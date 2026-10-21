@@ -1,49 +1,49 @@
 {
   "task": "task482",
-  "architecture": "v3",
+  "architecture": "v4",
   "drawn": "2026-10-21",
-  "slot_note": "re-root of seed ET39 after architectures 1 and 2 were spent at stage 4; a business registry's timeliness review, where the third quarter's applications are still being processed at the extract",
+  "slot_note": "re-root of seed ET39 after architectures 1 to 3 were spent at stage 4; a statistics office's area residential property price index, read for the housing ministry's rapid price growth designation",
   "domain": "survey-research-official-statistics",
   "client_domain": "survey-research-official-statistics",
   "subdomain": "census-register-administrative-data-quality",
-  "niche": "a business registry's choice of the regional registration offices placed on a timeliness improvement plan because the median working days from a complete application to registration, for applications received in the third quarter of 2026, exceed 20, when at the October extract a share of each office's applications is still open and sits only in the open caseload snapshot",
+  "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, read against the housing ministry's 8 per cent line for designating rapid price growth areas, when each area's sales in a year are a shifting sample of its dwelling stock and the dwellings' attributes and small-area locations sit in the valuation register and the address point file, not in the price register",
   "objective": "etl",
-  "shape": "other",
+  "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "CRO-AD, CRO-CV, CRO-FM, CRO-GQ, CRO-LW and CRO-MG planned",
+  "answer": "to be fixed by the generator (figures.json call.designated)",
   "answer_source": "generator/figures.json",
   "gap": [
-    "time"
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G9",
-    "G12"
+    "G6",
+    "G17"
   ],
-  "gate_g": "etl_conformance",
-  "calibration_form": "censored_or_lagged_release",
-  "stump_strategy": "other",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "With every file conformed and every rule read, the easy route takes each office's median over its registered applications, or counts the open ones at their age at the extract; but an application still open has only lasted at least its age, and the open ones are the slow ones, so the median of the registered understates it and an open application counted at its age understates it too, while only the product-limit estimate over registered and open applications, each open one censored at its age, recovers the median of the quarter's applications.",
-  "domain_test": "The timeliness of a register's intake measured from a cohort still being processed, worked the way official statistics measures a duration from records some of which have not ended: the open applications are right-censored at their age, and the median comes from the product-limit (Kaplan-Meier) estimate over the whole cohort; with another field's nouns the step survives only where durations are still running at the cut.",
+  "analyst_test": "With every file conformed and every rule read, the easy route compares each area's median sale price, or its median price per square metre, or its type-by-type change weighted by the census stock, between the two years; but the dwellings that sold in each year are not the area's stock, and in some areas the year to September 2026 sold far more homes in the cheaper or the dearer electoral divisions, or far more new homes, so every summary of what sold moves with which homes sold, and only a hedonic regression of log price on the dwellings' type, floor area, new-dwelling status and electoral division, with a term for the year, gives the change in the value of an unchanged dwelling.",
+  "domain_test": "An area's house price inflation measured the way official property price statistics measure it: sales are a changing sample of the dwelling stock, so the index is a constant-quality one, the time effect of a hedonic regression of log price on the dwelling's characteristics and location; with another field's nouns the step survives only where a price is read from a shifting sample of heterogeneous units whose attributes sit in another register.",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:a cohort's median duration read from its finished members alone when the unfinished are the slow ones",
+  "layer2_pattern": "own:an area's price change read from summaries of what sold when the sold homes are a shifting sample of the stock by location, size and newness",
   "layer1": [
-    "the registration log in two systems' layouts",
-    "working days against calendar days and the registry's holiday list",
-    "applications made complete after a query, the clock restarting",
-    "an open caseload snapshot by office and receipt day, not by application"
+    "the price register in two layouts across the October 2025 system change",
+    "new-dwelling prices filed exclusive of VAT at 13.5 per cent",
+    "addresses joined to the valuation register by property number and to the address point file for the electoral division",
+    "sales not at full market price flagged and outside the index"
   ],
-  "stakeholder_role": "head of registration services at a business registry",
-  "role_family": "policy_adviser",
-  "scoring_unit": "other",
+  "stakeholder_role": "head of price statistics at a national statistics office",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "index points",
   "spine": {
     "file": "cro_card_payments_settled_2026-07_to_2026-10.csv",
     "rows": 66132,
@@ -51,40 +51,39 @@
     "grain": "payment",
     "source": "synthetic"
   },
-  "forum": "executive_team",
-  "forcing_event": "period_close",
-  "org_family": "other",
+  "forum": "minister_or_cabinet",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "research_or_statistics_office",
   "world": {
     "geography": "Ireland (a fictional nation)",
     "currency": "EUR",
-    "org_type": "national business registry",
+    "org_type": "national statistics office",
     "invented_names": [
-      "Companies Registration Office of Ardmuir"
+      "Brannagh Statistics Office"
     ],
     "people": [
-      "Eunan Reid",
-      "Jennifer Dyer"
+      "Clare McEntee",
+      "Evelyn Clune"
     ]
   },
   "deliverables": [
-    "cro_timeliness_plans_q3_2026.xlsx"
+    "bso_area_property_price_change_2026.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A cohort's median duration is read while part of the cohort is still running, and the still-running members are the slow ones; the median of the finished members understates it, and so does counting the unfinished at their age, so only the product-limit estimate that keeps each unfinished member at risk until its age recovers the cohort's median.",
-  "driver_concrete": "Each office's July to September applications are partly still open on 9 October, the open ones listed only as counts by receipt day in the caseload snapshot; an office with a backlog has its slow applications among them, so its median over registered applications looks under 20 working days while the quarter's median is over.",
-  "stump": "The default path takes each office's median working days over its registered third-quarter applications and files CRO-FM and CRO-MG planned, because it never asks how long the applications still open at the extract will take: they are the slow ones, so the four offices with a backlog look quick on what they have registered, and only the product-limit median over registered and open applications, each open one at risk until its age, gives the quarter's median.",
+  "driver": "A unit's price change is read from the units of a heterogeneous stock that happened to trade in each period, and the traded mix shifts between periods by location, size and newness, with location held in a separate register; every summary of the traded units, raw, per unit of size or reweighted by a coarse type, moves with the mix, and only a regression of log price on the units' characteristics and fine location with a period term gives the change for an unchanged unit.",
+  "driver_concrete": "Each area's sales in the year to September 2026 come from different electoral divisions, sizes and new estates than the year before; the median sale price, the median per square metre and the census-weighted change by dwelling type all move with that mix, and only the hedonic index with the electoral division from the address point file puts the right areas over 8 per cent.",
+  "stump": "The default path compares each area's sales between the year to September 2025 and the year to September 2026 by dwelling type, weights the changes by the census stock and files the areas over 8 per cent, because it never asks whether the homes that sold within each type were the same kind of home in both years: in several areas the second year sold far more homes in the cheaper or the dearer electoral divisions, larger homes, or new homes at a premium, and only a hedonic regression on type, floor area, new-dwelling status and electoral division gives each area's change for an unchanged dwelling.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task479": "task479 weighs noisy unit levels against the pool; here durations still running at the cut are censored.",
-    "task469": "task469 reads a share of future tasks needing longer than a new allowance from tasks seen only when they overran their own; here every application's clock runs from receipt, the registered ones observed in full and the open ones right-censored at their age on one extract date, and the quantity is a cohort's median.",
-    "task231": "task231 reads a rate over active units when exits are recorded a year late; here nothing is recorded late: open applications are known to be open, and their durations are censored.",
-    "task234": "task234 reads each source's current output from a share a transit loss cannot move; no output and no transit loss here.",
-    "task445": "task445 completes holders who keep fixed fractions of units; no holding here.",
-    "task100": "task100 scores each unit on the members it will hold forward when members exit on completing a two-stage course and the snapshot records only periods enrolled; here no member is held forward: a closed cohort's median duration is read with its open members censored at their age."
+    "task481": "task481 restates counts onto a new classification by conversion rates from a dual-coded window; here no classification changes: prices of a shifting sample of dwellings are held to constant quality by regression.",
+    "task470": "task470 rebuilds activity a sensor never records from units it does; here every sale is recorded and the question is what the traded mix says about the stock's price.",
+    "task251": "task251 reads a unit's error over conditions its check never saw; here no instrument error: a price change for an unchanged dwelling.",
+    "task479": "task479 weighs noisy unit levels against the pool; here no shrinkage: each area's change is the time effect of a regression on the dwellings' characteristics.",
+    "task464": "task464 converts values across instruments by regression and counts units under a cut; here no instrument changes and no unit is converted: the regression holds quality fixed across two periods.",
+    "task484": "task484 counts occupied places when new places fill slowly; here new dwellings sell at a premium and the question is price, not occupancy."
   },
-  "notes": "stump_strategy composition_mix: the plan year's paid share depends on the benefit design mix the history does not carry for the changed districts.",
-  "registered": "2026-10-21T03:22:00Z",
+  "notes": "architecture 4: the client's held tasks are compound or keep a dimension in another file; here the size and newness sit in the valuation register and the electoral division in the address point file, and each partial correction files a different wrong set.",
   "lineage": [
     {
       "architecture": "v1",
@@ -131,5 +130,6 @@
       "gate_g": "etl_conformance",
       "niche": "a business registry's choice of the regional registration offices placed on a timeliness improvement plan because the median working days from a complete application to registration, for applications received in the third quarter of 2026, exceed 20, when at the October extract a share of each office's applications is still open and sits only in the open caseload snapshot"
     }
-  ]
+  ],
+  "registered": "2026-10-21T03:33:04Z"
 }

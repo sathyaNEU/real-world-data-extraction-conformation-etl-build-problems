@@ -1,13 +1,13 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-21",
- "stump": "The default path takes each office's median working days over its registered third-quarter applications and files CRO-FM and CRO-MG planned, because it never asks how long the applications still open at the extract will take: they are the slow ones, so the four offices with a backlog look quick on what they have registered, and only the product-limit median over registered and open applications, each open one at risk until its age, gives the quarter's median.",
+ "stump": "pending the generator's placement; see the card's stump",
  "architecture": 4,
  "loops": 0,
  "precut": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 1: architecture 3 spent (both readers censored the open caseload); re-root architecture 4 with a new world and decisive step, recheck guard recent and mechanisms, card through guard check and register",
+ "resume": "stage 2: build the v4 world (sixteen areas, hedonic ladder) and write the design note's ladder, then precut",
  "approved": null,
  "delivered": null,
  "portal": null,
