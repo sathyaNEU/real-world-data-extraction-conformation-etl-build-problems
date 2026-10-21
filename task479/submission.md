@@ -1,75 +1,83 @@
 ## Tags
 
-**Domain:** Education & Learning Sciences (item response theory and test equating).
+**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Designate C01, C04, C07 and C13 for 2026-27 high-dosage tutoring.**
-42.4, 39.6, 41.3 and 39.1 per cent of their students tested in spring 2026 are below Basic, against the 35 per cent line; no other campus reaches it. Not C03, C06, C09, C11, which reach 42.8, 42.7, 46.5, 40.4 per cent only on the vendor's reported scores: their students answered many items in under three seconds at the blind-guess rate, and scored on the responses given with effort they stand at 21.0, 19.6, 23.9, 22.3 per cent.
+**Raise the contributions of MV03, MV07, MV21, MV25, MV36 and MV47 from 1 January 2027.**
+Their expected plan year 2026 plan-paid claims are $600, 480, 500, 530, 500 and 490 per member per month against claims components of $570.94, 459.80, 475.87, 503.37, 474.44 and 468.15; every other district is under its claims component. MV07, MV21 and MV47 moved from plan MVA ($500 deductible) to plan MVC ($3,000) in 2026, and a plan MVC year carries less of its claims in January to June, so their first half is completed by the factor of the districts that ran plan MVC through 2025; completed by their own 2025 on plan MVA they read $440, 450 and 450 and look covered.
 
 ## 2. Critical Components
 
-1. Designated campuses: **C01**, **C04**, **C07**, **C13**
-2. Share of students tested below Basic, per cent: C01 **42.4**, C02 **11.9**, C03 **21.0**, C04 **39.6**, C05 **10.1**, C06 **19.6**, C07 **41.3**, C08 **15.5**, C09 **23.9**, C10 **17.6**, C11 **22.3**, C12 **7.9**, C13 **39.1**, C14 **19.0**
+1. Districts raised from 1 January 2027: **MV03**, **MV07**, **MV21**, **MV25**, **MV36**, **MV47**
+2. Expected plan year 2026 plan-paid claims PMPM, to the nearest $10: MV03 **600**, MV07 **480**, MV11 **540**, MV14 **570**, MV18 **500**, MV21 **500**, MV25 **530**, MV28 **600**, MV32 **470**, MV36 **500**, MV39 **520**, MV43 **630**, MV47 **490**, MV50 **550**, MV54 **480**, MV58 **600**
+3. Claims components of the 2026 contribution rates: MV03 570.94, MV07 459.80, MV11 577.07, MV14 612.93, MV18 532.26, MV21 475.87, MV25 503.37, MV28 631.65, MV32 504.69, MV36 474.44, MV39 545.48, MV43 675.98, MV47 468.15, MV50 579.81, MV54 509.33, MV58 642.17
 
 ## 3. Step-by-Step Solution
 
-1. Took the spring 2026 item responses from both exports (milliseconds before the 30 March release, seconds after) and the bank's 3PL parameters.
-2. Found the rapid responses: none of the engaged responses took under 7.5 seconds, and those under 3 seconds were right a quarter of the time at every difficulty, the blind-guess rate on four options.
-3. Rescored every student by maximum likelihood on the bank, as the technical summary scores, from the responses given in 5 seconds or more, the rapid ones treated as not administered; scale 500 + 40 theta, bounded 350 to 650.
-4. Took each campus's share of students tested below 470 and applied the 35 per cent line: C01, C04, C07, C13.
-5. Ask A: the fall 2025 report with each temporary id resolved through the register and the fall roster to the student, the later administration of a restarted session kept; share at or above 520.
-6. Ask B: fall students linked to their winter ids through the crosswalk and, for those it misses, by name and birth date between the rosters; growth is winter less fall, by winter campus.
-7. Recommended C01, C04, C07, C13.
+1. Joined the two claims lag reports by district, month of service, paid month and category, the May 2026 cells both platforms sent counted once, cents in dollars.
+2. Counted each district's member months from the eligibility file, 2025 and January to June 2026.
+3. Took each district's plan in 2025 and 2026 from the benefit designs PDF.
+4. For each plan, pooled the districts that ran it through 2025: plan year 2025 PMPM over January to June 2025 PMPM.
+5. Multiplied each district's January to June 2026 PMPM by the factor of its 2026 plan, so the four districts that moved to plan MVC are completed on plan MVC's year, not their own 2025.
+6. Compared with the 2026 claims component: MV03, MV07, MV21, MV25, MV36, MV47 over.
+7. Ask A: July to September 2026 eligibility counted once per person a month (members reissued new ids when their district moved payroll matched on district, birth date, sex and relationship).
+8. Ask B: each member's latest 2026 advisory, the district through the 2026 policy schedule, a claimant file reopened under a member's new id joined to the member's earlier one.
 
 ## 4. Deliverable Answers
 
-### bellweather_2026-27_tutoring_designation.xlsx
+### mvshc_january_2027_contribution_review.xlsx
 
-1. Share of students tested below Basic, per cent to one decimal, and the designation:
-   - C01: 42.4, designated
-   - C02: 11.9, not designated
-   - C03: 21.0, not designated
-   - C04: 39.6, designated
-   - C05: 10.1, not designated
-   - C06: 19.6, not designated
-   - C07: 41.3, designated
-   - C08: 15.5, not designated
-   - C09: 23.9, not designated
-   - C10: 17.6, not designated
-   - C11: 22.3, not designated
-   - C12: 7.9, not designated
-   - C13: 39.1, designated
-   - C14: 19.0, not designated
-2. Chart of the fourteen campuses' shares against the 35 per cent line, the designated four in teal.
-3. Fall 2025: students tested and share at or above Proficient (per cent to one decimal):
-   - C01: 470, 12.1
-   - C02: 531, 30.7
-   - C03: 433, 22.6
-   - C04: 599, 11.4
-   - C05: 343, 35.6
-   - C06: 525, 22.1
-   - C07: 379, 7.9
-   - C08: 600, 29.5
-   - C09: 452, 18.1
-   - C10: 340, 29.4
-   - C11: 474, 20.5
-   - C12: 397, 35.8
-   - C13: 529, 6.6
-   - C14: 391, 28.9
-4. Students tested in fall and winter and their mean fall-to-winter growth (scale points to one decimal):
-   - C01: 476, 6.3
-   - C02: 530, 6.5
-   - C03: 423, 7.2
-   - C04: 608, 6.9
-   - C05: 337, 5.7
-   - C06: 525, 7.5
-   - C07: 387, 7.2
-   - C08: 600, 6.1
-   - C09: 456, 6.9
-   - C10: 330, 5.9
-   - C11: 475, 6.5
-   - C12: 392, 7.8
-   - C13: 534, 6.0
-   - C14: 390, 6.7
+1. Expected plan year 2026 plan-paid claims PMPM (nearest $10) against the 2026 claims component, and the call:
+   - MV03: 600 against 570.94, raised
+   - MV07: 480 against 459.80, raised
+   - MV11: 540 against 577.07, not raised
+   - MV14: 570 against 612.93, not raised
+   - MV18: 500 against 532.26, not raised
+   - MV21: 500 against 475.87, raised
+   - MV25: 530 against 503.37, raised
+   - MV28: 600 against 631.65, not raised
+   - MV32: 470 against 504.69, not raised
+   - MV36: 500 against 474.44, raised
+   - MV39: 520 against 545.48, not raised
+   - MV43: 630 against 675.98, not raised
+   - MV47: 490 against 468.15, raised
+   - MV50: 550 against 579.81, not raised
+   - MV54: 480 against 509.33, not raised
+   - MV58: 600 against 642.17, not raised
+2. Chart of each district's expected PMPM beside its claims component, the raised districts marked.
+3. July to September 2026 member months:
+   - MV03: 2,499
+   - MV07: 1,851
+   - MV11: 3,409
+   - MV14: 1,436
+   - MV18: 2,046
+   - MV21: 2,791
+   - MV25: 1,650
+   - MV28: 2,340
+   - MV32: 3,870
+   - MV36: 1,781
+   - MV39: 2,637
+   - MV43: 1,993
+   - MV47: 2,181
+   - MV50: 3,018
+   - MV54: 1,690
+   - MV58: 2,721
+4. 2026 specific advisories: members on advisory and their incurred claims to date as last reported (whole dollars):
+   - MV03: 3, $752,799
+   - MV07: 1, $293,071
+   - MV11: 3, $848,055
+   - MV14: 2, $506,290
+   - MV18: 2, $381,007
+   - MV21: 2, $575,738
+   - MV25: 2, $533,024
+   - MV28: 1, $217,664
+   - MV32: 2, $393,471
+   - MV36: 1, $271,229
+   - MV39: 3, $726,766
+   - MV43: 1, $214,314
+   - MV47: 1, $283,111
+   - MV50: 2, $536,289
+   - MV54: 1, $240,715
+   - MV58: 2, $557,020

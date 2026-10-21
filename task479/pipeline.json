@@ -1,26 +1,26 @@
 {
  "task": "task479",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-21",
- "stump": "The default path completes each district's January to June 2026 plan-paid claims with its own 2025 January-to-June share and finds no shortfall at the four districts that moved to the $3,000 deductible, because it never asks whether a plan year's paid claims fall the same way under a different deductible.",
+ "stump": "The default path completes each district's January to June 2026 plan-paid claims by its own 2025 and files MV03, MV25 and MV36 raised, because it never asks whether a plan year's claims fall the same way under a different deductible: Brantmoor, Farrowdale and Northam Vale moved from the $500 plan to the $3,000 plan in 2026, whose first half carries less of the year, and they are short of their claims components.",
  "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-21"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW",
   "reader": ""
  },
  "duplicate_check": {
   "heart": "WARN",
-  "nearest": "see guard heart"
+  "nearest": "task480 0.08"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: design architecture 5 (plan-year completion under the 2026 benefit design): generator, ladder, asks, prompt, precut",
+ "resume": "stage 4: spawn two Sonnet leak readers on fresh unzips of target.zip and the judge thread on a hand-built brief, score each reader with score_reader.py, fix findings in one pass",
  "approved": null,
  "delivered": null,
  "portal": null,

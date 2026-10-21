@@ -1,165 +1,138 @@
 {
  "ask_a": {
-  "C01": {
-   "proficient_pct": "12.1",
-   "tested": 470
-  },
-  "C02": {
-   "proficient_pct": "30.7",
-   "tested": 531
-  },
-  "C03": {
-   "proficient_pct": "22.6",
-   "tested": 433
-  },
-  "C04": {
-   "proficient_pct": "11.4",
-   "tested": 599
-  },
-  "C05": {
-   "proficient_pct": "35.6",
-   "tested": 343
-  },
-  "C06": {
-   "proficient_pct": "22.1",
-   "tested": 525
-  },
-  "C07": {
-   "proficient_pct": "7.9",
-   "tested": 379
-  },
-  "C08": {
-   "proficient_pct": "29.5",
-   "tested": 600
-  },
-  "C09": {
-   "proficient_pct": "18.1",
-   "tested": 452
-  },
-  "C10": {
-   "proficient_pct": "29.4",
-   "tested": 340
-  },
-  "C11": {
-   "proficient_pct": "20.5",
-   "tested": 474
-  },
-  "C12": {
-   "proficient_pct": "35.8",
-   "tested": 397
-  },
-  "C13": {
-   "proficient_pct": "6.6",
-   "tested": 529
-  },
-  "C14": {
-   "proficient_pct": "28.9",
-   "tested": 391
-  }
+  "MV03": 2499,
+  "MV07": 1851,
+  "MV11": 3409,
+  "MV14": 1436,
+  "MV18": 2046,
+  "MV21": 2791,
+  "MV25": 1650,
+  "MV28": 2340,
+  "MV32": 3870,
+  "MV36": 1781,
+  "MV39": 2637,
+  "MV43": 1993,
+  "MV47": 2181,
+  "MV50": 3018,
+  "MV54": 1690,
+  "MV58": 2721
  },
  "ask_b": {
-  "C01": {
-   "growth": "6.3",
-   "students": 476
+  "MV03": {
+   "claims_to_date": 752799,
+   "members": 3
   },
-  "C02": {
-   "growth": "6.5",
-   "students": 530
+  "MV07": {
+   "claims_to_date": 293071,
+   "members": 1
   },
-  "C03": {
-   "growth": "7.2",
-   "students": 423
+  "MV11": {
+   "claims_to_date": 848055,
+   "members": 3
   },
-  "C04": {
-   "growth": "6.9",
-   "students": 608
+  "MV14": {
+   "claims_to_date": 506290,
+   "members": 2
   },
-  "C05": {
-   "growth": "5.7",
-   "students": 337
+  "MV18": {
+   "claims_to_date": 381007,
+   "members": 2
   },
-  "C06": {
-   "growth": "7.5",
-   "students": 525
+  "MV21": {
+   "claims_to_date": 575738,
+   "members": 2
   },
-  "C07": {
-   "growth": "7.2",
-   "students": 387
+  "MV25": {
+   "claims_to_date": 533024,
+   "members": 2
   },
-  "C08": {
-   "growth": "6.1",
-   "students": 600
+  "MV28": {
+   "claims_to_date": 217664,
+   "members": 1
   },
-  "C09": {
-   "growth": "6.9",
-   "students": 456
+  "MV32": {
+   "claims_to_date": 393471,
+   "members": 2
   },
-  "C10": {
-   "growth": "5.9",
-   "students": 330
+  "MV36": {
+   "claims_to_date": 271229,
+   "members": 1
   },
-  "C11": {
-   "growth": "6.5",
-   "students": 475
+  "MV39": {
+   "claims_to_date": 726766,
+   "members": 3
   },
-  "C12": {
-   "growth": "7.8",
-   "students": 392
+  "MV43": {
+   "claims_to_date": 214314,
+   "members": 1
   },
-  "C13": {
-   "growth": "6.0",
-   "students": 534
+  "MV47": {
+   "claims_to_date": 283111,
+   "members": 1
   },
-  "C14": {
-   "growth": "6.7",
-   "students": 390
+  "MV50": {
+   "claims_to_date": 536289,
+   "members": 2
+  },
+  "MV54": {
+   "claims_to_date": 240715,
+   "members": 1
+  },
+  "MV58": {
+   "claims_to_date": 557020,
+   "members": 2
   }
  },
- "below_basic_pct": {
-  "C01": "42.4",
-  "C02": "11.9",
-  "C03": "21.0",
-  "C04": "39.6",
-  "C05": "10.1",
-  "C06": "19.6",
-  "C07": "41.3",
-  "C08": "15.5",
-  "C09": "23.9",
-  "C10": "17.6",
-  "C11": "22.3",
-  "C12": "7.9",
-  "C13": "39.1",
-  "C14": "19.0"
- },
  "call": {
-  "designated": [
-   "C01",
-   "C04",
-   "C07",
-   "C13"
+  "raised": [
+   "MV03",
+   "MV07",
+   "MV21",
+   "MV25",
+   "MV36",
+   "MV47"
   ]
  },
+ "claims_component": {
+  "MV03": "570.94",
+  "MV07": "459.80",
+  "MV11": "577.07",
+  "MV14": "612.93",
+  "MV18": "532.26",
+  "MV21": "475.87",
+  "MV25": "503.37",
+  "MV28": "631.65",
+  "MV32": "504.69",
+  "MV36": "474.44",
+  "MV39": "545.48",
+  "MV43": "675.98",
+  "MV47": "468.15",
+  "MV50": "579.81",
+  "MV54": "509.33",
+  "MV58": "642.17"
+ },
  "conventions": {
-  "basic": 470,
+  "advisory": 125000,
   "counts": [
-   2,
    4,
-   14
+   6,
+   16
   ],
-  "items": 40,
-  "line_pct": 35,
-  "proficient": 520,
-  "scale": [
+  "deductibles": [
    500,
-   40,
-   350,
-   650
+   1500,
+   3000
   ],
-  "seconds": [
+  "months": [
    3,
-   5,
-   7.5
+   6,
+   30,
+   31
   ],
+  "rounding": [
+   10
+  ],
+  "specific": 250000,
   "years": [
    2025,
    2026,
@@ -167,31 +140,46 @@
   ]
  },
  "default_path": {
-  "below_basic_pct": {
-   "C01": "42.4",
-   "C02": "12.1",
-   "C03": "42.8",
-   "C04": "52.5",
-   "C05": "17.5",
-   "C06": "42.7",
-   "C07": "41.3",
-   "C08": "15.5",
-   "C09": "46.5",
-   "C10": "17.6",
-   "C11": "40.4",
-   "C12": "19.6",
-   "C13": "39.3",
-   "C14": "27.4"
+  "expected_pmpm": {
+   "MV03": 600,
+   "MV07": 440,
+   "MV11": 540,
+   "MV14": 570,
+   "MV18": 500,
+   "MV21": 450,
+   "MV25": 530,
+   "MV28": 600,
+   "MV32": 420,
+   "MV36": 500,
+   "MV39": 520,
+   "MV43": 630,
+   "MV47": 450,
+   "MV50": 550,
+   "MV54": 480,
+   "MV58": 600
   },
-  "designated": [
-   "C01",
-   "C03",
-   "C04",
-   "C06",
-   "C07",
-   "C09",
-   "C11",
-   "C13"
+  "raised": [
+   "MV03",
+   "MV25",
+   "MV36"
   ]
+ },
+ "expected_pmpm": {
+  "MV03": 600,
+  "MV07": 480,
+  "MV11": 540,
+  "MV14": 570,
+  "MV18": 500,
+  "MV21": 500,
+  "MV25": 530,
+  "MV28": 600,
+  "MV32": 470,
+  "MV36": 500,
+  "MV39": 520,
+  "MV43": 630,
+  "MV47": 490,
+  "MV50": 550,
+  "MV54": 480,
+  "MV58": 600
  }
 }

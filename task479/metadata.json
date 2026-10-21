@@ -1,64 +1,60 @@
 {
  "task": "task479",
- "domain": "Education & Learning Sciences (item response theory and test equating)",
- "client_domain": "Education & Learning Sciences",
- "task_type": "item-response-theory-test-equating",
+ "domain": "Healthcare Delivery & Health Economics (payment, claims and health plan analytics)",
+ "client_domain": "Healthcare Delivery & Health Economics",
+ "task_type": "payment-claims-health-plan-analytics",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "state_accountability_math_2025_bellweather.csv",
-  "bellweather_chronic_absence_2025-26.csv"
+  "tollard_pharmacy_rebate_statement_2025.csv",
+  "mvshc_district_contribution_receipts_fy2026.csv",
+  "state_school_employee_plan_survey_2025.csv"
  ],
  "distractor_reasons": {
-  "state_accountability_math_2025_bellweather.csv": "the state test's 2025 results by campus, a different test, year and scale; the designation is on the spring 2026 benchmark",
-  "bellweather_chronic_absence_2025-26.csv": "chronic absence by campus; the designation counts students tested on the benchmark, whatever their attendance"
+  "tollard_pharmacy_rebate_statement_2025.csv": "the 2025 pharmacy rebates credited to the cooperative's reserve; the review memo takes plan-paid claims before rebates, so no district's figure nets them",
+  "mvshc_district_contribution_receipts_fy2026.csv": "the districts' fiscal 2026 contributions billed and received; the review compares claims with the claims component of the 2026 rate, and no receipt enters it",
+  "state_school_employee_plan_survey_2025.csv": "a state survey's 2025 claims cost per member per month by plan type; the review rests on each district's own claims and no benchmark enters it"
  },
  "stated_inputs": [
-  "470",
-  "520",
-  "35"
+  "125,000",
+  "250,000",
+  "3,000",
+  "1,500"
  ],
  "deliverables": [
-  "bellweather_2026-27_tutoring_designation.xlsx"
+  "mvshc_january_2027_contribution_review.xlsx"
  ],
- "as_of": "2026-10-02",
+ "as_of": "2026-10-06",
  "files": [
-  "bellweather_assessment_data_dictionary.csv",
-  "bellweather_assessment_extract_manifest_2026-10-02.csv",
-  "bellweather_chronic_absence_2025-26.csv",
-  "bellweather_sis_id_crosswalk_2026-01-05.csv",
-  "bellweather_sis_roster_2025-10-01.csv",
-  "bellweather_sis_roster_2026-03-01.csv",
-  "bellweather_tutoring_designation_2026-27.docx",
-  "quantilis_benchmark_technical_summary_2025-26.pdf",
-  "quantilis_fall2025_score_report.csv",
-  "quantilis_item_bank_2025-26.csv",
-  "quantilis_spring2026_item_responses_from_2026-03-30.csv",
-  "quantilis_spring2026_item_responses_through_2026-03-27.csv",
-  "quantilis_spring2026_score_report.csv",
-  "quantilis_temporary_id_register_fall2025.csv",
-  "quantilis_winter2026_score_report.csv",
-  "state_accountability_math_2025_bellweather.csv"
+  "granfield_specific_advisories_2026.csv",
+  "granfield_specific_policy_schedule_2025-2027.csv",
+  "mvshc_2026_contribution_rates.xlsx",
+  "mvshc_benefit_designs_2025_2026.pdf",
+  "mvshc_contribution_review_january_2027.pdf",
+  "mvshc_data_dictionary.csv",
+  "mvshc_district_contribution_receipts_fy2026.csv",
+  "mvshc_extract_manifest_2026-10-06.csv",
+  "state_school_employee_plan_survey_2025.csv",
+  "tollard_claims_lag_report_paid_2025-01_to_2026-05.csv",
+  "tollard_claims_lag_report_paid_2026-05_to_2026-09.csv",
+  "tollard_eligibility_member_months_2025-01_to_2026-09.csv",
+  "tollard_pharmacy_rebate_statement_2025.csv"
  ],
  "rows": {
-  "bellweather_chronic_absence_2025-26.csv": 56,
-  "quantilis_item_bank_2025-26.csv": 120,
-  "bellweather_assessment_data_dictionary.csv": 24,
-  "quantilis_fall2025_score_report.csv": 6951,
-  "bellweather_assessment_extract_manifest_2026-10-02.csv": 15,
-  "quantilis_spring2026_item_responses_through_2026-03-27.csv": 72400,
-  "quantilis_spring2026_item_responses_from_2026-03-30.csv": 186120,
-  "bellweather_sis_roster_2025-10-01.csv": 6463,
-  "bellweather_sis_roster_2026-03-01.csv": 6463,
-  "quantilis_spring2026_score_report.csv": 6463,
-  "state_accountability_math_2025_bellweather.csv": 14,
-  "quantilis_temporary_id_register_fall2025.csv": 488,
-  "quantilis_winter2026_score_report.csv": 6463,
-  "bellweather_sis_id_crosswalk_2026-01-05.csv": 6157
+  "granfield_specific_advisories_2026.csv": 205,
+  "mvshc_data_dictionary.csv": 27,
+  "tollard_eligibility_member_months_2025-01_to_2026-09.csv": 271893,
+  "tollard_claims_lag_report_paid_2026-05_to_2026-09.csv": 640,
+  "tollard_claims_lag_report_paid_2025-01_to_2026-05.csv": 2176,
+  "mvshc_extract_manifest_2026-10-06.csv": 12,
+  "granfield_specific_policy_schedule_2025-2027.csv": 48,
+  "tollard_pharmacy_rebate_statement_2025.csv": 64,
+  "mvshc_district_contribution_receipts_fy2026.csv": 192,
+  "state_school_employee_plan_survey_2025.csv": 5
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task479/generator); the network, its campuses and students, the vendor and the people are fictional",
-  "public_specifications": "the item bank follows the three-parameter logistic model and maximum likelihood scoring as published in the measurement literature",
+  "constructed": "every file is constructed for this task by its generator (task479/generator); the cooperative, the districts, the administrator, the carrier, their members and the people are fictional",
+  "public_specifications": "the layouts follow common third-party administrator claims lag reports, eligibility files and specific stop-loss advisories (12/15 contract basis), described in no shipped file beyond the pack's own dictionary",
   "licence": "CC0 1.0 (constructed data)",
-  "date": "2026-10-02"
+  "date": "2026-10-06"
  }
 }

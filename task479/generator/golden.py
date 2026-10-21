@@ -1,6 +1,6 @@
-"""The golden deliverable, computed from the cut pack through bundle.py: the Assessment office's 2026-27 tutoring
-designation workbook (each campus's share below Basic on the spring 2026 benchmark, the students it rests on, the fall
-2025 benchmark and fall-to-winter growth), and generator/figures.json."""
+"""The golden deliverable, computed from the cut pack through bundle.py: the cooperative's January 2027 contribution
+review workbook (each district's expected plan year 2026 plan-paid PMPM against its 2026 claims component, the plan-year
+factors it rests on, July to September 2026 member months and the 2026 advisories), and generator/figures.json."""
 import json
 import os
 import sys
@@ -10,45 +10,55 @@ sys.path.insert(0, HERE)
 
 import bundle as B    # noqa: E402
 
-FILE = "bellweather_2026-27_tutoring_designation.xlsx"
+FILE = "mvshc_january_2027_contribution_review.xlsx"
 INK = "1B2430"
-TEAL = "1F5A63"
-PALE = "E4F0EF"
-MUTED = "A7B3B1"
+GREEN = "2C5A3F"
+PALE = "E7EFE9"
+MUTED = "A3ACB8"
+ACCENT = "B4452F"
+NAMES = "mvshc_2026_contribution_rates.xlsx"
+
+
+def r10(v):
+    return int(10 * round(v / 10))
 
 
 def compute(target):
     b = B.load(target)
-    gold = B.spring(b, "golden")
-    vend = B.spring(b, "vendor")
-    sh = B.shares(b, gold)
-    return {"b": b, "gold": gold, "vend": vend, "sh": sh, "shv": B.shares(b, vend), "des": B.designate(b, gold),
-            "a": B.ask_a(b), "bb": B.ask_b(b)}
+    est = B.expected(b, "golden")
+    k = B.factors_by_design(b)
+    return {"b": b, "est": est, "k": k, "raised": B.raised(b, est), "a": B.ask_a(b), "bb": B.ask_b(b),
+            "h1": {d: B.h1(b, d) for d in b["ids"]}}
 
 
-def write_xlsx(path, G):
+def write_xlsx(path, G, target):
     import openpyxl
-    from openpyxl.chart import BarChart, LineChart, Reference
-    from openpyxl.chart.marker import DataPoint
+    from openpyxl.chart import BarChart, Reference
+    from openpyxl.chart.series import DataPoint
     from openpyxl.chart.shapes import GraphicalProperties
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     from openpyxl.utils import get_column_letter
     b = G["b"]
+    names = {}
+    ws0 = openpyxl.load_workbook(os.path.join(target, NAMES), data_only=True)["2026 rates"]
+    for r in ws0.iter_rows(min_row=5, values_only=True):
+        if r[0]:
+            names[r[0]] = r[1]
     wb = openpyxl.Workbook()
     hdr = Font(name="Calibri", bold=True, color="FFFFFF", size=10)
-    hfill = PatternFill("solid", fgColor=TEAL)
+    hfill = PatternFill("solid", fgColor=GREEN)
     body = Font(name="Calibri", size=10, color=INK)
     bold = Font(name="Calibri", size=10, color=INK, bold=True)
-    thin = Border(bottom=Side(style="thin", color="C3CDCB"))
-    dfill = PatternFill("solid", fgColor=PALE)
+    thin = Border(bottom=Side(style="thin", color="C3CAD3"))
+    nfill = PatternFill("solid", fgColor=PALE)
 
     def head(ws, row, cols, widths):
         for i, (h, w) in enumerate(zip(cols, widths), 1):
             c = ws.cell(row=row, column=i, value=h)
             c.font, c.fill = hdr, hfill
-            c.alignment = Alignment(wrap_text=True, vertical="center", horizontal="left" if i == 1 else "right")
+            c.alignment = Alignment(wrap_text=True, vertical="center", horizontal="left" if i <= 2 else "right")
             ws.column_dimensions[get_column_letter(i)].width = w
-        ws.row_dimensions[row].height = 32
+        ws.row_dimensions[row].height = 42
 
     def title(ws, t, sub):
         ws["A1"] = t
@@ -56,100 +66,130 @@ def write_xlsx(path, G):
         ws["A2"] = sub
         ws["A2"].font = Font(name="Calibri", size=9, italic=True, color="5B6470")
 
-    n, below, rapid = {}, {}, {}
-    for s, v in G["gold"].items():
-        c = b["spring"][s]["campus_id"]
-        n[c] = n.get(c, 0) + 1
-        below[c] = below.get(c, 0) + (v < B.BASIC)
-        rapid[c] = rapid.get(c, 0) + any(x[3] < B.RAPID for x in b["resp"][s])
     ws = wb.active
-    ws.title = "Designation"
-    des = G["des"]
-    title(ws, "%d campuses are designated for 2026-27 tutoring: %s" % (len(des), ", ".join(des)),
-          "Spring 2026 benchmark; each student's scale score estimated by maximum likelihood on Quantilis's bank from "
-          "the responses given with effort (responses in under five seconds treated as not administered).")
-    head(ws, 4, ["Campus", "Students tested", "Students with rapid responses", "Below Basic", "Share below Basic",
-                 "Designated"], [10, 12, 14, 11, 12, 11])
-    for i, c in enumerate(b["campuses"]):
-        vals = [c, n[c], rapid[c], below[c], round(100 * G["sh"][c], 1), "yes" if c in des else "no"]
+    ws.title = "Contribution review"
+    n = G["raised"]
+    title(ws, "%d of 16 districts rise from 1 January 2027: %s" % (len(n), ", ".join(n)),
+          "Expected plan year 2026 plan-paid claims per member per month: January to June 2026 incurred claims paid "
+          "through 30 September 2026, completed by the plan-year factor of the districts that ran the same plan "
+          "through 2025, against the claims component of the 2026 contribution rate.")
+    cols = ["District", "District name", "2026 plan (deductible)", "Jan to Jun 2026 member months",
+            "Jan to Jun 2026 plan paid ($)", "Jan to Jun 2026 PMPM ($)", "Plan-year factor",
+            "Expected plan year 2026 PMPM ($)", "2026 claims component ($)", "Over (under) ($)", "Contribution rises"]
+    head(ws, 4, cols, [8, 30, 12, 11, 14, 11, 9, 13, 12, 11, 10])
+    for i, d in enumerate(b["ids"]):
+        dz = b["design"][(d, 2026)]
+        mm = sum(b["mm"].get((d, ym), 0) for ym in B.H1)
+        pd = sum(b["paid"].get((d, ym), 0.0) for ym in B.H1)
+        est, rate = G["est"][d], b["rates"][d]
+        vals = [d, names[d], "%s ($%s)" % ({500: "MVA", 1500: "MVB", 3000: "MVC"}[dz], "{:,}".format(dz)), mm,
+                round(pd), round(G["h1"][d], 2), round(G["k"][dz], 4), r10(est), rate, round(est - rate, 2),
+                "yes" if d in n else "no"]
         for j, v in enumerate(vals, 1):
-            cell = ws.cell(row=5 + i, column=j, value=v)
-            cell.font = bold if (c in des and j in (1, 6)) else body
-            cell.border = thin
-            if c in des:
-                cell.fill = dfill
-            if j == 5:
-                cell.number_format = "0.0"
-            elif j in (2, 3, 4):
-                cell.number_format = "#,##0"
-            if j >= 2:
-                cell.alignment = Alignment(horizontal="right")
-    ws.freeze_panes = "B5"
-    r0 = 5 + len(b["campuses"]) + 1
+            c = ws.cell(row=5 + i, column=j, value=v)
+            c.font = bold if (d in n and j in (1, 2, 11)) else body
+            c.border = thin
+            if d in n:
+                c.fill = nfill
+            if j in (4, 5, 8):
+                c.number_format = "#,##0"
+            elif j in (6, 9):
+                c.number_format = "#,##0.00"
+            elif j == 7:
+                c.number_format = "0.0000"
+            elif j == 10:
+                c.number_format = "#,##0.00;(#,##0.00)"
+            if j >= 3:
+                c.alignment = Alignment(horizontal="right")
+    ws.freeze_panes = "C5"
+    r0 = 5 + len(b["ids"]) + 1
     for k, t in enumerate([
-        "The benchmark is untimed and no engaged response in the spring sessions took under 7.5 seconds; responses "
-        "given in under 3 seconds were right a quarter of the time whatever the item's difficulty, the rate of a blind "
-        "guess on four options, so they carry nothing about the student's achievement and are scored as not "
-        "administered. Every student tested keeps a score.",
-        "The 35 per cent line is applied to the unrounded share; shares are shown to one decimal.",
+        "The plan pays little in the first months of a plan year while members meet their deductibles, and less the "
+        "higher the deductible, so January to June carries less of a plan MVC year than of a plan MVA year. "
+        "Brantmoor, Farrowdale, Isenbrook and Northam Vale moved from plan MVA to plan MVC on 1 January 2026: "
+        "their January to June 2026 claims are completed by the factor of Eversley Plains, Kestrel Point and Pellow "
+        "Ridge, which ran plan MVC through 2025, not by their own 2025 on plan MVA.",
+        "Over (under) is the expected PMPM unrounded less the claims component. Plan-paid claims are gross of "
+        "specific stop-loss reimbursements and before pharmacy rebates (contribution review memo, section 2).",
     ]):
-        cell = ws.cell(row=r0 + k, column=1, value=t)
-        cell.font = Font(name="Calibri", size=9, color="5B6470")
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-        ws.merge_cells(start_row=r0 + k, start_column=1, end_row=r0 + k, end_column=6)
-        ws.row_dimensions[r0 + k].height = 48
+        c = ws.cell(row=r0 + k, column=1, value=t)
+        c.font = Font(name="Calibri", size=9, color="5B6470")
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+        ws.merge_cells(start_row=r0 + k, start_column=1, end_row=r0 + k, end_column=11)
+        ws.row_dimensions[r0 + k].height = 40
+
     cs = wb.create_sheet("Chart data")
-    cs.append(["Campus", "Share below Basic (%)", "35% line"])
-    for c in b["campuses"]:
-        cs.append([c, round(100 * G["sh"][c], 1), 35.0])
+    cs.append(["District", "Expected plan year 2026 PMPM ($)", "2026 claims component ($)"])
+    for d in b["ids"]:
+        cs.append([d, round(G["est"][d], 2), b["rates"][d]])
     ch = BarChart()
     ch.type = "col"
-    ch.title = "Spring 2026 share of students below Basic, against the 35% line"
-    ch.y_axis.title = "Per cent of students tested"
-    ch.y_axis.numFmt = "0"
-    ch.y_axis.scaling.min = 0
+    word = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight"}.get(len(n), str(len(n)))
+    ch.title = "%s districts' expected 2026 claims run over their claims component" % word
+    ch.y_axis.title = "Dollars per member per month"
+    ch.y_axis.numFmt = "#,##0"
+    ch.y_axis.scaling.min = 300
     ch.y_axis.delete = False
     ch.x_axis.delete = False
     ch.x_axis.tickLblSkip = 1
-    ch.add_data(Reference(cs, min_col=2, min_row=1, max_row=len(b["campuses"]) + 1), titles_from_data=True)
-    ch.set_categories(Reference(cs, min_col=1, min_row=2, max_row=len(b["campuses"]) + 1))
-    s0 = ch.series[0]
-    s0.graphicalProperties = GraphicalProperties(solidFill=MUTED)
-    for i, c in enumerate(b["campuses"]):
-        if c in des:
+    data = Reference(cs, min_col=2, min_row=1, max_col=3, max_row=len(b["ids"]) + 1)
+    ch.add_data(data, titles_from_data=True)
+    ch.set_categories(Reference(cs, min_col=1, min_row=2, max_row=len(b["ids"]) + 1))
+    ch.series[0].graphicalProperties = GraphicalProperties(solidFill=GREEN)
+    for i, d in enumerate(b["ids"]):
+        if d in n:
             pt = DataPoint(idx=i)
-            pt.graphicalProperties = GraphicalProperties(solidFill=TEAL)
-            s0.dPt.append(pt)
-    ln = LineChart()
-    ln.add_data(Reference(cs, min_col=3, min_row=1, max_row=len(b["campuses"]) + 1), titles_from_data=True)
-    ln.series[0].graphicalProperties.line.solidFill = INK
-    ln.series[0].graphicalProperties.line.dashStyle = "dash"
-    ln.series[0].marker.symbol = "none"
-    ch += ln
+            pt.graphicalProperties = GraphicalProperties(solidFill=ACCENT)
+            ch.series[0].dPt.append(pt)
+    ch.series[1].graphicalProperties = GraphicalProperties(solidFill=MUTED)
+    ch.gapWidth = 60
     ch.legend.position = "b"
-    ch.height, ch.width = 10, 22
+    ch.height, ch.width = 10, 26
     ws.add_chart(ch, "A%d" % (r0 + 3))
 
-    fa = wb.create_sheet("Fall 2025")
-    title(fa, "Fall 2025 benchmark by campus", "Each student once: a restarted session's later administration is the "
-                                               "student's score, temporary ids resolved through the register.")
-    head(fa, 4, ["Campus", "Students tested", "Share at or above Proficient (%)"], [10, 14, 18])
-    for i, c in enumerate(b["campuses"]):
-        for j, (v, fm) in enumerate(((c, None), (G["a"][c][0], "#,##0"), (round(G["a"][c][1], 1), "0.0")), 1):
-            cell = fa.cell(row=5 + i, column=j, value=v)
-            cell.font, cell.border = body, thin
+    fs = wb.create_sheet("Plan-year factors")
+    title(fs, "Plan year 2025: the plan-year PMPM over the January to June PMPM, by plan",
+          "Claims incurred in 2025 and paid through 31 March 2026; each plan's factor pools the districts that ran it "
+          "through 2025.")
+    head(fs, 4, ["Plan", "Districts", "2025 member months", "2025 plan paid ($)", "Plan year PMPM ($)",
+                 "Jan to Jun PMPM ($)", "Factor"], [8, 30, 12, 15, 12, 12, 10])
+    row = 5
+    for dz, code in ((500, "MVA"), (1500, "MVB"), (3000, "MVC")):
+        ids = [i for i in b["ids"] if b["design"][(i, 2025)] == dz]
+        mm = sum(b["mm"].get((i, ym), 0) for i in ids for ym in B.Y25)
+        pd = sum(b["paid"].get((i, ym), 0.0) for i in ids for ym in B.Y25)
+        mh = sum(b["mm"].get((i, ym), 0) for i in ids for ym in B.Y25[:6])
+        ph = sum(b["paid"].get((i, ym), 0.0) for i in ids for ym in B.Y25[:6])
+        vals = [code, ", ".join(ids), mm, round(pd), round(pd / mm, 2), round(ph / mh, 2), round(G["k"][dz], 4)]
+        for j, v in enumerate(vals, 1):
+            c = fs.cell(row=row, column=j, value=v)
+            c.font, c.border = body, thin
+            c.number_format = {3: "#,##0", 4: "#,##0", 5: "#,##0.00", 6: "#,##0.00", 7: "0.0000"}.get(j, "General")
+        row += 1
+
+    a = wb.create_sheet("Q3 2026 member months")
+    title(a, "July to September 2026 member months", "Each person counted once a month: members reissued new ids when "
+                                                     "their district moved payroll to the county system are one person "
+                                                     "under both ids.")
+    head(a, 4, ["District", "District name", "Member months"], [8, 30, 14])
+    for i, d in enumerate(b["ids"]):
+        for j, (v, fm) in enumerate(((d, None), (names[d], None), (G["a"][d], "#,##0")), 1):
+            c = a.cell(row=5 + i, column=j, value=v)
+            c.font, c.border = body, thin
             if fm:
-                cell.number_format = fm
-    gr = wb.create_sheet("Fall to winter")
-    title(gr, "Fall to winter growth by winter campus", "Students tested in both windows, linked across the January "
-                                                        "2026 id migration (the crosswalk, then name and birth date).")
-    head(gr, 4, ["Campus", "Students in both", "Mean growth (scale points)"], [10, 14, 16])
-    for i, c in enumerate(b["campuses"]):
-        for j, (v, fm) in enumerate(((c, None), (G["bb"][c][0], "#,##0"), (round(G["bb"][c][1], 1), "0.0")), 1):
-            cell = gr.cell(row=5 + i, column=j, value=v)
-            cell.font, cell.border = body, thin
+                c.number_format = fm
+    ad = wb.create_sheet("2026 advisories")
+    title(ad, "Granfield's 2026 specific advisories", "Members flagged at $125,000, each counted once (a claimant file "
+                                                      "reopened under a member's new id is the same member), at the "
+                                                      "claims to date Granfield last reported.")
+    head(ad, 4, ["District", "District name", "Members on advisory", "Claims to date ($)"], [8, 30, 12, 16])
+    for i, d in enumerate(b["ids"]):
+        for j, (v, fm) in enumerate(((d, None), (names[d], None), (G["bb"][d][0], "0"),
+                                     (round(G["bb"][d][1]), "#,##0")), 1):
+            c = ad.cell(row=5 + i, column=j, value=v)
+            c.font, c.border = body, thin
             if fm:
-                cell.number_format = fm
+                c.number_format = fm
     for w in wb.worksheets:
         w.sheet_view.showGridLines = False
         w.page_setup.orientation = "landscape"
@@ -161,25 +201,26 @@ def write_xlsx(path, G):
 
 def figures(G):
     b = G["b"]
+    dflt = B.expected(b, "default")
     return {
-        "call": {"designated": G["des"]},
-        "below_basic_pct": {c: "%.1f" % (100 * G["sh"][c]) for c in b["campuses"]},
-        "ask_a": {c: {"tested": G["a"][c][0], "proficient_pct": "%.1f" % G["a"][c][1]} for c in b["campuses"]},
-        "ask_b": {c: {"students": G["bb"][c][0], "growth": "%.1f" % G["bb"][c][1]} for c in b["campuses"]},
-        "default_path": {"designated": B.designate(b, G["vend"]),
-                         "below_basic_pct": {c: "%.1f" % (100 * G["shv"][c]) for c in b["campuses"]}},
-        "conventions": {"line_pct": 35, "basic": 470, "proficient": 520, "items": 40, "seconds": [3, 5, 7.5], "scale": [500, 40, 350, 650],
-                        "years": [2025, 2026, 2027], "counts": [2, 4, 14]},
+        "call": {"raised": G["raised"]},
+        "expected_pmpm": {d: r10(G["est"][d]) for d in b["ids"]},
+        "ask_a": {d: G["a"][d] for d in b["ids"]},
+        "ask_b": {d: {"members": G["bb"][d][0], "claims_to_date": int(round(G["bb"][d][1]))} for d in b["ids"]},
+        "default_path": {"raised": B.raised(b, dflt), "expected_pmpm": {d: r10(dflt[d]) for d in b["ids"]}},
+        "claims_component": {d: "%.2f" % b["rates"][d] for d in b["ids"]},
+        "conventions": {"deductibles": [500, 1500, 3000], "advisory": 125000, "specific": 250000,
+                        "years": [2025, 2026, 2027], "counts": [4, 6, 16], "months": [3, 6, 30, 31], "rounding": [10]},
     }
 
 
 def main(target, gdir, fig_path):
     os.makedirs(gdir, exist_ok=True)
     G = compute(target)
-    write_xlsx(os.path.join(gdir, FILE), G)
+    write_xlsx(os.path.join(gdir, FILE), G, target)
     import postprocess as PP
-    PP.normalize_ooxml(os.path.join(gdir, FILE), "Sabrina Santos", "Sabrina Santos", "2026-10-06T15:10:00Z",
-                       "2026-10-07T19:42:00Z", excel=True, company="Bellweather Academies")
+    PP.normalize_ooxml(os.path.join(gdir, FILE), "Brady Cooper", "Brady Cooper", "2026-10-08T14:10:00Z",
+                       "2026-10-12T20:35:00Z", excel=True, company=PP.COMPANY)
     with open(fig_path, "w") as fh:
         json.dump(figures(G), fh, indent=1, sort_keys=True)
         fh.write("\n")

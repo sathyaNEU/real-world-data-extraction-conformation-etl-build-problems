@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "MV03, MV07, MV21, MV25, MV36 and MV47 raised",
+  "answer_source": "generator/figures.json",
   "gap": [
     "time"
   ],
@@ -36,18 +36,17 @@
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "own:a partial plan year completed by the share its months carry under the year's own benefit design",
   "layer1": [
-    "the claims lag report in two layouts across the plan administrator's platform change",
-    "June 2026 claims still running out at the extract",
-    "2025 incurred claims paid in 2026",
-    "enrollment snapshots with mid-month changes",
-    "districts' group numbers reissued when the cooperative re-rated two districts"
+    "the claims lag report in two layouts across the May 2026 platform move, May sent by both",
+    "the benefit design table inside a PDF",
+    "member ids reissued at the summer 2026 payroll move, old ids lingering",
+    "stop-loss policy numbers rewritten at the 2026 renewal"
   ],
   "stakeholder_role": "benefits finance manager of a school employees' health cooperative",
   "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
+    "file": "tollard_eligibility_member_months_2025-01_to_2026-09.csv",
+    "rows": 270941,
     "entity": "one member's enrollment in one month",
     "grain": "member x month",
     "source": "synthetic"
@@ -59,18 +58,24 @@
     "geography": "United States (a fictional county region)",
     "currency": "USD",
     "org_type": "school employees' health cooperative",
-    "invented_names": [],
+    "invented_names": [
+      "Merrin Valley Schools Health Cooperative",
+      "Tollard Benefit Services",
+      "Granfield Specialty Insurance Company"
+    ],
     "people": [
       "Brady Cooper",
       "James Hernandez"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "mvshc_january_2027_contribution_review.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A period's total is completed from its first months by the share those months carry, and the share is set by a design that resets each period and can change between periods: for units whose design changed, their own earlier period's share belongs to the old design, so the share has to come from units already on the new one.",
   "driver_concrete": "A district's plan pays little in the first months of a plan year while its members meet their deductibles, and less still at a $3,000 deductible: completing January to June 2026 with the district's own 2025 share works where the plan did not change, but the four districts that moved to the $3,000 deductible had their 2025 on a $500 plan, and the share their January to June carries now is the one the districts already on $3,000 show.",
-  "stump": "The default path completes each district's January to June 2026 plan-paid claims with its own 2025 January-to-June share and finds no shortfall at the four districts that moved to the $3,000 deductible, because it never asks whether a plan year's paid claims fall the same way under a different deductible.",
+  "stump": "The default path completes each district's January to June 2026 plan-paid claims by its own 2025 and files MV03, MV25 and MV36 raised, because it never asks whether a plan year's claims fall the same way under a different deductible: Brantmoor, Farrowdale and Northam Vale moved from the $500 plan to the $3,000 plan in 2026, whose first half carries less of the year, and they are short of their claims components.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task474": "task474 carries short counts to a year by a calendar pattern measured at always-on reference sites, the facility-serving sites following their facility's schedule; here no calendar or schedule outside the plan sets the pattern: the plan's own deductible accumulators make paid claims back-load within the plan year, and the share is read by design, from the districts already on the new deductible.",

@@ -23,11 +23,11 @@ import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
 LOCAL = dt.timezone(dt.timedelta(hours=-5))
-AS_OF = {"resp1": "2026-03-28 06:10", "resp2": "2026-04-14 06:20", "spring": "2026-04-14 06:25", "bank": "2025-08-01 09:00",
-         "manual": "2025-08-01 09:30", "memo": "2026-09-18 16:05", "fall": "2025-10-17 07:40", "temp": "2025-10-17 07:45",
-         "winter": "2026-02-06 07:30", "roster_f": "2025-10-01 05:00", "roster_s": "2026-03-01 05:00",
-         "xwalk": "2026-01-05 14:12", "state": "2025-09-15 11:00", "attend": "2026-05-01 08:15",
-         "dictionary": "2026-10-02 10:40", "manifest": "2026-10-02 10:44"}
+AS_OF = {"enroll": "2026-10-06 05:40", "lag_old": "2026-06-02 06:15", "lag_new": "2026-10-06 06:05",
+         "adv": "2026-10-01 11:20", "policy": "2026-09-30 15:45", "rates": "2025-10-21 17:10",
+         "memo": "2026-10-02 16:30", "benefits": "2025-11-14 10:05", "rebates": "2026-05-12 09:00",
+         "receipts": "2026-07-15 14:25", "survey": "2026-04-30 12:00", "dictionary": "2026-10-06 08:50",
+         "manifest": "2026-10-06 08:55"}
 
 
 def build(out, x=None, quiet=False):
@@ -38,25 +38,24 @@ def build(out, x=None, quiet=False):
     os.makedirs(out)
     f = lambda k: os.path.join(out, P.FILES[k])
     x = x or W.build()
-    P.people(x)
+    P.ids(x)
+    P.lag_cells(x)
     n = {}
-    n["resp1"] = P.write_csv(f("resp1"), P.RESP1_COLS, P.resp_rows(x, 1))
-    n["resp2"] = P.write_csv(f("resp2"), P.RESP2_COLS, P.resp_rows(x, 2))
-    n["spring"] = P.write_csv(f("spring"), P.SPRING_COLS, P.spring_rows(x))
-    n["bank"] = P.write_csv(f("bank"), P.BANK_COLS, P.bank_rows(x))
-    n["fall"] = P.write_csv(f("fall"), P.FALL_COLS, P.fall_rows(x))
-    n["temp"] = P.write_csv(f("temp"), P.TEMP_COLS, P.temp_rows(x))
-    n["winter"] = P.write_csv(f("winter"), P.WINTER_COLS, P.winter_rows(x))
-    n["roster_f"] = P.write_csv(f("roster_f"), P.ROSTER_COLS, P.roster_rows(x, "fall"))
-    n["roster_s"] = P.write_csv(f("roster_s"), P.ROSTER_COLS, P.roster_rows(x, "spring"))
-    n["xwalk"] = P.write_csv(f("xwalk"), P.XWALK_COLS, P.xwalk_rows(x))
-    n["state"] = P.write_csv(f("state"), P.STATE_COLS, P.state_rows(x))
-    n["attend"] = P.write_csv(f("attend"), P.ATTEND_COLS, P.attend_rows(x))
-    DC.write_manual(f("manual"))
-    PP.normalize_pdf(f("manual"), b"D:20250731151204-05'00'", b"D:20250801093002-05'00'")
+    n["enroll"] = P.write_csv(f("enroll"), P.ENROLL_COLS, P.enroll_rows(x))
+    n["lag_old"] = P.write_csv(f("lag_old"), P.LAG_OLD_COLS, P.lag_rows(x, "old"))
+    n["lag_new"] = P.write_csv(f("lag_new"), P.LAG_NEW_COLS, P.lag_rows(x, "new"))
+    n["adv"] = P.write_csv(f("adv"), P.ADV_COLS, P.adv_rows(x))
+    n["policy"] = P.write_csv(f("policy"), P.POLICY_COLS, P.policy_rows())
+    n["rebates"] = P.write_csv(f("rebates"), P.REBATE_COLS, P.rebate_rows(x))
+    n["receipts"] = P.write_csv(f("receipts"), P.RECEIPT_COLS, P.receipt_rows(x))
+    n["survey"] = P.write_csv(f("survey"), P.SURVEY_COLS, P.survey_rows())
+    DC.write_rates(f("rates"), x)
+    PP.normalize_ooxml(f("rates"), "Brady Cooper", "Brady Cooper", "2025-10-14T15:20:00Z", "2025-10-21T22:10:00Z",
+                       excel=True, company=P.COMPANY)
     DC.write_memo(f("memo"))
-    PP.normalize_ooxml(f("memo"), "Sabrina Santos", "Sabrina Santos", "2026-09-17T19:20:00Z", "2026-09-18T21:05:00Z",
-                       excel=False, company=P.NETWORK)
+    PP.normalize_pdf(f("memo"), b"D:20261002152214-05'00'", b"D:20261002163002-05'00'")
+    DC.write_benefits(f("benefits"))
+    PP.normalize_pdf(f("benefits"), b"D:20251113141907-05'00'", b"D:20251114100511-05'00'")
     n["dictionary"] = P.write_csv(f("dictionary"), DC.DICT_COLS, DC.dictionary_rows())
     n["manifest"] = P.write_csv(f("manifest"), DC.MANIFEST_COLS, DC.manifest_rows(n))
     for k in P.FILES:
