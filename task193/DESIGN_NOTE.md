@@ -800,6 +800,74 @@ over the generator's own flag.
   summary's serious share was 43 per cent every quarter, and the register held no patient under 18, which is
   now the extract's own stated scope.
 
+**The 2026-10-21 pass, measuring whether the ladder can be re-sited while the decisive step stays.**
+
+- The instructed rewrite of section 3.2(b), dropping "the number that would be expected if receiving
+  the product had no bearing on when the marker treatment is first received" and the matching clause in
+  1.1, so that the records rather than a sentence force the construction. Measured dead on Gate F
+  before a word was cut, because the branch the blind reader took is not a reading of that clause: on
+  the generator's clean truth every member of the licensed family refers the committed set over 20
+  redraws (exchangeability inside the pair 20 of 20, the two drugs' window incidence distributions 20
+  of 20, the pair's product dates against the marker's window distribution 20 of 20, the pair's
+  product dates against an even marker 20 of 20), with 1.00 distinct designated sets of 4 and the
+  crude set never equal to it in any of the 20. A rung the field's whole estimator family lands
+  unanimously is not silent, whatever the standard says. The trichotomy has no fourth position: state
+  the null and the construction follows (rule application, now measured); name its inputs instead and
+  the signpost is louder; file neither and the comparison, which is one of the estimand's five parts,
+  is unfiled, so "half of the pair" becomes a licensed reading of an undefined term and refers 10
+  against 7, a Gate C and Gate D fork on the main call.
+- Rung 3's readability test 6, scored "no: it is a double count over the pair's two date sets, or
+  either drug's window incidence distribution", is wrong, and this is the kill rather than a note
+  correction. The fourth licensed arithmetic is `n` times (the window's last day minus the pair's own
+  mean product first-receipt date) over the window's length, which is one group-by, one subtraction
+  and one divide, and it is an identity rather than an approximation whenever the marker groups are
+  level. Measured: that one-liner refers the committed seven in 20 of 20 redraws, the median-date
+  variant in 14 of 20, and its null share correlates with the golden family's at +0.9954 (minimum
+  +0.9920 over the redraws). The marker groups are level precisely because trends on that side fork
+  the call, which this section already records, so the convergence the determinism rests on is what
+  licenses the one-liner. One dial, both ends, nothing between them.
+- This note's own parting advice, placing two or three pairs between 1.20 and 1.35 on all four
+  constructions at once. Measured and it buys nothing on Gate F: the median cross-construction spread
+  of a candidate's multiple is 0.066 and the maximum 0.835, so a pair cannot sit closer than about
+  0.033 to the 1.25 multiple without the family splitting on its referral, and every placement outside
+  that floor is referred by all four members and by the one-liner. It tightens the figure and leaves
+  the call where it was.
+- Each patient's at-risk span truncated by their own recorded exit, as a second opportunity layer under
+  the window's arithmetic. Dead on the ceiling before the same-driver objection applies: 256 of 16,991
+  patients have a death or emigration inside the window (1.51 per cent), the smallest move that changes
+  the designated set is 0.134 of a multiple, and the largest move that subset can produce on any of the
+  20 candidates is 0.034 even when every touched patient's ordering probability moves the full half,
+  short by 3.9 times.
+- Each patient's at-risk span opened by their own first appearance in the register instead. Same kill
+  with a bigger subset and the partial-coverage screen besides: 360 of 15,755 window patients have no
+  line before the window (2.28 per cent), the largest move is 0.052 against 0.134 needed, short by 2.6
+  times, and the 97.7 per cent the correction never touches is a filter and a divide estimating the
+  same quantity with no model.
+- Breaking the family's unanimity on purpose, so that a reader taking the wrong member of it misses the
+  call. Swept a rising trend on the marker groups from 0 to +4x across the extract: every one of the
+  four members still refers the effect set in 6 of 6 seeds at every setting, because the candidates sit
+  at 0.91 to 1.12 and 1.35 to 2.26 with nothing in between. The settings deep enough to split the
+  family are the settings that fork the call.
+- A second estimated quantity inside standard 7-2024's referral test, so that the decisive step could
+  be redesigned rather than deepened. Enumerated and there is none: the pair's patients, the
+  after-count, the before-count, the 25-patient minimum and the tracker's status at the pull are each a
+  function of the shipped records once population, outcome, window and unit are filed, so the expected
+  number is the only quantity left to estimate and the test admits exactly one decisive step. Which is
+  why architecture 1 died on the comparison population and architecture 2 died on the value of the
+  comparison: the same structure twice.
+- Taking the null's marker input from patients the product never reached, to correct the window
+  incidence distribution for the effect's own contribution. That is the comparison population, which is
+  part of the estimand and is architecture 1's death exactly.
+- Within-patient dependence under the null, both first receipts arising from one care episode so that
+  the product of two marginals is the wrong joint. Nothing in the pack measures it from a non-circular
+  input: the only source is pairs known to carry no effect, which is the answer being tested.
+- **Conclusion of the pass.** The ladder cannot be re-sited while the decisive step stays, and the
+  decisive step cannot be redesigned inside this standard's test, so architecture 2 is spent on
+  measurement and the slot needs a fresh draw at stage 1 as architecture 3, its last before retirement.
+  Draw it away from the estimand's five parts and away from the value of a comparison the estimand
+  files, which is the one structure this number has now died on twice, and price the one-group-by route
+  to the call in writing before the first harness.
+
 ## Architecture 1, spent at stage 4 on the judge's SEND_BACK
 
 **The verdict.** NOT_DETERMINISTIC, `underspecified_objective`, disposition SEND_BACK. Gate G passes

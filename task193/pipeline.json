@@ -4,9 +4,9 @@
   "status": "FAILED_TO_STUMP",
   "domain": "pharmacology-pharmacoepidemiology-safety/safety-signal-detection",
   "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-20",
+  "stage": 1,
+  "stage_name": "draw, re-root to architecture 3",
+  "updated": "2026-10-21",
   "stump": "A competent solver reconciles the two register layouts, folds the replaced patient pseudonyms, carries the reissued package codes onto one product at each dispensing's own date, establishes every first receipt against the 24-month clearance period, counts each pair's after and before patients exactly and refers 10 pairs by measuring each after-count against 1.25 times half of the pair, because the number expected if the product had no bearing on when the marker treatment is first received is not half of the pair when the product's own first receipts are not level across the screen window.",
   "architecture": 2,
   "loops": 6,
@@ -43,7 +43,7 @@
     "report": "loops 6: nothing failed to reproduce, Gate G and H pass, stump power moderate, and it expects a substantial share of strong runs to file the crude expectation"
   },
   "returned": [],
-  "resume": "FAILED_TO_STUMP on measurement, not on a portal result: the wave 8 blind reader landed the call. The ladder is re-sited at stage 2; the asks are not re-worded.",
+  "resume": "Architecture 2 is spent on measurement, not on wording. The 2026-10-21 pass measured that re-siting the ladder while the decisive step stays cannot work: every member of the licensed null family refers the committed seven in 20 of 20 redraws at 1.00 distinct designated sets, and the fourth licensed arithmetic is algebraically one group-by, one subtraction and one divide on the pair's own mean product first-receipt date, which refers the committed seven in 20 of 20. Standard 7-2024's referral test admits exactly one estimated quantity, so the decisive step cannot be redesigned inside it either. Next step: a fresh draw at stage 1 as architecture 3, the slot's last before retirement, drawn away from the estimand's five parts and away from the value of a comparison the estimand files. Evidence and the abandoned candidates are in DESIGN_NOTE.md under the 2026-10-21 pass in ## Tried and rejected.",
   "approved": null,
   "delivered": "2026-10-17",
   "portal": null,
@@ -128,5 +128,17 @@
     "the transfer history is no longer staged: four transactions spread over January, March, August and September 2026, with 25 older transfers back to 2017, so the inside-window ones are a minority of the column",
     "the Final Recommendation no longer names the two hidden pairs as dropped from the equal-chance ten; reworded twice so the frozen figure set in that block is unchanged, after freeze.py caught the first rewrite dropping a repeated 10",
     "A3 audited against the same shape and its gap closed: every recorded region change now falls on or after the day the register began keeping a previous region, which its documentation states, so a blank is demonstrably uninformative rather than a no"
-  ]
+  ],
+  "rework_2026_10_21": {
+    "verdict": "architecture 2 spent; stage-1 re-root required, nothing cut",
+    "family_reach": "4 of 4 licensed null constructions refer the committed set, 20 of 20 redraws",
+    "designation_determinacy": "1.00 distinct designated sets of 4 over 20 redraws",
+    "one_liner": "n x (window end - the pair's mean product first-receipt date) / window length refers the committed seven 20 of 20, median-date variant 14 of 20, corr +0.9954 (min +0.9920) with the golden null share; an identity while the marker groups are level",
+    "readability_correction": "rung 3's test 6 is a FAIL, not a 'no': the decisive construction is one group-by and one divide",
+    "marker_trend_sweep": "0 to +4x: the family stays unanimous 6 of 6 seeds at every setting; the settings that split it fork the call",
+    "placement_lever": "median cross-construction spread 0.066, max 0.835, so no candidate can sit closer than about 0.033 to the 1.25 multiple without the family splitting",
+    "opportunity_candidates": "exit-truncated span: 1.51 per cent of patients, ceiling 0.034 against 0.134 needed, short 3.9x; register-entry span: 2.28 per cent, ceiling 0.052, short 2.6x, and 97.7 per cent unaffected",
+    "gates_rerun": "precut 0, build 0 (183 generator assertions, 267 verifier checks), two rebuilds byte-identical and identical to the shipped pack over 23 files, figures_check 0 (205 of 205), leak.py REVIEW unchanged, voice-check 0, guard validate 0",
+    "asks": "unmeasured: the blind reader never attempted A1, A2 or A3, so the 7 of 15 ask share is not evidence about the ask layer"
+  }
 }
