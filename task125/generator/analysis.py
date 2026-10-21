@@ -63,17 +63,13 @@ def published(d, q, reweight="file"):
     return rates(df, w)
 
 
-def positions(k):
-    return tuple(x for x in (1 + k, k) if 1 <= x <= W.WAVES)
+FORWARD = W.forward()
 
 
-FORWARD = [W.qnext(W.LIMIT_FROM, k) for k in range(5)]
-
-
-def gap_path(d, template=W.TEMPLATE_Q, reweight="rake", carry="panel"):
+def gap_path(d, template=W.TEMPLATE_Q, reweight="rake", carry="panel", quarters=None):
     """The gap (published less six-visit) in each quarter July to September 2026 to July to September 2027.
     carry: 'panel' (golden: the capped intakes' late households dropped at every wave they occupy) or 'wave1'
-    (the default: dropped at wave 1 while the cap runs, nothing from January 2027).
+    (the default: dropped at wave 1 while the cap runs, nothing once first interviews are back on six visits).
     reweight: 'rake' (golden) or 'keep' (the template's final weights kept)."""
     df = quarter(d, template)
     ctl = d["controls"][W.qlabel(template)]
@@ -82,8 +78,8 @@ def gap_path(d, template=W.TEMPLATE_Q, reweight="rake", carry="panel"):
     late = (df["interview_visit"] > W.CAP_VISITS).to_numpy()
     wave = df["wave"].to_numpy()
     out = []
-    for k, q in enumerate(FORWARD):
-        pos = positions(k) if carry == "panel" else ((1,) if W.capped(q) else ())
+    for q in (FORWARD if quarters is None else quarters):
+        pos = W.capped_waves(q) if carry == "panel" else ((1,) if W.capped(q) else ())
         keep = ~(np.isin(wave, pos) & late)
         sub = df[keep].reset_index(drop=True)
         w = rake(sub, ctl) if reweight == "rake" else w0[keep]
@@ -92,7 +88,7 @@ def gap_path(d, template=W.TEMPLATE_Q, reweight="rake", carry="panel"):
     return out
 
 
-def constant_gap_path(d, template=W.TEMPLATE_Q):
+def constant_gap_path(d, template=W.TEMPLATE_Q, quarters=None):
     """Rung 1: the wave-1 gap (the wave re-estimated alone without its late households) carried at each wave a
     capped intake occupies, weighted by that wave's share of the labour force (unemployment rate) or population."""
     df = quarter(d, template)
@@ -107,15 +103,19 @@ def constant_gap_path(d, template=W.TEMPLATE_Q):
     du, de = cut[0] - full[0], cut[1] - full[1]
     sa = [(w0 * act)[wave == v].sum() / (w0 * act).sum() for v in range(1, 6)]
     sp = [w0[wave == v].sum() / w0.sum() for v in range(1, 6)]
-    return [(sum(du * sa[p - 1] for p in positions(k)), sum(de * sp[p - 1] for p in positions(k))) for k in range(5)]
+    qs = FORWARD if quarters is None else quarters
+    return [(sum(du * sa[p - 1] for p in W.capped_waves(q)), sum(de * sp[p - 1] for p in W.capped_waves(q))) for q in qs]
 
 
-def headline(d):
-    """The call's figures: published rates in April to June and July to September 2026, the cap's July to September
-    gap, the rate without the cap and the labour market's share of the change."""
-    q2, q3 = published(d, (2026, 2)), published(d, (2026, 3))
-    path = gap_path(d)
+def headline(d, template=W.TEMPLATE_Q, carry="panel", reweight="rake"):
+    """The call's figures. The cap is already in both quarters being compared, so its share of the change is the
+    change in the gap, not the gap: cap = gap(released quarter) less gap(prior quarter)."""
+    q2, q3 = published(d, W.PRIOR_Q), published(d, W.RELEASE_Q)
+    path = gap_path(d, template=template, carry=carry, reweight=reweight)
+    gp = gap_path(d, template=template, carry=carry, reweight=reweight, quarters=[W.PRIOR_Q])[0]
     g3u, g3e = path[0]
-    return dict(path=path, pub_q2=q2, pub_q3=q3, rise_u=q3[0] - q2[0], rise_e=q3[1] - q2[1],
-                without_u=q3[0] - g3u, without_e=q3[1] - g3e, real_u=q3[0] - g3u - q2[0], real_e=q3[1] - g3e - q2[1],
+    cap_u, cap_e = g3u - gp[0], g3e - gp[1]
+    return dict(path=path, gap_prior=gp, pub_q2=q2, pub_q3=q3, rise_u=q3[0] - q2[0], rise_e=q3[1] - q2[1],
+                cap_u=cap_u, cap_e=cap_e, real_u=(q3[0] - q2[0]) - cap_u, real_e=(q3[1] - q2[1]) - cap_e,
+                without_u=q3[0] - g3u, without_e=q3[1] - g3e, without_q2_u=q2[0] - gp[0], without_q2_e=q2[1] - gp[1],
                 series=[(q, published(d, q)) for q in W.qrange(W.FIRST_Q, W.LAST_Q)])

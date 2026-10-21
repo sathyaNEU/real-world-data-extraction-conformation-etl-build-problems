@@ -12,14 +12,14 @@ import build as B   # noqa: E402
 TASK = os.path.dirname(HERE)
 SOURCES = {
     "person": "Household Labour Survey person-quarter analysis file, January to March 2023 to July to September 2026",
-    "calls": "Call records for addresses issued for a first interview, intakes January to March 2024 to July to September 2026",
+    "calls": "Call records for addresses issued for a first interview, intakes January to March 2025 to July to September 2026",
     "register": "Addresses issued for a first interview, same intakes",
     "controls": "Population controls by region and by age group and sex, 2023 to 2027",
     "release": "Release tables for April to June 2026",
     "claimants": "Jobseeker Support claimants by region and month, January 2023 to September 2026",
     "staffing": "Field interviewers by region, October 2026",
     "methods": "HLS methods note, 2025 edition",
-    "fi_2026": "Field instruction FI-2026/07, first-interview visits from 1 July 2026",
+    "fi_2026": "Field instruction FI-2026/04, first-interview visits from 1 April 2026",
     "fi_2024": "Field instruction FI-2024/03, call pattern for first interviews (superseded)",
     "dictionary": "HLS analysis files data dictionary",
     "notes": "Survey Data Office extract notes, 20 October 2026",
@@ -47,11 +47,12 @@ def write(target, out_path):
     meta = {
         "task": "task125",
         "title": "How much of the July to September 2026 rise in the Household Labour Survey's unemployment rate is the "
-                 "labour market, and how far the first-interview visit cap will hold the published unemployment and "
-                 "employment rates off the six-visit rates in each quarter to September 2027",
+                 "labour market once the three-visit cap has been running for two intakes, and how far the cap will "
+                 "hold the published unemployment and employment rates off the six-visit rates in each quarter to "
+                 "September 2027",
         "domain": "Survey Research & Official Statistics",
-        "subdomain": "anomaly detection in official statistics (a fieldwork protocol change in a rotating-panel labour "
-                     "force survey separated from the labour market)",
+        "subdomain": "anomaly detection in official statistics (a recruitment protocol change accumulating through a "
+                     "rotating panel, separated from the labour market)",
         "objective": "Anomaly Detection & Diagnostics",
         "prompt_shape": "02 (forecast across periods): the gap in the published unemployment and employment rates in "
                         "each quarter from July to September 2026 to July to September 2027, with the July to September "

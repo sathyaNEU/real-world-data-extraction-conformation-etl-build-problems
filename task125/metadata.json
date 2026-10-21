@@ -1,8 +1,8 @@
 {
   "task": "task125",
-  "title": "How much of the July to September 2026 rise in the Household Labour Survey's unemployment rate is the labour market, and how far the first-interview visit cap will hold the published unemployment and employment rates off the six-visit rates in each quarter to September 2027",
+  "title": "How much of the July to September 2026 rise in the Household Labour Survey's unemployment rate is the labour market once the three-visit cap has been running for two intakes, and how far the cap will hold the published unemployment and employment rates off the six-visit rates in each quarter to September 2027",
   "domain": "Survey Research & Official Statistics",
-  "subdomain": "anomaly detection in official statistics (a fieldwork protocol change in a rotating-panel labour force survey separated from the labour market)",
+  "subdomain": "anomaly detection in official statistics (a recruitment protocol change accumulating through a rotating panel, separated from the labour market)",
   "objective": "Anomaly Detection & Diagnostics",
   "prompt_shape": "02 (forecast across periods): the gap in the published unemployment and employment rates in each quarter from July to September 2026 to July to September 2027, with the July to September split, and three regional measures",
   "as_of": "2026-10-20",
@@ -25,7 +25,7 @@
       "xlsx"
     ],
     "largest_file": "hls_person_quarter_2023q1_2026q3.parquet",
-    "largest_file_rows": 491673
+    "largest_file_rows": 490398
   },
   "sources": [
     {
@@ -41,7 +41,7 @@
     {
       "path": "extract_notes_2026-10-20.md",
       "format": "md",
-      "bytes": 1641,
+      "bytes": 1865,
       "rows": null,
       "source": "Constructed: Survey Data Office extract notes, 20 October 2026",
       "date": "2026-10-20",
@@ -57,11 +57,11 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "field_instruction_FI-2026-07_first_interview_visits.pdf",
+      "path": "field_instruction_FI-2026-04_first_interview_visits.pdf",
       "format": "pdf",
-      "bytes": 64014,
+      "bytes": 64035,
       "rows": null,
-      "source": "Constructed: Field instruction FI-2026/07, first-interview visits from 1 July 2026",
+      "source": "Constructed: Field instruction FI-2026/04, first-interview visits from 1 April 2026",
       "date": "2026-10-20",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
@@ -75,27 +75,27 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "hls_address_register_2024q1_2026q3.csv",
+      "path": "hls_address_register_2025q1_2026q3.csv",
       "format": "csv",
-      "bytes": 3480703,
-      "rows": 70400,
+      "bytes": 2214500,
+      "rows": 44800,
       "source": "Constructed: Addresses issued for a first interview, same intakes",
       "date": "2026-10-20",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "hls_call_records_2024q1_2026q3.csv",
+      "path": "hls_call_records_2025q1_2026q3.csv",
       "format": "csv",
-      "bytes": 14232199,
-      "rows": 182297,
-      "source": "Constructed: Call records for addresses issued for a first interview, intakes January to March 2024 to July to September 2026",
+      "bytes": 8646232,
+      "rows": 110684,
+      "source": "Constructed: Call records for addresses issued for a first interview, intakes January to March 2025 to July to September 2026",
       "date": "2026-10-20",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "hls_data_dictionary.md",
       "format": "md",
-      "bytes": 2015,
+      "bytes": 2113,
       "rows": null,
       "source": "Constructed: HLS analysis files data dictionary",
       "date": "2026-10-20",
@@ -104,7 +104,7 @@
     {
       "path": "hls_methods_note_2025.pdf",
       "format": "pdf",
-      "bytes": 42794,
+      "bytes": 42707,
       "rows": null,
       "source": "Constructed: HLS methods note, 2025 edition",
       "date": "2026-10-20",
@@ -113,8 +113,8 @@
     {
       "path": "hls_person_quarter_2023q1_2026q3.parquet",
       "format": "parquet",
-      "bytes": 4030763,
-      "rows": 491673,
+      "bytes": 4033673,
+      "rows": 490398,
       "source": "Constructed: Household Labour Survey person-quarter analysis file, January to March 2023 to July to September 2026",
       "date": "2026-10-20",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -122,7 +122,7 @@
     {
       "path": "hls_release_tables_2026q2.xlsx",
       "format": "xlsx",
-      "bytes": 9382,
+      "bytes": 9393,
       "rows": null,
       "source": "Constructed: Release tables for April to June 2026",
       "date": "2026-10-20",

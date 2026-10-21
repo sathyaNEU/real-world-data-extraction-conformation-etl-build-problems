@@ -3,7 +3,7 @@ the parameters of the households it samples. Every other module reads its consta
 import datetime as dt
 
 SEED = 125
-SALT = 13                                # realisation of the sampling noise (chosen once, see the design note)
+SALT = 14                                # realisation of the sampling noise (chosen once, see the design note)
 AS_OF = dt.date(2026, 10, 20)            # data lock for the July to September 2026 processing run
 NOTE_DATE = dt.date(2026, 10, 23)        # the methods note the goldens are dated
 OFFICE = "Merrowland Statistics"
@@ -30,10 +30,13 @@ AGE_EDGES = [15, 25, 35, 45, 55, 65, 75, 200]
 FIRST_Q = (2023, 1)
 LAST_Q = (2026, 3)
 FIRST_INTAKE = (2022, 1)
-CALLS_FROM = (2024, 1)                   # call records ship for the intakes of 2024Q1 to 2026Q3
-LIMIT_FROM = (2026, 3)                   # first interviews capped at three visits from 1 July 2026
-LIMIT_TO = (2026, 4)                     # ... to 31 December 2026; six visits again from January 2027
-TEMPLATE_Q = (2026, 2)                   # the last full quarter collected before the limit
+CALLS_FROM = (2025, 1)                   # the call-record app replaced the paper call sheets at the 2025Q1 intake
+LIMIT_FROM = (2026, 2)                   # first interviews capped at three visits from 1 April 2026
+LIMIT_TO = (2027, 1)                     # ... to 31 March 2027 (the 2026/27 field year); six visits from April 2027
+RELEASE_Q = (2026, 3)                    # the quarter being released, and the quarter whose rise is in question
+PRIOR_Q = (2026, 2)                      # the quarter it is compared with
+LAST_PUBLISHED = (2026, 2)               # the latest quarter already released when the extract was locked
+TEMPLATE_Q = (2026, 1)                   # the one uncapped quarter whose five intakes all carry visit histories
 WAVES = 5
 MAX_VISITS = 6
 CAP_VISITS = 3
@@ -116,6 +119,21 @@ def qname(q):
 
 def capped(intake):
     return qindex(LIMIT_FROM) <= qindex(intake) <= qindex(LIMIT_TO)
+
+
+def capped_intakes():
+    return qrange(LIMIT_FROM, LIMIT_TO)
+
+
+def capped_waves(q):
+    """The waves of quarter q's sample held by an intake first interviewed under the three-visit cap."""
+    return tuple(sorted(w for c in capped_intakes()
+                        for w in [qindex(q) - qindex(c) + 1] if 1 <= w <= WAVES))
+
+
+def forward():
+    """The five published quarters the call is about: the released quarter and the four after it."""
+    return qrange(RELEASE_Q, qnext(RELEASE_Q, 4))
 
 
 def age_group(age):

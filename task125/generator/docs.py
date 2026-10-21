@@ -1,5 +1,5 @@
 """The pack's documents: the HLS methods note (2025 edition), the field instruction that capped first-interview visits
-from July 2026 and the one it replaced, the data dictionary and the survey data office's extract notes."""
+for the 2026/27 field year and the one it replaced, the data dictionary and the survey data office's extract notes."""
 from reportlab import rl_config
 
 rl_config.invariant = 1
@@ -15,7 +15,7 @@ import records as R    # noqa: E402
 import world as W      # noqa: E402
 
 METHODS = "hls_methods_note_2025.pdf"
-FI_2026 = "field_instruction_FI-2026-07_first_interview_visits.pdf"
+FI_2026 = "field_instruction_FI-2026-04_first_interview_visits.pdf"
 FI_2024 = "field_instruction_FI-2024-03_call_pattern.pdf"
 DICTIONARY = "hls_data_dictionary.md"
 NOTES = "extract_notes_2026-10-20.md"
@@ -122,12 +122,11 @@ def write_methods(path):
             "HLS uses the raked weights.",
             "The controls come from the office's population estimates and projections and are revised when the "
             "population base is rebased; a revision applies from the quarter stated in the controls file."]),
-        ("5. Assessing changes to the survey", [
-            "When a change to fieldwork or processing is assessed, its effect on the estimates is measured by applying "
-            "the change to the last full quarter collected before it and re-running the estimation as in section 4. "
-            "Effects are reported in percentage points on the published rates.",
+        ("5. Sampling error", [
             "Sampling error on the national unemployment rate is about 0.2 percentage point (95 per cent margin about "
-            "0.4); on a quarter-on-quarter change it is somewhat smaller, the samples sharing four intakes."]),
+            "0.4); on a quarter-on-quarter change it is somewhat smaller, the samples sharing four intakes.",
+            "Errors from sources other than sampling are not quantified. Quarter-on-quarter changes are published "
+            "unadjusted for seasonality."]),
         ("6. Flows", [
             "Labour market flows between two quarters are counted on the people interviewed in both, matched person to "
             "person within the household; a flow rate is the number moving from one status to another as a percentage "
@@ -145,7 +144,7 @@ def write_methods(path):
 
 
 def _instruction(path, ref, title, date, paras, superseded=None):
-    who, role = W.PEOPLE["field"] if ref.endswith("07") else W.PEOPLE["field_2024"]
+    who, role = W.PEOPLE["field"] if "2026" in ref else W.PEOPLE["field_2024"]
     doc = _doc(path, "Field instruction %s: %s" % (ref, title), who)
     s = [_p("MERROWLAND STATISTICS · FIELD OPERATIONS", A_META), _p("Field instruction %s" % ref, A_H1),
          _p(title, A_H2), _p("Issued %s by %s, %s. To: all field interviewers and team leaders." % (date, who, role), A_META)]
@@ -158,16 +157,16 @@ def _instruction(path, ref, title, date, paras, superseded=None):
 
 
 def write_fi_2026(path):
-    _instruction(path, "FI-2026/07", "First-interview visits from 1 July 2026", "17 June 2026", [
-        "This instruction replaces FI-2024/03 for addresses issued for a first interview from 1 July 2026.",
+    _instruction(path, "FI-2026/04", "First-interview visits from 1 April 2026", "11 March 2026", [
+        "This instruction replaces FI-2024/03 for addresses issued for a first interview from 1 April 2026.",
         "Make no more than three visits to an address issued for a first interview. If no one has been contacted by "
         "the end of the third visit, record the outcome of that visit and return the address as a non-contact. "
         "Addresses are not reissued.",
         "Keep the call pattern of FI-2024/03 for the visits you make: at least one visit in the evening or at a "
         "weekend, and the visits spread over at least ten days where the fieldwork period allows.",
         "Telephone interviews at waves 2 to 5 are unchanged.",
-        "The change is made to bring face-to-face fieldwork within the field budget for July to December 2026. The "
-        "visit pattern from January 2027 will be set with the 2027 field budget.",
+        "The change is made to bring face-to-face fieldwork within the field budget for the 2026/27 field year "
+        "(1 April 2026 to 31 March 2027). The visit pattern for 2027/28 will be set with that year's field budget.",
     ])
 
 
@@ -179,7 +178,7 @@ def write_fi_2024(path):
         "Log every visit in the call-record application at the address, including visits where no one answers. A "
         "visit at which you speak to a household member is a contact, whatever its outcome.",
         "Telephone interviews at waves 2 to 5 are arranged at the first interview.",
-    ], superseded="Superseded for first interviews from 1 July 2026 by FI-2026/07.")
+    ], superseded="Superseded for first interviews issued from 1 April 2026 by FI-2026/04.")
 
 
 def write_dictionary(path):
@@ -201,9 +200,10 @@ def write_dictionary(path):
         ("| ilo_status | 1 employed, 2 unemployed, 3 not in the labour force (methods note, section 3) |", None),
         ("| actual_hours | hours actually worked in the reference week, all jobs; blank if not employed |", None),
         ("| weight | final person weight for the quarter |", None),
-        ("## hls_call_records_2024q1_2026q3.csv", None),
+        ("## " + R.CALLS, None),
         ("One row per call record uploaded from the call-record application, for addresses issued for a first "
-         "interview in the intakes of January to March 2024 to July to September 2026.", None),
+         "interview in the intakes of January to March 2025 to July to September 2026. Visits at earlier intakes "
+         "are on the field's paper call sheets and are not in the analysis files.", None),
         ("| column | content |", None), ("|---|---|", None),
         ("| record_id | call record id, assigned on upload |", None),
         ("| serial | address serial |", None),
@@ -214,8 +214,8 @@ def write_dictionary(path):
         ("| visit_start | local date and time the visit started |", None),
         ("| outcome | 110 interview, 210 refusal, 310 no reply, 410 not eligible (vacant, demolished or not residential) |", None),
         ("| uploaded | local date and time the record reached the server |", None),
-        ("## hls_address_register_2024q1_2026q3.csv", None),
-        ("One row per address issued for a first interview, January to March 2024 to July to September 2026: "
+        ("## " + R.REGISTER, None),
+        ("One row per address issued for a first interview, January to March 2025 to July to September 2026: "
          "serial, intake, area_code, region, urban_rural, dwelling_type.", None),
     ]
     out = []
@@ -239,7 +239,7 @@ def write_notes(path):
         "## Files",
         "",
         "- `%s`: person-quarter analysis file, January to March 2023 to July to September 2026." % R.PERSON,
-        "- `%s`: call records for first-interview addresses, intakes January to March 2024 to July to September 2026." % R.CALLS,
+        "- `%s`: call records for first-interview addresses, intakes January to March 2025 to July to September 2026." % R.CALLS,
         "- `%s`: the addresses issued in the same intakes." % R.REGISTER,
         "- `%s`: population controls (Population Estimates and Projections)." % R.CONTROLS,
         "- `%s`: the release tables for April to June 2026." % R.RELEASE,
@@ -251,11 +251,13 @@ def write_notes(path):
         "",
         "- From the July to September 2026 processing run, address serials carry a check digit as a tenth character. "
         "Records from earlier runs keep the nine-character serial; the address register is unchanged.",
-        "- July to September 2026 is the first quarter collected under FI-2026/07.",
+        "- July to September 2026 is the second quarter whose wave-1 intake was issued under FI-2026/04.",
         "",
         "## Not in this extract",
         "",
         "- Interviewer workload and pay records.",
+        "- Visit histories for intakes before January to March 2025. The call-record application replaced the field's "
+        "paper call sheets at the January to March 2025 intake and the paper sheets were never keyed.",
         "- The October to December 2026 intake (issued 1 October; first call records arrive with the next run).",
     ]
     with open(path, "w", encoding="utf-8") as fh:

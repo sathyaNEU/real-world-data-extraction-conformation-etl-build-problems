@@ -42,7 +42,7 @@ def main(target, golden):
     t = pq.read_table(os.path.join(target, "hls_person_quarter_2023q1_2026q3.parquet")).to_pydict()
     n = len(t["quarter"])
     first = {}
-    with open(os.path.join(target, "hls_call_records_2024q1_2026q3.csv"), encoding="utf-8") as fh:
+    with open(os.path.join(target, "hls_call_records_2025q1_2026q3.csv"), encoding="utf-8") as fh:
         calls = list(csv.DictReader(fh))
     for r in calls:
         if r["outcome"] == "110":
@@ -62,20 +62,26 @@ def main(target, golden):
         wt = np.array([t["weight"][i] for i in idx])
         return region, cell, st, wave, late, wt
 
-    region, cell, st, wave, late, _ = sample("2026Q2")
-    base = ur_er(st, ipf(region, cell, reg["2026Q2"], cel["2026Q2"]))
+    # the one quarter with no capped intake at any wave and a visit history for every household: January to March
+    # 2026. The cap runs on the intakes of 2026Q2 to 2027Q1, so quarter q holds them at waves q - intake + 1.
+    region, cell, st, wave, late, _ = sample("2026Q1")
+    base = ur_er(st, ipf(region, cell, reg["2026Q1"], cel["2026Q1"]))
     path = []
-    for pos in [(1,), (2, 1), (3, 2), (4, 3), (5, 4)]:
+    for pos in [(1, 2), (1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5)]:      # 2026Q3 .. 2027Q3
         keep = ~(np.isin(wave, pos) & late)
-        r = ur_er(st[keep], ipf(region[keep], cell[keep], reg["2026Q2"], cel["2026Q2"]))
+        r = ur_er(st[keep], ipf(region[keep], cell[keep], reg["2026Q1"], cel["2026Q1"]))
         path.append((r[0] - base[0], r[1] - base[1]))
+    keep = ~((wave == 1) & late)                                                # 2026Q2, one capped intake at wave 1
+    r = ur_er(st[keep], ipf(region[keep], cell[keep], reg["2026Q1"], cel["2026Q1"]))
+    prior = (r[0] - base[0], r[1] - base[1])
     q2 = ur_er(*sample("2026Q2")[2::3])
     q3 = ur_er(*sample("2026Q3")[2::3])
-    real_u = q3[0] - path[0][0] - q2[0]
+    cap_u = path[0][0] - prior[0]
+    real_u = (q3[0] - q2[0]) - cap_u
 
     # asks
     register = {}
-    with open(os.path.join(target, "hls_address_register_2024q1_2026q3.csv"), encoding="utf-8") as fh:
+    with open(os.path.join(target, "hls_address_register_2025q1_2026q3.csv"), encoding="utf-8") as fh:
         for r in csv.DictReader(fh):
             register[r["serial"]] = r["region"]
     vis = defaultdict(set)
@@ -104,9 +110,11 @@ def main(target, golden):
     gp = [r for r in wb["Gap path"].iter_rows(min_row=5, max_row=9, values_only=True)]
     for (u, e), r in zip(path, gp):
         assert "%.2f" % r[1] == "%.2f" % round(u, 2) and "%.2f" % r[2] == "%.2f" % round(e, 2), (r, u, e)
-    split = {r[0]: r for r in wb["Gap path"].iter_rows(min_row=12, max_row=17, values_only=True)}
+    split = {r[0]: r for r in wb["Gap path"].iter_rows(min_row=12, max_row=20, values_only=True) if r[0]}
+    assert "%.2f" % split["of which the cap"][1] == "%.2f" % round(cap_u, 2), (split["of which the cap"][1], cap_u)
     assert "%.2f" % split["of which the labour market"][1] == "%.2f" % round(real_u, 2)
     assert "%.2f" % split["Published, July to September 2026"][1] == "%.2f" % round(q3[0], 2)
+    assert "%.2f" % split["Gap, April to June 2026"][1] == "%.2f" % round(prior[0], 2)
     rg = {r[0]: r for r in wb["Regions"].iter_rows(min_row=4, max_row=9, values_only=True)}
     for g in REG:
         row = rg[NAME[g]]
@@ -116,10 +124,11 @@ def main(target, golden):
         assert "%.1f" % row[5] == "%.1f" % (hours[g] / 1000), (g, row[5], hours[g])
     with zipfile.ZipFile(os.path.join(golden, "hls_visit_limit_note_2026q3.docx")) as z:
         x = re.sub(r"<[^>]+>", "", z.read("word/document.xml").decode("utf-8"))
-    assert "accounts for %.2f point of that rise and the labour market for %.2f point" % (round(path[0][0], 2),
+    assert "accounts for %.2f point of that rise and the labour market for %.2f point" % (round(cap_u, 2),
                                                                                           round(real_u, 2)) in x
-    print("verify: OK (July to September: %.2f of the %.2f-point rise is the cap; gap path %s; 18 regional figures "
-          "recomputed independently)" % (path[0][0], q3[0] - q2[0], "/".join("%.2f" % p[0] for p in path)))
+    print("verify: OK (July to September: %.2f of the %.2f-point rise is the cap, against %.2f for the wave-1 route; "
+          "gap path %s; 18 regional figures recomputed independently)"
+          % (cap_u, q3[0] - q2[0], 0.0, "/".join("%.2f" % p[0] for p in path)))
 
 
 if __name__ == "__main__":

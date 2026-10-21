@@ -1,6 +1,6 @@
-"""Write the HLS data files: the person-quarter microdata, the wave-1 call records, the address register, the
-population controls, the release tables to April to June 2026, and the two files the analysis never needs (the
-benefit claimant counts and the field staffing list)."""
+"""Write the HLS data files: the person-quarter microdata, the wave-1 call records (the intakes the call-record app
+covers), the address register, the population controls, the release tables to the latest published quarter, and the
+two files the analysis never needs (the benefit claimant counts and the field staffing list)."""
 import csv
 import datetime as dt
 import json
@@ -15,8 +15,8 @@ import models as M
 import world as W
 
 PERSON = "hls_person_quarter_2023q1_2026q3.parquet"
-CALLS = "hls_call_records_2024q1_2026q3.csv"
-REGISTER = "hls_address_register_2024q1_2026q3.csv"
+CALLS = "hls_call_records_2025q1_2026q3.csv"
+REGISTER = "hls_address_register_2025q1_2026q3.csv"
 CONTROLS = "population_controls_2023q1_2027q4.xlsx"
 RELEASE = "hls_release_tables_2026q2.xlsx"
 CLAIMANTS = "jobseeker_support_claimants_2023-01_2026-09.csv"
@@ -105,7 +105,7 @@ def write_person(path, rows):
 
 
 def calls(intakes):
-    """Every visit to every address issued in the intakes of 2024Q1 to 2026Q3, as the call-record app uploaded it."""
+    """Every visit to every address issued in the intakes the call-record app covers, as it uploaded them."""
     rows = []
     for c in W.qrange(W.CALLS_FROM, W.LAST_Q):
         d = intakes[c]
@@ -135,7 +135,7 @@ def calls(intakes):
                 base = dict(serial=as_filed(serial(c, h), c), intake=W.qlabel(c), area_code=area, interviewer=interviewer,
                             visit_no=v, visit_start=tv, outcome=out, uploaded=up)
                 rows.append(base)
-                if c == W.LIMIT_FROM and out != 110 and REPLAY[0] <= tv <= REPLAY[1] and rng.random() < REPLAY_SHARE:
+                if c == W.RELEASE_Q and out != 110 and REPLAY[0] <= tv <= REPLAY[1] and rng.random() < REPLAY_SHARE:
                     rows.append(dict(base, uploaded=up + dt.timedelta(hours=int(rng.integers(20, 70))), _replay=True))
     rows.sort(key=lambda r: (r["uploaded"], r["serial"], r["visit_no"]))
     for k, r in enumerate(rows):
@@ -227,7 +227,7 @@ def write_release(path, intakes, person_rows):
         if p["ilo_status"] == 1:
             hours[p["quarter"]] = hours.get(p["quarter"], 0.0) + p["weight"] * decimal_hours(p["actual_hours"], p["mode"])
     regional = []
-    for q in W.qrange(W.FIRST_Q, W.TEMPLATE_Q):
+    for q in W.qrange(W.FIRST_Q, W.LAST_PUBLISHED):
         s = M.quarter_sample(intakes, q)
         w = M.rake(s["region"], s["cell"], q)
         u, e = M.rates(s["status"], w)

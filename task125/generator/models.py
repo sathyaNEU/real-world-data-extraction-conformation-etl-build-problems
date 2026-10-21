@@ -80,28 +80,20 @@ def published(intakes, q, **kw):
 LATE = lambda d: d["need"] > W.CAP_VISITS
 
 
-def positions(k):
-    """Waves the two capped intakes (July to September and October to December 2026) occupy k quarters after
-    July to September 2026."""
-    a = 1 + k                       # the July to September 2026 intake
-    b = k                           # the October to December 2026 intake (from k = 1)
-    return tuple(x for x in (a, b) if 1 <= x <= W.WAVES)
+FORWARD = W.forward()                                      # 2026Q3 .. 2027Q3
 
 
-FORWARD = [W.qnext(W.LIMIT_FROM, k) for k in range(5)]     # 2026Q3 .. 2027Q3
-
-
-def gap_path(intakes, template=W.TEMPLATE_Q, reweight="rake", carry="panel", wave1_only=False):
-    """Each forward quarter's gap (published less six-visit), unemployment and employment rate, points.
+def gap_path(intakes, template=W.TEMPLATE_Q, reweight="rake", carry="panel", wave1_only=False, quarters=None):
+    """Each quarter's gap (published less six-visit), unemployment and employment rate, points.
     reweight: 'rake' re-rakes after dropping, 'keep' keeps the template's final weights.
     carry: 'panel' drops the late households in every wave a capped intake occupies; wave1_only drops them only in
-    the wave-1 position while the limit runs."""
+    the wave-1 position while the cap runs."""
     s = quarter_sample(intakes, template)
     w0 = rake(s["region"], s["cell"], template)
     base = rates(s["status"], w0)
     out = []
-    for k, q in enumerate(FORWARD):
-        pos = positions(k)
+    for q in (FORWARD if quarters is None else quarters):
+        pos = W.capped_waves(q)
         if wave1_only:
             pos = (1,) if W.capped(q) else ()
         drop = np.isin(s["wave"], pos) & s["late"]
@@ -114,7 +106,7 @@ def gap_path(intakes, template=W.TEMPLATE_Q, reweight="rake", carry="panel", wav
     return out
 
 
-def constant_gap_path(intakes, template=W.TEMPLATE_Q):
+def constant_gap_path(intakes, template=W.TEMPLATE_Q, quarters=None):
     """Rung 1: the wave-1 gap of the template, carried unchanged into each later wave a capped intake occupies,
     each wave weighted by its share of the quarter's economically active (or population)."""
     s = quarter_sample(intakes, template)
@@ -130,8 +122,8 @@ def constant_gap_path(intakes, template=W.TEMPLATE_Q):
     full, cut = wrates(w1), wrates(w1 & ~s["late"])
     du, de = cut[0] - full[0], cut[1] - full[1]
     out = []
-    for k, q in enumerate(FORWARD):
-        pos = positions(k)
+    for q in (FORWARD if quarters is None else quarters):
+        pos = W.capped_waves(q)
         out.append((sum(du * share_act[p - 1] for p in pos), sum(de * share_pop[p - 1] for p in pos)))
     return out
 

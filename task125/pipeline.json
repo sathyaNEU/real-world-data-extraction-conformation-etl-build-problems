@@ -1,31 +1,31 @@
 {
   "task": "task125",
   "owner": "oviya13ya",
-  "status": "FAILED_TO_STUMP",
+  "status": "BUILD",
   "domain": "survey-research-official-statistics",
   "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-20",
-  "stump": "A competent solver finds the visit limit in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves the latest wave-1 intake, carries that wave-1 gap through the two capped quarters and files the published rates as clean from January 2027; the step that lands it there is treating the limit as a first-interview effect, when the households a capped intake fails to recruit would have stayed in the panel for five quarters with their lower unemployment partly persisting.",
+  "stage": 3,
+  "stage_name": "build",
+  "updated": "2026-10-21",
+  "stump": "A competent solver finds the cap in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves a wave-1 intake (0.21 point) and files that one gap for every quarter the cap is issued and 0.00 from April to June 2027, with none of the 0.27-point July to September rise the cap, so the rise is real; the step that lands it there is taking the unit the change acts on to be the quarter's fieldwork, when it is the intake, which the panel keeps for five quarters, so the gap compounds to 0.62 point by January to March 2027 and the change between two capped quarters is the change in the mix, not zero.",
   "architecture": 2,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
-    "date": "2026-10-12"
+    "date": "2026-10-21"
   },
   "leak": {
-    "leak_py": "REVIEW (outcome code 110 against a denominator; architecture 1 vocabulary)",
-    "reader": "wave 8 audit: call landed (2 of 2), asks 38 of 53, Gate F failed"
+    "leak_py": "REVIEW (domain vocabulary only; sweeps 1 to 3 and 5 to 8 clean)",
+    "reader": ""
   },
   "duplicate_check": {
     "heart": "WARN",
     "nearest": "0.08 task500 v2"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (pass 2)",
-    "report": "task125/determinism_check_report_pass2.md"
+    "verdict": "",
+    "disposition": "",
+    "report": "task125/determinism_check_report_pass2.md (void: scoped to the first ladder's pack)"
   },
   "returned": [
     {
@@ -33,11 +33,17 @@
       "portal": "author audit: 10/10 alignment",
       "repair": "alignment",
       "commit": ""
+    },
+    {
+      "date": "2026-10-21",
+      "portal": "blind reader audit: call landed (2 of 2), asks 38 of 53, Gate F failed; the methods note's section 5 stated the method",
+      "repair": "design (stage-2 re-root of the ladder)",
+      "commit": ""
     }
   ],
-  "resume": "FAILED_TO_STUMP on measurement, not on a portal result. the methods note states the decisive method in its own words, so executing it is rule application rather than analysis. Re-root at stage 1: that section goes, and the reason to re-run on the pre-change quarter has to come from the data's structure.",
+  "resume": "Stage 4 is owed on the re-rooted pack: spawn the leak reader and the determinism judge together at medium effort (the pass-2 APPROVE is void, every graded figure moved). Stage 3 gates are green: 300 checks, independent verifier, two byte-identical builds, figures_check 155 figures, precut 51 of 51, leak.py REVIEW, voice-check PASS, guard.py validate.",
   "approved": null,
-  "delivered": "2026-10-12",
+  "delivered": null,
   "portal": null,
   "lineage": [
     {
@@ -45,5 +51,5 @@
       "fate": "FAILED_TO_STUMP: in-house solves (rounds 1, 2) and judge SEND_BACK on hygiene, 2026-10-10"
     }
   ],
-  "alignment_pass": "prompt: one question, the forward gap path leading and the decomposition inside it"
+  "alignment_pass": "stage-2 re-root 2026-10-21: section 5's procedure sentence removed, the base quarter settled by the call-record file's coverage, the cap moved to the 2026/27 field year so the decisive step carries the headline"
 }
