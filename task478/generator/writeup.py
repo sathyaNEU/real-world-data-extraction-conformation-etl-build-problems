@@ -30,10 +30,10 @@ def main():
     n_out = f["call"]["of"] - f["call"]["count"]
     out.append("**Give dedicated spring patching crews to %s of the fourteen sections: %s.**" % (WORDS[len(des)], join(des)))
     out.append("Their state roadway held %s potholes per ten lane-miles in March 2027 against the program's %.1f line; the "
-               "highest of the other %s is %s at %d. Not %s, which joining every unit's detections at one distance "
-               "(%d feet) gives: the street sweepers' units place a pothole %d to %d feet either way against %d to %d "
-               "feet for every other unit, so no one distance both keeps a sweeper's reports of one pothole together "
-               "and keeps neighbouring bridge-deck potholes apart.\n"
+               "highest of the other %s is %s at %d. Not the five sections (%s) that joining every unit's detections "
+               "at one distance of %d feet designates: the street sweepers' units place a pothole %d to %d feet either way "
+               "against %d to %d feet for every other unit, so no one distance both keeps a sweeper's reports of one "
+               "pothole together and keeps neighbouring bridge-deck potholes apart.\n"
                % (rates, f["line"], WORDS[n_out], c["highest_below"]["name"], c["highest_below"]["rate"],
                   join(f["default"]["designated"]), f["default"]["tolerance_ft"], c["sweeper_error_ft"][0],
                   c["sweeper_error_ft"][1], c["other_error_ft"][0], c["other_error_ft"][1]))

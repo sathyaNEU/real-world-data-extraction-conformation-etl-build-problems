@@ -6,7 +6,7 @@
 ## 1. Final Recommendation
 
 **Give dedicated spring patching crews to seven of the fourteen sections: Elmscourt, Norvelle, Thistlebank, Carrow Point, Holloway Run, Kestrelton and Fenwick Gap.**
-Their state roadway held 9, 8, 8, 8, 8, 7 and 7 potholes per ten lane-miles in March 2027 against the program's 6.0 line; the highest of the other seven is Rushmead at 5. Not Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle, which joining every unit's detections at one distance (53 feet) gives: the street sweepers' units place a pothole 52 to 59 feet either way against 2 to 3 feet for every other unit, so no one distance both keeps a sweeper's reports of one pothole together and keeps neighbouring bridge-deck potholes apart.
+Their state roadway held 9, 8, 8, 8, 8, 7 and 7 potholes per ten lane-miles in March 2027 against the program's 6.0 line; the highest of the other seven is Rushmead at 5. Not the five sections (Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle) that joining every unit's detections at one distance of 53 feet designates: the street sweepers' units place a pothole 52 to 59 feet either way against 2 to 3 feet for every other unit, so no one distance both keeps a sweeper's reports of one pothole together and keeps neighbouring bridge-deck potholes apart.
 
 ## 2. Critical Components
 
