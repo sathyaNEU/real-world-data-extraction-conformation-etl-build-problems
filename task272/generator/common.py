@@ -44,6 +44,51 @@ HOSPITALS = [
     ("H31", "Wennberg Regional Hospital", "Ellensburg", "WA", "columbia"),
 ]
 CODES = [h[0] for h in HOSPITALS]
+
+# The collaborative's regions, as its member list carries them.
+REGION = {
+    "H01": "Portland and Vancouver", "H18": "Portland and Vancouver",
+    "H02": "Willamette Valley", "H03": "Willamette Valley", "H06": "Willamette Valley", "H12": "Willamette Valley",
+    "H04": "Southern Oregon", "H07": "Southern Oregon", "H13": "Southern Oregon",
+    "H05": "Central Oregon", "H08": "Klamath Basin",
+    "H09": "Columbia Basin", "H14": "Columbia Basin", "H23": "Columbia Basin", "H26": "Columbia Basin",
+    "H30": "Columbia Basin",
+    "H10": "Columbia Gorge", "H11": "Oregon Coast",
+    "H15": "Puget Sound", "H16": "Puget Sound", "H19": "Puget Sound", "H21": "Puget Sound",
+    "H17": "Inland Northwest",
+    "H20": "Central Washington", "H24": "Central Washington", "H31": "Central Washington",
+    "H22": "Northwest Washington", "H29": "Northwest Washington",
+    "H25": "Southwest Washington", "H27": "Southwest Washington", "H28": "Olympic Peninsula",
+}
+# The share of each hospital's applicant households whose main earner's work follows a season (generator only).
+SEASONAL_SHARE = {
+    "H01": (0.03, 0.05), "H02": (0.14, 0.20), "H03": (0.05, 0.08), "H04": (0.14, 0.20), "H05": (0.12, 0.18),
+    "H06": (0.06, 0.10), "H07": (0.10, 0.15), "H08": (0.12, 0.18), "H09": (0.12, 0.18), "H10": (0.20, 0.28),
+    "H11": (0.12, 0.18), "H12": (0.16, 0.22), "H13": (0.08, 0.12), "H14": (0.22, 0.30), "H15": (0.02, 0.04),
+    "H16": (0.02, 0.04), "H17": (0.04, 0.07), "H18": (0.03, 0.05), "H19": (0.03, 0.05), "H20": (0.24, 0.32),
+    "H21": (0.03, 0.05), "H22": (0.12, 0.18), "H23": (0.16, 0.24), "H24": (0.22, 0.30), "H25": (0.08, 0.12),
+    "H26": (0.14, 0.20), "H27": (0.12, 0.18), "H28": (0.10, 0.15), "H29": (0.18, 0.26), "H30": (0.20, 0.28),
+    "H31": (0.10, 0.15),
+}
+# The chance a household denied or given part of its balance applies again once its pay has fallen: seasonal
+# work, year-round work (generator only).
+REAPPLY = (0.10, 0.03)
+# Each hospital's share under the golden estimate, as designed (generator only): the documents-denial rate is set to
+# land it. Qualifying hospitals sit between 7.27 and 9.71, the others between 2.46 and 4.92.
+TARGET = {
+    "H01": 4.63, "H02": 7.68, "H03": 3.88, "H04": 4.68, "H05": 4.81, "H06": 3.59, "H07": 4.29, "H08": 7.31,
+    "H09": 4.37, "H10": 7.93, "H11": 7.42, "H12": 8.57, "H13": 4.92, "H14": 7.36, "H15": 8.83, "H16": 3.12,
+    "H17": 9.71, "H18": 2.46, "H19": 4.14, "H20": 8.38, "H21": 3.79, "H22": 7.62, "H23": 7.84, "H24": 7.27,
+    "H25": 4.71, "H26": 8.14, "H27": 4.47, "H28": 7.55, "H29": 9.06, "H30": 7.47, "H31": 4.26,
+}
+# Applicant households over 2024 and 2025 (generator only).
+HOUSEHOLDS = {c: (3200, 5400) for c in [h[0] for h in HOSPITALS]}
+HOUSEHOLDS.update({"H01": (11000, 14000), "H15": (11000, 14000), "H16": (9500, 12500), "H17": (8000, 11000),
+                   "H18": (7000, 9500), "H19": (7000, 9500), "H20": (8000, 11000), "H03": (7000, 9500),
+                   "H02": (7000, 9500), "H04": (6500, 8800), "H05": (5600, 8000), "H21": (5600, 8000),
+                   "H22": (5600, 8000), "H23": (6500, 8800), "H24": (5600, 8000), "H29": (5200, 7200),
+                   "H30": (4800, 6700)})
+
 NAME = {h[0]: h[1] for h in HOSPITALS}
 HUB = {h[0]: h[4] for h in HOSPITALS}
 MIGRATED = "H23"
@@ -53,7 +98,11 @@ YEAR = 2025
 HOLIDAYS = [dt.date(2025, 1, 1), dt.date(2025, 1, 20), dt.date(2025, 2, 17), dt.date(2025, 5, 26),
             dt.date(2025, 6, 19), dt.date(2025, 7, 4), dt.date(2025, 9, 1), dt.date(2025, 11, 11),
             dt.date(2025, 11, 27), dt.date(2025, 11, 28), dt.date(2025, 12, 25)]
-DST = (dt.datetime(2025, 3, 9, 2, 0), dt.datetime(2025, 11, 2, 2, 0))   # Pacific daylight time, local wall clock
+HOLIDAYS_2024 = [dt.date(2024, 1, 1), dt.date(2024, 1, 15), dt.date(2024, 2, 19), dt.date(2024, 5, 27),
+                 dt.date(2024, 6, 19), dt.date(2024, 7, 4), dt.date(2024, 9, 2), dt.date(2024, 11, 11),
+                 dt.date(2024, 11, 28), dt.date(2024, 11, 29), dt.date(2024, 12, 25)]
+HOLIDAYS_ALL = set(HOLIDAYS) | set(HOLIDAYS_2024) | {dt.date(2026, 1, 1), dt.date(2026, 1, 19)}
+WITHDRAWN = 0.012                            # the share of applications withdrawn before a decision
 EXTRACT_CUT = dt.date(2026, 3, 31)          # adjustments posted through this date on 2025 applications
 CRITERIA_DATE = dt.date(2026, 12, 8)        # the foundation's program committee approves the criteria
 ASSEMBLED = dt.datetime(2027, 1, 26, 14, 20)
@@ -76,11 +125,11 @@ REASON_SWITCH = dt.date(2025, 7, 1)
 
 FILES = {
     "criteria": "fac_decision_coaching_criteria_fy2027.pdf",
-    "guide": "fac_data_guide_2025_extracts.pdf",
-    "puget": "fac_determinations_2025_puget_hub.csv",
-    "willamette": "fac_determinations_2025_willamette_hub.csv",
-    "columbia": "fac_determinations_2025_columbia_hub.csv",
-    "crosswalk": "fac_counsellor_id_crosswalk_2025.xlsx",
+    "guide": "fac_data_guide_2024_2025_extracts.pdf",
+    "puget": "fac_determinations_2024_2025_puget_hub.csv",
+    "willamette": "fac_determinations_2024_2025_willamette_hub.csv",
+    "columbia": "fac_determinations_2024_2025_columbia_hub.csv",
+    "crosswalk": "fac_h23_id_crosswalk_2025.xlsx",
     "hospitals": "fac_member_hospitals_2025.xlsx",
     "ledger": "fac_assistance_adjustments_2025.csv",
     "accounts": "fac_patient_accounts_2025.csv",
@@ -88,4 +137,23 @@ FILES = {
     "state": "state_charity_care_filings_fy2025.xlsx",
     "contents": "contents.txt",
 }
+# The main earner's work as the common application asks it (question 7): the generator's kind, the Willamette hub's
+# numeric code, the Columbia hub's short code and the Puget hub's label.
+WORK = [
+    ("FIELD", 1, "FARM", "Farm or orchard"),
+    ("PACK", 2, "PACK", "Packing or food processing"),
+    ("FISH", 3, "FISH", "Fishing or seafood"),
+    ("RESORT", 4, "RSRT", "Hotel, resort or ski area"),
+    ("WOODS", 5, "LOGG", "Logging or tree farm"),
+    ("BUILD", 6, "CONS", "Construction"),
+    ("CARE", 7, "HLTH", "Health care"),
+    ("SHOP", 8, "RETL", "Retail or warehouse"),
+    ("OFFICE", 9, "OFFC", "Office, school or government"),
+    ("PLANT", 10, "FACT", "Factory"),
+    ("OTHER", 11, "OTHR", "Other work"),
+    ("NONE", 12, "NONE", "Not working or retired"),
+]
+WORK_W = {k: n for k, n, _, _ in WORK}
+WORK_C = {k: s for k, _, s, _ in WORK}
+WORK_P = {k: lbl for k, _, _, lbl in WORK}
 DELIVERABLES = ("fair_assistance_coaching_2027.xlsx", "fair_assistance_coaching_2027.png")

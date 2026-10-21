@@ -1,28 +1,28 @@
 {
   "task": "task272",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "demographic-social-science",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-21",
-  "stump": "A competent analyst who conforms the three hubs and takes the 2025 policy's yearly figure, three months' income times four, as each household's income over the twelve months before applying puts about a third of the hospitals over the six-point line; one calendar for all seasonal work, or one per hospital across kinds of work, still misses the hospitals whose seasonal households work to a calendar of their own; only each region's calendar for each kind of seasonal work, read from the households that applied in more than one season, puts the qualifying hospitals over it.",
+  "stump": "A competent analyst who conforms the three hubs and takes the 2025 policy's yearly figure (the three months before the application times four) as each household's income over the twelve months before it applied files 5 grants (H11, H15, H17, H23, H26); one calendar for every seasonal kind of work files 6, one per kind of work across regions or per region or hospital across kinds of work 10; only each region's calendar for each kind of work names the 16.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": "",
-    "checks": 0
+    "exit": 0,
+    "date": "2026-10-21",
+    "checks": 51
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-21 (no LEAK): program name, estimand words, column vocabulary, hospitals beside beds and filings; each answered in the note's Leak check",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "0.07 task111 v2 (driver)",
-    "surface": ""
+    "heart": "WARN 2026-10-21 (three_rules.strategy_risk, repeat.gate_g against task482 v4, overuse.gate_g; answered in the note's Draw item 9)",
+    "nearest": "0.07 task111 v2 (driver); task17 v3 lineage 0.05 differentiated on the card",
+    "surface": "clean 2026-10-21 (persona Kristin Robertson)"
   },
   "judge": {
     "verdict": "",
@@ -30,7 +30,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "Stage 2: write the design note's default path, stump sentence, Three rules, readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet (Ask A re-sited, reader B found the repeated write-off; Ask B's renumbering held) and leak check; prompt.txt through voice-check; precut.py exit 0. Then stage 3: the world generator (households, seasonal calendars by region and kind of work, applications 2024 to 2025, the 2025 policy's decisions) reusing the hubs' Layer 1.",
+  "resume": "Stage 4 (architecture 2): two isolated scored readers (r272c, r272d) and the determinism judge on target.zip 66ca10c7; fix every finding in the generator in one pass; ship, or record the architecture spent (architecture 3 is the last).",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -46,8 +46,17 @@
     {
       "architecture": 2,
       "drawn": "2026-10-21",
-      "fate": ""
+      "fate": "built 2026-10-21, stage 4 running"
     }
   ],
-  "gates": {}
+  "gates": {
+    "checks": "0 failed",
+    "verify": "PASS",
+    "byte_identical": true,
+    "figures_check": "85 figures, 0 absent",
+    "target_zip_md5": "66ca10c770c9de7091ae11a117f6ee9f",
+    "target_mb": 10.6,
+    "pair_ceiling": 29.4,
+    "family_margin_floor": 0.882
+  }
 }

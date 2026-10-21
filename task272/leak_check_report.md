@@ -1,21 +1,19 @@
 # leak check, task272
 
-**Verdict: REVIEW.** 12 files read, 63 golden figures and 32 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 46 golden figures and 32 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: counsellor, points, reordering, within-day, chance, benchmark, determination, queues, working, comparison, dependence, session, approval, length, decisive, effect, application, family, screen, excess, counsellor-day, control, initiative, approving, pooling
+Stump terms swept: income, household, calendar, months, quarter, region, percent, application, seasonal, applications, policy, twelve-month, twelve, yearly, households, applied, period, factor, record, poverty, records, determinations, architecture, season, denial
 
 ## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `contents.txt`: carries 3 of 5 distinctive words of the committed call: 'The FY2027 budget should carry 11 Decision Coaching Grants, $704,000, for H03, H06, H09, H10, H17, H19, H20, H21, H22, H'
-- **REVIEW** `fac_decision_coaching_criteria_fy2027.pdf`: carries 4 of 5 distinctive words of the committed call: 'The FY2027 budget should carry 11 Decision Coaching Grants, $704,000, for H03, H06, H09, H10, H17, H19, H20, H21, H22, H'
+- **REVIEW** `contents.txt`: carries 3 of 5 distinctive words of the committed call: 'The FY2027 budget should carry 16 Decision Coaching Grants, $1,024,000, for H02, H08, H10, H11, H12, H14, H15, H17, H20,'
+- **REVIEW** `fac_decision_coaching_criteria_fy2027.pdf`: carries 4 of 5 distinctive words of the committed call: 'The FY2027 budget should carry 16 Decision Coaching Grants, $1,024,000, for H02, H08, H10, H11, H12, H14, H15, H17, H20,'
 
-## 4 design-note vocabulary (REVIEW 5)
-- **REVIEW** `contents.txt`: 3 of 25 stump-paragraph terms appear (counsellor, determination, application); read whether the document names the move
-- **REVIEW** `fac_data_guide_2025_extracts.pdf`: 6 of 25 stump-paragraph terms appear (counsellor, determination, working, approval, application, screen); read whether the document names the move
-- **REVIEW** `fac_decision_coaching_criteria_fy2027.pdf`: 11 of 25 stump-paragraph terms appear (counsellor, points, chance, determination, queues, working); read whether the document names the move
-- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "How many Decision Coaching Grants should the foundation's FY2027 budget carry, one for each Fair Assistance Collaborative hospital that meets the coaching criteria on its counsellors' 2025 determinations?"
-- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "The board's scorecard in the workbook also needs, for each hospital, the assistance its counsellors' 2025 approvals wrote off, net of the reversals posted by 31 March 2026, and how many of its counsellors' 2025 denials w"
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `contents.txt`: 4 of 25 stump-paragraph terms appear (region, application, applications, determinations); read whether the document names the move
+- **REVIEW** `fac_data_guide_2024_2025_extracts.pdf`: 15 of 25 stump-paragraph terms appear (income, household, calendar, months, region, percent); read whether the document names the move
+- **REVIEW** `fac_decision_coaching_criteria_fy2027.pdf`: 13 of 25 stump-paragraph terms appear (income, household, calendar, months, percent, application); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2)
 - **REVIEW** `fac_member_hospitals_2025.xlsx`: names 31 of 32 answer-set candidates beside numbers; confirm it does not rank them on the decision question

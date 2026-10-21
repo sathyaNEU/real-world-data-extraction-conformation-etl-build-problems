@@ -1,9 +1,11 @@
-"""The ask sheet's stops, run on the cut pack. The cracker lands the call (it measures each hospital against the same
-days' determinations in any order), runs the hygiene battery (exact duplicates dropped, one key per row, every
-application and account joined) and executes every filed rule (the guide's codes, the criteria's population, the
-extract's cut); it sums the adjustments as the extract gives them and reads the reason codes by the guide's list. The
-mirror stops on the call's easy route (each counsellor-day held) and reads the asks the same way. Every other stop is a
-complete pipeline at a value of its own; the golden is analysis.ask_a and analysis.ask_b."""
+"""The ask sheet's stops, run on the cut pack. The cracker lands the call (each household's twelve-month income through
+its region's calendar for its kind of work), runs the hygiene battery (exact duplicates dropped, one write-off per
+application where an application's lines repeat one amount, every application and account joined) and executes every
+filed rule (the guide's codes, the criteria's population, the extract's cut); it joins each adjustment to the approval
+whose number it carries and reads the reason codes by the guide's list. The mirror stops on the call's easy route (the
+2025 policy's yearly figure) and reads the asks the same way. Every other stop is a complete pipeline at a value of its
+own; the golden is analysis.ask_a and analysis.ask_b."""
+import collections
 import os
 import sys
 
@@ -15,76 +17,95 @@ import models as M       # noqa: E402
 import pack as PK        # noqa: E402
 
 
+def _approved_2025(rows_, presumptive=False):
+    out = {k for k, v in A.counsellor_approvals(rows_).items() if v["when"].year == K.YEAR}
+    if presumptive:
+        out |= {(r["code"], r["app"]) for r in rows_
+                if r["outcome"] == "approve" and r["user"] in PK.SYSTEM and r["when"].year == K.YEAR}
+    return out
+
+
 def ask_a(target, rows_, mode="golden"):
-    """mode: golden (each approval's write-off once, reversals each), every_line (every FAWO line summed, the extract
-    as given), no_dedupe (every line, the twice-loaded December lines too), with_presumptive (every line, the
-    presumptive screening's approvals too), gross (each approval once, reversals ignored), amount_dedupe (one line per
-    application, code and amount, reversals of equal amount on one approval merged)."""
+    """mode: golden; per_app_once (each application's write-off once, joined by the number it posted under);
+    event_by_app (one amount per number and posting date, joined by that number); every_line (every line as the
+    extract gives it, joined by number); posted_year (every write-off posted in 2025 under an approval's number,
+    whenever approved); golden_dups, golden_presumptive, golden_gross (the golden's attribution with one hazard
+    mishandled: the twice-loaded lines kept, the presumptive screening kept, reversals ignored)."""
     if mode == "golden":
         return A.ask_a(target, rows_)
-    if mode in ("golden_dups", "golden_presumptive"):
-        # the golden's handling with one hazard mishandled: the twice-loaded lines kept, or the screening kept
-        approved = A.counsellor_approvals(rows_)
-        if mode == "golden_presumptive":
-            approved |= {(r["code"], r["app"]) for r in rows_ if r["outcome"] == "approve" and r["user"] in PK.SYSTEM}
-        wo, rev = {}, {}
-        for line in PK.ledger(target, dedupe=(mode != "golden_dups")):
+    if mode.startswith("golden_"):
+        lines = PK.ledger(target, dedupe=(mode != "golden_dups"))
+        approved = _approved_2025(rows_, presumptive=(mode == "golden_presumptive"))
+        ev, rv = A.attribute(target, rows_, lines)
+        out = {c: 0.0 for c in K.CODES}
+        for e in ev.values():
+            if e["approval"] in approved:
+                out[e["approval"][0]] += e["amount"]
+        if mode != "golden_gross":
+            for v in rv:
+                if v["approval"] in approved:
+                    out[v["approval"][0]] -= v["amount"]
+        return {c: round(v, 2) for c, v in out.items()}
+    L = PK.ledger(target)
+    out = collections.Counter({c: 0.0 for c in K.CODES})
+    if mode == "posted_year":
+        allappr = set(A.counsellor_approvals(rows_))
+        ev, rev = {}, collections.Counter()
+        for line in L:
             key = (line["hospital_code"], line["application_id"])
-            if key not in approved:
+            if line["posted_date"][:4] != str(K.YEAR) or key not in allappr:
                 continue
             if line["adjustment_code"] == "FAWO":
-                wo.setdefault(key, float(line["amount"]))
+                ev.setdefault(key + (line["posted_date"],), float(line["amount"]))
             else:
-                rev[key] = rev.get(key, 0.0) + float(line["amount"])
-        out = {c: 0.0 for c in K.CODES}
-        for (c, _), v in wo.items():
-            out[c] += v
-        for (c, _), v in rev.items():
+                rev[key[0]] += float(line["amount"])
+        for k, v in ev.items():
+            out[k[0]] += v
+        for c, v in rev.items():
             out[c] -= v
-        return {c: round(v, 2) for c, v in out.items()}
-    approved = A.counsellor_approvals(rows_)
-    if mode == "with_presumptive":
-        approved |= {(r["code"], r["app"]) for r in rows_ if r["outcome"] == "approve" and r["user"] in PK.SYSTEM}
-    L = PK.ledger(target, dedupe=(mode != "no_dedupe"))
-    out = {c: 0.0 for c in K.CODES}
+        return {c: round(out[c], 2) for c in K.CODES}
+    approved = _approved_2025(rows_)
     seen = set()
     for line in L:
         key = (line["hospital_code"], line["application_id"])
         if key not in approved:
             continue
         v = float(line["amount"])
-        if mode == "gross":
-            if line["adjustment_code"] == "FAWO" and key not in seen:
-                seen.add(key)
-                out[key[0]] += v
+        if line["adjustment_code"] == "FAWR":
+            out[key[0]] -= v
             continue
-        if mode == "amount_dedupe":
-            k2 = key + (line["adjustment_code"], line["amount"])
+        if mode == "per_app_once":
+            if key in seen:
+                continue
+            seen.add(key)
+        elif mode == "event_by_app":
+            k2 = key + (line["posted_date"],)
             if k2 in seen:
                 continue
             seen.add(k2)
-        out[key[0]] += v if line["adjustment_code"] == "FAWO" else -v
-    return {c: round(v, 2) for c, v in out.items()}
+        out[key[0]] += v
+    return {c: round(out[c], 2) for c in K.CODES}
 
 
 def ask_b(target, rows_, mode="golden"):
     """mode: golden (version 1 to 30 June, version 2 from 1 July), guide_list (the guide's list for the whole year),
-    first_list (version 1 for the whole year), reopened (denials a later reconsideration reopened), initial_only."""
+    first_list (version 1 for the whole year), initial_only (first-review denials only), both_years (2024 too)."""
     if mode == "golden":
         return A.ask_b(target, rows_)
-    reopened = {(r["code"], r["app"]) for r in rows_ if r["type"] == "RECON"}
     out = {c: 0 for c in K.CODES}
     for r in rows_:
-        if r["outcome"] != "deny" or r["user"] in PK.SYSTEM or r["when"].year != K.YEAR:
+        if r["outcome"] != "deny" or r["user"] in PK.SYSTEM:
+            continue
+        if mode != "both_years" and r["when"].year != K.YEAR:
             continue
         if mode == "guide_list":
             hit = r["reason"] == 1
         elif mode == "first_list":
             hit = r["reason"] == 2
-        elif mode == "reopened":
-            hit = r["type"] == "INITIAL" and (r["code"], r["app"]) in reopened
         elif mode == "initial_only":
             hit = r["type"] == "INITIAL" and r["reason"] == A.documents_code(r["when"].date())
+        elif mode == "both_years":
+            hit = r["reason"] == A.documents_code(r["when"].date())
         else:
             raise ValueError(mode)
         out[r["code"]] += hit
@@ -92,11 +113,10 @@ def ask_b(target, rows_, mode="golden"):
 
 
 def call_stops(target, rows_):
-    days = PK.counsellor_days(target, rows_)
-    out = {}
-    for name, f in [("golden", M.excess), ("day_fe", M.day_fe), ("per_day", M.per_day), ("pooled", M.pooled),
-                    ("counsellor_fe", M.counsellor_fe), ("day_rate", M.day_rate)]:
-        out[name] = sorted(c for c in K.CODES if f(M._arr(days[c])) >= K.THRESHOLD)
+    fr = PK.first_reviews(target, rows_)
+    out = {"golden": sorted(c for c, v in M.golden(fr).items() if v >= K.THRESHOLD)}
+    for k, v in M.reflexes(fr).items():
+        out[k] = sorted(c for c in K.CODES if v.get(c, 0) >= K.THRESHOLD)
     return out
 
 
@@ -104,11 +124,11 @@ def stops(target):
     rows_ = PK.conformed(target)
     th = lambda d: {c: round(v / 1000.0, 1) for c, v in d.items()}
     out = {"golden": (th(ask_a(target, rows_)), ask_b(target, rows_))}
-    out["cracker"] = (th(ask_a(target, rows_, "every_line")), ask_b(target, rows_, "guide_list"))
+    out["cracker"] = (th(ask_a(target, rows_, "per_app_once")), ask_b(target, rows_, "guide_list"))
     out["mirror"] = out["cracker"]
-    for m in ("no_dedupe", "with_presumptive", "gross", "amount_dedupe", "golden_dups", "golden_presumptive"):
+    for m in ("every_line", "event_by_app", "posted_year", "golden_dups", "golden_presumptive", "golden_gross"):
         out["a_" + m] = (th(ask_a(target, rows_, m)), out["golden"][1])
-    for m in ("first_list", "reopened", "initial_only"):
+    for m in ("first_list", "initial_only", "both_years"):
         out["b_" + m] = (out["golden"][0], ask_b(target, rows_, m))
     return out, call_stops(target, rows_)
 
@@ -136,8 +156,8 @@ if __name__ == "__main__":
         mb = sum(b[c] != g[1][c] for c in K.CODES)
         da = [round(a[c] - g[0][c], 1) for c in K.CODES]
         db = [b[c] - g[1][c] for c in K.CODES]
-        print("%-20s A misses %2d of 31 (deltas %s to %s)   B misses %2d of 31 (deltas %s to %s)" % (
+        print("%-22s A misses %2d of 31 (deltas %s to %s)   B misses %2d of 31 (deltas %s to %s)" % (
             k, ma, min(da), max(da), mb, min(db), max(db)))
     for k, v in cs.items():
-        print("call %-14s %2d %s" % (k, len(v), v))
+        print("call %-26s %2d %s" % (k, len(v), v))
     print(pair_ceiling(st, g))

@@ -6,12 +6,12 @@
   "domain": "demographic-social-science",
   "subdomain": "income-poverty-inequality",
   "client_domain": "sociology-demography",
-  "niche": "a health foundation's FY2027 decision-coaching grants for its collaborative's hospital financial-assistance teams, one per hospital whose 2025 decisions most often left households that the collaborative's 2026 standard makes eligible on their income over the twelve months before applying without free care in full, when the 2025 policy read income from the three months before the application and much of the region's work follows harvest, fishing and resort seasons",
+  "niche": "a health foundation's FY2027 decision-coaching grants for its collaborative's hospital financial-assistance teams, one per hospital whose 2025 decisions most often left households that the collaborative's 2026 standard makes eligible on their income over the twelve months before applying owing more than half of their balance, when the 2025 policy read income from the three months before the application and much of the region's work follows harvest, packing, fishing, logging and resort seasons",
   "objective": "descriptive-distribution",
   "shape": "08",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
+  "answer": "16 grants, $1,024,000: H02, H08, H10, H11, H12, H14, H15, H17, H20, H22, H23, H24, H26, H28, H29 and H30",
   "answer_source": "submission.md block 1; fair_assistance_coaching_2027.xlsx",
   "gap": [
     "objective",
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the three hubs and reads the 2026 standard correctly takes the 2025 policy's yearly figure, the three months before the application times four, as the best available estimate of each household's income over the twelve months before it applied, or corrects it with one seasonal calendar for all seasonal work, and files too few grants: households whose work follows a harvest, fishing or resort season were assessed in their peak or slack quarter, and only each region's own calendar for each kind of seasonal work, read from the households that applied in more than one season, puts their year's income where it was.",
+  "analyst_test": "A strong analyst who conforms every hub correctly and applies criteria 2.1 to 2.5 takes the 2025 policy's yearly figure (the three months before the application times four) as each household's income over the twelve months before it applied and files 5 grants (H11, H15, H17, H23 and H26) where the answer is 16: households whose work follows a season were assessed on their peak or slack quarter, and only each region's own calendar for each kind of work puts their year's income where it was (one calendar pooled across regions or across kinds of work files 6 or 10).",
   "domain_test": "The deciding quantity is each applicant household's income over the twelve months before it applied against the poverty line, estimated from the one quarter the 2025 policy recorded with the local seasonal calendar of the household's work: the reference-period problem of income and poverty measurement, where a single period's income misstates the year for earnings that follow a season. Swapping earnings for megawatt-hours or visits breaks it, and replacing the calendar estimate with the recorded quarter times four changes the call.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:seasonal-reference-period-income",
@@ -49,8 +49,8 @@
   "scoring_unit": "units served",
   "spine": {
     "file": "fac_determinations_2024_2025_*_hub.csv (three hub extracts)",
-    "rows": 0,
-    "entity": "one financial-assistance application decision, pend or withdrawal a counsellor or the presumptive screening records",
+    "rows": 213918,
+    "entity": "one financial-assistance application decision, pend, withdrawal or reconsideration a counsellor or the presumptive screening records",
     "grain": "determination event",
     "source": "synthetic"
   },
@@ -76,12 +76,13 @@
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "A household's yearly income is read from one quarter's income scaled to the year; for households whose earnings follow a season, the scaled quarter overstates the year when the quarter is the season's peak and understates it in the slack months, and the season's timing differs by place and by kind of work, so judging each household against a yearly line by its scaled quarter, or by one calendar for every seasonal household, misplaces them; each place's calendar for each kind of work comes from the households seen in more than one season, and each quarter is put on the yearly basis by its own share of that calendar.",
-  "driver_concrete": "Each hospital's share of the 2025 applications from households within the free-care limit on their income over the twelve months before applying that did not get free care in full, the twelve-month income rebuilt for farm, orchard, fishing and resort households from the three months the 2025 policy recorded and the calendar of that kind of work in that region, read from the households that applied in more than one season, not the policy's three months times four.",
-  "stump": "A competent analyst who conforms the three hubs and takes the 2025 policy's yearly figure, the household's income in the three months before it applied times four, as its income over the twelve months before applying puts about a third of the hospitals over the six-point line, because households that applied after a harvest, fishing or resort season were assessed on their best quarter and those that applied in the slack months on their worst; one who corrects with a single calendar for all seasonal work, or one per hospital across every kind of work, still misses the hospitals whose seasonal households work to a calendar of their own; only each region's calendar for each kind of seasonal work, read from the households that applied in more than one season, puts about two thirds over it.",
+  "driver": "A household's yearly income is read from one quarter's income scaled to the year; for households whose earnings follow a season, the scaled quarter overstates the year when the quarter is the season's peak and understates it in the slack months, and the season's timing differs by place and by kind of work, so judging each household against a yearly line by its scaled quarter, or through one calendar pooled across places or across kinds of work, misplaces them; each place's calendar for each kind of work is read from how the scaled quarter moves with the month across that place's households in that work, and each quarter is put on the yearly basis by its own month's factor.",
+  "driver_concrete": "Each hospital's share of its counsellors' 2025 first-review decisions on households within the free-care limit on their income over the twelve months before applying that left the household owing more than half of its balance (a denial or a 25 percent discount), the twelve-month income rebuilt from the three months the 2025 policy recorded through the calendar of the main earner's kind of work in the hospital's region (the policy's yearly figure averaged by month of application over 2024 and 2025, set against the year's average), not the policy's three months times four and not a calendar pooled across regions or across kinds of work.",
+  "stump": "A competent analyst who conforms the three hubs, keeps each application's first review and takes the 2025 policy's yearly figure (the three months before the application times four) as the household's income over the twelve months before it applied names 5 hospitals (H11, H15, H17, H23 and H26) for the FY2027 grants, because a household whose pay follows a harvest, packing, fishing, logging or resort season was assessed on one quarter of its year; one calendar for every seasonal kind of work files 6, one for each kind of work across regions 10, one for each region or each hospital across kinds of work 10; only each region's calendar for each kind of work names the 16.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task272 (v1)": "architecture 1 decided on the serial dependence of counsellors' decisions within a working day against its reordering benchmark; architecture 2 decides on households' yearly income rebuilt from one seasonal quarter with the local calendar of their work, a different quantity (income against the poverty line), a different unit (the household) and a different estimator"
+    "task272 (v1)": "architecture 1 decided on the serial dependence of counsellors' decisions within a working day against its reordering benchmark; architecture 2 decides on households' yearly income rebuilt from one seasonal quarter with the local calendar of their work, a different quantity (income against the poverty line), a different unit (the household) and a different estimator",
+    "task17": "task17's third revision (economics forecasting) applies a mandated, filed calendar factor before carrying a part-period rate forward, with a misfiled decoy block; here no factor is filed, each region's calendar for each kind of work is estimated from the applications themselves, and the trap is pooling it across places or kinds of work whose seasons fall in different months."
   },
   "lineage": [
     {

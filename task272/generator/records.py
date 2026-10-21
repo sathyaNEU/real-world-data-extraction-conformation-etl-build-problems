@@ -45,12 +45,16 @@ def write_puget(path, rows):
     out = []
     for i, r in enumerate(_by_hub(rows, "puget")):
         typ = {"INITIAL": "INITIAL", "RECON": "RECONSIDERATION", "PRESUMPTIVE": "PRESUMPTIVE"}[r["type"]]
+        pres = r["type"] == "PRESUMPTIVE"
         out.append([r["code"], "D%08d" % (31000000 + i), r["app"], r["guarantor"], r["user"],
                     r["when"].strftime("%Y-%m-%d %H:%M:%S"), typ, K.PUGET_OUTCOME[r["outcome"]],
                     r["tier"] if r["outcome"] == "approve" else "",
-                    reason_code(r["reason"], r["when"].date()) if r["outcome"] == "deny" else ""])
+                    reason_code(r["reason"], r["when"].date()) if r["outcome"] == "deny" else "",
+                    "" if pres else r["received"].isoformat(), "" if pres else r["size"],
+                    "" if pres else "%.2f" % r["inc3"], "" if pres else K.WORK_P[r["kind"]]])
     return _w(path, ["hospital_code", "determination_id", "application_id", "guarantor_id", "user_id", "determined_at",
-                     "determination_type", "outcome", "discount_pct", "denial_reason"], out)
+                     "determination_type", "outcome", "discount_pct", "denial_reason", "received_date",
+                     "household_size", "income_3mo", "work_type"], out)
 
 
 def write_willamette(path, rows):
@@ -59,14 +63,17 @@ def write_willamette(path, rows):
     out = []
     for r in sel:
         seq[r["code"]] = seq.get(r["code"], 0) + 1
+        pres = r["type"] == "PRESUMPTIVE"
         out.append([r["code"], "%d%06d" % (int(r["code"][1:]), seq[r["code"]]), r["app"], r["guarantor"], r["user"],
                     r["when"].strftime("%m/%d/%Y"), r["when"].strftime("%H:%M:%S"),
                     "Y" if r["type"] == "RECON" else "N", K.WILLAMETTE_OUTCOME[r["outcome"]],
                     r["tier"] if r["outcome"] == "approve" else "",
-                    reason_code(r["reason"], r["when"].date()) if r["outcome"] == "deny" else ""])
+                    reason_code(r["reason"], r["when"].date()) if r["outcome"] == "deny" else "",
+                    "" if pres else r["received"].strftime("%m/%d/%Y"), "" if pres else r["size"],
+                    "" if pres else "%d" % int(round(r["inc3"] * 4)), "" if pres else K.WORK_W[r["kind"]]])
     out.sort(key=lambda x: (x[0], int(x[1])))
     return _w(path, ["HOSP_ID", "DET_NO", "APPL_NO", "GUAR_NO", "USER_ID", "DET_DATE", "DET_TIME", "RECON", "RESULT",
-                     "ADJ_PCT", "DENY_RSN"], out)
+                     "ADJ_PCT", "DENY_RSN", "RCVD_DATE", "HH_SIZE", "ANN_INC", "WORK_CD"], out)
 
 
 def write_columbia(path, rows):
@@ -77,12 +84,15 @@ def write_columbia(path, rows):
         else:
             dec = K.COLUMBIA_OUTCOME[r["outcome"]]
         kind = {"INITIAL": "new", "RECON": "recheck", "PRESUMPTIVE": "screen"}[r["type"]]
+        pres = r["type"] == "PRESUMPTIVE"
         out.append([r["code"], r["app"], 5400000 + i, r["guarantor"], r["user"],
                     to_utc(r["when"]).strftime("%Y-%m-%dT%H:%M:%SZ"), kind, dec,
                     r["tier"] if r["outcome"] == "approve" else "",
-                    reason_code(r["reason"], r["when"].date()) if r["outcome"] == "deny" else ""])
+                    reason_code(r["reason"], r["when"].date()) if r["outcome"] == "deny" else "",
+                    "" if pres else r["received"].isoformat(), "" if pres else r["size"],
+                    "" if pres else "%.2f" % round(r["inc3"] / 3.0, 2), "" if pres else K.WORK_C[r["kind"]]])
     return _w(path, ["facility", "app_ref", "seq", "guarantor", "staff_key", "ts_utc", "kind", "decision", "pct",
-                     "reason"], out)
+                     "reason", "rcvd", "hh", "inc_mo", "work"], out)
 
 
 # ------------------------------------------------------------------------------------------- workbooks
@@ -95,10 +105,10 @@ def _xl_header(ws, row, cols, widths):
         ws.column_dimensions[get_column_letter(j)].width = wdt
 
 
-def write_crosswalk(path, crosswalk):
+def write_crosswalk(path, crosswalk, guarantors):
     wb = Workbook()
     ws = wb.active
-    ws.title = "H23 counsellor IDs"
+    ws.title = "Counsellor user IDs"
     ws["A1"] = "Lundgren Regional Hospital (H23): counsellor user IDs before and after the billing conversion"
     ws["A1"].font = Font(bold=True, size=12)
     ws["A2"] = ("H23's billing moved from the Columbia hub's system to the Puget hub's on 2 June 2025. Each counsellor "
@@ -112,8 +122,22 @@ def write_crosswalk(path, crosswalk):
         c = ws.cell(row=i, column=4, value=x["effective"])
         c.number_format = "yyyy-mm-dd"
     ws.freeze_panes = "A5"
+    ws2 = wb.create_sheet("Guarantor numbers")
+    ws2["A1"] = "Lundgren Regional Hospital (H23): guarantor numbers before and after the billing conversion"
+    ws2["A1"].font = Font(bold=True, size=12)
+    ws2["A2"] = ("The conversion gave every H23 guarantor a Puget number; applications and accounts kept their own "
+                 "numbers.")
+    _xl_header(ws2, 4, ["Hospital", "Columbia guarantor (to 30 May 2025)", "Puget guarantor (from 2 June 2025)",
+                        "Effective"], [14, 30, 30, 14])
+    for i, x in enumerate(sorted(guarantors, key=lambda g: g["old"]), 5):
+        ws2.cell(row=i, column=1, value=x["code"])
+        ws2.cell(row=i, column=2, value=x["old"])
+        ws2.cell(row=i, column=3, value=x["new"])
+        c = ws2.cell(row=i, column=4, value=x["effective"])
+        c.number_format = "yyyy-mm-dd"
+    ws2.freeze_panes = "A5"
     wb.save(path)
-    return len(crosswalk)
+    return len(crosswalk) + len(guarantors)
 
 
 def write_hospitals(path, hs, seed):
@@ -123,23 +147,20 @@ def write_hospitals(path, hs, seed):
     ws.title = "Members 2025"
     ws["A1"] = "%s: member hospitals, 2025" % K.COLLAB
     ws["A1"].font = Font(bold=True, size=12)
-    cols = ["Code", "Hospital", "City", "State", "Hub", "Licensed beds", "Free care up to (% of FPL)",
-            "Discounts up to (% of FPL)", "Joined the collaborative"]
-    _xl_header(ws, 3, cols, [8, 36, 16, 7, 34, 10, 12, 12, 12])
+    cols = ["Code", "Hospital", "City", "State", "Region", "Hub", "Licensed beds", "Joined the collaborative"]
+    _xl_header(ws, 3, cols, [8, 36, 16, 7, 24, 34, 10, 12])
     for i, (code, name, city, state, hub) in enumerate(K.HOSPITALS, 4):
         hub_txt = {"puget": "Puget", "willamette": "Willamette", "columbia": "Columbia"}[hub]
         if code == K.MIGRATED:
             hub_txt = "Columbia to 30 May 2025; Puget from 2 June 2025"
         beds = int(r.integers(25, 120)) if state == "OR" and r.random() < 0.5 else int(r.integers(60, 480))
-        free = 300 if state == "WA" and beds >= 200 else 200
-        disc = 400 if state == "WA" else int(r.choice([300, 400]))
         joined = dt.date(int(r.choice([2023, 2023, 2024])), int(r.choice([1, 4, 7, 10])), 1)
-        for j, v in enumerate([code, name, city, state, hub_txt, beds, free, disc, joined], 1):
+        for j, v in enumerate([code, name, city, state, K.REGION[code], hub_txt, beds, joined], 1):
             c = ws.cell(row=i, column=j, value=v)
-            if j == 9:
+            if j == 8:
                 c.number_format = "yyyy-mm"
     ws.freeze_panes = "C4"
-    ws.auto_filter.ref = "A3:I%d" % (3 + len(K.HOSPITALS))
+    ws.auto_filter.ref = "A3:H%d" % (3 + len(K.HOSPITALS))
     wb.save(path)
     return len(K.HOSPITALS)
 

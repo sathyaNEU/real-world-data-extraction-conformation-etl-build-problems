@@ -33,14 +33,15 @@ CACHE = os.path.join(__import__("tempfile").gettempdir(), "task272_world_cache")
 CONTENTS = [
     ("criteria", "Vellacott Health Foundation, Program Committee: Decision Coaching Grants FY2027, criteria (approved "
                  "8 December 2026)."),
-    ("guide", "Fair Assistance Collaborative: data guide to the 2025 extracts."),
-    ("puget", "Financial-assistance determinations, 2025: the Puget hub's extract."),
-    ("willamette", "Financial-assistance determinations, 2025: the Willamette hub's extract."),
-    ("columbia", "Financial-assistance determinations, 2025: the Columbia hub's extract."),
-    ("crosswalk", "Lundgren Regional Hospital (H23): counsellor user IDs before and after the June 2025 conversion."),
+    ("guide", "Fair Assistance Collaborative: data guide to the 2024 and 2025 extracts."),
+    ("puget", "Financial-assistance applications and determinations, 2024 and 2025: the Puget hub's extract."),
+    ("willamette", "Financial-assistance applications and determinations, 2024 and 2025: the Willamette hub's extract."),
+    ("columbia", "Financial-assistance applications and determinations, 2024 and 2025: the Columbia hub's extract."),
+    ("crosswalk", "Lundgren Regional Hospital (H23): counsellor user IDs and guarantor numbers before and after the "
+                  "June 2025 billing conversion."),
     ("hospitals", "The collaborative's member hospitals, 2025."),
-    ("ledger", "Financial-assistance adjustments on 2025 applications, posted through 31 March 2026."),
-    ("accounts", "Patient accounts the 2025 adjustments post to."),
+    ("ledger", "Financial-assistance adjustments posted from 1 January 2025 through 31 March 2026."),
+    ("accounts", "Patient accounts those adjustments post to."),
     ("survey", "Patient-experience survey, 2025: would-recommend top-box rates by payer group."),
     ("state", "Charity care as filed with the states, fiscal year 2025."),
 ]
@@ -54,6 +55,8 @@ def make_world(seed=W.SEED):
     if os.path.exists(path):
         return pickle.load(open(path, "rb"))
     hs = W.world(seed)
+    doc = W.tune(hs)
+    W.decide(hs, doc)
     op = O.build(hs, seed)
     os.makedirs(CACHE, exist_ok=True)
     pickle.dump((hs, op), open(path, "wb"))
@@ -70,7 +73,7 @@ def build(out, seed=W.SEED, keep=False):
     n["puget"] = R.write_puget(p("puget"), op["rows"])
     n["willamette"] = R.write_willamette(p("willamette"), op["rows"])
     n["columbia"] = R.write_columbia(p("columbia"), op["rows"])
-    n["crosswalk"] = R.write_crosswalk(p("crosswalk"), op["crosswalk"])
+    n["crosswalk"] = R.write_crosswalk(p("crosswalk"), op["crosswalk"], op["guarantor_crosswalk"])
     n["hospitals"] = R.write_hospitals(p("hospitals"), hs, seed)
     n["ledger"] = R.write_ledger(p("ledger"), op["ledger"])
     n["accounts"] = R.write_accounts(p("accounts"), op["accounts"], op["ledger"])
@@ -88,7 +91,7 @@ DOC_DATES = {
 }
 OOXML = {
     "crosswalk": ("Puget Hub Billing Conversion", "Puget Hub Billing Conversion", "2025-05-21T17:05:00Z",
-                  "2025-06-03T15:42:00Z", "H23 counsellor ID crosswalk"),
+                  "2025-06-03T15:42:00Z", "H23 ID crosswalk"),
     "hospitals": ("Fair Assistance Collaborative", "Fair Assistance Collaborative", "2023-01-09T18:30:00Z",
                   "2026-04-10T20:12:00Z", "Member hospitals 2025"),
     "state": ("Vellacott Health Foundation", "Vellacott Health Foundation", "2026-02-02T19:10:00Z",
@@ -122,7 +125,7 @@ def metadata(fig, counts):
     return {
         "task": "task272",
         "title": "%s: how many FY2027 Decision Coaching Grants" % K.FOUNDATION,
-        "domain": "General Statistics & Data Science (resampling and simulation)",
+        "domain": "Sociology & Demography (income and poverty measurement)",
         "objective": "Descriptive & Distribution Analysis",
         "distractors": [K.FILES["survey"], K.FILES["state"]],
         "provenance": {name: {"source": "constructed by the task generator (seeded); %s, the %s, its member "
