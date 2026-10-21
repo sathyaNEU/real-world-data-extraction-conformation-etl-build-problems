@@ -825,7 +825,7 @@ def user_stamp(rng, d):
 
 class Fac:
     __slots__ = ("fid", "booking", "product", "ccy", "limit", "obligors", "start", "maturity", "status", "drawn",
-                 "booked", "oct1", "sep30", "later", "dev", "closed_on", "history")
+                 "booked", "oct1", "sep30", "later", "dev", "closed_on", "history", "copy_of", "util")
 
     def __init__(self, **kw):
         for k in self.__slots__:
@@ -865,7 +865,8 @@ def round_limit(x):
 
 
 def in_force(f):
-    return f.start <= EXTRACT_DATE < f.maturity
+    """in force at the end of 30 September; a facility the interface booked twice (DV-D) is no commitment at all"""
+    return "R" not in f.dev and f.start <= EXTRACT_DATE < f.maturity
 
 
 def fac_value(f, clock="right"):
@@ -1610,6 +1611,106 @@ def band_exposure_figures(w, cohort, **kw):
     return [x / 1e6 for x in com] + [sum(com) / 1e6], [x / 1e6 for x in arr] + [sum(arr) / 1e6]
 
 
+def plant_replays(w, cohort):
+    """DV-D, the ask layer's primary. When the limit system's interface timed out on a facility-creation message
+    it sent the message again, and the ledger booked a second facility under the next number: the same customer,
+    terms and first limit version, stamp for stamp and user for user, never drawn. Beside them sit genuine twin
+    tranches booked the same day on the same terms and keyed separately, the second often undrawn. Counting every
+    facility number once keeps the copies and lifts their groups a band; dropping every near-duplicate on its terms,
+    or the undrawn one of each pair, also drops a genuine tranche and lowers its group a band. Only the limit
+    history tells the two apart. Planted after the exposures are tuned, on its own stream, and moving no group's
+    true exposure: a copy is no commitment, and a pair of tranches sums to the facility it was cut from."""
+    rng = np.random.default_rng(SEED + 303)
+    w.rrng = rng
+    used = w.used_groups
+    M4 = [w.groups[g] for g in cohort[4]["M"]]
+    w.movers["R"], w.movers["TW"] = [], []
+    w.single_version = set()           # facilities keyed once at booking and never amended
+
+    def plain(g):
+        return [f for f in w.gfacs.get(g.gid, []) if in_force(f) and len(f.obligors) == 1 and not f.dev
+                and f.status == "ACTIVE" and not f.sep30 and not f.oct1 and not f.later and f.limit % 50000 == 0]
+
+    # booked apart from one another and from the other devices' facilities, so no stretch of a ledger reads as
+    # one device's
+    taken = {}
+    for f in w.facilities:
+        if f.dev:
+            taken.setdefault(f.booking, []).append(f.booked)
+    mine = []
+
+    def apart(f, level):
+        """level 2: clear of the other devices by three days and of this one by thirty; 1: of this one only"""
+        return (level < 2 or all(abs((f.booked - d).days) > 3 for d in taken.get(f.booking, []))) and \
+            (level < 1 or all(abs((f.booked - d).days) > 30 for d in mine))
+
+    def choose(band, flag, test, kind=None):
+        cands = [g for g in M4 if g.band == band and (flag is None or g.flag[4] == flag) and g.gid not in used
+                 and (kind is None or g.kind[4] == kind)]
+        order = rng.permutation(len(cands))
+        for level in (2, 1, 0):
+            for i in order:
+                g = cands[int(i)]
+                e = gexp(w, g)
+                fs = [f for f in plain(g) if test(e, f.limit / FX[f.ccy]) and apart(f, level)]
+                if fs:
+                    f = fs[int(rng.integers(0, len(fs)))]
+                    mine.append(f.booked)
+                    return g, f
+        return None, None
+
+    def copy(f):
+        add_fac(w, Fac(booking=f.booking, product=f.product, ccy=f.ccy, limit=f.limit, obligors=list(f.obligors),
+                       start=f.start, maturity=f.maturity, status="ACTIVE", booked=f.booked, dev={"R"}, copy_of=f,
+                       util=0.0))
+        w.single_version.add(id(f))
+
+    def split(f, undrawn):
+        half = f.limit / 2
+        f.limit = half
+        f.dev.add("TW")
+        w.single_version.add(id(f))
+        add_fac(w, Fac(booking=f.booking, product=f.product, ccy=f.ccy, limit=half, obligors=list(f.obligors),
+                       start=f.start, maturity=f.maturity, status="ACTIVE", booked=f.booked, dev={"TW", "TWB"},
+                       util=0.0 if undrawn else float(rng.uniform(0.2, 0.95))))
+
+    def lands(e, edge):
+        return edge_dist(e) >= 0.25e6 and band_of(e) == edge
+
+    # copies: a group under each edge lifted over it by its copy (edges GBP 5m, 15m, 40m, 100m)
+    for flag, plan in ((True, (1, 2, 1, 2)), (False, (1, 2, 1, 2))):
+        for edge, cnt in enumerate(plan):
+            for _ in range(cnt):
+                g, f = choose(edge, flag, lambda e, v: v <= 40e6 and lands(e + v, edge + 1))
+                assert g is not None, ("R", edge, flag)
+                copy(f)
+                used.add(g.gid)
+                w.movers["R"].append(g.gid)
+    # twins: a group over each edge dropped under it when one tranche is dropped; the flags crossing into and out
+    # of the GBP 40m to 100m band are of opposite kinds, so its expected arrivals cannot net back into their bin
+    for flag, plan in ((True, (1, 2, 1, 2)), (False, (2, 2, 2, 0))):
+        for edge, cnt in enumerate(plan):
+            for _ in range(cnt):
+                kind = {2: "I", 3: "D"}.get(edge) if flag else None
+                g, f = choose(edge + 1, flag, lambda e, v: lands(e - v / 2, edge), kind)
+                if g is None:
+                    g, f = choose(edge + 1, flag, lambda e, v: lands(e - v / 2, edge))
+                assert g is not None, ("TW", edge, flag)
+                split(f, undrawn=True)
+                used.add(g.gid)
+                w.movers["TW"].append(g.gid)
+    # copies and twins that cross nothing, in every band; some twins drawn on both tranches
+    for band in range(5):
+        for kind, undrawn in (("R", None), ("R", None), ("TW", True), ("TW", False)):
+            if kind == "R":
+                g, f = choose(band, None, lambda e, v: v <= 40e6 and lands(e + v, band))
+            else:
+                g, f = choose(band, None, lambda e, v: lands(e - v / 2, band))
+            assert g is not None, ("benign", kind, band)
+            copy(f) if kind == "R" else split(f, undrawn)
+            used.add(g.gid)
+
+
 def tune_exposures(w, cohort):
     """Nudge one ordinary sterling limit at a time until every committed and arriving exposure figure (five
     bands and the total, GBP m to one decimal) sits at least 0.25 of its bin from an edge."""
@@ -1648,23 +1749,37 @@ def number_facilities(w):
     rng = w.drng
     plc = sorted([f for f in w.facilities if f.booking == "HB-PLC"], key=lambda f: (f.booked, f.start, f.limit))
     dac = sorted([f for f in w.facilities if f.booking == "HB-DAC"], key=lambda f: (f.booked, f.start, f.limit))
+    def second(f):
+        """booked by the same message or the same deal as the facility just before it"""
+        return bool(f.dev & {"R", "TWB"})
+
     n = 20418226
     for f in plc:
-        n += int(rng.integers(1, 6))
+        n += 1 if second(f) else int(rng.integers(1, 6))
         f.fid = "%08d" % n
-    span = n - 20418226
-    step = max(2, span // max(1, len(dac)))
+    span = n - 20418226 - sum(1 for f in plc if second(f))
+    step = max(2, span // max(1, sum(1 for f in dac if not second(f))))
     n = 20418226 + int(rng.integers(0, 20))
     for f in dac:
-        n += int(rng.integers(1, 2 * step))
+        n += 1 if second(f) else int(rng.integers(1, 2 * step))
         f.fid = "%08d" % n
 
 
 def build_histories(w):
     """Every committed limit each facility has carried, with the platform's UTC stamps."""
     rng = w.drng
+    single = getattr(w, "single_version", set())
     for f in w.facilities:
         h = []
+        if f.copy_of is not None:
+            # the second booking of a re-sent creation message carries the first's version, stamp and user
+            f.history = list(f.copy_of.history)
+            continue
+        if "TWB" in f.dev:
+            # the second tranche, keyed by its own hand the day the deal was booked
+            r2 = w.rrng
+            f.history = [(user_stamp(r2, f.booked), f.limit, str(r2.choice(USERS)))]
+            continue
         if "ACT" in f.dev:
             h.append((SOD_1OCT, f.oct1, "SOD_BATCH"))
             f.history = h
@@ -1681,16 +1796,21 @@ def build_histories(w):
         vals = [float(pre)]
         for _ in days:
             vals.insert(0, float(round_limit(vals[0] * rng.uniform(0.7, 1.15))))
+        # a facility the interface booked twice, and a deal's first tranche, were never amended (the draws are
+        # made all the same)
+        amended = id(f) not in single
         # initial version: keyed when the facility was booked, or set by the batch on the start date
         if rng.random() < 0.6:
-            h.append((user_stamp(rng, f.booked), vals[0], str(rng.choice(USERS))))
+            h.append((user_stamp(rng, f.booked), vals[0] if amended else float(pre), str(rng.choice(USERS))))
         else:
-            h.append((sod_stamp(f.start), vals[0], "SOD_BATCH"))
+            h.append((sod_stamp(f.start), vals[0] if amended else float(pre), "SOD_BATCH"))
         for d, v in zip(days, vals[1:]):
             if rng.random() < 0.5:
-                h.append((sod_stamp(d), v, "SOD_BATCH"))
+                ver = (sod_stamp(d), v, "SOD_BATCH")
             else:
-                h.append((user_stamp(rng, d), v, str(rng.choice(USERS))))
+                ver = (user_stamp(rng, d), v, str(rng.choice(USERS)))
+            if amended:
+                h.append(ver)
         if f.status in ("CANCELLED", "CLOSED") and "MAT" not in f.dev:
             h.append((user_stamp(rng, f.closed_on) if rng.random() < 0.5 else sod_stamp(f.closed_on), 0.0,
                       "SOD_BATCH" if rng.random() < 0.5 else str(rng.choice(USERS))))
@@ -1736,6 +1856,7 @@ def build(devices=True):
         plant_devices(w, cohort)
         w.tune_steps = tune_exposures(w, cohort)
         jv_signals(w)
+        plant_replays(w, cohort)
     number_facilities(w)
     build_histories(w)
     for f in w.facilities:

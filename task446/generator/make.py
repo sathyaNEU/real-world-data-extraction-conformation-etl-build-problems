@@ -221,6 +221,8 @@ def build(target=TARGET, devices=True):
         shares = rng.dirichlet(np.ones(len(f.obligors)) * 2.0) if len(f.obligors) > 1 else [1.0]
         util = 0.0 if f.status != "ACTIVE" or f.start > EXTRACT_DATE else \
             (rng.uniform(0.2, 0.95) if f.product != "OVERDRAFT" else rng.uniform(0, 0.6))
+        if f.util is not None:
+            util = f.util
         for eid, sh in zip(f.obligors, shares):
             e = w.ents[eid]
             fx_rows.append((f.booking, f.fid, e.cust, f.product, f.ccy, "%.2f" % ext, "%.2f" % (ext * util * sh),

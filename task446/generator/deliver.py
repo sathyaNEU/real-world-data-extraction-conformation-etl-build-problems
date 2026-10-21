@@ -56,6 +56,7 @@ def figures(t=solve.TARGET):
              flagged_exp=fc["flagged"], unflagged_exp=fc["unflagged"])
     F["single"] = fc["test"]["hit_and_miss"]
     F["split"] = fc["test"]["split"]
+    F["twice"] = len(solve.booked_twice(G["pack"]))
     return F
 
 

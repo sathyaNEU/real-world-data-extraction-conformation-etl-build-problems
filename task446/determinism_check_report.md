@@ -1,88 +1,55 @@
-# determinism-check report, task446 (architecture 2, loop 1), 2026-10-11
-
-Run note: one isolated judge thread (general-purpose, Sonnet, medium) spawned by the main session under the determinism-check contract (the judge agent in this runtime cannot spawn): the judge system prompt verbatim, the submission's graded blocks and a fresh unzip of target.zip (cut d1696c6) as its only readable path, the literal reading first. Its verdict.md follows verbatim.
+# determinism-check report, task446, 2026-10-21
 
 ## Verdict
-DETERMINISTIC
-**Disposition:** APPROVE
-**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
-**Gate H:** domain pass, layers pass, decisive_step analytical
-
-## Spec gates (main session)
-17 files, 6 formats, largest file ews_entity_signals_2022-09_to_2026-09.csv at 125,317 rows, 2 distractors named in metadata.json only, 2 deliverables, every ask with unit and rounding, target.zip 17 members matching target/ (H7).
-
-## Gate G reconciliation
-Card and design note: method_or_model_selection (the basis chosen by the filed leave-one-cohort-out test); the thread reads the same. No mismatch.
-
-## Judge thread verdict.md
-
-# Verdict (task 446)
-
-## Literal reading
-Executed CRM-07 v3.1 word for word on the shipped files.
-- 4.1/4.2 book and outcome: group active on register at 30 Sep (start <= date, end blank or > date), not on an open watch-list case at that date. Books 846/871/889/902/913 (2022-26); arrivals 75/43/36/47 (2022-25). Boundary variants (>= instead of >) change nothing (no placed/removed/ended dates fall on 30 Sep).
-- 2.2/3.2 membership and flags: master group_id (customers with blank group placed via LEI) plus GLEIF ULTIMATELY/DIRECTLY_CONSOLIDATED_BY chains in force at the date. Flagged counts 119/98/95/104 (2022-25), 165 (2026).
-- 5.2 is silent on which bases compete, so I enumerated every pairing of 4.3's rates plus a flat rate and ran the filed leave-one-cohort-out test on each (largest miss as share of cohort arrivals):
-  - capture + false-alarm (prior-shift inversion on the cohort's own flagged share): 1.57% (misses -0.2, -1.6, +0.5, +1.1). 2026 expectation 133.04.
-  - hit + miss: 40.6%. 2026 expectation 72.9.
-  - hit + capture: 35.6%. 2026 expectation 79.7.
-  - capture + miss: 58.4%. flat reach rate: 55.6%. hit + FA: 352%.
-  - The filed test picks capture/FA by a margin of 25x. No tie, no second basis wins.
-- 6.1 exposure: limit version latest with effective_from before 2026-09-30T23:00Z (end of 30 Sep UK/BST, per 1.3), facilities with start <= 30 Sep and maturity > 30 Sep, each (booking entity, facility) once per group with any member obligor, converted at units_per_gbp. Bands per 6.2, lower bound inclusive.
-- Literal answer: 133.04 -> 133 whole groups.
-
-## Verdict: DETERMINISTIC
-
-## Disposition: APPROVE
-No repair. No fork found; no rerun.
+DETERMINISTIC (main call 78 groups; every golden figure recomputed from target.zip, sha256 72419f5f...2973a3)
+**Disposition:** FIX_NOW (optional, small): pin the cohort window for the one-decimal band figures. The call needs no change.
+**Stumping type:** mechanism: forecasting, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-CRM-07 5.2 files both the probability structure (flag-only, same across book) and the selection test, and the test separates the bases by 1.6% vs 40.6%. 133.04 sits far from a rounding boundary. Every committed answer (call, 5 band rows x 5 figures, total row) recomputes from the shipped files. Upstream choices the files pin (GLEIF membership under 2.2, UK-time limit cut-off under 1.3/6.1, facility dedup under 6.1) are each stated in the standard.
+Read literally, CRM-07 pins the book (4.1), outcome (4.2), flag (3.2), membership (2.2) and exposure (1.3, 6.1, 6.2): 913 groups, 165 flagged, 127 flagged on a customer. The closed-cohort counts (120/240, 11/176, 50/3092) give 77.96 arrivals, 78 under every kind-of-flag rate construction tried (77.9 to 78.2). The pooled flagged rate (131/416) gives 64.1: the analytical trap, not a fork, because the filed back-test criterion (5.2) ranks the split first (max miss 3.9% against 14.4%).
 
-## Evidence
-Recomputation ledger (files: credit_group_register_20260930.xlsx, watch_list_history, ews_entity_signals, credit_obligor_master, gleif_rr/lei, facility_obligor_extract, facility_limit_history, treasury_closing_rates).
-
-| Figure | Claimed | Recomputed | Reproduced |
+## Recomputation ledger
+| Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Monitored book 30 Sep 2026 | 913 | 913 | yes |
-| Flagged 2026 | 165 | 165 (18.07%) | yes |
-| Pooled capture 2022-25 | 78.1% | 78.11% (157/201) | yes |
-| Pooled false-alarm | 7.83% | 7.83% (259/3307) | yes |
-| Largest miss, capture/FA | 1.6% | 1.57% | yes |
-| Largest miss, hit/miss | 40.6% | 40.60% (2024 cohort) | yes |
-| Implied share reaching list | 14.6% | 14.57% | yes |
-| P(reach \| flagged) | 63.0% | 62.98% | yes |
-| P(reach \| not flagged) | 3.9% | 3.89% | yes |
-| Caseload | 133 | 133.04 | yes |
-| Under 5m: n / exposure / flag / not flag / arriving | 201 / 475.8 / 21.4 / 6.5 / 69.6 | 201 / 475.78 / 21.41 / 6.50 / 69.58 | yes |
-| 5-15m | 306 / 3016.2 / 34.0 / 9.8 / 411.5 | 306 / 3016.22 / 34.01 / 9.81 / 411.52 | yes |
-| 15-40m | 250 / 7153.8 / 29.6 / 7.9 / 1108.6 | 250 / 7153.81 / 29.60 / 7.90 / 1108.60 | yes |
-| 40-100m | 120 / 8213.8 / 12.6 / 3.9 / 1121.5 | 120 / 8213.80 / 12.60 / 3.89 / 1121.52 | yes |
-| 100m+ | 36 / 6640.9 / 6.3 / 1.0 / 1283.4 | 36 / 6640.89 / 6.30 / 1.01 / 1283.40 | yes |
-| Total | 913 / 25,500.5 / 103.9 / 29.1 / 3,994.6 | 913 / 25500.49 / 103.91 / 29.12 / 3994.62 | yes |
-| SVG title/caseload (text) | 133 of 913 | consistent with above | yes (text only; SVG not shipped) |
-
-Sensitivity of the call to choices the files pin (all stay under the standard's own wording):
-- Master-only membership gives 131; GLEIF-only 127. Filed 2.2 requires both, so not a fork.
-- Branch/fund relationships, lapsed LEIs, successor LEIs, relationship dates: no change (165 flagged, 133.04).
-- Book including watch-list groups (violates 4.1): 147. Book excluding ever-listed groups: 122.
-- UTC end-of-day limit cut (violates 1.3): same 133 but band rows shift (e.g. 100m+ 46 groups, 4,059.1m arriving); no dedup across booking entities: 29,095m total. Both contradicted by filed 1.3/6.1.
+| Book at 30 Sep 2026 (group register, watch_list_history) | 913 | 913 | yes |
+| Flagged / flagged on a customer (ews_entity_signals, obligor master, GLEIF) | 165 / 127 | 165 / 127 | yes |
+| Cohort rates 2022-25 | 50.0% / 6.25% / 1.62% | 120/240, 11/176, 50/3092 | yes |
+| Back-test max miss, split / pooled | 3.9% / 14.4% | 3.9% / 14.4% | yes |
+| Expected arrivals | 78.0 | 77.96 | yes |
+| Bands (groups, £m, flagged, arrivals, £m arriving) | 201/499.9/34/16.2/38.5; 304/3112.0/54/25.8/257.1; 248/6936.6/46/21.9/596.8; 120/8402.7/20/9.0/576.3; 40/6712.2/11/5.1/826.8 | identical | yes |
+| Total | 913/25663.4/165/78.0/2295.5 | identical | yes |
 
 ## Competing answers that survived
-None for the call. Competing figures exist only under readings the filed text rules out: hit/miss 73 (loses 5.2's test by 25x), hit+capture 80, flat 52, master-only membership 131, book incl. watch-list 147. Band-table alternatives (UTC cut, no dedup) are excluded by 1.3 and 6.1.
+- Soft fork in the asks only: a two-way split (customer-flagged against the rest) gives a call of 78.2 (still 78) but bands 16.3/25.9/22.0 and £38.6m/£258.2m/£597.8m, which differ from the golden at one decimal. Its back-test is worse (max 4.8%, mean 3.9% against 2.5%), so 5.2 ranks the golden first, but the margin is not wide. Closing rule meant: 4.3 and 1.2 (design note SF3). The 2025-only window gives band 4 as 9.1 against 9.0 (design note records this window as same call, not band-checked in the note's text).
+- "Customer" read as ACTIVE status only gives 73.8 (74): a wrong reading, since customer_since <= date is the stated opening date. Not a stump; no change required.
+- UTC cut-off instead of UK time moves 10 groups between bands; closed by the literal UK time in 1.3 and 6.1.
 
-## Files/Hygiene: PASS
-17 files; formats xlsx (3), csv (9), md, docx, pdf, txt. Signals file 125,317 rows. Distractors: internal_rating_master_scale_2026.xlsx and group ratings sheet, group_economics_uk_outlook_oct2026.xlsx (stress scenarios), committee agenda docx. They look relevant but are not used by the standard. Operational artifacts (extract log, GLEIF CDF files, SOD_BATCH history) read as system output. Minor note: the extract log says "limit history reconciled to the facility extract, no breaks" while 101 facility limits in the extract differ from the 30 Sep UK-time version, because the extract ran after the 1 Oct SOD batch; this is in-world consistent (the log notes the extract ran after start of day 01/10), not a defect. No authoring/benchmark disclosures found. Nothing exclusion-level.
+## Spec gates
+| Gate | Required | Actual | Pass |
+|---|---|---|---|
+| Files | 10+ | 17 | yes |
+| Formats | 3+ | 6 (md, xlsx, csv, docx, pdf, txt) | yes |
+| Large file | 25,000+ rows | 125,975 (ews_entity_signals) | yes |
+| Distractors | 2+ in metadata.json, none named by file | internal_rating_master_scale_2026.xlsx, group_economics_uk_outlook_oct2026.xlsx; names unlabelled | yes |
+| Distractor quality | unused, relevant, ruled out by a shipped fact | ratings dated 30 Sep 2026 only (would leak the future into past cohorts); judge found neither reproduces a graded figure | yes |
+| Deliverables | 1 to 3, all in golden | 2 (xlsx, svg), both in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | 5 bands x 5 measures plus total, whole number / one decimal / £m one decimal | yes |
+| Prompt shape and rubric | shape identified, 25+ criteria | shape 05 (allocation to a fixed total); about 35 gradable cells and chart items by count; not measured by a generated rubric here | yes (by count) |
+| LLM-generated reading | none | judge found none; mild note only: all LEIs share the 213800 prefix | yes |
 
-## Stump power
-Moderate. The naive route is the hit and miss rates the committee is already shown (4.3), carried onto this year's flags (73 groups); it fails because the hit rate moves with each cohort's base rate (40.6% miss on the 2024 cohort). 5.2 files the backtest, so a solver that runs it will see hit/miss fail and may search for a better basis; those that stop at the reported rates or at a latest-cohort/trended rate land on a wrong whole number. Risk of being cracked is real (the test is spelled out), the lever if too easy is to leave the test pin while moving the candidate bases off the named 4.3 rates.
+## Gate G reconciliation
+Judge: mechanism forecasting, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Design note: Layer 2 is estimand_identification (composition shift), decisive step is forecasting each flagged group at the conversion of its own kind of flag instead of the pooled rate; no decoy declared as carrying the task. The judge names neither declared distractor as the surface read. Match: no mismatch found. Gate G: analytical_non_defect, passes. (The card was not separately opened; the reconciliation used the design note's Three rules and fork table.)
 
-## Stumping type
-`mechanism: method_or_model_selection`, `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. The reported hit and capture rates are correct; the difficulty is choosing the predictive basis under a base-rate shift by out-of-sample backtest, and it survives on clean data.
+## Gate H
+domain: pass, layers: pass (Layer 1 GLEIF dates, LEI against Companies House keys, UK time against UTC, EUR/USD facilities; Layer 2 hit rates by the member that raised the flag, validated on closed cohorts), decisive_step: analytical. This matches the note's Three rules. The easy route (pooled flagged rate) files 64.
 
-## Three rules
-`domain: pass`, `layers: pass`, `decisive_step: analytical`. Layer 1: GLEIF consolidation chains, LEI/CRN keys, ungrouped customers, two ledgers with overlapping facility ids, multi-currency, UTC versions vs UK day. Layer 2: prior-shift (label-shift) inversion of the capture and false-alarm rates validated leave-one-cohort-out. The easy route (hit/miss rates on this year's flags, the committee's own reported rates) gives about 73 instead of 133. Swap test: a monitoring-system backtest of flag precision/recall under base-rate drift is credit-risk specific.
+## Stump power (Gate F)
+Moderate to good. A strong model that reads CRM-07 computes the pooled flagged rate and files about 64, missing that a flag raised only on a non-lent-to member converts at 6.25% against 50.0%. A solver who tests the split against the closed cohorts finds it. The two-way variant still gets the headline, so the call is partly forgiving; the asks (facilities counted in every group with a member on them, end-of-day BST limit versions, GLEIF-placed customers, one-decimal arrivals) carry the rest. The decisive step is a method choice the filed back-test criterion selects, not a pure textbook-route call; the main thread should weigh it with the blind readers' result.
 
-## Fix
-none (no change to prompt, input files or solution).
+## Findings, ranked
+1. Soft fork on the band figures: kind-of-flag split versus two-way split (and a single-cohort window) moves band arrivals by 0.1 at one decimal while the call stays 78. Closed by 4.3 and 1.2 only by inference; a window clause in the prompt would pin it.
+2. "Customer" ACTIVE-status reading gives 74: semantic edge, no action required.
+3. Cosmetic: shared 213800 LEI prefix.
 
+## Next action for the author
+Optional: add "from the 2022 to 2025 cohorts taken together" to prompt.txt (or confirm in checks.py that the two-way split and 2025-only window cannot move a one-decimal band figure by filing the window in a shipped rule), then ship. Rule: file the WHAT (window), not the HOW (split), so the decisive step is not turned into rule application.

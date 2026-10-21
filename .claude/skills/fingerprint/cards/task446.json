@@ -84,7 +84,8 @@
     "GLEIF Level 1 and Level 2 records with relationship periods, lapsed registrations, merged entities with successor LEIs, international branches, fund-management links that are not consolidation, and reporting exceptions",
     "a credit system's group register and watch-list history in its own customer namespace, with two list categories that are one list",
     "a consolidated facility extract from two loan ledgers at facility-and-obligor grain (the committed limit repeated on every obligor row, joint facilities whose obligors sit in two groups, ledger facility numbers that coincide across the two booking entities), run after the 1 October start-of-day batch, beside a limit history stamped in UTC; and customers the credit system has not yet booked to a group, reached through their GLEIF consolidation",
-    "joint-venture companies booked by the credit system to the partner that arranged their facility while GLEIF reports the other partner's ultimate parent as their accounting-consolidation parent, so each is a member of both groups under the monitoring standard"
+    "joint-venture companies booked by the credit system to the partner that arranged their facility while GLEIF reports the other partner's ultimate parent as their accounting-consolidation parent, so each is a member of both groups under the monitoring standard",
+    "facility-creation messages the ledger booked twice under the next number (each copy undrawn and repeating its original's limit history stamp for stamp and user for user) beside genuine same-day tranches on the same terms keyed apart, told apart only by the limit history"
   ],
   "mechanism_source": "design_note",
   "differentiation": {

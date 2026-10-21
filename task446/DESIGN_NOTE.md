@@ -154,11 +154,13 @@ every closed cohort within 3.9 per cent out of sample (the single flagged rate m
 |---|---|---|---|---|---|
 | SF1 | an ultimate parent that is not booked | a member (2.2 as amended) | members only when booked or consolidated | same call: no flag sits on an unbooked ultimate parent at any cohort date (asserted) | 2.2: "A group's members are its ultimate parent, ..." |
 | SF2 | a flag raised on a customer (the decisive step's partition) | an AMBER or RED entity that is a customer on the credit system opened by the cohort date, open or closed now | customers ACTIVE at the extract date only; obligors on the 30 Sep 2026 facility extract only | 73.08 and 73.37 (both 73) | the field reference: the obligor master is "every customer on the credit system, open or closed", `customer_status` is "at the extract date", `customer_since` dates each customer; the facility extract is the 30 September 2026 book only |
-| SF3 | the closed cohorts the rates are taken over | the four closed cohorts taken together | the latest alone, the last two, the last three, the first three | same call (77.95, 77.98, 78.23, 77.98; asserted) | for the band figures, 4.3 (the closed cohorts scored by the current release, taken together) and 1.2 (the engine unchanged since January 2022) |
+| SF3 | the closed cohorts the rates are taken over | the four closed cohorts taken together | the latest alone, the last two, the last three, the first three | same call (77.95, 77.98, 78.23, 77.98; asserted); the 2025 cohort alone puts the GBP 40m to 100m band's arrivals at 9.1 | 5.2: the forecast "rests on the closed cohorts scored by the current release, taken together", and 1.2 (the engine unchanged since January 2022); filed at the stage 4 judge's FIX_NOW, a WHAT that names no model, segmentation or basis |
 | SF4 | pooled rates against the mean of the cohorts' rates | pooled | mean of the four cohorts' rates | same call (77.97) and every band's expected arrivals in the same bin (asserted) | converges |
 | SF5 | refinements within each kind of flag | none needed | RED against AMBER, covenant trigger or not, rates trended over the cohorts | same call (77.97, 77.97, 78.36; asserted) | converges: pooled over the cohorts each kind's RED and AMBER flags, and its flags with and without a covenant trigger, reach the list at exactly the kind's rate |
 | SF6 | a customer booked to one group whose GLEIF records consolidate it into another group's ultimate parent (21 joint ventures; asks only) | a member of both, its facility counted in both groups' committed exposure | the booked group only; the consolidating group only | same call (no such company carries a signal at any cohort date; asserted); band figures move (the ask device) | 2.2: members are "the customers the credit system books to it and every legal entity whose GLEIF relationship record shows it accounting-consolidated into the ultimate parent" |
 | SF7 | an international branch or a fund of a group member | read through its head office or manager, or left out | the other reading | same call | every such entity is green at every cohort date (texture inert, asserted) |
+| SF8 | a facility the ledger booked twice (22; asks only) | no commitment: left out | every facility number counted once; near-duplicates dropped on their terms; the undrawn near-duplicate dropped | same call (exposure never enters the forecast; asserted); every band figure moves (the ask's primary) | the records: each copy is undrawn and repeats, stamp, limit and user, the whole limit history of the facility numbered just before it for the same customer and terms; every genuine same-day pair is keyed apart (asserted) |
+| SF9 | the flag classes the rates are taken over | three: raised on a customer, raised only elsewhere, not flagged | two: raised on a customer against everything else | same call (78.17); three band arrival figures move by 0.1 | the closed cohorts: predicting each from the other three, the three-way split misses by at most 3.92 per cent and the two-way by 4.77 (`solve.basis_test`; the stage 4 judge measured the same) |
 
 ## Ladder
 
@@ -224,21 +226,21 @@ share of actual arrivals; forward figure). Nothing in the pack files this test.
 | 4 | As-of dating | the September month-end publication; relationship periods covering the date; a customer is a customer from the date the credit system opened it (`customer_since`); asks: limits as they stood at the end of 30 Sep UK time (1.3, 6.1) read from a history stamped in UTC |
 | 5 | Version basis | one publication per month-end; asks: the limit version in force at the end of 30 Sep (6.1), not the extract's limit at its 01:15 run on 1 Oct |
 | 6 | Denominator | each kind's flags in the cohorts taken together; 5.2's estimand is a count of groups |
-| 7 | Weighting | the cohorts taken together (4.3); the mean of the cohorts' rates converges on the call and on every band figure (SF4, asserted) |
-| 8 | Window length | every closed cohort scored by release 3.2 (4.3, 1.2); every window variant files 78 (SF3, asserted) |
+| 7 | Weighting | the cohorts taken together (5.2); the mean of the cohorts' rates converges on the call and on every band figure (SF4, asserted) |
+| 8 | Window length | every closed cohort scored by release 3.2, taken together (5.2, 1.2); every window variant files 78 (SF3, asserted) |
 | 9 | Inclusivity | band edges "and under" (6.2); C1: no group within GBP 0.25m of an edge on the right path |
 | 10 | Rounding path | unrounded throughout; whole groups to the nearest (5.3); one decimal on report; every graded figure at least 0.25 of its bin from an edge (asserted) |
 | 11 | Tie-break | none needed: every member of the decisive family files 78 |
 | 12 | Maturity | a cohort is closed once its twelve months have ended (4.2); 2025's window ends 30 Sep 2026 and the history runs to that date |
 | 13 | Order of operations | flag at group level before counting; a group's flag is kind D when any AMBER or RED member is a customer, and every second carrier is of its lead's kind (no mixed group, asserted); convert each facility to sterling before summing |
 | 14 | Row order | irrelevant on the right path; the whole-extract de-duplication stops depend on it and both orders are asserted off the golden |
-| 15 | Duplicate resolution | a group counts once per window (4.2); a facility counts once in each group with a member on it (6.1) |
-| 16 | Identity | LEI case-normalised; CRN keys through the company number; merged LEIs green (inert); a facility is its booking entity and ledger number |
+| 15 | Duplicate resolution | a group counts once per window (4.2); a facility counts once in each group with a member on it (6.1); a creation message the ledger booked twice is one facility, told from a genuine same-day tranche by its limit history (SF8, asks only) |
+| 16 | Identity | LEI case-normalised; CRN keys through the company number; merged LEIs green (inert); a facility is its booking entity and ledger number, the copies apart (SF8) |
 | 17 | Netting | none |
 | 18 | Units | limits in facility currency; rates in `units_per_gbp` (inert) |
 | 19 | Code semantics | AMBER and RED flag, GREEN does not (3.2); every watch level is on the list; CANCELLED and CLOSED facilities carry a nil limit in the extract and in the history's version in force |
 | 20 | Integerisation | nearest whole group (5.3); 77.97 sits 0.47 from the nearest edge |
-| 21 | Clause scope | 5.2 files the count and exposure for the whole book; 5.3 the reporting precision; 2.2 makes a company booked to one group and consolidated into another a member of both (asks only, SF6) |
+| 21 | Clause scope | 5.2 files the count and exposure for the whole book and the cohorts it rests on; 5.3 the reporting precision; 2.2 makes a company booked to one group and consolidated into another a member of both (asks only, SF6) |
 | 22 | Forward window | the 30 Sep 2026 monitored book only (5.1, 5.2); every group in it carries at least one facility in force at the end of 30 Sep 2026 (asserted) |
 | decisive | The basis | design-forced, C3: nothing filed names a segmentation; every basis that prices a flag by the member that raised it files 78 and validates within 4.8 per cent (7.4 trended); every basis that does not misses a closed cohort by 8.1 per cent or more and files 43.9 to 65.8 or 136.0 (asserted) |
 
@@ -246,8 +248,8 @@ share of actual arrivals; forward figure). Nothing in the pack files this test.
 
 Executing the prompt and CRM-07 word for word, a reader computes the expected number of the 913 groups in the 30
 September 2026 monitored book (4.1, later joiners out under 5.1) placed on the watch list by 30 September 2027
-(4.2, 5.2), to the nearest whole group (5.3). The text names no model, segmentation, window or basis, so every
-forecasting basis the cohorts support is an option: each one that prices a group's flag by the member that raised
+(4.2, 5.2), to the nearest whole group (5.3), resting on the closed cohorts taken together (5.2). The text names
+no model, segmentation or basis, so every forecasting basis the cohorts support is an option: each one that prices a group's flag by the member that raised
 it files 78 (pooled or mean rates, any window, colour or covenant trigger within kind, trended); every other files
 43.9 to 65.8, or 136.0, and misses a closed cohort by 8.1 per cent or more. The easy 64 comes from an easy method on
 the same literal estimand; no sentence in the pack, read literally, gives it.
@@ -265,42 +267,50 @@ to score the answer.
 (2022-09-30 to 2026-09-30) in the signal file; the GLEIF LEI-CDF and RR-CDF rows of every entity carrying AMBER
 or RED in any of them, and of its parents up the consolidation chain; the obligor master rows whose LEI or
 Companies House number matches such an entity; every group register row; every watch-list history row. Device and
-hazard rows: every row of the facility-obligor extract, the limit history and the rates file (outside by file); the
-obligor master, GLEIF and signal rows of the customers not yet grouped and of the 21 joint-venture companies, each
-green in every September publication (asserted zero inside); no device writes a register, watch-list or
-September-publication row the call reads (asserted by building the main-path files with and without the devices).
+hazard rows: every row of the facility-obligor extract, the limit history and the rates file (outside by file),
+the 22 facilities booked twice and the 22 second tranches among them; the obligor master, GLEIF and signal rows of
+the customers not yet grouped and of the 21 joint-venture companies, each green in every September publication
+(asserted zero inside); no device writes a register, watch-list or September-publication row the call reads
+(asserted by building the main-path files with and without the devices).
 
 **The asks** (one band table in `watchlist_inflow_2027.xlsx`, its expected arrivals drawn in the chart):
 
 | Column | Figures | Construction | Devices on the path | Use |
 |---|---|---|---|---|
-| Groups the band holds | 5 counts, total 913 | each group's committed exposure at 30 Sep 2026 (6.1), banded (6.2) | DV-C, DV-A, DV-B, HZ | how the book splits between Restructuring (GBP 40m and over) and Business Support |
-| Their committed exposure | 5 in GBP m, total | the band's sum of group exposures | DV-C, DV-A, DV-B, HZ | the close timetable's "committed exposure by caseload band" |
-| Groups flagged in September | 5 counts, total 165 | the call's flags (3.2) by band | DV-C, DV-A, DV-B through band membership | where the early-warning load sits |
+| Groups the band holds | 5 counts, total 913 | each group's committed exposure at 30 Sep 2026 (6.1), banded (6.2) | DV-D; DV-C, DV-A, DV-B, HZ | how the book splits between Restructuring (GBP 40m and over) and Business Support |
+| Their committed exposure | 5 in GBP m, total | the band's sum of group exposures | DV-D; DV-C, DV-A, DV-B, HZ | the close timetable's "committed exposure by caseload band" |
+| Groups flagged in September | 5 counts, total 165 | the call's flags (3.2) by band | DV-D and the rest through band membership | where the early-warning load sits |
 | Expected arrivals | 5, total 78.0 | each group's probability by the kind of its flag, summed by band | the same | caseload by team |
 | Expected exposure arriving | 5 in GBP m, total | probability x committed exposure | all | what the arriving caseload carries |
 
 **Device ledger.**
 
-- **DV-C, primary, a company booked to one group and consolidated into another (D7, silent).** Root cause: 21
-  joint-venture companies whose majority partner consolidates them (GLEIF reports that partner's ultimate parent as
-  their accounting-consolidation parent) while the minority partner's relationship team arranged their facility, so
-  the credit system books the customer to the minority partner's group. Under 2.2 each is a member of both groups
-  (booked to one, consolidated into the other's ultimate parent), and its facility counts in both groups' committed
-  exposure. Right: both. Wrong stops: C1 one group per booked customer (the credit system's group; the consolidating
-  group loses the facility, and 14 groups cross a band edge downwards: flagged 1 / 3 / 1 / 3 and not flagged
-  1 / 2 / 1 / 2 across the GBP 5m, 15m, 40m and 100m edges); C2, over-cleaning, the consolidating group only (the
-  booked group loses it). Organs: 2.2 and the records (the obligor master's `group_id`; the GLEIF RR-CDF
-  `IS_ULTIMATELY_CONSOLIDATED_BY` record of the customer's LEI pointing at another group's ultimate parent). Silent:
-  nothing marks a two-group customer; every customer joins one group, the map the main call's roll-up builds; the
-  inconsistency shows only when a booked customer's GLEIF parent is set against its booked group, a cut nothing in the
-  pack invites. Seven more joint ventures cross nothing.
+- **DV-D, primary, facilities the ledger booked twice beside genuine same-day tranches (D1, silent: "a replay
+  under fresh ids, key kept, beside genuine same-day pairs").** Root cause: when the limit system's interface timed
+  out on a facility-creation message it sent the message again, and the ledger booked a second facility under the
+  next number. Each copy carries its original's customer, product, currency, limit and dates and, stamp for stamp,
+  limit for limit and user for user, its original's whole limit history, and has never been drawn. 22 copies,
+  2016 to 2025, the largest GBP 37m. Beside them, 22 genuine pairs of tranches booked the same day on the same terms
+  and keyed apart, the second tranche undrawn in 17 of them. Right: leave the copies out, keep both tranches.
+  Wrong stops: Dk, the extract's every facility number counted once (the readers' path: the copies lift twelve
+  groups over an edge, flagged 1 / 2 / 1 / 2 and not flagged 1 / 2 / 1 / 2 across the GBP 5m, 15m, 40m and 100m
+  edges); Dt, over-cleaning, near-duplicates dropped on their terms (a genuine tranche goes too, and twelve groups
+  drop under an edge, flagged 1 / 2 / 1 / 2 and not flagged 2 / 2 / 2 / 0); Du, the undrawn near-duplicate dropped
+  (the copies go, and so do the undrawn second tranches). Organs: the extract and the limit history only (split
+  evidence: the terms and drawn balance in one, the stamps and users in the other, neither enough alone); no filed
+  sentence speaks to it, and the extract log's reconciliation control ties under every handling. Silent: the
+  extract is unique on its key, every row joins the master and the history, every control ties; the copies show
+  only when a customer's same-terms facilities are set side by side and their histories compared.
+- **DV-C, a hazard (it was the primary until stage 4): a company booked to one group and consolidated into
+  another (D7).** 21 joint ventures booked to the minority partner's group and consolidated through GLEIF into the
+  majority partner's ultimate parent; under 2.2 each is a member of both, its facility in both groups' committed
+  exposure. Both stage 4 readers built each group as a set of members under 2.2 and counted them in both without
+  noticing them. Wrong stops: C1 one group per booked customer; C2 the consolidating group only. Seven cross nothing.
 - **DV-A, the facility-and-obligor grain (D6, documented: a mirror device).** The extract carries one row per
   facility per obligor with the facility's limit on each row; joint property facilities with borrowers in two
   groups; about 40 ledger numbers that coincide across the two booking entities. Right: within each group each
   (booking entity, facility number) once. Wrong stops: A1 every row summed; A2 each facility number once across the
-  extract; A3 each booking entity and number once across the extract. 6.1 and the field reference resolve it, so the
-  cracker clears it.
+  extract; A3 each booking entity and number once across the extract. 6.1 and the field reference resolve it.
 - **DV-B, the limit clock (D8, documented: a mirror device).** The extract ran at 01:15 on 1 October after the
   start-of-day batch applied about 70 increases and 12 activations stamped 2026-09-30T23:30:00Z. Right: each
   facility's version in force at 23:00Z on 30 September. Wrong stops: B1 the extract's limit; B2 the history on its
@@ -309,39 +319,43 @@ September-publication row the call reads (asserted by building the main-path fil
 - **HZ, customers not yet grouped (D7, documented: a mirror device).** 14 September HB-DAC customers with a blank
   `group_id`, each consolidated through GLEIF into a monitored group's ultimate parent (2.2). Wrong stop: dropped.
 
-**Movers** (distinct groups per device; edges in GBP 5m, 15m, 40m, 100m order): DV-C 14 crossing (flagged
-1 / 3 / 1 / 3, not flagged 1 / 2 / 1 / 2) and 7 crossing nothing; A1 flagged 1 / 3 / 1 / 2 and not flagged 3 / 7 /
-3 / 7; B2 flagged 1 / 3 / 1 / 3 and not flagged 3 / 7 / 3 / 7; A3, B0 and HZ as before. Every flagged mover's flag
-was raised on a customer (0.5 of an expected arrival), so every band's flagged count and expected arrivals leave
-their bin under C1, A1 and B2 alone.
+**Movers** (distinct groups per device; edges in GBP 5m, 15m, 40m, 100m order): DV-D twelve copies (flagged
+1 / 2 / 1 / 2, not flagged 1 / 2 / 1 / 2) and twelve tranche pairs (flagged 1 / 2 / 1 / 2, not flagged 2 / 2 / 2 /
+0; the flags crossing into and out of the GBP 40m to 100m band of opposite kinds, so its arrivals cannot net back
+into their bin), ten copies and ten pairs crossing nothing, two of each in every band; DV-C 14 crossing and 7 not;
+A1 flagged 1 / 3 / 1 / 2 and not flagged 3 / 7 / 3 / 7; B2 flagged 1 / 3 / 1 / 3 and not flagged 3 / 7 / 3 / 7; A3,
+B0 and HZ as before. DV-D is planted after the exposures are tuned, on its own random stream: it moves no group's
+true exposure, so every graded figure stood still when it went in (asserted on the golden band table).
 
 **Assertions for the builder** (all in `generator/checks.py`).
 1. Zero device and hazard rows inside the declared population.
-2. C1, A1 and B2 alone each move all 25 band figures and the arriving total; every other single reading moves 12
-   or more and the committed total by GBP 5m or more.
-3. The device grid (A at four stops, B at five, HZ at two, C at three): every one of the 119 cells but the all-correct
-   one misses the golden on 12 or more of the 25 band figures and moves the committed total by GBP 3m or more (the
-   nearest, B1 or B2 with either one-group reading of the joint ventures, by GBP 6.65m); no subset of mishandlings
-   cancels back onto the golden band figures.
+2. Dk, Dt and Du, and C1, A1 and B2, each alone move all 25 band figures and the arriving total; every other single
+   reading moves 12 or more and the committed total by GBP 5m or more.
+3. The device grid (A at four stops, B at five, HZ at two, C at three, D at four): every one of the 479 cells but the
+   all-correct one misses the golden on 12 or more of the 25 band figures and moves the committed total by GBP 3m or
+   more (the nearest printed by the run); no subset of mishandlings cancels back onto the golden band figures.
 4. Fairness: the right handling reproduces the world's own group exposures exactly.
 5. The hygiene battery on every wrong path runs clean.
-6. The over-cleaners (A2, A3, B0, C2) each land on their own values below the golden.
+6. The over-cleaners (A2, A3, B0, C2, Dt, Du) each land on their own values below the golden; Dk lands above it.
 7. Every band figure at least 0.25 of its bin from an edge; every group in the book has a facility in force.
+8. SF8: the right reading drops exactly the 22 copies; each copy repeats its original's history and takes the next
+   number; every genuine same-day pair is keyed apart.
 
-**Pair arithmetic, measured** (`generator/cracker.py` on the cut pack, Part 0's weights 38 / 7 / 55, 34 graded ask
-figures: the heading, 25 band figures, the total row's five and the chart's three parts). The cracker lands 78,
-executes 6.1, 1.3, the UTC history and 2.2's customers not yet grouped, and builds one group per booked customer: it
-keeps 6 of 34 (the heading, 913, 165, 78.0, the caseload on the chart and the title), 54.7 in all. The mirror stops
-on R0 and handles the asks the same way: it keeps 2 of 34 (913 and 165), 15.2.
+**Pair arithmetic** (`generator/cracker.py` on the cut pack, Part 0's weights 38 / 7 / 55, 34 graded ask figures:
+the heading, 25 band figures, the total row's five and the chart's three parts). The cracker lands 78 and takes the
+path both stage 4 readers took on the earlier cut: 2.2's members as sets, 6.1, 1.3 and the UTC history, the
+customers not yet grouped placed through GLEIF, every facility number in the extract counted once. It keeps 6 of 34
+(the heading, 913, 165, 78.0, the caseload on the chart and the title), 54.7 in all. The mirror stops on R0 and
+handles the asks the same way: it keeps 2 of 34 (913 and 165), 15.2.
 
 | Ask figure | Where the cracker's path goes | Mirror (stops at R0) | Cracker (lands 78, executes every filed rule it points at) |
 |---|---|---|---|
-| Groups per band (5) | one group per booked customer: 14 consolidating groups sit a band low | miss | miss |
-| Committed exposure per band (5) | the joint ventures' facilities left out of their consolidating groups | miss | miss |
-| Groups flagged per band (5) | eight flagged consolidating groups sit a band low | miss | miss |
+| Groups per band (5) | the copies counted: twelve groups sit a band high | miss | miss |
+| Committed exposure per band (5) | the 22 copies' limits added | miss | miss |
+| Groups flagged per band (5) | six flagged groups sit a band high | miss | miss |
 | Expected arrivals per band (5) | the same band membership | miss | miss |
 | Expected exposure arriving per band (5) | the same membership and exposures | miss | miss |
-| Total committed and arriving exposure (2) | the joint ventures' facilities counted once, in the booked group | miss | miss |
+| Total committed and arriving exposure (2) | the copies' limits in the total | miss | miss |
 | The chart's bars (1) | the band arrivals above | miss | miss |
 
 - **Main-path figures in the ask layer:** the heading, 913, 165 and the expected-arrivals total (78.0) sit on the
@@ -349,7 +363,9 @@ on R0 and handles the asks the same way: it keeps 2 of 34 (913 and 165), 15.2.
   keeps them, the mirror keeps 913 and 165. They are counted in the pair arithmetic, not in the cracker sheet.
 - Mirror leakage: 5.9 per cent of ask weight (913 and 165).
 - Pair ceiling: 35.0 (C = 38 + 7 + 55 x 6/34 = 54.7; S = 5 + 7 + 55 x 2/34 = 15.2).
-- Measured by: generator/cracker.py, run on the cut pack by `generator/checks.py` on every build.
+- Measured by: generator/cracker.py, run on the cut pack by `generator/checks.py` on every build. Stage 4 round 1
+  (the cut before DV-D) measured both readers off the call at 64 with 18 of 34 ask figures each (52.9 per cent), on
+  the path the cracker now models; the re-sited device is measured again by two fresh readers on this cut.
 
 ## Layers
 
@@ -361,8 +377,9 @@ on R0 and handles the asks the same way: it keeps 2 of 34 (913 and 165), 15.2.
   (lapsed registrations, merged LEIs still in the vendor feed, international branches, fund-management links,
   reporting exceptions) sits on entities whose signals are green at every cohort date, so mishandling it moves
   nothing (asserted).
-- **Layer 1 (ask paths, ledgered devices):** the joint ventures booked to the other partner, the facility-obligor
-  grain, the UTC limit clock and the customers not yet grouped.
+- **Layer 1 (ask paths, ledgered devices):** the facilities the ledger booked twice beside genuine same-day
+  tranches, the joint ventures booked to the other partner, the facility-obligor grain, the UTC limit clock and the
+  customers not yet grouped.
 - **Layer 2:** a group-level flag is a mixture of two signals that convert at 0.50 and 0.0625; the cohorts measured
   the mixture at their own mix, this book holds another.
 
@@ -396,6 +413,15 @@ on R0 and handles the asks the same way: it keeps 2 of 34 (913 and 165), 15.2.
 - Dates after 2026-10-08 in the facility extract: final maturity dates of facilities in force, forward by nature.
   Harmless.
 
+**Solver's-eye read, stage 4 round 1** (two isolated scored readers on the cut before DV-D): both filed 64 (one
+rate for every flagged group) and named the decisive step an analytical choice (question 6); question 1 quoted only
+5.2's estimand and nothing that names the segmentation; questions 2 and 4 none; question 3 the field reference and
+the extract log; question 5 quoted 5.2 and gave each reader's own forecast as its result, while 5.2 names no basis
+(the judge, executing it literally, filed 78 under every construction it tried). Both kept 18 of 34 ask figures
+(52.9 per cent, score_reader exit 1), which re-sited the ask primary (Tried and rejected). Realism notes: every LEI
+on one 213800 prefix, formulaic entity names, round limits, the fourteen ungrouped Irish customers alike, the
+extract log's "no breaks" beside 1 October starts; none moves a figure and none is on the decisive step.
+
 ## Pre-ship check
 
 1. Domain: group credit monitoring's own reading of an early-warning flag (where in the obligor group it sits); with
@@ -418,6 +444,9 @@ on R0 and handles the asks the same way: it keeps 2 of 34 (913 and 165), 15.2.
   stress showing in the monthly signals as a run of new AMBER and RED customers from May.
 - 21 joint ventures among 913 groups, spread across the sectors, each booked to the partner that arranged its
   facility.
+- 22 facilities the ledger booked twice and never closed, booked 2016 to 2025 and undrawn throughout, the largest
+  GBP 37m: an undrawn duplicate limit moves no balance and so passes the ledger's balance reconciliations, which is
+  how such records survive; the limit system's own reconciliation to the extract ties, since both hold the copies.
 
 ## Realism repairs for the loop 1 rebuild (the reader's tells and golden-realism)
 
@@ -509,3 +538,11 @@ on R0 and handles the asks the same way: it keeps 2 of 34 (913 and 165), 15.2.
   The three devices stay as mirror devices; the joint ventures booked to the other partner (two memberships under
   2.2) are the silent primary; the band columns became groups, committed exposure, groups flagged, expected
   arrivals and exposure arriving, and the chart one bar per band.
+- The joint ventures booked to the other partner as the ask layer's primary (DV-C), spent at stage 4 on 2026-10-21:
+  both isolated scored readers built each group's members as a set under 2.2 (the ultimate parent, the customers
+  booked to it, every entity GLEIF consolidates into it), so every joint venture counted in both groups without being
+  noticed, and with 6.1, 1.3 and the GLEIF placement executed both kept 18 of 34 ask figures (52.9 per cent) while
+  missing the call at 64. A device that a filed rule resolves for anyone who executes it is a fork closed in the
+  golden's favour, not a device. Re-sited onto the facility records the readers' path runs through, where no
+  sentence speaks: the ledger's facilities booked twice beside genuine same-day tranches (DV-D); the joint ventures
+  stay as a hazard.

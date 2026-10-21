@@ -451,7 +451,8 @@ def standard_pdf(path):
         ("p", "5.2 The forecast is the number of groups in the monitored book at the cohort date expected to reach "
               "the watch list in the twelve months after it, with the book, the outcome and the groups left out as "
               "4.1, 4.2 and 5.1 set them, and the committed exposure at the cohort date that those groups are "
-              "expected to bring. The Chief Risk Officer's leadership team sets the coming year's Restructuring and "
+              "expected to bring. It rests on the closed cohorts scored by the current release, taken together. The "
+              "Chief Risk Officer's leadership team sets the coming year's Restructuring and "
               "Business Support headcount from it, and each forecast is "
               "set against its cohort's actual arrivals once the cohort closes."),
         ("p", "5.3 The caseload is reported to the nearest whole group, and the expected arrivals and the committed "

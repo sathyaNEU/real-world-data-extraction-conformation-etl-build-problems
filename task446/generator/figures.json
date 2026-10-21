@@ -20,7 +20,8 @@
   "cohort_not_flagged": 3092,
   "cohort_not_flagged_reached": 50,
   "backtest_largest_miss_split_pct": 3.9,
-  "backtest_largest_miss_one_rate_pct": 14.4
+  "backtest_largest_miss_one_rate_pct": 14.4,
+  "facilities_booked_twice": 22
  },
  "band_edges_gbp_m": [
   5,

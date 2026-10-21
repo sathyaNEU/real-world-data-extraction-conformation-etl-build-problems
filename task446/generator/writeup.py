@@ -78,13 +78,16 @@ def build(F):
         "flagged, over the four cohorts taken together (CRM-07 4.3) and summed: %.1f expected arrivals, %d to the "
         "nearest whole group (CRM-07 5.3)."
         % (F["expected"], F["call"]),
-        "Built each group's committed exposure under CRM-07 1.3 and 6.1 from facility_obligor_extract_20260930.csv, "
+        "Built each group's committed exposure under CRM-07 1.3 and 6.1 from facility_obligor_extract_20260930.csv: "
         "each facility (booking entity and number) once in every group with a member on it, counting the facility of "
         "a company booked to one group and consolidated through GLEIF into another's ultimate parent in both groups "
         "and placing customers not yet grouped through GLEIF (2.2), at the limit in facility_limit_history_20261008.csv "
-        "as at the end of 30 September UK time, in sterling at the units_per_gbp rates, and banded it under 6.2.",
-        "Summed each band's groups, flagged groups, probabilities and probability-weighted committed exposure for "
-        "the workbook and the chart.",
+        "as at the end of 30 September UK time, in sterling at the units_per_gbp rates.",
+        "Left out the %d facilities the ledger booked twice, each undrawn and repeating stamp for stamp, limit for "
+        "limit and user for user the limit history of the facility numbered just before it for the same customer and "
+        "terms, kept the same-day tranches whose histories differ, banded the groups under 6.2 and summed each band's "
+        "groups, flagged groups, probabilities and probability-weighted committed exposure for the workbook and the "
+        "chart." % F["twice"],
         "Recommendation: set the 2027 watch-list caseload at %d groups." % F["call"],
     ]
     for i, s_ in enumerate(steps, start=1):
@@ -155,7 +158,8 @@ def figures_doc(F):
                   "cohort_flagged_only_elsewhere": m["I"], "cohort_flagged_only_elsewhere_reached": m["I_R"],
                   "cohort_not_flagged": m["U"], "cohort_not_flagged_reached": m["U_R"],
                   "backtest_largest_miss_split_pct": round(F["split"][1] * 100, 1),
-                  "backtest_largest_miss_one_rate_pct": round(F["single"][1] * 100, 1)},
+                  "backtest_largest_miss_one_rate_pct": round(F["single"][1] * 100, 1),
+                  "facilities_booked_twice": F["twice"]},
         "band_edges_gbp_m": [5, 15, 40, 100],
         # as block 4 prints them ("£499.9m"), for figures_check.py, whose tokeniser stops at the unit letter;
         # under parameters so a reader is scored on the numeric keys above and below, never on these

@@ -10,8 +10,8 @@
  "architecture": 3,
  "loops": 0,
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-21, --asof 2026-10-08); every REVIEW line answered in the design note's Leak sweep",
-  "reader": "two isolated scored readers in flight"
+  "leak_py": "REVIEW, no LEAK (2026-10-21, --asof 2026-10-08, cut 06a4c8d5); every REVIEW line answered in the design note's Leak sweep",
+  "reader": "round 1 (cut 72419f5f): readers A and B both filed 64 (call missed, question 6 analytical) and kept 18 of 34 ask figures (52.9 per cent, score_reader exit 1): DV-C was resolved by 2.2 for anyone building member sets; ask primary re-sited to DV-D (facilities booked twice beside genuine same-day tranches). Round 2 (cut 06a4c8d5): readers C and D in flight"
  },
  "duplicate_check": {
   "heart": "WARN (question form repeats task272, answered in the note); test.same_puzzle_older and test.same_driver_older differentiated. An earlier BLOCK on forum and forcing event against task486 v2 was cleared by redrawing both in the pack (executive_team, period_close) and re-registering at 05:35Z",
@@ -71,9 +71,9 @@
   }
  ],
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": "judge thread in flight on the agent's brief"
+  "verdict": "round 1: DETERMINISTIC, FIX_NOW optional (pin the cohort window behind the band figures), Gate G analytical_non_defect, Gate H analytical",
+  "disposition": "FIX_NOW applied: CRM-07 5.2 'It rests on the closed cohorts scored by the current release, taken together'; re-judge in flight",
+  "report": "determinism_check_report.md"
  },
  "approved": null,
  "delivered": "2026-10-15",
@@ -98,7 +98,7 @@
  "status": "PAUSED",
  "owner": "oviya1301",
  "author_decision": "2026-10-12: kept as SHIPPED at the author's request; the FAILED_TO_STUMP rework (redesign) is not done and the portal record below is unchanged",
- "resume": "stage 4 in flight on target.zip sha256 72419f5f: two isolated scored readers and the determinism judge thread. On their reports: score each reader with score_reader.py task446 <reader.json> --call-key call.caseload (any call hit spends the architecture), send each reader the REVIEW lines with the call text and the golden figure redacted, re-invoke the determinism-judge agent with the thread's verdict.md so it writes determinism_check_report.md, fix every finding in one generator pass and re-run the free gates; then RESHIPPED with target.zip re-cut, heart re-read after the final pull, the ledger's v2 row moved to Earlier architectures and a v3 row added. If the session's scratch is lost, re-run stage 4 from scratch on the committed pack.",
+ "resume": "stage 4 round 2 on target.zip sha256 06a4c8d5: two fresh scored readers (C and D) and the determinism re-judge. On their reports: score each reader with score_reader.py task446 <reader.json> --call-key call.caseload (a call hit spends the architecture; 35 per cent or more of ask figures re-sites again), complete the judge agent's pass with the thread's verdict.md, confirm the full checks run green, then RESHIPPED: target.zip from the final build, heart re-read after the final pull, the ledger's v2 row moved to Earlier architectures and a v3 row added. If the session's scratch is lost, re-run stage 4 from scratch on the committed pack.",
  "precut": {
   "exit": 0,
   "date": "2026-10-21"
@@ -118,13 +118,13 @@
   }
  ],
  "build": {
-  "checks": 9329,
+  "checks": "round 1 cut: 9329 assertions; DV-D cut: full run in flight (479-cell grid)",
   "byte_identical": true,
-  "target_zip_sha256": "72419f5f621f6c6a6e13bc0183a5adad4985a8c5a5ffc235f1e545cbfc2973a3",
+  "target_zip_sha256": "06a4c8d533d9e1dffc39022444e22e7bf5b21c6b0a08aad219f28bba30b01bc6",
   "figures_check": "PASS, 71 figures",
   "voice_check": "PASS",
   "precut": "PASS, 51 checks",
   "producer_metadata": "clean (pack and goldens)"
  },
- "status_note": "architecture 3 built 2026-10-21; stage 3 free gates green; stage 4 readers and judge running when the session paused"
+ "status_note": "architecture 3; stage 4 round 1 measured the ask layer leaking (DV-C resolved by 2.2), DV-D re-sited the primary onto the facility records with every graded figure unchanged; round 2 in flight"
 }

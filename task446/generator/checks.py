@@ -19,6 +19,7 @@ import subprocess
 import sys
 import tempfile
 import zipfile
+from collections import defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -154,6 +155,9 @@ def main():
     ok(abs(test["split"][1] - 0.0392) < 0.0005 and abs(test["hit_and_miss"][1] - 0.1442) < 0.0005,
        "split 3.9 per cent, one flagged rate 14.4 per cent")
     ok(test["capture_false_alarm"][1] > 0.8, "the error-rate basis misses a closed cohort by more than 80 per cent")
+    ok(round(test["direct_vs_rest"][2]) == CALL and abs(test["direct_vs_rest"][1] - 0.0477) < 0.0005
+       and test["direct_vs_rest"][1] > test["split"][1] + 0.008,
+       "SF9: the two-way split files %d and misses by 4.77 per cent, the three-way by 3.92" % CALL)
     # the mix the decisive step reads: customer-raised share of the flags
     shares = [x["D"] / x["F"] for x in cc]
     ok(max(shares) < 0.70 < row["D"] / row["F"], "this September's flags sit on customers far more than any cohort's")
@@ -204,7 +208,8 @@ def main():
     readings = dict(A1=dict(grain="rows"), A2f=dict(grain="fid"), A2l=dict(grain="fid", order="last"),
                     A3f=dict(grain="bkfid"), A3l=dict(grain="bkfid", order="last"), B1=dict(clock="B1"),
                     B2=dict(clock="B2"), B3=dict(clock="B3"), B0=dict(clock="B0"), HZ=dict(hz=False),
-                    C1=dict(member="booked"), C2=dict(member="gleif"))
+                    C1=dict(member="booked"), C2=dict(member="gleif"), Dk=dict(dup="keep"), Dt=dict(dup="terms"),
+                    Du=dict(dup="undrawn"))
     moved, totals = {}, {}
     for name, kw in readings.items():
         e2 = solve.exposures(pk, **kw)
@@ -212,16 +217,46 @@ def main():
         f2 = band_figures(bt2)
         moved[name] = n_moved(golden_figs, f2)
         totals[name] = sum(r["committed"] for r in bt2) / 1e6
-        if name in ("C1", "A1", "B2"):
+        if name in ("Dk", "Dt", "Du", "C1", "A1", "B2"):
             ok(moved[name] == 25, "%s moves all 25 band figures (%d)" % (name, moved[name]))
             ok(r1(sum(r["exp_exposure"] for r in bt2) / 1e6) != r1(tot_exp), "%s moves the arriving total" % name)
         else:
             ok(moved[name] >= 12, "%s moves at least 12 of the 25 (%d)" % (name, moved[name]))
         ok(abs(totals[name] - tot_com) >= 5, "%s moves the committed total by GBP 5m or more (%.1f)"
            % (name, totals[name] - tot_com))
-    for k in ("A2f", "A3f", "B0", "C2"):
+    for k in ("A2f", "A3f", "B0", "C2", "Dt", "Du"):
         ok(totals[k] < tot_com, "over-cleaner %s lands below the golden" % k)
-    ok(len({round(totals[k], 1) for k in ("A2f", "A3f", "B0", "C2")}) == 4, "over-cleaners land on their own values")
+    ok(len({round(totals[k], 1) for k in ("A2f", "A3f", "B0", "C2", "Dt", "Du")}) == 6,
+       "over-cleaners land on their own values")
+    ok(totals["Dk"] > tot_com, "counting every facility number once lands above the golden")
+    # DV-D: the facilities booked twice, beside genuine twin tranches; only the limit history tells them apart
+    copies = [f for f in w.facilities if f.copy_of is not None]
+    twins = [f for f in w.facilities if "TWB" in f.dev]
+    ok(len(copies) == 22 and len(twins) == 22, "22 copies and 22 second tranches (%d, %d)" % (len(copies), len(twins)))
+    ok(len(w.movers["R"]) == 12 and len(w.movers["TW"]) == 12, "twelve movers each way")
+    drawn = defaultdict(float)
+    for r in pk.fac:
+        drawn[(r["booking_entity"], r["facility_id"])] += float(r["drawn_balance"])
+    twice = solve.booked_twice(pk)
+    ok(twice == {(f.booking, f.fid) for f in copies}, "the right reading drops exactly the copies")
+    for f in copies:
+        o = f.copy_of
+        ok(pk.versions[(f.booking, f.fid)] == pk.versions[(o.booking, o.fid)] and drawn[(f.booking, f.fid)] == 0,
+           "SF8: copy %s repeats %s's history stamp for stamp and is undrawn" % (f.fid, o.fid))
+        ok(int(f.fid) == int(o.fid) + 1, "copy %s takes the next number after %s" % (f.fid, o.fid))
+    near = defaultdict(list)
+    terms = {}
+    for r in pk.fac:
+        k = (r["booking_entity"], r["facility_id"])
+        terms.setdefault(k, [r["booking_entity"], set(), r["product"], r["currency"], r["committed_limit"],
+                             r["start_date"], r["final_maturity_date"], r["facility_status"]])[1].add(r["customer_id"])
+    for k, t in terms.items():
+        near[(t[0], frozenset(t[1])) + tuple(t[2:])].append(k)
+    genuine = [ks for ks in near.values() if len(ks) > 1 and not set(ks) & twice]
+    ok(len(genuine) >= 22, "genuine near-duplicate pairs beside the copies (%d)" % len(genuine))
+    for ks in genuine:
+        ok(len({tuple(pk.versions[k]) for k in ks}) == len(ks), "SF8: genuine pair %s keyed apart" % (ks,))
+    ok(sum(1 for f in twins if drawn[(f.booking, f.fid)] == 0) >= 12, "most second tranches undrawn")
     # the device cannot move the call: exposure never enters the forecast
     ok(round(solve.forecast(tab)["total"]) == CALL, "no exposure reading moves the call")
     # SF6: a company booked to one group and consolidated into another's ultimate parent is a member of both (2.2)
@@ -238,20 +273,23 @@ def main():
     Bd = dict(right={}, B0=dict(clock="B0"), B1=dict(clock="B1"), B2=dict(clock="B2"), B3=dict(clock="B3"))
     H = dict(right={}, drop=dict(hz=False))
     C = dict(right={}, C1=dict(member="booked"), C2=dict(member="gleif"))
+    Dd = dict(right={}, Dk=dict(dup="keep"), Dt=dict(dup="terms"), Du=dict(dup="undrawn"))
     cells, nearest = 0, (float("inf"), "")
-    for (ak, av), (bk, bv), (hk, hv), (ck, cv) in itertools.product(A.items(), Bd.items(), H.items(), C.items()):
-        if ak == bk == hk == ck == "right":
+    for (ak, av), (bk, bv), (hk, hv), (ck, cv), (dk, dv) in itertools.product(A.items(), Bd.items(), H.items(),
+                                                                            C.items(), Dd.items()):
+        if ak == bk == hk == ck == dk == "right":
             continue
-        kw = dict(av, **bv, **hv, **cv)
+        kw = dict(av, **bv, **hv, **cv, **dv)
         bt2 = solve.band_table(tab, fc, solve.exposures(pk, **kw))
         f2 = band_figures(bt2)
-        ok(n_moved(golden_figs, f2) >= 12, "grid cell %s/%s/%s/%s misses at least 12 band figures (%d)"
-           % (ak, bk, hk, ck, n_moved(golden_figs, f2)))
+        cell = "%s/%s/%s/%s/%s" % (ak, bk, hk, ck, dk)
+        ok(n_moved(golden_figs, f2) >= 12, "grid cell %s misses at least 12 band figures (%d)"
+           % (cell, n_moved(golden_figs, f2)))
         move = abs(sum(r["committed"] for r in bt2) / 1e6 - tot_com)
-        ok(move >= 3, "grid cell %s/%s/%s/%s moves the committed total by GBP 3m or more" % (ak, bk, hk, ck))
-        nearest = min(nearest, (move, "%s/%s/%s/%s" % (ak, bk, hk, ck)))
+        ok(move >= 3, "grid cell %s moves the committed total by GBP 3m or more" % cell)
+        nearest = min(nearest, (move, cell))
         cells += 1
-    ok(cells == 119, "119 grid cells")
+    ok(cells == 479, "479 grid cells")
     print("nearest grid cell: %s moves the committed total by GBP %.2fm" % (nearest[1], nearest[0]))
     # the measured pair ceiling on the cut pack (supplemental-stumping Part 0's weights)
     import cracker
@@ -479,7 +517,7 @@ def goldens_and_writeup():
     owed = {str(F["call"]), str(F["N1"]), str(F["F1"]), str(F["D1"]), "%.1f" % F["expected"],
             "%.1f%%" % (F["p_d"] * 100), "%.2f%%" % (F["p_i"] * 100), "%.2f%%" % (F["p_unflag"] * 100),
             "%.1f%%" % (F["split"][1] * 100), "%.1f%%" % (F["single"][1] * 100), str(m["D"]), str(m["D_R"]),
-            str(m["I"]), str(m["I_R"]), "{:,}".format(m["U"]), str(m["U_R"])}
+            str(m["I"]), str(m["I_R"]), "{:,}".format(m["U"]), str(m["U_R"]), str(F["twice"])}
     for row in F["rows"] + [F["total"]]:
         owed |= {"%.1f" % row["arrivals"], "£{:,.1f}m".format(row["exposure"]), "£{:,.1f}m".format(row["committed"]),
                  "{:,}".format(row["groups"]), str(row["flagged"])}

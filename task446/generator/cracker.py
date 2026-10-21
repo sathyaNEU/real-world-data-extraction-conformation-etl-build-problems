@@ -2,15 +2,15 @@
 
     python3 task446/generator/cracker.py [<target>]
 
-The cracker lands the call (each flag priced by where in the group it was raised) and executes every filed rule it
-points at on the ask paths: each facility once per group (6.1), the limit as it stood at the end of 30 September
-UK time read from the UTC history (1.3, 6.1, the field reference), customers not yet grouped placed through GLEIF
-(2.2), every booked customer in the group the credit system books it to. That last is where it stops: a company
-booked to one group and consolidated through GLEIF into another group's ultimate parent is a member of both under
-2.2, and a one-group-per-customer map loses its facility from the consolidating group. The mirror stops on rung 0
-of the call (one rate for every flagged group) and handles the asks the same way. Pair ceiling on
-supplemental-stumping Part 0's weights (38 recommendation and components for a landed call, about 5 kept by a wrong
-one, 7 instruction-following, 55 asks)."""
+The cracker lands the call (each flag priced by where in the group it was raised) and takes the ask path both
+stage 4 readers took on the earlier cut: every filed rule executed (2.2's members as sets, so a company booked to
+one group and consolidated into another counts in both; each facility once per group under 6.1; the limit as it
+stood at the end of 30 September UK time from the UTC history; customers not yet grouped placed through GLEIF),
+with every facility number in the extract counted once. That is where it stops: the ledger booked 22 creation
+messages twice, and their copies lift twelve groups over a band edge. The mirror stops on rung 0 of the call (one
+rate for every flagged group) and handles the asks the same way. Pair ceiling on supplemental-stumping Part 0's
+weights (38 recommendation and components for a landed call, about 5 kept by a wrong one, 7 instruction-following,
+55 asks)."""
 import os
 import sys
 
@@ -51,9 +51,9 @@ def response(G, model, **kw):
 def main(target):
     G = solve.golden(target)
     gold = graded(G["call"], G["fc"]["N1"], G["bands"], deliver.TITLE)
-    handling = dict(grain="group", clock="right", hz=True, member="booked")
-    paths = [("cracker (on the call; 6.1, 1.3, the UTC history and 2.2's customers not yet grouped executed; one "
-              "group per booked customer)", "split", handling),
+    handling = dict(grain="group", clock="right", hz=True, member="both", dup="keep")
+    paths = [("cracker (on the call; 2.2, 6.1, 1.3 and the UTC history executed; every facility number counted once)",
+              "split", handling),
              ("mirror (rung 0: one rate for every flagged group; the same handling of the asks)", "hit_and_miss",
               handling)]
     kept = []
@@ -63,8 +63,11 @@ def main(target):
         kept.append(len(hits) / len(gold))
         print("%-118s keeps %2d of %d: %s" % (name, len(hits), len(gold), ", ".join(hits)))
     print("stops on the ask paths (the golden's handling, one reading changed at a time):")
-    right = dict(handling, member="both")
-    for label, kw in (("2.2 both ways (the golden)", right),
+    right = dict(handling, dup="right")
+    for label, kw in (("the golden's handling", right),
+                      ("every facility number counted once", dict(right, dup="keep")),
+                      ("near-duplicates dropped on their terms", dict(right, dup="terms")),
+                      ("the undrawn near-duplicate dropped", dict(right, dup="undrawn")),
                       ("one group per booked customer", dict(right, member="booked")),
                       ("consolidating group only", dict(right, member="gleif")),
                       ("every extract row summed", dict(right, grain="rows")),

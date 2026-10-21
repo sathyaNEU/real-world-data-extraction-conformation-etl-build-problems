@@ -56,10 +56,15 @@ class Pack:
         self.fx = {r["currency"]: float(r["units_per_gbp"]) for r in rows(t, "treasury_closing_rates_20260930.csv")}
         self.fac = rows(t, "facility_obligor_extract_20260930.csv")
         self.hist = defaultdict(list)
+        self.versions = defaultdict(list)
         for r in rows(t, "facility_limit_history_20261008.csv"):
-            self.hist[(r["booking_entity"], r["facility_id"])].append(
-                (dt.datetime.strptime(r["effective_from"], "%Y-%m-%dT%H:%M:%SZ"), float(r["committed_limit"])))
+            k = (r["booking_entity"], r["facility_id"])
+            self.hist[k].append((dt.datetime.strptime(r["effective_from"], "%Y-%m-%dT%H:%M:%SZ"),
+                                 float(r["committed_limit"])))
+            self.versions[k].append((r["effective_from"], r["committed_limit"], r["source"]))
         for v in self.hist.values():
+            v.sort()
+        for v in self.versions.values():
             v.sort()
 
     # ------------------------------------------------------------ membership
@@ -465,10 +470,48 @@ def customer_groups(pk, hz=True, member="both"):
     return out
 
 
-def exposures(pk, grain="group", clock="right", hz=True, order="first", member="both"):
+def booked_twice(pk, dup="right"):
+    """Facilities a reading of the extract's near-duplicates leaves out. Near-duplicates are facilities of one ledger
+    with the same customers, product, currency, limit, dates and status. "right": a facility whose whole limit
+    history repeats, stamp, limit and source, that of a lower-numbered near-duplicate (the ledger booked one
+    creation message twice); "terms": every near-duplicate after the lowest-numbered; "undrawn": the undrawn ones
+    among near-duplicates (all but the lowest-numbered where none is drawn); "keep": none."""
+    if dup == "keep":
+        return set()
+    fac = {}
+    for r in pk.fac:
+        k = (r["booking_entity"], r["facility_id"])
+        x = fac.setdefault(k, dict(cust=set(), drawn=0.0, terms=(r["product"], r["currency"], r["committed_limit"],
+                                                                 r["start_date"], r["final_maturity_date"],
+                                                                 r["facility_status"])))
+        x["cust"].add(r["customer_id"])
+        x["drawn"] += float(r["drawn_balance"])
+    sets = defaultdict(list)
+    for k, x in fac.items():
+        sets[(k[0], frozenset(x["cust"]), x["terms"])].append(k)
+    out = set()
+    for ks in sets.values():
+        if len(ks) < 2:
+            continue
+        ks.sort(key=lambda k: int(k[1]))
+        if dup == "terms":
+            out.update(ks[1:])
+        elif dup == "undrawn":
+            drawn = [k for k in ks if fac[k]["drawn"] > 0]
+            out.update(k for k in ks if fac[k]["drawn"] == 0 and (drawn or k != ks[0]))
+        elif dup == "right":
+            out.update(k for i, k in enumerate(ks) if any(pk.versions[k] == pk.versions[j] for j in ks[:i]))
+        else:
+            raise ValueError(dup)
+    return out
+
+
+def exposures(pk, grain="group", clock="right", hz=True, order="first", member="both", dup="right"):
     date = dt.date(2026, 9, 30)
     cg = customer_groups(pk, hz, member)
-    rows_ = [r for r in pk.fac if d(r["start_date"]) <= date < d(r["final_maturity_date"])]
+    twice = booked_twice(pk, dup)
+    rows_ = [r for r in pk.fac if d(r["start_date"]) <= date < d(r["final_maturity_date"])
+             and (r["booking_entity"], r["facility_id"]) not in twice]
     if grain in ("fid", "bkfid"):
         seen, keep = set(), []
         for r in (rows_ if order == "first" else rows_[::-1]):

@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: member, cohorts, cohort, decisive, asserted, closed, architecture, window, customer, pooled, parent, estimand, credit, raised, nothing, facility, ultimate, driver, history, forecasting, customers, booked, standard, segmentation, sentence
+Stump terms swept: cohorts, member, asserted, cohort, customer, decisive, facility, closed, raised, window, extract, history, forecasting, standard, credit, customers, booked, estimand, segmentation, nothing, pooled, conversion, trended, ultimate, parent
 
 ## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `early_warning_and_watch_list_standard.pdf`: \bthe model\b x1: ...have not changed since. A change would be a new release, approved by the Model Risk Committee before use. 1.3 Dates and times in this standard are U...
@@ -16,13 +16,13 @@ Stump terms swept: member, cohorts, cohort, decisive, asserted, closed, architec
 - **REVIEW** `early_warning_and_watch_list_standard.pdf`: carries 14 of 14 distinctive words of the committed call: 'Set the 2027 watch-list caseload at 78 groups: 78 of the 913 obligor groups in the monitored book at 30 September 2026 a'
 
 ## 4 design-note vocabulary (REVIEW 4)
-- **REVIEW** `credit_data_field_reference.md`: 8 of 25 stump-paragraph terms appear (closed, customer, parent, credit, facility, ultimate); read whether the document names the move
-- **REVIEW** `crm_year_end_close_timetable_2026.docx`: 5 of 25 stump-paragraph terms appear (cohort, closed, credit, history, standard); read whether the document names the move
-- **REVIEW** `early_warning_and_watch_list_standard.pdf`: 12 of 25 stump-paragraph terms appear (member, cohorts, cohort, closed, customer, parent); read whether the document names the move
-- **REVIEW** `reference_data_extract_log_20261008.txt`: 3 of 25 stump-paragraph terms appear (credit, facility, history); read whether the document names the move
+- **REVIEW** `credit_data_field_reference.md`: 9 of 25 stump-paragraph terms appear (customer, facility, closed, extract, credit, customers); read whether the document names the move
+- **REVIEW** `crm_year_end_close_timetable_2026.docx`: 6 of 25 stump-paragraph terms appear (cohort, closed, extract, history, standard, credit); read whether the document names the move
+- **REVIEW** `early_warning_and_watch_list_standard.pdf`: 13 of 25 stump-paragraph terms appear (cohorts, member, cohort, customer, facility, closed); read whether the document names the move
+- **REVIEW** `reference_data_extract_log_20261008.txt`: 4 of 25 stump-paragraph terms appear (facility, extract, history, credit); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `facility_obligor_extract_20260930.csv`: 3047 ISO dates after 2026-10-08, e.g. 2026-10-10, 2026-10-17, 2026-10-26, 2026-10-29, 2026-10-30
+- **REVIEW** `facility_obligor_extract_20260930.csv`: 3091 ISO dates after 2026-10-08, e.g. 2026-10-10, 2026-10-17, 2026-10-26, 2026-10-29, 2026-10-30
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
