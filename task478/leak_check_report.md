@@ -1,21 +1,16 @@
 # leak check, task478
 
-**Verdict: REVIEW.** 16 files read, 29 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 16 files read, 31 golden figures and 4 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: pothole, architecture, decisive, kerbline, detections, linkage, covers, population, window, inventory, camera, tolerance, sweepers, vehicle, reports, pattern, sentence, milepost, duplicate, readers, reader, identity, reason, confirmed, dropped
+Stump terms swept: architecture, decisive, pothole, detections, kerbline, groups, population, review, vehicle, pattern, window, reader, readers, capture, inventory, segment, independent, passes, trucks, sentence, confirmed, blocked, closed, camera, service
 
-## 2 author vocabulary (REVIEW 1)
-- **REVIEW** `kerbline_pilot_scope_of_work.pdf`: \bthe model\b x1: ...it reports each detection with its class, its severity for a pothole, the model's confidence, the image, and the position of the phone's GPS fix at c...
-
-## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `tamsett_pilot_data_dictionary.pdf`: golden figure 407 appears: ...it_utc are UTC. utility_cover_inventory_2026.csv (407 rows) The district's utility cover inventory: one...
-
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `kerbline_pilot_scope_of_work.pdf`: 7 of 25 stump-paragraph terms appear (pothole, kerbline, detections, covers, camera, vehicle); read whether the document names the move
-- **REVIEW** `spring_patching_program_2027.pdf`: 5 of 25 stump-paragraph terms appear (pothole, kerbline, inventory, camera, sweepers); read whether the document names the move
-- **REVIEW** `tamsett_pilot_data_dictionary.pdf`: 5 of 25 stump-paragraph terms appear (pothole, kerbline, inventory, vehicle, milepost); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 4)
+- **REVIEW** `kerbline_pilot_scope_of_work.pdf`: 9 of 25 stump-paragraph terms appear (pothole, detections, kerbline, review, vehicle, capture); read whether the document names the move
+- **REVIEW** `route_turnback_notice_2027-03.pdf`: 3 of 25 stump-paragraph terms appear (inventory, segment, passes); read whether the document names the move
+- **REVIEW** `spring_patching_program_2027.pdf`: 8 of 25 stump-paragraph terms appear (pothole, kerbline, review, inventory, segment, trucks); read whether the document names the move
+- **REVIEW** `tamsett_pilot_data_dictionary.pdf`: 8 of 25 stump-paragraph terms appear (pothole, kerbline, review, vehicle, capture, inventory); read whether the document names the move
 
 ## 6 ranking artifacts (INFO 1)
 - **INFO** `maintenance_sections.csv`: names 4 of 4 answer-set candidates; confirm it does not rank them on the decision question
@@ -24,6 +19,10 @@ Stump terms swept: pothole, architecture, decisive, kerbline, detections, linkag
 - **INFO** `-`: audit reported no writer signature (1 lines)
 
 ## 1 file names (clean)
+
+## 2 author vocabulary (clean)
+
+## 3 answer figures in the pack (clean)
 
 ## 5 announcements (clean)
 

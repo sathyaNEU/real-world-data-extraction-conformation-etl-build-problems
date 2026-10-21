@@ -95,78 +95,90 @@ def main(target=None):
         if ref in xw:
             return next(s for s, lo, hi in xw[ref] if lo <= float(mp) <= hi)
         return ref if ref in inv else None
+    qa = sheet(j("kerbline_qa_review_2027-03.xlsx"), "Review decisions")
+    ok("xlsx read back: the review's header (control)", "Reviewed (UTC)" in qa[0])
+    conf = {r["Defect ID"] for r in qa if r["Decision"] == "Confirmed"}
+    near = defaultdict(list)
+    for r in qa:
+        if r["Decision"] == "Confirmed":
+            near[r["Route"]].append((float(r["Milepost"]), r["Defect ID"]))
+    dup = {r["Defect ID"]: min(near[r["Route"]], key=lambda c: (abs(c[0] - float(r["Milepost"])), c[1]))[1]
+           for r in qa if r["Reason"] == "Duplicate"}
+    det = rows(j("kerbline_detections_2027-03.csv"))
+    where = defaultdict(Counter_)
+    found_by = defaultdict(set)
+    for d in det:
+        k = dup.get(d["defect_id"], d["defect_id"])
+        if k not in conf:
+            continue
+        s = seg_of(d["road_ref"], d["road_mp"])
+        if s is None:
+            continue
+        where[k][s] += 1
+        found_by[k].add(d["unit_serial"])
+    pot = {k: max(c.items(), key=lambda kv: (kv[1], -int(kv[0])))[0] for k, c in where.items()}
+    pot = {k: s for k, s in pot.items() if s in road}
     reg = sheet(j("kerbline_unit_register.xlsx"), "Units")
-    ok("xlsx read back: the register's header (control)", "Unit serial" in reg[0])
     units = defaultdict(list)
+    fleet = {}
     for r in reg:
         a = excel_time(r["Installed"]).date()
         b = excel_time(r["Removed"]).date() if r["Removed"] else None
         units[r["Vehicle"]].append((r["Unit serial"], a, b))
-    # each unit's milepost error, by its own median absolute deviation against the surveyed covers (a code path of
-    # its own: methods.py's golden uses the root mean square)
-    covers = defaultdict(list)
-    for r in rows(j("utility_cover_inventory_2026.csv")):
-        covers[r["route"]].append(float(r["milepost"]))
-    det = rows(j("kerbline_detections_2027-03.csv"))
-    resid = defaultdict(list)
-    for d in det:
-        if d["defect_class"] == "utility_cover" and d["road_mp"]:
-            x = float(d["road_mp"])
-            c = min(covers[d["route"]], key=lambda m: abs(m - x))
-            if abs(c - x) <= 0.1:
-                resid[d["unit_serial"]].append(x - c)
-    sig = {}
-    for k, xs in resid.items():
-        xs = sorted(xs)
-        med = xs[len(xs) // 2]
-        dev = sorted(abs(x - med) for x in xs)
-        sig[k] = 1.4826 * dev[len(dev) // 2]
-    ok("every unit measured on the covers", len(sig) == len(reg))
-    seg_by_route = defaultdict(list)
-    for k, s in road.items():
-        seg_by_route[s["route"]].append((float(s["begin_mp"]), float(s["end_mp"]), k))
-    pots = defaultdict(list)
-    for d in det:
-        if d["defect_class"] == "pothole" and d["road_mp"] and d["captured_local"][:7] == "2027-03":
-            pots[d["route"]].append((float(d["road_mp"]), d["unit_serial"]))
-    count = defaultdict(int)
-    for rt, xs in pots.items():
-        xs.sort()
-        runs = [[xs[0]]]
-        for (m1, u1), (m2, u2) in zip(xs, xs[1:]):
-            if m2 - m1 <= 3.0 * (sig[u1] ** 2 + sig[u2] ** 2) ** 0.5:
-                runs[-1].append((m2, u2))
-            else:
-                runs.append([(m2, u2)])
-        for run in runs:
-            ms = sorted(m for m, _ in run)
-            mid = ms[(len(ms) - 1) // 2]
-            hit = [k for lo, hi, k in seg_by_route.get(rt, []) if lo - 1e-9 <= mid <= hi + 1e-9]
-            if hit:
-                count[road[hit[0]]["section"]] += 1
-    rate = {sec: count[sec] / (lmi[sec] / 10) for sec in lmi}
-    des = sorted(sec for sec, v_ in rate.items() if v_ >= 6.0)
+        fleet[r["Unit serial"]] = (r["Fleet group"], a, b)
+    drove = defaultdict(set)
+    trav = rows(j("fleet_camera_traversals_2027-03.csv"))
+    for t in trav:
+        if t["segment_id"] not in road:
+            continue
+        day = dt.datetime.strptime(t["enter_utc"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=Z).astimezone(ET).date()
+        if (day.year, day.month) != (2027, 3):
+            continue
+        for u, a, b in units.get(t["vehicle_id"], []):
+            if a <= day and (b is None or day < b):
+                drove[t["segment_id"]].add(fleet[u][0])
+    ok("every roadway segment has an installed unit's March pass", all(drove[s] for s in road))
+    found_by = {k: {fleet[u][0] for u in us} for k, us in found_by.items()}
+    num = den = 0
+    for k, s in pot.items():
+        C, f_ = len(drove[s]), len(found_by[k] & drove[s])
+        if C >= 2:
+            num += f_ * (f_ - 1)
+            den += f_ * (C - 1)
+    q = num / den
+    est = defaultdict(float)
+    for k, s in pot.items():
+        est[road[s]["section"]] += 1 / (1 - (1 - q) ** len(drove[s]))
+    rate = {sec: est[sec] / (lmi[sec] / 10) for sec in lmi}
+    des = sorted(sec for sec, v in rate.items() if v >= 6.0)
     figs = json.load(open(os.path.join(HERE, "figures.json")))
     by_no = {str(x["section"]): (n, x) for n, x in figs["sections"].items()}
-    ok("the potholes (%d) and lane-miles (%.1f) match" % (sum(count.values()), sum(lmi.values())),
-       sum(count.values()) == figs["components"]["potholes"] and round(sum(lmi.values()), 1) == figs["components"]["lane_miles"])
+    ok("the confirmed potholes (%d) and lane-miles (%.1f) match" % (len(pot), sum(lmi.values())),
+       len(pot) == figs["components"]["confirmed"] and round(sum(lmi.values()), 1) == figs["components"]["lane_miles"])
+    ok("the find rate %.4f matches %.1f per cent" % (q, figs["components"]["find_rate_pct"]),
+       round(100 * q, 1) == figs["components"]["find_rate_pct"])
     ok("the designated set matches", sorted(by_no[s][0] for s in des) == sorted(figs["call"]["designated"]))
     ok("every section's whole number matches", all(int(rate[s] + 0.5) == by_no[s][1]["rate"] for s in rate))
     # ask A
+    known = {r["Defect ID"] for r in qa}
+    loc = {(r["Route"], "%.3f" % float(r["Milepost"])): r["Defect ID"] for r in qa if r["Milepost"]}
     wo = rows(j("mms_cold_patch_orders_2027-03.csv"))
     done = [r for r in wo if r["status"] == "COMPLETE" and r["finished"][:2] == "03"]
-    lbs, lines = defaultdict(int), defaultdict(list)
+    pots, lbs, lines = defaultdict(set), defaultdict(int), defaultdict(list)
     for r in done:
+        ref = r["ext_ref"] if r["ext_ref"] in known else loc[(r["route"], r["milepost"])]
+        pots[r["section"]].add(dup.get(ref, ref))
         lines[r["wo_number"]].append(r)
-    sev = {d["detection_id"]: d["severity"] for d in det if d["severity"]}
+    sev = {d["defect_id"]: d["severity"] for d in det if d["severity"]}
+    ref_of = lambda r: r["ext_ref"] if r["ext_ref"] in known else loc[(r["route"], r["milepost"])]
     big = defaultdict(int)
     for w, ls in lines.items():
         if len(ls) == 1:
-            big[sev[ls[0]["ext_ref"]]] = max(big[sev[ls[0]["ext_ref"]]], int(ls[0]["cold_mix_lb"]))
+            big[sev[ref_of(ls[0])]] = max(big[sev[ref_of(ls[0])]], int(ls[0]["cold_mix_lb"]))
     for w, ls in lines.items():
-        vals = [int(x["cold_mix_lb"]) for x in ls]
-        total = len(ls) > 1 and len(set(vals)) == 1 and vals[0] > max(big[sev[x["ext_ref"]]] for x in ls)
-        lbs[ls[0]["section"]] += vals[0] if total else sum(vals)
+        v = [int(x["cold_mix_lb"]) for x in ls]
+        total = len(ls) > 1 and len(set(v)) == 1 and v[0] > max(big[sev[ref_of(x)]] for x in ls)
+        lbs[ls[0]["section"]] += v[0] if total else sum(v)
     ok("ask A pounds match", all(lbs[s] == by_no[s][1]["cold_mix_lb"] for s in by_no))
     # the golden CSV carries the same figures
     gc = rows(os.path.join(TASK, "golden", "tamsett_spring_patching_sections_2027.csv"))

@@ -1,26 +1,28 @@
 ## Tags
 
-**Domain:** General Statistics & Data Science (data integration and entity resolution: a state DOT district's camera pilot, Kerbline's raw detections resolved into distinct potholes with a linkage tolerance set by each unit's positional error, measured on the surveyed utility covers, and conformed to the road inventory as at 31 March into potholes per maintenance section).
+**Domain:** General Statistics & Data Science (data integration: a state DOT district's camera pilot, Kerbline's detections linked into defects and reviewed, integrated with the fleet's segment traversals, the unit register and the road inventory into a completed count of potholes per maintenance section, the potholes no unit recorded estimated with each kind of vehicle, not each unit, as one capture occasion).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Give dedicated spring patching crews to seven of the fourteen sections: Elmscourt, Norvelle, Thistlebank, Carrow Point, Holloway Run, Kestrelton and Fenwick Gap.**
-Their state roadway held 9, 8, 8, 8, 8, 7 and 7 potholes per ten lane-miles in March 2027 against the program's 6.0 line; the highest of the other seven is Rushmead at 5. Not the five sections (Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle) that joining every unit's detections at one distance of 53 feet designates: the street sweepers' units place a pothole 52 to 59 feet either way against 2 to 3 feet for every other unit, so no one distance both keeps a sweeper's reports of one pothole together and keeps neighbouring bridge-deck potholes apart.
+**Give dedicated spring patching crews to seven of the fourteen sections: Elmscourt, Carrow Point, Norvelle, Holloway Run, Thistlebank, Kestrelton and Fenwick Gap.**
+Their state roadway held 9, 9, 8, 8, 8, 7 and 7 potholes per ten lane-miles in March 2027 against the program's 6.0 line; the highest of the other seven is Rushmead at 5. Not Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle, which counting every installed unit as an independent chance gives: two units on the same kind of vehicle record 93.6 per cent of the same potholes against 54.9 per cent across kinds, so a segment's chances are its kinds of vehicle. Not Carrow Point and Elmscourt, which counting every pass gives.
 
 ## 2. Critical Components
 
-1. The program's roadway is **2,428.9** lane-miles, the 2026 inventory less the five segments turned back on 15 March, on which the pilot's units recorded **1,413** distinct potholes in March.
-2. Potholes per ten lane-miles: Holloway Run **8**, Fenwick Gap **7**, Carrow Point **8**, Grisholt **4**, Marlpit **4**, Kestrelton **7**, Elmscourt **9**, Halverton **3**, Thistlebank **8**, Oxbrae **4**, Rushmead **5**, Stonebeck **3**, Norvelle **8**, Pyke Hill **2**.
+1. The program's roadway is **2,428.9** lane-miles, the 2026 inventory less the five segments turned back on 15 March, holding **1,034** confirmed potholes.
+2. Potholes per ten lane-miles, completed over the distinct fleet groups that drove each segment: Holloway Run **8**, Fenwick Gap **7**, Carrow Point **9**, Grisholt **4**, Marlpit **4**, Kestrelton **7**, Elmscourt **9**, Halverton **3**, Thistlebank **8**, Oxbrae **4**, Rushmead **5**, Stonebeck **3**, Norvelle **8**, Pyke Hill **2**.
 
 ## 3. Step-by-Step Solution
 
 1. Took the roadway from road_inventory_2026.csv less the five segments in route_turnback_notice_2027-03.pdf, lane-miles as length times through lanes (program section 2): 2,428.9 lane-miles.
-2. Measured each unit's milepost error from its utility_cover detections in kerbline_detections_2027-03.csv against the nearest surveyed cover on the same route in utility_cover_inventory_2026.csv: the six street sweepers' units 52 to 59 feet, every other unit 2 to 3 feet.
-3. Sorted the March pothole detections (district local time) on each route by road_mp and joined each to the one before it when the gap was within three times the root sum of squares of the two units' errors; each run of joined detections is one pothole.
-4. Placed each pothole on the 2026 segment holding its median milepost and kept those on the roadway: 1,413 potholes; divided each section's count by its lane-miles over ten.
-5. Pounds of cold mix from mms_cold_patch_orders_2027-03.csv, COMPLETE orders finished in March: a multi-line order carrying one figure on every line counted it once where the figure is more than any single-line order used on a pothole of its lines' severities (the severity of the ext_ref detection; the mobile app's order total), and summed its lines otherwise.
-6. Designated the sections at 6.0 or more: Elmscourt, Norvelle, Thistlebank, Carrow Point, Holloway Run, Kestrelton and Fenwick Gap.
+2. Kept the potholes confirmed in kerbline_qa_review_2027-03.xlsx, folding each defect rejected as a duplicate into the confirmed defect nearest it on its route, and placed each on its 2026 segment from its detections' road_ref and road_mp in kerbline_detections_2027-03.csv through road_inventory_crosswalk_2025_2026.csv: 1,034 potholes.
+3. Listed the units that drove each segment in March, district local time, from fleet_camera_traversals_2027-03.csv joined by vehicle to kerbline_unit_register.xlsx on its install and removal dates, and their fleet groups.
+4. Read the recaptures: where two units drove a segment, the second recorded 93.6 per cent of the first's potholes when both were in one fleet group and 54.9 per cent across groups, so each fleet group that drove a segment is one capture occasion.
+5. Read the per-group find rate from the potholes on segments two or more groups drove: 54.4 per cent.
+6. Counted each confirmed pothole as one over one minus 0.456 to the power of the distinct fleet groups that drove its segment, and divided each section's total by its lane-miles over ten.
+7. Pounds of cold mix from mms_cold_patch_orders_2027-03.csv, COMPLETE orders finished in March: a multi-line order carrying one figure on every line counted it once where the figure is more than any single-line order used on a pothole of its lines' severities in the detections (the mobile app's order total; an ext_ref Kerbline no longer carries taken to the defect at the same route and milepost in the review export), and summed its lines otherwise.
+8. Designated the sections at 6.0 or more: Elmscourt, Carrow Point, Norvelle, Holloway Run, Thistlebank, Kestrelton and Fenwick Gap.
 
 ## 4. Deliverable Answers
 
@@ -29,7 +31,7 @@ Their state roadway held 9, 8, 8, 8, 8, 7 and 7 potholes per ten lane-miles in M
 1. Potholes per ten lane-miles of state roadway, March 2027, whole numbers:
    - 401 Holloway Run: 8
    - 402 Fenwick Gap: 7
-   - 403 Carrow Point: 8
+   - 403 Carrow Point: 9
    - 404 Grisholt: 4
    - 405 Marlpit: 4
    - 406 Kestrelton: 7
@@ -57,20 +59,20 @@ Their state roadway held 9, 8, 8, 8, 8, 7 and 7 potholes per ten lane-miles in M
    - 413 Norvelle: Yes
    - 414 Pyke Hill: No
 3. Pounds of cold mix the section's March cold patches used:
-   - 401 Holloway Run: 1,400
-   - 402 Fenwick Gap: 1,575
-   - 403 Carrow Point: 3,770
-   - 404 Grisholt: 495
-   - 405 Marlpit: 1,000
-   - 406 Kestrelton: 780
-   - 407 Elmscourt: 4,380
-   - 408 Halverton: 690
-   - 409 Thistlebank: 1,710
-   - 410 Oxbrae: 655
-   - 411 Rushmead: 2,560
-   - 412 Stonebeck: 815
-   - 413 Norvelle: 1,325
-   - 414 Pyke Hill: 325
+   - 401 Holloway Run: 1,350
+   - 402 Fenwick Gap: 1,360
+   - 403 Carrow Point: 4,455
+   - 404 Grisholt: 585
+   - 405 Marlpit: 1,135
+   - 406 Kestrelton: 935
+   - 407 Elmscourt: 3,400
+   - 408 Halverton: 500
+   - 409 Thistlebank: 1,110
+   - 410 Oxbrae: 180
+   - 411 Rushmead: 1,835
+   - 412 Stonebeck: 540
+   - 413 Norvelle: 940
+   - 414 Pyke Hill: 295
 
 ### tamsett_spring_patching_task_orders_2027.pdf
 

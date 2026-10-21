@@ -16,14 +16,14 @@
    "source": "fleet telematics provider for the district (fictional), synthetic records",
    "date": "2027-04-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 63343
+   "rows": 64996
   },
   {
    "file": "kerbline_detections_2027-03.csv",
    "source": "Kerbline Vision platform (fictional), synthetic records",
    "date": "2027-04-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 62376
+   "rows": 38664
   },
   {
    "file": "kerbline_pilot_scope_of_work.pdf",
@@ -31,6 +31,13 @@
    "date": "2027-01-19",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
+  },
+  {
+   "file": "kerbline_qa_review_2027-03.xlsx",
+   "source": "Kerbline Vision platform, review module (fictional), synthetic records",
+   "date": "2027-04-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1157
   },
   {
    "file": "kerbline_unit_register.xlsx",
@@ -58,7 +65,7 @@
    "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
    "date": "2027-04-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 473
+   "rows": 391
   },
   {
    "file": "pavement_condition_2026.csv",
@@ -103,13 +110,6 @@
    "rows": null
   },
   {
-   "file": "utility_cover_inventory_2026.csv",
-   "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
-   "date": "2026-12-15",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 407
-  },
-  {
    "file": "winter_operations_2027-03.csv",
    "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
    "date": "2027-04-01",
@@ -120,8 +120,7 @@
  "distractor_files": [
   "pavement_condition_2026.csv",
   "winter_operations_2027-03.csv",
-  "kerbline_unit_sessions_2027-03.json",
-  "fleet_camera_traversals_2027-03.csv"
+  "kerbline_unit_sessions_2027-03.json"
  ],
  "distractors": [
   {
@@ -133,12 +132,8 @@
    "why": "the March storms' plow hours, salt and freeze-thaw cycles by section: what made potholes, not a count of them"
   },
   {
-   "file": "fleet_camera_traversals_2027-03.csv",
-   "why": "the fleet's segment passes in March: where the camera vehicles drove, which says nothing about where a detected pothole is"
-  },
-  {
    "file": "kerbline_unit_sessions_2027-03.json",
-   "why": "the units' platform sessions: when a unit was running, which neither the detections nor the register's install dates need"
+   "why": "the units' platform sessions: when a unit was running, which the traversals and the register already settle for every pass"
   }
  ],
  "deliverables": [

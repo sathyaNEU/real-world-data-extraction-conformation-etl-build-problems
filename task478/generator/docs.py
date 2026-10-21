@@ -1,5 +1,5 @@
 """The pack's documents and workbooks: the Spring Patching Program 2027 (PDF), Kerbline's pilot scope of work (PDF),
-the City's route turnback notice (PDF), the data notes (PDF), and the unit register (xlsx)."""
+the City's route turnback notice (PDF), the data notes (PDF), the review module export and the unit register (xlsx)."""
 from reportlab import rl_config
 rl_config.invariant = 1
 from reportlab.lib import colors                                     # noqa: E402
@@ -55,12 +55,12 @@ def write_program(path):
          Paragraph("2. Which sections get a crew", HEAD),
          Paragraph("2.1 A maintenance section receives a dedicated crew when its state-maintained roadway held 6.0 or "
                    "more potholes per ten lane-miles in March 2027.", BODY),
-         Paragraph("2.2 The count is every pothole the pilot's camera units recorded on that roadway in March 2027, "
-                   "each pothole counted once however many times and by however many units it was recorded. A pothole "
-                   "that was cold patched in March counts: the spring crews replace cold patch with hot mix.", BODY),
+         Paragraph("2.2 The count is every pothole on that roadway in March 2027, whether or not a Kerbline unit "
+                   "recorded it. A pothole that was cold patched in March counts: the spring crews replace cold patch "
+                   "with hot mix.", BODY),
          Paragraph("2.3 A pothole is a bowl-shaped hole in the traveled way at least six inches across (Pavement "
-                   "Distress Manual, section 4.3). The district takes Kerbline's pothole class as a pothole: the "
-                   "February acceptance checks found the class reliable.", BODY),
+                   "Distress Manual, section 4.3). The district reviews every defect Kerbline reports as a pothole and "
+                   "rejects any that is not one.", BODY),
          Paragraph("2.4 A section's roadway is its state-maintained segments in the district road inventory as at 31 "
                    "March 2027. Lane-miles are each segment's length times its through lanes.", BODY),
          Paragraph("3. Task orders", HEAD),
@@ -70,7 +70,8 @@ def write_program(path):
          Paragraph("4. The March 2027 detection campaign", HEAD),
          Paragraph("From 1 to 31 March 2027 the district ran Kerbline Vision camera units on its section patrol pickups, "
                    "freeway service patrol trucks, street sweepers and district crew trucks under the pilot scope of "
-                   "work. The section crews cold patched from Kerbline's map through the month.", BODY),
+                   "work. Pothole reports went to the district's review queue, and the section crews cold patched from "
+                   "the queue through the month.", BODY),
          Spacer(1, 10),
          Paragraph("%s, P.E.<br/>District Maintenance Engineer, %s" % (eng, W.DISTRICT), BODY)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
@@ -84,28 +85,31 @@ def write_sow(path):
          Paragraph("Kerbline Vision, Inc. Attachment A to purchase order 27-PO-0418, %s. January 2027." % ORG, SUB),
          Paragraph("1. Services", HEAD),
          Paragraph("Kerbline supplies camera units, installs them on up to 36 district vehicles the district chooses, and "
-                   "provides its platform and data exports for the pilot, which runs from 22 February to 30 June 2027.", BODY),
+                   "provides its platform, its review module and data exports for the pilot, which runs from 22 February "
+                   "to 30 June 2027.", BODY),
          Paragraph("2. Units", HEAD),
          Paragraph("A unit is a smartphone in a windshield mount running the Kerbline detection app. It powers with its "
                    "vehicle and runs a session on the platform while the vehicle's ignition is on, recording the roadway "
                    "ahead and reporting the defects it detects: potholes, alligator cracking, longitudinal cracking, "
                    "utility covers, patches, edge breaks and debris.", BODY),
-         Paragraph("3. Detections", HEAD),
-         Paragraph("A unit reports each detection with its class, its severity for a pothole, the model's confidence, "
-                   "the image, and the position of the phone's GPS fix at capture. The platform's map shows every "
-                   "detection; linking repeated detections of one defect into a defect record is part of Kerbline's "
-                   "Enterprise tier and is not in the pilot.", BODY),
-         Paragraph("4. Data", HEAD),
+         Paragraph("3. Defect numbers", HEAD),
+         Paragraph("Kerbline links repeated detections of one defect into one defect number. The detection inventory "
+                   "lists the defects the units detected; it is not an inventory of every defect on the roadway the "
+                   "vehicles drove.", BODY),
+         Paragraph("4. Review", HEAD),
+         Paragraph("Every pothole-class defect goes to the district's review queue, where the district's reviewer "
+                   "confirms or rejects it. Kerbline supports the reviewer's work in the review module.", BODY),
+         Paragraph("5. Data", HEAD),
          Paragraph("On request Kerbline provides the detections export, with each detection's capture time in district "
-                   "local time, and the unit session export from its device API, with times "
+                   "local time; the review module export; and the unit session export from its device API, with times "
                    "in UTC.", BODY),
-         Paragraph("5. Charges", HEAD),
-         Paragraph("5.1 A unit's service day is a calendar day, district local time, during any part of which the unit, "
+         Paragraph("6. Charges", HEAD),
+         Paragraph("6.1 A unit's service day is a calendar day, district local time, during any part of which the unit, "
                    "installed on a district vehicle, had a session open on the platform.", BODY),
-         Paragraph("5.2 The district pays $%.2f per service day, invoiced monthly in arrears. Bench testing before "
+         Paragraph("6.2 The district pays $%.2f per service day, invoiced monthly in arrears. Bench testing before "
                    "installation is not charged." % W.DAY_RATE, BODY),
-         Paragraph("5.3 Installation, removal and data exports are included.", BODY),
-         Paragraph("6. Term", HEAD),
+         Paragraph("6.3 Installation, removal, the review module and data exports are included.", BODY),
+         Paragraph("7. Term", HEAD),
          Paragraph("Either party may end the pilot on 30 days' notice. Units are returned to Kerbline at the end of the "
                    "pilot or when the district takes a vehicle out of the pilot.", BODY)]
     d.build(s, onFirstPage=frame, onLaterPages=frame)
@@ -140,16 +144,16 @@ def write_dictionary(path, n):
     items = [
         (F["detections"], n["detections"],
          "One row per detection: a unit's capture of a defect. The platform keeps the first capture of a defect by a "
-         "unit on a calendar day. road_ref is the road inventory segment the platform's base map gives the detection's "
-         "position (the base map is the 2025 inventory release); road_mp is that position's route milepost; both are "
-         "blank off the state highway system. latitude and longitude are the unit's GPS fix. captured_local is district local time. severity (1 to 3) "
+         "unit on a calendar day. defect_id is the platform's defect number. road_ref is the road inventory segment the "
+         "platform's base map gives the detection (the base map is the 2025 inventory release); road_mp is the route "
+         "milepost; both are blank off the state highway system. captured_local is district local time. severity (1 to 3) "
          "is Kerbline's for pothole-class defects."),
         (F["traversals"], n["traversals"],
          "One row per traversal of a state highway segment by a pilot vehicle, from the fleet telematics provider's map "
          "matching. segment_id is the 2026 inventory release. enter_utc and exit_utc are UTC."),
-        (F["covers"], n["covers"],
-         "The district's utility cover inventory: one row per cover in the state roadway, located by the 2026 GPS rover "
-         "survey (route milepost to the ten-thousandth), with its owner and type."),
+        (F["review"], n["review"],
+         "One row per pothole-class defect with the reviewer's decision (Confirmed or Rejected) and, for a rejection, the "
+         "reason as entered. Milepost is the defect's route milepost. Times are UTC."),
         (F["register"], n["register"],
          "One row per unit: the vehicle it is installed on, the fleet group, and the installation and removal dates."),
         (F["sessions"], n["sessions"],
@@ -164,8 +168,8 @@ def write_dictionary(path, n):
         (F["crosswalk"], n["crosswalk"],
          "The 2025 segments that the 2026 release split or merged, with the 2026 segments they became."),
         (F["orders"], n["orders"],
-         "One row per task line of a cold patch work order (activity PCOLD) raised in March. ext_ref is the Kerbline detection "
-         "the order was raised from. raised and finished are district local time. cold_mix_lb is the cold mix "
+         "One row per task line of a cold patch work order (activity PCOLD) raised in March. ext_ref is the Kerbline defect "
+         "number the order was raised from. raised and finished are district local time. cold_mix_lb is the cold mix "
          "pounds as entered. status is COMPLETE or OPEN at the extract."),
         (F["pci"], n["pci"],
          "The 2026 pavement condition survey: one row per segment, with the survey date, roughness (IRI), rut depth, "
@@ -181,6 +185,35 @@ def write_dictionary(path, n):
     s.append(Paragraph("Times: the district's local time is Eastern Time; daylight saving time began at 2:00 a.m. on 14 March "
                        "2027.", BODY))
     d.build(s, onFirstPage=frame, onLaterPages=frame)
+
+
+def write_review(path, e):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Review decisions"
+    ws.append(["Defect ID", "Class", "Route", "Milepost", "First detected (UTC)", "Decision", "Reason", "Reviewed (UTC)",
+               "Reviewer"])
+    for c in ws[1]:
+        c.font = Font(bold=True)
+    n = 0
+    for row in P.review_rows(e):
+        ws.append(row)
+        n += 1
+    for r_ in ws.iter_rows(min_row=2, min_col=5, max_col=5):
+        for c in r_:
+            c.number_format = "yyyy-mm-dd hh:mm"
+    for r_ in ws.iter_rows(min_row=2, min_col=8, max_col=8):
+        for c in r_:
+            c.number_format = "yyyy-mm-dd hh:mm"
+    for r_ in ws.iter_rows(min_row=2, min_col=4, max_col=4):
+        for c in r_:
+            c.number_format = "0.000"
+    for col, w in zip("ABCDEFGHI", (12, 9, 22, 10, 19, 11, 30, 17, 9)):
+        ws.column_dimensions[col].width = w
+    ws.freeze_panes = "A2"
+    ws.auto_filter.ref = "A1:I%d" % (n + 1)
+    wb.save(path)
+    return n
 
 
 def write_register(path, e):

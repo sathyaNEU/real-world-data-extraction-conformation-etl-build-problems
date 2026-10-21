@@ -30,36 +30,34 @@ def compute(target):
     p = M.load(target)
     g = M.golden(p)
     fam = M.family(p, g)
-    lm = M.lane_miles(p, g["road"])
-    lb = M.ask_pounds(p)
+    pp, pass_rate = M.per_pass(p, g)
+    du, unit_rate = M.distinct_units(p, g)
+    same, cross = M.agreement(p, g)
+    a_n, a_lb = M.ask_patches(p)
     est = g["est"]
     des = sorted([s for s in ORDER if est[s] >= M.LINE], key=lambda s: (-est[s], s))
     below = max((s for s in ORDER if s not in des), key=lambda s: est[s])
     lowest_in = min(des, key=lambda s: est[s])
-    u = M.units(p)
-    sw = [g["sig"][k] * 5280 for k, v in u.items() if v[1] == "Street sweeper"]
-    other = [g["sig"][k] * 5280 for k, v in u.items() if v[1] != "Street sweeper"]
-    dflt = M.single(p, DEFAULT_T, g["road"])
     f = {
         "call": {"designated": [NAMES[s] for s in des], "count": len(des), "of": len(ORDER)},
         "line": M.LINE,
-        "sections": {NAMES[s]: {"section": s, "lane_miles": round(lm[s], 1), "rate": whole(est[s]),
-                                "crew": "Yes" if s in des else "No", "cold_mix_lb": lb.get(s, 0)}
+        "sections": {NAMES[s]: {"section": s, "lane_miles": round(g["lm"][s], 1), "rate": whole(est[s]),
+                                "crew": "Yes" if s in des else "No", "cold_mix_lb": a_lb.get(s, 0)}
                      for s in ORDER},
-        "components": {"lane_miles": round(sum(lm.values()), 1), "potholes": sum(g["counts"].get(s, 0) for s in ORDER),
-                       "turned_back": len(p["turnback"]),
-                       "sweeper_error_ft": [int(min(sw) + 0.5), int(max(sw) + 0.5)],
-                       "other_error_ft": [int(min(other) + 0.5), int(max(other) + 0.5)],
+        "components": {"lane_miles": round(sum(g["lm"].values()), 1), "confirmed": len(g["pots"]),
+                       "turned_back": len(p["turnback"]), "find_rate_pct": round(100 * g["q"], 1),
+                       "miss_rate": round(1 - g["q"], 3), "same_fleet_pct": round(100 * same, 1),
+                       "cross_fleet_pct": round(100 * cross, 1),
                        "highest_below": {"name": NAMES[below], "rate": whole(est[below])},
                        "lowest_in": {"name": NAMES[lowest_in], "rate": whole(est[lowest_in])}},
-        "default": {"designated": [NAMES[s] for s in ORDER if dflt[s] >= M.LINE], "tolerance_ft": int(DEFAULT_T * 5280 + 0.5)},
+        "default": {"designated": [NAMES[s] for s in ORDER if pp[s] >= M.LINE]},
+        "units": {"designated": [NAMES[s] for s in ORDER if du[s] >= M.LINE]},
         "_unrounded": {NAMES[s]: round(est[s], 4) for s in ORDER},
-        "_family": {k: {NAMES[s]: round(v[s], 4) for s in ORDER} for k, v in fam.items()},
+        "_family": {k: {NAMES[s]: round(v[s], 4) for s in ORDER} for k, v in fam.items() if not k.startswith("_")},
+        "_rates": {"pairs": round(fam["_rates"]["pairs"], 5), "mle": round(fam["_rates"]["mle"], 5),
+                   "units": round(unit_rate, 5), "pass": round(pass_rate, 5)},
     }
     return p, g, f
-
-
-DEFAULT_T = 0.01
 
 
 def write_csv(path, f):
@@ -164,42 +162,42 @@ def write_pdf(path, f):
                               ("TEXTCOLOR", (0, 0), (-1, -1), ink), ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
                               ("TOPPADDING", (0, 0), (-1, -1), 1), ("LINEBELOW", (0, -1), (-1, -1), 0.6, ink)]))
     names = ", ".join(des[:-1]) + " and " + des[-1]
-    n_word = WORDS.get(len(des), str(len(des))).capitalize()
-    dft = f["default"]
     story = [
         Paragraph("TAMSETT DISTRICT MAINTENANCE: MEMORANDUM", ParagraphStyle("o", fontName="Helvetica-Bold", fontSize=8,
                                                                           textColor=ink2, spaceAfter=4)),
         memo,
-        Paragraph("%s sections get a dedicated spring patching crew" % n_word, title),
+        Paragraph("Seven sections get a dedicated spring patching crew", title),
         Paragraph("<b>%s get the dedicated crews.</b> Each held 6.0 or more potholes per ten lane-miles of state roadway "
-                  "in March; of the other %s, %s comes closest at %d. The task orders can issue on 19 April as drafted "
-                  "for these %s." % (names, WORDS.get(len(ORDER) - len(des), str(len(ORDER) - len(des))),
-                                     c["highest_below"]["name"], c["highest_below"]["rate"],
-                                     WORDS.get(len(des), str(len(des)))), body),
+                  "in March, counting the potholes no camera unit recorded; of the other seven, %s comes closest at %d. "
+                  "The task orders can issue on 19 April as drafted for these seven." % (names, c["highest_below"]["name"],
+                                                                                        c["highest_below"]["rate"]), body),
         d,
-        Paragraph("Bars at the unrounded figure. Each pothole is counted once however many units and passes recorded it "
+        Paragraph("Bars at the unrounded estimate. The count includes the potholes no camera unit recorded "
                   "(program 2.2).", note),
         Paragraph("How the March count was made", head),
-        Paragraph("Kerbline's export is one row per detection, and the pilot does not include Kerbline's defect linking, "
-                  "so the detections had to be resolved into potholes here. The units do not place a pothole equally "
-                  "well. Against the asset inventory's surveyed utility covers, the six street sweepers' units, the "
-                  "older phones, put their detections %d to %d feet either way along the route; every other unit puts "
-                  "them within %d to %d feet. A sweeper's reports of one pothole on an arterial are spread over a "
-                  "hundred feet or more, while on the bridge decks the patrol units report neighbouring potholes a few "
-                  "yards apart." % (c["sweeper_error_ft"][0], c["sweeper_error_ft"][1], c["other_error_ft"][0],
-                                     c["other_error_ft"][1]), body),
-        Paragraph("So no single matching distance works. Detections were joined into one pothole when they lay within "
-                  "three times the two units' combined error of each other: a few feet between two patrol units, about "
-                  "a hundred and fifty feet between two sweepers. Joined at one distance for every unit, %d feet for "
-                  "instance, the bridge-deck potholes run together and only %s clear the line; at a few feet, the "
-                  "sweepers' scatter counts one pothole several times and Rushmead joins the list."
-                  % (dft["tolerance_ft"], ", ".join(dft["designated"][:-1]) + " and " + dft["designated"][-1]), body),
-        Paragraph("Inputs: {:,.1f} lane-miles of state roadway as at 31 March<super>1</super> and {:,} potholes the "
-                  "pilot's units recorded on it in March.".format(c["lane_miles"], c["potholes"]), body),
+        Paragraph("The program counts every pothole on a section's roadway, recorded or not (program 2.2), and Kerbline's "
+                  "list is not every defect on the roads the units drove (scope of work 3). How much it misses comes "
+                  "from the units' own records, and the first thing they show is that what a unit can see depends on "
+                  "the kind of vehicle it rides on. Every truck of one kind carries its phone in the same mount at the "
+                  "same height: where two units of the same fleet group drove a segment, the second recorded %.1f per "
+                  "cent of the potholes the first recorded; a unit on another kind of vehicle recorded %.1f per cent. "
+                  "Two freeway service patrol trucks, or two crew trucks, are one look at the road, not two."
+                  % (c["same_fleet_pct"], c["cross_fleet_pct"]), body),
+        Paragraph("So each segment's chances are the distinct kinds of vehicle that drove it in March, each finding a "
+                  "pothole another kind found %.1f per cent of the time, and each confirmed pothole stands for one over "
+                  "the chance that at least one of them found it, one minus %.3f raised to their number. Counting every "
+                  "unit as its own chance, as if two service patrol trucks saw independently, completes too little and "
+                  "leaves only %s over the line; counting pass by pass completes nothing and leaves %s."
+                  % (c["find_rate_pct"], c["miss_rate"], ", ".join(f["units"]["designated"][:-1]) + " and "
+                     + f["units"]["designated"][-1], " and ".join(f["default"]["designated"])), body),
+        Paragraph("Inputs: {:,.1f} lane-miles of state roadway as at 31 March<super>1</super> and {:,} potholes the review "
+                  "queue confirmed on it, after folding the reviewer's duplicates.".format(c["lane_miles"], c["confirmed"]),
+                  body),
         Paragraph("Sections", head),
         t,
-        Paragraph("Source: Kerbline detections (2 April), utility cover inventory (2026 survey), 2026 road inventory, MMS "
-                  "work orders (PCOLD). Cold mix counts a mobile-app order's pounds once rather than on every line.", note),
+        Paragraph("Source: Kerbline detections and review export (2 April), fleet telematics traversals, unit register, "
+                  "2026 road inventory, MMS work orders (PCOLD). Cold mix counts a mobile-app order's pounds once rather "
+                  "than on every line.", note),
         Spacer(1, 6),
         Paragraph("<super>1</super> Program 2.4. The five SR 11 segments in Elmscourt that passed to the City on 15 March "
                   "(route turnback notice of 1 March) are not state roadway at 31 March and are left out, potholes and "
