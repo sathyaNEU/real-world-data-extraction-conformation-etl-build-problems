@@ -1,87 +1,73 @@
 # task179 design note
 
-**Status: architecture v2 drawn 2026-10-21 in the round's second new cell, Epidemiology & Public Health,
-`infectious-disease-transmission-modeling`, Forecasting.** The first cell (the ambulance surge pool, never carded)
-and the redraw cell in Economics & Econometrics (`time-series-macro-econometrics`, never carded) are spent; their
+**Status: architecture v2, re-sited 2026-10-21 into a fictional setting inside the round's second new cell,
+Epidemiology & Public Health, `infectious-disease-transmission-modeling`, Forecasting.** The first cell (the
+ambulance surge pool, never carded) and the redraw cell in Economics & Econometrics (never carded) are spent; their
 records sit under `## First-cell record` and in `## Tried and rejected`. Re-screen nothing there.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task179.json`, architecture v2 (no earlier card exists; v1 is the
-   uncarded first cell). `guard.py check` WARN only: `repeat.gate_g` against task479 (answered in item 5);
-   `test.same_puzzle_older` and `test.same_driver_older` against task126, task138 and task82, differentiated on
-   the card (a succession link split, a store rebuilt from inputs, records attributed through a second ledger;
-   none reads a delay distribution from linked pairs). Redrawn under the registration lock after task178 entered
-   the window: the decisive generator G13 became G3 and the context artifact `published_series` became
-   `capacity_report` (item 5 and item 7). Nearest drivers 0.07 (task251 v4) and 0.06 (task192 v1,
-   task452 v1, task199).
+1. Card: `.claude/skills/fingerprint/cards/task179.json`, architecture v2, first registered 2026-10-21 and
+   re-registered at the re-site. `guard.py check` WARN only: `repeat.gate_g` against task178 (answered in item 5);
+   `test.same_puzzle_older` and `test.same_driver_older` against task133, task196 and task180 (G12) and earlier
+   task126, task138 and task82 (G3), differentiated on the card (left truncation of loan exposure, capture-recapture
+   of uncounted events, events masked by instrument noise; none reads a delay distribution from linked pairs).
+   Nearest drivers 0.07 (task251 v4) and 0.06 (task192 v1).
 2. Pairing: Epidemiology & Public Health (client domain) / `infectious-disease-transmission-modeling` /
-   Forecasting & Predictive Modeling. The one build on file in this task type is task501 (a next-generation
-   matrix built from contact diaries of the season's own regime); nothing here touches a contact matrix, a regime
-   of observation days or an eigenvalue.
-3. Niche: Action Sante Lulonga (invented; no organisation of that name found), a medical humanitarian
-   organisation running two Ebola treatment centres in Equateur province, projecting the cases its centres must
-   plan for in epidemiological weeks 49 to 52 (30 November to 27 December 2026) under the provincial response
-   plan's central scenario, from the province's line list and the response's contact-tracing chain register.
+   Forecasting & Predictive Modeling. The one build on file in this task type is task501 (a next-generation matrix
+   built from contact diaries of the season's regime); nothing here touches a contact matrix or an eigenvalue.
+3. Niche: Larrowmede Medical Relief, a medical humanitarian organisation running two treatment centres in the
+   fictional Marrisford Province of the fictional Republic of Saldane, projecting the cases its centres must plan
+   for in epidemiological weeks 49 to 52 (30 November to 27 December 2026) of an outbreak of Tamberlow virus disease
+   (a fictional haemorrhagic fever first described in this outbreak) under the provincial response plan's central
+   scenario, from the province's line list and the response's transmission links.
 4. Call and shape: the number of new cases (confirmed and probable, by date of symptom onset) in weeks 49 to 52
-   under the central scenario, to the precision the measured family supports (`quantity_figure`, `count`,
-   question form how-many), with the four weekly figures and the current reproduction number as components. Shape
-   `single-figure` (the call, its components and the ask tables; criteria counted in `## Ask sheet`); `other`
-   and `10` are in the last two builds.
-5. Mechanism keys: gap population (the chain register is not the population of transmission intervals, it is
-   the subset whose case has already fallen ill) then time (the projection bets on the interval the chains run
-   on, the register measures the intervals finished by its cut-off); generators G3 (record versus operation: the
-   register's intervals against the interval the transmission process runs on) then G13 (each pair is observed
-   only inside the horizon its source has to the extract). G13 led the first draft and task178 now holds it in the
-   window; G3 is an equally honest reading of the step, and G12 (absence of a record) would also read. Gate G `forecasting`
-   (a forecast the correctly read past does not pin): the WARN `repeat.gate_g` against task479 is answered by
-   the honest key, `method_or_model_selection` would claim two methods pinned by a validation or a standard and
-   here no validation or standard pins anything, the data's own truncation does. Strategy `maturity_censoring`
-   (right truncation of a delay at the extract), free in the window (task486 other, task480
-   decomposition_attribution, task479 other).
+   under the central scenario, to the nearest thousand (`quantity_figure`, `count`, question form how-many), with the
+   reproduction number and the mean serial interval as components. Shape `single-figure`.
+5. Mechanism keys: gap population (the transmission links are not the population of transmission intervals, they
+   are the subset whose case has already fallen ill) then time; generators G12 (absence of a record against a record
+   of absence: the long intervals are missing because their later event has not happened, not because they do not
+   exist), G3 (the record's interval against the process's), G13 (each pair observed only inside its source's
+   horizon to the extract). G13 led the first draft and G3 the second; task178 and task484 took them into the window
+   in turn, and G12 reads the step as honestly. Gate G `forecasting` (a forecast the correctly read past does not
+   pin); the WARN `repeat.gate_g` against task178 is answered by the honest key, since no validation or standard pins
+   a method here. Strategy `maturity_censoring` (right truncation of a delay at the extract).
 6. Layer 2: `estimation_fit` (censoring and truncation), pattern
    `epidemiology-public-health/infectious-disease-transmission-modeling/1` (Rt needs onset timing and the
-   generation interval). The card is the textbook route and the default path takes it whole; the stump is the
-   judgment it takes for granted, that the serial interval read from the outbreak's own pairs is the interval the
-   renewal equation needs.
-7. Furniture: forum `operations_desk` (the organisation's emergency desk commissions beds and staff directly on
-   the planning lead's projection); forcing event `incident_or_complaint` (the outbreak, with the response plan's
-   phase 3 starting 2 November); organisation family `hospital_or_health_provider` (a non-governmental operator
-   whose role here is running treatment centres; `nonprofit_or_charity` would also read and is in the window,
-   task486, said in the card's notes); role family `capacity_planner` (the medical planning lead); context
-   artifact `capacity_report` (the treatment centres' weekly bed-capacity report the planning lead works from; the
-   provincial weekly situation report also ships); calibration `none`. Free against
-   task486, task480 and task479 on every axis.
-8. Spine: the provincial line list as extracted on Sunday 18 October 2026 (one row per notified suspect,
-   probable or confirmed case), constructed in the layout of a provincial surveillance export; the 25,000-row file
-   is the contact follow-up log (contact by follow-up day).
-9. Deliverables: `projection_mve_s49_s52.xlsx` (the projection, its components and the ask tables) and
-   `courbe_projection_mve.svg` (observed and projected weekly cases with the scenario's start marked; SVG, since
-   xlsx with png repeats task178's set).
-10. World: Ebola virus disease (Zaire ebolavirus) in Equateur province, Democratic Republic of the Congo, first
-    known onset 4 May 2026, declared in July, growing steadily since (doubling about every two weeks) to several
-    thousand cases by mid-October across the Mbandaka, Wangata, Bolenge, Bikoro, Iboko, Ingende and Lotumbe health
-    zones. The response plan's phase 3 (ring vaccination widened, a third treatment centre, safe burials scaled)
-    starts Monday 2 November; its central planning scenario is that each case with onset from 2 November causes 40
-    per cent fewer cases than cases did over the six weeks to 11 October. Personas from `guard.py names --geo
-    "Democratic Republic of the Congo" --locale fr_FR --seed 179` (no locale is mapped for the country; the
-    organisation's international staff carry French names): Valerie Francois (response epidemiologist, owner of the
-    planning note), Thibaut Hebert (emergency coordinator), Colette Chauveau (treatment-centre medical lead).
-11. As-of: the line list and chain register extracted Sunday 18 October 2026 at 23:59 (Kinshasa time, UTC+1);
-    the provincial protocol closes notification within seven days of onset, so onsets to Sunday 11 October are
-    complete; the projection is for weeks 49 to 52.
+   generation interval). The default path is that card's method; the stump is the judgment it takes for granted,
+   that the serial interval read from the outbreak's own pairs is the interval the renewal equation needs.
+7. Furniture: forum `operations_desk` (the organisation's emergency desk orders beds and staff on the planning
+   lead's figure); forcing event `incident_or_complaint` (the outbreak, with the response plan's phase 3 starting 2
+   November); organisation family `hospital_or_health_provider` (a non-governmental operator whose role here is
+   running treatment centres); role family `capacity_planner`; context artifact `capacity_report` (the centres'
+   weekly bed and roster file); calibration `none`.
+8. Spine: the provincial line list as extracted on Sunday 18 October 2026 (one row per notified suspected,
+   probable or confirmed case); the 25,000-row file is the contact registry (one row per listing of a person).
+9. Deliverables: `tvd_projection_w49-w52.xlsx` (the projection, its components and the ask tables) and
+   `tvd_projection_curve.svg` (observed and projected weekly cases with phase 3's start marked).
+10. World, fictional throughout: the Republic of Saldane and its Marrisford Province (provincial capital
+    Kettlebank), seven districts with cases (Tamberlow, Quillmarsh, Vossmarren, Orrin Delta, Brindlecourt, Kettlebank
+    North, Kettlebank South), the Marrisford Provincial Health Directorate, the Kettlebank public health laboratory
+    and the Tamberlow field laboratory, Larrowmede Medical Relief and its two centres, and Tamberlow virus disease
+    with its own provincial case definition. No real administrative geography, agency, product or report voice is
+    used; `metadata.json` states that the setting is fictional and the data synthetic. The epidemiology is kept
+    real: a growing outbreak (doubling about every 18 days), onset to notification to laboratory to outcome links,
+    contact tracing. Personas from `guard.py names --geo "Republic of Saldane" --seed 179`: Melanie Tate
+    (response epidemiologist, owner of the planning note), Gordon Campos (emergency coordinator), Kristin Sampson
+    (treatment-centre medical lead).
+11. As-of: the line list and the transmission links extracted Sunday 18 October 2026 at 23:59 (Saldane Standard
+    Time, UTC+1); notification closes within four days of onset, so onsets to Sunday 11 October are complete; the
+    laboratories' exports were pulled at 08:00 on Monday 19 October.
 12. Sources read for the domain (stumping 1.3): the cell's two library cards (renewal-equation Rt with onset timing
-    and the generation interval; the next-generation matrix's eigenvalue); task501 (a contact matrix pooled over
-    two regimes; here no matrix); task232 (a transmission rate per exposure from closed episodes whose outcomes
-    surface after a delay window; here the delay itself is the estimated quantity and the episodes are open);
-    task181's lineage (a count read before its records finish arriving, units completed from their own arrival
-    history; here the counts are complete and the intervals between linked records are what the cut-off bends);
-    task133 (left truncation in a loan record; here truncation is on the right and by the later event); task91
-    (young units that look dormant; here no unit's age conditions its outcome).
-13. Data-native sentence: a source-to-case link is entered in the chain register only when the infected contact
-    falls ill and is notified, and the outbreak doubles about every two weeks, so at the extract most sources are
-    recent and are listed only with the cases they infected within the few weeks they have had, which bends the
-    register's intervals short in exactly the cohort the renewal equation's growth window reads.
+    and the generation interval; the next-generation matrix's eigenvalue); task501 (a contact matrix pooled over two
+    regimes); task232 (a transmission rate per exposure from closed episodes whose outcomes surface after a delay
+    window; here the delay itself is the estimated quantity); task181's lineage (counts read before their records
+    finish arriving; here the counts are complete and the intervals between linked records are what the cut-off
+    bends); task133 (left truncation; here truncation is on the right and by the later event).
+13. Data-native sentence: a source-to-case link is entered in the tracing system only when the infected contact
+    falls ill and is notified, and the outbreak doubles about every 18 days, so at the extract most sources are
+    recent and appear only with the cases they infected within the few weeks they have had, which bends the links'
+    intervals short in exactly the cohort the renewal equation's growth window reads.
 
 ## Screens (stumping 1.2, as code)
 
@@ -111,32 +97,186 @@ each route against the golden (truncated maximum likelihood, gamma) on the same 
   decisive step itself. On the case's clock (the reflex) it lands the default.
 - Truncation direction: the cut-off hides the top of the interval distribution (the long intervals), which is the
   case the screen keeps alive.
-- Literature reflex: plugging in the West African 2014 serial interval (15.3 days, sd 9.3) lands +30 per cent;
-  the planning note files that the projection rests on this outbreak's own chains.
+- Literature reflex: none applies in the re-sited world, since the virus is described only in this outbreak and the
+  planning note says no parameter comes from elsewhere; in the screened world an outside interval (15.3 days, sd 9.3)
+  landed +30 per cent, outside the golden's bin either way.
 - `guard.py slots --driver`: vocabulary hits only (task194, task190, task253, task117, task501); no slot records
   a truncated delay distribution or a serial interval dying.
 
 ## Default path
 
-1. Daily onsets of confirmed and probable cases from the line list (suspects discarded after testing left out, a
-   case notified twice kept once), complete to 11 October.
-2. The serial interval from every source-to-case pair in the chain register: onset of case less onset of source,
-   gamma fitted (mean about 11.5 days).
-3. The current reproduction number from the growth of onsets over weeks 36 to 41 through that interval (about 1.6).
-4. The renewal equation forward from 12 October, the reproduction number cut by 40 per cent for cases with onset
-   from 2 November, cases summed over weeks 49 to 52.
+1. Daily onsets of confirmed and probable cases from the line list (people found not to be cases and suspected cases
+   left out, a case notified twice under two numbers kept once by its sample), complete to 11 October.
+2. The serial interval from every source-to-case pair in the transmission links: onset of case less onset of source,
+   2,449 pairs, a gamma fitted or the pairs' own distribution (mean 11 days).
+3. The reproduction number implied by the exponential growth rate of daily onsets over weeks 36 to 41 (0.038 a day)
+   through that interval (1.5).
+4. The renewal equation forward from 12 October, the reproduction number halved for every source with onset from
+   2 November, cases summed over weeks 49 to 52 (3,564).
 
-Ends on: to be measured on the cut pack (about a quarter under the golden in every screened outbreak)
-Golden: to be measured on the cut pack
+Ends on: 4,000 cases
+Golden: 5,000 cases
 
 ## Stump sentence
 
-A competent analyst fits the serial interval to every source-to-case pair in the chain register, takes the
-reproduction number from the growth of onsets over weeks 36 to 41, cuts it by 40 per cent from 2 November and
-projects about a quarter too few cases for weeks 49 to 52, because the register holds a pair only once its case has
-fallen ill, so September's and October's sources appear only with the cases they infected quickly; read against
-the time each source had to the cut-off, the pairs give the longer interval the chains run on, a higher
-reproduction number and a December that holds instead of falling away.
+A competent analyst fits the serial interval to every source-to-case pair in the transmission links (11 days), takes
+the reproduction number implied by the growth of onsets over weeks 36 to 41 (1.5), halves it from 2 November and
+projects about 4,000 cases for weeks 49 to 52 instead of about 5,000, because the tracing system holds a link only
+once its case has fallen ill, so September's and October's sources appear only with the cases they infected quickly;
+read against the time each source had to 11 October, the links give the 13-day interval the chains run on, a
+reproduction number of 1.6 and a December that holds a quarter higher.
+
+## Three rules
+
+Task type: infectious-disease-transmission-modeling (Epidemiology & Public Health): the outbreak's line list and transmission links turned into a serial interval, a reproduction number and a renewal-equation projection of cases under the response plan's central scenario, a projection serving Forecasting & Predictive Modeling.
+
+Domain test: the deciding quantity is the serial interval distribution the renewal equation runs on, estimated from the outbreak's own transmission pairs the way a transmission modeller estimates a delay during a growing epidemic: each pair read against the longest interval its source could show at the cut-off (right truncation), then the reproduction number from the growth rate through that interval (Wallinga and Lipsitch) and the renewal equation forward under the scenario's halving.
+
+Swap: "how many referrals a sales network brings in December, from referrer-to-referee links" keeps a link between two dated events and loses the step's ground: no renewal equation turning a growth rate into a reproduction number through the generation interval, no scenario that halves transmission by the source's onset, no epidemic whose growth makes the recent sources the numerous ones.
+
+Layer 1: a case notified a second time from a neighbouring district under a new number with the same laboratory sample, people found not to be cases and suspected cases awaiting a result in the line list, rows fed from the field laboratory's forms carrying ISO dates beside day-first ones, links graded by certainty and links whose case was later discarded; each is how a surveillance line list and a tracing system write, nothing is placed to be caught, and checks.py asserts the call holds under each (SF1, SF6, L1, L2).
+
+Layer 2: estimation_fit, the data's real structure: the serial interval is read from pairs that exist only once the later case has fallen ill, so the sample is right truncated at the extract, and during growth the truncation falls on the recent sources that are most of the pairs.
+
+Decisive step: estimating the serial interval with each pair conditioned on its interval being no longer than 11 October less its source's onset (or any estimator that reads the pairs against their sources' horizon), which moves the mean from 11 to 13 days, the reproduction number from 1.5 to 1.6 and weeks 49 to 52 from 3,564 to 5,049 cases.
+
+Not semantics: every field, code and definition read correctly (the classifications, the duplicate case numbers, the two date formats, the links' source and target, the dictionary's note that a link is entered when the target case is notified) still leaves the easy route fitting the pairs as they stand, because no field says the pairs are a truncated sample of the outbreak's intervals; the step is the inference that a growing outbreak cut off at an extract holds only the quick intervals of its recent sources, which the data show (the mean interval of the pairs falls from 13.5 days for sources ill in August to 11.0 for September's and 5.2 for October's) and no sentence says.
+
+Not rule application: the planning note files the population, outcome, window, unit, scenario and the reproduction number's basis, and no rule says how the serial interval is read from the links; executing every filed rule with the pairs fitted as they stand files 4,000 cases.
+
+Analyst test: a strong analyst who cleans the line list and reads every rule, fitting the serial interval to every pair in the links, files 4,000 cases (the default path's Ends on); one who drops the pairs whose case fell ill in the last fortnight (the hygiene reflex, on the case's clock) files 4,000 too; only reading each pair against its source's time to 11 October files 5,000; checks.py runs the three on the generator's clean truth (R3a, R3b, R3c).
+
+Estimand: the planning note (planning_note_phase3_2026-10-19.pdf, sections 1 to 3): the population (new cases of Tamberlow virus disease, confirmed and probable under the provincial case definition, in the seven districts with cases), the outcome and unit (cases by date of symptom onset), the window (ISO weeks 49 to 52, 30 November to 27 December 2026), the scenario (every case with onset on or after 2 November causes half as many new cases as cases did over weeks 36 to 41, whose reproduction number is the one implied by the exponential growth rate of their daily onsets), the records (the line list and the transmission links as extracted on 18 October, onsets complete to 11 October, no outside parameter).
+
+No decoy: nothing is planted: the line list, links, contact registry, laboratory exports, capacity report and situation report are the producing systems' records, the planning note states the scenario without a method, and no serial interval, reproduction number, projection or published parameter ships anywhere in the pack.
+
+No certified replay: no certified or published serial interval, reproduction number or projection ships; the planning note says the virus is described only in this outbreak, so the method is not recovered by reproducing any figure.
+
+Lesson: a delay read from linked records that exist only once the later event has happened is truncated at the extract, and while the process grows that truncation sits on the recent sources, which are most of the record; no build on file estimates a delay distribution from linked pairs read against each pair's own horizon.
+
+## Readability screen
+
+Each rung, the sentence or file a reader would have to read to take it, and whether any shipped text hands it over.
+
+| Rung | What takes the reader there | Verdict |
+|---|---|---|
+| Layer 1: the duplicate case numbers, non-cases and suspects, two date formats | the dictionary and the line list | readable |
+| R0 growth of onsets over weeks 36 to 41 | the planning note, section 2 | readable |
+| R1 (default path) the serial interval from every pair as it stands | the transmission links and the dictionary | readable |
+| R1b the pairs whose case fell ill in the last fortnight dropped | the hygiene reflex on the links' dates | readable |
+| R2 (decisive) each pair read against its source's time to 11 October | nothing: no sentence names truncation, the interval's bias, a cohort of complete sources or an estimator; the dictionary says when a link is entered and nothing about what that does to the intervals | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | a case | Confirmed and Probable, a person notified twice under two numbers counted once by sample | both numbers kept; Not a case kept | same call (5,206; 4,898) | planning note section 3; checks.py SF1 |
+| SF2 | completeness | onsets to 11 October complete, pairs whose case fell ill by 11 October | pairs and onsets to the 18 October extract | same call (4,739) | planning note section 3; SF2 |
+| SF3 | the growth rate | log-linear least squares on daily onsets, 31 August to 11 October | Poisson regression on daily onsets; weekly counts | same call (5,005; 5,004) | SF3 |
+| SF4 | the reproduction number's basis | the one implied by the exponential growth rate through the serial interval | the renewal ratio over the same six weeks (5,508) | not the filed estimand | planning note section 2, "implied by the exponential growth rate of their daily onsets" |
+| SF5 | the halving | every source with onset on or after 2 November transmits at half | cases whose own onset falls on or after 2 November halved (2,525) | not the filed scenario | planning note section 2, "every case with symptom onset on or after 2 November causes half as many new cases" |
+| SF6 | the links' certainty | every link | Low certainty dropped | same call (4,992) | SF6 |
+| SF7 | the interval's family | discretised gamma | Weibull; the reverse-time nonparametric estimator; lognormal | same call (5,062; 5,047; 5,406, the lognormal 36 log-likelihood units worse) | SF7 |
+| SF8 | the window | ISO weeks 49 to 52 by onset, 30 November to 27 December | none | filed | planning note section 1 |
+| SF9 | rounding | the unrounded projection to the nearest thousand | none | prompt | prompt.txt |
+| SF10 | the projection's start | the renewal equation from 12 October on onsets to 11 October | the onsets of 12 to 18 October read as complete (4,241) | not the filed record | planning note section 3, "onsets to Sunday 11 October are complete in the extract"; SF10 |
+
+## Ladder
+
+Built values from the cut pack (generator/checks.py R1 to R3c, SF1 to SF10), cases in weeks 49 to 52.
+
+| Rung | Route | Serial interval (days) | R | Cases | Call |
+|---|---|---|---|---|---|
+| R1 (default path) | every pair as it stands, gamma or empirical | 11.13 | 1.484 | 3,564 | 4,000 |
+| R1b | pairs whose case fell ill in the last 14 days dropped | 11.09 | 1.483 | 3,549 | 4,000 |
+| Golden | truncated gamma, each pair conditioned on its source's time to 11 October | 13.16 | 1.586 | 5,049 | 5,000 |
+| Golden family | truncated Weibull; reverse-time nonparametric; sources 50 or 60 days old only | 13.04; 13.14; 13.15; 12.83 | 1.585; 1.586; 1.589; 1.573 | 5,062; 5,047; 5,092; 4,857 | 5,000 |
+
+- Dominance: every member of the golden family sits in [4,500, 5,500), the nearest 7.4 per cent from an edge (the
+  complete-cohort subset at 60 days, 4,857), the golden 8.9 per cent; a bootstrap of the pairs (60 draws) puts the
+  golden's sd at 3.0 per cent and every draw in the bin (B1); the default family sits in [3,500, 4,500).
+- The data separates the readings: the mean interval of the pairs by the month their source fell ill falls from 13.5
+  days (August, 519 pairs) to 11.0 (September, 1,486) and 5.2 (October, 215), which an interval that does not change
+  cannot do unless the record is cut off; read against each source's horizon, the truncated fit's interval holds
+  (sources 50 days old or more, whose cases have all fallen ill, give 13.15 days).
+
+## Closure table
+
+| # | Axis | Reading | Move |
+|---|---|---|---|
+| 1 | Population | new cases, confirmed and probable, in the seven districts with cases | filed (planning note 1, 3) |
+| 2 | Unit of account | a case by date of symptom onset | filed (planning note 1) |
+| 3 | Attribution window | ISO weeks 49 to 52, 30 November to 27 December 2026 | filed (SF8) |
+| 4 | As-of dating | the extract of 18 October 23:59, onsets complete to 11 October | planning note 3; manifest (SF2) |
+| 5 | Version basis | one line list and one links export, no earlier release | the manifest |
+| 6 | Denominator | none (a count) | commutes |
+| 7 | Weighting | each pair once, each day's onsets as counted | SF3, SF7 |
+| 8 | Window length | the growth window weeks 36 to 41 | filed (planning note 2) |
+| 9 | Boundary inclusivity | onset on or after 2 November halved; 30 November and 27 December inside | filed (SF5, SF8) |
+| 10 | Rounding path | the unrounded projection to the nearest thousand | prompt (SF9) |
+| 11 | Tie-break | none | the golden family 3.0 per cent or more inside its bin |
+| 12 | Maturity and censoring | the pairs right truncated at 11 October; onsets complete to 11 October | the decisive step; SF2 |
+| 13 | Order of operations | clean, pair, fit, grow, project from complete onsets, sum | SF10 |
+| 14 | Row order | none | commutes |
+| 15 | Duplicate resolution | a case notified twice counted once by its sample | SF1 |
+| 16 | Identity normalisation | case numbers across the line list and the links, duplicates mapped to the first | SF1 |
+| 17 | Netting against gross | not a case and suspected rows out | filed (planning note 3, SF1) |
+| 18 | Dimensional units | days, cases | the dictionary |
+| 19 | Code and status semantics | classifications, certainty grades | the dictionary (SF6); never the stump |
+| 20 | Integerisation | none before the rounding | commutes |
+| 21 | Clause scope | the halving applies to every source in every district from 2 November | filed (SF5) |
+| 22 | Forward window contents | cases not yet ill, the scenario's halving the only change | filed (planning note 2) |
+
+## Literal reader
+
+The planning note executed word for word asks for the cases with onset in weeks 49 to 52 under a scenario whose base
+is the reproduction number the growth of weeks 36 to 41 implies through the outbreak's serial interval; the literal
+question is the interval the chains run on, which the links show only in part, since a link exists once its case has
+fallen ill. A literal reader who fits the links as they stand has assumed the extract holds every interval its
+sources will produce, which the falling mean interval by source month contradicts; every other reading converges or
+violates a quoted sentence (fork table). Re-run on the finished pack.
+
+## Oracles
+
+- No shipped file carries a serial interval, a reproduction number, a projection or a published parameter for the
+  virus; the planning note says none comes from elsewhere.
+- The Kettlebank public health laboratory's results, the centres' admissions and the safe burials log are
+  distractors (metadata.json); none ranks a projection.
+- The situation report counts cases by week of notification as notified at 13 October; it projects nothing.
+- No control ties only under the golden on the asks.
+
+## Ask sheet
+
+- **Ask A, contacts first listed in weeks 37 to 39 in Tamberlow, Quillmarsh, Kettlebank North and Brindlecourt:
+  different people and the percentage who completed follow-up (eight figures, whole numbers and one decimal).**
+  Home: the planning note's section 4 (the follow-up the scenario leans on). Path: the contact registry. Primary
+  device: the same records under two key schemes: in the four districts the directorate's paper listings are
+  entered at the district office beside the organisation's tablet listings of the same contacts, and the paper form
+  carries an estimated age one to three years off the tablet's, so the exact person key counts those people twice;
+  only source case, household, initials and sex, listed within a day, tie them. Hazards: a person exposed to two
+  cases is listed once for each; completion is the person's last listing, not each listing's.
+- **Ask B, the Tamberlow field laboratory's diagnostic samples by ISO week of collection, weeks 38 to 41: average
+  hours from collection to final result and the percentage resulted within 24 hours (eight figures, one decimal).**
+  Home: the planning note's section 4 (the laboratory turnaround). Path: the field laboratory's workbook. Primary
+  device: a clock basis: the analyser writes its result time on UTC while collection and reception are keyed on
+  local time (UTC+1); the evidence is in the data, results less than the 92-minute cartridge run after reception and
+  positives a day before the line list's lab_result_date. Hazards: the final result is the re-run after
+  Indeterminate; discharge-control samples are out.
+- **The construction layer:** the call, its two components and the chart; the cracker has them.
+- **Main population zero-counts (asserted):** the call reads the line list and the links only; the registry and the
+  laboratory workbook are read by the asks only (X1).
+- **Hazard table (asserted):** A1 to A3, B1 to B3 in checks.py; none moves the call.
+- **Referee:** none.
+
+| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
+|---|---|---|
+| A, people and completion by district | the exact person key, the last listing's status; keeps 0 of 8 | miss |
+| B, turnaround by week | the final result on the clock the file shows; keeps 0 of 8 | miss |
+
+- Mirror leakage: 0.0 per cent of ask weight on the cut pack (0 of 16).
+- Pair ceiling: 28.5 on the cut pack (weights 38 / 7 / 55: the cracker keeps the call and instructions, 45.0; the
+  mirror at the default path misses the call and keeps no ask figure, 12.0). Re-measured by the stage 4 readers.
+- Measured by: generator/ceiling.py on the cut pack.
 
 ## First-cell record
 
@@ -202,17 +342,7 @@ task160 (regional waves timed by their lag) and task162 (version uptake set by t
 candidate touches them.
 
 ## Tried and rejected
-- **Architecture v2's world, stopped during the build on 2026-10-21 and not committed beyond the card.** The
-  mechanism screened and held on measurement (the default family sat about 29 per cent under the golden on the
-  cut pack, the golden family inside 0.5 per cent), but the pack it needed was a full set of synthetic case,
-  contact and laboratory records for a named real disease in a named real province, written in the voice of the
-  organisations that keep such records. I am not willing to produce and ship that artifact: fabricated
-  public-health records of a real place and a real outbreak can mislead whoever meets them outside this
-  repository, whatever the build's purpose. The generator, prompt, write-up and pack stay in the worktree,
-  uncommitted. The mechanism itself (a delay distribution read from pairs that a record holds only once the
-  later event has happened, which bends it short while the process grows) is live and carries no such problem
-  in a world that is not a real disease in a real place; it is for the author to decide whether to re-site it
-  or to retire the number.
+- **Architecture v2's first world (a named real disease in a named real province):** declined on the real-places records concern, since its pack would be fabricated public-health records of a real outbreak; the mechanism was re-sited unchanged into the fictional Republic of Saldane.
 
 - **Candidate 1: the district's requirement read from the areas' joint evenings, against the closed summers'
   area-by-area staffing, the areas treated as independent, a square-root pooling law and a pooling discount** (the
@@ -399,6 +529,5 @@ candidate touches them.
 
 ## Resume
 
-Architecture v2 drawn 2026-10-21. Next: the generator's world and pack, the measured default and golden on the cut
-pack, the asks and their devices, then the stage 2 sections (three rules, readability screen, fork table, ladder,
-closure table, literal reader, oracles, ask sheet) and `precut.py`.
+Architecture v2 re-sited 2026-10-21 into the fictional setting. Stage 3: generator, pack, goldens, submission.md and
+the free gates; stage 4 next (two scored readers and the judge).
