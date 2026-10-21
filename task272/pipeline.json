@@ -1,0 +1,45 @@
+{
+  "task": "task272",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "general-statistics-data-science",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-21",
+  "stump": "A competent analyst who conforms the three exports and holds each working day's mix fixed by regressing every determination on the counsellor's previous one with a fixed effect per counsellor-day puts about 27 of the 31 hospitals over the six-point line, because a queue of eight determinations shows a drop of about 14 points after an approval with no counsellor swayed at all, and one who pools consecutive determinations instead puts 1 or 2 over it, because days fed by presumptive referrals string approvals together; only the excess over what each day's own determinations would show in any order puts the 11 hospitals whose counsellors are really swayed over it.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.07 task122 v2 (lineage)"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "Stage 2: the generator's world from scratch t272/proto/s6.py (31 hospitals, 11 with effects 9.5 to 12.5 points, construction margin 1.5 on the five-member family), the criteria's estimand clause, the fork and closure tables, the asks on quantities the call never reads, prompt.txt, then precut.py.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "architectures": [
+    {
+      "architecture": 1,
+      "drawn": "2026-10-21",
+      "fate": ""
+    }
+  ]
+}

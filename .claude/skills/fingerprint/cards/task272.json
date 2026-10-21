@@ -1,0 +1,87 @@
+{
+  "task": "task272",
+  "architecture": "v1",
+  "drawn": "2026-10-21",
+  "slot_note": "",
+  "domain": "general-statistics-data-science",
+  "subdomain": "resampling-simulation-monte-carlo-methods",
+  "client_domain": "general-statistics-data-science",
+  "niche": "a health foundation's FY2027 decision-coaching grants for hospital financial-assistance teams, one per hospital whose counsellors approve an application markedly less often right after approving one, measured from the counsellors' 2025 decision logs worked in short daily queues whose mix of applicants swings from day to day",
+  "objective": "descriptive-distribution",
+  "shape": "10",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "rule",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G16"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the logs and reads the criteria correctly either pools each hospital's consecutive decisions and finds almost no hospital over the six-point line, because days with easy files string approvals together, or holds each day's mix fixed with a day-by-day regression and puts every hospital over it, because short queues manufacture a drop after an approval on their own; only the excess over what each day's decisions would show in any order counts the hospitals that qualify.",
+  "domain_test": "The deciding quantity is serial dependence in a sequence of binary decisions measured against the exchangeable benchmark of each session's own reorderings, the resampling task type's own object; swapping the nouns leaves a dependence statistic whose within-session expectation under no dependence is not zero, so replacing the reordering benchmark with a pooled or fixed-effects estimate changes the call in any field.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:within-session-reordering-benchmark",
+  "layer1": [
+    "local working day against UTC timestamps",
+    "system auto-approvals among counsellor decisions",
+    "counsellor IDs re-keyed at a system migration",
+    "reconsiderations beside initial decisions",
+    "duplicate export rows",
+    "decision codes differing by billing system"
+  ],
+  "stakeholder_role": "Program Officer, Fair Billing Initiative",
+  "role_family": "programme_officer",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "the three billing systems' financial-assistance determination exports, 2025",
+    "rows": 300000,
+    "entity": "one financial-assistance determination a counsellor records",
+    "grain": "determination event",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "foundation_or_funder",
+  "world": {
+    "geography": "United States (Oregon and Washington)",
+    "currency": "USD",
+    "org_type": "health foundation",
+    "invented_names": [
+      "Vellacott Health Foundation",
+      "Fair Billing Initiative"
+    ],
+    "people": [
+      "Kristin Robertson",
+      "Spencer Frank"
+    ]
+  },
+  "deliverables": [
+    "fair_assistance_coaching_2027.xlsx",
+    "fair_assistance_coaching_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is how strongly each unit's yes-or-no decisions depend on its previous decision inside short sessions whose mix of cases varies; pooling the sessions credits the mix with a positive dependence, comparing within sessions builds in a negative one that short sessions produce on their own, and only the excess over what each session's own decisions would show in any order measures it.",
+  "driver_concrete": "Each hospital's sequence effect is the drop in its counsellors' approval rate right after an approval against right after a denial, measured as the excess over what each working day's own decisions would give in any order; pooling consecutive decisions credits the busy outreach days with strings of approvals and clears almost every hospital, and a day-by-day regression charges every hospital with the drop that an eight-decision day shows even when no counsellor is swayed.",
+  "stump": "A competent analyst who holds each working day's mix fixed by regressing every decision on the counsellor's previous one with day effects puts all 31 hospitals over the six-point line, and one who pools consecutive decisions puts almost none over it, when the excess over what each day's decisions would show in any order puts only the hospitals whose counsellors are really swayed over it.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "WARN repeat.question_form how-many against task484 v1: the call is the number of grants the FY2027 budget carries, a count, so how-many is the honest form. Personas from guard.py names --geo 'United States' --seed 272 (Jacob Burgess, Stephen Graham, Patricia Morse, Olivia Maldonado set aside on people.first WARNs).",
+  "registered": "2026-10-21T01:51:21Z"
+}
