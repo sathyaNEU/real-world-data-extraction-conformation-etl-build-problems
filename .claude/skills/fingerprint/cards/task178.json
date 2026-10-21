@@ -96,6 +96,7 @@
     "task501": "task501's lineage sizes a facility buffer from a back-test or a deadline-driven draw; here nothing is back-tested or paced, the expected crossings are a convolution of the window's predicted high waters with the season's surge distribution."
   },
   "lineage": [],
-  "notes": "Architecture 1 of task178 under its redraw; FC49's world was screened at stage 1 and never registered. stump_strategy time_semantics is the F1 family (the window the decision bets on), not a field reading: no code, unit or definition flips the call. context_artifact redrawn 2026-10-21 from published_series to filed_standard after the window moved (task251 and task478 marked spent pulled task481, published_series, into it): the trestle design basis is the stakeholder's own filed document, the honester label.",
-  "registered": "2026-10-21T01:16:21Z"
+  "notes": "Architecture 1 of task178 under its redraw; FC49's world was screened at stage 1 and never registered. stump_strategy time_semantics is the F1 family (the window the decision bets on), not a field reading: no code, unit or definition flips the call. context_artifact redrawn 2026-10-21 from published_series to filed_standard after the window moved (task251 and task478 marked spent pulled task481, published_series, into it): the trestle design basis is the stakeholder's own filed document, the honester label. Architecture 1 spent at stage 4 Gate F on 2026-10-21: scored reader A conditioned on the 2027 tide table and landed 11.60 ft, 0.4 and 2.3; reader B filed the default 12.35 ft.",
+  "registered": "2026-10-21T01:16:21Z",
+  "architecture_spent": true
 }

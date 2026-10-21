@@ -1,6 +1,6 @@
 # task178 design note
 
-**Status: BUILD, stage 3 green (generator checks 84 of 84, verifier 19 of 19, two byte-identical builds, precut and figures_check exit 0, leak.py REVIEW answered, guard surface exit 0 and heart WARN), waiting on stage 4's two scored readers and the judge. Architecture 1 of the redraw, card registered 2026-10-21.** The author redrew the
+**Status: PAUSED, architecture 1 spent at stage 4 Gate F on 2026-10-21 (below). Before that: BUILD, stage 3 green (generator checks 84 of 84, verifier 19 of 19, two byte-identical builds, precut and figures_check exit 0, leak.py REVIEW answered, guard surface exit 0 and heart WARN), waiting on stage 4's two scored readers and the judge. Architecture 1 of the redraw, card registered 2026-10-21.** The author redrew the
 number in a new cell after seed FC49's product-security world died at stage 1 (its record is kept below, in the FC49 screen
 record and in the Tried and rejected list). Cell, allocated by the main session:
 physical-environmental-sciences / climate-weather-extremes, Forecasting. Organisation, decision, quantity and
@@ -435,4 +435,16 @@ none is touched by either candidate.
 - **Names near a real waterfront.** The first cut used a Commercial Street, a Union Wharf, a Marginal Way and a
   Custom House on a Maine harbour (Portland's own) and a city name shared with a real village; renamed before any
   reader saw the pack (`reduce-house-fixes` H21).
+- **Architecture 1, the April-May 2027 trestle deck set against the window's own predicted tides: spent at stage 4,
+  Gate F (2026-10-21, pack d64099d2), the judge stopped since the readers decided it.** Scored reader A landed the
+  call exactly (11.60 ft, 0.4 and 2.3): "the 2027 predicted highs for 1 April to 31 May were combined with
+  observed-minus-predicted peak residuals from April and May of 1995 to 2026, each year shifted to 5.40". Reader B
+  filed the default path, 12.35 ft. With the tide table in the pack the decisive step is a reflex for any reader who
+  thinks of it, and hiding the table would be a plant, so the architecture is spent rather than hardened. Asks: A
+  kept 15 of 22 and B 16 of 22; the sensor bracket offset fell (reader A: "the sensor read 0.08 ft low from the
+  2017-10-30 storm until the 2018-03-12 reset; checked against the harbormaster board") and the reset work orders
+  fell to a time-gap merge ("counts did not change for cutoffs from 6.5 to 9 hours"); the legacy system's unstated
+  UTC clock held for both readers (both filed 18, 22, 22, 18, 17, 10 against 24, 36, 33, 30, 20, 18). Why it held: its
+  only evidence is an alignment between two files that no document invites anyone to make, while the two that fell
+  each had a document naming the event (a log line, a levelling row) or a gap a reflexive dedup closes.
 
