@@ -318,6 +318,19 @@ Measured by: generator/pair.py on the cut pack (target.zip af7016cf).
   night, the outstation changes, the lost signals, the storm-night stops).
 - Probes on the near-final pack (pr252m): G filed exactly the default path's six, H the first-port five; neither read
   the flushes.
+- Stage 4 on target.zip af7016cf, two scored readers (pack and prompt only): both missed the call. Reader A filed
+  BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1 and HOL-FI1 (carryover from the slot before only, both check shortfalls read as
+  gain errors); reader B filed those five with GAR-FW1 and HOL-FW1 (carryover from both slots, no zero error). Neither
+  read the flushes or the lines. Asks 0 of 16 each (ask A 11, 6, 7, 9, 8, 7, 11 and 10 from both, the analysis stamps as
+  given; ask B by a check rule and by a filtered-port-only rule), model score 12 each, measured pair 12.0. Both answered
+  question 1 with no sentence naming the step and question 6 with an analytical choice (the carryover model). Their
+  realism notes, none changed: four check rows with three equal readings (a stable analyser reads to 0.001), the
+  planned round's regular times (a schedule), the second logging's one pickup time (the courier's docket), Calderwood's
+  filtered reading under its final water (the line loss itself).
+- Judge (isolated thread): DETERMINISTIC, APPROVE, every figure reproduced (CAL-FI1 -0.0104, HOL-FI1 -0.0018, the
+  rises at the flushes, the regrowth time, asks A and B); Gate G analytical_non_defect, no surface-read dependency, no
+  sole data defect (each borderline, live testing recommended); Gate H domain, layers and decisive step pass. Its two
+  soft spots (ask A's analysis clock, ask B's PLC reading) are closed by the shipped records and are not the stump.
 
 ## Tried and rejected
 

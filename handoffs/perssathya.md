@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-21 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task251 SHIPPED 10-21 (architecture 5); task249's architecture 5 spent 10-20, PAUSED, drawn fresh next; task252's architecture 1 spent 10-21 and architecture 2 drawn 10-21, in build). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-21 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task251 SHIPPED 10-21 (architecture 5); task249's architecture 5 spent 10-20, PAUSED, drawn fresh next; task252 SHIPPED 10-21 (architecture 2)). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
@@ -18,7 +18,7 @@ author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 r
 reshipped), then the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last
 (task232 and task229 assessed 10-14: no clean second layer, kept as shipped; task231's second layer, the 2025 rise in closures, was built and returned SEND_BACK at the re-judge, so it was reverted and the shipped build stands; task122 prototyped 10-14: informative hyperkalaemia stops leave the MAR estimators apart and short of the counterfactual, so no clean second layer, kept as shipped; task131 assessed 10-14: no clean second layer, kept as shipped; task123 kept as shipped at the author's call (no Energy task type serves ETL, so its tag is its only legal home). The review is complete; verdicts sit in the board's `assessment` collection. Next: wave 2 (task233 to task236) or task228, at the author's call.)
 
-**task252: architecture 2 DRAWN 2026-10-21, in design and build (stage 2 to 3).**
+**task252: SHIPPED 2026-10-21 (architecture 2), waiting on the portal.**
 - Architecture 2 (same world and pairing): each channel's offset now includes the ammonia its own sample line takes
   before the cell. Calderwood's and Holmedale's unchlorinated filtered lines carry a nitrifying film that each monthly
   line flush (the register's planned maintenance log) clears and that grows back over two days; the checks enter after
@@ -26,8 +26,10 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   BRN-FW1, CAL-FI1, DUN-FW1, ELS-FW1, GAR-FI1 and GAR-FW1; architecture 1's full model (the default path here) files
   HOL-FI1 for CAL-FI1. Every licensed recovery form files the same six (margin 0.002).
 - Ask B re-sited: each analyser tripped once on a storm night and restarted its sequence at the raw water port, a run
-  reader H's rule reads as the telemetry's. Prototype in the session scratchpad (t252a2/gen) is the port source; see
-  pipeline.json's resume line.
+  reader H's rule reads as the telemetry's.
+- Stage 4 (target.zip af7016cf): both scored readers missed the call (reader A filed five channels with the slot-before
+  carryover only, reader B seven with no zero error; neither read the flushes) and every ask figure, model score 12
+  each. Judge DETERMINISTIC APPROVE, Gate G analytical_non_defect (borderline), Gate H pass.
 - Architecture 1 (spent at stage 4 round 4, reader H landed it): its lessons stand in the design note's Tried and
   rejected: a measurement model whose every term the readings and grabs identify is solved by a careful reader about
   one time in eight.

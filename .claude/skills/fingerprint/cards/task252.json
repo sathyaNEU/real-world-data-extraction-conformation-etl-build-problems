@@ -10,7 +10,7 @@
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Flag BRN-FW1, CAL-FI1, DUN-FW1, ELS-FW1, GAR-FI1 and GAR-FW1 (6 of 16 treated-water channels) in the fourth-quarter 2027 return; the other ten read within 0.003 mg/L as N of the water at their sample points.",
+  "answer": "Flag BRN-FW1, CAL-FI1, DUN-FW1, ELS-FW1, GAR-FI1 and GAR-FW1 in the fourth-quarter 2027 return: these six treated-water channels read more than 0.005 mg/L as N off the water at their sample points.",
   "answer_source": "submission.md, 1. Final Recommendation",
   "gap": [
     "objective",

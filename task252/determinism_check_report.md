@@ -1,55 +1,79 @@
-# Verdict (task252)
+# determinism-check report, task252 (architecture 2), 2026-10-21
 
-**Verdict:** DETERMINISTIC
+## Verdict
+DETERMINISTIC
+**Disposition:** APPROVE
+**Stumping type:** mechanism: other (latent measurement-error identification: lagged-regression carryover, zero/span split, flush event-study, with ETL-conformance asks), stumping_family: analytical_non_defect (borderline), surface_read_dependency: no (borderline), sole_data_defect: no (borderline)
 
-**Disposition:** APPROVE. No repair needed; no rerun. One watch item (the analysed-stamp clock offset, below) is closed by the shipped chronology and is an ask-level item only.
+The judge ran as one isolated sonnet thread on the prepared brief. Its verdict is at /tmp/claude-0/-home-user/ae71c25a-4beb-538a-9fe7-971dc23fc641/scratchpad/t252a2s4/judge/verdict.md. This report replaces the architecture 1 report.
 
-**Why:** The six flagged channels fall out of the shipped historian, register, verification workbook and LIMS grabs the same way for every rigorous solver. The carryover shares (about 7 and 2 per cent at five analysers) separate cleanly from the other three, and the zero error versus span error is separated by the raw-grab comparison, which is far apart (Holmedale about 1.7 per cent of level against 8 per cent for a span error; Calderwood about 10.7 per cent against about 1.6 per cent for a zero error). The margins are wide: flagged channels sit at 0.009 or more in my reconstruction and the rest within 0.003, so nothing sits near 0.005. Asks 2 and 3 reproduce exactly from the files.
+## Why
+Every committed figure reproduced from the shipped bundle alone. The six flagged channels are BRN-FW1, CAL-FI1, DUN-FW1, ELS-FW1, GAR-FI1 and GAR-FW1. They come from three separable instrument effects: port carryover, the zero or span calibration error, and the filtered sample-line loss that regrows after each monthly flush. Every flagged channel is 0.009 or more off, and every other channel is within 0.004 of zero, so the 0.005 line sits in a gap. Asks 2 and 3 reproduce for all eight plants. Each rests on one inference the files force (see the forks below).
 
-## Evidence (recomputation ledger)
+## Recomputation ledger
+| Figure | Claimed | Judge recomputed | Reproduced |
+|---|---|---|---|
+| Carryover share BRN / DUN / ELS / GAR / HOL (1 and 2 slots back) | about 7% and 2% | .072/.019, .079/.020, .076/.021, .066/.019, .070/.020 | yes |
+| Carryover share ASH / CAL / FEN | under 1% | .006/-.001, .003/.002, .004/-.001 | yes |
+| Carryover offset BRN-FW1 / DUN-FW1 / ELS-FW1 / GAR-FI1 / GAR-FW1 | each 0.006 or more | +0.0115 / +0.0123 / +0.0091 / +0.0266 / +0.0112 | yes |
+| Carryover offset HOL-FI1 / HOL-FW1 | cancelled by line loss / zero error | +0.0254 / +0.0077 | yes |
+| Holmedale zero error | 0.008 low at every level | check mean 0.0920; raw lab minus online -0.0071 (a span error would predict -0.029) | yes |
+| Calderwood span error | about 8% low | check mean 0.0916 (-8.4%); raw difference -0.052 (span predicts -0.042, zero error -0.008) | yes |
+| Other six analysers' check means | within 0.002 of 0.100 | .0996, .1011, .0993, .1002, .0996, .1008 | yes |
+| CAL-FI1 / HOL-FI1 rise at flush | 0.009 to 0.011 / 0.018 to 0.020 | +0.0102 / +0.0195 | yes |
+| Other channels' flush rise | none | at noise | yes |
+| Regrowth time | 2.0 days | grid fit 2.00 for both | yes |
+| Line loss over quarter CAL / HOL | 0.010 / 0.019 | 0.0104 / 0.0192 | yes |
+| CAL-FI1 total | 0.007 or more below | -0.0104 | yes |
+| HOL-FI1 total | within 0.004 | -0.0018 | yes |
+| Other unflagged totals | within 0.004 | ASH-FI1 -0.0005, ASH-FW1 +0.0010, BRN-FI1 +0.0003, CAL-FW1 -0.0008, DUN-FI1 -0.0002, ELS-FI1 -0.0002, FEN-FI1 -0.0005, FEN-FW1 +0.0006, HOL-FW1 -0.0003 | yes |
+| Flagged list (six) | as above | same six: +0.0116, -0.0104, +0.0122, +0.0091, +0.0268, +0.0113 | yes |
+| Ask 2, lab holding time over 24 h (Ash, Bra, Cal, Dun, Els, Fen, Gar, Hol) | 14, 9, 8, 12, 11, 13, 14, 11 | same | yes (needs the +1 h shift on `analysed` and de-duplication) |
+| Ask 3, fixed-dose hours (same order) | 31.2, 27.8, 35.8, 32.2, 26.7, 34.8, 31.3, 29.3 | same | yes |
+| Ask 4 PNG | six marked | not checked by the judge (golden outside its access) | n/a |
 
-| Figure | Claimed | Recomputed | Reproduced | Source |
-|---|---|---|---|---|
-| Carryover shares BRN, DUN, ELS, GAR, HOL | about 7% of slot before, 2% of the one before | c1 0.066 to 0.081, c2 0.010 to 0.035 in per-port regressions with raw lags 2 to 8 h as controls; pooled fits about 0.07 and 0.02 (noisier at DUN and ELS for the 2-back share) | yes | nh3_online_readings, G rows, port order from register |
-| Carryover shares ASH, CAL, FEN | under 1% | about 0 (CAL 0.003 to 0.006, ASH and FEN about 0) | yes | same |
-| Holmedale check mean | 0.092 (0.008 low) | 0.0917 to 0.0923 | yes | verification workbook, HOL rows |
-| Calderwood check mean | about 8% low | 0.0907 to 0.0923 | yes | verification workbook, CAL rows |
-| Other six checks | within 0.002 of 0.100 | 0.0987 to 0.1020 (BRN Dec 0.102 is the largest) | yes | verification workbook |
-| Holmedale zero error | 0.008, not 8% | raw grabs less carryover-removed raw reading: mean shortfall 0.0062 (SE about 0.002), relative 1.7% (n=12) | yes, zero not span | LIMS RW-HOL against HOL-RW1 slots |
-| Calderwood span error | about 8% | relative shortfall 10.7% (SE about 0.7%) against 0.008 for a zero error (n=13) | yes, span | LIMS RW-CAL against CAL-RW1 slots |
-| BRN-FW1 | 0.007 or more | carry +0.0115 (+0.0135 with shares inflated 15% and 25%) | yes | historian |
-| DUN-FW1 | 0.007 or more | +0.0113 (+0.0133) | yes | historian |
-| ELS-FW1 | 0.007 or more | +0.0091 (+0.0107) | yes | historian |
-| GAR-FI1 | 0.007 or more | +0.0271 (+0.0316) | yes | historian |
-| GAR-FW1 | 0.007 or more | +0.0118 (+0.0147); the two-back raw share matters here | yes | historian |
-| HOL-FI1 | 0.007 or more | +0.0236 carry, -0.008 zero, net +0.0156 | yes | historian |
-| HOL-FW1 | within 0.003 of zero | +0.0088 carry, -0.008 zero, net +0.0008 (+0.0030 at inflated shares) | yes, not flagged | historian |
-| CAL-FI1, CAL-FW1 | about 0.002 | -0.0016, -0.0014 | yes | historian |
-| Every other treated channel | within 0.003 | all within 0.0004 | yes | historian |
-| Ask 2 counts (analysed more than 24 h after collection) | ASH 14, BRN 9, CAL 8, DUN 12, ELS 11, FEN 13, GAR 14, HOL 11 | identical with the analysed stamp moved forward 1 h (identical for any shift from 53 to 64 min); 16 courier-docket duplicates dropped; TW- and TUR codes mapped | yes | lims_ammonia, register Sample points, eml |
-| Ask 3 hours at fixed dose | ASH 25.0, BRN 23.0, CAL 22.0, DUN 28.5, ELS 20.5, FEN 41.0, GAR 17.5, HOL 22.0 | identical, all eight, from the stated recipe (check cycles, filtered-port-only unfilled F, all-port unfilled F runs followed by V checks unavailable; filled F, missing rows and all-port runs with no check available; gap beyond the 2 h hold) | yes | nh3_online_readings, process summary, WQ-DS-04 |
+## Competing answers that survived
+No fork survives that moves the main call. Two soft forks sit on the asks, and the shipped data closes both.
+- **Ask 2, clock of `analysed`.** The dictionary says "NZ time" for collected, received and released but is silent on `analysed`. Read with no shift, the total is 69 instead of 92. The files force a shift of 53 to 64 minutes: 16 rows have `analysed` before `received`, and no result is released within 64 minutes of its stamp. Every shift in that window gives the golden counts. The 7 December duplicate rows must be dropped, otherwise each plant is 2 higher. A solver who takes the stamp at face value files wrong counts. This is a Layer 1 clock issue on an ask, not the stump. The judge would not send it back and offers an optional pin: state `analysed` as "laboratory run record, instrument clock".
+- **Ask 3, availability rule.** The PLC reads the analyser directly and the historian is downstream. A historian-only reading gives 38.2, 34.8, 42.3, 38.7, 32.7, 40.8, 38.3, 36.3. Counting every F row as unavailable gives 34.2, 30.8, 38.3, 34.7, 28.7, 36.8, 32.8, 32.8. Only the golden fits the process summary's telemetry description and the dictionary's fill and missing-slot notes. Counting the check slots as available changes no plant.
+- Wrong lists on the main call all fail:
+  - Raw historian plus PASS checks flags HOL-FI1, HOL-FW1 and CAL-FI1 and misses the five carryover channels.
+  - Correct carryover without line loss wrongly flags HOL-FI1 and drops CAL-FI1.
+  - Mixing up zero and span error wrongly flags HOL-FW1 or CAL-FW1.
 
-## Competing answers and forks
+## Spec gates
+| Gate | Required | Actual | Pass |
+|---|---|---|---|
+| Files | 10 or more | 10 | yes |
+| Formats | 3 or more | 5 (csv, xlsx, pdf, eml, md) | yes |
+| Large file | 25,000 or more rows | nh3_online_readings 106,100 rows | yes |
+| Distractors | 2 or more, named in metadata.json, no file name labels one | plant_daily_output_2027Q4.csv and catchment_rainfall_daily_2027Q4.csv named in metadata.json; neither file name labels it | yes |
+| Distractors unused and relevant | unused by solution, relevant enough to weigh, a ruling-out fact shipped | both are unused by any answer; the judge found no sign that either reproduces a graded quantity | yes |
+| Deliverables | 1 to 3, all in golden | 2 (xlsx, png) | yes |
+| Asks | multi-dimensional, unit and rounding stated | 16 channels, 8 plants by 2 items; hours to one decimal; counts are whole numbers | yes |
+| Prompt shape and rubric of 25 or more | identifiable shape, 25 or more criteria | shape 07 per metadata; 16 channel flags plus 16 per-plant values plus chart items exceed 25 | yes (criteria count inferred, not generated here) |
+| Not LLM generated, goldens real | no authoring language | judge found none; real-looking noise throughout | yes |
 
-- Treat the historian as truth (no carryover) and apply only the Holmedale check as a bias: flags HOL-FI1 and HOL-FW1, six channels short. This is the wrong easy route, not a surviving answer: the carryover is visible in the data (regressions above) and the answer is not forced by that reading.
-- Holmedale as a span error: HOL-FW1 net +0.0076 flagged, HOL-FI1 net +0.021. Closed by the raw grab comparison (1.7% against 8%). Calderwood as a zero error: CAL-FI1 and CAL-FW1 at about -0.008, flagged. Closed the same way (10.7%).
-- Ask 2 literal fork. The data dictionary gives no time basis for `analysed` (the other three clocks are stated as New Zealand time). Read literally with no shift the counts are ASH 11, BRN 6, CAL 7, DUN 9, ELS 8, FEN 7, GAR 11, HOL 10. The shipped data close it: 16 rows are stamped analysed before reception logged them (down to 53 minutes before) and no result is released within 64 minutes of its stamp, so a one-hour clock behind (NZST against NZDT) is the only coherent repair, and all shifts in 53 to 64 minutes give the golden counts. I count this as closed but an ask-level data-semantics step; it relies on an inference no file states.
-- Ask 2 duplicates: keeping the courier-docket row (15:28 collected) instead of the sampler's row would lower counts for the 7 December round. Closed because 15:28 is the same time for all 16 points while the others are sampling-round times.
-- Ask 3: counting every F row as unavailable, or none of the all-port runs, gives different hours. Closed by the process summary (PLC reads the analyser directly, the outstation and historian are separate), the dictionary (filled F, missing rows) and the verification sheet's note that a fault is followed by a check. This is also a multi-rule ask (asks may be rule application).
+## Gate G reconciliation
+Judge: mechanism other (latent measurement-error identification), stumping_family analytical_non_defect (borderline), surface_read_dependency no (borderline), sole_data_defect no (borderline).
 
-## Files/Hygiene
-PASS. Ten files, five formats (csv x4, xlsx x2, pdf x2, md, eml); nh3_online_readings has 106,181 rows. Rainfall and plant output files are unused by the solution (distractor candidates). Timeline coherent (data and documents Oct to Dec 2027, dictionary revised 3 Nov). No authoring or benchmark language seen in the files I opened. The only oddity is the missing time basis for `analysed` in the dictionary, which I treat as realistic mess, not a hygiene fault. I did not open metadata.json (forbidden). Nothing exclusion-level.
+Card and design note: `stump_class: analytical`. The easy path is carryover plus zero and span, flagging HOL-FI1 and leaving CAL-FI1 at about +0.001. The stump is the filtered-line loss read from the recovery after each monthly flush. The judge independently reached the same easy-route result: correct carryover without line loss flags HOL-FI1 wrongly and drops CAL-FI1.
+
+The two readings match. The PASS checks are named as the misleading surface read, but they do not carry the task. Neither declared distractor (plant output, rainfall) carries any weight. No finding of a too-load-bearing distractor. The "borderline" labels stem from the judge's worry that three stacked corrections can look like a defect chain. The design note's reply is that nothing is planted and the maintenance log records visits only, so I read it as an estimation task and not a send-back risk.
+
+## Gate H line
+`domain: pass`, `layers: pass`, `decisive_step: analytical`
+
+This agrees with the card's `analyst_test` and `domain_test` and the design note's `## Three rules`. The decisive step is not a field reading or an executed rule. A strong analyst who cleans the data and reads every document still files the wrong list unless they join the maintenance log to the readings.
 
 ## Stump power (Gate F)
-Good. A capable solver who reads the historian offsets as the deliverable, or who finds only the Holmedale check shortfall, files HOL-FI1 and HOL-FW1 only. Reaching all six needs a fitted carryover model (two-slot shares, with the port's own raw-lag response controlled for) and a zero versus span separation from the raw grabs. The verification workbook says PASS for Holmedale and Calderwood, which is not a rejection trap by itself. The shipped prose never mentions carryover, so it is not pre-disarmed.
+High. Three independent chances to err sit on the main call: the PASS checks, the missing line loss, and zero versus span. Asks 2 and 3 add two more (the clock shift with de-duplication, and the PLC-versus-historian availability reasoning). The data dictionary documents the fill and missing-slot rules, and the log says "sample lines flushed", but neither names the effect. The line-loss method is not filed, which is consistent with the rule of filing the WHAT and not the HOW. The textbook-route caveat does not apply: the judge reached the golden by identification from the data, not by applying a standard method with no judgment.
 
-## Stumping type (Gate G)
-`mechanism: method_or_model_selection` (measurement-error model estimation), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`.
-The core is estimating the analyser's carryover shares and its calibration error structure; run on data with no carryover, the zero/span separation at Holmedale and Calderwood alone would still stump. Borderline note: a reviewer could read the carryover as an instrument "defect"; I judge it the field's own measurement-system analysis, not a planted decoy.
+## Findings, ranked
+1. Ask 2: the `analysed` clock is unstated. The files force the answer (53 to 64 min), but a literal reading gives 69, not 92. The judge classed it determinate by evidence and not a send-back. The optional pin in the dictionary is cheap and does not move the stump.
+2. Ask 3: the availability rule rests on inference from the process summary. Determinate, and the golden is the only consistent reading.
+3. Minor hygiene: the dictionary is "revised 3 November" yet describes a December export.
+4. Not verified by the judge: Ask 4 (the PNG), the metadata.json distractor naming (checked by me: present), and the cross-batch comparison.
 
-## Three rules (Gate H)
-`domain: pass`, `layers: pass`, `decisive_step: analytical`.
-Domain swap test fails to swap: carryover and zero/span calibration error of an online analyser against laboratory grabs is what a water-quality instrument engineer estimates. Layer 1: clock and code mess in the laboratory export (NZ time, unlabelled analysis stamp, October-to-November code change, duplicated logging), historian fills and lost rows. Layer 2: estimating carryover shares per analyser and separating zero from span error. Easy route: take the historian or the check mean at face value, giving {HOL-FI1, HOL-FW1} instead of the six.
-
-## Fix
-none. Optional: none that changes what solvers see.
+## Next action for the author
+No repair is needed. Optionally add the one-line clock note for `analysed` to water_services_data_dictionary.md, and if so rebuild and re-run the free gates. Otherwise proceed to ship.
