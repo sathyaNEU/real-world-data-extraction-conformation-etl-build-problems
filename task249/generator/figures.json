@@ -147,7 +147,8 @@
  },
  "components": {
   "recognised_time_pct": 70,
-  "speeded_share_pct": 40
+  "speeded_hi": 48,
+  "speeded_lo": 36
  },
  "family": {
   "direct_acgh_min": 1.0,
@@ -199,6 +200,7 @@
    ]
   },
   "time_same": 0.6,
-  "time_sib": 0.8
+  "time_sib": 0.8,
+  "time_trial": 0.7
  }
 }
