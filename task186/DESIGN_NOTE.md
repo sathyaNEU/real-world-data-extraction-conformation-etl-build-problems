@@ -85,55 +85,68 @@ Petroleum's company-run stations, which kept about 3 cents a litre more than the
 
 ## Three rules
 
-- Task type: survey-research-official-statistics / anomaly-detection, which serves anomaly-detection; the decisive
-  step scores each unit's period change against the spread of comparable changes, as official statistics' anomaly
-  detection does.
-- Domain test: the deciding quantity is the number of a brand's stations whose retail margin rose by more than the
-  levy, judged against the margin changes the retail price cycle produces on its own. Retail fuel prices run in
-  town-level cycles of undercutting and restoration over five to nine weeks, so a station's margin 28 days apart moves
-  by cents with nothing happening at all; the reference distribution for "passed on more than the rise" therefore has
-  to come from the same stations across periods when the levy did not move, which is the price monitor's own
-  construction and the reason a within-station null is the wrong instrument here.
-- Swap: put clinics and wait times in place of stations and margins and the task no longer stands: there is no levy to
-  net out of a margin and no rack price, and the decisive structure, town-level cycles of undercutting and restoration
-  in retail fuel margins, is the fuel market's own; the field measures pass-through as the margin change net of the
-  levy change, station by station, and the monitor scores each station's period change against comparable changes,
-  official statistics' own anomaly detection. The test is not generic multiple testing wearing fuel nouns: what makes
-  the easy null wrong is the cycle itself, a feature of this market and of no clinic's waiting list. Swap the null
-  instead, the day-to-day one for the stations' own changes when nothing happened, and the call moves (Harbourline
-  against Tallis).
+Rewritten at the stage-2 re-measurement of 2026-10-21, which refuses this architecture. Each line says what was
+measured on the generator's clean truth, not what the design intended. Three lines fail, and they are the three the
+client's check turns on.
+
+- Task type: survey-research-official-statistics / anomaly-detection, which serves anomaly-detection: the monitor
+  scores each unit's period change against the spread of comparable changes. The task type is right, and it is also
+  the problem, because that score is reached by a one-column outlier screen (see Not rule application).
+- Domain test: the deciding quantity, the number of a brand's stations whose retail margin rose by more than the levy
+  judged against what the town's own price cycle moves a 28-day margin anyway, is the field's own quantity, and this
+  line holds. Town-level cycles of undercutting and restoration run five to nine weeks (measured: every area's period
+  36 to 62 days, amplitude 2.45 to 3.05 cents a litre), so the cycle alone moves a station's 28-day margin by up to
+  1.4927 cents a litre, which is the largest change among the 341 stations the golden does not find. What fails is not
+  the quantity but the step the design calls decisive.
+- Swap: put clinics and wait times in place of stations and margins and the task no longer stands, because there is no
+  levy to net out of a margin, no rack price and no five-to-nine-week cycle of undercutting and restoration. This line
+  holds.
 - Layer 1: a minute-stamped price-change log in UTC read against a local-time daily window across daylight-saving
-  changes (how the reporting platform stores submissions); station numbers renumbered by the reporting system in June
-  2026 with a crosswalk; terminal rack prices published per business day in dollars a litre, weekends and holidays
-  carried; a station register whose brand changes are effective-dated; batches of changes resubmitted after reporting
-  outages. None is placed to be caught; each is asserted neutral for the call.
-- Layer 2: estimand_identification, the counterfactual movement of a station's margin without the levy change, which
-  under the areas' price cycles is a 28-day phase effect that only between-period or same-area evidence measures.
-- Decisive step: choosing the null for many simultaneous tests is an estimator choice on records the bureau keeps,
-  not catching a plant (the cycles are every area's ordinary pricing), not reading a field (every field is read the
-  same on both routes) and not applying a rule (the standard files the false discovery rate and the inquiry rule,
-  never the null).
-- Not semantics: every field, unit and code (UTC stamps, the crosswalk, the rack's dollars a litre, the sales tax, the
-  levy in force, the register's brand on the day) is read the same on the easy route and the golden one; a reader who
-  reads them all correctly and tests each station against its daily variation still sends the inquiry to Harbourline.
-- Not rule application: the standard states the margin, the windows, the false discovery rate and the inquiry rule,
-  but no filed rule says how to judge a margin change against what full pass-through would leave; executing every
-  stated rule with a t-test still files Harbourline.
-- Analyst test: a strong analyst who rebuilds every station's daily margin from the minute log, applies the standard's
-  windows and examined-station rule and tests each margin change against the station's day-to-day variation before
-  Benjamini-Hochberg at 5 per cent finds most stations in two areas and sends the inquiry to Harbourline Fuels (88 per
-  cent of its stations found), not Tallis Petroleum (40 per cent on that route, 30 on the golden).
-- Estimand: the monitoring standard's finding sentence (a station passed on more than the rise when its margin rose
-  by more across the change than it would have had the levy not changed), with the false discovery rate across every
-  examined station held at 5 per cent, and the inquiry rule.
-- No decoy: no memo, bulletin, briefing or stakeholder figure names a brand, a share or a finding; the bureau's
+  changes; station numbers renumbered by the reporting platform in June 2026 with a crosswalk; terminal rack prices
+  published per business day in dollars a litre, weekends and holidays carried; a register whose brand changes are
+  effective-dated; changes resubmitted after six intake outages. None is planted, each is asserted neutral for the
+  call, and this line holds.
+- Layer 2: the design files estimand_identification, the counterfactual movement of a station's margin without the
+  levy change. Measured, that counterfactual never has to be estimated to answer the call: the 28 stations the golden
+  finds are exactly the top 28 of 369 by the standard's own 28-day margin change, clear of the 29th by 1.2233 cents a
+  litre, so the layer that was meant to decide is decoration on every graded figure.
+- Decisive step: FAILS on measurement. The design's decisive step is the choice of reference distribution for many
+  simultaneous tests. On the clean truth 7 of 15 data-free cuts on the standard's own margin-change column file the
+  golden call and all seven printed bins, at a maximum absolute difference of 0.0000 percentage points and with an
+  identical found set; three of the seven are plain outlier reflexes (the cross-section's median plus three MAD, its
+  median plus 1.5 interquartile ranges, its mean plus two standard deviations). Choosing the null is therefore not the
+  step that decides the call: one group-by, one robust spread and one comparison decide it.
+- Not semantics: holds. Every field, unit and code (UTC stamps, the crosswalk, the rack's dollars a litre, the sales
+  tax, the levy in force, the register's brand on the day) is read the same on the easy route and the golden one, and a
+  reader who reads them all correctly and tests each station against its daily variation still files Harbourline.
+- Not rule application: FAILS on the measured spread, which is the half of this line that was never answered. The
+  standard files the margin, the windows, the false discovery rate and the inquiry rule and names no null, so the
+  design's old line was answered against the question "does a filed rule name the method". Asked the right question,
+  "is anything left to decide once every filed rule is read", the answer is nothing. Across the 13 licensed
+  reference-distribution constructions (the station's own 28-day changes at non-levy dates one-sided, two-sided, by a
+  normal approximation, before the change only, after it only, pooled over every station, pooled within each area; the
+  cross-section at the change by median and IQR, by median and MAD, by mean and SD; same-area competitors on MAD, IQR
+  and SD scale) the spread on six of the seven graded shares is exactly 0.0 percentage points, and 12 of the 13 file
+  Tallis at 30 per cent with every other brand at 0. The 13th, the cross-section's mean and standard deviation, finds
+  nothing. The Spearman correlation of the golden's own statistic with the plain margin-change column is +0.9837.
+- Analyst test: the easy route still ends wrong, and that is no longer enough. A strong analyst who rebuilds every
+  station's daily margin from the minute log, applies the standard's windows and examined-station rule and tests each
+  margin change against the station's day-to-day variation before Benjamini-Hochberg at 5 per cent finds 195 of 369
+  stations and sends the inquiry to Harbourline Fuels (88.5 per cent of its stations found, Tallis seventh of seven at
+  40.2 per cent). The same analyst reaching instead for the cross-section's robust spread, the reflex this task type is
+  named for, files the golden without ever asking what the counterfactual is, so the test separates two reflexes rather
+  than a reflex from an analysis.
+- Estimand: the monitoring standard's finding sentence (a station passed on more than the rise when its margin rose by
+  more across the change than it would have had the levy not changed), the false discovery rate across every examined
+  station held at 5 per cent, and the inquiry rule; filed literally in PM-04 and unchanged by this reading.
+- No decoy: holds. No memo, bulletin, briefing or stakeholder figure names a brand, a share or a finding; the bureau's
   published weekly averages rank nothing on pass-through and are a distractor.
-- No certified replay: no certified or published figure is reproduced to recover the method; the null comes from the
-  record itself.
-- Lesson: a change measured across an event carries every structure the series has between periods, so the evidence
-  for many units at once must be judged against how much such changes move when nothing happened, not against
-  within-period noise; no build on file teaches the null of many simultaneous tests (18 Anomaly Detection drivers read
-  above).
+- No certified replay: holds. No certified or published figure is reproduced to recover the method, and the reference
+  distribution comes from the record itself.
+- Lesson: none this architecture can teach. The intended lesson, that evidence for many units at once must be judged
+  against how much such changes move when nothing happened, is not what this data makes necessary: the quantity the
+  lesson corrects is separated by 1.2233 cents a litre, and any ordinary outlier rule on one column reaches the same 28
+  stations. The number is re-rooted at stage 1.
 
 ## Readability screen
 
@@ -395,3 +408,48 @@ about 15).
   station's brand the day before it closed and the extract notes end a price at the closing day.
 - Critical components carrying the count of stations found: the same-area null finds 29 Tallis stations where the
   stations' own changes find 28, both 30 per cent; the components state the shares.
+- Widening the magnitudes at stage 2, which is what a `FAILED_TO_STUMP` on measurement normally takes: refused on
+  measurement. The golden's 28 found stations are exactly the top 28 of 369 by the standard's own 28-day margin change
+  and clear of the 29th by 1.2233 cents a litre, so any cut in a 1.2233-cent-wide window reproduces the found set
+  exactly; 7 of 15 data-free cuts on that one column file the call and all seven printed bins at a maximum absolute
+  difference of 0.0000 percentage points, three of them plain outlier reflexes (median plus three MAD, median plus 1.5
+  interquartile ranges, mean plus two standard deviations). The same seven land it on the shipped bundle read through
+  `generator/verify.py`. The decisive step is arithmetic, so no magnitude repairs it.
+- The signal dial (Tallis's excess pass-through) as the way to widen the separation: one-ended, both ends read, at
+  exA10 (no call, the golden finds nothing, 0 of 13 agree, 0 of 5 crude routes land it), exA15 (gap -0.348, 2 of 13
+  agree, 0 of 5 crude routes land it), exA20 (gap 0.225, 9 of 13 agree, 1 of 5 crude routes land it), exA25 (gap
+  0.720, 12 of 13 agree, 4 of 5 crude routes land it), base (gap 1.223, 12 of 13 agree, 4 of 5 crude routes land it),
+  exA40 (gap 2.225, 13 of 13 agree, 4 of 5 crude routes land it), exA50 (gap 3.223, 13 of 13 agree, 4 of 5 crude
+  routes land it), exA60 (gap 4.225, 13 of 13 agree, 4 of 5 crude routes land it). No setting has the step both needed
+  and determinate.
+- The cycle-amplitude dial as the way to widen it: the same one-ended curve from the other side, at ampB050 (gap
+  2.120, 13 of 13 agree, 4 of 5 crude routes land it), ampB075 (gap 1.687, 13 of 13 agree, 4 of 5 crude routes land
+  it), base (gap 1.223, 12 of 13 agree, 4 of 5 crude routes land it), ampB150 (gap 0.357, 9 of 13 agree, 1 of 5 crude
+  routes land it), ampB200 (gap -0.578, 5 of 13 agree, 0 of 5 crude routes land it).
+- The phase-spread dial (how far the coastal areas' cycle phase at the change sits above Tallis's four towns'), which
+  is the only axis that moves the default path at all: one-ended too, at phC040 (gap 2.050, 13 of 13 agree, 4 of 5
+  crude routes land it), phC070 (gap 1.544, 12 of 13 agree, 4 of 5 crude routes land it), base (gap 1.223, 12 of 13
+  agree, 4 of 5 crude routes land it), phC130 (gap 0.970, 10 of 13 agree, 4 of 5 crude routes land it), phC160 (gap
+  0.972, 10 of 13 agree, 3 of 5 crude routes land it), and it fails three ways as it widens. Compressed to 0.40 the
+  default path itself files Tallis (Harbourline no longer leads: Tallis first at 30.4 per cent, lead 3.17 times), so
+  the ladder inverts. Widened to 1.30 and 1.60 the default path's own lead over Pellow falls to 1.14 and 1.13 times,
+  under the 1.15 times floor, while the licensed family drops to 10 of 13 and 4 of 5 then 3 of 5 crude routes still
+  land the golden.
+- Tuning any of the three dials to find a cell where the separation is wide and the licensed family still unanimous:
+  there is no such cell, and the reason is algebraic rather than a matter of search. The decisive step is the choice
+  of the scale a one-dimensional unit statistic is read against, so the licensed constructions differ only in the
+  location and spread they divide that statistic by. They agree on the found set exactly when no admissible scale
+  reorders the units, which is exactly when one sort on the statistic is the answer. Measured over 16 settings,
+  Spearman corr(crude routes landing the golden, licensed constructions agreeing) = +0.8837.
+- The default path's own separation as the thing to widen, which is what this build's resume line ordered: the
+  within-window route is insensitive to the signal dial (Harbourline 88.5 per cent, lead 1.27 times over Pellow,
+  Tallis seventh of seven at 40.2 per cent at every excess from 1.0 to 5.0 cents a litre), so nothing on that axis
+  moves a reader's crossing.
+- The readability screen's reflex row on the decisive rung, accepted at the first stage 2: measured on an incomplete
+  enumeration. The row lists t-tests, robust errors, rank tests and stratifying by brand or area, every one of them a
+  within-window test, and omits two reflexes that each file the golden's exact printed answer: the cross-section's own
+  robust spread, which is the Hidiroglou-Berthelot move this note's `## Draw` names as official statistics' anomaly
+  detection, and the default path's own Welch test run after the town's daily mean margin is removed (30 stations
+  found, Tallis 31.5 per cent, printed bins 30 and six zeros, the golden's bins exactly). Removing the town mean is
+  the first control anyone reaches for against town-level cycles; `checks.py` tested the area-relative margin only
+  against the placebo null, never against the within-window test.

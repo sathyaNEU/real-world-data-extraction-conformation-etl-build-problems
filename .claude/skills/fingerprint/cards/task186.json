@@ -89,6 +89,13 @@
   ],
   "mechanism_source": "design_note",
   "differentiation": {},
-  "lineage": [],
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent 2026-10-21 on measurement at stage 2, after the shipped pack failed Gate F in a blind read",
+      "driver": "Each unit's change across an event is tested for exceeding what the event alone would leave, but the units' levels swing between periods in local cycles shared within each place for reasons unrelated to the event, so a test built on a unit's within-period variation finds most units in the places whose cycles happened to rise across the event; only a null built from the units' changes between periods without the event, or from their same-place peers, holds the error rate and leaves the one group whose units truly moved.",
+      "why": "The decisive step was the scale a one-dimensional per-unit statistic is read against, and that is arithmetic: the golden's 28 found stations are exactly the top 28 of 369 by the change in margin over the two windows, with a 1.2233 cent a litre gap to the 29th, so any cut in a 1.2233-wide window reproduces the found set and 7 of 15 data-free cuts file the call and all seven printed bins at a maximum difference of 0.0000 points. Three of those are the plainest outlier reflexes there are. corr(-log10 p, the change) is +0.9576 Pearson and +0.9837 Spearman, confirmed from the shipped bundle as well as the clean truth. The three dials that move the gap each trade Gate F against Gate C one for one, 0 of 16 cells passing both, and the restricted family that holds the filed false-discovery rate spreads exactly zero on six of the seven graded figures with 12 of 13 constructions filing the golden."
+    }
+  ],
   "notes": "Pairing redrawn from general-statistics-data-science x anomaly-detection (ban.pairing against task185) to survey-research-official-statistics x anomaly-detection: the monitor sits in the provincial statistics bureau, and scoring each unit's change against an empirical reference of comparable changes is official statistics' own anomaly detection. Decisive generator G2 (the unit of independent evidence is a 28-day period change of an urban area's cycle, not a station-day), G17 supporting; G16 is banned against task185."
 }

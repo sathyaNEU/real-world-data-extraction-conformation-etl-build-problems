@@ -4,12 +4,12 @@
   "status": "FAILED_TO_STUMP",
   "domain": "survey-research-official-statistics / anomaly-detection (secondary economics-econometrics)",
   "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-20",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-21",
   "stump": "The default path tests each station's 28-day margin change against its own day-to-day variation, which cannot see that every area's margins cycle over five to nine weeks, so it finds nearly every station in the two areas whose cycles restored around the turn of the year and sends the inquiry to Harbourline Fuels; a null from the stations' changes between periods when the levy did not move holds the false discovery rate and leaves Tallis Petroleum's company-run stations.",
   "architecture": 1,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
     "date": "2026-10-13"
@@ -33,12 +33,19 @@
       "portal": "author audit: 10/10 alignment",
       "repair": "alignment",
       "commit": ""
+    },
+    {
+      "date": "2026-10-21",
+      "portal": "wave 8 audit: call landed, 48 of 60 ask figures, Gate F failed",
+      "repair": "design",
+      "commit": ""
     }
   ],
-  "resume": "FAILED_TO_STUMP on measurement, not on a portal result. Like task181 this is a magnitude failure and not a leak: the reader said nothing in the files states the method and it inferred the town benchmark from the data, naming the pooled reading's 195 of 369 and the wrong brand it hands the call to. Widen the separation between the pooled reading and the town benchmark at stage 2.",
+  "resume": "Stage-2 re-measurement of 2026-10-21 REFUSES this architecture, so the magnitude widening the previous resume line ordered was not made. Three screens on the generator's clean truth, each run twice and byte-identical. (1) Estimator family spread: non-zero on the wide reading (20 constructions in 5 groups, 3 distinct calls, up to 92.3 percentage points of spread on a graded share), zero on the strict reading (the 13 constructions the filed false discovery rate leaves open spread exactly 0.0 points on six of the seven graded shares and 12 of 13 file the golden). (2) Cheapest construction: the designed step is an IDENTITY in a threshold on the standard's own 28-day margin-change column. The golden's 28 found stations are exactly the top 28 of 369, clear of the 29th by 1.2233 cents a litre, so any cut in a 1.2233-cent window reproduces the found set; 7 of 15 data-free cuts file the call and all seven printed bins at a maximum absolute difference of 0.0000 points (median plus 3 MAD, median plus 1.5 IQR and mean plus 2 SD among them), Spearman corr of the golden statistic with that column +0.9837, and the same result reproduces from target.zip through generator/verify.py. (3) The dial is one-ended over 16 settings of the signal, the cycle amplitude and the phase spread: Spearman corr(crude routes landing the golden, licensed constructions agreeing) = +0.8837, 3 settings have no crude route landing it and 0 of those have the licensed family at 12 or 13 of 13. No setting has the step both needed and determinate. NEXT STEP: re-root at stage 1 as architecture 2, same number and objective (anomaly-detection), and the decisive step must not be the scale a one-dimensional unit statistic is read against, because licensed unanimity on such a step is the same number as one-column separability. The card at .claude/skills/fingerprint/cards/task186.json still needs its lineage line marking v1 spent: this session's scope barred writing under .claude/skills/. ORCHESTRATOR, 2026-10-21: architecture 1 spent on measurement, card lineage filed, re-root to architecture 2. The new decisive step must NOT be the scale a one-dimensional per-unit statistic is read against, because that family's unanimity and one-column separability are the same number: measured at Spearman +0.8837 between crude routes landing the call and licensed constructions agreeing, over 16 settings of three independent dials, with 0 of 16 cells passing both gates. The build's own hardening assertion in checks.py, that the found stations' changes clear every other station's by a cent a litre, is from the solver's side the statement that one sort on one column is the answer.",
   "approved": null,
   "delivered": "2026-10-13",
   "portal": null,
   "seed": "analytical_tasks/02_anomaly_detection/AD09_passthrough-panel-price-setting-population.md",
-  "alignment_pass": "design note and card: the domain claim rests on the retail price cycle; the \"setting survives\" concession deleted"
+  "alignment_pass": "design note and card: the domain claim rests on the retail price cycle; the \"setting survives\" concession deleted",
+  "architecture_spent": true
 }

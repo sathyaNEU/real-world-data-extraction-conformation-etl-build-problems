@@ -4,12 +4,12 @@
   "status": "FAILED_TO_STUMP",
   "domain": "political-science-public-policy/conflict-protest-event-data-analysis",
   "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-20",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-21",
   "stump": "A competent solver resolves the three routes, builds the actions on the protocol's grain, reads 3.3, corrects the classifier's labels with the confrontational shares the hand coding found on each side of them and files 600 confrontational actions, because those shares were measured on the four months the coding desk audited and the record's composition moves after them.",
   "architecture": 3,
-  "loops": 4,
+  "loops": 5,
   "precut": {
     "exit": 0,
     "date": "2026-10-17",
@@ -22,8 +22,8 @@
     "reader": "wave 8 audit: 1 of 1, asks 98 of 106"
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-17, no BLOCK: nearest driver 0.09 task189 and task58",
-    "nearest": "surface 0.101 task191 promoted for adjudication, 0 BLOCK lines"
+    "heart": "BLOCK 2026-10-21 (was WARN with no BLOCK on 2026-10-17): ban.role research_desk, ban.forum trustees_or_governors and ban.forcing_event vote_or_meeting all against task266 (v1), plus test.same_driver_older against task270 (v2, lineage) with no differentiation on the card; four WARNs besides. Driver text is not the cause, nearest neighbour 0.06. guard.py validate clean, 277 cards, 0 invalid.",
+    "nearest": "surface 2026-10-21: exit 0, 277 builds screened, 276 pairs in scope, 3 promoted for adjudication and task192 is in all three, each at exclusion level with both sides delivered. task191 vs task192 0.101 (corpus pct 99, back to back, B same decisive gap objective and same context artifact published_series); task192 vs task193 0.100 (pct 98, back to back, B same decisive gap objective); task189 vs task192 0.101 (pct 99, B same decision type quantity_figure). On 2026-10-17 only the task191 pair was promoted, so two have appeared since. No BLOCK lines and no personas in the cut pack; the promotions are B-track card-axis matches, not driver text, whose nearest neighbour sits at 0.06."
   },
   "judge": {
     "verdict": "DETERMINISTIC",
@@ -31,7 +31,7 @@
     "report": "loop 4 on the re-drawn record: nothing failed to reproduce, Gate G and H pass, stump power moderate, blind enumeration of 14 candidates over 6 cells"
   },
   "returned": [],
-  "resume": "FAILED_TO_STUMP on measurement, not on a portal result, and a magnitude failure rather than a leak: the reader said nothing in the files states the correction and it inferred the Rogan-Gladen form from the data, giving the right reason for it (the audit sample covers part of the window and prevalence moved). The ask layer went with it at 98 of 106. Widen the separation at stage 2.",
+  "resume": "Stage 2 re-measurement of 2026-10-21 REFUSED the magnitude repair and the architecture, on measurement rather than on a portal result. The three screens were run on the generator's clean truth, each twice and byte-identical. Screen 1 PASSES: the family that differs in what it does spreads 458.642 actions over seven printed calls (250, 300, 400, 450, 500, 600, 700), 9.17 printed units, so the decisive step is not a reflex on the enumeration alone. Screen 2 PASSES: the designed construction is exactly affine in the one-group-by route R0 = H + M (slope 2.18270, intercept -136.600, residual 5.7e-14) but is not an identity in it, corr(RG, R0) = -0.0815 over 24 action redraws, max |RG - R0| = 254.850 actions, R0 in the call's printed cell in 0 of 24. Screen 3 FAILS, three ways. (i) The reach IS the signpost, by identity not correlation: PV - RG = N (p - p_a) [(PPV - (1 - NPV)) - 1/(r - f)] to 1.3e-13 at every seed, where p is one group-by on codigo_acao and p_a one group-by on codigo_monitor, so the shipped 159.6192-action reach is bought at z 5.934, p 2.962e-09 on that two-line comparison, at 26.90 actions of reach per sigma. (ii) The two separations the ladder needs are one quantity with two signs: over the composition drop the reach rises 36.95 to 206.33 actions while the margin on the nearest wrong rung falls 1.3588 to 1.0919, crossing the 1.15x floor between the shipped k = 2.6 (1.1785) and k = 3.2 (1.1423), so the shipped point is already the widest setting the floor allows and the widening this session was sent to do is not available. (iii) The one axis that buys reach without spending the floor, the surge volume, never delivers Gate C: the licensed error-rate family is unanimous on one printed call in 5 of 120 draws there. Counted over the two axes at 20 action seeds a setting, 245 of 300 draws give a printed cell of reach or more and 66 leave the window comparison insignificant, 22 do both, and 0 of those 22 have the licensed family unanimous; the family is unanimous in 9 of the 300 and all nine sit where the comparison is significant below 0.05. 0 of 320 draws give reach, a unanimous family, the 1.15x floor and a mid-bin call together. So every draw with reach and a quiet record forks the call and every draw that files one call announces the step. Architecture 3 is therefore spent on measurement. The author's call is re-root to architecture 4 or retire the number (the build-pipeline skill retires on the third architecture spent; the brief for this session allows one more re-root first). Also open and unrelated to magnitude: a calibration model on the classifier's label with a month term, extrapolated over the two unaudited months, files 504.483 and prints 500, a seventh cell with no candidate-table row and no cand.* assertion, which the loop-4 judge never tested. Nothing was moved in the call, the decisive step, the prompt, target/, golden/, target.zip or any graded figure; the design note's Three rules and Tried and rejected carry the measurement. Harness: /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/t192 (truth.py, measurelib.py, screen1.py, screen2.py, screen3.py, screen3b.py, screen3c.py, shipped_point.py). ORCHESTRATOR, 2026-10-21: architecture 3 is spent on measurement and the number is NOT retired. The author file overrides build-pipeline's third-architecture retirement rule for this lane: this author's builds are never retired, so this goes back in a wave as FAILED_TO_STUMP and is re-rooted to architecture 4. Two things must be redrawn at that draw whatever the new mechanism is, because the card's axes have aged out: the stakeholder role family (research_desk), the deciding forum (trustees_or_governors) and the forcing event (vote_or_meeting) all BLOCK against task266 v1, delivered since; and test.same_driver_older BLOCKs against task270 v2 with no differentiation on the card. The surface screen also promotes three pairs now (task191, task193 and task189 against this build, 0.100 to 0.101 at the 98th to 99th percentile), two of them new since the ship, all B-track card-axis matches rather than driver text at a nearest neighbour of 0.06. One correction to the agent's report, measured here: guard.py heart exits 1 on BLOCK and 0 otherwise, as guard.py line 1296 says; its finding that heart exits 0 on a BLOCK verdict is false. The open Gate C it found stands and carries forward: a calibration fitted on the worksheet with the classifier's label and a month term files 504.483 and prints 500, a seventh cell the candidate table does not carry and checks.py does not assert, on a pack an earlier judge pass approved.",
   "approved": null,
   "delivered": "2026-10-17",
   "portal": null,
@@ -54,5 +54,15 @@
     "freeze": "freeze.py check --mode determinism with all 121 moved figures.json keys allowed reports five frozen items that an allow list cannot cover and the pass required: the Final Recommendation's and Critical Components' numbers, the design note's ladder and default-path sections, and the workbook's Deliverable Answers. The prompt's call sentence, the stump sentence and the card are unchanged.",
     "cracker": "generator/cracker.py, 11 rows measured on the cut pack, 0 kept by the cracker, exit 0; the sheet in the design note is its printed output"
   },
-  "held": "nothing: the six items of the loop-2 and loop-3 reads are built and each is recorded in the design note's ## Tried and rejected with what it cost."
+  "held": "nothing: the six items of the loop-2 and loop-3 reads are built and each is recorded in the design note's ## Tried and rejected with what it cost.",
+  "architecture_spent": true,
+  "screens": {
+    "date": "2026-10-21",
+    "run_on": "the generator's clean truth, each screen twice and byte-identical",
+    "harness_validated": "reproduces the shipped pack exactly: 4,656 actions, 4,228 press-reported, 271 marked, 428 filer-coded, 49 marked, cells 77/84/18/877, recall 0.4783, false-mark 0.0201, RG 454.911, PV 614.530, rung 2 386.000, truth 468",
+    "screen_1_family_spread": "PASS: 21 of 23 constructions computable, raw spread 458.642 actions, 7 distinct printed calls (250, 300, 400, 450, 500, 600, 700), 9.17 printed units of 50; the licensed error-rate sub-family 9 members, spread 34.049 actions, 1 printed call",
+    "screen_2_cheapest_route": "PASS: RG exactly affine in R0 = H + M, not an identity; corr(RG, R0) = -0.0815 over 24 redraws, max |RG - R0| = 254.850 actions (5.10 printed units), R0 in RG's cell 0 of 24",
+    "screen_3_dial": "FAIL, one-ended on both axes: corr(reach, z of the window group-by) = +0.8773; corr(reach, gap to the nearest rung) = -0.5791; of 300 draws 245 have a printed cell of reach, 66 leave the window comparison insignificant, 22 have both and 0 of those 22 have the licensed family unanimous, while the 9 draws that are unanimous all sit below p 0.05; 0 of 320 draws give reach, a unanimous licensed family, the 1.15x floor and a mid-bin call together, and the 3 that give the first three are the shipped setting and two at surge 1.0",
+    "verdict": "MEASURED REFUSAL. Not a magnitude failure: the dial's two ends are the same end."
+  }
 }

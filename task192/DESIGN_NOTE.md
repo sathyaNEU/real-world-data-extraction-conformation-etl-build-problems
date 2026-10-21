@@ -99,6 +99,12 @@ about one action in ten was.
 
 ## Three rules
 
+**The stage-2 re-measurement of 2026-10-21 refused this architecture, and these lines are written to
+what it measured rather than to the gate.** The three screens, their harness and their numbers are in
+`## Tried and rejected` under that date. Two lines below now record a failure, `Not rule application:`
+and `Analyst test:`; the other eleven hold unchanged, and nothing in the call, the decisive step, the
+prompt or any graded figure was moved in writing them.
+
 - **Task type:** `conflict-protest-event-data-analysis`, the task type in Political Science & Public
   Policy that serves Anomaly Detection: turning multi-source reports into an event record and
   separating what happened from what the record's own instruments made of it.
@@ -128,28 +134,53 @@ about one action in ten was.
   desk's own worksheet rows carry no manual code because the desk could not fix one. None of it is
   placed to be caught and none of it decides the count.
 - **Layer 2:** `field_method`. The methodological choice is which of the quantities the hand coding
-  measures can be carried to a period the hand coding never reached.
+  measures can be carried to a period the hand coding never reached. Measured, the data does not
+  leave that choice open: once the record's own marked rate is read against the worksheet's own
+  marked rate, every construction the data leaves standing files one printed call. See
+  `Not rule application:`.
 - **Decisive step:** rebuild the count of confrontational actions among the actions the press monitor
   carries from the classifier's measured sensitivity and false-mark rate, which are properties of the
   coder and do not depend on how confrontational the audited weeks happened to be, rather than from
-  the audited reports' own confrontational shares, which do; then add the actions a filer coded.
+  the audited reports' own confrontational shares, which do; then add the actions a filer coded. It
+  is the field's own step and it is a reflex once two group-bys are run: the record marks 6.4096 per
+  cent of its 4,228 press-reported actions and the worksheet marks 8.9962 per cent of its 1,056 coded
+  rows, a two-proportion z of 2.961 at p = 3.064e-03, and across the audit's own window boundary
+  8.7923 against 4.3130 per cent, z 5.934 at p = 2.962e-09.
 - **Not semantics:** every field, code, zone, offset and place name read correctly still leaves the
   default path carrying the audited batch's own shares onto the record and filing 600. The dictionary
   gives every field, the protocol defines the action grain and lists the confrontational codes, the
   monitor's configuration gives the offsets and the rounding is filed. Reading all of it right is what
   produces the 600.
-- **Not rule application:** the protocol files the action grain, the confrontational codes, the
-  reporting period, which route's code the register keeps, that the count is of the actions and not of
-  the codes, the granularity, and what each round of hand coding drew its batch from. No shipped
-  sentence says how the classifier's labels are to be turned into the count: nothing names
+- **Not rule application: FAILS, MEASURED.** The first half of the line is still true and is worth
+  nothing on its own: the protocol files the action grain, the confrontational codes, the reporting
+  period, which route's code the register keeps, that the count is of the actions and not of the
+  codes, the granularity, and what each round of hand coding drew its batch from, and no shipped
+  sentence says how the classifier's labels are to be turned into the count, nothing naming
   sensitivity, specificity, recall, precision, a correction, a false positive, a false negative,
-  representativeness or extrapolation, and a word sweep over every shipped file asserts it. The
-  worksheet states two codings per row and no rate at all.
-- **Analyst test:** a strong analyst who resolves the three routes and the two editions, drops the
-  reposted month, resolves the superseded place names, applies every filed paragraph and corrects the
-  classifier's labels with the shares the hand coding found on each side of them files **600
-  confrontational actions** (614.53 raw), the default path's `Ends on:`, where the period's record
-  gives 450 (454.91 raw).
+  representativeness or extrapolation, with the word sweep over every shipped file still asserting
+  it. What the line owes is the other half, the spread of the family the rule leaves open once every
+  filed rule **and the data** are read, and that spread is one call. The family that differs in what
+  it does spreads 458.642 actions over seven printed calls (250, 300, 400, 450, 500, 600, 700); the
+  family the data leaves standing, the nine constructions built on the classifier's two measured
+  error rates, spreads 34.049 actions, 0.68 of a printed unit, and files **one** printed call, 450.
+  What rules the other families out is not an argument a solver can miss, it is two one-line
+  aggregations that print 0.064096 against 0.089962, and the ladder's whole 159.6192-action reach is
+  that same difference times a constant of the worksheet's four cells, by identity and not by
+  correlation: PV - RG = N (p - p_a) [(PPV - (1 - NPV)) - 1/(r - f)], residual at or below 1.3e-13 at
+  every seed tested. So nothing is left to decide once the data is read, and the step both matters
+  and is determinate only because the record announces it, which is readability tests 2 and 3 rather
+  than test 1.
+- **Analyst test: FAILS AS WRITTEN.** It says a strong analyst who resolves the three routes and the
+  two editions, drops the reposted month, resolves the superseded place names, applies every filed
+  paragraph and corrects the classifier's labels with the shares the hand coding found on each side
+  of them files **600 confrontational actions** (614.53 raw), the default path's `Ends on:`, where the
+  period's record gives 450 (454.91 raw). `checks.py` still executes that on the clean truth and it is
+  still true of an analyst who does not compare the two marked rates. Measured, that is not the
+  analyst the bar is set against: the wave-8 audit reader, cold on the shipped pack, landed the call
+  1 of 1 and said in terms that nothing in the files named the step and that it had inferred the step
+  from the data, giving the right reason for it. The easy route is available only to an analyst who
+  skips the first hygiene check anyone runs on a validation sample, whether the sample covers the
+  population it is being carried to, and the record answers that check at p = 2.962e-09.
 - **Estimand:** the protocol's 3.3, "Indicador 2, acoes de confronto: o numero das acoes registadas no
   periodo de relato que foram acoes de confronto na acepcao de 2.2, ao mais proximo de cinquenta
   acoes. O codigo que o classificador do monitor de imprensa atribui e a leitura do classificador, que
@@ -169,7 +200,15 @@ about one action in ten was.
   does to a unit of a given class and what share of the units were of that class, and only the first
   travels to a window the batch never covered. When the record's own composition moves between the
   audited window and the rest, the easy correction inherits the audit's calendar and the count is
-  wrong by a third. No build on file teaches it.
+  wrong by a third. No build on file teaches it. The re-measurement adds the lesson that refuses the
+  build: on this shape the forcing Gate C requires and the reach Gate F pays are one number, so there
+  is no setting of the world at which the correction both matters and is not announced by the record.
+  Over the sweep of the composition drop and the surge volume, 300 distinct settings at twenty
+  action seeds each, 22 draws deliver a printed cell of reach with the window comparison
+  insignificant and the licensed family is unanimous in none of those 22; the family is unanimous
+  in 9 of the 300 and every one of those nine has the comparison significant below 0.05. Not one
+  draw in the sweep delivers reach, a unanimous licensed family, the 1.15x floor on the nearest
+  wrong rung and a mid-bin call at the same time.
 
 ## WHAT screen
 
@@ -893,6 +932,71 @@ the desk's own calendar, capacity, rota, notes and failures to code.
   left the medians open four ways. The gazetteer now carries "Acores" and "Madeira" as separate
   districts and the monitor's configuration states each one's offset and the 25 October change, which
   closes the medians and leaves the Azores hour as a device in A2 rather than an accident.
+- **(architecture 3, the stage-2 re-measurement of 2026-10-21) The magnitude fix itself: widening the
+  composition drop so the easy family sits further from the call.** Dead on the floor it spends. The
+  drop and the margin on the nearest wrong rung are one quantity with two signs: sweeping
+  `CONF_RATE_LO = CONF_RATE_HI / k` over k = 1.0 to 8.0 at the shipped surge, the reach `PV - RG` rises
+  36.95, 89.56, 114.37, 139.19, **159.62 (shipped, k = 2.6)**, 180.05, 190.27, 197.57, 206.33 actions
+  while the gap to rung 2 falls 180.10, 125.68, 105.57, 85.47, **68.91**, 52.35, 44.07, 38.16, 31.06
+  and its ratio falls 1.3588, 1.2824, 1.2496, 1.2126, **1.1785**, 1.1423, 1.1245, 1.1103, 1.0919. The
+  1.15x floor is crossed between k = 2.6 and k = 3.2, the gap falls under one printed cell by
+  k = 4.0 (0.88 cells) and rung 2 shares the call's own printed cell at k = 8.0 (369.064 against
+  338.000, both printing 350). Over twenty action seeds a setting, the floor passes falls from 20
+  of 20 at k = 1.0 to 13 of 20 at the shipped point and 8 of 20 at k = 4.0. The shipped point is
+  therefore already at or past the widest setting the floor allows, and the realism pass of
+  2026-10-17 had already walked this dial down from a fall of 4.2 to 2.6 to keep a wrong route
+  inside its own printed cell (its own entry above), which is this same trade read from the other
+  side. `corr(reach, gap to the nearest rung)` = -0.5791 over the sweep.
+- **(architecture 3, the stage-2 re-measurement) Widening on the volume axis instead, where the two
+  separations do not trade off.** `ACTIONS_SURGE` 1.0 to 6.0 at the shipped drop raises the reach
+  65.23, 82.77, **159.62**, 207.10, 250.98 actions with the floor holding (ratios 1.2027, 1.2306,
+  **1.1785**, 1.1896, 1.2190), so it is the one axis that buys reach without spending the floor, and
+  it is dead on Gate C: over 120 draws on that axis the licensed error-rate family is unanimous on
+  one printed call in 5, going 2, 1, 2, 0, 0, 0 of 20 seeds at surges 1.0, 1.6, 2.45, 3.4, 4.5 and
+  6.0. The axis that keeps the ladder splits the call.
+- **(architecture 3, the stage-2 re-measurement) The architecture, on the identity behind both of
+  those.** `PV - RG = N (p - p_a) [(PPV - (1 - NPV)) - 1/(r - f)]` holds to 1.3e-13 at every seed, so
+  the reach the ladder stands on **is** the difference between the record's own marked rate and the
+  worksheet's own marked rate, times a constant of the four cells. Both are one group-by on a shipped
+  column (`codigo_acao` on the item log, `codigo_monitor` against a non-empty `codigo_manual` on the
+  worksheet), so the exchange rate is fixed by arithmetic rather than by tuning: 26.90 actions of
+  reach per sigma of the window comparison at the shipped point, 25.29 to 48.00 across the drop axis.
+  Counted over the two axes at twenty action seeds a setting, 245 of 300 draws give a printed
+  cell of reach or more and 66 leave the window comparison insignificant, 22 do both, and **0**
+  of those 22 have the licensed family unanimous; the family is unanimous in 9 of the 300 and all
+  nine sit where the comparison is significant below 0.05. **0** of 320 draws give reach, a
+  unanimous family, the 1.15x floor and a mid-bin call together, and the three that give the
+  first three are the shipped setting and two at surge 1.0. So every draw with reach and a quiet
+  record forks the call and every draw that files one call announces the step: the dial's two
+  ends are the same end, the failure is not magnitude and no magnitude fix exists. Re-root or
+  retire, the author's call: this is architecture 3.
+- **(architecture 3, the stage-2 re-measurement) Re-shipping this pack as it stands, independently
+  of the screens.** `guard.py heart task192` now returns **BLOCK** where on 2026-10-17 it returned
+  WARN with no BLOCK, because the corpus moved under it: `ban.role` on the `research_desk`
+  stakeholder family, `ban.forum` on `trustees_or_governors` and `ban.forcing_event` on
+  `vote_or_meeting` all against task266 (v1), now delivered or approved, and
+  `test.same_driver_older` because the decisive gap, the decisive pattern and the Gate G mechanism
+  all repeat task270 (v2, lineage) with no differentiation line on the card. The driver text is not
+  the problem, its nearest neighbour on file sits at 0.06; the axes are. So the role, the forum and
+  the forcing event have to be redrawn whatever is decided about the magnitudes, which is a second
+  reason the number wants a re-root rather than a resumption. `guard.py validate` is clean (277
+  cards, 0 invalid) and the pack itself is untouched: `verify.py` passes all 138 independent checks
+  and `target/`, `golden/` and `target.zip` hash to what the ship recorded.
+  `guard.py surface` is exit 0 with no BLOCK lines and no personas in the cut pack, and it now
+  promotes **three** pairs for adjudication with task192 in all three, each at exclusion level
+  with both sides delivered: task191 vs task192 at 0.101 (corpus pct 99, back to back, same
+  decisive gap and same context-artifact type on the cards), task192 vs task193 at 0.100 (pct 98,
+  back to back, same decisive gap) and task189 vs task192 at 0.101 (pct 99, same decision type).
+  On 2026-10-17 only the task191 pair was promoted, so two have appeared since. These are B-track
+  card-axis matches rather than driver text, and they point the same way as the heart BLOCK.
+- **(architecture 3, the stage-2 re-measurement) A seventh cell nothing in the pack rules out, found
+  on the way.** A calibration model fitted on the worksheet with the classifier's label and a month
+  term, extrapolated over the two months the audit never reached, files 504.483 and prints **500**,
+  which is neither the call nor the default path and has no row in the candidate table and no `cand.*`
+  assertion. Without the month term the same model reproduces the default path exactly (614.530). It
+  is a construction a competent analyst would use and it is an open Gate C candidate on the shipped
+  pack, which the loop-4 judge never tested; recorded here because it would have to be closed by any
+  repair and cannot be closed by a magnitude.
 
 ## Architecture 2, blocked at the draw by the remote merge
 
