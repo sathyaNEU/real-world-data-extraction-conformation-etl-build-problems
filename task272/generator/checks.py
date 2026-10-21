@@ -178,6 +178,9 @@ def run(task, b, fig, res):
         check("ASK A stop %s misses every hospital" % k, all(st[k][0][c] != g[0][c] for c in K.CODES))
     for k in ("b_first_list", "b_reopened", "b_initial_only"):
         check("ASK B stop %s misses every hospital" % k, all(st[k][1][c] != g[1][c] for c in K.CODES))
+    near_tie = min(abs((v % 100) - 50) for v in fig["ask_a_usd"].values())
+    check("ASK A no hospital's total within 50 cents of a rounding tie at one decimal of thousands", near_tie >= 0.5,
+          round(near_tie, 2))
     pc = CR.pair_ceiling(st, g)
     check("PAIR ceiling under 40 and mirror leakage under 35", pc["pair"] <= 40 and pc["mirror_leak"] < 35, pc)
     acc = {r["account_number"]: float(r["patient_balance"]) for r in PK.rows(target, "accounts")}
