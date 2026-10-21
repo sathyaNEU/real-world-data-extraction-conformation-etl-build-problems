@@ -1,4 +1,4 @@
-"""Independent golden path for task446 (architecture 2). Reads target/ only; shares no code or state with
+"""Independent golden path for task446 (architecture 3). Reads target/ only; shares no code or state with
 the generator.
 
     python3 task446/generator/solve.py [target_dir]
@@ -140,10 +140,46 @@ class Pack:
         end = dt.date(date.year + 1, date.month, date.day)
         return {r["group_id"] for r in self.wl if date < d(r["placed_on"]) <= end}
 
-    def flagged(self, date, **kw):
+    def customer_keys(self, date, active_only=False):
+        """keys of the customers the credit system had opened by the date (by LEI and by Companies House
+        number); active_only is the misreading that takes the extract's status for the status at the date"""
+        out = set()
+        for r in self.obl:
+            if d(r["customer_since"]) > date:
+                continue
+            if active_only and r["customer_status"] != "ACTIVE":
+                continue
+            if r["lei"]:
+                out.add(r["lei"].upper())
+            if r["companies_house_no"]:
+                out.add("CRN:" + r["companies_house_no"])
+        return out
+
+    def facility_keys(self):
+        """the misreading that takes a borrower to be an obligor on the 30 Sep 2026 facility extract"""
+        cust = {r["customer_id"]: r for r in self.obl}
+        out = set()
+        for r in self.fac:
+            c = cust.get(r["customer_id"])
+            if c and c["lei"]:
+                out.add(c["lei"].upper())
+            if c and c["companies_house_no"]:
+                out.add("CRN:" + c["companies_house_no"])
+        return out
+
+    def flag_detail(self, date, borrower="customer", **kw):
+        """group -> dict(kind, red, cov) for every group with a member AMBER or RED in the publication for the
+        date. kind D: a customer the bank lends to carries the flag; kind I: only members it does not lend to,
+        reached through the GLEIF records or as the ultimate parent."""
         resolve, _ = self.group_of_key(date, **kw)
         case_fold = kw.get("case_fold", True)
-        out = set()
+        if borrower == "customer":
+            keys = self.customer_keys(date)
+        elif borrower == "active":
+            keys = self.customer_keys(date, active_only=True)
+        else:
+            keys = self.facility_keys()
+        out = {}
         ds = date.isoformat()
         for r in self.signals:
             if r["publication_date"] != ds or r["signal"] == "GREEN":
@@ -152,41 +188,59 @@ class Pack:
             if case_fold and not k.startswith("CRN:"):
                 k = k.upper()
             g = resolve(k)
-            if g:
-                out.add(g)
+            if not g:
+                continue
+            x = out.setdefault(g, dict(kind="I", red=False, cov=False))
+            if k in keys:
+                x["kind"] = "D"
+            x["red"] = x["red"] or r["signal"] == "RED"
+            x["cov"] = x["cov"] or "COVENANT" in r["trigger_codes"]
         return out
+
+    def flagged(self, date, **kw):
+        return set(self.flag_detail(date, **kw))
 
     def cohort_table(self, **kw):
         tab = []
         for i, cs in enumerate(COHORTS):
             date = d(cs)
             M = self.active(date) - self.on_list(date)
-            F = self.flagged(date, **kw) & M
+            det = {g: v for g, v in self.flag_detail(date, **kw).items() if g in M}
+            F = set(det)
             R = (self.reached(date) & M) if i < 4 else None
-            tab.append(dict(date=cs, M=M, F=F, R=R))
+            tab.append(dict(date=cs, M=M, F=F, R=R, det=det, FD={g for g in F if det[g]["kind"] == "D"},
+                            FI={g for g in F if det[g]["kind"] == "I"}))
         return tab
 
 
 def cohort_counts(tab):
-    """N, flagged, reaching, flagged and reaching for each closed cohort"""
+    """for each closed cohort: N, flagged, reaching, flagged and reaching, and the same by kind, colour and
+    covenant trigger"""
     out = []
     for c in tab[:4]:
-        out.append(dict(N=len(c["M"]), F=len(c["F"]), P=len(c["R"]), TP=len(c["R"] & c["F"])))
+        R, F, det = c["R"], c["F"], c["det"]
+        row = dict(N=len(c["M"]), F=len(F), P=len(R), TP=len(R & F))
+        for name, sel in (("D", lambda v: v["kind"] == "D"), ("I", lambda v: v["kind"] == "I"),
+                          ("RED", lambda v: v["red"]), ("COV", lambda v: v["cov"]),
+                          ("D_RED", lambda v: v["kind"] == "D" and v["red"]),
+                          ("I_RED", lambda v: v["kind"] == "I" and v["red"]),
+                          ("D_COV", lambda v: v["kind"] == "D" and v["cov"])):
+            S = {g for g in F if sel(det[g])}
+            row[name], row[name + "_R"] = len(S), len(S & R)
+        row["U"], row["U_R"] = row["N"] - row["F"], row["P"] - row["TP"]
+        out.append(row)
     return out
 
 
 def measures(tab):
     cc = cohort_counts(tab)
-    P = sum(c["P"] for c in cc)
-    TP = sum(c["TP"] for c in cc)
-    NF = sum(c["F"] for c in cc)
-    N = sum(c["N"] for c in cc)
-    FP = NF - TP
-    return dict(hit=TP / NF, capture=TP / P, false_alarm=FP / (N - P), miss=(P - TP) / (N - NF),
-                P=P, TP=TP, NF=NF, N=N, FP=FP)
+    S = {k: sum(c[k] for c in cc) for k in cc[0]}
+    S["FP"] = S["F"] - S["TP"]
+    S.update(hit=S["TP"] / S["F"], capture=S["TP"] / S["P"], false_alarm=S["FP"] / (S["N"] - S["P"]),
+             miss=(S["P"] - S["TP"]) / (S["N"] - S["F"]), NF=S["F"])
+    return S
 
 
-# ------------------------------------------------------------ CRM-07 5.2: the bases and the test
 def _lin(x, y, w=None):
     n = len(x)
     w = w or [1.0] * n
@@ -197,107 +251,164 @@ def _lin(x, y, w=None):
     return my - b * mx, b
 
 
+def _rate(cs, key, mean=False):
+    if mean:
+        return sum(c[key + "_R"] / c[key] for c in cs) / len(cs)
+    return sum(c[key + "_R"] for c in cs) / sum(c[key] for c in cs)
+
+
 def basis_fit(name, cs):
-    """Set a basis from a list of cohorts (dicts N, F, P, TP); return f(N, F) -> (p_flag, p_unflag) or a share."""
+    """Set a basis from a list of cohort rows; return f(row) -> expected arrivals for a cohort or book row. A
+    row carries N, F and the cell counts of cohort_counts (outcomes not needed)."""
     N = sum(c["N"] for c in cs)
     F = sum(c["F"] for c in cs)
     P = sum(c["P"] for c in cs)
     TP = sum(c["TP"] for c in cs)
     if name == "hit_and_miss":
         pf, pu = TP / F, (P - TP) / (N - F)
-        return lambda n, f: (pf, pu)
+        return lambda r: r["F"] * pf + (r["N"] - r["F"]) * pu
+    if name == "mean_hit_and_miss":
+        pf = sum(c["TP"] / c["F"] for c in cs) / len(cs)
+        pu = sum((c["P"] - c["TP"]) / (c["N"] - c["F"]) for c in cs) / len(cs)
+        return lambda r: r["F"] * pf + (r["N"] - r["F"]) * pu
+    if name in ("latest_hit_and_miss", "most_stressed_hit_and_miss"):
+        c = cs[-1] if name.startswith("latest") else max(cs, key=lambda c: c["P"] / c["N"])
+        pf, pu = c["TP"] / c["F"], (c["P"] - c["TP"]) / (c["N"] - c["F"])
+        return lambda r: r["F"] * pf + (r["N"] - r["F"]) * pu
     if name == "one_share":
-        s = P / N
-        return lambda n, f: (s, s)
-    if name == "arrivals_per_flagged":
-        r = P / F
-        return lambda n, f: (r, 0.0)
-    if name == "every_flagged_reaches":
-        pu = (P - TP) / (N - F)
-        return lambda n, f: (1.0, pu)
-    if name in ("capture_false_alarm", "mean_capture_false_alarm"):
-        if name == "capture_false_alarm":
-            se, fa = TP / P, (F - TP) / (N - P)
-        else:
-            se = sum(c["TP"] / c["P"] for c in cs) / len(cs)
-            fa = sum((c["F"] - c["TP"]) / (c["N"] - c["P"]) for c in cs) / len(cs)
-
-        def g(n, f):
-            a = f / n
-            s = (a - fa) / (se - fa)
-            return se * s / a, (1 - se) * s / (1 - a)
-        return g
-    if name in ("share_on_flagged_share", "share_on_flagged_share_weighted"):
-        x = [c["F"] / c["N"] for c in cs]
-        y = [c["P"] / c["N"] for c in cs]
-        c0, b = _lin(x, y, [float(c["N"]) for c in cs] if name.endswith("weighted") else None)
-        return lambda n, f: ("share", c0 + b * f / n)
-    if name == "arrivals_on_flagged_and_book":
-        # least squares P = b1 F + b2 N, no intercept
-        sff = sum(c["F"] ** 2 for c in cs)
-        snn = sum(c["N"] ** 2 for c in cs)
-        sfn = sum(c["F"] * c["N"] for c in cs)
-        sfp = sum(c["F"] * c["P"] for c in cs)
-        snp = sum(c["N"] * c["P"] for c in cs)
-        det = sff * snn - sfn ** 2
-        b1, b2 = (sfp * snn - snp * sfn) / det, (snp * sff - sfp * sfn) / det
-        return lambda n, f: ("share", (b1 * f + b2 * n) / n)
+        return lambda r: r["N"] * P / N
+    if name == "capture_false_alarm":
+        se, fa = TP / P, (F - TP) / (N - P)
+        return lambda r: r["N"] * (r["F"] / r["N"] - fa) / (se - fa)
     if name == "hit_and_miss_trended":
         x = [c["F"] / c["N"] for c in cs]
         h0, hb = _lin(x, [c["TP"] / c["F"] for c in cs])
         m0, mb = _lin(x, [(c["P"] - c["TP"]) / (c["N"] - c["F"]) for c in cs])
-        return lambda n, f: (h0 + hb * f / n, m0 + mb * f / n)
-    if name == "mean_hit_and_miss":
-        pf = sum(c["TP"] / c["F"] for c in cs) / len(cs)
-        pu = sum((c["P"] - c["TP"]) / (c["N"] - c["F"]) for c in cs) / len(cs)
-        return lambda n, f: (pf, pu)
-    if name in ("latest_hit_and_miss", "most_stressed_hit_and_miss"):
-        c = cs[-1] if name.startswith("latest") else max(cs, key=lambda c: c["P"] / c["N"])
-        pf, pu = c["TP"] / c["F"], (c["P"] - c["TP"]) / (c["N"] - c["F"])
-        return lambda n, f: (pf, pu)
+        return lambda r: r["F"] * (h0 + hb * r["F"] / r["N"]) + (r["N"] - r["F"]) * (m0 + mb * r["F"] / r["N"])
+    if name == "share_on_flagged_share":
+        c0, b = _lin([c["F"] / c["N"] for c in cs], [c["P"] / c["N"] for c in cs])
+        return lambda r: r["N"] * (c0 + b * r["F"] / r["N"])
+    if name == "arrivals_on_flagged_count":
+        c0, b = _lin([float(c["F"]) for c in cs], [float(c["P"]) for c in cs])
+        return lambda r: c0 + b * r["F"]
+    if name == "colour_split":
+        pr = sum(c["RED_R"] for c in cs) / sum(c["RED"] for c in cs)
+        pa = (TP - sum(c["RED_R"] for c in cs)) / (F - sum(c["RED"] for c in cs))
+        pu = (P - TP) / (N - F)
+        return lambda r: r["RED"] * pr + (r["F"] - r["RED"]) * pa + (r["N"] - r["F"]) * pu
+    if name == "covenant_split":
+        pc = sum(c["COV_R"] for c in cs) / sum(c["COV"] for c in cs)
+        po = (TP - sum(c["COV_R"] for c in cs)) / (F - sum(c["COV"] for c in cs))
+        pu = (P - TP) / (N - F)
+        return lambda r: r["COV"] * pc + (r["F"] - r["COV"]) * po + (r["N"] - r["F"]) * pu
+    if name in ("split", "split_mean"):
+        m = name == "split_mean"
+        pd_, pi, pu = _rate(cs, "D", m), _rate(cs, "I", m), _rate(cs, "U", m)
+        return lambda r: r["D"] * pd_ + r["I"] * pi + (r["N"] - r["F"]) * pu
+    if name == "split_colour":
+        p = {}
+        for k in ("D", "I"):
+            n_r, k_r = sum(c[k + "_RED"] for c in cs), sum(c[k + "_RED_R"] for c in cs)
+            n_a, k_a = sum(c[k] for c in cs) - n_r, sum(c[k + "_R"] for c in cs) - k_r
+            p[k] = (k_r / n_r, k_a / n_a)
+        pu = _rate(cs, "U")
+        return lambda r: (r["D_RED"] * p["D"][0] + (r["D"] - r["D_RED"]) * p["D"][1] + r["I_RED"] * p["I"][0] +
+                          (r["I"] - r["I_RED"]) * p["I"][1] + (r["N"] - r["F"]) * pu)
+    if name == "split_covenant":
+        n_c, k_c = sum(c["D_COV"] for c in cs), sum(c["D_COV_R"] for c in cs)
+        n_o, k_o = sum(c["D"] for c in cs) - n_c, sum(c["D_R"] for c in cs) - k_c
+        pi, pu = _rate(cs, "I"), _rate(cs, "U")
+        return lambda r: r["D_COV"] * k_c / n_c + (r["D"] - r["D_COV"]) * k_o / n_o + r["I"] * pi + (r["N"] - r["F"]) * pu
+    if name == "direct_vs_rest":
+        pd_ = _rate(cs, "D")
+        prest = sum(c["I_R"] + c["U_R"] for c in cs) / sum(c["I"] + c["U"] for c in cs)
+        return lambda r: r["D"] * pd_ + (r["N"] - r["D"]) * prest
+    if name == "split_trended":
+        t = []
+        for k in ("D", "I", "U"):
+            a, b = _lin(list(range(len(cs))), [c[k + "_R"] / c[k] for c in cs])
+            t.append(a + b * len(cs))
+        return lambda r: r["D"] * t[0] + r["I"] * t[1] + (r["N"] - r["F"]) * t[2]
     raise ValueError(name)
 
 
-BASES = ["hit_and_miss", "one_share", "arrivals_per_flagged", "every_flagged_reaches", "capture_false_alarm",
-         "mean_capture_false_alarm", "share_on_flagged_share", "share_on_flagged_share_weighted",
-         "arrivals_on_flagged_and_book", "hit_and_miss_trended", "mean_hit_and_miss", "latest_hit_and_miss",
-         "most_stressed_hit_and_miss"]
+BASES = ["split", "split_mean", "split_colour", "split_covenant", "direct_vs_rest", "hit_and_miss",
+         "mean_hit_and_miss", "latest_hit_and_miss", "most_stressed_hit_and_miss", "one_share", "capture_false_alarm",
+         "hit_and_miss_trended", "share_on_flagged_share", "arrivals_on_flagged_count", "colour_split",
+         "covenant_split", "split_trended"]
+WINDOWS = dict(latest=slice(3, 4), last2=slice(2, 4), last3=slice(1, 4), first3=slice(0, 3))
 
 
-def predict(fn, n, f):
-    p = fn(n, f)
-    if p[0] == "share":
-        return n * p[1]
-    return f * p[0] + (n - f) * p[1]
+def book_row(c):
+    """the forward book's counts in the same cells"""
+    F, det = c["F"], c["det"]
+    row = dict(N=len(c["M"]), F=len(F))
+    for name, sel in (("D", lambda v: v["kind"] == "D"), ("I", lambda v: v["kind"] == "I"),
+                      ("RED", lambda v: v["red"]), ("COV", lambda v: v["cov"]),
+                      ("D_RED", lambda v: v["kind"] == "D" and v["red"]),
+                      ("I_RED", lambda v: v["kind"] == "I" and v["red"]),
+                      ("D_COV", lambda v: v["kind"] == "D" and v["cov"])):
+        row[name] = sum(1 for g in F if sel(det[g]))
+    row["U"] = row["N"] - row["F"]
+    return row
 
 
 def basis_test(tab):
-    """5.2's test: each closed cohort predicted from the other three taken together; error = largest miss as a
-    share of the cohort's actual arrivals. Returns {basis: (misses, error, forward)}."""
+    """Each closed cohort predicted from the other three taken together; error = largest miss as a share of
+    the cohort's actual arrivals. Returns {basis: (misses, error, forward)}. Never filed: the design's
+    evidence that the data force the basis."""
     cc = cohort_counts(tab)
-    N1, F1 = len(tab[4]["M"]), len(tab[4]["F"])
+    fwd = book_row(tab[4])
     out = {}
     for name in BASES:
         miss = []
         for i in range(4):
             fn = basis_fit(name, [c for j, c in enumerate(cc) if j != i])
-            miss.append(predict(fn, cc[i]["N"], cc[i]["F"]) / cc[i]["P"] - 1)
-        out[name] = (miss, max(abs(x) for x in miss), predict(basis_fit(name, cc), N1, F1))
+            miss.append(fn(cc[i]) / cc[i]["P"] - 1)
+        out[name] = (miss, max(abs(x) for x in miss), basis_fit(name, cc)(fwd))
     return out
 
 
-def forecast(tab, model=None):
-    """The forecast on the basis 5.2's test selects (or on a named basis)."""
-    test = basis_test(tab)
-    if model is None:
-        model = min(test, key=lambda k: test[k][1])
+def forecast(tab, model="split", window=None):
+    """The forecast on the flag-kind basis (or a named basis), with each group's probability for the band
+    table: the closed cohorts taken together unless a window is named."""
     cc = cohort_counts(tab)
+    cs = cc[WINDOWS[window]] if window else cc
     fwd = tab[4]
-    N1, F1 = len(fwd["M"]), len(fwd["F"])
-    pf, pu = basis_fit(model, cc)(N1, F1)
-    m = measures(tab)
-    return dict(model=model, test=test, N1=N1, F1=F1, a1=F1 / N1, p_flag=pf, p_unflag=pu, flagged=F1 * pf,
-                unflagged=(N1 - F1) * pu, total=F1 * pf + (N1 - F1) * pu, measures=m)
+    row = book_row(fwd)
+    total = basis_fit(model, cs)(row)
+    pu = _rate(cs, "U")
+    if model in ("split", "split_mean", "split_trended"):
+        m = model == "split_mean"
+        if model == "split_trended":
+            t = []
+            for k in ("D", "I", "U"):
+                a, b = _lin(list(range(len(cs))), [c[k + "_R"] / c[k] for c in cs])
+                t.append(a + b * len(cs))
+            pd_, pi, pu = t
+        else:
+            pd_, pi, pu = _rate(cs, "D", m), _rate(cs, "I", m), _rate(cs, "U", m)
+
+        def p_of(g):
+            v = fwd["det"].get(g)
+            return pu if v is None else (pd_ if v["kind"] == "D" else pi)
+    elif model == "hit_and_miss":
+        S = {k: sum(c[k] for c in cs) for k in ("TP", "F", "P", "N")}
+        pf, pu = S["TP"] / S["F"], (S["P"] - S["TP"]) / (S["N"] - S["F"])
+        pd_ = pi = pf
+
+        def p_of(g):
+            return pf if g in fwd["F"] else pu
+    else:
+        pd_ = pi = None
+
+        def p_of(g):
+            raise ValueError("no group probabilities on basis " + model)
+    flagged = sum(p_of(g) for g in fwd["F"]) if pd_ is not None else None
+    unflagged = (row["N"] - row["F"]) * pu if pd_ is not None else None
+    return dict(model=model, window=window, test=basis_test(tab), N1=row["N"], F1=row["F"], D1=row["D"],
+                I1=row["I"], a1=row["F"] / row["N"], p_d=pd_, p_i=pi, p_unflag=pu, p_of=p_of, flagged=flagged,
+                unflagged=unflagged, total=total, measures=measures(tab), cc=cc, row=row)
 
 
 # ------------------------------------------------------------ exposure (CRM-07 6.1)
@@ -321,19 +432,42 @@ def limit_on_clock(pk, key, ext_limit, clock):
     return sel[-1] if sel else 0.0
 
 
-def customer_groups(pk, hz=True):
-    cg = {r["customer_id"]: r["group_id"] for r in pk.obl}
-    if hz:
-        resolve, _ = pk.group_of_key(dt.date(2026, 9, 30))
-        for r in pk.obl:
-            if not r["group_id"] and r["lei"]:
-                cg[r["customer_id"]] = resolve(r["lei"].upper()) or ""
-    return cg
-
-
-def exposures(pk, grain="group", clock="right", hz=True, order="first"):
+def customer_groups(pk, hz=True, member="both"):
+    """customer -> the groups it is a member of at 30 Sep 2026 under 2.2: the group the credit system books it
+    to and the group whose ultimate parent its GLEIF records consolidate it into (one group for nearly every
+    customer; two for a company consolidated into one group and booked to another). Customers not yet grouped
+    are placed through GLEIF (hz). member "booked" or "gleif" reads a two-group customer one way only."""
     date = dt.date(2026, 9, 30)
-    cg = customer_groups(pk, hz)
+    resolve, _ = pk.group_of_key(date)
+    tops = {r["ultimate_parent_lei"]: r["group_id"] for r in pk.reg if r["ultimate_parent_lei"]}
+    ult = {}
+    for r in pk.rr:
+        st, en = d(r["Relationship.Period1.startDate"]), d(r["Relationship.Period1.endDate"])
+        if r["Relationship.RelationshipType"] == "IS_ULTIMATELY_CONSOLIDATED_BY" and st <= date and (en is None or en > date):
+            ult[r["Relationship.StartNode.NodeID"]] = r["Relationship.EndNode.NodeID"]
+    out = {}
+    for r in pk.obl:
+        gs = set()
+        if r["group_id"]:
+            gs.add(r["group_id"])
+        elif hz and r["lei"]:
+            g = resolve(r["lei"].upper())
+            if g:
+                gs.add(g)
+        lei = r["lei"].upper()
+        cons = tops.get(ult.get(lei, ""))
+        if r["group_id"] and cons and cons != r["group_id"]:
+            if member == "both":
+                gs.add(cons)
+            elif member == "gleif":
+                gs = {cons}
+        out[r["customer_id"]] = gs
+    return out
+
+
+def exposures(pk, grain="group", clock="right", hz=True, order="first", member="both"):
+    date = dt.date(2026, 9, 30)
+    cg = customer_groups(pk, hz, member)
     rows_ = [r for r in pk.fac if d(r["start_date"]) <= date < d(r["final_maturity_date"])]
     if grain in ("fid", "bkfid"):
         seen, keep = set(), []
@@ -347,17 +481,15 @@ def exposures(pk, grain="group", clock="right", hz=True, order="first"):
     exp = defaultdict(float)
     counted = set()
     for r in rows_:
-        g = cg.get(r["customer_id"], "")
-        if not g:
-            continue
         key = (r["booking_entity"], r["facility_id"])
-        if grain == "group":
-            if (g, key) in counted:
-                continue
-            counted.add((g, key))
         lim = limit_on_clock(pk, key, float(r["committed_limit"]), clock)
         rate = pk.fx[r["currency"]] if r["currency"] != "GBP" else 1.0
-        exp[g] += lim / rate
+        for g in sorted(cg.get(r["customer_id"], ())):
+            if grain == "group":
+                if (g, key) in counted:
+                    continue
+                counted.add((g, key))
+            exp[g] += lim / rate
     return exp
 
 
@@ -370,16 +502,17 @@ def band_of(x):
 
 def band_table(tab, fc, exp):
     fwd = tab[4]
+    p = fc["p_of"]
     out = []
     for b in range(5):
         G = [g for g in fwd["M"] if band_of(exp.get(g, 0.0)) == b]
         Fg = [g for g in G if g in fwd["F"]]
-        Ug = [g for g in G if g not in fwd["F"]]
-        ef = len(Fg) * fc["p_flag"]
-        eu = len(Ug) * fc["p_unflag"]
-        ex = fc["p_flag"] * sum(exp.get(g, 0.0) for g in Fg) + fc["p_unflag"] * sum(exp.get(g, 0.0) for g in Ug)
-        out.append(dict(band=BANDS[b], groups=len(G), flagged=len(Fg), committed=sum(exp.get(g, 0.0) for g in G),
-                        exp_flagged=ef, exp_unflagged=eu, exp_total=ef + eu, exp_exposure=ex))
+        ea = sum(p(g) for g in G)
+        ex = sum(p(g) * exp.get(g, 0.0) for g in G)
+        out.append(dict(band=BANDS[b], groups=len(G), flagged=len(Fg),
+                        direct=sum(1 for g in Fg if g in fwd["FD"]), indirect=sum(1 for g in Fg if g in fwd["FI"]),
+                        committed=sum(exp.get(g, 0.0) for g in G), exp_arrivals=ea,
+                        exp_flagged=sum(p(g) for g in Fg), exp_exposure=ex))
     return out
 
 
@@ -393,26 +526,28 @@ def golden(t=TARGET):
 
 
 # ------------------------------------------------------------ CRM-07 2.2: the ultimate parent is a member
-COMMITTED = dict(call=133, flagged=165, apex_only=[6, 5, 3, 5, 6], bands=[
-    (201, 475.8, 21.4, 6.5, 69.6), (306, 3016.2, 34.0, 9.8, 411.5), (250, 7153.8, 29.6, 7.9, 1108.6),
-    (120, 8213.8, 12.6, 3.9, 1121.5), (36, 6640.9, 6.3, 1.0, 1283.4)])
+COMMITTED = dict(call=None, flagged=165, bands=None)
 
 
 def check_membership(G, t=TARGET):
     """The amended 2.2 read literally (the ultimate parent, booked customers and GLEIF consolidation members)
-    gives the committed figures; the apex-only flags are counted; every apex edge has one reading."""
+    gives the committed figures; no flag sits on an ultimate parent the bank does not lend to, so the clause's
+    reading moves nothing; every apex edge has one reading."""
     import pypdf
     pk, tab = G["pack"], G["tab"]
     std = " ".join("".join(p.extract_text() for p in pypdf.PdfReader(
         os.path.join(t, "early_warning_and_watch_list_standard.pdf")).pages).split())
     assert "A group's members are its ultimate parent, the customers the credit system books to it" in std
-    assert len(tab[4]["F"]) == COMMITTED["flagged"] and G["call"] == COMMITTED["call"]
-    got = [(r["groups"], round(r["committed"] / 1e6 + 1e-12, 1), round(r["exp_flagged"] + 1e-12, 1),
-            round(r["exp_unflagged"] + 1e-12, 1), round(r["exp_exposure"] / 1e6 + 1e-12, 1)) for r in G["bands"]]
-    assert got == COMMITTED["bands"], got
+    assert len(tab[4]["F"]) == COMMITTED["flagged"]
+    if COMMITTED["call"] is not None:
+        assert G["call"] == COMMITTED["call"], G["call"]
+    if COMMITTED["bands"] is not None:
+        got = [(r["groups"], round(r["committed"] / 1e6 + 1e-12, 1), r["flagged"], round(r["exp_arrivals"] + 1e-12, 1),
+                round(r["exp_exposure"] / 1e6 + 1e-12, 1)) for r in G["bands"]]
+        assert got == COMMITTED["bands"], got
     no_apex = pk.cohort_table(apex=False)
     only = [len(a["F"] - b["F"]) for a, b in zip(tab, no_apex)]
-    assert only == COMMITTED["apex_only"] and all(not (b["F"] - a["F"]) for a, b in zip(tab, no_apex)), only
+    assert only == [0] * 5 and all(a["det"] == b["det"] for a, b in zip(tab, no_apex)), only
     tops = {r["ultimate_parent_lei"]: r["group_id"] for r in pk.reg}
     assert all(tops), "every group has an ultimate parent LEI"
     booked = {r["lei"]: r["group_id"] for r in pk.obl if r["lei"]}
@@ -435,19 +570,20 @@ if __name__ == "__main__":
     t = sys.argv[1] if len(sys.argv) > 1 else TARGET
     G = golden(t)
     print("2.2 membership: flagged %d, apex-only flags by cohort %s" % (len(G["tab"][4]["F"]), check_membership(G, t)))
-    for c in G["tab"]:
-        print(c["date"], len(c["M"]), len(c["F"]), None if c["R"] is None else (len(c["R"]), len(c["R"] & c["F"])))
     fc = G["fc"]
-    m = fc["measures"]
+    for c, row in zip(G["tab"], fc["cc"] + [fc["row"]]):
+        print(c["date"], "N", row["N"], "F", row["F"], "D", row["D"], "I", row["I"],
+              "" if c["R"] is None else "P %d TP %d D_R %d I_R %d U_R %d" % (row["P"], row["TP"], row["D_R"],
+                                                                             row["I_R"], row["U_R"]))
     for k, (miss, err, fw) in sorted(fc["test"].items(), key=lambda kv: kv[1][1]):
-        print("%-34s %s  worst %6.2f%%  forward %7.2f" % (k, " ".join("%+6.1f" % (100 * x) for x in miss), 100 * err, fw))
-    print("basis used:", fc["model"])
-    print("hit %.4f capture %.4f false-alarm %.4f miss %.5f" % (m["hit"], m["capture"], m["false_alarm"], m["miss"]))
-    print("forward N %d flagged %d; p_flag %.5f p_unflag %.5f" % (fc["N1"], fc["F1"], fc["p_flag"], fc["p_unflag"]))
+        print("%-28s %s  worst %6.2f%%  forward %7.2f" % (k, " ".join("%+6.1f" % (100 * x) for x in miss), 100 * err, fw))
+    for w_ in WINDOWS:
+        print("window %-7s %.3f" % (w_, forecast(G["tab"], window=w_)["total"]))
+    print("p_d %.5f p_i %.5f p_u %.5f" % (fc["p_d"], fc["p_i"], fc["p_unflag"]))
     print("caseload %.3f -> %d (flagged %.3f, unflagged %.3f)" % (fc["total"], G["call"], fc["flagged"], fc["unflagged"]))
     for r in G["bands"]:
-        print("%-28s groups %4d flagged %3d  committed GBP m %9.3f  exp_flag %7.3f exp_unflag %7.3f  exp_exposure GBP m %8.3f"
-              % (r["band"], r["groups"], r["flagged"], r["committed"] / 1e6, r["exp_flagged"], r["exp_unflagged"],
-                 r["exp_exposure"] / 1e6))
+        print("%-28s groups %4d flagged %3d (D %3d I %2d) committed GBP m %9.3f  exp_arrivals %7.3f"
+              "  exp_exposure GBP m %8.3f" % (r["band"], r["groups"], r["flagged"], r["direct"], r["indirect"],
+                                              r["committed"] / 1e6, r["exp_arrivals"], r["exp_exposure"] / 1e6))
     print("committed total GBP m %.3f, expected exposure total GBP m %.3f" % (
         sum(r["committed"] for r in G["bands"]) / 1e6, sum(r["exp_exposure"] for r in G["bands"]) / 1e6))

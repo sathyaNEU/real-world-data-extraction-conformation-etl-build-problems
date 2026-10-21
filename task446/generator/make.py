@@ -188,13 +188,10 @@ def build(target=TARGET, devices=True):
         if e.cust is None:
             continue
         g = w.groups[e.gid]
-        since = max(g.active_from, e.reg - dt.timedelta(days=200)) if e.role != "top" else g.active_from
-        since = min(since, EXTRACT_DATE - dt.timedelta(days=30))
-        if e.hz:
-            since = e.cust_since
+        since = world.cust_since(w, e)
         closed = (g.active_to is not None and g.active_to <= EXTRACT_DATE) or (not e.borrower)
         booking = "HB-DAC" if e.country == "IE" else "HB-PLC"
-        ob.append((e.cust, e.name, e.lei or "", e.crn or "", e.country, "" if e.hz else g.gid, since.isoformat(),
+        ob.append((e.cust, e.name, e.lei or "", e.crn or "", e.country, "" if e.hz else (e.booked or g.gid), since.isoformat(),
                    "CLOSED" if closed else "ACTIVE", booking))
     ob.sort()
     wcsv(os.path.join(target, FILES["obligors"]),

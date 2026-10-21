@@ -2,20 +2,20 @@
  "task": "task446",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-15",
+ "stage": 3,
+ "stage_name": "build",
+ "updated": "2026-10-21",
  "branch": "oviya1301/task446-lei-group-concentration",
- "stump": "A competent solver rolls the entity signals up to groups, builds the four closed cohorts and gives each flagged group the share of flagged groups that reached the list over those cohorts taken together and each other group the unflagged share, and files 73; the step that lands it there is carrying the hit rate onto a book whose flagged share has jumped to 18.1 per cent, when the hit rate moves with each year's base rate and only the screen's capture and false-alarm rates hold; backing this year's arrival share out of the flagged share through those two rates validates within 1.6 per cent and gives 133.",
- "architecture": 2,
- "loops": 1,
+ "stump": "A competent solver rolls the entity signals up to groups, builds the four closed cohorts and gives each flagged group the share of flagged groups that reached the list over those cohorts taken together and each other group the unflagged share, and files 64 (Ends on); the step that lands it there is treating every group flag as one kind of signal, when a flag raised on a customer the bank lends to reaches the list half the time (120 of 240) and one raised only on a member it does not lend to one time in sixteen (11 of 176), and this September's flags are 77 per cent customer-raised against 48 to 69 per cent in the cohorts; pricing each kind of flag at its own rate predicts every closed cohort within 3.9 per cent out of sample (the single flagged rate misses one by 14.4) and gives 78.",
+ "architecture": 3,
+ "loops": 0,
  "leak": {
-  "leak_py": "REVIEW (0 LEAK) at --asof 2026-10-11",
-  "reader": "isolated read 2026-10-15: question 1 none, no ranking file, question 5 fixes the estimand and band split and no method, window or selection rule, question 6 an analytical choice"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (first names only)",
-  "surface": "no promoted pair",
+  "heart": "WARN (decision type and question form repeat task272; task134 v2 round 1, task149, task131 v2, task183, task230 v3 differentiated)",
+  "surface": "",
   "nearest": "0.06"
  },
  "solver_rounds": [
@@ -71,12 +71,9 @@
   }
  ],
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "report": "task446/determinism_check_report_pass2.md",
-  "gate_g": "forecasting (method selection by out-of-sample validation), analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "notes": "every figure reproduced; competing bases 73, 147, 80, 52 and the window variants 127 to 139 rejected by the data and by 4.3's window; its one wording note (the trended basis 'far more') rewritten"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "approved": null,
  "delivered": "2026-10-15",
@@ -98,13 +95,13 @@
   "target_zip": "3035037 bytes, 17 members, matches target/ (H7); rebuild byte-identical (builder)"
  },
  "returns": 1,
- "status": "SHIPPED",
+ "status": "BUILD",
  "owner": "oviya1301",
  "author_decision": "2026-10-12: kept as SHIPPED at the author's request; the FAILED_TO_STUMP rework (redesign) is not done and the portal record below is unchanged",
- "resume": "",
+ "resume": "stage 3: finish the free gates (checks.py green, figures_check, leak.py, guard surface and heart, golden-realism), then stage 4 (leak reader and determinism judge together), then RESHIPPED with target.zip",
  "precut": {
   "exit": 0,
-  "date": "2026-10-15"
+  "date": "2026-10-21"
  },
  "returned": [
   {
@@ -112,11 +109,18 @@
    "portal": "client return: 10/10 rule application (CRM-07 5.2 filed the model and the selection test)",
    "repair": "design (5.2 files the estimand only; the data forces the basis; prompt.txt; pairing to Forecasting)",
    "commit": "RESHIPPED (task446), 2026-10-15"
+  },
+  {
+   "date": "2026-10-21",
+   "portal": "the author sent the client's 2026-10-12 review again (version 363: Stumped passed, Stumped type match failed, rule application: CRM-07 5.2 filed the model, the fitting window and the selection rule). The 2026-10-15 repair had unfiled the selection rule only: 5.3 still filed one probability per flag status shared across the book, and the decisive insight repeated task192's driver",
+   "repair": "re-root to architecture 3: each group flag priced by the member that raised it (a customer the bank lends to, or only a parent or sister company reached through GLEIF); CRM-07 files the estimand and the precision only; asks re-sited onto joint ventures booked to the other partner (2.2's two memberships); call 78, easy route 64",
+   "commit": "DRAWN (task446), 2026-10-21"
   }
  ],
  "build": {
   "checks": 9162,
   "byte_identical": true,
   "target_zip_sha256": "6033cdc7cd03750f32363ea163fce7113075251a7bbc2ccb86a9b4725a4f36d4"
- }
+ },
+ "status_note": "architecture 3 drawn and built 2026-10-21; stage 3 free gates and stage 4 reader and judge to run before RESHIPPED"
 }

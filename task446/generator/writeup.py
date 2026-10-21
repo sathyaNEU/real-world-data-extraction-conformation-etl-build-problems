@@ -24,9 +24,7 @@ def money(x):
 def build(F):
     m = F["measures"]
     rows, tot = F["rows"], F["total"]
-    test = F["test"]
-    err_ans = test[F["model"]][1]
-    err_hm = test["hit_and_miss"][1]
+    err_split, err_single = F["split"][1], F["single"][1]
     L = []
     L.append("# task446 submission")
     L.append("")
@@ -42,27 +40,28 @@ def build(F):
              "at 30 September 2026 are expected to reach the watch list by 30 September 2027.**"
              % (F["call"], F["call"], F["N1"]))
     L.append("")
-    L.append("The %d comes from the early-warning screen's capture and false-alarm rates over the 2022 to 2025 "
-             "cohorts, which hold from year to year, with this year's share of the book reaching the list backed out "
-             "of this year's %s flagged share; predicting each closed cohort from the other three, that basis never "
-             "misses by more than %s. Not the hit and miss rates those cohorts report, carried onto this year's "
-             "flags: the hit rate moves with each year's share of the book reaching the list, and that basis misses "
-             "a closed cohort by %s. Not the latest or the most stressed cohort's rates, which carry one year's "
-             "arrival share, nor the hit and miss rates trended on the flagged share, which stretch a four-cohort "
-             "trend past every flagged share the cohorts saw and miss a closed cohort out of sample by five times as much."
-             % (F["call"], pct(F["a1"]), pct(err_ans), pct(err_hm)))
+    L.append("The %d prices each September flag by where in the group it was raised. Over the 2022 to 2025 cohorts a "
+             "group whose flag sat on a customer we lend to reached the list within the year %s of the time, and one "
+             "flagged only through a parent or sister company we do not lend to %s, and this September %d of the %d "
+             "flags sit on customers, a far larger share than in any closed cohort. Predicting each closed cohort from "
+             "the other three, that basis misses none by more than %s. Not one rate for every flagged group, which "
+             "gives %d and misses a closed cohort by %s because it carries the cohorts' mix of the two kinds of flag "
+             "onto a book that holds far more of the first; nor the colour or covenant-trigger splits, the latest or "
+             "most stressed cohort, or the screen's capture and false-alarm rates with this year's arrival share "
+             "backed out of the flagged share, which gives %d."
+             % (F["call"], pct(F["p_d"]), pct(F["p_i"], 2), F["D1"], F["F1"], pct(err_split),
+                round(F["single"][2]), pct(err_single), round(F["test"]["capture_false_alarm"][2])))
     L.append("")
     L.append("## 2. Critical Components")
     L.append("")
-    L.append("1. The monitored book at 30 September 2026 is **%d** groups, **%d** of them flagged" % (F["N1"], F["F1"]))
-    L.append("2. Predicting each closed cohort from the other three, the capture and false-alarm basis misses none by "
-             "more than **%s**; the hit and miss rates miss one by **%s**" % (pct(err_ans), pct(err_hm)))
-    L.append("3. Over the 2022 to 2025 cohorts taken together the capture rate is **%s** and the false-alarm rate "
-             "**%s**" % (pct(m["capture"]), pct(m["false_alarm"], 2)))
-    L.append("4. The flagged share of **%s** implies **%s** of the book reaches the watch list within the year"
-             % (pct(F["a1"]), pct(F["p1"])))
-    L.append("5. A flagged group reaches it with probability **%s**, a group not flagged with **%s**"
-             % (pct(F["p_flag"]), pct(F["p_unflag"])))
+    L.append("1. The monitored book at 30 September 2026 is **%d** groups; **%d** of them are flagged, **%d** of those "
+             "flags raised on a customer the bank lends to" % (F["N1"], F["F1"], F["D1"]))
+    L.append("2. Over the 2022 to 2025 cohorts taken together a flag raised on a customer reached the watch list "
+             "**%s** of the time, a flag raised only on a member the bank does not lend to **%s**, and a group not "
+             "flagged **%s**" % (pct(F["p_d"]), pct(F["p_i"], 2), pct(F["p_unflag"], 2)))
+    L.append("3. Predicting each closed cohort from the other three, the split by where the flag was raised misses "
+             "none by more than **%s**; one rate for every flagged group misses one by **%s**"
+             % (pct(err_split), pct(err_single)))
     L.append("")
     L.append("## 3. Step-by-Step Solution")
     L.append("")
@@ -70,25 +69,26 @@ def build(F):
         "Built the monitored book at each 30 September from credit_group_register_20260930.xlsx and "
         "watch_list_history_2020-01_to_2026-09.csv (CRM-07 4.1): %d groups at 30 September 2026." % F["N1"],
         "Carried each September publication in ews_entity_signals_2022-09_to_2026-09.csv to groups through the "
-        "group register's ultimate parent LEI, the obligor master's LEI and Companies House keys and the GLEIF relationship records in force at the date "
-        "(CRM-07 2.2, 3.2): %d of the %d are flagged." % (F["F1"], F["N1"]),
-        "Matched the 2022 to 2025 cohorts to watch-list placements in the following twelve months (CRM-07 4.2) and "
-        "measured them taken together (4.3): capture rate %s, false-alarm rate %s."
-        % (pct(m["capture"]), pct(m["false_alarm"], 2)),
-        "Back-tested the forecasting bases, each closed cohort predicted from the other three taken together: the "
-        "hit rate moves with each cohort's arrivals while the capture and false-alarm rates hold, and that basis "
-        "misses by at most %s against %s for the hit and miss rates."
-        % (pct(err_ans), pct(err_hm)),
-        "Solved this year's %s flagged share for the share of the book that will reach the list through those two "
-        "rates: %s, so a flagged group reaches it with probability %s and a group not flagged with %s."
-        % (pct(F["a1"]), pct(F["p1"]), pct(F["p_flag"]), pct(F["p_unflag"])),
-        "Summed the probabilities over the %d groups: %.1f expected arrivals, %d to the nearest whole group "
-        "(CRM-07 5.3)." % (F["N1"], F["expected"], F["call"]),
+        "group register's ultimate parent LEI, the obligor master's LEI and Companies House keys and the GLEIF "
+        "relationship records in force at the date (CRM-07 2.2, 3.2), and marked each flag by whether an AMBER or RED "
+        "entity is a customer on credit_obligor_master_20260930.csv opened by the date: %d flagged, %d of them on a "
+        "customer." % (F["F1"], F["D1"]),
+        "Matched the 2022 to 2025 cohorts to watch-list placements in the following twelve months (CRM-07 4.2): of "
+        "%d flags raised on customers %d reached the list, of %d raised only on other members %d, of %s groups not "
+        "flagged %d." % (m["D"], m["D_R"], m["I"], m["I_R"], "{:,}".format(m["U"]), m["U_R"]),
+        "Back-tested the bases on the closed cohorts, each predicted from the other three: the split by where the "
+        "flag was raised misses by at most %s, one rate for every flagged group by %s." % (pct(err_split),
+                                                                                           pct(err_single)),
+        "Gave each group in the 30 September 2026 book the share for its kind over the four cohorts taken together "
+        "(4.3) and summed: %.1f expected arrivals, %d to the nearest whole group (CRM-07 5.3)."
+        % (F["expected"], F["call"]),
         "Built each group's committed exposure under CRM-07 1.3 and 6.1 from facility_obligor_extract_20260930.csv, "
-        "each facility (booking entity and number) once in every group with an obligor on it and customers not yet "
-        "grouped placed through GLEIF (2.2), at the limit in facility_limit_history_20261008.csv as at the end of 30 "
-        "September UK time, in sterling at the units_per_gbp rates, then banded it under 6.2 and split each band's "
-        "arrivals and exposure by flag status under 5.3 for the workbook.",
+        "each facility (booking entity and number) once in every group with a member on it, counting the facility of "
+        "a company booked to one group and consolidated through GLEIF into another's ultimate parent in both groups "
+        "and placing customers not yet grouped through GLEIF (2.2), at the limit in facility_limit_history_20261008.csv "
+        "as at the end of 30 September UK time, in sterling at the units_per_gbp rates, and banded it under 6.2.",
+        "Summed each band's groups, flags, probabilities and probability-weighted committed exposure for the workbook "
+        "and the chart.",
         "Recommendation: put a 2027 caseload of %d groups to the committee." % F["call"],
     ]
     for i, s_ in enumerate(steps, start=1):
@@ -98,20 +98,18 @@ def build(F):
     L.append("")
     L.append("### %s" % deliver.XLSX)
     L.append("1. Heading figure: %d obligor groups expected to reach the watch list by 30 September 2027" % F["call"])
-    L.append("2. One row per caseload band, smallest first (groups the band holds, their committed exposure, expected "
-             "arrivals from groups flagged in September, expected arrivals from groups not flagged, expected "
-             "committed exposure arriving):")
+    L.append("2. One row per caseload band, smallest first (groups the band holds, their committed exposure, groups "
+             "flagged in September, expected arrivals, expected committed exposure arriving):")
     for r in rows:
-        L.append("   - %s: %s groups, %s committed, %.1f flagged, %.1f not flagged, %s arriving"
-                 % (r["band"], "{:,}".format(r["groups"]), money(r["committed"]), r["flagged"], r["unflagged"],
+        L.append("   - %s: %s groups, %s committed, %d flagged, %.1f expected arrivals, %s arriving"
+                 % (r["band"], "{:,}".format(r["groups"]), money(r["committed"]), r["flagged"], r["arrivals"],
                     money(r["exposure"])))
-    L.append("3. Total row: %s groups, %s committed, %.1f flagged, %.1f not flagged, %s arriving"
-             % ("{:,}".format(tot["groups"]), money(tot["committed"]), tot["flagged"], tot["unflagged"],
+    L.append("3. Total row: %s groups, %s committed, %d flagged, %.1f expected arrivals, %s arriving"
+             % ("{:,}".format(tot["groups"]), money(tot["committed"]), tot["flagged"], tot["arrivals"],
                 money(tot["exposure"])))
     L.append("")
     L.append("### %s" % deliver.CHART)
-    L.append("1. One stacked bar per band, smallest first, with the flagged and not-flagged segments labelled with "
-             "the band figures above")
+    L.append("1. One bar per band, smallest first, labelled with the band's expected arrivals above")
     L.append("2. The caseload, %d groups, written on the chart" % F["call"])
     L.append("3. Title: \"%s\"" % (deliver.TITLE % (F["call"], F["N1"])))
     return "\n".join(L) + "\n"

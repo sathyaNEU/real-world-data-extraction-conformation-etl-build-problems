@@ -1,4 +1,4 @@
-"""Documents and workbooks for task446's pack (architecture 2)."""
+"""Documents and workbooks for task446's pack (architecture 3)."""
 import datetime as dt
 import io
 import os
@@ -432,8 +432,8 @@ def standard_pdf(path):
         ("p", "4.2 A group in a cohort reaches the watch list if it is placed on the watch list in the twelve "
               "months after the cohort date. A group that leaves the book in that time without being placed has "
               "not reached it. A group counts once. A cohort is closed once its twelve months have ended."),
-        ("p", "4.3 The system's performance is reported to the Credit Risk Committee each November on the last "
-              "four closed cohorts taken together:"),
+        ("p", "4.3 The system's performance is reported to the Credit Risk Committee each November on the closed "
+              "cohorts scored by the current release, taken together:"),
         ("u", "hit rate: groups flagged at the cohort date that reach the watch list, as a share of groups "
               "flagged;"),
         ("u", "capture rate: groups reaching the watch list that were flagged at the cohort date, as a share of "
@@ -450,12 +450,8 @@ def standard_pdf(path):
               "4.1, 4.2 and 5.1 set them, and the committed exposure at the cohort date that those groups are "
               "expected to bring. The Committee resources the coming year's caseload on it, and each forecast is "
               "set against its cohort's actual arrivals once the cohort closes."),
-        ("p", "5.3 The caseload is reported to the nearest whole group. In each band of 6.2 the expected arrivals "
-              "are split into those from groups flagged at the cohort date and those from groups not flagged: each "
-              "part is the book's expected arrivals from groups of that flag status, shared among the bands in "
-              "proportion to the band's groups of that status, and the committed exposure the arrivals are expected "
-              "to bring is shared the same way, in proportion to those groups' committed exposure. Expected arrivals "
-              "within a band are reported to one decimal."),
+        ("p", "5.3 The caseload is reported to the nearest whole group, and the expected arrivals and the committed "
+              "exposure they are expected to bring in each band of 6.2 to one decimal."),
         ("h", "6 Committed exposure and caseload bands"),
         ("p", "6.1 A group's committed exposure at a date is the sum of the committed limits, as they stood at the "
               "end of that date, of the facilities on which one or more of its members is an obligor, across "
@@ -504,9 +500,12 @@ Every customer on the credit system, open or closed.
 | field | meaning |
 |---|---|
 | customer_id | credit system customer number |
+| customer_name | the customer's registered name |
 | lei | the customer's LEI where held |
 | companies_house_no | Companies House number for UK-registered customers |
+| country | country of registration |
 | group_id | the obligor group the credit system books the customer to; blank until the monthly grouping review books a new customer |
+| customer_since | the date the customer was opened on the credit system |
 | customer_status | ACTIVE or CLOSED at the extract date |
 | primary_booking_entity | HB-PLC (Halstow Bank plc) or HB-DAC (Halstow Bank Ireland DAC) |
 
