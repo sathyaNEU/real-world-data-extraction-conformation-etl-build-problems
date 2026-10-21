@@ -1,61 +1,61 @@
 {
   "task": "task272",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-21",
   "slot_note": "",
-  "domain": "general-statistics-data-science",
-  "subdomain": "resampling-simulation-monte-carlo-methods",
-  "client_domain": "general-statistics-data-science",
-  "niche": "a health foundation's FY2027 decision-coaching grants for its collaborative's hospital financial-assistance teams, one per hospital whose counsellors approve an application markedly less often right after approving one, measured from the counsellors' 2025 determination logs, worked in short daily queues whose mix of applicants swings from day to day",
+  "domain": "demographic-social-science",
+  "subdomain": "income-poverty-inequality",
+  "client_domain": "sociology-demography",
+  "niche": "a health foundation's FY2027 decision-coaching grants for its collaborative's hospital financial-assistance teams, one per hospital whose 2025 decisions most often left households that the collaborative's 2026 standard makes eligible on their income over the twelve months before applying without free care in full, when the 2025 policy read income from the three months before the application and much of the region's work follows harvest, fishing and resort seasons",
   "objective": "descriptive-distribution",
-  "shape": "10",
+  "shape": "08",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "11 Decision Coaching Grants ($704,000): H03, H06, H09, H10, H17, H19, H20, H21, H22, H26 and H31",
+  "answer": "",
   "answer_source": "submission.md block 1; fair_assistance_coaching_2027.xlsx",
   "gap": [
-    "rule",
+    "objective",
     "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G6",
+    "G13",
     "G16"
   ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
-  "decisive_rule_filed": false,
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "retry_or_revision_log",
+  "stump_strategy": "time_semantics",
+  "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the logs and reads the criteria correctly either pools each hospital's consecutive decisions and finds almost no hospital over the six-point line, because days with easy files string approvals together, or holds each day's mix fixed with a day-by-day regression and puts every hospital over it, because short queues manufacture a drop after an approval on their own; only the excess over what each day's decisions would show in any order counts the hospitals that qualify.",
-  "domain_test": "The deciding quantity is serial dependence in a sequence of binary decisions measured against the exchangeable benchmark of each session's own reorderings, the resampling task type's own object; swapping the nouns leaves a dependence statistic whose within-session expectation under no dependence is not zero, so replacing the reordering benchmark with a pooled or fixed-effects estimate changes the call in any field.",
+  "analyst_test": "A strong analyst who conforms the three hubs and reads the 2026 standard correctly takes the 2025 policy's yearly figure, the three months before the application times four, as the best available estimate of each household's income over the twelve months before it applied, or corrects it with one seasonal calendar for all seasonal work, and files too few grants: households whose work follows a harvest, fishing or resort season were assessed in their peak or slack quarter, and only each region's own calendar for each kind of seasonal work, read from the households that applied in more than one season, puts their year's income where it was.",
+  "domain_test": "The deciding quantity is each applicant household's income over the twelve months before it applied against the poverty line, estimated from the one quarter the 2025 policy recorded with the local seasonal calendar of the household's work: the reference-period problem of income and poverty measurement, where a single period's income misstates the year for earnings that follow a season. Swapping earnings for megawatt-hours or visits breaks it, and replacing the calendar estimate with the recorded quarter times four changes the call.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:within-session-reordering-benchmark",
+  "layer2_pattern": "own:seasonal-reference-period-income",
   "layer1": [
-    "local working day against UTC timestamps",
-    "system auto-approvals among counsellor decisions",
-    "counsellor IDs re-keyed at a system migration",
-    "reconsiderations beside initial decisions",
-    "duplicate export rows",
-    "decision codes differing by billing system"
+    "three billing systems with their own layouts and codes",
+    "UTC timestamps against local application dates",
+    "guarantor IDs re-keyed at a billing migration",
+    "reapplications and reconsiderations beside first decisions",
+    "duplicate ledger rows",
+    "denial reason codes renumbered mid-year"
   ],
   "stakeholder_role": "Program Officer, Vellacott Health Foundation",
   "role_family": "programme_officer",
   "scoring_unit": "units served",
   "spine": {
-    "file": "fac_determinations_2025_*_hub.csv (three hub extracts)",
-    "rows": 221856,
-    "entity": "one financial-assistance determination, pend or withdrawal a counsellor or the presumptive screening records",
+    "file": "fac_determinations_2024_2025_*_hub.csv (three hub extracts)",
+    "rows": 0,
+    "entity": "one financial-assistance application decision, pend or withdrawal a counsellor or the presumptive screening records",
     "grain": "determination event",
     "source": "synthetic"
   },
   "forum": "board_of_directors",
-  "forcing_event": "launch_or_rollout",
+  "forcing_event": "vote_or_meeting",
   "org_family": "foundation_or_funder",
   "world": {
     "geography": "United States (Oregon and Washington)",
@@ -76,13 +76,42 @@
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "The decisive quantity is how strongly each unit's yes-or-no decisions depend on its previous decision inside short sessions whose mix of cases varies; pooling the sessions credits the mix with a positive dependence, comparing within sessions builds in a negative one that short sessions produce on their own, and only the excess over what each session's own decisions would show in any order measures it.",
-  "driver_concrete": "Each hospital's sequence effect is the drop in its counsellors' approval rate right after an approval against right after a denial, measured as the excess over what each working day's own decisions would give in any order; pooling consecutive decisions credits the busy outreach days with strings of approvals and clears almost every hospital, and a day-by-day regression charges every hospital with the drop that an eight-decision day shows even when no counsellor is swayed.",
-  "stump": "A competent analyst who conforms the three exports and holds each working day's mix fixed by regressing every determination on the counsellor's previous one with a fixed effect per counsellor-day puts 23 of the 31 hospitals over the six-point line, because a short queue shows a drop after an approval with no counsellor swayed, and one who pools consecutive determinations puts 2 over it, because days fed by presumptive referrals string approvals together; only the excess over what each day's own determinations would show in any order puts the 11 hospitals whose counsellors are really swayed over it.",
+  "driver": "A household's yearly income is read from one quarter's income scaled to the year; for households whose earnings follow a season, the scaled quarter overstates the year when the quarter is the season's peak and understates it in the slack months, and the season's timing differs by place and by kind of work, so judging each household against a yearly line by its scaled quarter, or by one calendar for every seasonal household, misplaces them; each place's calendar for each kind of work comes from the households seen in more than one season, and each quarter is put on the yearly basis by its own share of that calendar.",
+  "driver_concrete": "Each hospital's share of the 2025 applications from households within the free-care limit on their income over the twelve months before applying that did not get free care in full, the twelve-month income rebuilt for farm, orchard, fishing and resort households from the three months the 2025 policy recorded and the calendar of that kind of work in that region, read from the households that applied in more than one season, not the policy's three months times four.",
+  "stump": "A competent analyst who conforms the three hubs and takes the 2025 policy's yearly figure, the household's income in the three months before it applied times four, as its income over the twelve months before applying puts about a third of the hospitals over the six-point line, because households that applied after a harvest, fishing or resort season were assessed on their best quarter and those that applied in the slack months on their worst; one who corrects with a single calendar for all seasonal work, or one per hospital across every kind of work, still misses the hospitals whose seasonal households work to a calendar of their own; only each region's calendar for each kind of seasonal work, read from the households that applied in more than one season, puts about two thirds over it.",
   "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "WARN repeat.question_form how-many against task484 v1: the call is the number of grants the FY2027 budget carries, a count, so how-many is the honest form. Personas from guard.py names --geo 'United States' --seed 272 (Jacob Burgess, Stephen Graham, Patricia Morse, Olivia Maldonado set aside on people.first WARNs). Re-filed at stage 3 (2026-10-21): task479 v5 (shape 10), filed at 01:37Z by another lane, reached this checkout only in the rebase before the DRAWN push, so the draw's check never saw it and the heart screen then blocked ban.shape; shape 10 is the honest shape (each hospital's measure against its six-point threshold) and was kept, not relabelled; task482 v2 and task251 v5 have filed since, and the re-filed card clears with WARN only (repeat.deliverables png+xlsx against task251 v5: the call's scorecard and its chart are the honest set). Architecture 1 spent 2026-10-21 at stage 4 (Gate F: both scored readers permuted each working day's determinations and landed the 11); the identity moves into lineage when architecture 2 is registered.",
-  "registered": "2026-10-21T02:56:55Z",
-  "architecture_spent": true
+  "differentiation": {
+    "task272 (v1)": "architecture 1 decided on the serial dependence of counsellors' decisions within a working day against its reordering benchmark; architecture 2 decides on households' yearly income rebuilt from one seasonal quarter with the local calendar of their work, a different quantity (income against the poverty line), a different unit (the household) and a different estimator"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-21",
+      "fate": "spent 2026-10-21 at stage 4: both isolated scored readers corrected each counsellor-day's approve-after-approve contrast for the short-queue bias by permuting the day's determinations and landed the 11 (Gate F)",
+      "domain": "general-statistics-data-science",
+      "subdomain": "resampling-simulation-monte-carlo-methods",
+      "objective": "descriptive-distribution",
+      "shape": "10",
+      "gap": [
+        "rule",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G6",
+        "G16"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "decomposition_attribution",
+      "driver": "The decisive quantity is how strongly each unit's yes-or-no decisions depend on its previous decision inside short sessions whose mix of cases varies; pooling the sessions credits the mix with a positive dependence, comparing within sessions builds in a negative one that short sessions produce on their own, and only the excess over what each session's own decisions would show in any order measures it.",
+      "driver_concrete": "Each hospital's sequence effect is the drop in its counsellors' approval rate right after an approval against right after a denial, measured as the excess over what each working day's own decisions would give in any order; pooling consecutive decisions credits the busy outreach days with strings of approvals and clears almost every hospital, and a day-by-day regression charges every hospital with the drop that an eight-decision day shows even when no counsellor is swayed.",
+      "stump": "A competent analyst who conforms the three exports and holds each working day's mix fixed by regressing every determination on the counsellor's previous one with a fixed effect per counsellor-day puts 23 of the 31 hospitals over the six-point line, because a short queue shows a drop after an approval with no counsellor swayed, and one who pools consecutive determinations puts 2 over it, because days fed by presumptive referrals string approvals together; only the excess over what each day's own determinations would show in any order puts the 11 hospitals whose counsellors are really swayed over it.",
+      "answer": "11 Decision Coaching Grants ($704,000): H03, H06, H09, H10, H17, H19, H20, H21, H22, H26 and H31"
+    }
+  ],
+  "notes": "Architecture 2 drawn 2026-10-21 after architecture 1 was spent at stage 4 (Gate F: both scored readers permuted each working day's determinations). Same world (Vellacott Health Foundation, Fair Assistance Collaborative, 31 hospitals, three billing hubs), new quantity and decisive step. Personas kept from architecture 1 (guard.py names --geo 'United States' --seed 272). stump_strategy time_semantics is the honest label (the income's reference period, a quarter against the year, read through the local seasonal calendar), a three_rules.strategy_risk WARN answered in the design note.",
+  "architecture_spent": false,
+  "registered": "2026-10-21T03:54:48Z"
 }
