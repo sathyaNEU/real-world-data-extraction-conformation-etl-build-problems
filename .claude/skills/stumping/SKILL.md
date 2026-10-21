@@ -553,17 +553,37 @@ definition or formula names the decisive quantity, or only makes the solver ask 
 cannot avoid reading sends it looking, and a join forced by a key it already holds is one line of code; a
 template asking for each candidate's affected population is that clause for every candidate (500 v2). **A
 filed confidence level, significance level or test threshold is a filed method when, once it is filed, only
-a textbook variance remains.** The test is what is left, not that a level appears. task190 architecture 6
-filed "established below target at the 95 per cent level" in its authority memo over a ratio of a complete
-administrative numerator to a survey denominator, which left nothing but the standard formula: it screened
-its decisive rung `silent` and its isolated reader landed the call and all 38 ask figures. **The
-counter-example matters as much**, because the first draft of this rule condemned it wrongly: a shipped
-build files the level, the direction, the graded quantity and the tie-break in one protocol clause and
-still holds, because the clause never says whose interval, and the decisive step is that the two screens
-run on the same specimens so the variance is the paired difference's and not the sum of two. The level is
-part of the WHAT, which `determinism-check` §1 requires to be filed literally; the variance structure is
-the HOW, and the shared-unit design forces it. So file the level when the estimand needs it, and ask
-separately whether a reader who has it still has a method to choose. **2 Schema:** a column, key or marker makes it a row
+a variance remains.** The test is what is left, not that a level appears, and **the variance does not have
+to be a textbook one for the rule to bite: it is enough that the design's own schema points at which
+variance it is.** task190 architecture 6 filed "established below target at the 95 per cent level" in its
+authority memo over a ratio of a complete administrative numerator to a survey denominator, which left
+nothing but the standard formula: it screened its decisive rung `silent` and its isolated reader landed the
+call and all 38 ask figures.
+
+**This rule was once narrowed to spare a counter-example, and the narrowing was wrong.** The earlier text
+said a filed level is a filed method only where nothing but a *textbook* variance remains, and offered a
+build that files the level, the direction, the graded quantity and the tie-break in one protocol clause and
+was argued to hold because the clause never says whose interval, the decisive step being that the two
+screens run on the same specimens so the variance is the paired difference's. **Measured on that build's own
+shipped pack, 6 of 12 textbook routes to the interval file the golden**, and two of the six need no insight
+into the design at all: a nonparametric bootstrap over the specimen rows is paired for free, because the
+population the protocol files is one row per specimen carrying both calls, and a regression of the outcome
+on the screen with unit-clustered standard errors is a house reflex that lands it. The point estimate is
+identical under both estimators to twelve decimal places; only the standard error differs, 0.01378 against
+0.03029. So the clause did not need to say whose interval: **the schema said it** (two call files keyed one
+to one on the specimen) and the reflex took it, which is readability tests 2 and 3 rather than test 1. The
+build's isolated reader landed the call and its determinism judge, cold on the same pack, built both
+estimators and ruled the unpaired one wrong rather than a rival reading.
+
+**The pincer this leaves, and it is the reason the rule is not narrowed again.** Where the decisive step is
+a choice between two members of a variance family over a quantity the records already fix, forcing that
+choice is mandatory for Gate C, and every way of forcing it is a readability tell: a clause is test 1, the
+file layout is test 2, and a house reflex is test 3. `determinism-check` §1 ranks "the data's structure
+forces the method" first among closures, and on this shape that forcing *is* the tell. So file the level
+when the estimand needs it, and then ask not whether a reader who has it has a method to choose, but
+whether the data leaves it **any** choice: if the records fix every input and only the variance is open,
+the step is a reflex and the build is drawn elsewhere. Twice measured, on two different grounds, both
+builds' readers landing the call. **2 Schema:** a column, key or marker makes it a row
 predicate or a header-found join. **3 Reflex:** an opponent default. **4 Control bench:** a control or
 corpus scores the rules or refutes the naive read. **5 Hygiene:** the battery finds it (73 v2, 117). **6
 Linear:** one subtraction, ratio or half of a reported figure. The note gives a row per rung, verdict
