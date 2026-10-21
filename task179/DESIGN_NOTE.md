@@ -1,6 +1,6 @@
 # task179 design note
 
-**Status: architecture v2, re-sited 2026-10-21 into a fictional setting inside the round's second new cell,
+**Status: RETIRED 2026-10-21 (see `## Retired`). Architecture v2, re-sited 2026-10-21 into a fictional setting inside the round's second new cell,
 Epidemiology & Public Health, `infectious-disease-transmission-modeling`, Forecasting.** The first cell (the
 ambulance surge pool, never carded) and the redraw cell in Economics & Econometrics (never carded) are spent; their
 records sit under `## First-cell record` and in `## Tried and rejected`. Re-screen nothing there.
@@ -342,6 +342,7 @@ task160 (regional waves timed by their lag) and task162 (version uptake set by t
 candidate touches them.
 
 ## Tried and rejected
+- **Architecture v2 (the serial interval read from transmission links right truncated at the extract), spent at stage 4 Gate F on target.zip 9e1843f8:** scored reader B landed 5,000 cases, R 1.6 and 13 days on its own first route, "Serial interval: onset differences on transmission links where both ends are cases; sources with early onset (right-truncation), mean about 13 days, gamma (shape 2.86, scale 4.6). R from r via gamma moment generating function: 1.59", then the renewal projection with the halving from 2 November; it kept 0 of 16 ask figures. The correction is a reflex at medium effort in this field (the textbook nowcasting caution), so it was the default path, not the stump; the judge and reader A were stopped.
 - **Architecture v2's first world (a named real disease in a named real province):** declined on the real-places records concern, since its pack would be fabricated public-health records of a real outbreak; the mechanism was re-sited unchanged into the fictional Republic of Orvanthe.
 
 - **Candidate 1: the district's requirement read from the areas' joint evenings, against the closed summers'
@@ -527,9 +528,46 @@ candidate touches them.
     is the size of its lever, because macro aggregates rest on too few independent events. Micro registers give the
     precision and move the work out of this task type.
 
+## Retired
+
+Retired on 2026-10-21 under the author's rule for this round (a number that dies in its second new cell is
+retired). Three worlds were worked. The first cell, the seed's own world (a private ambulance contractor's summer
+surge pool), died at stage 1 on code: the golden's own sigma was wider than a whole-unit bin under every pooling and
+level lever. The redraw cell in Economics & Econometrics (time-series macro-econometrics) died on code and paper
+before any card: every structural judgment beyond the textbook routes was a driver on file or carried a golden whose
+own error matched its lever. The second new cell, Epidemiology & Public Health
+(infectious-disease-transmission-modeling), carried architecture v2: the serial interval read from transmission
+links that exist only once the later case has fallen ill, right truncated at the extract while the outbreak grows.
+Its first world, a named real disease in a named real province, was declined on the real-place records concern; it
+was re-sited into a fictional setting (the Republic of Orvanthe, Dunmarrow Province, Tamberlow virus disease),
+built to stage 3 green (44 checks, the independent verifier, two byte-identical builds, precut.py exit 0, pair
+ceiling 28.5) and spent at Gate F when scored reader B landed the call and both components.
+
+The lesson: a correction the field teaches as standard is the default path, not the stump. Right truncation of a
+delay read from linked records is the textbook caution of outbreak analytics (nowcasting, serial and generation
+interval estimation), so a strong reader applies it on the first pass; the screen that measured the uncorrected
+fit as the competent route measured a route this field's analysts do not take. A delay-truncation stump needs a
+setting where the truncation is not the field's own named hazard, or a judgment beyond the correction.
+
+The card stays filed with `architecture_spent` set. The two ask devices held (the reader kept 0 of 16) and are kept
+here as reusable records:
+
+- **Device record, the paper register's handover join.** During a handover between two field teams, the outgoing
+  team's paper listings were keyed at the district office beside the incoming team's tablet listings of the same
+  people, the paper form carrying an estimated age one to three years off and the listing closed as lost when the
+  visits stopped. The exact person key counts those people twice and drags completion down; only source case,
+  household, initials and sex, listed within a day, with the age inside the paper form's estimate, tie them. The
+  filed definition (the follow-up that ends last, completed by either team) keeps the completion share determinate.
+  Measured: the exact key, the key without age, the listing id and per-listing completion each missed every
+  district's count and percentage.
+- **Device record, the UTC result clock inferred from an internal inconsistency.** A laboratory analyser writes its
+  result time on UTC while collection and reception are keyed on local time (UTC+1); nothing labels the clock. The
+  evidence sits in the data: about 2.6 per cent of results land less than the dictionary's 92-minute cartridge run
+  after reception, and positives fall on the day before the line list's result date, both vanishing once an hour is
+  added. Measured: the clock read as local missed every week's mean and within-24-hour share; the re-run after an
+  indeterminate result is the hazard beside it.
+
 ## Resume
 
-Stage 3 green on 2026-10-21 (architecture v2 in the fictional setting): build.py with 44 checks, the independent
-verifier, two byte-identical builds and target.zip; precut.py exit 0; figures_check.py, leak.py (REVIEW only),
-guard.py surface and heart, the producer audits and the golden-realism pass. Next: stage 4, two scored readers and
-the judge, run by the main session.
+RETIRED 2026-10-21: architecture v2 spent at stage 4 Gate F (scored reader B landed 5,000, R 1.6 and 13 days by the
+field's standard right-truncation correction); this was the number's second and last cell. Nothing to resume.

@@ -1,7 +1,7 @@
 {
  "task": "task179",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "RETIRED",
  "domain": "epidemiology-public-health",
  "objective": "forecasting",
  "stage": 4,
@@ -17,7 +17,7 @@
  },
  "leak": {
   "leak_py": "REVIEW (2026-10-21): answer-word and vocabulary overlaps in the planning note, situation report and prompt for the reader; no LEAK",
-  "reader": ""
+  "reader": "scored reader B landed the call and both components, 0 of 16 ask figures; reader A and the judge stopped"
  },
  "duplicate_check": {
   "heart": "PASS (2026-10-21)",
@@ -25,7 +25,7 @@
  },
  "judge": {
   "verdict": "",
-  "disposition": "",
+  "disposition": "stopped: Gate F failed on reader B",
   "report": ""
  },
  "returned": [],
@@ -48,7 +48,7 @@
    "prototypes": "scratchpad b179r/screen: s1_cp.py, lm1.py (lm1.out byte-identical with lm1_run2.out), d1.py, w1.py, w2.py, screen179r.py (screen179r.out byte-identical with screen179r_run2.out)"
   }
  },
- "resume": "stage 4: two scored readers and the judge",
+ "resume": "RETIRED 2026-10-21 under the author's rule: architecture v2 (the right-truncated serial interval) spent at stage 4 Gate F, scored reader B landing 5,000, R 1.6 and 13 days on target.zip 9e1843f8 by the field's standard truncation correction; second and last cell (see ## Retired)",
  "approved": null,
  "delivered": null,
  "portal": null,

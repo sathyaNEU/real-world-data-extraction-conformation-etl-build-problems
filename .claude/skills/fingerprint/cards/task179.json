@@ -100,7 +100,25 @@
     "task196": "task196 recovers how many events happened from the overlap of two capture channels; here nothing is uncounted, every case is in the line list, and the record's links are a growth-weighted, right-truncated sample of one interval",
     "task180": "task180 completes small events masked by a daily noise cycle at the instruments; here the missing records are the long intervals whose later event has not yet happened at the extract, corrected by conditioning each pair on its source's time to the cut-off"
   },
-  "lineage": [],
-  "notes": "org_family hospital_or_health_provider: the organisation is a non-governmental medical humanitarian operator whose function here is running treatment centres; nonprofit_or_charity is in the live window (task486), and the health-provider key is the reviewer's reading of what it does in this build. Redrawn under the lock on 2026-10-21 after task178 entered the window: the decisive generator moved from G13 to G3 (record versus operation: the register's intervals against the transmission process's), which is as honest a reading of the step, G13 kept second; the context artifact moved from the provincial situation report (published_series) to the treatment centres' weekly bed-capacity report (capacity_report), which the planning lead works from and the pack ships either way; the chart moved to SVG. Re-sited on 2026-10-21 into a fictional setting (the Republic of Orvanthe, Dunmarrow Province, Tamberlow virus disease, Larrowmede Medical Relief): the first world named a real disease in a real province and was declined on that concern before anything but the card was committed. Mechanism, keys and measurements unchanged. At the re-site the decisive generator moved from G3 (task484 now holds it in the window) to G12 (absence of a record against a record of absence: the long intervals are missing from the links because their later event has not happened, not because they do not exist), which reads the step as honestly; G3 and G13 kept behind it.",
-  "registered": "2026-10-21T02:59:20Z"
+  "lineage": [
+    {
+      "architecture": "v2 (the serial interval read from transmission links right truncated at the extract)",
+      "fate": "spent at stage 4 Gate F on target.zip 9e1843f8: scored reader B landed 5,000 cases, R 1.6 and 13 days by the field's standard right-truncation correction (sources' horizon to the cut-off, gamma, R from r through the moment generating function); 0 of 16 ask figures; RETIRED in its second and last cell",
+      "domain": "epidemiology-public-health",
+      "objective": "forecasting",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "An interval between two linked events, read from the pairs a record holds at its cut-off, is shorter than the interval the process runs on while the process is growing, because a pair enters the record only once its later event has happened and the pairs still open at the cut-off are the long ones from the recent and most numerous earlier events; the reproduction number taken from the growth rate on the record's interval is too low, so a projection under a planned cut in transmission falls away too fast."
+    }
+  ],
+  "notes": "org_family hospital_or_health_provider: the organisation is a non-governmental medical humanitarian operator whose function here is running treatment centres; nonprofit_or_charity is in the live window (task486), and the health-provider key is the reviewer's reading of what it does in this build. Redrawn under the lock on 2026-10-21 after task178 entered the window: the decisive generator moved from G13 to G3 (record versus operation: the register's intervals against the transmission process's), which is as honest a reading of the step, G13 kept second; the context artifact moved from the provincial situation report (published_series) to the treatment centres' weekly bed-capacity report (capacity_report), which the planning lead works from and the pack ships either way; the chart moved to SVG. Re-sited on 2026-10-21 into a fictional setting (the Republic of Orvanthe, Dunmarrow Province, Tamberlow virus disease, Larrowmede Medical Relief): the first world named a real disease in a real province and was declined on that concern before anything but the card was committed. Mechanism, keys and measurements unchanged. At the re-site the decisive generator moved from G3 (task484 now holds it in the window) to G12 (absence of a record against a record of absence: the long intervals are missing from the links because their later event has not happened, not because they do not exist), which reads the step as honestly; G3 and G13 kept behind it. Architecture v2 spent at stage 4 Gate F: scored reader B applied the right-truncation correction outbreak analysts are taught as standard and landed 5,000, R 1.6 and 13 days (0 of 16 ask figures). task179 RETIRED (dead in its second new cell): a truncation correction the field teaches is the default path, not the stump.",
+  "registered": "2026-10-21T02:59:20Z",
+  "architecture_spent": true
 }
