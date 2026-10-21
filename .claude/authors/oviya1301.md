@@ -11,8 +11,8 @@ session for anyone else ignores this file.
 - **Parallel builds (the author's rule, 2026-10-20).** Several sessions build at once, each on the numbers assigned to
   it here and no other: the orchestrating session rebuilds task468 and task471; three sibling sessions build wave 6 in
   pairs (task472 then task475; task473 then task476; task474 then task477); three more build wave 7 (task478; task479
-  then task482; task480 then task483) and the orchestrating session builds task481; the session that shipped task474
-  builds wave 8's task484 then task485. A session pulls before every guard check
+  then task482; task480 then task483) and the orchestrating session builds task481, then wave 8's task486; the session that
+  shipped task474 builds wave 8's task484 then task485. A session pulls before every guard check
   and registers its card the moment its draw is fixed, so concurrent draws guard each other.
 - **Status board:** https://claude.ai/artifact/U4syUnRUycHUsWwhonBYoQ (one row per task: the task and its call, status, links to the prompt, submission and `target.zip` on `main`, a short note, the date), updated at every commit point.
 - **Resume:** `handoffs/oviya1301.md` (task445, task447).

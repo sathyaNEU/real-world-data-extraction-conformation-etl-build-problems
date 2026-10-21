@@ -1,0 +1,86 @@
+{
+  "task": "task486",
+  "architecture": "v1",
+  "drawn": "2026-10-21",
+  "slot_note": "wave 8, oviya1301 ETL lane; numbered from seed ET43 (mirror trade statistics), re-worlded because every lever in the mirror-trade world is a filed concept (valuation basis, partner attribution, recording time, classification) or a composition rate task481 just spent",
+  "domain": "general-statistics-data-science",
+  "subdomain": "data-integration-record-linkage-entity-resolution",
+  "client_domain": "general-statistics-data-science",
+  "niche": "fusing a formally private census release's nested block, block group and tract tables with the county's housing register into census-day counts of older residents for senior-services provider areas whose boundaries cut block groups at the town edges, for the state aging formula's filing",
+  "objective": "etl",
+  "shape": "14",
+  "decision_type": "conformed_dataset",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G16",
+    "G12"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
+  "stump_strategy": "other",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "With the data cleaned and every rule read correctly, the analyst adds the release's block counts of residents aged 60 and over and 75 and over across each provider area's blocks and files North Kelvane at 420 residents aged 60 and over, every rural area a fifth to two fifths high and both towns 1 to 2 per cent low, where building each area from its block groups' counts, split by census-day housing units wherever a boundary cuts a block group, gives about 350.",
+  "domain_test": "The deciding quantity is an area count fused from nested tables of a formally private release and an exact housing register, estimated the way data integration across sources with different error structures is done: each quantity taken from the source and level whose error does not accumulate when cells are added, here the block groups' counts of older residents split by census-day housing units, because counts forced to non-negative whole numbers consistent with their block group drift from dense blocks into sparse ones; replacing that fusion with the generic integration (summing the finest cells across the area) changes every rural and town count, and with another field's nouns the task still turns on the same estimator, so the swap is of the method, as the task type's own object requires.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:post-processing-truncation-bias-by-grain",
+  "layer1": [
+    "the release's block counts in a long extract (one row per block, sex and age group) against the block group and tract tables in the wide layout",
+    "block identifiers stored as numbers in the county's provider-area assignment export, leading zeros dropped, against the release's text identifiers",
+    "census-day housing unit counts in the release against the county's 2026 address points, which carry the subdivisions built since",
+    "group quarters residents (nursing and assisted living facilities) counted in blocks with no housing units",
+    "provider areas redrawn in 2023, the assignment file carrying an effective date per block"
+  ],
+  "stakeholder_role": "the Kelvane County Office on Aging's planning and grants officer, who files the provider areas' census-day counts in the county's FY2027 area plan update to the state",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "dhc_block_sex_by_age_long.csv",
+    "rows": 0,
+    "entity": "one count of residents of one sex and age group in one census block",
+    "grain": "block x sex x age group",
+    "source": "synthetic (constructed in the layout of a census block-level sex-by-age table extract)"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States, an unnamed state (Kelvane County, its towns, offices and people are fictional)",
+    "currency": "USD",
+    "org_type": "county planning department certifying census counts for the county Office on Aging",
+    "invented_names": [
+      "Kelvane County",
+      "Wickmoor",
+      "Fallowmere"
+    ],
+    "people": [
+      "Priscilla Kemp",
+      "Donald Castillo"
+    ]
+  },
+  "deliverables": [
+    "kelvane_provider_area_counts.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "Small-area counts published with added noise and then forced to non-negative whole numbers that add up to the next level's count are pushed up where the true count is near zero and down where it is large, so an area assembled from the sparse cells of groups it shares with dense cells collects the drift; it has to be built from the groups' own counts and split inside a cut group by a measure the release leaves exact.",
+  "driver_concrete": "Kelvane County's six senior-services provider areas cut block groups at the edges of Wickmoor and Fallowmere; the release's block counts of residents aged 60 and over were noise-infused and then made non-negative and consistent with each block group's counts, so summing an area's blocks moves residents from the town blocks into the rural ones; building each area from its block groups' counts, split by the census housing unit counts where a boundary cuts a block group, restores them.",
+  "stump": "Summing the release's block counts over each provider area's blocks files North Kelvane at 420 residents aged 60 and over where it held about 350, and every rural area a fifth to two fifths high and both towns low, because noise-infused counts forced to be non-negative and consistent with their block group drift from the dense town blocks into the sparse rural blocks of the block groups the boundaries cut.",
+  "mechanism_source": "design_note",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "stump_strategy other: the decisive structure is a truncation bias from post-processing a noise-infused release to non-negative, consistent counts, read by geographic level; no listed strategy names it (grain_or_unit is the nearest and is about the decision's unit, not the release's bias). gate_g etl_conformance: the call is the provider areas' census-day counts conformed to the state formula's definition, and the choice of source and level inside the fusion is the stump; a judge may read it as method_or_model_selection. Domain: the world sits in survey research's census-register task type by nature, and the pairing with ETL was taken by task479's re-root an hour before this draw, so the build is filed in General Statistics' data-integration task type, which serves ETL and whose own object here is fusing sources with different error structures.",
+  "registered": "2026-10-21T00:39:03Z"
+}
