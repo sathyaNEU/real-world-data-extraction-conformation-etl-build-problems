@@ -283,6 +283,7 @@ def main(target, gdir):
     check("ask A fair: the other dismantlers bill one amount per tow zone (%s)" % dict(other.groupby("tow_zone")["amount"].first()),
           bool((per == 1).all()) and len(per) == 4)
     vou = pd.read_excel(os.path.join(target, W.FILES["vouchers"]), dtype=str)
+    check("realism: every dismantler certificate number is issued once", not vou["certificate_no"].duplicated().any())
     tr = reg[(reg["record_status"] == "TRANSFERRED") & reg["vin"].isin(vou["vin"])]
     check("ask A twins: %d voucher vehicles carry a transferred record from an earlier move, and are retired" % len(tr),
           len(tr) >= 20)

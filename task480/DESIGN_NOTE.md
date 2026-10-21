@@ -229,6 +229,32 @@ Measured by: generator/ceiling.py on the cut pack
 | A | Kinnard vehicles retired | 102 | 118 | miss |
 | A | Kinnard dismantler charges | $26,625 | $30,720 | miss |
 
+## Pre-ship check
+
+- **Three rules, re-read against the built pack.** Domain: the deciding quantity is each county's 2027 on-road NOx
+  from its eligible vehicles, its activity term estimated the way a mobile source inventory estimates mileage
+  accumulation by age, from the cross-section of inspection odometer readings read as a cumulative curve. Two layers:
+  the Layer 1 inventory above, each item mishandled in checks.py R2 with the call and every county's whole tons
+  unchanged; Layer 2 the estimator of a year's miles from one cumulative reading. The decisive step is none of the
+  three banned kinds, each executed in checks.py: not a plant (R3c: no repeated record; no file states a yearly
+  mileage, a curve or an inventory); not data semantics (SF1 to SF18: every field read right still leaves the reading
+  over the age on nine counties); not rule application (R3a: every filed rule executed with the reading over the age
+  files nine; R3b: only the vehicle's level against the cumulative curve times its rise over 2027 files the five).
+  All six stage 4 readers took the reading over the age and filed nine, quoting 3.3 as naming the evidence and not the
+  computation; the judge read Gate H as analytical.
+- **Gates.** 15 files in 3 formats (csv, pdf, xlsx); vehicle_registrations_2026-07-01.csv at 253,717 rows; four
+  declared distractors; 120 generator checks; verify.py from the bundle alone; two builds byte-identical;
+  figures_check.py (42 figures), precut.py (51) and voice-check.py exit 0; leak.py REVIEW (no LEAK; the guidelines'
+  rule words, field vocabulary, forward registration expiry dates); containers clean. Judge DETERMINISTIC, APPROVE
+  (Gate G method_or_model_selection, analytical_non_defect; Gate H analytical); its two watch items answered: the
+  readings reject a linear cumulative fit (chi-square 5,820 against the quadratic's 30, asserted), and "retired"
+  rests on the dictionary's CANCELLED title. Readers: six scored over three rounds, all missed the call; the station
+  ask leaked twice and was retired; the pilot ask kept 0 of 8 for all six.
+- **Heart.** WARN at registration (00:40, 10-21). It reads BLOCK at ship on ban.pairing, ban.subdomain and
+  ban.forcing_event against task474 v6 (drawn 10-20 21:03): the three builds between them at the draw (task479,
+  task251 v4, task486) have since re-rooted and taken later stamps, so task474 v6 is now task480's nearest live
+  predecessor; each of those re-roots met task480 in its own check. Flagged to the author.
+
 ## Tried and rejected
 
 - 2026-10-20, at the draw: the seed's own quantity, each NUTS 2 region's GDP per head in PPS against 75 and 100 per

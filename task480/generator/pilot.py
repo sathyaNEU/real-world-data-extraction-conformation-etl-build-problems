@@ -34,6 +34,11 @@ def vouchers():
                         applied=s - dt.timedelta(days=int(rng.integers(9, 45))), surrendered=s, licence=lic,
                         cert="CD25-%06d" % int(rng.integers(100000, 999999)),
                         paid=s + dt.timedelta(days=int(rng.integers(6, 26))), zone=zone, reinstated=bool(v.reinstated)))
+    seen = set()
+    for v in out:          # a certificate number is issued once
+        while v["cert"] in seen:
+            v["cert"] = "CD25-%06d" % (int(v["cert"][5:]) + 1)
+        seen.add(v["cert"])
     return out
 
 
