@@ -1,108 +1,79 @@
 {
   "task": "task479",
-  "architecture": "v3",
+  "architecture": "v4",
   "drawn": "2026-10-21",
-  "slot_note": "re-root of seed ET36 after architectures 1 and 2 were spent at stage 4; nothing of either world or step kept: a third-party administrator's self-funded employer groups, whose 2027 retained claims under an unchanged specific stop-loss attachment are restated from 2025 experience",
-  "domain": "healthcare-delivery-health-economics",
-  "client_domain": "healthcare-delivery-health-economics",
-  "subdomain": "payment-claims-health-plan-analytics",
-  "niche": "a third-party administrator's 2027 funding true-up notices: which of its self-funded employer groups' expected 2027 retained medical claims per member per month, the claims the plan itself pays after specific stop-loss at the unchanged $250,000 attachment, exceed the 2027 funding rates the employers set in September",
+  "slot_note": "re-root of seed ET36 after architectures 1 to 3 were spent at stage 4; nothing of any earlier world or step kept: a charter network's spring 2026 math benchmark item responses rescored to the vendor's scale, a share of them rapid guesses",
+  "domain": "education-learning-sciences",
+  "client_domain": "education-learning-sciences",
+  "subdomain": "item-response-theory-test-equating",
+  "niche": "a charter network's 2026-27 high-dosage math tutoring designation: the campuses where 35 per cent or more of the students tested on the spring 2026 benchmark score below Basic on the vendor's scale, from the item responses, the response times and the vendor's item bank, where some sessions were tested when students were not trying",
   "objective": "etl",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "True-up notices to G1052 (Ferris Valley Credit Union), G1118 (Pemberton Hardware Cooperative) and G1163 (Tamarack Hotel Group) only",
-  "answer_source": "golden/mba_2027_funding_true_up.xlsx (True-up notices sheet) and submission.md block 1",
+  "answer": "",
+  "answer_source": "golden workbook and submission.md block 1",
   "gap": [
-    "time"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G1",
-    "G13"
+    "G15",
+    "G16"
   ],
-  "gate_g": "forecasting",
-  "calibration_form": "counterparty_acknowledgement",
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
   "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "filed_model",
   "stump_class": "analytical",
-  "analyst_test": "With every extract conformed and every rule read, the easy route trends each group's 2025 retained claims (paid claims less the carrier's reimbursements) per member per month to 2027 and compares them with the funding rates, which flags the groups with the most large claimants; but medical trend acts on each member's claims and the attachment is fixed, so the retained claims of members at or above $250,000 do not grow at all, and trending each member's 2025 claims before the attachment leaves those groups under their rates.",
-  "domain_test": "Experience rating of a self-funded health plan under specific stop-loss, worked the way health plan actuaries project retained claims: trend is applied to each member's claims and the specific attachment is applied after, so the retained layer grows slower than trend and the excess layer faster (the leveraging of a fixed deductible); with another field's nouns there is no medical trend acting on claims beneath a per-member attachment that a reinsurer absorbs.",
+  "analyst_test": "With every file conformed and every rule read, the easy route takes the vendor's reported scale scores (each the maximum likelihood estimate from all forty responses on the bank's parameters) and designates the campuses with 35 per cent or more below Basic; but some sessions were rapid-guessed, responses given in a second or two at chance accuracy that carry no information about what the student knows, and scoring each student on the responses given with effort moves several campuses off the list.",
+  "domain_test": "Effort-moderated item response scoring, the psychometrician's treatment of rapid-guessing in a low-stakes test: a response given faster than any engaged reading of the item is treated as not administered and the student's ability is estimated by maximum likelihood from the responses given with effort; with another field's nouns there is no item response model, no response time and no guessing floor, so the step does not exist.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:a trend applied to claims before a per-member cap, not to the capped total",
+  "layer2_pattern": "own:responses given faster than any engaged reading carry no information and are scored as not administered",
   "layer1": [
-    "the claims system's 2025 paid-claims extract in two layouts across the June platform upgrade",
-    "claims paid in 2025 for 2024 service and the 2026 run-out paid for 2025 service",
-    "claim reversals and replacement claims",
-    "members renumbered when an employer changed its payroll vendor",
-    "the stop-loss carrier's large claimant report keyed to its own claimant numbers and the carrier's incurred-and-paid contract basis",
-    "monthly enrollment snapshots against mid-month adds and terms"
+    "the vendor's response export in two layouts across its March 2026 platform release (milliseconds against seconds)",
+    "response times logged on the client clock for one campus's devices",
+    "students reissued new ids at the January 2026 student information system migration, with a partial crosswalk",
+    "makeup attempts recorded under temporary ids",
+    "two administrations of the same student when a session was restarted",
+    "the bank's item ids against the form's position codes"
   ],
-  "stakeholder_role": "director of client finance at a third-party administrator of self-funded employer health plans",
-  "role_family": "finance_controller",
+  "stakeholder_role": "director of assessment at a charter management organization",
+  "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "mba_enrollment_member_months_2025-01_to_2026-08.csv",
-    "rows": 189177,
-    "entity": "one member enrolled in one month",
-    "grain": "member x month",
+    "file": "",
+    "rows": 0,
+    "entity": "one student's response to one item",
+    "grain": "student x item",
     "source": "synthetic"
   },
-  "forum": "executive_team",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "professional_services",
+  "forum": "board_of_directors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "university_or_school",
   "world": {
-    "geography": "United States (a fictional Midwestern metro region)",
+    "geography": "United States (a fictional metro region)",
     "currency": "USD",
-    "org_type": "third-party administrator of self-funded employer health plans",
-    "invented_names": [
-      "Marlowe Benefit Administrators",
-      "Arbor Ridge Specialty Insurance Company",
-      "Lakeshore Employers Health Coalition",
-      "Halsted Tool & Die",
-      "Ferris Valley Credit Union",
-      "Oakmont Senior Living",
-      "Grafton Freight Lines",
-      "Kittredge Foods",
-      "Ashbury Engineering Group",
-      "Linden Park Schools Foundation",
-      "Pemberton Hardware Cooperative",
-      "Sorrel Creek Dental Partners",
-      "Northfield Paperboard",
-      "Calloway & Reese LLP",
-      "Brightwell Plumbing & Heating",
-      "Tamarack Hotel Group",
-      "Wexford County Mutual",
-      "Delacorte Printing",
-      "Quarry Hill Builders"
-    ],
+    "org_type": "charter management organization",
+    "invented_names": [],
     "people": [
-      "Gregory Valdez",
-      "Claire Grant",
-      "Andrea Snow",
-      "Brady Cooper",
-      "Chelsea Petersen",
-      "James Hernandez"
+      "Sabrina Santos",
+      "Gregory Valdez"
     ]
   },
-  "deliverables": [
-    "mba_2027_funding_true_up.xlsx"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A total kept below a fixed per-unit ceiling is carried to a later period on a growth rate that applies to the uncapped amounts, so each unit's amount grows first and is capped after: a unit already above the ceiling adds nothing to the kept total and a unit just below it adds only what it gains up to the ceiling, so growing the kept total by the rate overstates it most where units sit at or near the ceiling.",
-  "driver_concrete": "A self-funded group's retained claims are each member's year of claims kept below the $250,000 specific attachment, and medical trend applies to the claims, not to the retained total: a member whose 2025 claims were already over the attachment costs the plan exactly $250,000 in 2027 whatever the trend, so trending 2025 retained claims puts $36,000 of trend on every such member that the stop-loss carrier, not the plan, will pay; the groups with the most large claimants look over their funding rates when they are not.",
-  "stump": "The default path trends each group's 2025 retained claims per member per month by the 2027 trend assumption and sends true-up notices to the groups it puts over their funding rates, because it never asks how much of the trend lands above the attachment for the members already at or near it.",
+  "driver": "Each unit's level is estimated from its answers to a set of items through a known response model, and in some sittings part of the answers were given too fast to have been read, at the chance rate, so they carry no information; estimating every unit from all its answers pulls the units of those sittings toward the floor, and only the answers given with effort, scored by the same model, recover each unit's level.",
+  "driver_concrete": "On the spring 2026 benchmark, the students in a few campuses' end-of-day sessions answered a third or more of the items in under three seconds and got a quarter of them right, the rate of a blind guess on four options; the vendor's scores count those guesses as wrong answers and put those campuses over the 35 per cent line, while each student's score from the items answered with effort leaves them under it.",
+  "stump": "The default path takes the vendor's reported scale scores and designates the campuses with 35 per cent or more of students below Basic, because it never asks whether every response it scores was a real attempt.",
   "mechanism_source": "design_note",
-  "differentiation": {
-    "task198": "task198 recovers a contracted entitlement hidden by a lesser-of censoring in each record; here nothing is hidden or recovered: each member's 2025 claims are known, and the step is growing them before a fixed ceiling rather than growing the capped total.",
-    "task255": "task255 fits a size distribution's upper tail between floors and moving ceilings; here no tail is fitted: each recorded member amount is trended and capped by arithmetic."
-  },
+  "differentiation": {},
   "lineage": [
     {
       "architecture": "v1",
@@ -151,7 +122,6 @@
       "niche": "a third-party administrator's 2027 funding true-up notices: which of its self-funded employer groups' expected 2027 retained medical claims per member per month, the claims the plan itself pays after specific stop-loss at the unchanged $250,000 attachment, exceed the 2027 funding rates the employers set in September"
     }
   ],
-  "notes": "stump_strategy other: the leveraging of a fixed per-unit ceiling under a growth rate (trend before the attachment, not after); binding_constraint would misdescribe it, since no capacity binds a choice. Gate G forecasting: the 2027 retained claims are projected from 2025 experience. G1: the trend is a rate on the uncapped value applied to the capped value.",
-  "registered": "2026-10-21T01:01:34Z",
-  "architecture_spent": true
+  "notes": "stump_strategy other: effort moderation of rapid guesses in item response scoring. Gate G method_or_model_selection: the scoring model is the vendor's (filed), the choice is which responses it is fed.",
+  "registered": "2026-10-21T01:21:59Z"
 }
