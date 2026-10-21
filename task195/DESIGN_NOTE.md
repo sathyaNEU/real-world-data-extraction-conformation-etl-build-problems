@@ -720,3 +720,98 @@ from the judge-approved set on 45 keys, 27 under `panel_weeks` and 18 under `dil
   in `determinism_check_report.md`, which is the judge's own artifact and is not edited. The count the
   judge graded is unchanged, the clearance is 4.2 stored steps instead of 1.2, and the level now sits at
   the estimator's stated limit of detection, where a sensitivity panel belongs.
+- Deleting clause 3.4's first sentence ("Detection is counted per specimen") so the records alone force the
+  pairing, which is the repair the Gate F failure was handed over with: measured inert. The deletion is
+  legal, because the unit fork closes by convergence (counting detection per read set returns the same
+  294, 308, 310, 319, 326 detections, the same +2, +16, +18, +27, +34 increases and the same false-call
+  rates, so axis 2 and SF3 close by C1 rather than by the sentence), but it moves no route: the reflex
+  sweep run on the shipped pack scores 6 of 12 enumerated routes landing the golden 0.030 and not one of
+  them reads a clause.
+- Rewording 3.4 so it files the unit without signalling the pairing: dropped, the pairing is a consequence
+  of two filings the spec makes mandatory. 3.2 files the population at specimen grain and 4.1 files the
+  comparison of the two screens on that population, so one specimen carrying both calls follows from the
+  estimand, and `determinism-check` section 1 requires the estimand filed literally. There is no wording
+  of a parallel run in which the two screens are not read on the same material.
+- The whole paired-variance architecture (`own:paired-difference-against-marginal-intervals`): spent, on
+  measurement rather than on the clause. The decisive step moves no point estimate (the increase is
+  +0.040712 at 0.030 under both estimators, identical to 1e-12 at all five cutoffs), so the call is a
+  binary estimator-family selection, and the family is internally unanimous on each side (every paired
+  member's lower bound 1.34 to 1.53 points, spread 0.187 points, all clear of zero; every unpaired member
+  at 0.015 or the hold). A nonparametric bootstrap over the specimen rows and a regression of detection on
+  screen with specimen-clustered standard errors both file 0.030, and both are one line on the table the
+  population rebuild necessarily produces. `stumping` Part 6: a reflex reaching the golden spends the stump.
+- The reference standard's own misses as the decisive step (the identity panel's sensitivity falling with
+  the markers it typed): dropped, unidentified in this pack. Inside the comparison the panel typed 84 to
+  107 markers, 5,772 of 5,839 specimens at 90 or more and none under 40, so the records measure no
+  sensitivity gradient about themselves and the candidate is `stumping` 1.2b case three. Building it needs
+  a different reference-standard design, which is a draw and not a ladder.
+- Plate clustering as the decisive step: dropped twice over. The measured plate design effect on the
+  increase is 0.725 to 0.863, below 1, so clustering narrows rather than widens and separates nothing
+  (established at 0.030 and unestablished at 0.050 either way), and a widening correction fails the
+  variance-only screen anyway, because then every conservative reflex files the hold with no analysis.
+- In-sample selection over the five listed cutoffs as the decisive step: dropped, no lever. Unadjusted,
+  Bonferroni, Sidak and one-sided Bonferroni over the five cutoffs all establish 0.030, 0.020 and 0.015
+  and all recommend 0.030, so no multiplicity reading moves the call.
+- Moving the decisive step anywhere else inside KVAL-07 4.1: dropped, the rule leaves nowhere to move it
+  to. Four of the five per-cutoff graded figures are recorded statistics the pack fixes exactly (the
+  detections, the increase in specimens and points, the false-call rate, all reproduced from the shipped
+  files), so by `stumping` 1.2 nothing there is left to estimate and the interval is the only residue.
+  Changing that means changing the decision rule, which is the world's own governing document, which is a
+  stage-1 draw.
+
+- Resuming this architecture at all: refused by the free guard, which has moved since the ship.
+  `guard.py heart` now returns BLOCK on `test.same_driver_older`, because the decisive gap, the decisive
+  pattern and the Gate G mechanism all repeat task190 architecture 6 and this card carries no
+  differentiation against it (the Draw section answers that test against task228's lineage, which was the
+  only collision on file when the draw was fixed). The collision is not cosmetic: task190 architecture 6
+  filed a 95 per cent level in an authority memo over a quantity whose variance was then the standard
+  formula, screened its decisive rung silent, and its isolated reader landed the call and all 38 ask
+  figures. This build filed a 95 per cent level in a protocol clause over a quantity whose variance is then
+  the paired formula, screened its decisive rung silent, and its isolated reader landed the call and 26 of
+  30 ask figures. Same gap, same pattern, same mechanism, same measured death twice, so the architecture is
+  spent at corpus level and not only in this folder. `guard.py surface` is clean (exit 0) on the same pack.
+
+### The thirteen rule lines for the deleted-clause candidate, with the failures named
+
+Written for the repair as handed over (3.4's first sentence gone, the records forcing the pairing), not
+written to pass. Nine lines hold, three fail, and the client's own test is answered no.
+
+- **Task type:** genomics-gwas-high-dimensional-association, the anomaly-detection flavour, unchanged: a
+  sample-level anomaly called from a high-dimensional marker signal. Holds.
+- **Domain test:** the deciding quantity is still the increase in confirmed contamination events the same
+  archived read sets yield under a second caller, which a laboratory validation judges on the discordant
+  specimens. Holds.
+- **Swap:** unchanged and still bites: two inspection rigs reading different units have nothing to pair.
+  Holds.
+- **Layer 1:** unchanged, every mess item the laboratory's own systems write, each asserted neutral. Holds.
+- **Layer 2:** `field_method`, the uncertainty of a paired difference. Holds as a family, and is not what
+  fails.
+- **Decisive step:** take the increase's 95 per cent interval from the specimens the two screens call
+  differently, with the pairing read off the records rather than off a clause. Stated, and it is this step
+  that the two failing lines below are about.
+- **Not semantics:** holds. Every field, code, unit and definition can be read correctly, the comparison
+  reconciled to 5,839 specimens and 393 events and every count recovered exactly, and the easy route still
+  files the hold, because the point estimate is identical under both estimators (+0.040712 at 0.030 either
+  way) and only the standard error differs (0.01378 against 0.03029, z 2.953 against 1.344).
+- **Not rule application:** holds in the letter and does not save the build. With the sentence deleted no
+  filed clause performs the step, and executing 3.1 to 3.5 and 4.1 word for word still leaves the estimator
+  unchosen. What the build fails is the analyst test below, not this line.
+- **Analyst test:** **fails, measured.** The easy route is supposed to file the hold. Run as code on the
+  shipped pack, 6 of 12 enumerated routes file the golden 0.030: paired Wald, continuity-corrected
+  McNemar, exact McNemar, a nonparametric bootstrap over the specimen rows, a permutation of the screen
+  label within specimen, and a regression of detection on screen with specimen-clustered standard errors.
+  The bootstrap and the clustered regression read no clause and need no insight into the design: the
+  population rebuild 3.2 forces produces one row per specimen, and resampling those rows is paired for
+  free. The client's test, could a strong analyst who cleaned the data and read every rule correctly still
+  get the answer wrong by doing the analysis the easy way, is therefore answered **no** on measurement.
+- **Estimand:** holds. KVAL-07 3.1 to 3.5 file the population, outcome, window, unit and comparison, and
+  with 3.4's first sentence gone the unit closes by convergence instead (measured above). The decisive step
+  settles none of the five parts, which is why the WHAT screen passed and the build still died.
+- **No decoy:** holds. Nothing is planted, no document ranks the cutoffs or argues a basis, and the
+  difficulty survives deleting every document.
+- **No certified replay:** holds. No closed corpus of past determinations and no published figure to
+  reproduce.
+- **Lesson:** **fails to be a lesson.** What a model learns by getting this right is to use McNemar on a
+  paired comparison of two classifiers, which is the textbook first move on that 2 x 2 rather than a
+  judgment the data settle. The library test fires: the golden is a card's method applied as the card
+  states it, and the blind reader landed it in one pass at about 70 per cent confidence.

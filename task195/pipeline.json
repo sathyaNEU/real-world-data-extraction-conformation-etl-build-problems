@@ -10,8 +10,9 @@
   "delivered": "2026-10-17",
   "domain": "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
   "duplicate_check": {
-    "heart": "WARN 2026-10-17, no BLOCK, nearest 0.08 (task185 ledger row)",
-    "nearest": "task185 0.08"
+    "heart": "BLOCK 2026-10-21 on test.same_driver_older against task190 (6), no differentiation on the card; it was WARN nearest 0.08 at ship, and task190 architecture 6 was registered after. Nearest driver 0.07 task198 (v3), nearest stump 0.06 task260",
+    "nearest": "task190 (6) same gap, pattern and Gate G mechanism; task198 v3 driver 0.07; task260 stump 0.06",
+    "surface": "clean, exit 0, 2026-10-21, personas Dag Rasmussen only"
   },
   "freeze": {
     "ask_side": "both deliverables moved, 42 ask figures moved, 0 main-call figures moved",
@@ -40,12 +41,12 @@
     "detail": "49 checks, 0 FAIL, 0 WARN; cracker re-measured on the shipped pack",
     "exit": 0
   },
-  "resume": "FAILED_TO_STUMP on measurement, not on a portal result: the reader landed the 0.030 cutoff and took 26 of 30 ask figures. It read the route off a filed sentence, clause 3.4 of the validation protocol, that detection is counted per specimen, and quoted that as what told it the design is paired, then reported all paired variants agreeing and all unpaired variants agreeing. So the decisive choice is a two-way fork one shipped sentence resolves, which is readability screen test 1. Re-root at stage 1: the clause goes.",
+  "resume": "architecture 1 spent on measurement; re-root at stage 1 as architecture 2, loops reset, the asks re-cut with it. A stage-2 ladder repair was screened as code and refused on three independent kills. One, the reflex sweep: 6 of 12 textbook routes to an interval on the increase file the golden 0.030, two of them needing no insight into the design (a nonparametric bootstrap over the specimen rows is paired for free because the protocol files the population at specimen grain, and a regression on the screen with unit-clustered standard errors is a house reflex), with the point estimate identical under both estimators to twelve decimals and only the standard error differing, 0.01378 against 0.03029. Two, there is nowhere to move the step: four of the five per-cutoff graded figures are statistics the pack fixes exactly, so the interval is the decision rule's only residue, and every alternative decisive step screened out with a number (the reference standard's own misses unidentified, no specimen under 40 markers; plate design effect 0.725 to 0.863, below 1, so it narrows and separates nothing; all four multiplicity readings establish the same cutoff; the dilution curve and the repeatability measurements each reduce to one scalar correction, a monotone rescaling). Three, guard.py heart BLOCKs test.same_driver_older against task190 architecture 6, substantively and not as the H27 artifact: same decisive gap, same pattern, same Gate G mechanism, both filing a 95 per cent level over a quantity whose variance is then the only open thing, both screening the decisive rung silent, and both readers landing the call and nearly every ask figure. A ladder-only repair could not have cleared the bar anyway: the reader banked 54.7 on the ask side alone against a bar of 50, before the call is scored. Do not draw a decisive step that is a choice between two members of a variance family over a quantity the records already fix.",
   "returned": [],
-  "stage": 5,
-  "stage_name": "ship",
+  "stage": 1,
+  "stage_name": "draw",
   "status": "FAILED_TO_STUMP",
   "stump": "A competent solver computes each screen's detection rate on the parallel run with its own 95 per cent interval, finds every compliant cutoff's interval overlapping the screen in service's, reads the protocol's interval test as unmet and holds the change, where the same specimens establish the increase at the 0.030 cutoff with an interval clear of zero.",
   "task": "task195",
-  "updated": "2026-10-20"
+  "updated": "2026-10-21"
 }
