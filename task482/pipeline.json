@@ -4,8 +4,8 @@
  "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-21",
  "stump": "The default path takes each region's share of its audited records in error and files AR01, AR02, AR04, AR05, AR06, AR07, AR08, AR10, AR11, AR12 and AR13 chosen, because it never asks how the audit drew its records: it took close to a quarter of the records the May risk screen referred and one in twenty-five of the rest, the referred records are in error far more often, and a region's register error rate is its strata's audited rates carried to the records each stratum holds.",
  "architecture": 2,
@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW",
-  "reader": ""
+  "reader": "both readers landed the call (exit 1); architecture 2 spent"
  },
  "duplicate_check": {
   "heart": "WARN",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: spawn two Sonnet leak readers on fresh unzips of target.zip and the judge thread on a hand-built brief, score each reader with score_reader.py",
+ "resume": "stage 1: re-root to architecture 3 in a fresh world and decisive step (architectures 1 and 2 spent, see Tried and rejected)",
  "approved": null,
  "delivered": null,
  "portal": null,
