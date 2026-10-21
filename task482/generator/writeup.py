@@ -1,6 +1,11 @@
 """submission.md, drafted from generator/figures.json: every figure in blocks 1 to 4 is one the generator wrote."""
 import json
 
+NAMES = {"KB": "Kilbrannagh", "AC": "Ardcullen", "LF": "Lisnafeen", "RG": "Rathgowan", "TV": "Tullyvane",
+         "MR": "Moyrath", "GS": "Glenaskin", "DM": "Dunmarra", "CT": "Clonteevan", "IR": "Innishrue",
+         "CV": "Carrigvore", "KF": "Knockfeerin", "BM": "Ballymarne", "CL": "Corlespie", "AV": "Annaghvale",
+         "DS": "Drumshallon"}
+
 
 def _and(xs):
     xs = list(xs)
@@ -9,10 +14,11 @@ def _and(xs):
 
 def write(fig_path, out):
     f = json.load(open(fig_path))
-    pl = f["call"]["planned"]
-    dp = f["default_path"]["planned"]
-    ids = sorted(f["ask"])
-    added = [u for u in pl if u not in dp]
+    d = f["call"]["designated"]
+    dp = f["default_path"]["designated"]
+    ch = f["change"]
+    codes = sorted(f["ask"], key=lambda k: NAMES[k])
+    nm = lambda ks: [NAMES[k] for k in sorted(ks, key=lambda k: NAMES[k])]
     lines = []
     w = lines.append
     w("## Tags")
@@ -22,40 +28,49 @@ def write(fig_path, out):
     w("")
     w("## 1. Final Recommendation")
     w("")
-    w("**Place %s on a timeliness improvement plan.**" % _and(pl))
-    w("Their median working days from a complete application to registration, for the applications received from 1 "
-      "July to 30 September 2026, exceed 20; no other office's do. Part of each office's quarter is still open on 9 "
-      "October, and the open applications are the slow ones, so each is kept at risk until its age (a product-limit "
-      "median). On the registered applications alone only %s are over; %s hold their backlog among the open "
-      "applications." % (_and(dp), _and(added)))
+    w("**Designate %s as rapid price growth areas for 2027.**" % _and(nm(d)))
+    w("Their residential property prices rose by more than 8 per cent in the year to September 2026 on the year "
+      "before, for a dwelling of unchanged type, floor area, newness and electoral division; no other area's did. The "
+      "homes that sold in each year are a shifting slice of each area's stock, so the change is the year effect of a "
+      "hedonic regression rather than a summary of what sold: by dwelling type against the census stock the areas over "
+      "8 per cent would be %s." % _and(nm(dp)))
     w("")
     w("## 2. Critical Components")
     w("")
-    w("1. Offices placed on a plan: %s" % ", ".join("**%s**" % u for u in pl))
-    w("2. Offices not placed: %s" % ", ".join(u for u in ids if u not in pl))
+    w("1. Areas designated: %s" % ", ".join("**%s**" % x for x in nm(d)))
+    w("2. Areas not designated: %s" % ", ".join(nm([k for k in codes if k not in d])))
+    w("3. Price change, year to September 2026 (per cent): %s" % "; ".join(
+        "%s %.1f" % (NAMES[k], ch[k]) for k in sorted(codes, key=lambda k: -ch[k])))
     w("")
     w("## 3. Step-by-Step Solution")
     w("")
-    w("1. Stacked the legacy log (DD/MM/YYYY, two-letter office codes) and the case system's log, and kept the "
-      "applications received 1 July to 30 September 2026.")
-    w("2. Counted working days from the clock start (the complete day, not counted) to registration, excluding "
-      "weekends and the holiday calendar.")
-    w("3. Added the open caseload snapshot's third-quarter applications, each at its working days from clock start to "
-      "9 October, as still running.")
-    w("4. For each office took the product-limit (Kaplan-Meier) survival estimate over registered and open "
-      "applications and its median, the first duration at which the estimate falls to one half.")
-    w("5. Placed the offices whose median exceeds 20: %s." % ", ".join(pl))
-    w("6. Ask: each payment dated by its settlement batch's terminal day (the payment file carries the settlement day, "
-      "the next working day), payments taken 1 July to 30 September counted and summed by office.")
+    w("1. Read both price register extracts: the old layout's day-first dates and euro text prices, its new-dwelling "
+      "prices grossed up by 13.5 per cent VAT, and the new system's consideration including VAT.")
+    w("2. Joined each old-layout sale to the valuation register by its normalised eircode, or by its address where "
+      "no eircode was keyed, and each new-system sale by property number; counted the filings made in both systems "
+      "from 1 to 10 October 2025 once.")
+    w("3. Took each dwelling's type, floor area and newness from the valuation register and its electoral division "
+      "from the address point file through the eircode.")
+    w("4. Kept sales at full market price dated 1 October 2024 to 30 September 2026 by date of sale.")
+    w("5. For each area regressed log price on a year-to-September-2026 indicator, dwelling type, log floor area, new "
+      "dwelling and electoral division; the change is exp(year effect) less one.")
+    w("6. Designated the areas over 8 per cent: %s." % ", ".join(nm(d)))
+    w("7. Ask: every residential sale dated 1 October 2025 to 30 September 2026, any market basis; the apartments of a "
+      "housing body's block share one building, date and consideration (the block's total on each line), so each "
+      "block is one purchase paid once.")
     w("")
     w("## 4. Deliverable Answers")
     w("")
-    w("### cro_timeliness_plans_q3_2026.xlsx")
+    w("### bso_area_property_price_change_2026.xlsx")
     w("")
-    w("1. Offices placed on a plan: %s." % ", ".join(pl))
-    w("2. Chart of each office's median working days against the 20-day line, the planned offices marked.")
-    w("3. Card payments made in the third quarter, number and amount (whole euros):")
-    for u in ids:
-        w("   - %s: %s, EUR %s" % (u, "{:,}".format(f["ask"][u]["payments"]), "{:,}".format(f["ask"][u]["amount"])))
+    w("1. Areas designated: %s." % ", ".join(nm(d)))
+    w("2. Chart of every area's price change against the 8 per cent line, the designated areas marked.")
+    w("3. Price change, year to September 2026 on the year before (per cent, one decimal):")
+    for k in codes:
+        w("   - %s: %.1f" % (NAMES[k], ch[k]))
+    w("4. Residential purchases in the year to September 2026, number and total paid including VAT (whole euros):")
+    for k in codes:
+        w("   - %s: %s purchases, EUR %s" % (NAMES[k], "{:,}".format(f["ask"][k]["purchases"]),
+                                            "{:,}".format(f["ask"][k]["paid"])))
     with open(out, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")

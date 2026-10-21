@@ -11,7 +11,7 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "to be fixed by the generator (figures.json call.designated)",
+  "answer": "Ardcullen, Annaghvale, Carrigvore, Dunmarra, Glenaskin and Kilbrannagh designated",
   "answer_source": "generator/figures.json",
   "gap": [
     "objective"
@@ -52,7 +52,7 @@
     "source": "synthetic"
   },
   "forum": "minister_or_cabinet",
-  "forcing_event": "statutory_or_regulatory_filing",
+  "forcing_event": "vote_or_meeting",
   "org_family": "research_or_statistics_office",
   "world": {
     "geography": "Ireland (a fictional nation)",
@@ -73,7 +73,7 @@
   "question_form": "which",
   "driver": "A unit's price change is read from the units of a heterogeneous stock that happened to trade in each period, and the traded mix shifts between periods by location, size and newness, with location held in a separate register; every summary of the traded units, raw, per unit of size or reweighted by a coarse type, moves with the mix, and only a regression of log price on the units' characteristics and fine location with a period term gives the change for an unchanged unit.",
   "driver_concrete": "Each area's sales in the year to September 2026 come from different electoral divisions, sizes and new estates than the year before; the median sale price, the median per square metre and the census-weighted change by dwelling type all move with that mix, and only the hedonic index with the electoral division from the address point file puts the right areas over 8 per cent.",
-  "stump": "The default path compares each area's sales between the year to September 2025 and the year to September 2026 by dwelling type, weights the changes by the census stock and files the areas over 8 per cent, because it never asks whether the homes that sold within each type were the same kind of home in both years: in several areas the second year sold far more homes in the cheaper or the dearer electoral divisions, larger homes, or new homes at a premium, and only a hedonic regression on type, floor area, new-dwelling status and electoral division gives each area's change for an unchanged dwelling.",
+  "stump": "The default path compares each area's sales between the two years dwelling type by dwelling type, weights the changes by the census stock and files Annaghvale, Ballymarne, Carrigvore, Glenaskin, Innishrue, Kilbrannagh, Moyrath and Rathgowan designated, because it never asks whether the homes that sold within each type were the same kind of home in both years: in several areas the second year sold more homes in the cheaper or the dearer electoral divisions, or new homes at a premium, and only a hedonic regression on type, floor area, new-dwelling status and electoral division gives each area's change for an unchanged dwelling.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task481": "task481 restates counts onto a new classification by conversion rates from a dual-coded window; here no classification changes: prices of a shifting sample of dwellings are held to constant quality by regression.",

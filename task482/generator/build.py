@@ -22,10 +22,10 @@ import pack as P         # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
-AS_OF = {"log_old": "2026-08-03 07:40", "log_new": "2026-10-09 06:15", "open": "2026-10-09 06:20",
-         "holidays": "2025-12-01 09:00", "pays": "2026-10-09 05:30", "batches": "2026-10-09 05:35",
-         "paper": "2026-10-09 15:30", "staff": "2026-09-30 16:10", "survey": "2026-07-20 12:00",
-         "dictionary": "2026-10-09 08:50", "manifest": "2026-10-09 08:55"}
+AS_OF = {"ppr_old": "2025-10-13 06:40", "ppr_new": "2026-10-15 06:10", "valuation": "2026-10-15 07:05",
+         "points": "2026-10-15 07:20", "eds": "2026-01-05 10:30", "census": "2023-06-29 11:00",
+         "method": "2026-03-02 14:10", "circular": "2026-10-12 16:45", "rents": "2026-08-14 09:30",
+         "mortgages": "2026-08-20 10:15", "dictionary": "2026-10-15 08:40", "manifest": "2026-10-15 08:45"}
 LOCAL = dt.timezone(dt.timedelta(hours=1))
 
 
@@ -36,21 +36,26 @@ def build(out, x=None, quiet=False):
         shutil.rmtree(out)
     os.makedirs(out)
     f = lambda k: os.path.join(out, P.FILES[k])
-    x = x or W.build()
-    P.ids(x)
+    if x is None:
+        x = W.build()
+        P.ids(x)
     n = {}
-    n["log_old"] = P.write_csv(f("log_old"), P.OLD_COLS, P.log_rows(x, "old"))
-    n["log_new"] = P.write_csv(f("log_new"), P.NEW_COLS, P.log_rows(x, "new"))
-    n["open"] = P.write_csv(f("open"), P.OPEN_COLS, P.open_rows(x))
-    n["holidays"] = P.write_csv(f("holidays"), P.HOL_COLS, P.holiday_rows())
-    n["pays"] = P.write_csv(f("pays"), P.PAY_COLS, P.pay_rows(x))
-    n["batches"] = P.write_csv(f("batches"), P.BATCH_COLS, P.batch_rows(x))
-    n["survey"] = P.write_csv(f("survey"), P.SURVEY_COLS, P.survey_rows())
-    DC.write_staff(f("staff"), x)
-    PP.normalize_ooxml(f("staff"), "Jennifer Dyer", "Jennifer Dyer", "2026-09-28T13:20:00Z", "2026-09-30T15:10:00Z",
-                       excel=True, company=P.COMPANY)
-    DC.write_memo(f("paper"))
-    PP.normalize_pdf(f("paper"), b"D:20261009142214+01'00'", b"D:20261009153002+01'00'")
+    n["ppr_old"] = P.write_csv(f("ppr_old"), P.OLD_COLS, P.old_rows(x), encoding="cp1252")
+    n["ppr_new"] = P.write_csv(f("ppr_new"), P.NEW_COLS, P.new_rows(x))
+    n["valuation"] = P.write_csv(f("valuation"), P.VAL_COLS, P.valuation_rows(x))
+    n["points"] = P.write_csv(f("points"), P.PT_COLS, P.point_rows(x))
+    n["eds"] = P.write_csv(f("eds"), P.ED_COLS, P.ed_rows(x))
+    n["mortgages"] = P.write_csv(f("mortgages"), P.MORT_COLS, P.mortgage_rows(x))
+    DC.write_census(f("census"), x)
+    PP.normalize_ooxml(f("census"), "Census Division", "Census Division", "2023-06-20T09:10:00Z",
+                       "2023-06-29T10:00:00Z", excel=True, company=P.COMPANY)
+    DC.write_rents(f("rents"), x)
+    PP.normalize_ooxml(f("rents"), "RTA Research", "RTA Research", "2026-08-11T13:00:00Z", "2026-08-14T08:30:00Z",
+                       excel=True, company="Residential Tenancies Authority")
+    DC.write_method(f("method"))
+    PP.normalize_pdf(f("method"), b"D:20260302131540+00'00'", b"D:20260302140958+00'00'")
+    DC.write_circular(f("circular"))
+    PP.normalize_pdf(f("circular"), b"D:20261012153012+01'00'", b"D:20261012164431+01'00'")
     n["dictionary"] = P.write_csv(f("dictionary"), DC.DICT_COLS, DC.dictionary_rows())
     n["manifest"] = P.write_csv(f("manifest"), DC.MANIFEST_COLS, DC.manifest_rows(n))
     for k in P.FILES:
@@ -106,7 +111,7 @@ def main(fast=False):
     x = everything(TASK)
     good = CK.run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), x=x,
                   meta_path=os.path.join(TASK, "metadata.json"), fig_path=os.path.join(HERE, "figures.json"))
-    V.main(os.path.join(TASK, "target"), os.path.join(TASK, "golden"))
+    good = V.main(os.path.join(TASK, "target"), os.path.join(TASK, "golden")) and good
     if fast:
         if not good:
             raise SystemExit("checks failed")

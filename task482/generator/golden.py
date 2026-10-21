@@ -1,6 +1,8 @@
-"""The golden deliverable, computed from the cut pack through bundle.py: the management board's third-quarter 2026
-timeliness workbook (each office's median working days for its July to September applications, the open ones censored
-at their age, the offices placed on a plan, and the quarter's card payments), and generator/figures.json."""
+"""The golden deliverable, computed from the cut pack through bundle.py: the Brannagh Statistics Office's workbook
+for the Minister (each area's residential property price change, year to September 2026 on the year before, the
+time effect of a hedonic regression on the dwellings' type, floor area, new-dwelling status and electoral division;
+the areas over 8 per cent; each area's residential purchases and the total paid in the year to September 2026), and
+generator/figures.json."""
 import json
 import os
 import sys
@@ -10,30 +12,29 @@ sys.path.insert(0, HERE)
 
 import bundle as B    # noqa: E402
 
-FILE = "cro_timeliness_plans_q3_2026.xlsx"
+FILE = "bso_area_property_price_change_2026.xlsx"
 INK = "1B2430"
 GREEN = "2C5A3F"
 PALE = "E7EFE9"
 MUTED = "A3ACB8"
 ACCENT = "B4452F"
-NAMES = {"CRO-AD": "Ardmuir", "CRO-BN": "Bannock", "CRO-CV": "Carrick", "CRO-DL": "Dunlay", "CRO-ES": "Eskmoor",
-         "CRO-FM": "Fallowmere", "CRO-GQ": "Glenquhar", "CRO-HL": "Harlaw", "CRO-IB": "Inverbeck",
-         "CRO-KM": "Kelso Moss", "CRO-LW": "Lenwick", "CRO-MG": "Mossgiel", "CRO-NM": "Northmuir",
-         "CRO-SL": "Strathlorn"}
+NAMES = {"KB": "Kilbrannagh", "AC": "Ardcullen", "LF": "Lisnafeen", "RG": "Rathgowan", "TV": "Tullyvane",
+         "MR": "Moyrath", "GS": "Glenaskin", "DM": "Dunmarra", "CT": "Clonteevan", "IR": "Innishrue",
+         "CV": "Carrigvore", "KF": "Knockfeerin", "BM": "Ballymarne", "CL": "Corlespie", "AV": "Annaghvale",
+         "DS": "Drumshallon"}
 
 
 def compute(target):
     b = B.load(target)
-    m = B.medians(b, "golden")
-    return {"b": b, "m": m, "reg": B.medians(b, "registered_only"), "pl": B.planned(b, m), "a": B.ask(b)}
+    c = B.change(b, "golden")
+    return {"b": b, "c": c, "d": B.designated(b, "golden"), "a": B.ask(b), "n": counts(b)}
 
 
 def counts(b):
     out = {}
-    for u in b["ids"]:
-        r = sum(1 for o, rec, c, g in b["reg"] if o == u and B.Q3[0] <= rec <= B.Q3[1])
-        o_ = sum(k for o, rec, c, k in b["open"] if o == u and B.Q3[0] <= rec <= B.Q3[1])
-        out[u] = (r, o_)
+    for code in b["areas"]:
+        ss = B._market(b, code)
+        out[code] = (sum(1 for s in ss if s["date"] < B.Y2[0]), sum(1 for s in ss if s["date"] >= B.Y2[0]))
     return out
 
 
@@ -44,8 +45,8 @@ def write_xlsx(path, G):
     from openpyxl.chart.shapes import GraphicalProperties
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     from openpyxl.utils import get_column_letter
-    b, m = G["b"], G["m"]
-    cnt = counts(b)
+    b, c, d = G["b"], G["c"], G["d"]
+    order = sorted(b["areas"], key=lambda k: -c[k])
     wb = openpyxl.Workbook()
     hdr = Font(name="Calibri", bold=True, color="FFFFFF", size=10)
     hfill = PatternFill("solid", fgColor=GREEN)
@@ -56,9 +57,9 @@ def write_xlsx(path, G):
 
     def head(ws, row, cols, widths):
         for i, (h, w) in enumerate(zip(cols, widths), 1):
-            c = ws.cell(row=row, column=i, value=h)
-            c.font, c.fill = hdr, hfill
-            c.alignment = Alignment(wrap_text=True, vertical="center", horizontal="left" if i <= 2 else "right")
+            x = ws.cell(row=row, column=i, value=h)
+            x.font, x.fill = hdr, hfill
+            x.alignment = Alignment(wrap_text=True, vertical="center", horizontal="left" if i <= 2 else "right")
             ws.column_dimensions[get_column_letter(i)].width = w
         ws.row_dimensions[row].height = 44
 
@@ -69,81 +70,84 @@ def write_xlsx(path, G):
         ws["A2"].font = Font(name="Calibri", size=9, italic=True, color="5B6470")
 
     ws = wb.active
-    ws.title = "Offices"
-    pl = G["pl"]
-    title(ws, "%d of 14 offices go on a timeliness improvement plan: %s" % (len(pl), ", ".join(
-        "%s (%s)" % (NAMES[u], u) for u in pl)),
-          "Median working days from a complete application to registration for applications received 1 July to 30 "
-          "September 2026; applications still open on 9 October counted as lasting at least their age "
-          "(product-limit estimate).")
-    cols = ["Office", "Office name", "Received in the quarter", "Registered by 9 October", "Open on 9 October",
-            "Median of the registered (working days)", "Median, open applications at risk (working days)",
-            "Improvement plan"]
-    head(ws, 4, cols, [9, 14, 12, 12, 11, 14, 15, 12])
-    for i, u in enumerate(b["ids"]):
-        r, o = cnt[u]
-        vals = [u, NAMES[u], r + o, r, o, G["reg"][u], m[u], "yes" if u in pl else "no"]
+    ws.title = "Designation"
+    title(ws, "%d of 16 areas rose more than 8 per cent and are designated: %s" % (
+        len(d), ", ".join(NAMES[k] for k in sorted(d, key=lambda k: NAMES[k]))),
+          "Residential property price change, year to September 2026 on the year to September 2025, for a dwelling of "
+          "unchanged type, floor area, newness and electoral division (hedonic time effect), sales at full market price.")
+    head(ws, 4, ["LA code", "Local authority area", "Sales, year to Sep 2025", "Sales, year to Sep 2026",
+                 "Price change (%)", "Rapid price growth area"], [9, 20, 13, 13, 12, 13])
+    for i, k in enumerate(order):
+        vals = [k, NAMES[k], G["n"][k][0], G["n"][k][1], round(c[k], 1), "yes" if k in d else "no"]
         for j, v in enumerate(vals, 1):
-            c = ws.cell(row=5 + i, column=j, value=v)
-            c.font = bold if (u in pl and j in (1, 2, 8)) else body
-            c.border = thin
-            if u in pl:
-                c.fill = nfill
-            if 3 <= j <= 5:
-                c.number_format = "#,##0"
-            elif j in (6, 7):
-                c.number_format = "0"
+            x = ws.cell(row=5 + i, column=j, value=v)
+            x.font = bold if (k in d and j in (1, 2, 6)) else body
+            x.border = thin
+            if k in d:
+                x.fill = nfill
+            if j in (3, 4):
+                x.number_format = "#,##0"
+            elif j == 5:
+                x.number_format = "0.0"
             if j >= 3:
-                c.alignment = Alignment(horizontal="right")
+                x.alignment = Alignment(horizontal="right")
     ws.freeze_panes = "C5"
-    r0 = 5 + len(b["ids"]) + 1
-    for k, t in enumerate([
-        "An application still open on 9 October has lasted at least its working days since its clock started, and the "
-        "open ones are the slow ones: the offices with a backlog have their slowest applications among them. Each open "
-        "application stays at risk until its age and the median is read where the product-limit survival estimate "
-        "first falls to one half.",
-        "Working days exclude weekends and the bank holidays of 1 June, 3 August and 26 October. The clock starts on "
-        "the complete day (board paper, section 2). Registrations of June and October receipts are outside the quarter.",
+    r0 = 5 + len(order) + 1
+    for n, t in enumerate([
+        "Each area's change is the year effect of a regression of the log price (including VAT) on the dwelling's type, "
+        "log floor area, new-dwelling status and electoral division, fitted to the area's sales at full market price "
+        "in the two years, so the homes that sold in each year are compared like with like.",
+        "A sale counts in the year of its date of sale. Filings made in both systems from 1 to 10 October 2025 are "
+        "counted once; the old system's VAT-exclusive prices of new dwellings are grossed up at 13.5 per cent.",
     ]):
-        c = ws.cell(row=r0 + k, column=1, value=t)
-        c.font = Font(name="Calibri", size=9, color="5B6470")
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-        ws.merge_cells(start_row=r0 + k, start_column=1, end_row=r0 + k, end_column=8)
-        ws.row_dimensions[r0 + k].height = 40
+        x = ws.cell(row=r0 + n, column=1, value=t)
+        x.font = Font(name="Calibri", size=9, color="5B6470")
+        x.alignment = Alignment(wrap_text=True, vertical="top")
+        ws.merge_cells(start_row=r0 + n, start_column=1, end_row=r0 + n, end_column=6)
+        ws.row_dimensions[r0 + n].height = 40
 
     cs = wb.create_sheet("Chart data")
-    cs.append(["Office", "Median working days"])
-    for u in b["ids"]:
-        cs.append([u, m[u]])
+    cs.append(["Area", "Price change (%)", "Line (%)"])
+    for k in order:
+        cs.append([NAMES[k], round(c[k], 1), B.LINE])
     bc = BarChart()
-    bc.type = "col"
-    bc.title = "Median working days to registration, third-quarter applications, against the 20-day line"
-    bc.y_axis.title = "Working days"
+    bc.type = "bar"
+    bc.title = "Price change by area, year to September 2026, against the 8 per cent line"
+    bc.x_axis.title = None
+    bc.y_axis.title = "Per cent"
     bc.y_axis.delete = False
     bc.x_axis.delete = False
-    bc.add_data(Reference(cs, min_col=2, min_row=1, max_row=len(b["ids"]) + 1), titles_from_data=True)
-    bc.set_categories(Reference(cs, min_col=1, min_row=2, max_row=len(b["ids"]) + 1))
+    bc.x_axis.scaling.orientation = "maxMin"
+    bc.add_data(Reference(cs, min_col=2, min_row=1, max_row=len(order) + 1), titles_from_data=True)
+    bc.set_categories(Reference(cs, min_col=1, min_row=2, max_row=len(order) + 1))
     bc.series[0].graphicalProperties = GraphicalProperties(solidFill=MUTED)
-    for i, u in enumerate(b["ids"]):
-        if u in pl:
+    for i, k in enumerate(order):
+        if k in d:
             pt = DataPoint(idx=i)
             pt.graphicalProperties = GraphicalProperties(solidFill=ACCENT)
             bc.series[0].dPt.append(pt)
     bc.legend = None
-    bc.height, bc.width = 10, 22
-    ws.add_chart(bc, "A%d" % (r0 + 3))
+    bc.height, bc.width = 11, 20
+    ws.add_chart(bc, "H4")
 
-    q = wb.create_sheet("Q3 2026 card payments")
-    title(q, "Card payments made in the third quarter of 2026", "By the day the payment was taken (the settlement "
-                                                                  "batch's terminal day), not the day it settled.")
-    head(q, 4, ["Office", "Office name", "Payments", "Amount (EUR)"], [9, 14, 12, 14])
-    for i, u in enumerate(b["ids"]):
-        for j, (v, fm) in enumerate(((u, None), (NAMES[u], None), (G["a"][u][0], "#,##0"),
-                                     (G["a"][u][1], "#,##0")), 1):
-            c = q.cell(row=5 + i, column=j, value=v)
-            c.font, c.border = body, thin
+    q = wb.create_sheet("Transactions 2025-26")
+    title(q, "Residential purchases, year to September 2026", "By date of sale; every purchase counts whether or not "
+          "at full market price; a block of apartments bought in one purchase counts once, at its one consideration.")
+    head(q, 4, ["LA code", "Local authority area", "Purchases", "Total paid incl. VAT (EUR)"], [9, 20, 12, 22])
+    for i, k in enumerate(sorted(b["areas"], key=lambda k: NAMES[k])):
+        for j, (v, fm) in enumerate(((k, None), (NAMES[k], None), (G["a"][k][0], "#,##0"),
+                                     (int(round(G["a"][k][1])), "#,##0")), 1):
+            x = q.cell(row=5 + i, column=j, value=v)
+            x.font, x.border = body, thin
             if fm:
-                c.number_format = fm
+                x.number_format = fm
+                x.alignment = Alignment(horizontal="right")
+    tr = 5 + len(b["areas"])
+    q.cell(row=tr, column=2, value="All areas").font = bold
+    for j, v in ((3, sum(G["a"][k][0] for k in b["areas"])), (4, int(round(sum(G["a"][k][1] for k in b["areas"]))))):
+        x = q.cell(row=tr, column=j, value=v)
+        x.font, x.number_format = bold, "#,##0"
+        x.alignment = Alignment(horizontal="right")
     for w in wb.worksheets:
         w.sheet_view.showGridLines = False
         w.page_setup.orientation = "landscape"
@@ -156,10 +160,12 @@ def write_xlsx(path, G):
 def figures(G):
     b = G["b"]
     return {
-        "call": {"planned": G["pl"]},
-        "ask": {u: {"payments": G["a"][u][0], "amount": int(round(G["a"][u][1]))} for u in b["ids"]},
-        "default_path": {"planned": B.planned(b, G["reg"])},
-        "conventions": {"line": 20, "years": [2026, 2027], "counts": [14], "dates": [1, 9, 30, 31]},
+        "call": {"designated": G["d"]},
+        "change": {k: round(G["c"][k], 1) for k in b["areas"]},
+        "ask": {k: {"purchases": G["a"][k][0], "paid": int(round(G["a"][k][1]))} for k in b["areas"]},
+        "default_path": {"designated": B.designated(b, "type_weighted")},
+        "conventions": {"line": 8, "vat": 13.5, "years": [2019, 2024, 2025, 2026, 2027], "counts": [16],
+                        "dates": [1, 10, 30]},
     }
 
 
@@ -168,8 +174,8 @@ def main(target, gdir, fig_path):
     G = compute(target)
     write_xlsx(os.path.join(gdir, FILE), G)
     import postprocess as PP
-    PP.normalize_ooxml(os.path.join(gdir, FILE), "Jennifer Dyer", "Jennifer Dyer", "2026-10-12T09:10:00Z",
-                       "2026-10-14T15:35:00Z", excel=True, company=PP.COMPANY)
+    PP.normalize_ooxml(os.path.join(gdir, FILE), "Clare McEntee", "Clare McEntee", "2026-10-20T09:10:00Z",
+                       "2026-10-22T15:35:00Z", excel=True, company=PP.COMPANY)
     with open(fig_path, "w") as fh:
         json.dump(figures(G), fh, indent=1, sort_keys=True)
         fh.write("\n")

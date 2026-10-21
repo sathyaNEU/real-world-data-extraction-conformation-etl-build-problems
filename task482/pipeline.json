@@ -1,13 +1,13 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-21",
- "stump": "pending the generator's placement; see the card's stump",
+ "stump": "The default path compares each area's sales between the two years dwelling type by dwelling type, weights the changes by the census stock and files Annaghvale, Ballymarne, Carrigvore, Glenaskin, Innishrue, Kilbrannagh, Moyrath and Rathgowan designated, because it never asks whether the homes that sold within each type were the same kind of home in both years: in several areas the second year sold more homes in the cheaper or the dearer electoral divisions, or new homes at a premium, and only a hedonic regression on type, floor area, new-dwelling status and electoral division gives each area's change for an unchanged dwelling.",
  "architecture": 4,
  "loops": 0,
  "precut": {
@@ -15,12 +15,12 @@
   "date": "2026-10-21"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW",
   "reader": ""
  },
  "duplicate_check": {
   "heart": "WARN",
-  "nearest": "see guard heart"
+  "nearest": "task137 (0.07)"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: build the v4 world (sixteen areas, hedonic ladder) and write the design note's ladder, then precut",
+ "resume": "stage 4: readers 9 and 10 and the judge (r5) running on target.zip 9e21c3d9; score each reader with score_reader.py --call-key call.designated, then ship or re-root",
  "approved": null,
  "delivered": null,
  "portal": null,

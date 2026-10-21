@@ -1,6 +1,7 @@
-"""The pack's data files, written from the truth in world.py: the registration logs of the legacy and the current case
-system, the open caseload snapshot, the public holiday calendar, the card payments and their settlement batches, the
-staffing return and the customer survey."""
+"""The pack's data files, written from the truth in world.py: the residential property price register as the old
+system filed it to 10 October 2025 and as the new system has filed it since 1 October 2025, the valuation register's
+dwelling attributes, the address point file with each building's electoral division, the electoral divisions, the
+census dwelling stock, and two files the index does not use (rents and mortgage drawdowns)."""
 import csv
 import datetime as dt
 
@@ -9,36 +10,45 @@ import numpy as np
 import world as W
 
 FILES = {
-    "log_old": "cro_registrations_legacy_system_2026-07.csv",
-    "log_new": "cro_registrations_case_system_2026-08_to_2026-10.csv",
-    "open": "cro_open_caseload_snapshot_2026-10-09.csv",
-    "holidays": "cro_public_holidays_2026.csv",
-    "pays": "cro_card_payments_settled_2026-07_to_2026-10.csv",
-    "batches": "cro_card_settlement_batches_2026q3.csv",
-    "paper": "cro_board_paper_timeliness_q3_2026.pdf",
-    "staff": "cro_office_staffing_2026-09.xlsx",
-    "survey": "cro_customer_survey_2026h1.csv",
-    "dictionary": "cro_data_dictionary.csv",
-    "manifest": "cro_extract_manifest_2026-10-09.csv",
+    "ppr_old": "ppr_residential_sales_filed_2024-10-01_to_2025-10-10.csv",
+    "ppr_new": "ppr_residential_sales_filed_2025-10-01_to_2026-10-14.csv",
+    "valuation": "valuation_register_dwellings_extract_2026-10-15.csv",
+    "points": "address_points_buildings_extract_2026-10-15.csv",
+    "eds": "bso_electoral_divisions_2026.csv",
+    "census": "census_2022_dwelling_stock_by_area_and_type.xlsx",
+    "method": "bso_rppi_methodology_note_2026.pdf",
+    "circular": "dhlgh_circular_rapid_price_growth_areas_2026.pdf",
+    "rents": "rta_registered_rents_by_area_2026q2.xlsx",
+    "mortgages": "mortgage_drawdowns_by_area_2025-2026.csv",
+    "dictionary": "bso_data_dictionary.csv",
+    "manifest": "bso_extract_manifest_2026-10-15.csv",
 }
-COMPANY = "Companies Registration Office of Ardmuir"
-OLD_COLS = ["AppRef", "Office", "Received", "QueryRaised", "Complete", "Registered", "CompanyType"]
-NEW_COLS = ["application_id", "office_code", "received_on", "clock_start", "registered_on", "company_type",
-            "service"]
-OPEN_COLS = ["office_code", "received_on", "clock_start", "open_applications"]
-HOL_COLS = ["date", "holiday"]
-PAY_COLS = ["payment_ref", "office_code", "batch_id", "settled_on", "amount_eur"]
-BATCH_COLS = ["batch_id", "office_code", "terminal_date", "settled_on", "payments", "amount_eur"]
-SURVEY_COLS = ["office_code", "responses", "satisfied_pct", "would_use_online_pct"]
-TYPES = ["private company limited by shares", "designated activity company", "company limited by guarantee",
-         "public limited company", "unlimited company"]
-HOLNAMES = {dt.date(2026, 5, 4): "May bank holiday", dt.date(2026, 6, 1): "June bank holiday",
-            dt.date(2026, 8, 3): "August bank holiday", dt.date(2026, 10, 26): "October bank holiday",
-            dt.date(2026, 12, 25): "Christmas Day", dt.date(2026, 12, 28): "St Stephen's Day (observed)"}
+COMPANY = "Brannagh Statistics Office"
+OLD_COLS = ["Date of Sale (dd/mm/yyyy)", "Address", "County", "Eircode", "Price (€)", "Not Full Market Price",
+            "VAT Exclusive", "Description of Property", "Property Size Description"]
+NEW_COLS = ["transaction_id", "property_number", "eircode", "la_code", "sale_date", "filed_date", "consideration_eur",
+            "market_basis", "dwelling_status"]
+VAL_COLS = ["property_number", "eircode", "address", "la_code", "dwelling_type", "floor_area_m2", "year_built",
+            "valuation_date"]
+PT_COLS = ["eircode", "building_id", "ed_code", "latitude", "longitude", "address_point_status"]
+ED_COLS = ["ed_code", "ed_name", "la_code", "la_name"]
+MORT_COLS = ["la_code", "quarter", "drawdowns", "value_eur_m", "first_time_buyer_share_pct"]
+OLD_WINDOW = (dt.date(2024, 10, 1), dt.date(2025, 10, 10))
+NEW_WINDOW = (dt.date(2025, 10, 1), dt.date(2026, 10, 14))
+VTYPE = {"detached": "Detached house", "semi-detached": "Semi-detached house", "terraced": "Terraced house",
+         "apartment": "Apartment"}
+STREETS = ["Main Street", "Church Road", "The Green", "Station Road", "Mill Lane", "Abbey View", "Oak Park",
+           "Riverside", "Chapel Hill", "Meadow Court", "Ashgrove", "Castle Heights", "Fairfield", "Woodlands",
+           "Beechwood Avenue", "Hazel Close", "The Paddocks", "Cherry Lawn", "Willow Rise", "Glebe Road"]
+ROUTING = {c: "G%02d" % (11 + 4 * i) for i, c in enumerate(W.CODES)}
+EIR_CHARS = "ACDEFHKNPRTVWXY0123456789"
+BLOCK_A = ["Harbour", "Linden", "Quarry", "Foundry", "Granary", "Weir", "Tannery", "Maltings", "Orchard", "Sorrel",
+           "Heron", "Kestrel", "Larch", "Rowan", "Alder", "Brook"]
+BLOCK_B = ["Court", "House", "Place", "Yard", "Square"]
 
 
-def write_csv(path, cols, rows):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
+def write_csv(path, cols, rows, encoding="utf-8"):
+    with open(path, "w", newline="", encoding=encoding) as fh:
         w = csv.writer(fh, lineterminator="\r\n")
         w.writerow(cols)
         for r in rows:
@@ -46,82 +56,175 @@ def write_csv(path, cols, rows):
     return len(rows)
 
 
-def ids(x):
-    rng = np.random.default_rng(W.SEED + 1)
-    allapps = x["apps"] + x["extra"]
-    for i, j in enumerate(rng.permutation(len(allapps))):
-        a = allapps[j]
-        a["ref"] = ("L%06d" % (420117 + 3 * i)) if a["registered"] < dt.date(2026, 8, 1) else ("CR-%07d" % (8810233 + 7 * i))
-        a["type"] = TYPES[int(rng.choice(5, p=[0.82, 0.08, 0.06, 0.02, 0.02]))]
-        a["service"] = "two-day" if rng.random() < 0.12 else "standard"
-
-
-def log_rows(x, which):
-    """The registrations made by the extract: those made in July in the legacy system, which the offices used until
-    31 July, and every later one in the case system, July's receipts still in hand migrated to it with new ids."""
-    rows = []
-    for a in sorted(x["apps"] + x["extra"], key=lambda a: a["ref"]):
-        if a["registered"] > W.EXTRACT:
-            continue
-        if which == "old" and a["registered"] < dt.date(2026, 8, 1):
-            rows.append((a["ref"], a["office"].replace("CRO-", ""), a["received"].strftime("%d/%m/%Y"),
-                         "Y" if a["query"] else "N", a["complete"].strftime("%d/%m/%Y"),
-                         a["registered"].strftime("%d/%m/%Y"), a["type"]))
-        if which == "new" and a["registered"] >= dt.date(2026, 8, 1):
-            rows.append((a["ref"], a["office"], a["received"].isoformat(), a["complete"].isoformat(),
-                         a["registered"].isoformat(), a["type"], a["service"]))
-    return rows
-
-
-def open_rows(x):
-    cnt = {}
-    for a in x["apps"]:
-        if a["registered"] > W.EXTRACT:
-            k = (a["office"], a["received"], a["complete"])
-            cnt[k] = cnt.get(k, 0) + 1
-    return [(o, r.isoformat(), c.isoformat(), n) for (o, r, c), n in sorted(cnt.items())]
-
-
-def holiday_rows():
-    return [(d.isoformat(), HOLNAMES[d]) for d in sorted(W.HOLIDAYS)]
-
-
-def next_working(d):
-    while True:
-        d += dt.timedelta(days=1)
-        if d.weekday() < 5 and d not in W.HOLIDAYS:
-            return d
-
-
-def pay_rows(x):
-    """Card payments as the acquirer settles them: one batch per office and terminal day, settled the next working
-    day; the payment file carries the settlement date and the batch, the batch file the terminal day."""
-    rng = np.random.default_rng(W.SEED + 2)
-    rows, batches = [], {}
-    order = rng.permutation(len(x["pays"]))
-    for i, j in enumerate(order):
-        p = x["pays"][j]
-        bid = "B%s%s" % (p["office"][-2:], p["day"].strftime("%y%m%d"))
-        st = next_working(p["day"])
-        b = batches.setdefault(bid, [p["office"], p["day"], st, 0, 0])
-        b[3] += 1
-        b[4] += p["amount"]
-        rows.append(("P%08d" % (31400017 + 13 * i), p["office"], bid, st.isoformat(), "%.2f" % p["amount"]))
-    rows = [r for r in rows if dt.date(2026, 7, 1) <= dt.date.fromisoformat(r[3]) <= dt.date(2026, 10, 9)]
-    rows.sort(key=lambda r: (r[3], r[1], r[0]))
-    x["batches"] = batches
-    return rows
-
-
-def batch_rows(x):
+def _edge(rng, x):
+    """Sales just outside the two index years that the extract also carries: July to September 2024 sales filed
+    from October 2024, and October 2026 sales filed by 14 October."""
+    eds = {}
+    for e in x["eds"]:
+        eds.setdefault(e["area"], []).append(e)
     out = []
-    for bid, (o, d, st, n, amt) in sorted(x["batches"].items()):
-        if dt.date(2026, 7, 1) <= st <= dt.date(2026, 10, 9):
-            out.append((bid, o, d.isoformat(), st.isoformat(), n, "%.2f" % amt))
+    for a in x["areas"]:
+        for lo, hi, share in ((dt.date(2024, 7, 1), dt.date(2024, 9, 30), 0.25), (dt.date(2026, 10, 1),
+                                                                                   dt.date(2026, 10, 14), 0.04)):
+            dd = [d for d in W.days(lo, hi) if d.weekday() < 5]
+            for _ in range(int(a["n"] * share)):
+                e = eds[a["code"]][int(rng.integers(0, len(eds[a["code"]])))]
+                t = W.TYPES[int(rng.choice(4, p=W.TMIX))]
+                fl = W.TFLOOR[t] * float(np.exp(rng.normal(0, 0.17)))
+                d = dd[int(rng.integers(0, len(dd)))]
+                lp = (W._level(a["level"], d, a["growth"]) + e["eff"] + W.TEFF[t] + W.ELAST * np.log(fl / 100.0)
+                      + float(rng.normal(0, W.NOISE)))
+                out.append({"area": a["code"], "ed": e["code"], "type": t, "floor": round(fl, 1), "new": False,
+                            "built": 1998, "date": d, "price": round(float(np.exp(lp)) / 500.0) * 500.0,
+                            "market": True, "bulk": None, "edge": True})
     return out
 
 
-def survey_rows():
+def ids(x):
+    """Property numbers, eircodes, addresses, filing days and transaction ids, in one seeded pass."""
+    rng = np.random.default_rng(W.SEED + 1)
+    x["sales"] += _edge(rng, x)
+    used = set()
+    addrs = set()
+    blocks = {}
+    for i, j in enumerate(rng.permutation(len(x["sales"]))):
+        s = x["sales"][j]
+        s["pn"] = "%07d" % (1204411 + 13 * i)
+        while True:
+            e = ROUTING[s["area"]] + " " + "".join(EIR_CHARS[int(k)] for k in rng.integers(0, len(EIR_CHARS), 4))
+            if e not in used and not e[4].isdigit():
+                used.add(e)
+                break
+        s["eircode"] = e
+        if s["bulk"] is not None:
+            k, units = s["bulk"]
+            n = blocks.setdefault(k, [0])
+            n[0] += 1
+            s["address"] = "Apartment %d, %s %s, %s" % (n[0], BLOCK_A[k % len(BLOCK_A)], BLOCK_B[k // len(BLOCK_A)],
+                                                       W.NAMES[s["area"]])
+        elif s["type"] == "apartment":
+            while True:
+                s["address"] = "Apartment %d, %d %s, %s" % (int(rng.integers(1, 40)), int(rng.integers(1, 90)),
+                                                           STREETS[int(rng.integers(0, len(STREETS)))],
+                                                           W.NAMES[s["area"]])
+                if s["address"] not in addrs:
+                    break
+        else:
+            while True:
+                s["address"] = "%d %s, %s" % (int(rng.integers(1, 900)), STREETS[int(rng.integers(0, len(STREETS)))],
+                                              W.NAMES[s["area"]])
+                if s["address"] not in addrs:
+                    break
+        addrs.add(s["address"])
+        lag = int(min(150, max(3, round(float(rng.lognormal(np.log(26), 0.55))))))
+        s["filed"] = s["date"] + dt.timedelta(days=lag)
+        if s["bulk"] is not None:
+            s["filed"] = s["date"] + dt.timedelta(days=21)
+        s["eir_shown"] = rng.random() > 0.08
+        s["eir_style"] = int(rng.integers(0, 4))
+        s["lat"] = 53.2 + (W.CODES.index(s["area"]) % 4) * 0.31 + float(rng.uniform(0, 0.25))
+        s["lon"] = -8.9 + (W.CODES.index(s["area"]) // 4) * 0.42 + float(rng.uniform(0, 0.35))
+    x["sales"].sort(key=lambda s: s["pn"])
+    for i, s in enumerate(sorted(x["sales"], key=lambda s: (s["filed"], s["pn"]))):
+        s["tid"] = "PPR-%06d" % (500113 + 3 * i)
+
+
+def filed_price(s, vat_exclusive):
+    return round(s["price"] / (1 + W.VAT), 2) if (vat_exclusive and s["new"]) else s["price"]
+
+
+def _eir(s):
+    e = s["eircode"]
+    return [e, e.replace(" ", ""), e.lower(), " " + e][s["eir_style"]]
+
+
+def _size_desc(s):
+    if not s["new"]:
+        return ""
+    if s["floor"] < 38:
+        return "less than 38 sq metres"
+    if s["floor"] < 125:
+        return "greater than or equal to 38 sq metres and less than 125 sq metres"
+    return "greater than or equal to 125 sq metres"
+
+
+def old_rows(x):
+    """The old system's filings, 1 October 2024 to 10 October 2025, in its public layout: day-first dates, a euro
+    price as text, new dwellings filed exclusive of VAT, the eircode as keyed and sometimes missing."""
+    rows = []
+    for s in sorted(x["sales"], key=lambda s: (s["filed"], s["pn"])):
+        if not OLD_WINDOW[0] <= s["filed"] <= OLD_WINDOW[1]:
+            continue
+        price = filed_price(s, True)
+        rows.append((s["date"].strftime("%d/%m/%Y"), s["address"], W.NAMES[s["area"]],
+                     _eir(s) if s["eir_shown"] else "", "€{:,.2f}".format(price),
+                     "No" if s["market"] else "Yes", "Yes" if s["new"] else "No",
+                     "New Dwelling house /Apartment" if s["new"] else "Second-Hand Dwelling house /Apartment",
+                     _size_desc(s)))
+    return rows
+
+
+def new_rows(x):
+    """The new system's filings from 1 October 2025 (it ran beside the old one to 10 October): ISO dates, the
+    consideration including VAT, the property number and the eircode as the register holds them."""
+    rows = []
+    for s in sorted(x["sales"], key=lambda s: (s["filed"], s["tid"])):
+        if not NEW_WINDOW[0] <= s["filed"] <= NEW_WINDOW[1]:
+            continue
+        rows.append((s["tid"], s["pn"], s["eircode"], s["area"], s["date"].isoformat(), s["filed"].isoformat(),
+                     "%.2f" % s["price"], "FMP" if s["market"] else "NFMP", "NEW" if s["new"] else "SH"))
+    return rows
+
+
+def in_extract(s):
+    return OLD_WINDOW[0] <= s["filed"] <= OLD_WINDOW[1] or NEW_WINDOW[0] <= s["filed"] <= NEW_WINDOW[1]
+
+
+def valuation_rows(x):
+    rows = []
+    for s in x["sales"]:
+        if in_extract(s):
+            vd = dt.date(2025, 6, 30) if s["date"] < dt.date(2025, 6, 30) or not s["new"] else dt.date(2026, 6, 30)
+            rows.append((s["pn"], s["eircode"], s["address"], s["area"], VTYPE[s["type"]], "%.1f" % s["floor"],
+                         s["built"], vd.isoformat()))
+    return rows
+
+
+def point_rows(x):
+    rows = []
+    bid = {}
+    for s in x["sales"]:
+        if in_extract(s):
+            key = s["address"].split(", ", 1)[1] if s["bulk"] is not None else s["pn"]
+            b = bid.setdefault(key, "B%08d" % (30117 + 11 * len(bid)))
+            rows.append((s["eircode"], b, s["ed"], "%.5f" % s["lat"], "%.5f" % s["lon"], "active"))
+    rows.sort()
+    return rows
+
+
+def ed_rows(x):
+    return [(e["code"], e["name"], e["area"], W.NAMES[e["area"]]) for e in sorted(x["eds"], key=lambda e: e["code"])]
+
+
+def stock(x):
+    """Census 2022 occupied and vacant dwellings by area and type: the stock of which a year's sales are about four
+    in a hundred, in the area's long-run mix."""
     rng = np.random.default_rng(W.SEED + 3)
-    return [(c, int(rng.integers(80, 400)), "%.1f" % float(rng.uniform(71, 90)), "%.1f" % float(rng.uniform(55, 80)))
-            for c in W.IDS]
+    out = {}
+    for a in x["areas"]:
+        tot = int(a["n"] / 0.041)
+        mix = np.array(W.TMIX) * rng.uniform(0.9, 1.1, 4)
+        mix = mix / mix.sum()
+        out[a["code"]] = [int(round(tot * m / 10.0)) * 10 for m in mix]
+    return out
+
+
+def mortgage_rows(x):
+    rng = np.random.default_rng(W.SEED + 4)
+    rows = []
+    for a in x["areas"]:
+        for q in ("2025Q1", "2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2"):
+            n = int(a["n"] / 4 * float(rng.uniform(0.45, 0.6)))
+            rows.append((a["code"], q, n, "%.1f" % (n * float(np.exp(a["level"])) * float(rng.uniform(0.78, 0.86)) / 1e6),
+                         "%.1f" % float(rng.uniform(44, 58))))
+    return rows

@@ -3,7 +3,7 @@ import json
 
 import pack as P
 
-DISTRACTORS = [P.FILES["staff"], P.FILES["survey"]]
+DISTRACTORS = [P.FILES["rents"], P.FILES["mortgages"]]
 
 
 def write(target, path, n):
@@ -15,24 +15,24 @@ def write(target, path, n):
         "objective": "Data Extraction & Conformation (ETL)",
         "distractor_files": DISTRACTORS,
         "distractor_reasons": {
-            P.FILES["staff"]: "registration staff by office in September; the plans are chosen on timeliness, and "
-                              "staffing is what a plan reviews afterwards",
-            P.FILES["survey"]: "customer satisfaction in the first half of 2026; perceptions of an earlier period, not "
-                               "the third quarter's working days",
+            P.FILES["rents"]: "registered rents by area in the second quarter of 2026; the designation turns on the "
+                              "price of dwellings bought, and rents are a different market",
+            P.FILES["mortgages"]: "mortgage drawdowns by area and quarter; a count and value of loans, not of the price "
+                                  "of an unchanged dwelling, and it stops at June 2026",
         },
-        "stated_inputs": ["20"],
-        "deliverables": ["cro_timeliness_plans_q3_2026.xlsx"],
-        "as_of": "2026-10-09",
+        "stated_inputs": ["8", "13.5"],
+        "deliverables": ["bso_area_property_price_change_2026.xlsx"],
+        "as_of": "2026-10-15",
         "files": sorted(P.FILES.values()),
         "rows": {P.FILES[k]: v for k, v in sorted(n.items())},
         "sources": {
             "constructed": "every file is constructed for this task by its generator (task482/generator); the nation, "
-                           "the registry, its offices, the companies and the people are fictional",
-            "public_specifications": "the layouts follow common case management extracts, open caseload snapshots and "
-                                     "card acquirer settlement files, described in no shipped file beyond the pack's "
-                                     "own dictionary",
+                           "its statistics office, the areas, the dwellings, the sales and the people are fictional",
+            "public_specifications": "the price register's old layout follows the public layout of a national "
+                                     "residential property price register; the other layouts are the pack's own, "
+                                     "described in its dictionary",
             "licence": "CC0 1.0 (constructed data)",
-            "date": "2026-10-09",
+            "date": "2026-10-15",
         },
     }
     with open(path, "w", encoding="utf-8") as fh:

@@ -1,176 +1,224 @@
-"""The world of task482 (architecture 3): the Companies Registration Office of Ardmuir, fourteen regional offices
-registering new companies, and the management board's third-quarter 2026 timeliness review.
+"""The world of task482 (architecture 4): the Brannagh Statistics Office's residential property price index for
+sixteen local authority areas, read by the Minister for Housing against the 8 per cent line for designating rapid
+price growth areas for 2027.
 
-An application's clock runs in working days from the day it is complete (its receipt, or the reply to a query) to its
-registration. On the 9 October extract part of each office's July to September applications is still open, and the
-open ones are the slow ones: the offices with a backlog hold their slow applications there.
+A dwelling's log price is its area's level on the sale day, its electoral division's premium, its type's, a floor
+area elasticity and a new-dwelling premium, with noise. Each area's price level moves at one steady rate across the
+two index years (October 2024 to September 2025, October 2025 to September 2026), so the change for an unchanged
+dwelling is the same everywhere in the area. What moves between the years is which dwellings sell: in some areas the
+second year sells far more second-hand homes in the cheaper or the dearer electoral divisions, or a run of large new
+homes, or more apartments.
 
-    x = build()    the truth: offices, applications with their complete and registration days, fees"""
+    x = build()    the truth: areas, electoral divisions, dwellings, sales"""
 import datetime as dt
 
 import numpy as np
 
-SEED = 4823
-EXTRACT = dt.date(2026, 10, 9)
-LINE = 20
-HOLIDAYS = [dt.date(2026, 8, 3), dt.date(2026, 10, 26), dt.date(2026, 6, 1), dt.date(2026, 12, 25),
-            dt.date(2026, 12, 28), dt.date(2026, 5, 4)]
+SEED = 4824
+LINE = 8.0
+Y1 = (dt.date(2024, 10, 1), dt.date(2025, 9, 30))
+Y2 = (dt.date(2025, 10, 1), dt.date(2026, 9, 30))
+EXTRACT = dt.date(2026, 10, 15)
+VAT = 0.135
+TYPES = ["detached", "semi-detached", "terraced", "apartment"]
+TEFF = {"detached": 0.22, "semi-detached": 0.06, "terraced": 0.0, "apartment": -0.04}
+TFLOOR = {"detached": 152.0, "semi-detached": 112.0, "terraced": 91.0, "apartment": 68.0}
+TMIX = [0.27, 0.31, 0.22, 0.20]
+ELAST = 0.80
+NEWP = 0.10
+NOISE = 0.14
 
-# office code, name, applications in the quarter, median working days of the quick, share in the backlog,
-# backlog median working days, place ("b" over on the golden, under on the registered median; "o" over on the golden
-# and on the registered median; "u" under on the golden; "y" under on the golden, over when every open application is
-# counted as late), and the share of applications received in the second half of September (a filing rush)
-OFFICES = [
-    ("CRO-AD", "Ardmuir", 3900, 11.0, 0.55, 42, "b", 0.00),
-    ("CRO-BN", "Bannock", 1700, 9.0, 0.10, 34, "u", 0.00),
-    ("CRO-CV", "Carrick", 1300, 11.5, 0.56, 43, "b", 0.00),
-    ("CRO-DL", "Dunlay", 2100, 15.0, 0.10, 32, "y", 0.50),
-    ("CRO-ES", "Eskmoor", 900, 9.5, 0.08, 30, "u", 0.00),
-    ("CRO-FM", "Fallowmere", 1600, 24.0, 0.20, 45, "o", 0.00),
-    ("CRO-GQ", "Glenquhar", 1100, 10.5, 0.57, 41, "b", 0.00),
-    ("CRO-HL", "Harlaw", 2600, 8.5, 0.07, 28, "u", 0.00),
-    ("CRO-IB", "Inverbeck", 800, 15.0, 0.10, 32, "y", 0.50),
-    ("CRO-KM", "Kelso Moss", 1900, 10.0, 0.11, 33, "u", 0.00),
-    ("CRO-LW", "Lenwick", 1200, 11.0, 0.54, 44, "b", 0.00),
-    ("CRO-MG", "Mossgiel", 1500, 24.5, 0.18, 46, "o", 0.00),
-    ("CRO-NM", "Northmuir", 2300, 9.5, 0.09, 31, "u", 0.00),
-    ("CRO-SL", "Strathlorn", 1000, 15.0, 0.10, 32, "y", 0.50),
+# area code, name, second-hand sales a year, log level, annual growth (per cent), electoral divisions, place, knobs:
+#   tilt  the second year's lean of second-hand sales toward the dearer (+) or cheaper (-) electoral divisions
+#   new   the share of the second year's sales that are new dwellings (the first year's is 4 per cent), built in the
+#         divisions at rank `where` (0 the cheapest)
+#   apt   the second year's lean toward apartments (log odds)
+# place: "o" over the line on the golden and on every summary of what sold; "u" under on all; "c" over on the golden,
+# under on every summary (sales leaning cheap); "d" under on the golden, over on every summary (leaning dear); "n"
+# under on the golden and on the regression without location, over on the summaries (new homes); "a" over on the
+# golden, under on the median, over per square metre (apartments)
+AREAS = [
+    ("KB", "Kilbrannagh", 3100, 12.72, 11.6, 10, "o", dict(tilt=0.0, new=0.05, where=4, apt=0.0)),
+    ("AC", "Ardcullen", 2400, 12.55, 10.3, 9, "c", dict(tilt=-0.26, new=0.04, where=3, apt=0.0)),
+    ("LF", "Lisnafeen", 1900, 12.41, 4.2, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0)),
+    ("RG", "Rathgowan", 2700, 12.63, 5.9, 9, "d", dict(tilt=0.26, new=0.04, where=3, apt=0.0)),
+    ("TV", "Tullyvane", 1600, 12.30, 3.1, 8, "u", dict(tilt=0.0, new=0.05, where=3, apt=0.0)),
+    ("MR", "Moyrath", 2200, 12.48, 5.8, 9, "n", dict(tilt=0.0, new=0.21, where=6, apt=0.0)),
+    ("GS", "Glenaskin", 1800, 12.37, 12.8, 8, "o", dict(tilt=0.0, new=0.05, where=3, apt=0.0)),
+    ("DM", "Dunmarra", 2900, 12.69, 10.2, 10, "c", dict(tilt=-0.25, new=0.04, where=4, apt=0.0)),
+    ("CT", "Clonteevan", 1500, 12.26, 6.1, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0)),
+    ("IR", "Innishrue", 2000, 12.44, 5.9, 9, "n", dict(tilt=0.0, new=0.20, where=6, apt=0.0)),
+    ("CV", "Carrigvore", 2600, 12.60, 10.4, 9, "a", dict(tilt=0.0, new=0.04, where=4, apt=0.50)),
+    ("KF", "Knockfeerin", 1700, 12.33, 2.4, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0)),
+    ("BM", "Ballymarne", 2300, 12.52, 6.0, 9, "d", dict(tilt=0.25, new=0.04, where=4, apt=0.0)),
+    ("CL", "Corlespie", 1400, 12.22, 3.8, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0)),
+    ("AV", "Annaghvale", 2100, 12.46, 12.1, 9, "o", dict(tilt=0.0, new=0.05, where=4, apt=0.0)),
+    ("DS", "Drumshallon", 1900, 12.39, 6.4, 8, "u", dict(tilt=0.0, new=0.05, where=3, apt=0.0)),
 ]
-IDS = [o[0] for o in OFFICES]
+CODES = [a[0] for a in AREAS]
+NAMES = {a[0]: a[1] for a in AREAS}
+ED_WORDS = ["North", "South", "East", "West", "Urban", "Rural", "Upper", "Lower", "Central", "Bridge", "Mill", "Hill"]
 
 
-def working_days(a, b):
-    """Working days from day a to day b (b after a): weekdays not on the holiday list, a not counted."""
-    n = 0
-    d = a
-    while d < b:
-        d += dt.timedelta(days=1)
-        if d.weekday() < 5 and d not in HOLIDAYS:
-            n += 1
-    return n
+def days(a, b):
+    return [a + dt.timedelta(days=k) for k in range((b - a).days + 1)]
 
 
-def add_working(a, k):
-    d = a
-    while k > 0:
-        d += dt.timedelta(days=1)
-        if d.weekday() < 5 and d not in HOLIDAYS:
-            k -= 1
-    return d
+def _level(area, d, g):
+    """The area's log price level on day d: a steady rate through the two years, centred on 1 October 2025."""
+    t = (d - Y2[0]).days / 365.25
+    return area + np.log1p(g / 100.0) * t
 
 
-def km_median(times, events):
-    """The product-limit median: the smallest time at which the survival estimate falls to one half or below."""
-    order = sorted(zip(times, events))
-    n = len(order)
-    s = 1.0
-    i = 0
-    while i < n:
-        t = order[i][0]
-        d = sum(1 for tt, e in order[i:] if tt == t and e)
-        c = sum(1 for tt, e in order[i:] if tt == t)
-        s *= 1 - d / (n - i)
-        if s <= 0.5:
-            return t
-        i += c
-    return None
+def _sales(rng, code, n, lvl, g, eds, kn, year):
+    """One year's sales in one area: second-hand dwellings drawn from the stock (with the year's lean) and new ones."""
+    lo, hi = Y1 if year == 1 else Y2
+    dd = [d for d in days(lo, hi) if d.weekday() < 5]
+    ne = len(eds)
+    order = np.argsort([e["eff"] for e in eds])
+    rank = np.empty(ne)
+    rank[order] = np.linspace(-1, 1, ne)
+    tilt = kn["tilt"] if year == 2 else 0.0
+    w_ed = np.exp(tilt * 1.6 * rank) * np.array([e["size"] for e in eds])
+    w_ed = w_ed / w_ed.sum()
+    apt = kn["apt"] if year == 2 else 0.0
+    w_t = np.array(TMIX) * np.exp([0, 0, 0, apt])
+    w_t = w_t / w_t.sum()
+    share_new = kn["new"] if year == 2 else 0.04
+    n_new = int(round(n * share_new / (1 - share_new)))
+    out = []
+    for i in range(n + n_new):
+        new = i >= n
+        if new:
+            e = int(order[min(ne - 1, kn["where"] + int(rng.integers(0, 2)))])
+            t = TYPES[int(rng.choice(4, p=[0.38, 0.44, 0.12, 0.06]))]
+            fl = TFLOOR[t] * 1.18 * float(np.exp(rng.normal(0, 0.10)))
+            built = (2025 if year == 1 else 2026) - int(rng.integers(0, 2))
+        else:
+            e = int(rng.choice(ne, p=w_ed))
+            t = TYPES[int(rng.choice(4, p=w_t))]
+            fl = TFLOOR[t] * float(np.exp(rng.normal(0, 0.17)))
+            built = int(rng.choice([1965, 1975, 1985, 1995, 2002, 2006, 2012, 2018])) + int(rng.integers(0, 6))
+        d = dd[int(rng.integers(0, len(dd)))]
+        lp = (_level(lvl, d, g) + eds[e]["eff"] + TEFF[t] + ELAST * np.log(fl / 100.0) + (NEWP if new else 0.0)
+              + float(rng.normal(0, NOISE)))
+        price = float(np.exp(lp))
+        price = round(price / 500.0) * 500.0 if price < 1e6 else round(price / 5000.0) * 5000.0
+        out.append({"area": code, "ed": eds[e]["code"], "type": t, "floor": round(fl, 1), "new": new,
+                    "built": built, "date": d, "price": price, "market": True, "bulk": None})
+    return out
+
+
+def _estimates(sales):
+    """The routes on the truth (VAT-inclusive prices, market sales): the median change, the median per square metre,
+    the type change weighted by the first year's mix, the regression without location, and the full regression."""
+    y = np.array([s["date"] >= Y2[0] for s in sales])
+    p = np.array([s["price"] for s in sales])
+    fl = np.array([s["floor"] for s in sales])
+    lp = np.log(p)
+    out = {"median": 100 * (np.median(p[y]) / np.median(p[~y]) - 1),
+           "per_m2": 100 * (np.median((p / fl)[y]) / np.median((p / fl)[~y]) - 1)}
+    tt = np.array([s["type"] for s in sales])
+    acc = 0.0
+    for t in TYPES:
+        m = tt == t
+        acc += (m & ~y).sum() / (~y).sum() * (np.median(p[m & y]) / np.median(p[m & ~y]) - 1)
+    out["type_weighted"] = 100 * acc
+
+    def reg(location):
+        cols = [np.ones(len(sales)), y.astype(float), np.log(fl / 100.0), np.array([s["new"] for s in sales], float)]
+        cols += [(tt == t).astype(float) for t in TYPES[1:]]
+        if location:
+            eds = sorted(set(s["ed"] for s in sales))
+            ee = np.array([s["ed"] for s in sales])
+            cols += [(ee == e).astype(float) for e in eds[1:]]
+        b = np.linalg.lstsq(np.column_stack(cols), lp, rcond=None)[0]
+        return 100 * (np.exp(b[1]) - 1)
+    out["hedonic_no_location"] = reg(False)
+    out["hedonic"] = reg(True)
+    return out
+
+
+def placed(place, e):
+    over = {k: v > LINE + 1.0 for k, v in e.items()}
+    under = {k: v < LINE - 1.0 for k, v in e.items()}
+    clear = abs(e["hedonic"] - LINE) >= 1.5
+    summ = ("median", "per_m2", "type_weighted")
+    return clear and {
+        "o": all(over.values()),
+        "u": all(under.values()),
+        "c": over["hedonic"] and all(under[k] for k in summ) and under["hedonic_no_location"],
+        "d": under["hedonic"] and all(over[k] for k in summ) and over["hedonic_no_location"],
+        "n": under["hedonic"] and under["hedonic_no_location"] and all(over[k] for k in summ),
+        "a": over["hedonic"] and under["median"] and over["per_m2"] and over["hedonic_no_location"],
+    }[place]
 
 
 def build():
     rng = np.random.default_rng(SEED)
-    days = [dt.date(2026, 7, 1) + dt.timedelta(days=k) for k in range(92)]
-    wdays = [d for d in days if d.weekday() < 5 and d not in HOLIDAYS]
-    apps = []
-    k = 0
-    late = [d for d in wdays if d >= dt.date(2026, 9, 14)]
-    for code, name, n, qm, share, bm, place, surge in OFFICES:
-        for tries in range(80):
-            sub = []
-            for i in range(n):
-                rec = late[int(rng.integers(0, len(late)))] if rng.random() < surge else \
-                    wdays[int(rng.integers(0, len(wdays)))]
-                query = rng.random() < 0.22
-                comp = add_working(rec, int(rng.integers(2, 12))) if query else rec
-                if comp >= EXTRACT:
-                    comp, query = rec, False
-                slow = rng.random() < share
-                dur = max(1, int(round(float(rng.lognormal(np.log(bm if slow else qm), 0.35 if slow else 0.45)))))
-                reg = add_working(comp, dur)
-                sub.append({"office": code, "received": rec, "complete": comp, "dur": dur, "registered": reg,
-                            "query": query})
-            m = summary(sub)
-            ok = {"b": m["km"] > LINE + 1.5 and m["closed"] < LINE - 1.5,
-                  "o": m["km"] > LINE + 1.5 and m["closed"] > LINE + 1.5,
-                  "u": m["km"] < LINE - 1.5,
-                  "y": m["km"] < LINE - 1.5 and m["open_late"] > LINE + 1.5}[place]
-            if ok and abs(m["km"] - LINE) >= 1.5 and abs(m["open_age"] - LINE) >= 0.5:
+    x = {"areas": [], "eds": [], "sales": [], "est": {}}
+    for code, name, n, lvl, g, ne, place, kn in AREAS:
+        for tries in range(200):
+            words = list(rng.permutation(ED_WORDS))[:ne]
+            eff = rng.normal(0, 0.24, ne)
+            eff -= eff.mean()
+            eds = [{"code": "%s%03d" % (code, 11 + 7 * k), "name": "%s %s" % (name, words[k]), "area": code,
+                    "eff": float(eff[k]), "size": float(rng.uniform(0.6, 1.6))} for k in range(ne)]
+            sub = _sales(rng, code, n, lvl, g, eds, kn, 1) + _sales(rng, code, n, lvl, g, eds, kn, 2)
+            e = _estimates(sub)
+            if placed(place, e):
                 break
         else:
-            raise SystemExit("office %s not placed" % code)
-        for a in sub:
-            k += 1
-            a["k"] = k
-        apps += sub
-    x = {"apps": apps}
-    # receipts outside the quarter that the logs also carry: late June's registered in July, early October's
-    extra = []
-    for code, name, n, qm, *_ in OFFICES:
-        for _ in range(int(n * 0.05)):
-            rec = dt.date(2026, 6, 15) + dt.timedelta(days=int(rng.integers(0, 16)))
-            if rec.weekday() >= 5 or rec in HOLIDAYS:
-                continue
-            dur = max(1, int(round(float(rng.lognormal(np.log(qm), 0.45)))))
-            extra.append({"office": code, "received": rec, "complete": rec, "dur": dur,
-                          "registered": add_working(rec, dur), "query": False})
-        for _ in range(int(n * 0.02)):
-            rec = dt.date(2026, 10, 1) + dt.timedelta(days=int(rng.integers(0, 6)))
-            if rec.weekday() >= 5:
-                continue
-            dur = int(rng.integers(1, 4))
-            extra.append({"office": code, "received": rec, "complete": rec, "dur": dur,
-                          "registered": add_working(rec, dur), "query": False})
-    x["extra"] = [a for a in extra if dt.date(2026, 7, 1) <= a["registered"] <= EXTRACT]
-    _fees(x, rng)
+            raise SystemExit("area %s not placed" % code)
+        x["areas"].append({"code": code, "name": name, "growth": g, "place": place, "n": n, "level": lvl})
+        x["eds"] += eds
+        x["sales"] += sub
+        x["est"][code] = e
+    _non_market(rng, x)
     return x
 
 
-def summary(sub):
-    """An office's medians on the truth: the product-limit median with open applications censored at their age, the
-    median of the registered alone, the median counting each open one at its age, and counting each open one as
-    over the line."""
-    t, e, closed, at_age, late = [], [], [], [], []
-    for a in sub:
-        age = working_days(a["complete"], EXTRACT)
-        if a["registered"] <= EXTRACT:
-            t.append(a["dur"])
-            e.append(True)
-            closed.append(a["dur"])
-            at_age.append(a["dur"])
-            late.append(a["dur"])
-        else:
-            t.append(age)
-            e.append(False)
-            at_age.append(age)
-            late.append(10 ** 6)
-    return {"km": km_median(t, e), "closed": float(np.median(closed)), "open_age": float(np.median(at_age)),
-            "open_late": float(np.median(late)), "true": float(np.median([a["dur"] for a in sub]))}
-
-
-def _fees(x, rng):
-    """Every card payment an office took in the quarter: the registration fee with each application on its receipt
-    day (EUR 50, or EUR 100 for the two-day service) and the office's other fees (name reservations, annual return
-    filings, certified copies); truth by the day paid."""
-    pays = []
-    days = [dt.date(2026, 6, 24) + dt.timedelta(days=k) for k in range(110)]
-    for a in x["apps"]:
-        pays.append({"office": a["office"], "day": a["received"], "amount": 100 if rng.random() < 0.12 else 50})
-    for code, name, n, *_ in OFFICES:
-        for d in days:
-            if d.weekday() >= 5 or d in HOLIDAYS:
+def _non_market(rng, x):
+    """Sales not at full market price (family transfers, part-interest sales) in every area, and housing bodies'
+    purchases of whole blocks of new apartments, the block's one consideration on each apartment's line."""
+    eds_by_area = {}
+    for e in x["eds"]:
+        eds_by_area.setdefault(e["area"], []).append(e)
+    extra = []
+    for a in x["areas"]:
+        eds = eds_by_area[a["code"]]
+        for year, (lo, hi) in ((1, Y1), (2, Y2)):
+            dd = [d for d in days(lo, hi) if d.weekday() < 5]
+            for _ in range(int(a["n"] * 0.035)):
+                e = eds[int(rng.integers(0, len(eds)))]
+                t = TYPES[int(rng.choice(4, p=TMIX))]
+                fl = TFLOOR[t] * float(np.exp(rng.normal(0, 0.17)))
+                d = dd[int(rng.integers(0, len(dd)))]
+                lp = _level(a["level"], d, a["growth"]) + e["eff"] + TEFF[t] + ELAST * np.log(fl / 100.0)
+                price = round(float(np.exp(lp)) * float(rng.uniform(0.35, 0.8)) / 500.0) * 500.0
+                extra.append({"area": a["code"], "ed": e["code"], "type": t, "floor": round(fl, 1), "new": False,
+                              "built": 1990, "date": d, "price": price, "market": False, "bulk": None})
+    # housing bodies' purchases of whole blocks of new apartments, one consideration for each block
+    k = 0
+    for a in x["areas"]:
+        eds = sorted(eds_by_area[a["code"]], key=lambda e: e["eff"])
+        for j, (year, (lo, hi)) in enumerate(((1, Y1), (2, Y2), (2, Y2), (2, Y2))):
+            if j > 1 and rng.random() < 0.5:
                 continue
-            for _ in range(int(rng.poisson(n / 65.0 * 1.6))):
-                pays.append({"office": code, "day": d, "amount": int(rng.choice([20, 20, 25, 40, 60]))})
-    x["pays"] = pays
-    q3 = [p for p in pays if dt.date(2026, 7, 1) <= p["day"] <= dt.date(2026, 9, 30)]
-    x["fees"] = {code: (sum(1 for p in q3 if p["office"] == code), sum(p["amount"] for p in q3 if p["office"] == code))
-                 for code in IDS}
+            if year == 1 and rng.random() < 0.6:
+                continue
+            units = int(rng.integers(4, 21))
+            e = eds[int(rng.integers(1, len(eds) - 1))]
+            dd = [d for d in days(lo, hi) if d.weekday() < 5]
+            d = dd[int(rng.integers(0, len(dd) - 30))]
+            unit = []
+            for u in range(units):
+                fl = round(TFLOOR["apartment"] * float(np.exp(rng.normal(0, 0.08))), 1)
+                lp = _level(a["level"], d, a["growth"]) + e["eff"] + TEFF["apartment"] + ELAST * np.log(fl / 100.0) + NEWP
+                unit.append((fl, float(np.exp(lp)) * 0.88))
+            total = round(sum(v for _, v in unit) / 1000.0) * 1000.0
+            for fl, _ in unit:
+                extra.append({"area": a["code"], "ed": e["code"], "type": "apartment", "floor": fl, "new": True,
+                              "built": d.year, "date": d, "price": total, "market": False, "bulk": (k, units)})
+            k += 1
+    x["sales"] += extra

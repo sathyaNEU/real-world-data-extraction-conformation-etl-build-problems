@@ -1,92 +1,127 @@
 {
  "ask": {
-  "CRO-AD": {
-   "amount": 426480,
-   "payments": 10113
+  "AC": {
+   "paid": 838392500,
+   "purchases": 2460
   },
-  "CRO-BN": {
-   "amount": 187185,
-   "payments": 4497
+  "AV": {
+   "paid": 696982000,
+   "purchases": 2177
   },
-  "CRO-CV": {
-   "amount": 142795,
-   "payments": 3420
+  "BM": {
+   "paid": 866667000,
+   "purchases": 2355
   },
-  "CRO-DL": {
-   "amount": 226105,
-   "payments": 5398
+  "CL": {
+   "paid": 359074500,
+   "purchases": 1425
   },
-  "CRO-ES": {
-   "amount": 99735,
-   "payments": 2389
+  "CT": {
+   "paid": 418911500,
+   "purchases": 1539
   },
-  "CRO-FM": {
-   "amount": 174420,
-   "payments": 4167
+  "CV": {
+   "paid": 963083000,
+   "purchases": 2686
   },
-  "CRO-GQ": {
-   "amount": 118900,
-   "payments": 2842
+  "DM": {
+   "paid": 1286799000,
+   "purchases": 2983
   },
-  "CRO-HL": {
-   "amount": 283990,
-   "payments": 6798
+  "DS": {
+   "paid": 578041000,
+   "purchases": 1978
   },
-  "CRO-IB": {
-   "amount": 87305,
-   "payments": 2111
+  "GS": {
+   "paid": 569966000,
+   "purchases": 1853
   },
-  "CRO-KM": {
-   "amount": 203815,
-   "payments": 4920
+  "IR": {
+   "paid": 868862500,
+   "purchases": 2455
   },
-  "CRO-LW": {
-   "amount": 129470,
-   "payments": 3112
+  "KB": {
+   "paid": 1415960000,
+   "purchases": 3216
   },
-  "CRO-MG": {
-   "amount": 159580,
-   "payments": 3826
+  "KF": {
+   "paid": 489289000,
+   "purchases": 1750
   },
-  "CRO-NM": {
-   "amount": 251435,
-   "payments": 5965
+  "LF": {
+   "paid": 590768500,
+   "purchases": 1952
   },
-  "CRO-SL": {
-   "amount": 105525,
-   "payments": 2494
+  "MR": {
+   "paid": 1062521000,
+   "purchases": 2735
+  },
+  "RG": {
+   "paid": 1114686500,
+   "purchases": 2770
+  },
+  "TV": {
+   "paid": 453259000,
+   "purchases": 1664
   }
  },
  "call": {
-  "planned": [
-   "CRO-AD",
-   "CRO-CV",
-   "CRO-FM",
-   "CRO-GQ",
-   "CRO-LW",
-   "CRO-MG"
+  "designated": [
+   "AC",
+   "AV",
+   "CV",
+   "DM",
+   "GS",
+   "KB"
   ]
+ },
+ "change": {
+  "AC": 9.9,
+  "AV": 12.3,
+  "BM": 5.7,
+  "CL": 3.5,
+  "CT": 5.9,
+  "CV": 10.7,
+  "DM": 10.1,
+  "DS": 6.1,
+  "GS": 12.1,
+  "IR": 6.3,
+  "KB": 11.5,
+  "KF": 2.0,
+  "LF": 3.8,
+  "MR": 5.7,
+  "RG": 6.2,
+  "TV": 3.1
  },
  "conventions": {
   "counts": [
-   14
+   16
   ],
   "dates": [
    1,
-   9,
-   30,
-   31
+   10,
+   30
   ],
-  "line": 20,
+  "line": 8,
+  "vat": 13.5,
   "years": [
+   2019,
+   2024,
+   2025,
    2026,
    2027
   ]
  },
  "default_path": {
-  "planned": [
-   "CRO-FM",
-   "CRO-MG"
+  "designated": [
+   "AV",
+   "BM",
+   "CV",
+   "GS",
+   "IR",
+   "KB",
+   "MR",
+   "RG"
   ]
  }
 }

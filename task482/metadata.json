@@ -5,48 +5,49 @@
  "task_type": "census-register-administrative-data-quality",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "cro_office_staffing_2026-09.xlsx",
-  "cro_customer_survey_2026h1.csv"
+  "rta_registered_rents_by_area_2026q2.xlsx",
+  "mortgage_drawdowns_by_area_2025-2026.csv"
  ],
  "distractor_reasons": {
-  "cro_office_staffing_2026-09.xlsx": "registration staff by office in September; the plans are chosen on timeliness, and staffing is what a plan reviews afterwards",
-  "cro_customer_survey_2026h1.csv": "customer satisfaction in the first half of 2026; perceptions of an earlier period, not the third quarter's working days"
+  "rta_registered_rents_by_area_2026q2.xlsx": "registered rents by area in the second quarter of 2026; the designation turns on the price of dwellings bought, and rents are a different market",
+  "mortgage_drawdowns_by_area_2025-2026.csv": "mortgage drawdowns by area and quarter; a count and value of loans, not of the price of an unchanged dwelling, and it stops at June 2026"
  },
  "stated_inputs": [
-  "20"
+  "8",
+  "13.5"
  ],
  "deliverables": [
-  "cro_timeliness_plans_q3_2026.xlsx"
+  "bso_area_property_price_change_2026.xlsx"
  ],
- "as_of": "2026-10-09",
+ "as_of": "2026-10-15",
  "files": [
-  "cro_board_paper_timeliness_q3_2026.pdf",
-  "cro_card_payments_settled_2026-07_to_2026-10.csv",
-  "cro_card_settlement_batches_2026q3.csv",
-  "cro_customer_survey_2026h1.csv",
-  "cro_data_dictionary.csv",
-  "cro_extract_manifest_2026-10-09.csv",
-  "cro_office_staffing_2026-09.xlsx",
-  "cro_open_caseload_snapshot_2026-10-09.csv",
-  "cro_public_holidays_2026.csv",
-  "cro_registrations_case_system_2026-08_to_2026-10.csv",
-  "cro_registrations_legacy_system_2026-07.csv"
+  "address_points_buildings_extract_2026-10-15.csv",
+  "bso_data_dictionary.csv",
+  "bso_electoral_divisions_2026.csv",
+  "bso_extract_manifest_2026-10-15.csv",
+  "bso_rppi_methodology_note_2026.pdf",
+  "census_2022_dwelling_stock_by_area_and_type.xlsx",
+  "dhlgh_circular_rapid_price_growth_areas_2026.pdf",
+  "mortgage_drawdowns_by_area_2025-2026.csv",
+  "ppr_residential_sales_filed_2024-10-01_to_2025-10-10.csv",
+  "ppr_residential_sales_filed_2025-10-01_to_2026-10-14.csv",
+  "rta_registered_rents_by_area_2026q2.xlsx",
+  "valuation_register_dwellings_extract_2026-10-15.csv"
  ],
  "rows": {
-  "cro_card_settlement_batches_2026q3.csv": 1008,
-  "cro_data_dictionary.csv": 13,
-  "cro_public_holidays_2026.csv": 6,
-  "cro_registrations_case_system_2026-08_to_2026-10.csv": 15355,
-  "cro_registrations_legacy_system_2026-07.csv": 2941,
-  "cro_extract_manifest_2026-10-09.csv": 10,
-  "cro_open_caseload_snapshot_2026-10-09.csv": 1905,
-  "cro_card_payments_settled_2026-07_to_2026-10.csv": 66132,
-  "cro_customer_survey_2026h1.csv": 14
+  "bso_data_dictionary.csv": 15,
+  "bso_electoral_divisions_2026.csv": 139,
+  "bso_extract_manifest_2026-10-15.csv": 11,
+  "mortgage_drawdowns_by_area_2025-2026.csv": 96,
+  "address_points_buildings_extract_2026-10-15.csv": 75814,
+  "ppr_residential_sales_filed_2025-10-01_to_2026-10-14.csv": 39373,
+  "ppr_residential_sales_filed_2024-10-01_to_2025-10-10.csv": 37410,
+  "valuation_register_dwellings_extract_2026-10-15.csv": 75814
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task482/generator); the nation, the registry, its offices, the companies and the people are fictional",
-  "public_specifications": "the layouts follow common case management extracts, open caseload snapshots and card acquirer settlement files, described in no shipped file beyond the pack's own dictionary",
+  "constructed": "every file is constructed for this task by its generator (task482/generator); the nation, its statistics office, the areas, the dwellings, the sales and the people are fictional",
+  "public_specifications": "the price register's old layout follows the public layout of a national residential property price register; the other layouts are the pack's own, described in its dictionary",
   "licence": "CC0 1.0 (constructed data)",
-  "date": "2026-10-09"
+  "date": "2026-10-15"
  }
 }

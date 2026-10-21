@@ -1,14 +1,13 @@
 """The generator's assertions on the cut pack and the truth: the three rules (the analyst test on the clean truth),
-the ladder and its margins, the fork table's rows (SF1 to SF8), the ask's device and its separation from the call,
-and the input gates.
+the ladder and its margins, the golden family's agreement, the fork table's rows (SF1 to SF8), the ask's device and
+its separation from the call, and the input gates.
 
     python3 task482/generator/checks.py [target]"""
+import datetime as dt
 import json
 import os
 import re
 import sys
-
-import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -18,8 +17,12 @@ import pack as P      # noqa: E402
 import world as W     # noqa: E402
 
 TASK = os.path.dirname(HERE)
-GOLDEN = ["CRO-AD", "CRO-CV", "CRO-FM", "CRO-GQ", "CRO-LW", "CRO-MG"]
-DEFAULT = ["CRO-FM", "CRO-MG"]
+GOLDEN = ["AC", "AV", "CV", "DM", "GS", "KB"]
+DEFAULT = ["AV", "BM", "CV", "GS", "IR", "KB", "MR", "RG"]
+FAMILY = ("golden", "hedonic_built", "hedonic_second_hand", "hedonic_monthly", "hedonic_levels_check")
+WRONG = {"median": ["AV", "BM", "GS", "IR", "KB", "MR", "RG"], "per_m2": DEFAULT, "type_weighted": DEFAULT,
+         "type_weighted_mean": DEFAULT, "hedonic_no_location": ["AV", "BM", "CV", "GS", "KB", "RG"],
+         "ed_type_cells": ["AC", "AV", "CV", "DM", "GS", "IR", "KB", "MR"]}
 
 
 class Run:
@@ -45,70 +48,129 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
         P.ids(x)
     b = B.load(target)
     # -------------------------------------------------------------- the three rules, executed on the clean truth
-    summ = {u: W.summary([a for a in x["apps"] if a["office"] == u]) for u in W.IDS}
-    R.ok(sorted(u for u in summ if summ[u]["closed"] > W.LINE) == DEFAULT, "R3a the easy route (the registered "
-         "median) on the clean truth files the default two")
-    R.ok(sorted(u for u in summ if summ[u]["true"] > W.LINE) == GOLDEN, "R3b the quarter's own median (every "
-         "application's duration, the decisive step's target) files the golden six")
-    R.ok(sorted(u for u in summ if summ[u]["km"] > W.LINE) == GOLDEN, "R3c the censored median on the truth files the "
-         "golden six")
+    est = x["est"]
+    pick = lambda k: sorted(a for a in est if est[a][k] > W.LINE)
+    R.ok(pick("type_weighted") == DEFAULT, "R3a the easy route (type changes weighted by the stock) on the clean "
+         "truth files the default eight (%s)" % pick("type_weighted"))
+    R.ok(pick("hedonic") == GOLDEN, "R3b the hedonic with location on the clean truth files the golden six")
+    R.ok(sorted(a["code"] for a in x["areas"] if a["growth"] > W.LINE) == GOLDEN, "R3c the true change for an "
+         "unchanged dwelling (the world's growth) files the golden six")
+    R.ok(pick("hedonic_no_location") != GOLDEN and pick("median") != GOLDEN and pick("per_m2") != GOLDEN,
+         "R3d every partial correction on the truth misses the golden")
     # -------------------------------------------------------------- the ladder on the cut pack
-    sets = {r: B.planned(b, B.medians(b, r)) for r in B.ROUTES}
-    for r in B.GOLDEN_FORMS:
+    ch = {r: B.change(b, r) for r in FAMILY + tuple(WRONG)}
+    sets = {r: sorted(k for k, v in ch[r].items() if round(v, 1) > B.LINE) for r in ch}
+    for r in FAMILY:
         R.ok(sets[r] == GOLDEN, "L1 %s files the golden six (%s)" % (r, sets[r]))
-    R.ok(sets["registered_only"] == DEFAULT, "L2 the default path on the pack (%s)" % sets["registered_only"])
-    for r in ("open_at_age", "open_as_late", "calendar_days"):
-        R.ok(sets[r] != GOLDEN, "L3 %s files a wrong set (%s)" % (r, sets[r]))
-    for r in B.GOLDEN_FORMS:
-        m = B.medians(b, r)
-        R.ok(min(abs(m[u] - B.LINE) for u in m) >= 1.5, "C2 %s: every office 1.5 working days or more from 20" % r)
-    m = B.medians(b, "golden")
-    R.ok(all(abs(m[u] - summ[u]["true"]) <= 2 for u in W.IDS), "C3 every censored median within two days of the "
-         "quarter's own median")
-    # -------------------------------------------------------------- the fork table
-    paper = _pdf(os.path.join(target, P.FILES["paper"]))
-    R.ok("received from 1 July to 30 September 2026, exceeds 20" in paper, "SF1 the cohort and the line are filed")
-    R.ok("the start day is not counted" in paper, "SF2 the start day is not counted")
-    R.ok("Working days exclude Saturdays, Sundays and the public holidays" in paper, "SF3 working days are filed")
-    R.ok("those registered by the 9 October extract and those still open on it" in paper, "SF4 open applications "
-         "are in the population")
-    R.ok("the last reply arrived" in paper, "SF5 the clock starts on the complete day")
-    R.ok(not ({r[0] for r in P.log_rows(x, "old")} & {r[0] for r in P.log_rows(x, "new")}),
-         "SF6 no registration in both logs")
-    R.ok(all(c >= r for o, r, c, g in b["reg"]) and all(c >= r for o, r, c, k in b["open"]),
-         "SF7 every clock starts on or after receipt")
-    R.ok(True, "SF8 exceeds is strictly over (no office within 1.5 days, C2)")
-    # -------------------------------------------------------------- the ask
-    A, A0 = B.ask(b, True), B.ask(b, False)
-    R.ok(all(A[u] != A0[u] for u in A), "A1 dating payments by settlement moves every office")
-    R.ok(all(A[u][0] == x["fees"][u][0] and abs(A[u][1] - x["fees"][u][1]) < 0.01 for u in A), "A2 the golden equals "
-         "the truth")
-    R.ok(True, "X1 the call reads the two logs, the open caseload and the holidays; the ask reads the payments and "
-               "batches only")
-    # -------------------------------------------------------------- gates
+    for r, want in WRONG.items():
+        R.ok(sets[r] == want, "L2 %s files its rung (%s)" % (r, sets[r]))
+    R.ok(all(abs(ch["golden"][k] - B.LINE) >= 1.5 for k in b["areas"]), "C1 every area 1.5 points or more from the "
+         "line on the golden")
+    for r in FAMILY:
+        R.ok(all(abs(ch[r][k] - B.LINE) >= 1.0 for k in b["areas"]), "C2 every area a point or more from the line "
+             "under %s" % r)
+    log_family = ("golden", "hedonic_built", "hedonic_second_hand", "hedonic_monthly")
+    spread = max(max(ch[r][k] for r in log_family) - min(ch[r][k] for r in log_family) for k in b["areas"])
+    R.ok(spread <= 0.7, "C3 the log hedonic forms agree within 0.7 of a point in every area (%.2f)" % spread)
+    for r in WRONG:
+        if r == "ed_type_cells":
+            continue
+        R.ok(sum(abs(ch[r][k] - B.LINE) >= 1.0 for k in b["areas"] if (k in sets[r]) != (k in GOLDEN)) ==
+             sum(1 for k in b["areas"] if (k in sets[r]) != (k in GOLDEN)), "C4 every area %s misplaces is a point "
+             "or more from the line" % r)
+    # -------------------------------------------------------------- forks
+    bv = B.load(target, vat=False)
+    R.ok(B.designated(bv, "golden") == GOLDEN, "SF1 the old layout's VAT-exclusive new-dwelling prices left as filed: "
+         "same call")
+    keys = [(s["pn"], s["date"]) for s in b["sales"]]
+    R.ok(len(keys) == len(set(keys)), "SF2 one record per sale after the two systems' overlap")
+    both = sum(1 for s in x["sales"] if P.OLD_WINDOW[0] <= s["filed"] <= P.OLD_WINDOW[1]
+               and P.NEW_WINDOW[0] <= s["filed"] <= P.NEW_WINDOW[1])
+    R.ok(both > 100, "SF3 the overlap is real: %d filings in both systems" % both)
+    allb = dict(b)
+    allb["sales"] = [dict(s, market=True) for s in b["sales"]]
+    sf4 = B.designated(allb, "golden")
+    R.ok(isinstance(sf4, list), "SF4 every sale counted, not filed (the note keeps sales at full market price): %s" % sf4)
+    R.ok(sorted(k for k, v in ch["golden"].items() if round(v, 1) >= B.LINE) == GOLDEN, "SF7 at or over 8 per cent: "
+         "same call")
+    nf = [s for s in b["sales"] if not s["market"] and Y(s)]
+    R.ok(len(nf) > 500, "SF5 sales not at full market price exist and are outside the index (%d)" % len(nf))
+    excl = dict(b)
+    excl["sales"] = [s for s in b["sales"] if s["market"] or not s["new"]]
+    R.ok(B.designated(excl, "golden") == GOLDEN, "SF6 the call does not read a housing body's block")
+    R.ok(all(abs(round(ch["golden"][k], 1) - ch["golden"][k]) <= 0.05 for k in b["areas"]) and
+         all((round(ch["golden"][k], 1) > B.LINE) == (ch["golden"][k] > B.LINE) for k in b["areas"]),
+         "SF8 the call is the same on the printed and the unrounded changes")
+    # -------------------------------------------------------------- ask: the device and its separation
+    A = B.ask(b)
+    A0 = B.ask(b, blocks_once=False)
+    R.ok(all(A[k][0] != A0[k][0] and A[k][1] != A0[k][1] for k in b["areas"]), "A1 the block device moves both "
+         "figures in every area")
+    blocks = [s for s in b["sales"] if Y2(s) and not s["market"]]
+    grp = {}
+    for s in blocks:
+        grp.setdefault((s["building"], s["date"], s["price"]), []).append(s)
+    multi = [g for g in grp.values() if len(g) > 1]
+    R.ok(all(all(s["new"] and s["type"] == "Apartment" for s in g) for g in multi), "A2 every multi-line purchase is a "
+         "block of new apartments")
+    R.ok(not any(s["market"] for g in multi for s in g), "X1 no device row in the call's population (every block line "
+         "is not at full market price)")
+    R.ok(len(multi) >= 16, "A3 at least one block in every area's second year (%d blocks)" % len(multi))
+    # -------------------------------------------------------------- golden and figures
+    fig = json.load(open(fig_path)) if fig_path else None
+    if fig:
+        R.ok(fig["call"]["designated"] == GOLDEN, "G1 figures.json carries the golden six")
+        R.ok(all(fig["ask"][k]["purchases"] == A[k][0] and fig["ask"][k]["paid"] == int(round(A[k][1]))
+                 for k in b["areas"]), "G2 figures.json carries the ask")
+        import openpyxl
+        wb = openpyxl.load_workbook(os.path.join(gdir, "bso_area_property_price_change_2026.xlsx"), data_only=True)
+        ws = wb["Designation"]
+        rows = {r[0]: r for r in ws.iter_rows(min_row=5, max_row=20, values_only=True)}
+        R.ok(sorted(k for k, r in rows.items() if r[5] == "yes") == GOLDEN, "G3 the workbook designates the golden six")
+        R.ok(all(abs(rows[k][4] - fig["change"][k]) < 1e-9 for k in b["areas"]), "G4 the workbook's changes match")
+        q = {r[0]: r for r in wb["Transactions 2025-26"].iter_rows(min_row=5, max_row=20, values_only=True)}
+        R.ok(all(q[k][2] == fig["ask"][k]["purchases"] and q[k][3] == fig["ask"][k]["paid"] for k in b["areas"]),
+             "G5 the workbook's transactions match")
+        R.ok(len(wb["Designation"]._charts) == 1, "G6 the chart is on the designation sheet")
+    # -------------------------------------------------------------- input gates and texture
     files = sorted(os.listdir(target))
-    R.ok(len(files) >= 10, "G1 ten or more files (%d)" % len(files))
-    R.ok(len({f.rsplit(".", 1)[1] for f in files}) >= 3, "G2 three or more formats")
-    big = max(sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv"))
-    R.ok(big >= 25000, "G3 a file of 25,000 rows or more (%d)" % big)
+    R.ok(len(files) >= 10, "I1 ten or more files (%d)" % len(files))
+    R.ok(len(set(f.rsplit(".", 1)[1] for f in files)) >= 3, "I2 three or more formats")
+    big = max(sum(1 for _ in open(os.path.join(target, f), encoding="cp1252" if "2024-10-01" in f else "utf-8")) - 1
+              for f in files if f.endswith(".csv"))
+    R.ok(big >= 25000, "I3 a file of 25,000 or more rows (%d)" % big)
     if meta_path:
         meta = json.load(open(meta_path))
-        R.ok(len(meta["distractor_files"]) >= 2 and all(dd in files for dd in meta["distractor_files"]),
-             "G4 two or more distractors, shipped")
-        R.ok(not any(re.search(r"distract|decoy|trap", f) for f in files), "G5 no file name names a role")
+        R.ok(len(meta["distractor_files"]) >= 2 and all(f in files for f in meta["distractor_files"]),
+             "I4 two distractors named and shipped")
+        R.ok(not any(w in f for f in files for w in ("distract", "decoy", "trap")), "I5 no file name names a role")
+    late = [s for s in x["sales"] if P.in_extract(s) and s["filed"] > dt.date(2026, 10, 14)]
+    R.ok(not late, "D1 nothing filed after the extract")
     for f in files:
-        if f.endswith(".csv"):
-            txt = open(os.path.join(target, f), encoding="utf-8").read()
-            R.ok("—" not in txt and "–" not in txt, "G6 no dashes in %s" % f)
-    if fig_path and gdir:
-        fig = json.load(open(fig_path))
-        R.ok(fig["call"]["planned"] == GOLDEN, "F1 figures.json carries the golden six")
+        if f.endswith(".pdf"):
+            t = _pdf(os.path.join(target, f)).lower()
+            R.ok(not re.search(r"hedonic|regression|electoral division.*(control|adjust)|mix|composition|stratif",
+                               t), "D2 %s names no method" % f)
+    txt = open(os.path.join(target, P.FILES["dictionary"]), encoding="utf-8").read().lower()
+    R.ok(not re.search(r"hedonic|regression|block|total for|each line|once", txt), "D3 the dictionary names no method "
+         "and no device")
+    allt = "".join(open(os.path.join(TASK, "prompt.txt")).read()) if os.path.exists(os.path.join(TASK, "prompt.txt")) \
+        else ""
+    R.ok("—" not in allt and "–" not in allt, "T1 no dashes in the prompt")
     print("checks: %d run, %d failed" % (R.n, len(R.bad)))
     return not R.bad
+
+
+def Y(s):
+    return B.Y1[0] <= s["date"] <= B.Y2[1]
+
+
+def Y2(s):
+    return B.Y2[0] <= s["date"] <= B.Y2[1]
 
 
 if __name__ == "__main__":
     t = sys.argv[1] if len(sys.argv) > 1 else os.path.join(TASK, "target")
     ok = run(t, os.path.join(TASK, "golden"), meta_path=os.path.join(TASK, "metadata.json"),
              fig_path=os.path.join(HERE, "figures.json"))
-    sys.exit(0 if ok else 1)
+    raise SystemExit(0 if ok else 1)
