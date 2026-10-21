@@ -6,13 +6,13 @@
   "domain": "survey-research-official-statistics",
   "client_domain": "survey-research-official-statistics",
   "subdomain": "seasonal-adjustment-official-time-series-production",
-  "niche": "a state lodging association's 2027 Rising Destinations co-op marketing match, a fixed fund split across the counties whose taxable lodging receipts grew at least five per cent from 2024 to 2025 in proportion to their 2025 receipts, where 2025 must be restated from the association's fixed monthly member panel onto the Department of Revenue's annual county basis a year before the Department publishes it",
+  "niche": "a state lodging association's 2027 Rising Destinations co-op marketing match, a fixed fund split equally across the counties whose taxable lodging receipts grew at least six per cent from 2024 to 2025, where 2025 must be restated from the association's fixed monthly member panel onto the Department of Revenue's annual county basis two months before the Department publishes it",
   "objective": "etl",
-  "shape": "05",
-  "decision_type": "allocation_to_total",
-  "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "golden workbook (Rising Destinations sheet) and submission.md block 1",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Arvenne, Brisholt, Elsmoor, Fallowmere and Grindell qualify for the 2027 Rising Destinations match, $360,000 each",
+  "answer_source": "golden/tla_rising_destinations_2027.xlsx (Rising Destinations sheet) and submission.md block 1",
   "gap": [
     "time"
   ],
@@ -32,54 +32,83 @@
   "validated_decoy": false,
   "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "With every report extracted and every file conformed, the easy route carries each county's 2024 Department receipts forward by its member panel's 2024 to 2025 growth (the same as scaling the panel by its 2024 ratio to the Department) and qualifies the counties whose member hotels grew five per cent or more; but in every year since the panel was drawn the Department's receipts outgrew the panel's by a steady margin that differs by county, and adding a year of that margin qualifies counties the easy route leaves out and moves the match.",
+  "analyst_test": "With every report extracted and every file conformed, the easy route carries each county's 2024 Department receipts forward by its member panel's 2024 to 2025 growth (the same as scaling the panel by its 2024 ratio to the Department) and files Arvenne, Brisholt, Corrigan Bay and Delvane qualify at $450,000 each; but in every year since the panel was drawn the Department's receipts outgrew the panel's by a steady margin in Elsmoor, Fallowmere and Grindell and trailed it in Corrigan Bay and Delvane, and carrying each county's ratio on its own line one year further qualifies Arvenne, Brisholt, Elsmoor, Fallowmere and Grindell.",
   "domain_test": "Benchmarking a sub-annual indicator to annual benchmarks and extrapolating past the last benchmark on the path of the benchmark-to-indicator ratio, the way official time-series production carries a monthly survey past its latest annual census (the IMF Quarterly National Accounts Manual's chapter on benchmarking); with another field's nouns there is no sample panel that misses the whole's new entrants and no lagged complete count to benchmark it to, so the step does not exist.",
   "layer2_family": "forecast_uncertainty",
   "layer2_pattern": "own:benchmark-to-indicator ratio extrapolated on its own path past the last benchmark",
   "layer1": [
-    "the Department's annual county reports as PDFs whose table layout changed in 2021 (thousands of dollars before, dollars after, county codes added)",
+    "the Department's annual county reports as seven PDFs in two layouts (thousands of dollars to 2020, dollars with county codes after)",
     "each report's prior-year column revising the year before for amended returns",
-    "the member reporting export in two layouts across the 2022 property-management-system change, revenue in dollars and later in cents",
-    "member properties renumbered at the system change, with a crosswalk",
-    "late and resubmitted monthly reports overlapping the first submission",
-    "properties that closed leaving the panel mid-year",
-    "a city whose lodging tax is collected by one county but straddles two"
+    "the Monitor in two exports across the 2022 system change: local received stamps against UTC submission stamps, dollars against cents, legacy ids against InnSight ids with the vendor's crosswalk",
+    "resubmitted months beside the first submission, and reports sent twice",
+    "legacy county names in two cases",
+    "properties that closed leaving the panel",
+    "September 2026 still coming in at the extract"
   ],
   "stakeholder_role": "research director of a state lodging association",
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "member_monthly_reports.csv",
-    "rows": 0,
-    "entity": "one member property's monthly report",
-    "grain": "property x month",
+    "file": "tla_monitor_reports_2018-01_to_2022-03.csv",
+    "rows": 28483,
+    "entity": "one monthly report received from a panel property",
+    "grain": "property x month x submission",
     "source": "synthetic"
   },
   "forum": "board_of_directors",
   "forcing_event": "season_or_peak",
   "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "United States (a fictional state's sixteen counties)",
+    "geography": "United States (a fictional state, Tarrowind, and its sixteen counties)",
     "currency": "USD",
     "org_type": "state lodging association, a member trade body",
-    "invented_names": [],
+    "invented_names": [
+      "Tarrowind Lodging Association",
+      "Tarrowind Department of Revenue",
+      "Tarrowind Tourism Bureau",
+      "InnSight",
+      "Harbor & Pine Hospitality",
+      "Coastline Hotel Group",
+      "Bramwell Lodging",
+      "Summit Ridge Hospitality",
+      "Northgate Inns",
+      "Arvenne",
+      "Brisholt",
+      "Corrigan Bay",
+      "Delvane",
+      "Elsmoor",
+      "Fallowmere",
+      "Grindell",
+      "Hollin Ridge",
+      "Isterhaven",
+      "Jorvale",
+      "Kestholm",
+      "Larrowby",
+      "Marrowfield",
+      "Nethervane",
+      "Orrin Falls",
+      "Pellow Sound"
+    ],
     "people": [
       "Samantha Walter",
       "Debbie Brady"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "tla_rising_destinations_2027.xlsx"
+  ],
   "opening_move": "question-first",
-  "question_form": "how-much",
+  "question_form": "which",
   "driver": "A total for a period not yet counted is carried from the last complete count by the movement of a fixed sample, and the sample covers a shrinking share of the whole because new members join only the whole, at a pace that differs by area and has held steady through every counted period; carrying the last count by the sample's movement, or scaling the sample by the last count's ratio to it, drops one more period of that drift, so the ratio must be carried forward on its own path.",
-  "driver_concrete": "The association's member panel was fixed when it was drawn, so hotels opened since then reach the Department's receipts and never the panel, and in the counties where hotels keep opening the Department's receipts have outgrown the panel's by a steady few points every year; moving 2024's receipts by the panel's 2025 growth leaves that year's margin out and ranks the counties on member hotels' growth alone.",
-  "stump": "The default path moves each county's 2024 Department receipts by its member panel's 2024 to 2025 growth, qualifies the counties whose member hotels grew five per cent or more and splits the match among them, because it never asks how the panel's growth has tracked the Department's in the years both are known.",
+  "driver_concrete": "The association's Lodging Monitor panel was fixed when it was drawn in 2018, so the Department's receipts in each county are the panel's times a ratio that has moved along a straight line ever since (up where lodging keeps opening outside the panel, down where it has been closing); moving 2024's receipts by the panel's 2025 growth holds the ratio at its 2024 value and qualifies Corrigan Bay and Delvane, while the ratio carried one year on its line qualifies Elsmoor, Fallowmere and Grindell instead.",
+  "stump": "The default path moves each county's 2024 Department receipts by its member panel's 2025 growth and qualifies Arvenne, Brisholt, Corrigan Bay and Delvane, because it never asks how the panel's growth has tracked the Department's in the years both are known.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task123": "task123 splits each unit's interval total onto calendar periods by a daily-measured sample's within-interval rate; here no interval is split: a fixed sample's annual movement is carried past the last complete count on the path of its ratio to that count.",
     "task474": "task474 carries short counts to a year by a calendar pattern measured at reference sites; here the reference is the lagged complete count itself and the move is the drift of the sample's coverage of it, year over year.",
     "task481": "task481 restates a count onto a new classification by conversion rates from a dual-coded window; here nothing is reclassified: the same quantity is measured completely each year with a lag and by a fixed sample monthly, and the sample's shortfall grows.",
-    "task133": "task133 counts a taken-over loan's exposure only from the go-live, a risk set filled with months the record never watched; here no unit's exposure or outcome is counted: a fixed sample keeps losing share of a whole that gains members it never takes in, and the whole's lagged count shows the loss growing at a steady pace that is carried one year further."
+    "task133": "task133 counts a taken-over loan's exposure only from the go-live, a risk set filled with months the record never watched; here no unit's exposure or outcome is counted: a fixed sample keeps losing share of a whole that gains members it never takes in, and the whole's lagged count shows the loss growing at a steady pace that is carried one year further.",
+    "task100": "task100 v2 re-attributes members across a scheduled transition at the unit level from a snapshot; here no member is re-attributed: a fixed sample's aggregate ratio to a lagged complete count is carried one period along the line it has followed."
   },
   "lineage": [
     {
@@ -100,5 +129,5 @@
     }
   ],
   "notes": "stump_strategy forecast_method_backtest: the right move is found by checking how the easy carry-forward would have done against each past benchmark, which the pack lets an analyst do; no back-test is filed. layer2 forecast_uncertainty: the ratio is forecast one year past the last benchmark.",
-  "registered": "2026-10-21T00:22:34Z"
+  "registered": "2026-10-21T00:42:17Z"
 }

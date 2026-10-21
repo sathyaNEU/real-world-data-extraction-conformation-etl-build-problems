@@ -1,488 +1,274 @@
-"""The pack read back, and every route computed from it: the golden replay of each building's flood record on the
-building as it stands, the ladder's wrong routes, each Layer 1 item mishandled, and the asks with their wrong paths.
-Reads only target/."""
+"""Read the cut pack the way an analyst would, and run every route the design names on it: the golden's and each
+wrong rung's. Nothing here reads world.py's truth; golden.py, checks.py, verify.py and ceiling.py all go through it.
+
+    load(target)            the conformed Monitor reports, the register, the crosswalk and the Department's reports
+    estimate(b, route)      each county's tax year 2025 receipts on the Department's basis under a route
+    qualify(b, est)         the counties at or above the 6 per cent floor
+    ask_a(b, county_from)   January to August 2026 occupancy and average daily rate by county
+    ask_b(b, link)          the January 2018 panel's properties still reporting in August 2026, and their rooms share"""
+import calendar
 import csv
 import datetime as dt
 import os
-from collections import defaultdict
+import re
 
-AS_OF = dt.date(2026, 9, 30)
-PULL = dt.date(2026, 10, 2)
-WIN0, WIN1 = dt.date(2001, 1, 1), dt.date(2026, 1, 1)      # the window, end exclusive
-YEAR = 365.25
+import numpy as np
+
 FILES = {
-    "policies": "nfip_dsa_policy_history_2026-10-02.csv",
-    "claims1": "nfip_dsa_claims_2001-2019.csv",
-    "claims2": "nfip_dsa_claims_2020-2026.csv",
-    "register": "tsrfa_hma_grants_export_2026-09-30.xlsx",
-    "crosswalk": "tsrfa_property_building_crosswalk.csv",
-    "offsets": "tsrfa_vertical_datum_offsets.csv",
-    "members": "tsrfa_member_counties.csv",
+    "legacy": "tla_monitor_reports_2018-01_to_2022-03.csv",
+    "current": "tla_monitor_reports_2022-04_to_2026-09.csv",
+    "register": "tla_monitor_properties_2026-10-02.csv",
+    "xwalk": "innsight_property_id_crosswalk_2022-04.csv",
 }
-_CACHE = {}
+BENCH = list(range(2018, 2025))
+THRESHOLD = 0.06
+FUND = 1_800_000
+ROUTES = ("ols", "ols_revised", "ols_2021", "mean_change", "last_change", "half_step",
+          "flat_2024", "mean_ratio", "pooled_drift", "dept_persist", "log_linear")
+GOLDEN_FAMILY = ("ols", "ols_revised", "ols_2021", "mean_change", "last_change")
 
 
-def rows(target, key):
-    path = os.path.join(target, FILES[key])
-    if not os.path.exists(path):          # a file left out of a subset (the separation checks)
-        return []
+def _csv(path):
     with open(path, newline="", encoding="utf-8") as fh:
         return list(csv.DictReader(fh))
 
 
-def day(s):
-    return dt.date.fromisoformat(s) if s else None
+def _pdf_text(path):
+    import pypdf
+    return "\n".join(pg.extract_text() for pg in pypdf.PdfReader(path).pages)
 
 
-def mdy(s):
-    return dt.datetime.strptime(s, "%m/%d/%Y").date() if s else None
+def _dor_rows(txt):
+    """The county rows of one report: {county: (code or None, [the numbers after the name])}."""
+    toks = [t.strip() for t in txt.splitlines() if t.strip()]
+    rows = {}
+    for i, t in enumerate(toks):
+        if re.fullmatch(r"[A-Z][a-z]+(?: [A-Z][a-z]+)?", t) and i + 3 < len(toks) and re.fullmatch(r"-?[\d,]+", toks[i + 1]):
+            code = toks[i - 1] if re.fullmatch(r"\d\d", toks[i - 1]) else None
+            nums = []
+            for u in toks[i + 1:i + 6]:
+                if re.fullmatch(r"-?[\d,.]+%?", u):
+                    nums.append(u)
+                else:
+                    break
+            if t != "State":
+                rows[t] = (code, nums)
+    return rows
 
 
-def local_day(stamp):
-    """A UTC timestamp of the 2023 layout to its Central time date."""
-    if not stamp:
-        return None
-    t = dt.datetime.strptime(stamp, "%Y-%m-%dT%H:%M:%S.000Z")
-    d0 = t.date()
-    for off in (5, 6):
-        loc = t - dt.timedelta(hours=off)
-        if _dst(loc.date()) == (off == 5):
-            return loc.date()
-    return d0
+def read_dor(target):
+    """Each report's first print for its tax year and its revised prior year, by county, in dollars."""
+    first, revised, code = {}, {}, {}
+    for y in BENCH:
+        txt = _pdf_text(os.path.join(target, "tdor_taxable_lodging_receipts_ty%d.pdf" % y))
+        mult = 1000 if "thousands of dollars" in txt else 1
+        rows = _dor_rows(txt)
+        assert len(rows) == 16, (y, sorted(rows))
+        for c, (cd, nums) in rows.items():
+            vals = [int(v.replace(",", "")) for v in nums if not v.endswith("%")]
+            cur, prev = (vals[0], vals[1]) if mult == 1000 else (vals[1], vals[2])
+            first[(c, y)] = cur * mult
+            if y > 2018:
+                revised[(c, y - 1)] = prev * mult
+            if cd:
+                code[cd] = c
+    return first, revised, sorted({c for c, _ in first}), code
 
 
-def _dst(d):
-    mar = dt.date(d.year, 3, 1)
-    s = mar + dt.timedelta(days=(6 - mar.weekday()) % 7 + 7)
-    nov = dt.date(d.year, 11, 1)
-    e = nov + dt.timedelta(days=(6 - nov.weekday()) % 7)
-    return s <= d < e
-
-
-def fl(s):
-    return float(s) if s not in ("", None) else None
-
-
-# ---------------------------------------------------------------------------------------------- reading
 def load(target):
-    if target in _CACHE:
-        return _CACHE[target]
-    off = {r["county_fips"]: float(r["navd88_minus_ngvd29_ft"]) for r in rows(target, "offsets")}
-    names = {r["county_fips"]: r["county"] for r in rows(target, "members")}
-    comm = {}
-    for r in rows(target, "members"):
-        for c in r["nfip_communities"].split(";"):
-            comm[c] = r["county_fips"]
-    pols = []
-    for r in rows(target, "policies"):
-        s = day(r["original_effective_date"])
-        if r["policy_status"] == "ACTIVE":
-            e = None
-        elif r["policy_status"] == "EXPIRED":
-            e = day(r["term_expiration_date"])
-        else:
-            e = day(r["cancellation_date"])
-        lfe, bfe = fl(r["lowest_floor_elevation"]), fl(r["base_flood_elevation"])
-        if r["elevation_datum"] == "NGVD29":
-            lfe = None if lfe is None else lfe + off.get(r["county_fips"], 0.0)
-            bfe = None if bfe is None else bfe + off.get(r["county_fips"], 0.0)
-        pols.append(dict(number=r["policy_number"], prior=r["prior_policy_number"], bid=r["nfip_building_id"],
-                         fips=r["county_fips"], form=r["policy_form"], condo=r["condo_indicator"],
-                         bcov=int(r["building_coverage"]), start=s, end=e, lfe=lfe, bfe=bfe,
-                         lfe_raw=fl(r["lowest_floor_elevation"]), bfe_raw=fl(r["base_flood_elevation"]),
-                         datum=r["elevation_datum"], zone=r["flood_zone"], ec=day(r["elevation_certificate_date"]),
-                         status=r["policy_status"], reason=r["cancellation_reason"], company=r["company_code"]))
-    claims = []
-    for r in rows(target, "claims1"):
-        claims.append(dict(number=r["CLAIM_NO"], policy=r["POLICY_NO"], bid=r["BLDG_ID"], fips=r["COUNTY_FIPS"],
-                           dol=mdy(r["DATE_OF_LOSS"]), dol_utc=mdy(r["DATE_OF_LOSS"]), reported=mdy(r["DATE_REPORTED"]),
-                           status={"C": "Closed", "CWOP": "Closed without payment", "O": "Open"}[r["CLAIM_STATUS"]],
-                           condo=r["CONDO_IND"], lfe_raw=fl(r["LOWEST_FLR_ELEV"]), bfe_raw=fl(r["BFE"]),
-                           datum=r["ELEV_DATUM"], depth=int(r["WATER_DEPTH_IN"]), bdmg=int(r["BLDG_DAMAGE_AMT"]),
-                           bpay=float(r["BLDG_PAID_AMT"]), cpay=float(r["CNTS_PAID_AMT"]), icc=float(r["ICC_PAID_AMT"]),
-                           cat=r["CAT_NO"], layout=1))
-    for r in rows(target, "claims2"):
-        claims.append(dict(number=r["claimNumber"], policy=r["policyNumber"], bid=r["buildingId"], fips=r["countyCode"],
-                           dol=local_day(r["dateOfLoss"]), dol_utc=day(r["dateOfLoss"][:10]),
-                           reported=local_day(r["originalReportDate"]), status=r["claimStatus"],
-                           condo=r["condominiumIndicator"], lfe_raw=fl(r["lowestFloorElevation"]),
-                           bfe_raw=fl(r["baseFloodElevation"]), datum=r["verticalDatum"], depth=int(r["waterDepthInches"]),
-                           bdmg=int(r["buildingDamageAmount"]), bpay=float(r["amountPaidOnBuildingClaim"]),
-                           cpay=float(r["amountPaidOnContentsClaim"]), icc=float(r["amountPaidOnIccClaim"]),
-                           cat=r["catastropheNumber"], layout=2))
-    for c in claims:
-        o = off.get(c["fips"], 0.0)
-        c["lfe"] = None if c["lfe_raw"] is None else (c["lfe_raw"] + o if c["datum"] == "NGVD29" else c["lfe_raw"])
-        c["bfe"] = None if c["bfe_raw"] is None else (c["bfe_raw"] + o if c["datum"] == "NGVD29" else c["bfe_raw"])
-    by_number = {p["number"]: p for p in pols}
-    out = dict(off=off, names=names, comm=comm, pols=pols, claims=claims, by_number=by_number)
-    _CACHE[target] = out
-    return out
+    reg = _csv(os.path.join(target, FILES["register"]))
+    first, revised, counties, code = read_dor(target)
+    # legacy: the latest received report per property and month; county names in one case
+    leg = {}
+    for r in _csv(os.path.join(target, FILES["legacy"])):
+        mm, yy = r["Report Month"].split("/")
+        when = dt.datetime.strptime(r["Received"], "%m/%d/%Y %H:%M")
+        key = (r["Property ID"], int(yy), int(mm))
+        if key not in leg or when >= leg[key]["when"]:
+            leg[key] = {"id": r["Property ID"], "name": r["Property Name"], "county": r["County"].title(),
+                        "y": int(yy), "m": int(mm), "avail": int(r["Rooms Available"]), "sold": int(r["Rooms Sold"]),
+                        "rev": float(r["Room Revenue"]), "when": when}
+    cur = {}
+    for r in _csv(os.path.join(target, FILES["current"])):
+        yy, mm = r["period"].split("-")
+        when = r["submitted_at_utc"]
+        key = (r["prop_id"], int(yy), int(mm))
+        if key not in cur or when >= cur[key]["when"]:
+            cur[key] = {"id": r["prop_id"], "county": code[r["county_code"]], "y": int(yy), "m": int(mm),
+                        "avail": int(r["avail_room_nights"]), "sold": int(r["sold_room_nights"]),
+                        "rev": int(r["room_revenue_cents"]) / 100.0, "when": when}
+    xw = {r["legacy_property_id"]: r["innsight_prop_id"] for r in _csv(os.path.join(target, FILES["xwalk"]))}
+    return {"reg": reg, "leg": leg, "cur": cur, "first": first, "revised": revised, "counties": counties,
+            "xwalk": xw, "code": code}
 
 
-def building_policy(p, units=False, contents=False):
-    """A building policy (guidelines 2.1): a dwelling, general property or association policy with building
-    coverage; unit owners' and contents policies are not."""
-    if p["condo"] == "U" and not units:
-        return False
-    if p["bcov"] <= 0 and not contents:
-        return False
-    return True
+def panel(b):
+    t = {}
+    for src in (b["leg"], b["cur"]):
+        for r in src.values():
+            if r["y"] <= 2025:
+                t[(r["county"], r["y"])] = t.get((r["county"], r["y"]), 0.0) + r["rev"]
+    return t
 
 
-def in_force(p, d):
-    return p["start"] <= d and (p["end"] is None or d < p["end"])
-
-
-def spans_days(spans, a=WIN0, z=WIN1):
-    """Days in [a, z) covered by any span, each counted once."""
-    iv = sorted((max(s, a), min(e or PULL, z)) for s, e in spans if (e or PULL) > a and s < z)
-    tot, cur_s, cur_e = 0, None, None
-    for s, e in iv:
-        if e <= s:
-            continue
-        if cur_e is None or s > cur_e:
-            if cur_e is not None:
-                tot += (cur_e - cur_s).days
-            cur_s, cur_e = s, e
-        else:
-            cur_e = max(cur_e, e)
-    if cur_e is not None:
-        tot += (cur_e - cur_s).days
-    return tot
-
-
-# ---------------------------------------------------------------------------------------------- the population
-def population(target, units=False, contents=False, zone_x=False, datum=True, active=False):
-    """The elevated insured buildings (guidelines 2.2): building policy in force on 30 September 2026 with its
-    lowest floor at or above its base flood elevation. Returns {bid: dict(fips, lfe, policy, years)}."""
-    D = load(target)
-    by_b = defaultdict(list)
-    for p in D["pols"]:
-        if building_policy(p, units, contents):
-            by_b[p["bid"]].append(p)
-    pop = {}
-    for bid, ps in by_b.items():
-        cur = [p for p in ps if (p["status"] == "ACTIVE" if active else in_force(p, AS_OF))]
-        if not cur:
-            continue
-        p = max(cur, key=lambda q: q["start"])
-        lfe, bfe = (p["lfe"], p["bfe"]) if datum else (p["lfe_raw"], p["bfe_raw"])
-        if bfe is None:
-            if not zone_x:
-                continue
-            bfe = -99.0
-        if lfe < bfe - 1e-9:
-            continue
-        pop[bid] = dict(fips=p["fips"], lfe=lfe, lfe_raw=p["lfe_raw"], datum=p["datum"], policy=p["number"],
-                        days=spans_days([(q["start"], q["end"]) for q in ps]))
-    return pop
-
-
-def building_claims(target, pop, units=False, contents=False, layout2=True, utc=False):
-    """Claims under each population building's building policies with a date of loss in 2001 to 2025."""
-    D = load(target)
-    out = defaultdict(list)
-    for c in D["claims"]:
-        if c["bid"] not in pop:
-            continue
-        if c["layout"] == 2 and not layout2:
-            continue
-        p = D["by_number"].get(c["policy"])
-        if p is None or not building_policy(p, units, contents):
-            continue
-        dd = c["dol_utc"] if utc else c["dol"]
-        if not (WIN0 <= dd < WIN1):
-            continue
-        out[c["bid"]].append(c)
-    return out
-
-
-def replay_counts(c, b, datum=True, feet=False, bfe_rule=False, threshold=1 / 12.0):
-    """Would this claim's flood bring a paid building claim to the building as it stands: the water's elevation on
-    the day (the floor the claim was rated on plus the depth above it) against the floor the building has now."""
-    lfe_then = c["lfe"] if datum else c["lfe_raw"]
-    now = b["lfe"] if datum else b["lfe_raw"]
-    depth_ft = c["depth"] if feet else c["depth"] / 12.0
-    wse = lfe_then + depth_ft
-    if bfe_rule:
-        bfe_then = c["bfe"] if datum else c["bfe_raw"]
-        if lfe_then < now - 0.45:
-            return wse >= (bfe_then or 0) + 1 / 12.0 - 1e-9 and c["bpay"] > 0
-        return c["bpay"] > 0
-    if threshold <= 0:
-        return wse - now > 1e-9
-    return wse - now >= threshold - 1e-9
-
-
-CALL_ROUTES = ("golden", "E0", "E1", "E1r", "E2", "E3", "E7")
-MESS_ROUTES = ("datum_raw", "units_in", "contents_in", "zone_x", "cwop_in", "contents_claims", "utc_dol", "depth_feet",
-               "policies_not_buildings", "active_status", "any_water")
-
-
-def raised_from_register(target):
-    """Buildings the register shows elevated, with the date: final inspections passed, through the crosswalk."""
-    R = register(target)
-    xw = {}
-    for r in rows(target, "crosswalk"):
-        xw[r["property_id"]] = r["nfip_building_id"]
-    full = {}
-    D = load(target)
-    for p in D["pols"]:
-        full[p["bid"][:-1]] = p["bid"]
+def estimate(b, route):
+    P = panel(b)
+    F, R = b["first"], b["revised"]
+    ys = np.array(BENCH, dtype=float)
     out = {}
-    for pid, pr in R["props"].items():
-        if pr["measure"] != "Elevation":
+    ratios = {c: np.array([F[(c, y)] / P[(c, y)] for y in BENCH]) for c in b["counties"]}
+    pooled = np.mean([np.polyfit(ys, ratios[c], 1)[0] / ratios[c][-1] for c in b["counties"]])
+    for c in b["counties"]:
+        r = ratios[c]
+        if route == "ols":
+            k, a = np.polyfit(ys, r, 1)
+            r25 = a + k * 2025
+        elif route == "ols_revised":
+            rv = np.array([(R[(c, y)] if (c, y) in R else F[(c, y)]) / P[(c, y)] for y in BENCH])
+            k, a = np.polyfit(ys, rv, 1)
+            r25 = (a + k * 2025) * F[(c, 2024)] / (R.get((c, 2024), F[(c, 2024)]))
+        elif route == "ols_2021":
+            k, a = np.polyfit(ys[3:], r[3:], 1)
+            r25 = a + k * 2025
+        elif route == "mean_change":
+            r25 = r[-1] + np.mean(np.diff(r))
+        elif route == "last_change":
+            r25 = 2 * r[-1] - r[-2]
+        elif route == "half_step":
+            r25 = r[-1] + 0.5 * np.polyfit(ys, r, 1)[0]
+        elif route == "log_linear":
+            k, a = np.polyfit(ys, np.log(r), 1)
+            r25 = np.exp(a + k * 2025)
+        elif route == "flat_2024":
+            r25 = r[-1]
+        elif route == "mean_ratio":
+            r25 = r.mean()
+        elif route == "pooled_drift":
+            r25 = r[-1] * (1 + pooled)
+        elif route == "dept_persist":
+            g = F[(c, 2024)] / R[(c, 2023)] - 1
+            out[c] = F[(c, 2024)] * (1 + g)
             continue
-        done = R["final"].get(pid)
-        if done is None or done > AS_OF:
-            continue
-        bid = xw.get(pid)
-        if bid is None:
-            continue
-        bid = full.get(bid, bid) if len(bid) == 11 else bid
-        out[bid] = max(out.get(bid, done), done)
+        out[c] = r25 * P[(c, 2025)]
     return out
 
 
-def rates(target, route="golden"):
-    """Each county's expected claim rate under a route: {fips: (claims, building-years, rate per 1,000)}."""
-    kw = dict(units=route == "units_in", contents=route == "contents_in", zone_x=route == "zone_x",
-              datum=route != "datum_raw", active=route == "active_status")
-    pop = population(target, **kw)
-    cl = building_claims(target, pop, units=route in ("units_in",), contents=route in ("contents_in", "contents_claims"),
-                         layout2=route != "v2_dropped", utc=route == "utc_dol")
-    D = load(target)
-    raised = raised_from_register(target) if route == "E1r" else None
-    res = {}
-    for f in D["names"]:
-        ids = [b for b, v in pop.items() if v["fips"] == f]
-        n, days = 0, 0
-        cls_n, cls_d = 0, 0
-        for bid in ids:
-            b = pop[bid]
-            cs = cl.get(bid, [])
-            if route in ("E1", "E3", "E2", "E7"):
-                pre = [c for c in cs if c["lfe"] is not None and c["lfe"] < b["lfe"] - 0.45]
-                last = max((c["dol"] for c in pre), default=None)
-            if route == "E0":
-                n += sum(1 for c in cs if c["bpay"] > 0)
-                days += b["days"]
-            elif route == "E1":
-                n += sum(1 for c in cs if c["bpay"] > 0 and not (c["lfe"] is not None and c["lfe"] < b["lfe"] - 0.45))
-                days += b["days"]
-            elif route == "E1r":
-                done = raised.get(bid)
-                n += sum(1 for c in cs if c["bpay"] > 0 and (done is None or c["dol"] >= done))
-                days += b["days"]
-            elif route == "E3":
-                kept = [c for c in cs if c["bpay"] > 0 and not (c["lfe"] is not None and c["lfe"] < b["lfe"] - 0.45)]
-                n += len(kept)
-                if pre:
-                    # building-years after the elevation: the first post-elevation day is after the last claim on the
-                    # old floor; the record's own policies carry the date the floor changed
-                    days += _days_after(D, bid, b, last)
-                else:
-                    days += b["days"]
-            elif route == "E2":
-                if pre:
-                    days += b["days"]
-                else:
-                    cls_n += sum(1 for c in cs if c["bpay"] > 0)
-                    cls_d += b["days"]
-                    days += b["days"]
-            elif route == "E7":
-                n += sum(1 for c in cs if replay_counts(c, b, bfe_rule=True))
-                days += b["days"]
-            elif route == "cwop_in":
-                n += sum(1 for c in cs if replay_counts(c, b) or (c["status"] == "Closed without payment"))
-                days += b["days"]
-            elif route == "contents_claims":
-                n += sum(1 for c in cs if replay_counts(c, b))
-                days += b["days"]
-            elif route == "depth_feet":
-                n += sum(1 for c in cs if replay_counts(c, b, feet=True) and c["depth"] >= 1)
-                days += b["days"]
-            elif route == "any_water":
-                n += sum(1 for c in cs if replay_counts(c, b, threshold=0))
-                days += b["days"]
-            else:
-                n += sum(1 for c in cs if replay_counts(c, b, datum=route != "datum_raw"))
-                days += b["days"]
-        if route == "E2":
-            rate = 1000.0 * cls_n / (cls_d / YEAR) if cls_d else 0.0
-            res[f] = (cls_n, days / YEAR, rate)
-        else:
-            res[f] = (n, days / YEAR, 1000.0 * n / (days / YEAR) if days else 0.0)
-    if route == "policies_not_buildings":
-        return _policy_count_route(target)
-    return res
+def growth(b, est):
+    return {c: est[c] / b["first"][(c, 2024)] - 1 for c in est}
 
 
-def _days_after(D, bid, b, last):
-    """A raised building's days of cover from the first policy term rated on its present floor."""
-    first = None
-    for p in D["pols"]:
-        if p["bid"] == bid and building_policy(p) and p["lfe"] is not None and abs(p["lfe"] - b["lfe"]) < 0.05 \
-                and p["ec"] is not None and p["ec"] > last:
-            first = p["ec"] if first is None else min(first, p["ec"])
-    if first is None:
-        first = last + dt.timedelta(days=1)
-    spans = [(max(p["start"], first), p["end"]) for p in D["pols"] if p["bid"] == bid and building_policy(p)
-             and (p["end"] or PULL) > first]
-    return spans_days(spans)
+def qualify(b, est):
+    g = growth(b, est)
+    return sorted(c for c in g if g[c] >= THRESHOLD)
 
 
-def _policy_count_route(target):
-    """Exposure counted in policy-years rather than building-years (a building's policies summed, overlaps twice)."""
-    D = load(target)
-    pop = population(target)
-    cl = building_claims(target, pop)
-    res = {}
-    by_b = defaultdict(list)
-    for p in D["pols"]:
-        if p["bid"] in pop and building_policy(p):
-            by_b[p["bid"]].append(p)
-    for f in D["names"]:
-        n, days = 0, 0
-        for bid, b in pop.items():
-            if b["fips"] != f:
-                continue
-            n += sum(1 for c in cl.get(bid, []) if replay_counts(c, b))
-            days += sum(spans_days([(p["start"], p["end"])]) for p in by_b[bid])
-        res[f] = (n, days / YEAR, 1000.0 * n / (days / YEAR))
-    return res
-
-
-def slate(res):
-    order = sorted(res, key=lambda f: res[f][2])
-    return order[:5], order[5]
-
-
-def r1(v):
-    return float("%.1f" % (v + 1e-9))
-
-
-# ---------------------------------------------------------------------------------------------- ask A, 2026 losses
-A_ROUTES = ("golden", "naive", "bdol_latest", "bdol_sum", "validity", "chain_sum", "utc", "with_icc")
-
-
-def losses_2026(target, route="golden"):
-    """Each county's paid building claims on losses in 2026 and the building payments made on them as of the extract:
-    {fips: (claims, payments)}."""
-    D = load(target)
-    pols = D["by_number"]
-    cs = []
-    for c in D["claims"]:
-        dd = c["dol_utc"] if route == "utc" else c["dol"]
-        if dd.year != 2026:
-            continue
-        cs.append(c)
-    res = {f: [0, 0.0] for f in D["names"]}
-    pay = (lambda c: c["bpay"] + c["icc"]) if route == "with_icc" else (lambda c: c["bpay"])
-    if route in ("naive", "utc", "with_icc"):
-        for c in cs:
-            if pay(c) > 0:
-                res[c["fips"]][0] += 1
-                res[c["fips"]][1] += pay(c)
-        return {f: (v[0], v[1]) for f, v in res.items()}
-    if route in ("bdol_latest", "bdol_sum"):
-        grp = defaultdict(list)
-        for c in cs:
-            if c["bpay"] > 0:
-                grp[(c["bid"], c["dol"])].append(c)
-        for k, g in grp.items():
-            res[g[0]["fips"]][0] += 1
-            res[g[0]["fips"]][1] += (max(g, key=lambda c: c["reported"])["bpay"] if route == "bdol_latest"
-                                     else sum(c["bpay"] for c in g))
-        return {f: (v[0], v[1]) for f, v in res.items()}
-    if route == "validity":
-        for c in cs:
-            p = pols.get(c["policy"])
-            if c["bpay"] > 0 and p is not None and in_force(p, c["dol"]):
-                res[c["fips"]][0] += 1
-                res[c["fips"]][1] += c["bpay"]
-        return {f: (v[0], v[1]) for f, v in res.items()}
-    # the golden and chain_latest: a claim entered under a policy not yet in force on its date of loss continues the
-    # claim on the policy that policy replaced, where one exists for the same building and date of loss
-    merged = {}
-    for c in cs:
-        p = pols.get(c["policy"])
-        key = c["number"]
-        if p is not None and not in_force(p, c["dol"]) and p["prior"]:
-            twin = [t for t in cs if t["policy"] == p["prior"] and t["bid"] == c["bid"] and t["dol"] == c["dol"]]
-            if twin:
-                key = twin[0]["number"]
-        merged.setdefault(key, []).append(c)
-    for k, g in merged.items():
-        if route == "chain_sum":
-            b = sum(c["bpay"] for c in g)
-        else:
-            b = max(g, key=lambda c: c["reported"])["bpay"]     # the record continuing the claim carries its payments
-        if b > 0:
-            res[g[0]["fips"]][0] += 1
-            res[g[0]["fips"]][1] += b
-    return {f: (v[0], v[1]) for f, v in res.items()}
-
-
-# ---------------------------------------------------------------------------------------------- ask B, the pipeline
-B_ROUTES = ("golden", "status", "status_true_share", "inspection_shown_share", "lead_county", "with_withdrawn")
-
-
-def register(target):
-    if ("register", target) in _CACHE:
-        return _CACHE[("register", target)]
-    import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(target, FILES["register"]), read_only=True, data_only=True)
-
-    def sheet(name):
-        it = wb[name].iter_rows(values_only=True)
-        head = next(it)
-        return [dict(zip(head, r)) for r in it]
-    projects = {r["project_number"]: r for r in sheet("Projects")}
-    props = {}
-    for r in sheet("Properties"):
-        props[r["property_id"]] = dict(project=r["project_number"], measure=r["measure"], cost=r["approved_cost"],
-                                       share=r["federal_share"], status=r["property_status"], community=r["community_number"],
-                                       status_date=_d(r["status_date"]))
-    final = {}
-    for r in sheet("Inspections"):
-        if r["inspection"] == "Final" and r["result"] == "Pass":
-            final[r["property_id"]] = _d(r["inspection_date"])
-    out = dict(projects=projects, props=props, final=final)
-    _CACHE[("register", target)] = out
+def fit_residuals(b):
+    """Each county's largest absolute residual from the straight line and from the log-linear line, per cent."""
+    P = panel(b)
+    ys = np.array(BENCH, dtype=float)
+    out = {}
+    for c in b["counties"]:
+        r = np.array([b["first"][(c, y)] / P[(c, y)] for y in BENCH])
+        k, a = np.polyfit(ys, r, 1)
+        lin = np.max(np.abs(r / (a + k * ys) - 1)) * 100
+        k2, a2 = np.polyfit(ys, np.log(r), 1)
+        lg = np.max(np.abs(r / np.exp(a2 + k2 * ys) - 1)) * 100
+        out[c] = (lin, lg)
     return out
 
 
-def _d(v):
-    if v is None:
-        return None
-    return v.date() if isinstance(v, dt.datetime) else v
+def backtest(b):
+    """How carrying the last benchmark by the panel's growth would have done for each year 2019 to 2024 (first
+    print over the carried figure, less one), per county."""
+    P = panel(b)
+    return {c: [b["first"][(c, y)] / (b["first"][(c, y - 1)] * P[(c, y)] / P[(c, y - 1)]) - 1 for y in BENCH[1:]]
+            for c in b["counties"]}
 
 
-def pipeline(target, route="golden"):
-    """Each county's buildings in elevation or acquisition projects not completed on 30 September 2026 and the
-    federal share obligated to them: {fips: (buildings, dollars)}."""
-    D = load(target)
-    R = register(target)
-    lead = {}
-    for n, q in R["projects"].items():
-        nm = q["applicant"].replace(" County", "")
-        lead[n] = [f for f, v in D["names"].items() if v == nm][0]
-    res = {f: [0, 0] for f in D["names"]}
-    for pid, p in R["props"].items():
-        q = R["projects"][p["project"]]
-        if route in ("status", "status_true_share"):
-            pending = p["status"] in ("Approved", "Under construction")
-        elif route == "with_withdrawn":
-            pending = R["final"].get(pid) is None or R["final"][pid] > AS_OF
-        else:
-            pending = p["status"] != "Withdrawn" and (R["final"].get(pid) is None or R["final"][pid] > AS_OF)
-        if not pending:
+# ------------------------------------------------------------------------------------------------ ask A
+def ask_a(b, county_from="register"):
+    """January to August 2026 occupancy (per cent) and average daily rate (dollars) by county. county_from:
+    'register' (the property's county in the register), 'report' (the county code on each report)."""
+    regc = {r["prop_id"]: r["county"] for r in b["reg"]}
+    s = {}
+    for r in b["cur"].values():
+        if r["y"] != 2026 or r["m"] > 8:
             continue
-        true_share = int(round(p["cost"] * q["federal_cost_share_pct"] / 100.0))
-        share = p["share"] if route in ("status", "inspection_shown_share") else true_share
-        f = lead[p["project"]] if route == "lead_county" else D["comm"][p["community"]]
-        res[f][0] += 1
-        res[f][1] += share
-    return {f: (v[0], v[1]) for f, v in res.items()}
+        c = regc[r["id"]] if county_from == "register" else r["county"]
+        a = s.setdefault(c, [0, 0, 0.0])
+        a[0] += r["avail"]
+        a[1] += r["sold"]
+        a[2] += r["rev"]
+    return {c: (100.0 * v[1] / v[0], v[2] / v[1]) for c, v in s.items()}
+
+
+def ask_a_raw(target, county_from="register"):
+    """Ask A on every row as delivered, no resubmission resolved (the mirror's half-handled read)."""
+    b = load(target)
+    regc = {r["prop_id"]: r["county"] for r in b["reg"]}
+    s = {}
+    for r in _csv(os.path.join(target, FILES["current"])):
+        yy, mm = r["period"].split("-")
+        if int(yy) != 2026 or int(mm) > 8:
+            continue
+        c = regc[r["prop_id"]] if county_from == "register" else b["code"][r["county_code"]]
+        a = s.setdefault(c, [0, 0, 0.0])
+        a[0] += int(r["avail_room_nights"])
+        a[1] += int(r["sold_room_nights"])
+        a[2] += int(r["room_revenue_cents"]) / 100
+    return {c: (100.0 * v[1] / v[0], v[2] / v[1]) for c, v in s.items()}
+
+
+# ------------------------------------------------------------------------------------------------ ask B
+def link(b, how="rooms"):
+    """Legacy id to InnSight id: the crosswalk, and with how='rooms' every legacy property reporting in March 2022
+    that the crosswalk misses matched to the InnSight property in the same county first reporting in April 2022
+    with the same rooms (room-nights over the month's days), which the crosswalk also misses."""
+    m = dict(b["xwalk"])
+    if how == "crosswalk":
+        return m
+    regc = {r["prop_id"]: r["county"] for r in b["reg"]}
+    mapped_new = set(m.values())
+    lost = [r for (i, y, mo), r in b["leg"].items() if (y, mo) == (2022, 3) and i not in m]
+    found = [r for (i, y, mo), r in b["cur"].items() if (y, mo) == (2022, 4) and i not in mapped_new]
+    for r in lost:
+        rooms = r["avail"] // 31
+        cand = [f for f in found if regc[f["id"]] == r["county"] and f["avail"] // 30 == rooms]
+        if how == "name":
+            names = {x["prop_id"]: x["property_name"] for x in b["reg"]}
+            cand = [f for f in found if names[f["id"]] == r["name"]]
+        if len(cand) == 1:
+            m[r["id"]] = cand[0]["id"]
+    return m
+
+
+def ask_b(b, how="rooms"):
+    """Per county, for the properties reporting in January 2018 that still report in August 2026: the share of
+    January 2018's panel rooms they hold, and the change in their rooms from January 2018 to August 2026, both per
+    cent (rooms are a month's room-nights available over its days)."""
+    m = link(b, how)
+    aug = {i: r["avail"] / 31 for (i, y, mo), r in b["cur"].items() if (y, mo) == (2026, 8)}
+    out = {}
+    for (i, y, mo), r in b["leg"].items():
+        if (y, mo) != (2018, 1):
+            continue
+        o = out.setdefault(r["county"], [0.0, 0.0, 0.0])
+        rooms = r["avail"] / 31
+        o[0] += rooms
+        if m.get(i) in aug:
+            o[1] += rooms
+            o[2] += aug[m[i]]
+    return {c: (100.0 * v[1] / v[0], 100.0 * (v[2] / v[1] - 1)) for c, v in out.items()}
+
+
+def ask_b_unlinked(b):
+    """The read with no linking: every property reporting in August 2026 against January 2018's panel rooms."""
+    regc = {r["prop_id"]: r["county"] for r in b["reg"]}
+    aug, base = {}, {}
+    for (i, y, mo), r in b["cur"].items():
+        if (y, mo) == (2026, 8):
+            aug[regc[i]] = aug.get(regc[i], 0) + r["avail"] / 31
+    for (i, y, mo), r in b["leg"].items():
+        if (y, mo) == (2018, 1):
+            base[r["county"]] = base.get(r["county"], 0) + r["avail"] / 31
+    return {c: (100.0 * aug[c] / base[c], None) for c in base}

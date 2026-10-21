@@ -1,7 +1,8 @@
-"""The pack's documents: the authority's placement guidelines for the 2027 pilot, the 2025 outreach close-out summary,
-the data dictionary and the export manifest."""
+"""The pack's documents: the Department of Revenue's seven annual county reports (two layouts), the Lodging Monitor's
+methods note, the Rising Destinations 2027 program terms, the data dictionary and the extract manifest."""
 import datetime as dt
 
+import numpy as np
 from reportlab import rl_config
 
 rl_config.invariant = 1
@@ -25,44 +26,45 @@ for nm, f in (("LiberationSerif", "Regular"), ("LiberationSerif-Bold", "Bold"), 
         pdfmetrics.registerFont(TTFont(nm, FONT_DIR + nm.split("-")[0] + "-" + f + ".ttf"))
 INK = colors.HexColor("#1b2430")
 GREY = colors.HexColor("#5b6470")
-BLUE = colors.HexColor("#1f4e6b")
-BODY = ParagraphStyle("body", fontName="LiberationSerif", fontSize=10.5, leading=14.2, textColor=INK, spaceAfter=6)
-CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=8.2, leading=10.4, textColor=INK)
+BODY = ParagraphStyle("body", fontName="LiberationSerif", fontSize=10.3, leading=13.8, textColor=INK, spaceAfter=6)
+SMALL = ParagraphStyle("small", fontName="LiberationSerif", fontSize=8.6, leading=11.2, textColor=GREY, spaceAfter=4)
+CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=8.0, leading=10.0, textColor=INK)
 CELLR = ParagraphStyle("cellr", parent=CELL, alignment=2)
-CELLB = ParagraphStyle("cellb", fontName="LiberationSans-Bold", fontSize=8.2, leading=10.4, textColor=INK)
-H1 = ParagraphStyle("h1", fontName="LiberationSans-Bold", fontSize=14.5, leading=18.5, textColor=BLUE, spaceAfter=3)
-H1S = ParagraphStyle("h1s", fontName="LiberationSans", fontSize=9.0, leading=12.2, textColor=GREY, spaceAfter=12)
-H2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10.8, leading=14, textColor=INK, spaceBefore=8,
+CELLB = ParagraphStyle("cellb", fontName="LiberationSans-Bold", fontSize=8.0, leading=10.0, textColor=INK)
+CELLBR = ParagraphStyle("cellbr", parent=CELLB, alignment=2)
+H2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10.6, leading=14, textColor=INK, spaceBefore=8,
                     spaceAfter=4)
-AUTH = "Tarrow Sound Regional Flood Authority"
+DOR = "Tarrowind Department of Revenue"
+DOR_BLUE = colors.HexColor("#22465f")
+TLA_GREEN = colors.HexColor("#2f5d4e")
 
 
-def _doc(path, title, footer):
+def _doc(path, title, author, footer):
     def frame(canvas, doc):
         canvas.saveState()
         canvas.setFillColor(GREY)
-        canvas.setFont("LiberationSans", 7.4)
-        canvas.drawString(0.9 * inch, 0.6 * inch, footer)
-        canvas.drawRightString(letter[0] - 0.9 * inch, 0.6 * inch, "Page %d" % doc.page)
+        canvas.setFont("LiberationSans", 7.2)
+        canvas.drawString(0.85 * inch, 0.55 * inch, footer)
+        canvas.drawRightString(letter[0] - 0.85 * inch, 0.55 * inch, "Page %d" % doc.page)
         canvas.restoreState()
-    d = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.9 * inch, rightMargin=0.9 * inch, topMargin=0.85 * inch,
-                          bottomMargin=0.95 * inch, title=title, author=AUTH, subject="", creator="", producer="")
+    d = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.85 * inch, rightMargin=0.85 * inch, topMargin=0.8 * inch,
+                          bottomMargin=0.9 * inch, title=title, author=author, subject="", creator="", producer="")
     return d, frame
 
 
-def _table(rows, widths, right=()):
+def _table(rows, widths, right=(), total=False):
     data = []
     for i, r in enumerate(rows):
-        row = []
-        for k, v in enumerate(r):
-            st = CELLB if i == 0 else (CELLR if k in right else CELL)
-            row.append(Paragraph(str(v), st))
-        data.append(row)
+        bold = i == 0 or (total and i == len(rows) - 1)
+        data.append([Paragraph(str(v), (CELLBR if k in right else CELLB) if bold else (CELLR if k in right else CELL))
+                     for k, v in enumerate(r)])
     t = Table(data, colWidths=widths, repeatRows=1, hAlign="LEFT")
-    t.setStyle(TableStyle([("LINEBELOW", (0, 0), (-1, 0), 0.6, INK), ("LINEBELOW", (0, -1), (-1, -1), 0.4, GREY),
-                           ("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 3),
-                           ("RIGHTPADDING", (0, 0), (-1, -1), 3), ("TOPPADDING", (0, 0), (-1, -1), 2),
-                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2)]))
+    st = [("LINEBELOW", (0, 0), (-1, 0), 0.6, INK), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+          ("LEFTPADDING", (0, 0), (-1, -1), 3), ("RIGHTPADDING", (0, 0), (-1, -1), 3),
+          ("TOPPADDING", (0, 0), (-1, -1), 1.6), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.6)]
+    if total:
+        st.append(("LINEABOVE", (0, -1), (-1, -1), 0.5, INK))
+    t.setStyle(TableStyle(st))
     return t
 
 
@@ -70,284 +72,259 @@ def fmt(n):
     return "{:,}".format(int(n))
 
 
-# ---------------------------------------------------------------------------------------------- the guidelines
-GUIDELINES = [
+# --------------------------------------------------------------------------------- the Department's annual reports
+def dor_table(x, y):
+    """Each county's first print for tax year y and the revised prior year, as the report prints them."""
+    rng = np.random.default_rng(W.SEED + 100 + y)
+    rows = []
+    for name in W.NAMES:
+        cur = x["first"][(name, y)]
+        if y == 2018:
+            prev = int(round(cur / float(rng.uniform(1.015, 1.058))))
+        else:
+            prev = x["revised"][(name, y - 1)]
+        n_props = sum(1 for p in x["props"] if p["county"] == name)
+        returns = int(round(n_props * x["ratio"][(name, y)] * float(rng.uniform(1.6, 2.1)) * (1 + 0.05 * (y - 2018))))
+        rate = (6.0 + P.rate_on(name, y)) / 100
+        rows.append((name, cur, prev, returns, int(round(cur * rate * float(rng.uniform(0.996, 1.0))))))
+    return rows
+
+
+def write_dor(path, x, y):
+    iy, im, iday = P.DOR_ISSUED[y]
+    issued = dt.date(iy, im, iday)
+    d, frame = _doc(path, "Taxable Lodging Receipts by County, Tax Year %d" % y, DOR,
+                    "%s, Office of Tax Research. Lodging Tax Series LT-%d. Issued %s." % (
+                        DOR, y, issued.strftime("%B %-d, %Y")))
+    story = [Paragraph(DOR.upper(), ParagraphStyle("o", fontName="LiberationSans-Bold", fontSize=8.4, textColor=DOR_BLUE,
+                                                   leading=11)),
+             Paragraph("Office of Tax Research", SMALL),
+             Paragraph("Taxable Lodging Receipts by County, Tax Year %d" % y,
+                       ParagraphStyle("t", fontName="LiberationSans-Bold", fontSize=14, leading=18, textColor=INK,
+                                      spaceAfter=8))]
+    rows = dor_table(x, y)
+    tot = [sum(r[i] for r in rows) for i in (1, 2, 3, 4)]
+    if y <= 2020:
+        story.append(Paragraph(
+            "Taxable lodging receipts are the gross receipts from the rental of rooms and other accommodations for "
+            "periods of fewer than thirty days, as reported on lodging tax returns for tax periods in calendar %d "
+            "and processed through %s. Receipts for %d are revised for amended returns processed since the "
+            "Tax Year %d report. Amounts are in thousands of dollars." % (
+                y, dt.date(iy, 9, 30).strftime("%B %-d, %Y"), y - 1, y - 1), BODY))
+        head = ["County", "Tax Year %d" % y, "Tax Year %d (revised)" % (y - 1), "Change"]
+        body = [head]
+        for nm, cur, prev, ret, tax in rows:
+            body.append([nm, fmt(round(cur / 1000)), fmt(round(prev / 1000)), "%.1f%%" % (100 * (cur / prev - 1))])
+        body.append(["State total", fmt(round(tot[0] / 1000)), fmt(round(tot[1] / 1000)),
+                     "%.1f%%" % (100 * (tot[0] / tot[1] - 1))])
+        story.append(_table(body, [2.0 * inch, 1.45 * inch, 1.75 * inch, 0.9 * inch], right=(1, 2, 3), total=True))
+    else:
+        story.append(Paragraph(
+            "Taxable lodging receipts are the gross receipts from the rental of rooms and other accommodations for "
+            "periods of fewer than thirty days, as reported on lodging tax returns for tax periods in calendar %d "
+            "and processed through %s. Receipts for %d are revised for amended returns processed since the Tax Year %d report. "
+            "Amounts are in dollars; tax due is the state and county lodging tax on the receipts." % (
+                y, dt.date(iy, 9, 30).strftime("%B %-d, %Y"), y - 1, y - 1), BODY))
+        body = [["Code", "County", "Returns", "Taxable receipts, TY %d" % y, "TY %d, revised" % (y - 1),
+                 "Change", "Tax due, TY %d" % y]]
+        for nm, cur, prev, ret, tax in sorted(rows, key=lambda r: W.CODE[r[0]]):
+            body.append([W.CODE[nm], nm, fmt(ret), fmt(cur), fmt(prev), "%.1f%%" % (100 * (cur / prev - 1)), fmt(tax)])
+        body.append(["", "State", fmt(tot[2]), fmt(tot[0]), fmt(tot[1]), "%.1f%%" % (100 * (tot[0] / tot[1] - 1)),
+                     fmt(tot[3])])
+        story.append(_table(body, [0.45 * inch, 1.2 * inch, 0.65 * inch, 1.35 * inch, 1.25 * inch, 0.6 * inch,
+                                   1.15 * inch], right=(2, 3, 4, 5, 6), total=True))
+    story.append(Spacer(1, 8))
+    story.append(Paragraph(
+        "Receipts are assigned to the county in which the accommodation is located. Figures for the most recent tax "
+        "year are revised in the following year's report; earlier years are not revised again.", SMALL))
+    d.build(story, onFirstPage=frame, onLaterPages=frame)
+
+
+# ------------------------------------------------------------------------------------------ the Monitor's methods
+METHODS = [
+    ("1. The Lodging Monitor", [
+        "The Lodging Monitor is the Association's monthly report of hotel and lodging performance in the state's "
+        "sixteen counties. Each month the member properties in the Monitor panel report their rooms available, rooms "
+        "sold and room revenue for the month before, and the Association publishes occupancy, average daily rate and "
+        "revenue per available room for each county in the members' bulletin.",
+    ]),
+    ("2. The panel", [
+        "The panel was drawn in January 2018 from the member properties then reporting each month. A property in the "
+        "panel reports every month while it is open; a property that closes leaves the panel. A property that "
+        "changes its name, brand or management company stays in the panel under the same property record.",
+    ]),
+    ("3. Reporting", [
+        "Reports are due by the twentieth day of the following month and late reports are accepted. A property may "
+        "resubmit a month's report to correct it; the later submission replaces the earlier one for that month.",
+        "Until March 2022 reports were filed through the Association's own reporting system, which stamped each "
+        "report with the local date and time it was received. From April 2022 reports are filed through the "
+        "InnSight portal, which gave every property a new property id, records room revenue in cents and stamps each "
+        "submission in Coordinated Universal Time. InnSight's migration team supplied the crosswalk from the legacy "
+        "property ids to the InnSight ids when the portal went live.",
+    ]),
+    ("4. Definitions", [
+        "Rooms available are the room-nights a property had available to sell in the month; rooms out of order for "
+        "the whole month are not available. Rooms sold are the room-nights sold, complimentary rooms excluded. Room "
+        "revenue is the revenue from rooms sold, before taxes and excluding fees and other departments.",
+        "Occupancy is rooms sold over rooms available. Average daily rate is room revenue over rooms sold. Revenue "
+        "per available room is room revenue over rooms available. A county's figures for a period are computed "
+        "from the totals of its properties' reports for the months of the period, not averaged across properties "
+        "or months.",
+    ]),
+]
+
+
+def write_method(path):
+    d, frame = _doc(path, "Lodging Monitor: methods", P.COMPANY,
+                    "%s, Research. Lodging Monitor methods, revised February 2026." % P.COMPANY)
+    story = [Paragraph(P.COMPANY.upper(), ParagraphStyle("o", fontName="LiberationSans-Bold", fontSize=8.4,
+                                                         textColor=TLA_GREEN, leading=11)),
+             Paragraph("Lodging Monitor: methods", ParagraphStyle("t", fontName="LiberationSans-Bold", fontSize=14,
+                                                                  leading=18, textColor=INK, spaceAfter=3)),
+             Paragraph("Research, revised February 2026", SMALL), Spacer(1, 6)]
+    for h, paras in METHODS:
+        story.append(Paragraph(h, H2))
+        for t in paras:
+            story.append(Paragraph(t, BODY))
+    d.build(story, onFirstPage=frame, onLaterPages=frame)
+
+
+# ------------------------------------------------------------------------------------------- the program terms
+PROGRAM = [
     ("1. Purpose", [
-        "1.1 Under the Private Flood Placement Agreement of 30 June 2026, two admitted private flood insurers will "
-        "offer flood coverage from 1 March 2027 to the owners of elevated insured buildings in five of the "
-        "Authority's member counties. These guidelines set how the Board of Directors designates the five counties "
-        "and the county next in line.",
-    ]),
-    ("2. Definitions", [
-        "2.1 An insured building is a building with an NFIP building policy in force: a dwelling, general property or "
-        "residential condominium building association policy with building coverage. A condominium building insured "
-        "by its association's policy is one insured building. A unit owner's policy insures a unit and a contents "
-        "policy insures contents; neither makes a building insured.",
-        "2.2 An elevated insured building is a building insured on 30 September 2026 whose lowest floor elevation on "
-        "the building policy then in force is at or above the base flood elevation on that policy. A building whose "
-        "policy shows no base flood elevation is not an elevated insured building.",
-        "2.3 A building's claims are the claims under its building policies. A paid building claim is one on which a "
-        "building payment was made; a claim that paid only contents or Increased Cost of Compliance, or that closed "
-        "without payment, is not a paid building claim.",
-        "2.4 A building-year is 365.25 days of building coverage. A building's building-years are the days from "
-        "1 January 2001 through 31 December 2025 on which it was insured, each day counted once.",
-    ]),
-    ("3. The expected claim rate", [
-        "3.1 A member county's expected claim rate is the number of paid building claims that the floods of 2001 "
-        "through 2025 would bring the county's elevated insured buildings as they stand on 30 September 2026, per "
-        "1,000 of those buildings' building-years.",
-        "3.2 The rate is computed from the NFIP policy and claims records that FEMA shares with the Authority under "
-        "its data sharing agreement, as extracted on 2 October 2026.",
-    ]),
-    ("4. Designation", [
-        "4.1 The pilot runs in the five member counties with the lowest expected claim rates. The county with the "
-        "sixth lowest rate is next in line: if the board of supervisors of a designated county declines the pilot "
-        "by 31 January 2027, the county next in line takes its place.",
-        "4.2 The Board designates the counties at its regular meeting of 12 November 2026, and the Authority files "
-        "them with the State Department of Insurance by 1 December 2026 under section 14-209 of the State Insurance "
-        "Code, on which the Department approves the participating insurers' rates for the five counties.",
-    ]),
-    ("5. The record brought with the designation", [
-        "5.1 With the designation the Flood Insurance Program Manager brings to the Board, for each member county, "
-        "the claims on losses in 2026 that carry a building payment, unit owners' claims included, with the building "
-        "payments made on them as of the extract, and the buildings in the Authority's elevation and acquisition "
-        "projects that were not completed on 30 September 2026, with the federal share obligated to them.",
-    ]),
-]
-CONTROL = [["Revision", "Adopted", "Resolution", "Change"],
-           ["1", "13 August 2026", "26-14", "First issue, for the 2027 pilot"]]
-
-
-def write_guidelines(path):
-    d, frame = _doc(path, "2027 Private Flood Placement Pilot: County Selection Guidelines",
-                    AUTH + "  |  Flood Insurance Program  |  2027 Private Flood Placement Pilot Guidelines")
-    story = [Paragraph("2027 Private Flood Placement Pilot: County Selection Guidelines", H1),
-             Paragraph(AUTH + ", Flood Insurance Program. Adopted by the Board of Directors on 13 August 2026 "
-                       "(Resolution 26-14). Owner: Flood Insurance Program Manager, Samantha Walter.", H1S)]
-    for head, paras in GUIDELINES:
-        story.append(Paragraph(head, H2))
-        for p in paras:
-            story.append(Paragraph(p, BODY))
-    story.append(Paragraph("Schedule. Member counties", H2))
-    rows = [["County", "FIPS code", "NFIP communities"]] + [[W.NAME[f], f, ", ".join(W.COMMUNITIES[f])] for f in W.FIPS]
-    story.append(_table(rows, [1.5 * inch, 0.9 * inch, 3.2 * inch]))
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("Document control", H2))
-    story.append(_table(CONTROL, [0.7 * inch, 1.15 * inch, 0.85 * inch, 3.9 * inch]))
-    d.build(story, onFirstPage=frame, onLaterPages=frame)
-
-
-def guidelines_text():
-    out = []
-    for head, paras in GUIDELINES:
-        out.append(head)
-        out.extend(paras)
-    return out
-
-
-# ---------------------------------------------------------------------------------------------- the close-out
-def closeout_table(x):
-    """Each county's outreach in 2025, with the building policies in force at the year's end."""
-    B = x["buildings"]
-    end = dt.date(2025, 12, 31)
-    inforce = {f: 0 for f in W.FIPS}
-    for p in x["book"]:
-        if p["form"] == "B" and p["start"] <= end and (p["end"] is None or end < p["end"]):
-            inforce[B[p["bi"]]["fips"]] += 1
-    rng = W.stream(30)
-    rows = [["County", "Workshops", "Attendees", "Elevation certificates filed", "Private quote referrals",
-             "Building policies in force, 31 Dec 2025"]]
-    tot = [0, 0, 0, 0, 0]
-    for f in W.FIPS:
-        ws = int(rng.integers(2, 7))
-        att = int(ws * rng.integers(14, 46))
-        ec = int(inforce[f] * float(rng.uniform(0.006, 0.02)))
-        ref = int(inforce[f] * float(rng.uniform(0.004, 0.015)))
-        rows.append([W.NAME[f], ws, att, ec, ref, fmt(inforce[f])])
-        tot = [tot[0] + ws, tot[1] + att, tot[2] + ec, tot[3] + ref, tot[4] + inforce[f]]
-    rows.append(["All counties", tot[0], tot[1], tot[2], tot[3], fmt(tot[4])])
-    return rows, inforce
-
-
-CLOSE_PARAS = [
-    "The 2025 flood insurance outreach ran from 3 February to 21 November 2025 in all fourteen member counties. Staff "
-    "mailed every NFIP policyholder in the Authority's communities a plain-language letter on the second year of "
-    "Risk Rating 2.0 premiums, held evening workshops with the county floodplain administrators, and kept the "
-    "elevation certificate help desk open three days a week. The help desk filed the certificates below with the "
-    "owners' insurers; most were for buildings whose premiums had been set without one.",
-    "At the Board's request staff also sounded the private flood market. Seven admitted insurers answered the "
-    "request for information of 14 April 2025; two have since signed the Private Flood Placement Agreement of 30 June "
-    "2026, under which they will quote elevated insured buildings in five member counties from March 2027. The "
-    "referrals in the table are policyholders who asked at a workshop or by letter to be told when private quotes "
-    "are offered in their county.",
-    "Next steps: the Board adopted the placement guidelines for the 2027 pilot on 13 August 2026, and the Flood "
-    "Insurance Program Manager will bring the designation of the five counties to the Board in November 2026. The "
-    "2026 outreach will follow the June flood and Hurricane Teodor with claims workshops in the counties most "
-    "affected.",
+        "Rising Destinations matches the summer 2027 co-op marketing campaigns of the county tourism bureaus in the "
+        "counties where lodging is growing fastest, so the Association's marketing dollars follow the demand its "
+        "members are building."]),
+    ("2. Qualification", [
+        "A county qualifies when its taxable lodging receipts for tax year 2025, as the Tarrowind Department of "
+        "Revenue first publishes them in its Tax Year 2025 report, are at least 6 per cent above its taxable "
+        "lodging receipts for tax year 2024 as published in the Tax Year 2024 report."]),
+    ("3. Timing", [
+        "The Department publishes its Tax Year 2025 report in December 2026, after the county bureaus' co-op "
+        "budgets for summer 2027 close on 30 November 2026. The Board therefore designates the qualifying counties "
+        "at its meeting of 27 October 2026 on the Director of Research's estimate of each county's tax year 2025 "
+        "receipts on the Department's basis. A designation stands when the report is published."]),
+    ("4. The match", [
+        "The Rising Destinations fund of $1,800,000 is divided equally among the qualifying counties. Each county's "
+        "share is paid to its tourism bureau against an equal amount the bureau commits to its summer 2027 co-op "
+        "campaign."]),
+    ("5. With the designation", [
+        "The Director of Research brings the Board each county's Lodging Monitor occupancy and average daily rate "
+        "for January to August 2026, and the standing of the Monitor panel in each county against the panel as it "
+        "was drawn in January 2018."]),
 ]
 
 
-def write_closeout(path, x):
-    d, frame = _doc(path, "2025 Flood Insurance Outreach: Close-out Summary",
-                    AUTH + "  |  Flood Insurance Program  |  2025 Outreach Close-out")
-    rows, _ = closeout_table(x)
-    story = [Paragraph("2025 Flood Insurance Outreach: Close-out Summary", H1),
-             Paragraph(AUTH + ", Flood Insurance Program. Prepared by Debbie Brady, Outreach Coordinator, for the "
-                       "Board of Directors, 19 February 2026; next steps updated 2 September 2026.", H1S),
-             Paragraph(CLOSE_PARAS[0], BODY), Paragraph(CLOSE_PARAS[1], BODY),
-             Paragraph("Table 1. Outreach in 2025 by county", H2),
-             _table(rows, [1.3 * inch, 0.75 * inch, 0.75 * inch, 1.05 * inch, 1.0 * inch, 1.35 * inch],
-                    right=(1, 2, 3, 4, 5)),
-             Paragraph("Building policies in force are the NFIP dwelling, general property and condominium association "
-                       "policies with building coverage in force on 31 December 2025 in the county's communities, from "
-                       "FEMA's data sharing extract.", CELL),
-             Spacer(1, 8), Paragraph("Next steps", H2), Paragraph(CLOSE_PARAS[2], BODY)]
-    d.build(story, onFirstPage=frame, onLaterPages=frame)
+def write_program(path):
+    import docx
+    from docx.shared import Pt, RGBColor
+    doc = docx.Document()
+    st = doc.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10.5)
+    p = doc.add_paragraph()
+    r = p.add_run(P.COMPANY.upper())
+    r.bold = True
+    r.font.size = Pt(8.5)
+    r.font.color.rgb = RGBColor(0x2f, 0x5d, 0x4e)
+    p = doc.add_paragraph()
+    r = p.add_run("Rising Destinations 2027: program terms")
+    r.bold = True
+    r.font.size = Pt(15)
+    doc.add_paragraph("Adopted by the Board of Directors on 16 September 2026 (resolution 2026-31).")
+    for h, paras in PROGRAM:
+        q = doc.add_paragraph()
+        rr = q.add_run(h)
+        rr.bold = True
+        for t in paras:
+            doc.add_paragraph(t)
+    doc.add_paragraph("Debbie Brady, Chair of the Board\nSamantha Walter, Director of Research")
+    doc.core_properties.author = "Samantha Walter"
+    doc.core_properties.last_modified_by = "Samantha Walter"
+    doc.core_properties.created = dt.datetime(2026, 9, 16, 15, 2)
+    doc.core_properties.modified = dt.datetime(2026, 9, 17, 9, 41)
+    doc.core_properties.title = "Rising Destinations 2027: program terms"
+    doc.core_properties.comments = ""
+    doc.core_properties.keywords = ""
+    doc.core_properties.subject = ""
+    doc.core_properties.revision = 3
+    doc.save(path)
 
 
-# ---------------------------------------------------------------------------------------------- the dictionary
-DICTIONARY = """Tarrow Sound Regional Flood Authority, Flood Insurance Program
-Data dictionary for the files of the 2027 pilot designation. Issue 2, 2 October 2026.
-
-nfip_dsa_policy_history_2026-10-02.csv
-FEMA's data sharing extract of NFIP policies for the Authority's communities, pulled 2 October 2026: every policy
-in force at any time since 1 January 2001. One row per policy, with the rating of its latest term.
-  policy_number                the NFIP policy number
-  prior_policy_number          where the policy was written to replace another, the policy it replaced
-  company_code                 the write-your-own company or servicing agent issuing the policy: 14418 Gulfline
-                               Mutual Insurance Company; 15306 Tarrow Southern Insurance Company; 16127 Bayward
-                               Casualty Company; 17452 Shorebrook Indemnity Company; 10099 NFIP Direct Servicing Agent
-  nfip_building_id             FEMA's identifier of the insured building
-  county_fips, community_number   the building's county and NFIP community
-  policy_form                  DP dwelling; GP general property; RCBAP residential condominium building association
-  condo_indicator              N not a condominium policy; A condominium association; U condominium unit owner
-  condo_units                  units in the building (association policies)
-  unit_number                  the unit insured (unit owners' policies)
-  occupancy_code               terms before 1 October 2021: 1 single family, 2 two to four family, 3 other
-                               residential, 4 non-residential; later terms: 11 single family home, 12 residential
-                               building of two to four units, 15 residential condominium association building,
-                               16 residential unit in a multi-unit building, 18 non-residential building,
-                               19 non-residential unit in a multi-unit building
-  original_effective_date      first day of the policy's cover
-  term_effective_date, term_expiration_date   the latest term, which covers from its effective date to the day
-                               before its expiration date
-  policy_status                ACTIVE in force on the extract date; EXPIRED not renewed at the expiration date;
-                               CANCELLED cancelled on the cancellation date
-  cancellation_date            the policy's last day of coverage is the day before
-  cancellation_reason          01 building sold or ownership changed; 02 insurance no longer required; 08 building
-                               demolished or removed; 22 cancelled and rewritten under a new policy number
-  building_coverage, contents_coverage   limits of the latest term, dollars; a contents policy has no building
-                               coverage
-  building_deductible          dollars
-  total_premium                the latest term's premium with the surcharges and fees, dollars
-  flood_zone                   the rated flood zone
-  base_flood_elevation, lowest_floor_elevation   feet, on the datum in elevation_datum, from the elevation
-                               certificate the latest term was rated on
-  elevation_datum              NGVD29 (National Geodetic Vertical Datum of 1929) or NAVD88 (North American Vertical
-                               Datum of 1988); certificates completed before 2012 used NGVD 1929
-  elevation_certificate_date   date of that certificate
-  post_firm_construction       Y built after the community's first flood insurance rate map
-  number_of_floors
-
-nfip_dsa_claims_2001-2019.csv
-FEMA's data sharing extract of NFIP claims for the Authority's communities, losses from 1 January 2001 to
-31 December 2019, in the layout FEMA used before its 2023 release. One row per claim.
-  CLAIM_NO, POLICY_NO, BLDG_ID, COUNTY_FIPS, COMMUNITY_NO
-  DATE_OF_LOSS, DATE_REPORTED, DATE_CLOSED   MM/DD/YYYY
-  CLAIM_STATUS                 C closed; CWOP closed without payment
-  OCCUPANCY                    the earlier occupancy codes above
-  CONDO_IND                    N, A, U as above
-  FLOOD_ZONE, BFE, LOWEST_FLR_ELEV, ELEV_DATUM   the building's rating for the claim: elevations in feet on the
-                               datum given
-  WATER_DEPTH_IN               depth of water in the building above the lowest floor, inches
-  BLDG_DAMAGE_AMT, CNTS_DAMAGE_AMT   damage to the building and to contents as adjusted, dollars
-  BLDG_PAID_AMT, CNTS_PAID_AMT, ICC_PAID_AMT   payments on building, contents and Increased Cost of Compliance
-                               coverage, dollars
-  CAUSE_OF_LOSS                1 tidal water overflow; 2 stream, river or lake overflow; 4 accumulation of rainfall
-  CAT_NO                       the catastrophe number FEMA gave the flood, where it gave one
-
-nfip_dsa_claims_2020-2026.csv
-The same extract for losses from 1 January 2020, pulled 2 October 2026, in the layout of FEMA's 2023 release, which
-renamed the fields and writes dates as UTC timestamps. Payments are as of the extract.
-  claimNumber, policyNumber, buildingId, countyCode, communityId
-  dateOfLoss, originalReportDate, claimClosedDate   UTC timestamps
-  claimStatus                  Closed; Closed without payment; Open
-  occupancyType                the current occupancy codes above
-  condominiumIndicator         N, A, U as above
-  floodZone, baseFloodElevation, lowestFloorElevation, verticalDatum   as in the earlier layout
-  waterDepthInches             depth of water in the building above the lowest floor, inches
-  buildingDamageAmount, contentsDamageAmount   dollars
-  amountPaidOnBuildingClaim, amountPaidOnContentsClaim, amountPaidOnIccClaim   dollars
-  causeOfDamage                as CAUSE_OF_LOSS above
-  catastropheNumber            as CAT_NO above
-
-tsrfa_hma_grants_export_2026-09-30.xlsx
-The Authority's grants management system, export of 30 September 2026: its hazard mitigation assistance projects
-(elevations and acquisitions under the Hazard Mitigation Grant Program, Flood Mitigation Assistance and Building
-Resilient Infrastructure and Communities grants), every project approved since 2006.
-  Projects sheet: project_number; program; disaster_number (HMGP); project_title; applicant (the county applying);
-    project_status (Open, Closed); approved_date; period_of_performance_end; federal_cost_share_pct;
-    approved_total_cost and federal_share_obligated (dollars, the project's properties not withdrawn);
-    property_count (properties not withdrawn)
-  Properties sheet: project_number; property_id (the Authority's property number); site_address;
-    community_number; measure (Elevation, Acquisition); approved_cost (dollars); federal_share (dollars);
-    property_status (Approved, Under construction, Completed, Withdrawn); status_date
-  Inspections sheet: property_id; project_number; inspection (Pre-construction site visit; Final, the inspection
-    of the completed elevation or acquisition); inspection_date; result (Pass, Fail); inspector_id
-
-tsrfa_property_building_crosswalk.csv
-The Authority's property numbers matched to FEMA's building identifiers: property_id, nfip_building_id,
-match_method (address, parcel, manual), matched_date.
-
-tsrfa_vertical_datum_offsets.csv
-navd88_minus_ngvd29_ft for each member county: an elevation on NGVD 1929 plus the offset is the elevation on
-NAVD 1988.
-
-tsrfa_member_counties.csv
-The fourteen member counties: county_fips, county, member_since, nfip_communities, board_seat.
-
-nfip_crs_community_classes_2026-10.csv
-Community Rating System classes of the members' NFIP communities in October 2026, with the premium discounts
-they give in and outside the special flood hazard area (per cent).
-
-tsrfa_firm_revision_log_2001-2026.csv
-The flood insurance rate map revisions and letters of map revision effective in the members' communities since
-2001: community_number, county_fips, map_action, effective_date, case_number, panels, description.
-
-tsrfa_private_flood_placement_guidelines_2027.pdf
-The Board's county selection guidelines for the 2027 pilot (13 August 2026).
-
-tsrfa_2025_flood_insurance_outreach_closeout.pdf
-The 2025 outreach close-out summary (19 February 2026, next steps updated 2 September 2026).
-
-export_manifest.csv
-This list of files.
-"""
+# ----------------------------------------------------------------------------------- dictionary and manifest
+DICT_COLS = ["file_name", "field", "description"]
 
 
-def write_dictionary(path):
-    with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
-        fh.write(DICTIONARY)
+def dictionary_rows():
+    f = P.FILES
+    d = [
+        (f["legacy"], "Property ID", "the property's id in the Association's legacy reporting system"),
+        (f["legacy"], "Property Name", "the property's name when the report was received"),
+        (f["legacy"], "County", "the county the property is in"),
+        (f["legacy"], "Report Month", "the month the report covers, MM/YYYY"),
+        (f["legacy"], "Rooms Available", "room-nights available to sell in the month"),
+        (f["legacy"], "Rooms Sold", "room-nights sold in the month, complimentary rooms excluded"),
+        (f["legacy"], "Room Revenue", "revenue from rooms sold in the month, dollars, before taxes and excluding fees"),
+        (f["legacy"], "Received", "local date and time the report was received, MM/DD/YYYY HH:MM"),
+        (f["current"], "submission_id", "InnSight's id for the submission"),
+        (f["current"], "prop_id", "the property's InnSight id"),
+        (f["current"], "period", "the month the report covers, YYYY-MM"),
+        (f["current"], "county_code", "the Department of Revenue's code for the county the property is in"),
+        (f["current"], "avail_room_nights", "room-nights available to sell in the month"),
+        (f["current"], "sold_room_nights", "room-nights sold in the month, complimentary rooms excluded"),
+        (f["current"], "room_revenue_cents", "revenue from rooms sold in the month, in cents, before taxes and "
+                                             "excluding fees"),
+        (f["current"], "submitted_at_utc", "when the submission was made, UTC"),
+        (f["register"], "prop_id", "the property's InnSight id"),
+        (f["register"], "property_name", "the property's name today"),
+        (f["register"], "street", "street address"),
+        (f["register"], "city", "city or town"),
+        (f["register"], "county", "the county the property is in"),
+        (f["register"], "rooms", "rooms in the property today"),
+        (f["register"], "management_company", "the company managing the property today, blank if owner-operated"),
+        (f["register"], "panel_status", "reporting, or closed (the property has closed and left the panel)"),
+        (f["xwalk"], "legacy_property_id", "the property's id in the legacy reporting system"),
+        (f["xwalk"], "innsight_prop_id", "the property's InnSight id"),
+        (f["xwalk"], "property_name_at_mapping", "the property's name in the legacy system when it was mapped"),
+        (f["xwalk"], "mapped_on", "the date the mapping was made"),
+        (f["rates"], "state_rate_pct", "state lodging tax rate, per cent of taxable receipts"),
+        (f["rates"], "county_rate_pct", "county lodging tax rate, per cent of taxable receipts"),
+        (f["rates"], "effective_from", "first day the rates apply"),
+        (f["rates"], "effective_to", "last day the rates apply, blank if current"),
+        (f["visitor"], "visitor_spending_usd_millions", "estimated spending by visitors in the county, all categories, "
+                                                        "millions of dollars"),
+        (f["visitor"], "lodging_share_pct", "the share of visitor spending on lodging, per cent"),
+        (f["visitor"], "day_trip_share_pct", "the share of visitor spending by day visitors, per cent"),
+        (f["visitor"], "estimate_status", "final, or preliminary (to be revised in the next release)"),
+    ]
+    return d
 
 
 MANIFEST_COLS = ["file_name", "contents", "provided_by", "as_of_date", "coverage", "record_count"]
-MANIFEST = {
-    "policies": ("NFIP policies, data sharing extract", "FEMA", "2026-10-02", "policies in force since 2001-01-01"),
-    "claims1": ("NFIP claims, data sharing extract, earlier layout", "FEMA", "2026-10-02", "losses 2001-01-01 to 2019-12-31"),
-    "claims2": ("NFIP claims, data sharing extract, 2023 release layout", "FEMA", "2026-10-02",
-                "losses 2020-01-01 to 2026-10-02"),
-    "register": ("Hazard mitigation grants export", "Authority grants management system", "2026-09-30",
-                 "projects approved since 2006"),
-    "crosswalk": ("Property to FEMA building crosswalk", "Flood Insurance Program", "2026-09-30", "the grants export"),
-    "offsets": ("Vertical datum offsets by county", "Floodplain Management", "2013-04-22", "member counties"),
-    "members": ("Member counties", "Board office", "2026-10-02", "current"),
-    "crs": ("Community Rating System classes", "FEMA", "2026-10-01", "October 2026"),
-    "firm": ("Flood map revision log", "Floodplain Management", "2026-09-30", "effective 2001-01-01 to 2026-09-30"),
-    "guidelines": ("2027 pilot county selection guidelines", "Board of Directors", "2026-08-13", "the 2027 pilot"),
-    "closeout": ("2025 outreach close-out summary", "Flood Insurance Program", "2026-02-19", "2025"),
-    "dictionary": ("Data dictionary", "Flood Insurance Program", "2026-10-02", "these files"),
-}
 
 
 def manifest_rows(n):
-    return [[P.FILES[k], d, s, p, c, n.get(k, "")] for k, (d, s, p, c) in MANIFEST.items()]
+    f = P.FILES
+    rows = [
+        (f["legacy"], "Lodging Monitor reports from the legacy reporting system", "TLA Research", "2022-04-04",
+         "2018-01 to 2022-03", n["legacy"]),
+        (f["current"], "Lodging Monitor reports from InnSight", "InnSight (export)", "2026-10-02",
+         "2022-04 to 2026-09", n["current"]),
+        (f["register"], "Lodging Monitor panel property register", "InnSight (export)", "2026-10-02",
+         "properties migrated April 2022", n["register"]),
+        (f["xwalk"], "legacy to InnSight property id crosswalk", "InnSight migration team", "2022-04-01",
+         "properties migrated April 2022", n["xwalk"]),
+    ]
+    for y in W.BENCH:
+        iy, im, iday = P.DOR_ISSUED[y]
+        rows.append((f["dor%d" % y], "Taxable Lodging Receipts by County, Tax Year %d" % y, DOR,
+                     "%d-%02d-%02d" % (iy, im, iday), "tax year %d and %d revised" % (y, y - 1), 16))
+    rows += [
+        (f["rates"], "state and county lodging tax rates", DOR, "2026-07-01", "2018-01-01 to date", n["rates"]),
+        (f["visitor"], "visitor spending estimates by county", "Tarrowind Tourism Bureau", "2025-11-18",
+         "2019 to 2024", n["visitor"]),
+        (f["method"], "Lodging Monitor methods", "TLA Research", "2026-02-12", "", ""),
+        (f["program"], "Rising Destinations 2027 program terms", "TLA Board of Directors", "2026-09-16", "", ""),
+        (f["dictionary"], "field descriptions for the data files", "TLA Research", "2026-10-02", "", n["dictionary"]),
+    ]
+    return rows

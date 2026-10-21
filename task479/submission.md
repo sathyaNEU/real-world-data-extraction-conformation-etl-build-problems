@@ -1,82 +1,83 @@
 ## Tags
 
-**Domain:** General Statistics & Data Science (data integration, record linkage and entity resolution).
+**Domain:** Survey Research & Official Statistics (seasonal adjustment and official time-series production).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**The 2027 private flood placement pilot should run in Wickmere, Amberjack Bay, Thornock, Lisgrove and Saltreach, with Eastmarsh next in line.**
-The five have the lowest expected claim rates of the fourteen member counties, 2.6, 2.6, 2.8, 3.0 and 3.0 paid building claims per 1,000 building-years, against 3.7 for Eastmarsh. Not Kettlemoor or Dunholme, which fall to 1.7 and 2.1 only when every claim their buildings filed before they were elevated is dropped: the 2016 flood stood above the floors most of those buildings have now, and replayed on them the two counties stand at 21.7 and 23.0. Not the record as filed, which keeps the coast's floods that its elevated floors now clear.
+**Arvenne, Brisholt, Elsmoor, Fallowmere and Grindell qualify for the 2027 Rising Destinations match, $360,000 each from the $1,800,000 fund.**
+On the Department of Revenue's basis their tax year 2025 receipts grow 9, 8, 10, 11 and 9 per cent on 2024, at or above the 6 per cent floor; no other county reaches it. Not Corrigan Bay or Delvane, which reach 7 and 6 per cent only when 2024's receipts are moved by the Monitor's own 2025 growth: the Department's receipts there have trailed the panel every year since it was drawn, and carried one year further they grow 4 and 4 per cent. Elsmoor, Fallowmere and Grindell, whose member hotels grew only 3, 3 and 4 per cent, qualify because the Department's receipts there have outgrown the panel at a steady pace in every year both are known.
 
 ## 2. Critical Components
 
-1. Elevated insured buildings on 30 September 2026: **11,060**
-2. Claims of 2016 that would come again on buildings elevated since: Dunholme **352**, Kettlemoor **276**
-3. Expected claim rates per 1,000 building-years: Wickmere **2.6**, Amberjack Bay **2.6**, Thornock **2.8**, Lisgrove **3.0**, Saltreach **3.0**; Eastmarsh **3.7**; Kettlemoor **21.7**, Dunholme **23.0**
+1. Qualifying counties: **Arvenne**, **Brisholt**, **Elsmoor**, **Fallowmere**, **Grindell**
+2. Estimated growth of tax year 2025 receipts on 2024, whole per cent: Arvenne **9**, Brisholt **8**, Elsmoor **10**, Fallowmere **11**, Grindell **9**, Hollin Ridge **5**, Isterhaven **5**, Nethervane **5**, Pellow Sound **5**, Corrigan Bay **4**, Delvane **4**, Kestholm **4**, Larrowby **4**, Orrin Falls **4**, Jorvale **3**, Marrowfield **2**
+3. Match: **$360,000** to each qualifying county
 
 ## 3. Step-by-Step Solution
 
-1. From nfip_dsa_policy_history_2026-10-02.csv took the building policies the guidelines define and the buildings whose policy in force on 30 September 2026 shows the lowest floor at or above the base flood elevation, NGVD29 elevations converted with tsrfa_vertical_datum_offsets.csv: 11,060 buildings.
-2. Counted each building's days of building cover from 1 January 2001 to 31 December 2025 once across its policies, each policy covering to the day before its expiration or cancellation date, over 365.25.
-3. Joined the claims of nfip_dsa_claims_2001-2019.csv and nfip_dsa_claims_2020-2026.csv (UTC dates taken to Central time) under those buildings' building policies for losses of 2001 to 2025.
-4. Replayed each claim on the building as it stands on 30 September 2026: its water stood at the claim's lowest floor elevation plus its depth in inches over 12, and it counts where that is an inch or more above the present lowest floor, as every building-policy claim with an inch or more of water above its floor was paid: Dunholme 352 and Kettlemoor 276 claims of 2016 count again, the coast's none.
-5. Divided each county's counted claims by its building-years per 1,000 and took the five lowest and the sixth as the guidelines direct: Wickmere, Amberjack Bay, Thornock, Lisgrove, Saltreach, then Eastmarsh.
-6. Ask A: among claims on 2026 losses with a building payment, merged each claim NFIP Direct entered under a policy not yet in force at the loss into the claim under the policy its prior_policy_number names for the same building and date of loss, counting it once at the later record's payments to date, unit owners' claims counted, as the guidelines direct.
-7. Ask B: in tsrfa_hma_grants_export_2026-09-30.xlsx took the properties not withdrawn with no final inspection passed by 30 September 2026 in the Inspections sheet (the Properties status of projects approved before 12 January 2026 predates their later inspections), each at its approved cost times the project's federal cost-share percentage, by the county of its community.
-8. Recommended Wickmere, Amberjack Bay, Thornock, Lisgrove, Saltreach for the pilot, Eastmarsh next in line.
+1. Took each county's first-print taxable lodging receipts for tax years 2018 to 2024 from the seven Department reports (thousands of dollars to 2020, dollars after).
+2. Built each county's Monitor room revenue for 2018 to 2025 from the legacy and InnSight exports, the later submission of a resubmitted month replacing the earlier, InnSight cents in dollars, legacy county names in one case.
+3. Divided each year's receipts by the Monitor revenue: the ratio rises or falls along a straight line in every county, and carrying 2024's receipts by the panel's growth would have missed each earlier year by that drift.
+4. Fitted the line to 2018 to 2024 by least squares, read it at 2025 and multiplied by the county's 2025 Monitor revenue to estimate the tax year 2025 receipts the Department will first publish.
+5. Divided by the 2024 first print, applied the 6 per cent floor and split the fund equally: Arvenne, Brisholt, Elsmoor, Fallowmere, Grindell.
+6. Ask A: January to August 2026 InnSight reports, the later submission of each month, each property in the county the register gives (Harbor & Pine's reports carry its office county's code from April 2026); occupancy and average daily rate from the county totals.
+7. Ask B: linked the January 2018 legacy properties to InnSight through the crosswalk and, for the thirteen March 2022 properties it misses, to the one unmapped InnSight property in the same county with the same rooms in April 2022; took those reporting in August 2026, rooms as room-nights available over the month's days.
+8. Recommended Arvenne, Brisholt, Elsmoor, Fallowmere, Grindell for the match.
 
 ## 4. Deliverable Answers
 
-### tsrfa_2027_private_flood_pilot.xlsx
+### tla_rising_destinations_2027.xlsx
 
-1. Expected claim rate per 1,000 building-years, the fourteen counties in rate order:
-   - Wickmere: 2.6, pilot
-   - Amberjack Bay: 2.6, pilot
-   - Thornock: 2.8, pilot
-   - Lisgrove: 3.0, pilot
-   - Saltreach: 3.0, pilot
-   - Eastmarsh: 3.7, next in line
-   - Hensby: 4.6
-   - Ravensholt: 5.4
-   - Tesmond: 6.4
-   - Menhaden Point: 7.1
-   - Ivesby: 8.5
-   - Gorran: 17.1
-   - Kettlemoor: 21.7
-   - Dunholme: 23.0
-2. The five marked: Wickmere, Amberjack Bay, Thornock, Lisgrove, Saltreach; next in line: Eastmarsh.
-3. Bar chart of the fourteen rates on the Pilot counties sheet, the five shaded dark.
-4. Claims on losses in 2026 that carry a building payment, and the building payments made on them as of the extract, whole claims and whole dollars:
-   - Amberjack Bay: 772 claims, $31,099,515
-   - Dunholme: 446 claims, $17,948,675
-   - Eastmarsh: 665 claims, $25,344,431
-   - Gorran: 258 claims, $10,188,863
-   - Hensby: 668 claims, $27,850,818
-   - Ivesby: 285 claims, $12,820,441
-   - Kettlemoor: 425 claims, $14,933,957
-   - Lisgrove: 237 claims, $8,661,639
-   - Menhaden Point: 744 claims, $30,873,950
-   - Ravensholt: 234 claims, $9,030,331
-   - Saltreach: 932 claims, $39,215,507
-   - Tesmond: 167 claims, $7,362,347
-   - Thornock: 201 claims, $9,551,979
-   - Wickmere: 164 claims, $8,233,257
-5. Buildings in elevation and acquisition projects not completed on 30 September 2026, and the federal share obligated to them, whole buildings and whole dollars:
-   - Amberjack Bay: 35 buildings, $6,681,525
-   - Dunholme: 29 buildings, $5,233,000
-   - Eastmarsh: 56 buildings, $10,195,485
-   - Gorran: 47 buildings, $7,247,655
-   - Hensby: 37 buildings, $6,244,320
-   - Ivesby: 26 buildings, $4,542,675
-   - Kettlemoor: 28 buildings, $4,802,040
-   - Lisgrove: 36 buildings, $6,424,755
-   - Menhaden Point: 91 buildings, $15,273,270
-   - Ravensholt: 22 buildings, $4,162,125
-   - Saltreach: 34 buildings, $6,451,135
-   - Tesmond: 40 buildings, $6,763,290
-   - Thornock: 27 buildings, $4,530,945
-   - Wickmere: 35 buildings, $6,036,255
-
-### tsrfa_pilot_elevated_buildings_2026-09-30.csv
-
-1. 11,060 rows, one per elevated insured building, with its county, its building-years to one decimal and its paid building claims as it stands: 1,395 claims in all, on 1,330 buildings.
+1. Each county's estimated growth of tax year 2025 receipts on 2024, whole per cent, and its match:
+   - Arvenne: 9, qualifies, $360,000
+   - Brisholt: 8, qualifies, $360,000
+   - Corrigan Bay: 4, does not qualify
+   - Delvane: 4, does not qualify
+   - Elsmoor: 10, qualifies, $360,000
+   - Fallowmere: 11, qualifies, $360,000
+   - Grindell: 9, qualifies, $360,000
+   - Hollin Ridge: 5, does not qualify
+   - Isterhaven: 5, does not qualify
+   - Jorvale: 3, does not qualify
+   - Kestholm: 4, does not qualify
+   - Larrowby: 4, does not qualify
+   - Marrowfield: 2, does not qualify
+   - Nethervane: 5, does not qualify
+   - Orrin Falls: 4, does not qualify
+   - Pellow Sound: 5, does not qualify
+2. Bar chart of the sixteen counties' growth against the 6 per cent floor, the qualifying five in green.
+3. Lodging Monitor occupancy (per cent, one decimal) and average daily rate (dollars, to the cent), January to August 2026:
+   - Arvenne: 73.1, $169.45
+   - Brisholt: 71.0, $183.91
+   - Corrigan Bay: 72.9, $207.83
+   - Delvane: 74.0, $213.98
+   - Elsmoor: 66.6, $182.84
+   - Fallowmere: 71.1, $197.59
+   - Grindell: 72.0, $127.66
+   - Hollin Ridge: 74.3, $239.47
+   - Isterhaven: 72.8, $161.63
+   - Jorvale: 71.7, $116.94
+   - Kestholm: 73.8, $174.49
+   - Larrowby: 70.2, $128.80
+   - Marrowfield: 66.6, $102.73
+   - Nethervane: 70.6, $195.04
+   - Orrin Falls: 71.9, $191.88
+   - Pellow Sound: 71.7, $189.66
+4. Of the panel's January 2018 properties, those still reporting in August 2026: their share of January 2018's panel rooms, and the change in their rooms since, per cent to one decimal:
+   - Arvenne: 86.9, 1.8
+   - Brisholt: 76.1, 3.7
+   - Corrigan Bay: 90.6, 1.7
+   - Delvane: 94.5, 3.7
+   - Elsmoor: 86.7, 1.9
+   - Fallowmere: 74.1, 8.7
+   - Grindell: 81.2, 7.8
+   - Hollin Ridge: 81.8, 0.1
+   - Isterhaven: 85.7, 1.5
+   - Jorvale: 80.9, 4.7
+   - Kestholm: 86.0, 0.5
+   - Larrowby: 93.9, 4.5
+   - Marrowfield: 66.3, 5.8
+   - Nethervane: 88.3, 4.9
+   - Orrin Falls: 94.5, 0.8
+   - Pellow Sound: 90.4, 1.3

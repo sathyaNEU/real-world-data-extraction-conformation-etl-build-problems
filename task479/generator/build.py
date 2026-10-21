@@ -1,6 +1,6 @@
-"""Build task479: the pack into <task>/target, the golden deliverables into <task>/golden, metadata.json, submission.md
-and generator/figures.json; then the checks and the independent verifier, a second full build into a scratch folder
-inside the task compared byte for byte, and target.zip cut from the final build.
+"""Build task479: the pack into <task>/target, the golden deliverable into <task>/golden, metadata.json,
+submission.md and generator/figures.json; then the checks and the independent verifier, a second full build into a
+scratch folder inside the task compared byte for byte, and target.zip cut from the final build.
 
     python3 task479/generator/build.py              everything
     python3 task479/generator/build.py --out DIR    the pack only, into DIR
@@ -22,17 +22,13 @@ import pack as P         # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
-CENTRAL = dt.timezone(dt.timedelta(hours=-5))
-PDF_STAMPS = {"guidelines": (b"D:20260813162210-05'00'", b"D:20260814091544-05'00'"),
-              "closeout": (b"D:20260219103128-06'00'", b"D:20260902151907-05'00'")}
-OOXML = {   # creator, last modified by, created, modified, company
-    "register": ("TSRFA Grants", "TSRFA Grants", "2026-09-30T22:04:00Z", "2026-09-30T22:04:00Z", P.COMPANY_NAME),
-}
-AS_OF = {"policies": "2026-10-02 06:12", "claims1": "2026-10-02 06:31", "claims2": "2026-10-02 06:40",
-         "register": "2026-09-30 17:04", "crosswalk": "2026-09-30 17:20", "offsets": "2013-04-22 14:05",
-         "members": "2026-10-02 10:48", "crs": "2026-10-01 09:12", "firm": "2026-09-30 16:31",
-         "guidelines": "2026-08-14 09:15", "closeout": "2026-09-02 15:19", "dictionary": "2026-10-02 11:36",
-         "manifest": "2026-10-02 11:41"}
+LOCAL = dt.timezone(dt.timedelta(hours=-5))
+AS_OF = {"legacy": "2022-04-04 10:12", "current": "2026-10-02 06:41", "register": "2026-10-02 06:44",
+         "xwalk": "2022-04-01 16:20", "rates": "2026-07-01 09:05", "visitor": "2025-11-18 14:30",
+         "method": "2026-02-12 11:48", "program": "2026-09-17 09:41", "dictionary": "2026-10-02 11:02",
+         "manifest": "2026-10-02 11:06"}
+for _y, (_a, _b, _c) in P.DOR_ISSUED.items():
+    AS_OF["dor%d" % _y] = "%d-%02d-%02d 10:00" % (_a, _b, _c)
 
 
 def build(out, x=None, quiet=False):
@@ -43,31 +39,28 @@ def build(out, x=None, quiet=False):
     os.makedirs(out)
     f = lambda k: os.path.join(out, P.FILES[k])
     x = x or W.build()
-    P.property_ids(x)
+    P.names(x)
     n = {}
-    n["policies"] = P.write_csv(f("policies"), P.POLICY_COLS, P.policy_rows(x))
-    n["claims1"] = P.write_csv(f("claims1"), P.CLAIM1_COLS, P.claim_rows(x, 1))
-    n["claims2"] = P.write_csv(f("claims2"), P.CLAIM2_COLS, P.claim_rows(x, 2))
-    props, insp = P.register_rows(x)
-    pr = P.project_rows(x)
-    n["register"] = P.write_xlsx(f("register"), [("Projects", P.PROJECT_COLS, pr, (6, 7), (9, 10)),
-                                                ("Properties", P.PROPERTY_COLS, props, (8,), (5, 6)),
-                                                ("Inspections", P.INSPECTION_COLS, insp, (3,), ())])
-    n["crosswalk"] = P.write_csv(f("crosswalk"), P.CROSS_COLS, P.crosswalk_rows(x))
-    n["offsets"] = P.write_csv(f("offsets"), P.OFFSET_COLS, P.offset_rows())
-    n["members"] = P.write_csv(f("members"), P.MEMBER_COLS, P.member_rows())
-    n["crs"] = P.write_csv(f("crs"), P.CRS_COLS, P.crs_rows())
-    n["firm"] = P.write_csv(f("firm"), P.FIRM_COLS, P.firm_rows())
-    DC.write_guidelines(f("guidelines"))
-    DC.write_closeout(f("closeout"), x)
-    DC.write_dictionary(f("dictionary"))
+    n["legacy"] = P.write_csv(f("legacy"), P.LEGACY_COLS, P.legacy_rows(x))
+    n["current"] = P.write_csv(f("current"), P.CURRENT_COLS, P.current_rows(x))
+    n["register"] = P.write_csv(f("register"), P.REGISTER_COLS, P.register_rows(x))
+    n["xwalk"] = P.write_csv(f("xwalk"), P.XWALK_COLS, P.xwalk_rows(x))
+    n["rates"] = P.write_csv(f("rates"), P.RATES_COLS, P.rates_rows())
+    n["visitor"] = P.write_csv(f("visitor"), P.VISITOR_COLS, P.visitor_rows(x))
+    for y in W.BENCH:
+        DC.write_dor(f("dor%d" % y), x, y)
+        iy, im, iday = P.DOR_ISSUED[y]
+        PP.normalize_pdf(f("dor%d" % y), ("D:%d%02d%02d093000-05'00'" % (iy, im, iday - 1)).encode(),
+                         ("D:%d%02d%02d100000-05'00'" % (iy, im, iday)).encode())
+    DC.write_method(f("method"))
+    PP.normalize_pdf(f("method"), b"D:20260211160412-05'00'", b"D:20260212114802-05'00'")
+    DC.write_program(f("program"))
+    PP.normalize_ooxml(f("program"), "Samantha Walter", "Samantha Walter", "2026-09-16T20:02:00Z",
+                       "2026-09-17T14:41:00Z", excel=False, company=P.COMPANY)
+    n["dictionary"] = P.write_csv(f("dictionary"), DC.DICT_COLS, DC.dictionary_rows())
     n["manifest"] = P.write_csv(f("manifest"), DC.MANIFEST_COLS, DC.manifest_rows(n))
-    for k, (c, m) in PDF_STAMPS.items():
-        PP.normalize_pdf(f(k), c, m)
-    for k, (cr, lb, c0, m0, co) in OOXML.items():
-        PP.normalize_ooxml(f(k), cr, lb, c0, m0, excel=True, company=co)
     for k in P.FILES:
-        t = dt.datetime.strptime(AS_OF[k], "%Y-%m-%d %H:%M").replace(tzinfo=CENTRAL).timestamp()
+        t = dt.datetime.strptime(AS_OF[k], "%Y-%m-%d %H:%M").replace(tzinfo=LOCAL).timestamp()
         os.utime(f(k), (t, t))
     if not quiet:
         big = max(n, key=lambda k: n[k])
@@ -85,7 +78,7 @@ def cut_zip(root):
     zp = os.path.join(root, "target.zip")
     with zipfile.ZipFile(zp, "w") as z:
         for name in sorted(os.listdir(folder)):
-            t = dt.datetime.fromtimestamp(os.path.getmtime(os.path.join(folder, name)), CENTRAL)
+            t = dt.datetime.fromtimestamp(os.path.getmtime(os.path.join(folder, name)), LOCAL)
             zi = zipfile.ZipInfo(name, date_time=(t.year, t.month, t.day, t.hour, t.minute, t.second))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16

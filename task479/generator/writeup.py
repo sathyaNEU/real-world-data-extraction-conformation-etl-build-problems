@@ -1,8 +1,6 @@
 """submission.md, drafted from generator/figures.json: every figure in blocks 1 to 4 is one the generator wrote."""
 import json
 
-ORDER_NOTE = "in rate order"
-
 
 def money(v):
     return "${:,}".format(int(v))
@@ -10,91 +8,75 @@ def money(v):
 
 def write(fig_path, out):
     f = json.load(open(fig_path))
-    rates = f["components"]["rates"]
-    order = f["rate_order"]
-    five, nxt = f["call"]["five"], f["call"]["next"]
-    five_o = [k for k in order if k in five]
+    q = f["call"]["qualifying"]
+    g = f["growth_pct"]
     dp = f["default_path"]
-    again = f["replayed_2016"]
-    csvf = f["csv"]
+    each = f["call"]["match_each"]
+    others = [c for c in sorted(g, key=lambda c: (-g[c], c)) if c not in q]
     lines = []
     w = lines.append
     w("## Tags")
     w("")
-    w("**Domain:** General Statistics & Data Science (data integration, record linkage and entity resolution).")
+    w("**Domain:** Survey Research & Official Statistics (seasonal adjustment and official time-series production).")
     w("**Analytical objective:** Data Extraction & Conformation (ETL).")
     w("")
     w("## 1. Final Recommendation")
     w("")
-    w("**The 2027 private flood placement pilot should run in %s and %s, with %s next in line.**" % (
-        ", ".join(five_o[:-1]), five_o[-1], nxt))
-    w("The five have the lowest expected claim rates of the fourteen member counties, %s paid building claims per 1,000 "
-      "building-years, against %s for %s. Not Kettlemoor or Dunholme, which fall to %s and %s only when every claim "
-      "their buildings filed before they were elevated is dropped: the 2016 flood stood above the floors most of those "
-      "buildings have now, and replayed on them the two counties stand at %s and %s. Not the record as filed, which "
-      "keeps the coast's floods that its elevated floors now clear." % (
-          ", ".join(rates[k] for k in five_o[:-1]) + " and " + rates[five_o[-1]], rates[nxt], nxt,
-          dp["rates"]["Kettlemoor"], dp["rates"]["Dunholme"], rates["Kettlemoor"], rates["Dunholme"]))
+    w("**%s and %s qualify for the 2027 Rising Destinations match, %s each from the %s fund.**" % (
+        ", ".join(q[:-1]), q[-1], money(each), money(f["call"]["fund"])))
+    w("On the Department of Revenue's basis their tax year 2025 receipts grow %s per cent on 2024, at or above the "
+      "6 per cent floor; no other county reaches it. Not Corrigan Bay or Delvane, which reach %d and %d per cent only "
+      "when 2024's receipts are moved by the Monitor's own 2025 growth: the Department's receipts there have trailed "
+      "the panel every year since it was drawn, and carried one year further they grow %d and %d per cent. Elsmoor, "
+      "Fallowmere and Grindell, whose member hotels grew only %d, %d and %d per cent, qualify because the Department's "
+      "receipts there have outgrown the panel at a steady pace in every year both are known." % (
+          ", ".join(str(g[c]) for c in q[:-1]) + " and " + str(g[q[-1]]), dp["Corrigan Bay"], dp["Delvane"],
+          g["Corrigan Bay"], g["Delvane"], dp["Elsmoor"], dp["Fallowmere"], dp["Grindell"]))
     w("")
     w("## 2. Critical Components")
     w("")
-    w("1. Elevated insured buildings on 30 September 2026: **{:,}**".format(csvf["rows"]))
-    w("2. Claims of 2016 that would come again on buildings elevated since: Dunholme **%d**, Kettlemoor **%d**" % (
-        again["Dunholme"], again["Kettlemoor"]))
-    w("3. Expected claim rates per 1,000 building-years: %s; %s **%s**; Kettlemoor **%s**, Dunholme **%s**" % (
-        ", ".join("%s **%s**" % (k, rates[k]) for k in five_o), nxt, rates[nxt], rates["Kettlemoor"],
-        rates["Dunholme"]))
+    w("1. Qualifying counties: %s" % ", ".join("**%s**" % c for c in q))
+    w("2. Estimated growth of tax year 2025 receipts on 2024, whole per cent: %s" % ", ".join(
+        "%s **%d**" % (c, g[c]) for c in q + others))
+    w("3. Match: **%s** to each qualifying county" % money(each))
     w("")
     w("## 3. Step-by-Step Solution")
     w("")
-    w("1. From nfip_dsa_policy_history_2026-10-02.csv took the building policies the guidelines define and the buildings whose "
-      "policy in force on 30 September 2026 shows the lowest floor at or above the base flood elevation, NGVD29 "
-      "elevations converted with tsrfa_vertical_datum_offsets.csv: {:,} buildings.".format(csvf["rows"]))
-    w("2. Counted each building's days of building cover from 1 January 2001 to 31 December 2025 once across its "
-      "policies, each policy covering to the day before its expiration or cancellation date, over 365.25.")
-    w("3. Joined the claims of nfip_dsa_claims_2001-2019.csv and nfip_dsa_claims_2020-2026.csv (UTC dates taken to "
-      "Central time) under those buildings' building policies for losses of 2001 to 2025.")
-    w("4. Replayed each claim on the building as it stands on 30 September 2026: its water stood at the claim's lowest floor "
-      "elevation plus its depth in inches over 12, and it counts where that is an inch or more above the present "
-      "lowest floor, as every building-policy claim with an inch or more of water above its floor was paid: Dunholme "
-      "%d and Kettlemoor %d claims of 2016 count again, the coast's none." % (again["Dunholme"], again["Kettlemoor"]))
-    w("5. Divided each county's counted claims by its building-years per 1,000 and took the five lowest and the sixth "
-      "as the guidelines direct: %s, then %s." % (", ".join(five_o), nxt))
-    w("6. Ask A: among claims on 2026 losses with a building payment, merged each claim NFIP Direct entered under a "
-      "policy not yet in force at the loss into the claim under the policy its prior_policy_number names for the same "
-      "building and date of loss, counting it once at the later record's payments to date, unit owners' claims "
-      "counted, as the guidelines direct.")
-    w("7. Ask B: in tsrfa_hma_grants_export_2026-09-30.xlsx took the properties not withdrawn with no final inspection "
-      "passed by 30 September 2026 in the Inspections sheet (the Properties status of projects approved before "
-      "12 January 2026 predates their later inspections), each at its approved cost times the project's federal "
-      "cost-share percentage, by the county of its community.")
-    w("8. Recommended %s for the pilot, %s next in line." % (", ".join(five_o), nxt))
+    w("1. Took each county's first-print taxable lodging receipts for tax years 2018 to 2024 from the seven "
+      "Department reports (thousands of dollars to 2020, dollars after).")
+    w("2. Built each county's Monitor room revenue for 2018 to 2025 from the legacy and InnSight exports, the later "
+      "submission of a resubmitted month replacing the earlier, InnSight cents in dollars, legacy county names in one "
+      "case.")
+    w("3. Divided each year's receipts by the Monitor revenue: the ratio rises or falls along a straight line in every "
+      "county, and carrying 2024's receipts by the panel's growth would have missed each earlier year by that drift.")
+    w("4. Fitted the line to 2018 to 2024 by least squares, read it at 2025 and multiplied by the county's 2025 Monitor "
+      "revenue to estimate the tax year 2025 receipts the Department will first publish.")
+    w("5. Divided by the 2024 first print, applied the 6 per cent floor and split the fund equally: %s." % ", ".join(q))
+    w("6. Ask A: January to August 2026 InnSight reports, the later submission of each month, each property in the "
+      "county the register gives (Harbor & Pine's reports carry its office county's code from April 2026); occupancy "
+      "and average daily rate from the county totals.")
+    w("7. Ask B: linked the January 2018 legacy properties to InnSight through the crosswalk and, for the thirteen "
+      "March 2022 properties it misses, to the one unmapped InnSight property in the same county with the same rooms "
+      "in April 2022; took those reporting in August 2026, rooms as room-nights available over the month's days.")
+    w("8. Recommended %s for the match." % ", ".join(q))
     w("")
     w("## 4. Deliverable Answers")
     w("")
-    w("### tsrfa_2027_private_flood_pilot.xlsx")
+    w("### tla_rising_destinations_2027.xlsx")
     w("")
-    w("1. Expected claim rate per 1,000 building-years, the fourteen counties %s:" % ORDER_NOTE)
-    for k in order:
-        mark = ", pilot" if k in five else (", next in line" if k == nxt else "")
-        w("   - %s: %s%s" % (k, rates[k], mark))
-    w("2. The five marked: %s; next in line: %s." % (", ".join(five_o), nxt))
-    w("3. Bar chart of the fourteen rates on the Pilot counties sheet, the five shaded dark.")
-    w("4. Claims on losses in 2026 that carry a building payment, and the building payments made on them as of the "
-      "extract, whole claims and whole dollars:")
-    a = f["a_losses"]
-    for k in sorted(a):
-        w("   - %s: %s claims, %s" % (k, "{:,}".format(a[k]["claims"]), money(a[k]["payments"])))
-    w("5. Buildings in elevation and acquisition projects not completed on 30 September 2026, and the federal share "
-      "obligated to them, whole buildings and whole dollars:")
-    b = f["b_pipeline"]
-    for k in sorted(b):
-        w("   - %s: %d buildings, %s" % (k, b[k]["buildings"], money(b[k]["federal_share"])))
-    w("")
-    w("### tsrfa_pilot_elevated_buildings_2026-09-30.csv")
-    w("")
-    w("1. {:,} rows, one per elevated insured building, with its county, its building-years to one decimal and its "
-      "paid building claims as it stands: {:,} claims in all, on {:,} buildings.".format(
-          csvf["rows"], csvf["claims"], csvf["buildings_with_a_claim"]))
+    w("1. Each county's estimated growth of tax year 2025 receipts on 2024, whole per cent, and its match:")
+    for c in sorted(g):
+        w("   - %s: %d%s" % (c, g[c], ", qualifies, %s" % money(each) if c in q else ", does not qualify"))
+    w("2. Bar chart of the sixteen counties' growth against the 6 per cent floor, the qualifying five in green.")
+    w("3. Lodging Monitor occupancy (per cent, one decimal) and average daily rate (dollars, to the cent), January to "
+      "August 2026:")
+    for c in sorted(f["ask_a"]):
+        a = f["ask_a"][c]
+        w("   - %s: %s, $%s" % (c, a["occupancy_pct"], a["adr_usd"]))
+    w("4. Of the panel's January 2018 properties, those still reporting in August 2026: their share of January "
+      "2018's panel rooms, and the change in their rooms since, per cent to one decimal:")
+    for c in sorted(f["ask_b"]):
+        b = f["ask_b"][c]
+        w("   - %s: %s, %s" % (c, b["rooms_share_pct"], b["rooms_change_pct"]))
     with open(out, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")

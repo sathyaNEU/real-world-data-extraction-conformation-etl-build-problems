@@ -1,12 +1,15 @@
-"""The ask layer measured on the cut pack: the cracker (lands the call, runs the hygiene battery, executes every filed
-rule it points at) and the mirror (stops at the most attractive wrong rung, the default path) priced against
-generator/figures.json.
+"""The ask layer measured on the cut pack: the cracker (lands the call, runs the hygiene battery, keeps the later
+submission of a resubmitted month, takes each report's county from the county code the report carries as the
+dictionary describes it, and links the legacy properties through the crosswalk, trying the property name for the ones
+it misses) and the mirror (the default path on the call, the asks handled the cracker's way), priced against
+generator/figures.json on the weights 38 / 7 / 55.
 
     python3 task479/generator/ceiling.py [target]
 
-Weights 38 / 7 / 55: the call 10 (the five 8, the county next in line 2) and the fourteen rates 2 each (28);
-instructions 7; the 56 ask figures 55 / 56 each. A figure is kept when it prints in the golden's cell at the ask's
-rounding."""
+The call is 38: the qualifying set 10 and the sixteen counties' growth figures 28 / 16 each. Instructions 7. The 64
+ask figures (sixteen counties' occupancy, rate, rooms share and rooms change) are 55 / 64 each. A figure is kept when
+it prints in the golden's cell at the ask's rounding. The asks consume nothing the call's construction produces, so
+the cracker and the mirror take the same ask readings; checks.py X1 and X2 prove the separation."""
 import json
 import os
 import sys
@@ -17,60 +20,32 @@ sys.path.insert(0, HERE)
 import bundle as B    # noqa: E402
 
 TASK = os.path.dirname(HERE)
-ASK_W = 55.0 / 56
-
-
-def kept_a(golden, got, nm):
-    c = sum(got[f][0] == golden[nm[f]]["claims"] for f in got)
-    p = sum(int(round(got[f][1])) == golden[nm[f]]["payments"] for f in got)
-    return c, p
-
-
-def kept_b(golden, got, nm):
-    c = sum(got[f][0] == golden[nm[f]]["buildings"] for f in got)
-    s = sum(got[f][1] == golden[nm[f]]["federal_share"] for f in got)
-    return c, s
-
-
-def main_block(fig, res, nm):
-    five, nxt = B.slate(res)
-    gold_five = set(fig["call"]["five"])
-    pts = 8 * (set(nm[f] for f in five) == gold_five) + 2 * (nm[nxt] == fig["call"]["next"])
-    pts += 2 * sum("%.1f" % res[f][2] == fig["components"]["rates"][nm[f]] for f in res)
-    return pts
+ASK_W = 55.0 / 64
 
 
 def main(target=None):
     target = target or os.path.join(TASK, "target")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    nm = B.load(target)["names"]
-    ga, gb = fig["a_losses"], fig["b_pipeline"]
-    print("Ask A, claims on 2026 losses with a building payment, and the payments")
-    a_routes = {r: B.losses_2026(target, r) for r in B.A_ROUTES}
-    for k, v in a_routes.items():
-        print("  %-24s keeps claims %2d of 14, payments %2d of 14" % ((k,) + kept_a(ga, v, nm)))
-    print("Ask B, buildings in projects not completed on 30 September 2026, and the federal share")
-    b_routes = {r: B.pipeline(target, r) for r in B.B_ROUTES}
-    for k, v in b_routes.items():
-        print("  %-24s keeps buildings %2d of 14, federal share %2d of 14" % ((k,) + kept_b(gb, v, nm)))
-    # the cracker: the hygiene battery's path. Claim numbers are unique and no row repeats; a building and date of
-    # loss carried by more than one claim is resolved by keeping the latest record (the battery's repair), and a
-    # project property is pending while its status says so, at the federal share the register gives it.
-    ca = sum(kept_a(ga, a_routes["bdol_latest"], nm))
-    cb = sum(kept_b(gb, b_routes["status"], nm))
-    C = 38 + 7 + ASK_W * (ca + cb)
-    # the mirror: the default path (every claim filed before a building's elevation dropped), its asks handled the
-    # cracker's way
-    m = main_block(fig, B.rates(target, "E1"), nm)
-    S = m + 7 + ASK_W * (ca + cb)
-    best_other = max(main_block(fig, B.rates(target, r), nm) for r in ("E0", "E2", "E3", "E7"))
-    print()
-    print("cracker: call landed (38), instructions (7), ask figures kept %d of 56 (A %d, B %d): %.1f" % (
-        ca + cb, ca, cb, C))
-    print("mirror (the default path): main block %.1f (the call missed, %d rates kept), ask figures kept %d of 56: %.1f"
-          % (m, m // 2, ca + cb, S))
-    print("best other wrong rung's main block: %.1f" % best_other)
-    print("Mirror leakage: %.1f per cent of ask weight" % (100.0 * (ca + cb) / 56))
+    b = B.load(target)
+    A = B.ask_a(b, "report")
+    Bx = B.ask_b(b, "name")
+    ka_o = sum(c in A and "%.1f" % A[c][0] == fig["ask_a"][c]["occupancy_pct"] for c in fig["ask_a"])
+    ka_r = sum(c in A and "%.2f" % A[c][1] == fig["ask_a"][c]["adr_usd"] for c in fig["ask_a"])
+    kb_s = sum("%.1f" % Bx[c][0] == fig["ask_b"][c]["rooms_share_pct"] for c in fig["ask_b"])
+    kb_c = sum("%.1f" % Bx[c][1] == fig["ask_b"][c]["rooms_change_pct"] for c in fig["ask_b"])
+    kept = ka_o + ka_r + kb_s + kb_c
+    print("Ask A occupancy kept %d of 16, average daily rate kept %d of 16 (county from the report's code)" % (ka_o, ka_r))
+    print("Ask B rooms share kept %d of 16, rooms change kept %d of 16 (crosswalk, then the property name)" % (kb_s, kb_c))
+    C = 38 + 7 + ASK_W * kept
+    g = B.growth(b, B.estimate(b, "flat_2024"))
+    set_hit = B.qualify(b, B.estimate(b, "flat_2024")) == fig["call"]["qualifying"]
+    rates = sum(int(round(100 * g[c])) == fig["growth_pct"][c] for c in g)
+    m = 10 * set_hit + 28.0 / 16 * rates
+    S = m + 7 + ASK_W * kept
+    print("cracker: call landed (38), instructions (7), ask figures kept %d of 64: %.1f" % (kept, C))
+    print("mirror (the default path): main block %.1f (set %s, %d growth figures kept), ask figures kept %d of 64: %.1f"
+          % (m, "landed" if set_hit else "missed", rates, kept, S))
+    print("Mirror leakage: %.1f per cent of ask weight" % (100.0 * kept / 64))
     print("Pair ceiling: %.1f" % ((C + S) / 2))
     return (C + S) / 2
 
