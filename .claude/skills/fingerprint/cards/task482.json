@@ -115,6 +115,21 @@
       ],
       "gate_g": "etl_conformance",
       "niche": "a national statistics office's decision at its November 2026 quality board on which regional business registers go to a 2027 re-validation exercise because their share of records in error exceeds 4 per cent, estimated from the summer 2026 quality audit, whose sample took records flagged by the register's automated risk screen at a far higher rate than unflagged ones"
+    },
+    {
+      "architecture": "v3",
+      "drawn": "2026-10-21",
+      "fate": "spent 2026-10-21 at stage 4: both readers (target.zip 29ab3b38) read the board paper's 'those still open on it', censored the open applications at their age, took the product-limit median and landed the call; both kept all 28 ask figures by dating payments on the batch terminal day (score_reader exit 1); the judge returned DETERMINISTIC APPROVE. A duration cohort with an open caseload shipped beside it is read as right-censored by a strong reader.",
+      "driver": "A cohort's median duration is read while part of the cohort is still running, and the still-running members are the slow ones; the median of the finished members understates it, and so does counting the unfinished at their age, so only the product-limit estimate that keeps each unfinished member at risk until its age recovers the cohort's median.",
+      "stump": "The default path takes each office's median working days over its registered third-quarter applications and files CRO-FM and CRO-MG planned, because it never asks how long the applications still open at the extract will take: they are the slow ones, so the four offices with a backlog look quick on what they have registered, and only the product-limit median over registered and open applications, each open one at risk until its age, gives the quarter's median.",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "etl_conformance",
+      "niche": "a business registry's choice of the regional registration offices placed on a timeliness improvement plan because the median working days from a complete application to registration, for applications received in the third quarter of 2026, exceed 20, when at the October extract a share of each office's applications is still open and sits only in the open caseload snapshot"
     }
   ]
 }
