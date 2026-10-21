@@ -43,6 +43,7 @@ def everything():
     sessions(e)
     work_orders(e)
     twin_orders(e)
+    loops(e)
     replay(e)
     distractors(e)
     return e
@@ -572,6 +573,53 @@ def work_orders(e):
 
 
 # ------------------------------------------------------------------------------------------------ telematics
+def loops(e):
+    """Patrol and service-patrol trucks working an interchange come round its loop and drive a short segment a second
+    time, the same way, a minute or three after leaving it."""
+    r = W.rng(37)
+    S = e["S"]
+    by_veh = {}
+    for t in e["trav"]:
+        by_veh.setdefault(t["veh"], []).append(t["enter"])
+    for v in by_veh:
+        by_veh[v].sort()
+    added = []
+    for no in W.ORDER:
+        cands = []
+        for t in e["trav"]:
+            s = S[t["seg"]]
+            dur = (t["exit"] - t["enter"]).total_seconds()
+            if (s["sec"] != no or s["turnback"] or s["length"] > 1.3 or dur > 150
+                    or not W.installed_at(e["veh_by"][t["veh"]], t["enter"])
+                    or W.local(t["enter"]).month != 3 or W.local(t["enter"]).day in (1, 31)
+                    or W.REPLAY_FROM - dt.timedelta(hours=2) <= t["enter"] < W.REPLAY_TO + dt.timedelta(hours=2)):
+                continue
+            nxt = [x for x in by_veh[t["veh"]] if t["enter"] < x <= t["exit"] + dt.timedelta(minutes=8)]
+            if nxt:
+                continue
+            cands.append(t)
+        cands.sort(key=lambda t: (t["enter"], t["veh"], t["seg"]))
+        picks = [cands[int(i)] for i in r.permutation(len(cands))]
+        miles, n = 0.0, 0
+        for t in picks:
+            if miles >= 1.6 and n >= 3:
+                break
+            dur = (t["exit"] - t["enter"]).total_seconds()
+            gap = float(r.uniform(60, max(61.0, 270 - dur)))
+            a = t["exit"] + dt.timedelta(seconds=round(gap, 1))
+            b = a + dt.timedelta(seconds=round(dur * float(r.uniform(0.9, 1.12)), 1))
+            if (a - t["enter"]).total_seconds() >= 290:
+                continue
+            added.append(dict(veh=t["veh"], seg=t["seg"], enter=a, exit=b, dir=t["dir"], fwd=t.get("fwd"), loop=True))
+            by_veh[t["veh"]].append(a)
+            by_veh[t["veh"]].sort()
+            miles += S[t["seg"]]["length"]
+            n += 1
+        assert miles >= 1.0 and n >= 2, (no, miles, n)
+    e["trav"] = sorted(e["trav"] + added, key=lambda t: (t["enter"], t["veh"], t["seg"]))
+    e["loops"] = added
+
+
 def replay(e):
     """The telematics provider re-ran its map matching over 12 March 00:00 to 13 March 06:00 UTC after a fix and
     appended the re-run's traversals beside the originals; the re-run places each segment entry and exit afresh."""

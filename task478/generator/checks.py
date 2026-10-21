@@ -246,6 +246,9 @@ def main():
             truth_miles[s["sec"]] += s["length"]
     check("B golden equals the generator's truth (every pass once)",
           all(abs(gB[s] - truth_miles[s]) < 1e-6 for s in ORDER))
+    cw = M.ask_miles(p, window_s=300)
+    check("B every section's miles move when a vehicle's repeat of a segment within five minutes is dropped (the loops)",
+          all(int(cw[s] + .5) != int(gB[s] + .5) for s in ORDER))
     check("B1 fair: every re-run traversal overlaps exactly one original of its vehicle and segment",
           len(e["replays"]) > 0 and len(p["trav"]) == len(e["trav"]) + len(e["replays"]))
     import ceiling as CE

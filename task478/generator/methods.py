@@ -463,7 +463,7 @@ def severities(p):
     return out
 
 
-def ask_miles(p, dedupe=True, installed=True, local_window=True, program_road=True):
+def ask_miles(p, dedupe=True, installed=True, local_window=True, program_road=True, window_s=None):
     """Ask B: per section, the miles the pilot's camera units were driven on the program's roadway in March, each
     pass at the segment's inventory length. dedupe drops a vehicle's traversal of a segment that overlaps an
     earlier-numbered traversal of the same segment."""
@@ -478,9 +478,12 @@ def ask_miles(p, dedupe=True, installed=True, local_window=True, program_road=Tr
     for t in rows:
         key = (t["vehicle_id"], t["segment_id"])
         a, b = _utc(t["enter_utc"]), _utc(t["exit_utc"])
-        if dedupe and key in last and a <= last[key][1]:
+        if window_s is not None and key in last and (a - last[key][0]).total_seconds() <= window_s \
+                and t["direction"] == last[key][2]:
             continue
-        last[key] = (a, b)
+        if window_s is None and dedupe and key in last and a <= last[key][1]:
+            continue
+        last[key] = (a, b, t["direction"])
         keep.append(t)
     out = defaultdict(float)
     for t in keep:

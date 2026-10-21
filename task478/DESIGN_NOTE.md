@@ -392,5 +392,12 @@ Measured by: generator/ceiling.py
 - 2026-10-21, stage 4 round 2: G2 kept as the card's decisive generator once task474 architecture 6 (G2) was
   delivered, a ban.pattern BLOCK; the card's pattern is now D (two flawless grains, the passes and the cameras), the
   pattern the strategy map gives grain_or_unit, with differentiation lines for the older D builds.
+- 2026-10-21, stage 4 round 3: reader F dropped a vehicle's repeats of a segment within five minutes and kept the
+  camera miles; genuine loop passes within that window now sit in every section, so only overlap separates a re-run.
+- 2026-10-21, stage 4 round 3: the nearest-confirmed fold of a bare "Duplicate" reason: all four round 2 and round 3
+  readers placed every order by route and milepost and kept all fourteen counts. A silent count device needs a pothole
+  that two records count twice inside the call's own confirmed population (a failed patch re-opening under a new
+  confirmed number), which the separation line forbids; the count stays the construction layer the pounds and miles
+  devices surround.
 - 2026-10-20, stage 3: the sweepers' night shifts of 28 February and 31 March: under a UTC window they moved camera
   miles across the month boundary; the spring sweeping schedule now runs 1 to 30 March nights.

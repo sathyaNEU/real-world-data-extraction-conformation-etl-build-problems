@@ -89,20 +89,20 @@ Their state roadway held 9, 8, 8, 8, 8, 7 and 7 potholes per ten lane-miles in M
    - 413 Norvelle: 860
    - 414 Pyke Hill: 400
 5. Miles the pilot's camera units were driven on the program's roadway in March, each pass at its segment's inventory length:
-   - 401 Holloway Run: 2,084
-   - 402 Fenwick Gap: 1,787
-   - 403 Carrow Point: 7,732
-   - 404 Grisholt: 1,771
-   - 405 Marlpit: 2,510
-   - 406 Kestrelton: 1,656
-   - 407 Elmscourt: 6,741
-   - 408 Halverton: 1,820
-   - 409 Thistlebank: 1,868
-   - 410 Oxbrae: 2,049
-   - 411 Rushmead: 13,257
-   - 412 Stonebeck: 2,254
-   - 413 Norvelle: 1,789
-   - 414 Pyke Hill: 1,774
+   - 401 Holloway Run: 2,087
+   - 402 Fenwick Gap: 1,789
+   - 403 Carrow Point: 7,734
+   - 404 Grisholt: 1,774
+   - 405 Marlpit: 2,512
+   - 406 Kestrelton: 1,659
+   - 407 Elmscourt: 6,743
+   - 408 Halverton: 1,823
+   - 409 Thistlebank: 1,870
+   - 410 Oxbrae: 2,052
+   - 411 Rushmead: 13,259
+   - 412 Stonebeck: 2,257
+   - 413 Norvelle: 1,791
+   - 414 Pyke Hill: 1,776
 
 ### tamsett_spring_patching_task_orders_2027.pdf
 
