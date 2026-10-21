@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-21 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task251 SHIPPED 10-21 (architecture 5); task249's architecture 5 spent 10-20, architecture 6 drawn 10-21; task252 SHIPPED 10-21 (architecture 2)). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-21 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task251 SHIPPED 10-21 (architecture 5); task249's architecture 5 spent 10-20, architecture 6 drawn 10-21 and at stage 4; task252 SHIPPED 10-21 (architecture 2)). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
@@ -46,7 +46,7 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
 
 **task250: SHIPPED 2026-10-20** (run the 4.0 setting, 18 drift alerts a year within the plan's 28 visits).
 
-**task249: DRAWN 2026-10-21, architecture 6 (a fresh rebuild at the author's standing instruction); stage 2 next.**
+**task249: PAUSED 2026-10-21, architecture 6, stage 3 green (target.zip ff5b5f5b); stage 4 running.**
 - Architecture 6 (Psychology & Behavioral Science, psychometric measurement x DQ): the Institute of Healthcare Coding
   Professionals' Certified Clinical Coder examination, four-hour open-book sittings, forms drawn at random. Call: which
   of the ten 2027 forms gave their resit candidates more than one scored item per resit sitting from what an earlier
@@ -55,8 +55,13 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   answers at the end of the form; the within-candidate excess on recognised items (siblings included), the probes'
   route, files A, C, G and H. Its first, untimed form (siblings decisive) was landed by both call-only probes; the
   timed form was missed by both (sonnet and opus each filed A, C, G, H). Card registered, WARN only.
-- Resume: port the scratchpad prototype (t249a6/gen2) into task249/generator, design the asks on files the call never
-  reads, then fork table, ladder, closure, prompt and precut.
+- Built: generator in task249/generator (27,905 checks, verifier agrees, two builds byte-identical), precut PASS,
+  figures_check 38 of 38, leak.py REVIEW only, heart WARN. Asks: each form's 2027 sittings a workstation or power
+  failure interrupted (the log's booking from the export-time seat plan, the Kochi power cut only in the invigilators'
+  report) and those that ran in part without the centre's link (every seated workstation logs the loss). Pair ceiling
+  35.4, mirror leakage 10 per cent (generator/pair.py).
+- Resume: stage 4 (two isolated scored readers, sonnet and opus, and the determinism judge on ff5b5f5b): score each
+  reader with score_reader.py, fix every finding in the generator in one pass, re-judge once on FIX_NOW, then ship.
 - Architecture 5 (sediment loads conditioned on rising water) was spent 10-20 at stage 4: both scored readers took the
   field's hysteresis reflex. Its generator and pack left the folder with this draw (history holds them).
 

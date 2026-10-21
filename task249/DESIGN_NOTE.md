@@ -66,16 +66,24 @@ set is not task252's.
 
 ## Default path
 
-A strong analyst links every 2027 resit sitting to the candidate's earlier sittings and booked reviews, marks each
-scored item a candidate had met before (the same item at an earlier sitting, scored or trial, its key at a review, or
-an item written from the same item model), fits item difficulties on the window's first-time candidates, estimates each
-resit candidate's ability on the items they had not met (blanks treated as not reached) and sums the excess on the
-items they had met. The forms whose average excess exceeds one item are flagged.
+1. Join the two releases of the results export (release 4's latencies in milliseconds), link candidates through the
+   register's number changes, map the 2026 layouts' item numbers through the January 2027 renumbering and key every
+   response from the bank snapshot; a 2027 sitting by a candidate who had sat before is a resit sitting.
+2. Mark each resit sitting's delivered items an earlier sitting or held review had shown the candidate: the same item
+   reached at an earlier sitting, scored or trial, or an item written from the same item model.
+3. Fit each 2027 window's items on its first-time candidates (Rasch, or the share correct) and estimate each resit
+   candidate's ability on the scored items nothing had shown them, blanks left out as not reached (scored wrong instead,
+   the same forms).
+4. Sum each resit sitting's correct answers on the recognised items less that ability's expectation, average over each
+   form's 2027 resit sittings and flag above 1.0.
 
-Ends on: CC27-A, C, G and H (the excess on recognised items alone). The lower rungs: the gain between sittings flags
-all ten (learning and regression after a failed sitting carry it), resit against first-time candidates on shared items
-none (ability carries it), the same item alone A and G, the raw within-candidate excess A, C, D and G (CC27-D reuses
-easy items).
+Ends on: CC27-A, C, G and H (the excess on recognised items alone).
+Golden: CC27-A, B, C, D, G and H (the excess plus the items reached only in the time recognised items freed).
+
+The lower rungs: the gain over the previous sitting flags nine forms, all but the speeded CC27-I (learning and the
+rebound after a failed sitting carry it); resit against first-time candidates on the shared items flags none (ability
+carries it); the same item alone flags A and G; the raw within-candidate excess flags A, C, D and G (CC27-D reuses easy
+items). Both call-only probes on the timed pack (sonnet and opus) ended on the default path's four.
 
 ## Stump sentence
 
@@ -101,411 +109,159 @@ No decoy: nothing is planted: the responses, latencies and blanks are what the d
 No certified replay: no certified or published figure sits in the pack; the regulations state the estimand and the line, the vendor's export records sittings, and no file states a form's gain or flag.
 Lesson: a within-unit comparison of treated with untreated parts measures the treatment's total effect only when the parts do not share a budget; under a binding limit the treatment's savings are spent on the untreated parts, so the comparison misses the effect exactly where the limit binds; no shipped build carries a treatment's effect through a shared time limit.
 
-## Tried and rejected`. Guard verdict WARN, no BLOCK; test.same_puzzle_older and
-test.same_driver_older are NOTEs, differentiated on the card against task230, task134, task149 and task452. Each WARN,
-answered: repeat.gate_g and overuse.gate_g (method_or_model_selection after task473): the mechanism that carries the
-stump is the choice of the calibration model, a relation conditioned on the hydraulic regime against one on turbidity
-alone, and no other key is true of it; repeat.question_form (which, after task473): the decision is a designation of
-stations to re-issue, so it is asked as which. Two axes were redrawn at registration, each to the honester label and
-not merely the passing one: stump_strategy from composition_mix (task473 in the window) to population_selection, which
-names the cause, the samples selected by when the field team can reach the river, where composition_mix named its
-arithmetic, and which is how this lane files non-random observation timing (task245); org_family from
-utility_or_infrastructure (task472) to professional_services, with the world redrawn to match: the programme is run
-under contract by an environmental consultancy, whose data manager decides, for the hydropower company that owns the
-stations.
-
-- **Pairing.** Physical & Environmental Sciences / sensor-calibration-measurement, a task type serving Data Quality
-  Monitoring & Alerting only. Not banned against the last three live builds at the draw (task474 survey-research ETL,
-  task473 general statistics ETL, task472 supply-chain ETL). The object is the health of a published data product,
-  each station's 2027 suspended-sediment load computed from a turbidity surrogate, and the call is the spring review's
-  monitoring decision: which stations' loads fall outside the 15 per cent tolerance and are re-issued before the
-  reservoir flushing plan uses them.
-- **The seed, re-found.** DQ22 gave the world (a sensor network's published series), the decision (which units'
-  published data are pulled or re-issued) and the quantity (each unit's error against a tolerance). The low-cost air
-  sensors and their drift are left (spent twice on this number); the pitfall is re-found in surrogate calibration.
-- **Niche.** Vasslia Miljørådgiving AS, an environmental consultancy, runs the Fjellbrekke sediment monitoring
-  programme under contract for Fjellbrekke Kraft AS, a Western Norwegian hydropower company in inner Sogn: 14
-  suspended-sediment stations on the rivers feeding Breiavatn, Kvitstølvatn and Djupevatn, six glacier-fed, five
-  rain-fed, three lake outlets. Each logs discharge and turbidity every 15 minutes; the consultancy's field team takes
-  depth-integrated samples on routine rounds and on flood callouts; a contract laboratory weighs them. Each station's
-  annual load is published to the company from a log-log regression of concentration on turbidity (procedure SMP-03
-  v3) and feeds the company's sediment budgets and its flushing plan, fixed on 20 March 2028.
-- **The call.** Which stations' published 2027 loads misstate the sediment that passed by more than the review
-  tolerance (15 per cent, section 8), and whether over or under. Golden: SKB, JVB, FND and ESK over; the ten others
-  within.
-- **Shape.** 10, a scorecard of 14 stations checked against one tolerance (verdict and direction), beside two
-  per-station audit lines of the loads' inputs (14 hours, 14 counts) and a chart of every station's published load
-  against the estimate: 14 + 4 + 28 + 5 = 51 criteria before instruction-following. Decision designation_set, answer
-  set_of_items, question form which.
-- **Strategy.** population_selection: the calibration samples are selected by when the field team can reach the river,
-  a selection correlated with the regime that sets the concentration per unit of turbidity, and the relation fitted on
-  the selected samples is applied to the whole year. G14 decisive (the relation conditioned on the regime), G7, G6; gap time then population; Gate G method_or_model_selection; calibration
-  physical_verification (the depth-integrated samples); context artifact monitoring_export (the published load report);
-  Layer 2 family field_method, pattern own:surrogate-calibration-conditioned-on-hydrograph-limb.
-- **Forum, event, organisation.** operations_desk (the programme's data desk signs off the loads), season_or_peak (the
-  company's spring flushing window before the melt), professional_services (an environmental consultancy running the
-  programme under contract). Role compliance_or_audit (the programme's data manager, who reviews the published loads
-  against the procedure's tolerance).
-- **People** (`guard.py names --geo Norway --seed 249`): Marianne Lunde, the programme's data manager, who asks; Lise
-  Pettersen, the field team lead; Laila Pedersen, the laboratory's quality manager. None appears in the prompt.
-- **Data-native sentence.** Sand moves only while a river rises and turbidity barely sees sand, so a unit of turbidity
-  carries more sediment on rising water; the field team's working-hours rounds on the glacier rivers land on the melt's
-  daily rise and its early flood callouts reach the rivers on the rising limb, so at four stations most calibration
-  samples were taken on rising water, and a regression on turbidity alone carries their sand into every steady and
-  falling hour of the year.
-- **As-of.** Monday 6 March 2028 (the request); the review is dated 13 March, the plan fixed on 20 March. The call is
-  retrospective by design: the monitored product is the published 2027 load, and the decision it drives (re-issue
-  before the plan reads it) faces forward.
-- **Sources.** The client's two-layer standard (field_method); published sediment-monitoring practice: turbidity as a
-  surrogate for suspended-sediment concentration calibrated on depth-integrated samples with a log-log regression and
-  Duan's smearing, loads summed over 15-minute records, and hysteresis between rising and falling limbs from sand
-  entrained on the rising limb. task229 (hydrometry, a daily mean through a convex conversion) and task241 (profiling
-  float salinity against ship references) are the nearest builds in the subdomain; neither conditions a surrogate on a
-  regime.
-
-## Default path
-
-1. Join the field sheet to the laboratory's results on year and bottle number (final results, both sheets of the
-   workbook) and pair each sample, at its UTC time, with the station's nearest 15-minute turbidity reading.
-2. Refit the procedure's regression (section 6: log10 concentration on log10 turbidity, Duan's smearing) and apply it
-   to 2027's intervals (section 7): every published load reproduces to within 0.1 per cent.
-3. Review the regression the way a surrogate rating is reviewed: residuals against discharge and season, discharge
-   added as a second variable where it tests significant (no station moves past 15 per cent), seasonal terms (JVB
-   alone), the trip type of each bottle (TVE in, JVB out).
-4. Compare each published load with the refitted estimate under the review tolerance.
-
-Ends on: no station re-issued, all 14 within 15 per cent
-
-Golden: SKB, JVB, FND and ESK over by more than 15 per cent, re-issued; the ten others within
-
-## Stump sentence
-
-A competent analyst refits each station's turbidity regression on all its samples, with discharge or season added
-where they test significant, reproduces the published loads and ends on no station re-issued, all 14 within 15 per cent
-(or JVB alone); the step that lands it there is treating the calibration samples as a fair draw of the year, when sand
-moves only while the river rises and at four stations most samples were taken on rising water (the melt season's
-working-hours rounds at JVB, SKB and FND, the early flood callouts at ESK, SKB and FND). Conditioning each station's
-relation on whether the river was rising at the sample, read from the 15-minute discharge, and applying it to every
-interval of 2027 with that interval's own state puts SKB (+39 per cent), JVB (+105), FND (+42) and ESK (+78) over, and
-every other station within 7 per cent.
-
-## Three rules
-
-- **Task type:** physical-environmental-sciences / sensor-calibration-measurement, which serves Data Quality Monitoring
-  & Alerting: the published loads are the monitored data product and the call is the review's monitoring decision, which
-  station series fall outside the tolerance and are re-issued.
-- **Domain test:** the quantity that decides is each station's 2027 suspended-sediment load, which sediment monitoring
-  estimates through a turbidity surrogate calibrated on depth-integrated samples (log-log regression, Duan's smearing,
-  summed over the 15-minute record), here conditioned on the hydrograph limb because sand is entrained on rising water
-  and turbidity barely registers sand.
-- **Swap:** "which of our 14 hospitals' published 2027 admissions misstate what happened by more than our tolerance"
-  keeps the sentence and loses the task: there is no turbidity sensor blind to one size of particle, no hydrograph whose
-  rising limb moves sand, no melt cycle or flood callout setting when samples are taken, so a relation conditioned on
-  rising water has nothing to act on.
-- **Layer 1:** the laboratory's former system's 2025 sheet in Norwegian headers beside the current system's 2026 and
-  2027 sheet (the LIMS migration); corrected results kept beside the replaced ones (the laboratory's re-weighing); bottle
-  numbers restarting every year (the field labels); sample times in local time with their UTC offset against loggers
-  in UTC (the field app); rows re-sent after logger outages (the telemetry); the load table inside the report's PDF
-  (the annual report); discharge to three significant figures (the hydrometry system). None is placed to be caught, and
-  the call is the same under every handling (R2 and SF6 to SF10 in checks.py).
-- **Layer 2:** field_method: the surrogate relation conditioned on the hydrograph limb, the method a sediment
-  hydrologist uses when the samples' timing is not representative of the record, where the easy routes refit the
-  published relation or add the reflex covariates (discharge, season, trip type).
-- **Decisive step:** adding an indicator of rising water at each sample, from the rate of rise of the 15-minute
-  discharge, to each station's log-log relation and applying it to every 15-minute interval of 2027 with that
-  interval's own indicator, rather than refitting on turbidity alone or with discharge, season or trip type.
-- **Not semantics:** reading every field, code, unit and definition right (final results, both LIMS layouts, the
-  offset on each sample time, the procedure's method, the tolerance) leaves the refit on no station re-issued: no file
-  names rising water, a limb or sand, and the samples' excess shows only when their residuals are read against the
-  discharge's rate of change.
-- **Not rule application:** the procedure files the estimand (the sediment that passed, the year, the tolerance) and
-  the published method; executing every filed rule reproduces the published loads to 0.1 per cent and re-issues none,
-  and no filed rule mentions the hydrograph.
-- **Analyst test:** a strong analyst who reads every file right refits each station's regression, adds discharge and
-  season where they test significant, and ends on no station re-issued, all 14 within 15 per cent (JVB alone with
-  season); on the generator's clean truth the published method overstates the same four and the rising-water term
-  alone files the golden (R3a, R3b in checks.py).
-- **Estimand:** procedure SMP-03 v3 sections 7 and 8 with the prompt: for each of the 14 stations in the register,
-  the published 2027 load (1 January 00:00 to 31 December 23:45 UTC, tonnes) against the suspended sediment that passed
-  the station in that year, re-issued when it misstates it by more than 15 per cent, over or under.
-- **No decoy:** nothing is planted: the report's loads are right on their own method and are the comparison the call
-  needs; no memo, draft or voice argues a set; the request names no station; the two distractors (precipitation,
-  reservoir levels) rank nothing.
-- **No certified replay:** no certified or validated load exists for a method to reproduce; the conditioning is found
-  in the samples' own residuals against the discharge record, and the published loads tie under the easy route.
-- **Lesson:** a surrogate relation calibrated on samples whose timing over-represents one hydraulic regime carries
-  that regime into the whole record, and conditioning the relation on the regime, read from a second continuous
-  variable, is the field's correction. No build on file teaches it (task229 converts a daily mean through a convex
-  rating, task241 calibrates float salinity against ship casts, task247 reads near-real-time against reprocessed SST).
-
 ## Readability screen
 
-Six tests per rung (stumping 2.1): 1 a filed sentence names the decisive quantity or sends the solver to it; 2 a
-column, key or marker makes it a row predicate or a header-found join; 3 an opponent reflex reaches it; 4 a control or
-corpus scores the rules or refutes the naive read; 5 the hygiene battery finds it; 6 one subtraction, ratio or half of a
-reported figure.
-
-| Rung | 1 Filed | 2 Schema | 3 Reflex | 4 Bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 the published loads: none | the report | the report's table | yes | none | no | read off | readable |
-| 1 (default) the procedure refitted: none | procedure section 6 | the field sheet, LIMS, record | yes, reproduce the published figure | the report ties to 0.1 per cent | no | one regression | readable |
-| 2 discharge added (the field's two-variable surrogate): none | none | discharge_m3s | yes | the report | no | one regression | readable |
-| 3 season or hour of day: JVB | none | the timestamps | partly | none | no | one regression | readable |
-| 4 the bottle's trip type: ESK, FND, SKB, TVE | none | the field sheet's trip column | yes, every visible attribute held | none | no | one regression | readable |
-| 5 routine bottles only: ESK, GRV, TVE | none | the trip column | partly, storm samples set aside | none | no | a filter | readable |
-| 6 2027 bottles only: JVB and SKB under | none | the sample dates | partly, the latest calibration | none | no | a filter | readable |
-| 7 (decisive) the relation conditioned on rising water, read from the 15-minute discharge's rate of rise, applied per interval: SKB, JVB, FND, ESK | no sentence names rising water, a limb or sand; the procedure names only turbidity | the rate of rise is in no column; it is computed from the discharge series at another grain | no: the reflexes are discharge, season and the trip type | the samples refute the turbidity-only relation only when their residuals are read against the discharge's rate of change (t from 18 to 44 at the four, the trip type then near nought) | no | not linear: a state per sample and per interval, a fit per station, a sum over 35,040 intervals | silent |
+| Rung | Where a reader meets it | Verdict |
+|---|---|---|
+| 1. The gain over the previous sitting (nine forms, all but CC27-I) | the exports' scores, the first read of a resit | readable |
+| 2. Resit against first-time candidates on the items both met (no form) | the layouts and the exports | readable |
+| 3. The same item alone, within each resit candidate, difficulty-adjusted (CC27-A and G) | the renumbering and the layouts; the field's repeated-item comparison | readable |
+| 4. Item-model siblings counted with the same item (CC27-A, C, G and H: the default path) | the bank's item_model column and regulation 3.4; both call-only probes took it | readable |
+| 5. (decisive) The items reached only in the time recognised items freed (adds CC27-B and D: the golden) | nothing names a recognised item's time, the time it frees or where the four hours would have ended; the latencies, blanks and end reasons are recorded as what they are | silent |
 
 ## Semantic fork table
 
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | the 2027 load's year | 1 January 00:00 to 31 December 23:45 UTC | the Norwegian calendar year | same call | asserted (procedure section 7 names UTC) |
-| SF2 | the published load | the report's tonnes | recomputed from the report's coefficients | same call | asserted: the report's loads are the procedure's |
-| SF3 | misstates by more than 15 per cent | against what passed | against the published load | same call | asserted |
-| SF4 | over or under | published above what passed is over | none differs | converge | all four over (asserted) |
-| SF5 | the calibration samples | every accepted sample of 2025 to 2027 | 2027's alone | JVB and SKB under | procedure section 6 "2025 to 2027 for the 2027 loads" (asserted read back) |
-| SF6 | a bottle's result | the final result | the replaced result kept | same call | asserted |
-| SF7 | the 2025 results | the former system's sheet read with the current one | 2025 left out | same call | asserted |
-| SF8 | pairing a sample with turbidity | the nearest 15-minute reading | interpolated between readings | same call | asserted |
-| SF9 | a sample's time | the field app's time with its offset | the wall clock read as UTC | the refit misses the report | the offset on every value; the wall clock does not reproduce the published loads (asserted) |
-| SF10 | re-sent record rows | each interval once | duplicates kept | same call | none in 2027 or near a sample (asserted) |
-| SF11 | which bottles calibrate | every river sample in the sheet | none differs | converge | every bottle is a river sample (asserted) |
-| SF12 | retransformation | Duan's smearing (procedure section 6) | none | same call | asserted |
-| SF13 | logarithm base | log10 (procedure) | natural logs | converge | a constant factor (asserted) |
-| SF14 | discharge | the record's one series, three significant figures | none differs | converge | asserted |
-| SF15 | the stations | the register's 14 | none differs | converge | asserted |
-| SF16 | Ask A's years | 2025 and 2026 in UTC | in Norwegian time | same figures | nothing unusable within two hours of either edge (asserted) |
-| SF17 | Ask A's hours | intervals over four, whole hours | none differs | converge | no station on a half hour (asserted) |
-| SF18 | Ask A's repeated rows | an interval once (procedure section 5 counts intervals) | rows | same figures | every repeat is exact (asserted) |
-| SF19 | Ask A's upper end of the range | 1,000 FNU on a TS-10 until the station's TS-40W (procedure section 2, register, maintenance log) | 4,000 FNU throughout | moves four stations | procedure section 2 gives each sonde's range; no TS-10 reading above 1,000 (asserted) |
-| SF20 | Ask A's fouled or sonde-out rows | F and M, and G and O before 14 April 2026 | F and M alone | moves every station | the maintenance log: the O and M rows are exactly its logged sonde-out times, the G spans end at its "flagged back to last clean" visits (asserted) |
-| SF21 | Ask A's checked readings | K and C usable | counted unusable | moves every station | procedure section 5 (C is usable); K sits on each logged handheld check before the migration (asserted) |
-| SF22 | Ask B's 2027 samples | every bottle sampled in 2027 | none differs | converge | the batch export holds each once (asserted) |
-| SF23 | Ask B's control concentration | the lot's concentration in the quality statement | the export's nominal 50.0 for every lot | moves 13 stations | procedure section 4 "the control suspension's concentration"; the statement's table gives KS-27-06 at 54.0 (asserted read back) |
-| SF24 | Ask B's blank | a change of more than 0.5 mg either way | gains only | moves stations | section 4 "changes by no more than 0.5 mg"; a blank below -0.5 mg ships (asserted) |
-| SF25 | Ask B's aliquot agreement | against their mean (section 4) | against the larger aliquot | same figures | asserted |
-| SF26 | Ask B's samples per station | one line per sample | none differs | converge | asserted |
+| SF1 | what a results review shows | each scored item answered wrongly at that sitting, items left blank not shown | the blanks shown too | same call | regulation 4.2; asserted |
+| SF2 | an item an earlier sitting showed | an item the candidate reached there | every item delivered there | same call | asserted |
+| SF3 | a trial item met before | counts as shown (7.2: any item) | scored positions only | same call | asserted |
+| SF4 | a resit sitting under a changed number | linked through the register (2.1) | numbers as given | same call (Layer 1 does not carry it) | regulations 2.1 and 7.2; asserted |
+| SF5 | the year | the February to November 2027 windows | none | same call | regulation 7.2; asserted |
+| SF6 | more than 1.0 scored item | strictly, unrounded | at or above | same call | every form at least 0.3 from the line (asserted) |
+| SF7 | a recognised item's time had nothing shown it | the log-normal mean of the first-time candidates' log seconds, shifted by the candidate's pace | the median | same call | asserted (family lowest flagged 1.5, highest unflagged 0.6) |
+| SF8 | the baseline on the unrecognised items | a logit shift on the first-time candidates' share correct | an additive shift | same call | asserted |
+| SF9 | a booked review cancelled or not attended | showed nothing | counted as held | same call | the bookings' status; asserted |
+| SF10 | the four hours | examination time: the latencies exclude the stops of 3.6 | wall time | same call | regulation 3.6; asserted (no stopped sitting's latencies exceed four hours) |
+| SF11 | release 4's latencies | milliseconds | seconds | same call | the data notes; asserted (each release's medians agree once converted) |
+| SF12 | a failure of the workstation or its power (ask A) | a WS_FAIL, or the Kochi power cut, after the clock started | the invigilators' pauses, the link losses | the asks only | regulations 3.6 and 7.4; asserted |
+| SF13 | the sitting a failure interrupted (ask A) | the one whose clock was running on that workstation at that moment | the logged booking_ref | the asks only | the event times (asserted: the paths differ on six or more forms) |
+| SF14 | ran in part without the link (ask B) | the clock ran while the workstation's link was down | any loss logged against the booking | the asks only | regulation 7.4 and the data notes (the client carries on); asserted |
+| SF15 | a link loss with no NET_BACK (ask B) | down until the sitting's end | dropped | the asks only | asserted |
 
 ## Ladder
 
-Seven wrong rungs and the golden, each a complete defensible analysis, each dying to one fact of the samples (sets on
-the cut pack, printed by `generator/pair.py --ladder`, asserted in `checks.py`).
-
-| Rung | Construction | Answer | Dies to |
+| Route | Flags | Count | Golden |
 |---|---|---|---|
-| 0 | the published loads | none | the review exists to test them |
-| 1 (default) | the procedure refitted on every sample | none | the residuals split by whether the river was rising at the sample |
-| 2 | discharge added | none | turbidity already carries discharge; the residual split stays |
-| 3 | season or hour of day | JVB | the split appears at every season at SKB, FND, ESK and inside JVB's own summers |
-| 4 | the trip type | ESK, FND, SKB, TVE | with rising water in the model the trip type adds nothing at any station (absolute t under 2.5); TVE's callouts fell mostly on falling water |
-| 5 | routine bottles only | ESK, GRV, TVE | routine rounds land on the melt's rise as surely as callouts land on a flood's |
-| 6 | 2027 bottles only | JVB, SKB under | 44 to 101 bottles become 14 to 34; the procedure calibrates on three years |
-| 7 (golden) | the relation conditioned on rising water, applied per interval | SKB, JVB, FND, ESK over | |
+| The gain over the previous sitting | A, B, C, D, E, F, G, H, J | 9 | no |
+| Resit against first-time candidates on the items both met | none | 0 | no |
+| The same item alone, within each resit candidate | A, G | 2 | no |
+| The raw within-candidate excess (no difficulty adjustment) | A, C, D, G | 4 | no |
+| The excess on recognised items, siblings included, blanks not reached (the default path) | A, C, G, H | 4 | no |
+| The same with blanks scored wrong | A, C, G, H | 4 | no |
+| Golden: the excess plus the items reached only in the freed time (Rasch, log-normal mean) | A, B, C, D, G, H | 6 | yes |
+| Golden with an additive baseline; with the median time | A, B, C, D, G, H | 6 | yes |
 
-- **Margins.** Every rising-water specification on file (thresholds 0 to 3 per cent an hour, unsmoothed, the past hour
-  or two, separate fits, discharge and season added, a linear or positive rate of rise, rising turbidity smoothed over
-  one to six hours) files the four: the smallest flagged misstatement 18.5 per cent (rising turbidity over an hour), the
-  largest other station 6.9 per cent (asserted).
-- **Position.** No wrong rung reaches the four; rungs 4 and 6 reach two or three of them with a wrong station or a
-  wrong direction.
-- **Dominance.** On rising water a unit of turbidity carries 2.2 to 2.8 times the concentration at the four (10 to the
-  0.34 to 0.45), and 48 to 75 per cent of their samples were taken on rising water against 1 to 16 per cent of 2027's
-  intervals.
-- **Worth.** Four re-issues of 14; the clean truth's sediment puts the same four over (R3 in checks.py).
+On the clean world the excess on recognised items alone files the default path's four and the reach added files the
+golden (checks.py, dataset-generation 7.1). CC27-I is speeded like B and D and stays under the line, so speed alone
+flags nothing.
 
 ## Closure table
 
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | the register's 14 stations (SF15) |
-| 2 | Unit of account | one station's annual load, in tonnes (section 7) |
-| 3 | Attribution window | calendar 2027 UTC (section 7, SF1) |
-| 4 | As-of dating | the review of March 2028 on the report of 15 February 2028; 2027's records complete |
-| 5 | Version basis | procedure v3; the report as issued; LIMS final results (SF6) |
-| 6 | Denominator | the misstatement against what passed (SF3) |
-| 7 | Weighting | each 15-minute interval's concentration times its discharge (section 7) |
-| 8 | Window length | the three calibration years (SF5) |
-| 9 | Boundary inclusivity | more than 15 per cent re-issues; nothing within 3 points of it on any specification |
-| 10 | Rounding path | none before the comparison; asks in whole hours and whole samples (SF17) |
-| 11 | Tie-break | none needed |
-| 12 | Maturity and censoring | every 2027 interval and every bottle reported |
-| 13 | Order of operations | results, pairing, fit, prediction per interval, sum, comparison |
-| 14 | Row order | no step depends on file order |
-| 15 | Duplicate resolution | final over replaced results (SF6); re-sent rows once (SF10, SF18) |
-| 16 | Identity normalisation | year and bottle number across the sheet and both LIMS layouts; station codes |
-| 17 | Netting against gross | none |
-| 18 | Dimensional units | mg/L equals g per cubic metre; cubic metres per second times 900 seconds; tonnes |
-| 19 | Code and status semantics | trip types; LIMS status; the record's flags (SF20, SF21) |
-| 20 | Integerisation | whole hours, whole samples |
-| 21 | Clause scope | section 8 applies to every station, both directions |
-| 22 | Forward window contents | the plan reads 2027's loads as published or re-issued; nothing forecast |
+| # | Axis | Reading | Move |
+|---|---|---|---|
+| 1 | Population | the ten 2027 forms and the year's resit sittings of each | filed (regulation 7.2) |
+| 2 | Unit of account | a form's gain per resit sitting, in scored items | filed (7.2) |
+| 3 | Attribution window | the 2027 windows' resit sittings | filed (7.2) |
+| 4 | As-of dating | the exports as delivered; the bank snapshot of 31 December 2027; the register to January 2028 | filed |
+| 5 | Version basis | the regulations as amended in June 2027 | filed |
+| 6 | Denominator | the form's 2027 resit sittings | filed (7.2) |
+| 7 | Weighting | each resit sitting once | filed (7.2, an average over sittings) |
+| 8 | Window length | the year's four windows | filed |
+| 9 | Boundary inclusivity | exceeds 1.0 | C1 (0.3 clear, asserted) |
+| 10 | Rounding path | no gain graded; counts whole | filed (the prompt) |
+| 11 | Tie-break | none open | asserted |
+| 12 | Maturity and censoring | every 2027 sitting in the exports; a review counts only before the resit | filed (4.2) |
+| 13 | Order of operations | exposure marked, ability and pace from the unrecognised items, the clock rerun, the two parts summed per sitting, then averaged | C1 (asserted) |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | none in the call's rows; on the asks a sitting counts once | filed |
+| 16 | Identity normalisation | candidate numbers through the register, item numbers through the renumbering | filed (2.1; the data notes) |
+| 17 | Netting against gross | none | not applicable |
+| 18 | Dimensional units | seconds (release 3) and milliseconds (release 4) | filed (the data notes) |
+| 19 | Code and status semantics | blanks, end reasons, review status, event codes | filed (the data notes); never the stump |
+| 20 | Integerisation | the sitting counts whole | filed (the prompt) |
+| 21 | Clause scope | 7.2 and 7.3 for every 2027 form; 7.4 for every form | filed |
+| 22 | Forward window contents | a flagged form is reassembled before it is used again | filed (7.3) |
 
 ## Literal reader
 
-Executing the prompt and the procedure word for word: for each of the 14 stations, the published 2027 load against
-the suspended sediment that passed the station in calendar 2027 UTC, re-issued when it misstates it by more than 15 per
-cent either way. What passed is not observed; it is estimated from the shipped samples and the 15-minute record, and
-the procedure gives the published method, not the truth. Every estimate whose relation is conditioned on rising water
-(any of the sixteen specifications under Margins) files the four, and every fork row files the same call; the easy
-answer, none, comes from the easy method on the same literal estimand, never from another reading.
+Executing the prompt and every filed sentence word for word (the regulations, the data notes, the request) leaves one
+open move, how the counterfactual of regulation 7.2 is estimated, and the design and the data force it: forms drawn at
+random among those not sat (3.5) make the comparison inside each resit candidate the design's own; an item recognised
+from an earlier sitting is answered in about 70 per cent of the time the candidate's own pace on the other items gives;
+and on the forms where four in ten candidates run out of the four hours (blank items at the end, time expired), the
+time freed is spent on the items at the end, which a sitting with nothing shown would not have reached. The
+counterfactual of 7.2 covers every scored item of the sitting, so those answers are in it. Every licensed estimate
+files the same six (asserted: a logit or additive baseline, the mean or median counterfactual time; lowest flagged 1.5,
+highest unflagged 0.6).
 
 ## Oracles
 
-None for the call: no validated load, sediment survey or earlier review ships. The report ties under the easy route by
-construction, which is the stump's own identity. For the asks, the maintenance log (sonde-out times, the fouling
-remarks, the handheld checks, the sonde change) and the quality statement (each control lot's concentration) referee
-the devices; neither names a station's figure.
+- No file ranks the forms or states a form's gain, flag, exposure count or reach.
+- The exports state responses, latencies, end reasons and scores; the regulations state the estimand and the line.
+- The bank snapshot states each item's model and format; no file states which items a candidate recognised.
+- The event log states events and the incident reports describe incidents; no file states which sittings a failure
+  interrupted or which ran without the link.
+- The panel's decision log and minutes, the practice-test orders and the centres' capacity (the distractors) carry no
+  figure any route needs.
+
 
 ## Ask sheet
 
-**Ask A, each station's hours in 2025 and 2026 without a usable turbidity reading (14 figures, whole hours).** H18: the
-turbidity record of the calibration years is the input the regression pairs every sample with, so its health is the
-audit trail of the call's input; the call reads the record only at the samples' own intervals and in 2027, which no
-device reaches (asserted). Use: the review sheet's record line, as every spring. Primary devices: D2, a label stored
-before a silent switch, twice over. The data team's database migration of 14 April 2026 changed the flag letters (G
-fouled and O sonde out before it, F and M after; K and C for a handheld check), and procedure section 5 and the
-dictionary give the current letters only, so executing the filed letters misses every older fouled or sonde-out
-interval (-15 to -350 hours at all 14), while counting every flag counts the checks (+1 to +4 at all 14); the old
-letters are found only through the maintenance log, whose sonde-out times the O rows match exactly and whose "flagged
-back to last clean" visits end each G span. The register gives each station's current sonde (TS-40W, 4,000 FNU) and its
-installation in autumn 2026; the TS-10's limit of 1,000 FNU before it holds the readings at the upper end of the range,
-unflagged (-2 to -16 at four stations on the register's sonde). D4: an interval the logger never sent has no row (-51 to
--300 at all 14 counting rows only). Hazards: rows re-sent after outages, exact repeats. Path: the record, the
-register, the maintenance log, the procedure, the dictionary (5 files, 7 columns). Realism: logger and database
-migrations change flag letters and leave old rows as they were; sondes saturate at full scale.
+**Ask A, each form's 2027 sittings a failure of the candidate's workstation or its power interrupted (10 figures,
+whole numbers).** H18: regulation 7.4 puts the interrupted sittings in the integrity report beside the flags, the
+record of each form's sittings delivered through a failure; the call reads the two exports, the layouts, the bank
+snapshot, the renumbering, the register and the review bookings, and never the event log, the seat plan or the
+invigilators' reports (asserted). Use: the report's 7.4 table, filed every year. Primary devices: D7, the true key
+elsewhere: the server raises WS_FAIL when a workstation stops answering, and the log export fills the booking from the
+seat plan as it stood at export, so a morning failure at a workstation repaired at lunch and used again in the
+afternoon carries the afternoon's booking (61 of 2027's 119 failures), while the morning candidate resumes on a spare or,
+with a few minutes of work left, has the sitting closed on the saved responses (17 with no resume); only the event times
+place a failure in the sitting whose clock ran on that workstation (the logged booking moves 8 forms, -9 to +4). D4,
+absence as the signal: the Kochi power cut of 19 August 2027 at 11:05 local took the centre's server down with the
+workstations, so the log holds nothing for the sittings it stopped until they resumed, and the invigilators' report
+records the cut (left out, 5 forms move, up to -9). Hazards: the invigilators' pauses (resumes with no failure), the
+link losses, the reboots between sittings. Path: the event log, the seat plan, the invigilators' reports, the
+regulations, the data notes and either export for each booking's form (6 files, 10 columns). Realism: a log export
+that resolves the booking through the current seat plan; a power cut that takes the logging server down with the room.
 
-**Ask B, each station's 2027 samples weighed in a batch that failed its quality control (14 figures, whole samples).**
-H18: the 2027 bottles are a third of the regression's samples, and the batch quality control is the audit trail of
-their concentrations; the call reads the laboratory's results and never the batch export. Primary device: D2, the
-export's control column is the LIMS template's nominal 50.0 mg/L on every line, while lot KS-27-06, in use from 1 July
-2027, is 54.0 mg/L in the quality statement; recovery against the nominal fails good batches through the second half
-of the year (13 of 14 stations moved, by up to 4). D3: each aliquot's concentration is its net mass over its own volume
-(200 or 250 mL). Hazards: the batch's results repeated on every sample line (a batch counts once in deciding failure,
-its samples each once per station); a blank below -0.5 mg. Path: the batch export, the quality statement, the field
-sheet, the procedure (4 files, 9 columns). Realism: a LIMS template keeps its default nominal when a control lot
-changes; certified lots differ from the nominal they were prepared to.
+**Ask B, each form's 2027 sittings that ran in part without the centre's link (10 figures, whole numbers).** H18:
+regulation 7.4's third item, the sittings whose responses were held on the workstation while the link was down; the
+call never reads the event log. Use: the same table. Primary device: D6, a log read as a roster: every seated
+workstation logs the centre's link losses against its booking, a candidate who had finished and one still in the
+tutorial alike, so only a loss overlapping the sitting's clock (SESSION_START to SESSION_END) counts (every loss row
+counted moves all 10 forms, +17 to +41). D4: a loss still running when the session closed has no NET_BACK (67 began
+inside a sitting's clock; dropped, all 10 forms move, -2 to -12). D8: a loss that began in the tutorial and ran into the
+examination counts (a loss timed inside the clock only moves all 10, -4 to -23). Hazards: a flapping link (several
+losses in one sitting count once), losses inside the tutorial alone. Path: the event log, the data notes, the
+regulations and either export for each booking's form (4 files, 6 columns). Realism: a centre's link loss is logged on
+every workstation in the room, and a workstation that closes its session before the link returns logs no NET_BACK.
 
-Main population zero-counts: the call reads the field sheet, both LIMS sheets' results, the record's discharge and
-turbidity in 2027 and at each sample's interval, and the report; no flag, gap, check, sonde limit or re-sent row sits
-within three hours of a calibration sample or anywhere in 2027 (asserted per station), and the call never opens the
-batch export, the quality statement or the maintenance log.
+Main population zero-counts: the event log, the seat plan and the invigilators' reports are read by the asks alone,
+and no file the call reads carries a device row (asserted: separation).
 
 | Hazard | Asks moved | Per-ask deltas (largest) |
 |---|---|---|
-| the migration's old letters G and O (D2, primary) | A | -350 hours |
-| the checks K and C counted as flags | A | +4 hours |
-| the TS-10's 1,000 FNU limit read off the register's TS-40W (D2, primary) | A | -16 hours |
-| intervals with no row (D4) | A | -300 hours |
-| the export's nominal 50.0 for lot KS-27-06 (D2, primary) | B | +4 samples |
+| the seat plan's afternoon booking on a morning failure (D7, primary) | A | -9 sittings |
+| the power cut's missing events (D4, primary) | A | -9 sittings |
+| the invigilators' pauses read as failures | A | +16 sittings |
+| every seated workstation's loss rows (D6, primary) | B | +41 sittings |
+| a loss with no NET_BACK dropped (D4) | B | -12 sittings |
+| a loss counted only when it began inside the clock (D8) | B | -23 sittings |
 
 | Ask row | The cracker (landed the call, hygiene battery, every filed rule executed on the fields it names) | Verdict |
 |---|---|---|
-| Ask A, hours, all 14 stations | a full 15-minute grid, re-sent rows once, the procedure's letters F and M, the TS-10's limit before each station's TS-40W | miss |
-| Ask B, samples, all 14 stations | each batch once, concentrations from mass and volume, recovery against the export's control column | miss |
+| Ask A, sittings, all ten forms | each WS_FAIL's logged booking, the power cut's sittings from the invigilators' report, the pauses and link losses left out | miss |
+| Ask B, sittings, all ten forms | each NET_LOST paired with the workstation's next NET_BACK and overlapped with the sitting's clock, a loss with no NET_BACK left out | miss |
 
-Measured by: generator/pair.py on the cut pack: the cracker keeps 1 of the 28 ask figures (KVF's nought under both
-controls), the mirror (off the call, the same ask paths) 1; a response that decodes the old letters through the
-maintenance log and reads each lot's concentration keeps all 28.
+Measured by: generator/pair.py on the cut pack (target.zip ff5b5f5b): the cracker keeps 3 of the 20 ask figures (CC27-A,
+B and J of ask A, where neither the afternoon bookings nor the power cut move the count), the mirror (off the call, each
+log's first reading: the failure's logged booking, every loss row) 2; a response that places each failure by its time,
+reads the power cut from the report and overlaps each loss with the clock keeps all 20.
 
-Pair ceiling: 30.5 ((38 + 7 + 55 x 1/28) and (5 + 7 + 55 x 1/28), averaged)
+Pair ceiling: 35.4 ((38 + 7 + 55 x 3/20) and (5 + 7 + 55 x 2/20), averaged)
 
-Mirror leakage: 3.6 per cent of ask weight
-
-## Pre-ship check
-
-1. Domain: the call stands on each station's 2027 suspended-sediment load, estimated the way sediment monitoring
-   estimates it (a turbidity surrogate calibrated on depth-integrated samples, log-log with Duan's smearing, summed over
-   the 15-minute record), conditioned on the hydrograph limb because sand is entrained on rising water and turbidity
-   barely registers sand; with a hospital's or a utility's nouns there is no sonde blind to one particle size, no rising
-   limb and no melt cycle setting when samples are taken, so the task stops making sense.
-2. Two layers: Layer 1 (the two LIMS layouts, replaced results, bottle numbers restarting, local sample times with
-   their offset against UTC loggers, re-sent rows, the load table inside the report's PDF, discharge to three
-   significant figures) is neutral on the call (R2, SF6 to SF10). Layer 2 is the relation conditioned on rising water,
-   asserted alone to move the easy route (none re-issued) to the golden (SKB, JVB, FND, ESK) on the generator's clean
-   truth (R3a, R3b).
-3. No banned stump decides: nothing is planted (the report's loads are right on their own method and reproduce to 0.1
-   per cent); not semantics (every field read right, the refit still re-issues none); not rule application (the
-   procedure files the estimand and the published method, and no filed rule mentions the hydrograph).
-4. Gate G: no shipped artifact ranks the stations against what passed; the annual report is the context artifact
-   (correct on its own basis, declared in metadata.json); the two distractors (Fjellbrekke Kraft's weather stations,
-   the reservoirs' levels) give no station a load.
-5. Determinism: sixteen rising-water routes (thresholds, smoothing, lagged and unsmoothed rates, separate fits,
-   discharge and season beside the indicator, continuous rate terms, turbidity's own rise) file the golden, the four
-   at 18.5 per cent or more and the ten at 6.9 or less; every threshold from 0 to 3 per cent an hour in steps of 0.1
-   files it (the step's corridor, asserted); 26 fork rows asserted; the verifier recomputes every graded figure by its
-   own code; 470 checks; two builds byte-identical (target.zip 9dd86516).
-6. Fingerprint: heart WARN (repeat.gate_g, overuse.gate_g, repeat.question_form, answered in the Draw; nearest driver
-   task452 v1 at 0.07). The surface screen promoted three pairs for adjudication: task248 (back to back, the same
-   calibration form and context artifact on the cards; both labels were read again and set honestly, calibration form
-   none because the samples are the regression's own raw material, context artifact close_out_summary for the annual
-   report, and the card re-checked WARN only), and task230 and task149 (same gap and pattern, differentiated on the
-   card). It read the three card personas and "Lot Material", the quality statement's table header read as a name.
-7. Judge (the determinism-judge agent with one isolated thread, Sonnet, medium, the bundle and the graded blocks
-   only, on target.zip 9dd86516): DETERMINISTIC, FIX_NOW. The main call reproduced: the refit returns all 14 published
-   loads to 0.1 per cent, and the rising-water term puts SKB, JVB, FND and ESK over at every threshold from 0 to 3 per
-   cent an hour, the other ten within 7. Gate G clean (the report is the procedure's own output); Gate H domain,
-   layers and decisive step pass, analytical. FIX_NOW on the two ask devices, read as unpinned: the flag letters G, O
-   and K appear in no dictionary or procedure (F and M alone give SKB 472 hours against 702), and the export's 50.0
-   against the statement's 54.0 (16 failed batches against 12). Not repaired: the architecture was spent at Gate F.
-
-## Leak check
-
-leak.py (as-of 2028-03-13): REVIEW, no LEAK; file names, author vocabulary, announcements, ranking artifacts, hidden
-content, column names, dates and the prompt gate clean. Each REVIEW line, answered:
-
-- The figure 433 inside the report's "30,433" (another station's load): a coincidence of digits; harmless.
-- The procedure carries words of the call (re-issue, published, loads, per cent): section 8's tolerance, the filed
-  estimand; harmless.
-- Design-note vocabulary in the documents (discharge, regression, calibration, surrogate, report, regime, rounds,
-  procedure, record): the procedure's and the report's own subject; "rounds" is the sampling rounds and the
-  proficiency rounds; no document says rising, limb, hysteresis or sand; harmless.
-- Earlier run: the precipitation export's column names (air_temp_c) read as a generator's; rewritten as the power
-  company's export writes them (Norwegian headers, semicolons, decimal commas).
-
-Readers (two isolated, Sonnet, medium, the prompt and a fresh pack each, on target.zip 9dd86516), both scored with
-score_reader.py: each landed the call (2 of 2) and all 28 ask figures, exit 1. Reader A conditioned each station's
-relation on discharge up more than 1 per cent over the previous 30 minutes; reader B on Q(t+30 min)/Q(t-30 min) above
-1.015; both named sediment hysteresis as the field's known effect before fitting (question 1: "nothing mentions
-hysteresis or rising limbs"). Both decoded the old flag letters (G as F, O as M, K as C) and took 54.0 from the quality
-statement. Question 6 analytical in both. Realism tells both quoted: the residuals two-valued with a scatter of about
-0.025 in log10 (real surrogate relations scatter 0.1 to 0.2), the same noise structure at all 14 stations, discharge
-to three significant figures on smooth hydrographs, fouled spans of round lengths, maintenance visits at near-identical
-hours, the export's nominal left at 50.0.
-
-## Candidates for architecture 6 (the author's call)
-
-Architecture 5 is spent, and a sixth is past the author file's cap, so it waits on the author. Each candidate keeps
-the objective, puts a field reflex on the first rung and the decisive step on a second, data-native move a reflex
-does not reach.
-
-1. Survey interviewer effects (survey research, nonresponse and measurement error x DQ). Which of a health survey's
-   16 regional prevalence estimates carry the release's precision warning. Default path: the design-based variance
-   (strata, PSUs, weights) warns none. Reflex rung: an interviewer random effect over all assignments warns most
-   regions, because interviewers and areas are nested and the area's own variation is read as the interviewer's.
-   Decisive: the interviewer variance from the random-pair subsample the field office interpenetrates in each region,
-   carried to each region's workload. Screen: a cross-classified model needs interviewers working several areas, which
-   the field design rarely gives; the interpenetrated pairs are a column in the sample file, named nowhere as the
-   identifying design.
-2. Register over-coverage of the oldest residents (census, register and administrative data quality x DQ). Which of
-   20 municipalities' register counts of residents 80 and over overstate those living there by more than the
-   standard. Default: the register as counted warns none. Reflex rung: residents with no sign of life in a year
-   (no health, pension or tax contact) treated as gone warns most municipalities. Decisive: the chance that a real
-   resident shows no sign of life rises steeply in care homes (contacts run through the home's own records), measured
-   on the address-check subsample, so the no-contact count is netted by each municipality's care-home share. Screen:
-   distinct from task243 (deaths against two counts) and task230 (late-channel classification).
-3. Anchor drift in an exam's scale (psychometric measurement x DQ). Which of 14 test forms' 2028 scale scores go to
-   re-equating. Default: mean-sigma linking on all anchor items files none. Reflex rung: a robust-z screen of the
-   anchors drops the few with large displacement and files a different set. Decisive: anchors exposed in a
-   preparation book drift together by a modest amount each, below any single-item screen, and only a linking on the
-   unexposed anchors (the exposure is in the item bank's release history) moves the forms. Screen: the exposure
-   history is an ordinary bank record; a reader must ask why a block of anchors moves together.
-4. Experiment assignment health (product analytics, metric definition x DQ). Which of 40 experiments' readouts carry
-   the platform's sample-ratio warning. Default: a chi-square on assigned users flags none. Reflex rung: the same test
-   on the triggered analysis population flags a dozen, because a trigger fired after assignment lets the treatment's
-   own change move who is counted. Decisive: the ratio read on the counterfactual trigger logged for both arms, which
-   flags the few with a real assignment fault. Screen: the counterfactual-trigger log is a standard platform table;
-   the reflex test is the dashboard's own.
+Mirror leakage: 10.0 per cent of ask weight
 
 ## Tried and rejected
 
@@ -703,3 +459,7 @@ does not reach.
   forms drawn at random the within-candidate comparison is the design's own, and a strong reader marks every exposure
   channel a column shows, so a retrospective gain on the items shown leaves the analysis nothing to get wrong. The
   sibling stays as a lower rung; the decisive step moved to the four-hour limit the items share.
+- Ask B as each content area's 2027 trial items standing accepted at the year end, read from the panel's decision log
+  (withdrawals, revisions and entries under the earlier item numbers): the log's latest decision per item, the lazy
+  path, kept most figures, so the ask carried no device a careful response misses; replaced by the sittings that ran
+  in part without the centre's link, and the log ships as a distractor.

@@ -1,24 +1,27 @@
 {
  "task": "task249",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "psychology-behavioral-science",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-21",
  "stump": "A competent analyst reads each resit candidate's gain as the excess on the items an earlier sitting or review had shown them (or their item-model siblings) over their own difficulty-adjusted performance on the other items and flags CC27-A, C, G and H; the other items share the four hours, and on CC27-B and D, where four in ten candidates run out of time, most of the gain is the items resit candidates reached only because the items they recognised took them less time.",
  "architecture": 6,
  "loops": 0,
- "precut": null,
- "leak": null,
+ "precut": "PASS (51 checks, 0 FAIL, 0 WARN)",
+ "leak": {
+  "leak_py": "REVIEW (no LEAK): the regulations' 1.0 line and estimand, field names in the data notes, reviews still booked after 17 January 2028",
+  "reader": ""
+ },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "task83 at 0.12 (guard check at the draw)"
+  "heart": "WARN (overuse.gate_g, repeat.decision, repeat.question_form; NOTEs differentiated against task193 v2 and task254 v3)",
+  "nearest": "task83 at 0.12"
  },
  "judge": null,
  "returned": [],
- "resume": "Architecture 6 drawn 2026-10-21 (card registered, WARN only). Stage 2: port the timed prototype (scratchpad t249a6/gen2: sim_t.py, routes_t.py, variants_t.py) into task249/generator, design the asks on files the call never reads (asks plan in the scratchpad), fork table, ladder, closure, prompt, precut. Prototype golden at seed 2496: CC27-A, B, C, D, G, H; the direct excess files A, C, G, H.",
+ "resume": "Stage 3 green on target.zip ff5b5f5b (27,905 checks, verify agrees, two builds byte-identical, figures_check 38 of 38, precut PASS, leak.py REVIEW, heart WARN). Stage 4 running: two isolated scored readers (sonnet and opus, medium, fresh copies under the scratchpad's leak-task249-r1 and r2) and the determinism judge. Next: score each reader with score_reader.py (call key call.flagged), fix every finding in the generator in one pass, re-judge once on FIX_NOW, then ship.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -49,6 +52,10 @@
   {
    "architecture": 6,
    "status": "drawn 2026-10-21 (its first, untimed form landed by both call-only probes before the card was filed; the timed form missed by both)"
+  },
+  {
+   "architecture": 6,
+   "status": "stage 3 green 2026-10-21 (target.zip ff5b5f5b); stage 4 running"
   }
  ]
 }
