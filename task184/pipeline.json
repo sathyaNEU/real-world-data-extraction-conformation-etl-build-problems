@@ -1,11 +1,11 @@
 {
   "task": "task184",
   "owner": "oviya13ya",
-  "status": "BUILD",
+  "status": "FAILED_TO_STUMP",
   "domain": "criminology-justice",
   "objective": "anomaly-detection",
-  "stage": 3,
-  "stage_name": "build",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-21",
   "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, spreads each occurrence window evenly over its own hours and commissions Friday 12:00, Thursday 20:00, Friday 00:00, Saturday 00:00, Friday 16:00, Thursday 16:00, Friday 20:00 and Sunday 20:00, filing 3,150 covered offences a season when its eight meet 4,250 of the golden's 5,700; the step that lands it there is reading the window as a statement that the offence is equally likely in every hour of it, when the window is the gap in its keeper's own routine and the gap covering a Friday or Saturday night is a weekend closure three to four times as long as a midweek one.",
   "architecture": 2,
@@ -24,9 +24,16 @@
     "nearest": "0.08 task121 v3, task180 v4"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK",
+    "report": "task184/determinism_check_report_pass2.md",
+    "pass": "architecture 2, pass 1",
+    "taxonomy": "underspecified_objective",
+    "gates": "Gate A reproduces, Gate C FAIL, Gate F strong, Gate G pass, Gate H pass",
+    "gate_g": "passes: mechanism method_or_model_selection, analytical_non_defect, no surface-read dependency, no sole data defect",
+    "gate_h": "passes: domain pass, layers pass, decisive_step analytical",
+    "finding": "Gate C, underspecified_objective. The pooled hour-of-week estimator, one clock across the five classes and both seasons, is filed nowhere in the shipped text and appears only in the write-up's step 4. Verified in the main thread from the generator rather than taken on trust: fitting one clock per offence class and summing across classes gives 7 of 8 slots in common with the golden and a different eighth, Monday 20:00-00:00 replaced by Friday 16:00-20:00, with the eight totalling 4,866 a season against 5,705, and a likelihood ratio of per-class over pooled of 511.1 on 668 degrees of freedom, z = -4.29, so the data neither reject pooling nor prefer it. Two defensible estimators, two committed slates, nothing filed choosing between them.",
+    "root_cause": "The family was counted too narrowly. The ladder measured the record refuting every rival PLACEMENT inside the pooled model (even spread 3,035.2, keeper-seen profile 13,660.0, witnessed classes 3,435.4, footfall 7,834.8) and no rival GROUPING of the same estimator. The build's own gap over standard error of 1.71 at the cap predicted it and was read as conservative because the errors are correlated through the record's fixed total; per-class fitting is the case where that reasoning fails, because five times 168 parameters on the same rows raises the variance rather than sharing it. The cap's gap of 76.80 offences is too small to survive a licensed re-grouping."
   },
   "returned": [
     {
@@ -42,7 +49,7 @@
       "commit": ""
     }
   ],
-  "resume": "Stage 4 half done. The leak reader has reported and DID NOT land the call, filing the default path's slate exactly; its findings are recorded in the note and nothing in the pack needed changing, so leak.py does not need re-running and the reader does not need recalling. The determinism judge is still running on a fresh unzip in /tmp/determinism-check-task184-r2/; its report goes to determinism_check_report_pass2.md, since the skill forbids overwriting an earlier pass. On APPROVE this ships; on FIX_NOW the fix goes in the generator and is re-judged once. The two points flagged for it are the surviving sentence of agreement 4.4 and the fifth of covered offences that carry a time rather than a window.",
+  "resume": "Architecture 2 is spent: build-pipeline is explicit that a judge's SEND_BACK spends it, so it is not resumed or hardened. Stage 1 re-root to architecture 3, which is this number's last before retirement. What carries forward, so the next draw does not pay for it again: the mechanism recovers a latent clock from interval-censored records and the blind reader did not land it, which is worth keeping; the cap's gap must clear the spread of the estimator's own licensed GROUPINGS and not only of its placements; and the grouping has to be forced by the data rather than filed, which this world cannot do, because the five classes genuinely share one clock and the per-class fit therefore differs from the pooled one only by noise. The judge's three weaker alternatives are recorded in the design note for the re-root: an inclusive window end at about 5,400, which the closure table should have pinned as a convention; the exact-time profile at about 4,900, which is rung 3b and which the generator refutes at 13,660.0, so the judge's listing it as surviving disagrees with a measurement in the pack; and early stopping at 50 iterations, which is not a licensed reading of an estimator defined by its fixed point.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -60,5 +67,6 @@
     "guard_surface": "exit 0, one persona in the cut pack (Bethan Murray), no promoted pair",
     "ladder": "measured on the clean truth, offences a season: rung 0 window start 6,500 meeting 2,700 (0.475), rung 1 window end 6,200 meeting 1,400, rung 2 midpoint 5,850 meeting 3,150, rung 3 the even spread 3,150 meeting 4,250 (0.741), rung 3b the keeper-seen offences' profile 4,900 meeting 4,100, golden 5,700. Worst margin 1.350x against a floor of 1.15x, no rung keeping more than 4 of 8 names, at least 34 of 42 cells wrong on every rung. Gap at the cap 76.80 offences, 18.81 per cent; every graded figure at least 3.212 offences from its bin edge against an arithmetic noise of 0.0131. Over 20 redraws the record's eight are this build's eight in 20 of 20 and the unobserved true times' eight in 20 of 20.",
     "leak_reader_2026_10_21": "DID NOT LAND, and it filed the default path's answer exactly: Friday 12:00-16:00, Thursday 20:00-00:00, Friday 00:00-04:00, Saturday 00:00-04:00, Friday 16:00-20:00, Thursday 16:00-20:00, Friday 20:00-00:00 and Sunday 20:00-00:00 at about 3,150 covered offences a season, at 55 per cent confidence on the eight and 85 on the method, against the golden's 5,700. All eight slots in the design's predicted order and the same total, which checks.py asserts on the clean truth. Question 1 clean: no file states the decisive step, and it said it chose its own approach because 'the default was an even spread'. Questions 2, 3 and 4 none. Question 6 'an analytical choice', which is the 10/10 rule 3 answer. Question 5 is the designed open HOW and is the judge's to rule on: it said no filed sentence fixes the placement for windowed offences, which is what the record's likelihood is there to force. Question 7 produced two realism lines, both measured and both answered rather than patched: its suspicion that the KC/20xx/700xxx references are a block holding exactly the out-of-scope rows is false, the block being beat KC-06's own range at 535 rows of which 209 (39 per cent) are in-scope blank-location rows of uncovered classes; and the round-hour windows are load bearing, 100 per cent of the 20,313 windowed rows having both edges on the hour against 1.7 per cent of the 13,453 exact-time rows, which is what cuts the week at 159 distinct hours and identifies all 42 slot figures rather than only their sums. Recorded in the design note's new 'Stage 4: the leak reader' section."
-  }
+  },
+  "architecture_spent": true
 }

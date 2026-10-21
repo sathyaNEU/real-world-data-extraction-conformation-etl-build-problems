@@ -511,6 +511,50 @@ forcing; the reader's answer is evidence that no sentence is doing the work.
   plausible". No change.
 
 
+## Stage 4: the determinism judge, 2026-10-21. NOT_DETERMINISTIC, SEND_BACK
+
+**The verdict stands and I verified its decisive claim myself before accepting it.** The judge, holding only a
+fresh unzip of `target.zip`, `prompt.txt` and the graded blocks, reproduced every graded figure from the
+bundle alone, including the golden slate at 5,705 from a converged pooled hour-of-week fit with half-open
+windows, converging to the same shares from random starts and at ten-minute cells. It then failed the build on
+Gate C, `underspecified_objective`: the pooled estimator, one hour-of-week distribution across the five
+classes and both seasons, appears nowhere in the shipped text and only in the write-up's own step 4.
+
+**Recomputed here from the generator, and the judge is right to the decimal.** Fitting one hour-of-week clock
+per offence class and summing the slot figures across classes gives **7 of 8 slots in common with the golden
+and a different eighth**: Monday 20:00 to 00:00 is replaced by Friday 16:00 to 20:00, and the eight total
+4,866 a season against the golden's 5,705. The likelihood ratio of per-class over pooled is **511.1 on 668
+degrees of freedom, z = -4.29**, so the data do not reject pooling and equally give no reason to prefer it.
+Two defensible estimators, two committed slates, nothing filed choosing between them. That is a fork, and the
+stump is never a reading.
+
+**Why this build's own measurements missed it, and it is the sharper finding.** The `## Ladder` section
+measures the record refuting every rival **placement** inside the pooled model, the even spread at 3,035.2,
+the keeper-seen profile at 13,660.0, the witnessed classes' hours at 3,435.4 and footfall at 7,834.8. Not one
+of those is a rival **grouping** of the same estimator. The family was counted too narrowly in exactly the way
+the `stumping` law filed today names: count the family wide enough that its members are not one method wearing
+three hats, and the member that forks this build is a different grouping rather than a different penalisation.
+The build's own `gap over standard error = 1.71` at the cap predicted this and was read as conservative
+because the errors are correlated through the record's fixed total; per-class fitting is the case where that
+reasoning fails, because five times 168 parameters on the same rows raises the variance rather than sharing it.
+
+**So the cap's gap, 76.80 offences, is too small to survive a licensed re-grouping, and that is a magnitude
+fact about a mechanism that is otherwise sound.** The judge's other three alternatives are weaker and are
+recorded for the re-root rather than accepted: an inclusive window end gives about 5,400 and is a convention
+the closure table should have pinned; the exact-time profile at about 4,900 is rung 3b and the record refutes
+it at 13,660.0, so the judge listing it as surviving is a disagreement with a measurement that is in the
+generator; and early stopping at 50 iterations is not a licensed reading of an estimator defined by its fixed
+point, which `determinism-check` section 3 already says is never graded.
+
+**Disposition.** `build-pipeline` is explicit that a judge's SEND_BACK spends the architecture, so architecture
+2 is spent and is not resumed or hardened. What carries forward to architecture 3, written here so the next
+draw does not pay for it again: the mechanism recovers a latent clock from interval-censored records and the
+reader did not land it, which is worth keeping; the cap's gap has to clear the spread of the estimator's own
+licensed groupings, not just the spread of its placements; and the grouping has to be forced by the data
+rather than filed, which on this world it is not, because the classes genuinely share one clock and the
+per-class fit therefore differs from the pooled one only by noise.
+
+
 ## Guard WARNs, answered
 
 `guard.py heart` is WARN with no BLOCK after the card was brought up to the re-root. One line per WARN, as

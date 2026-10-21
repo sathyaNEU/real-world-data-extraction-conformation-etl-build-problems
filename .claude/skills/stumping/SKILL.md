@@ -99,6 +99,20 @@ population the decision funds, the structure a pooled quantity hides, the quanti
 family that skips it lands somewhere else and the family that takes it has nothing left to choose. Screen the
 dial before the draw: if closing Gate C would make the family unanimous, the ground is spent.
 
+**Count the family wide enough that its members are not one method wearing three hats, and count groupings
+as members.** A family measured over rival *placements* of one estimator is not the family: the member that
+forks a build is as often a different **grouping** of the same estimator as a different penalisation of it.
+One build measured the record refuting four rival placements at likelihood ratios of 3,035.2 to 13,660.0 and
+shipped on that, and its judge then fitted the same estimator **per class** instead of pooled and got a
+different committed answer: 7 of 8 named parts in common and a different eighth, the graded total 4,866
+against 5,705, on a likelihood ratio of 511.1 on 668 degrees of freedom (z = -4.29), so the data neither
+reject the pooling nor prefer it. The deeper reading is that a grouping the data cannot reject is the hardest
+member to see, because the groups genuinely share the quantity and the rival therefore differs from the
+golden only by estimation noise: the test is not whether the data prefer the grouping but whether the
+decision's own margin clears the noise the grouping adds. Five times the parameters on the same rows raises
+the variance rather than sharing it, so a margin sized against the pooled estimator's standard error is
+sized against the wrong number.
+
 **Count the family wide enough that its members are not one method wearing three hats.** The spread is measured
 over constructions that differ in what they *do*, not in how they are penalised. One build asserted maximum
 likelihood, Firth and Jeffreys agreeing within 0.0633 and called the method forced; those are three score
