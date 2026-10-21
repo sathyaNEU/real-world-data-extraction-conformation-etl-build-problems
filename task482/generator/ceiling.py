@@ -30,7 +30,7 @@ def main(target=None):
     print("Ask kept %d of 16 purchase counts and %d of 16 totals (every line a purchase at its own consideration)" % (
         k1, k2))
     C = 38 + 7 + ASK_W * kept
-    d = B.designated(b, "type_weighted")
+    d = B.designated(b, "pooled")
     g = fig["call"]["designated"]
     same = sum((k in d) == (k in g) for k in b["areas"])
     m = 10 * (d == g) + 28.0 / 16 * same

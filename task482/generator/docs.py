@@ -38,9 +38,10 @@ H2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10.6, leading
 METHOD = [
     ("1. What the index measures", [
         "The residential property price index for a local authority area measures the change in the market value of "
-        "the dwellings in the area. The annual change published each October compares the year to September with "
-        "the year to September before it, each year taken as a whole. The index is compiled to the Handbook on "
-        "Residential Property Prices Indices (Eurostat, 2013).",
+        "the area's dwelling stock, the dwellings the 2022 census counts there, from the prices of one year to those "
+        "of the next. The annual change published each October compares the year to September with the year to "
+        "September before it, each year taken as a whole. The index is compiled to the Handbook on Residential "
+        "Property Prices Indices (Eurostat, 2013).",
         "It is compiled from the residential property price register, the valuation register's record of each "
         "dwelling and the address point file."]),
     ("2. Which sales count", [

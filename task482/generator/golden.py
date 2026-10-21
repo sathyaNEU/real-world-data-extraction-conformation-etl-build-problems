@@ -73,8 +73,8 @@ def write_xlsx(path, G):
     ws.title = "Designation"
     title(ws, "%d of 16 areas rose more than 8 per cent and are designated: %s" % (
         len(d), ", ".join(NAMES[k] for k in sorted(d, key=lambda k: NAMES[k]))),
-          "Residential property price change, year to September 2026 on the year to September 2025, for a dwelling of "
-          "unchanged type, floor area, newness and electoral division (hedonic time effect), sales at full market price.")
+          "Change in the market value of each area's dwelling stock (the 2022 census count), year to September 2026 on the "
+          "year to September 2025: each dwelling type's hedonic change, weighted by the stock's value of that type.")
     head(ws, 4, ["LA code", "Local authority area", "Sales, year to Sep 2025", "Sales, year to Sep 2026",
                  "Price change (%)", "Rapid price growth area"], [9, 20, 13, 13, 12, 13])
     for i, k in enumerate(order):
@@ -94,9 +94,10 @@ def write_xlsx(path, G):
     ws.freeze_panes = "C5"
     r0 = 5 + len(order) + 1
     for n, t in enumerate([
-        "Each area's change is the year effect of a regression of the log price (including VAT) on the dwelling's type, "
-        "log floor area, new-dwelling status and electoral division, fitted to the area's sales at full market price "
-        "in the two years, so the homes that sold in each year are compared like with like.",
+        "Each type's change is its year effect in a regression of the log price (including VAT) on the dwelling's type, "
+        "log floor area, new-dwelling status and electoral division, fitted to the area's sales at full market price. "
+        "The four changes are weighted by the census count of each type times its mean price in the first year, the "
+        "stock's value, because apartments sell far more often than the stock holds them and rose differently.",
         "A sale counts in the year of its date of sale. Filings made in both systems from 1 to 10 October 2025 are "
         "counted once; the old system's VAT-exclusive prices of new dwellings are grossed up at 13.5 per cent.",
     ]):
@@ -163,7 +164,7 @@ def figures(G):
         "call": {"designated": G["d"]},
         "change": {k: round(G["c"][k], 1) for k in b["areas"]},
         "ask": {k: {"purchases": G["a"][k][0], "paid": int(round(G["a"][k][1]))} for k in b["areas"]},
-        "default_path": {"designated": B.designated(b, "type_weighted")},
+        "default_path": {"designated": B.designated(b, "pooled")},
         "conventions": {"line": 8, "vat": 13.5, "years": [2019, 2024, 2025, 2026, 2027], "counts": [16],
                         "dates": [1, 10, 30]},
     }

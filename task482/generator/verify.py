@@ -46,14 +46,22 @@ def main(target=None, gdir=None):
     y1, y2, y3 = pd.Timestamp("2024-10-01"), pd.Timestamp("2025-10-01"), pd.Timestamp("2026-09-30")
     mk = s[s["fmp"] & (s["date"] >= y1) & (s["date"] <= y3)].copy()
     mk["y"] = (mk["date"] >= y2).astype(float)
+    import openpyxl
+    ws = openpyxl.load_workbook(os.path.join(target, "census_2022_dwelling_stock_by_area_and_type.xlsx"),
+                                data_only=True).active
+    hdr = [c.value for c in ws[4]]
+    census = {r[0]: dict(zip(hdr[2:6], r[2:6])) for r in ws.iter_rows(min_row=5, values_only=True) if r[0]}
     out, bad = {}, []
     for code, g in mk.groupby("la_code"):
-        X = pd.concat([pd.Series(1.0, index=g.index, name="c"), g["y"], np.log(g["floor"] / 100.0).rename("lf"),
+        yt = pd.get_dummies(g["dwelling_type"], dtype=float).mul(g["y"], axis=0).add_prefix("y_")
+        X = pd.concat([pd.Series(1.0, index=g.index, name="c"), yt, np.log(g["floor"] / 100.0).rename("lf"),
                        g["new"].astype(float).rename("nw"),
                        pd.get_dummies(g["dwelling_type"], drop_first=True, dtype=float),
                        pd.get_dummies(g["ed_code"], drop_first=True, dtype=float)], axis=1)
-        beta = np.linalg.solve(X.T.values @ X.values, X.T.values @ np.log(g["price"].values))
-        out[code] = 100 * (np.exp(beta[1]) - 1)
+        beta = pd.Series(np.linalg.solve(X.T.values @ X.values, X.T.values @ np.log(g["price"].values)), index=X.columns)
+        base = g[g["y"] == 0].groupby("dwelling_type")["price"].mean()
+        w = {t: census[code][t] * base[t] for t in base.index}
+        out[code] = 100 * (sum(w[t] * np.exp(beta["y_" + t]) for t in w) / sum(w.values()) - 1)
         if round(out[code], 1) != fig["change"][code]:
             bad.append("change %s %.2f against %.1f" % (code, out[code], fig["change"][code]))
     des = sorted(k for k, v in out.items() if round(v, 1) > 8)

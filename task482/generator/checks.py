@@ -17,12 +17,14 @@ import pack as P      # noqa: E402
 import world as W     # noqa: E402
 
 TASK = os.path.dirname(HERE)
-GOLDEN = ["AC", "AV", "CV", "DM", "GS", "KB"]
-DEFAULT = ["AV", "BM", "CV", "GS", "IR", "KB", "MR", "RG"]
-FAMILY = ("golden", "hedonic_built", "hedonic_second_hand", "hedonic_monthly", "hedonic_levels_check")
-WRONG = {"median": ["AV", "BM", "GS", "IR", "KB", "MR", "RG"], "per_m2": DEFAULT, "type_weighted": DEFAULT,
-         "type_weighted_mean": DEFAULT, "hedonic_no_location": ["AV", "BM", "CV", "GS", "KB", "RG"],
-         "ed_type_cells": ["AC", "AV", "CV", "DM", "GS", "IR", "KB", "MR"]}
+GOLDEN = ["AC", "AV", "CV", "DM", "GS", "KB", "MR"]
+DEFAULT = ["AC", "AV", "DM", "DS", "GS", "IR", "KB"]
+TYPED = ["AV", "BM", "CV", "GS", "KB", "MR", "RG"]
+FAMILY = ("golden", "golden_built", "stock_count_weights", "per_type_regressions", "golden_second_hand")
+WRONG = {"pooled": DEFAULT, "pooled_monthly": DEFAULT, "type_weighted": TYPED, "type_weighted_mean": TYPED,
+         "hedonic_no_location": ["AV", "BM", "DS", "GS", "IR", "KB", "RG"],
+         "median": ["AV", "BM", "CV", "DS", "GS", "KB", "MR", "RG"],
+         "per_m2": ["AV", "BM", "DS", "GS", "IR", "KB", "RG"], "ed_type_cells": DEFAULT}
 
 
 class Run:
@@ -50,12 +52,18 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     # -------------------------------------------------------------- the three rules, executed on the clean truth
     est = x["est"]
     pick = lambda k: sorted(a for a in est if est[a][k] > W.LINE)
-    R.ok(pick("type_weighted") == DEFAULT, "R3a the easy route (type changes weighted by the stock) on the clean "
-         "truth files the default eight (%s)" % pick("type_weighted"))
-    R.ok(pick("hedonic") == GOLDEN, "R3b the hedonic with location on the clean truth files the golden six")
-    R.ok(sorted(a["code"] for a in x["areas"] if a["growth"] > W.LINE) == GOLDEN, "R3c the true change for an "
-         "unchanged dwelling (the world's growth) files the golden six")
-    R.ok(pick("hedonic_no_location") != GOLDEN and pick("median") != GOLDEN and pick("per_m2") != GOLDEN,
+    R.ok(pick("pooled") == DEFAULT, "R3a the easy route (the pooled regression with location, one year effect) on the "
+         "clean truth files the default seven (%s)" % pick("pooled"))
+    R.ok(pick("hedonic") == GOLDEN, "R3b each type's year effect weighted by the stock's value files the golden seven")
+    tv = {}
+    for a in x["areas"]:
+        ga = a["ga"] if a["ga"] is not None else a["growth"]
+        g = [a["growth"]] * 3 + [ga]
+        p0 = [W.TFLOOR[t] ** W.ELAST * __import__("math").exp(W.TEFF[t]) for t in W.TYPES]
+        tv[a["code"]] = sum(m * v * g_ for m, v, g_ in zip(a["stock"], p0, g)) / sum(m * v for m, v in zip(a["stock"], p0))
+    R.ok(sorted(k for k, v in tv.items() if v > W.LINE) == GOLDEN, "R3c the true change in the stock's value (each "
+         "type's growth weighted by the stock's value) files the golden seven")
+    R.ok(pick("type_weighted") == TYPED and pick("hedonic_no_location") != GOLDEN and pick("median") != GOLDEN,
          "R3d every partial correction on the truth misses the golden")
     # -------------------------------------------------------------- the ladder on the cut pack
     ch = {r: B.change(b, r) for r in FAMILY + tuple(WRONG)}
@@ -69,11 +77,11 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     for r in FAMILY:
         R.ok(all(abs(ch[r][k] - B.LINE) >= 1.0 for k in b["areas"]), "C2 every area a point or more from the line "
              "under %s" % r)
-    log_family = ("golden", "hedonic_built", "hedonic_second_hand", "hedonic_monthly")
+    log_family = ("golden", "golden_built", "per_type_regressions", "golden_second_hand")
     spread = max(max(ch[r][k] for r in log_family) - min(ch[r][k] for r in log_family) for k in b["areas"])
     R.ok(spread <= 0.7, "C3 the log hedonic forms agree within 0.7 of a point in every area (%.2f)" % spread)
     for r in WRONG:
-        if r == "ed_type_cells":
+        if r not in ("pooled", "type_weighted"):
             continue
         R.ok(sum(abs(ch[r][k] - B.LINE) >= 1.0 for k in b["areas"] if (k in sets[r]) != (k in GOLDEN)) ==
              sum(1 for k in b["areas"] if (k in sets[r]) != (k in GOLDEN)), "C4 every area %s misplaces is a point "

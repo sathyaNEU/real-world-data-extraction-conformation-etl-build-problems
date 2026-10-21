@@ -212,10 +212,8 @@ def stock(x):
     rng = np.random.default_rng(W.SEED + 3)
     out = {}
     for a in x["areas"]:
-        tot = int(a["n"] / 0.041)
-        mix = np.array(W.TMIX) * rng.uniform(0.9, 1.1, 4)
-        mix = mix / mix.sum()
-        out[a["code"]] = [int(round(tot * m / 10.0)) * 10 for m in mix]
+        tot = int(a["n"] / 0.041 * float(rng.uniform(0.95, 1.05)))
+        out[a["code"]] = [int(round(tot * m / 10.0)) * 10 for m in a["stock"]]
     return out
 
 

@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 1: architecture 4 spent (reader 9 fitted the hedonic with location); re-root architecture 5",
+ "resume": "stage 1: architecture 5 (per-type hedonic with location weighted by the census stock's value; default = pooled year effect) is built in the generator (fast build green: 54 checks, verify 0) but the card is not registered: guard BLOCKs own_lineage against v4 (redraw gap or pattern) and forcing_event vote_or_meeting (redraw); draft card at scratchpad v4/card5.json not kept, rebuild it from the card plus these notes; then design note, precut, full build, stage 4",
  "approved": null,
  "delivered": null,
  "portal": null,

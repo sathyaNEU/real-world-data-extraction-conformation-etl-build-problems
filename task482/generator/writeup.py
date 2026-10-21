@@ -29,11 +29,11 @@ def write(fig_path, out):
     w("## 1. Final Recommendation")
     w("")
     w("**Designate %s as rapid price growth areas for 2027.**" % _and(nm(d)))
-    w("Their residential property prices rose by more than 8 per cent in the year to September 2026 on the year "
-      "before, for a dwelling of unchanged type, floor area, newness and electoral division; no other area's did. The "
-      "homes that sold in each year are a shifting slice of each area's stock, so the change is the year effect of a "
-      "hedonic regression rather than a summary of what sold: by dwelling type against the census stock the areas over "
-      "8 per cent would be %s." % _and(nm(dp)))
+    w("The market value of each one's dwelling stock rose by more than 8 per cent in the year to September 2026 on the "
+      "year before; no other area's did. Each dwelling type's change is held to constant quality by a hedonic "
+      "regression with location, and the four are weighted by the census stock's value, because apartments sell far "
+      "more often than the stock holds them and in some areas rose differently from houses: one year effect for all "
+      "sales would designate %s." % _and(nm(dp)))
     w("")
     w("## 2. Critical Components")
     w("")
@@ -52,10 +52,12 @@ def write(fig_path, out):
     w("3. Took each dwelling's type, floor area and newness from the valuation register and its electoral division "
       "from the address point file through the eircode.")
     w("4. Kept sales at full market price dated 1 October 2024 to 30 September 2026 by date of sale.")
-    w("5. For each area regressed log price on a year-to-September-2026 indicator, dwelling type, log floor area, new "
-      "dwelling and electoral division; the change is exp(year effect) less one.")
-    w("6. Designated the areas over 8 per cent: %s." % ", ".join(nm(d)))
-    w("7. Ask: every residential sale dated 1 October 2025 to 30 September 2026, any market basis; the apartments of a "
+    w("5. For each area regressed log price on a year-to-September-2026 indicator for each dwelling type, dwelling "
+      "type, log floor area, new dwelling and electoral division.")
+    w("6. Weighted each type's exp(year effect) by the census count of that type times its mean first-year price "
+      "(the stock's value) and took the weighted mean less one as the area's change.")
+    w("7. Designated the areas over 8 per cent: %s." % ", ".join(nm(d)))
+    w("8. Ask: every residential sale dated 1 October 2025 to 30 September 2026, any market basis; the apartments of a "
       "housing body's block share one building, date and consideration (the block's total on each line), so each "
       "block is one purchase paid once.")
     w("")

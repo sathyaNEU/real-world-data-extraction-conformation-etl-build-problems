@@ -39,10 +39,10 @@
   "bso_electoral_divisions_2026.csv": 139,
   "bso_extract_manifest_2026-10-15.csv": 11,
   "mortgage_drawdowns_by_area_2025-2026.csv": 96,
-  "address_points_buildings_extract_2026-10-15.csv": 75814,
-  "ppr_residential_sales_filed_2025-10-01_to_2026-10-14.csv": 39373,
-  "ppr_residential_sales_filed_2024-10-01_to_2025-10-10.csv": 37410,
-  "valuation_register_dwellings_extract_2026-10-15.csv": 75814
+  "address_points_buildings_extract_2026-10-15.csv": 75141,
+  "ppr_residential_sales_filed_2025-10-01_to_2026-10-14.csv": 38633,
+  "ppr_residential_sales_filed_2024-10-01_to_2025-10-10.csv": 37532,
+  "valuation_register_dwellings_extract_2026-10-15.csv": 75141
  },
  "sources": {
   "constructed": "every file is constructed for this task by its generator (task482/generator); the nation, its statistics office, the areas, the dwellings, the sales and the people are fictional",

@@ -1,68 +1,68 @@
 {
  "ask": {
   "AC": {
-   "paid": 838392500,
-   "purchases": 2460
+   "paid": 843585000,
+   "purchases": 2457
   },
   "AV": {
-   "paid": 696982000,
-   "purchases": 2177
+   "paid": 712798500,
+   "purchases": 2164
   },
   "BM": {
-   "paid": 866667000,
-   "purchases": 2355
+   "paid": 860503000,
+   "purchases": 2368
   },
   "CL": {
-   "paid": 359074500,
-   "purchases": 1425
+   "paid": 366873500,
+   "purchases": 1433
   },
   "CT": {
-   "paid": 418911500,
-   "purchases": 1539
+   "paid": 400369000,
+   "purchases": 1540
   },
   "CV": {
-   "paid": 963083000,
-   "purchases": 2686
+   "paid": 928926000,
+   "purchases": 2674
   },
   "DM": {
-   "paid": 1286799000,
-   "purchases": 2983
+   "paid": 1181753500,
+   "purchases": 2978
   },
   "DS": {
-   "paid": 578041000,
-   "purchases": 1978
+   "paid": 546154500,
+   "purchases": 1973
   },
   "GS": {
-   "paid": 569966000,
-   "purchases": 1853
+   "paid": 575617000,
+   "purchases": 1870
   },
   "IR": {
-   "paid": 868862500,
-   "purchases": 2455
+   "paid": 574199000,
+   "purchases": 2058
   },
   "KB": {
-   "paid": 1415960000,
-   "purchases": 3216
+   "paid": 1425305000,
+   "purchases": 3229
   },
   "KF": {
-   "paid": 489289000,
-   "purchases": 1750
+   "paid": 502370000,
+   "purchases": 1756
   },
   "LF": {
-   "paid": 590768500,
-   "purchases": 1952
+   "paid": 606609500,
+   "purchases": 1944
   },
   "MR": {
-   "paid": 1062521000,
-   "purchases": 2735
+   "paid": 686107000,
+   "purchases": 2302
   },
   "RG": {
-   "paid": 1114686500,
-   "purchases": 2770
+   "paid": 1123996000,
+   "purchases": 2766
   },
   "TV": {
-   "paid": 453259000,
-   "purchases": 1664
+   "paid": 460510500,
+   "purchases": 1660
   }
  },
  "call": {
@@ -72,26 +72,27 @@
    "CV",
    "DM",
    "GS",
-   "KB"
+   "KB",
+   "MR"
   ]
  },
  "change": {
-  "AC": 9.9,
-  "AV": 12.3,
-  "BM": 5.7,
-  "CL": 3.5,
-  "CT": 5.9,
-  "CV": 10.7,
-  "DM": 10.1,
-  "DS": 6.1,
-  "GS": 12.1,
-  "IR": 6.3,
-  "KB": 11.5,
-  "KF": 2.0,
+  "AC": 10.1,
+  "AV": 10.6,
+  "BM": 5.2,
+  "CL": 3.8,
+  "CT": 5.3,
+  "CV": 9.5,
+  "DM": 10.2,
+  "DS": 5.6,
+  "GS": 12.0,
+  "IR": 4.8,
+  "KB": 11.2,
+  "KF": 3.4,
   "LF": 3.8,
-  "MR": 5.7,
-  "RG": 6.2,
-  "TV": 3.1
+  "MR": 10.4,
+  "RG": 5.7,
+  "TV": 3.6
  },
  "conventions": {
   "counts": [
@@ -114,14 +115,13 @@
  },
  "default_path": {
   "designated": [
+   "AC",
    "AV",
-   "BM",
-   "CV",
+   "DM",
+   "DS",
    "GS",
    "IR",
-   "KB",
-   "MR",
-   "RG"
+   "KB"
   ]
  }
 }

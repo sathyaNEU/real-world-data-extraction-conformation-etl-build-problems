@@ -28,33 +28,36 @@ ELAST = 0.80
 NEWP = 0.10
 NOISE = 0.14
 
-# area code, name, second-hand sales a year, log level, annual growth (per cent), electoral divisions, place, knobs:
+# area code, name, second-hand sales a year, log level, annual growth of a house (per cent), electoral divisions,
+# place, knobs:
 #   tilt  the second year's lean of second-hand sales toward the dearer (+) or cheaper (-) electoral divisions
 #   new   the share of the second year's sales that are new dwellings (the first year's is 4 per cent), built in the
 #         divisions at rank `where` (0 the cheapest)
-#   apt   the second year's lean toward apartments (log odds)
-# place: "o" over the line on the golden and on every summary of what sold; "u" under on all; "c" over on the golden,
-# under on every summary (sales leaning cheap); "d" under on the golden, over on every summary (leaning dear); "n"
-# under on the golden and on the regression without location, over on the summaries (new homes); "a" over on the
-# golden, under on the median, over per square metre (apartments)
+#   apt   the lean of both years' sales toward apartments (log odds), against a stock with few of them
+#   ga    the annual growth of an apartment (per cent), where it differs from a house's
+# place: "o" over the line on the golden and every route; "u" under on all; "c" over on the golden and the pooled
+# regression, under on the summaries by type (sales leaning cheap); "d" the reverse (leaning dear); "w" over on the
+# golden, under on the pooled regression (houses rising, apartments flat, the sales full of apartments); "v" the
+# reverse (apartments rising)
 AREAS = [
-    ("KB", "Kilbrannagh", 3100, 12.72, 11.6, 10, "o", dict(tilt=0.0, new=0.05, where=4, apt=0.0)),
-    ("AC", "Ardcullen", 2400, 12.55, 10.3, 9, "c", dict(tilt=-0.26, new=0.04, where=3, apt=0.0)),
-    ("LF", "Lisnafeen", 1900, 12.41, 4.2, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0)),
-    ("RG", "Rathgowan", 2700, 12.63, 5.9, 9, "d", dict(tilt=0.26, new=0.04, where=3, apt=0.0)),
-    ("TV", "Tullyvane", 1600, 12.30, 3.1, 8, "u", dict(tilt=0.0, new=0.05, where=3, apt=0.0)),
-    ("MR", "Moyrath", 2200, 12.48, 5.8, 9, "n", dict(tilt=0.0, new=0.21, where=6, apt=0.0)),
-    ("GS", "Glenaskin", 1800, 12.37, 12.8, 8, "o", dict(tilt=0.0, new=0.05, where=3, apt=0.0)),
-    ("DM", "Dunmarra", 2900, 12.69, 10.2, 10, "c", dict(tilt=-0.25, new=0.04, where=4, apt=0.0)),
-    ("CT", "Clonteevan", 1500, 12.26, 6.1, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0)),
-    ("IR", "Innishrue", 2000, 12.44, 5.9, 9, "n", dict(tilt=0.0, new=0.20, where=6, apt=0.0)),
-    ("CV", "Carrigvore", 2600, 12.60, 10.4, 9, "a", dict(tilt=0.0, new=0.04, where=4, apt=0.50)),
-    ("KF", "Knockfeerin", 1700, 12.33, 2.4, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0)),
-    ("BM", "Ballymarne", 2300, 12.52, 6.0, 9, "d", dict(tilt=0.25, new=0.04, where=4, apt=0.0)),
-    ("CL", "Corlespie", 1400, 12.22, 3.8, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0)),
-    ("AV", "Annaghvale", 2100, 12.46, 12.1, 9, "o", dict(tilt=0.0, new=0.05, where=4, apt=0.0)),
-    ("DS", "Drumshallon", 1900, 12.39, 6.4, 8, "u", dict(tilt=0.0, new=0.05, where=3, apt=0.0)),
+    ("KB", "Kilbrannagh", 3100, 12.72, 11.6, 10, "o", dict(tilt=0.0, new=0.05, where=4, apt=0.0, ga=None)),
+    ("AC", "Ardcullen", 2400, 12.55, 10.3, 9, "c", dict(tilt=-0.26, new=0.04, where=3, apt=0.0, ga=None)),
+    ("LF", "Lisnafeen", 1900, 12.41, 4.2, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0, ga=None)),
+    ("RG", "Rathgowan", 2700, 12.63, 5.9, 9, "d", dict(tilt=0.26, new=0.04, where=3, apt=0.0, ga=None)),
+    ("TV", "Tullyvane", 1600, 12.30, 3.1, 8, "u", dict(tilt=0.0, new=0.05, where=3, apt=0.0, ga=None)),
+    ("MR", "Moyrath", 2200, 12.48, 11.4, 9, "w", dict(tilt=0.0, new=0.05, where=4, apt=1.25, ga=1.0)),
+    ("GS", "Glenaskin", 1800, 12.37, 12.8, 8, "o", dict(tilt=0.0, new=0.05, where=3, apt=0.0, ga=None)),
+    ("DM", "Dunmarra", 2900, 12.69, 10.2, 10, "c", dict(tilt=-0.25, new=0.04, where=4, apt=0.0, ga=None)),
+    ("CT", "Clonteevan", 1500, 12.26, 6.1, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0, ga=None)),
+    ("IR", "Innishrue", 2000, 12.44, 4.4, 9, "v", dict(tilt=0.0, new=0.05, where=4, apt=1.25, ga=18.0)),
+    ("CV", "Carrigvore", 2600, 12.60, 11.2, 9, "w", dict(tilt=0.0, new=0.04, where=4, apt=1.20, ga=0.5)),
+    ("KF", "Knockfeerin", 1700, 12.33, 2.4, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0, ga=None)),
+    ("BM", "Ballymarne", 2300, 12.52, 6.0, 9, "d", dict(tilt=0.25, new=0.04, where=4, apt=0.0, ga=None)),
+    ("CL", "Corlespie", 1400, 12.22, 3.8, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0, ga=None)),
+    ("AV", "Annaghvale", 2100, 12.46, 12.1, 9, "o", dict(tilt=0.0, new=0.05, where=4, apt=0.0, ga=None)),
+    ("DS", "Drumshallon", 1900, 12.39, 4.8, 8, "v", dict(tilt=0.0, new=0.05, where=3, apt=1.20, ga=17.0)),
 ]
+STOCK = [0.31, 0.34, 0.22, 0.13]
 CODES = [a[0] for a in AREAS]
 NAMES = {a[0]: a[1] for a in AREAS}
 ED_WORDS = ["North", "South", "East", "West", "Urban", "Rural", "Upper", "Lower", "Central", "Bridge", "Mill", "Hill"]
@@ -81,8 +84,7 @@ def _sales(rng, code, n, lvl, g, eds, kn, year):
     tilt = kn["tilt"] if year == 2 else 0.0
     w_ed = np.exp(tilt * 1.6 * rank) * np.array([e["size"] for e in eds])
     w_ed = w_ed / w_ed.sum()
-    apt = kn["apt"] if year == 2 else 0.0
-    w_t = np.array(TMIX) * np.exp([0, 0, 0, apt])
+    w_t = np.array(TMIX) * np.exp([0, 0, 0, kn["apt"]])
     w_t = w_t / w_t.sum()
     share_new = kn["new"] if year == 2 else 0.04
     n_new = int(round(n * share_new / (1 - share_new)))
@@ -100,7 +102,8 @@ def _sales(rng, code, n, lvl, g, eds, kn, year):
             fl = TFLOOR[t] * float(np.exp(rng.normal(0, 0.17)))
             built = int(rng.choice([1965, 1975, 1985, 1995, 2002, 2006, 2012, 2018])) + int(rng.integers(0, 6))
         d = dd[int(rng.integers(0, len(dd)))]
-        lp = (_level(lvl, d, g) + eds[e]["eff"] + TEFF[t] + ELAST * np.log(fl / 100.0) + (NEWP if new else 0.0)
+        gt = kn["ga"] if (t == "apartment" and kn["ga"] is not None) else g
+        lp = (_level(lvl, d, gt) + eds[e]["eff"] + TEFF[t] + ELAST * np.log(fl / 100.0) + (NEWP if new else 0.0)
               + float(rng.normal(0, NOISE)))
         price = float(np.exp(lp))
         price = round(price / 500.0) * 500.0 if price < 1e6 else round(price / 5000.0) * 5000.0
@@ -109,49 +112,55 @@ def _sales(rng, code, n, lvl, g, eds, kn, year):
     return out
 
 
-def _estimates(sales):
-    """The routes on the truth (VAT-inclusive prices, market sales): the median change, the median per square metre,
-    the type change weighted by the first year's mix, the regression without location, and the full regression."""
+def _estimates(sales, stock):
+    """The routes on the truth (VAT-inclusive prices, market sales): the median change, type changes weighted by the
+    stock, the pooled regression with and without location, and the golden: each type's year effect from the regression
+    with location, weighted by the stock's value of that type (its count times the first year's mean price)."""
     y = np.array([s["date"] >= Y2[0] for s in sales])
     p = np.array([s["price"] for s in sales])
     fl = np.array([s["floor"] for s in sales])
     lp = np.log(p)
-    out = {"median": 100 * (np.median(p[y]) / np.median(p[~y]) - 1),
-           "per_m2": 100 * (np.median((p / fl)[y]) / np.median((p / fl)[~y]) - 1)}
     tt = np.array([s["type"] for s in sales])
-    acc = 0.0
-    for t in TYPES:
-        m = tt == t
-        acc += (m & ~y).sum() / (~y).sum() * (np.median(p[m & y]) / np.median(p[m & ~y]) - 1)
-    out["type_weighted"] = 100 * acc
+    out = {"median": 100 * (np.median(p[y]) / np.median(p[~y]) - 1)}
+    out["type_weighted"] = 100 * sum(stock[i] * (np.median(p[(tt == t) & y]) / np.median(p[(tt == t) & ~y]) - 1)
+                                     for i, t in enumerate(TYPES))
+    eds = sorted(set(s["ed"] for s in sales))
+    ee = np.array([s["ed"] for s in sales])
 
-    def reg(location):
-        cols = [np.ones(len(sales)), y.astype(float), np.log(fl / 100.0), np.array([s["new"] for s in sales], float)]
+    def reg(location, by_type=False):
+        cols = [np.ones(len(sales))]
+        cols += [(y & (tt == t)).astype(float) for t in TYPES] if by_type else [y.astype(float)]
+        cols += [np.log(fl / 100.0), np.array([s["new"] for s in sales], float)]
         cols += [(tt == t).astype(float) for t in TYPES[1:]]
         if location:
-            eds = sorted(set(s["ed"] for s in sales))
-            ee = np.array([s["ed"] for s in sales])
             cols += [(ee == e).astype(float) for e in eds[1:]]
-        b = np.linalg.lstsq(np.column_stack(cols), lp, rcond=None)[0]
-        return 100 * (np.exp(b[1]) - 1)
-    out["hedonic_no_location"] = reg(False)
-    out["hedonic"] = reg(True)
+        return np.linalg.lstsq(np.column_stack(cols), lp, rcond=None)[0]
+    out["hedonic_no_location"] = 100 * (np.exp(reg(False)[1]) - 1)
+    out["pooled"] = 100 * (np.exp(reg(True)[1]) - 1)
+    bt = reg(True, by_type=True)[1:5]
+    val = np.array([stock[i] * np.mean(p[(tt == t) & ~y]) for i, t in enumerate(TYPES)])
+    out["hedonic"] = 100 * (float(np.sum(val * np.exp(bt)) / np.sum(val)) - 1)
     return out
 
 
 def placed(place, e):
     over = {k: v > LINE + 1.0 for k, v in e.items()}
     under = {k: v < LINE - 1.0 for k, v in e.items()}
+    main = ("hedonic", "pooled", "type_weighted", "hedonic_no_location")
     clear = abs(e["hedonic"] - LINE) >= 1.5
-    summ = ("median", "per_m2", "type_weighted")
     return clear and {
-        "o": all(over.values()),
-        "u": all(under.values()),
-        "c": over["hedonic"] and all(under[k] for k in summ) and under["hedonic_no_location"],
-        "d": under["hedonic"] and all(over[k] for k in summ) and over["hedonic_no_location"],
-        "n": under["hedonic"] and under["hedonic_no_location"] and all(over[k] for k in summ),
-        "a": over["hedonic"] and under["median"] and over["per_m2"] and over["hedonic_no_location"],
+        "o": all(over[k] for k in main),
+        "u": all(under[k] for k in main),
+        "c": over["hedonic"] and over["pooled"] and under["type_weighted"] and under["median"],
+        "d": under["hedonic"] and under["pooled"] and over["type_weighted"] and over["median"],
+        "w": over["hedonic"] and under["pooled"] and under["hedonic_no_location"],
+        "v": under["hedonic"] and over["pooled"] and over["hedonic_no_location"],
     }[place]
+
+
+def stock_mix(rng, kn):
+    mix = np.array(STOCK) * rng.uniform(0.92, 1.08, 4)
+    return mix / mix.sum()
 
 
 def build():
@@ -164,13 +173,15 @@ def build():
             eff -= eff.mean()
             eds = [{"code": "%s%03d" % (code, 11 + 7 * k), "name": "%s %s" % (name, words[k]), "area": code,
                     "eff": float(eff[k]), "size": float(rng.uniform(0.6, 1.6))} for k in range(ne)]
+            mix = stock_mix(rng, kn)
             sub = _sales(rng, code, n, lvl, g, eds, kn, 1) + _sales(rng, code, n, lvl, g, eds, kn, 2)
-            e = _estimates(sub)
+            e = _estimates([s for s in sub], mix)
             if placed(place, e):
                 break
         else:
             raise SystemExit("area %s not placed" % code)
-        x["areas"].append({"code": code, "name": name, "growth": g, "place": place, "n": n, "level": lvl})
+        x["areas"].append({"code": code, "name": name, "growth": g, "ga": kn["ga"], "place": place, "n": n,
+                           "level": lvl, "stock": [float(m) for m in mix]})
         x["eds"] += eds
         x["sales"] += sub
         x["est"][code] = e
@@ -214,7 +225,8 @@ def _non_market(rng, x):
             unit = []
             for u in range(units):
                 fl = round(TFLOOR["apartment"] * float(np.exp(rng.normal(0, 0.08))), 1)
-                lp = _level(a["level"], d, a["growth"]) + e["eff"] + TEFF["apartment"] + ELAST * np.log(fl / 100.0) + NEWP
+                lp = (_level(a["level"], d, a["ga"] if a["ga"] is not None else a["growth"]) + e["eff"]
+                      + TEFF["apartment"] + ELAST * np.log(fl / 100.0) + NEWP)
                 unit.append((fl, float(np.exp(lp)) * 0.88))
             total = round(sum(v for _, v in unit) / 1000.0) * 1000.0
             for fl, _ in unit:

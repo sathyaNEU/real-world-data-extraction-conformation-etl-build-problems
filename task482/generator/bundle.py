@@ -25,8 +25,9 @@ Y2 = (dt.date(2025, 10, 1), dt.date(2026, 9, 30))
 LINE = 8.0
 VAT = 0.135
 TYPES = ["Detached house", "Semi-detached house", "Terraced house", "Apartment"]
-ROUTES = ("golden", "hedonic_built", "hedonic_second_hand", "hedonic_levels_check", "hedonic_monthly",
-          "median", "per_m2", "type_weighted", "type_weighted_mean", "hedonic_no_location", "no_vat", "ed_type_cells")
+ROUTES = ("golden", "golden_built", "stock_count_weights", "per_type_regressions", "golden_second_hand",
+          "pooled", "pooled_monthly", "median", "per_m2", "type_weighted", "type_weighted_mean",
+          "hedonic_no_location", "ed_type_cells")
 
 
 def _csv(path, encoding="utf-8"):
@@ -83,7 +84,22 @@ def _market(b, code):
     return [s for s in b["sales"] if s["area"] == code and s["market"] and Y1[0] <= s["date"] <= Y2[1]]
 
 
-def _reg(ss, location=True, built=False, levels=False, monthly=False):
+def _by_type(b, code, ss, weights="value", built=False, separate=False):
+    """Each dwelling type's year effect from the regression with location, combined over the census stock: by the
+    stock's value of each type (its count times the first year's mean price of that type) or by its count."""
+    tt = [s["type"] for s in ss]
+    if separate:
+        eff = {t: np.log1p(_reg([s for s in ss if s["type"] == t], typed=False) / 100.0) for t in TYPES}
+    else:
+        eff = _reg(ss, built=built, typed=True)
+    n = b["census"][code]
+    y1 = {t: np.mean([s["price"] for s in ss if s["type"] == t and s["date"] < Y2[0]]) for t in TYPES}
+    w = {t: n[t] * (y1[t] if weights == "value" else 1.0) for t in TYPES}
+    del tt
+    return 100 * (sum(w[t] * np.exp(eff[t]) for t in TYPES) / sum(w.values()) - 1)
+
+
+def _reg(ss, location=True, built=False, levels=False, monthly=False, typed=False):
     y = np.array([s["date"] >= Y2[0] for s in ss])
     tt = np.array([s["type"] for s in ss])
     cols = [np.ones(len(ss))]
@@ -91,10 +107,13 @@ def _reg(ss, location=True, built=False, levels=False, monthly=False):
         months = sorted(set((s["date"].year, s["date"].month) for s in ss))
         mm = [(s["date"].year, s["date"].month) for s in ss]
         cols += [np.array([m == k for m in mm], float) for k in months[1:]]
+    elif typed:
+        cols += [(y & (tt == t)).astype(float) for t in TYPES]
     else:
         cols.append(y.astype(float))
     cols += [np.log(np.array([s["floor"] for s in ss]) / 100.0), np.array([s["new"] for s in ss], float)]
-    cols += [(tt == t).astype(float) for t in TYPES[1:]]
+    if len(set(tt)) > 1:
+        cols += [(tt == t).astype(float) for t in TYPES[1:]]
     if built:
         cols.append(np.array([min(s["built"], 2026) - 1990 for s in ss], float) / 10.0)
     if location:
@@ -108,6 +127,8 @@ def _reg(ss, location=True, built=False, levels=False, monthly=False):
         fit0[:, 1] = 0
         return 100 * bb[1] / float(np.mean(fit0 @ bb))
     bb = np.linalg.lstsq(X, np.log(p), rcond=None)[0]
+    if typed:
+        return {t: bb[1 + i] for i, t in enumerate(TYPES)}
     if monthly:
         months = sorted(set((s["date"].year, s["date"].month) for s in ss))
         eff = np.concatenate([[0.0], bb[1:len(months)]])
@@ -125,15 +146,19 @@ def change(b, route="golden"):
         p = np.array([s["price"] for s in ss])
         fl = np.array([s["floor"] for s in ss])
         tt = np.array([s["type"] for s in ss])
-        if route in ("golden", "no_vat"):
+        if route == "golden":
+            v = _by_type(b, code, ss)
+        elif route == "golden_built":
+            v = _by_type(b, code, ss, built=True)
+        elif route == "stock_count_weights":
+            v = _by_type(b, code, ss, weights="count")
+        elif route == "per_type_regressions":
+            v = _by_type(b, code, ss, separate=True)
+        elif route == "golden_second_hand":
+            v = _by_type(b, code, [s for s in ss if not s["new"]])
+        elif route == "pooled":
             v = _reg(ss)
-        elif route == "hedonic_built":
-            v = _reg(ss, built=True)
-        elif route == "hedonic_second_hand":
-            v = _reg([s for s in ss if not s["new"]])
-        elif route == "hedonic_levels_check":
-            v = _reg(ss, levels=True)
-        elif route == "hedonic_monthly":
+        elif route == "pooled_monthly":
             v = _reg(ss, monthly=True)
         elif route == "hedonic_no_location":
             v = _reg(ss, location=False)
