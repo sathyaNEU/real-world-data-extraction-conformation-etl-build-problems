@@ -1,38 +1,48 @@
 {
-  "task": "task191",
-  "owner": "oviya13ya",
-  "status": "FAILED_TO_STUMP",
-  "domain": "general-statistics-data-science/multiple-testing-selective-inference",
-  "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-20",
-  "stump": "A competent solver cleans the panel, excludes the booked maintenance evenings, takes the quarter's worst evening window at 318 kbps on HVT-01, judges it against that interconnect's own evening spread (28 per cent above its own quarterly 99th percentile, z about 3) and files fund the augment on HVT-01, where 318 kbps is the smallest of the nine quarterly worst windows the same seven interconnects have produced and the call is to fund nothing.",
-  "architecture": 1,
-  "loops": 1,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-17"
-  },
-  "leak": {
-    "leak_py": "REVIEW, clause numbers and domain nouns only, four lines answered in the design note",
-    "reader": "wave 8 audit: call landed, Gate F failed, scored by score_reader.py"
-  },
-  "duplicate_check": {
-    "heart": "PASS after the forum was redrawn",
-    "nearest": "0.05 task130 v3"
-  },
-  "judge": {
-    "verdict": "r2 DETERMINISTIC (r1 NOT_DETERMINISTIC FIX_NOW), Gate G and Gate H pass",
-    "disposition": "r2 FIX_NOW on two write-up figures and one ask pin, all three fixed in the generator: the window counts computed from the data (1,851 and 1,809), step 6's pooled-statistics overclaim replaced by the 282 of 15,330 record windows at or above the quarter, and clause 7.2 pinned to the commitment in force on the quarter's last day",
-    "report": "/tmp/determinism-check-task191-r2/verdict.md"
-  },
-  "returned": [],
-  "resume": "FAILED_TO_STUMP on measurement, not on a portal result: the wave 8 blind reader landed the call. The ladder is re-sited at stage 2; the asks are not re-worded.",
-  "approved": null,
-  "delivered": "2026-10-17",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": ""
+ "task": "task191",
+ "owner": "oviya13ya",
+ "status": "FAILED_TO_STUMP",
+ "domain": "general-statistics-data-science/multiple-testing-selective-inference",
+ "objective": "anomaly-detection",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-21",
+ "stump": "A competent solver cleans the panel, excludes the booked maintenance evenings, takes the quarter's worst evening window at 318 kbps on HVT-01, judges it against that interconnect's own evening spread (28 per cent above its own quarterly 99th percentile, z about 3) and files fund the augment on HVT-01, where 318 kbps is the smallest of the nine quarterly worst windows the same seven interconnects have produced and the call is to fund nothing.",
+ "architecture": 1,
+ "loops": 1,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-17"
+ },
+ "leak": {
+  "leak_py": "REVIEW, clause numbers and domain nouns only, four lines answered in the design note",
+  "reader": "wave 8 audit: call landed 1 of 1 and 111 of 119 ask figures, scored by score_reader.py; the reader's decisive step was the port's own prior-record 99th percentile at 330.2 kbps, which is one of the 48 licensed constructions and holds"
+ },
+ "duplicate_check": {
+  "heart": "PASS after the forum was redrawn",
+  "nearest": "0.05 task130 v3"
+ },
+ "judge": {
+  "verdict": "r2 DETERMINISTIC (r1 NOT_DETERMINISTIC FIX_NOW), Gate G and Gate H pass",
+  "disposition": "r2 FIX_NOW on two write-up figures and one ask pin, all three fixed in the generator: the window counts computed from the data (1,851 and 1,809), step 6's pooled-statistics overclaim replaced by the 282 of 15,330 record windows at or above the quarter, and clause 7.2 pinned to the commitment in force on the quarter's last day",
+  "report": "/tmp/determinism-check-task191-r2/verdict.md"
+ },
+ "returned": [],
+ "resume": "Architecture 1 refused on measurement, screened before any redesign (see DESIGN_NOTE.md '## Measured refusal' and generator/screen_estimator_family.py). Next step is a stage 1 re-root: new draw, architecture 2, loops reset, guard.py mechanisms and check first. The re-root may not reuse clause 4.2's filed comparison criterion in any wording, a reference built as a statistic of a statistic over the same panel, a two-year rollup of the same quantity shipped beside the quarter compared with it, or a decisive step whose only output is a binary while every graded figure is invariant to it. The ask layer is re-cut inside the re-root: 49 of its 119 graded figures are the deliverable's own worst-window grid and chart, which carry no device.",
+ "approved": null,
+ "delivered": "2026-10-17",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "architecture_spent": true,
+ "screen": {
+  "date": "2026-10-21",
+  "harness": "generator/screen_estimator_family.py",
+  "double_run_md5": "2b3635593d0488408a01958568840c89",
+  "estimator_family": "48 licensed constructions of clause 4.2's reference; 35 of 48 file the committed hold, 34 of the 38 read off the prior record do; graded-figure spread 0.0 kbps on the decided 318, on all 21 grid cells, on the closest interconnect and on the 14 evenings; only the binary call moves",
+  "cheapest_construction": "max over the eight quarterly worst windows equals one column maximum of the same rows, difference 0.000e+00, an identity; the one-group-by route is one idxmax over 17,139 kept rollup rows",
+  "lever_vs_ceiling": "the ladder needs the decided figure above 248.0 kbps and Gate C needs it at or below the same 248.0 kbps; admissible window [262.9, 234.0], empty by 28.9 kbps",
+  "verdict": "the decisive step has no estimator content; architecture 1 refused"
+ }
 }

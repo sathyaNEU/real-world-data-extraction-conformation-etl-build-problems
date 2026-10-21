@@ -2,6 +2,71 @@
 
 Judging the worst of many monitored series when the worst was chosen for being worst.
 
+## Measured refusal
+
+**Architecture 1 is refused on measurement, not redesigned. The decisive step has no estimator
+content.** Everything below this section is the record of the refused design and is kept as history;
+nothing in it is resumed. The re-root starts at stage 1 with a new draw.
+
+The wave 8 blind reader at medium effort, holding only a fresh unzip of `target.zip`, `prompt.txt`
+and the figure names, landed the call (fund no augment, HVT-01 worst at 318 kbps) and took 111 of
+119 ask figures. It named the decisive step as comparing each port's worst shortfall against that
+port's own non-congested noise level with clause 4.4's evenings removed, quoted clauses 4.2 and 4.4
+as what sent it there, and reported a baseline of 330 kbps against the 398 to 489 this note ships.
+That divergence is the whole finding, and it was priced before any redesign work was done.
+
+`generator/screen_estimator_family.py ../target` is the harness. It runs on the goldens' own reading
+of the pack, prints all three screens and is byte-identical over two runs
+(md5 `2b3635593d0488408a01958568840c89`).
+
+**Screen 1, the estimator family clause 4.2 leaves open.** 48 constructions of "the shortfall the
+network's own record shows the measurement produces without congestion", computed on the clean
+truth. 35 of 48 file the committed hold, 13 file a fund. The spread the family puts on the graded
+figures is **0.0 kbps on every one of them**: the decided 318 kbps is a maximum and no reference
+enters it, the 21 grid worst-window figures and their dates do not read a reference at all, the
+closest interconnect is the same name under all 48, and clause 4.4 fixes the 14 evenings. Only the
+binary call moves. The reader's 330.2 kbps is `HVT-01`'s own prior-record 99th percentile, and it
+holds; so does the same statistic for all seven interconnects (322.1 to 368.9 kbps against worst
+windows of 249 to 318), so the reader's route funds nobody.
+
+**The selection-breadth axis the architecture rests on is not the dial.** The reach this note calls
+the only admissible one (the quarterly worst window) holds 10 of 10, and the reach it calls wrong
+(the single interconnect's own record) holds 7 of 8. Read off the prior record at any reach the call
+holds 34 of 38; read off this quarter at any reach it holds 1 of 10. What decides the call is which
+file is opened, `evening_quality_daily.csv` or the quarter's own windows, and clause 4.2 says in its
+own words to open the record. Executing a filed sentence is rule application.
+
+**Screen 2, the cheapest licensed construction as algebra.** The designed construction is an exact
+identity with one column maximum: max over the eight quarterly worst windows 489.000000000000
+against `prior["shortfall"].max()` 489.000000000000, difference **0.000e+00**, because the maximum
+of a partition's maxima is the maximum. Slope 1, intercept 0. Seven of the eight draws of the
+statistic enter no graded figure, because `golden.compute` reads the eight quarterly maxima only
+through `by_q.iloc[0]`. The one-group-by route to the call is one line: subtract the rollup's two
+median columns, drop clause 4.4's evenings, take one `idxmax` over all 17,139 kept rows; it lands in
+2026Q1 on `RHN-01` at 489 kbps, not in 2027Q1, so fund nothing. A filter and a count file it too:
+282 of the 15,330 prior record windows already sit at or above 318 kbps.
+
+**Screen 3, the lever against the ceiling, which is empty by construction.** The ladder needs the
+decided figure above the easy route's reference, `HVT-01`'s own 2027Q1 99th percentile at 248.0
+kbps. Gate C needs it at or below every licensed reference, and the smallest licensed reference is
+that same 248.0 kbps, because the easy route is itself a licensed construction. At the 6 per cent
+margin `checks.py` asserts the admissible window is [262.9, 234.0], **empty by 28.9 kbps**. As
+shipped the decided figure clears the easy reference by 28.2 per cent and therefore clears the
+smallest licensed reference by the same 28.2 per cent, which is the Gate C failure in the same
+number as the ladder's margin. The family spread is 264.2 kbps on a graded quantity of 318 kbps, 83
+per cent of its own level and 264 printed units wide at the prompt's nearest kbps, and the decision
+boundary sits inside it, 2.0 kbps above the nearest licensed reference below and 12.2 kbps below the
+nearest above. One dial, both ends the same end: raising the decided figure to clear the easy route
+is what carries it past the licensed references that hold, and lowering it under every licensed
+reference puts the easy route on the hold as well.
+
+**What the re-root may not reuse.** Not clause 4.2's filed comparison criterion in any wording, not
+a reference built as a statistic of a statistic over the same panel (it is an identity with one
+column maximum), not a two-year rollup of the same quantity shipped beside the quarter it is
+compared with, and not a decisive step whose whole output is a binary while every graded figure is
+invariant to it. The pack itself is sound: 153 generator assertions and 168 independent checks are
+green on the shipped `target/`, and the refusal is of the design, not of the data.
+
 ## Draw
 
 | Axis | Value |
@@ -70,62 +135,79 @@ reach and the call is to fund nothing.
 
 ## Three rules
 
-- **Task type:** `multiple-testing-selective-inference`, which serves Anomaly Detection & Diagnostics:
-  the call is whether one monitored extreme is a real degradation or an artifact of having monitored
-  630 cells.
-- **Domain test:** the deciding quantity is the null distribution of a maximum over many series and
-  many periods, which selective inference estimates at the selection that produced the statistic rather
-  than from the selected member. In General Statistics the setting is always another field's, so the
-  swap is of the method: replace the distribution of the quarterly worst cell with a generic summary of
-  the selected path (its own mean, its own spread, its own history) and the call flips from hold to
-  fund, which is the whole task.
-- **Swap:** rewrite the call as which pumping station to refurbish on the worst night of the quarter,
-  or which till to replace on its worst hour, and the task still runs, because the object is a
-  statistical one. What breaks the task is swapping the method: a single series read once was selected
-  from nothing, so there is no maximum to calibrate and no call left.
-- **Layer 1:** the panel is minute grain with collector dropouts, written in UTC while the framework
-  states the windows in local time and the Netherlands moves to summer time on 28 March inside the
-  quarter; two vantage points measure the same traffic at different grains, the client telemetry per
-  minute and the edge per five minutes; one interconnect was renamed on 12 February and the register
-  carries both codes; nine evenings on one path sit inside a planned maintenance window; the cost
-  workbook is one wide sheet per month. Every one of these is what the platform's own systems produce
-  and none of them is placed to be caught.
-- **Layer 2:** `forecast_uncertainty`, own pattern `null-of-the-selected-maximum`. The methodological
-  choice that flips the call is the breadth of the selection the reference distribution is built at.
-- **Decisive step:** calibrate the statistic at the selection that produced it. The figure put forward
-  is the maximum over seven interconnects, ninety evenings and three windows, so what it has to be
-  measured against is what the same measurement produces at that same reach, which the eight
-  preceding quarters of the same panel supply as eight draws of the same statistic.
-- **Not semantics:** every field, code, unit and definition read correctly still leaves 318 kbps on
-  the table as a correct figure for a real evening on a real interconnect. The dictionary gives the
-  timezone, the register resolves the rename, the standard defines the shortfall and the framework
-  names the booked evenings and the three windows. Reading all of it right is what gets a solver to
-  318 kbps, which is the wrong answer's input, not its cure.
-- **Not rule application:** no filed rule says what a shortfall is compared against. The framework
-  files the criterion in general terms, that an augment is funded when the shortfall is larger than the
-  network's own record shows the measurement produces without congestion, and files the observable, the
-  windows, the maintenance exclusion and the quarter. It never says over how many cells the record is
-  read, and executing every stated rule gives 318 kbps against `HVT-01`'s own record, which funds.
-- **Analyst test:** a strong analyst who reads every field correctly and applies every filed rule tests
-  the quarter's worst cell against the interconnect it fell on, adds a seven-path multiplicity
-  correction because seven interconnects were looked at, clears both and files fund the augment on
-  `HVT-01`, the default path's `Ends on:`.
-- **Estimand:** the framework's clause 4.2, which files the quantity as the largest shortfall any
-  interconnect in the register shows in any evening window of the reporting quarter, one figure for
-  each interconnect and each window, the interconnects being those the register has in service at the
-  quarter end including any renamed inside it, and the evenings being every date of the quarter outside
-  the maintenance windows clause 4.4 names.
-- **No decoy:** nothing is planted to be caught. No block of readings is copied, no memo argues a call,
-  no stakeholder figure carries an answer, no draft or briefing ships, and the maintenance window is a
-  real schedule the framework points at rather than a trap. The eight earlier quarters are the same
+Re-answered against the screens above rather than against the design's intent. Six of the thirteen
+lines fail, and each failing line says so in its first words.
+
+- **Task type:** **HOLDS on the label, FAILS on the work.** `multiple-testing-selective-inference`
+  does serve Anomaly Detection & Diagnostics, and the call is nominally whether one monitored extreme
+  is a real degradation or what monitoring 1,851 windows produces on its own. But nothing selective
+  is computed: screen 2 shows the construction is one column maximum, so the task type is the label
+  on the design and not the work the solver does.
+- **Domain test:** **FAILS.** The deciding quantity was meant to be the null distribution of a
+  maximum over many series and many periods. Measured, that distribution enters the call only through
+  its own maximum, which equals the pooled maximum of the same rows to 0.000e+00, so the deciding
+  quantity is a single recorded number the record already holds and there is nothing for selective
+  inference to estimate. A quantity the records fix exactly is not one the field estimates
+  (`stumping` 1.2a).
+- **Swap:** **FAILS the method swap, which is the swap that binds in General Statistics.** Replace
+  the distribution of the quarterly worst cell with any summary of the same record and the call does
+  not move: the quarterly-worst reach holds 10 of 10 and the single interconnect's own record holds 7
+  of 8. The call survives deleting the whole selective layer, so the method is not what the task
+  turns on.
+- **Layer 1:** **HOLDS.** The panel is minute grain with collector dropouts, written in UTC while the
+  framework states the windows in local time and the Netherlands moves to summer time on 28 March
+  inside the quarter; two vantage points measure the same traffic at different grains, the client
+  telemetry per minute and the edge per five minutes; one interconnect was renamed on 12 February and
+  the register carries both codes; nine evenings on one path sit inside a planned maintenance window;
+  the cost workbook is one wide sheet per month. Every one of these is what the platform's own systems
+  produce, none is placed to be caught, and the reader joined the rename unprompted, which is what a
+  sound Layer 1 does.
+- **Layer 2:** **FAILS.** `forecast_uncertainty` with own pattern `null-of-the-selected-maximum` was
+  to make the breadth of the selection the methodological choice that flips the call. Screen 1
+  measures that breadth as inert: it is which record is opened, not at what breadth it is read, and
+  clause 4.2 names the record. There is no Layer 2.
+- **Decisive step:** **FAILS.** As designed it was to calibrate the statistic at the selection that
+  produced it. As measured it is: open `evening_quality_daily.csv`, subtract its two median columns,
+  drop clause 4.4's evenings and take one `idxmax`; the largest row of nine quarters sits in 2026Q1 on
+  `RHN-01`, so fund nothing. One group-by, or not even that.
+- **Not semantics:** **HOLDS.** Every field, code, unit and definition read correctly still leaves 318
+  kbps standing as a correct figure for a real evening on a real interconnect. The dictionary gives
+  the timezone, the register resolves the rename, the standard defines the shortfall and the framework
+  names the booked evenings and the three windows. The reader read all of it right and the figure it
+  reached was the golden's, so the call never turned on a reading. This line was never the problem.
+- **Not rule application:** **FAILS, and the measured family spread is the proof: 0.0 kbps on every
+  graded figure of the call.** The question is not whether a filed rule names the method but whether
+  anything is left to decide once every filed rule is read, and here nothing is. Clause 4.2 files the
+  criterion ("larger than the shortfall the network's own record shows the measurement produces
+  without congestion") and the 48-construction family it leaves open puts a spread of exactly **0.0
+  kbps** on the decided 318 kbps, **0.0 kbps** on each of the 21 grid worst-window figures, **0
+  names** on the closest interconnect and **0** on the 14 evenings; the reference spread itself is
+  264.2 kbps but no graded figure reads it. 35 of 48 constructions file the committed hold, 34 of the
+  38 read off the record do, and the reader's own 330.2 kbps is one of them. A spread of zero means
+  the step is a reflex whatever the documents say.
+- **Analyst test:** **FAILS, measured.** The test claimed a strong analyst tests the quarter's worst
+  cell against the interconnect it fell on, adds a seven-path multiplicity correction, clears both and
+  files fund the augment on `HVT-01`, the default path's `Ends on:` at 318 kbps. The blind reader did
+  exactly the per-port comparison the test predicts, against that port's own non-congested record at
+  330.2 kbps rather than its current-quarter spread at 248.0, and filed the golden hold. The easy
+  route lands the answer, so there is no stump.
+- **Estimand:** **HOLDS.** Clause 4.2 files the quantity as the largest shortfall any interconnect in
+  the register shows in any evening window of the reporting quarter, one figure for each interconnect
+  and each window, the interconnects being those the register has in service at the quarter end
+  including any renamed inside it, and the evenings being every date of the quarter outside the
+  maintenance windows clause 4.4 names. It is filed literally and its literal execution is the
+  golden's quantity. Filing it is also what leaves nothing behind it.
+- **No decoy:** **HOLDS.** Nothing is planted to be caught. No block of readings is copied, no memo
+  argues a call, no stakeholder figure carries an answer, no draft or briefing ships, and the
+  maintenance window is a real schedule the framework points at. The eight earlier quarters are the
   rollup the platform's own quality pipeline keeps and carry no determination to reproduce.
-- **No certified replay:** no published figure is reproduced to recover a method. The published
-  quarterly report states the platform-wide delivered bitrate and nothing per interconnect, and the
-  decisive reference is computed, never published.
-- **Lesson:** calibrate an extreme at the breadth it was selected at, not at the breadth you are
-  looking at it from. No build on file teaches it: the corpus carries detection delay, incomplete
-  arrival, base-rate transport and censoring, and nothing where the statistic itself was chosen for
-  being extreme.
+- **No certified replay:** **HOLDS.** No published figure is reproduced to recover a method. The
+  published quarterly report states the platform-wide delivered bitrate and nothing per interconnect,
+  and the reference is computed, never published.
+- **Lesson:** **FAILS.** The intended lesson was to calibrate an extreme at the breadth it was
+  selected at. A model that gets this build right learns nothing of the kind, because the breadth does
+  not reach the call: it learns to open the two-year rollup the pack ships, which the reader did
+  without being told.
 
 ## Readability screen
 
@@ -284,8 +366,22 @@ quarters, asserted by count. Deleting every device leaves the call exactly as ha
 **The referee.** `telemetry_handover_inventory.csv` states each file's row count and date range and arbitrates the
 one designed disagreement, the partial queue extract in A3, without naming a level.
 
-**The cracker sheet.** The cracker landed the call, ran the hygiene battery, executed every filed rule
-and matched every control.
+**The cracker sheet, refuted by measurement.** The table below is the author's model of the opponent
+and the wave 8 reader beat all three of its rows. It is kept as the record of what was predicted. The
+reader answered 119 of the 128 non-call leaves in `generator/figures.json` and hit 111, so each of
+A1's version device, A2's reissued build key and A3's absent restoration times was defeated at medium
+effort, and at least 40 of the 48 device-bearing figures were taken.
+
+**And the ask layer cannot be rescued on this pack, by arithmetic rather than by judgement.** Of the
+128 graded non-call figures, only **48 can carry a device at all** (A1's 21, A2's 18, A3's 9). The
+other **80 (62.5 per cent)** are the call's own construction layer: the deliverable's 42 worst-window
+cells and dates, the 8 quarterly worst windows, the 7 own 99th percentiles and 23 call-side
+singletons. `supplemental-stumping` requires the devices to be decoupled from the call, so none of
+those 80 may carry one, and the prompt shape that supplies the 25 criteria is what puts them in the
+deliverable. So the **best achievable ask result from re-cutting only the asks is 80 of 128, 62.5 per
+cent**, with every one of the three devices working perfectly. That is over the bar on the ask side
+alone before a single device is designed, which is why the ask layer is re-cut inside the stage 1
+re-root and not against this pack.
 
 | Ask figure | Cracker's path | Cracker's figure | Golden | Result |
 |---|---|---|---|---|
@@ -293,8 +389,12 @@ and matched every control.
 | A2 rebuffer share per build | the build string as the key | two builds blended into one | the release log's build windows | miss |
 | A3 restored inside the standard per month | the ticket close as the restoration | seven incidents counted inside | the restoration extract joined on the incident reference | miss |
 
-**Pair ceiling:** 39.5
-**Mirror leakage:** 20.0
+**Pair ceiling:** 93.3 measured, against the 39.5 this sheet predicted before the pack was cut
+**Mirror leakage:** 93.3 measured, against the 20.0 predicted; the reader held the ask weight while
+also landing the call, so there is no mirror to leak into
+**Measured by:** `.claude/skills/leak-check/score_reader.py`, wave 8, one blind Sonnet reader at
+medium effort holding only a fresh unzip of `target.zip`, `prompt.txt` and the figure names: 1 of 1
+on the call and 111 of 119 on the ask figures
 
 ## Tried and rejected
 
@@ -310,6 +410,23 @@ and matched every control.
 - A filed alarm rule with a nightly threshold, so that the statistic becomes a count of alarm nights:
   the alarm rule is a stated score and the selection collapses to seven paths, which a strong model
   corrects by reflex. Dropped: the selection has to be over cells for the step to be worth a rung.
+- Architecture 1 itself, the quarterly worst window judged against the eight earlier quarterly worst
+  windows: refused on measurement, not redesigned. The licensed family of 48 constructions puts a
+  spread of 0.0 kbps on every graded figure of the call, the designed maximum-of-maxima is an exact
+  identity with one column maximum of the same rows (0.000e+00), and the ladder's margin and Gate C's
+  requirement are the same number, so the admissible placement of the decided figure is empty by 28.9
+  kbps. The selection breadth the architecture rests on is inert: the record holds the call at every
+  reach, 34 of 38. See `## Measured refusal`.
+- Resuming architecture 1 by re-siting the reference (a trailing-four-quarter reference, a per-port
+  reference, a pooled-window percentile): killed by screen 1 before it was designed. Every one of
+  those is already in the 48-member family and 34 of the 38 record-based members file the committed
+  hold, so moving the reference moves no graded figure and cannot restore a ladder.
+- Re-cutting the ask layer alone on this pack: refused by arithmetic. Only 48 of the 128 graded
+  non-call figures can carry a device; the other 80 (62.5 per cent) are the call's own construction
+  layer, which `supplemental-stumping` forbids a device to touch, and the prompt shape that supplies
+  the 25 criteria is what puts them in the deliverable. Perfect devices on all three asks still bank
+  62.5 per cent of the ask weight, over the bar on its own. The asks are re-cut inside the stage 1
+  re-root.
 
 ## Pre-ship check
 
