@@ -1,22 +1,22 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-21",
- "stump": "The default path takes each region's share of its audited records in error and files AR01, AR02, AR04, AR05, AR06, AR07, AR08, AR10, AR11, AR12 and AR13 chosen, because it never asks how the audit drew its records: it took close to a quarter of the records the May risk screen referred and one in twenty-five of the rest, the referred records are in error far more often, and a region's register error rate is its strata's audited rates carried to the records each stratum holds.",
- "architecture": 2,
+ "stump": "The default path takes each office's median working days over its registered third-quarter applications and misses the offices whose medians run over 20, because it never asks how long the applications still open at the extract will take: they are the slow ones, so only the product-limit median over registered and open applications, the open ones censored at their age, gives the quarter's median.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-21"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW",
-  "reader": "both readers landed the call (exit 1); architecture 2 spent"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
   "heart": "WARN",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 1: re-root to architecture 3 in a fresh world and decisive step (architectures 1 and 2 spent, see Tried and rejected)",
+ "resume": "stage 2: design architecture 3 (third-quarter registration times with open applications censored): generator, ladder, asks, prompt, precut",
  "approved": null,
  "delivered": null,
  "portal": null,

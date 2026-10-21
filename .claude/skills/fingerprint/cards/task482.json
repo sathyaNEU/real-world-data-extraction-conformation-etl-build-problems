@@ -1,12 +1,12 @@
 {
   "task": "task482",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-10-21",
-  "slot_note": "re-root of seed ET39 after architecture 1 was spent at stage 4; a statistics office's business register quality audit, where the audit sample drew records flagged by an automated screen far more heavily than the rest",
+  "slot_note": "re-root of seed ET39 after architectures 1 and 2 were spent at stage 4; a business registry's timeliness review, where the third quarter's applications are still being processed at the extract",
   "domain": "survey-research-official-statistics",
   "client_domain": "survey-research-official-statistics",
   "subdomain": "census-register-administrative-data-quality",
-  "niche": "a national statistics office's decision at its November 2026 quality board on which regional business registers go to a 2027 re-validation exercise because their share of records in error exceeds 4 per cent, estimated from the summer 2026 quality audit, whose sample took records flagged by the register's automated risk screen at a far higher rate than unflagged ones",
+  "niche": "a business registry's choice of the regional registration offices placed on a timeliness improvement plan because the median working days from a complete application to registration, for applications received in the third quarter of 2026, exceed 20, when at the October extract a share of each office's applications is still open and sits only in the open caseload snapshot",
   "objective": "etl",
   "shape": "other",
   "decision_type": "designation_set",
@@ -14,76 +14,72 @@
   "answer": "AR01, AR05, AR08, AR11 and AR12 chosen",
   "answer_source": "generator/figures.json",
   "gap": [
-    "population"
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
-    "G5"
+    "G12",
+    "G9"
   ],
   "gate_g": "etl_conformance",
-  "calibration_form": "gold_standard_subsample",
-  "stump_strategy": "population_selection",
+  "calibration_form": "censored_or_lagged_release",
+  "stump_strategy": "maturity_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
+  "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "With every file conformed and every rule read, the easy route takes each region's error rate as the share of its audited records found in error; but the audit took records the risk screen flagged at about thirty times the rate of unflagged records, and flagged records are in error far more often, so the audited share overstates every region's error rate, most where flagged records are a small part of the register, and only weighting each audited record by the inverse of its chance of being drawn estimates the register's own rate.",
-  "domain_test": "Estimating a register's error rate from a quality audit sample, worked the way official statistics estimates from an unequal-probability sample: each audited record stands for the records of its stratum in the register, weighted by the inverse of its stratum's sampling fraction (Horvitz-Thompson), the strata here the risk screen's flag; with another field's nouns there is no administrative register audited against its source and no screen that drives the selection.",
+  "analyst_test": "With every file conformed and every rule read, the easy route takes each office's median over its registered applications, or counts the open ones at their age at the extract; but an application still open has only lasted at least its age, and the open ones are the slow ones, so the median of the registered understates it and an open application counted at its age understates it too, while only the product-limit estimate over registered and open applications, each open one censored at its age, recovers the median of the quarter's applications.",
+  "domain_test": "The timeliness of a register's intake measured from a cohort still being processed, worked the way official statistics measures a duration from records some of which have not ended: the open applications are right-censored at their age, and the median comes from the product-limit (Kaplan-Meier) estimate over the whole cohort; with another field's nouns the step survives only where durations are still running at the cut.",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:an audited share read as the register's rate when the audit drew records by a screen at very different rates",
+  "layer2_pattern": "own:a cohort's median duration read from its finished members alone when the unfinished are the slow ones",
   "layer1": [
-    "the register extract in two systems' layouts across the 2025 migration",
-    "regional office codes renumbered at the 2025 reorganisation",
-    "audit outcomes coded in two schemes across the audit season",
-    "a business re-registered under a new number left active under the old"
+    "the registration log in two systems' layouts",
+    "working days against calendar days and the registry's holiday list",
+    "applications made complete after a query, the clock restarting",
+    "an open caseload snapshot by office and receipt day, not by application"
   ],
-  "stakeholder_role": "head of register quality at a national statistics office",
-  "role_family": "statistical_office_head",
+  "stakeholder_role": "head of registration services at a business registry",
+  "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
-    "file": "sar_business_register_extract_2026-09-30.csv",
-    "rows": 135900,
-    "entity": "one business record on the register",
-    "grain": "record",
+    "file": "",
+    "rows": 0,
+    "entity": "one registration application",
+    "grain": "application",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "audit_or_inspection",
-  "org_family": "research_or_statistics_office",
+  "forum": "executive_team",
+  "forcing_event": "period_close",
+  "org_family": "other",
   "world": {
-    "geography": "United Kingdom (a fictional nation)",
-    "currency": "GBP",
-    "org_type": "national statistics office",
-    "invented_names": [
-      "Statistics Ardmuir",
-      "Ardmuir Gazette"
-    ],
+    "geography": "Ireland (a fictional nation)",
+    "currency": "EUR",
+    "org_type": "national business registry",
+    "invented_names": [],
     "people": [
-      "Sally Phillips",
-      "Sophie Williams"
+      "Eunan Reid",
+      "Jennifer Dyer"
     ]
   },
-  "deliverables": [
-    "sar_register_revalidation_2027_regions.xlsx"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A rate over a whole list is read from an audit of a sample drawn at very different rates for the members a screen flagged and the rest, and the flagged members carry the outcome far more often; the audited share overstates the rate wherever flagged members are a small part of the list, and only weighting each audited member by the inverse of its chance of being drawn, a chance recorded only in the screen's own output, recovers the list's rate.",
-  "driver_concrete": "The summer audit drew 60 per cent of the records the automated risk screen had flagged and 2 per cent of the rest, and a flagged record is in error about one time in four against one in fifty for the rest; each region's audited error share, 10 to 14 per cent, overstates its register's rate, 2 to 6 per cent, by how small a part of its register the screen flagged.",
-  "stump": "The default path takes each region's share of its audited records in error and files AR01, AR02, AR04, AR05, AR06, AR07, AR08, AR10, AR11, AR12 and AR13 chosen, because it never asks how the audit drew its records: it took close to a quarter of the records the May risk screen referred and one in twenty-five of the rest, the referred records are in error far more often, and a region's register error rate is its strata's audited rates carried to the records each stratum holds.",
+  "driver": "A cohort's median duration is read while part of the cohort is still running, and the still-running members are the slow ones; the median of the finished members understates it, and so does counting the unfinished at their age, so only the product-limit estimate that keeps each unfinished member at risk until its age recovers the cohort's median.",
+  "driver_concrete": "Each office's July to September applications are partly still open on 9 October, the open ones listed only as counts by receipt day in the caseload snapshot; an office with a backlog has its slow applications among them, so its median over registered applications looks under 20 working days while the quarter's median is over.",
+  "stump": "The default path takes each office's median working days over its registered third-quarter applications and misses the offices whose medians run over 20, because it never asks how long the applications still open at the extract will take: they are the slow ones, so only the product-limit median over registered and open applications, the open ones censored at their age, gives the quarter's median.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task479": "task479 weighs each employer's noisy experience against the pool's by credibility; here no unit's record is noisy: each region's audit is large, and its share is biased by how the sample was drawn, corrected by inverse-probability weights from the screen's output.",
-    "task473": "task473 estimates, from units tested regardless, the share of cases an observer notices at each trait level and divides each positive by it; here no detection is modelled and no trait level enters: the audit's own draw rates by the screen's flag, fixed by the counts drawn and on the register, weight each audited record, and the outcome is an error rate, not a count.",
-    "task458": "task458 counts trait-holders through events logged while units are observed, the observed share selected on the trait; here every record is on the register and observed, and only the audit's sample is drawn unequally, by a recorded flag.",
-    "task233": "task233 carries a missing group's departure from imputed values measured on a follow-up; here nothing is missing or imputed: the audited records are a stratified sample whose strata the screen's output records."
+    "task479": "task479 weighs noisy unit levels against the pool; here durations still running at the cut are censored.",
+    "task469": "task469 reads a share of future tasks needing longer than a new allowance from tasks seen only when they overran their own; here every application's clock runs from receipt, the registered ones observed in full and the open ones right-censored at their age on one extract date, and the quantity is a cohort's median.",
+    "task231": "task231 reads a rate over active units when exits are recorded a year late; here nothing is recorded late: open applications are known to be open, and their durations are censored.",
+    "task234": "task234 reads each source's current output from a share a transit loss cannot move; no output and no transit loss here.",
+    "task445": "task445 completes holders who keep fixed fractions of units; no holding here."
   },
   "notes": "stump_strategy composition_mix: the plan year's paid share depends on the benefit design mix the history does not carry for the changed districts.",
-  "registered": "2026-10-21T02:54:13Z",
+  "registered": "2026-10-21T03:10:51Z",
   "lineage": [
     {
       "architecture": "v1",
