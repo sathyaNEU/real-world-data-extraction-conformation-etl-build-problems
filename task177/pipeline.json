@@ -1,11 +1,11 @@
 {
  "task": "task177",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "psychology-behavioral-science",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-21",
  "stump": "One learning rate fitted to every contact and simulated through the assistant-first weeks files 40 per cent; the overflow transfers in the record, the only contacts a jobseeker did not choose, move their later choices about a fifth as far as a conversation they opened, so eight weeks of release 4.0 answering their calls convert far fewer of them and the share is 25 per cent.",
  "architecture": 1,
@@ -17,7 +17,7 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-21 on the round 5 pack (five lines, each answered in the design note's ## Leak sweep; no LEAK)",
-  "reader": "round 4 on target.zip a2c932a3: readers G and H call 10 and 20 (missed), asks 0 of 24 each, score_reader PASS on both"
+  "reader": "round 5 on target.zip 3be16ba3: reader I landed the call (25, from 26.2 with a fitted outcome-weighted habit model), Gate F fails and architecture 1 is spent; round 4 on a2c932a3 readers G and H had missed (10 and 20), asks 0 of 24 each"
  },
  "duplicate_check": {
   "heart": "BLOCK 2026-10-21 on ban.forum, ban.forcing_event and ban.org_family against task248 and task165, ruled by the author: the bans passed at registration (19 October 07:01Z) and fire only because task269 and task468 re-rooted after it; the window stays fixed at the draw",
@@ -25,12 +25,12 @@
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "FIX_NOW",
-  "report": "round 4 on target.zip a2c932a3: its own implementation 26.9 to 27.2, 0.3 to 0.6 under the 27.5 edge; diagnosed as the phone's outcome rate over every call (+0.49, filed as plan 3.3) and the transferred calls' choice left out of the likelihood (+0.62, open); re-centred with the acceptance count (2,003 of 2,400), golden 25.21, re-judge pending"
+  "disposition": "APPROVE",
+  "report": "round 5 re-judge on target.zip 3be16ba3: DETERMINISTIC, APPROVE (round 4 on a2c932a3 had been FIX_NOW at 26.9 to 27.2 against the 27.5 edge, fixed by plan 3.3 and the re-centring to 25.21)"
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
- "resume": "stage 4: the re-judge of the round 4 fix",
+ "resume": "architecture spent at Gate F; second cell this round assigned by the main session",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -109,5 +109,11 @@
   "build": "checks.py PASS 138 of 138, verify.py PASS 26 of 26, a second full build byte-identical (18 files)",
   "gates": "figures_check exit 0 (44); precut exit 0 (51); voice-check PASS; leak.py REVIEW (5 answered); scrub clean; surface exit 0; heart BLOCK (ruled, window fixed at draw)",
   "cracker": "pair ceiling 28.5, mirror leakage 0.0 (asks measured at 0 of 24 by the round 4 readers on a2c932a3)"
+ },
+ "gate_f": {
+  "zip_sha256": "3be16ba3488501d4a5ed86fb3f8754cb144a21aafe9b3017ec3ac8db3633402d",
+  "fate": "architecture 1 spent at Gate F: the re-judge DETERMINISTIC, APPROVE, but reader I landed the 25 bin",
+  "reader_I_path": "Channel choice is habit-driven (fitted latent habit model: decays 0.63 per contact, weights by previous contact outcome; resolved chat strongly raises next chat use, voice resolved raises it modestly, abandoned calls push to chat); release 4.0 filed at 83.5 per cent (acceptance); Chat share of contacts 1 Mar-25 Apr = 26.2 per cent, rounded to 25",
+  "lesson": "whole per cent failed determinism and nearest 5 admitted an outcome-weighted habit model, so the lever between the golden and its neighbours was no wider than the golden family's own spread"
  }
 }

@@ -1,7 +1,9 @@
 # task177 design note
 
-**Status: stage 4 round 4 fixed, waiting on the re-judge (2026-10-21), architecture 1 in a new world.** Rounds 1 to 3
-(2c536aaa, 2c11b94b, 8ab100af) re-sited the asks twice and moved the forecast to the nearest 5 per cent; round 3's
+**Status: architecture 1 spent at Gate F on target.zip 3be16ba3 (2026-10-21), paused at stage 1; the second cell this
+round is assigned by the main session.** The round 5 re-judge was DETERMINISTIC and APPROVE, and a scored reader's
+outcome-weighted habit model landed the 25 bin (`## Tried and rejected`). The history of architecture 1 follows.
+Rounds 1 to 3 (2c536aaa, 2c11b94b, 8ab100af) re-sited the asks twice and moved the forecast to the nearest 5 per cent; round 3's
 readers kept 0 of 24 asks. Round 4 on a2c932a3: readers G and H missed the call (10 and 20) and kept 0 of 24 asks; the
 re-judge DETERMINISTIC, FIX_NOW, its own implementation at 26.9 to 27.2, 0.3 to 0.6 under the cell's 27.5 edge. The
 four judge passes had run 26.0, 25.7, 26.4 to 27.2 and 26.9 to 27.2 against the generator's 26.05. Diagnosed by an
@@ -634,3 +636,11 @@ its group's surviving records), the same family by its label.
     it every time (26.0, 25.7, 26.4 to 27.2, 26.9 to 27.2), the last 0.3 to 0.6 under the cell's edge. The drift is
     the phone's outcome rate taken over every call (+0.49, now plan 3.3) and the transferred calls' choice left out of
     the likelihood (+0.62, open); the acceptance count went to 2,003 of 2,400 so the open readings sit a point inside.
+- **Architecture 1 spent at Gate F (round 5, target.zip 3be16ba3).** The re-judge was DETERMINISTIC and APPROVE, but
+  reader I landed the call: "Channel choice is habit-driven (fitted latent habit model: decays 0.63 per contact,
+  weights by previous contact outcome; resolved chat strongly raises next chat use, voice resolved raises it modestly,
+  abandoned calls push to chat)." and "release 4.0 filed at 83.5 per cent (acceptance) ... Chat share of contacts 1
+  Mar-25 Apr = 26.2 per cent, rounded to 25." The lesson: whole per cent failed determinism and nearest 5 admitted an
+  outcome-weighted habit model, so the lever between the golden and its neighbours was no wider than the golden
+  family's own spread, and a quantity's lever has to clear that spread by a wide margin, measured on an outsider's
+  re-implementation at the screen, before any rounding is chosen.
