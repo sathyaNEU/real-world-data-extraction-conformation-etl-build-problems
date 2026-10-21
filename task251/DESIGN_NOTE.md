@@ -2,255 +2,85 @@
 
 ## Draw
 
-Card `cards/task251.json` (architecture 3, re-rooted 2026-10-20 from architecture 2, spent at stage 4; see Tried and
-rejected and the card's lineage). Guard verdict WARN, no BLOCK. The WARNs, answered: repeat.decision (designation_set
-after task478: the decision is the set of meters the visit takes, and a set is what the manufacturer's engineer needs; a
-count or a gate would hide which meters, and the scoring unit is the meter, not task478's road segment);
-repeat.deliverables (png and xlsx after task481: the list goes to the manufacturer as a workbook and the quality office
-reads the chart; no other format family fits the decision); repeat.question_form (which, after task480 and task478: a
-pick asks which, and the question is a pick of meters). The structural notes are differentiated on the card against
-task229, task231, task236, task245, task265 and the slot's two earlier architectures. `guard.py slots` on the candidate
-driver: the four slot notes it returns (task202, task253, task190, task260) share words, not the move. The draw waited
-for the window: task471 and then task271 held population_selection and task271 the hospital family until later
-registrations pushed them out, and the analyzer parallel run was folded into the laboratory's note when task481 took
-parallel_run_overlap (Tried and rejected). At filing task478 held operations_desk, purchase_order_or_contract and
-monitoring_export, and the three were redrawn to the honester labels below; its re-filing took field_unit_lead, and the
-role was redrawn with it.
+Card `cards/task251.json` (architecture 4, re-rooted 2026-10-21 from architecture 3, spent at stage 4; a fresh rebuild
+at the author's standing instruction, see Tried and rejected and the card's lineage). Guard verdict WARN, no BLOCK. The
+WARNs, answered: repeat.gate_g and overuse.gate_g (method_or_model_selection after task484 and task271: the two methods
+are the validation day's error and a load-dependent error model, and the data's own conservation pairs pin the second,
+which is the vocabulary's definition; no other mechanism is honest here); repeat.decision (designation_set after task271:
+the decision is the set of stations the report flags and the contractor recalibrates); repeat.deliverables (xlsx and png:
+the list goes to the contractor as a workbook and the report prints the chart); repeat.question_form (which: a pick of
+stations). At filing task484 held statistical_office_head and register, task478 monitoring_export, task479 published_series and
+task271 line_manager_or_team, and test.same_driver matched population, G7 and method_or_model_selection against task271 v2 and
+task471 v1 lineage: role, artifact and forum were redrawn to the honest neighbours below (the artifact twice, as task479 filed) and G5 leads the generators.
 
 - **Pairing.** General Statistics & Data Science / missing-data-censoring-measurement-error, drawn for Data Quality
-  Monitoring & Alerting. The object is the health of the trust's bedside glucose results, which reach the clinical record
-  from 52 meters, and the call is a monitoring decision: which meters the point-of-care office withdraws for the
-  manufacturer's recalibration.
-- **The seed, re-found.** DQ24 gave the world (instruments checked against a reference, both noisy), the decision (which
-  instruments go for recalibration) and the quantity (each instrument's factor against a tolerance). Its pitfall, the
-  attenuated slope between two noisy instruments, is spent (task249 v1); this number's first two architectures spent a
-  reference chain and a wear clock. The decisive step is re-found in the data's own structure: most of a neonatal
-  meter's pairings with the laboratory exist because the meter's own reading was critical.
-- **Niche.** The ASST Pianura Orientale (fictional, the Po valley) runs 52 Glyvera GX2 meters on thirteen wards of the
-  Castelmarne, Rivobello and Valdarena hospitals. The meters' data manager, GlyLink, pairs a meter result with the central
-  laboratory's result whenever the nurse reads a tube's barcode on the meter: on the morning round on the days the
-  point-of-care office's plan gives each meter, and whenever a reading under 50 or over 400 mg/dL is confirmed in the
-  laboratory. The manufacturer recalibrated every meter in January 2027 and returns from 17 to 21 January 2028 under the
-  service contract; the procedure withdraws a meter whose systematic error against the laboratory is beyond 5 per cent.
-- **The call.** Which meters go on the list for the January 2028 visit, or none.
-- **Shape.** other: the list (each of the eight meters and no other: 9), each listed meter's ward, hospital and error
-  (8), the chart of every meter's error against the band with the list marked (4), the share of 2027 results reaching the
-  record late per hospital and quarter (12), the 2027 patient tests per ward (13), the two files (2): 48 criteria.
-- **Strategy.** `population_selection` (strategies F7: checks that see a unit because it was wrong). Gate G
-  signal_vs_noise_or_hold (a confirmation pairing's apparent bias is the meter's selected random error); generators G9,
-  G5, G11; gap population; calibration none (the analyzer change rides on the note's filed factor); context artifact
-  register (the meter register with its location history); Layer 2 field_method, pattern own:confirmation-pairs-selected-on-the-meter-reading.
-- **Forum, event, organisation.** customer_or_counterparty (the manufacturer receives the list: its service manager's
-  mail asks for it by Monday 10 January, and the visit, not the office, acts on it), other for the event (the
-  manufacturer's scheduled recalibration visit of 17 to 21 January 2028, a service visit with no order, renewal or tender
-  at stake, which purchase_order_or_contract overstated), hospital_or_health_provider. Role compliance_or_audit (the
-  coordinator answers for the meters' analytical quality under POCT-GLU-02; field_unit_lead, drawn first, went to task478
-  at its re-filing and named a site unit the office is not). Context artifact register: anagrafica_glucometri.xlsx answers where each meter stands, where it stood
-  and when it was last calibrated, correctly, and ranks nothing; the data manager's export is the spine.
-- **People** (`guard.py names --geo Italy --seed 251`, locale it_IT): Lorenzo Carfagna, the point-of-care office's
-  coordinator, who asks; Silvestro Fittipaldi, the laboratory's director, who signs the analyzer note; Adelmo Gori, the
-  manufacturer's service manager. None appears in the prompt.
-- **Data-native sentence.** A pairing sits in GlyLink's report either because the plan drew the meter on the morning
-  round, whatever it read, or because the meter's own reading was under 50 or over 400 mg/dL and the nurse sent a
-  confirmation; the second kind sees the meter when its random error ran outward, and on the nursery and the neonatal
-  intensive care it is about two pairings in three (62 and 67 in a hundred).
-- **As-of.** Tuesday 4 January 2028 (the manufacturer's mail); the list is due Monday 10 January, the visit runs 17 to 21
-  January. The call faces forward: which meters' error the 2028 recalibration has to correct.
-- **Sources.** The client's two-layer standard; meter-laboratory comparison practice for bedside glucose (CLSI POCT12,
-  ISO 15197); laboratory confirmation of critical bedside readings and neonatal hypoglycaemia screening; regression to
-  the mean of a sample selected on a noisy measurement.
+  Monitoring & Alerting. The object is the health of a regional municipality's permanent traffic counts, and the call
+  is a monitoring decision: which count stations the 2027 report flags as not meeting the counting standard, the same
+  stations the maintenance contractor recalibrates in the spring 2028 round.
+- **The seed, re-found.** DQ24 gave the world (instruments checked against a reference), the decision (which instruments
+  go for recalibration) and the quantity (each instrument's error against a tolerance). Architectures 1 to 3 spent a
+  reference chain, a wear clock and a selection on the measured value. The decisive step is re-found in the data's own
+  structure: the only validation each station gets is filmed on a summer weekday, when nothing queues, while its loops
+  lose vehicles in the term-time queues that only the river bridges' two approaches, counting the same stream, reveal.
+- **Niche.** The Regional Municipality of Halbrook (fictional, southern Ontario) counts traffic at 30 permanent stations
+  on its regional roads, inductive loops in every lane reporting each hour's vehicles and occupancy to the count
+  management system. Five of the stations stand in pairs on the two approaches of its Kessel River bridges, counted since
+  a 2019 crossings study. Every July and August a contractor films each station for one weekday and counts every vehicle.
+  TDP-03, the region's counting standard, flags a station whose year's count misstates the vehicles that passed by more
+  than 5 per cent, and the flagged stations go to the maintenance contractor's spring recalibration.
+- **The call.** Which stations' 2027 counts are beyond 5 per cent either way, if any.
+- **Shape.** other: the list (each of the 30 stations in or out), each listed station's error, the chart of every
+  station's error against the band with the list marked, and the asks' figures (stage 2): 25 or more criteria.
+- **Strategy.** `composition_mix`: a station's error depends on the traffic state, the validation day's states (free
+  flow only) differ from the year's (term-time queues), and the queued state's loss has to be measured elsewhere and
+  carried through each station's own mix of states. Gate G method_or_model_selection; generators G5, G7, G17; gap
+  population; calibration other (a conservation pair, see the card); context artifact operations_log (the maintenance
+  contractor's 2027 work orders at the stations, which answer their own question and rank nothing); Layer 2 field_method, pattern
+  own:conservation-pairs-load-dependent-detector-loss.
+- **Forum, event, organisation.** customer_or_counterparty (the maintenance contractor receives the recalibration list),
+  statutory_or_regulatory_filing (the annual count report the region files with the province by 31 March 2028, flags
+  included), local_government. Role compliance_or_audit (the traffic data coordinator answers for the counts' accuracy).
+- **People** (`guard.py names --geo Canada --seed 251`, locale en_CA): Miranda Harris, the traffic data coordinator, who
+  asks; Andrew Wong, the validation contractor's project manager; Yvonne Larson, the maintenance contractor's service
+  manager. None appears in the prompt.
+- **Data-native sentence.** A loop counts a vehicle when its occupancy pulse starts and ends; in a crawling queue the
+  gaps between vehicles close and two vehicles hold one pulse, so the loops lose vehicles as occupancy rises, the summer
+  validation day never sees that state, and on a bridge, where nothing joins or leaves, the queued approach's count
+  falls short of the free approach's by exactly the vehicles lost.
 
 ## Default path
 
-1. Read POCT-GLU-02: a meter beyond 5 per cent is withdrawn; its systematic error is the factor e of section 7, on the
-   current calibration, against the laboratory's method in use.
-2. Read GlyLink's pairing report (13,938 pairings from July 2026), keep those after each meter's ultima_taratura in the
-   register, numeric meter values only.
-3. Divide the C600's values drawn before 13 September 2027 by 1.035 (the laboratory's note).
-4. Take each meter's mean of meter over laboratory ratios less one and withdraw the meters beyond 5 per cent.
+1. Read TDP-03 (the year's error: vehicles counted against vehicles that passed, both directions, beyond 5 per cent
+   flagged) and the station register.
+2. Read the contractor's 2027 validation counts: for each station, 24 hours on a July or August weekday, the video
+   count and the loops' count by direction and 15 minutes.
+3. Take each station's error as its loops' count against the video count over the validation day, both directions.
+4. Flag the stations beyond 5 per cent.
 
-Ends on: GX2-A564E, GX2-J921X, GX2-M707F, GX2-P722J, GX2-R842P, GX2-S959P, GX2-W228Y and GX2-W234L (GX2-M707F in, GX2-K532W out)
-Golden: GX2-A564E, GX2-J921X, GX2-K532W, GX2-P722J, GX2-R842P, GX2-S959P, GX2-W228Y and GX2-W234L
+Ends on: the validation list (computed by the generator and written here at stage 2).
 
 ## Stump sentence
 
-A competent solver puts every pairing since each meter's January 2027 calibration on the C900 scale and withdraws
-GX2-A564E, GX2-J921X, GX2-M707F, GX2-P722J, GX2-R842P, GX2-S959P, GX2-W228Y and GX2-W234L (GX2-M707F in, GX2-K532W out):
-on the nursery and the neonatal intensive care two pairings in three are confirmations, drawn because the meter's own
-reading was under 50 mg/dL, so they catch the meter when its random error ran low, pull GX2-M707F from -1.6 to -5.8 per
-cent and GX2-K532W from +8.4 to +4.8; on the pairings the plan drew, GX2-K532W goes and GX2-M707F stays.
+A competent solver takes each station's 2027 error from its summer validation count and flags the stations beyond
+5 per cent; the validation days were July and August weekdays when no approach queues, so they miss the vehicles the
+loops lose in term-time queues, which the bridges' two approaches show growing with occupancy, and the list misses the
+queued stations past 5 per cent and keeps one the loss brings back inside.
 
 ## Three rules
 
-Task type: missing-data-censoring-measurement-error (General Statistics & Data Science), tagged in the taxonomy for Data Quality Monitoring: a measurement-error model's bias term estimated from paired measurements, judged by how the pairs were drawn.
-Domain test: The deciding quantity is each meter's systematic error against the laboratory, the bias of a measurement-error model estimated from meter and laboratory pairings as bedside glucose practice does it; whether a pairing measures it depends on why it was drawn, which only the field's workflow (scheduled verification against critical-value confirmation) tells.
-Swap: "the meters whose error is beyond 5 per cent, read on the pairings the plan drew, because the confirmations were drawn by the meter's own critical reading" put into a warehouse's scales and its audit weighings loses its mechanism, since no weighing sends a second sample to a reference because the scale's own reading crossed a clinical limit; replacing the selection-aware estimate with the mean over every pairing changes the list.
-Layer 1: the data manager's export in reception order with the copies an unacknowledged docking re-sends; the meters' clocks on solar time against the laboratory's civil time and the server's UTC; the export's ward and hospital as each meter's current assignment; LO and HI as text; the laboratory's analyzer change of 13 September 2027 never recalculated; the per-meter pairing plan with holidays moved; seven meters moved between wards.
-Layer 2: field_method under population_selection: a sample selected on the measured value regresses toward the reference, so a bias is read on the pairs drawn independently of the meter's reading.
-Decisive step: estimating each meter's systematic error on the pairings the plan drew on the morning round and leaving out the confirmations of critical readings, which exist because the meter's own result was extreme and so carry its random error outward.
-Not semantics: every field of the pairing report reads as what it is (a meter result and the laboratory's result on the tube its barcode linked), the procedure describes the plan's pairings and the confirmations side by side without ranking them, and nothing in any field, code, unit or definition says a confirmation misstates a meter's bias.
-Not rule application: no filed sentence says which pairings estimate the systematic error; section 7 defines the factor and its estimate as a mean of ratios without naming the pairings, so executing every filed rule over every pairing files the default list.
-Analyst test: A strong analyst who reads the procedure, the note and the register, keeps every pairing since each meter's calibration on the C900 scale and takes each meter's mean ratio withdraws GX2-A564E, GX2-J921X, GX2-M707F, GX2-P722J, GX2-R842P, GX2-S959P, GX2-W228Y and GX2-W234L (GX2-M707F in, GX2-K532W out), dropping the nursery meter reading 8 per cent high and adding one reading 2 per cent low.
-Estimand: each of the 52 meters' factor e by which it reads the laboratory's method in use (the C900) times 1 + e, the same at every concentration, on its current calibration (results after the manufacturer's last calibration), estimated as the mean of meter over laboratory ratios less one, a meter withdrawn when e is beyond 5 per cent either way (POCT-GLU-02 section 7 and the prompt).
-No decoy: nothing is planted: the confirmations are the procedure's own critical-value practice, every pairing holds a true meter result and a true laboratory result, no memo, draft or figure argues for the pooled list, and no file ranks the meters.
-No certified replay: no certified or published figure reproduces only under one method; the pairing report carries no per-meter summary, the procedure no worked example and the service report no measured error.
-Lesson: a paired comparison is only as sound as the reason each pair was drawn, and pairs a meter's own extreme reading triggered show its error at its most outward, so a bias is read on pairs a schedule drew; no build on file estimates a measurement's bias from pairs selected on that same measurement.
-
-## Readability screen
-
-| Rung | Where a reader meets it | Verdict |
-|---|---|---|
-| 1. Every pairing, the laboratory as reported (eleven meters) | the pairing report | readable |
-| 2. Each meter's current calibration: pairings after ultima_taratura | the register, section 7 | readable |
-| 3. The C600's values divided by 1.035 | the laboratory's note, section 7 | readable |
-| 4. (decisive) The pairings the plan drew, the confirmations left out (the eight) | nothing names it: section 5 describes the plan's pairings and section 6 the confirmations, the report carries both without a type, and only the reasoning that a pair drawn because the meter read critical carries that reading's own error sends a reader to the plan | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | the meters | the 52 in the register | only those with pairings | same call | every meter carries 98 or more plan pairings (asserted) |
-| SF2 | systematic error | section 7's mean of ratios less one | ratio of totals, slope through the origin, geometric mean, median ratio | same call | section 7; the list asserted over five estimators, closest margin 1.3 points |
-| SF3 | against the laboratory | the C900, the C600 divided by 1.035 | each pairing's own analyzer | another list | section 7 (metodo in uso alla data della valutazione) and the note |
-| SF4 | the current calibration | pairings after ultima_taratura | every pairing since July 2026 | another list | section 7 (risultati successivi all'ultima taratura) |
-| SF5 | the calibration day | after it | on or after it | same call | no plan pairing falls on its meter's calibration day (asserted) |
-| SF6 | beyond 5 per cent | strictly | at or beyond | same call | the closest meter is 1.3 points from the line (asserted) |
-| SF7 | LO and HI | out of the estimate | at 20 and 600 | same list | section 7 files them out (asserted) |
-| SF8 | the plan's holidays | moved to the next working day | not moved | same call | the plan's rule; asserted |
-| SF9 | the morning round | the laboratory's draw from 6:00 to 7:30 | other edges | same call | no other pairing within ten minutes of either edge on a planned day (asserted) |
-| SF10 | the note's factor | divide by 1.035 | multiply by 0.965 | same call | the note; asserted |
-| SF11 | a pairing's date | the laboratory's draw | the meter's clock | same call | asserted |
-| SF12 | a patient result (asks) | once per meter and memory number, first reception | every row | the asks only | section 3: a result is in the record from the moment the data manager receives it |
-| SF13 | a test's instant (asks) | the meter's clock less one hour | the clock as civil time or as UTC | the asks only | the plan pairings show the meter an hour before the draw in summer and on time in winter (asserted) |
-| SF14 | the ward and hospital (asks) | where the meter stood on the day | the export's presidio and reparto | the asks only | section 8 (eseguiti nel reparto), the dictionary (assegnato), the register's history |
-| SF15 | a test's date (asks) | Italian civil date | UTC or the meter's date | same figures | asserted |
-| SF16 | more than two hours (asks) | over 7,200 seconds | 7,200 or more | same figures | asserted |
-| SF17 | a listed meter's ward and hospital | the register's current assignment | where it stood when paired | same figures | none of the eight moved (asserted) |
-
-## Ladder
-
-| Route | Withdraws | Count | Golden |
-|---|---|---|---|
-| Every pairing, the laboratory as reported | the golden eight without GX2-K532W, with GX2-M707F, GX2-U982T, GX2-Y416X and GX2-Y986N | 11 | no |
-| Every pairing since the calibration on the C900 (the default path) | the eight with GX2-M707F for GX2-K532W | 8 | no |
-| The same, ratio of totals | the same eight | 8 | no |
-| The same, median ratio | the golden eight with GX2-M707F and GX2-Y416X | 10 | no |
-| Every pairing within 15 per cent of the laboratory | the golden eight without GX2-K532W | 7 | no |
-| Every pairing whose meter value is not critical | the golden eight with GX2-J313P | 9 | no |
-| The plan's pairings, the laboratory as reported | the golden eight with GX2-U982T | 9 | no |
-| The plan's pairings since July 2026 | the golden eight without GX2-J921X and GX2-R842P | 6 | no |
-| Golden: the plan's pairings since the calibration on the C900 | GX2-A564E, GX2-J921X, GX2-K532W, GX2-P722J, GX2-R842P, GX2-S959P, GX2-W228Y, GX2-W234L | 8 | yes |
-
-The golden family agrees on the eight under every estimator of a single factor (mean of ratios, ratio of totals, slope
-through the origin, geometric mean, median ratio), the note's factor as a division or as 0.965, the plan with or without
-its holidays and LO and HI out or at the range's ends (asserted, closest margin 1.3 points). On the clean truth, every
-pairing files the wrong list and the plan's pairings alone the truth (checks.py, dataset-generation 7.1).
-
-## Closure table
-
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | the 52 meters in the register | filed (register) |
-| 2 | Unit of account | a meter, withdrawn or not | filed (section 7) |
-| 3 | Attribution window | each meter's results after its last calibration | filed (section 7, register) |
-| 4 | As-of dating | 4 January 2028, the record to 31 December 2027 | filed (mail, export) |
-| 5 | Version basis | POCT-GLU-02 revision 3 | filed |
-| 6 | Denominator | the laboratory's value in each ratio | filed (section 7) |
-| 7 | Weighting | each pairing once | filed (section 7's mean) |
-| 8 | Window length | to 31 December 2027 | filed (export) |
-| 9 | Boundary inclusivity | beyond 5 per cent | C1 (1.3 points clear, asserted) |
-| 10 | Rounding path | the error to one decimal from the unrounded mean | filed (the prompt) |
-| 11 | Tie-break | none open | asserted |
-| 12 | Maturity and censoring | every pairing resulted | C1 |
-| 13 | Order of operations | the factor, then the ratios, then the mean | C1 |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | one row per tube in the pairing report | asserted |
-| 16 | Identity normalisation | the matricola across every file | filed |
-| 17 | Netting against gross | none | not applicable |
-| 18 | Dimensional units | mg/dL and per cent | filed (section 3, the prompt) |
-| 19 | Code and status semantics | LO, HI, PAZIENTE, CONTROLLO | filed (dictionary, section 7); never the stump |
-| 20 | Integerisation | whole counts on the asks | filed (the prompt) |
-| 21 | Clause scope | section 7 for every meter | filed |
-| 22 | Forward window contents | the January 2028 visit corrects the current calibration's error | filed (section 7, the mail) |
-
-## Literal reader
-
-Executing the prompt and every filed sentence word for word (sections 3 to 8, the note, the register, the plan) leaves
-one open move, which pairings estimate each meter's factor; the data's structure forces it (the confirmations exist
-because the meter's reading was critical, and on the neonatal wards they are two pairings in three and run outward),
-and every estimator of a single factor on the plan's pairings files the same eight (asserted, closest margin 1.5
-points).
-
-## Oracles
-
-- No file ranks the meters or carries a per-meter error, a list or a projected figure.
-- The 2027 service report lists every meter as calibrated; every route passes it.
-- The laboratory's note states its 3.5 per cent; every route that reads it applies it.
-- The external quality scheme shows the laboratory's own accuracy; every route sees it and none needs it.
-
-## Ask sheet
-
-Ask 1: per hospital and quarter of 2027, the share of patient results reaching the clinical record more than two hours
-after the test (12 figures, per cent to one decimal). Ask 2: per ward, the patient tests of 2027 (13 counts). Both read
-the data manager's export (GlyLink_risultati_2026-2027.csv), which the call never reads; the call reads the pairing
-report, the plan, the register and the note (separation asserted).
-
-Devices, silent (no filed sentence points at any of them):
-- The meters' clocks keep solar time all year: read as Italian civil time, every summer result looks an hour later than
-  it reached the record, read as UTC every result an hour earlier. Moves every figure of ask 1. Found only in the plan
-  pairings, which show the meter an hour before the laboratory's draw from April to October and on time in winter.
-- The export's presidio and reparto are each meter's current assignment; seven meters moved in 2027, three of them
-  between hospitals (the register's Storico ubicazioni). Moves every figure of ask 2 and nine of ask 1.
-Hazards: the copies a docking the meter never saw acknowledged re-sends whole at the next docking under new
-id_risultato (moves every figure of both asks unless removed by matricola and n_memoria keeping the first reception);
-control runs among the results; LO and HI as text.
-
-| Path | Ask 1 late share | Ask 2 tests per ward | Keeps |
-| --- | --- | --- | --- |
-| the export as delivered, every row a result | 0 of 12 | 0 of 13 | 0 of 25 |
-| the copies removed by memory number, the export's ward, the clock as civil time | 0 | 0 | 0 |
-| the same, the clock read as UTC | 0 | 0 | 0 |
-| the copies removed keeping the last reception | 0 | 0 | 0 |
-| the solar clock found | 3 | 0 | 3 |
-| the location history found | 0 | 13 | 13 |
-| both found, the copies kept | 0 | 0 | 0 |
-
-| Ask | Cracker (the call landed, the export's ward, the clock as civil time) | Verdict |
-| --- | --- | --- |
-| 1 late share per hospital and quarter | 0 of 12 | miss |
-| 2 tests per ward | 0 of 13 | miss |
-
-Pair ceiling: 28.5 ((45.0 + 12.0) / 2), the cracker keeping none of the 25 ask figures on the call and the mirror the same.
-Mirror leakage: 0 per cent of ask weight.
-Measured by: generator/pair.py on the cut pack. A reader who finds the location history keeps 13 of 25 (73.6 with the
-call); the stage 4 readers are the measurement.
-
-## Pre-ship check
-
-- Free gates (stage 3): generator checks 56 passed (the golden is the world's truth, five single-factor estimators
-  agree on the list at least 1 point clear of the line, every named wrong route files another list, the easy route
-  fails on the clean truth and the scheduled pairings alone recover it, SF1 to SF17, the asks against the world, the
-  devices present, the pack gates, the documents read back); verify.py 0 failures on its own csv and openpyxl path;
-  two builds byte-identical (target.zip dfd2d32a); figures_check 62 of 62; precut 51 of 51; voice-check PASS.
-- leak.py REVIEW, no LEAK, both lines harmless: 400 mg/dL is section 6's critical value, which the procedure files
-  because the ward needs it, and the write-up names it to say why the confirmations are drawn; the prompt's ask
-  sentence carries the deliverable's own column words (ward, hospital, systematic error), which the decision needs.
-- guard heart WARN (repeat.decision, repeat.deliverables, repeat.question_form, answered under Draw); surface: the
-  pack's personas are the card's three; six pairs promoted for the author's optional adjudication, none on a hard tell
-  (task243, task244, task246, task247 on the lane's shared xlsx and png deliverables and formats; task245 and task265
-  on gap, pattern and decision family, differentiated on the card).
-- Containers clean (no producer signature, no out-of-band timestamp) in target/ and golden/.
-- Golden realism: the workbook opens on the finding (8 of 52) with the procedure and the office's date under it, the
-  list by hospital and ward with the plan pairings each error rests on, every meter's sheet with its last calibration
-  and outcome, the section 8 indicators by hospital and quarter and by ward, and a notes sheet citing the procedure,
-  the note and the data's cut-off; the chart is a lollipop of every meter by hospital and ward against the band, the
-  listed eight marked and labelled, a source line under it.
-- The 10/10 rules re-read against the built pack: the decisive step is still which pairings estimate a meter's
-  bias, and no filed sentence makes it (section 7 defines the factor and its estimator, not the pairings); the solar
-  clocks, re-sent copies, current ward fields, LO and HI, the analyzer change and the plan's holidays are each the
-  systems' own and none moves the list.
-- Open risk, stated: a reader who asks why a nursery meter has three times the pairings of a ward meter, and reads
-  section 6 as a selection on the meter's own value, lands the call. The stage 4 readers are the measurement.
+Task type: missing-data-censoring-measurement-error (General Statistics & Data Science), tagged in the taxonomy for Data Quality Monitoring: a measurement-error model with a load-dependent term, estimated from a natural pairing of instruments on one conserved stream because the validation design never sampled the load at which the error arises.
+Domain test: The deciding quantity is each count station's error over the traffic it carried in 2027, the loops' sensitivity together with a loss that grows with occupancy in queued traffic: a measurement-error model with a load-dependent term, which the traffic data field estimates where the same vehicles are counted twice with nothing joining or leaving and carries through each detector's own hours; replacing it with each station's validation-day error, the generic calibration summary, changes the list.
+Swap: "the stations whose count is beyond 5 per cent once the loss the bridges' paired approaches show in queued traffic is carried through each station's own occupancy" put into a hospital's glucose meters loses its mechanism, since no two meters read the same blood with nothing added or taken between them while one of them sits in a queue; replacing the load-dependent model with each station's validation-day error changes the list.
+Layer 1: the count management system's hourly export in local time, the autumn hour twice and the spring hour missing; the contractor's own site codes against the region's station codes; two stations renumbered when their controllers were replaced; occupancy to one decimal from the older controllers and as integer tenths of a per cent from the newer ones; the contractor's sheets per station, direction and 15 minutes on different days; the network file keyed by road and kilometre point.
+Layer 2: field_method under composition_mix: the error depends on the traffic state, the validation day sampled only free flow, and the queued state's loss is measured on the conservation pairs and carried through each station's own state mix.
+Decisive step: estimating each station's 2027 error with a loss term that grows with occupancy, fitted on the bridges' paired approaches (the queued side's count against the free side's, each on its validated sensitivity) and carried through each station's own hourly occupancy, rather than taking the summer validation day's error as the year's.
+Not semantics: every field reads as what it is (vehicles counted in the hour, occupancy, the video count of the vehicles that passed), and nothing in any field, code, unit or definition says that loops lose vehicles in queues or that the validation days held no queue; the bridges are in the network file only as structures with a road and kilometre points.
+Not rule application: no filed sentence says how a station's year error is estimated; TDP-03 defines the error over the year and states the validation programme's facts, so executing every filed rule on the validation counts files the validation list.
+Analyst test: A strong analyst who reads the standard, the register, the validation counts and the hourly counts takes each station's 2027 error from its validation day and flags the stations beyond 5 per cent; the validation days held no queue, so the list misses the queued stations the loss pushes past 5 per cent and keeps one it brings back inside (the generator asserts the lists at stage 2).
+Estimand: each of the 30 stations' 2027 count error, the vehicles it counted in 2027 (both directions, every lane) against the vehicles that passed it in 2027, less one; a station is flagged when its error is beyond 5 per cent either way (TDP-03 and the prompt).
+No decoy: nothing is planted: the validation counts are true counts of the vehicles on their days, the loops' counts are what the loops counted, no memo, draft or figure argues for the validation list, and no file ranks the stations by error.
+No certified replay: no certified or published figure reproduces only under one method; the 2026 report publishes each station's AADT and no error or flag, and the contractor's report states its counts and no accuracy verdict.
+Lesson: a validation that never samples the condition in which an instrument errs cannot give its error over a year that holds that condition, and a stream counted twice with nothing joining or leaving measures the loss where the condition occurs; no build on file reads a counting error from conservation between paired counters.
 
 ## Tried and rejected
 

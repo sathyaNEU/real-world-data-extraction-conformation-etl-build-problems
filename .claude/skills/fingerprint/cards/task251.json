@@ -1,12 +1,12 @@
 {
   "task": "task251",
-  "architecture": "v3",
-  "drawn": "2026-10-20",
+  "architecture": "v4",
+  "drawn": "2026-10-21",
   "slot_note": "",
   "domain": "general-statistics-data-science",
   "subdomain": "missing-data-censoring-measurement-error",
   "client_domain": "general-statistics-data-science",
-  "niche": "a Po valley hospital trust's bedside glucose meters on thirteen wards of three hospitals, checked against the central laboratory: which meters its point-of-care office sends to the manufacturer's January 2028 recalibration visit, each meter's systematic error read from meter and laboratory pairings, most of them drawn because the meter's own reading was critical",
+  "niche": "a regional municipality's permanent traffic count stations on its own roads (inductive loops at 30 stations, its five river bridges counted on both approaches): which stations' 2027 counts misstate the vehicles that passed by more than 5 per cent either way, to be flagged in the annual traffic count report and recalibrated in the spring 2028 round, each station's error over a year of term-time queues read when its only validation count was filmed on a summer weekday",
   "objective": "data-quality-monitoring",
   "shape": "other",
   "decision_type": "designation_set",
@@ -20,63 +20,63 @@
     "none"
   ],
   "generators": [
-    "G9",
     "G5",
-    "G11"
+    "G7",
+    "G17"
   ],
-  "gate_g": "signal_vs_noise_or_hold",
-  "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "other",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "register",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads the procedure, the pairing report, the laboratory's note and the 2027 service report puts every pairing since each meter's January 2027 calibration on the C900 scale and takes each meter's mean percentage difference over all of them, withdrawing the meters beyond 5 per cent; on the neonatal wards most pairings exist because the meter's own reading was under 50 mg/dL, so they see the meter when its random error ran low, the list misses a nursery meter reading 8 per cent high and adds one reading 2 per cent low.",
-  "domain_test": "The deciding quantity is each meter's systematic error against the laboratory, the measurement-error model's bias term estimated from paired measurements; the task type's own object is that estimate's validity under the way the pairs were drawn (pairs selected on the meter's reading regress toward the laboratory), and replacing it with the generic mean difference over every pair changes the list.",
+  "analyst_test": "A strong analyst who reads the counting standard, the station register, the contractor's validation counts and the hourly counts takes each station's 2027 error from its validation day (the loops' count against the video count over 24 hours, both directions) and flags the stations beyond 5 per cent; every validation day was a July or August weekday, when no approach queues, so the validation sees each station's sensitivity but none of the vehicles its loops lose in the term-time queues, and the list misses the queued stations the loss pushes past 5 per cent and keeps one it brings back inside.",
+  "domain_test": "The deciding quantity is each count station's error over the traffic it carried in 2027: the loops' sensitivity together with a loss that grows with occupancy in queued traffic, a measurement-error model with a load-dependent term, estimated where the same vehicles are counted twice with nothing joining or leaving (the two approaches of each river bridge, one queued and one free) and applied through each station's own hourly occupancy; replacing it with each station's validation-day error, the generic calibration summary, changes the list.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:confirmation-pairs-selected-on-the-meter-reading",
+  "layer2_pattern": "own:conservation-pairs-load-dependent-detector-loss",
   "layer1": [
-    "the meters' own clocks on solar time all year against the laboratory's civil time and the server's UTC",
-    "re-sent memory copies in the data manager's export after a docking the meter never saw acknowledged",
-    "the export's ward and hospital fields carrying each meter's current assignment, not where it was",
-    "LO and HI readings outside the meter's range as text in the result column",
-    "a laboratory analyzer change mid-year whose earlier results were never recalculated",
-    "a pairing plan by weekday with holidays moved to the next working day, and meters moved between wards"
+    "the count system's hourly export in local time, the autumn hour twice and the spring hour missing",
+    "the validation contractor's own site codes against the region's station numbers",
+    "two stations renumbered when their controllers were replaced during the year",
+    "the contractor's 15-minute sheets per station and direction, filmed on different days",
+    "occupancy reported to one decimal by the older controllers and in tenths of a per cent as integers by the newer ones",
+    "the structures register and the road network's junction list keyed by road and kilometre point"
   ],
-  "stakeholder_role": "the point-of-care testing coordinator of the trust's laboratory, who answers for the bedside meters' analytical quality under the procedure and sends the manufacturer the list of meters to withdraw",
+  "stakeholder_role": "the region's traffic data coordinator, who flags stations in the annual traffic count report and lists them for the maintenance contractor's spring recalibration",
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "GlyLink_risultati_2026-2027.csv",
-    "rows": 185844,
-    "entity": "one result the data manager received from a meter (patient test or control run)",
-    "grain": "meter x memory record x reception",
+    "file": "hourly_counts_2027.csv",
+    "rows": 0,
+    "entity": "one hour of one direction at one station: vehicles counted and occupancy",
+    "grain": "station x direction x hour",
     "source": "synthetic"
   },
   "forum": "customer_or_counterparty",
-  "forcing_event": "other",
-  "org_family": "hospital_or_health_provider",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "local_government",
   "world": {
-    "geography": "Italy, Lombardy (a fictional hospital trust)",
-    "currency": "EUR",
-    "org_type": "a public hospital trust with three hospitals",
+    "geography": "Canada, Ontario (a fictional regional municipality)",
+    "currency": "CAD",
+    "org_type": "a regional municipality's transportation services department",
     "invented_names": [],
     "people": [
-      "Lorenzo Carfagna",
-      "Adelmo Gori",
-      "Silvestro Fittipaldi"
+      "Miranda Harris",
+      "Andrew Wong",
+      "Yvonne Larson"
     ]
   },
   "deliverables": [
-    "ritiro_glucometri_gennaio_2028.xlsx",
-    "errore_sistematico_glucometri_2027.png"
+    "count_stations_flagged_2027.xlsx",
+    "count_station_errors_2027.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is each unit's systematic error against a reference, read from paired checks most of which were drawn because the unit's own reading crossed a critical value, so those pairs see the unit when its random error ran outward and show a bias it does not have; read on the pairs a fixed schedule drew independently of the unit's reading, the units over the limit differ.",
-  "driver_concrete": "Each point-of-care glucose meter's percentage bias against the laboratory's current analyzer, read on the weekly scheduled split samples (drawn by the calendar, not by the meter's result) with the earlier analyzer's results carried onto the new one by the parallel run; the critical-value confirmations, drawn because the meter read below 50 or above 400 mg/dL, regress toward the laboratory and are left out of the bias; meters beyond 5 per cent are withdrawn.",
-  "stump": "A competent solver puts every meter-laboratory pair on the new analyzer's basis and withdraws the meters whose mean percentage difference over all their pairs is beyond 5 per cent; the critical-value confirmations, most of the pairs in intensive care and neonatology, were drawn because the meter's own reading was extreme, so they show each meter reading further out than it does, and the meters beyond 5 per cent on the scheduled pairs differ.",
+  "driver": "The decisive quantity is each unit's error over every condition it operated in, while its only check was taken on a day the error-raising condition never occurred; the error's growth with load is read from pairs of units counting the same stream with nothing entering or leaving between them, one held in a queue and one past it, and carried through each unit's own record of load.",
+  "driver_concrete": "Each count station's 2027 error is its loops' sensitivity, read from its summer video count, combined with the vehicles its loops lose in queued traffic, a loss that grows with occupancy; the loss is fitted on the five river bridges' two approaches, the queued side's count against the free side's (nothing joins or leaves on a bridge), and carried through each station's own hourly occupancy; the stations beyond 5 per cent either way are flagged.",
+  "stump": "A competent solver takes each station's 2027 error from its summer validation count and flags the stations beyond 5 per cent; the validation days were July and August weekdays when no approach queues, so they miss the vehicles the loops lose in term-time queues, which the bridges' two approaches show growing with occupancy, and the list misses the queued stations past 5 per cent and keeps one the loss brings back inside.",
   "lineage": [
     {
       "architecture": "v1",
@@ -113,24 +113,40 @@
       "stump_strategy": "forecast_method_backtest",
       "decision_type": "designation_set",
       "stump": "A competent solver pools every converter's titrations against its age since the service log's change and carries each converter in service to its 2028 service on that curve: every converter reaches its service about a year old and above 95 per cent, and only BP08, its 2027 service put back to February 2028, runs past it, so it books BP08 alone; the converters wear with the NO2 they reduce, the checks collapse on one curve in NO2 converted that steepens past about 90 ppm-hours, and carried on each station's own load seven are below 95 per cent by their service."
+    },
+    {
+      "architecture": "v3",
+      "fate": "spent 2026-10-20 at stage 4: scored reader A landed the call (the planned morning-round pairings only, the confirmations read as selected on the meter's own reading), reader B filed the default path; both kept 25 of 25 ask figures (dedup, solar clocks, location history); judge DETERMINISTIC APPROVE",
+      "driver": "The decisive quantity is each unit's systematic error against a reference, read from paired checks most of which were drawn because the unit's own reading crossed a critical value, so those pairs see the unit when its random error ran outward and show a bias it does not have; read on the pairs a fixed schedule drew independently of the unit's reading, the units over the limit differ.",
+      "driver_concrete": "Each point-of-care glucose meter's percentage bias against the laboratory's current analyzer, read on the weekly scheduled split samples (drawn by the calendar, not by the meter's result) with the earlier analyzer's results carried onto the new one by the parallel run; the critical-value confirmations, drawn because the meter read below 50 or above 400 mg/dL, regress toward the laboratory and are left out of the bias; meters beyond 5 per cent are withdrawn.",
+      "stump": "A competent solver puts every meter-laboratory pair on the new analyzer's basis and withdraws the meters whose mean percentage difference over all their pairs is beyond 5 per cent; the critical-value confirmations, most of the pairs in intensive care and neonatology, were drawn because the meter's own reading was extreme, so they show each meter reading further out than it does, and the meters beyond 5 per cent on the scheduled pairs differ.",
+      "domain": "general-statistics-data-science",
+      "subdomain": "missing-data-censoring-measurement-error",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "signal_vs_noise_or_hold",
+      "stump_strategy": "population_selection",
+      "decision_type": "designation_set"
     }
   ],
-  "architecture_spent": true,
+  "architecture_spent": null,
   "differentiation": {
-    "task148": "queue units leave when the wait outlasts their patience, censored waits estimated over every unit; here nothing is censored by leaving: a converter's titration efficiency wears with the NO2 it reduces and is read at a service date the record has not reached",
-    "task241": "a sensor's error read against a reference the medium's displacement moves; here there is no outside reference: the converter's own titrated efficiency, clocked in the NO2 it reduces, decides",
-    "task254": "lineage v2 cut a time-to-event distribution under lock-date truncation; here a wear curve in a constructed load is projected over the load still to come",
-    "task501": "lineage v2 struck the pace from a filed walk-forward test; here no test is filed: the converters' own checks collapse on NO2 reduced and not on time, which forces the clock",
-    "task229": "229's checks see a unit's state just before resetting it; here the checks are drawn on the unit's own reading crossing a critical value, a selection on the measurement error rather than on the state's timing",
-    "task236": "236 reads a capture rate against an independent fixed-protocol sample because the source's own attempts move with a change; here no change is involved: the unit's own extreme readings draw the reference check, so the selection is on its random error",
-    "task231": "231's follow-up reaches active units more often than exited ones (verification by state); here the reference check is drawn by the unit's own reading, so the pairs regress toward the reference",
-    "task251 (v2, lineage)": "architecture 2 read each converter's efficiency on a wear curve in NO2 converted; architecture 3 has no wear and no forecast clock: the bias is constant and the decisive step is which pairs estimate it",
-    "task251 (v1, lineage)": "architecture 1 read a reference gas's loss through cylinder changes; architecture 3's reference (the laboratory) is sound, its one change measured by a parallel run, and the decisive step is the selection of the pairs",
-    "task245": "245 counts periods above a level from records whose gaps fall in the heaviest periods, rebuilt from a driver; here nothing is missing: every pairing is recorded, and the confirmation pairings exist because the meter's own reading crossed a critical value, so they carry its outward random error into the bias",
-    "task265 (v1)": "265 estimates survival from a record that admits early starters only if still event-free (entry truncation); here the selection is on the measurement itself: a pairing exists because the meter read critical, so the pair regresses toward the laboratory",
-    "task265": "265 estimates survival from a record that admits early starters only if still event-free (entry truncation); here the selection is on the measurement itself: a pairing exists because the meter read critical, so the pair regresses toward the laboratory"
+    "task474": "474 expands short counts with factors and carries a facility's road by its own activity record; here every station is permanent and counted every hour, and the decisive step is a counting error that grows with occupancy, read from the bridges' paired approaches",
+    "task248": "248 restores a sample's loss in transit at a rate set by temperature from a paired study, where a constant correction cancels against the baseline; here nothing cancels: the validation day sees no queue at all, and the loss is measured inside the network by paired stations on one stream",
+    "task241": "241 reads a sensor against a reference that the medium's displacement moves; here no external reference exists for the queued hours: the far approach of the same bridge is the reference, through conservation of vehicles",
+    "task246": "246 separates measurers' offsets from their random error with repeat and reference readings; here the error is systematic in load, and the validation design never sampled the load at which it arises",
+    "task245": "245 rebuilds periods above a level from gappy records; here every hour is recorded and the counts themselves lose vehicles in queues",
+    "task229 (v3, lineage)": "that draft read a counting point's capture under platooned arrivals from a maker's curve; here no maker's curve is filed: the loss is fitted from the network's own paired stations",
+    "task251 (v3, lineage)": "architecture 3 chose the pairings that estimate a meter's bias (selection on the meter's reading); architecture 4 has no selection: the validation sample covers the wrong conditions, and the missing condition's error comes from conservation pairs",
+    "task251 (v2, lineage)": "architecture 2 projected a converter's wear in NO2 converted; architecture 4 has no wear and no forecast clock",
+    "task251 (v1, lineage)": "architecture 1 read a reference gas's loss through cylinder changes; architecture 4's reference is the free approach of the same bridge",
+    "task265": "265 estimates survival under entry truncation; here nothing is truncated: every station counts every hour, and the validation sample's conditions differ from the year's"
   },
-  "notes": "Re-rooted 2026-10-20 from architecture 2 (spent at stage 4, see lineage). stump_strategy population_selection (strategies F7: checks that see a unit because it was wrong): the confirmation pairings are drawn on the meter's own reading. gate_g signal_vs_noise_or_hold: the confirmation pairings' apparent bias is the meter's selected random error. calibration_form none: the laboratory's analyzer change is carried by the note's filed factor, no corpus calibrates the decisive step. Redrawn at filing against task478: forum customer_or_counterparty (the manufacturer receives the list, its service engineer's mail asks for it by 10 January; the honester label than operations_desk, since the office does not act on the list itself, the visit does); forcing_event other (the manufacturer's scheduled recalibration visit of 17 to 21 January 2028, a service visit under the maintenance arrangement with no order, renewal or tender at stake, which purchase_order_or_contract overstated); context_artifact register (the meter register, anagrafica_glucometri.xlsx with its location history, answers where each meter stood and when it was last calibrated, correctly; the data manager's export is the spine, not a context file). Role redrawn when task478 re-filed as field_unit_lead: compliance_or_audit, since the coordinator's remit is the meters' analytical quality under POCT-GLU-02 (quality control, tolerance, withdrawal), not a site unit. Architecture 3 spent 2026-10-20 at stage 4: scored reader A landed the call (the planned morning-round pairings only, the confirmations recognised as selected on the meter's own reading), reader B filed the default path, both kept every ask figure; judge DETERMINISTIC APPROVE. A fourth architecture or retirement is the author's call.",
+  "notes": "Re-rooted 2026-10-21 from architecture 3 (spent at stage 4, see lineage) at the author's standing instruction to rebuild spent builds fresh. stump_strategy composition_mix: the station's error depends on the traffic state, the validation day's mix of states (all free flow) differs from the year's, and the queued state's error must come from elsewhere. calibration_form other: the two approaches of each river bridge count the same vehicles with nothing joining or leaving between them, a conservation pair rather than a parallel run of two instruments on one point. Labels drawn at filing: role compliance_or_audit (the coordinator answers for the counts' accuracy against the counting standard), context artifact operations_log (the maintenance contractor's 2027 work orders at the count stations, which answer their own question correctly and rank nothing; register went to task484 and published_series to task479 at filing), forum customer_or_counterparty (the maintenance contractor receives the recalibration list), generators led by G5 (the loss the decision needs is provided elsewhere, by the bridges' paired approaches).",
   "mechanism_source": "design_note",
-  "registered": "2026-10-20T22:28:32Z"
+  "registered": "2026-10-21T00:38:46Z"
 }

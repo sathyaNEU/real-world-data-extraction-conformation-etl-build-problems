@@ -1,38 +1,30 @@
 {
  "task": "task251",
  "owner": "perssathya",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "general-statistics-data-science",
  "objective": "data-quality-monitoring",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-20",
- "stump": "A competent solver puts every meter-laboratory pair on the new analyzer's basis and withdraws the meters whose mean percentage difference over all their pairs is beyond 5 per cent; the critical-value confirmations, most of the pairs in intensive care and neonatology, were drawn because the meter's own reading was extreme, so they show each meter reading further out than it does, and the meters beyond 5 per cent on the scheduled pairs differ.",
- "architecture": 3,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-21",
+ "stump": "A competent solver takes each station's 2027 error from its summer validation count and flags the stations beyond 5 per cent; the validation days were July and August weekdays when no approach queues, so they miss the vehicles the loops lose in term-time queues, which the bridges' two approaches show growing with occupancy, and the list misses the queued stations past 5 per cent and keeps one the loss brings back inside.",
+ "architecture": 4,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-20",
-  "checks": 51
+  "exit": null
  },
  "leak": {
-  "leak_py": "REVIEW (two lines, harmless: section 6's 400 mg/dL; the ask sentence's column words)",
-  "reader": "A landed the call (planned pairings only), B filed the default path; both 25 of 25 asks"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.decision, repeat.deliverables, repeat.question_form)",
-  "surface": "six pairs promoted for the author's optional adjudication, no hard tell (task243, task244, task246, task247 on the lane's xlsx and png format; task245 and task265 on gap, pattern and decision family, differentiated on the card)",
-  "nearest": "task251 (v1, lineage) 0.08"
+  "heart": "",
+  "surface": "",
+  "nearest": "task251 (v3, lineage) 0.11"
  },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "gate_g": "statistical_rigor, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
-  "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "report": "determinism_check_report.md"
- },
+ "judge": null,
  "returned": [],
- "resume": "Architecture 3 spent at stage 4 (reader A landed the call; both readers took every ask figure). This was the slot's third architecture: a fourth architecture, a ban waiver or retirement is the author's call. If the author chooses a fourth: re-root at stage 1 (move v3 into the card's lineage with its fate, draw a decisive step from the held family whose mechanism is not legible in one column, two keys as in task250 v3), and build the ask layer on silent devices (grain or self-validation shapes, or a domain effect never modelled), never on dedup, clock or effective-dated-map devices, which the battery executes.",
+ "resume": "Architecture 4 drawn and registered (WARN only): Halbrook Region's 30 loop count stations, each station's 2027 error with the loss its loops take in queued traffic, fitted on the five river bridges' paired approaches and carried through each station's hourly occupancy; the validation days are summer weekdays without queues. Next: stage 2 (prototype in scratch t251v4: proto5/6 world; pick the seed with a three-rung ladder; design the asks on silent devices in the maintenance work orders and the controllers' event log, task250's shape; fork table, closure, prompt, precut), optionally a two-reader probe on the call before the full build.",
  "approved": null,
  "delivered": "",
  "portal": null,
@@ -83,16 +75,11 @@
   {
    "date": "2026-10-20",
    "event": "architecture 3 spent at stage 4: scored reader A landed the call (planned morning-round pairings only), reader B filed the default path; both kept 25 of 25 ask figures (score_reader exit 1 on both); judge DETERMINISTIC APPROVE, Gate H analytical; PAUSED for the author's call on a fourth architecture or retirement"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "architecture 4 drawn at the author's standing instruction (fresh rebuild): General Statistics measurement error, a regional municipality's loop count stations, the congestion loss read from the river bridges' paired approaches (card registered WARN only; role, artifact and forum redrawn at filing, generators led by G5 to clear test.same_driver)"
   }
  ],
- "readers": {
-  "A": {
-   "call": "landed",
-   "asks": "25 of 25"
-  },
-  "B": {
-   "call": "missed (default path)",
-   "asks": "25 of 25"
-  }
- }
+ "readers": null
 }
