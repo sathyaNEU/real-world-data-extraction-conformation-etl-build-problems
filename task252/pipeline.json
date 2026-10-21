@@ -1,34 +1,37 @@
 {
  "task": "task252",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-21",
- "stump": "A competent solver fits each treated channel's carryover from the two ports before it, reads Hollins' and Calderwood's low checks as span errors because both raw ports read about as low against the laboratory's raw grabs as their checks do, and flags HOL-FW1 beside BRF-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1; with Hollins' raw port carryover taken out its grabs show a constant 0.008 zero error that cancels HOL-FW1's carryover, so the list is the six.",
+ "stump": "A competent solver fits each treated channel's carryover from the two ports before it, reads Holmedale's and Calderwood's low checks as span errors because both raw ports read about as low against the laboratory's raw grabs as their checks do, and flags HOL-FW1 beside BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1; with Holmedale's raw port carryover taken out its grabs show a constant 0.008 zero error that cancels HOL-FW1's carryover, so the list is the six.",
  "architecture": 1,
- "loops": 0,
+ "loops": 3,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-21"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (4 lines, no LEAK)",
+  "reader": "rounds 1 and 2: all four readers missed the call (the seven twice, the five twice); questions 1 to 4 none"
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "PASS (people WARN: Caleb, task196, answered in the Draw)",
   "nearest": "task91 0.09"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "round": 4,
+  "gate_g": "method_or_model_selection, analytical_non_defect",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "report": "determinism_check_report.md"
  },
  "returned": [],
- "resume": "Stage 2: the asks and their devices, the fork table, closure, ladder and prompt to precut exit 0; the world is the scratch prototype cw12 seed 45 (carryover with a two-sample memory at five worn analysers, Hollins' zero error, Calderwood's span error), to be rebuilt as generator/sim.py.",
+ "resume": "Architecture 1 spent at stage 4 round 4 (reader H landed the six with a full carryover model and the two-point read on the raw pairs; reader G missed by the slot before only). Next: architecture 2 drawn fresh at stage 1 from the design note's '## Candidates for architecture 2' (the author's standing instruction: spent builds are rebuilt fresh, never retired unasked), with call-only probe readers before the full build; the ask layer's shape carries over (the analyser clock bracketed by reception and release held ask A at 0 of 8 for both round 4 readers; the lost signals held ask B against reader G only).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -43,6 +46,38 @@
   {
    "date": "2026-10-21",
    "event": "drawn (architecture 1), card registered; forcing event redrawn from launch_or_rollout to period_close against task177"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "stage 2 left on precut 51 of 51; stage 3 free gates green on target.zip c2a2789e (checks 72 passed, verify 0 failures, two byte-identical builds, figures_check 23 of 23, leak.py REVIEW, heart PASS, surface differentiated)"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "stage 4 round 1 on target.zip c2a2789e: both scored readers filed the default path's seven and missed ask A, but took all of ask B (8 of 8 each); judge NOT_DETERMINISTIC FIX_NOW (ask A's hour unfiled, the lost night's reading unstated, step 2 executable as an additive carryover); Gate G method_or_model_selection, analytical_non_defect; Gate H pass"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "repair (loop 1): ask A pinned by the notice's run times for the 26 October round; ask B re-sited onto the November outstation changes; the lost night stated in the dictionary; the carryover rewritten as a mix with one pair of shares per analyser (golden pooled); free gates green on target.zip 9251d6a1 (checks 85 passed, verify 0, byte-identical, figures_check 26 of 26, precut 51 of 51, leak.py REVIEW)"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "stage 4 round 2 on target.zip 9251d6a1: readers C and D filed five channels (missed the call); C took all 16 ask figures (the notice's run times, the register's outstation list), D ask B; judge NOT_DETERMINISTIC FIX_NOW on ask A (pin the clock for the whole quarter), call and ask B reproduce, Gate H pass"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "repair (loop 2): the clock filed in the dictionary; ask A re-sited onto the bottle (duplicate bottles beside the 7 December round logged twice); ask B's outstation list removed, the changes found only by the missing post-repair check; listed bound printed at 0.007; free gates green on target.zip db101482 (checks 91 passed, verify 0, byte-identical, figures_check 26 of 26, precut 51 of 51, leak.py REVIEW, pair ceiling 28.5)"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "stage 4 round 3 on target.zip db101482: readers E and F missed the call (E filed five, F the default seven); both kept all 8 of ask B by the check rule and none of ask A; judge NOT_DETERMINISTIC FIX_NOW on ask A (a weekly pair a second bottle or a repeat analysis, no file decides), call and ask B reproduce, Gate G method_or_model_selection, Gate H pass"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "repair (loop 3): the duplicate bottles removed; ask A's primary the analyser's clock with nothing filed, bracketed by the reception and release stamps (53 to 64 minutes, every shift counting as the hour), the 7 December second logging under the courier docket's pickup time; ask B's primary each filtered port's lost signal to the PLC (F rows at that port alone, no check after), the outstation changes now a hazard; call figures unchanged; free gates green on target.zip f52cad28 (checks 98 passed, verify 0, byte-identical, figures_check 28 of 28, precut 51 of 51, leak.py REVIEW, pair ceiling 35.4)"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "stage 4 round 4 on target.zip f52cad28: judge DETERMINISTIC APPROVE (Gate G method_or_model_selection, Gate H pass); reader H landed the call (carryover from both slots before, zero and span read from the raw pairs) and ask B 8 of 8, ask A 0 of 8; reader G filed HOL-FW1 for GAR-FW1 (the slot before only), asks 0 of 16. A call any reader lands is spent: architecture 1 spent at stage 4"
   }
  ]
 }

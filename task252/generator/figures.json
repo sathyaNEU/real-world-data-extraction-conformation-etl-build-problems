@@ -1,0 +1,141 @@
+{
+ "call": "BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1",
+ "threshold": 0.005,
+ "check_standard": 0.1,
+ "n_flagged": 6,
+ "flagged": [
+  "BRN-FW1",
+  "DUN-FW1",
+  "ELS-FW1",
+  "GAR-FI1",
+  "GAR-FW1",
+  "HOL-FI1"
+ ],
+ "flag_band_low": 0.0085,
+ "flag_band_print": 0.007,
+ "unflagged_band_high": 0.0028,
+ "hol_zero_error": -0.008,
+ "cal_span_pct": 8,
+ "cal_span_treated": 0.002,
+ "hol_fw1_carry": 0.009,
+ "carry_share_1": 7,
+ "carry_share_2": 2,
+ "carry_share_healthy": 1,
+ "hol_fw1_offset": 0.001,
+ "default_path": "BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1, HOL-FI1 and HOL-FW1",
+ "worn": [
+  "Brannock",
+  "Dunmere",
+  "Elstow",
+  "Garrick",
+  "Holmedale"
+ ],
+ "clock_lo": 53,
+ "clock_hi": 64,
+ "ask_a": {
+  "Ashcombe": 14,
+  "Brannock": 9,
+  "Calderwood": 8,
+  "Dunmere": 12,
+  "Elstow": 11,
+  "Fenwick": 13,
+  "Garrick": 14,
+  "Holmedale": 11
+ },
+ "ask_b": {
+  "Ashcombe": 25.0,
+  "Brannock": 23.0,
+  "Calderwood": 22.0,
+  "Dunmere": 28.5,
+  "Elstow": 20.5,
+  "Fenwick": 41.0,
+  "Garrick": 17.5,
+  "Holmedale": 22.0
+ },
+ "offsets": {
+  "ASH-FI1": 0.0001,
+  "ASH-FW1": 0.001,
+  "BRN-FI1": -0.0003,
+  "BRN-FW1": 0.0116,
+  "CAL-FI1": 0.0011,
+  "CAL-FW1": -0.0008,
+  "DUN-FI1": 0.0001,
+  "DUN-FW1": 0.0121,
+  "ELS-FI1": -0.0004,
+  "ELS-FW1": 0.0092,
+  "FEN-FI1": 0.0002,
+  "FEN-FW1": 0.0007,
+  "GAR-FI1": 0.0266,
+  "GAR-FW1": 0.0115,
+  "HOL-FI1": 0.0155,
+  "HOL-FW1": 0.0008
+ },
+ "carry": {
+  "ASH-FI1": 0.0001,
+  "ASH-FW1": 0.001,
+  "BRN-FI1": -0.0003,
+  "BRN-FW1": 0.0116,
+  "CAL-FI1": 0.0027,
+  "CAL-FW1": 0.0007,
+  "DUN-FI1": 0.0001,
+  "DUN-FW1": 0.0121,
+  "ELS-FI1": -0.0004,
+  "ELS-FW1": 0.0092,
+  "FEN-FI1": 0.0002,
+  "FEN-FW1": 0.0007,
+  "GAR-FI1": 0.0266,
+  "GAR-FW1": 0.0115,
+  "HOL-FI1": 0.0235,
+  "HOL-FW1": 0.0088
+ },
+ "analysers": {
+  "ASH": {
+   "k1": 0.005,
+   "k2": 0.001,
+   "check_mean": 0.0996,
+   "form": "none"
+  },
+  "BRN": {
+   "k1": 0.073,
+   "k2": 0.019,
+   "check_mean": 0.1011,
+   "form": "none"
+  },
+  "CAL": {
+   "k1": 0.006,
+   "k2": 0.002,
+   "check_mean": 0.0916,
+   "form": "span"
+  },
+  "DUN": {
+   "k1": 0.077,
+   "k2": 0.019,
+   "check_mean": 0.0993,
+   "form": "none"
+  },
+  "ELS": {
+   "k1": 0.076,
+   "k2": 0.02,
+   "check_mean": 0.1002,
+   "form": "none"
+  },
+  "FEN": {
+   "k1": 0.003,
+   "k2": 0.001,
+   "check_mean": 0.0996,
+   "form": "none"
+  },
+  "GAR": {
+   "k1": 0.066,
+   "k2": 0.019,
+   "check_mean": 0.1008,
+   "form": "none"
+  },
+  "HOL": {
+   "k1": 0.069,
+   "k2": 0.02,
+   "check_mean": 0.092,
+   "form": "zero"
+  }
+ }
+}

@@ -10,8 +10,8 @@
   "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Flag BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1 (6 of 16 treated-water channels) in the fourth-quarter 2027 return; the other ten read within 0.003 mg/L as N of the water they sample.",
+  "answer_source": "submission.md, 1. Final Recommendation",
   "gap": [
     "population"
   ],
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly, fits each treated channel's carryover from the ports read before it apart from the treatment's own lagged breakthrough, and reads the two analysers whose checks run about 8 per cent low as span errors (each one's raw port also reads about 9 to 11 per cent low against the laboratory's raw grabs) flags Hollins' final water channel with the six it should; one who adds the check shortfall to every channel as an offset flags Calder Moor's two channels instead.",
+  "analyst_test": "A strong analyst who reads every file correctly, fits each treated channel's carryover from the ports read before it apart from the treatment's own lagged breakthrough, and reads the two analysers whose checks run about 8 per cent low as span errors (each one's raw port also reads about 9 to 11 per cent low against the laboratory's raw grabs) flags Holmedale's final water channel with the six it should; one who adds the check shortfall to every channel as an offset flags Calderwood's two channels instead.",
   "domain_test": "The deciding quantity is each treated channel's mean offset from the ammonia in its water: the carryover a three-stream sequencer leaves from the two samples before it (fitted on the zero-lag response, apart from the raw-water breakthrough that reaches treated water only after the plant's transit times) plus the analyser's calibration error at the channel's own level, its zero and its span read from the 0.100 check standard against the weekly raw-water grabs once the raw port's own carryover is taken out, the instrument field's two-point calibration; a hospital's or a grid's nouns have no sequencer, no shared sample line, no check standard and no transit time, so the task does not survive the swap.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:sequencer-carryover-plus-zero-versus-span-two-point-calibration",
@@ -41,14 +41,17 @@
     "check-port readings inside the readings stream under quality code V and fault slots under F",
     "treated-water laboratory results reported as below the 0.030 detection limit",
     "the laboratory's own sample point codes against the control system's sample point tags",
-    "the register's port sequence history, two analysers resequenced at their mid-2027 annual service"
+    "the register's port sequence history, two analysers resequenced at their mid-2027 annual service",
+    "the laboratory analyser's run record kept on standard time all year, an hour behind the collection, reception and release times",
+    "the delayed 7 December round logged twice at reception, the second time under the courier docket's pickup time",
+    "failed polls filled from the outstation's store, the November outstation changes' polls never filled, each plant's filtered port losing its signal to the PLC once"
   ],
   "stakeholder_role": "the council's water quality compliance officer, who flags channels in the quarterly online monitoring return and lists them for the instrument technicians before the next quarter",
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
     "file": "nh3_online_readings_2027Q4.csv",
-    "rows": 105984,
+    "rows": 106181,
     "entity": "one ten-minute reading of one sample point by one works' analyser",
     "grain": "analyser x ten-minute slot",
     "source": "synthetic"
@@ -61,19 +64,21 @@
     "currency": "NZD",
     "org_type": "a district council's water services unit",
     "invented_names": [
-      "Turangawai District Council",
+      "Fernvale District Council",
       "Ashcombe",
-      "Brayford",
+      "Brannock",
       "Calderwood",
       "Dunmere",
       "Elstow",
       "Fenwick",
-      "Garthmore",
-      "Hollins"
+      "Garrick",
+      "Holmedale",
+      "Kowhai Bay Analytical"
     ],
     "people": [
       "Emily Butler",
       "Cameron Waugh",
+      "Caleb MacDonald",
       "Suzanne Nelson"
     ]
   },
@@ -84,10 +89,19 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is each channel's mean error against the truth, made of a share of the two samples before it carried into each reading (read from the zero-lag response, apart from the stream's own lagged response) and the instrument's calibration error, whose form (a constant offset or a proportional gain) a check at one level cannot tell apart and a reference at a higher level settles only once that reference channel's own carryover, which also reads in proportion, is taken out; read without it, the constant error looks proportional, so an instrument whose constant error cancels one channel's carryover is left flagged.",
-  "driver_concrete": "Each treated ammonia channel's quarter offset is its sequencer carryover from the two ports read before it (fitted apart from the raw-water breakthrough that arrives after each plant's transit times) plus its analyser's calibration error at the channel's own level; Hollins' 0.008 check shortfall looks like a span error because its raw port also reads about 10 per cent low against the weekly raw grabs, but that is its own carryover, and with it taken out the grabs show a constant zero error that cancels the final water channel's memory carryover, while Calder Moor's shortfall, on a healthy analyser, is a span error that shrinks to about 0.002 at treated levels.",
-  "stump": "A competent solver fits each treated channel's carryover, reads Hollins' and Calder Moor's low checks as span errors because both raw ports read about as low against the laboratory's raw grabs, and flags HOL-FW1 beside BRF-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1; Hollins' raw port reads low through its own carryover, and with that taken out its grabs show a constant 0.008 zero error that cancels HOL-FW1's memory carryover, so the list is the six.",
+  "driver_concrete": "Each treated ammonia channel's quarter offset is its sequencer carryover from the two ports read before it (fitted apart from the raw-water breakthrough that arrives after each plant's transit times) plus its analyser's calibration error at the channel's own level; Holmedale's 0.008 check shortfall looks like a span error because its raw port also reads about 10 per cent low against the weekly raw grabs, but that is its own carryover, and with it taken out the grabs show a constant zero error that cancels the final water channel's memory carryover, while Calderwood's shortfall, on a healthy analyser, is a span error that shrinks to about 0.002 at treated levels.",
+  "stump": "A competent solver fits each treated channel's carryover, reads Holmedale's and Calderwood's low checks as span errors because both raw ports read about as low against the laboratory's raw grabs, and flags HOL-FW1 beside BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1; Holmedale's raw port reads low through its own carryover, and with that taken out its grabs show a constant 0.008 zero error that cancels HOL-FW1's memory carryover, so the list is the six.",
   "mechanism_source": "design_note",
   "lineage": [],
-  "notes": "Probed before the draw: three call-only rounds on carryover designs (3 of 3, then 1 of 3 landed); this design, Hollins worn as well as zero-shifted, 0 of 3 (pr252f). stump_strategy decomposition_attribution: each channel's error is split into carryover and a calibration error, and the calibration error's form (zero or span) is attributed from two levels once the reference channel's own carryover is removed. calibration_form physical_verification: the monthly check standard through the analyser's check port. layer2_family field_method: the zero and span two-point calibration and the multi-stream carryover correction are the instrument field's own methods. forcing_event period_close (redrawn from launch_or_rollout, which repeats task177): the quarter has closed and its online monitoring return is compiled; the call is retrospective because the return flags the quarter just closed and the list sends the channels to the technicians before the next one.",
-  "registered": "2026-10-21T07:22:31Z"
+  "notes": "Probed before the draw: three call-only rounds on carryover designs (3 of 3, then 1 of 3 landed); this design, Holmedale worn as well as zero-shifted, 0 of 3 (pr252f). stump_strategy decomposition_attribution: each channel's error is split into carryover and a calibration error, and the calibration error's form (zero or span) is attributed from two levels once the reference channel's own carryover is removed. calibration_form physical_verification: the monthly check standard through the analyser's check port. layer2_family field_method: the zero and span two-point calibration and the multi-stream carryover correction are the instrument field's own methods. forcing_event period_close (redrawn from launch_or_rollout, which repeats task177): the quarter has closed and its online monitoring return is compiled; the call is retrospective because the return flags the quarter just closed and the list sends the channels to the technicians before the next one.",
+  "registered": "2026-10-21T07:22:31Z",
+  "differentiation": {
+    "task251": "251 reads count stations' error from paired approaches on one stream (a queue loss and a cold miss outside the validation days); here no second instrument sees the stream: the error is the analyser's own carryover from the samples before, separated from the water's lagged response, and its calibration error's form read from two levels",
+    "task250": "250 forecasts how many drift alerts a wider limit raises from a record its repairs cut short; here nothing is forecast: each channel's quarter offset is estimated from the analyser's own readings, its checks and the raw grabs",
+    "task254": "254 times a unit through recorded stages whose later delay is censored; here the G7 window is the check's single operating level against the channel's own, and the decisive step attributes a check shortfall to a zero or a span",
+    "task244": "244 removes spurious moves between two periods' states read with a measured classification error; here no state is classified: the quantity is an instrument's continuous offset, and the reference it is read against is itself diluted by the instrument's carryover",
+    "task202": "202 recovers the within-unit shape of a distribution from the minority that reported item by item; here no distribution is cut: each channel's mean error is the analyser's own carryover plus a calibration error whose zero or span form is read from two levels",
+    "task243": "243 recovers the share of exits a register records from the counts above each age at two dates; here the quantity is an instrument's continuous offset, read against a reference channel the instrument's own carryover dilutes"
+  },
+  "architecture_spent": true
 }

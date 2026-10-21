@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-21 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task251 SHIPPED 10-21 (architecture 5); task249's architecture 5 spent 10-20 and PAUSED, to be drawn fresh at the author's instruction; task252 is next, beside task249). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-21 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task251 SHIPPED 10-21 (architecture 5); task249's architecture 5 spent 10-20 and task252's architecture 1 spent 10-21, both PAUSED and both drawn fresh next at the author's instruction). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
@@ -17,6 +17,20 @@ domain General Statistics) though its decisive method is web performance enginee
 author chose: task230 re-rooted inside Data Quality (done, reshipped), task129 re-rooted in a client domain (done,
 reshipped), then the second-layer reviews in the order task232, task231, task229, task122, task131, with task123 last
 (task232 and task229 assessed 10-14: no clean second layer, kept as shipped; task231's second layer, the 2025 rise in closures, was built and returned SEND_BACK at the re-judge, so it was reverted and the shipped build stands; task122 prototyped 10-14: informative hyperkalaemia stops leave the MAR estimators apart and short of the counterfactual, so no clean second layer, kept as shipped; task131 assessed 10-14: no clean second layer, kept as shipped; task123 kept as shipped at the author's call (no Energy task type serves ETL, so its tag is its only legal home). The review is complete; verdicts sit in the board's `assessment` collection. Next: wave 2 (task233 to task236) or task228, at the author's call.)
+
+**task252: PAUSED 2026-10-21; architecture 1 spent at stage 4 round 4; architecture 2 is drawn fresh next.**
+- Architecture 1 (Physical & Environmental Sciences, sensor calibration and measurement x DQ): Fernvale District
+  Council's eight water treatment plants, each three-stream ammonia analyser's carryover from the two samples before a
+  reading plus its calibration error, Holmedale's zero error cancelling HOL-FW1's carryover; golden BRN-FW1, DUN-FW1,
+  ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1. Every free gate green (98 checks, verifier, byte-identical, target.zip
+  f52cad28, precut 51 of 51); judge DETERMINISTIC APPROVE on round 4 after three FIX_NOW rounds on the asks.
+- Stage 4: three probes and the six readers of rounds 1 to 3 missed the call; in round 4 reader H landed it (a full
+  carryover model, the two-point read on the raw pairs) and reader G missed it (the slot before only). Ask A (the
+  analyser clock bracketed by reception and release, the 7 December round logged twice) held 0 of 8 for both; ask B
+  (each filtered port's lost signal at the PLC) held for G and fell to H.
+- Lesson: a measurement model whose every term the readings and grabs identify is solved by a careful reader about one
+  time in eight, which the two-reader rule counts as spent; the next draw's decisive step must survive a perfect fit to
+  the same data.
 
 **task251: SHIPPED 2026-10-21 (architecture 5), waiting on the portal.**
 - The Regional Municipality of Halbrook's 30 loop count stations: flag R02-01, R04-03, R06-01, R08-05, R14-01, R25-01
