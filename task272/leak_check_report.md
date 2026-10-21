@@ -37,3 +37,7 @@ Stump terms swept: counsellor, points, reordering, within-day, chance, benchmark
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Isolated readers (stage 4)
+
+- Architecture 1 (target.zip 90774da6): two scored readers, each on fresh copies of `prompt.txt` and `target/`. Reader 1 (r272a) corrected each counsellor-day's contrast by shuffling the day's determinations; reader 2 (r272b) fitted counsellor-day fixed effects and subtracted the null of 150 within-day permutations per hospital, naming the short-queue bias unprompted. Both named the golden 11. Asks: r272a 0 of 62 (every write-off line summed; code 1 for the whole year), r272b 31 of 62 (Ask A whole; Ask B code 1 for the whole year). `score_reader.py --call-key call.qualify` FAIL on both (the call): Gate F failed and the architecture is spent.

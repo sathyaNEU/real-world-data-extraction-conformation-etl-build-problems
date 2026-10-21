@@ -4,8 +4,8 @@
   "status": "PAUSED",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-21",
   "stump": "A competent analyst who conforms the three exports and holds each working day's mix fixed by regressing every determination on the counsellor's previous one with a fixed effect per counsellor-day puts 23 of the 31 hospitals over the six-point line, because a queue of eight determinations shows a drop of about 14 points after an approval with no counsellor swayed at all, and one who pools consecutive determinations instead puts 2 over it, because days fed by presumptive referrals string approvals together; only the excess over what each day's own determinations would show in any order puts the 11 hospitals whose counsellors are really swayed over it.",
   "architecture": 1,
@@ -17,7 +17,7 @@
   },
   "leak": {
     "leak_py": "REVIEW 2026-10-21 (no LEAK after the grant price left block 4): program name, estimand words, column vocabulary, hospitals beside beds and filings; each answered in the note",
-    "reader": ""
+    "reader": "2026-10-21 both isolated scored readers landed the call (score_reader exit 1 on each): r272a by shuffling each day's determinations, asks 0 of 62; r272b by counsellor-day fixed effects less 150 within-day permutations, Ask A 31 of 31, Ask B 0 of 31; architecture 1 spent"
   },
   "duplicate_check": {
     "heart": "WARN 2026-10-21 (repeat.deliverables png+xlsx against task251 v5) after the stage-3 re-filing; ban.shape against task479 v5 cleared by the moved window, shape 10 kept",
@@ -25,12 +25,12 @@
     "surface": "clean 2026-10-21 (persona Kristin Robertson; promoted pairs left to the author's clone-check)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "FIX_NOW (documentation only: the asks' two conventions; the main call's uncorrected within-day reading, 23, is the stump itself)",
+    "report": "determinism_check_report.md"
   },
   "returned": [],
-  "resume": "Stage 4: two isolated scored readers (r272a, r272b) and the determinism judge on target.zip 90774da6; fix every finding in the generator in one pass; ship or record the architecture spent.",
+  "resume": "Stage 1: re-root to architecture 2 in a fresh decisive step (architecture 1 spent, see the Architecture 1 record and Tried and rejected): guard recent, coverage, mechanisms and slots; the card re-registered with architecture 1 in lineage; the design note rewritten above the record; DRAWN commit; then the full pipeline. Retire after the third spent architecture.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -41,8 +41,7 @@
     {
       "architecture": 1,
       "drawn": "2026-10-21",
-      "fate": "",
-      "paused": "stage 4 running"
+      "fate": "spent 2026-10-21 at stage 4: Gate F failed, both scored readers corrected the within-day contrast for the short-queue bias and landed the 11"
     }
   ],
   "gates": {
