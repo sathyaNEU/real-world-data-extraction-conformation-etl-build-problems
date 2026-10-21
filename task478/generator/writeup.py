@@ -43,7 +43,7 @@ def main():
         "Took the roadway from road_inventory_2026.csv less the five segments in route_turnback_notice_2027-03.pdf, "
         "lane-miles as length times through lanes (program section 2): {:,.1f} lane-miles.".format(c["lane_miles"]),
         "Kept the potholes confirmed in kerbline_qa_review_2027-03.xlsx, folding each defect rejected as a duplicate into "
-        "the defect it names, and placed each on its 2026 segment from its detections' road_ref and road_mp in "
+        "the confirmed defect nearest it on its route, and placed each on its 2026 segment from its detections' road_ref and road_mp in "
         "kerbline_detections_2027-03.csv through road_inventory_crosswalk_2025_2026.csv: {:,} potholes.".format(c["confirmed"]),
         "Listed the units that drove each segment in March, district local time, from fleet_camera_traversals_2027-03.csv "
         "joined by vehicle to kerbline_unit_register.xlsx on its install and removal dates; every segment had at least one.",
@@ -55,8 +55,9 @@ def main():
         "Cold patches from mms_cold_patch_orders_2027-03.csv, COMPLETE orders finished in March: an ext_ref missing from "
         "Kerbline's exports, a number from before Kerbline's 17 March renumbering, taken to the confirmed defect at the "
         "same route and milepost in the review export, each defect the reviewer rejected as a duplicate taken to the "
-        "defect it names, so each pothole counts once; a multi-line order carrying the same pounds on every line counted "
-        "once.",
+        "confirmed defect nearest it on its route, so each pothole counts once; a multi-line order carrying one figure on "
+        "every line counted it once where the figure is more than any single-line order used on a pothole of its lines' "
+        "severities in the detections (the mobile app's order total), and summed its lines otherwise.",
         "Camera miles: dropped each traversal overlapping the same vehicle's earlier-numbered traversal of the same "
         "segment (the provider's re-run of 12 to 13 March), kept installed units' March passes on the program's roadway "
         "and summed inventory lengths.",

@@ -125,7 +125,7 @@
  "sections": {
   "Carrow Point": {
    "camera_miles": 7732,
-   "cold_mix_lb": 3770,
+   "cold_mix_lb": 3780,
    "cold_patched": 70,
    "crew": "Yes",
    "lane_miles": 258.7,
@@ -134,7 +134,7 @@
   },
   "Elmscourt": {
    "camera_miles": 6741,
-   "cold_mix_lb": 4840,
+   "cold_mix_lb": 4760,
    "cold_patched": 85,
    "crew": "Yes",
    "lane_miles": 254.1,
@@ -143,7 +143,7 @@
   },
   "Fenwick Gap": {
    "camera_miles": 1787,
-   "cold_mix_lb": 1540,
+   "cold_mix_lb": 1535,
    "cold_patched": 27,
    "crew": "Yes",
    "lane_miles": 165.3,
@@ -152,8 +152,8 @@
   },
   "Grisholt": {
    "camera_miles": 1771,
-   "cold_mix_lb": 360,
-   "cold_patched": 8,
+   "cold_mix_lb": 460,
+   "cold_patched": 11,
    "crew": "No",
    "lane_miles": 126.8,
    "rate": 4,
@@ -161,8 +161,8 @@
   },
   "Halverton": {
    "camera_miles": 1820,
-   "cold_mix_lb": 300,
-   "cold_patched": 4,
+   "cold_mix_lb": 360,
+   "cold_patched": 6,
    "crew": "No",
    "lane_miles": 128.6,
    "rate": 3,
@@ -170,7 +170,7 @@
   },
   "Holloway Run": {
    "camera_miles": 2084,
-   "cold_mix_lb": 1255,
+   "cold_mix_lb": 1275,
    "cold_patched": 20,
    "crew": "Yes",
    "lane_miles": 129.1,
@@ -179,7 +179,7 @@
   },
   "Kestrelton": {
    "camera_miles": 1656,
-   "cold_mix_lb": 1085,
+   "cold_mix_lb": 1070,
    "cold_patched": 13,
    "crew": "Yes",
    "lane_miles": 126.9,
@@ -188,7 +188,7 @@
   },
   "Marlpit": {
    "camera_miles": 2510,
-   "cold_mix_lb": 775,
+   "cold_mix_lb": 765,
    "cold_patched": 13,
    "crew": "No",
    "lane_miles": 182.3,
@@ -197,8 +197,8 @@
   },
   "Norvelle": {
    "camera_miles": 1789,
-   "cold_mix_lb": 805,
-   "cold_patched": 9,
+   "cold_mix_lb": 860,
+   "cold_patched": 10,
    "crew": "Yes",
    "lane_miles": 131.1,
    "rate": 8,
@@ -206,8 +206,8 @@
   },
   "Oxbrae": {
    "camera_miles": 2049,
-   "cold_mix_lb": 170,
-   "cold_patched": 4,
+   "cold_mix_lb": 280,
+   "cold_patched": 7,
    "crew": "No",
    "lane_miles": 138.3,
    "rate": 4,
@@ -215,8 +215,8 @@
   },
   "Pyke Hill": {
    "camera_miles": 1774,
-   "cold_mix_lb": 350,
-   "cold_patched": 5,
+   "cold_mix_lb": 400,
+   "cold_patched": 7,
    "crew": "No",
    "lane_miles": 172.1,
    "rate": 2,
@@ -224,7 +224,7 @@
   },
   "Rushmead": {
    "camera_miles": 13257,
-   "cold_mix_lb": 2930,
+   "cold_mix_lb": 2915,
    "cold_patched": 48,
    "crew": "No",
    "lane_miles": 264.5,
@@ -233,7 +233,7 @@
   },
   "Stonebeck": {
    "camera_miles": 2254,
-   "cold_mix_lb": 810,
+   "cold_mix_lb": 780,
    "cold_patched": 13,
    "crew": "No",
    "lane_miles": 181.7,
@@ -242,8 +242,8 @@
   },
   "Thistlebank": {
    "camera_miles": 1868,
-   "cold_mix_lb": 1090,
-   "cold_patched": 21,
+   "cold_mix_lb": 1140,
+   "cold_patched": 23,
    "crew": "Yes",
    "lane_miles": 169.4,
    "rate": 8,

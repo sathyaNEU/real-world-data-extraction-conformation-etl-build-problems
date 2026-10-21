@@ -37,7 +37,7 @@
    "source": "Kerbline Vision platform, review module (fictional), synthetic records",
    "date": "2027-04-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 1231
+   "rows": 1230
   },
   {
    "file": "kerbline_unit_register.xlsx",
@@ -65,7 +65,7 @@
    "source": "State Department of Transportation, Tamsett District (fictional), synthetic records",
    "date": "2027-04-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 406
+   "rows": 419
   },
   {
    "file": "pavement_condition_2026.csv",

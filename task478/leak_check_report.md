@@ -4,10 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: decisive, kerbline, passes, detections, repeat, population, capture, second, defect, recorded, family, pairing, window, chance, distinct, record, completion, pattern, independent, carrow, elmscourt, recaptures, government, agency, method
-
-## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `tamsett_pilot_data_dictionary.pdf`: golden figure 406 appears: ...s they became. mms_cold_patch_orders_2027-03.csv (406 rows) One row per task line of a cold patch work...
+Stump terms swept: decisive, kerbline, detections, passes, repeat, population, capture, second, defect, recorded, family, pairing, window, chance, distinct, record, completion, pattern, independent, carrow, elmscourt, recaptures, government, agency, method
 
 ## 4 design-note vocabulary (REVIEW 3)
 - **REVIEW** `kerbline_pilot_scope_of_work.pdf`: 6 of 25 stump-paragraph terms appear (kerbline, detections, repeat, capture, defect, record); read whether the document names the move
@@ -23,6 +20,8 @@ Stump terms swept: decisive, kerbline, passes, detections, repeat, population, c
 ## 1 file names (clean)
 
 ## 2 author vocabulary (clean)
+
+## 3 answer figures in the pack (clean)
 
 ## 5 announcements (clean)
 

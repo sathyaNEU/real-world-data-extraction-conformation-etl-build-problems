@@ -201,10 +201,35 @@ def main():
     by_wo = defaultdict(list)
     for r in p["wo"]:
         by_wo[r["wo_number"]].append(r)
-    mob = [w for w, ls in by_wo.items() if len(ls) > 1 and len({l["cold_mix_lb"] for l in ls}) == 1]
     truth_mobile = {"WO-%d" % o["wo"] for o in e["orders"] if o["mobile"] and len(o["lines"]) > 1}
-    check("A1 fair: the multi-line orders carrying one figure on every line are exactly the mobile app's (%d)" % len(mob),
-          set(mob) == truth_mobile)
+    rep = {w for w, ls in by_wo.items() if len(ls) > 1 and len({l["cold_mix_lb"] for l in ls}) == 1
+           and all(l["status"] == "COMPLETE" for l in ls)}
+    check("A1 fair: the repeated figures above every single-line order on their severities are exactly the mobile "
+          "app's totals (%d of %d repeated-figure orders)" % (len(truth_mobile & rep), len(rep)),
+          M.total_orders(p) == {w for w in truth_mobile if w in rep})
+    po = M.ask_patches(p, pounds="per_order")[1]
+    check("A1 every section's pounds move when every repeated figure is taken once (the like potholes' orders)",
+          all(po.get(s, 0) != gA[1].get(s, 0) for s in ORDER))
+    sv = {}
+    conf_ids = {int(r["Defect ID"]) for r in p["qa"] if r["Decision"] == "Confirmed" or r["Reason"] == "Duplicate"}
+    for d in p["det"]:
+        if d["severity"] and int(d["defect_id"]) in conf_ids:
+            sv.setdefault(int(d["defect_id"]), set()).add(d["severity"])
+    check("A1 fair: every confirmed or duplicate defect carries one severity in the detections", all(len(v) == 1 for v in sv.values()))
+    dm = M.dup_map(p)
+    truth_dup = {d["id"]: d["dup_of"]["id"] for d in e["defects"] if d.get("dup_of") is not None}
+    conf_mp = defaultdict(list)
+    for r in p["qa"]:
+        if r["Decision"] == "Confirmed":
+            conf_mp[r["Route"]].append(float(r["Milepost"]))
+    qmp = {int(r["Defect ID"]): (r["Route"], float(r["Milepost"])) for r in p["qa"] if r["Milepost"] is not None}
+    def margin(t):
+        rt, mp = qmp[t]
+        ds = sorted(abs(x - mp) for x in conf_mp[rt])
+        return ds[0] <= 0.0105 and (len(ds) < 2 or ds[1] >= 0.02)
+    check("A3 fair: each rejected duplicate's nearest confirmed defect on its route is the one it duplicates, within "
+          "0.01 mile and no other within 0.02 (%d)" % len(dm),
+          dm == truth_dup and all(margin(t) for t in dm))
     check("A golden equals the generator's truth (distinct potholes, pounds used)",
           all(gA[0].get(s, 0) == len({id(l["defect"]) for l in e["wo_rows"] if l["sec"] == s and l["status"] == "COMPLETE"})
               for s in ORDER)

@@ -76,8 +76,7 @@ def repeat_rate(p, g):
         for unit, inst, rem in by_veh.get(t["vehicle_id"], []):
             if day >= inst and (rem is None or day < rem):
                 passdays[(seg, unit)].add(day.isoformat())
-    dup = {int(r["Defect ID"]): int(str(r["Reason"]).split()[-1]) for r in p["qa"]
-           if (r["Reason"] or "").startswith("Duplicate of ")}
+    dup = M.dup_map(p)
     dd = defaultdict(set)
     for d in p["det"]:
         did = dup.get(int(d["defect_id"]), int(d["defect_id"]))

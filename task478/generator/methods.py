@@ -141,15 +141,25 @@ def looks(p, road, use_utc_day=False, ignore_install=False, sessions_only=False)
     return out
 
 
+def dup_map(p):
+    """A defect the reviewer rejected as a duplicate, to the confirmed defect nearest it on its route."""
+    conf = defaultdict(list)
+    for r in p["qa"]:
+        if r["Decision"] == "Confirmed" and r["Milepost"] is not None:
+            conf[r["Route"]].append((float(r["Milepost"]), int(r["Defect ID"])))
+    out = {}
+    for r in p["qa"]:
+        if r["Decision"] == "Rejected" and (r["Reason"] or "") == "Duplicate":
+            mp = float(r["Milepost"])
+            out[int(r["Defect ID"])] = min(conf[r["Route"]], key=lambda c: (abs(c[0] - mp), c[1]))[1]
+    return out
+
+
 def potholes(p, road, mapper=None, merge_dups=True):
     """Confirmed potholes on the roadway: defect -> (segment, set of units that detected it)."""
     mapper = mapper or ref_to_2026(p)
-    confirmed, dup_of = set(), {}
-    for r in p["qa"]:
-        if r["Decision"] == "Confirmed":
-            confirmed.add(int(r["Defect ID"]))
-        elif r["Reason"] and str(r["Reason"]).startswith("Duplicate of "):
-            dup_of[int(r["Defect ID"])] = int(str(r["Reason"]).split()[-1])
+    confirmed = {int(r["Defect ID"]) for r in p["qa"] if r["Decision"] == "Confirmed"}
+    dup_of = dup_map(p)
     segs = defaultdict(list)
     det_units = defaultdict(set)
     for d in p["det"]:
@@ -293,8 +303,7 @@ def per_pass(p, g=None):
                 passes[seg].append((unit, day))
     first = {}
     det_days = defaultdict(set)
-    dup = {int(r["Defect ID"]): int(str(r["Reason"]).split()[-1]) for r in p["qa"]
-           if (r["Reason"] or "").startswith("Duplicate of ")}
+    dup = dup_map(p)
     for d in p["det"]:
         did = dup.get(int(d["defect_id"]), int(d["defect_id"]))
         if did in pots:
@@ -374,13 +383,16 @@ def _mms_time(s):
     return dt.datetime.strptime(s, "%m/%d/%Y %H:%M").replace(tzinfo=TZ) if s else None
 
 
-def ask_patches(p, legacy="location", pounds="per_order", fold=True, confirmed_only=False):
+def ask_patches(p, legacy="location", pounds="severity", fold=True, confirmed_only=False):
     """Ask A: per section, the potholes cold patched in March (a pothole patched twice counts once) and the pounds of
-    cold mix their orders used. legacy: 'location' takes an ext_ref Kerbline no longer carries to the defect at the
+    cold mix their orders used. pounds: 'severity' takes a figure repeated on every line of an order once where it is
+    more than any single-line order used on a pothole of any of its lines' severities, 'per_order' wherever it repeats;
+    'lines' sums. legacy: 'location' takes an ext_ref Kerbline no longer carries to the defect at the
     same route and milepost, 'as_is' counts refs as written, 'all_location' identifies every line by its route and
-    milepost. fold follows the reviewer's "Duplicate of" to the defect it names; confirmed_only drops lines whose defect
+    milepost. fold takes a defect the reviewer rejected as a duplicate to the confirmed defect nearest it on its route; confirmed_only drops lines whose defect
     the reviewer rejected. pounds: 'per_order' takes a figure repeated on every line of an order once; 'lines' sums."""
-    loc, known, dup, conf = {}, set(), {}, set()
+    loc, known, conf = {}, set(), set()
+    dup = dup_map(p)
     for r in p["qa"]:
         did = int(r["Defect ID"])
         known.add(did)
@@ -388,8 +400,6 @@ def ask_patches(p, legacy="location", pounds="per_order", fold=True, confirmed_o
             loc[(r["Route"], round(float(r["Milepost"]), 3))] = did
         if r["Decision"] == "Confirmed":
             conf.add(did)
-        elif (r["Reason"] or "").startswith("Duplicate of "):
-            dup[did] = int(str(r["Reason"]).split()[-1])
     done = [r for r in p["wo"] if r["status"] == "COMPLETE" and r["finished"]
             and _mms_time(r["finished"]).month == 3]
     pots = defaultdict(set)
@@ -407,15 +417,50 @@ def ask_patches(p, legacy="location", pounds="per_order", fold=True, confirmed_o
     orders = defaultdict(list)
     for r in done:
         orders[r["wo_number"]].append(r)
+    sev = severities(p)
+    res = {}
+    for r in done:
+        ref = int(r["ext_ref"])
+        if ref not in known:
+            ref = loc[(r["route"], round(float(r["milepost"]), 3))]
+        res[(r["wo_number"], r["task_line"])] = sev.get(ref)
+    top = defaultdict(int)
+    for wo, lines in orders.items():
+        if len(lines) == 1:
+            s_ = res[(wo, lines[0]["task_line"])]
+            top[s_] = max(top[s_], int(lines[0]["cold_mix_lb"]))
     lb = defaultdict(int)
     for wo, lines in orders.items():
         sec = int(lines[0]["section"])
         vals = [int(l["cold_mix_lb"]) for l in lines]
-        if pounds == "per_order" and len(lines) > 1 and len(set(vals)) == 1:
+        repeated = len(lines) > 1 and len(set(vals)) == 1
+        if pounds == "severity" and repeated and vals[0] > max(top[res[(wo, l["task_line"])]] for l in lines):
+            TOTALS.add(wo)
+            lb[sec] += vals[0]
+        elif pounds == "per_order" and repeated:
             lb[sec] += vals[0]
         else:
             lb[sec] += sum(vals)
     return {sec: len(v) for sec, v in pots.items()}, dict(lb)
+
+
+TOTALS = set()
+
+
+def total_orders(p):
+    """The orders whose repeated figure ask A's golden takes once."""
+    TOTALS.clear()
+    ask_patches(p)
+    return set(TOTALS)
+
+
+def severities(p):
+    """Each defect's severity as Kerbline's detections give it."""
+    out = {}
+    for d in p["det"]:
+        if d["severity"]:
+            out[int(d["defect_id"])] = int(d["severity"])
+    return out
 
 
 def ask_miles(p, dedupe=True, installed=True, local_window=True, program_road=True):

@@ -105,8 +105,15 @@ def kerbline(e):
     reals = [d for d in defects if d["real"] and not d["off"] and sum(1 for u in d["seen"] if d["seen"][u]) >= 1]
     split = set(int(i) for i in r.choice(len(reals), 11, replace=False))
     extra = []
+    on_route = {}
+    for d in defects:
+        if d["mp"] is not None:
+            on_route.setdefault(d["route"], []).append(d["mp"])
     for i, d in enumerate(reals):
         if i not in split:
+            continue
+        tmp = round(d["mp"] + float(r.choice([-1, 1])) * float(r.uniform(0.004, 0.008)), 3)
+        if sum(1 for m in on_route[d["route"]] if abs(m - tmp) < 0.02) > 1:
             continue
         units = [u for u in sorted(d["seen"]) if d["seen"][u]]
         if len(units) >= 2:
@@ -136,7 +143,7 @@ def kerbline(e):
                 d["seen"] = dict(d["seen"])
                 d["seen"][u] = hits[:cut]
         twin["dup_of"] = d
-        twin["mp"] = round(d["mp"] + float(r.choice([-1, 1])) * float(r.uniform(0.004, 0.008)), 3)
+        twin["mp"] = tmp
         extra.append(twin)
     defects += extra
     # numbers: the old platform's (sequential from the pilot's start) and the new one's after 17 March
@@ -224,7 +231,7 @@ def review(e):
         if d["off"]:
             dec, why = "Rejected", "Not on state highway system"
         elif d.get("dup_of") is not None:
-            dec, why = "Rejected", "Duplicate of %d" % d["dup_of"]["id"]
+            dec, why = "Rejected", "Duplicate"
             at = max(at, d["dup_of"].get("reviewed", at))
         elif not d["real"]:
             dec, why = "Rejected", {"utility_cover": "Utility cover / grate", "patch": "Existing patch",
@@ -326,6 +333,9 @@ def service_days(e, start_only=False, utc=False, bench=False, listed_only=False)
 
 
 # ------------------------------------------------------------------------------------------------ work orders
+BAND = {1: 40, 2: 66, 3: 112}
+
+
 def work_orders(e):
     """MMS cold patch work orders raised from the review queue in March. Office orders carry each line's own
     pounds and hours; the crews' mobile app writes the order's total pounds on every line."""
@@ -462,11 +472,86 @@ def work_orders(e):
         a["raised"] = max(a["raised"], b["raised"])
         a["finish"] = max(a["finish"], b["finish"])
         orders.remove(b)
-    # office multi-line orders never carry the same pounds on every line
+    # crews often enter one figure for like potholes on an office order; the mobile app's repeated total is more
+    # than any one pothole of its lines' severities takes
+    sev_of = lambda l: l["d"]["src"]["severity"]
     for o in orders:
-        if not o["mobile"] and len(o["lines"]) >= 2:
-            while len({l["lb"] for l in o["lines"]}) < len(o["lines"]):
-                o["lines"][-1]["lb"] += 5
+        if len(o["lines"]) < 2:
+            continue
+        if o["mobile"]:
+            top = max(BAND[sev_of(l)] for l in o["lines"])
+            while sum(l["lb"] for l in o["lines"]) <= top:
+                room = [l for l in o["lines"] if l["lb"] + 5 <= BAND[sev_of(l)]]
+                if not room:
+                    break
+                min(room, key=lambda l: (l["lb"] - BAND[sev_of(l)], l["d"]["id"]))["lb"] += 5
+            if sum(l["lb"] for l in o["lines"]) <= top:
+                o["mobile"] = False
+        if not o["mobile"] and len({sev_of(l) for l in o["lines"]}) == 1 and r.random() < 0.7:
+            v = min(l["lb"] for l in o["lines"])
+            for l in o["lines"]:
+                l["lb"] = v
+    # every section has an office order carrying one figure on like potholes
+    for no in W.ORDER:
+        def like(o):
+            return (not o["mobile"] and len(o["lines"]) >= 2 and len({l["lb"] for l in o["lines"]}) == 1
+                    and o["finish"] < W.utc_of(dt.date(2027, 3, 31), 12))
+        if any(o["sec"] == no and like(o) for o in orders):
+            continue
+        multi = [o for o in orders if o["sec"] == no and not o["mobile"] and len(o["lines"]) >= 2
+                 and len({sev_of(l) for l in o["lines"]}) == 1 and o["finish"] < W.utc_of(dt.date(2027, 3, 31), 12)]
+        if multi:
+            v = min(l["lb"] for l in multi[0]["lines"])
+            for l in multi[0]["lines"]:
+                l["lb"] = v
+            continue
+        singles = sorted([o for o in orders if o["sec"] == no and len(o["lines"]) == 1
+                          and o["lines"][0]["attempt"] == 1 and o["finish"] < W.utc_of(dt.date(2027, 3, 29), 12)
+                          and not any(x["d"] is o["lines"][0]["d"] for x in second)],
+                         key=lambda o: (o["raised"], o["lines"][0]["d"]["id"]))
+        pair = None
+        for i, a in enumerate(singles):
+            for b in singles[i + 1:]:
+                if (sev_of(a["lines"][0]) == sev_of(b["lines"][0])
+                        and (a["raised"] < W.MIGRATION_UTC) == (b["raised"] < W.MIGRATION_UTC)
+                        and (b["raised"] - a["raised"]) < dt.timedelta(days=6)):
+                    pair = (a, b)
+                    break
+            if pair:
+                break
+        if not pair:
+            # two like potholes of the section with no order yet go on one office order
+            pool = sorted([d for d in conf if e["S"][d["seg"]]["sec"] == no
+                           and d["reviewed"] < W.utc_of(dt.date(2027, 3, 24), 12)
+                           and not any(l["d"] is d for o_ in orders for l in o_["lines"])],
+                          key=lambda d: (d["reviewed"], d["id"]))
+            for i, d1 in enumerate(pool):
+                d2 = next((d for d in pool[i + 1:] if d["src"]["severity"] == d1["src"]["severity"]
+                           and (d["reviewed"] < W.MIGRATION_UTC) == (d1["reviewed"] < W.MIGRATION_UTC)), None)
+                if d2 is None:
+                    continue
+                made = []
+                for d in (d1, d2):
+                    line = dict(d=d, sec=no, route=e["S"][d["seg"]]["route"], attempt=1,
+                                raised=d["reviewed"] + dt.timedelta(minutes=float(r.uniform(6, 95))))
+                    line["lb"] = int(5 * round(float(r.uniform(*{1: (18, 40), 2: (32, 66), 3: (58, 112)}[sev_of(line)])) / 5))
+                    o = dict(lines=[line], mobile=False, sec=no, raised=line["raised"])
+                    o["finish"] = finish_after(line["raised"], float(r.uniform(3.0, 30.0)))
+                    o["crew"] = "%d-%s" % (no, "AB"[int(r.integers(2))])
+                    o["crew_size"] = int(r.choice([2, 3], p=[0.55, 0.45]))
+                    orders.append(o)
+                    made.append(o)
+                pair = tuple(made)
+                break
+        a, b = pair
+        a["lines"] = a["lines"] + b["lines"]
+        a["raised"] = max(a["raised"], b["raised"])
+        a["finish"] = max(a["finish"], b["finish"])
+        a["mobile"] = False
+        v = min(l["lb"] for l in a["lines"])
+        for l in a["lines"]:
+            l["lb"] = v
+        orders.remove(b)
     orders.sort(key=lambda o: (o["raised"], o["lines"][0]["d"]["id"]))
     rows = []
     for o in orders:
@@ -573,7 +658,29 @@ def twin_orders(e):
         done = {"only": False, "first": False}
         lines = sorted([x for x in rows if x["sec"] == no and x["status"] == "COMPLETE" and x["attempt"] == 1],
                        key=lambda x: (x["raised"], x["wo"], x["line"]))
-        for x in lines:
+        k_ = 0
+        while k_ < len(lines) or not done["only"]:
+            if k_ >= len(lines):
+                # a lone pothole of the section with no order yet gets one, for its second number to carry
+                iso = lambda d: all(abs(q["mp"] - d["mp"]) >= 0.03 for q in e["review"] if q["route"] == d["route"]
+                                    and q["mp"] is not None and q["defect"] != d["id"])
+                pool = sorted([d for d in e["defects"] if d.get("decision") == "Confirmed" and not d["off"]
+                               and d["sec"] == no and not e["S"][d["seg"]]["turnback"] and id(d) not in patched
+                               and days_ok(d) is not None and iso(d)], key=lambda d: (d["first"], d["id"]))
+                d = pool[0]
+                raised = _business(W.utc_of(days_ok(d) + dt.timedelta(1), 8) + dt.timedelta(minutes=int(r.integers(0, 240))), r)
+                fin = _business(raised + dt.timedelta(hours=float(r.uniform(5, 26))), r)
+                lb = int(5 * round(float(r.uniform(*{1: (18, 40), 2: (32, 66), 3: (58, 112)}[d["src"]["severity"]])) / 5))
+                x = dict(wo=wo_next, line=1, sec=no, route=d["route"], mp=d["mp"],
+                         ref=d["legacy"] if raised < W.MIGRATION_UTC else d["id"], raised=raised, finish=fin,
+                         crew="%d-A" % no, crew_size=2, lb=lb, status="COMPLETE", defect=d, mobile=False,
+                         true_lb=lb, attempt=1)
+                rows.append(x)
+                patched.add(id(d))
+                wo_next += int(r.integers(3, 17))
+                lines.append(x)
+            x = lines[k_]
+            k_ += 1
             d = x["defect"]
             again = [y for y in rows if y["defect"] is d and y["attempt"] == 2]
             kind = "first" if again else "only"
@@ -591,6 +698,17 @@ def twin_orders(e):
             if cand is None:
                 continue
             u, cut = cand
+            mp = None
+            for k in range(40):
+                m = round(d["mp"] + float(r.choice([-1, 1])) * float(r.uniform(0.004, 0.008)), 3)
+                s_ = e["S"][d["seg"]]
+                if ((d["route"], m) not in taken_mp and s_["bmp"] + 0.004 < m < s_["emp"] - 0.004
+                        and all(abs(q["mp"] - m) >= 0.02 for q in e["review"] if q["route"] == d["route"]
+                                and q["mp"] is not None and q["defect"] != d["id"])):
+                    mp = m
+                    break
+            if mp is None:
+                continue
             if W.utc_of(cut, 23, 59) >= x["raised"]:
                 # the crew took it from Kerbline's map, a day or two after the second number appeared
                 raised = _business(W.utc_of(cut + dt.timedelta(1), 8) + dt.timedelta(minutes=int(r.integers(0, 300))), r)
@@ -601,15 +719,6 @@ def twin_orders(e):
                 if W.local(fin).month != 3:
                     continue
                 x["raised"], x["finish"] = raised, fin
-            mp = None
-            for k in range(40):
-                m = round(d["mp"] + float(r.choice([-1, 1])) * float(r.uniform(0.004, 0.008)), 3)
-                s_ = e["S"][d["seg"]]
-                if (d["route"], m) not in taken_mp and s_["bmp"] + 0.004 < m < s_["emp"] - 0.004:
-                    mp = m
-                    break
-            if mp is None:
-                continue
             while True:
                 tid = int(r.integers(27310000, 27989999))
                 if tid not in ids:
@@ -630,7 +739,7 @@ def twin_orders(e):
             twin["decision"] = "Rejected"
             e["defects"].append(twin)
             e["review"].append(dict(defect=tid, route=d["route"], mp=mp, first=first, decision="Rejected",
-                                    reason="Duplicate of %d" % d["id"], reviewed=twin["reviewed"],
+                                    reason="Duplicate", reviewed=twin["reviewed"],
                                     reviewer=REVIEWERS[int(r.integers(len(REVIEWERS)))], sev=None))
             taken_mp.add((d["route"], mp))
             x["ref"] = legacy if x["raised"] < W.MIGRATION_UTC else tid

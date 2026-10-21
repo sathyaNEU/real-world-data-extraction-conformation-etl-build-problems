@@ -17,7 +17,7 @@
     "population"
   ],
   "pattern": [
-    "none"
+    "D"
   ],
   "generators": [
     "G2",
@@ -102,7 +102,18 @@
     "task239": "task239 estimates how strongly each component's group-level part goes with a shared factor from the few members who answered; here the decisive unit is the capture occasion, a camera rather than a pass, in completing a count of unseen defects.",
     "task48": "task48's re-root recovers a population invisible at a monitor's grain by aggregating transactions to a two-sided pair grain; here nothing is regrouped to find a population: passes are regrouped by camera to count the independent chances a segment's defects had.",
     "task120": "task120's first architecture builds a unit from two links no file stores, for percentile cuts; here the unit is the detection occasion, and it completes a count of unseen defects.",
-    "task269": "task269 works each rider's wait over only the departures serving the rider's destination; here nothing waits: the occasions that could find a defect are the distinct cameras, not the passes, and they complete a count."
+    "task269": "task269 works each rider's wait over only the departures serving the rider's destination; here nothing waits: the occasions that could find a defect are the distinct cameras, not the passes, and they complete a count.",
+    "task181": "task181 locates losses of separation by a geometric condition (one aircraft crossing another's level) to forecast each sector; here nothing is located by geometry: the unseen potholes are completed from how many distinct cameras drove each segment.",
+    "task229": "task229 times two stations' peak releases against a flow window; here no schedule exists: a count of potholes is completed from cross-camera recaptures, the passes of one camera adding no chance.",
+    "task98": "task98 counts dwellings under a points cap as permits end; here no record lapses and no cap applies: the decisive step completes defects no camera recorded, counting cameras rather than passes as the looks.",
+    "task126": "task126 reads which continuity edges are re-examinations against continuing applications; here no edge is classified: the grains are a segment's passes and its distinct cameras, and only the second are independent chances of a find.",
+    "task34": "task34 separates populations by a fitted rent structure and an admissibility test; here nothing is fitted to separate members: every pothole is one population, and the unseen part of it is completed by distinct-camera recapture.",
+    "task49": "task49 floors each award's unpaid amount at zero per award; here nothing is floored or netted: the decisive grain is the capture occasion, a camera, in completing a count of unseen defects.",
+    "task52": "task52 recovers a handover day from the slowest coach's teaching days; here nothing binds on a slowest member: the find chance per camera is read from cross-camera recaptures and a segment's looks are its distinct cameras.",
+    "task57": "task57 joins two extract archives with different field names to find never-funded organisations; here no archive is merged to find a population: the unrecorded potholes are estimated, not found, by distinct-camera completion.",
+    "task74": "task74 recovers a size scale from a style re-code chain; here no chain is walked: the grain decision is passes against cameras as the independent looks in completing a count.",
+    "task75": "task75 adds reopened files found by a household-and-subject match; here no match recovers members: the members no camera saw are completed statistically from the cameras' own recaptures.",
+    "task81": "task81 groups units into firms by an identical site set across a cessation; here no units are regrouped into owners: passes are grouped by camera only to count a segment's independent chances of a find."
   },
   "lineage": [],
   "notes": "Pairing honest label: the decision-maker is a state DOT district maintaining its highway network (supply-chain-logistics, transportation-network), sitting in general-statistics-data-science's data-integration-record-linkage-entity-resolution task type, the ETL task type the house domain maps to; the ETL work is real linkage (detections into defects across passes and cameras, vendor segments to the renumbered road inventory, camera units to vehicles by date). Redrawn twice at the draw: first off the client pairing general-statistics-data-science x etl after task479 registered it, then off business-operations-analytics/field-service-maintenance after task480 registered that pairing, subdomain, decisive pattern G16 and role family 1.5 minutes before this card; the decisive pattern is now G2 (the pass against the camera as the unit of an independent chance), which is the move itself, with G16 second.",

@@ -16,19 +16,19 @@
   },
   "leak": {
     "leak_py": "REVIEW (design-note vocabulary in the scope of work, the program and the data notes; no LEAK)",
-    "reader": ""
+    "reader": "round 2: readers C and D missed the call; C kept ask A's counts and pounds, D the counts; A1 and A3 re-sited, readers E and F running"
   },
   "duplicate_check": {
-    "heart": "WARN (no BLOCK); nearest task49 at 0.07",
+    "heart": "WARN (no BLOCK) after pattern D and differentiation",
     "nearest": "task49"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task478/determinism_check_report_pass2.md"
   },
   "returned": [],
-  "resume": "stage 4 round 2 in flight: ask C dropped, ask A's count primary re-sited to rejected twin numbers, B1 offsets scaled; readers C and D (fresh unzips in the scratchpad) and the judge thread (brief /tmp/determinism-check-task478-r2/judge_brief.md) on target.zip c4af1f7f7f64f67ddc1f6c3e29a74346; score each reader with score_reader.py before its verdict, send verdict.md to the determinism-judge agent for determinism_check_report_pass2.md, fix findings in the generator, re-run gates, then ship",
+  "resume": "stage 4 round 3 in flight: readers E and F (fresh unzips in the scratchpad) on target.zip 12c8ba27fd724bccaf56a999e2b046a3; score each with score_reader.py before its verdict; if both miss the call and neither exits 1, ship (target.zip and golden/ force-added); judge pass 2 APPROVE stands (data-only repair since)",
   "approved": null,
   "delivered": null,
   "portal": null,

@@ -283,17 +283,20 @@ and the camera miles' traversal duplicates sit outside the call's population (ze
   counting once, and the pounds of cold mix those patches used, for each of the fourteen sections). Path: the work
   orders, the review export (defect numbers, decisions, reasons and route mileposts), the detections, the program.
   Devices: A1 (D6, primary for the pounds), the crews' mobile app writes the order's total pounds on every line of a
-  multi-line order while office orders carry each line's own pounds, so summing the lines counts a mobile order's pounds
-  once per line; only the lines' identical figures and pounds per pothole three to four times the office lines' show
-  it. A3 (D7, primary for the counts), when Kerbline split one pothole into two defect numbers, a crew sometimes raised
-  the order on the second number before the reviewer rejected it as a duplicate of the first; in every section one
-  pothole's only order carries the rejected twin's number, and one pothole's first order carries the twin's number and
-  its re-patch the surviving number, a few thousandths of a mile apart. Only the review's "Duplicate of" reason joined to
-  the orders shows it: counting by location keeps the twin as a second pothole, dropping orders on rejected numbers
-  loses a patched pothole. Hazard A2 (D7), the 17 March renumbering: an order raised before it carries the old number,
-  which only the order's route milepost resolves. Other hazards: open orders (no finish), the March finish window.
-  Stops: refs as written and lines summed (the natural read); refs resolved by location and lines summed (the
-  cracker); lines once per order but no duplicate fold; rejected numbers dropped; the golden.
+  multi-line order, while office orders carry each line's own pounds and crews often enter one figure for like potholes
+  on an office order (every section has one), so summing the lines counts a mobile order's pounds once per line and
+  taking every repeated figure once loses the office orders' like lines; only the detections' severity shows which is
+  which (a repeated figure above anything a single-line order used on a pothole of its lines' severities is a total).
+  A3 (D7, primary for the counts), when Kerbline split one pothole into two defect numbers, a crew sometimes raised the
+  order on the second number before the reviewer rejected it as a duplicate (the review's reason is the bare word
+  "Duplicate", naming no defect); in every section one pothole's only order carries the rejected number, and one
+  pothole's first order carries it while its re-patch carries the surviving number, a few thousandths of a mile apart.
+  Only the review's milepost joined across rows shows which confirmed defect the duplicate is (the nearest on its
+  route, within 0.01 mile and no other within 0.02, asserted): counting by location keeps the twin as a second pothole,
+  dropping orders on rejected numbers loses a patched pothole. Hazard A2 (D7), the 17 March renumbering: an order raised
+  before it carries the old number, which only the order's route milepost resolves. Other hazards: open orders (no
+  finish), the March finish window. Stops: refs as written and lines summed (the natural read); refs resolved by
+  location and lines summed (the cracker); every repeated figure once; rejected numbers dropped; the golden.
 - **Ask B, camera miles by section: 14 figures** (the miles the pilot's units were driven on the program's roadway in
   March, each pass at its segment's inventory length). Path: the traversals, the register, the inventory, the turnback,
   the program. Device B1 (D1, primary): the telematics provider re-ran its map matching over 12 March 00:00 to 13 March
@@ -380,5 +383,14 @@ Measured by: generator/ceiling.py
   that a location join keeps as two potholes.
 - 2026-10-21, stage 4: the telematics re-run appended one or two seconds after the originals: an exact-looking near
   duplicate a reader dedups on sight; the offsets now scale with each traversal's duration.
+- 2026-10-21, stage 4 round 2: the review's "Duplicate of <number>" reason as A3's only link: it narrates the device,
+  and both readers folded every twin from it (14 of 14 counts each); the reason is now the bare "Duplicate" and the
+  link is the nearest confirmed defect on the route.
+- 2026-10-21, stage 4 round 2: office multi-line orders forced to distinct pounds: one figure on every line then marked
+  the mobile app's totals by itself, and reader C took each once and kept all 14 pounds; office orders now carry one
+  figure on like potholes too, and only the detections' severity separates a total from a line's own figure.
+- 2026-10-21, stage 4 round 2: G2 kept as the card's decisive generator once task474 architecture 6 (G2) was
+  delivered, a ban.pattern BLOCK; the card's pattern is now D (two flawless grains, the passes and the cameras), the
+  pattern the strategy map gives grain_or_unit, with differentiation lines for the older D builds.
 - 2026-10-20, stage 3: the sweepers' night shifts of 28 February and 31 March: under a UTC window they moved camera
   miles across the month boundary; the spring sweeping schedule now runs 1 to 30 March nights.

@@ -98,7 +98,12 @@ def main(target=None):
     qa = sheet(j("kerbline_qa_review_2027-03.xlsx"), "Review decisions")
     ok("xlsx read back: the review's header (control)", "Reviewed (UTC)" in qa[0])
     conf = {r["Defect ID"] for r in qa if r["Decision"] == "Confirmed"}
-    dup = {r["Defect ID"]: r["Reason"].split()[-1] for r in qa if (r["Reason"] or "").startswith("Duplicate of")}
+    near = defaultdict(list)
+    for r in qa:
+        if r["Decision"] == "Confirmed":
+            near[r["Route"]].append((float(r["Milepost"]), r["Defect ID"]))
+    dup = {r["Defect ID"]: min(near[r["Route"]], key=lambda c: (abs(c[0] - float(r["Milepost"])), c[1]))[1]
+           for r in qa if r["Reason"] == "Duplicate"}
     det = rows(j("kerbline_detections_2027-03.csv"))
     where = defaultdict(Counter_)
     found_by = defaultdict(set)
@@ -163,9 +168,16 @@ def main(target=None):
         ref = r["ext_ref"] if r["ext_ref"] in known else loc[(r["route"], r["milepost"])]
         pots[r["section"]].add(dup.get(ref, ref))
         lines[r["wo_number"]].append(r)
+    sev = {d["defect_id"]: d["severity"] for d in det if d["severity"]}
+    ref_of = lambda r: r["ext_ref"] if r["ext_ref"] in known else loc[(r["route"], r["milepost"])]
+    big = defaultdict(int)
+    for w, ls in lines.items():
+        if len(ls) == 1:
+            big[sev[ref_of(ls[0])]] = max(big[sev[ref_of(ls[0])]], int(ls[0]["cold_mix_lb"]))
     for w, ls in lines.items():
         v = [int(x["cold_mix_lb"]) for x in ls]
-        lbs[ls[0]["section"]] += v[0] if len(ls) > 1 and len(set(v)) == 1 else sum(v)
+        total = len(ls) > 1 and len(set(v)) == 1 and v[0] > max(big[sev[ref_of(x)]] for x in ls)
+        lbs[ls[0]["section"]] += v[0] if total else sum(v)
     ok("ask A counts match", all(len(pots[s]) == by_no[s][1]["cold_patched"] for s in by_no))
     ok("ask A pounds match", all(lbs[s] == by_no[s][1]["cold_mix_lb"] for s in by_no))
     # ask B
