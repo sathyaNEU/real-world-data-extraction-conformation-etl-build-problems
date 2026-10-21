@@ -200,9 +200,10 @@ the finished pack.
 
 ## Pre-ship check
 
-READERS_LINE
+- Readers (two Sonnet, medium, fresh unzips of target.zip, the neutral brief, 2026-10-21): both took each employer's own trended experience and filed CR104, CR109, CR136, CR167 and CR176 (the default path); score_reader.py exit 0 for both, call missed, asks 2 of 54 (3.7 per cent); both named no sentence carrying the decisive step and called the review lines harmless.
 
-JUDGE_LINE
+- Judge (hand-built brief, Sonnet, medium): DETERMINISTIC, APPROVE; the set reproduces under Buhlmann-Straub, limited fluctuation at 1,000 and 3,000 lives and k from half to twice its estimate; Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no; Gate H domain pass, layers pass, decisive_step analytical. Report: determinism_check_report.md.
+- The 10/10 rules re-read against the built pack: the decisive step is credibility (analytical), the mess (two lag layouts, policy rewrites, reissued ids) is Layer 1 and moves no decision.
 
 ## Tried and rejected
 

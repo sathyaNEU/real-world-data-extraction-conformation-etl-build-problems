@@ -1,11 +1,11 @@
 {
  "task": "task479",
  "owner": "oviya1301",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-21",
  "stump": "The default path trends each employer's own 2023 to 2025 retained claims to 2027 and raises the employers whose experience exceeds their claims component, because it never asks how much of a small employer's three years is chance.",
  "architecture": 6,
@@ -15,22 +15,22 @@
   "date": "2026-10-21"
  },
  "leak": {
-  "leak_py": "REVIEW",
-  "reader": ""
+  "leak_py": "REVIEW (claims components as inputs only)",
+  "reader": "two readers missed the call (exit 0, asks 3.7 per cent)"
  },
  "duplicate_check": {
   "heart": "WARN",
   "nearest": "task89 0.06"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 4: spawn two Sonnet leak readers on fresh unzips of target.zip and the judge thread on a hand-built brief, score each reader with score_reader.py, fix findings in one pass",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-21",
  "portal": null,
  "source_note": "seed ET36 (NFIP loss ratios from public policy and claim records, written against earned, rows against insured units): the world, the decision and the quantity kept (NFIP claims experience per insured building, outreach for private-market flood products); the seed's mechanisms only as Layer 1; the pitfall re-found in the record's own mitigation history"
 }
