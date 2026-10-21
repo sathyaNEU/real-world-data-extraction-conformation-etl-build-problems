@@ -1,0 +1,84 @@
+{
+ "answer": "11 grants: H03, H06, H09, H10, H17, H19, H20, H21, H22, H26, H31",
+ "distractors": [
+  "fac_patient_experience_by_payer_2025.csv",
+  "state_charity_care_filings_fy2025.xlsx"
+ ],
+ "domain": "General Statistics & Data Science (resampling and simulation)",
+ "objective": "Descriptive & Distribution Analysis",
+ "provenance": {
+  "contents.txt": {
+   "date": "2027-01-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Vellacott Health Foundation, the Fair Assistance Collaborative, its member hospitals, counsellors, patients, applications and accounts are fictional; place names and the federal holiday calendar follow public usage"
+  },
+  "fac_assistance_adjustments_2025.csv": {
+   "date": "2027-01-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Vellacott Health Foundation, the Fair Assistance Collaborative, its member hospitals, counsellors, patients, applications and accounts are fictional; place names and the federal holiday calendar follow public usage"
+  },
+  "fac_counsellor_id_crosswalk_2025.xlsx": {
+   "date": "2027-01-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Vellacott Health Foundation, the Fair Assistance Collaborative, its member hospitals, counsellors, patients, applications and accounts are fictional; place names and the federal holiday calendar follow public usage"
+  },
+  "fac_data_guide_2025_extracts.pdf": {
+   "date": "2027-01-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Vellacott Health Foundation, the Fair Assistance Collaborative, its member hospitals, counsellors, patients, applications and accounts are fictional; place names and the federal holiday calendar follow public usage"
+  },
+  "fac_decision_coaching_criteria_fy2027.pdf": {
+   "date": "2027-01-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Vellacott Health Foundation, the Fair Assistance Collaborative, its member hospitals, counsellors, patients, applications and accounts are fictional; place names and the federal holiday calendar follow public usage"
+  },
+  "fac_determinations_2025_columbia_hub.csv": {
+   "date": "2027-01-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Vellacott Health Foundation, the Fair Assistance Collaborative, its member hospitals, counsellors, patients, applications and accounts are fictional; place names and the federal holiday calendar follow public usage"
+  },
+  "fac_determinations_2025_puget_hub.csv": {
+   "date": "2027-01-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Vellacott Health Foundation, the Fair Assistance Collaborative, its member hospitals, counsellors, patients, applications and accounts are fictional; place names and the federal holiday calendar follow public usage"
+  },
+  "fac_determinations_2025_willamette_hub.csv": {
+   "date": "2027-01-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Vellacott Health Foundation, the Fair Assistance Collaborative, its member hospitals, counsellors, patients, applications and accounts are fictional; place names and the federal holiday calendar follow public usage"
+  },
+  "fac_member_hospitals_2025.xlsx": {
+   "date": "2027-01-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Vellacott Health Foundation, the Fair Assistance Collaborative, its member hospitals, counsellors, patients, applications and accounts are fictional; place names and the federal holiday calendar follow public usage"
+  },
+  "fac_patient_accounts_2025.csv": {
+   "date": "2027-01-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Vellacott Health Foundation, the Fair Assistance Collaborative, its member hospitals, counsellors, patients, applications and accounts are fictional; place names and the federal holiday calendar follow public usage"
+  },
+  "fac_patient_experience_by_payer_2025.csv": {
+   "date": "2027-01-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Vellacott Health Foundation, the Fair Assistance Collaborative, its member hospitals, counsellors, patients, applications and accounts are fictional; place names and the federal holiday calendar follow public usage"
+  },
+  "state_charity_care_filings_fy2025.xlsx": {
+   "date": "2027-01-26",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Vellacott Health Foundation, the Fair Assistance Collaborative, its member hospitals, counsellors, patients, applications and accounts are fictional; place names and the federal holiday calendar follow public usage"
+  }
+ },
+ "rows": {
+  "fac_assistance_adjustments_2025.csv": 234729,
+  "fac_counsellor_id_crosswalk_2025.xlsx": 3,
+  "fac_determinations_2025_columbia_hub.csv": 85087,
+  "fac_determinations_2025_puget_hub.csv": 70005,
+  "fac_determinations_2025_willamette_hub.csv": 66764,
+  "fac_member_hospitals_2025.xlsx": 31,
+  "fac_patient_accounts_2025.csv": 219929,
+  "fac_patient_experience_by_payer_2025.csv": 124,
+  "state_charity_care_filings_fy2025.xlsx": 31
+ },
+ "task": "task272",
+ "title": "Vellacott Health Foundation: how many FY2027 Decision Coaching Grants"
+}

@@ -1,26 +1,28 @@
 {
   "task": "task272",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-21",
-  "stump": "A competent analyst who conforms the three exports and holds each working day's mix fixed by regressing every determination on the counsellor's previous one with a fixed effect per counsellor-day puts about 27 of the 31 hospitals over the six-point line, because a queue of eight determinations shows a drop of about 14 points after an approval with no counsellor swayed at all, and one who pools consecutive determinations instead puts 1 or 2 over it, because days fed by presumptive referrals string approvals together; only the excess over what each day's own determinations would show in any order puts the 11 hospitals whose counsellors are really swayed over it.",
+  "stump": "A competent analyst who conforms the three exports and holds each working day's mix fixed by regressing every determination on the counsellor's previous one with a fixed effect per counsellor-day puts 23 of the 31 hospitals over the six-point line, because a queue of eight determinations shows a drop of about 14 points after an approval with no counsellor swayed at all, and one who pools consecutive determinations instead puts 2 over it, because days fed by presumptive referrals string approvals together; only the excess over what each day's own determinations would show in any order puts the 11 hospitals whose counsellors are really swayed over it.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-21",
+    "checks": 51
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-21 (no LEAK after the grant price left block 4): program name, estimand words, column vocabulary, hospitals beside beds and filings; each answered in the note",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "0.07 task122 v2 (lineage)"
+    "heart": "WARN 2026-10-21 (repeat.deliverables png+xlsx against task251 v5) after the stage-3 re-filing; ban.shape against task479 v5 cleared by the moved window, shape 10 kept",
+    "nearest": "0.07 task456 (stump)",
+    "surface": "clean 2026-10-21 (persona Kristin Robertson; promoted pairs left to the author's clone-check)"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +30,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "Stage 2: the generator's world from scratch t272/proto/s6.py (31 hospitals, 11 with effects 9.5 to 12.5 points, construction margin 1.5 on the five-member family), the criteria's estimand clause, the fork and closure tables, the asks on quantities the call never reads, prompt.txt, then precut.py.",
+  "resume": "Stage 4: two isolated scored readers (r272a, r272b) and the determinism judge on target.zip 90774da6; fix every finding in the generator in one pass; ship or record the architecture spent.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -39,7 +41,16 @@
     {
       "architecture": 1,
       "drawn": "2026-10-21",
-      "fate": ""
+      "fate": "",
+      "paused": "stage 4 running"
     }
-  ]
+  ],
+  "gates": {
+    "checks": "0 failed",
+    "verify": "PASS",
+    "byte_identical": true,
+    "figures_check": "82 figures, 0 absent",
+    "target_zip_md5": "90774da6d81c9538241c760527e7082b",
+    "target_mb": 11.2
+  }
 }
