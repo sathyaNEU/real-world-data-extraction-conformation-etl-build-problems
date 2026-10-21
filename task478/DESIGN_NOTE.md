@@ -280,6 +280,12 @@ scattered reports into the precise units' potholes. Judge APPROVE (v2).
 
 ## Tried and rejected
 
+- 2026-10-21, architecture 4 draw: re-rooted on the author's standing rule (no retirement). The decisive step leaves
+  the capture family that spent architectures 1 and 3 and the visible scatter that spent architecture 2: every phone
+  places a detection ahead of the pothole by its own GPS latency times its speed, so a pothole seen both ways is two
+  tight clusters, which only the surveyed covers (the latency) and the traversals (each pass's direction and speed)
+  resolve. At registration G3 BLOCKed (task484), then identity_resolution (task486 v2) and monitoring_export (task482
+  v3); the card carries G10, strategy other (named in its notes) and context artifact register.
 - 2026-10-21, architecture 3 stage 4: architecture 3 spent. Reader D of round 2 landed the call (the seven) by
   estimating each fleet group's visibility by maximum likelihood after seeing that units of one group agree 93 to 100
   per cent of the time; round 1's readers A and B and round 2's reader C missed (C pending at the spend). The judge

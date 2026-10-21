@@ -1,14 +1,14 @@
 {
   "task": "task478",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "DESIGN",
   "domain": "supply-chain-logistics/transportation-network (client: general-statistics-data-science/data-integration-record-linkage-entity-resolution)",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-21",
   "stump": "The default path completes pass by pass and designates Carrow Point and Elmscourt, and the careful path takes every installed unit as an independent chance at the 69.9 per cent a second unit finds what a first found and designates Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle, because two units on the same kind of vehicle record 93.6 per cent of each other's potholes against 54.9 per cent across kinds, so the independent chances are the fleet groups that drove a segment at 54.4 per cent, and Fenwick Gap (6.86) and Kestrelton (7.28) clear the line beside the five.",
-  "architecture": 3,
+  "architecture": 4,
   "loops": 0,
   "precut": {
     "exit": 0,
@@ -28,7 +28,7 @@
     "report": "/tmp/determinism-check-task478-v3/verdict.md (thread verdict; the agent report was not written)"
   },
   "returned": [],
-  "resume": "architectures 1, 2 and 3 spent at stage 4 (each landed by one isolated reader: distinct-unit recapture; sweeper-aware dedup; fleet-group recapture). The assignment forbids retirement, so the next step is a fourth re-root at stage 1; paused for the author to confirm, since build-pipeline retires a number at its third spent architecture.",
+  "resume": "architecture 4 drawn (directional GPS latency calibrated on the covers, corrected with the traversals before linking); next: generator from architecture 2's base with the latency, design note, precut, build, stage 4",
   "approved": null,
   "delivered": null,
   "portal": null,
