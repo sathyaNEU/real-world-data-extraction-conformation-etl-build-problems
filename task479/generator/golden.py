@@ -1,66 +1,60 @@
-"""The golden deliverable, computed from the cut pack through bundle.py: the Research desk's Rising Destinations 2027
-workbook (the designation, the receipts restated onto the Department's basis, the Monitor's January to August 2026
-by county and the panel's standing against its January 2018 draw), and generator/figures.json."""
+"""The golden deliverable, computed from the cut pack through bundle.py: Client Finance's 2027 funding true-up
+workbook (each group's expected 2027 retained claims PMPM against its elected claims rate, the large claimants it
+rests on, January to August 2026, and the 2026 advisories), and generator/figures.json."""
 import json
 import os
 import sys
-
-import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
 import bundle as B    # noqa: E402
 
-FILE = "tla_rising_destinations_2027.xlsx"
+FILE = "mba_2027_funding_true_up.xlsx"
 INK = "1B2430"
-GREEN = "2F5D4E"
-PALE = "E8EFEC"
-MUTED = "9AA5A0"
+NAVY = "22395C"
+PALE = "E6ECF4"
+MUTED = "A3ACB8"
+RED = "B4452F"
 
 
 def compute(target):
     b = B.load(target)
-    P = B.panel(b)
-    est = B.estimate(b, "ols")
-    g = B.growth(b, est)
-    q = B.qualify(b, est)
-    share = B.FUND // len(q)
-    ys = np.array(B.BENCH, dtype=float)
-    hist, line = {}, {}
-    for c in b["counties"]:
-        r = [b["first"][(c, y)] / P[(c, y)] for y in B.BENCH]
-        k, a = np.polyfit(ys, r, 1)
-        hist[c] = r
-        line[c] = (a + k * 2024, a + k * 2025, k)
-    return {"b": b, "P": P, "est": est, "g": g, "q": q, "share": share, "hist": hist, "line": line,
-            "a": B.ask_a(b), "bb": B.ask_b(b)}
+    mm, gross = B.experience(b)
+    cl = B.claimants(b)
+    est = B.retained27(b, "golden")
+    ret25 = {g: (gross[g] - sum(e for t, e, p in cl.get(g, []))) / mm[g] for g in b["groups"]}
+    return {"b": b, "mm": mm, "gross": gross, "cl": cl, "est": est, "ret25": ret25,
+            "notice": B.notices(b, est), "a": B.ask_a(b), "bb": B.ask_b(b)}
 
 
 def write_xlsx(path, G):
     import openpyxl
-    from openpyxl.chart import BarChart, LineChart, Reference
-    from openpyxl.chart.marker import DataPoint
+    from openpyxl.chart import BarChart, Reference
     from openpyxl.chart.shapes import GraphicalProperties
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     from openpyxl.utils import get_column_letter
     b = G["b"]
     wb = openpyxl.Workbook()
     hdr = Font(name="Calibri", bold=True, color="FFFFFF", size=10)
-    hfill = PatternFill("solid", fgColor=GREEN)
+    hfill = PatternFill("solid", fgColor=NAVY)
     body = Font(name="Calibri", size=10, color=INK)
     bold = Font(name="Calibri", size=10, color=INK, bold=True)
-    thin = Border(bottom=Side(style="thin", color="B8C2BD"))
-    top = Border(top=Side(style="thin", color=INK))
-    qfill = PatternFill("solid", fgColor=PALE)
+    thin = Border(bottom=Side(style="thin", color="C3CAD3"))
+    nfill = PatternFill("solid", fgColor=PALE)
+    import csv
+    emp = {}
+    with open(os.path.join(os.path.dirname(path), "..", "target", "mba_group_roster_2026-10.csv")) as fh:
+        for r in csv.DictReader(fh):
+            emp[r["group_no"]] = r["employer"]
 
     def head(ws, row, cols, widths):
         for i, (h, w) in enumerate(zip(cols, widths), 1):
             c = ws.cell(row=row, column=i, value=h)
             c.font, c.fill = hdr, hfill
-            c.alignment = Alignment(wrap_text=True, vertical="center", horizontal="left" if i == 1 else "right")
+            c.alignment = Alignment(wrap_text=True, vertical="center", horizontal="left" if i <= 2 else "right")
             ws.column_dimensions[get_column_letter(i)].width = w
-        ws.row_dimensions[row].height = 30
+        ws.row_dimensions[row].height = 32
 
     def title(ws, t, sub):
         ws["A1"] = t
@@ -68,202 +62,136 @@ def write_xlsx(path, G):
         ws["A2"] = sub
         ws["A2"].font = Font(name="Calibri", size=9, italic=True, color="5B6470")
 
-    # ---------------------------------------------------------------- 1 the designation
     ws = wb.active
-    ws.title = "Rising Destinations"
-    title(ws, "Five counties qualify for the 2027 Rising Destinations match: Arvenne, Brisholt, Elsmoor, Fallowmere "
-              "and Grindell" if G["q"] == ["Arvenne", "Brisholt", "Elsmoor", "Fallowmere", "Grindell"] else
-          "Counties qualifying for the 2027 Rising Destinations match",
-          "Tax year 2025 taxable lodging receipts estimated on the Department of Revenue's basis, against tax year "
-          "2024 as published in the TY2024 report. Research, 2 October 2026 extract.")
-    cols = ["County", "Code", "TY2024 receipts, published ($)", "Monitor room revenue 2024 ($)",
-            "Monitor room revenue 2025 ($)", "Department to Monitor ratio, 2024", "Ratio carried to 2025",
-            "TY2025 receipts, estimated ($)", "Growth on TY2024", "Qualifies", "Match ($)"]
-    head(ws, 4, cols, [15, 6, 17, 17, 17, 13, 13, 17, 10, 10, 12])
-    code = {v: k for k, v in b["code"].items()}
-    r = 5
-    for c in b["counties"]:
-        qual = c in G["q"]
-        vals = [c, code[c], b["first"][(c, 2024)], round(G["P"][(c, 2024)]), round(G["P"][(c, 2025)]),
-                G["hist"][c][-1], G["line"][c][1], round(G["est"][c], -5), round(G["g"][c], 2),
-                "yes" if qual else "no", G["share"] if qual else 0]
-        for i, v in enumerate(vals, 1):
-            cell = ws.cell(row=r, column=i, value=v)
-            cell.font = bold if (qual and i in (1, 10, 11)) else body
-            cell.border = thin
-            if qual:
-                cell.fill = qfill
-            if i in (3, 4, 5, 8, 11):
-                cell.number_format = "#,##0"
-            elif i in (6, 7):
-                cell.number_format = "0.000"
-            elif i == 9:
-                cell.number_format = "0%"
-            if i >= 2:
-                cell.alignment = Alignment(horizontal="right")
-        r += 1
-    ws.cell(row=r, column=1, value="State").font = bold
-    for i, v, fm in ((3, sum(b["first"][(c, 2024)] for c in b["counties"]), "#,##0"),
-                     (4, round(sum(G["P"][(c, 2024)] for c in b["counties"])), "#,##0"),
-                     (5, round(sum(G["P"][(c, 2025)] for c in b["counties"])), "#,##0"),
-                     (8, round(sum(G["est"][c] for c in b["counties"]), -5), "#,##0"),
-                     (11, G["share"] * len(G["q"]), "#,##0")):
-        cell = ws.cell(row=r, column=i, value=v)
-        cell.font, cell.number_format, cell.border = bold, fm, top
-    for i in range(1, 12):
-        ws.cell(row=r, column=i).border = top
-    ws.freeze_panes = "B5"
-    notes_row = r + 2
+    ws.title = "True-up notices"
+    n = G["notice"]
+    title(ws, "%d of 16 groups get a 2027 funding true-up notice: %s" % (len(n), ", ".join(n)),
+          "Expected 2027 retained claims per member per month on 2025 experience (incurred 2025, paid through "
+          "31 March 2026) at 7.5 per cent trend a year, net of specific stop-loss at $250,000, against the claims "
+          "component of each group's elected 2027 funding rate.")
+    cols = ["Group", "Employer", "2025 member months", "2025 incurred claims ($)", "2025 retained PMPM ($)",
+            "Members over $250,000 in 2027", "2027 expected retained PMPM ($)", "2027 claims component ($)",
+            "Over (under) ($)", "Notice"]
+    head(ws, 4, cols, [8, 30, 11, 15, 12, 12, 13, 13, 11, 8])
+    F = B.F
+    for i, g in enumerate(b["groups"]):
+        over27 = sum(1 for t, e, p in G["cl"].get(g, []) if F * t > B.ATTACH)
+        est, rate = G["est"][g], b["rates"][g]
+        vals = [g, emp[g], G["mm"][g], round(G["gross"][g]), round(G["ret25"][g], 2), over27, round(est, 2), rate,
+                round(est - rate, 2), "yes" if g in n else "no"]
+        for j, v in enumerate(vals, 1):
+            c = ws.cell(row=5 + i, column=j, value=v)
+            c.font = bold if (g in n and j in (1, 2, 10)) else body
+            c.border = thin
+            if g in n:
+                c.fill = nfill
+            if j in (3, 4, 6):
+                c.number_format = "#,##0"
+            elif j in (5, 7, 8):
+                c.number_format = "#,##0.00"
+            elif j == 9:
+                c.number_format = "#,##0.00;(#,##0.00)"
+            if j >= 3:
+                c.alignment = Alignment(horizontal="right")
+    ws.freeze_panes = "C5"
+    r0 = 5 + len(b["groups"]) + 1
     for k, t in enumerate([
-        "The Department's TY2025 report is due in December 2026. Each county's 2025 receipts are its Monitor room "
-        "revenue for 2025 times the Department-to-Monitor ratio carried one year along the straight line fitted to "
-        "its first-print ratios for 2018 to 2024; the ratio has risen or fallen at a steady pace in every county since "
-        "the panel was drawn, so the 2024 ratio is a year behind.",
-        "Growth is shown to the nearest whole per cent; the 6 per cent floor is applied to the unrounded figure. The "
-        "$1,800,000 fund is divided equally among the qualifying counties (program terms, section 4).",
+        "Each member's 2025 claims are trended two years at 7.5 per cent before the $250,000 specific deductible is "
+        "applied: a member already over it costs the plan $250,000 in 2027 whatever the trend. Members under "
+        "$100,000 in 2025 cannot reach the deductible at this trend, so the large claimant report carries every "
+        "member the deductible touches.",
+        "Pharmacy rebates are credited to the funding accounts and are not netted (assumptions memo, section 4). "
+        "Claims paid after 31 March 2026 are outside the experience (section 2).",
     ]):
-        c = ws.cell(row=notes_row + k, column=1, value=t)
+        c = ws.cell(row=r0 + k, column=1, value=t)
         c.font = Font(name="Calibri", size=9, color="5B6470")
-        ws.merge_cells(start_row=notes_row + k, start_column=1, end_row=notes_row + k, end_column=11)
         c.alignment = Alignment(wrap_text=True, vertical="top")
-        ws.row_dimensions[notes_row + k].height = 40
+        ws.merge_cells(start_row=r0 + k, start_column=1, end_row=r0 + k, end_column=10)
+        ws.row_dimensions[r0 + k].height = 38
 
-    # the chart: growth by county, qualifying counties in the house green, the floor as a line
     cs = wb.create_sheet("Chart data")
-    cs.append(["County", "Growth on TY2024 (%)", "6% floor"])
-    order = sorted(b["counties"], key=lambda c: -G["g"][c])
-    for c in order:
-        cs.append([c, round(100 * G["g"][c], 1), 6.0])
+    cs.append(["Group", "2027 expected retained PMPM ($)", "2027 claims component ($)"])
+    for g in b["groups"]:
+        cs.append([g, round(G["est"][g], 2), b["rates"][g]])
     ch = BarChart()
     ch.type = "col"
-    ch.style = 2
-    ch.title = "TY2025 receipts growth on TY2024, estimated, against the 6% floor"
-    ch.y_axis.title = "Per cent"
-    ch.y_axis.numFmt = "0"
-    ch.y_axis.scaling.min = 0
-    ch.y_axis.scaling.max = 12
-    ch.y_axis.majorUnit = 2
+    ch.title = "2027 expected retained claims PMPM against the elected claims component"
+    ch.y_axis.title = "Dollars per member per month"
+    ch.y_axis.numFmt = "#,##0"
     ch.y_axis.delete = False
     ch.x_axis.delete = False
     ch.x_axis.tickLblSkip = 1
-    ch.x_axis.txPr = None
-    data = Reference(cs, min_col=2, min_row=1, max_row=len(order) + 1)
-    cats = Reference(cs, min_col=1, min_row=2, max_row=len(order) + 1)
+    data = Reference(cs, min_col=2, min_row=1, max_col=3, max_row=len(b["groups"]) + 1)
     ch.add_data(data, titles_from_data=True)
-    ch.set_categories(cats)
-    s = ch.series[0]
-    s.graphicalProperties = GraphicalProperties(solidFill=MUTED)
-    s.graphicalProperties.line.noFill = True
-    for i, c in enumerate(order):
-        if c in G["q"]:
-            pt = DataPoint(idx=i)
-            pt.graphicalProperties = GraphicalProperties(solidFill=GREEN)
-            pt.graphicalProperties.line.noFill = True
-            s.dPt.append(pt)
-    ch.gapWidth = 50
-    floor = LineChart()
-    floor.add_data(Reference(cs, min_col=3, min_row=1, max_row=len(order) + 1), titles_from_data=True)
-    fl = floor.series[0]
-    fl.graphicalProperties.line.solidFill = INK
-    fl.graphicalProperties.line.width = 19050
-    fl.graphicalProperties.line.dashStyle = "dash"
-    fl.marker.symbol = "none"
-    fl.smooth = False
-    ch += floor
+    ch.set_categories(Reference(cs, min_col=1, min_row=2, max_row=len(b["groups"]) + 1))
+    ch.series[0].graphicalProperties = GraphicalProperties(solidFill=NAVY)
+    ch.series[1].graphicalProperties = GraphicalProperties(solidFill=MUTED)
+    ch.gapWidth = 60
     ch.legend.position = "b"
-    ch.height, ch.width = 10, 22
-    ws.add_chart(ch, "A%d" % (notes_row + 3))
+    ch.height, ch.width = 10, 24
+    ws.add_chart(ch, "A%d" % (r0 + 3))
 
-    # ---------------------------------------------------------------- 2 the ratio history
-    hs = wb.create_sheet("Ratio history")
-    title(hs, "The Department's receipts have outgrown or trailed the Monitor at a steady pace in every county",
-          "First-print taxable lodging receipts over Monitor room revenue, tax years 2018 to 2024, and the "
-          "straight line carried to 2025.")
-    head(hs, 4, ["County"] + [str(y) for y in B.BENCH] + ["Change a year (line)", "2025 (line)"],
-         [15] + [8] * 7 + [12, 10])
-    for i, c in enumerate(b["counties"]):
-        row = [c] + [round(v, 4) for v in G["hist"][c]] + [round(G["line"][c][2], 4), round(G["line"][c][1], 4)]
-        for j, v in enumerate(row, 1):
-            cell = hs.cell(row=5 + i, column=j, value=v)
-            cell.font, cell.border = body, thin
-            if j > 1:
-                cell.number_format = "0.000"
-    hs.freeze_panes = "B5"
+    ls = wb.create_sheet("Large claimants")
+    title(ls, "2025 large claimants carried to 2027", "Arbor Ridge's 2025 large claimant report; each member's claims "
+                                                      "trended two years, the specific deductible applied after.")
+    head(ls, 4, ["Group", "Claimant", "2025 claims ($)", "2027 claims ($)", "2027 retained ($)", "2027 excess ($)"],
+         [8, 14, 14, 14, 14, 14])
+    row = 5
+    for r in sorted(b["lcr"], key=lambda r: (b["pol"][(r["policy_no"], 2025)], r["claimant_no"])):
+        t = float(r["total_incurred"])
+        vals = [b["pol"][(r["policy_no"], 2025)], r["claimant_no"], t, round(F * t, 2), round(min(F * t, B.ATTACH), 2),
+                round(max(0.0, F * t - B.ATTACH), 2)]
+        for j, v in enumerate(vals, 1):
+            c = ls.cell(row=row, column=j, value=v)
+            c.font, c.border = body, thin
+            if j >= 3:
+                c.number_format = "#,##0.00"
+        row += 1
+    ls.freeze_panes = "A5"
 
-    # ---------------------------------------------------------------- 3 the Monitor, January to August 2026
-    ms = wb.create_sheet("Monitor Jan-Aug 2026")
-    title(ms, "Lodging Monitor, January to August 2026, by county",
-          "Occupancy is rooms sold over rooms available and average daily rate is room revenue over rooms sold, "
-          "from the county's totals; each property in the county the register places it in.")
-    head(ms, 4, ["County", "Occupancy (%)", "Average daily rate ($)"], [15, 13, 16])
-    for i, c in enumerate(b["counties"]):
-        o, adr = G["a"][c]
-        for j, (v, fm) in enumerate(((c, None), (round(o, 1), "0.0"), (round(adr, 2), "#,##0.00")), 1):
-            cell = ms.cell(row=5 + i, column=j, value=v)
-            cell.font, cell.border = body, thin
+    a = wb.create_sheet("2026 to date")
+    title(a, "January to August 2026", "Member months count each person once a month (members reissued new ids when "
+                                       "their employer changed payroll vendor are counted once); paid claims are 2026 "
+                                       "incurred claims paid through September 2026.")
+    head(a, 4, ["Group", "Member months", "Paid claims PMPM ($)"], [8, 14, 16])
+    for i, g in enumerate(b["groups"]):
+        for j, (v, fm) in enumerate(((g, None), (G["a"][g][0], "#,##0"), (round(G["a"][g][1], 2), "#,##0.00")), 1):
+            c = a.cell(row=5 + i, column=j, value=v)
+            c.font, c.border = body, thin
             if fm:
-                cell.number_format = fm
-    ms.freeze_panes = "B5"
-
-    # ---------------------------------------------------------------- 4 the panel's standing
-    ps = wb.create_sheet("Panel standing")
-    title(ps, "The Monitor panel against its January 2018 draw",
-          "Properties reporting in January 2018 that still report in August 2026: their share of January 2018's "
-          "panel rooms, and the change in their rooms since (rooms are room-nights available over the month's days).")
-    head(ps, 4, ["County", "Share of January 2018 rooms (%)", "Change in their rooms to August 2026 (%)"],
-         [15, 18, 20])
-    for i, c in enumerate(b["counties"]):
-        sh, chg = G["bb"][c]
-        for j, (v, fm) in enumerate(((c, None), (round(sh, 1), "0.0"), (round(chg, 1), "0.0")), 1):
-            cell = ps.cell(row=5 + i, column=j, value=v)
-            cell.font, cell.border = body, thin
+                c.number_format = fm
+    ad = wb.create_sheet("2026 advisories")
+    title(ad, "Arbor Ridge's 2026 specific advisories", "Members flagged at $125,000, each counted once (a claimant "
+                                                        "file reopened under a member's new id is the same member), at "
+                                                        "the claims to date the carrier last reported.")
+    head(ad, 4, ["Group", "Members flagged", "Claims to date ($)"], [8, 14, 16])
+    for i, g in enumerate(b["groups"]):
+        for j, (v, fm) in enumerate(((g, None), (G["bb"][g][0], "0"), (round(G["bb"][g][1]), "#,##0")), 1):
+            c = ad.cell(row=5 + i, column=j, value=v)
+            c.font, c.border = body, thin
             if fm:
-                cell.number_format = fm
-    ps.freeze_panes = "B5"
-
-    # ---------------------------------------------------------------- 5 notes
-    ns = wb.create_sheet("Notes")
-    ns.column_dimensions["A"].width = 120
-    for i, t in enumerate([
-        "Sources: Tarrowind Department of Revenue, Taxable Lodging Receipts by County, Tax Years 2018 to 2024 "
-        "(first prints, and each report's revised prior year); Lodging Monitor reports from the legacy system "
-        "(January 2018 to March 2022) and InnSight (April 2022 to September 2026), extract of 2 October 2026; the "
-        "InnSight property register and the April 2022 id crosswalk.",
-        "Monitor reports: where a property resubmitted a month, the later submission is used. Legacy county names are "
-        "read in one case. InnSight revenue is in cents.",
-        "From April 2026 the reports of the properties Harbor & Pine Hospitality took over carry its office county's "
-        "code; their figures are placed in the county the register gives.",
-        "Thirteen properties reporting in March 2022 are missing from the April 2022 crosswalk; each is the one "
-        "InnSight property in its county that first reported in April 2022 outside the crosswalk with the same rooms, "
-        "under a new name.",
-        "September 2026 is not complete in the extract and is not used.",
-    ]):
-        c = ns.cell(row=1 + i, column=1, value=t)
-        c.font = body
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-        ns.row_dimensions[1 + i].height = 32
+                c.number_format = fm
     for w in wb.worksheets:
         w.sheet_view.showGridLines = False
         w.page_setup.orientation = "landscape"
         w.page_setup.fitToWidth = 1
         w.page_setup.fitToHeight = 0
         w.sheet_properties.pageSetUpPr.fitToPage = True
-    ws.print_title_rows = "4:4"
     wb.save(path)
 
 
 def figures(G):
     b = G["b"]
+    dflt = B.retained27(b, "default")
     return {
-        "call": {"qualifying": G["q"], "match_each": G["share"], "fund": B.FUND},
-        "growth_pct": {c: int(round(100 * G["g"][c])) for c in b["counties"]},
-        "ask_a": {c: {"occupancy_pct": "%.1f" % G["a"][c][0], "adr_usd": "%.2f" % G["a"][c][1]}
-                  for c in b["counties"]},
-        "ask_b": {c: {"rooms_share_pct": "%.1f" % G["bb"][c][0], "rooms_change_pct": "%.1f" % G["bb"][c][1]}
-                  for c in b["counties"]},
-        "default_path": {c: int(round(100 * v)) for c, v in B.growth(b, B.estimate(b, "flat_2024")).items()},
-        "conventions": {"threshold_pct": 6, "years": [2018, 2020, 2021, 2022, 2024, 2025, 2026, 2027],
-                        "counts": [3, 7, 13, 16, 30], "months_2026": "January to August", "rooms_day": 31},
+        "call": {"notices": G["notice"]},
+        "retained_pmpm": {g: "%d" % round(G["est"][g]) for g in b["groups"]},
+        "ask_a": {g: {"member_months": G["a"][g][0], "paid_pmpm": "%.2f" % G["a"][g][1]} for g in b["groups"]},
+        "ask_b": {g: {"members": G["bb"][g][0], "claims_to_date": int(round(G["bb"][g][1]))} for g in b["groups"]},
+        "default_path": {"notices": B.notices(b, dflt), "retained_pmpm": {g: "%d" % round(dflt[g]) for g in b["groups"]}},
+        "rates": {g: "%d" % round(b["rates"][g]) for g in b["groups"]},
+        "conventions": {"trend_pct": 7.5, "deductible": 250000, "advisory": 125000, "lcr_floor": 100000,
+                        "years": [2025, 2026, 2027], "counts": [2, 16]},
     }
 
 
@@ -272,8 +200,8 @@ def main(target, gdir, fig_path):
     G = compute(target)
     write_xlsx(os.path.join(gdir, FILE), G)
     import postprocess as PP
-    PP.normalize_ooxml(os.path.join(gdir, FILE), "Samantha Walter", "Samantha Walter", "2026-10-05T19:12:00Z",
-                       "2026-10-06T14:27:00Z", excel=True, company="Tarrowind Lodging Association")
+    PP.normalize_ooxml(os.path.join(gdir, FILE), "Claire Grant", "Claire Grant", "2026-10-07T18:40:00Z",
+                       "2026-10-08T13:55:00Z", excel=True, company="Marlowe Benefit Administrators")
     with open(fig_path, "w") as fh:
         json.dump(figures(G), fh, indent=1, sort_keys=True)
         fh.write("\n")

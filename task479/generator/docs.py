@@ -1,8 +1,7 @@
-"""The pack's documents: the Department of Revenue's seven annual county reports (two layouts), the Lodging Monitor's
-methods note, the Rising Destinations 2027 program terms, the data dictionary and the extract manifest."""
+"""The pack's documents: Marlowe's 2027 renewal assumptions memo, the employers' 2027 funding elections workbook, the
+data dictionary and the extract manifest."""
 import datetime as dt
 
-import numpy as np
 from reportlab import rl_config
 
 rl_config.invariant = 1
@@ -26,278 +25,138 @@ for nm, f in (("LiberationSerif", "Regular"), ("LiberationSerif-Bold", "Bold"), 
         pdfmetrics.registerFont(TTFont(nm, FONT_DIR + nm.split("-")[0] + "-" + f + ".ttf"))
 INK = colors.HexColor("#1b2430")
 GREY = colors.HexColor("#5b6470")
+NAVY = colors.HexColor("#22395c")
 BODY = ParagraphStyle("body", fontName="LiberationSerif", fontSize=10.3, leading=13.8, textColor=INK, spaceAfter=6)
 SMALL = ParagraphStyle("small", fontName="LiberationSerif", fontSize=8.6, leading=11.2, textColor=GREY, spaceAfter=4)
-CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=8.0, leading=10.0, textColor=INK)
-CELLR = ParagraphStyle("cellr", parent=CELL, alignment=2)
-CELLB = ParagraphStyle("cellb", fontName="LiberationSans-Bold", fontSize=8.0, leading=10.0, textColor=INK)
-CELLBR = ParagraphStyle("cellbr", parent=CELLB, alignment=2)
+CELL = ParagraphStyle("cell", fontName="LiberationSans", fontSize=8.4, leading=10.6, textColor=INK)
+CELLB = ParagraphStyle("cellb", fontName="LiberationSans-Bold", fontSize=8.4, leading=10.6, textColor=INK)
 H2 = ParagraphStyle("h2", fontName="LiberationSans-Bold", fontSize=10.6, leading=14, textColor=INK, spaceBefore=8,
                     spaceAfter=4)
-DOR = "Tarrowind Department of Revenue"
-DOR_BLUE = colors.HexColor("#22465f")
-TLA_GREEN = colors.HexColor("#2f5d4e")
+
+MEMO = [
+    ("1. Purpose", [
+        "This memo sets the assumptions Client Finance uses for each self-funded group's 2027 expected claims and for "
+        "the funding true-up notices that go to employers on 2 November 2026. It does not change any group's plan "
+        "design, stop-loss contract or administrative fee."]),
+    ("2. Experience period", [
+        "Each group's experience is its claims incurred from 1 January to 31 December 2025 and paid through "
+        "31 March 2026, medical and pharmacy, as the claims lag report records them, and its 2025 member months from "
+        "the enrollment file. A member month is a member enrolled in the group in the month. Claims paid after "
+        "31 March 2026 are not part of the experience; the run-out factor for them is carried in the administrative "
+        "load, not in the claims projection."]),
+    ("3. Trend", [
+        "Medical and pharmacy claims trend at 7.5 per cent a year, 2025 to 2027, two years, for every group. The "
+        "assumption follows the 2027 renewal survey of the regional stop-loss market and Marlowe's own book; it is "
+        "not adjusted by group."]),
+    ("4. Retained claims", [
+        "A group's retained claims are the claims the plan itself pays: its incurred claims less the specific "
+        "stop-loss reimbursements due from Arbor Ridge Specialty Insurance Company. Each group's specific policy "
+        "reimburses a member's claims incurred in the contract year above the specific deductible, which Arbor Ridge's "
+        "2027 renewals keep at $250,000 for every group. Pharmacy rebates are credited to the employer's funding "
+        "account when received and are not netted from claims. No group carries an aggregate stop-loss recovery in "
+        "its experience."]),
+    ("5. The true-up notice", [
+        "Each employer elected its 2027 funding rate in September, of which the claims component is shown in the "
+        "funding elections workbook. A group receives a true-up notice when its expected 2027 retained claims per "
+        "member per month, on its 2025 experience and the trend in section 3, exceed the claims component of its "
+        "2027 funding rate. The notice gives the employer until 1 December 2026 to raise its rate before the "
+        "contribution schedules close."]),
+]
 
 
-def _doc(path, title, author, footer):
+def write_memo(path):
     def frame(canvas, doc):
         canvas.saveState()
         canvas.setFillColor(GREY)
         canvas.setFont("LiberationSans", 7.2)
-        canvas.drawString(0.85 * inch, 0.55 * inch, footer)
+        canvas.drawString(0.85 * inch, 0.55 * inch, "%s, Client Finance. 2027 renewal assumptions, issued 9 September "
+                                                     "2026." % P.COMPANY)
         canvas.drawRightString(letter[0] - 0.85 * inch, 0.55 * inch, "Page %d" % doc.page)
         canvas.restoreState()
     d = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.85 * inch, rightMargin=0.85 * inch, topMargin=0.8 * inch,
-                          bottomMargin=0.9 * inch, title=title, author=author, subject="", creator="", producer="")
-    return d, frame
-
-
-def _table(rows, widths, right=(), total=False):
-    data = []
-    for i, r in enumerate(rows):
-        bold = i == 0 or (total and i == len(rows) - 1)
-        data.append([Paragraph(str(v), (CELLBR if k in right else CELLB) if bold else (CELLR if k in right else CELL))
-                     for k, v in enumerate(r)])
-    t = Table(data, colWidths=widths, repeatRows=1, hAlign="LEFT")
-    st = [("LINEBELOW", (0, 0), (-1, 0), 0.6, INK), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-          ("LEFTPADDING", (0, 0), (-1, -1), 3), ("RIGHTPADDING", (0, 0), (-1, -1), 3),
-          ("TOPPADDING", (0, 0), (-1, -1), 1.6), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.6)]
-    if total:
-        st.append(("LINEABOVE", (0, -1), (-1, -1), 0.5, INK))
-    t.setStyle(TableStyle(st))
-    return t
-
-
-def fmt(n):
-    return "{:,}".format(int(n))
-
-
-# --------------------------------------------------------------------------------- the Department's annual reports
-def dor_table(x, y):
-    """Each county's first print for tax year y and the revised prior year, as the report prints them."""
-    rng = np.random.default_rng(W.SEED + 100 + y)
-    rows = []
-    for name in W.NAMES:
-        cur = x["first"][(name, y)]
-        if y == 2018:
-            prev = int(round(cur / float(rng.uniform(1.015, 1.058))))
-        else:
-            prev = x["revised"][(name, y - 1)]
-        n_props = sum(1 for p in x["props"] if p["county"] == name)
-        returns = int(round(n_props * x["ratio"][(name, y)] * float(rng.uniform(1.6, 2.1)) * (1 + 0.05 * (y - 2018))))
-        rate = (6.0 + P.rate_on(name, y)) / 100
-        rows.append((name, cur, prev, returns, int(round(cur * rate * float(rng.uniform(0.996, 1.0))))))
-    return rows
-
-
-def write_dor(path, x, y):
-    iy, im, iday = P.DOR_ISSUED[y]
-    issued = dt.date(iy, im, iday)
-    d, frame = _doc(path, "Taxable Lodging Receipts by County, Tax Year %d" % y, DOR,
-                    "%s, Office of Tax Research. Lodging Tax Series LT-%d. Issued %s." % (
-                        DOR, y, issued.strftime("%B %-d, %Y")))
-    story = [Paragraph(DOR.upper(), ParagraphStyle("o", fontName="LiberationSans-Bold", fontSize=8.4, textColor=DOR_BLUE,
-                                                   leading=11)),
-             Paragraph("Office of Tax Research", SMALL),
-             Paragraph("Taxable Lodging Receipts by County, Tax Year %d" % y,
-                       ParagraphStyle("t", fontName="LiberationSans-Bold", fontSize=14, leading=18, textColor=INK,
-                                      spaceAfter=8))]
-    rows = dor_table(x, y)
-    tot = [sum(r[i] for r in rows) for i in (1, 2, 3, 4)]
-    if y <= 2020:
-        story.append(Paragraph(
-            "Taxable lodging receipts are the gross receipts from the rental of rooms and other accommodations for "
-            "periods of fewer than thirty days, as reported on lodging tax returns for tax periods in calendar %d "
-            "and processed through %s. Receipts for %d are revised for amended returns processed since the "
-            "Tax Year %d report. Amounts are in thousands of dollars." % (
-                y, dt.date(iy, 9, 30).strftime("%B %-d, %Y"), y - 1, y - 1), BODY))
-        head = ["County", "Tax Year %d" % y, "Tax Year %d (revised)" % (y - 1), "Change"]
-        body = [head]
-        for nm, cur, prev, ret, tax in rows:
-            body.append([nm, fmt(round(cur / 1000)), fmt(round(prev / 1000)), "%.1f%%" % (100 * (cur / prev - 1))])
-        body.append(["State total", fmt(round(tot[0] / 1000)), fmt(round(tot[1] / 1000)),
-                     "%.1f%%" % (100 * (tot[0] / tot[1] - 1))])
-        story.append(_table(body, [2.0 * inch, 1.45 * inch, 1.75 * inch, 0.9 * inch], right=(1, 2, 3), total=True))
-    else:
-        story.append(Paragraph(
-            "Taxable lodging receipts are the gross receipts from the rental of rooms and other accommodations for "
-            "periods of fewer than thirty days, as reported on lodging tax returns for tax periods in calendar %d "
-            "and processed through %s. Receipts for %d are revised for amended returns processed since the Tax Year %d report. "
-            "Amounts are in dollars; tax due is the state and county lodging tax on the receipts." % (
-                y, dt.date(iy, 9, 30).strftime("%B %-d, %Y"), y - 1, y - 1), BODY))
-        body = [["Code", "County", "Returns", "Taxable receipts, TY %d" % y, "TY %d, revised" % (y - 1),
-                 "Change", "Tax due, TY %d" % y]]
-        for nm, cur, prev, ret, tax in sorted(rows, key=lambda r: W.CODE[r[0]]):
-            body.append([W.CODE[nm], nm, fmt(ret), fmt(cur), fmt(prev), "%.1f%%" % (100 * (cur / prev - 1)), fmt(tax)])
-        body.append(["", "State", fmt(tot[2]), fmt(tot[0]), fmt(tot[1]), "%.1f%%" % (100 * (tot[0] / tot[1] - 1)),
-                     fmt(tot[3])])
-        story.append(_table(body, [0.45 * inch, 1.2 * inch, 0.65 * inch, 1.35 * inch, 1.25 * inch, 0.6 * inch,
-                                   1.15 * inch], right=(2, 3, 4, 5, 6), total=True))
-    story.append(Spacer(1, 8))
-    story.append(Paragraph(
-        "Receipts are assigned to the county in which the accommodation is located. Figures for the most recent tax "
-        "year are revised in the following year's report; earlier years are not revised again.", SMALL))
-    d.build(story, onFirstPage=frame, onLaterPages=frame)
-
-
-# ------------------------------------------------------------------------------------------ the Monitor's methods
-METHODS = [
-    ("1. The Lodging Monitor", [
-        "The Lodging Monitor is the Association's monthly report of hotel and lodging performance in the state's "
-        "sixteen counties. Each month the member properties in the Monitor panel report their rooms available, rooms "
-        "sold and room revenue for the month before, and the Association publishes occupancy, average daily rate and "
-        "revenue per available room for each county in the members' bulletin.",
-    ]),
-    ("2. The panel", [
-        "The panel was drawn in January 2018 from the member properties then reporting each month. A property in the "
-        "panel reports every month while it is open; a property that closes leaves the panel. A property that "
-        "changes its name, brand or management company stays in the panel under the same property record.",
-    ]),
-    ("3. Reporting", [
-        "Reports are due by the twentieth day of the following month and late reports are accepted. A property may "
-        "resubmit a month's report to correct it; the later submission replaces the earlier one for that month.",
-        "Until March 2022 reports were filed through the Association's own reporting system, which stamped each "
-        "report with the local date and time it was received. From April 2022 reports are filed through the "
-        "InnSight portal, which gave every property a new property id, records room revenue in cents and stamps each "
-        "submission in Coordinated Universal Time. InnSight's migration team supplied the crosswalk from the legacy "
-        "property ids to the InnSight ids when the portal went live.",
-    ]),
-    ("4. Definitions", [
-        "Rooms available are the room-nights a property had available to sell in the month; rooms out of order for "
-        "the whole month are not available. Rooms sold are the room-nights sold, complimentary rooms excluded. Room "
-        "revenue is the revenue from rooms sold, before taxes and excluding fees and other departments.",
-        "Occupancy is rooms sold over rooms available. Average daily rate is room revenue over rooms sold. Revenue "
-        "per available room is room revenue over rooms available. A county's figures for a period are computed "
-        "from the totals of its properties' reports for the months of the period, not averaged across properties "
-        "or months.",
-    ]),
-]
-
-
-def write_method(path):
-    d, frame = _doc(path, "Lodging Monitor: methods", P.COMPANY,
-                    "%s, Research. Lodging Monitor methods, revised February 2026." % P.COMPANY)
+                          bottomMargin=0.9 * inch, title="2027 renewal assumptions", author="Claire Grant", subject="",
+                          creator="", producer="")
+    head = [["To", "Account managers, Client Finance"], ["From", "Claire Grant, Director of Client Finance"],
+            ["Date", "9 September 2026"], ["Subject", "2027 renewal assumptions for self-funded groups"]]
+    t = Table([[Paragraph(a, CELLB), Paragraph(b, CELL)] for a, b in head], colWidths=[0.9 * inch, 5.6 * inch],
+              hAlign="LEFT")
+    t.setStyle(TableStyle([("LINEBELOW", (0, -1), (-1, -1), 0.6, INK), ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                           ("BOTTOMPADDING", (0, 0), (-1, -1), 2)]))
     story = [Paragraph(P.COMPANY.upper(), ParagraphStyle("o", fontName="LiberationSans-Bold", fontSize=8.4,
-                                                         textColor=TLA_GREEN, leading=11)),
-             Paragraph("Lodging Monitor: methods", ParagraphStyle("t", fontName="LiberationSans-Bold", fontSize=14,
-                                                                  leading=18, textColor=INK, spaceAfter=3)),
-             Paragraph("Research, revised February 2026", SMALL), Spacer(1, 6)]
-    for h, paras in METHODS:
+                                                         textColor=NAVY, leading=11)),
+             Paragraph("Memorandum", ParagraphStyle("t", fontName="LiberationSans-Bold", fontSize=14, leading=18,
+                                                    textColor=INK, spaceAfter=6)), t, Spacer(1, 8)]
+    for h, paras in MEMO:
         story.append(Paragraph(h, H2))
-        for t in paras:
-            story.append(Paragraph(t, BODY))
+        for p in paras:
+            story.append(Paragraph(p, BODY))
     d.build(story, onFirstPage=frame, onLaterPages=frame)
 
 
-# ------------------------------------------------------------------------------------------- the program terms
-PROGRAM = [
-    ("1. Purpose", [
-        "Rising Destinations matches the summer 2027 co-op marketing campaigns of the county tourism bureaus in the "
-        "counties where lodging is growing fastest, so the Association's marketing dollars follow the demand its "
-        "members are building."]),
-    ("2. Qualification", [
-        "A county qualifies when its taxable lodging receipts for tax year 2025, as the Tarrowind Department of "
-        "Revenue first publishes them in its Tax Year 2025 report, are at least 6 per cent above its taxable "
-        "lodging receipts for tax year 2024 as published in the Tax Year 2024 report."]),
-    ("3. Timing", [
-        "The Department publishes its Tax Year 2025 report in December 2026, after the county bureaus' co-op "
-        "budgets for summer 2027 close on 30 November 2026. The Board therefore designates the qualifying counties "
-        "at its meeting of 27 October 2026 on the Director of Research's estimate of each county's tax year 2025 "
-        "receipts on the Department's basis. A designation stands when the report is published."]),
-    ("4. The match", [
-        "The Rising Destinations fund of $1,800,000 is divided equally among the qualifying counties. Each county's "
-        "share is paid to its tourism bureau against an equal amount the bureau commits to its summer 2027 co-op "
-        "campaign."]),
-    ("5. With the designation", [
-        "The Director of Research brings the Board each county's Lodging Monitor occupancy and average daily rate "
-        "for January to August 2026, and the standing of the Monitor panel in each county against the panel as it "
-        "was drawn in January 2018."]),
-]
+def write_rates(path, x):
+    import openpyxl
+    from openpyxl.styles import Font, PatternFill
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "2027 elections"
+    ws.append(["Group", "Employer", "Elected 2027 funding rate PMPM", "Claims component PMPM", "Administration PMPM",
+               "Specific stop-loss premium PMPM", "Elected on", "Signed by"])
+    for c in ws[1]:
+        c.font = Font(bold=True, color="FFFFFF")
+        c.fill = PatternFill("solid", fgColor="22395C")
+    import numpy as np
+    rng = np.random.default_rng(W.SEED + 9)
+    for gno, emp, *_ in W.GROUPS:
+        claims = x["rates"][gno]
+        admin = round(float(rng.uniform(38, 52)), 2)
+        prem = round(float(rng.uniform(61, 96)), 2)
+        day = int(rng.integers(8, 27))
+        ws.append([gno, emp, round(claims + admin + prem, 2), claims, admin, prem, dt.date(2026, 9, day),
+                   "Benefits committee"])
+    for row in ws.iter_rows(min_row=2):
+        for c in row[2:6]:
+            c.number_format = "#,##0.00"
+        row[6].number_format = "yyyy-mm-dd"
+    for col, w in zip("ABCDEFGH", (9, 32, 16, 14, 13, 16, 12, 18)):
+        ws.column_dimensions[col].width = w
+    ws.freeze_panes = "A2"
+    wb.save(path)
 
 
-def write_program(path):
-    import docx
-    from docx.shared import Pt, RGBColor
-    doc = docx.Document()
-    st = doc.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(10.5)
-    p = doc.add_paragraph()
-    r = p.add_run(P.COMPANY.upper())
-    r.bold = True
-    r.font.size = Pt(8.5)
-    r.font.color.rgb = RGBColor(0x2f, 0x5d, 0x4e)
-    p = doc.add_paragraph()
-    r = p.add_run("Rising Destinations 2027: program terms")
-    r.bold = True
-    r.font.size = Pt(15)
-    doc.add_paragraph("Adopted by the Board of Directors on 16 September 2026 (resolution 2026-31).")
-    for h, paras in PROGRAM:
-        q = doc.add_paragraph()
-        rr = q.add_run(h)
-        rr.bold = True
-        for t in paras:
-            doc.add_paragraph(t)
-    doc.add_paragraph("Debbie Brady, Chair of the Board\nSamantha Walter, Director of Research")
-    doc.core_properties.author = "Samantha Walter"
-    doc.core_properties.last_modified_by = "Samantha Walter"
-    doc.core_properties.created = dt.datetime(2026, 9, 16, 15, 2)
-    doc.core_properties.modified = dt.datetime(2026, 9, 17, 9, 41)
-    doc.core_properties.title = "Rising Destinations 2027: program terms"
-    doc.core_properties.comments = ""
-    doc.core_properties.keywords = ""
-    doc.core_properties.subject = ""
-    doc.core_properties.revision = 3
-    doc.save(path)
-
-
-# ----------------------------------------------------------------------------------- dictionary and manifest
 DICT_COLS = ["file_name", "field", "description"]
 
 
 def dictionary_rows():
     f = P.FILES
-    d = [
-        (f["legacy"], "Property ID", "the property's id in the Association's legacy reporting system"),
-        (f["legacy"], "Property Name", "the property's name when the report was received"),
-        (f["legacy"], "County", "the county the property is in"),
-        (f["legacy"], "Report Month", "the month the report covers, MM/YYYY"),
-        (f["legacy"], "Rooms Available", "room-nights available to sell in the month"),
-        (f["legacy"], "Rooms Sold", "room-nights sold in the month, complimentary rooms excluded"),
-        (f["legacy"], "Room Revenue", "revenue from rooms sold in the month, dollars, before taxes and excluding fees"),
-        (f["legacy"], "Received", "local date and time the report was received, MM/DD/YYYY HH:MM"),
-        (f["current"], "submission_id", "InnSight's id for the submission"),
-        (f["current"], "prop_id", "the property's InnSight id"),
-        (f["current"], "period", "the month the report covers, YYYY-MM"),
-        (f["current"], "county_code", "the Department of Revenue's code for the county the property is in"),
-        (f["current"], "avail_room_nights", "room-nights available to sell in the month"),
-        (f["current"], "sold_room_nights", "room-nights sold in the month, complimentary rooms excluded"),
-        (f["current"], "room_revenue_cents", "revenue from rooms sold in the month, in cents, before taxes and "
-                                             "excluding fees"),
-        (f["current"], "submitted_at_utc", "when the submission was made, UTC"),
-        (f["register"], "prop_id", "the property's InnSight id"),
-        (f["register"], "property_name", "the property's name today"),
-        (f["register"], "street", "street address"),
-        (f["register"], "city", "city or town"),
-        (f["register"], "county", "the county the property is in"),
-        (f["register"], "rooms", "rooms in the property today"),
-        (f["register"], "management_company", "the company managing the property today, blank if owner-operated"),
-        (f["register"], "panel_status", "reporting, or closed (the property has closed and left the panel)"),
-        (f["xwalk"], "legacy_property_id", "the property's id in the legacy reporting system"),
-        (f["xwalk"], "innsight_prop_id", "the property's InnSight id"),
-        (f["xwalk"], "property_name_at_mapping", "the property's name in the legacy system when it was mapped"),
-        (f["xwalk"], "mapped_on", "the date the mapping was made"),
-        (f["rates"], "state_rate_pct", "state lodging tax rate, per cent of taxable receipts"),
-        (f["rates"], "county_rate_pct", "county lodging tax rate, per cent of taxable receipts"),
-        (f["rates"], "effective_from", "first day the rates apply"),
-        (f["rates"], "effective_to", "last day the rates apply, blank if current"),
-        (f["visitor"], "visitor_spending_usd_millions", "estimated spending by visitors in the county, all categories, "
-                                                        "millions of dollars"),
-        (f["visitor"], "lodging_share_pct", "the share of visitor spending on lodging, per cent"),
-        (f["visitor"], "day_trip_share_pct", "the share of visitor spending by day visitors, per cent"),
-        (f["visitor"], "estimate_status", "final, or preliminary (to be revised in the next release)"),
+    return [
+        (f["enroll"], "member_id", "Marlowe's id for the member"),
+        (f["enroll"], "subscriber_id", "Marlowe's id for the employee whose coverage the member is on"),
+        (f["enroll"], "relationship", "EE employee, SP spouse, CH child"),
+        (f["enroll"], "birth_date", "the member's date of birth"),
+        (f["enroll"], "coverage_month", "a month the member is enrolled, YYYY-MM"),
+        (f["enroll"], "coverage_tier", "the subscriber's tier: EE, ES, EC or FAM"),
+        (f["lag_old"], "IncurredMonth", "the month the service was provided, MM/YYYY"),
+        (f["lag_old"], "PaidMonth", "the month the claims were paid, MM/YYYY"),
+        (f["lag_old"], "Category", "Medical or Pharmacy"),
+        (f["lag_old"], "PaidAmount", "claims paid by the plan, dollars, net of reversals in the month"),
+        (f["lag_new"], "incurred_period", "the month the service was provided, YYYY-MM"),
+        (f["lag_new"], "paid_period", "the month the claims were paid, YYYY-MM"),
+        (f["lag_new"], "benefit_type", "MED medical, RX pharmacy"),
+        (f["lag_new"], "paid_cents", "claims paid by the plan, cents, net of reversals in the month"),
+        (f["lcr"], "member_ref", "Marlowe's member_id as Arbor Ridge holds it"),
+        (f["lcr"], "total_incurred", "the member's claims incurred in 2025 and paid through 31 March 2026, dollars"),
+        (f["lcr"], "specific_deductible", "the policy's specific deductible, dollars"),
+        (f["lcr"], "eligible_excess", "total_incurred above the specific deductible, dollars"),
+        (f["lcr"], "reimbursed_to_date", "what Arbor Ridge has reimbursed on the claimant, dollars"),
+        (f["adv"], "advisory_date", "the date Arbor Ridge issued the advisory"),
+        (f["adv"], "incurred_to_date", "the claimant's claims incurred in the 2026 contract year to date, dollars"),
+        (f["adv"], "advisory_type", "initial (first advisory) or update"),
+        (f["policy"], "contract_basis", "12/15: claims incurred in the contract year and paid within 15 months"),
+        (f["policy"], "aggregate_corridor_pct", "the aggregate attachment as a share of expected claims (no group "
+                                                "has an aggregate claim)"),
+        (f["rebates"], "rebate_amount", "pharmacy rebates credited to the group's funding account, dollars"),
+        (f["bench"], "median_pmpm_2025", "the survey's median 2025 total claims cost per member per month"),
     ]
-    return d
 
 
 MANIFEST_COLS = ["file_name", "contents", "provided_by", "as_of_date", "coverage", "record_count"]
@@ -305,26 +164,21 @@ MANIFEST_COLS = ["file_name", "contents", "provided_by", "as_of_date", "coverage
 
 def manifest_rows(n):
     f = P.FILES
-    rows = [
-        (f["legacy"], "Lodging Monitor reports from the legacy reporting system", "TLA Research", "2022-04-04",
-         "2018-01 to 2022-03", n["legacy"]),
-        (f["current"], "Lodging Monitor reports from InnSight", "InnSight (export)", "2026-10-02",
-         "2022-04 to 2026-09", n["current"]),
-        (f["register"], "Lodging Monitor panel property register", "InnSight (export)", "2026-10-02",
-         "properties migrated April 2022", n["register"]),
-        (f["xwalk"], "legacy to InnSight property id crosswalk", "InnSight migration team", "2022-04-01",
-         "properties migrated April 2022", n["xwalk"]),
+    return [
+        (f["enroll"], "member months by group", "Marlowe eligibility", "2026-10-05", "2025-01 to 2026-08", n["enroll"]),
+        (f["lag_old"], "claims lag report, legacy platform", "Marlowe claims", "2026-06-03", "paid 2025-01 to 2026-05",
+         n["lag_old"]),
+        (f["lag_new"], "claims lag report, current platform", "Marlowe claims", "2026-10-05",
+         "paid 2026-06 to 2026-09", n["lag_new"]),
+        (f["lcr"], "2025 large claimant report", P.CARRIER, "2026-05-20", "claimants of $100,000 or more", n["lcr"]),
+        (f["adv"], "2026 specific advisories", P.CARRIER, "2026-10-01", "2026 contract year to date", n["adv"]),
+        (f["policy"], "specific stop-loss policy schedule", P.CARRIER, "2026-09-30", "2025 to 2027", n["policy"]),
+        (f["roster"], "group roster", "Marlowe account management", "2026-10-01", "", n["roster"]),
+        (f["rates"], "employers' 2027 funding elections", "Marlowe Client Finance", "2026-09-30", "2027", 16),
+        (f["memo"], "2027 renewal assumptions", "Marlowe Client Finance", "2026-09-09", "", ""),
+        (f["rebates"], "2025 pharmacy rebate statement", "Marlowe pharmacy benefits", "2026-05-14", "2025",
+         n["rebates"]),
+        (f["bench"], "regional employer health cost survey", "Lakeshore Employers Health Coalition", "2026-04-30",
+         "2025", n["bench"]),
+        (f["dictionary"], "field descriptions", "Marlowe Client Finance", "2026-10-05", "", n["dictionary"]),
     ]
-    for y in W.BENCH:
-        iy, im, iday = P.DOR_ISSUED[y]
-        rows.append((f["dor%d" % y], "Taxable Lodging Receipts by County, Tax Year %d" % y, DOR,
-                     "%d-%02d-%02d" % (iy, im, iday), "tax year %d and %d revised" % (y, y - 1), 16))
-    rows += [
-        (f["rates"], "state and county lodging tax rates", DOR, "2026-07-01", "2018-01-01 to date", n["rates"]),
-        (f["visitor"], "visitor spending estimates by county", "Tarrowind Tourism Bureau", "2025-11-18",
-         "2019 to 2024", n["visitor"]),
-        (f["method"], "Lodging Monitor methods", "TLA Research", "2026-02-12", "", ""),
-        (f["program"], "Rising Destinations 2027 program terms", "TLA Board of Directors", "2026-09-16", "", ""),
-        (f["dictionary"], "field descriptions for the data files", "TLA Research", "2026-10-02", "", n["dictionary"]),
-    ]
-    return rows

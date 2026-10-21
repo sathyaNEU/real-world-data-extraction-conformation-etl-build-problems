@@ -1,57 +1,61 @@
 {
  "task": "task479",
- "domain": "Survey Research & Official Statistics (seasonal adjustment and official time-series production)",
- "client_domain": "Survey Research & Official Statistics",
- "task_type": "seasonal-adjustment-official-time-series-production",
+ "domain": "Healthcare Delivery & Health Economics (payment, claims and health plan analytics)",
+ "client_domain": "Healthcare Delivery & Health Economics",
+ "task_type": "payment-claims-health-plan-analytics",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "tdor_county_lodging_tax_rates_2018-2026.csv",
-  "ttb_visitor_spending_by_county_2019-2024.csv"
+  "mba_pharmacy_rebate_statement_2025.csv",
+  "midwest_employer_health_cost_survey_2025.csv",
+  "mba_group_roster_2026-10.csv"
  ],
  "distractor_reasons": {
-  "tdor_county_lodging_tax_rates_2018-2026.csv": "the state and county lodging tax rates and their changes; the program qualifies a county on its taxable receipts, which are before tax, so no rate enters the estimate",
-  "ttb_visitor_spending_by_county_2019-2024.csv": "the tourism bureau's visitor spending estimates, all categories of spending and only to 2024 (preliminary); the program's basis is the Department's taxable lodging receipts, and the estimates neither measure them nor reach 2025"
+  "mba_pharmacy_rebate_statement_2025.csv": "the 2025 pharmacy rebates credited to each employer's funding account; the assumptions memo keeps rebates out of claims, so retained claims are gross of them",
+  "midwest_employer_health_cost_survey_2025.csv": "a regional survey's 2025 claims cost per member per month by industry; the notice rests on each group's own experience, and no benchmark enters it",
+  "mba_group_roster_2026-10.csv": "the groups' employers, industries and account managers; the notices are by group number and nothing on the roster changes a group's claims"
  },
  "stated_inputs": [
-  "1,800,000"
+  "250,000",
+  "125,000",
+  "100,000",
+  "7.5"
  ],
  "deliverables": [
-  "tla_rising_destinations_2027.xlsx"
+  "mba_2027_funding_true_up.xlsx"
  ],
- "as_of": "2026-10-02",
+ "as_of": "2026-10-05",
  "files": [
-  "innsight_property_id_crosswalk_2022-04.csv",
-  "tdor_county_lodging_tax_rates_2018-2026.csv",
-  "tdor_taxable_lodging_receipts_ty2018.pdf",
-  "tdor_taxable_lodging_receipts_ty2019.pdf",
-  "tdor_taxable_lodging_receipts_ty2020.pdf",
-  "tdor_taxable_lodging_receipts_ty2021.pdf",
-  "tdor_taxable_lodging_receipts_ty2022.pdf",
-  "tdor_taxable_lodging_receipts_ty2023.pdf",
-  "tdor_taxable_lodging_receipts_ty2024.pdf",
-  "tla_lodging_monitor_methods_2026.pdf",
-  "tla_monitor_properties_2026-10-02.csv",
-  "tla_monitor_reports_2018-01_to_2022-03.csv",
-  "tla_monitor_reports_2022-04_to_2026-09.csv",
-  "tla_research_data_dictionary.csv",
-  "tla_research_extract_manifest_2026-10-02.csv",
-  "tla_rising_destinations_2027_program.docx",
-  "ttb_visitor_spending_by_county_2019-2024.csv"
+  "arbor_ridge_large_claimant_report_cy2025.csv",
+  "arbor_ridge_specific_advisories_2026.csv",
+  "arbor_ridge_specific_policy_schedule_2025-2027.csv",
+  "mba_2027_funding_elections.xlsx",
+  "mba_2027_renewal_assumptions.pdf",
+  "mba_claims_lag_report_paid_2025-01_to_2026-05.csv",
+  "mba_claims_lag_report_paid_2026-06_to_2026-09.csv",
+  "mba_data_dictionary.csv",
+  "mba_enrollment_member_months_2025-01_to_2026-08.csv",
+  "mba_extract_manifest_2026-10-05.csv",
+  "mba_group_roster_2026-10.csv",
+  "mba_pharmacy_rebate_statement_2025.csv",
+  "midwest_employer_health_cost_survey_2025.csv"
  ],
  "rows": {
-  "tla_monitor_reports_2022-04_to_2026-09.csv": 27314,
-  "tla_research_data_dictionary.csv": 36,
-  "tla_monitor_reports_2018-01_to_2022-03.csv": 28483,
-  "tla_research_extract_manifest_2026-10-02.csv": 16,
-  "tdor_county_lodging_tax_rates_2018-2026.csv": 22,
-  "tla_monitor_properties_2026-10-02.csv": 503,
-  "ttb_visitor_spending_by_county_2019-2024.csv": 96,
-  "innsight_property_id_crosswalk_2022-04.csv": 490
+  "arbor_ridge_specific_advisories_2026.csv": 268,
+  "midwest_employer_health_cost_survey_2025.csv": 11,
+  "mba_data_dictionary.csv": 26,
+  "mba_enrollment_member_months_2025-01_to_2026-08.csv": 190147,
+  "mba_claims_lag_report_paid_2026-06_to_2026-09.csv": 1408,
+  "mba_claims_lag_report_paid_2025-01_to_2026-05.csv": 4416,
+  "arbor_ridge_large_claimant_report_cy2025.csv": 84,
+  "mba_extract_manifest_2026-10-05.csv": 12,
+  "arbor_ridge_specific_policy_schedule_2025-2027.csv": 48,
+  "mba_pharmacy_rebate_statement_2025.csv": 64,
+  "mba_group_roster_2026-10.csv": 16
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task479/generator); the state, its Department of Revenue, the association, its counties, towns, properties, companies and people are fictional",
-  "public_specifications": "the measures follow the lodging industry's standard definitions (occupancy, average daily rate, revenue per available room) and the benchmark-to-indicator practice of official time-series production, described in no shipped file",
+  "constructed": "every file is constructed for this task by its generator (task479/generator); the administrator, the carrier, the employers, their members and the people are fictional",
+  "public_specifications": "the layouts follow common third-party administrator claims lag reports, eligibility files and specific stop-loss large claimant reports (12/15 contract basis), described in no shipped file beyond the pack's own dictionary",
   "licence": "CC0 1.0 (constructed data)",
-  "date": "2026-10-02"
+  "date": "2026-10-05"
  }
 }

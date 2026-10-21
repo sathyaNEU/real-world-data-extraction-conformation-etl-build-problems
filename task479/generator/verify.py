@@ -1,94 +1,65 @@
-"""An independent recomputation of every graded figure from the cut pack, written apart from bundle.py (pandas, its
-own PDF reading), compared with generator/figures.json.
+"""An independent recomputation of every graded figure from the cut pack, written apart from bundle.py (pandas),
+compared with generator/figures.json.
 
     python3 task479/generator/verify.py [target]"""
 import json
 import os
-import re
 import sys
 
-import numpy as np
+import openpyxl
 import pandas as pd
-import pypdf
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 
 
-def dept(target):
-    rows = []
-    for y in range(2018, 2025):
-        reader = pypdf.PdfReader(os.path.join(target, "tdor_taxable_lodging_receipts_ty%d.pdf" % y))
-        toks = [t.strip() for t in "\n".join(p.extract_text() for p in reader.pages).splitlines() if t.strip()]
-        k = 1000 if any("thousands of dollars" in t for t in toks) else 1
-        for i, t in enumerate(toks):
-            if re.fullmatch(r"[A-Z][a-z]+( [A-Z][a-z]+)?", t) and t != "State" and re.fullmatch(r"[\d,]+", toks[i + 1]):
-                nums = [int(v.replace(",", "")) for v in toks[i + 1:i + 6] if re.fullmatch(r"[\d,]+", v)]
-                cur = nums[0] if k == 1000 else nums[1]
-                rows.append((t, y, cur * k))
-    return pd.DataFrame(rows, columns=["county", "year", "first"])
-
-
-def monitor(target):
-    leg = pd.read_csv(os.path.join(target, "tla_monitor_reports_2018-01_to_2022-03.csv"))
-    leg["when"] = pd.to_datetime(leg["Received"], format="%m/%d/%Y %H:%M")
-    leg = leg.sort_values("when").drop_duplicates(["Property ID", "Report Month"], keep="last")
-    leg["year"] = leg["Report Month"].str[-4:].astype(int)
-    leg["county"] = leg["County"].str.title()
-    leg["rev"] = leg["Room Revenue"]
-    cur = pd.read_csv(os.path.join(target, "tla_monitor_reports_2022-04_to_2026-09.csv"), dtype={"county_code": str})
-    cur = cur.sort_values("submitted_at_utc").drop_duplicates(["prop_id", "period"], keep="last")
-    reg = pd.read_csv(os.path.join(target, "tla_monitor_properties_2026-10-02.csv"))
-    cur = cur.merge(reg[["prop_id", "county", "rooms"]], on="prop_id", how="left")
-    cur["year"] = cur["period"].str[:4].astype(int)
-    cur["month"] = cur["period"].str[5:].astype(int)
-    cur["rev"] = cur["room_revenue_cents"] / 100
-    return leg, cur, reg
-
-
 def main(target=None, gdir=None):
     target = target or os.path.join(TASK, "target")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    d = dept(target)
-    leg, cur, reg = monitor(target)
-    pan = pd.concat([leg[["county", "year", "rev"]], cur[["county", "year", "rev"]]])
-    pan = pan[pan.year <= 2025].groupby(["county", "year"]).rev.sum()
+    en = pd.read_csv(os.path.join(target, "mba_enrollment_member_months_2025-01_to_2026-08.csv"))
+    old = pd.read_csv(os.path.join(target, "mba_claims_lag_report_paid_2025-01_to_2026-05.csv"))
+    new = pd.read_csv(os.path.join(target, "mba_claims_lag_report_paid_2026-06_to_2026-09.csv"))
+    old = pd.DataFrame({"g": old.GroupNo, "inc": old.IncurredMonth.str[-4:] + "-" + old.IncurredMonth.str[:2],
+                        "paid": old.PaidMonth.str[-4:] + "-" + old.PaidMonth.str[:2], "cat": old.Category.str[:3].str.upper(),
+                        "amt": old.PaidAmount})
+    new = pd.DataFrame({"g": new.group_id, "inc": new.incurred_period, "paid": new.paid_period,
+                        "cat": new.benefit_type.map({"MED": "MED", "RX": "PHA"}), "amt": new.paid_cents / 100})
+    lag = pd.concat([old, new]).drop_duplicates(["g", "inc", "paid", "cat"], keep="last")
+    exp = lag[lag.inc.str.startswith("2025") & (lag.paid <= "2026-03")].groupby("g").amt.sum()
+    mm = en[en.coverage_month.str.startswith("2025")].groupby("group_no").size()
+    lcr = pd.read_csv(os.path.join(target, "arbor_ridge_large_claimant_report_cy2025.csv"))
+    pol = pd.read_csv(os.path.join(target, "arbor_ridge_specific_policy_schedule_2025-2027.csv"))
+    p25 = pol[pol.contract_year == 2025].set_index("policy_no").group_no
+    lcr["g"] = lcr.policy_no.map(p25)
+    F = 1.075 ** 2
+    lcr["x27"] = (lcr.total_incurred * F - 250000).clip(lower=0)
+    ws = openpyxl.load_workbook(os.path.join(target, "mba_2027_funding_elections.xlsx"), data_only=True)["2027 elections"]
+    rate = {r[0]: r[3] for r in ws.iter_rows(min_row=2, values_only=True) if r[0]}
     bad = 0
-    q = []
-    for c, g in d.groupby("county"):
-        g = g.set_index("year")["first"]
-        r = np.array([g[y] / pan[(c, y)] for y in range(2018, 2025)])
-        k, a = np.polyfit(np.arange(2018, 2025), r, 1)
-        gr = (a + k * 2025) * pan[(c, 2025)] / g[2024] - 1
-        if gr >= 0.06:
-            q.append(c)
-        bad += int(round(100 * gr)) != fig["growth_pct"][c]
-    bad += sorted(q) != fig["call"]["qualifying"]
-    a = cur[(cur.year == 2026) & (cur.month <= 8)].groupby("county")[["avail_room_nights", "sold_room_nights", "rev"]].sum()
-    for c, r in a.iterrows():
-        bad += "%.1f" % (100 * r.sold_room_nights / r.avail_room_nights) != fig["ask_a"][c]["occupancy_pct"]
-        bad += "%.2f" % (r.rev / r.sold_room_nights) != fig["ask_a"][c]["adr_usd"]
-    # ask B: crosswalk, then the unmapped March 2022 legacy property to the unmapped April 2022 InnSight one with the
-    # same county and rooms
-    xw = pd.read_csv(os.path.join(target, "innsight_property_id_crosswalk_2022-04.csv"))
-    link = dict(zip(xw.legacy_property_id, xw.innsight_prop_id))
-    mar = leg[leg["Report Month"] == "03/2022"]
-    apr = cur[cur.period == "2022-04"]
-    for _, r in mar[~mar["Property ID"].isin(link)].iterrows():
-        cand = apr[(~apr.prop_id.isin(set(link.values()))) & (apr.county == r.county) &
-                   (apr.avail_room_nights // 30 == r["Rooms Available"] // 31)]
-        if len(cand) == 1:
-            link[r["Property ID"]] = cand.prop_id.iloc[0]
-    aug = cur[cur.period == "2026-08"].set_index("prop_id").avail_room_nights / 31
-    j18 = leg[leg["Report Month"] == "01/2018"].copy()
-    j18["rooms"] = j18["Rooms Available"] / 31
-    j18["new"] = j18["Property ID"].map(link)
-    j18["still"] = j18["new"].isin(aug.index)
-    j18["aug"] = j18["new"].map(aug)
-    for c, g in j18.groupby("county"):
-        s = g[g.still]
-        bad += "%.1f" % (100 * s.rooms.sum() / g.rooms.sum()) != fig["ask_b"][c]["rooms_share_pct"]
-        bad += "%.1f" % (100 * (s.aug.sum() / s.rooms.sum() - 1)) != fig["ask_b"][c]["rooms_change_pct"]
+    notes = []
+    for g in sorted(rate):
+        v = (F * exp[g] - lcr[lcr.g == g].x27.sum()) / mm[g]
+        bad += "%d" % round(v) != fig["retained_pmpm"][g]
+        if v > rate[g]:
+            notes.append(g)
+    bad += notes != fig["call"]["notices"]
+    e26 = en[en.coverage_month.str.startswith("2026")]
+    e26 = e26.drop_duplicates(["group_no", "birth_date", "sex", "relationship", "coverage_month"])
+    m26 = e26.groupby("group_no").size()
+    p26 = lag[lag.inc.between("2026-01", "2026-08")].groupby("g").amt.sum()
+    for g in rate:
+        bad += int(m26[g]) != fig["ask_a"][g]["member_months"]
+        bad += "%.2f" % (p26[g] / m26[g]) != fig["ask_a"][g]["paid_pmpm"]
+    adv = pd.read_csv(os.path.join(target, "arbor_ridge_specific_advisories_2026.csv"))
+    p26p = pol[pol.contract_year == 2026].set_index("policy_no").group_no
+    who = en.drop_duplicates("member_id").set_index("member_id")
+    adv["g"] = adv.policy_no.map(p26p)
+    adv["person"] = adv.member_ref.map(lambda m: tuple(who.loc[m, ["birth_date", "sex", "relationship"]]))
+    last = adv.sort_values(["advisory_date", "claimant_no"]).groupby(["g", "person"]).incurred_to_date.last()
+    for g in rate:
+        s = last[last.index.get_level_values(0) == g]
+        bad += len(s) != fig["ask_b"][g]["members"]
+        bad += int(round(s.sum())) != fig["ask_b"][g]["claims_to_date"]
     print("verify: %d figures differ from figures.json" % bad)
     return bad == 0
 

@@ -4,7 +4,7 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "Tarrowind Lodging Association"
+COMPANY = "Marlowe Benefit Administrators"
 
 
 def _x(s):

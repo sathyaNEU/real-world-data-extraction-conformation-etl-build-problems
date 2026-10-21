@@ -1,31 +1,26 @@
-"""Read the cut pack the way an analyst would, and run every route the design names on it: the golden's and each
-wrong rung's. Nothing here reads world.py's truth; golden.py, checks.py, verify.py and ceiling.py all go through it.
+"""Read the cut pack the way an analyst would, and run every route the design names on it. Nothing here reads
+world.py's truth; golden.py, checks.py, verify.py and ceiling.py all go through it.
 
-    load(target)            the conformed Monitor reports, the register, the crosswalk and the Department's reports
-    estimate(b, route)      each county's tax year 2025 receipts on the Department's basis under a route
-    qualify(b, est)         the counties at or above the 6 per cent floor
-    ask_a(b, county_from)   January to August 2026 occupancy and average daily rate by county
-    ask_b(b, link)          the January 2018 panel's properties still reporting in August 2026, and their rooms share"""
-import calendar
+    load(target)            the conformed enrollment, claims lag cells, the carrier's records and the elections
+    retained27(b, route)    each group's expected 2027 retained claims PMPM under a route
+    notices(b, est)         the groups over the claims component of their 2027 funding rate
+    ask_a(b, persons)       January to August 2026 member months and paid claims PMPM by group
+    ask_b(b, persons)       2026 advisory members and their claims to date by group"""
 import csv
-import datetime as dt
 import os
-import re
-
-import numpy as np
 
 FILES = {
-    "legacy": "tla_monitor_reports_2018-01_to_2022-03.csv",
-    "current": "tla_monitor_reports_2022-04_to_2026-09.csv",
-    "register": "tla_monitor_properties_2026-10-02.csv",
-    "xwalk": "innsight_property_id_crosswalk_2022-04.csv",
+    "enroll": "mba_enrollment_member_months_2025-01_to_2026-08.csv",
+    "lag_old": "mba_claims_lag_report_paid_2025-01_to_2026-05.csv",
+    "lag_new": "mba_claims_lag_report_paid_2026-06_to_2026-09.csv",
+    "lcr": "arbor_ridge_large_claimant_report_cy2025.csv",
+    "adv": "arbor_ridge_specific_advisories_2026.csv",
+    "policy": "arbor_ridge_specific_policy_schedule_2025-2027.csv",
+    "rates": "mba_2027_funding_elections.xlsx",
 }
-BENCH = list(range(2018, 2025))
-THRESHOLD = 0.06
-FUND = 1_800_000
-ROUTES = ("ols", "ols_revised", "ols_2021", "mean_change", "last_change", "half_step",
-          "flat_2024", "mean_ratio", "pooled_drift", "dept_persist", "log_linear")
-GOLDEN_FAMILY = ("ols", "ols_revised", "ols_2021", "mean_change", "last_change")
+ATTACH = 250_000
+F = 1.075 ** 2
+ROUTES = ("golden", "default", "partial", "gross", "golden_runout", "default_reimbursed", "golden_rebates")
 
 
 def _csv(path):
@@ -33,242 +28,143 @@ def _csv(path):
         return list(csv.DictReader(fh))
 
 
-def _pdf_text(path):
-    import pypdf
-    return "\n".join(pg.extract_text() for pg in pypdf.PdfReader(path).pages)
-
-
-def _dor_rows(txt):
-    """The county rows of one report: {county: (code or None, [the numbers after the name])}."""
-    toks = [t.strip() for t in txt.splitlines() if t.strip()]
-    rows = {}
-    for i, t in enumerate(toks):
-        if re.fullmatch(r"[A-Z][a-z]+(?: [A-Z][a-z]+)?", t) and i + 3 < len(toks) and re.fullmatch(r"-?[\d,]+", toks[i + 1]):
-            code = toks[i - 1] if re.fullmatch(r"\d\d", toks[i - 1]) else None
-            nums = []
-            for u in toks[i + 1:i + 6]:
-                if re.fullmatch(r"-?[\d,.]+%?", u):
-                    nums.append(u)
-                else:
-                    break
-            if t != "State":
-                rows[t] = (code, nums)
-    return rows
-
-
-def read_dor(target):
-    """Each report's first print for its tax year and its revised prior year, by county, in dollars."""
-    first, revised, code = {}, {}, {}
-    for y in BENCH:
-        txt = _pdf_text(os.path.join(target, "tdor_taxable_lodging_receipts_ty%d.pdf" % y))
-        mult = 1000 if "thousands of dollars" in txt else 1
-        rows = _dor_rows(txt)
-        assert len(rows) == 16, (y, sorted(rows))
-        for c, (cd, nums) in rows.items():
-            vals = [int(v.replace(",", "")) for v in nums if not v.endswith("%")]
-            cur, prev = (vals[0], vals[1]) if mult == 1000 else (vals[1], vals[2])
-            first[(c, y)] = cur * mult
-            if y > 2018:
-                revised[(c, y - 1)] = prev * mult
-            if cd:
-                code[cd] = c
-    return first, revised, sorted({c for c, _ in first}), code
+def _ym(s):
+    if "/" in s:
+        m, y = s.split("/")
+    else:
+        y, m = s.split("-")
+    return int(y), int(m)
 
 
 def load(target):
-    reg = _csv(os.path.join(target, FILES["register"]))
-    first, revised, counties, code = read_dor(target)
-    # legacy: the latest received report per property and month; county names in one case
-    leg = {}
-    for r in _csv(os.path.join(target, FILES["legacy"])):
-        mm, yy = r["Report Month"].split("/")
-        when = dt.datetime.strptime(r["Received"], "%m/%d/%Y %H:%M")
-        key = (r["Property ID"], int(yy), int(mm))
-        if key not in leg or when >= leg[key]["when"]:
-            leg[key] = {"id": r["Property ID"], "name": r["Property Name"], "county": r["County"].title(),
-                        "y": int(yy), "m": int(mm), "avail": int(r["Rooms Available"]), "sold": int(r["Rooms Sold"]),
-                        "rev": float(r["Room Revenue"]), "when": when}
-    cur = {}
-    for r in _csv(os.path.join(target, FILES["current"])):
-        yy, mm = r["period"].split("-")
-        when = r["submitted_at_utc"]
-        key = (r["prop_id"], int(yy), int(mm))
-        if key not in cur or when >= cur[key]["when"]:
-            cur[key] = {"id": r["prop_id"], "county": code[r["county_code"]], "y": int(yy), "m": int(mm),
-                        "avail": int(r["avail_room_nights"]), "sold": int(r["sold_room_nights"]),
-                        "rev": int(r["room_revenue_cents"]) / 100.0, "when": when}
-    xw = {r["legacy_property_id"]: r["innsight_prop_id"] for r in _csv(os.path.join(target, FILES["xwalk"]))}
-    return {"reg": reg, "leg": leg, "cur": cur, "first": first, "revised": revised, "counties": counties,
-            "xwalk": xw, "code": code}
+    import openpyxl
+    enroll = _csv(os.path.join(target, FILES["enroll"]))
+    cells = {}
+    for r in _csv(os.path.join(target, FILES["lag_old"])):
+        k = (r["GroupNo"], _ym(r["IncurredMonth"]), _ym(r["PaidMonth"]), r["Category"])
+        cells[k] = float(r["PaidAmount"])
+    for r in _csv(os.path.join(target, FILES["lag_new"])):
+        k = (r["group_id"], _ym(r["incurred_period"]), _ym(r["paid_period"]),
+             "Medical" if r["benefit_type"] == "MED" else "Pharmacy")
+        cells[k] = int(r["paid_cents"]) / 100.0          # May 2026 sent by both platforms: one cell, as a key
+    lcr = _csv(os.path.join(target, FILES["lcr"]))
+    adv = _csv(os.path.join(target, FILES["adv"]))
+    pol = {(r["policy_no"], int(r["contract_year"])): r["group_no"] for r in _csv(os.path.join(target, FILES["policy"]))}
+    ws = openpyxl.load_workbook(os.path.join(target, FILES["rates"]), data_only=True)["2027 elections"]
+    rates = {r[0]: float(r[3]) for r in ws.iter_rows(min_row=2, values_only=True) if r[0]}
+    groups = sorted(rates)
+    rebates = {}
+    for r in _csv(os.path.join(target, "mba_pharmacy_rebate_statement_2025.csv")):
+        rebates[r["group_no"]] = rebates.get(r["group_no"], 0.0) + float(r["rebate_amount"])
+    return {"enroll": enroll, "cells": cells, "lcr": lcr, "adv": adv, "pol": pol, "rates": rates, "groups": groups,
+            "rebates": rebates}
 
 
-def panel(b):
-    t = {}
-    for src in (b["leg"], b["cur"]):
-        for r in src.values():
-            if r["y"] <= 2025:
-                t[(r["county"], r["y"])] = t.get((r["county"], r["y"]), 0.0) + r["rev"]
-    return t
+def experience(b, runout=False):
+    """Per group: 2025 member months (enrollment rows in 2025), 2025 incurred claims paid through March 2026."""
+    mm, gross = {}, {}
+    for r in b["enroll"]:
+        if r["coverage_month"].startswith("2025"):
+            mm[r["group_no"]] = mm.get(r["group_no"], 0) + 1
+    for (g, inc, paid, cat), amt in b["cells"].items():
+        if inc[0] == 2025 and (runout or paid <= (2026, 3)):
+            gross[g] = gross.get(g, 0.0) + amt
+    return mm, gross
 
 
-def estimate(b, route):
-    P = panel(b)
-    F, R = b["first"], b["revised"]
-    ys = np.array(BENCH, dtype=float)
+def claimants(b):
+    """Each group's 2025 large claimants' totals, by group through the 2025 policy number."""
     out = {}
-    ratios = {c: np.array([F[(c, y)] / P[(c, y)] for y in BENCH]) for c in b["counties"]}
-    pooled = np.mean([np.polyfit(ys, ratios[c], 1)[0] / ratios[c][-1] for c in b["counties"]])
-    for c in b["counties"]:
-        r = ratios[c]
-        if route == "ols":
-            k, a = np.polyfit(ys, r, 1)
-            r25 = a + k * 2025
-        elif route == "ols_revised":
-            rv = np.array([(R[(c, y)] if (c, y) in R else F[(c, y)]) / P[(c, y)] for y in BENCH])
-            k, a = np.polyfit(ys, rv, 1)
-            r25 = (a + k * 2025) * F[(c, 2024)] / (R.get((c, 2024), F[(c, 2024)]))
-        elif route == "ols_2021":
-            k, a = np.polyfit(ys[3:], r[3:], 1)
-            r25 = a + k * 2025
-        elif route == "mean_change":
-            r25 = r[-1] + np.mean(np.diff(r))
-        elif route == "last_change":
-            r25 = 2 * r[-1] - r[-2]
-        elif route == "half_step":
-            r25 = r[-1] + 0.5 * np.polyfit(ys, r, 1)[0]
-        elif route == "log_linear":
-            k, a = np.polyfit(ys, np.log(r), 1)
-            r25 = np.exp(a + k * 2025)
-        elif route == "flat_2024":
-            r25 = r[-1]
-        elif route == "mean_ratio":
-            r25 = r.mean()
-        elif route == "pooled_drift":
-            r25 = r[-1] * (1 + pooled)
-        elif route == "dept_persist":
-            g = F[(c, 2024)] / R[(c, 2023)] - 1
-            out[c] = F[(c, 2024)] * (1 + g)
-            continue
-        out[c] = r25 * P[(c, 2025)]
+    for r in b["lcr"]:
+        g = b["pol"][(r["policy_no"], 2025)]
+        out.setdefault(g, []).append((float(r["total_incurred"]), float(r["eligible_excess"]),
+                                      float(r["reimbursed_to_date"])))
     return out
 
 
-def growth(b, est):
-    return {c: est[c] / b["first"][(c, 2024)] - 1 for c in est}
-
-
-def qualify(b, est):
-    g = growth(b, est)
-    return sorted(c for c in g if g[c] >= THRESHOLD)
-
-
-def fit_residuals(b):
-    """Each county's largest absolute residual from the straight line and from the log-linear line, per cent."""
-    P = panel(b)
-    ys = np.array(BENCH, dtype=float)
+def retained27(b, route="golden"):
+    mm, gross = experience(b, runout=(route == "golden_runout"))
+    cl = claimants(b)
     out = {}
-    for c in b["counties"]:
-        r = np.array([b["first"][(c, y)] / P[(c, y)] for y in BENCH])
-        k, a = np.polyfit(ys, r, 1)
-        lin = np.max(np.abs(r / (a + k * ys) - 1)) * 100
-        k2, a2 = np.polyfit(ys, np.log(r), 1)
-        lg = np.max(np.abs(r / np.exp(a2 + k2 * ys) - 1)) * 100
-        out[c] = (lin, lg)
+    for g in b["groups"]:
+        c = cl.get(g, [])
+        G = gross[g] - (b["rebates"][g] if route == "golden_rebates" else 0.0)
+        if route in ("golden", "golden_runout", "golden_rebates"):
+            v = F * G - sum(max(0.0, F * t - ATTACH) for t, e, p in c)
+        elif route == "default":
+            v = F * (G - sum(e for t, e, p in c))
+        elif route == "default_reimbursed":
+            v = F * (G - sum(p for t, e, p in c))
+        elif route == "partial":
+            v = F * G - sum(F * t - ATTACH for t, e, p in c if t >= ATTACH)
+        elif route == "gross":
+            v = F * G
+        out[g] = v / mm[g]
     return out
 
 
-def backtest(b):
-    """How carrying the last benchmark by the panel's growth would have done for each year 2019 to 2024 (first
-    print over the carried figure, less one), per county."""
-    P = panel(b)
-    return {c: [b["first"][(c, y)] / (b["first"][(c, y - 1)] * P[(c, y)] / P[(c, y - 1)]) - 1 for y in BENCH[1:]]
-            for c in b["counties"]}
+def notices(b, est):
+    return sorted(g for g in est if est[g] > b["rates"][g])
 
 
 # ------------------------------------------------------------------------------------------------ ask A
-def ask_a(b, county_from="register"):
-    """January to August 2026 occupancy (per cent) and average daily rate (dollars) by county. county_from:
-    'register' (the property's county in the register), 'report' (the county code on each report)."""
-    regc = {r["prop_id"]: r["county"] for r in b["reg"]}
-    s = {}
-    for r in b["cur"].values():
-        if r["y"] != 2026 or r["m"] > 8:
+def persons(b):
+    """Member id to one person key: the group, birth date, sex and relationship (unique within a group)."""
+    return {r["member_id"]: (r["group_no"], r["birth_date"], r["sex"], r["relationship"]) for r in b["enroll"]}
+
+
+def ask_a(b, by_person=True):
+    """January to August 2026: member months (a person enrolled in the month, counted once) and paid claims PMPM
+    (2026 incurred January to August, paid through September 2026)."""
+    pk = persons(b)
+    seen = set()
+    mm = {}
+    for r in b["enroll"]:
+        ym = _ym(r["coverage_month"])
+        if ym[0] != 2026:
             continue
-        c = regc[r["id"]] if county_from == "register" else r["county"]
-        a = s.setdefault(c, [0, 0, 0.0])
-        a[0] += r["avail"]
-        a[1] += r["sold"]
-        a[2] += r["rev"]
-    return {c: (100.0 * v[1] / v[0], v[2] / v[1]) for c, v in s.items()}
+        key = (pk[r["member_id"]], ym) if by_person else (r["member_id"], ym)
+        if key in seen:
+            continue
+        seen.add(key)
+        mm[r["group_no"]] = mm.get(r["group_no"], 0) + 1
+    paid = {}
+    for (g, inc, pd, cat), amt in b["cells"].items():
+        if inc[0] == 2026 and inc[1] <= 8:
+            paid[g] = paid.get(g, 0.0) + amt
+    return {g: (mm[g], paid[g] / mm[g]) for g in b["groups"]}
 
 
-def ask_a_raw(target, county_from="register"):
-    """Ask A on every row as delivered, no resubmission resolved (the mirror's half-handled read)."""
+def ask_a_doubled_may(target, by_person=True):
+    """Ask A with May 2026's paid cells taken from both platforms' files."""
     b = load(target)
-    regc = {r["prop_id"]: r["county"] for r in b["reg"]}
-    s = {}
-    for r in _csv(os.path.join(target, FILES["current"])):
-        yy, mm = r["period"].split("-")
-        if int(yy) != 2026 or int(mm) > 8:
-            continue
-        c = regc[r["prop_id"]] if county_from == "register" else b["code"][r["county_code"]]
-        a = s.setdefault(c, [0, 0, 0.0])
-        a[0] += int(r["avail_room_nights"])
-        a[1] += int(r["sold_room_nights"])
-        a[2] += int(r["room_revenue_cents"]) / 100
-    return {c: (100.0 * v[1] / v[0], v[2] / v[1]) for c, v in s.items()}
+    extra = {}
+    for r in _csv(os.path.join(target, FILES["lag_old"])):
+        inc, pd = _ym(r["IncurredMonth"]), _ym(r["PaidMonth"])
+        if pd == (2026, 5) and inc[0] == 2026:
+            extra[r["GroupNo"]] = extra.get(r["GroupNo"], 0.0) + float(r["PaidAmount"])
+    a = ask_a(b, by_person)
+    return {g: (a[g][0], a[g][1] + extra.get(g, 0.0) / a[g][0]) for g in a}
 
 
 # ------------------------------------------------------------------------------------------------ ask B
-def link(b, how="rooms"):
-    """Legacy id to InnSight id: the crosswalk, and with how='rooms' every legacy property reporting in March 2022
-    that the crosswalk misses matched to the InnSight property in the same county first reporting in April 2022
-    with the same rooms (room-nights over the month's days), which the crosswalk also misses."""
-    m = dict(b["xwalk"])
-    if how == "crosswalk":
-        return m
-    regc = {r["prop_id"]: r["county"] for r in b["reg"]}
-    mapped_new = set(m.values())
-    lost = [r for (i, y, mo), r in b["leg"].items() if (y, mo) == (2022, 3) and i not in m]
-    found = [r for (i, y, mo), r in b["cur"].items() if (y, mo) == (2022, 4) and i not in mapped_new]
-    for r in lost:
-        rooms = r["avail"] // 31
-        cand = [f for f in found if regc[f["id"]] == r["county"] and f["avail"] // 30 == rooms]
-        if how == "name":
-            names = {x["prop_id"]: x["property_name"] for x in b["reg"]}
-            cand = [f for f in found if names[f["id"]] == r["name"]]
-        if len(cand) == 1:
-            m[r["id"]] = cand[0]["id"]
-    return m
-
-
-def ask_b(b, how="rooms"):
-    """Per county, for the properties reporting in January 2018 that still report in August 2026: the share of
-    January 2018's panel rooms they hold, and the change in their rooms from January 2018 to August 2026, both per
-    cent (rooms are a month's room-nights available over its days)."""
-    m = link(b, how)
-    aug = {i: r["avail"] / 31 for (i, y, mo), r in b["cur"].items() if (y, mo) == (2026, 8)}
-    out = {}
-    for (i, y, mo), r in b["leg"].items():
-        if (y, mo) != (2018, 1):
-            continue
-        o = out.setdefault(r["county"], [0.0, 0.0, 0.0])
-        rooms = r["avail"] / 31
-        o[0] += rooms
-        if m.get(i) in aug:
-            o[1] += rooms
-            o[2] += aug[m[i]]
-    return {c: (100.0 * v[1] / v[0], 100.0 * (v[2] / v[1] - 1)) for c, v in out.items()}
-
-
-def ask_b_unlinked(b):
-    """The read with no linking: every property reporting in August 2026 against January 2018's panel rooms."""
-    regc = {r["prop_id"]: r["county"] for r in b["reg"]}
-    aug, base = {}, {}
-    for (i, y, mo), r in b["cur"].items():
-        if (y, mo) == (2026, 8):
-            aug[regc[i]] = aug.get(regc[i], 0) + r["avail"] / 31
-    for (i, y, mo), r in b["leg"].items():
-        if (y, mo) == (2018, 1):
-            base[r["county"]] = base.get(r["county"], 0) + r["avail"] / 31
-    return {c: (100.0 * aug[c] / base[c], None) for c in base}
+def ask_b(b, by_person=True, take="latest"):
+    """2026 specific advisories by group: the members the carrier has flagged and their claims to date as it last
+    reported them. by_person links a claimant file opened under a member's new id to the person's earlier file."""
+    pk = persons(b)
+    last = {}
+    for r in sorted(b["adv"], key=lambda r: (r["advisory_date"], r["claimant_no"])):
+        g = b["pol"][(r["policy_no"], 2026)]
+        who = pk[r["member_ref"]] if by_person else r["claimant_no"]
+        v = float(r["incurred_to_date"])
+        if take == "latest":
+            last[(g, who)] = v
+        elif take == "max":
+            last[(g, who)] = max(v, last.get((g, who), 0.0))
+        elif take == "sum":
+            last[(g, who)] = last.get((g, who), 0.0) + v
+    out = {g: [0, 0.0] for g in b["groups"]}
+    for (g, who), v in last.items():
+        out[g][0] += 1
+        out[g][1] += v
+    return {g: tuple(v) for g, v in out.items()}

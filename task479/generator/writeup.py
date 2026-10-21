@@ -2,81 +2,69 @@
 import json
 
 
-def money(v):
-    return "${:,}".format(int(v))
-
-
 def write(fig_path, out):
     f = json.load(open(fig_path))
-    q = f["call"]["qualifying"]
-    g = f["growth_pct"]
+    n = f["call"]["notices"]
+    r = f["retained_pmpm"]
+    rate = f["rates"]
     dp = f["default_path"]
-    each = f["call"]["match_each"]
-    others = [c for c in sorted(g, key=lambda c: (-g[c], c)) if c not in q]
+    extra = [g for g in dp["notices"] if g not in n]
     lines = []
     w = lines.append
     w("## Tags")
     w("")
-    w("**Domain:** Survey Research & Official Statistics (seasonal adjustment and official time-series production).")
+    w("**Domain:** Healthcare Delivery & Health Economics (payment, claims and health plan analytics).")
     w("**Analytical objective:** Data Extraction & Conformation (ETL).")
     w("")
     w("## 1. Final Recommendation")
     w("")
-    w("**%s and %s qualify for the 2027 Rising Destinations match, %s each from the %s fund.**" % (
-        ", ".join(q[:-1]), q[-1], money(each), money(f["call"]["fund"])))
-    w("On the Department of Revenue's basis their tax year 2025 receipts grow %s per cent on 2024, at or above the "
-      "6 per cent floor; no other county reaches it. Not Corrigan Bay or Delvane, which reach %d and %d per cent only "
-      "when 2024's receipts are moved by the Monitor's own 2025 growth: the Department's receipts there have trailed "
-      "the panel every year since it was drawn, and carried one year further they grow %d and %d per cent. Elsmoor, "
-      "Fallowmere and Grindell, whose member hotels grew only %d, %d and %d per cent, qualify because the Department's "
-      "receipts there have outgrown the panel at a steady pace in every year both are known." % (
-          ", ".join(str(g[c]) for c in q[:-1]) + " and " + str(g[q[-1]]), dp["Corrigan Bay"], dp["Delvane"],
-          g["Corrigan Bay"], g["Delvane"], dp["Elsmoor"], dp["Fallowmere"], dp["Grindell"]))
+    w("**Send 2027 funding true-up notices to %s and %s only.**" % (", ".join(n[:-1]), n[-1]))
+    w("Their expected 2027 retained claims are $%s per member per month against claims components of $%s; every "
+      "other group is under its rate. Not the %d groups (%s) that trending 2025 retained claims also puts over: "
+      "their 2025 experience carries members at or near the $250,000 specific deductible, who cost the plan no more "
+      "than $250,000 in 2027 whatever the trend, so the trend on their claims lands with Arbor Ridge." % (
+          ", ".join(r[g] for g in n[:-1]) + " and " + r[n[-1]], ", ".join(rate[g] for g in n[:-1]) + " and " +
+          rate[n[-1]], len(extra), ", ".join(extra)))
     w("")
     w("## 2. Critical Components")
     w("")
-    w("1. Qualifying counties: %s" % ", ".join("**%s**" % c for c in q))
-    w("2. Estimated growth of tax year 2025 receipts on 2024, whole per cent: %s" % ", ".join(
-        "%s **%d**" % (c, g[c]) for c in q + others))
-    w("3. Match: **%s** to each qualifying county" % money(each))
+    w("1. Groups with a notice: %s" % ", ".join("**%s**" % g for g in n))
+    w("2. Expected 2027 retained claims PMPM, whole dollars: %s" % ", ".join("%s **%s**" % (g, r[g]) for g in sorted(r)))
+    w("3. Claims components elected for 2027, whole dollars: %s" % ", ".join("%s %s" % (g, rate[g]) for g in sorted(rate)))
     w("")
     w("## 3. Step-by-Step Solution")
     w("")
-    w("1. Took each county's first-print taxable lodging receipts for tax years 2018 to 2024 from the seven "
-      "Department reports (thousands of dollars to 2020, dollars after).")
-    w("2. Built each county's Monitor room revenue for 2018 to 2025 from the legacy and InnSight exports, the later "
-      "submission of a resubmitted month replacing the earlier, InnSight cents in dollars, legacy county names in one "
-      "case.")
-    w("3. Divided each year's receipts by the Monitor revenue: the ratio rises or falls along a straight line in every "
-      "county, and carrying 2024's receipts by the panel's growth would have missed each earlier year by that drift.")
-    w("4. Fitted the line to 2018 to 2024 by least squares, read it at 2025 and multiplied by the county's 2025 Monitor "
-      "revenue to estimate the tax year 2025 receipts the Department will first publish.")
-    w("5. Divided by the 2024 first print, applied the 6 per cent floor and split the fund equally: %s." % ", ".join(q))
-    w("6. Ask A: January to August 2026 InnSight reports, the later submission of each month, each property in the "
-      "county the register gives (Harbor & Pine's reports carry its office county's code from April 2026); occupancy "
-      "and average daily rate from the county totals.")
-    w("7. Ask B: linked the January 2018 legacy properties to InnSight through the crosswalk and, for the thirteen "
-      "March 2022 properties it misses, to the one unmapped InnSight property in the same county with the same rooms "
-      "in April 2022; took those reporting in August 2026, rooms as room-nights available over the month's days.")
-    w("8. Recommended %s for the match." % ", ".join(q))
+    w("1. From the two claims lag reports took each group's claims incurred in 2025 and paid through 31 March 2026, "
+      "medical and pharmacy, the May 2026 cells the new platform re-sent counted once, cents in dollars.")
+    w("2. Counted each group's 2025 member months from the enrollment file.")
+    w("3. From Arbor Ridge's 2025 large claimant report took each claimant's 2025 claims, the group through the 2025 "
+      "policy schedule.")
+    w("4. Trended the group's 2025 claims two years at 7.5 per cent, and took off each large claimant's trended claims "
+      "above $250,000: the specific deductible applies to 2027 claims, so each member's claims are trended before it.")
+    w("5. Divided by the 2025 member months and compared with the claims component of the elected 2027 rate: %s over."
+      % ", ".join(n))
+    w("6. Ask A: 2026 enrollment counted once per person a month (members reissued new ids at a payroll vendor change "
+      "matched on group, birth date, sex and relationship); 2026 incurred claims January to August paid through "
+      "September 2026 over those member months.")
+    w("7. Ask B: each claimant's latest 2026 advisory, the group through the 2026 policy schedule, a claimant file "
+      "reopened under a member's new id joined to the member's earlier one.")
+    w("8. Recommended notices to %s." % ", ".join(n))
     w("")
     w("## 4. Deliverable Answers")
     w("")
-    w("### tla_rising_destinations_2027.xlsx")
+    w("### mba_2027_funding_true_up.xlsx")
     w("")
-    w("1. Each county's estimated growth of tax year 2025 receipts on 2024, whole per cent, and its match:")
-    for c in sorted(g):
-        w("   - %s: %d%s" % (c, g[c], ", qualifies, %s" % money(each) if c in q else ", does not qualify"))
-    w("2. Bar chart of the sixteen counties' growth against the 6 per cent floor, the qualifying five in green.")
-    w("3. Lodging Monitor occupancy (per cent, one decimal) and average daily rate (dollars, to the cent), January to "
-      "August 2026:")
-    for c in sorted(f["ask_a"]):
-        a = f["ask_a"][c]
-        w("   - %s: %s, $%s" % (c, a["occupancy_pct"], a["adr_usd"]))
-    w("4. Of the panel's January 2018 properties, those still reporting in August 2026: their share of January "
-      "2018's panel rooms, and the change in their rooms since, per cent to one decimal:")
-    for c in sorted(f["ask_b"]):
-        b = f["ask_b"][c]
-        w("   - %s: %s, %s" % (c, b["rooms_share_pct"], b["rooms_change_pct"]))
+    w("1. Expected 2027 retained claims PMPM against the 2027 claims component, whole dollars, and the notice:")
+    for g in sorted(r):
+        w("   - %s: %s against %s, %s" % (g, r[g], rate[g], "notice" if g in n else "no notice"))
+    w("2. Chart of each group's expected 2027 retained PMPM beside its claims component.")
+    w("3. January to August 2026 member months and paid claims PMPM (dollars to the cent):")
+    for g in sorted(f["ask_a"]):
+        a = f["ask_a"][g]
+        w("   - %s: %s, $%s" % (g, "{:,}".format(a["member_months"]), a["paid_pmpm"]))
+    w("4. 2026 specific advisories: members flagged and their claims to date as last reported (whole dollars):")
+    for g in sorted(f["ask_b"]):
+        b = f["ask_b"][g]
+        w("   - %s: %d, $%s" % (g, b["members"], "{:,}".format(b["claims_to_date"])))
     with open(out, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")

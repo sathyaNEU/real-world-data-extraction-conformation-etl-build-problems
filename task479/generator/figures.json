@@ -1,203 +1,223 @@
 {
  "ask_a": {
-  "Arvenne": {
-   "adr_usd": "169.45",
-   "occupancy_pct": "73.1"
+  "G1041": {
+   "member_months": 4730,
+   "paid_pmpm": "582.07"
   },
-  "Brisholt": {
-   "adr_usd": "183.91",
-   "occupancy_pct": "71.0"
+  "G1052": {
+   "member_months": 3006,
+   "paid_pmpm": "706.53"
   },
-  "Corrigan Bay": {
-   "adr_usd": "207.83",
-   "occupancy_pct": "72.9"
+  "G1063": {
+   "member_months": 4588,
+   "paid_pmpm": "744.16"
   },
-  "Delvane": {
-   "adr_usd": "213.98",
-   "occupancy_pct": "74.0"
+  "G1074": {
+   "member_months": 3552,
+   "paid_pmpm": "825.60"
   },
-  "Elsmoor": {
-   "adr_usd": "182.84",
-   "occupancy_pct": "66.6"
+  "G1085": {
+   "member_months": 11080,
+   "paid_pmpm": "701.28"
   },
-  "Fallowmere": {
-   "adr_usd": "197.59",
-   "occupancy_pct": "71.1"
+  "G1096": {
+   "member_months": 2408,
+   "paid_pmpm": "1014.28"
   },
-  "Grindell": {
-   "adr_usd": "127.66",
-   "occupancy_pct": "72.0"
+  "G1107": {
+   "member_months": 3802,
+   "paid_pmpm": "841.82"
   },
-  "Hollin Ridge": {
-   "adr_usd": "239.47",
-   "occupancy_pct": "74.3"
+  "G1118": {
+   "member_months": 6886,
+   "paid_pmpm": "658.18"
   },
-  "Isterhaven": {
-   "adr_usd": "161.63",
-   "occupancy_pct": "72.8"
+  "G1129": {
+   "member_months": 1992,
+   "paid_pmpm": "980.85"
   },
-  "Jorvale": {
-   "adr_usd": "116.94",
-   "occupancy_pct": "71.7"
+  "G1130": {
+   "member_months": 5528,
+   "paid_pmpm": "841.12"
   },
-  "Kestholm": {
-   "adr_usd": "174.49",
-   "occupancy_pct": "73.8"
+  "G1141": {
+   "member_months": 2843,
+   "paid_pmpm": "599.33"
   },
-  "Larrowby": {
-   "adr_usd": "128.80",
-   "occupancy_pct": "70.2"
+  "G1152": {
+   "member_months": 3311,
+   "paid_pmpm": "904.47"
   },
-  "Marrowfield": {
-   "adr_usd": "102.73",
-   "occupancy_pct": "66.6"
+  "G1163": {
+   "member_months": 7219,
+   "paid_pmpm": "736.47"
   },
-  "Nethervane": {
-   "adr_usd": "195.04",
-   "occupancy_pct": "70.6"
+  "G1174": {
+   "member_months": 3105,
+   "paid_pmpm": "646.69"
   },
-  "Orrin Falls": {
-   "adr_usd": "191.88",
-   "occupancy_pct": "71.9"
+  "G1185": {
+   "member_months": 2226,
+   "paid_pmpm": "986.58"
   },
-  "Pellow Sound": {
-   "adr_usd": "189.66",
-   "occupancy_pct": "71.7"
+  "G1196": {
+   "member_months": 4242,
+   "paid_pmpm": "863.86"
   }
  },
  "ask_b": {
-  "Arvenne": {
-   "rooms_change_pct": "1.8",
-   "rooms_share_pct": "86.9"
+  "G1041": {
+   "claims_to_date": 481706,
+   "members": 2
   },
-  "Brisholt": {
-   "rooms_change_pct": "3.7",
-   "rooms_share_pct": "76.1"
+  "G1052": {
+   "claims_to_date": 598069,
+   "members": 2
   },
-  "Corrigan Bay": {
-   "rooms_change_pct": "1.7",
-   "rooms_share_pct": "90.6"
+  "G1063": {
+   "claims_to_date": 709492,
+   "members": 3
   },
-  "Delvane": {
-   "rooms_change_pct": "3.7",
-   "rooms_share_pct": "94.5"
+  "G1074": {
+   "claims_to_date": 985127,
+   "members": 3
   },
-  "Elsmoor": {
-   "rooms_change_pct": "1.9",
-   "rooms_share_pct": "86.7"
+  "G1085": {
+   "claims_to_date": 968587,
+   "members": 3
   },
-  "Fallowmere": {
-   "rooms_change_pct": "8.7",
-   "rooms_share_pct": "74.1"
+  "G1096": {
+   "claims_to_date": 970989,
+   "members": 3
   },
-  "Grindell": {
-   "rooms_change_pct": "7.8",
-   "rooms_share_pct": "81.2"
+  "G1107": {
+   "claims_to_date": 1510452,
+   "members": 4
   },
-  "Hollin Ridge": {
-   "rooms_change_pct": "0.1",
-   "rooms_share_pct": "81.8"
+  "G1118": {
+   "claims_to_date": 591882,
+   "members": 2
   },
-  "Isterhaven": {
-   "rooms_change_pct": "1.5",
-   "rooms_share_pct": "85.7"
+  "G1129": {
+   "claims_to_date": 581057,
+   "members": 3
   },
-  "Jorvale": {
-   "rooms_change_pct": "4.7",
-   "rooms_share_pct": "80.9"
+  "G1130": {
+   "claims_to_date": 870521,
+   "members": 3
   },
-  "Kestholm": {
-   "rooms_change_pct": "0.5",
-   "rooms_share_pct": "86.0"
+  "G1141": {
+   "claims_to_date": 412571,
+   "members": 2
   },
-  "Larrowby": {
-   "rooms_change_pct": "4.5",
-   "rooms_share_pct": "93.9"
+  "G1152": {
+   "claims_to_date": 903963,
+   "members": 4
   },
-  "Marrowfield": {
-   "rooms_change_pct": "5.8",
-   "rooms_share_pct": "66.3"
+  "G1163": {
+   "claims_to_date": 993848,
+   "members": 4
   },
-  "Nethervane": {
-   "rooms_change_pct": "4.9",
-   "rooms_share_pct": "88.3"
+  "G1174": {
+   "claims_to_date": 443935,
+   "members": 2
   },
-  "Orrin Falls": {
-   "rooms_change_pct": "0.8",
-   "rooms_share_pct": "94.5"
+  "G1185": {
+   "claims_to_date": 970569,
+   "members": 4
   },
-  "Pellow Sound": {
-   "rooms_change_pct": "1.3",
-   "rooms_share_pct": "90.4"
+  "G1196": {
+   "claims_to_date": 1034735,
+   "members": 3
   }
  },
  "call": {
-  "fund": 1800000,
-  "match_each": 360000,
-  "qualifying": [
-   "Arvenne",
-   "Brisholt",
-   "Elsmoor",
-   "Fallowmere",
-   "Grindell"
+  "notices": [
+   "G1052",
+   "G1118",
+   "G1163"
   ]
  },
  "conventions": {
+  "advisory": 125000,
   "counts": [
-   3,
-   7,
-   13,
-   16,
-   30
+   2,
+   16
   ],
-  "months_2026": "January to August",
-  "rooms_day": 31,
-  "threshold_pct": 6,
+  "deductible": 250000,
+  "lcr_floor": 100000,
+  "trend_pct": 7.5,
   "years": [
-   2018,
-   2020,
-   2021,
-   2022,
-   2024,
    2025,
    2026,
    2027
   ]
  },
  "default_path": {
-  "Arvenne": 8,
-  "Brisholt": 7,
-  "Corrigan Bay": 7,
-  "Delvane": 6,
-  "Elsmoor": 3,
-  "Fallowmere": 3,
-  "Grindell": 4,
-  "Hollin Ridge": 5,
-  "Isterhaven": 4,
-  "Jorvale": 1,
-  "Kestholm": 4,
-  "Larrowby": 2,
-  "Marrowfield": -1,
-  "Nethervane": 6,
-  "Orrin Falls": 1,
-  "Pellow Sound": 5
+  "notices": [
+   "G1052",
+   "G1063",
+   "G1074",
+   "G1096",
+   "G1118",
+   "G1130",
+   "G1152",
+   "G1163",
+   "G1174"
+  ],
+  "retained_pmpm": {
+   "G1041": "614",
+   "G1052": "515",
+   "G1063": "904",
+   "G1074": "867",
+   "G1085": "532",
+   "G1096": "847",
+   "G1107": "670",
+   "G1118": "604",
+   "G1129": "484",
+   "G1130": "893",
+   "G1141": "535",
+   "G1152": "844",
+   "G1163": "715",
+   "G1174": "837",
+   "G1185": "736",
+   "G1196": "692"
+  }
  },
- "growth_pct": {
-  "Arvenne": 9,
-  "Brisholt": 8,
-  "Corrigan Bay": 4,
-  "Delvane": 4,
-  "Elsmoor": 10,
-  "Fallowmere": 11,
-  "Grindell": 9,
-  "Hollin Ridge": 5,
-  "Isterhaven": 5,
-  "Jorvale": 3,
-  "Kestholm": 4,
-  "Larrowby": 4,
-  "Marrowfield": 2,
-  "Nethervane": 5,
-  "Orrin Falls": 4,
-  "Pellow Sound": 5
+ "rates": {
+  "G1041": "637",
+  "G1052": "495",
+  "G1063": "885",
+  "G1074": "848",
+  "G1085": "556",
+  "G1096": "826",
+  "G1107": "704",
+  "G1118": "581",
+  "G1129": "512",
+  "G1130": "871",
+  "G1141": "561",
+  "G1152": "831",
+  "G1163": "683",
+  "G1174": "817",
+  "G1185": "766",
+  "G1196": "733"
+ },
+ "retained_pmpm": {
+  "G1041": "601",
+  "G1052": "515",
+  "G1063": "863",
+  "G1074": "833",
+  "G1085": "528",
+  "G1096": "808",
+  "G1107": "665",
+  "G1118": "600",
+  "G1129": "484",
+  "G1130": "852",
+  "G1141": "526",
+  "G1152": "818",
+  "G1163": "707",
+  "G1174": "802",
+  "G1185": "736",
+  "G1196": "678"
  }
 }

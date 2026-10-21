@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "golden workbook and submission.md block 1",
+  "answer": "True-up notices to G1052 (Ferris Valley Credit Union), G1118 (Pemberton Hardware Cooperative) and G1163 (Tamarack Hotel Group) only",
+  "answer_source": "golden/mba_2027_funding_true_up.xlsx (True-up notices sheet) and submission.md block 1",
   "gap": [
     "time"
   ],
@@ -47,9 +47,9 @@
   "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
-    "entity": "one member's enrollment in one month",
+    "file": "mba_enrollment_member_months_2025-01_to_2026-08.csv",
+    "rows": 189177,
+    "entity": "one member enrolled in one month",
     "grain": "member x month",
     "source": "synthetic"
   },
@@ -60,13 +60,39 @@
     "geography": "United States (a fictional Midwestern metro region)",
     "currency": "USD",
     "org_type": "third-party administrator of self-funded employer health plans",
-    "invented_names": [],
+    "invented_names": [
+      "Marlowe Benefit Administrators",
+      "Arbor Ridge Specialty Insurance Company",
+      "Lakeshore Employers Health Coalition",
+      "Halsted Tool & Die",
+      "Ferris Valley Credit Union",
+      "Oakmont Senior Living",
+      "Grafton Freight Lines",
+      "Kittredge Foods",
+      "Ashbury Engineering Group",
+      "Linden Park Schools Foundation",
+      "Pemberton Hardware Cooperative",
+      "Sorrel Creek Dental Partners",
+      "Northfield Paperboard",
+      "Calloway & Reese LLP",
+      "Brightwell Plumbing & Heating",
+      "Tamarack Hotel Group",
+      "Wexford County Mutual",
+      "Delacorte Printing",
+      "Quarry Hill Builders"
+    ],
     "people": [
       "Gregory Valdez",
-      "Claire Grant"
+      "Claire Grant",
+      "Andrea Snow",
+      "Brady Cooper",
+      "Chelsea Petersen",
+      "James Hernandez"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "mba_2027_funding_true_up.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A total kept below a fixed per-unit ceiling is carried to a later period on a growth rate that applies to the uncapped amounts, so each unit's amount grows first and is capped after: a unit already above the ceiling adds nothing to the kept total and a unit just below it adds only what it gains up to the ceiling, so growing the kept total by the rate overstates it most where units sit at or near the ceiling.",

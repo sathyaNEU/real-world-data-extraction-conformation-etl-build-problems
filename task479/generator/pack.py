@@ -1,6 +1,6 @@
-"""The pack's data files, written from the truth in world.py: the Lodging Monitor's two report exports (the legacy
-system to March 2022, the current one since), the panel's property register, the vendor's id crosswalk, the
-Department's county tax rates and the tourism bureau's visitor spending estimates."""
+"""The pack's data files, written from the truth in world.py: Marlowe's enrollment file, its claims lag reports in two
+layouts across the June 2026 platform upgrade, Arbor Ridge's 2025 large claimant report and 2026 specific advisories,
+the stop-loss policy schedule, the group roster, the rebate statement and the industry benchmark."""
 import calendar
 import csv
 import datetime as dt
@@ -10,54 +10,37 @@ import numpy as np
 import world as W
 
 FILES = {
-    "legacy": "tla_monitor_reports_2018-01_to_2022-03.csv",
-    "current": "tla_monitor_reports_2022-04_to_2026-09.csv",
-    "register": "tla_monitor_properties_2026-10-02.csv",
-    "xwalk": "innsight_property_id_crosswalk_2022-04.csv",
-    "rates": "tdor_county_lodging_tax_rates_2018-2026.csv",
-    "visitor": "ttb_visitor_spending_by_county_2019-2024.csv",
-    "method": "tla_lodging_monitor_methods_2026.pdf",
-    "program": "tla_rising_destinations_2027_program.docx",
-    "dictionary": "tla_research_data_dictionary.csv",
-    "manifest": "tla_research_extract_manifest_2026-10-02.csv",
+    "enroll": "mba_enrollment_member_months_2025-01_to_2026-08.csv",
+    "lag_old": "mba_claims_lag_report_paid_2025-01_to_2026-05.csv",
+    "lag_new": "mba_claims_lag_report_paid_2026-06_to_2026-09.csv",
+    "lcr": "arbor_ridge_large_claimant_report_cy2025.csv",
+    "adv": "arbor_ridge_specific_advisories_2026.csv",
+    "policy": "arbor_ridge_specific_policy_schedule_2025-2027.csv",
+    "roster": "mba_group_roster_2026-10.csv",
+    "rates": "mba_2027_funding_elections.xlsx",
+    "memo": "mba_2027_renewal_assumptions.pdf",
+    "rebates": "mba_pharmacy_rebate_statement_2025.csv",
+    "bench": "midwest_employer_health_cost_survey_2025.csv",
+    "dictionary": "mba_data_dictionary.csv",
+    "manifest": "mba_extract_manifest_2026-10-05.csv",
 }
-for _y in W.BENCH:
-    FILES["dor%d" % _y] = "tdor_taxable_lodging_receipts_ty%d.pdf" % _y
-DOR_ISSUED = {2018: (2019, 12, 10), 2019: (2020, 12, 15), 2020: (2021, 12, 14), 2021: (2022, 12, 13),
-              2022: (2023, 12, 12), 2023: (2024, 12, 10), 2024: (2025, 12, 9)}
-EXTRACT = dt.datetime(2026, 10, 2, 6, 40)
-COMPANY = "Tarrowind Lodging Association"
+COMPANY = "Marlowe Benefit Administrators"
+CARRIER = "Arbor Ridge Specialty Insurance Company"
+EXTRACT = dt.datetime(2026, 10, 5, 6, 30)
 
-LEGACY_COLS = ["Property ID", "Property Name", "County", "Report Month", "Rooms Available", "Rooms Sold",
-               "Room Revenue", "Received"]
-CURRENT_COLS = ["submission_id", "prop_id", "period", "county_code", "avail_room_nights", "sold_room_nights",
-                "room_revenue_cents", "submitted_at_utc"]
-REGISTER_COLS = ["prop_id", "property_name", "street", "city", "county", "rooms", "management_company",
-                 "panel_status"]
-XWALK_COLS = ["legacy_property_id", "innsight_prop_id", "property_name_at_mapping", "mapped_on"]
-RATES_COLS = ["county_code", "county", "state_rate_pct", "county_rate_pct", "effective_from", "effective_to"]
-VISITOR_COLS = ["county", "year", "visitor_spending_usd_millions", "lodging_share_pct", "day_trip_share_pct",
-                "estimate_status"]
-
-TOWNS = {
-    "Arvenne": ["Arvenne City", "Southgate", "Millbrook Park"], "Brisholt": ["Brisholt Beach", "Gullhaven"],
-    "Corrigan Bay": ["Port Corrigan", "Sandreach"], "Delvane": ["Delvane Springs", "Highcroft"],
-    "Elsmoor": ["Elsmoor Shores", "Dunlin Point"], "Fallowmere": ["Fallowmere", "Ridgewater"],
-    "Grindell": ["Grindell", "Ashby Crossing"], "Hollin Ridge": ["Hollin", "Cedar Notch"],
-    "Isterhaven": ["Isterhaven", "Riverside Heights"], "Jorvale": ["Jorvale", "Tamsin Mill"],
-    "Kestholm": ["Kestholm", "North Kestholm"], "Larrowby": ["Larrowby", "Fenwick Corner"],
-    "Marrowfield": ["Marrowfield", "Oatlands"], "Nethervane": ["Nethervane Beach", "Kittiwake"],
-    "Orrin Falls": ["Orrin Falls", "Bluestem"], "Pellow Sound": ["Pellow", "Sound Harbor"],
-}
-STEMS = ["Harborview", "Seabright", "Pinecrest", "Lakeside", "Summit", "Willow Creek", "Bayfront", "Stonebridge",
-         "Maple Grove", "Riverbend", "Lighthouse", "Cardinal", "Heritage", "Juniper", "Meadowlark", "Granite Peak",
-         "Driftwood", "Saltmarsh", "Copper Kettle", "Old Mill", "Bluewater", "Timberline", "Sandpiper", "Foxglove",
-         "Northstar", "Crescent", "Gateway", "Oak Hollow", "Tidewater", "Aspen", "Larkspur", "Hearthstone"]
-KINDS = ["Inn", "Hotel", "Lodge", "Motor Inn", "Suites", "Resort", "Inn & Suites", "Cottages"]
-STREETS = ["Main St", "Shore Rd", "Ocean Ave", "Highway 9", "Mill Rd", "Lake Dr", "Pine St", "Summit Way",
-           "Harbor Blvd", "Route 41", "Bay St", "Market St", "Ridge Rd", "Station Ave", "Elm St", "Beach Rd"]
-COMPANIES = ["Harbor & Pine Hospitality", "Coastline Hotel Group", "Bramwell Lodging", "Summit Ridge Hospitality",
-             "Northgate Inns"]
+ENROLL_COLS = ["member_id", "subscriber_id", "relationship", "birth_date", "sex", "group_no", "coverage_month",
+               "coverage_tier"]
+LAG_OLD_COLS = ["GroupNo", "IncurredMonth", "PaidMonth", "Category", "PaidAmount", "ClaimLines"]
+LAG_NEW_COLS = ["group_id", "incurred_period", "paid_period", "benefit_type", "paid_cents", "line_count"]
+LCR_COLS = ["claimant_no", "policy_no", "member_ref", "relationship", "birth_year", "incurred_medical",
+            "incurred_pharmacy", "total_incurred", "specific_deductible", "eligible_excess", "reimbursed_to_date",
+            "open_balance"]
+ADV_COLS = ["advisory_date", "claimant_no", "policy_no", "member_ref", "incurred_to_date", "advisory_type"]
+POLICY_COLS = ["policy_no", "group_no", "contract_year", "effective", "expires", "contract_basis",
+               "specific_deductible", "aggregate_corridor_pct"]
+ROSTER_COLS = ["group_no", "employer", "industry", "renewal_month", "funding_arrangement", "account_manager"]
+REBATE_COLS = ["group_no", "quarter", "rebate_amount", "credited_on"]
+BENCH_COLS = ["industry", "plan_type", "employers", "median_pmpm_2025", "p75_pmpm_2025"]
 
 
 def write_csv(path, cols, rows):
@@ -69,187 +52,247 @@ def write_csv(path, cols, rows):
     return len(rows)
 
 
-def names(x):
-    """Each property's name, street, city and management company, and the legacy name where the property was
-    renamed between its legacy reports and the register."""
-    rng = np.random.default_rng(W.SEED + 11)
-    used = set()
-    for p in x["props"]:
-        while True:
-            nm = "%s %s" % (STEMS[int(rng.integers(0, len(STEMS)))], KINDS[int(rng.integers(0, len(KINDS)))])
-            if (p["county"], nm) not in used:
-                used.add((p["county"], nm))
-                break
-        p["name"] = nm
-        towns = TOWNS[p["county"]]
-        p["city"] = towns[int(rng.integers(0, len(towns)))]
-        p["street"] = "%d %s" % (int(rng.integers(10, 2900)), STREETS[int(rng.integers(0, len(STREETS)))])
-        p["company"] = COMPANIES[1 + int(rng.integers(0, 4))] if rng.random() < 0.28 else ""
-        p["legacy_name"] = nm
-    for p in x["props"]:
-        if p["k"] in x["mgmt"]:
-            p["company"] = "Harbor & Pine Hospitality"
-        elif p["company"] == "" and p["county"] == W.MGMT_COUNTY and rng.random() < 0.3:
-            p["company"] = "Harbor & Pine Hospitality"
-    # rebrands: the property's legacy name differs from the register's; the crosswalk gaps all rebranded, and so
-    # did properties the crosswalk maps
-    for p in x["props"]:
-        if p["k"] in x["xwalk_gap"] or (rng.random() < 0.05 and (p["close"] is None or p["close"] > (2022, 3))):
-            stem = STEMS[int(rng.integers(0, len(STEMS)))]
-            p["legacy_name"] = "%s %s" % (stem, KINDS[int(rng.integers(0, len(KINDS)))])
-            if p["legacy_name"] == p["name"]:
-                p["legacy_name"] = p["name"] + " Motel"
+def ids(x):
+    """TPA member and subscriber ids; the employers that changed payroll vendor in 2026 had their members reissued
+    under new ids from the change month, the old ids left on file for one to three months after (the Ask A device)."""
+    rng = np.random.default_rng(W.SEED + 1)
+    order = rng.permutation(len(x["members"]))
+    for i, j in enumerate(order):
+        m = x["members"][j]
+        m["mid"] = "M%07d" % (2210457 + 13 * i)
+    subs = {}
+    for m in x["members"]:
+        key = (m["group"], m["sub"])
+        if key not in subs:
+            subs[key] = "S%06d" % (310000 + int(rng.integers(0, 600000)))
+        m["sid"] = subs[key]
+    x["vendor_change"] = {}
+    for gno in ("G1041", "G1052", "G1063", "G1074", "G1085", "G1096", "G1107", "G1118", "G1130", "G1141", "G1152", "G1163", "G1174",
+                "G1196"):
+        x["vendor_change"][gno] = (2026, int(rng.integers(5, 8)), int(rng.integers(1, 3)))
+    for m in x["members"]:
+        if m["group"] in x["vendor_change"]:
+            m["mid2"] = "M%07d" % (5400003 + 11 * m["k"])
+            m["sid2"] = "S%06d" % (900000 + int(m["sid"][1:]) % 99991)
 
 
-def county_name_legacy(c):
-    return c.upper() if c in ("Jorvale", "Larrowby", "Marrowfield") else c
+def tier(fam):
+    rels = {m["rel"] for m in fam}
+    if rels == {"EE"}:
+        return "EE"
+    if "SP" in rels and "CH" in rels:
+        return "FAM"
+    return "ES" if "SP" in rels else "EC"
 
 
-def legacy_rows(x):
-    """The legacy reporting system, January 2018 to March 2022: one row per report received, a revised report
-    beside the one it revises and a report sent twice beside itself, received stamps in local time."""
-    rng = np.random.default_rng(W.SEED + 21)
-    pk = {p["k"]: p for p in x["props"]}
-    out = []
-    for r in x["rep"]:
-        if (r["y"], r["m"]) > (2022, 3):
-            continue
-        p = pk[r["k"]]
-        due = W.month_end(r["y"], r["m"]) + dt.timedelta(days=int(rng.integers(3, 24)))
-        rec = dt.datetime(due.year, due.month, due.day, int(rng.integers(7, 19)), int(rng.integers(0, 60)))
-        kind, f = x["resub"].get((r["k"], r["y"], r["m"]), (None, 0.0))
-        subs = []
-        if kind == "revised":
-            subs.append((W.submitted_report(r, kind, f), rec))
-            subs.append((r, rec + dt.timedelta(days=int(rng.integers(6, 50)), hours=int(rng.integers(1, 9)))))
-        elif kind == "repeat":
-            subs.append((r, rec))
-            subs.append((r, rec + dt.timedelta(minutes=int(rng.integers(2, 300)))))
-        else:
-            subs.append((r, rec))
-        for s, when in subs:
-            out.append((p["old_id"], p["legacy_name"], county_name_legacy(p["county"]), "%02d/%d" % (r["m"], r["y"]),
-                        s["avail"], s["sold"], "%.2f" % s["rev"], when.strftime("%m/%d/%Y %H:%M"), when))
-    out.sort(key=lambda t: (t[8], t[0]))
-    return [t[:8] for t in out]
-
-
-def current_rows(x):
-    """The current system (InnSight), April 2022 to September 2026: revenue in cents, submission stamps in UTC,
-    September 2026 only from the properties that had reported by the extract. Harbor & Pine's portal account files
-    its properties under its own office county from April 2026."""
-    rng = np.random.default_rng(W.SEED + 31)
-    pk = {p["k"]: p for p in x["props"]}
-    out = []
-    sept = {}
-    for p in x["props"]:
-        sept[p["k"]] = rng.random() < 0.58
-    reps = [r for r in x["rep"] if (r["y"], r["m"]) >= (2022, 4)]
-    # September 2026 is the month after the last full one: generated here from August's pattern
-    extra = []
-    for r in reps:
-        if (r["y"], r["m"]) == W.LAST and sept[r["k"]]:
-            s = dict(r)
-            s["m"] = 9
-            days = 30
-            s["avail"] = r["avail"] // 31 * days
-            s["sold"] = int(round(s["avail"] * r["sold"] / r["avail"] * 0.84))
-            s["rev"] = round(r["rev"] / r["sold"] * s["sold"] * 0.97, 2) if r["sold"] else 0.0
-            extra.append(s)
-    n = 0
-    for r in reps + extra:
-        p = pk[r["k"]]
-        local = W.month_end(r["y"], r["m"]) + dt.timedelta(days=int(rng.integers(2, 21)))
-        if (r["y"], r["m"]) == (2026, 9):
-            local = dt.date(2026, 10, int(rng.integers(1, 3)))
-        hh = int(rng.integers(12, 24)) if (r["y"], r["m"]) != (2026, 9) else int(rng.integers(0, 10))
-        utc = dt.datetime(local.year, local.month, local.day, hh, int(rng.integers(0, 60)), int(rng.integers(0, 60)))
-        if utc > EXTRACT:
-            utc = EXTRACT - dt.timedelta(minutes=int(rng.integers(5, 300)))
-        code = W.CODE[p["county"]]
-        if p["k"] in x["mgmt"] and (r["y"], r["m"]) >= W.MGMT_TAKEOVER:
-            code = W.CODE[W.MGMT_COUNTY]
-        kind, f = x["resub"].get((r["k"], r["y"], r["m"]), (None, 0.0))
-        subs = []
-        if kind == "revised" and (r["y"], r["m"]) < (2026, 9):
-            later = utc + dt.timedelta(days=int(rng.integers(4, 40)), hours=int(rng.integers(1, 9)))
-            if later > EXTRACT:
-                later = EXTRACT - dt.timedelta(minutes=17)
-            subs = [(W.submitted_report(r, kind, f), utc), (r, later)]
-        elif kind == "repeat":
-            subs = [(r, utc), (r, utc + dt.timedelta(seconds=int(rng.integers(20, 4000))))]
-        else:
-            subs = [(r, utc)]
-        for s, when in subs:
-            n += 1
-            out.append([None, p["new_id"], "%d-%02d" % (r["y"], r["m"]), code, s["avail"], s["sold"],
-                        int(round(s["rev"] * 100)), when.strftime("%Y-%m-%dT%H:%M:%SZ"), when])
-    out.sort(key=lambda t: (t[8], t[1]))
-    for i, t in enumerate(out):
-        t[0] = "S%07d" % (4410023 + 7 * i)
-    return [t[:8] for t in out]
-
-
-def register_rows(x):
-    """The panel's property register as InnSight holds it on the extract day: every property that came across in
-    April 2022, its county and its rooms today."""
+def enroll_rows(x):
+    fams = {}
+    for m in x["members"]:
+        fams.setdefault((m["group"], m["sub"]), []).append(m)
     rows = []
-    for p in sorted(x["props"], key=lambda p: p["new_id"]):
-        if not (p["close"] is None or p["close"] > (2022, 3)):
-            continue
-        rp = p["rooms_path"]
-        rooms = rp["rooms"] if rp else p["rooms"]
-        status = "reporting" if p["close"] is None else "closed"
-        rows.append((p["new_id"], p["name"], p["street"], p["city"], p["county"], rooms, p["company"], status))
+    for m in x["members"]:
+        t = tier(fams[(m["group"], m["sub"])])
+        vc = x["vendor_change"].get(m["group"])
+        for ym in W.MONTHS25 + W.MONTHS26:
+            if not (m["start"] <= ym <= m["end"]):
+                continue
+            ymS = "%d-%02d" % ym
+            if vc and ym >= (vc[0], vc[1]):
+                rows.append((m["mid2"], m["sid2"], m["rel"], m["birth"].isoformat(), m["sex"], m["group"], ymS, t))
+                overlap_end = (vc[0], vc[1] + vc[2] - 1)
+                if ym <= overlap_end:
+                    rows.append((m["mid"], m["sid"], m["rel"], m["birth"].isoformat(), m["sex"], m["group"], ymS, t))
+            else:
+                rows.append((m["mid"], m["sid"], m["rel"], m["birth"].isoformat(), m["sex"], m["group"], ymS, t))
+    rows.sort(key=lambda r: (r[6], r[5], r[0]))
     return rows
 
 
-def xwalk_rows(x):
+LAGS = [0.46, 0.33, 0.11, 0.05, 0.025, 0.012, 0.007, 0.004, 0.002]   # share of a month's claims paid k months later
+
+
+def _months_after(y, m, k):
+    t = y * 12 + m - 1 + k
+    return t // 12, t % 12 + 1
+
+
+def lag_cells(x):
+    """Each group's claims by incurred month, paid month and category. 2025 incurred claims paid through March 2026
+    are the experience (they equal the members' 2025 claims); a small tail paid from April 2026 on; 2024 incurred
+    claims paid in early 2025; 2026 incurred claims through September 2026."""
+    rng = np.random.default_rng(W.SEED + 2)
+    cells = {}
+
+    def add(g, inc, paid, cat, amt, lines):
+        k = (g, inc, paid, cat)
+        a = cells.setdefault(k, [0.0, 0])
+        a[0] += amt
+        a[1] += lines
+
+    for gno, *_ in W.GROUPS:
+        gm = [m for m in x["members"] if m["group"] == gno]
+        for cat, key in (("Medical", "med25"), ("Pharmacy", "rx25")):
+            tot = sum(m[key] for m in gm)
+            # monthly incurred pattern, then the lag through March 2026 renormalised to the experience total
+            w = rng.dirichlet(np.ones(12) * 40)
+            for i, (y, mo) in enumerate(W.MONTHS25):
+                inc_amt = tot * w[i]
+                lags = []
+                for k, s in enumerate(LAGS):
+                    py, pm = _months_after(y, mo, k)
+                    if (py, pm) <= (2026, 3):
+                        lags.append((k, s))
+                norm = sum(s for _, s in lags)
+                for k, s in lags:
+                    py, pm = _months_after(y, mo, k)
+                    a = round(inc_amt * s / norm, 2)
+                    add(gno, (y, mo), (py, pm), cat, a, max(1, int(a / (180 if cat == "Medical" else 75))))
+                # the run-out paid after March 2026
+                for k, s in enumerate(LAGS):
+                    py, pm = _months_after(y, mo, k)
+                    if (2026, 4) <= (py, pm) <= (2026, 9):
+                        a = round(inc_amt * s * 0.6, 2)
+                        add(gno, (y, mo), (py, pm), cat, a, max(1, int(a / 200)))
+            # 2024 incurred, paid in 2025
+            for mo in (10, 11, 12):
+                inc_amt = tot / 12 * 0.95
+                for k, s in enumerate(LAGS):
+                    py, pm = _months_after(2024, mo, k)
+                    if py == 2025:
+                        add(gno, (2024, mo), (py, pm), cat, round(inc_amt * s, 2), max(1, int(inc_amt * s / 190)))
+        # 2026 incurred, January to August, paid through September 2026
+        for cat, share in (("Medical", 0.79), ("Pharmacy", 0.21)):
+            tot26 = sum(m["c26"] for m in gm) * share
+            w = rng.dirichlet(np.ones(8) * 40)
+            for i, (y, mo) in enumerate(W.MONTHS26):
+                inc_amt = tot26 * w[i]
+                for k, s in enumerate(LAGS):
+                    py, pm = _months_after(y, mo, k)
+                    if (py, pm) <= (2026, 9):
+                        a = round(inc_amt * s, 2)
+                        add(gno, (y, mo), (py, pm), cat, a, max(1, int(a / 180)))
+    # make the 2025 experience equal the members' claims to the cent, group and category
+    for gno, *_ in W.GROUPS:
+        gm = [m for m in x["members"] if m["group"] == gno]
+        for cat, key in (("Medical", "med25"), ("Pharmacy", "rx25")):
+            want = round(sum(m[key] for m in gm), 2)
+            ks = sorted(k for k in cells if k[0] == gno and k[3] == cat and k[1][0] == 2025 and k[2] <= (2026, 3))
+            have = round(sum(cells[k][0] for k in ks), 2)
+            cells[ks[0]][0] = round(cells[ks[0]][0] + want - have, 2)
+    x["lag"] = cells
+    return cells
+
+
+def lag_rows(x, layout):
+    cells = x["lag"]
     rows = []
-    for p in sorted(x["props"], key=lambda p: p["old_id"]):
-        if not (p["close"] is None or p["close"] > (2022, 3)) or p["k"] in x["xwalk_gap"]:
+    for (g, inc, paid, cat), (amt, lines) in sorted(cells.items()):
+        if layout == "old" and paid <= (2026, 5):
+            rows.append((g, "%02d/%d" % (inc[1], inc[0]), "%02d/%d" % (paid[1], paid[0]), cat, "%.2f" % amt, lines))
+        if layout == "new" and paid >= (2026, 5):
+            # the new platform's first export carried May 2026 again, as the old platform had sent it
+            rows.append((g, "%d-%02d" % inc, "%d-%02d" % paid, "MED" if cat == "Medical" else "RX",
+                         int(round(amt * 100)), lines))
+    return rows
+
+
+def policies():
+    """Each group's specific policy number by contract year; five groups were rewritten at the 2026 renewal."""
+    out = {}
+    rew = {"G1052", "G1085", "G1129", "G1163", "G1196"}
+    for i, (gno, *_) in enumerate(W.GROUPS):
+        a = "ARS-SL-%05d" % (40211 + 17 * i)
+        b = "ARS-SL-%05d" % (51907 + 23 * i) if gno in rew else a
+        out[gno] = {2025: a, 2026: b, 2027: b}
+    return out
+
+
+def policy_rows():
+    pol = policies()
+    rows = []
+    for gno, *_ in W.GROUPS:
+        for y in (2025, 2026, 2027):
+            rows.append((pol[gno][y], gno, y, "%d-01-01" % y, "%d-12-31" % y, "12/15", W.ATTACH, 125))
+    return rows
+
+
+def lcr_rows(x):
+    """The carrier's 2025 large claimant report: every member with $100,000 or more of 2025 incurred claims paid
+    through March 2026 (the 12/15 contract)."""
+    rng = np.random.default_rng(W.SEED + 3)
+    pol = policies()
+    rows = []
+    big = sorted((m for m in x["members"] if m["c25"] >= 100_000), key=lambda m: m["k"])
+    for i, m in enumerate(big):
+        exc = max(0.0, m["c25"] - W.ATTACH)
+        paid = round(exc * float(rng.choice([1.0, 1.0, 0.82, 0.64, 0.0])), 2) if exc else 0.0
+        rows.append(("ARS-25-%05d" % (10441 + 7 * i), pol[m["group"]][2025], m["mid"], m["rel"], m["birth"].year,
+                     "%.2f" % m["med25"], "%.2f" % m["rx25"], "%.2f" % m["c25"], W.ATTACH, "%.2f" % exc, "%.2f" % paid,
+                     "%.2f" % (exc - paid)))
+    return rows
+
+
+def adv_rows(x):
+    """The carrier's 2026 specific advisories: a row each month for every claimant at or over the 50 per cent
+    threshold, restating the claimant's 2026 incurred claims to date (claims reprocessed later can lower it)."""
+    rng = np.random.default_rng(W.SEED + 4)
+    pol = policies()
+    rows = []
+    x["adv_truth"] = {}
+    cand = sorted((m for m in x["members"] if m["c26"] >= W.ADVISORY), key=lambda m: m["k"])
+    for i, m in enumerate(cand):
+        cno = "ARS-26-%05d" % (20117 + 9 * i)
+        start = int(rng.integers(2, 5))
+        path = np.sort(rng.uniform(0.55, 1.0, 9 - start))
+        path[-1] = 1.0
+        vals = [m["c26"] * p for p in path]
+        if rng.random() < 0.45 and len(vals) > 1:        # a reprocessing lowers the latest figure
+            vals[-1] = vals[-2] * float(rng.uniform(0.86, 0.97))
+        first = next((j for j, v in enumerate(vals) if v >= W.ADVISORY), None)
+        if first is None:
             continue
-        rows.append((p["old_id"], p["new_id"], p["legacy_name"], "2022-04-01"))
+        shown = [(start + j, v) for j, v in enumerate(vals) if j >= first]
+        vc = x["vendor_change"].get(m["group"])
+        cno2 = "ARS-26-%05d" % (60119 + 9 * i)
+        for mo, v in shown:
+            d = dt.date(2026, mo + 1, int(rng.integers(3, 12))) if mo < 9 else dt.date(2026, 9, 28)
+            after = vc is not None and (2026, mo) >= (vc[0], vc[1])
+            # the carrier opened a new claimant file when the member's id changed, and carried the claims to date
+            ref, no = (m["mid2"], cno2) if after else (m["mid"], cno)
+            first_of_no = not any(r[1] == no for r in rows)
+            rows.append((d.isoformat(), no, pol[m["group"]][2026], ref, "%.2f" % v,
+                         "initial" if first_of_no else "update"))
+        x["adv_truth"].setdefault(m["group"], []).append(round(shown[-1][1], 2))
+    rows.sort(key=lambda r: (r[0], r[1]))
     return rows
 
 
-RATE_CHANGES = {"Brisholt": (2022, 7, 1.0), "Elsmoor": (2023, 1, 0.5), "Fallowmere": (2021, 7, 1.0),
-                "Corrigan Bay": (2024, 7, -0.5), "Arvenne": (2020, 1, 0.5), "Delvane": (2025, 1, 1.0)}
-BASE_RATE = {n: 2.0 + (i * 7 % 5) * 0.5 for i, n in enumerate(W.NAMES)}
+MANAGERS = ["Andrea Snow", "Brady Cooper", "Chelsea Petersen", "James Hernandez"]
 
 
-def rate_on(name, y, m=7):
-    r = BASE_RATE[name]
-    if name in RATE_CHANGES:
-        cy, cm, d = RATE_CHANGES[name]
-        if (y, m) >= (cy, cm):
-            r += d
-    return r
-
-
-def rates_rows():
+def roster_rows():
     rows = []
-    for n in W.NAMES:
-        if n in RATE_CHANGES:
-            cy, cm, d = RATE_CHANGES[n]
-            end = dt.date(cy, cm, 1) - dt.timedelta(days=1)
-            rows.append((W.CODE[n], n, "6.00", "%.2f" % BASE_RATE[n], "2018-01-01", end.isoformat()))
-            rows.append((W.CODE[n], n, "6.00", "%.2f" % (BASE_RATE[n] + d), "%d-%02d-01" % (cy, cm), ""))
-        else:
-            rows.append((W.CODE[n], n, "6.00", "%.2f" % BASE_RATE[n], "2018-01-01", ""))
+    for i, (gno, emp, ind, *_) in enumerate(W.GROUPS):
+        rows.append((gno, emp, ind, "January", "self-funded with specific stop-loss", MANAGERS[i % 4]))
     return rows
 
 
-def visitor_rows(x):
-    """The state tourism bureau's visitor spending estimates (all spending by visitors, not lodging receipts):
-    through 2024 only, the latest year preliminary."""
-    rng = np.random.default_rng(W.SEED + 41)
+def rebate_rows(x):
+    rng = np.random.default_rng(W.SEED + 5)
     rows = []
-    for n in W.NAMES:
-        for y in range(2019, 2025):
-            base = x["first"][(n, y)] / 1e6
-            spend = base * float(rng.uniform(2.6, 3.4)) * (1 + 0.02 * (y - 2019))
-            lodge = 100 * base / spend * float(rng.uniform(0.92, 1.05))
-            rows.append((n, y, "%.1f" % spend, "%.1f" % lodge, "%.1f" % float(rng.uniform(18, 46)),
-                         "preliminary" if y == 2024 else "final"))
+    for gno, *_ in W.GROUPS:
+        rx = sum(m["rx25"] for m in x["members"] if m["group"] == gno)
+        for q, cred in (("2025Q1", "2025-08-14"), ("2025Q2", "2025-11-13"), ("2025Q3", "2026-02-12"),
+                        ("2025Q4", "2026-05-14")):
+            rows.append((gno, q, "%.2f" % (rx / 4 * float(rng.uniform(0.16, 0.22))), cred))
+    return rows
+
+
+def bench_rows():
+    rows = []
+    for ind, emp, med in (("manufacturing", 212, 571.40), ("finance", 98, 498.10), ("health care", 143, 612.75),
+                          ("transportation", 77, 603.20), ("food processing", 51, 556.90),
+                          ("professional services", 166, 512.35), ("education", 120, 547.80), ("retail", 134, 529.60),
+                          ("construction", 109, 588.15), ("hospitality", 88, 541.25), ("insurance", 61, 505.70)):
+        rows.append((ind, "self-funded PPO", emp, "%.2f" % med, "%.2f" % (med * 1.24)))
     return rows
