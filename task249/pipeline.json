@@ -19,9 +19,16 @@
   "heart": "WARN (overuse.gate_g, repeat.decision, repeat.question_form; NOTEs differentiated against task193 v2 and task254 v3)",
   "nearest": "task83 at 0.12"
  },
- "judge": null,
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "gate_g": "pass (decomposition_attribution, analytical_non_defect)",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "finding": "item-model siblings read as untouched flag A, B, D, G: closed by SF16 (the data refute it, asserted)",
+  "pack": "ff5b5f5b"
+ },
  "returned": [],
- "resume": "Stage 3 green on target.zip ff5b5f5b (27,905 checks, verify agrees, two builds byte-identical, figures_check 38 of 38, precut PASS, leak.py REVIEW, heart WARN). Stage 4 running: two isolated scored readers (sonnet and opus, medium, fresh copies under the scratchpad's leak-task249-r1 and r2) and the determinism judge. Next: score each reader with score_reader.py (call key call.flagged), fix every finding in the generator in one pass, re-judge once on FIX_NOW, then ship.",
+ "resume": "Stage 4: the judge returned DETERMINISTIC, APPROVE on ff5b5f5b (Gate G and H pass); its one fork, the item-model siblings, is closed by SF16 (asserted; checks 27,907 on the shipped pack). Waiting on the two isolated scored readers (sonnet and opus, fresh copies leak-task249-r1 and r2 in the scratchpad): score each with score_reader.py (call key call.flagged); ship if both miss the call and neither exits 1.",
  "approved": null,
  "delivered": null,
  "portal": null,

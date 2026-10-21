@@ -176,6 +176,32 @@ def forks(target, C):
     for t in T:
         if t["booking"] in stopped:
             ok(np.nansum(t["secs"]) <= 4 * 3600 + 170, "SF10 latencies are working time")
+    # SF16 an item written from the same item model as an item shown is not an untouched item: on the pack the
+    # siblings are answered in about four fifths of the candidate's own pace and above their ability, where the
+    # untouched items sit at the pace and at the ability; read as untouched they would flag A, B, D and G
+    lt = {"sib": [], "un": []}
+    ex = {"sib": [], "un": []}
+    for t in T:
+        if t["w"] < 4 or not t["prev"] or t["form"] not in S.F27:
+            continue
+        same, sib, rev = S.exposure(T, t, D)
+        ep = np.array([Pn.get((t["w"], i), np.nan) for i in t["items"]])
+        mj = np.array([Mu.get((t["w"], i), np.nan) for i in t["items"]])
+        okk = ~np.isnan(ep) & ~np.isnan(mj) & t["reach"] & t["scored"]
+        u = okk & ~same & ~sib
+        if u.sum() < 20:
+            continue
+        lr = np.log(t["secs"]) - mj
+        pace = np.nanmean(lr[u])
+        pe = 1 / (1 + np.exp(-(S.lg(ep) + S.rasch_shift(t["x"][u], ep[u]))))
+        for k, m in (("sib", okk & sib & ~same), ("un", u)):
+            lt[k].extend(lr[m] - pace)
+            ex[k].extend(t["x"][m] - pe[m])
+    ok(np.exp(np.mean(lt["sib"])) < 0.9 and np.mean(ex["sib"]) > 0.03 and abs(np.mean(lt["un"])) < 0.02,
+       "SF16 siblings answered at %.2f of the pace and %+.3f above ability (untouched %.2f, %+.3f)" % (
+           np.exp(np.mean(lt["sib"])), np.mean(ex["sib"]), np.exp(np.mean(lt["un"])), np.mean(ex["un"])))
+    ok(run(lambda Tt, t, Dd: (lambda a: (a[0], np.zeros_like(a[1]), a[2]))(S.exposure(Tt, t, Dd)))
+       == ["CC27-A", "CC27-B", "CC27-D", "CC27-G"], "SF16 the siblings read as untouched flag A, B, D and G")
     # SF11 release 3 seconds and release 4 milliseconds are the same clock: the golden on release 4 read in
     # seconds alone is not a reading (the note states the unit)
     md = {}
