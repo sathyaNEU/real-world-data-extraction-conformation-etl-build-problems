@@ -1,26 +1,26 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-21",
- "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and awards the grant to five standalone campuses, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs on average per student.",
+ "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and files 214506, 214682, 214858, 214946 and 215298 awarded, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs per student on average: the campuses that report alone show a lower-division credit hour costing under a third of a graduate hour, and three branches priced at the hours they teach have the lowest instruction expense per FTE in the state.",
  "architecture": 1,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-21"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN",
+  "nearest": "task130 0.07"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: design architecture 1 (consolidated returns apportioned by a cost model): generator, ladder, asks, prompt, precut",
+ "resume": "stage 4: spawn two Sonnet leak readers on fresh unzips of target.zip and the judge thread on a hand-built brief, score each reader with score_reader.py, fix findings in one pass",
  "approved": null,
  "delivered": null,
  "portal": null,

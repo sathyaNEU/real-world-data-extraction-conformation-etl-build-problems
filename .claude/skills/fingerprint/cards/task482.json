@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "214682, 214946, 216190, 216278 and 216454 awarded",
+  "answer_source": "generator/figures.json",
   "gap": [
     "population"
   ],
@@ -45,8 +45,8 @@
   "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
+    "file": "lhecb_fall2026_census_enrollment_branch_campuses.csv",
+    "rows": 70594,
     "entity": "one student's enrollment in one course section in one term",
     "grain": "student x section x term",
     "source": "synthetic"
@@ -58,18 +58,24 @@
     "geography": "United States (a fictional state)",
     "currency": "USD",
     "org_type": "state higher-education coordinating board",
-    "invented_names": [],
+    "invented_names": [
+      "Lakemoor Higher Education Coordinating Board",
+      "University of Lakemoor",
+      "Lakemoor Polytechnic University"
+    ],
     "people": [
       "Jeremy Cortez",
       "John Huang"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "lhecb_2027-28_instructional_investment_awards.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A combined return reports one total for several units, and each unit's share is split by its head count, which gives every unit the group's average; but the item follows an activity whose unit cost differs several-fold across kinds, and the units inside the return do mostly the cheap kind, which the units that report alone measure, so the split by head count overstates the units inside and keeps them out of the lowest ranks.",
   "driver_concrete": "Each branch campus's instruction expense sits inside its flagship's return and is split by FTE students, which gives a branch the flagship system's cost per student; the branches teach mostly freshman and sophomore credit hours, which the sixteen campuses that report alone show cost about a third of a graduate hour, so their true cost per student is far under the system's and several belong in the lowest five.",
-  "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and awards the grant to five standalone campuses, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs on average per student.",
+  "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and files 214506, 214682, 214858, 214946 and 215298 awarded, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs per student on average: the campuses that report alone show a lower-division credit hour costing under a third of a graduate hour, and three branches priced at the hours they teach have the lowest instruction expense per FTE in the state.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task475": "task475 recovers each area's mix of member kinds from its own count and paired amount using known averages; here no unit's mix is unknown: each campus's credit hours by level are recorded, the unknown is each unit's share of a combined total, and the cost per kind is fitted on the units that report alone.",

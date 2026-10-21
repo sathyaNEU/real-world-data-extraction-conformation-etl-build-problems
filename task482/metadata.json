@@ -1,0 +1,56 @@
+{
+ "task": "task482",
+ "domain": "Survey Research & Official Statistics (census, register and administrative data quality)",
+ "client_domain": "Survey Research & Official Statistics",
+ "task_type": "census-register-administrative-data-quality",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "distractor_files": [
+  "lhecb_fy2026_state_appropriations.xlsx",
+  "lhecb_2026-27_tuition_and_fees.csv",
+  "ipeds_gr2025_graduation_rates_lakemoor_public.csv"
+ ],
+ "distractor_reasons": {
+  "lhecb_fy2026_state_appropriations.xlsx": "the state's fiscal 2026 appropriations by campus, made to branches directly; the grant ranks instruction expense, which the appropriation does not measure",
+  "lhecb_2026-27_tuition_and_fees.csv": "2026-27 tuition and fees; a price, not an expense, and of the wrong year",
+  "ipeds_gr2025_graduation_rates_lakemoor_public.csv": "graduation rates of the 2019 cohort; an outcome the grant does not rank on"
+ },
+ "stated_inputs": [
+  "4.5"
+ ],
+ "deliverables": [
+  "lhecb_2027-28_instructional_investment_awards.xlsx"
+ ],
+ "as_of": "2026-10-09",
+ "files": [
+  "ipeds_e12_2025-26_enrollment_lakemoor_public.csv",
+  "ipeds_f1a_fy2026_finance_lakemoor_public.csv",
+  "ipeds_gr2025_graduation_rates_lakemoor_public.csv",
+  "ipeds_hd2025_directory_lakemoor_public.csv",
+  "lhecb_2026-27_tuition_and_fees.csv",
+  "lhecb_campus_codes_2026.csv",
+  "lhecb_credit_hours_by_level_2025-26.csv",
+  "lhecb_data_dictionary.csv",
+  "lhecb_extract_manifest_2026-10-09.csv",
+  "lhecb_fall2026_census_enrollment_branch_campuses.csv",
+  "lhecb_fy2026_state_appropriations.xlsx",
+  "lhecb_instructional_investment_grant_guidelines_2027-28.pdf"
+ ],
+ "rows": {
+  "lhecb_fall2026_census_enrollment_branch_campuses.csv": 70594,
+  "lhecb_credit_hours_by_level_2025-26.csv": 1638,
+  "lhecb_campus_codes_2026.csv": 26,
+  "lhecb_data_dictionary.csv": 26,
+  "ipeds_e12_2025-26_enrollment_lakemoor_public.csv": 26,
+  "ipeds_f1a_fy2026_finance_lakemoor_public.csv": 26,
+  "ipeds_gr2025_graduation_rates_lakemoor_public.csv": 26,
+  "ipeds_hd2025_directory_lakemoor_public.csv": 26,
+  "lhecb_extract_manifest_2026-10-09.csv": 11,
+  "lhecb_2026-27_tuition_and_fees.csv": 26
+ },
+ "sources": {
+  "constructed": "every file is constructed for this task by its generator (task482/generator); the state, the board, the campuses, their students and the people are fictional",
+  "public_specifications": "the federal files follow the IPEDS directory (HD), finance (F1A, GASB) and 12-month enrollment (E12) layouts and variable names, including the finance parent/child indicator PRCH_F and parent UNITID IDX_F; the state files are a coordinating board's own layouts, described in the pack's dictionary",
+  "licence": "CC0 1.0 (constructed data)",
+  "date": "2026-10-09"
+ }
+}
