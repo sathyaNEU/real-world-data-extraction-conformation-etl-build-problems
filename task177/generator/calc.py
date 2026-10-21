@@ -174,15 +174,37 @@ def forecast(D, spec="split", reps=200, seed=17, S=None, aux=None, P=None, fit_o
 
 
 # ------------------------------------------------------------------------------------------------------------ asks
-def ask_counts(D, bn, own_bn=True, employer_utc=True, retyped=True, vendor_bn=None):
+def day_cut_links(D):
+    """the employer widget's day cut: its session closed at 00:00:00 UTC, and the session its account opened at that
+    second under a new conversation id, are one conversation; returns the later id's link to the earlier"""
+    closed = {(s["account_ref"], s["ended"]): s["conversation_id"] for s in D["sessions"]
+              if s["channel"] == "employer" and s["ended"].endswith("T00:00:00")}
+    link = {}
+    for s in D["sessions"]:
+        if s["channel"] == "employer" and s["started"].endswith("T00:00:00"):
+            c0 = closed.get((s["account_ref"], s["started"]))
+            if c0 and c0 != s["conversation_id"]:
+                link[s["conversation_id"]] = c0
+    return link
+
+
+def ask_counts(D, bn, own_bn=True, employer_utc=True, retyped=True, vendor_bn=None, day_cut=True):
     """for each month of 2026 (Manitoba time, a conversation in the month its first session started): conversations
     employers held, and conversations the service's own staff and test accounts held. The switches are the handlings
     the golden takes: an employer account registered to the service's own business number is a test account; the
     employer portal's widget records UTC; an account the vendor re-typed as staff was staff before; a staff-console
-    account registered to the vendor's business number (vendor_bn, from its invoices) is the vendor's, not ours."""
+    account registered to the vendor's business number (vendor_bn, from its invoices) is the vendor's, not ours; the
+    widget cuts its day at 00:00:00 UTC, so a widget session closed at that second and the same account's widget
+    session opened at it under a new conversation_id are one conversation (day_cut)."""
+    link = day_cut_links(D) if day_cut else {}
+
+    def root(c):
+        while c in link:
+            c = link[c]
+        return c
     first = {}
     for s in D["sessions"]:
-        cid = s["conversation_id"]
+        cid = root(s["conversation_id"])
         if cid not in first or s["started"] < first[cid]["started"]:
             first[cid] = s
     staff_accounts = {s["account_ref"] for s in D["sessions"] if s["account_type"] == "staff"}
@@ -304,6 +326,7 @@ def solve(target, reps=400):
     out["next_choice"] = {k: (a[0] / a[1], a[1]) for k, a in nxt.items()}
     out["backtest"] = backtest(D, rows)
     emp, own = ask_counts(D, bn=fi["bn"], vendor_bn=fi["vendor_bn"])
+    out["n_day_cut"] = len(day_cut_links(D))
     out["ask_employers"] = emp
     out["ask_own"] = own
     return out

@@ -60,6 +60,7 @@ def figures(target):
         cycle=Q["filed"]["cycle"],
         bn=Q["filed"]["bn"],
         vendor_bn=Q["filed"]["vendor_bn"],
+        n_day_cut=Q["n_day_cut"],
         accept_resolved=Q["filed"]["accept_resolved"],
         accept_n=Q["filed"]["accept_n"],
         p_phone_pct=round(100 * Q["aux"]["p_phone"], 1),
@@ -90,7 +91,6 @@ def write_workbook(path, F):
         ("Forecast share started in Ask Prairie Works (whole per cent)", F["call_share"]),
         ("Jobseekers on the register on 3 January 2027", F["n_pop"]),
         ("Their share in the last eight weeks of 2026 (whole per cent)", F["share_last8"]),
-        ("Their share during the assistant-first weeks, 4 January to 28 February (whole per cent)", F["share_af"]),
         (None, None),
         ("Inputs", None),
         ("Release 4.0 resolved in the acceptance test (per cent)", F["p_new_pct"]),
@@ -119,7 +119,7 @@ def write_workbook(path, F):
         if a in fmt:
             ws.cell(row=i, column=2).number_format = fmt[a]
     ws.cell(row=1, column=1).font = Font(bold=True, size=13)
-    for r in (4, 9, 16):
+    for r in (4, 8, 15):
         ws.cell(row=r, column=1).font = bold
     ws.cell(row=4, column=2).font = Font(bold=True, size=13)
     ws.column_dimensions["A"].width = 86
@@ -217,7 +217,9 @@ def write_workbook(path, F):
     c.font = bold
     ws4.cell(row=16, column=1, value="A conversation counts once, in the month its first session started, Manitoba "
                                      "time. The test employers registered to our own business number are our own use; "
-                                     "the employer widget writes UTC, moved here to Manitoba time. Riverlot's support "
+                                     "the employer widget writes UTC, moved here to Manitoba time, and closes the "
+                                     "sessions open at midnight UTC, carrying each on as a new conversation from the "
+                                     "same account, counted here once. Riverlot's support "
                                      "desk works in the staff console under accounts registered to Riverlot's business "
                                      "number; those conversations are the vendor's and are not counted.")
     for col, w in zip("ABC", (30, 24, 34)):
@@ -416,8 +418,8 @@ def write_submission(path, F):
         "",
         "1. An overflow transfer moves a jobseeker's later choices **%s** as far as a conversation they opened" %
         F["ratio_words"],
-        "2. During the assistant-first weeks those jobseekers start **%d per cent** of their own contacts in the "
-        "assistant" % F["share_af"],
+        "2. The 2026 record holds **%s** overflow transfers, the only contacts a jobseeker did not choose, among %s "
+        "contacts" % ("{:,}".format(F["n_redirects"]), "{:,}".format(F["n_contacts"])),
         "",
         "## 3. Step-by-Step Solution",
         "",
@@ -434,19 +436,19 @@ def write_submission(path, F):
         "3. Took the jobseekers with a claim open on 3 January 2027 in %s, each from the end state of their own "
         "record." % C.F_CLAIMS,
         "4. Simulated 4 January to 25 April 2027 per %s: every call met by release %s resolving %s of %s as in %s to 28 "
-        "February (%d per cent of their own contacts started in the assistant), then the line back to advisers with "
-        "the 2026 transfer share, check-ins every %d days from each claim's opening and other contacts at the 2026 rate: "
-        "%d per cent of their own contacts in the window started in the assistant." % (
+        "February, then the line back to advisers with the 2026 transfer share, check-ins every %d days from each "
+        "claim's opening and other contacts at the 2026 rate: %d per cent of their own contacts in the window started "
+        "in the assistant." % (
             C.F_PLAN, F["release"], "{:,}".format(F["accept_resolved"]), "{:,}".format(F["accept_n"]), C.F_ACCEPT,
-            F["share_af"],
             F["cycle"], F["call_share"]),
-        "5. Counted the conversations in %s once each, in the month their first session started, employer-widget times "
-        "(written in UTC, as their hours and the employer line's calls a few minutes later show) moved to Manitoba time, "
-        "with the employer accounts registered to Prairie Works Manitoba's own business number (%s, on %s) and the "
-        "accounts the vendor re-typed as staff on 14 September counted as our own use for the whole year, and the "
-        "staff-console accounts registered to Riverlot's business number (%s, its GST/HST number on %s) left out as "
-        "the vendor's own support desk: the monthly counts below." % (C.F_CONV, F["bn"], C.F_ORDER, F["vendor_bn"],
-                                                                       C.F_INVOICES),
+        "5. Counted the conversations in %s once each, in the month their first session started: employer-widget "
+        "times (written in UTC, as their hours and the employer line's calls a few minutes later show) moved to "
+        "Manitoba time, and each widget session closed at 00:00:00 UTC joined, as one conversation, to the session its "
+        "account opened at that second under a new conversation id (%s such pairs); the employer accounts registered "
+        "to Prairie Works Manitoba's own business number (%s, on %s) and the accounts the vendor re-typed as staff on "
+        "14 September counted as our own use for the whole year; and the staff-console accounts registered to "
+        "Riverlot's business number (%s, its GST/HST number on %s) left out as the vendor's own support desk: the "
+        "monthly counts below." % (C.F_CONV, F["n_day_cut"], F["bn"], C.F_ORDER, F["vendor_bn"], C.F_INVOICES),
         "",
         "## 4. Deliverable Answers",
         "",

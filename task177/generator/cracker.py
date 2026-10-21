@@ -3,13 +3,13 @@
     python3 task177/generator/cracker.py [<target>]
 
 The cracker lands the call, runs the hygiene battery and executes every filed rule it points at: it counts each
-conversation once (conversation_id, the dictionary's grain), in the month of its first session as the export
-records it, employers by the employer channel, our own use by the console and the accounts typed staff; and it
-takes the two handlings the stage 4 readers found, the employer accounts registered to the service's own business
-number (on the order form) as our own use, and every account ever typed staff as staff all year. The mirror stops on
-a wrong rung of the call and takes the business number only, as the other reader did. Pair ceiling on
-supplemental-stumping Part 0's weights (38 recommendation and components for a landed call, about 5 kept by a wrong
-one, 7 instruction-following, 55 asks)."""
+conversation once (conversation_id, the dictionary's grain), in the month of its first session, employers by the
+employer channel, our own use by the console and the accounts typed staff; and it takes every handling the stage 4
+readers found over two rounds: the employer widget's times read as UTC and moved to Manitoba time, the employer
+accounts registered to the service's own business number (on the order form) as our own use, and every account ever
+typed staff as staff all year. The mirror stops on a wrong rung of the call and handles the asks the same way, as
+both round 2 readers did. Pair ceiling on supplemental-stumping Part 0's weights (38 recommendation and components
+for a landed call, about 5 kept by a wrong one, 7 instruction-following, 55 asks)."""
 from __future__ import annotations
 
 import json
@@ -36,9 +36,10 @@ def main(target):
     fi = K.filed_inputs(target)
     total = 24
     paths = {
-        "cracker (on the call; every filed rule, recorded month, the business number, every account ever typed staff)":
-            dict(own_bn=True, employer_utc=False, retyped=True),
-        "mirror (off the call; the business number found)": dict(own_bn=True, employer_utc=False, retyped=False),
+        "cracker (on the call; every filed rule, the widget's UTC, the business number, every account ever typed staff)":
+            dict(own_bn=True, employer_utc=True, retyped=True, day_cut=False),
+        "mirror (off the call; the same handling of the asks)":
+            dict(own_bn=True, employer_utc=True, retyped=True, day_cut=False),
     }
     kept = {}
     for name, f in paths.items():
@@ -46,19 +47,13 @@ def main(target):
         he, ho = score(e, o, fig)
         kept[name] = (he + ho) / total
         print("%-100s employers %2d of 12, own use %2d of 12" % (name, he, ho))
-    print("devices found (for the record; the stage 4 readers found the business number, one of them the accounts "
-          "ever typed staff):")
+    print("devices found beyond the readers' path (for the record):")
     V = fi["vendor_bn"]
-    for label, f in (("the own business number", dict(own_bn=True, employer_utc=False, retyped=False)),
-                     ("the widget's UTC", dict(own_bn=False, employer_utc=True, retyped=False)),
-                     ("the re-typed accounts", dict(own_bn=False, employer_utc=False, retyped=True)),
-                     ("the vendor's support desk", dict(own_bn=False, employer_utc=False, retyped=False, vendor_bn=V)),
-                     ("business number and re-typed", dict(own_bn=True, employer_utc=False, retyped=True)),
-                     ("business number and UTC", dict(own_bn=True, employer_utc=True, retyped=False)),
-                     ("business number, UTC, re-typed", dict(own_bn=True, employer_utc=True, retyped=True)),
-                     ("business number, UTC, vendor", dict(own_bn=True, employer_utc=True, retyped=False, vendor_bn=V)),
-                     ("business number, re-typed, vendor",
-                      dict(own_bn=True, employer_utc=False, retyped=True, vendor_bn=V))):
+    base = dict(own_bn=True, employer_utc=True, retyped=True, day_cut=False)
+    for label, f in (("the widget's day cut", dict(base, day_cut=True)),
+                     ("the vendor's support desk", dict(base, vendor_bn=V)),
+                     ("both", dict(base, day_cut=True, vendor_bn=V)),
+                     ("the day cut, clock unconverted", dict(base, employer_utc=False, day_cut=True))):
         e, o = K.ask_counts(D, bn=fi["bn"], **f)
         he, ho = score(e, o, fig)
         print("   %-34s employers %2d of 12, own use %2d of 12" % (label, he, ho))

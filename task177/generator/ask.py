@@ -7,7 +7,9 @@ the claimant channels (typed claimant until the vendor's release 3.4 re-typed th
 channels team's test employers on the employer portal, registered to Prairie Works Manitoba's own business number.
 Beside them the vendor's support desk works in the tenant's staff console under its own accounts, registered to
 Riverlot's business number: the vendor's use, not the service's. Employers' wage-subsidy claims fall due on each
-month's last day, and many are filed that evening.
+month's last day, and many are filed that evening. The widget also cuts its day at midnight UTC: a session open at
+00:00:00 UTC is closed there and the exchange carries on, at the same second, as a new conversation from the same
+account, so one conversation reaches the export under two conversation ids.
 
 The truth here is what each ask's golden counts; calc.py recomputes every figure from the shipped files."""
 from __future__ import annotations
@@ -125,7 +127,7 @@ def build_employers(rec):
                 sessions += _sessions(rng, conv, local, _end_state(rng), 0.05, _emp_mk(rng, acct, C.BN))
                 truth.append((local, "test", conv))
     _month_end(rate, joined, bns, accts, users, sessions, truth)
-    rec.sessions_employer = sessions
+    rec.sessions_employer = _widget_day_cut(sessions)
     rec.employer_truth = truth
     rec.employer_bns = bns
     rec.legs_employer = _employer_line(rec, rng, bns, pairs)
@@ -141,6 +143,33 @@ def _emp_mk(rng, acct, bn, intent=None):
                     assistant_turns=int(rng.integers(3, 14)), intent=intent or _emp_intent(rng), end_state=st,
                     release=Rc.release_at(s))
     return mk
+
+
+def _widget_day_cut(sessions):
+    """the partner's widget closes every session still open at its UTC day boundary (00:00:00 UTC, its daily export
+    cut) and carries the exchange on in a new conversation from the same account; the conversation's later sessions
+    follow the new id. Deterministic: no draw, so the rest of the record is as drawn."""
+    out = []
+    renamed = {}
+    for s in sessions:
+        conv = s["conversation_id"]
+        s = dict(s, conversation_id=renamed.get(conv, s["conversation_id"]))
+        a = dt.datetime.fromisoformat(s["started"])
+        b = dt.datetime.fromisoformat(s["ended"])
+        if b.date() == a.date():
+            out.append(s)
+            continue
+        cut = dt.datetime.combine(b.date(), dt.time())
+        frac = (cut - a).total_seconds() / (b - a).total_seconds()
+        u1 = max(1, min(s["user_turns"] - 1, int(round(s["user_turns"] * frac))))
+        t1 = max(1, min(s["assistant_turns"] - 1, int(round(s["assistant_turns"] * frac))))
+        new = "c_" + Rc.hexid("empcut", conv, s["session_id"])
+        out.append(dict(s, ended=Rc.iso_local(cut), end_state="timeout", user_turns=u1, assistant_turns=t1))
+        out.append(dict(s, session_id="s_" + Rc.hexid("esesscut", s["session_id"]), conversation_id=new,
+                        started=Rc.iso_local(cut), user_turns=s["user_turns"] - u1,
+                        assistant_turns=s["assistant_turns"] - t1))
+        renamed[conv] = new
+    return out
 
 
 def _month_end(rate, joined, bns, accts, users, sessions, truth):

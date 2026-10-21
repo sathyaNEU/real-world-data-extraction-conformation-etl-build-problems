@@ -379,36 +379,43 @@ def fi_adhoc(rows, D):
 # ----------------------------------------------------------------------------------------------- the ask devices
 def ask_devices(D, fi, emp, own):
     out = []
+    ALL = dict(own_bn=True, employer_utc=True, retyped=True, vendor=True, day_cut=True)
 
-    def hits(own_bn, utc, retyped, vendor):
-        e, o = K.ask_counts(D, bn=fi["bn"], own_bn=own_bn, employer_utc=utc, retyped=retyped,
-                            vendor_bn=fi["vendor_bn"] if vendor else None)
+    def hits(**found):
+        f = {k: found.get(k, False) for k in ALL}
+        e, o = K.ask_counts(D, bn=fi["bn"], own_bn=f["own_bn"], employer_utc=f["employer_utc"], retyped=f["retyped"],
+                            vendor_bn=fi["vendor_bn"] if f["vendor"] else None, day_cut=f["day_cut"])
         return sum(a == b for a, b in zip(e, emp)), sum(a == b for a, b in zip(o, own))
-    he, ho = hits(False, False, False, False)
+    he, ho = hits()
     out.append(("A cracker path, natural (no device found): every month of both asks missed", he == 0 and ho == 0,
                 "employers %d of 12, own use %d of 12" % (he, ho)))
-    for label, f in (("own business number found", (True, False, False, False)),
-                     ("the widget's UTC found", (False, True, False, False)),
-                     ("the re-typed accounts found", (False, False, True, False)),
-                     ("the vendor's support desk found", (False, False, False, True))):
-        he, ho = hits(*f)
+    for label, k in (("own business number found", "own_bn"), ("the widget's UTC found", "employer_utc"),
+                     ("the re-typed accounts found", "retyped"), ("the vendor's support desk found", "vendor"),
+                     ("the widget's day cut found", "day_cut")):
+        he, ho = hits(**{k: True})
         out.append(("A one device found (%s): the others still hold every month" % label, he == 0 and ho == 0,
                     "employers %d of 12, own use %d of 12" % (he, ho)))
-    he, ho = hits(True, False, True, False)
-    out.append(("A the business number and every account ever typed staff, clock as recorded: both asks missed every "
-                "month", he == 0 and ho == 0, "employers %d of 12, own use %d of 12" % (he, ho)))
-    he, ho = hits(True, True, False, False)
-    out.append(("A the employers' figures need both the business number and the clock", he == 12 and ho == 0,
+    he, ho = hits(own_bn=True, retyped=True)
+    out.append(("A round 1 reader's path (the business number, every account ever typed staff): both asks missed "
+                "every month", he == 0 and ho == 0, "employers %d of 12, own use %d of 12" % (he, ho)))
+    he, ho = hits(own_bn=True, employer_utc=True, retyped=True)
+    out.append(("A round 2 readers' path (the business number, the widget's UTC, every account ever typed staff): both "
+                "asks missed every month", he == 0 and ho == 0, "employers %d of 12, own use %d of 12" % (he, ho)))
+    he, ho = hits(own_bn=True, employer_utc=True, day_cut=True)
+    out.append(("A the employers' figures need the business number, the clock and the day cut", he == 12,
+                "employers %d of 12" % he))
+    he, ho = hits(own_bn=True, employer_utc=True, retyped=True, vendor=True)
+    out.append(("A the widget's day cut moves every month's employer count", he == 0 and ho == 12,
                 "employers %d of 12, own use %d of 12" % (he, ho)))
-    he, ho = hits(True, False, True, True)
-    out.append(("A the widget's clock moves every month's employer count", he == 0 and ho == 12,
+    he, ho = hits(own_bn=True, retyped=True, vendor=True, day_cut=True)
+    out.append(("A the widget's clock still moves every month's employer count", he == 0 and ho == 12,
                 "employers %d of 12, own use %d of 12" % (he, ho)))
-    he, ho = hits(True, True, True, False)
+    he, ho = hits(own_bn=True, employer_utc=True, retyped=True, day_cut=True)
     out.append(("A our own use needs the vendor's support desk left out, in every month", ho == 0,
                 "own use %d of 12" % ho))
-    he, ho = hits(True, True, False, True)
+    he, ho = hits(own_bn=True, employer_utc=True, vendor=True, day_cut=True)
     out.append(("A our own use needs the re-typed accounts, January to September", ho <= 3, "own use %d of 12" % ho))
-    he, ho = hits(True, True, True, True)
+    he, ho = hits(**ALL)
     out.append(("A every device handled: both asks reproduce", he == 12 and ho == 12, ""))
     # each device is fair: one handling reproduces the truth, and the evidence ships
     n_bn = sum(1 for s in D["sessions"] if s["channel"] == "employer" and s["org_ref"] == fi["bn"])
@@ -423,6 +430,18 @@ def ask_devices(D, fi, emp, own):
     per = [sum(1 for v in first.values() if v[:7] == "2026-%02d" % m) for m in range(1, 13)]
     out.append(("A the vendor's support desk: its business number on the invoices, its accounts in the console every "
                 "month", fi["vendor_bn"] == C.VENDOR_BN and min(per) >= 8, "%s" % per))
+    closed = {(s["account_ref"], s["ended"]) for s in D["sessions"]
+              if s["channel"] == "employer" and s["ended"].endswith("T00:00:00")}
+    opened = [s for s in D["sessions"] if s["channel"] == "employer" and s["started"].endswith("T00:00:00")]
+    paired = [s for s in opened if (s["account_ref"], s["started"]) in closed]
+    per_cut = [0] * 12
+    for s in paired:
+        t = C.to_local(dt.datetime.fromisoformat(s["started"]))
+        if t.year == 2026:
+            per_cut[t.month - 1] += 1
+    out.append(("A the widget's day cut: every session closed at 00:00:00 UTC reopened by its account at that second "
+                "under a new conversation id, in every month", len(paired) == len(closed) and min(per_cut) >= 4,
+                "%s (%d pairs; %d other sessions start on the second)" % (per_cut, len(paired), len(opened) - len(paired))))
     return out
 
 

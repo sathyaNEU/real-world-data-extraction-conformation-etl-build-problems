@@ -258,7 +258,23 @@ def main(target):
 
     # ------------------------------------------------------------------------------------------------- the asks
     sess["t0"] = pd.to_datetime(sess.started)
-    firsts = sess.sort_values(["conversation_id", "t0"]).groupby("conversation_id").first()
+    # the widget's day cut: a widget session closed at 00:00:00 UTC and its account's widget session opened at that
+    # second under another conversation id are one conversation
+    ew = sess[sess.channel == "employer"]
+    cut_end = ew[ew.ended.str.endswith("T00:00:00")][["account_ref", "ended", "conversation_id"]].rename(
+        columns={"ended": "started", "conversation_id": "parent"})
+    cut_start = ew[ew.started.str.endswith("T00:00:00")][["account_ref", "started", "conversation_id"]]
+    pairs = cut_start.merge(cut_end, on=["account_ref", "started"])
+    parent = {c: p_ for c, p_ in zip(pairs.conversation_id, pairs.parent) if c != p_}
+    ok("the widget's day cut: every session closed at 00:00:00 UTC has its reopened twin", len(pairs) == len(cut_end),
+       "%d pairs, %d other sessions starting on the second" % (len(pairs), len(cut_start) - len(pairs)))
+
+    def root(c):
+        while c in parent:
+            c = parent[c]
+        return c
+    sess["conv"] = [root(c) for c in sess.conversation_id]
+    firsts = sess.sort_values(["conv", "t0"]).groupby("conv").first()
     emp_mask = firsts.channel == "employer"
     t_loc = firsts.t0.copy()
     t_loc[emp_mask] = utc_to_winnipeg(firsts.t0[emp_mask])
@@ -289,15 +305,18 @@ def main(target):
     note = " ".join(p.text for p in Document(os.path.join(TASK, "golden", "assistant_first_aftermath_note.docx")).paragraphs)
     ok("the note states the forecast", ("%d per cent" % fig["call_share"]) in note)
     wsm = wb["Model comparison"]
+    lab = {r[0]: r[1] for r in ws.iter_rows(values_only=True) if r and r[0] is not None}
     sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
     rates = ("%.2f" % af, "%.2f" % ao)
     FRACTION = {5: "a fifth"}[int(round(af / ao))]
     ok("the learning rates agree with this fit in every file", rates == ("%.2f" % fig["a_free"], "%.2f" % fig["a_forced"])
-       and (ws["B18"].value, ws["B19"].value) == (fig["a_free"], fig["a_forced"])
+       and (lab["Learning rate, contacts the jobseeker chose"], lab["Learning rate, overflow transfers"]) ==
+       (fig["a_free"], fig["a_forced"])
        and (wsm["D2"].value, wsm["E2"].value) == (fig["a_free"], fig["a_forced"])
        and "%s as far as a conversation" % fig["ratio_words"] in note and "about %s" % FRACTION in sub
        and abs(ao / af - fig["ratio"]) < 0.005, "%s and %s" % rates)
-    ok("the one-rate figure agrees in every file", ws["B20"].value == fig["share_one_rate"] and
+    ok("the one-rate figure agrees in every file",
+       lab["One learning rate for every contact would give (whole per cent)"] == fig["share_one_rate"] and
        wsm["I3"].value == fig["share_one_rate"] and ("%d per cent" % fig["share_one_rate"]) in note and
        ("Not the %d per cent" % fig["share_one_rate"]) in sub)
     ok("the split's gain over one rate agrees in every file", wsm["C3"].value == fig["ll_gain_one_rate"] and

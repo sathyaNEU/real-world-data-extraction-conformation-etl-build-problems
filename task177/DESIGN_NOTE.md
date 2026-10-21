@@ -1,17 +1,19 @@
 # task177 design note
 
-**Status: stage 4 round 1 fixed, waiting on the round 2 readers and the re-judge (2026-10-19), architecture 1 in a
-new world.** Round 1 on target.zip 2c536aaa: the judge DETERMINISTIC / APPROVE (26.0, one rate 39.7, the trailing
-13.7, every ask count); both scored readers missed the call (11 and 13 per cent) and kept 5 and 14 of the 24 ask
-figures. The repair re-sited ask B's primary (the vendor's support desk in the staff console), made the widget's clock
-move every month of ask A (employers' month-end filings), and filed release 4.0's resolution for every channel (plan
-1.3), the judge's one weak fork; the call, the stump and every call-side figure are unchanged and asserted against the
-judged pack (the J block in checks.py). The
-seed FC48 world (drop-off recycling bins) died at stage 1 on measurement before any card was filed (its record is kept
-below under `## Seed world` and in `## Tried and rejected`). The redraw was handed the cell psychology-behavioral-science
-/ decision-making-computational-behavioral-modeling and searched it by prototype on 2026-10-19: goals as reference
-points (A) and drift-diffusion speed-accuracy adaptation (E) died on measurement and on the library test, a dozen more
-on paper, and the imposed-contact learning discount (F) held. Prototypes are in the session scratchpad (r177/proto).
+**Status: stage 4 round 2 fixed, waiting on the round 3 readers and the re-judge (2026-10-21), architecture 1 in a
+new world.** Round 1 on target.zip 2c536aaa: the judge DETERMINISTIC / APPROVE; both scored readers missed the call
+(11 and 13 per cent) and kept 5 and 14 of the 24 ask figures. Round 2 on 2c11b94b: the judge DETERMINISTIC / APPROVE
+(the call at 25.7 over four seeds); both readers missed the call (11 and 11) and kept 12 of 24 each, every employer
+month and no own-use month: they converted the widget's clock and missed the vendor's desk. The round 2 repair
+re-sited ask A's primary onto the widget's day cut (one conversation under two ids at midnight UTC), keeping the
+clock as a hazard, and took the assistant-first weeks' share out of the write-up (a reproduction printed 19). The
+call, the stump and every call-side input are unchanged and asserted against the round 1 judged pack (the J block in
+checks.py). The seed FC48 world (drop-off recycling bins) died at stage 1 on measurement before any card was filed
+(its record is kept below under `## Seed world` and in `## Tried and rejected`). The redraw was handed the cell
+psychology-behavioral-science / decision-making-computational-behavioral-modeling and searched it by prototype on
+2026-10-19: goals as reference points (A) and drift-diffusion speed-accuracy adaptation (E) died on measurement and on
+the library test, a dozen more on paper, and the imposed-contact learning discount (F) held. Prototypes are in the
+session scratchpad (r177/proto).
 
 ## Draw
 
@@ -229,28 +231,34 @@ call reads and no ask touches, and the call's own session rows, are the judged p
 conversations). Golden: 945, 1,040, 1,555, 1,686, 1,850, 1,852, 1,660, 1,399, 1,838, 1,794, 1,799, 1,203.
 - H18 home: a component of the March and April chat tiers the order commits to; employers' conversations ride the
   same tier as jobseekers'.
-- Basis: the asking sentence (a conversation once, in the month it started, Manitoba time); plan 5.2.
-- Primary A2 (D8 a clock against the month boundary, a per-source clock; silent): the employer portal's widget, built
-  by the vendor's integration partner, writes UTC with no zone marker where every other channel writes Manitoba time.
-  Employers' wage-subsidy claims fall due on each month's last day and many are filed that evening and into the
-  night, so read as Manitoba time those conversations fall in the next month and every month moves, by 4 to 33
-  (January -15, February -5, March -21, April +6, May +27, June -33, July +6, August -6, September +19, October +4,
-  November -31, December +9). Fair: the widget's hours (employer conversations peaking at 15:00 to 17:00 read as
-  local, and the month-end filings at 00:00 to 05:00 on the 1st) and the employer line's calls a few minutes after an
-  abandoned conversation (UTC on the legs, the widget's own minute) show it. Silent: the dictionary describes started
-  as when the session started, for every channel.
-- A1 (D5 out-of-scope rows known only by structure, D9 totals invariant; found by both round 1 readers, so a hazard
-  now): Digital Channels tests the employer portal under five test employer accounts registered to Prairie Works
-  Manitoba's own business number (812447093, the customer's business number on the order form); counted as employers
-  every month is high by 39 to 76.
+- Basis: the asking sentence (a conversation once, in the month it started, Manitoba time); plan 5.2 and the
+  dictionary's conversation_id (a conversation keeps its id across sessions).
+- Primary A3 (D7 the true key elsewhere, one conversation under two ids; silent): the widget, built by the vendor's
+  integration partner, cuts its day at midnight UTC, its daily export boundary. A session still open at 00:00:00 UTC
+  is closed there, written as a timeout, and the exchange carries on at that same second as a new conversation from
+  the same account, so 183 conversations of 2026 reach the export under two conversation ids. Counted by
+  conversation_id with the clock converted and the business number's accounts left out (both round 2 readers' path),
+  every month is high, by 7 to 25 (January +8, February +7, March +25, April +8, May +20, June +21, July +11, August
+  +16, September +23, October +18, November +14, December +12). Fair: each pair is a widget session ending at exactly
+  00:00:00 UTC, short of the 30 idle minutes a timeout means, and its account's next session starting at that second
+  under a new id; no other two employer sessions meet at a second, and the one other widget session that starts on
+  the second has no closed twin. Silent: the dictionary says a conversation keeps its id across sessions, and nothing
+  in the pack marks the cut.
+- A2 (D8 a per-source clock; found by both round 2 readers, so a hazard now): the widget writes UTC with no zone
+  marker where every other channel writes Manitoba time; employers' wage-subsidy claims fall due on each month's last
+  day and many are filed that evening, so read unconverted every month moves, by 4 to 33.
+- A1 (D5 out-of-scope rows known only by structure; found by every reader, a hazard): Digital Channels tests the
+  employer portal under five test employer accounts registered to Prairie Works Manitoba's own business number
+  (812447093, on the order form); counted as employers every month is high by 39 to 76.
 - Hazards: sessions (a conversation reopened after a timeout keeps its conversation_id; plan 5.2 and the dictionary
   pin it).
-- Stops (each a complete pipeline, `cracker.py`): natural 0 of 12; the business number found (both round 1 readers)
-  0 of 12; the clock found 0 of 12; both found 12 of 12.
+- Stops (each a complete pipeline, `cracker.py`): natural 0 of 12; the business number found 0 of 12; the business
+  number and the clock (both round 2 readers) 0 of 12; the business number and the day cut, clock unconverted, 0 of
+  12; all three 12 of 12.
 - Span: the session export, the order form, the employer line's legs, the dictionary, the plan (5 files).
 - Realism: departments test their own portals under their own registration; an integration partner's widget logging
-  UTC beside a vendor's local-time export is how mixed integrations really ship; claims due on a month's last day are
-  filed that evening.
+  UTC beside a vendor's local-time export is how mixed integrations really ship; a widget that partitions its log by
+  UTC day splits whatever is open at midnight; claims due on a month's last day are filed that evening.
 
 **Ask B. For each month of 2026, the conversations our own staff and test accounts held** (12 figures, whole
 conversations). Golden: 1,256, 1,148, 1,326, 1,171, 1,163, 1,217, 1,332, 1,161, 1,224, 1,208, 1,252, 1,244.
@@ -277,28 +285,34 @@ conversations). Golden: 1,256, 1,148, 1,326, 1,171, 1,163, 1,217, 1,332, 1,161, 
 - Realism: a vendor's support staff work inside a customer's tenant under their own organisation's accounts; a
   platform records each staff user's organisation; a type-only migration leaves the re-typed accounts without one.
 
-**Hazard table:** sessions (both asks, every month, pinned); the employer widget's clock (ask A every month, by 4 to
-33); the own business number (both asks, every month, 39 to 76); the vendor's support desk (ask B every month, 29 to
-71); the re-typed accounts (ask B, January to September, 39 to 124).
+**Hazard table:** sessions (both asks, every month, pinned); the employer widget's day cut (ask A every month, 7 to
+25); the employer widget's clock (ask A every month, 4 to 33); the own business number (both asks, every month, 39
+to 76); the vendor's support desk (ask B every month, 29 to 71); the re-typed accounts (ask B, January to September,
+39 to 124).
 
 **Referee:** the order form's business number (whose accounts the test employers and our console are) and the
 invoices' supplier GST/HST number (whose the desk's are), the only records of either.
 
-Pair ceiling: 28.5 (the cracker lands the call with every filed rule and both handlings the round 1 readers found,
-and keeps 0 of 24 ask figures; the mirror, off the call with the business number, keeps 0 of 24; a cracker finding
-the vendor's desk as well, or the widget's clock instead, keeps 12 of 24, a ceiling of 42.3)
+Pair ceiling: 28.5 (the cracker lands the call with every filed rule and every handling the readers found over two
+rounds, the widget's UTC, the business number and the accounts ever typed staff, and keeps 0 of 24 ask figures; the
+mirror handles the asks the same way off the call and keeps 0 of 24; a cracker finding the widget's day cut as well,
+or the vendor's desk, keeps 12 of 24, a ceiling of 42.3)
 Mirror leakage: 0.0 per cent of ask weight
 Measured by: generator/cracker.py
 
-| Ask | Cracker sheet (every filed rule, recorded month, the business number, every account ever typed staff) | Hits | Verdict |
+Ask B's row was measured by both round 2 readers on 2c11b94b (0 of 12 each) and its device has not moved since; ask
+A's row is a model on this pack, because its device moved after round 2, and the round 3 readers measure it.
+
+| Ask | Cracker sheet (every filed rule, the widget's UTC converted, the business number, every account ever typed staff) | Hits | Verdict |
 |---|---|---|---|
-| Ask A, employers' conversations, twelve months | employer channel less the business number's accounts, recorded month | 0 of 12 | miss |
+| Ask A, employers' conversations, twelve months | employer channel less the business number's accounts, by conversation id, Manitoba month | 0 of 12 | miss |
 | Ask B, our own staff and test conversations, twelve months | console, accounts ever typed staff and the business number's employer accounts | 0 of 12 | miss |
 
 ## Leak sweep
 
-`leak.py --asof 2027-01-04` on the round 2 pack: REVIEW, four lines, no LEAK (earlier sweeps of this pack's round 1
-cut, taking their term list from earlier drafts of this note, returned the same kinds of line). Each, harmless:
+`leak.py --asof 2027-01-04` on the round 2 and round 3 packs: REVIEW, the same four lines, no LEAK (earlier sweeps of
+the round 1 cut, taking their term list from earlier drafts of this note, returned the same kinds of line). Each,
+harmless:
 - Sweep 3, January's employer count 945 appears in the rollout plan: it is the exchange of the claimant line's number
   (204-945-0100), not a count.
 - Sweep 3, the rollout plan carries 8 of 10 words of the committed call: they are the plan's own nouns for the
@@ -556,3 +570,12 @@ its group's surviving records), the same family by its label.
     rate for the claimant line only, and the 2026 assistant's rate (0.501) kept for the app and the web files 16. Plan
     1.3 now files the planning assumption for every channel, the voice service's transfers after 1 March included
     (25.98 at the 2026 voice rate, the same call).
+  - Ask A's primary on the widget's clock (round 2, target.zip 2c11b94b): both readers converted it ("employer-portal
+    timestamps are UTC") and kept 12 of 12 employer months; the month-end filings had made the widget's UTC hour
+    profile plain, and at medium effort clock conversion is a reflex. Re-sited onto the widget's day cut, a grain
+    judgment the converted path still gets wrong in every month (7 to 25); the clock stays as a hazard.
+  - The assistant-first weeks' share as critical component 2 (18 per cent): the golden's family puts it at 18.22 to
+    18.32 (18.27 to 18.28 over six seeds, 18.46 with no pull to the last choice, a rejected form), 0.18 to 0.28 of a
+    point from the 18.5 edge, and judge pass 2 reproduced 18.8 under its own conventions (pass 1 18.2), so a
+    reasonable reproduction prints 19. Dropped from block 2, from step 4 and from the workbook; component 2 is now the
+    record's 11,154 transfers among 413,866 contacts, which both judges reproduced exactly.

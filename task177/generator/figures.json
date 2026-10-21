@@ -61,6 +61,7 @@
  "n_calls": 342358,
  "n_contacts": 413866,
  "n_conversations": 71508,
+ "n_day_cut": 183,
  "n_pop": 12500,
  "n_redirects": 11154,
  "next_choice": {
