@@ -402,6 +402,31 @@ at or inside the worst case the pack holds, asserted against the recomputed extr
 in the verifier. Where a write-up sentence states a bound over a family of methods, the extremum runs over
 every member of the family the records license, not over the shortlist the generator happens to assert.
 
+## H30. A scope gate whose "nothing moved" cannot tell a clean repair from no repair
+
+**The defect.** A gate that proves a targeted repair stayed in scope does it by comparing graded figures
+before and after. When the repair's whole point is to change what the natural pipeline finds while the right
+answers stay put, every figure is unchanged and the gate reports that nothing graded changed, which reads as
+"this repair did nothing". The cleanest possible repair and the empty one print the same line.
+
+**The measured instance.** An ask layer was rebuilt on three new devices: a re-sent settlement file, a
+notification channel that loads monthly rather than daily, and a recovery route the scheme remitted centrally.
+The pack changed in four files and gained a fifth; the natural read moved on 55 of 55 graded figures. Not one
+golden answer moved, because each device changed where the evidence sits rather than what it sums to. The
+scope gate passed with "ask figures that moved: 0" and a WARN saying nothing graded had changed.
+
+**What it costs.** Nothing, if the author reads the warning and answers it; a repair redone or abandoned if
+anyone reads the gate's output as the verdict. It also cuts the other way: a repair that moves many ask
+figures looks productive on this gate whether or not any device got harder.
+
+**The line.** Scope is "did the frozen side move", which the gate does measure. Effect is "did the natural
+read move", which it does not. An unmoved ask figure is evidence about scope and says nothing about effect.
+
+**The check.** Read the forcing measurement beside the scope gate, never instead of it: the per-figure gap
+between the natural read and the golden on the cut pack, with its own rounding beside it, asserted in the
+generator and printed by the ceiling script. Where a repair moves no graded figure, the design note says so
+in those words and names the files that did move, so the next reader is not left inferring from a WARN.
+
 ## Adding an entry
 
 An entry is a **class** a future build could repeat with other nouns; anything else goes in the design
