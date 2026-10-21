@@ -31,7 +31,7 @@
       "xlsx"
     ],
     "largest_file": "nh3_online_readings_2027Q4.csv",
-    "largest_file_rows": 106181
+    "largest_file_rows": 106100
   },
   "sources": [
     {
@@ -47,8 +47,8 @@
     {
       "path": "nh3_online_readings_2027Q4.csv",
       "format": "csv",
-      "bytes": 5513292,
-      "rows": 106181,
+      "bytes": 5507955,
+      "rows": 106100,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-14",
       "license": "CC0-1.0 (original work)"
@@ -65,7 +65,7 @@
     {
       "path": "analyser_verification_2027Q4.xlsx",
       "format": "xlsx",
-      "bytes": 8084,
+      "bytes": 8122,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-14",
@@ -74,7 +74,7 @@
     {
       "path": "online_analyser_register.xlsx",
       "format": "xlsx",
-      "bytes": 9416,
+      "bytes": 12785,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-14",
@@ -92,7 +92,7 @@
     {
       "path": "water_treatment_process_summary_2027.pdf",
       "format": "pdf",
-      "bytes": 4177,
+      "bytes": 4200,
       "rows": null,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-14",
@@ -128,7 +128,7 @@
     {
       "path": "catchment_rainfall_daily_2027Q4.csv",
       "format": "csv",
-      "bytes": 20332,
+      "bytes": 20338,
       "rows": 460,
       "source": "Constructed (seeded generator)",
       "date": "2028-01-14",

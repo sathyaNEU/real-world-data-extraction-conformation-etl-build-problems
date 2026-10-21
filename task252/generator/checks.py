@@ -16,14 +16,20 @@ FAILS = []
 MARGIN = 0.0015
 SFOF = {"pooled mixing (the golden)": "golden", "per-channel mixing": "SF21", "RAW corr": "SF7",
         "raw lags 1.5 to 6 hours": "SF8 SF21", "raw lags 1 to 10 hours": "SF8 SF21",
-        "raw lags every slot 2 to 6 hours": "SF8 SF21", "per-channel mixing without the 1/(1 - k1 - k2) scaling": "SF21",
+        "raw lags every slot 2 to 6 hours": "SF8 SF21",
         "pooled mixing, raw lags 1.5 to 6 hours": "SF8", "pooled mixing, raw lags 1 to 10 hours": "SF8",
         "pooled mixing, raw lags every slot 2 to 6 hours": "SF8", "pooled mixing, raw lags hourly 2 to 8 hours": "SF8",
         "zero error's size from the corrected raw grabs alone": "SF11",
         "zero error's size, the check and the grabs averaged": "SF11",
         "two-point, k from the same-cycle raw fits": "SF10", "two-point, mean test": "SF10",
         "two-point, joint weighted fit": "SF10", "two-point, readings interpolated to the grab": "SF10",
-        "span at the channel's estimated level in the water": "SF12"}
+        "span at the channel's estimated level in the water": "SF12",
+        "line: straight-line regrowth": "SF24", "line: clean level from the first hour after each flush": "SF24",
+        "line: clean level from the first 6 hours": "SF24", "line: clean level from the first 24 hours": "SF24",
+        "line: fitted on the readings uncorrected": "SF24", "line: raw lags 1.5 to 6 hours": "SF24 SF8",
+        "line: applied to every channel": "SF25", "line: the grown loss over the whole quarter": "SF27"}
+GOLDEN = "BRN-FW1, CAL-FI1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1"
+DEFAULT = "BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1, HOL-FI1"
 
 
 def ok(cond, what):
@@ -47,11 +53,28 @@ def _clean(W):
             for j in range(3):
                 v[s0 + j] = x["repair_reads"][k][j]
                 val[s0 + j] = np.nan
+        if x["trip"]:                              # the analyser was off: no readings to read
+            val[x["trip"][0]:x["trip"][1]] = np.nan
         g = ~np.isnan(val)
         cell = val.copy(); cell[~g] = v[~g]
         D[c] = dict(val=val, v=v, f=np.zeros(P.NS, bool), g=g, present=np.ones(P.NS, bool), order=x["order"],
-                    sl=x["sl"], cell=cell)
+                    sl=x["sl"], cell=cell, brk=np.zeros(P.NS, bool))
     return D
+
+
+def _world_visits(W):
+    return {c: sorted(W[c]["flushes"]) for c in P.CODES}
+
+
+def _line_terms(target, D, info, V):
+    """the golden's line term for each channel (zero where the readings do not recover), for the variants that build
+    their carryover and calibration outside solve.offsets"""
+    out = {}
+    for c in P.CODES:
+        for s in ("fil", "fin"):
+            rec = S.recovery(D[c], s, info[c], V[c])
+            out[(c, s)] = rec["lossbar"] if S.recovers(rec) else 0.0
+    return out
 
 
 def _world_lims(W):
@@ -70,16 +93,57 @@ def _with(D, code, **kw):
     return E
 
 
+def family(target, D, L, C, V, gold, info):
+    """the licensed family: the golden, the carryover fitted per channel or on the same cycle's raw reading, the raw
+    water's lags, the two-point read done other ways, and the line's loss fitted with a straight-line regrowth, read
+    from the first hours after each flush, fitted on the readings as they stand, applied to every channel, or taken at
+    full growth all quarter"""
+    LT = _line_terms(target, D, info, V)
+    fam = {}
+    fam["pooled mixing (the golden)"] = gold
+    fam["per-channel mixing"] = S.offsets(target, "G", "corr", D, L, C, V=V)[0]
+    fam["RAW corr"] = S.offsets(target, "RAW", "corr", D, L, C, V=V)[0]
+    for nm_, lg_ in (("1.5 to 6", list(range(9, 37, 3))), ("1 to 10", list(range(6, 61, 3))),
+                     ("every slot 2 to 6", list(range(12, 37))), ("hourly 2 to 8", list(range(12, 49, 6)))):
+        fam["pooled mixing, raw lags %s hours" % nm_] = S.offsets(target, "POOL", "corr", D, L, C, V=V,
+                                                                  lags_slots=lg_)[0]
+    for name_, fn in _attribution_variants(D, L, C).items():
+        fam[name_] = {k: v + LT[k] for k, v in fn.items()}
+    fam["raw lags 1.5 to 6 hours"] = S.offsets(target, "G", "corr", D, L, C, V=V, lags_slots=list(range(9, 37, 3)))[0]
+    fam["raw lags 1 to 10 hours"] = S.offsets(target, "G", "corr", D, L, C, V=V, lags_slots=list(range(6, 61, 3)))[0]
+    fam["raw lags every slot 2 to 6 hours"] = S.offsets(target, "G", "corr", D, L, C, V=V,
+                                                        lags_slots=list(range(12, 37)))[0]
+    for nm_, kw_ in (("straight-line regrowth", dict(rec_kw=dict(form="pwl"))),
+                     ("clean level from the first hour after each flush", dict(rec_kw=dict(window=1))),
+                     ("clean level from the first 6 hours", dict(rec_kw=dict(window=6))),
+                     ("clean level from the first 24 hours", dict(rec_kw=dict(window=24))),
+                     ("fitted on the readings uncorrected", dict(rec_kw=dict(corrected=False))),
+                     ("raw lags 1.5 to 6 hours", dict(rec_kw=dict(lags_slots=list(range(9, 37, 3))))),
+                     ("applied to every channel", dict(line="all"))):
+        fam["line: " + nm_] = S.offsets(target, S.CARRY, "corr", D, L, C, V=V, **kw_)[0]
+    grown = dict(S.offsets(target, S.CARRY, "corr", D, L, C, line="none", V=V)[0])
+    for k in LT:
+        if LT[k]:
+            rec = info[k]
+            grown[k] += rec["b"]                     # the loss at full growth, the whole quarter
+    fam["line: the grown loss over the whole quarter"] = grown
+    return fam
+
+
 def main(target):
     W = sim.build()
     T = sim.channel_truth(W)
     truth = sorted(k for k, v in T.items() if abs(v) > P.THRESH)
-    D = S.load(target); L = S.lims(target); C = S.checks(target)
-    gold, info = S.offsets(target, S.CARRY, "corr", D, L, C)
+    D = S.load(target); L = S.lims(target); C = S.checks(target); V = S.visits(target)
+    gold, info = S.offsets(target, S.CARRY, "corr", D, L, C, V=V)
     G = S.flags(gold)
     names = ", ".join(S.name(k) for k in G)
     ok(G == truth, "golden list equals the world's truth: %s" % names)
-    ok(names == "BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1, HOL-FI1", "the golden is the designed six")
+    ok(names == GOLDEN, "the golden is the designed six")
+    ok(all(V[c][-4:] == sorted(W[c]["flushes"]) for c in P.CODES), "SF26: the planned maintenance log's monthly "
+       "visits, read in New Zealand time, are the flushes the world ran (September's the last before the quarter)")
+
+    LT = _line_terms(target, D, info, V)
     ok(min(abs(abs(v) - P.THRESH) for v in T.values()) >= 0.002, "every channel's true offset 0.002 or more from the line "
        "(%.4f)" % min(abs(abs(v) - P.THRESH) for v in T.values()))
     ok(max(abs(gold[k] - T[k]) for k in T) < 0.0015, "golden offsets within 0.0015 of the truth on every channel "
@@ -87,20 +151,10 @@ def main(target):
     ok(info["HOL"]["kind"] == "zero" and info["CAL"]["kind"] == "span" and
        all(info[c]["kind"] is None for c in P.CODES if c not in ("HOL", "CAL")),
        "attribution: Holmedale zero, Calderwood span, no other analyser outside the check's noise")
-    # the licensed family: carryover fits and two-point variants
-    fam = {}
-    fam["pooled mixing (the golden)"] = gold
-    fam["per-channel mixing"] = S.offsets(target, "G", "corr", D, L, C)[0]
-    fam["RAW corr"] = S.offsets(target, "RAW", "corr", D, L, C)[0]
-    for nm_, lg_ in (("1.5 to 6", list(range(9, 37, 3))), ("1 to 10", list(range(6, 61, 3))),
-                     ("every slot 2 to 6", list(range(12, 37))), ("hourly 2 to 8", list(range(12, 49, 6)))):
-        fam["pooled mixing, raw lags %s hours" % nm_] = S.offsets(target, "POOL", "corr", D, L, C, lags_slots=lg_)[0]
-    for name_, fn in _attribution_variants(D, L, C).items():
-        fam[name_] = fn
-    fam["raw lags 1.5 to 6 hours"] = S.offsets(target, "G", "corr", D, L, C, lags_slots=list(range(9, 37, 3)))[0]
-    fam["raw lags 1 to 10 hours"] = S.offsets(target, "G", "corr", D, L, C, lags_slots=list(range(6, 61, 3)))[0]
-    fam["raw lags every slot 2 to 6 hours"] = S.offsets(target, "G", "corr", D, L, C, lags_slots=list(range(12, 37)))[0]
-    fam["per-channel mixing without the 1/(1 - k1 - k2) scaling"] = S.offsets(target, "G", "corr", D, L, C, form="add")[0]
+    fam = family(target, D, L, C, V, gold, info)
+    unscaled = S.flags(S.offsets(target, "G", "corr", D, L, C, V=V, form="add")[0])
+    ok(True, "SF7: the mix without its one-less-both-shares scaling (an algebra slip the step's own words rule out) "
+       "files %s" % ", ".join(S.name(k) for k in unscaled))
     for k_, v in fam.items():
         ok(S.flags(v) == G, "%s: licensed %s files the golden" % (SFOF.get(k_, "SF7 SF8 SF10 SF11"), k_))
     import json as _json
@@ -119,7 +173,8 @@ def main(target):
     tr = [g for g in L if g["stream"] != "raw"]
     ok(sum(g["cens"] for g in tr) >= 0.6 * len(tr), "SF4: %d of %d treated grabs below the limit, so no quarter mean comes "
        "from them" % (sum(g["cens"] for g in tr), len(tr)))
-    ok(all(gold[k] > 0 for k in G), "SF6: all six flagged channels read high")
+    ok(gold[("CAL", "fil")] < 0 and all(gold[k] > 0 for k in G if k != ("CAL", "fil")), "SF6: CAL-FI1 reads low, "
+       "the other five high, so 'above only' files another list")
     import openpyxl as _ox
     _wb = _ox.load_workbook(os.path.join(target, "analyser_verification_2027Q4.xlsx"), read_only=True)
     _rows = list(_wb["Checks Q4 2027"].iter_rows(values_only=True))[1:]
@@ -155,7 +210,8 @@ def main(target):
        "misses every plant")
     edge = all(f["a"] >= 288 and f["b"] <= P.NS - 288 for c in P.CODES for f in W[c]["faults"])
     ok(edge, "SF19: no analyser fault within two days of either end of the quarter")
-    fam["span at the channel's estimated level in the water"] = _span_true_level(D, L, C)
+    fam["span at the channel's estimated level in the water"] = {k: v + LT[k] for k, v in
+                                                                  _span_true_level(D, L, C, V).items()}
     ok(S.flags(fam["span at the channel's estimated level in the water"]) == G, "SF12: a span carried at the channel's "
        "estimated level in the water files the golden")
     # the rivals
@@ -163,10 +219,12 @@ def main(target):
               "P1 span": ("P1", "span"), "P1 corr": ("P1", "corr"), "RAW span": ("RAW", "span"), "D1 corr": ("D1", "corr"),
               "CRUDE none": ("CRUDE", "none"), "FIRST span": ("FIRST", "span"), "FIRST corr": ("FIRST", "corr")}
     for k_, (c, ch) in rivals.items():
-        f = S.flags(S.offsets(target, c, ch, D, L, C)[0])
-        d = sorted(set(f) ^ set(G))
-        ok(len(d) > 0, "rival %s files another list (differs on %s)" % (k_, ", ".join(S.name(x) for x in d)))
-    add = S.flags(S.offsets(target, "POOL", "corr", D, L, C, form="add")[0])
+        for ln in ("fit", "none"):
+            f = S.flags(S.offsets(target, c, ch, D, L, C, V=V, line=ln)[0])
+            d = sorted(set(f) ^ set(G))
+            ok(len(d) > 0, "rival %s, line %s, files another list (differs on %s)" % (
+                k_, "read" if ln == "fit" else "not read", ", ".join(S.name(x) for x in d)))
+    add = S.flags(S.offsets(target, "POOL", "corr", D, L, C, V=V, form="add")[0])
     ok(sorted(set(add) ^ set(G)) != [], "rival: the additive law (k times the readings before) files another list "
        "(differs on %s)" % ", ".join(S.name(x) for x in sorted(set(add) ^ set(G))))
     # the data rule the additive law out: the worn analysers' raw ports read below the raw grabs, not above
@@ -176,22 +234,49 @@ def main(target):
         low[c] = float(np.mean(A_[:, 1] - A_[:, 0]))
     ok(all(v < -0.005 for v in low.values()), "SF7: the worn analysers with no calibration error read their raw grabs "
        "low (%s), as a mix in the cell does and an added carryover cannot" % ", ".join("%s %+.4f" % kv for kv in low.items()))
-    dflt = S.flags(S.offsets(target, S.CARRY, "span", D, L, C)[0])
-    ok([S.name(k) for k in dflt] == ["BRN-FW1", "DUN-FW1", "ELS-FW1", "GAR-FI1", "GAR-FW1", "HOL-FI1", "HOL-FW1"],
-       "default path (carryover fitted, the low checks as span errors) files the seven")
+    dflt = S.flags(S.offsets(target, S.CARRY, "corr", D, L, C, V=V, line="none")[0])
+    ok(", ".join(S.name(k) for k in dflt) == DEFAULT, "default path (architecture 1's full model: carryover from both "
+       "slots before, the two-point read, no line) files %s" % DEFAULT)
+    ok(abs(gold[("HOL", "fil")]) <= 0.0035 and gold[("CAL", "fil")] <= -0.008,
+       "the line moves HOL-FI1 inside the band (%+.4f) and CAL-FI1 out of it (%+.4f)" % (gold[("HOL", "fil")],
+                                                                                       gold[("CAL", "fil")]))
+    recs = [k for k in gold if S.recovers(info[k])]
+    ok(recs == [("CAL", "fil"), ("HOL", "fil")], "SF25: only CAL-FI1 and HOL-FI1 rise after every flush with a quarter "
+       "or more of the water lost when grown (shares %.2f and %.2f)" % (info[("CAL", "fil")]["share"],
+                                                                         info[("HOL", "fil")]["share"]))
+    oth = max(abs(info[k]["lossbar"]) for k in gold if k not in recs)
+    ok(oth <= 0.002, "SF25: every other channel's fitted loss moves it by %.4f or less" % oth)
+    ok(all(min(info[k]["steps"]) > 0.008 for k in recs) and
+       all(min(info[k]["steps"]) < 0.002 for k in gold if k not in recs),
+       "SF25: the two lines' readings rise by more than 0.008 at every flush, no other channel's by 0.002 at all of them")
+    cellT = {}
+    for c in P.CODES:
+        x = W[c]
+        q = sim.qc_series(x)
+        for st in ("fil", "fin"):
+            idx = np.where((x["sl"] == st) & (q == "G"))[0]
+            cellT[(c, st)] = float(np.mean(x["reading"][idx] - x["cell"][idx]))
+    ok(sorted(k for k, v in cellT.items() if abs(v) > P.THRESH) != truth, "SF4: against the water reaching the cell "
+       "(the line's loss dropped) the list is another")
+    labs = [g for g in L if g["code"] in ("CAL", "HOL") and g["stream"] == "fil"]
+    ok(len(labs) == 28 and all(g["cens"] for g in labs), "SF4: all 28 of Calderwood's and Holmedale's filtered grabs "
+       "are below the 0.030 limit, so no grab sees the lines' loss")
     # analyst test on the clean world
     Dc = _clean(W)
     Lw = _world_lims(W)
     Cw = {c: [v for m3 in W[c]["checks"] for v in m3] for c in P.CODES}
-    easy = S.flags(S.offsets(None, S.CARRY, "span", Dc, Lw, Cw)[0])
-    right = S.flags(S.offsets(None, S.CARRY, "corr", Dc, Lw, Cw)[0])
-    ok(easy == dflt, "R3a: the analyst test on the clean truth: the easy route (carryover fitted, the low checks as span "
-       "errors) files the seven")
-    ok(right == G, "R3b: the easy route with only the decisive step changed (the two-point read with the raw port's "
-       "carryover out) files the six")
-    lower = S.flags(S.offsets(None, "FIRST", "corr", Dc, Lw, Cw)[0])
-    ok(lower != G, "R3b: the lower rung's single correction (the two-point read without the second port's carryover) "
-       "stays on a wrong list")
+    Vw = _world_visits(W)
+    easy = S.flags(S.offsets(None, S.CARRY, "corr", Dc, Lw, Cw, V=Vw, line="none")[0])
+    right = S.flags(S.offsets(None, S.CARRY, "corr", Dc, Lw, Cw, V=Vw)[0])
+    ok(", ".join(S.name(k) for k in easy) == DEFAULT, "R3a: the analyst test on the clean truth: the easy route "
+       "(architecture 1's full model, the checks and grabs taken as showing nothing more) files %s" % DEFAULT)
+    ok(right == G, "R3b: the easy route with only the decisive step changed (each line's loss read from the recovery "
+       "after the flushes) files the golden")
+    for nm_, (c_, ch_) in (("the previous slot only", ("P1", "corr")), ("Holmedale's shortfall a span error",
+                                                                         (S.CARRY, "span")),
+                           ("the checks set aside", (S.CARRY, "none"))):
+        lower = S.flags(S.offsets(None, c_, ch_, Dc, Lw, Cw, V=Vw)[0])
+        ok(lower != G, "R3b: the line read with %s stays on a wrong list" % nm_)
     # Layer 1 neutral to the call
     E = {}
     for c in P.CODES:
@@ -203,7 +288,7 @@ def main(target):
         cell = val.copy(); m3 = ~np.isnan(x["v"]); cell[m3] = x["v"][m3]
         y.update(val=val, g=g, cell=cell)
         E[c] = y
-    ok(S.flags(S.offsets(target, S.CARRY, "corr", E, L, C)[0]) == G, "R2 SF3: Layer 1 item, a reloaded slot's F row kept and its G "
+    ok(S.flags(S.offsets(target, S.CARRY, "corr", E, L, C, V=V)[0]) == G, "R2 SF3: Layer 1 item, a reloaded slot's F row kept and its G "
        "row dropped, leaves the call unchanged")
     E2 = {}
     cut = 13 * 6                                    # the quarter read in UTC: the first 13 hours dropped
@@ -215,13 +300,13 @@ def main(target):
         cell = x["cell"].copy(); cell[:cut] = np.nan
         y.update(val=val, g=g, cell=cell)
         E2[c] = y
-    ok(S.flags(S.offsets(target, S.CARRY, "corr", E2, L, C)[0]) == G, "R2 SF2: Layer 1 item, the quarter cut on UTC dates, leaves the "
+    ok(S.flags(S.offsets(target, S.CARRY, "corr", E2, L, C, V=V)[0]) == G, "R2 SF2: Layer 1 item, the quarter cut on UTC dates, leaves the "
        "call unchanged")
     E3 = {c: dict(D[c], cell=D[c]["val"].copy()) for c in P.CODES}   # check cycles not used as the cell's content
-    ok(S.flags(S.offsets(target, S.CARRY, "corr", E3, L, C)[0]) == G, "R2: Layer 1 item, the check port's V rows left out of the "
+    ok(S.flags(S.offsets(target, S.CARRY, "corr", E3, L, C, V=V)[0]) == G, "R2: Layer 1 item, the check port's V rows left out of the "
        "cell, leaves the call unchanged")
     L_cur = [g for g in L if not (g["stream"] != "raw" and g["collected"] < dt.datetime(2027, 11, 1))]
-    ok(S.flags(S.offsets(target, S.CARRY, "corr", D, L_cur, C)[0]) == G, "R2: Layer 1 item, October's treated samples left "
+    ok(S.flags(S.offsets(target, S.CARRY, "corr", D, L_cur, C, V=V)[0]) == G, "R2: Layer 1 item, October's treated samples left "
        "unmatched under the old codes, leaves the call unchanged")
     # asks against the world
     A = S.ask_a(target, L)
@@ -270,10 +355,38 @@ def main(target):
                       and 24 * 60 < (g["analysed"] - g["collected"]).total_seconds() / 60 <= 25 * 60) for c in P.CODES}
     ok(all(v not in (0, 2) for v in late_cl.values()), "SF14 SF22: the clock moves every plant's count, never by two, "
        "so missing it and counting the second logging never net: %s" % late_cl)
-    for nm in ("checked", "allport", "faults", "historian", "allF", "nohold"):
+    for nm in ("nophase", "checked", "allport", "faults", "historian", "allF", "nohold"):
         alt = S.ask_b(target, D, nm)
-        ok(all(abs(alt[c] - B[c]) > 0.45 for c in P.CODES), "SF17 SF18 SF20 SF23: ask B path '%s' misses every plant "
-           "by half an hour or more" % nm)
+        ok(all(abs(alt[c] - B[c]) > 0.45 for c in P.CODES), "SF17 SF18 SF20 SF23 SF28: ask B path '%s' misses every "
+           "plant by half an hour or more" % nm)
+    # ask B's storm-night stops: each analyser off once, the polls returning no reading at every port, no check after,
+    # and its sequence starting again at the raw water port in slots the running sequence would not have reached
+    trips = True
+    for c in P.CODES:
+        x = D[c]
+        a_, b_ = W[c]["trip"]
+        brk = np.where(x["brk"])[0]
+        trips &= bool(list(brk) == [b_] and x["sl"][b_] == "raw" and x["point"][b_].endswith("RW1"))
+        trips &= bool(np.all(x["f"][a_:b_]) and not np.any(x["g"][a_:b_]) and x["g"][a_ - 1] and x["g"][b_]
+                      and np.all(np.isnan(x["v"][a_ - 30:b_ + 30])) and 3.5 <= (b_ - a_) / 6 <= 7.5)
+        trips &= bool(not S.telemetry(x, "plc")[a_:b_].any() and S.telemetry(x, "nophase")[a_:b_].all())
+    ok(trips, "SF28: each analyser stopped once on its storm night (F rows at every port, nothing filled, no check "
+       "within five hours, 3.5 to 7.5 hours) and its sequence starts again at the raw water port straight after, the "
+       "only restart in its record; the golden reads each as the analyser's, round 4 reader H's rule as the "
+       "telemetry's")
+    nights = {}
+    for c in P.CODES:
+        a_ = W[c]["trip"][0]
+        nights.setdefault(P.slot_end(a_).astimezone(P.NZ).date() - dt.timedelta(
+            days=1 if P.slot_end(a_).astimezone(P.NZ).hour < 12 else 0), []).append(c)
+    rain = {}
+    import csv as _csv0
+    with open(os.path.join(target, "catchment_rainfall_daily_2027Q4.csv")) as fh:
+        for r in _csv0.DictReader(fh):
+            rain.setdefault(r["date"], []).append(float(r["rain_mm"]))
+    ok(len(nights) == 2 and all(len(v) == 4 for v in nights.values()) and
+       all(min(rain[d.isoformat()]) > 30 for d in nights), "SF28: the stops fall on two storm nights, four plants each, "
+       "both wet at every catchment gauge (%s)" % ", ".join("%s %s" % (d, "/".join(v)) for d, v in sorted(nights.items())))
     # ask B: the outstation changes are the only unfilled whole-plant runs no check followed; every analyser fault is
     # followed by the technician's check; each plant's filtered port lost its signal to the PLC once, with the ports
     # either side read and no check after it
@@ -334,6 +447,8 @@ def main(target):
         val = x["reading"].copy()
         q = sim.qc_series(x)
         g = (q == "G") | (q == "lost") | (q == "S")
+        if x["trip"]:
+            g[x["trip"][0]:x["trip"][1]] = False
         for f in x["signals"]:
             g[f["a"]:f["b"]] = True
         val[~g] = np.nan
@@ -345,9 +460,19 @@ def main(target):
             for j in range(3):
                 v[s0 + j] = x["repair_reads"][k][j]
         cell = val.copy(); m3 = ~np.isnan(v); cell[m3] = v[m3]
-        E4[c] = dict(val=val, v=v, f=(q == "F"), g=g, present=np.ones(P.NS, bool), order=x["order"], sl=x["sl"], cell=cell)
-    ok(S.flags(S.offsets(None, S.CARRY, "corr", E4, L, C)[0]) == G, "separation: with no failed polls, no lost hours, no "
-       "outstation changes and no lost signals the call is unchanged")
+        E4[c] = dict(val=val, v=v, f=(q == "F"), g=g, present=np.ones(P.NS, bool), order=x["order"], sl=x["sl"], cell=cell,
+                     brk=np.zeros(P.NS, bool))
+    ok(S.flags(S.offsets(None, S.CARRY, "corr", E4, L, C, V=V)[0]) == G, "separation: with no failed polls, no lost "
+       "hours, no outstation changes and no lost signals the call is unchanged")
+    keep = P.STORMS
+    try:
+        P.STORMS = {}
+        W5 = sim.build()
+    finally:
+        P.STORMS = keep
+    D5 = _clean(W5)
+    ok(S.flags(S.offsets(None, S.CARRY, "corr", D5, L, C, V=_world_visits(W5))[0]) == G, "separation: in a world with no "
+       "storm nights (no trips, no restarts) the call is unchanged")
     ok(all(g["stream"] == "raw" for g in L if False) or True, "separation: the call reads the laboratory's raw rows' "
        "collection times and results only; ask A reads the treated rows' analysis stamps")
     # the checks pass
@@ -367,10 +492,11 @@ def main(target):
             wb2 = openpyxl.load_workbook(os.path.join(target, f), read_only=True)
             for ws2 in wb2.worksheets:
                 heads += [str(v) for v in next(ws2.iter_rows(values_only=True)) if v]
-        bad += [h for h in heads if any(w in h.lower() for w in ("offset", "flag", "carryover", "zero error", "span error"))]
-    ok(not bad, "R1: no shipped column holds an offset, a flag, a carryover or an error's form %s" % bad)
-    ok(True, "R1: the golden reads the readings with the two slots before each, the check readings and the raw grabs "
-       "(solve.offsets)")
+        bad += [h for h in heads if any(w in h.lower() for w in ("offset", "flag", "carryover", "zero error", "span error",
+                                                                   "loss", "biofilm", "fouling"))]
+    ok(not bad, "R1: no shipped column holds an offset, a flag, a carryover, an error's form or a line's loss %s" % bad)
+    ok(True, "R1: the golden reads the readings with the two slots before each, the check readings, the raw grabs and "
+       "the planned maintenance log's visit times (solve.offsets, solve.recovery)")
     seqs = {c: D[c]["order"] for c in P.CODES}
     ok(all(seqs[c] == W[c]["order"] for c in P.CODES), "R2: Layer 1 item, the register's port sequence history: the "
        "current sequence is the one the readings follow all quarter")
@@ -413,8 +539,8 @@ def main(target):
     return FAILS
 
 
-def _span_true_level(D, L, C):
-    off, info = S.offsets(None, "G", "corr", D, L, C)
+def _span_true_level(D, L, C, V):
+    off, info = S.offsets(None, "G", "corr", D, L, C, V=V, line="none")
     out = {}
     for c in P.CODES:
         x = D[c]
@@ -434,9 +560,9 @@ def _attribution_variants(D, L, C):
     check and the corrected grabs"""
     out = {}
     base_k = {}
-    for c in P.CODES:
-        kg = [S.fit(D[c], s, "G") for s in ("fil", "fin")]
-        base_k[c] = (float(np.mean([f["k1"] for f in kg])), float(np.mean([f["k2"] for f in kg])))
+    for c in P.CODES:                              # the analyser's shares: one cell, one pair (a per-channel fit at a
+        pk = S.pooled(D[c])                        # fouled filtered line takes the line's recovery into its share two
+        base_k[c] = (pk["k1"], pk["k2"])           # slots back)
 
     def run(kind_of):
         off = {}
@@ -530,7 +656,7 @@ def _ask_b_world(W):
         x = W[c]
         q = sim.qc_series(x)
         fi = np.where(x["sl"] == "fil")[0]
-        good = ~((q[fi] == "F") | (q[fi] == "V"))
+        good = ~((q[fi] == "F") | (q[fi] == "V") | (q[fi] == "T"))
         gaps = np.diff(fi[good]) * P.SLOT_MIN / 60.0
         out[c] = float(np.sum(np.clip(gaps - P.DOSE_HOLD_H, 0, None)))
     return out

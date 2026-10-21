@@ -28,6 +28,8 @@ def routes(target):
     out["b: the hour added, rows equal but for the number dropped"] = S.ask_a(target, L, dedup="content")
     out["c: unfilled runs a check followed as the analyser's faults, the rest the telemetry's (round 3, both "
         "readers)"] = S.ask_b(target, D, "checked")
+    out["c: unfilled runs at every port that no check followed the telemetry's, a port's own unfilled rows the PLC's "
+        "(round 4, reader H)"] = S.ask_b(target, D, "nophase")
     out["c: unfilled runs at every port the telemetry's, checks aside"] = S.ask_b(target, D, "allport")
     out["c: F rows with nothing filled back as the analyser's faults (stage 4 rounds 1 and 2, all four readers)"] = (
         S.ask_b(target, D, "faults"))

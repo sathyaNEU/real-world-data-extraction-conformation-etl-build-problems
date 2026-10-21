@@ -97,6 +97,16 @@ def register(path, W):
     _ws(wb, "Sample points", ["Sample point", "Plant", "Water", "Laboratory code", "Location"], pts, [14, 13, 15, 16, 44])
     _ws(wb, "Port sequence history", ["Analyser tag", "From", "To", "Port sequence", "Note"], hist, [16, 12, 12, 34, 60],
         fmts={"From": "yyyy-mm-dd", "To": "yyyy-mm-dd"})
+    mrows = []
+    pm = "Monthly planned maintenance: sample lines (raw, filtered, final) flushed with dilute hypochlorite and rinsed; inlet strainers cleaned"
+    for c in P.CODES:
+        for t in sim.earlier_visits(c) + W[c]["flush_times"]:
+            mrows.append([t.replace(tzinfo=None), P.tag(c), P.NAME[c], pm, R.TECH[c]])
+        sv = dt.datetime.fromisoformat(serv[c] + "T10:00")
+        mrows.append([sv, P.tag(c), P.NAME[c], "Annual service by the supplier's engineer (report on file)", "Supplier"])
+    mrows.sort(key=lambda r: (r[0], r[1]))
+    _ws(wb, "Planned maintenance", ["Visit (NZ time)", "Analyser tag", "Plant", "Work done", "By"], mrows,
+        [18, 16, 13, 100, 18], fmts={"Visit (NZ time)": "dd/mm/yyyy hh:mm"})
     wb.save(path)
 
 

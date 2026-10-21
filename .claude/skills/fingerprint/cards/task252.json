@@ -54,7 +54,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "nh3_online_readings_2027Q4.csv",
-    "rows": 106181,
+    "rows": 106100,
     "entity": "one ten-minute reading of one sample point by one works' analyser",
     "grain": "analyser x ten-minute slot",
     "source": "synthetic"

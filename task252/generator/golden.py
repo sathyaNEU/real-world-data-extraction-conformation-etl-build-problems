@@ -61,31 +61,36 @@ def workbook(path, fig):
 
     ws = wb.create_sheet("Channels")
     _head(ws, 1, ["Channel", "Plant", "Water", "Carryover (mg/L as N)", "Calibration error at the channel's level "
-                  "(mg/L as N)", "Offset (mg/L as N)", "Flagged"])
+                  "(mg/L as N)", "Sample line (mg/L as N)", "Offset (mg/L as N)", "Flagged"])
     for ch in sorted(fig["offsets"]):
         code, sp = ch.split("-")
-        cal = fig["offsets"][ch] - fig["carry"][ch]
+        cal = fig["offsets"][ch] - fig["carry"][ch] - fig["line"][ch]
         ws.append([ch, P.NAME[code], {"FI1": "Filtered", "FW1": "Final"}[sp], fig["carry"][ch], round(cal, 4),
-                   fig["offsets"][ch], "Yes" if ch in fig["flagged"] else "No"])
+                   fig["line"][ch], fig["offsets"][ch], "Yes" if ch in fig["flagged"] else "No"])
         if ch in fig["flagged"]:
             for cell in ws[ws.max_row]:
                 cell.fill = FLAG
-    for row in ws.iter_rows(min_row=2, min_col=4, max_col=6):
+    for row in ws.iter_rows(min_row=2, min_col=4, max_col=7):
         for cell in row:
             cell.number_format = "+0.000;-0.000;0.000"
-    _widths(ws, [11, 13, 10, 14, 22, 12, 9])
+    _widths(ws, [11, 13, 10, 14, 22, 14, 12, 9])
     ws.freeze_panes = "A2"
 
     ws = wb.create_sheet("Analysers")
     _head(ws, 1, ["Analyser", "Plant", "Carryover from the port before", "Carryover from two ports before",
-                  "Check mean, Q4 (mg/L as N)", "Calibration error"])
+                  "Check mean, Q4 (mg/L as N)", "Calibration error", "Filtered sample line"])
     form = {"zero": "Zero error: the same shortfall at every level", "span": "Span error: shortfall in proportion",
             "none": "Within the checks' scatter"}
     for c in P.CODES:
         a = fig["analysers"][c]
+        ch = "%s-FI1" % c
+        line = ("Takes %s of the ammonia when grown; rises %.3f to %.3f at each monthly flush (six hours after, two "
+                "days before)" % (
+            fig["line_share_words"][ch], fig["line_step_low"][ch], fig["line_step_high"][ch])
+            if ch in fig["line_share"] else "No change at the flushes")
         ws.append([P.tag(c), P.NAME[c], a["k1"] if c in ("BRN", "DUN", "ELS", "GAR", "HOL") else "under 0.01",
                    a["k2"] if c in ("BRN", "DUN", "ELS", "GAR", "HOL") else "under 0.01", a["check_mean"],
-                   form[a["form"]]])
+                   form[a["form"]], line])
     for row in ws.iter_rows(min_row=2, min_col=3, max_col=4):
         for cell in row:
             if isinstance(cell.value, float):
@@ -93,7 +98,7 @@ def workbook(path, fig):
     for row in ws.iter_rows(min_row=2, min_col=5, max_col=5):
         for cell in row:
             cell.number_format = "0.0000"
-    _widths(ws, [15, 13, 16, 16, 15, 44])
+    _widths(ws, [15, 13, 16, 16, 15, 44, 70])
     ws.freeze_panes = "A2"
 
     ws = wb.create_sheet("Notes")
@@ -109,7 +114,14 @@ def workbook(path, fig):
         "Calibration: Holmedale and Calderwood read about 8 per cent low on the 0.100 standard. Against the raw grabs, "
         "with the raw port's own carryover from the treated ports ahead of it taken out, Holmedale reads the same 0.008 "
         "low (a zero error, carried whole to its treated channels) and Calderwood about 8 per cent low (a span error, "
-        "about 0.002 at its treated levels).",
+        "about 0.001 at its treated levels).",
+        "Sample lines: the check standard enters at the check port, after the sample lines, and the laboratory's grabs "
+        "come from the taps, so neither sees what a line takes. With carryover and calibration taken out, Calderwood's "
+        "and Holmedale's filtered readings rise at every monthly line flush in the register's planned maintenance log "
+        "and fall back over the following days as the unchlorinated line's film grows again (fitted on the days since "
+        "the flush with the raw water's lagged response, regrowth time %.1f days); averaged over the quarter's G "
+        "readings their lines read %.3f and %.3f below the water. No other channel moves at the flushes." % (
+            fig["line_tau_days"], fig["line_loss_mean"]["CAL-FI1"], fig["line_loss_mean"]["HOL-FI1"]),
         "Item (b): the laboratory's analysis stamps run behind its reception and release times (some runs are "
         "stamped up to %d minutes before reception logged their bottles, and no result is released within %d minutes "
         "of its stamp), so the stamps move forward an hour, the analyser keeping standard time against the daylight "
@@ -118,10 +130,13 @@ def workbook(path, fig):
         "treated bottles appear twice in the export, logged again on unpacking under the courier docket's pickup time, "
         "with the same point, analysis stamp, result and release." % (fig["clock_lo"], fig["clock_hi"]),
         "Item (c): the PLC reads the analyser directly, so a slot the historian lost, filled after a failed poll, or "
-        "lost in a run of failed polls at every port that nothing filled and no technician's check followed (the "
-        "telemetry's, one a plant in November) was good at the plant. A filtered port's own run of F rows, with the "
-        "other ports read between them, is a reading that never reached the PLC (once at each plant) and counts with "
-        "the analyser's faults and its check cycles; each gap is counted beyond the two-hour hold.",
+        "lost in a run of failed polls at every port that nothing filled, no technician's check followed and the "
+        "analyser's port sequence ran through unbroken (the telemetry's, one a plant in November) was good at the "
+        "plant. A run after which the sequence starts again at the raw water port is the analyser's own stop (each "
+        "analyser once, on the storm night of 26 to 27 October or 3 to 4 December, until the morning reset), and a "
+        "filtered port's own run of F rows, with the other ports read between them, is a reading that never reached "
+        "the PLC (once at each plant); both count with the analyser's faults and its check cycles, each gap beyond "
+        "the two-hour hold.",
     ]
     for i, n in enumerate(notes, 1):
         ws.cell(row=i, column=1, value=n).alignment = Alignment(wrap_text=True, vertical="top")
@@ -149,14 +164,16 @@ def chart(path, fig):
                     mfc="#B23A1E" if hot else "white", mew=1.6, zorder=3)
             if hot:
                 ax.annotate(ch, (i + dx, v), xytext=(4, 6), textcoords="offset points", fontsize=8, color="#7A2614")
-    ax.annotate("HOL-FW1: carryover cancelled\nby Holmedale's zero error", (7.14, off["HOL-FW1"]), xytext=(4.9, -0.0085),
+    ax.annotate("HOL-FI1: carryover cancelled by\nits filtered line's loss", (6.86, off["HOL-FI1"]), xytext=(4.95, -0.0086),
+                fontsize=8, color="#3A4A56", arrowprops=dict(arrowstyle="-", color="#7A8A96", lw=0.8))
+    ax.annotate("HOL-FW1: carryover cancelled\nby Holmedale's zero error", (7.14, off["HOL-FW1"]), xytext=(5.75, -0.0133),
                 fontsize=8, color="#3A4A56", arrowprops=dict(arrowstyle="-", color="#7A8A96", lw=0.8))
     ax.text(7.45, P.THRESH + 0.0004, "+0.005", fontsize=8, color="#5C6B76", ha="right")
     ax.text(7.45, -P.THRESH - 0.0013, "-0.005", fontsize=8, color="#5C6B76", ha="right")
     ax.set_xticks(range(len(plants)))
     ax.set_xticklabels([P.NAME[c] for c in plants], fontsize=9)
     ax.set_ylabel("Offset, Q4 2027 (mg/L as N)", fontsize=9)
-    ax.set_ylim(-0.012, 0.032)
+    ax.set_ylim(-0.0155, 0.032)
     ax.tick_params(axis="y", labelsize=8.5)
     ax.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%.3f"))
     for s in ("top", "right"):
@@ -167,9 +184,10 @@ def chart(path, fig):
     ax.legend(handles=[h1, h2, h3], loc="upper left", fontsize=8, frameon=False)
     ax.set_title("Six of 16 treated-water ammonia channels read more than 0.005 mg/L as N off, Q4 2027",
                  fontsize=11, loc="left")
-    fig_.text(0.01, 0.01, "Source: historian readings, monthly checks and laboratory grabs, Q4 2027. Offset = sequencer "
-              "carryover plus the analyser's calibration error at the channel's level.", fontsize=7, color="#5C6B76")
-    fig_.tight_layout(rect=(0, 0.03, 1, 1))
+    fig_.text(0.01, 0.012, "Source: historian readings, monthly checks, laboratory grabs and the planned maintenance log, "
+              "Q4 2027.\nOffset = sequencer carryover + the analyser's calibration error at the channel's level + the "
+              "sample line's loss.", fontsize=7, color="#5C6B76", linespacing=1.4)
+    fig_.tight_layout(rect=(0, 0.05, 1, 1))
     fig_.savefig(path, metadata={"Software": None})
     plt.close(fig_)
 

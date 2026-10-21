@@ -126,7 +126,7 @@ Lesson: a reference that enters a measuring system part-way along measures only 
 | SF2 | the fourth quarter of 2027 | 1 October to 31 December, New Zealand time | UTC dates | same call | WQ-DS-04 section 1; asserted |
 | SF3 | the readings | the channel's rows held with quality G, a reloaded slot's G row included | a reloaded slot's F row kept and its G row dropped | same call | section 3 (readings held with code G); asserted |
 | SF4 | the ammonia actually in the water | the water at the sample point at each reading's time, before the sample line | the water as it reaches the measuring cell; the laboratory's treated grabs | another list (the cell's water drops the line's loss); no quarter mean (most grabs below 0.030) | section 3 (the water at its sample point); the register's sample points (the taps) and the process summary (each point's own sample line to the analyser); section 6 (the limit) |
-| SF5 | more than 0.005 | strictly | at or beyond | same call | every licensed estimate 0.002 or more from the line (asserted) |
+| SF5 | more than 0.005 | strictly | at or beyond | same call | every licensed estimate 0.0019 or more from the line (asserted, 24 estimates) |
 | SF6 | above or below | either sign | above only | another list (CAL-FI1 reads low) | the prompt ("above or below"); section 4 |
 | SF7 | the carryover's form | a mix in the cell: each reading 1 - k1 - k2 of its own water, k1 and k2 of the two samples before | the shares of the readings before added on (the additive law) | same list or another (asserted) | the worn analysers' raw ports read their raw grabs low by 0.010 to 0.039, as a mix does and an added carryover cannot (asserted) |
 | SF8 | the treated water's own response | the raw readings 2 to 8 hours earlier | 1.5 to 6 hours; 1 to 10 hours | same list | asserted |
@@ -135,7 +135,7 @@ Lesson: a reference that enters a measuring system part-way along measures only 
 | SF10 | the two-point test | squared residuals under each form | a mean test; readings interpolated to the grab | same list | asserted |
 | SF11 | the zero error's size | the check's shortfall | the corrected grabs' mean shortfall | same list | asserted |
 | SF12 | a span error at the channel's level | the shortfall in proportion to the channel's mean reading | to its estimated level in the water | same list | asserted |
-| SF24 | the line's loss | a share of the water that grows back as one less an exponential in the days since the last flush, fitted with the raw water's lagged response | a straight-line regrowth to a plateau; the clean level as the mean of the first 1 to 24 hours after each flush; the fit on the readings uncorrected | same list | asserted: every form files the six, HOL-FI1 between -0.003 and +0.003, CAL-FI1 between -0.010 and -0.007 |
+| SF24 | the line's loss | a share of the water that grows back as one less an exponential in the days since the last flush, fitted with the raw water's lagged response | a straight-line regrowth to a plateau; the clean level as the mean of the first 1 to 24 hours after each flush; the fit on the readings uncorrected | same list | asserted: every form files the six, HOL-FI1 between -0.0031 and +0.0029, CAL-FI1 between -0.0107 and -0.0073 |
 | SF25 | which channels lose ammonia in the line | the two whose readings rise after every flush of the quarter (CAL-FI1 and HOL-FI1) | the fitted loss applied to every channel | same list | asserted: every other channel's fitted loss moves it by 0.002 or less and its steps change sign between flushes |
 | SF26 | the flush's moment | the visit time in the planned maintenance log, New Zealand time | the time read as UTC | same list | the log's column ("Visit (NZ time)"); asserted |
 | SF27 | the loss in the quarter's offset | the mean over the channel's G readings of the loss at each reading's days since the flush | the grown loss over the whole quarter | same list | asserted |
@@ -181,7 +181,7 @@ lost, no trips) the default path files its six and the decisive step alone the g
 | 6 | Denominator | the channel's G readings | filed (section 3) |
 | 7 | Weighting | each G reading once | filed (section 3) |
 | 8 | Window length | the calendar quarter, New Zealand time | filed (section 1) |
-| 9 | Boundary inclusivity | more than 0.005 | C1 (0.002 clear, asserted) |
+| 9 | Boundary inclusivity | more than 0.005 | C1 (0.0019 clear, asserted) |
 | 10 | Rounding path | no offset graded; sample counts whole; hours to one decimal | filed (the prompt) |
 | 11 | Tie-break | none open | asserted |
 | 12 | Maturity and censoring | treated results below 0.030; the 28 December round analysed on 5 January, inside the export | filed (section 6; the export) |
@@ -207,7 +207,10 @@ filtered readings at Calderwood and Holmedale rise at every logged line flush an
 other channel moves, so the line takes ammonia between the tap and the cell, and the reading straight after a flush is
 the clean line's. Every licensed estimate files the same six (asserted: the pooled and per-channel mixing fits, two lag
 windows, the exponential and straight-line regrowth, the clean level from the first 1 to 24 hours after each flush, the
-fit on the readings uncorrected, the loss applied to every channel; margin 0.002).
+fit on the readings uncorrected, the loss applied to every channel or at full growth all quarter; margin 0.0019
+over 24 estimates). The mix without its one-less-both-shares scaling is an algebra slip, not an estimate: a reading that
+is 1 - k1 - k2 of its own water and k1 and k2 of the two before differs from its water by the shares of the differences
+divided by 1 - k1 - k2, which the golden's step states.
 
 ## Oracles
 
@@ -288,7 +291,33 @@ at all, stated in the dictionary), the check cycles inside the hold, the two-hou
 
 Pair ceiling: 35.4 ((51.9 + 18.9) / 2), the cracker keeping 2 of the 16 ask figures on the call and the mirror the same.
 Mirror leakage: 12.5 per cent of ask weight.
-Measured by: generator/pair.py on the prototype's pack; re-measured on the cut pack at stage 3.
+Measured by: generator/pair.py on the cut pack (target.zip af7016cf).
+
+## Pre-ship check
+
+- Free gates (stage 3, on the cut pack): generator checks 130 passed (the golden list against the world's truth; 24
+  licensed estimates each filing the six with 0.0019 or more from the line; the line's recovery read at CAL-FI1 and
+  HOL-FI1 only, every other channel moved 0.002 or less; the analyst test on the clean world, architecture 1's full
+  model filing its six and the line alone the golden; SF1 to SF28; R1 to R3; the separation line with no failed polls,
+  lost hours, outstation changes or lost signals, and in a world with no storm nights; the asks against the world with
+  every natural path, round 4 reader H's rule included, missing every plant; the input gates); verify.py 0 failures;
+  two builds byte-identical (target.zip af7016cf); figures_check 35 of 35; precut 51 of 51; voice-check PASS.
+- leak.py REVIEW, no LEAK: WQ-DS-04 carries the call's words (its estimand and the return) and the documents carry
+  the field's terms; none names a line loss, a film, a flush's effect, a trip or a restart.
+- guard heart WARN (driver.near 0.16 against the slot's own lineage, differentiated on the card; people.first Caleb);
+  surface people Emily Butler and Suzanne Nelson, as drawn.
+- Containers clean (no producer signature, no out-of-band timestamp) in target/ and golden/.
+- Golden realism: the workbook leads with the six as its title, lists them with plant, water, analyser and direction;
+  the channels sheet carries each channel's carryover, calibration error at its level, sample-line loss and offset;
+  the analysers sheet the shares, the error's form and the filtered line's loss with its rise at the flushes; the
+  notes sheet states the estimand, the carryover, the calibration, the lines and how each item was counted. The chart
+  shows every channel by plant against the 0.005 band, the six marked, both Holmedale channels annotated.
+- The 10/10 rules re-read against the built pack: the decisive step (each filtered line's loss read from the readings'
+  recovery after the flushes) is an estimate no filed sentence performs; every Layer 1 item mishandled leaves the call
+  unchanged (asserted: the check port's rows, the quarter on UTC dates, October's old codes, the failed polls, the lost
+  night, the outstation changes, the lost signals, the storm-night stops).
+- Probes on the near-final pack (pr252m): G filed exactly the default path's six, H the first-port five; neither read
+  the flushes.
 
 ## Tried and rejected
 
@@ -376,8 +405,13 @@ Measured by: generator/pair.py on the prototype's pack; re-measured on the cut p
 - Architecture 2, pack 2 (losses of 0.55 and 0.85 regrowing over 1.5 days, Holmedale's filtered water as drawn): probes
   D and F filed the default list or the one-slot list and never read the flushes; probe E returned nothing. The licensed
   recovery forms put HOL-FI1 between +0.0010 and +0.0052 (a straight-line regrowth crossed the band). Holmedale's
-  filtered water was lifted 0.004 (its 14 filtered grabs still all below the limit), the losses set to 0.65 and 0.95
-  and the regrowth to two days: every form now files the same six.
+  filtered water was lifted 0.0035 (its 14 filtered grabs still all below the limit), the losses set to 0.65 and 0.95
+  and the regrowth to two days: every form now files the same six, 0.0019 or more from the line.
 - Ask B's lost signals alone (round 4: reader H kept 8 of 8 by the rule that a whole-plant unfilled run with no check
   after it is the telemetry's): that rule is right on every run the round 4 pack carried, so no re-siting of the lost
   signals beats it; the storm-night stops are runs it misreads, found by the analyser's sequence starting again.
+- The per-channel carryover fit taken into the two-point read (stage 3): at a fouled filtered line the regression on the
+  two slots before takes the line's recovery into its share two slots back (Holmedale's filtered port 0.098 against its
+  final port's 0.020, one cell), and the raw port corrected with those shares moves Holmedale's zero error by 0.012. The
+  two-point read uses the analyser's pooled shares, as one cell implies; the per-channel route itself (its offsets with
+  the line read) files the six.

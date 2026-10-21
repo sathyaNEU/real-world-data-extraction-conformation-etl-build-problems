@@ -30,6 +30,7 @@ def _water(rng, w, code):
     if code in P.ZERO or code in P.GAIN:
         fil = rng.uniform(0.016, 0.022) + rng.normal(0, 0.0015, P.NS)
         fin = rng.uniform(0.014, 0.019) + rng.normal(0, 0.0012, P.NS)
+        fil = fil + P.FIL_LIFT.get(code, 0.0)
     elif worn and code not in P.HIGH:
         fil = rng.uniform(0.040, 0.055) + rng.normal(0, 0.002, P.NS)
         fin = rng.uniform(0.006, 0.012) + rng.normal(0, 0.0012, P.NS)
@@ -47,8 +48,16 @@ def _water(rng, w, code):
     return dict(k1=k1, k2=k2, raw=raw, fil=fil, fin=fin, events=events, breakthrough=lags)
 
 
-def _check_days(rng, w):
+def _top(x, s):
+    """the first slot from s on at which the analyser's sequence is at its raw water port (the top of a cycle)"""
+    while x["sl"][s] != x["order"][0]:
+        s += 1
+    return s
+
+
+def _check_days(rng, x):
     """the technician's monthly check: a weekday in the second week of each month, about nine to eleven"""
+    w = x["w"]
     out = []
     for m, d0 in ((10, 11), (11, 8), (12, 6)):
         day = dt.date(2027, m, d0) + dt.timedelta(days=int((w * 3 + rng.integers(0, 3)) % 5))
@@ -56,10 +65,43 @@ def _check_days(rng, w):
             day += dt.timedelta(days=1)
         hh = 9 + int(rng.integers(0, 3)); mm = int(rng.choice([0, 10, 20, 30, 40, 50]))
         t = dt.datetime(day.year, day.month, day.day, hh, mm, tzinfo=P.NZ)
-        s = P.slot_of(t)
-        s += (3 - s % 3) % 3                       # the check starts at the top of a cycle
-        out.append(s)
+        out.append(_top(x, P.slot_of(t)))         # the check starts at the top of a cycle
     return out
+
+
+
+def earlier_visits(code):
+    """the monthly visits from January to August 2027, on the same route (drawn on their own stream)"""
+    rng = np.random.default_rng([P.SEED_TRIP, P.CODES.index(code)])
+    route = {"ASH": (0, 0), "BRN": (0, 1), "DUN": (1, 0), "FEN": (1, 1),
+             "CAL": (0, 0), "ELS": (0, 1), "GAR": (1, 0), "HOL": (1, 1)}[code]
+    out = []
+    for m_, d0 in ((1, 19), (2, 16), (3, 16), (4, 20), (5, 18), (6, 15), (7, 20), (8, 17)):
+        day = dt.date(2027, m_, d0) + dt.timedelta(days=route[0] + (0 if code in ("ASH", "BRN", "DUN", "FEN") else 2))
+        while day.weekday() >= 5:
+            day += dt.timedelta(days=1)
+        out.append(dt.datetime(day.year, day.month, day.day, 9 if route[1] == 0 else 13, 30, tzinfo=P.NZ)
+                   + dt.timedelta(minutes=int(rng.integers(-20, 21))))
+    return out
+
+
+def _flush_visits(rng, x):
+    """the technician's monthly sample-line visit (all three lines flushed with dilute hypochlorite and rinsed, the
+    strainers cleaned) in the fourth week of each month: each technician drives his four plants over two working days,
+    two plants a day, the first at about half past nine and the second at about half past one; September's visit is
+    the one before the quarter. Returned as slots (September's negative)"""
+    route = {"ASH": (0, 0), "BRN": (0, 1), "DUN": (1, 0), "FEN": (1, 1),
+             "CAL": (0, 0), "ELS": (0, 1), "GAR": (1, 0), "HOL": (1, 1)}[x["code"]]
+    out = []
+    for y, m, d0 in ((2027, 9, 21), (2027, 10, 19), (2027, 11, 23), (2027, 12, 14)):
+        day = dt.date(y, m, d0) + dt.timedelta(days=route[0] + (0 if x["code"] in ("ASH", "BRN", "DUN", "FEN") else 2))
+        while day.weekday() >= 5:
+            day += dt.timedelta(days=1)
+        t = dt.datetime(day.year, day.month, day.day, 9 if route[1] == 0 else 13, 30, tzinfo=P.NZ) + dt.timedelta(
+            minutes=int(rng.integers(-20, 21)))
+        out.append(t)
+    x["flush_times"] = out
+    return [P.slot_of(t) for t in out]
 
 
 def build():
@@ -86,11 +128,23 @@ def build():
         W[code] = dict(code=code, w=w, order=order, z=z, g=g, k1=x["k1"], k2=x["k2"], true=dict(raw=x["raw"],
                        fil=x["fil"], fin=x["fin"]), sl=sl, val=val, noise=noise, checks=checks, events=x["events"],
                        breakthrough=x["breakthrough"])
+    _trips(np.random.default_rng(P.SEED_TRIP), W)
     ops = np.random.default_rng(P.SEED_OPS)
     for code in P.CODES:
         x = W[code]
-        x["check_slots"] = _check_days(ops, x["w"])
+        x["check_slots"] = _check_days(ops, x)
         val = x["val"].copy()
+        x["flushes"] = _flush_visits(ops, x)       # the monthly sample-line maintenance visit, every plant
+        if code in P.FOUL:                         # the filtered line's biofilm takes its share before the cell;
+            fmax, tau = P.FOUL[code]               # each flush clears it and it grows back over a few days
+            flushes = x["flushes"]
+            fi = np.where(x["sl"] == "fil")[0]
+            last = np.array([max(f for f in flushes if f <= i) for i in fi])
+            age = (fi - last) * P.SLOT_MIN / 1440.0
+            val[fi] = val[fi] * (1 - fmax * (1 - np.exp(-age / tau)))
+        if x["trip"]:                              # the analyser stood off: its cell held its last sample
+            a, b = x["trip"]
+            val[a:b] = val[a - 1]
         for s0 in x["check_slots"]:
             val[s0:s0 + 3] = P.CHECK_STD          # the flushed cell holds the standard for the check's cycle
         x["cell"] = val
@@ -112,6 +166,46 @@ def build():
     _outstations(np.random.default_rng(P.SEED_TELEM), W)
     _signals(np.random.default_rng(P.SEED_SIGNAL), W)
     return W
+
+
+def _trips(rng, W):
+    """the storm nights: lightning on the district's lines tripped the supply to four plants' analysers each night
+    (the PLC and the outstation run on their own backed-up supply, so the polls went on and returned no reading); the
+    analyser stood off until the morning operator reset it, and its sequencer then started again from the raw water
+    port, so its ports fall in new slots for the rest of the quarter. The PLC had no reading while it was off"""
+    for (y, m, d), codes in P.STORMS.items():
+        night = dt.datetime(y, m, d, 23, 0, tzinfo=P.NZ)
+        hits = sorted(night + dt.timedelta(minutes=int(v)) for v in rng.choice(np.arange(20, 230), 2, replace=False))
+        resets = []
+        for code in codes:
+            x = W[code]
+            trip = hits[int(rng.integers(0, 2))] + dt.timedelta(seconds=int(rng.integers(0, 120)))
+            for _ in range(500):
+                reset = dt.datetime(y, m, d, 6, 5, tzinfo=P.NZ) + dt.timedelta(days=1, minutes=int(rng.integers(0, 160)))
+                a, b = P.slot_of(trip), P.slot_of(reset) + 1
+                if (3.5 <= (b - a) / 6 <= 7.5 and b % 3 != 0
+                        and all(abs((reset - r).total_seconds()) > 1500 for r in resets)):
+                    break
+            else:
+                raise RuntimeError("no trip window at %s" % code)
+            resets.append(reset)
+            order = x["order"]
+            sl = np.array([order[i % 3] for i in range(P.NS)])
+            sl[b:] = [order[(i - b) % 3] for i in range(b, P.NS)]
+            val = np.zeros(P.NS)
+            for st in ("raw", "fil", "fin"):
+                mk = sl == st
+                val[mk] = x["true"][st][mk]
+            x.update(trip=(a, b), sl=sl, val=val)
+    for code in P.CODES:
+        W[code].setdefault("trip", None)
+
+
+def _trip_busy(x, pad):
+    if not x["trip"]:
+        return set()
+    a, b = x["trip"]
+    return set(range(a - pad, b + pad))
 
 
 def _lab_extras(rng, W):
@@ -234,6 +328,7 @@ def _signals(rng, W):
             busy |= set(range(s_ - 18, e_ + 18))
         for a_, b_ in (x["lost"], x["swap"]):
             busy |= set(range(a_ - 18, b_ + 18))
+        busy |= _trip_busy(x, 18)
         x["signals"] = []
         for port, lo, hi in [("fil", 4.0, 9.0)] + ([("fin", 2.0, 6.0)] if w in fw else []):
             for _ in range(500):
@@ -255,11 +350,14 @@ def _readings(x):
     analyser's span and zero"""
     val = x["cell"]
     reading = np.full(P.NS, np.nan)
-    for pos, s in enumerate(x["order"]):
-        idx = np.arange(pos, P.NS, 3)
+    for s in x["order"]:
+        idx = np.where(x["sl"] == s)[0]
         p1 = np.maximum(idx - 1, 0); p2 = np.maximum(idx - 2, 0)
         co = x["k1"] * (val[p1] - val[idx]) + x["k2"] * (val[p2] - val[idx])
-        reading[idx] = np.round(x["g"] * (val[idx] + co) + x["z"] + x["noise"][s], 3)
+        nz = x["noise"][s]
+        if nz.size < idx.size:                     # a restart can give a port one slot more by the quarter's end
+            nz = np.r_[nz, np.zeros(idx.size - nz.size)]
+        reading[idx] = np.round(x["g"] * (val[idx] + co) + x["z"] + nz[:idx.size], 3)
     x["reading"] = reading
 
 
@@ -280,7 +378,7 @@ def _faults(rng, W):
     for code in P.CODES:
         x = W[code]
         x["faults"] = []
-        busy = set()
+        busy = _trip_busy(x, 18)
         for c in x["check_slots"]:
             busy |= set(range(c - 12, c + 15))
         for k in kinds[code]:
@@ -296,7 +394,9 @@ def _faults(rng, W):
                     start = dt.datetime(2027, 10, 1, tzinfo=P.NZ) + dt.timedelta(days=day, hours=float(rng.uniform(0, 24)))
                     hours = float(rng.uniform(2.5, 14))
                 a, b = _span(start, hours)
-                b += (3 - b % 3) % 3
+                if b + 6 >= P.NS:
+                    continue
+                b = _top(x, b)
                 if b + 3 >= P.NS or busy & set(range(a - 6, b + 9)):
                     continue
                 busy |= set(range(a, b + 3))
@@ -314,7 +414,7 @@ def _telemetry(rng, W):
     for code in P.CODES:
         x = W[code]
         x["lost"] = (a, b)
-        busy = set(range(a - 12, b + 12))
+        busy = set(range(a - 12, b + 12)) | _trip_busy(x, 12)
         for f in x["faults"]:
             busy |= set(range(f["a"] - 6, f["b"] + 6))
         for c in x["check_slots"]:
@@ -348,15 +448,23 @@ def _outstations(rng, W):
         for s, e in x["comms"]:
             busy |= set(range(s - 18, e + 18))
         a0, b0 = x["lost"]
-        busy |= set(range(a0 - 18, b0 + 18))
-        for _ in range(200):
-            start = dt.datetime(day.year, day.month, day.day, 8, 30, tzinfo=P.NZ) + dt.timedelta(
-                minutes=int(rng.integers(0, 37)) * 10 + int(rng.integers(0, 10)))
-            hours = float(rng.uniform(2.7, 4.9))
-            a, b = _span(start, hours)
-            if not busy & set(range(a, b)):
+        busy |= set(range(a0 - 18, b0 + 18)) | _trip_busy(x, 18)
+        done = False
+        for slip in range(6):                      # a plant busy that day is done the next working day
+            d = day + dt.timedelta(days=slip)
+            if d.weekday() >= 5:
+                continue
+            for _ in range(200):
+                start = dt.datetime(d.year, d.month, d.day, 8, 30, tzinfo=P.NZ) + dt.timedelta(
+                    minutes=int(rng.integers(0, 37)) * 10 + int(rng.integers(0, 10)))
+                hours = float(rng.uniform(2.7, 4.9))
+                a, b = _span(start, hours)
+                if not busy & set(range(a - 6, b + 6)):
+                    done = True
+                    break
+            if done:
                 break
-        else:
+        if not done:
             raise RuntimeError("no free window for the outstation change at %s" % code)
         live = P.slot_end(b - 1).astimezone(P.NZ) + dt.timedelta(minutes=int(rng.integers(1, 9)))
         x["swap"] = (a, b)
@@ -432,7 +540,7 @@ def channel_truth(W):
         q = qc_series(x)
         for s in ("fil", "fin"):
             idx = np.where((x["sl"] == s) & (q == "G"))[0]
-            out[(code, s)] = float(np.mean(x["reading"][idx] - x["cell"][idx]))
+            out[(code, s)] = float(np.mean(x["reading"][idx] - x["val"][idx]))
     return out
 
 
@@ -459,4 +567,7 @@ def qc_series(x):
     if "swap" in x:
         a, b = x["swap"]
         q[a:b] = "S"
+    if x.get("trip"):
+        a, b = x["trip"]
+        q[a:b] = "T"
     return q

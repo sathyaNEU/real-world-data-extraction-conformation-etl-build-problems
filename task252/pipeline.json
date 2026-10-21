@@ -1,30 +1,30 @@
 {
  "task": "task252",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "data-quality-monitoring",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-21",
  "stump": "A competent solver fits each analyser's carryover from both slots before, reads Holmedale's check shortfall as a zero error and Calderwood's as a span error from the raw pairs, and flags BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1, leaving CAL-FI1 at about +0.001; the filtered sample lines at Calderwood and Holmedale lose ammonia to a biofilm each monthly line flush clears, which the readings' recovery after the flushes measures: with it HOL-FI1 sits inside the band and CAL-FI1 reads about 0.010 low.",
  "architecture": 2,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": null
+  "exit": 0,
+  "date": "2026-10-21"
  },
  "leak": {
-  "leak_py": null,
+  "leak_py": "REVIEW (5 lines, no LEAK)",
   "reader": null
  },
  "duplicate_check": {
-  "heart": null,
+  "heart": "WARN (driver.near own lineage 0.16, people.first Caleb; both answered)",
   "nearest": "task252 v1 (lineage) 0.16; task251 v1 0.09"
  },
  "judge": null,
  "returned": [],
- "resume": "Architecture 2 drawn 10-21 (the filtered sample lines' loss read from the recovery after each monthly line flush; ask B re-sited with the storm-night stops found by the sequence's restart). The prototype in scratch (t252a2/gen) is the source for the repo port: params (FOUL, FIL_LIFT, STORMS, SEED_TRIP), sim (phase-aware sequence, _trips, earlier_visits, flush loss), records (trip F rows, storm rainfall), build (planned maintenance sheet), docs (own sample lines), solve (labels, visits, recovery, recovers, restarted), pair (reader H's path). Next: port, checks and verify for the line and the trips, write-up and goldens, precut, stage 3 gates, stage 4.",
+ "resume": "Stage 4 in flight on target.zip af7016cf (stage 3 green): two scored readers in the session scratchpad (t252a2s4/rA, rB; score with t252a2s4/score.py against generator/figures.json) and the isolated judge thread (t252a2s4/judge/verdict.md, then its report into task252/determinism_check_report.md). On their return: ship if both readers miss the call and the judge raises no FIX_NOW (fix in the generator in one pass, re-judge once); a call either reader lands spends architecture 2. The ship's ledger row is drafted in t252a2/ship/ledger_row.txt.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -75,6 +75,14 @@
   {
    "date": "2026-10-21",
    "event": "architecture 2 drawn: probes on two prototype packs (pack 1's loss on lines whose grabs show it read off the lab pairs by probes A, B and C; pack 2's on the two censored filtered lines missed by probes D and F, E returned nothing); retuned so every licensed recovery form files the same six; ask B's storm-night stops added (reader H's rule misses every plant); card registered (guard WARN: own lineage 0.16, Caleb)"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "probes on the near-final pack (pr252m): G filed exactly the default path's six (architecture 1's full model, no line), H the first-port five; neither read the flushes"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "stage 2 left on precut 51 of 51; stage 3 free gates green on target.zip af7016cf (checks 130 passed, verify 0 failures, two byte-identical builds, figures_check 35 of 35, leak.py REVIEW, guard heart WARN only, pair ceiling 35.4); stage 4 launched: two scored readers and the judge"
   }
  ]
 }

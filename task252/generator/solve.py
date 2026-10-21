@@ -41,9 +41,18 @@ def load(target):
     for r in list(reg["Analysers"].iter_rows(values_only=True))[1:]:
         code = r[0].split("-")[1]
         D[code]["order"] = [{"RW1": "raw", "FI1": "fil", "FW1": "fin"}[p.strip().split("-")[1]] for p in r[5].split(">")]
+    port = {"RW1": "raw", "FI1": "fil", "FW1": "fin"}
     for c in P.CODES:
         x = D[c]
-        x["sl"] = np.array([x["order"][i % 3] for i in range(P.NS)])
+        o = x["order"]
+        sl = np.array([""] * P.NS, dtype=object)
+        x["brk"] = np.zeros(P.NS, bool)           # the sequence starts again at a port it would not have reached
+        for i in range(P.NS):
+            nxt = o[(o.index(sl[i - 1]) + 1) % 3] if i else o[0]
+            lab = port.get(x["point"][i].split("-")[-1]) if x["point"][i] else None
+            sl[i] = lab or nxt                     # a check cycle or a slot with no row keeps the sequence going
+            x["brk"][i] = bool(lab) and i > 0 and lab != nxt
+        x["sl"] = sl
         cell = x["val"].copy()
         m = ~np.isnan(x["v"])
         cell[m] = x["v"][m]                         # the cell held the standard on a check cycle
@@ -206,7 +215,102 @@ def attribute(x, L, code, chk, corrected=True, k=None):
     return ("zero" if so < sg else "span"), dev, so, sg
 
 
-def offsets(target, carry="G", check="corr", D=None, L=None, C=None, **fit_kw):
+def visits(target):
+    """the monthly sample-line flushes in the register's planned maintenance log, as slots of the quarter (earlier
+    visits negative)"""
+    wb = load_workbook(os.path.join(target, "online_analyser_register.xlsx"), read_only=True)
+    out = {c: [] for c in P.CODES}
+    for r in list(wb["Planned maintenance"].iter_rows(values_only=True))[1:]:
+        if str(r[3]).startswith("Monthly planned maintenance"):
+            out[r[1].split("-")[1]].append(P.slot_of(r[0].replace(tzinfo=P.NZ)))
+    return {c: sorted(v) for c, v in out.items()}
+
+
+def ages(idx, fl):
+    """days since the last flush at or before each slot"""
+    fl = np.array(sorted(fl))
+    last = fl[np.searchsorted(fl, idx, side="right") - 1]
+    return (idx - last) * P.SLOT_MIN / 1440.0
+
+
+_DESIGN = {}
+
+
+def _design(x, s, lg):
+    """the channel's G slots with both slots before them read, and the level and raw-lag columns, kept per channel
+    (the arrays are held with the key so a later channel cannot take this one's id)"""
+    key = (id(x), s, tuple(lg))
+    if key not in _DESIGN:
+        allg = np.where((x["sl"] == s) & x["g"])[0]
+        idx = allg[allg >= max(lg)]
+        p1 = x["cell"][idx - 1]; p2 = x["cell"][idx - 2]
+        ok = ~np.isnan(p1) & ~np.isnan(p2)
+        idx, p1, p2 = idx[ok], p1[ok], p2[ok]
+        rf = _rawfull(x)
+        R = np.column_stack([np.ones(idx.size)] + [rf[idx - L] for L in lg])
+        Q = np.linalg.qr(R)[0]
+        _DESIGN[key] = (x, allg, idx, p1, p2, R, Q)
+    return _DESIGN[key][1:]
+
+
+def recovery(x, s, inf, fl, lags_slots=None, form="exp", window=None, corrected=True):
+    """the channel's readings with the analyser's carryover and calibration taken out reading by reading, fitted on the
+    days since the last line flush: a level, the raw water at the transit lags (the water's own response) and b times
+    (1 - exp(-age / tau)), the loss the line's biofilm takes as it grows back, tau searched over 0.05 to 20 days.
+    Returns the fitted level, b, tau, the share lost when grown (-b over the level), each flush's step (the six hours
+    after it against the two days before) and the quarter mean of the loss term over the channel's G readings. form
+    'pwl' fits a loss growing in a straight line to a plateau instead; window=H takes the clean level as the mean of
+    the first H hours after the flushes; corrected=False fits the readings as they stand"""
+    k1, k2 = inf["k"]
+    lg = lags_slots or LAGS
+    allg, idx, p1, p2, R, Q = _design(x, s, lg)
+    lvl = float(np.mean(x["val"][allg]))
+    cal = 0.0 if inf["kind"] is None else (inf["dev"] if inf["kind"] == "zero" else inf["dev"] / P.CHECK_STD * lvl)
+    r = x["val"][idx]
+    y = r - (k1 * (p1 - r) + k2 * (p2 - r)) / (1 - k1 - k2) - cal
+    if not corrected:                              # the readings as they stand, the loss read in reading units
+        y = r.copy()
+    a = ages(idx, fl)
+    q = [f for f in fl if 0 <= f < P.NS]
+    steps = [float(y[(idx >= f) & (idx < f + 36)].mean() - y[(idx < f) & (idx >= f - 288)].mean())
+             for f in q if np.any((idx >= f) & (idx < f + 36)) and np.any((idx < f) & (idx >= f - 288))]
+    if window:
+        post = float(np.concatenate([y[(idx >= f) & (idx < f + int(window * 6))] for f in q]).mean())
+        loss = float(np.mean(y)) - post
+        return dict(level=post, b=loss, tau=None, share=-loss / post, steps=steps, lossbar=loss)
+    yr = y - Q @ (Q.T @ y)
+
+    def shape(t, ag):
+        return (1 - np.exp(-ag / t)) if form == "exp" else np.minimum(ag, t) / t
+
+    def score(t):
+        h = shape(t, a)
+        hr = h - Q @ (Q.T @ h)
+        hh = float(hr @ hr)
+        return -(float(hr @ yr) ** 2) / hh if hh > 0 else 0.0
+
+    lo, hi = (0.05, 20.0) if form == "exp" else (0.2, 10.0)
+    grid = np.exp(np.linspace(np.log(lo), np.log(hi), 61))
+    sc = [score(t) for t in grid]
+    j = int(np.argmin(sc))
+    fine = np.exp(np.linspace(np.log(grid[max(j - 1, 0)]), np.log(grid[min(j + 1, 60)]), 41))
+    tau = float(fine[int(np.argmin([score(t) for t in fine]))])
+    h = shape(tau, a)
+    c = np.linalg.lstsq(np.column_stack([R, h]), y, rcond=None)[0]
+    b = float(c[-1])
+    level = float(R.mean(axis=0) @ c[:-1])
+    hall = shape(tau, ages(allg, fl))
+    return dict(level=level, b=b, tau=tau, share=-b / level if level > 0 else 0.0, steps=steps,
+                lossbar=float(np.mean(b * hall)))
+
+
+def recovers(rec):
+    """the golden's reading of the flushes: a channel whose readings rise after every flush of the quarter and whose
+    fitted loss takes a quarter or more of the water when grown back"""
+    return bool(rec["steps"]) and all(v > 0 for v in rec["steps"]) and rec["share"] >= 0.25
+
+
+def offsets(target, carry="G", check="corr", D=None, L=None, C=None, line="fit", V=None, rec_kw=None, **fit_kw):
     """check: 'corr' (the golden), 'naive' (the two-point read without the raw port's carryover), 'span' (every
     shortfall a span error), 'zero' (every shortfall added as an offset), 'none' (checks passed, nothing done)"""
     D = D or load(target); L = L or lims(target); C = C or checks(target)
@@ -232,6 +336,12 @@ def offsets(target, carry="G", check="corr", D=None, L=None, C=None, **fit_kw):
             level = float(np.mean(x["val"][idx]))
             cal = 0.0 if kind is None else (dev if kind == "zero" else dev / P.CHECK_STD * level)
             out[(code, s)] = fits[s]["co"] + cal
+            if line != "none":
+                V = V or visits(target)
+                rec = recovery(x, s, info[code], V[code], **(rec_kw or {}))
+                info[(code, s)] = rec
+                if line == "all" or recovers(rec):
+                    out[(code, s)] += rec["lossbar"]
     return out, info
 
 
@@ -307,14 +417,24 @@ def whole_plant(x, a, b):
     return bool(np.all(x["f"][a:b + 1] & ~x["g"][a:b + 1]))
 
 
+def restarted(x, b):
+    """the analyser's sequence starts again after slot b at a port the sequence would not have reached: the analyser
+    had stopped and been switched back on"""
+    return bool(np.any(x["brk"][b + 1:min(b + 4, P.NS)]))
+
+
 def telemetry(x, rule="plc"):
     """the slots of the unfilled runs that were the historian's alone, the PLC reading its analyser throughout. 'plc'
-    (the golden): every port unfilled and no check after it, since a failed poll takes the plant's whole record and a
-    fault is followed by the technician's check, while a run at one port with the others read either side is a reading
-    the PLC never had; 'checked': any run with no check after it; 'allport': any run at every port"""
+    (the golden): every port unfilled, no check after it and the analyser's sequence running on unbroken across it,
+    since a failed poll takes the plant's whole record while the analyser goes on reading, a fault is followed by the
+    technician's check, and an analyser that stopped starts its sequence again at the raw water port when it is switched
+    back on; a run at one port with the others read either side is a reading the PLC never had. 'nophase' (the round 4
+    reader's rule): every port unfilled and no check after it; 'checked': any run with no check after it; 'allport':
+    any run at every port"""
     out = np.zeros(P.NS, bool)
     for a, b in runs(x):
-        hit = {"plc": whole_plant(x, a, b) and not checked(x, b), "checked": not checked(x, b),
+        hit = {"plc": whole_plant(x, a, b) and not checked(x, b) and not restarted(x, b),
+               "nophase": whole_plant(x, a, b) and not checked(x, b), "checked": not checked(x, b),
                "allport": whole_plant(x, a, b)}[rule]
         if hit:
             out[a:b + 1] = True
@@ -324,7 +444,7 @@ def telemetry(x, rule="plc"):
 def fil_good(x, how):
     """the filtered water slots with a reading the PLC had, as each path reads the export"""
     fi = np.where(x["sl"] == "fil")[0]
-    if how in ("plc", "nohold", "checked", "allport"):
+    if how in ("plc", "nohold", "checked", "allport", "nophase"):
         tel = telemetry(x, "plc" if how == "nohold" else how)
         good = (~(x["f"][fi] & ~x["g"][fi]) | tel[fi]) & np.isnan(x["v"][fi])
     elif how == "faults":
@@ -371,7 +491,12 @@ if __name__ == "__main__":
     G = golden(tg)
     for k, v in sorted(G["off"].items()):
         print("%-8s %+.4f %s" % (name(k), v, "FLAG" if k in G["flags"] else ""))
-    for c, i in G["info"].items():
+    for c in P.CODES:
+        i = G["info"][c]
         print(c, "k1 %.3f k2 %.3f dev %+.4f %s" % (i["k"][0], i["k"][1], i["dev"], i["kind"]))
+        for s in ("fil", "fin"):
+            r = G["info"][(c, s)]
+            print("   %s share %+.2f tau %.2f lossbar %+.4f steps %s %s" % (s, r["share"], r["tau"], r["lossbar"],
+                  " ".join("%+.4f" % v for v in r["steps"]), "RECOVERS" if recovers(r) else ""))
     print("ask A", G["ask_a"])
     print("ask B", {c: round(v, 1) for c, v in G["ask_b"].items()})

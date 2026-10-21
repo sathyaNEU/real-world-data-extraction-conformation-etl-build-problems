@@ -132,8 +132,9 @@ def process(path, W):
          _table(rows, [24, 30, 26, 32, 30, 30]),
          Paragraph("Ammonia analysers", h2),
          Paragraph("Each plant has one colorimetric ammonia analyser (salicylate method, range 0 to 5 mg/L as N) with a "
-                   "three-stream sequencer. The sequencer passes each sample point's water through the same sample line "
-                   "and measuring cell for ten minutes in turn, so each sample point is read every 30 minutes. The "
+                   "three-stream sequencer. Each sample point's water comes to the analyser in its own sample line, and the "
+                   "sequencer passes each in turn through the one measuring cell for ten minutes, so each sample point is "
+                   "read every 30 minutes. The "
                    "analyser's reading for a port is the measurement at the end of that port's ten minutes. A fault "
                    "(reagent, measuring cell or a blocked sample line) stops the readings it affects until a technician "
                    "clears it.", body),

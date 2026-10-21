@@ -18,6 +18,7 @@ SEED_REPAIR = 2524         # the technicians' checks on the standard after clear
 SEED_DUP = 2525            # the laboratory's second logging of the delayed 7 December round
 SEED_SIGNAL = 2526         # signal faults: a port's reading lost between the analyser and the PLC
 SEED_BENCH = 2527          # the bench's start each morning and the release of each run's results
+SEED_TRIP = 2528           # the storm nights: each analyser's supply tripping and the operator's reset
 
 PLANTS = [("ASH", "Ashcombe"), ("BRN", "Brannock"), ("CAL", "Calderwood"), ("DUN", "Dunmere"), ("ELS", "Elstow"),
           ("FEN", "Fenwick"), ("GAR", "Garrick"), ("HOL", "Holmedale")]
@@ -28,6 +29,11 @@ WEAK = {"ASH", "DUN", "FEN"}                         # raw-water ammonia passes 
 HIGH = {"CAL", "GAR", "HOL"}                         # dairy catchments: raw ammonia two to three times the others'
 ZERO = {"HOL": -0.0085}                              # contaminated zero water: reads low by a constant
 GAIN = {"CAL": 0.91}                                 # weak reagent: reads low in proportion
+FOUL = {"CAL": (0.65, 2.0), "HOL": (0.95, 2.0)}      # unchlorinated filtered sample line's nitrifying film: share of
+                                                     # the ammonia it takes when grown, days to grow back after a flush
+FIL_LIFT = {"HOL": 0.0035}                            # Holmedale's filtered water a little above the others'
+STORMS = {(2027, 10, 26): ("ASH", "CAL", "DUN", "GAR"),       # nights whose lightning tripped four analysers' supply
+          (2027, 12, 3): ("BRN", "ELS", "FEN", "HOL")}
 ORDER = {"ASH": "rnf", "BRN": "rnf", "CAL": "rfn", "DUN": "rnf", "ELS": "rnf", "FEN": "rnf", "GAR": "rfn",
          "HOL": "rfn"}
 STREAM = {"r": "raw", "f": "fil", "n": "fin"}

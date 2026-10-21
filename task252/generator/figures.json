@@ -1,28 +1,53 @@
 {
- "call": "BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1",
+ "call": "BRN-FW1, CAL-FI1, DUN-FW1, ELS-FW1, GAR-FI1 and GAR-FW1",
  "threshold": 0.005,
  "check_standard": 0.1,
  "n_flagged": 6,
  "flagged": [
   "BRN-FW1",
+  "CAL-FI1",
   "DUN-FW1",
   "ELS-FW1",
   "GAR-FI1",
-  "GAR-FW1",
-  "HOL-FI1"
+  "GAR-FW1"
  ],
- "flag_band_low": 0.0085,
- "flag_band_print": 0.007,
- "unflagged_band_high": 0.0028,
+ "flag_band_low": 0.0073,
+ "flag_band_print": 0.006,
+ "unflagged_band_high": 0.0031,
+ "unflagged_band_print": 0.004,
  "hol_zero_error": -0.008,
  "cal_span_pct": 8,
- "cal_span_treated": 0.002,
- "hol_fw1_carry": 0.009,
  "carry_share_1": 7,
  "carry_share_2": 2,
  "carry_share_healthy": 1,
- "hol_fw1_offset": 0.001,
- "default_path": "BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1, HOL-FI1 and HOL-FW1",
+ "default_path": "BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1",
+ "hol_fi1_before_line": 0.018,
+ "cal_fi1_before_line": 0.001,
+ "hol_fi1_offset": -0.002,
+ "cal_fi1_offset": -0.01,
+ "cal_fi1_bound": 0.007,
+ "line_share": {
+  "CAL-FI1": 0.59,
+  "HOL-FI1": 1.0
+ },
+ "line_share_words": {
+  "CAL-FI1": "about 60 per cent",
+  "HOL-FI1": "nearly all"
+ },
+ "line_tau_days": 2.0,
+ "line_step_low": {
+  "CAL-FI1": 0.009,
+  "HOL-FI1": 0.018
+ },
+ "line_step_high": {
+  "CAL-FI1": 0.011,
+  "HOL-FI1": 0.02
+ },
+ "line_loss_mean": {
+  "CAL-FI1": 0.01,
+  "HOL-FI1": 0.019
+ },
+ "other_loss_max": 0.002,
  "worn": [
   "Brannock",
   "Dunmere",
@@ -43,72 +68,90 @@
   "Holmedale": 11
  },
  "ask_b": {
-  "Ashcombe": 25.0,
-  "Brannock": 23.0,
-  "Calderwood": 22.0,
-  "Dunmere": 28.5,
-  "Elstow": 20.5,
-  "Fenwick": 41.0,
-  "Garrick": 17.5,
-  "Holmedale": 22.0
+  "Ashcombe": 31.2,
+  "Brannock": 27.8,
+  "Calderwood": 35.8,
+  "Dunmere": 32.2,
+  "Elstow": 26.7,
+  "Fenwick": 34.8,
+  "Garrick": 31.3,
+  "Holmedale": 29.3
  },
  "offsets": {
   "ASH-FI1": 0.0001,
-  "ASH-FW1": 0.001,
+  "ASH-FW1": 0.0011,
   "BRN-FI1": -0.0003,
-  "BRN-FW1": 0.0116,
-  "CAL-FI1": 0.0011,
-  "CAL-FW1": -0.0008,
+  "BRN-FW1": 0.0115,
+  "CAL-FI1": -0.0098,
+  "CAL-FW1": -0.0012,
   "DUN-FI1": 0.0001,
-  "DUN-FW1": 0.0121,
+  "DUN-FW1": 0.0122,
   "ELS-FI1": -0.0004,
-  "ELS-FW1": 0.0092,
-  "FEN-FI1": 0.0002,
+  "ELS-FW1": 0.0091,
+  "FEN-FI1": 0.0003,
   "FEN-FW1": 0.0007,
-  "GAR-FI1": 0.0266,
-  "GAR-FW1": 0.0115,
-  "HOL-FI1": 0.0155,
-  "HOL-FW1": 0.0008
+  "GAR-FI1": 0.0267,
+  "GAR-FW1": 0.0112,
+  "HOL-FI1": -0.0017,
+  "HOL-FW1": -0.0001
  },
  "carry": {
   "ASH-FI1": 0.0001,
-  "ASH-FW1": 0.001,
+  "ASH-FW1": 0.0011,
   "BRN-FI1": -0.0003,
-  "BRN-FW1": 0.0116,
-  "CAL-FI1": 0.0027,
-  "CAL-FW1": 0.0007,
+  "BRN-FW1": 0.0115,
+  "CAL-FI1": 0.0014,
+  "CAL-FW1": 0.0003,
   "DUN-FI1": 0.0001,
-  "DUN-FW1": 0.0121,
+  "DUN-FW1": 0.0122,
   "ELS-FI1": -0.0004,
-  "ELS-FW1": 0.0092,
-  "FEN-FI1": 0.0002,
+  "ELS-FW1": 0.0091,
+  "FEN-FI1": 0.0003,
   "FEN-FW1": 0.0007,
-  "GAR-FI1": 0.0266,
-  "GAR-FW1": 0.0115,
-  "HOL-FI1": 0.0235,
-  "HOL-FW1": 0.0088
+  "GAR-FI1": 0.0267,
+  "GAR-FW1": 0.0112,
+  "HOL-FI1": 0.0255,
+  "HOL-FW1": 0.0079
+ },
+ "line": {
+  "ASH-FI1": 0.0,
+  "ASH-FW1": 0.0,
+  "BRN-FI1": 0.0,
+  "BRN-FW1": 0.0,
+  "CAL-FI1": -0.0104,
+  "CAL-FW1": 0.0,
+  "DUN-FI1": 0.0,
+  "DUN-FW1": 0.0,
+  "ELS-FI1": 0.0,
+  "ELS-FW1": 0.0,
+  "FEN-FI1": 0.0,
+  "FEN-FW1": 0.0,
+  "GAR-FI1": 0.0,
+  "GAR-FW1": 0.0,
+  "HOL-FI1": -0.0192,
+  "HOL-FW1": 0.0
  },
  "analysers": {
   "ASH": {
-   "k1": 0.005,
+   "k1": 0.006,
    "k2": 0.001,
    "check_mean": 0.0996,
    "form": "none"
   },
   "BRN": {
-   "k1": 0.073,
+   "k1": 0.072,
    "k2": 0.019,
    "check_mean": 0.1011,
    "form": "none"
   },
   "CAL": {
-   "k1": 0.006,
-   "k2": 0.002,
+   "k1": 0.003,
+   "k2": 0.001,
    "check_mean": 0.0916,
    "form": "span"
   },
   "DUN": {
-   "k1": 0.077,
+   "k1": 0.078,
    "k2": 0.019,
    "check_mean": 0.0993,
    "form": "none"
@@ -121,7 +164,7 @@
   },
   "FEN": {
    "k1": 0.003,
-   "k2": 0.001,
+   "k2": 0.002,
    "check_mean": 0.0996,
    "form": "none"
   },
@@ -132,7 +175,7 @@
    "form": "none"
   },
   "HOL": {
-   "k1": 0.069,
+   "k1": 0.07,
    "k2": 0.02,
    "check_mean": 0.092,
    "form": "zero"

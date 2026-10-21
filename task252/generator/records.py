@@ -47,6 +47,7 @@ def readings(W):
             comms[s:e] = True
         a, b = x["lost"]
         sa, sb = x["swap"]
+        ta, tb = x["trip"] or (0, 0)
         for i in range(P.NS):
             if a <= i < b:
                 continue
@@ -55,7 +56,7 @@ def readings(W):
                 rows.append((code, tg, ts, "%s-CHK" % code, "%.3f" % chk[i], "V"))
                 continue
             sp = P.point(code, x["sl"][i])
-            if fault[i] or sa <= i < sb:
+            if fault[i] or sa <= i < sb or ta <= i < tb:
                 rows.append((code, tg, ts, sp, "", "F"))
                 continue
             if comms[i]:
@@ -126,9 +127,12 @@ def rainfall(W, rng):
               ("RG05", "Sedge at the Quarry")]
     rows = []
     wet = rng.random(P.DAYS) < 0.38
+    storm = np.random.default_rng(P.SEED_TRIP + 7)
     for d in range(P.DAYS):
         day = dt.date(2027, 10, 1) + dt.timedelta(days=d)
         for g, name in gauges:
             mm = float(rng.gamma(1.2, 7.0)) if (wet[d] and rng.random() < 0.85) else (0.2 if rng.random() < 0.12 else 0.0)
+            if (day.year, day.month, day.day) in P.STORMS:          # the two thunderstorm nights
+                mm = float(storm.uniform(31, 79))
             rows.append((day.isoformat(), g, name, "%.1f" % mm))
     return rows
