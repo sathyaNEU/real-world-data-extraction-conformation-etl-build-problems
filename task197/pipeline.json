@@ -1,7 +1,7 @@
 {
   "task": "task197",
   "owner": "oviya13ya",
-  "status": "RETURNED",
+  "status": "SHIPPED",
   "stage": 5,
   "architecture": "v1",
   "objective": "anomaly-detection",
@@ -9,7 +9,7 @@
   "subdomain": "grid-reliability-outage-analysis",
   "drawn": "2026-10-17",
   "card": ".claude/skills/fingerprint/cards/task197.json",
-  "resume": "RETURNED on measurement, not on a portal result, and the call HELD: the reader filed the wrong site at 57 per cent on 152 episodes against 72 per cent on 134, confidently, so the ladder works. The ask layer leaked 24 of 49, which fails Gate F by itself. /fix-rubric with the main recommendation side frozen: re-site the primary devices.",
+  "resume": "SHIPPED and holding. The wave 8 audit's first scoring said the ask layer leaked 49 per cent and was wrong: score_reader.py counted provenance keys as graded figures, and re-scored the layer sits at 4 of 29. The real leak is two figures, ask C's portfolio totals, which the reader reached by correlating the meter series against the programme at 0.999 and shifting the interval stamps back fifteen minutes, so the D6 interval-index device is findable by the one cut the ask sheet names as its only evidence. Asks A and B held. Ask B's twelve figures are unmeasured, the reader not having attempted them, and are owed a reader that does.",
   "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
   "gates": {
     "checks.py": "84 checks, 0 failed (floor 40)",
@@ -27,7 +27,7 @@
   },
   "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
   "stage_name": "ship",
-  "updated": "2026-10-20",
+  "updated": "2026-10-21",
   "ask_layer": {
     "figures": 50,
     "primaries": "A D9 the minute summary against its own seconds; B D8 the logged clock against start_local; C D6 the meter interval index",
@@ -37,7 +37,7 @@
   },
   "leak": {
     "leak_py": "REVIEW, 0 LEAK",
-    "reader": "wave 8 audit: 0 of 4, the call MISSED, asks 24 of 49"
+    "reader": "wave 8 audit re-scored 2026-10-21 with provenance keys excluded: call 0 of 4 and wrong on every figure, ask layer 4 of 29 (13.8 per cent), PASS. The earlier 24 of 49 counted 20 pack row counts, stated constants and window dates as graded figures."
   },
   "judge": {
     "verdict": "DETERMINISTIC",
@@ -80,12 +80,5 @@
     "also_reported": "the asset register ships no old metering point for OOS so the pre-October EAN is matchable only by elimination; the metered file carries one point in kWh with no sentence saying so; and the interval labels are interval-end with no sentence saying so. All three are designed Layer 1."
   },
   "delivered": "2026-10-18",
-  "returned": [
-    {
-      "date": "2026-10-20",
-      "portal": "wave 8 audit, measured in house",
-      "repair": "rubric",
-      "commit": ""
-    }
-  ]
+  "returned": []
 }

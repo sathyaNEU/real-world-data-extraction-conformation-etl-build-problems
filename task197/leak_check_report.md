@@ -115,3 +115,45 @@ ask figures    24 of 49 hit (49.0 per cent)
 FAIL  the ask layer leaks 49.0 per cent, at or over the 35 bar. Re-site the devices:
       a reader hit means the device is absent from its path, not weak.
 ```
+
+
+## Correction to the wave 8 audit, 2026-10-21: this build passes, and the earlier failure was my instrument
+
+The entry above reports the ask layer at 24 of 49 and calls Gate F failed. **That was wrong, and the fault
+was in `score_reader.py` rather than in this build.** The scorer treated every figures.json key that is not
+the call as a graded ask figure, and this build files its provenance there: the pack's row counts
+(`counts.freq_1s`, `counts.commitments`, `counts.metered` and nine more), the standard's own stated constants
+(`constants.qualify_under_hz`, `constants.deadband_mhz`, the 90 per cent tolerance and five more) and the
+window's dates. **Twenty of the twenty-four hits were those.** None is a rubric criterion: a reader that
+reads 111,454 rows out of a file and repeats the standard's own 49.920 Hz threshold has demonstrated nothing.
+
+### Re-scored with the provenance keys excluded
+
+| block | hit |
+|---|---|
+| main call | **0 of 4**, and wrong on every figure (a different site at 57 per cent on 152 episodes against 72 on 134, filed at about 85 per cent confidence) |
+| ask figures | **4 of 29** (13.8 per cent), under the fifth the pair arithmetic budgets |
+
+```
+provenance, not graded by the submission, so not scored (20): as_of, constants.deadband_mhz, constants.full_activation_mhz, constants.qualify_over_hz, constants.qualify_secs, constants.qualify_under_hz, constants.span_hz, constants.tolerance_pct, counts.auction_results, counts.commitments, counts.dictionary, counts.event_log, counts.freq_1s, counts.freq_min ...
+
+call figures   0 of 4 hit
+ask figures    4 of 29 hit (13.8 per cent)
+
+PASS  the call missed and the ask layer holds under a fifth.
+```
+
+**The real leak is two figures, and it is ask C's device.** Of the four hits, the standard's 90 per cent
+tolerance and an 11-point gap that coincided are not device figures; the two that are, are ask C's portfolio
+totals, 114.4 MWh above programme and 242.6 below. The reader said how it got them: "the meter file's
+interval timestamps are interval ends. Shifted back 15 minutes they match the programme at a correlation of
+0.999." That is exactly the evidence the ask sheet names as the device's only evidence, the programme the
+rows are paired against, and a careful solver runs that correlation. **So ask C's D6 interval-index device is
+findable, while asks A and B held: every one of the nine under-frequency gains, the eight over-frequency
+gains and the episode count missed.** Ask B's twelve figures the reader did not attempt at all, so they are
+unmeasured rather than held.
+
+**Disposition: no rubric repair.** The layer holds under a fifth, and `/fix-rubric` exists to pull a layer
+back under the bar rather than to polish one that is already there. Ask C's two portfolio totals are a
+known, measured, recorded leak of two figures in twenty-nine, and ask B is owed a measurement by a reader
+that answers it. The status returns to SHIPPED.

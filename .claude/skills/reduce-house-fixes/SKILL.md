@@ -352,6 +352,29 @@ stops on a false finding or learns to ignore the gate, and the second is worse: 
 colliding cards' `drawn` dates against the build's own. A collision with a later card is an artifact: record it
 with the dates and carry on. A gate meant to run at two different times says which comparison set it used.
 
+## H28. A measurement whose denominator is whatever the generator happened to file
+
+**The defect.** A score is reported as a fraction of "the figures", where the denominator is every key in a
+generator's own figures file rather than the figures the rubric grades. Builds file their provenance there
+beside the graded answers, so the denominator and the numerator both swell with things no rubric scores, and
+the percentage says more about a build's filing habits than about the build.
+
+**The measured instance.** A scored reader was reported as leaking 24 of 49 ask figures, 49 per cent, and the
+build was sent for a rubric repair on that number. **Twenty of the twenty-four hits were the pack's own row
+counts, the governing standard's stated constants and the window's dates**: a reader that counts 111,454 rows
+in a file and repeats a published 49.920 Hz threshold has shown nothing. Re-scored with those excluded the
+layer sat at 4 of 29, under the bar, and the build needed no repair at all. The real leak was two figures,
+which the same output had buried among twenty-two irrelevancies.
+
+**What it costs.** A whole repair aimed at the wrong build, and the right finding, two figures with a named
+cause, hidden inside a number that looked decisive. It also cuts the other way: a build that files little
+provenance is scored harshly beside one that files a lot.
+
+**The check.** State a score's denominator before reading the score, and make the instrument print what it
+excluded so the exclusion can be argued with. `score_reader.py` now drops a printed list of provenance
+prefixes and offers `--all-keys` to turn it off. More generally: when a measurement decides work, read one
+case's rows by hand before trusting the fraction.
+
 ## Adding an entry
 
 An entry is a **class** a future build could repeat with other nouns; anything else goes in the design

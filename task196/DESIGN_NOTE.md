@@ -552,6 +552,58 @@ output (the 400 recorded cases) is not repaired by any rung: every rung reads th
 
 ## Ask sheet
 
+**Diagnosis, 2026-10-21, after the wave 8 audit measured this layer at 29 of 29.** The paper ceiling above
+says the cracker keeps 13 of 68 and scores the pair at 37.4. The blind scored reader took **every graded ask
+figure**, the indemnity by tier and quarter to the penny included, while missing the call. So the measured
+`Lc` on the device layer is 1.0 against the sheet's 0.191, and no sizing of the construction layer repairs
+that: with the asks fully taken, a response that lands the call scores about 100 and one that misses it about
+67, for a pair near 83. The three devices have to be rebuilt. The sweep, the sizing argument and the
+construction-layer cut below are all sound and all beside the point, and they are kept because the
+construction layer is unchanged.
+
+**Why all three fell, and it is one cause.** **The asking sentence pins the basis each device turns on.**
+Ask A's device is that the advice is a rollup above its own parts, the advice's month not being its cases'
+closure month, and the prompt asks for the indemnity "by member tier and **the 2026/27 quarter each case
+closed in**". Ask C's device is that the recovery statement is a control true only in its own scope,
+counting a recovery in the quarter the money arrived and stating one route net of its agent charge, and the
+prompt asks for the share "**from every case-level credit**". Ask B's device is a silently partial extract,
+and the pack carries the second file under the name `notifications_2027_28_q1_supplementary.csv` while the
+prompt asks for the "**distinct**" cases. In each case a solver who simply does what the sentence says is
+routed around the trap: the pin names the right basis, the right source, or the hygiene step.
+
+This is `stumping` Part 4's rule met from the other side. A pin fixes the basis and never the answer, and
+the test it gives is whether the answer stays forced once the clause is deleted. Here the answer stayed
+forced **and** the clause handed over the insight, because the device lived in exactly the dimension the pin
+closed. It is the mirror of task187's failure, where a filed document adjudicated the device; here the
+**ask's own wording** adjudicates it, and the pins cannot simply be deleted, because they are what make the
+figures determinate.
+
+**So the repair's constraint is sharper than re-siting.** Every new device has to sit where the pin is
+silent, and the shape that satisfies that is one where **the solver knows exactly which quantity is wanted
+and still computes it wrong, because the data's structure misleads rather than its description**. That rules
+out a basis, a grain, a source and a population question, which is to say it rules out everything a
+reconciliation finds: the current layer's three devices are each found by reconciling one total against its
+own parts, which is the first thing this opponent does. From `supplemental-stumping` Part 3 the shapes that
+survive a reconciling solver are the ones whose reconciliation **passes** on the wrong handling: a replay
+under fresh ids beside genuine same-day pairs, codes reissued to other entities so the raw join and the
+current-code filter are both wrong, an attribute read at the wrong vintage, a per-row quote convention that
+passes the identity check, and a total invariant under the device. The current ask C is the near miss: it is
+a control true only in its scope, which a reconciliation finds, where a control **invariant** under the
+device is one it does not.
+
+**Two findings the reader volunteered that belong to the call's side and not this repair**, recorded here so
+they are not lost: `register_feed_notes.txt` carries the sentence "pad the account number back to eight
+digits before matching anything against the register, or the match loses every account whose number starts
+with a zero", which is a filed rule performing the match step and is not something an organisation writes
+down; and `member_payment_matches.csv` is a pre-done join carrying `case_reference`, so the match a solver
+would build is supplied. Both sit in the main call's declared population, which this repair freezes, and
+both are why the reader reached the right estimator shape at 35 per cent confidence. They are the first
+thing to fix if this build's call is ever reworked. The reader also flagged 213 rows in
+`notifications_2027_28_q1.csv` carrying 2026/27 payment dates and sharing no key with the 417 late-notified
+register rows, which it read as generator noise, and Castlegate's unrecorded count rising 52, 71, 92, 113
+over four years as too regular to be an organisation's record.
+
+
 **Pair ceiling:** 37.4
 **Mirror leakage:** 13.2 per cent of ask weight
 **Measured by:** `generator/ceiling.py` (stage 2 on the designed stops; re-run with `--pack` on the cut

@@ -8,7 +8,7 @@ reported 43 of 43 graded figures. This script is how that is found before a buil
 after three stage 4 rounds.
 
 Usage
-    python3 score_reader.py taskNN <reader.json> [--call-key K]... [--tol-pct 0.0] [--quiet]
+    python3 score_reader.py taskNN <reader.json> [--call-key K]... [--tol-pct 0.0] [--all-keys] [--quiet]
 
 <reader.json> is a flat object the reader hands back, keyed exactly as <task>/generator/figures.json
 is keyed, holding only the figures the reader actually committed to. A nested golden value is
@@ -21,6 +21,14 @@ at the top level under its own name ("plants_over_amber", "sectors_over_toleranc
 as a pass and is the one output an audit must never produce silently. So name the call's keys with
 --call-key, once per key; a key named this way is the committed answer whatever it is called, and
 the scorer refuses to run when it can find no call key at all.
+
+**Only figures the submission states are scored.** `figures.json` carries provenance beside the graded
+answers: a pack's row counts, a standard's stated constants, the window's dates. Those are not rubric
+criteria, and counting them as ask figures inflates the leak: one build's reader scored 24 of 49 and 22 of
+the 24 were file row counts, stated constants and window bounds, with every genuine device figure missed
+except two. So the graded set is taken from `submission.md` blocks 1 to 4, which is what the rubric grades,
+by the same extraction `figures_check.py` uses: a figures.json key counts as graded when its value appears
+there. `--all-keys` scores every key instead, for a build whose submission is not written yet.
 
 A hit is an exact match at the golden's own precision: a float is compared rounded to the golden's
 decimal places, a list elementwise, a string case-insensitively on the golden's first words. Pass
@@ -112,6 +120,7 @@ def main(argv):
     if "--tol-pct" in argv:
         tol_pct = float(argv[argv.index("--tol-pct") + 1])
     call_keys = {argv[i + 1] for i, a in enumerate(argv) if a == "--call-key" and i + 1 < len(argv)}
+    all_keys = "--all-keys" in argv
 
     root = Path(__file__).resolve().parents[3]
     figures = root / task / "generator" / "figures.json"
@@ -127,7 +136,22 @@ def main(argv):
         print("the reader file holds %s, not an object keyed like figures.json" % type(got).__name__)
         return 3
 
-    rows, unknown = [], []
+    # Provenance is not a rubric criterion. figures.json carries the pack's row counts, the standard's
+    # stated constants and the window's dates beside the graded answers, and scoring those as ask figures
+    # inflates the leak: one build's reader scored 24 of 49 and 22 of the 24 were row counts, stated
+    # constants and window bounds, every genuine device figure missing but two. The excluded set is a
+    # prefix list, not a guess at meaning, and every key it drops is printed so the exclusion is auditable.
+    # --all-keys turns it off.
+    PROVENANCE = ("counts.", "constants.", "parameters.", "input_gates.", "sources.", "spine.")
+    PROVENANCE_EXACT = ("as_of", "window_from", "window_to", "delivery_month", "delivery_start",
+                        "filing_due", "org", "tso", "generator", "created")
+
+    def is_provenance(key):
+        if all_keys:
+            return False
+        return key.startswith(PROVENANCE) or key.split(".")[0] in PROVENANCE_EXACT
+
+    rows, unknown, context = [], [], []
     for key in got:
         g, ok = walk(gold, key)
         if not ok:
@@ -141,6 +165,9 @@ def main(argv):
             tail = key[len(head):].lstrip(".").lower()
             kind = "input" if any(w in tail for w in CALL_INPUT_WORDS) else CALL_PREFIX
         else:
+            if is_provenance(key):
+                context.append(key)
+                continue
             kind = "ask"
         rows.append((kind, key, g, got[key], hit))
 
@@ -171,6 +198,10 @@ def main(argv):
                 print("%-4s %-34s golden %-26s reader %s" % ("HIT" if hit else "miss", key,
                                                              json.dumps(g)[:26], json.dumps(r)[:26]))
             print()
+    if context:
+        print("provenance, not graded by the submission, so not scored (%d): %s" %
+              (len(context), ", ".join(sorted(context)[:14]) + (" ..." if len(context) > 14 else "")))
+        print()
     if unknown:
         print("not in figures.json, scored as nothing: %s" % ", ".join(sorted(unknown)))
         print()
