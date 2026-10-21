@@ -459,6 +459,58 @@ The pre-ship check, read against the rebuilt pack:
   two byte-identical builds, `figures_check.py` 201 figures with none absent, `leak.py` REVIEW,
   `voice-check.py` PASS, `guard.py validate` 277 cards with none invalid.
 
+## Stage 4: the leak reader, 2026-10-21
+
+**Gate F: it did not land the call, and it filed the default path's answer exactly.** The blind reader, holding
+only `prompt.txt` and a fresh unzip of `target.zip`, committed to Friday 12:00 to 16:00, Thursday 20:00 to
+00:00, Friday 00:00 to 04:00, Saturday 00:00 to 04:00, Friday 16:00 to 20:00, Thursday 16:00 to 20:00, Friday
+20:00 to 00:00 and Sunday 20:00 to 00:00 at about 3,150 covered offences a season, at 55 per cent confidence
+on the eight and 85 per cent on the method. That is the `Ends on:` slate of this note's `## Default path`,
+all eight slots in the same order and the same total, which is as close as this layer gets to a prediction:
+`checks.py` asserts that slate on the generator's clean truth and the reader reached it from the pack. It
+called the even spread "the default" in its own words and said it had not tested weighting the windows
+against footfall or trading hours.
+
+**Questions 1 to 4 and 6, the ones that matter.** Question 1: no file states the decisive step. It named the
+three sentences it leaned on, the dictionary's `occurred_to` line ("The system holds no time between the two,
+and none is derived"), clause 4.2 and clause 4.1, and said it chose its own approach because a slot count
+means apportioning each window and "the default was an even spread". None of the three gives a placement.
+Question 2: none, and it read `harbourgate_patrol_plan_2026.xlsx` correctly as last year's slate rather than
+as a scoring of the candidates. Question 3: none clearly. Question 4: none; it said the 2026 plan's six slots
+read as the incumbent answer but are context. **Question 6: "an analytical choice"**, which is the 10/10
+rule 3 answer the build needs, and it named the choice as how to count offences known only as a window.
+
+**Question 5 is the one for the judge, and it is the designed state.** The reader's answer was that clause 3.1
+and Annex B fix the population literally, five classes at five locations, and that on the occurrence time "the
+literal result for windowed offences is therefore not fixed by any filed sentence". That is HOW left open,
+which `determinism-check` section 1 permits only where the data's structure forces it. The forcing is the
+record's own likelihood and it is measured in `## Ladder`: the even spread is refuted at a likelihood ratio of
+3,035.2 on 167 degrees of freedom, and every other placement by more. The judge rules on whether that is
+forcing; the reader's answer is evidence that no sentence is doing the work.
+
+**Question 7, two realism lines, both measured and both answered rather than patched.**
+
+- The reader's one firm suspicion was that the `KC/20xx/700xxx` crime references are "a separate numbered
+  block holding exactly the Cranstoun rows" and "look injected". Measured on the shipped file, that is false
+  in the way that matters: the block holds **535 rows, of which 326 are at the out-of-scope CR- locations and
+  209 are not**, 39 per cent of it. The 209 are blank-location rows on the same beat, `KC-06`, and all of
+  uncovered classes. So the block is **beat KC-06's own reference range**, which is how a force allocates
+  references, and not a flag on the rows the scope filter drops. It is also redundant rather than a shortcut:
+  the exclusion is by location code, which a solver applies anyway, and it is rung 0 cleaning rather than the
+  stump. Every CR- row is inside the block and the block is not every excluded row, so a solver filtering on
+  the block alone drops 209 rows it should keep, which is the over-correction half. No change.
+- "Many windows run on round hours" is true and load bearing. Measured: of the 20,313 windowed rows **100 per
+  cent have both edges on the hour**, and of the 13,453 exact-time rows **1.7 per cent** do, which is the
+  uniform share. That is how the record reads in life, a victim giving whole hours for a window and a
+  witnessed offence carrying a clock time, and it is what identifies the answer: with every edge on the hour
+  the record cuts the week at 159 distinct hours with no slot edge missing, so all 42 slot figures are settled
+  rather than only their sums. Moving the edges off the hour would take the identification with them, which
+  the `## Tried and rejected` four-hour-grid line already measures. No change.
+- Its remaining notes were that the sensor ids skip FG-03, FG-05 and FG-06 and that Netherbow has no sensor,
+  which is a decommissioned estate reading as one, and that the notes file and dictionary are "tidy, but
+  plausible". No change.
+
+
 ## Guard WARNs, answered
 
 `guard.py heart` is WARN with no BLOCK after the card was brought up to the re-root. One line per WARN, as
