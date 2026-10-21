@@ -135,10 +135,13 @@ Lesson: a within-unit comparison of treated with untreated parts measures the tr
 | SF10 | the four hours | examination time: the latencies exclude the stops of 3.6 | wall time | same call | regulation 3.6; asserted (no stopped sitting's latencies exceed four hours) |
 | SF11 | release 4's latencies | milliseconds | seconds | same call | the data notes; asserted (each release's medians agree once converted) |
 | SF16 | an item written from the same item model as an item shown | not untouched: its excess is in the gain (7.2's counterfactual removes every earlier showing, and 3.4 keeps two items of one model off a form) | an untouched item in the baseline | A, B, D and G | the data: siblings are answered in 0.79 of the candidate's own pace and 0.06 above their ability per item, the untouched items at 1.00 and 0.00 (asserted) |
-| SF12 | a failure of the workstation or its power (ask A) | a WS_FAIL, or the Kochi power cut, after the clock started | the invigilators' pauses, the link losses | the asks only | regulations 3.6 and 7.4; asserted |
-| SF13 | the sitting a failure interrupted (ask A) | the one whose clock was running on that workstation at that moment | the logged booking_ref | the asks only | the event times (asserted: the paths differ on six or more forms) |
-| SF14 | ran in part without the link (ask B) | the clock ran while the workstation's link was down | any loss logged against the booking | the asks only | regulation 7.4 and the data notes (the client carries on); asserted |
-| SF15 | a link loss with no NET_BACK (ask B) | down until the sitting's end | dropped | the asks only | asserted |
+| SF12 | a failure of the workstation or its power (ask A) | a WS_FAIL, a reported failure of the computer, screen, keyboard or mouse, or the Kochi power cut, while the clock ran | the pauses, the changes of seat a candidate asked for, the link losses | the asks only | regulation 3.6 as amended (the workstation's parts named; a change of seat is a pause); asserted (every resume on a spare read as a failure moves all ten forms) |
+| SF13 | a failure the server logged no WS_FAIL for (ask A) | counted from the invigilators' report, which names the spare and the resume | dropped (the log alone) | the asks only | every such failure is reported and resumed on a spare; asserted (the log alone, and the reports alone, each move all ten forms) |
+| SF14 | ran in part without the link (ask B) | the clock ran while the workstation's client had no link | any loss logged against the booking; a loss timed inside the clock only | the asks only | regulation 7.4 and the data notes (the client carries on); asserted |
+| SF15 | a NET_BACK with no NET_LOST before it (ask B) | the client logged in with the link down: without it from its login | dropped | the asks only | the client's login (its tutorial, or its resume on a spare) precedes it; asserted (all ten forms move) |
+| SF17 | the Kochi power cut's minutes on the UPS (ask B) | ran without the link (the router went down at once) | not counted (no rows in the log) | the asks only | the Kochi report; asserted (five forms move) |
+| SF18 | a link loss with no NET_BACK (ask B) | down until the sitting's end | dropped | the asks only | asserted (every such loss began inside the clock) |
+| SF19 | the workstation a report names (ask A) | the sitting the report's spare and resume time name | the workstation as typed | the asks only | each spare and resume time matches one SESSION_RESUME (asserted; about one report in ten carries a mistyped number) |
 
 ## Ladder
 
@@ -210,59 +213,65 @@ highest unflagged 0.6).
 ## Ask sheet
 
 **Ask A, each form's 2027 sittings a failure of the candidate's workstation or its power interrupted (10 figures,
-whole numbers).** H18: regulation 7.4 puts the interrupted sittings in the integrity report beside the flags, the
-record of each form's sittings delivered through a failure; the call reads the two exports, the layouts, the bank
-snapshot, the renumbering, the register and the review bookings, and never the event log, the seat plan or the
-invigilators' reports (asserted). Use: the report's 7.4 table, filed every year. Primary devices: D7, the true key
-elsewhere: the server raises WS_FAIL when a workstation stops answering, and the log export fills the booking from the
-seat plan as it stood at export, so a morning failure at a workstation repaired at lunch and used again in the
-afternoon carries the afternoon's booking (61 of 2027's 119 failures), while the morning candidate resumes on a spare or,
-with a few minutes of work left, has the sitting closed on the saved responses (17 with no resume); only the event times
-place a failure in the sitting whose clock ran on that workstation (the logged booking moves 8 forms, -9 to +4). D4,
-absence as the signal: the Kochi power cut of 19 August 2027 at 11:05 local took the centre's server down with the
-workstations, so the log holds nothing for the sittings it stopped until they resumed, and the invigilators' report
-records the cut (left out, 5 forms move, up to -9). Hazards: the invigilators' pauses (resumes with no failure), the
-link losses, the reboots between sittings. Path: the event log, the seat plan, the invigilators' reports, the
-regulations, the data notes and either export for each booking's form (6 files, 10 columns). Realism: a log export
-that resolves the booking through the current seat plan; a power cut that takes the logging server down with the room.
+whole numbers).** H18: regulation 7.4 puts the interrupted sittings in the integrity report beside the flags; the call
+reads the two exports, the layouts, the bank snapshot, the renumbering, the register and the review bookings, and never
+the event log, the seat plan or the invigilators' reports (asserted). Use: the report's 7.4 table, filed every year.
+Primary devices, split evidence (law 2), neither source enough alone: D4, the provider's server logs WS_FAIL only when
+it stops hearing a workstation while it still hears the centre, so a client that hangs as the centre's link drops under
+it (31 sittings) and a keyboard, mouse or screen that fails under a running computer (33) leave no WS_FAIL, and only the
+invigilators' reports, which name the spare and the resume, carry them; and three in ten of the failures the server
+logged go unreported (the log alone and the reports alone each move all ten forms). D5, the over-clean half: a change of
+seat at a candidate's request also ends on a spare (reported as a request), so every spare resume read as a failure
+moves all ten forms. D7, the true key elsewhere: about one report in ten carries the workstation's number typed wrong
+(two digits swapped, or the seat beside), so the reports mapped through the seat plan by the typed number name the wrong
+sitting (8 forms move); the spare and the resume time each report names match one SESSION_RESUME. D4 again: the Kochi
+power cut of 19 August 2027 leaves the log empty until the sittings resume on their own workstations (five forms move).
+Hazards: the pauses (resumes on the same workstation), the late failures closed on the saved responses, the link
+losses, the reboots between sittings. Path: the event log, the seat plan, the invigilators' reports, the regulations,
+the data notes and either export for each booking's form (6 files, 12 columns). Realism: a heartbeat monitor that
+cannot tell one silent workstation from a silent centre; incident reports typed up after the session.
 
 **Ask B, each form's 2027 sittings that ran in part without the centre's link (10 figures, whole numbers).** H18:
 regulation 7.4's third item, the sittings whose responses were held on the workstation while the link was down; the
-call never reads the event log. Use: the same table. Primary device: D6, a log read as a roster: every seated
-workstation logs the centre's link losses against its booking, a candidate who had finished and one still in the
-tutorial alike, so only a loss overlapping the sitting's clock (SESSION_START to SESSION_END) counts (every loss row
-counted moves all 10 forms, +17 to +41). D4: a loss still running when the session closed has no NET_BACK (67 began
-inside a sitting's clock; dropped, all 10 forms move, -2 to -12). D8: a loss that began in the tutorial and ran into the
-examination counts (a loss timed inside the clock only moves all 10, -4 to -23). Hazards: a flapping link (several
-losses in one sitting count once), losses inside the tutorial alone. Path: the event log, the data notes, the
-regulations and either export for each booking's form (4 files, 6 columns). Realism: a centre's link loss is logged on
-every workstation in the room, and a workstation that closes its session before the link returns logs no NET_BACK.
+call never reads the event log. Use: the same table. Primary devices: D4, a client that logs in (at its tutorial, or at
+its resume on a spare) while the link is already down logs no NET_LOST, only the NET_BACK when the link returns: an
+outage that began before a session's first tutorial leaves only NET_BACK rows (pairing each client's losses drops them:
+all ten forms move); D4 again, the Kochi power cut took the router down at once while the UPS carried the workstations
+for about four minutes, recorded only in the invigilator's report (five forms move). D6, a log read as a roster: a
+finished candidate's client logs the loss too until the session closes (every loss row counted: all ten forms move).
+Hazards: open losses with no NET_BACK, flapping links, losses inside the tutorial alone, a client that hung as the link
+dropped and resumed on a spare. Path: the event log, the data notes, the regulations, the Kochi report and either
+export for each booking's form (5 files, 7 columns). Realism: clients log their own link state and send it when the
+link is back; a router off the UPS.
 
 Main population zero-counts: the event log, the seat plan and the invigilators' reports are read by the asks alone,
 and no file the call reads carries a device row (asserted: separation).
 
-| Hazard | Asks moved | Per-ask deltas (largest) |
+| Hazard | Asks moved | Per-ask deltas (smallest to largest across the forms) |
 |---|---|---|
-| the seat plan's afternoon booking on a morning failure (D7, primary) | A | -9 sittings |
-| the power cut's missing events (D4, primary) | A | -9 sittings |
-| the invigilators' pauses read as failures | A | +16 sittings |
-| every seated workstation's loss rows (D6, primary) | B | +41 sittings |
-| a loss with no NET_BACK dropped (D4) | B | -12 sittings |
-| a loss counted only when it began inside the clock (D8) | B | -23 sittings |
+| failures with no WS_FAIL (hangs at the link loss, keyboards, mice, screens) (D4, primary): the log alone | A | -9 to -1 sittings |
+| failures the server logged and nobody reported (D4): the reports alone | A | -8 to -2 sittings |
+| changes of seat at a candidate's request (D5): every spare resume a failure | A | +1 to +4 sittings |
+| a report's workstation typed wrong (D7): the reports joined by the typed number | A | -2 to +2 sittings |
+| the power cut's missing events (D4) | A | -9 to 0 sittings |
+| clients logged in with the link down (D4, primary): each client's losses paired | B | -27 to -8 sittings |
+| the power cut's minutes on the UPS (D4) | B | -9 to 0 sittings |
+| a finished candidate's client logging the loss (D6): every loss row | B | -16 to +8 sittings |
 
 | Ask row | The cracker (landed the call, hygiene battery, every filed rule executed on the fields it names) | Verdict |
 |---|---|---|
-| Ask A, sittings, all ten forms | each WS_FAIL's logged booking, the power cut's sittings from the invigilators' report, the pauses and link losses left out | miss |
-| Ask B, sittings, all ten forms | each NET_LOST paired with the workstation's next NET_BACK and overlapped with the sitting's clock, a loss with no NET_BACK left out | miss |
+| Ask A, sittings, all ten forms | the WS_FAIL rows with the power cut read off the resumes and the report (the measured readers' route) | miss |
+| Ask B, sittings, all ten forms | each client's NET_LOST paired with its next NET_BACK, or the sitting's end, overlapped with the clock | miss |
 
-Measured by: generator/pair.py on the cut pack (target.zip ff5b5f5b): the cracker keeps 3 of the 20 ask figures (CC27-A,
-B and J of ask A, where neither the afternoon bookings nor the power cut move the count), the mirror (off the call, each
-log's first reading: the failure's logged booking, every loss row) 2; a response that places each failure by its time,
-reads the power cut from the report and overlaps each loss with the clock keeps all 20.
+Measured by: generator/pair.py on the cut pack (target.zip 2f190bcc): the cracker keeps 0 of the 20 ask figures, the
+mirror (off the call, each log's first reading: the WS_FAIL rows, every loss row) 0; the reports and the log joined
+through the typed workstation keep 2 of ask A's ten, a response that does everything but the power cut keeps 5 of each
+ask's ten, and one that joins the log and the reports through the spare and resume time, reads the reasons, the
+lone NET_BACK and the power cut keeps all 20.
 
-Pair ceiling: 35.4 ((38 + 7 + 55 x 3/20) and (5 + 7 + 55 x 2/20), averaged)
+Pair ceiling: 28.5 ((38 + 7 + 55 x 0/20) and (5 + 7 + 55 x 0/20), averaged)
 
-Mirror leakage: 10.0 per cent of ask weight
+Mirror leakage: 0.0 per cent of ask weight
 
 ## Tried and rejected
 
@@ -464,3 +473,9 @@ Mirror leakage: 10.0 per cent of ask weight
   (withdrawals, revisions and entries under the earlier item numbers): the log's latest decision per item, the lazy
   path, kept most figures, so the ask carried no device a careful response misses; replaced by the sittings that ran
   in part without the centre's link, and the log ships as a distractor.
+- Ask layer v1 (the WS_FAIL rows' booking filled from the export-time seat plan, so a morning failure carried the
+  afternoon's booking on 61 of 119 rows; the Kochi power cut absent from the log; every seated workstation logging the
+  centre's link losses, open losses and tutorial straddles): both stage 4 readers on target.zip ff5b5f5b missed the call
+  (sonnet A and G, opus A, C, G and H) but re-attributed each failure by time, read the power cut off the resumes and the
+  report, and overlapped the losses with the clock: 20 of 20 and 17 of 20 ask figures (score_reader FAIL on both). The
+  mis-join on half the rows read as planted to the sonnet reader. Each device was one habitual check deep.

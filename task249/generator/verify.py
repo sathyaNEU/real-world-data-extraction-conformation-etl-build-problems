@@ -17,6 +17,7 @@ FILES = {"export3": "results_export_r3_2026-02_to_2027-05.csv", "export4": "resu
          "layouts": "form_layouts_2026_2027.csv", "bank": "item_bank_snapshot_2027-12-31.xlsx",
          "crosswalk": "item_renumbering_2027-01-11.csv", "register": "candidate_number_changes.csv",
          "events": "workstation_event_log_2027.csv", "incidents": "invigilator_incident_reports_2027.xlsx",
+         "seat": "seat_plan_2027.csv",
          "panel_log": "item_panel_decision_log.csv"}
 WIN = ["2026-02", "2026-05", "2026-08", "2026-11", "2027-02", "2027-05", "2027-08", "2027-11"]
 
@@ -95,65 +96,78 @@ def main(target):
             gains.setdefault(s["form"], []).append(direct + reach)
     gain = {f: float(np.mean(v)) for f, v in gains.items() if f.startswith("CC27")}
     flags = sorted(f for f, g in gain.items() if g > 1.0)
-    # ask A: a resume on a spare workstation follows a workstation failure; the power cut's sittings from the report
+    # ask A: a sitting a failure interrupted either carries a WS_FAIL or was resumed on a spare workstation, except the
+    # changes of seat a candidate asked for; the power cut's sittings from the invigilators' report
     ev = pd.read_csv(p("events"), dtype=str, keep_default_na=False)
     ev["t"] = pd.to_datetime(ev["event_utc"])
-    # each WS_FAIL interrupted the sitting whose clock was running on that workstation at that moment
-    starts = ev[ev["event"] == "SESSION_START"][["centre_code", "workstation", "booking_ref", "t"]]
-    ends = ev[ev["event"] == "SESSION_END"].groupby("booking_ref")["t"].max()
-    hit = set()
-    for r in ev[ev["event"] == "WS_FAIL"].itertuples(index=False):
-        c = starts[(starts["centre_code"] == r.centre_code) & (starts["workstation"] == r.workstation) & (starts["t"] <= r.t)]
-        c = c[[ends.get(b, r.t) >= r.t for b in c["booking_ref"]]]
-        if len(c) == 1:
-            hit.add(c.iloc[0]["booking_ref"])
-    rep = pd.read_excel(p("incidents"), sheet_name=None, dtype=str)
+    seat = pd.read_csv(p("seat"), dtype=str)
+    where = {(r.centre_code, r.session_date, r.session, r.workstation): r.booking_ref for r in seat.itertuples()}
+    rep = pd.read_excel(p("incidents"), sheet_name=None, dtype=str, keep_default_na=False)
+    codes = {"Kochi": "COK", "Chennai": "MAA", "Bengaluru": "BLR", "Hyderabad": "HYD", "Pune": "PNQ", "Noida": "NOI"}
+    asked, cut_sittings = set(), set()
     for centre, df in rep.items():
         for r in df.itertuples(index=False):
+            d = dt.datetime.strptime(r.Date, "%d/%m/%Y").date()
+            if "asked to move" in str(r.Report):
+                # the spare and the resume time the report names; the typed workstation number can be wrong
+                sp = [w for w in str(r.Report).replace(",", " ").replace("(", " ").replace(")", " ").split() if w.startswith("SP")]
+                hm = [w.strip(".") for w in str(r.Report).split() if len(w.strip(".")) == 5 and w.strip(".")[2] == ":"]
+                asked.add((codes[centre], d.isoformat(), sp[0].strip(".,"), hm[-1]))
             if "Power cut" in str(r.Report):
-                d = dt.datetime.strptime(r.Date, "%d/%m/%Y").date()
                 h_, m_ = map(int, r.Time.split(":"))
                 cut = pd.Timestamp(dt.datetime(d.year, d.month, d.day, h_, m_)) - pd.Timedelta(minutes=330)
-                code = {"Kochi": "COK", "Chennai": "MAA", "Bengaluru": "BLR", "Hyderabad": "HYD", "Pune": "PNQ", "Noida": "NOI"}[centre]
-                day = ev[(ev["centre_code"] == code) & (ev["t"].dt.date == cut.date())]
+                day = ev[(ev["centre_code"] == codes[centre]) & (ev["t"].dt.date == cut.date())]
                 st = day[day["event"] == "SESSION_START"].set_index("booking_ref")["t"]
                 en = day[day["event"] == "SESSION_END"].set_index("booking_ref")["t"]
-                hit |= {k for k, t0 in st.items() if t0 <= cut < en.get(k, cut + pd.Timedelta(hours=9))}
+                cut_sittings |= {k for k, t0 in st.items() if t0 <= cut < en.get(k, cut)}
+    sp_rows = ev[(ev["event"] == "SESSION_RESUME") & ev["workstation"].str.match(r"SP\d")]
+    on_spare = set()
+    for r in sp_rows.itertuples(index=False):
+        loc = r.t + pd.Timedelta(minutes=330)
+        if (r.centre_code, loc.date().isoformat(), r.workstation, loc.strftime("%H:%M")) not in asked:
+            on_spare.add(r.booking_ref)
+    hit = set(ev[ev["event"] == "WS_FAIL"]["booking_ref"]) | on_spare | cut_sittings
     form_of = {s["bk"]: s["form"] for s in sit if s["w"] >= 4}
     ask_a = {f: 0 for f in sorted(gain)}
     for k in hit:
         if k in form_of:
             ask_a[form_of[k]] += 1
-    # ask B: walk each workstation's events in time order; the link is down from NET_LOST until NET_BACK, and a
-    # sitting counts when its clock ran (SESSION_START to its SESSION_END) at some point while the link was down
-    ses = {}
+    # ask B: walk each workstation's events in time order; a client logs in at its tutorial or at a resume on that
+    # workstation, and its link is down from a NET_LOST, or from the login when a NET_BACK comes with no NET_LOST before
+    # it, to the NET_BACK, or to the sitting's end; a sitting counts when that overlaps its clock
+    clock_of = {}
     for r in ev[ev["event"].isin(["SESSION_START", "SESSION_END"])].itertuples(index=False):
-        lo, hi = ses.get(r.booking_ref, (None, None))
+        lo, hi = clock_of.get(r.booking_ref, (None, None))
         if r.event == "SESSION_START":
             lo = r.t if lo is None else min(lo, r.t)
         else:
             hi = r.t if hi is None else max(hi, r.t)
-        ses[r.booking_ref] = (lo, hi)
-    off = set()
-    for (cc, ws), g in ev[ev["event"].isin(["NET_LOST", "NET_BACK"])].sort_values("t").groupby(["centre_code", "workstation"]):
-        down = None
+        clock_of[r.booking_ref] = (lo, hi)
+    off = set(cut_sittings)
+    walk = ev[ev["event"].isin(["TUTORIAL_START", "SESSION_RESUME", "NET_LOST", "NET_BACK"])].sort_values("t")
+    for (cc, ws), g in walk.groupby(["centre_code", "workstation"]):
+        state = {}
         for r in g.itertuples(index=False):
-            if r.event == "NET_LOST" and down is None:
-                down = (r.t, r.booking_ref)
-            elif r.event == "NET_BACK" and down is not None and r.booking_ref == down[1]:
-                lo, hi = ses.get(down[1], (None, None))
-                if lo is not None and max(lo, down[0]) < min(hi, r.t):
-                    off.add(down[1])
-                down = None
-            elif r.event == "NET_LOST" and down is not None and r.booking_ref != down[1]:
-                lo, hi = ses.get(down[1], (None, None))
-                if lo is not None and down[0] < hi:
-                    off.add(down[1])
-                down = (r.t, r.booking_ref)
-        if down is not None:
-            lo, hi = ses.get(down[1], (None, None))
-            if lo is not None and down[0] < hi:
-                off.add(down[1])
+            b = r.booking_ref
+            lo, hi = clock_of.get(b, (None, None))
+            if lo is None:
+                continue
+            if r.event in ("TUTORIAL_START", "SESSION_RESUME"):
+                state.setdefault(b, {"login": r.t, "down": None})
+                continue
+            stt = state.setdefault(b, {"login": lo, "down": None})
+            if r.event == "NET_LOST":
+                if stt["down"] is None:
+                    stt["down"] = r.t
+            else:
+                a = stt["down"] if stt["down"] is not None else stt["login"]
+                if max(lo, a) < min(hi, r.t):
+                    off.add(b)
+                stt["down"] = None
+        for b, stt in state.items():
+            lo, hi = clock_of[b]
+            if stt["down"] is not None and max(lo, stt["down"]) < hi:
+                off.add(b)
     ask_b = {f: 0 for f in sorted(gain)}
     for k in off:
         if k in form_of:

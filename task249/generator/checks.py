@@ -306,37 +306,41 @@ def ask_checks(target, W, X, C):
     for b in off:
         wantb[form_of[b]] += 1
     ok(Bk == wantb, "ask B %s against %s" % (Bk, wantb))
-    # the devices move the figures: the failure's own booking, the resumes, the link's lost rows
-    ev = pd.read_csv(os.path.join(target, S.FILES["events"]), dtype=str)
-    naive = {f: 0 for f in S.F27}
-    for b in set(ev[ev["event"] == "WS_FAIL"]["booking_ref"]):
-        if form_of.get(b) in naive:
-            naive[form_of[b]] += 1
-    # SF13 the sitting a failure interrupted is the one whose clock ran on that workstation then, not the logged booking
-    ok(sum(naive[f] != A[f] for f in S.F27) >= 6, "SF13 ask A device: WS_FAIL booking refs move %d forms" % sum(naive[f] != A[f] for f in S.F27))
-    res = {f: 0 for f in S.F27}
-    for b in set(ev[ev["event"] == "SESSION_RESUME"]["booking_ref"]):
-        if form_of.get(b) in res:
-            res[form_of[b]] += 1
-    # SF12 the invigilators' pauses and the link losses are not failures: every resume read as one moves the figures
-    ok(sum(res[f] != A[f] for f in S.F27) >= 6, "SF12 ask A device: resumes move %d forms" % sum(res[f] != A[f] for f in S.F27))
-    # SF14 any loss logged against the booking (lost_refs) against the clock running while the link was down; SF15 a
-    # loss with no NET_BACK dropped (pairs_only)
-    for sf, pth in (("SF14", "lost_refs"), ("SF14", "lost_within"), ("SF15", "pairs_only")):
+    moved = lambda v, g: sum(v[f] != g[f] for f in S.F27)
+    # SF13 a failure the server did not log (a client hung as the link dropped, a keyboard, mouse or screen) is in the
+    # invigilators' reports and on a spare: the log alone, and the reports alone, each miss
+    for pth in ("log_only", "reports_only"):
+        v, _ = S.ask_a(target, D=C["D"], path=pth)
+        ok(moved(v, A) >= 6, "SF13 ask A device: %s moves %d forms" % (pth, moved(v, A)))
+    # SF12 a change of seat a candidate asked for, and a pause, are not failures: every resume on a spare read as one
+    v, _ = S.ask_a(target, D=C["D"], path="spares_all")
+    ok(moved(v, A) >= 6, "SF12 ask A device: spares_all moves %d forms" % moved(v, A))
+    v, _ = S.ask_a(target, D=C["D"], path="no_power")
+    ok(moved(v, A) >= 4, "ask A device: the power cut left out moves %d forms" % moved(v, A))
+    # SF14 the roster read (every loss row) and a loss timed inside the clock only; SF15 a client that started without
+    # the link (a NET_BACK with none lost before it) dropped; SF17 the power cut's minutes on the UPS left out
+    for sf, pth, n in (("SF14", "lost_refs", 6), ("SF14", "lost_within", 6), ("SF15", "pairs_only", 6), ("SF17", "no_power", 4)):
         v = S.ask_b(target, D=C["D"], path=pth)
-        ok(sum(v[f] != Bk[f] for f in S.F27) >= 6, "%s ask B device: %s moves %d forms" % (sf, pth, sum(v[f] != Bk[f] for f in S.F27)))
-    # SF15 every loss with no NET_BACK began after its sitting's clock started, so the count does not depend on when
+        ok(moved(v, Bk) >= n, "%s ask B device: %s moves %d forms" % (sf, pth, moved(v, Bk)))
+    # SF18 every loss with no NET_BACK began after its sitting's clock started, so the count does not depend on when
     # the link came back
-    evt = ev.copy()
-    evt["t"] = pd.to_datetime(evt["event_utc"])
-    st0 = evt[evt["event"] == "SESSION_START"].groupby("booking_ref")["t"].min()
+    ev = pd.read_csv(os.path.join(target, S.FILES["events"]), dtype=str, keep_default_na=False)
+    ev["t"] = pd.to_datetime(ev["event_utc"])
+    st0 = ev[ev["event"] == "SESSION_START"].groupby("booking_ref")["t"].min()
     early = 0
-    for _, g in evt[evt["event"].isin(["NET_LOST", "NET_BACK"])].sort_values("t").groupby(["centre_code", "workstation"]):
+    for _, g in ev[ev["event"].isin(["NET_LOST", "NET_BACK"])].sort_values("t").groupby(["booking_ref", "workstation"]):
         rows = list(g.itertuples(index=False))
         for k, r in enumerate(rows):
-            if r.event == "NET_LOST" and not any(q.event == "NET_BACK" and q.booking_ref == r.booking_ref for q in rows[k + 1:]):
+            if r.event == "NET_LOST" and not any(q.event == "NET_BACK" for q in rows[k + 1:]):
                 early += int(r.t < st0[r.booking_ref])
-    ok(early == 0, "SF15 no unanswered loss before its sitting's clock started (%d)" % early)
+    ok(early == 0, "SF18 no unanswered loss before its sitting's clock started (%d)" % early)
+    # every failure without a WS_FAIL is reported, and the spare and resume time each report names recover its sitting
+    gold_set = S.ask_a(target, D=C["D"])[1]
+    logged = S.ask_a(target, D=C["D"], path="ws_fail_only")[1]
+    ok({b for b, k in truth.items() if k in ("hang", "periph")} <= gold_set - logged, "the failures the server did not log are all reported")
+    # SF19 a report's workstation as typed (about one in ten typed wrong) against the spare and resume time it names
+    v, _ = S.ask_a(target, D=C["D"], path="union_by_ws")
+    ok(moved(v, A) >= 4, "SF19 ask A device: union_by_ws moves %d forms" % moved(v, A))
     # separation: the asks' devices sit in files the call never reads
     ok(set(BLD.PACK) - {"events", "seat", "incidents"} >= {"export3", "export4", "layouts", "bank", "crosswalk", "register",
                                                             "reviews"}, "separation")

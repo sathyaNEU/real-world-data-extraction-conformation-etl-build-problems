@@ -46,7 +46,7 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
 
 **task250: SHIPPED 2026-10-20** (run the 4.0 setting, 18 drift alerts a year within the plan's 28 visits).
 
-**task249: PAUSED 2026-10-21, architecture 6, stage 3 green (target.zip ff5b5f5b); stage 4 running.**
+**task249: PAUSED 2026-10-21, architecture 6, asks re-sited after stage 4 round 1 (target.zip 2f190bcc); round 2 running.**
 - Architecture 6 (Psychology & Behavioral Science, psychometric measurement x DQ): the Institute of Healthcare Coding
   Professionals' Certified Clinical Coder examination, four-hour open-book sittings, forms drawn at random. Call: which
   of the ten 2027 forms gave their resit candidates more than one scored item per resit sitting from what an earlier
@@ -60,8 +60,9 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
   failure interrupted (the log's booking from the export-time seat plan, the Kochi power cut only in the invigilators'
   report) and those that ran in part without the centre's link (every seated workstation logs the loss). Pair ceiling
   35.4, mirror leakage 10 per cent (generator/pair.py).
-- Resume: stage 4 (two isolated scored readers, sonnet and opus, and the determinism judge on ff5b5f5b): score each
-  reader with score_reader.py, fix every finding in the generator in one pass, re-judge once on FIX_NOW, then ship.
+- Resume: stage 4 round 2 on target.zip 2f190bcc (round 1 on ff5b5f5b: the call held against both readers and the
+  judge approved, but the readers kept 20 of 20 and 17 of 20 ask figures; the ask devices were re-sited). Score readers 3
+  and 4 with score_reader.py, ship if both miss the call and neither exits 1; re-judge once on FIX_NOW.
 - Architecture 5 (sediment loads conditioned on rising water) was spent 10-20 at stage 4: both scored readers took the
   field's hysteresis reflex. Its generator and pack left the folder with this draw (history holds them).
 

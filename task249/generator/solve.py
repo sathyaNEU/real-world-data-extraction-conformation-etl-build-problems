@@ -10,6 +10,7 @@ recognised item's time at the first-time candidates' mean log time for it, shift
 to where the four hours would have ended).   S.solve(target) -> dict"""
 import datetime as dt
 import os
+import re
 import sys
 
 import numpy as np
@@ -236,90 +237,137 @@ def flagged(table, route):
 
 
 # ------------------------------------------------------------------ ask A: sittings interrupted
-def ask_a(target, T=None, D=None):
+FAILURE_WORDS = ("stopped responding", "froze", "hung", "not responding", "crashed", "frozen", "stopped working",
+                 "went blank")
+
+
+def reports(target):
+    """every invigilator report: (centre code, ISO date, session, local time, workstation, text)"""
+    rep = pd.read_excel(os.path.join(target, FILES["incidents"]), sheet_name=None, dtype=str, keep_default_na=False)
+    code = {v: k for k, v in CODE_CENTRE.items()}
+    out = []
+    for centre, df in rep.items():
+        for r in df.itertuples(index=False):
+            d = dt.datetime.strptime(r.Date, "%d/%m/%Y").date().isoformat()
+            out.append((code[centre], d, r.Session, r.Time, r.Workstation, str(r.Report)))
+    return out
+
+
+def power_cut(target, ev):
+    """the sittings running at the centre when the reported power cut began"""
+    hit = set()
+    for cc, d, sess, tm, wsx, text in reports(target):
+        if "power cut" not in text.lower():
+            continue
+        hh, mm = map(int, tm.split(":"))
+        cut = pd.Timestamp(d) + pd.Timedelta(hours=hh, minutes=mm) - pd.Timedelta(hours=5, minutes=30)
+        sub = ev[(ev["centre_code"] == cc) & (ev["t"].dt.date == cut.date())]
+        starts = sub[sub["event"] == "SESSION_START"].set_index("booking_ref")["t"]
+        ends = sub[sub["event"] == "SESSION_END"].set_index("booking_ref")["t"]
+        for b, t0 in starts.items():
+            if t0 <= cut and ends.get(b, cut) > cut:
+                hit.add(b)
+    return hit
+
+
+def per_form(D, bookings):
+    form_of = dict(zip(D["s"]["booking_ref"], D["s"]["form"]))
+    win_of = dict(zip(D["s"]["booking_ref"], D["s"]["window"]))
+    counts = {f: 0 for f in F27}
+    for b in bookings:
+        if win_of.get(b, "").startswith("2027") and form_of.get(b) in counts:
+            counts[form_of[b]] += 1
+    return counts
+
+
+def ask_a(target, T=None, D=None, path="golden"):
+    """each 2027 sitting a failure of the candidate's workstation or its power interrupted: every WS_FAIL (the server's),
+    every failure of a workstation's computer, keyboard, mouse or screen the invigilators reported (a change of seat at a
+    candidate's request and a pause are not failures), and the sittings running at Kochi when the power cut began"""
     j = lambda k: os.path.join(target, FILES[k])
     ev = pd.read_csv(j("events"), dtype=str, keep_default_na=False)
     ev["t"] = pd.to_datetime(ev["event_utc"])
     seat = pd.read_csv(j("seat"), dtype=str)
     D = D or load(target)
-    form_of = dict(zip(D["s"]["booking_ref"], D["s"]["form"]))
-    win_of = dict(zip(D["s"]["booking_ref"], D["s"]["window"]))
-    out = set()
-    # a failure belongs to the sitting that started on that workstation before it, that day
-    st = ev[ev["event"] == "SESSION_START"]
-    for r in ev[ev["event"] == "WS_FAIL"].itertuples():
-        c = st[(st["centre_code"] == r.centre_code) & (st["workstation"] == r.workstation) & (st["t"] <= r.t)
-               & (st["t"].dt.date == r.t.date())]
-        if len(c):
-            out.add(c.sort_values("t").iloc[-1]["booking_ref"])
-    # the Kochi power cut: every sitting at the centre running at 11:05 local on that date
-    rep = pd.read_excel(j("incidents"), sheet_name=None, dtype=str)
-    for centre, df in rep.items():
-        for r in df.itertuples(index=False):
-            if "Power cut" not in str(r.Report):
-                continue
-            d = dt.datetime.strptime(r.Date, "%d/%m/%Y").date()
-            hh, mm = map(int, r.Time.split(":"))
-            cut = pd.Timestamp(dt.datetime(d.year, d.month, d.day, hh, mm)) - pd.Timedelta(hours=5, minutes=30)
-            code = {v: k for k, v in CODE_CENTRE.items()}[centre]
-            sub = ev[(ev["centre_code"] == code) & (ev["t"].dt.date == cut.date())]
-            starts = sub[sub["event"] == "SESSION_START"].set_index("booking_ref")["t"]
-            ends = sub[sub["event"] == "SESSION_END"].set_index("booking_ref")["t"]
-            for b, t0 in starts.items():
-                if t0 <= cut and ends.get(b, cut) > cut:
-                    out.add(b)
-    counts = {f: 0 for f in F27}
-    for b in out:
-        if win_of.get(b, "").startswith("2027") and form_of.get(b) in counts:
-            counts[form_of[b]] += 1
-    return counts, out
+    seat_key = {(r.centre_code, r.session_date, r.session, r.workstation): r.booking_ref for r in seat.itertuples()}
+    logged = set(ev[ev["event"] == "WS_FAIL"]["booking_ref"])
+    on_spare = ev[(ev["event"] == "SESSION_RESUME") & ev["workstation"].str.startswith("SP")]
+    resumed = {}
+    for r in on_spare.itertuples(index=False):
+        loc = r.t + pd.Timedelta(hours=5, minutes=30)
+        resumed[(r.centre_code, loc.date().isoformat(), r.workstation, loc.strftime("%H:%M"))] = r.booking_ref
+    by_spare, by_ws, moved = set(), set(), set()
+    for cc, d, sess, tm, wsx, text in reports(target):
+        low = text.lower()
+        if "power cut" in low:
+            continue
+        sp = re.search(r"\b(SP\d\d)\b", text)
+        when = re.findall(r"\b(\d\d:\d\d)\b", text)
+        b_sp = resumed.get((cc, d, sp.group(1), when[-1])) if sp and when else None
+        if "asked to move" in low:
+            moved.add(b_sp)
+        elif any(w in low for w in FAILURE_WORDS):
+            if b_sp:
+                by_spare.add(b_sp)       # the spare and the time it resumed name the sitting
+            b = seat_key.get((cc, d, sess, wsx))
+            if b:
+                by_ws.add(b)             # the workstation as the invigilator typed it
+    power = power_cut(target, ev)
+    spare = set(on_spare["booking_ref"])
+    out = {"golden": logged | by_spare | power, "log_only": logged | power, "reports_only": by_ws | power,
+           "union_by_ws": logged | by_ws | power, "spares_all": logged | spare | power, "no_power": logged | by_spare,
+           "ws_fail_only": logged}[path]
+    return per_form(D, out), out
 
 
-# ------------------------------------------------------------------ ask B: sittings that ran partly offline
-def ask_b(target, D=None, path="golden"):
-    """each 2027 sitting whose examination clock ran while its workstation had lost the centre's link: a NET_LOST to
-    the next NET_BACK on that workstation, or to the sitting's end when the link did not come back while it ran,
-    overlapping the sitting's SESSION_START to SESSION_END"""
+def offline_sets(target, D=None):
+    """each 2027 sitting's link state as its clients logged it: a NET_LOST to the client's next NET_BACK, or to the
+    sitting's end when none came; a NET_BACK with no NET_LOST before it since the client logged in (at the tutorial, or
+    at the resume on a spare) means the client started without the link; overlapped with the sitting's clock"""
     j = lambda k: os.path.join(target, FILES[k])
-    D = D or load(target)
     ev = pd.read_csv(j("events"), dtype=str, keep_default_na=False)
     ev["t"] = pd.to_datetime(ev["event_utc"])
     st = ev[ev["event"] == "SESSION_START"].groupby("booking_ref")["t"].min()
     en = ev[ev["event"] == "SESSION_END"].groupby("booking_ref")["t"].max()
-    net = ev[ev["event"].isin(["NET_LOST", "NET_BACK"])].sort_values(["centre_code", "workstation", "t"])
-    hit = set()
-    for (cc, ws), g in net.groupby(["centre_code", "workstation"]):
-        rows = list(g.itertuples(index=False))
-        for k, r in enumerate(rows):
-            if r.event != "NET_LOST":
-                continue
-            b = r.booking_ref
-            if b not in st.index:
-                continue
-            nxt = next((q for q in rows[k + 1:] if q.event == "NET_BACK" and q.booking_ref == b), None)
-            s0, e0 = st[b], en.get(b, st[b])
-            if path == "lost_refs":
-                hit.add(b)
-                continue
-            if path == "lost_within":
+    login = {}
+    for r in ev[ev["event"].isin(["TUTORIAL_START", "SESSION_RESUME"])].itertuples(index=False):
+        login.setdefault((r.booking_ref, r.workstation), r.t)
+    net = ev[ev["event"].isin(["NET_LOST", "NET_BACK"])].sort_values("t")
+    sets = {k: set() for k in ("golden", "pairs_only", "lost_refs", "lost_within")}
+    for (b, wsx), g in net.groupby(["booking_ref", "workstation"]):
+        if b not in st.index:
+            continue
+        s0, e0 = st[b], en.get(b, st[b])
+        ivs, lone, opened = [], [], None
+        for r in g.itertuples(index=False):
+            if r.event == "NET_LOST":
+                sets["lost_refs"].add(b)
                 if s0 <= r.t <= e0:
-                    hit.add(b)
-                continue
-            if nxt is None:
-                if path == "pairs_only":
-                    continue
-                hi = e0
+                    sets["lost_within"].add(b)
+                if opened is None:
+                    opened = r.t
+            elif opened is not None:
+                ivs.append((opened, r.t))
+                opened = None
             else:
-                hi = nxt.t
-            if max(s0, r.t) < min(e0, hi):
-                hit.add(b)
-    form_of = dict(zip(D["s"]["booking_ref"], D["s"]["form"]))
-    win_of = dict(zip(D["s"]["booking_ref"], D["s"]["window"]))
-    counts = {f: 0 for f in F27}
-    for b in hit:
-        if win_of.get(b, "").startswith("2027") and form_of.get(b) in counts:
-            counts[form_of[b]] += 1
-    return counts
+                lone.append((login.get((b, wsx), s0), r.t))
+        if opened is not None:
+            ivs.append((opened, e0))
+        if any(max(s0, a) < min(e0, z) for a, z in ivs):
+            sets["pairs_only"].add(b)
+        if any(max(s0, a) < min(e0, z) for a, z in ivs + lone):
+            sets["golden"].add(b)
+    power = power_cut(target, ev)
+    sets["no_power"] = set(sets["golden"])
+    sets["golden"] = sets["golden"] | power
+    return sets
+
+
+def ask_b(target, D=None, path="golden"):
+    """each 2027 sitting whose examination clock ran while its workstation had no link to the provider, the Kochi
+    power cut's minutes on the UPS with the router down included"""
+    D = D or load(target)
+    return per_form(D, offline_sets(target, D)[path])
 
 
 def solve(target):

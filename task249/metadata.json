@@ -31,7 +31,7 @@
    "xlsx"
   ],
   "largest_file": "workstation_event_log_2027.csv",
-  "largest_file_rows": 60442
+  "largest_file_rows": 60664
  },
  "sources": [
   {
@@ -56,7 +56,7 @@
   {
    "path": "CCC_examination_regulations.pdf",
    "format": "pdf",
-   "bytes": 5415,
+   "bytes": 5474,
    "rows": null,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
@@ -146,8 +146,8 @@
   {
    "path": "workstation_event_log_2027.csv",
    "format": "csv",
-   "bytes": 3235384,
-   "rows": 60442,
+   "bytes": 3246592,
+   "rows": 60664,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
    "license": "CC0-1.0 (original work)"
@@ -155,7 +155,7 @@
   {
    "path": "invigilator_incident_reports_2027.xlsx",
    "format": "xlsx",
-   "bytes": 15984,
+   "bytes": 18787,
    "rows": null,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",

@@ -13,7 +13,7 @@
  "precut": "PASS (51 checks, 0 FAIL, 0 WARN)",
  "leak": {
   "leak_py": "REVIEW (no LEAK): the regulations' 1.0 line and estimand, field names in the data notes, reviews still booked after 17 January 2028",
-  "reader": ""
+  "reader": "round 1 (ff5b5f5b): call missed by both; asks 20/20 and 17/20 (FAIL), devices re-sited"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.gate_g, repeat.decision, repeat.question_form; NOTEs differentiated against task193 v2 and task254 v3)",
@@ -28,7 +28,7 @@
   "pack": "ff5b5f5b"
  },
  "returned": [],
- "resume": "Stage 4: the judge returned DETERMINISTIC, APPROVE on ff5b5f5b (Gate G and H pass); its one fork, the item-model siblings, is closed by SF16 (asserted; checks 27,907 on the shipped pack). Waiting on the two isolated scored readers (sonnet and opus, fresh copies leak-task249-r1 and r2 in the scratchpad): score each with score_reader.py (call key call.flagged); ship if both miss the call and neither exits 1.",
+ "resume": "Stage 4 round 2 on target.zip 2f190bcc. Round 1 (ff5b5f5b): both readers missed the call (sonnet A and G; opus A, C, G and H) and the judge returned DETERMINISTIC APPROVE, but the readers kept 20 of 20 and 17 of 20 ask figures, so the ask devices were re-sited (split evidence between the event log and the invigilators' reports, changes of seat, mistyped workstation numbers, clients that log in with the link down, the power cut's minutes on the UPS; cracker 0 of 20, pair 28.5 on paper). Running: two fresh isolated scored readers (sonnet and opus, scratchpad leak-task249-r3 and r4) and the judge. Next: score both with score_reader.py (call key call.flagged); ship if both miss the call and neither exits 1; re-judge once on FIX_NOW.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -63,6 +63,10 @@
   {
    "architecture": 6,
    "status": "stage 3 green 2026-10-21 (target.zip ff5b5f5b); stage 4 running"
+  },
+  {
+   "architecture": 6,
+   "status": "stage 4 round 1 2026-10-21: call held against both readers, ask layer cracked (20/20, 17/20); asks re-sited, target.zip 2f190bcc"
   }
  ]
 }

@@ -23,8 +23,8 @@ The other four forms are at 0.6 or less. Not the excess on the items shown alone
 4. Summed each resit sitting's correct answers less the ability's expectation on the recognised scored items answered within the four hours as they would have run, and averaged per form (component 2).
 5. Gave each recognised item the time the first-time candidates' mean log seconds and the candidate's pace give (the log-normal mean), reran the sitting's clock with those times and counted the correct scored answers beyond where four hours would have ended (component 3).
 6. Added the two per resit sitting and averaged over each form's 2027 resit sittings; flagged above 1.0: CC27-A, CC27-B, CC27-C, CC27-D, CC27-G and CC27-H.
-7. For each form, counted the 2027 sittings a failure of the workstation or its power interrupted: each WS_FAIL in the event log belongs to the sitting whose clock was running on that workstation when it failed, the last that started there that day before it (a workstation repaired at lunch carries the afternoon's booking on a morning failure, while the morning candidate resumes on a spare or, with a few minutes of work left, has the sitting closed on the saved responses), and the Kochi power cut of 19 August 2027 took down every sitting running there at 11:05 local time, though the log holds nothing until they resumed; the invigilators' pauses and the network losses are not failures.
-8. For each form, counted the 2027 sittings whose examination clock ran while their workstation had lost the centre's link: each NET_LOST to the next NET_BACK on that workstation, or to the sitting's end where none came while it ran, overlapping the sitting's SESSION_START to SESSION_END; every seated workstation logs the loss, so a sitting already ended or not yet started is not counted, and a loss that began in the tutorial counts once the clock started inside it.
+7. For each form, counted the 2027 sittings a failure of the workstation or its power interrupted: every sitting the event log shows a WS_FAIL on, every failure of a computer, screen, keyboard or mouse the invigilators' reports record (mapped to its sitting through the seat plan; the server logs no WS_FAIL when the centre's link is already down or the computer keeps running, and some failures it logged go unreported), and the sittings running at Kochi when the power cut of 19 August 2027 began at 11:05, which the log does not show until they resumed; the pauses and the changes of seat a candidate asked for, though they also resume on a spare, are not failures.
+8. For each form, counted the 2027 sittings whose examination clock ran while their workstation's client had no link: from each NET_LOST to that client's next NET_BACK, or to the sitting's end where none came, and from the client's login (its tutorial, or its resume on a spare) to its NET_BACK where it logged in with the link already down and so logged no NET_LOST, overlapped with the sitting's SESSION_START to SESSION_END; a client still on its end screen logs the loss too, and the Kochi sittings ran about four minutes on the UPS after the router went down at 11:05.
 
 ## 4. Deliverable Answers
 
@@ -32,27 +32,27 @@ The other four forms are at 0.6 or less. Not the excess on the items shown alone
 
 1. Flagged forms, six: CC27-A, CC27-B, CC27-C, CC27-D, CC27-G and CC27-H.
 2. 2027 sittings a failure of the workstation or its power interrupted, by form, whole numbers:
-   - CC27-A: 14
-   - CC27-B: 9
-   - CC27-C: 8
-   - CC27-D: 11
-   - CC27-E: 10
-   - CC27-F: 21
+   - CC27-A: 15
+   - CC27-B: 15
+   - CC27-C: 14
+   - CC27-D: 13
+   - CC27-E: 21
+   - CC27-F: 22
    - CC27-G: 20
-   - CC27-H: 14
-   - CC27-I: 11
-   - CC27-J: 24
+   - CC27-H: 25
+   - CC27-I: 27
+   - CC27-J: 31
 3. 2027 sittings that ran in part without the centre's link, by form, whole numbers:
-   - CC27-A: 32
-   - CC27-B: 31
-   - CC27-C: 33
-   - CC27-D: 39
-   - CC27-E: 33
-   - CC27-F: 42
-   - CC27-G: 38
-   - CC27-H: 40
-   - CC27-I: 59
-   - CC27-J: 53
+   - CC27-A: 60
+   - CC27-B: 73
+   - CC27-C: 58
+   - CC27-D: 64
+   - CC27-E: 71
+   - CC27-F: 67
+   - CC27-G: 70
+   - CC27-H: 73
+   - CC27-I: 81
+   - CC27-J: 85
 
 ### resit_exposure_2027.pdf
 

@@ -133,10 +133,10 @@ def regulations(path, F):
           "item model.",
           "3.5 The delivery system draws each candidate's form at random from the forms in use in the window, "
           "leaving out any form the candidate has sat before.",
-          "3.6 If a candidate's workstation or its power fails during a sitting, the examination clock stops, and the "
-          "candidate continues from their saved responses when their workstation or a spare one is ready. An "
-          "invigilator may pause a sitting (for a candidate taken ill, an identity check at the desk or an alarm); "
-          "the clock stops while the sitting is paused."]),
+          "3.6 If a candidate's workstation (its computer, screen, keyboard or mouse) or its power fails during a "
+          "sitting, the examination clock stops, and the candidate continues from their saved responses when their "
+          "workstation or a spare one is ready. An invigilator may pause a sitting (for a candidate taken ill, an "
+          "identity check at the desk, a change of seat or an alarm); the clock stops while the sitting is paused."]),
         ("4. Results, reviews and resits",
          ["4.1 A candidate passes with 105 or more of the 150 scored items correct.",
           "4.2 Results are released about three weeks after the window closes. A candidate who fails may book one "

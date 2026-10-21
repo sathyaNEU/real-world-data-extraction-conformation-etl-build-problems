@@ -70,8 +70,8 @@ def workbook(path, fig):
         ws2.cell(row=ws2.max_row, column=k).font = bold
         ws2.cell(row=ws2.max_row, column=k).border = Border(top=thin)
     ws2.append([])
-    ws2.append(["Event log read by workstation and time; the Kochi power cut of %s from the invigilator's report." %
-                fig["asks"]["power_day"]])
+    ws2.append(["Pariksha event log and the centres' incident reports; the Kochi power cut of %s from the invigilator's "
+                "report." % fig["asks"]["power_day"]])
     ws2.cell(row=ws2.max_row, column=1).font = Font(italic=True, size=9, color="52514E")
     for k, wdt in enumerate([10, 30, 30], 1):
         ws2.column_dimensions[get_column_letter(k)].width = wdt
@@ -90,12 +90,14 @@ def workbook(path, fig):
         "In the time those items freed: an item recognised from an earlier sitting takes less time than the candidate's "
         "own pace on the other items gives (the first-time candidates' mean log time on the item, shifted by the "
         "candidate's); the correct answers on the items reached only within that time count as gain.",
-        "Interrupted sittings (7.4): a failure of the candidate's workstation, from the event log read by workstation and "
-        "time, and the Kochi power cut of %s from the invigilator's report; invigilators' pauses and network losses "
-        "are not failures." % fig["asks"]["power_day"],
-        "Sittings that ran in part without the link (7.4): the examination clock running while the workstation had lost "
-        "the centre's link, from each NET_LOST to the next NET_BACK on that workstation, or to the sitting's end where the "
-        "link did not come back while it ran.",
+        "Interrupted sittings (7.4): every sitting the event log shows a WS_FAIL on, every failure of a workstation's "
+        "computer, screen, keyboard or mouse the invigilators reported (the server logs none when the centre's link is "
+        "already down or the computer keeps running), and the sittings running at Kochi when the power cut of %s began; "
+        "pauses and changes of seat a candidate asked for are not failures." % fig["asks"]["power_day"],
+        "Sittings that ran in part without the link (7.4): the examination clock running while the workstation's client "
+        "had no link, from each NET_LOST to its next NET_BACK (or the sitting's end where none came), and from a "
+        "client's login to its NET_BACK where it logged in with the link already down; the Kochi sittings ran on the "
+        "UPS for about four minutes after the router went down.",
         "Sources: Pariksha results exports releases 3 and 4, form layouts, item bank snapshot of 31 December 2027 and the "
         "January renumbering, candidate number changes, review bookings, seat plan and workstation event log, "
         "invigilator incident reports.",
