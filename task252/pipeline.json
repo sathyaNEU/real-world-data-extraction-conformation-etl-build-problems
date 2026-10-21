@@ -1,0 +1,48 @@
+{
+ "task": "task252",
+ "owner": "perssathya",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences",
+ "objective": "data-quality-monitoring",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-21",
+ "stump": "A competent solver fits each treated channel's carryover from the two ports before it, reads Hollins' and Calderwood's low checks as span errors because both raw ports read about as low against the laboratory's raw grabs as their checks do, and flags HOL-FW1 beside BRF-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1; with Hollins' raw port carryover taken out its grabs show a constant 0.008 zero error that cancels HOL-FW1's carryover, so the list is the six.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": "task91 0.09"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "Stage 2: the asks and their devices, the fork table, closure, ladder and prompt to precut exit 0; the world is the scratch prototype cw12 seed 45 (carryover with a two-sample memory at five worn analysers, Hollins' zero error, Calderwood's span error), to be rebuilt as generator/sim.py.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "history": [
+  {
+   "date": "2026-10-21",
+   "event": "prototyped before the draw: carryover alone (3 of 3 call-only probes landed), with a zero and a span error on healthy analysers (1 of 3), the zero error on a worn analyser with high raw water (0 of 3)"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "drawn (architecture 1), card registered; forcing event redrawn from launch_or_rollout to period_close against task177"
+  }
+ ]
+}
