@@ -235,6 +235,9 @@ analyst test (no field, code or definition flips the call); the Gate G repeat (f
 objective with a different mechanism; the structural tests are differentiated on the card against task461,
 task102, task130's and task134's and task501's lineages and task162. `surface`: exit 0, top pair task449 at 0.123
 (one CSV column set and the decision type); the one "persona" it lifted was a street name, since renamed.
+After the PAUSED commit the window moved (task251 and task478 marked spent pulled task481 into it) and `check`
+BLOCKed `ban.artifact` on published_series; the card's context artifact is redrawn to filed_standard, the honester
+label, since the trestle design basis is the engineer's own filed document and the tide tables are an input.
 
 ## FC49 screen record (world spent, kept for the record)
 
