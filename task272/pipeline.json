@@ -4,8 +4,8 @@
   "status": "PAUSED",
   "domain": "demographic-social-science",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-21",
   "stump": "A competent analyst who conforms the three hubs and takes the 2025 policy's yearly figure (the three months before the application times four) as each household's income over the twelve months before it applied files 5 grants (H11, H15, H17, H23, H26); one calendar for every seasonal kind of work files 6, one per kind of work across regions or per region or hospital across kinds of work 10; only each region's calendar for each kind of work names the 16.",
   "architecture": 2,
@@ -17,7 +17,7 @@
   },
   "leak": {
     "leak_py": "REVIEW 2026-10-21 (no LEAK): program name, estimand words, column vocabulary, hospitals beside beds and filings; each answered in the note's Leak check",
-    "reader": ""
+    "reader": "r272c and r272d (architecture 2) both landed the call: a seasonal calendar per hospital or region and kind of work; asks held (Ask A 0 of 31 each, Ask B 1 of 31 each, the H20 tie)"
   },
   "duplicate_check": {
     "heart": "WARN 2026-10-21 (three_rules.strategy_risk, repeat.gate_g against task482 v4, overuse.gate_g; answered in the note's Draw item 9)",
@@ -25,12 +25,12 @@
     "surface": "clean 2026-10-21 (persona Kristin Robertson)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report.md (architecture 2)"
   },
   "returned": [],
-  "resume": "Stage 4 (architecture 2): two isolated scored readers (r272c, r272d) and the determinism judge on target.zip 66ca10c7; fix every finding in the generator in one pass; ship, or record the architecture spent (architecture 3 is the last).",
+  "resume": "Re-root: draw architecture 3, the last (guard.py recent, coverage, mechanisms and slots first; the lane's held steps are silent data-structure problems, its spent ones named corrections for a gap the documents state); if it is spent, retire the number.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -46,7 +46,7 @@
     {
       "architecture": 2,
       "drawn": "2026-10-21",
-      "fate": "built 2026-10-21, stage 4 running"
+      "fate": "spent 2026-10-21 at stage 4: Gate F failed, both scored readers fitted a seasonal calendar per hospital or region and kind of work and landed the 16"
     }
   ],
   "gates": {

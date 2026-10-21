@@ -113,6 +113,6 @@
     }
   ],
   "notes": "Architecture 2 drawn 2026-10-21 after architecture 1 was spent at stage 4 (Gate F: both scored readers permuted each working day's determinations). Same world (Vellacott Health Foundation, Fair Assistance Collaborative, 31 hospitals, three billing hubs), new quantity and decisive step. Personas kept from architecture 1 (guard.py names --geo 'United States' --seed 272). stump_strategy time_semantics is the honest label (the income's reference period, a quarter against the year, read through the local seasonal calendar), a three_rules.strategy_risk WARN answered in the design note.",
-  "architecture_spent": false,
+  "architecture_spent": true,
   "registered": "2026-10-21T03:54:48Z"
 }
