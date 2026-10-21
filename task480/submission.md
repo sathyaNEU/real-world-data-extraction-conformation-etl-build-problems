@@ -1,6 +1,6 @@
 ## Tags
 
-**Domain:** Physical & Environmental Sciences (emissions inventory: the 2027 NOx of a nonattainment area's older gasoline vehicles by county, conformed from the registration snapshot, the inspection program's test records, its station licences and the model-year rate table, each vehicle's 2027 miles estimated from its one odometer reading).
+**Domain:** Physical & Environmental Sciences (emissions inventory: the 2027 NOx of a nonattainment area's older gasoline vehicles by county, conformed from the registration snapshot, the inspection program's test records and the model-year rate table, each vehicle's 2027 miles estimated from its one odometer reading).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
@@ -22,8 +22,7 @@ Marlbank, the designated county nearest the line, comes to 11 tons and Dunmarsh,
 4. Took each vehicle's 2027 miles as its reading over the curve at its age when tested, times the curve's rise from its age on 1 January 2027 to its age on 1 January 2028; vehicles without a reading take the average of their county and model year (3.4).
 5. Multiplied by the Table 2 rate in nox_running_rates_cy2027.xlsx for the model year and the class in registration_body_codes.csv and summed by county in short tons of 907,184.74 grams: five counties at 10.0 or more (3.1, 3.2).
 6. Pilot: a voucher in vrp_pilot_vouchers_2025.xlsx whose VIN has an ACTIVE record on the registration snapshot was not retired (the owner took the vehicle back); each retired vehicle's charge is what the Calderwick and Thistlebury lines of vrp_pilot_dismantler_invoices_2025.csv bill for its tow_zone ($185, $280, $330, $395), since Oakhaven's export repeats each invoice's total on every line: Elkhollow 222 vehicles, $59,050; Dunmarsh 201 vehicles, $53,985; Larkhaven 154 vehicles, $42,590; Kinnard 102 vehicles, $26,625.
-7. Stations: each vehicle ACTIVE at 1 July 2026 counted once at its completed initial inspection, its station_no read with the station holding that number on the test date: the six numbers eip_annual_report_2024.pdf lists in another county than eip_station_register_2026-06-30.xlsx belonged to the earlier station until the two to three month pause in that number's tests and to the register's station after it; kept where that station is in the vehicle's county.
-8. Recommended intake events in Wexmoor, Halvering, Linnmere, Elkhollow and Marlbank.
+7. Recommended intake events in Wexmoor, Halvering, Linnmere, Elkhollow and Marlbank.
 
 ## 4. Deliverable Answers
 
@@ -48,19 +47,6 @@ Marlbank, the designated county nearest the line, comes to 11 tons and Dunmarsh,
    - Dunmarsh: 201 vehicles; $53,985
    - Larkhaven: 154 vehicles; $42,590
    - Kinnard: 102 vehicles; $26,625
-4. For each county, the vehicles registered there on 1 July 2026 whose completed 2024 to 2025 initial inspection was at a station in that county:
-   - Copperleaf: 6,591
-   - Dunmarsh: 12,605
-   - Elkhollow: 11,277
-   - Halvering: 20,788
-   - Kinnard: 4,693
-   - Larkhaven: 9,340
-   - Linnmere: 17,587
-   - Marlbank: 10,471
-   - Quarrybrook: 9,848
-   - Sallowford: 5,849
-   - Thorncastle: 7,398
-   - Wexmoor: 30,798
 
 ### intake_counties_2027_memo.docx
 

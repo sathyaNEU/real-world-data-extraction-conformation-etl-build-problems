@@ -26,8 +26,6 @@ def figures(target):
     pil = A.pilot_figures(target)
     pil_naive = A.pilot_figures(target, drop_reinstated=False, rate_card=False)
     vouch = {c: v["n"] for c, v in A.pilot_figures(target, drop_reinstated=False).items()}
-    st = A.station_figures(target)
-    st_naive = A.station_figures(target, by_date=False)
     fam = ["golden", "ols3", "ols4", "ll4", "ll6", "bin1"]
     sets = {k: M.designated(v) for k, v in R.items()}
     return dict(
@@ -44,7 +42,6 @@ def figures(target):
         pilot={c: dict(vouchers=vouch[c], retired=pil[c]["n"], charges=int(round(pil[c]["charges"])),
                        naive_retired=pil_naive[c]["n"], naive_charges=int(round(pil_naive[c]["charges"])))
                for c in W.PILOT_COUNTIES},
-        stations={c: dict(in_county=st[c], naive=st_naive[c]) for c in W.NAMES},
         zone_charges=zone_charges(target),
         filed=dict(clauses=["2.1", "3.1", "3.2", "3.3", "3.4"], unusable_odometers=[0, 999999], age_from="1 January",
                    grams_per_short_ton="907,184.74"),
@@ -157,17 +154,6 @@ def write_workbook(path, f):
         row[4].number_format = "$#,##0"
     for col, w in zip("ABCDE", [10, 15, 11, 11, 16]):
         ps.column_dimensions[col].width = w
-    ss = wb.create_sheet("Station inspections")
-    ss.append(["County no.", "County", "Initial inspections at a station in the county"])
-    for c in sorted(W.NAMES, key=lambda c: W.CNO[c]):
-        ss.append(["%02d" % W.CNO[c], c, f["stations"][c]["in_county"]])
-    for cell in ss[1]:
-        cell.font, cell.fill = head, fill
-        cell.alignment = Alignment(wrap_text=True, vertical="center")
-    for row in ss.iter_rows(min_row=2):
-        row[2].number_format = "#,##0"
-    for col, w in zip("ABC", [10, 15, 22]):
-        ss.column_dimensions[col].width = w
     ns = wb.create_sheet("Notes")
     notes = [
         "Intake counties: guidelines 3.1 to 3.4. Eligible vehicles are the ACTIVE records on the 1 July 2026 "
@@ -182,9 +168,6 @@ def write_workbook(path, f):
         "Pilot 2025: a voucher whose vehicle is registered again (ACTIVE) at 1 July 2026 is not counted as retired. "
         "Dismantler charges are the program agreement's charge for each vehicle's tow zone; Oakhaven Salvage & Parts' "
         "invoice export repeats the invoice total on every line.",
-        "Station inspections: each vehicle registered in the county at 1 July 2026 is counted once, at its completed "
-        "initial inspection, by the county of the station that held the station number on the test date (six numbers "
-        "were licensed again to new stations in 2024 and 2025).",
         "Prepared by the Mobile Sources Section, 26 October 2026.",
     ]
     for n in notes:
@@ -247,14 +230,9 @@ def write_memo(path, f, png):
            sum(p[x]["vouchers"] - p[x]["retired"] for x in W.PILOT_COUNTIES),
            "{:,}".format(p["Elkhollow"]["charges"]), "{:,}".format(p["Dunmarsh"]["charges"]),
            "{:,}".format(p["Larkhaven"]["charges"]), "{:,}".format(p["Kinnard"]["charges"])))
-    doc.add_paragraph(
-        "Intake desks will sit at inspection stations, and the station sheet of the workbook gives, for each county, how "
-        "many of its vehicles had their initial inspection at one of its own stations; six station numbers passed to new "
-        "stations in other counties during the cycle, so each test is read with the licence that held its number that day.")
     src = doc.add_paragraph(
-        "Sources: registration snapshot of 1 July 2026; Enhanced Inspection Program tests, 2024 and 2025; station register "
-        "of 30 June 2026 and the 2024 annual report's station list; Table 2 (15 April 2026); pilot voucher register and "
-        "dismantler invoices. NOx is running exhaust only; counties are compared with the line before rounding.")
+        "Sources: registration snapshot of 1 July 2026; Enhanced Inspection Program tests, 2024 and 2025; Table 2 "
+        "(15 April 2026); pilot voucher register and dismantler invoices. NOx is running exhaust only; counties are compared with the line before rounding.")
     for run in src.runs:
         run.font.size = Pt(8.5)
         run.italic = True

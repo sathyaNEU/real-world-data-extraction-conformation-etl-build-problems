@@ -1,10 +1,10 @@
 # leak check, task480
 
-**Verdict: REVIEW.** 15 files read, 20 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 15 files read, 8 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: reading, cumulative, average, readings, decisive, odometer, window, register, family, readable, method, estimator, yearly, driver, lifetime, record, pooled, reader, architecture, nothing, golden, inspected, records, regional, quantity
+Stump terms swept: reading, cumulative, average, readings, decisive, odometer, window, inspection, register, family, readable, method, estimator, yearly, driver, lifetime, station, record, pooled, reader, architecture, nothing, golden, inspected, records
 
 ## 2 author vocabulary (REVIEW 1)
 - **REVIEW** `vrp_pilot_close_out_2025.pdf`: \bthe model\b x1: ...e title was not in the applicant's name (94), the vehicle was outside the model years (57) or the applicant had already retired two vehicles (11); th...
@@ -13,9 +13,9 @@ Stump terms swept: reading, cumulative, average, readings, decisive, odometer, w
 - **REVIEW** `vehicle_retirement_program_guidelines_2027.pdf`: carries 14 of 19 distinctive words of the committed call: 'Hold 2027 Vehicle Retirement Program intake events in the five counties whose eligible vehicles will emit 10 short tons '
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `eip_annual_report_2024.pdf`: 5 of 25 stump-paragraph terms appear (odometer, register, record, inspected, records); read whether the document names the move
-- **REVIEW** `extract_notes_and_dictionary.pdf`: 4 of 25 stump-paragraph terms appear (odometer, register, record, records); read whether the document names the move
-- **REVIEW** `vehicle_retirement_program_guidelines_2027.pdf`: 6 of 25 stump-paragraph terms appear (reading, average, odometer, register, record, inspected); read whether the document names the move
+- **REVIEW** `eip_annual_report_2024.pdf`: 7 of 25 stump-paragraph terms appear (odometer, inspection, register, station, record, inspected); read whether the document names the move
+- **REVIEW** `extract_notes_and_dictionary.pdf`: 6 of 25 stump-paragraph terms appear (odometer, inspection, register, station, record, records); read whether the document names the move
+- **REVIEW** `vehicle_retirement_program_guidelines_2027.pdf`: 8 of 25 stump-paragraph terms appear (reading, average, odometer, inspection, register, station); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `vehicle_registrations_2026-07-01.csv`: 161057 ISO dates after 2026-10-26, e.g. 2026-10-27, 2026-10-28, 2026-10-29, 2026-10-30, 2026-10-31

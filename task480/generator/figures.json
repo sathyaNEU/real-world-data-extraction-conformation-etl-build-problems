@@ -554,56 +554,6 @@
    }
   }
  },
- "stations": {
-  "Copperleaf": {
-   "in_county": 6591,
-   "naive": 6238
-  },
-  "Dunmarsh": {
-   "in_county": 12605,
-   "naive": 11849
-  },
-  "Elkhollow": {
-   "in_county": 11277,
-   "naive": 11330
-  },
-  "Halvering": {
-   "in_county": 20788,
-   "naive": 19174
-  },
-  "Kinnard": {
-   "in_county": 4693,
-   "naive": 3649
-  },
-  "Larkhaven": {
-   "in_county": 9340,
-   "naive": 9377
-  },
-  "Linnmere": {
-   "in_county": 17587,
-   "naive": 15960
-  },
-  "Marlbank": {
-   "in_county": 10471,
-   "naive": 10542
-  },
-  "Quarrybrook": {
-   "in_county": 9848,
-   "naive": 8600
-  },
-  "Sallowford": {
-   "in_county": 5849,
-   "naive": 5880
-  },
-  "Thorncastle": {
-   "in_county": 7398,
-   "naive": 7536
-  },
-  "Wexmoor": {
-   "in_county": 30798,
-   "naive": 30993
-  }
- },
  "threshold": 10.0,
  "totals": {
   "eligible": 65305,

@@ -286,30 +286,6 @@ def main(target, gdir):
     tr = reg[(reg["record_status"] == "TRANSFERRED") & reg["vin"].isin(vou["vin"])]
     check("ask A twins: %d voucher vehicles carry a transferred record from an earlier move, and are retired" % len(tr),
           len(tr) >= 20)
-    s, sn = A.station_figures(target), A.station_figures(target, by_date=False)
-    moved = [c for c in W.NAMES if s[c] != sn[c]]
-    check("ask B: the station number read with the current licence misses %d of 12 counties (least %d)" % (
-        len(moved), min(abs(s[c] - sn[c]) for c in W.NAMES)), len(moved) == 12 and min(abs(s[c] - sn[c]) for c in W.NAMES) >= 8)
-    check("ask B: no two counties carry the same in-county count", len(set(s.values())) == 12)
-    import stations as S
-    st_reg = S.register()
-    tt = tst.assign(day=pd.to_datetime(tst["test_start"]).dt.normalize())
-    pauses = {}
-    for no_, g in tt.groupby("station_no"):
-        dd = g["day"].drop_duplicates().sort_values()
-        k = int(np.argmax(dd.diff().fillna(pd.Timedelta(0)).to_numpy()))
-        pauses[int(no_)] = (dd.diff().max().days if len(dd) > 1 else 0, dd.iloc[k - 1].date() if k else None, dd.iloc[k].date())
-    re_no = {x["no"] for x in st_reg.s if x["gen"] == 1}
-    fair = all(pauses[x["no"]][0] >= 55 and pauses[x["no"]][1] <= x["start"] <= pauses[x["no"]][2]
-               for x in st_reg.s if x["gen"] == 1)
-    check("ask B fair: each of the six reissued numbers pauses %d to %d days in its tests across the hand-over" % (
-        min(pauses[n_][0] for n_ in re_no), max(pauses[n_][0] for n_ in re_no)), fair)
-    other = max(v[0] for k_, v in pauses.items() if k_ not in re_no)
-    check("ask B fair: no other station pauses more than %d days" % other, other <= 21)
-    sr_cols = list(pd.read_excel(os.path.join(target, W.FILES["stations"]), nrows=0).columns)
-    check("ask B silent: the station register carries no licence date (%s)" % sr_cols,
-          not any(re.search(r"since|date|issued|start", c) for c in sr_cols))
-
     # separation: the call reads no voucher, invoice or station row, and the reinstated vehicles do not move it
     rein = set(vou["vin"]) & set(act["vin"])
     el_r = el_p[~el_p["vin"].isin(rein)].reset_index(drop=True)

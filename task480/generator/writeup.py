@@ -21,11 +21,11 @@ def write(figs, out):
     qs = [x for x in order if x in q]
     below = [x for x in order if x not in q]
     r1, r2 = f["rungs"]["R1"]["set"], f["rungs"]["R2"]["set"]
-    p, s = f["pilot"], f["stations"]
+    p = f["pilot"]
     L = ["## Tags", "",
          "**Domain:** Physical & Environmental Sciences (emissions inventory: the 2027 NOx of a nonattainment area's "
          "older gasoline vehicles by county, conformed from the registration snapshot, the inspection program's test "
-         "records, its station licences and the model-year rate table, each vehicle's 2027 miles estimated from its one "
+         "records and the model-year rate table, each vehicle's 2027 miles estimated from its one "
          "odometer reading).",
          "**Analytical objective:** Data Extraction & Conformation (ETL).", ""]
     L += ["## 1. Final Recommendation", "",
@@ -61,12 +61,7 @@ def write(figs, out):
           "Oakhaven's export repeats each invoice's total on every line: %s." % (
               ", ".join("$%d" % f["zone_charges"][z] for z in sorted(f["zone_charges"])), "; ".join(
                   "%s %d vehicles, $%s" % (x, p[x]["retired"], "{:,}".format(p[x]["charges"])) for x in W.PILOT_COUNTIES)),
-          "7. Stations: each vehicle ACTIVE at 1 July 2026 counted once at its completed initial inspection, its "
-          "station_no read with the station holding that number on the test date: the six numbers eip_annual_report_2024.pdf "
-          "lists in another county than eip_station_register_2026-06-30.xlsx belonged to the earlier station until the "
-          "two to three month pause in that number's tests and to the register's station after it; kept where that "
-          "station is in the vehicle's county.",
-          "8. Recommended intake events in %s." % andlist(qs), ""]
+          "7. Recommended intake events in %s." % andlist(qs), ""]
     L += ["## 4. Deliverable Answers", "", "### %s" % W.GOLDEN["workbook"], "",
           "1. Each county's eligible vehicles' 2027 NOx in short tons to the nearest ton, and whether it qualifies:"]
     for x in order:
@@ -75,10 +70,6 @@ def write(figs, out):
           "3. The vehicles the 2025 pilot retired and what the Department paid dismantlers for them:"]
     for x in W.PILOT_COUNTIES:
         L.append("   - %s: %d vehicles; $%s" % (x, p[x]["retired"], "{:,}".format(p[x]["charges"])))
-    L += ["4. For each county, the vehicles registered there on 1 July 2026 whose completed 2024 to 2025 initial "
-          "inspection was at a station in that county:"]
-    for x in sorted(W.NAMES, key=lambda x: W.CNO[x]):
-        L.append("   - %s: %s" % (x, "{:,}".format(s[x]["in_county"])))
     L += ["", "### %s" % W.GOLDEN["memo"], "",
           "1. The recommendation: intake events in %s." % andlist(qs)]
     open(out, "w", encoding="utf-8").write("\n".join(L) + "\n")

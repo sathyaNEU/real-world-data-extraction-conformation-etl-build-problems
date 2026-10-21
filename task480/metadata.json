@@ -122,6 +122,10 @@
   {
    "file": "county_population_estimates_2025.csv",
    "why": "residents and households; the eligible fleet is the registration snapshot's ACTIVE records (2.1)"
+  },
+  {
+   "file": "eip_station_register_2026-06-30.xlsx",
+   "why": "where intake desks could sit (guidelines 5); a county's NOx rests on its vehicles' own readings wherever they were tested (3.3)"
   }
  ],
  "deliverables": [

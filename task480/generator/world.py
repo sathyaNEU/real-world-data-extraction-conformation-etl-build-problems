@@ -102,4 +102,5 @@ FILES = {
     "population": "county_population_estimates_2025.csv",
 }
 GOLDEN = {"workbook": "retirement_program_county_nox_2027.xlsx", "memo": "intake_counties_2027_memo.docx"}
-DISTRACTORS = ["dot_county_vmt_2025.csv", "gasoline_sales_by_county_2025.csv", "county_population_estimates_2025.csv"]
+DISTRACTORS = ["dot_county_vmt_2025.csv", "gasoline_sales_by_county_2025.csv", "county_population_estimates_2025.csv",
+               "eip_station_register_2026-06-30.xlsx"]

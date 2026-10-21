@@ -1,10 +1,8 @@
 """An independent verifier: it reads only the shipped bundle (target/, golden/, submission.md) and recomputes the call
-and every graded figure with its own code (pandas, pdftotext for the annual report's station list), then compares
+and every graded figure with its own code (pandas), then compares
 with the golden workbook and the write-up."""
 import datetime as dt
 import os
-import re
-import subprocess
 import sys
 
 import numpy as np
@@ -93,53 +91,6 @@ def pilot(t):
     return v.groupby("county").size(), v.groupby("county")["charge"].sum()
 
 
-def annual_list(t):
-    """The 2024 annual report's station list: number, name, county, status, off the PDF's text layer."""
-    txt = subprocess.run(["pdftotext", "-layout", os.path.join(t, "eip_annual_report_2024.pdf"), "-"],
-                         capture_output=True, text=True).stdout
-    out = []
-    for line in txt.splitlines():
-        m = re.match(r"^\s*(\d{4})\s{2,}(.+?)\s{2,}(.+?)\s{2,}([A-Z][a-z]+)\s{2,}(closed .+|licensed)\s*$", line)
-        if m:
-            out.append(dict(no=m.group(1), name=m.group(2).strip(), county=m.group(4), status=m.group(5).strip()))
-    return pd.DataFrame(out)
-
-
-def stations(t):
-    reg, tst, cty, body, rates = load(t)
-    names = dict(zip(cty["county_no"], cty["county"]))
-    sr = pd.read_excel(os.path.join(t, "eip_station_register_2026-06-30.xlsx"), dtype=str)
-    cur = sr.set_index("station_no")
-    old = annual_list(t)
-    tests = completed(tst)
-    prior, cut = {}, {}
-    for no, g in old.groupby("no"):
-        g = g[g["county"] != cur.at[no, "county"]] if no in cur.index else g
-        if len(g):
-            # a number the 2024 report places in another county than the register: the earlier station held it
-            # until the longest pause in the number's tests, the register's station after it
-            prior[no] = g["county"].iloc[0]
-            days = tests.loc[tests["station_no"] == no, "when"].dt.normalize().drop_duplicates().sort_values()
-            gaps = days.diff()
-            cut[no] = days.iloc[int(np.argmax(gaps.fillna(pd.Timedelta(0)).to_numpy()))].date()
-    act = reg[reg["record_status"] == "ACTIVE"].copy()
-    act["my"] = act["model_year"].astype(int)
-    act["county"] = act["county_no"].map(names)
-    rows = first_test(reg, completed(tst), act["vin"], act["plate"], act["my"])
-    where = []
-    for r in rows:
-        if r is None:
-            where.append(None)
-            continue
-        no, d = r["station_no"], r["when"].date()
-        if no in prior and d < cut[no]:
-            where.append(prior[no])
-        else:
-            where.append(cur.at[no, "county"] if no in cur.index else prior.get(no))
-    act["st"] = where
-    return (act["st"] == act["county"]).groupby(act["county"]).sum()
-
-
 def main(target, gdir):
     ok = True
     tons, n, read = nox(target)
@@ -162,14 +113,9 @@ def main(target, gdir):
         same = int(pn[c]) == int(p.at[c, "Vehicles retired"]) and int(round(pc[c])) == int(p.at[c, "Dismantler charges paid ($)"])
         print("verify: pilot %s %d retired, $%s %s" % (c, pn[c], "{:,.0f}".format(pc[c]), "ok" if same else "MISMATCH"))
         ok &= same
-    st = stations(target)
-    s = pd.read_excel(wb, sheet_name="Station inspections").set_index("County")
-    bad = [c for c in st.index if int(st[c]) != int(s.at[c, "Initial inspections at a station in the county"])]
-    print("verify: station counts %s" % ("agree in all twelve counties" if not bad else "MISMATCH %s" % bad))
-    ok &= not bad
     sub = open(os.path.join(os.path.dirname(gdir), "submission.md"), encoding="utf-8").read()
     for c in tons.index:
-        ok &= ("- %s: %d; " % (c, int(tons[c] + 0.5))) in sub and ("- %s: %s" % (c, "{:,}".format(int(st[c])))) in sub
+        ok &= ("- %s: %d; " % (c, int(tons[c] + 0.5))) in sub
     for c in pn.index:
         ok &= ("- %s: %d vehicles; $%s" % (c, pn[c], "{:,.0f}".format(pc[c]))) in sub
     print("verify: %s" % ("PASS" if ok else "FAIL"))

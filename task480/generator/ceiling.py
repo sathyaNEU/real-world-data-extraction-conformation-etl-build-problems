@@ -1,9 +1,9 @@
 """The pair ceiling on the cut pack. The cracker lands the call (every county's 2027 NOx, its verdict and the set) and
 runs the hygiene battery, executing every filed rule it points at: ask A by the voucher register's PAID vouchers per
-applicant county and each voucher's invoice line amounts; ask B by each test's station number joined to the station
-register. The mirror stops at the most attractive wrong rung (R1, each vehicle's reading over its age) and takes the
+applicant county, each priced at its tow zone's charge (Oakhaven's repeated invoice totals re-priced, as all four stage 4
+readers did). The mirror stops at the most attractive wrong rung (R1, each vehicle's reading over its age) and takes the
 asks by the same paths. Weights 38 / 7 / 55; the main block grades the set, each county's NOx and each county's
-verdict (25); the asks are 20 figures (8 pilot, 12 stations)."""
+verdict (25); the ask is 8 figures."""
 import os
 import sys
 
@@ -28,14 +28,11 @@ def main(target=None, quiet=False):
     gset, mset = M.designated(gold), M.designated(mir)
     keep = (gset == mset) + sum(r0(mir[c]) == r0(gold[c]) for c in W.NAMES) + \
         sum((mir[c] >= W.THRESHOLD_TONS) == (gold[c] >= W.THRESHOLD_TONS) for c in W.NAMES)
-    p, pn = A.pilot_figures(target), A.pilot_figures(target, drop_reinstated=False, rate_card=False)
-    s, sn = A.station_figures(target), A.station_figures(target, by_date=False)
+    p, pn = A.pilot_figures(target), A.pilot_figures(target, drop_reinstated=False)
     rows = []
     for c in W.PILOT_COUNTIES:
         rows.append(("A", "%s vehicles retired" % c, p[c]["n"], pn[c]["n"]))
         rows.append(("A", "%s dismantler charges ($)" % c, round(p[c]["charges"]), round(pn[c]["charges"])))
-    for c in W.NAMES:
-        rows.append(("B", "%s in-county initial inspections" % c, s[c], sn[c]))
     hits = sum(g == x for _, _, g, x in rows)
     ask = W_ASK * hits / len(rows)
     cracker = W_CALL + W_INSTR + ask

@@ -25,7 +25,9 @@ def write(path, n):
         "gasoline_sales_by_county_2025.csv": "gallons sold by county of sale, every vehicle that fuels there; not a "
                                              "vehicle's miles, which 3.3 takes from its own reading",
         "county_population_estimates_2025.csv": "residents and households; the eligible fleet is the registration "
-                                                "snapshot's ACTIVE records (2.1)"}
+                                                "snapshot's ACTIVE records (2.1)",
+        "eip_station_register_2026-06-30.xlsx": "where intake desks could sit (guidelines 5); a county's NOx rests on its "
+                                                "vehicles' own readings wherever they were tested (3.3)"}
     meta = dict(task="task480", title="%s: the 2027 %s intake counties" % (W.AREA, W.PROGRAM),
                 setting="A fictional state environmental quality department's mobile sources section, a fictional "
                         "twelve-county ozone nonattainment area and its first biennial inspection cycle; every "

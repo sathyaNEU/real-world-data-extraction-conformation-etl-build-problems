@@ -211,43 +211,23 @@ on other bases (distractors in metadata.json, each ruled out by 2.1 or 3.3) and 
   from a move before the pilot and were retired); D6, Oakhaven Salvage & Parts' billing export writes each invoice's
   total on every line (1.56 times Elkhollow's true charges), while the other two dismantlers bill one amount per tow
   zone and 4.2 says the charges are the same at every dismantler.
-- **Ask B, stations** (12 figures): for every county, the vehicles registered there at 1 July 2026 whose completed
-  initial inspection was at a station in that county. Its tie to the call: intake desks sit at the designated
-  counties' inspection stations (guidelines 5). Device: D7, six station licence numbers given again to new stations
-  in other counties during the cycle; the register lists only the current licensee, with no licence date, and the
-  2024 annual report lists 2024's stations, so the reissue shows only as a number the two files place in different
-  counties, and the hand-over only as the two to three month pause in that number's tests (no other station pauses
-  more than three weeks); a test is read with the station that held its number that day (the current licence misses
-  all twelve counties, by 31 to 1,618).
 - **Construction layer** (the call's own rows): each county's NOx and verdict and the chart of the twelve against the
   line; no device rows in the call's population (the 62 reinstated vehicles dropped leave every figure, asserted).
 
-Pair ceiling: 32.1 (cracker 45.0 on the call with no ask figure kept, mirror 19.2 at R1 keeping 8 of the 25 main criteria)
+Pair ceiling: 32.1 (cracker 45.0 on the call with no ask figure kept, mirror 19.2 at R1 keeping 8 of the 25 main criteria; the cracker's ask path is the one all six stage 4 readers took, every PAID voucher priced at its tow zone's charge)
 Mirror leakage: 0.0 per cent of ask weight
 Measured by: generator/ceiling.py on the cut pack
 
 | Ask | Figure | Golden | The cracker's path | Cracker |
 |---|---|---|---|---|
 | A | Elkhollow vehicles retired | 222 | 238 (every PAID voucher) | miss |
-| A | Elkhollow dismantler charges | $59,050 | $97,770 (line amounts) | miss |
+| A | Elkhollow dismantler charges | $59,050 | $63,405 (reinstated left in, zone charges) | miss |
 | A | Dunmarsh vehicles retired | 201 | 214 | miss |
 | A | Dunmarsh dismantler charges | $53,985 | $57,640 | miss |
 | A | Larkhaven vehicles retired | 154 | 171 | miss |
 | A | Larkhaven dismantler charges | $42,590 | $47,280 | miss |
 | A | Kinnard vehicles retired | 102 | 118 | miss |
 | A | Kinnard dismantler charges | $26,625 | $30,720 | miss |
-| B | Copperleaf in-county inspections | 6,591 | 6,238 (current licence) | miss |
-| B | Dunmarsh | 12,605 | 11,849 | miss |
-| B | Elkhollow | 11,277 | 11,330 | miss |
-| B | Halvering | 20,788 | 19,174 | miss |
-| B | Kinnard | 4,693 | 3,649 | miss |
-| B | Larkhaven | 9,340 | 9,377 | miss |
-| B | Linnmere | 17,587 | 15,960 | miss |
-| B | Marlbank | 10,471 | 10,542 | miss |
-| B | Quarrybrook | 9,848 | 8,600 | miss |
-| B | Sallowford | 5,849 | 5,880 | miss |
-| B | Thorncastle | 7,398 | 7,536 | miss |
-| B | Wexmoor | 30,798 | 30,993 | miss |
 
 ## Tried and rejected
 
@@ -313,3 +293,8 @@ Measured by: generator/ceiling.py on the cut pack
   test date with it, took the 2024 report's county before it, and kept all twelve station figures (score_reader 20 of
   44 each, call missed by both on the default path); the register now carries no licence date, so the reissue is a
   cross-file conflict and the hand-over is the pause in the number's own tests.
+- 2026-10-21, stage 4 round 2, ask B: with no licence date on the register, reader C still split each reused number
+  at the pause in its tests and kept all twelve station figures, and reader D kept seven from the 2024 report's
+  closure dates; a station number reused across counties is a map every careful reader reconciles, so the station
+  ask is retired, the register stays as a declared distractor, and the ask layer is the pilot (0 of 8 for all four
+  readers).
