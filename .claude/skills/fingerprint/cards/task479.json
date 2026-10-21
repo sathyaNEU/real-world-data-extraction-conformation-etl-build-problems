@@ -1,98 +1,81 @@
 {
   "task": "task479",
-  "architecture": "v4",
+  "architecture": "v5",
   "drawn": "2026-10-21",
-  "slot_note": "re-root of seed ET36 after architectures 1 to 3 were spent at stage 4; nothing of any earlier world or step kept: a charter network's spring 2026 math benchmark item responses rescored to the vendor's scale, a share of them rapid guesses",
-  "domain": "education-learning-sciences",
-  "client_domain": "education-learning-sciences",
-  "subdomain": "item-response-theory-test-equating",
-  "niche": "a charter network's 2026-27 high-dosage math tutoring designation: the campuses where 35 per cent or more of the students tested on the spring 2026 benchmark score below Basic on the vendor's scale, from the item responses, the response times and the vendor's item bank, where some sessions were tested when students were not trying",
+  "slot_note": "re-root of seed ET36 after architectures 1 to 4 were spent at stage 4; a school employees' health cooperative's member districts' 2026 plan-paid claims, completed from January to June to the full plan year, where four districts moved to a high-deductible plan for 2026",
+  "domain": "healthcare-delivery-health-economics",
+  "client_domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "niche": "a school employees' health cooperative's October 2026 mid-year contribution review: which member districts' expected full 2026 plan-year plan-paid claims per member per month exceed the claims component of their 2026 contribution rate, from January to June 2026 claims, when members pay their deductibles first in the plan year and four districts moved to a $3,000 deductible on 1 January 2026",
   "objective": "etl",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "C01 (Bellweather Eastgate), C04 (Carver Park), C07 (Ashby) and C13 (Fairview) designated for 2026-27 tutoring",
-  "answer_source": "golden/bellweather_2026-27_tutoring_designation.xlsx (Designation sheet) and submission.md block 1",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population"
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G15",
-    "G16"
+    "G4",
+    "G13"
   ],
-  "gate_g": "etl_conformance",
-  "calibration_form": "none",
-  "stump_strategy": "other",
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_model",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "With every file conformed and every rule read, the easy route takes the vendor's reported scale scores (each the maximum likelihood estimate from all forty responses on the bank's parameters) and designates the campuses with 35 per cent or more below Basic; but some sessions were rapid-guessed, responses given in a second or two at chance accuracy that carry no information about what the student knows, and scoring each student on the responses given with effort moves several campuses off the list.",
-  "domain_test": "Effort-moderated item response scoring, the psychometrician's treatment of rapid-guessing in a low-stakes test: a response given faster than any engaged reading of the item is treated as not administered and the student's ability is estimated by maximum likelihood from the responses given with effort; with another field's nouns there is no item response model, no response time and no guessing floor, so the step does not exist.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:responses given faster than any engaged reading carry no information and are scored as not administered",
+  "analyst_test": "With every file conformed and every rule read, the easy route completes each district's January to June 2026 plan-paid claims with the share of the 2025 plan year that its own January to June carried, which is right for the districts whose plan did not change; but plan-paid claims fall later in the plan year the higher the deductible, and the four districts that moved to the $3,000 deductible have no 2025 at that design, so their own 2025 share overstates what January to June carries and understates their full year.",
+  "domain_test": "Plan-year seasonality of a self-funded plan's paid claims, worked the way health plan actuaries complete a partial plan year: members meet their deductibles first, so the plan's share of claims rises through the year, and the completion share is a function of the benefit design, read from the districts already on that design; with another field's nouns there is no deductible accumulator that resets each January.",
+  "layer2_family": "forecast_uncertainty",
+  "layer2_pattern": "own:a partial plan year completed by the share its months carry under the year's own benefit design",
   "layer1": [
-    "the vendor's response export in two layouts across its March 2026 platform release (milliseconds against seconds)",
-    "response times logged on the client clock for one campus's devices",
-    "students reissued new ids at the January 2026 student information system migration, with a partial crosswalk",
-    "makeup attempts recorded under temporary ids",
-    "two administrations of the same student when a session was restarted",
-    "the bank's item ids against the form's position codes"
+    "the claims lag report in two layouts across the plan administrator's platform change",
+    "June 2026 claims still running out at the extract",
+    "2025 incurred claims paid in 2026",
+    "enrollment snapshots with mid-month changes",
+    "districts' group numbers reissued when the cooperative re-rated two districts"
   ],
-  "stakeholder_role": "director of assessment at a charter management organization",
-  "role_family": "research_desk",
+  "stakeholder_role": "benefits finance manager of a school employees' health cooperative",
+  "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "quantilis_spring2026_item_responses_from_2026-03-30.csv",
-    "rows": 186120,
-    "entity": "one student's response to one item",
-    "grain": "student x item",
+    "file": "",
+    "rows": 0,
+    "entity": "one member's enrollment in one month",
+    "grain": "member x month",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
+  "forum": "trustees_or_governors",
   "forcing_event": "vote_or_meeting",
-  "org_family": "university_or_school",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "United States (a fictional metro region)",
+    "geography": "United States (a fictional county region)",
     "currency": "USD",
-    "org_type": "charter management organization",
-    "invented_names": [
-      "Bellweather Academies",
-      "Quantilis Assessment",
-      "Bellweather Eastgate",
-      "Bellweather Riverside",
-      "Bellweather Highpoint",
-      "Bellweather Carver Park",
-      "Bellweather Northfield",
-      "Bellweather Lakemont",
-      "Bellweather Ashby",
-      "Bellweather Southridge",
-      "Bellweather Delmar",
-      "Bellweather Westbrook",
-      "Bellweather Granger",
-      "Bellweather Oak Hollow",
-      "Bellweather Fairview",
-      "Bellweather Mercer"
-    ],
+    "org_type": "school employees' health cooperative",
+    "invented_names": [],
     "people": [
-      "Sabrina Santos",
-      "Gregory Valdez"
+      "Brady Cooper",
+      "James Hernandez"
     ]
   },
-  "deliverables": [
-    "bellweather_2026-27_tutoring_designation.xlsx"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "Each unit's level is estimated from its answers to a set of items through a known response model, and in some sittings part of the answers were given too fast to have been read, at the chance rate, so they carry no information; estimating every unit from all its answers pulls the units of those sittings toward the floor, and only the answers given with effort, scored by the same model, recover each unit's level.",
-  "driver_concrete": "On the spring 2026 benchmark, the students in a few campuses' end-of-day sessions answered a third or more of the items in under three seconds and got a quarter of them right, the rate of a blind guess on four options; the vendor's scores count those guesses as wrong answers and put those campuses over the 35 per cent line, while each student's score from the items answered with effort leaves them under it.",
-  "stump": "The default path takes the vendor's reported scale scores and designates the campuses with 35 per cent or more of students below Basic, because it never asks whether every response it scores was a real attempt.",
+  "driver": "A period's total is completed from its first months by the share those months carry, and the share is set by a design that resets each period and can change between periods: for units whose design changed, their own earlier period's share belongs to the old design, so the share has to come from units already on the new one.",
+  "driver_concrete": "A district's plan pays little in the first months of a plan year while its members meet their deductibles, and less still at a $3,000 deductible: completing January to June 2026 with the district's own 2025 share works where the plan did not change, but the four districts that moved to the $3,000 deductible had their 2025 on a $500 plan, and the share their January to June carries now is the one the districts already on $3,000 show.",
+  "stump": "The default path completes each district's January to June 2026 plan-paid claims with its own 2025 January-to-June share and finds no shortfall at the four districts that moved to the $3,000 deductible, because it never asks whether a plan year's paid claims fall the same way under a different deductible.",
   "mechanism_source": "design_note",
-  "differentiation": {},
+  "differentiation": {
+    "task474": "task474 carries short counts to a year by a calendar pattern measured at always-on reference sites, the facility-serving sites following their facility's schedule; here no calendar or schedule outside the plan sets the pattern: the plan's own deductible accumulators make paid claims back-load within the plan year, and the share is read by design, from the districts already on the new deductible.",
+    "task451": "task451 completes a period's incurred cost from the arrival history of payments after a handler's delay changed; here the incurred months are complete and the year is unfinished: the part of the plan year not yet incurred is what is projected."
+  },
   "lineage": [
     {
       "architecture": "v1",
@@ -156,7 +139,6 @@
       "niche": "a charter network's 2026-27 high-dosage math tutoring designation: the campuses where 35 per cent or more of the students tested on the spring 2026 benchmark score below Basic on the vendor's scale, from the item responses, the response times and the vendor's item bank, where some sessions were tested when students were not trying"
     }
   ],
-  "notes": "stump_strategy other: effort moderation of rapid guesses in item response scoring. Gate G method_or_model_selection: the scoring model is the vendor's (filed), the choice is which responses it is fed.",
-  "registered": "2026-10-21T01:21:59Z",
-  "architecture_spent": true
+  "notes": "stump_strategy composition_mix: the plan year's paid share depends on the benefit design mix the history does not carry for the changed districts.",
+  "registered": "2026-10-21T01:37:07Z"
 }

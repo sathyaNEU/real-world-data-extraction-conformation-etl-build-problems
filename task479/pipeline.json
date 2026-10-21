@@ -1,34 +1,34 @@
 {
  "task": "task479",
  "owner": "oviya1301",
- "status": "PAUSED",
- "domain": "education-learning-sciences",
+ "status": "DESIGN",
+ "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-21",
- "stump": "The default path takes the vendor's reported scale scores and designates the campuses with 35 per cent or more of students below Basic, because it never asks whether every response it scores was a real attempt.",
+ "stump": "The default path completes each district's January to June 2026 plan-paid claims with its own 2025 January-to-June share and finds no shortfall at the four districts that moved to the $3,000 deductible, because it never asks whether a plan year's paid claims fall the same way under a different deductible.",
  "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-21"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW",
-  "reader": "architecture 4: both readers missed the call (default path); asks leaked 85.7 per cent"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
   "heart": "WARN",
   "nearest": "see guard heart"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "SEND_BACK",
-  "report": "architecture 4: Gate G planted_defect_flip (verdict kept in the design note's Tried and rejected)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "stage 1: re-root to architecture 5: a FINE-numbers shape (method selection or forecast), no shipped figure that ranks the candidates, a decisive structure that is a property of the world rather than contaminated rows; ask devices with no documented resolver",
+ "resume": "stage 2: design architecture 5 (plan-year completion under the 2026 benefit design): generator, ladder, asks, prompt, precut",
  "approved": null,
  "delivered": null,
  "portal": null,
