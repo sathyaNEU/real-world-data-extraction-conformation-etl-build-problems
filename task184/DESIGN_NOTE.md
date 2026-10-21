@@ -586,6 +586,21 @@ the fingerprint skill requires.
 
 ## Tried and rejected
 
+- 2026-10-21, architecture 3 at the draw: a latent-grouping decisive step in this world, recovering the
+  keeper's routine type from the windows and fitting the clock conditional on it. Dead before any design, read
+  off the generating model rather than measured on a pack. `offences.covered_record` draws every offence's hour
+  from `intensity()`, one quarter clock shared by every class and every routine, and the routine only turns
+  that hour into a window: the hour comes from the clock, the routine from the target, and they meet only at
+  the censoring. So every grouping of the records, by class, by routine, by location or by anything else,
+  estimates the SAME clock and differs from the pooled fit only by estimation noise. That is exactly what
+  killed architecture 2, where the per-class fit moved the eighth slot on a likelihood ratio of 511.1 on 668
+  degrees of freedom that neither rejects pooling nor prefers it, and it kills every grouping-based
+  architecture here for the same structural reason. The note's own docstring says it: the clock is "what the
+  record is of". Architecture 3 therefore needs either a world where the clock genuinely differs by a latent
+  group (which is a new world and so a real stage-1 draw, not a re-use of this one), or a decisive step that is
+  not about grouping at all. And if it is grouping, the group must be latent AND discoverable by estimation,
+  because stratifying on a visible attribute is on the opponent's own reflex list.
+
 - The shipped architecture's decisive step, the even spread of each window over its own hours against a
   point in it (2026-10-21, stage-2 re-root on a measured Gate F failure): a blind Sonnet reader at medium
   effort holding only a fresh unzip of `target.zip`, `prompt.txt` and the figure names reproduced the
