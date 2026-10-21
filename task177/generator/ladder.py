@@ -348,7 +348,11 @@ def semantic_forks(D, fi, rows, G, golden_of, P):
     ev["plan32"] = has(plan, "The overflow transfer to the assistant's voice service stays on")
     ev["plan41"] = fi["cycle"] == 14 and has(plan, "checks in every 14 days, counted from the day the claim opened") \
         and has(plan, "Rollout planning takes each check-in on its due date.")
-    ev["accept"] = fi["accept_resolved"] == 2041 and fi["accept_n"] == 2400 and "All intents" in acc
+    acc_rows = DOC.acceptance_rows()
+    ev["accept"] = fi["accept_resolved"] == sum(r[3] for r in acc_rows) and \
+        fi["accept_n"] == sum(r[1] + r[2] for r in acc_rows) and "All intents" in acc
+    ev["plan33"] = has(plan, "Rollout planning takes the calls the Claimant Services queue keeps, those an adviser "
+                             "answers and those abandoned in the queue, to resolve as those calls did in 2026.")
     rows_acc = DOC.acceptance_rows()
     n_ci = sum(1 for r in rows if r[5])
     w = n_ci / len(rows)
@@ -422,6 +426,35 @@ def judge_readings(D, fi, rows, golden_of, P, S):
         "share"], True)
     out["transfers counted as assistant starts"] = (golden_of(D, fi, rows, P=P, aux_over=dict(num="with_transfers"))[
         "share"], True)
+    return out
+
+
+def outsider_readings(D, fi, rows, golden_of, P, S):
+    """the choices an independent re-implementation of the golden's own model class makes differently (round 4's
+    diagnosis), each with what settles it: "a" a scenario fact the plan files, "b" a modelling choice the record settles
+    by likelihood (with the units), "c" a modelling choice the record leaves open. Returns label -> (share, kind, gap)."""
+    out = {}
+    ll_split = M.run(P, S, M.SPECS["split"])[0]
+    Pl, _, _ = M.fit(S, M.SPECS["split_lik_out"])
+    out["the transferred calls' choice left out of the likelihood"] = (
+        golden_of(D, fi, rows, spec="split_lik_out", P=Pl)["share"], "c", None)
+    out["the jobseekers with no 2026 contact at the others' mean state"] = (
+        golden_of(D, fi, rows, P=P, aux_over=dict(nohist="mean"))["share"], "c", None)
+    out["both of the open readings together"] = (
+        golden_of(D, fi, rows, spec="split_lik_out", P=Pl, aux_over=dict(nohist="mean"))["share"], "c", None)
+    calls = [r for r in rows if not r[2]]
+    p_all = sum(r[4] for r in calls) / len(calls)
+    out["the phone's 2026 outcome over every call, transfers included (%.3f)" % p_all] = (
+        golden_of(D, fi, rows, P=P, aux_over=dict(p_phone=p_all))["share"], "a", None)
+    out["that and the transferred calls left out of the likelihood (an outside judge's pair)"] = (
+        golden_of(D, fi, rows, spec="split_lik_out", P=Pl, aux_over=dict(p_phone=p_all))["share"], "a", None)
+    for name, label in (("split_q0_zero", "the values started at 0 rather than halfway"),
+                        ("split_q0_one", "the values started at 1 rather than halfway")):
+        Pq, llq, _ = M.fit(S, M.SPECS[name])
+        out[label] = (golden_of(D, fi, rows, spec=name, P=Pq)["share"], "b", ll_split - llq)
+    Pe, lle, _ = M.fit(S, M.SPECS["split_persev_exp"])
+    out["the assistant-first calls setting the pull to the assistant they met"] = (
+        golden_of(D, fi, rows, P=P, aux_over=dict(af_last="met"))["share"], "b", ll_split - lle)
     return out
 
 def fi_adhoc(rows, D):

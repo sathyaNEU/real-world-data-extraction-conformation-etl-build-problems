@@ -4,15 +4,15 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: points, contact, learning, golden, district, transfers, family, record, villages, fitted, window, inside, weekly, winter, holiday, transfer, pooled, decisive, nothing, chosen, half-term, mature, claimant, overflow, check-in
+Stump terms swept: points, learning, golden, contact, district, family, transfers, inside, villages, record, fitted, window, weekly, pooled, winter, holiday, decisive, nothing, acceptance, transfer, half-term, mature, claimant, overflow, check-in
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `assistant_first_rollout_plan.pdf`: golden figure 945 appears: ...Claimant Services queue on the claimant line (204-945-0100). A call it cannot resolve ends with an advi...
 - **REVIEW** `assistant_first_rollout_plan.pdf`: carries 7 of 10 distinctive words of the committed call: 'Jobseekers on the register on 3 January 2027 will start 25 per cent of their own contacts between 1 March and 25 April 2'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `assistant_first_rollout_plan.pdf`: 5 of 25 stump-paragraph terms appear (contact, transfer, claimant, overflow, check-in); read whether the document names the move
-- **REVIEW** `release4_acceptance_summary.pdf`: 3 of 25 stump-paragraph terms appear (window, claimant, check-in); read whether the document names the move
+- **REVIEW** `assistant_first_rollout_plan.pdf`: 6 of 25 stump-paragraph terms appear (contact, acceptance, transfer, claimant, overflow, check-in); read whether the document names the move
+- **REVIEW** `release4_acceptance_summary.pdf`: 4 of 25 stump-paragraph terms appear (window, acceptance, claimant, check-in); read whether the document names the move
 - **REVIEW** `prompt`: prompt sentence carries two or more stump terms: 'What share of the contacts that jobseekers on our register on 3 January 2027 start themselves between 1 March and 25 April 2027 will they start in Ask Prairie Works, once release 4.0 has answered every claimant-line call'
 
 ## 10 container metadata (INFO 1)

@@ -37,7 +37,7 @@ P_ABANDON = 0.025              # calls given up in the claimant queue
 P_ADVISER_RES = 0.905          # calls an adviser resolves (the rest end with a callback booked)
 P_PHONE = (1 - P_ABANDON) * P_ADVISER_RES
 OLD_ASST = dict(resolved=0.50, handoff=0.36, abandoned=0.14)    # the 2026 assistant, chat and voice alike
-NEW_ASST = 2041 / 2400         # the upgraded assistant, the acceptance test's resolved share
+NEW_ASST = 2003 / 2400         # the upgraded assistant, the acceptance test's resolved share
 P_SPLIT = 0.01                 # jobseekers' chat conversations that time out and are reopened (a second session)
 
 # --- jobseekers and their claims -------------------------------------------------------------------------------

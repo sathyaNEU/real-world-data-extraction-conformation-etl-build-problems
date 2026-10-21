@@ -85,7 +85,7 @@ def write(task_dir):
         deliverables=["assistant_share_forecast_mar_apr_2027.xlsx", "assistant_first_aftermath_note.docx"],
         distractor_files=[d["file"] for d in distractors],
         distractors=distractors,
-        stated_inputs=["2,041 of 2,400", "14 days", "3 January 2027", "4 January to 28 February 2027",
+        stated_inputs=["2,003 of 2,400", "14 days", "3 January 2027", "4 January to 28 February 2027",
                        "1 March to 25 April 2027"],
         field_terms=[],
         input_gates=dict(files=len(files), formats=sorted(set(x["format"] for x in files)), largest_file=big,

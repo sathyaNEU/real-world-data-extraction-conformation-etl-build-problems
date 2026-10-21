@@ -53,6 +53,8 @@ PLAN = [
     ("3. From 1 March 2027", [
         "3.1 From Monday 1 March the Claimant Services queue returns to advisers.",
         "3.2 The overflow transfer to the assistant's voice service stays on, with the thresholds set for 2026.",
+        "3.3 Rollout planning takes the calls the Claimant Services queue keeps, those an adviser answers and those "
+        "abandoned in the queue, to resolve as those calls did in 2026.",
     ]),
     ("4. Check-ins", [
         "4.1 A jobseeker on a claim checks in every 14 days, counted from the day the claim opened, by phone or through "
@@ -73,7 +75,7 @@ PLAN = [
 ]
 PLAN_REVISIONS = ("Version 1.4 (16 December 2026): section 6 after the January and February order. Version 1.3 "
                   "(9 December 2026): 1.3 and section 4 added. Version 1.2 (25 November 2026): dates confirmed with "
-                  "the vendor. Version 1.1 (2 November 2026): section 3.2.")
+                  "the vendor. Version 1.1 (2 November 2026): 3.2 and 3.3.")
 
 ACC_DATE = dt.date(2026, 12, 1)
 ACC_TITLE = "Acceptance test summary, Ask Prairie Works release 4.0"
@@ -187,8 +189,8 @@ def write_plan(out):
 
 def acceptance_rows():
     """the test's conversations by intent, chat and voice, and how many were resolved"""
-    rows = (("Fortnightly check-in", 1069, 875, 1655), ("Payment status", 92, 76, 143),
-            ("Reporting earnings", 59, 49, 91), ("Appointments", 46, 38, 72), ("Documents", 33, 27, 51),
+    rows = (("Fortnightly check-in", 1069, 875, 1624), ("Payment status", 92, 76, 140),
+            ("Reporting earnings", 59, 49, 90), ("Appointments", 46, 38, 70), ("Documents", 33, 27, 50),
             ("Other questions", 20, 16, 29))
     return rows
 

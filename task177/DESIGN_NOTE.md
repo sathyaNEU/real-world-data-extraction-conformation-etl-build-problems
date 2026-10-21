@@ -1,15 +1,16 @@
 # task177 design note
 
-**Status: stage 4 round 3 fixed, waiting on the re-judge (2026-10-21), architecture 1 in a new world.** Round 1 on
-target.zip 2c536aaa and round 2 on 2c11b94b: the judge DETERMINISTIC / APPROVE both times; the readers missed the call
-(11, 13, 11, 11) and the ask devices were re-sited twice (round 1 kept 5 and 14 of 24, round 2 12 and 12). Round 3 on
-8ab100af: both readers missed the call (13 and 11) and kept 0 of 24 ask figures; the judge NOT_DETERMINISTIC on the
-whole per cent (its reproductions of the golden's own model class ran 25.8 to 27.9 under conventions the text left
-open, straddling 26 and 27). The round 3 repair asks the share to the nearest 5 per cent (the golden 26.05 prints 25,
-1.45 points inside its cell) and files what the judge found open: plan 5.1 counts every contact a jobseeker starts and
-makes a claimant-line call a phone start whoever answers it, and plan 4.1 takes each check-in on its due date. The
-learner, its rates and the transfers' weighting stay unfiled; the call's data and every call-side input are the round
-1 judged pack's byte for byte (the J block in checks.py). The seed FC48 world (drop-off recycling bins) died at stage 1 on measurement before any card was filed
+**Status: stage 4 round 4 fixed, waiting on the re-judge (2026-10-21), architecture 1 in a new world.** Rounds 1 to 3
+(2c536aaa, 2c11b94b, 8ab100af) re-sited the asks twice and moved the forecast to the nearest 5 per cent; round 3's
+readers kept 0 of 24 asks. Round 4 on a2c932a3: readers G and H missed the call (10 and 20) and kept 0 of 24 asks; the
+re-judge DETERMINISTIC, FIX_NOW, its own implementation at 26.9 to 27.2, 0.3 to 0.6 under the cell's 27.5 edge. The
+four judge passes had run 26.0, 25.7, 26.4 to 27.2 and 26.9 to 27.2 against the generator's 26.05. Diagnosed by an
+outsider's re-implementation (`## Outsider diagnosis`): the drift is two choices, the phone's outcome rate taken over
+every call with the transfers' voice outcomes in it (+0.49, a scenario fact, now filed as plan 3.3) and the transferred
+calls' own choice left out of the likelihood (+0.62, open in the record); together they reproduce the judge's 27.1.
+The forecast was re-centred in its cell with the acceptance count (2,041 of 2,400 to 2,003 of 2,400): the golden 25.21,
+every open reading a point or more inside. The learner, its rates and the transfers' weighting stay unfiled; the call's
+other data files and its session rows are the round 1 judged pack's byte for byte (the J block in checks.py). The seed FC48 world (drop-off recycling bins) died at stage 1 on measurement before any card was filed
 (its record is kept below under `## Seed world` and in `## Tried and rejected`). The redraw was handed the cell
 psychology-behavioral-science / decision-making-computational-behavioral-modeling and searched it by prototype on
 2026-10-19: goals as reference points (A) and drift-diffusion speed-accuracy adaptation (E) died on measurement and on
@@ -24,7 +25,7 @@ session scratchpad (r177/proto).
 | Pairing | `psychology-behavioral-science` (client domain), task type `decision-making-computational-behavioral-modeling` (serves Forecasting), objective Forecasting |
 | World | Prairie Works Manitoba (fictional), a provincial employment and income assistance service; jobseekers on a claim check in every 14 days and ask questions in between, by calling the claimant line or through its digital assistant, Ask Prairie Works (app, web, and a voice service the claimant queue's overflow transfers calls to) |
 | Decision | the March and April 2027 usage tiers for Ask Prairie Works, due on the vendor's order form by 8 January 2027 (`purchase_order_or_contract`); the head of contact services signs it (`line_manager_or_team`); the forecast comes from Digital Channels (`policy_adviser`) |
-| Call | the share of the contacts that jobseekers on the register on 3 January 2027 start themselves from 1 March to 25 April 2027 that they start in Ask Prairie Works, after release 4.0 has answered every claimant-line call from 4 January to 28 February: **25 per cent** (to the nearest 5 per cent; unrounded 26.05) |
+| Call | the share of the contacts that jobseekers on the register on 3 January 2027 start themselves from 1 March to 25 April 2027 that they start in Ask Prairie Works, after release 4.0 has answered every claimant-line call from 4 January to 28 February: **25 per cent** (to the nearest 5 per cent; unrounded 25.21) |
 | Shape | `02`, a forecast for the window after the assistant-first weeks; the criteria come from the call, its two components and the 24 monthly cells of the asks (employers' conversations and our own staff and test conversations in each month of 2026), with the two files |
 | Decision type / unit | `quantity_figure` / `rate_or_share` |
 | Mechanism | gap population then time; pattern none, decisive G16 (the learning model the record selects), G7 (the assistant-first window) and G17 (the profile interval) supporting; Gate G `method_or_model_selection`; strategy `forecast_method_backtest`; Layer 2 `forecast_uncertainty`, pattern `psychology-behavioral-science/decision-making-computational-behavioral-modeling/3` |
@@ -46,18 +47,19 @@ beats one rate by 1,419 log-likelihood units and "transfers teach nothing" by 93
 made of such contacts. The judgment without the learning model (next-contact rates after transfers, a Markov chain
 split by route) misses too; the two together give the golden.
 
-**Measured on the pack** (`generator/checks.py`, 413,866 contacts, 11,154 transfers): the golden 26.05, printed 25 to
-the nearest 5 per cent and 1.45 points inside its cell (22.5 to 27.5); one learning rate 39.99; transfers teaching nothing 20.10; no learning 13.64; transfers learned at
-the chosen rate (clean truth) 41.08; a pooled last-four logistic 29.68; a pooled first-order Markov chain 30.39; a pull
-to the last channel met 28.20 (133 log-likelihood units worse); contacts at each jobseeker's own 2026 rate with the
-check-in ignored 23.99. The golden's family: 25.76 to 26.13 (a second simulation seed, starting values estimated,
-fitted on the planning population only, fitted to 31 October, no overflow from 1 March, questions at each jobseeker's
-own rate, claims closing at the register's rate); one standard error of the transfer rate either way 25.61 and 26.49.
-On the clean truth: one rate 39.89, the split 25.95, the world's own expected window 25.81. The record selects the
-learning model: fitted to January to October, the split predicts November and December's 68,677 choices better than
-one rate by 382 log-likelihood units and better than every reduced form (a last-one, last-four or last-eight logistic,
-transfers pooled or apart; a Markov chain, pooled or apart) by 1,419 to 3,763, while one rate still predicts their
-share at 14 per cent against 14 observed.
+**Measured on the pack** (`generator/checks.py`, 413,866 contacts, 11,154 transfers): the golden 25.21, printed 25 to
+the nearest 5 per cent and 2.29 points inside its cell (22.5 to 27.5); one learning rate 38.53; transfers teaching
+nothing 19.57; no learning 13.64; transfers learned at the chosen rate (clean truth) 39.60; a pooled last-four logistic
+28.89; a pooled first-order Markov chain 29.99; a pull to the last channel met 27.29 (133 log-likelihood units worse,
+a form of the split that prints the golden's cell); contacts at each jobseeker's own 2026 rate with the check-in
+ignored 23.23. The golden's family: 24.93 to 25.28 (a second simulation seed, starting values estimated, fitted on the
+planning population only, fitted to 31 October, no overflow from 1 March, questions at each jobseeker's own rate,
+claims closing at the register's rate); one standard error of the transfer rate either way 24.79 and 25.62. On the
+clean truth: one rate 38.43, the split 25.10, the world's own expected window 24.99. The record selects the learning
+model: fitted to January to October, the split predicts November and December's 68,677 choices better than one rate by
+382 log-likelihood units and better than every reduced form (a last-one, last-four or last-eight logistic, transfers
+pooled or apart; a Markov chain, pooled or apart) by 1,419 to 3,763, while one rate still predicts their share at 14 per
+cent against 14 observed.
 
 **The world after the screen** (fixed before the pack was cut, each change recorded with its reason): outcomes are
 recorded by each system (an adviser's wrap-up, queue abandonment, the voice session's end state) rather than derived
@@ -65,8 +67,9 @@ from repeat contacts, because repeats make the contact count depend on the outco
 forecast fork of about a point; contacts are the plan's fortnightly check-in plus questions at one rate, so the
 window's contacts per jobseeker are known rather than forecast; the lean is common to every jobseeker and claims
 close at one rate, so the planning population's own fit, the full fit and the closures converge; the world's draw
-(d7 of eight, the one whose family spread was smallest at scale 1.5) and the acceptance count (2,041 of 2,400, set
-by the re-centre rule: the family centred in its whole per cent) were fixed last.
+(d7 of eight, the one whose family spread was smallest at scale 1.5) and the acceptance count were fixed last, by
+the re-centre rule: 2,041 of 2,400 centred the family in its whole per cent, and in round 4 2,003 of 2,400 put the
+forecast at its 5-per-cent cell's centre with the outside reproductions a point or more inside.
 
 **Guard (2026-10-19).** WARN only. `overuse.org_family`: a public employment service is honestly a government agency,
 and no government-agency build on file turns on a learning model of its clients' choices. `repeat.gate_g` and
@@ -97,7 +100,7 @@ decision, organisation, country and driver differ.
    the last choice; fitted to January to October it predicts 14 per cent of November and December's own contacts in
    the assistant, against 14 per cent observed.
 3. Take the jobseekers on the register on 3 January 2027 (`claims_register_2026.csv`) from their end-of-record state
-   and simulate the plan's weeks: every call met by release 4.0 resolving 2,041 of 2,400 to 28 February, then the line
+   and simulate the plan's weeks: every call met by release 4.0 resolving 2,003 of 2,400 to 28 February, then the line
    back to advisers with the 2026 transfer share, check-ins every 14 days, other contacts at the 2026 rate.
 4. Read the share of their own contacts started in the assistant from 1 March to 25 April.
 
@@ -141,47 +144,47 @@ Lesson: an experience a person did not choose teaches them less than one they ch
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
 | SF1 | contacts jobseekers start themselves | calls they make to the claimant line, conversations they open in the app or on the web | callbacks the service makes | same call (callbacks are not in the exports) | plan 5.1 |
-| SF2 | starting a contact in Ask Prairie Works | opening a conversation in the app or on the web; an overflow transfer is a call | transfers counted as assistant starts | 30 (28.46) | plan 5.1 ("on the phone by calling the claimant line, whether an adviser or the assistant's voice service answers the call") |
-| SF3 | a conversation over several sessions | one contact, its last session's outcome | each session a contact | same call (26.30, R2) | plan 5.2 |
+| SF2 | starting a contact in Ask Prairie Works | opening a conversation in the app or on the web; an overflow transfer is a call | transfers counted as assistant starts | 30 (27.64) | plan 5.1 ("on the phone by calling the claimant line, whether an adviser or the assistant's voice service answers the call") |
+| SF3 | a conversation over several sessions | one contact, its last session's outcome | each session a contact | same call (25.46, R2) | plan 5.2 |
 | SF4 | jobseekers on our register on 3 January 2027 | claims open that day | every claim in the register | another population | the prompt's date |
 | SF5 | jobseekers joining after 3 January | not in the population | included | another population | the prompt's date |
-| SF6 | the window's edges | Manitoba dates, 1 March to 25 April | UTC dates | same call (26.05) | converges |
+| SF6 | the window's edges | Manitoba dates, 1 March to 25 April | UTC dates | same call (25.22) | converges |
 | SF7 | what the assistant-first weeks route | every call reaching Claimant Services; the app as before | the app's conversations counted as imposed | another call | plan 2.1, 2.3 |
-| SF8 | release 4.0's resolution | the acceptance test, 2,041 of 2,400 | the test's intents reweighted to the 2026 mix | same call (26.05) | converges |
-| SF9 | the phone's resolution in 2027 | the 2026 record | July to December only | same call (26.07) | converges |
-| SF10 | overflow after 1 March | the 2026 transfer share | none | same call (25.99) | plan 3.2 |
-| SF11 | contacts in the window per jobseeker | check-ins every 14 days from the claim's opening, other questions at the 2026 rate | each jobseeker's own 2026 rate, check-ins ignored | same call (23.99) | plan 4.1 |
+| SF8 | release 4.0's resolution | the acceptance test, 2,003 of 2,400 | the test's intents reweighted to the 2026 mix | same call (25.21) | converges |
+| SF9 | the phone's resolution in 2027 | the 2026 record over the calls the queue keeps | July to December only | same call (25.22) | plan 3.3; converges |
+| SF10 | overflow after 1 March | the 2026 transfer share | none | same call (25.15) | plan 3.2 |
+| SF11 | contacts in the window per jobseeker | check-ins every 14 days from the claim's opening, other questions at the 2026 rate | each jobseeker's own 2026 rate, check-ins ignored | same call (23.23) | plan 4.1 |
 | SF12 | rounding | the unrounded share rounded once to the nearest 5 per cent, halves away | rounding the weeks first | same call | the prompt's rounding sentence |
-| SF13 | the order of a jobseeker's contacts | start times on one clock (legs UTC, sessions Manitoba time) | both read as one clock unconverted | same call (26.04, R2) | converges |
-| SF14 | a call keyed by its caller | the case number keyed on its first leg | the caller's number through the contact details | same call (26.07, R2) | converges |
-| SF15 | release 4.0's resolution of the conversations jobseekers open | the acceptance test's rate, as for calls | the 2026 assistant's rate (0.501) kept for the app and the web | 16 | plan 1.3 |
-| SF16 | a transfer's outcome after 1 March | release 4.0 on the voice service at the acceptance rate | the 2026 voice service's rate (0.496) | same call (25.98) | plan 1.3; converges |
-| SF17 | the share's denominator | every contact the jobseekers start, the calls the voice service answers included | transferred calls left out | same call (26.69) | plan 5.1 ("every contact jobseekers start themselves") |
-| SF18 | a check-in's day | its due date | as late as 2026's check-ins (0 to 3 days) | same call (26.05: each phase is four whole cycles, so no check-in changes phase) | plan 4.1 ("on its due date") |
-| SF19 | the other contacts' rate | the 2026 rate per jobseeker-day | the last eight weeks' rate | same call (25.91) | converges |
+| SF13 | the order of a jobseeker's contacts | start times on one clock (legs UTC, sessions Manitoba time) | both read as one clock unconverted | same call (25.20, R2) | converges |
+| SF14 | a call keyed by its caller | the case number keyed on its first leg | the caller's number through the contact details | same call (25.23, R2) | converges |
+| SF15 | release 4.0's resolution of the conversations jobseekers open | the acceptance test's rate, as for calls | the 2026 assistant's rate (0.501) kept for the app and the web | 15 (15.61) | plan 1.3 |
+| SF16 | a transfer's outcome after 1 March | release 4.0 on the voice service at the acceptance rate | the 2026 voice service's rate (0.496) | same call (25.14) | plan 1.3; converges |
+| SF17 | the share's denominator | every contact the jobseekers start, the calls the voice service answers included | transferred calls left out | same call (25.84) | plan 5.1 ("every contact jobseekers start themselves") |
+| SF18 | a check-in's day | its due date | as late as 2026's check-ins (0 to 3 days) | same call (25.21: each phase is four whole cycles, so no check-in changes phase) | plan 4.1 ("on its due date") |
+| SF19 | the other contacts' rate | the 2026 rate per jobseeker-day | the last eight weeks' rate | same call (25.08) | converges |
+| SF20 | the values' start (b, the record settles it) | halfway, 0.5 | 0, or 1 | same call (27.09, 22.63) | the record, by 6,017 and 11,385 log-likelihood units |
+| SF21 | the pull after an assistant-first call (b) | to the channel chosen, the phone | to the assistant it met | 30 (28.01) | the record: a pull to the channel met is 133 units worse |
+| SF22 | a transferred call's own choice (c, open) | in the likelihood, a phone start (plan 5.1) | left out of the likelihood | same call (25.80, 1.70 inside the cell) | converges |
+| SF23 | the 351 on the register with no 2026 contact (c, open) | the fitted model's starting values | the others' mean state | same call (24.13, 1.63 inside) | converges; leaving them out narrows the prompt's population |
+| SF24 | the phone's outcome rate after 1 March (a, filed) | the 2026 rate over the calls the queue keeps (0.883) | over every call, the transfers' voice outcomes in (0.870) | same call (25.68; 26.28 with SF22's alternative) | plan 3.3 |
 
 ## Ladder
 
 | Rung | Route | Figure (nearest 5 per cent; unrounded) | Dies to |
 |---|---|---|---|
-| 0 | one learning rate for every contact, back-tested and simulated (the default path) | 40 (39.99) | the split's 1,419 log-likelihood units; the transfers' own next-choice rates |
+| 0 | one learning rate for every contact, back-tested and simulated (the default path) | 40 (38.53) | the split's 1,419 log-likelihood units; the transfers' own next-choice rates |
 | 1 | no learning: the last eight weeks of 2026 carried | 15 (13.64) | the 2026 series itself (35 per cent in January falling to 14) and the plan's weeks |
-| 1 | transfers teach nothing | 20 (20.10) | the record, by 93 log-likelihood units |
-| 2 | a pooled last-four logistic, or a pooled first-order Markov chain, of the choice | 30, 30 (29.68, 30.39) | the held-out choices (November and December, fitted to October): 1,612 and 3,763 log-likelihood units behind the split |
-| 2 | a pull to the last channel met rather than chosen | 30 (28.20) | the record, by 133 units |
-| 3 | (decisive) a separate rate for transfers, fitted jointly | 25 (26.05) | the answer |
+| 1 | transfers teach nothing | 20 (19.57) | the record, by 93 log-likelihood units |
+| 2 | a pooled last-four logistic, or a pooled first-order Markov chain, of the choice | 30, 30 (28.89, 29.99) | the held-out choices (November and December, fitted to October): 1,612 and 3,763 log-likelihood units behind the split |
+| 3 | (decisive) a separate rate for transfers, fitted jointly | 25 (25.21) | the answer |
 
-Worth: rung 0 sits three cells above the golden and every other route at least one cell from it, the nearest a pull to
-the last channel met at 28.20, 0.70 past the cell's edge and rejected by the record by 133 units. The golden's family
-spans 25.76 to 26.13 and one standard error of the transfer rate 25.61 to 26.49; the readings round 3's judge took,
-reproduced under the filed conventions (J3 in checks.py: five Monte Carlo seeds, check-ins late, the last eight weeks'
-rate of other contacts, a transfer moving the phone's value at the transfer rate, 31.8 units worse, transfers left
-out of the denominator), run 24.51 to 26.69, and the judge's own 25.8 and 26.4 to 27.2 sit in the same cell; all print
-25. Two readings leave the cell and are closed: transfers counted as assistant starts (28.46) by plan 5.1, and a
-transfer moving the phone's value at the chosen rate (33.53) by the record, 685.5 units worse. Two forms with the
-decisive split land in the cell as they did before: no pull to the last choice (26.20, rejected by 1,137 units) and
-each jobseeker's own contact rate with the check-ins ignored (23.99, against plan 4.1). The reflexes split both ways
-(no learning and teaching nothing below; one rate, the reduced forms and the wrong perseveration above), so no single
+Worth: rung 0 sits three cells above the golden and every route without the decisive step at least one cell from it,
+the nearest the pooled logistic at 28.89, 1.39 past the cell's edge. The golden's family spans 24.93 to 25.28 and one
+standard error of the transfer rate 24.79 to 25.62; round 3's readings (J3 in checks.py) run 23.89 to 25.84 and round
+4's outsider readings (`## Outsider diagnosis`) 22.63 to 28.01, every open one a point or more inside the cell. Forms of
+the split the record rejects print the golden's cell or the next: a pull to the last channel met 27.29 (133 units), no
+pull to the last choice (1,137 units), a transfer moving the phone's value at the transfer rate 23.89 (31.8 units). The
+reflexes split both ways (no learning and teaching nothing below; one rate and the reduced forms above), so no single
 correction walks the default path to the answer.
 
 ## Closure table
@@ -192,7 +195,7 @@ correction walks the default path to the answer.
 | 2 Unit of account | a contact (a call, a conversation) | plan 5.1, 5.2; SF1 to SF3 |
 | 3 Attribution window | a contact in the window by the day it starts, Manitoba time | the prompt; SF6 converges |
 | 4 As-of dating | the record to 3 January 2027, the plan's dates after it | the exports' coverage (manifest), the plan |
-| 5 Version basis | release 4.0 at its acceptance share on every channel; the phone as in 2026 | plan 1.2, 1.3, the summary; SF8, SF9, SF16 converge, SF15 ruled out |
+| 5 Version basis | release 4.0 at its acceptance share on every channel; the phone as in 2026 over the calls the queue keeps | plan 1.2, 1.3, 3.3, the summary; SF8, SF9, SF16, SF24 converge, SF15 ruled out |
 | 6 Denominator | every contact the population starts in the window, the calls the voice service answers included | plan 5.1; SF17 |
 | 7 Weighting | contacts, not jobseekers | the prompt's "share of the contacts" |
 | 8 Window length | the fit on the whole record | C3: fitted to 31 October or on the population only, same figure |
@@ -216,14 +219,36 @@ correction walks the default path to the answer.
 The method is open and forced by the record: the reinforcement-learning family beats every reduced form on held-out
 choices by 1,419 log-likelihood units or more, and inside it the separate transfer rate beats one rate by 382 held
 out (1,419 on the whole record) and "transfers teach nothing" by 93. Executed word for word, the prompt fixes the
-population, window, outcome and rounding (the nearest 5 per cent), and the plan's 1.3 and 2.1 to 5.2 fix release
-4.0's resolution on every channel, the routing, the check-in and its day, the denominator and what starting a contact
-is; every reading the text leaves open (the window's clock, the intents' weighting, the phone's period, the overflow
-from 1 March, a transfer's outcome after it, the other contacts' rate, the fit's data, the starting values, the
-closures, the Monte Carlo seed, a transfer moving the phone's value at the transfer rate) gives 25 per cent on the pack
-(SF6 to SF19, the family and J3 rows in checks.py), and the readings that do not (transfers as assistant starts, the
-2026 assistant's rate kept for the conversations jobseekers open) each violate a quotable sentence of the plan, while a
-transfer moving the phone's value at the chosen rate is rejected by the record by 685.5 log-likelihood units.
+population, window, outcome and rounding (the nearest 5 per cent), and the plan's 1.3, 2.1 to 4.1 and 5.1 to 5.2 fix
+release 4.0's resolution on every channel, the routing, the phone's outcome over the calls the queue keeps (3.3), the
+check-in and its day, the denominator and what starting a contact is; every reading the text leaves open (the window's
+clock, the intents' weighting, the phone's period, the overflow from 1 March, a transfer's outcome after it, the other
+contacts' rate, the fit's data, the starting values, the closures, the Monte Carlo seed, a transferred call's choice in
+or out of the likelihood, the start of the jobseekers with no 2026 contact) gives 25 per cent on the pack (SF6 to SF24,
+the family, J3 and outsider rows in checks.py), and the readings that do not (transfers as assistant starts, the 2026
+assistant's rate kept for the conversations jobseekers open) each violate a quotable sentence of the plan, while the
+model forms that leave the cell (a transfer moving the phone's value at the chosen rate, an assistant-first call pulling
+toward the assistant) are rejected by the record by 685.5 and 132.8 log-likelihood units.
+
+## Outsider diagnosis
+
+Round 4's re-judge reproduced every input and fit and forecast 26.9 to 27.2 against the generator's 26.05. An
+independent re-implementation of the same model class (scratch, outside the build; the generator's checks.py now
+carries each reading) replicated 26.01, then changed one choice at a time. Sizes at the round 4 pack (26.05):
+
+| Choice | The golden | The outsider's alternative | Moves the share | Class | Closure |
+|---|---|---|---|---|---|
+| the phone's outcome rate after 1 March | over the calls the queue keeps, 0.883 | over every call, the transfers' voice outcomes in, 0.870 | +0.49 | (a) a scenario fact | filed, plan 3.3 (SF24) |
+| a transferred call's own choice | in the likelihood | left out of it | +0.62 | (c) open: the two likelihoods cover different choices | left open; after re-centring 1.70 inside the cell (SF22) |
+| the 351 on the register with no 2026 contact | the fitted model's starting values | the others' mean state | -1.12 | (c) open | 1.63 inside (SF23) |
+| the values' start | halfway, 0.5 | 0, or 1 | +1.76, -2.71 | (b) settled: 6,017 and 11,385 units worse | the record (SF20) |
+| the pull after an assistant-first call | to the phone the jobseeker chose | to the assistant it met | +2.91 | (b) settled: a pull to the channel met is 133 units worse | the record (SF21) |
+| the phone's value during the assistant-first weeks | unmoved, no adviser met | moved by each call's outcome | -0.27 | (b) settled with the transfer-moves-phone forms, 31.8 and 685.5 units worse | the record (J3) |
+
+The first two together reproduce the judge's 27.1 (27.12 at 26.05; 26.28 at the re-centred 25.21). With 3.3 filed,
+the acceptance count was re-centred from 2,041 to 2,003 of 2,400 so the open readings sit a point or more inside the
+cell: the golden 25.21 (2.29 inside), SF22's alternative 25.80, SF23's 24.13, both together 24.72, and the judge's own
+pair 26.28.
 
 ## Oracles
 
@@ -329,18 +354,18 @@ the asks do not read.
 
 ## Leak sweep
 
-`leak.py --asof 2027-01-04` on the round 4 pack: REVIEW, five lines, no LEAK (the rounds before returned the same kinds
+`leak.py --asof 2027-01-04` on the round 5 pack: REVIEW, five lines, no LEAK (the rounds before returned the same kinds
 of line, each term list taken from that day's draft of this note). Each, harmless:
 - Sweep 3, January's employer count 945 appears in the rollout plan: it is the exchange of the claimant line's number
   (204-945-0100), not a count.
 - Sweep 3, the rollout plan carries 7 of 10 words of the committed call: they are the plan's own nouns for the
   estimand it files (jobseekers, the register, contacts they start, March and April); the plan states no share, no
   count and no forecast for any window.
-- Sweep 4, the rollout plan carries contact, transfer, claimant, overflow and check-in: its routing and reporting
-  vocabulary (the claimant line, the overflow transfer back on from 1 March, what a contact is, the check-in's day);
-  it never says what a transfer does to a later choice.
-- Sweep 4, the acceptance summary carries window, claimant and check-in: its test window, the claimant line's test
-  number and the fortnightly check-in intent; it reports release 4.0's resolution only.
+- Sweep 4, the rollout plan carries contact, acceptance, transfer, claimant, overflow and check-in: its routing,
+  planning and reporting vocabulary (the acceptance test it plans on, the claimant line, the overflow transfer back on
+  from 1 March, what a contact is, the check-in's day); it never says what a transfer does to a later choice.
+- Sweep 4, the acceptance summary carries window, acceptance, claimant and check-in: its test window, its own title,
+  the claimant line's test number and the fortnightly check-in intent; it reports release 4.0's resolution only.
 - Sweep 4, the prompt's question carries two terms of the note: they name what is counted and the routing the question
   conditions on, which the prompt has to state; neither names the learning model or the transfers.
 
@@ -605,3 +630,7 @@ its group's surviving records), the same family by its label.
     transfer moving the phone's value), reproduced 25.8 to 27.9, straddling 26 and 27 (passes 1 and 2 had 26.0 and
     25.7). The prompt now asks the share to the nearest 5 per cent, plan 5.1 files the denominator and the start
     channel, and plan 4.1 the check-in's day; the learner, its rates and the transfers' weighting stay the analyst's.
+  - The golden at 26.05 in the 25 cell (round 4, a2c932a3): independent re-implementations ran 0.5 to 1.2 points above
+    it every time (26.0, 25.7, 26.4 to 27.2, 26.9 to 27.2), the last 0.3 to 0.6 under the cell's edge. The drift is
+    the phone's outcome rate taken over every call (+0.49, now plan 3.3) and the transferred calls' choice left out of
+    the likelihood (+0.62, open); the acceptance count went to 2,003 of 2,400 so the open readings sit a point inside.

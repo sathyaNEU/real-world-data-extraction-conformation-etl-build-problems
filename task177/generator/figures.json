@@ -2,7 +2,7 @@
  "a_forced": 0.08,
  "a_free": 0.4,
  "accept_n": 2400,
- "accept_resolved": 2041,
+ "accept_resolved": 2003,
  "ask_employers": {
   "April": 1686,
   "August": 1399,
@@ -90,7 +90,7 @@
    5085
   ]
  },
- "p_new_pct": 85.0,
+ "p_new_pct": 83.5,
  "p_over_pct": 3.3,
  "p_phone_pct": 88.3,
  "q0": 0.5,
@@ -101,8 +101,8 @@
  "share_last8": 14,
  "share_no_persev": 25,
  "share_one_rate": 40,
- "share_persev_exp": 30,
+ "share_persev_exp": 25,
  "share_teach_nothing": 20,
- "share_unrounded": 0.2605,
+ "share_unrounded": 0.2521,
  "vendor_bn": "724906318"
 }

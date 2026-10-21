@@ -37,14 +37,14 @@ def in_bin(v, target_pct):
     return C.pct5(v) == target_pct
 
 
-# the pack the stage 4 readers and judge saw (target.zip 2c536aaa): the files the call reads that no ask touches
+# the pack the stage 4 readers and judge saw (target.zip 2c536aaa): the files the call reads that no ask touches; the
+# acceptance summary left the list in round 4, when its resolved count re-centred the forecast in its cell
 JUDGED = {
     "claims_register_2026.csv": "be407db35fc60906d6c75ea4265a610dcde1b03caa85e48726d707335972d9c2",
     "contact_details_crosswalk.csv": "540a58def6081741c0c7409e6b686e310ffc66eca0dbf24d43559a2fb9faf208",
     "contact_legs_2026.csv": "ec5472f533e9a09afb79a17b6634eb69200ddeede60e70f85a7e7df69b11b118",
     "overflow_episodes_2026.csv": "64364c04a67d34d7131bdf1eb48e005bdce6cbe2146e673e058b6581ef69f07d",
     "post_contact_survey_2026.csv": "7efb9911d46ea03cfe6fc8bfe493bb2650cf5858643f2ae413f7b2998ad74266",
-    "release4_acceptance_summary.pdf": "494012a7177cc5a535d1e7c3e3b397ac10c23386f874c14775d8ff2f5c4adeb9",
     "telephony_migration_codes.xlsx": "c5500172f1e136515f510eb515c068b4726d54d65c49d1420dfd9b8ee1e22b94",
     "usage_tier_order_form_2027.pdf": "f641b76233e2726fb3a66e2e03517b1215e619a71abb1b9941bdb9091a782358",
 }
@@ -184,9 +184,12 @@ def main(target):
     check("L1 the record rejects transfers teaching nothing", ll_g - fits["teach_nothing"][1] > 30,
           "%.1f units" % (ll_g - fits["teach_nothing"][1]))
     ope = K.forecast(D, spec="split_persev_exp", reps=200, S=S, aux=aux, P=fits["split_persev_exp"][0])["share"]
-    check("L2 pull to the last channel met: rejected by the record and outside the bin",
-          ll_g - fits["split_persev_exp"][1] > 30 and not in_bin(ope, G),
-          "%.1f units, %.4f" % (ll_g - fits["split_persev_exp"][1], ope))
+    check("L2 pull to the last channel met (a form of the split): rejected by the record%s" % (
+          ", and at the nearest 5 per cent it prints the golden's cell" if in_bin(ope, G) else " and outside the bin"),
+          ll_g - fits["split_persev_exp"][1] > 30, "%.1f units, %.4f" % (ll_g - fits["split_persev_exp"][1], ope))
+    check("L every route without the decisive step stays out of the golden's cell",
+          not any(in_bin(v, G) for v in (o1,)) and not in_bin(otn, G), "one rate %.4f, transfers teach nothing %.4f"
+          % (o1, otn))
     check("L2 no pull to the last choice: rejected by the record", ll_g - fits["split_no_persev"][1] > 300,
           "%.1f units" % (ll_g - fits["split_no_persev"][1]))
     import ladder as LD
@@ -293,7 +296,26 @@ def main(target):
     check("SF19 the other contacts at the 2026 rate or the last eight weeks': the same call",
           in_bin(jr["other contacts at the last eight weeks' rate"][0], G),
           "%.4f" % jr["other contacts at the last eight weeks' rate"][0])
-    check("J3 the round 3 judge's own figures (25.8, 26.4 to 27.2; reported, not recomputed) sit in the golden's cell",
+    # round 4's diagnosis: an outsider's re-implementation of the same model class, choice by choice
+    orr = LD.outsider_readings(D, fi, rows, golden_of, P, S)
+    sf = {"the values started at 0 rather than halfway": "SF20", "the values started at 1 rather than halfway": "SF20",
+          "the assistant-first calls setting the pull to the assistant they met": "SF21",
+          "the transferred calls' choice left out of the likelihood": "SF22",
+          "the jobseekers with no 2026 contact at the others' mean state": "SF23",
+          "both of the open readings together": "SF22, SF23"}
+    for label, (v, kind, gap) in orr.items():
+        tag = sf.get(label, "SF24")
+        if kind == "c":
+            check("%s (c, open) %s: inside the golden's cell by a point or more" % (tag, label),
+                  in_bin(v, G) and C.edge(100 * v, C.FORECAST_UNIT) >= 1.0,
+                  "%.4f, edge %.2f" % (v, C.edge(100 * v, C.FORECAST_UNIT)))
+        elif kind == "a":
+            check("%s (a, filed) %s: plan 3.3 files the phone's outcome%s" % (
+                tag, label, ", and the reading prints the same call" if in_bin(v, G) else ""), ev["plan33"], "%.4f" % v)
+        else:
+            check("%s (b, settled) %s: the record rejects it by %.1f units%s" % (
+                tag, label, gap, ", and it prints the same call" if in_bin(v, G) else ""), gap > 30, "%.4f" % v)
+    check("J3 the round 3 judge's own figures (25.8, 26.4 to 27.2, reported on 8ab100af, not recomputed) sit in the cell",
           all(C.pct5(x / 100) == G for x in (25.8, 26.4, 27.2)), "cell %.1f to %.1f" % (G - 2.5, G + 2.5))
 
     # --------------------------------------------------------------------------------------------- the asks

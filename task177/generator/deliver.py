@@ -234,7 +234,9 @@ def write_workbook(path, F):
         ("Conversation", "Counted once however many sessions it ran to (rollout plan 5.2); its outcome is its last "
                          "session's end state."),
         ("Window", "1 March to 25 April 2027, after the assistant-first weeks of 4 January to 28 February."),
-        ("Release 4.0", "Resolving 2,041 of the acceptance test's 2,400 conversations."),
+        ("Release 4.0", "Resolving %s of the acceptance test's %s conversations, in the app, on the web and on the "
+                        "voice service (rollout plan 1.3)." % ("{:,}".format(F["accept_resolved"]),
+                                                               "{:,}".format(F["accept_n"]))),
         ("Rounding", "The forecast shares to the nearest 5 per cent, rounded once from the unrounded forecast; the "
                      "2026 record's shares to the whole per cent; counts whole."),
         ("Sources", "contact_legs_2026.csv, assistant_sessions_2026.jsonl, contact_details_crosswalk.csv, "
@@ -320,10 +322,10 @@ def note_paragraphs(F):
         ("table", None),
         ("chart", None),
         ("h2", "What the forecast rests on"),
-        ("p", "Release 4.0 resolving the conversations it takes as it resolved %s of the acceptance test's %s; calls "
-              "an adviser takes resolving as in 2026; check-ins every %d days from each claim's opening; other "
-              "questions at the 2026 rate; the overflow transfer back on from 1 March. Jobseekers whose claims close "
-              "before March drop out without changing the share."
+        ("p", "Release 4.0 resolving the conversations it takes as it resolved %s of the acceptance test's %s "
+              "(rollout plan 1.3); the calls the queue keeps resolving as in 2026 (3.3); check-ins every %d days from "
+              "each claim's opening, on their due dates (4.1); other questions at the 2026 rate; the overflow transfer "
+              "back on from 1 March. Jobseekers whose claims close before March drop out without changing the share."
               % ("{:,}".format(F["accept_resolved"]), "{:,}".format(F["accept_n"]), F["cycle"])),
         ("h2", "For the order"),
         ("p", "The March and April chat tiers carry employers and our own staff and test use as well as jobseekers. "
@@ -437,7 +439,8 @@ def write_submission(path, F):
         "3. Took the jobseekers with a claim open on 3 January 2027 in %s, each from the end state of their own "
         "record." % C.F_CLAIMS,
         "4. Simulated 4 January to 25 April 2027 per %s: every call met by release %s resolving %s of %s as in %s to 28 "
-        "February, then the line back to advisers with the 2026 transfer share, check-ins every %d days from each "
+        "February, then the line back to advisers with the calls the queue keeps resolving as in 2026 and the 2026 "
+        "transfer share, check-ins every %d days from each "
         "claim's opening and other contacts at the 2026 rate: %d per cent of their own contacts in the window started "
         "in the assistant." % (
             C.F_PLAN, F["release"], "{:,}".format(F["accept_resolved"]), "{:,}".format(F["accept_n"]), C.F_ACCEPT,

@@ -57,6 +57,11 @@ SPECS = {
     # readings of how a transfer moves the phone's value too (the model class left open; the record rejects both)
     "split_tp_free": dict(split="free", persev="choice", q0="fixed", transfer_phone="free"),
     "split_tp_forced": dict(split="free", persev="choice", q0="fixed", transfer_phone="forced"),
+    # an outsider's other readings of the same class: the transferred calls' choice left out of the likelihood, and
+    # the values started at 0 or at 1 rather than halfway
+    "split_lik_out": dict(split="free", persev="choice", q0="fixed", lik_transfers=False),
+    "split_q0_zero": dict(split="free", persev="choice", q0="zero"),
+    "split_q0_one": dict(split="free", persev="choice", q0="one"),
 }
 
 
@@ -79,7 +84,7 @@ def unpack(x, spec):
     P["kappa"] = 0.0
     if spec["persev"] != "none":
         P["kappa"] = x[i]; i += 1
-    P["q0b"] = P["q0p"] = 0.5
+    P["q0b"] = P["q0p"] = {"zero": 0.0, "one": 1.0}.get(spec["q0"], 0.5)
     if spec["q0"] == "est":
         P["q0b"] = sigm(x[i]); P["q0p"] = sigm(x[i + 1]); i += 2
     return P
@@ -122,6 +127,8 @@ def run(P, S, spec, want_ll=True, mask=None):
         if want_ll:
             x = be * (QB - QP) + bi + ka * last[:m]
             terms = np.where(c, -np.logaddexp(0.0, -x), -np.logaddexp(0.0, x))
+            if spec.get("lik_transfers", True) is False:
+                terms = np.where(rd, 0.0, terms)
             if mask is None:
                 ll += float(np.sum(terms))
             else:
@@ -156,7 +163,7 @@ def fit(S, spec, starts=(0, 1)):
 
 def simulate(P, spec, qb, qp, last, rate_day, af_days, free_days, p_new, p_phone, p_over, reps=60, seed=1,
              life=None, sched_af=None, sched_free=None, p_chat=None, p_sent_free=None, denom="all",
-             num="chosen"):
+             num="chosen", af_last="chosen"):
     """the expected share of the population's own contacts started in the assistant over the free days, after the
     assistant-first days (every phone choice met by the upgraded assistant). Each claimant makes sched_af and
     sched_free scheduled contacts in the two phases (none when not given) and further contacts at rate_day a day;
@@ -207,7 +214,7 @@ def simulate(P, spec, qb, qp, last, rate_day, af_days, free_days, p_new, p_phone
                 p[ii] = np.where(~gb, p[ii] + P["a_free"] * (r - p[ii]), p[ii])
                 if tp_rate is not None:
                     p[ii] = np.where(rd, p[ii] + tp_rate * (r - p[ii]), p[ii])
-                la[ii] = np.where(gb if exp_persev else cb, 1.0, -1.0)
+                la[ii] = np.where(gb if (exp_persev or (af_last == "met" and phase == "af")) else cb, 1.0, -1.0)
                 if phase == "free":
                     tb += cb.sum() + (rd.sum() if num == "with_transfers" else 0)
                     tt += ii.size - (rd.sum() if denom == "no_transfers" else 0)

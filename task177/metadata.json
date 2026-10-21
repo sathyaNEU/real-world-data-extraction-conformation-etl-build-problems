@@ -32,7 +32,7 @@
   }
  ],
  "stated_inputs": [
-  "2,041 of 2,400",
+  "2,003 of 2,400",
   "14 days",
   "3 January 2027",
   "4 January to 28 February 2027",
@@ -64,7 +64,7 @@
   {
    "path": "assistant_first_rollout_plan.pdf",
    "format": "pdf",
-   "bytes": 54719,
+   "bytes": 54795,
    "rows": null,
    "source": "Constructed for this task (seeded, deterministic): Prairie Works Manitoba Digital Channels, Ask Prairie Works 4.0 rollout plan version 1.4",
    "date": "2026-12-16",
@@ -145,7 +145,7 @@
   {
    "path": "release4_acceptance_summary.pdf",
    "format": "pdf",
-   "bytes": 54378,
+   "bytes": 54368,
    "rows": null,
    "source": "Constructed for this task (seeded, deterministic): Riverlot Dialogue Inc., acceptance test summary for release 4.0",
    "date": "2026-12-01",
