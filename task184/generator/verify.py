@@ -1,7 +1,8 @@
 """Independent verifier: reads only the shipped pack and the goldens and recomputes every graded figure by its own
-route (the slot grid built minute by minute over each window rather than by overlap shares, the quarter taken from
-the register's own street ranges, the two exports reconciled on the occurrence key, the footfall hours counted
-against the supplier's fault log), then compares them with the goldens.
+route (the placement the record settles, reached in plain Python over the record's distinct window shapes rather
+than by the generator's numpy iteration over offence-hours, the quarter taken from the register's own street
+ranges, the two exports reconciled on the occurrence key, the footfall hours counted against the supplier's fault
+log), then compares them with the goldens.
 
     python3 task184/generator/verify.py [target] [golden]"""
 import csv
@@ -60,21 +61,86 @@ def ts(x):
     return dt.datetime.strptime(x, "%Y-%m-%d %H:%M")
 
 
-def minute_grid(rows, slot_h=4):
-    """Each offence's weight spread minute by minute over its window: a different arithmetic from the generator's
-    overlap shares, and it has to give the same figures."""
+HOURS_WEEK = 168
+def shape_of(a, b):
+    """(first hour of the week, length in hours) for one record's window, or (hour, 0) for a seen time."""
+    start = a.weekday() * 24 + a.hour
+    span = int(round((b - a).total_seconds() / 3600.0))
+    return start, max(span, 0)
+
+
+def settled_placement(rows, tol=1e-13, iters=20000):
+    """The hour-of-week shares the record settles, in plain Python, collapsed to distinct window shapes."""
+    shapes = {}
+    seen = [0.0] * HOURS_WEEK
+    n = 0
+    for r in rows:
+        s, ln = shape_of(r["from"], r["to"])
+        n += 1
+        if ln == 0:
+            seen[s % HOURS_WEEK] += 1.0
+        else:
+            shapes[(s, ln)] = shapes.get((s, ln), 0) + 1
+    members = {k: [(k[0] + i) % HOURS_WEEK for i in range(k[1])] for k in shapes}
+    q = [1.0 / HOURS_WEEK] * HOURS_WEEK
+    for _ in range(iters):
+        nxt = list(seen)
+        for key, cnt in shapes.items():
+            hs = members[key]
+            tot = 0.0
+            for h in hs:
+                tot += q[h]
+            if tot <= 0.0:
+                share = cnt / float(len(hs))
+                for h in hs:
+                    nxt[h] += share
+                continue
+            f = cnt / tot
+            for h in hs:
+                nxt[h] += q[h] * f
+        s = sum(nxt)
+        nxt = [x / s for x in nxt]
+        d = max(abs(x - y) for x, y in zip(nxt, q))
+        q = nxt
+        if d < tol:
+            break
+    return [x * n for x in q], n
+
+
+def settled_grid(rows, slot_h=4):
+    """The placement folded into the week's 42 four-hour slots."""
+    per_hour, _n = settled_placement(rows)
+    w = {(d, h): 0.0 for d in range(7) for h in range(0, 24, slot_h)}
+    for h in range(HOURS_WEEK):
+        w[(h // 24, (h % 24) // slot_h * slot_h)] += per_hour[h]
+    return w
+
+
+def identification(rows, slot_h=4):
+    """(the week's hours at which some window begins or ends, the slot edges none of them lands on)."""
+    edges = set()
+    for r in rows:
+        if r["to"] <= r["from"]:
+            continue
+        a, b = r["from"], r["to"]
+        edges.add(a.weekday() * 24 + a.hour)
+        edges.add((b.weekday() * 24 + b.hour) % HOURS_WEEK)
+    missing = sorted(set(range(0, HOURS_WEEK, slot_h)) - edges)
+    return edges, missing
+
+
+def even_spread_grid(rows, slot_h=4):
+    """The textbook weight, kept so the verifier can state that it is a different answer: each window spread
+    evenly over its own hours."""
     w = {(d, h): 0.0 for d in range(7) for h in range(0, 24, slot_h)}
     for r in rows:
-        a, b = r["from"], r["to"]
-        if b <= a:
-            w[(a.weekday(), (a.hour // slot_h) * slot_h)] += 1.0
+        s, ln = shape_of(r["from"], r["to"])
+        if ln == 0:
+            w[(s // 24, (s % 24) // slot_h * slot_h)] += 1.0
             continue
-        mins = int((b - a).total_seconds() // 60)
-        each = 1.0 / mins
-        t = a
-        for _ in range(mins):
-            w[(t.weekday(), (t.hour // slot_h) * slot_h)] += each
-            t += dt.timedelta(minutes=1)
+        for i in range(ln):
+            h = (s + i) % HOURS_WEEK
+            w[(h // 24, (h % 24) // slot_h * slot_h)] += 1.0 / ln
     return w
 
 
@@ -116,7 +182,18 @@ def main(target=None, golden=None):
     ok(all(r["from"].minute == 0 and r["to"].minute == 0 for r in main_rows if r["to"] > r["from"]),
        "every window is on the hour")
 
-    grid = {k: v / len(SEASONS) for k, v in minute_grid(main_rows).items()}
+    edges, missing_edges = identification(main_rows)
+    ok(not missing_edges,
+       "every four-hour slot edge of the week is a window edge in the record, so no cell the record "
+       "separates straddles a slot edge (missing %r)" % (missing_edges,))
+    ok(len(edges) >= 40, "the record's windows cut the week at %d distinct hours" % len(edges))
+    grid = {k: v / len(SEASONS) for k, v in settled_grid(main_rows).items()}
+    even = {k: v / len(SEASONS) for k, v in even_spread_grid(main_rows).items()}
+    moved = max(abs(even[k] - grid[k]) for k in grid)
+    ok(moved > 50.0,
+       "the even spread over each window is a different placement, not the same one (worst slot moves "
+       "%.1f offences)" % moved)
+    even_slate = [s for s, _ in sorted(even.items(), key=lambda kv: -kv[1])[:8]]
     order = sorted(grid.items(), key=lambda kv: -kv[1])
     slate = [s for s, _ in order[:8]]
     total = sum(v for _, v in order[:8])
@@ -335,7 +412,8 @@ def main(target=None, golden=None):
            "ask 3 %s %d: the workbook says %d, the pack gives %.2f" % (sid, yr, fig, got))
 
     print("verify: %d checks passed from the pack alone (slate %s and five more at %d a season, runner-up %s at %d; "
-          "%d quarter offences of the contracted classes; the grid built minute by minute agrees with the goldens to "
+          "%d quarter offences of the contracted classes; the placement recomputed over the record's own "
+          "distinct window shapes agrees with the goldens to "
           "the stated rounding)"
           % (n[0], ", ".join("%s %02d:00" % (DAYS[s[0]][:3], s[1]) for s in slate[:3]), fifty(total),
              "%s %02d:00" % (DAYS[runner[0][0]][:3], runner[0][1]), fifty(runner[1]), len(main_rows)))

@@ -5,12 +5,12 @@
   "slot_note": "re-root after the v1 architecture was sent back at Gate C and Gate G; same number and objective",
   "domain": "criminology-justice",
   "subdomain": "crime-incidence-hotspot-analysis",
-  "niche": "night-time economy hotspot patrol slate timed off offences whose occurrence time is a range",
+  "niche": "night-time economy hotspot patrol slate off offences the force records as an occurrence window rather than a time, the window being the gap in the target keeper's own routine",
   "objective": "anomaly-detection",
   "shape": "07",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "Commission Saturday 20:00 to 00:00, Friday 20:00 to 00:00, Sunday 00:00 to 04:00, Saturday 00:00 to 04:00, Sunday 04:00 to 08:00, Wednesday 20:00 to 00:00, Thursday 20:00 to 00:00 and Saturday 04:00 to 08:00, which together meet 4,050 of the offences the tasking contract covers in a season.",
+  "answer": "Commission Thursday 20:00 to 00:00, Saturday 00:00 to 04:00, Sunday 00:00 to 04:00, Sunday 20:00 to 00:00, Friday 12:00 to 16:00, Wednesday 20:00 to 00:00, Monday 20:00 to 00:00 and Tuesday 20:00 to 00:00, covering 5,700 covered offences a season (5,705.20 unrounded), with Friday 16:00 to 20:00 the runner-up at 400.",
   "answer_source": "task184/golden/harbourgate_patrol_slate_2027.pdf and harbourgate_slot_weights.xlsx",
   "gap": [
     "population",
@@ -25,7 +25,7 @@
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
@@ -62,8 +62,8 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:aoristic-weight-against-a-point-in-time",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:placement-the-windows-settle-against-the-even-spread",
   "layer1": [
     "offence records whose occurrence time is a window (occurred_from and occurred_to) and whose report time is a third timestamp",
     "two recording systems across the window, the force's legacy incident export to March 2026 and the new records management system after it, with different column names and time formats",
@@ -74,15 +74,16 @@
     "offences recorded under a British Summer Time local clock across two clock changes",
     "an offence class whose counts jump when a national counting rule changed, documented in the extract notes"
   ],
-  "driver": "The decisive unit is not the event but the event-hour it could have happened in: a large share of the events are recorded with a window rather than a time, the windows are long exactly for the events the decision exists to catch, and the slate is set on the weight those windows put on each slot, so assigning each event to one hour, whichever hour, or keeping only the precisely timed events, each names a different slate.",
-  "driver_concrete": "A large share of Harbourgate's night-time offences are recorded with an occurrence window rather than a time, and the windows are longest for the overnight burglaries and vehicle offences the patrol is commissioned against, so the weight each four-hour slot carries is the sum of each offence's window overlap with it; taking the window's start, its midpoint, its report time, or only the precisely timed offences each names a different six-slot slate.",
-  "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, takes each offence's occurrence time as occurred_from and commissions the week's five busiest evening slots and three late afternoons, filing 6,200 covered offences a season when its eight meet 3,300 of the golden's 4,050; the step that lands it there is treating a window as the point in time it starts, when seven in eight of these offences have a window longer than a patrol slot and 94 per cent of them cross a slot boundary.",
+  "driver": "The decisive quantity is a latent cyclical profile recovered from records that observe each event only as the interval it fell in, where the interval is the gap in the target's own inspection routine and its length varies systematically with the part of the cycle it covers, so the flat reading that spreads each event evenly across its own interval divides the busiest parts of the cycle across the longest intervals and the quietest across the shortest, and only the placement under which the recorded intervals are the likeliest set to have been recorded recovers the profile.",
+  "driver_concrete": "A covered offence is against a target its keeper looks at on a routine, so the record's window is the gap in that routine, and the gap covering a Friday or Saturday night is a weekend closure of 39 to 64 hours against a midweek night's 14 to 16. Spreading each window evenly over its own hours, which is the textbook aoristic weight, writes the quarter's heaviest nights down and its daytime absences up and moves the patrol slate onto Friday afternoon; the hour-of-week clock the record settles puts it back on the evenings and the small hours.",
+  "stump": "The default path spreads each occurrence window evenly over its own hours and commissions Friday 12:00 to 16:00, Thursday 20:00 to 00:00, Friday 00:00 to 04:00, Saturday 00:00 to 04:00, Friday 16:00 to 20:00, Thursday 16:00 to 20:00, Friday 20:00 to 00:00 and Sunday 20:00 to 00:00, filing 3,150 covered offences a season, when its eight meet only 4,250 of the golden's 5,700; the step that lands it there is reading the window as a claim that the offence is equally likely in each of its hours, when the window is the keeper's own closure and the closures covering the heaviest nights are the longest.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every column correctly, reconciles the two recording systems, drops the cross-system duplicates and fixes the gazetteer takes each offence's occurrence time as the start of its window (or its report time), sums offences by day and four-hour slot, and commissions the six heaviest slots; wrong, because for the offences the patrol exists to catch the window is hours or days long and a point in it is not where the offence happened.",
-  "domain_test": "The deciding analysis is aoristic crime analysis: an offence known only to have happened between two times contributes a fraction of itself to every hour in its window, and the hotspot's timing is the sum of those fractions per day and four-hour slot; with another field's nouns there is no offence discovered on return and no last-seen and found pair, so there is no window to spread and the task stops making sense.",
+  "analyst_test": "A strong analyst who reads every column correctly, conforms the legacy export to the new records management export, drops the cross-system duplicates, fixes the gazetteer and keeps the contracted classes takes the textbook aoristic weight, spreading each window evenly over its own hours, and files the slate led by Friday 12:00 to 16:00 at 3,150 covered offences a season. Executed on the generator's clean truth in checks.py, which asserts that slate, its figure, and that its eight meet at most 0.80 of the golden's coverage.",
+  "domain_test": "The deciding quantity is the quarter's hour-of-week offence clock for the contracted classes, and the field's own method is aoristic crime analysis read as what it is, an interval-censored observation of a time: the clock the record settles is the one under which the recorded windows are the likeliest set to have been recorded, and the record refutes the flat start at a likelihood ratio of 3,035.2. Swap the nouns for a depot's relief crew and breakdowns and there is no keeper routine, so no window and no closure-length variation, and nothing is left to recover.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task180": "t180 distorts the hourly profile by the instruments' sensitivity following a daily cycle, so small events are missing from the record; here every event is in the record and it is the precision of its time that varies, so the distortion is in where the recorded events are placed, not in which are recorded."
+    "task180": "t180 distorts the hourly profile by the instruments' sensitivity following a daily cycle, so small events are missing from the record; here every event is in the record and it is the precision of its time that varies, so the distortion is in where the recorded events are placed, not in which are recorded.",
+    "task464": "task464 converts one instrument's scale to another's by matching the two distributions in a sample measured on both, so its decisive step is a conversion between two measured scales and both scales are observed. Here nothing is measured twice: no covered offence's time is observed at all for four in five of them, and the decisive step recovers an unobserved hour-of-week clock from the overlap of interval-censored windows, with the record's own likelihood refuting every alternative placement (the even spread at 3,035.2, the keeper-seen offences' profile at 13,660.0, the witnessed classes' hours at 3,435.4 and footfall at 7,834.8)."
   },
   "lineage": [
     {

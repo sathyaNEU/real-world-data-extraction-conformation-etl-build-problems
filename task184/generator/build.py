@@ -89,10 +89,10 @@ def figures(w):
         },
         "week": {name(s): fifty(weights[s]) for s in W.SLOTS},
         "default_path": {
-            "slate": [name(s) for s in lad["rung0_window_start"]["slate"]],
-            "files": fifty(lad["rung0_window_start"]["files"]),
-            "meets": fifty(lad["rung0_window_start"]["meets"]),
-            "share_of_golden": round(lad["rung0_window_start"]["meets"] / g["files"], 3),
+            "slate": [name(s) for s in lad["rung3_flat_aoristic"]["slate"]],
+            "files": fifty(lad["rung3_flat_aoristic"]["files"]),
+            "meets": fifty(lad["rung3_flat_aoristic"]["meets"]),
+            "share_of_golden": round(lad["rung3_flat_aoristic"]["meets"] / g["files"], 3),
         },
         "rungs": {k: {"slate": [name(s) for s in v["slate"]], "files": fifty(v["files"]), "meets": fifty(v["meets"]),
                       "share_of_golden": round(v["meets"] / g["files"], 3)}
@@ -112,6 +112,8 @@ def figures(w):
             "share_of_windows_over_four_hours_per_cent": round(100.0 * sum(
                 1 for r in w["contracted"] if (r["to"] - r["from"]).total_seconds() > 4 * 3600) /
                 len(w["contracted"]), 1),
+            "share_carrying_a_window_per_cent": round(100.0 * sum(
+                1 for r in w["contracted"] if r["to"] > r["from"]) / len(w["contracted"]), 1),
             "share_of_windows_crossing_a_slot_per_cent": round(100.0 * sum(
                 1 for r in w["contracted"]
                 if O.slot_of(r["from"]) != O.slot_of(r["to"] - dt.timedelta(seconds=1))) /

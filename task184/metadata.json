@@ -61,7 +61,7 @@
     {
       "path": "harbourgate_footfall_hourly.csv",
       "format": "csv",
-      "bytes": 1118725,
+      "bytes": 1118785,
       "rows": 35136,
       "source": "Constructed: Business improvement district pedestrian sensor feed, hourly counts in UTC, 2025 and 2026 seasons",
       "date": "2027-01-22",
@@ -88,7 +88,7 @@
     {
       "path": "harbourgate_patrol_plan_2026.xlsx",
       "format": "xlsx",
-      "bytes": 8686,
+      "bytes": 8698,
       "rows": null,
       "source": "Constructed: Neighbourhood team's record of the hours the patrol worked in each slot under the 2026 agreement",
       "date": "2027-01-22",
@@ -97,7 +97,7 @@
     {
       "path": "harbourgate_patrol_tasking_contract_2027.pdf",
       "format": "pdf",
-      "bytes": 85901,
+      "bytes": 85788,
       "rows": null,
       "source": "Constructed: Harbourgate hotspot patrol tasking agreement for the 2027 season, with the tasking schedule and the classes covered",
       "date": "2027-01-22",
@@ -124,8 +124,8 @@
     {
       "path": "kcp_cis_offence_extract_2025.csv",
       "format": "csv",
-      "bytes": 344116,
-      "rows": 3659,
+      "bytes": 338107,
+      "rows": 3598,
       "source": "Constructed: Crime information system offence extract for the same streets, 2025 season to 27 July 2025",
       "date": "2027-01-22",
       "license": "CC0-1.0 (original work)"
@@ -133,7 +133,7 @@
     {
       "path": "kcp_crime_recording_standard_extract.pdf",
       "format": "pdf",
-      "bytes": 64612,
+      "bytes": 64502,
       "rows": null,
       "source": "Constructed: Force extract from the Crime Recording Standard: recording, occurrence date and time, classification and location",
       "date": "2027-01-22",
@@ -160,8 +160,8 @@
     {
       "path": "kcp_rms_offence_extract_2027-01-22.csv",
       "format": "csv",
-      "bytes": 4477355,
-      "rows": 33708,
+      "bytes": 4482791,
+      "rows": 33766,
       "source": "Constructed: Records management system offence extract for the Harbourgate streets, 2025 and 2026 seasons, run 22 January 2027",
       "date": "2027-01-22",
       "license": "CC0-1.0 (original work)"

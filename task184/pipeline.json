@@ -1,31 +1,32 @@
 {
   "task": "task184",
   "owner": "oviya13ya",
-  "status": "FAILED_TO_STUMP",
+  "status": "BUILD",
   "domain": "criminology-justice",
   "objective": "anomaly-detection",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-20",
-  "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, takes each offence's occurrence time as occurred_from and commissions the week's five busiest evening slots and three late afternoons, filing 6,200 covered offences a season when its eight meet 3,300 of the golden's 4,050.",
+  "stage": 3,
+  "stage_name": "build",
+  "updated": "2026-10-21",
+  "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, spreads each occurrence window evenly over its own hours and commissions Friday 12:00, Thursday 20:00, Friday 00:00, Saturday 00:00, Friday 16:00, Thursday 16:00, Friday 20:00 and Sunday 20:00, filing 3,150 covered offences a season when its eight meet 4,250 of the golden's 5,700; the step that lands it there is reading the window as a statement that the offence is equally likely in every hour of it, when the window is the gap in its keeper's own routine and the gap covering a Friday or Saturday night is a weekend closure three to four times as long as a midweek one.",
   "architecture": 2,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
-    "date": "2026-10-15"
+    "date": "2026-10-21",
+    "note": "exit 0 on the rebuilt task folder in the repair's scratch directory; exit 1 on the repo folder on one check only, SF11 absent from the shipped generator/checks.py, because this pass was not permitted to write under task184/generator"
   },
   "leak": {
-    "leak_py": "REVIEW (sweeps 4 and 6, both answered in the design note)",
-    "reader": "wave 8 audit: call landed, Gate F failed, scored by score_reader.py"
+    "leak_py": "REVIEW on the rebuild (sweeps 4 and 6, both answered in the design note)",
+    "reader": "not run: the pack is rebuilt in the repair's scratch directory and not yet in the repo"
   },
   "duplicate_check": {
     "heart": "PASS (WARNs answered in the note)",
     "nearest": "0.08 task121 v3, task180 v4"
   },
   "judge": {
-    "verdict": "DETERMINISTIC (pass 2; pass 1 NOT_DETERMINISTIC on four unpinned conventions)",
-    "disposition": "APPROVE",
-    "report": "task184/determinism_check_report.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [
     {
@@ -33,11 +34,30 @@
       "portal": "judge SEND_BACK at the hardening (not a portal return)",
       "repair": "re-root",
       "commit": "3329b92"
+    },
+    {
+      "date": "2026-10-21",
+      "portal": "FAILED_TO_STUMP on measurement: a blind Sonnet reader at medium effort holding only target.zip, prompt.txt and the figure names reproduced the call exactly and took 75 of 97 ask figures",
+      "repair": "design",
+      "commit": ""
     }
   ],
-  "resume": "FAILED_TO_STUMP on measurement, not on a portal result: the wave 8 blind reader landed the call. The ladder is re-sited at stage 2; the asks are not re-worded.",
+  "resume": "Stage 4 is owed and is the only thing between this and a ship: the leak reader and the determinism judge have not seen this pack. Spawn both together on a fresh unzip of target.zip. Two things the agent flagged for the judge rather than buried, and they are the places to press: the surviving sentence of agreement 4.4 rules out two of the five placements, so a judge may argue it nudges a reader toward the windows (the answer is that both routes it excludes are independently refuted by the record, at 3,435.4 and 7,834.8, so the clause is belt and braces rather than load bearing); and the 19.9 per cent of covered offences that carry a time rather than a window are the closest thing in the design to a plant, being the authentic consequence of keepers watching some hours, never read by the golden and argued from by no artifact. The worst slot figure the record settles also sits 102.8 offences from the unobservable true count, which is the irreducible width of an interval-censored record and the reason the agreement's count has to be estimated at all.",
   "approved": null,
-  "delivered": "2026-10-15",
+  "delivered": null,
   "portal": null,
-  "seed": "analytical_tasks/02_anomaly_detection/AD07_mobile-screening-team-idle-position-cap.md"
+  "seed": "analytical_tasks/02_anomaly_detection/AD07_mobile-screening-team-idle-position-cap.md",
+  "gates": {
+    "reroot_applied_2026_10_21": "The stage-2 re-root was built outside the repo and is now applied to it and rebuilt here, reproducing the same bytes: target and golden sha256 18f29b267934cedd, target.zip c507033cde9b779a over 16 files. The new decisive step recovers the quarter's hour-of-week offence clock from the overlapping occurrence windows themselves, by the placement under which the recorded windows are the likeliest set to have been recorded, rather than spreading each window evenly over its own hours. The data forces it: a covered offence is against a target its keeper inspects on a routine, so the window is the gap in that routine, and the gap covering a Friday or Saturday night is a weekend closure of 39 to 64 hours against a midweek night's 14 to 16, so the even spread divides the heaviest nights across the longest windows. The default path now ends on a wrong slate, 3,150 covered offences a season against the golden 5,700, its eight meeting 4,250 (0.741). Three documents moved: the recording standard's 3.3 is deleted, the agreement's 4.4 keeps only its input-scoping sentence, and 4.2 is unchanged, so no clause composes into the method and the deleted sentence that forbade the golden is gone.",
+    "checks": "exit 0, 34,455 assertions, run in the repo after the apply",
+    "verify": "exit 0, 170 independent checks from the pack alone",
+    "rebuild": "two consecutive rebuilds byte-identical on target/, golden/, metadata.json and figures.json, sha256 18f29b267934cedd; target.zip recut from the final one, 16 files, sha256 c507033cde9b779a",
+    "precut": "exit 0, 51 checks, 0 FAIL, 0 WARN (it exited 1 before the apply only because precut reads the task folder's own checks.py and SF11 lived in the scratchpad copy)",
+    "figures_check": "exit 0, 201 figures in blocks 1 to 4, 0 absent from figures.json",
+    "voice_check": "exit 0, prompt.txt unchanged: the question never named the method",
+    "leak": "REVIEW, no LEAK; sweeps 1, 2, 3, 5, 7, 8, 9 and 11 clean, 4 and 6 the same two lines as the shipped build and answered in the note",
+    "guard_heart": "WARN, exit 0, 0 BLOCK. It was BLOCK on test.same_puzzle_older and test.same_driver_older against task464 v2, drawn two days after this card was registered. Cleared with a differentiation line and with the card brought up to the re-root (layer2_family estimation_fit, layer2_pattern own:placement-the-windows-settle-against-the-even-spread, stump_strategy other, and the driver, stump, analyst_test, domain_test, niche and answer rewritten), not by relabelling an axis to clear a ban. Seven WARNs answered one line each in the note's new section.",
+    "guard_surface": "exit 0, one persona in the cut pack (Bethan Murray), no promoted pair",
+    "ladder": "measured on the clean truth, offences a season: rung 0 window start 6,500 meeting 2,700 (0.475), rung 1 window end 6,200 meeting 1,400, rung 2 midpoint 5,850 meeting 3,150, rung 3 the even spread 3,150 meeting 4,250 (0.741), rung 3b the keeper-seen offences' profile 4,900 meeting 4,100, golden 5,700. Worst margin 1.350x against a floor of 1.15x, no rung keeping more than 4 of 8 names, at least 34 of 42 cells wrong on every rung. Gap at the cap 76.80 offences, 18.81 per cent; every graded figure at least 3.212 offences from its bin edge against an arithmetic noise of 0.0131. Over 20 redraws the record's eight are this build's eight in 20 of 20 and the unobserved true times' eight in 20 of 20."
+  }
 }

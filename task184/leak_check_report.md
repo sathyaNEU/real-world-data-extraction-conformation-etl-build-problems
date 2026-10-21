@@ -4,11 +4,12 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: window, weight, decisive, occurred, records, nothing, checkpoint, airport, carries, covered, shipped, graded, construction, sentence, decision, occurrence, windows, architecture, pattern, document, summer, stand-down, ladder, timestamps, classes
+Stump terms swept: window, spread, weight, shipped, reader, covered, windows, records, occurred, decisive, golden, sentence, nothing, standard, construction, carries, timestamps, keeper, re-root, recording, classes, placement, profile, measured, exactly
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `harbourgate_patrol_tasking_contract_2027.pdf`: 5 of 25 stump-paragraph terms appear (occurred, records, nothing, covered, classes); read whether the document names the move
-- **REVIEW** `kcp_rms_extract_notes.md`: 4 of 25 stump-paragraph terms appear (records, occurrence, timestamps, classes); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `harbourgate_patrol_tasking_contract_2027.pdf`: 5 of 25 stump-paragraph terms appear (covered, records, occurred, nothing, classes); read whether the document names the move
+- **REVIEW** `kcp_crime_recording_standard_extract.pdf`: 3 of 25 stump-paragraph terms appear (occurred, standard, recording); read whether the document names the move
+- **REVIEW** `kcp_rms_extract_notes.md`: 4 of 25 stump-paragraph terms appear (records, timestamps, recording, classes); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2, INFO 6)
 - **REVIEW** `kcp_cis_offence_extract_2025.csv`: names 5 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -38,6 +39,7 @@ Stump terms swept: window, weight, decisive, occurred, records, nothing, checkpo
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 

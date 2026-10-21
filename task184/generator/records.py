@@ -104,18 +104,14 @@ def fringe():
         for j in range(FRINGE_PER_SEASON):
             cls = classes[int(g.integers(0, len(classes)))]
             kind = W.CLASSES[cls][1]
-            d = days[int(g.integers(0, len(days)))]
-            sh, ln = O.window(kind, g, 1)
-            at = dt.datetime.combine(d, dt.time()) + dt.timedelta(hours=float(sh[0]))
-            length = float(ln[0])
-            if length > 0:
-                end = at + dt.timedelta(hours=length)
-                at = O.on_the_hour(at, at.minute >= 30)
-                end = O.on_the_hour(end, end.minute >= 30)
-                if end <= at:
-                    end = at + dt.timedelta(hours=1)
+            if kind == "routine":
+                by_dow = {k: [x for x in days if x.weekday() == k] for k in range(7)}
+                at, end, _true = O.covered_record(cls, g, by_dow, W.SEASONS[si])
             else:
-                at = at.replace(second=0, microsecond=0)
+                d = days[int(g.integers(0, len(days)))]
+                sh, _ln = O.window(kind, g, 1)
+                at = (dt.datetime.combine(d, dt.time()) +
+                      dt.timedelta(hours=float(sh[0]))).replace(second=0, microsecond=0)
                 end = at
             n = int(180 + 2 * g.integers(0, 60))
             alt = bool(g.random() < ALT_SHARE)

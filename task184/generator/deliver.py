@@ -101,9 +101,9 @@ def paper(path, fig, lad, tmp):
          Paragraph("%s, %s. For the council's community safety committee at the annual review, %s."
                    % (man, man_role, W.PAPER_DATE.strftime("%d %B %Y")), META),
          Paragraph("Recommendation", H2),
-         Paragraph("Commission the eight slots in the table below: Saturday, Sunday and Friday through the late "
-                   "evening and the small hours, "
-                   "the two early-morning slots as the market opens, and the Wednesday and Thursday evenings. The "
+         Paragraph("Commission the eight slots in the table below: the five weekday evenings and Sunday "
+                   "evening, the small hours of Saturday and Sunday where the late licences push the trouble "
+                   "past midnight, and Friday afternoon. The "
                    "agreement covers %s recorded offences a season in the "
                    "quarter, and over a season those eight slots would have a patrol on the ground for %s of them, "
                    "against %s for the eight slots the windows' midpoints put first. The ninth slot by weight is "
@@ -130,22 +130,26 @@ def paper(path, fig, lad, tmp):
     f.append(Paragraph("The week", H2))
     f.append(Image(png, width=167 * mm, height=70 * mm))
     f.append(Paragraph("How the figures are built", H2))
-    f.append(Paragraph("Almost none of these offences was seen happening. A business is shut at ten and open at "
+    f.append(Paragraph("Most of these offences were not seen happening. A business is shut at ten and open at "
                        "seven and the shutter has been forced; a car is left at the Quayside at half past eight and "
                        "the window is out by one. The record holds the two times the victim can vouch for and "
-                       "nothing between them, and for nine in ten of the covered offences they are more than four "
-                       "hours apart, so a single offence belongs to more than one patrol slot. Each offence is "
-                       "therefore counted into every slot its occurrence window touches, in proportion to the share "
-                       "of the window that falls in that slot, and a slot's figure is the sum of those shares over "
-                       "the two seasons on record, divided by two. The workbook %s carries the figure for every "
+                       "nothing between them, and for four in five of the covered offences they are more than four "
+                       "hours apart, so no slot figure can be read off the record directly. What the record does "
+                       "settle is the quarter's own clock: the hours its offences fall in are the hours that make "
+                       "the windows the force actually recorded the likeliest set of windows to have been recorded, "
+                       "and that is a single answer because the windows cut the week at a hundred and fifty-nine "
+                       "different hours. A slot's figure is that clock summed over the slot, over the two seasons on "
+                       "record, divided by two. The workbook %s carries the figure for every "
                        "slot in the week, and the volume, location and footfall tables behind this paper." % BOOK,
                        BODY))
-    f.append(Paragraph("Taking the earliest time each offence can have happened as the time it happened would put "
-                       "the whole slate on the seven evening slots and Friday morning, and would credit it with "
-                       "%s offences a season. Those eight slots would in fact have a patrol present for %s, a "
-                       "fifth less than the slate above."
-                       % ("{:,}".format(fifty(lad["rung0_window_start"]["files"])),
-                          "{:,}".format(fifty(lad["rung0_window_start"]["meets"]))), BODY))
+    f.append(Paragraph("The figures are not what a flat reading of the windows gives. Treating an offence as "
+                       "equally likely in every hour of its own window credits a slate of %s offences a season and "
+                       "puts the patrol on the afternoons, because the windows that cover a Friday or a Saturday "
+                       "night are weekend closures three to four times longer than a Tuesday's, and a flat reading "
+                       "divides the weekend's offences across all of those hours. Those eight slots would in fact "
+                       "have a patrol present for %s, a quarter less than the slate above."
+                       % ("{:,}".format(fifty(lad["rung3_flat_aoristic"]["files"])),
+                          "{:,}".format(fifty(lad["rung3_flat_aoristic"]["meets"]))), BODY))
     def frame(canvas, doc):
         canvas.saveState()
         canvas.setFillColor(GREY)
@@ -220,8 +224,9 @@ def workbook(path, lad, a1, a2, a3, fig=None):
             "Population: offences of the classes at Annex B of the tasking agreement, at the five locations in "
             "harbourgate_location_register.csv, occurring between 1 April and 30 September in 2025 and in 2026.",
             "Slot figures are one season, the mean of the two seasons on record, to the nearest fifty offences. "
-            "An offence whose occurrence window touches more than one slot is counted into each in proportion to "
-            "the share of the window falling in it.",
+            "An offence whose record gives only the earliest and the latest time it can have occurred is "
+            "placed by the quarter's own hour-of-week clock, which is read off the windows themselves rather "
+            "than assumed flat inside each one.",
             "The Cranstoun length of Harbourgate Street, above number 178, is outside the quarter and outside "
             "every figure here.",
             "Offence counts by class are to the nearest ten and count one offence once, whichever system holds it; "

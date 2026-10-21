@@ -83,9 +83,6 @@ RULES_CLAUSES = [
         "3.2  Where the time an offence occurred is not known, the occurrence is recorded as the earliest and the "
         "latest time at which it can have occurred, taken from the account of the person reporting it. Both are "
         "recorded; neither is to be left blank, and neither is to be amended to the other.",
-        "3.3  The earliest and latest times are recorded as the reporting person gives them. They are not refined, "
-        "narrowed or estimated by the recording officer, and no inference is recorded about where within the two "
-        "the offence occurred.",
     ]),
     ("4  Classification", [
         "4.1  An offence is classified by the Home Office class of the principal offence disclosed by the "
@@ -126,8 +123,7 @@ CONTRACT_CLAUSES = [
         "4.3  The classes at Annex B are those for which the partnership has agreed that visible patrol is the "
         "appropriate response. The partnership may propose a change to the schedule at the annual review.",
         "4.4  A count of the offences covered by this agreement is built from the force's record of those offences "
-        "and from nothing else. Where the record gives the earliest and the latest time at which an offence can "
-        "have occurred, no other offence, data source or proxy may be used to place it within that period.",
+        "and from nothing else.",
     ]),
     ("5  Reporting", [
         "5.1  The force reports to the partnership, at the end of each month of the season, the hours worked in "

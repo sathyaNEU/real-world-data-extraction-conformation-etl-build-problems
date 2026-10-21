@@ -11,6 +11,8 @@ import io
 import json
 import os
 import re
+
+import numpy as np
 import zipfile
 
 import openpyxl
@@ -30,6 +32,17 @@ import world as W
 N = [0]
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
+
+
+# The ladder's measured floors, from the generator's clean truth (DESIGN_NOTE.md ## Ladder). A rung may
+# meet at most this much of the golden's coverage, keep at most this many of the eight slot names, and file
+# at most this many of the 42 cell figures inside the golden's own bin.
+RUNG_CEILING = 0.78
+RUNG_NAMES = 4
+RUNG_FIGS = 9
+GAP_FLOOR = 9.0
+RUNGS = ("rung0_window_start", "rung1_window_end", "rung2_midpoint", "rung3_flat_aoristic",
+         "rung3b_seen_profile")
 
 
 def ok(cond, what):
@@ -100,8 +113,10 @@ def run(target, golden, w, meta_path, quiet=False):
     for f, text in docs_text.items():
         low = text.lower()
         for word in ("aoristic", "in proportion to the window", "share of the window", "spread the offence",
-                     "weight of a slot", "slot weight", "fraction of the window"):
-            ok(word not in low, "R1 no document names the weighting (%s in %s)" % (word, f))
+                     "weight of a slot", "slot weight", "fraction of the window", "equally likely",
+                     "equal weight", "uniform", "at random within", "likelihood", "most likely",
+                     "where within", "no inference"):
+            ok(word not in low, "R1 no document names the placement (%s in %s)" % (word, f))
     for f, text in docs_text.items():
         if f.endswith(".pdf") or f.endswith(".md"):
             ok("{:,}".format(fifty(g["files"])) not in text and str(fifty(g["files"])) not in text,
@@ -132,33 +147,39 @@ def run(target, golden, w, meta_path, quiet=False):
         ok(f in files, "the ask and distractor file %s ships" % f)
 
     # ---------------------------------------------------------------- R3a: the easy route, every rule applied
-    r0 = lad["rung0_window_start"]
-    ok([name(s) for s in r0["slate"]] == fig["default_path"]["slate"], "R3a the easy route's slate")
-    ok(all(s[1] in (16, 20) for s in r0["slate"]),
-       "R3a the easy route takes the late afternoon and evening slots only")
-    ok(fifty(r0["files"]) == fig["default_path"]["files"], "R3a the easy route's own figure")
-    ok(r0["files"] / g["files"] >= 1.4, "R3a the easy route overstates its coverage by at least two fifths")
-    ok(set(r0["slate"]) != set(slate), "R3a the easy route is not the golden slate")
-    ok(len(set(r0["slate"]) & set(slate)) == 4, "R3a the easy route keeps four of the eight names")
-    for rung in ("rung0_window_start", "rung1_window_end", "rung2_midpoint"):
+    r3 = lad["rung3_flat_aoristic"]
+    ok([name(s) for s in r3["slate"]] == fig["default_path"]["slate"], "R3a the easy route's slate")
+    ok(fifty(r3["files"]) == fig["default_path"]["files"], "R3a the easy route's own figure")
+    ok(set(r3["slate"]) != set(slate), "R3a the easy route is not the golden slate")
+    ok(len(set(r3["slate"]) & set(slate)) <= RUNG_NAMES,
+       "R3a the easy route keeps at most %d of the eight names (%d)"
+       % (RUNG_NAMES, len(set(r3["slate"]) & set(slate))))
+    ok(r3["meets"] / g["files"] <= RUNG_CEILING,
+       "R3a the easy route's eight meet at most %.2f of the golden's coverage (%.3f)"
+       % (RUNG_CEILING, r3["meets"] / g["files"]))
+    for rung in RUNGS:
         rw = lad[rung]["weights"]
         kept = [s for s in W.SLOTS if fifty(rw[s]) == fifty(weights[s])]
-        ok(len(kept) <= 2, "R3a %s keeps at most two of the 42 cell figures (%d)" % (rung, len(kept)))
-        ok(all(s not in kept for s in slate), "R3a %s gets every commissioned cell wrong" % rung)
-        ok(len([s for s in W.SLOTS if fifty(rw[s]) != fifty(weights[s])]) >= 40,
-           "R3a %s gets at least 40 of the 42 cells wrong" % rung)
+        ok(len(kept) <= RUNG_FIGS, "R3a %s keeps at most %d of the 42 cell figures (%d)"
+           % (rung, RUNG_FIGS, len(kept)))
+        ok(len([s for s in W.SLOTS if fifty(rw[s]) != fifty(weights[s])]) >= 42 - RUNG_FIGS,
+           "R3a %s gets at least %d of the 42 cells wrong" % (rung, 42 - RUNG_FIGS))
 
     # ---------------------------------------------------------------- R3b: the decisive step alone
     ok([name(s) for s in slate] == fig["call"]["slate"], "R3b the golden slate")
     ok(fifty(g["files"]) == fig["call"]["covered_total"], "R3b the covered total")
-    for rung in ("rung0_window_start", "rung1_window_end", "rung2_midpoint"):
+    for rung in RUNGS:
         ok(set(lad[rung]["slate"]) != set(slate), "R3b %s files another slate" % rung)
-        ok(lad[rung]["meets"] / g["files"] <= 0.83, "R3b %s meets at most five sixths" % rung)
-        ok(lad[rung]["files"] / g["files"] >= 1.05 and fifty(lad[rung]["files"]) != fifty(g["files"]),
-           "R3b %s overstates its own coverage and files a figure outside the bin" % rung)
+        ok(lad[rung]["meets"] / g["files"] <= RUNG_CEILING,
+           "R3b %s meets at most %.2f of the golden's coverage (%.3f)"
+           % (rung, RUNG_CEILING, lad[rung]["meets"] / g["files"]))
+        ok(len(set(lad[rung]["slate"]) & set(slate)) <= RUNG_NAMES,
+           "R3b %s keeps at most %d of the eight names" % (rung, RUNG_NAMES))
+        ok(fifty(lad[rung]["files"]) != fifty(g["files"]),
+           "R3b %s files a covered total outside the golden's bin" % rung)
     order = sorted(weights.items(), key=lambda kv: -kv[1])
     gap = 100.0 * (order[7][1] - order[8][1]) / order[8][1]
-    ok(gap >= 9.0, "R3b the cap falls on a gap of at least 9 per cent (%.1f)" % gap)
+    ok(gap >= GAP_FLOOR, "R3b the cap falls on a gap of at least %.0f per cent (%.1f)" % (GAP_FLOOR, gap))
     ok(fifty(order[8][1]) == fig["call"]["runner_up_offences"], "R3b the runner-up's figure")
 
     # ---------------------------------------------------------------- R3c: nothing planted, nothing hidden
@@ -170,31 +191,114 @@ def run(target, golden, w, meta_path, quiet=False):
     ok(not any("true" in c or "actual" in c for c in head), "R3c no column holds the unobserved time")
 
     # ---------------------------------------------------------------- the grain and the refinement converge (C1)
+    flat_w = AN.per_season(AN.flat_weights(contracted))
     for step in (60, 15, 5):
         sw = AN.per_season(AN.sampled_weights(contracted, step))
-        ok(max(abs(sw[s] - weights[s]) for s in weights) < 1e-6,
-           "SF7 the %d-minute grain gives the same figure" % step)
-        ok(set(slate_of(sw)) == set(slate), "SF7 the %d-minute grain gives the same slate" % step)
+        ok(max(abs(sw[s] - flat_w[s]) for s in flat_w) < 1e-6,
+           "SF7 the even spread is the same figure at a %d-minute grain" % step)
+        ok(set(slate_of(sw)) == set(slate_of(flat_w)),
+           "SF7 the even spread is the same slate at a %d-minute grain" % step)
     ct = pdf_text(os.path.join(target, D.CONTRACT))
-    # SF8 and SF10: the agreement's clause 4.4 is what rules out placing an offence inside its window from
-    # another source, and the two routes it rules out are shown here to file another slate, so the clause is
-    # load bearing rather than decorative.
+    # Clause 4.4 keeps the count inside the force's record of the covered offences, which is the estimand's
+    # source and so part of the WHAT. Its second sentence, which forbade any other offence, source or proxy
+    # from placing an offence inside its window, is gone: it eliminated every alternative placement, which
+    # left the even spread as the only move and made the decisive step rule application, and it also forbade
+    # the construction the record settles, which reads one offence's window against the others'.
     ok("built from the force's record of those offences and from nothing else" in ct,
        "SF8 the agreement's clause 4.4 confines the count to the force's record of the covered offences")
-    ok("no other offence, data source or proxy may be used to place it within that period" in ct,
-       "SF10 clause 4.4 rules out any other source for placing an offence inside its window")
-    pw = AN.per_season(AN.profile_weighted(contracted, rows))
+    ok("no other offence, data source or proxy may be used to place it" not in ct,
+       "SF8 clause 4.4 no longer forbids the record's own windows from placing an offence")
+    pw = AN.per_season(AN.profile_weighted(contracted, AN.witnessed_profile(rows) + 1e-9))
     ok(set(slate_of(pw)) != set(slate), "SF8 the other classes' hourly profile files a different slate")
     sensor_of = {loc: sid for sid, (loc, _pos) in W.SENSORS.items()}
     fw = AN.per_season(AN.footfall_weighted(contracted, counts, sensor_of))
     ok(set(slate_of(fw)) != set(slate), "SF10 the footfall-weighted route files a different slate")
     ok(not any(c in " ".join(docs_text.values()).lower()
-               for c in ("equally likely", "uniformly across", "evenly across the window")),
-       "SF10 no document states the distribution inside a window")
+               for c in ("equally likely", "uniformly across", "evenly across the window", "no inference",
+                         "where within the two")),
+       "SF10 no document states the placement inside a window")
     windowed = [r for r in contracted if r["to"] > r["from"]]
+    seen = [r for r in contracted if r["to"] <= r["from"]]
     ok(all(r["from"].minute == 0 and r["to"].minute == 0 for r in windowed),
        "SF7 every window is recorded on the hour at both ends")
-    ok(len(windowed) == len(contracted), "SF7 every contracted offence carries a window")
+    ok(len(windowed) + len(seen) == len(contracted) and len(windowed) > 0 and len(seen) > 0,
+       "SF7 the record holds both windows and seen times (%d windows, %d seen)" % (len(windowed), len(seen)))
+    ok(0.60 <= len(windowed) / float(len(contracted)) <= 0.95,
+       "SF7 most of the covered offences carry a window (%.3f)" % (len(windowed) / float(len(contracted))))
+
+    # ------------------------------------------------------- the record settles the placement (C1 on HOW)
+    # 1. the record identifies the 42 figures: every slot edge of the week is a window edge in the shipped
+    #    record, so no cell the record separates straddles a slot edge, and no window edge falls inside an
+    #    hour, so nothing finer than the hour is separated.
+    edges = AN.window_edges(contracted)
+    missing = sorted(set(range(0, W.HOURS_WEEK, W.SLOT_H)) - edges)
+    ok(not missing, "C1 every slot edge of the week is a window edge in the record (missing %r)" % (missing,))
+    ok(len(edges) >= 40, "C1 the record's windows cut the week at %d distinct hours" % len(edges))
+
+    # 2. the construction has one answer: the self-consistent iteration from random starts, and from the
+    #    three placements a reader would start from, reaches the same 42 figures.
+    rs = np.random.default_rng(184)
+    worst_start = 0.0
+    for k in range(12):
+        qk = AN.ml_hour_shares(contracted, start=rs.dirichlet(np.full(W.HOURS_WEEK, 0.6)))
+        wk = AN.per_season(AN.as_slots(qk * len(contracted)))
+        worst_start = max(worst_start, max(abs(wk[s] - weights[s]) for s in W.SLOTS))
+    tight = min([abs(v % 50 - 25) for v in list(weights.values()) + [g["files"]]])
+    ok(worst_start < tight / 20.0,
+       "C1 the placement is the same from 12 random starts: the worst slot differs by %.3g offences, "
+       "against %.2f from the tightest graded figure's own rounding edge" % (worst_start, tight))
+    for tol in (1e-9, 1e-11, 1e-13):
+        qt = AN.ml_hour_shares(contracted, tol=tol)
+        wtl = AN.per_season(AN.as_slots(qt * len(contracted)))
+        moved = max(abs(wtl[s] - weights[s]) for s in W.SLOTS)
+        ok(moved < tight / 20.0,
+           "C1 stopping at %g moves the worst slot figure by %.3g offences, against %.2f from its "
+           "rounding edge" % (tol, moved, tight))
+
+    # 3. every rival placement is refuted by the record itself, not by a clause.
+    ml_q = AN.ml_hour_shares(contracted)
+    base_ll = AN.ml_loglik(contracted, ml_q)
+    rivals = {
+        "SF7 the even spread inside each window": np.ones(W.HOURS_WEEK),
+        "SF11 the covered offences the keeper saw": AN.seen_profile(contracted) + 1e-9,
+        "SF8 the witnessed classes' own hours": AN.witnessed_profile(rows) + 1e-9,
+        "SF10 the pedestrian feed's footfall": AN.footfall_profile(counts, sensor_of, contracted) + 1e-9,
+    }
+    for label, cand in rivals.items():
+        lr = 2.0 * (base_ll - AN.ml_loglik(contracted, cand))
+        ok(lr > 2000.0, "C1 the record refutes %s (likelihood ratio %.0f)" % (label, lr))
+    sp = AN.per_season(AN.profile_weighted(contracted, AN.seen_profile(contracted) + 1e-9))
+    ok(set(slate_of(sp)) != set(slate),
+       "SF11 the covered offences the keeper saw file a different slate as a placement")
+    ok(len(set(slate_of(sp)) & set(slate)) <= RUNG_NAMES,
+       "SF11 and keep at most %d of the eight names" % RUNG_NAMES)
+
+    # 4. the licensed variants of the construction. A grid finer than the hour returns the same 42 figures,
+    #    because no window edge falls inside an hour. Each grid coarser than the hour, and the separable
+    #    day-by-hour model, is a restriction of the same likelihood, so the record is asked about it against
+    #    its own degrees of freedom: z = (LR - df) / sqrt(2 df) is the large-sample standardised statistic,
+    #    and anything over 6 is a refutation past any level a competent analyst would use.
+    def zstat(lr, df):
+        return (lr - df) / ((2.0 * df) ** 0.5)
+
+    for width in (2, 4):
+        wv = AN.per_season(AN.ml_on_grid(contracted, width))
+        qv = AN.ml_hour_shares(contracted, group=(np.arange(W.HOURS_WEEK) // width).astype(np.int64))
+        lr = 2.0 * (base_ll - AN.ml_loglik(contracted, qv))
+        df = W.HOURS_WEEK - W.HOURS_WEEK // width
+        ok(zstat(lr, df) > 6.0,
+           "C1 the record refutes a %d-hour grid (likelihood ratio %.0f on %d degrees of freedom, z %.1f)"
+           % (width, lr, df, zstat(lr, df)))
+        ok(set(slate_of(wv)) != set(slate) or max(abs(wv[s] - weights[s]) for s in W.SLOTS) > 1.0,
+           "C1 the %d-hour grid is a different construction, not the same one" % width)
+    sep = AN.per_season(AN.ml_separable(contracted))
+    lr = 2.0 * (base_ll - AN.ml_loglik(contracted, AN.separable_hour_shares(contracted)))
+    df = W.HOURS_WEEK - (6 + 23 + 1)
+    ok(zstat(lr, df) > 6.0,
+       "C1 the record refutes a separable day-by-hour placement (likelihood ratio %.0f on %d degrees of "
+       "freedom, z %.1f)" % (lr, df, zstat(lr, df)))
+    ok(set(slate_of(sep)) != set(slate) or max(abs(sep[s] - weights[s]) for s in W.SLOTS) > 1.0,
+       "C1 the separable placement is a different construction")
 
     # ---------------------------------------------------------------- the semantic forks
     sched = read_csv(os.path.join(target, D.SCHEDULE))
@@ -226,8 +330,10 @@ def run(target, golden, w, meta_path, quiet=False):
     rules = pdf_text(os.path.join(target, D.RULES))
     ok("earliest and the latest time at which it can have occurred" in rules,
        "the recording standard files the window")
-    ok("no inference is recorded about where within the two the offence occurred" in rules,
-       "the recording standard records no inference inside the window")
+    ok("no inference is recorded about where within the two the offence occurred" not in rules,
+       "the recording standard no longer says nothing narrows the window")
+    ok("3.3" not in rules.split("4  Classification")[0],
+       "the recording standard's clause 3.3 is gone")
 
     # SF6, the figure's period: one season, the mean of the two on record
     per_both = {s: v * len(W.SEASONS) for s, v in weights.items()}
@@ -253,7 +359,6 @@ def run(target, golden, w, meta_path, quiet=False):
     parts = AN.per_season(parts)
     ok(max(abs(parts[s] - weights[s]) for s in W.SLOTS) > 1.0,
        "SF9 rounding each offence's share first is a different path, as the question's closing sentence rules out")
-    ok(AN.slate(parts) == slate, "SF9 and it still gives the same eight slots in the same order")
 
     # ---------------------------------------------------------------- the graded figures sit mid-bin
     worst = min(abs(v % 50 - 25) for v in list(weights.values()) + [g["files"]])
@@ -360,8 +465,17 @@ def run(target, golden, w, meta_path, quiet=False):
 
     # ---------------------------------------------------------------- figures.json against the goldens
     ok(fig["week"] == {name(s): fifty(weights[s]) for s in W.SLOTS}, "figures.json carries the 42 cells")
-    ok(fig["context"]["share_of_windows_over_four_hours"] >= 0.85, "nine in ten windows run over four hours")
-    ok(fig["context"]["share_of_windows_crossing_a_slot"] >= 0.90, "almost every window crosses a slot boundary")
+    ok(fig["context"]["share_carrying_a_window_per_cent"] >= 70.0,
+       "most covered offences carry a window rather than a time (%.1f per cent)"
+       % fig["context"]["share_carrying_a_window_per_cent"])
+    ok(fig["context"]["share_carrying_a_window_per_cent"] <= 90.0,
+       "and a real minority carry a time, because their keeper was watching (%.1f per cent)"
+       % (100.0 - fig["context"]["share_carrying_a_window_per_cent"]))
+    ok(fig["context"]["share_of_windows_over_four_hours"] >= 0.70,
+       "seven in ten covered offences have a window longer than a patrol slot (%.3f)"
+       % fig["context"]["share_of_windows_over_four_hours"])
+    ok(fig["context"]["share_of_windows_crossing_a_slot"] >= 0.70,
+       "and as many cross a slot boundary (%.3f)" % fig["context"]["share_of_windows_crossing_a_slot"])
     for f in files:
         ok(not f.startswith("."), "no dot file in the pack")
         ok("golden" not in f and "answer" not in f and "clean" not in f, "no author noun in a file name")
@@ -369,5 +483,5 @@ def run(target, golden, w, meta_path, quiet=False):
         print("checks: %d assertions passed (slate %s at %d a season; the easy route files %d on %s and meets %d, "
               "%.3f of it; worst call bin %.2f of 25; gap at the cap %.1f per cent)"
               % (N[0], ", ".join(name(s) for s in slate[:3]) + " and five more", fifty(g["files"]),
-                 fig["default_path"]["files"], ", ".join(name(s) for s in r0["slate"][:3]) + " and five more",
+                 fig["default_path"]["files"], ", ".join(name(s) for s in r3["slate"][:3]) + " and five more",
                  fig["default_path"]["meets"], fig["default_path"]["share_of_golden"], worst, gap))
