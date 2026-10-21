@@ -35,3 +35,12 @@ Stump terms swept: release, groups, blocks, housing, population, published, cens
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+Two isolated readers (general-purpose, medium), each on a fresh unzip of target.zip (sha256 915a6b4afe4113ee) with prompt.txt only, scored with score_reader.py before their verdicts were read.
+
+- Reader 1: call 0 of 12 (the block sum, North Kelvane 850 aged 60 and over); ask figures 12 of 12 (exit 1). Question 1: no sentence told it how to get the figures right. Question 6: "following the stated procedure and reading fields correctly ... I found no analytical choice that a careful reader could get wrong."
+- Reader 2: call 0 of 12 (the block sum); ask figures 12 of 12 (exit 1). Question 1: none. Question 6: "reading definitions and applying stated rules ... I did not find an analytical choice for the census counts beyond summing blocks."
+- Ask devices: both readers capped each client's hot meals at the roster's meals_per_day (the re-sent rows collapsed, the second meals kept) and joined the death match through the registry's links; both devices sat on the careful path.
+- Verdict on the REVIEW lines: the policy's word overlap with the call, the notes' and instructions' design vocabulary and the assignment's area names beside block codes were read by neither reader as the answer or the method; harmless.

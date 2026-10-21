@@ -4,8 +4,8 @@
   "status": "PAUSED",
   "domain": "general-statistics-data-science/data-integration-record-linkage-entity-resolution",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-21",
   "stump": "Summing the release's block counts over each provider area's blocks files North Kelvane at 850 residents aged 60 and over where it held about 700, every rural area 4 to 21 per cent high and both towns 1 to 3 per cent low, because noise-infused counts forced to be non-negative and consistent with their block group drift from the dense town blocks into the sparse rural blocks of the block groups the boundaries cut.",
   "architecture": 1,
@@ -16,19 +16,19 @@
   },
   "leak": {
     "leak_py": "REVIEW (no LEAK): vocabulary overlap in the notes, instructions and policy; the assignment names areas beside block codes",
-    "reader": ""
+    "reader": "two scored readers: call 0 of 12 each (block sum); asks 12 of 12 each (exit 1)"
   },
   "duplicate_check": {
     "heart": "WARN (overuse.objective, repeat.deliverables)",
     "nearest": "task471 v5 driver 0.07; surface 0 promoted"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC (competing_defensible_answer)",
+    "disposition": "SEND_BACK",
+    "report": "determinism_check_report.md"
   },
   "returned": [],
-  "resume": "stage 4: two scored readers and the judge thread running on target.zip sha256 915a6b4afe4113ee (scratch t486/stage4 and /tmp/determinism-check-task486-1792547142); on return score the readers with score_reader.py, have the determinism-judge write the report from verdict.md, fix every finding in one generator pass (docs.py already carries US spellings in the policy, not yet rebuilt), rebuild, re-run the stage-3 gates, then ship",
+  "resume": "architecture 1 spent at stage 4 (judge SEND_BACK: the block sum a defensible reading; both readers kept every ask figure); re-root at stage 1 to architecture 2: a fresh draw whose decisive step the data force, with ask devices off the careful path",
   "approved": null,
   "delivered": null,
   "portal": null,
