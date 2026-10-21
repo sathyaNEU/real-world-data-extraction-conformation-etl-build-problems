@@ -1,16 +1,16 @@
 {
  "task": "task179",
  "owner": "sathya8571",
- "status": "PAUSED",
- "domain": "",
+ "status": "DESIGN",
+ "domain": "epidemiology-public-health",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-19",
- "stump": "",
- "architecture": 0,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-21",
+ "stump": "A competent analyst fits the serial interval to every source-to-case pair in the chain register, takes the reproduction number from the growth of onsets over weeks 36 to 41, cuts it by 40 per cent from 2 November and projects about a quarter too few cases for weeks 49 to 52, because the register holds a pair only once its case has fallen ill.",
+ "architecture": 2,
  "loops": 0,
- "card_registered": false,
+ "card_registered": true,
  "precut": {
   "exit": null,
   "date": ""
@@ -29,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "wave": "new, seed FC50: the world, the decision and the quantity kept, the world moved honestly off local_government to a private ambulance company holding a city's 911 ambulance contract (the city the counterparty), deciding its own ten summer surge medic units for the weekend 20:00 to 24:00 block from June to August across three districts at the contract's 9-in-10 evenings standard at 1.2 unit-hours a call, the rest offered to the county's mutual-aid roster; the seed's filed staffing formula, the public dataset's suppression of one- and two-call cells and a pooling sentence were never candidates",
+ "wave": "new, seed FC50: the world, the decision and the quantity kept, the world moved honestly off local_government to a private ambulance company holding a city's 911 ambulance contract (the city the counterparty), deciding its own ten summer surge medic units for the weekend 20:00 to 24:00 block from June to August across three districts at the contract's 9-in-10 evenings standard at 1.2 unit-hours a call, the rest offered to the county's mutual-aid roster; the seed's filed staffing formula, the public dataset's suppression of one- and two-call cells and a pooling sentence were never candidates; redraw cell 1 econometrics time-series macro (2026-10-19, dead), redraw cell 2 epidemiology infectious-disease-transmission-modeling (2026-10-21, architecture v2)",
  "screen": {
   "assigned": "a forecasting judgment an EMS deployment analyst would recognise, inferred from the data, the rival rejected out of sample; ideas named: pooling with the areas' co-movement measured in the record, the lever of 30 per cent or more on units needed with no pooling discount or square-root law landing, next summer's level against the record's under a trend or a known change, a back-test on past summers",
   "candidate_1": "the district requirement from the areas' joint evenings (c1_pool.py, c1_summary.py, c1_station.py, c1_total.py; seeds 1 to 3): golden sigma 0.40 to 0.91 units in every realistic world (1.51 at twice the size, 0.24 only in small Poisson districts), the family spreading 0.44 to 1.19 units on one pack and two whole numbers in 6 of 9 district-seeds at the base world; the truth's pooling lever one unit a pooled district (8 per cent of units needed), 29 to 33 per cent only if the closed summers were staffed station by station; independence and the square-root law land the golden in 3 to 6 of 6 district-seeds wherever sigma is under 0.9 (one dial); the common-exposure subset fires 6 of 6 (the district's own totals filtered, summed and quantiled are the golden); pooling is the estimand's unit (rule application once filed) and the co-movement reading is task143's driver by abstraction; three-district total sigma 1.09 to 1.19",
@@ -48,7 +48,7 @@
    "prototypes": "scratchpad b179r/screen: s1_cp.py, lm1.py (lm1.out byte-identical with lm1_run2.out), d1.py, w1.py, w2.py, screen179r.py (screen179r.out byte-identical with screen179r_run2.out)"
   }
  },
- "resume": "PAUSED at stage 1, no card registered, nothing cut, architecture 0, not retired. The first cell (the ambulance surge pool, healthcare world) died on the sigma floor of one evening's percentile; the redraw cell (economics-econometrics / time-series-macro-econometrics, Forecasting, 2026-10-19) yielded nothing that holds: four candidates measured and seventeen screened on paper, each in the design note's ## Tried and rejected redraw-cell block. Re-screen nothing there. The main session decides a second cell under the round's retirement rule.",
+ "resume": "stage 2: build the generator's world and pack, measure the default and golden on the cut pack, design the asks, write the stage 2 sections, precut.py",
  "approved": null,
  "delivered": null,
  "portal": null,

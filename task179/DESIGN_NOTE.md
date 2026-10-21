@@ -1,11 +1,146 @@
 # task179 design note
 
-**Status: PAUSED at stage 1, no card ever registered, nothing cut.** On 2026-10-19 the number was redrawn in a
-new cell, Economics & Econometrics, `time-series-macro-econometrics`, Forecasting (the ambulance world spent), and
-that cell yielded nothing that holds either: four candidates measured on code and seventeen screened on paper, each
-recorded under `## Tried and rejected` (the redraw-cell block). The paragraphs below are the first cell's record.
+**Status: architecture v2 drawn 2026-10-21 in the round's second new cell, Epidemiology & Public Health,
+`infectious-disease-transmission-modeling`, Forecasting.** The first cell (the ambulance surge pool, never carded)
+and the redraw cell in Economics & Econometrics (`time-series-macro-econometrics`, never carded) are spent; their
+records sit under `## First-cell record` and in `## Tried and rejected`. Re-screen nothing there.
 
-**First cell.** New, Forecasting, seed FC50. The world was
+## Draw
+
+1. Card: `.claude/skills/fingerprint/cards/task179.json`, architecture v2 (no earlier card exists; v1 is the
+   uncarded first cell). `guard.py check` WARN only: `repeat.gate_g` against task479 (answered in item 5);
+   `test.same_puzzle_older` and `test.same_driver_older` against task126, task138 and task82, differentiated on
+   the card (a succession link split, a store rebuilt from inputs, records attributed through a second ledger;
+   none reads a delay distribution from linked pairs). Redrawn under the registration lock after task178 entered
+   the window: the decisive generator G13 became G3 and the context artifact `published_series` became
+   `capacity_report` (item 5 and item 7). Nearest drivers 0.07 (task251 v4) and 0.06 (task192 v1,
+   task452 v1, task199).
+2. Pairing: Epidemiology & Public Health (client domain) / `infectious-disease-transmission-modeling` /
+   Forecasting & Predictive Modeling. The one build on file in this task type is task501 (a next-generation
+   matrix built from contact diaries of the season's own regime); nothing here touches a contact matrix, a regime
+   of observation days or an eigenvalue.
+3. Niche: Action Sante Lulonga (invented; no organisation of that name found), a medical humanitarian
+   organisation running two Ebola treatment centres in Equateur province, projecting the cases its centres must
+   plan for in epidemiological weeks 49 to 52 (30 November to 27 December 2026) under the provincial response
+   plan's central scenario, from the province's line list and the response's contact-tracing chain register.
+4. Call and shape: the number of new cases (confirmed and probable, by date of symptom onset) in weeks 49 to 52
+   under the central scenario, to the precision the measured family supports (`quantity_figure`, `count`,
+   question form how-many), with the four weekly figures and the current reproduction number as components. Shape
+   `single-figure` (the call, its components and the ask tables; criteria counted in `## Ask sheet`); `other`
+   and `10` are in the last two builds.
+5. Mechanism keys: gap population (the chain register is not the population of transmission intervals, it is
+   the subset whose case has already fallen ill) then time (the projection bets on the interval the chains run
+   on, the register measures the intervals finished by its cut-off); generators G3 (record versus operation: the
+   register's intervals against the interval the transmission process runs on) then G13 (each pair is observed
+   only inside the horizon its source has to the extract). G13 led the first draft and task178 now holds it in the
+   window; G3 is an equally honest reading of the step, and G12 (absence of a record) would also read. Gate G `forecasting`
+   (a forecast the correctly read past does not pin): the WARN `repeat.gate_g` against task479 is answered by
+   the honest key, `method_or_model_selection` would claim two methods pinned by a validation or a standard and
+   here no validation or standard pins anything, the data's own truncation does. Strategy `maturity_censoring`
+   (right truncation of a delay at the extract), free in the window (task486 other, task480
+   decomposition_attribution, task479 other).
+6. Layer 2: `estimation_fit` (censoring and truncation), pattern
+   `epidemiology-public-health/infectious-disease-transmission-modeling/1` (Rt needs onset timing and the
+   generation interval). The card is the textbook route and the default path takes it whole; the stump is the
+   judgment it takes for granted, that the serial interval read from the outbreak's own pairs is the interval the
+   renewal equation needs.
+7. Furniture: forum `operations_desk` (the organisation's emergency desk commissions beds and staff directly on
+   the planning lead's projection); forcing event `incident_or_complaint` (the outbreak, with the response plan's
+   phase 3 starting 2 November); organisation family `hospital_or_health_provider` (a non-governmental operator
+   whose role here is running treatment centres; `nonprofit_or_charity` would also read and is in the window,
+   task486, said in the card's notes); role family `capacity_planner` (the medical planning lead); context
+   artifact `capacity_report` (the treatment centres' weekly bed-capacity report the planning lead works from; the
+   provincial weekly situation report also ships); calibration `none`. Free against
+   task486, task480 and task479 on every axis.
+8. Spine: the provincial line list as extracted on Sunday 18 October 2026 (one row per notified suspect,
+   probable or confirmed case), constructed in the layout of a provincial surveillance export; the 25,000-row file
+   is the contact follow-up log (contact by follow-up day).
+9. Deliverables: `projection_mve_s49_s52.xlsx` (the projection, its components and the ask tables) and
+   `courbe_projection_mve.svg` (observed and projected weekly cases with the scenario's start marked; SVG, since
+   xlsx with png repeats task178's set).
+10. World: Ebola virus disease (Zaire ebolavirus) in Equateur province, Democratic Republic of the Congo, first
+    known onset 4 May 2026, declared in July, growing steadily since (doubling about every two weeks) to several
+    thousand cases by mid-October across the Mbandaka, Wangata, Bolenge, Bikoro, Iboko, Ingende and Lotumbe health
+    zones. The response plan's phase 3 (ring vaccination widened, a third treatment centre, safe burials scaled)
+    starts Monday 2 November; its central planning scenario is that each case with onset from 2 November causes 40
+    per cent fewer cases than cases did over the six weeks to 11 October. Personas from `guard.py names --geo
+    "Democratic Republic of the Congo" --locale fr_FR --seed 179` (no locale is mapped for the country; the
+    organisation's international staff carry French names): Valerie Francois (response epidemiologist, owner of the
+    planning note), Thibaut Hebert (emergency coordinator), Colette Chauveau (treatment-centre medical lead).
+11. As-of: the line list and chain register extracted Sunday 18 October 2026 at 23:59 (Kinshasa time, UTC+1);
+    the provincial protocol closes notification within seven days of onset, so onsets to Sunday 11 October are
+    complete; the projection is for weeks 49 to 52.
+12. Sources read for the domain (stumping 1.3): the cell's two library cards (renewal-equation Rt with onset timing
+    and the generation interval; the next-generation matrix's eigenvalue); task501 (a contact matrix pooled over
+    two regimes; here no matrix); task232 (a transmission rate per exposure from closed episodes whose outcomes
+    surface after a delay window; here the delay itself is the estimated quantity and the episodes are open);
+    task181's lineage (a count read before its records finish arriving, units completed from their own arrival
+    history; here the counts are complete and the intervals between linked records are what the cut-off bends);
+    task133 (left truncation in a loan record; here truncation is on the right and by the later event); task91
+    (young units that look dormant; here no unit's age conditions its outcome).
+13. Data-native sentence: a source-to-case link is entered in the chain register only when the infected contact
+    falls ill and is notified, and the outbreak doubles about every two weeks, so at the extract most sources are
+    recent and are listed only with the cases they infected within the few weeks they have had, which bends the
+    register's intervals short in exactly the cohort the renewal equation's growth window reads.
+
+## Screens (stumping 1.2, as code)
+
+Prototypes in the session scratchpad, b179e/screen (`a1.py` to `a4.py`, `e1.py`; seeds fixed before outcomes,
+the outbreaks that died out before 2,500 cases skipped). The world screened is a discrete-day onset process,
+offspring negative binomial (R 1.7, k 0.4), serial interval a discretised gamma (mean 12.6, sd 7.4 days), 62 per
+cent of cases linked to a source, extract at day 165; eight outbreaks of 6,979 to 18,354 cases with 4,364 to
+11,356 pairs. Figures are the projected cases in a four-week window starting five weeks after a 40 per cent cut,
+each route against the golden (truncated maximum likelihood, gamma) on the same pack.
+
+- The default family lands about a quarter low and tightly: every pair fitted (empirical or gamma) -27.2 per cent
+  (sd 0.8), the same with the renewal-ratio R -27.0 (2.5), dropping pairs whose case fell ill in the last 21 or 42
+  days (the hygiene reflex, on the case's clock) -27.9 and -26.9.
+- The golden family converges where the data close it: truncated gamma 0.0, truncated Weibull +0.5 (0.1), the
+  reverse-time nonparametric estimator 0.0, sources whose onset is 50 or 70 days before the cut-off (the
+  complete-cohort subset, on the source's clock) +0.9 (3.0) and +0.3 (4.9). The lognormal reads +4.0 and the data
+  reject it (negative log-likelihood 64 to 183 units worse than the gamma on every pack).
+- The open residue is the current reproduction number's window and estimator: from the growth rate over 42 days
+  it is the golden, over 28 days -0.1 with sd 7.4, the renewal ratio over the same 42 days +0.6 with sd 3.0. That
+  is a knob, not the stump, so the window is filed (the six weeks to 11 October, weeks 36 to 41) and the spread of
+  the two estimators on that window is measured on the cut pack before the rounding is set.
+- Dispersion: the decisive quantity is a delay distribution's location; the parametric forms the data do not
+  reject agree within 0.5 per cent and the nonparametric estimator within 0.1.
+- Variance-only: the step moves the point (a quarter of the figure), it does not widen an interval.
+- Common-exposure subset: the subset already complete, sources old enough that every case they caused has fallen
+  ill, lands within its own sampling noise; choosing it means filtering on the source's onset, which is the
+  decisive step itself. On the case's clock (the reflex) it lands the default.
+- Truncation direction: the cut-off hides the top of the interval distribution (the long intervals), which is the
+  case the screen keeps alive.
+- Literature reflex: plugging in the West African 2014 serial interval (15.3 days, sd 9.3) lands +30 per cent;
+  the planning note files that the projection rests on this outbreak's own chains.
+- `guard.py slots --driver`: vocabulary hits only (task194, task190, task253, task117, task501); no slot records
+  a truncated delay distribution or a serial interval dying.
+
+## Default path
+
+1. Daily onsets of confirmed and probable cases from the line list (suspects discarded after testing left out, a
+   case notified twice kept once), complete to 11 October.
+2. The serial interval from every source-to-case pair in the chain register: onset of case less onset of source,
+   gamma fitted (mean about 11.5 days).
+3. The current reproduction number from the growth of onsets over weeks 36 to 41 through that interval (about 1.6).
+4. The renewal equation forward from 12 October, the reproduction number cut by 40 per cent for cases with onset
+   from 2 November, cases summed over weeks 49 to 52.
+
+Ends on: to be measured on the cut pack (about a quarter under the golden in every screened outbreak)
+Golden: to be measured on the cut pack
+
+## Stump sentence
+
+A competent analyst fits the serial interval to every source-to-case pair in the chain register, takes the
+reproduction number from the growth of onsets over weeks 36 to 41, cuts it by 40 per cent from 2 November and
+projects about a quarter too few cases for weeks 49 to 52, because the register holds a pair only once its case has
+fallen ill, so September's and October's sources appear only with the cases they infected quickly; read against
+the time each source had to the cut-off, the pairs give the longer interval the chains run on, a higher
+reproduction number and a December that holds instead of falling away.
+
+## First-cell record
+
+**First cell (2026-10-18).** New, Forecasting, seed FC50. The world was
 moved honestly off `local_government`: a private ambulance company holds a city's 911 ambulance contract (the city
 stays as the contract's counterparty) and decides its own summer surge pool, ten medic units for the weekend
 20:00 to 24:00 block from June to August, any it does not need offered to the county's mutual-aid roster for the
@@ -253,8 +388,6 @@ candidate touches them.
 
 ## Resume
 
-Do not re-screen anything above, in either cell. The first cell's binding finding is the sigma floor of one evening's
-percentile; the redraw cell's is that every structural judgment beyond the textbook macro time-series routes is a
-driver on file by abstraction or carries a golden whose own sigma or family split is the size of its lever. Nothing is
-registered and nothing is cut. The main session decides a second cell for the number under the round's retirement
-rule (a number that dies in its second new cell is retired).
+Architecture v2 drawn 2026-10-21. Next: the generator's world and pack, the measured default and golden on the cut
+pack, the asks and their devices, then the stage 2 sections (three rules, readability screen, fork table, ladder,
+closure table, literal reader, oracles, ask sheet) and `precut.py`.

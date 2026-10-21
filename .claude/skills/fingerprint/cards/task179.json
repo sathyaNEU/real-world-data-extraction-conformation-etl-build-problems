@@ -1,0 +1,93 @@
+{
+  "task": "task179",
+  "architecture": "v2",
+  "drawn": "2026-10-21",
+  "slot_note": "redraw, second new cell this round: the ambulance surge pool (v1, never carded) and the macro-econometrics cell are spent without a card; see the design note's Tried and rejected",
+  "domain": "epidemiology-public-health",
+  "subdomain": "infectious-disease-transmission-modeling",
+  "niche": "a medical humanitarian organisation running Ebola treatment centres in Equateur province projecting December's cases under the provincial response plan's central scenario, from the outbreak's own line list and contact-tracing chain register",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who dedups the line list, fits the serial interval to every source-to-case pair in the chain register, takes the reproduction number from the six weeks' growth, cuts it by the plan's 40 per cent from 2 November and runs the renewal equation forward files about a quarter too few cases for weeks 49 to 52, because the register holds a pair only once its case has fallen ill, so September's and October's sources appear only with the cases they infected quickly and the interval read off it is short.",
+  "domain_test": "The deciding quantity is the outbreak's generation interval estimated from transmission pairs that are right-truncated at the extract while incidence grows, which is how infectious-disease modellers turn a growth rate into a reproduction number and project under a control scenario; swap in hospital admissions or shipments and there is no chain of who infected whom, no interval between linked onsets and no renewal equation, so the task stops reading.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "epidemiology-public-health/infectious-disease-transmission-modeling/1",
+  "layer1": [
+    "mixed date formats between field forms and laboratory exports",
+    "a case notified in two health zones under two case numbers",
+    "suspect cases later discarded left in the line list with their final classification",
+    "probable cases from community deaths",
+    "chain links entered with a certainty grade",
+    "French field labels beside an English data dictionary",
+    "a weekly situation report counting by notification week, not onset week"
+  ],
+  "stakeholder_role": "the organisation's medical planning lead for the Equateur response",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per episode",
+  "spine": {
+    "file": "liste_lineaire_mve_equateur_2026-10-18.csv",
+    "rows": 0,
+    "entity": "one notified suspect, probable or confirmed Ebola case",
+    "grain": "case",
+    "source": "synthetic"
+  },
+  "forum": "operations_desk",
+  "forcing_event": "incident_or_complaint",
+  "org_family": "hospital_or_health_provider",
+  "world": {
+    "geography": "Democratic Republic of the Congo (Equateur province)",
+    "currency": "USD",
+    "org_type": "international medical humanitarian organisation running Ebola treatment centres",
+    "invented_names": [
+      "Action Sante Lulonga"
+    ],
+    "people": [
+      "Valérie François",
+      "Thibaut Hebert",
+      "Colette Chauveau"
+    ]
+  },
+  "deliverables": [
+    "projection_mve_s49_s52.xlsx",
+    "courbe_projection_mve.svg"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "An interval between two linked events, read from the pairs a record holds at its cut-off, is shorter than the interval the process runs on while the process is growing, because a pair enters the record only once its later event has happened and the pairs still open at the cut-off are the long ones from the recent and most numerous earlier events; the reproduction number taken from the growth rate on the record's interval is too low, so a projection under a planned cut in transmission falls away too fast.",
+  "driver_concrete": "Each source-to-case link enters the chain register only when the infected contact falls ill and is notified, so at the 18 October extract the cases of September and October are listed only with the contacts they infected quickly; the serial interval read off the register's pairs is shorter than the one the chains run on once each pair is read against the time its source had for a case to appear, the reproduction number from the six weeks' growth comes out too low, and the projection under the plan's 40 per cent cut shows weeks 49 to 52 falling away when they hold.",
+  "stump": "A competent analyst fits the serial interval to every source-to-case pair in the chain register, takes the reproduction number from the growth of onsets over epidemiological weeks 36 to 41, cuts it by 40 per cent from 2 November and projects about a quarter too few cases for weeks 49 to 52, because the register holds a pair only once its case has fallen ill.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task98": "task98 v6 counts units leaving a score class by an improvement step read from treated and untreated twins in a flow model; here nothing crosses a threshold, the decisive quantity is a delay distribution read from linked pairs that the extract truncates while incidence grows, and it enters through a renewal equation",
+    "task468": "task468 v2 and v3 apply cost and persistence by each active unit's own time since start or since its current spell; here no unit's duration conditions its outcome, the record's pairs are a growth-weighted, right-truncated sample of one transmission interval, corrected by reading each pair against the time its source had at the cut-off",
+    "task126": "task126 splits units joined by a succession link that a certifying corpus blesses; here no units are joined or split, and the decisive step is a delay distribution corrected for right truncation at the extract",
+    "task138": "task138 rebuilds each unit's store at the forecast date from its inputs at the share that reaches the store, identified from monitored units; here there is no store or balance, the record's linked pairs are a truncated sample of one interval and the correction reads each pair against its source's time to the cut-off",
+    "task82": "task82 attributes one-off keyed records to holders through a second system's ledger and a transaction reference; here nothing is attributed or joined across systems, and the step is estimating an interval distribution under truncation"
+  },
+  "lineage": [],
+  "notes": "org_family hospital_or_health_provider: the organisation is a non-governmental medical humanitarian operator whose function here is running treatment centres; nonprofit_or_charity is in the live window (task486), and the health-provider key is the reviewer's reading of what it does in this build. Redrawn under the lock on 2026-10-21 after task178 entered the window: the decisive generator moved from G13 to G3 (record versus operation: the register's intervals against the transmission process's), which is as honest a reading of the step, G13 kept second; the context artifact moved from the provincial situation report (published_series) to the treatment centres' weekly bed-capacity report (capacity_report), which the planning lead works from and the pack ships either way; the chart moved to SVG.",
+  "registered": "2026-10-21T01:20:07Z"
+}
