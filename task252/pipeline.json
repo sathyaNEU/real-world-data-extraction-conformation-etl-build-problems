@@ -1,37 +1,30 @@
 {
  "task": "task252",
  "owner": "perssathya",
- "status": "PAUSED",
+ "status": "DESIGN",
  "domain": "physical-environmental-sciences",
  "objective": "data-quality-monitoring",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-21",
- "stump": "A competent solver fits each treated channel's carryover from the two ports before it, reads Holmedale's and Calderwood's low checks as span errors because both raw ports read about as low against the laboratory's raw grabs as their checks do, and flags HOL-FW1 beside BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1; with Holmedale's raw port carryover taken out its grabs show a constant 0.008 zero error that cancels HOL-FW1's carryover, so the list is the six.",
- "architecture": 1,
- "loops": 3,
+ "stump": "A competent solver fits each analyser's carryover from both slots before, reads Holmedale's check shortfall as a zero error and Calderwood's as a span error from the raw pairs, and flags BRN-FW1, DUN-FW1, ELS-FW1, GAR-FI1, GAR-FW1 and HOL-FI1, leaving CAL-FI1 at about +0.001; the filtered sample lines at Calderwood and Holmedale lose ammonia to a biofilm each monthly line flush clears, which the readings' recovery after the flushes measures: with it HOL-FI1 sits inside the band and CAL-FI1 reads about 0.010 low.",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-21"
+  "exit": null,
+  "date": null
  },
  "leak": {
-  "leak_py": "REVIEW (4 lines, no LEAK)",
-  "reader": "rounds 1 and 2: all four readers missed the call (the seven twice, the five twice); questions 1 to 4 none"
+  "leak_py": null,
+  "reader": null
  },
  "duplicate_check": {
-  "heart": "PASS (people WARN: Caleb, task196, answered in the Draw)",
-  "nearest": "task91 0.09"
+  "heart": null,
+  "nearest": "task252 v1 (lineage) 0.16; task251 v1 0.09"
  },
- "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE",
-  "round": 4,
-  "gate_g": "method_or_model_selection, analytical_non_defect",
-  "gate_h": "domain pass, layers pass, decisive_step analytical",
-  "report": "determinism_check_report.md"
- },
+ "judge": null,
  "returned": [],
- "resume": "Architecture 1 spent at stage 4 round 4 (reader H landed the six with a full carryover model and the two-point read on the raw pairs; reader G missed by the slot before only). Next: architecture 2 drawn fresh at stage 1 from the design note's '## Candidates for architecture 2' (the author's standing instruction: spent builds are rebuilt fresh, never retired unasked), with call-only probe readers before the full build; the ask layer's shape carries over (the analyser clock bracketed by reception and release held ask A at 0 of 8 for both round 4 readers; the lost signals held ask B against reader G only).",
+ "resume": "Architecture 2 drawn 10-21 (the filtered sample lines' loss read from the recovery after each monthly line flush; ask B re-sited with the storm-night stops found by the sequence's restart). The prototype in scratch (t252a2/gen) is the source for the repo port: params (FOUL, FIL_LIFT, STORMS, SEED_TRIP), sim (phase-aware sequence, _trips, earlier_visits, flush loss), records (trip F rows, storm rainfall), build (planned maintenance sheet), docs (own sample lines), solve (labels, visits, recovery, recovers, restarted), pair (reader H's path). Next: port, checks and verify for the line and the trips, write-up and goldens, precut, stage 3 gates, stage 4.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -78,6 +71,10 @@
   {
    "date": "2026-10-21",
    "event": "stage 4 round 4 on target.zip f52cad28: judge DETERMINISTIC APPROVE (Gate G method_or_model_selection, Gate H pass); reader H landed the call (carryover from both slots before, zero and span read from the raw pairs) and ask B 8 of 8, ask A 0 of 8; reader G filed HOL-FW1 for GAR-FW1 (the slot before only), asks 0 of 16. A call any reader lands is spent: architecture 1 spent at stage 4"
+  },
+  {
+   "date": "2026-10-21",
+   "event": "architecture 2 drawn: probes on two prototype packs (pack 1's loss on lines whose grabs show it read off the lab pairs by probes A, B and C; pack 2's on the two censored filtered lines missed by probes D and F, E returned nothing); retuned so every licensed recovery form files the same six; ask B's storm-night stops added (reader H's rule misses every plant); card registered (guard WARN: own lineage 0.16, Caleb)"
   }
  ]
 }
