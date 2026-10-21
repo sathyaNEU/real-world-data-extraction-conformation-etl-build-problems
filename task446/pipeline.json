@@ -11,7 +11,7 @@
  "loops": 0,
  "leak": {
   "leak_py": "REVIEW, no LEAK (2026-10-21, --asof 2026-10-08, cut 06a4c8d5); every REVIEW line answered in the design note's Leak sweep",
-  "reader": "round 1 (cut 72419f5f): readers A and B both filed 64 (call missed, question 6 analytical) and kept 18 of 34 ask figures (52.9 per cent, score_reader exit 1): DV-C was resolved by 2.2 for anyone building member sets; ask primary re-sited to DV-D (facilities booked twice beside genuine same-day tranches). Round 2 (cut 06a4c8d5): readers C and D in flight"
+  "reader": "round 1 (cut 72419f5f): readers A and B both filed 64 (call missed, question 6 analytical) and kept 18 of 34 ask figures (52.9 per cent, exit 1): DV-C was resolved by 2.2 for anyone building member sets; the ask primary re-sited to DV-D. Round 2 (cut 06a4c8d5): readers C and D both filed 64 (question 6 analytical) and kept 5 and 2 of 34 ask figures (14.7 and 5.9 per cent, exit 0); neither noticed the facilities booked twice"
  },
  "duplicate_check": {
   "heart": "WARN (question form repeats task272, answered in the note); test.same_puzzle_older and test.same_driver_older differentiated. An earlier BLOCK on forum and forcing event against task486 v2 was cleared by redrawing both in the pack (executive_team, period_close) and re-registering at 05:35Z",
@@ -98,7 +98,7 @@
  "status": "PAUSED",
  "owner": "oviya1301",
  "author_decision": "2026-10-12: kept as SHIPPED at the author's request; the FAILED_TO_STUMP rework (redesign) is not done and the portal record below is unchanged",
- "resume": "stage 4 round 2 on target.zip sha256 06a4c8d5: two fresh scored readers (C and D) and the determinism re-judge. On their reports: score each reader with score_reader.py task446 <reader.json> --call-key call.caseload (a call hit spends the architecture; 35 per cent or more of ask figures re-sites again), complete the judge agent's pass with the thread's verdict.md, confirm the full checks run green, then RESHIPPED: target.zip from the final build, heart re-read after the final pull, the ledger's v2 row moved to Earlier architectures and a v3 row added. If the session's scratch is lost, re-run stage 4 from scratch on the committed pack.",
+ "resume": "stage 4 round 2: both readers scored (call missed, asks 14.7 and 5.9 per cent); the determinism re-judge thread is in flight on /tmp/determinism-check-task446-r3 (brief and unzip there). On its verdict: complete the judge agent's pass with verdict.md so it writes determinism_check_report.md; if it rules that 5.2's window sentence licenses the pooled flagged rate, re-word or withdraw the sentence and re-judge; else RESHIPPED with target.zip as cut (sha256 06a4c8d5), heart re-read after the final pull, the ledger's v2 row moved to Earlier architectures and a v3 row added.",
  "precut": {
   "exit": 0,
   "date": "2026-10-21"

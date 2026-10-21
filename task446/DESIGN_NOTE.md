@@ -422,6 +422,17 @@ the extract log; question 5 quoted 5.2 and gave each reader's own forecast as it
 on one 213800 prefix, formulaic entity names, round limits, the fourteen ungrouped Irish customers alike, the
 extract log's "no breaks" beside 1 October starts; none moves a figure and none is on the decisive step.
 
+**Solver's-eye read, stage 4 round 2** (two fresh isolated scored readers on the DV-D cut, sha256 06a4c8d5): both
+filed 64 again and named the decisive step an analytical choice (question 6). Reader C kept 5 of 34 ask figures
+(14.7 per cent: 913, 165, the under GBP 5m band's groups and flags, and one coincident arriving figure) and reader D
+2 of 34 (5.9 per cent: 913 and 165), score_reader exit 0 for both; neither noticed the facilities booked twice
+(reader D's total committed exposure is the copies-kept reading, GBP 25,943.2m). Both quoted 5.2's window sentence
+for question 1 and gave their own pooled two-class forecast (64) as 5.2's literal result for question 5; the sentence
+names the cohorts, not a segmentation, and the judge settles what it licenses. Realism notes: the extract dated 30
+September but run on 1 October (the log says so), lower-case LEI keys in the signal file (Layer 1 texture), the 21
+joint ventures noticed by reader D as customers booked away from their GLEIF parent (the DV-C hazard), uniform LEI
+prefixes; none moves a figure.
+
 ## Pre-ship check
 
 1. Domain: group credit monitoring's own reading of an early-warning flag (where in the obligor group it sits); with
