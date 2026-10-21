@@ -1,0 +1,116 @@
+{
+ "ask_a": [
+  {
+   "date": "2026-10-28",
+   "level_ft": 14.68,
+   "rank": 1
+  },
+  {
+   "date": "2018-01-04",
+   "level_ft": 14.64,
+   "rank": 2
+  },
+  {
+   "date": "2024-01-13",
+   "level_ft": 14.59,
+   "rank": 3
+  },
+  {
+   "date": "2018-03-02",
+   "level_ft": 14.32,
+   "rank": 4
+  },
+  {
+   "date": "2022-12-23",
+   "level_ft": 14.27,
+   "rank": 5
+  }
+ ],
+ "ask_b": {
+  "2017": {
+   "at_street_level": 24,
+   "closures": 30
+  },
+  "2018": {
+   "at_street_level": 36,
+   "closures": 42
+  },
+  "2019": {
+   "at_street_level": 33,
+   "closures": 47
+  },
+  "2020": {
+   "at_street_level": 30,
+   "closures": 36
+  },
+  "2021": {
+   "at_street_level": 20,
+   "closures": 26
+  },
+  "2022": {
+   "at_street_level": 18,
+   "closures": 30
+  }
+ },
+ "bracket_offset_ft": 0.08,
+ "call_below_ft": 11.35,
+ "call_deck_ft": 11.6,
+ "call_expected_at_deck": 0.4,
+ "call_expected_below": 2.3,
+ "default_by_setting": {
+  "10.60": 30.7,
+  "10.85": 22.4,
+  "11.10": 16.5,
+  "11.35": 11.0,
+  "11.60": 7.4,
+  "11.85": 4.4,
+  "12.10": 2.1,
+  "12.35": 0.9,
+  "12.60": 0.1
+ },
+ "default_deck_ft": 12.35,
+ "default_expected_at_deck": 7.4,
+ "design_msl_ft": 5.4,
+ "epoch_msl_ft": 5.12,
+ "expected_by_setting": {
+  "10.60": 24.5,
+  "10.85": 14.7,
+  "11.10": 7.1,
+  "11.35": 2.3,
+  "11.60": 0.4,
+  "11.85": 0.1,
+  "12.10": 0.0,
+  "12.35": 0.0,
+  "12.60": 0.0
+ },
+ "rival_picks": {
+  "2008 and 2009 seasons at 2027 sea level": 12.1,
+  "GEV on season maxima at 2027 sea level": 12.35,
+  "Poisson trend on counts": 12.6,
+  "climatology at 2027 sea level": 12.35,
+  "highest predicted tide plus a once-in-the-window surge": 12.1,
+  "last season (2026)": 12.1,
+  "last three seasons": 12.6,
+  "linear trend on counts": 12.35,
+  "peaks over threshold (GPD) at 2027 sea level": 12.35,
+  "pooled all-month surges (tide-aware)": 11.6,
+  "surges not moved off each year's sea level (tide-aware)": 11.85
+ },
+ "schedule_ft": [
+  10.6,
+  10.85,
+  11.1,
+  11.35,
+  11.6,
+  11.85,
+  12.1,
+  12.35,
+  12.6
+ ],
+ "season_skew_surges": 3756,
+ "stnd_1995_below_mllw_ft": 4.21,
+ "stnd_2026_below_mllw_ft": 4.09,
+ "street_level_ft": 11.8,
+ "window_high_waters": 118,
+ "window_highest_predicted_ft": 11.1
+}

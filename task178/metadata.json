@@ -1,0 +1,201 @@
+{
+ "task": "task178",
+ "title": "The lowest deck elevation for a Maine city's April to May 2027 wharf-rebuild work trestle that high water is expected to reach on no more than one tide",
+ "domain": "Physical & Environmental Sciences",
+ "client_domain": "Physical & Environmental Sciences",
+ "subdomain": "climate and weather extremes (coastal extreme water levels: the expected number of high waters reaching each candidate deck elevation over a known April to May 2027 window)",
+ "objective": "Forecasting & Predictive Modeling",
+ "prompt_shape": "one dial (the deck elevation on a nine-step pile schedule) with the expected tides at the chosen elevation and the one below; five survival tides with dates and levels; six years of street closures with those at the street's flooding level; a bar chart over the schedule",
+ "as_of": "2026-12-08",
+ "deliverables": [
+  "granite_wharf_trestle_deck.xlsx",
+  "trestle_deck_exposure.png"
+ ],
+ "distractor_files": [
+  "airport_daily_weather_2015-2026.csv",
+  "pennock_river_daily_flow_2015-2026.csv",
+  "harbormaster_tideboard_hourly_2015-2026.csv"
+ ],
+ "distractors": [
+  {
+   "file": "airport_daily_weather_2015-2026.csv",
+   "wrong_basis": false,
+   "why_relevant": "wind and pressure drive the storm surge on top of the tide",
+   "why_unused": "the surge the forecast needs is measured at the gauge itself; no figure reads the airport record",
+   "ruled_out_by": "the design basis sets every level at the gauge"
+  },
+  {
+   "file": "pennock_river_daily_flow_2015-2026.csv",
+   "wrong_basis": false,
+   "why_relevant": "the river's April snowmelt peak falls in the work window",
+   "why_unused": "the gauge's readings already carry whatever the river adds at Cutler Wharf; no figure reads it",
+   "ruled_out_by": "the design basis sets every level at the gauge"
+  },
+  {
+   "file": "harbormaster_tideboard_hourly_2015-2026.csv",
+   "wrong_basis": false,
+   "why_relevant": "the harbormaster's own hourly readings of the water on the same pier",
+   "why_unused": "the design basis and both asks take the gauge's readings; the board is hourly on its own zero",
+   "ruled_out_by": "the design basis section 2 (the gauge's highest 15-minute reading)"
+  }
+ ],
+ "stated_inputs": [
+  "1 April to 31 May 2027",
+  "11.80 ft MLLW",
+  "three hours",
+  "2017 to 2022",
+  "10.60",
+  "10.85",
+  "11.10",
+  "11.35",
+  "11.60",
+  "11.85",
+  "12.10",
+  "12.35",
+  "12.60"
+ ],
+ "field_terms": [
+  "MLLW",
+  "high water",
+  "tide"
+ ],
+ "input_gates": {
+  "files": 13,
+  "formats": [
+   "csv",
+   "pdf",
+   "xlsx"
+  ],
+  "largest_file": "ptg_verified_15min_1995-01_2026-06.csv",
+  "largest_file_rows": 1104384
+ },
+ "sources": [
+  {
+   "files": "all files under target/",
+   "origin": "constructed for this task by task178/generator/build.py (seeded, deterministic) around a fictional Maine coastal city (Port Tessaly), its tide gauge, harbormaster's office and public works department. No real organisation's records or person is depicted. The tide predictions follow the real astronomy; the storms on the record are placed on the dates of real Gulf of Maine storms but their levels are constructed.",
+   "date": "2026-12-08",
+   "license": "CC0-1.0 (original work)"
+  }
+ ],
+ "created": "2026-10-21",
+ "generator": "task178/generator/build.py",
+ "files": [
+  {
+   "path": "airport_daily_weather_2015-2026.csv",
+   "format": "csv",
+   "bytes": 159375,
+   "rows": 4352,
+   "source": "Constructed for this task (seeded, deterministic): Port Tessaly municipal airport daily weather summary",
+   "date": "2026-12-08",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "dpw_street_closures_2016-2026.csv",
+   "format": "csv",
+   "bytes": 37876,
+   "rows": 451,
+   "source": "Constructed for this task (seeded, deterministic): City of Port Tessaly DPW, street closure work orders from its two work-order systems",
+   "date": "2026-12-08",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "export_manifest.csv",
+   "format": "csv",
+   "bytes": 1705,
+   "rows": 12,
+   "source": "Constructed for this task (seeded, deterministic): City of Port Tessaly DPW, export manifest",
+   "date": "2026-12-08",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "granite_wharf_trestle_design_basis.pdf",
+   "format": "pdf",
+   "bytes": 54411,
+   "rows": null,
+   "source": "Constructed for this task (seeded, deterministic): City of Port Tessaly DPW, Granite Wharf trestle design basis revision B",
+   "date": "2026-11-20",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "harbormaster_tideboard_hourly_2015-2026.csv",
+   "format": "csv",
+   "bytes": 2260166,
+   "rows": 101182,
+   "source": "Constructed for this task (seeded, deterministic): City of Port Tessaly harbormaster's office, hourly float tide board log",
+   "date": "2026-12-08",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "pennock_river_daily_flow_2015-2026.csv",
+   "format": "csv",
+   "bytes": 79526,
+   "rows": 4352,
+   "source": "Constructed for this task (seeded, deterministic): Pennock River at Tessaly Falls (fictional river gauge), daily mean discharge",
+   "date": "2026-12-08",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "port_tessaly_tide_tables_1995-2027.xlsx",
+   "format": "xlsx",
+   "bytes": 1130582,
+   "rows": 46668,
+   "source": "Constructed for this task (seeded, deterministic): City of Port Tessaly harbormaster's office, compiled annual tide tables 1995 to 2027 in three layouts. Predictions are computed from fictional harmonic constants with the standard astronomical arguments and nodal factors, so their timing follows the real Moon and Sun",
+   "date": "2026-10-01",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ptg_data_dictionary.xlsx",
+   "format": "xlsx",
+   "bytes": 11307,
+   "rows": 27,
+   "source": "Constructed for this task (seeded, deterministic): City of Port Tessaly DPW, data dictionary for the exports",
+   "date": "2026-11-30",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ptg_datum_sheet_rev2026-06.pdf",
+   "format": "pdf",
+   "bytes": 56751,
+   "rows": null,
+   "source": "Constructed for this task (seeded, deterministic): City of Port Tessaly DPW, PTG-01 datum sheet revision 2026-06",
+   "date": "2026-06-15",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ptg_station_log.xlsx",
+   "format": "xlsx",
+   "bytes": 7686,
+   "rows": 32,
+   "source": "Constructed for this task (seeded, deterministic): City of Port Tessaly DPW, PTG-01 station log",
+   "date": "2026-11-02",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ptg_telemetry_6min_2026-05_2026-11.csv",
+   "format": "csv",
+   "bytes": 1485600,
+   "rows": 51227,
+   "source": "Constructed for this task (seeded, deterministic): City of Port Tessaly DPW, PTG-01 provisional 6-minute telemetry feed",
+   "date": "2026-12-08",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "ptg_verified_15min_1995-01_2026-06.csv",
+   "format": "csv",
+   "bytes": 29219344,
+   "rows": 1104384,
+   "source": "Constructed for this task (seeded, deterministic): City of Port Tessaly DPW (fictional), tide gauge PTG-01 verified 15-minute water level, in the layout of a municipal data system export",
+   "date": "2026-12-08",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "sea_level_guidance_2026.pdf",
+   "format": "pdf",
+   "bytes": 56055,
+   "rows": null,
+   "source": "Constructed for this task (seeded, deterministic): City of Port Tessaly DPW, Sea Level and Coastal Flooding Guidance 2026 update",
+   "date": "2026-09-03",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  }
+ ]
+}

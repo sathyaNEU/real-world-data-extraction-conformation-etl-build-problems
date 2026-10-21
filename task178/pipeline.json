@@ -1,27 +1,27 @@
 {
  "task": "task178",
  "owner": "sathya8571",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "physical-environmental-sciences/climate-weather-extremes",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-21",
- "stump": "The seasonal peaks-over-threshold or count-trend route on April and May high waters, moved to 2027 sea level, expects about seven tides at 11.75 ft and files a 12.25 to 12.50 ft deck; the window's own predicted high waters with the season's skew surges expect about half a tide there and file 11.75 ft.",
+ "stump": "The seasonal exceedance rate of the record's April and May high waters at 2027 sea level (or a peaks-over-threshold rate, a GEV or a count trend) expects 7.4 tides at 11.60 ft and files a 12.35 ft deck; the window's own 118 predicted high waters with the season's skew surges expect 0.4 tides there and 2.3 at 11.35 ft, and file 11.60 ft.",
  "architecture": 1,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-21"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-21 (two lines, sweeps 3 and 9, answered in the design note's ## Leak sweep; no LEAK)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-10-21 (time_semantics strategy risk and Gate G repeat, answered in ## Draw)",
+  "nearest": "drivers task465 lineage 0.07, task228 lineage 0.06, task262 0.05; surface top pair task449 0.123"
  },
  "judge": {
   "verdict": "",
@@ -30,7 +30,7 @@
  },
  "returned": [],
  "wave": "redraw in a new cell (physical-environmental-sciences / climate-weather-extremes, Forecasting); FC49's world spent at stage 1",
- "resume": "stage 2: write the default path, stump sentence, three rules, readability screen, fork table, ladder, closure, literal reader, oracles, ask sheet and prompt.txt; precut.py exit 0; then stage 3 build (generator from scratchpad b178r/proto p13_dial.py)",
+ "resume": "stage 4: two scored readers and the judge",
  "approved": null,
  "delivered": null,
  "portal": null,

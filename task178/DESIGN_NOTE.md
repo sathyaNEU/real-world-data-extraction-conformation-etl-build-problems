@@ -1,8 +1,8 @@
 # task178 design note
 
-**Status: DESIGN (stage 2), architecture 1 of the redraw, card registered 2026-10-21.** The author redrew the
-number in a new cell after seed FC49's product-security world died at stage 1 (its record is kept below under
-`## FC49 screen record` and in `## Tried and rejected`). Cell, allocated by the main session:
+**Status: BUILD, stage 3 green (generator checks 84 of 84, verifier 19 of 19, two byte-identical builds, precut and figures_check exit 0, leak.py REVIEW answered, guard surface exit 0 and heart WARN), waiting on stage 4's two scored readers and the judge. Architecture 1 of the redraw, card registered 2026-10-21.** The author redrew the
+number in a new cell after seed FC49's product-security world died at stage 1 (its record is kept below, in the FC49 screen
+record and in the Tried and rejected list). Cell, allocated by the main session:
 physical-environmental-sciences / climate-weather-extremes, Forecasting. Organisation, decision, quantity and
 mechanism were searched inside the cell (prototypes in the session scratchpad, b178r/proto: p1 to p13).
 
@@ -15,12 +15,11 @@ mechanism were searched inside the cell (prototypes in the session scratchpad, b
   lineage) differentiated on the card, one line each.
 - **Pairing:** Physical & Environmental Sciences, task type `climate-weather-extremes` (F), never drawn before.
   The deciding quantity is an extreme-sea-level exceedance frequency in a coming window.
-- **World:** a fictional Maine coastal city (Merrow Harbor) rebuilding Granite Wharf from 1 April to 31 May 2027
+- **World:** a fictional Maine coastal city (Port Tessaly) rebuilding Granite Wharf from 1 April to 31 May 2027
   from a temporary work trestle; the waterfront project engineer sets the trestle deck elevation in the
-  construction documents before the piles are ordered. Allowed deck elevations 10.50 to 12.50 ft above MLLW at
+  construction documents before the piles are ordered. Allowed deck elevations 10.60 to 12.60 ft above MLLW at
   the harbor gauge in quarter-foot steps; the deck is set at the lowest elevation at which high water is expected
-  to reach it on no more than one tide in the window (exact settings and bar fixed on the cut pack so the golden
-  sits mid-bin).
+  to reach it on no more than one tide in the window.
 - **Shape:** 04, setting one dial: the expected number of tides reaching the deck at every allowed elevation,
   the committed elevation and the one below it; asks supply the rest (`## Ask sheet`).
 - **Strategy:** `time_semantics` (F1, the window the decision bets on), gap time, G13 then G7, Gate G
@@ -41,6 +40,201 @@ mechanism were searched inside the cell (prototypes in the session scratchpad, b
   or Poisson count trend 7.0 to 10.1, the last season 6 to 9, the last three 7.3 to 9.3, the 18.6-year analogs
   4.5 to 6.0; golden family (linear or recent-20-year surge base, GPD tail, per month) picks 11.75 ft in every
   seed, every route without the window's tide picks 12.25 to 12.50 ft.
+
+## Default path
+
+The field's textbook route for a design water level over a works window: an extreme-value or exceedance analysis of
+the gauge's own record for the window's months, trended to the year of the works.
+
+1. Read `ptg_verified_15min_1995-01_2026-06.csv` (V readings, station datum to MLLW at 4.21 ft) and the telemetry
+   after June 2026 (STND 2026), one ft MLLW series.
+2. Take each tide's high water in April and May of 1995 to 2026 (the highest reading of each tidal cycle, or the
+   reading at each tabled high water).
+3. Move each year's high waters to 2027 sea level with the guidance's annual means and its 5.40 ft design value.
+4. Count, for each pile schedule elevation, the high waters reaching it per season and average over the 32 seasons
+   (equivalently a peaks-over-threshold rate, a GEV on season maxima or a trend on the season counts).
+5. Take the lowest elevation the record expects to be reached on one tide or fewer: 12.35 ft (0.9 tides there,
+   7.4 at 11.60 ft).
+
+Ends on: 12.35 ft
+Golden: 11.60 ft
+
+## Stump sentence
+
+The seasonal exceedance rate of the record's April and May high waters, moved to 2027 sea level (or fitted as a
+peaks-over-threshold rate, a GEV or a count trend), expects 7.4 tides at 11.60 ft and files a 12.35 ft deck, because
+it averages over every spring's astronomical tides while April and May 2027 sit at the 18.6-year low of the
+semidiurnal tide with perigee at the quarter moons; summing the season's skew surges over the window's own 118
+predicted high waters expects 0.4 tides at 11.60 ft and 2.3 at 11.35 ft, so the deck is 11.60 ft.
+
+## Three rules
+
+Task type: physical-environmental-sciences / climate-weather-extremes (F): the frequency of an extreme water level over a coming window.
+Domain test: the deciding quantity is the expected number of high waters exceeding a level in a known window, built the way extreme-sea-level analysis builds it (the window's astronomical high waters joined to the season's skew-surge distribution); with hospital or grid nouns there is no forcing known years ahead under a weather residual, so the task stops making sense.
+Swap: "the lowest bed count at which admissions are expected to exceed capacity on no more than one night in April and May" reads, but nothing in a hospital is published a year ahead the way the tide is, so the decisive step has nothing to act on and the call collapses to the textbook route.
+Layer 1: the 15-minute export with its preamble on the 1995 station datum and quality flags (the city data system), the 6-minute telemetry in metres on the 2026 station datum (the telemetry feed), the tide-table workbook in three layouts with EST-only times to 2006 and the pre-2007 daylight rule (the harbormaster's office), the April 2026 week the sensor was off (pier repair), the legacy work-order system's UTC times and reset work orders (WOMS), mixed date formats across the two work-order systems; nothing is placed to be caught.
+Layer 2: field_method: the window's expected exceedances come from the window's own known astronomical high waters convolved with the season's skew surges, not from the record's exceedance rate however trended.
+Decisive step: conditioning the forecast on the published 2027 high waters, the tide being a deterministic forcing known for the window, and joining each to the April-May skew-surge distribution (observed minus predicted high water, moved off each year's sea level).
+Not semantics: every field, datum and unit read correctly (STND to MLLW, metres to feet, EST to UTC, the design sea level) the textbook exceedance route still files 12.35 ft; no column, code or definition carries the tide-surge split.
+Not rule application: no shipped sentence says to use the tide table for the forecast or how to combine tide and surge; the basis files only the window, the schedule, the bar, the gauge and the sea level, and executing those literally with the record's rate files 12.35 ft.
+Analyst test: the textbook seasonal exceedance route (peaks over threshold, or the season counts' climatology or trend, on the gauge's April and May high waters since 1995 at the 2027 design sea level) expects 7.4 tides at 11.60 ft and ends on 12.35 ft, three schedule steps too high.
+Estimand: granite_wharf_trestle_design_basis.pdf section 2: the expected number of tides between 00:00 on 1 April and 24:00 on 31 May 2027 at which the gauge's highest 15-minute reading reaches each schedule elevation, ft MLLW (1983-2001 epoch), at the guidance's 2027 design mean sea level; the deck is the lowest elevation with one or fewer.
+No decoy: no memo, draft, contractor figure or published design level ships; the guidance gives only the sea level, the datum sheet only datums, the basis only the WHAT; nothing in the pack names an elevation as the answer.
+No certified replay: no figure in the pack is produced by the golden method; the guidance's annual sea levels and the tables' predictions are inputs, and nothing certified is reproduced to recover a method.
+Lesson: a forecast over a short window of a quantity that is partly deterministic must be conditioned on the window's known part; the record's average exceedance rate is right only for an average window, and in tidal water the window is never average. No build on file teaches a known astronomical forcing under a stochastic residual.
+
+## Readability screen
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 0 season exceedance climatology at 2027 sea level (12.35 ft) | no | no | yes (the textbook route) | no | no | no | readable |
+| 1 trend or Poisson trend on season counts (12.35 to 12.60 ft) | no | no | yes | no | no | no | readable |
+| 2 recent seasons, last season, 18.6-year analogs (12.10 to 12.60 ft) | no | no | yes | no | no | no | readable |
+| 3 highest predicted tide plus a once-in-the-window surge (12.10 ft) | no | the tide table | partly | no | no | yes | readable |
+| 4 the window's predicted high waters with the season's skew surges (decisive) | no sentence names the tide or the surge | the tables are the harbor's routine archive, one sheet a year over 33 years, read by the default path to find high waters | not the textbook reflex for an exceedance count | no control ties to it | no | no: a sum of 118 conditional exceedance shares | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "expected to reach the deck on no more than one tide" | expected count at most one | at least even odds of no more than one tide (Poisson) | same call | same call |
+| SF2 | the window | local dates 1 April to 31 May 2027 | UTC dates | same call | same call |
+| SF3 | 2027 sea level | the guidance's 5.40 ft design value | the trend at end-2027 (5.42) | same call | basis section 2 names the design value; same call |
+| SF4 | which surges | April and May skew surges | every month's | same call | same call (and March surges run 0.27 ft higher at the 99th percentile, June lower) |
+| SF5 | the surge record's years | 1995 to 2026 | the last 20 years | same call | same call |
+| SF6 | moving surges off sea level | each year's guidance mean | the guidance trend line | same call | same call |
+| SF7 | May and June 2026 | verified | telemetry | same call | same call |
+| SF8 | a tide | every high water | daily higher high waters only | same call | same call; basis: "on no more than one tide" |
+| SF9 | 1995 to 2006 table times | EST all year (sheet header) | local daylight time | same call | the sheet header; the three-hour window holds every maximum |
+| SF10 | interpolated readings | dropped (quality I) | kept | same call | same call |
+| SF11 | the 2017-18 bracket offset | corrected for the asks | left in | same call | no April or May reading falls in it |
+| SF12 | telemetry datum | STND 2026 (datum sheet) | STND 1995 | same call | same call; datum sheet revision 2026-06 |
+
+## Ladder
+
+| Rung | Route | Deck | Tides expected at 11.60 ft | Dies to |
+|---|---|---|---|---|
+| 0 | season exceedance climatology at 2027 sea level (default) | 12.35 | 7.4 | the 2027 sheet's high waters |
+| 1 | linear or Poisson trend on season counts; POT GPD; GEV on season maxima | 12.35 to 12.60 | 3.1 to 8.0 | the same |
+| 2 | last season, last three seasons, the 2008 and 2009 analog seasons | 12.10 to 12.60 | 4 to 8.3 | the same; 2026's springs were weak in other weeks |
+| 3 | highest predicted 2027 tide plus a once-in-the-window surge | 12.10 | n/a | it sizes one tide, not the window's count |
+| 3b | the window's tides with surges not moved off each year's sea level | 11.85 | 1.3 | the guidance's annual means |
+| 4 | the window's 118 predicted high waters with the April-May skew surges (golden) | 11.60 | 0.4 (2.3 at 11.35) | |
+
+Position: the golden is the lowest of every route; every route that does not read the 2027 sheet sits two to four
+steps above it. Margin: at the golden's deck the default expects 19.6 times the golden's tides; the golden sits 2.6
+times under the bar and the next deck down 2.3 times over it. Every golden-family construction (annual or trend
+detrending, the last 20 years, telemetry for May and June 2026, per-month surges, a GPD tail) picks 11.60 and prints
+0.4 and 2.3; 200 resampled records keep the call 200 times, one sigma 0.03 and 0.08 tides. Grid: the only wrong
+cell below the golden is rung 3b's, above it. Worth: the decisive step moves the deck three steps.
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | the high waters in the window | basis section 2; C1 |
+| 2 | Unit of account | a tide (a high water) | basis "on no more than one tide"; SF8 same call |
+| 3 | Attribution window | 1 April 00:00 to 31 May 24:00 local | basis; SF2 same call |
+| 4 | As-of dating | the 2027 sheet issued 2026-10-01; record to 30 November 2026 | the pack's own dates |
+| 5 | Version basis | verified over telemetry where both exist | SF7 same call |
+| 6 | Denominator | each tide's share of surges reaching the gap | n/a for a count |
+| 7 | Weighting | each season surge equally | SF5, SF6 same call |
+| 8 | Window length | 1995 to 2026 surges | SF5 same call |
+| 9 | Boundary inclusivity | at or above the deck | basis "at or above"; no figure on an edge |
+| 10 | Rounding path | expected tides summed then printed to one decimal | prompt; edges 0.029 and 0.022 |
+| 11 | Tie-break | lowest elevation meeting the bar | basis "the lowest of these" |
+| 12 | Maturity and censoring | none open | n/a |
+| 13 | Order of operations | sea level moved before summing | additive, commutes |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | May and June 2026 in two files | SF7 same call |
+| 16 | Identity normalisation | high waters matched by time | three-hour window, C1 |
+| 17 | Netting against gross | none | n/a |
+| 18 | Dimensional units | feet MLLW; telemetry metres | datum sheet; SF12 |
+| 19 | Code and status semantics | quality V, I, M | dictionary; SF10 same call |
+| 20 | Integerisation | none on the call | n/a |
+| 21 | Clause scope | the one-tide bar over the whole window | basis section 2 |
+| 22 | Forward window contents | the 2027 sheet's 118 high waters | the tide-table workbook's 2027 sheet |
+
+## Literal reader
+
+Executed word for word, the basis files the window, the schedule, the gauge, the 15-minute reading and the 2027
+design sea level, and asks for an expected count; it leaves the method open. Every literal reading of its terms
+(SF1 to SF12) gives 11.60 ft from the golden method, and the default path's 12.35 ft comes from an easier method on
+the same literal estimand, never from another reading. The asks' terms: "the five tides the survival check takes"
+reads basis section 3 (no two within three days; no pair of candidates sits between two and four days apart),
+"each closure counted once" is forced by the records (a reset work order opens within three hours of the previous
+order's closing; consecutive tides' closures sit seven hours or more apart), and the legacy times' clock is forced by
+the records (read as UTC they lead high water by a median 1.1 h as the new system's do by 1.3 h; read as local they
+trail it by 3.0 h).
+
+## Oracles
+
+none. No control, published figure or reconciliation ties under one route only: the guidance's annual means and
+design sea level are inputs every route uses; the tide tables are predictions every route may read; nothing
+publishes an expected count, a design water level or a past project's deck.
+
+## Ask sheet
+
+Criteria: the deck (1), the two expected counts (2), the design sea level component (1), ask A's ten cells (five
+dates and five readings), ask B's twelve cells (six years by closures and closures at 11.80 ft), the chart (the
+bars, the line, the marked deck: 2), the two files (2): 30.
+
+- Ask A, the survival check's five tides (basis section 3): rows are every high water from November 2016 to
+  November 2026 in the verified record and the telemetry; the call reads only April and May high waters, none of
+  them inside either device's rows (asserted, SEP). H18: the trestle frame's survival case.
+  A1 (D2, primary, split evidence): from the bracket's re-securing at 1500 on 30 October 2017 to the sensor reset at
+  1430 on 12 March 2018 the verified readings run 0.08 ft low (station log entries and the datum sheet's levelling
+  row; nothing joins them), so the January and March 2018 storms read low.
+  A2 (D3, primary): the telemetry is on STND 2026, 0.12 ft above the station datum of the verified export (datum
+  sheet revision 2026-06; the May and June 2026 overlap shows it), so the October 2026 storm reads low on the
+  verified export's offset.
+  Stops: the careful path (neither found) ranks 2024-01-13, 2026-10-28, 2018-01-04, 2022-12-23, 2018-03-02 at 14.59,
+  14.56, 14.56, 14.27, 14.24 and misses all ten cells; with A1 alone it keeps 4, with A2 alone 2.
+- Ask B, Front Street flooding closures 2017 to 2022 and those with the gauge at 11.80 ft within three hours of
+  the start: rows are DPW's work orders, which the call never reads, and the gauge's readings at the closures'
+  starts (Front Street floods at 11.8 ft, far above any April or May reading the call's counts turn on, and the
+  call reads the gauge only at April and May high waters). H18: the access allowance in the schedule (basis section 4).
+  B1 (D1, primary): WOMS opened a second work order when barricades were reset on the same flooding, 40 to 170
+  minutes after the first was closed, under a new number in the year's running sequence; counting work orders adds
+  7, 9, 13, 11, 3 and 8.
+  B2 (D8, primary, split evidence): WOMS (to June 2023) stored times in UTC with no zone in the export, PWWorks in
+  local time; read as local, the legacy closures' three-hour windows miss the high water and the at-11.80 counts fall
+  to 18, 22, 22, 18, 17 and 10 (asserted: read as UTC the legacy closures lead high water as the new system's do).
+  Hazards: the bracket offset (A1) on the 2017-18 winter readings, mixed date formats across the systems, other
+  streets' FLOOD orders, HM-requested closures.
+  Stops: the careful path misses all twelve cells; with B1 merged it keeps the six closure counts; with B2 alone, 1.
+- Zero device rows in the call's population: no April or May reading in the bracket window, no April or May
+  telemetry after the verified product, no work order in the call (asserted).
+
+Pair ceiling: 28.5 (the cracker on the call keeps 0 of 22 ask cells; credited with its best single device, the reset
+work orders merged, it keeps 6 for 36.0; both top responses on the call with no device found, 45.0)
+Mirror leakage: 0.0 per cent of ask weight
+Measured by: generator/cracker.py
+
+| Ask | Cracker sheet (every datum the datum sheet states for the file read, work orders as listed, each system's times as wall clock) | Hits | Verdict |
+|---|---|---|---|
+| Ask A, five dates | highest readings on the verified export's offset, telemetry on STND 1995 | 0 of 5 | miss |
+| Ask A, five readings | the same | 0 of 5 | miss |
+| Ask B, closures, six years | one closure per work order | 0 of 6 | miss |
+| Ask B, at 11.80 ft, six years | legacy times read as local | 0 of 6 | miss |
+
+
+## Leak sweep
+
+`leak.py` REVIEW, two lines, both answered. Sweep 3: the design basis carries every word of the committed call
+because it is the WHAT (the trestle, the pile schedule, the deck elevation in ft MLLW); the schedule's nine
+elevations are declared stated inputs in `metadata.json`, and the basis names none of them as the answer. Sweep 9:
+the tide-table workbook carries 2027 dates after the 8 December 2026 setting because it publishes the 2027
+predictions, issued on 1 October 2026 like every year's sheet. No decisive vocabulary (skew surge, joint
+probability, nodal, perigee, astronomical) appears in any shipped file (asserted in `checks.py`).
+
+## Guard
+
+`guard.py check` on the registered card and `heart`: WARN. The time_semantics strategy risk is answered by the
+analyst test (no field, code or definition flips the call); the Gate G repeat (forecasting, task479) is the lane's
+objective with a different mechanism; the structural tests are differentiated on the card against task461,
+task102, task130's and task134's and task501's lineages and task162. `surface`: exit 0, top pair task449 at 0.123
+(one CSV column set and the decision type); the one "persona" it lifted was a street name, since renamed.
 
 ## FC49 screen record (world spent, kept for the record)
 
@@ -228,3 +422,14 @@ none is touched by either candidate.
     rung.
   - A macrotidal estuary site: rejected on paper (p3): the tide is so dominant that every reader opens the tide
     table first.
+- **Ask B, first form: a dispatcher's call record beside each crew closure from 2022** (D1). Dropped on paper: the
+  source column names the dispatcher, so a careful reader drops those rows by reading it; and the new system's
+  years carried no second device, so 2019 to 2026 left five years' cells to the careful path. The ask moved to
+  2017 to 2022, all on the legacy system, where the reset work orders and the UTC clock move every cell.
+- **Ask A, first form: a storm-peak outage on the primary, the peak on the harbormaster's tide board** (D4).
+  Dropped on paper: whether the board's reading is "at the gauge" is a fork the survival definition cannot close
+  without naming the board, which announces the device. The outage was removed; the board ships as a distractor.
+- **Names near a real waterfront.** The first cut used a Commercial Street, a Union Wharf, a Marginal Way and a
+  Custom House on a Maine harbour (Portland's own) and a city name shared with a real village; renamed before any
+  reader saw the pack (`reduce-house-fixes` H21).
+

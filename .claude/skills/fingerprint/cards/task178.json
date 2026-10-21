@@ -6,13 +6,13 @@
   "domain": "physical-environmental-sciences",
   "subdomain": "climate-weather-extremes",
   "client_domain": "physical-environmental-sciences",
-  "niche": "a Maine coastal city's waterfront engineering office setting the deck elevation of the temporary work trestle for an April to May 2027 wharf rebuild, so that high water is expected to reach the deck on no more than one tide, at a harbor gauge where the extreme levels come from perigean spring tides plus storm surge",
+  "niche": "a Maine coastal city's (Port Tessaly) waterfront engineering office setting the deck elevation of the temporary work trestle for an April to May 2027 wharf rebuild, so that high water is expected to reach the deck on no more than one tide, at a harbor gauge where the extreme levels come from perigean spring tides plus storm surge",
   "objective": "forecasting",
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "11.60 ft MLLW (0.4 tides expected to reach the deck from 1 April to 31 May 2027; 2.3 at 11.35 ft)",
+  "answer_source": "task178/generator/calc.py golden() on the cut pack; generator/figures.json call_deck_ft, call_expected_at_deck, call_expected_below",
   "gap": [
     "time"
   ],
@@ -31,23 +31,23 @@
   "validated_decoy": false,
   "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "The textbook seasonal extreme-value route (peaks over threshold, or a trend on counts, on the gauge's April and May high waters since 1995, moved to 2027 sea level) expects about seven tides at 11.75 ft and sets the deck two or three quarter-foot steps too high, because it averages over the tidal cycles while April and May 2027 sit at the 18.6-year low of the semidiurnal tide with perigee falling at the quarter moons.",
+  "analyst_test": "The textbook seasonal extreme-value route (peaks over threshold, or the season counts' climatology or trend, on the gauge's April and May high waters since 1995 at the 2027 design sea level) expects 7.4 tides at 11.60 ft and ends on 12.35 ft, three schedule steps too high, because it averages over every spring's tides while April and May 2027 sit at the 18.6-year low of the semidiurnal tide with perigee at the quarter moons.",
   "domain_test": "The deciding quantity is the expected number of high waters exceeding a level in a known window, built the way coastal extreme-sea-level analysis builds it from the window's astronomical high waters and the season's skew surges; with hospital or grid nouns there is no forcing known years ahead and no surge on top of it, so the task stops making sense.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:skew-surge-joint-probability-over-a-known-tidal-window",
   "layer1": [
-    "a 15-minute gauge record in UTC on the station datum with quality flags, gaps and a documented sensor replacement offset",
-    "a preliminary recent extract overlapping the verified record",
-    "a tide-table workbook whose layout changes across years, in local time with daylight saving, heights in feet above MLLW on the 1983-2001 epoch",
-    "a datum sheet relating station datum, MLLW, MSL and NAVD88",
-    "feet against metres across the city's and the gauge's files"
+    "a 15-minute verified export with a preamble, on the 1995 station datum, quality flags V, I and M, a week missing for the April 2026 pier repair",
+    "a 6-minute provisional telemetry feed in metres on the 2026 station datum, overlapping the verified export in May and June 2026",
+    "a tide-table workbook in three layouts across 33 years, Eastern Standard Time all year to 2006 and local EST/EDT under each year's daylight rule after",
+    "a datum sheet relating STND 1995, STND 2026, MLLW, MSL and NAVD88 on the 1983-2001 epoch",
+    "work orders from two systems (one storing UTC with no zone, one local time) with different date formats and reset work orders on the same flooding"
   ],
   "stakeholder_role": "the city's waterfront project engineer, who sets the trestle deck elevation in the wharf rebuild's construction documents",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "harbor_gauge_15min_1995-2026.csv",
-    "rows": 1100000,
+    "file": "ptg_verified_15min_1995-01_2026-06.csv",
+    "rows": 1104384,
     "entity": "one 15-minute water-level reading at the harbor gauge",
     "grain": "gauge x 15 minutes",
     "source": "synthetic"
@@ -56,12 +56,20 @@
   "forcing_event": "season_or_peak",
   "org_family": "local_government",
   "world": {
-    "geography": "United States, Maine (a fictional coastal city, its harbor gauge and its waterfront)",
+    "geography": "United States, Maine (a fictional coastal city, Port Tessaly, its tide gauge PTG-01 and its waterfront)",
     "currency": "USD",
     "org_type": "city public works department, waterfront engineering",
     "invented_names": [
-      "Merrow Harbor",
-      "Granite Wharf"
+      "Port Tessaly",
+      "PTG-01",
+      "Granite Wharf",
+      "Cutler Wharf",
+      "Front Street",
+      "Ropewalk Road",
+      "Ferry Lane",
+      "Pennock River",
+      "WOMS",
+      "PWWorks"
     ],
     "people": [
       "Stacy Huber",
@@ -76,7 +84,7 @@
   "question_form": "what",
   "driver": "A forward period's count of threshold crossings is set by a component of the series that is deterministic and already known for that period, whose size in the period departs from its long-run average on cycles longer than a season, so the count has to be built from the period's own known component combined with the random remainder measured on the same grain in the same season, not read from the record's average crossing rate however it is trended.",
   "driver_concrete": "April and May 2027's high waters are already in the tide table and fall at the 18.6-year low of the semidiurnal tide with perigee at the quarter moons, so the expected number of tides reaching each deck elevation is the sum over the window's predicted high waters of the chance that an April or May skew surge (observed minus predicted high water on the 1995 to 2026 record, at 2027 sea level) covers the gap, not the seasonal exceedance rate of the record's observed high waters.",
-  "stump": "The seasonal peaks-over-threshold or count-trend route on April and May high waters, moved to 2027 sea level, expects about seven tides at 11.75 ft and files a 12.25 to 12.50 ft deck; the window's own predicted high waters with the season's skew surges expect about half a tide there and file 11.75 ft.",
+  "stump": "The seasonal exceedance rate of the record's April and May high waters at 2027 sea level (or a peaks-over-threshold rate, a GEV or a count trend) expects 7.4 tides at 11.60 ft and files a 12.35 ft deck; the window's own 118 predicted high waters with the season's skew surges expect 0.4 tides there and 2.3 at 11.35 ft, and file 11.60 ft.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task162": "task162's forward weeks are set by where a release date falls against a monthly restart burst (timing of take-up); here nothing is timed against anything: the level a known astronomical forcing reaches in the window, its 18.6-year and perigean modulation, sets a tail-exceedance count through a convolution with an independent surge.",
