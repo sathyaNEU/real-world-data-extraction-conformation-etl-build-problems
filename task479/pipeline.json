@@ -1,34 +1,34 @@
 {
  "task": "task479",
  "owner": "oviya1301",
- "status": "PAUSED",
- "domain": "survey-research-official-statistics",
+ "status": "DESIGN",
+ "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-21",
- "stump": "The default path moves each county's 2024 Department receipts by its member panel's 2024 to 2025 growth, qualifies the counties whose member hotels grew five per cent or more and splits the match among them, because it never asks how the panel's growth has tracked the Department's in the years both are known.",
- "architecture": 2,
+ "stump": "The default path trends each group's 2025 retained claims per member per month by the 2027 trend assumption and sends true-up notices to the groups it puts over their funding rates, because it never asks how much of the trend lands above the attachment for the members already at or near it.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-21"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW",
-  "reader": "stage 4 round 1 running (two readers, target.zip 7d73c6a44d3464b7)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN",
-  "nearest": "task268 v2 at 0.08"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": "running"
+  "report": ""
  },
  "returned": [],
- "resume": "stage 4: two scored readers and the judge thread (brief /tmp/determinism-check-task479-1792543631/judge_brief.md) were running on target.zip 7d73c6a44d3464b7; if their results are lost, rebuild (generator/build.py), re-unzip and re-run both readers and the judge, then fix every finding in one pass",
+ "resume": "stage 2: design architecture 3 (self-funded groups' 2027 retained claims under specific stop-loss): generator truth, default path, ladder, fork table, asks, prompt, precut",
  "approved": null,
  "delivered": null,
  "portal": null,

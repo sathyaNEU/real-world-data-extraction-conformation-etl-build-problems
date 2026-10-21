@@ -1,18 +1,18 @@
 {
   "task": "task479",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-10-21",
-  "slot_note": "re-root of seed ET36 after architecture 1 was spent at stage 4; nothing of v1's world or mechanism kept: a new world (a lodging association's monthly member panel restated onto the state's annual lodging-tax basis) and a new decisive step (the panel's tracking drift against the benchmark carried past the last benchmark)",
-  "domain": "survey-research-official-statistics",
-  "client_domain": "survey-research-official-statistics",
-  "subdomain": "seasonal-adjustment-official-time-series-production",
-  "niche": "a state lodging association's 2027 Rising Destinations co-op marketing match, a fixed fund split equally across the counties whose taxable lodging receipts grew at least six per cent from 2024 to 2025, where 2025 must be restated from the association's fixed monthly member panel onto the Department of Revenue's annual county basis two months before the Department publishes it",
+  "slot_note": "re-root of seed ET36 after architectures 1 and 2 were spent at stage 4; nothing of either world or step kept: a third-party administrator's self-funded employer groups, whose 2027 retained claims under an unchanged specific stop-loss attachment are restated from 2025 experience",
+  "domain": "healthcare-delivery-health-economics",
+  "client_domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "niche": "a third-party administrator's 2027 funding true-up notices: which of its self-funded employer groups' expected 2027 retained medical claims per member per month, the claims the plan itself pays after specific stop-loss at the unchanged $250,000 attachment, exceed the 2027 funding rates the employers set in September",
   "objective": "etl",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Arvenne, Brisholt, Elsmoor, Fallowmere and Grindell qualify for the 2027 Rising Destinations match, $360,000 each",
-  "answer_source": "golden/tla_rising_destinations_2027.xlsx (Rising Destinations sheet) and submission.md block 1",
+  "answer": "",
+  "answer_source": "golden workbook and submission.md block 1",
   "gap": [
     "time"
   ],
@@ -20,95 +20,62 @@
     "none"
   ],
   "generators": [
-    "G9",
-    "G13",
-    "G16"
+    "G1",
+    "G13"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "censored_or_lagged_release",
-  "stump_strategy": "forecast_method_backtest",
+  "calibration_form": "counterparty_acknowledgement",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "published_series",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "With every report extracted and every file conformed, the easy route carries each county's 2024 Department receipts forward by its member panel's 2024 to 2025 growth (the same as scaling the panel by its 2024 ratio to the Department) and files Arvenne, Brisholt, Corrigan Bay and Delvane qualify at $450,000 each; but in every year since the panel was drawn the Department's receipts outgrew the panel's by a steady margin in Elsmoor, Fallowmere and Grindell and trailed it in Corrigan Bay and Delvane, and carrying each county's ratio on its own line one year further qualifies Arvenne, Brisholt, Elsmoor, Fallowmere and Grindell.",
-  "domain_test": "Benchmarking a sub-annual indicator to annual benchmarks and extrapolating past the last benchmark on the path of the benchmark-to-indicator ratio, the way official time-series production carries a monthly survey past its latest annual census (the IMF Quarterly National Accounts Manual's chapter on benchmarking); with another field's nouns there is no sample panel that misses the whole's new entrants and no lagged complete count to benchmark it to, so the step does not exist.",
-  "layer2_family": "forecast_uncertainty",
-  "layer2_pattern": "own:benchmark-to-indicator ratio extrapolated on its own path past the last benchmark",
+  "analyst_test": "With every extract conformed and every rule read, the easy route trends each group's 2025 retained claims (paid claims less the carrier's reimbursements) per member per month to 2027 and compares them with the funding rates, which flags the groups with the most large claimants; but medical trend acts on each member's claims and the attachment is fixed, so the retained claims of members at or above $250,000 do not grow at all, and trending each member's 2025 claims before the attachment leaves those groups under their rates.",
+  "domain_test": "Experience rating of a self-funded health plan under specific stop-loss, worked the way health plan actuaries project retained claims: trend is applied to each member's claims and the specific attachment is applied after, so the retained layer grows slower than trend and the excess layer faster (the leveraging of a fixed deductible); with another field's nouns there is no medical trend acting on claims beneath a per-member attachment that a reinsurer absorbs.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:a trend applied to claims before a per-member cap, not to the capped total",
   "layer1": [
-    "the Department's annual county reports as seven PDFs in two layouts (thousands of dollars to 2020, dollars with county codes after)",
-    "each report's prior-year column revising the year before for amended returns",
-    "the Monitor in two exports across the 2022 system change: local received stamps against UTC submission stamps, dollars against cents, legacy ids against InnSight ids with the vendor's crosswalk",
-    "resubmitted months beside the first submission, and reports sent twice",
-    "legacy county names in two cases",
-    "properties that closed leaving the panel",
-    "September 2026 still coming in at the extract"
+    "the claims system's 2025 paid-claims extract in two layouts across the June platform upgrade",
+    "claims paid in 2025 for 2024 service and the 2026 run-out paid for 2025 service",
+    "claim reversals and replacement claims",
+    "members renumbered when an employer changed its payroll vendor",
+    "the stop-loss carrier's large claimant report keyed to its own claimant numbers and the carrier's incurred-and-paid contract basis",
+    "monthly enrollment snapshots against mid-month adds and terms"
   ],
-  "stakeholder_role": "research director of a state lodging association",
-  "role_family": "research_desk",
+  "stakeholder_role": "director of client finance at a third-party administrator of self-funded employer health plans",
+  "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "tla_monitor_reports_2018-01_to_2022-03.csv",
-    "rows": 28483,
-    "entity": "one monthly report received from a panel property",
-    "grain": "property x month x submission",
+    "file": "",
+    "rows": 0,
+    "entity": "one member's enrollment in one month",
+    "grain": "member x month",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
-  "forcing_event": "season_or_peak",
-  "org_family": "cooperative_or_member_body",
+  "forum": "executive_team",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "professional_services",
   "world": {
-    "geography": "United States (a fictional state, Tarrowind, and its sixteen counties)",
+    "geography": "United States (a fictional Midwestern metro region)",
     "currency": "USD",
-    "org_type": "state lodging association, a member trade body",
-    "invented_names": [
-      "Tarrowind Lodging Association",
-      "Tarrowind Department of Revenue",
-      "Tarrowind Tourism Bureau",
-      "InnSight",
-      "Harbor & Pine Hospitality",
-      "Coastline Hotel Group",
-      "Bramwell Lodging",
-      "Summit Ridge Hospitality",
-      "Northgate Inns",
-      "Arvenne",
-      "Brisholt",
-      "Corrigan Bay",
-      "Delvane",
-      "Elsmoor",
-      "Fallowmere",
-      "Grindell",
-      "Hollin Ridge",
-      "Isterhaven",
-      "Jorvale",
-      "Kestholm",
-      "Larrowby",
-      "Marrowfield",
-      "Nethervane",
-      "Orrin Falls",
-      "Pellow Sound"
-    ],
+    "org_type": "third-party administrator of self-funded employer health plans",
+    "invented_names": [],
     "people": [
-      "Samantha Walter",
-      "Debbie Brady"
+      "Gregory Valdez",
+      "Claire Grant"
     ]
   },
-  "deliverables": [
-    "tla_rising_destinations_2027.xlsx"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A total for a period not yet counted is carried from the last complete count by the movement of a fixed sample, and the sample covers a shrinking share of the whole because new members join only the whole, at a pace that differs by area and has held steady through every counted period; carrying the last count by the sample's movement, or scaling the sample by the last count's ratio to it, drops one more period of that drift, so the ratio must be carried forward on its own path.",
-  "driver_concrete": "The association's Lodging Monitor panel was fixed when it was drawn in 2018, so the Department's receipts in each county are the panel's times a ratio that has moved along a straight line ever since (up where lodging keeps opening outside the panel, down where it has been closing); moving 2024's receipts by the panel's 2025 growth holds the ratio at its 2024 value and qualifies Corrigan Bay and Delvane, while the ratio carried one year on its line qualifies Elsmoor, Fallowmere and Grindell instead.",
-  "stump": "The default path moves each county's 2024 Department receipts by its member panel's 2025 growth and qualifies Arvenne, Brisholt, Corrigan Bay and Delvane, because it never asks how the panel's growth has tracked the Department's in the years both are known.",
+  "driver": "A total kept below a fixed per-unit ceiling is carried to a later period on a growth rate that applies to the uncapped amounts, so each unit's amount grows first and is capped after: a unit already above the ceiling adds nothing to the kept total and a unit just below it adds only what it gains up to the ceiling, so growing the kept total by the rate overstates it most where units sit at or near the ceiling.",
+  "driver_concrete": "A self-funded group's retained claims are each member's year of claims kept below the $250,000 specific attachment, and medical trend applies to the claims, not to the retained total: a member whose 2025 claims were already over the attachment costs the plan exactly $250,000 in 2027 whatever the trend, so trending 2025 retained claims puts $36,000 of trend on every such member that the stop-loss carrier, not the plan, will pay; the groups with the most large claimants look over their funding rates when they are not.",
+  "stump": "The default path trends each group's 2025 retained claims per member per month by the 2027 trend assumption and sends true-up notices to the groups it puts over their funding rates, because it never asks how much of the trend lands above the attachment for the members already at or near it.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task123": "task123 splits each unit's interval total onto calendar periods by a daily-measured sample's within-interval rate; here no interval is split: a fixed sample's annual movement is carried past the last complete count on the path of its ratio to that count.",
-    "task474": "task474 carries short counts to a year by a calendar pattern measured at reference sites; here the reference is the lagged complete count itself and the move is the drift of the sample's coverage of it, year over year.",
-    "task481": "task481 restates a count onto a new classification by conversion rates from a dual-coded window; here nothing is reclassified: the same quantity is measured completely each year with a lag and by a fixed sample monthly, and the sample's shortfall grows.",
-    "task133": "task133 counts a taken-over loan's exposure only from the go-live, a risk set filled with months the record never watched; here no unit's exposure or outcome is counted: a fixed sample keeps losing share of a whole that gains members it never takes in, and the whole's lagged count shows the loss growing at a steady pace that is carried one year further.",
-    "task100": "task100 v2 re-attributes members across a scheduled transition at the unit level from a snapshot; here no member is re-attributed: a fixed sample's aggregate ratio to a lagged complete count is carried one period along the line it has followed."
+    "task198": "task198 recovers a contracted entitlement hidden by a lesser-of censoring in each record; here nothing is hidden or recovered: each member's 2025 claims are known, and the step is growing them before a fixed ceiling rather than growing the capped total.",
+    "task255": "task255 fits a size distribution's upper tail between floors and moving ceilings; here no tail is fitted: each recorded member amount is trended and capped by arithmetic."
   },
   "lineage": [
     {
@@ -126,8 +93,23 @@
       ],
       "gate_g": "etl_conformance",
       "niche": "a regional flood authority's 2027 private flood placement pilot, set on each member county's expected paid building claims per 1,000 insured buildings for the buildings insured today as they now stand, built from the NFIP claims history, the policy terms and the authority's own elevation and acquisition projects, where the 2016 flood rose above the floors the post-flood elevations were built to"
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-21",
+      "fate": "spent 2026-10-21 at stage 4: both scored readers (target.zip 7d73c6a44d3464b7) landed the call (score_reader exit 1, 50 and 54 of 80 ask figures) by computing each county's Department-to-Monitor ratio for every published year and extrapolating its visible linear drift; both also found the register county and the crosswalk gaps",
+      "driver": "A total for a period not yet counted is carried from the last complete count by the movement of a fixed sample, and the sample covers a shrinking share of the whole because new members join only the whole, at a pace that differs by area and has held steady through every counted period; carrying the last count by the sample's movement, or scaling the sample by the last count's ratio to it, drops one more period of that drift, so the ratio must be carried forward on its own path.",
+      "stump": "The default path moves each county's 2024 Department receipts by its member panel's 2025 growth and qualifies Arvenne, Brisholt, Corrigan Bay and Delvane, because it never asks how the panel's growth has tracked the Department's in the years both are known.",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "niche": "a state lodging association's 2027 Rising Destinations co-op marketing match, a fixed fund split equally across the counties whose taxable lodging receipts grew at least six per cent from 2024 to 2025, where 2025 must be restated from the association's fixed monthly member panel onto the Department of Revenue's annual county basis two months before the Department publishes it"
     }
   ],
-  "notes": "stump_strategy forecast_method_backtest: the right move is found by checking how the easy carry-forward would have done against each past benchmark, which the pack lets an analyst do; no back-test is filed. layer2 forecast_uncertainty: the ratio is forecast one year past the last benchmark.",
-  "registered": "2026-10-21T00:42:17Z"
+  "notes": "stump_strategy other: the leveraging of a fixed per-unit ceiling under a growth rate (trend before the attachment, not after); binding_constraint would misdescribe it, since no capacity binds a choice. Gate G forecasting: the 2027 retained claims are projected from 2025 experience. G1: the trend is a rate on the uncapped value applied to the capped value.",
+  "registered": "2026-10-21T01:01:34Z"
 }
