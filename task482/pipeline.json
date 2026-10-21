@@ -4,18 +4,18 @@
  "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-21",
  "stump": "The default path compares each area's sales between the two years dwelling type by dwelling type, weights the changes by the census stock and files Annaghvale, Ballymarne, Carrigvore, Glenaskin, Innishrue, Kilbrannagh, Moyrath and Rathgowan designated, because it never asks whether the homes that sold within each type were the same kind of home in both years: in several areas the second year sold more homes in the cheaper or the dearer electoral divisions, or new homes at a premium, and only a hedonic regression on type, floor area, new-dwelling status and electoral division gives each area's change for an unchanged dwelling.",
- "architecture": 4,
+ "architecture": 5,
  "loops": 0,
  "precut": {
   "exit": 0,
   "date": "2026-10-21"
  },
  "leak": {
-  "leak_py": "REVIEW",
+  "leak_py": "",
   "reader": ""
  },
  "duplicate_check": {
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: readers 9 and 10 and the judge (r5) running on target.zip 9e21c3d9; score each reader with score_reader.py --call-key call.designated, then ship or re-root",
+ "resume": "stage 1: architecture 4 spent (reader 9 fitted the hedonic with location); re-root architecture 5",
  "approved": null,
  "delivered": null,
  "portal": null,

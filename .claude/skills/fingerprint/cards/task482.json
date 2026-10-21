@@ -129,6 +129,21 @@
       ],
       "gate_g": "etl_conformance",
       "niche": "a business registry's choice of the regional registration offices placed on a timeliness improvement plan because the median working days from a complete application to registration, for applications received in the third quarter of 2026, exceed 20, when at the October extract a share of each office's applications is still open and sits only in the open caseload snapshot"
+    },
+    {
+      "architecture": "v4",
+      "drawn": "2026-10-21",
+      "fate": "spent 2026-10-21 at stage 4: reader 9 (target.zip 9e21c3d9) fitted a hedonic regression with the address point file's electoral division and landed the call (score_reader exit 1, asks 14 of 48 from the shared changes); reader 10 fitted it without location and missed (0 of 48); the judge was stopped once the call landed. A hedonic regression is a strong reader's reflex once a methodology note cites the RPPI handbook beside a valuation register, and location is one join away.",
+      "driver": "A unit's price change is read from the units of a heterogeneous stock that happened to trade in each period, and the traded mix shifts between periods by location, size and newness, with location held in a separate register; every summary of the traded units, raw, per unit of size or reweighted by a coarse type, moves with the mix, and only a regression of log price on the units' characteristics and fine location with a period term gives the change for an unchanged unit.",
+      "stump": "The default path compares each area's sales between the two years dwelling type by dwelling type, weights the changes by the census stock and files Annaghvale, Ballymarne, Carrigvore, Glenaskin, Innishrue, Kilbrannagh, Moyrath and Rathgowan designated, because it never asks whether the homes that sold within each type were the same kind of home in both years: in several areas the second year sold more homes in the cheaper or the dearer electoral divisions, or new homes at a premium, and only a hedonic regression on type, floor area, new-dwelling status and electoral division gives each area's change for an unchanged dwelling.",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, read against the housing ministry's 8 per cent line for designating rapid price growth areas, when each area's sales in a year are a shifting sample of its dwelling stock and the dwellings' attributes and small-area locations sit in the valuation register and the address point file, not in the price register"
     }
   ],
   "registered": "2026-10-21T03:33:04Z"
