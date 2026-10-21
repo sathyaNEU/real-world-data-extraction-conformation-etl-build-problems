@@ -4,8 +4,8 @@
   "status": "PAUSED",
   "domain": "supply-chain-logistics/transportation-network (client: general-statistics-data-science/data-integration-record-linkage-entity-resolution)",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-21",
   "stump": "The default path completes pass by pass and designates Carrow Point and Elmscourt, and the careful path takes every installed unit as an independent chance at the 69.9 per cent a second unit finds what a first found and designates Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle, because two units on the same kind of vehicle record 93.6 per cent of each other's potholes against 54.9 per cent across kinds, so the independent chances are the fleet groups that drove a segment at 54.4 per cent, and Fenwick Gap (6.86) and Kestrelton (7.28) clear the line beside the five.",
   "architecture": 3,
@@ -16,19 +16,19 @@
   },
   "leak": {
     "leak_py": "REVIEW (document vocabulary; answered in the design note)",
-    "reader": ""
+    "reader": "architecture 3: round 1 readers A and B missed the call (A kept 10 pounds via a route marker, fixed); round 2 reader D landed the call by fleet-group capture-recapture; architecture 3 spent"
   },
   "duplicate_check": {
     "heart": "WARN (no BLOCK)",
     "nearest": "task478 v2 / task49"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "/tmp/determinism-check-task478-v3/verdict.md (thread verdict; the agent report was not written)"
   },
   "returned": [],
-  "resume": "architecture 3 built, stage 3 gates green; stage 4: two scored readers and the judge on target.zip dbeb37a01f2a3db48a3545d25457179f; compare a reader's designated list as a set; ship if neither lands the call and the pounds hold",
+  "resume": "architectures 1, 2 and 3 spent at stage 4 (each landed by one isolated reader: distinct-unit recapture; sweeper-aware dedup; fleet-group recapture). The assignment forbids retirement, so the next step is a fourth re-root at stage 1; paused for the author to confirm, since build-pipeline retires a number at its third spent architecture.",
   "approved": null,
   "delivered": null,
   "portal": null,

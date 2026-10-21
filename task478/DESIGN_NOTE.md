@@ -280,6 +280,13 @@ scattered reports into the precise units' potholes. Judge APPROVE (v2).
 
 ## Tried and rejected
 
+- 2026-10-21, architecture 3 stage 4: architecture 3 spent. Reader D of round 2 landed the call (the seven) by
+  estimating each fleet group's visibility by maximum likelihood after seeing that units of one group agree 93 to 100
+  per cent of the time; round 1's readers A and B and round 2's reader C missed (C pending at the spend). The judge
+  (v3 thread) returned DETERMINISTIC, APPROVE and noted that a unit-level truncated MLE also landed the seven; a
+  rework adding a second same-model pickup per non-metro section separated the unit-level routes but was abandoned when
+  the spend arrived. Three architectures in this slot are spent; the author decides between a fourth re-root and
+  retirement.
 - 2026-10-21, architecture 3 stage 4 round 1: office multi-line orders spanning two routes while the mobile app's
   orders kept to one: reader A took a figure once per work order and route and kept ten of the fourteen pounds figures;
   every multi-line order now keeps to one route, and every section's pounds move under that rule (checks.py).
