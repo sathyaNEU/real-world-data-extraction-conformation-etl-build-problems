@@ -1,5 +1,49 @@
 # task178 design note
 
+**Status: DESIGN (stage 2), architecture 1 of the redraw, card registered 2026-10-21.** The author redrew the
+number in a new cell after seed FC49's product-security world died at stage 1 (its record is kept below under
+`## FC49 screen record` and in `## Tried and rejected`). Cell, allocated by the main session:
+physical-environmental-sciences / climate-weather-extremes, Forecasting. Organisation, decision, quantity and
+mechanism were searched inside the cell (prototypes in the session scratchpad, b178r/proto: p1 to p13).
+
+## Draw
+
+- **Card:** `.claude/skills/fingerprint/cards/task178.json`, guard `check` WARN only (time_semantics strategy
+  risk, answered under `## Three rules`: no field, code, unit or definition flips the call; repeat.gate_g
+  forecasting against task479, answered: the lane is Forecasting and the mechanism differs). Structural tests
+  same_puzzle_older (task461) and same_driver_older (task102, task130 lineage, task134 lineage, task162, task501
+  lineage) differentiated on the card, one line each.
+- **Pairing:** Physical & Environmental Sciences, task type `climate-weather-extremes` (F), never drawn before.
+  The deciding quantity is an extreme-sea-level exceedance frequency in a coming window.
+- **World:** a fictional Maine coastal city (Merrow Harbor) rebuilding Granite Wharf from 1 April to 31 May 2027
+  from a temporary work trestle; the waterfront project engineer sets the trestle deck elevation in the
+  construction documents before the piles are ordered. Allowed deck elevations 10.50 to 12.50 ft above MLLW at
+  the harbor gauge in quarter-foot steps; the deck is set at the lowest elevation at which high water is expected
+  to reach it on no more than one tide in the window (exact settings and bar fixed on the cut pack so the golden
+  sits mid-bin).
+- **Shape:** 04, setting one dial: the expected number of tides reaching the deck at every allowed elevation,
+  the committed elevation and the one below it; asks supply the rest (`## Ask sheet`).
+- **Strategy:** `time_semantics` (F1, the window the decision bets on), gap time, G13 then G7, Gate G
+  forecasting, layer2_family field_method, layer2_pattern own:skew-surge-joint-probability-over-a-known-tidal-window.
+- **Data-native sentence:** the harbor's high waters are an astronomical tide known years ahead plus a weather
+  surge, and April and May 2027 fall at the 18.6-year low of the semidiurnal tide with perigee at the quarter
+  moons (perigee and syzygy anti-aligned about 7 April 2027), so the window's own predicted high waters sit
+  about 0.2 m below the record's April and May average and the record's exceedance rate, however trended,
+  overstates the window several times over.
+- **Sources (one line each):** the five client families (`two-layer-task-design.md`): field_method, the field's
+  own joint-probability method done right; the textbook route is a GEV or POT on observed levels with a sea-level
+  trend (Coles' sea-level examples), which takes stationarity of the total level for granted; the actuarial
+  catastrophe and energy load cards: an exposure-window count, here the window is fixed by the works; the
+  epidemiology surveillance cards: a baseline from history, here the baseline is not exchangeable with the window
+  because part of the signal is deterministic and known. No client card exists for this domain.
+- **Measured lever (p13, three seeds, on the clean truth):** at 11.75 ft the window's JPM expects 0.51, 0.64 and
+  0.93 tides (truth by Monte Carlo 0.36 to 0.43); the seasonal climatology at 2027 sea level 7.3 to 8.9, a linear
+  or Poisson count trend 7.0 to 10.1, the last season 6 to 9, the last three 7.3 to 9.3, the 18.6-year analogs
+  4.5 to 6.0; golden family (linear or recent-20-year surge base, GPD tail, per month) picks 11.75 ft in every
+  seed, every route without the window's tide picks 12.25 to 12.50 ft.
+
+## FC49 screen record (world spent, kept for the record)
+
 **Status: PAUSED at stage 1, no card ever registered, nothing cut.** New, Forecasting, seed FC49: a
 network-equipment vendor's product-security team has one extra triage analyst for the first quarter of 2027,
 who goes to the product line with the most critical triages forecast for the quarter (one triage per CVE per
@@ -157,14 +201,30 @@ none is touched by either candidate.
     testing plan names the step.
   - The lead's error narrowed by the CVEs the top two lines share: the seed's own uncertainty-hold
     architecture, banned as a near driver, and the Poisson reflex lands any narrowing.
-
-## Resume
-
-Do not re-screen anything above in this world. The quantity's only strong Layer 2 here is work arriving
-through slow channels and trains, and every reading of it that holds is a per-unit completion, task181 v2's
-driver; the window facts (`maturity_censoring` frees when task201 leaves it, `composition_mix` when task165
-does) do not change that. The coordinator or the author decides whether the number is redrawn in another
-world, moved to another seed in the lane, or retired. A redraw in this world would need a difference
-between the coming quarter and the record that is large, rests on many events, shows in no recorded channel
-and is not a slow channel's backlog; candidate 1's numbers say a rule of thumb lands any held backlog the
-call can see, and candidate 2's say the queue read at face value lands any batch the call can see.
+- **Redraw cell, climate-weather-extremes: candidates screened (2026-10-19 to 21).**
+  - Mixed populations in annual maxima (tropical against extratropical): paper; the tropical population rests on
+    a few dozen events, the mixture fit's spread exceeds any lever, and the storm-track file needed to split
+    them is single-purpose.
+  - A summer hot-day count conditioned on spring soil-moisture deficit: paper; a regression on the obvious
+    covariate (the textbook route the blind readers take) with skill near r 0.4, lever under the noise.
+  - Fixed-interval against sliding-window rainfall maxima (Hershfield-Weiss factor from an hourly overlap):
+    paper; lever 5 to 13 per cent and the textbook 1.13 lands.
+  - A declustered heat-event count (extremal index): paper; the run-length is a knob, the dispersion screen
+    fires.
+  - Areal against point rainfall return levels: paper; the areal-mean series fitted directly is the golden.
+  - A nonstationary GEV on a warming covariate: the textbook itself.
+  - Frost after bloom (phenology-conditioned frost risk): paper; the bloom model's base temperature and stage
+    thresholds are open knobs, determinacy fails.
+  - Joint exceedance across a network (tail dependence): paper; the estimator family's spread is wide.
+  - A saturating gauge or a recorder lost in its largest events: task172's cap and task245's driver.
+  - The forward astronomical tide (this draw), first form: a winter (November to February 2026-27) closure
+    count at a mesotidal semidiurnal site; killed on measurement (p1, p2): the window's tidal index sits at
+    0.83 to 1.0 of the long-run mean, so the climatology lands within 17 per cent.
+  - Second form: March to April 2027; killed on measurement (p6, p11): the last season (2026, also weak
+    springs) lands (13 against a golden 12.4 to 15.2 at one threshold, 7 against 6.2 at another).
+  - Hourly non-tidal residual against skew surge as the decisive rung: killed on measurement (p6, p9): with the
+    timing interaction at 0.5 to 0.8 h per metre of surge the all-hours residual and the residual at predicted
+    high water both land the golden; only the cycle-maximum residual overstates (x1.5), so it is at most a lower
+    rung.
+  - A macrotidal estuary site: rejected on paper (p3): the tide is so dominant that every reader opens the tide
+    table first.
