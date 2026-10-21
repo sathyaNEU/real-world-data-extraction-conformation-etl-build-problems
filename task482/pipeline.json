@@ -4,8 +4,8 @@
  "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-21",
  "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and files 214506, 214682, 214858, 214946 and 215298 awarded, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs per student on average: the campuses that report alone show a lower-division credit hour costing under a third of a graduate hour, and three branches priced at the hours they teach have the lowest instruction expense per FTE in the state.",
  "architecture": 1,
@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW",
-  "reader": "round 1: both readers missed the call, kept ask B (re-sited); round 2 running"
+  "reader": "round 2 readers landed the call (exit 1); architecture 1 spent"
  },
  "duplicate_check": {
   "heart": "WARN",
@@ -28,7 +28,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 4 round 2: score readers 3 and 4 (score_reader.py), read the round 2 judge verdict, then ship",
+ "resume": "stage 1: re-root to architecture 2 in a fresh world and decisive step (architecture 1 spent, see Tried and rejected)",
  "approved": null,
  "delivered": null,
  "portal": null,

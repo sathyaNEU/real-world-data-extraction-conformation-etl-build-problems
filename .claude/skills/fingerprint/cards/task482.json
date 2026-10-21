@@ -83,5 +83,21 @@
   },
   "notes": "stump_strategy composition_mix: the plan year's paid share depends on the benefit design mix the history does not carry for the changed districts.",
   "registered": "2026-10-21T02:34:31Z",
-  "lineage": []
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-21",
+      "fate": "spent 2026-10-21 at stage 4: round 1 readers split each parent's return by FTE or total credit hours and missed the call (asks kept 50 per cent on the reissued ids, re-sited); both round 2 readers (target.zip b160b2ca) fitted cost per credit hour by level on the standalone campuses and landed the call (score_reader exit 1); the judge returned DETERMINISTIC APPROVE on round 1. A cost-by-level fit is natural to a strong reader once a credit hour file by level sits beside a consolidated return.",
+      "driver": "A combined return reports one total for several units, and each unit's share is split by its head count, which gives every unit the group's average; but the item follows an activity whose unit cost differs several-fold across kinds, and the units inside the return do mostly the cheap kind, which the units that report alone measure, so the split by head count overstates the units inside and keeps them out of the lowest ranks.",
+      "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and files 214506, 214682, 214858, 214946 and 215298 awarded, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs per student on average: the campuses that report alone show a lower-division credit hour costing under a third of a graduate hour, and three branches priced at the hours they teach have the lowest instruction expense per FTE in the state.",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "etl_conformance",
+      "niche": "a state higher-education coordinating board's 2027-28 instructional investment grant to the five public four-year reporting units with the lowest instruction expense per FTE student in fiscal 2026, from the federal finance and enrollment returns, where six branch campuses' finances are reported inside their parent campuses' returns"
+    }
+  ]
 }
