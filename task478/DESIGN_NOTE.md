@@ -291,6 +291,11 @@ missed or confirmed it; the ninth reader landed the call by fitting each unit as
 
 ## Tried and rejected
 
+- 2026-10-21, architecture 2 stage 4 round 2: architecture 2 spent. Reader D landed the call (the seven, every whole
+  number) by noticing the sweepers' detections sit tens of metres off where every other unit repeats a pothole within a
+  metre, merging the precise units' reports tightly and folding each sweeper report into the nearest such pothole; the
+  scatter is visible in the detections themselves without the covers. Judge APPROVE (v2); readers A and B had missed.
+  Re-root to architecture 3.
 - 2026-10-21, architecture 2 stage 4: ask B, camera miles by section, its re-run device in a fourth form (copies five
   hours early, written in district clock time): both readers found the exact five-hour copies (a vehicle in two places
   at once) and kept all fourteen figures; every appended-duplicate device leaves a cross-row impossibility a careful

@@ -4,8 +4,8 @@
   "status": "PAUSED",
   "domain": "supply-chain-logistics/transportation-network (client: general-statistics-data-science/data-integration-record-linkage-entity-resolution)",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-21",
   "stump": "The default path links the pothole detections at one distance for every unit and, at any distance from 53 to 264 feet, designates Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle, because a distance wide enough to hold a street sweeper's scattered reports of one pothole together runs Fenwick Gap's and Kestrelton's bridge-deck potholes into one another; measured on the surveyed utility covers, the sweepers' units are 52 to 59 feet off and the rest 2 to 3 feet, so each pair of detections is joined within its own units' error, and Fenwick Gap (6.78) and Kestrelton (6.78) clear the line; at a few feet for every unit the sweepers' scatter puts Rushmead over it instead.",
   "architecture": 2,
@@ -16,19 +16,19 @@
   },
   "leak": {
     "leak_py": "REVIEW (field nouns and a row count; answered in the design note)",
-    "reader": "architecture 2 round 1: readers A and B missed the call (eight sections each, Rushmead added) and held the pounds; both kept the camera miles, so ask B was dropped; round 2 readers running"
+    "reader": "architecture 2 round 2: reader D landed the call (sweeper-aware dedup); architecture 2 spent"
   },
   "duplicate_check": {
     "heart": "WARN (no BLOCK)",
     "nearest": "task49"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "task478/determinism_check_report_v2.md"
   },
   "returned": [],
-  "resume": "architecture 2 stage 4 round 2: readers on target.zip 603205203dcc4993d831580e8e3b3ff6 (ask B dropped, prompt changed); the judge thread on the round 1 pack (call unchanged); then ship",
+  "resume": "architecture 2 spent at stage 4 (reader D landed the call by folding the sweepers' scattered reports into the precise units' potholes); re-root at stage 1 as architecture 3",
   "approved": null,
   "delivered": null,
   "portal": null,
