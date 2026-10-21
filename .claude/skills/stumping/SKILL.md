@@ -54,7 +54,7 @@ the client's own check before a build ships. `precut.py` refuses a missing or on
 | `Layer 2:` | the family and the methodological choice that flips the call |
 | `Decisive step:` | the analytical choice that flips the call, in the field's own words |
 | `Not semantics:` | why reading every field, code, unit and definition correctly still leaves the easy route on the wrong answer |
-| `Not rule application:` | which step no filed rule or procedure performs, so executing every stated rule still files the wrong answer |
+| `Not rule application:` | which step no filed rule or procedure performs, so executing every stated rule still files the wrong answer, **and the measured spread of the estimator family the rule leaves open** (see below: a line that answers only the first half is worth nothing) |
 | `Analyst test:` | the easy route a strong analyst takes with every field read and every rule applied, and the wrong answer it files (the default path's `Ends on:`, named) |
 | `Estimand:` | the filed sentence fixing population, outcome, window, unit and comparison, and the file it sits in |
 | `No decoy:` | that nothing is planted to be caught: no copied block, hidden rule, memo, draft, briefing or stakeholder figure written to carry the wrong answer |
@@ -69,6 +69,41 @@ call is a backdrop at any depth (the client's bad pair: substations ranked by th
 General Statistics & Data Science the setting is always another field's, so there the swap is of the
 method: the deciding quantity is the task type's own statistical object (a distribution's shape, a model's
 diagnostic, an interval's coverage), and replacing it with a generic summary must change the call.
+
+**The `Not rule application:` line carries a number, and without it the line is worthless.** It is routinely
+answered against the wrong question. "Does a filed rule name the method?" is not the test; **"is anything left
+to decide once every filed rule is read?" is.** Three builds answered the first truthfully and shipped, and all
+three were landed by a blind reader at medium effort:
+- one filed the basis of a conversion and left ten admissible per-reading estimators that agree to **a spread of
+  exactly $0** on the graded figure;
+- one filed a confidence level over a quantity whose records fix every input, so only the variance was open, and
+  **6 of 12 textbook routes file the golden**, two of them needing no insight into the design;
+- one filed a counterfactual's definition, and its whole licensed family (4 of 4 constructions, 20 of 20 redraws)
+  refers the committed set at **1.00 distinct designated sets**.
+
+So the line states the family the rule leaves open and the spread that family returns on the graded figure. **A
+spread of zero means the step is a reflex, whatever the documents say**, and the build is drawn elsewhere. That
+measurement costs a minute on the clean truth and would have failed all three at stage 2 rather than at an audit.
+
+**Price the cheapest construction, not the one the design intends.** The algebra clause in 1.6a is run on the
+*cheapest* licensed member of the decisive family, because that is the one a solver reaches. Measured three ways
+on three unrelated grounds: a blend-unmixing step was **affine** in its forcing column, so one regression on that
+column beat the designed estimator (0.0026 against 0.0028 mean absolute error); a premium was **linear** in the
+day count its step moved, at $0.34 and $0.73 a day, capping every lever at 2 to 3 per cent; and an ordering
+expectation equalled `n` times (the window's end less the other side's mean date) over the window's length to
+**8.5e-14**, so the decisive construction was one group-by, one subtraction and one divide. In all three the
+design's own readability screen had scored the decisive rung as not linear, and in all three the screen was
+wrong by arithmetic. **Write the one-group-by route to the call in one line before the first harness, and do the
+algebra on it.**
+
+**The comparison's value has no third position, so do not draw there.** Where the decisive step is the value of
+a comparison the estimand files, and the field has one null for that comparison, the trichotomy closes: state the
+null and the construction follows from the sentence (rule application); name its inputs instead and the signpost
+is louder; file neither and the comparison, one of the five parts `determinism-check` §1 requires filed, is
+unfiled, so an undefined term takes a licensed reading and the main call forks on Gates C and D. The convergence
+determinism rests on and the reach Gate F pays are then **one number**, one dial whose two ends are the same end.
+Two architectures on one number died this way, the first on the comparison's population and the second on its
+value, which is the same structure twice.
 
 **Rule 3, the decisive step.** **Litmus:** is the number the task overturns actually wrong, and is catching
 that what defeats the model? Yes to both is a plant, banned at any depth. A field read, a unit converted
@@ -207,7 +242,9 @@ reproducing:
 
 A step that survives the screen settles none of them: the estimand is beyond argument and two or more
 methods of estimating that one filed quantity still stand, with the data's own structure ruling out the
-easy one. **A definition that implies the step is not a filing of it.** A filed outcome in plain words ("the time
+easy one. **Nor is the value of a comparison the estimand files a survivor, where the field has one null for it.** The screen passes such a step, because the five parts are each filed and only the counterfactual's value is left; it dies anyway, measured, because naming the null names the construction to anyone who knows the field. On a prescription-sequence screen whose standard filed the comparison as the count expected if the product had no bearing on the marker's timing, a blind reader at medium effort landed the committed call and quoted that clause, and on the clean truth all 4 licensed constructions referred the committed set in 20 of 20 redraws at 1.00 distinct designated sets. That is one dial: the convergence determinism rests on is the reach Gate F pays, and the cheapest licensed member was one group-by and one divide by identity (the window's end minus the pair's own mean exposure date, over the window's length, 20 of 20, corr +0.9954), because the comparator is level only where trends on that side fork the call. So run 1.6a's algebra clause on the counterfactual's cheapest construction, not only on the one the design intends.
+
+**A definition that implies the step is not a filing of it.** A filed outcome in plain words ("the time
 passengers spend waiting at the stop") that the golden's step follows from does not rule out the field's
 standard computation of that outcome: the judge executes the standard's own formula on the data the clause
 names, and when that is the easy route the call is a fork. So a step the note defends as the outcome's
