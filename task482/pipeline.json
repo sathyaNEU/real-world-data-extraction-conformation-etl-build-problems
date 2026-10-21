@@ -1,0 +1,36 @@
+{
+ "task": "task482",
+ "owner": "oviya1301",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics",
+ "objective": "etl",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-21",
+ "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and awards the grant to five standalone campuses, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs on average per student.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "stage 2: design architecture 1 (consolidated returns apportioned by a cost model): generator, ladder, asks, prompt, precut",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET39 (IPEDS parent-child instruction per FTE): the world, the decision and the quantity kept; the parent-child reporting only as Layer 1"
+}

@@ -1,0 +1,81 @@
+{
+  "task": "task482",
+  "architecture": "v1",
+  "drawn": "2026-10-21",
+  "slot_note": "seed ET39 (IPEDS parent-child instruction per FTE): the world, the decision and the quantity kept; the parent-child reporting is Layer 1, the pitfall re-found in how a consolidated return is apportioned",
+  "domain": "survey-research-official-statistics",
+  "client_domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "niche": "a state higher-education coordinating board's 2027-28 instructional investment grant to the five public four-year reporting units with the lowest instruction expense per FTE student in fiscal 2026, from the federal finance and enrollment returns, where six branch campuses' finances are reported inside their parent campuses' returns",
+  "objective": "etl",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G5",
+    "G2"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "other",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stump_class": "analytical",
+  "analyst_test": "With every file conformed and every rule read, the easy route splits each parent's consolidated instruction expense among the parent and its branches by their FTE students, which gives every branch its system's average cost per student; but instruction cost follows what a campus teaches, and the branches teach mostly lower-division credit hours, which the separately reporting campuses show cost a fraction of upper-division and graduate hours, so the branches' true cost per student sits far under their system's average and the FTE split keeps them out of the lowest five.",
+  "domain_test": "Apportioning a consolidated administrative return to the units inside it, worked the way an official-statistics register apportions a combined report: by a model of the item on auxiliary variables recorded for every unit (credit hours by level), fitted on the units that report the item alone, with the combined total kept; with another field's nouns the step survives only where the item is driven by an auxiliary of very different unit cost across the units.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:a combined return split among the units inside it by a cost model fitted on the units that report alone, not by their head counts",
+  "layer1": [
+    "branch campuses whose finance is reported with the parent (zero on their own return)",
+    "the 12-month enrollment return's FTE alongside the state's credit hour file in another layout",
+    "a fiscal year (July to June) against an academic year of three terms",
+    "a campus renamed and re-identified in 2024"
+  ],
+  "stakeholder_role": "director of finance policy at a state higher-education coordinating board",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "",
+    "rows": 0,
+    "entity": "one student's enrollment in one course section in one term",
+    "grain": "student x section x term",
+    "source": "synthetic"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "United States (a fictional state)",
+    "currency": "USD",
+    "org_type": "state higher-education coordinating board",
+    "invented_names": [],
+    "people": [
+      "Jeremy Cortez",
+      "John Huang"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "A combined return reports one total for several units, and each unit's share is split by its head count, which gives every unit the group's average; but the item follows an activity whose unit cost differs several-fold across kinds, and the units inside the return do mostly the cheap kind, which the units that report alone measure, so the split by head count overstates the units inside and keeps them out of the lowest ranks.",
+  "driver_concrete": "Each branch campus's instruction expense sits inside its flagship's return and is split by FTE students, which gives a branch the flagship system's cost per student; the branches teach mostly freshman and sophomore credit hours, which the sixteen campuses that report alone show cost about a third of a graduate hour, so their true cost per student is far under the system's and several belong in the lowest five.",
+  "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and awards the grant to five standalone campuses, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs on average per student.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task475": "task475 recovers each area's mix of member kinds from its own count and paired amount using known averages; here no unit's mix is unknown: each campus's credit hours by level are recorded, the unknown is each unit's share of a combined total, and the cost per kind is fitted on the units that report alone.",
+    "task474": "task474 splits a coarse total across a crossing partition by scaling an every-period indicator; here the split is of one combined return among the units inside it, by a cost model on recorded activity, the head-count split being the easy route."
+  },
+  "notes": "stump_strategy composition_mix: the plan year's paid share depends on the benefit design mix the history does not carry for the changed districts.",
+  "registered": "2026-10-21T02:34:31Z",
+  "lineage": []
+}
