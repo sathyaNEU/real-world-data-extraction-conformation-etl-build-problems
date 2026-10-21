@@ -57,6 +57,11 @@ class Records:
         self.ty, self.held, self.ex = W.this_year(self.ly)
         rng = C.stream("records")
         self.rng = rng
+        # app acceptances the offers engine did not apply: the app put the subscription on a half-price rate for its
+        # next two bills, so those bills carry no discount line
+        u = C.stream("app_fallback").random(len(self.ly))
+        self.fallback = set(np.where(self.ly.accepted.values & (self.ly.channel.values == "app")
+                                     & (u < W.P["app_fallback"]))[0].tolist())
         self._offers_and_email()
         self._lbs_invoices()
         self._recentre_goodwill()
@@ -108,10 +113,14 @@ class Records:
             price = int(round(C.PRICE[plan[i]] * 100))
             last = 5 if end[i] < 0 else min(end[i], 5)       # December 2025 (0) to April 2026 (4)
             pay_bills = list(range(0, last))
+            fb = i in self.fallback
             for j in pay_bills:
                 b = bills[i][j]
-                rows.append((b, lbs[i], "SUB", C.PLAN_CODE[plan[i]], "", price))
-                if j in disc[i]:
+                if j in disc[i] and fb:
+                    rows.append((b, lbs[i], "SUB", C.RATE_CODE[plan[i]], "", price - int(round(price * C.OFFER_SHARE))))
+                else:
+                    rows.append((b, lbs[i], "SUB", C.PLAN_CODE[plan[i]], "", price))
+                if j in disc[i] and not fb:
                     code = C.OFFER_CODE_APP if chan[i] == "app" else C.OFFER_CODE_WEB
                     rows.append((b, lbs[i], "DISC", code, self.acc_ref[i], -int(round(price * C.OFFER_SHARE))))
                 if j in desk[i]:
@@ -209,10 +218,36 @@ class Records:
             if T.has_addon.iat[i]:
                 subs[acct].append(dict(sub=T.addon_sp.iat[i], plan=None, start=T.start.iat[i], dom=int(T.addon_dom.iat[i]),
                                        kind="addon"))
+        partner = {}       # a household's second subscription -> the list subscription it is billed with
         for j in range(len(X)):
             if X.kind.iat[j] == "second":
-                subs[X.sp_acct.iat[j]].append(item(X.sp_sub.iat[j], X.plan.iat[j], X.start.iat[j], X.dom.iat[j], "other"))
+                kind = "household" if X.household.iat[j] else "other"
+                subs[X.sp_acct.iat[j]].append(item(X.sp_sub.iat[j], X.plan.iat[j], X.start.iat[j], X.dom.iat[j], kind))
+                if X.household.iat[j]:
+                    partner[X.sp_sub.iat[j]] = T.sp_sub.iat[int(X.owner.iat[j])]
         loyal = dict(zip(T.sp_sub.values, T.loyal_month.values))
+
+        def merge(ls):
+            """the platform bills identical lines of one account on one line: a household's two subscriptions on
+            the same plan and period appear once, under the account holder's subscription, the text counting them"""
+            out = list(ls)
+            for x in ls:
+                if x[0] not in partner:
+                    continue
+                for k_, y in enumerate(out):
+                    if (y[0] == partner[x[0]] and y[1] == x[1] and y[3] == x[3] and y[4] == x[4]
+                            and abs(y[5] - x[5]) < 1e-9 and " x " not in y[2]):
+                        name = y[2]
+                        if " (" in name:
+                            base, rest = name.split(" (", 1)
+                            name = "%s x 2 (%s" % (base, rest)
+                        else:
+                            name = name + " x 2"
+                        out[k_] = (y[0], y[1], name, y[3], y[4], round(y[5] + x[5], 2))
+                        out.remove(x)
+                        break
+            return out
+        self.merged = 0
 
         inv, credits, n_inv = [], [], 0
         accts = sorted(subs)
@@ -235,9 +270,13 @@ class Records:
                         main += [ln] + extra
                 docs = []
                 if main:
-                    docs.append((dt.datetime(run.year, run.month, run.day, 0, 5), main, run))
+                    m_ = merge(main)
+                    self.merged += len(main) - len(m_)
+                    docs.append((dt.datetime(run.year, run.month, run.day, 0, 5), m_, run))
                 for d0 in sorted(own_docs):
-                    docs.append((dt.datetime(d0.year, d0.month, d0.day, 0, 5), own_docs[d0], d0))
+                    m_ = merge(own_docs[d0])
+                    self.merged += len(own_docs[d0]) - len(m_)
+                    docs.append((dt.datetime(d0.year, d0.month, d0.day, 0, 5), m_, d0))
                 for t0, ls, pstart in docs:
                     n_inv += 1
                     iid = "INV-%07d" % (5200000 + n_inv)
@@ -275,7 +314,8 @@ class Records:
 
     # ------------------------------------------------------------------------------------------------ events
     def _events(self):
-        ly, ty, rng = self.ly, self.ty, self.rng
+        ly, ty = self.ly, self.ty
+        rng = C.stream("ly_events")          # its own stream, so no ask-side record moves an event
         xw = {}                      # LBS ref -> (SP sub, SP account, batch) for subscriptions alive at the move
         ly_alive_oct = (ly.end_bill < 0) | (ly.end_bill >= 10)         # still subscribed when billing moved
         sp_ids = W.ids(C.stream("ly_sp"), len(ly), "S", 9, 410000000)
@@ -289,6 +329,9 @@ class Records:
             if ref in over_map:
                 continue
             xw[ref] = (sp_ids[i], sp_acc[i], "MIG-%02d" % batches[i])
+        X = self.ex                  # the other legacy subscriptions on this year's list accounts
+        for j in np.where(X.legacy.values)[0]:
+            xw[X.lbs.iat[j]] = (X.sp_sub.iat[j], X.sp_acct.iat[j], X.batch.iat[j])
         for i in range(len(ty)):
             if not ty.legacy.iat[i]:
                 continue

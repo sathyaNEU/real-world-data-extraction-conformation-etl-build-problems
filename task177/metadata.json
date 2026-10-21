@@ -48,7 +48,7 @@
    "xlsx"
   ],
   "largest_file": "legacy_billing_invoices.csv",
-  "largest_file_rows": 736590
+  "largest_file_rows": 735727
  },
  "sources": [
   {
@@ -82,7 +82,7 @@
   {
    "path": "data_dictionary.xlsx",
    "format": "xlsx",
-   "bytes": 9213,
+   "bytes": 9268,
    "rows": 79,
    "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media Audience Data, field descriptions for the pull",
    "date": "2027-01-25",
@@ -100,8 +100,8 @@
   {
    "path": "legacy_billing_invoices.csv",
    "format": "csv",
-   "bytes": 40607799,
-   "rows": 736590,
+   "bytes": 40543569,
+   "rows": 735727,
    "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media legacy billing system, invoice line export for the subscriptions on either list and their add-ons",
    "date": "2027-01-25",
    "license": "CC0-1.0 (original work, constructed for this task)"
@@ -136,7 +136,7 @@
   {
    "path": "retention_model_validation_2026-12.pdf",
    "format": "pdf",
-   "bytes": 53967,
+   "bytes": 53965,
    "rows": null,
    "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media Audience Data Science, retention model 3.2 validation summary",
    "date": "2026-12-09",
@@ -145,7 +145,7 @@
   {
    "path": "retention_offer_plan_2027.docx",
    "format": "docx",
-   "bytes": 9412,
+   "bytes": 9411,
    "rows": null,
    "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media Subscriber Retention, January 2027 retention offer plan",
    "date": "2027-01-18",
@@ -163,7 +163,7 @@
   {
    "path": "subscription_events.csv",
    "format": "csv",
-   "bytes": 14239991,
+   "bytes": 14240783,
    "rows": 284984,
    "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media subscription events for last January's list, from both billing systems",
    "date": "2027-01-25",
@@ -172,17 +172,17 @@
   {
    "path": "subscription_id_crosswalk.csv",
    "format": "csv",
-   "bytes": 3969088,
-   "rows": 81000,
-   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media Billing Operations, legacy reference to platform id crosswalk issued with the billing move note",
+   "bytes": 4160384,
+   "rows": 84904,
+   "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media Billing Operations, legacy reference to platform id crosswalk issued with the billing move note, for the subscriptions on either list, their add-ons and the other subscriptions on this year's list accounts",
    "date": "2027-01-25",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
    "path": "subscriptions_platform_invoices.csv",
    "format": "csv",
-   "bytes": 58868533,
-   "rows": 192864,
+   "bytes": 58326712,
+   "rows": 192838,
    "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media subscriptions platform, invoice and credit note export pulled for this year's list (one row per document, its lines as JSON)",
    "date": "2027-01-25",
    "license": "CC0-1.0 (original work, constructed for this task)"

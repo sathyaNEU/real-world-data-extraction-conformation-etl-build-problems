@@ -79,6 +79,7 @@ OFFER_CODE_WEB = "STAY50"                # the code the offers engine applied to
 OFFER_CODE_APP = "LNT-APP-JAN26"         # the code the app team set up for in-app acceptances of the same offer
 DESK_CODE = "STAY50"                     # the save desk's discretionary half price uses the same billing code
 LOYAL_CODE = "LOYAL-CR"                  # goodwill credits on a bill (service apologies)
+RATE_CODE = {"Digital": "DIG-MA", "Digital Plus": "DGP-MA", "Family": "FAM-MA"}   # the app's two-bill half-price rates
 
 
 def stream(name):

@@ -52,7 +52,7 @@
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "legacy_billing_invoices.csv",
-    "rows": 736590,
+    "rows": 735727,
     "entity": "one line of a legacy invoice raised on a subscription's billing day (the plan's charge, a discount or a credit), for the subscriptions on either retention list and their add-ons",
     "grain": "invoice line (subscription x bill date x line type)",
     "source": "synthetic (constructed in the layout of a legacy subscription billing system's invoice line export)"

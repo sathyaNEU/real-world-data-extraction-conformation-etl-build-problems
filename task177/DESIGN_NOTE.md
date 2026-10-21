@@ -1,10 +1,13 @@
 # task177 design note
 
-**Status: architecture 2 at stage 3, green on every free gate (2026-10-21), waiting on the stage 4 readers and
-judge.** Second cell the main session assigned this round (product-analytics / churn-propensity-uplift-modeling,
-Forecasting). Architecture 1 (psychology-behavioral-science, a provincial employment service's assistant-share
-forecast) was spent at Gate F on target.zip 3be16ba3; its record is kept below under `## Architecture 1 record`, and
-every death of both architectures, with the seed world's, is in `## Tried and rejected`.
+**Status: architecture 2, stage 4 round 1 fixes made (2026-10-21), stage 3 gates green, waiting on the round 2
+readers.** Round 1 on target.zip 4827dc5d: the judge DETERMINISTIC, FIX_NOW for hygiene only, reproducing 20 (20.3 in
+the 1 to 6 day window, 19.9 in 1 to 14, 20.0 restandardised) against the pooled 9.6; both scored readers filed the call
+at 10; the asks leaked (reader A 9 of 21, reader B 21 of 21), so both asks' primaries were re-sited and the judge's
+hygiene fixed (`## Tried and rejected`). The call and every row it reads are frozen at round 1's bytes (FROZEN in
+checks.py). Second cell the main session assigned this round (product-analytics / churn-propensity-uplift-modeling,
+Forecasting). Architecture 1 (psychology-behavioral-science) was spent at Gate F on target.zip 3be16ba3; its record
+is kept below under `## Architecture 1 record`.
 
 ## Draw
 
@@ -212,86 +215,108 @@ prompt's "because they are sent". The default path reads the same literal estima
 each test subscription's January 2026 SUB line in `legacy_billing_invoices.csv`; this year's list and note 1.2's
 calendar (each list subscription's own January line confirms it). Device and hazard rows in it: 0 (SEPARATION in
 checks.py: one January bill per test subscription and no discount on it, the events carry the test's list only, and
-this year's next bill is 1 February under every reading). The note the call reads carries ask B's two filed hazards
-(3.2 the platform's UTC, 4.1 and 4.2 the duplicate October bills and their credits) and none of either ask's primaries,
-and the call reads one sentence of it.
+this year's next bill is 1 February under every reading). Every row the call reads is frozen at round 1's bytes (FROZEN
+in checks.py: the assignment, the CRM snapshot and the list byte for byte, the access and restart events, the January
+SUB lines, each list subscription's last billed day, and every test subscription's outcome, arm and lead). The note the
+call reads carries ask B's two filed hazards (3.2, and 4.1 to 4.2) and neither ask's primary.
 
 **Ask A. The discount last January's offer gave on bills raised in February and in March 2026, on each plan, and how
-many subscriptions on each plan took it** (9 figures, pounds to the nearest hundred, whole subscriptions). Golden:
-February 31,100, 22,200, 12,600; March 28,200, 20,200, 11,800; takers 6,224, 3,174, 1,402.
+many subscriptions on each plan took it** (9 figures, pounds to the nearest hundred, whole subscriptions). Golden,
+unchanged since round 1: February 31,100, 22,200, 12,600; March 28,200, 20,200, 11,800; takers 6,224, 3,174, 1,402.
 - H18 home: what the offer gives away, set against what it keeps (the plan's own words).
 - Basis: the asking sentence (each bill by the month it was raised, the plan in the CRM snapshot); the plan's terms
-  (half price on the next two monthly bills).
-- Primary A1 (D7 the true key elsewhere; silent): the offers engine keys an app acceptance by the app user id, and a
-  re-login replaced the id for 692 of 3,187 app acceptances; the CRM snapshot holds only the current id. Joined
-  through the CRM's keys, every taker count is low (by 392, 175, 90) and every discount cell low (by 756 to 1,960
-  pounds). Fair: each offer discount line in the ledger names the acceptance that applied it (applied_ref is the
-  acceptance_ref), so the ledger resolves every taker, the re-keyed included. Silent: the dictionary says customer_key
-  is the CRM number or the app user id, and nothing marks a replaced id.
-- A2 (D5 a category crossed by label; a hazard): the save desk's own half price uses the offer's billing code STAY50,
-  on 3,208 February and March lines, 1,834 of them on held-back subscriptions; each names a customer services case.
-  Counted as the offer, every discount cell is high by more than 50.
-- A3 (D1 the same records under two keys; a hazard): 185 app accepters also accepted from the email under their CRM
-  number, an acceptance the bill never applied; takers counted by acceptance are high.
-- A4 (a hazard): the app's acceptances carry the app team's code LNT-APP-JAN26 on 6,095 lines; read off STAY50 alone,
+  (half price on the next two monthly bills, on the subscription's own plan price).
+- Primary A1 (D3 the offer's discount carried in the charge, set per channel; silent): 453 app acceptances the offers
+  engine never applied (their references are on no bill). The app put those subscriptions on its half-price rate for
+  their next two bills (rate codes DIG-MA, DGP-MA, FAM-MA, 863 February and March bills) with no discount line. Read
+  from the discount lines that name an acceptance, which is both round 1 readers' route (reader B: "legacy DISC lines
+  whose applied_ref is an offers-engine acceptance ... Takers = distinct subscriptions with such a discount"), every
+  discount cell is low by 468 to 1,310 pounds and every takers count is low by 262, 134 and 57. Fair: those
+  subscriptions' February and March bills charge the plan at their January charge less the offer's half, under the
+  app's rate codes and only there; their acceptances are in the engine; a block 3 step names the handling. Silent: the
+  rate lines are ordinary SUB lines under a plan code, the dictionary calls item_code a plan, discount or credit code,
+  and every discount line still ties to an acceptance.
+- A2 (D7 the true key elsewhere; round 1's primary, now a hazard): 692 app acceptances keyed by an app user id the CRM
+  snapshot no longer holds. Joined through the CRM's keys (the cracker), every discount cell is low by 1,098 to 2,975
+  and the takers by 392, 175 and 90.
+- A3 (D5 a category crossed by label; a hazard): the save desk's own half price uses the offer's billing code STAY50 on
+  3,208 February and March lines, 1,834 of them on held-back subscriptions, each naming a customer services case.
+- A4 (D1 the same records under two keys; a hazard): 185 app accepters also accepted from the email under their CRM
+  number, an acceptance no bill applied.
+- A5 (a hazard): the app's acceptances carry the app team's code LNT-APP-JAN26; read off STAY50 alone (the mirror),
   every cell is low.
-- Stops (each a complete pipeline, `cracker.py`): the offer's web code and distinct engine customers (the mirror) 0 of
-  9; the engine's acceptances joined through the CRM's keys, the desk left out (the cracker) 0 of 9; the acceptance
-  references on the bills 9 of 9.
+- Stops (`cracker.py`, each a complete pipeline): the mirror 0 of 9; the cracker 0 of 9; reader B as quoted 0 of 9;
+  the discount lines and the rate bills 9 of 9.
 - Span: the offers engine, the CRM snapshot, the ledger, the assignment, the dictionary (5 files).
-- Realism: an app team ships its own code for the same offer; an app's user id changes on a re-login; a save desk
-  reuses a billing code for its discretionary half price.
+- Realism: an app team ships its own code for the same offer, and its fallback applies the offer as a temporary rate
+  when the engine does not answer; an app's user id changes on a re-login; a save desk reuses a billing code.
 
-**Ask B. What this year's list was billed for its plans in each month from October 2026 to January 2027 after
-credits, on each plan** (12 figures, pounds to the nearest hundred). Golden: October 135,700, 105,500, 72,700; November
-257,900, 199,400, 136,100; December 259,100, 200,200, 136,500; January 259,100, 200,300, 136,600.
+**Ask B. What this year's list was billed for its plans in each month from October 2026 to January 2027, net of credit
+notes and of the goodwill credits on its invoices alike, on each plan** (12 figures, pounds to the nearest hundred).
+Golden, unchanged since round 1: October 135,700, 105,500, 72,700; November 257,900, 199,400, 136,100; December
+259,100, 200,200, 136,500; January 259,100, 200,300, 136,600.
 - H18 home: what the list brings in, the revenue the offer protects beside what it gives away.
-- Basis: the asking sentence (billed in each month, for the list's plans, after credits); note 3.2 (Billing
-  Operations reports each bill in the month of the UK date it was raised); note 4.1 and 4.2 (the duplicate October
-  bills and their credits).
-- Primary B1 (D6 a ledger at another grain than its name, D7 the true key elsewhere; silent): the platform raises one
-  invoice per account, its subscription_id the first line's. 1,647 list subscriptions are paid from another
-  subscriber's account, filed under that subscriber's own subscription, and 2,286 other plan subscriptions (a partner's,
-  a student's) sit on list accounts' invoices filed under a list subscription. Read through the invoices filed under
-  the list, with every filed rule executed, every cell misses, by 222 to 5,978 pounds. Fair: every line names its own
-  subscription in the lines column, and the header's subscription is always the first line's. Silent: the dictionary
-  calls the column the platform subscription id, which it is, and every total ties to its lines.
-- B2 (D8 a clock against a filed cutoff; a hazard): the 1 October run was raised at 00:05 UK time, 23:05 to 23:59 UTC
-  on 30 September; by UTC month October is nearly empty.
-- B3 (D6; a hazard): an invoice's total holds the Puzzles add-on and any other plan on the account.
-- B4 (D1 and D2; a hazard): the legacy system's 1 October bills for seven batches and the platform's credit notes of
-  14 October, one per account, covering the account's every such bill (add-ons and other plans in); netted at the
-  credit note's total, October moves. The duplicate bills and their credits cancel exactly on the list's plans, so the
-  platform's own lines alone give the golden (asserted, a convergent reading).
-- B5 (a hazard): goodwill credits of two pounds as negative lines; left out, every cell misses.
-- Stops (`cracker.py`): the invoice totals filed under the list by issued_at month (the mirror) 0 of 12; the totals
-  in UK time 0 of 12; the invoices filed under the list read through their plan lines, goodwill kept, UK time, the
-  legacy bills and credit notes netted (the cracker) 0 of 12; each list subscription's own lines 12 of 12.
+- Basis: the asking sentence, which since round 1 pins credit notes and the in-invoice goodwill credits alike (the
+  judge measured the credit-notes-only reading at 300 to 1,100 pounds a cell); note 3.2 (Billing Operations reports
+  each bill in the month of the UK date it was raised); note 4.1 and 4.2 (the duplicate October bills and their
+  credits).
+- Primary B1 (D6 an allocation at the wrong weight, one line for two subscriptions; silent): the platform bills
+  identical lines of one account on one line. 921 list subscriptions share their account with a second subscription on
+  the same plan (a partner's, a student's), 594 of them set up the same day. From the run in which the two lines are
+  identical, the platform bills both on the list subscription's line, its text counting two ("Digital monthly x 2") and
+  its amount twice the charge, in every month. Read line by line for the list's subscription ids (reader B's route:
+  "platform invoice lines for list subscription ids, plan items only, goodwill credit lines (LOYAL-CR) netted, month =
+  UK date of issue"), every cell is high, by 884 to 4,905 pounds. With the credit notes netted at their totals, every
+  cell still misses (by 2,351 or more); with the legacy October bills added and each covered bill taken off, every cell
+  still misses (by 884 or more). Fair: every shared line's text counts two and its amount is exactly twice the list
+  subscription's own charge for the period. Each household's second subscription is in the pack under its own id (its
+  own line on the account's October invoice or first bill, or the crosswalk on the same account) and on no list. A
+  block 3 step names the handling. Silent: every line names one subscription, every invoice total ties to its lines,
+  and the dictionary lists the line fields.
+- B2 (D6 and D7; round 1's primary, now a hazard): the platform invoices per account, its subscription_id the first
+  line's. The invoices filed under the list miss the 1,647 list subscriptions paid from another subscriber's account
+  and carry the other plans on list accounts. On that route (the cracker), every cell misses by 152 to 5,094.
+- B3 (D8; a hazard): the 1 October run was raised at 00:05 UK time, 23:05 to 23:59 UTC on 30 September.
+- B4 (D6; a hazard): an invoice's total holds the Puzzles add-on and any other plan on the account.
+- B5 (D1 and D2; a hazard): the legacy system's 1 October bills for seven batches and the platform's account-level credit
+  notes of 14 October covering them (add-ons and other plans in). They cancel exactly on the list's plans, so the
+  shared-line handling with neither, or with both at each covered bill's own amount, gives the golden (asserted).
+- B6 (a hazard): goodwill credits of two pounds as negative lines; left out, every cell misses.
+- Stops (`cracker.py`): the mirror 0 of 12; the cracker 0 of 12; reader B as quoted 0 of 12; reader B with credit notes
+  at their totals 0 of 12; reader B with the legacy bills and the covered bills 0 of 12; each list subscription's share
+  of its own lines 12 of 12.
 - Span: the platform export, the list, the ledger, the crosswalk, the note, the dictionary (6 files).
-- Realism: subscription platforms invoice per account and one subscriber pays for another's plan; a migration's first
-  run lands on the old system's last night; a run not switched off is credited per account.
+- Realism: billing platforms print identical charges of one account on one line with a count; one subscriber pays for
+  another's plan; a migration's first run lands on the old system's last night; a run not switched off is credited per
+  account.
 
-**Hazard table:** the save desk's code (ask A, every discount cell); the app's code (ask A, every discount cell); the
-double acceptances (ask A, takers); the platform's UTC (ask B, October); the account totals (ask B, every cell); the
-duplicate October bills and their credits (ask B, October); the goodwill credits (ask B, every cell).
+**Hazard table:** the replaced app ids (ask A, every cell); the save desk's code (ask A, every discount cell); the app's
+code (ask A, every discount cell); the double acceptances (ask A, takers); the account grain (ask B, every cell); the
+platform's UTC (ask B, October); the account totals (ask B, every cell); the duplicate October bills and their credits
+(ask B, October); the goodwill credits (ask B, every cell).
 
-**Referee:** the ledger's applied_ref (whose acceptance applied a discount) and the platform lines' subscription_id
-(whose plan a line bills), the only records of either.
+**Referee:** the engine's acceptances against the ledger's applied_ref (which acceptances no bill applied), and each
+platform line's text count against the list (whose subscriptions a line bills). These are the only records of either.
 
-Pair ceiling: 28.5 (the cracker lands the call with every filed rule and the hygiene battery and keeps 0 of 21 ask
-figures; the mirror stops at the test's whole-list difference and keeps 0 of 21; a cracker that also resolved ask A's
-primary keeps 9 of 21, a ceiling of 40.3, ask B's 12 of 21, 44.2, and both 21 of 21, 56.0)
+Pair ceiling: 28.5. The cracker lands the call with every filed rule and the hygiene battery and keeps 0 of 21 ask
+figures; the mirror stops at the test's whole-list difference and keeps 0 of 21. Both round 1 readers missed the call
+(10 and 10), and on their quoted routes in cracker.py they would keep 0 of 21, a measured pair of 12.0.
 Mirror leakage: 0.0 per cent of ask weight
 Measured by: generator/cracker.py
 
-| Ask | Cracker sheet (every filed rule, the hygiene battery, the obvious keys) | Hits | Verdict |
+| Ask | Cracker sheet (every filed rule, the hygiene battery, the obvious keys; reader B's quoted routes) | Hits | Verdict |
 |---|---|---|---|
 | Ask A, last January's offer discounts and takers, nine figures | the engine's acceptances through the CRM's keys, the desk left out, their February and March discounts | 0 of 9 | miss |
+| Ask A, reader B's quoted route | the discount lines that name an acceptance, the plan of the bill's SUB line, takers the subscriptions on them | 0 of 9 | miss |
 | Ask B, this year's list billed for its plans, twelve figures | the invoices filed under the list, plan lines with goodwill, UK time, legacy bills and credit notes netted | 0 of 12 | miss |
+| Ask B, reader B's quoted route and both credit-note variants | the list's lines by their own ids, plan items, goodwill netted, UK date; then credit notes at totals; then legacy and covered bills | 0 of 12 | miss |
 
 ## Leak sweep
 
-`leak.py --asof 2027-01-25` on the final pack: REVIEW, no LEAK. Each line answered:
+`leak.py --asof 2027-01-25` on the round 2 pack (target.zip cc5a56de): REVIEW, no LEAK. Each line answered:
+- Design-note vocabulary, the prompt: the ask sentence carries "subscriptions" and "invoices" because those are the
+  asks' own nouns (ask A's takers, ask B's goodwill credits on the list's invoices, pinned since round 1); it says
+  nothing about where a delivery lands in a billing cycle.
 - Answer figures, `retention_offer_plan_2027.docx`: the plan states the question the executive team needs answered
   (the share of the list still subscribed on 31 March 2027 because of the offer) in the call's own words, and no
   figure; no file states a share, an uplift or an effect by timing.
@@ -1013,3 +1038,14 @@ its group's surviving records), the same family by its label.
   reads moves (the call 19.88 and the default 9.65 before and after).
 - **Architecture 2, the count of subscriptions billed twice for October (stage 2).** Dropped as a figure: it is read
   straight off note 4.1's batches and the credit notes, a seen hazard rather than a device.
+- **Architecture 2, round 1 asks (stage 4 on target.zip 4827dc5d).** Both readers counted ask A from the bills: the
+  discount lines carry the subscription, so the replaced app ids never mattered (reader B: "legacy DISC lines whose
+  applied_ref is an offers-engine acceptance ... Takers = distinct subscriptions with such a discount"). Reader B took
+  ask B from the line-level ids: every line names its subscription, so the account grain never bit ("platform invoice
+  lines for list subscription ids, plan items only, goodwill credit lines netted, month = UK date of issue"). Reader A
+  kept 9 of 21, reader B 21 of 21. Re-sited on the readers' own routes: ask A onto the app acceptances the engine never
+  applied, which the app billed at a half-price rate with no discount line, and ask B onto a household's two
+  subscriptions billed on one line under the list subscription. Both are measured on the quoted routes in cracker.py.
+  The judge's hygiene: the validation summary's list floor is now 0.20, the plan dates last January's send, the
+  dictionary says the campaign tool names a list's export by its send day, and the prompt pins credit notes and the
+  in-invoice goodwill credits alike (the credit-notes-only reading had moved each cell by 300 to 1,100 pounds).

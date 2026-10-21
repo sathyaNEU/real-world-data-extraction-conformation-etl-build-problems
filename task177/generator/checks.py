@@ -118,12 +118,58 @@ def ask_b_truth(R):
     return {k: round(v, 2) for k, v in out.items()}
 
 
+# the call side as the stage 4 round 1 readers and judge saw it (target.zip 4827dc5d): every row the call reads, hashed
+FROZEN = {
+    "file:" + C.F_ASSIGN: "aa021af0dfdd60f8d932b097c67125fd5647480cb43c065b029e38d63b02b90c",
+    "file:" + C.F_PROFILE: "65ea5193e3ed4c0b8647c2bd0e104e05fd5757535738b97b5caaec3715ba99b6",
+    "file:" + C.F_LIST: "3ee4c6bb228565d5c8242f20274df22d46c7d53d180b9e6ee85d1ce459b38615",
+    "events_access_restart": "2b2f460c050fe1d1ab9a7539f88babccf3136dbff774b3e46a84dfbde4e09aec",
+    "lbs_jan_sub": "24e25533571419c4d71378f6180315bb050545e05ff8880addf4693fa2d3b4a5",
+    "ty_last_to": "918ce4f1e7d614e17e849f3b2d5bef33f65498d50924ab009b2e9994b2a73428",
+    "ly_Y_d": "d55845151d5da853f7327131660685d02786c39395f4d3fad131db1cd8b14784",
+}
+FROZEN_SHARE, FROZEN_POOLED = 19.882009365668562, 9.645895635950868
+
+
+def _h(rows):
+    import hashlib
+    m = hashlib.sha256()
+    for r in rows:
+        m.update(("|".join(map(str, r)) + "\n").encode())
+    return m.hexdigest()
+
+
+def call_side(P, ly, target):
+    import hashlib
+    out = {}
+    for f in (C.F_ASSIGN, C.F_PROFILE, C.F_LIST):
+        out["file:" + f] = hashlib.sha256(open(os.path.join(target, f), "rb").read()).hexdigest()
+    ev = P.events[P.events.event.isin(["access_ended", "restarted"])]
+    out["events_access_restart"] = _h(sorted(zip(ev.subscription_key, ev.system, ev.event, ev.event_date)))
+    jan = P.lbs[(P.lbs.line_type == "SUB") & (P.lbs.date >= "2026-01-01") & (P.lbs.date <= "2026-01-31")]
+    out["lbs_jan_sub"] = _h(sorted(zip(jan.subscription_ref, jan.invoice_date, jan.line_type, jan.item_code,
+                                       jan.amount_pence)))
+    inv = P.spinv[P.spinv.doc_type == "invoice"][["invoice_id"]]
+    ln = P.spline.merge(inv, on="invoice_id")
+    last = ln[ln.subscription_id.isin(set(P.lst.subscription_id))].groupby("subscription_id").service_to.max()
+    out["ty_last_to"] = _h(sorted(last.items()))
+    out["ly_Y_d"] = _h(sorted(zip(ly.subscription_ref, ly.Y, ly.d, ly["T"])))
+    return out
+
+
 def main(target):
     P = K.Pack(target)
     c, ly, ty = K.call(P)
     ga, gb = K.ask_a(P), K.ask_b(P)
     R = PK.records()
     figs = json.load(open(os.path.join(HERE, "figures.json")))
+
+    # ------------------------------------------------------------------------------ FROZEN: the call side
+    cs = call_side(P, ly, target)
+    for k_, v_ in FROZEN.items():
+        check("FROZEN call side unchanged since round 1: %s" % k_, cs[k_] == v_)
+    check("FROZEN the call's share and default to the last digit", c["share"] == FROZEN_SHARE and c["pooled"] == FROZEN_POOLED,
+          "%r, %r" % (c["share"], c["pooled"]))
 
     # ------------------------------------------------------------------------------ R: the three rules
     w = R.ly
@@ -165,7 +211,7 @@ def main(target):
         if grp == "with the step":
             check("family: %s" % name, cell(v) == G, "%.2f" % v)
         elif grp == "without the step":
-            want = {"difference over the open rate": 35, "difference over the acceptance rate": 70,
+            want = {"difference over the open rate": 35, "difference over the acceptance rate": 75,
                     "accepters against the holdout": 45}.get(name, DEFAULT)
             check("rival: %s" % name, cell(v) == want and cell(v) != G, "%.2f -> %d" % (v, cell(v)))
         else:
@@ -195,7 +241,8 @@ def main(target):
     check("SF5 every subscription on this year's list is sent the offer: the plan",
           "Every subscription on the list is sent the offer; nobody is held back this year." in plan)
     check("SF6 last January's arms as randomised: the plan and the assignment file",
-          "random half of the 31 January 2026 at-risk list" in plan and set(P.assign.arm) == {"offer", "holdout"})
+          "The same offer went on 31 January 2026 to a random half of that day's at-risk list" in plan
+          and set(P.assign.arm) == {"offer", "holdout"})
     v = fortnight(ly_reading(P, arms="email"))
     check("SF6 the arms read off the email log (bounces as not sent): same call", cell(v) == G, "%.2f" % v)
     v = fortnight(ly_reading(P, day_from="dec"))
@@ -213,7 +260,7 @@ def main(target):
           all(dt.date(2026, 2, 1) <= C.month_day(2026, 2, k) <= C.LY_HORIZON and
               C.month_day(2026, 3, k) <= C.LY_HORIZON for k in range(1, 32)))
     check("SF12 rounding once at the end, to the nearest 5 per cent: the prompt", "nearest 5 per cent" in prompt)
-    check("SF13 the same offer both years: the plan", "The same offer went to a random half" in plan)
+    check("SF13 the same offer both years: the plan", "The same offer went on 31 January 2026" in plan)
     v = fortnight(ly_reading(P, outcome="request"))
     check("SF14 the outcome read by the cancellation request, not by access: same call", cell(v) == G, "%.2f" % v)
     check("SF15 the unit is the subscription in both lists, one per customer number: the prompt and the files",
@@ -256,10 +303,39 @@ def main(target):
     check("ask A device D7: app acceptances keyed by an app user id the profile no longer holds",
           unmatched > 300 and len(R.rekeyed) == unmatched, "%d of %d app acceptances" % (unmatched, len(app_acc)))
     applied = set(disc.applied_ref)
-    check("ask A fair: every offer discount line's applied_ref is an acceptance, every first acceptance applied",
+    check("ask A fair: every offer discount line's applied_ref is an acceptance; those never applied are the second "
+          "acceptances and the app acceptances the engine did not apply",
           set(disc[disc.applied_ref.str.startswith("OE26-")].applied_ref) <= refs
-          and len(refs - applied) == int(R.ly.also_email.sum()),
-          "%d acceptances never applied (second acceptances)" % len(refs - applied))
+          and len(refs - applied) == int(R.ly.also_email.sum()) + len(R.fallback),
+          "%d never applied: %d second, %d app fallback" % (len(refs - applied), int(R.ly.also_email.sum()),
+                                                              len(R.fallback)))
+    sub = P.lbs[P.lbs.line_type == "SUB"]
+    rate = sub[sub.item_code.isin(set(C.RATE_CODE.values()))]
+    regular = sub[sub.item_code.isin(set(C.PLAN_CODE.values()))]
+    jan_amt = regular[(regular.date >= "2026-01-01") & (regular.date <= "2026-01-31")].groupby("subscription_ref").amt.max()
+    half = {pl: int(round(int(round(C.PRICE[pl] * 100)) * C.OFFER_SHARE)) / 100.0 for pl in C.PLANS}
+    rplan = rate.subscription_ref.map(plan_ly)
+    offer_arm = set(P.assign[P.assign.arm == "offer"].subscription_ref)
+    disc_subs = set(disc[disc.applied_ref.isin(refs)].subscription_ref)
+    check("ask A primary: the app acceptances the engine never applied are billed at the app's half-price rate on "
+          "their February and March bills, with no discount line",
+          rate.subscription_ref.nunique() == len(R.fallback) and rate.date.dt.month.isin([2, 3]).all()
+          and (rate.date.dt.year == 2026).all() and rate.subscription_ref.isin(offer_arm).all()
+          and not (set(rate.subscription_ref) & disc_subs),
+          "%d subscriptions, %d bills" % (rate.subscription_ref.nunique(), len(rate)))
+    check("ask A fair: each rate charge is the subscription's own January charge less the offer's half",
+          all(abs(jan_amt[r_] - a_ - half[p_]) < 0.005 for r_, a_, p_ in zip(rate.subscription_ref, rate.amt, rplan)))
+    rba = CR.reader_b_a(P)
+    check("ask A: reader B's quoted path (discount lines with an acceptance ref, the plan of the bill's SUB line) "
+          "misses every figure", not any(CR.hit(ga[k], rba[k], k) for k in ga),
+          "nearest %.0f" % min(abs(ga[k] - rba[k]) for k in ga))
+    moved_rate = {k: (-(rate[(rate.date.dt.month == k[1]) & (rplan == k[2])].amt.sum()
+                        - jan_amt.reindex(rate[(rate.date.dt.month == k[1]) & (rplan == k[2])].subscription_ref).sum()))
+                  for k in ga if k[0] == "disc"}
+    check("ask A primary moves every discount cell by more than 50 pounds",
+          all(abs(v_) > 50 for v_ in moved_rate.values()), str({k[1:]: round(v_) for k, v_ in moved_rate.items()}))
+    check("ask A primary moves every takers count", all(
+        (rate.drop_duplicates("subscription_ref").subscription_ref.map(plan_ly) == pl).sum() > 0 for pl in C.PLANS))
     by_acc = {}
     crm_plan, app_plan = dict(zip(prof.customer_no, prof.plan)), dict(zip(prof.app_user_id, prof.plan))
     for k in P.offers.customer_key:
@@ -289,8 +365,53 @@ def main(target):
     others = sl[sl.head_sub.isin(ids) & ~sl.subscription_id.isin(ids) & sl.item_code.isin(C.PLAN_CODE.values())]
     check("ask B device D7/D6: list subscriptions billed on another account's invoice",
           foreign.subscription_id.nunique() > 1000, "%d subscriptions" % foreign.subscription_id.nunique())
-    check("ask B device D7/D6: other plans on the list's accounts' invoices, filed under a list subscription",
-          others.subscription_id.nunique() > 1500, "%d subscriptions" % others.subscription_id.nunique())
+    check("ask B hazard D7/D6: other plans on the list's accounts' invoices, filed under a list subscription",
+          others.subscription_id.nunique() > 800, "%d subscriptions" % others.subscription_id.nunique())
+    hh_ex = R.ex[R.ex.household]
+    seen_line = set(sl.subscription_id)
+    seen_xw = set(P.xwalk.platform_subscription_id)
+    acct_of = dict(zip(P.xwalk.platform_subscription_id, P.xwalk.platform_account_id))
+    vis = [(s_ in seen_line) or (s_ in seen_xw and acct_of[s_] == a_) for s_, a_ in zip(hh_ex.sp_sub, hh_ex.sp_acct)]
+    check("ask B fair: every household's second subscription is in the pack under its own id (its own line before the "
+          "lines merge, or the crosswalk on the same account)", all(vis),
+          "%d households, %d with their own line, %d set up together" % (len(hh_ex), sum(s_ in seen_line for s_ in
+                                                                                       hh_ex.sp_sub),
+                                                                         int(hh_ex.together.sum())))
+    shared = sl[sl.subscription_id.isin(ids) & (sl.n_subs > 1)]
+    by_month = {}
+    for t_, iid in zip(inv.uk, inv.invoice_id):
+        by_month[iid] = (t_.year, t_.month)
+    shared = shared.assign(ym=shared.invoice_id.map(by_month))
+    per = shared.groupby("ym").size().to_dict()
+    check("ask B primary: a household's two subscriptions on one line under the list subscription, every month",
+          all(per.get(ym_, 0) > 200 for ym_ in C.ASK_B_MONTHS), str({"%d-%02d" % k: v for k, v in sorted(per.items())}))
+    price_of = {C.PLAN_CODE[p_]: C.PRICE[p_] for p_ in C.PLANS}
+    hh_subs = set(R.ex[R.ex.household].sp_sub)
+    trow = {s_: i for i, s_ in enumerate(R.ty.sp_sub.values)}
+
+    def single(sub_id, f2):
+        """the list subscription's own line for the period that starts on f2, from the world"""
+        i, T_ = trow[sub_id], R.ty
+        s_ = dict(sub=sub_id, plan=T_.plan.iat[i], start=T_.start.iat[i], dom=int(T_.dom.iat[i]), kind="list")
+        f_ = dt.date.fromisoformat(f2)
+        for mi, (run, pend) in enumerate(PK.RUNS):
+            if run <= f_ <= pend:
+                r_ = PK.bill_line(s_, mi, run, pend)
+                return r_[0][5] if r_ else float("nan")
+        return float("nan")
+    check("ask B fair: every shared line counts 2 in its text and bills exactly twice the list subscription's own "
+          "charge for the period; the account's other subscription is not on the list",
+          (shared.n_subs == 2).all() and shared.text.str.contains(" x 2").all() and not (hh_subs & ids)
+          and all(abs(a_ - 2 * single(s_, f2)) < 0.011
+                  for s_, a_, f2 in zip(shared.subscription_id, shared.amt, shared.service_from)),
+          "%d shared lines" % len(shared))
+    rbb = CR.reader_b_b(P)
+    check("ask B: reader B's quoted path (the list's lines, plan items, goodwill netted, UK date) misses every figure",
+          not any(CR.hit(gb[k], rbb[k], k) for k in gb), "nearest %.0f" % min(abs(gb[k] - rbb[k]) for k in gb))
+    for how in ("header", "covers"):
+        rbx = CR.reader_b_b(P, how)
+        check("ask B: reader B's path with the credit notes (%s) misses every figure" % how,
+              not any(CR.hit(gb[k], rbx[k], k) for k in gb), "nearest %.0f" % min(abs(gb[k] - rbx[k]) for k in gb))
     check("ask B fair: every line names its own subscription; header subscription_id is the first line's",
           all(json.loads(lj)[0]["subscription_id"] == s for s, lj in zip(inv.subscription_id.values[:5000],
                                                                           inv.lines.values[:5000])))
@@ -311,9 +432,10 @@ def main(target):
     lines = lines.assign(ym=[(t_.year, t_.month) for t_ in lines.uk])
     for (y, m) in C.ASK_B_MONTHS:
         for pl in C.PLANS:
-            alt[("billed", y, m, pl)] = lines[(lines.ym == (y, m)) & (lines.subscription_id.map(lst.plan) == pl)].amt.sum()
-    check("ask B convergent reading: the platform's lines alone (no legacy bill, no credit note) give the golden",
-          all(abs(alt[k] - gb[k]) < 0.01 for k in gb))
+            sel_ = lines[(lines.ym == (y, m)) & (lines.subscription_id.map(lst.plan) == pl)]
+            alt[("billed", y, m, pl)] = (sel_.amt / sel_.n_subs).sum()
+    check("ask B convergent reading: the platform's lines alone, a shared line counted once (no legacy bill, no credit "
+          "note), give the golden", all(abs(alt[k] - gb[k]) < 0.01 for k in gb))
     hdr = {}
     for (y, m) in C.ASK_B_MONTHS:
         for pl in C.PLANS:

@@ -88,7 +88,9 @@ def main(target):
         t = uk(dt.datetime.strptime(at, "%Y-%m-%dT%H:%M:%SZ"))
         for x in json.loads(lj):
             if x["subscription_id"] in ids:
-                rows.append((x["subscription_id"], x["item"], x["to"], float(x["amount"]), t.year, t.month))
+                k = re.search(r" x (\d+)", x["text"])
+                share = float(x["amount"]) / (int(k.group(1)) if k else 1)
+                rows.append((x["subscription_id"], x["item"], x["to"], share, t.year, t.month))
     ln = pd.DataFrame(rows, columns=["sub", "item", "to", "gbp", "y", "m"])
     nxt = ln.groupby("sub").to.max().map(lambda s: dt.date.fromisoformat(s) + dt.timedelta(1))
     leads = {(d - dt.date(2027, 1, 26)).days for d in nxt}
@@ -108,10 +110,19 @@ def main(target):
     off = rd("offers_engine_acceptances_2026.csv")
     prof = rd("subscriber_profile_2026-01-31.csv").set_index("subscription_ref")
     d = lbs[(lbs.line_type == "DISC") & lbs.applied_ref.isin(set(off.acceptance_ref))].copy()
+    d["off"] = -d.gbp
+    # the app's half-price rate lines (the write-up names the codes): the discount is the January charge less the rate
+    rates = ("DIG-MA", "DGP-MA", "FAM-MA")
+    r = lbs[(lbs.line_type == "SUB") & lbs.item_code.isin(rates)].copy()
+    janc = lbs[(lbs.line_type == "SUB") & ~lbs.item_code.isin(rates) & (lbs.day.dt.year == 2026)
+               & (lbs.day.dt.month == 1)].groupby("subscription_ref").gbp.max()
+    r["off"] = r.subscription_ref.map(janc) - r.gbp
+    ok("ask A: every app rate line has a January charge to measure it against", r.off.notna().all(), "%d lines" % len(r))
+    d = pd.concat([d[["subscription_ref", "day", "off"]], r[["subscription_ref", "day", "off"]]])
     d["plan"] = d.subscription_ref.map(prof.plan)
     for m in (2, 3):
         for pl in PLANS:
-            v = -d[(d.day.dt.year == 2026) & (d.day.dt.month == m) & (d.plan == pl)].gbp.sum()
+            v = d[(d.day.dt.year == 2026) & (d.day.dt.month == m) & (d.plan == pl)].off.sum()
             ok("ask A discount, %s 2026 bills, %s" % (MONTHS[m], pl),
                nearest(v, 100) == figs["ask_a_discount"]["%s %s" % (MONTHS[m], pl)] and edge(v, 100) >= 25,
                "%.2f, edge %.2f" % (v, edge(v, 100)))

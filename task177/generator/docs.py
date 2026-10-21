@@ -72,11 +72,11 @@ VAL_BODY = [
     "Model 3.2 scores every monthly digital subscription each night for the chance that it is cancelled within 30 "
     "days. It replaced model 3.1 on 2 December 2026.",
     "Validation: subscriptions scored on 1 August 2026 and followed for 30 days. AUC 0.781 (model 3.1: 0.764).",
-    "The at-risk list for retention offers takes reader-paid monthly digital subscriptions scored 0.25 or above with no "
+    "The at-risk list for retention offers takes reader-paid monthly digital subscriptions scored 0.20 or above with no "
     "cancellation pending.",
 ]
 VAL_BANDS = (("A", "0.55 and above", "61.4%", "58.9%"), ("B", "0.40 to 0.549", "46.8%", "47.5%"),
-             ("C", "0.25 to 0.399", "31.9%", "33.2%"))
+             ("C", "0.20 to 0.399", "28.0%", "29.6%"))
 VAL_FEATURES = ("articles read in the last 28 days", "months subscribed", "support contacts in the last 90 days",
                 "newsletters taken", "plan", "main device", "payment failures in the last year")
 
@@ -97,7 +97,7 @@ PLAN = [
         "Email and in-app message on Tuesday 26 January 2027 from 09:30.",
     ]),
     ("Last January", [
-        "The same offer went to a random half of the 31 January 2026 at-risk list that day; the other half was not "
+        "The same offer went on 31 January 2026 to a random half of that day's at-risk list; the other half was not "
         "sent it.",
     ]),
     ("What the executive team needs before the send", [
@@ -125,7 +125,8 @@ FIELDS = (
     (C.F_PROFILE, "support_contacts_90d", "integer", "Contacts with customer services in the last 90 days"),
     (C.F_PROFILE, "payment_method", "text", "Payment method"),
     (C.F_PROFILE, "app_user_id", "text", "App user id, for subscribers who use the app"),
-    (C.F_LIST, "list_id", "text", "Campaign tool list"),
+    (C.F_LIST, "list_id", "text", "Campaign tool list; the tool names a list's export by its send day (RET-2027-01 "
+                                  "was cut on 25 January 2027 for the 26 January send)"),
     (C.F_LIST, "subscription_id", "text", "Platform subscription id"),
     (C.F_LIST, "account_id", "text", "Platform account id"),
     (C.F_LIST, "customer_no", "text", "CRM customer number"),

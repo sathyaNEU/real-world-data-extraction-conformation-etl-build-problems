@@ -6,6 +6,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import os
+import re
 
 import numpy as np
 import pandas as pd
@@ -37,9 +38,11 @@ class Pack:
         rows = []
         for iid, lj in zip(self.spinv.invoice_id, self.spinv.lines):
             for x in json.loads(lj):
-                rows.append((iid, x["line"], x["subscription_id"], x["item"], x["from"], x["to"], float(x["amount"])))
-        self.spline = pd.DataFrame(rows, columns=["invoice_id", "line_no", "subscription_id", "item_code", "service_from",
-                                                  "service_to", "amt"])
+                m = re.search(r" x (\d+)", x["text"])
+                rows.append((iid, x["line"], x["subscription_id"], x["item"], x["text"], x["from"], x["to"],
+                             float(x["amount"]), int(m.group(1)) if m else 1))
+        self.spline = pd.DataFrame(rows, columns=["invoice_id", "line_no", "subscription_id", "item_code", "text",
+                                                  "service_from", "service_to", "amt", "n_subs"])
 
 
 # --------------------------------------------------------------------------------------------------- the call
@@ -101,19 +104,32 @@ def call(P):
 
 
 # ---------------------------------------------------------------------------------------------------- ask A
+def offer_discounts(P):
+    """every bill line last January's offer discounted: the discount lines an acceptance applied, and the bills of
+    the app acceptances the engine never applied, which charge the plan at the app's half-price rate (their discount
+    is the subscription's own regular charge less the rate)"""
+    refs = set(P.offers.acceptance_ref)
+    disc = P.lbs[(P.lbs.line_type == "DISC") & P.lbs.applied_ref.isin(refs)]
+    disc = disc.assign(off=-disc.amt)
+    sub = P.lbs[P.lbs.line_type == "SUB"]
+    rate = sub[sub.item_code.isin(set(C.RATE_CODE.values()))]
+    regular = sub[sub.item_code.isin(set(C.PLAN_CODE.values()))]
+    jan = regular[(regular.date >= "2026-01-01") & (regular.date <= "2026-01-31")].groupby("subscription_ref").amt.max()
+    rate = rate.assign(off=rate.subscription_ref.map(jan) - rate.amt)
+    both = pd.concat([disc[["subscription_ref", "date", "off"]], rate[["subscription_ref", "date", "off"]]])
+    plan = P.profile.set_index("subscription_ref").plan
+    return both.assign(plan=both.subscription_ref.map(plan), m=both.date.dt.month, y=both.date.dt.year)
+
+
 def ask_a(P):
     """the discount last January's offer gave on bills raised in February and March 2026, by plan; how many
     subscriptions took it, by plan"""
-    refs = set(P.offers.acceptance_ref)
-    disc = P.lbs[(P.lbs.line_type == "DISC") & P.lbs.applied_ref.isin(refs)]
-    plan = P.profile.set_index("subscription_ref").plan
-    disc = disc.assign(plan=disc.subscription_ref.map(plan), m=disc.date.dt.month, y=disc.date.dt.year)
+    d = offer_discounts(P)
     out = {}
     for (y, m) in ((2026, 2), (2026, 3)):
         for pl in C.PLANS:
-            v = -disc[(disc.y == y) & (disc.m == m) & (disc.plan == pl)].amt.sum()
-            out[("disc", m, pl)] = round(v, 2)
-    takers = disc.drop_duplicates("subscription_ref")
+            out[("disc", m, pl)] = round(d[(d.y == y) & (d.m == m) & (d.plan == pl)].off.sum(), 2)
+    takers = d.drop_duplicates("subscription_ref")
     for pl in C.PLANS:
         out[("takers", pl)] = int((takers.plan == pl).sum())
     return out
@@ -143,7 +159,8 @@ def ask_b(P):
     plan = lst.plan
     for (y, m) in C.ASK_B_MONTHS:
         for pl in C.PLANS:
-            sl = lines[(lines.ym == (y, m)) & (lines.subscription_id.map(plan) == pl)].amt.sum()
+            sel = lines[(lines.ym == (y, m)) & (lines.subscription_id.map(plan) == pl)]
+            sl = (sel.amt / sel.n_subs).sum()        # a line billing a household's two subscriptions counts once
             lg = lb[(lb.date.dt.year == y) & (lb.date.dt.month == m) & (lb.sp.map(plan) == pl)].amt.sum()
             rv = lb_rev[(lb_rev.date.dt.year == y) & (lb_rev.date.dt.month == m) & (lb_rev.sp.map(plan) == pl)].amt.sum()
             out[("billed", y, m, pl)] = round(sl + lg - rv, 2)

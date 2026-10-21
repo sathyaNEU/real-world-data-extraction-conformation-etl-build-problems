@@ -9,11 +9,12 @@ Stump terms swept: effect, window, uplift, subscriber, billing, difference, fort
 ## 3 answer figures in the pack (REVIEW 1)
 - **REVIEW** `retention_offer_plan_2027.docx`: carries 7 of 8 distinctive words of the committed call: '20 per cent of the 48,000 subscriptions on the 26 January 2027 list will still be subscribed on 31 March 2027 because th'
 
-## 4 design-note vocabulary (REVIEW 1)
+## 4 design-note vocabulary (REVIEW 2)
 - **REVIEW** `billing_move_note_2026.pdf`: 3 of 25 stump-paragraph terms appear (billing, subscription, invoice); read whether the document names the move
+- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Put the forecast and your working in retention_offer_forecast_2027.xlsx, with the discount last January's offer gave on bills raised in February and in March 2026 on each plan and how many subscriptions on each plan took"
 
 ## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `subscriptions_platform_invoices.csv`: 106912 ISO dates after 2027-01-25, e.g. 2027-01-31
+- **REVIEW** `subscriptions_platform_invoices.csv`: 105991 ISO dates after 2027-01-25, e.g. 2027-01-31
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

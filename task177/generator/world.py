@@ -31,6 +31,10 @@ P = dict(
     restart=0.025,        # leavers who restart within four weeks
     open_rate=0.30,       # offer emails opened
     app_accept=0.34,      # accepters who accept in the app (its own discount code and customer key)
+    app_fallback=0.15,    # app acceptances the offers engine did not apply; the app put the subscription on a half-price
+                          # rate for its next two bills instead of a discount line
+    household=0.40,       # second subscriptions on the list subscription's plan, billed on its account
+    together=0.65,        # ... of which set up the same day as the list subscription (same billing day)
     both_channels=0.06,   # app accepters who also accept from the email (a second acceptance, another key)
     moved_day=0.10,       # subscriptions whose bill day moved from their start day (a recovered failed payment)
     addon=0.13,           # this year's accounts that also hold the Puzzles add-on
@@ -282,11 +286,31 @@ def this_year(ly):
     ex["dom"] = np.where(ra.random(k) < P["moved_day"], ra.integers(1, 29, k), dom)
     ex["sp_sub"] = ids(ra, k, "S", 9, 430000000)
     ex["legacy"] = np.array([s < C.MOVE for s in ex.start])
-    ex["lbs"] = np.where(ex.legacy, ids(ra, k, "L", 7, 7000000), "")
+    lbs_all = ids(ra, k, "L", 7, 7000000)
+    ex["lbs"] = np.where(ex.legacy, lbs_all, "")
     ex["batch"] = ty.batch.values[ex.owner.values]
     ex["dup"] = ex.legacy & (ex.dom == 1) & ex.batch.isin(held)
     payer_acct = ids(ra, k, "A", 8, 69000000)
     ex["sp_acct"] = np.where(ex.kind == "payer", payer_acct, ty.sp_acct.values[ex.owner.values])
+    # households: a second subscription set up with the list subscription takes its plan, its start and its billing
+    # day, so the two are billed together; a payer's own subscription is on another plan than the one it pays for
+    rh = C.stream("ty_household")
+    own = ex.owner.values
+    hh = (ex.kind.values == "second") & (rh.random(k) < P["household"])
+    ex["household"] = hh
+    ex.loc[hh, "plan"] = ty.plan.values[own[hh]]
+    tog = hh & legacy[own] & (C.stream("ty_household_together").random(k) < P["together"])
+    ex["together"] = tog
+    ex.loc[tog, "start"] = pd.Series(ty.start.values[own[tog]], index=ex.index[tog])
+    ex.loc[tog, "dom"] = ty.dom.values[own[tog]]
+    same = (ex.kind.values == "payer") & (ex.plan.values == ty.plan.values[own])
+    alt = rh.random(k)
+    for j in np.where(same)[0]:
+        others = [p for p in C.PLANS if p != ty.plan.iat[own[j]]]
+        ex.iat[j, ex.columns.get_loc("plan")] = others[int(alt[j] * 2)]
+    ex["legacy"] = np.array([s < C.MOVE for s in ex.start])
+    ex["lbs"] = np.where(ex.legacy, lbs_all, "")
+    ex["dup"] = ex.legacy & (ex.dom == 1) & ex.batch.isin(held)
     # a list subscription paid from another account carries that account's id
     pay_rows = ex[ex.kind == "payer"]
     ty.loc[pay_rows.owner.values, "sp_acct"] = pay_rows.sp_acct.values

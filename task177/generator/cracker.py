@@ -101,6 +101,62 @@ def mirror_b(P):
             for (y, m) in C.ASK_B_MONTHS for pl in C.PLANS}
 
 
+def reader_b_a(P):
+    """reader B's quoted path for ask A (round 1): "legacy DISC lines whose applied_ref is an offers-engine acceptance
+    (OE26; codes STAY50 and LNT-APP-JAN26, the latter being the app route), summed by invoice month and the plan of the
+    SUB line on the same invoice ... Takers = distinct subscriptions with such a discount (duplicate acceptances
+    collapsed)", as quoted."""
+    refs = set(P.offers.acceptance_ref)
+    disc = P.lbs[(P.lbs.line_type == "DISC") & P.lbs.applied_ref.isin(refs)]
+    sub = P.lbs[P.lbs.line_type == "SUB"]
+    code_plan = {v: k for k, v in C.PLAN_CODE.items()}
+    sub = sub.assign(pl=sub.item_code.map(code_plan)).dropna(subset=["pl"]).drop_duplicates("invoice_no")
+    inv_plan = sub.set_index("invoice_no").pl
+    disc = disc.assign(pl=disc.invoice_no.map(inv_plan), m=disc.date.dt.month, y=disc.date.dt.year)
+    out = {}
+    for m in (2, 3):
+        for pl in C.PLANS:
+            out[("disc", m, pl)] = -disc[(disc.y == 2026) & (disc.m == m) & (disc.pl == pl)].amt.sum()
+    tk = disc.drop_duplicates("subscription_ref")
+    for pl in C.PLANS:
+        out[("takers", pl)] = int((tk.pl == pl).sum())
+    return out
+
+
+def reader_b_b(P, credits="none"):
+    """reader B's quoted path for ask B (round 1): "platform invoice lines for list subscription ids, plan items only
+    (puzzles add-on excluded), goodwill credit lines (LOYAL-CR) netted, month = UK date of issue"; with credits="header"
+    the credit notes are also netted at their totals against the subscription they are filed under, and with
+    credits="covers" the legacy 1 October bills are added through the crosswalk and each bill a credit note covers is
+    taken off at its own amount (the golden's October handling)"""
+    lst = P.lst.set_index("subscription_id")
+    ids = set(lst.index)
+    plan = lst.plan
+    inv = P.spinv[P.spinv.doc_type == "invoice"][["invoice_id", "uk"]]
+    ln = P.spline.merge(inv, on="invoice_id")
+    ln = ln[ln.subscription_id.isin(ids) & (ln.item_code != C.ADDON_CODE)]
+    ln = ln.assign(ym=[(t.year, t.month) for t in ln.uk], pl=ln.subscription_id.map(plan))
+    cn = P.spinv[(P.spinv.doc_type == "credit_note") & P.spinv.subscription_id.isin(ids)]
+    cn = cn.assign(ym=[(t.year, t.month) for t in cn.uk], pl=cn.subscription_id.map(plan))
+    x = P.xwalk.set_index("legacy_subscription_ref").platform_subscription_id
+    lb = P.lbs[P.lbs.line_type == "SUB"].copy()
+    lb["sp"] = lb.subscription_ref.map(x)
+    lb = lb[lb.sp.isin(ids) & (lb.date >= "2026-10-01")]
+    allcn = P.spinv[P.spinv.doc_type == "credit_note"]
+    covered = set(";".join(allcn.covers).split(";")) if len(allcn) else set()
+    out = {}
+    for (y, m) in C.ASK_B_MONTHS:
+        for pl in C.PLANS:
+            v = ln[(ln.ym == (y, m)) & (ln.pl == pl)].amt.sum()
+            if credits == "header":
+                v += cn[(cn.ym == (y, m)) & (cn.pl == pl)].amt.sum()
+            elif credits == "covers":
+                g = lb[(lb.date.dt.year == y) & (lb.date.dt.month == m) & (lb.sp.map(plan) == pl)]
+                v += g.amt.sum() - g[g.invoice_no.isin(covered)].amt.sum()
+            out[("billed", y, m, pl)] = v
+    return out
+
+
 def hit(golden, v, key):
     if key[0] == "takers":
         return int(round(v)) == int(golden)
@@ -109,28 +165,36 @@ def hit(golden, v, key):
 
 def sheet(target):
     P, c, ga, gb, ly, ty = K.figures(target)
-    rows = []
-    for name, g, cr, mi in (("A", ga, cracker_a(P), mirror_a(P)), ("B", gb, cracker_b(P), mirror_b(P))):
-        for k in g:
-            rows.append((name, k, g[k], cr[k], hit(g[k], cr[k], k), mi[k], hit(g[k], mi[k], k)))
-    n = len(rows)
-    kc = sum(1 for r in rows if r[4])
-    km = sum(1 for r in rows if r[6])
-    lc, lm = kc / n, km / n
+    paths = {"cracker": (cracker_a(P), cracker_b(P)), "mirror": (mirror_a(P), mirror_b(P)),
+             "reader B as quoted": (reader_b_a(P), reader_b_b(P)),
+             "reader B, credit notes at their totals": (reader_b_a(P), reader_b_b(P, "header")),
+             "reader B, legacy bills and covered bills": (reader_b_a(P), reader_b_b(P, "covers"))}
+    rows, keeps = [], {}
+    for name, (pa, pb) in paths.items():
+        k = 0
+        for ask, g, p in (("A", ga, pa), ("B", gb, pb)):
+            for key in g:
+                h = hit(g[key], p[key], key)
+                k += h
+                rows.append((name, ask, key, g[key], p[key], h))
+        keeps[name] = k
+    n = len(ga) + len(gb)
+    lc, lm = keeps["cracker"] / n, keeps["mirror"] / n
     cscore = W_CALL + W_INSTR + W_ASKS * lc
     sscore = R_MISS + W_INSTR + W_ASKS * lm
-    return rows, dict(n=n, cracker_keeps=kc, mirror_keeps=km, pair=(cscore + sscore) / 2, mirror_leakage=100 * lm,
-                      call_golden=c["share"], call_mirror=c["pooled"])
+    return rows, dict(n=n, keeps=keeps, cracker_keeps=keeps["cracker"], mirror_keeps=keeps["mirror"],
+                      pair=(cscore + sscore) / 2, mirror_leakage=100 * lm, call_golden=c["share"], call_mirror=c["pooled"])
 
 
 def main(target):
     rows, s = sheet(target)
-    print("%-3s %-34s %14s %14s %5s %14s %5s" % ("ask", "figure", "golden", "cracker", "hit", "mirror", "hit"))
-    for a, k, g, cr, hc, mi, hm in rows:
-        print("%-3s %-34s %14.2f %14.2f %5s %14.2f %5s" % (a, str(k), g, cr, "HIT" if hc else "miss", mi, "HIT" if hm else "miss"))
+    print("%-42s %-3s %-30s %13s %13s %5s" % ("path", "ask", "figure", "golden", "path", "hit"))
+    for name, ask, k, g, p, h in rows:
+        print("%-42s %-3s %-30s %13.2f %13.2f %5s" % (name, ask, str(k), g, p, "HIT" if h else "miss"))
     print("call: golden %.2f (%d), mirror %.2f (%d)" % (s["call_golden"], C.pct5(s["call_golden"] / 100),
                                                       s["call_mirror"], C.pct5(s["call_mirror"] / 100)))
-    print("ask figures %d; cracker keeps %d, mirror keeps %d" % (s["n"], s["cracker_keeps"], s["mirror_keeps"]))
+    for name, k in s["keeps"].items():
+        print("ask figures kept by %s: %d of %d" % (name, k, s["n"]))
     print("Pair ceiling: %.1f   Mirror leakage: %.1f per cent of ask weight" % (s["pair"], s["mirror_leakage"]))
     return s
 

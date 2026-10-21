@@ -22,7 +22,8 @@ SOURCES = {
     C.F_SPINV: ("Daily Lantern Media subscriptions platform, invoice and credit note export pulled for this year's list "
                 "(one row per document, its lines as JSON)", "2027-01-25"),
     C.F_XWALK: ("Daily Lantern Media Billing Operations, legacy reference to platform id crosswalk issued with the "
-                "billing move note", "2027-01-25"),
+                "billing move note, for the subscriptions on either list, their add-ons and the other subscriptions on "
+                "this year's list accounts", "2027-01-25"),
     C.F_EVENTS: ("Daily Lantern Media subscription events for last January's list, from both billing systems",
                  "2027-01-25"),
     C.F_OFFERS: ("Daily Lantern Media offers engine, acceptances of the January 2026 retention offer", "2027-01-25"),
