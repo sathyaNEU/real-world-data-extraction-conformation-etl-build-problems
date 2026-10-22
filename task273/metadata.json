@@ -1,0 +1,118 @@
+{
+ "answer": "5 endpoints to fix: EP01, EP02, EP05, EP16, EP22",
+ "distractors": [
+  "apm_traces_perf_2026-11-18.json",
+  "payroll_db_slow_queries_2026-11.csv"
+ ],
+ "domain": "General Statistics & Data Science (missing data, censoring and measurement error)",
+ "objective": "Descriptive & Distribution Analysis",
+ "provenance": {
+  "apm_traces_perf_2026-11-18.json": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "billing_credits_2026-05-01_to_11-19.json": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "billing_subscription_events_2026.csv": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "contents.txt": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "crm_employer_accounts_2026-11-01.csv": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "developer_portal_changelog_2026.html": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "edge_requests_hourly_2026-01.csv": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "edge_uptime_monitors.yaml": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "legacy_billing_credits_2026-01_to_04.csv": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "loadtest_jmeter_results_2026-11-10_to_12.jtl": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "loadtest_k6_results_2026-11-16_to_19.csv": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "payroll_db_slow_queries_2026-11.csv": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "perf_cluster_pod_events_2026-11.csv": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "perf_gc_log_export_2026-11-10_to_19.log": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "public_api_endpoint_register.xlsx": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "status_page_incidents_2025-12_to_2026-11.xlsx": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "yearend_peak_loadtest_plan_2026.docx": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  },
+  "yearend_readiness_standard_2026.pdf": {
+   "date": "2026-10-22",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+  }
+ },
+ "rows": {
+  "apm_traces_perf_2026-11-18.json": 236,
+  "billing_credits_2026-05-01_to_11-19.json": 472,
+  "billing_subscription_events_2026.csv": 4341,
+  "crm_employer_accounts_2026-11-01.csv": 5424,
+  "edge_requests_hourly_2026-01.csv": 21050,
+  "legacy_billing_credits_2026-01_to_04.csv": 377,
+  "loadtest_jmeter_results_2026-11-10_to_12.jtl": 71962,
+  "loadtest_k6_results_2026-11-16_to_19.csv": 119387,
+  "payroll_db_slow_queries_2026-11.csv": 633,
+  "perf_cluster_pod_events_2026-11.csv": 230,
+  "perf_gc_log_export_2026-11-10_to_19.log": 29714,
+  "public_api_endpoint_register.xlsx": 24,
+  "status_page_incidents_2025-12_to_2026-11.xlsx": 133
+ },
+ "task": "task273",
+ "title": "Mirrendale Payroll: the public API endpoints to fix before the 2026 code freeze"
+}
