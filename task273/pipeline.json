@@ -1,34 +1,34 @@
 {
   "task": "task273",
   "owner": "sathay3012",
-  "status": "PAUSED",
+  "status": "DESIGN",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-22",
-  "stump": "A competent analyst who conforms the two load-test exports, keeps each endpoint's run of record without its warm-up and takes the 99th percentile of the recorded response times names too few endpoints, because the test clients each send the next request only after the last returns, so a pod's garbage-collection pause leaves one slow record per blocked client where customers arriving independently would meet it many times; the textbook back-fill names too many, because it credits each blocked client with every request it would have sent to the paused pod and back-fills endpoints that are slow on their own; only the response times rebuilt from each pod's pause record names the endpoints customers would see breach.",
-  "architecture": 1,
+  "stump": "A competent solver divides each use's caused crashes by its registered or permitted vehicles and covers the uses whose vehicles work long hours (ride-hail, taxi, parcel vans); one who knows induced exposure covers rental cars at their pooled not-at-fault share; the step that lands either there is taking a sample drawn by crash occurrence as a sample of miles, when only the not-at-fault share within each road class and hour, scaled by that stratum's VMT, measures miles.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-22"
+    "exit": null,
+    "date": null
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-22 (no LEAK): the plan's Table 1 lists every endpoint; generic load-test and estimand nouns in the plan and the standard; three files renamed off the author's vocabulary; each answered in the note's Leak check",
-    "reader": "r273a and r273b (architecture 1) both landed the call: the closed-loop test's coordinated omission rebuilt per pod from the GC log; asks r273a 36 of 48, r273b 48 of 48 (score_reader FAIL on both)"
+    "leak_py": null,
+    "reader": null
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-22 (no BLOCK): nearest driver 0.10 (task229 v1, lineage); same-puzzle and same-driver signatures differentiated on the card",
-    "nearest": "0.10 task229 v1 (lineage)"
+    "heart": null,
+    "nearest": "0.07 task201 v2"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "task273/determinism_check_report.md (Gate G method_or_model_selection, analytical_non_defect; Gate H pass)"
+    "verdict": null,
+    "disposition": null,
+    "report": null
   },
   "returned": [],
-  "resume": "Re-root to architecture 2, draw paused 2026-10-22 after the screens in the design note's last Tried and rejected line (none cleared; the guard window also closes composition_mix, other and causal_design). Resume the draw with a new driver once task274 is drawn, through guard.py recent, coverage, mechanisms and slots (stumping Part 6), not a hardening of coordinated omission; the card's identity moves into lineage at registration. If the next screen clears nothing, the number retires as task272 did. Lesson: a mechanism practitioners know by name, reached from the estimand's own determinacy sentences, is landable; asks need devices no routine reconstruction undoes.",
+  "resume": "Architecture 2 drawn 2026-10-22 (card registered 17:48Z, guard WARN only): each commercial vehicle use's crashes caused per mile against private drivers, its miles recovered from its share of the not-at-fault vehicles within each road class, day type and hour, scaled by the state's mileage for that stratum. Next: stage 2, the design note's default path, stump sentence, three rules, ladder (per vehicle, crash share, pooled share, road-only and hour-only strata, the full construction), fork table, closure, asks off the call's population, prompt.txt, then precut.py; the world search tunes each partial stratification onto a different set.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -40,6 +40,12 @@
       "architecture": 1,
       "drawn": "2026-10-22",
       "fate": "spent 2026-10-22 at stage 4: both isolated scored readers named coordinated omission and rebuilt open arrivals per pod from standard 1.2, 2.2 and the plan's closed workload, landing the five; r273b every ask figure; judge DETERMINISTIC, APPROVE"
+    },
+    {
+      "architecture": 2,
+      "drawn": "2026-10-22",
+      "fate": null,
+      "driver": "The decisive quantity is each group's rate of causing a two-party event per unit of travel when no record measures any group's travel; the uninvolved parties of those events measure it, but they are drawn where events are frequent, so their share overstates the travel of groups that travel at frequent-event times and places and has to be taken within each such stratum and scaled by the stratum's measured total travel."
     }
   ],
   "seed": "DA23 (an open-source security fund's 60 maintainer stipends): set aside at the draw; the world is new (Tried and rejected)"
