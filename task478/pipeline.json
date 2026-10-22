@@ -1,39 +1,39 @@
 {
   "task": "task478",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "DESIGN",
   "domain": "supply-chain-logistics/transportation-network (client: general-statistics-data-science/data-integration-record-linkage-entity-resolution)",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-22",
-  "stump": "The default path links the pothole detections at one distance and designates Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle at anything from 132 to 410 feet, or a seven with Grisholt and Oxbrae in place of Fenwick Gap and Kestrelton at 54 to 124 feet, because every Kerbline phone places a detection ahead of the pothole along its direction of travel by its own GPS latency times its speed, so on the two-lane roads one pothole seen both ways is two clusters of detections while the bridge decks' neighbouring potholes sit closer together than that; each detection moved back by its unit's latency, measured on the surveyed utility covers, at its own pass's direction and speed from the traversals, the detections link at any distance from 2 to 27 feet into potholes that designate the seven, Fenwick Gap at 6.90 and Kestrelton at 7.09.",
+  "stump": "to be filled at design: the default path counts each section's class 9 trucks over 80,000 lb from the weights as recorded; the golden carries each station's weights to the scale houses' static level through its loaded tractors' steer axles first",
   "architecture": 5,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-22"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (each document's own vocabulary; nothing names a latency, lag or offset)",
-    "reader": "eight readers over four rounds: seven missed the call, reader F (round 3) landed it by fitting each unit's lag from cluster offsets on signed speed; a call any reader lands is spent"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (no BLOCK)",
-    "nearest": "task478 v2 (lineage, 0.20, differentiated); surface exit 0, four pairs promoted on 0.10 surface similarity (task189, task231, task447, task191), none sharing a mechanism"
+    "heart": "",
+    "nearest": ""
   },
   "judge": {
-    "verdict": "DETERMINISTIC (r4e, after r4a to r4d found the cold-mix ask open)",
-    "disposition": "APPROVE (r4e)",
-    "report": "determinism_check_report_v4e.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "stage 1: architecture 4 spent at stage 4 (reader F landed the call; see the design note's Architecture 4 record); re-root to architecture 5 with a fresh draw, read Tried and rejected first",
+  "resume": "stage 2: architecture 5 drawn 2026-10-22 (WIM stations calibrated on loaded steer axles against static tickets); write the design note sections, the asks and prompt.txt, then precut.py",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "source_note": "seed ET35 (repeat-disaster counties across a FEMA region) screened at the draw and set aside (records-fixed count, semantics levers, spent mechanisms); the decision's form kept in a fresh world: a state DOT district's spring patching crews placed by the potholes its camera fleet found and did not find in a March 2027 detection campaign"
+  "source_note": "re-root to a fresh world (a turnpike authority's weigh-in-motion stations); the seed ET35 world and the pothole world were spent with architectures 1 to 4"
 }

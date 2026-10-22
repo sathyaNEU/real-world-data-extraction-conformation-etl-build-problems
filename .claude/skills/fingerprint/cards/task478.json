@@ -1,114 +1,82 @@
 {
   "task": "task478",
-  "architecture": "v4",
-  "drawn": "2026-10-21",
-  "slot_note": "seed ET35 (repeat-disaster counties across a FEMA region): the world screened at the draw and set aside (every unobserved quantity it offers is a spent lane mechanism and the declaration count itself is records-fixed, its levers 'Statewide' rows, amendments and spellings data semantics); the decision kept in form (which administrative areas a programme serves, on a count per area) in a fresh world: a state DOT district's spring patching crews placed by the potholes its camera-equipped maintenance fleet found and did not find in a March detection campaign",
+  "architecture": "v5",
+  "drawn": "2026-10-22",
+  "slot_note": "re-root after architectures 1 to 4 were spent at stage 4 (no retirement, the author's rule); a fresh world in the ETL objective: a turnpike authority ranks its twelve corridors for its 2027 virtual weigh station contract by the share of five-axle tractor-semitrailers its weigh-in-motion stations weighed over the 80,000-lb gross limit in 2026",
   "domain": "supply-chain-logistics",
   "client_domain": "general-statistics-data-science",
   "subdomain": "transportation-network",
-  "niche": "a state DOT district's count of the distinct potholes its camera-equipped maintenance fleet recorded on each maintenance section's state roadway in March, resolved from raw detections that each phone places ahead of the pothole by its own GPS latency in its direction of travel, placing its spring patching crews",
+  "niche": "a turnpike authority's twelve corridors ranked for 2027 virtual weigh station installations by each corridor's 2026 share of five-axle tractor-semitrailers over the 80,000-lb gross limit, weighed by piezoelectric and bending-plate weigh-in-motion stations whose calibrations differ, each station's level read off its loaded tractors' steer axles against the scale houses' static tickets",
   "objective": "etl",
-  "shape": "other",
-  "decision_type": "designation_set",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "Give dedicated spring patching crews to seven of the fourteen sections: Elmscourt, Thistlebank, Holloway Run, Carrow Point, Norvelle, Kestrelton and Fenwick Gap.",
-  "answer_source": "submission.md block 1; generator/figures.json call.designated and sections.*.rate",
+  "answer": "to be filled at ship",
+  "answer_source": "generator/figures.json",
   "gap": [
-    "population"
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G10",
-    "G3",
-    "G2"
+    "G16",
+    "G19"
   ],
   "gate_g": "etl_conformance",
-  "calibration_form": "none",
+  "calibration_form": "physical_verification",
   "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms Kerbline's detections, the telematics traversals, the road inventory and its crosswalk and reads every rule correctly links the detections into potholes at one distance and designates five sections at anything from 132 to 410 feet (Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle) or a seven with Grisholt and Oxbrae for Fenwick Gap and Kestrelton at 54 to 124 feet; checked on the surveyed utility covers the error is centred on zero at a median of 53 feet, which reads as scatter, and a tolerance per unit from it designates the five again; only each detection moved back by its unit's latency at its own pass's direction and speed designates the seven.",
-  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is a count of distinct entities resolved from position reports that carry a systematic, direction-dependent instrument bias, the bias calibrated per instrument on control objects of surveyed position and removed using each report's own direction and speed before the reports are linked; a generic dedup at one distance designates other sections at every distance, and without the surveyed controls and the pass record the bias cannot be measured or removed.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:a directional instrument latency calibrated on control points before the reports are linked",
+  "analyst_test": "A strong analyst who parses the authority's per-vehicle WIM records, keeps the five-axle tractor-semitrailers and reads the program's rules correctly counts each corridor's share over 80,000 lb from the weights as recorded and fills the five installations with corridors whose stations read high; carrying each station's weights to the scale houses' static level through its loaded tractors' steer axles fills a different five.",
+  "domain_test": "General statistics, so the swap is of the method: the deciding quantity is the share of a measured population above a fixed limit, read through instruments that each carry their own multiplicative bias, the bias measured per instrument on a component whose true size depends only on a coarse state and not on what the limit tests, matched by that state to a reference reading of the same component. In the turnpike's nouns this is the traffic monitoring field's own weigh-in-motion quality control on class 9 steer axles; with another field's nouns the steer axle, the load-state matching and the static scale have nothing to attach to.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:an instrument's multiplicative bias measured on a load-independent component, matched by load state to a static reference, before readings are counted against a limit",
   "layer1": [
-    "Kerbline's detections in district local time against the telematics traversals in UTC across the 14 March 2027 daylight saving change",
-    "Kerbline's road_ref on the 2025 inventory release against the 2026 release's split and merged segments (the inventory crosswalk)",
-    "five state segments turned back to the City on 15 March, still listed in the 2026 inventory (the turnback notice)",
-    "utility covers Kerbline reports alongside the potholes, surveyed in the district's asset inventory",
-    "mobile-app work orders writing the order's total pounds on every line (ask device)"
+    "two sensor vendors' per-vehicle exports: the piezoelectric stations' fixed-width records with weights in hundreds of pounds against the bending-plate stations' CSV in kilograms",
+    "station controller clocks on local standard time all year against the toll system's UTC timestamps",
+    "a controller replacement during 2026 that renumbered one station's lanes",
+    "the station-to-corridor list keyed by milepost, with one station re-sited along the road in 2025",
+    "records the controller flagged (speed out of range, axle weights not summing to the gross) left in the export",
+    "the scale houses' static tickets keyed at the scale, axle weights in pounds and the gross typed separately"
   ],
-  "stakeholder_role": "the district maintenance engineer of a state DOT district, who issues the spring patching crews' task orders",
-  "role_family": "field_unit_lead",
+  "stakeholder_role": "the turnpike authority's director of freight operations, who recommends the 2027 virtual weigh station sites to the authority's executive team",
+  "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "kerbline_detections_2027-03.csv",
-    "rows": 103162,
-    "entity": "one detection of a defect by one Kerbline unit on one pass",
-    "grain": "unit x defect x pass",
-    "source": "synthetic (constructed in the layout of a road-defect camera platform's detections export)"
+    "file": "wim_vehicle_records_2026.csv",
+    "rows": 0,
+    "entity": "one vehicle weighed by one WIM station in one lane",
+    "grain": "vehicle x station pass",
+    "source": "synthetic (constructed in the layout of a per-vehicle weigh-in-motion record export)"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "season_or_peak",
+  "forum": "executive_team",
+  "forcing_event": "purchase_order_or_contract",
   "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "United States (an unnamed state's DOT, its fictional Tamsett District)",
+    "geography": "United States (an unnamed state's turnpike)",
     "currency": "USD",
-    "org_type": "state department of transportation district office maintaining state highways",
-    "invented_names": [
-      "Tamsett District",
-      "Kerbline Vision"
-    ],
+    "org_type": "a public turnpike authority operating a toll road",
+    "invented_names": [],
     "people": [
-      "Nancy Hansen",
-      "Andrew Greene"
+      "Anthony Hale",
+      "Anna Haynes"
     ]
   },
-  "deliverables": [
-    "tamsett_spring_patching_sections_2027.csv",
-    "tamsett_spring_patching_task_orders_2027.pdf"
-  ],
+  "deliverables": [],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "Distinct entities are counted from position reports that each instrument displaces along its direction of travel by its own latency times its speed, so one entity seen in both directions appears as two tight clusters; the latency is calibrated on control objects of surveyed position and each report corrected by its pass's direction and speed before linking, while any single linking distance either splits the two directions or merges close neighbours.",
-  "driver_concrete": "Each section's potholes per ten lane-miles counts the distinct potholes its Kerbline detections resolve to after each detection is moved back along its pass by its unit's GPS latency (measured against the asset inventory's surveyed utility covers) times the pass's speed from the telematics traversals, because every phone places what it sees ahead of where it is, northbound to the north and southbound to the south.",
-  "stump": "The default path links the pothole detections at one distance and designates Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle at anything from 132 to 410 feet, or a seven with Grisholt and Oxbrae at 54 to 124 feet, because every Kerbline phone places a detection ahead of the pothole along its direction of travel by its own GPS latency times its speed, so on the two-lane roads one pothole seen both ways is two clusters while the bridge decks' neighbouring potholes sit closer than that; each detection moved back by its unit's latency on the surveyed covers at its own pass's speed and direction, the detections designate the seven.",
+  "driver": "The decisive quantity is the share of a measured population above a fixed limit, read through instruments that each carry their own multiplicative bias; a component of every unit whose true size depends only on a coarse state and not on the quantity the limit tests is read by the same instruments, so its level at each instrument, matched by that state to a reference reading of the same component, measures the instrument's bias, and dividing each reading by it before counting moves the ranking the raw readings give, while matching unlike states moves it again.",
+  "driver_concrete": "Each corridor's 2026 share of five-axle tractor-semitrailers over the 80,000-lb gross limit is counted from piezoelectric and bending-plate WIM stations whose weights run several per cent high or low; a tractor's steer axle carries its cab and engine and moves only with whether the trailer is loaded, so each station's loaded tractors' steer-axle level against the scale houses' loaded static tickets measures its calibration, and the raw weights and an all-tractor steer calibration each fill the five installations differently from the calibrated weights.",
+  "stump": "to be filled at design",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task104": "task104 replays a self-adapting scorer at a setting it never ran; here a count of road defects is completed from repeat detections, and the independent chances are the distinct cameras that drove a segment, not its passes.",
-    "task134": "task134's first architecture is a cumulative incidence with competing exits and censoring; here nothing exits and nothing is followed: unseen members are completed from cross-instrument recaptures, each instrument missing the same members on every look.",
-    "task177": "task177 weighs chosen against imposed experiences in later choices; here nothing is chosen: a count is completed from detections whose repeats by one camera carry no new chance of a find.",
-    "task463": "task463 is a spending-weighted price change with stock-up dynamics; here the quantity is a count of potholes completed by the number of distinct cameras that drove each segment.",
-    "task501": "task501 is the dominant eigenvalue of a who-passes-to-whom matrix; here a count is completed by the chance of at least one find across the distinct cameras that drove a segment.",
-    "task70": "task70 constructs per-record dates from an event log under a class cut; here the decisive construction is how many independent looks each segment had, the distinct cameras, read against the passes the telematics log lists.",
-    "task236": "task236 reads a capture rate against an independent fixed-protocol source after a capture change; here no protocol changes and no outside source exists: a second camera is the independent look and a repeat pass by the same camera is not.",
-    "task453": "task453's first architecture adjusts a seasonal pattern across a documented placement change; here the decisive step completes undetected defects by distinct-instrument occasions.",
-    "task470": "task470's transponder network never records some aircraft at all, so the missing activity is rebuilt from a register of units; here every pothole is visible to some cameras and not to others, independently, and the unseen are completed from the cameras' own cross-recaptures.",
-    "task462": "task462 weights each plume by one over a size-dependent detection probability fitted on blind releases; here detection does not depend on the defect and no trials exist: the per-camera find rate is read from cross-camera recaptures, and the decisive move is that repeat passes by one camera add no chance.",
-    "task473": "task473 completes untested drivers by the arrest catch rate at each positive's own BAC band, measured where everyone is tested; here there is no complete-observation subset and no band: the unseen are completed by the number of distinct cameras each segment had.",
-    "task264": "task264 weights sampled persons by the inverse of their visit multiplicity across sites; here the repeated looks are one camera's passes over one segment, and the estimand is the members no look found, not the distinct members among those seen.",
-    "task239": "task239 estimates how strongly each component's group-level part goes with a shared factor from the few members who answered; here the decisive unit is the capture occasion, a camera rather than a pass, in completing a count of unseen defects.",
-    "task48": "task48's re-root recovers a population invisible at a monitor's grain by aggregating transactions to a two-sided pair grain; here nothing is regrouped to find a population: passes are regrouped by camera to count the independent chances a segment's defects had.",
-    "task120": "task120's first architecture builds a unit from two links no file stores, for percentile cuts; here the unit is the detection occasion, and it completes a count of unseen defects.",
-    "task269": "task269 works each rider's wait over only the departures serving the rider's destination; here nothing waits: the occasions that could find a defect are the distinct cameras, not the passes, and they complete a count.",
-    "task181": "task181 locates losses of separation by a geometric condition (one aircraft crossing another's level) to forecast each sector; here nothing is located by geometry: the unseen potholes are completed from how many distinct cameras drove each segment.",
-    "task229": "task229 times two stations' peak releases against a flow window; here no schedule exists: a count of potholes is completed from cross-camera recaptures, the passes of one camera adding no chance.",
-    "task98": "task98 counts dwellings under a points cap as permits end; here no record lapses and no cap applies: the decisive step completes defects no camera recorded, counting cameras rather than passes as the looks.",
-    "task126": "task126 reads which continuity edges are re-examinations against continuing applications; here no edge is classified: the grains are a segment's passes and its distinct cameras, and only the second are independent chances of a find.",
-    "task34": "task34 separates populations by a fitted rent structure and an admissibility test; here nothing is fitted to separate members: every pothole is one population, and the unseen part of it is completed by distinct-camera recapture.",
-    "task49": "task49 floors each award's unpaid amount at zero per award; here nothing is floored or netted: the decisive grain is the capture occasion, a camera, in completing a count of unseen defects.",
-    "task52": "task52 recovers a handover day from the slowest coach's teaching days; here nothing binds on a slowest member: the find chance per camera is read from cross-camera recaptures and a segment's looks are its distinct cameras.",
-    "task57": "task57 joins two extract archives with different field names to find never-funded organisations; here no archive is merged to find a population: the unrecorded potholes are estimated, not found, by distinct-camera completion.",
-    "task74": "task74 recovers a size scale from a style re-code chain; here no chain is walked: the grain decision is passes against cameras as the independent looks in completing a count.",
-    "task75": "task75 adds reopened files found by a household-and-subject match; here no match recovers members: the members no camera saw are completed statistically from the cameras' own recaptures.",
-    "task81": "task81 groups units into firms by an identical site set across a cessation; here no units are regrouped into owners: passes are grouped by camera only to count a segment's independent chances of a find.",
-    "task478": "architectures 1 and 3 completed unrecorded potholes by capture occasions (units, then fleet groups); architecture 2 linked detections under unit-specific random scatter visible in the detections themselves; architecture 4 removes a systematic direction-dependent latency that no single file shows, calibrated on the covers and applied with the traversals.",
-    "task131": "task131 v1 nets a treatment's spillover across sibling sub-units sharing one budget; here nothing is treated or netted: a count is completed with dependent instruments of one family taken as one capture occasion."
+    "task478": "architecture 4 resolved position reports displaced by a direction-dependent latency into distinct entities on surveyed covers; here weights read with a station-level multiplicative bias are counted against a gross limit, the bias read on a load-independent axle matched by load state to static tickets, and nothing is linked or counted as entities",
+    "task252": "task252 calibrates an online analyser's readings against physical verification checks and attributes a movement; here no instrument is ever checked against a known load, and the reference is a component every weighed unit carries",
+    "task228": "task228 ranks the instruments themselves by their own random error, identified from the covariances of three independent series of one unobserved signal; here the instruments are never ranked: the units they weigh are counted against a fixed legal limit after each instrument's systematic multiplicative bias is read on a load-independent component, matched by load state to a static reference"
   },
   "lineage": [
     {
@@ -157,9 +125,23 @@
         "G12"
       ],
       "fate": "spent at stage 4 on 2026-10-21: round 2 reader D landed the call and all 14 rates by estimating each fleet group's visibility by maximum likelihood after seeing units of one group agree 93 to 100 per cent; the judge noted a unit-level truncated MLE also landed the seven"
+    },
+    {
+      "architecture": "v4",
+      "driver": "Distinct entities are counted from position reports that each instrument displaces along its direction of travel by its own latency times its speed, so one entity seen in both directions appears as two tight clusters; the latency is calibrated on control objects of surveyed position and each report corrected by its pass's direction and speed before linking, while any single linking distance either splits the two directions or merges close neighbours.",
+      "driver_concrete": "Each section's potholes per ten lane-miles counts the distinct potholes its Kerbline detections resolve to after each detection is moved back along its pass by its unit's GPS latency (measured against the asset inventory's surveyed utility covers) times the pass's speed from the telematics traversals, because every phone places what it sees ahead of where it is, northbound to the north and southbound to the south.",
+      "stump": "The default path links the pothole detections at one distance and designates Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle at anything from 132 to 410 feet, or a seven with Grisholt and Oxbrae at 54 to 124 feet, because every Kerbline phone places a detection ahead of the pothole along its direction of travel by its own GPS latency times its speed, so on the two-lane roads one pothole seen both ways is two clusters while the bridge decks' neighbouring potholes sit closer than that; each detection moved back by its unit's latency on the surveyed covers at its own pass's speed and direction, the detections designate the seven.",
+      "subdomain": "transportation-network",
+      "gate_g": "etl_conformance",
+      "generators": [
+        "G10",
+        "G3",
+        "G2"
+      ],
+      "stump_strategy": "other",
+      "fate": "spent 2026-10-22 at stage 4: reader F of eight landed the call by fitting each unit's lag from cluster offsets on the pass's signed speed; a displacement proportional to speed is identifiable from the clusters themselves, so the surveyed covers were a convenience"
     }
   ],
-  "notes": "Pairing honest label: the decision-maker is a state DOT district maintaining its highway network (supply-chain-logistics, transportation-network), sitting in general-statistics-data-science's data-integration-record-linkage-entity-resolution task type, the ETL task type the house domain maps to; the ETL work is real linkage (detections into defects across passes and cameras, vendor segments to the renumbered road inventory, camera units to vehicles by date). Redrawn twice at the draw: first off the client pairing general-statistics-data-science x etl after task479 registered it, then off business-operations-analytics/field-service-maintenance after task480 registered that pairing, subdomain, decisive pattern G16 and role family 1.5 minutes before this card; the decisive pattern is now G2 (the pass against the camera as the unit of an independent chance), which is the move itself, with G16 second. Architecture 2 (2026-10-21): the world, the decision and the asks are kept; the decisive step moves from completing unseen potholes to the district's verification sample of the recorded defects. Architecture 4 (2026-10-21): stump_strategy other, named here: a systematic, direction-dependent instrument latency calibrated on control points of surveyed position and removed pass by pass before the reports are matched; identity_resolution (task486 v2 in the window) is the step that follows it, not the one that decides. Context artifact register: the asset inventory's surveyed covers are the organ the decisive step stands on. Context artifact redrawn at stage 2 (2026-10-22): register BLOCKed against task479 v6 once it filed; the engineer works from the Spring Patching Program, a filed policy, so filed_standard is the honest label (the cover inventory is an input, not the stakeholder's file). Architecture 4 spent 2026-10-22 at stage 4: reader F landed the call by fitting each unit's lag from cluster offsets on the pass's signed speed (seven of eight readers missed; judge r4e DETERMINISTIC APPROVE).",
-  "registered": "2026-10-22T14:45:49Z",
-  "architecture_spent": true
+  "notes": "Pairing honest label: the decision-maker is a turnpike authority maintaining a toll road (supply-chain-logistics, transportation-network), sitting in general-statistics-data-science's data-integration-record-linkage-entity-resolution task type: the analysis conforms twelve stations' readings from two sensor technologies onto one weight basis before they are counted. Strategy other: an instrument calibration on an internal component, matched by state, no family key fits.",
+  "registered": "2026-10-22T20:55:56Z"
 }
