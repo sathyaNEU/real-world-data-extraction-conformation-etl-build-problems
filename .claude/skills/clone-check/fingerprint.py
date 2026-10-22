@@ -768,7 +768,8 @@ def artifact_family(cell):
     t = (cell or "").lower()
     if not t or t.startswith("none by design"):
         return None
-    return re.sub(r"[^a-z ]", " ", t).split()[0] if t else None
+    words = re.sub(r"[^a-z ]", " ", t).split()
+    return words[0] if words else None
 
 
 def norm_cell(s):
