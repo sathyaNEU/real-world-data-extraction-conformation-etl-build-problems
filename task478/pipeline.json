@@ -1,39 +1,39 @@
 {
   "task": "task478",
   "owner": "oviya1301",
-  "status": "PAUSED",
-  "domain": "supply-chain-logistics/transportation-network (client: general-statistics-data-science/data-integration-record-linkage-entity-resolution)",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences/emissions-inventory",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-22",
-  "stump": "The default path counts each section's class 9 trucks over 80,000 lb on the weights its station recorded and equips Brannock, Cole Hollow, Garnet Ridge, Ingram Mill and Jessup Fork; each station's loaded tractors' steer-axle median against the scale houses' loaded tickets measures its calibration, and the weights put on the static basis that way equip Cole Hollow, Elk Ferry, Garnet Ridge, Jessup Fork and Kettle Run",
-  "architecture": 5,
+  "stump": "The default path carries each unmonitored unit's latest source test across its 2026 fuel and names Ashgrove Refining, Haskett Ridge, Lindqvist Paperboard, Valmora Glass and Wexley Point; a unit injecting ammonia open-loop emits NOx at a rate that climbs with the operating hours on its catalyst since the last replacement, so Sedge Hollow's and St. Aldric's tests, read weeks after new catalysts went in, understate engines that ran on them all 2026 and Haskett Ridge's, read on catalysts replaced that December, overstate it, and the climb the test histories trace against catalyst hours names Ashgrove Refining, Sedge Hollow, St. Aldric Medical Center, Valmora Glass and Wexley Point.",
+  "architecture": 6,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-22"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (figures and section names in tables only)",
-    "reader": "architecture 5: round 1 on zip md5 feba8739, readers A and B missed the call and kept all 24 ask figures; round 2 on zip md5 98e0e301 after the asks were re-sited, reader C landed the call (score_reader exit 1: each station's gain measured on the vehicle classes other than 9 against the four stations that agree) and kept all 24 ask figures; reader D stopped at the spend"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (people.first Anthony; nearest driver task464 v2 at 0.08)",
-    "nearest": "task464 v2"
+    "heart": "",
+    "nearest": "task474 v2 at 0.09"
   },
   "judge": {
-    "verdict": "r5b: DETERMINISTIC (r5a on the round 1 pack: DETERMINISTIC)",
-    "disposition": "FIX_NOW (step 5's backfill window worded one-sided), moot at the spend",
-    "report": "determinism_check_report_v5.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "stage 1: architecture 5 spent at stage 4 round 2 (reader C landed the call by cross-class station gains and kept all 24 asks); re-root to architecture 6 with a fresh draw whose golden goes beyond the field's standard method, read Tried and rejected first",
+  "resume": "stage 2: architecture 6 drawn (an air district's 2026 NOx inventory, each unmonitored unit's source test carried along its catalyst's operating hours); the generator prototype is in the scratchpad; write the readability screen, fork table, ladder, closure and the ask sheet, prompt.txt, then precut",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "source_note": "re-root to a fresh world (a turnpike authority's weigh-in-motion stations); the seed ET35 world and the pothole world were spent with architectures 1 to 4"
+  "source_note": "re-root to a fresh world (an air district's SCR-controlled combustion units); the pothole world was spent with architectures 1 to 4 and the turnpike weigh-in-motion world with architecture 5"
 }
