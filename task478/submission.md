@@ -1,78 +1,77 @@
 ## Tags
 
-**Domain:** General Statistics & Data Science (data integration and entity resolution: a state DOT district's camera pilot, Kerbline's raw detections resolved into distinct potholes after each detection is moved back along its pass by its unit's GPS latency, fitted on the surveyed utility covers, times the pass's speed, and conformed to the road inventory as at 31 March into potholes per maintenance section).
+**Domain:** General Statistics & Data Science (data integration: a turnpike authority's twelve weigh-in-motion stations of two sensor types conformed onto the static scale's weight basis through each station's loaded class 9 steer axles against the scale houses' tickets, then counted against the 80,000-lb gross limit by section).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Give dedicated spring patching crews to seven of the fourteen sections: Elmscourt, Thistlebank, Holloway Run, Carrow Point, Norvelle, Kestrelton and Fenwick Gap.**
-Their state roadway held 9, 8, 8, 8, 8, 7 and 7 potholes per ten lane-miles in March 2027 against the program's 6.0 line; the highest of the other seven is Rushmead at 5. Not the five sections (Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle) that joining the detections where Kerbline placed them at one distance of 200 feet designates: every unit places a detection ahead of the pothole along its direction of travel by its GPS latency (0.47 to 1.74 seconds) times its speed, so a distance wide enough to join a pothole's two directions runs the bridge decks' potholes together, and at 100 feet Grisholt and Oxbrae come in instead.
+**Equip Cole Hollow, Elk Ferry, Garnet Ridge, Jessup Fork and Kettle Run with the 2027 virtual weigh stations.**
+With each station's weights on the static scale's basis, 11, 16, 21, 11 and 11 per cent of the class 9 trucks their stations weighed in 2026 ran over 80,000 lb, against Dunmere's 7 per cent in sixth. Not Brannock or Ingram Mill, which lead on the weights as recorded (9 and 10 per cent) only because their stations read 6 and 5 per cent heavy; not Dunmere, which comes in only when the steer axles of empty and loaded tractors are pooled.
 
 ## 2. Critical Components
 
-1. The program's roadway is **2,428.9** lane-miles, the 2026 inventory less the five segments turned back on 15 March, on which the pilot's units recorded **1,427** distinct potholes in March.
-2. Potholes per ten lane-miles: Holloway Run **8**, Fenwick Gap **7**, Carrow Point **8**, Grisholt **4**, Marlpit **4**, Kestrelton **7**, Elmscourt **9**, Halverton **3**, Thistlebank **8**, Oxbrae **4**, Rushmead **5**, Stonebeck **3**, Norvelle **8**, Pyke Hill **2**.
+1. Against the scale houses' loaded static tickets, on the steer axles of loaded class 9 trucks, Brannock's and Ingram Mill's stations read **6 and 5** per cent heavy and Elk Ferry's and Kettle Run's **5 and 4** per cent light.
+2. The lowest of the five shares is **11** per cent, against Dunmere's **7** in sixth.
 
 ## 3. Step-by-Step Solution
 
-1. Took the roadway from road_inventory_2026.csv less the five segments in route_turnback_notice_2027-03.pdf, lane-miles as length times through lanes (program section 2): 2,428.9 lane-miles.
-2. Joined every detection in kerbline_detections_2027-03.csv to its pass: the unit's vehicle from kerbline_unit_register.xlsx, captured_local (district local time, across the 14 March change) in UTC, and that vehicle's traversal in fleet_camera_traversals_2027-03.csv running at that moment, which gives the direction of travel (mileposts increase northbound and eastbound) and the speed (the 2026 segment's length over the traversal's duration).
-3. Fitted each unit's latency on its utility_cover detections against the nearest surveyed cover on the same route in utility_cover_inventory_2026.csv (within 0.05 mile): the error along the direction of travel regressed through the origin on the pass's speed, 0.47 to 1.74 seconds.
-4. Moved each March pothole detection (district local time) back along its pass by its unit's latency times its pass's speed, sorted each route's corrected mileposts and joined a detection to the one before it when the gap was within 10 feet; each run of joined detections is one pothole.
-5. Placed each pothole on the 2026 segment holding its median corrected milepost and kept those on the roadway: 1,427 potholes; divided each section's count by its lane-miles over ten.
-6. Pounds of cold mix from mms_cold_patch_orders_2027-03.csv, COMPLETE orders finished in March, each line on the section whose 2026 roadway holds its route milepost (program 3, the cold patches on the section's roadway, whichever section's crew made them): an order whose lines all carry one figure and one finished time counted that figure once (the data notes), every other line its own, a pothole patched twice on both of its orders.
-7. Designated the sections at 6.0 or more: Elmscourt, Thistlebank, Holloway Run, Carrow Point, Norvelle, Kestrelton and Fenwick Gap.
+1. Read ctpa_wim_piezo_2026.txt (fixed width, tens of pounds) and ctpa_wim_bendingplate_2026.csv (kilograms), kept the class 9 weighings the controllers did not reject and put each station in its section by its milepost in ctpa_wim_stations.csv: 155,032 class 9 trucks weighed.
+2. Took the loaded trucks in ctpa_scale_house_tickets_2026.xlsx (five axles summing over 50,000 lb): their steer axle's median on the static scale is 11,420 lb.
+3. Divided each station's median steer axle of its loaded class 9 trucks (gross over 50,000 lb as recorded) by that median: factors from 0.951 (Elk Ferry) to 1.066 (Foxbriar).
+4. Divided every weighing's gross by its station's factor and took each section's share over 80,000 lb (program 3.2): Cole Hollow 11, Elk Ferry 16, Garnet Ridge 21, Jessup Fork 11 and Kettle Run 11 lead, Dunmere is sixth at 7 per cent.
+5. For the weekday entries, took each entry in ctpa_toll_entries_5axle_2026.csv once: a T26 row stamped up to 16 minutes before a numeric-id row of the same tag and plaza is the new host's backfill of that entry (the plazas moved one by one in May and June) and goes; the numeric-id rows are the old host's local stamps and the other T26 rows UTC; placed plaza P23 at Brannock Road to 30 April (ctpa_toll_schedule_2025.pdf) and at Halbrook East from 1 September (ctpa_toll_plazas.csv), and averaged over the 261 weekdays (program 5): 502 five-axle entries a weekday on the turnpike.
+6. For the citations, placed each violation G row of ctpa_citations_2026.csv at its tag's last toll entry before the stop, the trip weighed (program 6.2), on those entries with the old host's stamps read as local time (read as UTC, the entry a cited truck makes coming back through the barrier after offloading falls before its stop), not at its entry_plaza, which the toll system returned when the citation was keyed: 1,279 gross overweight citations.
+7. Recommended the five highest shares: Cole Hollow, Elk Ferry, Garnet Ridge, Jessup Fork and Kettle Run.
 
 ## 4. Deliverable Answers
 
-### tamsett_spring_patching_sections_2027.csv
+### ctpa_vws_sections_2027.xlsx
 
-1. Potholes per ten lane-miles of state roadway, March 2027, whole numbers:
-   - 401 Holloway Run: 8
-   - 402 Fenwick Gap: 7
-   - 403 Carrow Point: 8
-   - 404 Grisholt: 4
-   - 405 Marlpit: 4
-   - 406 Kestrelton: 7
-   - 407 Elmscourt: 9
-   - 408 Halverton: 3
-   - 409 Thistlebank: 8
-   - 410 Oxbrae: 4
-   - 411 Rushmead: 5
-   - 412 Stonebeck: 3
-   - 413 Norvelle: 8
-   - 414 Pyke Hill: 2
-2. Dedicated crew:
-   - 401 Holloway Run: Yes
-   - 402 Fenwick Gap: Yes
-   - 403 Carrow Point: Yes
-   - 404 Grisholt: No
-   - 405 Marlpit: No
-   - 406 Kestrelton: Yes
-   - 407 Elmscourt: Yes
-   - 408 Halverton: No
-   - 409 Thistlebank: Yes
-   - 410 Oxbrae: No
-   - 411 Rushmead: No
-   - 412 Stonebeck: No
-   - 413 Norvelle: Yes
-   - 414 Pyke Hill: No
-3. Pounds of cold mix the section's March cold patches used:
-   - 401 Holloway Run: 1,760
-   - 402 Fenwick Gap: 1,495
-   - 403 Carrow Point: 4,125
-   - 404 Grisholt: 640
-   - 405 Marlpit: 1,070
-   - 406 Kestrelton: 1,340
-   - 407 Elmscourt: 4,495
-   - 408 Halverton: 520
-   - 409 Thistlebank: 2,005
-   - 410 Oxbrae: 380
-   - 411 Rushmead: 3,125
-   - 412 Stonebeck: 1,060
-   - 413 Norvelle: 1,495
-   - 414 Pyke Hill: 625
+1. The five sections to equip: Cole Hollow, Elk Ferry, Garnet Ridge, Jessup Fork and Kettle Run.
+2. Share of the class 9 trucks each section's station weighed in 2026 that were over 80,000 lb, whole per cent:
+   - Ashford Gap: 5 per cent
+   - Brannock: 3 per cent
+   - Cole Hollow: 11 per cent
+   - Dunmere: 7 per cent
+   - Elk Ferry: 16 per cent
+   - Foxbriar: 3 per cent
+   - Garnet Ridge: 21 per cent
+   - Halbrook: 6 per cent
+   - Ingram Mill: 4 per cent
+   - Jessup Fork: 11 per cent
+   - Kettle Run: 11 per cent
+   - Lowfield: 5 per cent
+3. Average five-axle trucks a weekday entering at each section's interchanges in 2026, whole trucks:
+   - Ashford Gap: 58
+   - Brannock: 58
+   - Cole Hollow: 26
+   - Dunmere: 55
+   - Elk Ferry: 23
+   - Foxbriar: 55
+   - Garnet Ridge: 22
+   - Halbrook: 31
+   - Ingram Mill: 52
+   - Jessup Fork: 27
+   - Kettle Run: 41
+   - Lowfield: 54
+4. Gross overweight citations the scale houses issued in 2026 to five-axle trucks that had entered at each section, whole citations:
+   - Ashford Gap: 65
+   - Brannock: 173
+   - Cole Hollow: 68
+   - Dunmere: 178
+   - Elk Ferry: 52
+   - Foxbriar: 168
+   - Garnet Ridge: 61
+   - Halbrook: 107
+   - Ingram Mill: 165
+   - Jessup Fork: 63
+   - Kettle Run: 121
+   - Lowfield: 58
 
-### tamsett_spring_patching_task_orders_2027.pdf
+### ctpa_section_overweight_2026.csv
 
-1. Bar chart on page 1 of every section's potholes per ten lane-miles against the program's 6.0 line, the seven designated sections in dark blue.
+5. Twelve rows, one per section west to east, each with its share as in item 2.
+
+### ctpa_overweight_share_2026.svg
+
+6. Bar chart of the twelve shares west to east, each labelled with its whole per cent, the five sections to equip in blue and the others in grey.

@@ -4,92 +4,101 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
+CODES = ["%02d" % i for i in range(1, 13)]
 
 
-WORDS = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine"}
-
-
-def join(xs):
-    return ", ".join(xs[:-1]) + " and " + xs[-1]
+def join(xs, word="and"):
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " %s " % word + xs[-1]
 
 
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    secs = sorted(f["sections"].items(), key=lambda kv: kv[1]["section"])
-    des = f["call"]["designated"]
+    by = {x["section"]: (n, x) for n, x in f["sections"].items()}
+    five = [by[c][0] for c in CODES if by[c][1]["equip"] == "Yes"]
+    S = lambda n: f["sections"][n]
     c = f["components"]
-    d = f["default"]
-    rates = ", ".join("%d" % f["sections"][n]["rate"] for n in des[:-1]) + " and %d" % f["sections"][des[-1]]["rate"]
+    six = c["sixth"]
+    raw_in = [n for n in f["default"]["equip"] if n not in five]
+    pooled_in = [n for n in f["pooled"]["equip"] if n not in five]
+    heavy = [n for n in raw_in]
+    light = [n for n in five if n not in f["default"]["equip"]]
+    low = min(S(n)["share_pct"] for n in five)
     out = []
     out.append("## Tags\n")
-    out.append("**Domain:** General Statistics & Data Science (data integration and entity resolution: a state DOT "
-               "district's camera pilot, Kerbline's raw detections resolved into distinct potholes after each detection is "
-               "moved back along its pass by its unit's GPS latency, fitted on the surveyed utility covers, times the "
-               "pass's speed, and conformed to the road inventory as at 31 March into potholes per maintenance section).")
+    out.append("**Domain:** General Statistics & Data Science (data integration: a turnpike authority's twelve "
+               "weigh-in-motion stations of two sensor types conformed onto the static scale's weight basis through each "
+               "station's loaded class 9 steer axles against the scale houses' tickets, then counted against the 80,000-lb "
+               "gross limit by section).")
     out.append("**Analytical objective:** Data Extraction & Conformation (ETL).\n")
     out.append("## 1. Final Recommendation\n")
-    n_out = f["call"]["of"] - f["call"]["count"]
-    out.append("**Give dedicated spring patching crews to %s of the fourteen sections: %s.**" % (WORDS[len(des)], join(des)))
-    out.append("Their state roadway held %s potholes per ten lane-miles in March 2027 against the program's %.1f line; the "
-               "highest of the other %s is %s at %d. Not the %s sections (%s) that joining the detections where Kerbline "
-               "placed them at one distance of %d feet designates: every unit places a detection ahead of the pothole "
-               "along its direction of travel by its GPS latency (%.2f to %.2f seconds) times its speed, so a distance "
-               "wide enough to join a pothole's two directions runs the bridge decks' potholes together, and at %d feet "
-               "%s come in instead.\n"
-               % (rates, f["line"], WORDS[n_out], c["highest_below"]["name"], c["highest_below"]["rate"],
-                  WORDS[len(d["designated"])], join(d["designated"]), d["tolerance_ft"], c["latency_s"][0],
-                  c["latency_s"][1], d["near_ft"], join([n for n in d["near_designated"] if n not in des])))
+    out.append("**Equip %s with the 2027 virtual weigh stations.**" % join(five))
+    out.append("With each station's weights on the static scale's basis, %s per cent of the class 9 trucks their "
+               "stations weighed in 2026 ran over 80,000 lb, against %s's %d per cent in sixth. Not %s, which lead on "
+               "the weights as recorded (%s per cent) only because their stations read %s per cent heavy; not %s, which "
+               "comes in only when the steer axles of empty and loaded tractors are pooled.\n"
+               % (join(["%d" % S(n)["share_pct"] for n in five]), six["name"], six["share_pct"], join(raw_in, "or"),
+                  join(["%d" % S(n)["raw_share_pct"] for n in raw_in]), join(["%d" % S(n)["reads_pct"] for n in heavy]),
+                  join(pooled_in, "or")))
     out.append("## 2. Critical Components\n")
-    out.append("1. The program's roadway is **{:,.1f}** lane-miles, the 2026 inventory less the five segments turned back "
-               "on 15 March, on which the pilot's units recorded **{:,}** distinct potholes in March.".format(
-                   c["lane_miles"], c["potholes"]))
-    out.append("2. Potholes per ten lane-miles: %s.\n" % ", ".join("%s **%d**" % (n, x["rate"]) for n, x in secs))
+    out.append("1. Against the scale houses' loaded static tickets, on the steer axles of loaded class 9 trucks, %s "
+               "stations read **%s** per cent heavy and %s **%s** per cent light."
+               % (join(["%s's" % n for n in heavy]), join(["%d" % S(n)["reads_pct"] for n in heavy]),
+                  join(["%s's" % n for n in light]), join(["%d" % -S(n)["reads_pct"] for n in light])))
+    out.append("2. The lowest of the five shares is **%d** per cent, against %s's **%d** in sixth.\n"
+               % (low, six["name"], six["share_pct"]))
     out.append("## 3. Step-by-Step Solution\n")
     steps = [
-        "Took the roadway from road_inventory_2026.csv less the five segments in route_turnback_notice_2027-03.pdf, "
-        "lane-miles as length times through lanes (program section 2): {:,.1f} lane-miles.".format(c["lane_miles"]),
-        "Joined every detection in kerbline_detections_2027-03.csv to its pass: the unit's vehicle from "
-        "kerbline_unit_register.xlsx, captured_local (district local time, across the 14 March change) in UTC, and that "
-        "vehicle's traversal in fleet_camera_traversals_2027-03.csv running at that moment, which gives the direction of "
-        "travel (mileposts increase northbound and eastbound) and the speed (the 2026 segment's length over the "
-        "traversal's duration).",
-        "Fitted each unit's latency on its utility_cover detections against the nearest surveyed cover on the same route "
-        "in utility_cover_inventory_2026.csv (within %.2f mile): the error along the direction of travel regressed "
-        "through the origin on the pass's speed, %.2f to %.2f seconds." % (c["cover_radius_mi"], c["latency_s"][0],
-                                                                            c["latency_s"][1]),
-        "Moved each March pothole detection (district local time) back along its pass by its unit's latency times its "
-        "pass's speed, sorted each route's corrected mileposts and joined a detection to the one before it when the gap "
-        "was within %d feet; each run of joined detections is one pothole." % c["link_ft"],
-        "Placed each pothole on the 2026 segment holding its median corrected milepost and kept those on the roadway: "
-        "{:,} potholes; divided each section's count by its lane-miles over ten.".format(c["potholes"]),
-        "Pounds of cold mix from mms_cold_patch_orders_2027-03.csv, COMPLETE orders finished in March, each line on the "
-        "section whose 2026 roadway holds its route milepost (program 3, the cold patches on the section's roadway, "
-        "whichever section's crew made them): an order whose lines all carry one figure and one finished time counted "
-        "that figure once (the data notes), every other line its own, a pothole patched twice on both of its orders.",
-        "Designated the sections at %.1f or more: %s." % (f["line"], join(des)),
+        "Read ctpa_wim_piezo_2026.txt (fixed width, tens of pounds) and ctpa_wim_bendingplate_2026.csv (kilograms), "
+        "kept the class 9 weighings the controllers did not reject and put each station in its section by its milepost "
+        "in ctpa_wim_stations.csv: {:,} class 9 trucks weighed.".format(c["class9_weighed"]),
+        "Took the loaded trucks in ctpa_scale_house_tickets_2026.xlsx (five axles summing over 50,000 lb): their steer "
+        "axle's median on the static scale is {:,} lb.".format(c["ticket_loaded_steer_lb"]),
+        "Divided each station's median steer axle of its loaded class 9 trucks (gross over 50,000 lb as recorded) by "
+        "that median: factors from %s (%s) to %s (%s)." % (c["factor_low"]["factor"], c["factor_low"]["name"],
+                                                           c["factor_high"]["factor"], c["factor_high"]["name"]),
+        "Divided every weighing's gross by its station's factor and took each section's share over 80,000 lb (program "
+        "3.2): %s lead, %s is sixth at %d per cent."
+        % (join(["%s %d" % (n, S(n)["share_pct"]) for n in five]), six["name"], six["share_pct"]),
+        "For the weekday entries, took each entry in ctpa_toll_entries_5axle_2026.csv once: a T26 row stamped up to 16 "
+        "minutes before a numeric-id row of the same tag and plaza is the new host's backfill of that entry (the plazas "
+        "moved one by one in May and June) and goes; the numeric-id rows are the old host's local stamps and the other "
+        "T26 rows UTC; placed plaza P23 at Brannock Road to 30 April (ctpa_toll_schedule_2025.pdf) and at Halbrook East "
+        "from 1 September (ctpa_toll_plazas.csv), and averaged over the 261 weekdays (program 5): {:,} five-axle entries "
+        "a weekday on the turnpike.".format(c["entries_weekday_total"]),
+        "For the citations, placed each violation G row of ctpa_citations_2026.csv at its tag's last toll entry before "
+        "the stop, the trip weighed (program 6.2), on those entries with the old host's stamps read as local time (read "
+        "as UTC, the entry a cited truck makes coming back through the barrier after offloading falls before its stop), "
+        "not at its entry_plaza, which the toll system returned when the citation was keyed: {:,} gross overweight "
+        "citations.".format(c["gross_citations_total"]),
+        "Recommended the five highest shares: %s." % join(five),
     ]
     for i, s in enumerate(steps, 1):
         out.append("%d. %s" % (i, s))
     out.append("")
     out.append("## 4. Deliverable Answers\n")
-    out.append("### tamsett_spring_patching_sections_2027.csv\n")
-    out.append("1. Potholes per ten lane-miles of state roadway, March 2027, whole numbers:")
-    for n, x in secs:
-        out.append("   - %d %s: %d" % (x["section"], n, x["rate"]))
-    out.append("2. Dedicated crew:")
-    for n, x in secs:
-        out.append("   - %d %s: %s" % (x["section"], n, x["crew"]))
-    out.append("3. Pounds of cold mix the section's March cold patches used:")
-    for n, x in secs:
-        out.append("   - %d %s: {:,}".format(x["cold_mix_lb"]) % (x["section"], n))
-    out.append("")
-    out.append("### tamsett_spring_patching_task_orders_2027.pdf\n")
-    out.append("1. Bar chart on page 1 of every section's potholes per ten lane-miles against the program's %.1f line, the "
-               "%s designated sections in dark blue." % (f["line"], WORDS[len(des)]))
-    text = "\n".join(out) + "\n"
-    open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8").write(text)
-    return text
+    out.append("### ctpa_vws_sections_2027.xlsx\n")
+    out.append("1. The five sections to equip: %s." % join(five))
+    out.append("2. Share of the class 9 trucks each section's station weighed in 2026 that were over 80,000 lb, whole "
+               "per cent:")
+    for code in CODES:
+        n, x = by[code]
+        out.append("   - %s: %d per cent" % (n, x["share_pct"]))
+    out.append("3. Average five-axle trucks a weekday entering at each section's interchanges in 2026, whole trucks:")
+    for code in CODES:
+        n, x = by[code]
+        out.append("   - %s: %d" % (n, x["weekday_entries"]))
+    out.append("4. Gross overweight citations the scale houses issued in 2026 to five-axle trucks that had entered at "
+               "each section, whole citations:")
+    for code in CODES:
+        n, x = by[code]
+        out.append("   - %s: %d" % (n, x["gross_citations"]))
+    out.append("\n### ctpa_section_overweight_2026.csv\n")
+    out.append("5. Twelve rows, one per section west to east, each with its share as in item 2.")
+    out.append("\n### ctpa_overweight_share_2026.svg\n")
+    out.append("6. Bar chart of the twelve shares west to east, each labelled with its whole per cent, the five sections "
+               "to equip in blue and the others in grey.")
+    open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8").write("\n".join(out) + "\n")
 
 
 if __name__ == "__main__":
-    print(main())
+    main()

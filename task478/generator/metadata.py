@@ -3,32 +3,32 @@ import json
 
 import pack as P
 
-DATES = {"detections": "2027-04-02", "traversals": "2027-04-02", "covers": "2026-12-15", "register": "2027-04-01",
-         "sessions": "2027-04-02", "inventory": "2027-01-04", "crosswalk": "2027-01-04", "turnback": "2027-03-01",
-         "orders": "2027-04-02", "program": "2027-04-06", "sow": "2027-01-19", "dictionary": "2027-04-03",
-         "manifest": "2027-04-03", "pci": "2026-11-30", "winter": "2027-04-01", "sections": "2027-01-04"}
-SOURCE = {"detections": "Kerbline Vision platform",
-          "register": "Kerbline Vision install log", "sessions": "Kerbline Vision device API",
-          "sow": "Kerbline Vision, Inc.", "traversals": "fleet telematics provider for the district",
-          "turnback": "City of Tamsett, Department of Public Works"}
+DATES = {"program": "2027-02-12", "dictionary": "2027-02-09", "schedule": "2024-11-18", "piezo": "2027-02-05",
+         "bending": "2027-02-05", "stations": "2027-02-05", "tickets": "2027-02-06", "citations": "2027-02-08",
+         "entries": "2027-02-04", "plazas": "2027-02-04", "pavement": "2026-07-22", "bridges": "2026-12-01"}
+SOURCE = {"program": "Office of Freight Operations", "dictionary": "Office of Freight Operations, WIM program",
+          "schedule": "Board of the Authority", "piezo": "WIM program, piezoelectric station controllers",
+          "bending": "WIM program, bending-plate vendor software", "stations": "WIM program",
+          "tickets": "enforcement unit, West and East Scale Houses", "citations": "enforcement unit citation log",
+          "entries": "toll back office", "plazas": "toll back office", "pavement": "pavement management section",
+          "bridges": "structures section, from the state's bridge inventory"}
 
 
 def write(path, n):
-    files = [dict(file=fn, source="%s (fictional), synthetic records" % SOURCE.get(k, "State Department of Transportation, "
-                                                                                   "Tamsett District"),
+    files = [dict(file=fn, source="Calderwick Turnpike Authority (fictional), %s; synthetic records" % SOURCE[k],
                   date=DATES[k], license="CC0-1.0 (synthetic, generated for this task)", rows=n.get(k))
              for k, fn in sorted(P.FILES.items(), key=lambda t: t[1])]
-    meta = dict(task="task478", title="Tamsett District Spring Patching Program 2027 designations",
-                setting="A fictional district of an unnamed U.S. state's department of transportation; every record is "
-                        "synthetic.",
-                as_of="2027-04-09", files=files,
-                distractor_files=list(P.DISTRACTORS) + [P.FILES["sessions"]],
-                distractors=[dict(file=P.FILES["pci"], why="the 2026 summer condition survey: roughness and cracking "
-                                  "before the winter, not the March potholes the program counts"),
-                             dict(file=P.FILES["winter"], why="the March storms' plow hours, salt and freeze-thaw "
-                                  "cycles by section: what made potholes, not a count of them"),
-                             dict(file=P.FILES["sessions"], why="the units' platform sessions: when a unit was "
-                                  "running, which neither the detections nor the register's install dates need")],
-                deliverables=["tamsett_spring_patching_sections_2027.csv", "tamsett_spring_patching_task_orders_2027.pdf"],
-                stated_inputs=["6.0"])
+    meta = dict(task="task478", title="Calderwick Turnpike virtual weigh station sections, 2027 contract",
+                setting="A fictional toll road authority in an unnamed U.S. state; every record is synthetic.",
+                as_of="2027-02-12", files=files,
+                distractor_files=[P.FILES["pavement"], P.FILES["bridges"]],
+                distractors=[dict(file=P.FILES["pavement"], why="the 2026 pavement condition survey by section: "
+                                  "damage heavy trucks do, not the share of them over the gross limit the program "
+                                  "sites on"),
+                             dict(file=P.FILES["bridges"], why="posted bridges on the crossing roads near the "
+                                  "interchanges: where an overweight truck may not go off the turnpike, not how many "
+                                  "run on it")],
+                deliverables=["ctpa_vws_sections_2027.xlsx", "ctpa_section_overweight_2026.csv",
+                              "ctpa_overweight_share_2026.svg"],
+                stated_inputs=["80,000 lb", "five of twelve sections", "calendar 2026"])
     json.dump(meta, open(path, "w", encoding="utf-8"), indent=1)

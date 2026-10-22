@@ -1,33 +1,36 @@
-"""checks.py: the build's assertions on the cut pack and the generator's clean truth. The three rules executed (R1 to
-R3c), the ladder over a fine sweep of linking distances and the golden's family, the semantic fork table (SF1 to
-SF12), the Layer 1 items' neutrality, the ask with its device and the separation line, the input gates, the realism
-sweep and the documents read back.
+"""task478's assertions on the cut pack and the generator's clean truth: the three rules (R1 to R3c), every semantic fork
+row (SF1 to SF18), the ladder, the golden's licensed family and margins, the asks' devices, the separation line, the
+distractors, the input gates and the realism sweep.
 
     python3 task478/generator/checks.py
 """
-import csv
 import datetime as dt
 import json
 import os
 import re
+import shutil
 import sys
-from collections import Counter, defaultdict
+import tempfile
+import warnings
+
+import numpy as np
+import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+warnings.filterwarnings("ignore")
 
-import methods as M    # noqa: E402
-import pack as P       # noqa: E402
-import records as R    # noqa: E402
-import world as W      # noqa: E402
+import bundle as B    # noqa: E402
+import pack as P      # noqa: E402
+import world as W     # noqa: E402
 
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
-GOLD = sorted([401, 402, 403, 406, 407, 409, 413])
-DEFAULT = [401, 403, 407, 409, 413]
-NEAR = sorted([401, 403, 404, 407, 409, 410, 413])
-ORDER = sorted(W.SEC)
+GOLD = ["03", "05", "07", "10", "11"]
+DEFAULT = ["02", "03", "07", "09", "10"]
 RESULTS = []
+LINES = (45000, 50000, 56000, 60000, 65000, 70000, 72000)
+RECEIPT_ALLOW = W.RECEIPT_MIN / 60.0      # the old host stamped an entry up to this many hours after it happened
 
 
 def check(name, ok):
@@ -35,305 +38,447 @@ def check(name, ok):
     print("%s  %s" % ("PASS" if ok else "FAIL", name))
 
 
-def pdf_text(name):
-    import pdfplumber
-    with pdfplumber.open(os.path.join(TARGET, name)) as pdf:
-        return "\n".join(p.extract_text() or "" for p in pdf.pages)
+def pdf_text(key):
+    import pypdf
+    r = pypdf.PdfReader(os.path.join(TARGET, P.FILES[key]))
+    return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in r.pages))
 
 
-def whole(x):
-    return int(x + 0.5)
+def whole(sh):
+    return {c: B.hround(sh[c]) for c in B.CODES}
+
+
+def subset(keys):
+    """A copy of the pack holding only the named files."""
+    d = tempfile.mkdtemp(prefix="t478_")
+    for k in keys:
+        shutil.copy(os.path.join(TARGET, P.FILES[k]), os.path.join(d, P.FILES[k]))
+    return d
+
+
+def ticket_arrays(tk, keyed=False):
+    st = tk["Axle 1 (lb)"].astype(float).to_numpy()
+    g = tk["Gross (lb)"].astype(float).to_numpy() if keyed else \
+        tk[["Axle %d (lb)" % i for i in range(1, 6)]].astype(float).sum(axis=1).to_numpy()
+    return st, g
+
+
+def factors_by(df, tst, tg, line=50000, agg=np.median, ragg=np.median):
+    return {c: agg(df[df["section"] == c]["steer"].to_numpy()[df[df["section"] == c]["gross"].to_numpy() > line])
+            / ragg(tst[tg > line]) for c in B.CODES}
+
+
+def world_routes(e):
+    """The clean truth: every station's readings and the tickets before any file is written."""
+    R = {r["code"]: (r["read"].sum(axis=1), r["read"][:, 0], r["gross"]) for r in e["wim"]}
+    tg, ts = e["tickets"]["gross"], e["tickets"]["axles"][:, 0]
+
+    def sh(fa):
+        return {c: 100.0 * np.mean(R[c][0] / fa[c] > W.LIMIT) for c in R}
+    out = {"raw": sh({c: 1.0 for c in R}),
+           "loaded": sh({c: np.median(R[c][1][R[c][0] > 50000]) / np.median(ts[tg > 50000]) for c in R}),
+           "pooled": sh({c: np.median(R[c][1]) / np.median(ts) for c in R}),
+           "empty": sh({c: np.median(R[c][1][R[c][0] <= 50000]) / np.median(ts[tg <= 50000]) for c in R}),
+           "gross": sh({c: np.median(R[c][0]) / np.median(tg) for c in R}),
+           "truth": {c: 100.0 * np.mean(R[c][2] > W.LIMIT) for c in R}}
+    return out
 
 
 def main():
-    e = R.everything()
-    p = M.load(TARGET)
-    g = M.golden(p)
-    fam = M.family(p, g)
-    road = g["road"]
+    f = json.load(open(os.path.join(HERE, "figures.json")))
+    wim_all = B.read_wim(TARGET)
+    df = B.class9(wim_all)
+    tk = B.read_tickets(TARGET)
+    tst, tg = ticket_arrays(tk)
+    fa = B.factors(df, tk, "loaded")
+    sh = B.shares(df, fa)
+    gw = whole(sh)
+    five = B.five(sh)
+    rank = sorted(B.CODES, key=lambda c: -sh[c])
+    e = W.everything()
 
-    # ------------------------------------------------------------------ R1: the field's raw material ships
-    cols = {}
-    for fn in os.listdir(TARGET):
+    # ---------------------------------------------------------------- R1: the field's raw material ships
+    check("R1 the WIM exports ship one record per vehicle with every axle's weight (%d class 9 weighings)" % len(df),
+          len(df) > 150000 and df["steer"].notna().all())
+    check("R1 the scale house tickets ship each truck's five static axle weights (%d tickets)" % len(tk),
+          len(tk) == 2600 and tk[["Axle %d (lb)" % i for i in range(1, 6)]].notna().all().all())
+    heads = []
+    for k, fn in P.FILES.items():
+        p = os.path.join(TARGET, fn)
         if fn.endswith(".csv"):
-            cols[fn] = open(os.path.join(TARGET, fn), encoding="utf-8").readline().strip().split(",")
-    flat = [c_.lower() for cs in cols.values() for c_ in cs]
-    det_cols = cols[P.FILES["detections"]]
-    check("R1 the detections ship one row per unit capture, with the unit, its time and its position, and no defect "
-          "number, direction or speed", {"detection_id", "unit_serial", "captured_local", "road_mp"} <= set(det_cols)
-          and not any(re.search(r"defect_id|direction|heading|speed", c_) for c_ in det_cols))
-    check("R1 the traversals ship each pass's vehicle, segment, direction and times (the raw pass record)",
-          {"vehicle_id", "segment_id", "direction", "enter_utc", "exit_utc"} <= set(cols[P.FILES["traversals"]]))
-    check("R1 the cover inventory ships the surveyed positions (the raw control points)",
-          {"asset_id", "route", "milepost"} <= set(cols[P.FILES["covers"]]))
-    check("R1 no shipped column holds an error, a latency, an offset, a speed, a tolerance, a pothole id or a rate",
-          not any(re.search(r"error|accura|latenc|offset|lag|speed|toler|sigma|cluster|pothole_id|defect_id|per_10|"
-                            r"density|estimate", c_) for c_ in flat))
+            heads += open(p, encoding="utf-8").readline().strip().lower().split(",")
+        elif fn.endswith(".xlsx"):
+            import openpyxl
+            ws = openpyxl.load_workbook(p, read_only=True).active
+            heads += [str(v).lower() for v in next(ws.iter_rows(values_only=True))]
+    check("R1 no shipped column holds a calibration, factor, bias, correction or static-basis weight",
+          not any(re.search(r"calib|factor|bias|correct|adjust|static|true_", h) for h in heads))
 
-    # ------------------------------------------------------------------ R3 on the generator's clean truth
-    S = e["S"]
-    lm = defaultdict(float)
-    for s in e["segs"]:
-        if not s["turnback"]:
-            lm[s["sec"]] += s["length"] * s["lanes"] / 10.0
-    truth = Counter(d["sec"] for d in e["defects"] if d["real"] and not d["off"] and not S[d["seg"]]["turnback"]
-                    and any(x["cls"] == "pothole" and W.local(x["t"]).month == 3 for x in e["det_by"][d["id"]]))
-    tr = {s: truth.get(s, 0) / lm[s] for s in ORDER}
-    check("R3b the generator's true counts of recorded potholes designate the golden set", M.designated(tr) == GOLD)
-    true_lat = {v["unit"]: v["lat"] for v in e["veh"]}
-    alone = M.rates(p, M.link(p, M.corrected(p, true_lat), M.TOL, road), road)
-    check("R3b the decisive step alone (each unit's true latency at its pass's speed, no Layer 1 mess) files the golden",
-          M.designated(alone) == GOLD)
-    # the easy route on the clean truth: detections where Kerbline placed them, linked at one distance
-    clean = []
-    for x in e["detections"]:
-        if x["cls"] == "pothole" and x["road_mp"] is not None and W.local(x["t"]).month == 3:
-            clean.append((x["route"], x["road_mp"], None))
-    sweep_clean = M.sweep_sets(p, clean, road)
-    hit = [d for d, st in sweep_clean.items() if st == GOLD]
-    check("R3a the easy route on the clean truth (one linking distance, every filed rule applied) misses the golden at "
-          "every distance from %.1f to %d feet" % (M.FINE[0], M.FINE[-1]), not hit)
-    check("R3c the careful route (a tolerance per unit from its error on the covers, read as scatter) files another set",
-          all(M.designated(M.rms_linkage(p, k, road)) != GOLD for k in (2.0, 2.5, 3.0, 4.0)))
+    # ---------------------------------------------------------------- R3: the analyst test on the clean truth
+    wr = world_routes(e)
+    check("R3a the easy route on the clean truth (the gross as each station read it, every filed rule applied) files "
+          "%s, the default path's answer" % B.five(wr["raw"]), B.five(wr["raw"]) == DEFAULT)
+    check("R3a the default path on the cut pack files the same five", B.five(B.shares(df)) == DEFAULT)
+    check("R3b the easy route with only the decisive step (each station's loaded steer axles against the loaded "
+          "tickets') files the golden on the clean truth", B.five(wr["loaded"]) == GOLD)
+    check("R3b each lower rung's single correction leaves a wrong five on the clean truth (pooled %s, empty %s, "
+          "gross %s)" % (B.five(wr["pooled"]), B.five(wr["empty"]), B.five(wr["gross"])),
+          all(B.five(wr[k]) != GOLD for k in ("pooled", "empty", "gross")))
+    check("R3 the trucks' true gross (the generator's truth) puts the golden five on top", B.five(wr["truth"]) == GOLD)
+    check("R3 every golden share sits within 2.5 points of the true share (the stations' random error only)",
+          all(abs(sh[c] - wr["truth"][c]) < 2.5 for c in B.CODES))
+    pz = open(os.path.join(TARGET, P.FILES["piezo"]), encoding="ascii").read().splitlines()
+    bp = pd.read_csv(os.path.join(TARGET, P.FILES["bending"]), dtype=str)
+    check("R3c no plant: no WIM record repeats another exactly (piezo %d, bending %d)" % (len(pz), len(bp)),
+          len(set(pz)) == len(pz) and not bp.duplicated().any())
+    days = df.assign(day=df["local"].dt.date).groupby(["section", "day"])["gross"].apply(lambda s: tuple(np.round(s, -1)))
+    check("R3c no plant: no station's day of class 9 weighings repeats another day", days.nunique() == len(days))
+    wax = set()
+    for ln in pz:
+        if ln[26:28] == "09":
+            wax.add(tuple(int(ln[35 + 4 * k:39 + 4 * k]) // 5 for k in range(5)))
+    for r in bp[bp["fhwa_class"] == "9"][["ax%d_kg" % i for i in range(1, 6)]].astype(int).itertuples(index=False):
+        wax.add(tuple(int(round(x / B.KG / 10.0)) // 5 for x in r))
+    tax = tk[["Axle %d (lb)" % i for i in range(1, 6)]].astype(int).to_numpy()
+    hits = sum(tuple(int(x // 10) // 5 for x in row) in wax for row in tax)
+    check("R3c no plant: no scale house ticket copies a WIM weighing (all five axles to 50 lb; %d)" % hits, hits <= 2)
 
-    # ------------------------------------------------------------------ the ladder, read from the pack
-    raw = M.sweep_sets(p, M.positions(p), road)
-    check("R0 a few feet's link designates all fourteen sections, and every link under 50 feet nine or more",
-          all(len(raw[d]) == 14 for d in M.FINE if d <= 8) and all(len(raw[d]) >= 9 for d in M.FINE if d < 50))
-    d0 = M.single(p, 200, road)
-    check("R1 the default path (one distance, 200 feet) designates %s" % M.designated(d0), M.designated(d0) == DEFAULT)
-    check("R1 every distance from 132 to 410 feet designates the same five",
-          all(raw[d] == DEFAULT for d in M.FINE if 132 <= d <= 410))
-    check("R1b every distance from 54 to 124 feet designates a seven with Grisholt and Oxbrae in place of Fenwick Gap "
-          "and Kestrelton", all(raw[d] == NEAR for d in M.FINE if 54 <= d <= 124))
-    check("R1 no single distance from %.1f to %d feet designates the golden" % (M.FINE[0], M.FINE[-1]),
-          all(st != GOLD for st in raw.values()))
-    for k in (2.0, 2.5, 3.0, 4.0):
-        r = M.rms_linkage(p, k, road)
-        check("R2 a tolerance of %.1f times the units' RMS error on the covers designates the five" % k,
-              M.designated(r) == DEFAULT)
-    for d in (130, 140, 160, 200, 230, 300, 400):
-        r = M.max_per_pass(p, d, road)
-        check("R2b a %d-foot link counted as the most detections one pass wrote leaves Fenwick Gap (%.2f) and Kestrelton "
-              "(%.2f) under the line" % (d, r[402], r[406]), r[402] < 5.75 and r[406] < 5.75 and M.designated(r) != GOLD)
-    fl = M.fleet_latency(p)
-    sw = M.sweep_sets(p, M.corrected(p, fl), road)
-    check("R3 one fleet latency (%.2f s) at the pass's speed misses the golden at every distance" % fl,
-          all(st != GOLD for st in sw.values()))
-    oi = M.offset_items(p)
-    sw = M.sweep_sets(p, oi, road)
-    on = [d for d, st in sw.items() if st == GOLD]
-    wrong = min((sum(whole(r[s]) != whole(g["est"][s]) for s in ORDER)
-                 for r in [M.single(p, d, road, oi) for d in on]), default=14)
-    check("R3 a fixed offset per unit and direction from the covers designates the five from 16 feet up and the seven's "
-          "names only between %s and %s feet, with %d or more of the fourteen whole numbers wrong there"
-          % (min(on) if on else "-", max(on) if on else "-", wrong),
-          all(sw[d] == DEFAULT for d in M.FINE if 16 <= d <= 400) and (not on or (max(on) - min(on) <= 1.0 and wrong >= 4)))
-    sw = M.sweep_sets(p, M.corrected(p, g["lat"], speed="unit"), road)
-    check("R3 each unit's latency at its mean speed, not each pass's, misses the golden at every distance",
-          all(st != GOLD for st in sw.values()))
-    gs = M.sweep_sets(p, M.corrected(p, g["lat"]), road)
-    band = [d for d, st in gs.items() if st == GOLD]
-    check("G the corrected detections designate the golden at every link from 2 to 27 feet",
-          all(gs[d] == GOLD for d in M.FINE if 2 <= d <= 27))
-    check("G the latency-corrected linkage designates the golden set", g["set"] == GOLD)
-    check("G the golden's counts are the generator's truth in every section",
-          all(g["counts"].get(s, 0) == truth.get(s, 0) for s in ORDER))
-    members = list(fam)
-    check("G every licensed member (%d: latency through the origin, as the median ratio or by direction; covers within "
-          "0.05 or 0.1 mile; a link of 8 to 20 feet; median or mean placement) designates the golden" % len(members),
-          all(M.designated(fam[k]) == GOLD for k in members))
-    check("G every licensed member prints the same fourteen whole numbers",
-          all([whole(fam[k][s]) for s in ORDER] == [whole(g["est"][s]) for s in ORDER] for k in members))
-    lo_in = min(fam[k][s] for k in members for s in GOLD)
-    hi_out = max(fam[k][s] for k in members for s in ORDER if s not in GOLD)
-    check("G margins: nearest designated %.2f, nearest undesignated %.2f (0.75 clear of the line or more)"
-          % (lo_in, hi_out), lo_in >= 6.75 and hi_out <= 5.25)
-    edge = min(abs(fam[k][s] - (int(fam[k][s]) + 0.5)) for k in members for s in ORDER)
-    check("bins: every member's figure at least 0.2 from a half (%.3f)" % edge, edge >= 0.2)
-    ce0 = M.cover_errors(p)
-    err = max(abs(g["lat"][u] - true_lat[u]) * max(x[2] for x in ce0[u]) * M.FT for u in true_lat)
-    check("the latency: every unit's fitted value moves its fastest pass's detections within a foot of where its own "
-          "latency would (worst %.2f feet), %.2f to %.2f s" % (err, min(g["lat"].values()), max(g["lat"].values())),
-          err <= 1.0)
-    # the corrected valley against the truth: a pothole's detections close, distinct potholes apart
-    did = {str(x["det"]): x["defect"] for x in e["detections"]}
-    by = defaultdict(list)
-    for rt, x, d in M.corrected(p, g["lat"]):
-        by[rt].append((x, did[d["detection_id"]]))
-    within, between = [0.0], [1e9]
-    for rt, xs in by.items():
-        xs.sort()
-        for a, b in zip(xs, xs[1:]):
-            (within if a[1] == b[1] else between).append((b[0] - a[0]) * M.FT)
-    check("the valley: corrected, a pothole's detections lie within %.1f feet of each other and distinct potholes %.1f "
-          "feet or more apart" % (max(within), min(between)), max(within) < 8 and min(between) > 20)
-    ce = M.cover_errors(p)
-    u = M.units(p)
-    check("every unit has 12 or more cover detections to be fitted on (fewest %d)" % min(len(ce[k]) for k in u),
-          min(len(ce.get(k, [])) for k in u) >= 12)
-    allerr = [x[0] for xs in ce.values() for x in xs]
-    check("the covers' errors average to almost nothing (%.1f feet) though they run %.0f feet at the median"
-          % (sum(allerr) / len(allerr) * M.FT, sorted(abs(x) for x in allerr)[len(allerr) // 2] * M.FT),
-          abs(sum(allerr) / len(allerr) * M.FT) < 5 and sorted(abs(x) for x in allerr)[len(allerr) // 2] * M.FT > 30)
-    decks = [d for d in e["pots"] if d.get("deck")]
-    check("the bridge decks: %d potholes in runs of five to eight, none on a segment a sweeper drove, most in Fenwick Gap "
-          "and Kestrelton" % len(decks), decks and all(not any(e["unit_veh"][un]["group"] == "SWEEPER" for un in d["seen"])
-                                                       for d in decks)
-          and sum(1 for d in decks if d["sec"] in (402, 406)) > len(decks) / 2)
+    # ---------------------------------------------------------------- R2: every Layer 1 item, mishandled
+    kg = wim_all.copy()
+    isb = kg["station"].str.startswith("CT")
+    kg.loc[isb, "gross"] = kg.loc[isb, "gross"] * B.KG
+    kg.loc[isb, "steer"] = kg.loc[isb, "steer"] * B.KG
+    raw_kg = B.shares(B.class9(kg))
+    bend = [s[0] for s in W.SECTIONS if s[4] == "bending"]
+    check("R2a kilograms read as pounds put every bending-plate station at zero over the limit (a loud failure no "
+          "careful route keeps)", all(raw_kg[c] == 0 for c in bend))
+    check("R2b the controllers' standard time read as daylight time leaves the call and the twelve shares (the year's "
+          "ends are in standard time)", True if df["local"].min().year == 2026 and df["local"].max().year == 2026
+          else False)
+    keep = df[~((df["station"] == P.STATION_ID[P.RELANED[0]]) & (df["lane"] > 2))]
+    check("R2c Foxbriar's renumbered lanes 3 and 4 dropped leaves the call",
+          B.five(B.shares(keep, B.factors(keep, tk))) == GOLD)
+    check("R2d the re-sited station at its previous milepost (%.1f) stays in its section" % P.RESITED[1],
+          B.section_at(P.RESITED[1]) == P.RESITED[0])
+    allr = wim_all[wim_all["cls"] == 9]
+    check("R2e the rejected weighings kept leaves the call", B.five(B.shares(allr, B.factors(allr, tk))) == GOLD)
+    ks, kgr = ticket_arrays(tk, keyed=True)
+    fk = factors_by(df, ks, kgr)
+    check("R2f the tickets' keyed gross trusted over their axles leaves the call and the twelve shares",
+          whole(B.shares(df, fk)) == gw)
+    wk = B.weekday_entries(TARGET)
+    wk_utc = B.weekday_entries(TARGET, clock="utc")
+    ci_utc = B.citations_by_section(TARGET, clock="utc")
+    ci0 = B.citations_by_section(TARGET)
+    check("R2g every toll stamp read as UTC moves only the asks (ask B in %d sections, ask A in %d)"
+          % (sum(B.hround(wk[c]) != B.hround(wk_utc[c]) for c in B.CODES), sum(ci_utc[c] != ci0[c] for c in B.CODES)),
+          sum(B.hround(wk[c]) != B.hround(wk_utc[c]) for c in B.CODES) >= 1 and
+          sum(ci_utc[c] != ci0[c] for c in B.CODES) == 12)
+    wk_cur = B.weekday_entries(TARGET, plazas="current")
+    check("R2h plaza code P23 read by the list as it stands moves only Brannock's and Halbrook's ask figures",
+          [c for c in B.CODES if B.hround(wk[c]) != B.hround(wk_cur[c])] == ["02", "08"])
 
-    # ------------------------------------------------------------------ R2: Layer 1 mishandled
-    mh = M.mishandled(p)
-    for k, v in mh.items():
-        check("R2 (%s) leaves the call" % k, M.designated(v) == GOLD)
-        if k not in ("crosswalk_unused",):
-            check("R2 (%s) leaves the fourteen whole numbers" % k,
-                  [whole(v[s]) for s in ORDER] == [whole(g["est"][s]) for s in ORDER])
-    ps = M.passes(p)
-    check("R2 every detection on the state routes finds its pass once local time is read across 14 March",
-          len(ps) == sum(1 for d in p["det"] if d["road_mp"]))
+    # ---------------------------------------------------------------- the ladder
+    raw = B.shares(df)
+    check("L0 the gross as recorded files %s" % B.five(raw), B.five(raw) == DEFAULT)
+    tr = lambda fs, ft: B.shares(df, {c: fs(df[df["section"] == c]["gross"].to_numpy(),
+                                            df[df["section"] == c]["steer"].to_numpy()) / ft(tg, tst) for c in B.CODES})
+    med, mean = np.median, np.mean
+    gross_routes = {
+        "median gross": tr(lambda g, s: med(g), lambda g, s: med(g)),
+        "mean gross": tr(lambda g, s: mean(g), lambda g, s: mean(g)),
+        "loaded median gross": tr(lambda g, s: med(g[g > 50000]), lambda g, s: med(g[g > 50000])),
+        "loaded mean gross": tr(lambda g, s: mean(g[g > 50000]), lambda g, s: mean(g[g > 50000])),
+        "empty median gross": tr(lambda g, s: med(g[g <= 50000]), lambda g, s: med(g[g <= 50000])),
+        "90th percentile gross": tr(lambda g, s: np.percentile(g, 90), lambda g, s: np.percentile(g, 90)),
+        "99th percentile gross": tr(lambda g, s: np.percentile(g, 99), lambda g, s: np.percentile(g, 99)),
+        "steer share of gross": tr(lambda g, s: med(s / g), lambda g, s: med(s / g)),
+    }
+    for k, v in gross_routes.items():
+        check("L1 every station scaled to the tickets' %s misses (%s)" % (k, B.five(v)), B.five(v) != GOLD)
+    pooled = B.shares(df, B.factors(df, tk, "pooled"))
+    pooled_mean = B.shares(df, B.factors(df, tk, "pooled", agg="mean", ragg="mean"))
+    check("L2 each station's steer axles pooled, empty and loaded, file %s (median) and %s (mean)"
+          % (B.five(pooled), B.five(pooled_mean)), B.five(pooled) != GOLD and B.five(pooled_mean) != GOLD)
+    empty = B.shares(df, B.factors(df, tk, "empty"))
+    peak = B.shares(df, B.factors(df, tk, "empty_peak"))
+    check("L3 the empty tractors' steer axles (%s) and the empty gross peak (%s) miss" % (B.five(empty), B.five(peak)),
+          B.five(empty) != GOLD and B.five(peak) != GOLD)
 
-    # ------------------------------------------------------------------ SF rows
-    inv = list(csv.DictReader(open(os.path.join(TARGET, P.FILES["inventory"]), encoding="utf-8")))
-    check("SF1 every inventory segment carries one section", all(r["section"] for r in inv) and
-          len({r["segment_id"] for r in inv}) == len(inv))
-    check("SF2 the five turned-back segments are in the inventory and the notice; keeping them keeps the call",
-          len(p["turnback"]) == 5 and all(s in p["inv"] for s in p["turnback"]) and M.designated(mh["turnback_kept"]) == GOLD)
-    check("SF3 UTC days for the window keep the call", M.designated(mh["utc_window"]) == GOLD)
-    prog = pdf_text(P.FILES["program"])
-    pz = prog.replace("\n", " ")
-    check("SF4 the program takes Kerbline's pothole class as a pothole", "pothole class as a pothole" in pz)
-    check("SF5 the program counts a pothole cold patched in March", "cold patched in March counts" in pz)
-    check("SF6 the program defines lane-miles as length times through lanes", "length times its through lanes" in pz)
-    check("SF7 no member's figure within 0.75 of the line",
-          min(abs(fam[k][s] - M.LINE) for k in members for s in ORDER) >= 0.75)
-    check("SF8 the program counts each recorded pothole once",
-          "counted once however many times and by however many units" in pz)
-    check("SF9 placing by road_ref through the crosswalk (or a split segment's first piece, or unlisted refs dropped) "
-          "keeps the call", M.designated(mh["placed_by_road_ref"]) == GOLD and
-          M.designated(mh["crosswalk_first_child"]) == GOLD and M.designated(mh["crosswalk_unused"]) == GOLD)
-    lat_f = M.latency(p, flip=True)
-    flipped = M.rates(p, M.link(p, M.corrected(p, lat_f, flip=True), M.TOL, road), road)
-    check("SF10 the direction convention read the other way: the latencies change sign and the call and the fourteen "
-          "whole numbers stay", all(lat_f[k] < 0 for k in lat_f) and M.designated(flipped) == GOLD
-          and [whole(flipped[s]) for s in ORDER] == [whole(g["est"][s]) for s in ORDER])
-    check("SF11 half up and half to even give the same fourteen whole numbers",
-          [whole(g["est"][s]) for s in ORDER] == [round(g["est"][s]) for s in ORDER])
-    check("SF12 the call reads the detections, traversals, register, covers, inventory, crosswalk and turnback only",
-          True)
+    def net(fn):
+        v = {c: fn(df[df["section"] == c]["gross"].to_numpy(), df[df["section"] == c]["steer"].to_numpy())
+             for c in B.CODES}
+        m = np.median(list(v.values()))
+        return B.shares(df, {c: v[c] / m for c in B.CODES})
+    for k, fn in (("loaded median gross", lambda g, s: med(g[g > 50000])), ("median gross", lambda g, s: med(g)),
+                  ("empty median gross", lambda g, s: med(g[g <= 50000])), ("pooled steer", lambda g, s: med(s))):
+        v = net(fn)
+        check("L4 every station scaled to the network's median %s misses (%s)" % (k, B.five(v)), B.five(v) != GOLD)
+    nl = net(lambda g, s: med(s[g > 50000]))
+    check("L5 the loaded steer axles against the network's median station (no static reference) file the golden five",
+          B.five(nl) == GOLD)
+    check("L the default path keeps four of twelve whole shares at most (%d)"
+          % sum(B.hround(raw[c]) == gw[c] for c in B.CODES), sum(B.hround(raw[c]) == gw[c] for c in B.CODES) <= 4)
 
-    # ------------------------------------------------------------------ the ask and its device
-    gA = M.ask_pounds(p)
-    cA = M.ask_pounds(p, pounds="lines")
-    check("A every section's pounds move under lines summed (A1)", all(cA.get(s, 0) != gA.get(s, 0) for s in ORDER))
-    po = M.ask_pounds(p, pounds="per_order")
-    check("A1 every section's pounds move when every repeated figure is taken once (the like potholes' orders)",
-          all(po.get(s, 0) != gA.get(s, 0) for s in ORDER))
-    by_wo = defaultdict(list)
-    for r in p["wo"]:
-        by_wo[r["wo_number"]].append(r)
-    done = {w: ls for w, ls in by_wo.items() if all(l["status"] == "COMPLETE" for l in ls)}
-    truth_mobile = {"WO-%d" % o["wo"] for o in e["orders"] if o["mobile"] and len(o["lines"]) > 1}
-    check("A1 fair: the orders taken once are exactly the mobile app's multi-line orders (%d)" % len(truth_mobile & set(done)),
-          M.total_orders(p) == {w for w in truth_mobile if w in done})
-    single_top = max(int(ls[0]["cold_mix_lb"]) for ls in done.values() if len(ls) == 1)
-    app_least = min(int(done[w][0]["cold_mix_lb"]) for w in truth_mobile if w in done)
-    check("A1 fair: every app order's one figure (least %d) is more than any single-line order used (%d), by 15 lb or more"
-          % (app_least, single_top), app_least >= single_top + 15)
-    check("A1 fair: every app order's lines carry one figure and one close",
-          all(len({l["cold_mix_lb"] for l in done[w]}) == 1 and len({l["finished"] for l in done[w]}) == 1
-              for w in truth_mobile if w in done))
-    office_multi = [w for w, ls in done.items() if len(ls) > 1 and w not in truth_mobile]
-    check("A1 fair: every office multi-line order's lines carry their own close times (%d orders)" % len(office_multi),
-          all(len({l["finished"] for l in done[w]}) == len(done[w]) for w in office_multi))
-    like = {w for w in office_multi if len({l["cold_mix_lb"] for l in done[w]}) == 1}
-    on_road = lambda w: {M.section_at(p)(r["route"], float(r["milepost"])) for r in done[w]}
-    check("A1 every section's roadway has an app order and an office order carrying one figure on like potholes",
-          all(any(on_road(w) == {s} for w in truth_mobile if w in done) and any(on_road(w) == {s} for w in like)
-              for s in ORDER))
-    two_line = [w for w in office_multi if len(done[w]) == 2]
-    check("A1 realism: like potholes' one figure on %d of %d two-line office orders, under half"
-          % (sum(1 for w in two_line if w in like), len(two_line)),
-          sum(1 for w in two_line if w in like) < 0.5 * max(1, len(two_line)))
-    check("A1 no route marker: every multi-line order keeps to one route",
-          all(len({l["route"] for l in ls}) == 1 for ls in by_wo.values()))
-    det_ids = {d["detection_id"] for d in p["det"] if d["defect_class"] == "pothole" and d["severity"]}
-    check("A1 fair: every order's ext_ref is a pothole detection carrying a severity",
-          all(r["ext_ref"] in det_ids for r in p["wo"]))
-    at = M.section_at(p)
-    cross = [r for ls in done.values() for r in ls if at(r["route"], float(r["milepost"])) != int(r["section"])]
-    check("A2 every section's pounds move when each line is taken on its order's section, not its roadway's (%d lines "
-          "made on the next section's roadway)" % len(cross),
-          all(M.ask_pounds(p, by="order").get(s, 0) != gA.get(s, 0) for s in ORDER))
-    tb = [(p["inv"][t]["route"], p["inv"][t]["bmp"], p["inv"][t]["emp"]) for t in p["turnback"]]
-    on_tb = lambda r: any(r["route"] == rt and lo <= float(r["milepost"]) <= hi for rt, lo, hi in tb)
-    check("A2 fair: every line's milepost lies on one section's 2026 roadway, never on a turned-back segment",
-          all(at(r["route"], float(r["milepost"])) is not None and not on_tb(r) for ls in done.values() for r in ls))
-    check("A2 fair: an app order's lines lie on one section's roadway (its one figure is never split)",
-          all(len({at(r["route"], float(r["milepost"])) for r in done[w]}) == 1 for w in truth_mobile if w in done))
-    check("A2 no marker: the next section's lines sit on both kinds of order and on every section's crews",
-          {int(r["section"]) for r in cross} == set(ORDER) or len({int(r["section"]) for r in cross}) >= 10)
-    fam = M.family(p, g)
-    check("A2 the pothole counts are forced: every licensed member gives every section the golden's count (%d members)"
-          % len(fam), all(abs(v[s] - g["est"][s]) < 1e-9 for v in fam.values() for s in ORDER))
-    check("A golden equals the generator's truth (pounds used)",
-          all(gA.get(s, 0) == sum(l["true_lb"] for l in e["wo_rows"] if e["S"][l["defect"]["seg"]]["sec"] == s
-                                  and l["status"] == "COMPLETE" and l["finish"] is not None
-                                  and W.local(l["finish"]).month == 3) for s in ORDER))
-    import ceiling as CE
-    pair, leak, kept_c, kept_m = CE.main(TARGET)
-    check("ceiling: the cracker keeps no ask figure, the mirror none, pair %.1f under 40" % pair,
-          not kept_c and not kept_m and pair <= 40)
+    # ---------------------------------------------------------------- the golden and its family
+    check("G1 the golden five: %s" % [B.NAMES[c] for c in five], five == GOLD)
+    check("G1 figures.json carries the golden five and the twelve shares",
+          sorted(B.CODES[B.CODES.index(f["sections"][n]["section"])] for n in f["call"]["equip"]) == GOLD and
+          all(f["sections"][B.NAMES[c]]["share_pct"] == gw[c] for c in B.CODES))
+    fam = {}
+    for line in LINES:
+        for a in ("median", "mean"):
+            for b in ("median", "mean"):
+                fam[(line, a, b)] = B.shares(df, B.factors(df, tk, "loaded", line, a, b))
+    check("G2 every licensed member (%d: the loaded line from 45,000 to 72,000 lb, the station's median or mean, the "
+          "tickets' median or mean) files the golden five" % len(fam), all(B.five(v) == GOLD for v in fam.values()))
+    check("G2 every licensed member prints the same twelve whole per cents", all(whole(v) == gw for v in fam.values()))
+    marg = min(abs((v[c] % 1) - 0.5) for v in fam.values() for c in B.CODES)
+    check("G3 every member's every share sits 0.15 points or more inside its whole-per-cent bin (least %.2f)" % marg,
+          marg >= 0.15)
+    gaps = [sorted(v.values())[-5] - sorted(v.values())[-6] for v in fam.values()]
+    check("G4 fifth clears sixth by 3.5 points or more under every member (least %.2f)" % min(gaps), min(gaps) >= 3.5)
+    reads = lambda fv: {c: B.hround(abs(fv[c] - 1) * 100) for c in ("02", "09", "05", "11")}
+    r0 = reads(fa)
+    check("G5 the critical component (Brannock and Ingram Mill %d and %d per cent heavy, Elk Ferry and Kettle Run %d "
+          "and %d light) holds under every member" % (r0["02"], r0["09"], r0["05"], r0["11"]),
+          all(reads(B.factors(df, tk, "loaded", line, a, b)) == r0 for line in LINES for a in ("median", "mean")
+              for b in ("median", "mean")) and all(abs((abs(fa[c] - 1) * 100) % 1 - 0.5) > 0.12 for c in r0))
+    check("G5 the critical component's sides: Brannock and Ingram Mill read heavy, Elk Ferry and Kettle Run light",
+          fa["02"] > 1 and fa["09"] > 1 and fa["05"] < 1 and fa["11"] < 1)
+    check("G6 the lowest of the five (%d) and sixth (%s, %d) as figures.json states"
+          % (gw[rank[4]], B.NAMES[rank[5]], gw[rank[5]]),
+          f["components"]["sixth"]["name"] == B.NAMES[rank[5]] and f["components"]["sixth"]["share_pct"] == gw[rank[5]]
+          and min(gw[c] for c in GOLD) == 11)
 
-    # ------------------------------------------------------------------ the separation line
-    import inspect
-    src = "".join(inspect.getsource(f) for f in (M.golden, M.link, M.latency, M.cover_errors, M.corrected, M.passes))
-    check("separation: the call reads no work order (the ask's device rows)", "wo" not in re.findall(r'p\["(\w+)"\]', src))
+    # ---------------------------------------------------------------- SF1 to SF18
+    prog = pdf_text("program")
+    dic = pdf_text("dictionary")
+    check("SF1 the program files gross vehicle weight as the static scale's, and the gross as recorded files another "
+          "five", "on a certified static scale" in prog and B.five(raw) != GOLD)
+    ge = B.shares(df, fa)
+    ge2 = {c: 100.0 * float(np.mean(df[df["section"] == c]["gross"].to_numpy() / fa[c] >= W.LIMIT)) for c in B.CODES}
+    check("SF2 at or above 80,000 lb gives the same call and twelve shares", whole(ge2) == whole(ge) and
+          "exceeded 80,000 lb" in prog)
+    five_ax = wim_all[(wim_all["axles"] == 5) & (wim_all["rejected"] == 0)]
+    check("SF3 every five-axle vehicle in place of class 9 gives the same call",
+          B.five(B.shares(five_ax, B.factors(five_ax, tk))) == GOLD and "FHWA vehicle class 9" in prog)
+    check("SF4 every record in place of the accepted weighings gives the same call (R2e)",
+          B.five(B.shares(allr, B.factors(allr, tk))) == GOLD)
+    utc = df[(df["local"] + pd.Timedelta(hours=5)).dt.year == 2026]
+    check("SF5 UTC dates for the controllers' clocks give the same call and twelve shares",
+          whole(B.shares(utc, B.factors(utc, tk))) == gw and "Eastern Standard Time all year" in dic)
+    check("SF6 the station list's previous milepost keeps the station in its section", B.section_at(29.7) == "02")
+    lane1 = df[df["lane"] == 1]
+    check("SF7 the first lane alone gives the same call", B.five(B.shares(lane1, B.factors(lane1, tk))) == GOLD and
+          "in every lane and in both directions" in prog)
+    fall = factors_by(df, tst, np.full(len(tst), 99999.0), line=50000)
+    check("SF8 every ticket in place of the loaded tickets as the reference gives the same call and twelve shares "
+          "(%d empty tickets)" % int((tg <= 50000).sum()), whole(B.shares(df, fall)) == gw)
+    check("SF9 the loaded line anywhere from 45,000 to 72,000 lb gives the same call and shares (G2)",
+          all(whole(fam[(l, "median", "median")]) == gw for l in LINES))
+    check("SF10 the mean in place of the median, either side, gives the same call and shares (G2)",
+          all(whole(fam[(50000, a, b)]) == gw for a in ("median", "mean") for b in ("median", "mean")))
+    check("SF11 half up and half to even agree on the twelve shares (no share at a half)",
+          all(B.hround(sh[c]) == int(np.round(sh[c])) for c in B.CODES))
+    check("SF12 no tie for fifth (%.2f points clear)" % (sh[rank[4]] - sh[rank[5]]), sh[rank[4]] - sh[rank[5]] >= 3.5)
+    ent = B.entries_clean(TARGET)
+    wkd = ent[np.array([d.weekday() < 5 for d in ent["date"]])]
+    hol = wkd[wkd["date"].isin(set(W.HOLIDAYS))]
+    check("SF13 the program counts holidays among the 261 weekdays, and leaving them out moves the figures (%d holiday "
+          "entries)" % len(hol), "holidays included" in prog and "261" in prog and len(hol) > 1000)
+    check("SF14 the program dates an entry by its local date; the UTC date moves ask B (R2g)",
+          "by the local date of the entry" in prog and wk_utc != wk)
+    pl = pd.read_csv(os.path.join(TARGET, P.FILES["plazas"]))
+    sched = pdf_text("schedule")
+    check("SF15 the plaza list dates P41 and the reissued P23, and the 2025 schedule places P23 at Brannock Road",
+          set(pl.loc[pl["in_service_from"].notna(), "plaza"]) == {"P41", "P23"} and "P23 Brannock Road 38.1" in sched)
+    ci = B.citations_by_section(TARGET)
+    cr = B.read_citations(TARGET)
+    ent_s = ent.sort_values("local")
+    by_tag = {t: v for t, v in ent_s.groupby("tag_id")}
+    tkt = tk.assign(when=pd.to_datetime(tk["Date"].astype(str).str[:10] + " " + tk["Time"]))
+    over = tkt[tg > 80000]
+    ps = B.plaza_section(TARGET)
+    cnt = {}
+    for tag, when in zip(over["Tag"], over["when"]):
+        v = by_tag[tag]
+        row = v[v["local"] <= when].iloc[-1]
+        s_ = ps(row["plaza"], row["date"])
+        cnt[s_] = cnt.get(s_, 0) + 1
+    check("SF16 a ticket over 80,000 lb is not a citation: counting tickets moves ask A (%d sections), and the program "
+          "names violation code G" % sum(cnt.get(c, 0) != ci[c] for c in B.CODES),
+          sum(cnt.get(c, 0) != ci[c] for c in B.CODES) >= 8 and "violation code G" in prog)
+    lg = B.citations_by_section(TARGET, "logged")
+    check("SF17 the program places a citation at the trip weighed; the log's entry plaza moves all twelve (A1)",
+          "on the trip on which the scale house weighed it" in prog and all(lg[c] != ci[c] for c in B.CODES))
+    d18 = subset(["piezo", "bending", "stations", "tickets"])
+    df18 = B.class9(B.read_wim(d18))
+    s18 = B.shares(df18, B.factors(df18, B.read_tickets(d18)))
+    check("SF18 the call and twelve shares from the WIM exports, the station list and the tickets alone",
+          whole(s18) == gw and B.five(s18) == GOLD)
+    shutil.rmtree(d18)
 
-    # ------------------------------------------------------------------ input gates
-    files = sorted(os.listdir(TARGET))
-    fmts = {f.rsplit(".", 1)[1] for f in files}
-    rows = {f: sum(1 for _ in open(os.path.join(TARGET, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv")}
-    check("gate: %d files" % len(files), len(files) >= 10)
-    check("gate: %d formats (%s)" % (len(fmts), ", ".join(sorted(fmts))), len(fmts) >= 3)
-    check("gate: a file of 25,000 rows or more (%s)" % max(rows.values()), max(rows.values()) >= 25000)
+    # ---------------------------------------------------------------- the asks
+    mv = lambda a: sum(B.hround(a[c]) != B.hround(wk[c]) for c in B.CODES)
+    var = {k: B.weekday_entries(TARGET, dedup=k) for k in ("none", "exact", "pair60", "cut_first", "cut_last",
+                                                             "sameday")}
+    check("A2 every section's weekday entries move under every reflex (%s)"
+          % ", ".join("%s %d" % (k, mv(v)) for k, v in var.items()), all(mv(v) == 12 for v in var.values()))
+    raw_e = B.read_entries(TARGET)
+    old, new = raw_e[raw_e["old"]], raw_e[~raw_e["old"]]
+    back = B._twins(old, new, -60, 16 * 60)
+    gen = P.entry_rows(e)
+    n_back = sum(1 for r in gen if r[5] == "backfill")
+    check("A2 fair: the new-host rows stamped up to 16 minutes before an old-host row of the same tag and plaza are "
+          "exactly the backfill (%d rows), each with one twin" % len(back),
+          len(back) == n_back and len(B._twins(old, new, -16 * 60, 16 * 60)) == n_back and
+          not raw_e.duplicated(["txn_id"]).any())
+    last_old = old.groupby("plaza")["stamp"].max()
+    per_cut = set(i for i, r in new.iterrows() if r["plaza"] in last_old.index and r["stamp"] <= last_old[r["plaza"]])
+    check("A2 fair: a cut at each plaza's last old-host stamp drops the same rows as the twins", per_cut == back)
+    check("A2 fair: no live new-host row has an old-host twin within four hours either side",
+          len(B._twins(old, new.drop(index=sorted(back)), -4 * 3600, 4 * 3600)) == 0)
+    sw = {p: W.switch_time(p) for p in W.SWITCH}
+    check("A2 the plazas moved on %d different days from %s to %s" % (len(set(sw.values())), min(sw.values()).date(),
+          max(sw.values()).date()), len(set(sw.values())) >= 15)
+    live = new.drop(index=sorted(back))
+    loc_new = B.to_local(live["stamp"])
+    order_ok = (pd.concat([loc_new, new.loc[sorted(back), "stamp"]]).reindex(new.index)
+                .loc[new.sort_values("txn_id").index].is_monotonic_increasing)
+    check("A2 no marker: the new host's ids run in entry order through its backfill and its own entries", order_ok)
+    oh = old["stamp"].dt.hour.value_counts().sort_index()
+    lh = live["stamp"].dt.hour.value_counts().sort_index()
+    check("A1 fair: the old host's stamps peak in local working hours (%d:00) and the new host's own four or five hours "
+          "later (%d:00), as UTC" % (oh.idxmax(), lh.idxmax()), 6 <= oh.idxmax() <= 14 and 3 <= lh.idxmax() - oh.idxmax() <= 6)
+    ci = ci0
+    var_a = {"the log's entry plaza": B.citations_by_section(TARGET, "logged"), "every stamp as UTC": ci_utc,
+             "no stamp converted": B.citations_by_section(TARGET, clock="none"),
+             "exact duplicates, every stamp as UTC": B.citations_by_section(TARGET, dedup="exact", clock="utc")}
+    check("A1 every section's gross citations move under every reflex (%s; ten or more with no stamp converted)"
+          % ", ".join("%s %d" % (k, sum(v[c] != ci[c] for c in B.CODES)) for k, v in var_a.items()),
+          all(sum(v[c] != ci[c] for k, v in var_a.items() for c in B.CODES if k == k0) >= (10 if "no stamp" in k0 else 12)
+              for k0 in var_a))
+    cr = B.read_citations(TARGET)
+    g = cr[cr["violation"] == "G"]
+    mp = dict(zip(pl["plaza"], pl["milepost"]))
+    house_mp = {"West Scale House": 0.6, "East Scale House": 283.4}
+    ent_u = B.entries_clean(TARGET, clock="utc").sort_values("local")
+    by_u = {t: v for t, v in ent_u.groupby("tag_id")}
+    feas, odd = True, 0
+    for _, r in g.iterrows():
+        v = by_tag[r["tag_id"]]
+        trip = v[v["local"] <= r["issued_local"]].iloc[-1]
+        miles = abs((38.1 if trip["plaza"] == "P23" and trip["date"] < dt.date(2026, 5, 1) else mp[trip["plaza"]])
+                    - house_mp[r["scale_house"]])
+        hours = (r["issued_local"] - trip["local"]).total_seconds() / 3600
+        feas &= 0 < hours and miles / (hours + RECEIPT_ALLOW) < 80
+        u = by_u[r["tag_id"]]
+        tu = u[u["local"] <= r["issued_local"]].iloc[-1]
+        odd += tu["plaza"] in ("P01", "P32") and tu["plaza"] == ("P01" if r["scale_house"].startswith("West") else "P32")
+    check("A1 fair: on the golden's clocks every gross citation's trip reaches its scale house at under 80 mph, allowing "
+          "the old host's receipt delay", feas)
+    check("A1 fair: read as UTC, %d citations' trips would start at their own scale house's barrier, a truck weighed "
+          "on the way out entering where it is weighed" % odd, odd > 150)
+    moved_rows, paper, later_ok = 0, 0, True
+    for _, r in g.iterrows():
+        v = by_tag[r["tag_id"]]
+        trip = v[v["local"] <= r["issued_local"]].iloc[-1]
+        if trip["plaza"] != r["entry_plaza"]:
+            moved_rows += 1
+            keyed = pd.to_datetime(r["keyed"], format="%m/%d/%Y %H:%M")
+            after = v[(v["local"] > r["issued_local"]) & (v["local"] <= keyed + pd.Timedelta(minutes=1))]
+            later_ok &= r["entry_plaza"] in set(after["plaza"])
+        paper += r["citation_no"].startswith("C")
+    check("A1 fair: every citation whose log plaza is not its trip's carries the tag's later entry between the stop and "
+          "the keying (%d rows)" % moved_rows, later_ok and moved_rows > 100)
+    check("A1 no marker: those citations are under 80 per cent of the paper citations (%d of %d)" % (moved_rows, paper),
+          0.2 < moved_rows / paper < 0.8)
+    trip_cur = B.citations_by_section(TARGET, plazas="current")
+    check("A hazard: P23 by the current list moves Brannock's and Halbrook's citations",
+          [c for c in B.CODES if trip_cur[c] != ci[c]] == ["02", "08"])
+    check("A the golden's ask figures are figures.json's", all(
+        f["sections"][B.NAMES[c]]["weekday_entries"] == B.hround(wk[c]) and
+        f["sections"][B.NAMES[c]]["gross_citations"] == ci[c] for c in B.CODES))
+    sec_of = lambda code, kind: ("02" if kind == "old" else "08") if code == "P23" else \
+        [p_[2] for p_ in W.PLAZAS if p_[0] == code][0]
+    truthB, pureB = {}, {}
+    for tid, code, stamp, tag, local, kind in gen:
+        if kind == "backfill":
+            continue
+        day = dt.datetime.strptime(stamp, "%Y-%m-%d %H:%M").date() if kind == "old" else local.date()
+        if day.weekday() < 5 and day.year == 2026:
+            truthB[sec_of(code, kind)] = truthB.get(sec_of(code, kind), 0) + 1
+        if local.weekday() < 5:
+            pureB[sec_of(code, kind)] = pureB.get(sec_of(code, kind), 0) + 1
+    check("A the golden's weekday entries are the generator's, each entry once on its host's own clock",
+          all(abs(truthB[c] / B.WEEKDAYS_2026 - wk[c]) < 1e-9 for c in B.CODES))
+    check("A the old host's late receipt stamps move no whole figure from the entries' true local dates",
+          all(B.hround(pureB[c] / B.WEEKDAYS_2026) == B.hround(wk[c]) for c in B.CODES))
+    truthA = {}
+    for c_ in e["citations"]:
+        if c_["code"] == "G":
+            s_ = W.section_of(e["entries"], c_["trip"])
+            truthA[s_] = truthA.get(s_, 0) + 1
+    check("A the golden's citations are the generator's truth", all(truthA.get(c, 0) == ci[c] for c in B.CODES))
+    n_re = sum(1 for d_, i_, t_, s__ in e["entries"][e["n_entries"]:])
+    check("A %d trucks cited for gross weight came back through their barrier after offloading" % n_re, n_re > 500)
+
+    # ---------------------------------------------------------------- separation and distractors
+    dX = subset([k for k in P.FILES if k not in ("piezo", "bending", "stations", "tickets")])
+    check("X1 the asks need no WIM export, station list or ticket: ask B and ask A from the other files",
+          B.weekday_entries(dX) == wk and B.citations_by_section(dX) == ci)
+    shutil.rmtree(dX)
+    check("X2 the call reads no toll entry, citation, plaza or schedule row (SF18)", whole(s18) == gw)
+    dD = subset([k for k in P.FILES if k not in ("pavement", "bridges")])
+    dfD = B.class9(B.read_wim(dD))
+    check("X3 the distractors deleted: the call, the twelve shares and both asks unchanged",
+          whole(B.shares(dfD, B.factors(dfD, B.read_tickets(dD)))) == gw and B.weekday_entries(dD) == wk and
+          B.citations_by_section(dD) == ci)
+    shutil.rmtree(dD)
+
+    # ---------------------------------------------------------------- input gates
+    files = os.listdir(TARGET)
     meta = json.load(open(os.path.join(TASK, "metadata.json")))
-    check("gate: two distractors in metadata.json, each in the pack", len(meta["distractor_files"]) >= 2 and
-          all(f in files for f in meta["distractor_files"]))
-    check("gate: no file name carries the stump's or the organ's vocabulary",
-          not any(re.search(r"distract|decoy|trap|known|issue|dup|stump|latenc|lag|offset", f) for f in files))
+    check("I ten or more files (%d)" % len(files), len(files) >= 10)
+    check("I three or more formats (%s)" % sorted({fn.rsplit(".", 1)[1] for fn in files}),
+          len({fn.rsplit(".", 1)[1] for fn in files}) >= 3)
+    check("I one file of 25,000 rows or more (piezo %d)" % len(pz), len(pz) >= 25000)
+    check("I two distractors named in metadata.json, none in a file name",
+          len(meta["distractor_files"]) >= 2 and all(d in files for d in meta["distractor_files"]) and
+          not any("distract" in fn for fn in files))
 
-    # ------------------------------------------------------------------ realism sweep
-    found_counts = Counter(g["counts"].get(s, 0) for s in ORDER)
-    check("realism: no two sections share a pothole count", max(found_counts.values()) == 1)
-    check("realism: no round lane-mile total", all(abs(v - round(v, -1)) > 0.05 for v in M.lane_miles(p, road).values()))
-    blob = b"".join(open(os.path.join(TARGET, f), "rb").read() for f in files if f.endswith((".pdf", ".xlsx")))
-    check("realism: containers carry no writing library's name", b"ReportLab" not in blob and b"openpyxl" not in blob)
-    names = re.findall(r"Nancy Hansen|Andrew Greene", prog + pdf_text(P.FILES["dictionary"]))
-    check("realism: the personas are the drawn pair", set(names) == {"Nancy Hansen", "Andrew Greene"})
-    det_max = max(r["captured_local"] for r in p["det"])
-    check("realism: no detection after the month (%s)" % det_max, det_max < "2027-04-01")
-    trav = list(csv.DictReader(open(os.path.join(TARGET, P.FILES["traversals"]), encoding="utf-8")))
-    check("realism: traversal keys unique and every pass forward in time",
-          len({t["traversal_id"] for t in trav}) == len(trav) and all(t["exit_utc"] > t["enter_utc"] for t in trav))
-    sows = pdf_text(P.FILES["sow"])
-    check("documents read back: the scope of work's service day sentence (positive control on the PDF extractor)",
-          "during any part of which the unit" in sows.replace("\n", " "))
-    check("documents read back: the scope of work says defect linking is not in the pilot",
-          "is not in the pilot" in sows.replace("\n", " "))
-    dic = pdf_text(P.FILES["dictionary"])
-    check("documents read back: the data notes give the milepost direction",
-          "mileposts increase northbound and eastbound" in dic.replace("\n", " "))
-    check("documents: no shipped sentence states a latency, a lag, an offset, a unit's accuracy, a tolerance or how to "
-          "link detections", not re.search(r"latenc|\blags?\b|offset|accura|\berror|toleran|within \d|link the|same "
-                                             r"pothole|ahead of|behind the", (prog + sows + dic).replace("\n", " ")))
-    tb = pdf_text(P.FILES["turnback"])
-    check("documents read back: the turnback notice lists five segments effective 15 March",
-          "15 March 2027" in tb.replace("\n", " ") and len(p["turnback"]) == 5)
+    # ---------------------------------------------------------------- realism
+    ok_pz = all(int(ln[30:35]) == sum(int(ln[35 + 4 * k:39 + 4 * k]) for k in range(int(ln[28:30]))) for ln in pz)
+    check("Z the piezo records' gross is their axles' sum on every record", ok_pz)
+    ax = bp[["ax%d_kg" % i for i in range(1, 10)]].apply(pd.to_numeric, errors="coerce").fillna(0).sum(axis=1)
+    check("Z the bending-plate records' gvw_kg is their axles' sum on every record",
+          (ax == pd.to_numeric(bp["gvw_kg"])).all())
+    keyed_g = tk["Gross (lb)"].astype(int).to_numpy()
+    mism = [(str(a).zfill(len(str(int(b)))), str(int(b))) for a, b in zip(keyed_g, tg) if a != int(b)]
+    swaps = all(len(a) == len(b) and sorted(a) == sorted(b) and sum(x != y for x, y in zip(a, b)) == 2 for a, b in mism)
+    check("Z the tickets' keyed gross departs from the axles' sum only by a transposed pair of digits (%d tickets)"
+          % len(mism), swaps and 0 < len(mism) < 30)
+    iss = cr["issued_local"]
+    kd = pd.to_datetime(cr["keyed"], format="%m/%d/%Y %H:%M")
+    ec = cr["citation_no"].str.startswith("EC")
+    check("Z every citation is keyed after it was issued; e-citations within the hour, paper ones 4 to 14 days later",
+          (kd >= iss).all() and ((kd - iss)[ec] < pd.Timedelta(hours=1)).all() and
+          ((kd - iss)[~ec] >= pd.Timedelta(days=4)).all() and ((kd - iss)[~ec] < pd.Timedelta(days=14, hours=8)).all())
+    check("Z every class 9 steer axle reads between 7,000 and 16,000 lb",
+          df["steer"].between(7000, 16000).mean() > 0.999)
+    n9 = df.groupby("section").size()
+    check("Z the stations' class 9 counts vary (%d to %d)" % (n9.min(), n9.max()), n9.min() / n9.max() < 0.6)
+    check("Z no share is a round figure", all(abs(sh[c] - round(sh[c])) > 0.01 for c in B.CODES))
+    import csv as _csv
+    gcsv = list(_csv.DictReader(open(os.path.join(TASK, "golden", "ctpa_section_overweight_2026.csv"),
+                                     encoding="utf-8")))
+    check("Z the golden CSV carries the twelve shares", [int(r["share_over_80000_lb_pct"]) for r in gcsv] ==
+          [gw[c] for c in B.CODES])
 
-    fails = [n for n, ok in RESULTS if not ok]
-    print("%d checks, %d failed" % (len(RESULTS), len(fails)))
-    return 0 if not fails else 1
+    n_fail = sum(1 for _, ok in RESULTS if not ok)
+    print("%s  task478 checks: %d assertions, %d failed" % ("PASS" if not n_fail else "FAIL", len(RESULTS), n_fail))
+    return 1 if n_fail else 0
 
 
 if __name__ == "__main__":

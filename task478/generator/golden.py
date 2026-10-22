@@ -1,232 +1,250 @@
-"""The golden: every owed figure computed from the cut pack (methods.py), written to generator/figures.json, and the two
-deliverables, tamsett_spring_patching_sections_2027.csv and tamsett_spring_patching_task_orders_2027.pdf."""
+"""The golden: every owed figure computed from the cut pack (bundle.py), written to generator/figures.json, and the three
+deliverables, ctpa_vws_sections_2027.xlsx, ctpa_section_overweight_2026.csv and ctpa_overweight_share_2026.svg."""
 import csv
 import io
 import json
 import os
 
-import methods as M
+import numpy as np
+
+import bundle as B
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-NAMES = {403: "Carrow Point", 407: "Elmscourt", 411: "Rushmead", 402: "Fenwick Gap", 409: "Thistlebank",
-         405: "Marlpit", 412: "Stonebeck", 414: "Pyke Hill", 401: "Holloway Run", 406: "Kestrelton",
-         413: "Norvelle", 404: "Grisholt", 408: "Halverton", 410: "Oxbrae"}
-ORDER = sorted(NAMES)
-CSV_NAME = "tamsett_spring_patching_sections_2027.csv"
-WORDS = {3: "three", 4: "four", 5: "five", 6: "six", 7: "seven"}
-PDF_NAME = "tamsett_spring_patching_task_orders_2027.pdf"
+XLSX = "ctpa_vws_sections_2027.xlsx"
+CSV = "ctpa_section_overweight_2026.csv"
+SVG = "ctpa_overweight_share_2026.svg"
+WORDS = {4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine"}
 
 
-def whole(x):
-    """Half up, the prompt's whole number."""
-    return int(x + 0.5)
+def pct_off(f):
+    """A station's reading against the static scale, whole per cent heavy (+) or light (-)."""
+    return B.hround(abs(f - 1) * 100) * (1 if f >= 1 else -1)
 
 
 def compute(target):
-    import csv as _csv
-    with open(os.path.join(target, "maintenance_sections.csv"), encoding="utf-8", newline="") as fh:
-        for r in _csv.DictReader(fh):
-            assert NAMES[int(r["section"])] == r["section_name"], r
-    p = M.load(target)
-    g = M.golden(p)
-    fam = M.family(p, g)
-    lm = M.lane_miles(p, g["road"])
-    lb = M.ask_pounds(p)
-    est = g["est"]
-    des = sorted([s for s in ORDER if est[s] >= M.LINE], key=lambda s: (-est[s], s))
-    below = max((s for s in ORDER if s not in des), key=lambda s: est[s])
-    lowest_in = min(des, key=lambda s: est[s])
-    lat = g["lat"]
-    dflt = M.single(p, DEFAULT_FT, g["road"])
-    near = M.single(p, NEAR_FT, g["road"])
+    df = B.class9(B.read_wim(target))
+    tk = B.read_tickets(target)
+    fa = B.factors(df, tk, "loaded")
+    sh = B.shares(df, fa)
+    raw = B.shares(df)
+    pooled = B.shares(df, B.factors(df, tk, "pooled"))
+    rank = sorted(B.CODES, key=lambda c: -sh[c])
+    five = rank[:5]
+    tsteer = tk["Axle 1 (lb)"].astype(float).to_numpy()
+    tgross = tk[["Axle %d (lb)" % i for i in range(1, 6)]].astype(float).sum(axis=1).to_numpy()
+    ref = float(np.median(tsteer[tgross > 50000]))
+    wk = B.weekday_entries(target)
+    ci = B.citations_by_section(target)
+    n9 = df.groupby("section").size()
     f = {
-        "call": {"designated": [NAMES[s] for s in des], "count": len(des), "of": len(ORDER)},
-        "line": M.LINE,
-        "sections": {NAMES[s]: {"section": s, "lane_miles": round(lm[s], 1), "rate": whole(est[s]),
-                                "crew": "Yes" if s in des else "No", "cold_mix_lb": lb.get(s, 0)}
-                     for s in ORDER},
-        "components": {"lane_miles": round(sum(lm.values()), 1), "potholes": sum(g["counts"].get(s, 0) for s in ORDER),
-                       "turned_back": len(p["turnback"]),
-                       "latency_s": [round(min(lat.values()), 2), round(max(lat.values()), 2)],
-                       "link_ft": int(M.TOL), "cover_radius_mi": M.RADIUS,
-                       "highest_below": {"name": NAMES[below], "rate": whole(est[below])},
-                       "lowest_in": {"name": NAMES[lowest_in], "rate": whole(est[lowest_in])}},
-        "default": {"designated": [NAMES[s] for s in ORDER if dflt[s] >= M.LINE], "tolerance_ft": DEFAULT_FT,
-                    "near_ft": NEAR_FT, "near_designated": [NAMES[s] for s in ORDER if near[s] >= M.LINE]},
-        "_unrounded": {NAMES[s]: round(est[s], 4) for s in ORDER},
-        "_family": {k: {NAMES[s]: round(v[s], 4) for s in ORDER} for k, v in fam.items()},
+        "call": {"equip": [B.NAMES[c] for c in B.CODES if c in five], "count": 5, "of": 12},
+        "sections": {B.NAMES[c]: {"section": c, "share_pct": B.hround(sh[c]), "equip": "Yes" if c in five else "No",
+                                  "weekday_entries": B.hround(wk[c]), "gross_citations": ci[c],
+                                  "raw_share_pct": B.hround(raw[c]), "reads_pct": pct_off(fa[c])}
+                     for c in B.CODES},
+        "components": {"fifth": {"name": B.NAMES[rank[4]], "share_pct": B.hround(sh[rank[4]])},
+                       "sixth": {"name": B.NAMES[rank[5]], "share_pct": B.hround(sh[rank[5]])},
+                       "ticket_loaded_steer_lb": int(round(ref)),
+                       "factor_low": {"name": B.NAMES[min(B.CODES, key=lambda c: fa[c])],
+                                      "factor": "%.3f" % min(fa.values())},
+                       "factor_high": {"name": B.NAMES[max(B.CODES, key=lambda c: fa[c])],
+                                       "factor": "%.3f" % max(fa.values())},
+                       "class9_weighed": int(len(df)),
+                       "entries_weekday_total": B.hround(sum(wk.values())),
+                       "gross_citations_total": int(sum(ci.values()))},
+        "default": {"equip": [B.NAMES[c] for c in B.five(raw)]},
+        "pooled": {"equip": [B.NAMES[c] for c in B.five(pooled)]},
+        "rank": [B.NAMES[c] for c in rank],
+        "stated": {"limit_lb": "80,000", "loaded_line_lb": "50,000", "weekdays_2026": B.WEEKDAYS_2026,
+                   "program_clauses": ["3.2", "5", "6.2"]},
+        "_unrounded": {"share": {c: round(sh[c], 4) for c in B.CODES}, "factor": {c: round(fa[c], 5) for c in B.CODES},
+                       "weekday": {c: round(wk[c], 4) for c in B.CODES}, "raw": {c: round(raw[c], 4) for c in B.CODES},
+                       "class9": {c: int(n9.get(c, 0)) for c in B.CODES}},
     }
-    return p, g, f
-
-
-DEFAULT_FT = 200
-NEAR_FT = 100
+    return f
 
 
 def write_csv(path, f):
-    cols = ["section", "section_name", "state_lane_miles", "potholes_per_10_lane_miles", "dedicated_crew",
-            "cold_mix_lb_mar"]
     buf = io.StringIO()
     w = csv.writer(buf, lineterminator="\r\n")
-    w.writerow(cols)
-    for name, x in sorted(f["sections"].items(), key=lambda kv: kv[1]["section"]):
-        w.writerow([x["section"], name, "%.1f" % x["lane_miles"], x["rate"], x["crew"], x["cold_mix_lb"]])
+    w.writerow(["section", "section_name", "share_over_80000_lb_pct"])
+    for c in B.CODES:
+        w.writerow([c, B.NAMES[c], f["sections"][B.NAMES[c]]["share_pct"]])
     open(path, "w", encoding="utf-8", newline="").write(buf.getvalue())
 
 
-def write_pdf(path, f):
-    from reportlab import rl_config
-    rl_config.invariant = 1
-    from reportlab.graphics.shapes import Drawing, Line, Rect, String
-    from reportlab.lib import colors
-    from reportlab.lib.pagesizes import letter
-    from reportlab.lib.styles import ParagraphStyle
-    from reportlab.lib.units import inch
-    from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+def write_xlsx(path, f):
+    import openpyxl
+    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Sites 2027"
+    bold = Font(name="Calibri", size=11, bold=True)
+    thin = Side(style="thin", color="808080")
+    ws["A1"] = "Virtual weigh station sites, 2027 contract"
+    ws["A1"].font = Font(name="Calibri", size=14, bold=True)
+    ws["A2"] = "Office of Freight Operations. Freight Compliance Program 2027, section 3. Prepared 12 February 2027."
+    ws["A2"].font = Font(name="Calibri", size=9, italic=True, color="555555")
+    head = ["Section", "Name", "From milepost", "To milepost", "Share of class 9 trucks over 80,000 lb"]
+    ws.append([])
+    ws.append(head)
+    for c in ws[4]:
+        c.font = bold
+        c.alignment = Alignment(wrap_text=True, vertical="bottom")
+        c.border = Border(bottom=thin)
+    secs = {s[0]: s for s in B.SECTIONS}
+    for name in f["call"]["equip"]:
+        x = f["sections"][name]
+        s = secs[x["section"]]
+        ws.append([x["section"], name, s[2], s[3], x["share_pct"] / 100.0])
+    for row in ws.iter_rows(min_row=5, max_row=9):
+        row[0].number_format = "@"
+        row[2].number_format = row[3].number_format = "0.0"
+        row[4].number_format = "0%"
+    c6 = f["components"]["sixth"]
+    ws["A11"] = ("West to east. Sixth: %s, %d%%. Shares are of each station's 2026 class 9 weighings, on the static "
+                 "scale's basis." % (c6["name"], c6["share_pct"]))
+    ws["A11"].font = Font(name="Calibri", size=9, color="555555")
+    for col, wd in zip("ABCDE", (9, 15, 10, 10, 18)):
+        ws.column_dimensions[col].width = wd
+    ws.row_dimensions[4].height = 30
+    ws.freeze_panes = "A5"
 
-    ink, ink2 = colors.HexColor("#0b0b0b"), colors.HexColor("#52514e")
-    body = ParagraphStyle("b", fontName="Helvetica", fontSize=9.4, leading=12.4, spaceAfter=5, textColor=ink)
-    note = ParagraphStyle("n", fontName="Helvetica", fontSize=7.6, leading=9.6, spaceAfter=3, textColor=ink2)
-    head = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=10.2, leading=13, spaceBefore=7, spaceAfter=3, textColor=ink)
-    title = ParagraphStyle("t", fontName="Helvetica-Bold", fontSize=13.5, leading=16.5, spaceBefore=6, spaceAfter=5, textColor=ink)
-    org = "Tamsett District Maintenance"
-    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.8 * inch, rightMargin=0.8 * inch, topMargin=0.65 * inch,
-                            bottomMargin=0.7 * inch, title="Spring Patching Program 2027: designated sections and March close-out",
-                            author=org, creator=org, producer=org, subject="Spring Patching Program 2027")
+    s2 = wb.create_sheet("Sections")
+    head = ["Section", "Name", "From milepost", "To milepost", "Share of class 9 trucks over 80,000 lb",
+            "Equip 2027", "Five-axle entries a weekday", "Gross overweight citations"]
+    s2.append(head)
+    for c in s2[1]:
+        c.font = bold
+        c.alignment = Alignment(wrap_text=True, vertical="bottom")
+        c.border = Border(bottom=thin)
+    fill = PatternFill("solid", fgColor="DDEBF7")
+    for code in B.CODES:
+        name = B.NAMES[code]
+        x = f["sections"][name]
+        s = secs[code]
+        s2.append([code, name, s[2], s[3], x["share_pct"] / 100.0, x["equip"], x["weekday_entries"],
+                   x["gross_citations"]])
+        if x["equip"] == "Yes":
+            for c in s2[s2.max_row]:
+                c.fill = fill
+    tot = s2.max_row + 1
+    s2.append(["Turnpike", None, 0.0, 284.0, None, None, f["components"]["entries_weekday_total"],
+               f["components"]["gross_citations_total"]])
+    for c in s2[tot]:
+        c.font = bold
+        c.border = Border(top=thin)
+    for row in s2.iter_rows(min_row=2, max_row=tot):
+        row[0].number_format = "@"
+        row[2].number_format = row[3].number_format = "0.0"
+        row[4].number_format = "0%"
+        row[6].number_format = row[7].number_format = "#,##0"
+        row[5].alignment = Alignment(horizontal="center")
+    for col, wd in zip("ABCDEFGH", (9, 15, 10, 10, 18, 10, 13, 13)):
+        s2.column_dimensions[col].width = wd
+    s2.row_dimensions[1].height = 45
+    s2.freeze_panes = "C2"
+    s2.print_title_rows = "1:1"
 
-    def frame(c, d_):
-        c.saveState()
-        c.setFont("Helvetica", 7.5)
-        c.setFillColor(ink2)
-        c.drawString(0.8 * inch, 0.45 * inch, "Tamsett District Maintenance | Spring Patching Program 2027 | internal")
-        c.drawRightString(letter[0] - 0.8 * inch, 0.45 * inch, "Page %d" % d_.page)
-        c.restoreState()
-
-    secs = sorted(f["sections"].items(), key=lambda kv: (-f["_unrounded"][kv[0]], kv[1]["section"]))
-    des = f["call"]["designated"]
-    c = f["components"]
-    # the chart: one bar per section, the program's line, the designated sections in blue
-    W, H = 6.9 * inch, 3.05 * inch
-    d = Drawing(W, H)
-    left, bottom, top = 1.05 * inch, 0.42 * inch, H - 0.3 * inch
-    scale = (W - left - 0.3 * inch) / 10.0
-    bh = (top - bottom) / len(secs)
-    blue, amber = colors.HexColor("#256abf"), colors.HexColor("#eda100")
-    d.add(String(0, H - 0.12 * inch, "March 2027 potholes per ten lane-miles of state roadway, by section",
-                 fontName="Helvetica-Bold", fontSize=8.4, fillColor=ink))
-    for t in range(0, 11, 2):
-        d.add(Line(left + t * scale, bottom, left + t * scale, top, strokeColor=colors.HexColor("#e6e5e0"), strokeWidth=0.5))
-    for i, (name, x) in enumerate(secs):
-        y = top - (i + 1) * bh + bh * 0.2
-        v = f["_unrounded"][name]
-        d.add(Rect(left, y, v * scale, bh * 0.6, fillColor=blue if name in des else amber, strokeColor=None))
-        d.add(String(left - 5, y + bh * 0.14, "%s %d" % (name, x["section"]), fontName="Helvetica", fontSize=7.3,
-                     textAnchor="end", fillColor=ink))
-        d.add(String(left + v * scale + 4, y + bh * 0.14, "%d" % x["rate"], fontName="Helvetica-Bold", fontSize=7.3,
-                     fillColor=ink))
-    xl = left + f["line"] * scale
-    d.add(Line(xl, bottom - 2, xl, top + 3, strokeColor=ink, strokeWidth=0.9, strokeDashArray=[3, 2]))
-    d.add(String(xl + 3, top + 4, "program line, %.1f" % f["line"], fontName="Helvetica", fontSize=7, fillColor=ink))
-    for t in range(0, 11, 2):
-        d.add(String(left + t * scale, bottom - 10, str(t), fontName="Helvetica", fontSize=7, textAnchor="middle",
-                     fillColor=ink2))
-    d.add(Line(left, bottom, left + 10 * scale, bottom, strokeColor=ink2, strokeWidth=0.5))
-    d.add(String(left + 5 * scale, bottom - 21, "potholes per ten lane-miles (bar labels to the whole number)",
-                 fontName="Helvetica", fontSize=7, textAnchor="middle", fillColor=ink2))
-    lx = W - 1.95 * inch
-    d.add(Rect(lx, bottom + 0.3 * inch, 8, 8, fillColor=blue, strokeColor=None))
-    d.add(String(lx + 12, bottom + 0.3 * inch + 1, "dedicated crew", fontName="Helvetica", fontSize=7, fillColor=ink))
-    d.add(Rect(lx, bottom + 0.12 * inch, 8, 8, fillColor=amber, strokeColor=None))
-    d.add(String(lx + 12, bottom + 0.12 * inch + 1, "section crews and shared crew", fontName="Helvetica", fontSize=7,
-                 fillColor=ink))
-
-    rows = [["Section", "Lane-miles", "Potholes per\nten lane-miles", "Dedicated\ncrew", "Cold mix,\nMarch (lb)"]]
-    ordered = sorted(f["sections"].items(), key=lambda kv: kv[1]["section"])
-    for name, x in ordered:
-        rows.append(["%d %s" % (x["section"], name), "{:,.1f}".format(x["lane_miles"]), str(x["rate"]), x["crew"],
-                     "{:,}".format(x["cold_mix_lb"])])
-    t = Table(rows, colWidths=[1.8 * inch, 1.0 * inch, 1.25 * inch, 0.95 * inch, 1.15 * inch],
-              repeatRows=1)
-    st = [("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 7.4), ("FONT", (0, 1), (-1, -1), "Helvetica", 7.6),
-          ("TEXTCOLOR", (0, 0), (-1, -1), ink), ("ALIGN", (1, 0), (-1, -1), "RIGHT"), ("ALIGN", (3, 1), (3, -1), "CENTER"),
-          ("LINEBELOW", (0, 0), (-1, 0), 0.6, ink), ("VALIGN", (0, 0), (-1, 0), "BOTTOM"),
-          ("BOTTOMPADDING", (0, 0), (-1, -1), 1.8), ("TOPPADDING", (0, 0), (-1, -1), 1.8)]
-    for i, (name, x) in enumerate(ordered, 1):
-        if x["crew"] == "Yes":
-            st.append(("BACKGROUND", (0, i), (-1, i), colors.HexColor("#e9f0f9")))
-    t.setStyle(TableStyle(st))
-    memo = Table([["To:", "Nancy Hansen, P.E., District Maintenance Engineer"],
-                  ["From:", "Andrew Greene, Maintenance Management Systems"],
-                  ["Date:", "12 April 2027"],
-                  ["Subject:", "Spring Patching Program 2027: designated sections and the March close-out"],
-                  ["Reference:", "On-call pavement repair contract 26-OC-1187, task orders of 19 April 2027"]],
-                 colWidths=[0.85 * inch, 5.9 * inch], hAlign="LEFT")
-    memo.setStyle(TableStyle([("FONT", (0, 0), (0, -1), "Helvetica-Bold", 8.6), ("FONT", (1, 0), (1, -1), "Helvetica", 8.6),
-                              ("TEXTCOLOR", (0, 0), (-1, -1), ink), ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
-                              ("TOPPADDING", (0, 0), (-1, -1), 1), ("LINEBELOW", (0, -1), (-1, -1), 0.6, ink)]))
-    names = ", ".join(des[:-1]) + " and " + des[-1]
-    n_word = WORDS.get(len(des), str(len(des))).capitalize()
-    dft = f["default"]
-    story = [
-        Paragraph("TAMSETT DISTRICT MAINTENANCE: MEMORANDUM", ParagraphStyle("o", fontName="Helvetica-Bold", fontSize=8,
-                                                                          textColor=ink2, spaceAfter=4)),
-        memo,
-        Paragraph("%s sections get a dedicated spring patching crew" % n_word, title),
-        Paragraph("<b>%s get the dedicated crews.</b> Each held 6.0 or more potholes per ten lane-miles of state roadway "
-                  "in March; of the other %s, %s comes closest at %d. The task orders can issue on 19 April as drafted "
-                  "for these %s." % (names, WORDS.get(len(ORDER) - len(des), str(len(ORDER) - len(des))),
-                                     c["highest_below"]["name"], c["highest_below"]["rate"],
-                                     WORDS.get(len(des), str(len(des)))), body),
-        d,
-        Paragraph("Bars at the unrounded figure. Each pothole is counted once however many units and passes recorded it "
-                  "(program 2.2).", note),
-        Paragraph("How the March count was made", head),
-        Paragraph("Kerbline's export is one row per detection, and the pilot does not include Kerbline's defect linking, "
-                  "so the detections had to be resolved into potholes here. Checked against the asset inventory's "
-                  "surveyed utility covers, every phone places what it detects ahead of where it is along its direction "
-                  "of travel: the GPS fix a phone tags a detection with arrives %.2f to %.2f seconds after the frame, "
-                  "depending on the phone, so a detection lands past the pothole by that lag times the truck's speed, "
-                  "north of it on a northbound pass and south of it on a southbound one. Averaged over both directions "
-                  "the covers show almost no error, which is why the offset reads as GPS scatter until the passes are "
-                  "separated by direction." % (c["latency_s"][0], c["latency_s"][1]), body),
-        Paragraph("On the two-lane roads the cameras record a pothole from both directions, so one pothole shows as two "
-                  "clusters of detections; on the bridge decks in Fenwick Gap and Kestrelton potholes sit a few car "
-                  "lengths apart. No single matching distance handles both. Each detection was moved back along its pass "
-                  "by its phone's lag times that pass's speed (the telematics traversal it was captured on gives the "
-                  "direction and the speed), and the corrected detections within %d feet of each other were taken as one "
-                  "pothole. Joined where Kerbline placed them at %d feet, the deck potholes run together and only %s "
-                  "clear the line; at %d feet the two directions are still apart in %s and they come in instead."
-                  % (c["link_ft"], dft["tolerance_ft"], ", ".join(dft["designated"][:-1]) + " and " + dft["designated"][-1],
-                     dft["near_ft"], " and ".join(n for n in dft["near_designated"] if n not in des)), body),
-        Paragraph("Inputs: {:,.1f} lane-miles of state roadway as at 31 March<super>1</super> and {:,} potholes the "
-                  "pilot's units recorded on it in March.".format(c["lane_miles"], c["potholes"]), body),
-        PageBreak(),
-        Paragraph("Sections", head),
-        t,
-        Paragraph("Source: Kerbline detections (2 April), utility cover inventory (2026 survey), 2026 road inventory, MMS "
-                  "work orders (PCOLD). Cold mix is by the roadway the patch is on, whichever section's crew made it.", note),
-        Spacer(1, 6),
-        Paragraph("<super>1</super> Program 2.4. The five SR 11 segments in Elmscourt that passed to the City on 15 March "
-                  "(route turnback notice of 1 March) are not state roadway at 31 March and are left out, potholes and "
-                  "lane-miles alike.", note),
+    s3 = wb.create_sheet("Notes")
+    notes = [
+        ("Share over 80,000 lb", "Program 3.2: of the class 9 trucks the section's weigh-in-motion station weighed in "
+         "2026 (valid weighings, every lane, both directions), the share whose gross vehicle weight exceeded 80,000 lb. "
+         "Gross vehicle weight is the static scale's (program 2.2): each station's weights were put on that basis by "
+         "the median steer axle of its loaded class 9 trucks (gross over 50,000 lb) against the scale houses' loaded "
+         "tickets' before counting."),
+        ("Five-axle entries a weekday", "Program 5: entries by five-axle trucks at the section's toll plazas, barrier "
+         "plazas included, on the 261 weekdays of 2026 by local date, averaged. Each plaza moved to the new toll host "
+         "on its own day in May or June and the new host backfilled its last days from the lane logs, so a backfilled "
+         "entry is counted once; the old host's stamps are local time, the new host's own UTC; plaza code P23 is "
+         "Brannock Road until 30 April and Halbrook East from 1 September."),
+        ("Gross overweight citations", "Program 6: violation code G, placed at the toll entry of the trip on which the "
+         "scale house weighed the truck (the tag's last entry before the stop, the old host's entries read in local "
+         "time), not the log's entry plaza, which the toll system returned when the citation was keyed. A truck cited "
+         "for gross weight usually comes back through the barrier after offloading; that entry is a new trip."),
+        ("Rounding", "Shares to the whole per cent from the unrounded share; entries and citations in whole numbers."),
+        ("Sources", "WIM piezoelectric and bending-plate exports 2026, WIM station list, scale house tickets 2026, toll "
+         "entries 2026 (exported 4 February 2027), toll plaza list, toll schedule 2025, citation log 2026."),
     ]
-    doc.build(story, onFirstPage=frame, onLaterPages=frame)
+    s3.append(["Item", "Note"])
+    for c in s3[1]:
+        c.font = bold
+    for k, v in notes:
+        s3.append([k, v])
+    for row in s3.iter_rows(min_row=2):
+        row[1].alignment = Alignment(wrap_text=True, vertical="top")
+        row[0].alignment = Alignment(vertical="top")
+    s3.column_dimensions["A"].width = 26
+    s3.column_dimensions["B"].width = 96
+    wb.save(path)
     import postprocess as PP
-    PP.normalize_pdf(path, b"D:20270412164012-04'00'", b"D:20270412164012-04'00'")
+    PP.normalize_ooxml(path, "Anna Haynes", "Anthony Hale", "2027-02-11T15:02:00Z", "2027-02-12T19:47:31Z",
+                       excel=True, company=PP.COMPANY)
+
+
+def write_svg(path, f):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    matplotlib.rcParams["svg.hashsalt"] = "task478-ctpa"
+    matplotlib.rcParams["svg.fonttype"] = "none"
+    matplotlib.rcParams["font.family"] = "DejaVu Sans"
+    names = [B.NAMES[c] for c in B.CODES]
+    vals = [f["_unrounded"]["share"][c] for c in B.CODES]
+    on = [f["sections"][n]["equip"] == "Yes" for n in names]
+    blue, grey, ink, muted = "#2a6fb0", "#c3c8ce", "#1f2328", "#59636e"
+    fig, ax = plt.subplots(figsize=(9.6, 5.0), dpi=100)
+    xs = np.arange(len(names))
+    ax.bar(xs, vals, width=0.68, color=[blue if o else grey for o in on], edgecolor="white", linewidth=2, zorder=3)
+    for x, v, o in zip(xs, vals, on):
+        ax.text(x, v + 0.35, "%d%%" % B.hround(v), ha="center", va="bottom", fontsize=9,
+                color=ink if o else muted, fontweight="bold" if o else "normal")
+    ax.set_xticks(xs)
+    ax.set_xticklabels(names, rotation=35, ha="right", fontsize=9, color=ink)
+    ax.set_ylabel("Share of class 9 trucks over 80,000 lb (%)", fontsize=9, color=muted)
+    ax.set_ylim(0, max(vals) * 1.18)
+    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: "%d" % v))
+    ax.tick_params(axis="y", labelsize=8.5, colors=muted)
+    ax.grid(axis="y", color="#e6e8eb", linewidth=0.8, zorder=0)
+    for side in ("top", "right", "left"):
+        ax.spines[side].set_visible(False)
+    ax.spines["bottom"].set_color("#9aa1a9")
+    from matplotlib.patches import Patch
+    ax.legend(handles=[Patch(color=blue, label="Equip in 2027 (five sections)"), Patch(color=grey, label="Not equipped")],
+              loc="upper left", frameon=False, fontsize=8.5)
+    c6 = f["components"]["sixth"]
+    low = min(f["sections"][n]["share_pct"] for n in f["call"]["equip"])
+    fig.suptitle("Five sections ran the highest shares of class 9 trucks over 80,000 lb in 2026", x=0.012, ha="left",
+                 fontsize=11.5, fontweight="bold", color=ink)
+    ax.set_title("Share of the five-axle tractor-semitrailers each section's station weighed that were over the gross "
+                 "limit,\nstation weights on the static scale's basis. Lowest of the five %d%%; sixth, %s, %d%%."
+                 % (low, c6["name"], c6["share_pct"]), loc="left", fontsize=8.5, color=muted, pad=10)
+    fig.text(0.012, 0.012, "Source: CTPA weigh-in-motion exports and scale house tickets, 2026.", fontsize=7.5,
+             color=muted)
+    fig.subplots_adjust(left=0.07, right=0.99, top=0.83, bottom=0.25)
+    buf = io.StringIO()
+    fig.savefig(buf, format="svg", metadata={"Date": None, "Creator": "Office of Freight Operations"})
+    plt.close(fig)
+    svg = buf.getvalue().replace('id="matplotlib.', 'id="').replace("'DejaVu Sans'", "'DejaVu Sans', Arial, Helvetica, sans-serif")
+    assert "matplotlib" not in svg.lower()
+    open(path, "w", encoding="utf-8", newline="\n").write(svg)
 
 
 def main(target=None):
     target = target or os.path.join(os.path.dirname(HERE), "target")
-    p, g, f = compute(target)
+    f = compute(target)
     json.dump(f, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
     out = os.path.join(os.path.dirname(HERE), "golden")
     os.makedirs(out, exist_ok=True)
-    write_csv(os.path.join(out, CSV_NAME), f)
-    write_pdf(os.path.join(out, PDF_NAME), f)
+    for fn in os.listdir(out):
+        os.remove(os.path.join(out, fn))
+    write_xlsx(os.path.join(out, XLSX), f)
+    write_csv(os.path.join(out, CSV), f)
+    write_svg(os.path.join(out, SVG), f)
     return f
 
 
 if __name__ == "__main__":
     import sys
     f = main(sys.argv[1] if len(sys.argv) > 1 else None)
-    print(json.dumps({k: v for k, v in f.items() if not k.startswith("_")}, indent=1)[:3000])
+    print(json.dumps({k: v for k, v in f.items() if not k.startswith("_")}, indent=1)[:4000])

@@ -11,8 +11,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "to be filled at ship",
-  "answer_source": "generator/figures.json",
+  "answer": "Equip Cole Hollow, Elk Ferry, Garnet Ridge, Jessup Fork and Kettle Run with the 2027 virtual weigh stations (11, 16, 21, 11 and 11 per cent of their weighed class 9 trucks over 80,000 lb on the static basis, against Dunmere's 7).",
+  "answer_source": "submission.md block 1, from generator/figures.json",
   "gap": [
     "objective"
   ],
@@ -47,8 +47,8 @@
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "wim_vehicle_records_2026.csv",
-    "rows": 0,
+    "file": "ctpa_wim_piezo_2026.txt",
+    "rows": 141557,
     "entity": "one vehicle weighed by one WIM station in one lane",
     "grain": "vehicle x station pass",
     "source": "synthetic (constructed in the layout of a per-vehicle weigh-in-motion record export)"
@@ -66,12 +66,16 @@
       "Anna Haynes"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "ctpa_vws_sections_2027.xlsx",
+    "ctpa_section_overweight_2026.csv",
+    "ctpa_overweight_share_2026.svg"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "The decisive quantity is the share of a measured population above a fixed limit, read through instruments that each carry their own multiplicative bias; a component of every unit whose true size depends only on a coarse state and not on the quantity the limit tests is read by the same instruments, so its level at each instrument, matched by that state to a reference reading of the same component, measures the instrument's bias, and dividing each reading by it before counting moves the ranking the raw readings give, while matching unlike states moves it again.",
   "driver_concrete": "Each corridor's 2026 share of five-axle tractor-semitrailers over the 80,000-lb gross limit is counted from piezoelectric and bending-plate WIM stations whose weights run several per cent high or low; a tractor's steer axle carries its cab and engine and moves only with whether the trailer is loaded, so each station's loaded tractors' steer-axle level against the scale houses' loaded static tickets measures its calibration, and the raw weights and an all-tractor steer calibration each fill the five installations differently from the calibrated weights.",
-  "stump": "to be filled at design",
+  "stump": "The default path counts each section's class 9 trucks over 80,000 lb on the gross its weigh-in-motion station recorded and equips Brannock, Cole Hollow, Garnet Ridge, Ingram Mill and Jessup Fork; each station reads every axle through its own calibration (Brannock's, Foxbriar's and Ingram Mill's 5 to 7 per cent heavy, Elk Ferry's and Kettle Run's 4 to 5 per cent light), which only its loaded tractors' steer-axle median against the scale houses' loaded static tickets measures, because a loaded tractor's steer axle does not move with the cargo while the tickets are pulled-in heavy trucks and the sections haul different freight.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task478": "architecture 4 resolved position reports displaced by a direction-dependent latency into distinct entities on surveyed covers; here weights read with a station-level multiplicative bias are counted against a gross limit, the bias read on a load-independent axle matched by load state to static tickets, and nothing is linked or counted as entities",
@@ -143,5 +147,6 @@
     }
   ],
   "notes": "Pairing honest label: the decision-maker is a turnpike authority maintaining a toll road (supply-chain-logistics, transportation-network), sitting in general-statistics-data-science's data-integration-record-linkage-entity-resolution task type: the analysis conforms twelve stations' readings from two sensor technologies onto one weight basis before they are counted. Strategy other: an instrument calibration on an internal component, matched by state, no family key fits.",
-  "registered": "2026-10-22T20:55:56Z"
+  "registered": "2026-10-22T20:55:56Z",
+  "architecture_spent": true
 }
