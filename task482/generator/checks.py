@@ -69,7 +69,7 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     ch = {r: B.change(b, r) for r in FAMILY + tuple(WRONG)}
     sets = {r: sorted(k for k, v in ch[r].items() if round(v, 1) > B.LINE) for r in ch}
     for r in FAMILY:
-        R.ok(sets[r] == GOLDEN, "L1 %s files the golden six (%s)" % (r, sets[r]))
+        R.ok(sets[r] == GOLDEN, "L1 %s files the golden seven (%s)" % (r, sets[r]))
     for r, want in WRONG.items():
         R.ok(sets[r] == want, "L2 %s files its rung (%s)" % (r, sets[r]))
     R.ok(all(abs(ch["golden"][k] - B.LINE) >= 1.5 for k in b["areas"]), "C1 every area 1.5 points or more from the "
@@ -127,14 +127,14 @@ def run(target, gdir, x=None, meta_path=None, fig_path=None):
     # -------------------------------------------------------------- golden and figures
     fig = json.load(open(fig_path)) if fig_path else None
     if fig:
-        R.ok(fig["call"]["designated"] == GOLDEN, "G1 figures.json carries the golden six")
+        R.ok(fig["call"]["designated"] == GOLDEN, "G1 figures.json carries the golden seven")
         R.ok(all(fig["ask"][k]["purchases"] == A[k][0] and fig["ask"][k]["paid"] == int(round(A[k][1]))
                  for k in b["areas"]), "G2 figures.json carries the ask")
         import openpyxl
         wb = openpyxl.load_workbook(os.path.join(gdir, "bso_area_property_price_change_2026.xlsx"), data_only=True)
         ws = wb["Designation"]
         rows = {r[0]: r for r in ws.iter_rows(min_row=5, max_row=20, values_only=True)}
-        R.ok(sorted(k for k, r in rows.items() if r[5] == "yes") == GOLDEN, "G3 the workbook designates the golden six")
+        R.ok(sorted(k for k, r in rows.items() if r[5] == "yes") == GOLDEN, "G3 the workbook designates the golden seven")
         R.ok(all(abs(rows[k][4] - fig["change"][k]) < 1e-9 for k in b["areas"]), "G4 the workbook's changes match")
         q = {r[0]: r for r in wb["Transactions 2025-26"].iter_rows(min_row=5, max_row=20, values_only=True)}
         R.ok(all(q[k][2] == fig["ask"][k]["purchases"] and q[k][3] == fig["ask"][k]["paid"] for k in b["areas"]),

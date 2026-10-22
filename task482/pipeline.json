@@ -1,7 +1,7 @@
 {
   "task": "task482",
   "owner": "oviya1301",
-  "status": "BUILD",
+  "status": "PAUSED",
   "domain": "survey-research-official-statistics",
   "objective": "etl",
   "stage": 3,
@@ -15,12 +15,12 @@
     "date": "2026-10-22"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (the methodology note's and the circular's own vocabulary)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN (no BLOCK)",
+    "nearest": "task482 v4 (lineage, 0.20); surface exit 0, nine pairs promoted for adjudication, the top one a false shared name ('The Office' opening a prompt sentence, also in task65's), reworded out of the prompt"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 3: architecture 5 card registered (v5) and the note written (precut 51/0); the circular now settles the 2027 fund allocations (docs.py), so the pack is rebuilt: full build, figures_check, leak.py, guard surface and heart, then stage 4",
+  "resume": "stage 3 complete: full build green (54 checks, verify 0 mismatches, two byte-identical builds, zip sha256 d70a11df), figures_check 0 absent, leak.py REVIEW, precut 51/0, voice-check PASS after the prompt's 'The Office' clause was reworded, heart WARN, surface exit 0; next: stage 4, two scored readers (briefs ready in the scratchpad; reader.json keyed call.designated, change.<la_code>, ask.<la_code>.purchases and .paid; refresh their prompt.txt copies) and the determinism judge in one message",
   "approved": null,
   "delivered": null,
   "portal": null,
