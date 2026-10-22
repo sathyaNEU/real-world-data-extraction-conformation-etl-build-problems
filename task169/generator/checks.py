@@ -110,12 +110,7 @@ def main(target):
     G = calc.golden(D, S)
     step, hi, lo, s = call_of(D, G["p"])
     figs = json.load(open(os.path.join(HERE, "figures.json")))
-    ok("CALL1 the rate step is the golden", step == 20 and figs["call"]["rate_step"] == 20, "%.3f per cent" % (100 * s["all"]))
-    ok("CALL2 highest and lowest districts", (hi, lo) == ("Garrison", "Corliss") and
-       figs["call"]["highest_district"] == hi and figs["call"]["lowest_district"] == lo, "%s %s" % (hi, lo))
-    srt = sorted(s[d] for d in C.DISTRICTS)
-    ok("CALL3 highest clears the second by 1.2x", srt[-1] / srt[-2] >= 1.2, "%.3f" % (srt[-1] / srt[-2]))
-    ok("CALL4 lowest clears the next by 1.2x", srt[1] / srt[0] >= 1.2, "%.3f" % (srt[1] / srt[0]))
+    ok("CALL1 the rate step is the golden", step == 20 and figs["call"] == {"rate_step": 20}, "%.3f per cent" % (100 * s["all"]))
     e = C.edge(100 * s["all"], 5)
     ok("EDGE1 the golden rate sits mid-bin", e >= 2.0, "edge distance %.2f points" % e)
 
@@ -147,7 +142,7 @@ def main(target):
     for k, p in fam.items():
         st, h, l, ss = call_of(D, p)
         worst = max(worst, abs(100 * ss["all"] - 100 * s["all"]))
-        ok("FAM %s" % k, (st, h, l) == (20, "Garrison", "Corliss"), "%.2f per cent, %s %s" % (100 * ss["all"], h, l))
+        ok("FAM %s" % k, st == 20, "%.2f per cent" % (100 * ss["all"]))
     ok("FAM spread inside the bin", worst < 2.5 - 0.0, "largest move %.2f points" % worst)
 
     # ------------------------------------------------------------ the rivals
@@ -156,7 +151,10 @@ def main(target):
         st, h, l, ss = call_of(D, R[k])
         ok("RIV %s misses by a full bin" % k, abs(st - 20) >= 5, "%.2f per cent, step %d, %s %s" % (100 * ss["all"], st, h, l))
     st1, h1, l1, _ = call_of(D, R["R1"])
-    ok("RIV R1 names other districts", (h1, l1) != ("Garrison", "Corliss"), "%s %s" % (h1, l1))
+    st, h, l, ss = call_of(D, calc.doc_bound_route(D, S))
+    ok("RIV the readers' route (sentence-bound arrests per day at liberty) misses", st != 20, "%.2f per cent" % (100 * ss["all"]))
+    st, h, l, ss = call_of(D, calc.crude_count_route(D, S))
+    ok("RIV the courts' conversion on arrests counted with no time at risk misses", st != 20, "%.2f per cent" % (100 * ss["all"]))
     # the record's new-commitment rate over the share of parolees' arrests the courts decided (a one-number uplift)
     arr = D["arr"].dropna(subset=["doc_number"])
     a24 = arr[arr.date <= calc.CONV_TO]
@@ -182,28 +180,24 @@ def main(target):
     ok("R3b competing exits alone stay wrong", st2 != 20, "%.2f per cent" % (100 * ss2["all"]))
     cg = calc.golden(CD, CS)
     gst, gh, gl, gss = call_of(CD, cg["p"])
-    ok("R3b the decisive step alone files the golden", (gst, gh, gl) == (20, "Garrison", "Corliss"),
-       "%.2f per cent, %s %s" % (100 * gss["all"], gh, gl))
+    ok("R3b the decisive step alone files the golden", gst == 20, "%.2f per cent" % (100 * gss["all"]))
     import records as Rr
     tr = Rr.cohort_truth(cohort, reps=8)
     dists = np.array([p["dist"] for p in cohort])
     tt = tr["act"].mean()
     ok("R3b the simulated forward truth is in the golden's bin", calc.step5(tt) == 20, "%.2f per cent" % (100 * tt))
-    ok("R3b truth ranks the districts the same way",
-       max(C.DISTRICTS, key=lambda d: tr["act"][dists == d].mean()) == "Garrison" and
-       min(C.DISTRICTS, key=lambda d: tr["act"][dists == d].mean()) == "Corliss", "")
     ok("R1 the field's raw material ships", len(D["arr"]) > 25000 and "otn" in D["aoc"].columns and len(D["rel"]) > 25000, "")
     cols = [c.lower() for f in files if f.endswith(".csv") for c in pd.read_csv(os.path.join(target, f), nrows=1).columns]
     ok("R1 no shipped column holds a return outcome", not any(re.search("return|recid|outcome|within", c) for c in cols), "")
     # R2: each Layer 1 item mishandled leaves the call where it was
     D2 = dict(D, rel=D["rel"].assign(code=D["rel"].movement_code))
     st, h, l, _ = call_of(D2, calc.golden(D2)["p"])
-    ok("R2 L1 old movement codes read as other movements", (st, h, l) == (20, hi, lo), "%d %s %s" % (st, h, l))
+    ok("R2 L1 old movement codes read as other movements", st == 20, "%d %s %s" % (st, h, l))
     adm2 = D["adm"].copy()
     adm2.loc[adm2.movement_type.isin(["TRN", "WRI"]), "movement_type"] = "ADM"
     D3 = dict(D, adm=adm2)
     st, h, l, _ = call_of(D3, calc.golden(D3)["p"])
-    ok("R2 L2 transfers and writs read as admissions", (st, h, l) == (20, hi, lo), "%d %s %s" % (st, h, l))
+    ok("R2 L2 transfers and writs read as admissions", st == 20, "%d %s %s" % (st, h, l))
     raw = pd.read_parquet(os.path.join(target, C.F_ARR))
     xw = pd.read_csv(os.path.join(target, C.F_XW), dtype=str)
     ok("R2 L3 the two state-ID formats: an unnormalised join matches nothing (loud)",
@@ -212,15 +206,15 @@ def main(target):
         ["docket_no", "entry_date"]).groupby("docket_no", as_index=False).head(1)
     D4 = dict(D, aoc=aoc_first)
     st, h, l, _ = call_of(D4, calc.golden(D4)["p"])
-    ok("R2 L4 amended dispositions: first row kept", (st, h, l) == (20, hi, lo), "%d %s %s" % (st, h, l))
+    ok("R2 L4 amended dispositions: first row kept", st == 20, "%d %s %s" % (st, h, l))
     save = calc.CONV_TO
     calc.CONV_TO = pd.Timestamp(C.CUT)
     st, h, l, ss = call_of(D, calc.project(D, G["lam"], calc.conversion(D)))
     calc.CONV_TO = save
-    ok("R2 L5 open cases counted as no sentence", (st, h, l) == (20, hi, lo), "%.2f per cent" % (100 * ss["all"]))
+    ok("R2 L5 open cases counted as no sentence", st == 20, "%.2f per cent" % (100 * ss["all"]))
     D6 = dict(D, death=D["death"].assign(doc_number="none"))
     st, h, l, _ = call_of(D6, calc.golden(D6)["p"])
-    ok("R2 L6 deaths ignored", (st, h, l) == (20, hi, lo), "%d %s %s" % (st, h, l))
+    ok("R2 L6 deaths ignored", st == 20, "%d %s %s" % (st, h, l))
     leg_dup = calc.board_revoked_otns(D)
     D7 = dict(D, leg=D["leg"][pd.to_datetime(D["leg"].action_date, errors="coerce") <= pd.Timestamp(C.BOARD_MIGRATE_CUT)])
     ok("R2 L7 the Board's two systems: the parallel run adds no revoked arrest", calc.board_revoked_otns(D7) == leg_dup, "")
@@ -232,55 +226,71 @@ def main(target):
     ok("SF1 one row per person on the extract", D["proj"].doc_number.is_unique, "%d people" % len(D["proj"]))
     ok("SF2 the extract holds only PAR and RPR in 2027", set(D["proj"].projected_movement) <= {"PAR", "RPR"} and
        (D["proj"].rd.dt.year == 2027).all(), "")
-    ok("SF3 transfers and writs are not returns", (st, h, l) == (20, hi, lo), "see R2 L2")
+    ok("SF3 transfers and writs are not returns", st == 20, "see R2 L2")
     W0 = C.WINDOW
     C.WINDOW = 731
     st, h, l, ss = call_of(D, calc.project(D, G["lam"], cv))
     C.WINDOW = W0
-    ok("SF4 two years read as 731 days", (st, h, l) == (20, hi, lo), "%.2f per cent" % (100 * ss["all"]))
+    ok("SF4 two years read as 731 days", st == 20, "%.2f per cent" % (100 * ss["all"]))
     ok("SF5 the Act governs the whole window of every cohort member", (D["proj"].rd >= pd.Timestamp(C.ACT_IN_FORCE)).all(), "")
     ok("SF6 district by county of commitment: one district per county", len(calc.DIST_OF) == 12, "")
-    exp = {d: s[d] * (D["proj"].dist == d).sum() for d in C.DISTRICTS}
-    ok("SF7 ranking by expected returns gives the same pair", max(exp, key=exp.get) == hi and min(exp, key=exp.get) == lo, "")
     ok("SF8 the rate is not on a rounding boundary", C.edge(100 * s["all"], 5) > 1.0, "")
     p_d = G["p"]
     ok("SF9 deaths in the denominator or out", True, "the cohort is not yet released; methodology 3.2 keeps them in")
-    ok("SF10 history window: the last two complete years give the same call", call_of(D, gr["p"])[:3] == (20, hi, lo), "")
+    ok("SF10 history window: the last two complete years give the same call", call_of(D, gr["p"])[0] == 20, "")
+    # the judge's two near-miss readings: each still sends every parolee arrest through the courts' conversion (the
+    # decisive step) and mishandles a filed convention or the exposure, so each is a fork on the golden route
+    cv0 = dict(cv, lags={c: np.zeros(1) for c in cv["lags"]})
+    st, h, l, ss = call_of(D, calc.crude_count_route(D, S, cv=cv0))
+    ok("SF11 in-window arrests counted crude, no time at risk and no arrest-to-admission time, at the courts' "
+       "conversion: same call, takes the decisive step", st == 20, "%.2f per cent" % (100 * ss["all"]))
+    st, h, l, ss = call_of(D, calc.project(D, G["lam"], cv, pooled=True))
+    ok("SF12 one conversion pooled over charge grades, at the courts' rate: same call, takes the decisive step",
+       st == 20, "%.2f per cent" % (100 * ss["all"]))
+    st, h, l, ss = call_of(D, calc.crude_count_route(D, S, cv=cv0, court_only=False))
+    ok("SF11 control: the same crude count without the decisive step misses", st != 20, "%.2f per cent" % (100 * ss["all"]))
 
     # ------------------------------------------------------------ the asks
     A = calc.ask_a(D)
     ok("ASKA golden matches figures.json", all(figs["a1_" + o] == A[o] for o in calc.OFFICES), "")
-    crack = calc.ask_a(D, dedupe=False)
-    hits = sum(crack[o][k] == A[o][k] for o in calc.OFFICES for k in ("arrest", "conditions"))
-    ok("ASKA cracker (both systems added) misses every cell", hits == 0, "%d of 8 kept" % hits)
-    kept = calc.ask_a(D, rescind=False)
-    ok("ASKA rescissions move the conditions cells", all(kept[o]["conditions"] != A[o]["conditions"] for o in calc.OFFICES), "")
+    def miss_a(a, name):
+        hits = sum(a[o][x] == A[o][x] for o in calc.OFFICES for x in ("arrest", "conditions"))
+        ok("ASKA stop %s misses every cell" % name, hits == 0, "%d of 8 kept" % hits)
+    miss_a(calc.ask_a(D, orders=False), "readers' path (each case row a recommitment)")
+    miss_a(calc.ask_a(D, orders=False, dedupe=False), "both systems added, case rows")
     leg, new = calc._board(D)
-    par = leg[(leg.ad > pd.Timestamp(C.BOARD_MIGRATE_CUT)) & (leg.action == "REVOKE")]
-    ok("ASKA the parallel run reaches every office and basis",
-       all(((par.office == o) & ((par.arrest_otn != "") == b)).sum() > 0 for o in calc.OFFICES for b in (True, False)), "")
+    nd = new.assign(d=new.dd.dt.date)
+    pairs = nd[nd.decision == "REVOKED"].groupby(["doc_number", "d"]).size()
+    ok("ASKA two cases decided at one hearing share the decision timestamp",
+       nd[nd.decision == "REVOKED"].groupby(["doc_number", "d"]).decision_ts.nunique().max() == 1, "%d orders with two cases" % (pairs > 1).sum())
+    late = calc.ask_a(D, rescind_by=pd.Timestamp(C.CUT))
+    ok("ASKA rescission after 30 June 2026 moves at least one cell", late != A, "")
     B = calc.ask_b(D)
     ok("ASKB golden matches figures.json", all(figs["b_" + d] == B[d] for d in C.DISTRICTS), "")
-    for kw, name in ((dict(dedupe=False, blank="action"), "cracker"), (dict(blank="action"), "lift at the hearing"),
-                     (dict(blank="drop"), "blank lifts dropped"), (dict(blank="extract"), "open to the extract")):
+    for kw, name in ((dict(union=False), "readers' path (detainers summed)"), (dict(union=False, dedupe=False, blank="action"), "both systems, every row, end at the decision"),
+                     (dict(blank="drop"), "blank lifts dropped"), (dict(both_days=True), "both end days counted")):
         b = calc.ask_b(D, **kw)
         hits = sum(b[d][q] == B[d][q] for d in C.DISTRICTS for q in B[d])
-        ok("ASKB stop %s misses every cell" % name, hits == 0, "%d of 16 kept" % hits)
-    b = calc.ask_b(D, dedupe=False)
-    ok("ASKB carried-over detainers counted twice move the last quarter", all(b[d]["Q4"] != B[d]["Q4"] for d in C.DISTRICTS), "")
-    b = calc.ask_b(D, both_days=True)
-    ok("ASKB both end days counted misses every cell", all(b[d][q] != B[d][q] for d in C.DISTRICTS for q in B[d]), "")
-    ok("ASKC chart totals are the district year totals", figs["chart"] == {d: sum(B[d].values()) for d in C.DISTRICTS}, "")
-    b = calc.ask_b(D, blank="admission", dedupe=False)
-    ok("ASKB the lift device cracked alone still misses every cell", all(b[d][q] != B[d][q] for d in C.DISTRICTS for q in B[d]), "")
-    vals = [v for d in C.DISTRICTS for v in B[d].values()] + [A[o][k] for o in calc.OFFICES for k in A[o]]
+        ok("ASKB stop %s misses every cell" % name, hits == 0, "%d of 8 kept" % hits)
+    W = calc.ask_c(D)
+    ok("ASKC golden matches figures.json", all(figs["c_" + i] == W[i] for i in calc.INSTITUTIONS), "")
+    w = calc.ask_c(D, ended_by_release=False)
+    hits = sum(w[i][h] == W[i][h] for i in calc.INSTITUTIONS for h in W[i])
+    ok("ASKC readers' path (an unreturned trip dropped) misses every cell", hits == 0, "%d of 10 kept" % hits)
+    vals = [v for d in C.DISTRICTS for v in B[d].values()] + [A[o][x] for o in calc.OFFICES for x in A[o]] + \
+           [v for i in calc.INSTITUTIONS for v in W[i].values()]
     ok("REAL ask figures distinct and not round", len(set(vals)) == len(vals) and not any(v % 100 == 0 for v in vals), "")
 
     # ------------------------------------------------------------ separation
+    par = leg[(leg.ad > pd.Timestamp(C.BOARD_MIGRATE_CUT)) & (leg.action == "REVOKE")]
     dev_otn = set(par.arrest_otn) - {""}
     conv_otn = set(D["arr"][D["arr"].date <= calc.CONV_TO].otn)
     ok("SEP parallel-run rows carry no arrest the call converts", not (dev_otn & conv_otn), "%d device arrests" % len(dev_otn))
     ok("SEP the call reads no hold", True, "calc.golden never calls holds()")
+    D8 = dict(D, adm=D["adm"][~D["adm"].movement_type.isin(["WRO", "WRI"])])
+    ok("SEP the call is unchanged with every writ row deleted", abs(calc.summarise(D8, calc.golden(D8, S)["p"])["all"] - s["all"]) < 1e-12, "")
+    sup = set(new[(new.decision == "REVOKED") & (new.arrest_otn != "")].arrest_otn) | set(leg[(leg.action == "REVOKE") & (leg.arrest_otn != "")].arrest_otn)
+    ok("SEP companion reports add no arrest number the Board did not already revoke on", sup == calc.board_revoked_otns(D), "")
 
     # ------------------------------------------------------------ distractors
     tmp = tempfile.mkdtemp()
@@ -290,8 +300,8 @@ def main(target):
                 shutil.copy(os.path.join(target, f), tmp)
         Dd = calc.load(tmp)
         st, h, l, ss = call_of(Dd, calc.golden(Dd)["p"])
-        ok("DIST call unchanged with every distractor deleted", (st, h, l) == (20, hi, lo) and abs(ss["all"] - s["all"]) < 1e-12, "")
-        ok("DIST asks unchanged with every distractor deleted", calc.ask_a(Dd) == A and calc.ask_b(Dd) == B, "")
+        ok("DIST call unchanged with every distractor deleted", st == 20 and abs(ss["all"] - s["all"]) < 1e-12, "")
+        ok("DIST asks unchanged with every distractor deleted", calc.ask_a(Dd) == A and calc.ask_b(Dd) == B and calc.ask_c(Dd) == W, "")
     finally:
         shutil.rmtree(tmp)
 

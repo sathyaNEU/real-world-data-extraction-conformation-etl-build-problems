@@ -18,10 +18,10 @@ def write(root):
                      "in revocation law, built from the arrest process and the courts' conversion of arrests into "
                      "prison commitments)",
         "objective": "Forecasting & Predictive Modeling",
-        "prompt_shape": "one rate in five-point steps with the highest and lowest district; revocations by office and "
-                        "basis; detainer days by district and quarter; a labelled stacked bar per district",
+        "prompt_shape": "one rate in five-point steps; recommitments by office and basis; parolee-days on detainer by "
+                        "district and half-year; writ days by institution and half-year",
         "as_of": C.ASSEMBLED.isoformat(),
-        "deliverables": ["returns_projection_2027.xlsx", "detainer_days_2025.png"],
+        "deliverables": ["returns_projection_2027.xlsx"],
         "distractor_files": list(C.DISTRACTORS),
         "distractors": [
             {"file": C.F_PRAT, "wrong_basis": False,

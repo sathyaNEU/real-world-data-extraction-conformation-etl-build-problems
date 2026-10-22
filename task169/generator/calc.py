@@ -158,10 +158,12 @@ def _days(x):
     return (pd.to_datetime(x).values.astype("datetime64[D]").astype(np.int64))
 
 
-def liberty(D, S, until_first=False):
-    """days at liberty and arrests in each band after each complete release"""
+def liberty(D, S, until_first=False, only=None):
+    """days at liberty and arrests in each band after each complete release (only: the arrest numbers to count)"""
     cu = custody(D)
     arr = D["arr"].dropna(subset=["doc_number"])
+    if only is not None:
+        arr = arr[arr.otn.isin(only)]
     cu = cu.assign(a=_days(cu.t), e=_days(cu.out))
     cu_g = {k: v[["a", "e"]].values for k, v in cu.groupby("doc_number")}
     ar_g = {k: np.sort(_days(v.date)) for k, v in arr.groupby("doc_number")}
@@ -279,6 +281,43 @@ def golden(D, S=None):
     return dict(p=p, cv=cv, model=m, pe=pe, S=S, lam=lam)
 
 
+def doc_bound_route(D, S):
+    """the readers' route: the hazard of an arrest that ended in a sentence to the Department, per day at liberty,
+    projected with the arrest-to-admission time; an arrest the Board revoked on never reached a sentence"""
+    aoc = D["aoc"]
+    only = set(aoc[aoc.sentence_type == "DOC"].otn)
+    pe = liberty(D, S, only=only)
+    m, cols = arrest_model(D, S, pe)
+    lam = lam_projected(D, m, cols)
+    cv = conversion(D)
+    alll = np.sort(np.concatenate(list(cv["lags"].values())))
+    ds = np.arange(C.WINDOW)
+    F = np.searchsorted(alll, C.WINDOW - ds, side="right") / len(alll)
+    L = lam[:, np.digitize(ds, (90, 180, 365))]
+    return 1 - np.exp(-(L * F[None, :]).sum(1))
+
+
+def crude_count_route(D, S, cv=None, court_only=True):
+    """arrests counted over the 730 days after each release with no allowance for time in custody, each at the
+    courts' conversion and timing (court_only=False: only the arrests that did end in a sentence to the Department,
+    each counted as a return, the record's route)"""
+    arr = D["arr"].dropna(subset=["doc_number"])
+    if not court_only:
+        aoc = D["aoc"]
+        arr = arr[arr.otn.isin(set(aoc[aoc.sentence_type == "DOC"].otn))]
+    g = {k: np.sort(_days(v.date)) for k, v in arr.groupby("doc_number")}
+    rd = _days(S.rd)
+    n = np.array([0 if doc not in g else int(np.searchsorted(g[doc], r + 730) - np.searchsorted(g[doc], r, "right"))
+                  for doc, r in zip(S.doc_number.values, rd)])
+    X = features(S, "rd")
+    m = sm.GLM(n, X, family=sm.families.Poisson()).fit()
+    lam = np.tile((m.predict(features(D["proj"], "rd")).values / 730.0)[:, None], (1, 4))
+    cv = conversion(D) if cv is None else cv
+    if not court_only:
+        cv = dict(cv, pc={c: 1.0 for c in cv["pc"]})
+    return project(D, lam, cv)
+
+
 def summarise(D, p):
     proj = D["proj"]
     out = {"all": float(np.mean(p))}
@@ -328,21 +367,26 @@ def _board(D):
     return leg, new
 
 
-def revocations(D, dedupe=True, rescind=True):
-    """the Board's revocations decided in fiscal 2025-26, one row each: office, basis, decision date"""
+def revocations(D, dedupe=True, rescind=True, orders=True, rescind_by=FY[1]):
+    """the Board's recommitments ordered in fiscal 2025-26: one per parolee per hearing, with its office, whether any
+    report it took up was of an arrest, and the decision date"""
     leg, new = _board(D)
     close = pd.Timestamp(C.BOARD_MIGRATE_CUT)
     L = leg[(leg.action == "REVOKE") & (leg.ad >= FY[0]) & (leg.ad <= FY[1])].copy()
     if dedupe:
         L = L[L.ad <= close]          # legacy entries dated after the legacy system closed are the parallel run's
     if rescind:
-        r = set(leg[leg.action == "RESCIND"].case_no)
+        r = set(leg[(leg.action == "RESCIND") & (leg.ad <= rescind_by)].case_no)
         L = L[~L.case_no.isin(r)]
     N = new[(new.decision == "REVOKED") & (new.dd >= FY[0]) & (new.dd <= FY[1])].copy()
     if rescind:
-        N = N[N.rescinded_date == ""]
-    out = pd.concat([pd.DataFrame({"office": L.office, "arrest": L.arrest_otn != "", "d": L.ad}),
-                     pd.DataFrame({"office": N.office, "arrest": N.arrest_otn != "", "d": N.dd})], ignore_index=True)
+        rd = _ts(N.rescinded_date)
+        N = N[~(rd <= rescind_by)]
+    out = pd.concat([pd.DataFrame({"doc": L.doc_number, "office": L.office, "arrest": L.arrest_otn != "", "d": L.ad}),
+                     pd.DataFrame({"doc": N.doc_number, "office": N.office, "arrest": N.arrest_otn != "", "d": N.dd})],
+                    ignore_index=True)
+    if orders:
+        out = out.groupby(["doc", "d"], as_index=False).agg(office=("office", "first"), arrest=("arrest", "max"))
     return out
 
 
@@ -400,16 +444,74 @@ def holds(D, blank="admission", dedupe=True, case=None, migr=None):
     return out
 
 
-def ask_b(D, both_days=False, **kw):
+def _union(h):
+    """merge each parolee's overlapping detainer intervals in one district"""
+    out = []
+    for (doc, dist), g in h.sort_values("s").groupby(["doc_number", "dist"]):
+        cs, ce = None, None
+        for s, e in zip(g.s, g.e):
+            if cs is None:
+                cs, ce = s, e
+            elif s <= ce:
+                ce = max(ce, e)
+            else:
+                out.append((doc, dist, cs, ce))
+                cs, ce = s, e
+        out.append((doc, dist, cs, ce))
+    return pd.DataFrame(out, columns=["doc_number", "dist", "s", "e"])
+
+
+HALVES = (("H1", "2025-01-01", "2025-06-30"), ("H2", "2025-07-01", "2025-12-31"))
+
+
+def ask_b(D, both_days=False, union=True, periods=None, **kw):
     h = holds(D, **kw)
+    if union:
+        h = _union(h)
     res = {}
     for d in C.DISTRICTS:
         x = h[h.dist == d]
         row = {}
-        for q, a, b in QUARTERS:
+        for q, a, b in (periods or HALVES):
             a, b = pd.Timestamp(a), pd.Timestamp(b) + pd.Timedelta(days=1)
             end = x.e + (pd.Timedelta(days=1) if both_days else pd.Timedelta(0))
             ov = (end.clip(upper=b) - x.s.clip(lower=a)).dt.days.clip(lower=0)
             row[q] = int(ov.sum())
         res[d] = row
+    return res
+
+
+INSTITUTIONS = C.FACILITIES
+
+
+def writ_trips(D, ended_by_release=True):
+    """each trip out on a court writ: the institution left, the day out and the day back (a WRI, or the release
+    movement for a person the court released)"""
+    m = D["adm"][D["adm"].movement_type.isin(["WRO", "WRI", "ADM", "TRN"])][["doc_number", "t", "movement_type", "location"]]
+    r = D["rel"][["doc_number", "rd"]].rename(columns={"rd": "t"}).assign(movement_type="REL", location="")
+    ev = pd.concat([m, r], ignore_index=True)
+    ev["k"] = ev.movement_type.map({"REL": 0, "ADM": 1, "TRN": 2, "WRI": 3, "WRO": 4})
+    ev = ev.sort_values(["doc_number", "t", "k"])
+    trips = []
+    for doc, g in ev.groupby("doc_number", sort=False):
+        open_ = None
+        for t, mt, loc in zip(g.t, g.movement_type, g.location):
+            if mt == "WRO":
+                open_ = (t, loc)
+            elif open_ is not None and (mt == "WRI" or (mt == "REL" and ended_by_release)):
+                trips.append((doc, open_[1], open_[0], t))
+                open_ = None
+    return pd.DataFrame(trips, columns=["doc_number", "inst", "s", "e"])
+
+
+def ask_c(D, **kw):
+    w = writ_trips(D, **kw)
+    res = {}
+    for inst in INSTITUTIONS:
+        x = w[w.inst == inst]
+        row = {}
+        for h, a, b in HALVES:
+            a, b = pd.Timestamp(a), pd.Timestamp(b) + pd.Timedelta(days=1)
+            row[h] = int((x.e.clip(upper=b) - x.s.clip(lower=a)).dt.days.clip(lower=0).sum())
+        res[inst] = row
     return res

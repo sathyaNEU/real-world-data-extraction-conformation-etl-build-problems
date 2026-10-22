@@ -7,9 +7,9 @@
   "stage": 4,
   "stage_name": "check",
   "updated": "2026-10-22",
-  "stump": "A competent solver keeps only the returns the Act still allows, models each 2027 release's chance of a new-commitment admission within two years on the record's complete releases and files 5 per cent with Linwood highest and Garrison lowest; the step that lands it there is reading the record's new-commitment returns as what parolees' arrests produce, when the Board answered about a third of parolees' arrests by revoking them before any court could, most of all in Garrison, and under the Act those arrests go to court and become prison commitments at the courts' own rate for their charge grade, which files 20 per cent with Garrison highest and Corliss lowest.",
+  "stump": "A competent solver keeps only the returns the Act still allows, models each 2027 release's chance of a new-commitment admission within two years on the record's complete releases and files 5 per cent; the step that lands it there is reading the record's new-commitment returns as what parolees' arrests produce, when the Board answered about a third of parolees' arrests by revoking them before any court could, and under the Act those arrests go to court and become prison commitments at the courts' own rate for their charge grade, which files 20 per cent.",
   "architecture": 2,
-  "loops": 0,
+  "loops": 1,
   "precut": {
     "exit": 0,
     "date": "2026-10-22",
@@ -17,20 +17,20 @@
   },
   "leak": {
     "leak_py": "REVIEW (no LEAK; every REVIEW line answered in ## Leak sweep), 2026-10-22",
-    "reader": ""
+    "reader": "round 0: readers A and B share 10 (missed), Garrison and Corliss landed, asks 24 of 24"
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.question_form against task482, answered; no BLOCK)",
+    "heart": "BLOCK ban.strategy against task252, which entered the window after this card was registered; ruled as task177's: the window stays fixed at the draw, not relabelled. WARN repeat.question_form against task482 (answered)",
     "nearest": "task103 v1 lineage at 0.06",
-    "surface": "exit 0, no personas"
+    "surface": "exit 0 (run with an in-memory guard for ledger rows whose artifact cell is '-', which crash clone-check fingerprint.py artifact_family on main), no personas; the shared rounding sentence with task177 reworded"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "round 0: DETERMINISTIC / APPROVE",
+    "disposition": "near misses 18 and 22.4 checked: both take the decisive step (SF11 21.78, SF12 20.87); without the step the crude count gives 14.23",
+    "report": "scratchpad/judge-task169r/verdict.md"
   },
   "returned": [],
-  "resume": "stage 4: two scored readers and the judge (score readers with score_reader.py task169 <reader.json> --call-key call.rate_step --call-key call.highest_district --call-key call.lowest_district)",
+  "resume": "stage 4 round 2: two scored readers (score readers with score_reader.py task169 <reader.json> --call-key call.rate_step)",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -41,17 +41,28 @@
   "gates": {
     "checks": "83 of 83",
     "verify": "0 failed",
-    "rebuild": "21 files byte-identical",
-    "figures_check": "exit 0, 38 figures",
+    "rebuild": "20 files byte-identical",
+    "figures_check": "exit 0, 36 figures",
     "voice_check": "PASS",
+    "precut": "exit 0, 51 checks",
     "scrub": "target and golden clean",
-    "cracker": "pair 28.5, mirror leakage 0.0, worst single crack 36.4"
+    "cracker": "pair 28.5, mirror leakage 0.0, both readers' quoted paths keep 0 of 26, worst single crack 39.1 (C1)"
   },
-  "target_zip_sha256": "8912821ba332b71cecbb42cc0a5bc2e9123dd36faea3a66a710f170bce8566a2",
+  "target_zip_sha256": "f3ef6705fe5c3dbfd36497d39cd3f9ff755af633343990235134e1d89bcf51dd",
   "call": {
     "rate_step": 20,
-    "highest_district": "Garrison",
-    "lowest_district": "Corliss",
-    "default_path": "5 per cent, Linwood highest, Garrison lowest"
-  }
+    "default_path": "5 per cent"
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "zip": "8912821b",
+      "result": "share held (readers 10, judge 20); districts landed by a route without the step; asks 24 of 24 on both readers"
+    },
+    {
+      "round": 1,
+      "zip": "f3ef6705",
+      "fixes": "districts dropped from the call; asks re-sited onto grain devices (one recommitment per hearing, the union of a parolee's overlapping detainers, writ trips ended by a release); rescission closed by a WHAT (not rescinded by 30 June 2026); chart dropped"
+    }
+  ]
 }

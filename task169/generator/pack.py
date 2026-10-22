@@ -105,6 +105,7 @@ def write_admissions(path, book, ident):
     """admission movements into Department custody, with the transfers out of reception and court-writ movements the
     offender management system writes into the same table"""
     rng = C.stream("pack/admissions")
+    wrng = C.stream("pack/writs")
     rels = {}
     for pid, rd, rtype, maxd, dist, rno in book.releases:
         rels.setdefault(pid, []).append(rd)
@@ -128,12 +129,26 @@ def write_admissions(path, book, ident):
             fac = T.facility_of(pid, ad)
             rows.append((doc, "%s %02d:%02d" % (tr.isoformat(), int(rng.integers(5, 11)), int(rng.integers(0, 60))),
                          "TRN", "CLASSIFICATION", fac, county))
-            if rng.random() < 0.05:
-                wo = C.add(tr, int(rng.integers(20, 200)))
-                wi = C.add(wo, int(rng.integers(1, 9)))
-                if wi < out and wi <= C.CUT:
-                    rows.append((doc, "%s 06:%02d" % (wo.isoformat(), int(rng.integers(0, 60))), "WRO", "COURT WRIT", fac, county))
-                    rows.append((doc, "%s 19:%02d" % (wi.isoformat(), int(rng.integers(0, 60))), "WRI", "COURT WRIT", fac, county))
+            # trips out to court on a writ: the institution writes WRO when the person leaves and WRI on return; a
+            # person the court releases (a sentence that ran out, a conviction vacated) never comes back, so the trip
+            # ends in the release movement and has no WRI
+            last = min(out, C.add(C.CUT, 1))
+            t0 = C.add(tr, 5)
+            while True:
+                t0 = C.add(t0, int(wrng.exponential(300)))
+                dur = int(wrng.integers(1, 13))
+                if C.add(t0, dur + 8) >= last:
+                    break
+                rows.append((doc, "%s %02d:%02d" % (t0.isoformat(), int(wrng.integers(5, 8)), int(wrng.integers(0, 60))),
+                             "WRO", "COURT WRIT", fac, county))
+                t0 = C.add(t0, dur)
+                rows.append((doc, "%s %02d:%02d" % (t0.isoformat(), int(wrng.integers(15, 21)), int(wrng.integers(0, 60))),
+                             "WRI", "COURT WRIT", fac, county))
+            if out <= C.CUT and C.days(tr, out) > 20 and wrng.random() < 0.12:
+                wo = C.add(out, -int(wrng.integers(1, 7)))
+                if all(not (r[0] == doc and r[2] in ("WRO", "WRI") and r[1][:10] >= wo.isoformat()) for r in rows[-6:]):
+                    rows.append((doc, "%s %02d:%02d" % (wo.isoformat(), int(wrng.integers(5, 8)), int(wrng.integers(0, 60))),
+                                 "WRO", "COURT WRIT", fac, county))
     rows.sort(key=lambda r: (r[1], r[0]))
     head = ("doc_number", "movement_datetime", "movement_type", "movement_reason", "location", "county_of_commitment")
     return C.write_csv(path, head, rows), lags
@@ -265,6 +280,11 @@ COND_TEXT = {"03": "Report as directed", "04": "Maintain approved residence", "0
              "01": "Obey all laws"}
 
 
+def _jail_draw(vid):
+    import hashlib
+    return int(hashlib.sha256(("jail/%d" % vid).encode()).hexdigest()[:8], 16) / 0xFFFFFFFF
+
+
 def board_frames(book, ident):
     """split the Board's violation records into the legacy system and the new one, with the migration and the
     January 2026 parallel run"""
@@ -273,10 +293,30 @@ def board_frames(book, ident):
     for vid, pid, lodged, lifted, admitted in book.holds:
         holds[vid] = (lodged, lifted, admitted)
     resc = {vid: d for vid, pid, d in book.rescinds}
+    companion_of = {}
     legacy, new = [], []
     nlegacy = {}
     officers = {d: ["%s%02d" % (C.OFFICE[d], k) for k in range(1, 7)] for d in C.DISTRICTS}
-    for vid, pid, rep, vtype, otn, hd, decision, term in sorted(book.violations, key=lambda r: (r[2], r[0])):
+    # a second report taken up at the same hearing: a supplemental report on the same arrest, or a conditions report
+    # filed while the parolee was held; the Board decides both cases at one hearing with one recommitment term
+    crng = C.stream("pack/board_companions")
+    viols = list(book.violations)
+    comp = []
+    for vid, pid, rep, vtype, otn, hd, decision, term in viols:
+        if decision != "REVOKED" or vid not in holds or C.days(rep, hd) < 6 or crng.random() >= 0.11:
+            continue
+        crep = C.add(rep, int(crng.integers(2, C.days(rep, hd) - 2)))
+        cvid = 50_000_000 + vid
+        if vtype == "N" and crng.random() < 0.55:
+            comp.append((cvid, pid, crep, "N", otn, hd, decision, term))
+        else:
+            comp.append((cvid, pid, crep, "C", "", hd, decision, term))
+        h = holds[vid]
+        holds[cvid] = (crep, h[1], h[2])
+        if vid in resc:
+            resc[cvid] = resc[vid]
+        companion_of[cvid] = vid
+    for vid, pid, rep, vtype, otn, hd, decision, term in sorted(viols + comp, key=lambda r: (r[2], r[0])):
         if rep > C.CUT:
             continue
         I = ident.p[pid]
@@ -294,7 +334,7 @@ def board_frames(book, ident):
         h = holds.get(vid)
         jail = None
         if h:
-            jail = ident.p[pid]["county"] if rng.random() < 0.9 else C.COUNTIES[dist][0]
+            jail = ident.p[pid]["county"] if (_jail_draw(companion_of.get(vid, vid)) < 0.9) else C.COUNTIES[dist][0]
         decided = hd if hd <= C.CUT else None
         officer = officers[dist][int(rng.integers(0, 6))]
         rec = dict(vid=vid, doc=I["doc"], office=C.OFFICE[dist], rep=rep, otn=_otn(otn) if otn else "", conds=conds,
@@ -374,6 +414,12 @@ def write_board_legacy(path, legacy, admissions_by_doc):
     return n
 
 
+def _hearing_time(doc, d):
+    import hashlib
+    h = int(hashlib.sha256(("hearing/%s/%s" % (doc, d.isoformat())).encode()).hexdigest()[:8], 16)
+    return 9 + h % 8, (h // 8) % 60
+
+
 def write_board_new(path, new):
     """the new case system's decisions export: one row per case, migrated cases flagged by where they opened; a
     rescinded revocation keeps its row with the rescission date; hold dates as the jail reported them"""
@@ -396,7 +442,7 @@ def write_board_new(path, new):
         conds = "; ".join(COND_TEXT[c] for c in r["conds"])
         rows.append((case_id, r["doc"], r["office"], "LEGACY" if r["migrated"] else "NEW", r["rep"].isoformat(), r["otn"],
                      conds, (r["jail"] + " County Jail") if r["jail"] else "", hs, he,
-                     dec, (r["decided"].isoformat() + "T%02d:%02d:00-05:00" % (int(rng.integers(9, 17)), int(rng.integers(0, 60))))
+                     dec, (r["decided"].isoformat() + "T%02d:%02d:00-05:00" % _hearing_time(r["doc"], r["decided"]))
                      if r["decided"] else "", r["term"] if dec == "REVOKED" else "", rdate, r["officer"]))
     head = ("case_id", "doc_number", "office", "opened_in", "report_date", "arrest_otn", "conditions_cited",
             "hold_facility", "hold_start", "hold_end", "decision", "decision_ts", "revocation_term_days",

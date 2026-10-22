@@ -11,7 +11,7 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "rate_or_share",
-  "answer": "Carry a two-year return rate of 20 per cent for the 6,466 people the Department expects to release to parole in 2027, highest in Garrison and lowest in Corliss.",
+  "answer": "Carry a two-year return rate of 20 per cent for the 6,466 people the Department expects to release to parole in 2027.",
   "answer_source": "submission.md, 1. Final Recommendation (generator/deliver.py from the pack; generator/verify.py recomputes)",
   "gap": [
     "time",
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who links the four agencies' records, reads the Act correctly and keeps only the record's new-commitment returns, modelling them on the obvious covariates, files 5 per cent with Linwood highest and Garrison lowest (10 per cent with revocations as competing exits), when the parolees' arrests the Board answered by revocation will be prosecuted and turned into prison commitments at the courts' own rate by charge grade, which files 20 per cent with Garrison highest and Corliss lowest.",
+  "analyst_test": "A strong analyst who links the four agencies' records, reads the Act correctly and keeps only the record's new-commitment returns, modelling them on the obvious covariates, files 5 per cent (10 per cent with revocations as competing exits, about 12 per cent counting the arrests that ended in a Department sentence per day at liberty, which both stage 4 readers filed as 10), when the parolees' arrests the Board answered by revocation will be prosecuted and turned into prison commitments at the courts' own rate by charge grade, which files 20 per cent.",
   "domain_test": "The deciding quantity is a release cohort's two-year return-to-prison rate estimated the way a corrections forecaster does it, from the arrest process and the courts' conversion of arrests into prison sentences by offence class, with the route each past return took read from the board's and the courts' records; with hospital readmissions or utility disconnections in place of returns there is no second institution whose processing the act hands the same behaviour to.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:revocation-in-lieu-of-prosecution-rerouted-under-a-conviction-only-act",
@@ -43,13 +43,15 @@
     "amended court dispositions as later rows on a docket, and cases still open at the cut",
     "deaths from a probabilistic vital-records match",
     "the Board's legacy and new case systems across its January 2026 go-live, with carried-over cases and a parallel-run fortnight",
-    "legacy detainers with no lift date when the person went to the Department, repeated on every action row of a case"
+    "legacy detainers with no lift date when the person went to the Department, repeated on every action row of a case",
+    "a second report on a parolee already held opened as its own case and decided at the same hearing",
+    "court-writ movements, some ending in a release with no return movement"
   ],
   "stakeholder_role": "the population projections analyst at the Pembroke Sentencing and Policy Commission, whose 2027 release-cohort returns go into the prison population projection the appropriations committees take in January 2027",
   "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "sbi_arrests_2019-2026.csv (the State Bureau of Identification's fingerprint-supported arrests of people released from Department custody since 2019)",
+    "file": "sbi_arrests_released_persons_2019-2026.parquet (the State Bureau of Identification's fingerprint-supported arrests of people released from Department custody since 2019)",
     "rows": 57810,
     "entity": "one arrest event of a person released from Department custody",
     "grain": "arrest event",
@@ -81,14 +83,13 @@
     ]
   },
   "deliverables": [
-    "returns_projection_2027.xlsx",
-    "detainer_days_2025.png"
+    "returns_projection_2027.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "The decisive quantity is the forward rate of an outcome that the record reaches through two processing routes, one of which a filed change closes: the rate the record shows through the remaining route understates it because the closed route pre-empted that route for most events, so only sending each event the closed route took through the remaining route's own conversion, by event class, sizes it.",
   "driver_concrete": "Under Act 26-114 a parolee returns to prison only on a new court commitment, and the record's new-commitment returns are few because the Board revoked about a third of parolees' arrests (four in five in Garrison, one in five in Corliss) before any court decided them; those arrests will now go to court and become prison commitments at the courts' own rate by charge grade, so the two-year rate is the arrest process per day out of custody times that conversion and its timing, 20 per cent against the record's 5.",
-  "stump": "A competent solver keeps only the returns the Act still allows, models each 2027 release's chance of a new-commitment admission within two years on the record's complete releases and files 5 per cent with Linwood highest and Garrison lowest; the step that lands it there is reading the record's new-commitment returns as what parolees' arrests produce, when the Board answered about a third of parolees' arrests by revoking them before any court could, most of all in Garrison, and under the Act those arrests go to court and become prison commitments at the courts' own rate for their charge grade, which files 20 per cent with Garrison highest and Corliss lowest.",
+  "stump": "A competent solver keeps only the returns the Act still allows, models each 2027 release's chance of a new-commitment admission within two years on the record's complete releases and files 5 per cent; the step that lands it there is reading the record's new-commitment returns as what parolees' arrests produce, when the Board answered about a third of parolees' arrests by revoking them before any court could, and under the Act those arrests go to court and become prison commitments at the courts' own rate for their charge grade, which files 20 per cent.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task172": "there a deadline-triggered request cuts each forward wait short at the filer's own expiry; here no wait is cut: a filed change closes one of two institutions' routes for the same arrests, and each arrest the closed route took is sent through the other institution's conversion by offence class"

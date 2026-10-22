@@ -210,38 +210,42 @@ def main(target):
     hi = max(dist_rate, key=dist_rate.get)
     lo = min(dist_rate, key=dist_rate.get)
     check("CALL rate step", step == figs["call"]["rate_step"], "%.3f per cent, step %d" % (100 * rate, step))
-    check("CALL highest and lowest", (hi, lo) == (figs["call"]["highest_district"], figs["call"]["lowest_district"]), "%s %s" % (hi, lo))
     check("CALL cohort size", len(proj) == figs["cohort_size"], "%d" % len(proj))
     check("DEFAULT the record's new-commitment model misses", int(5 * round(100 * np.mean(p1) / 5)) != step,
           "%.2f per cent" % (100 * np.mean(p1)))
 
-    # ---- ask A
+    # ---- ask A: one recommitment per parolee per hearing date, rescinded by 30 June 2026 out
     close, fy0, fy1 = dt.date(2026, 1, 2), dt.date(2025, 7, 1), dt.date(2026, 6, 30)
     def as_date(v):
         return v.date() if isinstance(v, dt.datetime) else v
-    resc = {r["case_no"] for r in legacy if r["action"] == "RESCIND"}
-    A = {o: {"arrest": 0, "conditions": 0} for o in ("D1", "D2", "D3", "D4")}
+    resc = {r["case_no"] for r in legacy if r["action"] == "RESCIND" and as_date(r["action_date"]) <= fy1}
+    orders = {}
     for r in legacy:
         d = as_date(r["action_date"])
         if r["action"] == "REVOKE" and d and fy0 <= d <= min(fy1, close) and r["case_no"] not in resc:
-            A[r["office"]]["arrest" if r["arrest_otn"] else "conditions"] += 1
+            k = (r["doc_number"], d)
+            o = orders.setdefault(k, [r["office"], False])
+            o[1] = o[1] or bool(r["arrest_otn"])
     for r in new:
         d = d_iso(r["decision_ts"])
-        if r["decision"] == "REVOKED" and d and fy0 <= d <= fy1 and not r["rescinded_date"]:
-            A[r["office"]]["arrest" if r["arrest_otn"] else "conditions"] += 1
+        if r["decision"] == "REVOKED" and d and fy0 <= d <= fy1 and not (r["rescinded_date"] and d_iso(r["rescinded_date"]) <= fy1):
+            k = (r["doc_number"], d)
+            o = orders.setdefault(k, [r["office"], False])
+            o[1] = o[1] or bool(r["arrest_otn"])
+    A = {o: {"arrest": 0, "conditions": 0} for o in ("D1", "D2", "D3", "D4")}
+    for off, arrest in orders.values():
+        A[off]["arrest" if arrest else "conditions"] += 1
     check("ASK A every office and basis", all(A[o] == figs["a1_" + o] for o in A), json.dumps(A))
-    # ---- ask B
+    # ---- ask B: parolee-days, each parolee's overlapping detainers merged
     moved = {(r["doc_number"], r["report_date"]) for r in new if r["opened_in"] == "LEGACY"}
-    spans = []
     last = {}
     for r in legacy:
         if r["hold_lodged"]:
             k = (r["case_no"], as_date(r["hold_lodged"]))
             if k not in last or as_date(r["action_date"]) > as_date(last[k]["action_date"]):
                 last[k] = r
+    spans = []
     for r in last.values():
-        if not r["hold_lodged"]:
-            continue
         s = as_date(r["hold_lodged"])
         if (r["doc_number"], as_date(r["report_date"]).isoformat()) in moved:
             continue
@@ -250,32 +254,56 @@ def main(target):
             e = next((a for a, _ in by_adm.get(r["doc_number"], []) if a >= s), None)
         if e is None:
             continue
-        spans.append((r["hold_facility"].replace(" CJ", ""), s, e))
+        spans.append((r["doc_number"], table1[r["hold_facility"].replace(" CJ", "").upper()], s, e))
     for r in new:
         if not r["hold_start"]:
             continue
         e = d_iso(r["hold_end"]) or cut + dt.timedelta(days=1)
-        spans.append((r["hold_facility"].replace(" County Jail", ""), d_iso(r["hold_start"]), e))
-    qs = (("Q1", dt.date(2025, 1, 1), dt.date(2025, 4, 1)), ("Q2", dt.date(2025, 4, 1), dt.date(2025, 7, 1)),
-          ("Q3", dt.date(2025, 7, 1), dt.date(2025, 10, 1)), ("Q4", dt.date(2025, 10, 1), dt.date(2026, 1, 1)))
-    Bv = {d: {q: 0 for q, _, _ in qs} for d in ("Garrison", "Ridgway", "Linwood", "Corliss")}
-    for jail, s, e in spans:
-        d = table1[jail.upper()]
-        for q, a, b in qs:
-            Bv[d][q] += max(0, (min(e, b) - max(s, a)).days)
-    check("ASK B every district and quarter", all(Bv[d] == figs["b_" + d] for d in Bv), json.dumps(Bv))
-    check("ASK chart district totals", all(sum(Bv[d].values()) == figs["chart"][d] for d in Bv))
+        spans.append((r["doc_number"], table1[r["hold_facility"].replace(" County Jail", "").upper()], d_iso(r["hold_start"]), e))
+    held = {}
+    for doc, dist, s, e in spans:
+        day = s
+        while day < e:
+            if dt.date(2025, 1, 1) <= day <= dt.date(2025, 12, 31):
+                held.setdefault((doc, dist), set()).add(day)
+            day += dt.timedelta(days=1)
+    Bv = {d: {"H1": 0, "H2": 0} for d in ("Garrison", "Ridgway", "Linwood", "Corliss")}
+    for (doc, dist), days in held.items():
+        for day in days:
+            Bv[dist]["H1" if day.month <= 6 else "H2"] += 1
+    check("ASK B every district and half", all(Bv[d] == figs["b_" + d] for d in Bv), json.dumps(Bv))
+    # ---- ask C: writ trips, ended by the return or by the release
+    allm = rows(J("doc_admission_movements_2019-2026.csv"))
+    ev = {}
+    for m_ in allm:
+        if m_["movement_type"] in ("WRO", "WRI", "ADM", "TRN"):
+            ev.setdefault(m_["doc_number"], []).append((d_iso(m_["movement_datetime"]), {"ADM": 1, "TRN": 2, "WRI": 3, "WRO": 4}[m_["movement_type"]], m_["movement_type"], m_["location"]))
+    for r in rel:
+        ev.setdefault(r["doc_number"], []).append((r["rd"], 0, "REL", ""))
+    Cv = {}
+    for doc, es in ev.items():
+        op = None
+        for t_, _, mt, loc in sorted(es):
+            if mt == "WRO":
+                op = (t_, loc)
+            elif op is not None and mt in ("WRI", "REL"):
+                day = op[0]
+                while day < t_:
+                    if day.year == 2025:
+                        c = Cv.setdefault(op[1], {"H1": 0, "H2": 0})
+                        c["H1" if day.month <= 6 else "H2"] += 1
+                    day += dt.timedelta(days=1)
+                op = None
+    check("ASK C every institution and half", all(Cv.get(i) == figs["c_" + i] for i in ("SCI-KTR", "SCI-FNW", "SCI-DNM", "SCI-LKV", "SCI-BRW")), json.dumps(Cv))
     # ---- the write-up states the figures
     for d in Bv:
         for q in Bv[d]:
             check("WRITE-UP carries %s %s" % (d, q), "{:,}".format(Bv[d][q]) in sub)
-    check("WRITE-UP carries the call", "%d per cent" % step in sub and hi in sub and lo in sub)
+    check("WRITE-UP carries the call", "%d per cent" % step in sub)
     # ---- the goldens read back
     g = openpyxl.load_workbook(os.path.join(TASK, "golden", "returns_projection_2027.xlsx"))
     v = g["Projection 2027"]["D4"].value
-    check("GOLDEN workbook carries the rate", abs(v - step / 100) < 1e-9 and g["Projection 2027"]["D5"].value == hi)
-    png = open(os.path.join(TASK, "golden", "detainer_days_2025.png"), "rb").read()
-    check("GOLDEN chart is a PNG without a writer stamp", png[:8] == b"\x89PNG\r\n\x1a\n" and b"matplotlib" not in png.lower())
+    check("GOLDEN workbook carries the rate", abs(v - step / 100) < 1e-9)
     print("\nverify: %d failed" % len(BAD))
     return 1 if BAD else 0
 

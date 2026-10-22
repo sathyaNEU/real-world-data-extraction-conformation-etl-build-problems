@@ -5,11 +5,10 @@
  "client_domain": "Criminology & Justice",
  "subdomain": "recidivism and risk assessment (a release cohort's two-year return-to-prison rate under a change in revocation law, built from the arrest process and the courts' conversion of arrests into prison commitments)",
  "objective": "Forecasting & Predictive Modeling",
- "prompt_shape": "one rate in five-point steps with the highest and lowest district; revocations by office and basis; detainer days by district and quarter; a labelled stacked bar per district",
+ "prompt_shape": "one rate in five-point steps; recommitments by office and basis; parolee-days on detainer by district and half-year; writ days by institution and half-year",
  "as_of": "2026-10-14",
  "deliverables": [
-  "returns_projection_2027.xlsx",
-  "detainer_days_2025.png"
+  "returns_projection_2027.xlsx"
  ],
  "distractor_files": [
   "prat_validation_study_2023.pdf",

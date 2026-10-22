@@ -1,56 +1,60 @@
 {
  "call": {
-  "rate_step": 20,
-  "highest_district": "Garrison",
-  "lowest_district": "Corliss"
+  "rate_step": 20
  },
  "cohort_size": 6466,
  "spells": 35818,
  "window_days": 730,
  "a1_D1": {
   "arrest": 1586,
-  "conditions": 295
+  "conditions": 296
  },
  "a1_D2": {
   "arrest": 709,
-  "conditions": 259
+  "conditions": 262
  },
  "a1_D3": {
   "arrest": 427,
-  "conditions": 176
+  "conditions": 179
  },
  "a1_D4": {
   "arrest": 157,
-  "conditions": 137
+  "conditions": 139
  },
  "b_Garrison": {
-  "Q1": 22746,
-  "Q2": 22034,
-  "Q3": 24883,
-  "Q4": 24606
+  "H1": 44780,
+  "H2": 49489
  },
  "b_Ridgway": {
-  "Q1": 15421,
-  "Q2": 14827,
-  "Q3": 13663,
-  "Q4": 14005
+  "H1": 30248,
+  "H2": 27668
  },
  "b_Linwood": {
-  "Q1": 9962,
-  "Q2": 10029,
-  "Q3": 10630,
-  "Q4": 11139
+  "H1": 19991,
+  "H2": 21769
  },
  "b_Corliss": {
-  "Q1": 6338,
-  "Q2": 6391,
-  "Q3": 6354,
-  "Q4": 6151
+  "H1": 12729,
+  "H2": 12505
  },
- "chart": {
-  "Garrison": 94269,
-  "Ridgway": 57916,
-  "Linwood": 41760,
-  "Corliss": 25234
+ "c_SCI-KTR": {
+  "H1": 3736,
+  "H2": 3929
+ },
+ "c_SCI-FNW": {
+  "H1": 3790,
+  "H2": 3876
+ },
+ "c_SCI-DNM": {
+  "H1": 3657,
+  "H2": 3574
+ },
+ "c_SCI-LKV": {
+  "H1": 3538,
+  "H2": 4054
+ },
+ "c_SCI-BRW": {
+  "H1": 3595,
+  "H2": 4077
  }
 }
