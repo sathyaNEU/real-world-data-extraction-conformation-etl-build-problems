@@ -64,14 +64,15 @@ CIRCULAR = [
         "The Minister will designate as rapid price growth areas for 2027 the local authority areas whose residential "
         "property price index, as the Brannagh Statistics Office measures it, rose by more than 8 per cent in the year "
         "to September 2026 on the year to September 2025. A designated area receives the accelerated planning and "
-        "infrastructure measures of Part 3 of the Housing Supply Act 2025 for the calendar year 2027."]),
+        "infrastructure measures of Part 3 of the Housing Supply Act 2025 for the calendar year 2027 and an allocation "
+        "from the Act's 2027 infrastructure fund."]),
     ("2. Transactions", [
         "With the designation the Department records each area's residential transactions in the year to September "
         "2026: the number of dwellings sold and the total paid for them, including VAT, every residential sale "
         "counting whether or not it was at full market price."]),
     ("3. Timing", [
-        "The Office is asked to provide the figures by 6 November 2026 so that the designations can be made at the "
-        "Government meeting of 17 November."]),
+        "The Office is asked to provide the figures by 6 November 2026 so that the designated areas' allocations can "
+        "be settled before the fund's 2027 allocation round closes on 20 November."]),
 ]
 
 

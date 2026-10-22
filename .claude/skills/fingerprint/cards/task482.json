@@ -1,40 +1,41 @@
 {
   "task": "task482",
-  "architecture": "v4",
-  "drawn": "2026-10-21",
+  "architecture": "v5",
+  "drawn": "2026-10-22",
   "slot_note": "re-root of seed ET39 after architectures 1 to 3 were spent at stage 4; a statistics office's area residential property price index, read for the housing ministry's rapid price growth designation",
   "domain": "survey-research-official-statistics",
   "client_domain": "survey-research-official-statistics",
   "subdomain": "census-register-administrative-data-quality",
-  "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, read against the housing ministry's 8 per cent line for designating rapid price growth areas, when each area's sales in a year are a shifting sample of its dwelling stock and the dwellings' attributes and small-area locations sit in the valuation register and the address point file, not in the price register",
+  "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, the change in the market value of each area's census dwelling stock, read against the housing ministry's 8 per cent line, when the dwelling types' prices move apart and each area's sales over- or under-represent apartments against its stock",
   "objective": "etl",
-  "shape": "10",
+  "shape": "other",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Ardcullen, Annaghvale, Carrigvore, Dunmarra, Glenaskin and Kilbrannagh designated",
+  "answer": "Ardcullen, Annaghvale, Carrigvore, Dunmarra, Glenaskin, Kilbrannagh and Moyrath designated",
   "answer_source": "generator/figures.json",
   "gap": [
     "objective"
   ],
   "pattern": [
-    "none"
+    "D"
   ],
   "generators": [
     "G6",
+    "G16",
     "G17"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "With every file conformed and every rule read, the easy route compares each area's median sale price, or its median price per square metre, or its type-by-type change weighted by the census stock, between the two years; but the dwellings that sold in each year are not the area's stock, and in some areas the year to September 2026 sold far more homes in the cheaper or the dearer electoral divisions, or far more new homes, so every summary of what sold moves with which homes sold, and only a hedonic regression of log price on the dwellings' type, floor area, new-dwelling status and electoral division, with a term for the year, gives the change in the value of an unchanged dwelling.",
-  "domain_test": "An area's house price inflation measured the way official property price statistics measure it: sales are a changing sample of the dwelling stock, so the index is a constant-quality one, the time effect of a hedonic regression of log price on the dwelling's characteristics and location; with another field's nouns the step survives only where a price is read from a shifting sample of heterogeneous units whose attributes sit in another register.",
+  "analyst_test": "With every file conformed and every rule read, a strong analyst who knows a constant-quality index fits one hedonic regression of log price on type, floor area, newness and electoral division with a year term per area and designates Ardcullen, Annaghvale, Dunmarra, Drumshallon, Glenaskin, Innishrue and Kilbrannagh; the easier routes (median change, per square metre, type medians weighted by the census stock, a regression without location) each file another set; only the year effect estimated per dwelling type and combined over the census stock's value of each type designates Ardcullen, Annaghvale, Carrigvore, Dunmarra, Glenaskin, Kilbrannagh and Moyrath.",
+  "domain_test": "Official house price statistics: an area's index is the change in the value of its dwelling stock, estimated from a changing sample of sales by a hedonic regression and aggregated to the stock with stock value weights, so where the types' prices move apart and the sales mix is not the stock's, a single pooled time effect is the wrong aggregate; with another field's nouns the step survives only where a stock's value is priced from a sample of traded units of unlike kinds.",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:an area's price change read from summaries of what sold when the sold homes are a shifting sample of the stock by location, size and newness",
+  "layer2_pattern": "own:a stock's value change taken from a regression on what traded, when the types' prices move apart and the traded mix over-represents one type against the stock",
   "layer1": [
     "the price register in two layouts across the October 2025 system change",
     "new-dwelling prices filed exclusive of VAT at 13.5 per cent",
@@ -52,7 +53,7 @@
     "source": "synthetic"
   },
   "forum": "minister_or_cabinet",
-  "forcing_event": "vote_or_meeting",
+  "forcing_event": "budget_or_appropriation",
   "org_family": "research_or_statistics_office",
   "world": {
     "geography": "Ireland (a fictional nation)",
@@ -71,9 +72,9 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A unit's price change is read from the units of a heterogeneous stock that happened to trade in each period, and the traded mix shifts between periods by location, size and newness, with location held in a separate register; every summary of the traded units, raw, per unit of size or reweighted by a coarse type, moves with the mix, and only a regression of log price on the units' characteristics and fine location with a period term gives the change for an unchanged unit.",
-  "driver_concrete": "Each area's sales in the year to September 2026 come from different electoral divisions, sizes and new estates than the year before; the median sale price, the median per square metre and the census-weighted change by dwelling type all move with that mix, and only the hedonic index with the electoral division from the address point file puts the right areas over 8 per cent.",
-  "stump": "The default path compares each area's sales between the two years dwelling type by dwelling type, weights the changes by the census stock and files Annaghvale, Ballymarne, Carrigvore, Glenaskin, Innishrue, Kilbrannagh, Moyrath and Rathgowan designated, because it never asks whether the homes that sold within each type were the same kind of home in both years: in several areas the second year sold more homes in the cheaper or the dearer electoral divisions, or new homes at a premium, and only a hedonic regression on type, floor area, new-dwelling status and electoral division gives each area's change for an unchanged dwelling.",
+  "driver": "A stock's value change is estimated from a regression on the units that traded, but the unit types' prices move at different rates and the traded mix over-represents one type against the stock, so the regression's one period effect is a traded-mix average of the types' changes; the stock's change takes each type's own period effect, holding characteristics and location fixed, weighted by the stock's value of that type.",
+  "driver_concrete": "Each area's residential property price change is the change in the market value of its census dwelling stock: each dwelling type's year effect from a regression of log price on type, floor area, new-dwelling status and electoral division with a year term per type, combined over the census stock by each type's value, because apartments are a third or more of the sales in Moyrath, Carrigvore, Innishrue and Drumshallon but a seventh of their stock, and their prices moved apart from the houses'.",
+  "stump": "The default path fits one regression of log price on dwelling type, floor area, new-dwelling status and the address point file's electoral division with a single year term and designates Ardcullen, Annaghvale, Dunmarra, Drumshallon, Glenaskin, Innishrue and Kilbrannagh, because the one year term averages the types' changes over what sold, and in Moyrath and Carrigvore the flat apartments are a third of the sales while in Innishrue and Drumshallon the rising ones are; each type's own year effect weighted by the census stock's value of that type designates Carrigvore and Moyrath in their place.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task481": "task481 restates counts onto a new classification by conversion rates from a dual-coded window; here no classification changes: prices of a shifting sample of dwellings are held to constant quality by regression.",
@@ -83,7 +84,7 @@
     "task464": "task464 converts values across instruments by regression and counts units under a cut; here no instrument changes and no unit is converted: the regression holds quality fixed across two periods.",
     "task484": "task484 counts occupied places when new places fill slowly; here new dwellings sell at a premium and the question is price, not occupancy."
   },
-  "notes": "architecture 4: the client's held tasks are compound or keep a dimension in another file; here the size and newness sit in the valuation register and the electoral division in the address point file, and each partial correction files a different wrong set.",
+  "notes": "architecture 4: the client's held tasks are compound or keep a dimension in another file; here the size and newness sit in the valuation register and the electoral division in the address point file, and each partial correction files a different wrong set. Architecture 5 (2026-10-22): the decisive step moves from a constant-quality regression (architecture 4, landed by its reader 9) to the aggregation that regression skips: each dwelling type's own year effect weighted by the census stock's value of that type; the pooled regression is now the default path. Redrawn at the draw: gap population (same-puzzle and same-driver against task251 v5) back to objective with pattern D (own_lineage against v4 cleared): the pooled constant-quality change is a correct figure and not the stock's value change the designation is scored on, two grains (the traded mix and the stock's types) both flawless; shape 10 (task249 v6) to other, a designation over every candidate against one line; context artifact filed_standard (task478 v4) to planning_thread, the Department's circular the Office answers; forcing event vote_or_meeting, then statutory_or_regulatory_filing (task249 v6), to budget_or_appropriation, the circular now settling the designated areas' 2027 infrastructure fund allocations in a round closing 20 November (the world changed to match, docs.py); strategy population_selection to composition_mix.",
   "lineage": [
     {
       "architecture": "v1",
@@ -146,5 +147,6 @@
       "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, read against the housing ministry's 8 per cent line for designating rapid price growth areas, when each area's sales in a year are a shifting sample of its dwelling stock and the dwellings' attributes and small-area locations sit in the valuation register and the address point file, not in the price register"
     }
   ],
-  "registered": "2026-10-21T03:33:04Z"
+  "registered": "2026-10-22T15:20:11Z",
+  "architecture_spent": false
 }

@@ -1,36 +1,36 @@
 {
- "task": "task482",
- "owner": "oviya1301",
- "status": "PAUSED",
- "domain": "survey-research-official-statistics",
- "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-21",
- "stump": "The default path compares each area's sales between the two years dwelling type by dwelling type, weights the changes by the census stock and files Annaghvale, Ballymarne, Carrigvore, Glenaskin, Innishrue, Kilbrannagh, Moyrath and Rathgowan designated, because it never asks whether the homes that sold within each type were the same kind of home in both years: in several areas the second year sold more homes in the cheaper or the dearer electoral divisions, or new homes at a premium, and only a hedonic regression on type, floor area, new-dwelling status and electoral division gives each area's change for an unchanged dwelling.",
- "architecture": 5,
- "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-21"
- },
- "leak": {
-  "leak_py": "",
-  "reader": ""
- },
- "duplicate_check": {
-  "heart": "WARN",
-  "nearest": "task137 (0.07)"
- },
- "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
- },
- "returned": [],
- "resume": "stage 1: architecture 5 (per-type hedonic with location weighted by the census stock's value; default = pooled year effect) is built in the generator (fast build green: 54 checks, verify 0) but the card is not registered: guard BLOCKs own_lineage against v4 (redraw gap or pattern) and forcing_event vote_or_meeting (redraw); draft card at scratchpad v4/card5.json not kept, rebuild it from the card plus these notes; then design note, precut, full build, stage 4",
- "approved": null,
- "delivered": null,
- "portal": null,
- "source_note": "seed ET39 (IPEDS parent-child instruction per FTE): the world, the decision and the quantity kept; the parent-child reporting only as Layer 1"
+  "task": "task482",
+  "owner": "oviya1301",
+  "status": "BUILD",
+  "domain": "survey-research-official-statistics",
+  "objective": "etl",
+  "stage": 3,
+  "stage_name": "build",
+  "updated": "2026-10-22",
+  "stump": "The default path fits one hedonic regression of log price on dwelling type, floor area, new-dwelling status and the address point file's electoral division with a single year term for each area and designates Ardcullen, Annaghvale, Dunmarra, Drumshallon, Glenaskin, Innishrue and Kilbrannagh, because the one year term averages the types' changes over what sold: in Moyrath and Carrigvore apartments are 45 and 44 per cent of the sales against 14 per cent of the stock and rose 0.5 and 1.1 per cent while the houses rose about 10 to 13, and in Innishrue and Drumshallon the apartments rose about 17 per cent and the houses 3 to 6; each type's own year effect, weighted by the census stock's value of that type, designates Carrigvore (9.5) and Moyrath (10.4) in place of Drumshallon (5.6) and Innishrue (4.8).",
+  "architecture": 5,
+  "loops": 0,
+  "precut": {
+    "exit": 0,
+    "date": "2026-10-22"
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 3: architecture 5 card registered (v5) and the note written (precut 51/0); the circular now settles the 2027 fund allocations (docs.py), so the pack is rebuilt: full build, figures_check, leak.py, guard surface and heart, then stage 4",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "source_note": "seed ET39 (IPEDS parent-child instruction per FTE): the world, the decision and the quantity kept; the parent-child reporting only as Layer 1"
 }
