@@ -4,11 +4,11 @@
   "status": "PAUSED",
   "domain": "survey-research-official-statistics",
   "objective": "etl",
-  "stage": 3,
-  "stage_name": "build",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-22",
   "stump": "The default path fits one hedonic regression of log price on dwelling type, floor area, new-dwelling status and the address point file's electoral division with a single year term for each area and designates Ardcullen, Annaghvale, Dunmarra, Drumshallon, Glenaskin, Innishrue and Kilbrannagh, because the one year term averages the types' changes over what sold: in Moyrath and Carrigvore apartments are 45 and 44 per cent of the sales against 14 per cent of the stock and rose 0.5 and 1.1 per cent while the houses rose about 10 to 13, and in Innishrue and Drumshallon the apartments rose about 17 per cent and the houses 3 to 6; each type's own year effect, weighted by the census stock's value of that type, designates Carrigvore (9.5) and Moyrath (10.4) in place of Drumshallon (5.6) and Innishrue (4.8).",
-  "architecture": 5,
+  "architecture": 6,
   "loops": 0,
   "precut": {
     "exit": 0,
@@ -16,19 +16,19 @@
   },
   "leak": {
     "leak_py": "REVIEW (the methodology note's and the circular's own vocabulary)",
-    "reader": ""
+    "reader": "both readers missed the call on the same wrong seven (type weighting by the census stock without location); asks 0 and 1 of 48"
   },
   "duplicate_check": {
     "heart": "WARN (no BLOCK)",
     "nearest": "task482 v4 (lineage, 0.20); surface exit 0, nine pairs promoted for adjudication, the top one a false shared name ('The Office' opening a prompt sentence, also in task65's), reworded out of the prompt"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC (r5a: asks 3 and 4 open; the designated set rests on an unfiled location control)",
+    "disposition": "SEND_BACK; read against the gate table G and H pass, but the step that held is a fork and the designed step a reflex, so the architecture is spent",
+    "report": "determinism_check_report_v5.md"
   },
   "returned": [],
-  "resume": "stage 3 complete: full build green (54 checks, verify 0 mismatches, two byte-identical builds, zip sha256 d70a11df), figures_check 0 absent, leak.py REVIEW, precut 51/0, voice-check PASS after the prompt's 'The Office' clause was reworded, heart WARN, surface exit 0; next: stage 4, two scored readers (briefs ready in the scratchpad; reader.json keyed call.designated, change.<la_code>, ask.<la_code>.purchases and .paid; refresh their prompt.txt copies) and the determinism judge in one message",
+  "resume": "stage 1: architecture 5 spent at stage 4 (see the design note's Architecture 5 record); re-root to architecture 6 with a fresh draw. Screened at the draw and dead: register misclassification by area mix (task244's driver), a common stack split by own rates (this slot's v1 driver), death-registration completeness (task243), retransformation bias (task135), length bias (task135, task268), a CEMS gap fill on load (guard BLOCK on pattern G12, strategy and forcing event)",
   "approved": null,
   "delivered": null,
   "portal": null,

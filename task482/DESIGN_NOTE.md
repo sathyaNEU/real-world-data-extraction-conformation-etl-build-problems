@@ -243,11 +243,24 @@ Measured by: generator/ceiling.py on the cut pack.
 
 ## Pre-ship check
 
-READERS_LINE
+- **Stage 4 readers.** Both isolated readers missed the call on the same wrong seven, R2's (Annaghvale, Ballymarne, Carrigvore, Glenaskin, Kilbrannagh, Moyrath, Rathgowan): reader A from type medians weighted by the census stock's shares, reader B from a regression with a year term per type weighted by the stock's counts and no location term. Asks 0 and 1 of 48 (both counted every line of a block purchase; reader B's one hit, Kilbrannagh's 11.2, is its own regression coinciding). Question 1 none from both (the note's estimand "points at stock weighting but does not say how"), question 6 analytical from both, the REVIEW lines harmless (leak_check_report.md).
 
-JUDGE_LINE
+- **Stage 4 judge.** r5a (determinism_check_report_v5.md) NOT_DETERMINISTIC, SEND_BACK by label: ask 4's purchases open (the circular's "number of dwellings sold" against the golden's one purchase per block), ask 3's one-decimal changes open across location-constant estimators (0.2 to 1.1 points), and the designated set resting on a location control no filed sentence requires; Gate G method_or_model_selection, analytical_non_defect, Gate H pass. The judge's own derivation (type means weighted by the census stock) filed the readers' seven.
+
+## Architecture 5 record (spent 2026-10-22)
+
+Architecture 5 designated rapid price growth areas on each dwelling type's own year effect weighted by the census
+stock's value, with a pooled hedonic year term as the default path. At stage 4 both readers and the judge's own
+derivation took the type-by-stock aggregation by reflex (type medians or type year effects weighted by the census
+stock) and missed the call only on the location control (electoral division), which the judge read as unfiled; filing
+it hands all three the call, so the decisive step as designed does not stump and the one that held is a fork.
 
 ## Tried and rejected
+- Architecture 5, the stock's price change as each dwelling type's own year effect weighted by the census stock's
+  value (2026-10-22, spent at stage 4): both readers and the judge's first derivation weighted dwelling types by the
+  census stock by reflex (the note's "dwellings the 2022 census counts" and the census workbook by type invite it) and
+  missed only on the electoral-division control, which the judge read as unfiled (r5a); filing it hands them the call.
+  A stock aggregation over a tabulated type mix is a reflex once the stock is the filed population.
 - Architecture 5 draw (2026-10-22): re-rooted on the author's standing rule (no retirement); the world and pack of architecture 4 kept, the decisive step moved from the constant-quality regression its reader 9 found to the aggregation that regression skips (each type's own year effect over the stock's value), with the pooled regression now the default path. At registration the v4 identity BLOCKed on own_lineage, gap population on same-puzzle and same-driver (task251 v5), shape 10 and the statutory filing (task249 v6) and filed_standard (task478 v4); redrawn as recorded in the Draw, the circular changed to settle the 2027 fund allocations.
 - Ask B's reissued student ids as a 7-digit id equal to the old one plus a campus constant, linked by birth date, sex and ZIP (2026-10-21, stage 4 round 1): both readers resolved it on the person columns and kept all six headcounts (score_reader 50 per cent); re-sited so the new ids share the old form with no arithmetic tie, birth date, sex and ZIP are shared by different students, and the movers' majors are recoded, so only the four-field key resolves it.
 - Architecture 1, a coordinating board's instructional grant with four parents' consolidated returns apportioned by a cost model (2026-10-21, spent at stage 4): round 1's two readers split by FTE or total credit hours and missed; both round 2 readers fitted instruction expense on credit hours by level across the standalone campuses, split each parent's return by the modelled cost and landed the call (exit 1). Pricing activity by level from the units that report alone is a strong reader's reflex once the activity file by level ships beside the combined return.

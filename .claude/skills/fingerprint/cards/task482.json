@@ -46,11 +46,11 @@
   "role_family": "statistical_office_head",
   "scoring_unit": "index points",
   "spine": {
-    "file": "cro_card_payments_settled_2026-07_to_2026-10.csv",
-    "rows": 66132,
-    "entity": "one card payment",
-    "grain": "payment",
-    "source": "synthetic"
+    "file": "ppr_residential_sales_filed_2025-10-01_to_2026-10-14.csv",
+    "rows": 38633,
+    "entity": "one dwelling's line on the residential property price register, a block purchase filed as one line per dwelling",
+    "grain": "dwelling x sale",
+    "source": "synthetic (constructed in the layout of a national residential property price register)"
   },
   "forum": "minister_or_cabinet",
   "forcing_event": "budget_or_appropriation",
@@ -84,7 +84,7 @@
     "task464": "task464 converts values across instruments by regression and counts units under a cut; here no instrument changes and no unit is converted: the regression holds quality fixed across two periods.",
     "task484": "task484 counts occupied places when new places fill slowly; here new dwellings sell at a premium and the question is price, not occupancy."
   },
-  "notes": "architecture 4: the client's held tasks are compound or keep a dimension in another file; here the size and newness sit in the valuation register and the electoral division in the address point file, and each partial correction files a different wrong set. Architecture 5 (2026-10-22): the decisive step moves from a constant-quality regression (architecture 4, landed by its reader 9) to the aggregation that regression skips: each dwelling type's own year effect weighted by the census stock's value of that type; the pooled regression is now the default path. Redrawn at the draw: gap population (same-puzzle and same-driver against task251 v5) back to objective with pattern D (own_lineage against v4 cleared): the pooled constant-quality change is a correct figure and not the stock's value change the designation is scored on, two grains (the traded mix and the stock's types) both flawless; shape 10 (task249 v6) to other, a designation over every candidate against one line; context artifact filed_standard (task478 v4) to planning_thread, the Department's circular the Office answers; forcing event vote_or_meeting, then statutory_or_regulatory_filing (task249 v6), to budget_or_appropriation, the circular now settling the designated areas' 2027 infrastructure fund allocations in a round closing 20 November (the world changed to match, docs.py); strategy population_selection to composition_mix.",
+  "notes": "architecture 4: the client's held tasks are compound or keep a dimension in another file; here the size and newness sit in the valuation register and the electoral division in the address point file, and each partial correction files a different wrong set. Architecture 5 (2026-10-22): the decisive step moves from a constant-quality regression (architecture 4, landed by its reader 9) to the aggregation that regression skips: each dwelling type's own year effect weighted by the census stock's value of that type; the pooled regression is now the default path. Redrawn at the draw: gap population (same-puzzle and same-driver against task251 v5) back to objective with pattern D (own_lineage against v4 cleared): the pooled constant-quality change is a correct figure and not the stock's value change the designation is scored on, two grains (the traded mix and the stock's types) both flawless; shape 10 (task249 v6) to other, a designation over every candidate against one line; context artifact filed_standard (task478 v4) to planning_thread, the Department's circular the Office answers; forcing event vote_or_meeting, then statutory_or_regulatory_filing (task249 v6), to budget_or_appropriation, the circular now settling the designated areas' 2027 infrastructure fund allocations in a round closing 20 November (the world changed to match, docs.py); strategy population_selection to composition_mix. Architecture 5 spent 2026-10-22 at stage 4: the stock aggregation was taken by reflex by both readers and the judge; the call held only on an unfiled location control.",
   "lineage": [
     {
       "architecture": "v1",
@@ -148,5 +148,5 @@
     }
   ],
   "registered": "2026-10-22T15:20:11Z",
-  "architecture_spent": false
+  "architecture_spent": true
 }
