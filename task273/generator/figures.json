@@ -1,0 +1,754 @@
+{
+ "ask_a": {
+  "EP01": 22706,
+  "EP02": 17452,
+  "EP03": 14131,
+  "EP04": 31303,
+  "EP05": 30284,
+  "EP06": 18440,
+  "EP07": 68147,
+  "EP08": 16349,
+  "EP09": 11307,
+  "EP10": 50368,
+  "EP11": 36247,
+  "EP12": 23044,
+  "EP13": 27980,
+  "EP14": 37032,
+  "EP15": 22912,
+  "EP16": 31925,
+  "EP17": 28116,
+  "EP18": 17824,
+  "EP19": 43320,
+  "EP20": 26523,
+  "EP21": 19401,
+  "EP22": 35149,
+  "EP23": 51862,
+  "EP24": 24536
+ },
+ "ask_a_detail": {
+  "EP01": {
+   "busiest_hour_utc": "2026-01-30T16:00Z",
+   "employers_jan1": 4960,
+   "employers_nov1": 5424,
+   "served_customers": 20764,
+   "synthetic_per_hour": 180
+  },
+  "EP02": {
+   "busiest_hour_utc": "2026-01-02T17:00Z",
+   "employers_jan1": 4960,
+   "employers_nov1": 5424,
+   "served_customers": 15959,
+   "synthetic_per_hour": 180
+  },
+  "EP03": {
+   "busiest_hour_utc": "2026-01-29T16:00Z",
+   "employers_jan1": 4960,
+   "employers_nov1": 5424,
+   "served_customers": 12922,
+   "synthetic_per_hour": 90
+  },
+  "EP04": {
+   "busiest_hour_utc": "2026-01-29T15:00Z",
+   "employers_jan1": 4960,
+   "employers_nov1": 5424,
+   "served_customers": 28625,
+   "synthetic_per_hour": 90
+  },
+  "EP05": {
+   "busiest_hour_utc": "2026-01-30T17:00Z",
+   "employers_jan1": 3129,
+   "employers_nov1": 3467,
+   "served_customers": 27332,
+   "synthetic_per_hour": 36
+  },
+  "EP06": {
+   "busiest_hour_utc": "2026-01-28T16:00Z",
+   "employers_jan1": 3129,
+   "employers_nov1": 3467,
+   "served_customers": 16642,
+   "synthetic_per_hour": 36
+  },
+  "EP07": {
+   "busiest_hour_utc": "2026-01-06T17:00Z",
+   "employers_jan1": 1464,
+   "employers_nov1": 1615,
+   "served_customers": 61775,
+   "synthetic_per_hour": 24
+  },
+  "EP08": {
+   "busiest_hour_utc": "2026-01-30T15:00Z",
+   "employers_jan1": 1464,
+   "employers_nov1": 1615,
+   "served_customers": 14820,
+   "synthetic_per_hour": 0
+  },
+  "EP09": {
+   "busiest_hour_utc": "2026-01-05T16:00Z",
+   "employers_jan1": 4960,
+   "employers_nov1": 5424,
+   "served_customers": 10340,
+   "synthetic_per_hour": 180
+  },
+  "EP10": {
+   "busiest_hour_utc": "2026-01-02T16:00Z",
+   "employers_jan1": 4960,
+   "employers_nov1": 5424,
+   "served_customers": 46059,
+   "synthetic_per_hour": 180
+  },
+  "EP11": {
+   "busiest_hour_utc": "2026-01-02T17:00Z",
+   "employers_jan1": 3129,
+   "employers_nov1": 3467,
+   "served_customers": 32713,
+   "synthetic_per_hour": 90
+  },
+  "EP12": {
+   "busiest_hour_utc": "2026-01-30T16:00Z",
+   "employers_jan1": 3129,
+   "employers_nov1": 3467,
+   "served_customers": 20797,
+   "synthetic_per_hour": 90
+  },
+  "EP13": {
+   "busiest_hour_utc": "2026-01-02T16:00Z",
+   "employers_jan1": 4960,
+   "employers_nov1": 5424,
+   "served_customers": 25586,
+   "synthetic_per_hour": 90
+  },
+  "EP14": {
+   "busiest_hour_utc": "2026-01-02T16:00Z",
+   "employers_jan1": 3129,
+   "employers_nov1": 3467,
+   "served_customers": 33422,
+   "synthetic_per_hour": 24
+  },
+  "EP15": {
+   "busiest_hour_utc": "2026-01-30T16:00Z",
+   "employers_jan1": 1464,
+   "employers_nov1": 1615,
+   "served_customers": 20770,
+   "synthetic_per_hour": 24
+  },
+  "EP16": {
+   "busiest_hour_utc": "2026-01-30T16:00Z",
+   "employers_jan1": 4960,
+   "employers_nov1": 5424,
+   "served_customers": 29194,
+   "synthetic_per_hour": 90
+  },
+  "EP17": {
+   "busiest_hour_utc": "2026-01-16T16:00Z",
+   "employers_jan1": 4960,
+   "employers_nov1": 5424,
+   "served_customers": 25711,
+   "synthetic_per_hour": 90
+  },
+  "EP18": {
+   "busiest_hour_utc": "2026-01-22T16:00Z",
+   "employers_jan1": 4960,
+   "employers_nov1": 5424,
+   "served_customers": 16299,
+   "synthetic_per_hour": 1260
+  },
+  "EP19": {
+   "busiest_hour_utc": "2026-01-30T16:00Z",
+   "employers_jan1": 1464,
+   "employers_nov1": 1615,
+   "served_customers": 39270,
+   "synthetic_per_hour": 90
+  },
+  "EP20": {
+   "busiest_hour_utc": "2026-01-30T17:00Z",
+   "employers_jan1": 1464,
+   "employers_nov1": 1615,
+   "served_customers": 24043,
+   "synthetic_per_hour": 24
+  },
+  "EP21": {
+   "busiest_hour_utc": "2026-01-02T15:00Z",
+   "employers_jan1": 472,
+   "employers_nov1": 530,
+   "served_customers": 17278,
+   "synthetic_per_hour": 12
+  },
+  "EP22": {
+   "busiest_hour_utc": "2026-01-08T15:00Z",
+   "employers_jan1": 1464,
+   "employers_nov1": 1615,
+   "served_customers": 31863,
+   "synthetic_per_hour": 24
+  },
+  "EP23": {
+   "busiest_hour_utc": "2026-01-30T17:00Z",
+   "employers_jan1": 1464,
+   "employers_nov1": 1615,
+   "served_customers": 47013,
+   "synthetic_per_hour": 36
+  },
+  "EP24": {
+   "busiest_hour_utc": "2026-01-09T16:00Z",
+   "employers_jan1": 3129,
+   "employers_nov1": 3467,
+   "served_customers": 22144,
+   "synthetic_per_hour": 36
+  }
+ },
+ "ask_b": {
+  "EP01": 6989,
+  "EP02": 10299,
+  "EP03": 11205,
+  "EP04": 11073,
+  "EP05": 12630,
+  "EP06": 20317,
+  "EP07": 18653,
+  "EP08": 9776,
+  "EP09": 12750,
+  "EP10": 3793,
+  "EP11": 27160,
+  "EP12": 15032,
+  "EP13": 12434,
+  "EP14": 15165,
+  "EP15": 14865,
+  "EP16": 8844,
+  "EP17": 10414,
+  "EP18": 6103,
+  "EP19": 35416,
+  "EP20": 22067,
+  "EP21": 31046,
+  "EP22": 23872,
+  "EP23": 30890,
+  "EP24": 16900
+ },
+ "ask_b_carried_forward": 141,
+ "ask_b_total": 387693,
+ "call": {
+  "count": 5,
+  "fix": [
+   "EP01",
+   "EP02",
+   "EP05",
+   "EP16",
+   "EP22"
+  ],
+  "fix_routes": [
+   "POST /v2/payroll-runs",
+   "GET /v2/payroll-runs/{id}/preview",
+   "POST /v2/filings",
+   "POST /v2/direct-deposits",
+   "POST /v2/accounting-sync/exports"
+  ],
+  "not": [
+   "EP03",
+   "EP04",
+   "EP06",
+   "EP07",
+   "EP08",
+   "EP09",
+   "EP10",
+   "EP11",
+   "EP12",
+   "EP13",
+   "EP14",
+   "EP15",
+   "EP17",
+   "EP18",
+   "EP19",
+   "EP20",
+   "EP21",
+   "EP23",
+   "EP24"
+  ]
+ },
+ "family_ms": {
+  "EP01": {
+   "golden": 1037.4,
+   "golden_alt": 1031.3,
+   "golden_untouched": 1058.3
+  },
+  "EP02": {
+   "golden": 985.8,
+   "golden_alt": 981.7,
+   "golden_untouched": 968.3
+  },
+  "EP03": {
+   "golden": 355.0,
+   "golden_alt": 355.0,
+   "golden_untouched": 355.0
+  },
+  "EP04": {
+   "golden": 359.0,
+   "golden_alt": 357.5,
+   "golden_untouched": 351.0
+  },
+  "EP05": {
+   "golden": 930.2,
+   "golden_alt": 891.4,
+   "golden_untouched": 929.9
+  },
+  "EP06": {
+   "golden": 428.0,
+   "golden_alt": 428.0,
+   "golden_untouched": 435.5
+  },
+  "EP07": {
+   "golden": 175.0,
+   "golden_alt": 175.0,
+   "golden_untouched": 169.0
+  },
+  "EP08": {
+   "golden": 688.9,
+   "golden_alt": 676.5,
+   "golden_untouched": 624.9
+  },
+  "EP09": {
+   "golden": 588.7,
+   "golden_alt": 591.8,
+   "golden_untouched": 582.7
+  },
+  "EP10": {
+   "golden": 405.9,
+   "golden_alt": 404.3,
+   "golden_untouched": 399.8
+  },
+  "EP11": {
+   "golden": 539.0,
+   "golden_alt": 539.0,
+   "golden_untouched": 537.0
+  },
+  "EP12": {
+   "golden": 419.3,
+   "golden_alt": 420.0,
+   "golden_untouched": 417.1
+  },
+  "EP13": {
+   "golden": 408.6,
+   "golden_alt": 408.6,
+   "golden_untouched": 406.6
+  },
+  "EP14": {
+   "golden": 196.0,
+   "golden_alt": 195.0,
+   "golden_untouched": 194.8
+  },
+  "EP15": {
+   "golden": 347.5,
+   "golden_alt": 347.6,
+   "golden_untouched": 347.5
+  },
+  "EP16": {
+   "golden": 1122.5,
+   "golden_alt": 1126.7,
+   "golden_untouched": 1121.7
+  },
+  "EP17": {
+   "golden": 306.8,
+   "golden_alt": 307.2,
+   "golden_untouched": 305.0
+  },
+  "EP18": {
+   "golden": 437.3,
+   "golden_alt": 437.3,
+   "golden_untouched": 436.6
+  },
+  "EP19": {
+   "golden": 413.3,
+   "golden_alt": 414.4,
+   "golden_untouched": 390.7
+  },
+  "EP20": {
+   "golden": 601.8,
+   "golden_alt": 601.8,
+   "golden_untouched": 525.4
+  },
+  "EP21": {
+   "golden": 546.7,
+   "golden_alt": 545.0,
+   "golden_untouched": 526.4
+  },
+  "EP22": {
+   "golden": 1233.4,
+   "golden_alt": 1225.6,
+   "golden_untouched": 1194.0
+  },
+  "EP23": {
+   "golden": 197.9,
+   "golden_alt": 197.9,
+   "golden_untouched": 197.5
+  },
+  "EP24": {
+   "golden": 548.0,
+   "golden_alt": 548.0,
+   "golden_untouched": 542.8
+  }
+ },
+ "filed": {
+  "clauses": [
+   "1.2",
+   "2.1",
+   "2.2",
+   "3.2",
+   "3.3",
+   "4.1",
+   "4.2",
+   "5.2"
+  ],
+  "endpoints": 24,
+  "freeze": "4 December 2026",
+  "measure_min": 10,
+  "percentile": 99,
+  "sla_ms": 800,
+  "warmup_min": 3
+ },
+ "fix_share_range_pct": [
+  2.8,
+  3.6
+ ],
+ "gc": {
+  "EP01": {
+   "longest_ms": 4086,
+   "share_pct": 2.83
+  },
+  "EP02": {
+   "longest_ms": 2958,
+   "share_pct": 2.91
+  },
+  "EP03": {
+   "longest_ms": 1761,
+   "share_pct": 1.78
+  },
+  "EP04": {
+   "longest_ms": 1463,
+   "share_pct": 1.6
+  },
+  "EP05": {
+   "longest_ms": 2648,
+   "share_pct": 3.03
+  },
+  "EP06": {
+   "longest_ms": 2753,
+   "share_pct": 2.58
+  },
+  "EP07": {
+   "longest_ms": 342,
+   "share_pct": 1.15
+  },
+  "EP08": {
+   "longest_ms": 229,
+   "share_pct": 1.15
+  },
+  "EP09": {
+   "longest_ms": 409,
+   "share_pct": 1.74
+  },
+  "EP10": {
+   "longest_ms": 399,
+   "share_pct": 1.65
+  },
+  "EP11": {
+   "longest_ms": 563,
+   "share_pct": 1.65
+  },
+  "EP12": {
+   "longest_ms": 291,
+   "share_pct": 1.77
+  },
+  "EP13": {
+   "longest_ms": 291,
+   "share_pct": 1.92
+  },
+  "EP14": {
+   "longest_ms": 470,
+   "share_pct": 1.69
+  },
+  "EP15": {
+   "longest_ms": 541,
+   "share_pct": 1.82
+  },
+  "EP16": {
+   "longest_ms": 2024,
+   "share_pct": 3.61
+  },
+  "EP17": {
+   "longest_ms": 1,
+   "share_pct": 0.0
+  },
+  "EP18": {
+   "longest_ms": 0,
+   "share_pct": 0.0
+  },
+  "EP19": {
+   "longest_ms": 572,
+   "share_pct": 2.56
+  },
+  "EP20": {
+   "longest_ms": 383,
+   "share_pct": 2.43
+  },
+  "EP21": {
+   "longest_ms": 304,
+   "share_pct": 2.01
+  },
+  "EP22": {
+   "longest_ms": 2849,
+   "share_pct": 2.87
+  },
+  "EP23": {
+   "longest_ms": 418,
+   "share_pct": 1.32
+  },
+  "EP24": {
+   "longest_ms": 505,
+   "share_pct": 1.45
+  }
+ },
+ "margin_floor_ms": 91,
+ "n_mc": 2000000,
+ "nearest_line": "EP05",
+ "nearest_s": 0.9,
+ "p99_tens": {
+  "EP01": 1040,
+  "EP02": 990,
+  "EP03": 350,
+  "EP04": 360,
+  "EP05": 930,
+  "EP06": 430,
+  "EP07": 170,
+  "EP08": 690,
+  "EP09": 590,
+  "EP10": 410,
+  "EP11": 540,
+  "EP12": 420,
+  "EP13": 410,
+  "EP14": 200,
+  "EP15": 350,
+  "EP16": 1120,
+  "EP17": 310,
+  "EP18": 440,
+  "EP19": 410,
+  "EP20": 600,
+  "EP21": 550,
+  "EP22": 1230,
+  "EP23": 200,
+  "EP24": 550
+ },
+ "pods": {
+  "EP01": 4,
+  "EP02": 4,
+  "EP03": 3,
+  "EP04": 3,
+  "EP05": 5,
+  "EP06": 5,
+  "EP07": 4,
+  "EP08": 4,
+  "EP09": 4,
+  "EP10": 4,
+  "EP11": 4,
+  "EP12": 3,
+  "EP13": 5,
+  "EP14": 3,
+  "EP15": 3,
+  "EP16": 2,
+  "EP17": 3,
+  "EP18": 4,
+  "EP19": 3,
+  "EP20": 4,
+  "EP21": 2,
+  "EP22": 3,
+  "EP23": 3,
+  "EP24": 3
+ },
+ "recorded_ms": {
+  "EP01": 574,
+  "EP02": 874,
+  "EP03": 326,
+  "EP04": 338,
+  "EP05": 740,
+  "EP06": 269,
+  "EP07": 174,
+  "EP08": 692,
+  "EP09": 592,
+  "EP10": 406,
+  "EP11": 536,
+  "EP12": 418,
+  "EP13": 412,
+  "EP14": 194,
+  "EP15": 349,
+  "EP16": 963,
+  "EP17": 307,
+  "EP18": 437,
+  "EP19": 405,
+  "EP20": 582,
+  "EP21": 555,
+  "EP22": 1084,
+  "EP23": 198,
+  "EP24": 543
+ },
+ "requests": {
+  "EP01": 4234,
+  "EP02": 3619,
+  "EP03": 2997,
+  "EP04": 6897,
+  "EP05": 5869,
+  "EP06": 3592,
+  "EP07": 14618,
+  "EP08": 3067,
+  "EP09": 2156,
+  "EP10": 10771,
+  "EP11": 6937,
+  "EP12": 4903,
+  "EP13": 5965,
+  "EP14": 7476,
+  "EP15": 4736,
+  "EP16": 6230,
+  "EP17": 5995,
+  "EP18": 3529,
+  "EP19": 9227,
+  "EP20": 5378,
+  "EP21": 3922,
+  "EP22": 6838,
+  "EP23": 10940,
+  "EP24": 4815
+ },
+ "route_counts": {
+  "drop": 0,
+  "golden": 5,
+  "golden_alt": 5,
+  "golden_rawsvc": 6,
+  "golden_untouched": 5,
+  "hdr": 10,
+  "hdr_gc": 7,
+  "hdr_gc_pods": 4,
+  "lw": 10,
+  "pooled": 7,
+  "raw": 3,
+  "raw_warm": 4
+ },
+ "routes": {
+  "drop": [],
+  "golden": [
+   "EP01",
+   "EP02",
+   "EP05",
+   "EP16",
+   "EP22"
+  ],
+  "golden_alt": [
+   "EP01",
+   "EP02",
+   "EP05",
+   "EP16",
+   "EP22"
+  ],
+  "golden_rawsvc": [
+   "EP01",
+   "EP02",
+   "EP05",
+   "EP06",
+   "EP16",
+   "EP22"
+  ],
+  "golden_untouched": [
+   "EP01",
+   "EP02",
+   "EP05",
+   "EP16",
+   "EP22"
+  ],
+  "hdr": [
+   "EP01",
+   "EP02",
+   "EP05",
+   "EP06",
+   "EP07",
+   "EP08",
+   "EP16",
+   "EP19",
+   "EP20",
+   "EP22"
+  ],
+  "hdr_gc": [
+   "EP01",
+   "EP02",
+   "EP05",
+   "EP06",
+   "EP08",
+   "EP16",
+   "EP22"
+  ],
+  "hdr_gc_pods": [
+   "EP01",
+   "EP02",
+   "EP16",
+   "EP22"
+  ],
+  "lw": [
+   "EP01",
+   "EP02",
+   "EP05",
+   "EP06",
+   "EP07",
+   "EP08",
+   "EP16",
+   "EP19",
+   "EP20",
+   "EP22"
+  ],
+  "pooled": [
+   "EP01",
+   "EP02",
+   "EP03",
+   "EP05",
+   "EP06",
+   "EP16",
+   "EP22"
+  ],
+  "raw": [
+   "EP02",
+   "EP16",
+   "EP22"
+  ],
+  "raw_warm": [
+   "EP01",
+   "EP02",
+   "EP16",
+   "EP22"
+  ]
+ },
+ "runs": {
+  "endpoints": 24,
+  "runs_total": 27,
+  "stopped_early": [
+   "EP05",
+   "EP13",
+   "EP20"
+  ]
+ },
+ "verdict": {
+  "EP01": "Fix before freeze",
+  "EP02": "Fix before freeze",
+  "EP03": "Meets 2.1",
+  "EP04": "Meets 2.1",
+  "EP05": "Fix before freeze",
+  "EP06": "Meets 2.1",
+  "EP07": "Meets 2.1",
+  "EP08": "Meets 2.1",
+  "EP09": "Meets 2.1",
+  "EP10": "Meets 2.1",
+  "EP11": "Meets 2.1",
+  "EP12": "Meets 2.1",
+  "EP13": "Meets 2.1",
+  "EP14": "Meets 2.1",
+  "EP15": "Meets 2.1",
+  "EP16": "Fix before freeze",
+  "EP17": "Meets 2.1",
+  "EP18": "Meets 2.1",
+  "EP19": "Meets 2.1",
+  "EP20": "Meets 2.1",
+  "EP21": "Meets 2.1",
+  "EP22": "Fix before freeze",
+  "EP23": "Meets 2.1",
+  "EP24": "Meets 2.1"
+ }
+}

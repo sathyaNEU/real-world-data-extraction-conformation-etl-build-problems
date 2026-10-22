@@ -36,17 +36,18 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:requests-a-closed-loop-client-never-sent-rebuilt-from-each-pods-pause-record",
   "layer1": [
-    "load-test results from two tools after a mid-campaign tool change, JSON lines in epoch milliseconds against a CSV with ISO times and microseconds",
-    "JVM garbage-collection logs per pod, some stamped in wall-clock time with a UTC offset and some in seconds since the JVM started, anchored by the deployment event log",
-    "a responding-pod header missing on timed-out requests, re-runs of an endpoint with the run of record named in the test plan, warm-up minutes to drop"
+    "load-test results from two tools after a mid-campaign tool change: JMeter's JTL stamping each sample's start in epoch milliseconds against k6's CSV stamping each response's completion in RFC 3339 nanoseconds",
+    "JVM garbage-collection logs exported with the log platform's ingestion time and out of order, each line written at its pause's end, decorated in wall-clock time at UTC-05:00 on one base image and in seconds since the JVM started on another, anchored by the pod events through two restarts",
+    "three first runs stopped early and repeated, warm-up minutes to drop, G1 concurrent-cycle and ZGC summary lines that stop nothing",
+    "for the asks: edge counts holding the uptime monitors' requests and the renamed routes' redirects, a CRM snapshot against the billing system's subscription events, a billing migration with legacy amounts in cents and open credits carried forward at their balance"
   ],
   "stakeholder_role": "capacity planner, platform engineering",
   "role_family": "capacity_planner",
   "scoring_unit": "per accepted item",
   "spine": {
-    "file": "loadtest_requests_2026-11.csv",
-    "rows": 430000,
-    "entity": "one request the load-test client sent, with its start, response time and the pod that answered",
+    "file": "loadtest_k6_results_2026-11-16_to_19.csv",
+    "rows": 119387,
+    "entity": "one request a k6 virtual user sent, stamped at its response's completion, with its response time and the pod that served it",
     "grain": "request",
     "source": "synthetic"
   },

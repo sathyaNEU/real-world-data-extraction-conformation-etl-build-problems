@@ -1,25 +1,25 @@
 {
   "task": "task273",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-22",
   "stump": "A competent analyst who conforms the two load-test exports, keeps each endpoint's run of record without its warm-up and takes the 99th percentile of the recorded response times names too few endpoints, because the test clients each send the next request only after the last returns, so a pod's garbage-collection pause leaves one slow record per blocked client where customers arriving independently would meet it many times; the textbook back-fill names too many, because it credits each blocked client with every request it would have sent to the paused pod and back-fills endpoints that are slow on their own; only the response times rebuilt from each pod's pause record names the endpoints customers would see breach.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-22"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-22 (no LEAK): the plan's Table 1 lists every endpoint; generic load-test and estimand nouns in the plan and the standard; three files renamed off the author's vocabulary; each answered in the note's Leak check",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN 2026-10-22 (no BLOCK): nearest driver 0.10 (task229 v1, lineage); same-puzzle and same-driver signatures differentiated on the card",
     "nearest": "0.10 task229 v1 (lineage)"
   },
   "judge": {
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "Stage 2: the generator's world from scratch t273/co2.py (24 endpoints: long-pause, short-pause, slow-on-their-own and plain; stop-the-world pauses that also hold requests in flight; golden margins of 60 ms or more from the 800 ms standard by design), the readiness standard's estimand clause, the fork and closure tables, the asks on quantities the call never reads, prompt.txt, then precut.py.",
+  "resume": "Stage 4 in flight on target.zip 837ff5a0: readers r273a and r273b (sonnet, medium, fresh copies of prompt.txt and target/ under the scratchpad's t273/) and the determinism judge's isolated thread (/tmp/determinism-check-task273-1792685999/judge_brief.md, verdict to verdict.md there; then re-invoke the determinism-judge agent with it to write determinism_check_report.md). On return: score each reader with score_reader.py --call-key call.fix --call-key call.count before reading its verdict; ship (SHIPPED, merge to main) if both miss the call, neither exits 1 and the judge approves; a reader on the call spends architecture 1 (re-root to architecture 2).",
   "approved": null,
   "delivered": null,
   "portal": null,
