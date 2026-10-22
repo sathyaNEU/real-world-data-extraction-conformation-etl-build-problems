@@ -3,30 +3,43 @@
 Architecture 2 (a fresh draw). Architecture 1 (Calvermouth's cycleway widening, urban-regional-science) was built
 to stage 3 in scratch and never registered: the guard's window held it three days on its strategy, pattern,
 forcing event, role and forum and on a same-driver test, and the author chose a fresh honest draw over waiting.
-That draw's world, mechanism and blocked axes are not reused; its line is in `## Tried and rejected`.
+That draw's world, mechanism and blocked axes are not reused; its line is in `## Leak sweep
+
+`leak.py task169 --asof 2026-10-14`: REVIEW, no LEAK. Each REVIEW line, answered:
+- The figure 114 in the Act and the methodology is the Act's number, which the prompt states.
+- Five coincidences in the court file (a sentence length in days such as 630 or 883 sitting after a date's day
+  digits) match the tail of a detainer-day figure; they are sentence lengths, unrelated to any ask.
+- The methodology carries nine of the call's words because it files the estimand (the cohort, the return, the
+  share, the step); it states no rate and no method.
+- Design-note vocabulary in the Act, the PRAT study and the methodology is the field's own (record, return,
+  sentence, courts, cohort); none of the three says what a revoked arrest becomes in court.
+- The projected-release extract carries 2027 dates by nature (projected release and maximum dates).
+
+## Tried and rejected`.
 
 ## Draw
 
 - **Cell.** Client domain Criminology & Justice, task type `recidivism-risk-assessment` (serves Forecasting &
-  Predictive Modeling). Objective Forecasting: the call is the number of people released to parole in calendar
-  2027 who will be back in prison within two years of release, a window not yet open, pinned by the record of the
-  2019 to 2026 releases.
+  Predictive Modeling). Objective Forecasting: the call is the share of the people the Department expects to
+  release to parole in calendar 2027 who will be admitted to prison again within two years of release, a window
+  not yet open, pinned by the record of the 2019 to 2026 releases. The call faces forward.
 - **World.** The State of Pembroke (fictional; its agencies, people, systems and records are fictional, the field's
   method is real). The Pembroke Sentencing and Policy Commission prepares the prison population projection the
-  General Assembly's appropriations committees take in January 2027. Act 26-114 (signed 30 June 2026, in force for
-  every release from 1 January 2027) ends returns to prison for violations of parole conditions: a parolee may be
-  returned to prison only on a new court commitment. The Department of Corrections (releases, admissions, the 2027
-  projected releases), the Board of Parole (violation reports, revocation decisions), the Administrative Office of
-  the Courts (case dispositions) and the State Bureau of Identification (arrests) hold the records.
+  General Assembly's appropriations committees take in January 2027. Act 26-114 (approved 30 June 2026, in force 1
+  January 2027) ends recommitment by the Board of Parole for technical violations and bars an arrest or pending
+  charge as a ground of recommitment; a parolee comes back to the Department only on a new sentence of total
+  confinement. Records to 30 September 2026 from the Department of Corrections (releases, admissions, the 2027
+  projected-release extract), the Board of Parole (two case systems either side of its 5 January 2026 go-live),
+  the Administrative Office of the Courts (case dispositions) and the State Bureau of Identification (arrests).
 - **Card.** `domain` criminology-justice, `subdomain` recidivism-risk-assessment, `objective` forecasting, `shape`
-  other, `decision_type` quantity_figure, `answer_unit` count, `gap` [time, population], `pattern` [none],
-  `generators` [G3, G13], `gate_g` forecasting, `calibration_form` none, `stump_strategy`
-  decomposition_attribution, `context_artifact` capacity_report, `role_family` capacity_planner, `forum`
-  council_or_assembly, `forcing_event` budget_or_appropriation, `org_family` research_or_statistics_office;
-  `stump_class` analytical; `layer2_family` field_method; `layer2_pattern`
+  other, `decision_type` quantity_figure, `answer_unit` count (to be set to rate_or_share at the card refresh),
+  `gap` [time, population], `pattern` [none], `generators` [G3, G13], `gate_g` forecasting, `calibration_form`
+  none, `stump_strategy` decomposition_attribution, `context_artifact` capacity_report, `role_family`
+  capacity_planner, `forum` council_or_assembly, `forcing_event` budget_or_appropriation, `org_family`
+  research_or_statistics_office; `stump_class` analytical; `layer2_family` field_method; `layer2_pattern`
   own:revocation-in-lieu-of-prosecution-rerouted-under-a-conviction-only-act. People from `guard.py names --geo
-  "United States" --seed 169`: Ashlee Clayton, Donald Kramer, Brandon Walter (Kristy, Karen and Cassandra dropped
-  on people.first WARNs).
+  "United States" --seed 169`: Ashlee Clayton, Donald Kramer, Brandon Walter (none appears in the pack or the
+  prompt; Kristy, Karen and Cassandra dropped on people.first WARNs).
 - **Axes redrawn at the probe, and why the replacement is the honest one.** `context_artifact` register blocked
   against task249: the stakeholder's own file is the Department's monthly population and capacity report, so
   capacity_report. `org_family` government_agency blocked against task273: in Pembroke, as in the states whose
@@ -34,21 +47,29 @@ That draw's world, mechanism and blocked axes are not reused; its line is in `##
   `forum` committee_or_panel blocked against task249: the projection goes to the General Assembly's
   appropriations committees, council_or_assembly.
 - **Guard.** `guard.py check` WARN only. repeat.question_form (how-many against task273) is answered by the
-  decision: the call is a count of people, so it asks how many. test.same_puzzle_older against task172 carries its
+  decision; the leading question asks what share, so the card's form is refreshed to `what` at the card update,
+  where the WARN against task482 is answered the same way. test.same_puzzle_older against task172 carries its
   differentiation on the card (a deadline cut against a route handed to another institution).
 - **Strategy.** decomposition_attribution: every return in the record reached prison by one of two routes for the
   same behaviour (the Board's revocation on the arrest, or the court's commitment months later), whichever acted
   first; the Act closes one route, and the decisive step is how the closed route's arrests divide once they go
   through the other.
+- **Shape and criteria.** The call: the rate (1), the highest district (1), the lowest district (1). Ask A, the
+  Board's revocations ordered in fiscal 2025-26 and not rescinded, by district office and basis (8). Ask B, the
+  detainer days held in each district's county jails in each quarter of 2025 (16). The chart, one bar per district
+  stacked by quarter and labelled with its year total (4 labels, plus the bars and the stacking). The two files
+  and the rounding (3). About 36 criteria.
 - **Data-native sentence.** In Pembroke's record a parolee's arrest reaches prison by whichever route acts first,
   a Board revocation within weeks or a court commitment months later, so the record's new-commitment returns
   measure how seldom the courts got there first, not how often parolees' arrests end in prison; the arrest
-  register, the court dispositions and the Board's decisions show each arrest's route, and discharged parolees'
-  arrests show the courts' conversion with the Board out of the way.
+  register, the court dispositions and the Board's decisions show each arrest's route, and the courts' own
+  decisions on the arrests the Board left alone (and on discharged parolees' arrests) show the conversion with the
+  Board out of the way.
 - **Sources read, and how this differs.**
   - `layer2-rigor-patterns.md` criminology recidivism-risk-assessment 1 (calibration), 2 (fixed follow-up, time at
-    risk), 4 (later cohorts), 6 (base rates): each is a lower rung or the default path here; the golden is none
-    of them applied as stated.
+    risk), 4 (later cohorts), 6 (base rates): each is a lower rung or the default path here (the default path's
+    model is validated by AUC, uses complete follow-up and the latest cohorts); the golden is none of them applied
+    as stated. Card 2's time at risk is inside the golden (days out of Department custody) but does not decide it.
   - task134 v1 (this cell, spent): competing removals and deaths in a return forecast, and its loop-1 deaths
     (period against cohort, composition, cure models, a forward booking change as rule application). Here no exit
     is censored wrongly and nothing is restated by an order: the closed route's arrests are re-routed.
@@ -58,91 +79,286 @@ That draw's world, mechanism and blocked axes are not reused; its line is in `##
     change hands one institution's share of the same events to another institution with its own conversion.
   - task163 (held): a reform's added applications at their own yield. Here nothing is added: the same arrests
     change route.
-- **Screens run as code before the card** (prototype, scratch `proto/p3.py`, 24,000 history releases, 6,500
-  projected; truth 21.6 per cent):
-  - Lever: the record's new-commitment rate 9.1, with revocations as competing exits about 11; the golden family
-    (arrest rate per street day times the courts' conversion by class with the lag to admission) 20.4 to 20.8;
-    lever about 55 per cent of the graded figure.
-  - Outsider spread: frailty on or off and a replay of the record's arrests with the courts' conversion put the
-    family at 18.5 to 20.8, about a tenth of the figure against a lever of a half.
-  - Subset (discharged parolees' time only, a flat rate): 9.6, misses (the hazard falls with time since release
-    and discharged time sits late). Scalar route (the record's new-commitment rate over the share of parolees'
-    arrests prosecuted): 14.0, misses (the record's rate is also cut by revocations removing people early).
-  - Dispersion, variance-only and truncation-direction screens do not apply: the decisive quantity is a level,
-    the step moves the point, no threshold suppresses a tail.
+- **Screens run as code** (prototype first, scratch `proto/p3.py`; then the cut pack, `generator/checks.py` FAM and
+  RIV blocks):
+  - Lever: the record's new-commitment rate 6.61 per cent (step 5), with revocations as competing exits 11.02
+    (step 10); the golden 20.37 (step 20); the record's return rate of every kind 52.24 (step 50).
+  - Outsider spread (nine constructions of the golden family: frailty 4 and 2, pooled conversion, one class mix for
+    everyone, conversion from discharged parolees only, exposure stopped at the first admission, a flat arrest rate,
+    the risk score added, the last two complete years only): 18.50 to 20.87, every one on 20 with Garrison highest
+    and Corliss lowest; the largest move 1.88 points against a lever of 9.4 to 13.8 points.
+  - Subset (discharged parolees' new-commitment admissions per day, flat): 15.75, misses (the hazard falls with
+    time since release and discharged time sits late). Scalar route (the record's rate over the share of arrests
+    the courts decided): 10.11, misses (the record's rate is also cut by revocations removing people early).
+  - Simulated forward truth under the Act, eight redraws of the cohort's two years: 20.41 per cent, the same
+    districts highest and lowest.
+  - Dispersion, variance-only and truncation-direction screens do not apply: the decisive quantity is a level, the
+    step moves the point, no threshold suppresses a tail.
 
 ## Default path
 
 The pipeline a strong analyst builds from the prompt, the Act and the files' grain, every filed rule applied.
 
-1. Link the 2019 to 2024 parole releases to the Department's admissions by DOC number and keep each release's
+1. Conform the release movement codes across the 2022 upgrade and link each 2019 to September 2024 release to
+   parole to the Department's admissions (ADM movements, transfers and writs left out), keeping each release's
    first admission within 730 days.
-2. Keep the returns the Act still allows: admissions on a new court commitment; revocation admissions are
-   dropped (Act 26-114, section 3).
-3. Fit a logistic model of a new-commitment admission within 730 days on age, prior commitments, offence class,
-   risk level and district over the releases with complete follow-up (AUC about 0.68), and apply it to the
-   projected 2027 releases.
+2. Keep the returns the Act still allows: admissions on a new court commitment; Board recommitments (PAROLE
+   VIOLATOR) are dropped (Act 26-114, section 3; methodology 4.2).
+3. Fit a logistic model of a new-commitment admission within 730 days on age, prior commitments, offence, sex and
+   district over the 35,818 complete releases (AUC 0.59), apply it to the 6,466 people on the projected-release
+   extract and round to the methodology's step.
 
-Ends on: about 600 of the 2027 releases back in prison within two years (prototype 9.1 per cent of 6,500).
+Ends on: 5 per cent (6.61 per cent unrounded), Linwood highest and Garrison lowest
 
-Golden: about 1,300 (20 per cent), every arrest the Board would have answered by revocation going to court and
-converting to a prison commitment at the courts' own rate for its class, with the time to admission.
+Golden: 20 per cent (20.37), Garrison highest and Corliss lowest
 
 ## Stump sentence
 
 A competent solver keeps only the returns the Act still allows, models each 2027 release's chance of a
-new-commitment admission within two years on the record's 2021 to 2024 releases and files about 600 (about 700
-with revocations treated as competing exits); the step that lands it there is reading the record's new-commitment
-returns as what parolees' arrests produce, when the Board answered most parolees' arrests by revoking them and
-under the Act those arrests go to court and become prison commitments at the courts' own rate for their offence
-class, which puts about 1,300 of the 2027 releases back in prison within two years.
+new-commitment admission within two years on the record's complete releases and files 5 per cent with Linwood
+highest and Garrison lowest (10 per cent with revocations treated as competing exits); the step that lands it there
+is reading the record's new-commitment returns as what parolees' arrests produce, when the Board answered about a
+third of parolees' arrests by revoking them before any court could, most of all in Garrison, and under the Act those
+arrests go to court and become prison commitments at the courts' own rate for their charge grade, which puts the
+cohort at 20 per cent with Garrison highest and Corliss lowest.
 
 ## Three rules
 
 - Task type: recidivism-risk-assessment (Criminology & Justice), which serves Forecasting & Predictive Modeling:
   a release cohort's two-year return-to-prison forecast for the prison population projection.
 - Domain test: the deciding quantity is the 2027 cohort's two-year return-to-prison probability, estimated the way
-  a corrections forecaster builds it under a change in revocation law: the arrest process per day at liberty and
-  the courts' conversion of arrests into prison commitments by offence class, with the route each past return
+  a corrections forecaster builds it under a change in revocation law: the arrest process per day out of custody
+  and the courts' conversion of arrests into prison commitments by charge grade, with the route each past return
   took read from the Board's and the courts' records.
-- Swap: "how many discharged patients will be readmitted within thirty days once observation stays stop counting"
-  keeps a removed route but loses what decides it here: a second institution, the courts, that takes over the same
-  arrests at its own conversion and timing; with readmissions there is no prosecutor waiting behind the closed
-  route, so the record's other route is the forecast and the task collapses to the default path.
-- Layer 1: (planned, each produced by the agencies' own systems) the Department's DOC number against the Bureau's
-  state ID and the courts' tracking number, joined through the Bureau's crosswalk; the Board's 2024 move to a new
-  case-management system (legacy decisions with condition codes, new ones with separate columns); admissions
-  logged at reception and again at the receiving facility; court dispositions amended after appeal; arrests on a
-  warrant with no new tracking number; fiscal-year folders against calendar dates; deaths from vital records.
+- Swap: "what share of discharged patients will be readmitted within thirty days once observation stays stop
+  counting" keeps a removed route but loses what decides it here: a second institution, the courts, that takes over
+  the same arrests at its own conversion and timing; with readmissions nothing waits behind the closed route, so the
+  record's remaining route is the forecast and the task collapses to the default path.
+- Layer 1: the Department's two movement-code vocabularies across its March 2022 upgrade; admission rows beside
+  transfer and court-writ movements in one table; the Bureau's state ID written with and without a hyphen before
+  the check letter; amended court dispositions as later rows on a docket; cases still open at the cut; deaths from
+  a probabilistic vital-records match; county names in two casings; the Board's legacy and new systems across the
+  January 2026 go-live, with carried-over cases, a parallel-run fortnight, postponed hearings repeating a case's
+  detainer columns and legacy detainers with no lift date when the person went to the Department. Each is listed
+  in `## Layer 1 inventory` with its R2 assertion.
 - Layer 2: field_method; the methodological choice that flips the call is building the forward conviction-return
   rate from the arrests and the courts' conversion, against carrying the record's conviction-return rate.
 - Decisive step: recognising that the record's new-commitment returns are what the courts reached before the Board
-  did, and forecasting under the Act from every parolee arrest at the courts' conversion by class, read off the
-  arrests the courts did process (discharged parolees' and the ones the Board left to court).
-- Not semantics: every field, code and date read correctly (admission types, revocation bases, disposition codes,
-  the Act's section 3) still leaves the default path on about 600, because no field says what a revoked arrest
-  would have become in court; that is an inference about the courts' behaviour under a regime the record never ran.
-- Not rule application: the Act files which returns remain and the methodology files the cohort, the window and
-  the count; executing every filed sentence on the clean truth gives the record's new-commitment rate (9.1 per
-  cent, about 600) or with competing exits about 11 per cent, never 20. Enumerated family spread 9.1 to 20.8
-  per cent; standing family (the constructions the data leave defensible, all of which route the revoked arrests
-  through the courts) 18.5 to 20.8 on the prototype, to be re-measured on the pack; what rules the rest out is the
-  arrests' own fates (parolees' arrests reach a court commitment about a third as often while the Board can revoke
-  as after discharge, in every district), a loud refutation but one no filed sentence states.
+  did, and forecasting under the Act from every parolee arrest at the courts' conversion by charge grade, read off
+  the arrests the courts did decide.
+- Not semantics: every field, code and date read correctly (movement reasons, revocation bases, disposition codes,
+  the Act's section 3, the methodology's 3.1 to 4.2) still leaves the default path on 5 per cent, because no field
+  says what a revoked arrest would have become in court; that is an inference about the courts' behaviour under a
+  regime the record never ran.
+- Not rule application: the Act files which returns remain and the methodology files the cohort, the window, the
+  outcome and the step; executing every filed sentence on the clean truth gives the record's new-commitment rate
+  (6.61 per cent, step 5) or with competing exits 11.02 (step 10), never 20. Enumerated family 6.61 to 20.87 per
+  cent (the default, competing exits, the scalar uplift 10.11, discharged time 15.75, and the nine golden
+  constructions); standing family (the nine that route the revoked arrests through the courts) 18.50 to 20.87, all
+  on 20 with the same two districts; what rules the rest out is the arrests' own fates, a DOC sentence for 10.4 per
+  cent of parolees' arrests while the Board could revoke against 21.2 per cent after discharge (6.8 against 21.4 in
+  Garrison, 17.1 against 21.8 in Corliss), loud in the records and stated in no sentence.
 - Analyst test: a strong analyst who links the four agencies' records, reads the Act correctly and keeps only the
-  new-commitment returns, modelling them on the obvious covariates, files about 600 (Ends on); with revocations as
-  competing exits about 700; only re-routing the revoked arrests through the courts' conversion files about 1,300.
-- Estimand: the Commission's projection methodology (filed in the pack) defines the cohort (releases to parole
-  with a projected release date in calendar 2027, the Department's projected-release extract), the outcome (an
-  admission to prison within 730 days of release), the count and its rounding; the Act files that from 1 January
-  2027 the only admissions of parolees are new court commitments.
-- No decoy: nothing is planted; no memo, briefing, fiscal note or stakeholder figure argues a return count; the
-  Board's annual report gives revocation counts, not a forecast; the wrong answer comes from the easy model alone.
+  new-commitment returns, modelling them on the obvious covariates, files 5 per cent with Linwood highest and
+  Garrison lowest (Ends on); with revocations as competing exits 10 per cent; only routing the revoked arrests
+  through the courts' conversion files 20 per cent, Garrison highest, Corliss lowest (`checks.py` R3a, R3b).
+- Estimand: `prison_population_projection_methodology_2026.pdf` 2.1 to 2.3 (the cohort: every person on the 9
+  October 2026 projected-release extract with a projected movement to parole in 2027, once each, the district
+  holding the county of commitment), 3.1 to 3.3 (a return is an ADM movement from the day after release to the
+  730th day after it, transfers and writs excluded; the share of members with a return, deaths kept in; steps of
+  five percentage points), 4.1 to 4.2 (the Act governs the cohort's whole window; returns are new court
+  commitments); the prompt names the cohort, the window and the comparison of districts.
+- No decoy: nothing is planted; no memo, briefing, fiscal note or stakeholder figure argues a rate; the PRAT study
+  reports the old law's returns of every kind for two early cohorts and says so; the wrong answer comes from the
+  easy model alone.
 - No certified replay: no certified or published figure is reproduced to recover the method; nothing in the pack
-  forecasts 2027 returns.
+  forecasts 2027 returns or states a conversion rate.
 - Lesson: when a law closes one institution's route to an outcome the record reached by whichever route acted
   first, the forward rate is the behaviour times the remaining institution's own conversion, not the remaining
   route's share of the record; no build on file teaches route substitution between two institutions.
+
+## Readability screen
+
+Reflex row written from what the field does to the deciding quantity (a release cohort's return rate): a risk model
+on the obvious covariates validated by AUC, Kaplan-Meier or a hazard model by time since release, competing risks,
+recalibration to the latest complete cohort, standardisation to the projected cohort's mix, an analogue population
+(discharged parolees), dropping the returns a law ends.
+
+| Rung | What the solver must see | Test that fires | Verdict |
+|---|---|---|---|
+| R0 the record's return rate of every kind, modelled | the admissions table | 3 reflex | readable |
+| R1 the Act's returns only: the record's new-commitment rate (the default path) | Act section 3, methodology 4.2 | 1 filed sentence | readable |
+| R2 revocations as competing exits | the admissions' two reasons | 3 reflex | readable |
+| R2b discharged parolees as the analogue, flat | the release file's maximum dates | 3 reflex | readable |
+| R3 (decisive) the revoked arrests re-routed through the courts' conversion by charge grade, with the arrest-to-admission time | nothing names it: no column carries an arrest's would-be court outcome, no sentence says the courts will take the revoked arrests, the disposition file's NP code covers the courts' own nolle prosequis too | none of the six fires: no clause, no column or marker, not an opponent default, no control bench, no hygiene finding, not one subtraction (the scalar uplift misses at 10.11) | silent |
+
+No confidence level, significance level or test threshold is filed anywhere in the pack.
+
+## Semantic fork table
+
+| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | share of the people | share of persons on the extract | share of release movements | same call | the extract lists each person once (methodology 2.2; asserted) |
+| SF2 | the people the Department expects to release to parole in 2027 | the extract's PAR and RPR movements dated 2027 | every 2027 release movement | same call | the extract holds only PAR and RPR in 2027 (asserted) |
+| SF3 | admitted to prison again | an ADM movement | any inbound movement (TRN, WRI) | same call | methodology 3.1; asserted with transfers read as admissions |
+| SF4 | within two years of release | day 1 to day 730 | 731 days, two calendar years | same call | methodology 3.1; asserted at 731 |
+| SF5 | under Act 26-114 | no recommitment; returns only as new commitments | the Act applying only to violations after its date | same call | every cohort member is released after 1 January 2027 (asserted) |
+| SF6 | parole district | the district holding the county of commitment | the releasing institution's district | same call | methodology 2.3, Table 1; one district per county (asserted) |
+| SF7 | highest share, lowest share | by the district's rate | by expected returns | same call | asserted: the same pair |
+| SF8 | the nearest five percentage points | the step centred on 20 | half-up against half-even | same call | the rate sits 2.13 points from the nearest edge (asserted) |
+| SF9 | a member who dies | in the denominator, no return | out of the denominator | same call | methodology 3.2 |
+| SF10 | the history the forecast stands on | every complete release since 2019 | the last two complete years | same call | asserted at 20.30, the same pair |
+
+Every row is asserted in `generator/checks.py` (labels SF1 to SF10).
+
+## Ladder
+
+| Rung | Construction | The pack's answer |
+|---|---|---|
+| 0 | the record's return rate of every kind, modelled on the covariates | 52.24 per cent (step 50), Garrison and Corliss |
+| 1 (default) | the record's new-commitment rate, logistic on the covariates, complete releases | 6.61 (step 5), Linwood highest, Garrison lowest |
+| 2 | new-commitment admissions as a cause-specific hazard by time since release, revocations censoring | 11.02 (step 10), Linwood highest, Ridgway lowest |
+| 2b | the record's rate over the share of arrests the courts decided (one-number uplift) | 10.11 (step 10) |
+| 2c | discharged parolees' new-commitment admissions per day, flat over 730 days | 15.75 (step 15) |
+| 3 (golden) | arrests per day out of custody by time since release and covariates, times the courts' DOC share by charge grade, timed by the arrest-to-admission lag | 20.37 (step 20), Garrison 25.1, Ridgway 19.1, Linwood 18.8, Corliss 13.4 |
+
+Position and margins: every rung misses by one full step or more; the golden family's nine constructions sit
+18.50 to 20.87 (edge distances 1.00 to 2.13); Garrison clears the second district by 1.31x and Corliss the next
+by 1.40x. Dominance: the in-lieu share runs from about a fifth (Corliss) to four fifths (Garrison) of parolees'
+arrests, so the default path ranks Garrison last, the golden first.
+
+## Closure table
+
+| # | Axis | Reading | Move |
+|---|---|---|---|
+| 1 | Population | the extract's 2027 PAR and RPR people, once each | filed, methodology 2.2 |
+| 2 | Unit of account | a person | filed, methodology 2.2, 3.2 |
+| 3 | Attribution window | day 1 to day 730 after release | filed, methodology 3.1 |
+| 4 | As-of dating | records to 30 September 2026, extract of 9 October 2026 | filed, methodology 1.2, 2.2; manifest |
+| 5 | Version basis | a docket's latest entry | dictionary (later row amends); R2 L4 asserted |
+| 6 | Denominator | every cohort member, deaths kept | filed, methodology 3.2 |
+| 7 | Weighting | each member equally | filed, methodology 3.2 (share of members) |
+| 8 | Window length | 730 days | filed, methodology 3.1 |
+| 9 | Boundary inclusivity | the day after release to the 730th day | filed, methodology 3.1; SF4 asserted |
+| 10 | Rounding path | the cohort rate once, to its step | filed, methodology 3.3 and the prompt |
+| 11 | Tie-break | none reached | C1: no tie among districts (1.31x, 1.40x) |
+| 12 | Maturity and censoring | the history uses complete releases and arrests old enough to have closed | C1: open cases counted as no sentence still files 20 (R2 L5) |
+| 13 | Order of operations | rate, conversion, projection | one order; the projection is per person |
+| 14 | Row order | file order irrelevant | C1 |
+| 15 | Duplicate resolution | admissions are ADM rows; amended dockets latest | dictionary; R2 L2, L4 asserted |
+| 16 | Identity normalisation | state ID with and without its hyphen | dictionary; R2 L3 (loud) |
+| 17 | Netting against gross | none | not applicable |
+| 18 | Dimensional units | days and people | units in the data |
+| 19 | Code and status semantics | movement codes before and after 2022; ADM, TRN, WRO, WRI; GP, GT, AQ, DM, NP, OPEN | dictionary; R2 L1, L2 asserted |
+| 20 | Integerisation | none on the call | C1 |
+| 21 | Clause scope | the Act from 1 January 2027 for every parolee | filed, Act section 6; methodology 4.1 |
+| 22 | Forward window contents | 2027 to 2029 under the Act; the cohort is on the extract | filed, methodology 2.2, 4.1 |
+
+## Literal reader
+
+Executed word for word, the methodology fixes the cohort (2.2), the return (3.1), the share (3.2), the step (3.3)
+and the Act's scope (4.1 to 4.2); the Act's section 3 fixes that only new commitments remain. Nothing filed says how
+the share of the cohort the Department will admit on a new commitment is estimated, so the method stays open, and
+the records force it: parolees' arrests while the Board could revoke reached a DOC sentence 10.4 per cent of the
+time against 21.2 after discharge, in every district (6.8 against 21.4 in Garrison), so the record's
+new-commitment rate is a censored route and the courts' own conversion is the forward one. Every construction that
+routes the revoked arrests through the courts files 20 per cent with Garrison and Corliss (nine of nine, `checks.py`
+FAM); every term's alternative reading gives the same call (SF1 to SF10). A literal reader who stops at the filed
+sentences has the estimand and no estimate.
+
+## Oracles
+
+Nothing in the pack ranks the districts on the 2027 cohort's return rate or states a rate. The PRAT study
+(distractor) reports the old law's returns of every kind by risk level for the 2019 and 2020 releases, a figure the
+Act ends; the caseload extract (distractor) counts people under supervision; the capacity report (context
+artifact) gives month-end populations. No file carries a conversion rate, an in-lieu share or a forecast (R1
+asserted).
+
+## Ask sheet
+
+**Main call's declared row population:** releases to parole from 1 January 2019 to 30 September 2024, the
+Department's admissions, arrests and court cases with arrests to 30 June 2024 (and the later rows only as custody
+and arrest counts), the Board's REVOKE and REVOKED rows only for the set of arrest numbers they cite, the deaths and
+the projected-release extract. Device and hazard rows in it: 0 (asserted, `checks.py` SEP: no parallel-run row
+cites an arrest in the call's conversion window; the call never reads a detainer; deleting the asks' devices leaves
+the revoked-arrest set unchanged, R2 L7).
+
+**Ask A. For each district office, the revocations the Board ordered from 1 July 2025 to 30 June 2026 and did not
+rescind, on a reported arrest and on conditions alone** (8 figures, whole numbers). H18 home: the record the Act
+ends, which the projection replaces and the committees read beside it.
+- A1 (D1, the same records under two key schemes; silent primary): the legacy system closed on 2 January 2026 and
+  its open cases were carried into the new system, but hearing officers kept entering decisions in the legacy
+  system until 23 January, so a carried-over case decided in that fortnight has a REVOKE row under its legacy case
+  number and a REVOKED row under its new case id. No column links them; a legacy action dated after the close is
+  the tell, with the new system's opened_in LEGACY as the corroborating file. Every office and both bases carry such
+  pairs (asserted). Adding the two files moves every cell, by 4 to 70 (D1 arrests +70, D4 arrests +4).
+- Hazard (D2): rescissions, a later RESCIND row in the legacy system and a rescinded_date in the new one; the
+  asking sentence states that rescinded revocations are out, so the cracker removes them.
+- Stops (asserted): both systems added (all 8 cells); rescissions kept (the 4 conditions cells).
+
+**Ask B. For the county jails of each parole district, the days parolees were held on Board detainers in each
+quarter of 2025, counting the day a detainer was lodged and not the day the person left** (16 figures). H18 home:
+the detainer days the Commonwealth reimburses (Act section 4(b) reimburses them from 2027), the projection's cost
+line beside the returns.
+- B1 (D4, absence as the signal; silent primary with its over-cleaning half): the legacy system wrote a lift date
+  only when the Board released the person itself; a detainer that ended in a Department admission has none. The end
+  is the person's next ADM movement in the Department's admissions; the new system writes that date as hold_end,
+  which is the corroborating file. Reflex repairs all miss: dropping the blanks, ending them on the decision, or
+  leaving them open to the extract.
+- B2 (D6, an event's quantity on every line it covers; silent): a legacy case's every action row repeats its
+  detainer columns, so a case whose hearing was postponed carries its detainer twice. One detainer per case.
+- B3 (D1, shared cause with A1): a case open at the legacy close has its detainer in both systems.
+- Stops (asserted): the cracker's path (both systems, every row, blanks ended on the decision) misses all 16; each
+  single repair alone still misses all 16; both end days counted misses all 16.
+
+**Chart.** One bar per district stacked by quarter of 2025, labelled with its year total: inherits B's three
+devices (4 labels).
+
+**Hazard table.**
+
+| Hazard | Root cause | Moves | Per-ask delta |
+|---|---|---|---|
+| H1 the parallel-run fortnight | decisions entered in both systems 5 to 23 January 2026 | A, B | A every cell +4 to +70; B the fourth quarter |
+| H2 rescissions | reconsideration after a revocation | A | the conditions cells, 6 to 23 each |
+| H3 postponed hearings | the legacy action table repeats a case's detainer on every action row | B | every cell |
+
+**Referee.** The Department's admissions table ends every detainer that went to the Department and dates no
+decision; it arbitrates B1 without handing over a figure. The new system's opened_in column corroborates A1.
+
+**Cracker sheet** (the cracker landed the call, ran the hygiene battery, executed every filed rule and every
+convention the asking sentences state, added the Board's two systems and ended a blank lift on the decision that
+closed its case; `generator/cracker.py` on the cut pack)
+
+| Ask row | Figures | Cracker's path | Device that holds | Verdict |
+|---|---|---|---|---|
+| Ask A, revocations by office and basis | 8 | both systems added, rescissions removed | A1 | miss |
+| Ask B, detainer days by district and quarter | 16 | every legacy row, blank lifts ended on the decision, carried-over cases twice | B1, B2, B3 | miss |
+| Chart, year totals by district | 4 | as Ask B | B1, B2, B3 | miss |
+
+One crack at a time (`cracker.py`): A1 cracked, the cracker keeps 8 of 28 and the pair is 36.4; any one of B's
+devices cracked alone, none; all three of B's cracked together, 20 of 28 and a pair of 48.1.
+
+Measured by: `generator/cracker.py` (run on the cut pack; Part 0's weights, the call and its components 38, the
+instructions 7, the asks 55 over the 28 ask figures; a response off the call keeps 5).
+
+Mirror leakage: 0.0 per cent of ask weight (the mirror, off the call on 5 per cent, adds both systems, keeps
+rescissions and leaves blank lifts out, and keeps none of the 28 figures).
+
+Pair ceiling: 28.5 measured on the cut pack (the cracker 45.0, the mirror 12.0); the worst single crack 36.4 (A1).
+
+## Layer 1 inventory
+
+| Item | System that writes it | File | Natural mishandling | R2 (checks.py) |
+|---|---|---|---|---|
+| L1 movement codes PAROLE, REPAROLE, MAX EXP before 14 March 2022, PAR, RPR, EXP after | DOC offender management system | doc_release_movements_2019-2026.csv | pre-2022 releases dropped | call unchanged |
+| L2 ADM beside TRN, WRO and WRI movements | DOC offender management system | doc_admission_movements_2019-2026.csv | transfers and writs read as admissions | call unchanged |
+| L3 the state ID with and without a hyphen | SBI repository and its crosswalk | the arrest parquet and the crosswalk | a raw join matches nothing | loud (0 against 100 per cent) |
+| L4 amended dispositions as later rows | AOC case management | aoc_case_dispositions_2019-2026.csv | the first row kept | call unchanged |
+| L5 cases still OPEN at the cut | AOC case management | aoc_case_dispositions_2019-2026.csv | open cases counted as no sentence | call unchanged (17.88) |
+| L6 deaths from a probabilistic match | Department of Health | vital_records_death_matches_2019-2026.csv | deaths ignored | call unchanged |
+| L7 the Board's two systems and the parallel run | Board case systems | the two Board files | duplicates added | the revoked-arrest set unchanged; Ask A device |
+| L8 county names in capitals and in title case with County | DOC and AOC | release, projection and court files | mapping missed | every county maps (asserted) |
+| L9 legacy detainers without a lift date, repeated on postponed hearings | Board legacy system | board_violation_actions_legacy_2019-2026.xlsx | blanks dropped or ended on the decision | outside the call's population; Ask B devices |
 
 ## Tried and rejected
 
@@ -182,3 +398,15 @@ class, which puts about 1,300 of the 2027 releases back in prison within two yea
   the history's hearings at that lead are a filter and a divide. Set aside on paper.
 - Positive tests per sanction-grid step under a lower testing frequency: the grid is a filed rule, so the replay is
   rule application. Set aside on paper.
+- Rates by district graded in five-point steps: Garrison's family ran 21.9 to 25.6 against a 22.5 edge on one world
+  and Ridgway's and Linwood's sat a point from 17.5, so district rates are not graded; the call grades the highest
+  and lowest district, which every construction names the same way at 1.31x and 1.40x.
+- The count of returns to the nearest hundred: the family's 18.5 to 20.9 per cent of about 6,500 people spans
+  1,200 to 1,350, two hundreds; the rate is carried in the methodology's five-point steps instead.
+- In-lieu shares that fell much harder on misdemeanours than on felonies A-B (scale 0.45): pooling the conversion
+  over grades then moved the rate 1.5 points; the scale was set to 0.8 so the pooled form stays in the step, the
+  grade-level conversion still forced by the records (60.7, 26.2 and 2.6 per cent).
+- Ask B over fiscal 2025-26 quarters and a monthly revocations chart: the last fiscal quarter sat wholly in the new
+  system and every month but January outside the parallel run, so a cracker kept four of sixteen detainer cells and
+  eleven of twelve chart labels; Ask B moved to calendar 2025 quarters (every quarter in the legacy era) and the
+  chart to the year's detainer totals, with the legacy action table's repeated detainer columns as a second device.

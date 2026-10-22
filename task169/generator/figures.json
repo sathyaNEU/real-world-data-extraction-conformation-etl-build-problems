@@ -1,0 +1,56 @@
+{
+ "call": {
+  "rate_step": 20,
+  "highest_district": "Garrison",
+  "lowest_district": "Corliss"
+ },
+ "cohort_size": 6466,
+ "spells": 35818,
+ "window_days": 730,
+ "a1_D1": {
+  "arrest": 1586,
+  "conditions": 295
+ },
+ "a1_D2": {
+  "arrest": 709,
+  "conditions": 259
+ },
+ "a1_D3": {
+  "arrest": 427,
+  "conditions": 176
+ },
+ "a1_D4": {
+  "arrest": 157,
+  "conditions": 137
+ },
+ "b_Garrison": {
+  "Q1": 22746,
+  "Q2": 22034,
+  "Q3": 24883,
+  "Q4": 24606
+ },
+ "b_Ridgway": {
+  "Q1": 15421,
+  "Q2": 14827,
+  "Q3": 13663,
+  "Q4": 14005
+ },
+ "b_Linwood": {
+  "Q1": 9962,
+  "Q2": 10029,
+  "Q3": 10630,
+  "Q4": 11139
+ },
+ "b_Corliss": {
+  "Q1": 6338,
+  "Q2": 6391,
+  "Q3": 6354,
+  "Q4": 6151
+ },
+ "chart": {
+  "Garrison": 94269,
+  "Ridgway": 57916,
+  "Linwood": 41760,
+  "Corliss": 25234
+ }
+}
