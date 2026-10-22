@@ -1,36 +1,36 @@
 {
   "task": "task482",
   "owner": "oviya1301",
-  "status": "PAUSED",
-  "domain": "survey-research-official-statistics",
+  "status": "DESIGN",
+  "domain": "education-learning-sciences",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-22",
-  "stump": "The default path fits one hedonic regression of log price on dwelling type, floor area, new-dwelling status and the address point file's electoral division with a single year term for each area and designates Ardcullen, Annaghvale, Dunmarra, Drumshallon, Glenaskin, Innishrue and Kilbrannagh, because the one year term averages the types' changes over what sold: in Moyrath and Carrigvore apartments are 45 and 44 per cent of the sales against 14 per cent of the stock and rose 0.5 and 1.1 per cent while the houses rose about 10 to 13, and in Innishrue and Drumshallon the apartments rose about 17 per cent and the houses 3 to 6; each type's own year effect, weighted by the census stock's value of that type, designates Carrigvore (9.5) and Moyrath (10.4) in place of Drumshallon (5.6) and Innishrue (4.8).",
+  "stump": "The default path computes Form 27A's expected raw score at each placement standard from the bank difficulties as filed and sets the college algebra placement score at 28; 40 of the form's 60 scored items were calibrated in the unscored field-test section at positions 61 to 70, and a student answers an item less often the later it comes (about 0.0075 logits per position in the 2026 attempts), so carrying each from its calibration position to Form 27A's unique section (mean position 40.5) puts the expected raw score at the standard near 29.5 and the placement score at 30.",
   "architecture": 6,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-22"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (the methodology note's and the circular's own vocabulary)",
-    "reader": "both readers missed the call on the same wrong seven (type weighting by the census stock without location); asks 0 and 1 of 48"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (no BLOCK)",
-    "nearest": "task482 v4 (lineage, 0.20); surface exit 0, nine pairs promoted for adjudication, the top one a false shared name ('The Office' opening a prompt sentence, also in task65's), reworded out of the prompt"
+    "heart": "",
+    "nearest": ""
   },
   "judge": {
-    "verdict": "NOT_DETERMINISTIC (r5a: asks 3 and 4 open; the designated set rests on an unfiled location control)",
-    "disposition": "SEND_BACK; read against the gate table G and H pass, but the step that held is a fork and the designed step a reflex, so the architecture is spent",
-    "report": "determinism_check_report_v5.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "stage 1: architecture 5 spent at stage 4 (see the design note's Architecture 5 record); re-root to architecture 6 with a fresh draw. Screened at the draw and dead: register misclassification by area mix (task244's driver), a common stack split by own rates (this slot's v1 driver), death-registration completeness (task243), retransformation bias (task135), length bias (task135, task268), a CEMS gap fill on load (guard BLOCK on pattern G12, strategy and forcing event)",
+  "resume": "stage 2: architecture 6 drawn 2026-10-22 (the QPI Form 27A placement scores, bank difficulties carried from the field-test section to their operational positions); write the default path, stump sentence, three rules, ladder, fork table, closure, asks and prompt, then precut.py",
   "approved": null,
   "delivered": null,
   "portal": null,
-  "source_note": "seed ET39 (IPEDS parent-child instruction per FTE): the world, the decision and the quantity kept; the parent-child reporting only as Layer 1"
+  "source_note": "re-root to a fresh world; the seed ET39 world was spent with architectures 1 to 5"
 }

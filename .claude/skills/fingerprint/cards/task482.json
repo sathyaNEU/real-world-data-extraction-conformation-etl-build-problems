@@ -1,90 +1,87 @@
 {
   "task": "task482",
-  "architecture": "v5",
+  "architecture": "v6",
   "drawn": "2026-10-22",
-  "slot_note": "re-root of seed ET39 after architectures 1 to 3 were spent at stage 4; a statistics office's area residential property price index, read for the housing ministry's rapid price growth designation",
-  "domain": "survey-research-official-statistics",
-  "client_domain": "survey-research-official-statistics",
-  "subdomain": "census-register-administrative-data-quality",
-  "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, the change in the market value of each area's census dwelling stock, read against the housing ministry's 8 per cent line, when the dwelling types' prices move apart and each area's sales over- or under-represent apartments against its stock",
+  "slot_note": "re-root after architectures 1 to 5 were spent at stage 4; a fresh world in the ETL objective: a state community college system pre-equates its 2027 mathematics placement form from a Rasch item bank and must publish the college algebra placement score before the form goes live",
+  "domain": "education-learning-sciences",
+  "client_domain": "education-learning-sciences",
+  "subdomain": "item-response-theory-test-equating",
+  "niche": "a state community college system's 2027 mathematics placement form, pre-equated from a Rasch item bank before it goes live on 1 March 2027: the raw score that places a student into college algebra, where most of the form's scored items were calibrated in the unscored field-test section at the end of earlier forms",
   "objective": "etl",
-  "shape": "other",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "Ardcullen, Annaghvale, Carrigvore, Dunmarra, Glenaskin, Kilbrannagh and Moyrath designated",
+  "shape": "04",
+  "decision_type": "dial_setting",
+  "answer_unit": "index_or_score",
+  "answer": "to be filled at ship",
   "answer_source": "generator/figures.json",
   "gap": [
     "objective"
   ],
   "pattern": [
-    "D"
+    "none"
   ],
   "generators": [
-    "G6",
-    "G16",
-    "G17"
+    "G14",
+    "G16"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "composition_mix",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "planning_thread",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "With every file conformed and every rule read, a strong analyst who knows a constant-quality index fits one hedonic regression of log price on type, floor area, newness and electoral division with a year term per area and designates Ardcullen, Annaghvale, Dunmarra, Drumshallon, Glenaskin, Innishrue and Kilbrannagh; the easier routes (median change, per square metre, type medians weighted by the census stock, a regression without location) each file another set; only the year effect estimated per dwelling type and combined over the census stock's value of each type designates Ardcullen, Annaghvale, Carrigvore, Dunmarra, Glenaskin, Kilbrannagh and Moyrath.",
-  "domain_test": "Official house price statistics: an area's index is the change in the value of its dwelling stock, estimated from a changing sample of sales by a hedonic regression and aggregated to the stock with stock value weights, so where the types' prices move apart and the sales mix is not the stock's, a single pooled time effect is the wrong aggregate; with another field's nouns the step survives only where a stock's value is priced from a sample of traded units of unlike kinds.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:a stock's value change taken from a regression on what traded, when the types' prices move apart and the traded mix over-represents one type against the stock",
+  "analyst_test": "A strong analyst who conforms the two bank systems' scales, joins Form 27A's map to the bank and reads the technical report's standard computes the form's test characteristic curve from the bank difficulties as filed, finds the expected raw score at the college algebra standard about 27.9 and sets the placement score at 28, two below the 30 that the difficulties carried from the field-test section to their Form 27A positions give (about 29.5).",
+  "domain_test": "Psychometrics: pre-equating a fixed form from a Rasch item bank. The deciding quantity is the form's test characteristic curve at the standard, which needs each item's difficulty where it sits on the form; the field estimates item position effects from administrations that vary item order and carries bank parameters from their calibration positions to their operational positions before pre-equating. With hospital or energy nouns there is no form, no item position, no characteristic curve and no standard on a latent scale, so nothing is left to decide.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:bank difficulties carried from their calibration position to their operational position before pre-equating",
   "layer1": [
-    "the price register in two layouts across the October 2025 system change",
-    "new-dwelling prices filed exclusive of VAT at 13.5 per cent",
-    "addresses joined to the valuation register by property number and to the address point file for the electoral division",
-    "sales not at full market price flagged and outside the index"
+    "the item bank in two systems, logits in the legacy bank and a bank unit of 100 plus 10 per logit in the new one",
+    "the old platform's wide export in two fixed versions against the new platform's long export in random order",
+    "item identifiers in two formats joined through the bank's crosswalk",
+    "the delivery platform cutover on 1 July 2026",
+    "retests, invalidated sessions and accommodated sessions",
+    "UTC timestamps on the new platform against local time on the old"
   ],
-  "stakeholder_role": "head of price statistics at a national statistics office",
-  "role_family": "statistical_office_head",
+  "stakeholder_role": "the system office's director of placement and developmental mathematics, who takes the 2027 placement scores to the State Board of Community Colleges",
+  "role_family": "programme_officer",
   "scoring_unit": "index points",
   "spine": {
-    "file": "ppr_residential_sales_filed_2025-10-01_to_2026-10-14.csv",
-    "rows": 38633,
-    "entity": "one dwelling's line on the residential property price register, a block purchase filed as one line per dwelling",
-    "grain": "dwelling x sale",
-    "source": "synthetic (constructed in the layout of a national residential property price register)"
+    "file": "qpi_item_responses_2026-07-01_to_2027-01-31.csv",
+    "rows": 0,
+    "entity": "one item response in one attempt on the new delivery platform, scored or field-test",
+    "grain": "attempt x item",
+    "source": "synthetic (constructed in the layout of a computer-based test delivery export)"
   },
-  "forum": "minister_or_cabinet",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "research_or_statistics_office",
+  "forum": "trustees_or_governors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "university_or_school",
   "world": {
-    "geography": "Ireland (a fictional nation)",
-    "currency": "EUR",
-    "org_type": "national statistics office",
+    "geography": "an unnamed state of the United States (the community college system, its colleges and its placement test are fictional)",
+    "currency": "USD",
+    "org_type": "a state community college system's office of assessment and placement",
     "invented_names": [
-      "Brannagh Statistics Office"
+      "Brackett Plains Community College System",
+      "Quantitative Placement Inventory"
     ],
     "people": [
-      "Clare McEntee",
-      "Evelyn Clune"
+      "Breanna Graham",
+      "John Huang"
     ]
   },
   "deliverables": [
-    "bso_area_property_price_change_2026.xlsx"
+    "qpi_form27a_score_conversion.csv",
+    "qpi_placement_review_2027.xlsx",
+    "qpi_form27a_expected_score_curve.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A stock's value change is estimated from a regression on the units that traded, but the unit types' prices move at different rates and the traded mix over-represents one type against the stock, so the regression's one period effect is a traded-mix average of the types' changes; the stock's change takes each type's own period effect, holding characteristics and location fixed, weighted by the stock's value of that type.",
-  "driver_concrete": "Each area's residential property price change is the change in the market value of its census dwelling stock: each dwelling type's year effect from a regression of log price on type, floor area, new-dwelling status and electoral division with a year term per type, combined over the census stock by each type's value, because apartments are a third or more of the sales in Moyrath, Carrigvore, Innishrue and Drumshallon but a seventh of their stock, and their prices moved apart from the houses'.",
-  "stump": "The default path fits one regression of log price on dwelling type, floor area, new-dwelling status and the address point file's electoral division with a single year term and designates Ardcullen, Annaghvale, Dunmarra, Drumshallon, Glenaskin, Innishrue and Kilbrannagh, because the one year term averages the types' changes over what sold, and in Moyrath and Carrigvore the flat apartments are a third of the sales while in Innishrue and Drumshallon the rising ones are; each type's own year effect weighted by the census stock's value of that type designates Carrigvore and Moyrath in their place.",
+  "question_form": "what",
+  "driver": "The decisive quantity is a sum over a fixed set of measuring items of each item's expected outcome at one fixed level, where each item's parameter was calibrated in the slot it occupied on an earlier instrument and an item's outcome worsens the later its slot; the slot effect is estimated from earlier administrations that presented the same items in varied orders, and each item is carried from its calibration slot to its new slot before summing, while summing the parameters as filed, or shifting every item by one average drift, sets the dial elsewhere.",
+  "driver_concrete": "Form 27A's college algebra placement score is the lowest raw score at or above the expected raw score of a student at the 0.35-logit standard; 40 of its 60 scored items carry bank difficulties calibrated in the unscored field-test section after the scored items of earlier forms, and a student's chance on an item falls with its position; the 2026 attempts (two fixed orders on the old platform, random order on the new) measure the position effect, and carrying each item from its calibration position to its Form 27A position raises the expected raw score at the standard from about 27.9 to about 29.5, so the placement score is 30, not 28.",
+  "stump": "The default path computes Form 27A's expected raw score at the standard from the bank difficulties as filed (about 27.9) and sets the placement score at 28; the golden carries each field-test-calibrated item from its calibration position to its Form 27A position by the position effect the 2026 attempts measure and sets it at 30.",
   "mechanism_source": "design_note",
-  "differentiation": {
-    "task481": "task481 restates counts onto a new classification by conversion rates from a dual-coded window; here no classification changes: prices of a shifting sample of dwellings are held to constant quality by regression.",
-    "task470": "task470 rebuilds activity a sensor never records from units it does; here every sale is recorded and the question is what the traded mix says about the stock's price.",
-    "task251": "task251 reads a unit's error over conditions its check never saw; here no instrument error: a price change for an unchanged dwelling.",
-    "task479": "task479 weighs noisy unit levels against the pool; here no shrinkage: each area's change is the time effect of a regression on the dwellings' characteristics.",
-    "task464": "task464 converts values across instruments by regression and counts units under a cut; here no instrument changes and no unit is converted: the regression holds quality fixed across two periods.",
-    "task484": "task484 counts occupied places when new places fill slowly; here new dwellings sell at a premium and the question is price, not occupancy."
-  },
-  "notes": "architecture 4: the client's held tasks are compound or keep a dimension in another file; here the size and newness sit in the valuation register and the electoral division in the address point file, and each partial correction files a different wrong set. Architecture 5 (2026-10-22): the decisive step moves from a constant-quality regression (architecture 4, landed by its reader 9) to the aggregation that regression skips: each dwelling type's own year effect weighted by the census stock's value of that type; the pooled regression is now the default path. Redrawn at the draw: gap population (same-puzzle and same-driver against task251 v5) back to objective with pattern D (own_lineage against v4 cleared): the pooled constant-quality change is a correct figure and not the stock's value change the designation is scored on, two grains (the traded mix and the stock's types) both flawless; shape 10 (task249 v6) to other, a designation over every candidate against one line; context artifact filed_standard (task478 v4) to planning_thread, the Department's circular the Office answers; forcing event vote_or_meeting, then statutory_or_regulatory_filing (task249 v6), to budget_or_appropriation, the circular now settling the designated areas' 2027 infrastructure fund allocations in a round closing 20 November (the world changed to match, docs.py); strategy population_selection to composition_mix. Architecture 5 spent 2026-10-22 at stage 4: the stock aggregation was taken by reflex by both readers and the judge; the call held only on an unfiled location control.",
+  "differentiation": {},
+  "notes": "architecture 6 drawn 2026-10-22 after architecture 5 was spent at stage 4; personas from guard.py names --geo 'United States' --seed 482; forum, forcing event and role family redrawn at the draw (committee_or_panel and research_desk BLOCKed against task249, launch_or_rollout against task177)",
   "lineage": [
     {
       "architecture": "v1",
@@ -145,8 +142,24 @@
       ],
       "gate_g": "method_or_model_selection",
       "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, read against the housing ministry's 8 per cent line for designating rapid price growth areas, when each area's sales in a year are a shifting sample of its dwelling stock and the dwellings' attributes and small-area locations sit in the valuation register and the address point file, not in the price register"
+    },
+    {
+      "architecture": "v5",
+      "drawn": "2026-10-22",
+      "driver": "A stock's value change is estimated from a regression on the units that traded, but the unit types' prices move at different rates and the traded mix over-represents one type against the stock, so the regression's one period effect is a traded-mix average of the types' changes; the stock's change takes each type's own period effect, holding characteristics and location fixed, weighted by the stock's value of that type.",
+      "stump": "The default path fits one regression of log price on dwelling type, floor area, new-dwelling status and the address point file's electoral division with a single year term and designates Ardcullen, Annaghvale, Dunmarra, Drumshallon, Glenaskin, Innishrue and Kilbrannagh, because the one year term averages the types' changes over what sold, and in Moyrath and Carrigvore the flat apartments are a third of the sales while in Innishrue and Drumshallon the rising ones are; each type's own year effect weighted by the census stock's value of that type designates Carrigvore and Moyrath in their place.",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "D"
+      ],
+      "gate_g": "method_or_model_selection",
+      "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, the change in the market value of each area's census dwelling stock, read against the housing ministry's 8 per cent line, when the dwelling types' prices move apart and each area's sales over- or under-represent apartments against its stock",
+      "fate": "spent at stage 4 on 2026-10-22: both scored readers and the judge's first derivation weighted dwelling types by the census stock by reflex and missed only on the electoral-division control, which the judge read as unfiled (r5a); filing it hands them the call; re-rooted fresh by the author's rule (no retirement)",
+      "subdomain": "census-register-administrative-data-quality",
+      "domain": "survey-research-official-statistics"
     }
   ],
-  "registered": "2026-10-22T15:20:11Z",
-  "architecture_spent": true
+  "registered": "2026-10-22T17:38:37Z"
 }
