@@ -1,34 +1,34 @@
 {
   "task": "task478",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "supply-chain-logistics/transportation-network (client: general-statistics-data-science/data-integration-record-linkage-entity-resolution)",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-21",
-  "stump": "The default path completes pass by pass and designates Carrow Point and Elmscourt, and the careful path takes every installed unit as an independent chance at the 69.9 per cent a second unit finds what a first found and designates Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle, because two units on the same kind of vehicle record 93.6 per cent of each other's potholes against 54.9 per cent across kinds, so the independent chances are the fleet groups that drove a segment at 54.4 per cent, and Fenwick Gap (6.86) and Kestrelton (7.28) clear the line beside the five.",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-22",
+  "stump": "The default path links the pothole detections at one distance and designates Holloway Run, Carrow Point, Elmscourt, Thistlebank and Norvelle at anything from 132 to 410 feet, or a seven with Grisholt and Oxbrae in place of Fenwick Gap and Kestrelton at 54 to 124 feet, because every Kerbline phone places a detection ahead of the pothole along its direction of travel by its own GPS latency times its speed, so on the two-lane roads one pothole seen both ways is two clusters of detections while the bridge decks' neighbouring potholes sit closer together than that; each detection moved back by its unit's latency, measured on the surveyed utility covers, at its own pass's direction and speed from the traversals, the detections link at any distance from 2 to 27 feet into potholes that designate the seven, Fenwick Gap at 6.90 and Kestrelton at 7.09.",
   "architecture": 4,
   "loops": 0,
   "precut": {
     "exit": 0,
-    "date": "2026-10-21"
+    "date": "2026-10-22"
   },
   "leak": {
-    "leak_py": "REVIEW (document vocabulary; answered in the design note)",
-    "reader": "architecture 3: round 1 readers A and B missed the call (A kept 10 pounds via a route marker, fixed); round 2 reader D landed the call by fleet-group capture-recapture; architecture 3 spent"
+    "leak_py": "REVIEW (the scope of work's 'the model's confidence' and each document's own vocabulary; nothing names a latency, lag or offset)",
+    "reader": "stage 4 round 1 (2026-10-22): reader A missed the call (the five at a 0.04-mile link), reader B missed it (nine, a lag it fitted itself with a loose correction); cold mix 0 of 14 each; question 6 analytical from both; REVIEW lines harmless"
   },
   "duplicate_check": {
     "heart": "WARN (no BLOCK)",
-    "nearest": "task478 v2 / task49"
+    "nearest": "task478 v2 (lineage, 0.20, differentiated); surface exit 0, four pairs promoted on 0.10 surface similarity (task189, task231, task447, task191), none sharing a mechanism"
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "report": "/tmp/determinism-check-task478-v3/verdict.md (thread verdict; the agent report was not written)"
+    "verdict": "NOT_DETERMINISTIC (run r4a: Gate C on the cold-mix ask only, WO-27004908's repeated 60 lb read both ways; G and H PASS, the main call forced)",
+    "disposition": "SEND_BACK by label, an ask-layer repair by the gate table (determinism-check: C confined to an ask spends no architecture); fixed in the generator, re-judge r4b running",
+    "report": "determinism_check_report_v4.md"
   },
   "returned": [],
-  "resume": "architecture 4 drawn (directional GPS latency calibrated on the covers, corrected with the traversals before linking); next: generator from architecture 2's base with the latency, design note, precut, build, stage 4",
+  "resume": "stage 4: readers A and B both missed the call (cold mix 0 of 14 each); judge r4a NOT_DETERMINISTIC on the cold-mix ask only (WO-27004908 read both ways; G and H PASS, main call forced), fixed in the generator (every repeated figure reads one way, Thistlebank 2,145 to 2,135 lb), rebuild green (86 checks, verify 14/14, byte-identical, zip 42ee425a); the one re-judge r4b is running from /tmp/determinism-check-task478-r4b/judge_brief.md (blocks in blocks.md, opened after derivation.md): on its verdict.md, send it to the determinism-judge agent for determinism_check_report_v4b.md, then the pre-ship check, card, ledger rows (scratchpad t478/ledger_rows.md), SHIPPED commit with target.zip and golden/ force-added, merge to main",
   "approved": null,
   "delivered": null,
   "portal": null,

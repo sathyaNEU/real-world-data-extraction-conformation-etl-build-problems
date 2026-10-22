@@ -1,8 +1,9 @@
 """The pair ceiling on the cut pack (supplemental-stumping Part 0, on its 38, 7 and 55 weights).
 
 The cracker lands the call, runs the hygiene battery and executes every filed rule it is pointed at: it sums each
-line's pounds (no rule says a line can carry its order's total). The mirror stops at the default path (no completion:
-the per-pass rate finds every pothole on a segment driven four or more times) and reads the ask the natural way. A hit is a figure inside half a unit of its stated rounding.
+line's pounds (no rule says a line can carry its order's total). The mirror stops at the default path (one linking
+distance, 200 feet, for every detection as Kerbline placed it) and reads every ask the natural way. A hit is a figure
+inside half a unit of its stated rounding.
 
     python3 task478/generator/ceiling.py [target]
 """
@@ -15,28 +16,30 @@ sys.path.insert(0, HERE)
 import methods as M   # noqa: E402
 
 ORDER = [403, 407, 411, 402, 409, 405, 412, 414, 401, 406, 413, 404, 408, 410]
+DEFAULT_FT = 200
 W_REC, W_IF, W_ASK, R_WRONG = 38.0, 7.0, 55.0, 5.0
 
 
 def figures(p, route):
-    """Every graded figure under one route: the call, the fourteen whole-number estimates and the 47 ask figures."""
+    """Every graded figure under one route: the call, the fourteen whole-number figures and the 28 ask figures."""
     g = M.golden(p)
     out = {}
     if route == "golden" or route == "cracker":
         est, call = g["est"], g["set"]
     else:
-        est, call = g["found"], M.designated(g["found"])
+        est = M.single(p, DEFAULT_FT, g["road"])
+        call = M.designated(est)
     out["call"] = tuple(call)
     for s in ORDER:
-        out["est_%d" % s] = round(est[s])
+        out["est_%d" % s] = int(est[s] + 0.5)
     if route == "golden":
-        a = M.ask_patches(p)
+        a = M.ask_pounds(p)
     elif route == "cracker":
-        a = M.ask_patches(p, pounds="lines")
+        a = M.ask_pounds(p, pounds="lines")
     else:
-        a = M.ask_patches(p, legacy="as_is", pounds="lines")
+        a = M.ask_pounds(p, pounds="lines")
     for s in ORDER:
-        out["A_lb_%d" % s] = a[1].get(s, 0)
+        out["A_lb_%d" % s] = a.get(s, 0)
     return out
 
 
@@ -64,6 +67,7 @@ def main(target=None):
             hit = [k for k in ks if k in kept]
             print("%-8s ask %s: %d of %d kept %s" % (name, ask, len(hit), len(ks), " ".join(hit)))
     print("cracker: call %s, %d of 14 estimates, score %.1f" % (call_c, est_c, sc))
+    print("mirror whole numbers kept: %d of 14" % est_m)
     print("mirror:  call %s, %d of 14 estimates, score %.1f" % (call_m, est_m, sm))
     print("Pair ceiling: %.1f" % ((sc + sm) / 2))
     print("Mirror leakage: %.1f per cent of ask weight" % (100.0 * len(kept_m) / len(asks)))

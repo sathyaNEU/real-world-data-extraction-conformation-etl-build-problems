@@ -14,14 +14,27 @@ TZ = ZoneInfo("America/New_York")
 UTC = dt.timezone.utc
 SEED = 4782027
 
-# The capture process: whether a defect can be seen from a phone depends on where the phone sits, and every vehicle of
-# one kind carries its phone in the same mount at the same height, so a fleet group either can or cannot see a given
-# defect (Q_SEE); a unit of a group that can see it sees it with probability UNIT_SEE (fixed for the installation) and
-# records it on a pass with probability R_PASS.
-Q_SEE = 0.56
-UNIT_SEE = 0.93
-GROUP_OF = {}
-R_PASS = 0.95
+# The capture process: a unit records a defect it passes with probability R_PASS (a pothole on a bridge deck, among
+# the joints and the shadows of the rails, far less often; the sweepers' night passes, brushes down, less often still).
+# A freeway's carriageways are apart, so a unit sees a freeway defect only from its own carriageway; on every other
+# road the camera sees the whole width and records a defect from either direction.
+# Where a unit places what it records: the phone tags a detection with the GPS fix it holds when the detection is
+# written, LAT seconds (the unit's own, with a little jitter) after the frame was taken, so the detection sits ahead of
+# the defect along the direction of travel by the latency times the speed, plus the fix's own small error.
+Q_SEE = 0.97
+R_PASS = 0.92
+R_PASS_DECK = 0.30
+R_PASS_SWEEPER = 0.22
+LAT = (0.45, 1.75)           # each unit's latency, seconds
+JITTER = 0.012               # seconds
+FIX = 0.0003                 # miles
+OPP = 0.45                   # a defect across the centre line, against one in the unit's own lanes
+GAP = 0.06                   # potholes off a deck lie at least this far apart
+DECK_GAP = (0.0055, 0.0080)  # neighbouring potholes on a bridge deck
+COVER_GAP = 0.06             # utility covers in the state roadway lie at least this far apart along a route
+DECK_RUN = (5, 8)            # potholes in a deck's run
+PACE = (0.55, 1.20)          # a pass's speed against the road's usual speed
+LAT_STREAM = 0               # the latency draws' stream (tune.json)
 LINE = 6.0
 
 MARCH = [dt.date(2027, 3, d) for d in range(1, 32)]
@@ -43,22 +56,26 @@ DAY_RATE = 10.85
 
 # no, name, kind (U metro, S suburban, R rural), mean potholes per ten lane-miles, crew-truck reach, tuning centre
 SECTIONS = [
-    (403, "Carrow Point", "U", 9.0, 0.0, 9),
+    (403, "Carrow Point", "U", 8.0, 0.0, 8),
     (407, "Elmscourt", "U", 9.0, 0.0, 9),
     (411, "Rushmead", "U", 5.0, 0.0, 5),
-    (402, "Fenwick Gap", "S", 7.0, 0.40, 7),
+    (402, "Fenwick Gap", "S", 2.8, 0.40, 7),
     (409, "Thistlebank", "S", 8.0, 0.30, 8),
     (405, "Marlpit", "S", 4.0, 0.55, 4),
     (412, "Stonebeck", "S", 3.0, 0.45, 3),
     (414, "Pyke Hill", "S", 2.0, 0.50, 2),
     (401, "Holloway Run", "R", 8.0, 0.18, 8),
-    (406, "Kestrelton", "R", 7.0, 0.32, 7),
+    (406, "Kestrelton", "R", 2.6, 0.32, 7),
     (413, "Norvelle", "R", 8.0, 0.24, 8),
     (404, "Grisholt", "R", 4.0, 0.28, 4),
     (408, "Halverton", "R", 3.0, 0.27, 3),
     (410, "Oxbrae", "R", 4.0, 0.25, 4),
 ]
-SEC = {s[0]: dict(no=s[0], name=s[1], kind=s[2], target=s[3], reach=min(0.95, 2.0 * s[4]), whole=s[5]) for s in SECTIONS}
+# the share of a section's longer segments that carry a bridge deck with a run of potholes
+DECK = {403: 0.05, 407: 0.05, 411: 0.05, 402: 0.18, 409: 0.04, 405: 0.04, 412: 0.04, 414: 0.04, 401: 0.04, 406: 0.28,
+        413: 0.04, 404: 0.04, 408: 0.04, 410: 0.04}
+SEC = {s[0]: dict(no=s[0], name=s[1], kind=s[2], target=s[3], reach=s[4], whole=s[5], deck=DECK[s[0]])
+       for s in SECTIONS}
 ORDER = [s[0] for s in SECTIONS]
 
 ROUTES = {
@@ -122,7 +139,7 @@ def network():
         for rt, _ in routes:
             base = route_end.get(rt)
             start_mp[rt] = round(float(r.uniform(0.6, 9.0)) if base is None else base + float(r.uniform(1.5, 7.0)), 3)
-        heading = {rt: float(r.uniform(0, 2 * math.pi)) for rt, _ in routes}
+        heading = {rt: float(r.uniform(-math.pi / 4, 3 * math.pi / 4)) for rt, _ in routes}
         i = 0
         while lm < target:
             rt, cls = routes[i % len(routes)] if r.random() < 0.8 else routes[int(r.integers(len(routes)))]
@@ -234,8 +251,10 @@ def fleet(segs):
         vehicles.append(dict(veh="4-%d" % next(fleet_no), group="CREW", desc="International CV, %s" % crews[j].lower(),
                              home=None))
     late = {vehicles[k]["veh"] for k in (27, 29, 31, 33)}
+    rl = rng(4, LAT_STREAM)
     for v in vehicles:
         v["unit"] = "KV-%d" % next(serials)
+        v["lat"] = round(float(rl.uniform(*LAT)), 3)
         if v["veh"] in late:
             v["installed"] = dt.date(2027, 3, 9)
         else:
@@ -245,7 +264,6 @@ def fleet(segs):
     sw = [v for v in vehicles if v["group"] == "SWEEPER"]
     sw[1]["removed"] = dt.date(2027, 3, 25)
     sw[4]["removed"] = dt.date(2027, 3, 25)
-    GROUP_OF.update({v["unit"]: v["group"] for v in vehicles})
     return vehicles
 
 
@@ -260,7 +278,8 @@ def installed_at(v, t_utc):
 
 # -------------------------------------------------------------------------------------------- the driving
 def _dir(s, forward):
-    """The traversal's direction as the route's own cardinal pair: increasing milepost runs north or east."""
+    """The traversal's direction as the route's own cardinal pair: a route's mileposts increase northbound or
+    eastbound."""
     h = s["heading"] % (2 * math.pi)
     ns = abs(math.sin(h)) >= abs(math.cos(h))
     up = ("NB" if math.sin(h) >= 0 else "SB") if ns else ("EB" if math.cos(h) >= 0 else "WB")
@@ -273,7 +292,7 @@ def _trip(path, start_utc, speeds, r, out, veh):
     forward = len(path) < 2 or path[0]["bmp"] <= path[-1]["bmp"]
     t = start_utc
     for s in path:
-        mph = speeds[s["cls"]] * float(r.uniform(0.82, 1.12))
+        mph = speeds[s["cls"]] * float(r.uniform(*PACE))
         t2 = t + dt.timedelta(seconds=round(s["length"] / mph * 3600.0, 1))
         out.append(dict(veh=veh, seg=s["seg"], enter=t, exit=t2, dir=_dir(s, forward), fwd=forward))
         t = t2 + dt.timedelta(seconds=round(float(r.uniform(4, 40)), 1))
@@ -444,8 +463,17 @@ def looks_of(vehicles, trav):
     return looks
 
 
-def section_potholes(no, segs, looks, offset):
-    """The potholes on one section's segments and what each unit recorded of them; offset picks the stream."""
+def _sees(p, side, cls, r):
+    """Whether a pass that would record a defect in its own lanes records this one: a freeway defect only from its own
+    carriageway, a defect across the centre line of any other road less often than one in the unit's own lanes."""
+    if p["fwd"] == side:
+        return True
+    return cls != "FWY" and r.random() < OPP
+
+
+def section_potholes(no, segs, looks, offset, veh_group=None):
+    """The potholes on one section's segments and what each unit recorded of them; offset picks the stream. On a
+    bridge deck the potholes come in runs a few yards apart; elsewhere they lie well apart."""
     out = []
     for s in segs:
         if s["sec"] != no:
@@ -454,27 +482,46 @@ def section_potholes(no, segs, looks, offset):
         lam = SEC[no]["target"] / 10.0 * s["length"] * s["lanes"] * float(r.gamma(9.0, 1 / 9.0))
         n = int(r.poisson(lam))
         units = looks.get(s["seg"], {})
-        for i in range(n):
-            mp = round(float(r.uniform(s["bmp"] + 0.012, s["emp"] - 0.012)), 3)
+        swept = any(veh_group and veh_group.get(u) == "SWEEPER" for u in units)
+        deck = (not swept) and s["cls"] != "FWY" and r.random() < SEC[no].get("deck", 0.0) and s["length"] >= 0.3
+        mps = []
+        on_deck = set()
+        if deck:
+            k = int(r.integers(DECK_RUN[0], DECK_RUN[1] + 1))
+            n += k
+            x = float(r.uniform(s["bmp"] + 0.03, s["emp"] - 0.03 - DECK_RUN[1] * DECK_GAP[1]))
+            for j in range(k):
+                mps.append(round(x, 3))
+                on_deck.add(round(x, 3))
+                x += float(r.uniform(*DECK_GAP))
+        tries = 0
+        while len(mps) < n and tries < 400:
+            tries += 1
+            m = round(float(r.uniform(s["bmp"] + 0.03, s["emp"] - 0.03)), 3)
+            if all(abs(m - q) >= GAP for q in mps):
+                mps.append(m)
+        for mp in mps:
+            side = bool(r.random() < 0.5)
             seen = {}
-            fv = {}
             for u in sorted(units):
-                g = GROUP_OF.get(u, "X")
-                if g not in fv:
-                    fv[g] = r.random() < Q_SEE
-                vis = fv[g] and r.random() < UNIT_SEE
-                seen[u] = [p for p in units[u] if vis and r.random() < R_PASS]
-            out.append(dict(seg=s["seg"], sec=no, mp=mp, cls="pothole", real=True, seen=seen,
-                            severity=int(r.choice([1, 2, 3], p=[0.38, 0.44, 0.18]))))
+                vis = r.random() < Q_SEE
+                if veh_group and veh_group.get(u) == "SWEEPER":
+                    rp = R_PASS_SWEEPER
+                else:
+                    rp = R_PASS_DECK if mp in on_deck else R_PASS
+                seen[u] = [p for p in units[u] if vis and r.random() < rp and _sees(p, side, s["cls"], r)]
+            out.append(dict(seg=s["seg"], sec=no, mp=mp, cls="pothole", real=True, seen=seen, deck=mp in on_deck,
+                            side=side, severity=int(r.choice([1, 2, 3], p=[0.38, 0.44, 0.18]))))
     return out
 
 
 def other_defects(segs, looks):
     """Cracking, utility covers, old patches, edge breaks and debris: what the units also record."""
     out = []
+    covers_on = {}
     for s in segs:
         other = {"alligator_cracking": 0.9, "longitudinal_crack": 1.1,
-                 "utility_cover": 0.9 if s["cls"] in ("ART", "SUB") else 0.15, "patch": 0.8,
+                 "utility_cover": 3.2 if s["cls"] == "ART" else (1.6 if s["cls"] == "SUB" else 1.0), "patch": 0.8,
                  "edge_break": 0.6 if s["cls"] == "RUR" else 0.1, "debris": 0.25}
         r2 = rng(21, s["k"])
         units = looks.get(s["seg"], {})
@@ -482,12 +529,19 @@ def other_defects(segs, looks):
             m = int(r2.poisson(rate / 10.0 * s["length"] * s["lanes"]))
             for i in range(m):
                 mp = round(float(r2.uniform(s["bmp"] + 0.012, s["emp"] - 0.012)), 3)
+                if c == "utility_cover":
+                    # the state routes' covers lie well apart (vaults and valves sit off the traveled way at junctions)
+                    near = covers_on.setdefault(s["route"], [])
+                    if any(abs(mp - q) < COVER_GAP for q in near):
+                        continue
+                    near.append(mp)
+                side = bool(r2.random() < 0.5)
                 seen = {}
                 for u in sorted(units):
-                    vis = r2.random() < (0.62 if c != "debris" else 0.5)
-                    hits = [p for p in units[u] if vis and r2.random() < 0.93]
+                    vis = r2.random() < (0.62 if c not in ("debris", "utility_cover") else (0.5 if c == "debris" else 0.9))
+                    hits = [p for p in units[u] if vis and r2.random() < 0.93 and _sees(p, side, s["cls"], r2)]
                     seen[u] = hits[:1] if c == "debris" else hits
-                out.append(dict(seg=s["seg"], sec=s["sec"], mp=mp, cls=c, real=False, seen=seen, severity=1))
+                out.append(dict(seg=s["seg"], sec=s["sec"], mp=mp, cls=c, real=False, seen=seen, severity=1, side=side))
     return out
 
 
