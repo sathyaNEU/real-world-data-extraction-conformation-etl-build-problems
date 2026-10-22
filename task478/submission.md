@@ -20,7 +20,7 @@ Their state roadway held 9, 8, 8, 8, 8, 7 and 7 potholes per ten lane-miles in M
 3. Fitted each unit's latency on its utility_cover detections against the nearest surveyed cover on the same route in utility_cover_inventory_2026.csv (within 0.05 mile): the error along the direction of travel regressed through the origin on the pass's speed, 0.47 to 1.74 seconds.
 4. Moved each March pothole detection (district local time) back along its pass by its unit's latency times its pass's speed, sorted each route's corrected mileposts and joined a detection to the one before it when the gap was within 10 feet; each run of joined detections is one pothole.
 5. Placed each pothole on the 2026 segment holding its median corrected milepost and kept those on the roadway: 1,427 potholes; divided each section's count by its lane-miles over ten.
-6. Pounds of cold mix from mms_cold_patch_orders_2027-03.csv, COMPLETE orders finished in March: a multi-line order carrying one figure on every line counted it once where the figure is more than any single-line order used on a pothole of its lines' severities (the severity of the ext_ref detection; the mobile app's order total), and summed its lines otherwise.
+6. Pounds of cold mix from mms_cold_patch_orders_2027-03.csv, COMPLETE orders finished in March, each line on the section whose 2026 roadway holds its route milepost (program 3, the cold patches on the section's roadway, whichever section's crew made them): an order whose lines all carry one figure and one finished time counted that figure once (the data notes), every other line its own, a pothole patched twice on both of its orders.
 7. Designated the sections at 6.0 or more: Elmscourt, Thistlebank, Holloway Run, Carrow Point, Norvelle, Kestrelton and Fenwick Gap.
 
 ## 4. Deliverable Answers
@@ -58,20 +58,20 @@ Their state roadway held 9, 8, 8, 8, 8, 7 and 7 potholes per ten lane-miles in M
    - 413 Norvelle: Yes
    - 414 Pyke Hill: No
 3. Pounds of cold mix the section's March cold patches used:
-   - 401 Holloway Run: 1,620
-   - 402 Fenwick Gap: 1,220
-   - 403 Carrow Point: 3,925
-   - 404 Grisholt: 625
-   - 405 Marlpit: 1,115
-   - 406 Kestrelton: 1,485
-   - 407 Elmscourt: 4,360
-   - 408 Halverton: 635
-   - 409 Thistlebank: 2,135
-   - 410 Oxbrae: 395
-   - 411 Rushmead: 3,200
-   - 412 Stonebeck: 1,055
-   - 413 Norvelle: 1,345
-   - 414 Pyke Hill: 690
+   - 401 Holloway Run: 1,760
+   - 402 Fenwick Gap: 1,495
+   - 403 Carrow Point: 4,125
+   - 404 Grisholt: 640
+   - 405 Marlpit: 1,070
+   - 406 Kestrelton: 1,340
+   - 407 Elmscourt: 4,495
+   - 408 Halverton: 520
+   - 409 Thistlebank: 2,005
+   - 410 Oxbrae: 380
+   - 411 Rushmead: 3,125
+   - 412 Stonebeck: 1,060
+   - 413 Norvelle: 1,495
+   - 414 Pyke Hill: 625
 
 ### tamsett_spring_patching_task_orders_2027.pdf
 

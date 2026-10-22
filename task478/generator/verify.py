@@ -184,14 +184,17 @@ def main(target=None):
     for r in done:
         lines[r["wo_number"]].append(r)
     sev = {d["detection_id"]: d["severity"] for d in det if d["severity"]}
-    big = defaultdict(int)
-    for w, ls in lines.items():
-        if len(ls) == 1:
-            big[sev[ls[0]["ext_ref"]]] = max(big[sev[ls[0]["ext_ref"]]], int(ls[0]["cold_mix_lb"]))
+    segs = defaultdict(list)
+    for r in inv.values():
+        segs[r["route"]].append((float(r["begin_mp"]), float(r["end_mp"]), r["section"]))
+    sec_at = lambda x: next(s for lo, hi, s in segs[x["route"]] if lo <= float(x["milepost"]) <= hi)
     for w, ls in lines.items():
         vals = [int(x["cold_mix_lb"]) for x in ls]
-        total = len(ls) > 1 and len(set(vals)) == 1 and vals[0] > max(big[sev[x["ext_ref"]]] for x in ls)
-        lbs[ls[0]["section"]] += vals[0] if total else sum(vals)
+        if len(ls) > 1 and len(set(vals)) == 1 and len({x["finished"] for x in ls}) == 1:
+            lbs[sec_at(ls[0])] += vals[0]
+        else:
+            for x, v in zip(ls, vals):
+                lbs[sec_at(x)] += v
     ok("ask A pounds match", all(lbs[s] == by_no[s][1]["cold_mix_lb"] for s in by_no))
     # the golden CSV carries the same figures
     gc = rows(os.path.join(TASK, "golden", "tamsett_spring_patching_sections_2027.csv"))

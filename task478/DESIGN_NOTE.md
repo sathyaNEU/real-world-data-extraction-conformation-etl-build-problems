@@ -259,17 +259,22 @@ latency or earlier designation ships.
 The program's section 3 puts each section's March cold patches, with the cold mix they used, on its task order. The ask
 reads no row the call reads (the work orders sit outside the call's population, asserted).
 
-- **Ask A, cold mix pounds by section: 14 figures.** Path: the work orders, the detections (each ext_ref's severity),
-  the program. Device A1 (D6, primary): the crews' mobile app writes the order's total pounds on every line of a
-  multi-line order, while office orders carry each line's own pounds and crews often enter one figure for like potholes
-  on an office order (every section has one), so summing the lines counts a mobile order's pounds once per line and
-  taking every repeated figure once loses the office orders' like lines; only the detections' severity shows which is
-  which. Every multi-line order keeps to one route, and every repeated figure reads one way only (above every single
-  order of its severities, or below its lines' least figures summed). Hazards: open orders, the March finish window.
-  Stops: lines summed (the natural read and the cracker); every repeated figure once; the golden. Held against every
-  reader across architectures 1 to 4 (architecture 4's readers A and B kept 0 of 14).
+- **Ask A, cold mix pounds by section: 14 figures.** Path: the work orders, the 2026 inventory and the program. The
+  program files the population: each task order lists the cold patches made in March on the section's roadway. Device
+  A2 (D7, the true key elsewhere, primary): a crew also takes potholes just inside the next section on a route the two
+  share (35 per cent of those within 2.5 miles of the boundary, every section involved), and an order's section column
+  is the section whose crew it went to, so taking each line on its order's section moves every section's pounds; only
+  the line's route milepost placed on the 2026 roadway gives the section the patch is on. Nothing marks a crossing line
+  (they sit on single, office and repeat orders and on every section's crews). Hazard A1, now filed: the data notes say
+  that where a crew closes all of an order's lines together it enters the order's pounds once and the export repeats
+  them on each line; the app orders (48, one close time, a figure of 125 lb or more against 110 at most on a single
+  line) and the office orders whose like potholes carry one figure each on its own close time (a third of two-line
+  office orders) punish summing every line and taking every repeated figure once. An app order's lines lie on one
+  section's roadway, so its one figure is never split. Hazards: open orders, a pothole patched twice (a line on each
+  of its orders, as the data notes say). Stops: each line on its order's section (the natural read, the cracker and the
+  mirror); every line summed; every repeated figure once; the golden.
 
-| Ask | Cracker (lands the call; lines summed) | Mirror (the default path; the ask read the natural way) |
+| Ask | Cracker (lands the call; the order entry read right, each line on its order's section) | Mirror (the default path; the ask read the same way) |
 |---|---|---|
 | A, cold mix pounds by section (14) | miss | miss |
 
@@ -293,6 +298,22 @@ Measured by: generator/ceiling.py
   business; none says a detection sits ahead of its pothole, names a latency or tells how to link detections (asserted
   in checks.py).
 - **House fixes.** Container metadata scrubbed; the manifest registers every file but itself.
+- **Stage 4 readers.** Eight isolated readers over four rounds (leak_check_report.md): seven missed the call (the five,
+  nine, eleven or twelve sections, every one from clustering detections as Kerbline placed them, at a distance or by
+  pass), and reader F landed it by fitting each unit's lag from the detections' offsets inside rough clusters on the
+  pass's signed speed, the latency correction itself found from the data, not from any sentence. With the three judge
+  threads' first derivations, eight of nine cold threads missed. No reader found a decisive-step sentence, a helping
+  file or a main-call fork; question 6 analytical from all eight. Ask A, with the order entry filed, holds the readers
+  who neither read the data notes nor place a patch on its roadway (D and F kept none; C, E, G and H all fourteen).
+- **Stage 4 judge.** Five threads over the ask repairs (determinism_check_report_v4.md to v4e.md): r4a to r4d each found ask A open and nothing else (G and H PASS); r4e on the last pack DETERMINISTIC and APPROVE, every figure reproduced, Gate G method_or_model_selection and analytical_non_defect, Gate H pass.
+
+## Architecture 4 record (spent 2026-10-22)
+
+Architecture 4 resolved Kerbline's detections into potholes after moving each one back along its pass by its unit's
+GPS latency, fitted on the surveyed utility covers, times the pass's speed. Over four stage 4 rounds seven of eight
+readers missed the call, and reader F (round 3) landed it by fitting each unit's lag from the detections' offsets
+inside rough clusters on the pass's signed speed; the judge's last pass (r4e) was DETERMINISTIC and APPROVE. A call any
+reader lands is spent (leak-check), so the architecture is spent.
 
 ## Architecture 3 record (spent 2026-10-21)
 
@@ -314,6 +335,30 @@ scattered reports into the precise units' potholes. Judge APPROVE (v2).
 
 ## Tried and rejected
 
+- Architecture 4, potholes resolved after a per-unit GPS latency fitted on surveyed covers (2026-10-22, spent at stage
+  4): reader F fitted each unit's lag from the offsets of its detections inside rough clusters, regressed on the pass's
+  signed speed, and landed the call exactly (1,441 potholes, 1,427 on the roadway); seven other readers and the judges'
+  first derivations missed. A displacement proportional to speed is identifiable from the clusters themselves once
+  passes at different speeds see one pothole, so the covers are a convenience, not the only route.
+- 2026-10-22, architecture 4 stage 4 (r4d): the section yards' stores, added to make summing an app order's lines
+  impossible, became an oracle (reader E: each crew-day's use rounded up to the bag reproduced every net draw) and a
+  third reading (the judge read the net draws as the pounds used); the judge again asked for the order entry to be
+  filed. The stores file is gone, the order entry is filed in the data notes, and the device moves to the roadway:
+  the program lists the cold patches on the section's roadway and an order's section column is its crew's.
+- 2026-10-22, architecture 4 stage 4 (r4c): with the app order's one close time and its figure above any single-line
+  order, the re-judge still read the convention as an inference the data favours ("no shipped document says so") and
+  asked for a filed sentence (FIX_NOW on ask 3 only), while reader C found it from the close times and kept 14 of 14
+  and reader D took every repeated figure once and kept none. A filed sentence turns the ask into a work order (the
+  mirror keeps it whole); the section yards' stores now make the summed reading impossible instead. A pothole-count ask
+  added for weight was reverted the same hour: the call's own construction, so the cracker banks it (pair 28.5 to
+  44.2).
+- 2026-10-22, architecture 4 stage 4 (r4b): the cold-mix convention rested on the single-line orders' figures by
+  severity, a fitted range no shipped text states, and one like-potholes figure (WO-27004552, 60 lb on two severity-3
+  lines) sat at its severity's least: the re-judge found ask 3 open in every section (Gate C on that ask only; the main
+  call, asks 1 and 2 and the chart deterministic, G and H passing, so no architecture spent). The app now closes an
+  order's lines at one time with a figure above any single-line order, and the office keys each line's own close, so the
+  data separates the readings without a model; like potholes carry one figure on a third of two-line office orders, not
+  half.
 - 2026-10-22, architecture 4 stage 4: the cold-mix ask's office orders sometimes carried one figure on two lines
   that could also be read as their total (WO-27004908, 60 lb on two severity-2 potholes, a crew's like figure or the
   two lines' own draws coming out equal): the judge (r4a) found the one ask figure open (Gate C); an office order's

@@ -6,6 +6,7 @@ sweep and the documents read back.
     python3 task478/generator/checks.py
 """
 import csv
+import datetime as dt
 import json
 import os
 import re
@@ -231,36 +232,54 @@ def main():
     by_wo = defaultdict(list)
     for r in p["wo"]:
         by_wo[r["wo_number"]].append(r)
+    done = {w: ls for w, ls in by_wo.items() if all(l["status"] == "COMPLETE" for l in ls)}
     truth_mobile = {"WO-%d" % o["wo"] for o in e["orders"] if o["mobile"] and len(o["lines"]) > 1}
-    rep = {w for w, ls in by_wo.items() if len(ls) > 1 and len({l["cold_mix_lb"] for l in ls}) == 1
-           and all(l["status"] == "COMPLETE" for l in ls)}
-    check("A1 fair: the repeated figures above every single-line order on their severities are exactly the mobile "
-          "app's totals (%d of %d repeated-figure orders)" % (len(truth_mobile & rep), len(rep)),
-          M.total_orders(p) == {w for w in truth_mobile if w in rep})
+    check("A1 fair: the orders taken once are exactly the mobile app's multi-line orders (%d)" % len(truth_mobile & set(done)),
+          M.total_orders(p) == {w for w in truth_mobile if w in done})
+    single_top = max(int(ls[0]["cold_mix_lb"]) for ls in done.values() if len(ls) == 1)
+    app_least = min(int(done[w][0]["cold_mix_lb"]) for w in truth_mobile if w in done)
+    check("A1 fair: every app order's one figure (least %d) is more than any single-line order used (%d), by 15 lb or more"
+          % (app_least, single_top), app_least >= single_top + 15)
+    check("A1 fair: every app order's lines carry one figure and one close",
+          all(len({l["cold_mix_lb"] for l in done[w]}) == 1 and len({l["finished"] for l in done[w]}) == 1
+              for w in truth_mobile if w in done))
+    office_multi = [w for w, ls in done.items() if len(ls) > 1 and w not in truth_mobile]
+    check("A1 fair: every office multi-line order's lines carry their own close times (%d orders)" % len(office_multi),
+          all(len({l["finished"] for l in done[w]}) == len(done[w]) for w in office_multi))
+    like = {w for w in office_multi if len({l["cold_mix_lb"] for l in done[w]}) == 1}
+    on_road = lambda w: {M.section_at(p)(r["route"], float(r["milepost"])) for r in done[w]}
+    check("A1 every section's roadway has an app order and an office order carrying one figure on like potholes",
+          all(any(on_road(w) == {s} for w in truth_mobile if w in done) and any(on_road(w) == {s} for w in like)
+              for s in ORDER))
+    two_line = [w for w in office_multi if len(done[w]) == 2]
+    check("A1 realism: like potholes' one figure on %d of %d two-line office orders, under half"
+          % (sum(1 for w in two_line if w in like), len(two_line)),
+          sum(1 for w in two_line if w in like) < 0.5 * max(1, len(two_line)))
     check("A1 no route marker: every multi-line order keeps to one route",
           all(len({l["route"] for l in ls}) == 1 for ls in by_wo.values()))
-    sev_of = {d["detection_id"]: int(d["severity"]) for d in p["det"] if d["severity"]}
-    singles = defaultdict(list)
-    for ls in by_wo.values():
-        if len(ls) == 1 and ls[0]["cold_mix_lb"]:
-            singles[sev_of[ls[0]["ext_ref"]]].append(int(ls[0]["cold_mix_lb"]))
-    two_ways = []
-    for w, ls in by_wo.items():
-        if len(ls) > 1 and all(l["cold_mix_lb"] for l in ls) and len({l["cold_mix_lb"] for l in ls}) == 1:
-            v, sv = int(ls[0]["cold_mix_lb"]), [sev_of[l["ext_ref"]] for l in ls]
-            as_total = v > max(max(singles[x]) for x in sv)
-            as_lines = v < sum(min(singles[x]) for x in sv)
-            if as_total == as_lines:
-                two_ways.append(w)
-    check("A1 fair: every repeated figure reads one way only, above every single-line order of its lines' severities "
-          "(a total) or below their least single-line figures summed (each line's own) (%d read both ways)" % len(two_ways),
-          not two_ways)
     det_ids = {d["detection_id"] for d in p["det"] if d["defect_class"] == "pothole" and d["severity"]}
     check("A1 fair: every order's ext_ref is a pothole detection carrying a severity",
           all(r["ext_ref"] in det_ids for r in p["wo"]))
+    at = M.section_at(p)
+    cross = [r for ls in done.values() for r in ls if at(r["route"], float(r["milepost"])) != int(r["section"])]
+    check("A2 every section's pounds move when each line is taken on its order's section, not its roadway's (%d lines "
+          "made on the next section's roadway)" % len(cross),
+          all(M.ask_pounds(p, by="order").get(s, 0) != gA.get(s, 0) for s in ORDER))
+    tb = [(p["inv"][t]["route"], p["inv"][t]["bmp"], p["inv"][t]["emp"]) for t in p["turnback"]]
+    on_tb = lambda r: any(r["route"] == rt and lo <= float(r["milepost"]) <= hi for rt, lo, hi in tb)
+    check("A2 fair: every line's milepost lies on one section's 2026 roadway, never on a turned-back segment",
+          all(at(r["route"], float(r["milepost"])) is not None and not on_tb(r) for ls in done.values() for r in ls))
+    check("A2 fair: an app order's lines lie on one section's roadway (its one figure is never split)",
+          all(len({at(r["route"], float(r["milepost"])) for r in done[w]}) == 1 for w in truth_mobile if w in done))
+    check("A2 no marker: the next section's lines sit on both kinds of order and on every section's crews",
+          {int(r["section"]) for r in cross} == set(ORDER) or len({int(r["section"]) for r in cross}) >= 10)
+    fam = M.family(p, g)
+    check("A2 the pothole counts are forced: every licensed member gives every section the golden's count (%d members)"
+          % len(fam), all(abs(v[s] - g["est"][s]) < 1e-9 for v in fam.values() for s in ORDER))
     check("A golden equals the generator's truth (pounds used)",
-          all(gA.get(s, 0) == sum(l["true_lb"] for l in e["wo_rows"] if l["sec"] == s and l["status"] == "COMPLETE"
-                                  and l["finish"] is not None and W.local(l["finish"]).month == 3) for s in ORDER))
+          all(gA.get(s, 0) == sum(l["true_lb"] for l in e["wo_rows"] if e["S"][l["defect"]["seg"]]["sec"] == s
+                                  and l["status"] == "COMPLETE" and l["finish"] is not None
+                                  and W.local(l["finish"]).month == 3) for s in ORDER))
     import ceiling as CE
     pair, leak, kept_c, kept_m = CE.main(TARGET)
     check("ceiling: the cracker keeps no ask figure, the mirror none, pair %.1f under 40" % pair,

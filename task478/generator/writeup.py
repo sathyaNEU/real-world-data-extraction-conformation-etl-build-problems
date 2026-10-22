@@ -62,10 +62,10 @@ def main():
         "was within %d feet; each run of joined detections is one pothole." % c["link_ft"],
         "Placed each pothole on the 2026 segment holding its median corrected milepost and kept those on the roadway: "
         "{:,} potholes; divided each section's count by its lane-miles over ten.".format(c["potholes"]),
-        "Pounds of cold mix from mms_cold_patch_orders_2027-03.csv, COMPLETE orders finished in March: a multi-line order "
-        "carrying one figure on every line counted it once where the figure is more than any single-line order used on a "
-        "pothole of its lines' severities (the severity of the ext_ref detection; the mobile app's order total), and "
-        "summed its lines otherwise.",
+        "Pounds of cold mix from mms_cold_patch_orders_2027-03.csv, COMPLETE orders finished in March, each line on the "
+        "section whose 2026 roadway holds its route milepost (program 3, the cold patches on the section's roadway, "
+        "whichever section's crew made them): an order whose lines all carry one figure and one finished time counted "
+        "that figure once (the data notes), every other line its own, a pothole patched twice on both of its orders.",
         "Designated the sections at %.1f or more: %s." % (f["line"], join(des)),
     ]
     for i, s in enumerate(steps, 1):

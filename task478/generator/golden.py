@@ -204,7 +204,7 @@ def write_pdf(path, f):
         Paragraph("Sections", head),
         t,
         Paragraph("Source: Kerbline detections (2 April), utility cover inventory (2026 survey), 2026 road inventory, MMS "
-                  "work orders (PCOLD). Cold mix counts a mobile-app order's pounds once rather than on every line.", note),
+                  "work orders (PCOLD). Cold mix is by the roadway the patch is on, whichever section's crew made it.", note),
         Spacer(1, 6),
         Paragraph("<super>1</super> Program 2.4. The five SR 11 segments in Elmscourt that passed to the City on 15 March "
                   "(route turnback notice of 1 March) are not state roadway at 31 March and are left out, potholes and "

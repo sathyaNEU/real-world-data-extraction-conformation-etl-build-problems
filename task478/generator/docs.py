@@ -66,7 +66,8 @@ def write_program(path):
          Paragraph("3. Task orders", HEAD),
          Paragraph("The task orders issue on 19 April 2027 and the crews start on 3 May 2027. A designated section's "
                    "task order names its yard as the crew's base and lists the section's state routes. Each task order "
-                   "also lists the section's March cold patches, for replacement, with the cold mix they used.", BODY),
+                   "also lists the cold patches made in March on the section's roadway, for replacement, with the cold mix they "
+                   "used.", BODY),
          Paragraph("4. The March 2027 detection campaign", HEAD),
          Paragraph("From 1 to 31 March 2027 the district ran Kerbline Vision camera units on its section patrol pickups, "
                    "freeway service patrol trucks, street sweepers and district crew trucks under the pilot scope of "
@@ -166,8 +167,11 @@ def write_dictionary(path, n):
          "The 2025 segments that the 2026 release split or merged, with the 2026 segments they became."),
         (F["orders"], n["orders"],
          "One row per task line of a cold patch work order (activity PCOLD) raised in March. ext_ref is the Kerbline detection "
-         "the order was raised from. raised and finished are district local time. cold_mix_lb is the cold mix "
-         "pounds as entered. status is COMPLETE or OPEN at the extract."),
+         "the order was raised from; a pothole cold patched again has a line on each of its orders. raised is when the "
+         "order was raised and finished when the task line was closed, both district local time. cold_mix_lb is the "
+         "cold mix pounds as entered: where a crew closes all of an order's lines together it enters the order's "
+         "pounds once, and the export repeats them on each of the order's lines. status is COMPLETE or OPEN at the "
+         "extract."),
         (F["pci"], n["pci"],
          "The 2026 pavement condition survey: one row per segment, with the survey date, roughness (IRI), rut depth, "
          "cracking and the pavement condition index."),

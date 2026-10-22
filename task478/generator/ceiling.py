@@ -1,9 +1,9 @@
 """The pair ceiling on the cut pack (supplemental-stumping Part 0, on its 38, 7 and 55 weights).
 
-The cracker lands the call, runs the hygiene battery and executes every filed rule it is pointed at: it sums each
-line's pounds (no rule says a line can carry its order's total). The mirror stops at the default path (one linking
-distance, 200 feet, for every detection as Kerbline placed it) and reads every ask the natural way. A hit is a figure
-inside half a unit of its stated rounding.
+The cracker lands the call, runs the hygiene battery and executes every filed rule it is pointed at: it takes an order's
+one entry once, as the data notes say, and puts each line on its order's section. The mirror stops at the default path
+(one linking distance, 200 feet, for every detection as Kerbline placed it) and reads every ask the same natural way. A
+hit is a figure inside half a unit of its stated rounding.
 
     python3 task478/generator/ceiling.py [target]
 """
@@ -21,7 +21,8 @@ W_REC, W_IF, W_ASK, R_WRONG = 38.0, 7.0, 55.0, 5.0
 
 
 def figures(p, route):
-    """Every graded figure under one route: the call, the fourteen whole-number figures and the 28 ask figures."""
+    """Every graded figure under one route: the call, the fourteen whole-number figures and the 14 ask figures (the
+    fourteen sections' pounds of cold mix)."""
     g = M.golden(p)
     out = {}
     if route == "golden" or route == "cracker":
@@ -34,10 +35,9 @@ def figures(p, route):
         out["est_%d" % s] = int(est[s] + 0.5)
     if route == "golden":
         a = M.ask_pounds(p)
-    elif route == "cracker":
-        a = M.ask_pounds(p, pounds="lines")
     else:
-        a = M.ask_pounds(p, pounds="lines")
+        # the data notes' order entry read right, each line on its order's section
+        a = M.ask_pounds(p, by="order")
     for s in ORDER:
         out["A_lb_%d" % s] = a.get(s, 0)
     return out

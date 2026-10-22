@@ -268,7 +268,12 @@ def service_days(e, start_only=False, utc=False, bench=False, listed_only=False)
 
 # ------------------------------------------------------------------------------------------------ work orders
 BAND = {1: 40, 2: 66, 3: 112}
-FLOOR = {1: 20, 2: 30, 3: 60}      # the least a crew enters for one pothole of each severity
+TOP = {1: 40, 2: 65, 3: 110}       # the most a crew enters for one pothole of each severity
+FLOOR = {1: 20, 2: 30, 3: 60}      # the least
+MOBILE_MIN = 125                   # the app's one figure for a multi-line order: more than any one pothole takes
+LIKE_SHARE = 0.35                  # office orders of like potholes carrying one figure
+CROSS_MI = 2.5                     # how far inside the next section a crew takes a pothole on a shared route
+CROSS_SHARE = 0.35                 # the share of such potholes the neighbouring section's crew takes
 
 
 def _like(lines, sev):
@@ -278,9 +283,62 @@ def _like(lines, sev):
     return min(v, len(lines) * FLOOR[sev] - 5)
 
 
+def _boundary_neighbours(S):
+    """near(route, sec, mp): the section whose roadway on the route begins or ends within CROSS_MI of the milepost on
+    the far side of the section's own end, or None."""
+    ext = {}
+    for s in S.values():
+        k = (s["route"], s["sec"])
+        lo, hi = ext.get(k, (s["bmp"], s["emp"]))
+        ext[k] = (min(lo, s["bmp"]), max(hi, s["emp"]))
+    by_route = {}
+    for (route, sec), (lo, hi) in ext.items():
+        by_route.setdefault(route, []).append((lo, hi, sec))
+    for v in by_route.values():
+        v.sort()
+
+    def near(route, sec, mp):
+        v = by_route.get(route, [])
+        for i, (lo, hi, s) in enumerate(v):
+            if s != sec or not lo <= mp <= hi:
+                continue
+            if i + 1 < len(v) and hi - mp <= CROSS_MI:
+                return v[i + 1][2]
+            if i > 0 and mp - lo <= CROSS_MI:
+                return v[i - 1][2]
+        return None
+    return near
+
+
+def _office_closes(o, r):
+    """Close times for an office order's lines, one a crew-reported time in working hours between the order's raising
+    and its finish, the last line at the finish, every line on its own minute."""
+    n = len(o["lines"])
+    lo = W.local(o["raised"]).replace(second=0, microsecond=0) + dt.timedelta(minutes=20)
+    hi = W.local(o["finish"]).replace(second=0, microsecond=0) - dt.timedelta(minutes=12)
+    slots, t = [], lo
+    while t <= hi:
+        if t.weekday() < 5 and 7 <= t.hour < 15:
+            slots.append(t)
+        t += dt.timedelta(minutes=1)
+    fin = W.local(o["finish"]).replace(second=0, microsecond=0)
+    if len(slots) >= 15 * (n - 1):
+        for _ in range(40):
+            pick = sorted(int(i) for i in r.choice(len(slots), size=n - 1, replace=False))
+            if all(b - a >= 15 for a, b in zip(pick, pick[1:])):
+                break
+        else:
+            pick = [k * len(slots) // n for k in range(1, n)]
+        times = [slots[i] for i in pick]
+    else:
+        times = [fin - dt.timedelta(minutes=9 * (n - 1 - k) + 9) for k in range(n - 1)]
+    return [x.astimezone(W.UTC) for x in times] + [o["finish"]]
+
+
 def work_orders(e):
-    """MMS cold patch work orders raised from the review queue in March. Office orders carry each line's own
-    pounds and hours; the crews' mobile app writes the order's total pounds on every line."""
+    """MMS cold patch work orders raised from the review queue in March. The office keys each task line's own pounds
+    and close time; the crews' mobile app takes one figure for the order and closes its lines at once, so the export
+    carries the order's pounds and close on each of its lines."""
     r = W.rng(33)
     rq = W.rng(38)
     for d in e["defects"]:
@@ -295,12 +353,15 @@ def work_orders(e):
             continue
         if r.random() < p_cls[s["cls"]]:
             picks.append(d)
-    # crews: two per section
+    # crews: two per section; a crew also takes potholes just inside the next section on a route the two share
+    near = _boundary_neighbours(e["S"])
     jobs = []
     for d in picks:
         s = e["S"][d["seg"]]
         raised = d["reviewed"] + dt.timedelta(minutes=float(r.uniform(6, 95)))
-        jobs.append(dict(d=d, sec=s["sec"], route=s["route"], raised=raised, attempt=1))
+        nb = near(s["route"], s["sec"], d["mp"])
+        crew_sec = nb if nb is not None and r.random() < CROSS_SHARE else s["sec"]
+        jobs.append(dict(d=d, sec=crew_sec, route=s["route"], raised=raised, attempt=1))
     # failed cold patches come back: a second order a few days after the first was finished
     out = []
     wo = 27004210
@@ -353,74 +414,79 @@ def work_orders(e):
         sev = x["d"]["src"]["severity"]
         x["lb"] = int(5 * round(float(r.uniform(*{1: (18, 40), 2: (32, 66), 3: (58, 112)}[sev])) / 5))
         orders.append(o)
-    # every section has a multi-line mobile order: where none came of the day's queue, the crew took the
-    # section's next two first-attempt potholes on one order
+    sev_of = lambda l: l["d"]["src"]["severity"]
+    cap = lambda ls: sum(TOP[sev_of(l)] for l in ls)
+    on = lambda o: {e["S"][l["d"]["seg"]]["sec"] for l in o["lines"]}     # the sections whose roadway the lines are on
+    # every section has a multi-line mobile order whose one figure is more than any pothole takes on its own: where
+    # none came of the day's queue, the crew took the section's next first-attempt potholes on one route on one order
     for no in W.ORDER:
-        if any(o["sec"] == no and o["mobile"] and len(o["lines"]) >= 2 for o in orders):
+        if any(on(o) == {no} and o["mobile"] and len(o["lines"]) >= 2 and cap(o["lines"]) >= MOBILE_MIN
+               for o in orders):
             continue
-        multi = [o for o in orders if o["sec"] == no and len(o["lines"]) >= 2]
+        multi = [o for o in orders if on(o) == {no} and len(o["lines"]) >= 2 and cap(o["lines"]) >= MOBILE_MIN]
         if multi:
             multi[0]["mobile"] = True
             continue
         singles = sorted([o for o in orders if o["sec"] == no and len(o["lines"]) == 1
-                          and o["lines"][0]["attempt"] == 1], key=lambda o: o["raised"])
-        while len(singles) < 2:
-            # a confirmed pothole of the section with no order yet gets one
+                          and o["lines"][0]["attempt"] == 1 and e["S"][o["lines"][0]["d"]["seg"]]["sec"] == no],
+                         key=lambda o: (o["raised"], o["lines"][0]["d"]["id"]))
+        taken = None
+        for route in sorted({o["lines"][0]["route"] for o in singles},
+                            key=lambda rt: min(o["raised"] for o in singles if o["lines"][0]["route"] == rt)):
+            run = []
+            for o in singles:
+                if o["lines"][0]["route"] == route and len(run) < 4:
+                    run.append(o)
+                    if len(run) >= 2 and cap([x["lines"][0] for x in run]) >= MOBILE_MIN:
+                        taken = run
+                        break
+            if taken:
+                break
+        if taken is None:
+            # the section's next confirmed potholes with no order yet, on the route of its first single, go on one order
             pool = sorted([d for d in conf if e["S"][d["seg"]]["sec"] == no
                            and d["reviewed"] < W.utc_of(dt.date(2027, 3, 26), 12)
                            and not any(l["d"] is d for o_ in orders for l in o_["lines"])],
                           key=lambda d: (d["reviewed"], d["id"]))
-            d = pool[0]
-            line = dict(d=d, sec=no, route=e["S"][d["seg"]]["route"], attempt=1,
-                        raised=d["reviewed"] + dt.timedelta(minutes=float(r.uniform(6, 95))))
-            sev = d["src"]["severity"]
-            line["lb"] = int(5 * round(float(r.uniform(*{1: (18, 40), 2: (32, 66), 3: (58, 112)}[sev])) / 5))
-            o = dict(lines=[line], mobile=True, sec=no, raised=line["raised"])
-            o["finish"] = finish_after(line["raised"], float(r.uniform(3.0, 30.0)))
-            o["crew"] = "%d-%s" % (no, "AB"[int(r.integers(2))])
-            o["crew_size"] = int(r.choice([2, 3], p=[0.55, 0.45]))
-            orders.append(o)
-            singles = sorted([o for o in orders if o["sec"] == no and len(o["lines"]) == 1
-                              and o["lines"][0]["attempt"] == 1], key=lambda o: o["raised"])
-        two = next(((a, b) for i, a in enumerate(singles) for b in singles[i + 1:]
-                    if a["lines"][0]["route"] == b["lines"][0]["route"]), None)
-        if two is None:
-            # the section's next first-attempt pothole on the first single's route goes on its order
-            a = singles[0]
-            pool = sorted([d for d in conf if e["S"][d["seg"]]["sec"] == no and d["route"] == a["lines"][0]["route"]
-                           and d["reviewed"] < W.utc_of(dt.date(2027, 3, 26), 12)
-                           and not any(l["d"] is d for o_ in orders for l in o_["lines"])],
-                          key=lambda d: (d["reviewed"], d["id"]))
-            d = pool[0]
-            line = dict(d=d, sec=no, route=d["route"], attempt=1,
-                        raised=d["reviewed"] + dt.timedelta(minutes=float(r.uniform(6, 95))))
-            line["lb"] = int(5 * round(float(r.uniform(*{1: (18, 40), 2: (32, 66), 3: (58, 112)}[d["src"]["severity"]])) / 5))
-            b = dict(lines=[line], mobile=True, sec=no, raised=line["raised"])
-            b["finish"] = finish_after(line["raised"], float(r.uniform(3.0, 30.0)))
-            orders.append(b)
-            two = (a, b)
-        a, b = two
-        a["lines"] = a["lines"] + b["lines"]
+            route = singles[0]["lines"][0]["route"] if singles else e["S"][pool[0]["seg"]]["route"]
+            pool = [d for d in pool if e["S"][d["seg"]]["route"] == route]
+            run = [o for o in singles if o["lines"][0]["route"] == route][:1]
+            for d in pool:
+                if len(run) >= 2 and cap([x["lines"][0] for x in run]) >= MOBILE_MIN:
+                    break
+                line = dict(d=d, sec=no, route=e["S"][d["seg"]]["route"], attempt=1,
+                            raised=d["reviewed"] + dt.timedelta(minutes=float(r.uniform(6, 95))))
+                line["lb"] = int(5 * round(float(r.uniform(*{1: (18, 40), 2: (32, 66), 3: (58, 112)}[sev_of(line)])) / 5))
+                o = dict(lines=[line], mobile=True, sec=no, raised=line["raised"])
+                o["finish"] = finish_after(line["raised"], float(r.uniform(3.0, 30.0)))
+                o["crew"] = "%d-%s" % (no, "AB"[int(r.integers(2))])
+                o["crew_size"] = int(r.choice([2, 3], p=[0.55, 0.45]))
+                orders.append(o)
+                run.append(o)
+            taken = run
+        a = taken[0]
+        for b in taken[1:]:
+            a["lines"] = a["lines"] + b["lines"]
+            a["raised"] = max(a["raised"], b["raised"])
+            a["finish"] = max(a["finish"], b["finish"])
+            orders.remove(b)
         a["mobile"] = True
-        a["raised"] = max(a["raised"], b["raised"])
-        a["finish"] = max(a["finish"], b["finish"])
-        orders.remove(b)
-    # crews often enter one figure for like potholes on an office order; the mobile app's repeated total is more
-    # than any one pothole of its lines' severities takes
-    sev_of = lambda l: l["d"]["src"]["severity"]
+    # crews often enter one figure for like potholes on an office order; the mobile app's one figure for an order is
+    # more than any single pothole takes
     for o in orders:
         if len(o["lines"]) < 2:
             continue
+        if o["mobile"] and len({e["S"][l["d"]["seg"]]["sec"] for l in o["lines"]}) > 1:
+            o["mobile"] = False
         if o["mobile"]:
-            top = max(BAND[sev_of(l)] for l in o["lines"])
-            while sum(l["lb"] for l in o["lines"]) <= top:
+            while sum(l["lb"] for l in o["lines"]) < MOBILE_MIN:
                 room = [l for l in o["lines"] if l["lb"] + 5 <= BAND[sev_of(l)]]
                 if not room:
                     break
                 min(room, key=lambda l: (l["lb"] - BAND[sev_of(l)], l["d"]["id"]))["lb"] += 5
-            if sum(l["lb"] for l in o["lines"]) <= top:
+            if sum(l["lb"] for l in o["lines"]) < MOBILE_MIN:
                 o["mobile"] = False
-        if not o["mobile"] and len({sev_of(l) for l in o["lines"]}) == 1 and r.random() < 0.7:
+        if not o["mobile"] and len({sev_of(l) for l in o["lines"]}) == 1 and r.random() < LIKE_SHARE:
             v = _like(o["lines"], sev_of(o["lines"][0]))
             for l in o["lines"]:
                 l["lb"] = v
@@ -429,16 +495,16 @@ def work_orders(e):
         def like(o):
             return (not o["mobile"] and len(o["lines"]) >= 2 and len({l["lb"] for l in o["lines"]}) == 1
                     and o["finish"] < W.utc_of(dt.date(2027, 3, 31), 12))
-        if any(o["sec"] == no and like(o) for o in orders):
+        if any(on(o) == {no} and like(o) for o in orders):
             continue
-        multi = [o for o in orders if o["sec"] == no and not o["mobile"] and len(o["lines"]) >= 2
+        multi = [o for o in orders if on(o) == {no} and not o["mobile"] and len(o["lines"]) >= 2
                  and len({sev_of(l) for l in o["lines"]}) == 1 and o["finish"] < W.utc_of(dt.date(2027, 3, 31), 12)]
         if multi:
             v = _like(multi[0]["lines"], sev_of(multi[0]["lines"][0]))
             for l in multi[0]["lines"]:
                 l["lb"] = v
             continue
-        singles = sorted([o for o in orders if o["sec"] == no and len(o["lines"]) == 1
+        singles = sorted([o for o in orders if o["sec"] == no and on(o) == {no} and len(o["lines"]) == 1
                           and o["lines"][0]["attempt"] == 1 and o["finish"] < W.utc_of(dt.date(2027, 3, 29), 12)
                           and not any(x["d"] is o["lines"][0]["d"] for x in second)],
                          key=lambda o: (o["raised"], o["lines"][0]["d"]["id"]))
@@ -491,6 +557,36 @@ def work_orders(e):
             v = _like(o["lines"], sev_of(o["lines"][0]))
             for l in o["lines"]:
                 l["lb"] = v
+    # every section has a March cold patch that the next section's crew made on its roadway, or one its own crew made
+    # on the next section's: where none came of the queue, a single office order near the boundary went to the neighbour
+    loc = lambda l: e["S"][l["d"]["seg"]]["sec"]
+    march = lambda o: o["finish"] < W.utc_of(dt.date(2027, 3, 31), 12)
+    for no in W.ORDER:
+        if any(march(o) and any(loc(l) != o["sec"] and no in (loc(l), o["sec"]) for l in o["lines"]) for o in orders):
+            continue
+        single = lambda o: march(o) and not o["mobile"] and len(o["lines"]) == 1
+        own = sorted([o for o in orders if single(o) and o["sec"] == no == loc(o["lines"][0])
+                      and near(o["lines"][0]["route"], no, o["lines"][0]["d"]["mp"]) is not None],
+                     key=lambda o: (o["raised"], o["lines"][0]["d"]["id"]))
+        theirs = sorted([o for o in orders if single(o) and o["sec"] == loc(o["lines"][0]) != no
+                         and near(o["lines"][0]["route"], o["sec"], o["lines"][0]["d"]["mp"]) == no],
+                        key=lambda o: (o["raised"], o["lines"][0]["d"]["id"]))
+        if own:
+            o = own[0]
+            o["sec"] = near(o["lines"][0]["route"], no, o["lines"][0]["d"]["mp"])
+        else:
+            o = theirs[0]
+            o["sec"] = no
+        o["crew"] = "%d-%s" % (o["sec"], "AB"[int(r.integers(2))])
+    # the office keys each task line closed as the crew reports it done, the last at the order's finish; the app
+    # closes all of an order's lines at once
+    for o in orders:
+        if o["mobile"] or len(o["lines"]) == 1:
+            for l in o["lines"]:
+                l["close"] = o["finish"]
+        else:
+            for l, t in zip(o["lines"], _office_closes(o, r)):
+                l["close"] = t
     orders.sort(key=lambda o: (o["raised"], o["lines"][0]["d"]["id"]))
     rows = []
     for o in orders:
@@ -503,7 +599,7 @@ def work_orders(e):
             dets = [x for x in e["det_by"][d["id"]] if x["t"] <= o["raised"]] or e["det_by"][d["id"]]
             ref = min(dets, key=lambda x: x["t"])["det"]
             rows.append(dict(wo=wo, line=n, sec=o["sec"], route=l["route"], mp=d["mp"], ref=ref, raised=o["raised"],
-                             finish=None if still_open else o["finish"], crew=o["crew"], crew_size=o["crew_size"],
+                             finish=None if still_open else l["close"], crew=o["crew"], crew_size=o["crew_size"],
                              lb=None if still_open else (total if o["mobile"] else l["lb"]),
                              status="OPEN" if still_open else "COMPLETE", defect=d, mobile=o["mobile"],
                              true_lb=l["lb"], attempt=l["attempt"]))

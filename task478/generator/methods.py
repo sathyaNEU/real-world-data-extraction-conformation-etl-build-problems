@@ -456,33 +456,45 @@ def _mms_time(s):
     return dt.datetime.strptime(s, "%m/%d/%Y %H:%M").replace(tzinfo=TZ) if s else None
 
 
-def ask_pounds(p, pounds="severity"):
-    """Ask A: per section, the pounds of cold mix its March cold patches used (COMPLETE orders finished in March).
-    pounds: 'severity' takes a figure repeated on every line of an order once where it is more than any single-line
-    order used on a pothole of any of its lines' severities, 'per_order' wherever it repeats; 'lines' sums."""
+def section_at(p):
+    """at(route, mp): the section whose 2026 roadway holds the milepost."""
+    segs = defaultdict(list)
+    for v in p["inv"].values():
+        segs[v["route"]].append((v["bmp"], v["emp"], v["sec"]))
+
+    def at(route, mp):
+        for lo, hi, sec in segs[route]:
+            if lo <= mp <= hi:
+                return sec
+        return None
+    return at
+
+
+def ask_pounds(p, pounds="close", by="roadway"):
+    """Ask A: per section, the pounds of cold mix its March cold patches used (COMPLETE orders finished in March), a
+    pothole patched twice on each of its orders. pounds: 'close' takes once the figure a multi-line order's lines all
+    carry with one close time (the data notes' order entry); 'per_order' every repeated figure once; 'lines' sums every
+    line. by: 'roadway' places each line on the section whose roadway holds its milepost (program 3); 'order' takes
+    the order's section column."""
     done = [r for r in p["wo"] if r["status"] == "COMPLETE" and r["finished"] and _mms_time(r["finished"]).month == 3]
-    sev = {d["detection_id"]: int(d["severity"]) for d in p["det"] if d["severity"]}
+    at = section_at(p)
     orders = defaultdict(list)
     for r in done:
         orders[r["wo_number"]].append(r)
-    top = defaultdict(int)
-    for wo, lines in orders.items():
-        if len(lines) == 1:
-            s_ = sev[lines[0]["ext_ref"]]
-            top[s_] = max(top[s_], int(lines[0]["cold_mix_lb"]))
     TOTALS.clear()
     lb = defaultdict(int)
     for wo, lines in orders.items():
-        sec = int(lines[0]["section"])
         vals = [int(l["cold_mix_lb"]) for l in lines]
         repeated = len(lines) > 1 and len(set(vals)) == 1
-        if pounds == "severity" and repeated and vals[0] > max(top[sev[l["ext_ref"]]] for l in lines):
+        one_close = len({l["finished"] for l in lines}) == 1
+        once = {"close": repeated and one_close, "per_order": repeated, "lines": False}[pounds]
+        place = (lambda l: at(l["route"], float(l["milepost"]))) if by == "roadway" else (lambda l: int(l["section"]))
+        if once:
             TOTALS.add(wo)
-            lb[sec] += vals[0]
-        elif pounds == "per_order" and repeated:
-            lb[sec] += vals[0]
+            lb[place(lines[0])] += vals[0]
         else:
-            lb[sec] += sum(vals)
+            for l, v in zip(lines, vals):
+                lb[place(l)] += v
     return dict(lb)
 
 
