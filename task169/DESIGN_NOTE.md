@@ -391,6 +391,24 @@ single crack 39.1 (C1).
   sentence, courts, cohort, parolees); none of the three says what a revoked arrest becomes in court.
 - The projected-release extract carries 2027 dates by nature (projected release and maximum dates).
 
+## Pre-ship check
+
+- Rule 1, the domain: the deciding quantity is the 2027 release cohort's two-year return-to-prison rate, built the
+  way a corrections forecaster builds it under a change in revocation law (arrests per day out of custody, the
+  courts' conversion by charge grade, the arrest-to-admission time); the swap test holds (the judge's Gate H).
+- Rule 2, two layers: Layer 1 is the Department's renamed movement codes, writs and transfers beside admissions, the
+  Bureau's hyphenated IDs, amended dockets, open cases, probabilistic deaths, the Board's two case systems with their
+  parallel run, carried-over cases, blank lifts and companion reports, each asserted neutral on the call (R2, SEP);
+  Layer 2 decides.
+- Rule 3: no plant, no filed method, no field names what a revoked arrest becomes in court; the easy route on the clean
+  truth files 5 (R3a); every route without the step misses (5, 10, 15, 50 or 55), and the judge's own wrong routes
+  land in their own buckets (raw arrests 15, no lag 25).
+- Determinism: the re-judge on 501d0e28 DETERMINISTIC, APPROVE, no fix; all 40 figures reproduce; its estimators put
+  the call at 18.6 to 19.3, 1.2 to 1.6 points above the 17.5 floor, against the golden's 20.37 (thin but clean).
+- Stage 4 record: round 1 (8912821b) readers A and B and the judge APPROVE, districts and asks re-sited; round 2
+  (f3ef6705) readers C and D both off the call (asks 1 and 9 of 26), the judge FIX_NOW on Table 3, repaired in the
+  data; the heart BLOCK on ban.strategy ruled as task177's, the window fixed at the draw.
+
 ## Tried and rejected
 
 - Candidate A with five summers of record (2022 to 2026): the extra cool summers made growth by hour without

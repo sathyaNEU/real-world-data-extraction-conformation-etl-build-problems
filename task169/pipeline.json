@@ -1,11 +1,11 @@
 {
   "task": "task169",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "criminology-justice",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-22",
   "stump": "A competent solver keeps only the returns the Act still allows, models each 2027 release's chance of a new-commitment admission within two years on the record's complete releases and files 5 per cent; the step that lands it there is reading the record's new-commitment returns as what parolees' arrests produce, when the Board answered about a third of parolees' arrests by revoking them before any court could, and under the Act those arrests go to court and become prison commitments at the courts' own rate for their charge grade, which files 20 per cent.",
   "architecture": 2,
@@ -25,14 +25,14 @@
     "surface": "exit 0 (run with an in-memory guard for ledger rows whose artifact cell is '-', which crash clone-check fingerprint.py artifact_family on main), no personas; the shared rounding sentence with task177 reworded"
   },
   "judge": {
-    "verdict": "round 2 on f3ef6705: NOT_DETERMINISTIC on Table 3 plus SOLUTION_WRONG, FIX_NOW; call and Tables 1 and 2 reproduce",
-    "disposition": "fixed in the generator: one writ trip open at a time per person, no rule filed; awaiting re-judge",
-    "report": "scratchpad/judge-task169s/verdict.md"
+    "verdict": "DETERMINISTIC / APPROVE, no fix (re-judge on 501d0e28)",
+    "disposition": "shipped; all 40 figures reproduce; the call at 18.6 to 19.3 under the judge's estimators, 1.2 to 1.6 points above the 17.5 floor, against the golden's 20.37",
+    "report": "scratchpad/judge-task169t/verdict.md"
   },
   "returned": [],
-  "resume": "stage 4 round 2: re-judge only (data-only repair; no document under target/ and no prompt change)",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-22",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -69,5 +69,27 @@
       "zip": "501d0e28",
       "fixes": "writ movements generated one trip at a time per person (overlapping stays had written overlapping WRO pairs); Table 3 reproduces under next-WRI and same-institution pairing; call, Tables 1 and 2 and every target file but the admissions table and the manifest byte-identical"
     }
-  ]
+  ],
+  "stage4": [
+    {
+      "round": 1,
+      "zip": "8912821b",
+      "readers": "A and B: share 10 (missed), districts landed, asks 24 of 24",
+      "judge": "DETERMINISTIC / APPROVE",
+      "then": "districts dropped from the call; asks re-sited; rescission closed by a WHAT"
+    },
+    {
+      "round": 2,
+      "zip": "f3ef6705",
+      "readers": "C: share 10, asks 1 of 26, exit 0; D: share 10, asks 9 of 26, exit 2",
+      "judge": "NOT_DETERMINISTIC on Table 3 plus SOLUTION_WRONG, FIX_NOW",
+      "then": "writ trips one at a time per person, nothing filed; call and Tables 1 and 2 byte-identical"
+    },
+    {
+      "round": "re-judge",
+      "zip": "501d0e28",
+      "judge": "DETERMINISTIC / APPROVE, no fix"
+    }
+  ],
+  "heart_ruling": "BLOCK on ban.strategy against task252 (entered the window after registration) ruled as the author ruled task177's: the window stays fixed at the draw; not relabelled"
 }
