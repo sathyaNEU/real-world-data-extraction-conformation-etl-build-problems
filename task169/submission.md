@@ -20,7 +20,7 @@
 4. For each person in doc_projected_releases_2027.csv, combined the arrest rate by time since release with that class mix, conversion and timing over 730 days: the cohort's rate is 20 per cent.
 5. Took REVOKE and REVOKED decisions dated 1 July 2025 to 30 June 2026, dropped the legacy entries dated after the legacy system closed on 2 January 2026 and those rescinded by 30 June 2026, and counted one recommitment per parolee per hearing date (two cases decided together are one order), on a reported arrest when any of its cases cites an arrest number.
 6. Took each detainer once (one per legacy case; a carried-over case from the new system), ended a legacy detainer with no lift date at the person's next ADM in doc_admission_movements_2019-2026.csv, merged each parolee's overlapping detainers, and counted days from the lodge day to the day before the end in each half of 2025 by the district of the county jail.
-7. Paired each WRO in doc_admission_movements_2019-2026.csv with the person's next WRI or, where the court released the person, the release movement in doc_release_movements_2019-2026.csv, and counted days from the day out to the day before the trip ended in each half of 2025 by the institution left.
+7. Ended each writ trip (a WRO in doc_admission_movements_2019-2026.csv; no person has two open at once) at the person's next WRI or, where a release movement in doc_release_movements_2019-2026.csv comes first, at the release, and counted days from the day out to the day before the trip ended in each half of 2025 by the WRO's institution.
 8. Carried 20 per cent in the projection.
 
 ## 4. Deliverable Answers
@@ -39,8 +39,8 @@
    - Linwood: January to June 19,991, July to December 21,769
    - Corliss: January to June 12,729, July to December 12,505
 4. Days people spent out on court writs, by the institution they left, 2025:
-   - SCI-KTR: January to June 3,736, July to December 3,929
-   - SCI-FNW: January to June 3,790, July to December 3,876
-   - SCI-DNM: January to June 3,657, July to December 3,574
-   - SCI-LKV: January to June 3,538, July to December 4,054
-   - SCI-BRW: January to June 3,595, July to December 4,077
+   - SCI-KTR: January to June 3,524, July to December 3,857
+   - SCI-FNW: January to June 3,642, July to December 3,754
+   - SCI-DNM: January to June 3,604, July to December 3,734
+   - SCI-LKV: January to June 3,489, July to December 4,116
+   - SCI-BRW: January to June 3,637, July to December 3,993

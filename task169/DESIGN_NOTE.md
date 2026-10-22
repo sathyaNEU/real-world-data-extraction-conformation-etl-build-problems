@@ -321,8 +321,10 @@ they went out but not the day the trip ended** (10 figures). H18 home: the Depar
 per-institution line the projection's custody days carry.
 - C1 (a trip ended by a release; silent primary): a person taken out on a writ is sometimes released by the court
   or from the county without coming back, so the WRO has no WRI and the person's next movement is a release to
-  parole in the Department's own release file. The trip ended with the release; 2,544 of 26,687 trips end that way.
-  The quoted path pairs WRO with WRI and drops a trip with no return. Every cell moves (147 to 202 days).
+  parole in the Department's own release file. The trip ended with the release; 2,561 of 26,482 trips end that way.
+  No person has two trips open at once (asserted in `checks.py` and `verify.py`), so every pairing of a WRI to an
+  open WRO gives the same trips. The quoted path pairs WRO with WRI and drops a trip with no return. Every cell moves
+  (144 to 221 days).
 - Stops (asserted): unpaired trips dropped (all 10); a trip with no return run to the next movement in the
   admissions table (all 10).
 
@@ -332,7 +334,7 @@ per-institution line the projection's custody days carry.
 |---|---|---|---|
 | H1 companion reports | a second report on a held parolee decided at the same hearing | A, B | A every cell, +12 to +114; B every cell, +351 to +2,795 |
 | H2 rescissions after 30 June 2026 | reconsideration after the fiscal year | A | the conditions cells, -1 to -3 |
-| H3 releases from a writ | the court releases a person out on a writ | C | every cell, +147 to +202 |
+| H3 releases from a writ | the court releases a person out on a writ | C | every cell, +144 to +221 |
 | H4 the parallel-run fortnight | decisions entered in both Board systems 5 to 23 January 2026 | A, B | handled on the readers' path |
 | H5 postponed hearings, blank lifts | the legacy action table | B | handled on the readers' path |
 
@@ -449,3 +451,9 @@ single crack 39.1 (C1).
   Ask B's quarters.
 - The heart BLOCK on ban.strategy (task252 entered the window after this card was registered) is ruled as the
   author ruled task177's: the window stays fixed at the draw; the card is not relabelled.
+- Writ trips generated stay by stay (stage 4 round 2, judge FIX_NOW on Table 3): a person with two admissions and no
+  release between them got two overlapping writ loops, 96 WRO rows in overlapping pairs, so no filed rule said which
+  open WRO a WRI closed, and the golden's pairing (a second WRO replacing the first) matched no reading of the files.
+  The generator now writes one trip at a time per person (a later trip that would leave before the earlier one came
+  back is not written), asserted in `checks.py` and `verify.py`; next-WRI and same-institution pairings both
+  reproduce Table 3 exactly. No pairing rule and no trip-end rule is filed.

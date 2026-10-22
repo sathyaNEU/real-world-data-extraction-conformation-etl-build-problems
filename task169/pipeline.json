@@ -9,7 +9,7 @@
   "updated": "2026-10-22",
   "stump": "A competent solver keeps only the returns the Act still allows, models each 2027 release's chance of a new-commitment admission within two years on the record's complete releases and files 5 per cent; the step that lands it there is reading the record's new-commitment returns as what parolees' arrests produce, when the Board answered about a third of parolees' arrests by revoking them before any court could, and under the Act those arrests go to court and become prison commitments at the courts' own rate for their charge grade, which files 20 per cent.",
   "architecture": 2,
-  "loops": 1,
+  "loops": 2,
   "precut": {
     "exit": 0,
     "date": "2026-10-22",
@@ -17,7 +17,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (no LEAK; every REVIEW line answered in ## Leak sweep), 2026-10-22",
-    "reader": "round 0: readers A and B share 10 (missed), Garrison and Corliss landed, asks 24 of 24"
+    "reader": "round 2 on f3ef6705: reader C share 10, asks 1 of 26 (PASS); reader D share 10, asks 9 of 26 (exit 2, thin: the detainer union and one writ cell)"
   },
   "duplicate_check": {
     "heart": "BLOCK ban.strategy against task252, which entered the window after this card was registered; ruled as task177's: the window stays fixed at the draw, not relabelled. WARN repeat.question_form against task482 (answered)",
@@ -25,12 +25,12 @@
     "surface": "exit 0 (run with an in-memory guard for ledger rows whose artifact cell is '-', which crash clone-check fingerprint.py artifact_family on main), no personas; the shared rounding sentence with task177 reworded"
   },
   "judge": {
-    "verdict": "round 0: DETERMINISTIC / APPROVE",
-    "disposition": "near misses 18 and 22.4 checked: both take the decisive step (SF11 21.78, SF12 20.87); without the step the crude count gives 14.23",
-    "report": "scratchpad/judge-task169r/verdict.md"
+    "verdict": "round 2 on f3ef6705: NOT_DETERMINISTIC on Table 3 plus SOLUTION_WRONG, FIX_NOW; call and Tables 1 and 2 reproduce",
+    "disposition": "fixed in the generator: one writ trip open at a time per person, no rule filed; awaiting re-judge",
+    "report": "scratchpad/judge-task169s/verdict.md"
   },
   "returned": [],
-  "resume": "stage 4 round 2: two scored readers (score readers with score_reader.py task169 <reader.json> --call-key call.rate_step)",
+  "resume": "stage 4 round 2: re-judge only (data-only repair; no document under target/ and no prompt change)",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -39,7 +39,7 @@
   "portal_status_date": "",
   "wave": "redraw of a parked number (architecture 1, the cycleway widening, never registered)",
   "gates": {
-    "checks": "83 of 83",
+    "checks": "84 of 84",
     "verify": "0 failed",
     "rebuild": "20 files byte-identical",
     "figures_check": "exit 0, 36 figures",
@@ -48,7 +48,7 @@
     "scrub": "target and golden clean",
     "cracker": "pair 28.5, mirror leakage 0.0, both readers' quoted paths keep 0 of 26, worst single crack 39.1 (C1)"
   },
-  "target_zip_sha256": "f3ef6705fe5c3dbfd36497d39cd3f9ff755af633343990235134e1d89bcf51dd",
+  "target_zip_sha256": "501d0e28f019bdcb6b3786935db0a5b8eccd178da34344313fbbd2f65bb15c7e",
   "call": {
     "rate_step": 20,
     "default_path": "5 per cent"
@@ -63,6 +63,11 @@
       "round": 1,
       "zip": "f3ef6705",
       "fixes": "districts dropped from the call; asks re-sited onto grain devices (one recommitment per hearing, the union of a parolee's overlapping detainers, writ trips ended by a release); rescission closed by a WHAT (not rescinded by 30 June 2026); chart dropped"
+    },
+    {
+      "round": 2,
+      "zip": "501d0e28",
+      "fixes": "writ movements generated one trip at a time per person (overlapping stays had written overlapping WRO pairs); Table 3 reproduces under next-WRI and same-institution pairing; call, Tables 1 and 2 and every target file but the admissions table and the manifest byte-identical"
     }
   ]
 }

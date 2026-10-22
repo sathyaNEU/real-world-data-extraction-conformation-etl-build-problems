@@ -111,6 +111,7 @@ def write_admissions(path, book, ident):
         rels.setdefault(pid, []).append(rd)
     import tables as T
     rows = []
+    writs = {}
     lags = {}
     for pid, ad, atype, otn, vid in book.admissions:
         if ad > C.CUT:
@@ -139,16 +140,29 @@ def write_admissions(path, book, ident):
                 dur = int(wrng.integers(1, 13))
                 if C.add(t0, dur + 8) >= last:
                     break
-                rows.append((doc, "%s %02d:%02d" % (t0.isoformat(), int(wrng.integers(5, 8)), int(wrng.integers(0, 60))),
-                             "WRO", "COURT WRIT", fac, county))
+                wo_ = (doc, "%s %02d:%02d" % (t0.isoformat(), int(wrng.integers(5, 8)), int(wrng.integers(0, 60))),
+                       "WRO", "COURT WRIT", fac, county)
                 t0 = C.add(t0, dur)
-                rows.append((doc, "%s %02d:%02d" % (t0.isoformat(), int(wrng.integers(15, 21)), int(wrng.integers(0, 60))),
-                             "WRI", "COURT WRIT", fac, county))
+                wi_ = (doc, "%s %02d:%02d" % (t0.isoformat(), int(wrng.integers(15, 21)), int(wrng.integers(0, 60))),
+                       "WRI", "COURT WRIT", fac, county)
+                writs.setdefault(doc, []).append((wo_[1], wi_[1], wo_, wi_))
             if out <= C.CUT and C.days(tr, out) > 20 and wrng.random() < 0.12:
                 wo = C.add(out, -int(wrng.integers(1, 7)))
-                if all(not (r[0] == doc and r[2] in ("WRO", "WRI") and r[1][:10] >= wo.isoformat()) for r in rows[-6:]):
-                    rows.append((doc, "%s %02d:%02d" % (wo.isoformat(), int(wrng.integers(5, 8)), int(wrng.integers(0, 60))),
-                                 "WRO", "COURT WRIT", fac, county))
+                if all(not (w[2][1][:10] >= wo.isoformat() or w[1][:10] >= wo.isoformat()) for w in writs.get(doc, [])[-6:]):
+                    wo_ = (doc, "%s %02d:%02d" % (wo.isoformat(), int(wrng.integers(5, 8)), int(wrng.integers(0, 60))),
+                           "WRO", "COURT WRIT", fac, county)
+                    writs.setdefault(doc, []).append((wo_[1], out.isoformat() + " 00:00", wo_, None))
+    # one body is on one court trip at a time: where a person's two admissions without a release between them would
+    # put a second trip out before the first came back, the later trip is not written
+    for doc, ws in writs.items():
+        end = ""
+        for start, stop, wo_, wi_ in sorted(ws):
+            if start < end:
+                continue
+            rows.append(wo_)
+            if wi_ is not None:
+                rows.append(wi_)
+            end = stop
     rows.sort(key=lambda r: (r[1], r[0]))
     head = ("doc_number", "movement_datetime", "movement_type", "movement_reason", "location", "county_of_commitment")
     return C.write_csv(path, head, rows), lags

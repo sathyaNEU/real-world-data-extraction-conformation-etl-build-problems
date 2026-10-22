@@ -210,9 +210,9 @@ def submission(r, f):
              "detainer with no lift date at the person's next ADM in %s, merged each parolee's overlapping detainers, "
              "and counted days from the lodge day to the day before the end in each half of 2025 by the district of the "
              "county jail." % C.F_ADM,
-             "7. Paired each WRO in %s with the person's next WRI or, where the court released the person, the release "
-             "movement in %s, and counted days from the day out to the day before the trip ended in each half of 2025 "
-             "by the institution left." % (C.F_ADM, C.F_REL),
+             "7. Ended each writ trip (a WRO in %s; no person has two open at once) at the person's next WRI or, where "
+             "a release movement in %s comes first, at the release, and counted days from the day out to the day before "
+             "the trip ended in each half of 2025 by the WRO's institution." % (C.F_ADM, C.F_REL),
              "8. Carried %d per cent in the projection." % rate,
              "", "## 4. Deliverable Answers", "", "### %s" % WB, "",
              "1. Two-year return rate of the 2027 parole releases under Act 26-114: %d per cent." % rate,

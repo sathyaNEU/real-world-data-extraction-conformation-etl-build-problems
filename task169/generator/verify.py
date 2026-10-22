@@ -281,11 +281,15 @@ def main(target):
     for r in rel:
         ev.setdefault(r["doc_number"], []).append((r["rd"], 0, "REL", ""))
     Cv = {}
+    nested = orphan = 0
     for doc, es in ev.items():
         op = None
         for t_, _, mt, loc in sorted(es):
             if mt == "WRO":
+                nested += op is not None
                 op = (t_, loc)
+            elif mt == "WRI" and op is None:
+                orphan += 1
             elif op is not None and mt in ("WRI", "REL"):
                 day = op[0]
                 while day < t_:
@@ -294,6 +298,8 @@ def main(target):
                         c["H1" if day.month <= 6 else "H2"] += 1
                     day += dt.timedelta(days=1)
                 op = None
+    check("ASK C one writ trip open at a time per person, every WRI closing one", nested == 0 and orphan == 0,
+          "%d WRO with a trip open, %d WRI with none" % (nested, orphan))
     check("ASK C every institution and half", all(Cv.get(i) == figs["c_" + i] for i in ("SCI-KTR", "SCI-FNW", "SCI-DNM", "SCI-LKV", "SCI-BRW")), json.dumps(Cv))
     # ---- the write-up states the figures
     for d in Bv:

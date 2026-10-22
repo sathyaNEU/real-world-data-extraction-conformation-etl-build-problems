@@ -273,6 +273,24 @@ def main(target):
         hits = sum(b[d][q] == B[d][q] for d in C.DISTRICTS for q in B[d])
         ok("ASKB stop %s misses every cell" % name, hits == 0, "%d of 8 kept" % hits)
     W = calc.ask_c(D)
+    wm = D["adm"][D["adm"].movement_type.isin(["WRO", "WRI"])][["doc_number", "t", "movement_type"]]
+    wr = D["rel"][["doc_number", "rd"]].rename(columns={"rd": "t"}).assign(movement_type="REL")
+    we = pd.concat([wm, wr]).assign(k=lambda x: x.movement_type.map({"REL": 0, "WRI": 1, "WRO": 2}))
+    we = we[we.doc_number.isin(set(wm.doc_number))].sort_values(["doc_number", "t", "k"])
+    nested = orphan = 0
+    for doc, g in we.groupby("doc_number", sort=False):
+        op = False
+        for mt in g.movement_type:
+            if mt == "WRO":
+                nested += op
+                op = True
+            elif mt == "WRI":
+                orphan += not op
+                op = False
+            else:
+                op = False
+    ok("ASKC one writ trip open at a time per person, every WRI closing one", nested == 0 and orphan == 0,
+       "%d WRO with a trip open, %d WRI with none" % (nested, orphan))
     ok("ASKC golden matches figures.json", all(figs["c_" + i] == W[i] for i in calc.INSTITUTIONS), "")
     w = calc.ask_c(D, ended_by_release=False)
     hits = sum(w[i][h] == W[i][h] for i in calc.INSTITUTIONS for h in W[i])
