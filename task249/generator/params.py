@@ -58,6 +58,17 @@ THRESH = 1.0
 CENTRES = ["Chennai", "Bengaluru", "Hyderabad", "Pune", "Kochi", "Noida"]
 CENTRE_CODE = {"Chennai": "MAA", "Bengaluru": "BLR", "Hyderabad": "HYD", "Pune": "PNQ", "Kochi": "COK", "Noida": "NOI"}
 CENTRE_W = [0.27, 0.19, 0.18, 0.13, 0.11, 0.12]
+# each centre keeps its own sheet in the incident workbook: its column names, its dates and its names for the sessions
+SHEETS = {
+    "Chennai": dict(cols=["Date", "Session", "Time", "Workstation", "Report"], date="%d/%m/%Y", sess=("AM", "PM")),
+    "Bengaluru": dict(cols=["Date", "Slot", "Time (IST)", "System", "Incident"], date="%d %b %Y",
+                      sess=("Morning", "Afternoon")),
+    "Hyderabad": dict(cols=["Exam date", "Session", "Time", "WS No", "Details"], date="%d.%m.%Y", sess=("AM", "PM")),
+    "Pune": dict(cols=["Date", "Batch", "Time", "Terminal", "Report"], date="%Y-%m-%d", sess=("Batch 1", "Batch 2")),
+    "Kochi": dict(cols=["Date", "Session", "Time", "Workstation", "Remarks"], date="%d/%m/%Y", sess=("FN", "AN")),
+    "Noida": dict(cols=["Date", "Shift", "Reported at", "Seat", "What happened"], date="%d-%b-%y",
+                  sess=("Morning", "Afternoon")),
+}
 AREAS = ["ICD-10-CM diagnosis coding", "ICD-10-PCS procedure coding", "CPT surgery coding",
          "CPT evaluation and management", "HCPCS and modifiers", "Coding guidelines and conventions",
          "Documentation and query practice", "Compliance and reimbursement"]

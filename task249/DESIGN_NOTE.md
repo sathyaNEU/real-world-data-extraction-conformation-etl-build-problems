@@ -119,6 +119,12 @@ Lesson: a within-unit comparison of treated with untreated parts measures the tr
 | 4. Item-model siblings counted with the same item (CC27-A, C, G and H: the default path) | the bank's item_model column and regulation 3.4; both call-only probes took it | readable |
 | 5. (decisive) The items reached only in the time recognised items freed (adds CC27-B and D: the golden) | nothing names a recognised item's time, the time it frees or where the four hours would have ended; the latencies, blanks and end reasons are recorded as what they are | silent |
 
+Measured at stage 4: rung 5 missed by five of the six readers on this architecture (the four at medium effort and the
+opus reader at max); the sonnet reader of round 3, spawned at max effort against the medium spec, found it after 95
+minutes by rescaling the recognised items' times and re-running the four hours. The author chose to keep the
+architecture with ask A re-sited, so that a response landing the call still loses both asks, and to ship only if two
+in-spec readers miss the call.
+
 ## Semantic fork table
 
 | SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
@@ -137,8 +143,10 @@ Lesson: a within-unit comparison of treated with untreated parts measures the tr
 | SF16 | an item written from the same item model as an item shown | not untouched: its excess is in the gain (7.2's counterfactual removes every earlier showing, and 3.4 keeps two items of one model off a form) | an untouched item in the baseline | A, B, D and G | the data: siblings are answered in 0.79 of the candidate's own pace and 0.06 above their ability per item, the untouched items at 1.00 and 0.00 (asserted) |
 | SF12 | a WS_FAIL (ask A) | an interruption where the sitting stopped there: its next event is its SESSION_RESUME or its SESSION_END | every WS_FAIL (a finished candidate's workstation switched off after its SESSION_END; a workstation's own connection lost while its client went on logging) | the asks only | the sitting's own events (a stopped workstation cannot carry its sitting on without a resume); asserted (every WS_FAIL counted, or every one inside the sitting, misses all ten forms) |
 | SF13 | a resume on the sitting's own workstation after that workstation's WS_REBOOT (ask A) | a restart after a freeze: interrupted, reported or not | an unreported pause (no WS_FAIL, no report) | the asks only | a working workstation is not restarted under a running sitting; every reported restart shows the WS_REBOOT and no reported pause does (asserted: the restarts dropped miss all ten forms) |
-| SF14 | a resume on the same workstation with no WS_FAIL, WS_REBOOT or report (ask A) | an unreported pause | a failure | the asks only | every reported failure shows a WS_FAIL, a WS_REBOOT or a spare; every reported pause none (asserted: the unexplained resumes counted miss all ten forms) |
-| SF15 | a loss one client logged alone (ask B) | that workstation's own connection, not the centre's link | a loss of the centre's link | the asks only | every loss of a centre's link is logged by every client logged in (three or more, within a minute of each other); each lone loss runs 8 to 35 minutes with no other client's row at the centre within 45 minutes (asserted: the lone losses counted miss all ten forms) |
+| SF14 | a resume on the same workstation with no WS_FAIL, WS_REBOOT or report (ask A) | an unreported pause | a failure | the asks only | every reported failure on its own workstation shows a WS_FAIL or a WS_REBOOT; every reported pause neither (asserted: the unexplained resumes counted miss all ten forms) |
+| SF21 | a sitting that went on on a spare with no WS_FAIL and no report (ask A) | a failure where the workstation it left logged WS_REBOOT before the session's last sitting ended; a change of seat where it did not | every move counted, or none | the asks only | the technician restarts each workstation left over a freeze, a faulty keyboard, mouse or screen or a client hung at the link's loss, and none left at a candidate's request over glare, noise, a desk or a chair: every reported move bears it out (asserted: the restart follows every fault's move and no request's; every move counted, or none, misses all ten forms) |
+| SF22 | a change of seat a candidate asked for because the screen flickered, keys stuck or the mouse pointer jumped (ask A) | a failure of the workstation (regulation 3.6 names its screen, keyboard and mouse) | a change of seat | the asks only | regulation 3.6 and the technician's restart after each (asserted); a change of seat over glare on the screen is not a fault and its workstation is left as it was (asserted), and a screen too bright is turned down at the desk with no clock stopped |
+| SF15 | a loss one client logged alone (ask B) | that workstation's own connection, not the centre's link | a loss of the centre's link | the asks only | every loss of a centre's link is logged by every client logged in (three or more, within a minute of each other); each lone loss runs 1 to 35 minutes with no other client's row at the centre within 45 minutes (asserted: the lone losses counted miss all ten forms) |
 | SF17 | a loss inside a hall stop (ask B) | no clock ran: every clock stopped before the router went off and restarted after the link was back | ran without the link | the asks only | regulation 3.6 and the data notes (the clock stops; the sitting runs again at the resume) with the two reports' times; asserted (counted, all ten forms move) |
 | SF18 | where a loss of the centre's link begins and ends (ask B) | each client's own NET_LOST and NET_BACK | the centre's first NET_LOST to its first or its last NET_BACK | same call | no clock starts, ends or resumes within a client's notice of either edge (asserted: the three readings file the same sittings) |
 | SF19 | a NET_BACK with no NET_LOST before it (ask B) | the client logged in with the link down: without it from its login | dropped | the asks only | the client's login (its tutorial, or its resume on a spare) precedes it; asserted (all ten forms move) |
@@ -218,31 +226,37 @@ whole numbers).** H18: regulation 7.4 puts the interrupted sittings in the integ
 reads the two exports, the layouts, the bank snapshot, the renumbering, the register and the review bookings, and never
 the event log, the seat plan or the invigilators' reports (asserted). Use: the report's 7.4 table, filed every year.
 The provider's server logs WS_FAIL once a workstation serving a sitting has said nothing for three minutes while it
-still hears the centre (nothing files that). Devices, silent, in two directions so neither half-repair lands:
-- D4 absence, evidenced in rows no booking join reaches: a frozen computer restarted where it stands logs WS_REBOOT, a
-  row with no booking, before its candidate's SESSION_RESUME on it; a restart inside three minutes leaves no WS_FAIL and
-  half go unreported (three or more sittings on every form), beside the invigilators' pauses, a quarter of them
-  unreported, which resume on the same workstation with nothing before them (the unexplained resumes counted as
-  failures take the pauses too).
-- Two mechanisms, one face (a WS_FAIL that interrupted nothing): an invigilator switching off a finished candidate's
-  workstation before the session closed, the WS_FAIL after the sitting's SESSION_END; and a fault on one workstation's
-  own connection, the server losing sight of a client that carried on, its own NET_LOST and NET_BACK around the WS_FAIL
-  and no resume after it (shared with ask B). Only the sitting's next event after the WS_FAIL, its resume or its end,
-  tells a stop from these.
-Hazards: the failures with no WS_FAIL (a client hung as the link dropped, a keyboard, mouse or screen) carried by the
-reports with the spare and minute of the resume; three in ten logged freezes unreported; a change of seat at the
-candidate's request ending on a spare; one report in ten with the workstation typed wrong; late freezes closed on the
-saved responses; the two hall stops (resumes on the same workstation after a stop the reports explain); the power cut
-(WS_REBOOT on every machine, resumes after half an hour of nothing). Path: the event log, the seat plan, the
-invigilators' reports, the regulations, the data notes and either export for each booking's form (6 files, 12 columns).
-Realism: a heartbeat monitor that cannot tell a dead workstation from one switched off or cut off; the workstation agent
-logging its own boots; incident reports typed up after the session.
+still hears the centre, and follows a sitting to a spare once it resumes there (nothing files either). Devices, silent:
+- Primary, D4 absence evidenced in rows no booking join reaches, in two directions so neither half-repair lands: a
+  sitting that goes on on a spare after a fault (a freeze, a keyboard, mouse or screen, a client hung at the link's
+  loss, or a change of seat the candidate asked for because the screen flickered, keys stuck or the pointer jumped)
+  leaves its workstation to the technician, who restarts it before the session's last sitting ends: a WS_REBOOT with no
+  booking on a workstation no sitting is using any more. A change of seat asked for over glare, noise, a desk or a chair
+  leaves the workstation as it was. Two in five moves go unreported and a move inside three minutes leaves no WS_FAIL,
+  so every unexplained move counted takes the requests and none counted drops the faults; only the cut from each move
+  to the later rows of the workstation it left separates them. Every reported move bears the rule out (SF21).
+- Read in a request's words: a reported change of seat over a flickering screen, sticking keys or a jumping pointer is a
+  fault (regulation 3.6 names the screen, keyboard and mouse), and a change of seat over glare on the screen is not
+  (SF22); a classifier on the report's frame drops the first, one on the hardware's name takes the second.
+- Kept from v3, each on the readers' own path: a frozen computer restarted where it stands logs WS_REBOOT before its
+  candidate's resume on it (a restart inside three minutes leaves no WS_FAIL, half unreported); the unreported pauses
+  resume with nothing before them; a WS_FAIL that interrupted nothing (a finished candidate's workstation switched off,
+  a workstation's own connection) is told by the sitting's next event.
+Hazards: the reports' typed workstation numbers (one in ten); each centre's sheet in its own columns, dates (Pune's
+year-first, read day-first it turns 10 May into 5 October) and session names (FN and AN at Kochi); notes of what
+stopped no clock (a query on an item, a screen turned down); three in ten logged freezes unreported; freezes while a
+candidate checked their answers closed on the saved responses; the two hall stops; the power cut (WS_REBOOT on every
+machine, resumes after half an hour of nothing); the technician's checks on workstations nobody was seated at. Path:
+the event log, the seat plan, the invigilators' reports, the regulations, the data notes and either export for each
+booking's form (6 files, 12 columns). Realism: a heartbeat monitor that cannot tell a dead workstation from one switched
+off or cut off; the workstation agent logging its own boots; a technician who restarts what failed before it is used
+again; incident reports typed up after the session, each centre in its own sheet.
 
 **Ask B, each form's 2027 sittings that ran in part without the centre's link (10 figures, whole numbers).** H18:
 regulation 7.4's third item, the sittings whose responses were held on the workstation while the link was down; the
 call never reads the event log. Use: the same table. Devices, silent:
 - Two mechanisms, one face (a client's NET_LOST and NET_BACK): the centre's link lost, logged by every client logged in
-  within a minute; and one workstation's own connection, logged by that client alone for 8 to 35 minutes while the
+  within a minute; and one workstation's own connection, logged by that client alone for 1 to 35 minutes while the
   others logged nothing (every form). Only the cut across the centre's clients separates them; the data notes call both
   the centre's link.
 - A loss with no clock running: twice a whole hall's clocks were stopped before its router went off (the Chennai fire
@@ -261,30 +275,39 @@ and no file the call reads carries a device row (asserted: separation).
 
 | Route (generator/pair.py) | Asks moved | Per-form deltas (smallest to largest) |
 |---|---|---|
-| every WS_FAIL, the reported failures, the power cut (the round 2 readers' route) | A | -2 to +10 sittings |
-| the same, a WS_FAIL inside the sitting only | A | -5 to +3 sittings |
-| a WS_FAIL the sitting stopped after, no restarts from the reboots | A | -7 to -3 sittings |
-| every WS_FAIL with the restarts from the reboots | A | +2 to +15 sittings |
-| a WS_FAIL inside the sitting with the restarts | A | +1 to +7 sittings |
-| the unexplained resumes counted as failures | A | +1 to +7 sittings |
-| each client's losses against the clock (the round 2 readers' route) | B | +5 to +21 sittings |
-| the same with the hall stops taken out | B | +1 to +7 sittings |
+| a WS_FAIL the sitting stopped after, the restarts in place, the failures reported with the spare they resumed on, the power cut (the round 3 readers' route) | A | -13 to -3 sittings |
+| the same with the changes of seat reported over a fault | A | -10 to -3 sittings |
+| the round 3 route with every unexplained move to a spare | A | +1 to +13 sittings |
+| the round 3 route with both | A | +3 to +14 sittings |
+| every move to a spare but the reported changes of seat | A | +1 to +13 sittings |
+| every move but the changes of seat reported over anything other than a fault | A | +3 to +14 sittings |
+| the round 3 route with every reported move naming the screen, keyboard or mouse | A | -10 to -1 sittings |
+| every move to a spare | A | +8 to +18 sittings |
+| every WS_FAIL, the reported failures, the power cut (the round 2 readers' route) | A | -13 to +2 sittings |
+| the same, a WS_FAIL inside the sitting only | A | -14 to -4 sittings |
+| every WS_FAIL with the restarts from the reboots | A | -8 to +5 sittings |
+| the unexplained resumes counted as failures | A | -8 to -2 sittings |
+| the WS_FAIL rows alone (the mirror) | A | -25 to -9 sittings |
+| each client's losses against the clock (the round 2 readers' route) | B | +7 to +20 sittings |
+| the same with the hall stops taken out | B | +2 to +6 sittings |
 | the lone losses dropped, the hall stops kept | B | +3 to +16 sittings |
-| the clients that logged in with the link down dropped | B | -26 to -11 sittings |
+| the clients that logged in with the link down dropped | B | -31 to -11 sittings |
+| every booking with a NET_LOST row (the mirror) | B | -15 to +18 sittings |
 | the power cut's minutes on the UPS left out | B | -6 to 0 sittings |
 
 | Ask row | The cracker (landed the call, hygiene battery, the best of the careful routes above) | Verdict |
 |---|---|---|
-| Ask A, sittings, all ten forms | every route short of the WS_FAIL rule and the reboot join together | miss |
+| Ask A, sittings, all ten forms | every route short of the WS_FAIL rule, the reboot join and the spare-move restart join together | miss |
 | Ask B, sittings, all ten forms | every route short of the cut across clients and the stops together | miss |
 
-Measured by: generator/pair.py on the cut pack (the ask layer re-sited after round 2): the cracker keeps 0 of the 20 ask
-figures on every careful route, the mirror (each log's first reading: the WS_FAIL rows, every loss row) 1. The round 3
-readers on this pack are the measurement.
+Measured by: generator/pair.py on the cut pack 535886d8 (ask A re-sited after round 3): the cracker keeps 0 of the 20
+ask figures on every careful route, the mirror (each log's first reading: the WS_FAIL rows, every loss row) 0; the round
+2 readers' ask A route keeps 1 form. checks.py asserts every careful route misses all ten forms and every older read
+keeps two at most. The round 4 readers on this pack are the measurement.
 
-Pair ceiling: 29.9 ((45.0 + 14.8) / 2), the cracker keeping none of the 20 ask figures and the mirror one.
+Pair ceiling: 28.5 ((45.0 + 12.0) / 2), the cracker keeping none of the 20 ask figures and the mirror none.
 
-Mirror leakage: 5.0 per cent of ask weight
+Mirror leakage: 0.0 per cent of ask weight
 
 ## Tried and rejected
 
@@ -499,3 +522,4 @@ Mirror leakage: 5.0 per cent of ask weight
   reports joined to the resumes by spare and minute, the reasons read, each client's losses overlapped with the clock.
   Every v2 device sat on the readers' own path; v3 moves both asks onto rows that path never cuts (the reboots with no
   booking, the next event after a WS_FAIL, the cut across a centre's clients, the clocks stopped before a link went).
+- Ask layer v3's ask A (a WS_FAIL counted by the sitting's next event, the restarts in place from the WS_REBOOT rows with no booking, the switch-offs and the connection faults' WS_FAIL that stopped nothing): both round 3 readers on target.zip 9572c4c8 kept all ten ask A figures, joining each reboot to the resume about a minute later and reading a WS_FAIL that stopped nothing from its own client's NET rows and the elapsed time; ask B held at 0 of 10 for both (the losses one client logged alone read as the centre's link). The opus reader missed the call (A, C, G and H); the sonnet reader, spawned without its effort so it ran at max against the medium the spec sets, landed it (the time freed, rescaled and the four hours re-run) after 95 minutes and 149 tool calls. Every v3 ask A device sat on a per-sitting path; v4 puts ask A's primary on a row no sitting's events reach: the workstation a sitting left for a spare, restarted by the technician after a fault and left as it was after a change of seat asked for over glare, noise, a desk or a chair, two in five of those moves unreported and the quick ones with no WS_FAIL. The author chose (2026-10-22) to re-read the v4 pack with two in-spec medium readers and ship only if both miss the call.

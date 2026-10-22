@@ -4,7 +4,7 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: reader, architecture, readers, decisive, recognised, golden, register, release, device, decision, landed, webkit, export, points, nothing, selection, comparison, sonnet, carried, editions, signed-in, edition, author, latencies, readable
+Stump terms swept: reader, readers, architecture, decisive, recognised, device, golden, register, release, landed, nothing, decision, sonnet, webkit, export, points, missed, author, selection, comparison, carried, editions, signed-in, edition, latencies
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `CCC_examination_regulations.pdf`: golden figure 1.0 appears: ...3 A form whose exposure gain for the year exceeds 1.0 scored item is flagged: its resit results for tha...

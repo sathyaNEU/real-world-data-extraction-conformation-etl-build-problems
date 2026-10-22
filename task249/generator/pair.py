@@ -2,7 +2,10 @@
 against the golden, the cracker (on the call, every filed rule executed, the hygiene battery run, the best of the careful
 routes: every WS_FAIL with the reported failures and the power cut, the round 2 readers' route, or that route with one
 of its repairs; each client's losses overlapped with the clock, with the lone losses dropped or the stops taken out) and
-the mirror (off the call, the first reading of each log: the WS_FAIL rows, every loss row), and the pair ceiling.
+the mirror (off the call, the first reading of each log: the WS_FAIL rows, every loss row), and the pair ceiling. The
+careful routes for ask A include the round 3 readers' (every WS_FAIL a sitting stopped after, the restarts in place, the
+failures reported with the spare they resumed on, the power cut) and each reading of the moves to a spare short of the
+workstation left being restarted.
 python3 pair.py [target]"""
 import json
 import os
@@ -17,10 +20,9 @@ import solve as S
 TASK = os.path.dirname(HERE)
 
 
-A_PATHS = ["golden", "v2_route", "in_sitting", "stopped_fail", "reboots", "in_sitting_reboots", "unexplained",
-           "ws_fail_only", "no_power"]
+A_PATHS = list(S.A_ROUTES)
 B_PATHS = ["golden", "per_booking", "per_booking_stops", "centre_only", "pairs_only", "lost_refs", "no_power"]
-A_CAREFUL = ["v2_route", "in_sitting", "stopped_fail", "reboots", "in_sitting_reboots", "unexplained"]
+A_CAREFUL = list(S.A_CAREFUL)
 B_CAREFUL = ["per_booking", "per_booking_stops", "centre_only", "pairs_only"]
 
 

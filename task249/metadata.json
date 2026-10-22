@@ -31,7 +31,7 @@
    "xlsx"
   ],
   "largest_file": "workstation_event_log_2027.csv",
-  "largest_file_rows": 58651
+  "largest_file_rows": 59240
  },
  "sources": [
   {
@@ -56,7 +56,7 @@
   {
    "path": "CCC_examination_regulations.pdf",
    "format": "pdf",
-   "bytes": 5474,
+   "bytes": 44016,
    "rows": null,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
@@ -146,8 +146,8 @@
   {
    "path": "workstation_event_log_2027.csv",
    "format": "csv",
-   "bytes": 3134915,
-   "rows": 58651,
+   "bytes": 3160568,
+   "rows": 59240,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
    "license": "CC0-1.0 (original work)"
@@ -155,7 +155,7 @@
   {
    "path": "invigilator_incident_reports_2027.xlsx",
    "format": "xlsx",
-   "bytes": 23842,
+   "bytes": 26533,
    "rows": null,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
@@ -173,7 +173,7 @@
   {
    "path": "item_review_panel_minutes_2027.pdf",
    "format": "pdf",
-   "bytes": 2575,
+   "bytes": 41121,
    "rows": null,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",
@@ -191,7 +191,7 @@
   {
    "path": "exam_centre_capacity_2027.xlsx",
    "format": "xlsx",
-   "bytes": 6231,
+   "bytes": 6236,
    "rows": null,
    "source": "Constructed (seeded generator)",
    "date": "2028-01-17",

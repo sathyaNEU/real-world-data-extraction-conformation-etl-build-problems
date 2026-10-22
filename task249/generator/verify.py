@@ -1,16 +1,19 @@
 """An independent recomputation of every owed figure from target/ alone, by other routes than solve.py: the flags
 with an additive baseline and each recognised item's time from the first-time candidates' mean seconds scaled by
 the candidate's own ratio; ask A from each sitting's own events in order (a failure it stopped after, a restart before it
-resumed in place), the reported failures by spare and minute and the power-cut report; ask B from each workstation's link
+resumed in place, a move to a spare after which the workstation left restarted before the session's last sitting ended)
+and the power-cut report; ask B from each workstation's link
 state walked through the event log in time order, kept where another client logged the loss and the clock was running.
 python3 verify.py [target]   exit 1 on any difference from generator/figures.json"""
 import datetime as dt
 import json
 import os
+import re
 import sys
 
 import numpy as np
 import pandas as pd
+from dateutil.parser import parse as dparse
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
@@ -112,8 +115,8 @@ def main(target):
         s0 = min((r.t for r in lst if r.event == "SESSION_START"), default=None)
         e0 = max((r.t for r in lst if r.event == "SESSION_END"), default=None)
         clock_of[k_] = (s0, e0)
-    # ask A: a WS_FAIL the sitting stopped after; a restart of the sitting's workstation before it resumed there; a
-    # reported failure of a computer or its keyboard, mouse or screen, by the spare and minute it resumed on; the sittings
+    # ask A: a WS_FAIL the sitting stopped after; a restart of the sitting's workstation before it resumed there; a move to
+    # a spare after which the workstation left was restarted before the session's last sitting ended; the sittings
     # running when the power cut began
     hit = set()
     for k_, lst in own.items():
@@ -126,40 +129,42 @@ def main(target):
     boots = {}
     for r in boot.itertuples(index=False):
         boots.setdefault((r.centre_code, r.workstation), []).append(r.t)
+    half = {}
+    for k_, (s0, e0) in clock_of.items():
+        loc = s0 + shift
+        half.setdefault((own[k_][0].centre_code, loc.date(), loc.hour < 12), []).append(k_)
+    closes = {}
+    for hk, ks in half.items():
+        last = max(clock_of[k_][1] for k_ in ks)
+        for k_ in ks:
+            closes[k_] = last
     for k_, lst in own.items():
         for n, r in enumerate(lst):
-            if r.event == "SESSION_RESUME" and not r.workstation.startswith("SP") and n:
-                if any(lst[n - 1].t < t <= r.t for t in boots.get((r.centre_code, r.workstation), [])):
+            if r.event != "SESSION_RESUME" or not n:
+                continue
+            q = lst[n - 1]
+            if r.workstation.startswith("SP"):
+                if any(q.t < t <= closes[k_] for t in boots.get((r.centre_code, q.workstation), [])):
                     hit.add(k_)
-    on_spare = {}
-    for r in ev[(ev["event"] == "SESSION_RESUME") & ev["workstation"].str.match(r"SP\d")].itertuples(index=False):
-        loc = r.t + shift
-        on_spare[(r.centre_code, loc.date().isoformat(), r.workstation, loc.strftime("%H:%M"))] = r.booking_ref
-    words = ("stopped responding", "froze", "hung", "not responding", "crashed", "frozen", "stopped working", "went blank",
-             "stuck")
+            elif any(q.t < t <= r.t for t in boots.get((r.centre_code, r.workstation), [])):
+                hit.add(k_)
     cut_sittings, stopped_at = set(), []
     for centre, df in rep.items():
-        for r in df.itertuples(index=False):
-            d = dt.datetime.strptime(r.Date, "%d/%m/%Y").date()
-            text = str(r.Report)
-            clean = text.replace(",", " ").replace("(", " ").replace(")", " ").replace(";", " ")
-            hm = [w.strip(".") for w in clean.split() if len(w.strip(".")) == 5 and w.strip(".")[2] == ":"]
-            sp = [w.strip(".") for w in clean.split() if w.strip(".").startswith("SP")]
+        c0, c1, c2, c3, c4 = list(df.columns)[:5]
+        for dv, tv, text in zip(df[c0], df[c2], df[c4]):
+            dv = dv.strip()
+            d = dt.date.fromisoformat(dv) if re.fullmatch(r"\d{4}-\d\d-\d\d", dv) else dparse(dv, dayfirst=True).date()
+            text = str(text)
             if "All clocks stopped at" in text:
                 h_, m_ = map(int, text.split("All clocks stopped at ")[1][:5].split(":"))
                 stopped_at.append((codes[centre], pd.Timestamp(dt.datetime(d.year, d.month, d.day, h_, m_)) - shift))
                 continue
             if "Power cut" in text:
-                h_, m_ = map(int, r.Time.split(":"))
+                h_, m_ = map(int, tv.replace(".", ":").split(":"))
                 cut = pd.Timestamp(dt.datetime(d.year, d.month, d.day, h_, m_)) - shift
                 for k_, (s0, e0) in clock_of.items():
                     if own[k_][0].centre_code == codes[centre] and s0 is not None and s0 <= cut < (e0 or cut):
                         cut_sittings.add(k_)
-                continue
-            if sp and hm and any(w in text.lower() for w in words):
-                k_ = on_spare.get((codes[centre], d.isoformat(), sp[0], hm[-1]))
-                if k_:
-                    hit.add(k_)
     hit |= cut_sittings
     form_of = {s["bk"]: s["form"] for s in sit if s["w"] >= 4}
     ask_a = {f: 0 for f in sorted(gain)}

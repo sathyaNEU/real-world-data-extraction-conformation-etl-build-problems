@@ -81,7 +81,8 @@ def run(target):
     D.notes(j("notes"), F)
     D.request(j("request"), F)
     for k, stamp in STAMP_PDF.items():
-        postprocess.scrub(j(k), "Microsoft Word 2019", stamp)
+        postprocess.scrub(j(k), "IHCP Examinations Department", stamp[:10])
+        postprocess.pdf_clock(j(k), stamp)
     for k, created, modified in (("bank", "2027-01-11T06:10:00Z", "2027-12-31T17:45:00Z"),
                                  ("incidents", "2027-02-08T03:30:00Z", "2027-11-20T12:15:00Z"),
                                  ("capacity", "2026-12-14T09:00:00Z", "2027-01-20T10:40:00Z")):

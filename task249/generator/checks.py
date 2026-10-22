@@ -283,8 +283,9 @@ def rules(target, W, C, X):
     rv = pd.read_csv(os.path.join(target, S.FILES["reviews"]), dtype=str)
     gap = (pd.to_datetime(rv["review_date"]) - pd.to_datetime(rv["booked_on"])).dt.days
     ok(bool(gap.between(4, 25).all()), "realism: reviews held 4 to 25 days after booking")
-    rep = pd.concat(pd.read_excel(os.path.join(target, S.FILES["incidents"]), sheet_name=None, dtype=str).values())
-    ok(rep["Report"].value_counts().max() <= 2, "realism: no incident report's text recurs beyond twice")
+    rep = pd.concat([df.iloc[:, 4] for df in pd.read_excel(os.path.join(target, S.FILES["incidents"]), sheet_name=None,
+                                                             dtype=str).values()])
+    ok(rep.value_counts().max() <= 2, "realism: no incident report's text recurs beyond twice")
     A, _ = S.ask_a(target, D=D)
     Bk = S.ask_b(target, D=D)
     ok(len(set(A.values())) >= 5 and len(set(Bk.values())) >= 5, "realism: the asks' figures vary across the forms (%d and "
@@ -351,10 +352,11 @@ def ask_checks(target, W, X, C):
     # every route short of the golden misses every form: SF12 (a WS_FAIL the sitting did not stop after: a finished
     # candidate's workstation switched off, a workstation's own connection), SF13 (a restart in place with no WS_FAIL and
     # no report), SF14 (an unexplained resume read as a failure takes the unreported pauses with it)
-    for pth in [k for k in S.A_ROUTES if k not in ("golden", "no_power")]:
+    ok(set(S.A_CAREFUL) | set(S.A_MIRRORS) == set(S.A_ROUTES) - {"golden", "no_power"}, "every ask A route classed")
+    for pth in S.A_CAREFUL + S.A_MIRRORS:
         v, _ = S.ask_a(target, D=C["D"], path=pth, sets=sa)
         kept = [f for f in S.F27 if v[f] == A[f]]
-        ok(len(kept) <= (2 if pth == "ws_fail_only" else 0), "ask A route %s keeps %s" % (pth, kept))
+        ok(len(kept) <= (2 if pth in S.A_MIRRORS else 0), "ask A route %s keeps %s" % (pth, kept))
     # SF15 (a loss one client logged alone is not the centre's link), SF17 (a loss inside a hall stop ran no clock), SF19
     # (a client that started without the link), the roster read
     for pth in ("per_booking", "per_booking_stops", "centre_only", "pairs_only", "lost_refs"):
@@ -363,9 +365,20 @@ def ask_checks(target, W, X, C):
         ok(len(kept) <= (2 if pth == "lost_refs" else 0), "ask B route %s keeps %s" % (pth, kept))
     v = S.ask_b(target, D=C["D"], path="no_power", sets=sb)
     ok(sum(v[f] != Bk[f] for f in S.F27) >= 4, "SF20 the power cut's minutes on the UPS left out move the August forms")
+    # SF21 the moves to a spare: the workstation a sitting left is restarted before the session's last sitting ends after
+    # a fault (a freeze, a keyboard, mouse or screen, a client hung at the link's loss, a change of seat asked for over a
+    # fault) and never after a change of seat asked for over anything else, reported or not
+    info = a["info"]
+    hw = {b for b, rec in info.items() if rec["kind"] in AK.HARDWARE}
+    req = {b for b, rec in info.items() if rec["kind"] == "move"}
+    ok(sa["moved"] == hw | req, "SF21 every move to a spare is a fault's or a change of seat's")
+    ok(sa["moved_restarted"] == hw, "SF21 the workstation left restarted after every fault and after no change of seat "
+       "(%d and %d)" % (len(sa["moved_restarted"] - hw), len(hw - sa["moved_restarted"])))
+    ok(sa["spare_req_rep"] - sa["spare_fault_rep"] <= req and sa["spare_fault_rep"] <= hw,
+       "SF22 a reported change of seat over a fault is a fault's move, over anything else a request's")
     # each device reaches every form
     dev = a["device"]
-    for k in ("quiet_restart", "unreported_pause", "switch_off", "fault", "hall_stop"):
+    for k in ("quiet_restart", "unreported_pause", "switch_off", "fault", "hall_stop", "silent_hw_move", "silent_req_move"):
         per = {f: 0 for f in S.F27}
         for b in dev[k]:
             per[form_of[b]] += 1
@@ -377,12 +390,11 @@ def ask_checks(target, W, X, C):
         ok(cv == sb["golden"], "SF18 the centre's reading (%s NET_BACK) against the clients': %d and %d differ"
            % ("first" if first else "last", len(cv - sb["golden"]), len(sb["golden"] - cv)))
     # every loss of a centre's link is logged by three or more clients; every loss one client logged alone is a
-    # workstation's own connection, eight minutes or more, with no other client logging anything there within 45 minutes
+    # workstation's own connection, with no other client logging anything there within 45 minutes
     ivs, _, _ = S.net_intervals(ev)
     net = ev[ev["event"].isin(["NET_LOST", "NET_BACK"])]
     lone = [iv for iv in ivs if not iv["shared"]]
     for iv in lone:
-        ok(iv["z"] - iv["a"] >= pd.Timedelta(minutes=8), "a lone loss lasts eight minutes or more")
         near = net[(net["centre_code"] == iv["cc"]) & (net["t"] > iv["a"] - pd.Timedelta(minutes=45))
                    & (net["t"] < iv["z"] + pd.Timedelta(minutes=45))]
         ok(set(near["booking_ref"]) == {iv["b"]}, "a lone loss has no other client's row within 45 minutes")

@@ -239,7 +239,13 @@ def flagged(table, route):
 # ------------------------------------------------------------------ ask A: sittings interrupted
 FAILURE_WORDS = ("stopped responding", "froze", "hung", "not responding", "crashed", "frozen", "stopped working",
                  "went blank", "stuck")
+FAULT_WORDS = ("flicker", "sticking", "jumping", "going dark")       # a change of seat asked for over a fault
+NOUN_WORDS = ("screen", "keyboard", "mouse", "keys")
+MOVE_WORDS = ("asked to move", "requested another seat")
 IST = pd.Timedelta(hours=5, minutes=30)
+DATE_FORMATS = ("%d/%m/%Y", "%d.%m.%Y", "%d-%m-%Y", "%d %b %Y", "%d-%b-%y", "%Y-%m-%d")
+HALVES = {"AM": "AM", "MORNING": "AM", "FN": "AM", "BATCH 1": "AM", "PM": "PM", "AFTERNOON": "PM", "AN": "PM",
+          "BATCH 2": "PM"}
 
 
 def events(target):
@@ -248,15 +254,27 @@ def events(target):
     return ev
 
 
+def _dates(col):
+    """a centre's dates in the one format that reads all of them (day before month where both could)"""
+    for f in DATE_FORMATS:
+        try:
+            return [dt.datetime.strptime(v.strip(), f).date().isoformat() for v in col]
+        except ValueError:
+            continue
+    raise ValueError("no date format reads %s" % col[:3])
+
+
 def reports(target):
-    """every invigilator report: (centre code, ISO date, session, local time, workstation, text)"""
+    """every invigilator report: (centre code, ISO date, session, local time, workstation, text); each centre's sheet
+    keeps its own columns (date, session, time, workstation, report, in that order), dates and session names"""
     rep = pd.read_excel(os.path.join(target, FILES["incidents"]), sheet_name=None, dtype=str, keep_default_na=False)
     code = {v: k for k, v in CODE_CENTRE.items()}
     out = []
     for centre, df in rep.items():
-        for r in df.itertuples(index=False):
-            d = dt.datetime.strptime(r.Date, "%d/%m/%Y").date().isoformat()
-            out.append((code[centre], d, r.Session, r.Time, r.Workstation, str(r.Report)))
+        cols = list(df.columns)
+        ds = _dates(list(df[cols[0]]))
+        for d, sess, tm, wsx, text in zip(ds, df[cols[1]], df[cols[2]], df[cols[3]], df[cols[4]]):
+            out.append((code[centre], d, HALVES[sess.strip().upper()], tm.strip().replace(".", ":"), wsx.strip(), str(text)))
     return out
 
 
@@ -311,16 +329,31 @@ def per_form(D, bookings):
     return counts
 
 
+def session_keys(ev):
+    """each booking's session (centre, local date, half by its clock start) and each session's last SESSION_END"""
+    st = ev[ev["event"] == "SESSION_START"].groupby("booking_ref").agg(t=("t", "min"), cc=("centre_code", "first"))
+    en = ev[ev["event"] == "SESSION_END"].groupby("booking_ref")["t"].max()
+    key, last = {}, {}
+    for b, r in st.iterrows():
+        loc = r["t"] + IST
+        k = (r["cc"], loc.date(), "AM" if loc.hour < 12 else "PM")
+        key[b] = k
+        last[k] = max(last.get(k, en[b]), en[b])
+    return key, last
+
+
 def ask_a_sets(target, ev=None):
     """the sets a response could build for ask A: each WS_FAIL as logged, inside its sitting, or followed by the
-    sitting's stop; the restarts in place (a WS_REBOOT of the sitting's workstation before its resume there); the
-    failures, pauses and changes of seat the invigilators reported; the power cut"""
+    sitting's stop; the restarts in place (a WS_REBOOT of the sitting's workstation before its resume there); the moves to
+    a spare, with whether the workstation left was restarted before the session's last sitting ended; the failures,
+    pauses and changes of seat the invigilators reported; the power cut"""
     ev = events(target) if ev is None else ev
     sit = ev[ev["booking_ref"] != ""].sort_values(["t", "event"])
     by_b = {b: g for b, g in sit.groupby("booking_ref")}
     end = sit[sit["event"] == "SESSION_END"].groupby("booking_ref")["t"].max()
-    out = {k: set() for k in ("fail_any", "fail_in", "fail_stop", "restarted", "spare_rep", "inplace_rep", "late_rep",
-                              "unexplained")}
+    out = {k: set() for k in ("fail_any", "fail_in", "fail_stop", "restarted", "moved", "moved_restarted", "spare_rep",
+                              "inplace_rep", "late_rep", "unexplained", "spare_unexplained", "spare_req_rep",
+                              "spare_fault_rep", "spare_noun_rep")}
     for r in sit[sit["event"] == "WS_FAIL"].itertuples(index=False):
         out["fail_any"].add(r.booking_ref)
         if r.t < end.get(r.booking_ref, r.t):
@@ -333,11 +366,19 @@ def ask_a_sets(target, ev=None):
     for r in ev[ev["event"] == "WS_REBOOT"].itertuples(index=False):
         boots.setdefault((r.centre_code, r.workstation), []).append(r.t)
     resumes = sit[sit["event"] == "SESSION_RESUME"]
+    key, last = session_keys(ev)
     for r in resumes.itertuples(index=False):
-        if r.workstation.startswith("SP"):
-            continue
         g = by_b[r.booking_ref]
-        prev = g[g["t"] < r.t]["t"].max()
+        before = g[g["t"] < r.t]
+        prev = before["t"].max()
+        if r.workstation.startswith("SP"):
+            # a move to a spare: was the workstation the sitting left restarted before the session's last sitting ended?
+            out["moved"].add(r.booking_ref)
+            left = before.iloc[-1]
+            hi = last[key[r.booking_ref]]
+            if any(left["t"] < t <= hi for t in boots.get((r.centre_code, left["workstation"]), [])):
+                out["moved_restarted"].add(r.booking_ref)
+            continue
         if any(prev < t <= r.t for t in boots.get((r.centre_code, r.workstation), [])):
             out["restarted"].add(r.booking_ref)
     at_min = {}
@@ -363,6 +404,14 @@ def ask_a_sets(target, ev=None):
                     hits = [q for q in hits if q.workstation == wsx]
         for q in hits:
             explained.add(q.booking_ref)
+        if sp and hits:
+            got = {q.booking_ref for q in hits}
+            if any(w in low for w in MOVE_WORDS):
+                out["spare_req_rep"] |= got
+                if any(w in low for w in FAULT_WORDS):
+                    out["spare_fault_rep"] |= got
+            if any(w in low for w in NOUN_WORDS):
+                out["spare_noun_rep"] |= got
         if not failure:
             continue
         if sp and hits:
@@ -376,30 +425,52 @@ def ask_a_sets(target, ev=None):
             out["late_rep"] |= set(near["booking_ref"])
     halls = hall_stops(target, ev)
     for r in resumes.itertuples(index=False):
-        if r.booking_ref not in explained and r.booking_ref not in halls and not r.workstation.startswith("SP"):
-            out["unexplained"].add(r.booking_ref)
+        if r.booking_ref not in explained and r.booking_ref not in halls:
+            if r.workstation.startswith("SP"):
+                out["spare_unexplained"].add(r.booking_ref)
+            else:
+                out["unexplained"].add(r.booking_ref)
     out["power"] = power_cut(target, ev)
+    # composed reads of the moves: every move but a reported change of seat; every move but a reported change of seat
+    # for something other than a fault
+    out["moves_but_req"] = out["moved"] - out["spare_req_rep"]
+    out["moves_but_req_nofault"] = out["moved"] - (out["spare_req_rep"] - out["spare_fault_rep"])
     return out
 
 
+# the careful reads of ask A since the round 3 readers (every one misses every form) and the older, less careful reads
+# (each a mirror: at most two forms)
+A_CAREFUL = ("v3_route", "v3_fault_reasons", "v3_unexplained_moves", "v3_reasons_unexplained", "moves_but_requests",
+             "moves_but_plain_requests", "nouns", "every_move")
+A_MIRRORS = ("v2_route", "in_sitting", "reboots", "unexplained", "ws_fail_only")
 A_ROUTES = {
-    "golden": ("fail_stop", "restarted", "spare_rep", "power"),
+    "golden": ("fail_stop", "restarted", "moved_restarted", "power"),
+    # the round 3 readers' route: the WS_FAIL a sitting stopped after, the restarts in place, the failures reported with
+    # the spare they resumed on, the power cut
+    "v3_route": ("fail_stop", "restarted", "spare_rep", "power"),
+    "v3_fault_reasons": ("fail_stop", "restarted", "spare_rep", "spare_fault_rep", "power"),
+    "v3_unexplained_moves": ("fail_stop", "restarted", "spare_rep", "spare_unexplained", "power"),
+    "v3_reasons_unexplained": ("fail_stop", "restarted", "spare_rep", "spare_fault_rep", "spare_unexplained", "power"),
+    "moves_but_requests": ("fail_stop", "restarted", "moves_but_req", "power"),
+    "moves_but_plain_requests": ("fail_stop", "restarted", "moves_but_req_nofault", "power"),
+    "nouns": ("fail_stop", "restarted", "spare_rep", "spare_noun_rep", "power"),
+    "every_move": ("fail_stop", "restarted", "moved", "power"),
     "v2_route": ("fail_any", "spare_rep", "inplace_rep", "late_rep", "power"),
     "in_sitting": ("fail_in", "spare_rep", "inplace_rep", "late_rep", "power"),
-    "stopped_fail": ("fail_stop", "spare_rep", "inplace_rep", "late_rep", "power"),
     "reboots": ("fail_any", "restarted", "spare_rep", "power"),
-    "in_sitting_reboots": ("fail_in", "restarted", "spare_rep", "power"),
     "unexplained": ("fail_stop", "spare_rep", "inplace_rep", "unexplained", "power"),
     "ws_fail_only": ("fail_any",),
-    "no_power": ("fail_stop", "restarted", "spare_rep"),
+    "no_power": ("fail_stop", "restarted", "moved_restarted"),
 }
 
 
 def ask_a(target, T=None, D=None, path="golden", sets=None):
     """each 2027 sitting a failure of the candidate's workstation or its power interrupted: a WS_FAIL the sitting stopped
-    after (its next event a resume or its end), a restart of its workstation before it resumed there, a failure of a
-    computer, keyboard, mouse or screen the invigilators reported with the spare it resumed on, and the sittings running
-    at Kochi when the power cut began; pauses, changes of seat and the two hall stops are not failures"""
+    after (its next event a resume or its end), a restart of its workstation before it resumed there, a move to a spare
+    after which the workstation left was restarted before the session's last sitting ended (the technician restarts a
+    workstation left for a fault; one left at the candidate's request for anything else stays as it was), and the
+    sittings running at Kochi when the power cut began; pauses, other changes of seat and the two hall stops are not
+    failures"""
     D = D or load(target)
     sets = sets or ask_a_sets(target)
     out = set().union(*[sets[k] for k in A_ROUTES[path]])

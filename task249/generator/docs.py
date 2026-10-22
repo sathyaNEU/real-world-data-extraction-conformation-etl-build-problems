@@ -2,18 +2,38 @@
 panel's 2027 minutes (pdf); the item bank snapshot, the invigilators' incident reports and the test centres'
 capacity (xlsx); the data notes (md)."""
 import datetime as dt
+import os
 
 from openpyxl import Workbook
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
+from reportlab import rl_config
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 import params as P
 import records as RC
+
+
+_TTF = "/usr/share/fonts/truetype/liberation"
+pdfmetrics.registerFont(TTFont("LiberationSans", os.path.join(_TTF, "LiberationSans-Regular.ttf")))
+pdfmetrics.registerFont(TTFont("LiberationSans-Bold", os.path.join(_TTF, "LiberationSans-Bold.ttf")))
+SANS, SANS_BOLD = "LiberationSans", "LiberationSans-Bold"
+rl_config.canvas_basefontname = SANS            # pages start in the document's own font
+
+
+def _retag(path, tags):
+    """the embedded subsets' six-letter tags, one per font, in place of the writer's AAAAAA"""
+    b = open(path, "rb").read()
+    for name, tag in tags:
+        b = b.replace(b"AAAAAA+" + name, tag + b"+" + name)
+    assert b"AAAAAA+" not in b
+    open(path, "wb").write(b)
 
 
 def _addr(who):
@@ -22,12 +42,12 @@ def _addr(who):
 
 def _styles():
     ss = getSampleStyleSheet()
-    body = ParagraphStyle("body", parent=ss["Normal"], fontName="Helvetica", fontSize=9.6, leading=13.4, spaceAfter=5)
-    h1 = ParagraphStyle("h1", parent=ss["Heading1"], fontName="Helvetica-Bold", fontSize=13.5, leading=17, spaceAfter=4)
-    h2 = ParagraphStyle("h2", parent=ss["Heading2"], fontName="Helvetica-Bold", fontSize=10.5, leading=14,
+    body = ParagraphStyle("body", parent=ss["Normal"], fontName=SANS, fontSize=9.6, leading=13.4, spaceAfter=5)
+    h1 = ParagraphStyle("h1", parent=ss["Heading1"], fontName=SANS_BOLD, fontSize=13.5, leading=17, spaceAfter=4)
+    h2 = ParagraphStyle("h2", parent=ss["Heading2"], fontName=SANS_BOLD, fontSize=10.5, leading=14,
                         spaceBefore=8, spaceAfter=4, keepWithNext=1)
     small = ParagraphStyle("small", parent=body, fontSize=8, leading=10.5, textColor=colors.HexColor("#444444"))
-    cell = ParagraphStyle("cell", fontName="Helvetica", fontSize=8.0, leading=9.8)
+    cell = ParagraphStyle("cell", fontName=SANS, fontSize=8.0, leading=9.8)
     return body, h1, h2, small, cell
 
 
@@ -42,7 +62,7 @@ def _grid(rows, widths, cell):
 def _footer(text):
     def foot(canvas, d):
         canvas.saveState()
-        canvas.setFont("Helvetica", 7.5)
+        canvas.setFont(SANS, 7.5)
         canvas.setFillColor(colors.HexColor("#555555"))
         canvas.drawString(20 * mm, 10 * mm, text)
         canvas.drawRightString(A4[0] - 20 * mm, 10 * mm, "Page %d" % d.page)
@@ -168,6 +188,7 @@ def regulations(path, F):
     _sections(s, sec, body, h2)
     doc.build(s, onFirstPage=_footer("%s examination regulations" % P.EXAM),
               onLaterPages=_footer("%s examination regulations" % P.EXAM))
+    _retag(path, [(b"LiberationSans-Bold", b"QHVKWB"), (b"LiberationSans", b"JRZEMT")])
 
 
 # ------------------------------------------------------------------ the panel's minutes (pdf)
@@ -196,6 +217,7 @@ def minutes(path, F, counts):
         for p in paras:
             s.append(Paragraph(p, body))
     doc.build(s, onFirstPage=_footer("Item review panel minutes 2027"), onLaterPages=_footer("Item review panel minutes 2027"))
+    _retag(path, [(b"LiberationSans-Bold", b"GXPLSA"), (b"LiberationSans", b"WNCYDF")])
 
 
 # ------------------------------------------------------------------ workbooks
@@ -219,15 +241,20 @@ def bank_xlsx(path, bank):
 
 
 def incidents_xlsx(path, rep):
+    """each centre keeps its own sheet, in its own columns, dates and names for the two sessions"""
+    widths = {"Chennai": [11, 9, 7, 12, 110], "Bengaluru": [12, 11, 10, 9, 104], "Hyderabad": [11, 9, 7, 8, 100],
+              "Pune": [11, 9, 7, 10, 96], "Kochi": [11, 9, 7, 12, 92], "Noida": [10, 11, 11, 7, 100]}
     wb = Workbook()
     first = True
     for c in P.CENTRES:
         ws = wb.active if first else wb.create_sheet()
         first = False
         ws.title = c
+        fmt = P.SHEETS[c]
         part = rep[rep["centre"] == c]
-        rows = [(r.date.strftime("%d/%m/%Y"), r.session, r.time, r.workstation, r.incident) for r in part.itertuples()]
-        _sheet(ws, ["Date", "Session", "Time", "Workstation", "Report"], rows, [11, 9, 7, 12, 110])
+        rows = [(r.date.strftime(fmt["date"]), fmt["sess"][0 if r.session == "AM" else 1], r.time, r.workstation,
+                 r.incident) for r in part.itertuples()]
+        _sheet(ws, fmt["cols"], rows, widths[c])
     wb.save(path)
 
 
@@ -238,7 +265,7 @@ def capacity_xlsx(path):
     rows = []
     for c in P.CENTRES:
         n = RC.WORKSTATIONS[c]
-        rows.append((c, P.CENTRE_CODE[c], 1 if n <= 42 else 2, n, RC.SPARES, 2, max(2, n // 15),
+        rows.append((c, P.CENTRE_CODE[c], 1 if n <= 42 else 2, n, RC.SPARES[c], 2, max(2, n // 15),
                      "09:30" , "14:30"))
     _sheet(ws, ["Centre", "Code", "Rooms", "Workstations", "Spare workstations", "Sessions a day", "Invigilators a session",
                 "Morning start", "Afternoon start"], rows, [12, 7, 7, 13, 17, 14, 21, 14, 16])

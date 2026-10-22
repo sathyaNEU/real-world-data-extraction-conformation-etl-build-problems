@@ -13,7 +13,7 @@ import sim
 IST = dt.timedelta(hours=5, minutes=30)
 SESSION_START = {"AM": (9, 30), "PM": (14, 30)}
 WORKSTATIONS = {"Chennai": 60, "Bengaluru": 42, "Hyderabad": 40, "Pune": 30, "Kochi": 24, "Noida": 28}
-SPARES = 4
+SPARES = {"Chennai": 6, "Bengaluru": 4, "Hyderabad": 4, "Pune": 3, "Kochi": 3, "Noida": 3}
 MIGRATION = dt.date(2027, 1, 11)
 SNAPSHOT = dt.date(2027, 12, 31)
 PANEL = {4: dt.date(2027, 4, 13), 5: dt.date(2027, 7, 13), 6: dt.date(2027, 10, 12), 7: dt.date(2027, 12, 14),
@@ -64,11 +64,15 @@ def candidate_numbers(W, rs):
     for r in rows:
         first.setdefault(r["cand"], r["w"])
     order = sorted(first, key=lambda k: (first[k], rs.uniform()))
-    base = {}
+    # a window's first-time candidates register over the twelve weeks before it, in this order
+    per_w, reg_at = {}, {}
     for k in order:
-        y = 2026 if first[k] < 4 else 2027
-        serial[y] += 1
-        base[k] = cand_no(y, serial[y])
+        per_w.setdefault(first[k], []).append(k)
+    for w, ks in per_w.items():
+        start = dt.datetime.combine(window_day(w, 0) - dt.timedelta(days=88), dt.time(9))
+        for q, k in enumerate(ks):
+            reg_at[k] = start + dt.timedelta(days=84 * q / len(ks))
+    base = {k: "@%06d" % q for q, k in enumerate(order)}           # issued below, with the changes
     num, changes, current = [], [], dict(base)
     held = {k: [(dt.date.min, v)] for k, v in base.items()}      # each candidate's numbers and when each began
     for r in rows:
@@ -86,17 +90,20 @@ def candidate_numbers(W, rs):
             current[k] = newno
             held[k].append((on, newno))
         num.append(current[k])
-    # a new number carries the year it was issued, serials running in the order of the changes
+    # the register issues numbers as it goes: a first-time candidate's carries the year of their first window, a new
+    # one the year of the change, the serials running in the order the register made them
+    events = [(2026 if first[k] < 4 else 2027, reg_at[k], base[k]) for k in order]
+    events += [(int(c["changed_on"][:4]), dt.datetime.fromisoformat(c["changed_on"]) + dt.timedelta(hours=11),
+                c["candidate_no"]) for c in changes]
     issued = {}
-    for c in sorted(changes, key=lambda c: (c["changed_on"], c["candidate_no"])):
-        y = int(c["changed_on"][:4])
+    for y, t, ph in sorted(events):
         serial[y] += 1
-        issued[c["candidate_no"]] = cand_no(y, serial[y])
-    num = [issued.get(n, n) for n in num]
+        issued[ph] = cand_no(y, serial[y])
+    num = [issued[n] for n in num]
     for c in changes:
-        c["previous_candidate_no"] = issued.get(c["previous_candidate_no"], c["previous_candidate_no"])
+        c["previous_candidate_no"] = issued[c["previous_candidate_no"]]
         c["candidate_no"] = issued[c["candidate_no"]]
-    held = {k: [(d, issued.get(n, n)) for d, n in v] for k, v in held.items()}
+    held = {k: [(d, issued[n]) for d, n in v] for k, v in held.items()}
     reg = pd.DataFrame(changes)
     if len(reg):
         reg = reg.sort_values(["changed_on", "candidate_no"]).reset_index(drop=True)

@@ -6,14 +6,14 @@
  "objective": "data-quality-monitoring",
  "stage": 4,
  "stage_name": "check",
- "updated": "2026-10-21",
+ "updated": "2026-10-22",
  "stump": "A competent analyst reads each resit candidate's gain as the excess on the items an earlier sitting or review had shown them (or their item-model siblings) over their own difficulty-adjusted performance on the other items and flags CC27-A, C, G and H; the other items share the four hours, and on CC27-B and D, where four in ten candidates run out of time, most of the gain is the items resit candidates reached only because the items they recognised took them less time.",
  "architecture": 6,
  "loops": 0,
  "precut": "PASS (51 checks, 0 FAIL, 0 WARN)",
  "leak": {
   "leak_py": "REVIEW (no LEAK): the regulations' 1.0 line and estimand, field names in the data notes, reviews still booked after 17 January 2028",
-  "reader": "round 1 (ff5b5f5b): call missed by both, asks 20/20 and 17/20 (FAIL); round 2 (2f190bcc): call missed by both (opus A, C, G, H; sonnet A, B, D, G), asks 20/20 each (FAIL); ask layer v3 re-sited, round 3 next"
+  "reader": "round 1 (ff5b5f5b): call missed by both, asks 20/20 and 17/20 (FAIL); round 2 (2f190bcc): call missed by both (opus A, C, G, H; sonnet A, B, D, G), asks 20/20 each (FAIL); round 3 (9572c4c8, both spawned without their effort so at max against the medium spec): opus missed the call (A, C, G, H), sonnet landed it (the time freed modelled, 95 minutes), both kept the ten ask A figures and missed the ten ask B (FAIL); the author chose to re-site ask A (v4) and re-read the pack with two medium readers, shipping only if both miss the call"
  },
  "duplicate_check": {
   "heart": "WARN (overuse.gate_g, repeat.decision, repeat.question_form; NOTEs differentiated against task193 v2 and task254 v3)",
@@ -28,7 +28,7 @@
   "pack": "ff5b5f5b"
  },
  "returned": [],
- "resume": "Stage 4 round 3 on the v3 pack. Round 2 (2f190bcc): both readers missed the call (opus A, C, G and H with the siblings; sonnet A, B, D and G with the time freed but no siblings) and kept all 20 ask figures each by joining the reports to the resumes by spare and minute and overlapping each client's losses with the clock. Ask layer v3 (generator/asks.py): ask A's WS_FAIL counts only where the sitting stopped there (switched-off finished workstations and a workstation's own connection log WS_FAIL too), restarts in place show only as WS_REBOOT rows with no booking before the resume (half unreported, unreported pauses beside them); ask B drops a loss one client logged alone (its own connection) and the two hall stops (Chennai fire alarm 14 May, Hyderabad generator switch 16 November) where every clock stopped before the router went off. Realism: spares occupied properly, the first-time pool varies by window, distractors weighted per item, report wording varied. checks 28,520 passed, verifier agrees, pair ceiling 29.9 (cracker 0/20, mirror 1/20), precut PASS 51. Next: two isolated readers (sonnet, opus) and the determinism judge on the new zip; score with score_reader.py; ship if both miss the call and the asks stay under 35 per cent.",
+ "resume": "Stage 4 round 4 on the v4 pack (target.zip 535886d8). Ask A re-sited after round 3 (generator/asks.py, A_SHIFT 1211): a move to a spare counts where the workstation the sitting left logged a WS_REBOOT before the session's last sitting ended (the technician restarts a workstation left over a freeze, a faulty keyboard, mouse or screen, a client hung at the link's loss, or a change of seat asked for over a fault, and never one left at a candidate's request over glare, noise, a desk or a chair; SF21, SF22); each centre's incident sheet in its own columns, dates and session names; notes that stopped no clock; short lone link losses; PDFs in Liberation Sans with an IST creation time. checks 28,641 passed, verifier agrees, byte-identical rebuild, figures_check 36/36, precut PASS 51, leak.py REVIEW only, pair ceiling 28.5 (cracker 0/20, mirror 0/20). Running: two medium readers (sonnet r7, opus r8) and the a6r4 judge thread. Next: score both with score_reader.py; ship only if both miss the call; the ship report states that round 3's sonnet reader (max effort, out of spec) landed the call.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -67,6 +67,10 @@
   {
    "architecture": 6,
    "status": "stage 4 round 1 2026-10-21: call held against both readers, ask layer cracked (20/20, 17/20); asks re-sited, target.zip 2f190bcc"
+  },
+  {
+   "architecture": 6,
+   "status": "stage 4 round 3 2026-10-21 (9572c4c8): opus reader missed the call, sonnet reader (max effort, out of spec) landed it; ask A cracked by both, ask B held by both; judge DETERMINISTIC FIX_NOW applied; the author chose 2026-10-22 to re-site ask A and re-read in spec"
   }
  ]
 }

@@ -34,6 +34,17 @@ def scrub(path, producer, stamp):
     assert not names and not bad, (path, names, bad)
 
 
+def pdf_clock(path, stamp):
+    """give a scrubbed PDF's creation and modification dates the time of day and the zone they were saved in (India),
+    byte for byte in place of the midnight UTC the scrub writes"""
+    b = open(path, "rb").read()
+    ymd, hms = stamp[:10].replace("-", ""), stamp[11:19].replace(":", "")
+    old = ("D:%s000000+00'00'" % ymd).encode()
+    new = ("D:%s%s+05'30'" % (ymd, hms)).encode()
+    assert len(old) == len(new) and b.count(old) >= 1, path
+    open(path, "wb").write(b.replace(old, new))
+
+
 def _core(parts, created, modified):
     core = parts["docProps/core.xml"]
     who = re.search(rb"<dc:creator[^>]*>([^<]*)</dc:creator>", core)

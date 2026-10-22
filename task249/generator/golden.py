@@ -96,9 +96,11 @@ def workbook(path, fig):
         "Interrupted sittings (7.4): a WS_FAIL counts where the sitting stopped there (its next event is its resume or "
         "its end); not where its own client carried on logging, nor after the sitting had ended (a finished candidate's "
         "workstation switched off). A sitting that resumed on its own workstation after that workstation restarted counts, "
-        "reported or not, as do the failures of a computer, keyboard, mouse or screen the invigilators reported with the "
-        "spare it resumed on, and the sittings running at Kochi when the power cut of %s began. Pauses, changes of seat "
-        "a candidate asked for and the two hall stops are not failures." % fig["asks"]["power_day"],
+        "reported or not. A sitting that went on on a spare counts where the workstation it left was restarted before the "
+        "session's last sitting ended, reported or not: the technician restarts a workstation left over a freeze or a "
+        "faulty keyboard, mouse or screen, and not one left at a candidate's request over glare, noise, a desk or a chair. "
+        "The sittings running at Kochi when the power cut of %s began count. Pauses, those changes of seat and the two "
+        "hall stops are not failures." % fig["asks"]["power_day"],
         "Sittings that ran in part without the link (7.4): the examination clock running while the centre's link was "
         "down, from each client's NET_LOST (or its login, where it logged in with the link down) to its NET_BACK or the "
         "sitting's end. A loss one workstation's client logged alone was that workstation's own connection, not the "
