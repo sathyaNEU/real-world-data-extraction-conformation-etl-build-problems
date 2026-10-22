@@ -1,236 +1,429 @@
-"""The world of task482 (architecture 4): the Brannagh Statistics Office's residential property price index for
-sixteen local authority areas, read by the Minister for Housing against the 8 per cent line for designating rapid
-price growth areas for 2027.
+"""The truth behind task482's pack: the Brackett Plains Community College System's Quantitative Placement Inventory
+(QPI), its item bank, its 2026 testing year on two delivery platforms, and Form 27A. Nothing outside the generator
+reads this module except pack.py (which writes the files from it) and checks.py (which compares the cut pack with it).
 
-A dwelling's log price is its area's level on the sale day, its electoral division's premium, its type's, a floor
-area elasticity and a new-dwelling premium, with noise. Each area's price level moves at one steady rate across the
-two index years (October 2024 to September 2025, October 2025 to September 2026), so the change for an unchanged
-dwelling is the same everywhere in the area. What moves between the years is which dwellings sell: in some areas the
-second year sells far more second-hand homes in the cheaper or the dearer electoral divisions, or a run of large new
-homes, or more apartments.
-
-    x = build()    the truth: areas, electoral divisions, dwellings, sales"""
+The response model is Rasch with a linear position term: a student of ability theta answers an item of position-free
+difficulty a, presented at position p, correctly with probability 1 / (1 + exp(-(theta - a - GAMMA p))). A bank
+difficulty is the difficulty the item showed where it was calibrated: the anchor block in place (positions 1 to 20),
+the field-tested items in the old platform's field-test section (positions 61 to 70, reversed on version B, so a
+mean position of 65.5)."""
 import datetime as dt
 
 import numpy as np
 
-SEED = 4824
-LINE = 8.0
-Y1 = (dt.date(2024, 10, 1), dt.date(2025, 9, 30))
-Y2 = (dt.date(2025, 10, 1), dt.date(2026, 9, 30))
-EXTRACT = dt.date(2026, 10, 15)
-VAT = 0.135
-TYPES = ["detached", "semi-detached", "terraced", "apartment"]
-TEFF = {"detached": 0.22, "semi-detached": 0.06, "terraced": 0.0, "apartment": -0.04}
-TFLOOR = {"detached": 152.0, "semi-detached": 112.0, "terraced": 91.0, "apartment": 68.0}
-TMIX = [0.27, 0.31, 0.22, 0.20]
-ELAST = 0.80
-NEWP = 0.10
-NOISE = 0.14
+SEED = 4826
+GAMMA = 0.0075                      # logits per position
+FT_MEAN_POS = 65.5                 # old platform field-test section, versions A and B
+UNIQUE_FT_SLOTS = list(range(21, 71))   # new platform: unique and field-test items shuffled together
+STANDARDS = {"CA": 0.20, "CCA": -0.70}  # 2022 standard setting, bank scale (logits)
+BU0, BU1 = 500.0, 100.0            # bank units: 500 + 100 x logit
+PRACTICE = 0.12                    # a second sitting's gain
+LEVELS = ("CA", "CCA", "DM")
 
-# area code, name, second-hand sales a year, log level, annual growth of a house (per cent), electoral divisions,
-# place, knobs:
-#   tilt  the second year's lean of second-hand sales toward the dearer (+) or cheaper (-) electoral divisions
-#   new   the share of the second year's sales that are new dwellings (the first year's is 4 per cent), built in the
-#         divisions at rank `where` (0 the cheapest)
-#   apt   the lean of both years' sales toward apartments (log odds), against a stock with few of them
-#   ga    the annual growth of an apartment (per cent), where it differs from a house's
-# place: "o" over the line on the golden and every route; "u" under on all; "c" over on the golden and the pooled
-# regression, under on the summaries by type (sales leaning cheap); "d" the reverse (leaning dear); "w" over on the
-# golden, under on the pooled regression (houses rising, apartments flat, the sales full of apartments); "v" the
-# reverse (apartments rising)
-AREAS = [
-    ("KB", "Kilbrannagh", 3100, 12.72, 11.6, 10, "o", dict(tilt=0.0, new=0.05, where=4, apt=0.0, ga=None)),
-    ("AC", "Ardcullen", 2400, 12.55, 10.3, 9, "c", dict(tilt=-0.26, new=0.04, where=3, apt=0.0, ga=None)),
-    ("LF", "Lisnafeen", 1900, 12.41, 4.2, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0, ga=None)),
-    ("RG", "Rathgowan", 2700, 12.63, 5.9, 9, "d", dict(tilt=0.26, new=0.04, where=3, apt=0.0, ga=None)),
-    ("TV", "Tullyvane", 1600, 12.30, 3.1, 8, "u", dict(tilt=0.0, new=0.05, where=3, apt=0.0, ga=None)),
-    ("MR", "Moyrath", 2200, 12.48, 11.4, 9, "w", dict(tilt=0.0, new=0.05, where=4, apt=1.25, ga=1.0)),
-    ("GS", "Glenaskin", 1800, 12.37, 12.8, 8, "o", dict(tilt=0.0, new=0.05, where=3, apt=0.0, ga=None)),
-    ("DM", "Dunmarra", 2900, 12.69, 10.2, 10, "c", dict(tilt=-0.25, new=0.04, where=4, apt=0.0, ga=None)),
-    ("CT", "Clonteevan", 1500, 12.26, 6.1, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0, ga=None)),
-    ("IR", "Innishrue", 2000, 12.44, 4.4, 9, "v", dict(tilt=0.0, new=0.05, where=4, apt=1.25, ga=18.0)),
-    ("CV", "Carrigvore", 2600, 12.60, 11.2, 9, "w", dict(tilt=0.0, new=0.04, where=4, apt=1.20, ga=0.5)),
-    ("KF", "Knockfeerin", 1700, 12.33, 2.4, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0, ga=None)),
-    ("BM", "Ballymarne", 2300, 12.52, 6.0, 9, "d", dict(tilt=0.25, new=0.04, where=4, apt=0.0, ga=None)),
-    ("CL", "Corlespie", 1400, 12.22, 3.8, 8, "u", dict(tilt=0.0, new=0.04, where=3, apt=0.0, ga=None)),
-    ("AV", "Annaghvale", 2100, 12.46, 12.1, 9, "o", dict(tilt=0.0, new=0.05, where=4, apt=0.0, ga=None)),
-    ("DS", "Drumshallon", 1900, 12.39, 4.8, 8, "v", dict(tilt=0.0, new=0.05, where=3, apt=1.20, ga=17.0)),
+SYSTEM = "Brackett Plains Community College System"
+OFFICE = "Office of Assessment and Placement"
+BOARD = "State Board of Community Colleges"
+TEST = "Quantitative Placement Inventory"
+OLD_PLATFORM = "Kestrel Testing Suite"
+NEW_PLATFORM = "Northgate Assess"
+BANK_SYSTEM = "Itemstore"
+PEOPLE = {"director": "Breanna Graham", "psychometrician": "John Huang"}
+
+# code, name, students in the 2026 testing year, ability mean, satellite centre
+COLLEGES = [
+    ("01", "Ashgrove Community College", 1150, -0.18, True),
+    ("02", "Bramblewood Community College", 980, -0.30, True),
+    ("03", "Calder Flats Community College", 870, -0.42, False),
+    ("04", "Dellwood Community College", 820, -0.12, True),
+    ("05", "Embervale Community College", 760, -0.36, False),
+    ("06", "Fennimore Ridge Community College", 700, -0.24, True),
+    ("07", "Gorseway Community College", 640, -0.48, False),
+    ("08", "Hartmoor Creek Community College", 600, -0.20, False),
+    ("09", "Iverton Prairie Community College", 560, -0.33, True),
+    ("10", "Juniper Lake Community College", 520, -0.27, False),
+    ("11", "Knollwood Community College", 470, -0.40, False),
+    ("12", "Lowland Mesa Community College", 380, -0.15, True),
+    ("13", "Marlow Fork Community College", 310, -0.52, False),
+    ("14", "Nettlefield Community College", 240, -0.22, False),
 ]
-STOCK = [0.31, 0.34, 0.22, 0.13]
-CODES = [a[0] for a in AREAS]
-NAMES = {a[0]: a[1] for a in AREAS}
-ED_WORDS = ["North", "South", "East", "West", "Urban", "Rural", "Upper", "Lower", "Central", "Bridge", "Mill", "Hill"]
+CODES = [c[0] for c in COLLEGES]
+NAMES = {c[0]: c[1] for c in COLLEGES}
+STRANDS = ("NS", "AE", "LE", "FG", "QR")
+STRAND_NAMES = {"NS": "Number sense and operations", "AE": "Algebraic expressions", "LE": "Linear equations and "
+                "inequalities", "FG": "Functions and graphs", "QR": "Quantitative reasoning"}
+
+YEAR_START = dt.date(2026, 3, 1)
+CUTOVER = dt.date(2026, 7, 1)
+REKEY = dt.date(2026, 10, 1)
+EXTRACT_END = dt.date(2027, 1, 31)
+# share of first sittings by month, March 2026 to January 2027
+MONTHS = [(2026, 3, .07), (2026, 4, .09), (2026, 5, .11), (2026, 6, .09), (2026, 7, .12), (2026, 8, .15),
+          (2026, 9, .06), (2026, 10, .06), (2026, 11, .08), (2026, 12, .09), (2027, 1, .08)]
+# local time is US Central; the new platform stamps UTC
+UTC_OFFSET_CDT, UTC_OFFSET_CST = 5, 6
+SESSION_STARTS = [(9, 0), (13, 0), (17, 30)]
 
 
-def days(a, b):
-    return [a + dt.timedelta(days=k) for k in range((b - a).days + 1)]
+def central_offset(d):
+    """Hours behind UTC on date d (US Central: daylight time from the second Sunday of March to the first Sunday of
+    November)."""
+    y = d.year
+    m3 = dt.date(y, 3, 8)
+    dst_start = m3 + dt.timedelta(days=(6 - m3.weekday()) % 7)
+    n1 = dt.date(y, 11, 1)
+    dst_end = n1 + dt.timedelta(days=(6 - n1.weekday()) % 7)
+    return UTC_OFFSET_CDT if dst_start <= d < dst_end else UTC_OFFSET_CST
 
 
-def _level(area, d, g):
-    """The area's log price level on day d: a steady rate through the two years, centred on 1 October 2025."""
-    t = (d - Y2[0]).days / 365.25
-    return area + np.log1p(g / 100.0) * t
+def P(theta, d):
+    return 1.0 / (1.0 + np.exp(-(theta - d)))
 
 
-def _sales(rng, code, n, lvl, g, eds, kn, year):
-    """One year's sales in one area: second-hand dwellings drawn from the stock (with the year's lean) and new ones."""
-    lo, hi = Y1 if year == 1 else Y2
-    dd = [d for d in days(lo, hi) if d.weekday() < 5]
-    ne = len(eds)
-    order = np.argsort([e["eff"] for e in eds])
-    rank = np.empty(ne)
-    rank[order] = np.linspace(-1, 1, ne)
-    tilt = kn["tilt"] if year == 2 else 0.0
-    w_ed = np.exp(tilt * 1.6 * rank) * np.array([e["size"] for e in eds])
-    w_ed = w_ed / w_ed.sum()
-    w_t = np.array(TMIX) * np.exp([0, 0, 0, kn["apt"]])
-    w_t = w_t / w_t.sum()
-    share_new = kn["new"] if year == 2 else 0.04
-    n_new = int(round(n * share_new / (1 - share_new)))
+def _items(rng, pool_seed=None):
+    """Every item the year touches, with its position-free difficulty and its bank record where it has one. The ready
+    pool's calibration error comes from its own stream, so the 2026 year is the same whatever it draws."""
+    rng_pool = np.random.default_rng(20000 + (POOL_SEED if pool_seed is None else pool_seed))
+    items = {}
+
+    def add(iid, legacy, strand, a, role, **kw):
+        items[iid] = dict(id=iid, legacy=legacy, strand=strand, a=float(a), role=role, **kw)
+
+    # anchor block: calibrated in place in the 2022 base calibration, kept in positions 1 to 20 on every form
+    anchor_strands = [s for s in STRANDS for _ in range(4)]
+    aA = rng.normal(-0.30, 0.75, 20)
+    for k in range(20):
+        num = 101 + k * 7
+        add("QPI-%s-%04d" % (anchor_strands[k], num), "%s%03d" % (anchor_strands[k], num), anchor_strands[k], aA[k],
+            "anchor", anchor_pos=k + 1)
+    # the ready pool: field-tested on the old platform in 2023 to 2025 (field-test section, mean position 65.5)
+    serial = 400
+    for year, count in ((2023, 50), (2024, 55), (2025, 55)):
+        for k in range(count):
+            s = STRANDS[(serial + k) % 5]
+            serial += 1
+            add("QPI-%s-%04d" % (s, serial), "%s%03d" % (s, serial % 1000) if year < 2025 else "", s,
+                rng.normal(0.20, 0.85), "pool", ft_year=year)
+    # Form 26A and 26B unique items (retired with the forms) and the 2026 field-test sets
+    for form in ("26A", "26B"):
+        for k in range(40):
+            s = STRANDS[k % 5]
+            serial += 1
+            add("QPI-%s-%04d" % (s, serial), "%s%03d" % (s, serial % 1000), s, rng.normal(0.15, 0.80), "unique",
+                form=form, slot=k + 1)
+    for st in range(8):
+        for k in range(10):
+            s = STRANDS[(st + k) % 5]
+            serial += 1
+            add("QPI-%s-%04d" % (s, serial), "%s%03d" % (s, serial % 1000), s, rng.normal(0.25, 0.90), "ft2026",
+                ft_set=st + 1, slot=k + 1)
+    # keys
+    for it in sorted(items):
+        items[it]["key"] = "ABCD"[int(rng.integers(4))]
+    # bank records: anchors in place, pool items at the field-test section's mean position
+    for it in sorted(items):
+        r = items[it]
+        if r["role"] == "anchor":
+            n = int(rng.integers(5600, 6400))
+            se = 1.0 / np.sqrt(n * 0.21)
+            r.update(n=n, se=se, bank=r["a"] + GAMMA * r["anchor_pos"] + rng.normal(0, se))
+        elif r["role"] in ("pool", "unique"):
+            n = int(rng.integers(540, 900))
+            se = 1.0 / np.sqrt(n * 0.21)
+            noise = rng.normal(0, se)
+            if r["role"] == "pool":
+                noise = rng_pool.normal(0, se)
+            r.update(n=n, se=se, bank=r["a"] + GAMMA * FT_MEAN_POS + noise)
+    return items
+
+
+def _assemble(items, rng):
+    """Forms 27A and 27B from the ready pool: eight items a strand each, spread over the pool's difficulty."""
+    pool = [items[i] for i in sorted(items) if items[i]["role"] == "pool"]
+    forms = {}
+    taken = set()
+    for form in ("27A", "27B"):
+        chosen = []
+        for s in STRANDS:
+            cand = sorted([r for r in pool if r["strand"] == s and r["id"] not in taken], key=lambda r: r["bank"])
+            idx = np.linspace(1, len(cand) - 2, 8).round().astype(int)
+            if form == "27B":
+                idx = np.clip(idx + 1, 0, len(cand) - 1)
+            pick = [cand[i] for i in idx]
+            chosen += pick
+            taken.update(p["id"] for p in pick)
+        order = rng.permutation(len(chosen))
+        forms[form] = [chosen[i]["id"] for i in order]
+    return forms
+
+
+def _students(rng):
+    studs = []
+    sid = 0
+    for code, name, n, mu, _ in COLLEGES:
+        for k in range(n):
+            sid += 1
+            age = 17 + int(rng.gamma(1.3, 2.4)) if rng.random() < 0.80 else int(rng.integers(24, 58))
+            age = min(age, 61)
+            dob = dt.date(2026 - age, 1, 1) + dt.timedelta(days=int(rng.integers(0, 365)))
+            studs.append(dict(k=sid, college=code, theta=float(rng.normal(mu, 1.0)), dob=dob,
+                              sex="F" if rng.random() < 0.56 else "M"))
+    return studs
+
+
+def _month_day(rng, after=None):
+    while True:
+        m = MONTHS[int(rng.choice(len(MONTHS), p=np.array([w for *_, w in MONTHS]) / sum(w for *_, w in MONTHS)))]
+        d = dt.date(m[0], m[1], 1) + dt.timedelta(days=int(rng.integers(0, 31)))
+        if d.month != m[1] or d > EXTRACT_END:
+            continue
+        if d.weekday() == 6 or (d.weekday() == 5 and rng.random() < 0.7):
+            continue
+        if after is None or d > after:
+            return d
+
+
+def _weekday_after(d, rng, lo, hi):
+    for _ in range(200):
+        e = d + dt.timedelta(days=int(rng.integers(lo, hi)))
+        if e.weekday() < 5:
+            return e
+    return None
+
+
+def form_items(items, form):
+    """Form 26A or 26B's scored items (anchors in place, then the unique items by slot) and the 2026 field-test sets."""
+    anchors = sorted([i for i in items.values() if i["role"] == "anchor"], key=lambda r: r["anchor_pos"])
+    unique = sorted([i for i in items.values() if i["role"] == "unique" and i["form"] == form], key=lambda r: r["slot"])
+    return [r["id"] for r in anchors], [r["id"] for r in unique]
+
+
+def ft_set_items(items, st):
+    return [r["id"] for r in sorted([i for i in items.values() if i["role"] == "ft2026" and i["ft_set"] == st],
+                                    key=lambda r: r["slot"])]
+
+
+def bank_expected(items, ids, theta):
+    return float(sum(P(theta, items[i]["bank"]) for i in ids))
+
+
+def program_scores(items, form):
+    """The programme's own 2026 placement scores for a form: the lowest whole raw score at or above the bank
+    curve at each standard (the bank difficulties as filed)."""
+    anc, uni = form_items(items, form)
+    return {lv: int(np.ceil(bank_expected(items, anc + uni, STANDARDS[lv]) - 1e-9)) for lv in ("CA", "CCA")}
+
+
+def level_of(raw, scores):
+    return "CA" if raw >= scores["CA"] else ("CCA" if raw >= scores["CCA"] else "DM")
+
+
+def _positions(platform, version, rng):
+    """Delivered positions of the 40 unique slots and the 10 field-test slots."""
+    if platform == "old":
+        u = np.arange(21, 61) if version == "A" else np.arange(60, 20, -1)
+        f = np.arange(61, 71) if version == "A" else np.arange(70, 60, -1)
+        return u, f
+    perm = rng.permutation(np.arange(21, 71))
+    return perm[:40], perm[40:]
+
+
+def _centres():
     out = []
-    for i in range(n + n_new):
-        new = i >= n
-        if new:
-            e = int(order[min(ne - 1, kn["where"] + int(rng.integers(0, 2)))])
-            t = TYPES[int(rng.choice(4, p=[0.38, 0.44, 0.12, 0.06]))]
-            fl = TFLOOR[t] * 1.18 * float(np.exp(rng.normal(0, 0.10)))
-            built = (2025 if year == 1 else 2026) - int(rng.integers(0, 2))
-        else:
-            e = int(rng.choice(ne, p=w_ed))
-            t = TYPES[int(rng.choice(4, p=w_t))]
-            fl = TFLOOR[t] * float(np.exp(rng.normal(0, 0.17)))
-            built = int(rng.choice([1965, 1975, 1985, 1995, 2002, 2006, 2012, 2018])) + int(rng.integers(0, 6))
-        d = dd[int(rng.integers(0, len(dd)))]
-        gt = kn["ga"] if (t == "apartment" and kn["ga"] is not None) else g
-        lp = (_level(lvl, d, gt) + eds[e]["eff"] + TEFF[t] + ELAST * np.log(fl / 100.0) + (NEWP if new else 0.0)
-              + float(rng.normal(0, NOISE)))
-        price = float(np.exp(lp))
-        price = round(price / 500.0) * 500.0 if price < 1e6 else round(price / 5000.0) * 5000.0
-        out.append({"area": code, "ed": eds[e]["code"], "type": t, "floor": round(fl, 1), "new": new,
-                    "built": built, "date": d, "price": price, "market": True, "bulk": None})
+    for code, name, _, _, sat in COLLEGES:
+        out.append(("TC%s1" % code, code, "main"))
+        if sat:
+            out.append(("TC%s2" % code, code, "satellite"))
     return out
 
 
-def _estimates(sales, stock):
-    """The routes on the truth (VAT-inclusive prices, market sales): the median change, type changes weighted by the
-    stock, the pooled regression with and without location, and the golden: each type's year effect from the regression
-    with location, weighted by the stock's value of that type (its count times the first year's mean price)."""
-    y = np.array([s["date"] >= Y2[0] for s in sales])
-    p = np.array([s["price"] for s in sales])
-    fl = np.array([s["floor"] for s in sales])
-    lp = np.log(p)
-    tt = np.array([s["type"] for s in sales])
-    out = {"median": 100 * (np.median(p[y]) / np.median(p[~y]) - 1)}
-    out["type_weighted"] = 100 * sum(stock[i] * (np.median(p[(tt == t) & y]) / np.median(p[(tt == t) & ~y]) - 1)
-                                     for i, t in enumerate(TYPES))
-    eds = sorted(set(s["ed"] for s in sales))
-    ee = np.array([s["ed"] for s in sales])
-
-    def reg(location, by_type=False):
-        cols = [np.ones(len(sales))]
-        cols += [(y & (tt == t)).astype(float) for t in TYPES] if by_type else [y.astype(float)]
-        cols += [np.log(fl / 100.0), np.array([s["new"] for s in sales], float)]
-        cols += [(tt == t).astype(float) for t in TYPES[1:]]
-        if location:
-            cols += [(ee == e).astype(float) for e in eds[1:]]
-        return np.linalg.lstsq(np.column_stack(cols), lp, rcond=None)[0]
-    out["hedonic_no_location"] = 100 * (np.exp(reg(False)[1]) - 1)
-    out["pooled"] = 100 * (np.exp(reg(True)[1]) - 1)
-    bt = reg(True, by_type=True)[1:5]
-    val = np.array([stock[i] * np.mean(p[(tt == t) & ~y]) for i, t in enumerate(TYPES)])
-    out["hedonic"] = 100 * (float(np.sum(val * np.exp(bt)) / np.sum(val)) - 1)
-    return out
+SWITCH_SEED = 68
+POOL_SEED = 29
+FEEDER = [0.30, 0.22, 0.16, 0.13, 0.11, 0.08]
+SIZES = {c[0]: c[2] for c in COLLEGES}
 
 
-def placed(place, e):
-    over = {k: v > LINE + 1.0 for k, v in e.items()}
-    under = {k: v < LINE - 1.0 for k, v in e.items()}
-    main = ("hedonic", "pooled", "type_weighted", "hedonic_no_location")
-    clear = abs(e["hedonic"] - LINE) >= 1.5
-    return clear and {
-        "o": all(over[k] for k in main),
-        "u": all(under[k] for k in main),
-        "c": over["hedonic"] and over["pooled"] and under["type_weighted"] and under["median"],
-        "d": under["hedonic"] and under["pooled"] and over["type_weighted"] and over["median"],
-        "w": over["hedonic"] and under["pooled"] and under["hedonic_no_location"],
-        "v": under["hedonic"] and over["pooled"] and over["hedonic_no_location"],
-    }[place]
-
-
-def stock_mix(rng, kn):
-    mix = np.array(STOCK) * rng.uniform(0.92, 1.08, 4)
-    return mix / mix.sum()
-
-
-def build():
+def everything(switch_seed=None):
     rng = np.random.default_rng(SEED)
-    x = {"areas": [], "eds": [], "sales": [], "est": {}}
-    for code, name, n, lvl, g, ne, place, kn in AREAS:
-        for tries in range(200):
-            words = list(rng.permutation(ED_WORDS))[:ne]
-            eff = rng.normal(0, 0.24, ne)
-            eff -= eff.mean()
-            eds = [{"code": "%s%03d" % (code, 11 + 7 * k), "name": "%s %s" % (name, words[k]), "area": code,
-                    "eff": float(eff[k]), "size": float(rng.uniform(0.6, 1.6))} for k in range(ne)]
-            mix = stock_mix(rng, kn)
-            sub = _sales(rng, code, n, lvl, g, eds, kn, 1) + _sales(rng, code, n, lvl, g, eds, kn, 2)
-            e = _estimates([s for s in sub], mix)
-            if placed(place, e):
-                break
+    rng_sw = np.random.default_rng(10000 + (SWITCH_SEED if switch_seed is None else switch_seed))
+    items = _items(rng)
+    forms = _assemble(items, rng)
+    studs = _students(rng)
+    scores26 = {f: program_scores(items, f) for f in ("26A", "26B")}
+    centres = _centres()
+    by_college = {}
+    for c in centres:
+        by_college.setdefault(c[1], []).append(c[0])
+    # identity: each college's student system issues 7-digit numbers from its own counter (the counters overlap)
+    csn_next = {code: 1000000 + int(rng.integers(0, 600000)) for code in CODES}
+    used_sys, used_ss = set(), set()
+
+    def new_id(pool):
+        while True:
+            v = int(rng.integers(100000000, 999999999))
+            if v not in used_sys and v not in used_ss:
+                pool.add(v)
+                return v
+
+    hs_codes = {code: sorted(int(x) for x in rng.choice(np.arange(140000, 149999), 15, replace=False)) for code in CODES}
+    attempts = []
+    seen4 = set()
+    for s in studs:
+        code = s["college"]
+        first = _month_day(rng)
+        s["registered"] = first - dt.timedelta(days=int(rng.integers(3, 160)))
+        s["_first"] = first
+        # most entrants come from a handful of feeder high schools in the college's district
+        u = rng.random()
+        if u < 0.10:
+            s["hs"] = "GED"
+        elif u < 0.80:
+            s["hs"] = str(hs_codes[code][int(rng.choice(6, p=FEEDER))])
+        elif u < 0.92:
+            s["hs"] = str(hs_codes[code][6 + int(rng.integers(9))])
         else:
-            raise SystemExit("area %s not placed" % code)
-        x["areas"].append({"code": code, "name": name, "growth": g, "ga": kn["ga"], "place": place, "n": n,
-                           "level": lvl, "stock": [float(m) for m in mix]})
-        x["eds"] += eds
-        x["sales"] += sub
-        x["est"][code] = e
-    _non_market(rng, x)
-    return x
+            s["hs"] = str(int(rng.integers(100000, 999999)))
+        while (s["dob"], s["sex"], s["hs"], s["registered"]) in seen4:
+            s["registered"] -= dt.timedelta(days=1)
+        seen4.add((s["dob"], s["sex"], s["hs"], s["registered"]))
+        s["csn"] = None
+        s["first"] = first
+        # registering college history: a student may move their registration to another college, most often in
+        # the weeks after a summer sitting, and most often towards the larger colleges
+        s["switch"] = None
+        p_sw = 0.13 if CUTOVER <= first < REKEY else (0.07 if first >= REKEY else 0.04)
+        if rng_sw.random() < p_sw:
+            d = first + dt.timedelta(days=int(rng_sw.integers(10, 76)))
+            other = [c for c in CODES if c != code]
+            w = np.array([SIZES[c] ** 1.5 for c in other])
+            to = other[int(rng_sw.choice(len(other), p=w / w.sum()))]
+            if d <= EXTRACT_END:
+                s["switch"] = (d, to)
+        s["attempts"] = []
+    # first sittings, then retests
+    def college_on(s, d):
+        if s["switch"] and d >= s["switch"][0]:
+            return s["switch"][1]
+        return s["college"]
+
+    def sit(s, d, form, retest):
+        platform = "old" if d < CUTOVER else "new"
+        reg = college_on(s, d)
+        if platform == "old":
+            centre = by_college[reg][0] if len(by_college[reg]) == 1 or rng.random() < 0.7 else by_college[reg][1]
+        else:
+            if rng.random() < 0.88:
+                centre = by_college[reg][int(rng.integers(len(by_college[reg])))]
+            else:
+                oc = [c for c in CODES if c != reg]
+                centre = by_college[oc[int(rng.integers(len(oc)))]][0]
+        slot = SESSION_STARTS[int(rng.choice(3, p=[0.45, 0.4, 0.15]))]
+        start = dt.datetime(d.year, d.month, d.day, slot[0], slot[1]) + dt.timedelta(minutes=int(rng.integers(0, 9)))
+        version = "AB"[int(rng.integers(2))] if platform == "old" else ""
+        ft = int(rng.integers(1, 9))
+        anc, uni = form_items(items, form)
+        fts = ft_set_items(items, ft)
+        upos, fpos = _positions(platform, version, rng)
+        ids = anc + uni + fts
+        pos = np.r_[np.arange(1, 21), upos, fpos]
+        a = np.array([items[i]["a"] for i in ids])
+        th = s["theta"] + (PRACTICE if retest else 0.0)
+        y = (rng.random(70) < P(th, a + GAMMA * pos)).astype(int)
+        omit = rng.random(70) < 0.008
+        y[omit] = 0
+        raw = int(y[:60].sum())
+        dur = int(rng.integers(68, 132))
+        at = dict(student=s["k"], date=d, start=start, end=start + dt.timedelta(minutes=dur), platform=platform,
+                  form=form, version=version, ft_set=ft, centre=centre, reg=reg, items=ids, pos=pos.tolist(),
+                  y=y.tolist(), omit=omit.tolist(), raw=raw, level=level_of(raw, scores26[form]), retest=retest,
+                  letters=[])
+        for i, iid in enumerate(ids):
+            key = items[iid]["key"]
+            if omit[i]:
+                at["letters"].append("")
+            elif y[i]:
+                at["letters"].append(key)
+            else:
+                at["letters"].append([c for c in "ABCD" if c != key][int(rng.integers(3))])
+        s["attempts"].append(at)
+        attempts.append(at)
+        return at
+
+    for s in studs:
+        a1 = sit(s, s["first"], "26A", False)
+        sc = scores26["26A"]
+        near = any(0 < sc[lv] - a1["raw"] <= 3 for lv in ("CA", "CCA"))
+        p = 0.40 if near else (0.08 if a1["level"] != "CA" else 0.015)
+        if rng.random() < p:
+            d2 = _weekday_after(s["first"], rng, 14, 150)
+            if d2 and d2 <= EXTRACT_END:
+                sit(s, d2, "26B", True)
+    attempts.sort(key=lambda r: (r["start"], r["student"]))
+    # identities: legacy numbers for students who sat on the old platform, system ids at the cutover or on first
+    # registering with the new platform, state ids from 1 October for every attempt from then on
+    for s in sorted(studs, key=lambda r: (r["first"], r["k"])):
+        olds = [a for a in s["attempts"] if a["platform"] == "old"]
+        s["csn"] = {}
+        for a in olds:
+            c = a["reg"]
+            if c not in s["csn"]:
+                s["csn"][c] = csn_next[c]
+                csn_next[c] += int(rng.integers(1, 4))
+        s["sysid"] = new_id(used_sys) if (olds or any(a["date"] < REKEY for a in s["attempts"])) else None
+        s["ssid"] = new_id(used_ss) if any(a["date"] >= REKEY for a in s["attempts"]) else None
+        for a in s["attempts"]:
+            if a["platform"] == "old":
+                a["sid"] = s["csn"][a["reg"]]
+                a["site"] = a["reg"]
+            else:
+                a["sid"] = s["sysid"] if a["date"] < REKEY else s["ssid"]
+            # the new platform's college column: the student profile as now held (the system-id profile froze
+            # on 30 September when the state ids replaced it)
+            if a["platform"] == "new":
+                held_on = REKEY - dt.timedelta(days=1) if a["date"] < REKEY else EXTRACT_END
+                a["college_held"] = college_on(s, held_on)
+    # score reports: the automatic report to the college the student was registered through when they sat;
+    # a student who moves registration asks for earlier scores to be sent to the new college
+    reports = []
+    for s in studs:
+        for a in s["attempts"]:
+            reports.append(dict(attempt=a, to=a["reg"], kind="automatic", sent=a["end"] + dt.timedelta(minutes=2)))
+        if s["switch"]:
+            d, to = s["switch"]
+            for a in s["attempts"]:
+                if a["date"] < d:
+                    t = dt.datetime(d.year, d.month, d.day, 10, 0) + dt.timedelta(minutes=int(rng.integers(0, 400)))
+                    reports.append(dict(attempt=a, to=to, kind="requested", sent=t))
+        elif rng.random() < 0.03 and s["attempts"]:
+            a = s["attempts"][0]
+            to = [c for c in CODES if c != a["reg"]][int(rng.integers(13))]
+            sent = a["end"] + dt.timedelta(days=int(rng.integers(2, 40)))
+            if sent.date() <= EXTRACT_END:
+                reports.append(dict(attempt=a, to=to, kind="requested", sent=sent))
+    # sessions and irregularities
+    sessions = {}
+    for a in attempts:
+        key = (a["centre"], a["date"], a["start"].replace(minute=0 if a["start"].hour != 17 else 30).strftime("%H:%M"))
+        sessions.setdefault(key, []).append(a)
+    for i, key in enumerate(sorted(sessions)):
+        for a in sessions[key]:
+            a["session"] = key
+    cand = sorted([k for k, v in sessions.items() if len(v) >= 5])
+    pick = [cand[int(i)] for i in rng.choice(len(cand), 10, replace=False)]
+    pick.sort()
+    irregular = []
+    for j, key in enumerate(pick):
+        reinstated = j in (2, 5, 8)
+        irregular.append(dict(session=key, reinstated=reinstated))
+        for a in sessions[key]:
+            a["invalid"] = not reinstated
+    for a in attempts:
+        a.setdefault("invalid", False)
+    e = dict(items=items, forms=forms, students=studs, attempts=attempts, reports=reports, sessions=sessions,
+             irregular=irregular, scores26=scores26, centres=centres, hs_codes=hs_codes)
+    return e
 
 
-def _non_market(rng, x):
-    """Sales not at full market price (family transfers, part-interest sales) in every area, and housing bodies'
-    purchases of whole blocks of new apartments, the block's one consideration on each apartment's line."""
-    eds_by_area = {}
-    for e in x["eds"]:
-        eds_by_area.setdefault(e["area"], []).append(e)
-    extra = []
-    for a in x["areas"]:
-        eds = eds_by_area[a["code"]]
-        for year, (lo, hi) in ((1, Y1), (2, Y2)):
-            dd = [d for d in days(lo, hi) if d.weekday() < 5]
-            for _ in range(int(a["n"] * 0.035)):
-                e = eds[int(rng.integers(0, len(eds)))]
-                t = TYPES[int(rng.choice(4, p=TMIX))]
-                fl = TFLOOR[t] * float(np.exp(rng.normal(0, 0.17)))
-                d = dd[int(rng.integers(0, len(dd)))]
-                lp = _level(a["level"], d, a["growth"]) + e["eff"] + TEFF[t] + ELAST * np.log(fl / 100.0)
-                price = round(float(np.exp(lp)) * float(rng.uniform(0.35, 0.8)) / 500.0) * 500.0
-                extra.append({"area": a["code"], "ed": e["code"], "type": t, "floor": round(fl, 1), "new": False,
-                              "built": 1990, "date": d, "price": price, "market": False, "bulk": None})
-    # housing bodies' purchases of whole blocks of new apartments, one consideration for each block
-    k = 0
-    for a in x["areas"]:
-        eds = sorted(eds_by_area[a["code"]], key=lambda e: e["eff"])
-        for j, (year, (lo, hi)) in enumerate(((1, Y1), (2, Y2), (2, Y2), (2, Y2))):
-            if j > 1 and rng.random() < 0.5:
-                continue
-            if year == 1 and rng.random() < 0.6:
-                continue
-            units = int(rng.integers(4, 21))
-            e = eds[int(rng.integers(1, len(eds) - 1))]
-            dd = [d for d in days(lo, hi) if d.weekday() < 5]
-            d = dd[int(rng.integers(0, len(dd) - 30))]
-            unit = []
-            for u in range(units):
-                fl = round(TFLOOR["apartment"] * float(np.exp(rng.normal(0, 0.08))), 1)
-                lp = (_level(a["level"], d, a["ga"] if a["ga"] is not None else a["growth"]) + e["eff"]
-                      + TEFF["apartment"] + ELAST * np.log(fl / 100.0) + NEWP)
-                unit.append((fl, float(np.exp(lp)) * 0.88))
-            total = round(sum(v for _, v in unit) / 1000.0) * 1000.0
-            for fl, _ in unit:
-                extra.append({"area": a["code"], "ed": e["code"], "type": "apartment", "floor": fl, "new": True,
-                              "built": d.year, "date": d, "price": total, "market": False, "bulk": (k, units)})
-            k += 1
-    x["sales"] += extra
+if __name__ == "__main__":
+    e = everything()
+    print(len(e["items"]), {k: len(v) for k, v in e["forms"].items()}, len(e["students"]), len(e["attempts"]))
+    print("2026 scores", e["scores26"])

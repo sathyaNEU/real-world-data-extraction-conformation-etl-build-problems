@@ -11,8 +11,8 @@
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "index_or_score",
-  "answer": "to be filled at ship",
-  "answer_source": "generator/figures.json",
+  "answer": "Form 27A should place students into College Algebra from a raw score of 30 and into Corequisite College Algebra from 19.",
+  "answer_source": "task482/submission.md, block 1",
   "gap": [
     "objective"
   ],
@@ -31,7 +31,7 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the two bank systems' scales, joins Form 27A's map to the bank and reads the technical report's standard computes the form's test characteristic curve from the bank difficulties as filed, finds the expected raw score at the college algebra standard about 27.9 and sets the placement score at 28, two below the 30 that the difficulties carried from the field-test section to their Form 27A positions give (about 29.5).",
+  "analyst_test": "A strong analyst who conforms the bank's units, joins Form 27A's assembly to the pool and reads the technical report correctly sums the bank difficulties as filed and sets College Algebra from 29, Corequisite College Algebra from 18 (expected raw scores 28.2 and 17.5); only the difficulties carried from the field-test section to Form 27A's positions give 30 and 19.",
   "domain_test": "Psychometrics: pre-equating a fixed form from a Rasch item bank. The deciding quantity is the form's test characteristic curve at the standard, which needs each item's difficulty where it sits on the form; the field estimates item position effects from administrations that vary item order and carries bank parameters from their calibration positions to their operational positions before pre-equating. With hospital or energy nouns there is no form, no item position, no characteristic curve and no standard on a latent scale, so nothing is left to decide.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:bank difficulties carried from their calibration position to their operational position before pre-equating",
@@ -47,8 +47,8 @@
   "role_family": "programme_officer",
   "scoring_unit": "index points",
   "spine": {
-    "file": "qpi_item_responses_2026-07-01_to_2027-01-31.csv",
-    "rows": 0,
+    "file": "northgate_item_responses_2026-07-01_to_2027-01-31.csv",
+    "rows": 454510,
     "entity": "one item response in one attempt on the new delivery platform, scored or field-test",
     "grain": "attempt x item",
     "source": "synthetic (constructed in the layout of a computer-based test delivery export)"
@@ -77,8 +77,8 @@
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "The decisive quantity is a sum over a fixed set of measuring items of each item's expected outcome at one fixed level, where each item's parameter was calibrated in the slot it occupied on an earlier instrument and an item's outcome worsens the later its slot; the slot effect is estimated from earlier administrations that presented the same items in varied orders, and each item is carried from its calibration slot to its new slot before summing, while summing the parameters as filed, or shifting every item by one average drift, sets the dial elsewhere.",
-  "driver_concrete": "Form 27A's college algebra placement score is the lowest raw score at or above the expected raw score of a student at the 0.35-logit standard; 40 of its 60 scored items carry bank difficulties calibrated in the unscored field-test section after the scored items of earlier forms, and a student's chance on an item falls with its position; the 2026 attempts (two fixed orders on the old platform, random order on the new) measure the position effect, and carrying each item from its calibration position to its Form 27A position raises the expected raw score at the standard from about 27.9 to about 29.5, so the placement score is 30, not 28.",
-  "stump": "The default path computes Form 27A's expected raw score at the standard from the bank difficulties as filed (about 27.9) and sets the placement score at 28; the golden carries each field-test-calibrated item from its calibration position to its Form 27A position by the position effect the 2026 attempts measure and sets it at 30.",
+  "driver_concrete": "Form 27A's two placement scores are the lowest whole raw scores at or above the expected raw score of a student at each standard (0.20 and -0.70 logits); its 40 unique items carry bank difficulties calibrated in the old platform's field-test section (positions 61 to 70), and a student's chance on an item falls with its position; the 2026 attempts (two fixed orders on the old platform, a fresh order for every sitting on the new) measure the position term, and carrying each unique item to the positions 21 to 70 it takes on Form 27A raises the expected raw scores from 28.2 and 17.5 to 29.5 and 18.5, so the placement scores are 30 and 19, not 29 and 18.",
+  "stump": "The default path computes Form 27A's expected raw score at each standard from the bank difficulties as filed (28.2 and 17.5) and sets College Algebra from 29, Corequisite College Algebra from 18; the golden carries each of the 40 field-test-calibrated unique items from the field-test section's mean position (65.5) to the positions 21 to 70 it takes on Northgate Assess by the position term the 2026 attempts measure (0.0075 logits a position, 0.15 over the carry), which puts the expected raw scores at 29.5 and 18.5 and the placement scores at 30 and 19.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "notes": "architecture 6 drawn 2026-10-22 after architecture 5 was spent at stage 4; personas from guard.py names --geo 'United States' --seed 482; forum, forcing event and role family redrawn at the draw (committee_or_panel and research_desk BLOCKed against task249, launch_or_rollout against task177)",
@@ -161,5 +161,6 @@
       "domain": "survey-research-official-statistics"
     }
   ],
-  "registered": "2026-10-22T17:38:37Z"
+  "registered": "2026-10-22T17:38:37Z",
+  "architecture_spent": true
 }

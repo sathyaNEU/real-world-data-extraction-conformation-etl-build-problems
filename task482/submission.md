@@ -1,67 +1,57 @@
 ## Tags
 
-**Domain:** Survey Research & Official Statistics (census, register and administrative data quality).
+**Domain:** Education & Learning Sciences (item response theory and test equating).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Designate Annaghvale, Ardcullen, Carrigvore, Dunmarra, Glenaskin, Kilbrannagh and Moyrath as rapid price growth areas for 2027.**
-The market value of each one's dwelling stock rose by more than 8 per cent in the year to September 2026 on the year before; no other area's did. Each dwelling type's change is held to constant quality by a hedonic regression with location, and the four are weighted by the census stock's value, because apartments sell far more often than the stock holds them and in some areas rose differently from houses: one year effect for all sales would designate Annaghvale, Ardcullen, Drumshallon, Dunmarra, Glenaskin, Innishrue and Kilbrannagh.
+**Form 27A should place students into College Algebra from a raw score of 30 and into Corequisite College Algebra from 19.**
+A student at the College Algebra standard is expected to reach 29.5 of the form's 60 scored items and a student at the Corequisite College Algebra standard 18.5, once each unique item is carried from the field-test section it was calibrated in to the positions it takes on Northgate Assess. Not 29 and 18, the scores the bank difficulties give as filed (28.2 and 17.5), which hold every unique item as hard as it was at positions 61 to 70.
 
 ## 2. Critical Components
 
-1. Areas designated: **Annaghvale**, **Ardcullen**, **Carrigvore**, **Dunmarra**, **Glenaskin**, **Kilbrannagh**, **Moyrath**
-2. Areas not designated: Ballymarne, Clonteevan, Corlespie, Drumshallon, Innishrue, Knockfeerin, Lisnafeen, Rathgowan, Tullyvane
-3. Price change, year to September 2026 (per cent): Glenaskin 12.0; Kilbrannagh 11.2; Annaghvale 10.6; Moyrath 10.4; Dunmarra 10.2; Ardcullen 10.1; Carrigvore 9.5; Rathgowan 5.7; Drumshallon 5.6; Clonteevan 5.3; Ballymarne 5.2; Innishrue 4.8; Corlespie 3.8; Lisnafeen 3.8; Tullyvane 3.6; Knockfeerin 3.4
+1. Position term of the Rasch model fitted to the 2026 attempts, from the field-test section's mean position (65.5) to Form 27A's (45.5): **0.15** logits
+2. Expected raw score on Form 27A at the College Algebra standard (0.20 logits): **29.5**
+3. Expected raw score on Form 27A at the Corequisite College Algebra standard (-0.70 logits): **18.5**
 
 ## 3. Step-by-Step Solution
 
-1. Read both price register extracts: the old layout's day-first dates and euro text prices, its new-dwelling prices grossed up by 13.5 per cent VAT, and the new system's consideration including VAT.
-2. Joined each old-layout sale to the valuation register by its normalised eircode, or by its address where no eircode was keyed, and each new-system sale by property number; counted the filings made in both systems from 1 to 10 October 2025 once.
-3. Took each dwelling's type, floor area and newness from the valuation register and its electoral division from the address point file through the eircode.
-4. Kept sales at full market price dated 1 October 2024 to 30 September 2026 by date of sale.
-5. For each area regressed log price on a year-to-September-2026 indicator for each dwelling type, dwelling type, log floor area, new dwelling and electoral division.
-6. Weighted each type's exp(year effect) by the census count of that type times its mean first-year price (the stock's value) and took the weighted mean less one as the area's change.
-7. Designated the areas over 8 per cent: Annaghvale, Ardcullen, Carrigvore, Dunmarra, Glenaskin, Kilbrannagh, Moyrath.
-8. Ask: every residential sale dated 1 October 2025 to 30 September 2026, any market basis; the apartments of a housing body's block share one building, date and consideration (the block's total on each line), so each block is one purchase paid once.
+1. Converted the Itemstore assembly pool's difficulties from bank units to logits (QPI-TR-2027 section 4) and took Form 27A's anchor block and 40 unique items from qpi_form_27A_assembly.csv.
+2. Scored every 2026 response: the Kestrel Testing Suite's response strings against the keys at their version's positions in qpi_forms_26A_26B_layout.csv, and Northgate Assess's item responses at their delivered seq.
+3. Fitted the Rasch model with a linear position term to all 2026 responses by marginal maximum likelihood, the anchor block fixed at its bank difficulties and every other item free: 0.15 logits over the 20 positions from the field-test section's mean to Form 27A's.
+4. Carried each unique item from the old platform's field-test section (mean position 65.5) to each of positions 21 to 70 on Northgate Assess and averaged its expected score over the shuffle; the anchor block, calibrated in place, kept its bank difficulties.
+5. Summed the 60 expected scores at each standard: 29.5 at College Algebra and 18.5 at Corequisite College Algebra.
+6. Matched each student across both platforms and both student identifiers on birth date, sex, high school code and registration date, and left out the attempts in sessions qpi_session_review_log_2026.xlsx leaves invalidated.
+7. Placed each student on their higher level (the later sitting on a tie) at the college their placing sitting's automatic score report went to in qpi_score_reports_2026-03-01_to_2027-01-31.csv: 8,970 students placed, 3,387 into College Algebra and 2,705 into Corequisite College Algebra, 775 of them sat twice.
+8. Set the placement scores at the lowest whole raw scores at or above the expected raw scores (QPI-TR-2027 section 7): College Algebra from 30, Corequisite College Algebra from 19.
 
 ## 4. Deliverable Answers
 
-### bso_area_property_price_change_2026.xlsx
+### qpi_placement_review_2027.xlsx
 
-1. Areas designated: Annaghvale, Ardcullen, Carrigvore, Dunmarra, Glenaskin, Kilbrannagh, Moyrath.
-2. Chart of every area's price change against the 8 per cent line, the designated areas marked.
-3. Price change, year to September 2026 on the year before (per cent, one decimal):
-   - Annaghvale: 10.6
-   - Ardcullen: 10.1
-   - Ballymarne: 5.2
-   - Carrigvore: 9.5
-   - Clonteevan: 5.3
-   - Corlespie: 3.8
-   - Drumshallon: 5.6
-   - Dunmarra: 10.2
-   - Glenaskin: 12.0
-   - Innishrue: 4.8
-   - Kilbrannagh: 11.2
-   - Knockfeerin: 3.4
-   - Lisnafeen: 3.8
-   - Moyrath: 10.4
-   - Rathgowan: 5.7
-   - Tullyvane: 3.6
-4. Residential purchases in the year to September 2026, number and total paid including VAT (whole euros):
-   - Annaghvale: 2,164 purchases, EUR 712,798,500
-   - Ardcullen: 2,457 purchases, EUR 843,585,000
-   - Ballymarne: 2,368 purchases, EUR 860,503,000
-   - Carrigvore: 2,674 purchases, EUR 928,926,000
-   - Clonteevan: 1,540 purchases, EUR 400,369,000
-   - Corlespie: 1,433 purchases, EUR 366,873,500
-   - Drumshallon: 1,973 purchases, EUR 546,154,500
-   - Dunmarra: 2,978 purchases, EUR 1,181,753,500
-   - Glenaskin: 1,870 purchases, EUR 575,617,000
-   - Innishrue: 2,058 purchases, EUR 574,199,000
-   - Kilbrannagh: 3,229 purchases, EUR 1,425,305,000
-   - Knockfeerin: 1,756 purchases, EUR 502,370,000
-   - Lisnafeen: 1,944 purchases, EUR 606,609,500
-   - Moyrath: 2,302 purchases, EUR 686,107,000
-   - Rathgowan: 2,766 purchases, EUR 1,123,996,000
-   - Tullyvane: 1,660 purchases, EUR 460,510,500
+1. Placement scores: College Algebra 30, Corequisite College Algebra 19.
+2. Expected raw score at the standard: College Algebra 29.5, Corequisite College Algebra 18.5.
+3. Each college from 1 March 2026 to 31 January 2027, whole students (placed; College Algebra; Corequisite College Algebra; sat twice):
+   - 01 Ashgrove: 1,155 placed, 488 College Algebra, 356 Corequisite College Algebra, 116 sat twice
+   - 02 Bramblewood: 978 placed, 348 College Algebra, 297 Corequisite College Algebra, 89 sat twice
+   - 03 Calder Flats: 866 placed, 280 College Algebra, 272 Corequisite College Algebra, 88 sat twice
+   - 04 Dellwood: 821 placed, 372 College Algebra, 231 Corequisite College Algebra, 71 sat twice
+   - 05 Embervale: 743 placed, 275 College Algebra, 227 Corequisite College Algebra, 61 sat twice
+   - 06 Fennimore Ridge: 700 placed, 273 College Algebra, 226 Corequisite College Algebra, 50 sat twice
+   - 07 Gorseway: 639 placed, 177 College Algebra, 203 Corequisite College Algebra, 55 sat twice
+   - 08 Hartmoor Creek: 599 placed, 250 College Algebra, 158 Corequisite College Algebra, 38 sat twice
+   - 09 Iverton Prairie: 554 placed, 191 College Algebra, 170 Corequisite College Algebra, 54 sat twice
+   - 10 Juniper Lake: 518 placed, 201 College Algebra, 151 Corequisite College Algebra, 38 sat twice
+   - 11 Knollwood: 471 placed, 153 College Algebra, 141 Corequisite College Algebra, 38 sat twice
+   - 12 Lowland Mesa: 379 placed, 186 College Algebra, 99 Corequisite College Algebra, 23 sat twice
+   - 13 Marlow Fork: 308 placed, 96 College Algebra, 93 Corequisite College Algebra, 32 sat twice
+   - 14 Nettlefield: 239 placed, 97 College Algebra, 81 Corequisite College Algebra, 22 sat twice
+   - System: 8,970 placed, 3,387 College Algebra, 2,705 Corequisite College Algebra, 775 sat twice
+
+### qpi_form27a_score_conversion.csv
+
+4. Raw scores 0 to 18 Developmental Mathematics (MATH 091), 19 to 29 Corequisite College Algebra (MATH 131 with MATH 031), 30 to 60 College Algebra (MATH 131).
+
+### qpi_form27a_expected_score_curve.svg
+
+5. Form 27A's expected raw score against ability in logits, the two standards marked (0.20 and -0.70) with their expected raw scores (29.5 and 18.5) and placement scores (30 and 19), and the curve from the bank difficulties as filed dashed.

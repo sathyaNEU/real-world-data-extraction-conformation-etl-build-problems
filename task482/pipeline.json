@@ -1,26 +1,26 @@
 {
   "task": "task482",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "education-learning-sciences",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-22",
-  "stump": "The default path computes Form 27A's expected raw score at each placement standard from the bank difficulties as filed and sets the college algebra placement score at 28; 40 of the form's 60 scored items were calibrated in the unscored field-test section at positions 61 to 70, and a student answers an item less often the later it comes (about 0.0075 logits per position in the 2026 attempts), so carrying each from its calibration position to Form 27A's unique section (mean position 40.5) puts the expected raw score at the standard near 29.5 and the placement score at 30.",
-  "architecture": 6,
+  "stump": "The default path computes Form 27A's expected raw score at each standard from the bank difficulties as filed (28.2 and 17.5) and sets College Algebra from 29, Corequisite College Algebra from 18; the golden carries each of the 40 field-test-calibrated unique items from the field-test section's mean position (65.5) to the positions 21 to 70 it takes on Northgate Assess by the position term the 2026 attempts measure (0.0075 logits a position, 0.15 over the carry), which puts the expected raw scores at 29.5 and 18.5 and the placement scores at 30 and 19.",
+  "architecture": 7,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-22"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (2026-10-22)",
+    "reader": "architecture 6: reader A landed the call (score_reader: call 2 of 2, asks 13 of 62) by fitting a position term to the rebuilt attempts; reader B and the judge thread stopped at the spend"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN (repeat.gate_g against task273, answered in the note)",
+    "nearest": "task190 at 0.07"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: architecture 6 drawn 2026-10-22 (the QPI Form 27A placement scores, bank difficulties carried from the field-test section to their operational positions); write the default path, stump sentence, three rules, ladder, fork table, closure, asks and prompt, then precut.py",
+  "resume": "stage 1: architecture 6 spent at stage 4 (reader A landed the call; see the design note Architecture 6 record); re-root to architecture 7 with a fresh draw, read Tried and rejected first",
   "approved": null,
   "delivered": null,
   "portal": null,

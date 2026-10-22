@@ -3,36 +3,37 @@ import json
 
 import pack as P
 
-DISTRACTORS = [P.FILES["rents"], P.FILES["mortgages"]]
+DISTRACTORS = [P.FILES["headcount"], P.FILES["outcomes"]]
 
 
-def write(target, path, n):
+def write(path, n):
     meta = {
         "task": "task482",
-        "domain": "Survey Research & Official Statistics (census, register and administrative data quality)",
-        "client_domain": "Survey Research & Official Statistics",
-        "task_type": "census-register-administrative-data-quality",
+        "domain": "Education & Learning Sciences (item response theory and test equating)",
+        "client_domain": "Education & Learning Sciences",
+        "task_type": "item-response-theory-test-equating",
         "objective": "Data Extraction & Conformation (ETL)",
         "distractor_files": DISTRACTORS,
         "distractor_reasons": {
-            P.FILES["rents"]: "registered rents by area in the second quarter of 2026; the designation turns on the "
-                              "price of dwellings bought, and rents are a different market",
-            P.FILES["mortgages"]: "mortgage drawdowns by area and quarter; a count and value of loans, not of the price "
-                                  "of an unchanged dwelling, and it stops at June 2026",
+            P.FILES["headcount"]: "each college's fall 2026 headcount, FTE and first-time students: the colleges' size, "
+                                  "not the students the QPI placed, and counted on a census date rather than by sitting",
+            P.FILES["outcomes"]: "fall 2026 course outcomes by college and course: how placed students fared, which "
+                                 "neither sets a placement score nor counts placements",
         },
-        "stated_inputs": ["8", "13.5"],
-        "deliverables": ["bso_area_property_price_change_2026.xlsx"],
-        "as_of": "2026-10-15",
+        "stated_inputs": ["0.20", "-0.70", "60"],
+        "deliverables": ["qpi_placement_review_2027.xlsx", "qpi_form27a_score_conversion.csv",
+                         "qpi_form27a_expected_score_curve.svg"],
+        "as_of": "2027-02-05",
         "files": sorted(P.FILES.values()),
         "rows": {P.FILES[k]: v for k, v in sorted(n.items())},
         "sources": {
-            "constructed": "every file is constructed for this task by its generator (task482/generator); the nation, "
-                           "its statistics office, the areas, the dwellings, the sales and the people are fictional",
-            "public_specifications": "the price register's old layout follows the public layout of a national "
-                                     "residential property price register; the other layouts are the pack's own, "
-                                     "described in its dictionary",
+            "constructed": "every file is constructed for this task by its generator (task482/generator); the community "
+                           "college system, its colleges, its placement test, the item bank, the delivery platforms, "
+                           "the students and the people are fictional",
+            "public_specifications": "the layouts are the pack's own, in the style of a computer-based test delivery "
+                                     "export and an item bank export, described in its data dictionary",
             "licence": "CC0 1.0 (constructed data)",
-            "date": "2026-10-15",
+            "date": "2027-02-05",
         },
     }
     with open(path, "w", encoding="utf-8") as fh:

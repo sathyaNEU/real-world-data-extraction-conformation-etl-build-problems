@@ -1,14 +1,33 @@
 # leak check, task482
 
-**Verdict: REVIEW.** 12 files read, 44 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 15 files read, 51 golden figures and 11 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: regression, architecture, register, reader, dwelling, census, decisive, market, constant-quality, objective, designation, population, traded, effect, readable, commutes, readers, landed, beside, sample, location, status, default, lineage, pattern
+Stump terms swept: position, architecture, calibrated, carried, unique, section, report, difficulty, positions, readers, reader, condition, decisive, field-test, reflex, method, attempts, effect, difficulties, anchor, population, window, census, parameter, weighted
+
+## 3 answer figures in the pack (REVIEW 10)
+- **REVIEW** `qpi_data_dictionary_2027.pdf`: golden figure 091 appears: ...ollege Algebra; 131C Corequisite College Algebra; 091 Developmental Mathematics Northgate Assess attemp...
+- **REVIEW** `qpi_data_dictionary_2027.pdf`: golden figure 131 appears: ...mber of scored items answered correctly placement 131 College Algebra; 131C Corequisite College Algebra...
+- **REVIEW** `qpi_data_dictionary_2027.pdf`: candidate 'College Algebra' sits beside decision vocabulary: ...re no option was chosen raw_score number of scored items answered correctly placement 131 College Algebra; 131C Corequisite College Algebra; 091 Developmental Mathematics Northgate Assess attempt...
+- **REVIEW** `qpi_data_dictionary_2027.pdf`: candidate 'Corequisite College Algebra' sits beside decision vocabulary: ...n raw_score number of scored items answered correctly placement 131 College Algebra; 131C Corequisite College Algebra; 091 Developmental Mathematics Northgate Assess attempts (northgate_attempts_2026-07-01_t...
+- **REVIEW** `qpi_technical_report_2027.pdf`: golden figure 091 appears: ...pport course) and Developmental Mathematics (MATH 091). Each form has two placement scores, and System...
+- **REVIEW** `qpi_technical_report_2027.pdf`: golden figure 031 appears: ...ite College Algebra (MATH 131 taken with the MATH 031 support course) and Developmental Mathematics (MA...
+- **REVIEW** `qpi_technical_report_2027.pdf`: golden figure 131 appears: ...f three mathematics levels: College Algebra (MATH 131), Corequisite College Algebra (MATH 131 taken wit...
+- **REVIEW** `bpccs_mathematics_placement_policy_4-12.pdf`: carries 6 of 9 distinctive words of the committed call: 'Form 27A should place students into College Algebra from a raw score of 30 and into Corequisite College Algebra from 19.'
+- **REVIEW** `qpi_data_dictionary_2027.pdf`: carries 7 of 9 distinctive words of the committed call: 'Form 27A should place students into College Algebra from a raw score of 30 and into Corequisite College Algebra from 19.'
+- **REVIEW** `qpi_technical_report_2027.pdf`: carries 9 of 9 distinctive words of the committed call: 'Form 27A should place students into College Algebra from a raw score of 30 and into Corequisite College Algebra from 19.'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `bso_rppi_methodology_note_2026.pdf`: 4 of 25 stump-paragraph terms appear (register, dwelling, census, market); read whether the document names the move
-- **REVIEW** `dhlgh_circular_rapid_price_growth_areas_2026.pdf`: 3 of 25 stump-paragraph terms appear (dwelling, market, designation); read whether the document names the move
+- **REVIEW** `qpi_data_dictionary_2027.pdf`: 9 of 25 stump-paragraph terms appear (position, calibrated, unique, section, report, difficulty); read whether the document names the move
+- **REVIEW** `qpi_technical_report_2027.pdf`: 10 of 25 stump-paragraph terms appear (position, calibrated, carried, unique, report, difficulty); read whether the document names the move
+
+## 6 ranking artifacts (REVIEW 2, INFO 3)
+- **REVIEW** `math_course_outcomes_fall_2026.xlsx`: names 7 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `qpi_technical_report_2027.pdf`: names 4 of 11 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `bpccs_fall_2026_headcount_by_college.csv`: names 7 of 11 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `qpi_data_dictionary_2027.pdf`: names 4 of 11 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `qpi_testing_centres.csv`: names 7 of 11 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -17,11 +36,7 @@ Stump terms swept: regression, architecture, register, reader, dwelling, census,
 
 ## 2 author vocabulary (clean)
 
-## 3 answer figures in the pack (clean)
-
 ## 5 announcements (clean)
-
-## 6 ranking artifacts (clean)
 
 ## 7 hidden content (clean)
 
@@ -30,6 +45,7 @@ Stump terms swept: regression, architecture, register, reader, dwelling, census,
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 

@@ -1,127 +1,220 @@
 {
- "ask": {
-  "AC": {
-   "paid": 843585000,
-   "purchases": 2457
+ "call": {
+  "college_algebra_score": 30,
+  "corequisite_score": 19
+ },
+ "colleges": {
+  "01": {
+   "CA": 488,
+   "CCA": 356,
+   "code": "01",
+   "name": "Ashgrove",
+   "placed": 1155,
+   "twice": 116
   },
-  "AV": {
-   "paid": 712798500,
-   "purchases": 2164
+  "02": {
+   "CA": 348,
+   "CCA": 297,
+   "code": "02",
+   "name": "Bramblewood",
+   "placed": 978,
+   "twice": 89
   },
-  "BM": {
-   "paid": 860503000,
-   "purchases": 2368
+  "03": {
+   "CA": 280,
+   "CCA": 272,
+   "code": "03",
+   "name": "Calder Flats",
+   "placed": 866,
+   "twice": 88
   },
-  "CL": {
-   "paid": 366873500,
-   "purchases": 1433
+  "04": {
+   "CA": 372,
+   "CCA": 231,
+   "code": "04",
+   "name": "Dellwood",
+   "placed": 821,
+   "twice": 71
   },
-  "CT": {
-   "paid": 400369000,
-   "purchases": 1540
+  "05": {
+   "CA": 275,
+   "CCA": 227,
+   "code": "05",
+   "name": "Embervale",
+   "placed": 743,
+   "twice": 61
   },
-  "CV": {
-   "paid": 928926000,
-   "purchases": 2674
+  "06": {
+   "CA": 273,
+   "CCA": 226,
+   "code": "06",
+   "name": "Fennimore Ridge",
+   "placed": 700,
+   "twice": 50
   },
-  "DM": {
-   "paid": 1181753500,
-   "purchases": 2978
+  "07": {
+   "CA": 177,
+   "CCA": 203,
+   "code": "07",
+   "name": "Gorseway",
+   "placed": 639,
+   "twice": 55
   },
-  "DS": {
-   "paid": 546154500,
-   "purchases": 1973
+  "08": {
+   "CA": 250,
+   "CCA": 158,
+   "code": "08",
+   "name": "Hartmoor Creek",
+   "placed": 599,
+   "twice": 38
   },
-  "GS": {
-   "paid": 575617000,
-   "purchases": 1870
+  "09": {
+   "CA": 191,
+   "CCA": 170,
+   "code": "09",
+   "name": "Iverton Prairie",
+   "placed": 554,
+   "twice": 54
   },
-  "IR": {
-   "paid": 574199000,
-   "purchases": 2058
+  "10": {
+   "CA": 201,
+   "CCA": 151,
+   "code": "10",
+   "name": "Juniper Lake",
+   "placed": 518,
+   "twice": 38
   },
-  "KB": {
-   "paid": 1425305000,
-   "purchases": 3229
+  "11": {
+   "CA": 153,
+   "CCA": 141,
+   "code": "11",
+   "name": "Knollwood",
+   "placed": 471,
+   "twice": 38
   },
-  "KF": {
-   "paid": 502370000,
-   "purchases": 1756
+  "12": {
+   "CA": 186,
+   "CCA": 99,
+   "code": "12",
+   "name": "Lowland Mesa",
+   "placed": 379,
+   "twice": 23
   },
-  "LF": {
-   "paid": 606609500,
-   "purchases": 1944
+  "13": {
+   "CA": 96,
+   "CCA": 93,
+   "code": "13",
+   "name": "Marlow Fork",
+   "placed": 308,
+   "twice": 32
   },
-  "MR": {
-   "paid": 686107000,
-   "purchases": 2302
-  },
-  "RG": {
-   "paid": 1123996000,
-   "purchases": 2766
-  },
-  "TV": {
-   "paid": 460510500,
-   "purchases": 1660
+  "14": {
+   "CA": 97,
+   "CCA": 81,
+   "code": "14",
+   "name": "Nettlefield",
+   "placed": 239,
+   "twice": 22
   }
  },
- "call": {
-  "designated": [
-   "AC",
-   "AV",
-   "CV",
-   "DM",
-   "GS",
-   "KB",
-   "MR"
-  ]
+ "components": {
+  "carry_logits": 0.15,
+  "expected_raw_ca": 29.5,
+  "expected_raw_cca": 18.5,
+  "field_test_mean_position": 65.5,
+  "position_effect_logits": 0.0075,
+  "unique_items_carried": 40,
+  "unique_mean_position": 45.5
  },
- "change": {
-  "AC": 10.1,
-  "AV": 10.6,
-  "BM": 5.2,
-  "CL": 3.8,
-  "CT": 5.3,
-  "CV": 9.5,
-  "DM": 10.2,
-  "DS": 5.6,
-  "GS": 12.0,
-  "IR": 4.8,
-  "KB": 11.2,
-  "KF": 3.4,
-  "LF": 3.8,
-  "MR": 10.4,
-  "RG": 5.7,
-  "TV": 3.6
+ "conversion": {
+  "0": "DM",
+  "1": "DM",
+  "10": "DM",
+  "11": "DM",
+  "12": "DM",
+  "13": "DM",
+  "14": "DM",
+  "15": "DM",
+  "16": "DM",
+  "17": "DM",
+  "18": "DM",
+  "19": "CCA",
+  "2": "DM",
+  "20": "CCA",
+  "21": "CCA",
+  "22": "CCA",
+  "23": "CCA",
+  "24": "CCA",
+  "25": "CCA",
+  "26": "CCA",
+  "27": "CCA",
+  "28": "CCA",
+  "29": "CCA",
+  "3": "DM",
+  "30": "CA",
+  "31": "CA",
+  "32": "CA",
+  "33": "CA",
+  "34": "CA",
+  "35": "CA",
+  "36": "CA",
+  "37": "CA",
+  "38": "CA",
+  "39": "CA",
+  "4": "DM",
+  "40": "CA",
+  "41": "CA",
+  "42": "CA",
+  "43": "CA",
+  "44": "CA",
+  "45": "CA",
+  "46": "CA",
+  "47": "CA",
+  "48": "CA",
+  "49": "CA",
+  "5": "DM",
+  "50": "CA",
+  "51": "CA",
+  "52": "CA",
+  "53": "CA",
+  "54": "CA",
+  "55": "CA",
+  "56": "CA",
+  "57": "CA",
+  "58": "CA",
+  "59": "CA",
+  "6": "DM",
+  "60": "CA",
+  "7": "DM",
+  "8": "DM",
+  "9": "DM"
  },
- "conventions": {
-  "counts": [
-   16
-  ],
-  "dates": [
-   1,
-   10,
-   30
-  ],
-  "line": 8,
-  "vat": 13.5,
-  "years": [
-   2019,
-   2024,
-   2025,
-   2026,
-   2027
-  ]
+ "courses": {
+  "CA": "MATH 131",
+  "CCA": "MATH 131 with MATH 031",
+  "DM": "MATH 091"
  },
- "default_path": {
-  "designated": [
-   "AC",
-   "AV",
-   "DM",
-   "DS",
-   "GS",
-   "IR",
-   "KB"
-  ]
+ "form": {
+  "field_test_positions_from": 61,
+  "field_test_positions_to": 70,
+  "scored_items": 60,
+  "unique_positions_from": 21,
+  "unique_positions_to": 70
+ },
+ "rivals": {
+  "filed_ca_score": 29,
+  "filed_cca_score": 18,
+  "filed_expected_ca": 28.2,
+  "filed_expected_cca": 17.5
+ },
+ "standards": {
+  "CA": 0.2,
+  "CCA": -0.7
+ },
+ "system": {
+  "CA": 3387,
+  "CCA": 2705,
+  "placed": 8970,
+  "twice": 775
  }
 }

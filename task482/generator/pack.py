@@ -1,7 +1,7 @@
-"""The pack's data files, written from the truth in world.py: the residential property price register as the old
-system filed it to 10 October 2025 and as the new system has filed it since 1 October 2025, the valuation register's
-dwelling attributes, the address point file with each building's electoral division, the electoral divisions, the
-census dwelling stock, and two files the index does not use (rents and mortgage drawdowns)."""
+"""Write task482's data files from world.py's truth, each in the layout of the system that produces it: the item
+bank's assembly-pool export, the two forms' layouts, the old platform's wide attempt export, the new platform's
+attempt and item-response exports, the score-routing log, the cutover crosswalk, the testing centres and the
+distractors. docs.py writes the documents and the review log workbook."""
 import csv
 import datetime as dt
 
@@ -10,219 +10,257 @@ import numpy as np
 import world as W
 
 FILES = {
-    "ppr_old": "ppr_residential_sales_filed_2024-10-01_to_2025-10-10.csv",
-    "ppr_new": "ppr_residential_sales_filed_2025-10-01_to_2026-10-14.csv",
-    "valuation": "valuation_register_dwellings_extract_2026-10-15.csv",
-    "points": "address_points_buildings_extract_2026-10-15.csv",
-    "eds": "bso_electoral_divisions_2026.csv",
-    "census": "census_2022_dwelling_stock_by_area_and_type.xlsx",
-    "method": "bso_rppi_methodology_note_2026.pdf",
-    "circular": "dhlgh_circular_rapid_price_growth_areas_2026.pdf",
-    "rents": "rta_registered_rents_by_area_2026q2.xlsx",
-    "mortgages": "mortgage_drawdowns_by_area_2025-2026.csv",
-    "dictionary": "bso_data_dictionary.csv",
-    "manifest": "bso_extract_manifest_2026-10-15.csv",
+    "report": "qpi_technical_report_2027.pdf",
+    "policy": "bpccs_mathematics_placement_policy_4-12.pdf",
+    "dictionary": "qpi_data_dictionary_2027.pdf",
+    "pool": "itemstore_assembly_pool_2027-02-03.csv",
+    "map27": "qpi_form_27A_assembly.csv",
+    "layout26": "qpi_forms_26A_26B_layout.csv",
+    "kts": "kts_qpi_attempts_2026-03-01_to_2026-06-30.csv",
+    "ng_att": "northgate_attempts_2026-07-01_to_2027-01-31.csv",
+    "ng_resp": "northgate_item_responses_2026-07-01_to_2027-01-31.csv",
+    "reports": "qpi_score_reports_2026-03-01_to_2027-01-31.csv",
+    "review": "qpi_session_review_log_2026.xlsx",
+    "xwalk": "kts_to_northgate_student_crosswalk.csv",
+    "centres": "qpi_testing_centres.csv",
+    "headcount": "bpccs_fall_2026_headcount_by_college.csv",
+    "outcomes": "math_course_outcomes_fall_2026.xlsx",
 }
-COMPANY = "Brannagh Statistics Office"
-OLD_COLS = ["Date of Sale (dd/mm/yyyy)", "Address", "County", "Eircode", "Price (€)", "Not Full Market Price",
-            "VAT Exclusive", "Description of Property", "Property Size Description"]
-NEW_COLS = ["transaction_id", "property_number", "eircode", "la_code", "sale_date", "filed_date", "consideration_eur",
-            "market_basis", "dwelling_status"]
-VAL_COLS = ["property_number", "eircode", "address", "la_code", "dwelling_type", "floor_area_m2", "year_built",
-            "valuation_date"]
-PT_COLS = ["eircode", "building_id", "ed_code", "latitude", "longitude", "address_point_status"]
-ED_COLS = ["ed_code", "ed_name", "la_code", "la_name"]
-MORT_COLS = ["la_code", "quarter", "drawdowns", "value_eur_m", "first_time_buyer_share_pct"]
-OLD_WINDOW = (dt.date(2024, 10, 1), dt.date(2025, 10, 10))
-NEW_WINDOW = (dt.date(2025, 10, 1), dt.date(2026, 10, 14))
-VTYPE = {"detached": "Detached house", "semi-detached": "Semi-detached house", "terraced": "Terraced house",
-         "apartment": "Apartment"}
-STREETS = ["Main Street", "Church Road", "The Green", "Station Road", "Mill Lane", "Abbey View", "Oak Park",
-           "Riverside", "Chapel Hill", "Meadow Court", "Ashgrove", "Castle Heights", "Fairfield", "Woodlands",
-           "Beechwood Avenue", "Hazel Close", "The Paddocks", "Cherry Lawn", "Willow Rise", "Glebe Road"]
-ROUTING = {c: "G%02d" % (11 + 4 * i) for i, c in enumerate(W.CODES)}
-EIR_CHARS = "ACDEFHKNPRTVWXY0123456789"
-BLOCK_A = ["Harbour", "Linden", "Quarry", "Foundry", "Granary", "Weir", "Tannery", "Maltings", "Orchard", "Sorrel",
-           "Heron", "Kestrel", "Larch", "Rowan", "Alder", "Brook"]
-BLOCK_B = ["Court", "House", "Place", "Yard", "Square"]
+KTS_LEVEL = {"CA": "131", "CCA": "131C", "DM": "091"}
 
 
-def write_csv(path, cols, rows, encoding="utf-8"):
-    with open(path, "w", newline="", encoding=encoding) as fh:
-        w = csv.writer(fh, lineterminator="\r\n")
+def write_csv(path, cols, rows, crlf=False):
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh, lineterminator="\r\n" if crlf else "\n")
         w.writerow(cols)
+        n = 0
         for r in rows:
-            w.writerow(["" if v is None else v for v in r])
-    return len(rows)
+            w.writerow(r)
+            n += 1
+    return n
 
 
-def _edge(rng, x):
-    """Sales just outside the two index years that the extract also carries: July to September 2024 sales filed
-    from October 2024, and October 2026 sales filed by 14 October."""
-    eds = {}
-    for e in x["eds"]:
-        eds.setdefault(e["area"], []).append(e)
-    out = []
-    for a in x["areas"]:
-        for lo, hi, share in ((dt.date(2024, 7, 1), dt.date(2024, 9, 30), 0.25), (dt.date(2026, 10, 1),
-                                                                                   dt.date(2026, 10, 14), 0.04)):
-            dd = [d for d in W.days(lo, hi) if d.weekday() < 5]
-            for _ in range(int(a["n"] * share)):
-                e = eds[a["code"]][int(rng.integers(0, len(eds[a["code"]])))]
-                t = W.TYPES[int(rng.choice(4, p=W.TMIX))]
-                fl = W.TFLOOR[t] * float(np.exp(rng.normal(0, 0.17)))
-                d = dd[int(rng.integers(0, len(dd)))]
-                lp = (W._level(a["level"], d, a["growth"]) + e["eff"] + W.TEFF[t] + W.ELAST * np.log(fl / 100.0)
-                      + float(rng.normal(0, W.NOISE)))
-                out.append({"area": a["code"], "ed": e["code"], "type": t, "floor": round(fl, 1), "new": False,
-                            "built": 1998, "date": d, "price": round(float(np.exp(lp)) / 500.0) * 500.0,
-                            "market": True, "bulk": None, "edge": True})
-    return out
+def bu(logit):
+    return "%.1f" % (W.BU0 + W.BU1 * logit)
 
 
-def ids(x):
-    """Property numbers, eircodes, addresses, filing days and transaction ids, in one seeded pass."""
-    rng = np.random.default_rng(W.SEED + 1)
-    x["sales"] += _edge(rng, x)
-    used = set()
-    addrs = set()
-    blocks = {}
-    for i, j in enumerate(rng.permutation(len(x["sales"]))):
-        s = x["sales"][j]
-        s["pn"] = "%07d" % (1204411 + 13 * i)
-        while True:
-            e = ROUTING[s["area"]] + " " + "".join(EIR_CHARS[int(k)] for k in rng.integers(0, len(EIR_CHARS), 4))
-            if e not in used and not e[4].isdigit():
-                used.add(e)
-                break
-        s["eircode"] = e
-        if s["bulk"] is not None:
-            k, units = s["bulk"]
-            n = blocks.setdefault(k, [0])
-            n[0] += 1
-            s["address"] = "Apartment %d, %s %s, %s" % (n[0], BLOCK_A[k % len(BLOCK_A)], BLOCK_B[k // len(BLOCK_A)],
-                                                       W.NAMES[s["area"]])
-        elif s["type"] == "apartment":
-            while True:
-                s["address"] = "Apartment %d, %d %s, %s" % (int(rng.integers(1, 40)), int(rng.integers(1, 90)),
-                                                           STREETS[int(rng.integers(0, len(STREETS)))],
-                                                           W.NAMES[s["area"]])
-                if s["address"] not in addrs:
-                    break
+def utc(t_local):
+    return t_local + dt.timedelta(hours=W.central_offset(t_local.date()))
+
+
+def iso_z(t):
+    return t.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def _ids(e):
+    """Stable identifiers: old-platform attempt ids, new-platform attempt refs, session refs."""
+    if "_ids" in e:
+        return e["_ids"]
+    rng = np.random.default_rng(W.SEED + 7)
+    out = {}
+    serial = {}
+    refs = set()
+    for a in e["attempts"]:
+        if a["platform"] == "old":
+            serial[a["site"]] = serial.get(a["site"], 0) + 1
+            out[id(a)] = "KT%s-26%04d" % (a["site"], serial[a["site"]] + 1180)
         else:
             while True:
-                s["address"] = "%d %s, %s" % (int(rng.integers(1, 900)), STREETS[int(rng.integers(0, len(STREETS)))],
-                                              W.NAMES[s["area"]])
-                if s["address"] not in addrs:
+                r = "NG%08d" % int(rng.integers(10000000, 99999999))
+                if r not in refs:
+                    refs.add(r)
                     break
-        addrs.add(s["address"])
-        lag = int(min(150, max(3, round(float(rng.lognormal(np.log(26), 0.55))))))
-        s["filed"] = s["date"] + dt.timedelta(days=lag)
-        if s["bulk"] is not None:
-            s["filed"] = s["date"] + dt.timedelta(days=21)
-        s["eir_shown"] = rng.random() > 0.08
-        s["eir_style"] = int(rng.integers(0, 4))
-        s["lat"] = 53.2 + (W.CODES.index(s["area"]) % 4) * 0.31 + float(rng.uniform(0, 0.25))
-        s["lon"] = -8.9 + (W.CODES.index(s["area"]) // 4) * 0.42 + float(rng.uniform(0, 0.35))
-    x["sales"].sort(key=lambda s: s["pn"])
-    for i, s in enumerate(sorted(x["sales"], key=lambda s: (s["filed"], s["pn"]))):
-        s["tid"] = "PPR-%06d" % (500113 + 3 * i)
-
-
-def filed_price(s, vat_exclusive):
-    return round(s["price"] / (1 + W.VAT), 2) if (vat_exclusive and s["new"]) else s["price"]
-
-
-def _eir(s):
-    e = s["eircode"]
-    return [e, e.replace(" ", ""), e.lower(), " " + e][s["eir_style"]]
-
-
-def _size_desc(s):
-    if not s["new"]:
-        return ""
-    if s["floor"] < 38:
-        return "less than 38 sq metres"
-    if s["floor"] < 125:
-        return "greater than or equal to 38 sq metres and less than 125 sq metres"
-    return "greater than or equal to 125 sq metres"
-
-
-def old_rows(x):
-    """The old system's filings, 1 October 2024 to 10 October 2025, in its public layout: day-first dates, a euro
-    price as text, new dwellings filed exclusive of VAT, the eircode as keyed and sometimes missing."""
-    rows = []
-    for s in sorted(x["sales"], key=lambda s: (s["filed"], s["pn"])):
-        if not OLD_WINDOW[0] <= s["filed"] <= OLD_WINDOW[1]:
-            continue
-        price = filed_price(s, True)
-        rows.append((s["date"].strftime("%d/%m/%Y"), s["address"], W.NAMES[s["area"]],
-                     _eir(s) if s["eir_shown"] else "", "€{:,.2f}".format(price),
-                     "No" if s["market"] else "Yes", "Yes" if s["new"] else "No",
-                     "New Dwelling house /Apartment" if s["new"] else "Second-Hand Dwelling house /Apartment",
-                     _size_desc(s)))
-    return rows
-
-
-def new_rows(x):
-    """The new system's filings from 1 October 2025 (it ran beside the old one to 10 October): ISO dates, the
-    consideration including VAT, the property number and the eircode as the register holds them."""
-    rows = []
-    for s in sorted(x["sales"], key=lambda s: (s["filed"], s["tid"])):
-        if not NEW_WINDOW[0] <= s["filed"] <= NEW_WINDOW[1]:
-            continue
-        rows.append((s["tid"], s["pn"], s["eircode"], s["area"], s["date"].isoformat(), s["filed"].isoformat(),
-                     "%.2f" % s["price"], "FMP" if s["market"] else "NFMP", "NEW" if s["new"] else "SH"))
-    return rows
-
-
-def in_extract(s):
-    return OLD_WINDOW[0] <= s["filed"] <= OLD_WINDOW[1] or NEW_WINDOW[0] <= s["filed"] <= NEW_WINDOW[1]
-
-
-def valuation_rows(x):
-    rows = []
-    for s in x["sales"]:
-        if in_extract(s):
-            vd = dt.date(2025, 6, 30) if s["date"] < dt.date(2025, 6, 30) or not s["new"] else dt.date(2026, 6, 30)
-            rows.append((s["pn"], s["eircode"], s["address"], s["area"], VTYPE[s["type"]], "%.1f" % s["floor"],
-                         s["built"], vd.isoformat()))
-    return rows
-
-
-def point_rows(x):
-    rows = []
-    bid = {}
-    for s in x["sales"]:
-        if in_extract(s):
-            key = s["address"].split(", ", 1)[1] if s["bulk"] is not None else s["pn"]
-            b = bid.setdefault(key, "B%08d" % (30117 + 11 * len(bid)))
-            rows.append((s["eircode"], b, s["ed"], "%.5f" % s["lat"], "%.5f" % s["lon"], "active"))
-    rows.sort()
-    return rows
-
-
-def ed_rows(x):
-    return [(e["code"], e["name"], e["area"], W.NAMES[e["area"]]) for e in sorted(x["eds"], key=lambda e: e["code"])]
-
-
-def stock(x):
-    """Census 2022 occupied and vacant dwellings by area and type: the stock of which a year's sales are about four
-    in a hundred, in the area's long-run mix."""
-    rng = np.random.default_rng(W.SEED + 3)
-    out = {}
-    for a in x["areas"]:
-        tot = int(a["n"] / 0.041 * float(rng.uniform(0.95, 1.05)))
-        out[a["code"]] = [int(round(tot * m / 10.0)) * 10 for m in a["stock"]]
+            out[id(a)] = r
+    e["_ids"] = out
     return out
 
 
-def mortgage_rows(x):
-    rng = np.random.default_rng(W.SEED + 4)
+def session_ref(a):
+    c, d, hm = a["session"]
+    return "S%s-%s-%s" % (c[2:], d.strftime("%Y%m%d"), hm.replace(":", ""))
+
+
+CALIB_FORM = {2023: "23A", 2024: "24A", 2025: "25A"}
+
+
+def pool_rows(e):
+    it = e["items"]
+    status = {}
+    for f in ("27A", "27B"):
+        for i in e["forms"][f]:
+            status[i] = "Form %s" % f
+    rng = np.random.default_rng(W.SEED + 11)
     rows = []
-    for a in x["areas"]:
-        for q in ("2025Q1", "2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2"):
-            n = int(a["n"] / 4 * float(rng.uniform(0.45, 0.6)))
-            rows.append((a["code"], q, n, "%.1f" % (n * float(np.exp(a["level"])) * float(rng.uniform(0.78, 0.86)) / 1e6),
-                         "%.1f" % float(rng.uniform(44, 58))))
+    for k in sorted(it):
+        r = it[k]
+        if r["role"] == "anchor":
+            rows.append([k, r["legacy"], r["strand"], "anchor", bu(r["bank"]), "%.1f" % (W.BU1 * r["se"]), r["n"],
+                         "base calibration 2022", "2022-07-15", r["key"]])
+        elif r["role"] == "pool":
+            st = int(rng.integers(1, 9))
+            when = {2023: "2023-07-21", 2024: "2024-07-19", 2025: "2025-07-18"}[r["ft_year"]]
+            rows.append([k, r["legacy"], r["strand"], status.get(k, "ready"), bu(r["bank"]),
+                         "%.1f" % (W.BU1 * r["se"]), r["n"], "field test %d, Form %s set %d" % (r["ft_year"],
+                         CALIB_FORM[r["ft_year"]], st), when, r["key"]])
     return rows
+
+
+POOL_COLS = ["item_id", "kts_item", "strand", "status", "difficulty_bu", "se_bu", "n_calibration", "calibration",
+             "calibrated_on", "key"]
+
+
+def map27_rows(e):
+    it = e["items"]
+    anc = sorted([i for i in it.values() if i["role"] == "anchor"], key=lambda r: r["anchor_pos"])
+    rows = [["27A", "anchor", r["anchor_pos"], r["id"], r["legacy"], r["strand"], r["key"], str(r["anchor_pos"])]
+            for r in anc]
+    for k, iid in enumerate(e["forms"]["27A"]):
+        r = it[iid]
+        rows.append(["27A", "unique", k + 1, iid, r["legacy"], r["strand"], r["key"], "21-70, shuffled with the field-test set"])
+    rng = np.random.default_rng(W.SEED + 13)
+    serial = 900
+    for st in range(1, 9):
+        for k in range(10):
+            serial += int(rng.integers(1, 4))
+            s = W.STRANDS[(st + k) % 5]
+            rows.append(["27A", "field test", "%d.%d" % (st, k + 1), "QPI-%s-%04d" % (s, serial), "", s,
+                         "ABCD"[int(rng.integers(4))], "21-70, shuffled with the unique items"])
+    return rows
+
+
+MAP27_COLS = ["form", "section", "slot", "item_id", "kts_item", "strand", "key", "position"]
+
+
+def layout26_rows(e):
+    it = e["items"]
+    rows = []
+    for form in ("26A", "26B"):
+        anc, uni = W.form_items(it, form)
+        for k, iid in enumerate(anc):
+            r = it[iid]
+            rows.append([form, "anchor", k + 1, iid, r["legacy"], r["strand"], r["key"], k + 1, k + 1])
+        for k, iid in enumerate(uni):
+            r = it[iid]
+            rows.append([form, "unique", k + 1, iid, r["legacy"], r["strand"], r["key"], 21 + k, 60 - k])
+    for st in range(1, 9):
+        for k, iid in enumerate(W.ft_set_items(it, st)):
+            r = it[iid]
+            rows.append(["FT26-%d" % st, "field test", k + 1, iid, r["legacy"], r["strand"], r["key"], 61 + k, 70 - k])
+    return rows
+
+
+LAYOUT_COLS = ["form", "section", "slot", "item_id", "kts_item", "strand", "key", "kts_position_version_A",
+               "kts_position_version_B"]
+
+
+def _person(e, a):
+    return e["students"][a["student"] - 1]
+
+
+def kts_rows(e):
+    ids = _ids(e)
+    it = e["items"]
+    rows = []
+    for a in e["attempts"]:
+        if a["platform"] != "old":
+            continue
+        s = _person(e, a)
+        # delivered order: positions 1..70
+        order = sorted(range(70), key=lambda i: a["pos"][i])
+        resp = "".join(a["letters"][i] or "*" for i in order)
+        site = a["centre"][2:4] + ("M" if a["centre"].endswith("1") else "S")
+        rows.append([ids[id(a)], a["site"], site, "%07d" % a["sid"], s["dob"].strftime("%m/%d/%Y"), s["sex"],
+                     s["hs"], s["registered"].strftime("%m/%d/%Y"), a["form"], a["version"], a["ft_set"],
+                     a["date"].strftime("%m/%d/%Y"), a["start"].strftime("%H:%M"), a["end"].strftime("%H:%M"),
+                     resp, a["raw"], KTS_LEVEL[a["level"]]])
+    return rows
+
+
+KTS_COLS = ["attempt_id", "college", "site", "student_no", "birth_date", "sex", "hs_code", "registered", "form",
+            "version", "ft_set", "test_date", "start", "end", "responses", "raw_score", "placement"]
+
+
+def ng_att_rows(e):
+    ids = _ids(e)
+    rows = []
+    for a in e["attempts"]:
+        if a["platform"] != "new":
+            continue
+        s = _person(e, a)
+        rows.append([ids[id(a)], "%09d" % a["sid"], s["dob"].isoformat(), s["sex"], s["hs"], s["registered"].isoformat(),
+                     a["college_held"], a["centre"], session_ref(a), a["form"], a["ft_set"], iso_z(utc(a["start"])),
+                     iso_z(utc(a["end"])), a["raw"], a["level"]])
+    return rows
+
+
+NG_ATT_COLS = ["attempt_ref", "student_id", "birth_date", "sex", "hs_code", "registered", "college", "centre",
+               "session_ref", "form", "ft_set", "started_at", "submitted_at", "raw_score", "placement"]
+
+
+def ng_resp_rows(e):
+    ids = _ids(e)
+    rng = np.random.default_rng(W.SEED + 17)
+    for a in e["attempts"]:
+        if a["platform"] != "new":
+            continue
+        order = sorted(range(70), key=lambda i: a["pos"][i])
+        t = utc(a["start"]) + dt.timedelta(seconds=int(rng.integers(40, 90)))
+        span = (a["end"] - a["start"]).total_seconds() - 120
+        rts = rng.gamma(2.2, 1.0, 70)
+        rts = rts / rts.sum() * span
+        for j, i in enumerate(order):
+            rt = max(4, int(rts[j]))
+            yield [ids[id(a)], a["items"][i], a["pos"][i], a["letters"][i], a["y"][i], rt, iso_z(t)]
+            t += dt.timedelta(seconds=rt)
+
+
+NG_RESP_COLS = ["attempt_ref", "item_id", "seq", "response", "score", "rt_s", "served_at"]
+
+
+def report_rows(e):
+    ids = _ids(e)
+    reps = sorted(e["reports"], key=lambda r: (r["sent"], ids[id(r["attempt"])], r["to"]))
+    rows = []
+    for k, r in enumerate(reps):
+        rows.append(["R%07d" % (2604000 + k * 3 + 1), ids[id(r["attempt"])], r["to"],
+                     "automatic" if r["kind"] == "automatic" else "on request", r["sent"].strftime("%Y-%m-%d %H:%M")])
+    return rows
+
+
+REPORT_COLS = ["report_id", "attempt", "sent_to", "report", "sent"]
+
+
+def xwalk_rows(e):
+    rows = []
+    for s in e["students"]:
+        for c, n in sorted(s["csn"].items()):
+            rows.append([c, "%07d" % n, "%09d" % s["sysid"], "2026-07-01"])
+    rows.sort(key=lambda r: (r[0], r[1]))
+    return rows
+
+
+XWALK_COLS = ["kts_college", "kts_student_no", "northgate_student_id", "migrated"]
+
+
+def centre_rows(e):
+    rows = []
+    for c, code, kind in e["centres"]:
+        nm = W.NAMES[code].replace(" Community College", "")
+        rows.append([c, code, "%s %s testing centre" % (nm, "main campus" if kind == "main" else "satellite"),
+                     "%s%s" % (code, "M" if kind == "main" else "S")])
+    return rows
+
+
+CENTRE_COLS = ["centre", "college", "centre_name", "kts_site"]
+
+
+def headcount_rows(e):
+    rng = np.random.default_rng(W.SEED + 19)
+    rows = []
+    for code, name, n, _, _ in W.COLLEGES:
+        hc = int(n * rng.uniform(5.6, 7.4))
+        rows.append([code, name, hc, int(hc * rng.uniform(0.52, 0.64)), int(n * rng.uniform(0.62, 0.78))])
+    return rows
+
+
+HEADCOUNT_COLS = ["college", "college_name", "headcount_fall_2026", "fte_fall_2026", "first_time_students_fall_2026"]

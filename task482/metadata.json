@@ -1,53 +1,61 @@
 {
  "task": "task482",
- "domain": "Survey Research & Official Statistics (census, register and administrative data quality)",
- "client_domain": "Survey Research & Official Statistics",
- "task_type": "census-register-administrative-data-quality",
+ "domain": "Education & Learning Sciences (item response theory and test equating)",
+ "client_domain": "Education & Learning Sciences",
+ "task_type": "item-response-theory-test-equating",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "rta_registered_rents_by_area_2026q2.xlsx",
-  "mortgage_drawdowns_by_area_2025-2026.csv"
+  "bpccs_fall_2026_headcount_by_college.csv",
+  "math_course_outcomes_fall_2026.xlsx"
  ],
  "distractor_reasons": {
-  "rta_registered_rents_by_area_2026q2.xlsx": "registered rents by area in the second quarter of 2026; the designation turns on the price of dwellings bought, and rents are a different market",
-  "mortgage_drawdowns_by_area_2025-2026.csv": "mortgage drawdowns by area and quarter; a count and value of loans, not of the price of an unchanged dwelling, and it stops at June 2026"
+  "bpccs_fall_2026_headcount_by_college.csv": "each college's fall 2026 headcount, FTE and first-time students: the colleges' size, not the students the QPI placed, and counted on a census date rather than by sitting",
+  "math_course_outcomes_fall_2026.xlsx": "fall 2026 course outcomes by college and course: how placed students fared, which neither sets a placement score nor counts placements"
  },
  "stated_inputs": [
-  "8",
-  "13.5"
+  "0.20",
+  "-0.70",
+  "60"
  ],
  "deliverables": [
-  "bso_area_property_price_change_2026.xlsx"
+  "qpi_placement_review_2027.xlsx",
+  "qpi_form27a_score_conversion.csv",
+  "qpi_form27a_expected_score_curve.svg"
  ],
- "as_of": "2026-10-15",
+ "as_of": "2027-02-05",
  "files": [
-  "address_points_buildings_extract_2026-10-15.csv",
-  "bso_data_dictionary.csv",
-  "bso_electoral_divisions_2026.csv",
-  "bso_extract_manifest_2026-10-15.csv",
-  "bso_rppi_methodology_note_2026.pdf",
-  "census_2022_dwelling_stock_by_area_and_type.xlsx",
-  "dhlgh_circular_rapid_price_growth_areas_2026.pdf",
-  "mortgage_drawdowns_by_area_2025-2026.csv",
-  "ppr_residential_sales_filed_2024-10-01_to_2025-10-10.csv",
-  "ppr_residential_sales_filed_2025-10-01_to_2026-10-14.csv",
-  "rta_registered_rents_by_area_2026q2.xlsx",
-  "valuation_register_dwellings_extract_2026-10-15.csv"
+  "bpccs_fall_2026_headcount_by_college.csv",
+  "bpccs_mathematics_placement_policy_4-12.pdf",
+  "itemstore_assembly_pool_2027-02-03.csv",
+  "kts_qpi_attempts_2026-03-01_to_2026-06-30.csv",
+  "kts_to_northgate_student_crosswalk.csv",
+  "math_course_outcomes_fall_2026.xlsx",
+  "northgate_attempts_2026-07-01_to_2027-01-31.csv",
+  "northgate_item_responses_2026-07-01_to_2027-01-31.csv",
+  "qpi_data_dictionary_2027.pdf",
+  "qpi_form_27A_assembly.csv",
+  "qpi_forms_26A_26B_layout.csv",
+  "qpi_score_reports_2026-03-01_to_2027-01-31.csv",
+  "qpi_session_review_log_2026.xlsx",
+  "qpi_technical_report_2027.pdf",
+  "qpi_testing_centres.csv"
  ],
  "rows": {
-  "bso_data_dictionary.csv": 15,
-  "bso_electoral_divisions_2026.csv": 139,
-  "bso_extract_manifest_2026-10-15.csv": 11,
-  "mortgage_drawdowns_by_area_2025-2026.csv": 96,
-  "address_points_buildings_extract_2026-10-15.csv": 75141,
-  "ppr_residential_sales_filed_2025-10-01_to_2026-10-14.csv": 38633,
-  "ppr_residential_sales_filed_2024-10-01_to_2025-10-10.csv": 37532,
-  "valuation_register_dwellings_extract_2026-10-15.csv": 75141
+  "qpi_testing_centres.csv": 20,
+  "bpccs_fall_2026_headcount_by_college.csv": 14,
+  "kts_qpi_attempts_2026-03-01_to_2026-06-30.csv": 3288,
+  "qpi_forms_26A_26B_layout.csv": 200,
+  "qpi_form_27A_assembly.csv": 140,
+  "northgate_attempts_2026-07-01_to_2027-01-31.csv": 6493,
+  "northgate_item_responses_2026-07-01_to_2027-01-31.csv": 454510,
+  "itemstore_assembly_pool_2027-02-03.csv": 180,
+  "qpi_score_reports_2026-03-01_to_2027-01-31.csv": 10674,
+  "kts_to_northgate_student_crosswalk.csv": 3179
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task482/generator); the nation, its statistics office, the areas, the dwellings, the sales and the people are fictional",
-  "public_specifications": "the price register's old layout follows the public layout of a national residential property price register; the other layouts are the pack's own, described in its dictionary",
+  "constructed": "every file is constructed for this task by its generator (task482/generator); the community college system, its colleges, its placement test, the item bank, the delivery platforms, the students and the people are fictional",
+  "public_specifications": "the layouts are the pack's own, in the style of a computer-based test delivery export and an item bank export, described in its data dictionary",
   "licence": "CC0 1.0 (constructed data)",
-  "date": "2026-10-15"
+  "date": "2027-02-05"
  }
 }
