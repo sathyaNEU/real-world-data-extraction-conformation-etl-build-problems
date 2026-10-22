@@ -1,7 +1,7 @@
 {
  "task": "task177",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "RETIRED",
  "domain": "product-analytics/churn-propensity-uplift-modeling",
  "objective": "forecasting",
  "stage": 4,
@@ -21,16 +21,16 @@
  },
  "duplicate_check": {
   "surface": "exit 0 2026-10-22: the same six card-level pairs as rounds 1 and 2",
-  "heart": "BLOCK 2026-10-22 after the pull to bbc366d5, for the author's ruling: ban.strategy (composition_mix) and ban.forum (executive_team) against task446 v3, registered 2026-10-21T05:35:41Z in another session and on main only after this card's registration (05:48:20Z) and after round 1's heart PASS; no axis relabelled"
+  "heart": "PASS at registration (2026-10-21T05:48:20Z) and after rounds 1 and 2's pulls; BLOCK on 2026-10-22 after the pull to bbc366d5 on ban.strategy (composition_mix) and ban.forum (executive_team) against task446 v3, registered at 05:35:41Z on 2026-10-21 in another session and on main only after round 1; no axis relabelled, left for the author; moot at retirement"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC (round 2, ask B only)",
-  "disposition": "FIX_NOW",
-  "report": "round 2 re-judge on target.zip cc5a56de: the call (20) and ask A reproduce; ask B's 'x 2' line convention unfiled and the credit notes' attribution inferred; fixed in round 3's pack by the lines' qty and unit_amount in the dictionary, note 4.2 (a credit note reduces the bills it covers) and the legacy pull's filed scope. Round 1 on 4827dc5d: DETERMINISTIC, hygiene fixed."
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "report": "round 3 re-judge on target.zip c2789bda: the call reproduces at 20 (95 per cent half-width about 0.7 points), all of ask A and all 12 ask B cells; round 2 on cc5a56de NOT_DETERMINISTIC on ask B only (the line convention), round 1 on 4827dc5d DETERMINISTIC with hygiene"
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
- "resume": "stage 4 round 3: two scored readers on target.zip c2789bda (the author's final ask pass; task177 retires if round 3 fails); the call and every call-side row frozen at round 1's bytes",
+ "resume": "RETIRED 2026-10-22 under the author's rule for the final ask pass: architecture 2 (the churn uplift by the days to the next bill) held its call in every blind read and the round 3 re-judge was DETERMINISTIC and APPROVE on target.zip c2789bda, but reader E kept ask B's 12 cells through the filed qty convention, so the asks never cleared two readers in one round; architecture 1 (the psychology two-rate learner) was spent at Gate F on 3be16ba3 (see ## Retired). Nothing to resume.",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -172,6 +172,13 @@
  },
  "readers": {
   "round1": "target.zip 4827dc5d: reader A call 10, asks 9 of 21; reader B call 10, asks 21 of 21",
-  "round2": "target.zip cc5a56de: reader C call 10, asks 0 of 21 (PASS); reader D call 10, ask A 9 of 9 through the -MA rate lines, ask B 0 of 12 (FAIL at 42.9 per cent); ask A re-sited onto credits posted against the acceptance, ask B's convention filed"
+  "round2": "target.zip cc5a56de: reader C call 10, asks 0 of 21 (PASS); reader D call 10, ask A 9 of 9 through the -MA rate lines, ask B 0 of 12 (FAIL at 42.9 per cent); ask A re-sited onto credits posted against the acceptance, ask B's convention filed",
+  "round3": "target.zip c2789bda: reader E call 10, asks 12 of 21 (ask A 0 of 9, the credit lines held; ask B 12 of 12 through the filed qty convention), score_reader FAIL at 57.1 per cent; reader F's result lost in a container restart"
+ },
+ "retired": {
+  "date": "2026-10-22",
+  "why": "the asks never cleared two readers in one round of architecture 2 (round 1: 9 and 21 of 21; round 2: 0 and 9; round 3: 12 of 21), the call holding in every blind read; architecture 1 spent at Gate F",
+  "lesson": "an ask device whose determinism needs a filed convention dies when the convention is filed",
+  "device_records": "vendor desk, day cut (architecture 1), the offer's half price posted as credits (architecture 2), in the design note's ## Retired"
  }
 }

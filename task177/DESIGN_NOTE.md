@@ -1,13 +1,10 @@
 # task177 design note
 
-**Status: architecture 2, stage 4 round 2 fixes made (2026-10-22), stage 3 gates green, waiting on the round 3
-readers; the author's final ask pass, and task177 retires if round 3 fails.** Round 2 on target.zip cc5a56de: readers C
-and D both filed the call at 10; C kept 0 of 21 asks, D all of ask A (it added the -MA rate lines to the discount
-lines) and none of ask B; the re-judge NOT_DETERMINISTIC on ask B only (the "x 2" line convention unfiled; the credit
-notes' attribution inferred), the call and ask A reproducing. Round 1 on target.zip 4827dc5d: the judge DETERMINISTIC,
-both readers at 10 on the call, the asks leaking (9 of 21, 21 of 21). The call and every row it reads are frozen at
-round 1's bytes (FROZEN in checks.py). Architecture 1 (psychology-behavioral-science) was spent at Gate F on target.zip
-3be16ba3; its record is kept below under `## Architecture 1 record`.
+**Status: RETIRED 2026-10-22 (see `## Retired`).** Architecture 2 (product-analytics /
+churn-propensity-uplift-modeling, Forecasting) held its call in every blind read and was approved by the round 3
+re-judge, but its asks never cleared two readers in one round; the author's final ask pass failed on round 3 (reader E
+kept ask B's twelve cells). Architecture 1 (psychology-behavioral-science) was spent at Gate F on target.zip 3be16ba3;
+its record is kept below under `## Architecture 1 record`.
 
 ## Draw
 
@@ -1071,3 +1068,65 @@ its group's surviving records), the same family by its label.
   convention is filed as Layer 1 (the lines' qty and unit_amount), the credit note's effect in note 4.2, and the legacy
   pull's scope in the dictionary. The device left is the reader's own: summing a line filed under the list
   subscription counts the household's other subscription too.
+- **Architecture 2, round 3 asks (stage 4 on target.zip c2789bda), the final pass.** The re-judge was DETERMINISTIC and
+  APPROVE (the call at 20, every ask figure reproducing) and reader E filed the call at 10 and kept 0 of 9 on ask A (the
+  credits posted against the acceptance held), but it kept all twelve of ask B: "platform invoice lines filed under
+  list subscription ids ... one unit per line (qty 2 lines bill a second, non-list subscription)". Filing qty as the
+  number of subscriptions a line bills closed the round 2 judge's fork and handed over the device in the same sentence.
+  The lesson: an ask device whose determinism needs a filed convention dies when the convention is filed; such a
+  device has to be found by an internal inconsistency with no convention to read, or re-sited. Across architecture 2
+  the call held in every blind read (readers A to E filed 10; reader F's result was lost in a container restart) and
+  the asks never cleared two readers in one round (round 1: 9 and 21 of 21; round 2: 0 and 9; round 3: 12 of 21).
+
+## Retired
+
+Retired on 2026-10-22 under the author's rule for the final ask pass (if round 3 still fails, the number retires).
+Two architectures were built to stage 4, after the seed's own world (FC48, drop-off recycling bins) died at stage 1 on
+measurement before any card.
+
+- **Architecture 1, psychology-behavioral-science / decision-making-computational-behavioral-modeling: the two-rate
+  learner.** A provincial employment service's share of jobseekers' own contacts its upgraded assistant would take in
+  March and April 2027, after eight assistant-first weeks. The decisive step was a separate learning rate for the
+  contacts a jobseeker did not choose (the overflow transfers), fitted jointly and carried through weeks made of
+  imposed contacts. Five rounds re-sited the asks twice and moved the forecast to the nearest 5 per cent. It was spent
+  at Gate F on target.zip 3be16ba3: the round 5 re-judge was DETERMINISTIC and APPROVE, but scored reader I landed the
+  25 bin with an outcome-weighted habit model that never separated the imposed contacts. Lesson: the lever between the
+  golden and its neighbours was no wider than the golden family's own spread.
+- **Architecture 2, product-analytics / churn-propensity-uplift-modeling: the churn uplift by the days to the next
+  bill.** The share of Daily Lantern Media's 26 January 2027 at-risk list kept to 31 March 2027 by a half-price offer,
+  forecast from last January's randomised test. The offer worked only when it landed in the fortnight before a
+  subscriber's next bill, and every bill on this year's list falls six days after the send, so the answer is 20 per
+  cent against the test's whole-list 10. The call held: every blind reader (A to E) filed 10, and the round 1 and
+  round 3 judges were DETERMINISTIC (round 3 APPROVE, the call's 95 per cent half-width about 0.7 points). The asks
+  never cleared two readers in one round across three rounds, and the author's final pass failed on ask B (reader E,
+  12 of 21).
+
+The lesson the number leaves: an ask device whose determinism needs a filed convention dies when the convention is
+filed. Ask B's household line could only be made determinate by saying in the dictionary what a line's quantity counts,
+and the same sentence told the reader how to handle it. A device must be found by an internal inconsistency that a
+grader can verify without a convention, or the ask must be re-sited before the judge sees it.
+
+The card stays filed with `architecture_spent` set; both architectures are in its lineage. Three ask devices held
+against scored readers and are kept here as reusable records:
+
+- **Device record, the vendor's support desk (architecture 1, ask B).** A vendor's support staff work inside the
+  customer's tenant under accounts typed staff, like the customer's own. The customer's carry its business number in
+  org_ref; the desk's carry the vendor's, which appears only as the supplier's tax number on the vendor's invoices.
+  Counting staff by type puts the vendor's desk into the customer's own use in every month. Measured: the round 3 and
+  round 4 readers kept 0 of 12 each.
+- **Device record, the widget's day cut (architecture 1, ask A).** An integration partner's widget partitions its log
+  by UTC day: a session still open at 00:00:00 UTC is closed there as a timeout and carries on at that second as a new
+  conversation id from the same account, so a conversation reaches the export twice. Fair, because a timeout means 30
+  idle minutes and no other two sessions meet at a second. Measured: the round 3 and round 4 readers kept 0 of 12 each.
+- **Device record, the offer's half price posted as credits (architecture 2, ask A, round 3).** An engine that
+  applied an acceptance only after the subscription's first discounted bill had been raised has billing post the half
+  price on both bills as credit lines (CRED) carrying the offer's code and the acceptance's own reference, with no
+  discount line. Every reader that counts the offer from the discount lines misses those subscriptions in every month,
+  plan and takers count. Fair, because each credit is exactly half the subscription's own charge, against its own
+  acceptance. Measured: reader E kept 0 of 9; on reader D's round 2 route every discount cell is low by 954 to 2,505
+  pounds.
+
+## Resume
+
+RETIRED 2026-10-22: architecture 2's asks never cleared two readers in one round and the author's final ask pass failed
+on round 3 (reader E kept ask B's 12 cells); architecture 1 was spent at Gate F. Nothing to resume.

@@ -130,8 +130,47 @@
       "stump": "One learning rate fitted to every contact and simulated through the assistant-first weeks files about 40 per cent of claimants' own contacts in the assistant for March and April; the overflow-redirected contacts in the record teach about a fifth as much as chosen ones, so the share is about 26 per cent.",
       "answer": "25 per cent (to the nearest 5 per cent; 25.21 unrounded)",
       "fate": "spent at stage 4 Gate F on target.zip 3be16ba3 (2026-10-21): the re-judge was DETERMINISTIC and APPROVE, but scored reader I landed the 25 bin with a fitted outcome-weighted habit model (decay 0.63 per contact, weights by the previous contact outcome) that never separated the imposed contacts; whole per cent had failed determinism and nearest 5 admitted the neighbour, so the lever was no wider than the golden family spread"
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-21",
+      "domain": "product-analytics",
+      "subdomain": "churn-propensity-uplift-modeling",
+      "niche": "a UK news publisher's forecast of the share of its January at-risk list of monthly digital subscribers that a half-price retention offer keeps through March, carried from last January's half-and-half test after billing moved to the 1st of the month",
+      "objective": "forecasting",
+      "shape": "single-figure",
+      "decision_type": "quantity_figure",
+      "answer_unit": "rate_or_share",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G7",
+        "G6"
+      ],
+      "gate_g": "forecasting",
+      "calibration_form": "pilot_log",
+      "stump_strategy": "composition_mix",
+      "context_artifact": "planning_thread",
+      "role_family": "product_manager",
+      "forum": "executive_team",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "media_or_publishing",
+      "layer2_family": "estimand_identification",
+      "layer2_pattern": "product-analytics/churn-propensity-uplift-modeling/1",
+      "driver": "An intervention moves a unit mainly when it lands in the days before the unit's own recurring decision, so the effect a randomised test measured while those decisions fell at every point of the units' cycles is an average over the cycle, and it does not carry to a delivery that now lands a few days before every unit's decision; only the effect the test read on its units whose decision fell as close to their delivery does.",
+      "driver_concrete": "A half-price retention offer keeps a subscriber mainly when it lands in the fortnight before their next monthly bill, so last January's half-and-half test, sent while bills fell on every day of the month, kept about 9 in 100 across the cycle, while this January's list, every bill on 1 February six days after the send since billing moved to the 1st, is kept at the rate the test measured on subscribers billed within two weeks of it, about 20 in 100.",
+      "stump": "An uplift model on last January's half-and-half test (two-model or transformed outcome on the subscriber features) scored on this year's list files about 10 per cent; the test's subscribers whose next bill fell within two weeks of the send were kept at about twice the overall rate and almost none of the rest, and every bill on this year's list falls six days after the send, so the share is about 20 per cent.",
+      "answer": "20 per cent",
+      "fate": "RETIRED 2026-10-22 at stage 4 after the author's final ask pass: the call held in every blind read (readers A to E filed the default 10 per cent) and the round 3 re-judge was DETERMINISTIC and APPROVE on target.zip c2789bda, but the asks never cleared two readers in one round (round 1: 9 and 21 of 21; round 2: 0 and 9; round 3: reader E 12 of 21, keeping ask B through the filed qty convention); an ask device whose determinism needs a filed convention dies when the convention is filed"
     }
   ],
-  "notes": "Re-rooted 2026-10-21 to architecture v2 in the second cell the main session assigned this round; v1's identity is in lineage with its fate.",
-  "registered": "2026-10-21T05:48:20Z"
+  "notes": "Re-rooted 2026-10-21 to architecture v2 in the second cell the main session assigned this round; v1's identity is in lineage with its fate. Architecture v2 RETIRED 2026-10-22 (the number's second and last architecture): the call held in every blind read and was approved, but the asks never cleared two readers in one round; its identity is in lineage with its fate. Heart BLOCKed on 2026-10-22 against task446 v3 (registered 13 minutes earlier in another session, visible only after round 1); no axis was relabelled.",
+  "registered": "2026-10-21T05:48:20Z",
+  "architecture_spent": true
 }
