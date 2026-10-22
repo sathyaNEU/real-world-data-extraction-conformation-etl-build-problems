@@ -82,69 +82,80 @@ the span.
 
 ## Three rules
 
-- Task type: conflict-protest-event-data-analysis, which the client taxonomy gives anomaly-detection and
-  descriptive-distribution; this build takes the anomaly-detection reading, a real escalation separated from
-  a reporting artifact.
-- Domain test: the deciding quantity is protest incidence recovered from a media-sourced event record, which
-  conflict-event analysis estimates by conditioning event counts on reporting intensity, the field's own
-  pattern 1 for this task type and the reason every published protest-event series carries a media-reach
-  caveat; the estimator is a rate of recorded actions per unit of press material reaching the monitor,
-  compared with the city's own earlier rate.
-- Swap: "which city's protest activity rose, as against the volume of press material reaching the register
-  from it" becomes, with another field's nouns, "which hospital's falls rose, as against the volume of
-  incident forms reaching the registry from it", and it stops making sense, because an internal incident
-  system has no outside reporters whose filing volume the record separately measures, no citations per event,
-  and no gap between an event happening and an account of it reaching a coder.
-- Layer 1: the register ships as yearly exports whose columns were renamed in 2025 and whose dates change
-  format (the office's own export tool, revised between calendar years); the preliminary and definitive
-  extracts of three 2026 months overlap (the publication cycle); the 2026 template records a day count where
-  earlier templates wrote one row per day (a template revision); city keys arrive as names and as divipola
-  codes with one code reassigned after a merger (the national coding standard); population projections ship
-  in thousands on one sheet and units on another in two vintages (the statistics office's release practice);
-  the quarterly bulletin's figures sit inside PDF tables; outlet codes carry a service prefix in the 2026
-  delivery file only; the ingest stamp is UTC while the action date is local. Nothing is placed to be caught
-  and none of it changes which city is designated.
-- Layer 2: estimand_identification. The recorded count is the product of how often actions happen and how
-  reliably an account of one reaches the monitor, and the decisive choice is which of the record's own
-  measured volumes may stand for the second factor.
-- Decisive step: condition each city's rise on the press material the monitor received from that city, the
-  one volume in the record that is not produced by the actions themselves, rather than on residents (which
-  cancels out of a within-city rise), on the items retained for screening, or on the citations the register
-  holds per action.
-- Not semantics: every field, code, unit and date can be read correctly and the easy route still files
-  Sardinata; the data dictionary defines all three volumes accurately, nothing in any definition says which
-  one belongs in a denominator, and the two wrong ones are wrong for a structural reason, that they contain
-  the action count by construction, which no reading of a field reveals.
-- Not rule application: the protocol files the designation's population, outcome, window, unit and
-  comparison, and no filed rule, formula or procedure performs the conditioning or names a volume; executing
-  every stated rule gives the eleven cities' recorded rises against their own baselines, which is the default
-  path's wrong answer.
-- Analyst test: with every field read, every date and code resolved and the protocol's window and unit
-  applied, the easy route compares each city's half-year actions with its own baseline and files Sardinata,
-  121.4 actions per 100,000 residents; the obvious correction, dividing actions by the register's own protest
-  material, files Teorama, whose citations fell by two thirds when one outlet stopped republishing. `checks.py` executes
-  both on the clean truth and asserts the named wrong answers, then changes the denominator alone and asserts
-  the golden.
-- Estimand: the protocol's designation clause fixes the population (every action the register holds for the
-  eleven panel cities, all sources, single-source actions included, on the definitive extract of 5 November
-  2026, with actions not yet registered at that date outside it because every window month has passed its
-  30-day definitive close), the outcome (a rise in the actions occurring in the city, for which the
-  register's entries are the evidence and not themselves the measure), the window (1 April to 30 September
-  2026 inclusive against the twenty-four months ended 31 December 2025), the unit (one gathering, on one day,
-  at one place, with the printed figure per 100,000 residents of the 2026 projection) and the comparison (the
-  city against its own record over the baseline), and the candidate set (a city is eligible where the
-  register holds at least thirty actions for it in the half year and the city has been in the panel for the
-  whole of the baseline, which removes Hacari at 25 actions and no other city, and removes nobody any route
-  names).
-- No decoy: nothing is planted to be caught; no memo, draft or stakeholder figure argues for any city, no
-  block of records is copied, no rule is withheld, the quarterly bulletin reports completed quarters as it
-  always has and designates nobody, and the three cities whose press presence rose have unrelated causes
-  which no shipped sentence states.
-- No certified replay: no certified, published or closed figure in the pack is reproduced by the wrong
-  method, and no bench blesses a method; the pack ships no completeness audit at all.
-- Lesson: an exposure measure has to be independent of the outcome being measured, because a denominator the
-  outcome itself produces subtracts the signal; no build on file teaches it, since the five nearest builds
-  all estimate what a record is missing and none turns on which measured volume may normalise a rise.
+**Written to the measured truth at the wave 7 triage, after three isolated reads landed the call and
+the three screens were run twice byte-identical on the clean truth and on the shipped pack. Five of the
+thirteen lines now fail. The architecture is refused and re-rooted at stage 1; the measurements are in
+`## Tried and rejected`.**
+
+- Task type: conflict-protest-event-data-analysis, taken in its anomaly-detection reading, a real
+  escalation separated from a reporting artifact. Holds, and is not where the build fails.
+- Domain test: holds on its own terms and is the reason the build fails. The deciding quantity is
+  protest incidence recovered from a media-sourced event record, and the field's own method for it is to
+  condition event counts on reporting intensity, which is the client's pattern 1 for this task type
+  verbatim. The golden is therefore that published card applied as the card states it, which `stumping`
+  1.3's library test says a blind reader lands: three did, at 45 to 50, 60 to 65 and about 75 per cent
+  confidence, the last of them finding the coverage correction unaided and naming Sardinata as the trap.
+- Swap: holds. "Which city's protest activity rose, as against the volume of press material reaching the
+  register from it" does not survive hospitals and falls, because an internal incident system has no
+  outside reporters whose filing volume the record separately measures.
+- Layer 1: holds and is inert as designed. Renamed 2025 columns, day-first dates, the 2026 day-count
+  template against one row per day, the preliminary and definitive overlap on three months, divipola
+  reassignment, units against thousands, PDF tables, the RSA prefix, UTC ingest against local action
+  date. None of it changes which city is designated.
+- Layer 2: FAILS as drawn. estimand_identification is the right family, but the residue it leaves is
+  empty. On the shipped pack the standing family (every construction that differs in what it does, with
+  the knobs and the hats removed and the groupings counted: ratio of ratios, its count form, the window
+  level, the square-root form, a pooled log-exposure fit, the same fit per stratum, and the two
+  drop-the-risen-feeds routes) returns one designated city, 137 window action-days and 92.2 per 100,000,
+  a spread of exactly zero on all three graded figures of the call. A standing spread of zero means the
+  decisive step is a reflex whatever the documents say.
+- Decisive step: FAILS, by algebra. `log(score) = log(raw rise) - log(delivered-item rise)` to a maximum
+  absolute difference of 2.22e-16 on the clean truth and again on the cut pack, so the decisive
+  construction is two group-bys and one subtraction, and it recovers the generator's own activity
+  multiplier exactly (correlation +1.0000, error zero). Worse, on the eight cities whose feed did not
+  move the designed score equals the raw rise to a mean of 2.87 per cent with the order identical
+  (correlation +0.993114), so the construction does no work on them at all: its only effect is to push
+  the three risen feeds from 2.78, 3.17 and 2.78 down to 0.48, 0.45 and 0.44. Dropping those three and
+  ranking the remaining eight on the raw rise therefore names the golden at 1.637x against the designed
+  route's 1.815x, with the same 137 action-days and the same printed 92.2, and it does so at 576 of 576
+  cells of a four-axis dial sweep.
+- Not semantics: FAILS. The two wrong volumes are not ruled out by anything structural a solver has to
+  work out; they are ruled out by reading the data dictionary's own column descriptions correctly (a
+  `cita` is "un item que el registro vinculo a una entrada", so it moves with the numerator; `items_retenidos`
+  is what the register's own filter kept). Reading a column definition correctly is the second banned
+  class, and here it is what eliminates every candidate but one.
+- Not rule application: FAILS, with the three numbers the line owes. ENUMERATED family on the shipped
+  pack: 20 constructions, 3 distinct designations, printed-rate spread 71.7 per 100,000, which is 717
+  times the printed unit of 0.1, on window action-days of 81, 137 and 177. STANDING family: 8
+  constructions, 1 designation, spread exactly zero on the designated city, on 137 and on 92.2.
+  LOUDNESS of the ruling-out: the elimination is performed by one filed sentence at authority, protocol
+  clause 4.1 ("Los registros del Observatorio son la evidencia de esa actividad y no su medida"), plus
+  the dictionary's column definitions, and by nothing in the record. A Poisson-offset profile of the
+  rival exposure bases against the 5,711 events the register actually carries ranks the golden's own
+  base third of four: retained items best, citations 23.77 behind in `2 dlogL`, delivered items 184.36
+  behind, residents 300.75 behind. So the data not only fails to force the delivered-item exposure, it
+  positively disprefers it, and axis 6's closure ("forced by the data's structure") is not what closes it.
+- Analyst test: holds as written and is insufficient as a gate. The easy route does file Sardinata at
+  121.4 per 100,000 and the citation correction does file Teorama, and `checks.py` executes both. What
+  the test never executed is the step between them: once clause 4.1 pushes a reader off the raw count,
+  every remaining non-circular construction files the golden, which is the half of the test that decides
+  Gate F.
+- Estimand: the five parts are filed (population, outcome, window, unit, comparison in protocol clauses
+  2.1, 3.2, 4.1, 4.2 and 4.5) and the MEASURE OF THE RISE is not, which the wave 6 audit recorded as a
+  separate finding and which SF12 states outright ("not closed by any sentence"). A literal raw-count
+  reading of 4.2 gives Sardinata, so the ranking measure is open on the shipped text. Filing it makes the
+  step rule application; leaving it open forks the main call. Same dial, both ends.
+- No decoy: holds. Nothing is planted, no memo or stakeholder figure argues for a city, no block of
+  records is copied, the bulletin designates nobody. The note's own single-use test, however, records
+  that deleting the sentence which forces the call leaves the designation unforced, which is the
+  announcement and the forcing being one sentence rather than two.
+- No certified replay: holds. No completeness audit, gold standard or certified rate ships, and no bench
+  blesses a method.
+- Lesson: as drawn there is none a model can take, because the standing family has nothing to choose. The
+  lesson the triage banks instead is a screen: where the decisive step is which of a record's own measured
+  volumes may stand in a denominator, price the standing family and the one-exclusion subset route before
+  the world is drawn, because a correction that leaves most of the record alone is published by the part
+  it leaves alone.
 
 ## Readability screen
 
@@ -587,3 +598,52 @@ path and the prompt's call sentence.
   monthly completeness re-push under fresh item ids resolved by the transmission batch, and what the pack
   carries is the publication period against the delivery day plus the credited lote. No data changed; the
   sheet now describes what the cut pack contains, which is what the forcing measurement reads.
+- Architecture 1 as a whole, the delivered-item exposure as the decisive step: refused at the wave 7
+  triage on measurement, not on taste. Three screens, each run twice byte-identical on the clean truth
+  and on the shipped pack. (1) The standing family, knobs and hats removed and groupings counted, is 8
+  constructions and returns one designation, 137 action-days and 92.2 per 100,000: spread exactly zero
+  on every graded figure of the call, against an enumerated family of 20 constructions, 3 designations
+  and 717 printed units of spread. (2) The construction is an identity, log(score) = log(raw rise) minus
+  log(delivered-item rise) to 2.22e-16, so it is two group-bys and one subtraction. (3) A four-axis dial
+  sweep over 576 cells passes 0 cells jointly, with the one-exclusion route landing the call in 576 of
+  576. The step is a reflex that one filed sentence and one dictionary page select; it is not an analysis.
+- A magnitude fix on the risers' feed multiplier, in either direction: measured dead before it was
+  drafted. On the eight cities whose feed did not move the designed score equals the raw rise (mean 2.87
+  per cent apart, identical order, correlation +0.993114), so dropping the three risen feeds and ranking
+  the remaining eight on the raw rise names the golden at 1.637x with the same 137 and the same 92.2. The
+  risers' multiplier appears in neither ranking's top element, so it cannot separate the two routes:
+  turning the lever down hides the trap and leaves the route that lands the call untouched, and turning it
+  up only makes the three risen feeds louder (they already sit at 5.8x to 7.0x per semester against 0.97x
+  to 1.10x everywhere else, which the group-by ask A already requires separates at a glance).
+- A clause removal on protocol 4.1, leaving the measure of the rise to the data: rejected on the note's
+  own deletion test, which records that without the forcing sentence the designation is unforced
+  (Sardinata on the recorded-count reading, Tibu on the activity reading). The sentence that announces the
+  decisive step is the sentence that forces the call, so removing it trades a Gate F failure for a Gate C
+  failure. The same pincer measured from the data side: a Poisson-offset profile of the rival exposure
+  bases against the record's 5,711 events puts the golden's own base third of four, 184.36 in `2 dlogL`
+  behind retained items, so the data cannot take the clause's place.
+- The saturating presence form counted as a parameter-free member of the decisive family (the `## Ladder`
+  row's "saturating 1.28x"): wrong, and it hid a fork. Its scale is a free knob, and swept over four
+  orders of magnitude on the shipped pack it names Sardinata at every scale up to about 1,500 (where it
+  is the raw rise, fully saturated) and the golden only from 3,000 up (where it is the per-delivered-item
+  route). At the shipped volumes with the note's own scale of 700 it names Sardinata at 1.142x. The
+  member was one of the other two wearing a hat, and neither the judge nor the leak reader tested it.
+- The clean truth's own retained-item route as evidence that a second exposure measure agrees: it does not
+  agree. `core.routes` builds retained items as citations times 1.18, so on the clean truth the
+  retained-item route is algebraically the citation route and names Teorama at 2.778, while the pack
+  builder gives retained items an additive near-miss term that scales with delivery rows, so on the cut
+  pack it names the golden at 1.140x. The `## Ladder` paragraph's "the retained-item route ranks the
+  golden first at 1.658" is a cut-pack artifact of that unmodelled term, not a designed property, and
+  1.140x is under the 1.15x floor besides.
+- The rung floor as shipped: three of the five wrong rungs sit inside it on the cut pack, so the default
+  path is not a stopping point. Raw rise 1.142x, raw rise in its count form 1.142x, absolute increase
+  1.083x, retained items 1.140x; only the window level (1.182x) and the citation route (1.587x) clear. A
+  solver who computes the raw rise sees Sardinata barely clear of Convencion and El Tarra and is sent on,
+  which is where the one remaining step is the answer. On the clean truth the same clearances are 1.052x,
+  1.052x, 1.029x and 1.008x. The dial sweep clears the floor in 2 of 576 cells and 116 cells fail on it
+  alone, so it is spendable only by widening the risers' spread tenfold, which makes the trap louder still.
+- Resuming this architecture at all: blocked by the free gate independently of the measurements. `guard.py
+  heart task199` now reads HEART VERDICT: BLOCK with three BLOCKs the corpus grew after this build shipped,
+  `ban.shape` on shape 10 against task245, `ban.strategy` on causal_design against task163, and
+  `test.same_puzzle_older` on gap, pattern and decision type against task268 v2 with no differentiation on
+  the card. A re-root has to redraw the shape and the strategy whatever it does with the ground.
