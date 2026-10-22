@@ -85,18 +85,63 @@ at about 15 expected failures against Harrow Road 12's 9.9.
 
 ## Three rules
 
-- **Litmus:** no reported number is wrong and nothing overturns one. The work orders, the register, the outage
-  export and the reliability report are all correct; the difficulty is building a 2027 count the record does not
-  state.
-- Domain test: what decides the call is distribution cable reliability engineering's condition reading of
-  underground sections, where a first failure is often a one-off splice or termination defect and a second marks
-  insulation degraded by water treeing that keeps failing (the reason utilities replace a section at its second
-  failure); with another field's nouns there is no splice, no water treeing and no repair-against-replacement
-  history behind the recurrence, so the task does not read the same.
+Rewritten to the measured truth on 2026-10-22, after the wave 8 audit landed the call and after the three
+rework screens were run on the generator's clean truth (every number below is from a harness run twice with
+byte-identical output; the harness lines sit in `## Tried and rejected`). Two of the thirteen labelled lines
+were never written when this build shipped, `Not semantics:` and `Not rule application:`, and the second one
+fails. The lines are no longer written to pass.
+
+- Task type: energy-systems-utilities / grid-reliability-outage-analysis, which serves anomaly-detection; the
+  call reads which feeder's in-service cable is in a failing condition its recent count does not show. Holds.
+- Domain test: what was meant to decide the call is distribution cable reliability engineering's condition
+  reading of underground sections, where a first failure is often a one-off splice or termination defect and a
+  second marks insulation degraded by water treeing that keeps failing (the reason utilities replace a section
+  at its second failure). Measured, what actually decides the call is the number of in-service sections that
+  have already failed twice, 17 on Quarry Hill 21 against 0 on every other feeder, and that number is one
+  group-by on `section_id` followed by a sort, not a quantity the field estimates, models or tests. Fails as
+  built: the field's condition reading is the dressing and a count is the decision.
+- Swap: rewrite the call with hospital wards and patients and there is no section that is spliced or replaced at a
+  failure, no water treeing behind a second failure and no network that replaces at the second failure except under
+  one highway, so the recurrence and the call do not carry over. Holds.
+- Layer 2: the layer was to be that a feeder's forward failures are neither its trailing rate nor a rate built
+  from its cable's visible attributes, so the forecast has to carry each section's own failure count. Measured,
+  the layer collapses into Layer 1's own key: the designed forecast is exactly linear in the in-service stock
+  counts, 0.0224 n0 plus 0.0201 n1 plus 0.3111 n2 plus 0.5786 n3, and because seven feeders carry n2 = n3 = 0
+  the top bar is settled by the two high-count terms alone. Regressing the designed forecast on the count of
+  twice-failed in-service sections gives R-squared 0.8180 with the same top bar, maximum difference 2.222
+  expected failures. Fails: the analysis adds nothing to the count.
+- Decisive step: intended as carrying each in-service section at the record's rate for its own count of
+  failures. Measured, the decisive step is the elimination and not the construction: the record's refutation of
+  every forecast without a failure-count term is deafening (2 dlogL of 164.58 on 3 df added to the attribute
+  model; 41 failures observed on the 93.16 section years at two or more failures against 2.16 expected at the
+  pooled rate, Poisson tail probability 0.000e+00), and once that elimination is made every construction left
+  is a weighted count of the same stock. Fails.
+- Not semantics: holds. Every field, code, unit and definition is read the same on both paths. The cause codes
+  INS, SPL and TRM against TPD and OTH, the GIS status codes IS and RET, the predecessor pointer, the fault
+  date against the completion date and the dated connectivity are each ruled out or convergent in the fork
+  table, and the 96-cell cross product of the six live fork axes names Quarry Hill 21 in 96 of 96 cells. A
+  reader who misread a field would land on the same feeder, so no reading flips the call.
+- Not rule application: fails, and the three numbers say so. Enumerated family, the 30 constructions a
+  competent distribution-reliability analyst reaches for: 4 distinct names on the call (Harrow Road 12, Mill
+  Lane 7, Quarry Hill 21, Sutter Park 5), so the build looks alive on the first number. Standing family, the 16
+  the record leaves defensible once it has refuted every forecast with no failure-count term: 2 distinct names,
+  Quarry Hill 21 in 12 and Harrow Road 12 in 4, and all four of those are groupings of the same estimator (per
+  feeder 1.648x, per substation 1.366x, per feeder shrunk to the pool 1.676x, failure count collapsed to ever
+  failed 1.030x), of which only the per-feeder Poisson form is asserted refuted in `checks.py`. Loudness of
+  whatever does the ruling-out: the elimination carries 2 dlogL of 164.58 on 3 df and a 19-fold observed
+  excess on the twice-failed exposure, while five of the eight rival candidates are additionally retired in
+  writing by the 2025 filing and the extract notes. So once the elimination is made the step is a reflex: the
+  cheapest licensed route is one group-by on the section key, which names the call at an infinite lead
+  (17 against 0), and four more one-group-by routes name it too (sections at three or more failures, infinite;
+  most failures on any one in-service section, 9.000x; repeat-failure events inside the default path's own
+  five-year window, 4.000x; sections spliced in place twice or more off `repair_code`, 1.889x). Nothing is left
+  to decide once every filed rule is read.
 - Analyst test: a strong analyst who keeps only cable-condition failures, drops dig-ins and replaced sections and
   reads every field correctly still forecasts 2027 from each feeder's recent failure rate, or from failure rates by
-  insulation type and age, and names Mill Lane 7 or Sutter Park 5, because only a forecast that carries each
-  section's own failure history forward shows that Quarry Hill 21's twice-failed sections will fail most.
+  insulation type and age, and names Mill Lane 7 or Sutter Park 5. That half still holds on the built pack (the
+  five-year in-service average names Mill Lane 7 by 1.161x; rates by insulation and age band name Sutter Park 5
+  by 1.165x). What fails is the other half: the same analyst also reaches the per-section failure count by one
+  group-by, and five such routes name Quarry Hill 21, so the easy way is not confined to the wrong answer.
 - Layer 1: realistic mess on the ask paths only, from the organisation's own systems: an outage management export
   at device-operation grain with staged restorations as several rows per outage; substation outages carried as one
   row per feeder with the outage's total customer minutes repeated on each row; an outage system migration on
@@ -104,18 +149,6 @@ at about 15 expected failures against Harrow Road 12's 9.9.
   customer system's feeder label stored at account set-up and not moved by the 14 June 2026 lateral transfer from
   Mill Lane 3 to Mill Lane 7; dated connectivity rows retained after a 2026 meter exchange; section replacements as
   new section ids with a predecessor pointer; work orders with a coded cause and a free-text crew note.
-- Layer 2: a feeder's forward failures are not its trailing rate, and not a rate built from its cable's visible
-  attributes: failures recur on the section that has already failed, so the forecast has to carry each section's
-  own failure count (the repeated-events pattern, made on cable sections), and the record proves it, because a
-  section with two failures fails again about fifteen times as often as one with a single failure.
-- Task type: energy-systems-utilities / grid-reliability-outage-analysis, which serves anomaly-detection; the
-  decisive step reads which feeder's cable is in a failing condition its recent count does not show.
-- Swap: rewrite the call with hospital wards and patients and there is no section that is spliced or replaced at a
-  failure, no water treeing behind a second failure and no network that replaces at the second failure except under
-  one highway, so the recurrence and the call do not carry over.
-- Decisive step: carrying each in-service section at the record's rate for its own count of failures is a forecasting
-  choice; no planted defect decides it, every field is read the same on every path, and no filed rule says how to
-  forecast.
 - Estimand: the prompt's first sentence (failures of the cable itself, insulation, splice and termination, on the
   sections in service at the end of September 2026, in 2027, damage by others left out), with the cause codes in
   the code list and the in-service status in the GIS export.
@@ -123,11 +156,20 @@ at about 15 expected failures against Harrow Road 12's 9.9.
   relief as facts); no memo, draft or voice argues for a feeder.
 - No certified replay: no certified figure is reproduced to recover the method; the state rates are estimated on the
   record, and a filed back-test was measured and not used (Tried and rejected).
-- Lesson: repeat failures concentrate in parts that have already failed twice, which a unit's trailing rate and its
-  parts' visible attributes both hide, and a recent surge with a cause that has ended is not a rate to carry forward.
-- **Stump class:** analytical. Rule 3 is cleared: no planted defect or decoy decides it, no field reading flips it
-  (every code is read the same on both paths), and no stated rule produces it (nothing in the pack says how to
-  forecast).
+- Lesson: the lesson was to be that repeat failures concentrate in parts that have already failed twice, which a
+  unit's trailing rate and its parts' visible attributes both hide, and that a recent surge with a cause that
+  has ended is not a rate to carry forward. Measured, a model learns no method from this build, only to count
+  the parts that have failed twice, which it reaches by one group-by. The lesson is not banked and the
+  architecture owes a new one.
+- **Litmus:** no reported number is wrong and nothing overturns one. The work orders, the register, the outage
+  export and the reliability report are all correct; the difficulty was to be building a 2027 count the record
+  does not state. The litmus still passes, which is why this is a Gate F failure and not a Gate G one.
+- **Stump class:** analytical in kind and spent in power. Rule 3's three bans are each cleared (no planted
+  defect or decoy decides it, no field reading flips it, no stated rule produces it) and the client's own
+  question is answered no: a strong analyst who cleaned the data and read every rule correctly does NOT get the
+  answer wrong by doing the analysis the easy way, because the easy way includes a one-group-by count of the
+  twice-failed sections that names the call at an infinite lead. The decisive step is an elimination followed
+  by a reflex, so the architecture is re-rooted rather than resumed.
 
 ## Gate G
 
@@ -157,7 +199,7 @@ at about 15 expected failures against Harrow Road 12's 9.9.
 | R0 all cable failures, retired sections included (Harrow Road 12) | the prompt names the in-service sections | the register's status column | no | the report ties | clean | one average | readable |
 | R1 in-service five-year average, the default path (Mill Lane 7) | no | status filter on a join the solver holds | no | the report ties | clean | one average | readable |
 | R2 failure rates by insulation and age applied to the stock (Sutter Park 5) | no | insulation and install year are columns | yes: holds the pool to every visible attribute | no | clean | no | readable |
-| R3 (decisive) hazard by each section's own failure count, applied to the in-service stock (Quarry Hill 21) | no sentence names repeat failure, failure order or a section's failure count | no column carries the count; it is built by ordering the work orders within each section, and no marker or flag isolates the twice-failed sections | not a reflex: the reflex holds visible attributes, and the failure count is not one | no control sees section states; the report publishes feeder totals | clean on the wrong path: repeat section ids are distinct failures, every join matches | no: a rate estimated on section years and applied to a stock | silent |
+| R3 (decisive) hazard by each section's own failure count, applied to the in-service stock (Quarry Hill 21) | no: no sentence anywhere in the pack names repeat failure, failure order or a section's failure count (grepped on 2026-10-22, every PDF, CSV, note and code list) | **yes**: `repair_code` isolates them, because this network's second failures are REPL everywhere and SPLICE on Quarry Hill 21, and sections spliced in place twice or more names the call by 1.889x | **yes**: repeat-failure sections are the field's own reflex for a cable replacement programme, and the count of in-service sections at two or more failures names the call at an infinite lead, 17 against 0 | no control sees section states; the report publishes feeder totals | clean on the wrong path: repeat section ids are distinct failures, every join matches | **yes**: the forecast is exactly linear in the stock counts, R-squared 0.8180 on the twice-failed count alone with the same top bar | readable |
 
 ## Semantic fork table
 
@@ -550,3 +592,60 @@ architecture's main call.
   five-year average, which collapses the ladder. A fourth rung therefore needs a re-rooted world with different
   volumes, not a hardening of this one, and the shipped build was left exactly as it is (rebuilt byte-identical
   after the experiment).
+
+- Removing the filed adjudication, the cheap repair the rework was opened on, 2026-10-22: dead on measurement,
+  and it was priced clause by clause before anything was edited (harness
+  `scratchpad/t183rw/s4.py`, run twice byte-identical). Two of the four clauses the wave 8 reader quoted are
+  redundant and could go (report 6.2 on Harrow Road 12's paper replacement, because the register's own status,
+  retired_date, insulation and install_date columns already refute a per-feeder rate there, 21.79 expected
+  against the attribute model's 2.08, a ratio of 10.5; report 6.4 on Harrow Road 14's elbow batch, because no
+  standing member of the estimator family names Harrow Road 14 at all, 0 of 9). One cannot go: the prompt's
+  "sections in service at the end of September 2026" is the estimand's population, one of the five parts
+  `determinism-check` section 1 requires filed. And one is load-bearing: SF9, the Kessler Avenue loop's
+  overload and its relief in report 6.3 and the extract notes, is the clause the portal's own determinism
+  return of 2026-10-12 required, and removing it reinstates `competing_defensible_answer` exactly, Sutter Park
+  5 under the last twelve months (1.083x), a two-year average (1.043x), a three-year average (1.088x), a
+  straight line on the yearly counts (1.076x) and an exponentially weighted count (1.025x), with Quarry Hill 21
+  second in all five. So the dial has both ends on the same end: the convergence Gate C rests on here is the
+  reach Gate F pays, which is the condition `stumping` 1.1 names, and it holds because the easy route (a
+  trailing average) is itself a member of the family the portal licenses.
+
+- Resuming this architecture at all, 2026-10-22: dead, because the stump does not need the clauses. The
+  decisive content of the call is 17 in-service sections at two or more failures on Quarry Hill 21 against 0 on
+  every other feeder, and five one-group-by routes on `section_id`, a key the default path already holds, reach
+  the call from the files alone with no filed sentence: sections at two or more failures (infinite lead),
+  sections at three or more (infinite), most failures on any one in-service section (9.000x), repeat-failure
+  events inside the default path's own five-year window (4.000x) and sections spliced in place twice or more off
+  `repair_code` (1.889x). The designed forecast is exactly linear in the stock counts and a regression on the
+  twice-failed count alone reproduces it at R-squared 0.8180 with the same top bar, maximum difference 2.222
+  expected failures. Screens failed, by name: `stumping` Part 3 step three (the correcting quantity is one per
+  CLASS, four pooled rates, not one per case, and it is forced from the same file at the same grain as the main
+  file rather than by a second file at a finer grain); the proxy screen in its structural form (the forcing file
+  is the work order history and its plainest column, the per-section failure count, IS the correction); the
+  monotone-functional screen (the graded object is a sum over a per-class rate vector, which a one-pass count
+  reaches); and the designation determinacy screen (the standing family returns 2 distinct names, Quarry Hill 21
+  in 12 of 16 and Harrow Road 12 in 4, and only one of those four groupings is asserted refuted in
+  `checks.py`). The recorded resume line of 2026-10-20 was necessary and not sufficient: inferring the retired
+  causes from the data's own structure rather than from a filing leaves every one of those five routes standing.
+
+- Retuning this world's dial, 2026-10-22: dead, and the cells were counted jointly rather than marginally
+  (harness `scratchpad/t183rw/s3.py` against a copy of the generator with the replacement year parameterised,
+  run twice byte-identical). 300 settings swept over four dials, the highway run at 12, 20, 33, 48 and 70
+  sections, the rate after two failures at 0.12, 0.20, 0.33 and 0.50, the rate after three or more at 0.33,
+  0.50, 0.70 and 0.90, and the replacement-at-the-second-failure policy starting 2014, 2019, 2023 or never.
+  The requirements were listed before the sweep: the licensed family unanimous on one printed call, the golden's
+  lead at or above 1.15x, each of the three wrong rungs naming another feeder and clearing its own second place
+  by 1.15x, no cheap count form naming the golden, and the golden in another printed cell. Marginally the dial
+  looks open (the golden's separation holds in 181 of 300, rung 0's floor in 288, the golden in another cell in
+  228). Jointly it is shut: **0 of 300**. The family is unanimous in only 32 settings, and a cheap count form
+  lands the call in all 32 of them; the count of twice-failed in-service sections lands it in **300 of 300**,
+  the count at three or more in 300 of 300, the most failures on any one section in 300 of 300 and the
+  repeat-failure events in 288 of 300. The reason is algebra and not tuning: the decisive construction is
+  `n2 + rho n3` with `rho = r3 / r2`, so `rho = 1` IS the twice-or-more count and `rho` large IS the
+  three-or-more count, and the designed forecast sits between the two cheap routes by construction. Searching
+  integer stocks to 60 sections and `rho` from 1.05 to 12, the largest lead an intermediate `rho` can take while
+  both cheap routes name someone else is 1.2732x, so a cell exists in the geometry and no realistic replacement
+  policy reaches it, which is why the sweep found none. Also measured at the shipped setting: the licensed
+  family is NOT unanimous (Harrow Road 12 under the per-feeder and per-substation groupings), and rung 2's own
+  lead is 1.165x on the built pack but 1.122x when the lateral is read off the register rather than moved, so
+  the rung floor sits on the attribution of one lateral.
