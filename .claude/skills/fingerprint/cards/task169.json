@@ -1,0 +1,200 @@
+{
+  "task": "task169",
+  "architecture": "v2",
+  "drawn": "2026-10-22",
+  "slot_note": "architecture 2, a fresh draw: architecture 1 (the cycleway widening) was built to stage 3 in scratch and never registered, blocked three days by the window; the author chose a fresh honest draw",
+  "domain": "criminology-justice",
+  "subdomain": "recidivism-risk-assessment",
+  "client_domain": "criminology-justice",
+  "niche": "a state sentencing commission projecting how many of the people released to parole in 2027 will be back in prison within two years, the first cohort released under an act that ends returns to prison except on a new court commitment, when the parole board answered most parolees' arrests in the record by revocation before any court could",
+  "objective": "forecasting",
+  "shape": "other",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who links releases, returns and arrests, reads the act correctly and keeps only the returns it still allows files the record's new-conviction return rate (about 9 per cent, or about 11 with revocations treated as competing exits), when the parolees' arrests the board answered by revocation will be prosecuted and convicted at the courts' own rate by class, which files about 20.",
+  "domain_test": "The deciding quantity is a release cohort's two-year return-to-prison rate estimated the way a corrections forecaster does it, from the arrest process and the courts' conversion of arrests into prison sentences by offence class, with the route each past return took read from the board's and the courts' records; with hospital readmissions or utility disconnections in place of returns there is no second institution whose processing the act hands the same behaviour to.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:revocation-in-lieu-of-prosecution-rerouted-under-a-conviction-only-act",
+  "layer1": [
+    "the Department's DOC number against the Bureau's state ID and the courts' tracking number, joined through the Bureau's crosswalk",
+    "the Board's July 2024 move to a new case-management system: legacy decisions with condition codes, new ones with separate columns",
+    "admissions logged at reception and again at the receiving facility",
+    "court dispositions amended after appeal or resentencing",
+    "arrests on a warrant carrying no new tracking number",
+    "fiscal-year folders against calendar dates",
+    "deaths from vital records"
+  ],
+  "stakeholder_role": "the population projections analyst at the Pembroke Sentencing and Policy Commission, whose 2027 release-cohort returns go into the prison population projection the appropriations committees take in January 2027",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "sbi_arrests_2019-2026.csv (the State Bureau of Identification's fingerprint-supported arrests of people released from Department custody since 2019)",
+    "rows": 0,
+    "entity": "one arrest event of a person released from Department custody",
+    "grain": "arrest event",
+    "source": "synthetic"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "research_or_statistics_office",
+  "world": {
+    "geography": "United States (the State of Pembroke, fictional; its agencies, people, systems and records are fictional)",
+    "currency": "USD",
+    "org_type": "a state sentencing and policy commission that owns the prison population projection",
+    "invented_names": [
+      "State of Pembroke",
+      "Pembroke Sentencing and Policy Commission",
+      "Pembroke Board of Parole",
+      "Pembroke Department of Corrections",
+      "State Bureau of Identification",
+      "Act 26-114",
+      "Garrison",
+      "Ridgway",
+      "Linwood",
+      "Corliss"
+    ],
+    "people": [
+      "Ashlee Clayton",
+      "Donald Kramer",
+      "Brandon Walter"
+    ]
+  },
+  "deliverables": [
+    "returns_projection_2027.xlsx",
+    "returns_by_route.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is the forward rate of an outcome that the record reaches through two processing routes, one of which a filed change closes: the rate the record shows through the remaining route understates it because the closed route pre-empted that route for most events, so only sending each event the closed route took through the remaining route's own conversion, by event class, sizes it.",
+  "driver_concrete": "Under the act a parolee returns to prison only on a new conviction, and the record's new-conviction returns are rare because the board revoked most parolees on the arrest itself; those arrests will now be prosecuted and turned into prison sentences at the courts' own rate for their class, so the two-year rate is the arrest process times that conversion, about twice the record's new-conviction rate.",
+  "stump": "A competent solver keeps only the record's new-conviction returns and files a two-year rate of about 10 per cent; the step that lands it there is reading the record's conviction returns as the behaviour the act leaves, when the board answered most parolees' arrests by revocation and those arrests will now be prosecuted and convicted at the courts' rate, which files 20.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task172": "there a deadline-triggered request cuts each forward wait short at the filer's own expiry; here no wait is cut: a filed change closes one of two institutions' routes for the same arrests, and each arrest the closed route took is sent through the other institution's conversion by offence class"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "domain": "urban-regional-science",
+      "subdomain": "forecasting",
+      "client_domain": "urban-regional-science",
+      "niche": "an English city council's active travel team choosing the one cycleway it can widen before summer 2027, by forecasting the days next summer on which a counted segment's two-way hourly cycle flow will exceed its design capacity, when the narrowest segments crowd at different hours and the trip purposes that fill those hours grow at different rates",
+      "objective": "forecasting",
+      "shape": "other",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "named_option",
+      "answer": "Widen Tolland Road (CW1), at Tolland Bridge, which crowds between 08:00 and 09:00 on weekday mornings.",
+      "answer_source": "submission.md, 1. Final Recommendation (generator/deliver.py from the pack; generator/verify.py recomputes)",
+      "gap": [
+        "time",
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G6",
+        "G2"
+      ],
+      "gate_g": "forecasting",
+      "calibration_form": "none",
+      "stump_strategy": "composition_mix",
+      "decisive_rule_filed": false,
+      "official_decoy": false,
+      "validated_decoy": false,
+      "context_artifact": "monitoring_export",
+      "stakeholder_role": "the council's active travel team leader, whose widening allocation for 2026-27 goes to the Transport and Environment Committee",
+      "role_family": "programme_officer",
+      "scoring_unit": "other",
+      "spine": {
+        "file": "counts_summer2025_2026.parquet (the current counter platform's hourly counts by direction for the summers of 2025 and 2026) beside counts_summer2024_legacy.csv (the legacy logger export for summer 2024)",
+        "rows": 0,
+        "entity": "one counter's count of cyclists in one direction in one clock hour",
+        "grain": "counter x hour x direction",
+        "source": "synthetic (constructed in the layout of a cycle counter platform's hourly export and a legacy logger's channel export)"
+      },
+      "forum": "committee_or_panel",
+      "forcing_event": "vote_or_meeting",
+      "org_family": "local_government",
+      "world": {
+        "geography": "United Kingdom, England (Calvermouth, a fictional estuary city; the council, its contractor, the people, systems and data are fictional)",
+        "currency": "GBP",
+        "org_type": "a city council's transport strategy service, active travel team",
+        "invented_names": [
+          "Calvermouth",
+          "Calvermouth City Council",
+          "Ferrand Signal Services",
+          "Calvermouth Cycle Forum",
+          "Tolland Road",
+          "Tolland Bridge",
+          "Brickfields",
+          "Gasworks Lane",
+          "Estuary Path",
+          "The Boardwalk",
+          "Wardle Park",
+          "Lido Gate",
+          "Market Street",
+          "Butter Market",
+          "Haymarket Steps",
+          "Southfield",
+          "Fenn Common Bridge"
+        ],
+        "people": [
+          "Eleanor Phillips",
+          "Conor Reynolds",
+          "Judith Hughes",
+          "Kevin Hale",
+          "Adrian Hill"
+        ]
+      },
+      "deliverables": [
+        "cycleway_widening_2027.xlsx",
+        "widening_note_2027.docx"
+      ],
+      "opening_move": "question-first",
+      "question_form": "which",
+      "layer2_family": "forecast_uncertainty",
+      "layer2_pattern": "own:binding-hour-growth-against-diluted-daily-growth-with-weather-held-fixed",
+      "layer1": [
+        "counter platform migrated in January 2025: summer 2024 comes from the legacy loggers (local clock, hour beginning, two channels per site, semicolon delimited) and 2025-26 from the platform (UTC, hour beginning, one row per direction with a status code)",
+        "two legacy loggers wired with channel 1 away from the centre",
+        "counter outages and estimated hours flagged on the platform, left blank in the legacy export",
+        "the Corn Exchange counter replaced in March 2025 under a new id",
+        "the count week's interval export stamped at quarter ends in UTC, two loggers left on laptop local time after spring restarts",
+        "maintenance log rows linked by parent job, the contractor's own job inside the unit's for a fault, downtime in minutes by the contractor and h:mm by the unit, a mis-keyed asset id",
+        "volunteer count sheets kept one tab per site, one site's morning tallied by the hour"
+      ],
+      "driver": "Where a limit is exceeded only in one cell of a recurring cycle that one component of demand dominates, the record's growth measured over the whole cycle is a mix of components growing at different rates, and an outside condition that differed across the record's periods moved some components more than others, so carrying the whole-cycle growth to that cell or reading the condition's effect as trend misranks the candidates; only the cell's own growth with the condition held fixed ranks them right.",
+      "driver_concrete": "Tolland Bridge on Tolland Road, 2.6 m wide and rated for 650 cyclists an hour, overflows only between 08:00 and 09:00 on weekday mornings, a commuting hour that grows 11 to 14 per cent a year once each day's weather is held fixed, while the bridge's daily total, half of it midday riding that is flat or falling, grew 8.6 per cent from 2025 to 2026, and the Estuary Path's leisure riding rose with the hot, dry summer of 2026 well beyond its trend; replaying the three summers at each counter's growth in total riders puts Estuary Path first and Tolland Road fifth, and each counter's growth by hour and day group with each day's rain and temperature held fixed puts Tolland Road first.",
+      "stump": "A competent solver replays the three recorded summers at each counter's 2025 to 2026 growth in total riders and files Estuary Path, because the hot, dry summer of 2026 lifted the path's leisure riding and that rise is read as trend, while Tolland Bridge's daily total hides how fast the weekday 08:00 commuting hour that crowds it is growing; only each counter's growth at its own hour and day group, with each day's rain and temperature held fixed, files Tolland Road.",
+      "stump_class": "analytical",
+      "analyst_test": "A strong analyst who conforms both exports, reads every capacity and rule correctly and replays the three summers at each counter's 2025 to 2026 growth in total riders files Estuary Path; growth by hour without weather and weather-held daily growth file Estuary Path too, and only hour-level growth with rain and temperature held files Tolland Road.",
+      "domain_test": "The quantity that decides the call is the forecast number of days next summer on which a counted segment's two-way hourly cycle flow exceeds its design capacity, estimated the way a transport planner forecasts cycle demand, by trip-purpose growth at the hour that binds with weather held fixed; with beds or megawatt-hours in place of cyclists there is no commuting peak growing against declining leisure riding and no weather elasticity of leisure trips.",
+      "fate": "built to stage 3 in scratch and never registered: the window blocked it from 2026-10-18 to 2026-10-21 on stump_strategy composition_mix, pattern G14, forcing_event vote_or_meeting, role, forum and test.same_driver; the author chose a fresh draw on 2026-10-22"
+    }
+  ],
+  "notes": "redrawn axes at the probe: context_artifact register (blocked against task249) to capacity_report; org_family government_agency (blocked against task273) to research_or_statistics_office, the commission that owns the projection; forum committee_or_panel (blocked against task249) to council_or_assembly",
+  "registered": "2026-10-22T18:42:06Z"
+}

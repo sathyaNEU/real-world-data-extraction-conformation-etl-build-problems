@@ -1,12 +1,19 @@
 {
   "task": "task169",
   "owner": "sathya8571",
-  "domain": "urban-regional-science",
+  "status": "DESIGN",
+  "domain": "criminology-justice",
   "objective": "forecasting",
-  "updated": "2026-10-18",
-  "stump": "A competent solver replays the three recorded summers at each counter's 2025 to 2026 growth in total riders and files Estuary Path (CW3), because the hot, dry summer of 2026 lifted the path's leisure riding and that rise is read as trend, while Tolland Bridge's daily total hides how fast the weekday 08:00 commuting hour that crowds it is growing; only each counter's growth at its own hour and day group, with each day's rain and temperature held fixed, files Tolland Road (CW1).",
-  "architecture": 1,
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-22",
+  "stump": "A competent solver keeps only the returns the Act still allows, models each 2027 release's chance of a new-commitment admission within two years on the record's 2021 to 2024 releases and files about 600; the step that lands it there is reading the record's new-commitment returns as what parolees' arrests produce, when the Board answered most parolees' arrests by revoking them and under the Act those arrests go to court and become prison commitments at the courts' own rate for their offence class, which puts about 1,300 back in prison within two years.",
+  "architecture": 2,
   "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
   "leak": {
     "leak_py": "",
     "reader": ""
@@ -21,135 +28,12 @@
     "report": ""
   },
   "returned": [],
+  "resume": "stage 2: the generator, the fork table, the ladder and the asks, then precut.py",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "wave": "wave 7 (new), seed FC40 (world, decision and quantity kept; the seed's year-on-year replay convention, headline-counter ranking and filed weakest-segment rule not shipped)",
-  "status": "PAUSED",
-  "stage": 3,
-  "stage_name": "build, green in scratch, card held",
-  "card_registered": false,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-18",
-    "checks": 51,
-    "note": "run through a scratch mirror holding the draft card"
-  },
-  "resume": "register when guard.py check passes on card_draft (below): task165, task268 and task248 must leave the last-three window, three registrations after task248. Then write card_draft to a scratch file, run guard.py check and register on it, commit DRAWN with the card, the note and this file; run generator/build.py in the worktree (target/, golden/ and target.zip rebuild byte-identical, target.zip sha256 f8a6d877); run precut, figures_check, voice-check, leak.py --asof 2026-10-12, guard.py surface and heart, and generator/cracker.py; commit PAUSED with target.zip and golden/ force-added; then stage 4: reader (scored with score_reader.py) and judge",
-  "card_draft": {
-    "task": "task169",
-    "architecture": "v1",
-    "drawn": "2026-10-18",
-    "slot_note": "wave 7, new; seed FC40 (world, decision and quantity only; the seed's year-on-year replay convention, headline-counter ranking and filed weakest-segment rule dropped)",
-    "domain": "urban-regional-science",
-    "subdomain": "forecasting",
-    "client_domain": "urban-regional-science",
-    "niche": "an English city council's active travel team choosing the one cycleway it can widen before summer 2027, by forecasting the days next summer on which a counted segment's two-way hourly cycle flow will exceed its design capacity, when the narrowest segments crowd at different hours and the trip purposes that fill those hours grow at different rates",
-    "objective": "forecasting",
-    "shape": "other",
-    "decision_type": "pick_one_of_n",
-    "answer_unit": "named_option",
-    "answer": "Widen Tolland Road (CW1), at Tolland Bridge, which crowds between 08:00 and 09:00 on weekday mornings.",
-    "answer_source": "submission.md, 1. Final Recommendation (generator/deliver.py from the pack; generator/verify.py recomputes)",
-    "gap": [
-      "time",
-      "objective"
-    ],
-    "pattern": [
-      "none"
-    ],
-    "generators": [
-      "G14",
-      "G6",
-      "G2"
-    ],
-    "gate_g": "forecasting",
-    "calibration_form": "none",
-    "stump_strategy": "composition_mix",
-    "decisive_rule_filed": false,
-    "official_decoy": false,
-    "validated_decoy": false,
-    "context_artifact": "monitoring_export",
-    "stakeholder_role": "the council's active travel team leader, whose widening allocation for 2026-27 goes to the Transport and Environment Committee",
-    "role_family": "programme_officer",
-    "scoring_unit": "other",
-    "spine": {
-      "file": "counts_summer2025_2026.parquet (the current counter platform's hourly counts by direction for the summers of 2025 and 2026) beside counts_summer2024_legacy.csv (the legacy logger export for summer 2024)",
-      "rows": 0,
-      "entity": "one counter's count of cyclists in one direction in one clock hour",
-      "grain": "counter x hour x direction",
-      "source": "synthetic (constructed in the layout of a cycle counter platform's hourly export and a legacy logger's channel export)"
-    },
-    "forum": "committee_or_panel",
-    "forcing_event": "vote_or_meeting",
-    "org_family": "local_government",
-    "world": {
-      "geography": "United Kingdom, England (Calvermouth, a fictional estuary city; the council, its contractor, the people, systems and data are fictional)",
-      "currency": "GBP",
-      "org_type": "a city council's transport strategy service, active travel team",
-      "invented_names": [
-        "Calvermouth",
-        "Calvermouth City Council",
-        "Ferrand Signal Services",
-        "Calvermouth Cycle Forum",
-        "Tolland Road",
-        "Tolland Bridge",
-        "Brickfields",
-        "Gasworks Lane",
-        "Estuary Path",
-        "The Boardwalk",
-        "Wardle Park",
-        "Lido Gate",
-        "Market Street",
-        "Butter Market",
-        "Haymarket Steps",
-        "Southfield",
-        "Fenn Common Bridge"
-      ],
-      "people": [
-        "Eleanor Phillips",
-        "Conor Reynolds",
-        "Judith Hughes",
-        "Kevin Hale",
-        "Adrian Hill"
-      ]
-    },
-    "deliverables": [
-      "cycleway_widening_2027.xlsx",
-      "widening_note_2027.docx"
-    ],
-    "opening_move": "question-first",
-    "question_form": "which",
-    "layer2_family": "forecast_uncertainty",
-    "layer2_pattern": "own:binding-hour-growth-against-diluted-daily-growth-with-weather-held-fixed",
-    "layer1": [
-      "counter platform migrated in January 2025: summer 2024 comes from the legacy loggers (local clock, hour beginning, two channels per site, semicolon delimited) and 2025-26 from the platform (UTC, hour beginning, one row per direction with a status code)",
-      "two legacy loggers wired with channel 1 away from the centre",
-      "counter outages and estimated hours flagged on the platform, left blank in the legacy export",
-      "the Corn Exchange counter replaced in March 2025 under a new id",
-      "the count week's interval export stamped at quarter ends in UTC, two loggers left on laptop local time after spring restarts",
-      "maintenance log rows linked by parent job, the contractor's own job inside the unit's for a fault, downtime in minutes by the contractor and h:mm by the unit, a mis-keyed asset id",
-      "volunteer count sheets kept one tab per site, one site's morning tallied by the hour"
-    ],
-    "driver": "Where a limit is exceeded only in one cell of a recurring cycle that one component of demand dominates, the record's growth measured over the whole cycle is a mix of components growing at different rates, and an outside condition that differed across the record's periods moved some components more than others, so carrying the whole-cycle growth to that cell or reading the condition's effect as trend misranks the candidates; only the cell's own growth with the condition held fixed ranks them right.",
-    "driver_concrete": "Tolland Bridge on Tolland Road, 2.6 m wide and rated for 650 cyclists an hour, overflows only between 08:00 and 09:00 on weekday mornings, a commuting hour that grows 11 to 14 per cent a year once each day's weather is held fixed, while the bridge's daily total, half of it midday riding that is flat or falling, grew 8.6 per cent from 2025 to 2026, and the Estuary Path's leisure riding rose with the hot, dry summer of 2026 well beyond its trend; replaying the three summers at each counter's growth in total riders puts Estuary Path first and Tolland Road fifth, and each counter's growth by hour and day group with each day's rain and temperature held fixed puts Tolland Road first.",
-    "stump": "A competent solver replays the three recorded summers at each counter's 2025 to 2026 growth in total riders and files Estuary Path, because the hot, dry summer of 2026 lifted the path's leisure riding and that rise is read as trend, while Tolland Bridge's daily total hides how fast the weekday 08:00 commuting hour that crowds it is growing; only each counter's growth at its own hour and day group, with each day's rain and temperature held fixed, files Tolland Road.",
-    "stump_class": "analytical",
-    "analyst_test": "A strong analyst who conforms both exports, reads every capacity and rule correctly and replays the three summers at each counter's 2025 to 2026 growth in total riders files Estuary Path; growth by hour without weather and weather-held daily growth file Estuary Path too, and only hour-level growth with rain and temperature held files Tolland Road.",
-    "domain_test": "The quantity that decides the call is the forecast number of days next summer on which a counted segment's two-way hourly cycle flow exceeds its design capacity, estimated the way a transport planner forecasts cycle demand, by trip-purpose growth at the hour that binds with weather held fixed; with beds or megawatt-hours in place of cyclists there is no commuting peak growing against declining leisure riding and no weather elasticity of leisure trips.",
-    "mechanism_source": "design_note",
-    "differentiation": {
-      "task165": "there an upgrade's gain is conditioned on each street's prior partial coverage, here a counter's growth is split by the hour and day type that binds and held at fixed weather, with no service upgrade and no prior coverage",
-      "task164": "there a new load's draw at the moment a seasonal peak is set decides an asset's overload, here no load joins: each segment's own hourly demand grows at the rate of the trip purposes filling its binding hour",
-      "task159": "there a counted stock is a backlog behind undersized services, here the counts are flows and the question is which cell's growth a forecast carries",
-      "task131": "there a randomised tariff moves load out of a window and the rebound sets a new maximum on the design day, here no treatment moves demand: each segment's own hourly flow grows at the rate of the trip purposes filling its binding hour, read with each day's weather held fixed",
-      "task183": "there a unit's coming failures are set by its parts' own failure histories, here a cycleway's coming crowded days are set by how fast the trips in its binding hour grow against its daily total, with each day's weather held fixed",
-      "task230": "there a category's coding bias in an output still to be processed is carried by response route under a looser acceptance rule, here nothing is unprocessed: each recorded hour is carried to next summer at its own hour and day type's growth"
-    },
-    "lineage": [],
-    "notes": ""
-  }
+  "wave": "redraw of a parked number (architecture 1, the cycleway widening, never registered)"
 }
