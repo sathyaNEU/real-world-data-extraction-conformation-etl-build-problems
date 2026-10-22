@@ -1,0 +1,46 @@
+{
+  "task": "task273",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "general-statistics-data-science",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-22",
+  "stump": "A competent analyst who conforms the two load-test exports, keeps each endpoint's run of record without its warm-up and takes the 99th percentile of the recorded response times names too few endpoints, because the test clients each send the next request only after the last returns, so a pod's garbage-collection pause leaves one slow record per blocked client where customers arriving independently would meet it many times; the textbook back-fill names too many, because it credits each blocked client with every request it would have sent to the paused pod and back-fills endpoints that are slow on their own; only the response times rebuilt from each pod's pause record names the endpoints customers would see breach.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "0.10 task229 v1 (lineage)"
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "Stage 2: the generator's world from scratch t273/co2.py (24 endpoints: long-pause, short-pause, slow-on-their-own and plain; stop-the-world pauses that also hold requests in flight; golden margins of 60 ms or more from the 800 ms standard by design), the readiness standard's estimand clause, the fork and closure tables, the asks on quantities the call never reads, prompt.txt, then precut.py.",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "architectures": [
+    {
+      "architecture": 1,
+      "drawn": "2026-10-22",
+      "fate": ""
+    }
+  ],
+  "seed": "DA23 (an open-source security fund's 60 maintainer stipends): set aside at the draw; the world is new (Tried and rejected)"
+}

@@ -1,0 +1,90 @@
+{
+  "task": "task273",
+  "architecture": "v1",
+  "drawn": "2026-10-22",
+  "slot_note": "wave 5, sathay3012, Descriptive lane, new; seed DA23 (an open-source security fund's maintainer stipends) set aside at the draw: its quantities are counts the fund's filed rules fix (dependents and downloads per package, a cap per ecosystem), so it offers only grain, identity or rule application as the decisive step",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "niche": "a payroll platform's year-end readiness review from closed-loop load tests, the requests the blocked test clients never sent during each pod's garbage-collection pauses",
+  "objective": "descriptive-distribution",
+  "shape": "14",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G12",
+    "G18",
+    "G17"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field correctly, keeps each endpoint's run of record without its warm-up and takes the 99th percentile of the recorded response times files the default list; the test clients send each request only after the last returned, so a pod's pause leaves one slow record per blocked client where customers arriving independently would have met it many times, and the endpoints whose pods pause for long stretches pass at their recorded percentile while customers would see them breach.",
+  "domain_test": "The deciding quantity is each endpoint's 99th-percentile response time for requests that arrive independently of the platform's state at the forecast peak, estimated from a closed-loop test whose missing requests (those the blocked clients never sent during each pod's pauses) are missing because of the outcome, so the missing-data analysis rebuilds them from each pod's pause record; replacing it with the recorded percentile, or with the textbook back-fill that credits each blocked client with every request it would have sent to the paused pod, changes which endpoints are fixed.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:requests-a-closed-loop-client-never-sent-rebuilt-from-each-pods-pause-record",
+  "layer1": [
+    "load-test results from two tools after a mid-campaign tool change, JSON lines in epoch milliseconds against a CSV with ISO times and microseconds",
+    "JVM garbage-collection logs per pod, some stamped in wall-clock time with a UTC offset and some in seconds since the JVM started, anchored by the deployment event log",
+    "a responding-pod header missing on timed-out requests, re-runs of an endpoint with the run of record named in the test plan, warm-up minutes to drop"
+  ],
+  "stakeholder_role": "capacity planner, platform engineering",
+  "role_family": "capacity_planner",
+  "scoring_unit": "per accepted item",
+  "spine": {
+    "file": "loadtest_requests_2026-11.csv",
+    "rows": 430000,
+    "entity": "one request the load-test client sent, with its start, response time and the pod that answered",
+    "grain": "request",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "season_or_peak",
+  "org_family": "software_or_platform",
+  "world": {
+    "geography": "United States (the company, its platform, customers and people are fictional)",
+    "currency": "USD",
+    "org_type": "payroll and tax-filing software platform",
+    "invented_names": [
+      "Mirrendale Payroll"
+    ],
+    "people": [
+      "Theresa Meyers",
+      "Zachary Mendoza"
+    ]
+  },
+  "deliverables": [
+    "yearend_readiness_2027.xlsx",
+    "yearend_readiness_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is a tail percentile of response times for requests arriving independently of the server's state, measured by clients that each send the next request only after the last returns, so a pause on one node behind a balancer leaves each blocked client one slow record where independent arrivals would have met the pause many times; each node's pause record rebuilds the missing arrivals, and the textbook back-fill, which credits each blocked client with every request it would have sent to that node, overstates nodes behind a balancer and requests that are slow on their own.",
+  "driver_concrete": "Each endpoint's p99 at the forecast peak as customers arriving independently would see it: the recorded response times outside each pod's garbage-collection pauses, and for the share of time each pod spends paused, the rest of the pause plus a service time, from the pod's GC log; not the recorded p99 (the clients stop sending during a pause), and not HdrHistogram's back-fill at the planned interval (each blocked client credited with every request it would have sent, all to the paused pod).",
+  "stump": "A competent solver takes each endpoint's 99th percentile of the recorded response times in the run of record and files the default list; the step that lands there is reading the closed-loop clients' requests as the requests customers would send, when each client sent nothing while its pod was paused, so a long pause counts once per blocked client instead of once per arrival.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task180": "task180 v4 completes a catalogue whose small events are masked by a daily noise cycle at the instruments; task273's records are not masked: the test clients stop sending while a pod is paused, so the missing requests are the ones the pause itself created, rebuilt from each pod's pause record",
+    "task271": "task271 v3 corrects ascertainment through probands and relatives tested once they had the outcome; task273 has no ascertainment: a closed-loop client's own blocking removes requests exactly while the server is slow, and the pause log rebuilds them",
+    "task456": "task456 estimates a state's prevalence from three error-prone feeds by their agreement; task273 has one record of every request sent and no misclassification: what is missing is the requests never sent, rebuilt from the pause timeline",
+    "task462": "task462 weights intermittent sources by a size-dependent detection probability measured on blind trials; task273 records every request sent, and the missing ones are those a blocked client never sent, set by the pause length and the balancer rather than by a detection probability",
+    "task196": "task196 v2 recovers unseen events from the overlap of two dependent capture channels; task273 has one channel whose own blocking removes the observations, and no overlap to estimate from",
+    "task255": "task255 v1 fits a size distribution truncated at item-specific floors and censored at a moving ceiling; task273's response times are complete for every request sent, and the bias is in which requests were sent, rebuilt by weighting time against each pod's pauses",
+    "task268": "task268 v2 contrasts collectors' preferential sampling with a fixed probability survey; task273 has no second sample: the closed-loop clients' sampling rate falls to nothing exactly when a pod stalls, and each pod's pause record says for how long"
+  },
+  "lineage": [],
+  "notes": "architecture 1 drawn 2026-10-22 in a new world (the seed's world set aside, see slot_note); the stump is the missing-data structure of a closed-loop measurement, rebuilt per pod from the pause record.",
+  "registered": "2026-10-22T14:13:16Z"
+}
