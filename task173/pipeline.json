@@ -2,26 +2,26 @@
  "task": "task173",
  "owner": "sathya8571",
  "status": "PAUSED",
- "domain": "business-operations-analytics (client domain general-statistics-data-science), workforce-labour-planning; task type regression-classification-model-diagnostics",
+ "domain": "redraw cell 1 searched: healthcare-delivery-health-economics / patient-flow-beds-workforce-optimization (Forecasting); no candidate held",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build, built in scratch, card held",
- "updated": "2026-10-18",
- "stump": "A competent solver carries the 2026 fortnight's 1.207 contacts per new case onto the demand plan's 47,169 cases, gives the bench its handle time by weeks on the queue and books the rest, 7,000 agent hours; the step that lands it there is treating comebacks as a property of the season when they are a property of whoever opened each case, so that a 2027 bench opening 45 per cent of its cases with classes 1 to 11 weeks in, and the booked agents' own openings at a third, bring 1.292 contacts a case, and only the comeback model by opener, carried to the coming mix with the booking's own openings in it, books 10,000 agent hours.",
+ "stage": 1,
+ "stage_name": "draw, redraw search",
+ "updated": "2026-10-22",
+ "stump": "",
  "architecture": 1,
  "loops": 0,
  "card_registered": false,
  "precut": {
-  "exit": 1,
-  "date": "2026-10-18"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (scratch pack, target.zip sha256 c7b14f88)",
+  "leak_py": "",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "0.05 against task128 (card unregistered)",
-  "nearest": "task165: test.same_puzzle and test.same_driver BLOCK in the twelve-build window"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
   "verdict": "",
@@ -30,7 +30,7 @@
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC44",
- "resume": "register when guard.py check passes: task165 must leave the twelve-build window. Then commit DRAWN with the card, run generator/build.py in the worktree (target/, golden/ and target.zip rebuild byte-identical, target.zip sha256 c7b14f88), precut (its one FAIL is the card row), figures_check, leak.py --asof 2026-10-30, guard.py surface and heart, then stage 4: reader and judge",
+ "resume": "architecture 1 (Ashdale Tax Live) abandoned unregistered; redraw cell 1 (healthcare-delivery-health-economics / patient-flow-beds-workforce-optimization, Forecasting) searched on 2026-10-22 with two candidates measured dead (ALC census with a placement-count exit; a shared regional placement pool) and twelve killed on paper, each in ## Tried and rejected; the main session assigns a second cell, where a death retires the number",
  "approved": null,
  "delivered": null,
  "portal": null,
