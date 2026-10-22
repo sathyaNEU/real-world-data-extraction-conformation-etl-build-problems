@@ -30,7 +30,7 @@ FILES = dict(
     fx="treasury_closing_rates_20260930.csv",
     triggers="ews_trigger_codes.csv",
     standard="early_warning_and_watch_list_standard.pdf",
-    agenda="exec_risk_committee_agenda_2026-11-04.docx",
+    close="crm_year_end_close_timetable_2026.docx",
     fieldref="credit_data_field_reference.md",
     log="reference_data_extract_log_20261008.txt",
     ratings="internal_rating_master_scale_2026.xlsx",
@@ -188,13 +188,10 @@ def build(target=TARGET, devices=True):
         if e.cust is None:
             continue
         g = w.groups[e.gid]
-        since = max(g.active_from, e.reg - dt.timedelta(days=200)) if e.role != "top" else g.active_from
-        since = min(since, EXTRACT_DATE - dt.timedelta(days=30))
-        if e.hz:
-            since = e.cust_since
+        since = world.cust_since(w, e)
         closed = (g.active_to is not None and g.active_to <= EXTRACT_DATE) or (not e.borrower)
         booking = "HB-DAC" if e.country == "IE" else "HB-PLC"
-        ob.append((e.cust, e.name, e.lei or "", e.crn or "", e.country, "" if e.hz else g.gid, since.isoformat(),
+        ob.append((e.cust, e.name, e.lei or "", e.crn or "", e.country, "" if e.hz else (e.booked or g.gid), since.isoformat(),
                    "CLOSED" if closed else "ACTIVE", booking))
     ob.sort()
     wcsv(os.path.join(target, FILES["obligors"]),
@@ -224,6 +221,8 @@ def build(target=TARGET, devices=True):
         shares = rng.dirichlet(np.ones(len(f.obligors)) * 2.0) if len(f.obligors) > 1 else [1.0]
         util = 0.0 if f.status != "ACTIVE" or f.start > EXTRACT_DATE else \
             (rng.uniform(0.2, 0.95) if f.product != "OVERDRAFT" else rng.uniform(0, 0.6))
+        if f.util is not None:
+            util = f.util
         for eid, sh in zip(f.obligors, shares):
             e = w.ents[eid]
             fx_rows.append((f.booking, f.fid, e.cust, f.product, f.ccy, "%.2f" % ext, "%.2f" % (ext * util * sh),
@@ -260,7 +259,7 @@ def build(target=TARGET, devices=True):
     # ---------------------------------------------------------------- documents and workbooks
     docs.register_workbook(w, os.path.join(target, FILES["register"]))
     docs.standard_pdf(os.path.join(target, FILES["standard"]))
-    docs.agenda_docx(os.path.join(target, FILES["agenda"]))
+    docs.close_docx(os.path.join(target, FILES["close"]))
     docs.field_reference(os.path.join(target, FILES["fieldref"]), FILES)
     docs.extract_log(os.path.join(target, FILES["log"]), FILES, target)
     docs.ratings_workbook(w, os.path.join(target, FILES["ratings"]))

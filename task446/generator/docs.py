@@ -1,4 +1,4 @@
-"""Documents and workbooks for task446's pack (architecture 2)."""
+"""Documents and workbooks for task446's pack (architecture 3)."""
 import datetime as dt
 import io
 import os
@@ -205,7 +205,7 @@ def outlook_workbook(path):
                 dt.datetime(2026, 10, 6, 9, 38, 0))
 
 
-# ------------------------------------------------------------------ docx agenda
+# ------------------------------------------------------------------ docx close timetable
 W_NS = ('xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" '
         'xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" '
         'xmlns:o="urn:schemas-microsoft-com:office:office" '
@@ -241,34 +241,37 @@ def _w_par(runs, rsid, style=None, ind=None, after=None):
     return '<w:p w:rsidR="%s" w:rsidRDefault="%s">%s%s</w:p>' % (rsid, rsid, ppr, "".join(runs))
 
 
-def agenda_docx(path):
-    rs = ["00A31C58", "00A31C58", "00A31C58", "00A31C58", "00F27D14", "00A31C58", "00F27D14", "00A31C58", "00A31C58",
-          "002B6E90", "00F27D14", "00A31C58", "00A31C58", "002B6E90", "00A31C58"]
+def close_docx(path):
+    rs = ["00C41E27", "00C41E27", "00C41E27", "00C41E27", "00C41E27", "00C41E27", "005A3D81", "00C41E27", "005A3D81",
+          "00C41E27", "00C41E27", "0071B2F4", "00C41E27"]
     paras = [
         ([_w_run("HALSTOW BANK PLC", bold=True)], None, None, 0),
-        ([_w_run("Executive Risk Committee", bold=True)], None, None, 0),
-        ([_w_run("Wednesday 4 November 2026, 09:30 to 12:00, Board Room 2, Halstow House")], None, None, None),
-        ([_w_run("Chair: Chief Risk Officer. Members: Chief Financial Officer, Chief Credit Officer, Chief Operating "
-                 "Officer. In attendance: Jill Berry (Head of Credit Risk Monitoring), Mathew Long (Head of "
-                 "Restructuring), Head of Business Support, Company Secretary.")], None, None, None),
-        ([_w_run("Agenda", bold=True)], None, None, None),
-        ([_w_run("1.\tMinutes of the meeting of 7 October 2026 and matters arising")], None, None, None),
-        ([_w_run("2.\tQ3 2026 risk appetite dashboard (Chief Risk Officer)")], None, None, None),
-        ([_w_run("3.\t2027 resourcing budget: credit")], None, None, 60),
-        ([_w_run("3.1\tWatch-list caseload for the year to 30 September 2027 (Credit Risk Monitoring, paper to "
-                 "follow). The caseload standard for Restructuring and Business Support is twelve watch-list groups "
-                 "per analyst.")], None, 720, 60),
-        ([_w_run("3.2\tRestructuring and Business Support headcount for 2027 (Head of Restructuring)")], None, 720, None),
-        ([_w_run("4.\tEarly-warning system annual performance report: taken at the Credit Risk Committee on 18 "
-                 "November")], None, None, None),
-        ([_w_run("5.\tOperational resilience: third-party data feeds (Chief Operating Officer)")], None, None, None),
-        ([_w_run("6.\tAny other business")], None, None, None),
-        ([_w_run("Papers to the Company Secretary by 12:00 on Wednesday 28 October. Item 3.1 papers carry the "
-                 "committed exposure by caseload band so that 3.2 can be read against them.")], None, None, None),
+        ([_w_run("Credit Risk Monitoring", bold=True)], None, None, 0),
+        ([_w_run("Year-end close for the monitoring year to 30 September 2026: timetable and owners", bold=True)],
+         None, None, None),
+        ([_w_run("Issued by Jill Berry, Head of Credit Risk Monitoring, on Friday 2 October 2026. To: Mathew Long "
+                 "(Head of Restructuring), Head of Business Support, Reference Data, Chief Risk Officer's office.")],
+         None, None, None),
+        ([_w_run("Timetable", bold=True)], None, None, None),
+        ([_w_run("Thu 8 Oct\tQuarter-end extracts and the reference data pack: group register, obligor master, "
+                 "facilities, limit history, watch-list history and GLEIF files (Reference Data)")], None, None, 60),
+        ([_w_run("Fri 16 Oct\tOutcomes for the cohort of 30 September 2025, closed on 30 September 2026, taken from "
+                 "the watch-list history (Credit Risk Monitoring)")], None, None, 60),
+        ([_w_run("Fri 30 Oct\tWatch-list caseload for the year to 30 September 2027, with the committed exposure by "
+                 "caseload band (Credit Risk Monitoring). The caseload standard for Restructuring and Business "
+                 "Support is twelve watch-list groups per analyst.")], None, None, 60),
+        ([_w_run("Wed 4 Nov\tClose pack to the Chief Risk Officer's leadership team, which sets the 2027 "
+                 "Restructuring and Business Support headcount from the caseload (Head of Restructuring, Head of "
+                 "Business Support)")], None, None, 60),
+        ([_w_run("Wed 18 Nov\tEarly-warning system annual performance report to the Credit Risk Committee (Credit "
+                 "Risk Monitoring)")], None, None, None),
+        ([_w_run("The caseload paper carries the committed exposure by caseload band so that the headcount can be "
+                 "read against it.")], None, None, None),
+        ([_w_run("Questions on the timetable to Abbie Stevens.")], None, None, None),
         ([_w_run("Internal. Not for onward distribution.", italic=True)], None, None, None),
     ]
     body = "".join(_w_par(r, rs[k], style, ind, after) for k, (r, style, ind, after) in enumerate(paras))
-    sect = ('<w:sectPr w:rsidR="00A31C58"><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" '
+    sect = ('<w:sectPr w:rsidR="00C41E27"><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" '
             'w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/><w:cols w:space="708"/>'
             '<w:docGrid w:linePitch="360"/></w:sectPr>')
     document = XML_HEAD + '<w:document %s><w:body>%s%s</w:body></w:document>' % (W_NS, body, sect)
@@ -295,16 +298,16 @@ def agenda_docx(path):
                 'w:uri="http://schemas.microsoft.com/office/word" w:val="1"/><w:compatSetting '
                 'w:name="enableOpenTypeFeatures" w:uri="http://schemas.microsoft.com/office/word" w:val="1"/>'
                 '<w:compatSetting w:name="doNotFlipMirrorIndents" w:uri="http://schemas.microsoft.com/office/word" '
-                'w:val="1"/></w:compat><w:rsids><w:rsidRoot w:val="00A31C58"/><w:rsid w:val="002B6E90"/><w:rsid '
-                'w:val="00A31C58"/><w:rsid w:val="00F27D14"/></w:rsids><m:mathPr><m:mathFont m:val="Cambria Math"/>'
+                'w:val="1"/></w:compat><w:rsids><w:rsidRoot w:val="00C41E27"/><w:rsid w:val="005A3D81"/><w:rsid '
+                'w:val="0071B2F4"/><w:rsid w:val="00C41E27"/></w:rsids><m:mathPr><m:mathFont m:val="Cambria Math"/>'
                 '</m:mathPr><w:themeFontLang w:val="en-GB"/><w:clrSchemeMapping w:bg1="light1" w:t1="dark1" '
                 'w:bg2="light2" w:t2="dark2" w:accent1="accent1" w:accent2="accent2" w:accent3="accent3" '
                 'w:accent4="accent4" w:accent5="accent5" w:accent6="accent6" w:hyperlink="hyperlink" '
                 'w:followedHyperlink="followedHyperlink"/><w:shapeDefaults><o:shapedefaults v:ext="edit" '
                 'spidmax="1026"/><o:shapelayout v:ext="edit"><o:idmap v:ext="edit" data="1"/></o:shapelayout>'
                 '</w:shapeDefaults><w:decimalSymbol w:val="."/><w:listSeparator w:val=","/>'
-                '<w14:docId w14:val="5E2A7C31"/><w15:chartTrackingRefBased/><w15:docId '
-                'w15:val="{8C4B2F0A-6D1E-4F3B-9A57-2E61C0D4B7A9}"/></w:settings>' % W_NS)
+                '<w14:docId w14:val="3B9D05E6"/><w15:chartTrackingRefBased/><w15:docId '
+                'w15:val="{4F7A1C93-2B6E-4D08-8E35-91C2A6F0D74B}"/></w:settings>' % W_NS)
     fonts = (XML_HEAD + '<w:fonts %s>' % W_NS + "".join(
         '<w:font w:name="%s"><w:panose1 w:val="%s"/><w:charset w:val="00"/><w:family w:val="%s"/>'
         '<w:pitch w:val="variable"/></w:font>' % x for x in
@@ -358,8 +361,8 @@ def agenda_docx(path):
         "word/_rels/document.xml.rels": drels.encode(), "word/styles.xml": styles.encode(),
         "word/settings.xml": settings.encode(), "word/fontTable.xml": fonts.encode(),
         "word/webSettings.xml": web.encode(), "word/theme/theme1.xml": theme.encode(), "docProps/app.xml": app.encode(),
-        "docProps/core.xml": core_xml("Company Secretariat", "Abbie Stevens", dt.datetime(2026, 10, 7, 9, 14, 0),
-                                      dt.datetime(2026, 10, 8, 15, 52, 0), revision=4),
+        "docProps/core.xml": core_xml("Jill Berry", "Abbie Stevens", dt.datetime(2026, 10, 2, 8, 41, 0),
+                                      dt.datetime(2026, 10, 7, 16, 20, 0), revision=4),
     }
     write_container(path, members)
 
@@ -432,8 +435,8 @@ def standard_pdf(path):
         ("p", "4.2 A group in a cohort reaches the watch list if it is placed on the watch list in the twelve "
               "months after the cohort date. A group that leaves the book in that time without being placed has "
               "not reached it. A group counts once. A cohort is closed once its twelve months have ended."),
-        ("p", "4.3 The system's performance is reported to the Credit Risk Committee each November on the last "
-              "four closed cohorts taken together:"),
+        ("p", "4.3 The system's performance is reported to the Credit Risk Committee each November on the closed "
+              "cohorts scored by the current release, taken together:"),
         ("u", "hit rate: groups flagged at the cohort date that reach the watch list, as a share of groups "
               "flagged;"),
         ("u", "capture rate: groups reaching the watch list that were flagged at the cohort date, as a share of "
@@ -441,21 +444,19 @@ def standard_pdf(path):
         ("u", "false-alarm rate: groups not reaching the watch list that were flagged at the cohort date, as a "
               "share of groups not reaching it."),
         ("h", "5 Watch-list caseload forecast"),
-        ("p", "5.1 Each October credit risk monitoring forecasts how many groups in the monitored book at the "
-              "cohort date will reach the watch list in the following twelve months, and the committed exposure "
-              "they will bring, for the resourcing budget. Groups that join the book after the cohort date are "
-              "outside the forecast."),
+        ("p", "5.1 In the close of each monitoring year, which ends on the cohort date, credit risk monitoring "
+              "forecasts how many groups in the monitored book at the cohort date will reach the watch list in the "
+              "following twelve months, and the committed exposure they will bring. Groups that join the book after "
+              "the cohort date are outside the forecast."),
         ("p", "5.2 The forecast is the number of groups in the monitored book at the cohort date expected to reach "
               "the watch list in the twelve months after it, with the book, the outcome and the groups left out as "
               "4.1, 4.2 and 5.1 set them, and the committed exposure at the cohort date that those groups are "
-              "expected to bring. The Committee resources the coming year's caseload on it, and each forecast is "
+              "expected to bring. It rests on the closed cohorts scored by the current release, taken together. The "
+              "Chief Risk Officer's leadership team sets the coming year's Restructuring and "
+              "Business Support headcount from it, and each forecast is "
               "set against its cohort's actual arrivals once the cohort closes."),
-        ("p", "5.3 The caseload is reported to the nearest whole group. In each band of 6.2 the expected arrivals "
-              "are split into those from groups flagged at the cohort date and those from groups not flagged: each "
-              "part is the book's expected arrivals from groups of that flag status, shared among the bands in "
-              "proportion to the band's groups of that status, and the committed exposure the arrivals are expected "
-              "to bring is shared the same way, in proportion to those groups' committed exposure. Expected arrivals "
-              "within a band are reported to one decimal."),
+        ("p", "5.3 The caseload is reported to the nearest whole group, and the expected arrivals and the committed "
+              "exposure they are expected to bring in each band of 6.2 to one decimal."),
         ("h", "6 Committed exposure and caseload bands"),
         ("p", "6.1 A group's committed exposure at a date is the sum of the committed limits, as they stood at the "
               "end of that date, of the facilities on which one or more of its members is an obligor, across "
@@ -504,9 +505,12 @@ Every customer on the credit system, open or closed.
 | field | meaning |
 |---|---|
 | customer_id | credit system customer number |
+| customer_name | the customer's registered name |
 | lei | the customer's LEI where held |
 | companies_house_no | Companies House number for UK-registered customers |
+| country | country of registration |
 | group_id | the obligor group the credit system books the customer to; blank until the monthly grouping review books a new customer |
+| customer_since | the date the customer was opened on the credit system |
 | customer_status | ACTIVE or CLOSED at the extract date |
 | primary_booking_entity | HB-PLC (Halstow Bank plc) or HB-DAC (Halstow Bank Ireland DAC) |
 

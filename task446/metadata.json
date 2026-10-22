@@ -4,7 +4,7 @@
   "domain": "Banking, Credit & Financial Risk",
   "subdomain": "credit-scoring-pd-modeling (early-warning and watch-list monitoring of corporate obligor groups)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "05 (allocation to a fixed total): the caseload allocated over the five exposure bands, each band with the groups it holds, their committed exposure, expected arrivals from flagged and from unflagged groups and the expected committed exposure arriving, with a total row",
+  "prompt_shape": "05 (allocation to a fixed total): the caseload allocated over the five exposure bands, each band with the groups it holds, their committed exposure, the groups the September early-warning run flagged, the expected arrivals and the committed exposure they are expected to bring, with a total row",
   "as_of": "2026-10-08",
   "deliverables": [
     "watchlist_inflow_2027.xlsx",
@@ -25,7 +25,7 @@
       "xlsx"
     ],
     "largest_file": "ews_entity_signals_2022-09_to_2026-09.csv",
-    "largest_file_rows": 125317
+    "largest_file_rows": 125975
   },
   "sources": [
     {
@@ -41,7 +41,7 @@
     {
       "path": "credit_data_field_reference.md",
       "format": "md",
-      "bytes": 4249,
+      "bytes": 4413,
       "rows": null,
       "source": "Constructed: Reference Data field reference for the quarter-end credit extracts (data dictionary)",
       "date": "2026-10-08",
@@ -50,8 +50,8 @@
     {
       "path": "credit_group_register_20260930.xlsx",
       "format": "xlsx",
-      "bytes": 93100,
-      "rows": 1310,
+      "bytes": 92597,
+      "rows": 1301,
       "source": "Constructed: Credit system obligor group register with relationship dates, ultimate parent LEI and sector",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -59,16 +59,25 @@
     {
       "path": "credit_obligor_master_20260930.csv",
       "format": "csv",
-      "bytes": 213422,
-      "rows": 2078,
+      "bytes": 213964,
+      "rows": 2083,
       "source": "Constructed: Credit system obligor master: customer, LEI, Companies House number, obligor group, booking entity",
+      "date": "2026-10-08",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "crm_year_end_close_timetable_2026.docx",
+      "format": "docx",
+      "bytes": 7780,
+      "rows": null,
+      "source": "Constructed: Credit Risk Monitoring year-end close timetable for the year to 30 Sep 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
       "path": "early_warning_and_watch_list_standard.pdf",
       "format": "pdf",
-      "bytes": 5568,
+      "bytes": 5513,
       "rows": null,
       "source": "Constructed: Early-Warning and Watch-List Monitoring Standard CRM-07 v3.1",
       "date": "2026-10-08",
@@ -77,8 +86,8 @@
     {
       "path": "ews_entity_signals_2022-09_to_2026-09.csv",
       "format": "csv",
-      "bytes": 11018582,
-      "rows": 125317,
+      "bytes": 11067228,
+      "rows": 125975,
       "source": "Constructed: Early-warning engine month-end publications, one row per covered entity per month-end, September 2022 to September 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -93,19 +102,10 @@
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "exec_risk_committee_agenda_2026-11-04.docx",
-      "format": "docx",
-      "bytes": 7812,
-      "rows": null,
-      "source": "Constructed: Executive Risk Committee agenda, 4 Nov 2026",
-      "date": "2026-10-08",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "facility_limit_history_20261008.csv",
       "format": "csv",
-      "bytes": 268106,
-      "rows": 4647,
+      "bytes": 274160,
+      "rows": 4752,
       "source": "Constructed: Committed limit history for every facility, one row per version, to 7 Oct 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -113,8 +113,8 @@
     {
       "path": "facility_obligor_extract_20260930.csv",
       "format": "csv",
-      "bytes": 279195,
-      "rows": 3104,
+      "bytes": 286160,
+      "rows": 3181,
       "source": "Constructed: Facility and obligor extract from the Halstow Bank plc and Halstow Bank Ireland DAC loan ledgers, run 01:15 on 1 Oct 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -122,8 +122,8 @@
     {
       "path": "gleif_lei_cdf_20260930.csv",
       "format": "csv",
-      "bytes": 596466,
-      "rows": 3269,
+      "bytes": 596080,
+      "rows": 3266,
       "source": "Constructed: GLEIF LEI-CDF 3.1 level 1 records for the Bank's entities and the engine's coverage list, GLEIF concatenated file of 30 Sep 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -131,8 +131,8 @@
     {
       "path": "gleif_repex_20260930.csv",
       "format": "csv",
-      "bytes": 210990,
-      "rows": 2612,
+      "bytes": 209508,
+      "rows": 2594,
       "source": "Constructed: GLEIF level 2 reporting exceptions, GLEIF concatenated file of 30 Sep 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -140,8 +140,8 @@
     {
       "path": "gleif_rr_cdf_20260930.csv",
       "format": "csv",
-      "bytes": 711712,
-      "rows": 3729,
+      "bytes": 714369,
+      "rows": 3743,
       "source": "Constructed: GLEIF RR-CDF 2.1 level 2 relationship records, GLEIF concatenated file of 30 Sep 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -158,8 +158,8 @@
     {
       "path": "internal_rating_master_scale_2026.xlsx",
       "format": "xlsx",
-      "bytes": 28893,
-      "rows": 1002,
+      "bytes": 28729,
+      "rows": 996,
       "source": "Constructed: Internal rating master scale and group ratings at 30 Sep 2026",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"
@@ -185,8 +185,8 @@
     {
       "path": "watch_list_history_2020-01_to_2026-09.csv",
       "format": "csv",
-      "bytes": 29823,
-      "rows": 307,
+      "bytes": 27945,
+      "rows": 287,
       "source": "Constructed: Watch-list cases opened since January 2020: placement, level, removal and reason",
       "date": "2026-10-08",
       "license": "CC0-1.0 (original work, constructed for this task)"

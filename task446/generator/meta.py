@@ -32,7 +32,7 @@ DESC = {
     FILES["fx"]: "Group Treasury closing FX rates at 30 Sep 2026",
     FILES["triggers"]: "Early-warning trigger code list with feed and default signal",
     FILES["standard"]: "Early-Warning and Watch-List Monitoring Standard CRM-07 v3.1",
-    FILES["agenda"]: "Executive Risk Committee agenda, 4 Nov 2026",
+    FILES["close"]: "Credit Risk Monitoring year-end close timetable for the year to 30 Sep 2026",
     FILES["fieldref"]: "Reference Data field reference for the quarter-end credit extracts (data dictionary)",
     FILES["log"]: "Reference Data quarter-end extract log: jobs, run times, row counts and the control check "
                   "(provenance)",
@@ -69,8 +69,9 @@ def main():
         "subdomain": "credit-scoring-pd-modeling (early-warning and watch-list monitoring of corporate obligor groups)",
         "objective": "Forecasting & Predictive Modeling",
         "prompt_shape": "05 (allocation to a fixed total): the caseload allocated over the five exposure bands, each band "
-                        "with the groups it holds, their committed exposure, expected arrivals from flagged and from "
-                        "unflagged groups and the expected committed exposure arriving, with a total row",
+                        "with the groups it holds, their committed exposure, the groups the September early-warning run "
+                        "flagged, the expected arrivals and the committed exposure they are expected to bring, with a "
+                        "total row",
         "as_of": "2026-10-08",
         "deliverables": ["watchlist_inflow_2027.xlsx", "watchlist_inflow_2027.svg"],
         "distractor_files": list(DISTRACTORS),

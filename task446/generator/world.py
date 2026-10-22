@@ -1,15 +1,19 @@
-"""task446 world (architecture 2).
+"""task446 world (architecture 3).
 
 Halstow Bank plc's corporate and commercial obligor groups from 2020 to 30 September 2026: the legal
 entities in each group and their GLEIF records, the early-warning engine's month-end entity signals,
 the watch-list history, and the facility book at 30 September 2026.
 
-The four closed cohorts are built to fixed counts (monitored, reaching the watch list, flagged and
-reaching, flagged and not reaching) and the 30 September 2026 book to a fixed size, flagged count and
-exposure-band composition. Everything else is drawn from numpy default_rng(SEED). Nothing here reads
-target/.
+A group is flagged when any member is AMBER or RED. A flag is raised either on a customer the bank lends to
+(kind D) or only on a member it does not lend to, reached through the GLEIF consolidation records (kind I),
+and the two kinds reach the watch list at different rates. The four closed cohorts are built to fixed counts
+(monitored; flags of each kind and how many of each reach the list; unflagged groups reaching), with the
+colour and the covenant trigger of each flag planned so that neither carries anything beyond its kind, and
+the 30 September 2026 book to a fixed size, flag mix and exposure-band composition. Everything else is drawn
+from numpy default_rng(SEED). Nothing here reads target/.
 """
 import datetime as dt
+import itertools
 import string
 import numpy as np
 
@@ -17,11 +21,39 @@ SEED = 4462
 D = dt.date
 COHORTS = [D(2022, 9, 30), D(2023, 9, 30), D(2024, 9, 30), D(2025, 9, 30), D(2026, 9, 30)]
 N_TARGET = [846, 871, 889, 902, 913]
-P_REACH = [75, 43, 36, 47]
-TP_FLAG = [58, 32, 28, 39]
-FP_FLAG = [61, 66, 67, 65]
-F_FWD = 165
+D_FLAG = [58, 62, 58, 62]          # flags raised on a booked customer
+D_REACH = [28, 32, 30, 30]
+I_FLAG = [62, 28, 40, 46]          # flags raised only on a member the bank does not lend to
+I_REACH = [4, 2, 1, 4]
+U_REACH = [13, 11, 12, 14]         # groups not flagged at the cohort date that reach the list
+P_REACH = [a + b + c for a, b, c in zip(D_REACH, I_REACH, U_REACH)]
+D_FWD, I_FWD = 127, 38
+F_FWD = D_FWD + I_FWD
 EXTRACT_DATE = D(2026, 9, 30)
+
+
+def apportion(total, weights):
+    """split a whole number over weights by largest remainder (ties to the earlier position)"""
+    w = [float(x) for x in weights]
+    raw = [total * x / sum(w) for x in w]
+    out = [int(np.floor(x)) for x in raw]
+    order = sorted(range(len(w)), key=lambda i: (-(raw[i] - out[i]), i))
+    for i in order[:total - sum(out)]:
+        out[i] += 1
+    return out
+
+
+# Pooled over the cohorts, each kind's RED and AMBER flags reach the list at exactly the kind's rate, and so
+# do kind D flags with and without a covenant trigger: the colour and the trigger carry nothing beyond the kind.
+RED_D, RED_I = 43, 32                # RED leads among kind D flags reaching (and, again, not reaching); kind I total
+COV_D = 30                           # kind D flags with a covenant trigger, reaching (and, again, not reaching)
+RED_I_REACH = 2
+RED_PLAN = list(zip(apportion(RED_D, D_REACH), apportion(RED_D, [a - b for a, b in zip(D_FLAG, D_REACH)]),
+                    apportion(RED_I_REACH, I_REACH),
+                    apportion(RED_I - RED_I_REACH, [a - b for a, b in zip(I_FLAG, I_REACH)])))
+COV_PLAN = list(zip(apportion(COV_D, D_REACH), apportion(COV_D, [a - b for a, b in zip(D_FLAG, D_REACH)])))
+RED_FWD = (46, 7)
+COV_FWD = 32
 GAP = 8                       # no lifecycle date within this many days of a cohort date
 BAND_EDGES = [5e6, 15e6, 40e6, 100e6]
 BAND_LABELS = ["Under GBP 5m", "GBP 5m and under 15m", "GBP 15m and under 40m",
@@ -103,7 +135,7 @@ SUB_SUFFIX = ["Ltd", "Ltd", "Ltd", "Limited", "Services Ltd", "Operations Ltd", 
 class Ent:
     __slots__ = ("eid", "gid", "lei", "crn", "name", "country", "category", "role", "parent", "borrower",
                  "cust", "reg", "reg_status", "successor", "merged_on", "joined", "lower_key", "repex",
-                 "direct_only", "vendor_name", "inert", "hz", "cust_since")
+                 "direct_only", "vendor_name", "inert", "hz", "cust_since", "booked")
 
     def __init__(self, **kw):
         for k in self.__slots__:
@@ -120,6 +152,9 @@ class Group:
         self.members = []          # Ent
         self.episodes = []         # dict(start, end, level, reason)
         self.flag = {}             # cohort index -> bool
+        self.kind = {}             # cohort index -> "D" (a booked customer raised the flag) or "I"
+        self.red = {}              # cohort index -> the lead carrier is RED in the September publication
+        self.cov = {}              # cohort index -> the lead carrier's triggers include a covenant trigger
         self.carriers = {}         # cohort index -> [eid]
         self.band = None
         self.exposure = None       # GBP target at 30 Sep 2026
@@ -322,11 +357,7 @@ def build_lifecycle(w):
         nleave = int(round(len(rest) * rng.uniform(0.047, 0.058)))
         for i in sorted(rng.choice(len(rest), nleave, replace=False)):
             rest[i].active_to = w.rand_date(d + dt.timedelta(days=GAP + 1), nd - dt.timedelta(days=GAP + 1))
-        # flags at the cohort date
-        tp = set(rng.choice([g.gid for g in reach], TP_FLAG[c], replace=False))
-        fp = set(rng.choice([g.gid for g in rest], FP_FLAG[c], replace=False))
-        for g in M:
-            g.flag[c] = g.gid in tp or g.gid in fp
+        # flags at the cohort date are drawn once the GLEIF texture is known (assign_flags)
         cohort[c] = dict(M=[g.gid for g in M], reach=[g.gid for g in reach])
         # joiners during the window, to the next cohort's size
         prov = len(w.monitored(nd))
@@ -415,59 +446,128 @@ AMBER_TRIG = ["PAY_DELAY", "FILING_LATE", "RATING_WATCH", "CCJ", "COVENANT_RISK"
 RED_TRIG = ["PAY_DEFAULT", "RATING_DOWN", "WINDING_UP_PETITION", "GOING_CONCERN", "COVENANT_BREACH"]
 
 
-def pick_carriers(w, g, c):
-    """Which members carry a flag at cohort c: an entity whose group the standard's rules reach however the
-    GLEIF texture is read (a non-inert borrower, or a non-borrower with an LEI under a chain of ISSUED
-    registrations), usually a borrower."""
-    rng = w.rng
-    top = g.members[0]
+def cust_since(w, e):
+    """the date the credit system opened the customer (make.py writes it to the obligor master)"""
+    g = w.groups[e.gid]
+    if e.hz or e.booked:
+        return e.cust_since
+    since = max(g.active_from, e.reg - dt.timedelta(days=200)) if e.role != "top" else g.active_from
+    return min(since, EXTRACT_DATE - dt.timedelta(days=30))
 
-    def chain_issued(e):
-        x = e
-        for _ in range(6):
-            if x.reg_status != "ISSUED" or x.direct_only:
-                return False
-            if x.parent is None:
-                return True
-            x = w.ents[x.parent]
-        return False
 
-    def ok_entity(e):
-        if e.inert or e.role not in ("top", "sub", "hold"):
+def chain_issued(w, e):
+    x = e
+    for _ in range(6):
+        if x.reg_status != "ISSUED" or x.direct_only:
             return False
-        if e.joined is not None and e.joined >= COHORTS[c] - dt.timedelta(days=GAP):
-            return False
-        if e.borrower:
+        if x.parent is None:
             return True
-        return bool(e.lei) and chain_issued(e)
+        x = w.ents[x.parent]
+    return False
 
-    live = [e for e in g.members if ok_entity(e)]
-    if not live:
-        top.reg_status, top.lower_key, top.direct_only, top.inert = "ISSUED", False, False, False
-        live = [e for e in g.members if ok_entity(e)]
-    borrowers = [e for e in live if e.borrower]
-    others = [e for e in live if not e.borrower]
-    crn_only = [e for e in borrowers if not e.lei]
-    u = rng.random()
-    if others and u < 0.11:
-        lead = others[int(rng.integers(0, len(others)))]
-    elif crn_only and u < 0.20:
-        lead = crn_only[int(rng.integers(0, len(crn_only)))]
+
+def d_members(w, g, c):
+    """members that can raise a kind D flag at cohort c: customers the credit system lends to, booked to the
+    group well before the cohort date, whose keys every reading of the texture resolves"""
+    lim = COHORTS[c] - dt.timedelta(days=GAP)
+    return [e for e in g.members if e.borrower and e.cust and not e.inert and not e.hz and
+            e.role in ("top", "sub", "hold") and (e.joined is None or e.joined < lim) and cust_since(w, e) < lim]
+
+
+def i_members(w, g, c):
+    """members that can raise a kind I flag at cohort c: subsidiaries and holding companies the bank does not
+    lend to, with an LEI under a chain of ISSUED registrations that report their ultimate parent; never the
+    ultimate parent itself"""
+    lim = COHORTS[c] - dt.timedelta(days=GAP)
+    return [e for e in g.members if not e.borrower and e.cust is None and e.role in ("sub", "hold") and e.lei
+            and not e.inert and not e.hz and chain_issued(w, e) and (e.joined is None or e.joined < lim)]
+
+
+def pick_carriers(w, g, c, rng):
+    """The members carrying a flag at cohort c: kind D flags sit on customers, kind I flags only on members the
+    bank does not lend to; a second carrier, when there is one, is of the same kind. A group that reaches the
+    list from green gets the member its later signal sits on."""
+    kind = g.kind.get(c)
+    if kind == "I":
+        live = i_members(w, g, c)
     else:
-        pool = borrowers or live
-        lead = pool[int(rng.integers(0, len(pool)))]
+        live = d_members(w, g, c)
+        if not live:
+            live = [e for e in g.members if e.borrower and not e.inert and not e.hz] or \
+                [e for e in g.members if not e.inert and e.role in ("top", "sub", "hold")] or [g.members[0]]
+    lead = live[int(rng.integers(0, len(live)))]
     out = [lead]
     rest = [e for e in live if e is not lead]
-    if rest and rng.random() < 0.3:
+    if g.flag.get(c) and rest and rng.random() < 0.3:
         out.append(rest[int(rng.integers(0, len(rest)))])
     return out
 
 
-def build_signals(w, cohort):
-    """Month-end signals per entity. September publications follow the cohort design exactly; other
-    months follow episodes around it."""
+def assign_flags(w, cohort):
+    """Flags at the four closed cohort dates, to the design counts by kind and outcome, with the colour and
+    covenant plans laid on each kind's reaching and non-reaching flags."""
     rng = w.rng
-    state = {}   # (eid, month) -> (colour, triggers)
+    for c in range(4):
+        M = [w.groups[x] for x in cohort[c]["M"]]
+        R = set(cohort[c]["reach"])
+        taken = set()
+        plan = [("I", True, I_REACH[c]), ("D", True, D_REACH[c]), ("I", False, I_FLAG[c] - I_REACH[c]),
+                ("D", False, D_FLAG[c] - D_REACH[c])]
+        red = dict(zip([("D", True), ("D", False), ("I", True), ("I", False)], RED_PLAN[c]))
+        cov = dict(zip([("D", True), ("D", False)], COV_PLAN[c]))
+        for kind, reached, n in plan:
+            ok_ = d_members if kind == "D" else i_members
+            pool = [g for g in M if (g.gid in R) == reached and g.gid not in taken and ok_(w, g, c)]
+            assert len(pool) >= n, (c, kind, reached, len(pool), n)
+            got = [pool[i] for i in sorted(rng.choice(len(pool), n, replace=False))]
+            reds = set(rng.choice(n, red[(kind, reached)], replace=False)) if n else set()
+            covs = set(rng.choice(n, cov.get((kind, reached), 0), replace=False)) if n else set()
+            for i, g in enumerate(got):
+                taken.add(g.gid)
+                g.flag[c], g.kind[c], g.red[c], g.cov[c] = True, kind, i in reds, i in covs
+        for g in M:
+            if g.gid not in taken:
+                g.flag[c] = False
+
+
+def draw_triggers(rng, colour, m, borrower, cov=None):
+    """Trigger codes for one row. Covenant triggers come from the Bank's own compliance certificates, so only a
+    customer can carry one; cov True or False fixes whether the row carries one (the September plan)."""
+    allow = borrower and cov is not False
+    if colour == "AMBER":
+        pool = list(AMBER_TRIG)
+        p = np.array([0.30, 0.08, 0.20, 0.08, 0.12, 0.06, 0.12, 0.04]) if m >= D(2026, 4, 1) else np.ones(8)
+        keep = [i for i, t in enumerate(pool) if allow or t != "COVENANT_RISK"]
+        if cov is True:
+            keep = [i for i in keep if pool[i] != "COVENANT_RISK"]
+        pool, p = [pool[i] for i in keep], p[keep] / p[keep].sum()
+        k = int(rng.integers(1, 3))
+        picks = list(rng.choice(pool, k, replace=False, p=p))
+        if cov is True:
+            picks = ["COVENANT_RISK"] + picks[:k - 1]
+        return ";".join(sorted(picks))
+    pool = [t for t in RED_TRIG if allow or t != "COVENANT_BREACH"]
+    if cov is True:
+        pool = [t for t in pool if t != "COVENANT_BREACH"]
+    k = int(rng.integers(1, 3))
+    picks = list(rng.choice(pool, k, replace=False))
+    if cov is True:
+        picks = ["COVENANT_BREACH"] + picks[:k - 1]
+    if rng.random() < 0.5:
+        extra = [t for t in AMBER_TRIG if allow or t != "COVENANT_RISK"]
+        if cov is True:
+            extra = [t for t in extra if t != "COVENANT_RISK"]
+        picks.append(str(rng.choice(extra)))
+    return ";".join(sorted(set(picks)))
+
+
+def build_signals(w, cohort):
+    """Month-end signals per entity. September publications follow the cohort design exactly (which groups
+    are flagged, by which kind of member, in which colour, with or without a covenant trigger); other months
+    follow episodes around it. Before and at a cohort date nothing in a flagged member's signal depends on
+    whether the group goes on to reach the list. The signals draw from their own stream."""
+    rng = np.random.default_rng(SEED + 202)
+    state = {}   # (eid, month) -> colour
 
     def mark(e, m, colour):
         key = (e.eid, m)
@@ -489,14 +589,15 @@ def build_signals(w, cohort):
                 continue
             if not w.active(g, d):
                 continue
-            car = pick_carriers(w, g, c)
+            car = pick_carriers(w, g, c, rng)
             g.carriers[c] = [e.eid for e in car]
             entry = None
             if c < 4 and gid in cohort[c]["reach"]:
                 entry = [ep for ep in g.episodes if COHORTS[c] < ep["start"] <= COHORTS[c + 1]][0]["start"]
             flagged = g.flag.get(c, False)
             if flagged:
-                k0 = int(rng.integers(0, 5))
+                planned = "RED" if g.red.get(c) else "AMBER"
+                k0 = int(rng.choice(6, p=[0.06, 0.18, 0.24, 0.22, 0.18, 0.12]))
                 start = MONTHS[max(0, MONTHS.index(d) - k0)]
                 if entry is not None:
                     stop = entry + dt.timedelta(days=int(rng.integers(20, 75)))
@@ -507,8 +608,14 @@ def build_signals(w, cohort):
                 for m in months_between(start, stop):
                     if m in sept_idx and m != d:
                         continue
-                    colour = "RED" if (entry is not None and m >= entry - dt.timedelta(days=75)) or \
-                        rng.random() < 0.28 else "AMBER"
+                    if m < d:
+                        colour = "RED" if planned == "RED" and rng.random() < 0.80 else "AMBER"
+                    elif m == d:
+                        colour = planned
+                    elif entry is not None and m >= entry - dt.timedelta(days=60):
+                        colour = "RED"
+                    else:
+                        colour = planned
                     mark(car[0], m, colour)
                     if len(car) > 1 and m >= d - dt.timedelta(days=40):
                         mark(car[1], m, "AMBER")
@@ -560,51 +667,53 @@ def build_signals(w, cohort):
                 if m in sept_idx and e.inert:
                     colour = "GREEN"
                 rows.append((m, e, colour))
-    # September publications for groups outside their September role are green unless on the list
+    # September publications: a monitored group's carriers as planned, every other member green
     out = []
     for m, e, colour in rows:
         g = w.groups[e.gid]
+        cov = None
         if m in sept_idx:
             c = sept_idx[m]
             if w.active(g, m) and not w.on_list(g, m):
-                want = g.flag.get(c, False)
-                if not want:
+                car = g.carriers.get(c, []) if g.flag.get(c, False) else []
+                if e.eid not in car:
                     colour = "GREEN"
+                elif e.eid == car[0]:
+                    colour = "RED" if g.red.get(c) else "AMBER"
+                    cov = bool(g.cov.get(c))
                 else:
-                    if e.eid not in g.carriers.get(c, []):
-                        colour = "GREEN"
-                    elif colour == "GREEN":
-                        colour = "AMBER"
+                    colour = "AMBER"
+                    cov = False
         if colour == "GREEN":
             score = int(rng.integers(6, 40))
             trig = ""
         elif colour == "AMBER":
             score = int(rng.integers(40, 70))
-            k = int(rng.integers(1, 3))
-            pool = AMBER_TRIG
-            p = None
-            if m >= D(2026, 4, 1):
-                p = np.array([0.30, 0.08, 0.20, 0.08, 0.12, 0.06, 0.12, 0.04])
-                p = p / p.sum()
-            trig = ";".join(sorted(rng.choice(pool, k, replace=False, p=p)))
+            trig = draw_triggers(rng, colour, m, bool(e.cust), cov)
         else:
             score = int(rng.integers(70, 98))
-            k = int(rng.integers(1, 3))
-            trig = ";".join(sorted(set(list(rng.choice(RED_TRIG, k, replace=False)) +
-                                       ([str(rng.choice(AMBER_TRIG))] if rng.random() < 0.5 else []))))
+            trig = draw_triggers(rng, colour, m, bool(e.cust), cov)
         out.append((m, e, colour, score, trig))
     w.signals = out
 
 
 # ------------------------------------------------------------------ bands and the forward flags
-def ppv_m1():
-    P, TP, FP = map(np.array, (P_REACH, TP_FLAG, FP_FLAG))
-    Ns = np.array(N_TARGET[:4])
-    se = TP.sum() / P.sum()
-    f = FP.sum() / (Ns - P).sum()
-    a1 = F_FWD / N_TARGET[4]
-    p1 = (a1 - f) / (se - f)
-    return se * p1 / a1, (1 - se) * p1 / (1 - a1)
+def probs(mean=False):
+    """each kind's share reaching the list over the four closed cohorts taken together (or the mean of the four
+    cohorts' shares): kind D flags, kind I flags, groups not flagged"""
+    U = [n - a - b for n, a, b in zip(N_TARGET[:4], D_FLAG, I_FLAG)]
+    if mean:
+        return (sum(a / b for a, b in zip(D_REACH, D_FLAG)) / 4, sum(a / b for a, b in zip(I_REACH, I_FLAG)) / 4,
+                sum(a / b for a, b in zip(U_REACH, U)) / 4)
+    return sum(D_REACH) / sum(D_FLAG), sum(I_REACH) / sum(I_FLAG), sum(U_REACH) / sum(U)
+
+
+def p_group(g, mean=False):
+    """the golden's probability that a group in the 30 Sep 2026 book reaches the list"""
+    pD, pI, pU = probs(mean)
+    if not g.flag.get(4):
+        return pU
+    return pD if g.kind[4] == "D" else pI
 
 
 def bin_margin(x, step=0.1):
@@ -613,50 +722,73 @@ def bin_margin(x, step=0.1):
 
 
 def band_plan():
-    """Band composition of the 30 Sep 2026 book: groups and flagged groups per band, chosen so every
-    expected-arrival figure sits well inside its one-decimal bin."""
-    PPV1, M1 = ppv_m1()
-    base_n = [205, 300, 248, 118, 42]
-    base_f = [34, 54, 46, 22, 9]
+    """Band composition of the 30 Sep 2026 book: groups and flags of each kind per band, chosen so every band's
+    expected arrivals sit well inside their one-decimal bin on the pooled rates and on the mean of the cohorts'
+    rates alike."""
+    P, Pm = probs(), probs(True)
+    base_n = [201, 306, 250, 120, 36]
+    base_d = [26, 42, 36, 16, 7]
+    base_i = [8, 11, 11, 5, 3]
     best = None
-    for dn in [(a, b, c, d) for a in range(-6, 7, 2) for b in range(-6, 7, 2) for c in range(-6, 7, 2)
-               for d in range(-4, 5, 2)]:
-        n = [base_n[0] + dn[0], base_n[1] + dn[1], base_n[2] + dn[2], base_n[3] + dn[3]]
+    for dn in [(a, b, c, d) for a in range(-4, 5, 2) for b in range(-4, 5, 2) for c in range(-4, 5, 2)
+               for d in range(-2, 3, 2)]:
+        n = [base_n[i] + dn[i] for i in range(4)]
         n.append(N_TARGET[4] - sum(n))
-        for df in [(a, b, c, d) for a in range(-2, 3) for b in range(-2, 3) for c in range(-2, 3) for d in range(-2, 3)]:
-            fl = [base_f[i] + df[i] for i in range(4)]
-            fl.append(F_FWD - sum(fl))
-            if fl[4] < 6 or fl[4] > 12:
+        for dd in itertools.product(range(-2, 3), repeat=4):
+            dk = [base_d[i] + dd[i] for i in range(4)]
+            dk.append(D_FWD - sum(dk))
+            if not 5 <= dk[4] <= 10:
                 continue
-            u = [n[i] - fl[i] for i in range(5)]
-            ms = [bin_margin(fl[i] * PPV1) for i in range(5)] + [bin_margin(u[i] * M1) for i in range(5)]
-            m = min(ms)
-            key = (round(m, 3), -sum(abs(x) for x in dn) - sum(abs(x) for x in df))
-            if best is None or key > best[0]:
-                best = (key, n, fl)
-    return best[1], best[2]
+            for di in itertools.product(range(-1, 2), repeat=4):
+                ik = [base_i[i] + di[i] for i in range(4)]
+                ik.append(I_FWD - sum(ik))
+                if not 1 <= ik[4] <= 4:
+                    continue
+                ms = []
+                for i in range(5):
+                    u = n[i] - dk[i] - ik[i]
+                    a, am = (dk[i] * q[0] + ik[i] * q[1] + u * q[2] for q in (P, Pm))
+                    ms += [bin_margin(a), bin_margin(am)]
+                    if round(a + 1e-12, 1) != round(am + 1e-12, 1):
+                        ms.append(-1)
+                m = min(ms)
+                key = (round(m, 3), -sum(map(abs, dn)) - sum(map(abs, dd)) - sum(map(abs, di)))
+                if best is None or key > best[0]:
+                    best = (key, n, dk, ik)
+    return best[1], best[2], best[3]
 
 
-BAND_N = [201, 306, 250, 120, 36]     # band_plan() result, fixed here; checks.py re-derives the margins
-BAND_F = [34, 54, 47, 20, 10]
+BAND_N = [201, 304, 248, 120, 40]     # band_plan() result, fixed here; checks.py re-derives the margins
+BAND_D = [26, 42, 36, 14, 9]
+BAND_I = [8, 12, 10, 6, 2]
 
 
 def assign_bands_and_flags(w, cohort):
+    """Bands and flags of the 30 Sep 2026 book to the plan; kind I flags only on groups with a member that can
+    raise one; then the colour and covenant of each forward flag, drawn without regard to anything else."""
     rng = w.rng
-    n, fl = list(BAND_N), list(BAND_F)
     M4 = [w.groups[g] for g in cohort[4]["M"]]
     order = rng.permutation(len(M4))
     pos = 0
     for b in range(5):
-        chosen = [M4[i] for i in order[pos:pos + n[b]]]
-        pos += n[b]
-        fset = set(rng.choice(len(chosen), fl[b], replace=False))
+        chosen = [M4[i] for i in order[pos:pos + BAND_N[b]]]
+        pos += BAND_N[b]
+        ok_i = [i for i, g in enumerate(chosen) if i_members(w, g, 4)]
+        iset = set(int(x) for x in rng.choice(ok_i, BAND_I[b], replace=False))
+        ok_d = [i for i, g in enumerate(chosen) if i not in iset and d_members(w, g, 4)]
+        dset = set(int(x) for x in rng.choice(ok_d, BAND_D[b], replace=False))
         for i, g in enumerate(chosen):
             g.band = b
-            g.flag[4] = i in fset
-    w.band_n, w.band_f = n, fl
-
-
+            g.flag[4] = i in iset or i in dset
+            if g.flag[4]:
+                g.kind[4] = "I" if i in iset else "D"
+    for kind, nred, ncov in (("D", RED_FWD[0], COV_FWD), ("I", RED_FWD[1], 0)):
+        fl = [g for g in M4 if g.flag[4] and g.kind[4] == kind]
+        reds = set(int(x) for x in rng.choice(len(fl), nred, replace=False))
+        covs = set(int(x) for x in rng.choice(len(fl), ncov, replace=False))
+        for i, g in enumerate(fl):
+            g.red[4], g.cov[4] = i in reds, i in covs
+    w.band_n, w.band_d, w.band_i = list(BAND_N), list(BAND_D), list(BAND_I)
 
 
 # ------------------------------------------------------------------ facilities at 30 Sep 2026
@@ -693,7 +825,7 @@ def user_stamp(rng, d):
 
 class Fac:
     __slots__ = ("fid", "booking", "product", "ccy", "limit", "obligors", "start", "maturity", "status", "drawn",
-                 "booked", "oct1", "sep30", "later", "dev", "closed_on", "history")
+                 "booked", "oct1", "sep30", "later", "dev", "closed_on", "history", "copy_of", "util")
 
     def __init__(self, **kw):
         for k in self.__slots__:
@@ -733,7 +865,8 @@ def round_limit(x):
 
 
 def in_force(f):
-    return f.start <= EXTRACT_DATE < f.maturity
+    """in force at the end of 30 September; a facility the interface booked twice (DV-D) is no commitment at all"""
+    return "R" not in f.dev and f.start <= EXTRACT_DATE < f.maturity
 
 
 def fac_value(f, clock="right"):
@@ -751,42 +884,51 @@ def fac_value(f, clock="right"):
     return v
 
 
-def fac_groups(w, f, grain="group", hz=True):
+def ent_groups(e, hz=True, member="both"):
+    """the groups an obligor is a member of (2.2): its legal group, and the group the credit system books it to
+    where that is another (a joint venture consolidated into one partner and booked to the other). member reads
+    the joint ventures one way only: "booked" (the credit system's group) or "gleif" (the consolidating one)."""
+    if e.hz:
+        return {e.gid} if hz else set()
+    if e.booked is None or e.booked == e.gid:
+        return {e.gid}
+    return {"both": {e.booked, e.gid}, "booked": {e.booked}, "gleif": {e.gid}}[member]
+
+
+def fac_groups(w, f, grain="group", hz=True, member="both"):
     cnt = {}
     for eid in f.obligors:
-        e = w.ents[eid]
-        if e.hz and not hz:
-            continue
-        cnt[e.gid] = cnt.get(e.gid, 0) + 1
+        for gid in ent_groups(w.ents[eid], hz, member):
+            cnt[gid] = cnt.get(gid, 0) + 1
     if grain != "rows":
         cnt = {k: 1 for k in cnt}
     return cnt
 
 
-def gexp(w, g, clock="right", grain="group", hz=True):
+def gexp(w, g, clock="right", grain="group", hz=True, member="both"):
     tot = 0.0
     for f in w.gfacs.get(g.gid, []):
         if not in_force(f):
             continue
-        k = fac_groups(w, f, grain, hz).get(g.gid, 0)
+        k = fac_groups(w, f, grain, hz, member).get(g.gid, 0)
         tot += k * fac_value(f, clock) / FX[f.ccy]
     return tot
 
 
-def exposure(w, clock="right", grain="group", hz=True):
+def exposure(w, clock="right", grain="group", hz=True, member="both"):
     out = {}
     for f in w.facilities:
         if not in_force(f):
             continue
         v = fac_value(f, clock) / FX[f.ccy]
-        for gid, k in fac_groups(w, f, grain, hz).items():
+        for gid, k in fac_groups(w, f, grain, hz, member).items():
             out[gid] = out.get(gid, 0.0) + k * v
     return out
 
 
 def add_fac(w, f):
     w.facilities.append(f)
-    for gid in {w.ents[e].gid for e in f.obligors}:
+    for gid in set().union(*(ent_groups(w.ents[e]) for e in f.obligors)):
         w.gfacs.setdefault(gid, [])
         if f not in w.gfacs[gid]:
             w.gfacs[gid].append(f)
@@ -952,7 +1094,8 @@ def plant_devices(w, cohort):
         return gexp(w, g) - BAND_EDGES[g.band - 1] if g.band > 0 else gexp(w, g)
 
     def pool(band, flag, key):
-        c = [g for g in M4 if g.band == band and g.flag[4] == flag and g.gid not in used]
+        c = [g for g in M4 if g.band == band and g.flag[4] == flag and (not flag or g.kind[4] == "D")
+             and g.gid not in used]
         c.sort(key=key)
         return c
 
@@ -1036,6 +1179,101 @@ def plant_devices(w, cohort):
             got += 1
         assert got == cnt, ("HZ nc", band, got)
 
+    # ---------------------------------------------------------- DV-C: joint ventures booked to the other partner
+    # A company consolidated into group B's ultimate parent (B holds the majority, so GLEIF reports B as its
+    # accounting-consolidation parent) whose facility the minority partner's relationship team arranged, so the
+    # credit system books the customer to group A. Under 2.2 it is a member of both, and its facility counts in
+    # both groups. A one-group-per-customer reading loses it from B; a GLEIF-only reading loses it from A.
+    w.movers["JV"] = []
+    jv_plan = [(0, True, 1), (1, True, 3), (2, True, 1), (3, True, 3),
+               (0, False, 1), (1, False, 2), (2, False, 1), (3, False, 2)]        # (edge, flagged, count), down
+    live_partners = [g for g in w.live_groups if g.band is not None]
+
+    def jv_entity(gB, gA, u):
+        top = gB.members[0]
+        place = str(rng.choice(PLACE))
+        word = str(rng.choice(SECTORS[gB.sector][2]))
+        nm = f"{place} {word} {rng.choice(['Ltd', 'Limited', 'Holdings Ltd', 'Partnership Ltd'])}"
+        w._eseq += 1
+        reg = D(2017, 1, 1) + dt.timedelta(days=int(rng.integers(0, 2000)))
+        e = Ent(eid=w._eseq, gid=gB.gid, lei=make_lei(rng, LOUS["GB"][:4], w.used_lei), crn=w.new_crn(), name=nm,
+                country="GB", category="GENERAL", role="sub", parent=top.eid, borrower=True, cust=None, reg=reg,
+                reg_status="ISSUED", successor=None, merged_on=None, joined=None, lower_key=False, repex=None,
+                direct_only=False, vendor_name=nm, inert=True, hz=False, cust_since=None, booked=gA.gid)
+        w._jvseq += int(rng.integers(3, 40))
+        e.cust = "HB%07d" % w._jvseq
+        u.member(gB, e, w)
+        return e
+
+    def jv_partner(gB, L):
+        """a partner group whose band the joint venture's facility leaves unchanged once its own facilities are
+        trimmed by the same amount"""
+        cands = [g for g in live_partners if g.gid not in used and g is not gB and hz_ok_group(g)
+                 and gexp(w, g) >= L + 1.0e6]
+        for i in rng.permutation(len(cands)):
+            gA = cands[int(i)]
+            if band_of(gexp(w, gA)) == gA.band and edge_dist(gexp(w, gA)) >= 0.6e6:
+                return gA
+        return None
+
+    def jv_place(gB, L, cross):
+        u = Undo()
+        gA = jv_partner(gB, L)
+        if gA is None:
+            return None
+        reduce_by(w, gB, L, u)
+        reduce_by(w, gA, L, u)
+        e = jv_entity(gB, gA, u)
+        st = w.rand_date(D(2019, 1, 1), D(2025, 12, 31))
+        f = Fac(booking="HB-PLC", product=str(rng.choice(["TERM_LOAN", "RCF", "TERM_LOAN"])), ccy="GBP",
+                limit=float(L), obligors=[e.eid], start=st,
+                maturity=st + dt.timedelta(days=int(rng.integers(1400, 2600))), status="ACTIVE",
+                booked=st - dt.timedelta(days=int(rng.integers(0, 30))), dev={"JV"})
+        if f.maturity <= EXTRACT_DATE + dt.timedelta(days=60):
+            f.maturity = EXTRACT_DATE + dt.timedelta(days=int(rng.integers(200, 900)))
+        e.cust_since = st - dt.timedelta(days=int(rng.integers(20, 90)))
+        u.add(w, f)
+        eb = gexp(w, gB, member="booked")
+        ok_ = right_ok(w, gB) and right_ok(w, gA)
+        if cross:
+            ok_ = ok_ and band_of(eb) == gB.band - 1 and edge_dist(eb) >= 0.2e6
+        else:
+            ok_ = ok_ and band_of(eb) == gB.band
+        if not ok_:
+            u.rollback(w)
+            return None
+        used.update([gA.gid, gB.gid])
+        return gA
+
+    for edge, flag, cnt in jv_plan:
+        got = 0
+        for gB in pool(edge + 1, flag, key=lambda g: down(g)):
+            if got >= cnt:
+                break
+            if not hz_ok_group(gB):
+                continue
+            L = float(round_limit(down(gB) + rng.uniform(0.5e6, 1.4e6)))
+            if L > 0.6 * gexp(w, gB):
+                continue
+            if jv_place(gB, L, True) is not None:
+                w.movers["JV"].append(gB.gid)
+                got += 1
+        assert got == cnt, ("JV", edge, flag, got)
+    # joint ventures that cross nothing, in every band
+    for band, cnt in ((0, 1), (1, 2), (2, 2), (3, 1), (4, 1)):
+        got = 0
+        cands = [g for g in M4 if g.band == band and g.gid not in used and hz_ok_group(g)]
+        for i in rng.permutation(len(cands)):
+            if got >= cnt:
+                break
+            gB = cands[int(i)]
+            L = float(round_limit(min(rng.uniform(0.15, 0.45) * gexp(w, gB), down(gB) - 0.6e6, 12e6)))
+            if L < 0.3e6:
+                continue
+            if jv_place(gB, L, False) is not None:
+                got += 1
+        assert got == cnt, ("JV nc", band, got)
+
     # ---------------------------------------------------------- DV-A: joint property facilities
     w.movers["A3"] = []
     re_live = [g for g in w.live_groups if g.sector == 0]
@@ -1055,7 +1293,7 @@ def plant_devices(w, cohort):
         elif prefer_band is not None:
             order_ = [g for g in order_ if g.band == prefer_band] + [g for g in order_ if g.band != prefer_band]
         for gA in order_:
-            ea = [m for m in gA.members if m.borrower and not m.hz and m.cust < eB.cust]
+            ea = [m for m in gA.members if m.borrower and not m.hz and m.booked is None and m.cust < eB.cust]
             if not ea:
                 continue
             eA = ea[0]
@@ -1094,7 +1332,7 @@ def plant_devices(w, cohort):
                 break
             if gB.sector != 0:
                 continue
-            eb = [m for m in gB.members if m.borrower and not m.hz]
+            eb = [m for m in gB.members if m.borrower and not m.hz and m.booked is None]
             eB = max(eb, key=lambda m: m.cust)
             u = Undo()
             L = float(round_limit(down(gB) + rng.uniform(0.5e6, 1.5e6)))
@@ -1116,7 +1354,7 @@ def plant_devices(w, cohort):
         d0 = down(gB)
         if d0 < 2.0e6:
             continue
-        eb = [m for m in gB.members if m.borrower and not m.hz]
+        eb = [m for m in gB.members if m.borrower and not m.hz and m.booked is None]
         eB = max(eb, key=lambda m: m.cust)
         u = Undo()
         L = float(round_limit(rng.uniform(0.25, 0.7) * min(d0 - 0.5e6, 20e6)))
@@ -1128,11 +1366,11 @@ def plant_devices(w, cohort):
 
     # ---------------------------------------------------------- DV-A: several obligors in one group
     w.movers["A1"] = []
-    a1_plan = [(0, True, 1), (1, True, 3), (2, True, 1), (3, True, 3),
+    a1_plan = [(0, True, 1), (1, True, 3), (2, True, 1), (3, True, 2),
                (0, False, 3), (1, False, 7), (2, False, 3), (3, False, 7)]
 
     def borrowers_of(g):
-        return [m for m in g.members if m.borrower and not m.hz and m.cust]
+        return [m for m in g.members if m.borrower and not m.hz and m.booked is None and m.cust]
 
     for edge, flag, cnt in a1_plan:
         got = 0
@@ -1249,7 +1487,7 @@ def plant_devices(w, cohort):
         n += 1
     # facilities available from 1 October, activated by the same batch
     for g in [w.live_groups[int(i)] for i in rng.choice(len(w.live_groups), 12, replace=False)]:
-        e = [m for m in g.members if m.borrower and not m.hz][0]
+        e = [m for m in g.members if m.borrower and not m.hz and m.booked is None][0]
         ccy = ccy_of(rng, e)
         add_fac(w, Fac(booking=booking_of(e), product=str(rng.choice(["RCF", "TERM_LOAN", "ASSET_FINANCE"])), ccy=ccy,
                        limit=0.0, oct1=float(round_limit(rng.uniform(0.5e6, 6e6) * FX[ccy])), obligors=[e.eid],
@@ -1347,9 +1585,21 @@ def plant_devices(w, cohort):
     w.used_groups = used
 
 
+def jv_signals(w):
+    """The engine covers the joint ventures like any other group company: green month-end rows from the month the
+    credit system opened them, keyed by LEI."""
+    rng = w.drng
+    for e in sorted((e for e in w.ents.values() if e.booked), key=lambda e: e.eid):
+        g = w.groups[e.gid]
+        start = max(D(2022, 9, 1), e.cust_since or g.active_from)
+        for m in MONTHS:
+            if m < start:
+                continue
+            w.signals.append((m, e, "GREEN", int(rng.integers(6, 40)), ""))
+
+
 def band_exposure_figures(w, cohort, **kw):
     """World-side committed exposure and expected arriving exposure by band and in total (GBP m)."""
-    PPV1, M1 = ppv_m1()
     E = exposure(w, **kw)
     com, arr = [0.0] * 5, [0.0] * 5
     for gid in cohort[4]["M"]:
@@ -1357,8 +1607,108 @@ def band_exposure_figures(w, cohort, **kw):
         e = E.get(gid, 0.0)
         b = band_of(e)
         com[b] += e
-        arr[b] += (PPV1 if g.flag[4] else M1) * e
+        arr[b] += p_group(g) * e
     return [x / 1e6 for x in com] + [sum(com) / 1e6], [x / 1e6 for x in arr] + [sum(arr) / 1e6]
+
+
+def plant_replays(w, cohort):
+    """DV-D, the ask layer's primary. When the limit system's interface timed out on a facility-creation message
+    it sent the message again, and the ledger booked a second facility under the next number: the same customer,
+    terms and first limit version, stamp for stamp and user for user, never drawn. Beside them sit genuine twin
+    tranches booked the same day on the same terms and keyed separately, the second often undrawn. Counting every
+    facility number once keeps the copies and lifts their groups a band; dropping every near-duplicate on its terms,
+    or the undrawn one of each pair, also drops a genuine tranche and lowers its group a band. Only the limit
+    history tells the two apart. Planted after the exposures are tuned, on its own stream, and moving no group's
+    true exposure: a copy is no commitment, and a pair of tranches sums to the facility it was cut from."""
+    rng = np.random.default_rng(SEED + 303)
+    w.rrng = rng
+    used = w.used_groups
+    M4 = [w.groups[g] for g in cohort[4]["M"]]
+    w.movers["R"], w.movers["TW"] = [], []
+    w.single_version = set()           # facilities keyed once at booking and never amended
+
+    def plain(g):
+        return [f for f in w.gfacs.get(g.gid, []) if in_force(f) and len(f.obligors) == 1 and not f.dev
+                and f.status == "ACTIVE" and not f.sep30 and not f.oct1 and not f.later and f.limit % 50000 == 0]
+
+    # booked apart from one another and from the other devices' facilities, so no stretch of a ledger reads as
+    # one device's
+    taken = {}
+    for f in w.facilities:
+        if f.dev:
+            taken.setdefault(f.booking, []).append(f.booked)
+    mine = []
+
+    def apart(f, level):
+        """level 2: clear of the other devices by three days and of this one by thirty; 1: of this one only"""
+        return (level < 2 or all(abs((f.booked - d).days) > 3 for d in taken.get(f.booking, []))) and \
+            (level < 1 or all(abs((f.booked - d).days) > 30 for d in mine))
+
+    def choose(band, flag, test, kind=None):
+        cands = [g for g in M4 if g.band == band and (flag is None or g.flag[4] == flag) and g.gid not in used
+                 and (kind is None or g.kind[4] == kind)]
+        order = rng.permutation(len(cands))
+        for level in (2, 1, 0):
+            for i in order:
+                g = cands[int(i)]
+                e = gexp(w, g)
+                fs = [f for f in plain(g) if test(e, f.limit / FX[f.ccy]) and apart(f, level)]
+                if fs:
+                    f = fs[int(rng.integers(0, len(fs)))]
+                    mine.append(f.booked)
+                    return g, f
+        return None, None
+
+    def copy(f):
+        add_fac(w, Fac(booking=f.booking, product=f.product, ccy=f.ccy, limit=f.limit, obligors=list(f.obligors),
+                       start=f.start, maturity=f.maturity, status="ACTIVE", booked=f.booked, dev={"R"}, copy_of=f,
+                       util=0.0))
+        w.single_version.add(id(f))
+
+    def split(f, undrawn):
+        half = f.limit / 2
+        f.limit = half
+        f.dev.add("TW")
+        w.single_version.add(id(f))
+        add_fac(w, Fac(booking=f.booking, product=f.product, ccy=f.ccy, limit=half, obligors=list(f.obligors),
+                       start=f.start, maturity=f.maturity, status="ACTIVE", booked=f.booked, dev={"TW", "TWB"},
+                       util=0.0 if undrawn else float(rng.uniform(0.2, 0.95))))
+
+    def lands(e, edge):
+        return edge_dist(e) >= 0.25e6 and band_of(e) == edge
+
+    # copies: a group under each edge lifted over it by its copy (edges GBP 5m, 15m, 40m, 100m)
+    for flag, plan in ((True, (1, 2, 1, 2)), (False, (1, 2, 1, 2))):
+        for edge, cnt in enumerate(plan):
+            for _ in range(cnt):
+                g, f = choose(edge, flag, lambda e, v: v <= 40e6 and lands(e + v, edge + 1))
+                assert g is not None, ("R", edge, flag)
+                copy(f)
+                used.add(g.gid)
+                w.movers["R"].append(g.gid)
+    # twins: a group over each edge dropped under it when one tranche is dropped; the flags crossing into and out
+    # of the GBP 40m to 100m band are of opposite kinds, so its expected arrivals cannot net back into their bin
+    for flag, plan in ((True, (1, 2, 1, 2)), (False, (2, 2, 2, 0))):
+        for edge, cnt in enumerate(plan):
+            for _ in range(cnt):
+                kind = {2: "I", 3: "D"}.get(edge) if flag else None
+                g, f = choose(edge + 1, flag, lambda e, v: lands(e - v / 2, edge), kind)
+                if g is None:
+                    g, f = choose(edge + 1, flag, lambda e, v: lands(e - v / 2, edge))
+                assert g is not None, ("TW", edge, flag)
+                split(f, undrawn=True)
+                used.add(g.gid)
+                w.movers["TW"].append(g.gid)
+    # copies and twins that cross nothing, in every band; some twins drawn on both tranches
+    for band in range(5):
+        for kind, undrawn in (("R", None), ("R", None), ("TW", True), ("TW", False)):
+            if kind == "R":
+                g, f = choose(band, None, lambda e, v: v <= 40e6 and lands(e + v, band))
+            else:
+                g, f = choose(band, None, lambda e, v: lands(e - v / 2, band))
+            assert g is not None, ("benign", kind, band)
+            copy(f) if kind == "R" else split(f, undrawn)
+            used.add(g.gid)
 
 
 def tune_exposures(w, cohort):
@@ -1399,23 +1749,37 @@ def number_facilities(w):
     rng = w.drng
     plc = sorted([f for f in w.facilities if f.booking == "HB-PLC"], key=lambda f: (f.booked, f.start, f.limit))
     dac = sorted([f for f in w.facilities if f.booking == "HB-DAC"], key=lambda f: (f.booked, f.start, f.limit))
+    def second(f):
+        """booked by the same message or the same deal as the facility just before it"""
+        return bool(f.dev & {"R", "TWB"})
+
     n = 20418226
     for f in plc:
-        n += int(rng.integers(1, 6))
+        n += 1 if second(f) else int(rng.integers(1, 6))
         f.fid = "%08d" % n
-    span = n - 20418226
-    step = max(2, span // max(1, len(dac)))
+    span = n - 20418226 - sum(1 for f in plc if second(f))
+    step = max(2, span // max(1, sum(1 for f in dac if not second(f))))
     n = 20418226 + int(rng.integers(0, 20))
     for f in dac:
-        n += int(rng.integers(1, 2 * step))
+        n += 1 if second(f) else int(rng.integers(1, 2 * step))
         f.fid = "%08d" % n
 
 
 def build_histories(w):
     """Every committed limit each facility has carried, with the platform's UTC stamps."""
     rng = w.drng
+    single = getattr(w, "single_version", set())
     for f in w.facilities:
         h = []
+        if f.copy_of is not None:
+            # the second booking of a re-sent creation message carries the first's version, stamp and user
+            f.history = list(f.copy_of.history)
+            continue
+        if "TWB" in f.dev:
+            # the second tranche, keyed by its own hand the day the deal was booked
+            r2 = w.rrng
+            f.history = [(user_stamp(r2, f.booked), f.limit, str(r2.choice(USERS)))]
+            continue
         if "ACT" in f.dev:
             h.append((SOD_1OCT, f.oct1, "SOD_BATCH"))
             f.history = h
@@ -1432,16 +1796,21 @@ def build_histories(w):
         vals = [float(pre)]
         for _ in days:
             vals.insert(0, float(round_limit(vals[0] * rng.uniform(0.7, 1.15))))
+        # a facility the interface booked twice, and a deal's first tranche, were never amended (the draws are
+        # made all the same)
+        amended = id(f) not in single
         # initial version: keyed when the facility was booked, or set by the batch on the start date
         if rng.random() < 0.6:
-            h.append((user_stamp(rng, f.booked), vals[0], str(rng.choice(USERS))))
+            h.append((user_stamp(rng, f.booked), vals[0] if amended else float(pre), str(rng.choice(USERS))))
         else:
-            h.append((sod_stamp(f.start), vals[0], "SOD_BATCH"))
+            h.append((sod_stamp(f.start), vals[0] if amended else float(pre), "SOD_BATCH"))
         for d, v in zip(days, vals[1:]):
             if rng.random() < 0.5:
-                h.append((sod_stamp(d), v, "SOD_BATCH"))
+                ver = (sod_stamp(d), v, "SOD_BATCH")
             else:
-                h.append((user_stamp(rng, d), v, str(rng.choice(USERS))))
+                ver = (user_stamp(rng, d), v, str(rng.choice(USERS)))
+            if amended:
+                h.append(ver)
         if f.status in ("CANCELLED", "CLOSED") and "MAT" not in f.dev:
             h.append((user_stamp(rng, f.closed_on) if rng.random() < 0.5 else sod_stamp(f.closed_on), 0.0,
                       "SOD_BATCH" if rng.random() < 0.5 else str(rng.choice(USERS))))
@@ -1473,9 +1842,11 @@ def build(devices=True):
     w = World()
     w.drng = np.random.default_rng(SEED + 101)
     w._hzseq = 2290000
+    w._jvseq = 2296000
     cohort = build_lifecycle(w)
     w.cohort = cohort
     gleif_texture(w, cohort)
+    assign_flags(w, cohort)
     assign_bands_and_flags(w, cohort)
     build_signals(w, cohort)
     build_facilities(w, cohort)
@@ -1484,6 +1855,8 @@ def build(devices=True):
     if devices:
         plant_devices(w, cohort)
         w.tune_steps = tune_exposures(w, cohort)
+        jv_signals(w)
+        plant_replays(w, cohort)
     number_facilities(w)
     build_histories(w)
     for f in w.facilities:
@@ -1498,4 +1871,4 @@ if __name__ == "__main__":
     w = build()
     print(len(w.groups), len(w.ents), len(w.signals), len(w.facilities))
     print({k: len(v) for k, v in w.movers.items()}, "tuning", w.tune_steps)
-    print(w.band_n, w.band_f)
+    print(w.band_n, w.band_d, w.band_i)
