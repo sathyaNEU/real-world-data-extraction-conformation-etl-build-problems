@@ -87,5 +87,6 @@
   },
   "lineage": [],
   "notes": "architecture 1 drawn 2026-10-22 in a new world (the seed's world set aside, see slot_note); the stump is the missing-data structure of a closed-loop measurement, rebuilt per pod from the pause record.",
-  "registered": "2026-10-22T14:13:16Z"
+  "registered": "2026-10-22T14:13:16Z",
+  "architecture_spent": true
 }
