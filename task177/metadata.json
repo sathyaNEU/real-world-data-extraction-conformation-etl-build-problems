@@ -73,7 +73,7 @@
   {
    "path": "billing_move_note_2026.pdf",
    "format": "pdf",
-   "bytes": 54314,
+   "bytes": 54352,
    "rows": null,
    "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media Billing Operations, note on monthly digital billing on the subscriptions platform, version 1.3",
    "date": "2026-10-15",
@@ -82,7 +82,7 @@
   {
    "path": "data_dictionary.xlsx",
    "format": "xlsx",
-   "bytes": 9268,
+   "bytes": 9423,
    "rows": 79,
    "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media Audience Data, field descriptions for the pull",
    "date": "2027-01-25",
@@ -181,7 +181,7 @@
   {
    "path": "subscriptions_platform_invoices.csv",
    "format": "csv",
-   "bytes": 58326712,
+   "bytes": 66514589,
    "rows": 192838,
    "source": "Constructed for this task (seeded, deterministic): Daily Lantern Media subscriptions platform, invoice and credit note export pulled for this year's list (one row per document, its lines as JSON)",
    "date": "2027-01-25",

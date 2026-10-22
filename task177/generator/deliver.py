@@ -139,9 +139,10 @@ def write_workbook(path, F):
         ws3.cell(row=i, column=4, value=F["takers"][pl]).number_format = "#,##0"
     ws3.cell(row=6, column=1, value="Half-price discounts on the bills of subscriptions that took last January's offer, "
                                     "in the email, on the web or in the app, by the month the bill was raised; pounds "
-                                    "to the nearest hundred. App acceptances the offers engine did not apply were "
-                                    "billed at the app's half-price rate with no discount line, and are counted. The "
-                                    "save desk's own half price is not the offer.")
+                                    "to the nearest hundred. Discount lines and the credits posted against an "
+                                    "acceptance once a bill had been raised are both the offer; app acceptances the "
+                                    "offers engine did not apply were billed at the app's half-price rate with no "
+                                    "discount line, and are counted. The save desk's own half price is not the offer.")
     ws3.merge_cells("A6:D6")
     ws3.cell(row=6, column=1).alignment = Alignment(wrap_text=True, vertical="top")
     ws3.cell(row=6, column=1).font = Font(italic=True, size=9, color="5F6670")
@@ -162,9 +163,9 @@ def write_workbook(path, F):
     ws4.cell(row=6, column=1, value="What the subscriptions on this year's list were billed for their plans, net of "
                                     "credit notes and the goodwill credits on its invoices, by the UK date each bill "
                                     "was raised; pounds to the nearest hundred. Each subscription's own invoice lines, "
-                                    "on whichever account's invoice they sit, a line billing two subscriptions of a "
-                                    "household counted once; the Puzzles add-ons and other plans on the same invoices "
-                                    "are not the list's plans.")
+                                    "on whichever account's invoice they sit, one unit of each (a line of qty 2 also "
+                                    "bills the household's other subscription); the Puzzles add-ons and other plans on "
+                                    "the same invoices are not the list's plans.")
     ws4.merge_cells("A6:E6")
     ws4.cell(row=6, column=1).alignment = Alignment(wrap_text=True, vertical="top")
     ws4.cell(row=6, column=1).font = Font(italic=True, size=9, color="5F6670")
@@ -386,18 +387,18 @@ def write_submission(path, F):
           "2027, so all %s bill next on %s, %d days after the send, as the 1st-of-month calendar in %s has it."
           % (C.F_SPINV, "{:,}".format(F["n_ty"]), F["ty_next"], F["ty_days"], C.F_NOTE),
           "5. Carried the rate within %d days of the bill to the whole list: %d per cent." % (w, F["call_share"]),
-          "6. Took last January's offer discounts from %s: the DISC lines whose applied_ref is an acceptance in %s "
-          "(the save desk's STAY50 cases are not the offer), and the February and March bills of the app acceptances "
-          "the engine never applied, which charge the plan at the app's half-price rate (%s), each such discount the "
-          "subscription's January charge less the rate; by the month the bill was raised and the plan in %s, the "
-          "subscriptions with either took it." % (C.F_LBS, C.F_OFFERS, ", ".join(C.RATE_CODE[p] for p in C.PLANS),
-                                                   C.F_PROFILE),
-          "7. Took each list subscription's own lines from the lines column of %s by their subscription_id (an "
-          "account's invoice also carries its add-ons and any other plan it pays for, some list subscriptions are "
-          "billed on another account's invoice, and a line whose text counts two subscriptions of a household bills "
-          "the list subscription once) by the UK date each bill was raised (times are UTC), goodwill credit lines "
-          "netted, added its legacy 1 October bill through %s and took off each bill a credit note covers at that "
-          "bill's own amount." % (C.F_SPINV, C.F_XWALK),
+          "6. Took last January's offer discounts from %s: the DISC lines and the CRED lines (credits posted once the "
+          "bill had been raised) whose applied_ref is an acceptance in %s, the save desk's STAY50 cases not being the "
+          "offer, and the February and March bills of the app acceptances the engine never applied, which charge the "
+          "plan at the app's half-price rate (%s), each such discount the subscription's January charge less the "
+          "rate; by the month the bill was raised and the plan in %s, the subscriptions with any of them took it."
+          % (C.F_LBS, C.F_OFFERS, ", ".join(C.RATE_CODE[p] for p in C.PLANS), C.F_PROFILE),
+          "7. Took each list subscription's own lines from the lines column of %s by their subscription_id, one unit "
+          "of each (an account's invoice also carries its add-ons and any other plan it pays for, some list "
+          "subscriptions are billed on another account's invoice, and a line of qty 2 bills the list subscription "
+          "and the household's other subscription on that plan), by the UK date each bill was raised (times are "
+          "UTC), goodwill credit lines netted, added its legacy 1 October bill through %s and took off each bill a "
+          "credit note covers at that bill's own amount, as %s has it." % (C.F_SPINV, C.F_XWALK, C.F_NOTE),
           "8. Recommendation: %d per cent of the list kept to 31 March 2027 by the offer." % F["call_share"], ""]
     L += ["## 4. Deliverable Answers", "", "### %s" % F_BOOK, "",
           "1. Share of the 26 January 2027 list still subscribed on 31 March 2027 because of the offer: %d per cent."

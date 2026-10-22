@@ -58,7 +58,8 @@ NOTE = [
     ("4. 1 October run (added 15 October)", [
         "4.1 The legacy system's 1 October run was not switched off for seven migration batches until 06:00, so "
         "subscriptions billed on the 1st in those batches were billed by both systems for October.",
-        "4.2 The platform credited each affected account on 14 October. Customers were told by email the same day.",
+        "4.2 The platform credited each affected account on 14 October. Each credit note lists the legacy invoices "
+        "it reverses and reduces those bills. Customers were told by email the same day.",
     ]),
 ]
 NOTE_REVISIONS = ("Version 1.3 (15 October 2026): section 4. Version 1.2 (22 September 2026): batch dates confirmed. "
@@ -141,11 +142,13 @@ FIELDS = (
     (C.F_LIST, "risk_score", "number", "Retention model score when the list was cut"),
     (C.F_LIST, "risk_band", "text", "Band of the score (A, B, C)"),
     (C.F_LBS, "invoice_no", "text", "Legacy invoice number"),
-    (C.F_LBS, "subscription_ref", "text", "Legacy billing subscription reference"),
+    (C.F_LBS, "subscription_ref", "text", "Legacy billing subscription reference; the pull holds the bills of the "
+                                          "subscriptions on either list and their add-ons"),
     (C.F_LBS, "invoice_date", "date", "Bill date (dd/mm/yyyy); the legacy system billed each subscription monthly in "
                                       "advance on its billing day"),
     (C.F_LBS, "line_type", "text", "SUB charge for the subscription, DISC discount, CRED credit"),
-    (C.F_LBS, "item_code", "text", "Plan, discount or credit code"),
+    (C.F_LBS, "item_code", "text", "Plan, discount or credit code. Plans: DIG-M, DGP-M, FAM-M monthly; DIG-MA, "
+                                   "DGP-MA, FAM-MA monthly at the app's half-price rate"),
     (C.F_LBS, "applied_ref", "text", "Reference of the request that applied the discount or credit"),
     (C.F_LBS, "amount_pence", "integer", "Pence; discounts and credits are negative"),
     (C.F_LBS, "vat_code", "text", "Z zero-rated"),
@@ -161,7 +164,9 @@ FIELDS = (
     (C.F_SPINV, "tax_rate", "number", "VAT rate, per cent"),
     (C.F_SPINV, "covers", "text", "For a credit note, the invoice numbers it reverses"),
     (C.F_SPINV, "status", "text", "Payment status"),
-    (C.F_SPINV, "lines", "json", "The document's lines: line, subscription_id, item, text, from, to, amount"),
+    (C.F_SPINV, "lines", "json", "The document's lines: line, subscription_id (the subscription the line is filed "
+                                 "under), item, text, qty (the number of subscriptions the line bills), unit_amount "
+                                 "(pounds for each), from, to, amount (qty times unit_amount; credits negative)"),
     (C.F_XWALK, "legacy_subscription_ref", "text", "Legacy billing subscription reference"),
     (C.F_XWALK, "platform_subscription_id", "text", "Platform subscription id"),
     (C.F_XWALK, "platform_account_id", "text", "Platform account id"),

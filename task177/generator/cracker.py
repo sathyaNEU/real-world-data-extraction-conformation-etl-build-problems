@@ -123,6 +123,50 @@ def reader_b_a(P):
     return out
 
 
+def reader_d_a(P):
+    """reader D's quoted path for ask A (round 2): "legacy invoices, DISC lines with OE26 refs (customer-service STAY50
+    CS- refs excluded) plus half-price -MA plan lines (list price minus billed). 10,800 subscriptions.", as quoted."""
+    lb = P.lbs
+    disc = lb[(lb.line_type == "DISC") & lb.applied_ref.str.startswith("OE26")]
+    disc = disc.assign(off=-disc.amt)
+    rate = lb[(lb.line_type == "SUB") & lb.item_code.isin(set(C.RATE_CODE.values()))]
+    plan_of_code = {v: k for k, v in C.RATE_CODE.items()}
+    rate = rate.assign(off=[C.PRICE[plan_of_code[c_]] - a_ for c_, a_ in zip(rate.item_code, rate.amt)])
+    both = pd.concat([disc[["subscription_ref", "date", "off"]], rate[["subscription_ref", "date", "off"]]])
+    plan = P.profile.set_index("subscription_ref").plan
+    both = both.assign(pl=both.subscription_ref.map(plan), m=both.date.dt.month, y=both.date.dt.year)
+    out = {}
+    for m in (2, 3):
+        for pl in C.PLANS:
+            out[("disc", m, pl)] = both[(both.y == 2026) & (both.m == m) & (both.pl == pl)].off.sum()
+    tk = both.drop_duplicates("subscription_ref")
+    for pl in C.PLANS:
+        out[("takers", pl)] = int((tk.pl == pl).sum())
+    return out
+
+
+def reader_c_a(P):
+    """reader C's route for ask A (round 2), from its remark "353 of them accepted but never had the discount applied
+    to a bill": takers are the engine's acceptances through the CRM snapshot's keys, one per subscription; the
+    discounts are the discount lines that name an acceptance"""
+    prof = P.profile
+    key_sub = dict(zip(prof.customer_no, prof.subscription_ref))
+    key_sub.update({k: v for k, v in zip(prof.app_user_id, prof.subscription_ref) if k})
+    subs = {key_sub[k] for k in P.offers.customer_key if k in key_sub}
+    plan = prof.set_index("subscription_ref").plan
+    refs = set(P.offers.acceptance_ref)
+    disc = P.lbs[(P.lbs.line_type == "DISC") & P.lbs.applied_ref.isin(refs)]
+    disc = disc.assign(pl=disc.subscription_ref.map(plan), m=disc.date.dt.month, y=disc.date.dt.year)
+    out = {}
+    for m in (2, 3):
+        for pl in C.PLANS:
+            out[("disc", m, pl)] = -disc[(disc.y == 2026) & (disc.m == m) & (disc.pl == pl)].amt.sum()
+    tk = pd.Series(sorted(subs)).map(plan)
+    for pl in C.PLANS:
+        out[("takers", pl)] = int((tk == pl).sum())
+    return out
+
+
 def reader_b_b(P, credits="none"):
     """reader B's quoted path for ask B (round 1): "platform invoice lines for list subscription ids, plan items only
     (puzzles add-on excluded), goodwill credit lines (LOYAL-CR) netted, month = UK date of issue"; with credits="header"
@@ -165,10 +209,14 @@ def hit(golden, v, key):
 
 def sheet(target):
     P, c, ga, gb, ly, ty = K.figures(target)
+    rb_a, rb_b = reader_b_a(P), reader_b_b(P)
     paths = {"cracker": (cracker_a(P), cracker_b(P)), "mirror": (mirror_a(P), mirror_b(P)),
-             "reader B as quoted": (reader_b_a(P), reader_b_b(P)),
-             "reader B, credit notes at their totals": (reader_b_a(P), reader_b_b(P, "header")),
-             "reader B, legacy bills and covered bills": (reader_b_a(P), reader_b_b(P, "covers"))}
+             "reader A (round 1), the discount-line route": (rb_a, cracker_b(P)),
+             "reader B (round 1) as quoted": (rb_a, rb_b),
+             "reader B, credit notes at their totals": (rb_a, reader_b_b(P, "header")),
+             "reader B, legacy bills and covered bills": (rb_a, reader_b_b(P, "covers")),
+             "reader C (round 2) as quoted": (reader_c_a(P), rb_b),
+             "reader D (round 2) as quoted": (reader_d_a(P), rb_b)}
     rows, keeps = [], {}
     for name, (pa, pb) in paths.items():
         k = 0

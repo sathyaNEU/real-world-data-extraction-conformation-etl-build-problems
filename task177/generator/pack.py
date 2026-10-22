@@ -62,6 +62,10 @@ class Records:
         u = C.stream("app_fallback").random(len(self.ly))
         self.fallback = set(np.where(self.ly.accepted.values & (self.ly.channel.values == "app")
                                      & (u < W.P["app_fallback"]))[0].tolist())
+        # acceptances the engine applied only after the subscription's first discounted bill had been raised: billing
+        # posted the half price on each of the two bills as a credit against the acceptance, not as a discount line
+        v = C.stream("offer_credit").random(len(self.ly))
+        self.credit_booked = set(np.where(self.ly.accepted.values & (v < W.P["credit_booked"]))[0].tolist()) - self.fallback
         self._offers_and_email()
         self._lbs_invoices()
         self._recentre_goodwill()
@@ -122,7 +126,8 @@ class Records:
                     rows.append((b, lbs[i], "SUB", C.PLAN_CODE[plan[i]], "", price))
                 if j in disc[i] and not fb:
                     code = C.OFFER_CODE_APP if chan[i] == "app" else C.OFFER_CODE_WEB
-                    rows.append((b, lbs[i], "DISC", code, self.acc_ref[i], -int(round(price * C.OFFER_SHARE))))
+                    lt = "CRED" if i in self.credit_booked else "DISC"
+                    rows.append((b, lbs[i], lt, code, self.acc_ref[i], -int(round(price * C.OFFER_SHARE))))
                 if j in desk[i]:
                     rows.append((b, lbs[i], "DISC", C.DESK_CODE, "CS-%07d" % cases[ci], -int(round(price * C.OFFER_SHARE))))
                     ci += 1
@@ -229,21 +234,15 @@ class Records:
 
         def merge(ls):
             """the platform bills identical lines of one account on one line: a household's two subscriptions on
-            the same plan and period appear once, under the account holder's subscription, the text counting them"""
-            out = list(ls)
-            for x in ls:
+            the same plan and period appear once, under the account holder's subscription, with qty 2"""
+            out = [x + (1, x[5]) if len(x) == 6 else x for x in ls]
+            for x in list(out):
                 if x[0] not in partner:
                     continue
                 for k_, y in enumerate(out):
                     if (y[0] == partner[x[0]] and y[1] == x[1] and y[3] == x[3] and y[4] == x[4]
-                            and abs(y[5] - x[5]) < 1e-9 and " x " not in y[2]):
-                        name = y[2]
-                        if " (" in name:
-                            base, rest = name.split(" (", 1)
-                            name = "%s x 2 (%s" % (base, rest)
-                        else:
-                            name = name + " x 2"
-                        out[k_] = (y[0], y[1], name, y[3], y[4], round(y[5] + x[5], 2))
+                            and abs(y[7] - x[7]) < 1e-9 and y[6] == 1):
+                        out[k_] = (y[0], y[1], y[2], y[3], y[4], round(y[7] * 2, 2), 2, y[7])
                         out.remove(x)
                         break
             return out
@@ -283,7 +282,8 @@ class Records:
                     issued = C.to_utc(t0 + dt.timedelta(seconds=int(rng.integers(0, 3300))))
                     total = round(sum(x[5] for x in ls), 2)
                     lj = json.dumps([{"line": li, "subscription_id": x[0], "item": x[1], "text": x[2],
-                                      "from": x[3].isoformat(), "to": x[4].isoformat(), "amount": "%.2f" % x[5]}
+                                      "qty": x[6], "unit_amount": "%.2f" % x[7], "from": x[3].isoformat(),
+                                      "to": x[4].isoformat(), "amount": "%.2f" % x[5]}
                                      for li, x in enumerate(ls, 1)], separators=(",", ":"))
                     inv.append((iid, acct, ls[0][0], "invoice", _utc_iso(issued), pstart.isoformat(), pend.isoformat(),
                                 "%.2f" % total, "0", "", "paid", lj))

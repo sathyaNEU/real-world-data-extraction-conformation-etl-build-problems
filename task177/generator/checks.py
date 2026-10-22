@@ -302,8 +302,9 @@ def main(target):
     unmatched = (~app_acc.customer_key.isin(app_keys)).sum()
     check("ask A device D7: app acceptances keyed by an app user id the profile no longer holds",
           unmatched > 300 and len(R.rekeyed) == unmatched, "%d of %d app acceptances" % (unmatched, len(app_acc)))
-    applied = set(disc.applied_ref)
-    check("ask A fair: every offer discount line's applied_ref is an acceptance; those never applied are the second "
+    offer_lines = P.lbs[P.lbs.line_type.isin(["DISC", "CRED"]) & P.lbs.applied_ref.isin(refs)]
+    applied = set(offer_lines.applied_ref)
+    check("ask A fair: every offer line's applied_ref is an acceptance; those never applied are the second "
           "acceptances and the app acceptances the engine did not apply",
           set(disc[disc.applied_ref.str.startswith("OE26-")].applied_ref) <= refs
           and len(refs - applied) == int(R.ly.also_email.sum()) + len(R.fallback),
@@ -317,25 +318,42 @@ def main(target):
     rplan = rate.subscription_ref.map(plan_ly)
     offer_arm = set(P.assign[P.assign.arm == "offer"].subscription_ref)
     disc_subs = set(disc[disc.applied_ref.isin(refs)].subscription_ref)
-    check("ask A primary: the app acceptances the engine never applied are billed at the app's half-price rate on "
-          "their February and March bills, with no discount line",
+    check("ask A hazard (round 1's primary): the app acceptances the engine never applied are billed at the app's "
+          "half-price rate on their February and March bills, with no discount line",
           rate.subscription_ref.nunique() == len(R.fallback) and rate.date.dt.month.isin([2, 3]).all()
           and (rate.date.dt.year == 2026).all() and rate.subscription_ref.isin(offer_arm).all()
           and not (set(rate.subscription_ref) & disc_subs),
           "%d subscriptions, %d bills" % (rate.subscription_ref.nunique(), len(rate)))
     check("ask A fair: each rate charge is the subscription's own January charge less the offer's half",
           all(abs(jan_amt[r_] - a_ - half[p_]) < 0.005 for r_, a_, p_ in zip(rate.subscription_ref, rate.amt, rplan)))
-    rba = CR.reader_b_a(P)
-    check("ask A: reader B's quoted path (discount lines with an acceptance ref, the plan of the bill's SUB line) "
-          "misses every figure", not any(CR.hit(ga[k], rba[k], k) for k in ga),
-          "nearest %.0f" % min(abs(ga[k] - rba[k]) for k in ga))
-    moved_rate = {k: (-(rate[(rate.date.dt.month == k[1]) & (rplan == k[2])].amt.sum()
-                        - jan_amt.reindex(rate[(rate.date.dt.month == k[1]) & (rplan == k[2])].subscription_ref).sum()))
-                  for k in ga if k[0] == "disc"}
-    check("ask A primary moves every discount cell by more than 50 pounds",
-          all(abs(v_) > 50 for v_ in moved_rate.values()), str({k[1:]: round(v_) for k, v_ in moved_rate.items()}))
+    cred = P.lbs[(P.lbs.line_type == "CRED") & P.lbs.applied_ref.isin(refs)]
+    cplan = cred.subscription_ref.map(plan_ly)
+    check("ask A primary: the acceptances applied after the first discounted bill was raised carry the half price "
+          "as credits against the acceptance on both bills, and no discount line",
+          cred.subscription_ref.nunique() == len(R.credit_booked) and cred.date.dt.month.isin([2, 3]).all()
+          and (cred.date.dt.year == 2026).all() and not (set(cred.subscription_ref) & disc_subs)
+          and cred.subscription_ref.isin(offer_arm).all(),
+          "%d subscriptions, %d credits" % (cred.subscription_ref.nunique(), len(cred)))
+    check("ask A fair: each such credit is the offer's half of the subscription's own January charge, its code the "
+          "offer's and its applied_ref the subscription's own acceptance on the bill",
+          all(abs(-a_ - half[p_]) < 0.005 for a_, p_ in zip(cred.amt, cplan))
+          and set(cred.item_code) <= {C.OFFER_CODE_WEB, C.OFFER_CODE_APP})
+    moved_cred = {k: cred[(cred.date.dt.month == k[1]) & (cplan == k[2])].amt.sum() for k in ga if k[0] == "disc"}
+    check("ask A primary moves every discount cell by more than 50 pounds on the discount-line routes",
+          all(abs(v_) > 50 for v_ in moved_cred.values()), str({k[1:]: round(v_) for k, v_ in moved_cred.items()}))
     check("ask A primary moves every takers count", all(
-        (rate.drop_duplicates("subscription_ref").subscription_ref.map(plan_ly) == pl).sum() > 0 for pl in C.PLANS))
+        (cred.drop_duplicates("subscription_ref").subscription_ref.map(plan_ly) == pl).sum() > 0 for pl in C.PLANS))
+    for nm, fn in (("reader B's quoted path (round 1)", CR.reader_b_a), ("reader C's route (round 2)", CR.reader_c_a),
+                   ("reader D's quoted path (round 2)", CR.reader_d_a)):
+        rp = fn(P)
+        check("ask A: %s misses every figure" % nm, not any(CR.hit(ga[k], rp[k], k) for k in ga),
+              "nearest %.0f" % min(abs(ga[k] - rp[k]) for k in ga))
+    plan_doc = " ".join(DOC.plan_text())
+    world_takers = R.ly[R.ly.accepted].groupby("plan").size().to_dict()
+    check("ask A took it: the plan files taking the offer as accepting it, and every subscription that accepted was "
+          "discounted on its bills (the two readings give one count)",
+          "A subscriber takes it from the offer email or the in-app message" in plan_doc
+          and all(world_takers[pl] == ga[("takers", pl)] for pl in C.PLANS), str(world_takers))
     by_acc = {}
     crm_plan, app_plan = dict(zip(prof.customer_no, prof.plan)), dict(zip(prof.app_user_id, prof.plan))
     for k in P.offers.customer_key:
@@ -399,12 +417,18 @@ def main(target):
                 r_ = PK.bill_line(s_, mi, run, pend)
                 return r_[0][5] if r_ else float("nan")
         return float("nan")
-    check("ask B fair: every shared line counts 2 in its text and bills exactly twice the list subscription's own "
+    check("ask B fair: every shared line has qty 2 and bills exactly twice the list subscription's own "
           "charge for the period; the account's other subscription is not on the list",
-          (shared.n_subs == 2).all() and shared.text.str.contains(" x 2").all() and not (hh_subs & ids)
+          (shared.n_subs == 2).all() and not (hh_subs & ids)
           and all(abs(a_ - 2 * single(s_, f2)) < 0.011
                   for s_, a_, f2 in zip(shared.subscription_id, shared.amt, shared.service_from)),
           "%d shared lines" % len(shared))
+    check("ask B pins: the dictionary files qty as the subscriptions a line bills and amount as qty times unit_amount; "
+          "note 4.2 files that a credit note reduces the bills it covers; the legacy pull's scope is filed",
+          "qty (the number of subscriptions the line bills)" in fields[(C.F_SPINV, "lines")]
+          and "amount (qty times unit_amount" in fields[(C.F_SPINV, "lines")]
+          and "Each credit note lists the legacy invoices it reverses and reduces those bills." in note
+          and "the pull holds the bills of the subscriptions on either list" in fields[(C.F_LBS, "subscription_ref")])
     rbb = CR.reader_b_b(P)
     check("ask B: reader B's quoted path (the list's lines, plan items, goodwill netted, UK date) misses every figure",
           not any(CR.hit(gb[k], rbb[k], k) for k in gb), "nearest %.0f" % min(abs(gb[k] - rbb[k]) for k in gb))

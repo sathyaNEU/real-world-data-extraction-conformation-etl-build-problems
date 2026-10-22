@@ -88,8 +88,7 @@ def main(target):
         t = uk(dt.datetime.strptime(at, "%Y-%m-%dT%H:%M:%SZ"))
         for x in json.loads(lj):
             if x["subscription_id"] in ids:
-                k = re.search(r" x (\d+)", x["text"])
-                share = float(x["amount"]) / (int(k.group(1)) if k else 1)
+                share = float(x["amount"]) / int(x["qty"])     # qty: the subscriptions the line bills
                 rows.append((x["subscription_id"], x["item"], x["to"], share, t.year, t.month))
     ln = pd.DataFrame(rows, columns=["sub", "item", "to", "gbp", "y", "m"])
     nxt = ln.groupby("sub").to.max().map(lambda s: dt.date.fromisoformat(s) + dt.timedelta(1))
@@ -109,7 +108,7 @@ def main(target):
     # ------------------------------------------------------------------------------------------- ask A
     off = rd("offers_engine_acceptances_2026.csv")
     prof = rd("subscriber_profile_2026-01-31.csv").set_index("subscription_ref")
-    d = lbs[(lbs.line_type == "DISC") & lbs.applied_ref.isin(set(off.acceptance_ref))].copy()
+    d = lbs[lbs.line_type.isin(["DISC", "CRED"]) & lbs.applied_ref.isin(set(off.acceptance_ref))].copy()
     d["off"] = -d.gbp
     # the app's half-price rate lines (the write-up names the codes): the discount is the January charge less the rate
     rates = ("DIG-MA", "DGP-MA", "FAM-MA")

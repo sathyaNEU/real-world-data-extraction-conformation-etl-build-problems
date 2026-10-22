@@ -38,9 +38,8 @@ class Pack:
         rows = []
         for iid, lj in zip(self.spinv.invoice_id, self.spinv.lines):
             for x in json.loads(lj):
-                m = re.search(r" x (\d+)", x["text"])
                 rows.append((iid, x["line"], x["subscription_id"], x["item"], x["text"], x["from"], x["to"],
-                             float(x["amount"]), int(m.group(1)) if m else 1))
+                             float(x["amount"]), int(x["qty"])))
         self.spline = pd.DataFrame(rows, columns=["invoice_id", "line_no", "subscription_id", "item_code", "text",
                                                   "service_from", "service_to", "amt", "n_subs"])
 
@@ -109,7 +108,8 @@ def offer_discounts(P):
     the app acceptances the engine never applied, which charge the plan at the app's half-price rate (their discount
     is the subscription's own regular charge less the rate)"""
     refs = set(P.offers.acceptance_ref)
-    disc = P.lbs[(P.lbs.line_type == "DISC") & P.lbs.applied_ref.isin(refs)]
+    # the offer's half price is a discount line, or a credit posted against the acceptance once the bill was raised
+    disc = P.lbs[P.lbs.line_type.isin(["DISC", "CRED"]) & P.lbs.applied_ref.isin(refs)]
     disc = disc.assign(off=-disc.amt)
     sub = P.lbs[P.lbs.line_type == "SUB"]
     rate = sub[sub.item_code.isin(set(C.RATE_CODE.values()))]
@@ -160,7 +160,7 @@ def ask_b(P):
     for (y, m) in C.ASK_B_MONTHS:
         for pl in C.PLANS:
             sel = lines[(lines.ym == (y, m)) & (lines.subscription_id.map(plan) == pl)]
-            sl = (sel.amt / sel.n_subs).sum()        # a line billing a household's two subscriptions counts once
+            sl = (sel.amt / sel.n_subs).sum()        # a line's qty counts the subscriptions it bills: one share
             lg = lb[(lb.date.dt.year == y) & (lb.date.dt.month == m) & (lb.sp.map(plan) == pl)].amt.sum()
             rv = lb_rev[(lb_rev.date.dt.year == y) & (lb_rev.date.dt.month == m) & (lb_rev.sp.map(plan) == pl)].amt.sum()
             out[("billed", y, m, pl)] = round(sl + lg - rv, 2)

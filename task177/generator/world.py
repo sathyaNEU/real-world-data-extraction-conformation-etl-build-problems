@@ -33,6 +33,7 @@ P = dict(
     app_accept=0.34,      # accepters who accept in the app (its own discount code and customer key)
     app_fallback=0.15,    # app acceptances the offers engine did not apply; the app put the subscription on a half-price
                           # rate for its next two bills instead of a discount line
+    credit_booked=0.08,   # acceptances applied after the first discounted bill was raised (half price as credits)
     household=0.40,       # second subscriptions on the list subscription's plan, billed on its account
     together=0.65,        # ... of which set up the same day as the list subscription (same billing day)
     both_channels=0.06,   # app accepters who also accept from the email (a second acceptance, another key)

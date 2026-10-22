@@ -6,10 +6,10 @@
  "objective": "forecasting",
  "stage": 4,
  "stage_name": "check",
- "updated": "2026-10-21",
+ "updated": "2026-10-22",
  "stump": "An uplift model on last January's half-and-half test (two-model or transformed outcome on the subscriber features) scored on this year's list files about 10 per cent; the test's subscribers whose next bill fell within two weeks of the send were kept at about twice the overall rate and almost none of the rest, and every bill on this year's list falls six days after the send, so the share is about 20 per cent.",
  "architecture": 2,
- "loops": 1,
+ "loops": 2,
  "card_registered": true,
  "precut": {
   "exit": 0,
@@ -17,20 +17,20 @@
   "checks": 51
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-21 on target.zip cc5a56de (four lines, each answered in the design note's ## Leak sweep; no LEAK)"
+  "leak_py": "REVIEW 2026-10-22 on target.zip c2789bda (four lines, each answered in the design note's ## Leak sweep; no LEAK)"
  },
  "duplicate_check": {
-  "surface": "exit 0 2026-10-21 on the round 2 pack: the same six card-level pairs as round 1",
-  "heart": "PASS 2026-10-21 after the pull to 4a9aa358"
+  "surface": "exit 0 2026-10-22: the same six card-level pairs as rounds 1 and 2",
+  "heart": "BLOCK 2026-10-22 after the pull to bbc366d5, for the author's ruling: ban.strategy (composition_mix) and ban.forum (executive_team) against task446 v3, registered 2026-10-21T05:35:41Z in another session and on main only after this card's registration (05:48:20Z) and after round 1's heart PASS; no axis relabelled"
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "FIX_NOW (hygiene only)",
-  "report": "round 1 on target.zip 4827dc5d: reproduces 20 (20.3 in the 1 to 6 day window, 19.9 in 1 to 14, 20.0 restandardised) against a pooled 9.6, and every ask figure; hygiene fixed in round 2 (the validation floor 0.20, the plan's send date, the list's send-day name in the dictionary, the credits pinned in the prompt)"
+  "verdict": "NOT_DETERMINISTIC (round 2, ask B only)",
+  "disposition": "FIX_NOW",
+  "report": "round 2 re-judge on target.zip cc5a56de: the call (20) and ask A reproduce; ask B's 'x 2' line convention unfiled and the credit notes' attribution inferred; fixed in round 3's pack by the lines' qty and unit_amount in the dictionary, note 4.2 (a credit note reduces the bills it covers) and the legacy pull's filed scope. Round 1 on 4827dc5d: DETERMINISTIC, hygiene fixed."
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
- "resume": "stage 4 round 2: two scored readers on target.zip cc5a56de (the asks re-sited; the call and every call-side row frozen at round 1's bytes, so the judge's round 1 DETERMINISTIC stands for the call)",
+ "resume": "stage 4 round 3: two scored readers on target.zip c2789bda (the author's final ask pass; task177 retires if round 3 fails); the call and every call-side row frozen at round 1's bytes",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -148,12 +148,12 @@
   "fate": "spent at stage 4 Gate F on target.zip 3be16ba3 (2026-10-21); see the card lineage and the design note"
  },
  "stage3": {
-  "build": "generator/build.py 2026-10-21 (round 2): checks.py PASS 141 of 141 (FROZEN call side unchanged), verify.py PASS 35 of 35, a second full build byte-identical (19 files), target.zip cut from the final rebuild",
-  "zip_sha256": "cc5a56de487da7b1d354c78c19a7f1dfde4af5cdde53bae95ede8af7874654a7",
-  "figures_check": "exit 0 (51 figures); figures.json byte-identical to round 1, so no graded figure moved",
-  "voice_check": "PASS (763 characters)",
+  "build": "generator/build.py 2026-10-22 (round 3 pack): checks.py PASS 147 of 147 (FROZEN call side unchanged), verify.py PASS 35 of 35, a second full build byte-identical (19 files, the write-up included), target.zip cut from the final rebuild",
+  "zip_sha256": "c2789bda6ae4c102d0537e9577f81f5d5fe14a81ad937dcc3e116db40d738b4a",
+  "figures_check": "exit 0 (51 figures); figures.json byte-identical to rounds 1 and 2, so no graded figure moved",
+  "voice_check": "PASS (763 characters, unchanged)",
   "precut": "exit 0 (51 checks)",
-  "cracker": "pair ceiling 28.5, mirror leakage 0.0; cracker, mirror, reader B as quoted and both credit-note variants each 0 of 21; thinnest miss 57 (ask A Family takers, reader B) and 152 pounds (ask B October Family, the header route)",
+  "cracker": "pair ceiling 28.5, mirror leakage 0.0; the cracker, the mirror and readers A, B (as quoted and with both credit-note variants), C and D each 0 of 21; thinnest misses 90 on a takers count (reader C) and 152 pounds (ask B October Family, the header route)",
   "call": "20 per cent (19.88, frozen); default 10 (9.65)",
   "figures_json_call_keys": [
    "call_fortnight_kept",
@@ -171,6 +171,7 @@
   ]
  },
  "readers": {
-  "round1": "target.zip 4827dc5d: reader A call 10, asks 9 of 21 (all of ask A, none of ask B); reader B call 10, asks 21 of 21; score_reader FAIL on both; both asks' primaries re-sited in round 2"
+  "round1": "target.zip 4827dc5d: reader A call 10, asks 9 of 21; reader B call 10, asks 21 of 21",
+  "round2": "target.zip cc5a56de: reader C call 10, asks 0 of 21 (PASS); reader D call 10, ask A 9 of 9 through the -MA rate lines, ask B 0 of 12 (FAIL at 42.9 per cent); ask A re-sited onto credits posted against the acceptance, ask B's convention filed"
  }
 }
