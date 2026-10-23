@@ -332,7 +332,18 @@ Measured by: generator/ceiling.py on the cut pack.
 6. No decoy, no withheld rule against a stated one, no certified replay.
 7. The lesson is on no other card: nearest drivers 0.09 (task474 v2 and v3); task190, task195 and task228 v2
    differentiated on the card.
-8. Re-read against the built pack at stage 4: pending the two scored readers and the judge on zip md5 946c7506.
+8. Re-read against the built pack at stage 4 (zip md5 946c7506): reader A landed the call, so the architecture is
+   spent (Architecture 6 record below).
+
+## Architecture 6 record (spent 2026-10-23)
+
+Architecture 6 named the five facilities whose Rule 4306 units emitted the most NOx in 2026 with each unmonitored
+unit's source tests carried along its SCR catalyst's operating hours by one climb fitted on the units' test histories.
+Round 1 (zip md5 946c7506): reader A plotted the tests against operating hours since each unit's last catalyst event,
+found the climb and landed the call, and kept all 14 gas figures; reader B carried each test forward from its test date
+and missed the call, and kept all 14 engine figures. The judge (thread on the agent's brief) returned DETERMINISTIC
+with a FIX_NOW on a placeholder in the guidance's file dictionary (determinism_check_report_v6.md). A call any reader
+lands is spent, so the architecture is spent.
 
 ## Architecture 5 record (spent 2026-10-22)
 
@@ -371,6 +382,16 @@ scattered reports into the precise units' potholes. Judge APPROVE (v2).
 
 ## Tried and rejected
 
+- 2026-10-23, architecture 6 spent at stage 4 round 1 (zip md5 946c7506): reader A built each unit's operating hours
+  since its last SCR INSTALLED or CATALYST entry from the statements and the compliance log, saw its test rates fall on a
+  clean exponential in those hours (about 5 per cent scatter), fitted one shared climb (4.8e-5 an hour) with a level for
+  each unit and filed the golden five; it read the July billing switch on every meter (usage over the BTU factor runs on
+  across it) and kept 14 of 14 gas figures, and the replaced engines (7 of 14 engine figures). Reader B carried each
+  test forward from its test date and filed the default five, but read the hours-and-minutes sheets off their "Hours"
+  header and the replacements off the log (14 of 14 engine figures) and found the switch on the index meters only (3 of
+  14). A rate that moves with an exposure clock the pack carries is found by plotting a unit's own repeated
+  measurements against that clock: a clean structure the measurements display is a fit a strong reader makes, so the
+  next architecture's decisive step cannot be a relation the field's own measurements show when plotted.
 - 2026-10-23, architecture 6 build: the gas ask's switch was bypassed by the meter index (read difference times
   multiplier times BTU factor files every figure without meeting the switch); the elevated-pressure meters now bill on
   volume correctors and show no multiplier, and plan 4.2 files the billed usage (SF14), so the index lands 5 of 14.

@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "to be filled at ship",
-  "answer_source": "generator/figures.json",
+  "answer": "Sign the 2027 NOx reduction agreements with Wexley Point Energy Center, Ashgrove Refining, Valmora Glass Works, Sedge Hollow Landfill Gas and St. Aldric Medical Center (24, 21, 22, 8 and 8 tons from their Rule 4306 units in 2026, against Lindqvist Paperboard's 7).",
+  "answer_source": "submission.md block 1, from generator/figures.json",
   "gap": [
     "objective",
     "time"
@@ -178,5 +178,6 @@
   ],
   "notes": "architecture 6 drawn 2026-10-22 after architecture 5 was spent at stage 4; personas from guard.py names --geo 'United States' --seed 478",
   "client_domain": "physical-environmental-sciences",
-  "registered": "2026-10-22T23:51:59Z"
+  "registered": "2026-10-22T23:51:59Z",
+  "spent": "spent at stage 4 on 2026-10-23: reader A (round 1) landed the call by fitting each unit's tests on the operating hours since its last catalyst event (one shared climb, a level per unit); reader B missed it"
 }

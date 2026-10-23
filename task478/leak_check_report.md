@@ -51,3 +51,21 @@ Stump terms swept: architecture, reader, catalyst, section, decisive, pothole, m
   ("Gross vehicle weight is the weight of the whole truck as the law measures it, on a certified static scale"). Its
   route: each station's gain measured on the classes other than 9 against the four stations that agree, class 9 divided
   by it. Reader D stopped at the spend. The architecture is spent (design note, Tried and rejected).
+
+## Solver's-eye read
+
+Two isolated readers (Sonnet, medium), each on a fresh copy of prompt.txt and target/ (zip md5 946c7506).
+
+Reader A. Q1: none stated; nearest "the NOx emission rate it operated at over the year" (guidance section 3). Q2: none.
+Q3: the guidance. Q4: none. Q5: plan 2.2 and guidance section 3, leaving how a year's rate comes from tests at
+different catalyst ages open. Q6: an analytical choice, the year's rate from snapshot tests along catalyst operating
+hours. It filed the golden five (score_reader: the five as a set; 14 of 14 tons, 14 of 14 gas, 7 of 14 engines).
+
+Reader B. Q1: guidance sections 2 and 3 and plan 2.2. Q2: none. Q3: the guidance. Q4: none. Q5: guidance section 3,
+read with each test's rate applied from its test date. Q6: mostly the stated procedure on messy data, with an
+analytical choice in the year's rate. It filed the default five (10 of 14 tons, 3 of 14 gas, 14 of 14 engines) and
+called the index meters' usage switching to therms in July "a reconciliation clue, not an answer-giving leak".
+
+Every REVIEW line: harmless to both readers (the plan's roster, Method 19 and source test wording, the DEVICE_NO
+columns as the district's own field names).
+
