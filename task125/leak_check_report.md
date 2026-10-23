@@ -4,14 +4,14 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: change, measured, decisive, asserted, sentence, population, intakes, estimator, golden, statistics, effect, records, weights, quarters, households, instruction, carried, architecture, controls, application, recruitment, driver, different, release, telephone
+Stump terms swept: change, measured, decisive, asserted, sentence, population, intakes, estimator, golden, statistics, effect, records, weights, households, instruction, carried, architecture, controls, application, recruitment, driver, different, release, telephone, sample
 
 ## 4 design-note vocabulary (REVIEW 5)
 - **REVIEW** `extract_notes_2026-10-20.md`: 8 of 25 stump-paragraph terms appear (change, population, intakes, statistics, records, controls); read whether the document names the move
 - **REVIEW** `field_instruction_FI-2024-03_call_pattern.pdf`: 4 of 25 stump-paragraph terms appear (statistics, instruction, application, telephone); read whether the document names the move
 - **REVIEW** `field_instruction_FI-2026-04_first_interview_visits.pdf`: 4 of 25 stump-paragraph terms appear (change, statistics, instruction, telephone); read whether the document names the move
 - **REVIEW** `hls_data_dictionary.md`: 4 of 25 stump-paragraph terms appear (intakes, statistics, application, telephone); read whether the document names the move
-- **REVIEW** `hls_methods_note_2025.pdf`: 11 of 25 stump-paragraph terms appear (change, population, intakes, statistics, weights, quarters); read whether the document names the move
+- **REVIEW** `hls_methods_note_2025.pdf`: 11 of 25 stump-paragraph terms appear (change, population, intakes, statistics, weights, instruction); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

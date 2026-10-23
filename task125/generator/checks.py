@@ -117,6 +117,12 @@ def run(target, golden, world, meta_path):
         if uncapped and complete:
             feasible.append(q)
     ok(feasible == [W.TEMPLATE_Q], "SF4 one feasible base quarter: %s" % ", ".join(W.qlabel(q) for q in feasible))
+    # SF4 is filed, not left to feasibility: the prompt names the base quarter by the observable property the
+    # loop above tests, so the pin and this code cannot drift apart. It names the WHAT (the comparison), never
+    # the HOW, and the decisive step stays the unit the cap acts on.
+    _pr = open(os.path.join(os.path.dirname(golden), "prompt.txt")).read()
+    ok("latest quarter with all five waves' visit histories" in _pr, "SF4 the base quarter is filed in the prompt")
+    ok("published less six-visit" in _pr, "SF5b the gap's sign is filed in the prompt")
     ok(W.qnext(W.TEMPLATE_Q) == W.LIMIT_FROM, "SF4 the base quarter is also the last quarter before the cap")
     for q in (W.qnext(W.TEMPLATE_Q, -1), W.qnext(W.TEMPLATE_Q, -2)):
         miss = AN.quarter(d, q)["interview_visit"].isna().mean()

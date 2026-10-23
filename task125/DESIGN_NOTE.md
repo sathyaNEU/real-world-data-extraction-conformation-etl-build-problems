@@ -545,3 +545,96 @@ not worth a pack churn that would void the reader's pass; `repeat.gate_g`, `deco
 repeats task252 (v2), and the Gate G mechanism is the one axis this build cannot rotate without changing
 the decisive step itself, which the 10/10 rules fix.
 
+### The determinism judge, round 1: FIX_NOW, and what each finding got (2026-10-23)
+
+**Verdict DETERMINISTIC conditional on one fork, disposition FIX_NOW.** Every graded figure recomputed from
+`target/` in the judge's own hands: published unemployment 5.5893 then 5.8624 (a rise of 0.273), employment
+58.8786 then 58.5387; the counterfactual unemployment gaps 0.213, 0.393, 0.532, 0.619, 0.473, 0.276 and the
+employment gaps -0.791, -1.420, -1.971, -2.442, -1.881, -1.191, matching critical components 1, 2, 5 and 6;
+the six-visit rates 5.38 then 5.47 and 59.67 then 59.96, so the employment change is plus 0.29 and the cap's
+share -0.63; and every supplementary ask, the visit counts 3,866, 2,378, 1,851, 1,629, 1,408, 1,282, the flow
+shares and the weighted hours. It also re-raked from equal-within-region weights and reproduced the file's
+weights to about 1e-5, and confirmed the main call holds under every alternative baseline it tried.
+
+**F1, the one real fork, now fixed.** Nothing shipped filed which sample the six-visit counterfactual is
+built on. The golden uses the one quarter the construction can run on at all, and the generator already
+asserted that (`SF4 one feasible base quarter`, plus the two prior quarters each failing at more than 15 per
+cent of the sample having no visit history), but feasibility is a deduction a solver has to make rather than
+a filed sentence, so on a literal read the baseline was open. The judge's alternatives are real in that they
+produce numbers: a 2025Q4 base gives 0.21, 0.41, 0.53, 0.67, 0.39, 0.19 and a 2025Q3 base 0.21, 0.37, 0.50,
+0.50, 0.25, 0.09, against the golden's 0.21, 0.39, 0.53, 0.62, 0.47, 0.28, with a household bootstrap putting
+one gap's standard deviation near 0.07 against a 0.005 rounding grain. They are reachable only by dropping
+the sixth or more of each earlier sample that has no visit history, which is a biased subsample rather than a
+defensible base, but the exposure was real because nothing said so. **Fixed by filing the comparison in the
+prompt**, which now reads "from the latest quarter with all five waves' visit histories" and, for the sign,
+"published less six-visit". That is the WHAT (`determinism-check` section 1: population, outcome, window,
+unit, comparison) and never the HOW; the decisive step is still the unit the cap acts on, the intake rather
+than the quarter. The named property is exactly the condition the feasibility loop tests, and `checks.py` now
+asserts both clauses are present (`SF4 the base quarter is filed in the prompt`, `SF5b the gap's sign is
+filed in the prompt`), so the pin and the code cannot drift. Assertions 300 to 302. The prompt is 999
+characters and passes `voice-check.py`; the pack is untouched, so both build hashes are unchanged.
+
+**F5, the gap's sign**, folded into the same clause: "published less six-visit".
+
+**F6, the telephone hours convention, not fixed, and the reason is that it is already closed more strongly.**
+The judge found CATI `actual_hours` are hours and minutes while `hls_data_dictionary.md` does not say so, and
+proposed a dictionary line. The generator refuses it: `checks.py` line 191 asserts the dictionary stays
+silent on "minutes", because the convention is a deliberate ask-layer device. It is closed by the records
+instead, asserted twice and recomputed independently, which `determinism-check` prefers over filing: line 179
+asserts telephone hours never run past .59 and line 180 that face-to-face hours fall on quarter hours, so the
+lattice is visible in the data; and the block at line 200, "the published hours referee: only the converted
+telephone hours reproduce it, every quarter", asserts for every quarter that the release table's hours total
+sits within 0.051 of the converted sum and more than 50 from the raw sum. `verify.py` recomputes it from the
+shipped bundle alone. The judge's own numbers agree: the converted 2026Q2 total 83,589.1 equals the release
+table's Table 1 where the raw sum is 83,305.1. A solver summing raw hours is contradicted by a shipped
+control total, so the readings converge on the records (C1) rather than forking.
+
+**F2, F3, F4 and F7 the judge closed itself**, and its closures match the design: raking to the target
+quarter's own controls changes nothing to three decimals and re-raking after removal is required by the
+methods note's section 4; the labour-market share is the change in the six-visit rate, 0.09, where using the
+whole July to September gap instead gives -0.12; and `person_no` is unstable between quarters (2,961 of
+24,043 pairs disagree on sex or date of birth), so matching on sex and date of birth is the sound key at 797
+matched pairs against 799.
+
+**Its Gate lines.** Files and hygiene PASS, 12 files in 6 formats, the person file at 490,398 rows, several
+distractors, nothing reading as generated and nothing exclusion-level. Stump power "good": treating the cap
+as a wave-1-only effect gives a constant 0.21 gap and files "the 0.27 rise is the labour market". Three
+rules: domain pass, layers pass, decisive step **analytical**, the easy route named as the wave-1-only gap.
+Gate G: mechanism `decomposition_attribution`, family `analytical_non_defect`, no surface-read dependency and
+no sole data defect.
+
+### The leak reader, round 2, on the new pin: clean (2026-10-23)
+
+Re-run because the prompt changed, on a fresh isolated copy of `prompt.txt` and the 12-file pack and nothing
+else. It was asked the six standard questions plus one more, aimed squarely at the two clauses the F1 fix
+added, with the categories put to it as (i) fixes a basis that would otherwise be ambiguous, leaving the
+analytical work untouched, or (ii) tells you how to do the analysis or which way the answer comes out.
+
+**Both clauses came back (i).** On the base quarter: "It fixes which quarter's data to use as the base...
+It names a quarter by description rather than by label, so the analyst must derive which quarter that is. It
+gives nothing away about the method", and it added that reading the clause to exclude July to September 2026,
+whose later waves are not yet observed, "is real work". On the sign: "category (i), sign convention only",
+and "I found no clause stating the direction of the gap itself". That is the Part 4 test passed, a pin that
+fixes the basis and never the answer.
+
+**The other six unchanged.** Question 1, no sentence names the decisive step, and the reader's own statement
+of the hardest judgement is the designed one: that under the cap "the addresses that would have been
+interviewed on visits 4 to 6 are missing from wave 1, and the wave 2 to 5 follow-ups are lost with them",
+so a strong analyst "must reconstruct what six visits would have produced and carry it forward through the
+5-wave rotation", with "nothing in the pack" stating the method. Question 2, no ranking file. Question 3, no
+helper-only file, with the claimants extract, the staffing JSON and the superseded field instruction read as
+distractors, which is what `metadata.json` declares them. Question 4, no answer-like figure. Question 6,
+**(a) an analytical choice**.
+
+**One point it raised and the answer to it.** It noted that naming "the rise" implies one exists, and that
+the release tables stop at April to June 2026. That is not a presupposition leak under H23, which permits "a
+fact the requester knows before any analysis": the office holds the person-quarter microdata, the July to
+September rate is computable from the shipped file (the judge recomputed 5.5893 then 5.8624 independently),
+and "none of it" remains a grammatical answer to how much of the rise is the labour market, so nothing is
+presupposed that the pack does not carry.
+
+**Its realism tells, all weak and none acted on:** short PDFs that are essentially numbered lists, which is
+what a real one-page field instruction is; a consecutive `record_id` sequence, which is what a single extract
+run produces; uniformly structured interviewer ids; and the same density note as round 1 on the methods
+note's flow and rounding sections, answered there.
+
