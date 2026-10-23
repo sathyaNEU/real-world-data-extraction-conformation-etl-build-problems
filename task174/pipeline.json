@@ -1,12 +1,12 @@
 {
  "task": "task174",
  "owner": "sathya8571",
- "status": "RETIRED",
+ "status": "PAUSED",
  "domain": "",
  "objective": "forecasting",
  "stage": 1,
  "stage_name": "draw",
- "updated": "2026-10-19",
+ "updated": "2026-10-23",
  "stump": "",
  "architecture": 1,
  "loops": 0,
@@ -39,7 +39,7 @@
   "forcing_event": "purchase_order_or_contract (the term sheet) was this world's honest key, banned by task170 and held for task165 at the time of the screen",
   "prototypes": "scratchpad b174/proto: physics.py, calib.py to calib3.py, lever.py, screen_common_exposure.py, slip_lever.py, vintage_proto.py to vintage_proto5.py"
  },
- "resume": "RETIRED 2026-10-19 at stage 1 by the author's rule (a number that dies in its second new cell this round is retired). No card was registered and nothing was cut; three worlds screened (upstream gas, education early warning, product-analytics retention), every death in the design note's ## Tried and rejected.",
+ "resume": "PAUSED 2026-10-23 at stage 1 after the rebuild screen in biomedical-clinical-research / survival-time-to-event-analysis: no card registered, nothing cut; the coordinator assigns another cell (screen_bio and the design note's ## Rebuild (2026-10-23)).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -63,5 +63,13 @@
   "finding": "a tenure curve by the asked unit within its plan or group absorbs every stationary structure; the forward conditions natural to subscriptions are spent drivers, visible dates the plan-level curve reads, or causal responses sized from one past event",
   "window_at_screen": "live last three task249 v4, task177, task270 v2: blocked causal_design, forecast_method_backtest, population_selection; G14, G16, G12; period_close, purchase_order_or_contract, launch_or_rollout",
   "prototypes": "scratchpad r174: protoQ1.py, protoQ2.py, STATE.md"
+ },
+ "screen_bio": {
+  "assigned": "rebuild 2026-10-23 (no number stays retired) in biomedical-clinical-research / survival-time-to-event-analysis (Forecasting), the field's corrections (Kaplan-Meier, Aalen-Johansen, left truncation) taken as the default path; no card drafted beyond the screen",
+  "measured_s1": "a trial's first months draining a waiting pool of indolent patients, tempo rebuilt from prior-therapy dates (s1_backlog.py, seeds 174-183, 700 patients): pooled piecewise exponential -5.6 per cent (sd 6.8), enrolment-period covariate +5.7, tempo covariates -5.4 to +4.8",
+  "measured_s3": "registry entry at a worsening episode, left truncation's quasi-independence failing (s3_entry.py, seeds 174-177, 21,000 members, about 3,000 deaths): time since entry +6.5 (sd 2.7), left-truncated by duration +7.1, time since entry with duration at entry -4.7, both clocks -0.4",
+  "paper": "twenty-three on the structural screens, each a line in the design note's Tried and rejected: switch transient (attaining subset, swap), imaging-interval amendment (lever near 10, rule), annual-visit bunching (task162), manufacturing wait (task169), duration cap (subset), dosing interval (premise, subset), therapy uptake (causal, dated), crossover (no data), winter deaths (task162/178), cure plateau (subset), MRD cure (precision), illness-death state (precision), randomisation ratio (9 per cent), period analysis (trailing reflex), background mortality (10-15), excess-hazard transport (10), recurrent events (default, subset), two-cut back-test (rule, fork), final-analysis HR (variance), IVF funding cap (task268), induction cap (task172), shared frailty (task143), post-treatment follow-up cap (task268)",
+  "finding": "a time-since-entry hazard with the field's corrections, conditioned on each member's follow-up, is unbiased for the current risk set whenever entry cohorts are exchangeable on the hazard's clock and the window stays inside observed follow-up; the breakers (cohort change, extrapolation, a forward change, a calendar-bound record) are absorbed, fork, are the textbook competing-risks move or task169's driver, or are task162's and task178's drivers; trials also carry too few events for the bar's sigma",
+  "prototypes": "scratchpad b174n/proto: s1_backlog.py, s3_entry.py; STATE.md"
  }
 }

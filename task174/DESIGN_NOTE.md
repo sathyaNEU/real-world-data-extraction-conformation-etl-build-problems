@@ -1,6 +1,6 @@
 # task174 design note
 
-**Status: RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
+**Status: PAUSED at stage 1 on 2026-10-23 after the rebuild screen (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
 Forecasting. Three worlds were screened on this number and none yields a draw that holds; the third, the
 product-analytics retention cell of the same day, is recorded in its own finding below and in the last block of
 `## Tried and rejected`. The first is seed FC45's: a north-east
@@ -63,6 +63,30 @@ worlds were screened: seed FC45's upstream gas producer (two mechanisms, dead on
 / learning-analytics-early-warning-models (twenty-one candidates, two on code) and product-analytics /
 retention-cohort-lifetime-value-modeling (fifteen candidates, two on code). Every death is a line in `## Tried and
 rejected`; the prototypes stay in the session scratchpads (b174/proto and r174).
+
+## Rebuild (2026-10-23)
+
+Reopened by the author's rule that no number stays retired, and screened from scratch in
+biomedical-clinical-research / survival-time-to-event-analysis (Forecasting), the cell the coordinator allocated,
+with the field's own corrections (Kaplan-Meier for censoring, Aalen-Johansen for competing risks, left truncation)
+taken as the default path. No card was registered and nothing was cut: two candidates measured on code
+(`s1_backlog.py`, `s3_entry.py`, scratchpad b174n/proto) and twenty-three on the structural screens, every death a
+line at the foot of `## Tried and rejected`. The number is PAUSED at stage 1 for the coordinator to assign another
+cell.
+
+**The finding, and the first thing a later pass should read.** A forecast of events over a cohort's current risk
+set, made from a hazard by time since entry with the field's corrections applied and each member's own follow-up
+conditioned on, is unbiased whenever the entry cohorts are exchangeable on the clock the hazard runs on and the
+window stays inside the follow-up already observed. Every per-patient refinement (the current progression state, a
+response or MRD status, a biomarker path, a recurrent-event history) then buys precision, not a lever. A lever needs
+one of four breakers: the cohorts change across entry, the window extrapolates past the observed follow-up, a
+forward change rewires the process, or the record is bound to a calendar (a visit schedule, a season, a batch). In
+this cell the first is absorbed by the pooled curve (measured at 5 to 7 per cent, inside the noise), the second
+forks on the parametric family, the third is either the textbook competing-risks move (task169's driver when a route
+closes) or names its own step, and the fourth is task162's or task178's driver in clinical nouns. Event-driven trials
+also carry only hundreds of events, so any decisive parameter estimated from a trial carries several per cent of
+sigma against the bar's one per cent; only registries of tens of thousands reach it, and there the time-since-entry
+curve absorbs the stationary structure.
 
 ## Tried and rejected
 
@@ -210,3 +234,70 @@ rejected`; the prototypes stay in the session scratchpads (b174/proto and r174).
 - **Exits driven by contracts, regulation or partners** (renewal-reminder laws, cooling-off rights after renewal,
   bundle partners, payment-method sunsets, operating-system support drops): each a causal or rule step sized from a
   single past event, with causal_design blocked by task249 v4. On paper.
+- **Rebuild of 2026-10-23, biomedical-clinical-research / survival-time-to-event-analysis (Forecasting).** Each line
+  is one candidate, written when it died; the two measured ones first.
+- **A trial whose first months drain a waiting pool of indolent patients before the incident flow arrives** (the
+  backlog at trial opening, each patient's tempo rebuilt from the prior-therapy dates), measured on `s1_backlog.py`
+  (seeds 174 to 183, 700 patients, forecast PFS events in the 12 months after the cut among those event-free). The
+  pooled piecewise-exponential projection lands at -5.6 per cent of the truth (sd 6.8), an enrolment-period
+  covariate at +5.7, the waiting time or first-line PFS as covariates at -5.4 to +4.8: the pooled curve by time
+  since randomisation already carries the survivor mix at each time, so the lever is under the noise.
+- **Registry entry at a worsening episode, so left truncation's quasi-independence fails** (hazard by disease
+  duration times a spike after each episode, members entering at their first episode after the registry opens),
+  measured on `s3_entry.py` (seeds 174 to 177, 21,000 members alive at the cut, about 3,000 deaths in the year).
+  Time since entry +6.5 per cent (sd 2.7), left-truncated by duration +7.1, time since entry with duration at entry
+  -4.7, both clocks -0.4: every route inside 7 per cent, because the later, unrecorded episodes are stationary and
+  carry most of the spike.
+- **A transient hazard after a formulation switch, with every remaining patient switched in the window**: the rates
+  in the months after past individual switches are the attaining subset and the golden at once; turned round (past
+  switch transients inflating the record) it is a staggered programme an event study finds, and the swap test reads
+  the same with an app release. On paper.
+- **Scan-detected progression under a forward imaging-interval amendment**: in steady state detection equals
+  occurrence, so the lever is the extra mean delay (about a month on a ten-month trigger, near 10 per cent); a short
+  window right after the change is the schedule executed (rule application), and the amendment names the step. On
+  paper.
+- **Annual-visit endpoints with bunched enrolment** (an event recorded only at a visit on the randomisation
+  anniversary): task162's restart-burst driver in clinical nouns, and the history's event dates show the anniversaries.
+  On paper.
+- **The manufacturing wait before a cell therapy infusion shortened, with pre-infusion deaths competing**: the
+  cause-specific hazard recombined under the new wait is the textbook competing-risks move, and closing or
+  shortening a competing route is task169's driver. On paper.
+- **Delayed events after a forward treatment-duration cap**: the early stoppers' off-treatment person-time is the
+  attaining subset, and the cap puts the question in the premise. On paper.
+- **A hazard by time since the last dose under a forward dosing-interval change**: the interval is the premise, the
+  delayed doses are the attaining subset, and the step is exposure-response, another task type's. On paper.
+- **Post-progression therapy uptake rising over calendar time**: a causal effect of subsequent therapy read from
+  observational post-progression data, sized against a diffusion curve whose extrapolation forks, and next to a
+  dated approval. On paper.
+- **Crossover permitted after the PFS analysis**: no data before the amendment measures the crossover effect on
+  post-progression survival. On paper.
+- **Winter excess deaths in an elderly heart-failure trial**: calendar-locked (task162, task178), the excess 15 to
+  25 per cent of a winter quarter, short of the bar and readable on a calendar plot. On paper.
+- **A cure plateau** (mixture cure against a Weibull tail): the early cohorts' tail publishes the plateau and a
+  piecewise-exponential fit lands (the common-exposure subset). On paper.
+- **A biomarker that marks the cured** (MRD or ctDNA at a landmark): with exchangeable cohorts it is precision, not
+  bias. On paper.
+- **OS events conditioned on each patient's current progression state** (illness-death against the OS curve):
+  unbiased without a shift in the state mix; precision only. On paper.
+- **A randomisation-ratio change by amendment under blinded event prediction**: the arms' mixture moves the pooled
+  hazard by about 9 per cent at a hazard ratio of 0.6. On paper.
+- **Secular improvement read by period against cohort analysis**: period analysis is a trailing-window filter, the
+  opponent's reflex, and extrapolating the trend forks on the window. On paper.
+- **Background mortality for an ageing cohort** (relative survival): 10 to 15 per cent over a two-year window, and
+  attained age with delayed entry is the default. On paper.
+- **An effect on the excess hazard transported to a younger population**: about 10 per cent from a proportional
+  model with age. On paper.
+- **Recurrent events** (frailty, event dependence, recency after a discharge): the time-indexed mean cumulative
+  function with death as the terminal event is the default and unbiased for the current cohort; a population
+  entering at discharge is the attaining subset. On paper.
+- **Two data cuts back-testing the parametric extrapolation** (the HTA route): a filed selection criterion makes the
+  choice executable, and extrapolated means fork across the families. On paper.
+- **The hazard ratio the final analysis will report under non-proportional hazards**: the late-time ratio rests on
+  few events (the variance screen). On paper.
+- **A funding cap on IVF cycles moved from three to six**: the self-funded continuers past the cap are task268's
+  informative censoring by state, or the cycles beyond are extrapolated. On paper.
+- **Induction at a gestational-age cap moved earlier**: task172's deadline that cuts the wait. On paper.
+- **Paired grafts from one donor, or two eyes of one patient** (shared frailty): task143's shared group effect. On
+  paper.
+- **OS follow-up capped two years after treatment stops, with the cap lifted for the final analysis**: censoring tied
+  to the clinical state at discontinuation, task268's informative censoring. On paper.
