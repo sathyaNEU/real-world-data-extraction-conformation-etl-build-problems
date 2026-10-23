@@ -11,7 +11,7 @@
   "shape": "07",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "Plan for about 3,250 of the 8,659 first-time entrants enrolled at the 1 October 2026 census not to be enrolled at the 1 October 2027 census.",
+  "answer": "Plan for about 3,250 of the 8,659 first-time entrants enrolled at the 1 October 2026 census not to be enrolled at the 1 October 2027 census, to the nearest 250.",
   "answer_source": "task179/submission.md, block 1; continuing_enrolment_2027.xlsx (Projection)",
   "gap": [
     "time",

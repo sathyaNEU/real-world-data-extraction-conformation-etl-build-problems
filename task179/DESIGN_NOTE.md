@@ -266,6 +266,11 @@ was dropped in the round 1 fix (`## Stage 4 round 1`); its files stay as distrac
   faculty and level; one group per class code double-counts every pair. Only the slot with the room-capacity reading
   of a repeated figure gives the golden.
 - **Chart (`s1_2026_teaching_groups.png`):** its segments are the ask's cells.
+- **Answered risk (judge pass 2, optional note):** no file states that ARC writes a combination's enrolment on each of its
+  classes, and the one alternative reading (every figure the class's own) moves one group in each of 10 cells; the
+  sentence was not added because it announces the device, and the golden reading is forced by the data: the ARC
+  combinations carry one teacher of record and their repeated figure added would overfill every room they meet in,
+  while the SIRIUS pairs keep two teachers and fit their rooms.
 - Screened against 1.1e and this round's fallen devices: no duplicate row, comment, code or column marks a combination
   or its origin; the identity is the slot plus the figure's repetition against the room, which the round 1 readers'
   path (merge identical meeting sets, add) and the battery's repair (read a repeated total once) both miss.
@@ -322,7 +327,8 @@ Measured by: generator/ceiling.py
   composition_mix, `ban.pattern` G6, `ban.artifact` register, `ban.forum` executive_team) against task175: the card
   registered under the lock at WARN (4afaec0a) while task173 was live, and task173 was later spent, which re-formed the
   live window around task175 (drawn before this build). Recorded per H27's reading of a re-run draw-time gate, not
-  relabelled; the main session decides whether the window has to move before ship. Driver and stump similarity stay
+  relabelled. Author's standing ruling, "Ship, window fixed at draw", covers it: the window is the one the card
+  registered against. Driver and stump similarity stay
   low (nearest 0.07, task143).
 - Keys for the readers: the call `call_not_enrolled_2027`; components `cc1_intake_2026_at_census`,
   `cc2_intake_2026_no_repeat_classmate`; the ask `ask_groups_s1_2026_<ass|bus|sci|eng|hlt>_<200|300up>_<30orfewer|over30>`;
