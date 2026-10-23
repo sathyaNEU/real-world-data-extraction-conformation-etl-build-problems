@@ -1,169 +1,172 @@
-"""Independent verifier for task171: reads only target/ (the extract, the CIS files, the CRM workbook, the rate
-schedules PDF and the committee paper), on its own code path, and recomputes the two call figures and every ask
-figure, then compares them with generator/figures.json. Prices are read from the PDF, not from the generator."""
+"""Independent verifier for task171: reads only target/ and the golden workbook, recomputes every graded figure on its
+own code path (csv and pyarrow rows, plain dictionaries) and compares with figures.json. Exit 1 on any mismatch."""
 from __future__ import annotations
 
+import calendar
+import csv
+import datetime as dt
 import json
 import os
-import re
 import sys
-import warnings
+from bisect import bisect_right
+from collections import defaultdict
 
-import numpy as np
-import pandas as pd
 import pyarrow.parquet as pq
-import statsmodels.api as sm
-from pypdf import PdfReader
 
-warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 T = os.path.join(TASK, "target")
-bad = []
+ASOF = dt.date(2026, 10, 31)
+PROBLEMS = []
 
 
-def check(label, cond, detail=""):
-    print("%-4s %-55s %s" % ("OK" if cond else "BAD", label, detail))
-    if not cond:
-        bad.append(label)
+def bad(msg):
+    PROBLEMS.append(msg); print("PROBLEM", msg)
 
 
-files = os.listdir(T)
-f_ami = [f for f in files if f.endswith(".parquet")][0]
-f_pdf = [f for f in files if f.endswith(".pdf")][0]
-f_svc = [f for f in files if f.startswith("cis_service")][0]
-f_rate = [f for f in files if f.startswith("cis_rate")][0]
-f_crm = [f for f in files if f.startswith("crm_")][0]
-f_doc = [f for f in files if f.endswith(".docx")][0]
-
-# prices from the schedules
-txt = "\n".join(p.extract_text() for p in PdfReader(os.path.join(T, f_pdf)).pages).replace("\n", " ")
-check("PDF read back", len(txt) > 1500 and "Schedule R-ON" in txt)
+def d(s):
+    return dt.date.fromisoformat(s) if s else None
 
 
-def cents(pattern):
-    m = re.search(pattern, txt)
-    return float(m.group(1)) / 100
-
-
-r1_24 = cents(r"Effective January 1, 2024: customer charge \$[\d.]+; energy charge ([\d.]+) cents")
-r1_27 = cents(r"Effective January 1, 2027: customer charge \$[\d.]+; energy charge ([\d.]+) cents")
-tou_pk = cents(r"Effective March 1, 2024: customer charge \$[\d.]+; on-peak energy ([\d.]+) cents")
-tou_op = cents(r"Effective March 1, 2024: customer charge \$[\d.]+; on-peak energy [\d.]+ cents per kWh; off-peak energy ([\d.]+) cents")
-on_off = cents(r"Effective January 1, 2027: customer charge \$[\d.]+; off-peak energy ([\d.]+) cents")
-on_pk = cents(r"Effective January 1, 2027: customer charge \$[\d.]+; off-peak energy [\d.]+ cents per kWh; on-peak energy ([\d.]+) cents")
-cc = re.findall(r"Effective January 1, 2027: customer charge \$([\d.]+)", txt)
-check("PDF 2027 customer charges equal on R-1 and R-ON", len(cc) == 2 and cc[0] == cc[1], str(cc))
-import docx  # noqa: E402
-paper = " ".join(p.text for p in docx.Document(os.path.join(T, f_doc)).paragraphs)
-check("DOCX read back with the population and revenue sentences", "billed for all twelve billing months November 2025 to October 2026" in paper and "counted in full" in paper)
-
-ami = pq.read_table(os.path.join(T, f_ami)).to_pandas()
-svc = pd.read_csv(os.path.join(T, f_svc), dtype=str, keep_default_na=False)
-rate = pd.read_csv(os.path.join(T, f_rate), dtype=str, keep_default_na=False)
-svc["s"] = pd.to_datetime(svc.service_start, format="%m/%d/%Y")
-svc["e"] = pd.to_datetime(svc.service_end.where(svc.service_end != ""), format="%m/%d/%Y")
-rate["a"] = pd.to_datetime(rate.eff_from)
-rate["b"] = pd.to_datetime(rate.eff_to.where(rate.eff_to != ""))
-end_of = svc.set_index("service_acct").e
-
-pre = [m for m in sorted(ami.bill_month.unique()) if "2023-03" <= m <= "2024-02"]
-ty = [m for m in sorted(ami.bill_month.unique()) if "2025-11" <= m <= "2026-10"]
-check("billing months", len(pre) == 12 and len(ty) == 12)
-P = ["kwh_2300_0600", "kwh_0600_1600", "kwh_1600_2100", "kwh_2100_2300"]
-
-
-def period_sums(months):
-    x = ami[ami.bill_month.isin(months)]
-    pair = x.duplicated(["meter_no", "service_acct", "bill_month", "read_from"], keep=False)
-    x = x[~(pair & (x.read_type == "EST"))]
-    return x.groupby("service_acct")[P].sum(), x.groupby("service_acct").bill_month.nunique()
-
-
-# rate in effect on a date: a row covers it, an open R-TOU row ending at the service's final read
-rate["b2"] = rate.b.fillna(rate.service_acct.map(end_of))
-
-
-def on_rate(code, day):
-    r = rate[(rate.rate_code == code) & (rate.a <= day) & (rate.b2.isna() | (rate.b2 >= day))]
-    return set(r.service_acct)
-
-
-offer = pd.Timestamp("2024-03-01"); asof = pd.Timestamp("2026-10-31")
-c = svc[svc.service_acct.isin(on_rate("R-1", offer)) & (svc.s < offer) & (svc.e.isna() | (svc.e > offer))].copy()
-first_tou = rate[rate.rate_code == "R-TOU"].groupby("service_acct").a.min()
-c["mo"] = c.service_acct.map(first_tou).pipe(lambda d: (d.dt.year - 2024) * 12 + d.dt.month - 3).fillna(999)
-c["last"] = c.e.pipe(lambda d: (d.dt.year - 2024) * 12 + d.dt.month - 3).fillna(99)
-u, _ = period_sums(pre)
-u = u.reindex(c.service_acct).fillna(0.0)
-c["x"] = (u.sum(1) * r1_24 - (u.kwh_1600_2100 * tou_pk + (u.sum(1) - u.kwh_1600_2100) * tou_op)).values
-
-b = svc[svc.service_acct.isin(on_rate("R-1", asof)) & svc.e.isna()].copy()
-v, n = period_sums(ty)
-b = b[b.service_acct.map(n).fillna(0) == 12]
-v = v.reindex(b.service_acct)
-b["x"] = (v.sum(1) * r1_27 - (v.kwh_2300_0600 * on_off + (v.sum(1) - v.kwh_2300_0600) * on_pk)).values
-
-# discrete-time hazard, month-since-offer dummies, risk set ends at the final read
-rows, ys = [], []
-for k in range(12):
-    at = (c.mo.values >= k) & (c["last"].values >= k)
-    d = np.zeros((at.sum(), 12)); d[:, k] = 1.0
-    rows.append(np.column_stack([c.x.values[at], d])); ys.append((c.mo.values[at] == k).astype(float))
-fit = sm.Logit(np.concatenate(ys), np.vstack(rows)).fit(disp=0)
-s = np.ones(len(b))
-for k in range(12):
-    d = np.zeros((len(b), 12)); d[:, k] = 1.0
-    s *= 1 - fit.predict(np.column_stack([b.x.values, d]))
-p = 1 - s
-members, short = p.sum(), (p * b.x.values).sum()
 fig = json.load(open(os.path.join(HERE, "figures.json")))
-check("call members to the nearest 250", round(members / 250) * 250 == fig["call_members_2027"], "%.1f" % members)
-check("call shortfall to the nearest 25,000", round(short / 25000) * 25000 == fig["call_shortfall_2027_usd"], "%.0f" % short)
-check("unrounded figures agree with the generator", abs(members - fig["members_unrounded"]) < 0.5 and abs(short - fig["shortfall_unrounded"]) < 2)
+man = {r["file"]: r for r in csv.DictReader(open(os.path.join(T, "export_manifest.csv")))}
+inv = {}
+for r in csv.DictReader(open(os.path.join(T, "tbm_invoices_2025-04_2026-10.csv"))):
+    r["issued"] = d(r["issued_on"]); r["toll"] = float(r["toll_billed"])
+    r["bal"] = r["toll"] + float(r["invoice_fee"]) + float(r["late_fee"]) + float(r["collection_fee"])
+    inv[r["invoice_no"]] = r
+pays = [r for r in csv.DictReader(open(os.path.join(T, "tbm_payments_2025-04_2026-11.csv"))) if d(r["posted_on"]) <= ASOF]
+holds = {r["invoice_no"]: r for r in csv.DictReader(open(os.path.join(T, "dmv_registration_holds_2025-2026.csv")))}
+agency = {r["invoice_no"]: r for r in csv.DictReader(open(os.path.join(T, "agency_placements_2025-2026.csv")))}
 
-# ask A
-tou_now = svc[svc.service_acct.isin(on_rate("R-TOU", asof)) & svc.e.isna()].copy()
-r = rate[rate.rate_code == "R-TOU"].sort_values(["service_acct", "a"])
-start = {}
-for acct, grp in r.groupby("service_acct"):
-    a0, b0 = None, None
-    for row in grp.itertuples():
-        if a0 is None or b0 is None or row.a != b0 + pd.Timedelta(days=1):
-            a0 = row.a
-        b0 = row.b2
-    start[acct] = a0
-tou_now["long"] = tou_now.service_acct.map(start) <= pd.Timestamp("2025-11-01")
-w, _ = period_sums(ty)
-tou_now = tou_now.join(w, on="service_acct")
-for dname, grp in tou_now.groupby("district"):
-    k = {"Sedge Flats": "SF", "Brisco Bend": "BB", "Kessel Mill": "KM", "Pike Ridge": "PR", "Tamsey": "TY"}[dname]
-    check("ask A %s" % dname, (int(grp.long.sum()), int(round(grp.kwh_1600_2100.sum())), int(round(grp.kwh_2300_0600.sum()))) ==
-          (fig["a_%s_twelve_months" % k], fig["a_%s_kwh_4to9pm" % k], fig["a_%s_kwh_11pmto6am" % k]))
+# plan figures from the programme note
+import zipfile, re
+with zipfile.ZipFile(os.path.join(T, "aet_cutover_revenue_plan_2027.docx")) as z:
+    doc = re.sub(r"<[^>]+>", "", z.read("word/document.xml").decode("utf-8"))
+m = re.search(r"\$([\d,]+) on plates registered in this state and \$([\d,]+) on plates registered elsewhere", doc)
+plan_is, plan_os = (int(m.group(1).replace(",", "")), int(m.group(2).replace(",", ""))) if m else (None, None)
+if plan_is is None:
+    bad("plan figures not found in the programme note")
 
-# ask B
-crm = pd.read_excel(os.path.join(T, f_crm), dtype=str)
-loc = pd.to_datetime(crm.received_utc, utc=True).dt.tz_convert("America/Chicago")
-crm = crm[(crm.request == "Enrol R-TOU") & (loc >= pd.Timestamp("2024-03-01", tz="America/Chicago")) & (loc < pd.Timestamp("2024-06-01", tz="America/Chicago")) & (crm.status != "Closed - duplicate")]
-members_of = svc.groupby("membership_no").service_acct.apply(list)
-mem = svc.set_index("service_acct").membership_no
-dist = svc.set_index("service_acct").district
+# toll paid per invoice: payments to the records date, toll first; a violation agency remittance above its invoice's
+# balance covers the plate's other invoices the agency closed as collected that day, oldest first
+got = defaultdict(float); got60 = defaultdict(float)
+for r in pays:
+    k = r["invoice_no"]
+    if not k:
+        continue
+    a = float(r["amount"])
+    got[k] += a
+    if (d(r["posted_on"]) - inv[k]["issued"]).days <= 60:
+        got60[k] += a
+coll_by = defaultdict(list)
+for k, r in agency.items():
+    if r["status"] == "COLLECTED" and k.startswith("V"):
+        coll_by[(inv[k]["plate"], inv[k]["plate_state"], r["closed_on"])].append(k)
+for r in pays:
+    k = r["invoice_no"]
+    if r["channel"] != "AGENCY" or not k.startswith("V"):
+        continue
+    extra = got[k] - inv[k]["bal"]
+    if extra <= 0.01:
+        continue
+    got[k] = inv[k]["bal"]
+    for o in sorted((x for x in coll_by[(inv[k]["plate"], inv[k]["plate_state"], r["posted_on"])] if x != k), key=lambda x: (inv[x]["issued"], x)):
+        take = min(extra, max(inv[o]["bal"] - got[o], 0.0))
+        got[o] += take; extra -= take
+tp = {k: min(max(got[k], 0.0), v["toll"]) for k, v in inv.items()}
+tp60 = {k: min(max(got60[k], 0.0), v["toll"]) for k, v in inv.items()}
 
 
-def put_on(row):
-    if row.status != "Completed":
-        return row.service_acct
-    done = pd.Timestamp(row.completed_on)
-    for sacct in [row.service_acct] + [x for x in members_of[mem[row.service_acct]] if x != row.service_acct]:
-        f = first_tou.get(sacct)
-        if f is not None and 0 <= (f - done).days <= 45:
-            return sacct
-    return row.service_acct
+def expiry_end(mmYYYY):
+    mo, yr = int(mmYYYY[:2]), int(mmYYYY[3:])
+    return dt.date(yr, mo, calendar.monthrange(yr, mo)[1])
 
 
-crm["d"] = crm.apply(put_on, axis=1).map(dist)
-for dname, grp in crm.groupby("d"):
-    k = {"Sedge Flats": "SF", "Brisco Bend": "BB", "Kessel Mill": "KM", "Pike Ridge": "PR", "Tamsey": "TY"}[dname]
-    check("ask B %s" % dname, (len(grp), int((grp.channel == "Web form").sum())) == (fig["b_%s_requests" % k], fig["b_%s_web" % k]))
-print("verify: %d problems" % len(bad))
-sys.exit(1 if bad else 0)
+num = defaultdict(float); den = defaultdict(float)
+for k, v in inv.items():
+    if v["invoice_type"] != "TOLL-BY-MAIL":
+        continue
+    age = (ASOF - v["issued"]).days
+    if v["plate_state"] == "HM":
+        if age >= 61:
+            num["early"] += tp60[k]; den["early"] += v["toll"]
+            if tp60[k] < v["toll"] - 0.005:
+                h = holds.get(k)
+                if h and h["response"] == "HOLD PLACED":
+                    den["unpaid"] += v["toll"]; num["held"] += v["toll"]
+                elif h and h["response"] == "NO RECORD":
+                    den["unpaid"] += v["toll"]
+        h = holds.get(k)
+        if h and h["response"] == "HOLD PLACED" and expiry_end(h["reg_expires"]) <= ASOF:
+            num["renew"] += tp[k]; den["renew"] += v["toll"]
+        if h and h["response"] == "NO RECORD" and age >= 365:
+            num["norec"] += tp[k]; den["norec"] += v["toll"]
+    elif age >= 365:
+        num["os"] += tp[k]; den["os"] += v["toll"]
+e = num["early"] / den["early"]; wh = num["held"] / den["unpaid"]
+share_is = e + (1 - e) * (wh * num["renew"] / den["renew"] + (1 - wh) * num["norec"] / den["norec"])
+share_os = num["os"] / den["os"]
+collected = plan_is * share_is + plan_os * share_os
+if round(collected / 250_000) * 250_000 != fig["call_collected_toll_2027_usd"]:
+    bad("collected toll %.0f against %s" % (collected, fig["call_collected_toll_2027_usd"]))
+if round(share_is * 100) != fig["call_share_in_state_pct"] or round(share_os * 100) != fig["call_share_out_of_state_pct"]:
+    bad("shares %.2f %.2f" % (share_is * 100, share_os * 100))
+
+# ask A and B: violation lines, straddles and classifier splits
+lines = pq.read_table(os.path.join(T, "tbm_invoice_lines_2025-03_2026-09.parquet")).to_pylist()
+posts = pq.read_table(os.path.join(T, "marrowpass_commercial_postings_2026-01_2026-09.parquet"),
+                      columns=["plaza", "direction", "lane", "posted_at"]).to_pylist()
+lane_t = defaultdict(list)
+for p in posts:
+    lane_t[(p["plaza"], p["direction"], p["lane"])].append(p["posted_at"])
+for k in lane_t:
+    lane_t[k].sort()
+vio = [l for l in lines if l["invoice_no"].startswith("V")]
+by_plate = defaultdict(list)
+for l in vio:
+    by_plate[(l["plate"], l["plate_state"], l["plaza"], l["direction"])].append(l)
+drop = set()
+for k, L in by_plate.items():
+    L.sort(key=lambda l: l["crossed_at"])
+    for a, b in zip(L, L[1:]):
+        if (b["crossed_at"] - a["crossed_at"]).total_seconds() <= 1.0:
+            drop.add(b["line_id"])
+for l in vio:
+    ts = lane_t.get((l["plaza"], l["direction"], l["lane"]), [])
+    i = bisect_right(ts, l["crossed_at"])
+    if i and (l["crossed_at"] - ts[i - 1]).total_seconds() <= 0.4:
+        drop.add(l["line_id"])
+cnt = defaultdict(int); owed_m = defaultdict(float); owed_inv = defaultdict(float)
+for l in vio:
+    if l["line_id"] in drop:
+        continue
+    owed_inv[l["invoice_no"]] += l["toll"]
+    if dt.datetime(2026, 1, 1) <= l["crossed_at"] < dt.datetime(2026, 10, 1):
+        cnt[l["crossed_at"].month] += 1; owed_m[l["crossed_at"].month] += l["toll"]
+for mo in range(1, 10):
+    if cnt[mo] != fig["a_2026_%02d_crossings" % mo] or abs(round(owed_m[mo], 2) - fig["a_2026_%02d_toll_owed_usd" % mo]) > 0.005:
+        bad("ask A month %d: %d, %.2f" % (mo, cnt[mo], owed_m[mo]))
+qs = {"2025q2": (dt.date(2025, 4, 1), dt.date(2025, 7, 1)), "2025q3": (dt.date(2025, 7, 1), dt.date(2025, 10, 1)),
+      "2025q4": (dt.date(2025, 10, 1), dt.date(2026, 1, 1)), "2026q1": (dt.date(2026, 1, 1), dt.date(2026, 4, 1))}
+for q, (a, b) in qs.items():
+    n_ = d_ = 0.0
+    for k, v in inv.items():
+        if v["invoice_type"] == "VIOLATION" and v["plate_state"] != "HM" and a <= v["issued"] < b:
+            o = owed_inv.get(k, 0.0)
+            n_ += min(tp[k], o); d_ += o
+    if round(100 * n_ / d_) != fig["b_%s_collected_pct" % q]:
+        bad("ask B %s: %.2f" % (q, 100 * n_ / d_))
+
+# the golden workbook carries the same figures
+import openpyxl
+wb = openpyxl.load_workbook(os.path.join(TASK, "golden", "aet_2027_toll_by_mail_forecast.xlsx"))
+txt = " ".join(str(c.value) for ws in wb for row in ws.iter_rows() for c in row if c.value is not None)
+if "{:,}".format(fig["call_collected_toll_2027_usd"]) not in txt:
+    bad("the workbook does not state the collected toll")
+ws = wb["Violations 2026"]
+for mo in range(1, 10):
+    if ws.cell(mo + 1, 2).value != fig["a_2026_%02d_crossings" % mo] or abs(ws.cell(mo + 1, 3).value - fig["a_2026_%02d_toll_owed_usd" % mo]) > 0.005:
+        bad("workbook month %d" % mo)
+print("verify: %d problems (in-state %.2f, out-of-state %.2f, collected %.0f)" % (len(PROBLEMS), share_is * 100, share_os * 100, collected))
+sys.exit(1 if PROBLEMS else 0)

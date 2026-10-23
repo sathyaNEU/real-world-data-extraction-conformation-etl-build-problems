@@ -11,19 +11,18 @@
   "shape": "single-figure",
   "decision_type": "quantity_figure",
   "answer_unit": "currency",
-  "answer": "",
+  "answer": "$13.75 million of the toll billed by mail in 2027 to today's cash-lane users collected (in-state 94 per cent, out-of-state 60 per cent)",
   "answer_source": "task171/generator/figures.json (call keys), written by generator/build.py",
   "gap": [
     "time",
     "population"
   ],
   "pattern": [
-    "none",
     "E"
   ],
   "generators": [
-    "G13",
     "G14",
+    "G13",
     "G7"
   ],
   "gate_g": "forecasting",
@@ -34,7 +33,7 @@
   "validated_decoy": false,
   "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who builds every invoice correctly and reads the collected share of the overnight cash-lane invoices old enough to have run the reminder, the hold referral and the agency (six months, or a year) files about 83 per cent of the toll, because an in-state plate's invoice still unpaid at 60 days is paid only when the plate next renews its two-year registration, so most in-state invoices in a twenty-month record are still waiting on a renewal; read on the in-state invoices whose plate has already reached its next expiry since the hold, the share is about 94 per cent in-state and the call about 13.6 million dollars against 11.2.",
+  "analyst_test": "A strong analyst who builds every invoice correctly and reads the collected share of the overnight cash-lane invoices old enough to have run the reminder, the hold referral and the agency (a year) files $12.00 million (in-state 80 per cent), because an in-state plate's invoice still unpaid at 60 days is paid only when the plate next renews its two-year registration, so most in-state invoices in a twenty-month record are still waiting on a renewal; read on the held invoices whose registration on file has expired, the in-state share is 94 per cent and the call $13.75 million.",
   "domain_test": "The deciding quantity is the ultimate collection rate of video-billed tolls for the vehicles that pay cash today, the revenue leakage a traffic-and-revenue forecast carries into an all-electronic conversion year, read on the toll-by-mail experience of the cash lanes' own users and matured on the enforcement cycle that collects it (the motor vehicle registration hold at each plate's two-year renewal); put a hospital's patient bills in place of the turnpike and there is no registration renewal clock and no booth-closure natural experiment, so the task does not read the same.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:toll-by-mail-ultimate-collection-matured-on-each-plates-registration-renewal",
@@ -48,7 +47,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "tbm_invoice_lines_2025-03_2026-10.parquet",
-    "rows": 0,
+    "rows": 619192,
     "entity": "one billed crossing on a toll-by-mail invoice",
     "grain": "crossing x invoice",
     "source": "synthetic (constructed in the layout of a toll back-office invoice line extract)"
@@ -74,8 +73,8 @@
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "An unpaid bill is collected only when the payer's own recurring renewal next falls due after the bill reaches enforcement, so the collected share of a young book keeps rising until every payer's renewal has passed; the share a forward book will yield is read on the bills whose payer has already reached that renewal, from the payers who will receive the forward bills (the users of the channel being closed, billed when that channel was shut by the clock), not on bills old enough by age alone and not on bills sent to people billed for evading.",
-  "driver_concrete": "Under the Marrowfield enforcement policy an in-state plate's toll-by-mail invoice still unpaid at 60 days goes on a registration hold and is paid when the plate renews its two-year registration, so the overnight cash-lane invoices of the twenty months since the booths began closing at night collect about 94 per cent in-state once each plate's next expiry after the hold has passed, against about 75 per cent on in-state invoices six months old; out-of-state invoices finish with the agency inside a year at about 57 per cent. The 2027 forecast carries those shares to the toll the cash lanes' users will be billed by mail.",
-  "stump": "A competent solver reads the collected share of the overnight cash-lane invoices old enough to have run the reminder, the hold referral and the agency, applies it to the plan's 2027 toll by plate state and files about 11.2 million dollars; the step that lands it there is maturing in-state invoices by their own age when an invoice unpaid at 60 days is collected at its plate's next two-year registration renewal, which puts the in-state share at about 94 per cent and the call at about 13.6 million.",
+  "driver_concrete": "Under the Marrowfield enforcement policy an in-state plate's toll-by-mail invoice still unpaid at 60 days goes on a registration hold and is paid when the plate renews its two-year registration, so the overnight cash-lane invoices of the twenty months since the booths began closing at night collect 94 per cent in-state once the held invoices are read where the registration on file has expired, against 80 per cent on invoices a year old; out-of-state invoices finish with the agency inside a year at 60 per cent. The 2027 forecast carries those shares to the toll the cash lanes' users will be billed by mail: $13.75 million against $12.00 million.",
+  "stump": "A competent solver matures the overnight toll-by-mail invoices by their age, reads the collected share of those issued a year or more before 31 October 2026 (80 per cent in-state, 60 per cent out-of-state), applies it to the plan's 2027 billed toll and files $12.00 million; the step that lands it there is maturing in-state invoices by age when an invoice unpaid at 60 days is collected only at its plate's next two-year registration renewal, which puts the in-state share at 94 per cent and the call at $13.75 million.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task171": "architecture 3 priced an optional rate's take-up on each member's own pre-offer saving, a choice model; here nothing is chosen or priced: the deciding quantity is how much of a billed book is eventually collected, censored by each payer's own registration renewal date, and read on the invoices whose renewal has passed.",
@@ -84,7 +83,15 @@
     "task134": "task134's earlier architecture sized an inflow from a step in a threshold ending each member's duration clock; here no threshold moves: each in-state invoice's collection waits on its own plate's renewal date, spread across two years, so the matured share comes from the invoices whose renewal has passed.",
     "task162": "task162 times version take-up to a monthly burst of restarts against a fixed first-week window; here no window is fixed and no burst exists: renewals fall evenly over two years, and the forecast is the ultimate collected share of a book, read on the invoices whose plate has renewed since the hold.",
     "task178": "task178's earlier architecture counted threshold crossings from a known deterministic component of a series; here no series is decomposed: the quantity is a collection share of a billed book, censored by each payer's renewal date.",
-    "task501": "task501's earlier architecture drew down allotments against a hard deadline each unit faced; here no allotment or deadline exists: an unpaid invoice is collected only at the plate's own next registration renewal, and the forecast reads the share on invoices whose renewal has passed."
+    "task501": "task501's earlier architecture drew down allotments against a hard deadline each unit faced; here no allotment or deadline exists: an unpaid invoice is collected only at the plate's own next registration renewal, and the forecast reads the share on invoices whose renewal has passed.",
+    "task117": "task117 replays closed operations against per-unit caps reached through a dated join; here nothing is replayed or capped: the share a billed book finally collects is read on the invoices whose own registration renewal has passed since the hold.",
+    "task137": "task137 splits a repricing share into two kinds of unit; here no class mixture is recovered: one book is censored by each payer's renewal date, and the collected share is read where that date has passed.",
+    "task37": "task37 recovers an unstated coupling rule from a closed roll; here no rule is withheld: the hold and the renewal window are filed, and the forecast is an estimate of how much a young book will finally collect.",
+    "task44": "task44 splits a pilot's pooled effect by an unrecorded moderator; here there is no pilot effect: the quantity is a collection share, and the subset it is read on is set by another file's dates (the registration on file).",
+    "task481": "task481 restates a count onto a new classification by conversion rates from a dual-coded window; here nothing is reclassified: the share of a billed toll finally collected is read on invoices whose collection clock has run.",
+    "task97": "task97 carries a place's history across occupants; here nothing is carried across holders: each in-state invoice is collected at its own plate's renewal.",
+    "task155": "task155 prices a task's take-up on its position against the member's own schedule; here no choice is priced: an unpaid bill is collected when the payer's registration renewal falls due, and the share is read where that renewal has passed.",
+    "task166": "task166 splits a stock into two parts that answer forward terms in opposite directions; here one billed book's collected share is censored by a renewal clock and read on the invoices past it."
   },
   "lineage": [
     {

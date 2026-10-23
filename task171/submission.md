@@ -1,43 +1,45 @@
 ## Tags
 
-**Domain:** Economics & Econometrics (discrete choice and limited dependent variable modeling).
+**Domain:** Economics & Econometrics (forecasting and forecast evaluation).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Budget for 2,250 R-1 services moved to R-ON by December 31, 2027, giving up $200,000 a year at test-year use.** Members take an optional rate by what it saves them on their own use, so the overnight rate's take-up is the evening rate's first-year response to each service's saving on its use in the year before that offer, run through each service's overnight saving. Not the evening rate's take-up applied at the average member's bill change, which ignores who takes an optional rate. Not the same response read on the latest year's use, which the evening rate's takers had already changed by taking it.
+**Put $13.75 million in the 2027 revenue certificate as the toll collected on the toll billed by mail to today's cash-lane users.** An in-state invoice unpaid at 60 days is collected when its plate next renews its two-year registration, so the in-state share is read on the held invoices whose registration on file has since expired: 94 per cent in-state and 60 per cent out-of-state. Not the share of invoices a year old, which counts in-state invoices still waiting on a renewal. Not the share across every toll-by-mail and violation invoice, which mixes in the violators.
 
 ## 2. Critical Components
 
-1. The forecast population is **21,490** R-1 services billed in all twelve test-year months.
-2. Of the **25,559** R-1 services open when R-TOU opened in March 2024, **2,017** had it in effect by the February 2025 read.
-3. The services moved to R-ON by December 31, 2027 are **2,250**, giving up **$200,000** a year.
+1. Share of in-state toll billed by mail eventually collected: **94 per cent**.
+2. Share of out-of-state toll billed by mail eventually collected: **60 per cent**.
 
 ## 3. Step-by-Step Solution
 
-1. Took from cis_rate_assignments_2026-10-31.csv and cis_service_accounts_2026-10-31.csv the R-1 services open when R-TOU opened in March 2024 (25,559) and the month each first had R-TOU in effect, 2,017 by the February 2025 read, a service leaving the risk set at its final read.
-2. Priced each of those services' R-1 and R-TOU bills at the 2024 prices in residential_rate_schedules_2024-2027.pdf on its own use in billing months March 2023 to February 2024 in ami_load_research_extract_2023-03_2026-10.parquet, and fitted a monthly logit hazard of R-TOU taking effect on that saving with a term for each month since the offer.
-3. Took the population of paper RC-26-19 in r-on_launch_plan_rates_committee_nov2026.docx, 21,490 R-1 services at October 31, 2026 billed in all twelve billing months November 2025 to October 2026, and priced each one's R-1 and R-ON bills on the 2027 schedules on that use.
-4. Ran each population service's saving through the fitted hazard over the twelve months of 2027 and summed the probabilities and the probability-weighted savings: 2,250 services and $200,000.
-5. For the R-TOU table, joined each service's contiguous R-TOU rows into one spell (the TOU module re-writes the row at account maintenance), ended an open R-TOU row at the service's final read, kept the re-collected actual row where the extract holds an estimate and an actual for one meter and read period, and summed the kWh by district.
-6. For the requests table, converted received_utc in crm_rate_requests_2024-03_2026-10.xlsx to Central time, dropped cases closed as duplicates, placed each completed case in the district of the service that had R-TOU take effect at the next read after the case was completed (the case's service or the same member's other service) and each other case at the service it names.
-7. Filed 2,250 services and $200,000 for the 2027 budget.
+1. Took the overnight toll-by-mail invoices (invoice_type TOLL-BY-MAIL in tbm_invoices_2025-04_2026-10.csv) and applied each invoice's payments in tbm_payments_2025-04_2026-11.csv posted to 31 October 2026, net of reversals, toll first.
+2. In-state, among invoices at least 61 days old, 61.0 per cent of the toll was paid within 60 days of issue.
+3. For the in-state toll still unpaid at 60 days, joined dmv_registration_holds_2025-2026.csv: of the held invoices whose registration on file (reg_expires) had expired by 31 October 2026, 86.1 per cent of the toll was paid; invoices with no Division record were read on those a year old, as the agency had closed them.
+4. Combined the two: 94 per cent of in-state toll is eventually collected; out-of-state, the invoices issued a year or more before 31 October 2026 collected 60 per cent.
+5. Applied the shares to the 2027 toll billed by mail in aet_cutover_revenue_plan_2027.docx ($11,908,500 in-state, $4,292,700 out-of-state): $13.75 million, to the nearest $0.25 million.
+6. For the violation tables, counted each express-lane vehicle read in both lanes within a second once, and dropped violation lines read 0.4 seconds or less behind a commercial posting in the same lane in marrowpass_commercial_postings_2026-01_2026-09.parquet (a trailer or towed car split off a MarrowPass truck), then counted crossings and summed toll by month of crossing.
+7. For the out-of-state violation invoices, applied each agency settlement in tbm_payments_2025-04_2026-11.csv (no invoice number; its reference lists the invoices) oldest invoice first, toll before fees, and divided the toll collected on owed crossings by the toll owed, by quarter of issue.
 
 ## 4. Deliverable Answers
 
-### r-on_2027_forecast.xlsx
+### aet_2027_toll_by_mail_forecast.xlsx
 
-1. R-1 services moved to R-ON by December 31, 2027: 2,250.
-2. Annual revenue those services give up at test-year use: $200,000.
-3. Services on R-TOU at October 31, 2026, by district:
-   - Sedge Flats: 247 on it without a break since November 1, 2025 or earlier; 1,327,738 kWh 4 p.m. to 9 p.m.; 1,800,772 kWh 11 p.m. to 6 a.m.
-   - Brisco Bend: 396 on it without a break since November 1, 2025 or earlier; 1,819,585 kWh 4 p.m. to 9 p.m.; 2,515,310 kWh 11 p.m. to 6 a.m.
-   - Kessel Mill: 547 on it without a break since November 1, 2025 or earlier; 2,199,290 kWh 4 p.m. to 9 p.m.; 3,840,128 kWh 11 p.m. to 6 a.m.
-   - Pike Ridge: 149 on it without a break since November 1, 2025 or earlier; 805,489 kWh 4 p.m. to 9 p.m.; 1,045,518 kWh 11 p.m. to 6 a.m.
-   - Tamsey: 358 on it without a break since November 1, 2025 or earlier; 1,567,329 kWh 4 p.m. to 9 p.m.; 2,426,413 kWh 11 p.m. to 6 a.m.
-4. R-TOU enrolment requests received March 1 to May 31, 2024, by district:
-   - Sedge Flats: 159 requests, 93 through the web form
-   - Brisco Bend: 277 requests, 152 through the web form
-   - Kessel Mill: 364 requests, 224 through the web form
-   - Pike Ridge: 71 requests, 37 through the web form
-   - Tamsey: 267 requests, 148 through the web form
+1. Toll collected in 2027 on the toll billed by mail to today's cash-lane users: $13.75 million.
+2. Share eventually collected: in-state 94 per cent; out-of-state 60 per cent.
+3. Violation crossings and toll owed, by month of crossing in 2026:
+   - January: 15,003 crossings, $34,730.85 owed
+   - February: 13,740 crossings, $31,764.50 owed
+   - March: 15,530 crossings, $35,840.85 owed
+   - April: 14,758 crossings, $34,341.75 owed
+   - May: 15,332 crossings, $35,140.10 owed
+   - June: 14,970 crossings, $34,115.05 owed
+   - July: 15,285 crossings, $35,075.85 owed
+   - August: 14,918 crossings, $34,673.90 owed
+   - September: 14,368 crossings, $33,446.00 owed
+4. Out-of-state violation invoices, share of toll owed collected by 31 October 2026, by quarter of issue:
+   - April to June 2025: 44 per cent
+   - July to September 2025: 48 per cent
+   - October to December 2025: 41 per cent
+   - January to March 2026: 40 per cent

@@ -1,6 +1,6 @@
 # task171 design note
 
-**Status: DRAWING, architecture 4 (redrawn 2026-10-23 after architecture 3 was spent at Gate F; the number stays open).**
+**Status: BUILD, architecture 4, stage 3 green and parked at stage 4 for the main session's two scored readers and the judge (redrawn 2026-10-23 after architecture 3 was spent at Gate F).**
 The cell is economics-econometrics / forecasting-forecast-evaluation; the draw is a turnpike authority's first
 all-electronic tolling year and the toll it will collect on what it bills by mail. Architectures 1 to 3 are kept under
 `## Earlier screens`.
@@ -28,7 +28,7 @@ all-electronic tolling year and the toll it will collect on what it bills by mai
   bond trustee. Records to 31 October 2026.
 - **Card.** `domain` economics-econometrics, `subdomain` forecasting-forecast-evaluation, `objective` forecasting,
   `shape` single-figure, `decision_type` quantity_figure, `answer_unit` currency, `gap` [time, population], `pattern`
-  [none, E], `generators` [G13, G14, G7], `gate_g` forecasting, `calibration_form` existing_book_actuals,
+  [E], `generators` [G14, G13, G7], `gate_g` forecasting, `calibration_form` existing_book_actuals,
   `stump_strategy` maturity_censoring, `context_artifact` planning_thread, `role_family` programme_officer, `forum`
   customer_or_counterparty, `forcing_event` cutover_or_migration, `org_family` government_agency; `stump_class`
   analytical; `layer2_family` estimation_fit; `layer2_pattern`
@@ -43,6 +43,22 @@ all-electronic tolling year and the toll it will collect on what it bills by mai
   itself; a public authority is a `government_agency`; the requester runs the AET conversion programme
   (`programme_officer`); the decisive move is a censoring construction on a clock each payer carries
   (`maturity_censoring`); the population step (the cash lanes' own users, not the violators) is the supporting E.
+- **Pattern, redrawn at stage 3.** The draw registered with the decisive pattern `none` (the guard reads that as G13);
+  at stage 3 a re-registered card moved task178's lineage (time, G13, forecasting) inside the last twelve, so the
+  decisive pattern is now E, which is the honest label too: the golden reads the held invoices' collected share on the
+  subset whose registration on file has expired, a conditioned yield on a subset another file's dates set, and the
+  older E builds are differentiated on the card.
+- **Stage 3 record (2026-10-23).** `generator/build.py`: checks 69 of 69, verify 0 problems, two byte-identical
+  rebuilds, target.zip 9451b6bdf0182a8eff3f67f3dc4e30d6; figures_check 43 of 43; precut 51 checks, 0 FAIL;
+  voice-check PASS (967 characters). `leak.py` REVIEW, four lines answered: the plan and the policy share the call's
+  plain words (toll, billed by mail, revenue certificate) and print no figure of it; the policy's registration and
+  renewal sentences (4.1, 4.2) are the enforcement rule the record runs on and say nothing about when a book has
+  finished collecting. `guard.py surface`: no persona pair; ten promoted pairs on axis collisions (task169, task172,
+  task170, task167, task460, task129, task230, task162, task130, task102) for the author's adjudicated read if wanted.
+  `guard.py heart` WARN only. Pair ceiling 28.5 by `generator/cracker.py`.
+- **Data-native sentence.** In-state toll-by-mail invoices are collected when the plate next renews its two-year
+  registration, and the booths have been closing at night for only twenty months, so the overnight book's
+  collected share is censored by each plate's own expiry date, not by the invoice's age.
 - **WARN answers.** `people.first` Zachary appears once in an older build (task141), a different surname and world.
   `overuse.org_family` government_agency is honest for a public authority. `repeat.gate_g`, `overuse.gate_g` and
   `repeat.decision` follow from a forecast quantity in the Forecasting lane. `repeat.deliverables` (one workbook) is the
@@ -51,7 +67,199 @@ all-electronic tolling year and the toll it will collect on what it bills by mai
 
 ## Default path
 
-(stage 2)
+The strong analyst's route, every field read and every filed rule applied (the field's textbook for a toll-by-mail
+leakage estimate: the collected share of the existing toll-by-mail book, read on invoices old enough to have run their
+collection cycle, applied to the billed toll):
+
+1. Reads programme note PN-14 for the 2027 toll billed by mail to today's cash-lane users, $11,908,500 on in-state
+   plates and $4,292,700 out-of-state, after image review, and the basis (toll only, collected however long the hold
+   or the agency takes).
+2. Takes the TOLL-BY-MAIL invoices (the overnight booth-lane crossings) from the invoices file and their payments
+   posted to 31 October 2026 from the payments file, nets returned payments and applies each payment toll first
+   (policy 3.3).
+3. Matures the book by age: an invoice is done once the reminder, the hold or agency referral and the agency's
+   270 days have run, a year after issue, so it reads the collected share of the invoices issued a year or more
+   before 31 October 2026: 80.1 per cent in-state, 60.0 per cent out-of-state.
+4. Applies the shares to the billed toll: $12,116,763.
+
+**Ends on:** $12.00 million (in-state 80 per cent, out-of-state 60 per cent).
+**Golden:** $13.75 million (in-state 94 per cent, out-of-state 60 per cent; $13,743,858 unrounded).
+
+## Stump sentence
+
+A competent solver matures the overnight toll-by-mail invoices by their age, reads the collected share of those
+issued a year or more before 31 October 2026 (80 per cent in-state, 60 per cent out-of-state), applies it to the
+plan's 2027 billed toll and files $12.00 million; the step that lands it there is maturing in-state invoices by age
+when an invoice unpaid at 60 days is collected only at its plate's next two-year registration renewal, so in a
+twenty-month record most held invoices are still waiting on a renewal, and read on the held invoices whose
+registration on file has since expired the in-state share is 94 per cent and the call $13.75 million.
+
+## Three rules
+
+- Task type: forecasting-forecast-evaluation (Economics & Econometrics; serves Forecasting & Predictive Modeling).
+- Domain test: the deciding quantity is the ultimate collection rate of video-billed tolls for the vehicles that pay cash today, the revenue leakage a traffic-and-revenue forecast carries into an all-electronic conversion year, estimated on the toll-by-mail book of the cash lanes' own users and matured on the enforcement cycle that collects it (the registration hold paid at each plate's two-year renewal, the agency's 270 days); remove the maturity construction and the forecast is the book's young collected share, so the call moves by $1.75 million.
+- Swap: put a hospital's self-pay bills or a utility's arrears in place of the turnpike's invoices and there is no registration renewal clock that collects a held balance and no booth closure that billed the cash lanes' users by mail, so the construction has nothing to run on and the task does not read the same.
+- Layer 1: the back office's export writes one line per billed crossing and one invoice per plate and month, issued on the eighth or the next weekday, carries returned payments as negative REVERSAL rows and postings after the records date to the export run, the Division writes the registration on file as MM/YYYY, the toll schedule changed on 1 January 2026, an express-lane vehicle passing between the two lanes is read twice, and the lane classifier sometimes counts a truck's trailer as a second vehicle; each is what the systems write, and none moves the call (`checks.py` R2).
+- Layer 2: estimation_fit, own pattern: the ultimate collected share of a young billed book is censored by a clock each payer carries (the plate's next registration expiry after the hold), so it is read on the payers whose clock has run, not on the bills old enough by their own age.
+- Decisive step: for the in-state toll unpaid at 60 days, read the collected share on the held invoices whose registration on file (reg_expires) had expired by 31 October 2026, combine it with the share paid inside 60 days and the agency's share on invoices with no Division record, and carry the in-state and out-of-state shares to the plan's billed toll.
+- Not semantics: every field, code, date and status read correctly, including the policy's hold and renewal sentences, still leaves the analyst choosing when a toll-by-mail invoice has finished collecting, and maturing it by its own age (the reminder, the referral and the agency's 270 days, a year) files $12.00 million; no field states an invoice's outcome is final.
+- Not rule application: executing the policy's sentences (invoice cycle, late fee, hold at 60 days, renewal window, agency at 90 days and its 270 days, toll-first application) and the plan's basis gives the bills and their payments but not the share a young book will finally collect; that is an estimate from the record, and the standard route (a year-old cohort) is a valid-looking estimate that lands a wrong figure.
+- Analyst test: a strong analyst who cleans the book and reads every rule correctly, then matures the overnight invoices by age and reads the share of those a year old, files $12.00 million against the golden's $13.75 million; read on invoices 15 months old, $12.50 million; on every invoice as it stands, $10.50 million.
+- Estimand: PN-14 files the population (the toll billed by mail in 2027 to the vehicles that pay cash at the booths today, $11,908,500 in-state and $4,292,700 out-of-state, after image review), the outcome (the toll collected on those invoices however long the hold or the agency takes), the unit (toll dollars; fees left out) and the window (calendar 2027 crossings); the prompt sets the rounding.
+- No decoy: nothing is planted; no memo, draft, briefing or stakeholder figure carries a collection rate, a leakage share or a forecast; the held invoices waiting on renewals are what a two-year registration and a 60-day hold produce and are never stated as such.
+- No certified replay: no published or certified figure is reproduced to recover a method; no shipped file prints a collected share, a leakage rate or a forecast, and the image review and traffic files answer other questions.
+- Lesson: a young book's collected share is censored by whatever clock collects it, and here the clock is each payer's own renewal date, not the bill's age; read the share where that clock has run. No build on file matures a billed book on a renewal each payer carries.
+
+## Readability screen
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 0 no leakage, the billed toll collected in full ($16.25 million) | no | no | yes | no | no | yes | readable |
+| 1 every toll-by-mail invoice's collected share as it stands ($10.50 million) | no | no | yes | no | no | yes | readable |
+| 2 invoices matured by age, 180 days ($11.50 million), a year ($12.00 million), 15 months ($12.50 million) | no | no | yes | no | no | yes | readable |
+| 3 the renewal construction run on the toll-by-mail and violation invoices pooled ($13.00 million) | no | no | no | no | no | no | readable |
+| 4 (decisive) in-state held invoices read where the plate's registration on file has expired, the cash lanes' own invoices ($13.75 million) | no: no sentence says when an invoice's collection is complete or that held invoices are still waiting | no: the hold returns carry every invoice's expiry alike, no final flag | no: the reflex is a cohort old enough by age | no: no shipped figure ties only under the golden | no: no repair of a defect reaches it | no: the share is a decomposition read on a subset set by another file's dates | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | toll billed by mail in 2027 to today's cash-lane users | PN-14's $11,908,500 and $4,292,700 | rebuilt from the traffic counts | not built from the pack | PN-14 states the figures and their basis |
+| SF2 | collected | toll collected however long the hold or agency takes | collected within 2027 | a different quantity | PN-14: "however long the registration hold or the agency takes" |
+| SF3 | toll, not fees | toll only, payments applied toll first | fees counted | none (fees excluded) | PN-14 and policy 3.3 |
+| SF4 | in-state | plate_state HM | plates of nearby states | same call (HM only) | the dictionary: HM is this state |
+| SF5 | records date | payments posted to 31 October 2026 | to the export run | same call (asserted) | the invoices' status date and PN-14 |
+| SF6 | returned payments | netted | gross | same call (asserted) | the dictionary's REVERSAL rows |
+| SF7 | an expired registration on file | reg_expires month end on or before 31 October 2026 | strictly before | same call (asserted) | records converge (SF7 asserted) |
+| SF8 | agency-matured invoices | issued a year or more before 31 October 2026 (placement at 90 days, return at 270) | 400 days | same call (asserted) | policy 4.3 |
+| SF9 | the cash lanes' users' book | TOLL-BY-MAIL invoices | every billed-by-mail invoice | $13.00 million | PN-14: the vehicles that pay cash at the booths today; policy 2.2 |
+| SF10 | rounding | nearest $0.25 million, shares to whole per cent | finer | n/a | the prompt |
+
+## Ladder
+
+| Rung | Route | In-state | Out-of-state | Collected | Printed | Dies to |
+|---|---|---|---|---|---|---|
+| 0 | no leakage | 100.0 | 100.0 | $16,201,200 | $16.25 million | the book collects far less than it bills |
+| 1 | every invoice as it stands | 69.9 | 51.5 | $10,530,742 | $10.50 million | young invoices are still collecting |
+| 2a | invoices 180 days old | 76.0 | 56.9 | $11,495,557 | $11.50 million | the agency's 270 days and the renewals still to come |
+| 2b | invoices a year old (default path) | 80.1 | 60.0 | $12,116,763 | $12.00 million | in-state invoices wait on a renewal up to two years after the hold |
+| 2c | invoices 15 months old | 82.4 | 61.2 | $12,436,584 | $12.50 million | the same; most renewals have not come |
+| 3 | renewal construction, violations pooled in | 88.0 | 56.6 | $12,912,749 | $13.00 million | the violators are not today's cash-lane users |
+| 4 | renewal construction on the cash lanes' own invoices (golden) | 93.8 | 60.0 | $13,743,858 | $13.75 million | |
+
+Margins: the golden family (registration on file expired on or before, or strictly before, the records date; the
+agency read on invoices issued 365 to 400 days before; returned payments netted or not; payments to the records date
+or the export run) sits in one printed cell, the call $13,743,395 to $13,761,443 against the $13.625 to $13.875
+million cell, in-state 93.78 to 93.90 and out-of-state 60.00 to 60.31; every rival misses by at least three cells.
+The in-state share's parts: 61.0 per cent of the toll paid within 60 days; of the unpaid toll, 96.8 per cent put on a
+hold and 86.1 per cent of the held toll collected where the registration on file has expired (7,214 invoices); the
+agency's share on the 279 invoices with no Division record, 23.0 per cent.
+
+## Closure table
+
+| Axis | Name | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | the 2027 toll billed by mail to today's cash-lane users | filed in PN-14 with its two figures |
+| 2 | Unit of account | toll dollars | PN-14; fees left out |
+| 3 | Attribution window | calendar 2027 crossings, collected however long it takes | filed |
+| 4 | As-of dating | payments posted to 31 October 2026; invoice status at that date | SF5 asserted |
+| 5 | Version basis | the 2026 rates, unchanged for 2027 | the schedule |
+| 6 | Denominator | toll billed on the invoices read | C1 |
+| 7 | Weighting | toll-weighted shares | the call is toll dollars |
+| 8 | Window length | invoices issued April 2025 to October 2026 | the record |
+| 9 | Boundary inclusivity | expiry on or before the records date | SF7 asserted |
+| 10 | Rounding path | shares and toll unrounded, round once | the prompt |
+| 11 | Tie-break | none needed | C1 |
+| 12 | Maturity and censoring | in-state held invoices matured on the registration on file; agency invoices at a year | the decisive step; family converges |
+| 13 | Order of operations | payments to toll first, then shares, then the plan's toll | policy 3.3 |
+| 14 | Row order | none matters | C1 |
+| 15 | Duplicate resolution | express-lane double reads occur only on violation lines | SEP asserted |
+| 16 | Identity normalisation | invoice number joins every file | dictionary |
+| 17 | Netting against gross | returned payments netted | SF6 asserted |
+| 18 | Dimensional units | dollars | dictionary |
+| 19 | Code and status semantics | TOLL-BY-MAIL and VIOLATION; HOLD PLACED and NO RECORD | dictionary and policy 4.1, 4.3 |
+| 20 | Integerisation | none before rounding | C1 |
+| 21 | Clause scope | PN-14's first figure is the call, the second the Enforcement tables | PN-14's paragraphs |
+| 22 | Forward window contents | every crossing without a MarrowPass billed by mail from 4 January 2027, on today's cycle | policy 2.3 and PN-14 |
+
+## Literal reader
+
+Executed word for word, PN-14's basis and figures and the policy's sentences fix every input of the golden's quantity
+(the billed toll by plate state, toll only, collected however long it takes), and every literal reading of them (SF1 to
+SF10) lands the same call or is ruled out by a quoted sentence; the easy answer comes from the easy method (a
+year-old cohort) on the same literal estimand, never from another reading.
+
+## Oracles
+
+None tie only under the golden. The invoices' status column is the back office's own as at 31 October and agrees with
+the payments under every reading; the image review summary and the plaza traffic counts are the systems' own totals
+and no graded figure reads them; no shipped figure prints a collected share, a leakage rate or a forecast.
+
+## Ask sheet
+
+**Main call's declared row population:** the TOLL-BY-MAIL invoices issued April 2025 to October 2026, their lines (booth
+lanes, 11 p.m. to 5 a.m.), their payments posted to 31 October 2026, their Division hold returns and agency placements
+(Corrigan Mott Recovery), and PN-14's two billed-toll figures. Device and hazard rows in it: 0 (`checks.py` SEP: no
+express-lane line on a toll-by-mail invoice, so no double read or classifier split; every toll-by-mail agency
+remittance names its own invoice and covers only it; the call never reads the commercial postings).
+
+**Ask A. For each month January to September 2026, the violation crossings and the toll they owe** (18 figures,
+crossings whole, toll to the cent). H18 home: the violation part of the certificate's toll-by-mail line, which
+Enforcement forecasts from it, beside the programme's figure. Path: the invoice lines, the commercial MarrowPass
+postings, the lane table, the policy (four files, eight columns).
+- A1 (classifier splits; silent primary): a five- or six-axle truck with a MarrowPass sometimes passes the express-lane
+  classifier as a three-axle tractor posted to its account and a second, tagless vehicle a tenth to three tenths of a
+  second behind it in the same lane, read on the trailer's (or a towed car's) own plate and billed as a violation. It
+  is not a violation (policy 2.1: the vehicle had a valid MarrowPass), and only the commercial postings place it:
+  2,611 lines over the nine months, every month moves (by 254 to 319 crossings and $553.70 to $707.20).
+- A2 (straddles; seen, repaired right): an express-lane vehicle passing between E1 and E2 is read in both, a fraction of
+  a second apart on one plate, 2,961 lines; the battery counts it once.
+- Stops (asserted): every line (all 18 miss), straddles dropped (all 18 miss), a window of 2.5 seconds behind a posting
+  that also drops the violators following trucks a second or two behind (all 18 miss).
+
+**Ask B. For the out-of-state violation invoices issued in each quarter April 2025 to March 2026, the share of the toll
+owed collected by 31 October 2026** (4 figures, whole per cent). H18 home: the collection record of the violation
+book that becomes toll-by-mail at the cutover, the certificate's companion figure. Path: the invoices, the payments,
+the agency placements, the lines and the postings (five files, ten columns).
+- B1 (whole-account remittances; silent primary): Benbow Associates works a plate's whole violation account, so one
+  remittance names the oldest invoice it holds for the plate and covers every invoice it closed as collected that
+  day; the payment joins its invoice, exceeds that invoice's balance, and the other invoices show no payment. Applied
+  oldest first (policy 3.3) the quarters read 44, 48, 41 and 40 per cent; applied to the named invoice only, 42, 42, 34
+  and 34 (283 of the 812 violation remittances cover more than the invoice they name).
+- B2 (classifier splits; shared hazard): the phantom violations of 2026 owe nothing; left in, the January to March 2026
+  quarter moves.
+- Stops (asserted): every payment on the invoice it names (all 4 miss); the phantoms left in owed (the 2026 quarter).
+
+**Hazard table.**
+
+| Hazard | Root cause | Moves | Per-ask delta |
+|---|---|---|---|
+| H1 classifier splits | the express-lane classifier on tractor-trailers and tows | A, B | A every cell; B the 2026 quarter |
+| H2 straddles | lane change through the express lanes | A | every cell, before the battery |
+| H3 whole-account remittances | the violation agency's contract | B | every quarter, 3 to 6 points |
+| H4 returned payments, postings to the export run | the back office | call (neutral), B | under 0.1 point |
+
+**Referee.** A1: a tagless read in the same lane a tenth to three tenths of a second behind a commercial posting (two
+vehicles cannot pass one lane that close; ordinary followers are 0.9 seconds and more behind); B1: a remittance above
+its invoice's balance and the agency file's other invoices for the plate collected that day. Each is countable from
+shipped rows.
+
+**Cracker sheet** (`generator/cracker.py` on the cut pack: the call landed, returned payments netted, straddles
+counted once, each payment applied to the invoice it names toll first, payments to 31 October)
+
+| Ask row | Figures | Cracker's path | Device that holds | Verdict |
+|---|---|---|---|---|
+| Ask A, violation crossings and toll owed by month | 18 | straddles counted once, every other line kept | A1 | miss |
+| Ask B, out-of-state violation collections by quarter | 4 | each payment on the invoice it names | B1 | miss |
+
+Measured by: `generator/cracker.py` (Part 0's weights: the call and its components 38, the instructions 7, the asks
+55 over the 22 ask figures; a response off the call keeps 5).
+
+Mirror leakage: 0.0 per cent of ask weight (the mirror keeps none of the 22).
+
+Pair ceiling: 28.5 measured on the cut pack (the cracker 45.0, the mirror 12.0). The honest risk: A1 falls to a
+reader who pairs every violation read with the commercial postings by lane and time, which lifts the cracker by 45
+points of ask weight on 18 figures; B1 falls to one who checks each remittance against its invoice's balance.
 
 ## Earlier screens (architectures 1 to 3, kept as history)
 
@@ -141,6 +349,7 @@ with them.
 - **Architecture 3 (optional-rate take-up, Sablewood Electric Cooperative) spent at Gate F on ce04ed65, 2026-10-23.** Scored reader B filed 2,250 services and $200,000 and all 20 ask figures. Its path: "Cohort = R-1 services at launch, billed 12 months pre-launch, open through 2025-02-28; outcome = on R-TOU 12 months after launch. Logistic on annual dollar saving (R-1 minus R-TOU, 2024 rates, pre-launch use) fits best"; for the asks, "consecutive R-TOU rows (1-day gap) merged into spells ... after dropping the EST row of each EST/ACT duplicate" and "CRM times UTC converted to local ... 'Closed - duplicate' rows dropped". A careful reader calibrating take-up on a launch cohort reads the cohort's pre-launch covariates by default, because that is the textbook way to set up a launch cohort, so the decisive step was the default; and every ask device (spell gaps, estimate and actual duplicates, UTC, duplicate-closed rows) was visible hygiene the battery executes.
 - **Rebuild 2026-10-23, after architecture 3: a regional hospital emergency department's low-acuity walk-ins deterred by its posted wait, a 2027 fast-track holding that wait at 45 minutes (healthcare-delivery utilization-access-demand-forecasting; scratch `b171n/proto2/ed2.py`, `screen3.py`, `screen4.py`).** A slotted priority-queue ED with a queue-based hourly posted wait, deterrence exp(-beta x posted) on CTAS 4 and 5 walk-ins, unfilled physician shifts as the exogenous shifter. The lever is 15 to 25 per cent of the CTAS 4 and 5 count, and the naive Poisson with hour-of-week effects is biased by the shared demand shocks (beta 0.05 to 0.10 against 0.13 to 0.18). It died on the family: with the truth at beta 0.18 the deterrence-aware estimators split, Poisson with day effects 0.205 to 0.214, day-demeaned log OLS 0.123 to 0.174, the Wald ratio on the shortfall 0.135 to 0.151, 2SLS on logs 0.152 to 0.182, the control function 0.150 to 0.166, forecasts about 6 per cent either side, so no rounding holds the golden; and the decisive insight (patients answer the posted wait) is the one a reader reaches from the feed the plan's own target names.
 - **Rebuild 2026-10-23, paper and arithmetic screens beside it.** An index provider's 2027 watch list making every addition anticipated, the event desk's capture read on the rule-mandated additions (quantitative-finance strategy-backtesting-evaluation): a hedged five-day capture carries about 4.5 per cent of noise against a mean near 0.7, so 600 anticipated additions give a standard error of 27 per cent of the figure and 2 per cent would need about 37,000 events; the short-notice variant (off-cycle additions already at a one-day notice) is the very subset the rule change names. Cross-border fuel excise after a unilateral rate rise (time-series-macro): the neighbour's price survey on the textbook path names the mechanism and the one tax holiday in the record sizes it from a single episode. A kindergarten entry cut-off moved from 31 December to 1 September, delayed entry by relative age read from a second board already on 1 September (sociology population projection, spent by task176 besides): relative-age redshirting is common knowledge and the second board's pattern is the analogue a reader takes. A five-year mortgage reset's defaults on its payment shock (credit-scoring-pd): the payment shock is the covariate every reader fits. Bunching at a tax kink moved forward: the counterfactual density is a polynomial knob. Forestalling before a tax rise and a toll bridge's commuters were not taken further (the second is this note's dt1 world).
+- **Architecture 4 at design, 2026-10-23: agency settlements as Ask B's device, replaced before the pack was frozen.** A violation account settled at 65 per cent in one payment with no invoice number, its invoices listed in the reference and applied oldest first, toll before fees: the unmatched join the hygiene battery runs surfaces the payment and a policy sentence then hands the allocation over (a filed rule adjudicating the device), so the device became the violation agency's whole-account remittance named on the oldest invoice.
 
 ## Retired
 
@@ -157,4 +366,4 @@ textbook route and it lands.
 
 Reopened under the author's rule that no number stays retired; rebuilt from scratch in economics-econometrics / discrete-choice-limited-dependent-variable-modeling as architecture 3 (`## Draw`), the receiving-desk seed and both redraw cells left spent.
 
-Architecture 3 was spent at Gate F at stage 4 the same day (the scored reader calibrated take-up on the launch cohort's pre-launch use by default); the coordinator left the next cell to this build, the healthcare utilization cell died on code, and architecture 4 was drawn in economics-econometrics / forecasting-forecast-evaluation: the Marrowfield Turnpike Authority's first all-electronic tolling year (`## Draw`).
+Architecture 3 was spent at Gate F at stage 4 the same day (the scored reader calibrated take-up on the launch cohort's pre-launch use by default); the coordinator left the next cell to this build, the healthcare utilization cell died on code, and architecture 4 was drawn in economics-econometrics / forecasting-forecast-evaluation: the Marrowfield Turnpike Authority's first all-electronic tolling year (`## Draw`). Stage 3 went green the same day and the build is parked at stage 4 for the readers and the judge.

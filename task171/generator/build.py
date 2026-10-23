@@ -1,5 +1,6 @@
-"""Build task171: target/ (the evidence pack), golden/ (the deliverable), metadata.json, generator/figures.json, then
-the checks and the independent verifier, then a second build compared byte for byte, then target.zip.
+"""Build task171: target/ (the evidence pack), golden/ (the deliverable), metadata.json, generator/figures.json,
+submission.md, then the checks and the independent verifier, then a second build compared byte for byte, then
+target.zip.
 
     python3 task171/generator/build.py             everything
     python3 task171/generator/build.py --pack-only the pack, the golden and figures.json, no checks"""
@@ -18,8 +19,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import common as C   # noqa: E402
 
-MTIME = 1795_000_000  # placeholder, replaced below
-ZIP_STAMP = (2026, 11, 20, 7, 42, 0)
+ZIP_STAMP = (2026, 11, 12, 9, 14, 0)
+MONTHS_A = list(range(1, 10))
 
 
 def write_pack(out):
@@ -29,28 +30,26 @@ def write_pack(out):
     W = world.build()
     P = pack.build_pack(W, out)
     rng = np.random.default_rng(C.SEED + 2)
-    crm = docs.crm_requests(P, rng)
-    docs.write_xlsx(os.path.join(out, C.F_CRM), [("requests", crm)])
-    docs.write_pdf(os.path.join(out, C.F_SCHED), docs.sched_text())
-    docs.write_docx(os.path.join(out, C.F_PLAN), docs.PLAN)
-    docs.billing_summary(W, P).to_csv(os.path.join(out, C.F_BILL), index=False, lineterminator="\n")
-    docs.ev_rebates(W, P, rng).to_csv(os.path.join(out, C.F_EV), index=False, lineterminator="\n")
-    docs.degree_days(rng).to_csv(os.path.join(out, C.F_HDD), index=False, lineterminator="\n")
-    dict_rows = [(f, c, d) for f, cols in docs.DICT.items() for c, d in cols]
-    docs.write_xlsx(os.path.join(out, C.F_DICT), [("fields", pd.DataFrame(dict_rows, columns=["file", "field", "definition"]))],
-                    author="Sablewood IT data services")
+    pack.lanes().to_csv(os.path.join(out, C.F_LANES), index=False, lineterminator="\n")
+    pack.traffic(W, rng).to_csv(os.path.join(out, C.F_TRAFFIC), index=False, lineterminator="\n")
+    pack.image_review(W, rng).to_csv(os.path.join(out, C.F_IMG), index=False, lineterminator="\n")
+    docs.write_pdf(os.path.join(out, C.F_POLICY), docs.policy_text())
+    docs.write_docx(os.path.join(out, C.F_PLAN), docs.plan_items())
+    rows = [(f, c, d) for f, cols in docs.DICT.items() for c, d in cols]
+    docs.write_xlsx(os.path.join(out, C.F_DICT), [("fields", pd.DataFrame(rows, columns=["file", "field", "definition"]))])
     man = [
-        (C.F_AMI, "Meter data management system", "2026-11-19", "Billing months March 2023 to October 2026, every residential meter read", "Load-research extract, one row per meter, service account and read period"),
-        (C.F_SVC, "Customer information system", "2026-11-19", "Every residential service open at any time since March 2023", "Service accounts as at October 31, 2026"),
-        (C.F_RATE, "Customer information system", "2026-11-19", "Rate assignments of the same services", "R-TOU rows are written by the TOU enrolment module"),
-        (C.F_EXCH, "Work management system", "2026-11-18", "Meter exchanges at residential locations, 2023 to 2026", ""),
-        (C.F_CRM, "Member services CRM", "2026-11-18", "Residential rate-change cases from March 1, 2024", "Times in UTC"),
-        (C.F_BILL, "Billing system MIS", "2026-11-12", "Billing months November 2025 to October 2026", "Residential class, base schedules"),
-        (C.F_EV, "Energy services rebate register", "2026-11-10", "EV charger rebates paid 2021 to 2026", ""),
-        (C.F_HDD, "SCADA weather feed", "2026-11-01", "Daily, January 2023 to October 2026", ""),
-        (C.F_SCHED, "Tariff book", "2026-11-06", "Residential schedules, revision 14", ""),
-        (C.F_PLAN, "Rates Committee papers", "2026-11-13", "Paper RC-26-19", "Draft"),
-        (C.F_DICT, "IT data services", "2026-11-19", "Field definitions for the extracts", ""),
+        (C.F_LINES, "Toll-by-mail back office", "2026-11-09", "Crossings billed by mail, 3 March 2025 to 30 September 2026", "One row per billed crossing"),
+        (C.F_INV, "Toll-by-mail back office", "2026-11-09", "Invoices issued April 2025 to October 2026", "Status at 31 October 2026"),
+        (C.F_PAY, "Toll-by-mail back office", "2026-11-09", "Payments posted from April 2025", "Includes postings to the export run"),
+        (C.F_MVD, "Division of Motor Vehicles hold returns", "2026-11-02", "Hold requests from June 2025 to 31 October 2026", ""),
+        (C.F_AGY, "Collection agency placement file", "2026-11-04", "Placements from July 2025 to 31 October 2026", ""),
+        (C.F_TAG, "MarrowPass account system", "2026-11-06", "Commercial account postings in the express lanes, January to September 2026", ""),
+        (C.F_LANES, "Toll systems", "2026-11-06", "Plaza lane table", ""),
+        (C.F_TRAFFIC, "Traffic and revenue", "2026-10-20", "Plaza transactions by month and hour, January 2025 to September 2026", ""),
+        (C.F_IMG, "Image review", "2026-11-05", "Captures by month of crossing, March 2025 to September 2026", ""),
+        (C.F_POLICY, "Office of Toll Revenue", "2026-02-02", "Resolution 2025-31 as amended", ""),
+        (C.F_PLAN, "AET programme", "2026-11-10", "Programme note PN-14", ""),
+        (C.F_DICT, "Toll systems", "2026-11-12", "Field definitions for the extracts", ""),
     ]
     pd.DataFrame(man, columns=["file", "source_system", "extracted", "covers", "notes"]).to_csv(os.path.join(out, C.F_MAN), index=False, lineterminator="\n")
     return W, P
@@ -59,94 +58,105 @@ def write_pack(out):
 def solve_all(tdir):
     import solve
     F = solve.frames(tdir)
-    g, P12 = solve.golden(F)
-    A = solve.ask_A(F)
-    B = solve.ask_B(tdir, F)
+    g = solve.golden(F)
+    V = solve.straddle_and_phantom(F)
+    A = solve.ask_A(F, V)
+    B = solve.ask_B(F, V)
     return F, g, A, B
 
 
 def figures(g, A, B):
-    fig = {"call_members_2027": int(round(g["members"] / 250) * 250),
-           "call_shortfall_2027_usd": int(round(g["shortfall"] / 25000) * 25000),
-           "members_unrounded": round(g["members"], 1), "shortfall_unrounded": round(g["shortfall"], 0),
-           "cohort_2024": g["cohort"], "takers_first_year_2024": g["takers12"], "population_2026": g["pop"]}
-    for d in C.DISTRICTS:
-        k = C.DCODE[d]
-        fig["a_%s_twelve_months" % k] = A[d]["twelve"]
-        fig["a_%s_kwh_4to9pm" % k] = A[d]["kwh"]
-        fig["a_%s_kwh_11pmto6am" % k] = A[d]["night"]
-        fig["b_%s_requests" % k] = B[d]["requests"]
-        fig["b_%s_web" % k] = B[d]["web"]
+    fig = {"call_collected_toll_2027_usd": int(round(g["collected"] / 250_000) * 250_000),
+           "call_share_in_state_pct": int(round(g["IS"] * 100)),
+           "call_share_out_of_state_pct": int(round(g["OS"] * 100)),
+           "collected_unrounded": round(g["collected"], 0), "share_in_state_unrounded": round(g["IS"] * 100, 2),
+           "share_out_of_state_unrounded": round(g["OS"] * 100, 2),
+           "plan_toll_in_state_usd": C.PLAN_TOLL["IS"], "plan_toll_out_of_state_usd": C.PLAN_TOLL["OS"],
+           "early_share_in_state_pct": round(g["parts"]["early"] * 100, 1), "renewal_share_in_state_pct": round(g["parts"]["renew"] * 100, 1),
+           "collected_toll_2027_million": round(round(g["collected"] / 250_000) * 0.25, 2), "rounding_unit_million": 0.25,
+           "split_window_seconds": 0.4, "straddle_window_seconds": 1}
+    for mo in MONTHS_A:
+        n, t = A[mo]
+        fig["a_2026_%02d_crossings" % mo] = n
+        fig["a_2026_%02d_toll_owed_usd" % mo] = round(t, 2)
+    for q, v in B.items():
+        fig["b_%s_collected_pct" % q.lower()] = int(round(v * 100))
     return fig
 
 
 def write_golden(fig, gdir):
     import openpyxl
-    from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
+    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     import docs
     os.makedirs(gdir, exist_ok=True)
-    bold = Font(bold=True); head = PatternFill("solid", fgColor="DCE6F0"); thin = Border(bottom=Side(style="thin", color="7F7F7F"))
+    bold = Font(bold=True); head = PatternFill("solid", fgColor="DDE7EE"); thin = Border(bottom=Side(style="thin", color="7F7F7F"))
+    n = lambda x: "{:,}".format(x)
     wb = openpyxl.Workbook()
-    ws = wb.active; ws.title = "R-ON 2027"
-    ws["A1"] = "R-ON in its first year: %s services moved by December 31, 2027, $%s a year given up" % ("{:,}".format(fig["call_members_2027"]), "{:,}".format(fig["call_shortfall_2027_usd"]))
+    ws = wb.active; ws.title = "Certificate 2027"
+    ws["A1"] = "Toll-by-mail, cash lanes' users, 2027: $%.2f million of the $%.1f million billed will be collected" % (
+        fig["call_collected_toll_2027_usd"] / 1e6, (C.PLAN_TOLL["IS"] + C.PLAN_TOLL["OS"]) / 1e6)
     ws["A1"].font = Font(bold=True, size=13)
-    ws["A2"] = "Rates Committee, December 3, 2026. Forecast for the 2027 budget, basis as in paper RC-26-19."
+    ws["A2"] = "For the 2027 revenue certificate, toll-by-mail line. Basis as in programme note PN-14; records as at 31 October 2026."
     ws["A2"].font = Font(italic=True, color="595959")
     ws.append([])
-    ws.append(["Measure", "Forecast", "Rounded to"])
+    ws.append(["", "Toll billed by mail in 2027 (Traffic, PN-14)", "Share eventually collected", "Toll collected"])
     for c in ws[4]:
-        c.font = bold; c.fill = head; c.border = thin
-    ws.append(["R-1 services with R-ON in effect on December 31, 2027", fig["call_members_2027"], "nearest 250 services"])
-    ws.append(["Revenue given up a year: R-1 bill less R-ON bill, 2027 schedules, test-year use", fig["call_shortfall_2027_usd"], "nearest $25,000"])
-    ws["B5"].number_format = "#,##0"; ws["B6"].number_format = "$#,##0"
-    ws.append([])
-    ws.append(["Take-up is each service's chance of moving in 2027, from the R-TOU launch year (March 2024 to February 2025) read on each service's saving over its twelve billing months before the March 2024 offer."])
-    ws.column_dimensions["A"].width = 78; ws.column_dimensions["B"].width = 14; ws.column_dimensions["C"].width = 22
-    ws2 = wb.create_sheet("R-TOU book Oct 2026")
-    ws2.append(["District", "On R-TOU without a break since Nov 1, 2025 or earlier", "kWh 4 p.m. to 9 p.m.", "kWh 11 p.m. to 6 a.m."])
-    for c in ws2[1]:
         c.font = bold; c.fill = head; c.border = thin; c.alignment = Alignment(wrap_text=True, vertical="top")
-    for d in C.DISTRICTS:
-        k = C.DCODE[d]
-        ws2.append([d, fig["a_%s_twelve_months" % k], fig["a_%s_kwh_4to9pm" % k], fig["a_%s_kwh_11pmto6am" % k]])
-    n = len(C.DISTRICTS)
-    ws2.append(["All districts", "=SUM(B2:B%d)" % (n + 1), "=SUM(C2:C%d)" % (n + 1), "=SUM(D2:D%d)" % (n + 1)])
-    for c in ws2[n + 2]:
+    ws.append(["Plates registered in this state", C.PLAN_TOLL["IS"], fig["share_in_state_unrounded"] / 100, "=B5*C5"])
+    ws.append(["Plates registered elsewhere", C.PLAN_TOLL["OS"], fig["share_out_of_state_unrounded"] / 100, "=B6*C6"])
+    ws.append(["Total", "=B5+B6", "", "=D5+D6"])
+    for c in ws[7]:
         c.font = bold
-    for row in ws2.iter_rows(min_row=2, min_col=2, max_col=4):
-        for c in row:
-            c.number_format = "#,##0"
+    for r in (5, 6, 7):
+        ws.cell(r, 2).number_format = "$#,##0"; ws.cell(r, 4).number_format = "$#,##0"
+        ws.cell(r, 3).number_format = "0%"
+    ws.append([])
+    ws.append(["Total toll collected for the certificate, rounded to the nearest $0.25 million: $%s." % n(fig["call_collected_toll_2027_usd"])])
+    ws.append(["In-state shares come from the overnight toll-by-mail invoices: the share paid within 60 days, and for invoices put on a registration hold, the share paid once the plate's registration on file had expired, so every renewal it could be collected at has passed."])
+    ws.append(["Out-of-state shares come from the overnight invoices issued a year or more before 31 October 2026, by when the agency had collected or returned them."])
+    for r in (9, 10, 11):
+        ws.cell(r, 1).alignment = Alignment(wrap_text=True, vertical="top")
+    ws.column_dimensions["A"].width = 46; ws.column_dimensions["B"].width = 22; ws.column_dimensions["C"].width = 16; ws.column_dimensions["D"].width = 16
+    ws.row_dimensions[4].height = 32
+    ws2 = wb.create_sheet("Violations 2026")
+    ws2.append(["Month of crossing", "Violation crossings", "Toll owed"])
+    for c in ws2[1]:
+        c.font = bold; c.fill = head; c.border = thin
+    import calendar
+    for mo in MONTHS_A:
+        ws2.append(["%s 2026" % calendar.month_name[mo], fig["a_2026_%02d_crossings" % mo], fig["a_2026_%02d_toll_owed_usd" % mo]])
+    k = len(MONTHS_A) + 1
+    ws2.append(["January to September", "=SUM(B2:B%d)" % k, "=SUM(C2:C%d)" % k])
+    for c in ws2[k + 1]:
+        c.font = bold
+    for row in ws2.iter_rows(min_row=2, min_col=2, max_col=3):
+        row[0].number_format = "#,##0"; row[1].number_format = "$#,##0.00"
     ws2.append([])
-    ws2.append(["kWh: every service on R-TOU at October 31, 2026, billing months November 2025 to October 2026, the re-collected read where the MDM holds an estimate and a re-collection."])
-    ws2.column_dimensions["A"].width = 16
-    for col in "BCD":
-        ws2.column_dimensions[col].width = 22
-    ws2.row_dimensions[1].height = 45; ws2.freeze_panes = "B2"
-    ws3 = wb.create_sheet("R-TOU requests 2024")
-    ws3.append(["District", "Enrolment requests received Mar 1 to May 31, 2024", "Of which by the web form"])
+    ws2.append(["A vehicle read in both express lanes is one crossing; a trailer or towed car the classifier counted separately behind a MarrowPass truck owes nothing."])
+    ws2.column_dimensions["A"].width = 22; ws2.column_dimensions["B"].width = 20; ws2.column_dimensions["C"].width = 14
+    ws2.freeze_panes = "A2"
+    ws3 = wb.create_sheet("Violation collections")
+    ws3.append(["Out-of-state violation invoices issued", "Share of toll owed collected by 31 Oct 2026"])
     for c in ws3[1]:
         c.font = bold; c.fill = head; c.border = thin; c.alignment = Alignment(wrap_text=True, vertical="top")
-    for d in C.DISTRICTS:
-        k = C.DCODE[d]
-        ws3.append([d, fig["b_%s_requests" % k], fig["b_%s_web" % k]])
-    ws3.append(["All districts", "=SUM(B2:B%d)" % (n + 1), "=SUM(C2:C%d)" % (n + 1)])
-    for c in ws3[n + 2]:
-        c.font = bold
+    labels = {"2025q2": "April to June 2025", "2025q3": "July to September 2025", "2025q4": "October to December 2025", "2026q1": "January to March 2026"}
+    for q, lab in labels.items():
+        ws3.append([lab, fig["b_%s_collected_pct" % q] / 100])
+        ws3.cell(ws3.max_row, 2).number_format = "0%"
     ws3.append([])
-    ws3.append(["Central time; a duplicate web submission counted once; a request counted where the service it put on R-TOU is."])
-    ws3.column_dimensions["A"].width = 16; ws3.column_dimensions["B"].width = 26; ws3.column_dimensions["C"].width = 18
-    ws3.row_dimensions[1].height = 45; ws3.freeze_panes = "B2"
+    ws3.append(["Agency settlements applied oldest invoice first, toll before fees (policy 3.3 and 4.4)."])
+    ws3.column_dimensions["A"].width = 36; ws3.column_dimensions["B"].width = 24; ws3.row_dimensions[1].height = 32
     ws4 = wb.create_sheet("Notes")
-    for line in ["Population: R-1 services on the books at October 31, 2026 billed in all twelve billing months November 2025 to October 2026, none closing or opening in 2027.",
-                 "Moved: R-ON in effect for the service on the date (tariff general terms 1 and 2).",
-                 "Revenue: full twelve test-year months whatever month of 2027 a service moves; riders PCA-1 and TX-2 apply alike on every schedule and are left out.",
-                 "Sources: MDM load-research extract to billing month October 2026; CIS service accounts and rate assignments at October 31, 2026; member services CRM; tariff book section 3, revision 14."]:
+    for line in ["Toll only: invoice, violation, late and collection fees are budgeted separately (PN-14).",
+                 "Toll billed by mail in 2027: Traffic's figures in PN-14, 2026 traffic at the 2027 rates, after image review.",
+                 "Records: toll-by-mail back office export of 9 November 2026, payments posted to 31 October 2026; Division of Motor Vehicles hold returns; agency placements; MarrowPass commercial postings January to September 2026.",
+                 "Policy: toll schedule and toll-by-mail policy, resolution 2025-31 as amended, sections 3 and 4."]:
         ws4.append([line])
     ws4.column_dimensions["A"].width = 120
-    wb.properties.creator = "Rate Products"; wb.properties.lastModifiedBy = "Rate Products"
+    wb.properties.creator = "AET programme"; wb.properties.lastModifiedBy = "AET programme"
     wb.properties.created = docs.FIXED; wb.properties.modified = docs.FIXED
-    p = os.path.join(gdir, "r-on_2027_forecast.xlsx")
-    wb.save(p); docs._normalise_zip(p)
+    p = os.path.join(gdir, "aet_2027_toll_by_mail_forecast.xlsx")
+    wb.save(p); docs.normalise_zip(p, docs.FIXED)
 
 
 def stamp(tdir):
@@ -189,7 +199,7 @@ def main():
     import metadata
     metadata.write()
     if a.pack_only:
-        print(json.dumps({k: fig[k] for k in list(fig)[:7]})); return
+        print(json.dumps({k: fig[k] for k in list(fig)[:10]})); return
     r = subprocess.run([sys.executable, os.path.join(HERE, "checks.py")]); assert r.returncode == 0, "checks failed"
     r = subprocess.run([sys.executable, os.path.join(HERE, "verify.py")]); assert r.returncode == 0, "verify failed"
     d1 = digest(tdir)

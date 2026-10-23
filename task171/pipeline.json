@@ -1,27 +1,27 @@
 {
   "task": "task171",
   "owner": "sathya8571",
-  "status": "DRAWING",
+  "status": "BUILD",
   "domain": "economics-econometrics",
   "objective": "forecasting",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-23",
-  "stump": "A competent solver reads the collected share of the overnight cash-lane invoices old enough to have run the reminder, the hold referral and the agency, applies it to the plan's 2027 toll by plate state and files about 11.2 million dollars; the step that lands it there is maturing in-state invoices by their own age when an invoice unpaid at 60 days is collected at its plate's next two-year registration renewal.",
+  "stump": "A competent solver matures the overnight toll-by-mail invoices by their age, reads the collected share of those issued a year or more before 31 October 2026 (80 per cent in-state, 60 per cent out-of-state), applies it to the plan's 2027 billed toll and files $12.00 million; the step that lands it there is maturing in-state invoices by age when an invoice unpaid at 60 days is collected only at its plate's next two-year registration renewal.",
   "architecture": 4,
   "loops": 0,
   "card_registered": true,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-23"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW 2026-10-23 (four REVIEW lines answered in the design note; no LEAK)",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": ""
+    "heart": "WARN 2026-10-23",
+    "nearest": "task167 v2 0.06"
   },
   "judge": {
     "verdict": "",
@@ -55,7 +55,7 @@
     "rebuild_drawn": "architecture 3: optional overnight rate R-ON (2027) after the evening-peak rate R-TOU (March 2024); take-up on each member own pre-offer saving; golden family 0 to 3 per cent (count), -2 to +6 (shortfall); every rival misses one figure by 10 per cent or more (scratch b171n/proto/tou3.py, tou4.py); strategy forecast_method_backtest and role product_manager after task175 filed composition_mix and finance_controller under the lock",
     "rebuild_built": "stage 3 green 2026-10-23: checks 76/76, verify, byte-identical rebuild, figures_check, precut exit 0, voice-check PASS, leak.py REVIEW, guard surface (15 promoted pairs, axis collisions only, no persona pair), heart WARN; cracker pair 29.6, mirror leakage 4.0"
   },
-  "resume": "stage 2: design architecture 4 (Marrowfield Turnpike Authority, toll-by-mail ultimate collection matured on each plate's registration renewal); default path, ladder, fork and closure tables, ask sheet, prompt, precut",
+  "resume": "stage 4: two scored readers and the judge (main session). Pack target.zip (9451b6bd) from generator/build.py; call keys call_collected_toll_2027_usd, call_share_in_state_pct, call_share_out_of_state_pct in generator/figures.json",
   "approved": null,
   "delivered": null,
   "portal": null,

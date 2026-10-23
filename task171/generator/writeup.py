@@ -1,5 +1,5 @@
 """submission.md for task171, emitted from figures.json."""
-import json
+import calendar
 import os
 
 import common as C
@@ -7,47 +7,43 @@ import common as C
 
 def write(fig):
     n = lambda x: "{:,}".format(x)
-    L = []
-    L += ["## Tags", "", "**Domain:** Economics & Econometrics (discrete choice and limited dependent variable modeling).",
-          "**Analytical objective:** Forecasting & Predictive Modeling.", ""]
+    m = lambda x: "$%.2f million" % (x / 1e6)
+    L = ["## Tags", "", "**Domain:** Economics & Econometrics (forecasting and forecast evaluation).",
+         "**Analytical objective:** Forecasting & Predictive Modeling.", ""]
     L += ["## 1. Final Recommendation", "",
-          "**Budget for %s R-1 services moved to R-ON by December 31, 2027, giving up $%s a year at test-year use.** "
-          "Members take an optional rate by what it saves them on their own use, so the overnight rate's take-up is the evening "
-          "rate's first-year response to each service's saving on its use in the year before that offer, run through each "
-          "service's overnight saving. Not the evening rate's take-up applied at the average member's bill change, which "
-          "ignores who takes an optional rate. Not the same response read on the latest year's use, which the evening rate's "
-          "takers had already changed by taking it." % (n(fig["call_members_2027"]), n(fig["call_shortfall_2027_usd"])), ""]
+          "**Put %s in the 2027 revenue certificate as the toll collected on the toll billed by mail to today's cash-lane users.** "
+          "An in-state invoice unpaid at 60 days is collected when its plate next renews its two-year registration, so the "
+          "in-state share is read on the held invoices whose registration on file has since expired: %d per cent in-state and "
+          "%d per cent out-of-state. Not the share of invoices a year old, which counts in-state invoices still waiting on a "
+          "renewal. Not the share across every toll-by-mail and violation invoice, which mixes in the violators."
+          % (m(fig["call_collected_toll_2027_usd"]), fig["call_share_in_state_pct"], fig["call_share_out_of_state_pct"]), ""]
     L += ["## 2. Critical Components", "",
-          "1. The forecast population is **%s** R-1 services billed in all twelve test-year months." % n(fig["population_2026"]),
-          "2. Of the **%s** R-1 services open when R-TOU opened in March 2024, **%s** had it in effect by the February 2025 read." % (n(fig["cohort_2024"]), n(fig["takers_first_year_2024"])),
-          "3. The services moved to R-ON by December 31, 2027 are **%s**, giving up **$%s** a year." % (n(fig["call_members_2027"]), n(fig["call_shortfall_2027_usd"])), ""]
+          "1. Share of in-state toll billed by mail eventually collected: **%d per cent**." % fig["call_share_in_state_pct"],
+          "2. Share of out-of-state toll billed by mail eventually collected: **%d per cent**." % fig["call_share_out_of_state_pct"], ""]
     L += ["## 3. Step-by-Step Solution", "",
-          "1. Took from %s and %s the R-1 services open when R-TOU opened in March 2024 (%s) and the month each first had R-TOU in effect, "
-          "%s by the February 2025 read, a service leaving the risk set at its final read." % (C.F_RATE, C.F_SVC, n(fig["cohort_2024"]), n(fig["takers_first_year_2024"])),
-          "2. Priced each of those services' R-1 and R-TOU bills at the 2024 prices in %s on its own use in billing months "
-          "March 2023 to February 2024 in %s, and fitted a monthly logit hazard of R-TOU taking effect on that saving with a "
-          "term for each month since the offer." % (C.F_SCHED, C.F_AMI),
-          "3. Took the population of paper RC-26-19 in %s, %s R-1 services at October 31, 2026 billed in all twelve billing "
-          "months November 2025 to October 2026, and priced each one's R-1 and R-ON bills on the 2027 schedules on that use." % (C.F_PLAN, n(fig["population_2026"])),
-          "4. Ran each population service's saving through the fitted hazard over the twelve months of 2027 and summed the "
-          "probabilities and the probability-weighted savings: %s services and $%s." % (n(fig["call_members_2027"]), n(fig["call_shortfall_2027_usd"])),
-          "5. For the R-TOU table, joined each service's contiguous R-TOU rows into one spell (the TOU module re-writes the row "
-          "at account maintenance), ended an open R-TOU row at the service's final read, kept the re-collected actual row "
-          "where the extract holds an estimate and an actual for one meter and read period, and summed the kWh by district.",
-          "6. For the requests table, converted received_utc in %s to Central time, dropped cases closed as duplicates, placed "
-          "each completed case in the district of the service that had R-TOU take effect at the next read after the case was "
-          "completed (the case's service or the same member's other service) and each other case at the service it names." % C.F_CRM,
-          "7. Filed %s services and $%s for the 2027 budget." % (n(fig["call_members_2027"]), n(fig["call_shortfall_2027_usd"])), ""]
-    L += ["## 4. Deliverable Answers", "", "### r-on_2027_forecast.xlsx", "",
-          "1. R-1 services moved to R-ON by December 31, 2027: %s." % n(fig["call_members_2027"]),
-          "2. Annual revenue those services give up at test-year use: $%s." % n(fig["call_shortfall_2027_usd"]),
-          "3. Services on R-TOU at October 31, 2026, by district:"]
-    for d in C.DISTRICTS:
-        k = C.DCODE[d]
-        L.append("   - %s: %s on it without a break since November 1, 2025 or earlier; %s kWh 4 p.m. to 9 p.m.; %s kWh 11 p.m. to 6 a.m."
-                 % (d, n(fig["a_%s_twelve_months" % k]), n(fig["a_%s_kwh_4to9pm" % k]), n(fig["a_%s_kwh_11pmto6am" % k])))
-    L.append("4. R-TOU enrolment requests received March 1 to May 31, 2024, by district:")
-    for d in C.DISTRICTS:
-        k = C.DCODE[d]
-        L.append("   - %s: %s requests, %s through the web form" % (d, n(fig["b_%s_requests" % k]), n(fig["b_%s_web" % k])))
+          "1. Took the overnight toll-by-mail invoices (invoice_type TOLL-BY-MAIL in %s) and applied each invoice's payments in %s "
+          "posted to 31 October 2026, net of reversals, toll first." % (C.F_INV, C.F_PAY),
+          "2. In-state, among invoices at least 61 days old, %.1f per cent of the toll was paid within 60 days of issue." % fig["early_share_in_state_pct"],
+          "3. For the in-state toll still unpaid at 60 days, joined %s: of the held invoices whose registration on file (reg_expires) "
+          "had expired by 31 October 2026, %.1f per cent of the toll was paid; invoices with no Division record were read on "
+          "those a year old, as the agency had closed them." % (C.F_MVD, fig["renewal_share_in_state_pct"]),
+          "4. Combined the two: %d per cent of in-state toll is eventually collected; out-of-state, the invoices issued a year or "
+          "more before 31 October 2026 collected %d per cent." % (fig["call_share_in_state_pct"], fig["call_share_out_of_state_pct"]),
+          "5. Applied the shares to the 2027 toll billed by mail in %s ($%s in-state, $%s out-of-state): %s, to the nearest $0.25 million."
+          % (C.F_PLAN, n(C.PLAN_TOLL["IS"]), n(C.PLAN_TOLL["OS"]), m(fig["call_collected_toll_2027_usd"])),
+          "6. For the violation tables, counted each express-lane vehicle read in both lanes within a second once, and dropped "
+          "violation lines read 0.4 seconds or less behind a commercial posting in the same lane in %s (a trailer or towed car "
+          "split off a MarrowPass truck), then counted crossings and summed toll by month of crossing." % C.F_TAG,
+          "7. For the out-of-state violation invoices, applied each agency settlement in %s (no invoice number; its reference "
+          "lists the invoices) oldest invoice first, toll before fees, and divided the toll collected on owed crossings by the "
+          "toll owed, by quarter of issue." % C.F_PAY, ""]
+    L += ["## 4. Deliverable Answers", "", "### aet_2027_toll_by_mail_forecast.xlsx", "",
+          "1. Toll collected in 2027 on the toll billed by mail to today's cash-lane users: %s." % m(fig["call_collected_toll_2027_usd"]),
+          "2. Share eventually collected: in-state %d per cent; out-of-state %d per cent." % (fig["call_share_in_state_pct"], fig["call_share_out_of_state_pct"]),
+          "3. Violation crossings and toll owed, by month of crossing in 2026:"]
+    for mo in range(1, 10):
+        L.append("   - %s: %s crossings, $%s owed" % (calendar.month_name[mo], n(fig["a_2026_%02d_crossings" % mo]), "{:,.2f}".format(fig["a_2026_%02d_toll_owed_usd" % mo])))
+    L.append("4. Out-of-state violation invoices, share of toll owed collected by 31 October 2026, by quarter of issue:")
+    for q, lab in [("2025q2", "April to June 2025"), ("2025q3", "July to September 2025"), ("2025q4", "October to December 2025"), ("2026q1", "January to March 2026")]:
+        L.append("   - %s: %d per cent" % (lab, fig["b_%s_collected_pct" % q]))
     open(os.path.join(C.TASK, "submission.md"), "w").write("\n".join(L) + "\n")
