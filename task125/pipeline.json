@@ -1,11 +1,11 @@
 {
  "task": "task125",
  "owner": "oviya13ya",
- "status": "BUILD",
+ "status": "SHIPPED",
  "domain": "survey-research-official-statistics",
  "objective": "anomaly-detection",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-23",
  "stump": "A competent solver finds the cap in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves a wave-1 intake (0.21 point) and files that one gap for every quarter the cap is issued and 0.00 from April to June 2027, with none of the 0.27-point July to September rise the cap, so the rise is real; the step that lands it there is taking the unit the change acts on to be the quarter's fieldwork, when it is the intake, which the panel keeps for five quarters, so the gap compounds to 0.62 point by January to March 2027 and the change between two capped quarters is the change in the mix, not zero.",
  "architecture": 2,
@@ -16,7 +16,7 @@
  },
  "leak": {
   "leak_py": "REVIEW (sweep 4 only, generic survey vocabulary; sweeps 1 to 3 and 5 to 11 clean)",
-  "reader": "round 1 clean and round 2 clean. Round 2 re-run because the prompt changed, and asked specifically about the two new clauses: both came back category (i), a basis fixed and nothing of the method given away, with no clause stating the direction of the gap itself. Question 1 finds no sentence naming the decisive step and question 6 answers (a) an analytical choice in both rounds."
+  "reader": "three rounds, all clean, Q6 answered (a) an analytical choice in every one. Round 1 found the population-control realism defect (fixed at source) and the methods-note density (ruled harmless on leak-check's own would-it-exist-without-the-trap test). Rounds 2 and 3 tested the pins: every clause came back as fixing a basis or convention with the analytical work untouched, and round 3 answered the shortcut question \"No. The prompt plus the pack does not let you shortcut the main question.\""
  },
  "duplicate_check": {
   "heart": "WARN",
@@ -41,9 +41,9 @@
    "commit": ""
   }
  ],
- "resume": "stage 4, awaiting the third isolated leak reader, then ship. The judge returned FIX_NOW twice and the one re-judge is spent. Round 2's finding was that MY round-1 pin did not pin: a described property ('the latest quarter with all five waves' visit histories') read literally to 2026Q3, filing a zero July to September gap, and reached the golden only by inferring 'visit histories' meant six-visit ones. Now NAMED, in the judge's own recommended wording, 'from January to March 2026, the last six-visit quarter', which is also less leaky because it drops the 'all five waves' hint. checks.py binds it to W.qname(W.TEMPLATE_Q) so the prompt and the feasibility loop cannot drift. Two further pins the judge asked for: the flow denominator 'interviewed in both quarters' (the literal full-sample reading gives 25.51 against the golden's 31.65) and the unit 'in points'. Assertions 300 to 304. Prompt 991 characters, voice-check PASS. Pack unchanged, both hashes still 052a1c1b078e0b29 and target.zip 5314b654417ae84b, every graded figure unchanged. ON THE READER: a clean read ships (ledger row, status SHIPPED, commit SHIPPED with the zip and golden force-added); a quoted question-1 sentence or a shortcut found goes back to stage 2.",
+ "resume": "",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-23",
  "portal": null,
  "lineage": [
   {

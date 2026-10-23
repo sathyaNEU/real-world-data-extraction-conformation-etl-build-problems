@@ -698,3 +698,37 @@ that the rotation and cap dates are stated so placement could read as rule appli
 judge's own prescriptions, in its own words for two of them, each asserted and each tied to the code, so the
 remaining exposure is leakage rather than determinism, and that is what the third isolated reader checks.
 
+### The leak reader, round 3, on all four pins: clean, and no shortcut (2026-10-23)
+
+Run because the prompt changed again, on a fresh isolated copy. Asked the five standard questions, then each
+of the four pins against the same (i) or (ii) test, then outright whether prompt plus pack permits a shortcut.
+
+**All four pins came back (i).** The named quarter: "It fixes the baseline. It does not shorten the work,
+because the gap is still a counterfactual for every quarter... It does not say WHY the quarter matters beyond
+being the clean pre-change baseline." It noted one mild (ii), that naming a pre-cap quarter hints the effect
+starts from April to June 2026, which the pack already states twice over, in the field instruction's own
+effective date and in the extract notes' line that July to September 2026 is the second quarter issued under
+it, so the clause adds nothing the files do not carry. The sign clause: "(i), a sign convention only. It does
+not say which way the gap runs, and 'how far, if at all' leaves existence open." The flow denominator: "(i), a
+population and denominator definition consistent with methods note section 6... It does no analytical work",
+with one residual noted, that weighted against unweighted is not stated in the prompt, which the methods
+note's section 6 settles in its own words. The unit: "(i)", matching the release tables' own heading.
+
+**The shortcut question, answered outright: "No. The prompt plus the pack does not let you shortcut the main
+question."** Its reasoning is the designed one: the easy route, applying the contacts lost by keeping only
+visits 1 to 3 to the published rate, "is a plausible wrong answer, not a shortcut to the right one. It misses
+the selection of late contacts into unemployment, the carry-through to waves 2 to 5, and the raking."
+
+**Questions 1 to 5 unchanged across all three rounds:** no sentence names the decisive step, no file ranks the
+candidates, no file exists only to help the analyst, no figure reads as the answer, and question 5 is **(a) an
+analytical choice** in every round. It also found, unprompted, that January to March 2026 is where the
+population controls rebase, and called it "a genuine confound and not given away", which is depth the pin did
+not spend.
+
+**One new realism tell, ruled harmless:** "The population controls grow by an almost identical ratio each
+quarter, which is too smooth." Declined, because that is what a projection series is: the workbook's own Notes
+sheet says the controls are population estimates and projections and that quarters after July to September
+2026 are projections, and the one place the series is not smooth is the 2026Q1 rebase, which is both stated
+and load-bearing. The rest of its tells (fictional names, tidy one-page instructions, a uniform staffing
+file) it rated not severe itself.
+
