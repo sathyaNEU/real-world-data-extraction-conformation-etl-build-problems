@@ -1,101 +1,101 @@
 {
-  "task": "task125",
-  "architecture": "v2",
-  "drawn": "2026-10-12",
-  "slot_note": "re-root of task125 (architecture 1 spent); ladder re-rooted at stage 2 on 2026-10-21 after a measured Gate F failure; oviya13ya's Anomaly Detection lane, wave 1",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "anomaly-detection",
-  "niche": "separating a fieldwork artifact from a real labour market move in a national household labour survey's quarterly unemployment rate, where a three-visit cap on first interviews for one field year changes which households each intake of a five-quarter rotating panel recruits, so the distortion compounds across overlapping intakes and the change between two capped quarters is the change in the mix",
-  "objective": "anomaly-detection",
-  "shape": "02",
-  "decision_type": "quantity_figure",
-  "answer_unit": "rate_or_share",
-  "answer": "Most of the July to September 2026 rise is the three-visit cap, not the labour market: 0.18 of the 0.27-point rise in the unemployment rate is the cap and 0.09 point the labour market, and the published unemployment rate will sit 0.39, 0.53, 0.62, 0.47 and 0.28 point above the six-visit rate from July to September 2026 to July to September 2027, the employment rate 1.42, 1.97, 2.44, 1.88 and 1.19 point below it, with six visits back from 1 April 2027.",
-  "answer_source": "task125/submission.md, block 1 (Final Recommendation)",
-  "gap": [
-    "time",
-    "population"
+ "task": "task125",
+ "architecture": "v2",
+ "drawn": "2026-10-12",
+ "slot_note": "re-root of task125 (architecture 1 spent); ladder re-rooted at stage 2 on 2026-10-21 after a measured Gate F failure; oviya13ya's Anomaly Detection lane, wave 1",
+ "domain": "survey-research-official-statistics",
+ "subdomain": "anomaly-detection",
+ "niche": "separating a fieldwork artifact from a real labour market move in a national household labour survey's quarterly unemployment rate, where a three-visit cap on first interviews for one field year changes which households each intake of a five-quarter rotating panel recruits, so the distortion compounds across overlapping intakes and the change between two capped quarters is the change in the mix",
+ "objective": "anomaly-detection",
+ "shape": "02",
+ "decision_type": "quantity_figure",
+ "answer_unit": "rate_or_share",
+ "answer": "Most of the July to September 2026 rise is the three-visit cap, not the labour market: 0.18 of the 0.27-point rise in the unemployment rate is the cap and 0.09 point the labour market, and the published unemployment rate will sit 0.39, 0.53, 0.62, 0.47 and 0.28 point above the six-visit rate from July to September 2026 to July to September 2027, the employment rate 1.42, 1.97, 2.44, 1.88 and 1.19 point below it, with six visits back from 1 April 2027.",
+ "answer_source": "task125/submission.md, block 1 (Final Recommendation)",
+ "gap": [
+  "time",
+  "population"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G6",
+  "G13"
+ ],
+ "gate_g": "decomposition_attribution",
+ "calibration_form": "none",
+ "stump_strategy": "composition_mix",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "published_series",
+ "stakeholder_role": "head of labour market statistics at a national statistics office, who must say in the July to September release whether the quarter's rise in the unemployment rate is real and what the first-interview visit limit will do to the published rate through September 2027",
+ "role_family": "statistical_office_head",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "hls_person_quarter_2023q1_2026q3.parquet",
+  "rows": 490398,
+  "entity": "one person aged 15 or over in a responding household in one quarter's sample, with wave, household serial, ILO status items, region, age, sex and final person weight",
+  "grain": "person x quarter",
+  "source": "synthetic (fictional national household labour survey microdata)"
+ },
+ "forum": "line_manager_or_team",
+ "forcing_event": "statutory_or_regulatory_filing",
+ "org_family": "research_or_statistics_office",
+ "world": {
+  "geography": "fictional country (Merrowland), South Pacific, English-speaking",
+  "currency": "MRD",
+  "org_type": "national statistics office running a quarterly household labour survey with a five-wave rotating panel (first interview face to face, waves 2 to 5 by telephone)",
+  "invented_names": [
+   "Merrowland",
+   "Merrowland Statistics",
+   "Household Labour Survey"
   ],
-  "pattern": [
-    "none"
-  ],
-  "generators": [
-    "G6",
-    "G13"
-  ],
-  "gate_g": "decomposition_attribution",
-  "calibration_form": "none",
-  "stump_strategy": "composition_mix",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "published_series",
-  "stakeholder_role": "head of labour market statistics at a national statistics office, who must say in the July to September release whether the quarter's rise in the unemployment rate is real and what the first-interview visit limit will do to the published rate through September 2027",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "hls_person_quarter_2023q1_2026q3.parquet",
-    "rows": 490398,
-    "entity": "one person aged 15 or over in a responding household in one quarter's sample, with wave, household serial, ILO status items, region, age, sex and final person weight",
-    "grain": "person x quarter",
-    "source": "synthetic (fictional national household labour survey microdata)"
-  },
-  "forum": "line_manager_or_team",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "research_or_statistics_office",
-  "world": {
-    "geography": "fictional country (Merrowland), South Pacific, English-speaking",
-    "currency": "MRD",
-    "org_type": "national statistics office running a quarterly household labour survey with a five-wave rotating panel (first interview face to face, waves 2 to 5 by telephone)",
-    "invented_names": [
-      "Merrowland",
-      "Merrowland Statistics",
-      "Household Labour Survey"
-    ],
-    "people": [
-      "Raewyn Bailey",
-      "Jane Phillips",
-      "Aaron Tucker",
-      "Dylan Fletcher",
-      "Anna Bishop",
-      "Shane Turner"
-    ]
-  },
-  "deliverables": [
-    "hls_visit_limit_note_2026q3.docx",
-    "hls_visit_limit_path_2027.xlsx"
-  ],
-  "opening_move": "question-first",
-  "question_form": "whether",
-  "driver": "A change at the point units are recruited filters out a hard-to-reach share whose outcomes differ from the rest, and because every recruited unit stays for a fixed run of later periods carrying part of that difference, the distortion in the aggregate compounds while filtered intakes are still being issued and decays for a full run after the change is reversed; the unit the change acts on is the intake and not the period, so each period's distortion is a re-estimate on that period's own mix of filtered and unfiltered intakes and the change between two filtered periods is the change in that mix, while the first-period gap repeated while the change lasts files no change at all and the same gap applied at every position overstates every period.",
-  "driver_concrete": "For the 2026/27 field year first interviews stop after three visits, so the households reached only at a fourth to sixth visit, whose members are more often in work and out by day, drop out of four successive wave-1 intakes; those households would have stayed five quarters, interviewed by telephone in waves 2 to 5, and their lower unemployment partly persists, so the distortion of the published unemployment rate compounds from 0.21 point in April to June 2026 to 0.62 in January to March 2027 and is still 0.28 in July to September 2027, and because both quarters of the published change are capped the cap's share of that change is 0.18 point rather than nothing.",
-  "stump": "A competent solver finds the cap in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves a wave-1 intake (0.21 point on the unemployment rate) and files that one gap for every quarter the cap is issued and 0.00 from April to June 2027, with none of the 0.27-point July to September rise the cap, so the rise is real; the step that lands it there is taking the unit the change acts on to be the quarter's fieldwork, when it is the intake, which the panel keeps for five quarters, so each published quarter is a mix of capped and uncapped intakes, the gap compounds to 0.62 point by January to March 2027 and the change between two capped quarters is the change in the mix, not zero.",
-  "stump_class": "analytical",
-  "analyst_test": "A strong analyst who derives ILO status correctly, re-rakes the weights, reads the field instruction and identifies the capped-out households exactly measures the cap on a wave-1 intake only, files 0.21 point in each quarter whose intake is capped and 0.00 from April to June 2027, and so files none of the 0.27-point July to September rise as the cap and calls the rise real.",
-  "domain_test": "The deciding analysis is the survey methodologist's: which households a first-interview contact protocol recruits, how long a five-wave rotating panel keeps each intake, how their selected outcomes regress over the telephone waves, and what the calibrated estimator reports on each quarter's own mix of fieldwork regimes; with another field's nouns there is no visit protocol, no intake riding five quarters, no overlapping regimes inside one estimate and no raked rate, so the task stops making sense.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:recruitment-selection-compounding-through-a-rotating-panel",
-  "layer1": [
-    "person-quarter microdata with ILO status from questionnaire items, final weights raked to population controls",
-    "a wave-1 call-record file keyed by address serial, one row per visit, with the app's re-sends",
-    "visit histories only from the intake at which the call-record app replaced the paper call sheets",
-    "population controls in two vintages after a population estimate rebase",
-    "a superseded field instruction beside the current one",
-    "a fiscal field year against calendar survey quarters",
-    "telephone interviews recording hours as hours and minutes against face-to-face decimal hours"
-  ],
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task132": "Both turn on who is in a population and file a forward figure, but task132 restarts a replaced item at the bottom of a wear curve inside a spares count, while task125 tracks a recruitment protocol's selection riding a rotating panel's intakes through their later waves and the estimator's rate, with no replacement, wear or spares.",
-    "task501": "Shares gap time with population and, in task501's own v3 lineage, Gate G forecasting, which is what fired test.same_driver before this card's Gate G was corrected. The mechanisms differ. task501 v3 is a PACING problem on a book of commitments: the forward draw is what each unit must still place before a hard deadline and the buffer is how far realised calls ran ahead of the forecast, so its quantity is a capacity path and its difficulty is choosing a pacing basis that survives a walk-forward test. task125 is a SELECTION problem on a rotating panel: a change at the point units are recruited filters out a hard-to-reach share whose outcomes differ, and because each recruited unit stays for a fixed run of later periods the distortion compounds through the rotation. Nothing is paced, no deadline binds and no back-test selects anything.",
-    "task150": "Both file a forward figure on a time gap with a population property inside it, but task150 projects a receiving unit's own count by separating members carried at a rate on its own base from arrivals that come at a steady count, and allocates a fixed number of classrooms across schools; task125 projects no count at all. Its forward figure is the distortion a recruitment protocol puts into an already-published estimator, built by removing a selected set of households from the waves each capped intake holds and re-raking, with no arrivals, no transfers, no carry-on rate and nothing allocated."
-  },
-  "lineage": [
-    {
-      "architecture": "v1 (Wealdmoor County Council digit filter: the 2027/28 call-off of routed payments for post-payment examination)",
-      "fate": "spent 2026-10-10: in-house solver rounds 1 and 2 landed (80.2, 85.1), judge SEND_BACK on hygiene (the payments ledger read as generated); FAILED_TO_STUMP, re-rooted 2026-10-12 under the no-retirement rule",
-      "driver": "The forward count of items a fixed band rule selects includes units outside the band today: each unit's periodic amount is one sum over every component it holds, a filed date in the forward window ends one class of component, and re-summing what survives moves the unit's amount into the selected band; some units are paid in two equal parts to two linked payees, and how a unit is paid depends on how many components it keeps, because the record's own changed units show that a unit left with one component is paid its whole amount by the first payee and nothing by the second; a forecast that treats every linked unit as always paid in halves carries the one-component units' halves below the band's lower floor and out of the count, and only applying the payment rule recovered from the changed units puts each such unit's whole amount into the band once a period, after a fixed-term cohort run-off on a term recovered from an earlier completed cohort, the whole-amount decomposition and the linked-pair re-sum have all been made and read as final."
-    }
-  ],
-  "notes": "Re-root under the author's no-retirement rule; architecture 1's identity is in lineage. Interviewer falsification was considered for this draw and dropped before registration (fabricated interviews are a planted defect under the three rules). Strategy: composition_mix and population_selection both fit (the sample's mix on a recruitment property no person column names shifts as filtered intakes rotate in); composition_mix is filed because the distortion is read as the panel's mix moving under a correct pooled rate, rebuilt from the contact log joined to the panel. Labels revised at stage 3 after guard.py surface: decisive gap time (the cap's effect bet on its own quarters when it covers the panel's five-quarter horizon), population second; G6 then G13; context artifact filed_standard (the stakeholder's own file is the field instruction). Each alternative set collided with a same-driver signature somewhere on this ground (task132, task126 back to back, task102, task501 v3); the kept set is differentiated against task501 v3 and task132. Ladder re-rooted at stage 2 on 2026-10-21: a blind reader took the call from the methods note's section 5, which stated the procedure, so that section is gone, the base quarter is settled by what the call-record file covers, and the cap now runs for the 2026/27 field year so both quarters of the published change are capped and the wave-1 route files none of the rise. The decisive step is the unit of analysis (the intake, not the period), which CLAUDE.md rule 3 counts as analysis; the design note's Not rule application line records that the construction is arithmetic once that choice is made. TWO AXES RE-KEYED 2026-10-23, each to the more accurate value, with the reasoning recorded as the fingerprint skill requires. gate_g forecasting to decomposition_attribution: the vocabulary reads that key as 'a correctly reported movement assigned to the right driver', which is this call exactly, since the published 0.27-point rise is correctly reported and the question is how much of it the visit cap accounts for against the labour market; forecasting reads 'a forecast the correctly read past does not pin', and while the build carries a forward path to September 2027 the stump does not turn on a forecast. context_artifact filed_standard to published_series: the stakeholder is a statistics office deciding how much of a PUBLISHED rise is real, so the series is what it works from, while the methods note is a governing standard the pack ships rather than the stakeholder's own working artifact. Each re-key also clears a BLOCK (test.same_driver against task501 v3, which keyed on Gate G, and ban.artifact against task501 v4), and each is defensible on the vocabulary alone. ONE BLOCK REMAINS AND IS NOT FORCED: ban.strategy, composition_mix against task448. composition_mix is the honest label, because each published quarter is a mix of capped and uncapped intakes and the change between two quarters is the change in that mix, so relabelling to grain_or_unit (the file's row grain is the interview and the decision's unit is the quarter, so it does not describe the step) or to other (untrue while composition_mix fits) is the dodge the skill names as banned. ban.strategy reaches the last three builds only, so it is a recency ban that ages out to an overuse WARN as the corpus moves past task448, and this build ships then with no override at all. Driver similarity to task448 is 0.07 against a warn line of 0.12, so only the coarse label collides."
+  "people": [
+   "Raewyn Bailey",
+   "Jane Phillips",
+   "Aaron Tucker",
+   "Dylan Fletcher",
+   "Anna Bishop",
+   "Shane Turner"
+  ]
+ },
+ "deliverables": [
+  "hls_visit_limit_note_2026q3.docx",
+  "hls_visit_limit_path_2027.xlsx"
+ ],
+ "opening_move": "question-first",
+ "question_form": "whether",
+ "driver": "A change at the point units are recruited filters out a hard-to-reach share whose outcomes differ from the rest, and because every recruited unit stays for a fixed run of later periods carrying part of that difference, the distortion in the aggregate compounds while filtered intakes are still being issued and decays for a full run after the change is reversed; the unit the change acts on is the intake and not the period, so each period's distortion is a re-estimate on that period's own mix of filtered and unfiltered intakes and the change between two filtered periods is the change in that mix, while the first-period gap repeated while the change lasts files no change at all and the same gap applied at every position overstates every period.",
+ "driver_concrete": "For the 2026/27 field year first interviews stop after three visits, so the households reached only at a fourth to sixth visit, whose members are more often in work and out by day, drop out of four successive wave-1 intakes; those households would have stayed five quarters, interviewed by telephone in waves 2 to 5, and their lower unemployment partly persists, so the distortion of the published unemployment rate compounds from 0.21 point in April to June 2026 to 0.62 in January to March 2027 and is still 0.28 in July to September 2027, and because both quarters of the published change are capped the cap's share of that change is 0.18 point rather than nothing.",
+ "stump": "A competent solver finds the cap in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves a wave-1 intake (0.21 point on the unemployment rate) and files that one gap for every quarter the cap is issued and 0.00 from April to June 2027, with none of the 0.27-point July to September rise the cap, so the rise is real; the step that lands it there is taking the unit the change acts on to be the quarter's fieldwork, when it is the intake, which the panel keeps for five quarters, so each published quarter is a mix of capped and uncapped intakes, the gap compounds to 0.62 point by January to March 2027 and the change between two capped quarters is the change in the mix, not zero.",
+ "stump_class": "analytical",
+ "analyst_test": "A strong analyst who derives ILO status correctly, re-rakes the weights, reads the field instruction and identifies the capped-out households exactly measures the cap on a wave-1 intake only, files 0.21 point in each quarter whose intake is capped and 0.00 from April to June 2027, and so files none of the 0.27-point July to September rise as the cap and calls the rise real.",
+ "domain_test": "The deciding analysis is the survey methodologist's: which households a first-interview contact protocol recruits, how long a five-wave rotating panel keeps each intake, how their selected outcomes regress over the telephone waves, and what the calibrated estimator reports on each quarter's own mix of fieldwork regimes; with another field's nouns there is no visit protocol, no intake riding five quarters, no overlapping regimes inside one estimate and no raked rate, so the task stops making sense.",
+ "layer2_family": "estimand_identification",
+ "layer2_pattern": "own:recruitment-selection-compounding-through-a-rotating-panel",
+ "layer1": [
+  "person-quarter microdata with ILO status from questionnaire items, final weights raked to population controls",
+  "a wave-1 call-record file keyed by address serial, one row per visit, with the app's re-sends",
+  "visit histories only from the intake at which the call-record app replaced the paper call sheets",
+  "population controls in two vintages after a population estimate rebase",
+  "a superseded field instruction beside the current one",
+  "a fiscal field year against calendar survey quarters",
+  "telephone interviews recording hours as hours and minutes against face-to-face decimal hours"
+ ],
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task132": "Both turn on who is in a population and file a forward figure, but task132 restarts a replaced item at the bottom of a wear curve inside a spares count, while task125 tracks a recruitment protocol's selection riding a rotating panel's intakes through their later waves and the estimator's rate, with no replacement, wear or spares.",
+  "task501": "Shares gap time with population and, in task501's own v3 lineage, Gate G forecasting, which is what fired test.same_driver before this card's Gate G was corrected. The mechanisms differ. task501 v3 is a PACING problem on a book of commitments: the forward draw is what each unit must still place before a hard deadline and the buffer is how far realised calls ran ahead of the forecast, so its quantity is a capacity path and its difficulty is choosing a pacing basis that survives a walk-forward test. task125 is a SELECTION problem on a rotating panel: a change at the point units are recruited filters out a hard-to-reach share whose outcomes differ, and because each recruited unit stays for a fixed run of later periods the distortion compounds through the rotation. Nothing is paced, no deadline binds and no back-test selects anything.",
+  "task150": "Both file a forward figure on a time gap with a population property inside it, but task150 projects a receiving unit's own count by separating members carried at a rate on its own base from arrivals that come at a steady count, and allocates a fixed number of classrooms across schools; task125 projects no count at all. Its forward figure is the distortion a recruitment protocol puts into an already-published estimator, built by removing a selected set of households from the waves each capped intake holds and re-raking, with no arrivals, no transfers, no carry-on rate and nothing allocated."
+ },
+ "lineage": [
+  {
+   "architecture": "v1 (Wealdmoor County Council digit filter: the 2027/28 call-off of routed payments for post-payment examination)",
+   "fate": "spent 2026-10-10: in-house solver rounds 1 and 2 landed (80.2, 85.1), judge SEND_BACK on hygiene (the payments ledger read as generated); FAILED_TO_STUMP, re-rooted 2026-10-12 under the no-retirement rule",
+   "driver": "The forward count of items a fixed band rule selects includes units outside the band today: each unit's periodic amount is one sum over every component it holds, a filed date in the forward window ends one class of component, and re-summing what survives moves the unit's amount into the selected band; some units are paid in two equal parts to two linked payees, and how a unit is paid depends on how many components it keeps, because the record's own changed units show that a unit left with one component is paid its whole amount by the first payee and nothing by the second; a forecast that treats every linked unit as always paid in halves carries the one-component units' halves below the band's lower floor and out of the count, and only applying the payment rule recovered from the changed units puts each such unit's whole amount into the band once a period, after a fixed-term cohort run-off on a term recovered from an earlier completed cohort, the whole-amount decomposition and the linked-pair re-sum have all been made and read as final."
+  }
+ ],
+ "notes": "Re-root under the author's no-retirement rule; architecture 1's identity is in lineage. Interviewer falsification was considered for this draw and dropped before registration (fabricated interviews are a planted defect under the three rules). Strategy: composition_mix and population_selection both fit (the sample's mix on a recruitment property no person column names shifts as filtered intakes rotate in); composition_mix is filed because the distortion is read as the panel's mix moving under a correct pooled rate, rebuilt from the contact log joined to the panel. Labels revised at stage 3 after guard.py surface: decisive gap time (the cap's effect bet on its own quarters when it covers the panel's five-quarter horizon), population second; G6 then G13; context artifact filed_standard (the stakeholder's own file is the field instruction). Each alternative set collided with a same-driver signature somewhere on this ground (task132, task126 back to back, task102, task501 v3); the kept set is differentiated against task501 v3 and task132. Ladder re-rooted at stage 2 on 2026-10-21: a blind reader took the call from the methods note's section 5, which stated the procedure, so that section is gone, the base quarter is settled by what the call-record file covers, and the cap now runs for the 2026/27 field year so both quarters of the published change are capped and the wave-1 route files none of the rise. The decisive step is the unit of analysis (the intake, not the period), which CLAUDE.md rule 3 counts as analysis; the design note's Not rule application line records that the construction is arithmetic once that choice is made. TWO AXES RE-KEYED 2026-10-23, each to the more accurate value, with the reasoning recorded as the fingerprint skill requires. gate_g forecasting to decomposition_attribution: the vocabulary reads that key as 'a correctly reported movement assigned to the right driver', which is this call exactly, since the published 0.27-point rise is correctly reported and the question is how much of it the visit cap accounts for against the labour market; forecasting reads 'a forecast the correctly read past does not pin', and while the build carries a forward path to September 2027 the stump does not turn on a forecast. context_artifact filed_standard to published_series: the stakeholder is a statistics office deciding how much of a PUBLISHED rise is real, so the series is what it works from, while the methods note is a governing standard the pack ships rather than the stakeholder's own working artifact. Each re-key also clears a BLOCK (test.same_driver against task501 v3, which keyed on Gate G, and ban.artifact against task501 v4), and each is defensible on the vocabulary alone. ONE BLOCK REMAINS AND IS NOT FORCED: ban.strategy, composition_mix against task448. composition_mix is the honest label, because each published quarter is a mix of capped and uncapped intakes and the change between two quarters is the change in that mix, so relabelling to grain_or_unit (the file's row grain is the interview and the decision's unit is the quarter, so it does not describe the step) or to other (untrue while composition_mix fits) is the dodge the skill names as banned. ban.strategy reaches the last three builds only, but measured against the guard's code that window is FROZEN for this card and the ban NEVER ages out, so the earlier note that this build ships with no override was wrong. guard.py check builds its window as the cards drawn BEFORE the candidate (`ordered = [c for c in ordered if draw_key(c) < key]`, with the documented rationale that a filed card meets its own predecessors in draw order and never the builds drawn after it), so the window moves only when the candidate's own drawn date moves. Two further facts measured on 2026-10-23. First, this card still carries architecture 1's drawn date, 2026-10-12, while architecture 2 was drawn 2026-10-21 (commit e42fba5a), and it has no registered stamp, so the guard treats it as a draw not yet filed, pushes its sort key to the end of 2026-10-12 and pulls in cards drawn AFTER it that day, which is how task448 enters a window the documented rule excludes it from; the true same-day predecessor is task124 (forecasting, composition_mix). Second, correcting the drawn date to 2026-10-21 does not clear the build, it makes the position worse: the window becomes task486, task446, task252 and the verdict is two BLOCKs, ban.strategy against task446 (v3) and ban.artifact on published_series against task486 (v2). So composition_mix collides with a live card in every plausible window, because the strategy is heavily used across the corpus right now, and the only paths left are the author's --force override or a re-root. Relabelling remains banned as a dodge. The case for the override, for the author to weigh: driver similarity is 0.07 against a 0.12 WARN line and a 0.30 BLOCK line, the nearest card on any measure, and every colliding card sits in a different objective, domain, subdomain, spine and shape, so the purpose the axis ban exists for, that a reviewer not read two similar builds side by side, is not served by blocking here. The drawn-date correction is itself an author call, since moving this card's position in draw order changes which predecessors every later card would have been screened against. Driver similarity to task448 is 0.07 against a warn line of 0.12, so only the coarse label collides."
 }
