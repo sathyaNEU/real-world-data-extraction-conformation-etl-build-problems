@@ -1,44 +1,64 @@
 {
- "ask_a_discount": {
-  "February Digital": 31100,
-  "February Digital Plus": 22200,
-  "February Family": 12600,
-  "March Digital": 28200,
-  "March Digital Plus": 20200,
-  "March Family": 11800
+ "ask_a_deducted": {
+  "contact centres": 793629000,
+  "food processing": 547196000,
+  "logistics and courier": 444405000,
+  "private clinics": 474370000,
+  "retail chains": 521966000,
+  "security services": 572968000
  },
- "ask_a_takers": {
-  "Digital": 6224,
-  "Digital Plus": 3174,
-  "Family": 1402
+ "ask_a_outstanding": {
+  "contact centres": 79019000,
+  "food processing": 51328000,
+  "logistics and courier": 37041000,
+  "private clinics": 38066000,
+  "retail chains": 46902000,
+  "security services": 51867000
  },
- "ask_b_billed": {
-  "December 2026 Digital": 259100,
-  "December 2026 Digital Plus": 200200,
-  "December 2026 Family": 136500,
-  "January 2027 Digital": 259100,
-  "January 2027 Digital Plus": 200300,
-  "January 2027 Family": 136600,
-  "November 2026 Digital": 257900,
-  "November 2026 Digital Plus": 199400,
-  "November 2026 Family": 136100,
-  "October 2026 Digital": 135700,
-  "October 2026 Digital Plus": 105500,
-  "October 2026 Family": 72700
+ "ask_b_recovered": {
+  "2023": {
+   "education": 222767000,
+   "health": 86931000,
+   "national": 561001000,
+   "territorial": 247085000
+  },
+  "2024": {
+   "education": 175862000,
+   "health": 147806000,
+   "national": 759670000,
+   "territorial": 412827000
+  }
  },
- "call_fortnight_kept": 20,
- "call_later_kept": 0,
- "call_lead_days": [
-  1,
-  28
- ],
- "call_n_fort": 74466,
- "call_n_ly": 160000,
- "call_n_ty": 48000,
- "call_share": 20,
- "call_share_unrounded": 19.88,
- "call_ty_days": 6,
- "call_ty_next": "1 February 2027",
- "call_whole_list": 10,
- "call_window_days": 14
+ "call_share": {
+  "contact centres": 20,
+  "food processing": 10,
+  "logistics and courier": 10,
+  "private clinics": 5,
+  "retail chains": 10,
+  "security services": 10
+ },
+ "call_share_unrounded": {
+  "contact centres": 19.3,
+  "food processing": 8.2,
+  "logistics and courier": 8.4,
+  "private clinics": 5.7,
+  "retail chains": 9.4,
+  "security services": 10.3
+ },
+ "call_total": 250,
+ "call_total_unrounded": 247.0,
+ "cc_conversion_pct": 53,
+ "cc_leave_launch_pct": 3,
+ "counts": {
+  "n_launch": 2400,
+  "n_runs": 3690
+ },
+ "parameters": {
+  "default_path_total": 50,
+  "public_leave_pct_year": 3,
+  "public_pd12_pct": 1.6,
+  "rounding_amount_vmp": 1000,
+  "rounding_share_pct": 5,
+  "rounding_total_loans": 50
+ }
 }

@@ -1,11 +1,12 @@
-"""task177 documents: Billing Operations' note on the move to the subscriptions platform and the retention model's
-validation summary (PDFs), the January 2027 offer plan (Word) and the field descriptions (Excel). Their text is held here
-as data so checks.py can quote it and verify.py can read it back."""
+"""task177 documents: the deduction agreements register and the data dictionary (Excel), the Libranza Empresarial
+product rules and the cooperative's 2025 annual return to its supervisor (PDF). Their text is held here as data so
+checks.py can quote it and verify.py can read it back."""
 from __future__ import annotations
 
 import datetime as dt
 import os
 
+import numpy as np
 from reportlab import rl_config
 
 rl_config.invariant = 1
@@ -24,177 +25,61 @@ FONT_DIR = "/usr/share/fonts/truetype/"
 for _n, _f in (("Carlito", "crosextra/Carlito-Regular.ttf"), ("Carlito-Bold", "crosextra/Carlito-Bold.ttf"),
                ("LibSans", "liberation/LiberationSans-Regular.ttf"), ("LibSans-Bold", "liberation/LiberationSans-Bold.ttf")):
     pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
-INK = colors.HexColor("#1d1f23")
-GREY = colors.HexColor("#5f6670")
-ACCENT = colors.HexColor("#7a2e1f")
-RULE = colors.HexColor("#cfd4da")
+INK = colors.HexColor("#1b2430")
+GREY = colors.HexColor("#5d6875")
+ACCENT = colors.HexColor("#1f5b4a")
+RULE = colors.HexColor("#c9d1d6")
 
-# ---------------------------------------------------------------------------------------- the billing move note
-NOTE_DATE = dt.date(2026, 10, 15)
-NOTE_TITLE = "Monthly digital billing on the subscriptions platform"
-NOTE_SUB = ("Billing Operations, Daily Lantern Media. Version 1.3, 15 October 2026. Owner: Bernard Peacock, Billing "
-            "Operations Manager.")
-NOTE = [
-    ("1. The move", [
-        "1.1 The subscriptions platform bills every monthly digital subscription from the 1 October 2026 bill run. "
-        "The legacy billing system billed each subscription on its own billing day; its last scheduled bills were "
-        "raised on 30 September 2026.",
-        "1.2 From 1 November 2026 every monthly digital subscription is billed on the 1st of the month. A subscription "
-        "that starts on the platform has its first bill raised on its start day, for the days to the end of that month. "
-        "The platform's first bill for a migrated subscription, raised in the 1 October run, covers the days from the "
-        "end of its last legacy billing period to 31 October.",
-        "1.3 Plans and prices do not change with the move. Digital news subscriptions are zero-rated for VAT on both "
-        "systems.",
+# --------------------------------------------------------------------------------------------- the product rules
+RULES_DATE = dt.date(2026, 11, 20)
+RULES_TITLE = "Libranza Empresarial: product rules"
+RULES_SUB = ("Coopservir, Credit Directorate. Version 2.0, approved by the Board of Directors on 20 November 2026 "
+             "(minutes 2026-21). Owner: Esteban Ospina, Credit Director.")
+RULES = [
+    ("1. Scope", [
+        "1.1 Libranza Empresarial is a payroll-deduction loan to a member employed by a private employer that has signed "
+        "a deduction agreement with the cooperative. The libranza for public servants (Libranza Publica) is governed by "
+        "its own rules and is not changed by these.",
     ]),
-    ("2. Identifiers", [
-        "2.1 Every legacy subscription reference has a platform subscription id and a platform account id. The "
-        "crosswalk issued with this note lists them. Customer numbers do not change.",
+    ("2. Eligibility", [
+        "2.1 The member has made savings contributions through the employer's payroll in each of the twelve months "
+        "before the application.",
+        "2.2 The instalment does not exceed 30 per cent of the member's net monthly pay in the employer's latest "
+        "ordinary payroll, after the deductions already in force.",
+        "2.3 The member is at most 65 years old at the loan's last instalment.",
     ]),
-    ("3. Exports", [
-        "3.1 Legacy invoice exports give dates as day/month/year and amounts in pence.",
-        "3.2 Platform exports give times in UTC and amounts in pounds. Billing Operations reports each bill in the "
-        "month of the UK date it was raised.",
+    ("3. Terms", [
+        "3.1 Amounts from VMP 1,000,000 to VMP 40,000,000, over 12 to 60 months, at the monthly rate of the rate card in "
+        "force on the disbursement date, as a fixed monthly instalment.",
+        "3.2 The first instalment is deducted in the first payroll after disbursement. An employer that pays "
+        "fortnightly deducts half of the instalment in each fortnight.",
     ]),
-    ("4. 1 October run (added 15 October)", [
-        "4.1 The legacy system's 1 October run was not switched off for seven migration batches until 06:00, so "
-        "subscriptions billed on the 1st in those batches were billed by both systems for October.",
-        "4.2 The platform credited each affected account on 14 October. Each credit note lists the legacy invoices "
-        "it reverses and reduces those bills. Customers were told by email the same day.",
+    ("4. The employer under the agreement", [
+        "4.1 The employer uploads its payroll register for every pay period to the cooperative's intake portal within "
+        "three business days of the pay date, ordinary, bonus and final-settlement payments included.",
+        "4.2 The employer deducts each member's savings contribution and each instalment and transfers them to the "
+        "collection account within five business days of the pay date, with the period in the transfer reference.",
+        "4.3 The employer files a savings contribution schedule for each month through the portal.",
+    ]),
+    ("5. Default", [
+        "5.1 A loan is in default from the month-end at which an instalment is 90 or more days past due, the definition "
+        "the cooperative applies to every loan in its annual return.",
+        "5.2 On default the cooperative may net the member's own savings against the loan's balance (Statutes, article "
+        "41).",
+    ]),
+    ("6. Launch", [
+        "6.1 The first Libranza Empresarial loans are disbursed together on 1 February 2027 to the applications approved "
+        "in the launch disbursement file.",
     ]),
 ]
-NOTE_REVISIONS = ("Version 1.3 (15 October 2026): section 4. Version 1.2 (22 September 2026): batch dates confirmed. "
-                  "Version 1.1 (1 September 2026): export formats.")
+RULES_REVISIONS = ("Version 2.0 (20 November 2026): section 6 added; 2.1 to twelve months. Version 1.1 "
+                   "(14 March 2025): section 4. Version 1.0 (30 January 2025).")
 
-# ----------------------------------------------------------------------------------- the model validation summary
-VAL_DATE = dt.date(2026, 12, 9)
-VAL_TITLE = "Retention model 3.2: validation summary"
-VAL_SUB = "Audience Data Science, Daily Lantern Media. 9 December 2026."
-VAL_BODY = [
-    "Model 3.2 scores every monthly digital subscription each night for the chance that it is cancelled within 30 "
-    "days. It replaced model 3.1 on 2 December 2026.",
-    "Validation: subscriptions scored on 1 August 2026 and followed for 30 days. AUC 0.781 (model 3.1: 0.764).",
-    "The at-risk list for retention offers takes reader-paid monthly digital subscriptions scored 0.20 or above with no "
-    "cancellation pending.",
-]
-VAL_BANDS = (("A", "0.55 and above", "61.4%", "58.9%"), ("B", "0.40 to 0.549", "46.8%", "47.5%"),
-             ("C", "0.20 to 0.399", "28.0%", "29.6%"))
-VAL_FEATURES = ("articles read in the last 28 days", "months subscribed", "support contacts in the last 90 days",
-                "newsletters taken", "plan", "main device", "payment failures in the last year")
-
-# ------------------------------------------------------------------------------------------- the 2027 offer plan
-PLAN_DATE = dt.date(2027, 1, 18)
-PLAN_TITLE = "January 2027 retention offer"
-PLAN_SUB = "Subscriber Retention, Audience Revenue. 18 January 2027. Natalie Taylor."
-PLAN = [
-    ("The offer", [
-        "Half price on the next two monthly bills. A subscriber takes it from the offer email or the in-app message "
-        "within 30 days of the send; it applies to the subscription's own plan price.",
-    ]),
-    ("Who gets it", [
-        "The retention model's at-risk list of reader-paid monthly digital subscriptions, cut on 25 January 2027: "
-        "48,000 subscriptions. Every subscription on the list is sent the offer; nobody is held back this year.",
-    ]),
-    ("When", [
-        "Email and in-app message on Tuesday 26 January 2027 from 09:30.",
-    ]),
-    ("Last January", [
-        "The same offer went on 31 January 2026 to a random half of that day's at-risk list; the other half was not "
-        "sent it.",
-    ]),
-    ("What the executive team needs before the send", [
-        "The share of this list still subscribed on 31 March 2027 because of the offer, that is subscriptions that "
-        "would have gone without it, set against what the offer gives away in discounts.",
-    ]),
-]
-
-FIELDS = (
-    (C.F_ASSIGN, "list_id", "text", "Campaign tool list"),
-    (C.F_ASSIGN, "subscription_ref", "text", "Legacy billing subscription reference"),
-    (C.F_ASSIGN, "customer_no", "text", "CRM customer number"),
-    (C.F_ASSIGN, "arm", "text", "offer: sent the January offer on 31 January 2026; holdout: not sent"),
-    (C.F_ASSIGN, "risk_score", "number", "Retention model score when the list was cut"),
-    (C.F_ASSIGN, "risk_band", "text", "Band of the score (A, B, C)"),
-    (C.F_ASSIGN, "offer_sent_at", "datetime", "When the campaign tool queued the send, UK time (dd/mm/yyyy hh:mm)"),
-    (C.F_PROFILE, "customer_no", "text", "CRM customer number"),
-    (C.F_PROFILE, "subscription_ref", "text", "Legacy billing subscription reference"),
-    (C.F_PROFILE, "plan", "text", "Plan on 31 January 2026"),
-    (C.F_PROFILE, "started_on", "date", "Date the subscription started"),
-    (C.F_PROFILE, "region", "text", "Region of the billing address"),
-    (C.F_PROFILE, "most_used_on", "text", "Device most used in the last 28 days"),
-    (C.F_PROFILE, "articles_read_28d", "integer", "Articles read in the last 28 days"),
-    (C.F_PROFILE, "newsletters", "integer", "Newsletters taken"),
-    (C.F_PROFILE, "support_contacts_90d", "integer", "Contacts with customer services in the last 90 days"),
-    (C.F_PROFILE, "payment_method", "text", "Payment method"),
-    (C.F_PROFILE, "app_user_id", "text", "App user id, for subscribers who use the app"),
-    (C.F_LIST, "list_id", "text", "Campaign tool list; the tool names a list's export by its send day (RET-2027-01 "
-                                  "was cut on 25 January 2027 for the 26 January send)"),
-    (C.F_LIST, "subscription_id", "text", "Platform subscription id"),
-    (C.F_LIST, "account_id", "text", "Platform account id"),
-    (C.F_LIST, "customer_no", "text", "CRM customer number"),
-    (C.F_LIST, "plan", "text", "Plan on 25 January 2027"),
-    (C.F_LIST, "started_on", "date", "Date the subscription started"),
-    (C.F_LIST, "region", "text", "Region of the billing address"),
-    (C.F_LIST, "most_used_on", "text", "Device most used in the last 28 days"),
-    (C.F_LIST, "articles_read_28d", "integer", "Articles read in the last 28 days"),
-    (C.F_LIST, "newsletters", "integer", "Newsletters taken"),
-    (C.F_LIST, "support_contacts_90d", "integer", "Contacts with customer services in the last 90 days"),
-    (C.F_LIST, "payment_method", "text", "Payment method"),
-    (C.F_LIST, "risk_score", "number", "Retention model score when the list was cut"),
-    (C.F_LIST, "risk_band", "text", "Band of the score (A, B, C)"),
-    (C.F_LBS, "invoice_no", "text", "Legacy invoice number"),
-    (C.F_LBS, "subscription_ref", "text", "Legacy billing subscription reference; the pull holds the bills of the "
-                                          "subscriptions on either list and their add-ons"),
-    (C.F_LBS, "invoice_date", "date", "Bill date (dd/mm/yyyy); the legacy system billed each subscription monthly in "
-                                      "advance on its billing day"),
-    (C.F_LBS, "line_type", "text", "SUB charge for the subscription, DISC discount, CRED credit"),
-    (C.F_LBS, "item_code", "text", "Plan, discount or credit code. Plans: DIG-M, DGP-M, FAM-M monthly; DIG-MA, "
-                                   "DGP-MA, FAM-MA monthly at the app's half-price rate"),
-    (C.F_LBS, "applied_ref", "text", "Reference of the request that applied the discount or credit"),
-    (C.F_LBS, "amount_pence", "integer", "Pence; discounts and credits are negative"),
-    (C.F_LBS, "vat_code", "text", "Z zero-rated"),
-    (C.F_LBS, "status", "text", "Payment status"),
-    (C.F_SPINV, "invoice_id", "text", "Platform invoice or credit note number"),
-    (C.F_SPINV, "account_id", "text", "Platform account id"),
-    (C.F_SPINV, "subscription_id", "text", "Platform subscription id"),
-    (C.F_SPINV, "doc_type", "text", "invoice or credit_note"),
-    (C.F_SPINV, "issued_at", "datetime", "When the document was raised, UTC"),
-    (C.F_SPINV, "period_start", "date", "Start of the billing period"),
-    (C.F_SPINV, "period_end", "date", "End of the billing period"),
-    (C.F_SPINV, "amount_gbp", "number", "Invoice total in pounds; credit notes are negative"),
-    (C.F_SPINV, "tax_rate", "number", "VAT rate, per cent"),
-    (C.F_SPINV, "covers", "text", "For a credit note, the invoice numbers it reverses"),
-    (C.F_SPINV, "status", "text", "Payment status"),
-    (C.F_SPINV, "lines", "json", "The document's lines: line, subscription_id (the subscription the line is filed "
-                                 "under), item, text, qty (the number of subscriptions the line bills), unit_amount "
-                                 "(pounds for each), from, to, amount (qty times unit_amount; credits negative)"),
-    (C.F_XWALK, "legacy_subscription_ref", "text", "Legacy billing subscription reference"),
-    (C.F_XWALK, "platform_subscription_id", "text", "Platform subscription id"),
-    (C.F_XWALK, "platform_account_id", "text", "Platform account id"),
-    (C.F_XWALK, "migrated_on", "date", "Date the subscription moved"),
-    (C.F_XWALK, "batch", "text", "Migration batch"),
-    (C.F_EVENTS, "subscription_key", "text", "Legacy subscription reference, or platform subscription id from the move"),
-    (C.F_EVENTS, "system", "text", "legacy or platform"),
-    (C.F_EVENTS, "event", "text", "cancel_requested, access_ended, restarted"),
-    (C.F_EVENTS, "event_date", "date", "UK date of the event. access_ended is the last day of access: a subscription "
-                                       "is live until the end of its last paid period"),
-    (C.F_EVENTS, "reason", "text", "Reason given when cancelling"),
-    (C.F_OFFERS, "acceptance_ref", "text", "Offers engine acceptance reference"),
-    (C.F_OFFERS, "offer", "text", "Offer"),
-    (C.F_OFFERS, "customer_key", "text", "CRM customer number, or the app user id for acceptances in the app"),
-    (C.F_OFFERS, "channel", "text", "email, web or app"),
-    (C.F_OFFERS, "accepted_at", "datetime", "UTC"),
-    (C.F_OFFERS, "status", "text", "Acceptance status"),
-    (C.F_EMAIL, "message_id", "text", "Email platform message id"),
-    (C.F_EMAIL, "customer_no", "text", "CRM customer number"),
-    (C.F_EMAIL, "campaign", "text", "Campaign"),
-    (C.F_EMAIL, "event", "text", "delivered, bounced, opened, clicked"),
-    (C.F_EMAIL, "event_at", "datetime", "UTC"),
-    (C.F_SURVEY, "customer_no", "text", "CRM customer number"),
-    (C.F_SURVEY, "responded_on", "date", "Date of the response"),
-    (C.F_SURVEY, "satisfaction", "integer", "How satisfied, 0 to 10"),
-    (C.F_SURVEY, "likely_to_cancel_3m", "text", "How likely to cancel in the next three months"),
-    (C.F_SURVEY, "main_reason", "text", "Main reason given"),
-)
+# ------------------------------------------------------------------------------------------ the supervisor return
+SUPER_DATE = dt.date(2026, 3, 27)
+SUPER_TITLE = "Annual return 2025: payroll-deduction portfolio"
+SUPER_SUB = ("Coopservir to the Superintendencia de la Economia Solidaria de Valdemora, form F-12 summary. Filed 27 March "
+             "2026. Figures at each 31 December.")
 
 
 def esc(s):
@@ -202,8 +87,7 @@ def esc(s):
 
 
 def pdf_stamp(d, hh=10, mi=0):
-    bst = C.BST[d.year][0].date() <= d < C.BST[d.year][1].date()
-    return ("D:%04d%02d%02d%02d%02d00%+03d'00'" % (d.year, d.month, d.day, hh, mi, 1 if bst else 0)).encode()
+    return ("D:%04d%02d%02d%02d%02d00-05'00'" % (d.year, d.month, d.day, hh, mi)).encode()
 
 
 def _styles():
@@ -214,7 +98,7 @@ def _styles():
         h2=ParagraphStyle("h2", fontName="LibSans-Bold", fontSize=11, leading=14, textColor=ACCENT, spaceBefore=8,
                           spaceAfter=3),
         body=ParagraphStyle("body", fontName="Carlito", fontSize=10.8, leading=14.4, textColor=INK, spaceAfter=5),
-        cell=ParagraphStyle("cell", fontName="Carlito", fontSize=9.6, leading=12, textColor=INK),
+        cell=ParagraphStyle("cell", fontName="Carlito", fontSize=9.4, leading=12, textColor=INK),
         small=ParagraphStyle("small", fontName="Carlito", fontSize=8.6, leading=11, textColor=GREY, spaceBefore=10))
 
 
@@ -243,84 +127,198 @@ def _table(rows, widths, st):
     return t
 
 
-def note_text():
-    out = [NOTE_TITLE, NOTE_SUB]
-    for h, paras in NOTE:
+def rules_text():
+    out = [RULES_TITLE, RULES_SUB]
+    for h, paras in RULES:
         out.append(h)
         out.extend(paras)
-    out.append(NOTE_REVISIONS)
+    out.append(RULES_REVISIONS)
     return out
 
 
-def write_note(out):
-    path = os.path.join(out, C.F_NOTE)
+def write_rules(out):
+    path = os.path.join(out, C.F_RULES)
     st = _styles()
-    doc = _doc(path, NOTE_TITLE, "Billing Operations")
-    story = [Paragraph(esc(C.ORG + " | Billing Operations"), st["org"]), Paragraph(esc(NOTE_TITLE), st["h1"]),
-             Paragraph(esc(NOTE_SUB), st["sub"])]
-    for h, paras in NOTE:
+    doc = _doc(path, RULES_TITLE, "Credit Directorate")
+    story = [Paragraph(esc(C.ORG + " | Credit Directorate"), st["org"]), Paragraph(esc(RULES_TITLE), st["h1"]),
+             Paragraph(esc(RULES_SUB), st["sub"])]
+    for h, paras in RULES:
         story.append(Paragraph(esc(h), st["h2"]))
         for p in paras:
             story.append(Paragraph(esc(p), st["body"]))
     story.append(Spacer(1, 4))
-    story.append(Paragraph(esc(NOTE_REVISIONS), st["small"]))
-    foot = "Daily Lantern Media Ltd. Billing Operations. Internal."
+    story.append(Paragraph(esc(RULES_REVISIONS), st["small"]))
+    foot = "Coopservir. Credit Directorate. Board approved product rules."
     doc.build(story, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
-    PP.normalize_pdf(path, pdf_stamp(NOTE_DATE, 16, 42), pdf_stamp(NOTE_DATE, 16, 42))
+    PP.normalize_pdf(path, pdf_stamp(RULES_DATE, 17, 5), pdf_stamp(RULES_DATE, 17, 5))
 
 
-def write_validation(out):
-    path = os.path.join(out, C.F_VALID)
+def supervisor_rows(P):
+    """the libranza book at each 31 December 2021 to 2025, as the return reports it"""
+    rows = []
+    for y in range(2021, 2026):
+        t = C.mi(y, 12)
+        open_ = (P["disb"] <= t) & ((P["end_m"] < 0) | (P["end_m"] > t)) & ((P["dflt_m"] < 0) | (P["dflt_m"] > t))
+        bal = 0.0
+        for i in np.where(open_)[0]:
+            bal += C.balance_after(P["principal"][i], P["rate"][i], int(P["term"][i]), int(t - P["disb"][i]))
+        in_def = (P["dflt_m"] >= 0) & (P["dflt_m"] <= t) & (P["dflt_m"] > t - 24)
+        dbal = 0.0
+        for i in np.where(in_def)[0]:
+            k = int(P["dflt_m"][i] - P["disb"][i]) - 3
+            dbal += C.balance_after(P["principal"][i], P["rate"][i], int(P["term"][i]), max(0, k))
+        tot = bal + dbal
+        rows.append((str(y), "{:,}".format(int(open_.sum() + in_def.sum())), "{:,.0f}".format(tot / 1e6),
+                     "%.2f%%" % (100 * dbal / tot), "{:,.0f}".format(dbal * 0.62 / 1e6)))
+    return rows
+
+
+def write_supervisor(out, P):
+    path = os.path.join(out, C.F_SUPER)
     st = _styles()
-    doc = _doc(path, VAL_TITLE, "Audience Data Science")
-    story = [Paragraph(esc(C.ORG + " | Audience Data Science"), st["org"]), Paragraph(esc(VAL_TITLE), st["h1"]),
-             Paragraph(esc(VAL_SUB), st["sub"])]
-    for p in VAL_BODY:
-        story.append(Paragraph(esc(p), st["body"]))
-    story.append(Paragraph(esc("Calibration by band (1 August 2026 scores)"), st["h2"]))
-    story.append(_table([("Band", "Score", "Mean score", "Cancelled within 30 days")] + [list(r) for r in VAL_BANDS],
-                        [18 * mm, 40 * mm, 30 * mm, 50 * mm], st))
-    story.append(Paragraph(esc("Inputs"), st["h2"]))
-    story.append(Paragraph(esc(", ".join(VAL_FEATURES).capitalize() + "."), st["body"]))
-    foot = "Daily Lantern Media Ltd. Audience Data Science. Model 3.2."
+    doc = _doc(path, SUPER_TITLE, "Finance")
+    story = [Paragraph(esc(C.ORG + " | Finance"), st["org"]), Paragraph(esc(SUPER_TITLE), st["h1"]),
+             Paragraph(esc(SUPER_SUB), st["sub"])]
+    story.append(Paragraph(esc("Libranza Publica portfolio"), st["h2"]))
+    story.append(_table([("31 December", "Loans", "Balance, VMP million", "90+ days past due, share of balance",
+                          "Provision held, VMP million")] + supervisor_rows(P),
+                        [24 * mm, 22 * mm, 36 * mm, 46 * mm, 38 * mm], st))
+    story.append(Paragraph(esc("The balance includes loans in default for up to 24 months after default; loans written "
+                               "off are excluded. Provisions follow the Superintendencia's schedule for payroll-deduction "
+                               "consumer loans."), st["body"]))
+    story.append(Paragraph(esc("Libranza Empresarial: no loans at 31 December 2025."), st["body"]))
+    foot = "Coopservir. Form F-12 summary, 2025."
     doc.build(story, onFirstPage=_footer(foot), onLaterPages=_footer(foot))
-    PP.normalize_pdf(path, pdf_stamp(VAL_DATE, 14, 5), pdf_stamp(VAL_DATE, 14, 5))
+    PP.normalize_pdf(path, pdf_stamp(SUPER_DATE, 11, 40), pdf_stamp(SUPER_DATE, 11, 40))
 
 
-def plan_text():
-    out = [PLAN_TITLE, PLAN_SUB]
-    for h, paras in PLAN:
-        out.append(h)
-        out.extend(paras)
-    return out
+# ------------------------------------------------------------------------------------------------- Excel files
+def write_agreements(out, E):
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill
+    path = os.path.join(out, C.F_AGREE)
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "agreements"
+    head = ("employer_nit", "legal_name", "sector", "agreement_signed", "first_register_period", "city")
+    fill = PatternFill("solid", fgColor="DCE7E2")
+    for j, h in enumerate(head):
+        c = ws.cell(row=1, column=j + 1, value=h)
+        c.font = Font(bold=True)
+        c.fill = fill
+    rng = C.stream("agreements_xlsx")
+    import world as W
+    for i, e in enumerate(sorted(E, key=lambda e: e["start"])):
+        y, m = C.ym(e["start"])
+        signed = dt.date(y, m, 1) - dt.timedelta(days=int(rng.integers(5, 40)))
+        city = W.PLACES[int(rng.integers(0, len(W.PLACES)))]
+        vals = (e["nit"], e["name"], e["sector"], signed, "%04d-%02d" % (y, m), city)
+        for j, v in enumerate(vals):
+            c = ws.cell(row=i + 2, column=j + 1, value=v)
+            if j == 3:
+                c.number_format = "yyyy-mm-dd"
+    for col, w in zip("ABCDEF", (16, 42, 22, 16, 20, 22)):
+        ws.column_dimensions[col].width = w
+    ws.freeze_panes = "A2"
+    wb.save(path)
+    PP.normalize_ooxml(path, "Paola Ayala", "Paola Ayala", "2025-01-28T14:02:00Z", "2026-11-03T16:21:00Z",
+                       excel=True, company=C.ORG)
 
 
-def write_plan(out):
-    from docx import Document
-    from docx.shared import Pt, RGBColor
-    path = os.path.join(out, C.F_PLAN)
-    doc = Document()
-    st = doc.styles["Normal"]
-    st.font.name = "Calibri"
-    st.font.size = Pt(11)
-    h = doc.add_paragraph()
-    r = h.add_run(PLAN_TITLE)
-    r.bold = True
-    r.font.size = Pt(16)
-    r.font.color.rgb = RGBColor(0x7A, 0x2E, 0x1F)
-    s = doc.add_paragraph(PLAN_SUB)
-    s.runs[0].font.size = Pt(9.5)
-    s.runs[0].font.color.rgb = RGBColor(0x5F, 0x66, 0x70)
-    for head, paras in PLAN:
-        p = doc.add_paragraph()
-        rr = p.add_run(head)
-        rr.bold = True
-        rr.font.size = Pt(12)
-        for t in paras:
-            doc.add_paragraph(t)
-    doc.save(path)
-    PP.normalize_docx(path, "Natalie Taylor", "Natalie Taylor", "2027-01-14T10:12:00Z", "2027-01-18T15:47:00Z",
-                      revision=6, total_time=94, seed="plan2027", title=PLAN_TITLE, company=C.ORG)
+FIELDS = (
+    (C.F_LOANS, "loan_no", "text", "The loan's number in the core system. Loans closed before the core system went live in July 2021 keep their legacy number; legacy loans open at the move carry a new number (see the crosswalk)."),
+    (C.F_LOANS, "member_id", "integer", "The member's national id number."),
+    (C.F_LOANS, "payroll_unit", "text", "The Tesoreria payroll unit that pays the member's salary and takes the deduction."),
+    (C.F_LOANS, "unit_type", "text", "national, territorial, health or education, from the Tesoreria's unit list."),
+    (C.F_LOANS, "contract_type", "text", "The member's appointment at origination: CARRERA, LIBRE NOMBRAMIENTO or TEMPORAL in the core system; P (permanent) or T (temporary) as stored by the legacy system."),
+    (C.F_LOANS, "hire_date", "date", "First day of the month the member entered the payroll unit's service."),
+    (C.F_LOANS, "birth_year", "integer", "The member's year of birth."),
+    (C.F_LOANS, "net_pay_at_origination", "number", "Net monthly pay on the payroll certificate at origination, in pesos; legacy-system loans in thousands of pesos."),
+    (C.F_LOANS, "disbursement_date", "date", "Date the loan was disbursed."),
+    (C.F_LOANS, "principal", "number", "Amount lent, in pesos; legacy-system loans in thousands of pesos."),
+    (C.F_LOANS, "term_months", "integer", "Number of monthly instalments."),
+    (C.F_LOANS, "monthly_rate", "number", "Monthly interest rate."),
+    (C.F_LOANS, "instalment", "number", "Fixed monthly instalment, in pesos; legacy-system loans in thousands of pesos."),
+    (C.F_LOANS, "collection_channel", "text", "How the loan was being collected on 31 December 2026: NOMINA (payroll deduction), DEBITO DIRECTO (debit to the member's account), COBRANZA (in collections after default) or CERRADO."),
+    (C.F_LOANS, "closed_date", "date", "Date the loan closed, for CERRADO loans."),
+    (C.F_LOANS, "closure_reason", "text", "VENCIMIENTO (paid to term) or COMPRA DE CARTERA (paid off by another lender)."),
+    (C.F_LOANS, "origin_system", "text", "LEGACY for loans disbursed in the legacy system (to June 2021), CORE after."),
+    (C.F_XWALK, "legacy_loan_no", "text", "Legacy loan number."),
+    (C.F_XWALK, "core_loan_no", "text", "Number given in the core system to a legacy loan open at the move."),
+    (C.F_XWALK, "migrated_on", "date", "Migration date."),
+    (C.F_RETURNS, "period", "text", "Payroll month of the return: YYYYMM to March 2023, YYYY-MM from April 2023."),
+    (C.F_RETURNS, "payroll_unit", "text", "The Tesoreria payroll unit."),
+    (C.F_RETURNS, "national_id", "integer", "The member's national id number."),
+    (C.F_RETURNS, "loan_reference", "text", "The loan number the deduction order carries (legacy numbers to June 2021)."),
+    (C.F_RETURNS, "amount", "number", "Instalment not deducted, in pesos (legacy loans: as ordered, in pesos)."),
+    (C.F_RETURNS, "reason", "text", "Why the deduction was not applied: 01 or SIN SALARIO, no salary paid to the member in the month; 02 or SIN CUPO, salary paid but insufficient margin after priority deductions. One row per deduction not applied; deductions applied are not returned."),
+    (C.F_DEFAULTS, "loan_reference", "text", "The loan's number at the default date (legacy numbers to June 2021)."),
+    (C.F_DEFAULTS, "member_id", "integer", "The member's national id number."),
+    (C.F_DEFAULTS, "default_date", "date", "The month-end at which an instalment first stood 90 or more days past due."),
+    (C.F_DEFAULTS, "balance_at_default", "number", "Principal balance owed at the default date, in pesos."),
+    (C.F_DEFAULTS, "cure_date", "date", "Date the arrears were cleared, if they were."),
+    (C.F_RECEIPTS, "receipt_id", "text", "Receipt number in the collections system."),
+    (C.F_RECEIPTS, "receipt_date", "date", "Date the payment was received."),
+    (C.F_RECEIPTS, "loan_reference", "text", "The defaulted loan the payment was applied to."),
+    (C.F_RECEIPTS, "member_id", "integer", "The borrowing member's national id number."),
+    (C.F_RECEIPTS, "channel", "text", "TRANSFERENCIA (transfer into the collection account), CAJA (cash at a branch) or REVERSO (a receipt reversed because the payment was returned)."),
+    (C.F_RECEIPTS, "originating_account", "text", "For transfers, the paying account as bank code and account number."),
+    (C.F_RECEIPTS, "amount", "number", "Amount applied, in pesos; reversals negative."),
+    (C.F_SAVINGS, "savings_account", "text", "The member's savings account at the cooperative, bank code 0731."),
+    (C.F_SAVINGS, "member_id", "integer", "The account holder's national id number."),
+    (C.F_SAVINGS, "movement_date", "date", "Date of the movement."),
+    (C.F_SAVINGS, "movement", "text", "SALDO INICIAL (balance on 1 January 2023), APORTE (contribution), INTERES (annual interest) or RETIRO (withdrawal or transfer out)."),
+    (C.F_SAVINGS, "amount", "number", "Amount in pesos, withdrawals negative."),
+    (C.F_SAVINGS, "balance", "number", "Balance after the movement."),
+    (C.F_REGISTERS, "employer_nit", "text", "The employer's tax number."),
+    (C.F_REGISTERS, "register_no", "text", "The employer's register number for the upload."),
+    (C.F_REGISTERS, "period_start", "date", "First day of the pay period."),
+    (C.F_REGISTERS, "period_end", "date", "Last day of the pay period."),
+    (C.F_REGISTERS, "pay_date", "date", "Date the payment was made."),
+    (C.F_REGISTERS, "payment_type", "text", "NOMINA (ordinary pay), PRIMA (the June and December service bonus) or LIQUIDACION (final settlement at the end of employment)."),
+    (C.F_REGISTERS, "employee_id", "text", "The employee's national id as the intake portal stored it."),
+    (C.F_REGISTERS, "hire_date", "date", "First day of the month the employee was hired."),
+    (C.F_REGISTERS, "base_salary", "number", "Monthly base salary, in pesos."),
+    (C.F_REGISTERS, "gross_pay", "number", "Gross pay for the period, in pesos."),
+    (C.F_REGISTERS, "deductions", "number", "All deductions for the period, in pesos."),
+    (C.F_REGISTERS, "net_pay", "number", "Net pay for the period, in pesos."),
+    (C.F_LAUNCH, "loan_no", "text", "Libranza Empresarial loan number."),
+    (C.F_LAUNCH, "member_id", "integer", "The member's national id number."),
+    (C.F_LAUNCH, "employer_nit", "text", "The employer's tax number."),
+    (C.F_LAUNCH, "hire_date", "date", "From the employer's employment certificate."),
+    (C.F_LAUNCH, "member_since", "date", "Month the member's first contribution was received."),
+    (C.F_LAUNCH, "certified_net_pay", "number", "Net monthly pay certified by the employer for the application, in pesos."),
+    (C.F_LAUNCH, "principal", "number", "Amount to be disbursed, in pesos."),
+    (C.F_LAUNCH, "term_months", "integer", "Number of monthly instalments."),
+    (C.F_LAUNCH, "monthly_rate", "number", "Monthly interest rate."),
+    (C.F_LAUNCH, "instalment", "number", "Fixed monthly instalment, in pesos."),
+    (C.F_LAUNCH, "disbursement_date", "date", "Disbursement date."),
+    (C.F_LAUNCH, "first_deduction_period", "text", "Payroll month of the first deduction."),
+    (C.F_SCHED, "schedule_no", "text", "Number of the savings contribution schedule."),
+    (C.F_SCHED, "employer_nit", "text", "The employer's tax number."),
+    (C.F_SCHED, "period", "text", "Month of the contributions."),
+    (C.F_SCHED, "filed_on", "date", "Date the schedule was filed through the portal."),
+    (C.F_SCHED, "member_id", "integer", "The member's national id number."),
+    (C.F_SCHED, "contribution", "number", "Savings contribution deducted, in pesos."),
+    (C.F_STMT, "posting_date", "date", "Posting date on the collection account."),
+    (C.F_STMT, "description", "text", "The bank's transaction description."),
+    (C.F_STMT, "payer_id", "text", "Tax number or national id of the payer, as the paying bank sent it."),
+    (C.F_STMT, "payer_name", "text", "Payer's name, as the paying bank sent it."),
+    (C.F_STMT, "reference", "text", "Reference sent with the payment."),
+    (C.F_STMT, "credit", "number", "Credit, in pesos."),
+    (C.F_STMT, "debit", "number", "Debit, in pesos."),
+    (C.F_STMT, "balance", "number", "Running balance from 1 January 2025, in pesos."),
+    (C.F_LABOUR, "trimestre", "text", "Quarter."),
+    (C.F_LABOUR, "rama_actividad", "text", "Branch of economic activity."),
+    (C.F_LABOUR, "tasa_desempleo_pct", "number", "Unemployment rate, per cent."),
+    (C.F_LABOUR, "ocupados_miles", "number", "Employed persons, thousands."),
+    (C.F_AGREE, "employer_nit", "text", "The employer's tax number."),
+    (C.F_AGREE, "legal_name", "text", "Registered name."),
+    (C.F_AGREE, "sector", "text", "The cooperative's sector for the employer."),
+    (C.F_AGREE, "agreement_signed", "date", "Date the deduction agreement was signed."),
+    (C.F_AGREE, "first_register_period", "text", "First month for which the employer uploaded its payroll register."),
+    (C.F_AGREE, "city", "text", "City of the employer's main site."),
+)
 
 
 def write_dictionary(out):
@@ -331,9 +329,9 @@ def write_dictionary(out):
     ws = wb.active
     ws.title = "fields"
     head = ("file", "field", "type", "description")
-    fill = PatternFill("solid", fgColor="E7E2DC")
-    for j, hname in enumerate(head):
-        c = ws.cell(row=1, column=j + 1, value=hname)
+    fill = PatternFill("solid", fgColor="DCE7E2")
+    for j, h in enumerate(head):
+        c = ws.cell(row=1, column=j + 1, value=h)
         c.font = Font(bold=True)
         c.fill = fill
     for i, row in enumerate(FIELDS):
@@ -341,9 +339,9 @@ def write_dictionary(out):
             c = ws.cell(row=i + 2, column=j + 1, value=v)
             if j == 3:
                 c.alignment = Alignment(wrap_text=True, vertical="top")
-    for col, w in zip("ABCD", (38, 26, 10, 100)):
+    for col, w in zip("ABCD", (44, 26, 10, 100)):
         ws.column_dimensions[col].width = w
     ws.freeze_panes = "A2"
     wb.save(path)
-    PP.normalize_ooxml(path, "Audience Data", "Natalie Taylor", "2026-02-03T11:20:00Z", "2027-01-25T17:58:00Z",
+    PP.normalize_ooxml(path, "Paola Ayala", "Paola Ayala", "2025-02-11T15:40:00Z", "2027-01-21T18:12:00Z",
                        excel=True, company=C.ORG)

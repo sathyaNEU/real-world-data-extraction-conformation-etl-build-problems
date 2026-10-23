@@ -1,318 +1,386 @@
-"""task177 world: Daily Lantern Media's monthly digital subscriptions.
+"""task177 world: the clean truth before any file is written.
 
-Last year's test: the 31 January 2026 at-risk list, half sent the half-price offer, half held back, every subscription
-billed by the legacy billing system on its own day of the month. A subscriber weighs whether to keep paying as each bill
-comes up; an offer that lands in the fortnight before the next bill catches them deciding (they accept it and stay),
-one that lands earlier is mostly forgotten by then. This year's list (26 January 2027) is billed by the subscriptions
-platform on the 1st, so every bill falls six days after the send.
+Public side: Coopservir's payroll-deduction loans to public servants, 2017 to 2026, simulated month by month. A loan
+is paid at source by the Tesoreria's central payroll; it falls behind almost only when the borrower leaves that
+payroll with the loan open (about half of those loans reach 90 days past due a few months later), and a little through
+a persistent loss of deduction margin. Temporary staff hold loans capped to mature before their contracts end.
 
-Everything here is the clean truth the pack is cut from; calc.py reads only the pack."""
+Private side: the 38 employers that signed deduction agreements in 2025, their staff month by month, their payroll
+registers, the members who joined and saved, and the 2,400 launch loans. Each employer's staff leave at its own rate.
+
+The truth of the call: each launch loan's chance of being 90 days past due by 31 January 2028, from the true hazards.
+"""
 from __future__ import annotations
 
 import datetime as dt
+import math
 
 import numpy as np
-import pandas as pd
 
 import common as C
 
-P = dict(
-    n_ly=160000,          # last year's list
-    n_ty=48000,           # this year's list
-    a=0.75,               # risk intercept (per-bill intention to leave, logit)
-    r_high=0.82,          # share of would-be leavers the offer keeps when it lands in the fortnight before the bill
-    r_low=0.02,           # ... when it lands earlier
-    mid=14.5, width=0.5,  # where the fortnight ends (days before the bill)
-    q_sure=0.10,          # subscribers deciding to stay who take the discount anyway, in the fortnight
-    r2=0.75,              # at the second (still half-price) bill, share of accepters' would-be leavers kept
-    f_call=0.10,          # would-be leavers who phone the save desk instead of cancelling online
-    s_desk=0.30,          # callers the save desk keeps with its own half-price (same billing code)
-    later=0.50,           # later bills' intention as a share of the at-risk intention
-    restart=0.025,        # leavers who restart within four weeks
-    open_rate=0.30,       # offer emails opened
-    app_accept=0.34,      # accepters who accept in the app (its own discount code and customer key)
-    app_fallback=0.15,    # app acceptances the offers engine did not apply; the app put the subscription on a half-price
-                          # rate for its next two bills instead of a discount line
-    credit_booked=0.08,   # acceptances applied after the first discounted bill was raised (half price as credits)
-    household=0.40,       # second subscriptions on the list subscription's plan, billed on its account
-    together=0.65,        # ... of which set up the same day as the list subscription (same billing day)
-    both_channels=0.06,   # app accepters who also accept from the email (a second acceptance, another key)
-    moved_day=0.10,       # subscriptions whose bill day moved from their start day (a recovered failed payment)
-    addon=0.13,           # this year's accounts that also hold the Puzzles add-on
-    overlap=0.12,         # this year's list members who were on last year's list
-    loyalty=0.02,         # bills carrying a goodwill credit
-    second_sub=0.05,      # this year's accounts that also pay for a second plan subscription (not on the list)
-    paid_by_other=0.035,  # this year's list subscriptions paid from another subscriber's account
+T0 = C.mi(*C.HIST_FROM)
+TEND = C.mi(*C.DATA_END)
+LAG_P = {3: 0.55, 4: 0.35, 5: 0.10}          # months from the first absent payroll to 90 days past due
+FIRST_YEAR_MULT = 1.00                       # leaving is a little likelier in the first twelve months of service
+RESID_EMBARGO = 0.00030                      # monthly start of a persistent margin loss (a court order takes priority)
+EMBARGO_CONV = 0.75
+UNPAID_LEAVE = 0.00010
+SPORADIC_MARGIN = 0.0015
+BUYOUT = 0.0060
+TEMP_EARLY = 0.0035
+
+
+def conv_prob(rem_ratio):
+    """P(90 days past due | the borrower left the payroll with the loan open), rising gently with the balance still
+    owed in months of net pay"""
+    z = math.log(0.55 / 0.45) + 0.12 * (rem_ratio - 6.0) / 3.0
+    return 1.0 / (1.0 + np.exp(-z))
+
+
+# ----------------------------------------------------------------------------------------------------- public side
+PLACES = ("Sorana", "Cumbrera", "Tamarales", "Piedralta", "Nuevo Cauzal", "Lomaverde", "San Telmo del Llano",
+          "Vallehondo", "Arenisca", "Puerto Celeste", "Monteralto", "Las Garzas", "Rionegro Alto", "Bocachica",
+          "Santa Ines", "Altovalle", "Cerro Pardo", "La Ensenada", "Mirasol", "Campoalegre")
+MINISTRIES = ("Ministerio de Hacienda y Credito Publico", "Ministerio de Salud", "Ministerio de Educacion Nacional",
+              "Ministerio de Transporte", "Ministerio de Agricultura", "Ministerio de Justicia", "Ministerio del Interior",
+              "Ministerio de Trabajo", "Ministerio de Ambiente", "Ministerio de Comercio", "Registraduria Nacional",
+              "Direccion de Impuestos y Aduanas", "Instituto Geografico Nacional", "Servicio Nacional de Aprendizaje",
+              "Instituto de Bienestar Familiar", "Policia Civil de Transito", "Defensoria del Pueblo",
+              "Contraloria General", "Superintendencia Financiera", "Instituto Nacional de Vias")
+
+
+def agencies():
+    rng = C.stream("agencies")
+    out = []
+    code = 1100
+    plan = (("national", 20), ("territorial", 18), ("health", 12), ("education", 10))
+    terr_i, hosp_i, edu_i = 0, 0, 0
+    for typ, n in plan:
+        for j in range(n):
+            code += int(rng.integers(3, 40))
+            if typ == "national":
+                name = MINISTRIES[j]
+            elif typ == "territorial":
+                p = PLACES[terr_i % len(PLACES)]
+                name = ("Gobernacion de " if terr_i % 3 == 0 else "Alcaldia de ") + p
+                terr_i += 1
+            elif typ == "health":
+                p = PLACES[(hosp_i * 7 + 3) % len(PLACES)]
+                name = ("Hospital Departamental de " if hosp_i % 2 == 0 else "ESE Hospital Regional de ") + p
+                hosp_i += 1
+            else:
+                p = PLACES[(edu_i * 11 + 5) % len(PLACES)]
+                name = ("Universidad Publica de " if edu_i % 3 == 0 else "Secretaria de Educacion de ") + p
+                edu_i += 1
+            h = float(rng.uniform(0.0013, 0.0045))
+            if typ in ("territorial", "health") and rng.random() < 0.55:
+                temp = float(rng.uniform(0.20, 0.55))
+            elif rng.random() < 0.15:
+                temp = float(rng.uniform(0.15, 0.35))
+            else:
+                temp = float(rng.uniform(0.0, 0.08))
+            size = float(rng.lognormal(0, 0.7)) * (2.2 if typ == "education" else 1.0)
+            out.append(dict(code="UE-%04d" % code, name=name, type=typ, h=h, temp=temp, size=size))
+    return out
+
+
+def public_loans():
+    """every public loan disbursed January 2017 to December 2026 with its monthly history"""
+    A = agencies()
+    rng = C.stream("public_loans")
+    w = np.array([a["size"] for a in A])
+    w = w / w.sum()
+    months = np.arange(T0, TEND + 1)
+    per = (360 + 6.0 * (months - T0) / 12.0) * (1 + 0.08 * np.sin(2 * np.pi * (months % 12) / 12.0))
+    counts = rng.poisson(per)
+    n = int(counts.sum())
+    disb = np.repeat(months, counts)
+    ag = rng.choice(len(A), n, p=w)
+    temp = rng.random(n) < np.array([A[i]["temp"] for i in ag])
+    ten0 = np.where(temp, 3 + rng.gamma(1.5, 10, n), 6 + rng.gamma(2.0, 55, n)).astype(int)
+    age = np.clip(rng.normal(43, 9, n), 22, 62).astype(int)
+    pay = np.round(np.exp(rng.normal(np.log(4_300_000), 0.36, n) + 0.006 * (age - 43)), -3)
+    to_end = rng.integers(9, 37, n)
+    term = rng.choice([24, 36, 48, 60, 72, 84], n, p=[0.10, 0.18, 0.22, 0.22, 0.16, 0.12])
+    term = np.where(temp, np.minimum(term, to_end - 1), term)
+    term = np.maximum(term, 6)
+    rate = np.round(rng.uniform(0.0105, 0.0145, n) / 0.0005) * 0.0005
+    inst = np.round(pay * rng.uniform(0.12, 0.30, n), -3)
+    principal = np.round(inst * (1 - (1 + rate) ** -term) / rate, -3)
+    inst = np.round(principal * rate / (1 - (1 + rate) ** -term), 0)
+    h_ag = np.array([A[i]["h"] for i in ag])
+
+    # monthly histories
+    status = np.zeros(n, int)        # 0 open on payroll, 1 matured, 2 bought out, 3 default, 4 direct billing
+    end_m = np.full(n, -1)           # month the loan closed or defaulted or moved to direct billing
+    left_m = np.full(n, -1)          # first month absent from the payroll with the loan open
+    dflt_m = np.full(n, -1)
+    dflt_route = np.full(n, "", dtype=object)
+    returns = []                     # (loan index, month, code)
+    for k in range(1, 85):
+        cal = disb + k
+        alive = (status == 0) & (k <= term) & (cal <= TEND) & (dflt_m < 0)
+        idx = np.where(alive)[0]
+        if len(idx):
+            u = rng.random((len(idx), 6))
+            bo = u[:, 0] < BUYOUT
+            hz = np.where(temp[idx], TEMP_EARLY,
+                          h_ag[idx] * np.where(ten0[idx] + k < 12, FIRST_YEAR_MULT, 1.0))
+            lv = (~bo) & (u[:, 1] < hz)
+            emb = (~bo) & (~lv) & (u[:, 2] < RESID_EMBARGO)
+            ul = (~bo) & (~lv) & (~emb) & (u[:, 3] < UNPAID_LEAVE)
+            sp = (~bo) & (~lv) & (~emb) & (~ul) & (u[:, 4] < SPORADIC_MARGIN)
+            for j in np.where(bo)[0]:
+                i = idx[j]
+                status[i] = 2
+                end_m[i] = cal[i]
+            for j in np.where(lv)[0]:
+                i = idx[j]
+                c = cal[i]
+                left_m[i] = c
+                rem = (term[i] - k + 1) * inst[i] / pay[i]
+                if rng.random() < conv_prob(rem):
+                    L = int(rng.choice([3, 4, 5], p=[LAG_P[3], LAG_P[4], LAG_P[5]]))
+                    for t in range(c, min(c + 3, TEND + 1)):
+                        returns.append((i, t, "SIN SALARIO"))
+                    dflt_m[i] = c + L
+                    dflt_route[i] = "left"
+                    status[i] = 3
+                    end_m[i] = c + L
+                else:
+                    for t in range(c, min(c + 2, TEND + 1)):
+                        returns.append((i, t, "SIN SALARIO"))
+                    status[i] = 4
+                    end_m[i] = c + 2
+            for j in np.where(emb)[0]:
+                i = idx[j]
+                c = cal[i]
+                if rng.random() < EMBARGO_CONV:
+                    L = int(rng.choice([3, 4], p=[0.7, 0.3]))
+                    for t in range(c, min(c + 3, TEND + 1)):
+                        returns.append((i, t, "SIN CUPO"))
+                    dflt_m[i] = c + L
+                    dflt_route[i] = "margin"
+                    status[i] = 3
+                    end_m[i] = c + L
+                else:
+                    for t in range(c, min(c + 2, TEND + 1)):
+                        returns.append((i, t, "SIN CUPO"))
+            for j in np.where(ul)[0]:
+                i = idx[j]
+                c = cal[i]
+                D = int(rng.choice([1, 2, 3], p=[0.5, 0.35, 0.15]))
+                for t in range(c, min(c + D, TEND + 1)):
+                    returns.append((i, t, "SIN SALARIO"))
+            for j in np.where(sp)[0]:
+                i = idx[j]
+                returns.append((i, int(cal[i]), "SIN CUPO"))
+        mat = (status == 0) & (k == term) & (disb + k <= TEND) & (dflt_m < 0)
+        status[mat] = 1
+        end_m[mat] = disb[mat] + k
+    # defaults scheduled beyond the data end did not happen inside the record
+    beyond = (dflt_m > TEND)
+    dflt_obs = np.where(beyond, -1, dflt_m)
+    status_obs = np.where(beyond, 0, status)
+    # members: national ids, some members hold a second loan later
+    ids = rng.choice(np.arange(10_000_000, 99_999_999), n, replace=False)
+    hire = disb - ten0
+    birth = (disb // 12) - age
+    return dict(A=A, n=n, disb=disb, ag=ag, temp=temp, ten0=ten0, age=age, pay=pay, term=term, rate=rate, inst=inst,
+                principal=principal, status=status_obs, end_m=end_m, left_m=left_m, dflt_m=dflt_obs,
+                dflt_route=dflt_route, returns=returns, member=ids, hire=hire, birth=birth, h_ag=h_ag)
+
+
+# ---------------------------------------------------------------------------------------------------- private side
+EMPLOYERS = (
+    # name, sector, pay frequency, staff at agreement, monthly leaving hazard, group
+    ("Telnova Servicios de Contacto S.A.S.", "contact centres", "F", 907, 0.0639, ""),
+    ("Interlaza BPO S.A.S.", "contact centres", "F", 669, 0.0594, ""),
+    ("Atencion Integral del Caribe S.A.", "contact centres", "F", 400, 0.0532, "G3"),
+    ("Conecta Cumbrera S.A.S.", "contact centres", "M", 302, 0.0576, ""),
+    ("Voxpunto Andina S.A.S.", "contact centres", "F", 496, 0.0550, ""),
+    ("Callmar Soluciones S.A.S.", "contact centres", "M", 259, 0.0505, ""),
+    ("Almacenes La Garza S.A.", "retail chains", "F", 380, 0.0254, "G1"),
+    ("Supertiendas Mirasol S.A.", "retail chains", "F", 300, 0.0243, ""),
+    ("Droguerias Piedralta S.A.S.", "retail chains", "M", 165, 0.0213, ""),
+    ("Calzado Velasquez y Cia. S.A.S.", "retail chains", "M", 110, 0.0231, ""),
+    ("Hogar y Ferreteria El Puente S.A.S.", "retail chains", "F", 140, 0.0249, ""),
+    ("Comercializadora Tamarales S.A.", "retail chains", "M", 175, 0.0219, ""),
+    ("Moda Urbana Sorana S.A.S.", "retail chains", "F", 95, 0.0274, ""),
+    ("Autoservicio Lomaverde S.A.S.", "retail chains", "M", 130, 0.0237, ""),
+    ("Seguridad Atalaya Ltda.", "security services", "F", 476, 0.0287, ""),
+    ("Vigilancia La Garza Ltda.", "security services", "F", 210, 0.0274, "G1"),
+    ("Proteccion Privada del Llano S.A.S.", "security services", "F", 308, 0.0306, ""),
+    ("Escoltas y Custodia Monteralto Ltda.", "security services", "M", 133, 0.0253, ""),
+    ("Centinela Servicios Integrales S.A.S.", "security services", "F", 252, 0.0293, ""),
+    ("Guardianes de Altovalle Ltda.", "security services", "M", 161, 0.0268, ""),
+    ("Transportes Rapido Cumbrera S.A.", "logistics and courier", "M", 260, 0.0226, "G2"),
+    ("Mensajeria Expressa del Valle S.A.S.", "logistics and courier", "F", 210, 0.0260, ""),
+    ("Logistica Puerto Celeste S.A.S.", "logistics and courier", "M", 190, 0.0211, ""),
+    ("Envios Ya Valdemora S.A.S.", "logistics and courier", "F", 150, 0.0274, ""),
+    ("Bodegas y Distribucion Arenisca S.A.", "logistics and courier", "M", 130, 0.0197, ""),
+    ("Carga Segura Vallehondo S.A.S.", "logistics and courier", "M", 105, 0.0233, ""),
+    ("Lacteos Rionegro Alto S.A.", "food processing", "M", 290, 0.0201, "G2"),
+    ("Frigorifico Las Garzas S.A.", "food processing", "M", 240, 0.0226, ""),
+    ("Panificadora San Telmo S.A.S.", "food processing", "F", 160, 0.0247, ""),
+    ("Conservas del Mar Bocachica S.A.", "food processing", "M", 200, 0.0209, ""),
+    ("Avicola Campoalegre S.A.S.", "food processing", "M", 175, 0.0216, ""),
+    ("Molinos Cerro Pardo S.A.", "food processing", "M", 120, 0.0186, ""),
+    ("Bebidas La Ensenada S.A.S.", "food processing", "F", 140, 0.0240, ""),
+    ("Clinica Santa Ines S.A.", "private clinics", "M", 310, 0.0161, "G3"),
+    ("Centro Medico Altamira de Sorana S.A.S.", "private clinics", "M", 180, 0.0153, ""),
+    ("Clinica Oftalmologica del Norte S.A.S.", "private clinics", "M", 95, 0.0143, ""),
+    ("Laboratorio Clinico Vallehondo S.A.S.", "private clinics", "F", 120, 0.0171, ""),
+    ("Unidad Renal Piedralta S.A.S.", "private clinics", "M", 85, 0.0153, ""),
 )
-
-REGIONS = ("London", "South East", "Midlands", "North West", "North East and Yorkshire", "Scotland",
-           "Wales and South West")
-REGION_P = (0.19, 0.17, 0.15, 0.13, 0.13, 0.11, 0.12)
-DEVICES = ("web", "ios", "android", "mixed")
-PAY = ("card", "direct debit", "paypal")
+GROUP_PARENT = {"G1": "Almacenes La Garza S.A.", "G2": "Lacteos Rionegro Alto S.A.", "G3": "Clinica Santa Ines S.A."}
 
 
-def r_of_d(d):
-    return P["r_low"] + (P["r_high"] - P["r_low"]) / (1.0 + np.exp((np.asarray(d, float) - P["mid"]) / P["width"]))
+def employers():
+    rng = C.stream("employers")
+    out = []
+    used = set()
+    for j, (name, sector, freq, staff, h, grp) in enumerate(EMPLOYERS):
+        while True:
+            base = int(rng.integers(800_100_000, 901_999_999))
+            if base not in used:
+                used.add(base)
+                break
+        start = C.mi(2025, int(rng.choice([1, 1, 2, 2, 3, 3, 4, 5, 6])))
+        out.append(dict(i=j, name=name, sector=sector, freq=freq, staff=staff, h=h, group=grp, nit_base=base,
+                        nit=C.fmt_nit(base), start=start,
+                        pay_day=int(rng.choice([25, 28, 30])) if freq == "M" else 0,
+                        salary_mu=float({"contact centres": 1.75, "retail chains": 1.80, "security services": 1.95,
+                                         "logistics and courier": 2.15, "food processing": 2.05,
+                                         "private clinics": 2.70}[sector])))
+    return out
 
 
-def people(n, rng, asof, start_lo, start_hi):
-    span = (start_hi - start_lo).days
-    start = np.array([start_lo + dt.timedelta(int(x)) for x in rng.integers(0, span, n)])
-    plan = rng.choice(np.array(C.PLANS), n, p=[0.55, 0.30, 0.15])
-    region = rng.choice(np.array(REGIONS), n, p=REGION_P)
-    device = rng.choice(np.array(DEVICES), n, p=[0.36, 0.26, 0.20, 0.18])
-    arts = rng.poisson(np.exp(rng.normal(2.0, 0.9, n)))
-    news = rng.binomial(4, 0.35, n)
-    supp = rng.poisson(0.32, n)
-    pay = rng.choice(np.array(PAY), n, p=[0.62, 0.30, 0.08])
-    ten = np.array([(asof - s).days / 30.44 for s in start])
-    z = (P["a"] - 0.30 * np.log(ten) - 0.20 * np.log1p(arts) + 0.30 * supp - 0.08 * news
-         + pd.Series(plan).map({"Digital": 0.10, "Digital Plus": 0.0, "Family": -0.25}).values
-         + pd.Series(device).map({"web": 0.0, "ios": 0.05, "android": 0.08, "mixed": -0.05}).values
-         + rng.normal(0, 0.35, n))
-    p = 1 / (1 + np.exp(-z))
-    resp = np.clip(1.2 - 0.010 * ten, 0.7, 1.2)
-    dom = np.array([s.day for s in start])
-    moved = rng.random(n) < P["moved_day"]
-    dom = np.where(moved, rng.integers(1, 29, n), dom)
-    score = np.clip(p + rng.normal(0, 0.06, n), 0.20, 0.97)
-    band = np.where(score >= 0.55, "A", np.where(score >= 0.40, "B", "C"))
-    return pd.DataFrame(dict(start=start, plan=plan, region=region, device=device, arts=arts, news=news, supp=supp,
-                             pay=pay, ten=ten, p=p, resp=resp, dom=dom, moved=moved, score=np.round(score, 3),
-                             band=band))
+def private_staff():
+    """each employer's staff month by month from twelve months before its agreement to December 2026"""
+    E = employers()
+    rng = C.stream("private_staff")
+    people = []          # dict per employment spell
+    pid = 0
+    used_ids = set()
+
+    def new_id():
+        while True:
+            x = int(rng.integers(1_000_000_000, 1_299_999_999)) if rng.random() < 0.55 else int(rng.integers(20_000_000, 99_999_999))
+            if x not in used_ids:
+                used_ids.add(x)
+                return x
+
+    for e in E:
+        t_first = e["start"] - 12
+        staff = []
+        for _ in range(e["staff"]):
+            ten = int(6 + rng.gamma(1.4, 24))
+            staff.append(dict(pid=pid, emp=e["i"], id=new_id(), hire=t_first - ten, leave=None, unpaid=[],
+                              base=float(np.round(np.exp(rng.normal(np.log(e["salary_mu"] * 1_000_000), 0.22)), -3))))
+            pid += 1
+        for t in range(t_first, TEND + 1):
+            cur = [s for s in staff if s["leave"] is None]
+            for s in cur:
+                hz = e["h"] * (FIRST_YEAR_MULT if t - s["hire"] < 12 else 1.0)
+                if rng.random() < hz:
+                    s["leave"] = t            # last month worked (settlement paid in this month)
+                elif rng.random() < UNPAID_LEAVE:
+                    s["unpaid"].append((t + 1, int(rng.choice([1, 2]))))
+            n_now = sum(1 for s in staff if s["leave"] is None)
+            target = e["staff"] * (1 + 0.04 * (t - t_first) / 12)
+            hires = int(rng.poisson(max(0.0, target - n_now) * 0.8 + 0.2))
+            for _ in range(hires):
+                staff.append(dict(pid=pid, emp=e["i"], id=new_id(), hire=t, leave=None, unpaid=[],
+                                  base=float(np.round(np.exp(rng.normal(np.log(e["salary_mu"] * 1_000_000), 0.20)), -3))))
+                pid += 1
+        people.extend(staff)
+    return E, people
 
 
-def ids(rng, n, prefix, width, lo, span=None):
-    span = span or 20 * n
-    assert lo + span < 10 ** width
-    v = rng.choice(np.arange(lo, lo + span), n, replace=False)
-    return np.array(["%s%0*d" % (prefix, width, x) for x in v])
+def membership(E, people):
+    """who joined the cooperative and when, their monthly savings, and the launch borrowers"""
+    rng = C.stream("membership")
+    for s in people:
+        e = E[s["emp"]]
+        s["join"] = None
+        first = max(e["start"], s["hire"] + 3)
+        last = s["leave"] if s["leave"] is not None else TEND
+        if first > last:
+            continue
+        p0 = 0.62 if s["hire"] < e["start"] else 0.50
+        if rng.random() < p0:
+            j = first + int(rng.integers(0, 4)) if s["hire"] < e["start"] else first + int(rng.integers(1, 8))
+            if j <= last:
+                s["join"] = j
+                s["saving"] = float(max(20_000, np.round(s["base"] * rng.choice([0.02, 0.03, 0.04]), -3)))
+    elig = [s for s in people if s["join"] is not None and s["leave"] is None and s["join"] <= C.mi(2026, 1)]
+    quota = {"contact centres": 385, "retail chains": 505, "security services": 355, "logistics and courier": 400,
+             "food processing": 465, "private clinics": 290}
+    borrowers = []
+    for sec in C.SECTORS:
+        pool = [s for s in elig if E[s["emp"]]["sector"] == sec]
+        sel = rng.choice(len(pool), quota[sec], replace=False)
+        sel.sort()
+        borrowers.extend(pool[i] for i in sel)
+    borrowers.sort(key=lambda s: s["pid"])
+    for s in borrowers:
+        s["term"] = int(rng.choice([12, 24, 36, 48, 60], p=[0.08, 0.22, 0.30, 0.25, 0.15]))
+        rng.uniform(0.0135, 0.0175)
+        s["rate"] = {12: 0.0149, 24: 0.0149, 36: 0.0159, 48: 0.0165, 60: 0.0172}[s["term"]]
+        net = s["base"] * 0.88
+        inst = round(net * float(rng.uniform(0.10, 0.29)), -3)
+        s["principal"] = round(inst * (1 - (1 + s["rate"]) ** -s["term"]) / s["rate"], -3)
+        s["inst"] = round(s["principal"] * s["rate"] / (1 - (1 + s["rate"]) ** -s["term"]), 0)
+        s["net"] = net
+    return borrowers
 
 
-# --------------------------------------------------------------------------------------------- last year's test
-def last_year():
-    rng = C.stream("ly")
-    ly = people(P["n_ly"], rng, C.LY_LIST, dt.date(2018, 1, 1), dt.date(2025, 11, 30))
-    ly["lbs"] = ids(rng, len(ly), "L", 7, 1200000)
-    ly["crm"] = ids(rng, len(ly), "C", 7, 3400000)
-    ly["app_user"] = np.where(np.isin(ly.device, ["ios", "android", "mixed"]) & (rng.random(len(ly)) < 0.8),
-                              ids(rng, len(ly), "U", 8, 50000000), "")
-    ly["T"] = (rng.random(len(ly)) < 0.5).astype(int)
-    b1 = [C.next_bill_after(k, C.LY_LIST) for k in ly.dom]
-    ly["b1"] = b1
-    ly["d"] = np.array([(b - C.LY_LIST).days for b in b1], float)
-    # the bills from December 2025 to January 2027 on each subscription's day
-    bills = []
-    for k in ly.dom.values:
-        row = []
-        y, m = 2025, 12
-        for i in range(10):                    # the legacy system's bills to September 2026
-            row.append(C.month_day(y, m, k))
-            y, m = C.add_months(dt.date(y, m, 1), 1)
-        row += [dt.date(2026, 10, 1), dt.date(2026, 11, 1), dt.date(2026, 12, 1), dt.date(2027, 1, 1)]
-        bills.append(row)
-    ly["bills"] = bills   # index 0 December 2025, 1 January 2026, 2 February (= b1), 3 March (= b2) ...
-    n = len(ly)
-    p = ly.p.values; T = ly["T"].values; d = ly.d.values; resp = ly.resp.values
-    r1 = np.clip(r_of_d(d) * resp, 0, 0.95)
-    mode = d <= 14
-    alive = np.ones(n, bool)
-    end_bill = np.full(n, -1)                 # index of the bill they did not pay (access ends the day before)
-    accepted = np.zeros(n, bool)
-    disc_bills = [set() for _ in range(n)]    # bill indexes carrying the offer's half price
-    desk_bills = [set() for _ in range(n)]    # bill indexes carrying the save desk's half price
-    acc_day = np.array([None] * n, dtype=object)
-    restart_day = np.array([None] * n, dtype=object)
-    rr = C.stream("ly_decisions")
-    for j in range(2, 14):                    # decisions at February 2026 ... January 2027 bills
-        pj = p if j <= 3 else p * P["later"]
-        c = (rr.random(n) < pj) & alive
-        if j == 2:
-            c2 = c.copy()
-            pers = (T == 1) & c & (rr.random(n) < r1)
-            sure = (T == 1) & ~c & alive & mode & (rr.random(n) < P["q_sure"] * resp)
-            accepted = pers | sure
-            for i in np.where(accepted)[0]:
-                disc_bills[i].update((2, 3))
-            stay = pers
-        elif j == 3:
-            c3 = c.copy()
-            stay = accepted & c & (rr.random(n) < P["r2"])
-        else:
-            stay = np.zeros(n, bool)
-        # the save desk keeps some callers with its own half price; an accepter already on half price at the
-        # second bill is not offered it again
-        call = c & ~stay & ~(accepted & (j == 3)) & (rr.random(n) < P["f_call"]) & (rr.random(n) < P["s_desk"])
-        for i in np.where(call)[0]:
-            desk_bills[i].update((j, j + 1))
-        leave = c & ~stay & ~call
-        end_bill = np.where(leave & (end_bill < 0), j, end_bill)
-        alive = alive & ~leave
-    # re-centre last January's graded discount cells inside their hundreds: acceptance moves only for subscribers in
-    # the offer arm who were deciding at neither bill (they pay both bills either way), so nothing the call reads moves
-    acc0 = accepted.copy()
-    rc = C.stream("ly_recentre")
-    plan_v = ly.plan.values
-    pays_mar = (end_bill < 0) | (end_bill >= 4)
-    ly_shift = {}
-    for pl in C.PLANS:
-        dpl = int(round(int(round(C.PRICE[pl] * 100)) * C.OFFER_SHARE)) / 100.0
-        sel = plan_v == pl
-        feb, mar = dpl * (accepted & sel).sum(), dpl * (accepted & sel & pays_mar).sum()
-        ks = sorted(range(-25, 26), key=lambda k: (abs(k), k))
-        good = [k for k in ks if min(C.edge(feb + k * dpl, 100), C.edge(mar + k * dpl, 100)) >= 30]
-        k = good[0] if good else max(ks, key=lambda k: min(C.edge(feb + k * dpl, 100), C.edge(mar + k * dpl, 100)))
-        if k < 0:
-            pool = np.where(sel & accepted & ~pers & ~c3)[0]
-            for i in rc.choice(pool, -k, replace=False):
-                accepted[i] = False
-                disc_bills[i] = set()
-        elif k > 0:
-            pool = np.where(sel & (T == 1) & mode & ~c2 & ~c3 & ~accepted)[0]
-            for i in rc.choice(pool, k, replace=False):
-                accepted[i] = True
-                disc_bills[i].update((2, 3))
-        ly_shift[pl] = k
-    ly.attrs["recentre"] = ly_shift
-    ly["accepted"] = accepted
-    ly["end_bill"] = end_bill
-    # acceptance times: in the days before the first bill, never before the send
-    for i in np.where(acc0)[0]:
-        b = ly.bills.iat[i][2]
-        lag = int(rr.integers(1, int(min(7, d[i])) + 1)) if d[i] >= 1 else 0
-        if accepted[i]:
-            acc_day[i] = max(b - dt.timedelta(lag), C.LY_LIST)
-    for i in np.where(accepted & ~acc0)[0]:
-        b = ly.bills.iat[i][2]
-        lag = int(rc.integers(1, int(min(7, d[i])) + 1)) if d[i] >= 1 else 0
-        acc_day[i] = max(b - dt.timedelta(lag), C.LY_LIST)
-    ly["acc_day"] = acc_day
-    # restarts: a few leavers come back within four weeks, under the same subscription
-    for i in np.where(end_bill >= 0)[0]:
-        if rr.random() < P["restart"]:
-            b = ly.bills.iat[i][end_bill[i]]
-            restart_day[i] = b + dt.timedelta(int(rr.integers(3, 28)))
-    ly["restart_day"] = restart_day
-    ly["disc_bills"] = disc_bills
-    ly["desk_bills"] = desk_bills
-    ly["channel"] = np.where(accepted & (ly.app_user != "") & (rr.random(n) < P["app_accept"] / 0.6), "app",
-                             np.where(accepted, rr.choice(np.array(["email", "web"]), n, p=[0.7, 0.3]), ""))
-    ly["also_email"] = (ly.channel == "app") & (rr.random(n) < P["both_channels"])
-    ly["opened"] = (T == 1) & (rr.random(n) < P["open_rate"])
-    ly["loyal_bill"] = np.where(rr.random(n) < P["loyalty"] * 5, rr.integers(1, 6, n), -1)
-    ly["subscribed_h"] = ~((end_bill == 2) | (end_bill == 3)) | np.array(
-        [rd is not None and rd <= C.LY_HORIZON for rd in restart_day])
-    return ly
+def launch_truth(E, borrowers):
+    """each launch loan's chance of 90 days past due at a month-end up to 31 January 2028 under the true hazards.
+    Month 1 is February 2027 (the first deduction); a borrower whose last month worked is m misses the deduction of
+    month m + 1 first and reaches 90 days past due L months after that; a margin loss starting in month c reaches it
+    L months later."""
+    out = []
+    for s in borrowers:
+        e = E[s["emp"]]
+        h = e["h"]
+        surv = 1.0
+        p = 0.0
+        for m in range(1, 13):
+            c = m + 1
+            rem = (s["term"] - c + 1) * s["inst"] / s["net"]
+            lagok = sum(v for L, v in LAG_P.items() if c + L <= 12)
+            p += surv * h * conv_prob(rem) * lagok
+            emb = sum(v for L, v in ((3, 0.7), (4, 0.3)) if m + L <= 12)
+            p += surv * (1 - h) * RESID_EMBARGO * EMBARGO_CONV * emb
+            surv *= (1 - h) * (1 - RESID_EMBARGO)
+        out.append(p)
+    return np.array(out)
 
 
-def true_uplift(df):
-    """expected kept share at the two bills after the send, offer against none, for each subscription"""
-    p = df.p.values
-    r1 = np.clip(r_of_d(df.d.values) * df.resp.values, 0, 0.95)
-    q = np.where(df.d.values <= 14, P["q_sure"] * df.resp.values, 0.0)
-    fs = P["f_call"] * P["s_desk"]
-    acc = p * r1 + (1 - p) * q
-    stay1_noacc = (1 - p) * (1 - q) + p * (1 - r1) * fs
-    treated = acc * (1 - p * (1 - P["r2"]) * (1 - fs)) + stay1_noacc * (1 - p * (1 - fs))
-    control = (1 - p * (1 - fs)) ** 2
-    return treated - control
+_CACHE = {}
 
 
-# ------------------------------------------------------------------------------------------------ this year's list
-def this_year(ly):
-    rng = C.stream("ty")
-    n = P["n_ty"]
-    n_over = int(round(n * P["overlap"]))
-    # last year's members still subscribed in January 2027 and still on the at-risk list
-    alive = ly[(ly.end_bill < 0)].copy()
-    pick = rng.choice(alive.index.values, n_over, replace=False)
-    over = alive.loc[pick]
-    fresh = people(n - n_over, rng, C.TY_LIST, dt.date(2019, 1, 1), dt.date(2026, 11, 30))
-    fresh["lbs"] = ids(rng, len(fresh), "L", 7, 4500000)
-    fresh["crm"] = ids(rng, len(fresh), "C", 7, 7000000)
-    keep = ["start", "plan", "region", "device", "arts", "news", "supp", "pay", "ten", "p", "resp", "dom", "moved",
-            "score", "band", "lbs", "crm"]
-    o = over[keep].copy()
-    # a year on: their tenure and reading moved, their risk is this year's
-    o["ten"] = o["ten"] + 12.0
-    ro = C.stream("ty_overlap")
-    o["arts"] = ro.poisson(np.exp(ro.normal(2.0, 0.9, len(o))))
-    z = np.log(o.p / (1 - o.p)) - 0.30 * np.log(o.ten / (o.ten - 12.0)) + ro.normal(0, 0.15, len(o))
-    o["p"] = 1 / (1 + np.exp(-z))
-    o["score"] = np.round(np.clip(o.p + ro.normal(0, 0.06, len(o)), 0.20, 0.97), 3)
-    o["band"] = np.where(o.score >= 0.55, "A", np.where(o.score >= 0.40, "B", "C"))
-    o["from_ly"] = True
-    fresh["from_ly"] = False
-    ty = pd.concat([o, fresh[keep + ["from_ly"]]], ignore_index=True)
-    ty = ty.iloc[rng.permutation(len(ty))].reset_index(drop=True)
-    ty["sp_sub"] = ids(rng, len(ty), "S", 9, 400000000)
-    ty["sp_acct"] = ids(rng, len(ty), "A", 8, 61000000)
-    ty["d"] = 6.0
-    ty["has_addon"] = rng.random(len(ty)) < P["addon"]
-    ty["addon_lbs"] = np.where(ty.has_addon, ids(rng, len(ty), "L", 7, 5400000), "")
-    ty["addon_sp"] = np.where(ty.has_addon, ids(rng, len(ty), "S", 9, 700000000), "")
-    ty["addon_dom"] = np.where(ty.has_addon, rng.integers(1, 29, len(ty)), 0)
-    ty["batch"] = np.array(["MIG-%02d" % x for x in rng.integers(1, 13, len(ty))])
-    # the legacy system's 1 October run still held some batches of day-1 subscriptions
-    held = set(rng.choice(["MIG-%02d" % x for x in range(1, 13)], 7, replace=False))
-    legacy = np.array([x < C.MOVE for x in ty.start])           # joined before the platform took over billing
-    ty["legacy"] = legacy
-    ty["dup_news"] = legacy & (ty.dom == 1) & ty.batch.isin(held)
-    ty["dup_addon"] = legacy & ty.has_addon & (ty.addon_dom == 1) & ty.batch.isin(held)
-    ty["loyal_month"] = np.where(rng.random(len(ty)) < P["loyalty"] * 4, rng.integers(0, 4, len(ty)), -1)
-    # accounts: a list subscription is usually its account's only plan; some accounts also pay for a second plan
-    # subscription (a partner's, a student's) that is not on the list, and some list subscriptions are paid from
-    # another subscriber's account, whose own subscription is not on the list
-    ra = C.stream("ty_accounts")
-    m = len(ty)
-    other = ra.random(m) < P["paid_by_other"]
-    second = (ra.random(m) < P["second_sub"]) & ~other
-    ty["paid_by_other"] = other
-    ty["second"] = second
-    ty.loc[other, "has_addon"] = False
-    ty.loc[other, "addon_lbs"] = ""
-    ty.loc[other, "addon_sp"] = ""
-    ty.loc[other, "addon_dom"] = 0
-    ty["dup_addon"] = ty.legacy & ty.has_addon & (ty.addon_dom == 1) & ty.batch.isin(held)
-    k = int((other | second).sum())
-    ex = pd.DataFrame(dict(owner=np.where(other | second)[0]))
-    ex["kind"] = np.where(other[ex.owner.values], "payer", "second")
-    # an account holder paying for someone else's subscription was a subscriber before the move
-    span = np.where(ex.kind == "payer", (dt.date(2026, 9, 30) - dt.date(2018, 6, 1)).days,
-                    (dt.date(2026, 11, 30) - dt.date(2018, 6, 1)).days)
-    ex["start"] = [dt.date(2018, 6, 1) + dt.timedelta(int(x)) for x in (ra.random(k) * span).astype(int)]
-    ex["plan"] = ra.choice(np.array(C.PLANS), k, p=[0.62, 0.26, 0.12])
-    dom = np.array([s.day for s in ex.start])
-    ex["dom"] = np.where(ra.random(k) < P["moved_day"], ra.integers(1, 29, k), dom)
-    ex["sp_sub"] = ids(ra, k, "S", 9, 430000000)
-    ex["legacy"] = np.array([s < C.MOVE for s in ex.start])
-    lbs_all = ids(ra, k, "L", 7, 7000000)
-    ex["lbs"] = np.where(ex.legacy, lbs_all, "")
-    ex["batch"] = ty.batch.values[ex.owner.values]
-    ex["dup"] = ex.legacy & (ex.dom == 1) & ex.batch.isin(held)
-    payer_acct = ids(ra, k, "A", 8, 69000000)
-    ex["sp_acct"] = np.where(ex.kind == "payer", payer_acct, ty.sp_acct.values[ex.owner.values])
-    # households: a second subscription set up with the list subscription takes its plan, its start and its billing
-    # day, so the two are billed together; a payer's own subscription is on another plan than the one it pays for
-    rh = C.stream("ty_household")
-    own = ex.owner.values
-    hh = (ex.kind.values == "second") & (rh.random(k) < P["household"])
-    ex["household"] = hh
-    ex.loc[hh, "plan"] = ty.plan.values[own[hh]]
-    tog = hh & legacy[own] & (C.stream("ty_household_together").random(k) < P["together"])
-    ex["together"] = tog
-    ex.loc[tog, "start"] = pd.Series(ty.start.values[own[tog]], index=ex.index[tog])
-    ex.loc[tog, "dom"] = ty.dom.values[own[tog]]
-    same = (ex.kind.values == "payer") & (ex.plan.values == ty.plan.values[own])
-    alt = rh.random(k)
-    for j in np.where(same)[0]:
-        others = [p for p in C.PLANS if p != ty.plan.iat[own[j]]]
-        ex.iat[j, ex.columns.get_loc("plan")] = others[int(alt[j] * 2)]
-    ex["legacy"] = np.array([s < C.MOVE for s in ex.start])
-    ex["lbs"] = np.where(ex.legacy, lbs_all, "")
-    ex["dup"] = ex.legacy & (ex.dom == 1) & ex.batch.isin(held)
-    # a list subscription paid from another account carries that account's id
-    pay_rows = ex[ex.kind == "payer"]
-    ty.loc[pay_rows.owner.values, "sp_acct"] = pay_rows.sp_acct.values
-    return ty, held, ex
+def world():
+    if "w" not in _CACHE:
+        P = public_loans()
+        E, people = private_staff()
+        B = membership(E, people)
+        tr = launch_truth(E, B)
+        _CACHE["w"] = dict(P=P, E=E, people=people, B=B, truth=tr)
+    return _CACHE["w"]
+
+
+if __name__ == "__main__":
+    W = world()
+    P = W["P"]
+    print("public loans", P["n"], "returns", len(P["returns"]))
+    d12 = (P["dflt_m"] >= 0) & (P["dflt_m"] <= P["disb"] + 12)
+    ok = P["disb"] <= TEND - 12
+    print("public 12m default", d12[ok].mean())
+    print("people", len(W["people"]), "launch", len(W["B"]), "truth", W["truth"].sum())
+    for sec in C.SECTORS:
+        v = [p for p, s in zip(W["truth"], W["B"]) if W["E"][s["emp"]]["sector"] == sec]
+        print("  %-24s n=%4d  %.1f" % (sec, len(v), sum(v)))

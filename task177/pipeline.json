@@ -1,26 +1,28 @@
 {
  "task": "task177",
  "owner": "sathya8571",
- "status": "DESIGN",
+ "status": "BUILD",
  "domain": "banking-credit-financial-risk/credit-scoring-pd-modeling",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-23",
  "stump": "A PD model fitted on the public book's borrower attributes and scored on the launch file files about 50 of the 2,400 loans in default by 31 January 2028; the public book's defaults run almost wholly through borrowers leaving the payroll with the loan open, which the private employers' own salary batches show five to six times as often, so the count is about 250.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-23",
+  "checks": 51
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-23 --asof 2027-01-22 (five lines, each answered in the design note's ## Leak sweep; no LEAK)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "surface": "exit 0 2026-10-23, no promoted pair, personas Paola Ayala and Esteban Ospina only",
+  "heart": "WARN 2026-10-23 (overuse.strategy, overuse.objective, overuse.gate_g; task45 and task75 differentiated)",
+  "nearest": "task268 0.08, task446 0.07, task130 0.06"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +30,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2: design (readability screen, fork table, ladder, closure table, asks, prompt.txt; gate precut.py) from the design note's ## Draw, ## Screen and ## Default path",
+ "resume": "stage 4: two scored readers and the judge (main session); stage 3 green on target.zip 2db9de82",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -228,5 +230,47 @@
   },
   "architecture": 2,
   "fate": "RETIRED 2026-10-22: the asks never cleared two readers in one round; the call held in every blind read"
+ },
+ "stage3": {
+  "build": "generator/build.py 2026-10-23: checks.py PASS 158 of 158, verify.py PASS 40 of 40, a second full build byte-identical (20 files), target.zip cut from the final rebuild",
+  "zip_sha256": "2db9de82be2793c80156c2e585cd5f120e6de975fdc7e7e5686bf0b4fe973bc3",
+  "figures_check": "exit 0 (43 figures)",
+  "voice_check": "PASS (798 characters)",
+  "precut": "exit 0 (51 checks)",
+  "scrub": "target and golden clean",
+  "cracker": "pair ceiling 28.5, mirror leakage 0.0 (cracker routes 0 of 12 on ask A twice, 0 of 8 on ask B twice)",
+  "call": "250 loans (247.0 expected); sector shares 20, 10, 10, 10, 10, 5; default path 50 (46.7)",
+  "golden_family": "237 to 264 loans over the standing family, every sector in its cell; crude annual approximation 278 the only form outside",
+  "figures_json_call_keys": [
+   "call_share",
+   "call_share_unrounded",
+   "call_total",
+   "call_total_unrounded"
+  ],
+  "ask_keys": [
+   "ask_a_deducted.<sector>",
+   "ask_a_outstanding.<sector>",
+   "ask_b_recovered.<2023|2024>.<unit type>"
+  ],
+  "sectors": [
+   "contact centres",
+   "retail chains",
+   "security services",
+   "logistics and courier",
+   "food processing",
+   "private clinics"
+  ],
+  "unit_types": [
+   "national",
+   "territorial",
+   "health",
+   "education"
+  ],
+  "component_keys": [
+   "cc_conversion_pct",
+   "cc_leave_launch_pct"
+  ],
+  "context_keys": "counts.* and parameters.* (provenance, not graded)",
+  "score_reader": "python3 .claude/skills/leak-check/score_reader.py task177 <reader.json> --call-key call_total --call-key call_share"
  }
 }

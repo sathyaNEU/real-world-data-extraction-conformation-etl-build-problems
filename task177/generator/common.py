@@ -1,7 +1,9 @@
-"""task177 shared constants and helpers: the file names, the in-fiction calendar, the UK clock, the prices, the random
-streams and the writers that make the files reproduce byte for byte."""
+"""task177 shared constants and helpers: the cooperative, the pack's file names, the in-fiction calendar, the random
+streams, the month arithmetic, the writers that make the files reproduce byte for byte and the rounding the prompt
+asks for."""
 from __future__ import annotations
 
+import calendar
 import csv
 import datetime as dt
 import hashlib
@@ -10,103 +12,76 @@ import math
 
 import numpy as np
 
-ORG = "Daily Lantern Media"
-TITLE = "The Daily Lantern"
+ORG = "Cooperativa Servidores de Valdemora"
+SHORT = "Coopservir"
+COUNTRY = "Republica de Valdemora"
+CUR = "VMP"
 
 # ------------------------------------------------------------------------------------------------ the pack's files
-F_ASSIGN = "retention_campaign_2026-01_assignment.csv"
-F_PROFILE = "subscriber_profile_2026-01-31.csv"
-F_LIST = "at_risk_list_2027-01-26.csv"
-F_LBS = "legacy_billing_invoices.csv"
-F_SPINV = "subscriptions_platform_invoices.csv"
-F_XWALK = "subscription_id_crosswalk.csv"
-F_EVENTS = "subscription_events.csv"
-F_OFFERS = "offers_engine_acceptances_2026.csv"
-F_EMAIL = "email_campaign_log_2026-01.csv"
-F_NOTE = "billing_move_note_2026.pdf"
-F_PLAN = "retention_offer_plan_2027.docx"
+F_LOANS = "payroll_loans_public_2017_2026.csv"
+F_XWALK = "legacy_core_crosswalk_2021.csv"
+F_RETURNS = "treasury_deduction_returns_2017_2026.csv"
+F_DEFAULTS = "default_register_2017_2026.csv"
+F_REGISTERS = "employer_payroll_registers_2025_2026.csv"
+F_AGREE = "deduction_agreements_register.xlsx"
+F_LAUNCH = "libranza_empresarial_disbursement_file_2027-02-01.csv"
+F_SCHED = "savings_contribution_schedules_2025_2026.csv"
+F_STMT = "collection_account_statement_2025_2026.csv"
+F_RECEIPTS = "defaulted_loan_receipts_2023_2026.csv"
+F_SAVINGS = "member_savings_ledger_2023_2026.csv"
+F_RULES = "libranza_empresarial_product_rules_2026.pdf"
 F_DICT = "data_dictionary.xlsx"
-F_SURVEY = "reader_survey_2026_q4.csv"
-F_VALID = "retention_model_validation_2026-12.pdf"
-ALL_FILES = (F_ASSIGN, F_PROFILE, F_LIST, F_LBS, F_SPINV, F_XWALK, F_EVENTS, F_OFFERS, F_EMAIL, F_NOTE,
-             F_PLAN, F_DICT, F_SURVEY, F_VALID)
-DISTRACTORS = (F_SURVEY, F_VALID)
+F_SUPER = "supervisor_annual_return_2025.pdf"
+F_LABOUR = "labour_market_bulletin_2026q3.csv"
+ALL_FILES = (F_LOANS, F_XWALK, F_RETURNS, F_DEFAULTS, F_REGISTERS, F_AGREE, F_LAUNCH, F_SCHED, F_STMT, F_RECEIPTS,
+             F_SAVINGS, F_RULES, F_DICT, F_SUPER, F_LABOUR)
+DISTRACTORS = (F_SUPER, F_LABOUR)
 
 # ------------------------------------------------------------------------------------------- the in-fiction calendar
-LY_LIST = dt.date(2026, 1, 31)          # last year's list, cut and sent on this Saturday
-LY_SEND = dt.datetime(2026, 1, 31, 9, 30)
-LY_HORIZON = dt.date(2026, 3, 31)
-LBS_FROM = dt.date(2025, 12, 1)         # the legacy invoices in the pull start with December 2025's bills
-MOVE = dt.date(2026, 10, 1)             # the subscriptions platform's first bill run (00:05 UK time)
-LBS_LAST = dt.date(2026, 10, 1)         # the legacy system's last run (02:00, day-1 subscriptions it still held)
-CREDIT_DAY = dt.date(2026, 10, 14)      # the platform's credit notes for the bills both systems raised for October
-PULL = dt.datetime(2027, 1, 25, 18, 40) # the extract, UK time
-TY_LIST = dt.date(2027, 1, 26)
-TY_SEND = dt.datetime(2027, 1, 26, 9, 30)
-TY_HORIZON = dt.date(2027, 3, 31)
-ASK_A_MONTHS = ((2026, 2), (2026, 3), (2026, 4))
-ASK_B_MONTHS = ((2026, 10), (2026, 11), (2026, 12), (2027, 1))
+HIST_FROM = (2017, 1)            # first disbursement month in the public book extract
+DATA_END = (2026, 12)            # the last month every extract covers
+CORE_MOVE = (2021, 7)            # the new core's first month; legacy loans migrated under new numbers
+RET_LAYOUT = (2023, 4)           # the treasury's new return layout from the April 2023 payroll
+PORTAL_UPGRADE = (2026, 7)       # the intake portal stores employee ids without the document prefix from here
+PULL = dt.date(2027, 1, 22)      # the pull for the launch file and every extract
+DISBURSE = dt.date(2027, 2, 1)   # every launch loan is disbursed on this day
+HORIZON = dt.date(2028, 1, 31)   # the forecast window ends at this month-end
+N_LAUNCH = 2400
+ROUND_TOTAL = 50            # the prompt: the total to the nearest 50 loans
+ROUND_SHARE = 5             # each sector share to the nearest 5 per cent
+ROUND_AMOUNT = 1000         # every amount to the nearest VMP 1,000
+
 MONTH_NAME = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August",
               9: "September", 10: "October", 11: "November", 12: "December"}
 
-# British Summer Time: UTC+1 from 01:00 UTC on the last Sunday of March to 01:00 UTC on the last Sunday of October
-BST = {2025: (dt.datetime(2025, 3, 30, 1), dt.datetime(2025, 10, 26, 1)),
-       2026: (dt.datetime(2026, 3, 29, 1), dt.datetime(2026, 10, 25, 1)),
-       2027: (dt.datetime(2027, 3, 28, 1), dt.datetime(2027, 10, 31, 1))}
+AGENCY_TYPES = ("national", "territorial", "health", "education")
+SECTORS = ("contact centres", "retail chains", "security services", "logistics and courier", "food processing",
+           "private clinics")
 
 
-def to_utc(local):
-    """UK local wall time to UTC (the autumn's repeated hour read as its first, BST, pass)"""
-    a, b = BST[local.year]
-    a_loc, b_loc = a, b + dt.timedelta(hours=1)
-    return local - dt.timedelta(hours=1) if a_loc + dt.timedelta(hours=1) <= local < b_loc else local
+def mi(y, m):
+    """month index"""
+    return y * 12 + (m - 1)
 
 
-def to_local(utc):
-    a, b = BST[utc.year]
-    return utc + dt.timedelta(hours=1) if a <= utc < b else utc
+def ym(i):
+    return i // 12, i % 12 + 1
 
 
-# --------------------------------------------------------------------------------------------------------- the plans
-PLANS = ("Digital", "Digital Plus", "Family")
-PLAN_CODE = {"Digital": "DIG-M", "Digital Plus": "DGP-M", "Family": "FAM-M"}
-PRICE = {"Digital": 9.99, "Digital Plus": 13.99, "Family": 17.99}       # monthly, zero-rated for VAT
-ADDON = "Puzzles"
-ADDON_CODE = "PUZ-M"
-ADDON_PRICE = 3.49
-OFFER_SHARE = 0.5                        # half price on the next two monthly bills
-OFFER_CODE_WEB = "STAY50"                # the code the offers engine applied to web and email acceptances
-OFFER_CODE_APP = "LNT-APP-JAN26"         # the code the app team set up for in-app acceptances of the same offer
-DESK_CODE = "STAY50"                     # the save desk's discretionary half price uses the same billing code
-LOYAL_CODE = "LOYAL-CR"                  # goodwill credits on a bill (service apologies)
-RATE_CODE = {"Digital": "DIG-MA", "Digital Plus": "DGP-MA", "Family": "FAM-MA"}   # the app's two-bill half-price rates
+def month_end(i):
+    y, m = ym(i)
+    return dt.date(y, m, calendar.monthrange(y, m)[1])
+
+
+def month_start(i):
+    y, m = ym(i)
+    return dt.date(y, m, 1)
 
 
 def stream(name):
     """an independent, reproducible random stream for one part of the world"""
-    h = int.from_bytes(hashlib.sha256(("task177v2/" + name).encode()).digest()[:8], "little")
+    h = int.from_bytes(hashlib.sha256(("task177v3/" + name).encode()).digest()[:8], "little")
     return np.random.default_rng(h)
-
-
-def add_months(d, n):
-    y, m = d.year + (d.month - 1 + n) // 12, (d.month - 1 + n) % 12 + 1
-    return y, m
-
-
-def month_day(y, m, dom):
-    """the bill day of a subscription anniversary-billed on day dom, in month (y, m): days 29 to 31 fall back to the
-    month's last day"""
-    import calendar
-    return dt.date(y, m, min(dom, calendar.monthrange(y, m)[1]))
-
-
-def next_bill_after(dom, day):
-    """the first anniversary bill strictly after `day` for a subscription billed on day dom"""
-    b = month_day(day.year, day.month, dom)
-    if b > day:
-        return b
-    y, m = add_months(day, 1)
-    return month_day(y, m, dom)
 
 
 def write_csv(path, head, rows, crlf=True):
@@ -125,24 +100,59 @@ def read_csv(path):
         return list(csv.DictReader(fh))
 
 
+def nearest(v, unit):
+    """v printed to the nearest unit, halves away from zero"""
+    return int(unit * math.floor(v / unit + 0.5))
+
+
 def edge(v, unit):
     """distance from v to the nearest edge of the printed cell it falls in"""
     c = round(v / unit) * unit
     return unit / 2 - abs(v - c)
 
 
-FORECAST_UNIT = 5                        # the prompt asks for the share to the nearest 5 per cent
+def annuity(principal, rate, n):
+    return principal * rate / (1 - (1 + rate) ** -n)
 
 
-def pct5(v):
-    """a share printed to the nearest 5 per cent, halves away from zero"""
-    return int(FORECAST_UNIT * math.floor(v * 100 / FORECAST_UNIT + 0.5))
+def balance_after(principal, rate, n, k):
+    """scheduled balance after k instalments of an n-month annuity"""
+    if k <= 0:
+        return principal
+    if k >= n:
+        return 0.0
+    a = annuity(principal, rate, n)
+    return principal * (1 + rate) ** k - a * ((1 + rate) ** k - 1) / rate
 
 
-def hundred(v):
-    """an amount in pounds printed to the nearest hundred, halves away from zero"""
-    return int(100 * math.floor(v / 100 + 0.5))
+def nit_check(base):
+    """the check digit of a Valdemoran tax number (the modulus-11 weights the tax office publishes)"""
+    w = (3, 7, 13, 17, 19, 23, 29, 37, 41, 43, 47, 53, 59, 67, 71)
+    s = sum(int(d) * w[i] for i, d in enumerate(reversed(base)))
+    r = s % 11
+    return r if r < 2 else 11 - r
+
+
+def fmt_nit(base):
+    b = str(base)
+    return "%s.%s.%s-%d" % (b[:3], b[3:6], b[6:], nit_check(b))
 
 
 def money(v):
-    return "%.2f" % (math.floor(v * 100 + 0.5) / 100)
+    return int(math.floor(v + 0.5))
+
+
+HOLIDAYS = {(1, 1), (5, 1), (7, 20), (8, 7), (12, 8), (12, 25)}
+
+
+def business_day(d, back=False):
+    """the next (or previous) business day on or after (before) d: weekends and the fixed national holidays"""
+    step = dt.timedelta(days=-1 if back else 1)
+    while d.weekday() >= 5 or (d.month, d.day) in HOLIDAYS:
+        d = d + step
+    return d
+
+
+def dotted(x):
+    """a national id or number with thousands dots, as Valdemoran forms print it"""
+    return "{:,}".format(int(x)).replace(",", ".")

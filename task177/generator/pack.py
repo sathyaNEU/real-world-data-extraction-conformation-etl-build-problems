@@ -1,11 +1,15 @@
-"""task177 pack: every file under target/, cut from the world. The records here are what Daily Lantern Media's systems
-export: the campaign tool's two lists, the CRM snapshot, the legacy billing system's invoice lines (on each
-subscription's own day), the subscriptions platform's invoices and lines (UTC), the identifier crosswalk, the
-subscription events, the offers engine's acceptances (UTC) and the email platform's log (UTC)."""
+"""task177 pack: every file under target/, written from the world the way each system would export it.
+
+Public side: the loan book at 31 December 2026 (legacy loans that were still open in June 2021 carried into the new
+core under new numbers, the rest kept under their legacy numbers), the crosswalk, the Tesoreria's deduction returns,
+the default register, the receipts on defaulted loans and the members' savings ledger.
+Private side: the employers' payroll registers, the agreements register, the launch disbursement file, the savings
+contribution schedules and the collection account statement.
+Documents: the product rules, the data dictionary, the supervisor's annual return and the labour market bulletin."""
 from __future__ import annotations
 
 import datetime as dt
-import json
+import math
 import os
 
 import numpy as np
@@ -13,524 +17,638 @@ import numpy as np
 import common as C
 import world as W
 
-
-def _dmy(d):
-    return d.strftime("%d/%m/%Y")
-
-
-def _utc_iso(t):
-    return t.strftime("%Y-%m-%dT%H:%M:%SZ")
+TEND = W.TEND
+LEGACY_END = C.mi(*C.CORE_MOVE) - 1      # June 2021, the legacy core's last month
 
 
-RUNS = [(dt.date(2026, 10, 1), dt.date(2026, 10, 31)), (dt.date(2026, 11, 1), dt.date(2026, 11, 30)),
-        (dt.date(2026, 12, 1), dt.date(2026, 12, 31)), (dt.date(2027, 1, 1), dt.date(2027, 1, 31))]
+def iso(d):
+    return d.isoformat()
 
 
-def bill_line(s, mi, run, pend):
-    """the platform line for subscription s in bill run mi, and whether it is the subscription's own first bill
-    (raised on its start day); None before the subscription starts"""
-    s0 = s["start"]
-    if s0 > pend:
-        return None
-    if s["kind"] == "addon":
-        code, name, price = C.ADDON_CODE, "Puzzles add-on", C.ADDON_PRICE
-    else:
-        code, name, price = C.PLAN_CODE[s["plan"]], "%s monthly" % s["plan"], C.PRICE[s["plan"]]
-    if s0 >= C.MOVE and s0 >= run:            # joins on the platform this month: from its start day
-        dn = (pend - s0).days + 1
-        return (s["sub"], code, "%s (from %s)" % (name, s0.strftime("%d %b")), s0, pend,
-                round(price * dn / pend.day, 2)), True
-    if mi == 0 and s0 < C.MOVE:                 # the first platform bill runs on from the last legacy period
-        k = s["dom"]
-        st = dt.date(2026, 10, 1) if k == 1 else C.month_day(2026, 10, k)
-        days = (pend - st).days + 1
-        return (s["sub"], code, "%s (from %s)" % (name, st.strftime("%d %b")), st, pend,
-                round(price * days / 31, 2)), False
-    return (s["sub"], code, name, run, pend, price), False
+def mstr_old(i):
+    y, m = C.ym(i)
+    return "%04d%02d" % (y, m)
 
 
-class Records:
-    """the world and every row the exports carry, built once"""
+def mstr(i):
+    y, m = C.ym(i)
+    return "%04d-%02d" % (y, m)
 
-    def __init__(self):
-        self.ly = W.last_year()
-        self.ty, self.held, self.ex = W.this_year(self.ly)
-        rng = C.stream("records")
-        self.rng = rng
-        # app acceptances the offers engine did not apply: the app put the subscription on a half-price rate for its
-        # next two bills, so those bills carry no discount line
-        u = C.stream("app_fallback").random(len(self.ly))
-        self.fallback = set(np.where(self.ly.accepted.values & (self.ly.channel.values == "app")
-                                     & (u < W.P["app_fallback"]))[0].tolist())
-        # acceptances the engine applied only after the subscription's first discounted bill had been raised: billing
-        # posted the half price on each of the two bills as a credit against the acceptance, not as a discount line
-        v = C.stream("offer_credit").random(len(self.ly))
-        self.credit_booked = set(np.where(self.ly.accepted.values & (v < W.P["credit_booked"]))[0].tolist()) - self.fallback
-        self._offers_and_email()
-        self._lbs_invoices()
-        self._recentre_goodwill()
-        self._sp_invoices()
-        self._events()
 
-    # ------------------------------------------------------------------------------------- goodwill credits
-    def _recentre_goodwill(self):
-        """goodwill credits (two pounds on a bill) re-centre this year's list billing cells inside their hundreds:
-        a few hundred credits a month across the list, moved by at most a few dozen in any month and plan"""
-        T = self.ty
-        rc = C.stream("ty_recentre")
-        loyal = T.loyal_month.values.copy()
-        plan = T.plan.values
-        subs = [dict(sub=T.sp_sub.iat[i], plan=plan[i], start=T.start.iat[i], dom=int(T.dom.iat[i]), kind="list")
-                for i in range(len(T))]
-        shift = {}
-        for mi, (run, pend) in enumerate(RUNS):
-            amt = np.array([np.nan if r is None else r[0][5] for r in (bill_line(s, mi, run, pend) for s in subs)])
-            billed = ~np.isnan(amt)
-            for pl in C.PLANS:
-                sel = (plan == pl) & billed
-                base = float(np.round(amt[sel], 2).sum())
-                g = int(((loyal == mi) & sel).sum())
-                ds = sorted(range(-40, 41), key=lambda x: (abs(x), x))
-                good = [x for x in ds if C.edge(base - 2.0 * (g + x), 100) >= 30]
-                x = good[0] if good else max(ds, key=lambda x: C.edge(base - 2.0 * (g + x), 100))
-                if x > 0:
-                    pool = np.where(sel & (loyal == -1))[0]
-                    loyal[rc.choice(pool, x, replace=False)] = mi
-                elif x < 0:
-                    pool = np.where(sel & (loyal == mi))[0]
-                    loyal[rc.choice(pool, -x, replace=False)] = -1
-                shift[(mi, pl)] = x
-        T["loyal_month"] = loyal
-        self.goodwill_shift = shift
+# ------------------------------------------------------------------------------------------------- the loan book
+def loan_numbers(P):
+    rng = C.stream("loan_numbers")
+    n = P["n"]
+    legacy = np.array(["PL%07d" % x for x in rng.choice(np.arange(1_000_000, 9_999_999), n, replace=False)])
+    newno = np.array([""] * n, dtype=object)
+    # a loan disbursed from July 2021 has a new-core number; a legacy loan still open at the move got one too
+    seq = 1
+    order = np.argsort(P["disb"], kind="stable")
+    closed_before = (P["end_m"] >= 0) & (P["end_m"] <= LEGACY_END)
+    for i in order:
+        if P["disb"][i] > LEGACY_END:
+            y, _ = C.ym(int(P["disb"][i]))
+            newno[i] = "LB%02d%06d" % (y % 100, seq)
+            seq += 1
+    seq_m = 1
+    for i in order:
+        if P["disb"][i] <= LEGACY_END and not closed_before[i]:
+            newno[i] = "LB21M%05d" % seq_m
+            seq_m += 1
+    migrated = (P["disb"] <= LEGACY_END) & ~closed_before
+    return legacy, newno, migrated, closed_before
 
-    # ---------------------------------------------------------------------------------------- legacy billing
-    def _lbs_invoices(self):
-        ly, ty, rng = self.ly, self.ty, self.rng
-        rows = []          # (date, subscription_ref, line_type, item_code, applied_ref, amount_pence)
-        cases = rng.choice(np.arange(4000000, 4999999), 3 * len(ly), replace=False)
-        ci = 0
-        L = ly
-        lbs = L.lbs.values; plan = L.plan.values; bills = L.bills.values; end = L.end_bill.values
-        acc = L.accepted.values; chan = L.channel.values; disc = L.disc_bills.values; desk = L.desk_bills.values
-        restart = L.restart_day.values; loyal = L.loyal_bill.values
-        for i in range(len(L)):
-            price = int(round(C.PRICE[plan[i]] * 100))
-            last = 5 if end[i] < 0 else min(end[i], 5)       # December 2025 (0) to April 2026 (4)
-            pay_bills = list(range(0, last))
-            fb = i in self.fallback
-            for j in pay_bills:
-                b = bills[i][j]
-                if j in disc[i] and fb:
-                    rows.append((b, lbs[i], "SUB", C.RATE_CODE[plan[i]], "", price - int(round(price * C.OFFER_SHARE))))
-                else:
-                    rows.append((b, lbs[i], "SUB", C.PLAN_CODE[plan[i]], "", price))
-                if j in disc[i] and not fb:
-                    code = C.OFFER_CODE_APP if chan[i] == "app" else C.OFFER_CODE_WEB
-                    lt = "CRED" if i in self.credit_booked else "DISC"
-                    rows.append((b, lbs[i], lt, code, self.acc_ref[i], -int(round(price * C.OFFER_SHARE))))
-                if j in desk[i]:
-                    rows.append((b, lbs[i], "DISC", C.DESK_CODE, "CS-%07d" % cases[ci], -int(round(price * C.OFFER_SHARE))))
-                    ci += 1
-                if loyal[i] == j:
-                    rows.append((b, lbs[i], "CRED", C.LOYAL_CODE, "CS-%07d" % cases[ci], -200))
-                    ci += 1
-            if restart[i] is not None and restart[i] <= dt.date(2026, 4, 30):
-                rd = restart[i]
-                k = rd.day
-                y, m = rd.year, rd.month
-                d0 = rd
-                while d0 <= dt.date(2026, 4, 30):
-                    rows.append((d0, lbs[i], "SUB", C.PLAN_CODE[plan[i]], "", price))
-                    y, m = C.add_months(dt.date(y, m, 1), 1)
-                    d0 = C.month_day(y, m, k)
-        # this year's list: August and September 2026 bills on each subscription's day, the add-ons' too, and the
-        # legacy system's last run on 1 October for the day-1 subscriptions in the batches it still held
-        T = ty
-        t_dom, t_plan, t_lbs = T.dom.values, T.plan.values, T.lbs.values
-        t_dupn, t_add, t_adom, t_albs, t_dupa = (T.dup_news.values, T.has_addon.values, T.addon_dom.values,
-                                                 T.addon_lbs.values, T.dup_addon.values)
-        ap = int(round(C.ADDON_PRICE * 100))
-        t_start = T.start.values
-        for i in range(len(T)):
-            if t_start[i] >= C.MOVE:
-                continue
-            k = int(t_dom[i])
-            price = int(round(C.PRICE[t_plan[i]] * 100))
-            for (y, m) in ((2026, 8), (2026, 9)):
-                b = C.month_day(y, m, k)
-                if b >= t_start[i]:
-                    rows.append((b, t_lbs[i], "SUB", C.PLAN_CODE[t_plan[i]], "", price))
-            if t_dupn[i]:
-                rows.append((C.LBS_LAST, t_lbs[i], "SUB", C.PLAN_CODE[t_plan[i]], "", price))
-            if t_add[i]:
-                ka = int(t_adom[i])
-                for (y, m) in ((2026, 8), (2026, 9)):
-                    rows.append((C.month_day(y, m, ka), t_albs[i], "SUB", C.ADDON_CODE, "", ap))
-                if t_dupa[i]:
-                    rows.append((C.LBS_LAST, t_albs[i], "SUB", C.ADDON_CODE, "", ap))
-        # the other plan subscriptions on this year's accounts were billed by the legacy system too; they are not on
-        # either list, so their bills take invoice numbers but are not in the pull
-        n_pull = len(rows)
-        X = self.ex
-        for j in np.where(X.legacy.values)[0]:
-            k = int(X.dom.iat[j])
-            price = int(round(C.PRICE[X.plan.iat[j]] * 100))
-            for (y, m) in ((2026, 8), (2026, 9)):
-                b = C.month_day(y, m, k)
-                if b >= X.start.iat[j]:
-                    rows.append((b, X.lbs.iat[j], "SUB", C.PLAN_CODE[X.plan.iat[j]], "", price))
-            if X.dup.iat[j]:
-                rows.append((C.LBS_LAST, X.lbs.iat[j], "SUB", C.PLAN_CODE[X.plan.iat[j]], "", price))
-        # overlap members' LY-era rows are already in from last year's list
-        order = sorted(range(len(rows)), key=lambda j: (rows[j][0], rows[j][1], {"SUB": 0, "DISC": 1, "CRED": 2}[rows[j][2]]))
-        out, inv_no, seen = [], {}, 0
-        gaps = rng.integers(1, 9, len(rows))      # the pull is a part of the system's invoices
-        for j in order:
-            d, sub, lt, code, ref, amt = rows[j]
-            key = (d, sub)
-            if key not in inv_no:
-                seen += int(gaps[j])
-                inv_no[key] = "IN%08d" % (30410000 + seen)
-            if j < n_pull:
-                out.append((inv_no[key], sub, _dmy(d), lt, code, ref, amt, "Z", "PAID"))
-        self.lbs_rows = out
-        self.lbs_inv = inv_no       # (date, subscription_ref) -> invoice number
 
-    # ------------------------------------------------------------------------------------ subscriptions platform
-    def _sp_invoices(self):
-        """one invoice per account in each 1st-of-month run, its lines one per subscription billed (the plan, the
-        Puzzles add-on, another plan the account pays for); a subscription that joins on the platform has its first
-        bill raised on its start day; credit notes on 14 October for the bills both systems raised for October"""
-        T, X, rng = self.ty, self.ex, self.rng
-        runs = RUNS
-        # the subscriptions on each account, the account holder's own first
-        subs = {}          # account -> list of dicts
+def ref_at(P, legacy, newno, i, month):
+    """the loan reference a system used in a month: legacy before the move, the new number after"""
+    if P["disb"][i] > LEGACY_END:
+        return newno[i]
+    return legacy[i] if month <= LEGACY_END or not newno[i] else newno[i]
 
-        def item(sub, plan, start, dom, kind):
-            return dict(sub=sub, plan=plan, start=start, dom=int(dom), kind=kind)
 
-        for i in range(len(T)):
-            acct = T.sp_acct.iat[i]
-            subs.setdefault(acct, [])
-        for j in range(len(X)):
-            if X.kind.iat[j] == "payer":
-                subs[X.sp_acct.iat[j]].append(item(X.sp_sub.iat[j], X.plan.iat[j], X.start.iat[j], X.dom.iat[j], "other"))
-        self.list_row = {}
-        for i in range(len(T)):
-            acct = T.sp_acct.iat[i]
-            subs[acct].append(item(T.sp_sub.iat[i], T.plan.iat[i], T.start.iat[i], T.dom.iat[i], "list"))
-            self.list_row[T.sp_sub.iat[i]] = i
-            if T.has_addon.iat[i]:
-                subs[acct].append(dict(sub=T.addon_sp.iat[i], plan=None, start=T.start.iat[i], dom=int(T.addon_dom.iat[i]),
-                                       kind="addon"))
-        partner = {}       # a household's second subscription -> the list subscription it is billed with
-        for j in range(len(X)):
-            if X.kind.iat[j] == "second":
-                kind = "household" if X.household.iat[j] else "other"
-                subs[X.sp_acct.iat[j]].append(item(X.sp_sub.iat[j], X.plan.iat[j], X.start.iat[j], X.dom.iat[j], kind))
-                if X.household.iat[j]:
-                    partner[X.sp_sub.iat[j]] = T.sp_sub.iat[int(X.owner.iat[j])]
-        loyal = dict(zip(T.sp_sub.values, T.loyal_month.values))
+def write_loans(out, P, legacy, newno, migrated, closed_before):
+    A = P["A"]
+    rows = []
+    rng = C.stream("loan_book")
+    CT_NEW = {False: ("CARRERA", "LIBRE NOMBRAMIENTO"), True: ("TEMPORAL",)}
+    for i in np.argsort(P["disb"], kind="stable"):
+        legacy_row = P["disb"][i] <= LEGACY_END
+        no = newno[i] if newno[i] else legacy[i]
+        temp = bool(P["temp"][i])
+        if legacy_row:
+            ct = "T" if temp else "P"
+        else:
+            ct = CT_NEW[temp][0] if temp else CT_NEW[False][int(rng.random() < 0.18)]
+        st = P["status"][i]
+        end = P["end_m"][i]
+        if P["dflt_m"][i] >= 0:
+            channel, closed, reason = "COBRANZA", "", ""
+        elif st == 1 and end <= TEND:
+            channel, closed, reason = "CERRADO", iso(C.month_end(int(end))), "VENCIMIENTO"
+        elif st == 2 and end <= TEND:
+            channel, closed, reason = "CERRADO", iso(dt.date(*C.ym(int(end)), int(rng.integers(3, 27)))), "COMPRA DE CARTERA"
+        elif st == 4 and end <= TEND:
+            channel, closed, reason = "DEBITO DIRECTO", "", ""
+        else:
+            channel, closed, reason = "NOMINA", "", ""
+        # the direct-billed loans that ran to maturity inside the record are closed
+        if channel == "DEBITO DIRECTO" and P["disb"][i] + P["term"][i] <= TEND:
+            channel, closed, reason = "CERRADO", iso(C.month_end(int(P["disb"][i] + P["term"][i]))), "VENCIMIENTO"
+        scale = 1000.0 if legacy_row else 1.0
+        prin = P["principal"][i] / scale
+        inst = P["inst"][i] / scale
+        rows.append((no, int(P["member"][i]), A[P["ag"][i]]["code"], A[P["ag"][i]]["type"], ct,
+                     iso(C.month_start(int(P["hire"][i]))), int(P["birth"][i]),
+                     ("%.1f" % (P["pay"][i] / 1000.0)) if legacy_row else "%d" % P["pay"][i],
+                     iso(dt.date(*C.ym(int(P["disb"][i])), int(rng.integers(1, 26)))),
+                     ("%.1f" % prin) if legacy_row else "%d" % prin, int(P["term"][i]), "%.4f" % P["rate"][i],
+                     ("%.1f" % inst) if legacy_row else "%d" % inst, channel, closed, reason,
+                     "LEGACY" if legacy_row else "CORE"))
+    head = ("loan_no", "member_id", "payroll_unit", "unit_type", "contract_type", "hire_date", "birth_year",
+            "net_pay_at_origination", "disbursement_date", "principal", "term_months", "monthly_rate", "instalment",
+            "collection_channel", "closed_date", "closure_reason", "origin_system")
+    return C.write_csv(os.path.join(out, C.F_LOANS), head, rows)
 
-        def merge(ls):
-            """the platform bills identical lines of one account on one line: a household's two subscriptions on
-            the same plan and period appear once, under the account holder's subscription, with qty 2"""
-            out = [x + (1, x[5]) if len(x) == 6 else x for x in ls]
-            for x in list(out):
-                if x[0] not in partner:
+
+def write_crosswalk(out, P, legacy, newno, migrated):
+    rows = [(legacy[i], newno[i], "2021-07-01") for i in np.argsort(P["disb"], kind="stable") if migrated[i]]
+    return C.write_csv(os.path.join(out, C.F_XWALK), ("legacy_loan_no", "core_loan_no", "migrated_on"), rows)
+
+
+def write_returns(out, P, legacy, newno):
+    A = P["A"]
+    rng = C.stream("returns")
+    rows = []
+    rets = sorted(P["returns"], key=lambda r: (r[1], A[P["ag"][r[0]]]["code"], r[0]))
+    resent = {C.mi(2019, 8), C.mi(2022, 3), C.mi(2025, 10)}           # months the Tesoreria sent twice
+    for i, t, code in rets:
+        if t > TEND:
+            continue
+        old = t < C.mi(*C.RET_LAYOUT)
+        ref = ref_at(P, legacy, newno, i, t)
+        amt = P["inst"][i]
+        r = (mstr_old(t) if old else mstr(t), A[P["ag"][i]]["code"], int(P["member"][i]), ref,
+             ("%d" % amt) if old else "%.2f" % amt, ({"SIN SALARIO": "01", "SIN CUPO": "02"}[code]) if old else code)
+        rows.append(r)
+        if t in resent:
+            rows.append(r)
+    head = ("period", "payroll_unit", "national_id", "loan_reference", "amount", "reason")
+    return C.write_csv(os.path.join(out, C.F_RETURNS), head, rows)
+
+
+def default_balance(P, i):
+    k = int(P["dflt_m"][i] - P["disb"][i]) - 3          # instalments paid before the three missed
+    return C.balance_after(P["principal"][i], P["rate"][i], int(P["term"][i]), max(0, k))
+
+
+def write_defaults(out, P, legacy, newno, cures):
+    rows = []
+    idx = [i for i in np.argsort(P["dflt_m"], kind="stable") if P["dflt_m"][i] >= 0]
+    for i in idx:
+        t = int(P["dflt_m"][i])
+        ref = ref_at(P, legacy, newno, i, t)
+        cure = cures.get(i)
+        rows.append((ref, int(P["member"][i]), iso(C.month_end(t)), "%.0f" % default_balance(P, i),
+                     iso(cure) if cure else ""))
+    head = ("loan_reference", "member_id", "default_date", "balance_at_default", "cure_date")
+    return C.write_csv(os.path.join(out, C.F_DEFAULTS), head, rows)
+
+
+# --------------------------------------------------------------------------- recoveries on defaulted public loans
+def recoveries(P):
+    """receipts on every defaulted loan from January 2023, the members' savings and the netting of them"""
+    rng = C.stream("recoveries")
+    first = C.mi(2023, 1)
+    idx = [i for i in range(P["n"]) if P["dflt_m"][i] >= 0 and P["dflt_m"][i] >= C.mi(2020, 1)]
+    acct_used = set()
+
+    def acct():
+        while True:
+            a = "0731-%08d" % int(rng.integers(10_000_000, 99_999_999))
+            if a not in acct_used:
+                acct_used.add(a)
+                return a
+    BANKS = ("0007", "0013", "0019", "0023", "0040", "0051", "0052", "0060", "0062")
+    receipts = []      # (date, loan i, channel, origin, amount, kind)  kind: cash, own, other
+    savings = {}       # member -> dict(acct, moves)
+    cures = {}
+    mem_of = {}
+    for i in idx:
+        m = int(P["member"][i])
+        if m not in savings:
+            bal = float(np.round(rng.lognormal(np.log(2_400_000), 0.65), -3)) if rng.random() < 0.82 else 0.0
+            savings[m] = dict(acct=acct(), opening=bal, moves=[])
+        mem_of[i] = m
+    others = []         # members who pay for a relative from their own savings
+    for _ in range(1400):
+        m = int(rng.integers(10_000_000, 99_999_999))
+        if m in savings:
+            continue
+        savings[m] = dict(acct=acct(), opening=float(np.round(rng.lognormal(np.log(3_100_000), 0.6), -3)), moves=[])
+        others.append(m)
+    for i in idx:
+        t0 = int(P["dflt_m"][i])
+        bal = default_balance(P, i)
+        m = mem_of[i]
+        sv = savings[m]
+        owed = bal
+        # netting of the member's own savings, one or two months after default
+        if sv["opening"] >= 150_000 and rng.random() < 0.58:
+            tn = t0 + int(rng.choice([1, 2]))
+            amt = float(min(sv["opening"] * float(rng.uniform(0.85, 1.0)), owed))
+            amt = float(np.round(amt, 0))
+            d = C.business_day(dt.date(*C.ym(tn), int(rng.integers(2, 26))))
+            receipts.append((d, i, "TRANSFERENCIA", sv["acct"], amt, "own"))
+            sv["moves"].append((d, "RETIRO", -amt))
+            owed -= amt
+        # a payment plan, a settlement or nothing
+        u = rng.random()
+        if u < 0.36:
+            start = t0 + int(rng.integers(1, 6))
+            nmon = int(rng.integers(3, 20))
+            pay = float(np.round(P["inst"][i] * float(rng.uniform(0.4, 1.0)), -3))
+            src_kind = rng.random()
+            for t in range(start, start + nmon):
+                if owed <= 0:
+                    break
+                if rng.random() < 0.18:
                     continue
-                for k_, y in enumerate(out):
-                    if (y[0] == partner[x[0]] and y[1] == x[1] and y[3] == x[3] and y[4] == x[4]
-                            and abs(y[7] - x[7]) < 1e-9 and y[6] == 1):
-                        out[k_] = (y[0], y[1], y[2], y[3], y[4], round(y[7] * 2, 2), 2, y[7])
-                        out.remove(x)
-                        break
-            return out
-        self.merged = 0
+                d = C.business_day(dt.date(*C.ym(t), int(rng.integers(1, 28))))
+                a = float(min(pay, owed))
+                if src_kind < 0.55:
+                    ch, org = "TRANSFERENCIA", "%s-%010d" % (BANKS[int(rng.integers(0, len(BANKS)))], int(rng.integers(10**9, 10**10 - 1)))
+                elif src_kind < 0.88:
+                    ch, org = "CAJA", ""
+                else:
+                    ch, org = "TRANSFERENCIA", "rel"
+                receipts.append((d, i, ch, org, a, "cash" if org != "rel" else "other"))
+                owed -= a
+            if owed < 0.05 * bal and rng.random() < 0.7 and start + nmon <= TEND:
+                cures[i] = dt.date(*C.ym(start + nmon), 28)
+        elif u < 0.46:
+            t = t0 + int(rng.integers(2, 20))
+            a = float(np.round(owed * float(rng.uniform(0.55, 0.9)), -3))
+            d = C.business_day(dt.date(*C.ym(t), int(rng.integers(1, 28))))
+            org = "%s-%010d" % (BANKS[int(rng.integers(0, len(BANKS)))], int(rng.integers(10**9, 10**10 - 1)))
+            if a > 0:
+                receipts.append((d, i, "TRANSFERENCIA", org, a, "cash"))
+    # every default year and unit type of 2023 and 2024 has at least one plan instalment paid from a relative's account
+    A = P["A"]
+    have = set()
+    for r in receipts:
+        if r[3] == "rel":
+            have.add((C.ym(int(P["dflt_m"][r[1]]))[0], A[P["ag"][r[1]]]["type"]))
+    for y in (2023, 2024):
+        for typ in C.AGENCY_TYPES:
+            if (y, typ) in have:
+                continue
+            cand = [k for k, r in enumerate(receipts) if r[5] == "cash" and r[2] == "TRANSFERENCIA" and
+                    C.ym(int(P["dflt_m"][r[1]]))[0] == y and A[P["ag"][r[1]]]["type"] == typ and
+                    C.mi(r[0].year, r[0].month) <= TEND]
+            k = cand[int(rng.integers(0, len(cand)))]
+            d, i, ch, org, a, kind = receipts[k]
+            receipts[k] = (d, i, ch, "rel", a, "other")
+    # a relative's own cooperative savings account pays some of the plan instalments
+    rel_rows = []
+    for r in receipts:
+        if r[3] == "rel":
+            m2 = others[int(rng.integers(0, len(others)))]
+            savings[m2]["moves"].append((r[0], "RETIRO", -r[4]))
+            rel_rows.append((r[0], r[1], r[2], savings[m2]["acct"], r[4], "other"))
+        else:
+            rel_rows.append(r)
+    receipts = [r for r in rel_rows if C.mi(r[0].year, r[0].month) >= first and C.mi(r[0].year, r[0].month) <= TEND]
+    return receipts, savings, cures
 
-        inv, credits, n_inv = [], [], 0
-        accts = sorted(subs)
-        for mi, (run, pend) in enumerate(runs):
-            for acct in accts:
-                own_docs = {}             # start day -> lines of the subscriptions that joined that day
-                main = []
-                for s in subs[acct]:
-                    r = bill_line(s, mi, run, pend)
-                    if r is None:
+
+def write_receipts(out, P, legacy, newno, receipts):
+    rng = C.stream("receipts_out")
+    rows = []
+    n = 0
+    for d, i, ch, org, a, kind in sorted(receipts, key=lambda r: (r[0], r[1])):
+        n += 1
+        t = C.mi(d.year, d.month)
+        ref = ref_at(P, legacy, newno, i, t)
+        rid = "RC%02d%06d" % (d.year % 100, n)
+        rows.append((rid, iso(d), ref, int(P["member"][i]), ch, org, "%.0f" % a))
+        if ch == "TRANSFERENCIA" and kind == "cash" and rng.random() < 0.025:
+            d2 = C.business_day(d + dt.timedelta(days=int(rng.integers(1, 4))))
+            if C.mi(d2.year, d2.month) <= TEND:
+                rows.append((rid + "R", iso(d2), ref, int(P["member"][i]), "REVERSO", org, "-%.0f" % a))
+                n += 1
+                d3 = C.business_day(d2 + dt.timedelta(days=int(rng.integers(2, 9))))
+                if C.mi(d3.year, d3.month) <= TEND:
+                    rows.append(("RC%02d%06d" % (d3.year % 100, n), iso(d3), ref, int(P["member"][i]), ch, org, "%.0f" % a))
+    head = ("receipt_id", "receipt_date", "loan_reference", "member_id", "channel", "originating_account", "amount")
+    return C.write_csv(os.path.join(out, C.F_RECEIPTS), head, rows)
+
+
+def write_savings(out, savings):
+    rng = C.stream("savings_ledger")
+    rows = []
+    start = dt.date(2023, 1, 1)
+    for m in sorted(savings):
+        sv = savings[m]
+        bal = sv["opening"]
+        moves = []
+        # monthly contributions and the December interest credit, for members still contributing
+        contrib = float(np.round(bal * 0.02, -3)) if bal > 0 else 0.0
+        for t in range(C.mi(2023, 1), TEND + 1):
+            y, mo = C.ym(t)
+            if contrib and rng.random() < 0.65:
+                moves.append((dt.date(y, mo, int(rng.integers(26, 29))), "APORTE", contrib))
+            if mo == 12:
+                moves.append((dt.date(y, 12, 31), "INTERES", None))
+        for d, k, a in sv["moves"]:
+            if d <= dt.date(2026, 12, 31):
+                moves.append((d, k, a))
+        if not sv["moves"] and rng.random() < 0.12:
+            d = dt.date(2023 + int(rng.integers(0, 4)), int(rng.integers(1, 13)), int(rng.integers(1, 28)))
+            moves.append((d, "RETIRO", -float(np.round(bal * float(rng.uniform(0.1, 0.4)), -3))))
+        moves.sort(key=lambda r: (r[0], {"APORTE": 0, "RETIRO": 1, "INTERES": 2}[r[1]]))
+        rows.append((sv["acct"], m, iso(start), "SALDO INICIAL", "%.0f" % bal, "%.0f" % bal))
+        for d, k, a in moves:
+            if k == "INTERES":
+                a = float(np.round(max(bal, 0) * 0.035, 0))
+            if a is None or a == 0:
+                continue
+            if k == "RETIRO" and -a > bal + 1:
+                a = -float(np.round(bal, 0))
+                if a == 0:
+                    continue
+            bal += a
+            rows.append((sv["acct"], m, iso(d), k, "%.0f" % a, "%.0f" % bal))
+    head = ("savings_account", "member_id", "movement_date", "movement", "amount", "balance")
+    return C.write_csv(os.path.join(out, C.F_SAVINGS), head, rows)
+
+
+# ---------------------------------------------------------------------------------------------- the private side
+def emp_id(x, t):
+    """the employee id as the intake portal stored it: with the document prefix and dots until June 2026"""
+    if t < C.mi(*C.PORTAL_UPGRADE):
+        return "CC " + C.dotted(x)
+    return str(x)
+
+
+def periods(e, t):
+    """the pay periods of month t for an employer"""
+    y, m = C.ym(t)
+    last = C.month_end(t).day
+    if e["freq"] == "F":
+        return [(dt.date(y, m, 1), dt.date(y, m, 15), C.business_day(dt.date(y, m, 15), back=True)),
+                (dt.date(y, m, 16), dt.date(y, m, last), C.business_day(dt.date(y, m, last), back=True))]
+    pd_ = min(e["pay_day"], last)
+    return [(dt.date(y, m, 1), dt.date(y, m, last), C.business_day(dt.date(y, m, pd_), back=True))]
+
+
+def write_registers(out, E, people):
+    rng = C.stream("registers")
+    rows = []
+    reg_no = {e["i"]: 1 for e in E}
+    by_emp = {}
+    for s in people:
+        by_emp.setdefault(s["emp"], []).append(s)
+    for e in E:
+        staff = by_emp[e["i"]]
+        for t in range(e["start"], TEND + 1):
+            y, m = C.ym(t)
+            ps = periods(e, t)
+            for j, (a, b, pdate) in enumerate(ps):
+                lastp = j == len(ps) - 1
+                regs = []
+                no = "%s-%04d" % (str(e["nit_base"])[-4:], reg_no[e["i"]])
+                reg_no[e["i"]] += 1
+                for s in staff:
+                    if s["hire"] > t or (s["leave"] is not None and s["leave"] < t):
                         continue
-                    ln, own = r
-                    extra = []
-                    if s["kind"] == "list" and loyal.get(s["sub"], -1) == mi:
-                        extra = [(s["sub"], C.LOYAL_CODE, "Goodwill credit", run, pend, -2.00)]
-                    if own:
-                        # a joiner's first bill is raised on its start day, with an add-on taken the same day
-                        own_docs.setdefault(ln[3], []).extend([ln] + extra)
-                    else:
-                        main += [ln] + extra
-                docs = []
-                if main:
-                    m_ = merge(main)
-                    self.merged += len(main) - len(m_)
-                    docs.append((dt.datetime(run.year, run.month, run.day, 0, 5), m_, run))
-                for d0 in sorted(own_docs):
-                    m_ = merge(own_docs[d0])
-                    self.merged += len(own_docs[d0]) - len(m_)
-                    docs.append((dt.datetime(d0.year, d0.month, d0.day, 0, 5), m_, d0))
-                for t0, ls, pstart in docs:
-                    n_inv += 1
-                    iid = "INV-%07d" % (5200000 + n_inv)
-                    issued = C.to_utc(t0 + dt.timedelta(seconds=int(rng.integers(0, 3300))))
-                    total = round(sum(x[5] for x in ls), 2)
-                    lj = json.dumps([{"line": li, "subscription_id": x[0], "item": x[1], "text": x[2],
-                                      "qty": x[6], "unit_amount": "%.2f" % x[7], "from": x[3].isoformat(),
-                                      "to": x[4].isoformat(), "amount": "%.2f" % x[5]}
-                                     for li, x in enumerate(ls, 1)], separators=(",", ":"))
-                    inv.append((iid, acct, ls[0][0], "invoice", _utc_iso(issued), pstart.isoformat(), pend.isoformat(),
-                                "%.2f" % total, "0", "", "paid", lj))
-        # credit notes on 14 October: each account the legacy system also billed for October, every such bill on it
-        dup = {}
-        for i in range(len(T)):
-            a_ = T.sp_acct.iat[i]
-            if T.dup_news.iat[i]:
-                dup.setdefault(a_, []).append((T.lbs.iat[i], C.PRICE[T.plan.iat[i]]))
-            if T.dup_addon.iat[i]:
-                dup.setdefault(a_, []).append((T.addon_lbs.iat[i], C.ADDON_PRICE))
-        for j in range(len(X)):
-            if X.dup.iat[j]:
-                dup.setdefault(X.sp_acct.iat[j], []).append((X.lbs.iat[j], C.PRICE[X.plan.iat[j]]))
-        first_sub = {}
-        for r in inv:
-            if r[5] == "2026-10-01" and r[1] not in first_sub:
-                first_sub[r[1]] = r[2]
-        cn = 0
-        for a_ in sorted(dup):
-            covered = sorted(self.lbs_inv[(C.LBS_LAST, ref)] for ref, _ in dup[a_])
-            amt = round(sum(p for _, p in dup[a_]), 2)
-            cn += 1
-            local = dt.datetime(2026, 10, 14, 11, 0) + dt.timedelta(seconds=int(rng.integers(0, 7200)))
-            credits.append(("CRN-%06d" % (88000 + cn), a_, first_sub[a_], "credit_note", _utc_iso(C.to_utc(local)),
-                            "2026-10-01", "2026-10-31", "%.2f" % -amt, "0", ";".join(covered), "refunded", "[]"))
-        self.sp_inv = sorted(inv + credits, key=lambda r: (r[4], r[0]))
+                    if s["hire"] == t and e["freq"] == "F" and j == 0 and rng.random() < 0.5:
+                        continue
+                    if any(st <= t < st + d for st, d in s["unpaid"]):
+                        continue
+                    leaving = s["leave"] == t and lastp
+                    if s["leave"] == t and not lastp and e["freq"] == "F" and rng.random() < 0.3:
+                        continue
+                    share = 0.5 if e["freq"] == "F" else 1.0
+                    gross = s["base"] * share * float(rng.uniform(1.0, 1.12))
+                    ptype = "NOMINA"
+                    if leaving:
+                        ptype = "LIQUIDACION"
+                        gross += s["base"] * float(rng.uniform(0.6, 2.2))
+                    ded = gross * float(rng.uniform(0.09, 0.13))
+                    if s.get("join") is not None and s["join"] <= t and lastp and not leaving:
+                        ded += s["saving"]
+                    regs.append((e["nit"], no, iso(a), iso(b), iso(pdate), ptype, emp_id(s["id"], t),
+                                 iso(C.month_start(s["hire"])), "%.0f" % s["base"], "%.0f" % gross, "%.0f" % ded,
+                                 "%.0f" % (gross - ded)))
+                rows.extend(regs)
+                if rng.random() < 0.02:
+                    rows.extend(regs)              # the employer uploaded the register twice
+            if m in (6, 12):
+                no = "%s-%04d" % (str(e["nit_base"])[-4:], reg_no[e["i"]])
+                reg_no[e["i"]] += 1
+                pdate = C.business_day(dt.date(y, m, 30 if m == 6 else 18), back=True)
+                for s in staff:
+                    if s["hire"] > t or (s["leave"] is not None and s["leave"] <= t):
+                        continue
+                    months = min(6, t - s["hire"] + 1)
+                    g = s["base"] * months / 12.0
+                    rows.append((e["nit"], no, iso(dt.date(y, m - 5, 1)), iso(C.month_end(t)), iso(pdate), "PRIMA",
+                                 emp_id(s["id"], t), iso(C.month_start(s["hire"])), "%.0f" % s["base"], "%.0f" % g, "0",
+                                 "%.0f" % g))
+    head = ("employer_nit", "register_no", "period_start", "period_end", "pay_date", "payment_type", "employee_id",
+            "hire_date", "base_salary", "gross_pay", "deductions", "net_pay")
+    return C.write_csv(os.path.join(out, C.F_REGISTERS), head, rows)
 
-    # ------------------------------------------------------------------------------------------------ events
-    def _events(self):
-        ly, ty = self.ly, self.ty
-        rng = C.stream("ly_events")          # its own stream, so no ask-side record moves an event
-        xw = {}                      # LBS ref -> (SP sub, SP account, batch) for subscriptions alive at the move
-        ly_alive_oct = (ly.end_bill < 0) | (ly.end_bill >= 10)         # still subscribed when billing moved
-        sp_ids = W.ids(C.stream("ly_sp"), len(ly), "S", 9, 410000000)
-        sp_acc = W.ids(C.stream("ly_spa"), len(ly), "A", 8, 64300000)
-        batches = C.stream("ly_batch").integers(1, 13, len(ly))
-        over = ty[ty.from_ly]
-        over_map = dict(zip(over.lbs, zip(over.sp_sub, over.sp_acct, over.batch)))
-        lbs_v = ly.lbs.values
-        for i in np.where(ly_alive_oct.values)[0]:
-            ref = lbs_v[i]
-            if ref in over_map:
-                continue
-            xw[ref] = (sp_ids[i], sp_acc[i], "MIG-%02d" % batches[i])
-        X = self.ex                  # the other legacy subscriptions on this year's list accounts
-        for j in np.where(X.legacy.values)[0]:
-            xw[X.lbs.iat[j]] = (X.sp_sub.iat[j], X.sp_acct.iat[j], X.batch.iat[j])
-        for i in range(len(ty)):
-            if not ty.legacy.iat[i]:
-                continue
-            xw[ty.lbs.iat[i]] = (ty.sp_sub.iat[i], ty.sp_acct.iat[i], ty.batch.iat[i])
-            if ty.has_addon.iat[i]:
-                xw[ty.addon_lbs.iat[i]] = (ty.addon_sp.iat[i], ty.sp_acct.iat[i], ty.batch.iat[i])
-        self.xwalk = xw
-        ev = []
-        reasons = np.array(["price", "not reading enough", "switching title", "money is tight", "other"])
-        endb = ly.end_bill.values; bills = ly.bills.values; lbs = ly.lbs.values; Tarm = ly["T"].values
-        dd = ly.d.values; rst = ly.restart_day.values
-        for i in np.where(endb >= 0)[0]:
-            j = int(endb[i])
-            b = bills[i][j]
-            lag = int(rng.integers(1, 8))
-            req = b - dt.timedelta(lag)
-            if j == 2:
-                req = max(req, C.LY_LIST + dt.timedelta(1)) if Tarm[i] == 1 and dd[i] > 1 else max(req, C.LY_LIST)
-            end = b - dt.timedelta(1)
-            key, sysname = lbs[i], "legacy"
-            if b >= C.MOVE:
-                key, sysname = self.xwalk.get(lbs[i], (lbs[i],))[0], "platform"
-            why = reasons[int(rng.integers(0, len(reasons)))]
-            ev.append((key, sysname, "cancel_requested", req.isoformat(), why))
-            ev.append((key, sysname, "access_ended", end.isoformat(), ""))
-            rd = rst[i]
-            if rd is not None and rd <= C.PULL.date():          # a restart after the pull is not in it yet
-                ev.append((key, sysname, "restarted", rd.isoformat(), ""))
-        self.events = sorted(ev, key=lambda r: (r[3], r[0], r[2]))
 
-    # ----------------------------------------------------------------------------------- offers and email (UTC)
-    def _offers_and_email(self):
-        ly, rng = self.ly, self.rng
-        acc_rows, mail = [], []
-        # app users whose app identity was replaced after they accepted (a re-login creates a new app user id;
-        # the CRM keeps the current one)
-        self.rekeyed = set()
-        old_ids = W.ids(C.stream("old_app"), len(ly), "U", 8, 56000000)
-        ev = []          # (utc time, LY index, key, channel, first acceptance?)
-        for i in np.where(ly.accepted.values)[0]:
-            day0 = ly.acc_day.iat[i]
-            first_hour = dt.time(9, 35) if day0 == C.LY_LIST else dt.time(7, 0)
-            span = int((dt.datetime.combine(day0, dt.time(22, 0)) - dt.datetime.combine(day0, first_hour)).total_seconds())
-            t = dt.datetime.combine(day0, first_hour) + dt.timedelta(seconds=int(rng.integers(0, span)))
-            ch = ly.channel.iat[i]
-            if ch == "app":
-                key = ly.app_user.iat[i]
-                if rng.random() < 0.22:
-                    key = old_ids[i]
-                    self.rekeyed.add(i)
+def write_launch(out, E, B):
+    rows = []
+    for k, s in enumerate(sorted(B, key=lambda s: (E[s["emp"]]["nit"], s["id"]))):
+        e = E[s["emp"]]
+        rows.append(("LE27%05d" % (k + 1), s["id"], e["nit"], iso(C.month_start(s["hire"])),
+                     iso(C.month_start(s["join"])), "%.0f" % s["net"], "%.0f" % s["principal"], s["term"],
+                     "%.4f" % s["rate"], "%.0f" % s["inst"], iso(C.DISBURSE), "2027-02"))
+    head = ("loan_no", "member_id", "employer_nit", "hire_date", "member_since", "certified_net_pay", "principal",
+            "term_months", "monthly_rate", "instalment", "disbursement_date", "first_deduction_period")
+    return C.write_csv(os.path.join(out, C.F_LAUNCH), head, rows)
+
+
+def schedules(E, people):
+    """the monthly savings contribution schedules, their corrections and supplements, and the transfers"""
+    rng = C.stream("schedules")
+    by_emp = {}
+    for s in people:
+        if s.get("join") is not None:
+            by_emp.setdefault(s["emp"], []).append(s)
+    sched = []      # dict(no, emp, period, rows[(id, amt)], kind 'first'|'replacement'|'supplement', filed date, replaces)
+    seq = 1
+    for e in E:
+        members = by_emp.get(e["i"], [])
+        for t in range(e["start"], TEND + 1):
+            rows = []
+            for s in members:
+                if s["join"] <= t and (s["leave"] is None or s["leave"] > t) and not any(st <= t < st + d for st, d in s["unpaid"]):
+                    rows.append((s["id"], s["saving"]))
+            if not rows:
+                continue
+            y, m = C.ym(t)
+            filed = C.month_end(t) + dt.timedelta(days=int(rng.integers(1, 6)))
+            first = dict(no="PA%06d" % seq, emp=e["i"], period=t, rows=rows, kind="first", filed=filed, replaces=None)
+            seq += 1
+            sched.append(first)
+            u = rng.random()
+            if u < 0.075:
+                # a corrected schedule for the period replaces the first: the same members, a few amounts changed,
+                # one member dropped or added
+                rows2 = [(i, a if rng.random() > 0.08 else float(np.round(a * float(rng.choice([0.5, 1.5, 2.0])), -3)))
+                         for i, a in rows]
+                if len(rows2) > 3 and rng.random() < 0.5:
+                    rows2.pop(int(rng.integers(0, len(rows2))))
+                sched.append(dict(no="PA%06d" % seq, emp=e["i"], period=t, rows=rows2, kind="replacement",
+                                  filed=filed + dt.timedelta(days=int(rng.integers(2, 9))), replaces=first["no"]))
+                seq += 1
+                first["replaced"] = True
+            elif u < 0.13 and len(rows) > 4:
+                # members left off the month's schedule are filed in a supplement a few days later
+                k = int(rng.integers(1, 4))
+                pick = set(int(j) for j in rng.choice(len(rows), k, replace=False))
+                extra = [r for j, r in enumerate(rows) if j in pick]
+                first["rows"] = [r for j, r in enumerate(rows) if j not in pick]
+                sched.append(dict(no="PA%06d" % seq, emp=e["i"], period=t, rows=extra, kind="supplement",
+                                  filed=filed + dt.timedelta(days=int(rng.integers(3, 15))), replaces=None))
+                seq += 1
+    # every sector gets at least one corrected schedule in 2026
+    for sec in C.SECTORS:
+        cands = [x for x in sched if x["kind"] == "first" and E[x["emp"]]["sector"] == sec and x["period"] >= C.mi(2026, 1)]
+        if not any(x.get("replaced") for x in cands):
+            x = cands[int(rng.integers(0, len(cands)))]
+            rows2 = [(i, a if j % 7 else float(np.round(a * 2, -3))) for j, (i, a) in enumerate(x["rows"])]
+            sched.append(dict(no="PA%06d" % seq, emp=x["emp"], period=x["period"], rows=rows2, kind="replacement",
+                              filed=x["filed"] + dt.timedelta(days=4), replaces=x["no"]))
+            seq += 1
+            x["replaced"] = True
+    return sched
+
+
+def transfers(E, sched):
+    """the employers' transfers into the collection account: one per effective schedule, the groups' parents paying
+    for their subsidiaries in one transfer, a few late, two employers behind, one transfer returned and sent again"""
+    rng = C.stream("transfers")
+    parent_of = {}
+    for e in E:
+        if e["group"]:
+            parent = [x for x in E if x["name"] == W.GROUP_PARENT[e["group"]]][0]
+            if parent["i"] != e["i"]:
+                parent_of[e["i"]] = parent["i"]
+    behind = {E[[x["name"] for x in E].index("Moda Urbana Sorana S.A.S.")]["i"]: (C.mi(2026, 8), C.mi(2026, 11)),
+              E[[x["name"] for x in E].index("Escoltas y Custodia Monteralto Ltda.")]["i"]: (C.mi(2026, 5), C.mi(2026, 7))}
+    eff = [x for x in sched if not x.get("replaced")]
+    tot = lambda x: float(sum(a for _, a in x["rows"]))
+    out = []          # (date, payer emp index, amount, period, covers [schedule nos])
+    by_key = {}
+    for x in eff:
+        by_key.setdefault((x["emp"], x["period"], x["kind"] == "supplement"), []).append(x)
+    done = set()
+    for x in sorted(eff, key=lambda x: (x["period"], x["emp"], x["no"])):
+        if x["no"] in done:
+            continue
+        e = x["emp"]
+        payer = parent_of.get(e, e)
+        covers = [x]
+        if x["kind"] != "supplement":
+            if payer == e:
+                kids = [k for k, p in parent_of.items() if p == e]
+                for k in kids:
+                    for y in by_key.get((k, x["period"], False), []):
+                        covers.append(y)
             else:
-                key = ly.crm.iat[i]
-            ev.append((C.to_utc(t), i, key, ch, True))
-            if ly.also_email.iat[i]:
-                t2 = t + dt.timedelta(minutes=int(rng.integers(20, 2000)))
-                ev.append((C.to_utc(t2), i, ly.crm.iat[i], "email", False))
-        ev.sort(key=lambda e: (e[0], e[1], not e[4]))
-        self.acc_ref = {}
-        for n_, (t, i, key, ch, first) in enumerate(ev):
-            ref = "OE26-%06d" % (104201 + 7 * n_ + int(rng.integers(0, 7)))
-            if first:
-                self.acc_ref[i] = ref
-            acc_rows.append((ref, "JAN26-HALF2", key, ch, _utc_iso(t), "accepted"))
-        self.offers = acc_rows
-        mi = 0
-        crm, opened = ly.crm.values, ly.opened.values
-        for i in np.where(ly["T"].values == 1)[0]:
-            mi += 1
-            sent = dt.datetime(2026, 1, 31, 9, 30) + dt.timedelta(seconds=int(rng.integers(0, 2400)))
-            mid = "M26%07d" % (1100000 + mi)
-            if rng.random() < 0.035:
-                mail.append((mid, crm[i], "JAN26-HALF2", "bounced", _utc_iso(C.to_utc(sent + dt.timedelta(seconds=40)))))
+                # the subsidiary's schedule is paid with the parent's
                 continue
-            mail.append((mid, crm[i], "JAN26-HALF2", "delivered", _utc_iso(C.to_utc(sent + dt.timedelta(seconds=20)))))
-            if opened[i]:
-                ot = sent + dt.timedelta(minutes=int(rng.integers(5, 6 * 24 * 60)))
-                mail.append((mid, crm[i], "JAN26-HALF2", "opened", _utc_iso(C.to_utc(ot))))
-                if rng.random() < 0.28:
-                    mail.append((mid, crm[i], "JAN26-HALF2", "clicked",
-                                 _utc_iso(C.to_utc(ot + dt.timedelta(seconds=int(rng.integers(5, 600)))))))
-        self.mail = sorted(mail, key=lambda r: (r[4], r[0]))
+        amt = sum(tot(c) for c in covers)
+        if e in behind and behind[e][0] <= x["period"] <= behind[e][1]:
+            continue
+        lag = int(rng.choice([3, 5, 7, 9, 12, 16, 24, 38], p=[0.18, 0.2, 0.18, 0.14, 0.12, 0.08, 0.06, 0.04]))
+        d = max(c["filed"] for c in covers) + dt.timedelta(days=lag)
+        for c in covers:
+            done.add(c["no"])
+        out.append((d, payer, amt, x["period"], [c["no"] for c in covers]))
+    # the arrears are paid off in two lumps, one of them after the year end
+    for e, (a, b) in behind.items():
+        owed = [x for x in eff if x["emp"] == e and a <= x["period"] <= b]
+        part = owed[:2]
+        out.append((dt.date(2026, 12, 21), parent_of.get(e, e), sum(tot(c) for c in part), part[0]["period"],
+                    [c["no"] for c in part]))
+    return out, parent_of
 
 
-# -------------------------------------------------------------------------------------------------- writers
-def write_assignment(out, R):
-    ly = R.ly
-    rng = C.stream("assign_times")
-    mins = rng.integers(0, 40, len(ly))
-    T = ly["T"].values
-    sent = [(dt.datetime(2026, 1, 31, 9, 30) + dt.timedelta(minutes=int(m))).strftime("%d/%m/%Y %H:%M") if t == 1 else ""
-            for t, m in zip(T, mins)]
-    rows = list(zip(["RET-2026-01"] * len(ly), ly.lbs.values, ly.crm.values, np.where(T == 1, "offer", "holdout"),
-                    ["%.3f" % s for s in ly.score.values], ly.band.values, sent))
-    rows.sort(key=lambda r: r[1])
-    return C.write_csv(os.path.join(out, C.F_ASSIGN), ["list_id", "subscription_ref", "customer_no", "arm", "risk_score",
-                                                       "risk_band", "offer_sent_at"], rows)
+def write_schedules(out, E, sched):
+    rows = []
+    for x in sorted(sched, key=lambda x: (x["filed"], x["no"])):
+        e = E[x["emp"]]
+        for i, a in x["rows"]:
+            rows.append((x["no"], e["nit"], mstr(x["period"]), iso(x["filed"]), i, "%.0f" % a))
+    head = ("schedule_no", "employer_nit", "period", "filed_on", "member_id", "contribution")
+    return C.write_csv(os.path.join(out, C.F_SCHED), head, rows)
 
 
-def write_profile(out, R):
-    ly = R.ly
-    rows = list(zip(ly.crm.values, ly.lbs.values, ly.plan.values, [s.isoformat() for s in ly.start.values],
-                    ly.region.values, ly.device.values, ly.arts.values.astype(int), ly.news.values.astype(int),
-                    ly.supp.values.astype(int), ly.pay.values, ly.app_user.values))
-    rows.sort(key=lambda r: r[0])
-    return C.write_csv(os.path.join(out, C.F_PROFILE), ["customer_no", "subscription_ref", "plan", "started_on", "region",
-                                                        "most_used_on", "articles_read_28d", "newsletters",
-                                                        "support_contacts_90d", "payment_method", "app_user_id"], rows)
+def write_statement(out, E, tr, people):
+    rng = C.stream("statement")
+    lines = []
+    for d, payer, amt, per, covers in tr:
+        if C.business_day(d) > dt.date(2026, 12, 31):
+            continue
+        e = E[payer]
+        y, m = C.ym(per)
+        lines.append((C.business_day(d), "TRANSFERENCIA RECIBIDA", e["nit"], e["name"].upper().replace(".", ""), "APORTES %02d/%04d" % (m, y), amt, 0.0))
+    # one transfer returned by the paying bank and sent again a few days later
+    pick = [k for k, l in enumerate(lines) if dt.date(2026, 3, 1) <= l[0] <= dt.date(2026, 9, 30)]
+    k = pick[int(rng.integers(0, len(pick)))]
+    d, desc, nit, nm, ref, amt, _ = lines[k]
+    lines.append((C.business_day(d + dt.timedelta(days=2)), "DEVOLUCION TRANSFERENCIA", nit, nm, ref, 0.0, amt))
+    lines.append((C.business_day(d + dt.timedelta(days=6)), "TRANSFERENCIA RECIBIDA", nit, nm, ref, amt, 0.0))
+    # members' own deposits and the account's charges
+    mem = [s for s in people if s.get("join") is not None]
+    for _ in range(2600):
+        s = mem[int(rng.integers(0, len(mem)))]
+        dd = C.business_day(dt.date(2025, 1, 1) + dt.timedelta(days=int(rng.integers(0, 728))))
+        if s["join"] > C.mi(dd.year, dd.month):
+            continue
+        lines.append((dd, "CONSIGNACION", str(s["id"]), "", "APORTE VOLUNTARIO", float(np.round(float(rng.uniform(20, 400)), 0) * 1000), 0.0))
+    for t in range(C.mi(2025, 1), TEND + 1):
+        lines.append((C.month_end(t), "COMISION MANEJO CUENTA", "", "", "", 0.0, 38_500.0))
+        lines.append((C.month_end(t), "GMF 4X1000", "", "", "", 0.0, float(np.round(float(rng.uniform(150_000, 420_000)), 0))))
+    lines.sort(key=lambda l: (l[0], l[1], l[2]))
+    rows = []
+    bal = 0.0
+    for d, desc, nit, nm, ref, cr, db in lines:
+        bal += cr - db
+        rows.append((iso(d), desc, nit, nm, ref, "%.0f" % cr if cr else "", "%.0f" % db if db else "", "%.0f" % bal))
+    head = ("posting_date", "description", "payer_id", "payer_name", "reference", "credit", "debit", "balance")
+    return C.write_csv(os.path.join(out, C.F_STMT), head, rows)
 
 
-def write_list(out, R):
-    ty = R.ty
-    rows = list(zip(["RET-2027-01"] * len(ty), ty.sp_sub.values, ty.sp_acct.values, ty.crm.values, ty.plan.values,
-                    [s.isoformat() for s in ty.start.values], ty.region.values, ty.device.values,
-                    ty.arts.values.astype(int), ty.news.values.astype(int), ty.supp.values.astype(int), ty.pay.values,
-                    ["%.3f" % s for s in ty.score.values], ty.band.values))
-    rows.sort(key=lambda r: r[1])
-    return C.write_csv(os.path.join(out, C.F_LIST), ["list_id", "subscription_id", "account_id", "customer_no", "plan",
-                                                     "started_on", "region", "most_used_on", "articles_read_28d",
-                                                     "newsletters", "support_contacts_90d", "payment_method",
-                                                     "risk_score", "risk_band"], rows)
-
-
-def write_lbs(out, R):
-    return C.write_csv(os.path.join(out, C.F_LBS), ["invoice_no", "subscription_ref", "invoice_date", "line_type",
-                                                    "item_code", "applied_ref", "amount_pence", "vat_code", "status"],
-                       R.lbs_rows)
-
-
-def write_sp(out, R):
-    return C.write_csv(os.path.join(out, C.F_SPINV), ["invoice_id", "account_id", "subscription_id", "doc_type",
-                                                      "issued_at", "period_start", "period_end", "amount_gbp",
-                                                      "tax_rate", "covers", "status", "lines"], R.sp_inv, crlf=False)
-
-
-def write_xwalk(out, R):
-    rows = sorted((k, v[0], v[1], "2026-10-01", v[2]) for k, v in R.xwalk.items())
-    return C.write_csv(os.path.join(out, C.F_XWALK), ["legacy_subscription_ref", "platform_subscription_id",
-                                                      "platform_account_id", "migrated_on", "batch"], rows)
-
-
-def write_events(out, R):
-    return C.write_csv(os.path.join(out, C.F_EVENTS), ["subscription_key", "system", "event", "event_date", "reason"],
-                       R.events)
-
-
-def write_offers(out, R):
-    return C.write_csv(os.path.join(out, C.F_OFFERS), ["acceptance_ref", "offer", "customer_key", "channel",
-                                                       "accepted_at", "status"], R.offers, crlf=False)
-
-
-def write_email(out, R):
-    return C.write_csv(os.path.join(out, C.F_EMAIL), ["message_id", "customer_no", "campaign", "event", "event_at"],
-                       R.mail, crlf=False)
-
-
-def write_survey(out, R):
-    """the reader survey's fourth-quarter export (both lists' members among the respondents)"""
-    rng = C.stream("survey")
-    pool = list(R.ty.crm.values) + list(R.ly.crm.values[R.ly.end_bill.values < 0])
-    n = 9200
-    who = rng.choice(np.array(pool), n, replace=False)
-    days = [dt.date(2026, 10, 5) + dt.timedelta(int(x)) for x in rng.integers(0, 80, n)]
-    sat = np.clip(np.round(rng.normal(6.4, 2.1, n)), 0, 10).astype(int)
-    lik = np.where(sat <= 3, rng.choice(np.array(["very likely", "likely", "unlikely"]), n, p=[0.45, 0.4, 0.15]),
-                   np.where(sat <= 6, rng.choice(np.array(["likely", "unlikely", "very unlikely"]), n, p=[0.3, 0.5, 0.2]),
-                            rng.choice(np.array(["unlikely", "very unlikely"]), n, p=[0.35, 0.65])))
-    why = rng.choice(np.array(["price", "not enough time to read", "quality of coverage", "app problems", "other news apps",
-                               "nothing in particular"]), n, p=[0.27, 0.22, 0.12, 0.08, 0.11, 0.20])
-    rows = sorted(zip(who, [d.isoformat() for d in days], sat, lik, why), key=lambda r: (r[1], r[0]))
-    return C.write_csv(os.path.join(out, C.F_SURVEY), ["customer_no", "responded_on", "satisfaction",
-                                                       "likely_to_cancel_3m", "main_reason"], rows)
-
-
-_CACHE = {}
-
-
-def records():
-    if "R" not in _CACHE:
-        _CACHE["R"] = Records()
-    return _CACHE["R"]
+def write_labour(out):
+    rng = C.stream("labour")
+    rows = []
+    secs = ("Comercio al por menor", "Servicios administrativos y de apoyo", "Transporte y almacenamiento",
+            "Industria manufacturera de alimentos", "Actividades de atencion de la salud", "Administracion publica",
+            "Educacion", "Total nacional")
+    base = {s: float(rng.uniform(6.5, 13.5)) for s in secs}
+    emp = {s: float(rng.uniform(250, 2600)) for s in secs}
+    for y in (2023, 2024, 2025, 2026):
+        for q in (1, 2, 3, 4):
+            if y == 2026 and q == 4:
+                continue
+            for s in secs:
+                u = base[s] + float(rng.normal(0, 0.45)) - 0.25 * (y - 2023)
+                emp[s] *= float(1 + rng.normal(0.004, 0.006))
+                rows.append(("%dT%d" % (y, q), s, "%.1f" % u, "%.1f" % emp[s]))
+    head = ("trimestre", "rama_actividad", "tasa_desempleo_pct", "ocupados_miles")
+    return C.write_csv(os.path.join(out, C.F_LABOUR), head, rows)
 
 
 def build_pack(out):
-    import docs as D
+    import docs
     os.makedirs(out, exist_ok=True)
-    R = records()
+    Wd = W.world()
+    P, E, people, B = Wd["P"], Wd["E"], Wd["people"], Wd["B"]
+    legacy, newno, migrated, closed_before = loan_numbers(P)
+    receipts, savings, cures = recoveries(P)
+    sched = schedules(E, people)
+    tr, parent_of = transfers(E, sched)
     n = {}
-    n[C.F_ASSIGN] = write_assignment(out, R)
-    n[C.F_PROFILE] = write_profile(out, R)
-    n[C.F_LIST] = write_list(out, R)
-    n[C.F_LBS] = write_lbs(out, R)
-    n[C.F_SPINV] = write_sp(out, R)
-    n[C.F_XWALK] = write_xwalk(out, R)
-    n[C.F_EVENTS] = write_events(out, R)
-    n[C.F_OFFERS] = write_offers(out, R)
-    n[C.F_EMAIL] = write_email(out, R)
-    n[C.F_SURVEY] = write_survey(out, R)
-    D.write_note(out)
-    D.write_validation(out)
-    D.write_plan(out)
-    D.write_dictionary(out)
+    n[C.F_LOANS] = write_loans(out, P, legacy, newno, migrated, closed_before)
+    n[C.F_XWALK] = write_crosswalk(out, P, legacy, newno, migrated)
+    n[C.F_RETURNS] = write_returns(out, P, legacy, newno)
+    n[C.F_DEFAULTS] = write_defaults(out, P, legacy, newno, cures)
+    n[C.F_RECEIPTS] = write_receipts(out, P, legacy, newno, receipts)
+    n[C.F_SAVINGS] = write_savings(out, savings)
+    n[C.F_REGISTERS] = write_registers(out, E, people)
+    n[C.F_LAUNCH] = write_launch(out, E, B)
+    n[C.F_SCHED] = write_schedules(out, E, sched)
+    n[C.F_STMT] = write_statement(out, E, tr, people)
+    n[C.F_LABOUR] = write_labour(out)
+    docs.write_agreements(out, E)
+    docs.write_rules(out)
+    docs.write_dictionary(out)
+    docs.write_supervisor(out, P)
     return n
+
+
+if __name__ == "__main__":
+    import sys
+    o = sys.argv[1]
+    print(build_pack(o))
+
+
+# ------------------------------------------------------------------------------------------- the asks' clean truth
+def ask_truth():
+    """Ask A and Ask B from the world's own objects (which schedule replaced which, which transfer paid which
+    schedules, which receipts netted the member's own savings), before any file is written"""
+    Wd = W.world()
+    P, E, people = Wd["P"], Wd["E"], Wd["people"]
+    sched = schedules(E, people)
+    tr, parent_of = transfers(E, sched)
+    eff = {x["no"]: x for x in sched if not x.get("replaced")}
+    paid = set()
+    for d, payer, amt, per, covers in tr:
+        if C.business_day(d) <= dt.date(2026, 12, 31):
+            paid.update(covers)
+    ded = {s: 0.0 for s in C.SECTORS}
+    out = {s: 0.0 for s in C.SECTORS}
+    for no, x in eff.items():
+        if C.ym(x["period"])[0] != 2026:
+            continue
+        sec = E[x["emp"]]["sector"]
+        t = float(sum(a for _, a in x["rows"]))
+        ded[sec] += t
+        if no not in paid:
+            out[sec] += t
+    receipts, savings, cures = recoveries(P)
+    A = P["A"]
+    rec = {y: {k: 0.0 for k in C.AGENCY_TYPES} for y in (2023, 2024)}
+    for d, i, ch, org, a, kind in receipts:
+        y = C.ym(int(P["dflt_m"][i]))[0]
+        if y in rec and kind != "own":
+            rec[y][A[P["ag"][i]]["type"]] += float("%.0f" % a)
+    return dict(deducted=ded, outstanding=out, recovered=rec, sched=sched, tr=tr, receipts=receipts,
+                parent_of=parent_of)

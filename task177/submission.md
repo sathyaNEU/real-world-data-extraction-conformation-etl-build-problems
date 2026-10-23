@@ -1,60 +1,66 @@
 ## Tags
 
-**Domain:** Product Analytics, churn propensity and uplift modelling.
-**Analytical objective:** Forecasting and predictive modelling.
+**Domain:** Banking, Credit & Financial Risk, credit scoring and PD modelling.
+**Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**20 per cent of the 48,000 subscriptions on the 26 January 2027 list will still be subscribed on 31 March 2027 because they are sent the offer.**
-Last January the offer kept 20 per cent of the test's subscriptions whose next bill fell within 14 days of the send, and every bill on this year's list falls 6 days after it. Not the test's whole-list 10 per cent, which averages in subscriptions billed later in the month, where the offer kept almost none.
+**About 250 of the 2,400 Libranza Empresarial loans disbursed on 1 February 2027 will go into default by 31 January 2028.**
+A payroll-deduction loan defaults almost only when its borrower stops being paid by the payroll with the loan open, 53 per cent of such public loans went into default, and the agreement employers' staff with a year's service work their last month at about 3 per cent a month. Not the 50 a PD model on the public book's borrower attributes gives, which reads the public servants' rare leaving as borrower quality.
 
 ## 2. Critical Components
 
-1. Every subscription on this year's list bills next on **1 February 2027**, **6 days** after the 26 January send (**48,000** of 48,000).
-2. Last January the offer kept **20 per cent** of the test's subscriptions whose next bill fell within 14 days of the send, and almost none of those billed later.
+1. Of the public loans whose borrower stopped being paid by the payroll with the loan open, **53 per cent** went into default.
+2. Staff with a year's service at the employers of the launch loans work their last month at about **3 per cent** a month.
 
 ## 3. Step-by-Step Solution
 
-1. Joined retention_campaign_2026-01_assignment.csv to subscription_events.csv: a test subscription is subscribed on 31 March 2026 unless its access ended before then and it did not restart by then (data dictionary, access_ended); offer against holdout as randomised.
-2. Took each test subscription's billing day from its January 2026 SUB line in legacy_billing_invoices.csv and its next bill in February (on the month's last day where the billing day is past it): 1 to 28 days after the send.
-3. Compared the arms by those days: within 14 days of the send the offer kept 20 per cent, later 0 per cent, the whole list 10 per cent (nearest 5).
-4. Took this year's next bill from the lines of subscriptions_platform_invoices.csv: every list subscription's last bill covers January 2027, so all 48,000 bill next on 1 February 2027, 6 days after the send, as the 1st-of-month calendar in billing_move_note_2026.pdf has it.
-5. Carried the rate within 14 days of the bill to the whole list: 20 per cent.
-6. Took last January's offer discounts from legacy_billing_invoices.csv: the DISC lines and the CRED lines (credits posted once the bill had been raised) whose applied_ref is an acceptance in offers_engine_acceptances_2026.csv, the save desk's STAY50 cases not being the offer, and the February and March bills of the app acceptances the engine never applied, which charge the plan at the app's half-price rate (DIG-MA, DGP-MA, FAM-MA), each such discount the subscription's January charge less the rate; by the month the bill was raised and the plan in subscriber_profile_2026-01-31.csv, the subscriptions with any of them took it.
-7. Took each list subscription's own lines from the lines column of subscriptions_platform_invoices.csv by their subscription_id, one unit of each (an account's invoice also carries its add-ons and any other plan it pays for, some list subscriptions are billed on another account's invoice, and a line of qty 2 bills the list subscription and the household's other subscription on that plan), by the UK date each bill was raised (times are UTC), goodwill credit lines netted, added its legacy 1 October bill through subscription_id_crosswalk.csv and took off each bill a credit note covers at that bill's own amount, as billing_move_note_2026.pdf has it.
-8. Recommendation: 20 per cent of the list kept to 31 March 2027 by the offer.
+1. Joined payroll_loans_public_2017_2026.csv, treasury_deduction_returns_2017_2026.csv (legacy numbers through legacy_core_crosswalk_2021.csv) and default_register_2017_2026.csv; marked the first month of each run of SIN SALARIO (01) returns on a loan, the month the Tesoreria stopped paying the borrower with the loan open.
+2. For runs starting January 2017 to December 2025, took the share of those loans whose default date falls within each number of months of that first month: 53 per cent by five months, none before three, the conversion by months left.
+3. Took the monthly default rate of loans still paid by the payroll (defaults with no SIN SALARIO run before them, per loan-month) as the on-payroll route.
+4. From employer_payroll_registers_2025_2026.csv (repeated uploads dropped, employee ids without the CC prefix and dots), took each employer's monthly rate of staff with twelve or more months' service working their last month (the LIQUIDACION row), over employee-months since its first register.
+5. For each loan in libranza_empresarial_disbursement_file_2027-02-01.csv, summed over February 2027 to January 2028 the chance its borrower leaves at the end of each month times the conversion for the months then left, plus the on-payroll route; by sector through deduction_agreements_register.xlsx.
+6. Savings in savings_contribution_schedules_2025_2026.csv: where an employer filed a second schedule for a month with the same members, only the later counts, and a schedule for members missing from the month adds to it; received from collection_account_statement_2025_2026.csv, a returned transfer counted once, a group parent's single transfer paying its own and its subsidiary's schedules of the month (its amount is their sum).
+7. Recoveries in defaulted_loan_receipts_2023_2026.csv on the loans whose default date in default_register_2017_2026.csv falls in 2023 or 2024, net of reversals, leaving out transfers from the borrowing member's own account in member_savings_ledger_2023_2026.csv (another member's savings account paying is a recovery), by unit_type in payroll_loans_public_2017_2026.csv.
+8. Recommendation: about 250 of the 2,400 loans in default by 31 January 2028.
 
 ## 4. Deliverable Answers
 
-### retention_offer_forecast_2027.xlsx
+### libranza_empresarial_default_forecast.xlsx
 
-1. Share of the 26 January 2027 list still subscribed on 31 March 2027 because of the offer: 20 per cent.
-2. Discount last January's offer gave, pounds to the nearest hundred:
-   - February 2026 bills, Digital: GBP 31,100
-   - February 2026 bills, Digital Plus: GBP 22,200
-   - February 2026 bills, Family: GBP 12,600
-   - March 2026 bills, Digital: GBP 28,200
-   - March 2026 bills, Digital Plus: GBP 20,200
-   - March 2026 bills, Family: GBP 11,800
-3. Subscriptions that took last January's offer:
-   - Digital: 6,224
-   - Digital Plus: 3,174
-   - Family: 1,402
-4. Billed to this year's list for its plans after credits, pounds to the nearest hundred:
-   - October 2026, Digital: GBP 135,700
-   - October 2026, Digital Plus: GBP 105,500
-   - October 2026, Family: GBP 72,700
-   - November 2026, Digital: GBP 257,900
-   - November 2026, Digital Plus: GBP 199,400
-   - November 2026, Family: GBP 136,100
-   - December 2026, Digital: GBP 259,100
-   - December 2026, Digital Plus: GBP 200,200
-   - December 2026, Family: GBP 136,500
-   - January 2027, Digital: GBP 259,100
-   - January 2027, Digital Plus: GBP 200,300
-   - January 2027, Family: GBP 136,600
+1. Libranza Empresarial loans in default by 31 January 2028: 250.
+2. Share of each sector's launch loans in default by 31 January 2028, nearest 5 per cent:
+   - Contact centres: 20 per cent
+   - Retail chains: 10 per cent
+   - Security services: 10 per cent
+   - Logistics and courier: 10 per cent
+   - Food processing: 10 per cent
+   - Private clinics: 5 per cent
+3. Members' savings contributions the employers deducted for the months of 2026, VMP to the nearest 1,000:
+   - Contact centres: VMP 793,629,000
+   - Retail chains: VMP 521,966,000
+   - Security services: VMP 572,968,000
+   - Logistics and courier: VMP 444,405,000
+   - Food processing: VMP 547,196,000
+   - Private clinics: VMP 474,370,000
+4. Of that, not received by 31 December 2026, VMP to the nearest 1,000:
+   - Contact centres: VMP 79,019,000
+   - Retail chains: VMP 46,902,000
+   - Security services: VMP 51,867,000
+   - Logistics and courier: VMP 37,041,000
+   - Food processing: VMP 51,328,000
+   - Private clinics: VMP 38,066,000
+5. Recovered by 31 December 2026 other than by netting the member's own savings, VMP to the nearest 1,000:
+   - Defaulted in 2023, national: VMP 561,001,000
+   - Defaulted in 2023, territorial: VMP 247,085,000
+   - Defaulted in 2023, health: VMP 86,931,000
+   - Defaulted in 2023, education: VMP 222,767,000
+   - Defaulted in 2024, national: VMP 759,670,000
+   - Defaulted in 2024, territorial: VMP 412,827,000
+   - Defaulted in 2024, health: VMP 147,806,000
+   - Defaulted in 2024, education: VMP 175,862,000
 
-### january_offer_note.docx
+### launch_default_note.docx
 
-1. The case: 20 per cent of the list kept to 31 March 2027, from last January's rate within 14 days of the bill, with every bill this year 6 days after the send.
-2. Bar chart of the share last January's offer kept by days from the send to the next bill, the days within 14 of the bill highlighted and this year's 6 marked.
+1. The forecast for the board: about 250 of the 2,400 loans in default by 31 January 2028, with the reason (leaving the payroll with the loan open, far more frequent at the agreement employers).
+2. Bar chart of the expected share in default by sector against the public loans' first-year rate.

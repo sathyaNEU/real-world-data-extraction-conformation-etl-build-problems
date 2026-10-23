@@ -11,8 +11,8 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "about 250 of the 2,400 loans in default by 31 January 2028 (247.0 expected); sector shares 20, 10, 10, 10, 10 and 5 per cent",
+  "answer_source": "submission.md block 1 and block 4",
   "gap": [
     "population",
     "time"
@@ -48,8 +48,8 @@
   "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "libranza_loans_2017_2026.csv",
-    "rows": 0,
+    "file": "payroll_loans_public_2017_2026.csv",
+    "rows": 46535,
     "entity": "one payroll-deduction loan disbursed to a public servant (or, for the legacy core, one loan as migrated)",
     "grain": "loan",
     "source": "synthetic"

@@ -1,251 +1,130 @@
-"""task177 cracker and mirror sheet, run on the cut pack.
+"""task177 cracker and mirror sheets, run on the cut pack: each ask figure on the routes a careful solver takes after
+landing the call (the cracker) and after stopping on the default path (the mirror), scored against figures.json at half
+the stated rounding, and the pair ceiling on Part 0's weights (38 call, 7 instruction following, 55 asks, a wrong call
+keeping about 5).
 
-The cracker lands the call and works every ask the careful way: it executes every filed definition (the dictionary's
-UTC and pence conventions, the note's credits), runs the hygiene battery (duplicate keys, unmatched joins) and joins the
-obvious keys. The mirror stops at the most attractive wrong rung: the call from last January's whole-list difference,
-the asks read straight off the files. Each graded ask figure is a hit when it is within half a unit of its stated
-rounding (pounds to the nearest hundred: within 50; counts: exact).
+The asks consume nothing the call's construction produces (separation is asserted in checks.py), so both responses
+take the same ask routes; each route is scored separately below, and the worst honest one is the gated figure.
 
-    python3 cracker.py <target>        prints the sheet and the pair ceiling on Part 0's weights (38, 7, 55)"""
+    python3 task177/generator/cracker.py task177/target"""
 from __future__ import annotations
 
-import datetime as dt
+import json
+import os
 import sys
 
-import numpy as np
 import pandas as pd
 
-import calc as K
-import common as C
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import common as C   # noqa: E402
 
-W_CALL, W_INSTR, W_ASKS, R_MISS = 38.0, 7.0, 55.0, 5.0
+TOL = 500.0
 
 
-def cracker_a(P):
-    """takers from the offers engine joined to subscriptions on the CRM's keys; every discount on their February and
-    March bills"""
-    prof = P.profile
-    by_crm = dict(zip(prof.customer_no, prof.subscription_ref))
-    by_app = dict(zip(prof.app_user_id[prof.app_user_id != ""], prof.subscription_ref[prof.app_user_id != ""]))
-    subs = set()
-    for k in P.offers.customer_key:
-        s = by_crm.get(k) or by_app.get(k)
-        if s:
-            subs.add(s)
-    plan = prof.set_index("subscription_ref").plan
-    disc = P.lbs[(P.lbs.line_type == "DISC") & P.lbs.subscription_ref.isin(subs)]
-    disc = disc.assign(plan=disc.subscription_ref.map(plan), m=disc.date.dt.month, y=disc.date.dt.year)
+def _sched(target):
+    S = pd.read_csv(os.path.join(target, C.F_SCHED), dtype={"member_id": str, "employer_nit": str})
+    S["contribution"] = S["contribution"].astype(float)
+    A = pd.read_excel(os.path.join(target, C.F_AGREE), dtype=str)
+    sec = dict(zip(A["employer_nit"], A["sector"]))
+    tot = S.groupby(["schedule_no", "employer_nit", "period", "filed_on"])["contribution"].sum().reset_index()
+    tot["sector"] = tot["employer_nit"].map(sec)
+    return tot, sec
+
+
+def _received_by_nit(target):
+    """the statement's employer transfers by payer and reference month, a returned transfer netted"""
+    T = pd.read_csv(os.path.join(target, C.F_STMT), dtype={"payer_id": str})
+    cr = T[T["description"] == "TRANSFERENCIA RECIBIDA"].copy()
+    cr["amt"] = cr["credit"].astype(float)
+    db = T[T["description"] == "DEVOLUCION TRANSFERENCIA"].copy()
+    db["amt"] = -db["debit"].astype(float)
+    X = pd.concat([cr, db])
+    X["per"] = X["reference"].str.extract(r"(\d\d)/(\d{4})").apply(lambda r: "%s-%s" % (r[1], r[0]), axis=1)
+    return X.groupby(["payer_id", "per"])["amt"].sum().to_dict()
+
+
+def ask_a_routes(target):
+    tot, sec = _sched(target)
+    t26 = tot[tot["period"].str.startswith("2026")]
+    rec = _received_by_nit(target)
     out = {}
-    for m in (2, 3):
-        for pl in C.PLANS:
-            out[("disc", m, pl)] = -disc[(disc.y == 2026) & (disc.m == m) & (disc.plan == pl)].amt.sum()
-    tk = pd.Series(sorted(subs)).map(plan)
-    for pl in C.PLANS:
-        out[("takers", pl)] = int((tk == pl).sum())
+    # version reflex: the latest filed schedule per employer and month
+    latest = t26.sort_values(["filed_on", "schedule_no"]).groupby(["employer_nit", "period"]).tail(1)
+    # sum reflex: every schedule
+    for name, base in (("latest_schedule", latest), ("all_schedules", t26)):
+        per = base.groupby(["employer_nit", "period"])["contribution"].sum().reset_index()
+        per["got"] = [rec.get((n, p), 0.0) for n, p in zip(per["employer_nit"], per["period"])]
+        per["short"] = (per["contribution"] - per["got"]).clip(lower=0)
+        per["sector"] = per["employer_nit"].map(sec)
+        out[name] = dict(deducted=per.groupby("sector")["contribution"].sum().to_dict(),
+                         outstanding=per.groupby("sector")["short"].sum().to_dict())
     return out
 
 
-def mirror_a(P):
-    """the offer's code read off the discount lines; takers as the engine's distinct customers"""
-    plan = P.profile.set_index("subscription_ref").plan
-    disc = P.lbs[(P.lbs.line_type == "DISC") & (P.lbs.item_code == C.OFFER_CODE_WEB)]
-    disc = disc.assign(plan=disc.subscription_ref.map(plan), m=disc.date.dt.month, y=disc.date.dt.year)
+def ask_b_routes(target):
+    Rc = pd.read_csv(os.path.join(target, C.F_RECEIPTS), dtype={"originating_account": str, "loan_reference": str})
+    D = pd.read_csv(os.path.join(target, C.F_DEFAULTS), dtype={"loan_reference": str})
+    L = pd.read_csv(os.path.join(target, C.F_LOANS), dtype={"loan_no": str}, usecols=["loan_no", "unit_type"])
+    typ = dict(zip(L["loan_no"], L["unit_type"]))
+    Rc["amount"] = Rc["amount"].astype(float)
+    D["year"] = D["default_date"].str[:4].astype(int)
     out = {}
-    for m in (2, 3):
-        for pl in C.PLANS:
-            out[("disc", m, pl)] = -disc[(disc.y == 2026) & (disc.m == m) & (disc.plan == pl)].amt.sum()
-    prof = P.profile
-    plan_crm = dict(zip(prof.customer_no, prof.plan))
-    plan_app = dict(zip(prof.app_user_id, prof.plan))
-    keys = P.offers.drop_duplicates("customer_key").customer_key
-    pls = [plan_crm.get(k) or plan_app.get(k) for k in keys]
-    for pl in C.PLANS:
-        out[("takers", pl)] = int(sum(1 for x in pls if x == pl))
+    for name, keep in (("all_receipts", lambda r: r), ("no_0731_transfers",
+                                                       lambda r: r[~r["originating_account"].fillna("").str.startswith("0731-")])):
+        g = keep(Rc)
+        res = {}
+        for y in (2023, 2024):
+            loans = set(D[D["year"] == y]["loan_reference"])
+            h = g[g["loan_reference"].isin(loans)]
+            res[str(y)] = h.groupby(h["loan_reference"].map(typ))["amount"].sum().to_dict()
+        out[name] = res
     return out
 
 
-def cracker_b(P):
-    """the platform's invoices filed under the list's subscriptions, by UK month; their plan lines from the lines
-    column with the add-on left out and the goodwill credits kept; the legacy system's October bills through the
-    crosswalk; each credit note netted against the subscription it is filed under"""
-    lst = P.lst.set_index("subscription_id")
-    ids = set(lst.index)
-    plan = lst.plan
-    head = P.spinv[P.spinv.subscription_id.isin(ids)][["invoice_id", "subscription_id", "doc_type", "uk", "amt"]]
-    ln = P.spline.merge(head[head.doc_type == "invoice"].drop(columns=["amt", "doc_type"])
-                        .rename(columns={"subscription_id": "head_sub"}), on="invoice_id")
-    ln = ln[ln.item_code != C.ADDON_CODE]
-    ln = ln.assign(ym=[(t.year, t.month) for t in ln.uk], pl=ln.head_sub.map(plan))
-    cn = head[head.doc_type == "credit_note"]
-    cn = cn.assign(ym=[(t.year, t.month) for t in cn.uk], pl=cn.subscription_id.map(plan))
-    x = P.xwalk.set_index("legacy_subscription_ref").platform_subscription_id
-    lb = P.lbs[P.lbs.line_type == "SUB"].copy()
-    lb["sp"] = lb.subscription_ref.map(x)
-    lb = lb[lb.sp.isin(ids) & (lb.date >= "2026-10-01")]
-    out = {}
-    for (y, m) in C.ASK_B_MONTHS:
-        for pl in C.PLANS:
-            v = ln[(ln.ym == (y, m)) & (ln.pl == pl)].amt.sum()
-            v += cn[(cn.ym == (y, m)) & (cn.pl == pl)].amt.sum()
-            v += lb[(lb.date.dt.year == y) & (lb.date.dt.month == m) & (lb.sp.map(plan) == pl)].amt.sum()
-            out[("billed", y, m, pl)] = v
-    return out
+def score(fig, target):
+    A = ask_a_routes(target)
+    B = ask_b_routes(target)
+    rows = []
+    for route, v in A.items():
+        hits = 0
+        n = 0
+        for key in ("deducted", "outstanding"):
+            for s in C.SECTORS:
+                n += 1
+                hits += abs(v[key].get(s, 0.0) - fig["ask_a_%s" % key][s]) <= TOL
+        rows.append(("A", route, hits, n))
+    for route, v in B.items():
+        hits = 0
+        n = 0
+        for y in ("2023", "2024"):
+            for t in C.AGENCY_TYPES:
+                n += 1
+                hits += abs(v[y].get(t, 0.0) - fig["ask_b_recovered"][y][t]) <= TOL
+        rows.append(("B", route, hits, n))
+    return rows
 
 
-def mirror_b(P):
-    """the invoice totals filed under the list's subscriptions, by the month of issued_at"""
-    lst = P.lst.set_index("subscription_id")
-    inv = P.spinv[P.spinv.subscription_id.isin(set(lst.index)) & (P.spinv.doc_type == "invoice")]
-    inv = inv.assign(ym=[(t.year, t.month) for t in inv.utc], pl=inv.subscription_id.map(lst.plan))
-    return {("billed", y, m, pl): inv[(inv.ym == (y, m)) & (inv.pl == pl)].amt.sum()
-            for (y, m) in C.ASK_B_MONTHS for pl in C.PLANS}
-
-
-def reader_b_a(P):
-    """reader B's quoted path for ask A (round 1): "legacy DISC lines whose applied_ref is an offers-engine acceptance
-    (OE26; codes STAY50 and LNT-APP-JAN26, the latter being the app route), summed by invoice month and the plan of the
-    SUB line on the same invoice ... Takers = distinct subscriptions with such a discount (duplicate acceptances
-    collapsed)", as quoted."""
-    refs = set(P.offers.acceptance_ref)
-    disc = P.lbs[(P.lbs.line_type == "DISC") & P.lbs.applied_ref.isin(refs)]
-    sub = P.lbs[P.lbs.line_type == "SUB"]
-    code_plan = {v: k for k, v in C.PLAN_CODE.items()}
-    sub = sub.assign(pl=sub.item_code.map(code_plan)).dropna(subset=["pl"]).drop_duplicates("invoice_no")
-    inv_plan = sub.set_index("invoice_no").pl
-    disc = disc.assign(pl=disc.invoice_no.map(inv_plan), m=disc.date.dt.month, y=disc.date.dt.year)
-    out = {}
-    for m in (2, 3):
-        for pl in C.PLANS:
-            out[("disc", m, pl)] = -disc[(disc.y == 2026) & (disc.m == m) & (disc.pl == pl)].amt.sum()
-    tk = disc.drop_duplicates("subscription_ref")
-    for pl in C.PLANS:
-        out[("takers", pl)] = int((tk.pl == pl).sum())
-    return out
-
-
-def reader_d_a(P):
-    """reader D's quoted path for ask A (round 2): "legacy invoices, DISC lines with OE26 refs (customer-service STAY50
-    CS- refs excluded) plus half-price -MA plan lines (list price minus billed). 10,800 subscriptions.", as quoted."""
-    lb = P.lbs
-    disc = lb[(lb.line_type == "DISC") & lb.applied_ref.str.startswith("OE26")]
-    disc = disc.assign(off=-disc.amt)
-    rate = lb[(lb.line_type == "SUB") & lb.item_code.isin(set(C.RATE_CODE.values()))]
-    plan_of_code = {v: k for k, v in C.RATE_CODE.items()}
-    rate = rate.assign(off=[C.PRICE[plan_of_code[c_]] - a_ for c_, a_ in zip(rate.item_code, rate.amt)])
-    both = pd.concat([disc[["subscription_ref", "date", "off"]], rate[["subscription_ref", "date", "off"]]])
-    plan = P.profile.set_index("subscription_ref").plan
-    both = both.assign(pl=both.subscription_ref.map(plan), m=both.date.dt.month, y=both.date.dt.year)
-    out = {}
-    for m in (2, 3):
-        for pl in C.PLANS:
-            out[("disc", m, pl)] = both[(both.y == 2026) & (both.m == m) & (both.pl == pl)].off.sum()
-    tk = both.drop_duplicates("subscription_ref")
-    for pl in C.PLANS:
-        out[("takers", pl)] = int((tk.pl == pl).sum())
-    return out
-
-
-def reader_c_a(P):
-    """reader C's route for ask A (round 2), from its remark "353 of them accepted but never had the discount applied
-    to a bill": takers are the engine's acceptances through the CRM snapshot's keys, one per subscription; the
-    discounts are the discount lines that name an acceptance"""
-    prof = P.profile
-    key_sub = dict(zip(prof.customer_no, prof.subscription_ref))
-    key_sub.update({k: v for k, v in zip(prof.app_user_id, prof.subscription_ref) if k})
-    subs = {key_sub[k] for k in P.offers.customer_key if k in key_sub}
-    plan = prof.set_index("subscription_ref").plan
-    refs = set(P.offers.acceptance_ref)
-    disc = P.lbs[(P.lbs.line_type == "DISC") & P.lbs.applied_ref.isin(refs)]
-    disc = disc.assign(pl=disc.subscription_ref.map(plan), m=disc.date.dt.month, y=disc.date.dt.year)
-    out = {}
-    for m in (2, 3):
-        for pl in C.PLANS:
-            out[("disc", m, pl)] = -disc[(disc.y == 2026) & (disc.m == m) & (disc.pl == pl)].amt.sum()
-    tk = pd.Series(sorted(subs)).map(plan)
-    for pl in C.PLANS:
-        out[("takers", pl)] = int((tk == pl).sum())
-    return out
-
-
-def reader_b_b(P, credits="none"):
-    """reader B's quoted path for ask B (round 1): "platform invoice lines for list subscription ids, plan items only
-    (puzzles add-on excluded), goodwill credit lines (LOYAL-CR) netted, month = UK date of issue"; with credits="header"
-    the credit notes are also netted at their totals against the subscription they are filed under, and with
-    credits="covers" the legacy 1 October bills are added through the crosswalk and each bill a credit note covers is
-    taken off at its own amount (the golden's October handling)"""
-    lst = P.lst.set_index("subscription_id")
-    ids = set(lst.index)
-    plan = lst.plan
-    inv = P.spinv[P.spinv.doc_type == "invoice"][["invoice_id", "uk"]]
-    ln = P.spline.merge(inv, on="invoice_id")
-    ln = ln[ln.subscription_id.isin(ids) & (ln.item_code != C.ADDON_CODE)]
-    ln = ln.assign(ym=[(t.year, t.month) for t in ln.uk], pl=ln.subscription_id.map(plan))
-    cn = P.spinv[(P.spinv.doc_type == "credit_note") & P.spinv.subscription_id.isin(ids)]
-    cn = cn.assign(ym=[(t.year, t.month) for t in cn.uk], pl=cn.subscription_id.map(plan))
-    x = P.xwalk.set_index("legacy_subscription_ref").platform_subscription_id
-    lb = P.lbs[P.lbs.line_type == "SUB"].copy()
-    lb["sp"] = lb.subscription_ref.map(x)
-    lb = lb[lb.sp.isin(ids) & (lb.date >= "2026-10-01")]
-    allcn = P.spinv[P.spinv.doc_type == "credit_note"]
-    covered = set(";".join(allcn.covers).split(";")) if len(allcn) else set()
-    out = {}
-    for (y, m) in C.ASK_B_MONTHS:
-        for pl in C.PLANS:
-            v = ln[(ln.ym == (y, m)) & (ln.pl == pl)].amt.sum()
-            if credits == "header":
-                v += cn[(cn.ym == (y, m)) & (cn.pl == pl)].amt.sum()
-            elif credits == "covers":
-                g = lb[(lb.date.dt.year == y) & (lb.date.dt.month == m) & (lb.sp.map(plan) == pl)]
-                v += g.amt.sum() - g[g.invoice_no.isin(covered)].amt.sum()
-            out[("billed", y, m, pl)] = v
-    return out
-
-
-def hit(golden, v, key):
-    if key[0] == "takers":
-        return int(round(v)) == int(golden)
-    return abs(v - golden) < 50 or C.hundred(v) == C.hundred(golden)
-
-
-def sheet(target):
-    P, c, ga, gb, ly, ty = K.figures(target)
-    rb_a, rb_b = reader_b_a(P), reader_b_b(P)
-    paths = {"cracker": (cracker_a(P), cracker_b(P)), "mirror": (mirror_a(P), mirror_b(P)),
-             "reader A (round 1), the discount-line route": (rb_a, cracker_b(P)),
-             "reader B (round 1) as quoted": (rb_a, rb_b),
-             "reader B, credit notes at their totals": (rb_a, reader_b_b(P, "header")),
-             "reader B, legacy bills and covered bills": (rb_a, reader_b_b(P, "covers")),
-             "reader C (round 2) as quoted": (reader_c_a(P), rb_b),
-             "reader D (round 2) as quoted": (reader_d_a(P), rb_b)}
-    rows, keeps = [], {}
-    for name, (pa, pb) in paths.items():
-        k = 0
-        for ask, g, p in (("A", ga, pa), ("B", gb, pb)):
-            for key in g:
-                h = hit(g[key], p[key], key)
-                k += h
-                rows.append((name, ask, key, g[key], p[key], h))
-        keeps[name] = k
-    n = len(ga) + len(gb)
-    lc, lm = keeps["cracker"] / n, keeps["mirror"] / n
-    cscore = W_CALL + W_INSTR + W_ASKS * lc
-    sscore = R_MISS + W_INSTR + W_ASKS * lm
-    return rows, dict(n=n, keeps=keeps, cracker_keeps=keeps["cracker"], mirror_keeps=keeps["mirror"],
-                      pair=(cscore + sscore) / 2, mirror_leakage=100 * lm, call_golden=c["share"], call_mirror=c["pooled"])
+def pair(rows):
+    nA = max(r[3] for r in rows if r[0] == "A")
+    nB = max(r[3] for r in rows if r[0] == "B")
+    keepA = max(r[2] for r in rows if r[0] == "A")
+    keepB = max(r[2] for r in rows if r[0] == "B")
+    L = (keepA + keepB) / float(nA + nB)
+    cracker = 38 + 7 + 55 * L
+    mirror = 5 + 7 + 55 * L
+    return (cracker + mirror) / 2, 100 * L, cracker, mirror
 
 
 def main(target):
-    rows, s = sheet(target)
-    print("%-42s %-3s %-30s %13s %13s %5s" % ("path", "ask", "figure", "golden", "path", "hit"))
-    for name, ask, k, g, p, h in rows:
-        print("%-42s %-3s %-30s %13.2f %13.2f %5s" % (name, ask, str(k), g, p, "HIT" if h else "miss"))
-    print("call: golden %.2f (%d), mirror %.2f (%d)" % (s["call_golden"], C.pct5(s["call_golden"] / 100),
-                                                      s["call_mirror"], C.pct5(s["call_mirror"] / 100)))
-    for name, k in s["keeps"].items():
-        print("ask figures kept by %s: %d of %d" % (name, k, s["n"]))
-    print("Pair ceiling: %.1f   Mirror leakage: %.1f per cent of ask weight" % (s["pair"], s["mirror_leakage"]))
-    return s
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    rows = score(fig, target)
+    for a, route, hits, n in rows:
+        print("ask %s  %-20s keeps %d of %d" % (a, route, hits, n))
+    pc, ml, cr, mi = pair(rows)
+    print("cracker %.1f, mirror %.1f, pair ceiling %.1f, mirror leakage %.1f per cent of ask weight" % (cr, mi, pc, ml))
+    return pc, ml
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target"))

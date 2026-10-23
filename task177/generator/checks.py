@@ -1,581 +1,316 @@
-"""task177 checks: the generator's own assertions on the built pack and on the clean truth behind it.
+"""task177 checks: the generator's assertions on the built pack and the clean truth. Exit 1 on any failure.
 
-    python3 task177/generator/checks.py <target>
-
-The three-rules block (R1 to R3), the golden and its family, the one-sigma move, every semantic-fork row (SF), the
-Layer 1 items mishandled one at a time (R2), the ladder, the ask devices against the world's truth, the separation
-line, every graded figure's distance to its cell's edge, the distractors, the input gates and the realism sweep.
-Exit 1 on any FAIL."""
+    python3 task177/generator/checks.py task177/target"""
 from __future__ import annotations
 
-import datetime as dt
+import copy
 import json
-import math
 import os
 import re
 import sys
-import warnings
 import zipfile
 
 import numpy as np
 import pandas as pd
 
-warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import calc as K        # noqa: E402
-import common as C      # noqa: E402
-import cracker as CR    # noqa: E402
-import docs as DOC      # noqa: E402
-import ladder as L      # noqa: E402
-import pack as PK       # noqa: E402
-import world as W       # noqa: E402
+import calc as K      # noqa: E402
+import common as C    # noqa: E402
+import cracker as CR  # noqa: E402
+import docs as DOC    # noqa: E402
+import pack as PK     # noqa: E402
+import world as W     # noqa: E402
 
-ROWS = []
-G = 20          # the golden's cell, nearest 5 per cent
-DEFAULT = 10    # the default path's cell
+RESULTS = []
 
 
-def check(label, ok, detail=""):
-    ROWS.append((label, bool(ok), detail))
-    print("%-4s %-70s %s" % ("PASS" if ok else "FAIL", label, detail), flush=True)
+def ok(name, cond, detail=""):
+    RESULTS.append((name, bool(cond), detail))
 
 
-def cell(v):
-    return C.pct5(v / 100)
+def cell(v, unit):
+    return C.nearest(v, unit)
 
 
-# ------------------------------------------------------------------------------------- readings of the call
-def ly_reading(P, ended_inclusive=False, ignore_restart=False, day_from="jan", late="feb28", arms="assign",
-               outcome="access"):
-    """last year's test under one reading of each convention the call needs; returns the frame with Y and d"""
-    a = P.assign.merge(P.profile.drop(columns=["customer_no"]), on="subscription_ref", how="left")
-    if arms == "assign":
-        a["T"] = (a.arm == "offer").astype(int)
-    else:                                   # the arm read off the email log: delivered (bounces count as not sent)
-        got = set(P.email[P.email.event == "delivered"].customer_no)
-        a["T"] = a.customer_no.isin(got).astype(int)
-    ev = P.events[P.events.system == "legacy"]
-    hz = pd.Timestamp(C.LY_HORIZON)
-    if outcome == "access":
-        ended = a.subscription_ref.map(ev[ev.event == "access_ended"].groupby("subscription_key").date.min())
-        gone = ended.notna() & ((ended <= hz) if ended_inclusive else (ended < hz))
-    else:                                   # read by the cancellation request
-        req = a.subscription_ref.map(ev[ev.event == "cancel_requested"].groupby("subscription_key").date.min())
-        gone = req.notna() & (req <= hz)
-    back = a.subscription_ref.map(ev[ev.event == "restarted"].groupby("subscription_key").date.min())
-    back = back.notna() & (back <= hz) & (not ignore_restart)
-    a["Y"] = (~gone | back).astype(int)
-    sub = P.lbs[P.lbs.line_type == "SUB"]
-    if day_from == "jan":
-        day = sub[(sub.date >= "2026-01-01") & (sub.date <= "2026-01-31")].groupby("subscription_ref").date.max().dt.day
-        dd = a.subscription_ref.map(day)
-    elif day_from == "dec":
-        day = sub[(sub.date >= "2025-12-01") & (sub.date <= "2025-12-31")].groupby("subscription_ref").date.max().dt.day
-        dd = a.subscription_ref.map(day)
-    else:
-        dd = pd.to_datetime(a.started_on).dt.day
-    nb = []
-    for k in dd.astype(int):
-        if late == "mar1" and k > 28:
-            nb.append(dt.date(2026, 3, 1))
-        else:
-            nb.append(C.month_day(2026, 2, int(k)))
-    a["d"] = [(x - C.LY_LIST).days for x in nb]
-    return a
+def total_of(B, h, F, r):
+    return float(K.golden_probs(B, h, F, r).sum())
 
 
-def fortnight(a):
-    return K.diff(a, (a.d >= 1) & (a.d <= 14))
-
-
-# ------------------------------------------------------------------------------------- the world's truth
-def ask_a_truth(R):
-    ly = R.ly
-    pays_mar = (ly.end_bill.values < 0) | (ly.end_bill.values >= 4)
-    acc = ly.accepted.values
-    out = {}
-    for pl in C.PLANS:
-        dpl = int(round(int(round(C.PRICE[pl] * 100)) * C.OFFER_SHARE)) / 100.0
-        sel = ly.plan.values == pl
-        out[("disc", 2, pl)] = round(dpl * (acc & sel).sum(), 2)
-        out[("disc", 3, pl)] = round(dpl * (acc & sel & pays_mar).sum(), 2)
-        out[("takers", pl)] = int((acc & sel).sum())
-    return out
-
-
-def ask_b_truth(R):
-    T = R.ty
-    out = {("billed", y, m, pl): 0.0 for (y, m) in C.ASK_B_MONTHS for pl in C.PLANS}
-    for mi, (run, pend) in enumerate(PK.RUNS):
-        for i in range(len(T)):
-            s = dict(sub=T.sp_sub.iat[i], plan=T.plan.iat[i], start=T.start.iat[i], dom=int(T.dom.iat[i]), kind="list")
-            r = PK.bill_line(s, mi, run, pend)
-            if r is None:
-                continue
-            v = r[0][5] + (-2.0 if T.loyal_month.iat[i] == mi else 0.0)
-            out[("billed", run.year, run.month, T.plan.iat[i])] += v
-    return {k: round(v, 2) for k, v in out.items()}
-
-
-# the call side as the stage 4 round 1 readers and judge saw it (target.zip 4827dc5d): every row the call reads, hashed
-FROZEN = {
-    "file:" + C.F_ASSIGN: "aa021af0dfdd60f8d932b097c67125fd5647480cb43c065b029e38d63b02b90c",
-    "file:" + C.F_PROFILE: "65ea5193e3ed4c0b8647c2bd0e104e05fd5757535738b97b5caaec3715ba99b6",
-    "file:" + C.F_LIST: "3ee4c6bb228565d5c8242f20274df22d46c7d53d180b9e6ee85d1ce459b38615",
-    "events_access_restart": "2b2f460c050fe1d1ab9a7539f88babccf3136dbff774b3e46a84dfbde4e09aec",
-    "lbs_jan_sub": "24e25533571419c4d71378f6180315bb050545e05ff8880addf4693fa2d3b4a5",
-    "ty_last_to": "918ce4f1e7d614e17e849f3b2d5bef33f65498d50924ab009b2e9994b2a73428",
-    "ly_Y_d": "d55845151d5da853f7327131660685d02786c39395f4d3fad131db1cd8b14784",
-}
-FROZEN_SHARE, FROZEN_POOLED = 19.882009365668562, 9.645895635950868
-
-
-def _h(rows):
-    import hashlib
-    m = hashlib.sha256()
-    for r in rows:
-        m.update(("|".join(map(str, r)) + "\n").encode())
-    return m.hexdigest()
-
-
-def call_side(P, ly, target):
-    import hashlib
-    out = {}
-    for f in (C.F_ASSIGN, C.F_PROFILE, C.F_LIST):
-        out["file:" + f] = hashlib.sha256(open(os.path.join(target, f), "rb").read()).hexdigest()
-    ev = P.events[P.events.event.isin(["access_ended", "restarted"])]
-    out["events_access_restart"] = _h(sorted(zip(ev.subscription_key, ev.system, ev.event, ev.event_date)))
-    jan = P.lbs[(P.lbs.line_type == "SUB") & (P.lbs.date >= "2026-01-01") & (P.lbs.date <= "2026-01-31")]
-    out["lbs_jan_sub"] = _h(sorted(zip(jan.subscription_ref, jan.invoice_date, jan.line_type, jan.item_code,
-                                       jan.amount_pence)))
-    inv = P.spinv[P.spinv.doc_type == "invoice"][["invoice_id"]]
-    ln = P.spline.merge(inv, on="invoice_id")
-    last = ln[ln.subscription_id.isin(set(P.lst.subscription_id))].groupby("subscription_id").service_to.max()
-    out["ty_last_to"] = _h(sorted(last.items()))
-    out["ly_Y_d"] = _h(sorted(zip(ly.subscription_ref, ly.Y, ly.d, ly["T"])))
-    return out
+def shares_of(B, h, F, r):
+    p = K.golden_probs(B, h, F, r)
+    s = pd.Series(p).groupby(B["sector"].values).sum()
+    n = B.groupby("sector").size()
+    return {k: 100 * s[k] / n[k] for k in C.SECTORS}
 
 
 def main(target):
-    P = K.Pack(target)
-    c, ly, ty = K.call(P)
-    ga, gb = K.ask_a(P), K.ask_b(P)
-    R = PK.records()
-    figs = json.load(open(os.path.join(HERE, "figures.json")))
-
-    # ------------------------------------------------------------------------------ FROZEN: the call side
-    cs = call_side(P, ly, target)
-    for k_, v_ in FROZEN.items():
-        check("FROZEN call side unchanged since round 1: %s" % k_, cs[k_] == v_)
-    check("FROZEN the call's share and default to the last digit", c["share"] == FROZEN_SHARE and c["pooled"] == FROZEN_POOLED,
-          "%r, %r" % (c["share"], c["pooled"]))
-
-    # ------------------------------------------------------------------------------ R: the three rules
-    w = R.ly
-    wly = pd.DataFrame(dict(T=w["T"].values, Y=w.subscribed_h.astype(int).values, d=w.d.values))
-    w_pooled = K.diff(wly)
-    w_fort = K.diff(wly, wly.d <= 14)
-    w_rest = K.diff(wly, wly.d > 14)
-    tyw = R.ty.copy()
-    tyw["d"] = 6.0
-    w_truth = 100 * W.true_uplift(tyw).mean()
-    check("R1 the effect lives in the fortnight before the bill (clean truth)", w_fort >= 15 and abs(w_rest) <= 3,
-          "days 1-14 %.2f, days 15-28 %.2f" % (w_fort, w_rest))
-    check("R1 every subscription on this year's list bills six days after the send (world and pack)",
-          set(R.ty.d) == {6.0} and c["ty_days"] == [6] and c["ty_inside"] == c["n_ty"] == 48000,
-          "pack days %s on %d of %d" % (c["ty_days"], c["ty_inside"], c["n_ty"]))
-    check("R3 analyst test on the clean truth: the pooled arms file the default", cell(w_pooled) == DEFAULT,
-          "%.2f -> %d" % (w_pooled, cell(w_pooled)))
-    check("R3 analyst test on the clean truth: the fortnight's arms file the golden", cell(w_fort) == G,
-          "%.2f -> %d" % (w_fort, cell(w_fort)))
-    check("R3 the forecast's truth (expected share kept on this year's list) sits in the golden's cell",
-          cell(w_truth) == G, "%.2f" % w_truth)
-    check("R3 on the pack: the pooled arms file the default, the fortnight the golden",
-          cell(c["pooled"]) == DEFAULT and cell(c["share"]) == G, "%.2f, %.2f" % (c["pooled"], c["share"]))
-
-    # ------------------------------------------------------------------------------ the golden and its family
-    gs = c["share"]
-    check("golden: 20 per cent of the list kept to 31 March 2027", cell(gs) == G and figs["call_share"] == G,
-          "%.2f" % gs)
-    check("golden: distance to the cell's edge", C.edge(gs, 5) >= 2.0, "%.2f" % C.edge(gs, 5))
-    t = ly["T"] == 1
-    f = (ly.d >= 1) & (ly.d <= 14)
-    p1, p0 = ly.Y[t & f].mean(), ly.Y[~t & f].mean()
-    se = 100 * math.sqrt(p1 * (1 - p1) / (t & f).sum() + p0 * (1 - p0) / (~t & f).sum())
-    check("one sigma either way stays in the cell", cell(gs - se) == G and cell(gs + se) == G,
-          "se %.2f: %.2f to %.2f" % (se, gs - se, gs + se))
-    routes = L.routes(P, c, ly, ty)
-    for name, v in routes.items():
-        grp = L.group(name)
-        if grp == "with the step":
-            check("family: %s" % name, cell(v) == G, "%.2f" % v)
-        elif grp == "without the step":
-            want = {"difference over the open rate": 35, "difference over the acceptance rate": 75,
-                    "accepters against the holdout": 45}.get(name, DEFAULT)
-            check("rival: %s" % name, cell(v) == want and cell(v) != G, "%.2f -> %d" % (v, cell(v)))
-        else:
-            ok = cell(v) != DEFAULT
-            check("days built wrongly: %s" % name, ok, "%.2f -> %d" % (v, cell(v)))
-    fam = [v for k, v in routes.items() if L.group(k) == "with the step"]
-    nos = [v for k, v in routes.items() if L.group(k) == "without the step" and cell(v) == DEFAULT]
-    check("lever: the step moves the call by far more than the family's spread",
-          min(fam) - max(nos) > 3 * (max(fam) - min(fam)),
-          "with %.2f to %.2f, without %.2f to %.2f" % (min(fam), max(fam), min(nos), max(nos)))
-
-    # ------------------------------------------------------------------------------ SF: semantic fork rows
-    note = " ".join(DOC.note_text())
-    plan = " ".join(DOC.plan_text())
-    fields = {(f_, k): v for f_, k, _, v in DOC.FIELDS}
-    prompt = open(os.path.join(os.path.dirname(HERE), "prompt.txt"), encoding="utf-8").read()
-    check("SF1 the share is of the 48,000 subscriptions on the list: the prompt",
-          "48,000 subscriptions" in prompt and "share" in prompt.lower())
-    check("SF2 subscribed on a day: its paid period covers it, access_ended is the last day: dictionary",
-          "last day of access" in fields[(C.F_EVENTS, "event_date")])
-    v = fortnight(ly_reading(P, ended_inclusive=True))
-    check("SF2 access_ended read as the first day without access: same call", cell(v) == G, "%.2f" % v)
-    v = fortnight(ly_reading(P, ignore_restart=True))
-    check("SF3 a subscription restarted by 31 March counts; restarts ignored: same call", cell(v) == G, "%.2f" % v)
-    check("SF4 kept because they are sent the offer: the prompt (sent, not taken)",
-          "because they are sent" in prompt and cell(routes["accepters against the holdout"]) != G)
-    check("SF5 every subscription on this year's list is sent the offer: the plan",
-          "Every subscription on the list is sent the offer; nobody is held back this year." in plan)
-    check("SF6 last January's arms as randomised: the plan and the assignment file",
-          "The same offer went on 31 January 2026 to a random half of that day's at-risk list" in plan
-          and set(P.assign.arm) == {"offer", "holdout"})
-    v = fortnight(ly_reading(P, arms="email"))
-    check("SF6 the arms read off the email log (bounces as not sent): same call", cell(v) == G, "%.2f" % v)
-    v = fortnight(ly_reading(P, day_from="dec"))
-    check("SF7 the billing day from the December 2025 bill: same call", cell(v) == G, "%.2f" % v)
-    v = fortnight(ly_reading(P, day_from="start"))
-    check("SF7 the billing day read off started_on: same call", cell(v) == G, "%.2f" % v)
-    v = fortnight(ly_reading(P, late="mar1"))
-    check("SF8 bills on the 29th to 31st falling on 1 March: same call", cell(v) == G, "%.2f" % v)
-    check("SF9 the days to the bill counted from the send date (31 January, 26 January): same call (every TY day 1-14)",
-          all(1 <= d_ <= 14 for d_ in (6, 7)), "6 from the send, 7 from the list cut")
-    check("SF10 this year's next bill is the 1st: note 1.2 and every list subscription's last line ends 31 January",
-          "From 1 November 2026 every monthly digital subscription is billed on the 1st of the month." in note
-          and [str(x) for x in c["ty_next"]] == ["2027-02-01"])
-    check("SF11 two bills inside each horizon: 1 February and 1 March 2027; February and March 2026",
-          all(dt.date(2026, 2, 1) <= C.month_day(2026, 2, k) <= C.LY_HORIZON and
-              C.month_day(2026, 3, k) <= C.LY_HORIZON for k in range(1, 32)))
-    check("SF12 rounding once at the end, to the nearest 5 per cent: the prompt", "nearest 5 per cent" in prompt)
-    check("SF13 the same offer both years: the plan", "The same offer went on 31 January 2026" in plan)
-    v = fortnight(ly_reading(P, outcome="request"))
-    check("SF14 the outcome read by the cancellation request, not by access: same call", cell(v) == G, "%.2f" % v)
-    check("SF15 the unit is the subscription in both lists, one per customer number: the prompt and the files",
-          P.assign.subscription_ref.is_unique and P.lst.subscription_id.is_unique and P.assign.customer_no.is_unique
-          and P.lst.customer_no.is_unique)
-
-    # ------------------------------------------------------------------------------ R2: Layer 1 one at a time
-    for label, kw in (("access_ended inclusive", dict(ended_inclusive=True)), ("restarts ignored", dict(ignore_restart=True)),
-                      ("arms from the email log", dict(arms="email")), ("bill day from December", dict(day_from="dec")),
-                      ("bill day from started_on", dict(day_from="start")), ("29th to 31st on 1 March", dict(late="mar1"))):
-        a_ = ly_reading(P, **kw)
-        check("R2 %s: default still the default, step still the golden" % label,
-              cell(K.diff(a_)) == DEFAULT and cell(fortnight(a_)) == G,
-              "%.2f / %.2f" % (K.diff(a_), fortnight(a_)))
-
-    # ------------------------------------------------------------------------------ ask A
-    ta = ask_a_truth(R)
-    check("ask A golden equals the world's truth (offer discounts and takers by plan)",
-          all(abs(ga[k] - ta[k]) < 0.005 for k in ta), "; ".join("%s %s" % (k, ga[k]) for k in ta))
-    cra, mia = CR.cracker_a(P), CR.mirror_a(P)
-    check("ask A: the cracker (CRM and app keys through the profile) misses every figure",
-          not any(CR.hit(ga[k], cra[k], k) for k in ga))
-    check("ask A: the mirror (the offer's web code off the discount lines) misses every figure",
-          not any(CR.hit(ga[k], mia[k], k) for k in ga))
-    refs = set(P.offers.acceptance_ref)
-    disc = P.lbs[P.lbs.line_type == "DISC"]
-    desk = disc[disc.applied_ref.str.startswith("CS-") & disc.date.dt.month.isin([2, 3]) & (disc.date.dt.year == 2026)]
-    plan_ly = P.profile.set_index("subscription_ref").plan
-    hold = set(P.assign[P.assign.arm == "holdout"].subscription_ref)
-    check("ask A device D5: the save desk's STAY50 on February and March bills, in both arms",
-          len(desk) > 500 and desk.subscription_ref.isin(hold).sum() > 200 and (desk.item_code == C.DESK_CODE).all(),
-          "%d lines, %d on held-back subscriptions" % (len(desk), desk.subscription_ref.isin(hold).sum()))
-    moved = all(abs(-desk[(desk.date.dt.month == m) & (desk.subscription_ref.map(plan_ly) == pl)].amt.sum()) > 50
-                for m in (2, 3) for pl in C.PLANS)
-    check("ask A device D5 moves every discount cell by more than 50 pounds", moved)
-    prof = P.profile
-    app_keys = set(prof.app_user_id[prof.app_user_id != ""])
-    app_acc = P.offers[P.offers.channel == "app"]
-    unmatched = (~app_acc.customer_key.isin(app_keys)).sum()
-    check("ask A device D7: app acceptances keyed by an app user id the profile no longer holds",
-          unmatched > 300 and len(R.rekeyed) == unmatched, "%d of %d app acceptances" % (unmatched, len(app_acc)))
-    offer_lines = P.lbs[P.lbs.line_type.isin(["DISC", "CRED"]) & P.lbs.applied_ref.isin(refs)]
-    applied = set(offer_lines.applied_ref)
-    check("ask A fair: every offer line's applied_ref is an acceptance; those never applied are the second "
-          "acceptances and the app acceptances the engine did not apply",
-          set(disc[disc.applied_ref.str.startswith("OE26-")].applied_ref) <= refs
-          and len(refs - applied) == int(R.ly.also_email.sum()) + len(R.fallback),
-          "%d never applied: %d second, %d app fallback" % (len(refs - applied), int(R.ly.also_email.sum()),
-                                                              len(R.fallback)))
-    sub = P.lbs[P.lbs.line_type == "SUB"]
-    rate = sub[sub.item_code.isin(set(C.RATE_CODE.values()))]
-    regular = sub[sub.item_code.isin(set(C.PLAN_CODE.values()))]
-    jan_amt = regular[(regular.date >= "2026-01-01") & (regular.date <= "2026-01-31")].groupby("subscription_ref").amt.max()
-    half = {pl: int(round(int(round(C.PRICE[pl] * 100)) * C.OFFER_SHARE)) / 100.0 for pl in C.PLANS}
-    rplan = rate.subscription_ref.map(plan_ly)
-    offer_arm = set(P.assign[P.assign.arm == "offer"].subscription_ref)
-    disc_subs = set(disc[disc.applied_ref.isin(refs)].subscription_ref)
-    check("ask A hazard (round 1's primary): the app acceptances the engine never applied are billed at the app's "
-          "half-price rate on their February and March bills, with no discount line",
-          rate.subscription_ref.nunique() == len(R.fallback) and rate.date.dt.month.isin([2, 3]).all()
-          and (rate.date.dt.year == 2026).all() and rate.subscription_ref.isin(offer_arm).all()
-          and not (set(rate.subscription_ref) & disc_subs),
-          "%d subscriptions, %d bills" % (rate.subscription_ref.nunique(), len(rate)))
-    check("ask A fair: each rate charge is the subscription's own January charge less the offer's half",
-          all(abs(jan_amt[r_] - a_ - half[p_]) < 0.005 for r_, a_, p_ in zip(rate.subscription_ref, rate.amt, rplan)))
-    cred = P.lbs[(P.lbs.line_type == "CRED") & P.lbs.applied_ref.isin(refs)]
-    cplan = cred.subscription_ref.map(plan_ly)
-    check("ask A primary: the acceptances applied after the first discounted bill was raised carry the half price "
-          "as credits against the acceptance on both bills, and no discount line",
-          cred.subscription_ref.nunique() == len(R.credit_booked) and cred.date.dt.month.isin([2, 3]).all()
-          and (cred.date.dt.year == 2026).all() and not (set(cred.subscription_ref) & disc_subs)
-          and cred.subscription_ref.isin(offer_arm).all(),
-          "%d subscriptions, %d credits" % (cred.subscription_ref.nunique(), len(cred)))
-    check("ask A fair: each such credit is the offer's half of the subscription's own January charge, its code the "
-          "offer's and its applied_ref the subscription's own acceptance on the bill",
-          all(abs(-a_ - half[p_]) < 0.005 for a_, p_ in zip(cred.amt, cplan))
-          and set(cred.item_code) <= {C.OFFER_CODE_WEB, C.OFFER_CODE_APP})
-    moved_cred = {k: cred[(cred.date.dt.month == k[1]) & (cplan == k[2])].amt.sum() for k in ga if k[0] == "disc"}
-    check("ask A primary moves every discount cell by more than 50 pounds on the discount-line routes",
-          all(abs(v_) > 50 for v_ in moved_cred.values()), str({k[1:]: round(v_) for k, v_ in moved_cred.items()}))
-    check("ask A primary moves every takers count", all(
-        (cred.drop_duplicates("subscription_ref").subscription_ref.map(plan_ly) == pl).sum() > 0 for pl in C.PLANS))
-    for nm, fn in (("reader B's quoted path (round 1)", CR.reader_b_a), ("reader C's route (round 2)", CR.reader_c_a),
-                   ("reader D's quoted path (round 2)", CR.reader_d_a)):
-        rp = fn(P)
-        check("ask A: %s misses every figure" % nm, not any(CR.hit(ga[k], rp[k], k) for k in ga),
-              "nearest %.0f" % min(abs(ga[k] - rp[k]) for k in ga))
-    plan_doc = " ".join(DOC.plan_text())
-    world_takers = R.ly[R.ly.accepted].groupby("plan").size().to_dict()
-    check("ask A took it: the plan files taking the offer as accepting it, and every subscription that accepted was "
-          "discounted on its bills (the two readings give one count)",
-          "A subscriber takes it from the offer email or the in-app message" in plan_doc
-          and all(world_takers[pl] == ga[("takers", pl)] for pl in C.PLANS), str(world_takers))
-    by_acc = {}
-    crm_plan, app_plan = dict(zip(prof.customer_no, prof.plan)), dict(zip(prof.app_user_id, prof.plan))
-    for k in P.offers.customer_key:
-        pl = crm_plan.get(k) or app_plan.get(k)
-        by_acc[pl] = by_acc.get(pl, 0) + 1
-    check("ask A device D1: acceptances counted as takers (both channels, rekeyed dropped) miss every plan",
-          all(by_acc.get(pl, 0) != ga[("takers", pl)] for pl in C.PLANS), str(by_acc))
-    app_code = disc[(disc.item_code == C.OFFER_CODE_APP)]
-    check("ask A hazard: the app's own discount code on February and March bills",
-          len(app_code) > 1000 and app_code.applied_ref.str.startswith("OE26-").all(), "%d lines" % len(app_code))
-
-    # ------------------------------------------------------------------------------ ask B
-    tb = ask_b_truth(R)
-    check("ask B golden equals the world's truth (list subscriptions' own plan lines and goodwill credits)",
-          all(abs(gb[k] - tb[k]) < 0.01 for k in tb), "max gap %.4f" % max(abs(gb[k] - tb[k]) for k in tb))
-    crb, mib = CR.cracker_b(P), CR.mirror_b(P)
-    check("ask B: the cracker (invoices filed under the list, plan lines, UK time, legacy bills and credit notes) "
-          "misses every figure", not any(CR.hit(gb[k], crb[k], k) for k in gb),
-          "nearest %.0f" % min(abs(gb[k] - crb[k]) for k in gb))
-    check("ask B: the mirror (invoice totals by issued_at) misses every figure", not any(CR.hit(gb[k], mib[k], k) for k in gb))
-    lst = P.lst.set_index("subscription_id")
-    ids = set(lst.index)
-    inv = P.spinv[P.spinv.doc_type == "invoice"]
-    sl = P.spline.merge(inv[["invoice_id", "subscription_id", "account_id"]].rename(
-        columns={"subscription_id": "head_sub"}), on="invoice_id")
-    foreign = sl[sl.subscription_id.isin(ids) & ~sl.head_sub.isin(ids)]
-    others = sl[sl.head_sub.isin(ids) & ~sl.subscription_id.isin(ids) & sl.item_code.isin(C.PLAN_CODE.values())]
-    check("ask B device D7/D6: list subscriptions billed on another account's invoice",
-          foreign.subscription_id.nunique() > 1000, "%d subscriptions" % foreign.subscription_id.nunique())
-    check("ask B hazard D7/D6: other plans on the list's accounts' invoices, filed under a list subscription",
-          others.subscription_id.nunique() > 800, "%d subscriptions" % others.subscription_id.nunique())
-    hh_ex = R.ex[R.ex.household]
-    seen_line = set(sl.subscription_id)
-    seen_xw = set(P.xwalk.platform_subscription_id)
-    acct_of = dict(zip(P.xwalk.platform_subscription_id, P.xwalk.platform_account_id))
-    vis = [(s_ in seen_line) or (s_ in seen_xw and acct_of[s_] == a_) for s_, a_ in zip(hh_ex.sp_sub, hh_ex.sp_acct)]
-    check("ask B fair: every household's second subscription is in the pack under its own id (its own line before the "
-          "lines merge, or the crosswalk on the same account)", all(vis),
-          "%d households, %d with their own line, %d set up together" % (len(hh_ex), sum(s_ in seen_line for s_ in
-                                                                                       hh_ex.sp_sub),
-                                                                         int(hh_ex.together.sum())))
-    shared = sl[sl.subscription_id.isin(ids) & (sl.n_subs > 1)]
-    by_month = {}
-    for t_, iid in zip(inv.uk, inv.invoice_id):
-        by_month[iid] = (t_.year, t_.month)
-    shared = shared.assign(ym=shared.invoice_id.map(by_month))
-    per = shared.groupby("ym").size().to_dict()
-    check("ask B primary: a household's two subscriptions on one line under the list subscription, every month",
-          all(per.get(ym_, 0) > 200 for ym_ in C.ASK_B_MONTHS), str({"%d-%02d" % k: v for k, v in sorted(per.items())}))
-    price_of = {C.PLAN_CODE[p_]: C.PRICE[p_] for p_ in C.PLANS}
-    hh_subs = set(R.ex[R.ex.household].sp_sub)
-    trow = {s_: i for i, s_ in enumerate(R.ty.sp_sub.values)}
-
-    def single(sub_id, f2):
-        """the list subscription's own line for the period that starts on f2, from the world"""
-        i, T_ = trow[sub_id], R.ty
-        s_ = dict(sub=sub_id, plan=T_.plan.iat[i], start=T_.start.iat[i], dom=int(T_.dom.iat[i]), kind="list")
-        f_ = dt.date.fromisoformat(f2)
-        for mi, (run, pend) in enumerate(PK.RUNS):
-            if run <= f_ <= pend:
-                r_ = PK.bill_line(s_, mi, run, pend)
-                return r_[0][5] if r_ else float("nan")
-        return float("nan")
-    check("ask B fair: every shared line has qty 2 and bills exactly twice the list subscription's own "
-          "charge for the period; the account's other subscription is not on the list",
-          (shared.n_subs == 2).all() and not (hh_subs & ids)
-          and all(abs(a_ - 2 * single(s_, f2)) < 0.011
-                  for s_, a_, f2 in zip(shared.subscription_id, shared.amt, shared.service_from)),
-          "%d shared lines" % len(shared))
-    check("ask B pins: the dictionary files qty as the subscriptions a line bills and amount as qty times unit_amount; "
-          "note 4.2 files that a credit note reduces the bills it covers; the legacy pull's scope is filed",
-          "qty (the number of subscriptions the line bills)" in fields[(C.F_SPINV, "lines")]
-          and "amount (qty times unit_amount" in fields[(C.F_SPINV, "lines")]
-          and "Each credit note lists the legacy invoices it reverses and reduces those bills." in note
-          and "the pull holds the bills of the subscriptions on either list" in fields[(C.F_LBS, "subscription_ref")])
-    rbb = CR.reader_b_b(P)
-    check("ask B: reader B's quoted path (the list's lines, plan items, goodwill netted, UK date) misses every figure",
-          not any(CR.hit(gb[k], rbb[k], k) for k in gb), "nearest %.0f" % min(abs(gb[k] - rbb[k]) for k in gb))
-    for how in ("header", "covers"):
-        rbx = CR.reader_b_b(P, how)
-        check("ask B: reader B's path with the credit notes (%s) misses every figure" % how,
-              not any(CR.hit(gb[k], rbx[k], k) for k in gb), "nearest %.0f" % min(abs(gb[k] - rbx[k]) for k in gb))
-    check("ask B fair: every line names its own subscription; header subscription_id is the first line's",
-          all(json.loads(lj)[0]["subscription_id"] == s for s, lj in zip(inv.subscription_id.values[:5000],
-                                                                          inv.lines.values[:5000])))
-    # the UK date against UTC: the 1 October run sits on 30 September in UTC
-    oct_run = inv[inv.period_start == "2026-10-01"]
-    check("ask B hazard D8: the 1 October run issued at 23:05 to 23:59 UTC on 30 September (BST)",
-          (oct_run.utc.dt.month == 9).mean() > 0.98 and (oct_run.uk.dt.month == 10).all())
-    cn = P.spinv[P.spinv.doc_type == "credit_note"]
-    covers = [x for s in cn.covers for x in s.split(";")]
-    in_pull = set(P.lbs.invoice_no)
-    check("ask B hazard D1/D2: credit notes cover each account's 1 October legacy bills, add-ons and other plans in",
-          len(cn) > 300 and sum(1 for x in covers if x in in_pull) < len(covers),
-          "%d notes, %d bills covered, %d in the pull" % (len(cn), len(covers), sum(1 for x in covers if x in in_pull)))
-    # the duplicate bills and their credits cancel exactly on the list's plans: ignoring both is the same figure
-    alt = {}
-    lines = P.spline.merge(inv[["invoice_id", "uk"]], on="invoice_id")
-    lines = lines[lines.subscription_id.isin(ids)]
-    lines = lines.assign(ym=[(t_.year, t_.month) for t_ in lines.uk])
-    for (y, m) in C.ASK_B_MONTHS:
-        for pl in C.PLANS:
-            sel_ = lines[(lines.ym == (y, m)) & (lines.subscription_id.map(lst.plan) == pl)]
-            alt[("billed", y, m, pl)] = (sel_.amt / sel_.n_subs).sum()
-    check("ask B convergent reading: the platform's lines alone, a shared line counted once (no legacy bill, no credit "
-          "note), give the golden", all(abs(alt[k] - gb[k]) < 0.01 for k in gb))
-    hdr = {}
-    for (y, m) in C.ASK_B_MONTHS:
-        for pl in C.PLANS:
-            s_ = inv[inv.subscription_id.isin(ids) & (inv.subscription_id.map(lst.plan) == pl)]
-            hdr[("billed", y, m, pl)] = s_[[(t_.year, t_.month) == (y, m) for t_ in s_.uk]].amt.sum()
-    check("ask B: invoice totals filed under the list (UK time) miss every figure",
-          not any(CR.hit(gb[k], hdr[k], k) for k in gb))
-    no_gw = {k: alt[k] - lines[(lines.item_code == C.LOYAL_CODE) & (lines.ym == (k[1], k[2])) &
-                                (lines.subscription_id.map(lst.plan) == k[3])].amt.sum() for k in gb}
-    check("ask B hazard: the goodwill credits left out miss every figure", not any(CR.hit(gb[k], no_gw[k], k) for k in gb))
-
-    # ------------------------------------------------------------------------------ the separation line
-    jan = P.lbs[(P.lbs.date >= "2026-01-01") & (P.lbs.date <= "2026-01-31")]
-    ly_refs = set(P.assign.subscription_ref)
-    js = jan[jan.subscription_ref.isin(ly_refs)]
-    check("SEPARATION: every test subscription has exactly one January 2026 bill and no discount on it",
-          (js[js.line_type == "SUB"].groupby("subscription_ref").size() == 1).all()
-          and js.subscription_ref.nunique() == len(ly_refs) and set(js.line_type) <= {"SUB", "CRED"},
-          "%d goodwill credits on January bills" % (js.line_type == "CRED").sum())
-    ev = P.events
-    check("SEPARATION: the events carry last January's list only", set(ev[ev.system == "legacy"].subscription_key) <= ly_refs)
-    jan_head = set(inv[inv.subscription_id.isin(ids) & (inv.period_end == "2027-01-31")].subscription_id)
-    jan_lines = sl[(sl.service_to == "2027-01-31") & sl.subscription_id.isin(ids)]
-    elsewhere = set(jan_lines[~jan_lines.head_sub.isin(ids) | (jan_lines.head_sub != jan_lines.subscription_id)]
-                    .subscription_id) - jan_head
-    check("SEPARATION: this year's next bill is 1 February under every reading (note 1.2; every list subscription's "
-          "own January line; the January invoices filed under it, the rest billed on another account's)",
-          set(jan_lines.subscription_id) == ids and len(jan_head) + len(elsewhere) == len(ids),
-          "%d filed under the subscription, %d on another account's invoice" % (len(jan_head), len(elsewhere)))
-
-    # ------------------------------------------------------------------------------ edges and figures.json
-    for k, v in ga.items():
-        if k[0] == "disc":
-            check("edge: ask A %s" % (k,), C.edge(v, 100) >= 25, "%.2f, edge %.2f" % (v, C.edge(v, 100)))
-    for k, v in gb.items():
-        check("edge: ask B %s" % (k,), C.edge(v, 100) >= 25, "%.2f, edge %.2f" % (v, C.edge(v, 100)))
-    check("figures.json carries the call and every ask figure as computed",
-          figs["call_share"] == cell(gs) and figs["call_whole_list"] == cell(c["pooled"])
-          and figs["call_fortnight_kept"] == cell(c["fortnight"]) and figs["call_ty_days"] == 6
-          and all(figs["ask_a_discount"]["%s %s" % (C.MONTH_NAME[m], pl)] == C.hundred(ga[("disc", m, pl)])
-                  for m in (2, 3) for pl in C.PLANS)
-          and all(figs["ask_a_takers"][pl] == ga[("takers", pl)] for pl in C.PLANS)
-          and all(figs["ask_b_billed"]["%s %d %s" % (C.MONTH_NAME[m], y, pl)] == C.hundred(gb[("billed", y, m, pl)])
-                  for (y, m) in C.ASK_B_MONTHS for pl in C.PLANS))
-
-    # ------------------------------------------------------------------------------ distractors and gates
-    meta = json.load(open(os.path.join(os.path.dirname(HERE), "metadata.json")))
-    src = open(os.path.join(HERE, "calc.py")).read()
-    check("distractors named in metadata.json, unread by every figure",
-          set(meta["distractor_files"]) == set(C.DISTRACTORS) and not any(d.split(".")[0] in src for d in C.DISTRACTORS)
-          and "F_SURVEY" not in src and "F_VALID" not in src)
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    task = os.path.dirname(os.path.abspath(target))
+    meta = json.load(open(os.path.join(task, "metadata.json")))
     files = sorted(os.listdir(target))
-    fmts = {f.rsplit(".", 1)[-1] for f in files}
-    check("input gates: 10 or more files, 3 or more formats, one of 25,000 rows or more",
-          len(files) >= 10 and len(fmts) >= 3 and meta["input_gates"]["largest_file_rows"] >= 25000,
-          "%d files, %s, %d rows" % (len(files), sorted(fmts), meta["input_gates"]["largest_file_rows"]))
-    check("no file name names a distractor, a trap or the answer",
-          not any(re.search(r"distract|decoy|trap|golden|answer|stump|uplift", f, re.I) for f in files))
 
-    # ------------------------------------------------------------------------------ realism sweep
-    texts = {}
-    for f in files:
-        p = os.path.join(target, f)
-        if f.endswith(".csv"):
-            texts[f] = open(p, encoding="utf-8").read()
-        elif f.endswith((".docx", ".xlsx")):
-            with zipfile.ZipFile(p) as z:
-                texts[f] = " ".join(z.read(n).decode("utf-8", "replace") for n in z.namelist() if n.endswith(".xml"))
-        else:
-            texts[f] = open(p, "rb").read().decode("latin-1")
-    dash = [f for f, t_ in texts.items() if "\u2014" in t_ or "\u2013" in t_]
-    check("realism: no em or en dash in any file", not dash, ", ".join(dash))
-    tells = [f for f, t_ in texts.items() if re.search(r"task177|generator|golden|stump|distractor|claude|openai|"
-                                                      r"python-docx|openpyxl|ReportLab", t_, re.I)]
-    check("realism: no build or toolchain tell in any file", not tells, ", ".join(tells))
-    late = []
-    for f in files:
-        if f.endswith(".csv"):
-            for y, mo, dd_ in re.findall(r"\b(20\d\d)-(\d\d)-(\d\d)", texts[f][:5_000_000]):
-                if (int(y), int(mo), int(dd_)) > (2027, 1, 31):
-                    late.append(f)
-                    break
-    check("realism: no date after the pull's month in any export", not late, ", ".join(late))
-    names = set(re.findall(r"\b(?:Bernard|Natalie) [A-Z][a-z]+", " ".join(texts.values())))
-    check("realism: the only people named are the card's personas", names <= {"Bernard Peacock", "Natalie Taylor"},
-          ", ".join(sorted(names)))
+    # ------------------------------------------------------------------------------------------ input gates
+    ok("gate: ten or more files", len(files) >= 10, "%d files" % len(files))
+    fmts = sorted(set(f.rsplit(".", 1)[-1] for f in files))
+    ok("gate: three or more formats", len(fmts) >= 3, ",".join(fmts))
+    rows = {f: sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv")}
+    ok("gate: a file of 25,000 rows or more", max(rows.values()) >= 25000, "%s %d" % (max(rows, key=rows.get), max(rows.values())))
+    ok("gate: two distractors named in metadata.json", len(meta["distractor_files"]) >= 2 and
+       all(d in files for d in meta["distractor_files"]), str(meta["distractor_files"]))
+    ok("gate: no distractor word in a file name", not any("distractor" in f.lower() for f in files))
+    ok("gate: every pack file has a source, date and licence", all(x["source"] and x["date"] and x["license"]
+                                                                    for x in meta["files"]))
 
-    # ------------------------------------------------------------------------------ house fixes wired in
-    dict_files = {f_ for f_, _, _, _ in DOC.FIELDS}
-    check("H9 the data dictionary names every CSV in the pack, and nothing else",
-          dict_files == {f for f in files if f.endswith(".csv")})
-    pull = C.PULL
-    last = {
-        C.F_EVENTS: P.events.date.max(), C.F_LBS: P.lbs.date.max(),
-        C.F_SPINV: P.spinv.utc.max(), C.F_OFFERS: pd.to_datetime(P.offers.accepted_at.str.replace("Z", "")).max(),
-        C.F_EMAIL: pd.to_datetime(P.email.event_at.str.replace("Z", "")).max(),
-    }
-    late = {k: str(v) for k, v in last.items() if v > pd.Timestamp(pull)}
-    check("H16 no export holds a record after the pull (25 January 2027, 18:40)", not late, str(late))
-    import subprocess
+    # ------------------------------------------------------------------------------------------ the call
+    L, R, D = K.load_public(target)
+    F, nruns = K.conversion(L, R, D)
+    r = K.residual(L, R, D)
+    G = K.load_registers(target)
+    h, expo, nl = K.hazards(G)
+    B, A = K.load_launch(target)
+    tot = total_of(B, h, F, r)
+    sh = shares_of(B, h, F, r)
+    ok("call: total reproduces figures.json", cell(tot, 50) == fig["call_total"] and abs(tot - fig["call_total_unrounded"]) < 0.06,
+       "%.2f" % tot)
+    ok("call: total mid-cell, at least 15 loans from an edge", C.edge(tot, 50) >= 15, "edge %.1f" % C.edge(tot, 50))
+    for s in C.SECTORS:
+        ok("call: %s share reproduces" % s, cell(sh[s], 5) == fig["call_share"][s], "%.2f" % sh[s])
+        ok("call: %s share at least 0.5 points from its cell edge" % s, C.edge(sh[s], 5) >= 0.5, "edge %.2f" % C.edge(sh[s], 5))
+    ok("call: the launch file holds 2,400 loans, one per member", len(B) == C.N_LAUNCH and B["member_id"].is_unique)
+    ok("call: conversion component 53 per cent", C.nearest(100 * F[12], 1) == fig["cc_conversion_pct"], "%.4f" % F[12])
+    ok("call: no default within two months of the first SIN SALARIO month", F[2] == 0.0 and F[3] > 0)
+    ok("call: the deciding quantity rests on enough events", nruns >= 2500 and sum(nl.values()) >= 3000,
+       "%d runs, %d leavers" % (nruns, sum(nl.values())))
+    hl = np.array([h[n] for n in B["employer_nit"]])
+    ok("call: leaving component 3 per cent a month", C.nearest(100 * hl.mean(), 1) == fig["cc_leave_launch_pct"],
+       "%.3f" % (100 * hl.mean()))
+
+    # one-sigma move of the deciding quantities (the conversion's binomial error and each employer's leaving count
+    # treated as Poisson, independent) leaves the printed figures where they are
+    se_conv = np.sqrt(F[12] * (1 - F[12]) / nruns)
+    p0 = K.golden_probs(B, h, F, r)
+    by_emp = pd.Series(p0).groupby(B["employer_nit"].values).sum()
+    var_t = sum((by_emp[k] / np.sqrt(max(nl[k], 1))) ** 2 for k in by_emp.index) + (tot * se_conv / F[12]) ** 2
+    se_t = float(np.sqrt(var_t))
+    ok("call: one standard error either side keeps the total cell", cell(tot - se_t, 50) == fig["call_total"] ==
+       cell(tot + se_t, 50), "total %.1f se %.1f" % (tot, se_t))
+    secs = B["sector"].values
+    for s in C.SECTORS:
+        emps = set(B[B["sector"] == s]["employer_nit"])
+        n_s = (secs == s).sum()
+        v = sum((by_emp[k] / np.sqrt(max(nl[k], 1))) ** 2 for k in emps) + (sh[s] * n_s / 100 * se_conv / F[12]) ** 2
+        se_s = 100 * float(np.sqrt(v)) / n_s
+        ok("call: one standard error either side keeps the %s cell" % s,
+           cell(sh[s] - se_s, 5) == fig["call_share"][s] == cell(sh[s] + se_s, 5), "%.2f se %.2f" % (sh[s], se_s))
+
+    # ------------------------------------------------------------------------------------------ the golden family
+    fam = {}
+    for mt in (0, 6, 24):
+        hh, _, _ = K.hazards(G, mt)
+        fam["SF10 staff with %d months' service" % mt] = (hh, F, r)
+    G26 = G[G["t"] >= C.mi(2026, 1)]
+    hh, _, _ = K.hazards(G26, 12)
+    fam["registers of 2026 only"] = (hh, F, r)
+    S = K.runs(R)
+    dd = D.groupby("loan")["t"].min()
+    for lo in (C.mi(2019, 1), C.mi(2021, 7)):
+        S2 = S[(S["c"] >= lo) & (S["c"] <= C.mi(2025, 12))]
+        first = S2.groupby("loan")["c"].min().reset_index()
+        first["dt"] = first["loan"].map(dd)
+        lag = first["dt"] - first["c"]
+        F2 = np.array([((lag >= 0) & (lag <= j)).mean() for j in range(13)])
+        fam["SF9 conversion from runs since %d-%02d" % C.ym(lo)] = (h, F2, r)
+    permloans = set(L[~L["temp"]]["loan_no"])
+    Sp = S[S["loan"].isin(permloans) & (S["c"] <= C.mi(2025, 12))]
+    first = Sp.groupby("loan")["c"].min().reset_index()
+    first["dt"] = first["loan"].map(dd)
+    lag = first["dt"] - first["c"]
+    fam["SF9 conversion from permanent-contract loans only"] = (h, np.array([((lag >= 0) & (lag <= j)).mean() for j in range(13)]), r)
+    fam["no on-payroll route"] = (h, F, 0.0)
+    Wk = G[G["payment_type"].isin(["NOMINA", "LIQUIDACION"])]
+    Pk = Wk[["employer_nit", "emp", "t", "hire_t"]].drop_duplicates()
+    last = Pk.groupby(["employer_nit", "emp"])["t"].max().reset_index()
+    last = last[last["t"] < C.mi(2026, 12)]
+    Pt = Pk[Pk["t"] - Pk["hire_t"] >= 12]
+    ex = Pt.groupby("employer_nit").size()
+    lv = last.merge(Pt, on=["employer_nit", "emp", "t"]).groupby("employer_nit").size()
+    fam["leaving read from the last appearance"] = ((lv.reindex(ex.index).fillna(0) / ex).to_dict(), F, r)
+    conv = F[12]
+    m8 = {"total": float(sum((1 - (1 - h[n]) ** 8) * conv + 9 * r for n in B["employer_nit"]))}
+    lows, highs = [tot], [tot]
+    for name, (hh, FF, rr) in fam.items():
+        t2 = total_of(B, hh, FF, rr)
+        s2 = shares_of(B, hh, FF, rr)
+        lows.append(t2)
+        highs.append(t2)
+        ok("family: %s keeps the total cell" % name, cell(t2, 50) == fig["call_total"], "%.1f" % t2)
+        ok("family: %s keeps every sector cell" % name, all(cell(s2[s], 5) == fig["call_share"][s] for s in C.SECTORS),
+           " ".join("%.1f" % s2[s] for s in C.SECTORS))
+    ok("family: leave by month 8 times the conversion keeps the total cell", cell(m8["total"], 50) == fig["call_total"],
+       "%.1f" % m8["total"])
+
+    # ------------------------------------------------------------------------------------------ semantic forks
+    Dd = pd.read_csv(os.path.join(target, C.F_DEFAULTS))
+    cures = Dd[Dd["cure_date"].notna()]
+    gap = (pd.to_datetime(cures["cure_date"]) - pd.to_datetime(cures["default_date"])).dt.days
+    ok("SF1 default dates are month-ends", pd.to_datetime(Dd["default_date"]).dt.is_month_end.all())
+    ok("SF2 cures within eight months of default are under one per cent of defaults", (gap < 240).sum() < 0.01 * len(Dd),
+       "%d of %d" % ((gap < 240).sum(), len(Dd)))
+    ok("SF3 every launch loan is disbursed on 1 February 2027", (B["disbursement_date"] == "2027-02-01").all())
+    ok("SF4 every launch employer has a register sector", B["sector"].notna().all() and set(B["sector"]) == set(C.SECTORS))
+    pr = K.golden_probs(B, h, F, r)
+    Bw = B.assign(p=pr, prin=B["principal"].astype(float))
+    for s in C.SECTORS:
+        g = Bw[Bw["sector"] == s]
+        ok("SF5 %s balance-weighted share in the same cell" % s,
+           cell(100 * (g.p * g.prin).sum() / g.prin.sum(), 5) == fig["call_share"][s])
+    # SF6: the first month a leaver misses is the month after the final settlement, because the settlement month is a
+    # paid month on the register and SIN SALARIO is a month with no salary paid; reading the settlement month as the
+    # first missed one contradicts both
+    liq = G[G["payment_type"] == "LIQUIDACION"]
+    ok("SF6 every final settlement is a paid month (positive net pay)", (liq["net_pay"].astype(float) > 0).all())
+    ok("SF6 the returns file defines SIN SALARIO as a month with no salary paid",
+       any("no salary paid to the member in the month" in row[3] for row in DOC.FIELDS))
+    ok("SF7 one loan per member", B["member_id"].is_unique)
+    ok("SF8 shares from rounded sector counts land in the same cells",
+       all(cell(100 * C.nearest(sh[s] * (B["sector"] == s).sum() / 100, 1) / (B["sector"] == s).sum(), 5) == fig["call_share"][s]
+           for s in C.SECTORS))
+
+    # ------------------------------------------------------------------------------------------ the three rules
+    dp = K.default_path(target)
+    ok("R1 the pack ships the loan book, the monthly returns and the employee-period registers",
+       rows[C.F_LOANS] > 40000 and rows[C.F_RETURNS] > 10000 and rows[C.F_REGISTERS] > 25000)
+    heads = {f: open(os.path.join(target, f), encoding="utf-8").readline().lower() for f in files if f.endswith(".csv")}
+    ok("R1 no shipped column holds a leaving rate, a turnover, a conversion or a PD",
+       not any(re.search(r"turnover|hazard|leav|attrition|conversion|\bpd\b|probab|default_rate", hd) for hd in heads.values()))
+    ok("R3a the default path (PD model on borrower attributes) files 50, not 250", cell(dp["total"], 50) == 50 and
+       cell(dp["total"], 50) != fig["call_total"], "%.1f" % dp["total"])
+    ok("R3a the default path's sector shares are 0 per cent in every sector",
+       all(cell(100 * dp["sectors"][s] / (B["sector"] == s).sum(), 5) == 0 for s in C.SECTORS))
+    ok("R3b the decisive step alone files the golden", cell(tot, 50) == fig["call_total"])
+    ok("R3b rung 1 alone (pooled public rate) stays at 50", cell(dp["pooled_total"], 50) == 50, "%.1f" % dp["pooled_total"])
+    ok("R3b rung 1 alone (temporaries as the analogue) stays at 50", cell(dp["temp_rate"] * C.N_LAUNCH, 50) == 50)
+    rr = K.ratio_route(target, dict(h=h))
+    ok("R3b rung 2 alone (rate scaled by leaving) lands a full cell away", abs(cell(rr["total"], 50) - fig["call_total"]) >= 100,
+       "%.1f" % rr["total"])
+    ok("R3b every rung clears the golden's cell edges by a full cell", dp["total"] <= 225 - 50 and rr["total"] >= 275 + 50)
+    # R2: each mess item mishandled leaves the call where it was
+    Rraw = pd.read_csv(os.path.join(target, C.F_RETURNS), dtype=str)
+    Rraw["loan"] = Rraw["loan_reference"]
+    Rraw["t"] = Rraw["period"].map(K.month_of)
+    Rraw["left"] = Rraw["reason"].isin(["01", "SIN SALARIO"])
+    D2 = D.copy()
+    D2["loan"] = D2["loan_reference"]
+    F_raw, _ = K.conversion(L, Rraw, D2)
+    ok("R2 returns and defaults joined on the raw references (no crosswalk), duplicates kept: total cell",
+       cell(total_of(B, h, F_raw, r), 50) == fig["call_total"], "%.1f" % total_of(B, h, F_raw, r))
+    Graw = pd.read_csv(os.path.join(target, C.F_REGISTERS), dtype=str)
+    Graw["emp"] = Graw["employee_id"]
+    Graw["t"] = Graw["period_start"].map(lambda s: C.mi(int(s[:4]), int(s[5:7])))
+    Graw["hire_t"] = Graw["hire_date"].map(lambda s: C.mi(int(s[:4]), int(s[5:7])))
+    hraw, _, _ = K.hazards(Graw)
+    ok("R2 registers with repeated uploads kept and ids not normalised: total and sector cells",
+       cell(total_of(B, hraw, F, r), 50) == fig["call_total"] and
+       all(cell(shares_of(B, hraw, F, r)[s], 5) == fig["call_share"][s] for s in C.SECTORS))
+    R01 = R.copy()
+    R01["left"] = R01["reason"] == "SIN SALARIO"
+    F01, _ = K.conversion(L, R01, D)
+    ok("R2 reading only the April 2023 text codes keeps the total cell (runs since April 2023 alone)",
+       cell(total_of(B, h, F01, r), 50) == fig["call_total"], "%.1f" % total_of(B, h, F01, r))
+    ok("R3c no copied or backfilled block: no two employers share a leaver count and exposure",
+       len(set((nl[k], expo[k]) for k in nl)) == len(nl))
+    ok("R3c no memo, briefing or stakeholder figure states a forecast, a turnover or a private PD",
+       not any(re.search(r"turnover|leaving rate|launch forecast", t, re.I) for t in DOC.rules_text()))
+
+    # ------------------------------------------------------------------------------------------ the asks
+    truth = PK.ask_truth()
+    a = K.ask_a(target)
+    b = K.ask_b(target)
+    for s in C.SECTORS:
+        ok("ask A %s deducted reproduces the clean truth" % s, abs(a["deducted"][s] - truth["deducted"][s]) < 0.5)
+        ok("ask A %s not received reproduces the clean truth" % s, abs(a["outstanding"][s] - truth["outstanding"][s]) < 0.5)
+        ok("ask A %s figures in figures.json" % s, fig["ask_a_deducted"][s] == C.nearest(a["deducted"][s], 1000)
+           and fig["ask_a_outstanding"][s] == C.nearest(a["outstanding"][s], 1000))
+    for y in (2023, 2024):
+        for t in C.AGENCY_TYPES:
+            ok("ask B %d %s reproduces the clean truth" % (y, t), abs(b[y][t] - truth["recovered"][y][t]) < 0.5)
+            ok("ask B %d %s in figures.json" % (y, t), fig["ask_b_recovered"][str(y)][t] == C.nearest(b[y][t], 1000))
+    rows_c = CR.score(fig, target)
+    for asknm, route, hits, n in rows_c:
+        ok("cracker: ask %s on the %s route misses every cell" % (asknm, route), hits == 0, "%d of %d" % (hits, n))
+    pc, ml = CR.pair(rows_c)[:2]
+    ok("pair ceiling at or under 40", pc <= 40.0, "%.1f" % pc)
+    ok("mirror leakage under 35 per cent", ml < 35.0, "%.1f" % ml)
+    call_files = {C.F_LOANS, C.F_XWALK, C.F_RETURNS, C.F_DEFAULTS, C.F_REGISTERS, C.F_LAUNCH, C.F_AGREE}
+    ask_device_files = {C.F_SCHED, C.F_STMT, C.F_RECEIPTS, C.F_SAVINGS}
+    ok("separation: no ask device file is read by the call", not (call_files & ask_device_files))
+    sched = truth["sched"]
+    for s in C.SECTORS:
+        ok("ask A device: a 2026 corrected schedule in %s" % s, any(x["kind"] == "replacement" and C.ym(x["period"])[0] == 2026
+                                                                   and W.employers()[x["emp"]]["sector"] == s for x in sched))
+    E_ = W.employers()
+    parents = {e["i"] for e in E_ if e["name"] in W.GROUP_PARENT.values()}
+    grp = [x for x in truth["tr"] if len(x[4]) > 1 and x[1] in parents]
+    ok("ask A device: every group parent pays its subsidiary's schedules in its own transfers",
+       {x[1] for x in grp} == parents and len(grp) >= 30, "%d transfers" % len(grp))
+    rec = truth["receipts"]
+    P = W.world()["P"]
+    for y in (2023, 2024):
+        for t in C.AGENCY_TYPES:
+            ks = [k for d, i, ch, org, am, k in rec if C.ym(int(P["dflt_m"][i]))[0] == y and P["A"][P["ag"][i]]["type"] == t]
+            ok("ask B device: own netting and a relative's payment in %d %s" % (y, t), "own" in ks and "other" in ks)
+
+    # ------------------------------------------------------------------------------------------ distractors
+    for dfile in C.DISTRACTORS:
+        ok("distractor %s is read by no golden figure" % dfile, dfile not in call_files | ask_device_files)
+
+    # ------------------------------------------------------------------------------------------ realism and dates
+    ok("realism: sector launch counts all differ", len(set(B.groupby("sector").size())) == 6)
+    ok("realism: the call is not a round number before rounding", abs(tot - round(tot)) > 0.01 or tot % 50 != 0)
+    ok("realism: employers' monthly leaving rates all differ", len(set(round(v, 6) for v in h.values())) == len(h))
+    dates_ok = True
+    for f, col in ((C.F_REGISTERS, "pay_date"), (C.F_RECEIPTS, "receipt_date"), (C.F_STMT, "posting_date"),
+                   (C.F_SAVINGS, "movement_date"), (C.F_SCHED, "filed_on")):
+        v = pd.read_csv(os.path.join(target, f), usecols=[col], dtype=str)[col]
+        if (v > "2027-01-22").any():
+            dates_ok = False
+    ok("dates: no extract row after the 22 January 2027 pull", dates_ok)
+    ok("dates: the rules are approved before the pull and after the last agreement", DOC.RULES_DATE < C.PULL)
+    ok("persona: only the two drawn names appear in the documents",
+       all(n in ("Paola Ayala", "Esteban Ospina") for n in re.findall(r"Paola Ayala|Esteban Ospina|[A-Z][a-z]+ [A-Z][a-z]+ Director", " ".join(DOC.rules_text()))))
+
+    # ------------------------------------------------------------------------------------------ registers (H9)
+    dic = {}
+    for f, field, _, _ in DOC.FIELDS:
+        dic.setdefault(f, []).append(field)
+    for f in files:
+        if f.endswith(".csv"):
+            hd = open(os.path.join(target, f), encoding="utf-8").readline().strip().split(",")
+            ok("dictionary lists exactly the fields of %s" % f, hd == dic.get(f), str(set(hd) ^ set(dic.get(f, []))))
+    ok("dictionary covers the agreements register", dic.get(C.F_AGREE) ==
+       ["employer_nit", "legal_name", "sector", "agreement_signed", "first_register_period", "city"])
     from pypdf import PdfReader
     from pdfminer.high_level import extract_text
-    for f, must in ((C.F_NOTE, ("billed on the 1st of the month", "Billing Operations reports each bill")),
-                    (C.F_VALID, ("validation summary", "Calibration by band"))):
-        p_ = os.path.join(target, f)
-        a1 = " ".join((pg.extract_text() or "") for pg in PdfReader(p_, strict=True).pages)
-        a2 = extract_text(p_)
-        a3 = subprocess.run(["pdftotext", "-q", p_, "-"], capture_output=True, text=True).stdout
-        norm = lambda s: re.sub(r"\s+", " ", s)
-        ok = all(m in norm(t_) for m in must for t_ in (a1, a2, a3))
-        check("H25 %s reads in pypdf (strict), pdfminer and pdftotext with its key sentences" % f, ok)
+    for f in (C.F_RULES, C.F_SUPER):
+        strict = " ".join(p.extract_text() for p in PdfReader(os.path.join(target, f), strict=True).pages)
+        miner = extract_text(os.path.join(target, f))
+        key = {C.F_RULES: "in default from the month-end at which an instalment is 90 or more days past due",
+               C.F_SUPER: "Libranza Empresarial: no loans at 31 December 2025"}[f]
+        ok("H25 %s reads under a strict and an independent extractor" % f,
+           key in re.sub(r"\s+", " ", strict) and key in re.sub(r"\s+", " ", miner))
+    with zipfile.ZipFile(os.path.join(task, "target.zip")) if os.path.exists(os.path.join(task, "target.zip")) else None as z:
+        if z is not None:
+            ok("H4 the archive holds exactly the pack's files, no folder", sorted(z.namelist()) == files)
 
-    fails = [r for r in ROWS if not r[1]]
-    print("%s: %d checks, %d FAIL" % ("PASS" if not fails else "FAIL", len(ROWS), len(fails)))
+    # ------------------------------------------------------------------------------------------ report
+    fails = [x for x in RESULTS if not x[1]]
+    for name, good, det in RESULTS:
+        if not good:
+            print("FAIL  %s  %s" % (name, det))
+    print("checks.py: %s %d of %d" % ("PASS" if not fails else "FAIL", len(RESULTS) - len(fails), len(RESULTS)))
     return 1 if fails else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1]))
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")))

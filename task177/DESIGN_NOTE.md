@@ -1,6 +1,6 @@
 # task177 design note
 
-**Status: architecture 3, drawn 2026-10-23 (rebuild from scratch).** The number was RETIRED on 2026-10-22 and
+**Status: architecture 3, stage 3 green 2026-10-23, waiting on stage 4 (rebuild from scratch).** The number was RETIRED on 2026-10-22 and
 reopened the next day under the author's rule that no number stays retired. Two rebuild cells found nothing that
 holds (quantitative-finance volatility, biomedical survival; `## Tried and rejected`, `## Rebuild (2026-10-23)`);
 the third cell, banking-credit-financial-risk / credit-scoring-pd-modeling (Forecasting), carries architecture 3
@@ -24,8 +24,8 @@ below. Architectures 1 and 2 are kept as records further down.
   disbursed together on 1 February 2027 from a file of 2,400 approved applications. The board books the 2027
   budget's provision for them from the first-year default forecast.
 - **Shape:** `other` on the card (the total and its split over six employer sectors, plus the asks' cells).
-  Criteria: the call's total (1), the six sector counts (6), the asks' cells (designed at stage 2, at least 15),
-  the two files (2): 24 before the asks' qualifiers, over 25 with them.
+  Criteria: the call's total (1), the six sector shares (6), Ask A's twelve cells, Ask B's eight cells, the two
+  files (2): 29.
 - **Decision:** `quantity_figure`, answer unit count, question form how-many. Forum `board_of_directors` (the
   cooperative's board approves the budget and its provisions), forcing event `budget_or_appropriation` (the 2027
   budget's provision for the first private-employer loans), org family `cooperative_or_member_body`, role family
@@ -150,12 +150,168 @@ Layer 1: the legacy core's loans (to June 2021) carried into the new core under 
 Layer 2: estimand and identification: which exposure the default rate is read on; the record's rate is a property of how rarely its borrowers leave their employer with a loan open, and it carries to a new population only per leaving event, with the leaving rate measured on the new population's own payroll.
 Decisive step: decompose the first-year PD of a payroll-deduction loan into the borrower's chance of leaving the employer's payroll while the loan is open and the default rate that follows such an exit, read the conversion from the public book's permanent-staff loans whose deductions stopped for good, and take each private employer's leaving rate from its own payroll registers.
 Not semantics: every field, code and definition read correctly (the two cores joined, the treasury codes, the 90-day definition, the registers' pay concepts) still leaves the PD model on borrower attributes at about 50, because no field names the leaving event and none states that default runs through it; the treasury's code for a deduction not applied covers a borrower short of margin and one gone from the payroll alike.
-Not rule application: no filed rule or procedure says how to forecast the launch's default, and executing every stated rule (the default definition, the window, the deduction cap, the eligibility rules) leaves the estimator open; the enumerated family a competent analyst reaches for spans 1.3 to 12.6 per cent over 20 seeds (logistic on attributes, pooled, temporaries as analogue, all-staff and permanent turnover scalings, the decomposition forms, the agency regression), the standing family the data leave defensible (the four decomposition forms, the agency regression, the permanent-turnover scaling) spans at most 0.42 percentage points within the decomposition and 7.7 to 12.6 across all of it, and nothing filed does the ruling-out: the logistic is refuted by the records themselves (most public defaults follow a run of deductions not applied that never resumes, and the private employers' staff leave at five to six times the public rate), which no clause states.
+Not rule application: no filed rule or procedure says how to forecast the launch's default, and executing every stated rule (the default definition, the window, the deduction cap, the eligibility rules) leaves the estimator open; measured on the cut pack, the enumerated family a competent analyst reaches for spans 33 to 438 loans (temporaries as analogue 33, pooled 38, logistic on attributes 47, the decomposition forms 237 to 264, the crude annual approximation 278, the leaving-ratio scaling 438), the standing family the data leave defensible (the lag-curve decomposition under every staff-tenure definition, register window and conversion window, leaving read from settlements or last appearances, with or without the on-payroll route, and the leave-by-month-8 approximation) spans 237 to 264, all in the 250 cell with every sector in its cell, and nothing filed does the ruling-out: the logistic is refuted by the records themselves (the public defaults follow runs of SIN SALARIO returns that never end, and the launch employers' registers show their staff leaving at about 3 per cent a month against 0.25 per cent for public borrowers), which no clause states.
 Analyst test: a strong analyst who joins the two cores, reads the treasury returns and the default register correctly, fits a PD model on the public book's borrower attributes (validated out of time) and scores the 2,400 launch applications files about 50 loans in default by 31 January 2028, where the answer is about 250.
 Estimand: the number of the 2,400 Libranza Empresarial loans disbursed on 1 February 2027 that are 90 days or more past due at any month-end up to 31 January 2028, as an expected count, in total and by employer sector, filed in prompt.txt and the product sheet (population, outcome, window, unit) with no comparison.
 No decoy: nothing in the pack is planted to be caught; no memo, draft, briefing or stakeholder figure states a launch forecast, a turnover figure or a PD for the private segment, and no public-book PD table ships.
 No certified replay: the method is not recovered by reproducing certified or published figures; no shipped figure is reproduced only by the decomposition, and the conversion and leaving rates exist only by construction from the records.
 Lesson: a rate learned on one population carries to another only per occurrence of the event that produces it, and when that event's frequency differs between the populations it has to be measured on the new one's own records; no build on file reads an outcome rate per exit from the body that collects the obligation (task169 closes a route, task446 prices a flag by its kind, task177 v2 times a test's effect within a billing cycle).
+
+## Layer 1 inventory
+
+| Item | System that writes it | File | Natural mishandling and what it moves |
+|---|---|---|---|
+| Legacy loans open at the July 2021 move carried under new numbers; loans closed before kept their legacy numbers | the core-system migration | loan book, crosswalk, returns, default register | joining returns and defaults on the raw reference splits a migrated loan in two; the call stays at 250 (R2, asserted) |
+| Legacy-core amounts and net pay in thousands of pesos, contract type as P or T | the legacy core, as migrated | loan book | a PD model reading the ratio unscaled; the golden reads no amount; the call stays (R2) |
+| The Tesoreria's April 2023 return layout: periods YYYYMM and codes 01 and 02 before, YYYY-MM and SIN SALARIO or SIN CUPO after | the Tesoreria | returns | reading only one code family drops half the runs; the golden reads both (R2 asserts the call with the codes mapped) |
+| Three return months the Tesoreria sent twice | the Tesoreria | returns | duplicated runs; run starts are unchanged (R2) |
+| Repeated register uploads (about 2 per cent) | the employers, through the intake portal | payroll registers | double employee-months; dropped or kept, the call stays (R2) |
+| Employee ids stored with the CC prefix and dots until June 2026 | the intake portal before its upgrade | payroll registers | a person splits into two at July 2026; the settlement-based leaving rate is unchanged (R2) |
+| Fortnightly and monthly payers side by side; June and December PRIMA registers; settlements in the last period | the employers' payroll systems | payroll registers | counting rows instead of months; the golden counts employee-months (R2) |
+| Cures and the default register's legacy numbers | credit risk | default register | none on the call (first default per loan) |
+
+## Readability screen
+
+| Rung | 1 filed sentence | 2 schema | 3 reflex | 4 control bench | 5 hygiene | 6 linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 0 PD model on the public book's borrower attributes, scored on the launch | product rules define default only | loan book columns invite it | yes, the textbook route | none | no | no | readable |
+| 1 public pooled or temporaries' first-year rate carried | none | contract type column | yes | none | no | yes | readable |
+| 2 public rate scaled by private over public leaving | none | registers and returns both ship | partial (a scaling reflex once leaving is suspected) | none | no | one ratio | readable |
+| 3 (decisive) conversion per payroll exit times each employer's leaving hazard, by month left in the window | no sentence relates leaving to default; rules 4.1 names final-settlement payments only as what an upload contains | no column holds a leaving rate, a conversion or a PD; the SIN SALARIO code covers any month without pay | not the field's PD reflex: the scorecard route models the outcome on the borrower, not on the event that produces it | no control or published figure ties to it | the battery finds nothing about it | a construction over two files at two grains with a lag curve | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "go into default" | an instalment 90 or more days past due at a month-end | 90 days past due on any day | same call (the record's defaults are month-end events) | product rules 5.1 |
+| SF2 | "by 31 January 2028" | every launch loan whose default date falls at a month-end on or before 31 January 2028 | loans in default status on 31 January 2028 (cured excluded) | same call (4 of 57 cures in the record come within eight months of default) | the prompt's "will go into default by" |
+| SF3 | the population | the 2,400 loans of the launch file, all disbursed 1 February 2027 | members on the waiting list, or loans still open | same call (one file, one date) | product rules 6.1 and the launch file |
+| SF4 | "each employer sector" | the agreements register's sector for the loan's employer | the labour bulletin's branches | same call on the register; the bulletin carries no employers | the prompt's "employer sector" and the register |
+| SF5 | "share of each employer sector's loans" | expected loans in default over the sector's launch loans | the share of the sector's principal | same call (balance-weighted shares 19.3, 9.4, 10.3, 8.4, 8.3, 5.6 sit in the same cells) | "share of ... loans" |
+| SF6 | the first month a leaver misses | the month after the final settlement (the first month with no pay), as a SIN SALARIO return is a month with no salary paid | the settlement month itself | 275 against 250 | the dictionary's SIN SALARIO definition and the registers, where every LIQUIDACION row is a paid month (both asserted) |
+| SF7 | the unit | loans | members | same call (one loan per member in the launch file) | the launch file |
+| SF8 | rounding | the total once to the nearest 50; each share from its sector's unrounded expected count | shares from rounded counts | same call (asserted) | the prompt's closing sentence |
+| SF9 | which public loans count toward the conversion | every loan whose borrower stopped being paid (a SIN SALARIO run) with the loan open, January 2017 to December 2025 | permanent-contract loans only; runs since 2019 or since July 2021 | same call (asserted: 245 to 248) | the data (the conversion does not depend on contract type) |
+| SF10 | which staff carry the forward leaving rate | staff with twelve or more months' service (every launch borrower has saved twelve months) | all staff, six or 24 months | same call (asserted: 238 to 246) | product rules 2.1 and the registers' hire dates |
+
+## Ladder
+
+| Rung | Construction | Figure (loans, unrounded) | Printed | Dies to |
+|---|---|---|---|---|
+| 0 | logistic PD on age, net pay, tenure, contract type, instalment over pay and term, fitted on public loans disbursed 2017 to 2025, scored on the launch file | about 47 | 50 | the returns: almost every public default follows a run of SIN SALARIO returns that never ends, so the attributes model the rarity of that event |
+| 1 | the public pooled first-year rate (1.6 per cent) or the temporaries' (1.4 per cent) carried | 38; 33 | 50; 50 | the same; the temporaries leave often but their loans end before their contracts |
+| 2 | the public first-year rate scaled by the launch employers' leaving rate over the public borrowers' exit rate | about 438 | 450 | the on-payroll route does not scale, and the scaling ignores the months a default needs |
+| 3 (decisive) | conversion by months since the first SIN SALARIO month (none before 3, 53 per cent by 5) times each employer's monthly leaving hazard for staff with a year's service, summed over February 2027 to January 2028, plus the on-payroll route | 247.0 | 250 | none |
+
+- Position and margins: the golden is 5.3 times rung 0 and 0.56 of rung 2; rung 2 is the nearest wrong printed cell
+  (450 against 250).
+- Every rung's figure sits at least one full cell (50 loans) from the golden's cell [225, 275): rung 0 at 47, rung 2
+  at 438; asserted in `checks.py`.
+- The golden family (lag-curve forms, staff tenure definitions of 0, 6, 12 and 24 months, 2026 registers alone, the
+  conversion from runs since 2017, 2019 or July 2021, leaving read from the last appearance instead of the settlement,
+  the residual route included or not, the leave-by-month-8 approximation) spans 237 to 264, all in the 250 cell; the
+  crude annual-leaving-times-three-quarters approximation reads 278 and is the only form outside it. Sector shares
+  across the family: contact centres 18.2 to 20.7 (20), retail 9.1 to 10.8, security 9.9 to 11.7, logistics 8.1 to
+  9.6, food 7.9 to 9.5 (each 10), clinics 5.4 to 6.7 (5).
+- Worth: the decisive rung moves the figure by about 200 loans, eight times the cell's half-width.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | the 2,400 launch loans | filed: prompt, rules 6.1, launch file |
+| 2 Unit of account | loans | prompt; one loan per member (C1) |
+| 3 Attribution window | default dates at month-ends February 2027 to January 2028 | prompt "by 31 January 2028"; rules 5.1 |
+| 4 As-of dating | the pull of 22 January 2027; extracts to December 2026 | dictionary and file names |
+| 5 Version basis | the registers as uploaded; repeated uploads collapse | C1: dropped or kept, same call |
+| 6 Denominator | sector shares over the sector's launch loans | prompt; balance weighting same call (SF5) |
+| 7 Weighting | each loan once | C1 |
+| 8 Window length | conversion runs 2017 to 2025; registers since each agreement | C3: every licensed window in the cell (SF9, SF10) |
+| 9 Boundary inclusivity | a default at the 31 January 2028 month-end counts | prompt "by"; no launch loan can default before May 2027 |
+| 10 Rounding path | total once to 50; shares from unrounded counts | prompt; asserted |
+| 11 Tie-break | none needed | C1 |
+| 12 Maturity and censoring | conversion runs to December 2025, so every run has twelve months' follow-up | C1: runs since July 2021 give the same cell |
+| 13 Order of operations | leaving hazard then conversion by months left | the lag curve; the m8 approximation same cell |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | re-sent returns and register uploads | C1 (R2 asserted) |
+| 16 Identity normalisation | employee ids with and without the CC prefix; legacy loan numbers | dictionary; C1 on the call (R2) |
+| 17 Netting against gross | none on the call | not applicable |
+| 18 Dimensional units | legacy amounts in thousands | dictionary; the call reads no amount |
+| 19 Code and status semantics | 01 or SIN SALARIO, 02 or SIN CUPO | dictionary |
+| 20 Integerisation | expected counts are not integerised | C1 |
+| 21 Clause scope | rules 5.1 default definition applies to every loan | rules 5.1 |
+| 22 Forward window contents | the launch file and each employer's own registers | shipped files; the market held at its 2025 to 2026 level |
+
+## Literal reader
+
+Executed literally, the prompt and the product rules file the estimand completely (the 2,400 launch loans, default at
+90 days past due at a month-end, entries up to 31 January 2028, counted, by the register's sector, rounded once) and
+no method; every reading of each term (SF1 to SF10) gives 250 and the same six sector cells, and the default path's 50
+comes from an easy method on the same literal estimand, not from another reading. The method is forced by the data's
+structure: the record's defaults run through the borrower leaving the payroll with the loan open, so the forecast
+transports the conversion per exit and measures the exits on the launch employers' own registers.
+
+## Oracles
+
+- `supervisor_annual_return_2025.pdf`: the public book's balance 90 or more days past due at each year end (2021 to
+  2025); on the wrong path it confirms a public default rate near 2 per cent and ties to nothing in the golden.
+- `labour_market_bulletin_2026q3.csv`: national unemployment and employment by branch; on the wrong path it invites a
+  macro adjustment and ties to nothing.
+- No control, published figure or reconciliation column ties only under the golden.
+
+## Ask sheet
+
+The asks sit on files the call never reads: the savings contribution schedules and the collection account statement
+(Ask A, the private employers' remittances), the receipts on defaulted public loans and the members' savings ledger
+(Ask B, the recoveries the provision nets). Zero device rows in the call's files, asserted.
+
+**Ask A: for each sector, the members' savings contributions the employers deducted for the months of 2026, and how
+much of that had not been received by 31 December 2026 (12 figures, VMP to the nearest 1,000).** H18: the employers'
+remittance record is the second risk of a payroll-deduction product, a component of the launch's case the board weighs
+beside the defaults. Primary device D2 (silent): an employer filing a second schedule for a month with the same members
+(a few amounts corrected, a member dropped or added) replaces the first, while a schedule listing members missing from
+the month adds to it; no field says which, the member overlap and the transfer amounts do. Second primary D7: three
+groups' parents (a retail chain with a security firm, a dairy with a haulier, a clinic with a contact centre) pay their
+own and their subsidiary's schedules in one transfer from the parent's tax number, so matching transfers to employers
+by payer leaves each subsidiary unpaid and its parent overpaid, in six sectors. Hazards: December schedules paid in
+January, two employers months behind and a catch-up lump, one returned and re-sent transfer, members' own deposits and
+charges on the statement. Stops: latest schedule per month with payer matching; every schedule with payer matching;
+the golden.
+
+**Ask B: for the public loans that went into default in 2023 and in 2024, how much was recovered by 31 December 2026
+other than by netting the member's own savings, by unit type (8 figures, VMP to the nearest 1,000).** H18: the
+recoveries the provision's loss rate rests on. Primary device D7 (silent): the netting is posted as a transfer from the
+member's own savings account at the cooperative (bank code 0731), and some plan instalments are paid from a relative's
+savings account at the cooperative; only the savings ledger's account holder separates them, in every cell. Hazards:
+reversals of returned transfers, legacy numbers for older loans. Stops: every receipt; every receipt but 0731
+transfers; the golden.
+
+| Route (the cracker lands the call and runs the battery; the asks consume nothing the call produces) | Ask A cells kept | Ask B cells kept | Verdict |
+|---|---|---|---|
+| cracker, latest schedule per employer and month, transfers matched by payer and month | 0 of 12 | n/a | miss |
+| cracker, every schedule, transfers matched by payer and month | 0 of 12 | n/a | miss |
+| cracker, every receipt net of reversals | n/a | 0 of 8 | miss |
+| cracker, every receipt but transfers from 0731 accounts | n/a | 0 of 8 | miss |
+
+Measured by: generator/cracker.py
+Pair ceiling: 28.5 (cracker 45.0, mirror 12.0, on 38, 7 and 55 with a wrong call keeping 5)
+Mirror leakage: 0.0 per cent of ask weight (the mirror takes the same ask routes)
+
+
+## Leak sweep
+
+`leak.py --asof 2027-01-22` on the stage 3 pack: REVIEW, five lines, no LEAK.
+- Rules PDF carries the call's distinctive words: they are the product's name, the launch date and the default
+  definition the prompt also states; no figure of the answer, no sentence on leaving or turnover. Harmless.
+- Supervisor return carries four of the call's words and three stump terms: payroll-deduction is the product's genre;
+  the return reports the public book's year-end balance in default, a different basis. Harmless (a distractor).
+- Rules PDF carries six stump terms (payroll, private, cooperative, fortnight, payroll-deduction, deduction): the
+  product's own vocabulary; it names no leaving rate, no conversion and no link between leaving and default. Harmless.
+- The launch file's 2,400 ISO dates after the pull are the planned disbursement date (1 February 2027), which the
+  prompt states. Harmless.
+- Single-use test: the payroll registers carry the launch's tenure certificates, the deduction margins and the
+  employment status the agreement requires (rules 4.1); the treasury returns are the collections workflow's input; the
+  default register feeds the annual return. No file's only use is the decisive step.
 
 ## Architecture 2 record (product-analytics / churn-propensity-uplift-modeling, retired 2026-10-22)
 
@@ -1468,5 +1624,7 @@ six times as often. The card's v2 identity is already in its lineage; v3 registe
 
 ## Resume
 
-Architecture 3 drawn 2026-10-23 (stage 1 complete at registration); resume at stage 2 (design: readability screen,
-fork table, ladder, closure, asks, prompt; gate precut.py) from `## Draw`, `## Screen` and `## Default path`.
+Architecture 3, stage 3 green on 2026-10-23 (target.zip 2db9de82): precut.py exit 0, checks.py 158 of 158,
+verify.py 40 of 40, two byte-identical builds, figures_check.py exit 0, voice-check PASS, leak.py REVIEW answered,
+guard.py surface exit 0 and heart WARN. Resume at stage 4: two scored readers and the determinism judge, run by the
+main session on this pack.

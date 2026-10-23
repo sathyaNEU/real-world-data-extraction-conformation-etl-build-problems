@@ -21,8 +21,8 @@ sys.path.insert(0, HERE)
 import pack as PK  # noqa: E402
 
 TASK = os.path.dirname(HERE)
-PULL_DONE = (2027, 1, 25, 19, 10, 0)                           # the pull assembled, UK time (GMT in January)
-MTIME = calendar.timegm((2027, 1, 25, 19, 10, 0, 0, 0, 0))     # the same moment, UTC
+PULL_DONE = (2027, 1, 22, 18, 30, 0)                           # the pull assembled, local time
+MTIME = calendar.timegm((2027, 1, 22, 23, 30, 0, 0, 0, 0))     # the same moment, UTC (local UTC-5)
 
 
 def build(out, quiet=False):
@@ -96,7 +96,7 @@ def main():
         if r1.returncode or r2.returncode:
             sys.exit("checks %d verify %d" % (r1.returncode, r2.returncode))
     if not a.no_rebuild:
-        tmp = tempfile.mkdtemp(prefix="t177_rebuild_", dir=os.environ.get("REBUILD_DIR"))
+        tmp = tempfile.mkdtemp(prefix="t177v3_rebuild_", dir=os.environ.get("REBUILD_DIR"))
         try:
             subprocess.run([sys.executable, os.path.join(HERE, "build.py"), "--into", tmp], check=True)
             mine = {k: v for k, v in digest(TASK).items() if k.split(os.sep)[0] in ("target", "golden")

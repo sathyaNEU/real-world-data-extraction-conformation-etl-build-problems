@@ -1,20 +1,21 @@
 # leak check, task177
 
-**Verdict: REVIEW.** 14 files read, 21 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 15 files read, 23 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: effect, window, uplift, subscriber, billing, difference, fortnight, subscription, ledger, inside, prompt, decision, dictionary, randomised, family, outcome, decisive, access, screen, nothing, features, treatment, delivery, invoice, outsider
+Stump terms swept: leaving, payroll, effect, registers, outcome, private, family, window, borrower, population, billing, uplift, payroll-deduction, cooperative, deduction, decisive, conversion, sentence, carries, nothing, subscriber, forward, first-year, analyst, ledger
 
-## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `retention_offer_plan_2027.docx`: carries 7 of 8 distinctive words of the committed call: '20 per cent of the 48,000 subscriptions on the 26 January 2027 list will still be subscribed on 31 March 2027 because th'
+## 3 answer figures in the pack (REVIEW 2)
+- **REVIEW** `libranza_empresarial_product_rules_2026.pdf`: carries 7 of 7 distinctive words of the committed call: 'About 250 of the 2,400 Libranza Empresarial loans disbursed on 1 February 2027 will go into default by 31 January 2028.'
+- **REVIEW** `supervisor_annual_return_2025.pdf`: carries 4 of 7 distinctive words of the committed call: 'About 250 of the 2,400 Libranza Empresarial loans disbursed on 1 February 2027 will go into default by 31 January 2028.'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `billing_move_note_2026.pdf`: 3 of 25 stump-paragraph terms appear (billing, subscription, invoice); read whether the document names the move
-- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Put the forecast and your working in retention_offer_forecast_2027.xlsx, with the discount last January's offer gave on bills raised in February and in March 2026 on each plan and how many subscriptions on each plan took"
+- **REVIEW** `libranza_empresarial_product_rules_2026.pdf`: 5 of 25 stump-paragraph terms appear (payroll, private, payroll-deduction, cooperative, deduction); read whether the document names the move
+- **REVIEW** `supervisor_annual_return_2025.pdf`: 3 of 25 stump-paragraph terms appear (payroll, payroll-deduction, deduction); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `subscriptions_platform_invoices.csv`: 105991 ISO dates after 2027-01-25, e.g. 2027-01-31
+- **REVIEW** `libranza_empresarial_disbursement_file_2027-02-01.csv`: 2400 ISO dates after 2027-01-22, e.g. 2027-02-01
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

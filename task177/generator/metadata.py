@@ -12,32 +12,33 @@ import common as C
 
 ORIGIN = "Constructed for this task (seeded, deterministic): "
 SOURCES = {
-    C.F_ASSIGN: ("Daily Lantern Media (fictional) campaign tool, the 31 January 2026 at-risk list and each "
-                 "subscription's arm in the retention test", "2026-01-31"),
-    C.F_PROFILE: ("Daily Lantern Media CRM, snapshot of the subscriptions on the 31 January 2026 list", "2026-01-31"),
-    C.F_LIST: ("Daily Lantern Media campaign tool, the at-risk list cut on 25 January 2027 for the 26 January send",
-               "2027-01-25"),
-    C.F_LBS: ("Daily Lantern Media legacy billing system, invoice line export for the subscriptions on either list and "
-              "their add-ons", "2027-01-25"),
-    C.F_SPINV: ("Daily Lantern Media subscriptions platform, invoice and credit note export pulled for this year's list "
-                "(one row per document, its lines as JSON)", "2027-01-25"),
-    C.F_XWALK: ("Daily Lantern Media Billing Operations, legacy reference to platform id crosswalk issued with the "
-                "billing move note, for the subscriptions on either list, their add-ons and the other subscriptions on "
-                "this year's list accounts", "2027-01-25"),
-    C.F_EVENTS: ("Daily Lantern Media subscription events for last January's list, from both billing systems",
-                 "2027-01-25"),
-    C.F_OFFERS: ("Daily Lantern Media offers engine, acceptances of the January 2026 retention offer", "2027-01-25"),
-    C.F_EMAIL: ("Daily Lantern Media email platform, event log of the January 2026 offer email", "2027-01-25"),
-    C.F_NOTE: ("Daily Lantern Media Billing Operations, note on monthly digital billing on the subscriptions platform, "
-               "version 1.3", "2026-10-15"),
-    C.F_PLAN: ("Daily Lantern Media Subscriber Retention, January 2027 retention offer plan", "2027-01-18"),
-    C.F_DICT: ("Daily Lantern Media Audience Data, field descriptions for the pull", "2027-01-25"),
-    C.F_SURVEY: ("Daily Lantern Media reader survey, fourth-quarter 2026 export", "2027-01-25"),
-    C.F_VALID: ("Daily Lantern Media Audience Data Science, retention model 3.2 validation summary", "2026-12-09"),
+    C.F_LOANS: ("Coopservir (fictional) core banking system, Libranza Publica loan book extract at 31 December 2026, "
+                "loans disbursed January 2017 to December 2026", "2027-01-22"),
+    C.F_XWALK: ("Coopservir core system migration, legacy to core loan numbers for the loans open at the July 2021 "
+                "move", "2021-07-01"),
+    C.F_RETURNS: ("Tesoreria General de Valdemora (fictional) monthly returns of payroll deductions not applied, as "
+                  "loaded by Coopservir", "2027-01-22"),
+    C.F_DEFAULTS: ("Coopservir credit risk, register of Libranza Publica defaults (90 days past due)", "2027-01-22"),
+    C.F_REGISTERS: ("Coopservir intake portal, payroll registers uploaded by the 38 agreement employers", "2027-01-22"),
+    C.F_AGREE: ("Coopservir commercial directorate, register of Libranza Empresarial deduction agreements",
+                "2026-11-03"),
+    C.F_LAUNCH: ("Coopservir credit directorate, launch disbursement file of approved Libranza Empresarial "
+                 "applications", "2027-01-22"),
+    C.F_SCHED: ("Coopservir intake portal, savings contribution schedules filed by the agreement employers",
+                "2027-01-22"),
+    C.F_STMT: ("Coopservir treasury, collection account statement export", "2027-01-22"),
+    C.F_RECEIPTS: ("Coopservir collections system, receipts applied to defaulted Libranza Publica loans", "2027-01-22"),
+    C.F_SAVINGS: ("Coopservir savings system, ledger extract for members with loans in collections and other members "
+                  "whose accounts paid them", "2027-01-22"),
+    C.F_RULES: ("Coopservir credit directorate, Libranza Empresarial product rules, version 2.0", "2026-11-20"),
+    C.F_DICT: ("Coopservir finance, field descriptions for the pull", "2027-01-21"),
+    C.F_SUPER: ("Coopservir finance, 2025 annual return to the supervisor (fictional), form F-12 summary", "2026-03-27"),
+    C.F_LABOUR: ("Instituto Nacional de Estadistica de Valdemora (fictional), quarterly labour market bulletin, "
+                 "unemployment and employment by branch", "2026-11-14"),
 }
-TITLE = ("The share of a national news publisher's 26 January 2027 at-risk list of monthly digital subscribers still "
-         "subscribed on 31 March 2027 because they are sent a half-price retention offer, forecast from last "
-         "January's randomised test")
+TITLE = ("How many of a public servants' savings and credit cooperative's first 2,400 payroll-deduction loans to "
+         "members employed by private firms will go into default within the first year, forecast from ten years of "
+         "payroll loans to public servants and the private employers' own payroll registers")
 
 
 def _rows(path):
@@ -64,47 +65,45 @@ def write(task_dir):
         files.append(dict(path=f, format=f.rsplit(".", 1)[-1], bytes=os.path.getsize(p), rows=rows,
                           source=ORIGIN + src, date=date, license="CC0-1.0 (original work, constructed for this task)"))
     distractors = [
-        dict(file=C.F_SURVEY, wrong_basis=False,
-             why_relevant="readers' satisfaction and their own stated chance of cancelling in the next three months, "
-                          "which looks like a way to size who on the list would go without the offer",
-             why_unused="a voluntary sample of both lists' members with stated intentions, no arm and no billing; no "
-                        "figure reads it",
-             ruled_out_by="its own coverage (a voluntary sample) and the randomised test, which measures what the offer "
-                          "keeps directly"),
-        dict(file=C.F_VALID, wrong_basis=False,
-             why_relevant="the retention model's calibration by risk band, which looks like the chance each list "
-                          "member cancels without the offer",
-             why_unused="it describes the chance of cancelling within 30 days, not what the offer changes; the test's "
-                        "arms give that directly; no figure reads it",
-             ruled_out_by="the test's holdout arm (the outcome without the offer, measured)"),
+        dict(file=C.F_SUPER, wrong_basis=False,
+             why_relevant="the cooperative's own reported default share of its payroll-deduction book by year, which "
+                          "looks like the benchmark rate for a new payroll-deduction product",
+             why_unused="it reports the public book's balance in default at each year end, a stock on a balance basis, "
+                        "not a first-year default count; no figure reads it",
+             ruled_out_by="its own basis (balance 90+ days past due at 31 December, defaults kept for 24 months) and "
+                          "the product rules' default definition"),
+        dict(file=C.F_LABOUR, wrong_basis=False,
+             why_relevant="unemployment and employment by branch of activity, which looks like a way to adjust a "
+                          "default rate for the private sectors' labour markets",
+             why_unused="national rates by branch say nothing about the 38 employers' own staff; their payroll "
+                        "registers do; no figure reads it",
+             ruled_out_by="the employers' payroll registers, which record their own staff month by month"),
     ]
     meta = dict(
         task="task177", title=TITLE,
-        domain="Product Analytics", client_domain="product-analytics",
-        subdomain="churn propensity and uplift modelling (the effect of a retention offer on a monthly subscription, "
-                  "carried from a randomised test whose deliveries fell at every point of the billing cycle to a list "
-                  "whose bills all fall six days after the send)",
+        domain="Banking, Credit & Financial Risk", client_domain="banking-credit-financial-risk",
+        subdomain="credit scoring and PD modelling (the first-year default of payroll-deduction loans to a new "
+                  "population of borrowers whose employers' staff leave far more often than the record's)",
         objective="Forecasting & Predictive Modeling",
-        prompt_shape="one forecast share to the nearest 5 per cent; last January's offer discounts on February and "
-                     "March 2026 bills and its takers on each plan; this year's list billed for its plans after "
-                     "credits in each month from October 2026 to January 2027 on each plan",
-        as_of="2027-01-25",
-        deliverables=["retention_offer_forecast_2027.xlsx", "january_offer_note.docx"],
+        prompt_shape="one forecast count to the nearest 50 loans and each employer sector's share in default to the "
+                     "nearest 5 per cent; the savings deducted for 2026 and not received by year end by sector; the "
+                     "recoveries on 2023 and 2024 public defaults by unit type",
+        as_of="2027-01-22",
+        deliverables=["libranza_empresarial_default_forecast.xlsx", "launch_default_note.docx"],
         distractor_files=[d["file"] for d in distractors],
         distractors=distractors,
-        stated_inputs=["48,000", "26 January 2027", "31 March 2027", "half price on the next two monthly bills",
-                       "31 January 2026"],
+        stated_inputs=["2,400", "1 February 2027", "31 January 2028"],
         field_terms=[],
         input_gates=dict(files=len(files), formats=sorted(set(x["format"] for x in files)), largest_file=big,
                          largest_file_rows=big_rows),
         sources=[dict(files="all files under target/",
                       origin="constructed for this task by task177/generator/build.py (seeded, deterministic) around a "
-                             "fictional national news publisher in the United Kingdom (Daily Lantern Media, publisher "
-                             "of The Daily Lantern), its legacy billing system and its subscriptions platform. "
-                             "Subscribers are identified by number only. No real organisation's records or person is "
-                             "depicted.",
-                      date="2027-01-25", license="CC0-1.0 (original work)")],
-        created="2026-10-21", generator="task177/generator/build.py", files=files)
+                             "fictional public servants' savings and credit cooperative (Coopservir) in a fictional "
+                             "country (Republica de Valdemora), its payroll-deduction loans, the fictional national "
+                             "treasury's returns and 38 fictional private employers. Members and employees are "
+                             "identified by number only. No real organisation's records or person is depicted.",
+                      date="2027-01-22", license="CC0-1.0 (original work)")],
+        created="2026-10-23", generator="task177/generator/build.py", files=files)
     with open(os.path.join(task_dir, "metadata.json"), "w") as fh:
         json.dump(meta, fh, indent=1)
         fh.write("\n")
