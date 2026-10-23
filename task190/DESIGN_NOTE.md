@@ -2094,6 +2094,95 @@ moved is `bws_2026_response_log.csv`, `enterprise_permit_crosswalk.csv`,
   levels, where the shared parameter's form is a free choice. (a) and (e) are dead on sight, (a) as the
   identity horn and (e) as the free-form horn. (b), (c) and (d) are screened as code below.
 
+- **Architecture 10's screens, all three horns measured on the clean truth, each harness run to
+  byte-identical output, nothing cut (2026-10-23).** Scripts in the pass's scratch directory:
+  `screen_b_single_unknown.py`, `screen_cd.py`, `screen_e2.py` and its volume sweep `e3.py`.
+  - **Horn (b), one unknown per case fitted on that case's own fine rows, dead on both ends at once
+    and the kill is algebra.** 36 cases, 160 fine rows each, a proportional relation fitted per case,
+    six standard variants (least squares through the origin, ratio of sums, mean of ratios, median of
+    ratios, geometric mean of ratios, inverse-x weighted). The spread across the variants is
+    **0.1215 in logs against a nearest clearance of 0.0399, so eps/c 3.047 where the window needs a
+    third**, and the variants' gap does not shrink with the row count because mean-of-ratios and
+    geometric-mean-of-ratios differ by half the row variance whatever the sample size. The best
+    variant files the exact count 76.0 per cent of the time and least squares 48.2. **The algebra
+    behind it: the ratio of sums IS the one-group-by route and is also a licensed member of the
+    family, so family unanimity implies the cheap route is right. One-ended by construction.**
+  - **Horn (c), a non-linear aggregation of the case's own rows (the peak of an accumulation), dead on
+    the resolution.** 36 designed cases, four licensed readings of "one position" (half, one, two and
+    three times the shipped beam width): **4.00 distinct graded counts and 4.00 distinct graded sets of
+    4**, only the true width filing the true count. The cheap route (published total times the mean
+    peak share) files the exact count 19.7 per cent, so the separation is there and the determinacy is
+    not. The other side of that pincer is not worth measuring: with the positions discrete and shipped
+    the accumulation is exact and eps is zero, and the construction is then two group-bys and a max, so
+    the decisive step is reading the estimand.
+  - **Horn (d), fine observations coupling several cases, inverted by a linear solve: the dial is
+    two-ended and the window is wide.** Generic screen first, 36 cases, observations each covering k
+    cases with shipped exposures, five licensed inversions: at k 5 with 40 observations a case and 5 per
+    cent per-observation noise, **the family is unanimous and true in 87.5 per cent of worlds, the
+    pro-rata attribution reflex files the exact count in 10.0, and the joint cell is 78.3 per cent**,
+    against the 0 of 16, 0 of 320 and 0 of 36 joint cells that killed five siblings. **The reason the
+    dial is two-ended here, and it is the pass's general result: the cheap route's error is a
+    systematic smear rather than noise, so precision is bought with volume and reach with the
+    exposures' movement, and the two are financed by different parameters.** Measured as that claim
+    predicts: over a volume sweep of 10 to 1 the reflexes' exact-count rate stays flat at 31 to 38 per
+    cent while family unanimity rises from 65.5 to 94.0 per cent.
+
+- **Horn (d) landed a two-ended dial in the allocated cell and is then spent three ways, which is
+  architecture 10's verdict and a measured refusal (2026-10-23).** The instance screened:
+  twelve wellbeing services counties of three hospitals each, the national audit's outcome ascertained
+  by a central linkage and released only at the county's grain by month and clinical group, each
+  hospital's expected counts computable per cell from the published risk model and the audit's own
+  case-level submission, and the call the count of hospitals above the standard's absolute ratio.
+  Measured at 300 expected per hospital-cell with the hospitals' expected-count shares moving across
+  cells at log sd 0.80: **the five licensed inversions (least squares, weighted least squares,
+  non-negative least squares, identity-link Poisson maximum likelihood, twenty iterative-proportional
+  sweeps) return 1.00 distinct counts and 1.00 distinct sets and equal the truth in 99.0 per cent of
+  worlds, while apportioning each county's release in proportion to expected (indirect standardisation
+  at the reporting grain) files the exact count in 36.0 per cent, the specialty-stratified reweight in
+  13.5 and the near-sole-cell route in 14.0; joint cell 60.0 per cent.** The site effect was
+  residualised against every visible site attribute at draw time, measured at corr +0.005 against size
+  and +0.007 against expected total. The revelation pincer does not bite: at sparse mixes, with 1.5
+  near-sole cells a hospital, the filter-and-divide route still files the exact count only 11.0 per
+  cent, because one or two revealed hospitals do not give a count over thirty-six.
+  **Why it dies.** `guard.py check` fired no axis ban at all, and the structural test named it:
+  `test.same_driver_older` against **task263**, a SHIPPED build whose driver is this insight in other
+  nouns, "each source's own level when the level is measured only in mixtures of the sources running at
+  the moment of measurement, in proportions that change from one measurement to the next; giving every
+  source in an over-the-line mixture the mixture's level, or giving each source the average of the
+  mixtures it ran in, credits clean sources with their partners' level", graded on the count of wells
+  above an absolute 4.0 ng/L. Hospitals for wells, counties for entry points, expected-count shares for
+  pump rates and a standardised ratio for a concentration is a re-skin of the driver, which no
+  differentiation line clears. `guard.py slots` on the mechanism's nouns then spends it twice more:
+  **task200's architecture 2** drew the same construction on a sibling's cell on 2026-10-20 ("one
+  source's own distribution inside a blend no row attributes, and the field's method for it is to solve
+  the blend identity across periods whose mix differs") and killed it on measurement, and that kill is
+  already the algebra clause in `stumping` 1.6a, one regression on the published mixing share reaching
+  mean absolute error 0.0026 against the designed estimator's 0.0028 at corr +0.9582. The driver text
+  screen cannot see any of it: task263 is not among the five nearest drivers, which top out at 0.14.
+- **The harness defect architecture 10 made and caught, and it is new: score the easy route as the
+  cheapest LICENSED member of the family, never as the crudest route available.** The E screens scored
+  the pro-rata apportionment, which fails at 36.0 per cent, and reported a joint cell of 60.0. But the
+  cheapest licensed member of the same family is **one call to a least-squares routine on the county's
+  shipped expected-count matrix**, and that is the member whose exact-count rate the determinacy screen
+  itself reports as 99.0 per cent. The same number is a pass on Gate C and a failure on Gate F, which is
+  `stumping`'s one-ended dial reached from a new direction: where the decisive step is whether the
+  sub-unit values are identified at all, the construction that exploits the identification is one line,
+  so family unanimity is the easy route landing. Any later pass on this shape prints the cheapest
+  licensed member's own hit rate beside the family's unanimity, because they are the same column.
+- **What architecture 10 leaves for architecture 11.** The five-horn enumeration of the blessed clause
+  is now closed with measurements on this cell: (a) and (e) on sight, (b) at eps/c 3.047 and one-ended
+  by algebra, (c) at 4.00 distinct sets of 4 across the licensed resolutions, (d) alive at a joint cell
+  of 60.0 per cent and spent as task263's shipped driver, task200's measured kill and `stumping`'s own
+  algebra clause. So the blessed clause itself, not just this cell, is what is closed, and the two
+  shipped builds that already carry the level-dependent threshold-count object (task164's count of
+  transformers past 120 per cent of nameplate, judge APPROVE, and task263's count of wells past
+  4.0 ng/L) are the evidence that the graded object works and is not novel. The one escape the pass did
+  not price is the other one `stumping` names, a crossing of a running sum, whose determinacy has to be
+  priced before anything else; architecture 7's C2 is the nearest measurement on this cell and it failed
+  at 1.57 distinct months across its licensed family with the easy route inside the printed unit, so a
+  crossing candidate starts by showing its increments are determinate. No card is written and none is
+  registered.
+
 
 **Architecture 6, spent on Gate F, measured 2026-10-18.** The round-3 leak reader, a medium-effort thread
 holding only a fresh unzip of the pack and `prompt.txt`, reported the call and every graded figure: 43 of
