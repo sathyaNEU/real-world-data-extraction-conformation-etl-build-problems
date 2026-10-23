@@ -179,6 +179,40 @@ design's own readability screen had scored the decisive rung as not linear, and 
 wrong by arithmetic. **Write the one-group-by route to the call in one line before the first harness, and do the
 algebra on it.**
 
+**Score the easy route as the cheapest LICENSED member of the family, never as the crudest route available,
+because where identification is the decisive step those are the same column.** One pass screened a
+linear-solve construction and reported a joint cell of 60.0 per cent by scoring the reflex as a pro-rata
+apportionment at 36.0 per cent. But the cheapest member of its own licensed family is one call to a least
+squares routine on the shipped exposure matrix, and that member's hit rate is the **99.0 per cent the
+determinacy screen was reporting as a pass**. The same number was a Gate C pass and a Gate F failure at
+once: where the decisive step is whether the sub-unit values are identified at all, the construction that
+exploits the identification is one line, so family unanimity IS the easy route landing. **Print the cheapest
+licensed member's own hit rate in the same table as the family's unanimity**, every time.
+
+**The one-correcting-quantity-per-case clause is now closed as a clause, not merely on one cell.** For a
+per-case latent quantity there are five ways a finer file can relate to it, and all five are measured:
+direct noisy replicates (the estimator is a mean, one group-by, the identity horn); a fixed-form relation
+with one unknown per case (dead by algebra at a variant spread of 0.1215 in logs against a nearest clearance
+of 0.0399, and one-ended by construction because the ratio of sums is both the one-group-by route and a
+licensed family member, so unanimity implies the cheap route is right); a non-linear aggregation of the
+case's own rows (separation yes at a cheap route of 19.7 per cent, determinacy no at **4.00 distinct graded
+counts and 4.00 distinct graded sets of 4** across four licensed readings of one resolution, while the
+discrete side makes the accumulation exact and the step a reading); observations coupling several cases and
+inverted by a linear solve (a genuinely two-ended dial, joint 60.0 to 78.3 per cent, and the only one that
+ever opened, because the easy route's error is a systematic smear rather than noise, so precision is bought
+with volume and reach with the exposures' movement, financed by different parameters: over a 10-to-1 volume
+sweep the reflexes stay flat at 31 to 38 per cent while family unanimity rises 65.5 to 94.0); and a fitted
+form carrying a shared parameter as well as per-case levels (free form, dead on sight). The one that opens
+is spent: it is a shipped build's driver in other nouns, and the **driver-text screen cannot see it**, that
+build sitting outside the five nearest drivers which top out at 0.14, so only the structural
+`test.same_driver_older` catches it.
+
+**And the level-dependent threshold count is proven ground, not new ground.** Two shipped builds already
+grade it (a count past a nameplate percentage, a count past a concentration limit), so reaching it is not a
+finding; what is still unpriced is the other escape, a crossing of a running sum, and that opens only by
+showing its increments are determinate: the nearest measurement on file failed at 1.57 distinct months across
+its licensed family with the easy route inside the printed unit.
+
 **The multiplicative-correction floor, and it is one division.** Where the designed quantity is an observable
 divided by a per-case correcting factor (`observed = base * factor`, the shape Part 3 step three blesses), the
 reflex that ranks on the observable stays correlated with the designed quantity at no less than
