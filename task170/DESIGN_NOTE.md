@@ -34,11 +34,11 @@ invented, and no record is a real place's or a real outbreak's.
    to this population); Gate G `forecasting`; strategy `causal_design`, read as transportability (the card's notes
    say why, and that `composition_mix`, in the ban window, also describes it); Layer 2 family `field_method`, pattern
    `own:protective-efficacy-carried-through-the-in-bed-share-of-exposure`.
-6. Default path's answer against the golden: the trial's pooled protective efficacy (about 62 per cent) applied to
-   the plan's baseline cases among users files about 21,000 cases averted; multiplying that efficacy by the county's
-   in-bed share of exposure, without dividing out the sites' own share, files about 9,000; the golden, the per-bite
-   protection the five sites share (about 0.80) carried through the county's in-bed share (about 0.42), files about
-   11,500. The figures are set from the shipped files at stage 3.
+6. Default path's answer against the golden: the trial's pooled protective efficacy (56.7 per cent) applied to
+   the plan's expected cases among users files 22,000 cases averted; multiplying that efficacy by the county's
+   in-bed share of exposure, without dividing out the sites' own share, files 8,000; the golden, the per-bite
+   protection the five sites share (0.80) carried through the county's in-bed share (0.36), files 11,000 (11,208
+   unrounded), 21 per cent of the 53,494 cases the county expects.
 7. **Data-native sentence.** The county's vector bites from dusk and peaks before most people are in bed, half its
    bites land outdoors where the evening is spent, and the KINGA-5 sites' vectors bit after midnight indoors, so a
    net that stops about four in five of the bites that reach its sleeper stopped most of a trial participant's
@@ -53,11 +53,11 @@ invented, and no record is a real place's or a real outbreak's.
    feedback. task149 (same task type, a hazard read within each unit against pace), task177 (an effect read at the
    point of each unit's own cycle) and task172 (a deadline's bite moving with a step) were read for their drivers and
    differ in the structure carrying the call (card `differentiation`). The seed FC41 is not used.
-9. WARN answers. `repeat.gate_g` and `overuse.gate_g` (forecasting in 5 of 12, beside task175): the objective is the
+9. WARN answers. `repeat.gate_g` and `overuse.gate_g` (forecasting in 5 of 12, beside task175 and task171): the objective is the
    lane's; the mechanism is not task175's (a vacant lot's chance read at its street's build-out). `repeat.decision`
    (quantity_figure beside task175): the call is a count of cases averted, the decision's own unit.
    `repeat.deliverables` (xlsx plus png): reviewed at stage 3 against the deliverable a donor's impact forecast
-   takes. `repeat.question_form` (how-many): a count asks how many.
+   takes. `repeat.question_form` (how-many, beside task175 and task171): a count asks how many.
 10. People (`guard.py names --geo Kenya --seed 170`): Dorcas Kagwiria (monitoring and evaluation lead, Tulivu Health
     Partners), Elkana Karanja (county vector-borne disease control coordinator), Amos Simiyu (county entomologist).
     None appears in the prompt.
@@ -65,6 +65,244 @@ invented, and no record is a real place's or a real outbreak's.
     (the grant that funds the March 2027 distribution; `launch_or_rollout` was the first draw and task171 holds it in the
     window), organisation family `nonprofit_or_charity`, role family `programme_officer`,
     context artifact `other` (the KINGA-5 trial report), calibration form `other` (the trial's five site results).
+
+## Default path
+
+The route a competent burden modeller takes from the prompt and the pack, every field read and every filed rule applied:
+
+1. Take the campaign's population and window from the plan's impact sentence (residents under a campaign net, April
+   to December 2027) and the expected cases by sub-county and month from obf_planning_baseline_2027.xlsx.
+2. Take the planned use by month from Table 2 of the plan, so the cases the users would have had are the baseline
+   times the use: 40,140 cases.
+3. Take LulaNet R's protective efficacy from the KINGA-5 report: the pooled 56.7 per cent of Table 1, the trial's
+   primary result across five sites and three countries, with nightly use verified.
+4. Cases averted are the users' expected cases times the efficacy, by sub-county and month, summed.
+
+Ends on: 22,000 cases averted (22,121 unrounded), 41 per cent of expected cases.
+Golden: 11,000 cases averted (11,208 unrounded), 21 per cent of expected cases.
+
+## Stump sentence
+
+A competent modeller applies the KINGA-5 pooled protective efficacy of 56.7 per cent to the plan's expected cases
+among net users and files 22,000 cases averted against 11,000; the step that lands it there is carrying an efficacy
+measured where most bites arrived after participants were in bed to a county whose vector bites early in the evening
+and half outdoors, where 0.36 of a resident's bites arrive in bed against 0.49 to 0.96 at the trial's sites, so the
+per-bite protection of 0.80 that every site shares reaches far less of a Ruvari resident's exposure.
+
+## Three rules
+
+- Task type: epidemiology-public-health / health-burden-impact-modeling, which serves Forecasting in the taxonomy:
+  the cases a vector-control campaign will avert over a window not yet open.
+- Domain test: the deciding quantity is the campaign's protective effect carried from the trial to the county through
+  the share of human exposure to the vector that arrives while people are in bed under the net, built the way
+  vector-control impact models carry trial efficacy, from human landing catches by hour and position against a human
+  behaviour survey; nothing in it reads with hospital or school nouns, because it is a vector's biting rhythm against
+  people's sleeping hours.
+- Swap: "how many readmissions will the discharge calls avert among the patients called in 2027" keeps the
+  coverage-times-efficacy arithmetic and loses everything that decides here: there is no hourly exposure that the
+  intervention covers only while people are in one place, and no trial whose effect is that overlap at its own sites.
+- Layer 1: the entomology unit's catch sheets change hour-label format twice (24-hour ranges, a 12-hour clock in two
+  sub-counties' 2024 sheets, compact ranges from the July 2025 tablet app) and position labels once, carry absent and
+  relieved collectors and other species in the same rows, and record a village under its sub-county on the night;
+  the behaviour survey holds enumerators' clock times in three formats and revisits a third of round 1's households;
+  the trial's tables sit inside a PDF; the registration app replays records and its mop-up re-registers households
+  under new numbers; the KHIS export keeps each return under the hierarchy it was entered in, re-entered the realigned
+  ward's June returns, and the parent hospitals' returns carried their outreach clinics to March 2026. Each is what
+  the system writes; none is placed to be caught, and none moves the call (`generator/checks.py` R2 rows).
+- Layer 2: family `field_method`. The choice that flips the call is reading the trial's efficacy as a per-bite
+  protection times its sites' in-bed share of exposure, which the five sites' tables show, and carrying the
+  protection, not the efficacy, to the county's own in-bed share.
+- Decisive step: transport the protective efficacy through the proportion of exposure occurring while in bed, the
+  sites' and the county's, each built from hourly biting indoors and outdoors and the population's hourly location.
+- Not semantics: every term is read correctly on the default path (the population, the window, the baseline, the use,
+  the efficacy as the report defines it), and it still files 22,000, because no field, code, unit or definition says
+  that the efficacy is a property of the sites' biting and sleeping hours; the vector species, the hour labels and the
+  survey times converge under every reading (SF5, SF7, R2 rows).
+- Not rule application: no filed rule or procedure computes the cases averted, so executing every stated rule (the
+  plan's population, window, baseline and use; the report's efficacy) files the default path's 22,000. The enumerated
+  family of overlap constructions (in-bed share with outdoor exposure, indoor-only in-bed share, indoor share, a fixed
+  22:00 clock, the nearest site, the trial efficacy alone or times the county's share) spreads 7,960 to 22,121; the
+  standing family, the constructions that carry the per-bite protection through the in-bed share with outdoor exposure
+  counted, by five estimators of the protection and two readings of the survey, spreads 11,170 to 11,230 (0.54 per
+  cent), and what rules the rest out is the sites' own efficacies, whose ratio to the in-bed share holds at 0.77 to 0.85
+  while the indoor-only ratio runs 0.71 to 0.92 and the indoor ratio 0.71 to 0.80 across the sites.
+- Analyst test: a strong analyst who cleans the catches and the survey, reads the plan and the report correctly and
+  applies the trial's pooled efficacy to the users' expected cases files 22,000 cases averted (8,000 if it multiplies
+  that efficacy by the county's in-bed share without dividing out the sites'), against the golden 11,000.
+- Estimand: the plan (lulanet_r_distribution_plan_2027.docx, section 5) files the population (residents sleeping
+  under campaign nets, no others), the outcome (Ombeni fever cases averted), the window (April to December 2027), the
+  comparison (the county's 2027 planning baseline without the campaign) and the use (Table 2); the prompt fixes the
+  unit and the rounding.
+- No decoy: nothing is planted. The KINGA-5 pooled efficacy is the trial's correct primary result, no document applies
+  it to Ruvari or argues for it, no memo, draft or stakeholder figure carries any cases-averted number, and no file is
+  copied or backfilled.
+- No certified replay: no certified or published figure is reproduced to recover a method; the trial's five site
+  efficacies are outcomes of the per-bite protection at five overlaps, read forward, and nothing in the pack certifies
+  a cases-averted figure.
+- Lesson: a trial's efficacy is the effect of a tool in its sites' exposure pattern, and carrying it to a population
+  whose exposure arrives elsewhere in the day means dividing out the sites' pattern before applying the target's; no
+  build on file teaches an effect read through an hourly overlap of two independently measured rhythms (task177 reads
+  an effect at the point of a unit's own cycle; task149 a hazard against work pace).
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0 trial pooled efficacy | the report states it as the primary result | Table 1 | coverage times efficacy | none | no | one product | readable |
+| R1 pooled efficacy times the county's in-bed share | no | hourly tables invite an overlap | a correction for local biting | none | no | one product | readable |
+| R2 nearest site's efficacy | no | five site rows | analogue site | none | no | a lookup | readable |
+| R3 indoor-only in-bed share | no | indoor catches | the entomologist's in-bed share of indoor biting | none | no | no | readable |
+| R4 decisive: per-bite protection through the in-bed share with outdoor exposure, sites divided out | no sentence names the overlap, the protection or the division | no column holds a share or a protection; the overlap needs catches by hour and position against survey times at a person grain | the textbook carries the efficacy | the site efficacies refute R3 and R4 only once each site's share is built | no | a ratio of two sums over hours in two files | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | cases averted "among the people sleeping under them" | residents under a campaign net only | community or non-user effects added | larger | plan section 5: "It counts no cases averted among residents who are not under a campaign net" |
+| SF2 | "from April to December 2027" | the nine baseline months | calendar 2027 | larger | the prompt and plan section 5; the baseline covers April to December only |
+| SF3 | the cases the county "would otherwise expect" | the planning baseline without the campaign | a trend fitted to KHIS | other | plan section 4 and the baseline's title line |
+| SF4 | how many sleep under the nets | Table 2's planned use by month | the registration's nets times two | other | plan section 5: "at the use in Table 2" |
+| SF5 | the vector | An. ruvariensis | every anopheline | same call (11,000) | data dictionary and trial report; asserted |
+| SF6 | the efficacy the trial measured | the report's one efficacy per site, nightly use verified | intention-to-treat against per-protocol | same call | the report reports one efficacy, use at 96 to 98 per cent of checks |
+| SF7 | the share at an hour | members indoors and in bed at the half hour, as the report's Table 3 | the share of each hour spent | same call (11,170) | asserted |
+| SF8 | which survey round | both rounds pooled | one round, or revisited members once | same call | asserted |
+| SF9 | landings per hour | per minute collected | per collector-hour row | same call | asserted under R2 |
+| SF10 | rounding path | unrounded by sub-county and month, rounded once per figure | sub-county figures rounded then summed | same call | prompt's rounding sentence; asserted |
+| SF11 | the per-bite protection's estimator | inverse-variance fit through the origin | unweighted, ratio of pooled, mean of ratios, with an intercept | same call (11,208 to 11,230) | asserted |
+| SF12 | case definition | confirmed cases in the baseline and the trial | clinical cases | same call | baseline title and report design; asserted |
+
+## Ladder
+
+| Rung | Construction | Cases averted | Rounded | Clearance from the golden's bin |
+|---|---|---|---|---|
+| R0 | trial pooled efficacy 56.7 per cent on the users' expected cases | 22,121 | 22,000 | 1.92x |
+| R1 | pooled efficacy times the county's in-bed share 0.36 | 7,960 | 8,000 | 1.32x |
+| R2 | the nearest site's efficacy (Kibondeni, share 0.49) | 15,226 | 15,000 | 1.32x |
+| R3 | per-bite protection through the indoor-only in-bed share (0.45) | 14,316 | 14,000 | 1.25x |
+| R4 | through the indoor share (0.50) | 14,041 | 14,000 | 1.22x |
+| R5 | through the share of bites after a fixed 22:00 | 12,165 | 12,000 | 1.06x (ruled out by the survey's own bedtimes: children are in bed before 22:00 and members indoors awake or outdoors after it) |
+| golden | per-bite protection 0.80 through the in-bed share 0.36 with outdoor exposure counted | 11,208 | 11,000 | edge 292 |
+
+Position: the default path is the largest figure; every correction short of the decisive one lands in its own bin;
+the golden is bracketed (R1 below, R2 to R5 above). Worth: the decisive step moves the call 49 per cent off R0.
+The trial's draw is the shipped pack's (the generator's TRIAL_SEED): among 400 draws of the five sites' outcomes at
+the same per-bite protection, it is one of the 46 in which every estimator of the protection agrees within 0.8 per
+cent, so the standing family is closed on this pack; across draws the through-origin estimators stay within 1.5 per
+cent of each other and the intercept fit wanders, which is why the intercept fit is asserted on the shipped draw.
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | residents under a campaign net | plan section 5 (SF1) |
+| 2 | Unit of account | cases | the prompt |
+| 3 | Attribution window | the case's month in the baseline | C1: the baseline is monthly; the plan's months |
+| 4 | As-of dating | the pull of 12 October 2026 | dictionary header; no figure moves with it |
+| 5 | Version basis | plan v2.1, baseline run of 14 September 2026 | one version ships of each |
+| 6 | Denominator | the share's denominator is the period's expected cases | the prompt's "cases the county would otherwise expect in that period" |
+| 7 | Weighting | the overlap weights hours by landings; people equally | C1: survey members equally (SF8), estimators agree (SF11) |
+| 8 | Window length | catches 2024 to 2026, both survey rounds | C1: every round and the pooled read agree (SF8) |
+| 9 | Boundary inclusivity | a member is in bed at the half hour from the bedtime | C1 (SF7) |
+| 10 | Rounding path | rounded once per figure | SF10 |
+| 11 | Tie-break | none needed | no tie at any bin |
+| 12 | Maturity and censoring | none: the baseline is complete for the window | not applicable |
+| 13 | Order of operations | protection times share times use times baseline | commutative products |
+| 14 | Row order | none | sums and means |
+| 15 | Duplicate resolution | revisited survey members kept as second nights | C1 (R2 row) |
+| 16 | Identity normalisation | the five sites by name across Tables 1 to 3b | one spelling |
+| 17 | Netting against gross | none | not applicable |
+| 18 | Dimensional units | landings per minute in every hour | SF9 |
+| 19 | Code and status semantics | IN and Indoor, OUT and Outdoor; three hour-label formats | dictionary; C1 (R2 rows) |
+| 20 | Integerisation | none on the call | not applicable |
+| 21 | Clause scope | the plan's section 5 governs the grant report's figures, the realignment sentence its sub-county figures | plan section 5 |
+| 22 | Forward window contents | the baseline and the use for every month of the window | both ship for all nine months |
+
+## Literal reader
+
+Executed word for word, the prompt and the plan fix the population, window, comparison and use, and the report's one
+efficacy per site; the literal reading that carries the report's pooled efficacy unchanged is the default path's easy
+method on the same literal estimand (22,000), not another reading of a term, and every term's alternatives converge
+or are ruled out by a quoted sentence (SF1 to SF12). Pass.
+
+## Oracles
+
+None ties only under the golden. The trial's Table 1 confirms every site efficacy on every path; the baseline and the
+use are inputs on every path; no published cases-averted figure ships. The site efficacies refute the indoor-only and
+indoor overlaps only after each site's share is built, which is the decisive step itself.
+
+## Ask sheet
+
+Asks, each on rows the call never reads (separation asserted in `checks.py`: the call's code reads no registration,
+KHIS or facility file).
+
+- Ask A, nets by sub-county (7 figures, whole numbers). H18 home: the procurement line of the grant case. Path:
+  nets_registration_2026.parquet (16 columns), the plan's allocation rule. Primary device (D1, the same records under
+  two keys, silent): the October mop-up re-registered 7,203 main-round households under new registration numbers,
+  usually under another member's name and a different or missing ID; the same household shows only as a mop-up row
+  matching a main-round row on its ward, dwelling mark, usual members, under-fives and sleeping spaces, while 11 per
+  cent of dwellings hold two or three genuine households that never match on all three counts (so a dedup by dwelling
+  mark deletes real households). Hazards: exact sync replays (battery), the cap of four nets. Stops: every row
+  575,791; replays dropped 574,079; same-ID re-registrations dropped 571,208; one household per dwelling 488,073;
+  golden 555,968. Realism: a registration app's sync replays and a mop-up round that re-registers households whose
+  slip was lost are what campaign registrations produce.
+- Ask B, confirmed cases January to September 2026 by sub-county (7 figures, whole numbers). H18 home: the reported
+  burden behind the grant case. Path: khis_moh705_obf_2024_2026.csv (11 columns), facility_list_2026.csv, the plan's
+  realignment sentence. Primary device (D6, a rollup above its parts, silent): each sub-county hospital's January to
+  March 2026 returns still carried its outreach clinic's outpatients while the clinic reported under its own code from
+  January, so the clinic's cases count twice; the only trace is a terse comment on the parent's rows and the facility
+  list's parent code. Hazards: the export's sub-county is the hierarchy at entry (D2, the realigned Lwala ward's
+  facilities sit under Kendagi to June 2026), and the ward's June 2026 returns were re-entered under Oyamo in July
+  (battery). Stops: export column, every row 39,960; facility list, every row 39,960 (other split); June once 39,791;
+  golden 39,331. Realism: a KHIS export keeps each value under the org unit it was entered against, and satellites
+  coming onto their own codes are entered by both parent and satellite until the next data review.
+
+Measured by: generator/ceiling.py
+
+| Ask | Cracker (lands the call, runs the battery, applies the plan's rule and boundaries) | Figures kept | Verdict |
+|---|---|---|---|
+| A nets by sub-county | drops replays and same-ID re-registrations, keeps the rest | 0 of 7 | miss |
+| B reported cases by sub-county | maps facilities to the realigned sub-counties, counts June once, keeps the outreach double count | 0 of 7 | miss |
+| call construction (share and sub-county averted) | on the call | 8 of 8 | yes |
+
+Mirror leakage: 0.0 per cent of ask weight (the mirror stops at R0 and takes both asks on their natural reads).
+Pair ceiling: 38.5 ((65.0 + 12.0) / 2 on 38, 7 and 55), 47.2 if the cracker also reads the outreach comment.
+
+## Leak review
+
+`leak.py --asof 2026-10-12`: REVIEW, no LEAK. Each line answered:
+- kinga5_final_report_2024.pdf carries 56.7: the trial's pooled efficacy is its primary result and the default
+  path's input, stated where a trial report states it; it is a step figure, not the call.
+- lulanet_r_distribution_plan_2027.docx shares the call's words (campaign, cases, nets, April to December 2027): the
+  plan files the estimand (section 5) in the organisation's words; it carries no figure, efficacy or method.
+- The trial report and the plan each carry four of the note's stump-paragraph terms (efficacy, pooled, survey,
+  report; survey, report, register, catches): ordinary words of a trial report and a campaign plan; neither names
+  an overlap, a share of bites in bed, a per-bite protection or a transport (`checks.py` R1 and R3c rows).
+
+## Duplicate check
+
+`guard.py heart task170` (2026-10-23, after the final pull): WARN, the five WARNs answered in `## Draw` item 9;
+nearest text 0.05 (task121 v3). `guard.py surface task170`: one pair promoted, task168 against task170, two numbers
+apart, on the decisive gap (population) and the decision type (quantity_figure), surface 0.080 (corpus percentile
+46). Both axes are the honest labels here and both are broad; the mechanisms share nothing: task168 completes the
+demand of units observed only until they reached a cap from the build of units that never did, while this build
+carries a trial's efficacy through the hourly overlap of a vector's biting and residents' hours in bed. The trial's
+site names were renamed once (a site whose name read as a person beside the next column) so the persona sweep reads
+only the card's people.
+
+## Layer 1 inventory
+
+| Item | System that writes it | File | Natural mishandling | Neutral |
+|---|---|---|---|---|
+| hour labels in three formats | paper sheets keyed by two teams, then the tablet app | hlc | dropping the 12-hour sheets | same call (R2) |
+| IN/OUT against Indoor/Outdoor | the tablet app from July 2025 | hlc | splitting positions four ways | asserted labels |
+| absent and relieved collectors | the field supervisor's sheet | hlc | counting rows, not minutes | same call (SF9) |
+| other species in the rows | the catch sheet | hlc | pooling anophelines | same call (SF5) |
+| village under its sub-county on the night | the sheet header | hlc | none on a county figure | not read |
+| three clock formats | enumerators | survey | none once parsed; all unambiguous | asserted parse |
+| revisited households | the round 2 design | survey | counting members once | same call (R2) |
+| tables inside a PDF | the trial's report | trial | none | verifier reads it |
+| sync replays, mop-up re-registrations | the registration app, CHVs | registration | ask A device | ask only |
+| hierarchy at entry, June re-entry, outreach in parents' returns | KHIS, the records office | KHIS | ask B device | ask only |
 
 ## Architecture 1 record (spent 2026-10-18)
 

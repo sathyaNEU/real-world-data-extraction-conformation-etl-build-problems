@@ -21,8 +21,8 @@ sys.path.insert(0, HERE)
 import pack as PK  # noqa: E402
 
 TASK = os.path.dirname(HERE)
-PULL_DONE = (2026, 9, 2, 9, 30, 0)                           # the pull's files assembled, local time (UTC+2)
-MTIME = calendar.timegm((2026, 9, 2, 7, 30, 0, 0, 0, 0))     # the same moment, UTC
+PULL_DONE = (2026, 10, 12, 16, 40, 0)                          # the pull's files assembled, local time (UTC+3)
+MTIME = calendar.timegm((2026, 10, 12, 13, 40, 0, 0, 0, 0))    # the same moment, UTC
 
 
 def build(out, quiet=False):
@@ -31,7 +31,7 @@ def build(out, quiet=False):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
     if not quiet:
         for f in sorted(os.listdir(out)):
-            print("  %-52s %10d bytes %s" % (f, os.path.getsize(os.path.join(out, f)), ("%s rows" % n[f]) if f in n else ""))
+            print("  %-48s %10d bytes %s" % (f, os.path.getsize(os.path.join(out, f)), ("%s rows" % n[f]) if f in n else ""))
     return n
 
 
@@ -59,7 +59,6 @@ def cut_zip(root):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out")
-    ap.add_argument("--pack-only", action="store_true")
     ap.add_argument("--no-rebuild", action="store_true")
     ap.add_argument("--no-checks", action="store_true")
     a = ap.parse_args()
@@ -69,14 +68,12 @@ def main():
     target = os.path.join(TASK, "target")
     if os.path.isdir(target):
         shutil.rmtree(target)
-    build(target)
-    if a.pack_only:
-        return
+    rows = build(target)
     import deliver
     import metadata
-    deliver.main(target, os.path.join(TASK, "golden"), os.path.join(HERE, "figures.json"),
-                 os.path.join(TASK, "submission.md"))
-    metadata.write(TASK)
+    deliver.deliver(target, os.path.join(TASK, "golden"), os.path.join(HERE, "figures.json"),
+                    os.path.join(TASK, "submission.md"))
+    metadata.write(TASK, target, rows)
     ok = True
     if not a.no_checks:
         r1 = subprocess.run([sys.executable, os.path.join(HERE, "checks.py"), target])
@@ -87,8 +84,8 @@ def main():
         tmp = tempfile.mkdtemp(prefix="b170_", dir=TASK)
         try:
             build(os.path.join(tmp, "target"), quiet=True)
-            deliver.main(os.path.join(tmp, "target"), os.path.join(tmp, "golden"), os.path.join(tmp, "figures.json"),
-                         os.path.join(tmp, "submission.md"))
+            deliver.deliver(os.path.join(tmp, "target"), os.path.join(tmp, "golden"), os.path.join(tmp, "figures.json"),
+                            os.path.join(tmp, "submission.md"))
             same = digest(target) == digest(os.path.join(tmp, "target"))
             same_g = digest(os.path.join(TASK, "golden")) == digest(os.path.join(tmp, "golden"))
             same_f = open(os.path.join(HERE, "figures.json"), "rb").read() == open(os.path.join(tmp, "figures.json"), "rb").read()

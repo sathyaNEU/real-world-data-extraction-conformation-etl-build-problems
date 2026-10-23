@@ -1,8 +1,10 @@
-"""task170 documents: the national guidelines' paediatric dosing annex, CMS's cycle quantification SOP, and the
-programme's HIV estimates summary. Their text is kept here as data so checks.py and verify.py can quote it."""
+"""task170 documents: the KINGA-5 trial report and the campaign's operational plan. Their text is kept here as data
+so checks.py and verify.py can quote it."""
 from __future__ import annotations
 
 import datetime as dt
+
+import numpy as np
 
 from reportlab import rl_config
 
@@ -28,13 +30,6 @@ ACCENT = colors.HexColor("#1f4e3d")
 RULE = colors.HexColor("#b9c4bd")
 HEAD = colors.HexColor("#e4ece7")
 
-F_DOSING = "paediatric_art_dosing_annex7_2026.pdf"
-F_SOP = "cms_sop_qp04_v3_cycle_quantification.pdf"
-F_EST = "hiv_estimates_2026_round_summary.pdf"
-
-DOSING_DATE = dt.date(2026, 2, 9)
-SOP_DATE = dt.date(2026, 2, 26)
-EST_DATE = dt.date(2026, 7, 30)
 
 
 def styles(font="LibSans", bold="LibSans-Bold", size=9.6):
@@ -83,170 +78,168 @@ def _table(st, head, rows, widths, right=()):
 
 
 def pdf_stamp(d, hh=9, mi=0):
-    return ("D:%04d%02d%02d%02d%02d00+02'00'" % (d.year, d.month, d.day, hh, mi)).encode()
+    return ("D:%04d%02d%02d%02d%02d00+03'00'" % (d.year, d.month, d.day, hh, mi)).encode()
 
 
-# ---------------------------------------------------------------------------------------------------- dosing annex
-DOSING_INTRO = [
-    "Antiretroviral drugs for children and adolescents are dosed by weight band. Weigh the child at each clinical "
-    "visit and dispense the formulation and number of tablets for the band of the weight recorded at that visit. A "
-    "child or adolescent started on TLD stays on TLD at later visits, whatever the weight recorded.",
-    "This edition lowers the weight from which TLD is given from 35 kg to 30 kg. A child on a first-line regimen who "
-    "weighs 30 kg or more at a clinical visit on or after 1 March 2026 moves onto TLD at that visit.",
-    "Children aged two or over who have been on treatment for six months or more and are well may be given two or three "
-    "months of medicines at a visit; the clinician sets the next appointment for the end of the supply. A caregiver may "
-    "collect a child's medicines between clinical visits; a collection dispenses the regimen of the last clinical "
-    "visit.",
+
+from reportlab.platypus import KeepTogether  # noqa: E402
+
+import world as W  # noqa: E402
+
+F_TRIAL = "kinga5_final_report_2024.pdf"
+F_PLAN = "lulanet_r_distribution_plan_2027.docx"
+TRIAL_DATE = dt.date(2024, 3, 18)
+PLAN_DATE = dt.date(2026, 10, 2)
+
+HOUR_ROWS = ["18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00", "01:00", "02:00", "03:00", "04:00", "05:00"]
+HALF_ROWS = ["18:30", "19:30", "20:30", "21:30", "22:30", "23:30", "00:30", "01:30", "02:30", "03:30", "04:30", "05:30"]
+
+TRIAL_TITLE = "KINGA-5: a household-randomised trial of a transfluthrin-treated sleeping net against Ombeni fever"
+TRIAL_SUMMARY = [
+    "KINGA-5 tested LulaNet R, a polyester sleeping net treated with transfluthrin, at five rural sites in three "
+    "countries between February 2022 and January 2023. Households were randomised one to one to receive LulaNet R "
+    "nets for every sleeping space or no net, and every household member was followed for twelve months.",
+    "Participants were visited every month and tested by rapid diagnostic test when febrile; febrile participants "
+    "between visits were tested at the study clinic. The primary outcome was confirmed Ombeni fever. Field staff "
+    "checked sleeping spaces at unannounced night visits; participants in net households were under the net at 96 to "
+    "98 per cent of checks at every site. Protective efficacy is one minus the ratio of the incidence in net "
+    "households to the incidence in households without nets, by site and pooled across sites.",
+    "LulaNet R repels mosquitoes from the occupied net; it does not kill them. Mosquitoes were caught landing on "
+    "collectors indoors and outdoors at 24 houses at each site, every hour from 18:00 to 06:00, two nights a month "
+    "for the twelve months; the vector at every site was Anopheles ruvariensis. A survey of 300 households at each "
+    "site in the third month recorded each member's times of going indoors for the night, going to bed and rising.",
 ]
-DOSING_CHANGES = [
-    ("TLD", "From 35 kg", "From 30 kg"),
-    ("Adult second line", "From 35 kg", "From 30 kg"),
-    ("25 to 29.9 kg", "ABC/3TC 600/300 mg with DTG 50 mg up to 34.9 kg", "ABC/3TC 600/300 mg with DTG 50 mg up to 29.9 kg"),
-    ("Medicines at a visit", "One month as a rule; two or three at the clinician's discretion",
-     "Two or three months for children two or over, six months on treatment and well"),
-]
-FIRST_LINE = [
-    ("3 to 5.9", "ABC/3TC 120/60 mg dispersible", "1", "DTG 10 mg dispersible", "half"),
-    ("6 to 9.9", "ABC/3TC 120/60 mg dispersible", "1.5", "DTG 10 mg dispersible", "1.5"),
-    ("10 to 13.9", "ABC/3TC 120/60 mg dispersible", "2", "DTG 10 mg dispersible", "2"),
-    ("14 to 19.9", "ABC/3TC 120/60 mg dispersible", "2.5", "DTG 10 mg dispersible", "2.5"),
-    ("20 to 24.9", "ABC/3TC 120/60 mg dispersible", "3", "DTG 50 mg film-coated", "1"),
-    ("25 to 29.9", "ABC/3TC 600/300 mg", "1", "DTG 50 mg film-coated", "1"),
-    ("30 and over", "TDF/3TC/DTG 300/300/50 mg (TLD)", "1", "", ""),
-]
-SECOND_LINE = [
-    ("3 to 29.9", "AZT/3TC 60/30 mg dispersible and LPV/r 40/10 mg pellets or 100/25 mg tablets, by the band table "
-     "in Annex 8"),
-    ("30 and over", "TDF/3TC 300/300 mg once daily and DRV/r 800/100 mg once daily"),
-]
+TRIAL_NOTE = ("Protective efficacy is computed from the cases and person-years shown. The pooled estimate stratifies "
+              "by site.")
+ENTO_NOTE = ("Mean An. ruvariensis landings per collector per hour of collection, two nights a month for twelve "
+             "months, 24 houses a site. Hours are the hour beginning.")
+BEHAV_NOTE = ("Per cent of household members indoors (in bed or not) and in bed at the half hour, from the third-month "
+              "survey, all ages.")
 
 
-def write_dosing(out):
+def write_trial(out, sites):
     st = styles()
-    path = out + "/" + F_DOSING
-    doc = _doc(path, "Annex 7. Antiretroviral dosing for children and adolescents", C.MOH)
-    el = [Paragraph("National Guidelines for HIV Prevention, Treatment and Care, 2026 edition", st["sub"]),
-          Paragraph("Annex 7. Antiretroviral dosing for children and adolescents", st["h1"]),
-          Paragraph("%s, %s. Effective 1 March 2026; replaces Annex 7 of the 2023 edition." % (C.MOH, C.PROG), st["sub"]),
-          Paragraph("7.1 Dosing by weight band", st["h2"])]
-    for p in DOSING_INTRO:
-        el.append(Paragraph(esc(p), st["body"]))
-    el.append(Paragraph("7.2 First-line regimen: ABC/3TC with DTG, then TLD", st["h2"]))
-    el.append(_table(st, ["Weight (kg)", "NRTI backbone", "Tablets a day", "DTG", "Tablets a day"],
-                     FIRST_LINE, [22, 52, 20, 42, 22], right=(2, 4)))
-    el.append(Spacer(1, 5))
-    el.append(Paragraph("ABC/3TC once daily; dispersible tablets dissolved in water. DTG 10 mg dispersible and DTG 50 mg "
-                        "film-coated tablets are not interchangeable mg for mg.", st["small"]))
-    el.append(Paragraph("7.3 Second-line regimen: protease inhibitor based", st["h2"]))
-    el.append(_table(st, ["Weight (kg)", "Regimen"], SECOND_LINE, [22, 136]))
-    el.append(Paragraph("7.4 Regimen codes in the electronic patient register", st["h2"]))
-    el.append(_table(st, ["Code", "Line", "Regimen", "Weight band"],
-                     [(r[0], r[1], r[2], r[3]) for r in C.REGIMENS], [24, 16, 92, 26]))
-    el.append(Paragraph("7.5 Changes from the 2023 edition", st["h2"]))
-    el.append(_table(st, ["", "2023 edition", "This edition"], DOSING_CHANGES, [30, 64, 64]))
-    doc.build(el, onFirstPage=_footer("Annex 7. %s, %s, 2026 edition" % (C.MOH, C.PROG)),
-              onLaterPages=_footer("Annex 7. %s, %s, 2026 edition" % (C.MOH, C.PROG)))
-    PP.normalize_pdf(path, pdf_stamp(DOSING_DATE, 10, 5), pdf_stamp(DOSING_DATE, 10, 5))
+    path = out + "/" + F_TRIAL
+    doc = _doc(path, TRIAL_TITLE, "KINGA-5 Trial Steering Committee")
+    flow = [Paragraph(esc(TRIAL_TITLE), st["h1"]),
+            Paragraph("Final report to the trial's funders, 18 March 2024. KINGA-5 Trial Steering Committee.", st["sub"]),
+            Paragraph("1. Design", st["h2"])]
+    for p in TRIAL_SUMMARY:
+        flow.append(Paragraph(esc(p), st["body"]))
+    flow.append(Paragraph("2. Results", st["h2"]))
+    rows = []
+    for s in sites:
+        ic = s["cases_c"] / s["py_c"]
+        inn = s["cases_n"] / s["py_n"]
+        pe = 1 - inn / ic
+        se = (1 / s["cases_c"] + 1 / s["cases_n"]) ** 0.5
+        lo, hi = 1 - (inn / ic) * np.exp(1.96 * se), 1 - (inn / ic) * np.exp(-1.96 * se)
+        rows.append([s["site"], "{:,}".format(s["cases_c"]), "{:,.1f}".format(s["py_c"]), "{:,}".format(s["cases_n"]),
+                     "{:,.1f}".format(s["py_n"]), "%.1f (%.1f to %.1f)" % (100 * pe, 100 * lo, 100 * hi)])
+    cc, pc = sum(s["cases_c"] for s in sites), sum(s["py_c"] for s in sites)
+    cn, pn = sum(s["cases_n"] for s in sites), sum(s["py_n"] for s in sites)
+    # Mantel-Haenszel rate ratio across sites
+    num = sum(s["cases_n"] * s["py_c"] / (s["py_c"] + s["py_n"]) for s in sites)
+    den = sum(s["cases_c"] * s["py_n"] / (s["py_c"] + s["py_n"]) for s in sites)
+    pooled = 1 - num / den
+    rows.append(["All sites", "{:,}".format(cc), "{:,.1f}".format(pc), "{:,}".format(cn), "{:,.1f}".format(pn),
+                 "%.1f" % (100 * pooled)])
+    flow.append(Paragraph("Table 1. Confirmed Ombeni fever by site and arm, and protective efficacy (per cent, 95% CI)",
+                          st["cellb"]))
+    flow.append(_table(st, ["Site", "No-net cases", "No-net person-years", "Net cases", "Net person-years",
+                            "Protective efficacy"], rows, [24, 22, 28, 20, 26, 48], right=(1, 2, 3, 4)))
+    flow.append(Paragraph(esc(TRIAL_NOTE), st["small"]))
+    flow.append(Paragraph("3. Site entomology and sleeping times", st["h2"]))
+    sites_h = [s["site"] for s in sites]
+    for key, label, lab2 in (("b_in", "Table 2a. An. ruvariensis landings per collector per hour, indoors", "%.2f"),
+                             ("b_out", "Table 2b. An. ruvariensis landings per collector per hour, outdoors", "%.2f")):
+        rows_t = [[HOUR_ROWS[h]] + [lab2 % s[key][h] for s in sites] for h in range(12)]
+        flow.append(KeepTogether([Paragraph(label, st["cellb"]),
+                                  _table(st, ["Hour"] + sites_h, rows_t, [22] + [26] * 5, right=tuple(range(1, 6)))]))
+    flow.append(Paragraph(esc(ENTO_NOTE), st["small"]))
+    for key, label in (("ind", "Table 3a. Household members indoors, in bed or not (per cent)"),
+                       ("inb", "Table 3b. Household members in bed (per cent)")):
+        rows_t = [[HALF_ROWS[h]] + ["%d" % s[key][h] for s in sites] for h in range(12)]
+        flow.append(KeepTogether([Paragraph(label, st["cellb"]),
+                                  _table(st, ["Time"] + sites_h, rows_t, [22] + [26] * 5, right=tuple(range(1, 6)))]))
+    flow.append(Paragraph(esc(BEHAV_NOTE), st["small"]))
+    flow.append(Paragraph("4. Adverse events", st["h2"]))
+    flow.append(Paragraph("Skin or eye irritation was reported by 1.9 per cent of participants in net households in the "
+                          "first week, and by none after the first month. No serious adverse event was attributed to "
+                          "the net.", st["body"]))
+    doc.build(flow, onFirstPage=_footer("KINGA-5 final report, March 2024"), onLaterPages=_footer("KINGA-5 final report, March 2024"))
+    PP.normalize_pdf(path, pdf_stamp(TRIAL_DATE, 16, 10), pdf_stamp(TRIAL_DATE, 16, 10))
+    return dict(pooled=pooled)
 
 
-# ---------------------------------------------------------------------------------------------------- the SOP
-SOP = [
-    ("1. Scope", [
-        "1.1 This procedure sets the cycle order for each antiretroviral product CMS buys for the national programme. "
-        "Cycles run from January to June and from July to December; C5 ran from January to June 2026, C6 runs from "
-        "July to December 2026 and C7 from January to June 2027.",
-        "1.2 Quantities are in the product's unit of issue. The unit of issue of TDF/3TC/DTG 300/300/50 mg (TLD) is the "
-        "bottle of 30 tablets.",
-    ]),
-    ("2. Calendar", [
-        "2.1 Stock is counted at the Main warehouse and the Northern depot on the last day of February and of August.",
-        "2.2 The quantification review sits in March and September and files the order for the cycle after the one in "
-        "progress: the September 2026 review files the C7 order.",
-    ]),
-    ("3. The order", [
-        "3.1 The order for a product is its forecast consumption from the first day of the month after the count to "
-        "the last day of the cycle ordered, plus the maximum stock level, less the usable stock on hand at the count, "
-        "less the quantities on order with a confirmed delivery date on or before the last day of the cycle ordered.",
-        "3.2 The maximum stock level is six months of the product's forecast consumption in the last month of the cycle "
-        "ordered.",
-        "3.3 Usable stock is stock on hand that is neither quarantined nor expired. Planned call-offs under a framework "
-        "agreement are not quantities on order until the supplier confirms a delivery date.",
-    ]),
-    ("4. Forecast consumption", [
-        "4.1 Consumption is forecast by month. For a once-daily tablet in bottles of 30, a month's consumption is one "
-        "bottle for each patient in care on the regimen at the end of the month; a patient who leaves care (lost to "
-        "follow-up, transferred out of the programme or died) is not counted from the month the patient leaves.",
-        "4.2 TLD. Patients aged 15 and over at the count, and patients who start treatment after the count, are taken "
-        "from the National ART Programme's patient projection. Children aged under 15 at the count who are on treatment "
-        "in the paediatric and adolescent ART register (no outcome entered) are forecast by the Quantification Unit from "
-        "the register to the last day of the cycle ordered, whatever their age by then.",
-        "4.3 The TLD order has two lines. Line 2, which the paediatric grant funds, carries the children of section 4.2: "
-        "their forecast consumption from the first day of the month after the count to the last day of the cycle "
-        "ordered, plus six months of their forecast consumption in the last month of the cycle ordered. Line 1 carries "
-        "the patients of the projection on the same terms, less the usable stock on hand and the quantities on order "
-        "(section 3.1), which are netted on line 1 alone.",
-        "4.4 Each line is ordered in whole pallets of TLD 30s, 84 cartons of 96 bottles (8,064 bottles) to the pallet, "
-        "rounded to the nearest pallet.",
-        "4.5 Other products are forecast from the programme projection's regimen shares.",
-    ]),
-    ("5. The review", [
-        "5.1 Before the order is filed, the review compares region by region the dispensing facilities reported for "
-        "the last two closed cycles with the deliveries CMS made to them.",
-        "5.2 The review records the order, the forecast it rests on and the stock position in the quantification "
-        "workbook, which the Quantification Unit keeps.",
-    ]),
-    ("6. Records", [
-        "6.1 The stock status report of the count, the programme projection and the register extract used are kept "
-        "with the workbook.",
-        "6.2 The order is sent to the Procurement Unit within five working days of the review.",
-    ]),
-]
+# ---------------------------------------------------------------------------------------------------- the plan (docx)
+PLAN_TITLE = "LulaNet R county-wide distribution, March 2027: operational plan"
+PLAN_PARAS = {
+    "scope": "Every household registered by community health volunteers in the seven sub-counties receives LulaNet R "
+             "nets at its village distribution point between 1 and 27 March 2027, sub-county by sub-county as Table "
+             "1 sets out. Registration ran from 7 to 26 September 2026, with a mop-up from 1 to 9 October 2026 for "
+             "households the first round missed.",
+    "product": "LulaNet R is a polyester sleeping net treated with transfluthrin, which repels mosquitoes from the "
+               "occupied net. It does not kill them. The supplier warrants three years of use.",
+    "rule": "One net for every two usual members of a household, rounded up, and no more than four nets to a "
+            "household. A usual member is a person who has slept in the household on most nights of the last three "
+            "months.",
+    "use": "Use is planned at the share of residents sleeping under a campaign net in Table 2, agreed with the "
+           "Arnbridge Foundation in August 2026 from the national programme's net-use curve for mass campaigns.",
+    "baseline": "Expected Ombeni fever cases without the campaign are the county's 2027 planning baseline, by "
+                "sub-county and month (obf_planning_baseline_2027.xlsx).",
+    "impact": "The grant report counts the Ombeni fever cases the nets avert among residents sleeping under campaign "
+              "nets from April to December 2027, against the planning baseline and at the use in Table 2. It counts "
+              "no cases averted among residents who are not under a campaign net. Sub-county figures in the grant report "
+              "follow the ward realignment of 1 July 2026.",
+    "monitoring": "Post-distribution surveys at three, six and nine months record nets present and used. The county "
+                  "entomology unit continues its sentinel catches through 2027.",
+}
+DIST_WEEKS = [("RTN", "1 to 6 March"), ("MWR", "1 to 6 March"), ("KDG", "8 to 13 March"), ("OYM", "8 to 13 March"),
+              ("NDR", "15 to 20 March"), ("KBR", "15 to 20 March"), ("WKL", "22 to 27 March")]
 
 
-def write_sop(out):
-    st = styles()
-    path = out + "/" + F_SOP
-    doc = _doc(path, "QP-04 Cycle quantification of antiretroviral medicines", C.ORG)
-    el = [Paragraph("%s, Quantification Unit" % C.ORG, st["sub"]),
-          Paragraph("Standard Operating Procedure QP-04. Cycle quantification of antiretroviral medicines", st["h1"]),
-          Paragraph("Version 3. Effective 1 March 2026. Supersedes version 2 of 2 October 2023. Owner: %s, "
-                    "quantification lead." % C.PEOPLE["quant_lead"], st["sub"])]
-    for head, paras in SOP:
-        el.append(Paragraph(head, st["h2"]))
-        for p in paras:
-            el.append(Paragraph(esc(p), st["body"]))
-    el.append(Spacer(1, 6))
-    el.append(_table(st, ["Version", "Date", "Change"],
-                     [("1", "14 March 2022", "First issue"),
-                      ("2", "2 October 2023", "Maximum stock level set at six months; the Northern depot counted"),
-                      ("3", "26 February 2026", "Sections 4.2 to 4.4: children under 15 forecast from the paediatric "
-                       "register on their own line; lines ordered in whole pallets")],
-                     [18, 30, 110]))
-    doc.build(el, onFirstPage=_footer("CMS QP-04 v3"), onLaterPages=_footer("CMS QP-04 v3"))
-    PP.normalize_pdf(path, pdf_stamp(SOP_DATE, 15, 40), pdf_stamp(SOP_DATE, 15, 40))
-
-
-# ---------------------------------------------------------------------------------------------------- estimates (unused)
-def write_estimates(out, est):
-    """The programme's HIV estimates summary, 2026 round (a distractor: it describes people living with HIV, not
-    patients on a regimen)."""
-    st = styles()
-    path = out + "/" + F_EST
-    doc = _doc(path, "HIV estimates, 2026 round: summary tables", C.PROG)
-    el = [Paragraph("%s, Strategic Information Unit" % C.PROG, st["sub"]),
-          Paragraph("HIV estimates, 2026 round: summary tables", st["h1"]),
-          Paragraph("Estimates for mid-2026 from the national model, fitted to antenatal surveillance, the 2024 "
-                    "population HIV survey and programme data to December 2025.", st["sub"]),
-          Paragraph("Table 1. People living with HIV and on antiretroviral treatment, by age group", st["h2"]),
-          _table(st, ["Age group", "Living with HIV", "Lower", "Upper", "On treatment", "Coverage (%)"],
-                 est["age"], [26, 30, 24, 24, 28, 26], right=(1, 2, 3, 4, 5)),
-          Paragraph("Table 2. People living with HIV, all ages, by region", st["h2"]),
-          _table(st, ["Region", "Living with HIV", "Lower", "Upper", "Adult prevalence 15-49 (%)"],
-                 est["region"], [30, 32, 26, 26, 44], right=(1, 2, 3, 4)),
-          Paragraph("Table 3. New infections and AIDS-related deaths", st["h2"]),
-          _table(st, ["Year", "New infections, 0-14", "New infections, 15+", "Deaths, 0-14", "Deaths, 15+"],
-                 est["trend"], [20, 36, 36, 32, 32], right=(1, 2, 3, 4)),
-          Spacer(1, 4),
-          Paragraph("Ranges are 95 per cent uncertainty bounds. Regions as drawn from 1 April 2026.", st["small"])]
-    doc.build(el, onFirstPage=_footer("HIV estimates 2026 round"), onLaterPages=_footer("HIV estimates 2026 round"))
-    PP.normalize_pdf(path, pdf_stamp(EST_DATE, 11, 20), pdf_stamp(EST_DATE, 11, 20))
+def write_plan(out, usage):
+    from docx import Document
+    from docx.shared import Pt
+    path = out + "/" + F_PLAN
+    d = Document()
+    st = d.styles["Normal"]
+    st.font.name = "Calibri"
+    st.font.size = Pt(10.5)
+    d.add_heading(PLAN_TITLE, level=1)
+    d.add_paragraph("Ruvari County Department of Health and Tulivu Health Partners. Version 2.1, 2 October 2026. "
+                    "Contacts: Elkana Karanja (county vector-borne disease control), Dorcas Kagwiria (Tulivu, "
+                    "monitoring and evaluation).")
+    d.add_heading("1. Scope", level=2)
+    d.add_paragraph(PLAN_PARAS["scope"])
+    t = d.add_table(rows=1, cols=2)
+    t.style = "Table Grid"
+    t.rows[0].cells[0].text, t.rows[0].cells[1].text = "Sub-county", "Distribution"
+    for sc, w in DIST_WEEKS:
+        r = t.add_row().cells
+        r[0].text, r[1].text = C.SC_NAME[sc], w
+    d.add_paragraph("Table 1. Distribution weeks.")
+    d.add_heading("2. Product", level=2)
+    d.add_paragraph(PLAN_PARAS["product"])
+    d.add_heading("3. Allocation", level=2)
+    d.add_paragraph(PLAN_PARAS["rule"])
+    d.add_heading("4. Planning assumptions", level=2)
+    d.add_paragraph(PLAN_PARAS["use"])
+    t = d.add_table(rows=1, cols=2)
+    t.style = "Table Grid"
+    t.rows[0].cells[0].text, t.rows[0].cells[1].text = "Month (2027)", "Residents under a campaign net (per cent)"
+    import calendar
+    for m in range(4, 13):
+        r = t.add_row().cells
+        r[0].text, r[1].text = calendar.month_name[m], "%d" % round(usage[m] * 100)
+    d.add_paragraph("Table 2. Planned use.")
+    d.add_paragraph(PLAN_PARAS["baseline"])
+    d.add_heading("5. Impact reporting", level=2)
+    d.add_paragraph(PLAN_PARAS["impact"])
+    d.add_heading("6. Monitoring", level=2)
+    d.add_paragraph(PLAN_PARAS["monitoring"])
+    d.core_properties.title = PLAN_TITLE
+    d.save(path)
+    PP.normalize_docx(path, C.PEOPLE["vbd"], C.PEOPLE["me"], "2026-08-11T06:42:00Z", "2026-10-02T12:18:00Z", 14, 412,
+                      seed=C.SEED, title=PLAN_TITLE, company=C.ORG)

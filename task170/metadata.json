@@ -1,208 +1,39 @@
 {
   "task": "task170",
-  "title": "How many pallets of TLD 30s a national Central Medical Stores should order on the children's line of its January to June 2027 order, when children are weighed into the 30 kg band at visits that just became less frequent",
-  "domain": "Healthcare Delivery & Health Economics",
-  "client_domain": "Healthcare Delivery & Health Economics",
-  "house_domain": "healthcare-delivery-health-economics",
-  "subdomain": "utilization, access and demand forecasting (a national ARV quantification: the children's line of the C7 TLD order, the paediatric regimen transitions forecast child by child from the register's scheduled weighings)",
+  "title": "How many Ombeni fever cases a county-wide repellent net campaign will avert among the people sleeping under its nets, when the county's vector bites earlier and more outdoors than at any site of the trial that measured the nets",
+  "domain": "Epidemiology & Public Health",
+  "client_domain": "Epidemiology & Public Health",
+  "subdomain": "health burden and impact modelling (a vector-control campaign's cases averted)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "the children's line of one cycle's TLD order in whole pallets with the children it carries, the adults' line with its consumption, maximum stock and the stock and shipments it nets, each region's CMS deliveries and reported dispensing over the last two closed cycles, and a chart of those deliveries and that dispensing by region for each cycle, every bar labelled",
-  "as_of": "2026-09-02",
+  "prompt_shape": "the county's cases averted among net users with each sub-county's, the share of expected cases, the nets to distribute and the confirmed cases reported in 2026 by sub-county, and a chart",
+  "as_of": "2026-10-12",
   "deliverables": [
-    "c7_tld_order.xlsx",
-    "c4_c5_tld_flows.png"
+    "ruvari_cases_averted_2027.xlsx",
+    "cases_averted_by_subcounty.png"
   ],
   "distractor_files": [
-    "paed_viral_load_2025-07_2026-08.csv",
-    "hiv_estimates_2026_round_summary.pdf"
-  ],
-  "field_terms": [],
-  "stated_inputs": [
-    1159770
+    "insecticide_susceptibility_2025.csv",
+    "rainfall_daily_2019_2026.csv"
   ],
   "input_gates": {
-    "files": 18,
+    "files": 13,
     "formats": [
       "csv",
-      "json",
+      "docx",
+      "parquet",
       "pdf",
+      "txt",
       "xlsx"
     ],
-    "largest_file": "paed_register_visits_epr_2024-06_2026-08.csv",
-    "largest_file_rows": 405046
+    "largest_file": "nets_registration_2026.parquet",
+    "largest_file_rows": 228723
   },
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task170/generator/build.py (seeded, deterministic) around a fictional southern African ministry of health, its Central Medical Stores and national ART programme, in the layouts of a legacy paediatric register and a national EPR, a warehouse system's delivery and customer exports, a proof-of-delivery app, an eLMIS requisition export, a facility registry and the programme's own guideline annex, SOP, projection and estimates; no real organisation's records or person is depicted.",
-      "date": "2026-09-02",
+      "origin": "constructed for this task by task170/generator/build.py (seeded, deterministic) around a fictional Kenyan county, its health department, an implementing non-profit, a donor, a fictional mosquito-borne fever, its vector and a fictional trial, in the layouts of human landing catch sheets, a behaviour survey, a campaign registration app, a KHIS export, a master facility list, a planning baseline and a trial report; no real organisation's records, outbreak or person is depicted.",
+      "date": "2026-10-12",
       "license": "CC0-1.0 (original work)"
-    }
-  ],
-  "created": "2026-10-18",
-  "generator": "task170/generator/build.py",
-  "files": [
-    {
-      "path": "art_number_crosswalk_2024-06.csv",
-      "format": "csv",
-      "bytes": 589377,
-      "rows": 19645,
-      "source": "Constructed for this task (seeded, deterministic): national EPR migration tables, legacy ART numbers to national patient identifiers",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "art_patient_projection_2026-09_2027-06.xlsx",
-      "format": "xlsx",
-      "bytes": 8052,
-      "rows": 15,
-      "source": "Constructed for this task (seeded, deterministic): National ART Programme patient projection, September 2026 round",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "cms_customer_accounts_2026-09-02.csv",
-      "format": "csv",
-      "bytes": 23995,
-      "rows": 411,
-      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores customer master at 2 September 2026",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "cms_deliveries_tld_2025-07_2026-08.csv",
-      "format": "csv",
-      "bytes": 756881,
-      "rows": 5905,
-      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores warehouse system, outbound deliveries of TLD 30s, July 2025 to August 2026",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "cms_pod_2025-07_2026-08.csv",
-      "format": "csv",
-      "bytes": 272718,
-      "rows": 4880,
-      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores proof-of-delivery app, July 2025 to August 2026",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "cms_sop_qp04_v3_cycle_quantification.pdf",
-      "format": "pdf",
-      "bytes": 43840,
-      "rows": null,
-      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores, SOP QP-04 version 3, cycle quantification (effective 1 March 2026)",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "cms_stock_status_2026-08-31.xlsx",
-      "format": "xlsx",
-      "bytes": 10158,
-      "rows": 32,
-      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores stock status report, count of 31 August 2026",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "data_dictionary.xlsx",
-      "format": "xlsx",
-      "bytes": 9837,
-      "rows": 72,
-      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores quantification unit, data dictionary",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "extract_manifest_2026-09-02.csv",
-      "format": "csv",
-      "bytes": 2631,
-      "rows": 18,
-      "source": "Constructed for this task (seeded, deterministic): Central Medical Stores quantification unit, extract manifest for the 2 September 2026 pull",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "facility_registry_extract_2026-09-01.csv",
-      "format": "csv",
-      "bytes": 34167,
-      "rows": 410,
-      "source": "Constructed for this task (seeded, deterministic): Ministry of Health facility registry extract, ART sites, 1 September 2026",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "hiv_estimates_2026_round_summary.pdf",
-      "format": "pdf",
-      "bytes": 42450,
-      "rows": null,
-      "source": "Constructed for this task (seeded, deterministic): National ART Programme, HIV estimates 2026 round, summary tables",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "lmis_monthly_reports_2025-07_2026-08.json",
-      "format": "json",
-      "bytes": 8674653,
-      "rows": 27569,
-      "source": "Constructed for this task (seeded, deterministic): eLMIS ART programme requisitions, periods July 2025 to August 2026",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "national_regimen_codes_2026.csv",
-      "format": "csv",
-      "bytes": 566,
-      "rows": 5,
-      "source": "Constructed for this task (seeded, deterministic): national regimen code list, 2026",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "paed_register_patients_2026-09-02.csv",
-      "format": "csv",
-      "bytes": 1077899,
-      "rows": 19993,
-      "source": "Constructed for this task (seeded, deterministic): national EPR paediatric and adolescent ART module, patient master at 2 September 2026",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "paed_register_visits_epr_2024-06_2026-08.csv",
-      "format": "csv",
-      "bytes": 41267653,
-      "rows": 405046,
-      "source": "Constructed for this task (seeded, deterministic): national EPR paediatric and adolescent ART module, encounters 1 June 2024 to 31 August 2026",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "paed_register_visits_legacy_2023-01_2024-06.csv",
-      "format": "csv",
-      "bytes": 24818147,
-      "rows": 293677,
-      "source": "Constructed for this task (seeded, deterministic): legacy paediatric ART register, visits 1 January 2023 to 30 June 2024",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "paed_viral_load_2025-07_2026-08.csv",
-      "format": "csv",
-      "bytes": 485582,
-      "rows": 9165,
-      "source": "Constructed for this task (seeded, deterministic): national laboratory information system, paediatric viral load results from July 2025",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "paediatric_art_dosing_annex7_2026.pdf",
-      "format": "pdf",
-      "bytes": 43020,
-      "rows": null,
-      "source": "Constructed for this task (seeded, deterministic): Ministry of Health, national HIV guidelines 2026, Annex 7 paediatric dosing (effective 1 March 2026)",
-      "date": "2026-09-02",
-      "license": "CC0-1.0 (original work, constructed for this task)"
     }
   ]
 }

@@ -1,26 +1,27 @@
 {
  "task": "task170",
  "owner": "sathya8571",
- "status": "DRAWING",
+ "status": "BUILD",
  "domain": "epidemiology-public-health/health-burden-impact-modeling",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-23",
  "stump": "A competent solver applies the trial's pooled protective efficacy to the plan's baseline cases among net users and files about 21,000 cases averted against about 11,500; the step that lands it there is carrying an efficacy measured where most bites fell while people slept under the nets to a county whose vector bites early and outdoors, where only about two fifths of a resident's bites arrive in bed.",
  "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-23",
+  "checks": 51
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-23 (--asof 2026-10-12), no LEAK; four lines answered in the note's Leak review",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-10-23 (five WARNs answered in Draw item 9), nearest text 0.05 task121",
+  "nearest": "surface: 1 pair promoted (task168, two numbers apart, gap population and quantity_figure, surface 0.080); answered in the note's Duplicate check"
  },
  "judge": {
   "verdict": "",
@@ -28,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "architecture 3 drawn 2026-10-23 (repellent net campaign, cases averted among users); next: stage 2 design, precut.py",
+ "resume": "stage 4: two scored readers and the judge (stage 3 green: generator 91 checks, verify 0 FAIL, byte-identical rebuild, figures_check, precut 51/0, leak REVIEW, heart WARN, surface 1 promoted pair answered)",
  "approved": null,
  "delivered": null,
  "portal": null,

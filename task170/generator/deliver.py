@@ -1,404 +1,254 @@
-"""The golden deliverables, figures.json and submission.md, computed from the cut pack (pack_read.py, asks.py,
-ladder.py) and written once."""
+"""task170 deliverables: the golden workbook and chart, generator/figures.json and submission.md, all computed from the
+shipped pack in target/ (calc.py)."""
 from __future__ import annotations
 
-import datetime as dt
 import json
 import os
 
-import matplotlib
+import numpy as np
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.utils import get_column_letter
 
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
-import matplotlib.ticker  # noqa: E402
-import numpy as np  # noqa: E402
-import openpyxl  # noqa: E402
-from openpyxl import Workbook  # noqa: E402
-from openpyxl.styles import Alignment, Font, PatternFill  # noqa: E402
-from openpyxl.utils import get_column_letter  # noqa: E402
+import calc
+import common as C
+import postprocess as PP
 
-import asks as AS  # noqa: E402
-import calc as K  # noqa: E402
-import common as C  # noqa: E402
-import ladder as LD  # noqa: E402
-import pack as PK  # noqa: E402
-import pack_read as PR  # noqa: E402
-import postprocess as PP  # noqa: E402
-
-D = dt.date
-G_XLSX = "c7_tld_order.xlsx"
-G_PNG = "c4_c5_tld_flows.png"
-MONTHS = ["Sep 2026", "Oct 2026", "Nov 2026", "Dec 2026", "Jan 2027", "Feb 2027", "Mar 2027", "Apr 2027", "May 2027",
-          "Jun 2027"]
+F_XLSX = "ruvari_cases_averted_2027.xlsx"
+F_PNG = "cases_averted_by_subcounty.png"
+BOLD = Font(name="Calibri", size=11, bold=True)
+BODY = Font(name="Calibri", size=11)
+TITLE = Font(name="Calibri", size=13, bold=True, color="1F4E3D")
+FILL = PatternFill("solid", fgColor="E2EFDA")
 
 
-def call_inputs(target):
-    wb = openpyxl.load_workbook(os.path.join(target, PK.F_PROJ))
-    ws = wb["Projection"]
-    rows = [[c.value for c in r] for r in ws.iter_rows(min_row=5, max_row=11)]
-    nat = rows[-1][1:]
-    adults = sum(nat) + C.MAX_MONTHS * nat[-1]
-    st = openpyxl.load_workbook(os.path.join(target, PK.F_STOCK))
-    soh = sum(r[5] for r in st["Stock on hand"].iter_rows(min_row=2, values_only=True) if r[4] == "Usable")
-    conf = [(r[0], r[1], r[3], r[4]) for r in st["On order"].iter_rows(min_row=2, values_only=True) if r[5] == "Confirmed"]
-    return dict(adult_months=nat, adults=adults, soh=soh, shipments=conf, shipped=sum(x[2] for x in conf))
+def r100(v):
+    return int(round(v / 100.0)) * 100
 
 
-def pallets(x):
-    return int(round(x / C.PALLET))
+def r1000(v):
+    return int(round(v / 1000.0)) * 1000
 
 
-def compute(target):
-    kids, visits = PR.register_view(target)
-    fam, c = LD.family(kids, visits)
-    P, sig = K.P_noisy(c)
-    tot, Cm = K.total(c, P)
-    on_m = c.S_on.sum(0)
-    sw_m = (P * c.S_c).sum(0)
-    ci = call_inputs(target)
-    kids_m = [int(round(float(x))) for x in Cm]
-    kids_cons, kids_max = sum(kids_m), C.MAX_MONTHS * kids_m[-1]
-    line2_unrounded = kids_cons + kids_max
-    line1_unrounded = ci["adults"] - ci["soh"] - ci["shipped"]
-    rv, info = LD.rivals(c)
-    bt = LD.backtests(kids, visits)
-    a, b, s, n = K.fits(c.visits, c.cand, c.fr, None, "lin")
-    default = K.total(c, K.P_smooth(c))[0]
-    pk = AS.Pack(target)
-    ask = AS.golden(pk)
-    return dict(kids=kids, visits=visits, c=c, fam=fam, P=P, sig=sig, children=tot, Cm=Cm, on_m=on_m, sw_m=sw_m,
-                kids_m=kids_m, kids_cons=kids_cons, kids_max=kids_max, ci=ci,
-                line1_unrounded=line1_unrounded, line1=pallets(line1_unrounded),
-                line2_unrounded=line2_unrounded, line2=pallets(line2_unrounded),
-                rivals=rv, info=info, backtests=bt, slope_n=n, default_children=default,
-                default_line2=pallets(default), switches=K.switches(c, P), ask=ask)
+def figures(target):
+    G = calc.golden(target)
+    nets = calc.nets_needed(target)
+    cases = calc.reported_cases(target)
+    bu = calc.averted_with(G, 1.0)
+    F = {
+        "call_cases_averted": r1000(G["total"]),
+        "call_share_of_expected_pct": int(round(100 * G["share"])),
+        "component_per_bite_protection": round(G["q"], 2),
+        "component_in_bed_share": round(G["phi"], 2),
+        "step_trial_pooled_efficacy_pct": round(100 * G["pooled"], 1),
+        "step_expected_cases": int(G["base_total"]),
+        "rival_trial_efficacy_cases_averted": r1000(bu * G["pooled"]),
+    }
+    for sc in C.SC_CODES:
+        F["call_cases_averted_%s" % sc] = r100(G["by_sc"][sc])
+    for sc in C.SC_CODES:
+        F["ask_nets_%s" % sc] = nets[sc]
+    for sc in C.SC_CODES:
+        F["ask_reported_cases_2026_%s" % sc] = cases[sc]
+    return F, G, nets, cases
 
 
-def fmt(x):
-    return "{:,}".format(int(round(x)))
+def _w(ws, r, c, v, font=BODY, fmt=None):
+    cell = ws.cell(row=r, column=c, value=v)
+    cell.font = font
+    if fmt:
+        cell.number_format = fmt
+    return cell
 
 
-# ---------------------------------------------------------------------------------------------------- workbook
-HEAD = PatternFill("solid", fgColor="DCE6E0")
-B = Font(name="Calibri", bold=True, size=11)
-N = Font(name="Calibri", size=11)
-
-
-def _head(ws, row, vals, widths=None):
-    for j, v in enumerate(vals):
-        c = ws.cell(row=row, column=j + 1, value=v)
-        c.font = B
-        c.fill = HEAD
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-    if widths:
-        for j, w in enumerate(widths):
-            ws.column_dimensions[get_column_letter(j + 1)].width = w
-
-
-def write_xlsx(R, path):
+def write_xlsx(out, F, G, nets, cases):
     wb = Workbook()
     ws = wb.active
-    ws.title = "C7 order"
-    ci = R["ci"]
-    pal = "{:,}".format(C.PALLET)
-    ws.cell(row=1, column=1, value="C7 order of TLD 30s: line 1, %d pallets; line 2, %d pallets"
-            % (R["line1"], R["line2"])).font = Font(name="Calibri", bold=True, size=13)
-    ws.cell(row=2, column=1, value="TDF/3TC/DTG 300/300/50 mg tablets, bottle of 30 (ARV0412), for January to June "
-                                   "2027. Stock count of 31 August 2026; SOP QP-04 version 3, sections 3 and 4; "
-                                   "pallets of 84 cartons of 96 bottles (%s bottles); September 2026 quantification "
-                                   "review." % pal).font = N
-    ws.cell(row=2, column=1).alignment = Alignment(wrap_text=True, vertical="top")
-    ws.merge_cells("A2:B3")
-    _head(ws, 4, ["Line", "Bottles"], [86, 15])
-    lines = [
-        ("Line 1. Patients aged 15 and over at the count or starting after it: consumption, September 2026 to June "
-         "2027 (programme projection)", sum(ci["adult_months"])),
-        ("Line 1. Maximum stock, six months of June 2027", C.MAX_MONTHS * ci["adult_months"][-1]),
-        ("Line 1. Less usable stock at the count, Main warehouse and Northern depot", -ci["soh"]),
-        ("Line 1. Less confirmed shipments due by 30 June 2027 (PO-2026-0147, lots 1 to 3)", -ci["shipped"]),
-        ("Line 1 before rounding", R["line1_unrounded"]),
-        ("Line 1, %d pallets" % R["line1"], R["line1"] * C.PALLET),
-        ("Line 2. Children under 15 at the count: consumption, September 2026 to June 2027 (paediatric register "
-         "forecast)", R["kids_cons"]),
-        ("Line 2. Maximum stock, six months of June 2027", R["kids_max"]),
-        ("Line 2 before rounding", R["line2_unrounded"]),
-        ("Line 2, %d pallets" % R["line2"], R["line2"] * C.PALLET),
-    ]
-    bold = {"Line 1 before rounding", "Line 2 before rounding", "Line 1, %d pallets" % R["line1"],
-            "Line 2, %d pallets" % R["line2"]}
-    for i, (k, v) in enumerate(lines):
-        ws.cell(row=5 + i, column=1, value=k).font = B if k in bold else N
-        c = ws.cell(row=5 + i, column=2, value=int(v))
-        c.number_format = "#,##0;-#,##0"
-        c.font = B if k in bold else N
-    r0 = 5 + len(lines) + 1
-    ws.cell(row=r0, column=1, value="Children under 15 on TLD at the count").font = N
-    ws.cell(row=r0, column=2, value=len(R["c"].on)).number_format = "#,##0"
-    ws.cell(row=r0 + 1, column=1, value="Children under 15 on a paediatric first-line regimen at the count").font = N
-    ws.cell(row=r0 + 1, column=2, value=len(R["c"].cand)).number_format = "#,##0"
-    ws.freeze_panes = "A5"
-    ws.print_title_rows = "4:4"
-    # children by month
-    w2 = wb.create_sheet("Children")
-    _head(w2, 1, ["Month end", "On TLD at the count, still in care", "Moved onto TLD after the count, in care",
-                  "Children on TLD (bottles)"], [12, 22, 24, 18])
-    for k, m in enumerate(MONTHS):
-        w2.cell(row=2 + k, column=1, value=m)
-        on_k = int(round(float(R["on_m"][k])))
-        for j, v in enumerate((on_k, R["kids_m"][k] - on_k, R["kids_m"][k])):
-            cc = w2.cell(row=2 + k, column=2 + j, value=v)
-            cc.number_format = "#,##0"
-    w2.cell(row=12, column=1, value="Total").font = B
-    cc = w2.cell(row=12, column=4, value=R["kids_cons"])
-    cc.number_format = "#,##0"
-    cc.font = B
-    w2.cell(row=14, column=1, value=("Expected children in care on TLD at each month's end, one bottle each (SOP 4.1). "
-                                     "Children on TLD at the count are carried at the register's exit rates of the last "
-                                     "12 months, under 12 and 12 and over. Each child on a paediatric first-line "
-                                     "regimen: a straight line through every weighing since January 2023; each "
-                                     "scheduled visit to June 2027, at the child's months-dispensed interval from the "
-                                     "next appointment, is weighed at the share of clinical visits of the last 12 "
-                                     "months and the reading scatters around the line (residual SD %.2f kg); the child "
-                                     "moves onto TLD at the first reading of 30.0 kg or more (Annex 7, 2026 edition), "
-                                     "or, for the %.1f%% of such readings since 1 March 2026 the clinician held back, at "
-                                     "the next weighed visit." % (R["sig"], 100 * R["c"].lag))
-             ).alignment = Alignment(wrap_text=True, vertical="top")
-    w2.merge_cells("A14:D20")
-    w2.freeze_panes = "A2"
-    # out of sample
-    w3 = wb.create_sheet("Out of sample")
-    _head(w3, 1, ["Forecast from", "Months", "TLD from", "Bottle-months the register shows",
-                  "Weighings around each line", "Error", "Each line reaching the band", "Error"],
-          [14, 8, 9, 18, 16, 9, 16, 9])
-    for i, bt in enumerate(R["backtests"]):
-        a = bt["actual"]
-        vals = [bt["origin"].strftime("%d %b %Y"), bt["months"], "%.0f kg" % bt["threshold"], a, round(bt["golden"]),
-                (bt["golden"] - a) / a, round(bt["smooth_all"]), (bt["smooth_all"] - a) / a]
-        for j, v in enumerate(vals):
-            cc = w3.cell(row=2 + i, column=1 + j, value=v)
-            if j in (5, 7):
-                cc.number_format = "+0.0%;-0.0%"
-            elif j >= 3:
-                cc.number_format = "#,##0"
-    w3.cell(row=6, column=1, value=("Each forecast stood at a month end the register has closed, under the band then "
-                                    "in force (TLD from 35 kg until the 2026 guidelines): the children in care on a "
-                                    "paediatric first line at that date and their weighings to it, followed over the "
-                                    "months shown; the register's later rows give the bottle-months they took on "
-                                    "TLD.")).alignment = Alignment(wrap_text=True, vertical="top")
-    w3.merge_cells("A6:H9")
-    w3.freeze_panes = "B2"
-    # regions
-    w4 = wb.create_sheet("Regions C4 C5")
-    _head(w4, 1, ["Region", "Delivered C4 (Jul-Dec 2025)", "Delivered C5 (Jan-Jun 2026)", "Dispensed C4 (Jul-Dec 2025)",
-                  "Dispensed C5 (Jan-Jun 2026)"], [14, 18, 18, 18, 18])
-    A, Bd = R["ask"]["A"], R["ask"]["B"]
-    for i, reg in enumerate(AS.REGIONS):
-        for j, v in enumerate((reg, A[(reg, "C4")], A[(reg, "C5")], Bd[(reg, "C4")], Bd[(reg, "C5")])):
-            cc = w4.cell(row=2 + i, column=1 + j, value=v)
-            if j:
-                cc.number_format = "#,##0"
-    w4.cell(row=8, column=1, value="All regions").font = B
-    for j, v in enumerate((sum(A[(r, "C4")] for r in AS.REGIONS), sum(A[(r, "C5")] for r in AS.REGIONS),
-                           sum(Bd[(r, "C4")] for r in AS.REGIONS), sum(Bd[(r, "C5")] for r in AS.REGIONS))):
-        cc = w4.cell(row=8, column=2 + j, value=v)
-        cc.number_format = "#,##0"
-        cc.font = B
-    w4.cell(row=10, column=1, value=("Bottles of TLD 30s. Each facility in its region in the facility registry as drawn "
-                                     "from 1 April 2026; a facility code reissued to a new site counts the closed site "
-                                     "to its closure and the new site from its opening. Deliveries: CMS customer "
-                                     "deliveries dated by the proof of delivery, those refused at the gate left out. "
-                                     "Dispensing: each facility's approved eLMIS report for the month, the partner's "
-                                     "donated TLD included.")).alignment = Alignment(wrap_text=True, vertical="top")
-    w4.merge_cells("A10:E14")
-    w4.freeze_panes = "B2"
-    # notes
-    w5 = wb.create_sheet("Notes")
-    _head(w5, 1, ["Item", "Note"], [22, 100])
+    ws.title = "Cases averted"
+    _w(ws, 1, 1, "LulaNet R will avert about %s Ombeni fever cases among net users, April to December 2027"
+       % "{:,}".format(F["call_cases_averted"]), TITLE)
+    _w(ws, 2, 1, "Tulivu Health Partners M&E, for the Arnbridge Foundation grant review. Planning baseline run of "
+                 "14 September 2026; use as planned in the operational plan v2.1.")
+    _w(ws, 4, 1, "County", BOLD)
+    _w(ws, 5, 1, "Cases averted (nearest 1,000)")
+    _w(ws, 5, 2, F["call_cases_averted"], BOLD, "#,##0")
+    _w(ws, 6, 1, "Share of expected cases, April to December 2027")
+    _w(ws, 6, 2, F["call_share_of_expected_pct"] / 100, BOLD, "0%")
+    _w(ws, 7, 1, "Expected cases without the campaign")
+    _w(ws, 7, 2, F["step_expected_cases"], fmt="#,##0")
+    head = ["Sub-county", "Expected cases", "Cases averted (nearest 100)", "Nets to distribute",
+            "Confirmed cases reported, Jan to Sep 2026"]
+    for j, h in enumerate(head):
+        c = _w(ws, 9, j + 1, h, BOLD)
+        c.fill = FILL
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    for i, sc in enumerate(C.SC_CODES):
+        r = 10 + i
+        _w(ws, r, 1, C.SC_NAME[sc])
+        _w(ws, r, 2, sum(G["base"][(sc, m)] for (_, m) in C.WINDOW), fmt="#,##0")
+        _w(ws, r, 3, F["call_cases_averted_%s" % sc], fmt="#,##0")
+        _w(ws, r, 4, F["ask_nets_%s" % sc], fmt="#,##0")
+        _w(ws, r, 5, F["ask_reported_cases_2026_%s" % sc], fmt="#,##0")
+    r = 10 + len(C.SC_CODES)
+    _w(ws, r, 1, "County", BOLD)
+    _w(ws, r, 2, F["step_expected_cases"], BOLD, "#,##0")
+    _w(ws, r, 4, sum(nets.values()), BOLD, "#,##0")
+    _w(ws, r, 5, sum(cases.values()), BOLD, "#,##0")
+    _w(ws, r + 2, 1, "Sub-county figures are rounded on their own and need not add to the county figure. Sub-counties "
+                     "as realigned on 1 July 2026.")
+    for j, wdt in enumerate([34, 16, 18, 18, 22]):
+        ws.column_dimensions[get_column_letter(j + 1)].width = wdt
+    ws.row_dimensions[9].height = 45
+    ws.freeze_panes = "B10"
+    ws.print_title_rows = "9:9"
+    ws.page_setup.orientation = "landscape"
+
+    m = wb.create_sheet("Protection")
+    _w(m, 1, 1, "How much of a resident's exposure the nets reach", TITLE)
+    _w(m, 3, 1, "Per-bite protection for a sleeper under the net, from the five KINGA-5 sites")
+    _w(m, 3, 2, F["component_per_bite_protection"], BOLD, "0.00")
+    _w(m, 4, 1, "Share of a Ruvari resident's bites that arrive while in bed (catches 2024 to 2026, survey 2025)")
+    _w(m, 4, 2, F["component_in_bed_share"], BOLD, "0.00")
+    _w(m, 5, 1, "KINGA-5 pooled protective efficacy (not the county's)")
+    _w(m, 5, 2, F["step_trial_pooled_efficacy_pct"] / 100, fmt="0.0%")
+    hd = ["Site", "Protective efficacy", "Share of bites in bed", "Efficacy per unit of in-bed share"]
+    for j, h in enumerate(hd):
+        c = _w(m, 7, j + 1, h, BOLD)
+        c.fill = FILL
+    for i, s in enumerate(G["sites"]):
+        _w(m, 8 + i, 1, s["site"])
+        _w(m, 8 + i, 2, round(s["E"], 3), fmt="0.0%")
+        _w(m, 8 + i, 3, round(s["share"], 3), fmt="0.00")
+        _w(m, 8 + i, 4, round(s["E"] / s["share"], 3), fmt="0.00")
+    hr = 15
+    for j, h in enumerate(["Hour", "Bites per hour indoors", "Bites per hour outdoors", "Residents indoors", "Residents in bed"]):
+        c = _w(m, hr, j + 1, h, BOLD)
+        c.fill = FILL
+    labels = ["18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00", "01:00", "02:00", "03:00", "04:00", "05:00"]
+    for h in range(12):
+        _w(m, hr + 1 + h, 1, labels[h])
+        _w(m, hr + 1 + h, 2, round(60 * float(G["b_in"][h]), 2), fmt="0.00")
+        _w(m, hr + 1 + h, 3, round(60 * float(G["b_out"][h]), 2), fmt="0.00")
+        _w(m, hr + 1 + h, 4, round(float(G["ind"][h]), 3), fmt="0%")
+        _w(m, hr + 1 + h, 5, round(float(G["inb"][h]), 3), fmt="0%")
+    for j, wdt in enumerate([70, 18, 20, 22, 18]):
+        m.column_dimensions[get_column_letter(j + 1)].width = wdt
+    n = wb.create_sheet("Notes")
     notes = [
-        ("Prepared for", "Quantification review, September 2026: the C7 order of TLD 30s, lines 1 and 2 (SOP 4.3)"),
-        ("Stock count", "31 August 2026, Main warehouse and Northern depot (SOP 2.1); the quarantined batch is not "
-                        "usable stock (SOP 3.3); stock and shipments netted on line 1 alone (SOP 4.3)"),
-        ("On order", "Lots with a supplier-confirmed delivery date on or before 30 June 2027; the C7 framework "
-                     "call-off FW-2027-C7A is planned and not on order (SOP 3.3)"),
-        ("Line 1", "Programme projection, September 2026 round: patients aged 15 and over on 31 August 2026 and every "
-                   "patient starting treatment from 1 September 2026 (SOP 4.2)"),
-        ("Line 2", "Paediatric and adolescent ART register extract of 2 September 2026: children under 15 at the count "
-                   "with no outcome entered, forecast to 30 June 2027 whatever their age by then (SOP 4.2); the legacy "
-                   "layout linked through the 2024 crosswalk"),
-        ("Rounding", "Each line rounded once to the nearest whole pallet of %s bottles (SOP 4.4); every other figure "
-                     "in whole bottles" % "{:,}".format(C.PALLET)),
+        ("As of", "Files pulled 12 October 2026; planning baseline run of 14 September 2026."),
+        ("Population", "Residents sleeping under a campaign net, at the planned use in Table 2 of the operational plan; "
+                       "no cases are counted for residents who are not under a campaign net (plan section 5)."),
+        ("Window", "April to December 2027."),
+        ("Protection", "KINGA-5 site efficacies (final report, Table 1) against each site's share of bites arriving "
+                       "in bed (Tables 2a to 3b); the county's share from the sentinel catches January 2024 to "
+                       "September 2026 (An. ruvariensis, landings per minute collected) and both rounds of the 2025 "
+                       "behaviour survey, read at the half hour."),
+        ("Nets", "One net for every two usual members, rounded up, at most four a household (plan section 3); sync "
+                 "replays counted once; mop-up registrations that repeat a main-round household's ward, dwelling "
+                 "mark, usual members, under-fives and sleeping spaces counted once."),
+        ("Reported cases", "MOH 705 confirmed Ombeni fever, all ages, January to September 2026, by the facility's "
+                           "sub-county in the master facility list; the re-entered June 2026 Lwala ward returns "
+                           "counted once; the sub-county hospitals' January to March 2026 returns net of their "
+                           "outreach clinics, which reported under their own codes from January 2026."),
+        ("Rounding", "County cases averted to the nearest 1,000, sub-counties to the nearest 100, each from unrounded "
+                     "figures; the share to a whole per cent."),
     ]
     for i, (k, v) in enumerate(notes):
-        w5.cell(row=2 + i, column=1, value=k).font = N
-        cc = w5.cell(row=2 + i, column=2, value=v)
-        cc.alignment = Alignment(wrap_text=True, vertical="top")
+        _w(n, 1 + i, 1, k, BOLD)
+        c = _w(n, 1 + i, 2, v)
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+        n.row_dimensions[1 + i].height = 15 * (1 + len(v) // 95)
+    n.column_dimensions["A"].width = 16
+    n.column_dimensions["B"].width = 100
+    path = os.path.join(out, F_XLSX)
     wb.save(path)
-    PP.normalize_ooxml(path, C.PEOPLE["quant_lead"], C.PEOPLE["quant_lead"], "2026-09-14T07:30:00Z",
-                       "2026-09-18T15:12:00Z", excel=True, company=C.ORG)
+    PP.normalize_ooxml(path, C.PEOPLE["me"], C.PEOPLE["me"], "2026-10-14T05:20:00Z", "2026-10-16T13:05:00Z",
+                       excel=True, company=C.ORG)
 
 
-def write_png(R, path):
-    ch = R["ask"]["chart"]
-    fig, axes = plt.subplots(1, 2, figsize=(11.0, 4.9), dpi=110, sharey=True)
-    x = np.arange(len(AS.REGIONS))
-    top = max(max(ch["delivered"].values()), max(ch["dispensed"].values()))
-    for ax, cy, span in zip(axes, ("C4", "C5"), ("July to December 2025", "January to June 2026")):
-        dv = [ch["delivered"][(r, cy)] for r in AS.REGIONS]
-        sp = [ch["dispensed"][(r, cy)] for r in AS.REGIONS]
-        b1 = ax.bar(x - 0.2, dv, 0.4, color="#2f6f57", label="Delivered by CMS (signed for)")
-        b2 = ax.bar(x + 0.2, sp, 0.4, color="#a9c7b6", label="Dispensed (approved reports)")
-        for bars, vals in ((b1, dv), (b2, sp)):
-            for bb, v in zip(bars, vals):
-                ax.text(bb.get_x() + bb.get_width() / 2, v + top * 0.012, "{:,}".format(v), rotation=90, ha="center",
-                        va="bottom", fontsize=7.2, color="#1d2126")
-        ax.set_xticks(x)
-        ax.set_xticklabels(AS.REGIONS, fontsize=8.5)
-        ax.set_title("%s, %s" % (cy, span), fontsize=10)
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-        ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, p: "{:,.0f}".format(v)))
-    axes[0].set_ylabel("Bottles of 30 tablets")
-    axes[0].set_ylim(0, top * 1.30)
-    axes[1].legend(frameon=False, fontsize=8, loc="upper right")
-    c5_short = [r for r in AS.REGIONS if ch["dispensed"][(r, "C5")] > ch["delivered"][(r, "C5")]]
-    if len(c5_short) == len(AS.REGIONS):
-        title = "TLD 30s by region: in C5 every region's facilities dispensed more than CMS delivered to them"
-    else:
-        title = "TLD 30s by region: CMS deliveries and facility dispensing, C4 and C5"
-    fig.suptitle(title, fontsize=11)
-    fig.text(0.01, 0.01, "Regions as drawn from 1 April 2026. Deliveries by proof-of-delivery date; dispensing from "
-                         "approved monthly reports.", fontsize=7, color="#5b6169")
-    fig.tight_layout(rect=(0, 0.03, 1, 1))
-    fig.savefig(path, metadata={"Software": None})
+def write_png(out, F):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import matplotlib.ticker
+    plt.rcParams["svg.hashsalt"] = "task170"
+    names = [C.SC_NAME[sc] for sc in C.SC_CODES]
+    vals = [F["call_cases_averted_%s" % sc] for sc in C.SC_CODES]
+    fig, ax = plt.subplots(figsize=(7.6, 4.2), dpi=120)
+    bars = ax.bar(names, vals, color="#2e6b4f", width=0.62)
+    for b, v in zip(bars, vals):
+        ax.text(b.get_x() + b.get_width() / 2, v + 25, "{:,}".format(v), ha="center", va="bottom", fontsize=9)
+    ax.set_ylabel("Cases averted among net users (nearest 100)")
+    ax.set_title("LulaNet R averts about %s Ombeni fever cases among net users, April to December 2027"
+                 % "{:,}".format(F["call_cases_averted"]), fontsize=10.5, loc="left")
+    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, p: "{:,.0f}".format(v)))
+    fig.text(0.01, 0.01, "Sub-counties as realigned 1 July 2026. Source: KINGA-5 final report; county sentinel catches "
+             "2024 to 2026; behaviour survey 2025; planning baseline 2027.", fontsize=7, color="#5b6169")
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.set_ylim(0, max(vals) * 1.15)
+    plt.xticks(fontsize=9)
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    fig.savefig(os.path.join(out, F_PNG), metadata={"Software": None})
     plt.close(fig)
 
 
-# ---------------------------------------------------------------------------------------------------- figures, write-up
-def figures(R):
-    ci = R["ci"]
-    A, Bd = R["ask"]["A"], R["ask"]["B"]
-    bt = R["backtests"]
-    err = lambda b, k: 100.0 * (b[k] - b["actual"]) / b["actual"]
-    f = dict(
-        call=R["line2"], call_bottles=R["line2"] * C.PALLET, call_unrounded=R["line2_unrounded"],
-        kids_consumption=R["kids_cons"], kids_max_stock=R["kids_max"],
-        line1=R["line1"], line1_bottles=R["line1"] * C.PALLET, line1_unrounded=R["line1_unrounded"],
-        adults=ci["adults"], adult_consumption=sum(ci["adult_months"]),
-        adult_max_stock=C.MAX_MONTHS * ci["adult_months"][-1], soh=ci["soh"], shipped=ci["shipped"],
-        on_tld=len(R["c"].on), candidates=len(R["c"].cand), sigma=round(R["sig"], 2),
-        held_back_pct=round(100 * R["c"].lag, 1), held_back_n=R["c"].lag_n, threshold_kg=30.0, pallet=C.PALLET,
-        sections_cited=["SOP 2.1", "SOP 3.1", "SOP 3.2", "SOP 3.3", "SOP 4.1", "SOP 4.2", "SOP 4.3", "SOP 4.4",
-                        "Annex 7.1", "Annex 7.2"],
-        default_line2=R["default_line2"], default_children=int(round(R["default_children"])),
-        rival_band_line2=int(round(R["rivals"]["band_0.5"] / C.PALLET)),
-        rival_recent_line2=int(round(R["rivals"]["recent_3"] / C.PALLET)),
-        asks={"%s %s %s" % (k, r, cy): v for k, D_ in (("delivered", A), ("dispensed", Bd)) for (r, cy), v in D_.items()},
-        backtest=[dict(origin=b["origin"].isoformat(), months=b["months"], threshold=b["threshold"], actual=b["actual"],
-                       golden=round(b["golden"]), golden_err=round(err(b, "golden"), 1), smooth=round(b["smooth_all"]),
-                       smooth_err=round(err(b, "smooth_all"), 1)) for b in bt],
-        golden_miss_pct=[round(abs(err(b, "golden")), 1) for b in bt],
-        line_short_pct=[round(-err(b, "smooth_all"), 1) for b in bt],
-    )
-    return f
+def submission(F):
+    sc_lines = "\n".join("   - %s: %s" % (C.SC_NAME[sc], "{:,}".format(F["call_cases_averted_%s" % sc])) for sc in C.SC_CODES)
+    nets_lines = "\n".join("   - %s: %s" % (C.SC_NAME[sc], "{:,}".format(F["ask_nets_%s" % sc])) for sc in C.SC_CODES)
+    case_lines = "\n".join("   - %s: %s" % (C.SC_NAME[sc], "{:,}".format(F["ask_reported_cases_2026_%s" % sc])) for sc in C.SC_CODES)
+    return f"""## Tags
+
+**Domain:** Epidemiology and public health (health burden and impact modelling).
+**Analytical objective:** Forecasting and predictive modelling.
+
+## 1. Final Recommendation
+
+**The March 2027 LulaNet R campaign will avert about {F['call_cases_averted']:,} Ombeni fever cases among the people sleeping under its nets in Ruvari County from April to December 2027, {F['call_share_of_expected_pct']} per cent of the {F['step_expected_cases']:,} the county expects.**
+It rests on a per-bite protection of {F['component_per_bite_protection']:.2f} against the {F['component_in_bed_share']:.2f} of a resident's bites that arrive in bed. Not the trial's pooled {F['step_trial_pooled_efficacy_pct']:.1f} per cent efficacy (about {F['rival_trial_efficacy_cases_averted']:,} cases averted), which was measured where most bites arrived after people were in bed.
+
+## 2. Critical Components
+
+1. The per-bite protection the five KINGA-5 sites share is **{F['component_per_bite_protection']:.2f}**.
+2. The share of a Ruvari resident's exposure that arrives in bed is **{F['component_in_bed_share']:.2f}**.
+
+## 3. Step-by-Step Solution
+
+1. Read each KINGA-5 site's protective efficacy from Table 1 of kinga5_final_report_2024.pdf (pooled {F['step_trial_pooled_efficacy_pct']:.1f} per cent) and its share of bites in bed from Tables 2a to 3b (bites indoors at each hour times members in bed, over bites indoors times members indoors plus bites outdoors times members outdoors).
+2. Fitted each site's efficacy as a multiple of its in-bed share through the origin, weighted by the inverse variance of the site's efficacy: a per-bite protection of {F['component_per_bite_protection']:.2f}.
+3. Built the county's An. ruvariensis landings per minute collected by hour and position from hlc_sentinel_2024_2026.csv (re-keyed sheets counted once, rows with no catch dropped).
+4. Read members indoors and in bed at each half hour from both rounds of human_behaviour_survey_2025.xlsx, and computed the county's in-bed share the same way as the sites': {F['component_in_bed_share']:.2f}.
+5. Multiplied each sub-county's expected cases by month in obf_planning_baseline_2027.xlsx by the planned use in Table 2 of lulanet_r_distribution_plan_2027.docx and by the per-bite protection times the in-bed share: {F['call_cases_averted']:,} cases averted, {F['call_share_of_expected_pct']} per cent of {F['step_expected_cases']:,}.
+6. Nets from nets_registration_2026.parquet under the plan's allocation rule, with replayed records counted once and each mop-up registration matching a main-round household on its ward, dwelling mark, usual members, under-fives and sleeping spaces counted as that household.
+7. Confirmed cases January to September 2026 from khis_moh705_obf_2024_2026.csv by each facility's sub-county in facility_list_2026.csv, the June 2026 re-entry of the realigned ward's returns counted once, and the parent hospitals' January to March 2026 returns marked as including outreach net of their outreach clinics' own returns.
+8. The campaign will avert about {F['call_cases_averted']:,} Ombeni fever cases among net users from April to December 2027.
+
+## 4. Deliverable Answers
+
+### ruvari_cases_averted_2027.xlsx
+
+1. Cases averted among net users, April to December 2027, county: {F['call_cases_averted']:,}
+2. Share of the county's expected cases in the period: {F['call_share_of_expected_pct']} per cent
+3. Cases averted by sub-county, to the nearest hundred:
+{sc_lines}
+4. Nets the campaign will hand out by sub-county:
+{nets_lines}
+5. Confirmed Ombeni fever cases reported by each sub-county's facilities, January to September 2026:
+{case_lines}
+
+### cases_averted_by_subcounty.png
+
+1. One bar per sub-county, labelled with its cases averted to the nearest hundred, the county figure in the title.
+"""
 
 
-def submission(R, f):
-    ci = R["ci"]
-    A, Bd = R["ask"]["A"], R["ask"]["B"]
-    gerr = [b["golden_err"] for b in f["backtest"]]
-    serr = [b["smooth_err"] for b in f["backtest"]]
-    assert max(abs(e) for e in gerr) < 15.0 and min(-e for e in serr) > 50.0, (gerr, serr)
-    L = []
-    L.append("## Tags")
-    L.append("")
-    L.append("**Domain:** Healthcare Delivery & Health Economics (utilization, access and demand forecasting).")
-    L.append("**Analytical objective:** Forecasting & Predictive Modeling.")
-    L.append("")
-    L.append("## 1. Final Recommendation")
-    L.append("")
-    L.append("**Line 2 of the C7 order should carry %d pallets of TLD 30s (%s bottles) for the children in the "
-             "paediatric register.** A child on a paediatric first-line regimen moves onto TLD at the first clinic "
-             "weighing that reads 30 kg or more, and a weighing scatters more than a kilogram around the child's growth "
-             "line, so most of those readings come months before the line itself reaches 30 kg; forecast from each "
-             "child's scheduled weighings at the child's own dispensing interval, the children's need to June 2027 with "
-             "six months of June's falls in the eleventh pallet. Not %d "
-             "pallets, which is what moving each child when its fitted line reaches 30 kg gives: on every window the "
-             "register has closed, under the band then in force, that route fell short by %s per cent. Not the register's own switch "
-             "history either, its switch rates by recorded weight or its recent count of switches, because those switches "
-             "came under the 35 kg band and the monthly visits that the 2026 guidelines changed in March."
-             % (R["line2"], fmt(f["call_bottles"]), f["default_line2"],
-                "%.0f to %.0f" % (min(f["line_short_pct"]), max(f["line_short_pct"]))))
-    L.append("")
-    L.append("## 2. Critical Components")
-    L.append("")
-    L.append("1. Line 1 is **%d pallets (%s bottles)**: patients aged 15 and over at the count or starting treatment after "
-             "it consume **%s** bottles from September 2026 to June 2027 with a maximum stock of **%s**, less **%s** "
-             "bottles of usable stock and **%s** bottles of confirmed shipments."
-             % (R["line1"], fmt(f["line1_bottles"]), fmt(f["adult_consumption"]), fmt(f["adult_max_stock"]),
-                fmt(ci["soh"]), fmt(ci["shipped"])))
-    L.append("2. **%s** children under 15 were on TLD at the count and **%s** were on a paediatric first-line regimen."
-             % (fmt(len(R["c"].on)), fmt(len(R["c"].cand))))
-    L.append("")
-    L.append("## 3. Step-by-Step Solution")
-    L.append("")
-    L.append("1. Summed the national row of %s from September 2026 to June 2027 (SOP QP-04, 4.1 and 4.2) with six months "
-             "of June 2027 as the maximum stock (3.2), and took the usable batches at both warehouses and the lots with a "
-             "confirmed delivery date from %s (2.1, 3.1 and 3.3): line 1 is %s bottles before rounding, %d pallets (4.3 "
-             "and 4.4)." % (PK.F_PROJ, PK.F_STOCK, fmt(f["line1_unrounded"]), R["line1"]))
-    L.append("2. Read the register's two layouts as one history: legacy ART numbers linked to the national identifier "
-             "through %s, legacy regimen lines coded with %s, the June 2024 visits kept once and EPR rows re-sent after "
-             "a failed sync dropped." % (PK.F_CW, PK.F_CODES))
-    L.append("3. Took the children born after 31 August 2011 with no outcome entered in %s: %s on TLD and %s on a "
-             "paediatric first-line regimen." % (PK.F_PTS, fmt(len(R["c"].on)), fmt(len(R["c"].cand))))
-    L.append("4. Fitted a straight line in kilograms to each first-line child's weighings since January 2023 and "
-             "scheduled its visits to June 2027 from its next appointment at its months-dispensed interval; the "
-             "residual standard deviation around the lines, two parameters fitted per child, is %.2f kg." % R["sig"])
-    L.append("5. Took each scheduled visit as weighed at the register's share of clinical visits over the last 12 months, "
-             "the reading scattered around the child's line at that spread, and moved the child onto TLD at its first "
-             "reading of 30.0 kg or more (Annex 7, 7.1 and 7.2), or at the next weighed visit for the %.1f per cent of "
-             "the %s such readings since 1 March 2026 that the register shows held back; every child was kept at the "
-             "register's exit rates of the last 12 months for children under 12 and 12 and over (SOP 4.1)."
-             % (f["held_back_pct"], fmt(f["held_back_n"])))
-    L.append("6. Stood the same forecast at three month ends the register has closed, under the band then in force "
-             "(35 kg), followed for twelve months from the first two and six from the third (%s): it came within %s per "
-             "cent of the bottle-months the register shows each time, while moving each child when its line reaches the "
-             "band fell short by %s per cent." % (", ".join(b["origin"] for b in f["backtest"]),
-                                                  "%.0f" % max(f["golden_miss_pct"]),
-                                                  "%.0f to %.0f" % (min(f["line_short_pct"]), max(f["line_short_pct"]))))
-    L.append("7. Counted one bottle for each child on TLD at each month's end with six months of June 2027 (SOP 4.1, 4.3), "
-             "%s bottles on this construction, and rounded to the nearest pallet of %s bottles (4.4): %d pallets."
-             % (fmt(f["call_unrounded"]), fmt(C.PALLET), R["line2"]))
-    L.append("")
-    L.append("## 4. Deliverable Answers")
-    L.append("")
-    L.append("### %s" % G_XLSX)
-    L.append("")
-    L.append("1. Line 2 of the C7 order is %d pallets of TLD 30s (%s bottles)." % (R["line2"], fmt(f["call_bottles"])))
-    L.append("2. Line 1 is %d pallets (%s bottles): consumption %s bottles and maximum stock %s bottles for patients aged "
-             "15 and over at the count or starting treatment after it, netting %s bottles of usable stock and %s bottles "
-             "of confirmed shipments." % (R["line1"], fmt(f["line1_bottles"]), fmt(f["adult_consumption"]),
-                                          fmt(f["adult_max_stock"]), fmt(ci["soh"]), fmt(ci["shipped"])))
-    L.append("3. %s children under 15 were on TLD at the count and %s on a paediatric first-line regimen."
-             % (fmt(len(R["c"].on)), fmt(len(R["c"].cand))))
-    L.append("4. Bottles delivered by CMS to each region's ART facilities, dated by when they were signed for, and "
-             "bottles those facilities reported dispensing, whole bottles:")
-    for reg in AS.REGIONS:
-        L.append("   - %s: delivered %s in C4 and %s in C5; dispensed %s in C4 and %s in C5"
-                 % (reg, fmt(A[(reg, "C4")]), fmt(A[(reg, "C5")]), fmt(Bd[(reg, "C4")]), fmt(Bd[(reg, "C5")])))
-    L.append("")
-    L.append("### %s" % G_PNG)
-    L.append("")
-    L.append("1. Two panels, C4 and C5: for each region a bar of the bottles CMS delivered and a bar of the bottles its "
-             "facilities reported dispensing, each labelled with its figure in the table above.")
-    return "\n".join(L) + "\n"
-
-
-def main(target, golden_dir, fig_path, sub_path):
+def deliver(target, golden_dir, figures_path, submission_path):
     os.makedirs(golden_dir, exist_ok=True)
-    R = compute(target)
-    write_xlsx(R, os.path.join(golden_dir, G_XLSX))
-    write_png(R, os.path.join(golden_dir, G_PNG))
-    f = figures(R)
-    open(fig_path, "w").write(json.dumps(f, indent=1, sort_keys=True) + "\n")
-    open(sub_path, "w").write(submission(R, f))
-    return R, f
+    F, G, nets, cases = figures(target)
+    write_xlsx(golden_dir, F, G, nets, cases)
+    write_png(golden_dir, F)
+    with open(figures_path, "w") as fh:
+        json.dump(F, fh, indent=1, sort_keys=False)
+        fh.write("\n")
+    open(submission_path, "w").write(submission(F))
+    return F, G

@@ -11,7 +11,7 @@
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "About 11,500 Ombeni fever cases averted among net users in Ruvari County from April to December 2027 (to be set from the shipped files at stage 3).",
+  "answer": "About 11,000 Ombeni fever cases averted among the people sleeping under the March 2027 LulaNet R nets in Ruvari County from April to December 2027, 21 per cent of the 53,042 cases the county expects (11,208 unrounded from the shipped files).",
   "answer_source": "submission.md, 1. Final Recommendation (generator/deliver.py from the pack; generator/verify.py recomputes)",
   "gap": [
     "population",
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "other",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the entomology and survey records, reads the trial report and the campaign plan correctly and applies the trial's pooled protective efficacy (about 62 per cent) to the plan's baseline cases among net users files about 21,000 cases averted (about 9,000 when it multiplies that efficacy by the county's in-bed share of bites without dividing out the trial sites' own), when the per-bite protection the five sites share, carried through the county's in-bed share of exposure, files about 11,500.",
+  "analyst_test": "A strong analyst who cleans the entomology and survey records, reads the trial report and the campaign plan correctly and applies the trial's pooled protective efficacy (56.7 per cent) to the plan's expected cases among net users files 22,000 cases averted (8,000 when it multiplies that efficacy by the county's in-bed share of bites without dividing out the trial sites' own), when the per-bite protection the five sites share (0.80), carried through the county's in-bed share of exposure (0.36), files 11,000.",
   "domain_test": "The deciding quantity is a vector-control tool's protective efficacy transported to a new setting through the share of human exposure to the vector that arrives while people are in bed under the net (the vector's hourly biting indoors and outdoors read against the population's hourly location), built from human landing catches and a human behaviour survey the way vector-control impact models carry trial efficacy; with hospital or school nouns there is no vector rhythm against people's sleeping hours for the protection to miss.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:protective-efficacy-carried-through-the-in-bed-share-of-exposure",
@@ -50,7 +50,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "hlc_sentinel_2024_2026.csv (the county entomology unit's human landing catches, indoor and outdoor, by collector-hour, at its sentinel villages)",
-    "rows": 0,
+    "rows": 44352,
     "entity": "one collector's catch in one hour of one night at one position (indoor or outdoor) in one sentinel village",
     "grain": "village x night x hour x position",
     "source": "synthetic"
@@ -79,13 +79,13 @@
   },
   "deliverables": [
     "ruvari_cases_averted_2027.xlsx",
-    "cases_averted_by_month.png"
+    "cases_averted_by_subcounty.png"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "A protection acts only on the exposure that arrives while the protected state holds, so an efficacy measured in a trial is a per-exposure protection times the share of its own sites' exposure that arrived in that state; the target's share is the overlap of when and where exposure arrives with when people are in the protected state, read hour by hour from two records at a finer grain than the trial's headline, and carrying the trial's efficacy, or multiplying it by the target's share without dividing out the sites' own, misstates the forward effect.",
-  "driver_concrete": "Ruvari County's Ombeni fever vector bites early in the evening and largely outdoors, so only about two fifths of a resident's bites arrive while they are in bed under a net, against seven to ten tenths at the KINGA-5 sites; the nets' pooled protective efficacy of about 62 per cent is a per-bite protection of about 0.8 times each site's in-bed share, so the cases averted among users from April to December 2027 are the plan's baseline times usage times that protection times the county's in-bed share, not the trial's efficacy and not that efficacy times the county's share.",
-  "stump": "A competent solver applies the trial's pooled protective efficacy to the plan's baseline cases among net users and files about 21,000 cases averted against about 11,500; the step that lands it there is carrying an efficacy measured where most bites fell while people slept under the nets to a county whose vector bites early and outdoors, where only about two fifths of a resident's bites arrive in bed.",
+  "driver_concrete": "Ruvari County's Ombeni fever vector bites from dusk and half of it outdoors, so only 0.36 of a resident's bites arrive while in bed under a net, against 0.49 to 0.96 at the KINGA-5 sites; the nets' pooled protective efficacy of 56.7 per cent is a per-bite protection of 0.80 times each site's in-bed share, so the cases averted among users from April to December 2027 are the plan's baseline times the planned use times 0.80 times 0.36, not the trial's efficacy and not that efficacy times the county's share.",
+  "stump": "A competent solver applies the trial's pooled protective efficacy of 56.7 per cent to the plan's expected cases among net users and files 22,000 cases averted against 11,000; the step that lands it there is carrying an efficacy measured where most bites arrived after participants were in bed to a county whose vector bites early and half outdoors, where 0.36 of a resident's bites arrive in bed against 0.49 to 0.96 at the sites.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task177": "there an offer moves a subscriber mainly in the days before the subscriber's own recurring bill, so a test's average over the billing cycle does not carry; here no unit has a cycle of its own: a protection acts only while people are in bed, and the share of exposure it can reach is the hourly overlap of two independently measured rhythms (the vector's biting indoors and outdoors and the population's location), with the trial's own sites' overlap divided out of its headline efficacy",
