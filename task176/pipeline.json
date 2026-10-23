@@ -1,27 +1,27 @@
 {
  "task": "task176",
  "owner": "sathya8571",
- "status": "DRAWING",
+ "status": "BUILD",
  "domain": "sociology-demography",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-23",
  "stump": "A competent solver fits closure hazards by years licensed with provider age, county and the grant flag and files about 300 closures for 2027; the step that lands it there is reading closure on the home's tenure when it runs on the provider's youngest own child's kindergarten year.",
  "architecture": 2,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-23"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (no LEAK), lines answered in ## Leak sweep",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (no BLOCK)",
+  "nearest": "task107 0.07"
  },
  "judge": {
   "verdict": "",
@@ -77,10 +77,11 @@
    "drawn": "Allerton's 2027 family child care home closures; closure hazard read on the provider's youngest own child's kindergarten summer (capacity worksheet birth dates), the 2023 start-up grant cohort reaching it together in 2027",
    "screens": "fcc5.py six seeds: tenure life table 0.613 to 0.647 of the golden; obvious-covariate reflexes at or below 0.71; youngest's age bands 0.87 to 0.91; any own child's kindergarten year 0.84 to 0.88 (deviance 532 to 641 against the youngest); golden family 0.946 to 1.025; forward truth 0.958 to 1.019",
    "paper": "pension age step (full-shift reflex is the golden), no-fault divorce backlog (behavioural, right truncation), review-detected closures (swap fails), care capital limit (replay), recall layoffs (labour economics), time since widowhood and surge-of-entry carers (task134 v2 family), naturalisation residence cut (rule conjunction or fork), joint retirement (lever capped), barred couples marrying (analogue, behavioural)",
-   "prototypes": "session scratchpad b176e/proto: fcc1.py to fcc5.py"
+   "prototypes": "session scratchpad b176e/proto: fcc1.py to fcc5.py",
+   "stage3": "checks.py 105 of 105, verify.py green (own IRLS 461.02), two byte-identical builds, figures_check 0, precut 0, leak.py REVIEW, guard heart WARN, surface no hard tell after the manifest schema change; asks re-sited (food program and visits cut to distractors) after the coordinator's stage 4 measurements"
   }
  },
- "resume": "stage 2: design note sections (precut), then the generator at stage 3",
+ "resume": "stage 4: two scored readers and the judge",
  "approved": null,
  "delivered": null,
  "portal": null,

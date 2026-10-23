@@ -44,10 +44,10 @@ spent; their record is `## Earlier draws (screen record)`, `## Tried and rejecte
   annual capacity worksheet, which lists every child who counts toward a home's capacity with a birth date and a
   relationship, and the 2023 round's providers joined when their youngest were babies, so they reach that summer
   together in 2027, in their fourth year, where a tenure clock puts the record's lowest closure rate.
-- **Shape and criteria.** The call is one count to the nearest 50 (1). Three ask tables on rows the call never
-  reads: subsidised child-days of care in family child care homes by region and half of 2026 (10), food program
-  meals claimed by homes by region and half of 2026 (10), and monitoring coverage by region in 2026 (10). The
-  workbook and its tables (2 to 3). About 33 criteria, every one a cell of the prompt's shape.
+- **Shape and criteria.** The call is one count to the nearest 50 (1). Two ask tables on rows the call never reads:
+  subsidised child-days of care in family child care homes by region and half of 2026 (10), and the money the subsidy
+  paid the homes by region and quarter of the 2026 payment run (20). The workbook and its tables (2 to 3). About 33
+  criteria, every one a cell of the prompt's shape.
 - **Data-native sentence.** In Allerton's licensing record a home's closure is written against the licence, but
   the clock that times it is in another file and another person's life: the capacity worksheet's own-child birth
   dates put most parent-run homes' closures in the summer before the youngest starts kindergarten, at whatever
@@ -84,6 +84,290 @@ spent; their record is `## Earlier draws (screen record)`, `## Tried and rejecte
     non-kindergarten hazard, so no filter of them reaches the call; the homes already in a kindergarten summer are
     the golden's own construction and need the clock to be found. Dispersion and truncation direction do not
     apply (a level, nothing suppressed); variance-only passes (the step moves the point).
+
+## Default path
+
+The pipeline a strong analyst builds from the prompt, the rules and the files' grain, every filed rule applied.
+
+1. Conform the licence extract: keep every home (small and large, rules 6.40.010), read the closure effective date
+   as the end of the licence, and admit the homes licensed before 2016 into the risk set at their January 2016
+   tenure (delayed entry, the cell's card 4).
+2. Build home-months from January 2016 to December 2026 and estimate the monthly closure rate by year of tenure (a
+   life table), with the provider's age (63 or more, 68 or more), the June to August lift, the county and the 2023
+   grant round's flag from startup_grant_awards_2023.xlsx as the obvious covariates.
+3. Apply the rates month by month through 2027 to the 3,081 homes licensed on 31 December 2026 and sum each home's
+   chance of closing.
+
+Ends on: 300 (323.1 unrounded; 252.3 with the grant round's own tenure rates, which file 250)
+
+Golden: 450 (461.0)
+
+## Stump sentence
+
+A competent solver fits closure rates by years licensed on the 2016 to 2026 home-months, with provider age and the
+summer months, and files 300 closures for 2027 (250 on the 2023 grant round's own rates so far); the step that lands
+it there is reading closure on the home's tenure, when a parent-run home closes in the June to August before the
+provider's youngest own child starts kindergarten, which 427 homes reach together in 2027, 336 of them from the 2023
+round whose providers were licensed with babies, so the count is 450.
+
+## Three rules
+
+- Task type: event-history-life-course-analysis (Sociology & Demography), which serves Forecasting & Predictive
+  Modeling: a forward count of a life-course transition (a provider leaving home-based child care) built from the
+  transition's hazard over the record's home-months.
+- Domain test: the deciding quantity is each home's monthly closure hazard read on its provider's family life course,
+  the June to August before her youngest own child living in the home starts kindergarten, estimated as a
+  discrete-time event-history model over 314,262 home-months with that time-varying clock taken from the capacity
+  worksheets' birth dates; the field reads a transition on the clock of the linked life it depends on.
+- Swap: "how many of the hair salons licensed on 31 December 2026 will close during 2027" keeps the tenure life table
+  and loses the youngest child, the school year and the 2023 round's family stage, so the deciding clock vanishes and
+  the task stops being the same; with clinics, shops or machines the same.
+- Layer 1: the licensing system's 1 July 2019 replacement (former licence numbers on the worksheets with a crosswalk,
+  two relationship code sets, birth dates as month/day/year before it and ISO after); the capacity worksheet repeating
+  each child at every renewal and listing a newborn only from the next worksheet; grandchildren, foster children and
+  other relatives on the same worksheet; homes licensed before 2016 present only from 2016 (delayed entry); blank
+  birth years for some legacy providers; county names and codes in three forms across files; on the asks, notice and
+  split-care lines, every child line repeating its remittance's amount, remittance numbers restarting in each county
+  office's run, voided remittances paid again in the next run, December 2025 service in the January 2026 run, and
+  centres and exempt carers in the same file. Each is the system's own;
+  none is placed to be caught, and each mishandled leaves the call in its cell (checks.py R2).
+- Layer 2: field_method, the event-history clock: which time scale the closure hazard runs on (a linked person's
+  school entry rather than the unit's tenure) and the forecast built from each home's own position on it.
+- Decisive step: reading the closure hazard on the provider's youngest own child's kindergarten summer, a
+  time-varying covariate rebuilt from the worksheet children's birth dates and the school-year cutoff, instead of on
+  the home's years licensed and the covariates the licence file carries.
+- Not semantics: the default path reads every field and code correctly (worksheets mapped, both code sets read,
+  delayed entry handled, small and large homes kept) and still files 300; no field, code, unit or definition says
+  that closures follow a child's school entry, and the worksheet exists to count children toward capacity.
+- Not rule application: no filed rule or procedure says how closures arise or which clock a hazard runs on (the
+  school-age rule in the subsidy policy sets rates for subsidised children), so executing every stated rule files
+  300. The family the estimand leaves open, enumerated (tenure tables; Poisson and logit hazards with provider age,
+  summer, county and the grant flag; a child-under-six flag; the youngest's age as a line and in bands; any own
+  child's summer; the youngest's summer in six windows and forms and three fitting windows) spreads 252.3 to 463.2,
+  printed 250 to 450; the standing family (the 18 constructions the record's likelihood keeps, every one reading the
+  youngest's summer) spreads 432.1 to 463.2, every one printed 450; the ruling out is the record's own likelihood
+  (2 dlogL 1,528 for no clock, 795 for the age bands, 364 for any own child), never a filed clause.
+- Analyst test: a strong analyst who joins the former and current licence numbers, keeps small and large homes,
+  admits pre-2016 homes at their 2016 tenure and fits closure rates by years licensed with provider age, the summer
+  months, county and the grant flag files 300 closures for 2027 (Ends on: 300), because a tenure clock spreads the
+  2023 round's closures thin when they arrive together in the summer their youngest own children start kindergarten.
+- Estimand: the prompt files it: population, the family child care homes licensed on 31 December 2026 (status ACTIVE
+  in fcc_licence_extract_20261231.csv, small and large under rules 6.40.010, no home licensed later); outcome, the
+  licence ending (closure effective date, rules 6.40.070); window, 1 January to 31 December 2027; unit, homes, a
+  count to the nearest 50; no comparison.
+- No decoy: nothing is planted to be caught; no memo, draft, forecast, briefing or stakeholder figure exists; the
+  supply report states past homes, places, openings and closures correctly and forecasts nothing; no document argues
+  a method or a figure.
+- No certified replay: no certified or published figure is reproduced to recover the method; the supply report's
+  counts to 30 September 2026 are past quantities every route reproduces from the extract, so they select nothing.
+- Lesson: a closure hazard in a home-based occupation runs on the provider's family life course (linked lives), so a
+  hazard read on the unit's own tenure averages over cohorts that joined at different family stages and misplaces a
+  cohort that joined together at one; no build on file reads a hazard on a linked person's age.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| Rung 0: closure rates by years licensed | no | the extract's dates | yes, the field's life table | no | no | no | readable |
+| Rung 1: provider age, summer, county, grant flag | no | licence and grant columns | yes, a hazard model on the visible covariates | no | no | no | readable |
+| Rung 2: own children as covariates (under six, the youngest's age) | no | the worksheet's birth dates | partly, feature building | no | no | no | readable |
+| Rung 3 (decisive): the youngest own child's kindergarten summer | no: no sentence ties closures to a child's school entry; the school-age rule is a subsidy rate rule | no: no column; rebuilt from birth dates, the cutoff and the youngest at each month | no: the field's reflex is tenure and covariates | no: no corpus scores clocks | no: no sweep builds a clock | no: a per-home time-varying flag, not a ratio of shipped figures | silent |
+
+The reflex row is enumerated from the field's own vocabulary for the deciding quantity (closure of a provider: a
+life table by tenure, a Cox or Poisson hazard on the licence's attributes, cohort rates by entry year, the latest
+year's rate, a trend), not from the rungs beneath it; every one of them lands at 250 to 350.
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | licensed on 31 December 2026 | status ACTIVE in the extract, closure date blank | open at any time in December | same call (ACTIVE equals blank closure date, asserted) | the extract's status as at 31 December 2026 (dictionary) |
+| SF2 | close during 2027 | the licence's closure effective date in 1 January to 31 December 2027 | a closure recorded in 2027 | same call (the forecast is of licences ending in 2027) | rules 6.40.070: the licence ends on the closure effective date |
+| SF3 | family child care homes | small and large homes | small homes only (would file 400) | 400 | rules 6.40.010: "Family child care homes are licensed in two types" |
+| SF4 | kindergarten year of a child | the school year in the calendar year the child turns five on or before 1 September | turns five in the calendar year | same call (433.7, asserted) | CCAP payment policy, section 5 |
+| SF5 | to the nearest 50 | 461.0 to 450 | 461.0 to 450 by any rounding rule | same call (14.0 homes from the half-cell boundary) | the golden is clear of 475 and 425 (asserted) |
+| SF6 | a home | one licence (one provider, one residence) | one provider | same call (one licence per provider, asserted) | rules 6.40.010: a licence is issued to one provider for one residence |
+| SF7 | own child living in the home | relationship C or OWN CHILD with lives_in_home Y | own child wherever the child lives | same call (every own child row is Y, asserted) | dictionary, worksheet relationship and lives_in_home |
+| SF8 | provider age | from provider_birth_year; blank years carry no age term | blank read as a year | same call (59 blank years, all pre-2009 homes, no age terms changes 450) | dictionary: blank where the legacy system did not hold it |
+
+## Ladder
+
+The graded figure is one count to the nearest 50; the golden cell is 425 to 475. Every figure below is computed on the
+cut pack by `generator/checks.py` (RIV, FAM) and recomputed by `generator/verify.py` on its own code.
+
+| Rung | Construction | Figure | Printed | Dies to |
+|---|---|---|---|---|
+| 0 | closure rates by years licensed (the default path) | 323.1 | 300 | the kindergarten summers the record shows at every tenure, 401 closures in 905 such summers |
+| 1a | rung 0 with provider age | 321.6 | 300 | the same |
+| 1b | Poisson hazard on tenure, age and summer | 319.5 | 300 | the same |
+| 1c | rates by tenure split by the 2023 grant round | 252.3 | 250 | the round's homes measured while their youngest were babies |
+| 1d | the latest year's rate | 293.2 | 300 | the same, and no clock |
+| 2a | a child-under-six flag | 341.6 | 350 | the flag is on for years before the summer that closes the home |
+| 2b | the youngest's age as a straight line | 328.8 | 350 | the hazard is a spike in one summer, not a slope |
+| 2c | the youngest's age in yearly bands | 419.9 | 400 | the record's likelihood: 2 dlogL 795 against the summer clock |
+| 2d | any own child's kindergarten summer | 424.2 | 400 | the record's likelihood: 2 dlogL 364 (an older child's school entry closes nothing) |
+| 3 (decisive) | the youngest own child's kindergarten summer | 461.0 | 450 | (golden) |
+
+- Position and margins: every rung that reads no child's school year sits at 1.2 times or more below the cell's lower
+  edge (the nearest, 341.6, at 1.24); the two rungs that read children without the youngest's school year sit one
+  cell below, ruled out by the likelihood rather than by a margin, and a solver on either has taken the direction of
+  the decisive step.
+- Standing family, 18 constructions (log and logit hazards; additive excess; the annual share; no summer, no age,
+  2020 and grandchild terms; tenure capped at five years; the whole kindergarten year and May to September windows,
+  each in log and additive form; fitting from 2016, 2019 and 2021; own children wherever they live; the step with the
+  age bands or any own child added): 432.1 to 463.2, every one printed 450, both edges clear by 7.1 and 11.8 homes.
+- Noise: one sigma of the summer's closure share (44.3 per cent on 905 summers) moves the call by 7.1 homes, inside
+  the golden's 14.0 homes to its upper edge and 36.0 to its lower; 401 closures carry the step.
+- Lever: the decisive step moves the figure from 323.1 to 461.0, 30 per cent of the graded figure, against a standing
+  family spread of 6.7 per cent of it.
+- Worth: delete every wrong number (none ships) and the difficulty stands: no file computes a forecast, and the
+  tenure route is wrong on the clean truth (checks.py R3a).
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | homes licensed on 31 December 2026, small and large | prompt; extract status; rules 6.40.010 (SF1, SF3) |
+| 2 | Unit of account | the home, one licence | rules 6.40.010 (SF6) |
+| 3 | Attribution window | a closure falls in the month of its effective date | C1: the forecast is a calendar-year sum |
+| 4 | As-of dating | status at the end of 31 December 2026 | dictionary (extract pulled 8 January 2027) |
+| 5 | Version basis | the extract as pulled; worksheets as filed | C1: one vintage ships |
+| 6 | Denominator | home-months at risk from 2016 | C1 across fitting windows (2016, 2019, 2021, asserted) |
+| 7 | Weighting | each home-month once | C1: pooled and annual forms agree in the cell |
+| 8 | Window length | the fitting window | C1 (three windows, asserted) |
+| 9 | Boundary inclusivity | the closure month counted as at risk | C1: in the cell either way (asserted with the first month) |
+| 10 | Rounding path | expected count once, to the nearest 50 | prompt; 14.0 homes from the edge |
+| 11 | Tie-break | none needed | not arising |
+| 12 | Maturity and censoring | homes open at the end of 2026 censored | C1: the hazard model treats them as at risk to December 2026 |
+| 13 | Order of operations | map numbers, dedupe children, then flag | C1: the order does not change the youngest at a month |
+| 14 | Row order | file order | C1: no figure depends on it |
+| 15 | Duplicate resolution | a child repeated across worksheets is one child | C1: initials and birth date (asserted with the latest worksheet only, R2 L2) |
+| 16 | Identity normalisation | former and current licence numbers | crosswalk; R2 L1 asserted |
+| 17 | Netting against gross | none | not arising |
+| 18 | Dimensional units | homes; months | in the data |
+| 19 | Code and status semantics | relationship codes; lives_in_home | dictionary (SF7) |
+| 20 | Integerisation | the count rounds once | prompt |
+| 21 | Clause scope | the school-age rule applies to the kindergarten year | policy section 5 (SF4) |
+| 22 | Forward window contents | the 2027 months of each home with its worksheet children | the worksheets carry every child's birth date (the driver for 2027 ships) |
+
+## Literal reader
+
+Executed word for word, the prompt's population (homes licensed on 31 December 2026), outcome (licence ending),
+window (2027) and unit (homes) are filed and every reading of them gives the same 3,081 homes and the same window
+(SF1 to SF8 asserted in `checks.py`); the method is left open and the record forces it, its likelihood rejecting every
+clock but the youngest own child's kindergarten summer, and every standing construction prints 450. No shipped
+sentence, read literally, fixes the tenure route or any other method.
+
+## Oracles
+
+- `child_care_supply_report_2026q3.pdf`: homes, places, openings and closures by region to 30 September 2026, and the
+  2023 round's homes still licensed; past quantities that every route reproduces from the extract; ties under every
+  basis; forecasts nothing.
+- `startup_grant_awards_2023.xlsx`: awards, payments and recoveries; the grant flag rung 1c reads; no closure
+  forecast.
+- No control, corpus or published figure ties only under the golden or only on the wrong read.
+
+## Ask sheet
+
+**Main call's declared row population:** fcc_licence_extract_20261231.csv, licence_number_crosswalk_2019.csv and
+capacity_worksheet_children_2016_2026.csv. Device and hazard rows in it: 0 (asserted, `checks.py` SEP: the call reads
+those three files and no ask file; the ask file carries no row the call reads).
+
+**Re-sited on 2026-10-23 before the pack went to readers.** The first ask layer carried a food program ask (a revised
+claim against a second sponsor's part-month claim) and a visits ask (two module records at one arrival). The round's
+stage 4 measurements had readers break both shapes (a re-filed schedule against a supplement; fills grouped by time,
+trader and side), so both were cut and their files stay in the pack as distractors; their line is in `## Tried and
+rejected`.
+
+**Ask A. For each region, the child-days of care the subsidy paid for in family child care homes in each half of
+2026** (10 figures, whole numbers). H18 home: the subsidised care that rests on the homes the call says will close.
+- A1 (silent primary, one child-day on two lines): a child who moves home is paid at the home left through up to ten
+  business days of notice after the last day attended while the new home's lines start, and a child in split care is
+  paid at two homes on the same days; a child-day is one child on one day, so each child and day count once. The
+  battery's path sums care_days on the home lines: every cell high by 1,149 to 6,931.
+- Hazards on the readers' path: centre and exempt lines in the same file, voided remittances paid again in the next
+  run (keeping both adds 186 to 722 a cell on the summing path), December 2025 service in the January 2026 run.
+- Stops (asserted): lines summed (all 10); voids kept and lines summed (all 10).
+
+**Ask B. For each region, the money the subsidy paid family child care homes in each quarter of 2026 by the date of
+the payment run** (20 figures, nearest dollar). H18 home: the subsidy income the homes' closures take out of the
+regions, the money the grant round is weighed against.
+- B1 (silent primary, which lines are one payment): a provider receives one remittance in a run and every child line
+  of it carries the remittance's amount, and each county office numbers its remittances afresh in every run in the
+  order of its payee list, so a number recurs across the fourteen offices in one run and, for a home, from run to run.
+  One payment is a remittance number, a run date and a county office (or, equally, a provider). Summing the amount on
+  every line counts a remittance once per child (every cell high by 105,815 to 641,981); a careful de-duplicator who
+  sees the repeated amount and keys it by number alone, number and run date, number and provider, number and amount,
+  number and county office, or provider and amount misses every cell (by 20,629 to 1,131,705).
+- Hazards: voided remittances (keeping them adds 1,624 to 16,864 a cell), the January 2027 run (December service)
+  outside 2026, centres and exempt carers in the same file.
+- Stops (asserted): lines summed (all 20); each of the six de-duplication keys (all 20); voids kept (all 20).
+
+**Hazard table.**
+
+| Hazard | Root cause | Moves | Per-ask delta |
+|---|---|---|---|
+| H1 notice and split-care lines | a child paid at two homes on the same days | A | every cell, +1,149 to +6,931 |
+| H2 voided remittances paid again | a remittance returned unpaid, reissued in the next run | A, B | A +186 to +722 on the summing path; B +1,624 to +16,864 |
+| H3 the remittance amount on every line | a remittance export at child-line grain | B | every cell, +105,815 to +641,981 when summed |
+| H4 remittance numbers per county office and run | each office numbers its run from 1 in payee-list order | B | every cell, -20,629 to -1,131,705 under any partial key |
+| H5 the January 2027 run | December service paid in the first January run | B | outside the 2026 quarters (the run date files it) |
+
+**Referee.** For A, the overlap of one child's lines at two homes in one county on the same weekdays; for B, the
+remittance's one amount, provider and status on every line of a number, run and county office (asserted), against the
+same number carrying other providers in other offices and other runs. Each is countable from the shipped rows and
+none needs a filed definition.
+
+**Cracker sheet** (the cracker lands the call, keeps the home lines, drops voided remittances, keeps 2026 service days
+and the 2026 runs, sums care_days, and takes the repeated remittance amount once per number on its best key:
+`generator/cracker.py` on the cut pack)
+
+| Ask row | Figures | Cracker's path | Device that holds | Verdict |
+|---|---|---|---|---|
+| Ask A, child-days by region and half | 10 | home lines not voided, care_days summed | A1 | miss |
+| Ask B, money by region and quarter | 20 | one amount per remittance number, or per number with run date, provider, amount or county office | B1 | miss |
+
+One crack at a time (`cracker.py`): A1 cracked, the cracker keeps 10 of 30 and the pair is 37.7; B1 alone, 20 and
+46.8; both, 30 and 56.0.
+
+Measured by: `generator/cracker.py` (run on the cut pack; Part 0's weights, the call and its components 38, the
+instructions 7, the asks 55 over the 30 ask figures; a response off the call keeps 5).
+
+Mirror leakage: 0.0 per cent of ask weight (the mirror, off the call at 300, sums care_days and the amount on every
+line and keeps none of the 30 figures).
+
+Pair ceiling: 28.5 measured on the cut pack (the cracker 45.0, the mirror 12.0); the worst single crack 46.8 (B1).
+
+## Layer 1 inventory
+
+| Item | System that writes it | File | Natural mishandling | R2 (checks.py) |
+|---|---|---|---|---|
+| L1 former licence numbers on worksheets before 1 July 2019 | licensing system replacement | worksheets and crosswalk | pre-2019 worksheets unmatched | call unchanged (437.5) |
+| L2 a child repeated at every renewal; a newborn only from the next worksheet | capacity worksheet process | worksheets | the latest worksheet only | call unchanged (466.0) |
+| L3 two relationship code sets and two date formats | licensing system replacement | worksheets | one set read | the same rows as L1 (call unchanged) |
+| L4 homes licensed before 2016 present from 2016 | the extract's scope | licence extract | tenure started at 2016 | call unchanged (444.6) |
+| L5 grandchildren, foster children, other relatives on the worksheet | rules 6.40.030 | worksheets | any child read as a provider's own | ruled out by SF7 and the likelihood (any own child) |
+| L6 blank birth years for legacy providers | the legacy system | licence extract | blank read as a year | call unchanged (no age terms, 462.7) |
+| L7 county names, codes and spellings across files | each system's own | lookup and ask files | a region unmapped | every county maps (asserted) |
+| L8 notice and split-care lines, voided remittances, December 2025 service | CCAP payment system | ccap_payment_lines_2026.csv | lines summed | outside the call's files; Ask A device and hazards |
+| L9 the remittance amount on every child line; numbers restarting per county office and run | CCAP payment system | ccap_payment_lines_2026.csv | amounts summed, or deduped on a partial key | outside the call's files; Ask B device |
+| L10 revised food program claims and sponsor changes; twin visit records | CACFP claims and licensing systems | distractor files | none (no figure reads them) | distractors |
+
+## Leak sweep
+
+`leak.py task176 --asof 2027-01-14`: REVIEW, no LEAK. Each REVIEW line, answered:
+- An ask figure (a child-days count) appears in the food program claims as two adjacent CSV fields read as one number
+  (suppers then snacks); a coincidence of adjacent integers, in a distractor file.
+- The policy, the supply report, the dictionary and the rules carry six or seven of the call's words because they are
+  the department's own vocabulary (family child care homes, licensed, Allerton, December); none states a count, a
+  rate or a forecast.
+- Stump-paragraph terms in the same four documents (children, capacity, provider, worksheet, closure, school) are the
+  field's nouns: the rules say what the capacity worksheet lists and why (capacity counting), the policy says when a
+  subsidised child is school-age (rates and hours), and neither ties a child's school entry to a home's closure.
+- The quality ratings carry their expiry dates, which by nature fall after the as-of date; a distractor file.
+- Single-use test: the capacity worksheet's in-world use is capacity counting, it holds grandchildren, foster children
+  and other relatives as well as own children, and the decisive step reads one derived flag from it; the school-age
+  sentence's use is the subsidy's hours and rates.
 
 ## Earlier draws (screen record)
 
@@ -463,6 +747,15 @@ Prototypes are in the session scratchpad (r176/demog).
     per cent, capped by the share of couples the change reaches.
   - Same-sex couples marrying after a bar lifts (unselected long-duration couples): an analogue from one past
     legalisation, and a behavioural uptake.
+
+- **Ask layer re-sited, 2026-10-23, before any reader (coordinator's stage 4 measurements).** Cut: a food program
+  ask whose device was a sponsor's revised claim (same sponsor, home and month, later received) against a second
+  sponsor's part-month claim (a home changing sponsor), and a visits ask whose device was a monitoring visit and a
+  complaint investigation entered as two records at one arrival. The round's readers broke both shapes elsewhere (a
+  re-filed schedule replacing the first against a supplement that adds members; fills grouped by time, trader and
+  side), so neither is silent. Replaced by the subsidy money ask, whose device is a property of the payment run itself
+  (the remittance amount on every child line and remittance numbers restarting in each county office's run); the two
+  files stay as distractors.
 
 ## Retired
 

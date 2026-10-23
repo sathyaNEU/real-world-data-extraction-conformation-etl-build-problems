@@ -1,0 +1,56 @@
+{
+ "task": "task176",
+ "title": "How many of Allerton's licensed family child care homes will close during 2027, two to four years after a start-up grant round licensed a wave of home providers",
+ "domain": "Sociology & Demography",
+ "client_domain": "Sociology & Demography",
+ "subdomain": "event history and life course analysis (a closure hazard read on the provider's family life course, the summer before her youngest own child starts kindergarten, from the licensing record's home-months and the capacity worksheets' children)",
+ "objective": "Forecasting & Predictive Modeling",
+ "prompt_shape": "one count to the nearest 50; subsidised child-days by region and half-year; subsidy money paid to the homes by region and quarter of the payment run",
+ "as_of": "2027-01-12",
+ "deliverables": [
+  "fcc_closures_2027.xlsx"
+ ],
+ "distractor_files": [
+  "qris_star_ratings_2026.csv",
+  "market_rate_survey_2025.xlsx",
+  "cacfp_home_claims_2026.csv",
+  "licensing_visits_2026.csv"
+ ],
+ "distractors": [
+  {
+   "file": "qris_star_ratings_2026.csv",
+   "wrong_basis": false,
+   "why_relevant": "the quality ratings of the homes, a natural covariate for which homes close",
+   "why_unused": "no figure reads it; ratings carry no information on closure in this record",
+   "ruled_out_by": "the call's model and every ask read other files"
+  },
+  {
+   "file": "cacfp_home_claims_2026.csv",
+   "wrong_basis": false,
+   "why_relevant": "the food program claims of the homes, a measure of how many children each home serves",
+   "why_unused": "no figure reads it; the call reads the licensing record and the asks the subsidy runs",
+   "ruled_out_by": "the prompt's tables, both on the subsidy"
+  },
+  {
+   "file": "licensing_visits_2026.csv",
+   "wrong_basis": false,
+   "why_relevant": "the inspectors' visits to the homes, with complaint investigations",
+   "why_unused": "no figure reads it",
+   "ruled_out_by": "the prompt's tables, both on the subsidy"
+  },
+  {
+   "file": "market_rate_survey_2025.xlsx",
+   "wrong_basis": false,
+   "why_relevant": "the prices homes charge by county and age group, the economics of running a home",
+   "why_unused": "a 2025 survey of private prices; no figure reads it",
+   "ruled_out_by": "its own header (weekly private-pay prices in spring 2025)"
+  }
+ ],
+ "stated_inputs": [
+  "2026",
+  "2027",
+  "31 December 2026",
+  "50"
+ ],
+ "field_terms": []
+}

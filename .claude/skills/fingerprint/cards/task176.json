@@ -11,7 +11,7 @@
   "shape": "single-figure",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "About 450 of the family child care homes licensed in Allerton on 31 December 2026 will close during 2027, to the nearest 50 (provisional at the draw; set from generator/figures.json at stage 3).",
+  "answer": "About 450 of the 3,081 family child care homes licensed in Allerton on 31 December 2026 will close during 2027, to the nearest 50 (461.0 expected on the golden model; the standing family 432.1 to 463.2).",
   "answer_source": "task176/submission.md block 1; generator/figures.json",
   "gap": [
     "time",
@@ -33,7 +33,7 @@
   "validated_decoy": false,
   "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins the legacy and current licence numbers, keeps family child care homes, admits pre-2016 homes at their 2016 tenure and fits closure hazards by years licensed with provider age, county and the start-up grant flag files about 300 closures for 2027, because a tenure clock spreads the grant cohort's closures thin when they arrive together in the summer their youngest own children start kindergarten.",
+  "analyst_test": "A strong analyst who joins the legacy and current licence numbers, keeps family child care homes, admits pre-2016 homes at their 2016 tenure and fits closure hazards by years licensed with provider age, county and the start-up grant flag files 300 closures for 2027 (323.1 unrounded), because a tenure clock spreads the grant cohort's closures thin when they arrive together in the summer their youngest own children start kindergarten.",
   "domain_test": "The deciding quantity is each home's 2027 closure hazard read on its provider's family life course, the summer her youngest own child living in the home starts kindergarten, estimated as a discrete-time event-history model over every home's months on the licensing record; with clinics, shops or machines in place of home providers there is no youngest child and no school year, and the task no longer reads the same.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:linked-lives-clock-youngest-own-child-school-entry",
@@ -44,15 +44,14 @@
     "homes licensed before 2016 present only from their first renewal on the current record (delayed entry)",
     "county names in two spellings across files, mapped to regions by a lookup",
     "subsidy lines billed by service period across half-year boundaries, with notice-period payments to a home a child has left",
-    "food program claims revised by the sponsor under a new claim number, and homes changing sponsor mid-month",
-    "a visit that combines an unannounced monitoring visit with a complaint investigation entered as two visit records"
+    "every subsidy child line repeating its remittance's amount, remittance numbers restarting in each county office's run, voided remittances paid again in the next run"
   ],
   "stakeholder_role": "the child care supply analyst in the Department of Early Learning's Office of Child Care",
   "role_family": "capacity_planner",
   "scoring_unit": "per active unit per period",
   "spine": {
     "file": "fcc_licence_extract_20261231.csv",
-    "rows": 7800,
+    "rows": 5784,
     "entity": "one family child care home licence (a provider at an address)",
     "grain": "licence, with its issue and closure dates",
     "source": "synthetic (constructed in the layout of a state child care licensing system export)"
@@ -81,7 +80,7 @@
   "question_form": "how-many",
   "driver": "The decisive quantity is the forward count of units that end in a window, where a unit ends mostly when the youngest of the dependants recorded beside it reaches a fixed institutional age rather than as its own tenure lengthens; a recent wave of entrants who joined when their dependants were younger than earlier entrants' had been reaches that age together inside the window, so a tenure-based hazard, however stratified, misplaces their endings.",
   "driver_concrete": "A family child care home closes mostly in the summer before its provider's youngest own child living in the home starts kindergarten, and the 2023 start-up grant round licensed many providers whose youngest were babies, so in 2027 hundreds of homes in their fourth year reach that summer together, which closure rates by years licensed (or by grant cohort, or with a has-young-children flag) spread thin.",
-  "stump": "A competent solver fits closure hazards by years licensed on the 2016 to 2026 record, with provider age, county and the grant flag, and files about 300 closures for 2027; the step that lands it there is reading closure on the home's tenure, when it runs on the provider's youngest own child's kindergarten year, which about 600 grant-round homes reach in 2027.",
+  "stump": "A competent solver fits closure hazards by years licensed on the 2016 to 2026 home-months, with provider age and the summer months (or the grant round's own rates), and files 300 closures for 2027 (250 on the grant round's rates); the step that lands it there is reading closure on the home's tenure, when it runs on the provider's youngest own child's kindergarten summer, which 427 homes reach together in 2027, 336 of them from the 2023 round.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task134": "task134 v2 round 1 reads an inflow from an outside pool on a conversion hazard by time since entry after a surge; task176 reads closures on no clock of the unit's own (tenure is the wrong clock) but on a linked person's age, the provider's youngest own child reaching kindergarten, carried in a second file.",
