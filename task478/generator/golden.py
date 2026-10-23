@@ -14,53 +14,58 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 XLSX = "tbapcd_cerp_facilities_2027.xlsx"
 CSV = "tbapcd_nox_inventory_2026.csv"
 SVG = "tbapcd_facility_nox_2026.svg"
-NUMBER = {n: no for n, no, _ in B.FACILITIES}
+NUMBER = {n: no for n, no, _, _ in B.FACILITIES}
 
 
 def compute(target):
     I = B.Inputs(target)
-    tons = B.facility_tons(I, "golden")
+    k = I.k_pb1()
+    tons = B.facility_tons(I, "golden", k)
     default = B.facility_tons(I, "latest")
     rank = sorted(B.ORDER, key=lambda n: -tons[n])
     five = B.five(tons)
-    lv, b, sd = B.fit_climb(I.test_rows())
-    beta = list(b.values())[0]
     gas = B.gas_2026(target)
     eng = B.engine_lb(target)
     bl = B.read_billing(target)
-    cut = B.conversion(bl)
-    therm_lines = int((bl["READ_TO"] >= cut).sum())
-    hmm = B.hmm_facilities(target)
+    comb = B.combined_accounts(bl)
+    el = B.elog_dates(target)
+    outs = B.outages(target)
     rep = B.replacements(target)
-    unit = B.unit_lb(I, "golden")
+    unit = B.unit_lb(I, "golden", k)
+    pb_dev, pbm = I.pb1_months()
+    burners = [d for d in I.open if "burner" in I.control[d]]
     f = {
         "call": {"facilities": five, "count": 5, "of": 14},
         "facilities": {n: {"number": NUMBER[n], "nox_tons": B.hround(tons[n]), "agreement": "Yes" if n in five else "No",
                            "gas_mmbtu": B.hround(gas[n]), "engine_nox_lb": B.hround(eng[n])} for n in B.ORDER},
         "components": {
-            "climb_pct_per_1000h": B.hround(100 * (math.exp(beta * 1000) - 1)),
-            "climb_log_per_10000h": "%.2f" % (beta * 1e4),
+            "rise_pct_per_pct": int(round(100 * (math.exp(k * 0.01) - 1))),
             "fifth": {"name": rank[4], "tons": B.hround(tons[rank[4]])},
             "sixth": {"name": rank[5], "tons": B.hround(tons[rank[5]])},
             "five_tons_low": min(B.hround(tons[n]) for n in five),
             "five_tons_high": max(B.hround(tons[n]) for n in five),
-            "tests": int(len(I.test_rows())), "open_units": len(I.open), "monitored_units": len(I.monitored),
-            "devices": len(I.devices), "cems_tons": B.hround(sum(I.cems.values()) / 2000.0),
+            "tests": int(len(I.tests)), "open_units": len(I.open), "monitored_units": len(I.monitored),
+            "burner_units": len(burners), "devices": len(I.devices),
+            "cems_tons": B.hround(sum(I.cems.values()) / 2000.0),
             "corridor_tons": B.hround(sum(tons.values())),
             "gas_total_mmbtu": B.hround(sum(gas.values())),
             "engine_total_lb": B.hround(sum(eng.values())),
         },
         "default": {"facilities": B.five(default), "tons": {n: B.hround(default[n]) for n in B.ORDER}},
-        "ask_a": {"therm_lines": therm_lines, "lines": int(len(bl)), "first_therm_month": "July 2026"},
-        "ask_b": {"hmm_facilities": [n for n in B.ORDER if n in hmm], "replaced": sorted(rep)},
+        "ask_a": {"combined_accounts": sorted(comb), "lines": int(len(bl)), "first_therm_read": "July 2026"},
+        "ask_b": {"elog": {n: str(el[n]) for n in B.ORDER if n in el}, "replaced": sorted(rep),
+                  "bank_facilities": sorted(n for n in outs if n in ("Ashgrove Refining", "St. Aldric Medical Center",
+                                                                     "Tamsett State University",
+                                                                     "Quarry Lane Correctional Facility"))},
         "rank": rank,
-        "stated": {"rule": "4306", "window": "calendar 2026", "agreements_by": "1 April 2027", "hhv_mmscf": 1037,
-                   "engine_load_factor": 0.74, "g_lb": B.G_LB, "therms_per_mmbtu": 10, "per_hours": [1000, 10000],
-                   "plan_gas_section": "4.2", "hmm_example": "1.30"},
+        "stated": {"rule": "4306", "window": "calendar 2026", "agreements_by": "1 April 2027",
+                   "engine_load_factor": 0.74, "g_lb": B.G_LB, "therms_per_mmbtu": 10, "plan_gas_section": "4.2",
+                   "monitored_burner": pb_dev, "hmm_example": "0.30", "o2_ref_pct": 3, "heat_content_ref": B.HREF},
         "_unrounded": {"tons": {n: round(tons[n], 4) for n in B.ORDER}, "gas": {n: round(gas[n], 3) for n in B.ORDER},
-                       "engine_lb": {n: round(eng[n], 3) for n in B.ORDER}, "beta_per_hour": beta,
-                       "residual_sd": sd, "unit_lb": {d: round(v, 2) for d, v in unit.items()},
-                       "cems_lb": {d: round(v, 2) for d, v in I.cems.items()}},
+                       "engine_lb": {n: round(eng[n], 3) for n in B.ORDER}, "k": k,
+                       "unit_lb": {d: round(v, 2) for d, v in unit.items()},
+                       "cems_lb": {d: round(v, 2) for d, v in I.cems.items()},
+                       "pb1_months": {str(m): v for m, v in pbm.items()}},
     }
     return f
 
@@ -84,7 +89,7 @@ def write_xlsx(path, f):
     thin = Side(style="thin", color="808080")
     ws["A1"] = "NOx reduction agreements, 2027"
     ws["A1"].font = Font(name="Calibri", size=14, bold=True)
-    ws["A2"] = ("Planning and Rules Division. Lowry Creek Community Emissions Reduction Plan 2027, section 2. Prepared "
+    ws["A2"] = ("Compliance Division. Lowry Creek Community Emissions Reduction Plan 2027, section 2. Prepared "
                 "19 February 2027.")
     ws["A2"].font = Font(name="Calibri", size=9, italic=True, color="555555")
     ws.append([])
@@ -140,31 +145,32 @@ def write_xlsx(path, f):
 
     s3 = wb.create_sheet("Notes")
     notes = [
-        ("2026 NOx, Rule 4306 units", "Plan 2.1 and 2.2: each facility's SCR-controlled boilers, heaters, turbines, "
-         "glass furnace and lean-burn engines, calendar 2026. Units with a CEMS: the monitors' hourly NOx mass, "
-         "substitute hours as reported. Units without one: each day's heat input from the emission statements at the "
-         "rate its catalyst's operating hours gave that day. Those units inject ammonia open-loop, so their rate climbs "
-         "with the hours on the catalyst until it is replaced: across the %d source tests since 2018, each unit's rate "
-         "rose about %d per cent for every 1,000 hours on its catalyst (one climb for all units, each unit its own "
-         "level), the hours counted from the catalyst dates in the compliance log." % (cp["tests"],
-                                                                                    cp["climb_pct_per_1000h"])),
-        ("Gas delivered", "Plan 4.2: each bill's billed usage on Tamsett Valley Gas's billing lines, spread evenly over "
-         "the days from its prior read to the day before its current read, 10 therms to the MMBtu. The utility's new "
-         "billing system bills therms from the reads of 1 July 2026, still in the USAGE_CCF column: on the meters billed "
-         "from their index a line's usage equals its read difference times the pressure multiplier times the BTU factor "
-         "from then on, and the read difference times the multiplier (CCF, turned into therms with the BTU factor) "
-         "before; the meters on volume correctors are billed by the same system from the same reads."),
+        ("2026 NOx, Rule 4306 units", "Plan 2.1 and 2.2: each facility's boilers, steam generators and process "
+         "heaters under Rule 4306, calendar 2026. Units with a CEMS: the monitors' hourly NOx mass, substitute hours as "
+         "reported. Units without one: each month's heat input from the emission statements at the rate the unit ran "
+         "at on that month's gas. Their ultra-low and low-NOx burners set their combustion air by volume, so a richer "
+         "gas fires hotter: the Lindqvist power boiler's monitor shows its NOx rate rising about %d per cent for each "
+         "per cent rise in its BTU area's heat content (Tamsett Valley Gas's monthly table), and the %d source tests "
+         "since 2018 bear the same rise out. Each burner's tests are carried from the heat content of their months' "
+         "gas to each 2026 month's (Westside's moved from 1.027 to 1.087 therms a CCF in 2026, Eastside's held "
+         "between 1.033 and 1.038)." % (cp["rise_pct_per_pct"], cp["tests"])),
+        ("Gas delivered", "Plan 4.2: each billing period's therms on Tamsett Valley Gas's billing lines, spread evenly "
+         "over the days from its prior read to the day before its current read, 10 therms to the MMBtu. Lines read "
+         "before the utility's July 2026 billing conversion carry corrected CCF in the USAGE_THERMS column (times the "
+         "line's BTU factor they are the therms billed); from the July reads the column is therms. The five "
+         "combined-billing accounts carry the account's usage on each of their meters' lines, taken once a period."),
         ("Emergency engines' NOx", "Plan 4.3 and the inventory guidance section 6: hours x rated bhp x 0.74 x the "
-         "tier's g/bhp-hr. Seven facilities log run time in hours and minutes (1.30 is an hour and a half), the reading "
-         "their engines' hour meters bear out between inspections (the meters also run through each start's warm-up and "
-         "cool-down). An engine replaced under the Clean Standby Engine program "
-         "keeps its device number; its runs before the replacement date are the old engine's, at the old rating and "
-         "tier the compliance log records."),
+         "tier's g/bhp-hr. Seven facilities moved their logs to the District's e-logbook during 2026, which records "
+         "run time as hours and minutes (0.30 is half an hour); their engines' hour meters bear that reading out. At "
+         "the four facilities whose engines run in parallel during an outage, each engine's emergency line carries the "
+         "bank's engine-hours: each engine ran the outage the compliance log records. An engine replaced under the "
+         "Clean Standby Engine program keeps its device number; its runs before the replacement date are the old "
+         "engine's, at the old rating and tier the compliance log records."),
         ("Rounding", "Tons to the whole ton, gas to the whole MMBtu and engine NOx to the whole pound, each from the "
          "unrounded figure."),
         ("Sources", "CEMS hourly export 2026, source test databases 2018 to 2021 and 2022 to 2026, emission statements "
-         "2017 to 2026, permit device list, compliance event log, Tamsett Valley Gas billing extract of 3 February "
-         "2027, Rule 4702 logs 2026 and engine inspections."),
+         "2018 to 2026, Tamsett Valley Gas monthly heat content, permit device list, compliance event log, Tamsett "
+         "Valley Gas billing extract of 8 February 2027, Rule 4702 logs 2026 and engine inspections."),
     ]
     s3.append(["Item", "Note"])
     for c in s3[1]:
@@ -178,7 +184,7 @@ def write_xlsx(path, f):
     s3.column_dimensions["B"].width = 100
     wb.save(path)
     import postprocess as PP
-    PP.normalize_ooxml(path, "Brian Daniels", "Nancy Hansen", "2027-02-18T16:12:00Z", "2027-02-19T21:37:44Z",
+    PP.normalize_ooxml(path, "Anna Haynes", "Andrew Greene", "2027-02-18T16:12:00Z", "2027-02-19T21:37:44Z",
                        excel=True, company=PP.COMPANY)
 
 
@@ -212,16 +218,16 @@ def write_svg(path, f):
     ax.legend(handles=[Patch(color=blue, label="NOx reduction agreement, 2027"), Patch(color=grey, label="No agreement")],
               loc="lower right", frameon=False, fontsize=8.5)
     c6 = f["components"]["sixth"]
-    fig.suptitle("Five facilities' SCR units emitted the most NOx in the Lowry Creek corridor in 2026", x=0.012, ha="left",
-                 fontsize=11.5, fontweight="bold", color=ink)
+    fig.suptitle("Five facilities' boilers and heaters emitted the most NOx in the Lowry Creek corridor in 2026", x=0.012,
+                 ha="left", fontsize=11.5, fontweight="bold", color=ink)
     ax.set_title("Tons of NOx from each facility's Rule 4306 units; the five in blue get the plan's 2027 agreements.\n"
                  "Next in line: %s, %d tons." % (c6["name"], c6["tons"]), loc="left", fontsize=8.5, color=muted, pad=10,
                  linespacing=1.5)
     fig.text(0.012, 0.012, "Source: Tamsett Basin APCD 2026 point source inventory (CEMS, source tests, emission "
-             "statements).", fontsize=7.5, color=muted)
+             "statements, Tamsett Valley Gas heat content).", fontsize=7.5, color=muted)
     fig.subplots_adjust(left=0.26, right=0.98, top=0.83, bottom=0.12)
     buf = io.StringIO()
-    fig.savefig(buf, format="svg", metadata={"Date": None, "Creator": "Planning and Rules Division"})
+    fig.savefig(buf, format="svg", metadata={"Date": None, "Creator": "Compliance Division"})
     plt.close(fig)
     svg = buf.getvalue().replace('id="matplotlib.', 'id="').replace("'DejaVu Sans'", "'DejaVu Sans', Arial, Helvetica, sans-serif")
     assert "matplotlib" not in svg.lower()

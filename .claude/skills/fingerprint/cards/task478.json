@@ -10,7 +10,7 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "Sign the 2027 NOx reduction agreements with Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass Works, against Tamsett State University in sixth (provisional at the draw; the tons come from generator/figures.json at stage 3).",
+  "answer": "Sign the 2027 NOx reduction agreements with Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Renewable Fuels (26, 12, 9, 8 and 8 tons from their Rule 4306 units in 2026), against Tamsett State University's 7 in sixth.",
   "answer_source": "design note at the draw; submission.md block 1 from generator/figures.json once built",
   "gap": [
     "objective"
@@ -30,26 +30,26 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms every source test to lb/MMBtu, every fuel statement to heat input (MMscf at the utility's heat content for the facility's BTU area and month) and every monitor hour to 2026, and reads the plan and its guidance correctly, carries each unmonitored burner's latest test (or the mean of its tests, or the monitored boiler's 2026 months as an index) across its 2026 fuel and names Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Glass Works; only each burner's tests carried from the heating value of their months' gas to each 2026 month's, by the rise of NOx with heating value that the monitored Lindqvist power boiler traces against the utility's monthly heat content, names Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass Works.",
+  "analyst_test": "A strong analyst who conforms every source test to lb/MMBtu, every fuel statement to heat input (MMscf at the utility's heat content for the facility's BTU area and month) and every monitor hour to 2026, and reads the plan and its guidance correctly, carries each unmonitored burner's latest test (or the mean of its tests, or the monitored boiler's 2026 months as an index) across its 2026 fuel and names Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Renewable Fuels; only each burner's tests carried from the heating value of their months' gas to each 2026 month's, by the rise of NOx with heating value that the monitored Lindqvist power boiler traces against the utility's monthly heat content, names Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Renewable Fuels.",
   "domain_test": "Stationary-source inventory work: a source test is a snapshot of a unit's NOx rate on its test day's fuel, and a low-NOx burner that meters its combustion air by volume burns a richer gas hotter, so its NOx rises several per cent for each per cent the supply's heating value rises; the year's NOx needs each test carried across the heating values the year's gas ran at; with hospital or traffic nouns there is no burner air-fuel ratio, no gas heating value and no source test to carry, so nothing is left to decide.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:a spot test of an emission rate read on its day's fuel, carried across the year month by month by the fuel's heating value, the sensitivity read from a monitored unit of the same burner type and the units' own test histories against the supplier's monthly record",
   "layer1": [
-    "source tests split across two databases, ppmvd at 3 per cent oxygen and lb/hr in the older, lb/MMBtu added in the newer",
-    "fuel statements in therms, MMscf and MMBtu by facility layout, MMscf converted at the utility's heat content for the facility's BTU area and month",
+    "source tests split across two databases, ppmvd at 3 per cent oxygen, lb/hr and load in the older, lb/MMBtu and heat input added in the newer",
+    "fuel statements in therms, MMscf and MMBtu by facility and year, MMscf converted at the utility's heat content for the facility's BTU area and month",
     "monitor hours in local standard time with substitute-data codes",
-    "district device numbers against the monitoring plan's unit ids and the test databases' keys without leading zeros",
-    "an event log with mixed date formats and free text, the notices and retests a failed test brings",
+    "district device numbers against the monitoring plan's unit ids and the older test database's keys without leading zeros or the D- prefix",
+    "an event log with month-first dates to 2020 and free text: test notifications, a deferral, breakdowns, inspections, outages, equipment work",
     "a facility renumbered after a change of owner",
-    "a test deferred past its due date under a filed extension"
+    "a source test deferred for a plant turnaround"
   ],
   "stakeholder_role": "the district's director of compliance",
   "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
     "file": "tbapcd_cems_hourly_2026.csv",
-    "rows": 35040,
-    "entity": "one hour of one continuously monitored unit",
+    "rows": 34065,
+    "entity": "one operating hour of one continuously monitored unit",
     "grain": "unit x hour",
     "source": "synthetic (constructed in the layout of a continuous emissions monitoring hourly export)"
   },
@@ -67,7 +67,7 @@
       "Lindqvist Paperboard",
       "Merriwell Foods",
       "Sedge Hollow Creamery",
-      "Valmora Glass Works",
+      "Valmora Renewable Fuels",
       "Tamsett State University",
       "Haskett Ridge Poultry",
       "Quarry Lane Correctional Facility",
@@ -88,7 +88,7 @@
   "question_form": "which",
   "driver": "The decisive quantity is each unit's period total of an output whose rate rises steeply with a property of an input a third party supplies, which the supplier records month by month for each supply area and which moves without any event at the unit; most units are measured only by occasional spot tests, each read on whatever input its day received, so carrying a spot test across the period, or averaging a unit's tests, misstates every unit whose period ran on a different input from its test days, while a continuously measured unit of the same kind and the units' own test histories trace the rate against the supplier's record, which carries each test from its test month's input to each month's.",
   "driver_concrete": "Each facility's 2026 NOx from its Rule 4306 boilers and heaters is mostly its unmonitored low-NOx burners' fuel times a rate that rises about six per cent for each per cent the Westside BTU area's gas heating value rises, because a burner metering its air by volume burns a richer gas hotter; a source test reads the rate on its test day's gas, so Merriwell Foods' boilers, tested in the lean Augusts of odd years, understate a 2026 season that ran on rich gas, and Tamsett State University's, tested in rich Mays, overstate a winter fired on lean gas, while the monitored Lindqvist power boiler traces the rise against the utility's monthly heat content.",
-  "stump": "The default path carries each unmonitored burner's latest source test across its 2026 fuel and names Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Glass Works; a low-NOx burner that meters its combustion air by volume burns a richer gas hotter, so its NOx rises with the heating value of the gas its BTU area receives, which the Westside gas plant's ethane recovery moves from month to month: Merriwell Foods' boilers were last tested in August 2025 on lean gas and ran their 2026 season on rich gas, and Tamsett State University's were tested in May 2026 on rich gas and fired the winter on lean; the rise the monitored Lindqvist power boiler traces against the utility's monthly heat content, carried from each test's month to each 2026 month, names Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass Works.",
+  "stump": "The default path carries each unmonitored burner's latest source test across its 2026 fuel and names Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Renewable Fuels; a low-NOx burner that meters its combustion air by volume burns a richer gas hotter, so its NOx rises with the heating value of the gas its BTU area receives, which the Westside gas plant's ethane recovery moves from month to month: Merriwell Foods' boilers were last tested in August 2025 on lean gas and ran their 2026 season on rich gas, and Tamsett State University's were tested in May 2026 on rich gas and fired the winter on lean; the rise the monitored Lindqvist power boiler traces against the utility's monthly heat content, carried from each test's month to each 2026 month, names Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Renewable Fuels.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task478": "architecture 6 carried each test along the operating hours on its catalyst, a clock the unit's own maintenance log builds; here no part ages and nothing at the unit changes: the rate follows a property of the fuel a third party supplies, recorded only in that supplier's monthly table",
@@ -191,7 +191,7 @@
       "fate": "spent at stage 4 on 2026-10-23: reader A (round 1) landed the call by fitting each unit's tests on the operating hours since its last catalyst event (one shared climb, a level per unit); reader B missed it"
     }
   ],
-  "notes": "architecture 7 drawn 2026-10-23 after architecture 6 was spent at stage 4; strategy other: a property of the fuel a third party supplies, recorded month by month in its heat content table, carries each spot test across the year; personas from guard.py names --geo 'United States' --seed 478",
+  "notes": "architecture 7 drawn 2026-10-23 after architecture 6 was spent at stage 4; strategy other: a property of the fuel a third party supplies, recorded month by month in its heat content table, carries each spot test across the year; personas from guard.py names --geo 'United States' --seed 478; built 2026-10-23 (zip md5 2936a1ef), fork rows SF1 to SF26 asserted, thirty standing constructions file one five and the same 14 whole tons",
   "client_domain": "physical-environmental-sciences",
   "registered": "2026-10-23T02:34:35Z"
 }

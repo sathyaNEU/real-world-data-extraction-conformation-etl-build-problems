@@ -6,17 +6,17 @@
  "files": [
   {
    "file": "tbapcd_cems_hourly_2026.csv",
-   "source": "Tamsett Basin Air Pollution Control District (fictional), continuous emissions monitoring data system; synthetic records",
+   "source": "Tamsett Basin APCD (fictional), continuous emissions monitoring data system; synthetic records",
    "date": "2027-02-08",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 60257
+   "rows": 34065
   },
   {
-   "file": "tbapcd_compliance_events_2017_2026.csv",
-   "source": "Tamsett Basin Air Pollution Control District (fictional), compliance tracking system; synthetic records",
+   "file": "tbapcd_compliance_events_2018_2026.csv",
+   "source": "Tamsett Basin APCD (fictional), compliance tracking system; synthetic records",
    "date": "2027-02-11",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 755
+   "rows": 624
   },
   {
    "file": "tbapcd_emission_inventory_guidance_2026.pdf",
@@ -26,74 +26,81 @@
    "rows": null
   },
   {
-   "file": "tbapcd_emission_statements_2017_2026.csv",
-   "source": "Tamsett Basin Air Pollution Control District (fictional), emission statements database; synthetic records",
+   "file": "tbapcd_emission_statements_2018_2026.csv",
+   "source": "Tamsett Basin APCD (fictional), emission statements database; synthetic records",
    "date": "2027-02-16",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 4200
+   "rows": 4104
   },
   {
    "file": "tbapcd_engine_inspections_2025_2027.csv",
-   "source": "Tamsett Basin Air Pollution Control District (fictional), engine inspection records; synthetic records",
+   "source": "Tamsett Basin APCD (fictional), engine inspection records; synthetic records",
    "date": "2027-02-12",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 59
+   "rows": 70
   },
   {
    "file": "tbapcd_lowry_creek_cerp_2027.pdf",
-   "source": "Tamsett Basin Air Pollution Control District (fictional), Planning and Rules Division; synthetic records",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), Compliance Division; synthetic records",
    "date": "2027-02-19",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
    "file": "tbapcd_lowry_creek_no2_hourly_2026.csv",
-   "source": "Tamsett Basin Air Pollution Control District (fictional), community air monitoring network; synthetic records",
+   "source": "Tamsett Basin APCD (fictional), community air monitoring network; synthetic records",
    "date": "2027-01-20",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": 26280
   },
   {
    "file": "tbapcd_lowry_creek_onroad_nox_2026.xlsx",
-   "source": "Tamsett Basin Air Pollution Control District (fictional), Mobile Sources Section, county-scale MOVES run; synthetic records",
+   "source": "Tamsett Basin APCD (fictional), Mobile Sources Section, county-scale MOVES run; synthetic records",
    "date": "2026-12-08",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": 34
   },
   {
    "file": "tbapcd_permit_devices.csv",
-   "source": "Tamsett Basin Air Pollution Control District (fictional), permit system, device list; synthetic records",
+   "source": "Tamsett Basin APCD (fictional), permit system device list; synthetic records",
    "date": "2027-02-10",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 66
+   "rows": 71
   },
   {
    "file": "tbapcd_rule4702_engine_logs_2026.xlsx",
-   "source": "Tamsett Basin Air Pollution Control District (fictional), facilities' Rule 4702 operating logs as submitted; synthetic records",
+   "source": "the facilities' Rule 4702 operating logs as submitted to Tamsett Basin APCD (fictional); synthetic records",
    "date": "2027-02-12",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 1425
+   "rows": 1557
   },
   {
    "file": "tbapcd_source_tests_2018_2021.csv",
-   "source": "Tamsett Basin Air Pollution Control District (fictional), source test results database (to 2021); synthetic records",
+   "source": "Tamsett Basin APCD (fictional), source test results database (to 2021); synthetic records",
    "date": "2027-02-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 77
+   "rows": 112
   },
   {
    "file": "tbapcd_source_tests_2022_2026.xlsx",
-   "source": "Tamsett Basin Air Pollution Control District (fictional), source test results database (from 2022); synthetic records",
+   "source": "Tamsett Basin APCD (fictional), source test results database (from 2022); synthetic records",
    "date": "2027-02-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 95
+   "rows": 136
   },
   {
    "file": "tvg_commercial_billing_extract_2027-02.csv",
-   "source": "Tamsett Basin Air Pollution Control District (fictional), Tamsett Valley Gas (fictional) under the District's data sharing agreement; synthetic records",
-   "date": "2027-02-03",
+   "source": "Tamsett Valley Gas (fictional), commercial billing extract under the District's data sharing agreement; synthetic records",
+   "date": "2027-02-08",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 253
+   "rows": 308
+  },
+  {
+   "file": "tvg_monthly_heat_content_2018_2027.csv",
+   "source": "Tamsett Valley Gas (fictional), published monthly heat content by BTU area; synthetic records",
+   "date": "2027-02-05",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 220
   }
  ],
  "distractor_files": [

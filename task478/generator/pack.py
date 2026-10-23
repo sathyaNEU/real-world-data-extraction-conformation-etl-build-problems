@@ -1,6 +1,7 @@
 """Writes task478's evidence pack from world.py: the monitors' hourly export, the two source test databases, the
-emission statements, the permit list, the compliance event log, the gas utility's billing extract, the facilities'
-emergency engine logs and inspections, and the two distractors (the documents are docs.py's)."""
+emission statements, the gas utility's monthly heat content table, the permit list, the compliance event log, the gas
+utility's billing extract, the facilities' emergency engine logs and inspections, and the two distractors (the
+documents are docs.py's)."""
 import csv
 import datetime as dt
 import os
@@ -15,9 +16,10 @@ FILES = {
     "cems": "tbapcd_cems_hourly_2026.csv",
     "tests_old": "tbapcd_source_tests_2018_2021.csv",
     "tests_new": "tbapcd_source_tests_2022_2026.xlsx",
-    "statements": "tbapcd_emission_statements_2017_2026.csv",
+    "statements": "tbapcd_emission_statements_2018_2026.csv",
+    "heat": "tvg_monthly_heat_content_2018_2027.csv",
     "permits": "tbapcd_permit_devices.csv",
-    "events": "tbapcd_compliance_events_2017_2026.csv",
+    "events": "tbapcd_compliance_events_2018_2026.csv",
     "billing": "tvg_commercial_billing_extract_2027-02.csv",
     "engine_logs": "tbapcd_rule4702_engine_logs_2026.xlsx",
     "inspections": "tbapcd_engine_inspections_2025_2027.csv",
@@ -25,18 +27,16 @@ FILES = {
     "onroad": "tbapcd_lowry_creek_onroad_nox_2026.xlsx",
 }
 # the monitoring plan's unit ids for the monitored devices
-CEMS_ID = {"D-1101": "CT1", "D-1102": "CT2", "D-1201": "H101", "D-1202": "H102", "D-1301": "MF1", "D-1701": "PB1",
-           "D-1801": "GT3", "D-2101": "1", "D-2102": "2"}
-ADDRESS = {"F01": "2200 Wexley Point Rd", "F02": "1 Refinery Ave", "F03": "880 Furnace St", "F04": "15500 Sedge Hollow Rd",
+CEMS_ID = {"D-1201": "H101", "D-1202": "H102", "D-1203": "BLR1", "D-1701": "PB1"}
+ADDRESS = {"F01": "2200 Wexley Point Rd", "F02": "1 Refinery Ave", "F03": "880 Distillery Rd", "F04": "15500 Sedge Hollow Rd",
            "F05": "4917 Haskett Ridge Rd", "F06": "1300 Aldric Blvd", "F07": "60 Mill Race Ln", "F08": "500 University Dr",
            "F09": "7700 Briar Flats Rd", "F10": "210 Cannery Row", "F11": "3150 Harrow Ln", "F12": "4410 Orchard Way",
            "F13": "4486 Orchard Way", "F14": "9 Quarry Lane"}
 # what each facility put its fuel in on its statements from 2021 (before that, every statement in MMSCF)
-STATEMENT_UNIT = {"F01": "MMBTU", "F02": "THERMS", "F03": "MMSCF", "F04": "MMSCF", "F05": "MMSCF", "F06": "THERMS",
-                  "F07": "MMBTU", "F08": "THERMS", "F09": "MMSCF", "F10": "MMSCF", "F11": "MMBTU", "F12": "THERMS",
+STATEMENT_UNIT = {"F01": "MMBTU", "F02": "THERMS", "F03": "MMSCF", "F04": "THERMS", "F05": "MMSCF", "F06": "THERMS",
+                  "F07": "MMBTU", "F08": "THERMS", "F09": "MMSCF", "F10": "THERMS", "F11": "MMSCF", "F12": "THERMS",
                   "F13": "THERMS", "F14": "MMBTU"}
-HHV_BIO = {"lfg": 534.0, "dg": 612.0}
-EXTRACT_BILLING = dt.date(2027, 2, 3)
+AREA_CODE = {"W": "WESTSIDE", "E": "EASTSIDE"}
 TESTERS = ("Basin Source Testing", "Delta Stack Services", "Westridge Emissions Measurement")
 
 
@@ -68,15 +68,12 @@ def write_cems(path, e):
 
 
 def _test_fields(dev, t, rng):
-    """A test's reported quantities: heat input at the test load, ppm at the reference oxygen, lb/hr, fuel flow."""
+    """A test's reported quantities: the load, heat input at the test load, ppm at 3 per cent oxygen, lb/hr."""
     u = W.UNIT[dev]
-    load = float(np.clip(u["load"] * rng.normal(1.0, 0.03), 0.6, 1.0))
+    load = float(np.clip(u["load"] * rng.normal(1.08, 0.03), 0.6, 1.0))
     hi = u["rating"] * load
-    fd = W.FD_NG if u["fuel"] == "ng" else W.FD_BIO
-    o2ref = W.KINDS[u["kind"]][2]
-    ppm = W.lb_to_ppm(t["measured"], o2ref, fd)
-    hhv = W.HHV_NG if u["fuel"] == "ng" else HHV_BIO[u["fuel"]] * float(rng.uniform(0.97, 1.03))
-    return dict(load=load, hi=hi, ppm=ppm, o2ref=o2ref, lbhr=t["measured"] * hi, scfh=hi * 1e6 / hhv, hhv=hhv)
+    ppm = W.lb_to_ppm(t["measured"])
+    return dict(load=load, hi=hi, ppm=ppm, lbhr=t["measured"] * hi)
 
 
 def write_tests(old_path, new_path, e):
@@ -87,24 +84,23 @@ def write_tests(old_path, new_path, e):
     for dev in sorted(W.OPEN):
         rng = _rng(int(dev[2:]))
         u = W.UNIT[dev]
-        lim = W.KINDS[u["kind"]][1]
         for t in e["units"][dev]["tests"]:
             tno += int(rng.integers(5, 30))
             f = _test_fields(dev, t, rng)
-            res = "PASS" if f["ppm"] <= lim else "FAIL"
+            res = "PASS" if round(f["ppm"], 2) <= u["limit"] else "FAIL"
             if t["date"].year <= 2021:
                 old.append([str(tno), fac_no(u["facility"], t["date"]).lstrip("0"), dev[2:],
-                            t["date"].strftime("%m/%d/%Y"), "%.2f" % f["ppm"], "%.0f" % f["o2ref"],
-                            "%.3f" % f["lbhr"], "%.0f" % f["scfh"], "%.0f" % f["hhv"], "%.0f" % (100 * f["load"]), res])
+                            t["date"].strftime("%m/%d/%Y"), "%.2f" % f["ppm"], "3", "%.3f" % f["lbhr"],
+                            "%.0f" % (100 * f["load"]), res])
             else:
                 new.append(["ST-%d" % tno, fac_no(u["facility"], t["date"]), dev, t["date"], 3, round(f["ppm"], 2),
-                            int(f["o2ref"]), round(t["measured"], 5), round(f["lbhr"], 3), round(f["hi"], 1),
+                            3, round(t["measured"], 5), round(f["lbhr"], 3), round(f["hi"], 1),
                             round(100 * f["load"]), TESTERS[int(rng.integers(0, 3))], t["report"], res])
-    old.sort(key=lambda r: dt.datetime.strptime(r[3], "%m/%d/%Y"))
+    old.sort(key=lambda r: (dt.datetime.strptime(r[3], "%m/%d/%Y"), r[2]))
     with open(old_path, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["TEST_NO", "FAC_NO", "DEVICE_NO", "TEST_DATE", "NOX_PPMVD", "O2_REF", "NOX_LB_HR", "FUEL_FLOW_SCFH",
-                    "FUEL_HHV", "LOAD_PCT", "RESULT"])
+        w.writerow(["TEST_NO", "FAC_NO", "DEVICE_NO", "TEST_DATE", "NOX_PPMVD", "O2_REF", "NOX_LB_HR", "LOAD_PCT",
+                    "RESULT"])
         w.writerows(old)
     new.sort(key=lambda r: (r[3], r[2]))
     wb = openpyxl.Workbook()
@@ -129,8 +125,8 @@ def write_tests(old_path, new_path, e):
     ws.freeze_panes = "A2"
     ns = wb.create_sheet("Field notes")
     for line in (["Source test results database (new system, from January 2022)"],
-                 ["Results are the average of the test's runs (normally three), corrected to the reference oxygen of"
-                  " the device's permit limit."],
+                 ["Results are the average of the test's runs (normally three), corrected to 3 per cent oxygen, the"
+                  " reference oxygen of the device's permit limit."],
                  ["lb/MMBtu is computed by the tester under EPA Method 19 from the fuel's F-factor; lb/hr from the"
                   " measured stack flow."],
                  ["Tests before 2022 are in the earlier database's export."]):
@@ -140,66 +136,73 @@ def write_tests(old_path, new_path, e):
     return len(old), len(new)
 
 
+def statement_quantity(code, y, m, mmbtu):
+    """The quantity and unit a facility's statement reports for a month's MMBtu."""
+    unit = "MMSCF" if y <= 2020 else STATEMENT_UNIT[code]
+    if unit == "MMSCF":
+        return "%.4f" % (mmbtu / (W.heat_content()[(W.AREA[code], y, m)] * 1000.0)), unit
+    if unit == "THERMS":
+        return "%.0f" % (mmbtu * 10), unit
+    return "%.1f" % mmbtu, unit
+
+
 def write_statements(path, e):
     rows = []
     for dev in sorted(W.UNIT):
         u = W.UNIT[dev]
-        hrs = e["units"][dev]["hours"] if not u["monitored"] else W.run_hours(dev)
-        hr = W.heat_rate(dev)
-        rng = _rng(100 + int(dev[2:]))
-        for y in range(2017, 2027):
+        mm = e["units"][dev]["mmbtu"]
+        hrs = W.run_hours(dev)
+        month_hours = {}
+        for d in W.DAYS:
+            month_hours[(d.year, d.month)] = month_hours.get((d.year, d.month), 0.0) + hrs[d]
+        for y in range(2018, 2027):
             for m in range(1, 13):
-                days = [d for d in hrs if d.year == y and d.month == m]
-                h = sum(hrs[d] for d in days)
                 if u["monitored"] and y == W.YEAR:
                     h = sum(op for t, op, _, _, _ in e["units"][dev]["cems"] if t.month == m)
-                    mmbtu = sum(hi for t, _, hi, _, _ in e["units"][dev]["cems"] if t.month == m)
                 else:
-                    mmbtu = h * hr
-                unit = "MMSCF" if y <= 2020 else STATEMENT_UNIT[u["facility"]]
-                hhv = ""
-                if u["fuel"] != "ng":
-                    unit = "MMSCF"
-                    hhv = "%.0f" % (HHV_BIO[u["fuel"]] * float(rng.uniform(0.97, 1.03)))
-                    qty = "%.4f" % (mmbtu / float(hhv))
-                elif unit == "MMSCF":
-                    qty = "%.4f" % (mmbtu / W.HHV_NG)
-                elif unit == "THERMS":
-                    qty = "%.0f" % (mmbtu * 10)
-                else:
-                    qty = "%.1f" % mmbtu
-                fuel = {"ng": "NATURAL GAS", "lfg": "LANDFILL GAS", "dg": "DIGESTER GAS"}[u["fuel"]]
-                rows.append([str(y), fac_no(u["facility"], dt.date(y, m, 1)), dev, str(m), fuel, qty, unit, hhv,
+                    h = month_hours[(y, m)]
+                qty, unit = statement_quantity(u["facility"], y, m, mm[(y, m)])
+                rows.append([str(y), fac_no(u["facility"], dt.date(y, m, 1)), dev, str(m), "NATURAL GAS", qty, unit,
                              "%.1f" % h])
     with open(path, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["STMT_YEAR", "FAC_NO", "DEVICE_NO", "MONTH", "FUEL", "QUANTITY", "UNIT", "HHV_BTU_SCF", "HOURS"])
+        w.writerow(["STMT_YEAR", "FAC_NO", "DEVICE_NO", "MONTH", "FUEL", "QUANTITY", "UNIT", "HOURS"])
+        w.writerows(rows)
+    return len(rows)
+
+
+def write_heat(path):
+    rows = []
+    for (a, y, m), v in sorted(W.heat_content().items(), key=lambda kv: (kv[0][1], kv[0][2], kv[0][0])):
+        rows.append(["%d-%02d" % (y, m), AREA_CODE[a], "%.3f" % v, "%d" % round(v * 1000)])
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["MONTH", "BTU_AREA", "BTU_FACTOR", "HEAT_CONTENT_BTU_SCF"])
         w.writerows(rows)
     return len(rows)
 
 
 # devices the permit list carries beyond the plan's units and the standby engines (small units under Rule 4307)
-SMALL = [("F02", "D-1290", "process water heater", 4.2), ("F03", "D-1390", "annealing lehr burner", 3.6),
+SMALL = [("F02", "D-1290", "process water heater", 4.2), ("F03", "D-1390", "process water heater", 3.6),
          ("F06", "D-1690", "kitchen water heater", 2.4), ("F07", "D-1790", "space heater bank", 4.8),
          ("F08", "D-1890", "laboratory boiler", 3.0), ("F10", "D-2090", "can washer heater", 2.0),
          ("F12", "D-2290", "office boiler", 1.2), ("F13", "D-2390", "curing press boiler", 4.6),
-         ("F14", "D-2490", "space heating boiler", 2.8)]
-REISSUED = {"D-1102": dt.date(2026, 3, 30), "D-1801": dt.date(2026, 3, 30), "D-1701": dt.date(2026, 6, 15),
-            "D-3202": dt.date(2026, 6, 1), "D-4402": dt.date(2026, 9, 21), "D-1290": dt.date(2026, 2, 9)}
+         ("F14", "D-2490", "kitchen boiler", 2.8)]
+REISSUED = {"D-1202": dt.date(2026, 3, 30), "D-1701": dt.date(2026, 6, 15), "D-3202": dt.date(2026, 6, 1),
+            "D-4402": dt.date(2026, 9, 21), "D-1290": dt.date(2026, 2, 9)}
 
 
 def write_permits(path):
     rows = []
     for dev in sorted(W.UNIT):
         u = W.UNIT[dev]
-        k = W.KINDS[u["kind"]]
-        issued = W.RENUMBERED[2] if u["facility"] == W.RENUMBERED[0] else (u["catalysts"][0] if u["catalysts"] else dt.date(2017, 9, 1))
+        issued = W.RENUMBERED[2] if u["facility"] == W.RENUMBERED[0] else dt.date(2017, 9, 1)
         issued = REISSUED.get(dev, issued)
+        ctl = "SCR" if u["control"] == "SCR" else ("low-NOx burner" if u["limit"] > 9 else "ultra-low NOx burner")
         rows.append([W.FAC_NO[u["facility"]], W.FAC_NAME[u["facility"]], dev, u["desc"], "4306",
-                     "%g" % u["rating"], "MMBtu/hr", {"ng": "natural gas", "lfg": "landfill gas", "dg": "digester gas"}[u["fuel"]],
-                     "SCR", "CEMS" if u["monitored"] else "source test", CEMS_ID.get(dev, ""),
-                     "" if u["kind"] == "furnace" else "%g" % k[1], "" if u["kind"] == "furnace" else "%g" % k[2],
-                     "" if u["monitored"] else str(12 * u["cycle"]), "", "", issued.isoformat()])
+                     "%g" % u["rating"], "MMBtu/hr", "natural gas", ctl, "CEMS" if u["monitored"] else "source test",
+                     CEMS_ID.get(dev, ""), "%g" % u["limit"], "3", "" if u["monitored"] else str(12 * u["cycle"]),
+                     "", "", issued.isoformat()])
     for dev, e in sorted(W.ENGINE.items()):
         issued = e["replaced"][0] if e["replaced"] else e["installed"]
         issued = REISSUED.get(dev, issued)
@@ -218,72 +221,51 @@ def write_permits(path):
     return len(rows)
 
 
-CAT_TEXT = ("SCR catalyst replaced, two layers (vendor changeout)", "Catalyst modules replaced in SCR reactor",
-            "SCR catalyst changeout completed; unit returned to service", "New SCR catalyst installed",
-            "Replaced spent SCR catalyst")
-
-
 def events(e):
     """The compliance event log's rows: (date, facility code, device, type, description)."""
     out = []
     for dev, u in W.UNIT.items():
         rng = _rng(300 + int(dev[2:]))
-        cats = list(W.schedule(dev)[0])
-        for i, c in enumerate(cats):
-            if i == 0:
-                out.append((c, u["facility"], dev, "SCR INSTALLED", "SCR system installed and started up (Rule 4306"
-                            " retrofit, compliance date 1 January 2018)"))
-            else:
-                out.append((c, u["facility"], dev, "CATALYST", CAT_TEXT[int(rng.integers(0, len(CAT_TEXT)))]))
         for t in e["units"][dev].get("tests", []):
-            if t["kind"] == "retest":
-                out.append((t["date"] - dt.timedelta(days=int(rng.integers(10, 21))), u["facility"], dev,
-                            "SOURCE TEST", "Retest notification received; test scheduled %s"
-                            % t["date"].strftime("%m/%d/%Y")))
-            else:
-                out.append((t["date"] - dt.timedelta(days=int(rng.integers(30, 45))), u["facility"], dev,
-                            "SOURCE TEST", "Source test notification received; test scheduled %s"
-                            % t["date"].strftime("%m/%d/%Y")))
-            if t["nov"] and t["nov"] <= W.END:
-                out.append((t["nov"], u["facility"], dev, "NOV", "Notice of violation: NOx at the source test of %s "
-                            "above the permit limit; corrective action and a retest required"
-                            % t["date"].strftime("%m/%d/%Y")))
+            out.append((t["date"] - dt.timedelta(days=int(rng.integers(30, 45))), u["facility"], dev,
+                        "SOURCE TEST", "Source test notification received; test scheduled %s"
+                        % t["date"].strftime("%m/%d/%Y")))
         for ch in u["calendar"]:
             if ch[0] == "defer":
                 out.append((ch[1] - dt.timedelta(days=9), u["facility"], dev, "TEST DEFERRAL",
-                            "Source test due %s deferred to %s: unit out of service for a scheduled engine overhaul"
+                            "Source test due %s deferred to %s: unit out of service for a scheduled plant turnaround"
                             % (ch[1].strftime("%m/%d/%Y"), ch[2].strftime("%m/%d/%Y"))))
-        if dev in W.DOWN:
-            a, b = W.DOWN[dev]
-            out.append((a, u["facility"], dev, "BREAKDOWN", "Unit shut down for scheduled overhaul; returned to service"
-                        " %s" % b.strftime("%m/%d/%Y")))
-        for y in range(2017, 2027):
-            if rng.random() < 0.45:
+        for y in range(2018, 2027):
+            if rng.random() < 0.35:
                 d = dt.date(y, int(rng.integers(1, 13)), int(rng.integers(1, 28)))
                 out.append((d, u["facility"], dev, "BREAKDOWN", "Breakdown reported: %s; corrected within 24 hours"
-                            % ("ammonia injection skid trip", "burner management fault", "SCR inlet temperature low",
+                            % ("flame safeguard trip", "burner management fault", "feedwater pump failure",
                                "control system communication loss")[int(rng.integers(0, 4))]))
             if rng.random() < 0.6:
                 d = dt.date(y, int(rng.integers(1, 13)), int(rng.integers(1, 28)))
                 out.append((d, u["facility"], dev, "INSPECTION", "Annual compliance inspection; no violations noted"))
         if u["monitored"]:
-            for y in range(2017, 2027):
+            for y in range(2018, 2027):
                 out.append((dt.date(y, 4 + int(rng.integers(0, 4)), int(rng.integers(1, 28))), u["facility"], dev,
                             "RATA", "CEMS relative accuracy test audit passed"))
     for dev, en in W.ENGINE.items():
         rng = _rng(500 + int(dev[2:]))
         if en["replaced"]:
             d, bhp, tier, model = en["replaced"]
-            out.append((d, en["facility"], dev, "EQUIPMENT", "Emergency engine replaced under the district's Clean"
+            out.append((d, en["facility"], dev, "EQUIPMENT", "Emergency engine replaced under the District's Clean"
                         " Standby Engine program: removed %s (%s bhp, %s); installed %s (%s bhp, %s)"
                         % (model, "{:,}".format(bhp), tier, en["model"], "{:,}".format(en["bhp"]), en["tier"])))
         if rng.random() < 0.5:
             out.append((dt.date(2026, int(rng.integers(1, 13)), int(rng.integers(1, 28))), en["facility"], dev,
                         "INSPECTION", "Emergency engine inspection; hour meter and log reviewed"))
+    for code, outs in W.OUTAGES.items():
+        for d, h in outs:
+            out.append((d, code, "", "OUTAGE", "Utility power outage reported under Rule 4702: the facility ran on its"
+                        " emergency engines for %.1f hours" % h))
     code, old, d, prev, new = W.RENUMBERED
     out.append((d, code, "", "OWNERSHIP", "Change of ownership: %s to %s; facility number %s replaced by %s"
                 % (prev, new, old, W.FAC_NO[code])))
-    out.append((dt.date(2026, 3, 30), "F01", "D-1102", "PERMIT MOD", "Permit reissued: administrative amendment"
+    out.append((dt.date(2026, 3, 30), "F02", "D-1202", "PERMIT MOD", "Permit reissued: administrative amendment"
                 " (monitoring plan update)"))
     return sorted((r for r in out if r[0] <= W.END), key=lambda r: (r[0], r[2], r[3]))
 
@@ -299,31 +281,66 @@ def write_events(path, e):
     return len(rows)
 
 
+def billing_lines(e):
+    """The extract's lines: the old system's history (read before the conversion) holds corrected CCF in the usage
+    column, the new system's bills therms; a combined-billing account's usage stands on each of its meters' lines."""
+    by_key = {}
+    for b in e["bills"]:
+        by_key.setdefault((b["account"], b["read_to"]), []).append(b)
+    out = []
+    for b in e["bills"]:
+        if b["read_to"] + dt.timedelta(days=3) > W.EXTRACT_BILLING:
+            continue
+        group = by_key[(b["account"], b["read_to"])] if b["account"] in W.COMBINED else [b]
+        usage = sum(x["ccf"] for x in group) if b["read_to"] < W.CONVERSION else b["account_therms"]
+        out.append(dict(b, usage=usage))
+    return out
+
+
 def write_billing(path, e):
     rows = []
-    for b in e["bills"]:
-        if b["read_to"] + dt.timedelta(days=3) > EXTRACT_BILLING:
-            continue                    # billed after the utility pulled the extract
+    for b in billing_lines(e):
         code = b["facility"]
-        rows.append([str(b["bill"]), b["account"], ADDRESS[code].upper().replace(" RD", " RD").replace("WAY", "WY"),
-                     b["meter"], b["read_from"].strftime("%m/%d/%Y"), b["read_to"].strftime("%m/%d/%Y"),
-                     str(b["prior"]), str(b["current"]), "A", "" if b["evc"] else "%.3f" % b["mult"],
-                     "%.3f" % b["btu"], str(b["usage"]),
-                     "G-20" if b["mult"] > 1 else "G-10",
+        rows.append([str(b["bill"]), b["account"], ADDRESS[code].upper().replace("WAY", "WY"), b["meter"],
+                     b["read_from"].strftime("%m/%d/%Y"), b["read_to"].strftime("%m/%d/%Y"),
+                     "E" if b["est"] else "A", "%.3f" % b["btu"], str(b["usage"]),
+                     "G-NR2" if W.OTHER_GAS[code][0] >= 100 else "G-NR1",
                      (b["read_to"] + dt.timedelta(days=3)).strftime("%m/%d/%Y")])
     rows.sort(key=lambda r: (r[1], r[3], dt.datetime.strptime(r[4], "%m/%d/%Y")))
     with open(path, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["BILL_ID", "ACCOUNT_NO", "SERVICE_ADDRESS", "METER_NO", "READ_FROM", "READ_TO", "PRIOR_READ",
-                    "CURRENT_READ", "READ_TYPE", "PRESSURE_MULT", "BTU_FACTOR", "USAGE_CCF", "RATE_CODE", "BILL_DATE"])
+        w.writerow(["BILL_ID", "ACCOUNT_NO", "SERVICE_ADDRESS", "METER_NO", "READ_FROM", "READ_TO", "READ_TYPE",
+                    "BTU_FACTOR", "USAGE_THERMS", "RATE_CODE", "BILL_DATE"])
         w.writerows(rows)
     return len(rows)
 
 
 def _hmm(h):
-    """Hours as the paper logs write them: whole hours, a point, minutes."""
+    """Hours as the e-logbook writes them: whole hours, a point, minutes."""
     mins = int(round(h * 60))
     return "%d.%02d" % (mins // 60, mins % 60)
+
+
+def log_rows(e):
+    """Each facility's 2026 log entries: [date, device, value, purpose, from the e-logbook]. From its e-logbook date a
+    facility's run time is hours and minutes; an outage on engines run in parallel stands on each engine's line as
+    the bank's engine-hours."""
+    out = {}
+    for code in W.FAC_NAME:
+        devs = [d for d, en in W.ENGINE.items() if en["facility"] == code]
+        rows = []
+        for dev in devs:
+            en = W.ENGINE[dev]
+            bank = [d for d in devs if en["bank"] and W.ENGINE[d]["bank"] == en["bank"]]
+            for d, h, why in e["runs"][dev]:
+                hours = h * len(bank) if (why == "emergency" and bank) else h
+                elog = code in W.ELOG and d >= W.ELOG[code]
+                v = float(_hmm(hours)) if elog else round(hours, 2)
+                rows.append([d, dev, v, {"readiness": "Testing (weekly)", "load test": "Maintenance (load bank)",
+                                         "emergency": "Emergency (utility outage)"}[why], elog])
+        rows.sort(key=lambda r: (r[0], r[1]))
+        out[code] = rows
+    return out
 
 
 def write_engine_logs(path, e):
@@ -332,35 +349,24 @@ def write_engine_logs(path, e):
     wb = openpyxl.Workbook()
     wb.remove(wb.active)
     n = 0
-    for code in sorted(W.FAC_NAME, key=lambda c: W.FAC_NO[c]):
-        devs = [d for d, en in W.ENGINE.items() if en["facility"] == code]
-        if not devs:
+    for code, rows in sorted(log_rows(e).items(), key=lambda kv: W.FAC_NO[kv[0]]):
+        if not rows:
             continue
         ws = wb.create_sheet(W.FAC_NO[code])
         ws.append(["%s (facility %s): Rule 4702 emergency engine operating log, calendar 2026"
                    % (W.FAC_NAME[code], W.FAC_NO[code])])
         ws["A1"].font = Font(bold=True)
-        if code in W.HMM:
-            ws.append(["Date", "Engine (device no.)", "Hours", "Reason"])
-        else:
-            ws.append(["Date", "Device", "Run hours", "Purpose"])
+        ws.append(["Date", "Device", "Run hours", "Purpose"])
         for c in ws[2]:
             c.font = Font(bold=True)
-        rows = []
-        for dev in devs:
-            for d, h, why in e["runs"][dev]:
-                v = _hmm(h) if code in W.HMM else "%.1f" % h
-                rows.append([d, dev, float(v), {"readiness": "Testing (weekly)", "load test": "Maintenance (load bank)",
-                                                "emergency": "Emergency (utility outage)"}[why]])
-        rows.sort(key=lambda r: (r[0], r[1]))
         for r in rows:
-            ws.append(r)
+            ws.append(r[:4])
             n += 1
         for row in ws.iter_rows(min_row=3):
             row[0].number_format = "mm/dd/yyyy"
-            row[2].number_format = "0.00" if code in W.HMM else "0.0"
+            row[2].number_format = "0.00"
         ws.column_dimensions["A"].width = 12
-        ws.column_dimensions["B"].width = 18
+        ws.column_dimensions["B"].width = 12
         ws.column_dimensions["C"].width = 10
         ws.column_dimensions["D"].width = 28
     wb.save(path)
@@ -438,6 +444,7 @@ def build_pack(out, e=None):
     n["cems"] = write_cems(f("cems"), e)
     n["tests_old"], n["tests_new"] = write_tests(f("tests_old"), f("tests_new"), e)
     n["statements"] = write_statements(f("statements"), e)
+    n["heat"] = write_heat(f("heat"))
     n["permits"] = write_permits(f("permits"))
     n["events"] = write_events(f("events"), e)
     n["billing"] = write_billing(f("billing"), e)

@@ -27,18 +27,18 @@ Status lives in `pipeline.json`; this note holds the design. Read the Tried and 
 - **Pairing:** Physical & Environmental Sciences, task type `emissions-inventory`, which serves Data Extraction &
   Conformation (ETL). The ETL work conforms the boilers, steam generators and process heaters at fourteen facilities onto
   one 2026 NOx inventory: four units' continuous monitor hours (local standard time, substitute-data codes, the
-  monitoring plan's unit ids against the district's device numbers), about twenty-eight units' source tests from two
-  test databases (the older in ppmvd at 3 per cent oxygen, the newer adding lb/MMBtu), the facilities' monthly fuel
+  monitoring plan's unit ids against the district's device numbers), thirty-four units' source tests from two test
+  databases (the older in ppmvd at 3 per cent oxygen and lb/hr, the newer adding lb/MMBtu), the facilities' monthly fuel
   statements in therms, MMscf and MMBtu (MMscf at the gas utility's heat content for the facility's BTU area and month),
-  the utility's monthly heat content table and the compliance event log. Objective: Data Extraction & Conformation (ETL).
+  the utility's monthly heat content table and the permit list. Objective: Data Extraction & Conformation (ETL).
 - **The decision and the quantity:** the Tamsett Basin Air Pollution Control District (fictional) names in its 2027
   Community Emissions Reduction Plan for the Lowry Creek corridor the five facilities, of the fourteen in its Appendix A,
   whose Rule 4306 units emitted the most NOx in calendar 2026, and signs a NOx reduction agreement with each by 1 April
   2027. A retrospective quantity with its reason: the plan sizes its agreements on the last closed year's emissions, and
   the agreements run from 2027.
 - **Shape:** 01, a ranked list under a cap of five: fourteen facilities' 2026 NOx at the whole ton (14), the five (1),
-  a chart's named parts (the fourteen bars, the five marked, the labels: 3), the files (3), and the asks' figures (two
-  asks designed at stage 2, about 26): about 47.
+  a chart's named parts (the fourteen bars, the five marked, the labels: 3), the files (3), and the asks' figures (the
+  gas delivered and the standby engines' NOx for each facility: 28): 49.
 - **Strategy:** `other`, named on the card: a property of the fuel a third party supplies, recorded month by month in
   its heat content table, carries each spot test across the year. Gate G `method_or_model_selection`: the conformed
   inventory is the object and no shipped artifact ranks the facilities. Gap objective, pattern none, generators G16
@@ -46,16 +46,16 @@ Status lives in `pipeline.json`; this note holds the design. Read the Tried and 
   fuel, carried across the year month by month by the fuel's heating value, the sensitivity read from a monitored unit
   of the same burner type and the units' own test histories against the supplier's monthly record`.
 - **World:** United States, an unnamed state's Tamsett Basin, its air district's Lowry Creek corridor with fourteen
-  facilities holding Rule 4306 boilers, steam generators and process heaters (a refinery, a paperboard mill, a
-  container glass plant, a tomato cannery, a creamery, a university central plant, a medical centre, an almond
-  processor, a poultry processor, a correctional facility, a commercial laundry, a tire retreader, a water reclamation
-  plant and a combined-cycle plant's auxiliary boiler). The refinery's heaters and boiler run SCR and close their
-  ammonia injection on their monitors' NOx; the paperboard mill's power boiler fires low-NOx burners under a monitor;
-  every other unit fires low-NOx burners whose combustion air is set by volume at tuning, with no oxygen trim, and is
+  facilities holding Rule 4306 boilers, steam generators and process heaters (a refinery, a paperboard mill, a fuel
+  ethanol plant, a tomato cannery, a creamery, a university central plant, a medical centre, an almond processor, a
+  poultry processor, a correctional facility, a commercial laundry, a tire retreader, a water reclamation plant and a
+  combined-cycle plant's auxiliary boiler). The refinery's heaters and boiler run SCR and close their ammonia injection
+  on their monitors' NOx; the paperboard mill's power boiler fires low-NOx burners under a monitor; every other unit
+  fires low-NOx or ultra-low NOx burners whose combustion air is set by volume at tuning, with no oxygen trim, and is
   source tested every one or two years under the district's NOx rule. The gas utility serves the corridor through two
   BTU areas: Eastside on interstate gas of steady heat content, Westside blended with the Lowry Creek gas plant's
   residue gas, whose heat content follows the plant's ethane recovery from month to month.
-- **Forcing fact:** the agreements are signed by 1 April 2027; the pack is as of 19 February 2027 (exports pulled 8 to
+- **Forcing fact:** the agreements are signed by 1 April 2027; the pack is as of 19 February 2027 (exports pulled 5 to
   16 February).
 - **Data-native sentence:** a low-NOx burner whose combustion air is set by volume at its tuning burns a richer gas
   hotter, so its NOx rate rises about six per cent for each per cent the gas's heating value rises; a source test reads
@@ -86,29 +86,29 @@ Status lives in `pipeline.json`; this note holds the design. Read the Tried and 
 
 1. Read the plan: the agreements go to the five facilities whose Rule 4306 units emitted the most NOx in 2026
    (section 2), each unit's emissions as the district's inventory guidance computes them: the monitored units from their
-   hourly NOx mass, the others from their fuel and an emission rate that represents the year's operation.
+   hourly NOx mass, the others from their heat input and their NOx emission rate in lb/MMBtu.
 2. Summed the four monitored units' hourly NOx mass for 2026 (local standard time, substitute hours as reported).
 3. Converted every unmonitored unit's source tests to lb/MMBtu (the newer database's lb/MMBtu, the older one's ppmvd at
    3 per cent oxygen through Method 19), took the latest test, and multiplied by the unit's 2026 heat input from its
    fuel statements (MMscf at the utility's heat content for the facility's BTU area and month).
 
-Ends on: Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Glass
-Works, with Merriwell Foods sixth (the prototype at the draw: Tamsett 3.4 tons against Merriwell 2.7; the figures are
-fixed at stage 3 in checks.py).
+Ends on: Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Renewable
+Fuels (checks.py R3a and L0: Tamsett State University 8 tons against Merriwell Foods' 7).
 
-Golden: Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass Works, with
-Tamsett State University sixth (prototype: Merriwell 3.6 tons against Tamsett 2.9).
+Golden: Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Renewable Fuels
+(Merriwell Foods 9 tons and Sedge Hollow 8 against Tamsett State University's 7).
 
 ## Stump sentence
 
-The default path carries each unmonitored burner's latest source test across its 2026 fuel and names Ashgrove
-Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Glass Works; a low-NOx
-burner that meters its combustion air by volume burns a richer gas hotter, so its NOx rises with the heating value of
-the gas its BTU area receives, which the Westside gas plant's ethane recovery moves from month to month: Merriwell
-Foods' boilers were last tested in August 2025 on lean gas and ran their 2026 season on rich gas, and Tamsett State
-University's were tested in May 2026 on rich gas and fired the winter on lean; the rise the monitored Lindqvist power
-boiler traces against the utility's monthly heat content, carried from each test's month to each 2026 month, names
-Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass Works.
+The default path carries each unmonitored burner's latest source test across its 2026 fuel and names Ashgrove Refining,
+Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Renewable Fuels, Tamsett at 8 tons
+against Merriwell Foods' 7; a low-NOx burner that meters its combustion air by volume burns a richer gas hotter, so its
+NOx rises with the heat content of the gas its BTU area receives, which the Westside gas plant's ethane recovery moves
+from month to month: Merriwell Foods' boilers were last tested in August 2025 on lean gas and fired their 2026 canning
+season on rich gas, and Tamsett State University's were tested in May 2026 on rich gas and fired the winter on lean;
+the rise the monitored Lindqvist power boiler traces against the utility's monthly heat content (about 6 per cent a per
+cent), carried from each test's month to each 2026 month, names Ashgrove Refining, Lindqvist Paperboard, Merriwell
+Foods, Sedge Hollow Creamery and Valmora Renewable Fuels.
 
 ## Three rules
 
@@ -127,14 +127,13 @@ supplied gas's heating value moves, no test day read against a year and no monit
 abstract move (a spot measurement carried by a property of a third party's delivery) needs the field's own combustion
 physics and the gas utility's heat content record.
 
-Layer 1: the source tests split across two databases, the older reporting ppmvd at 3 per cent oxygen and lb/hr, the
-newer adding lb/MMBtu; the fuel statements in therms, MMscf or MMBtu by facility, MMscf converted at the utility's heat
-content for the facility's BTU area and month; monitor hours in local standard time with substitute-data codes and the
-monitoring plan's unit ids against the district's device numbers; an event log of mixed date formats and free text, the
-notices and retests a failed test brings and a test deferred under a filed extension; a facility renumbered after a
-change of owner; test-database keys without their leading zeros and device prefixes. Each is written by the system
-named, none is placed to be caught, and each read the natural wrong way leaves the call where it is (asserted at stage
-3).
+Layer 1: the source tests split across two databases, the older reporting ppmvd at 3 per cent oxygen, lb/hr and the
+load, the newer adding lb/MMBtu and heat input; the fuel statements in therms, MMscf or MMBtu by facility and year, MMscf
+converted at the utility's heat content for the facility's BTU area and month; monitor hours in local standard time
+with substitute-data codes and the monitoring plan's unit ids against the district's device numbers; a facility
+renumbered after a change of owner; the older database's keys without their leading zeros and device prefixes; a test
+deferred under a plant turnaround. Each is written by the system named, none is placed to be caught, and each read the
+natural wrong way leaves the call where it is (checks.py R2a to R2f).
 
 Layer 2: estimation_fit, each unmonitored low-NOx burner's rate carried across 2026 from the heat content of its tests'
 months to each 2026 month's, by the rise of NOx with heat content the monitored burner of the same type and the units'
@@ -144,50 +143,207 @@ Decisive step: estimating the rise of a low-NOx burner's NOx rate with the gas's
 per cent, from the monitored Lindqvist boiler's hours against the Westside table and the units' tests against the table
 at their months) and carrying each unmonitored burner's tests from their months' heat content to each 2026 month's,
 which moves the five from Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and
-Valmora Glass Works to Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass
-Works.
+Valmora Renewable Fuels to Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora
+Renewable Fuels.
 
 No decoy: nothing is planted: the monitor exports, the test databases, the fuel statements, the heat content table, the
 event log and the documents are what each system writes; no report ranks the facilities, states a unit's 2026 rate or
-says a test is unrepresentative; the heat content moves as a gas plant's ethane recovery moves it, and every burner's
-response is the one low-NOx burners without oxygen trim have.
+says a test is unrepresentative; the heat content moves as a gas plant's ethane recovery moves it, every burner's
+response is the one low-NOx burners without oxygen trim have, and every test passed its limit, so no notice or retest
+sits beside any test.
 
 Not semantics: every field, unit, oxygen basis, clock and code read correctly (ppmvd at 3 per cent, lb/hr, the
 F-factor, therms, MMscf at the area's monthly heat content, substitute hours, device numbers) still leaves the careful
-route on the latest test; the heat content is read correctly on the default path itself, to convert MMscf, and no
-column or sentence says a burner's NOx moves with it; the step is an estimate (the rise and each unit's level) and the
-carrying it sets, not a reading.
+route on the latest test; the heat content is read correctly on the default path itself, to convert MMscf (every 2026
+MMscf reporter is Eastside, where it barely moves), and no column or sentence says a burner's NOx moves with it; the
+step is an estimate (the rise and each unit's level) and the carrying it sets, not a reading.
 
 Not rule application: the plan files the population, the outcome, the window and the cap (the WHAT) and the guidance
-the rate the unit operated at over the year; nothing filed says how a test becomes that rate. Measured on the draw's
-prototype (re-measured on the generator's clean truth at stage 2): twelve enumerated constructions (latest, mean,
-median, last two, highest test, the permit limit, the limit for tests older than 2026, the monitored boiler's 2026
-months as an index, and four carried by heat content) file four different fives; the four the data leave standing (the
-rise from the monitored boiler or from the tests, each unit's level from all its tests or its latest) file one five,
-with Merriwell Foods at 3.53 to 3.58 tons and Valmora at 3.15 to 3.21 against Tamsett's 2.89 to 2.96; what rules the
-rest out is no clause but the monitored boiler's hours and the tests set against the utility's heat content by month, a
-join nothing in the pack invites, where heat content takes the within-unit residual of the Westside tests from 0.093
-to 0.029 in the log (prototype).
+the NOx the unit emitted over the year from its heat input and its rate; nothing filed says how a test becomes that
+rate. Measured on the cut pack (checks.py L0 to L3, G2): the ten enumerated constructions short of the carrying (the
+latest test; the mean, median, highest or last two tests; the permit limit; the limit where the last test predates
+2026; the tests trended on the calendar; the monitored boiler's 2026 months as an index on each latest test, Westside or
+every burner) file two fives other than the golden, nine of the ten the default's; the thirty the data leave standing
+(the rise from the monitored boiler's hours, its monthly means, the Westside burners' tests or every burner's tests;
+each unit's level from all its carried tests, their mean, median, latest, last two or three or those since 2022; the
+power law; the older tests from lb/hr) file one five and the same 14 whole tons, Merriwell Foods at 9.01 to 9.13 tons
+and Sedge Hollow at 7.97 to 8.17 against Tamsett State University's 6.89 to 6.97; what rules the rest out is no clause
+but the monitored boiler's hours and the tests set against the utility's heat content by month, a join nothing in the
+pack invites, where the heat content takes the Westside burners' within-unit test scatter from 0.071 to 0.029 in the
+log and the monitored boiler's monthly mean rate follows the Westside heat content at a correlation of 0.999.
 
 Analyst test: a strong analyst who conforms every test to lb/MMBtu, every fuel statement to heat input and every monitor
 hour to 2026, and reads the plan and the guidance correctly, carries each unmonitored burner's latest test (or the mean
 of its tests, or the monitored boiler's 2026 months as an index) across its 2026 fuel and names Ashgrove Refining,
-Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Glass Works; only each burner's tests
-carried by the heat content of each month's gas name Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge
-Hollow Creamery and Valmora Glass Works (asserted in checks.py on the generator's clean truth at stage 3).
+Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Renewable Fuels, Tamsett at 8 tons;
+only each burner's tests carried by the heat content of each month's gas name Ashgrove Refining, Lindqvist Paperboard,
+Merriwell Foods, Sedge Hollow Creamery and Valmora Renewable Fuels (checks.py R3a and R3b on the generator's clean
+truth).
 
 Estimand: the 2027 Community Emissions Reduction Plan section 2: the five facilities whose boilers, steam generators and
 process heaters covered by Rule 4306 emitted the most NOx in calendar 2026, in tons, each facility the sum of its units.
 
 No certified replay: no facility total, unit rate or 2026 inventory figure ships; the source tests are what each test
-day read, the monitor hours what each monitor read and the heat content what the utility billed, so no published figure
-ties under either route.
+day read, the monitor hours what each monitor read and the heat content what the utility published, so no published
+figure ties under either route.
 
 Lesson: a source test is a correct reading of one day's rate on that day's fuel, and a year's emissions need the rate
 the year ran at; a low-NOx burner that meters its air by volume burns a richer gas hotter, so where a supply's heat
 content moves from month to month a burner's rate moves with it, and a test read on a lean month understates a season
 fired on rich gas while one read on a rich month overstates a winter on lean; no build on file carries a measured rate
 by a property of a third party's delivery.
+
+## Readability screen
+
+| Rung | What it takes | Verdict |
+|---|---|---|
+| 1 Monitored units | each 2026 CEMS hour's nox_mass_lb summed, joined to its device through the permit list's FAC_NO and CEMS_UNIT_ID (guidance section 2) | readable |
+| 2 Tests on one basis | the newer database's lb/MMBtu; the older one's NOX_PPMVD at 3 per cent oxygen through Method 19, or its NOX_LB_HR over the rating times the load (guidance section 5) | readable |
+| 3 Heat input | the statements' therms, MMBtu and MMSCF at the utility's heat content for the facility's BTU area and month (guidance section 4) | readable |
+| 4 The rise with heat content (decisive) | the monitored Lindqvist power boiler's measured hourly rate set against its BTU area's heat content by month, or the burners' tests against the heat content of their months, fitted in the log | silent |
+| 5 The year carried | each burner's tests carried from their months' heat content to each 2026 month's, each month's heat input at that month's rate | silent |
+
+Rung 4 is silent: no file holds a unit's 2026 rate or a sensitivity, no column or sentence ties a burner's NOx to the
+gas's heat content, the heat content table is read on the default path only to convert MMscf (all four 2026 MMscf
+reporters are Eastside, where it holds at 1.033 to 1.038), and the guidance's "its NOx emission rate in lb/MMBtu"
+reads, on the default path, as the latest test's figure. Rungs 1 to 3 are conversions the guidance files and every
+route takes them.
+
+## Semantic fork table
+
+| ID | Term or convention | Alternative reading | Ruled out by |
+|---|---|---|---|
+| SF1 | NOx | NOx as NO and not NO2 | plan 2.1 "expressed as NO2"; the newer database's lb/MMBtu is Method 19's NO2 figure from its ppm (checks.py SF1) |
+| SF2 | a facility's units | its emergency engines or Rule 4307 units added | plan 2.2 names the Rule 4306 units; with the engines added the five stands; the Rule 4307 units have no fuel record (SF2) |
+| SF3 | calendar 2026 | the CEMS hours read as UTC | guidance section 2, local standard time; same call and 14 whole tons on UTC (R2c, SF3) |
+| SF4 | a monitored unit's NOx | substitute data hours left out | guidance section 2 counts them; same call without them (R2d, SF4) |
+| SF5 | heat input | MMscf at a fixed 1,020 Btu/scf | guidance section 4, the area's monthly heat content; same call and 14 whole tons at 1,020 (R2b, SF5) |
+| SF6 | a test's lb/MMBtu | the older tests from lb/hr over rating times load, not Method 19 from ppm | guidance section 5 gives both as equal; same 14 whole tons (R2a, SF6) |
+| SF7 | the heat content's month | the month after the gas, as a billing month | guidance section 7: the average heat content of the gas delivered in the month; the boiler's fit falls from 6.01 to 4.65 on the lag (SF7) |
+| SF8 | the heat content's unit | Btu/scf to the whole Btu, not therms a CCF | same 14 whole tons (SF8) |
+| SF9 | the year's NOx | the year's fuel at the mean of the months' rates | guidance section 3, the NOx emitted over the year's operation, month by month at each month's rate; the five stands either way (SF9) |
+| SF10 | the facility of a device | Haskett Ridge's rows under 0705 as another facility | the permit list's device numbers carry every test and statement row (R2e, SF10) |
+| SF11 | whole tons | half to even, not half up | no figure within 0.297 tons of a half under any standing construction (G3, SF11) |
+| SF12 | the five | a tie for fifth | fifth clears sixth by 14.3 per cent or more under every standing construction (G4, SF12) |
+| SF13 | the call's inputs | a billing line, log, inspection or event moving the call | the call and the 14 whole tons from the CEMS, tests, statements, heat content and permit list alone (SF13) |
+| SF14 | the rise's form | a power of the heat content, not an exponential | same 14 whole tons (SF14) |
+| SF15 | the rise's source | the monitored boiler's monthly means or the burners' tests, not its hours | same 14 whole tons (G2, SF15) |
+| SF16 | a read period's days | the day after the prior read through the current read | plan 4.2: from the day of the prior read to the day before the current read (SF16) |
+| SF17 | MMBtu | therms at another ratio | guidance section 4, therms divided by 10 (SF17) |
+| SF18 | a line's facility | an address read to two facilities | each service address matches one Appendix A address (SF18) |
+| SF19 | a corrected CCF line's therms | rounded to the whole therm, not kept unrounded | same 14 whole MMBtu (SF19) |
+| SF20 | an engine's hours | the hour meters' advance, not the logs | guidance section 6, the time it ran; the meters also count warm-up and cool-down (SF20) |
+| SF21 | grams a pound | 453.59237 | guidance section 6 writes 453.6 (SF21) |
+| SF22 | the engine a run is charged to | a run on a replacement day | no replaced engine runs on its replacement date or in the four days before (SF22) |
+| SF23 | a banked engine's outage line | halved, not set at the outage's hours | same 14 whole pounds (SF23) |
+| SF24 | an estimated read | trued up against a later read | each estimated meter's next read is actual and the extract carries no adjustment line (SF24) |
+| SF25 | the rise's grouping | the low-NOx burners' own rise apart from the ultra-low NOx burners' | the low-NOx class's own tests give 6.04 (se 1.53) against 6.13 and the monitor's 6.01; same five and 14 whole tons (SF25) |
+| SF26 | the rise's grouping | each facility's own rise from its own tests | Merriwell Foods' tests all sit on lean August gas, so its own rise is unidentified (se 3.23) and a fit pools; with each facility's own rise where its tests identify it, same five and 14 whole tons (SF26) |
+
+## Ladder
+
+| Rung | Route | Five | Fifth over sixth |
+|---|---|---|---|
+| L0 | each burner's latest test across its 2026 heat input (the default path) | Ashgrove, Lindqvist, Sedge Hollow, Tamsett State, Valmora | 1.159 |
+| L1 | the mean, median or last two of each burner's tests | the same five | 1.071 to 1.148 |
+| L1 | each burner's highest test | the same five | 1.165 |
+| L1 | each burner at its permit limit | the same five | 1.054 |
+| L1 | each burner's tests trended on the calendar to mid-2026 | the same five | 1.138 |
+| L2 | the monitored boiler's 2026 months as an index on each latest test, Westside or every burner | the same five | 1.047 |
+| L3 | the permit limit where a burner's last test predates 2026 | Ashgrove, Haskett Ridge, Lindqvist, Merriwell, Sedge Hollow | 1.058 |
+| L4 | each burner's tests carried from their months' heat content to each 2026 month's by the monitored boiler's rise (the golden) | Ashgrove, Lindqvist, Merriwell, Sedge Hollow, Valmora | 1.163 |
+
+Every route short of L4 keeps Tamsett State University in the five or puts Haskett Ridge in (checks.py L0 to L3). L2 is
+the near miss: the monitored boiler's 2026 months do carry the season, but Merriwell's latest tests were read in August
+2025 on lean gas and the index reads them against August 2026's rich gas, so Merriwell falls further (6.59 tons). A
+response that carries the tests by heat content but applies the mean of the months' factors to the year's fuel (SF9)
+still files the golden five, Merriwell at 8 tons in place of 9. The standing family (G2) files L4's five and 14 whole
+tons under every member.
+
+## Closure table
+
+| # | Axis | Reading and closure |
+|---|---|---|
+| 1 | Population | the 38 Rule 4306 devices at the fourteen Appendix A facilities (plan 2.2, the permit list's RULE column; SF2) |
+| 2 | Unit of account | the facility, the sum of its units; for the asks the facility's meters and its emergency engines |
+| 3 | Attribution window | calendar 2026 in local standard time (SF3); the gas by the days of each read period inside 2026 (SF16) |
+| 4 | As-of dating | the extracts of 5 to 16 February 2027; the plan of 19 February 2027 |
+| 5 | Version basis | the permit list as permitted in February 2027, devices keyed by number across owners (SF10, SF22) |
+| 6 | Denominator | none; tons, MMBtu and pounds are totals |
+| 7 | Weighting | each 2026 month's heat input at that month's rate (SF9); each unit's level from all its tests, each once |
+| 8 | Window length | one calendar year |
+| 9 | Boundary inclusivity | a read period from its prior read's day to the day before its current read (plan 4.2) |
+| 10 | Rounding path | half up from the unrounded figure: whole tons, whole MMBtu, whole pounds (SF11, SF19) |
+| 11 | Tie-break | none needed (SF12) |
+| 12 | Maturity and censoring | 2026 closed; Valmora's B-2 test deferred from April to June 2026 for a turnaround, in the newer database |
+| 13 | Order of operations | conform the tests and statements, fit the rise, carry each burner's tests to each 2026 month, sum by facility, rank |
+| 14 | Row order | none |
+| 15 | Duplicate resolution | none in the call's files; a combined account's usage once a period (ask A) |
+| 16 | Identity normalisation | devices with and without their D- prefix, facility numbers with and without leading zeros, 0705 to 0912 |
+| 17 | Netting | none |
+| 18 | Dimensional units | ppmvd at 3 per cent oxygen, lb/hr, lb/MMBtu; therms, MMscf, MMBtu; therms a CCF and Btu/scf; hours and minutes |
+| 19 | Code and status semantics | substitute data code 12 counted (SF4); READ_TYPE E stands as billed (SF24); never the stump |
+| 20 | Integerisation | whole tons, MMBtu and pounds |
+| 21 | Clause scope | plan 2 governs the call, 4.2 the gas, 4.3 and guidance 6 the engines |
+| 22 | Forward window contents | the 2027 agreements, signed by 1 April 2027, with the five |
+
+## Literal reader
+
+A literal reader executes plan 2.1 and 2.2 over the permit list's Rule 4306 devices and the guidance's sections 2 to
+5: sums the monitored hours, puts every test on lb/MMBtu and every statement on MMBtu, and computes each unmonitored
+unit's "NOx it emitted over the year's operation ... from its heat input and its NOx emission rate". Nothing filed
+names that rate, so the literal reading is an estimate of the rate each month's fuel burned at, and the data decide it:
+each burner's tests rise and fall with the heat content of their months' gas, as the monitored boiler of the same
+burner does hour by hour, so a test-day figure is a reading of one month's gas, and every construction the data leave
+standing files the golden's five and its 14 whole tons (G2). The gas and engine asks execute plan 4.2 and guidance
+section 6 word for word, with the billed usage read in the unit the utility billed it, each combined account's usage
+once, the log read in the unit its logbook wrote it, and each run at the engine then installed.
+
+## Oracles
+
+- The main call has none: no shipped figure states a facility's or unit's 2026 NOx, a unit's rate for the year or a
+  sensitivity, and the CEMS mass, the tests and the heat content are each system's own readings, so nothing ties under
+  one route only.
+- Ask A: the plan units' own fuel in the emission statements arbitrates the unit of the billed usage (read as labelled,
+  the bills fall below the units' fuel on 45 of 62 periods read before July 2026 and on none of 82 after) without
+  handing over a level; the combined accounts show by their meters carrying identical usage every period.
+- Ask B: the hour meters arbitrate the log layout (read their own way, every engine's log over the first inspection
+  interval sits at 0.90 to 0.93 of its meter, the rest warm-up and cool-down; read as decimal hours the e-logbook
+  engines fall to 0.69 to 0.89) without handing over a figure; the compliance log's OUTAGE entries give each outage's
+  hours, which the banked engines' emergency lines double; the replaced engines' meters are first read after the
+  replacement, so only the EQUIPMENT entries carry the old engines.
+
+## Ask sheet
+
+Two asks, both on rows the call never reads (X1, X3): the plan's community tables beside each facility.
+
+- **Ask A, the gas Tamsett Valley Gas delivered in calendar 2026, whole MMBtu (14 figures).** User: the plan's fuel
+  balance (plan 4.2). Devices: D2 a label stored before a silent switch (USAGE_THERMS holds corrected CCF on the lines
+  read before 1 July 2026, the utility's billing conversion, and therms from the July reads; the plan units' fuel in the
+  statements shows it), and D6 an account's quantity on every line it covers (the five combined-billing accounts' usage
+  repeated on each of their meters' lines). Rungs: every line as labelled moves 14 of 14; as labelled with the combined
+  usage once 14; every line CCF times its factor 14; the conversion handled, every line summed, 5; each bill in its
+  current read's year 14.
+- **Ask B, the emergency standby engines' 2026 NOx, whole pounds (14 figures).** User: the plan's community table
+  (plan 4.3, guidance section 6). Devices: D3 hours and minutes read as decimal hours at the seven facilities that moved
+  their logs to the e-logbook during 2026 (the hour meters favour the reading, and the weekly readiness runs drop from
+  0.40 to 0.60 to 0.24 to 0.36 at the move); D6 the banked engines' emergency lines at four facilities carrying the
+  bank's engine-hours (twice the outage the compliance log records); and D2 an attribute at the wrong vintage at two (an
+  engine replaced in 2026 under the same device number, the permit list showing the new engine, the EQUIPMENT entry the
+  old one's rating and tier). Each of 13 figures is moved by exactly one device: the decimal reading moves 7, the bank
+  lines 4, the current engine 2; Lindqvist Paperboard's single engine carries none.
+
+| Ask | What the cracker does | Cracker |
+|---|---|---|
+| A | USAGE_THERMS as the dictionary names it (the usage billed), each combined account's repeated usage once, spread by plan 4.2 | miss |
+| B | the logs as decimal hours at each engine's permitted rating and tier (guidance section 6) | miss |
+
+Pair ceiling: 30.5 (cracker 47.0 on the call with 1 of 28 ask figures, mirror 14.0 off it with 1 of 28; a response that
+reconciles the usage against the plan units' fuel and the logs against the meters keeps 24 of 28, for a pair of 75.6).
+
+Mirror leakage: 3.6 per cent of ask weight.
+
+Measured by: generator/ceiling.py on the cut pack.
 
 ## Architecture 6 record (spent 2026-10-23)
 

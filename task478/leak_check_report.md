@@ -1,26 +1,26 @@
 # leak check, task478
 
-**Verdict: REVIEW.** 13 files read, 26 golden figures and 18 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 26 golden figures and 17 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: architecture, reader, catalyst, section, decisive, pothole, method, landed, readers, loaded, district, source, golden, window, reading, standard, device, covers, operating, carried, station, checks, potholes, latency, detections
+Stump terms swept: architecture, reader, content, method, decisive, section, carried, pothole, window, landed, readers, loaded, source, monitored, carries, burner, district, standard, device, covers, golden, pattern, boiler, reading, checks
 
 ## 3 answer figures in the pack (REVIEW 1)
-- **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: carries 17 of 18 distinctive words of the committed call: 'Sign the 2027 NOx reduction agreements with Wexley Point Energy Center, Ashgrove Refining, Valmora Glass Works, Sedge Ho'
+- **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: carries 14 of 15 distinctive words of the committed call: 'Sign the 2027 NOx reduction agreements with Ashgrove Refining, Valmora Renewable Fuels, Sedge Hollow Creamery, Lindqvist'
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `tbapcd_emission_inventory_guidance_2026.pdf`: 10 of 25 stump-paragraph terms appear (catalyst, section, method, district, source, reading); read whether the document names the move
-- **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: 6 of 25 stump-paragraph terms appear (district, source, device, operating, station, checks); read whether the document names the move
+- **REVIEW** `tbapcd_emission_inventory_guidance_2026.pdf`: 10 of 25 stump-paragraph terms appear (content, method, section, source, district, standard); read whether the document names the move
+- **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: 9 of 25 stump-paragraph terms appear (content, section, source, carries, burner, district); read whether the document names the move
 
-## 6 ranking artifacts (REVIEW 2, INFO 1)
-- **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: names 15 of 18 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `tbapcd_rule4702_engine_logs_2026.xlsx`: names 14 of 18 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `tbapcd_permit_devices.csv`: names 14 of 18 answer-set candidates; confirm it does not rank them on the decision question
+## 6 ranking artifacts (REVIEW 3)
+- **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: names 13 of 17 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `tbapcd_permit_devices.csv`: names 14 of 17 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `tbapcd_rule4702_engine_logs_2026.xlsx`: names 14 of 17 answer-set candidates beside numbers; confirm it does not rank them on the decision question
 
 ## 8 column names (REVIEW 6)
-- **REVIEW** `tbapcd_compliance_events_2017_2026.csv`: columns a generator names and an organisation does not: DEVICE_NO
-- **REVIEW** `tbapcd_emission_statements_2017_2026.csv`: columns a generator names and an organisation does not: DEVICE_NO
+- **REVIEW** `tbapcd_compliance_events_2018_2026.csv`: columns a generator names and an organisation does not: DEVICE_NO
+- **REVIEW** `tbapcd_emission_statements_2018_2026.csv`: columns a generator names and an organisation does not: DEVICE_NO
 - **REVIEW** `tbapcd_engine_inspections_2025_2027.csv`: columns a generator names and an organisation does not: DEVICE_NO
 - **REVIEW** `tbapcd_permit_devices.csv`: columns a generator names and an organisation does not: DEVICE_NO
 - **REVIEW** `tbapcd_rule4702_engine_logs_2026.xlsx`: columns a generator names and an organisation does not: Device
@@ -68,4 +68,3 @@ called the index meters' usage switching to therms in July "a reconciliation clu
 
 Every REVIEW line: harmless to both readers (the plan's roster, Method 19 and source test wording, the DEVICE_NO
 columns as the district's own field names).
-
