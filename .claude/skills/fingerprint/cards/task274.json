@@ -46,10 +46,10 @@
   "role_family": "statistical_office_head",
   "scoring_unit": "other",
   "spine": {
-    "file": "specimen and aliquot tracking log, 2025 examination wave",
-    "rows": 80000,
-    "entity": "one event on one serum aliquot (collected, received, stored, thawed, assayed)",
-    "grain": "aliquot x event",
+    "file": "mhnes_2025_specimen_tracking.csv",
+    "rows": 111459,
+    "entity": "one event on one vial (collected, processed, frozen, shipped, received, accessioned, assayed, stored, pulled, thawed, returned)",
+    "grain": "vial x event",
     "source": "synthetic"
   },
   "forum": "council_or_assembly",
@@ -120,7 +120,7 @@
       "domain": "general-statistics-data-science"
     }
   ],
-  "architecture_spent": null,
-  "notes": "Re-rooted 2026-10-23 after architecture 1 was spent at stage 4 (Gate F). Drawn from seed DA24's quantity only (a count on a distribution read against a fixed limit); world redrawn. Architecture 2 was first filed as a county-wide count corrected per reagent lot and analyzer (f2830db8); at stage 2 the count proved to need only the average bias, and per lot and analyzer pooling is the reflex a reader takes with re-assays in hand, so the call became a county designation and the decisive grain the calibration. Axes redrawn on re-registration: strategy decomposition_attribution (banned on task177 v3) to composition_mix, the honest family once the move is each county's own mix of calibrations against its reagent lot's pooled mix; context artifact filed_standard (task177 v3) to close_out_summary, the wave's fieldwork close-out that ships; forcing event launch_or_rollout (task178 v3) to vote_or_meeting, the board's vote on the programme's first counties. WARNs answered in the design note's Draw. Two draws refused before this one: an engine-hours warranty risk set (the integration lever 0.92 to 1.07 of mean imputation) and a chain of lot verifications (estimator spread 900 to 5,600 on 18,000).",
+  "architecture_spent": true,
+  "notes": "Re-rooted 2026-10-23 after architecture 1 was spent at stage 4 (Gate F). Drawn from seed DA24's quantity only (a count on a distribution read against a fixed limit); world redrawn. Architecture 2 was first filed as a county-wide count corrected per reagent lot and analyzer (f2830db8); at stage 2 the count proved to need only the average bias, and per lot and analyzer pooling is the reflex a reader takes with re-assays in hand, so the call became a county designation and the decisive grain the calibration. Axes redrawn on re-registration: strategy decomposition_attribution (banned on task177 v3) to composition_mix, the honest family once the move is each county's own mix of calibrations against its reagent lot's pooled mix; context artifact filed_standard (task177 v3) to close_out_summary, the wave's fieldwork close-out that ships; forcing event launch_or_rollout (task178 v3) to vote_or_meeting, the board's vote on the programme's first counties. WARNs answered in the design note's Draw. Two draws refused before this one: an engine-hours warranty risk set (the integration lever 0.92 to 1.07 of mean imputation) and a chain of lot verifications (estimator spread 900 to 5,600 on 18,000). Architecture 2 spent 2026-10-23 at stage 4 on Gate F: both isolated scored readers built the per-calibration bridge from the December re-assays, anchored the October check at its own calibration and committed the golden four counties (asks 0 of 32 each). Architecture 3 not drawn: no candidate cleared the re-root screens (the design note's last Tried and rejected line), so the number retired 2026-10-23; this card keeps architecture 2's identity, with architecture 1 in its lineage.",
   "registered": "2026-10-23T09:16:16Z"
 }

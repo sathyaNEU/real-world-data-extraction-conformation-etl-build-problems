@@ -1,0 +1,108 @@
+{
+ "answer": "Counties opening first: Wexmoor, Corvale, Lassiter, Inskeep",
+ "deliverables": [
+  "vitamin_d_status_2025.xlsx"
+ ],
+ "distractor_reasons": {
+  "mhnes_2021_county_tables.pdf": "the 2021 wave's county shares and response rates, measured by LC-MS/MS at another laboratory; nothing in the 2025 figures is computed from them",
+  "varnholt_customer_notice_2025-06.pdf": "the manufacturer's statement of what its restandardised lots do on average; the wave's results are carried to the reference scale by the laboratory's own check and bridging run, not by the notice's average"
+ },
+ "distractors": [
+  "target/varnholt_customer_notice_2025-06.pdf",
+  "target/mhnes_2021_county_tables.pdf"
+ ],
+ "domain": "Survey Research & Official Statistics (nonresponse, calibration and measurement-error adjustment)",
+ "objective": "Descriptive & Distribution Analysis",
+ "provenance": {
+  "README_files.txt": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "accuracy_program_report_2025-B.pdf": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "analyzer_event_log_2025.csv": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "county_codes.csv": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "instrument_register.csv": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "lis_vitd_bridging_run_2025-12-16.csv": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "lis_vitd_results_2025.csv": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "mhnes_2021_county_tables.pdf": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "mhnes_2025_analysis_plan.pdf": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "mhnes_2025_data_dictionary.pdf": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "mhnes_2025_dsq_products.csv": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "mhnes_2025_examined_persons.csv": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "mhnes_2025_fieldwork_closeout.pdf": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "mhnes_2025_screener_rosters.csv": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "mhnes_2025_sp_status.csv": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "mhnes_2025_specimen_tracking.csv": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "supplement_label_extract_2025.xlsx": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  },
+  "varnholt_customer_notice_2025-06.pdf": {
+   "date": "2026-10-19",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Merrivane Health District, its counties, survey, laboratory, staff, the Brennick Reference Measurement Program, Varnholt Diagnostics and every supplement brand are fictional; the survey follows the design of a health and nutrition examination survey (MEC stands, household interview, examination weights) and the laboratory files the shape of a hospital laboratory information system's and an immunoassay analyzer's exports"
+  }
+ }
+}

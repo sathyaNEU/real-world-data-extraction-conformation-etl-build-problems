@@ -1,39 +1,67 @@
 {
   "task": "task274",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "RETIRED",
   "domain": "survey-research-official-statistics",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-23",
   "stump": "A competent analyst pools the December re-assays of stored duplicates by the reagent lot and analyzer each original result carries, adds the October accuracy check's bias for the lot and analyzer it measured, weights each county and names the wrong counties, or divides every result by the check's bias and names fewer; the immunoassay's bias is set at each calibration, the calibrator lot changed on its own dates and every recalibration moved it, so only each result's own calibration's shift, read from the re-assays of results measured under it and anchored at the check's own calibration, names the golden set.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": null
+    "exit": 0,
+    "date": "2026-10-23",
+    "checks": 51,
+    "fail": 0,
+    "warn": 0
   },
   "leak": {
-    "leak_py": null,
-    "reader": null
+    "leak_py": "REVIEW (6 lines: county names in the plan; world vocabulary in five documents; none names the move)",
+    "reader": "a2r1 and a2r2 (architecture 2) both landed the call: each result under its own calibration's ratio from the December re-assays, anchored at the October check's calibration; asks held (0 of 32 figures each)"
   },
   "duplicate_check": {
-    "heart": null,
+    "heart": "WARN (no BLOCK)",
     "nearest": "task478 v5 0.10"
   },
   "judge": {
     "verdict": null,
     "disposition": null,
-    "report": null
+    "report": "none: the judge thread (run a2r1) was stopped once both scored readers had landed the call, which spends the architecture whatever the verdict"
   },
   "returned": [],
-  "resume": "Stage 2: build the world (the survey's eight county stands, the laboratory's calibrations with reagent lots, calibrator lots and analyzers, the October check and the December re-assays) and search seeds where the calibration family agrees and every lot-level route files another set; then the asks, the pack, prompt.txt and the design note's stage-2 sections to precut exit 0. The architecture 1 generator under task274/generator is replaced (postprocess.py and the document helpers kept).",
+  "resume": "RETIRED 2026-10-23: architectures 1 and 2 spent at stage 4 on Gate F, and the third dead at its draw (every candidate screened was spent in the corpus, landed by a filed sentence or a reflex, or left open across the field's estimators; the note's last Tried and rejected line). The number is not reused; wave 5 continues with task275.",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "seed": "DA24 (quantity only: a count on a distribution read against a fixed limit; world redrawn twice)"
+  "seed": "DA24 (quantity only: a count on a distribution read against a fixed limit; world redrawn twice)",
+  "build": {
+    "seed": 893,
+    "checks_failed": 0,
+    "verify": "PASS",
+    "byte_identical": true,
+    "figures_check": "50 of 50",
+    "cracker": "0 of 32, pair ceiling 28.5"
+  },
+  "architectures": [
+    {
+      "architecture": 1,
+      "drawn": "2026-10-23",
+      "fate": "spent 2026-10-23 at stage 4: Gate F failed, the scored reader fitted a survivor curve to the plant ledger and committed the golden 33,000"
+    },
+    {
+      "architecture": 2,
+      "drawn": "2026-10-23",
+      "fate": "spent 2026-10-23 at stage 4: Gate F failed, both scored readers built the per-calibration bridge anchored at the check and committed the golden four counties"
+    },
+    {
+      "architecture": 3,
+      "drawn": null,
+      "fate": "not drawn 2026-10-23: no candidate cleared the re-root screens (the note's last Tried and rejected line), so the number retires"
+    }
+  ]
 }

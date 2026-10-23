@@ -1,0 +1,484 @@
+{
+ "call": {
+  "counties": [
+   "Wexmoor",
+   "Corvale",
+   "Lassiter",
+   "Inskeep"
+  ]
+ },
+ "counties": {
+  "Wexmoor": {
+   "adults_with_result": 588,
+   "share_below_20": 35.8,
+   "share_whole": 36,
+   "opens_first": true
+  },
+  "Corvale": {
+   "adults_with_result": 636,
+   "share_below_20": 33.8,
+   "share_whole": 34,
+   "opens_first": true
+  },
+  "Lassiter": {
+   "adults_with_result": 567,
+   "share_below_20": 31.8,
+   "share_whole": 32,
+   "opens_first": true
+  },
+  "Ulverne": {
+   "adults_with_result": 629,
+   "share_below_20": 24.1,
+   "share_whole": 24,
+   "opens_first": false
+  },
+  "Vellance": {
+   "adults_with_result": 685,
+   "share_below_20": 19.6,
+   "share_whole": 20,
+   "opens_first": false
+  },
+  "Quennel": {
+   "adults_with_result": 565,
+   "share_below_20": 19.7,
+   "share_whole": 20,
+   "opens_first": false
+  },
+  "Yarrowmere": {
+   "adults_with_result": 619,
+   "share_below_20": 26.2,
+   "share_whole": 26,
+   "opens_first": false
+  },
+  "Inskeep": {
+   "adults_with_result": 572,
+   "share_below_20": 33.4,
+   "share_whole": 33,
+   "opens_first": true
+  }
+ },
+ "family_margin_points": 1.6,
+ "calibrations_used": {
+  "total": 35,
+  "IA1": 17,
+  "IA2": 18
+ },
+ "check": {
+  "mean_difference_pct": 13.4,
+  "calibration_start": "2025-10-12 07:50"
+ },
+ "bridging": {
+  "pairs": 959,
+  "bias_pct": 20.1,
+  "bias_whole": 20
+ },
+ "calibrations": [
+  {
+   "analyzer": "IA1",
+   "start": "2025-01-13 06:22",
+   "lot": "41207",
+   "calot": "C24117",
+   "results": 216,
+   "pairs": 40,
+   "shift": -0.123,
+   "bias": 6.2
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-01-30 07:49",
+   "lot": "41207",
+   "calot": "C24117",
+   "results": 155,
+   "pairs": 30,
+   "shift": -0.0841,
+   "bias": 10.4
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-02-24 06:44",
+   "lot": "41538",
+   "calot": "C24117",
+   "results": 80,
+   "pairs": 23,
+   "shift": -0.0894,
+   "bias": 9.8
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-03-12 07:26",
+   "lot": "41538",
+   "calot": "C24117",
+   "results": 234,
+   "pairs": 34,
+   "shift": -0.1019,
+   "bias": 8.5
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-04-07 06:53",
+   "lot": "41538",
+   "calot": "C25032",
+   "results": 214,
+   "pairs": 34,
+   "shift": 0.004,
+   "bias": 20.6
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-04-28 06:31",
+   "lot": "41906",
+   "calot": "C25032",
+   "results": 254,
+   "pairs": 47,
+   "shift": 0.0594,
+   "bias": 27.4
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-05-24 07:50",
+   "lot": "41906",
+   "calot": "C25032",
+   "results": 205,
+   "pairs": 36,
+   "shift": -0.0118,
+   "bias": 18.7
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-06-21 06:15",
+   "lot": "41906",
+   "calot": "C25032",
+   "results": 78,
+   "pairs": 17,
+   "shift": 0.0141,
+   "bias": 21.8
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-06-28 07:48",
+   "lot": "41906",
+   "calot": "C25032",
+   "results": 41,
+   "pairs": 5,
+   "shift": -0.0103,
+   "bias": 18.9
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-07-07 06:10",
+   "lot": "42317",
+   "calot": "C25032",
+   "results": 137,
+   "pairs": 27,
+   "shift": -0.1045,
+   "bias": 8.2
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-07-21 06:23",
+   "lot": "42317",
+   "calot": "C25071",
+   "results": 304,
+   "pairs": 67,
+   "shift": -0.1289,
+   "bias": 5.6
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-08-25 06:28",
+   "lot": "42680",
+   "calot": "C25071",
+   "results": 50,
+   "pairs": 5,
+   "shift": -0.1032,
+   "bias": 8.3
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-09-04 07:26",
+   "lot": "42680",
+   "calot": "C25071",
+   "results": 199,
+   "pairs": 40,
+   "shift": -0.0836,
+   "bias": 10.5
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-10-06 06:49",
+   "lot": "43012",
+   "calot": "C25071",
+   "results": 54,
+   "pairs": 11,
+   "shift": -0.1053,
+   "bias": 8.1
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-10-12 07:50",
+   "lot": "43012",
+   "calot": "C25071",
+   "results": 391,
+   "pairs": 81,
+   "shift": -0.0573,
+   "bias": 13.4
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-11-10 06:50",
+   "lot": "43012",
+   "calot": "C25108",
+   "results": 161,
+   "pairs": 32,
+   "shift": 0.0322,
+   "bias": 24.0
+  },
+  {
+   "analyzer": "IA1",
+   "start": "2025-12-03 07:25",
+   "lot": "43012",
+   "calot": "C25108",
+   "results": 72,
+   "pairs": 20,
+   "shift": 0.0128,
+   "bias": 21.6
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-01-14 06:22",
+   "lot": "41207",
+   "calot": "C24117",
+   "results": 83,
+   "pairs": 19,
+   "shift": -0.0344,
+   "bias": 16.0
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-01-28 07:20",
+   "lot": "41207",
+   "calot": "C24117",
+   "results": 166,
+   "pairs": 32,
+   "shift": -0.0575,
+   "bias": 13.4
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-02-25 06:22",
+   "lot": "41538",
+   "calot": "C24117",
+   "results": 146,
+   "pairs": 37,
+   "shift": -0.006,
+   "bias": 19.4
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-03-11 07:37",
+   "lot": "41538",
+   "calot": "C24117",
+   "results": 144,
+   "pairs": 35,
+   "shift": -0.0957,
+   "bias": 9.1
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-04-08 06:21",
+   "lot": "41538",
+   "calot": "C25032",
+   "results": 98,
+   "pairs": 21,
+   "shift": -0.0047,
+   "bias": 19.5
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-04-29 06:49",
+   "lot": "41906",
+   "calot": "C25032",
+   "results": 82,
+   "pairs": 18,
+   "shift": 0.0343,
+   "bias": 24.3
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-05-11 07:41",
+   "lot": "41906",
+   "calot": "C25032",
+   "results": 114,
+   "pairs": 25,
+   "shift": 0.0099,
+   "bias": 21.3
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-06-08 06:21",
+   "lot": "41906",
+   "calot": "C25032",
+   "results": 81,
+   "pairs": 17,
+   "shift": 0.0272,
+   "bias": 23.4
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-06-15 07:29",
+   "lot": "41906",
+   "calot": "C25032",
+   "results": 110,
+   "pairs": 16,
+   "shift": 0.0223,
+   "bias": 22.8
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-07-08 06:38",
+   "lot": "42317",
+   "calot": "C25032",
+   "results": 113,
+   "pairs": 20,
+   "shift": -0.1032,
+   "bias": 8.3
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-07-21 06:50",
+   "lot": "42317",
+   "calot": "C25071",
+   "results": 90,
+   "pairs": 19,
+   "shift": -0.114,
+   "bias": 7.1
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-08-06 07:55",
+   "lot": "42317",
+   "calot": "C25071",
+   "results": 204,
+   "pairs": 50,
+   "shift": -0.1037,
+   "bias": 8.3
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-08-26 06:52",
+   "lot": "42680",
+   "calot": "C25071",
+   "results": 134,
+   "pairs": 24,
+   "shift": -0.1032,
+   "bias": 8.3
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-09-23 06:21",
+   "lot": "42680",
+   "calot": "C25071",
+   "results": 113,
+   "pairs": 12,
+   "shift": -0.0877,
+   "bias": 10.0
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-10-07 06:48",
+   "lot": "43012",
+   "calot": "C25071",
+   "results": 104,
+   "pairs": 16,
+   "shift": -0.0252,
+   "bias": 17.1
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-11-02 07:40",
+   "lot": "43012",
+   "calot": "C25071",
+   "results": 33,
+   "pairs": 3,
+   "shift": -0.0529,
+   "bias": 13.9
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-11-11 06:31",
+   "lot": "43012",
+   "calot": "C25108",
+   "results": 188,
+   "pairs": 43,
+   "shift": 0.0333,
+   "bias": 24.2
+  },
+  {
+   "analyzer": "IA2",
+   "start": "2025-11-29 07:58",
+   "lot": "43012",
+   "calot": "C25108",
+   "results": 13,
+   "pairs": 3,
+   "shift": 0.0457,
+   "bias": 25.7
+  }
+ ],
+ "asks": {
+  "supplements_1000": {
+   "Wexmoor": 23.4,
+   "Corvale": 20.2,
+   "Lassiter": 20.3,
+   "Ulverne": 19.9,
+   "Vellance": 21.0,
+   "Quennel": 21.7,
+   "Yarrowmere": 22.1,
+   "Inskeep": 22.1
+  },
+  "supplements_2000": {
+   "Wexmoor": 9.0,
+   "Corvale": 8.3,
+   "Lassiter": 6.8,
+   "Ulverne": 6.4,
+   "Vellance": 8.5,
+   "Quennel": 9.6,
+   "Yarrowmere": 9.1,
+   "Inskeep": 8.7
+  },
+  "interview_rr": {
+   "Wexmoor": 80.1,
+   "Corvale": 81.9,
+   "Lassiter": 83.6,
+   "Ulverne": 77.7,
+   "Vellance": 80.4,
+   "Quennel": 78.3,
+   "Yarrowmere": 77.7,
+   "Inskeep": 80.9
+  },
+  "exam_rr": {
+   "Wexmoor": 62.6,
+   "Corvale": 63.7,
+   "Lassiter": 65.5,
+   "Ulverne": 68.7,
+   "Vellance": 66.5,
+   "Quennel": 64.3,
+   "Yarrowmere": 66.1,
+   "Inskeep": 60.2
+  }
+ },
+ "thresholds_iu": [
+  1000,
+  2000
+ ],
+ "district": {
+  "adults_with_result": 4861,
+  "share_whole": 27,
+  "supplements_1000": 21.1,
+  "supplements_2000": 8.2,
+  "interview_rr": 80.1,
+  "exam_rr": 64.7,
+  "voided_rows": 60,
+  "dwellings_screened_twice": 163
+ },
+ "results": 4861
+}
