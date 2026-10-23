@@ -222,6 +222,50 @@ so the floor binds again. Price both ends on the same case count before a world 
 few cases to reorder and many cases to be precise has no setting, and that is a refusal on arithmetic rather
 than a dial to sweep.
 
+**More negative is not better: the floor is not monotone in the coupling.** `corr(log observed, log base)` is
+`(1 + c r) / sqrt(1 + r^2 + 2 c r)` for `r` = rho and `c` the coupling, which equals **exactly plus 1 at c of
+minus 1** whenever rho is under 1, because a perfect negative coupling makes log factor a fixed negative
+multiple of log base and log observed a POSITIVE multiple of it. The function therefore runs from 1 at c of
+minus 1, down to `sqrt(1 - rho^2)` at c of minus rho, and back to 1 at c of plus 1. So the only useful
+coupling is near minus rho, and chasing a more strongly negative one makes the reflex MORE rank-equivalent,
+not less. The separate zero at c of minus one over rho needs rho at or above 1 and coincides with the minimum
+exactly at rho of 1.
+
+**The dispersion ceiling, which closes the blessed shape on bounded quantities and is the strongest
+arithmetic result on file.** Counting worlds in which every requirement holds at once (realised correlation
+at or under 0.80, the designed route naming the golden in at least 38 of 40 redraws, the golden 4th to 8th of
+12 under the raw reflex, no reflex ever naming it, each reflex's own top clearing its runner-up by 1.15x,
+designed margin over the designed figure's coefficient of variation at or above 1.15, and the standing family
+unanimous) gives **0 of 40 worlds at sd(log factor) 1.3, 2 to 5 at 2.0, 4 to 10 at 2.5 and 8 to 12 at 3.0**,
+best 12 of 40 at 25 cases per candidate. A passing world reads rho 3.61, realised correlation plus 0.151,
+designed 40 of 40, every reflex 0 of 40, golden 5th of 12, rung clearances 1.38 and 2.02, margin over
+coefficient of variation 3.5, standing family 40 of 40, so **the dial is genuinely two-ended there**. The
+window needs sd(log factor) at or above about 1.4, and that is what closes it: **only unbounded magnitudes
+carry that dispersion** (a loss severity at 2.00 and 2.80, a network reach at 2.07), while every bounded
+per-case quantity the shape licenses measures under the requirement, a window share at 0.38, a coverage share
+at 0.71, an inclusion probability from a daily capacity at 0.57, an opportunity count of 1 to 20 at 0.79, a
+duration in days at 0.89 and a contract-capped currency amount at 0.80. And an unbounded magnitude reopens
+the family, because converting an intensity into the decision's own quantity needs an exponent the record
+does not carry. **So measure sd(log factor) on the candidate quantity before anything else: under about 1.4
+the shape is closed, and the only openings are a bounded quantity that somehow carries that dispersion, or
+leaving the multiplicative form entirely.**
+
+**Two ways to leave the multiplicative form, both measured.** Grade a quantity that depends on the recovered
+vector's **levels** rather than its order, such as the count of cases crossing an ABSOLUTE threshold: that is
+level-dependent, so a route with the order right and the levels wrong files a wrong count, and it passes the
+monotonicity screen that kills a monotone summary of a recovered vector. Or grade something that is not a
+transform of a count at all, such as a crossing of a running sum, which sits outside the floor law entirely;
+price its determinacy first, since one such candidate's five licensed readings spread the graded figure 24.38
+days on average against a printed unit of one day.
+
+**Two harness defects that make a screen report a pass it did not measure.** A reflex on a threshold-count
+object must be scored against **the limit's own value**, never against a quantile of the reflex statistic,
+which hands the reflex the right count 98.3 per cent of the time and measures nothing. And where the
+correcting factor is a case's value over its own group's mean, it is a within-group deviation, so the honest
+coupling is pinned near zero (measured plus 0.0013 to minus 0.0405) and can never approach the minimising
+minus rho: there an independent prototype **understates** rho (0.7716 against 0.8099) while flattering the
+realised reach, so it misleads in both directions at once.
+
 **And draw the factor and the base from one generating process, or the screen measures nothing.** The same
 alarm-rationalisation step scored the reflex at 2 of 20 in a parameterised prototype that drew the chatter
 multiplier and the excursion rate independently, and at 12 of 12 once a trace simulation coupled them through
