@@ -374,6 +374,16 @@ task179), and task173's new draw is its sibling insight in the same world (a wat
 quantities read on which exposure the failures follow, with work on each unit recorded in another system). The lines
 are at the foot of `## Tried and rejected`. PAUSED at stage 1 for the main session to assign another cell.
 
+Fifth rebuild cell the same day, chosen by this agent shape first: actuarial-science-insurance /
+reserving-development-triangles (Forecasting), which no live card holds (task127 v3's Berquist-Sherman restatement
+died on determinism in lineage). The parallel rebuilds' cells were excluded first (task171 on dose-response, task173,
+task174, task176, task177 and task179 as their notes stand), with the coordinator's window note that composition_mix,
+causal_design and population_selection are banned at the draw (grain_or_unit too while task483 sits in the last
+three). One candidate was measured dead on code and about twenty more died on paper, several in the open
+utilization, health-burden and media cells read while choosing (`## Tried and rejected`, the fifth-cell block). No
+card registered, nothing cut, architecture 3 stays the card's current identity (marked spent). PAUSED at stage 1 for
+the main session to assign another cell.
+
 ## FC49 screen record (world spent, kept for the record)
 
 **Status: PAUSED at stage 1, no card ever registered, nothing cut.** New, Forecasting, seed FC49: a
@@ -822,3 +832,53 @@ none is touched by either candidate.
     so the converted districts' own post-conversion rate lands;
   - out-migration read on the years at the current address after an inflow surge: the mover-stayer model is taught and
     the honest label (a hazard by time since entry) is `time_semantics`, banned in the window.
+
+- **Fifth rebuild cell, reserving-development-triangles (Forecasting), searched shape first on 2026-10-23; no card.**
+  The field's routes (paid and incurred chain ladder, Bornhuetter-Ferguson and Cape Cod, the Berquist-Sherman disposal
+  restatement, a fitted tail, Mack or the over-dispersed Poisson bootstrap) taken as the default path, and the cell's
+  three library cards as the textbook. Measured on code (scratchpad `b178t/proto/c1.py`, seeds 1 to 3):
+  - **Litigated injury files of a leaving defence firm moving to the remaining panel firm, settlement read on the
+    concluded cases of the (defence firm, claimant firm) pair** (68 claimant firms, two regional defence firms, about
+    1,800 litigated claims a year 2014 to 2026, cross-region allocation 1 to 10 per cent, a monthly settlement hazard
+    by age scaled by a familiarity curve from 0.3 or 0.4 at no shared case to 1 by about 8 to 25). Against the expected
+    2027 settlements of the open inventory, the age-only rates (pooled, by region) sit 2 to 18 per cent high and the
+    remaining firm's own rates 4 to 24 per cent high, while the golden family (complementary log-log hazard with the
+    pair count as log(1+k), as bands or as a decay) spreads 3 to 15 per cent around the truth. Dead on lever and
+    determinacy: the big claimant firms conclude enough cases with the receiving firm inside the year that familiarity
+    rebuilds within months, so only the small firms' files stay slow, and the curve is identified only from the few
+    cross-allocated cases; raising the lever by slowing the learning widens the family as fast.
+- Dead on paper in the same search, one line each:
+  - follower claimants of one occurrence (passengers of one vehicle reporting after the lead claim): honestly
+    grain_or_unit, banned, and the mix of occurrence sizes moves only with a vehicle-class column or one large event;
+  - fleet size from the vehicle schedule driving report lag after a fleet tender: composition, and the lever measured
+    on paper at about 14 per cent;
+  - claimant representation read from payee names: attorney involvement is the field's named severity channel;
+  - claims reopened under new numbers in the legacy system: Layer 1 carrying the stump;
+  - an underwriting year whose inceptions were harmonised to one date: the earning correction is taught and the
+    inception date is a column;
+  - an aggregate deductible per client: reserving gross and applying the deductible is the taught route;
+  - claims of minors tolled to majority after a maternity unit opened: task176's driver (a fixed age reached by a
+    cohort together);
+  - both vehicles insured by the same insurer after a book acquisition: the at-fault side still pays the other's
+    damage, so the cost moves between heads rather than leaving, and the cell is claims frequency;
+  - alternative accommodation running until the sibling building claim closes: sized from one storm;
+  - claimant firms' portfolio settlements in batches: lumpy timing nothing forecasts;
+  - hearing-centre backlog as the grain for settlement speed: court backlog is named and the lever about 20 per cent;
+  - linked claims as a fraud ring: an anomaly read, close to a planted cluster;
+  - subsidence found at the next sale and incidents disclosed at renewal: timing exposures, calendar-bound;
+  - a reserve range widened by occurrence clustering: Mack and the bootstrap estimate dispersion from the triangle
+    itself, so the textbook already carries it;
+  - interim weekly loss-of-earnings payments read from payment cadence: a handling change the insurer would minute.
+  - Open utilization cells read while choosing: care home residents found by address cardinality in an absorbed list
+    (named, and about 11 per cent beyond the age-sex rates); post-operative follow-ups after a surgical blitz (the
+    programme is documented and the protocol replays); patients following transferring doctors (the staffing plan
+    names the channel); a new prison's in-house care (named).
+  - Health burden: second-hand smoke through shared walls under a smoke-free housing rule (a relational exposure not
+    on file, lever about 60 per cent, but an averted count of about 90 visits carries 5 to 15 per cent sigma and
+    rests on a compliance assumption); media reach: co-viewing on connected TV is the industry's taught factor.
+  - The cell finding: a reserving forecast conditions on the claims already open and on the triangle's own
+    dispersion, so a claim-level structure moves it only through the mix of the latest years (composition, banned in
+    this window) or through a handling, legal or contract change the insurer itself documents (named, replayed or
+    taught); the relational structures it carries (claimant firms, occurrences, payees) either rebuild inside the
+    window or rest on a few events.
+
