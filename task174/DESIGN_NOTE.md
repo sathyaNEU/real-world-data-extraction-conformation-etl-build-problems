@@ -1,6 +1,6 @@
 # task174 design note
 
-**Status: PAUSED at stage 1 on 2026-10-23 after the rebuild screen (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
+**Status: PAUSED at stage 1 on 2026-10-23 after two rebuild screens, biomedical survival and media reach (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
 Forecasting. Three worlds were screened on this number and none yields a draw that holds; the third, the
 product-analytics retention cell of the same day, is recorded in its own finding below and in the last block of
 `## Tried and rejected`. The first is seed FC45's: a north-east
@@ -87,6 +87,16 @@ closes) or names its own step, and the fourth is task162's or task178's driver i
 also carry only hundreds of events, so any decisive parameter estimated from a trial carries several per cent of
 sigma against the bar's one per cent; only registries of tens of thousands reach it, and there the time-since-entry
 curve absorbs the stationary structure.
+
+**The second cell of the day, marketing-consumer-research / media-reach-frequency-audience-measurement
+(Forecasting).** Screened with the field's planning routes as the default path (a reach curve fitted on GRPs,
+Sainsbury or beta-binomial duplication and frequency, last campaign's reach carried). One candidate measured on
+code (`cap1.py`, scratchpad b174n/proto2) and eleven on the structural screens; nothing holds. The finding: with
+respondent-level panel or exposure logs, the field's own route is a respondent-level schedule simulation, and like the
+survival curve by time since entry it absorbs every stationary structure of the audience; what breaks it is a plan
+the record never ran, and each such plan is either a delivery mechanic (a cap, a pacing rule, an ad load), which is
+rule application once filed and a hidden rule or a fork when not (the `binding_constraint` pincer of `stumping`
+1.2), or a new vehicle, season or audience whose own panelists are the attaining subset.
 
 ## Tried and rejected
 
@@ -301,3 +311,40 @@ curve absorbs the stationary structure.
   paper.
 - **OS follow-up capped two years after treatment stops, with the cap lifted for the final analysis**: censoring tied
   to the clinical state at discontinuation, task268's informative censoring. On paper.
+- **Rebuild of 2026-10-23, second cell: marketing-consumer-research / media-reach-frequency-audience-measurement
+  (Forecasting).** Each line is one candidate, written when it died; the measured one first.
+- **A tighter weekly household frequency cap on a guaranteed streaming buy, the impressions it takes from heavy
+  households re-served to the households under it**, measured on `cap1.py` (200,000 households, gamma-Poisson ad
+  opportunities): where the buy still fills, the cap lifts four-week reach by 12 per cent and three-plus reach from
+  50.6 to 65.2 per cent, a real lever; tighter settings leave the buy unfillable. It dies on the
+  `binding_constraint` pincer: where the re-serving goes is the ad server's mechanics, so filed it is rule
+  application (cap, pacing, guaranteed fill executed on each household's opportunities) and unfiled it is a hidden
+  rule recovered from past delivery or a fork between re-served and lost impressions.
+- **A plan bought in a few high-rated tentpole spots against a reach curve fitted on many low-rated ones**: the
+  respondent-level schedule simulation on last year's analogous programmes is the field's own planning route, so it
+  is the default, not the stump. On paper.
+- **Cross-media duplication from a fused TV and digital dataset whose matching attenuates the correlation**: the
+  file's own documentation names the fusion (a reading), and the true single-source calibration panel is the
+  attaining subset. On paper.
+- **A twelve-week flight against four-week continuous panel spans** (the beta-binomial extended without audience
+  turnover): the panelists in tab for twelve weeks are the attaining subset, reweighted by the panel's projection
+  weights (card 4). On paper.
+- **Next season's guarantee for a show whose audience a late streaming release swelled with new viewers**: retention
+  by each viewer's tenure with the show is task134 v2's hazard by time since entry after a surge filled the pool. On
+  paper.
+- **Renewed shows regressing after being renewed for strong ratings**: regression to the mean in a selected unit
+  (task130 v3 landed), and the historical change among renewed shows already carries it. On paper.
+- **A show moved behind a weaker lead-in** (inherited audience against loyal audience): audience flow from the
+  respondent-level panel is the field's textbook, and splitting the audience into two sources is
+  decomposition_attribution, banned against task169. On paper.
+- **Cord-cutting concentrating the remaining TV audience in heavy viewers**: about 7 to 9 per cent on reach at fixed
+  GRPs, and projecting who leaves next forks on the trend. On paper.
+- **A new ad-supported tier taken mostly by light streamers**: the pilot market's ad-tier households are the
+  attaining subset. On paper.
+- **Device reach converted to people reach through a device graph as the plan moves to mobile**: the single-source
+  panel's person-device links are card 1's textbook route, and a single conversion ratio is the one-number screen. On
+  paper.
+- **On-target reach of a modelled audience segment**: the segment's error rates carry and its yield moves with the
+  base rate, task446's driver. On paper.
+- **A rising ad load or a sold-out peak hour capping a platform's opportunities**: a filed capacity, so rule
+  application, the same pincer as the cap. On paper.

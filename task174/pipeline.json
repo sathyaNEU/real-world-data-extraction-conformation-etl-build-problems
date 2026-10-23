@@ -39,7 +39,7 @@
   "forcing_event": "purchase_order_or_contract (the term sheet) was this world's honest key, banned by task170 and held for task165 at the time of the screen",
   "prototypes": "scratchpad b174/proto: physics.py, calib.py to calib3.py, lever.py, screen_common_exposure.py, slip_lever.py, vintage_proto.py to vintage_proto5.py"
  },
- "resume": "PAUSED 2026-10-23 at stage 1 after the rebuild screen in biomedical-clinical-research / survival-time-to-event-analysis: no card registered, nothing cut; the coordinator assigns another cell (screen_bio and the design note's ## Rebuild (2026-10-23)).",
+ "resume": "PAUSED 2026-10-23 at stage 1 after two rebuild screens (biomedical survival, media reach and frequency): no card registered, nothing cut; the coordinator assigns another cell (screen_bio, screen_media and the design note's ## Rebuild (2026-10-23)).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -71,5 +71,12 @@
   "paper": "twenty-three on the structural screens, each a line in the design note's Tried and rejected: switch transient (attaining subset, swap), imaging-interval amendment (lever near 10, rule), annual-visit bunching (task162), manufacturing wait (task169), duration cap (subset), dosing interval (premise, subset), therapy uptake (causal, dated), crossover (no data), winter deaths (task162/178), cure plateau (subset), MRD cure (precision), illness-death state (precision), randomisation ratio (9 per cent), period analysis (trailing reflex), background mortality (10-15), excess-hazard transport (10), recurrent events (default, subset), two-cut back-test (rule, fork), final-analysis HR (variance), IVF funding cap (task268), induction cap (task172), shared frailty (task143), post-treatment follow-up cap (task268)",
   "finding": "a time-since-entry hazard with the field's corrections, conditioned on each member's follow-up, is unbiased for the current risk set whenever entry cohorts are exchangeable on the hazard's clock and the window stays inside observed follow-up; the breakers (cohort change, extrapolation, a forward change, a calendar-bound record) are absorbed, fork, are the textbook competing-risks move or task169's driver, or are task162's and task178's drivers; trials also carry too few events for the bar's sigma",
   "prototypes": "scratchpad b174n/proto: s1_backlog.py, s3_entry.py; STATE.md"
+ },
+ "screen_media": {
+  "assigned": "second cell 2026-10-23, marketing-consumer-research / media-reach-frequency-audience-measurement (Forecasting); default path the reach curve on GRPs, Sainsbury or beta-binomial duplication and frequency, last campaign's reach carried",
+  "measured_cap": "tighter weekly household cap on a guaranteed streaming buy, capped impressions re-served (cap1.py, 200,000 households): reach +12 per cent, three-plus reach 50.6 to 65.2 where the buy fills; dies on the binding_constraint pincer (filed serving mechanics are rule application, unfiled a hidden rule or a fork)",
+  "paper": "eleven on the structural screens (each a line in the design note): tentpole spots (respondent-level simulation is the default), fused duplication (reading, subset), twelve-week flight (continuous panelists subset), streaming-swelled show (task134 v2), renewed-show regression (task130 v3), lead-in move (textbook flow, decomposition banned), cord-cutting (7-9 per cent, fork), ad tier (pilot subset), device graph (card 1, one number), modelled segment (task446), ad load (rule)",
+  "finding": "with respondent-level logs the field's own route is respondent-level schedule simulation, which absorbs every stationary audience structure; a plan the record never ran is either a delivery mechanic (rule application filed, hidden rule or fork unfiled) or a new vehicle, season or audience whose own panelists are the attaining subset",
+  "prototypes": "scratchpad b174n/proto2: cap1.py"
  }
 }
