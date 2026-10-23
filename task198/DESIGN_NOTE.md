@@ -2547,3 +2547,104 @@ what the rows contain:
 **So the shape is closed as a clause on this ground and not merely on one cell**, and the three horns
 are the reason rather than three misses. The device that made task125 ship (a true operational
 sentence that makes the one-line join look pointless) is re-skinnable; the driver is not.
+
+### The one direction the correction left genuinely open, priced here (2026-10-23)
+
+**Direction (B), the structure's position unregistered, measured and dead at 5.00 distinct graded
+paths of 5.** World (clean truth, one generating process, 20 draws, run twice to byte-identical
+output): an environment agency's privately maintained package sewage treatment plants, 48 of them, so
+the agency holds no service record at all. Each plant is serviced on its own cycle of four to seven
+quarters and its effluent ammonia rises with quarters since service; the agency counts each quarter
+the plants over the 23 mg/l consent limit. A new service specification binds services **performed**
+in the four quarters of 2026 only, and a plant keeps the improvement until its next service, so the
+change acts on the service event and not on the reported quarter. The only estimated thing is the
+position: when each plant was last serviced, hence the regime of its last service and its quarters
+since. Given the position, the specification's effect is identified by one two-way group-by on
+(regime of last service, position), which is exact, so the measurement isolates the position.
+
+Five licensed reconstructions of the position (a largest-drop rule, local minima, a cusum reset, the
+design's own sawtooth fitted by least squares over a grid of period and phase, and the network's
+modal period phased on each plant's lowest reading), seed 0 against a golden of 0, 0, 3, 3, 4, 0, 4, 5:
+
+| reconstruction | 2026Q1 to 2027Q4 |
+|---|---|
+| golden | 0, 0, 3, 3, 4, 0, 4, 5 |
+| P1 largest-drop rule | 0, 1, 3, 3, 6, 5, 13, 9 |
+| P2 local minima | 0, 0, 2, 3, 5, 2, 3, 3 |
+| P3 cusum reset | 0, 0, 3, -1, 0, 1, 5, 5 |
+| P4 sawtooth least squares | 0, 0, 3, 3, 1, 0, 3, 3 |
+| P5 pooled modal period | 1, 3, 3, 2, 2, 3, 5, 4 |
+
+Over 20 worlds: **5.00 distinct graded paths of 5** (every reconstruction gives a different path in
+every world), a **mean per-quarter spread of 4.72 plants against a printed unit of 1 plant** (min
+3.00, max 6.38), and **3 of 20** worlds in which any member reproduces the golden path exactly. This
+confirms the lane's standing parametric-horn law on ground nothing on file had measured: the position
+is a latent quantity with one unknown per case recovered by a fit, which is the closed clause in
+additive nouns.
+
+**Rescue (A), grade the turning point rather than the levels: dead at 2.95 distinct turning points of
+5.** Discretising to the quarter the path peaks does narrow the family, from 5.00 distinct paths to
+2.95 distinct turning points of 5 (max 4), and 19 of 20 worlds have some member naming the true
+turning point, which is the trap: naming it is not the same as the family agreeing on it. The spread
+runs across four quarters of an eight-quarter window (true 2026Q1+7 against a family of +3, +4, +6,
++7), so Gate C fails on the discretised object too. The discretising rescue reaches a free weighting
+whose spread does not cross a line; here what forks is the position itself, so it is the designation
+that forks and the rescue cannot reach it.
+
+**Rescue (F), file the design's own functional form so one member stands: dead from both sides.**
+Filing the sawtooth leaves P4 alone standing. P4 does not reproduce the golden path: **RMSE 0.580
+plants, 31 per cent of the path's own mean level of 1.88, maximum absolute error 1.35 plants (worst
+4), exact in 3 of 20 worlds.** So the pincer has no third side: file the form and the decisive step is
+executing a filed procedure while the graded path is whatever a per-case fit returns, leave it open
+and five reconstructions give five paths. The clause `no free parameter, never no fit` is satisfied
+only where the form's unknowns are shipped endpoints (task197), and a period and a phase per plant are
+two free unknowns per case.
+
+### The test the brief required in writing: is any of this a per-case correction in disguise?
+
+Run on each horn rather than on the shape, because the answer differs and the difference is the
+finding. The graded object throughout is `D_t = C_t(counterfactual) - C_t(published)`, a difference of
+two counts over a limit, so it is not of the form `observable / per-case factor` and none of the six
+multiplicative laws (the floor `sqrt(1 - rho^2)`, the per-case correction averaging as one over the
+root of the case count, the floor-versus-precision pincer, the dispersion ceiling at sd(log factor)
+about 1.4, the geometric-mean route, scoring the easy route as the cheapest licensed member) binds it.
+Confirmed negatively: none of them produced any kill in this pass.
+
+**Horns (a) and (b) are genuinely outside the family and died elsewhere**, on the abstraction test and
+on an exact identity respectively. **Horn (c) and direction (B) are inside it in additive form**, and
+that is where the per-case law reappears without any of its multiplicative machinery: the correction
+is one per case (`v_i - delta_i`, `position_i`), it is estimated from that case's own thin slice, and
+the graded object is a count over an absolute limit. Grading a level-dependent count is the brief's
+own named escape from the monotone-summary kill, and it works: no sorted column and no monotone
+summary reaches the path. But the same level dependence is why the per-case estimation error does not
+average away, because a count across a limit is discontinuous and a recovery always misplaces the
+cases nearest the limit. **So the escape and the kill are one property.** That is `stumping`'s result
+that exactness of a graded count and non-triviality of its construction are one dial, re-measured here
+on an additive per-case correction (4.72 plants of spread against a printed unit of 1) where it was
+previously measured on a multiplicative one, which widens the closed clause rather than finding a gap
+in it.
+
+### Architecture 13, refused. What the refusal leaves for architecture 14.
+
+Five horns closed with a number each, and together they are exhaustive for this shape, because a
+counterfactual statistic can differ from the published one only in which rows enter or in what the
+rows contain, and the content is either recorded or not. Nothing was registered, no file was cut, no
+git write was made, and no agent was spawned.
+
+**The prescription is a constraint, not a mechanism**, since this lane has had two prescribed
+mechanisms die. Every architecture that has died on this slot died because the decisive construction
+was one of exactly two things: exact arithmetic on a shipped structure, or a fit carrying one unknown
+per case. Six grounds now return that dichotomy (a claims ledger, a safety record, a barrier
+investigation record, a payables ledger, a soil application register, a plant service history), and
+this pass adds that it holds for an additive per-case correction and for a level-dependent count, not
+only for a multiplicative one. So the axis to price next is **the number of unknowns relative to the
+number of cases**: a construction whose unknowns are strictly fewer than its cases is overidentified
+by the data, which is what closes the family without filing a method, and it is the only structure
+ever measured on this slot that opened a two-ended dial. The one instance of it on file is a linear
+solve over coupled observations, which is spent as a shipped driver in other nouns, so what is open is
+a shared-parameter construction that is not that: the test to run first, before a world is named, is
+whether the organisation's own process imposes a design that identifies a small number of shared
+parameters across many cases jointly. Draw it on a cell whose spent drivers are not all about how the
+instrument or the record sees the quantity, which is what
+`physical-environmental-sciences`/`environmental-monitoring-exceedance` is (task180 a detection
+threshold, task189 instrument-specific censoring, task245 non-random capture, task247 gap filling).
