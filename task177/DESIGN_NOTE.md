@@ -1077,6 +1077,77 @@ its group's surviving records), the same family by its label.
   device has to be found by an internal inconsistency with no convention to read, or re-sited. Across architecture 2
   the call held in every blind read (readers A to E filed 10; reader F's result was lost in a container restart) and
   the asks never cleared two readers in one round (round 1: 9 and 21 of 21; round 2: 0 and 9; round 3: 12 of 21).
+- **Rebuild cell, quantitative-finance / volatility-derivatives-pricing (2026-10-23), candidate G measured on code:
+  dealer gamma left by an overwriting programme's short calls.** The world: a fictional index (and, second form, a thin
+  single stock) whose largest holder writes one-month calls 2 per cent out of the money at each monthly expiry; the
+  dealers who buy them hedge delta, which damps every intraday move by 1/(1 + kappa G), G the calls' dollar gamma
+  computed by identity from the holdings and the exchange's settlement volatilities; the programme winds up, so Q1 2027
+  carries none of it. Default: HAR, AR(1) or a window mean on the observed realised variance. Golden: kappa from the
+  de-damped HAR fit (profile, or within each expiry month), the de-damped series forecast with no programme gamma, the
+  overnight variance kept undamped. Prototypes `g1.py` to `g5.py` (scratchpad b177n/proto), output `screen177n.out`
+  byte-identical with `screen177n_run2.out` over two runs; seeds 1 to 30 fixed before outcomes. Killed on measurement:
+  - index form: the lever is 27 to 35 per cent only at kappa G of 0.47 to 0.66, dealer hedging absorbing a third to two
+    fifths of every intraday move, which no index of realistic depth shows; the golden family's own spread (the base
+    forecast by HAR in levels or logs, AR(1), one-, two- and five-year means; gamma from the settlement volatility, a
+    flat volatility or the trailing realised one; kappa by profile or within-month) is 9.5 to 14.0 per cent at the
+    median and 19.8 to 26.5 per cent at worst over 20 seeds; at a vol-of-vol of 0.12 it falls to 3.7 per cent but the
+    series is too flat to pass as an equity index; no whole-point rounding holds the family, and the nearest 5 at about
+    18 puts the golden half a point from its edge;
+  - the attaining subset: HAR on the observed series scaled by the lowest-decile gamma days' mean variance over the
+    last two years' lands at a median 1.06 to 1.10 times the golden (0.87 to 1.42), so a crude conditioning on gamma is
+    as good as the golden family;
+  - single-stock form (base vol 36, overnight share 15 to 30 per cent, kappa G 0.33 to 0.43): lever 18 to 24 per cent
+    against a golden spread of 9.5 to 12.2 per cent; the golden family sits in one nearest-10 bin with the whole default
+    family below it in only 8 to 14 of 30 seeds, a bin that wide admits a judgmental bump of a third for "the pinning
+    stops", and the kappa G of 0.75 a 50 per cent lever needs leaves visible expiry pinning, a cue to the mechanism.
+- **The cell's structural finding (2026-10-23).** A volatility-level forecast carries its own model spread (window,
+  levels against logs, the speed of mean reversion, the input a correction needs), measured at 5.6 to 14 per cent at the
+  median at realistic vol-of-vol, so only a lever near 50 per cent survives any rounding without admitting a judgmental
+  bump; the mechanisms that move a volatility that far are identities a textbook executes once the change is read
+  (unlevering after a recapitalisation, the cheapest-to-deliver duration after a notional coupon change, a merger's
+  exchange ratio, an index rebuilt on new weights), and the one that is not textbook, dealer gamma, gives 20 to 35 per
+  cent at plausible strength. The structural quantities that are tight (a hedge ratio from smile dynamics, an overnight
+  share, a dampening coefficient) move the graded figure by 5 to 15 per cent.
+- **Rebuild cell, paper deaths (2026-10-23), one line each.**
+  - Leverage relevered (equity vol as asset vol times assets over equity after a debt-for-equity exchange or a mandatory
+    conversion): lever 40 to 100 per cent, but unlevering is the textbook move once the exchange is read, and noticing a
+    dated conversion in the debt register is a field reading.
+  - Bond future after a notional coupon change (the cheapest-to-deliver flips from the shortest to the longest bond, the
+    future's price vol scaling with its duration over the conversion factor): a filed contract mechanic whose effect is
+    the textbook cheapest-to-deliver computation, a lever of about 50 per cent against a yield-vol forecast spread near
+    10.
+  - Power cap after a plant retirement or a flat new load (residual demand shifted hour by hour by identity, the payoff
+    through the price and margin curve): the supply-stack model is the field's textbook and the obvious-covariate
+    regression, the cap's value rests on a few hundred scarcity hours, and the outage hours are the attaining subset.
+  - An index reweighted or a constituent removed (the index variance rebuilt from the constituents): named, so the
+    rebuild is the obvious move; a merger inside a capitalisation-weighted index changes nothing.
+  - A stale-price index moved to auction or mid-quote closes: task135's nonsynchronous driver, and a replay of the filed
+    methodology.
+  - A closing auction replacing last-trade closes (the bid-ask bounce removed): the auction's own noise is unobserved,
+    so the method forks, and the lever is about 10 per cent on liquid names.
+  - Trading hours extended or shortened, a lunch break removed, a night session added: the variance of hours never
+    traded is unobserved.
+  - The Samuelson effect for a contract near delivery: a scheduled date, and the textbook term structure of volatility.
+  - Minimum-variance delta from smile dynamics (the hedge read from the history of fixed-strike volatility against the
+    index): tight, but the adjustment is 5 to 15 per cent of the Black-Scholes delta for single options, and a book
+    netted to enlarge it is built for the lever.
+  - A forward-start put or cliquet under a stationary moneyness skew: the naive route (today's three-month 90 per cent
+    volatility) is the sticky-moneyness golden, and with an inverted term structure the golden is forward variance plus
+    today's skew, the sophisticated reader's natural route.
+  - Reserve scarcity and the overnight rate (reserves drained by identity, the spread through the reserve demand curve):
+    days at the forward reserve level are the attaining subset, and a level below the record's forks on extrapolation.
+  - Securities lending after an index deletion (the index funds' lendable supply leaves by identity, the fee through the
+    utilisation curve): the fee is not a volatility, and the utilisation curve is the field's textbook.
+  - A consumer price basket reweighted for an inflation swap fixing (seasonal factors re-aggregated on the new
+    weights): a filed mechanic replayed on the component history, and the inflation desk's textbook.
+  - Mortgage prepayment on each loan's own refinancing incentive: task171's driver (each unit's own saving) in
+    mortgage nouns.
+  - CVA with wrong-way risk: the hazard's response to the risk driver is a fitted behaviour whose copula forks, on a
+    simulated figure.
+  - Weather (degree-day) contracts after a settlement station or daily-mean definition change: the new station's
+    history is the attaining subset, and the definition change a replay of the filed rule.
+  - Barrier notes monitored on auction closes (observation noise lowers the minimum of the closes): a lever of 10 to 15
+    per cent on thin stocks and none on an index.
 
 ## Retired
 
@@ -1126,7 +1197,17 @@ against scored readers and are kept here as reusable records:
   acceptance. Measured: reader E kept 0 of 9; on reader D's round 2 route every discount cell is low by 954 to 2,505
   pounds.
 
+## Rebuild (2026-10-23)
+
+Reopened under the author's rule that no number stays retired, for a from-scratch rebuild in quantitative-finance /
+volatility-derivatives-pricing (Forecasting), worktree `b_177n`. No candidate held at stage 1: candidate G (dealer gamma
+from an overwriting programme) measured dead on code in three forms and seventeen more directions dead on paper, all in
+`## Tried and rejected` with the cell's structural finding. No card registered (the card's lineage already carries both
+spent architectures), nothing cut; PAUSED at stage 1 for the coordinator to assign another cell.
+
 ## Resume
 
-RETIRED 2026-10-22: architecture 2's asks never cleared two readers in one round and the author's final ask pass failed
-on round 3 (reader E kept ask B's 12 cells); architecture 1 was spent at Gate F. Nothing to resume.
+PAUSED 2026-10-23 at stage 1 after the quantitative-finance / volatility-derivatives-pricing screen found no draw that
+holds; resume at stage 1 in the next cell the coordinator assigns, reading `## Tried and rejected` first. (RETIRED
+2026-10-22 before the reopening: architecture 2's asks never cleared two readers in one round; architecture 1 was spent
+at Gate F.)

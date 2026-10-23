@@ -1,12 +1,12 @@
 {
  "task": "task177",
  "owner": "sathya8571",
- "status": "RETIRED",
+ "status": "PAUSED",
  "domain": "product-analytics/churn-propensity-uplift-modeling",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
- "updated": "2026-10-22",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-23",
  "stump": "An uplift model on last January's half-and-half test (two-model or transformed outcome on the subscriber features) scored on this year's list files about 10 per cent; the test's subscribers whose next bill fell within two weeks of the send were kept at about twice the overall rate and almost none of the rest, and every bill on this year's list falls six days after the send, so the share is about 20 per cent.",
  "architecture": 2,
  "loops": 2,
@@ -30,7 +30,7 @@
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
- "resume": "RETIRED 2026-10-22 under the author's rule for the final ask pass: architecture 2 (the churn uplift by the days to the next bill) held its call in every blind read and the round 3 re-judge was DETERMINISTIC and APPROVE on target.zip c2789bda, but reader E kept ask B's 12 cells through the filed qty convention, so the asks never cleared two readers in one round; architecture 1 (the psychology two-rate learner) was spent at Gate F on 3be16ba3 (see ## Retired). Nothing to resume.",
+ "resume": "PAUSED 2026-10-23 at stage 1: reopened (no number stays retired) and screened from scratch in quantitative-finance / volatility-derivatives-pricing (Forecasting); nothing holds, no card registered, nothing cut. Resume at stage 1 in the next cell the coordinator assigns, reading the design note's ## Tried and rejected and ## Rebuild (2026-10-23) first. (RETIRED 2026-10-22 before the reopening; architectures 1 and 2 spent, both in the card's lineage.)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -180,5 +180,14 @@
   "why": "the asks never cleared two readers in one round of architecture 2 (round 1: 9 and 21 of 21; round 2: 0 and 9; round 3: 12 of 21), the call holding in every blind read; architecture 1 spent at Gate F",
   "lesson": "an ask device whose determinism needs a filed convention dies when the convention is filed",
   "device_records": "vendor desk, day cut (architecture 1), the offer's half price posted as credits (architecture 2), in the design note's ## Retired"
+ },
+ "rebuild_2026_10_23": {
+  "cell": "quantitative-finance / volatility-derivatives-pricing, Forecasting (assigned 2026-10-23)",
+  "worktree": "/home/user/b_177n",
+  "measured": "G, dealer gamma from an overwriting programme's short calls damping intraday moves, the programme wound up: index form lever 27 to 35 per cent only at kappa G 0.47 to 0.66; golden family spread 9.5 to 14.0 per cent median (19.8 to 26.5 worst) over 20 seeds; crude lowest-decile-gamma ratio route 1.06 to 1.10 of the golden (0.87 to 1.42); single-stock form lever 18 to 24 per cent against a 9.5 to 12.2 per cent spread, buildable nearest-10 bins in 8 to 14 of 30 seeds",
+  "paper_deaths": "leverage relevered, bond future notional coupon (CTD), power cap (retirement, new load), index reweight or removal, stale-price index methodology, closing auction bounce, trading hours change, Samuelson effect, minimum-variance delta, forward-start skew, reserve scarcity, securities lending utilisation, CPI basket reweight, mortgage prepayment (task171's driver), CVA wrong-way risk, degree-day station change, barrier on auction closes",
+  "finding": "a volatility-level forecast carries a 5.6 to 14 per cent median model spread at realistic vol-of-vol, so only a lever near 50 per cent survives rounding; the mechanisms that move a volatility that far are textbook identities once the change is read, and dealer gamma gives 20 to 35 per cent at plausible strength",
+  "prototypes": "scratchpad b177n/proto: g1.py to g5.py, screen177n.out (byte-identical with screen177n_run2.out)",
+  "card": "none registered; cards/task177.json unchanged (lineage already holds architectures v1 and v2)"
  }
 }
