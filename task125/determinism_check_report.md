@@ -1,68 +1,60 @@
-# determinism-check report, task125, 2026-10-12
+# Determinism verdict, task125 (isolated judge; only target/ read)
 
-## Verdict
-DETERMINISTIC (the main call and the gap path reproduce; supplementary asks 3, 4 and 5 each rest on an unstated convention)
-**Disposition:** FIX_NOW (pins to the data dictionary and the ask wording; the main analysis is untouched). Gate H carries a send-back risk, see Findings.
-**Stumping type:** mechanism: decomposition_attribution, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+**Verdict:** NOT_DETERMINISTIC (underspecified_objective / prompt_ambiguity on one clause; every graded figure otherwise reproduces).
+**Disposition:** FIX_NOW. Pin the base quarter in one clause of the prompt (and, optionally, the flow denominator). No data or golden figure moves; no rerun needed beyond solvers reading the pinned text.
 
 ## Why
-Methods note section 5 (apply a fieldwork change to the last full quarter, April to June 2026), section 1 (rotation) and section 4 (raking) force one path: drop the visit 4 to 6 households from the waves the capped intakes occupy, re-rake to the April to June controls, difference the rates. The judge reproduced every critical component and the five-quarter gap path, none near a rounding edge. Starting the rake from file weights or using each quarter's own controls gives the same two-decimal path. The only different path skips the re-rake, which sections 4 and 5 forbid. Judge thread: one pass, scratch /tmp/determinism-check-task125-090148-17132/, verdict.md there.
+The prompt's only statement of the comparison sample is "from the latest quarter with all five waves' visit histories". Read literally, that is July to September 2026 (call records exist for all five intakes 2025Q3 to 2026Q3; also true of 2026Q1 and 2026Q2). The golden needs January to March 2026, the one quarter whose five intakes all carry SIX-visit histories. That reading is reached only by inferring that "visit histories" means uncapped histories. The base quarter moves the graded figures (below), so this is an open fork closed by inference.
 
-## Recomputation ledger
-| Figure | Claimed | Judge recomputed | Reproduced |
+## Evidence (all recomputed from target/)
+Method used: interview visit = visit_no of the outcome-110 call (one per serial); join on serial[:9]; drop visit 4-6 households from the waves that capped intakes occupy; rake (IPF from weight 1, region and 7 age x sex controls) to convergence; gap = capped (trimmed) rate less full-sample rate. Raking from weight 1 reproduces the file weights (max abs diff 0.005) and published 5.4273/59.875 for 2026Q1; file weights give 5.589/58.879 (2026Q2), 5.862/58.539 (2026Q3).
+
+| Item | Golden | Recomputed | Reproduced |
 |---|---|---|---|
-| Unemployment rate Apr-Jun 2026 / Jul-Sep 2026 | 4.99 / 5.27 | 4.9946 / 5.2663 | yes |
-| Rise | 0.27 | 0.2718 | yes |
-| Employment rate Apr-Jun / Jul-Sep | 60.01 / 59.36 (fall 0.65) | 60.0125 / 59.3614 | yes |
-| Unemployment gap path, 5 quarters | 0.22, 0.37, 0.25, 0.19, 0.07 | 0.223, 0.373, 0.254, 0.190, 0.071 | yes |
-| Employment gap path, 5 quarters | -0.74, -1.37, -1.11, -0.93, -0.63 | -0.739, -1.373, -1.109, -0.932, -0.631 | yes |
-| Without the cap, Jul-Sep 2026 | 5.04 / 60.10 | 5.0432 / 60.100 | yes |
-| Labour-market share | 0.05 / +0.09 | 0.0487 / +0.09 | yes |
-| Ask 3, visits by region | 3,945 / 2,360 / 1,856 / 1,737 / 1,469 / 1,212 | same, duplicates counted once | yes (convention unstated) |
-| Ask 4, shares | 30.77 / 30.58 / 35.45 / 39.22 / 28.72 / 27.14 | same, matched, unweighted | yes (convention unstated) |
-| Ask 5, hours (thousands) | 27,055.5 / 16,009.7 / 12,455.6 / 11,070.1 / 9,858.6 / 8,103.1 | same, after hours.minutes conversion | yes (convention unstated) |
+| UR gap AMJ26, JAS26, OND26, JFM27, AMJ27, JAS27 | .21,.39,.53,.62,.47,.28 | .213,.393,.532,.619,.473,.276 | yes |
+| ER gap, same quarters | -.79,-1.42,-1.97,-2.44,-1.88,-1.19 | -.791,-1.420,-1.971,-2.442,-1.881,-1.191 | yes |
+| UR rise AMJ-JAS 2026 / cap share / labour market | .27 / .18 / .09 | .2731 / .1798 / .0933 | yes |
+| Six-visit UR 5.38, 5.47; ER 59.67, 59.96; ER published change -0.34, cap -0.63, LM +0.29 | as stated | 5.376, 5.469; 59.670, 59.959; -0.340, -0.63, +0.289 | yes |
+| Wave sets 1; 1-2; 1-3; 1-4; 2-5; 3-5 and back to six from AMJ 2028 | as stated | FI-2026/04 (issued from 1 Apr 2026), prompt (six back 1 Apr 2027), methods note s.1 rotation | yes |
+| Visits to JAS26 intake by region (VEL, CAR, PEL, HAS, TIR, DUN) | 3866, 2378, 1851, 1629, 1408, 1282 | same after dropping 381 duplicate uploads (serial+visit_no) | yes |
+| Flow share (matched on serial[:9], sex, DOB) | 31.65 (75/237), 25.19 (34/135), 37.96 (52/137), 24.11 (27/112), 30.12 (25/83), 29.03 (27/93) | identical | yes |
+| Employed weekly hours JAS26, 000 (CATI converted) | 26679.5, 16124.7, 12659.1, 10624.5, 9734.0, 7648.3 | identical | yes |
 
-## Competing answers that survived
-| Ask | Fork | Answers | Shipped rule meant to close it |
-|---|---|---|---|
-| 5 | CATI actual_hours recorded as hours.minutes; the dictionary says only "hours actually worked" | raw sum Velmouth 26,963.2, Carrowdene 15,954.9, Pellard 12,411.9 (all six differ) vs golden 27,055.5 ... | none; visible only as a data signature (CATI fractions .00/.15/.30/.45) |
-| 4 | Denominator: matched Q2 unemployed vs all Q2 unemployed | Velmouth 24.00, Carrowdene 22.02, Pellard 25.66 vs 30.77, 30.58, 35.45 | none ("respondents" only) |
-| 4 | Weighted vs counts | Velmouth 31.27, Pellard 36.56, Haskvale 39.54 vs 30.77, 35.45, 39.22 | methods note says published estimates are raked, prompt says "respondents" |
-| 3 | Dictionary: "one row per call record uploaded", 369 re-uploads in the 2026Q3 intake | row count 4,059 / 2,438 / 1,901 / 1,792 / 1,515 / 1,243 vs 3,945 ... | none |
-| rounding | Rise from rounded endpoints is 0.28, and 5.27 less the rounded 0.22 is 5.05 | golden 0.27 and 5.04 come from unrounded values | prompt says only "two decimals"; design note SF9 claims it is filed in the prompt, it is not |
+Robustness of the gap itself: re-raking to base-quarter controls vs target-quarter controls vs starting from file weights gives identical gaps to 3 dp, so no control/start-weight fork. Capped intakes' interview yield at visits 1-3 is unchanged (e.g. visit 1: 1917 in 2026Q1 vs 1856 and 1875 in 2026Q2/Q3; visit 2: 957 vs 952/983; visit 3: 517 vs 533/524), so the "remove late households, nothing else changes" counterfactual is supported by the data. Wrong paths in the golden text check out: weights kept without re-raking gives UR gaps .245,.453,.612,.722,.567,.337 and ER -1.22 ... -3.93 (overstated); constant wave-1 gap leaves 0.27 to the labour market.
 
-The main call and the gap path have no surviving fork.
+### Fork 1 (FINDING, FIX_NOW): base quarter, "latest quarter with all five waves' visit histories"
+Quoted clause executed word for word. Candidates and what each gives (UR gap JAS26, OND26, JFM27, AMJ27, JAS27):
+- 2026Q1 (golden): .39 .53 .62 .47 .28
+- 2025Q4 (waves 1-4 only have histories): .41 .53 .67 .39 .19
+- 2026Q2 (wave 1 already capped, untrimmable): .15 .30 .42 .49 .29
+- 2026Q3 (the literal "latest"; waves 1-2 already capped): .00 .14 .26 .36 .36
+Only 2026Q1 can support a trim-the-late-visits counterfactual, and it is uniquely the quarter whose five intakes are all uncapped with histories (2025Q1 is the first call-record intake). But "latest" is then vacuous and the literal word picks 2026Q3, a base that returns a zero JAS26 gap. The clause lands on the graded path only after the solver infers "visit histories" = six-visit histories. Per the brief that is OPEN.
+Direction clause: "published less six-visit" executes cleanly: UR gap positive (.39 ...), ER gap negative (-1.42 ...). No fork. The ER sign differs from UR only because late-visit households are mostly employed, which the data shows.
+Does naming the base quarter hand over the analysis? No on balance. It files the WHAT (reference sample) that was genuinely ambiguous: the base choice moves figures by 0.02 to 0.5 point, far past rounding. It does not file the HOW: placing capped intakes by wave through the rotation, re-raking, and the change-in-gap attribution are untouched. Mild hint only: "all five waves" tells a solver that later waves matter, which weakens the wave-1-only trap a little. Prefer wording that names the quarter without the "all five waves" hint, e.g. "from January to March 2026, the last quarter fielded entirely under six visits".
 
-## Spec gates
-| Gate | Required | Actual | Pass |
-|---|---|---|---|
-| Files | 10 or more | 12 | yes |
-| Formats | 3 or more | 6 (md, pdf, json, csv, parquet, xlsx) | yes |
-| Large file | 25,000 rows or more | person file 491,673 rows; call records 182,297 | yes |
-| Distractors | 2 or more, named in metadata.json, none labelled in a file name | jobseeker_support_claimants_2023-01_2026-09.csv and field_staffing_2026-10.json; neither labelled in its name | yes |
-| Distractors relevant but unused, ruled out by a shipped fact | yes | the claimants file is a different concept on a changed benefit rule and is blind to the limit; the staffing file is unused; neither reproduces a graded quantity | yes |
-| Deliverables | 1 to 3, all in the golden | 2 (docx, xlsx), both present in golden/ | yes |
-| Asks multi-dimensional, unit and rounding stated | yes | five-quarter paths, six-region measures; the prompt states rates, gaps and shares to two decimals, hours in thousands to one | yes (rounding path unstated, see forks) |
-| Prompt shape, 25 or more criteria | identifiable, 25+ | shape 02 (forecast across periods); about 20 gap cells, 18 regional cells and the components give 25+ on paper; the generated rubric is not in the folder | yes (unverified) |
-| Not LLM generated, goldens realistic | yes | judge found no tells; golden realism not re-assessed here | yes |
-| Layer 1 messy, no planted defect | yes | 10-character serials, re-uploaded call records, population rebase, mixed-unit hours | yes |
+### Fork 2 (FINDING, minor, FIX_NOW): flow denominator
+Prompt: "the share of April to June unemployed respondents employed". Literal denominator is all April to June unemployed respondents: VEL 75/294 = 25.51, CAR 34/181 = 18.78, PEL 52/170 = 30.59, HAS 27/149 = 18.12, TIR 25/119 = 21.01, DUN 27/106 = 25.47. Golden uses only those re-interviewed (797 of 1019), which is methods note s.6 ("flows ... on the people interviewed in both ... unweighted"), but the prompt never says "flow" or "interviewed in both". Closed by the methods note only if the solver recognises the ask as a flow. Pin with "of those interviewed in both quarters". Matching key: serial[:9]+sex+DOB is the only stable identity (person_no matches 106 of 799 pairs with different DOB), so the key is closed by the data. Region identical across quarters (0 mismatches).
 
-## Gate G reconciliation
-Thread: mechanism decomposition_attribution, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card: stump_class analytical. Design note: the rise is the correctly published rate, the shortcut is to treat the cap as a wave-1 effect, the expert follows the recruited cohort through five waves and re-rakes. These match. The thread does not name the declared distractor (claimants file) as the surface read carrying the task. The design note's ladder (rung 0 default, rung 1 constant carry, rung 2 final weights kept, rung 3 golden) matches the easy routes the thread listed; its sensitivity values for rungs 2 agree (0.24 / -1.14, 0.41 / -2.14).
+### Fork 3 (checked, NOT open): telephone hours
+CATI actual_hours carry minutes only in .00/.15/.30/.45 (hh.mm); CAPI carry .00/.25/.50/.75 (decimal). Dictionary is silent. The release table (hls_release_tables_2026q2.xlsx, Table 1 "Total actual weekly hours (000)") settles it: converting CATI hh.mm to decimal hours and weighting reproduces the published total in ALL 14 quarters to 0.1 (e.g. 2026Q2: converted 83,589.1 = published 83,589.1; raw 83,305.1; 2026Q1: 85,326.1 vs raw 85,054.3; 2023Q1: 82,267.0 vs raw 82,005.6). The raw reading is contradicted by every published total, so the shipped files force the conversion. The two readings differ by about 0.3 per cent (VEL 26,679.5 converted vs 26,591.4 raw), which does matter to the graded cell, but it is reconcilable to a published number, not an inference. Judged closed. Advisory only: it remains a data-semantics ask (ask-level, allowed).
 
-Gate H: the thread says domain pass, layers pass, decisive_step analytical but borderline rule_application, because section 5 prescribes the base quarter and the raking. The card's domain_test and analyst_test (persistence through the rotation, re-rake) agree with the thread on the decisive step; the disagreement is only on how much of the method the methods note hands over.
+### Minor
+- "how much ... is the labour market": unit not stated (point 0.09 vs 33 per cent of the rise). "Rates, gaps and shares to two decimals" points to points; low risk. Say "in points".
+- Dedup of 381 double-uploaded JAS26 records and the 10-character serial are Layer-1 mess closed by methods note s.2 (visit = serial + visit number) and extract notes. Closed.
+- LM share = six-visit change (5.47-5.38) follows from the prompt's own "six visits all along"; the cap being in AMJ26 already is a stated fact (FI-2026/04, extract notes, call records max 3 visits). Closed.
 
-Tolerance comparison (generator/figures.json: 0.05 on unemployment gaps, 0.15 on employment gaps; not shipped, so the thread never saw it): the licensed variants the thread ran (file-weight start, own-quarter controls) agree to three decimals, well inside it. The no-re-rake path (rung 2) sits inside the 0.05 on every unemployment gap (differences 0.02, 0.04, 0.04, 0.04, 0.03) but 0.40 or more outside on every employment gap, so the tolerance separates it only on the employment half, as the design note says. The design note's SF4 alternatives (an earlier template quarter) move the unemployment gap up to 0.11, outside the tolerance; they are closed only by section 5, which the thread found sufficient. The tolerance is a build assertion; a reviewer compares exact two-decimal figures.
+## Files/Hygiene: PASS
+12 files; formats md, pdf (3), json, csv (3), parquet, xlsx (2) = 6 formats; person file 490,398 rows, call records 110,684. Distractors unused by the solution: jobseeker_support_claimants csv, field_staffing json, FI-2024-03 (superseded). Fictional Merrowland, dates consistent with 20 Oct 2026 extract, no authoring leakage seen in the text files. No exclusion-level finding.
 
 ## Stump power (Gate F)
-Moderate. The easy routes: a constant 0.22 gap, a gap dropped from January 2027, the cap applied to the July to September sample, households dropped without re-raking, a wave-1-only cap that misses the 0.37 / -1.37 peak. The thread flags too-easy signals: sections 1, 4 and 5 of the methods note nearly spell out the procedure, and the prompt names the cap and the return date. The asks add misses (check-digit join, duplicate uploads, hours encoding) but those are data-semantics traps. The thread's lever (soften section 5) would risk the main call's determinism, so leave it.
+Reasonable. Easy routes fail with specific wrong answers: treat the cap as a wave-1 effect (constant 0.21 gap, whole 0.27 to the labour market), carry the wave-1 difference into later waves (overstates), keep weights without re-raking (UR .245 ... .722, ER down to -3.93). Asks add independent traps (CATI hh.mm, 381 duplicate uploads, check digit, DOB matching). Expect top responses to lose on several asks.
 
-## Findings, ranked
-1. Gate H borderline (rule_application) and Gate F too-easy risk, both from methods note section 5 stating the base quarter and the method. If a reviewer reads the decisive step as rule application, this is a SEND_BACK. The defence is that the rotation bookkeeping and the persistence through waves 2 to 5 is not stated anywhere.
-2. Ask 5: the hours.minutes encoding of CATI hours is in no shipped file; the raw sum differs in every region. Pin it in hls_data_dictionary.md (the design note lists it as Layer 1, but it needs a filed sentence).
-3. Ask 4: matched versus all unemployed, and counts versus weights, are unpinned. Add to the prompt "among those also interviewed in July to September" and say counts or weighted.
-4. Ask 3: the 369 re-uploaded call records (identical but for record_id and upload time) make a row count differ from the golden. The design note's closure row 15 says re-syncs are only non-interview rows, which the data contradicts for the 2026Q3 intake. Add a dictionary line on re-uploads or say "one count per serial and visit" in the prompt.
-5. Rounding path: the design note's SF9 and closure row 10 say it is filed in the prompt, but prompt.txt says only "to two decimals". State that rates are rounded once from unrounded estimates (0.27 rise, 5.04 without the cap).
+## Stumping type (Gate G)
+mechanism: decomposition_attribution (with a rotation-panel forecast of the gap path); stumping_family: analytical_non_defect; surface_read_dependency: no; sole_data_defect: no. Published rates are correct; the difficulty is attributing a correctly reported rise to cap vs market using the rotation structure. Clean-data test: still stumps.
 
-## Next action for the author
-Add three filed pins in the generator and rebuild: (a) a dictionary line that CATI actual_hours is hours.minutes and that re-uploaded call records share a serial and visit number; (b) in the prompt, matched and counts wording for the share, and the single-rounding sentence, keeping prompt.txt under 1,000 characters (it is 997 now, so trade words); (c) re-run precut and checks.py, then re-judge once (the pins change asks 3 to 5 only).
+## Three rules (Gate H)
+domain: pass, layers: pass (Layer 1: duplicate uploads, 9/10-character serials, hh.mm telephone hours, rebased controls; Layer 2: panel-rotation counterfactual re-estimated with the raked estimator, change-in-gap attribution), decisive_step: analytical.
+The field's own analysis (nonresponse/field-effort bias under a rotating panel, estimator re-run on a counterfactual sample) decides the answer; the easy route (wave-1 difference, or gap on kept weights) gives "the rise is real" or an overstated gap. Borderline note: the rotation and cap dates are stated, so placement could be read as rule application; the estimation (trim, re-rake, difference the gap) keeps it analytical.
+
+## Fix
+prompt: replace "from the latest quarter with all five waves' visit histories" with an explicit base (January to March 2026, last quarter fielded wholly under six visits); add "of those interviewed in both quarters" to the flow ask; say "in points" for the labour-market share. Input files and goldens unchanged.

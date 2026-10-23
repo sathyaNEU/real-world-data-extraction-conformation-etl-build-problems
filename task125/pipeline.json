@@ -23,9 +23,9 @@
   "nearest": "0.08 task500 v2"
  },
  "judge": {
-  "verdict": "FIX_NOW (round 1): DETERMINISTIC conditional on one fork, the baseline sample of the six-visit counterfactual (F1). Fixed by filing the comparison and the gap sign in the prompt. F6 (telephone hours) not fixed: already closed by the records and asserted twice (checks.py 179, 180 and the referee block at 200, plus verify.py), and the dictionary silence is itself asserted at checks.py 191. F2, F3, F4, F7 closed by the judge itself.",
-  "disposition": "one re-judge running on brief /tmp/determinism-check-task125-180256c/judge_brief.md",
-  "report": "determinism_check_report_pass2.md is VOID (superseded ladder). Round 1 and the round-2 reader are recorded in DESIGN_NOTE.md."
+  "verdict": "round 2 NOT_DETERMINISTIC (underspecified_objective / prompt_ambiguity on one clause), round 1 FIX_NOW. Every graded figure reproduces in the judge's own hands in both rounds.",
+  "disposition": "FIX_NOW twice; the one re-judge a FIX_NOW allows is spent. All three round-2 findings fixed with the judge's own recommended wording and asserted: the base quarter NAMED (round 1 described it and the description was not unique, reading literally to 2026Q3 and a zero gap), the flow denominator filed as \"interviewed in both quarters\", and the unit filed as \"in points\". Telephone hours confirmed closed by the judge itself on a second look, verified in all 14 quarters.",
+  "report": "/tmp/determinism-check-task125-180256c/verdict.md; both rounds recorded in DESIGN_NOTE.md. determinism_check_report_pass2.md remains VOID."
  },
  "returned": [
   {
@@ -41,7 +41,7 @@
    "commit": ""
   }
  ],
- "resume": "stage 4, awaiting the single re-judge a FIX_NOW allows. The F1 fork is fixed: the prompt now files the comparison ('from the latest quarter with all five waves' visit histories') and the gap sign ('published less six-visit'), which is the WHAT and not the HOW, at 999 characters and passing voice-check. checks.py asserts both clauses so the pin cannot drift from the feasibility loop that tests the same property; assertions 300 to 302. The pack is unchanged (only prompt.txt moved, which is not in the bundle), so both hashes still read 052a1c1b078e0b29 and target.zip 5314b654417ae84b, and every graded figure is unchanged. The round-2 leak reader confirms the pin is basis only. ON THE VERDICT: APPROVE ships; a second FIX_NOW is NOT re-judged again, since the one re-judge is spent, and is fixed and shipped on the free gates; SEND_BACK re-roots at stage 1.",
+ "resume": "stage 4, awaiting the third isolated leak reader, then ship. The judge returned FIX_NOW twice and the one re-judge is spent. Round 2's finding was that MY round-1 pin did not pin: a described property ('the latest quarter with all five waves' visit histories') read literally to 2026Q3, filing a zero July to September gap, and reached the golden only by inferring 'visit histories' meant six-visit ones. Now NAMED, in the judge's own recommended wording, 'from January to March 2026, the last six-visit quarter', which is also less leaky because it drops the 'all five waves' hint. checks.py binds it to W.qname(W.TEMPLATE_Q) so the prompt and the feasibility loop cannot drift. Two further pins the judge asked for: the flow denominator 'interviewed in both quarters' (the literal full-sample reading gives 25.51 against the golden's 31.65) and the unit 'in points'. Assertions 300 to 304. Prompt 991 characters, voice-check PASS. Pack unchanged, both hashes still 052a1c1b078e0b29 and target.zip 5314b654417ae84b, every graded figure unchanged. ON THE READER: a clean read ships (ledger row, status SHIPPED, commit SHIPPED with the zip and golden force-added); a quoted question-1 sentence or a shortcut found goes back to stage 2.",
  "approved": null,
  "delivered": null,
  "portal": null,

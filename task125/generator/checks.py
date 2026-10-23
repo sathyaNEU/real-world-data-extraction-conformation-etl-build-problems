@@ -121,8 +121,15 @@ def run(target, golden, world, meta_path):
     # loop above tests, so the pin and this code cannot drift apart. It names the WHAT (the comparison), never
     # the HOW, and the decisive step stays the unit the cap acts on.
     _pr = open(os.path.join(os.path.dirname(golden), "prompt.txt")).read()
-    ok("latest quarter with all five waves' visit histories" in _pr, "SF4 the base quarter is filed in the prompt")
+    # The base quarter is NAMED, not described: an earlier wording ("the latest quarter with all five waves'
+    # visit histories") read literally to 2026Q3, whose base files a zero July to September gap, and reached
+    # the golden only by inferring that "visit histories" meant six-visit ones. The name is tied to the
+    # quarter the feasibility loop above picks, so the prompt and this code cannot drift.
+    ok(W.qname(W.TEMPLATE_Q) + ", the last six-visit quarter" in _pr,
+       "SF4 the base quarter is named in the prompt and is the one the feasibility loop picks")
     ok("published less six-visit" in _pr, "SF5b the gap's sign is filed in the prompt")
+    ok("interviewed in both quarters" in _pr, "SF5c the flow denominator is filed in the prompt")
+    ok("in points" in _pr, "SF5d the labour-market share's unit is filed in the prompt")
     ok(W.qnext(W.TEMPLATE_Q) == W.LIMIT_FROM, "SF4 the base quarter is also the last quarter before the cap")
     for q in (W.qnext(W.TEMPLATE_Q, -1), W.qnext(W.TEMPLATE_Q, -2)):
         miss = AN.quarter(d, q)["interview_visit"].isna().mean()

@@ -638,3 +638,63 @@ what a real one-page field instruction is; a consecutive `record_id` sequence, w
 run produces; uniformly structured interviewer ids; and the same density note as round 1 on the methods
 note's flow and rounding sections, answered there.
 
+### The determinism judge, round 2: NOT_DETERMINISTIC, and my round-1 fix was the defect (2026-10-23)
+
+**The re-judge found that the pin I wrote did not pin anything, and it was right.** My clause read "from the
+latest quarter with all five waves' visit histories". Executed word for word, "visit histories" means call
+records exist, which is true of 2026Q1, 2026Q2 and 2026Q3 alike, so the literal "latest" selects **2026Q3**,
+whose base files a July to September gap of **0.00** and a path of 0.00, 0.14, 0.26, 0.36, 0.36. The golden
+needs January to March 2026 and is reached only by inferring that "visit histories" means SIX-visit
+histories, after which "latest" does no work at all. The judge's measured alternatives: 2025Q4 gives 0.41,
+0.53, 0.67, 0.39, 0.19; 2026Q2, whose wave 1 is already capped and so untrimmable, gives 0.15, 0.30, 0.42,
+0.49, 0.29. Only 2026Q1 lands on 0.39, 0.53, 0.62, 0.47, 0.28. A described property was the wrong instrument:
+the lesson is that **a pin on the WHAT names the thing, it does not describe a property and hope the
+description is unique.**
+
+**Fixed with the judge's own recommended wording, which is also less leaky than mine.** The prompt now reads
+"from January to March 2026, the last six-visit quarter". That names the quarter outright, so there is no
+inference left, and it drops the phrase "all five waves", which the judge noted was "a mild hint that later
+waves matter, which weakens the wave-1-only trap a little". `checks.py` now binds the prompt to the code with
+`W.qname(W.TEMPLATE_Q) + ", the last six-visit quarter"`, so the named quarter is by construction the one the
+feasibility loop picks and the two cannot drift. On whether naming it gives the task away, the judge's own
+answer: "No on balance. It files the WHAT (reference sample) that was genuinely ambiguous: the base choice
+moves figures by 0.02 to 0.5 point, far past rounding. It does not file the HOW: placing capped intakes by
+wave through the rotation, re-raking, and the change-in-gap attribution are untouched."
+
+**Fork 2, the flow denominator, also real and also fixed.** "the share of April to June unemployed respondents
+employed" has no stated denominator. The literal reading takes all April to June unemployed respondents, which
+gives 25.51, 18.78, 30.59, 18.12, 21.01, 25.47, where the golden takes only those re-interviewed (797 of
+1,019) for 31.65, 25.19, 37.96, 24.11, 30.12, 29.03. The methods note's section 6 closes it only for a solver
+who recognises the ask as a flow, and the prompt never said "flow" or "interviewed in both". Now filed as
+"interviewed in both quarters", asserted as `SF5c`. The match key stays closed by the data: `person_no`
+disagrees on date of birth in 106 of 799 pairs, so serial, sex and date of birth is the only stable identity.
+
+**The unit, also filed.** "how much of the rise is the labour market" had no unit, 0.09 points against 33 per
+cent of the rise. Now "in points", asserted as `SF5d`. Assertions 302 to 304.
+
+**Fork 3, telephone hours: the judge reversed itself and confirmed the pack closes it.** On a second look it
+verified the conversion against the release table in **all 14 quarters** (2026Q2 converted 83,589.1 equals the
+published 83,589.1 against a raw 83,305.1; 2026Q1 85,326.1 against 85,054.3; 2023Q1 82,267.0 against
+82,005.6) and ruled it "not an open fork... the shipped files force the conversion", "Judged closed. Advisory
+only: it remains a data-semantics ask (ask-level, allowed)". That is the disposition this note argued at round
+1, now independently confirmed, and no dictionary line was added.
+
+**Everything else it checked reproduced or closed.** Every graded figure recomputed from `target/` in the
+judge's own hands, including the gap paths, the 0.273 rise with 0.180 the cap and 0.093 the labour market, the
+six-visit rates, the regional visit counts after dropping the 381 duplicate uploads, the flow shares and the
+converted hours. Raking to base-quarter controls, to target-quarter controls, or from the file weights gives
+identical gaps to three decimals, so there is no control or start-weight fork. The capped intakes' yield at
+visits 1 to 3 is unchanged (visit 1: 1,917 in 2026Q1 against 1,856 and 1,875; visit 2: 957 against 952 and
+983; visit 3: 517 against 533 and 524), so the "remove the late households and nothing else moves"
+counterfactual is supported by the data rather than assumed. Gate F "reasonable", with the wrong paths
+checked: the wave-1 reading gives a constant 0.21 gap and leaves the whole 0.27 to the labour market, and
+keeping weights without re-raking gives 0.245, 0.453, 0.612, 0.722, 0.567, 0.337. Gate G
+`decomposition_attribution`, `analytical_non_defect`, no surface-read dependency, no sole data defect, and the
+clean-data test still stumps. Gate H all pass with `decisive_step: analytical`, its own borderline note being
+that the rotation and cap dates are stated so placement could read as rule application, while "the estimation
+(trim, re-rake, difference the gap) keeps it analytical".
+
+**The re-judge budget is spent** (`determinism-check`: a FIX_NOW is re-judged once). These three fixes are the
+judge's own prescriptions, in its own words for two of them, each asserted and each tied to the code, so the
+remaining exposure is leakage rather than determinism, and that is what the third isolated reader checks.
+
