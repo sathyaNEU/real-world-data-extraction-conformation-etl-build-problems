@@ -1,106 +1,185 @@
 {
   "task": "task170",
-  "architecture": "v1",
-  "drawn": "2026-10-18",
-  "slot_note": "wave 7, sathya8571 forecasting lane, seed FC41 (world, decision and quantity only)",
-  "domain": "healthcare-delivery-health-economics",
-  "subdomain": "utilization-access-demand-forecasting",
-  "client_domain": "healthcare-delivery-health-economics",
-  "niche": "national ARV quantification of the children's line of the adult first-line TLD order across the paediatric weight-band transition, the band just lowered to 30 kg and the children's visits just thinned",
+  "architecture": "v3",
+  "drawn": "2026-10-23",
+  "slot_note": "architecture 3, a from-scratch rebuild of a reopened number: v1 (the paediatric ARV order) is in lineage; architecture 2's two cells (2026-10-19) and the expected-credit-loss cell (2026-10-23) died before any card (design note ## Tried and rejected)",
+  "domain": "epidemiology-public-health",
+  "subdomain": "health-burden-impact-modeling",
+  "client_domain": "epidemiology-public-health",
+  "niche": "an implementing non-profit's forecast, for its donor, of how many Ombeni fever cases the March 2027 county-wide distribution of repellent sleeping nets in Ruvari County will avert among the people sleeping under them from April to December 2027, when the county's vector bites earlier in the evening and more outdoors than at any site of the five-site trial that measured the nets' protective efficacy",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "generator/figures.json",
+  "answer": "About 11,500 Ombeni fever cases averted among net users in Ruvari County from April to December 2027 (to be set from the shipped files at stage 3).",
+  "answer_source": "submission.md, 1. Final Recommendation (generator/deliver.py from the pack; generator/verify.py recomputes)",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
     "G7",
-    "G13",
-    "G6"
+    "G14"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "other",
+  "calibration_form": "other",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stakeholder_role": "the Central Medical Stores quantification lead",
-  "role_family": "procurement_lead",
-  "scoring_unit": "per active unit per period",
+  "context_artifact": "other",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who cleans the entomology and survey records, reads the trial report and the campaign plan correctly and applies the trial's pooled protective efficacy (about 62 per cent) to the plan's baseline cases among net users files about 21,000 cases averted (about 9,000 when it multiplies that efficacy by the county's in-bed share of bites without dividing out the trial sites' own), when the per-bite protection the five sites share, carried through the county's in-bed share of exposure, files about 11,500.",
+  "domain_test": "The deciding quantity is a vector-control tool's protective efficacy transported to a new setting through the share of human exposure to the vector that arrives while people are in bed under the net (the vector's hourly biting indoors and outdoors read against the population's hourly location), built from human landing catches and a human behaviour survey the way vector-control impact models carry trial efficacy; with hospital or school nouns there is no vector rhythm against people's sleeping hours for the protection to miss.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:protective-efficacy-carried-through-the-in-bed-share-of-exposure",
+  "layer1": [
+    "human landing catch sheets at collector-hour grain with missing collector-nights and other species in the same rows",
+    "hour bins labelled two ways after a field-team change, and a 12-hour clock in one year's sheets",
+    "a human behaviour survey with self-reported clock times, am and pm slips and a second round re-asking a subset",
+    "the trial's site results and site entomology as tables inside a PDF report",
+    "county HMIS monthly facility reports with revisions resubmitted after the deadline",
+    "a sub-county boundary change moving villages and facilities",
+    "household registration lists from two rounds with re-registered households"
+  ],
+  "stakeholder_role": "the monitoring and evaluation lead at the implementing partner, whose cases-averted forecast goes into the donor's 2027 grant approval for the Ruvari net campaign",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
   "spine": {
-    "file": "paediatric register visit extract",
-    "rows": 698723,
-    "entity": "one clinic visit of a child on antiretroviral treatment, with the weighing and the regimen dispensed",
-    "grain": "child x clinic visit",
+    "file": "hlc_sentinel_2024_2026.csv (the county entomology unit's human landing catches, indoor and outdoor, by collector-hour, at its sentinel villages)",
+    "rows": 0,
+    "entity": "one collector's catch in one hour of one night at one position (indoor or outdoor) in one sentinel village",
+    "grain": "village x night x hour x position",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "government_agency",
+  "forum": "funder_or_donor",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "nonprofit_or_charity",
   "world": {
-    "geography": "fictional",
-    "currency": "USD",
-    "org_type": "national Central Medical Stores of a southern African ministry of health, ordering antiretrovirals for a programme of about 310,000 adults on TLD and 12,000 children on treatment",
-    "invented_names": [],
+    "geography": "Kenya (Ruvari County, a fictional lakeshore county; its health department, the implementing partner, the donor, Ombeni fever, its vector, the trial and every record are fictional)",
+    "currency": "KES",
+    "org_type": "an implementing non-profit running vector control with the county health department",
+    "invented_names": [
+      "Ruvari County",
+      "Ombeni fever",
+      "Anopheles ruvariensis",
+      "Tulivu Health Partners",
+      "Arnbridge Foundation",
+      "KINGA-5 trial",
+      "LulaNet R"
+    ],
     "people": [
-      "Nomalanga Magubane",
-      "Thabisile Mahlinza",
-      "Sibongile Sikhosana"
+      "Dorcas Kagwiria",
+      "Elkana Karanja",
+      "Amos Simiyu"
     ]
   },
   "deliverables": [
-    "c7_tld_order.xlsx",
-    "c4_c5_tld_flows.png"
+    "ruvari_cases_averted_2027.xlsx",
+    "cases_averted_by_month.png"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "Units move to another line at the first of their scheduled measurements that reads at or above a fixed level, and a single measurement scatters around each unit's own path by more than the path rises between measurements, so most moves come months before the paths reach the level; only the chance that each scheduled measurement reads over the level, taken from each unit's own path and the record's scatter, forecasts them, while paths projected to the level, a fixed age, the recent count of moves, the moves seen at each recorded level or a pooled rate each misplace them.",
-  "driver_concrete": "Children on paediatric antiretroviral regimens move to adult TLD at the first clinic weighing that reads 30 kg or more, and a clinic weighing scatters more than a kilogram either side of a child's own growth line while the line rises about a fifth of a kilogram a month, so most switches come months before the line reaches 30 kg; the children's line of the C7 order needs each child's chance of a qualifying weighing at each visit its own dispensing interval schedules, and projecting growth to 30 kg, a switch age, the recent switch count or the switch rate by last recorded weight each misplace the line by a pallet or more, the register's own rates because its switches came under the 35 kg band and at the monthly visits the 2026 guidelines replaced.",
-  "stump": "A competent solver fits each child's growth line from the register, switches the child to TLD at the first scheduled visit after the line reaches 30 kg and files line 2 at 10 pallets against 11, because the first weighing that reads 30 kg comes months before the line gets there.",
-  "stump_class": "analytical",
-  "analyst_test": "With every field read, the 2026 dosing band applied as filed and the SOP's line 2 built as filed, a strong analyst projects each child's weighings forward on a fitted growth line, moves the child to TLD when the line reaches 30 kg and files line 2 at 10 pallets of 8,064 bottles, one pallet below the 11 the scheduled weighings imply.",
-  "domain_test": "The line turns on the paediatric regimen-transition forecast of ARV quantification, the patient-months on TLD of children who will be weighed into the 30 kg band at their scheduled visits, built from each child's weighings, the clinics' weighing scatter, each child's dispensing interval and retention; with another field's nouns the dosing band applied at a clinic weighing, the dispensing interval and the cycle order's paediatric line stop meaning anything.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:first-scheduled-weighing-over-the-dosing-band-from-each-childs-growth-line-and-the-scale-scatter",
-  "layer1": [
-    "the paediatric register's migration from the legacy electronic register to the national EPR: legacy visit rows with day/month/year dates and regimen lines as free text, EPR rows with ISO dates and national regimen codes, the June 2024 migration month present in both",
-    "children keyed by facility ART numbers in the legacy export and by the national patient identifier in the EPR, a crosswalk between them, and a new ART number on each transfer between facilities",
-    "paper-captured legacy sites recording weights to the half kilogram until May 2024",
-    "estimated dates of birth entered as 1 July of the year",
-    "drug collections by a caregiver with no weighing recorded",
-    "visit rows re-sent by clinic tablets after a failed sync",
-    "the 2026 edition of the dosing annex in force from 1 March 2026, the register's earlier moves onto TLD made at 35 kg and its children's visits thinned by the two- and three-month dispensing it introduced",
-    "deaths, transfers out and loss to follow-up entered weeks after the last visit",
-    "the logistics information system's monthly facility reports with returned and resubmitted months, each stamped with the requisition group's region at submission",
-    "the warehouse system's delivery documents: posting dates days before the proof of delivery, transfers between CMS warehouses, returns from customers and the odd delivery refused at the gate",
-    "the warehouse stock by batch with a quarantined lot, and a planned framework call-off beside the confirmed lots",
-    "the programme's patient projection by region and month in its own layout",
-    "the customer master's delivery region kept as set when each account was opened, before the April 2026 regional boundary change, and facility codes reissued to new sites after closures",
-    "a partner's donated TLD reported on its own eLMIS product line"
-  ],
+  "driver": "A protection acts only on the exposure that arrives while the protected state holds, so an efficacy measured in a trial is a per-exposure protection times the share of its own sites' exposure that arrived in that state; the target's share is the overlap of when and where exposure arrives with when people are in the protected state, read hour by hour from two records at a finer grain than the trial's headline, and carrying the trial's efficacy, or multiplying it by the target's share without dividing out the sites' own, misstates the forward effect.",
+  "driver_concrete": "Ruvari County's Ombeni fever vector bites early in the evening and largely outdoors, so only about two fifths of a resident's bites arrive while they are in bed under a net, against seven to ten tenths at the KINGA-5 sites; the nets' pooled protective efficacy of about 62 per cent is a per-bite protection of about 0.8 times each site's in-bed share, so the cases averted among users from April to December 2027 are the plan's baseline times usage times that protection times the county's in-bed share, not the trial's efficacy and not that efficacy times the county's share.",
+  "stump": "A competent solver applies the trial's pooled protective efficacy to the plan's baseline cases among net users and files about 21,000 cases averted against about 11,500; the step that lands it there is carrying an efficacy measured where most bites fell while people slept under the nets to a county whose vector bites early and outdoors, where only about two fifths of a resident's bites arrive in bed.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task132": "spares failures on a wear curve with replacement; here a threshold crossing read through noisy repeated measurements",
-    "task142": "same task type, an upper percentile of home visits from stay lengths; here a point forecast of regimen transitions",
-    "task166": "loan maturities extended by refinance cover; different world and mechanism",
-    "task167": "fund call schedules by first-year draw class; different world and mechanism",
-    "task124": "lead service lines by era and main; different world and mechanism",
-    "task134": "redevelopment yield above a cost step; different world and mechanism",
-    "task161": "stock built ahead of a cost step drawn down at each holder's steady share of use; here each child's switch to another product at the first scheduled weighing over a dosing band",
-    "task259": "a level carried to a reference date by grade-specific drift across report dates; here the timing of a band crossing read through scattered weighings",
-    "task87": "an exclusivity between owed items in one time slot caps a delivered count; here no capacity or slot conflict, the switch timing is set by noisy weighings",
-    "task105": "an outlet can only win commitments agreed after it opens; here the forward count of units crossing a band at scheduled measurements",
-    "task229": "a convex conversion of a daily mean biased by within-day swings; here a first passage of noisy repeated measurements over a fixed band"
+    "task177": "there an offer moves a subscriber mainly in the days before the subscriber's own recurring bill, so a test's average over the billing cycle does not carry; here no unit has a cycle of its own: a protection acts only while people are in bed, and the share of exposure it can reach is the hourly overlap of two independently measured rhythms (the vector's biting indoors and outdoors and the population's location), with the trial's own sites' overlap divided out of its headline efficacy",
+    "task149": "the same task type: there a hazard per hour rises with work pace read within each site; here a trial efficacy is transported through an exposure overlap"
   },
-  "lineage": [],
-  "notes": "stump_strategy other: the decisive step is the first passage of noisy scheduled measurements over a dosing band, which none of the listed strategies names; forecast_method_backtest is spent by task167 and composition_mix belongs to task165. G7 first because a switch can only happen at a scheduled clinic weighing and the forecast is each scheduled weighing's chance of reading 30 kg or more; G13 and time follow because the step decides when each switch falls against the cycle window (time with G13 is task162's signature inside the batch). forcing_event purchase_order_or_contract is the honest key for a cycle order and is also task165's value; vote_or_meeting is banned by task167. Stage 4 round 1: the call moved from the whole C7 order to line 2, the children's line, in whole pallets; context_artifact redrawn from monitoring_export (it collided with task246's redraw, and the stock status report no longer carries the call) to operations_log, the paediatric register's encounter extract the forecast is built from. Architecture 1 spent on strength (stage 4, round 1 repair): with the call on line 2 in pallets the first-passage lead is 1.03 pallets, so the default misses by one pallet, knobs near the right value land and P(both) is about 0.2; the number needs a re-root. Redraw round 2026-10-19: architecture 2's search died in pharmacology popPK and banking deposit behaviour before any card. task170 RETIRED (dead in its second new cell).",
-  "registered": "2026-10-18T09:10:20Z"
+  "lineage": [
+    {
+      "architecture": "v1",
+      "domain": "healthcare-delivery-health-economics",
+      "subdomain": "utilization-access-demand-forecasting",
+      "client_domain": "healthcare-delivery-health-economics",
+      "niche": "national ARV quantification of the children's line of the adult first-line TLD order across the paediatric weight-band transition, the band just lowered to 30 kg and the children's visits just thinned",
+      "objective": "forecasting",
+      "shape": "other",
+      "decision_type": "quantity_figure",
+      "answer_unit": "count",
+      "answer": "",
+      "answer_source": "generator/figures.json",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G7",
+        "G13",
+        "G6"
+      ],
+      "gate_g": "forecasting",
+      "calibration_form": "none",
+      "stump_strategy": "other",
+      "decisive_rule_filed": false,
+      "official_decoy": false,
+      "validated_decoy": false,
+      "context_artifact": "operations_log",
+      "stakeholder_role": "the Central Medical Stores quantification lead",
+      "role_family": "procurement_lead",
+      "scoring_unit": "per active unit per period",
+      "spine": {
+        "file": "paediatric register visit extract",
+        "rows": 698723,
+        "entity": "one clinic visit of a child on antiretroviral treatment, with the weighing and the regimen dispensed",
+        "grain": "child x clinic visit",
+        "source": "synthetic"
+      },
+      "forum": "committee_or_panel",
+      "forcing_event": "purchase_order_or_contract",
+      "org_family": "government_agency",
+      "world": {
+        "geography": "fictional",
+        "currency": "USD",
+        "org_type": "national Central Medical Stores of a southern African ministry of health, ordering antiretrovirals for a programme of about 310,000 adults on TLD and 12,000 children on treatment",
+        "invented_names": [],
+        "people": [
+          "Nomalanga Magubane",
+          "Thabisile Mahlinza",
+          "Sibongile Sikhosana"
+        ]
+      },
+      "deliverables": [
+        "c7_tld_order.xlsx",
+        "c4_c5_tld_flows.png"
+      ],
+      "opening_move": "question-first",
+      "question_form": "how-many",
+      "layer2_family": "estimation_fit",
+      "layer2_pattern": "own:first-scheduled-weighing-over-the-dosing-band-from-each-childs-growth-line-and-the-scale-scatter",
+      "layer1": [
+        "the paediatric register's migration from the legacy electronic register to the national EPR: legacy visit rows with day/month/year dates and regimen lines as free text, EPR rows with ISO dates and national regimen codes, the June 2024 migration month present in both",
+        "children keyed by facility ART numbers in the legacy export and by the national patient identifier in the EPR, a crosswalk between them, and a new ART number on each transfer between facilities",
+        "paper-captured legacy sites recording weights to the half kilogram until May 2024",
+        "estimated dates of birth entered as 1 July of the year",
+        "drug collections by a caregiver with no weighing recorded",
+        "visit rows re-sent by clinic tablets after a failed sync",
+        "the 2026 edition of the dosing annex in force from 1 March 2026, the register's earlier moves onto TLD made at 35 kg and its children's visits thinned by the two- and three-month dispensing it introduced",
+        "deaths, transfers out and loss to follow-up entered weeks after the last visit",
+        "the logistics information system's monthly facility reports with returned and resubmitted months, each stamped with the requisition group's region at submission",
+        "the warehouse system's delivery documents: posting dates days before the proof of delivery, transfers between CMS warehouses, returns from customers and the odd delivery refused at the gate",
+        "the warehouse stock by batch with a quarantined lot, and a planned framework call-off beside the confirmed lots",
+        "the programme's patient projection by region and month in its own layout",
+        "the customer master's delivery region kept as set when each account was opened, before the April 2026 regional boundary change, and facility codes reissued to new sites after closures",
+        "a partner's donated TLD reported on its own eLMIS product line"
+      ],
+      "driver": "Units move to another line at the first of their scheduled measurements that reads at or above a fixed level, and a single measurement scatters around each unit's own path by more than the path rises between measurements, so most moves come months before the paths reach the level; only the chance that each scheduled measurement reads over the level, taken from each unit's own path and the record's scatter, forecasts them, while paths projected to the level, a fixed age, the recent count of moves, the moves seen at each recorded level or a pooled rate each misplace them.",
+      "driver_concrete": "Children on paediatric antiretroviral regimens move to adult TLD at the first clinic weighing that reads 30 kg or more, and a clinic weighing scatters more than a kilogram either side of a child's own growth line while the line rises about a fifth of a kilogram a month, so most switches come months before the line reaches 30 kg; the children's line of the C7 order needs each child's chance of a qualifying weighing at each visit its own dispensing interval schedules, and projecting growth to 30 kg, a switch age, the recent switch count or the switch rate by last recorded weight each misplace the line by a pallet or more, the register's own rates because its switches came under the 35 kg band and at the monthly visits the 2026 guidelines replaced.",
+      "stump": "A competent solver fits each child's growth line from the register, switches the child to TLD at the first scheduled visit after the line reaches 30 kg and files line 2 at 10 pallets against 11, because the first weighing that reads 30 kg comes months before the line gets there.",
+      "stump_class": "analytical",
+      "analyst_test": "With every field read, the 2026 dosing band applied as filed and the SOP's line 2 built as filed, a strong analyst projects each child's weighings forward on a fitted growth line, moves the child to TLD when the line reaches 30 kg and files line 2 at 10 pallets of 8,064 bottles, one pallet below the 11 the scheduled weighings imply.",
+      "domain_test": "The line turns on the paediatric regimen-transition forecast of ARV quantification, the patient-months on TLD of children who will be weighed into the 30 kg band at their scheduled visits, built from each child's weighings, the clinics' weighing scatter, each child's dispensing interval and retention; with another field's nouns the dosing band applied at a clinic weighing, the dispensing interval and the cycle order's paediatric line stop meaning anything.",
+      "fate": "spent 2026-10-18 at stage 4 on strength: with line 2 of the C7 order in whole pallets the first-passage lead was 1.03 pallets and routes with a chosen lead landed it; the number was retired 2026-10-19 after the redraw died in two cells on paper and reopened 2026-10-23, its rebuild cell (expected-credit-loss provisioning) dying on the shipped-proxy screen before this draw"
+    }
+  ],
+  "notes": "stump_strategy: causal_design, read as transportability (what the trial's own comparison measured, a per-bite protection times its sites' overlap, carried to a target with a different overlap); composition_mix (F5) also describes it and is in the ban window (task175), and is named here so the label is not read as chosen around the ban. calibration_form other: the trial's five site results, which test whether the per-bite protection is shared across sites.",
+  "registered": "2026-10-23T04:47:31Z"
 }

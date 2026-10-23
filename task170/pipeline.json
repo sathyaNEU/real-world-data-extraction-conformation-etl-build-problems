@@ -1,35 +1,34 @@
 {
  "task": "task170",
  "owner": "sathya8571",
- "status": "PAUSED",
- "domain": "healthcare-delivery-health-economics/utilization-access-demand-forecasting",
+ "status": "DRAWING",
+ "domain": "epidemiology-public-health/health-burden-impact-modeling",
  "objective": "forecasting",
  "stage": 1,
  "stage_name": "draw",
  "updated": "2026-10-23",
- "stump": "Fitting each child's growth line from the register and moving the child onto TLD when the line reaches 30 kg files line 2 of the C7 order at 10 pallets against the golden 11 (8,064 bottles to the pallet), because the switch is taken on a single clinic weighing and the weighings scatter about 1.3 kg around a line that rises about a fifth of a kilogram a month, so most children are first weighed at 30 kg months before their line gets there; the register's own band rates and switch counts were measured under the 35 kg band and at the monthly visits the 2026 guidelines replaced.",
- "architecture": 1,
+ "stump": "A competent solver applies the trial's pooled protective efficacy to the plan's baseline cases among net users and files about 21,000 cases averted against about 11,500; the step that lands it there is carrying an efficacy measured where most bites fell while people slept under the nets to a county whose vector bites early and outdoors, where only about two fifths of a resident's bites arrive in bed.",
+ "architecture": 3,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-18",
-  "checks": 51
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-18, no LEAK (five lines: the SOP's estimand words and stump terms, Annex 7's stump terms, the stock report's due and expiry dates, the EPR's next appointments; answered in the note's Leak review)",
-  "reader": "round 1 (old pack): score_reader.py, call not committed, 0 of 24 ask figures committed; its four committed figures are the order's filed parts (now line 1's), scored 4 of 4 in the script's ask class (exit 1); round 2 owed on the repaired pack"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-18 after the stage 4 redraw of context_artifact to operations_log (overuse.org_family, overuse.objective, repeat.question_form)",
-  "nearest": "surface: 7 pairs promoted for adjudication (task172 two apart on gap time and quantity_figure; task453 and task160 in the corpus top 1 per cent; task87, task229, task161, task259 on gap, pattern and decision family, each differentiated on the card); driver nearest task119 v1 0.08"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "round 1: NOT_DETERMINISTIC (margin_or_boundary_fragility)",
-  "disposition": "round 1: SEND_BACK; repaired: the call moved to line 2 in whole pallets, every construction of the decisive step a quarter pallet and one sigma inside (FAM)",
-  "report": "scratchpad judge-task170/verdict.md (round 1)"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "paused 2026-10-23: reopened for a from-scratch rebuild in banking-credit-financial-risk / expected-credit-loss-provisioning; the cell yielded nothing that holds (the auto-loan purchase-market recovery candidate measured and dead on the shipped-proxy screen, the rest dead on paper, design note ## Tried and rejected, last two lines); no card registered, the v1 card unchanged; resume at stage 1 in the next cell the main session assigns",
+ "resume": "architecture 3 drawn 2026-10-23 (repellent net campaign, cases averted among users); next: stage 2 design, precut.py",
  "approved": null,
  "delivered": null,
  "portal": null,
