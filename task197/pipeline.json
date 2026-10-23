@@ -1,84 +1,84 @@
 {
-  "task": "task197",
-  "owner": "oviya13ya",
-  "status": "SHIPPED",
-  "stage": 5,
-  "architecture": "v1",
-  "objective": "anomaly-detection",
-  "domain": "energy-systems-utilities",
-  "subdomain": "grid-reliability-outage-analysis",
-  "drawn": "2026-10-17",
-  "card": ".claude/skills/fingerprint/cards/task197.json",
-  "resume": "SHIPPED and holding. The wave 8 audit's first scoring said the ask layer leaked 49 per cent and was wrong: score_reader.py counted provenance keys as graded figures, and re-scored the layer sits at 4 of 29. The real leak is two figures, ask C's portfolio totals, which the reader reached by correlating the meter series against the programme at 0.999 and shifting the interval stamps back fifteen minutes, so the D6 interval-index device is findable by the one cut the ask sheet names as its only evidence. Asks A and B held. Ask B's twelve figures are unmeasured, the reader not having attempted them, and are owed a reader that does.",
-  "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
-  "gates": {
-    "checks.py": "84 checks, 0 failed (floor 40)",
-    "verify.py": "144 checks, 0 failed, reading only the shipped bundle",
-    "figures_check.py": "91 figures in blocks 1 to 4, 0 absent, exit 0",
-    "precut.py": "51 checks, 0 FAIL, 0 WARN, exit 0",
-    "voice-check.py": "PASS, 991 characters",
-    "ceiling.py": "pair ceiling 35.1 (bar 40), mirror leakage 6.0 per cent (bar under 35)",
-    "leak.py": "REVIEW, no LEAK",
-    "guard surface": "clean, no personas in the pack",
-    "guard heart": "WARN (gate_g repeat and overuse, question form), answered in the draw table",
-    "rebuilds": "two byte-identical, 18 files; goldens byte-identical; target.zip cut from the final bytes, 18 members, content equal to the tree",
-    "input gates": "18 files, 4 formats, a 111,454-row csv and a 1,194,352-row sqlite, 2 distractors",
-    "md5": "target tree 7df50bb24a0535ecdbbff6f4b69dd317, golden tree 8249fd0fcac403ea786bb9ea8a53c0e7, target.zip 90cfc57e0096c24532325439066403d2"
-  },
-  "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
-  "stage_name": "ship",
-  "updated": "2026-10-21",
-  "ask_layer": {
-    "figures": 50,
-    "primaries": "A D9 the minute summary against its own seconds; B D8 the logged clock against start_local; C D6 the meter interval index",
-    "pair_ceiling": 35.1,
-    "mirror_leakage": 6.0,
-    "measured_by": "generator/ceiling.py"
-  },
-  "leak": {
-    "leak_py": "REVIEW, 0 LEAK",
-    "reader": "wave 8 audit re-scored 2026-10-21 with provenance keys excluded: call 0 of 4 and wrong on every figure, ask layer 4 of 29 (13.8 per cent), PASS. The earlier 24 of 49 counted 20 pack row counts, stated constants and window dates as graded figures."
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE",
-    "taxonomy": "none; three advisories, none needing a rerun",
-    "report": "task197/determinism_check_report.md",
-    "gates": "A PASS every graded figure recomputes, B PASS, C PASS with advisories, D PASS, E PASS, F PASS strong, G PASS, H PASS",
-    "pass": "5; derive-before-read order kept and confirmed",
-    "scope": "the approve covers the pack at target.zip 90cfc57e0096c24532325439066403d2. The only change since is the September availability statement capacity column, which moves no graded figure (figures.json and submission.md byte-identical) and alters no clause a gate turned on, so under the filed rule the approve stands. Current zip fa5f18fd82ec50801231f4d763352d55.",
-    "key_closures": "two the judge established independently and that the design rests on. First, the traverse span criterion recovers each span uniquely to about a second, and every competing reading of it gives identical spans for all nine sites; the one reading that differs, committed boundaries, collapses for DLK, KPV and ZWT because the archive has no samples in the first two minutes there, so the uncommitted criterion is the only reading that identifies the call site. Second, only the ramp baseline reproduces quiet-minute power to the noise floor at a residual sd of 0.013 MW, while the rivals leave several MW after every boundary, so exactly one baseline is defensible once the power is compared against it. Rejected bases: period setpoint RDL 57.4, last pre-deviation power ZWT 71.7, common 120 s span RDL 72.1, common 300 s span ZWT 79.3.",
-    "advisories": "1, the energy-against-programme ask: the standard says programme energy is the setpoint the platform held for the period, so the step is the literal reading and the committed 114.4 and 242.6 reproduce, but a solver who has just found the traverse could carry it in and file 80.5 and 216.4. Closing it needs a pin that changes what solvers see, so it stays open and the judge did not treat it as blocking. 2, the nine events carrying start_local in UTC under a +02:00 label: the UTC reading is forced because an event cannot be logged before it starts, and the main call and the under-frequency table are unaffected. 3, the settled statements, availability statement, auction results and price file are fair distractors.",
-    "disclosure": "the thread disclosed an isolation near-miss honestly: it listed a shared scratch folder once by accident and overwrote two scratch files of its own naming, opening none of them and reading nothing from an earlier pass. That is my tooling fault rather than its breach, and later briefs now name a per-thread scratch directory."
-  },
-  "archive_spread": {
-    "recordings": 4617,
-    "rows": 1194352,
-    "kinds": "FREQ-DEV 3699, DPDT 878, MANUAL 17, ALARM 16, MODE 7",
-    "lengths": "371 distinct, 67 to 1,164 s",
-    "offsets": "268 distinct quarter-hour offsets",
-    "decisive_rows_share": "19.0 per cent (the rate-of-change captures the traverse is fitted over)",
-    "bounds_from_the_publication": "0 of 3,699 starts and 2 of 3,699 ends coincide with a published extract bound",
-    "site_independence": "0 of 36 site pairs share a bound set, highest start-set overlap 1.3 per cent",
-    "duration_spread": "per site sd 30 to 73 s, shortest 0.32 to 0.47 of the median, 99th centile 1.2 to 2.3 times it, 103 to 187 distinct lengths; longest in the archive 1,164 s against a median of 253",
-    "length_vs_span": "ring buffer 0.000, threshold 0.133, hold-off -0.167, flush ceiling -0.183, settle window 0.183 rank correlation against the traverse span",
-    "organ_exactness": "16 to 33 fitting boundaries per site at which it held no reserve commitment; all nine spans recover exactly, runner-up one second away",
-    "queue": "24 of 935 obliged under-frequency pairs and 12 of 443 over-frequency pairs have no recording, 2.6 per cent"
-  },
-  "frequency_spread": {
-    "published_windows": "666",
-    "qualifying_episodes": "515, unchanged by the added excursions on all 21 dates",
-    "minute_summary": "30,240 rows, every one carrying a mean; 32 carry the mean alone with the minimum and maximum columns empty, 0 read minimum, mean and maximum alike, 0 of 2,301 published minutes the extract overlaps are contradicted",
-    "why_nothing_graded_moves": "a site outside its committed blocks has its response gated to zero so its power does not depend on the frequency, and ask C scores only the periods a site holds no commitment for; all 20 exposure figures are unchanged and the tightest bin clearance is still 0.0303 MWh"
-  },
-  "approved": null,
-  "reader_findings": {
-    "gate_f": "STRONG, and this is the headline. The reader filed Reiderland at 57 per cent with about 85 per cent confidence, which is the golden ladder rung 1 exactly, the period-setpoint basis whose recorded figure is RDL 58. It saw the ramp, noted that the pre-event level is the previous period programme and the post-event level the current one, and concluded the counterfactual was the destination setpoint, missing that at about 80 seconds in the unit is still mid-traverse. Its whole scorecard is the rung 1 scorecard, five sites below tolerance rather than three. The stump worked on it.",
-    "must_fix": "the September group availability statement. Its \"Contracted capacity (MW, mean)\" column is the shipped 21 September to 11 October commitments summed per block and divided by 30, verified exactly on all six blocks: 140/30 is 4.67, 292/30 is 9.73, 357/30 is 11.90, 90/30 is 3.00, 410.5/30 is 13.68, 63/30 is 2.10. A document headed delivery month 2026-09 therefore carries figures that include eleven October dates and omit 1 to 20 September, and the derivation is reverse-engineerable from the shipped commitments file. Same family as the original defect: a document derived from the wrong source with the derivation visible. The fix is to give the September statement a capacity profile that is not a function of the review window, which is realistic because the pack only ships the window.",
-    "measured_and_dismissed": "its withdrawal-placement claim is wrong and the error is instructive. It reported that the 27 live reserve_unavailable windows never overlap a qualifying episode and inferred they were placed to avoid them. Measured: 7 of the 27 do overlap. Its stated expectation, that with roughly a quarter of periods carrying an episode many overlaps would be expected, was wrong by a factor near 20, because qualifying episodes cover 1.22 per cent of the extract span by duration, not a quarter. 7 of 27 against 1.22 per cent coverage is high, which is consistent with the generator deliberately placing some windows to cover an over-frequency extreme second for the ask device. Third reader structural claim tonight to fail on an implicit model inside it.",
-    "open": "the extreme-second concentration, now flagged by a second independent reader as the most generated-looking feature of the pack: 511 of 515 deepest seconds fall 60 to 90 seconds into the period, median 80, interquartile range 6 seconds. Its sharpest point is new and is the one that matters: no shipped document gives a cause that would pin the deviation to one 30-second window. The design note argues real physics, deterministic frequency deviation as schedules step at period boundaries, but the pack never says so, so a solver sees an unexplained concentration. Neither reader used it to find the answer and both fell short of the call, so it is not a leak. The candidate fix is a sentence in the technical conditions describing the recurring post-boundary deviation, which explains the Layer 1 timing without naming the baseline; the risk is that it points attention at the boundary where the traverse lives. Judge first, then decide.",
-    "also_reported": "the asset register ships no old metering point for OOS so the pre-October EAN is matchable only by elimination; the metered file carries one point in kWh with no sentence saying so; and the interval labels are interval-end with no sentence saying so. All three are designed Layer 1."
-  },
-  "delivered": "2026-10-18",
-  "returned": []
+ "task": "task197",
+ "owner": "oviya13ya",
+ "status": "SHIPPED",
+ "stage": 5,
+ "architecture": "v1",
+ "objective": "anomaly-detection",
+ "domain": "energy-systems-utilities",
+ "subdomain": "grid-reliability-outage-analysis",
+ "drawn": "2026-10-17",
+ "card": ".claude/skills/fingerprint/cards/task197.json",
+ "resume": "SHIPPED and rebuild-verified 2026-10-23: target.zip reproduces at sha256 ce23c1aa6f4a57e9 matching HEAD. REBUILD IS TWO STEPS HERE, in this order: generator/build.py then generator/submit.py. build.py writes figures.json and submit.py ENRICHES it (obliged_pairs, episodes_total and the constants block) before writing submission.md, so build.py alone leaves figures.json 23 lines short and figures_check.py reports 4 figures absent of 91 while target.zip still matches byte for byte. With both steps run, figures.json returns to the committed bytes exactly and figures_check passes 91 of 91. Filed as house fix H33.",
+ "notes": "Assigned ground (quantitative-finance / market-microstructure-execution-cost) cannot host anomaly-detection; the finance group's only AD task type was taken by task196 mid-draw. Re-rooted onto the coordinator's fallback list.",
+ "gates": {
+  "checks.py": "84 checks, 0 failed (floor 40)",
+  "verify.py": "144 checks, 0 failed, reading only the shipped bundle",
+  "figures_check.py": "91 figures in blocks 1 to 4, 0 absent, exit 0",
+  "precut.py": "51 checks, 0 FAIL, 0 WARN, exit 0",
+  "voice-check.py": "PASS, 991 characters",
+  "ceiling.py": "pair ceiling 35.1 (bar 40), mirror leakage 6.0 per cent (bar under 35)",
+  "leak.py": "REVIEW, no LEAK",
+  "guard surface": "clean, no personas in the pack",
+  "guard heart": "WARN (gate_g repeat and overuse, question form), answered in the draw table",
+  "rebuilds": "two byte-identical, 18 files; goldens byte-identical; target.zip cut from the final bytes, 18 members, content equal to the tree",
+  "input gates": "18 files, 4 formats, a 111,454-row csv and a 1,194,352-row sqlite, 2 distractors",
+  "md5": "target tree 7df50bb24a0535ecdbbff6f4b69dd317, golden tree 8249fd0fcac403ea786bb9ea8a53c0e7, target.zip 90cfc57e0096c24532325439066403d2"
+ },
+ "call": "VKF-KPV Kampvliet, 72 per cent of contracted gain",
+ "stage_name": "ship",
+ "updated": "2026-10-21",
+ "ask_layer": {
+  "figures": 50,
+  "primaries": "A D9 the minute summary against its own seconds; B D8 the logged clock against start_local; C D6 the meter interval index",
+  "pair_ceiling": 35.1,
+  "mirror_leakage": 6.0,
+  "measured_by": "generator/ceiling.py"
+ },
+ "leak": {
+  "leak_py": "REVIEW, 0 LEAK",
+  "reader": "wave 8 audit re-scored 2026-10-21 with provenance keys excluded: call 0 of 4 and wrong on every figure, ask layer 4 of 29 (13.8 per cent), PASS. The earlier 24 of 49 counted 20 pack row counts, stated constants and window dates as graded figures."
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "taxonomy": "none; three advisories, none needing a rerun",
+  "report": "task197/determinism_check_report.md",
+  "gates": "A PASS every graded figure recomputes, B PASS, C PASS with advisories, D PASS, E PASS, F PASS strong, G PASS, H PASS",
+  "pass": "5; derive-before-read order kept and confirmed",
+  "scope": "the approve covers the pack at target.zip 90cfc57e0096c24532325439066403d2. The only change since is the September availability statement capacity column, which moves no graded figure (figures.json and submission.md byte-identical) and alters no clause a gate turned on, so under the filed rule the approve stands. Current zip fa5f18fd82ec50801231f4d763352d55.",
+  "key_closures": "two the judge established independently and that the design rests on. First, the traverse span criterion recovers each span uniquely to about a second, and every competing reading of it gives identical spans for all nine sites; the one reading that differs, committed boundaries, collapses for DLK, KPV and ZWT because the archive has no samples in the first two minutes there, so the uncommitted criterion is the only reading that identifies the call site. Second, only the ramp baseline reproduces quiet-minute power to the noise floor at a residual sd of 0.013 MW, while the rivals leave several MW after every boundary, so exactly one baseline is defensible once the power is compared against it. Rejected bases: period setpoint RDL 57.4, last pre-deviation power ZWT 71.7, common 120 s span RDL 72.1, common 300 s span ZWT 79.3.",
+  "advisories": "1, the energy-against-programme ask: the standard says programme energy is the setpoint the platform held for the period, so the step is the literal reading and the committed 114.4 and 242.6 reproduce, but a solver who has just found the traverse could carry it in and file 80.5 and 216.4. Closing it needs a pin that changes what solvers see, so it stays open and the judge did not treat it as blocking. 2, the nine events carrying start_local in UTC under a +02:00 label: the UTC reading is forced because an event cannot be logged before it starts, and the main call and the under-frequency table are unaffected. 3, the settled statements, availability statement, auction results and price file are fair distractors.",
+  "disclosure": "the thread disclosed an isolation near-miss honestly: it listed a shared scratch folder once by accident and overwrote two scratch files of its own naming, opening none of them and reading nothing from an earlier pass. That is my tooling fault rather than its breach, and later briefs now name a per-thread scratch directory."
+ },
+ "archive_spread": {
+  "recordings": 4617,
+  "rows": 1194352,
+  "kinds": "FREQ-DEV 3699, DPDT 878, MANUAL 17, ALARM 16, MODE 7",
+  "lengths": "371 distinct, 67 to 1,164 s",
+  "offsets": "268 distinct quarter-hour offsets",
+  "decisive_rows_share": "19.0 per cent (the rate-of-change captures the traverse is fitted over)",
+  "bounds_from_the_publication": "0 of 3,699 starts and 2 of 3,699 ends coincide with a published extract bound",
+  "site_independence": "0 of 36 site pairs share a bound set, highest start-set overlap 1.3 per cent",
+  "duration_spread": "per site sd 30 to 73 s, shortest 0.32 to 0.47 of the median, 99th centile 1.2 to 2.3 times it, 103 to 187 distinct lengths; longest in the archive 1,164 s against a median of 253",
+  "length_vs_span": "ring buffer 0.000, threshold 0.133, hold-off -0.167, flush ceiling -0.183, settle window 0.183 rank correlation against the traverse span",
+  "organ_exactness": "16 to 33 fitting boundaries per site at which it held no reserve commitment; all nine spans recover exactly, runner-up one second away",
+  "queue": "24 of 935 obliged under-frequency pairs and 12 of 443 over-frequency pairs have no recording, 2.6 per cent"
+ },
+ "frequency_spread": {
+  "published_windows": "666",
+  "qualifying_episodes": "515, unchanged by the added excursions on all 21 dates",
+  "minute_summary": "30,240 rows, every one carrying a mean; 32 carry the mean alone with the minimum and maximum columns empty, 0 read minimum, mean and maximum alike, 0 of 2,301 published minutes the extract overlaps are contradicted",
+  "why_nothing_graded_moves": "a site outside its committed blocks has its response gated to zero so its power does not depend on the frequency, and ask C scores only the periods a site holds no commitment for; all 20 exposure figures are unchanged and the tightest bin clearance is still 0.0303 MWh"
+ },
+ "approved": null,
+ "reader_findings": {
+  "gate_f": "STRONG, and this is the headline. The reader filed Reiderland at 57 per cent with about 85 per cent confidence, which is the golden ladder rung 1 exactly, the period-setpoint basis whose recorded figure is RDL 58. It saw the ramp, noted that the pre-event level is the previous period programme and the post-event level the current one, and concluded the counterfactual was the destination setpoint, missing that at about 80 seconds in the unit is still mid-traverse. Its whole scorecard is the rung 1 scorecard, five sites below tolerance rather than three. The stump worked on it.",
+  "must_fix": "the September group availability statement. Its \"Contracted capacity (MW, mean)\" column is the shipped 21 September to 11 October commitments summed per block and divided by 30, verified exactly on all six blocks: 140/30 is 4.67, 292/30 is 9.73, 357/30 is 11.90, 90/30 is 3.00, 410.5/30 is 13.68, 63/30 is 2.10. A document headed delivery month 2026-09 therefore carries figures that include eleven October dates and omit 1 to 20 September, and the derivation is reverse-engineerable from the shipped commitments file. Same family as the original defect: a document derived from the wrong source with the derivation visible. The fix is to give the September statement a capacity profile that is not a function of the review window, which is realistic because the pack only ships the window.",
+  "measured_and_dismissed": "its withdrawal-placement claim is wrong and the error is instructive. It reported that the 27 live reserve_unavailable windows never overlap a qualifying episode and inferred they were placed to avoid them. Measured: 7 of the 27 do overlap. Its stated expectation, that with roughly a quarter of periods carrying an episode many overlaps would be expected, was wrong by a factor near 20, because qualifying episodes cover 1.22 per cent of the extract span by duration, not a quarter. 7 of 27 against 1.22 per cent coverage is high, which is consistent with the generator deliberately placing some windows to cover an over-frequency extreme second for the ask device. Third reader structural claim tonight to fail on an implicit model inside it.",
+  "open": "the extreme-second concentration, now flagged by a second independent reader as the most generated-looking feature of the pack: 511 of 515 deepest seconds fall 60 to 90 seconds into the period, median 80, interquartile range 6 seconds. Its sharpest point is new and is the one that matters: no shipped document gives a cause that would pin the deviation to one 30-second window. The design note argues real physics, deterministic frequency deviation as schedules step at period boundaries, but the pack never says so, so a solver sees an unexplained concentration. Neither reader used it to find the answer and both fell short of the call, so it is not a leak. The candidate fix is a sentence in the technical conditions describing the recurring post-boundary deviation, which explains the Layer 1 timing without naming the baseline; the risk is that it points attention at the boundary where the traverse lives. Judge first, then decide.",
+  "also_reported": "the asset register ships no old metering point for OOS so the pre-October EAN is matchable only by elimination; the metered file carries one point in kWh with no sentence saying so; and the interval labels are interval-end with no sentence saying so. All three are designed Layer 1."
+ },
+ "delivered": "2026-10-18",
+ "returned": []
 }
