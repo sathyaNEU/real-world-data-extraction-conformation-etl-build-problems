@@ -1,6 +1,6 @@
 # task174 design note
 
-**Status: PAUSED at stage 1 on 2026-10-23 after six rebuild screens, biomedical survival, media reach, healthcare demand, regression diagnostics, ratemaking and reserving (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
+**Status: PAUSED at stage 1 on 2026-10-23 after six rebuild screens, biomedical survival, media reach, healthcare demand, regression diagnostics, ratemaking and reserving, and a second pass over fourteen fresh cells left to the build (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
 Forecasting. Three worlds were screened on this number and none yields a draw that holds; the third, the
 product-analytics retention cell of the same day, is recorded in its own finding below and in the last block of
 `## Tried and rejected`. The first is seed FC45's: a north-east
@@ -73,6 +73,31 @@ taken as the default path. No card was registered and nothing was cut: two candi
 (`s1_backlog.py`, `s3_entry.py`, scratchpad b174n/proto) and twenty-three on the structural screens, every death a
 line at the foot of `## Tried and rejected`. The number is PAUSED at stage 1 for the coordinator to assign another
 cell.
+
+**Second rebuild pass (2026-10-23, the cell left to this build, shape first).** The coordinator's brief asked for the
+shape of the two holds this round (task175: the forward units sit at one end of a covariate the record measures at a
+finer grain than the textbook model uses, the grain chosen by fit; task169: a structural estimand choice the textbook
+route does not make), with the cells parallel rebuilds hold and the cells that died this round excluded, and with the
+stage 4 law that a channel or correction the field teaches is applied by a medium reader unprompted. Fresh ground was
+taken first: political-science-public-policy / election-polling-forecasting and the never-drawn actuarial
+mortality-longevity, then asset-condition-maintenance, municipal-service-demand-resource-allocation,
+population-estimation-demographic-projection, fertility-mortality-life-table-estimation, scaling-laws,
+resampling-simulation-monte-carlo-methods, deposit-liquidity-behaviour, expected-credit-loss-provisioning,
+churn-propensity-uplift-modeling, feature-adoption-diffusion-modeling, conjoint-choice-willingness-to-pay-analysis and
+strategy-backtesting-evaluation. One candidate was measured on code (`cem1.py`, scratchpad b174n/r2) and about twenty
+died on the structural screens; no card was registered and nothing was cut. Every death is a line at the foot of
+`## Tried and rejected`.
+
+**The finding of the pass.** A one-year-ahead forecast of a process that changes smoothly is matched by the trend of
+its own record, so a lever needs a discontinuity at the forecast start (a new population, a new rule, a new area);
+the response to it then has to be read on a covariate the record measures at a finer grain. In every cell screened
+that covariate was one of four things, each closed: a channel the field names (the at-home vote of first-time voters,
+pressure transients from pump starts, garden size, roof orientation, an agent's departure, a boiler's age), which a
+medium reader measures on sight; a column or a two-column join, which the log-link regression on the obvious
+covariates reaches exactly; a contagion of the same outcome among neighbours, peers or a household, which is task175's
+driver and task144's; or a timing exposure, which is task177 v2's. Where the forward condition is a schedule or a rule
+applied to units the record already holds, it replays on the record (the careful reader's move and the golden). The
+number is PAUSED at stage 1 again for the coordinator to assign a cell.
 
 **The finding, and the first thing a later pass should read.** A forecast of events over a cohort's current risk
 set, made from a hazard by time since entry with the field's corrections applied and each member's own follow-up
@@ -536,3 +561,60 @@ Berquist-Sherman card.
   paper.
 - **A shift in the report-lag mix within accident years**: composition on a recorded attribute (the report date), and
   the claims with the forward lag profile are the attaining subset. On paper.
+
+- **Second rebuild pass (2026-10-23), the cell left to the build.** Shape first (task175's finer-grain covariate chosen
+  by fit, task169's structural estimand), the parallel rebuilds' cells and this round's dead cells excluded, the stage
+  4 law (a channel or correction the field teaches is applied unprompted) read first. One candidate on code, the rest
+  on the structural screens:
+- **New graves a municipal cemetery must provide in 2027 after double-depth graves stopped selling in 2016, reopenings
+  using no new plot** (municipal-service-demand-resource-allocation; `r2/cem1.py`, seeds 174 to 179): the reopening
+  stock drains smoothly, so the first-interment trend since 2016 files 0.95 to 1.12 of the truth, the last three
+  years 0.88 to 1.07 and burials times the recent first-interment share 0.91 to 1.07, every rival inside the year's
+  own noise. No lever: a smooth drain is matched by trend at a one-year horizon. Dead on code.
+- **Votes at 16: the first council election open to 16- and 17-year-olds, read on the 18- and 19-year-olds who live
+  with voting parents** (election-polling-forecasting): with a 16-plus precedent election in the record, the
+  all-age turnout ratio carried onto the precedent's 16-17 turnout reproduces the household-concordance golden
+  (teen turnout is q0 plus (q1 - q0) times the parents' turnout, so its ratio across elections is the parents'
+  ratio); without one, the step from 18 to 16 is a behaviour the record never shows, and the at-home argument is the
+  votes-at-16 literature's own, a channel the field teaches. Its abstraction (an outcome read on a household context
+  the forward units all share) is task175's contagion in household nouns. On paper.
+- **A new estate's ward turnout read on each elector's time at the address, rebuilt from the register's monthly
+  change files**: the field's habit model already carries a category for electors not on the previous register at
+  the address, which is the recent-mover group, so the habit reflex lands within about 10 per cent. On paper.
+- **Breaks on the mains left after a renewal programme that replaced the segments with the most breaks**
+  (asset-condition-maintenance): the remaining segments' own history is low by regression to the mean and the cohort
+  rate high, but a Poisson regression on prior breaks over a time split is the field's standard pipe-break model and
+  files the golden, and regression to the mean is a taught correction. On paper.
+- **Main breaks read on pump starts under a 2027 night-tariff pumping schedule**: pressure transients are a channel
+  the water industry names, the schedule replays on the start log, and per-start against per-hour exposure reads the
+  same for a standby generator (task170's seventh-cell law; the swap test fails). On paper.
+- **Main breaks after a 2027 fibre rollout's trenching, read on the trench's lateral offset from the main**: the
+  street works register carries the promoter, and stratifying the past works by promoter (gas in the carriageway,
+  telecoms in the footway) is the careful reader's group-by, which lands. On paper.
+- **Pothole repair jobs once a 2027 contract makes every repair permanent, the record's jobs mostly re-failures of
+  temporary patches**: the contract names repair durability, and linking each job to its location's previous patch
+  replays the forward rule on 2026's record, which is the golden. On paper.
+- **Pothole damage claims against the council under a five-day repair standard, read on open defect-days times
+  traffic**: claims proportional to days open times flow is log-additive, so a Poisson regression on the two obvious
+  covariates lands exactly. On paper.
+- **311 calls offered after added call-takers cut abandonment, abandoned callers' retries one need**: tickets barely
+  move (the golden sits within a bin of carrying the record forward), the calls version needs the forward wait from a
+  queueing model whose forms fork, and patience drain is task148's driver. On paper.
+- **Births to a labour-migration wave read on time since arrival**: elevated fertility after migration is the
+  migration-fertility literature's own finding and a hazard by time since entry (task134 v2, task468, task173's cell
+  2 deaths). On paper.
+- **Ridership at a transit extension's stations read on the street-network walk catchment; EV charger use read on
+  nearby registrations; garden-waste take-up read on garden area; shaded or north-facing roofs in a second solar
+  wave**: each is task175's rollout-to-where-demand-was with the grain chosen by fit (a clone), or a channel the field
+  names on sight. On paper.
+- **Orphaned policies lapsing after a tied agency force is disbanded; primary-banking against rate-chasing savers
+  after a rate cut; heat-network take-up at each home's boiler age; SaaS upgrades read on recent seat growth**: each
+  is a channel the field names, measured as soon as the file that carries it is seen (task177 v3's death).
+  On paper.
+- **Adoption read on adopted frequent collaborators after a rollout from enterprise to small plans**: task144's
+  exposure to adopters on task175's rollout skeleton. On paper.
+- **Scaling-law forecasts (intermediate checkpoints, non-embedding against total parameters, repeated tokens)**: the
+  cards' textbook, and the fits fork at a loss precision of 0.01. **A contingency reserve at the 95th percentile of a
+  clustered total**: task142's independent unit. **Weighting a poll to recalled against recorded past vote**: a
+  choice between two columns, a reading. **A conjoint share under store-level assortment**: the distribution-weighted
+  simulator is practice. On paper.

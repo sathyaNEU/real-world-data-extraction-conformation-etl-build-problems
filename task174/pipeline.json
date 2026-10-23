@@ -39,7 +39,7 @@
   "forcing_event": "purchase_order_or_contract (the term sheet) was this world's honest key, banned by task170 and held for task165 at the time of the screen",
   "prototypes": "scratchpad b174/proto: physics.py, calib.py to calib3.py, lever.py, screen_common_exposure.py, slip_lever.py, vintage_proto.py to vintage_proto5.py"
  },
- "resume": "PAUSED 2026-10-23 at stage 1 after six rebuild screens (biomedical survival, media reach and frequency, healthcare demand, regression diagnostics, ratemaking, reserving): no card registered, nothing cut; the coordinator rests the number while other builds proceed (screen_bio, screen_media, screen_health, screen_diagnostics, screen_ratemaking, screen_reserving and the design note's ## Rebuild (2026-10-23)).",
+ "resume": "PAUSED 2026-10-23 at stage 1 after the second rebuild pass (fourteen fresh cells left to the build, one on code, about twenty on paper): no card registered, nothing cut; the coordinator assigns another cell (screen_pass2 and the design note's ## Rebuild (2026-10-23)).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -106,5 +106,12 @@
   "paper": "nine on the structural screens (each a line in the design note): XL retention (cap, rule), deductible recoverables (rule), trial-date settlements (task172), periodic-payment orders (rule, WHAT), forward index (inflation-adjusted chain ladder, textbook), reopens after a closure drive (Berquist-Sherman, task157), formula case reserves (Berquist-Sherman), shock claims (practice), report-lag mix (subset)",
   "finding": "each per-claim identity the triangle ignores is a cap or a scheduled date (task172's driver), a price index (textbook) or a closure-speed change (the Berquist-Sherman card)",
   "prototypes": "scratchpad b174n/proto6: lim1.py"
+ },
+ "screen_pass2": {
+  "assigned": "second rebuild pass 2026-10-23 (rb-task174.md): the cell left to the build, chosen by the shape of task175 and task169; parallel rebuilds' cells and this round's dead cells excluded; the stage 4 known-channel law read first",
+  "measured_cemetery": "new graves after double-depth sales stopped in 2016, reopenings use no plot (r2/cem1.py, seeds 174-179): first-interment trend 0.95-1.12 of truth, last three years 0.88-1.07, burials times recent share 0.91-1.07; a smooth drain is matched by trend at one year",
+  "paper": "about twenty on the structural screens (each a line in the design note): votes at 16 (all-age ratio reproduces household concordance; field literature), new-estate tenure (habit model's not-on-register category), mains after renewal (prior-break model is standard, RTM taught), pump starts (known channel, swap), fibre trenching offset (promoter stratification), permanent pothole repairs (replay), pothole claims (log-additive, two obvious covariates), 311 retries (no lever on tickets, queueing fork, task148), migrant fertility (time since entry, literature), walk catchment, EV chargers, garden waste, solar roofs (task175 clones or named channels), orphan lapses, primary banking, boiler age, seat growth (named channels), collaborator adoption (task144 on task175), scaling laws, reserve P95 (task142), recalled vote (reading), conjoint assortment (practice)",
+  "finding": "a one-year forecast of a smoothly changing process is matched by trend, so a lever needs a discontinuity at the forecast start read on a finer-grain covariate; in every cell screened that covariate was a field-named channel, a column or two-column join the log-link regression reaches, a contagion of the outcome (task175, task144), or a timing exposure (task177 v2), and schedules or rules on units the record holds replay",
+  "prototypes": "scratchpad b174n/r2: cem1.py; STATE.md"
  }
 }
