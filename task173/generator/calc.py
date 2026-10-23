@@ -1,511 +1,389 @@
-"""task173 analysis from the shipped files alone: the golden booking, every defensible construction of it, every rival
-route, the back-test and the screens. Reads target/; never imports the world."""
+"""Every graded figure, computed from the shipped pack alone (the golden), and every rival route the design note
+names, so checks.py can assert the ladder on the files a solver holds.
+
+The golden for the call:
+  bench (junior) services: each service's 2022 April to September energy, the season the district delivered
+    nothing, at a normal season's reference ET (2022 energy x normal ET / 2022 ET);
+  bottomland (senior) plants: each plant's normal-season energy (its 2015 to 2026 seasons each at normal ET, averaged),
+    less its river lift's energy on the diversion the order removes, plus its well's energy on that water pumped from
+    the well instead; the river lift and the well share one meter, so each plant's energy per acre-foot at the river
+    and at the well comes from fitting its water-year energy to its own diversions and its own metered extraction.
+    A plant with no well cannot make the water up and leaves it unirrigated.
+"""
 from __future__ import annotations
 
-import csv
 import datetime as dt
-import io
-import math
 import os
-import zipfile
+import re
 
 import numpy as np
-from scipy.optimize import curve_fit
+import pandas as pd
 
-import common as K
-
-# the standard's filed numbers (read back from the standard in checks.py)
-H_EXPERT = K.HANDLE_PER_EXPERT
-H_BILLED = K.HANDLE_PER_BILLED
-BLOCK = K.ORDER_BLOCK
-
-
-# ------------------------------------------------------------------------------------------------- loading
-def _read_csv(path):
-    with open(path, encoding="utf-8", newline="") as fh:
-        return list(csv.reader(fh))
-
-
-def _xlsx_rows(path, sheet):
-    import openpyxl
-    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
-    ws = wb[sheet]
-    rows = [list(r) for r in ws.iter_rows(values_only=True)]
-    wb.close()
-    return rows
-
-
-def parse_utc(s):
-    return dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")
-
-
-def pdf_text(path):
-    import logging
-    logging.getLogger("pypdf").setLevel(logging.ERROR)
-    from pypdf import PdfReader
-    return "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
-
-
-def calendar_classes(path):
-    """The 2027 classes in the training calendar: go-live date and seats."""
-    import re
-    txt = pdf_text(path)
-    out = []
-    for m in re.finditer(r"(27-\d)\s+Room \w\s+(\d{1,2} \w+ 2027)\s+(\d{1,2} \w+ 2027)\s+(\d+)", txt):
-        out.append((dt.datetime.strptime(m.group(3), "%d %B %Y").date(), int(m.group(4))))
-    assert len(out) == 4, out
-    return out
+import common as C
 
 
 class Pack:
-    """The shipped files, parsed once."""
-
-    def __init__(self, target, queues=("Live Experts EN",)):
-        self.target = target
-        p = lambda f: os.path.join(target, f)
-        import records as RC
-        self.F = RC
-        rows = _read_csv(p(RC.F_CRM))
-        head = rows[0]
-        ix = {c: i for i, c in enumerate(head)}
-        data = rows[1:]
-        self.n_crm = len(data)
-        en = [r for r in data if r[ix["Queue"]] in queues]
-        self.n_en = len(en)
-        self.case = np.array([r[ix["Case Number"]] for r in en])
-        self.iid = [r[ix["Interaction ID"]] for r in en]
-        self.itype = np.array([r[ix["Interaction Type"]] for r in en])
-        self.start_utc = [parse_utc(r[ix["Started (UTC)"]]) for r in en]
-        self.start_local = [K.eastern(t) for t in self.start_utc]
-        self.day = np.array([t.date().toordinal() for t in self.start_local])
-        self.tsort = np.array([(t - dt.datetime(2026, 1, 1)).total_seconds() for t in self.start_utc])
-        self.talk = np.array([float(r[ix["Talk Seconds"]]) for r in en])
-        self.acw = np.array([float(r[ix["After-Contact Work Seconds"]]) for r in en])
-        self.handled = np.array([r[ix["Handled By"]] for r in en])
-        self.disp = np.array([r[ix["Disposition"]] for r in en])
-        self.topic = np.array([r[ix["Topic"]] for r in en])
-        self.channel = np.array([r[ix["Channel"]] for r in en])
-        self.hmin = (self.talk + self.acw) / 60.0
-        # roster: in-house experts' first season and 2026 go-live; vendor agents from the vendor sheet
-        ros = _xlsx_rows(p(RC.F_ROSTER), "Seasonal experts")
-        h = ros[0]
-        ri = {c: i for i, c in enumerate(h)}
-        self.roster = {r[ri["Employee No"]]: r for r in ros[1:] if r[ri["Employee No"]]}
-        self.ri = ri
-        vend = _xlsx_rows(p(RC.F_ROSTER), "HCS agents 2026")
-        vh = vend[0]
-        vi = {c: i for i, c in enumerate(vh)}
-        self.vendor = {r[vi["Agent"]]: r for r in vend[1:] if r[vi["Agent"]]}
-        grp, golive = [], []
-        for u in self.handled:
-            if u in self.vendor:
-                grp.append("V"); golive.append(0)
-            else:
-                r = self.roster[u]
-                fs = int(r[ri["First Season"]])
-                if fs == 2026:
-                    g = r[ri["2026 Go-Live"]]
-                    g = g if isinstance(g, dt.date) else dt.date.fromisoformat(str(g)[:10])
-                    grp.append("N"); golive.append(g.toordinal() if not isinstance(g, dt.datetime) else g.date().toordinal())
-                else:
-                    grp.append("R"); golive.append(0)
-        self.grp = np.array(grp)
-        self.golive = np.array(golive)
-        self.wk = np.where(self.grp == "N", (self.day - self.golive) / 7.0, -1.0)
-        # case structure: each interaction's successor on its case
-        order = np.lexsort((self.tsort, self.case))
-        self.order = order
-        cs = self.case[order]
-        nxt = np.zeros(len(cs), dtype=bool)
-        nxt[:-1] = cs[1:] == cs[:-1]
-        self.followed = np.zeros(len(cs), dtype=bool)
-        self.followed[order] = nxt
-        first = np.ones(len(cs), dtype=bool)
-        first[1:] = cs[1:] != cs[:-1]
-        self.first = np.zeros(len(cs), dtype=bool)
-        self.first[order] = first
-        self.case_first_grp = {}
-        # demand plan
-        dp = _xlsx_rows(p(RC.F_DEMAND), "Daily forecast")
-        dh = dp[0]
-        di = {c: i for i, c in enumerate(dh)}
-        self.plan = []
-        for r in dp[1:]:
-            if r[di["Date"]] is None:
+    def __init__(self, folder):
+        p = lambda f: os.path.join(folder, f)
+        self.folder = folder
+        self.bill = pd.read_csv(p(C.F_BILL), dtype={"acct_no": str, "svc_no": str})
+        self.xw = pd.read_csv(p(C.F_XW), dtype=str)
+        self.reg = pd.read_excel(p(C.F_REG), sheet_name="IP services", dtype={"svc_no": str, "acct_no": str})
+        self.spt = pd.read_csv(p(C.F_SPT), dtype=str)
+        self.fdr = pd.read_csv(p(C.F_FDR), dtype=str)
+        self.div = pd.read_csv(p(C.F_DIV), dtype={"right_no": str, "pod": str})
+        self.alt = pd.read_excel(p(C.F_ALT), sheet_name="Schedule of allotments", dtype={"right_no": str})
+        self.lbid_con = pd.read_excel(p(C.F_LBID), sheet_name="Contracts")
+        self.lbid_alc = pd.read_excel(p(C.F_LBID), sheet_name="Allocations")
+        self.eto = pd.read_csv(p(C.F_ETO), dtype={"qc": str})
+        self.dpi = pd.read_csv(p(C.F_DPI), dtype={"meter_no": str})
+        self.peaks = pd.read_csv(p(C.F_PEAK), dtype=str)
+        gsa = pd.read_excel(p(C.F_GSA), sheet_name=None)
+        frames = []
+        for name, df in gsa.items():
+            m = re.fullmatch(r"WY(\d{4})", name)
+            if not m:
                 continue
-            d = r[di["Date"]]
-            d = d.date() if isinstance(d, dt.datetime) else (d if isinstance(d, dt.date) else dt.date.fromisoformat(str(d)))
-            self.plan.append((d, int(r[di["New expert cases"]])))
-        f0, f1 = K.fortnight(2027)
-        self.F27 = sum(n for d, n in self.plan if f0 <= d <= f1)
-        g0, g1 = K.fortnight(2026)
-        self.F26 = int(sum(1 for d, t in zip(self.day, self.itype) if t == "New case"
-                           and g0.toordinal() <= d <= g1.toordinal()))
-        # the 2027 classes, from the training calendar
-        self.classes27 = calendar_classes(p("training_calendar_2027.pdf"))
-        self.confirmed27 = {u for u, r in self.roster.items()
-                            if r[ri["Queue"]] == "EN" and r[ri["2027 Recall"]] == "Confirmed"}
-        self.returning27 = sum(1 for r in self.roster.values()
-                               if r[ri["Queue"]] == "EN" and r[ri["2027 Recall"]] == "Confirmed")
+            wy = int(m.group(1))
+            if "Volume (ac-ft)" in df.columns:
+                df = df.rename(columns={"State Well No.": "well", "Power Account": "power", "Volume (ac-ft)": "af",
+                                        "APN": "apn", "Owner of Record": "owner"})
+            else:
+                df = df.rename(columns={"state_well_no": "well", "power_source": "power", "extraction_af": "af"})
+            df = df.assign(wy=wy)
+            frames.append(df[["wy", "well", "power", "af"]])
+        self.gsa = pd.concat(frames, ignore_index=True)
+        self.gsa["svc_no"] = self.gsa["power"].str.extract(r"(\d{6})")[0]
 
 
-# ------------------------------------------------------------------------------------------------- estimators
-def expo(x, a, b, t):
-    return a + b * np.exp(-x / t)
+# ---------------------------------------------------------------- shared building blocks
+def eto_seasons(P, drop_flagged=False):
+    e = P.eto.copy()
+    if drop_flagged:
+        e = e[e["qc"].fillna("") != "M"]
+    e["d"] = pd.to_datetime(e["date"])
+    e = e[e["d"].dt.month.isin(C.SEASON)]
+    tot = e.groupby(e["d"].dt.year)["eto_in"].sum()
+    normal = float(tot.loc[C.ET_YEARS[0]:C.ET_YEARS[-1]].mean())
+    return {int(k): float(v) for k, v in tot.items()}, normal
 
 
-def binned(xw, y, width=1.0):
-    b = np.floor(xw / width).astype(int)
-    ub = np.unique(b)
-    yb = np.array([y[b == k].mean() for k in ub])
-    nb = np.array([(b == k).sum() for k in ub])
-    return (ub + 0.5) * width, yb, nb
+def monthly_kwh(P, v=None):
+    """kWh by service and bill month, every read line counted once (a cancel and its reversal net to nothing).
+
+    v carries the Layer 1 mishandlings checks.py runs (R2): drop_legacy, drop_cancel_rows, dedupe_meter, drop_est."""
+    v = v or {}
+    b = P.bill.copy()
+    if v.get("drop_cancel_rows"):
+        b = b[b["bill_status"] != "CANCEL"]
+    if v.get("drop_est"):
+        b = b[b["read_type"] != "E"]
+    if v.get("dedupe_meter"):
+        b = b.drop_duplicates(["acct_no", "bill_month"], keep="first")
+    leg = dict(zip(P.xw["legacy_acct_no"], P.xw["svc_no"]))
+    if v.get("drop_legacy"):
+        leg = {}
+    b["svc"] = b["svc_no"].where(b["svc_no"].notna() & (b["svc_no"] != ""), b["acct_no"].map(leg))
+    b = b[b["svc"].notna()]
+    b["y"] = b["bill_month"].str[:4].astype(int)
+    b["m"] = b["bill_month"].str[5:7].astype(int)
+    return b.groupby(["svc", "y", "m"])["kwh"].sum()
 
 
-def fit_expo(xw, y, p0):
-    x, yb, nb = binned(xw, y)
-    c, _ = curve_fit(expo, x, yb, p0=p0, sigma=1 / np.sqrt(nb), maxfev=40000)
-    return c
+def population(P):
+    reg = P.reg
+    act = reg[(reg["status"] == "ACTIVE")]
+    return set(act["svc_no"])
 
 
-class Est:
-    """The 2026 rates every construction draws on, from the English queue's interactions."""
-
-    def __init__(self, P, mask=None, fortnight_only=False):
-        m = np.ones(P.n_en, dtype=bool) if mask is None else mask
-        f0, f1 = K.fortnight(2026)
-        fn = (P.day >= f0.toordinal()) & (P.day <= f1.toordinal())
-        self.fn = fn
-        R, N, V = (P.grp == "R") & m, (P.grp == "N") & m, (P.grp == "V") & m
-        first, fol = P.first, P.followed.astype(float)
-        sel = fn if fortnight_only else np.ones(P.n_en, dtype=bool)
-        self.pR = fol[R & first & sel].mean()
-        self.pO = fol[V & first].mean()
-        self.q = fol[~first & m & sel].mean()
-        self.aR = P.hmin[R & sel].mean()
-        self.aO = P.hmin[V].mean()
-        self.cp = fit_expo(P.wk[N & first], fol[N & first], (0.14, 0.3, 5.0))
-        self.ca = fit_expo(P.wk[N], P.hmin[N], (31.0, 14.0, 5.0))
-        self.P = P
-        self.mN = N
-        self.N_first = N & first
+def classes(P):
+    """Bottomland plants are the services that pump a decree point of diversion; bench services are the rest."""
+    d = P.div[P.div["measure"].str.startswith("VVPUD")]
+    pod_svc = d.groupby("right_no")["measure"].first().str.replace("VVPUD ", "", regex=False)
+    seniors = dict(zip(pod_svc.values, pod_svc.index))          # svc -> right
+    return seniors
 
 
-def bench27(P):
-    f0, f1 = K.fortnight(2027)
-    days = [f0 + dt.timedelta(k) for k in range(14)]
-    return days
+def season_kwh(mk, svc, y):
+    try:
+        s = mk.loc[svc]
+    except KeyError:
+        return 0.0
+    return float(sum(s.get((y, m), 0.0) for m in C.SEASON))
 
 
-def inhouse(P, pf, af, pR, aR, nR=None):
-    """Contacts the 2027 in-house bench takes in the fortnight at the standard's handle hours, and the sum of their
-    first-contact follow-up chances (contacts weighted)."""
-    nR = P.returning27 if nR is None else nR
-    days = bench27(P)
-    Kc = Kp = 0.0
-    for d in days:
-        kr = nR * (H_EXPERT / 14) * 60 / aR
-        Kc += kr
-        Kp += kr * pR
-        for g, n in P.classes27:
-            x = (d - g).days / 7.0
-            kn = n * (H_EXPERT / 14) * 60 / af(x)
-            Kc += kn
-            Kp += kn * pf(x)
-    return Kc, Kp
+def wy_kwh(mk, svc, wy):
+    try:
+        s = mk.loc[svc]
+    except KeyError:
+        return 0.0
+    months = [(wy - 1, 10), (wy - 1, 11), (wy - 1, 12)] + [(wy, m) for m in range(1, 10)]
+    return float(sum(s.get(k, 0.0) for k in months))
 
 
-def solve_booking(Kc, Kp, pO, aO, q, F):
-    """Billed vendor hours that balance the fortnight: the bench's contacts and the vendor's equal the new cases
-    and every follow-up they bring, each case's follow-ups set by who takes its first contact."""
-    kO = H_BILLED * 60 / aO
-    lo, hi = 0.0, 2e5
-    for _ in range(200):
-        mid = (lo + hi) / 2
-        Ct = Kc + mid * kO
-        Pbar = (Kp + mid * kO * pO) / Ct
-        if Ct - F * (1 + Pbar / (1 - q)) < 0:
-            lo = mid
+# ---------------------------------------------------------------- the call
+def golden(P, variant=None):
+    """variant selects one construction of the golden family (asserted to agree) or a rival route by name."""
+    v = variant or {}
+    et, etn = eto_seasons(P, drop_flagged=v.get("drop_flagged", False))
+    if v.get("normal_years") == "2015-2026":
+        etn = float(np.mean([et[y] for y in C.YEARS]))
+    mk = monthly_kwh(P, v)
+    pop = population(P)
+    sen = classes(P)
+    juniors = sorted(s for s in pop if s not in sen)
+    seniors = sorted(s for s in pop if s in sen)
+
+    # bench services
+    jroute = v.get("junior", "2022")
+    if jroute == "2022":
+        J = sum(season_kwh(mk, s, 2022) for s in juniors) * etn / et[2022]
+    elif jroute == "regression":
+        # per service: season kWh = k (need x ET/ETn - alloc x contract); fitted across the 12 seasons
+        con = P.lbid_con
+        apn_con = {}
+        for _, r in con.iterrows():
+            for a in str(r["apn"]).split("; "):
+                apn_con[a] = float(r["contract_af"])
+        reg = P.reg.set_index("svc_no")
+        alloc = dict(zip(P.lbid_alc["season"].astype(int), P.lbid_alc["allocation_pct"].astype(float) / 100))
+        J = 0.0
+        for s in juniors:
+            a0 = str(reg.loc[s, "apn"]).split("; ")[0]
+            cont = apn_con.get(a0, 0.0)
+            ys = np.array(C.YEARS)
+            y_ = np.array([season_kwh(mk, s, y) for y in ys])
+            X = np.c_[np.array([et[y] / etn for y in ys]), -np.array([alloc[y] * cont for y in ys])]
+            co, *_ = np.linalg.lstsq(X, y_, rcond=None)
+            # co = [k*need, k]; the 2027 season delivers nothing
+            J += co[0]
+    elif jroute == "2026":
+        con = P.lbid_con
+        apn_con = {}
+        for _, r in con.iterrows():
+            for a in str(r["apn"]).split("; "):
+                apn_con[a] = float(r["contract_af"])
+        reg = P.reg.set_index("svc_no")
+        J = 0.0
+        for s in juniors:
+            a0 = str(reg.loc[s, "apn"]).split("; ")[0]
+            cont = apn_con.get(a0, 0.0)
+            k22 = season_kwh(mk, s, 2022) / et[2022]
+            # 2026 delivered 5 per cent of contract: add that water back at the service's own energy per acre-foot,
+            # read from its 2022 and 2026 seasons (same need per unit ET, different delivery)
+            e26 = season_kwh(mk, s, 2026)
+            kaf = (k22 * et[2026] - e26) / (0.05 * cont) if cont > 0 else 0.0
+            J += (e26 + 0.05 * cont * kaf) * etn / et[2026]
+    else:
+        raise ValueError(jroute)
+
+    # bottomland plants
+    alt = P.alt.set_index("right_no")
+    div = P.div[P.div["right_no"].isin(set(sen.values()))]
+    dseas = div.groupby(["right_no", "year"])["af_diverted"].sum()
+    gsa = P.gsa.groupby(["svc_no", "wy"])["af"].sum()
+    wells = set(P.gsa["svc_no"].dropna())
+    Sn = 0.0
+    add_w = 0.0
+    save_r = 0.0
+    detail = []
+    kj_mean = None
+    for s in seniors:
+        right = sen[s]
+        Fa = float(alt.loc[right, "season_allotment_af"])
+        ys = [y for y in C.YEARS if season_kwh(mk, s, y) > 0] if v.get("drop_legacy") else C.YEARS
+        if v.get("raw_mean"):
+            en = np.mean([season_kwh(mk, s, y) for y in ys]) * etn / np.mean([et[y] for y in ys])
+            dn = float(np.mean([dseas.loc[(right, y)] for y in C.YEARS])) * etn / np.mean([et[y] for y in C.YEARS])
         else:
-            hi = mid
-    return lo
-
-
-def golden(P, E=None):
-    E = E or Est(P)
-    Kc, Kp = inhouse(P, lambda x: expo(x, *E.cp), lambda x: expo(x, *E.ca), E.pR, E.aR)
-    B = solve_booking(Kc, Kp, E.pO, E.aO, E.q, P.F27)
-    kO = H_BILLED * 60 / E.aO
-    Ct = Kc + B * kO
-    Pbar = (Kp + B * kO * E.pO) / Ct
-    contacts = P.F27 * (1 + Pbar / (1 - E.q))
-    return dict(B=B, order=K.ceil_to(B, BLOCK), contacts=contacts, followups=contacts - P.F27,
-                inhouse_contacts=Kc, vendor_contacts=B * kO, pbar=Pbar, est=E)
-
-
-# ------------------------------------------------------------------------------------------------- constructions
-def constructions(P, E=None):
-    E = E or Est(P)
-    out = {}
-    first, fol = P.first, P.followed.astype(float)
-    N = P.grp == "N"
-    for wd in (1, 2, 3, 4):
-        xw, yb, _ = binned(P.wk[N & first], fol[N & first], wd)
-        xa, ab, _ = binned(P.wk[N], P.hmin[N], wd)
-        pf = lambda x, xw=xw, yb=yb, wd=wd: float(yb[np.argmin(np.abs(xw - (math.floor(x / wd) + 0.5) * wd))])
-        af = lambda x, xa=xa, ab=ab, wd=wd: float(ab[np.argmin(np.abs(xa - (math.floor(x / wd) + 0.5) * wd))])
-        out["tenure bands of %d week%s" % (wd, "" if wd == 1 else "s")] = solve_booking(
-            *inhouse(P, pf, af, E.pR, E.aR), E.pO, E.aO, E.q, P.F27)
-
-    def logit_curve(x, a, b):
-        return 1 / (1 + np.exp(-(a + b * np.log(x + 0.5))))
-    xw, yb, nb = binned(P.wk[N & first], fol[N & first])
-    cl, _ = curve_fit(logit_curve, xw, yb, p0=(-0.5, -0.5), sigma=1 / np.sqrt(nb), maxfev=40000)
-    out["logistic in log weeks"] = solve_booking(*inhouse(P, lambda x: logit_curve(x, *cl), lambda x: expo(x, *E.ca),
-                                                          E.pR, E.aR), E.pO, E.aO, E.q, P.F27)
-
-    def powc(x, a, b, c):
-        return a + b * (x + 1) ** (-c)
-    cpw, _ = curve_fit(powc, xw, yb, p0=(0.12, 0.3, 0.7), sigma=1 / np.sqrt(nb), maxfev=40000)
-    out["power law in weeks"] = solve_booking(*inhouse(P, lambda x: powc(x, *cpw), lambda x: expo(x, *E.ca),
-                                                       E.pR, E.aR), E.pO, E.aO, E.q, P.F27)
-    Ef = Est(P, fortnight_only=True)
-    out["returning rates and q from the 2026 fortnight"] = solve_booking(
-        *inhouse(P, lambda x: expo(x, *E.cp), lambda x: expo(x, *E.ca), Ef.pR, Ef.aR), E.pO, E.aO, Ef.q, P.F27)
-    # contact level: every interaction's chance of a successor by its handler, positions pooled, chains geometric
-    cpp = fit_expo(P.wk[N], fol[N], (0.14, 0.3, 5.0))
-    pRp = fol[P.grp == "R"].mean()
-    pOp = fol[P.grp == "V"].mean()
-    Kc, Kp = inhouse(P, lambda x: expo(x, *cpp), lambda x: expo(x, *E.ca), pRp, E.aR)
-    kO = H_BILLED * 60 / E.aO
-    lo, hi = 0.0, 2e5
-    for _ in range(200):
-        mid = (lo + hi) / 2
-        Ct = Kc + mid * kO
-        Pb = (Kp + mid * kO * pOp) / Ct
-        if Ct - P.F27 / (1 - Pb) < 0:
-            lo = mid
+            en = np.mean([season_kwh(mk, s, y) * etn / et[y] for y in ys])
+            dn = float(np.mean([dseas.loc[(right, y)] * etn / et[y] for y in C.YEARS]))
+        lim = C.SENIOR_LIMIT_2027 * Fa
+        if v.get("cut") == "face":
+            cut = (1 - C.SENIOR_LIMIT_2027) * Fa
+        elif v.get("cut") == "share_of_use":
+            cut = (1 - C.SENIOR_LIMIT_2027) * dn
         else:
-            hi = mid
-    out["contact level, positions pooled"] = lo
-    # the returning rate and handle time from the confirmed experts' own 2026 records (veterans in 2026)
-    conf = np.isin(P.handled, list(P.confirmed27)) & (P.grp == "R")
-    pRc, aRc = fol[conf & first].mean(), P.hmin[conf].mean()
-    out["returning rates from the confirmed veterans' own 2026 records"] = solve_booking(
-        *inhouse(P, lambda x: expo(x, *E.cp), lambda x: expo(x, *E.ca), pRc, aRc), E.pO, E.aO, E.q, P.F27)
-    # contact level with positions: first contacts by handler, follow-ups at their own rate (= the golden's form)
-    out["case level, follow-ups charged to the first contact"] = golden(P, E)["B"]
-    return out
+            cut = max(dn - lim, 0.0)
+        has_well = s in wells
+        wys = [wy for wy in C.WY_GSA if (s, wy) in gsa.index] if has_well else []
+        if v.get("gsa_missing_zero") and has_well:
+            wys = list(C.WY_GSA)
+        if v.get("drop_legacy"):
+            wys = [wy for wy in wys if wy >= 2021]
+        if has_well:
+            Y = np.array([wy_kwh(mk, s, wy) for wy in wys])
+            X = np.c_[np.array([dseas.loc[(right, wy)] for wy in wys]), np.array([gsa.get((s, wy), 0.0) for wy in wys])]
+            if v.get("fit") == "intercept":
+                X = np.c_[X, np.ones(len(wys))]
+            co, *_ = np.linalg.lstsq(X, Y, rcond=None)
+            kr, kw = float(co[0]), float(co[1])
+        else:
+            D = np.array([dseas.loc[(right, y)] for y in C.YEARS])
+            Y = np.array([season_kwh(mk, s, y) for y in C.YEARS])
+            kr, kw = float(Y.sum() / D.sum()), 0.0
+        Sn += en
+        detail.append((s, right, Fa, dn, cut, has_well, kr, kw, en))
+    det = pd.DataFrame(detail, columns=["svc", "right", "allot", "dn", "cut", "well", "kr", "kw", "en"])
+    if v.get("kappa") == "pooled":
+        sub = [s for s in seniors if s in wells]
+        rows = []
+        for s in sub:
+            right = sen[s]
+            for wy in C.WY_GSA:
+                if (s, wy) in gsa.index:
+                    rows.append((wy_kwh(mk, s, wy), dseas.loc[(right, wy)], gsa.loc[(s, wy)]))
+        A = np.array(rows)
+        co, *_ = np.linalg.lstsq(A[:, 1:], A[:, 0], rcond=None)
+        det.loc[det["well"], "kr"] = co[0]
+        det.loc[det["well"], "kw"] = co[1]
+    rule = v.get("seniors", "golden")
+    if rule == "golden":
+        add = float((det["cut"] * det["kw"] * det["well"]).sum() - (det["cut"] * det["kr"]).sum())
+    elif rule == "no_river":
+        add = float((det["cut"] * det["kw"] * det["well"]).sum())
+    elif rule == "own_history":
+        add = 0.0
+    elif rule == "blended":
+        bl = []
+        for _, r in det.iterrows():
+            s, right = r["svc"], r["right"]
+            ys = [wy for wy in C.WY_GSA]
+            kw_tot = sum(wy_kwh(mk, s, wy) for wy in ys)
+            af = sum(dseas.loc[(right, wy)] for wy in ys) + sum(gsa.get((s, wy), 0.0) for wy in ys)
+            bl.append(kw_tot / af)
+        add = float((det["cut"] * np.array(bl)).sum())
+    elif rule == "analog":
+        add = analog_beta(P, mk, et) * float(det["cut"].sum())
+    elif rule == "junior_kappa":
+        add = float((det["cut"] * det["well"]).sum() * junior_kappa(P, mk, juniors) - (det["cut"] * det["kr"]).sum())
+    elif rule == "well_ratio":
+        # each plant's water-year energy over its metered well extraction, read as the well's energy per acre-foot
+        kws = []
+        for _, r in det.iterrows():
+            s = r["svc"]
+            wys = [wy for wy in C.WY_GSA if (s, wy) in gsa.index]
+            kws.append(sum(wy_kwh(mk, s, wy) for wy in wys) / sum(gsa.loc[(s, wy)] for wy in wys) if wys else 0.0)
+        add = float((det["cut"] * np.array(kws) * det["well"]).sum())
+    elif rule == "two_step":
+        # river energy per acre-foot from the plants with no well, then each well's from what is left of its meter
+        ro = det[~det["well"]]
+        kr0 = float(ro["kr"].mean())
+        kws = []
+        for _, r in det.iterrows():
+            s, right = r["svc"], r["right"]
+            wys = [wy for wy in C.WY_GSA if (s, wy) in gsa.index]
+            if not wys:
+                kws.append(0.0)
+                continue
+            e = sum(wy_kwh(mk, s, wy) for wy in wys)
+            dd = sum(dseas.loc[(right, wy)] for wy in wys)
+            ww = sum(gsa.loc[(s, wy)] for wy in wys)
+            kws.append((e - kr0 * dd) / ww)
+        add = float((det["cut"] * np.array(kws) * det["well"]).sum() - det["cut"].sum() * kr0)
+    elif rule == "all_seniors_pump":
+        kw_mean = float(det.loc[det["well"], "kw"].mean())
+        add = float((det["cut"] * np.where(det["well"], det["kw"], kw_mean)).sum() - (det["cut"] * det["kr"]).sum())
+    else:
+        raise ValueError(rule)
+    total = J + Sn + add
+    return {"total_kwh": total, "juniors_kwh": J, "seniors_normal_kwh": Sn, "seniors_add_kwh": add,
+            "seniors_kwh": Sn + add, "detail": det, "etn": etn, "et": et, "n_juniors": len(juniors),
+            "n_seniors": len(seniors), "n_wells": int(det["well"].sum())}
 
 
-# ------------------------------------------------------------------------------------------------- rival routes
-def rivals(P, E=None):
-    E = E or Est(P)
-    g = golden(P, E)
-    Kg = g["inhouse_contacts"]
-    first, fol = P.first, P.followed.astype(float)
-    fn = E.fn
-    R, N, V = P.grp == "R", P.grp == "N", P.grp == "V"
-    M26 = fn.sum() / (fn & first).sum()
-    A26 = P.hmin[fn].mean()
-    kO_own = H_BILLED * 60 / E.aO
-    nR = P.returning27
-    nN = sum(n for _, n in P.classes27)
-
-    def B_contacts(C, cap, kO=kO_own):
-        return max(0.0, (C - cap) / kO)
-    out = {}
-    out["last season's contacts per new case, last season's handle time"] = max(
-        0.0, (P.F27 * M26 * A26 / 60 - (nR + nN) * H_EXPERT) / H_BILLED)
-    out["last season's contacts per new case, handle time by weeks on queue"] = B_contacts(P.F27 * M26, Kg)
-    season_share = (~first).mean()
-    out["season follow-up share of contacts, pooled"] = B_contacts(P.F27 / (1 - season_share), Kg)
-    out["first contacts only"] = B_contacts(P.F27, Kg)
-    pN_season = fol[N & first].mean()
-    out["first-contact rate by group, new hires at their season average"] = solve_booking(
-        *inhouse(P, lambda x: pN_season, lambda x: expo(x, *E.ca), E.pR, E.aR), E.pO, E.aO, E.q, P.F27)
-    pN_fn = fol[N & first & fn].mean()
-    out["first-contact rate by group, new hires at last fortnight's rate"] = solve_booking(
-        *inhouse(P, lambda x: pN_fn, lambda x: expo(x, *E.ca), E.pR, E.aR), E.pO, E.aO, E.q, P.F27)
-    Kc, Kp = inhouse(P, lambda x: expo(x, *E.cp), lambda x: expo(x, *E.ca), E.pR, E.aR)
-    out["vendor agents at the returning rate"] = solve_booking(Kc, Kp, E.pR, E.aO, E.q, P.F27)
-    Pin = Kp / Kc
-    out["bench's follow-ups only, vendor hours taken as pure capacity"] = B_contacts(P.F27 * (1 + Pin / (1 - E.q)), Kc)
-    out["first-contact curve, pooled handle time"] = solve_booking(
-        *inhouse(P, lambda x: expo(x, *E.cp), lambda x: A26, E.pR, A26), E.pO, A26, E.q, P.F27)
-    aN_season = P.hmin[N].mean()
-    out["first-contact curve, new hires' season-average handle time"] = solve_booking(
-        *inhouse(P, lambda x: expo(x, *E.cp), lambda x: aN_season, E.pR, E.aR), E.pO, E.aO, E.q, P.F27)
-    # the expert's own wrap-up code as the resolution
-    unres = (P.disp != "Resolved").astype(float)
-    dR = unres[R & first].mean()
-    dO = unres[V & first].mean()
-    dq = unres[~first].mean()
-    dc = fit_expo(P.wk[N & first], unres[N & first], (0.12, 0.05, 5.0))
-    out["resolution from the wrap-up code"] = solve_booking(
-        *inhouse(P, lambda x: expo(x, *dc), lambda x: expo(x, *E.ca), dR, E.aR), dO, E.aO, dq, P.F27)
-    # the naive tenure check: share of each group's contacts that are follow-ups
-    share_fu = {gname: (~first[P.grp == gname]).mean() for gname in "RNV"}
-    out["follow-up share of each group's own contacts"] = B_contacts(
-        P.F27 / (1 - (share_fu["R"] * 0.33 + share_fu["N"] * 0.46 + share_fu["V"] * 0.21)), Kg)
-    for u in (10, 20, 30):
-        f = u / 100.0
-        cap_r = nR * H_EXPERT * 60 / E.aR
-        Kn = Kg - cap_r
-        out["%d per cent off new experts' capacity, handle time by weeks" % u] = B_contacts(P.F27 * M26, Kg - f * Kn)
-        out["%d per cent off new experts' capacity, returning handle time" % u] = B_contacts(
-            P.F27 * M26, cap_r + nN * H_EXPERT * 60 / E.aR * (1 - f))
-        out["new experts %d per cent slower than returning" % u] = B_contacts(
-            P.F27 * M26, cap_r + nN * H_EXPERT * 60 / (E.aR * (1 + f)))
-        out["%d per cent more load for the new share, pooled handle time" % u] = max(
-            0.0, (P.F27 * M26 * (1 + f * nN / (nR + nN)) * A26 / 60 - (nR + nN) * H_EXPERT) / H_BILLED)
-    out["textbook first-contact resolution of 75 per cent"] = B_contacts(P.F27 * (1 + 1 / 3), Kg)
-    out["textbook first-contact resolution of 70 per cent"] = B_contacts(P.F27 * (1 + 0.3 / 0.7), Kg)
-    # the old system's follow-ups per new ticket, carried onto 2027
-    bt = backtest(P, E)
-    old_fn = np.mean([r["observed"] for r in bt["fortnight"]])
-    out["old system's fortnight follow-ups per new ticket, 2021 to 2025"] = B_contacts(P.F27 * (1 + old_fn), Kg)
-    out["old system's 2025 fortnight follow-ups per new ticket"] = B_contacts(
-        P.F27 * (1 + bt["fortnight"][-1]["observed"]), Kg)
-    # last season's outsourcer hours, scaled by the demand plan
-    inv26 = invoiced_hours_2026(P.target)
-    out["last season's outsourcer hours scaled by the new cases"] = inv26 * P.F27 / P.F26
-    # the customer survey's answers as the resolution
-    cs = csat_answered(P)
-    if cs:
-        uR, uN, uV, uF = cs
-        out["survey's unanswered share as the follow-up chance"] = solve_booking(
-            *inhouse(P, lambda x: uN, lambda x: expo(x, *E.ca), uR, E.aR), uV, E.aO, uF, P.F27)
-    return out, g
+def analog_beta(P, mk, et):
+    """The bench services' energy per acre-foot the district did not deliver, fitted on the 12 seasons with ET."""
+    alloc = dict(zip(P.lbid_alc["season"].astype(int), P.lbid_alc["allocation_pct"].astype(float) / 100))
+    contract = float(P.lbid_con["contract_af"].sum())
+    pop = population(P)
+    sen = classes(P)
+    juniors = [s for s in pop if s not in sen]
+    Y = np.array([sum(season_kwh(mk, s, y) for s in juniors) for y in C.YEARS])
+    X = np.c_[np.ones(len(C.YEARS)), np.array([(1 - alloc[y]) * contract for y in C.YEARS]),
+              np.array([et[y] for y in C.YEARS])]
+    co, *_ = np.linalg.lstsq(X, Y, rcond=None)
+    return float(co[1])
 
 
-def invoiced_hours_2026(target):
-    import re
-    txt = pdf_text(os.path.join(target, "hcs_invoices_2026_deadline_period.pdf"))
-    tot = {}
-    for block in re.split(r"(?=INVOICE HCS-)", txt)[1:]:
-        no = re.match(r"INVOICE (HCS-\d\d-\d{4})", block).group(1)
-        m = re.search(r"Total hours\s+([\d,.]+)", block)
-        rep = re.search(r"replaces invoice (HCS-\d\d-\d{4})", block)
-        tot[no] = (float(m.group(1).replace(",", "")), rep.group(1) if rep else None)
-    replaced = {r for _, r in tot.values() if r}
-    return sum(h for no, (h, r) in tot.items() if no not in replaced)
-
-
-def csat_answered(P):
-    """The survey's No to 'Did the expert answer your question?', by the group of the interaction's expert, for
-    new-case interactions, and for follow-ups."""
-    path = os.path.join(P.target, "csat_survey_responses_2026.csv")
-    rows = _read_csv(path)
-    head = rows[0]
-    ix = {c: i for i, c in enumerate(head)}
-    if not hasattr(P, "iid"):
-        return None
-    pos = {k: i for i, k in enumerate(P.iid)}
-    vals = {"R": [], "N": [], "V": [], "F": []}
-    for r in rows[1:]:
-        i = pos.get(r[ix["Interaction ID"]])
-        if i is None:
+def junior_kappa(P, mk, juniors):
+    gsa = P.gsa.groupby(["svc_no", "wy"])["af"].sum()
+    ks = []
+    for s in juniors:
+        wys = [wy for wy in C.WY_GSA if (s, wy) in gsa.index]
+        if not wys:
             continue
-        no = r[ix["Did the expert answer your question?"]] == "No"
-        if P.first[i]:
-            vals[P.grp[i]].append(no)
-        else:
-            vals["F"].append(no)
-    return tuple(float(np.mean(vals[k])) for k in ("R", "N", "V", "F"))
+        ks.append(sum(wy_kwh(mk, s, wy) for wy in wys) / sum(gsa.loc[(s, wy)] for wy in wys))
+    return float(np.mean(ks))
 
 
-# ------------------------------------------------------------------------------------------------- back-test
-def old_rows(target):
-    rows = []
-    for f, cols in (("ticketing_agent_weekly_2021_2022.csv",
-                     ("Season", "Week Starting", "Agent Code", "Team", "New Tickets", "Follow-up Tickets")),
-                    ("ticketing_agent_weekly_2023_2025.csv",
-                     ("season", "week_start", "agent_code", "team", "tickets_new", "tickets_followup"))):
-        data = _read_csv(os.path.join(target, f))
-        ix = {c: i for i, c in enumerate(data[0])}
-        for r in data[1:]:
-            ws = r[ix[cols[1]]]
-            d = dt.datetime.strptime(ws, "%m/%d/%Y").date() if "/" in ws else dt.date.fromisoformat(ws)
-            rows.append((int(r[ix[cols[0]]]), d, r[ix[cols[2]]], r[ix[cols[3]]], int(r[ix[cols[4]]]),
-                         int(r[ix[cols[5]]])))
-    return rows
+# ---------------------------------------------------------------- the asks
+def dp_meter_local(P, meters=None, shift_hours=1):
+    d = P.dpi.copy()
+    if meters is not None:
+        d = d[d["meter_no"].isin(meters)]
+    t = pd.to_datetime(d["interval_end"])
+    # meter clock is Pacific standard time; billing months and hours are prevailing time
+    if shift_hours:
+        dst = (t >= pd.Timestamp("2026-03-08 02:00")) & (t < pd.Timestamp("2026-11-01 01:00"))
+        t = t + pd.to_timedelta(np.where(dst, shift_hours, 0), unit="h")
+    d = d.assign(t=t)
+    return d
 
 
-def backtest(P, E):
-    """The 2026 fit carried back onto 2021 to 2025: each season's (and each deadline fortnight's) follow-up tickets
-    per new ticket on the English queue, against the tenure model's prediction from that season's own mix of who
-    took the new tickets, and against carrying the 2026 rate."""
-    hist = _read_csv(os.path.join(P.target, "seasonal_expert_history.csv"))
-    ix = {c: i for i, c in enumerate(hist[0])}
-    info = {(r[ix["old_agent_code"]], int(r[ix["season"]])): r for r in hist[1:] if r[ix["old_agent_code"]]}
-    rows = old_rows(P.target)
-    M26 = (E.fn.sum() / (E.fn & P.first).sum()) - 1
+REVENUE = ["81-2207", "81-3318", "81-1940", "81-1977", "81-4062"]
+CHECKS = ["81-2251", "81-3362", "81-1988", "81-4107"]
 
-    def p_of(y, d, code):
-        if code.startswith("EXT-"):
-            return E.pO
-        h = info[(code, y)]
-        if int(h[ix["first_season"]]) < y:
-            return E.pR
-        gl = dt.date.fromisoformat(h[ix["go_live"]])
-        return float(expo(max(((d + dt.timedelta(3)) - gl).days / 7.0, 0.0), *E.cp))
-    out = {"fortnight": [], "season": [], "rate26": M26}
-    for y in K.SEASONS_OLD:
-        f0, f1 = K.fortnight(y)
-        for key, sel in (("fortnight", [r for r in rows if r[0] == y and f0 <= r[1] <= f1]),
-                         ("season", [r for r in rows if r[0] == y])):
-            sel = [r for r in sel if r[3].startswith("EN") or r[3] == "HCS"]
-            new = sum(r[4] for r in sel)
-            fu = sum(r[5] for r in sel)
-            pb = sum(r[4] * p_of(y, r[1], r[2]) for r in sel) / new
-            obs = fu / new
-            out[key].append(dict(season=y, new=new, followups=fu, observed=obs, model=pb / (1 - E.q), rate26=M26,
-                                 err_model=100 * (pb / (1 - E.q) / obs - 1), err_rate=100 * (M26 / obs - 1)))
+
+def ask_a(P, meters=REVENUE, shift_hours=1):
+    """Energy Halvern metered at each delivery point in each billing month April to September 2026, MWh."""
+    d = dp_meter_local(P, meters, shift_hours)
+    # an interval belongs to the month its end falls in, the interval ending at 00:00 on the 1st to the month before
+    tm = d["t"] - pd.Timedelta(minutes=1)
+    d = d.assign(month=tm.dt.month, year=tm.dt.year)
+    d = d[(d["year"] == 2026) & d["month"].isin(C.SEASON)]
+    g = d.groupby(["dp_code", "month"])["kwh"].sum() / 1000.0
+    return {(dp, m): float(g.loc[(C.DP_CODES[dp], m)]) for dp in C.DPS for m in C.SEASON}
+
+
+def ask_c(P, meters=REVENUE, shift_hours=1):
+    """Each delivery point's demand in Halvern's monthly system peak hour, April to September 2026, kW."""
+    d = dp_meter_local(P, meters, shift_hours)
+    out = {}
+    pk = P.peaks
+    for _, r in pk.iterrows():
+        m = int(r["month"][5:7])
+        if m not in C.SEASON:
+            continue
+        he = int(r["hour_ending"][:2])
+        end = pd.Timestamp(r["peak_date"]) + pd.Timedelta(hours=he)
+        start = end - pd.Timedelta(hours=1)
+        sel = d[(d["t"] > start) & (d["t"] <= end)]
+        g = sel.groupby("dp_code")["kwh"].sum()
+        for dp in C.DPS:
+            out[(dp, m)] = float(g.get(C.DP_CODES[dp], 0.0))
     return out
 
 
-def report(target, F_override=None):
-    P = Pack(target)
-    if F_override:
-        P.F27 = F_override
-    E = Est(P)
-    g = golden(P, E)
-    cons = constructions(P, E)
-    rv, _ = rivals(P, E)
-    return P, E, g, cons, rv
-
-
-# ------------------------------------------------------------------------------------------------- sampling error
-def _est_idx(P, idx):
-    class _E:
-        pass
-    E = _E()
-    g, first, fol, wk, hm = P.grp[idx], P.first[idx], P.followed[idx].astype(float), P.wk[idx], P.hmin[idx]
-    R, N, V = g == "R", g == "N", g == "V"
-    E.pR = fol[R & first].mean(); E.pO = fol[V & first].mean(); E.q = fol[~first].mean()
-    E.aR = hm[R].mean(); E.aO = hm[V].mean()
-    E.cp = fit_expo(wk[N & first], fol[N & first], (0.14, 0.3, 5.0))
-    E.ca = fit_expo(wk[N], hm[N], (31.0, 14.0, 5.0))
-    return E
-
-
-def bootstrap(P, n=200, seed=173):
-    """Resample experts with replacement within the returning, first-season and vendor groups; the booking's spread
-    across the resamples is the golden's one sigma."""
-    R = np.random.default_rng(seed)
-    order = np.argsort(P.handled, kind="stable")
-    hs = P.handled[order]
-    u, starts = np.unique(hs, return_index=True)
-    ends = np.r_[starts[1:], len(hs)]
-    rows_of = {k: order[s0:s1] for k, s0, s1 in zip(u, starts, ends)}
-    grp_of = {k: P.grp[rows_of[k][0]] for k in u}
-    groups = {gname: [k for k in u if grp_of[k] == gname] for gname in "RNV"}
-    out = []
-    for _ in range(n):
-        idx = np.concatenate([np.concatenate([rows_of[k] for k in R.choice(ids, size=len(ids), replace=True)])
-                              for ids in groups.values()])
-        E = _est_idx(P, idx)
-        Kc, Kp = inhouse(P, lambda x: expo(x, *E.cp), lambda x: expo(x, *E.ca), E.pR, E.aR)
-        out.append(solve_booking(Kc, Kp, E.pO, E.aO, E.q, P.F27))
-    return float(np.std(out)), np.array(out)
+def ask_b(P, use_gis_label=False):
+    """For each delivery point, the IP services it supplied through the 2026 season and their April to September
+    2026 billed energy (MWh)."""
+    mk = monthly_kwh(P)
+    pop = population(P)
+    spt = P.spt.set_index("svc_no")
+    f = P.fdr.copy()
+    code_dp = {v: k for k, v in C.DP_CODES.items()}
+    out_n = {dp: 0 for dp in C.DPS}
+    out_e = {dp: 0.0 for dp in C.DPS}
+    for s in pop:
+        feeder = spt.loc[s, "feeder"]
+        if use_gis_label:
+            dp = spt.loc[s, "substation"]
+        else:
+            rows = f[f["feeder"] == feeder]
+            cur = rows[(rows["effective_from"] <= "2026-04-01") &
+                       ((rows["effective_to"].isna()) | (rows["effective_to"] >= "2026-09-30"))]
+            dp = code_dp[cur["source_dp"].iloc[0]]
+        out_n[dp] += 1
+        out_e[dp] += season_kwh(mk, s, 2026) / 1000.0
+    return out_n, out_e

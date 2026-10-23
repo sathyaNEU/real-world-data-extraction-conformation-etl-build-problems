@@ -1,257 +1,428 @@
-"""The shipped records behind the call: the CRM's 2026 interaction export, the seasonal roster with the 2027 recall,
-the HR history of every expert-season, the old ticketing system's weekly agent reports and the 2027 demand plan.
-Each is written the way the system that keeps it writes it."""
+"""The records each organisation keeps, written from the clean truth in world.py, with the mess its own systems
+produce (the 2020 CIS conversion, meter exchanges, estimated reads and their true-ups, cancelled and re-issued bills,
+two GSA report layouts, a feeder moved between substations, the delivery-point meters' own clock).
+
+Every frame here is what the pack writer serialises; nothing in this module computes an answer."""
 from __future__ import annotations
 
 import datetime as dt
 import math
 
 import numpy as np
+import pandas as pd
 
-import common as K
-import world as W
+import common as C
+import world as Wd
 
-F_CRM = "crm_expert_interactions_2026.csv"
-F_ROSTER = "seasonal_expert_roster_2027.xlsx"
-F_HISTORY = "seasonal_expert_history.csv"
-F_OLD_A = "ticketing_agent_weekly_2021_2022.csv"
-F_OLD_B = "ticketing_agent_weekly_2023_2025.csv"
-F_DEMAND = "demand_plan_2027.xlsx"
-
-QUEUE_NAME = {0: "Live Experts EN", 1: "Live Experts FR"}
-CHANNEL_NAME = {0: "Video", 1: "Chat", 2: "Phone"}
-DISP_NAME = {0: "Resolved", 1: "Customer to complete steps", 2: "Senior review requested", 3: "Callback arranged"}
-TEAMS_EN = ["EN-%02d" % k for k in range(1, 31)]
-TEAMS_FR = ["FR-01", "FR-02", "FR-03"]
+ROADS = ["Road 14", "Road 16", "Road 19", "Road 22", "Road 23", "Road 27", "Road 31", "Road 34", "Avenue 9",
+         "Avenue 12", "Avenue 15", "Avenue 18", "Avenue 21", "Levee Road", "Gaither Lane", "Ostrom Road",
+         "Bottoms Road", "Lone Bench Road", "Corwin Road", "Mill Slough Road", "Kessler Road", "Pruett Lane",
+         "Dunsmore Road", "Hatch Road"]
 
 
-def local_dt(day_ord, hours):
-    d = dt.date.fromordinal(int(day_ord))
-    secs = int(round(hours * 3600))
-    return dt.datetime.combine(d, dt.time(0, 0)) + dt.timedelta(seconds=secs)
+CLEAN = False      # checks.py sets this to cut the clean-truth pack: no Layer 1 mess on the call's records
 
 
-def to_utc_e(day_ord, hours):
-    return K.to_utc(local_dt(day_ord, hours), -5)
+def rng(tag):
+    return Wd.rng("rec:" + tag)
 
 
-# ------------------------------------------------------------------------------------------------- the people
-def assign_teams(people):
-    """Teams per season: experts spread over the English teams, a few per team from each class."""
-    R = K.rng("teams")
-    for e in people:
-        e.team = {}
-    for y in K.SEASONS_OLD + [K.SEASON_CRM, K.SEASON_PLAN]:
-        for queue, teams in (("EN", TEAMS_EN), ("FR", TEAMS_FR)):
-            members = [e for e in people if y in e.seasons and e.queue == queue]
-            order = R.permutation(len(members))
-            for k, i in enumerate(order):
-                members[i].team[y] = teams[k % (24 if queue == "EN" and y < 2026 else len(teams))]
-
-
-def recall_status(people):
-    """Every 2026 expert's answer to the 2027 recall."""
-    R = K.rng("recall")
-    out = {}
-    for e in people:
-        if K.SEASON_CRM not in e.seasons:
+# ---------------------------------------------------------------- identities
+def holder_names(n, tag):
+    from faker import Faker
+    r = rng("names" + tag)
+    pools = []
+    for loc, w in (("en_US", 0.55), ("es_MX", 0.22), ("pt_PT", 0.13), ("it_IT", 0.10)):
+        f = Faker(loc)
+        f.seed_instance(int(r.integers(1, 10 ** 9)))
+        pools.append((f, w))
+    out, seen = [], set()
+    forms = ["{L} Ranch", "{L} Farms", "{L} Family Trust", "{F}. & {G}. {L}", "{L} Bros.", "{L} Farms LLC",
+             "{L} Orchards", "{L} Land Co.", "{F}. {L}", "{L} Family Partnership", "{L} & Sons",
+             "{L} Ranch LP", "{F}. {L} Trust"]
+    while len(out) < n:
+        f = pools[int(r.choice(len(pools), p=[w for _, w in pools]))][0]
+        last = f.last_name().split()[0].replace(",", "")
+        first = f.first_name()[0]
+        second = f.first_name()[0]
+        form = forms[int(r.integers(0, len(forms)))]
+        nm = form.format(L=last, F=first, G=second)
+        if nm in seen:
             continue
-        if K.SEASON_PLAN in e.seasons:
-            out[e.emp] = "Confirmed"
-        else:
-            u = R.random()
-            out[e.emp] = "Declined" if u < 0.62 else ("No response" if u < 0.9 else "Not invited")
+        seen.add(nm)
+        out.append(nm)
     return out
 
 
-def roster_rows(people, recall):
-    rows = []
-    for e in people:
-        if K.SEASON_CRM not in e.seasons:
-            continue
-        cls = e.cls if e.first == K.SEASON_CRM else ""
-        gl = e.golive.isoformat() if e.first == K.SEASON_CRM else ""
-        rows.append({"Employee No": e.emp, "Queue": e.queue, "Team 2026": e.team.get(K.SEASON_CRM, ""),
-                     "First Season": e.first, "Seasons Worked": len([s for s in range(e.first, 2027)
-                                                                      if s in e.seasons or s < 2021]),
-                     "2026 Class": cls, "2026 Go-Live": gl, "2027 Recall": recall[e.emp]})
-    rows.sort(key=lambda r: (r["Queue"], r["Employee No"]))
-    return rows
-
-
-def history_rows(people):
-    rows = []
-    for e in people:
-        for y in sorted(set(e.seasons)):
-            if y > K.SEASON_CRM:
-                continue
-            first_here = (y == e.first)
-            rows.append({"employee_no": e.emp, "old_agent_code": e.old_code or "", "season": y, "queue": e.queue,
-                         "team": e.team.get(y, ""), "first_season": e.first,
-                         "class": e.cls if first_here and e.cls else "",
-                         "go_live": e.golive.isoformat() if first_here and e.golive else ""})
-    rows.sort(key=lambda r: (r["season"], r["queue"], r["employee_no"]))
-    return rows
-
-
-# ------------------------------------------------------------------------------------------------- the CRM export
-CRM_COLS = ["Interaction ID", "Case Number", "Queue", "Channel", "Interaction Type", "Topic", "Started (UTC)",
-            "Ended (UTC)", "Talk Seconds", "After-Contact Work Seconds", "Handled By", "Disposition"]
-
-
-def connect_seconds(recs):
-    """Seconds from the expert accepting a contact to the conversation beginning: the video platform takes a while
-    to bring both sides in, chat and phone hardly any."""
-    R = K.rng("connect")
-    u = R.random(len(recs))
-    ch = recs["channel"]
-    return np.where(ch == 0, 6 + 22 * u, np.where(ch == 1, 1 + 3 * u, 2 * u))
-
-
-def crm_rows(recs, staff, delay=None):
-    """The CRM's interaction export. Returns the rows and each record's Interaction ID by record index."""
-    delay = connect_seconds(recs) if delay is None else delay
-    order = np.lexsort((recs["start"], recs["day"]))
-    R = K.rng("crm_ids")
-    # case numbers in the order cases open
-    first_t = {}
-    for i in order:
-        c = int(recs["case"][i])
-        if c not in first_t:
-            first_t[c] = len(first_t)
-    base_case = 412800
-    case_no = {}
-    k = base_case
-    for c, rank in sorted(first_t.items(), key=lambda kv: kv[1]):
-        k += 1 + int(R.integers(0, 3))
-        case_no[c] = "CS-26-%07d" % k
-    inter = 18_204_000
-    rows = []
+def make_ids(W):
+    r = rng("ids")
+    nJ, nS = W.nJ, W.nS
+    n = nJ + nS + 7                       # seven services closed before 2019 ride along in the history
+    svc = r.choice(np.arange(100100, 189900), n, replace=False)
     ids = {}
-    for i in order:
-        r = recs[i]
-        inter += 1 + int(R.integers(0, 4))
-        e = staff[int(r["expert"])]
-        st = to_utc_e(r["day"], float(r["start"]) + float(delay[i]) / 3600)
-        en = to_utc_e(r["day"], r["end"])
-        wrap = int(round(float(r["wrap"])))
-        talk = int(round((en - st).total_seconds())) - wrap
-        ids[int(i)] = "INT-%09d" % inter
-        rows.append([
-            ids[int(i)], case_no[int(r["case"])], QUEUE_NAME[int(r["queue"])], CHANNEL_NAME[int(r["channel"])],
-            "New case" if r["pos"] == 1 else "Follow-up", W.TOPICS[int(r["topic"])][0], K.iso_z(st), K.iso_z(en),
-            talk, wrap, e.emp, DISP_NAME[int(r["disp"])]])
-    return rows, ids
+    ids["svcJ"] = [str(x) for x in svc[:nJ]]
+    ids["svcS"] = [str(x) for x in svc[nJ:nJ + nS]]
+    ids["svcX"] = [str(x) for x in svc[nJ + nS:]]
+    legacy = r.choice(np.arange(10000, 99999), n, replace=False)
+    ids["legacy"] = {s: "%02d-%05d-%d" % (int(r.integers(1, 9)), int(l), int(r.integers(0, 9)))
+                     for s, l in zip(ids["svcJ"] + ids["svcS"] + ids["svcX"], legacy)}
+    newacct = r.choice(np.arange(4100000000, 4100999999), n, replace=False)
+    ids["acct"] = {s: str(a) for s, a in zip(ids["svcJ"] + ids["svcS"] + ids["svcX"], newacct)}
+    ids["holdJ"] = holder_names(nJ, "J")
+    ids["holdS"] = holder_names(nS + 3, "S")
+    # assessor parcels: Lone Bench lands in books 045 to 049, bottomlands in books 031 to 034
+    def apns(k, books):
+        out = []
+        used = set()
+        for i in range(k):
+            m = int(r.choice([1, 1, 1, 2, 2, 3, 4]))
+            cur = []
+            while len(cur) < m:
+                a = "%03d-%03d-%03d" % (int(r.choice(books)), int(r.integers(10, 400)), int(r.integers(1, 60)))
+                if a not in used:
+                    used.add(a)
+                    cur.append(a)
+            out.append(cur)
+        return out
+    ids["apnJ"] = apns(nJ, [45, 46, 47, 48, 49])
+    ids["apnS"] = apns(nS, [31, 32, 33, 34])
+    wells = set()
+    def wellno(twn, rngw):
+        while True:
+            w = "%02dN%02dW%02d%s%03dM" % (twn, rngw, int(r.integers(1, 37)), "ABCDEFGHJKLMNPQR"[int(r.integers(0, 16))],
+                                         int(r.integers(1, 6)))
+            if w not in wells:
+                wells.add(w)
+                return w
+    ids["wellJ"] = [wellno(int(r.choice([14, 15])), int(r.choice([2, 3, 4]))) for _ in range(nJ)]
+    ids["wellS"] = [wellno(int(r.choice([12, 13])), int(r.choice([3, 4, 5]))) if W.S["well"][i] else ""
+                    for i in range(nS)]
+    ids["rightS"] = ["D-%04d" % x for x in r.choice(np.arange(40, 2400), nS, replace=False)]
+    ids["podS"] = ["VR-%03d" % x for x in r.choice(np.arange(100, 999), nS, replace=False)]
+    ids["roadJ"] = [ROADS[int(r.integers(0, len(ROADS)))] for _ in range(nJ)]
+    ids["roadS"] = [ROADS[int(r.integers(0, len(ROADS)))] for _ in range(nS)]
+    ids["noJ"] = [int(r.integers(1000, 9999)) for _ in range(nJ)]
+    ids["noS"] = [int(r.integers(1000, 9999)) for _ in range(nS)]
+    # feeders
+    fdr = {"RIVERSIDE": ["1201", "1202", "1203", "1204"], "MILL SLOUGH": ["2201", "2202", "2203"],
+           "BENCH": ["3201", "3202", "3203", "3204", "3205"], "CORWIN ROAD": ["4201", "4202", "4203", "4204"]}
+    ids["fdr_of_dp"] = fdr
+    fJ = [str(r.choice(fdr[dp], p=[0.23, 0.21, 0.22, 0.13, 0.21])) if dp == "BENCH" else fdr[dp][int(r.integers(0, len(fdr[dp])))]
+          for dp in W.J["dp"]]
+    fS = []
+    for dp in W.S["dp"]:
+        if dp == "RIVERSIDE":
+            fS.append(r.choice(fdr[dp], p=[0.30, 0.27, 0.27, 0.16]))
+        else:
+            fS.append(fdr[dp][int(r.integers(0, len(fdr[dp])))])
+    ids["fdrJ"] = fJ
+    ids["fdrS"] = [str(x) for x in fS]
+    return ids
 
 
-# ------------------------------------------------------------------------------------------------- old system
-OLD_A_COLS = ["Season", "Week Starting", "Agent Code", "Team", "New Tickets", "Follow-up Tickets", "Handle Time"]
-OLD_B_COLS = ["season", "week_start", "agent_code", "team", "tickets_new", "tickets_followup", "handle_minutes"]
+TRANSFER_FEEDER = "1204"
+TRANSFER_DATE = dt.date(2026, 3, 16)
+TRANSFER2_FEEDER = "3204"
+TRANSFER2_DATE = dt.date(2025, 11, 3)
 
 
-def old_rows(y, arr, staff):
-    """One row per agent per week of season y: tickets the agent took by type and their handle time."""
-    wk0 = K.monday(K.season_open(y))
-    week = (arr["day"] - wk0.toordinal()) // 7
+def feeder_dp(feeder, day):
+    """Where a feeder was supplied from on a day (the OMS record)."""
+    base = {"12": "RIVERSIDE", "22": "MILL SLOUGH", "32": "BENCH", "42": "CORWIN ROAD"}[feeder[:2]]
+    if feeder == TRANSFER_FEEDER and day >= TRANSFER_DATE:
+        return "MILL SLOUGH"
+    if feeder == TRANSFER2_FEEDER and day >= TRANSFER2_DATE:
+        return "CORWIN ROAD"
+    return base
+
+
+# ---------------------------------------------------------------- billing
+def month_end(y, m):
+    return dt.date(y + (m == 12), m % 12 + 1, 1) - dt.timedelta(days=1)
+
+
+def billing(W, ids):
+    r = rng("billing")
+    rows = []
+    services = [(s, "J", i) for i, s in enumerate(ids["svcJ"])] + [(s, "S", i) for i, s in enumerate(ids["svcS"])]
+    # closed services: four bench wells and three bottomland plants that left the rate before 2019
+    closed = {}
+    for k, s in enumerate(ids["svcX"]):
+        typ = "J" if k < 4 else "S"
+        close = dt.date(int(r.choice([2016, 2017, 2018])), int(r.integers(1, 13)), 1)
+        closed[s] = (typ, close, int(r.integers(0, W.nJ if typ == "J" else W.nS)), float(r.uniform(0.4, 1.2)))
+    ids["closed"] = closed
+    mult = {}
+    for s, typ, i in services:
+        hp_big = (typ == "J" and W.J["acres"][i] > 220)
+        mult[s] = int(r.choice([40, 80])) if hp_big else 1
+    for s, (typ, close, i, f) in closed.items():
+        mult[s] = 1
+    meter = {}
+    reg = {}
+    def new_meter(s):
+        m = "S%07d" % int(r.integers(1000000, 9999999))
+        meter[s] = m
+        reg[m] = int(r.integers(1000, 90000))
+        return m
+    for s in list(mult):
+        new_meter(s)
+    exch = set(r.choice([s for s, _, _ in services], 26, replace=False))
+    exch_month = {s: (int(r.choice([2017, 2018, 2019])), int(r.integers(1, 13))) for s in exch}
+    cancel = set()
+    est = {}
+    def line(s, y, m, kwh, rtype, status, mtr, start=None, end=None):
+        mm = mult[s]
+        adv = int(round(kwh / mm))
+        prev = reg[mtr]
+        reg[mtr] = prev + adv
+        legacy = y < 2020 and not CLEAN
+        rows.append({
+            "acct_no": ids["legacy"][s] if legacy else ids["acct"][s],
+            "svc_no": "" if legacy else s,
+            "rate": "IP",
+            "bill_month": "%04d-%02d" % (y, m),
+            "read_start": (start or dt.date(y, m, 1)).isoformat(),
+            "read_end": (end or month_end(y, m)).isoformat(),
+            "meter_no": mtr,
+            "prev_read": prev,
+            "curr_read": prev + adv,
+            "mult": mm,
+            "kwh": adv * mm,
+            "read_type": rtype,
+            "bill_status": status,
+        })
+        return adv * mm
+    for (y, m) in W.months:
+        for s, typ, i in services:
+            kwh = float((W.J_kwh if typ == "J" else W.S_kwh)[(y, m)][i])
+            mtr = meter[s]
+            if s in exch and exch_month[s] == (y, m) and not CLEAN:
+                cut = int(r.integers(5, 25))
+                a = kwh * cut / month_end(y, m).day
+                line(s, y, m, a, "A", "BILLED", mtr, end=dt.date(y, m, cut))
+                mtr = new_meter(s)
+                line(s, y, m, kwh - a, "A", "BILLED", mtr, start=dt.date(y, m, cut))
+                continue
+            carry = est.pop(s, None)
+            if carry is not None:
+                kwh = kwh + carry
+            if m in (5, 6, 7) and carry is None and r.random() < 0.012 and not CLEAN and y not in (2022, 2026):
+                e = kwh * float(r.uniform(0.8, 1.2))
+                line(s, y, m, e, "E", "BILLED", mtr)
+                est[s] = kwh - e
+                continue
+            if 2016 <= y <= 2019 and r.random() < 0.0009 and not CLEAN:
+                wrong = kwh * float(r.uniform(1.3, 1.9))
+                billed = line(s, y, m, wrong, "A", "CANCELLED", mtr)
+                rows.append(dict(rows[-1], kwh=-billed, prev_read=rows[-1]["curr_read"], curr_read=rows[-1]["prev_read"],
+                                 bill_status="CANCEL"))
+                reg[mtr] = rows[-1]["curr_read"]
+                line(s, y, m, kwh, "A", "REBILL", mtr)
+                cancel.add(s)
+                continue
+            line(s, y, m, kwh, "A", "BILLED", mtr)
+        for s, (typ, close, i, f) in closed.items():
+            if dt.date(y, m, 1) >= close:
+                continue
+            kwh = float((W.J_kwh if typ == "J" else W.S_kwh)[(y, m)][i]) * f
+            line(s, y, m, kwh, "A", "BILLED", meter[s])
+    df = pd.DataFrame(rows)
+    ids["meter_exchanges"] = sorted(exch)
+    return df
+
+
+# ---------------------------------------------------------------- register, crosswalk, GIS, OMS
+def register(W, ids):
+    r = rng("register")
+    rows = []
+    for i, s in enumerate(ids["svcJ"]):
+        hp = int(5 * round(W.J["need_n"][i] * W.J["k"][i] / 2400 / 5 + 0.5)) + 5
+        hp = max(hp, 30)
+        rows.append({"svc_no": s, "acct_no": ids["acct"][s], "rate": "IP", "status": "ACTIVE",
+                     "premise": "%d %s" % (ids["noJ"][i], ids["roadJ"][i]), "apn": "; ".join(ids["apnJ"][i]),
+                     "customer": ids["holdJ"][i], "plant": "WELL %d HP" % hp, "connected_hp": hp,
+                     "connect_date": dt.date(int(r.integers(1979, 2015)), int(r.integers(1, 13)), 1).isoformat(),
+                     "close_date": ""})
+    for i, s in enumerate(ids["svcS"]):
+        hr = int(5 * max(2, round(W.S["need_n"][i] * W.S["kr"][i] / 1300 / 5)))
+        if W.S["well"][i]:
+            hw = int(5 * max(3, round(W.S["need_n"][i] * W.S["kw"][i] / 1500 / 5)))
+            plant, chp = "RIVER LIFT %d HP + WELL %d HP" % (hr, hw), hr + hw
+        else:
+            plant, chp = "RIVER LIFT %d HP" % hr, hr
+        rows.append({"svc_no": s, "acct_no": ids["acct"][s], "rate": "IP", "status": "ACTIVE",
+                     "premise": "%d %s" % (ids["noS"][i], ids["roadS"][i]), "apn": "; ".join(ids["apnS"][i]),
+                     "customer": ids["holdS"][i], "plant": plant, "connected_hp": chp,
+                     "connect_date": dt.date(int(r.integers(1962, 2012)), int(r.integers(1, 13)), 1).isoformat(),
+                     "close_date": ""})
+    for s, (typ, close, i, f) in ids["closed"].items():
+        rows.append({"svc_no": s, "acct_no": ids["acct"][s], "rate": "IP", "status": "CLOSED",
+                     "premise": "%d %s" % (int(r.integers(1000, 9999)), ROADS[int(r.integers(0, len(ROADS)))]),
+                     "apn": "%03d-%03d-%03d" % (int(r.choice([31, 46])), int(r.integers(10, 400)), int(r.integers(1, 60))),
+                     "customer": ids["holdS"][-1 - (len(rows) % 3)] if typ == "S" else holder_names(1, s)[0],
+                     "plant": "WELL 60 HP" if typ == "J" else "RIVER LIFT 15 HP",
+                     "connected_hp": 60 if typ == "J" else 15,
+                     "connect_date": "1988-05-01", "close_date": close.isoformat()})
+    df = pd.DataFrame(rows).sort_values("svc_no").reset_index(drop=True)
+    return df
+
+
+def crosswalk(ids):
+    rows = [{"legacy_acct_no": ids["legacy"][s], "acct_no": ids["acct"][s], "svc_no": s, "converted": "2020-01-06"}
+            for s in ids["svcJ"] + ids["svcS"]]
+    for s, (typ, close, i, f) in ids["closed"].items():
+        rows.append({"legacy_acct_no": ids["legacy"][s], "acct_no": "", "svc_no": s, "converted": ""})
+    return pd.DataFrame(rows).sort_values("legacy_acct_no").reset_index(drop=True)
+
+
+def service_points(W, ids):
+    """GIS service points as of 30 September 2026; the substation column was set when each point was mapped."""
+    r = rng("gis")
+    rows = []
+    for i, s in enumerate(ids["svcJ"]):
+        f = ids["fdrJ"][i]
+        rows.append({"svc_no": s, "xfmr_id": "T%s-%03d" % (f, int(r.integers(1, 400))), "feeder": f,
+                     "substation": feeder_dp(f, dt.date(2015, 1, 1))})
+    for i, s in enumerate(ids["svcS"]):
+        f = ids["fdrS"][i]
+        rows.append({"svc_no": s, "xfmr_id": "T%s-%03d" % (f, int(r.integers(1, 400))), "feeder": f,
+                     "substation": feeder_dp(f, dt.date(2015, 1, 1))})
+    return pd.DataFrame(rows).sort_values(["feeder", "svc_no"]).reset_index(drop=True)
+
+
+def feeder_sources(ids):
+    rows = []
+    for dp, fs in ids["fdr_of_dp"].items():
+        for f in fs:
+            if f == TRANSFER_FEEDER:
+                rows.append({"feeder": f, "source_dp": C.DP_CODES["RIVERSIDE"], "source_bus": "RIVERSIDE 12.47 KV BUS 2",
+                             "effective_from": "2009-06-02", "effective_to": "2026-03-15", "order_no": "SO-09-118"})
+                rows.append({"feeder": f, "source_dp": C.DP_CODES["MILL SLOUGH"], "source_bus": "MILL SLOUGH 12.47 KV BUS 1",
+                             "effective_from": "2026-03-16", "effective_to": "", "order_no": "SO-26-031"})
+            elif f == TRANSFER2_FEEDER:
+                rows.append({"feeder": f, "source_dp": C.DP_CODES["BENCH"], "source_bus": "BENCH 12.47 KV BUS 1",
+                             "effective_from": "2009-06-02", "effective_to": "2025-11-02", "order_no": "SO-09-118"})
+                rows.append({"feeder": f, "source_dp": C.DP_CODES["CORWIN ROAD"], "source_bus": "CORWIN ROAD 12.47 KV BUS 2",
+                             "effective_from": "2025-11-03", "effective_to": "", "order_no": "SO-25-207"})
+            else:
+                rows.append({"feeder": f, "source_dp": C.DP_CODES[dp], "source_bus": "%s 12.47 KV BUS %d" % (dp, 1 + int(f[-1]) % 2),
+                             "effective_from": "2009-06-02", "effective_to": "", "order_no": "SO-09-118"})
+    return pd.DataFrame(rows)
+
+
+# ---------------------------------------------------------------- water records
+def wy_of(y, m):
+    return y + 1 if m >= 10 else y
+
+
+def gsa_reports(W, ids):
+    """Annual metered extraction by well and water year (October to September)."""
+    r = rng("gsa")
     out = {}
-    for i in range(len(arr)):
-        e = staff[int(arr["expert"][i])]
-        code = e.old_code if e.kind != "vendor" else "EXT-%s" % e.emp.replace("HCS-", "")
-        key = (int(week[i]), code)
-        o = out.setdefault(key, [0, 0, 0.0, e])
-        if arr["pos"][i] == 1:
-            o[0] += 1
-        else:
-            o[1] += 1
-        o[2] += float(arr["hsec"][i])
+    for wy in C.WY_GSA:
+        rows = []
+        months = [(wy - 1, m) for m in (10, 11, 12)] + [(wy, m) for m in range(1, 10)]
+        for i, s in enumerate(ids["svcJ"]):
+            af = sum(float(W.J_af[k][i]) for k in months if k in W.J_af)
+            rows.append({"well": ids["wellJ"][i], "apn": ids["apnJ"][i][0], "owner": ids["holdJ"][i],
+                         "power": "VVPUD %s" % s, "af": af * float(r.normal(1, 0.015)), "method": "FLOWMETER"})
+        for i, s in enumerate(ids["svcS"]):
+            if not W.S["well"][i]:
+                continue
+            af = sum(float(W.S_wa[k][i]) for k in months if k in W.S_wa)
+            rows.append({"well": ids["wellS"][i], "apn": ids["apnS"][i][0], "owner": ids["holdS"][i],
+                         "power": "VVPUD %s" % s, "af": af * float(r.normal(1, 0.015)), "method": "FLOWMETER"})
+        df = pd.DataFrame(rows)
+        if wy == 2026:
+            # the water year's reports are due 31 October; about a fifth had not come in by the pull
+            keep = r.random(len(df)) > 0.06
+            if not CLEAN:
+                df = df[keep].reset_index(drop=True)
+        out[wy] = df
+    return out
+
+
+def diversions(W, ids):
+    """Monthly diversion statements: each senior right's river pump, and the district's canal at its dam."""
+    r = rng("div")
     rows = []
-    for (w, code), (n_new, n_fu, secs, e) in sorted(out.items()):
-        start = wk0 + dt.timedelta(7 * w)
-        team = e.team.get(y, "") if e.kind != "vendor" else "HCS"
-        if e.queue == "FR":
-            team = e.team.get(y, "FR")
-        if y <= 2022:
-            hh = int(secs // 3600); mm = int(round((secs - 3600 * hh) / 60))
-            if mm == 60:
-                hh, mm = hh + 1, 0
-            rows.append([y, start.strftime("%m/%d/%Y"), code, team, n_new, n_fu, "%d:%02d" % (hh, mm)])
-        else:
-            rows.append([y, start.isoformat(), code, team, n_new, n_fu, int(round(secs / 60))])
-    return rows
+    for y in C.YEARS:
+        for m in C.SEASON:
+            for i in range(W.nS):
+                af = float(W.S_div[(y, m)][i]) * float(r.normal(1, 0.012))
+                rows.append({"right_no": ids["rightS"][i], "pod": ids["podS"][i], "year": y, "month": m,
+                             "af_diverted": round(af, 1), "measure": "VVPUD %s" % ids["svcS"][i]})
+            lbid = C.LBID_ALLOC[y] * float(W.J["contract"].sum()) * Wd.DELIV_SHARE[m] / 0.86
+            rows.append({"right_no": "D-0007", "pod": "LBD-1", "year": y, "month": m,
+                         "af_diverted": round(lbid * float(r.normal(1, 0.01)), 1), "measure": "CANAL GAUGE LB-1"})
+    return pd.DataFrame(rows)
 
 
-# ------------------------------------------------------------------------------------------------- 2027 demand plan
-def demand_plan_rows(F_target):
-    """The demand plan's daily new expert cases for the English queue, 11 January to 31 May 2027, scaled so the
-    deadline fortnight carries F_target."""
-    y = K.SEASON_PLAN
-    days = [K.season_open(y) + dt.timedelta(k) for k in range((K.season_close(y) - K.season_open(y)).days + 1)]
-    raw = np.array([W.demand_curve(d, y, 1.0, "EN") for d in days])
-    f0, f1 = K.fortnight(y)
-    fmask = np.array([f0 <= d <= f1 for d in days])
-    scale = F_target / raw[fmask].sum()
-    vals = raw * scale
-    # whole cases a day, the fortnight's sum held exactly at the target
-    ints = np.floor(vals).astype(int)
-    rem = vals - ints
-    short = int(round(F_target - ints[fmask].sum()))
-    idx = np.where(fmask)[0][np.argsort(-rem[fmask])][:short]
-    ints[idx] += 1
-    return days, ints
+def allotments(W, ids):
+    r = rng("allot")
+    rows = [{"right_no": "D-0007", "class": "POST-1914 APPROPRIATIVE", "priority": "1921-04-11",
+             "holder": "Lone Bench Irrigation District", "pod": "LBD-1", "place_of_use": "LBID service area",
+             "season_allotment_af": int(round(W.J["contract"].sum() / 0.86, -2))}]
+    for i in range(W.nS):
+        cls = "RIPARIAN" if r.random() < 0.62 else "PRE-1914 APPROPRIATIVE"
+        pri = "" if cls == "RIPARIAN" else dt.date(int(r.integers(1856, 1913)), int(r.integers(1, 13)), int(r.integers(1, 28))).isoformat()
+        rows.append({"right_no": ids["rightS"][i], "class": cls, "priority": pri, "holder": ids["holdS"][i],
+                     "pod": ids["podS"][i], "place_of_use": "; ".join(ids["apnS"][i]),
+                     "season_allotment_af": int(W.S["allot"][i])})
+    return pd.DataFrame(rows).sort_values("right_no").reset_index(drop=True)
 
 
-def demand_basis(F26, growth, history):
-    """The demand plan's Basis sheet: each season's deadline fortnight and its new expert cases on the English
-    queue (the old ticketing system to 2025, the CRM from 2026), and the 2027 figure."""
+def lbid(W, ids):
+    con = pd.DataFrame({"landowner": ids["holdJ"], "apn": ["; ".join(a) for a in ids["apnJ"]],
+                        "contract_af": W.J["contract"]})
+    al = pd.DataFrame([{"season": y, "allocation_pct": int(round(100 * C.LBID_ALLOC[y])),
+                        "announced": dt.date(y, 3 if C.LBID_ALLOC[y] < 1 else 2, 12 + (y % 9)).isoformat()} for y in C.YEARS])
+    return con, al
+
+
+def eto(W):
+    r = rng("eto-qc")
     rows = []
-    for y, n in history:
-        f0, f1 = K.fortnight(y)
-        rows.append([y, K.deadline(y), f0, f1, n, "Ticketing system, new tickets" if y < K.SEASON_CRM else "CRM, new cases"])
-    f0, f1 = K.fortnight(K.SEASON_PLAN)
-    rows.append([K.SEASON_PLAN, K.deadline(K.SEASON_PLAN), f0, f1, None, "Forecast"])
-    return rows
+    for d, v in W.eto_daily:
+        q = "" if (r.random() > 0.004 or CLEAN) else "M"
+        rows.append({"date": d.isoformat(), "eto_in": round(v, 3), "qc": q})
+    return pd.DataFrame(rows)
 
 
-CSAT_COLS = ["Survey ID", "Interaction ID", "Sent (UTC)", "Responded (UTC)", "Overall satisfaction (1-5)",
-             "Did the expert answer your question?", "How likely are you to recommend Ashdale Tax Live? (0-10)"]
-
-
-def csat_rows(recs, ids, followed):
-    """The post-contact survey: a sample of English-queue interactions get an email the next morning; some answer.
-    followed: for each record, whether its case came back after it."""
-    R = K.rng("csat")
-    en = np.where(recs["queue"] == 0)[0]
-    pick = en[R.random(len(en)) < 0.11]
-    rows = []
-    sid = 5_520_000
-    for i in sorted(pick, key=lambda k: (int(recs["day"][k]), float(recs["end"][k]))):
-        fol = bool(followed[i])
-        if R.random() >= (0.15 if fol else 0.12):
+# ---------------------------------------------------------------- the PUD's pump test programme (bench wells)
+def pump_tests(W, ids):
+    """Plants of 75 hp and more on Schedule IP are offered a free test every three years; bench wells only, since
+    no bottomland plant reaches the size. Two contractors, two report layouts (the change came with the 2022 bid)."""
+    r = rng("ptest")
+    old, new = [], []
+    for i, s in enumerate(ids["svcJ"]):
+        hp_est = W.J["need_n"][i] * W.J["k"][i] / 2400
+        if hp_est < 75 or r.random() < 0.18:
             continue
-        sent = to_utc_e(int(recs["day"][i]) + 1, 9.0 + float(R.uniform(0, 0.5)))
-        resp = sent + dt.timedelta(minutes=int(R.integers(4, 60 * 30)))
-        answered = R.random() >= (0.46 if fol else 0.09)
-        sat = int(np.clip(round(R.normal(4.45 if answered else 3.0, 0.75)), 1, 5))
-        nps = int(np.clip(round(R.normal(8.6 if answered else 5.8, 1.6)), 0, 10))
-        sid += 1 + int(R.integers(0, 3))
-        rows.append(["SV-%08d" % sid, ids[int(i)], K.iso_z(sent), K.iso_z(resp), sat, "Yes" if answered else "No", nps])
-    return rows
-
-
-RETURNS_COLS = ["Season", "Week Ending", "Live Returns Filed (000s)"]
-
-
-def returns_rows():
-    """Finance's weekly count of returns filed by Ashdale Tax Live customers, in thousands."""
-    R = K.rng("returns")
-    rows = []
-    for y in K.SEASONS_OLD + [K.SEASON_CRM]:
-        d = K.monday(K.season_open(y))
-        while d <= K.season_close(y):
-            days = [d + dt.timedelta(k) for k in range(7)]
-            cases = sum(W.demand_curve(x, y, W.SCALE[y], "EN") for x in days if K.season_open(y) <= x <= K.season_close(y))
-            ratio = 3.05 + 0.04 * (y - 2021)
-            val = cases * ratio * float(np.exp(R.normal(0, 0.03))) / 1000
-            rows.append([y, (d + dt.timedelta(6)).isoformat(), "%.1f" % val])
-            d += dt.timedelta(7)
-    return rows
+        y0 = int(r.choice([2019, 2020, 2021]))
+        for y in range(y0, 2027, 3):
+            mo = int(r.choice([1, 2, 3, 11, 12]))
+            day = dt.date(y, mo if not (y == 2026 and mo > 9) else mo - 9, int(r.integers(2, 27)))
+            swl = W.J["swl"][i] * float(r.normal(1, 0.02)) - (4 if day.month in (1, 2, 3) else 0)
+            pwl = swl + W.J["dd"][i] * float(r.normal(1, 0.06))
+            dis_psi = W.J["dis"][i] / 2.31 * float(r.normal(1, 0.05))
+            tdh = pwl + dis_psi * 2.31
+            ope = W.J["ope"][i] * float(r.normal(1, 0.03))
+            gpm = float(r.uniform(900, 2400))
+            kw = gpm * tdh / 3960 * 0.746 / ope
+            kwh_af = 1.0241 * tdh / ope
+            rec = {"svc_no": s, "well": ids["wellJ"][i], "test_date": day.isoformat(), "swl_ft": round(swl, 1),
+                   "pwl_ft": round(pwl, 1), "dis_psi": round(dis_psi, 1), "tdh_ft": round(tdh, 1), "gpm": int(round(gpm)),
+                   "kw_input": round(kw, 1), "ope": ope, "kwh_af": round(kwh_af)}
+            if y <= 2021:
+                old.append({"Service": "IP-" + s, "Well No": rec["well"], "Date": day.strftime("%m/%d/%Y"),
+                            "Standing Level (ft)": rec["swl_ft"], "Pumping Level (ft)": rec["pwl_ft"],
+                            "Discharge (psi)": rec["dis_psi"], "TDH (ft)": rec["tdh_ft"], "Flow (gpm)": rec["gpm"],
+                            "Input kW": rec["kw_input"], "OPE %": round(100 * ope, 1)})
+            else:
+                new.append({"svc_no": s, "state_well_no": rec["well"], "test_date": rec["test_date"],
+                            "swl_ft": rec["swl_ft"], "pwl_ft": rec["pwl_ft"], "discharge_psi": rec["dis_psi"],
+                            "tdh_ft": rec["tdh_ft"], "flow_gpm": rec["gpm"], "input_kw": rec["kw_input"],
+                            "ope": round(ope, 3), "kwh_per_af": rec["kwh_af"]})
+    return pd.DataFrame(old), pd.DataFrame(new)

@@ -1,70 +1,45 @@
-# task173 submission
-
 ## Tags
 
-**Domain:** Business & Operations Analytics, workforce and labour planning (a live tax-expert service's outsourced hours for the filing deadline).
+**Domain:** Energy Systems & Utilities (load forecasting).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Book 10,000 agent hours with Hillsborough Contact Services for the 2027 deadline fortnight.**
-The fortnight's 47,169 new cases will bring 1.292 contacts a case, 60,949 in all, and the hours Hillsborough's agents need to carry what the bench cannot, with their own cases coming back at 33.0 per cent, come to 9,420, so the order is the next whole block. Not 7,000 hours from last season's 1.207 contacts a case, which a far more experienced bench produced. Not 9,000 from comeback rates by group with this year's classes at last season's average, which came from classes much longer on the queue than this year's four will be. Not 9,000 from booking Hillsborough's hours as capacity that opens no cases of its own.
+**File 155,000 MWh as the irrigation class's April to September 2027 energy.** The Lone Bench services draw what they drew in 2022, when the district delivered nothing, and the bottomland plants make the diversion above a quarter of their allotments up from their own shallow wells, whose energy per acre-foot each plant's meter separates from its river lift's. Not the bench wells' energy per acre-foot carried onto the bottomland cut, which prices shallow water at deep lifts. Not each plant's energy over its water, which reads a river lift and a well on one meter as one pump.
 
 ## 2. Critical Components
 
-1. Over the 2026 season a case came back **13.9%** of the time when a returning expert opened it and **33.0%** when a Hillsborough agent did; a follow-up came back **18.1%** whoever took it.
-2. A class expert's cases come back about **41%** of the time in their first week on the queue, falling to about **20%** by the tenth.
-3. The 2027 fortnight's cases bring **1.29** contacts each, about **61,000** in all, against **1.21** a case in the 2026 fortnight.
+1. The Lone Bench services draw **118,000 MWh** in a normal season with no district water.
+2. The bottomland plants' wells make up **145,000 acre-feet** of diversion the order removes.
 
 ## 3. Step-by-Step Solution
 
-1. Took the load, capacity and order rules from expert_capacity_planning_standard.docx: every contact on the cases opening 19 April to 2 May 2027, 67.32 handle hours an in-house expert, 0.85 a billed Hillsborough hour, whole blocks of 1,000 rounded up.
-2. Took the bench from seasonal_expert_roster_2027.xlsx (150 confirmed English-queue experts) and training_calendar_2027.pdf (four classes of 60 going live 15 February, 1 March, 29 March and 12 April), and 47,169 new cases from the fortnight's days in demand_plan_2027.xlsx.
-3. Linked each English-queue case in crm_expert_interactions_2026.csv from its opening interaction to its later ones and each handler to the roster: returning experts' cases came back 13.9% of the time, Hillsborough's 33.0%, a follow-up 18.1% whoever took it.
-4. Fitted the class experts' comeback chance and handle time on their weeks on the queue, from 40.6% and 42.1 minutes in the first week to 19.5% and 32.2 minutes by the tenth, against 30.6 minutes for returning experts and 35.1 for Hillsborough's agents.
-5. Back-tested the model on the old system's weekly reports (ticketing_agent_weekly_2021_2022.csv, ticketing_agent_weekly_2023_2025.csv, through seasonal_expert_history.csv): within 1.3% of each season's follow-ups per new ticket and 3.6% of each deadline fortnight's, where carrying the 2026 rate missed by up to 9.9% and 13.0%.
-6. Read the four classes at their weeks in the 2027 fortnight: the bench carries 47,266 contacts at its handle hours.
-7. Solved for the billed Hillsborough hours whose contacts, with the cases they open coming back at 33.0%, carry the rest of the load: 9,420 hours, 60,949 contacts in all at 1.292 a case.
-8. Rounded up to the next block of 1,000: book 10,000 agent hours.
+1. Summed every read line in vvpud_ip_billing_2015-2026.csv by service and bill month, legacy accounts mapped through vvpud_cis_account_crosswalk_2020.csv, and kept the services ACTIVE in vvpud_ip_service_register_2026-09-30.xlsx; a service is a bottomland plant when varner_watermaster_diversion_statements_2015-2026.csv names it as a point's measure.
+2. Took the April to September total of station247_daily_eto_2007-2026.csv in each season and their 2007 to 2026 mean, 38.97 in, as the normal season the forecast instructions define.
+3. Put the Lone Bench services at their 2022 April to September energy times the normal over 2022's ET: 118,000 MWh.
+4. Put each bottomland plant at its 2015 to 2026 seasons' energy, each at normal ET, averaged, and its diversion the same way; the order holds diversion to 25 per cent of the allotment in varner_decree_allotment_schedule_2026.xlsx, so the diversion above that is lost to the river and made up from a well where the plant has one in vsga_extraction_reports_wy2017-wy2026.xlsx: 145,000 acre-feet.
+5. Fitted each plant's October to September energy, without intercept, on its season diversion and its metered well extraction for water years 2017 to 2026 to get its river lift's and its well's kWh per acre-foot (a plant with no well: its energy over its diversion).
+6. Added each plant's well energy on the water made up and took off its river lift's energy on the diversion lost; with the Lone Bench services the class draws 155,000 MWh to the nearest 5,000.
+7. Read hpa_dp_interval_export_2026.csv as meter standard time (every meter carries 96 intervals on 8 March 2026), moved daylight-time intervals an hour forward, kept the revenue meters (each point's check meter repeats its revenue meter one interval early; Bench's second bank adds its own meter from 15 June) and summed each billing month, and each posted peak's clock hour from hpa_2026_monthly_system_peaks.csv.
+8. Put each service at the delivery point its feeder was supplied from through the season in vvpud_oms_feeder_sources.csv (two feeders moved by switching order, one in November 2025 and one in March 2026), not the GIS substation, and summed its April to September 2026 bills.
 
 ## 4. Deliverable Answers
 
-### deadline_fortnight_plan_2027.xlsx
+### irrigation_forecast_2027.xlsx
 
-1. Booking with Hillsborough Contact Services for the 2027 deadline fortnight: 10,000 agent hours.
-2. Billable hours our ACD records show for Hillsborough's agents, by day of the 2026 deadline fortnight (hours, one decimal):
-   - 2026-04-20 (Monday): 299.2
-   - 2026-04-21 (Tuesday): 209.8
-   - 2026-04-22 (Wednesday): 202.6
-   - 2026-04-23 (Thursday): 229.6
-   - 2026-04-24 (Friday): 255.6
-   - 2026-04-25 (Saturday): 209.1
-   - 2026-04-26 (Sunday): 184.6
-   - 2026-04-27 (Monday): 293.3
-   - 2026-04-28 (Tuesday): 328.5
-   - 2026-04-29 (Wednesday): 343.0
-   - 2026-04-30 (Thursday): 393.9
-   - 2026-05-01 (Friday): 117.1
-   - 2026-05-02 (Saturday): 81.6
-   - 2026-05-03 (Sunday): 68.0
-3. Hours Hillsborough invoiced that the ACD records do not support, agent by agent, by invoice week (hours, one decimal):
-   - Week of 2026-04-20 (Monday): 53.7
-   - Week of 2026-04-27 (Monday), against the replacement invoice: 54.7
-4. Average wait of the English-queue customers an expert answered, by day (whole seconds):
-   - 2026-04-20 (Monday): 48
-   - 2026-04-21 (Tuesday): 73
-   - 2026-04-22 (Wednesday): 100
-   - 2026-04-23 (Thursday): 105
-   - 2026-04-24 (Friday): 85
-   - 2026-04-25 (Saturday): 228
-   - 2026-04-26 (Sunday): 224
-   - 2026-04-27 (Monday): 127
-   - 2026-04-28 (Tuesday): 173
-   - 2026-04-29 (Wednesday): 129
-   - 2026-04-30 (Thursday): 166
-   - 2026-05-01 (Friday): 271
-   - 2026-05-02 (Saturday): 44
-   - 2026-05-03 (Sunday): 33
-5. Share of answered customers answered within three minutes, by week (per cent, one decimal):
-   - Week of 2026-04-20 (Monday): 78.8%
-   - Week of 2026-04-27 (Monday): 74.5%
+1. Schedule IP energy, 1 April to 30 September 2027, normal season: 155,000 MWh.
+2. Energy Halvern metered at each delivery point, billing months April to September 2026, kWh:
+   - Riverside: April 4,337,023, May 4,792,475, June 4,918,970, July 5,198,818, August 4,883,322, September 4,371,873
+   - Mill Slough: April 1,970,622, May 2,376,369, June 2,592,761, July 2,795,017, August 2,504,076, September 2,082,669
+   - Bench: April 8,484,220, May 11,245,337, June 12,898,420, July 14,288,088, August 12,352,771, September 9,440,557
+   - Corwin Road: April 8,454,690, May 11,548,010, June 13,611,445, July 15,148,942, August 12,767,482, September 9,500,821
+3. Demand at each delivery point in Halvern's monthly system peak hour, April to September 2026, kW:
+   - Riverside: April 7,369, May 8,963, June 8,319, July 8,557, August 7,703, September 7,444
+   - Mill Slough: April 3,489, May 4,593, June 3,905, July 4,072, August 3,499, September 3,129
+   - Bench: April 15,332, May 20,712, June 16,878, July 18,550, August 14,537, September 12,645
+   - Corwin Road: April 14,084, May 21,893, June 16,380, July 18,058, August 14,481, September 12,235
+4. Irrigation services each delivery point supplied through the 2026 season and their April to September 2026 billed energy:
+   - Riverside: 186 services, 8,208.6 MWh
+   - Mill Slough: 198 services, 8,136.8 MWh
+   - Bench: 147 services, 55,488.3 MWh
+   - Corwin Road: 149 services, 59,619.7 MWh

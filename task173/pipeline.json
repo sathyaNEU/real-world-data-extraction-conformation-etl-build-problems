@@ -1,27 +1,27 @@
 {
  "task": "task173",
  "owner": "sathya8571",
- "status": "DRAWING",
+ "status": "BUILD",
  "domain": "energy-systems-utilities / load-forecasting",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-23",
  "stump": "A competent solver files about 260,000 MWh by carrying the bench wells' fitted energy per acre-foot the district withheld onto the bottomland plants' diversion above the limit, and one who carries the water at each plant's energy over its metered water files 145,000; the step that lands them there is reading each bottomland meter as one pump, when it carries a river lift and a well whose energy per acre-foot differ about fivefold.",
  "architecture": 2,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-23"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK (2026-10-23); every REVIEW line answered in ## Leak sweep",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN (no BLOCK)",
+  "nearest": "guard.py surface exit 0; task142 promoted on the card-level same-driver signature (population, G2, forecasting), differentiated on the card"
  },
  "judge": {
   "verdict": "",
@@ -30,11 +30,15 @@
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC44",
- "resume": "architecture 2 drawn 2026-10-23 (rebuild of a reopened number): design and build next, stage 2 gate precut.py",
+ "resume": "stage 4: two scored readers and the judge (target.zip be677673c249d2865ce57b76923b47c1; call key call.forecast_mwh = 155000; stage 3 gates green: checks 87/87, verify, byte-identical rebuild, figures_check, precut, voice-check, leak.py REVIEW, surface exit 0, heart WARN)",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "target_zip_md5": "be677673c249d2865ce57b76923b47c1",
+ "figures_call_keys": [
+  "call.forecast_mwh"
+ ]
 }

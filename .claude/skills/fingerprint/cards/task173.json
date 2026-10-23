@@ -10,8 +10,8 @@
   "shape": "single-figure",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "File 155,000 MWh as the irrigation class's April to September 2027 energy.",
+  "answer_source": "task173/submission.md, block 1",
   "gap": [
     "population",
     "time"
@@ -53,8 +53,8 @@
   "role_family": "procurement_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "vvec_ip_billing_2015-2026.csv",
-    "rows": 96153,
+    "file": "vvpud_ip_billing_2015-2026.csv",
+    "rows": 96151,
     "entity": "one meter read line on a Schedule IP irrigation pumping bill",
     "grain": "service x bill month x meter",
     "source": "synthetic"
@@ -68,7 +68,7 @@
     "org_type": "public utility district (a publicly owned electric distribution utility)",
     "invented_names": [
       "Varner Valley Public Utility District",
-      "Tri-Basin Power Authority",
+      "Halvern Power Authority",
       "Varner River",
       "Lone Bench Irrigation District",
       "Varner Subbasin Groundwater Agency",

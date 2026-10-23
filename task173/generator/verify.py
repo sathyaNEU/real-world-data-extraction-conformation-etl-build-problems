@@ -1,232 +1,190 @@
-"""task173 independent verifier: reads only the shipped bundle (target/) and generator/figures.json, recomputes the
-booking and every ask figure with its own code (pandas, its own parsing of the standard, the calendar and the
-invoices), and checks each against figures.json.
+"""Independent verifier: reads only the shipped bundle (target/), with the csv module, openpyxl and pypdf rather
+than pandas, shares no state with the generator, and recomputes every graded figure in figures.json.
 
-    python3 task173/generator/verify.py <target>"""
+    python3 verify.py [target]      exit 0 when every figure reproduces"""
 from __future__ import annotations
 
+import csv
 import datetime as dt
 import json
-import math
 import os
 import re
 import sys
+from collections import defaultdict
 
 import numpy as np
-import pandas as pd
-from scipy.optimize import curve_fit
+from openpyxl import load_workbook
+from pypdf import PdfReader
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = []
+TASK = os.path.dirname(HERE)
+SEASON = (4, 5, 6, 7, 8, 9)
+YEARS = range(2015, 2027)
 
 
-def check(label, ok, detail=""):
-    OUT.append(bool(ok))
-    print("%s %-70s %s" % ("PASS" if ok else "FAIL", label[:70], detail))
+def rows(path):
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
 
 
-def edt(s):
-    """UTC stamps to Eastern clock time for the season's dates (EST before 8 March 2026, EDT after)."""
-    t = pd.to_datetime(s, format="%Y-%m-%dT%H:%M:%SZ")
-    dst0 = pd.Timestamp("2026-03-08 07:00:00")
-    return t - pd.to_timedelta(np.where(t >= dst0, 4, 5), unit="h")
+def sheet_rows(path, name):
+    wb = load_workbook(path, read_only=True, data_only=True)
+    ws = wb[name]
+    it = ws.iter_rows(values_only=True)
+    head = [str(h) for h in next(it)]
+    out = [dict(zip(head, r)) for r in it]
+    wb.close()
+    return out
 
 
 def pdf_text(path):
-    import logging
-    logging.getLogger("pypdf").setLevel(logging.ERROR)
-    from pypdf import PdfReader
-    return "\n".join(p.extract_text() or "" for p in PdfReader(path).pages)
+    return " ".join((p.extract_text() or "") for p in PdfReader(path).pages)
 
 
-def half_up(x, nd=0):
-    return math.floor(x * 10 ** nd + 0.5) / 10 ** nd
-
-
-def main(t):
+def main(target):
+    fails = []
+    def ok(cond, msg):
+        if not cond:
+            fails.append(msg)
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-    # ------------------------------------------------------------------------------------- the standard's numbers
-    import docx
-    std = "\n".join(p.text for p in docx.Document(os.path.join(t, "expert_capacity_planning_standard.docx")).paragraphs)
-    H = float(re.search(r"= ([\d.]+) handle hours across the fortnight", std).group(1))
-    HB = float(re.search(r"Each agent hour billed by the outsourcer gives ([\d.]+) handle hours", std).group(1))
-    block = int(re.search(r"whole blocks of ([\d,]+) agent hours", std).group(1).replace(",", ""))
-    m = re.search(r"For the 2027 season it runs from \w+ (\d+) (\w+) (\d{4}) to \w+ (\d+) (\w+) (\d{4})", std)
-    f0 = dt.datetime.strptime("%s %s %s" % m.group(1, 2, 3), "%d %B %Y").date()
-    f1 = dt.datetime.strptime("%s %s %s" % m.group(4, 5, 6), "%d %B %Y").date()
-    check("the standard: %.3f handle hours an expert, %.2f a billed hour, blocks of %d" % (H, HB, block), H > 60)
+    f = lambda n: os.path.join(target, n)
 
-    # ------------------------------------------------------------------------------------- the 2026 CRM
-    crm = pd.read_csv(os.path.join(t, "crm_expert_interactions_2026.csv"))
-    en = crm[crm["Queue"] == "Live Experts EN"].copy()
-    en["start"] = edt(en["Started (UTC)"])
-    en["date"] = en["start"].dt.normalize()
-    en["hmin"] = (en["Talk Seconds"] + en["After-Contact Work Seconds"]) / 60.0
-    ros = pd.read_excel(os.path.join(t, "seasonal_expert_roster_2027.xlsx"), sheet_name="Seasonal experts")
-    first = dict(zip(ros["Employee No"], ros["First Season"]))
-    golive = dict(zip(ros["Employee No"], pd.to_datetime(ros["2026 Go-Live"])))
-    en["grp"] = np.where(en["Handled By"].str.startswith("HCS-"), "V",
-                         np.where(en["Handled By"].map(first) == 2026, "N", "R"))
-    en["gl"] = en["Handled By"].map(golive)
-    en["wk"] = (en["date"] - en["gl"]).dt.days / 7.0
-    en = en.sort_values(["Case Number", "start", "Interaction ID"])
-    en["followed"] = (en["Case Number"].shift(-1) == en["Case Number"]).astype(float)
-    en["opening"] = en["Interaction Type"] == "New case"
-    fo = en[en["opening"]]
-    pR = fo.loc[fo["grp"] == "R", "followed"].mean()
-    pO = fo.loc[fo["grp"] == "V", "followed"].mean()
-    q = en.loc[~en["opening"], "followed"].mean()
-    aR = en.loc[en["grp"] == "R", "hmin"].mean()
-    aO = en.loc[en["grp"] == "V", "hmin"].mean()
+    # documents carry the sentences the figures stand on (each through the same extractor, with a positive control)
+    order = re.sub(r"\s+", " ", pdf_text(f("varner_watermaster_order_2027_season.pdf")))
+    ok(len(order) > 500 and "limited, for the 2027 season, to 25 per cent of the season allotment" in order, "order: the limit sentence")
+    ok("is suspended for the whole of the 2027 season" in order, "order: the suspension sentence")
+    ins = re.sub(r"\s+", " ", pdf_text(f("hpa_member_load_forecast_instructions_2027.pdf")))
+    ok("in service on 30 September 2026" in ins and "20 seasons 2007 to 2026" in ins, "instructions: class and normal")
+    rate = re.sub(r"\s+", " ", pdf_text(f("hpa_wholesale_rate_schedule_w2_excerpt.pdf")))
+    ok("All times in this schedule are Pacific prevailing time" in rate, "rate: prevailing time")
 
-    def expo(x, a, b, c):
-        return a + b * np.exp(-x / c)
+    # ---- weather
+    eto = defaultdict(float)
+    for r in rows(f("station247_daily_eto_2007-2026.csv")):
+        d = dt.date.fromisoformat(r["date"])
+        if d.month in SEASON:
+            eto[d.year] += float(r["eto_in"])
+    etn = sum(eto[y] for y in range(2007, 2027)) / 20.0
 
-    def fit(sub, col, p0):
-        b = np.floor(sub["wk"]).astype(int)
-        g = sub.groupby(b)[col].agg(["mean", "size"])
-        c, _ = curve_fit(expo, g.index.values + 0.5, g["mean"].values, p0=p0, sigma=1 / np.sqrt(g["size"].values),
-                         maxfev=40000)
-        return c
-    cp = fit(fo[fo["grp"] == "N"], "followed", (0.14, 0.3, 5.0))
-    ca = fit(en[en["grp"] == "N"], "hmin", (31.0, 14.0, 5.0))
-    check("2026 rates: returning %.4f, Hillsborough %.4f, a follow-up's own %.4f" % (pR, pO, q),
-          abs(100 * pR - fig["follow_returning_pct"]) < 0.05 and abs(100 * pO - fig["follow_vendor_pct"]) < 0.05
-          and abs(100 * q - fig["follow_q_pct"]) < 0.05)
+    # ---- bills
+    xw = {r["legacy_acct_no"]: r["svc_no"] for r in rows(f("vvpud_cis_account_crosswalk_2020.csv"))}
+    kwh = defaultdict(float)
+    for r in rows(f("vvpud_ip_billing_2015-2026.csv")):
+        s = r["svc_no"] or xw.get(r["acct_no"])
+        y, m = int(r["bill_month"][:4]), int(r["bill_month"][5:7])
+        kwh[(s, y, m)] += float(r["kwh"])
+    reg = sheet_rows(f("vvpud_ip_service_register_2026-09-30.xlsx"), "IP services")
+    active = {str(r["svc_no"]) for r in reg if r["status"] == "ACTIVE"}
+    div = rows(f("varner_watermaster_diversion_statements_2015-2026.csv"))
+    sen = {}
+    dseas = defaultdict(float)
+    for r in div:
+        if r["measure"].startswith("VVPUD"):
+            sen[r["measure"].split()[1]] = r["right_no"]
+            dseas[(r["right_no"], int(r["year"]))] += float(r["af_diverted"])
+    allot = {r["right_no"]: float(r["season_allotment_af"]) for r in
+             sheet_rows(f("varner_decree_allotment_schedule_2026.xlsx"), "Schedule of allotments")}
+    wb = load_workbook(f("vsga_extraction_reports_wy2017-wy2026.xlsx"), read_only=True, data_only=True)
+    gsa = defaultdict(float)
+    for name in wb.sheetnames:
+        m = re.fullmatch(r"WY(\d{4})", name)
+        if not m:
+            continue
+        wy = int(m.group(1))
+        it = wb[name].iter_rows(values_only=True)
+        head = [str(h) for h in next(it)]
+        pcol = head.index("Power Account") if "Power Account" in head else head.index("power_source")
+        acol = head.index("Volume (ac-ft)") if "Volume (ac-ft)" in head else head.index("extraction_af")
+        for r in it:
+            s = re.search(r"(\d{6})", str(r[pcol])).group(1)
+            gsa[(s, wy)] += float(r[acol])
+    wb.close()
+    wells = {s for (s, wy) in gsa}
 
-    # ------------------------------------------------------------------------------------- the 2027 bench and demand
-    n_ret = int(((ros["Queue"] == "EN") & (ros["2027 Recall"] == "Confirmed")).sum())
-    cal = pdf_text(os.path.join(t, "training_calendar_2027.pdf"))
-    classes = [(dt.datetime.strptime(g, "%d %B %Y").date(), int(n)) for g, n in
-               re.findall(r"27-\d\s+Room \w\s+\d{1,2} \w+ 2027\s+(\d{1,2} \w+ 2027)\s+(\d+)", cal)]
-    plan = pd.read_excel(os.path.join(t, "demand_plan_2027.xlsx"), sheet_name="Daily forecast")
-    plan["Date"] = pd.to_datetime(plan["Date"]).dt.date
-    F = int(plan.loc[(plan["Date"] >= f0) & (plan["Date"] <= f1), "New expert cases"].sum())
-    check("bench %d returning, %d classes of %s; %d new cases" % (n_ret, len(classes), {n for _, n in classes}, F),
-          n_ret == fig["returning_2027"] and F == fig["new_cases_2027"] and len(classes) == 4)
-    days = [f0 + dt.timedelta(k) for k in range(14)]
-    Kc = n_ret * H * 60 / aR
-    Kp = Kc * pR
-    for d in days:
-        for g, n in classes:
-            x = (d - g).days / 7.0
-            k = n * (H / 14) * 60 / expo(x, *ca)
-            Kc += k
-            Kp += k * expo(x, *cp)
-    kO = HB * 60 / aO
-    lo, hi = 0.0, 1e5
-    for _ in range(200):
-        mid = (lo + hi) / 2
-        Ct = Kc + mid * kO
-        if Ct - F * (1 + (Kp + mid * kO * pO) / Ct / (1 - q)) < 0:
-            lo = mid
+    def season(s, y):
+        return sum(kwh.get((s, y, m), 0.0) for m in SEASON)
+
+    def wyk(s, wy):
+        return sum(kwh.get((s, wy - 1, m), 0.0) for m in (10, 11, 12)) + sum(kwh.get((s, wy, m), 0.0) for m in range(1, 10))
+
+    juniors = [s for s in active if s not in sen]
+    seniors = [s for s in active if s in sen]
+    J = sum(season(s, 2022) for s in juniors) * etn / eto[2022]
+    S = 0.0
+    well_af = 0.0
+    for s in seniors:
+        right = sen[s]
+        en = np.mean([season(s, y) * etn / eto[y] for y in YEARS])
+        dn = np.mean([dseas[(right, y)] * etn / eto[y] for y in YEARS])
+        cut = max(dn - 0.25 * allot[right], 0.0)
+        if s in wells:
+            wys = [wy for wy in range(2017, 2027) if (s, wy) in gsa]
+            X = np.array([[dseas[(right, wy)], gsa[(s, wy)]] for wy in wys])
+            Y = np.array([wyk(s, wy) for wy in wys])
+            kr, kw = np.linalg.lstsq(X, Y, rcond=None)[0]
+            S += en + cut * (kw - kr)
+            well_af += cut
         else:
-            hi = mid
-    booking = int(math.ceil(lo / block - 1e-12) * block)
-    check("THE CALL: %d agent hours (%.1f needed)" % (booking, lo), booking == fig["booking_blocks"]
-          and abs(lo - fig["billed_hours_needed"]) < 1.0)
-    Ct = Kc + lo * kO
-    check("forecast contacts %.0f" % Ct, abs(Ct - fig["forecast_contacts"]) < 1.0)
+            kr = sum(season(s, y) for y in YEARS) / sum(dseas[(right, y)] for y in YEARS)
+            S += en - cut * kr
+    total = (J + S) / 1000.0
+    ok(int(5000 * round(total / 5000)) == fig["call"]["forecast_mwh"], "call %.0f against %s" % (total, fig["call"]["forecast_mwh"]))
+    ok(int(1000 * round(J / 1000 / 1000)) == fig["comp_bench_mwh"], "bench %.0f" % (J / 1000))
+    ok(int(5000 * round(well_af / 5000)) == fig["comp_bottomland_well_af"], "well af %.0f" % well_af)
 
-    # ------------------------------------------------------------------------------------- Ask A
-    st = pd.read_csv(os.path.join(t, "acd_agent_state_detail_hcs_2026.csv"))
-    users = pd.read_csv(os.path.join(t, "acd_users_2026-10-29.csv"))
-    ob = pd.read_excel(os.path.join(t, "hcs_agent_onboarding_2026.xlsx"), sheet_name="Agents")
-    email_agent = dict(zip(ob["Email"].str.lower(), ob["HCS Agent ID"]))
-    agent_of = dict(zip(ob["ACD Login"], ob["HCS Agent ID"]))
-    for lg, em, role in zip(users["Login"], users["Email"].fillna("").str.lower(), users["Role"]):
-        if role == "Agent" and em in email_agent:
-            agent_of.setdefault(lg, email_agent[em])
-    bill = st[st["State"].isin(["Available", "On Contact", "After-Contact Work"])].copy()
-    bill["agent"] = bill["Agent Login"].map(agent_of)
-    bill = bill.dropna(subset=["agent"])
-    bill["a"] = edt(bill["Start (UTC)"])
-    bill["b"] = edt(bill["End (UTC)"])
-    daily = {}
-    weekly = {}
-    for ag, g in bill.sort_values("a").groupby("agent"):
-        cur_a = cur_b = None
-        spans = []
-        for a, b in zip(g["a"], g["b"]):
-            if cur_b is None or a > cur_b:
-                if cur_b is not None:
-                    spans.append((cur_a, cur_b))
-                cur_a, cur_b = a, b
-            elif b > cur_b:
-                cur_b = b
-        spans.append((cur_a, cur_b))
-        for a, b in spans:
-            while a < b:
-                nxt = a.normalize() + pd.Timedelta(days=1)
-                c = min(b, nxt)
-                h = (c - a).total_seconds() / 3600
-                d = a.date()
-                daily[d] = daily.get(d, 0.0) + h
-                wk = d - dt.timedelta(d.weekday())
-                weekly[(ag, wk)] = weekly.get((ag, wk), 0.0) + h
-                a = c
-    for k, v in fig["ask_a_daily"].items():
-        d = dt.date.fromisoformat(k)
-        check("Ask A %s billable hours %.1f" % (k, half_up(daily[d], 1)), half_up(daily[d], 1) == v, "figures %.1f" % v)
-    inv = pdf_text(os.path.join(t, "hcs_invoices_2026_deadline_period.pdf"))
-    blocks = re.split(r"(?=INVOICE HCS-)", inv)[1:]
-    parsed = []
-    for b in blocks:
-        no = re.match(r"INVOICE (HCS-\d\d-\d{4})", b).group(1)
-        wk = dt.datetime.strptime(re.search(r"Service week\s+(\d{1,2} \w+ \d{4})", b).group(1), "%d %B %Y").date()
-        rep = re.search(r"replaces invoice (HCS-\d\d-\d{4})", b)
-        lines = [(a, float(h)) for a, h in re.findall(r"(HCS-\d{4})\s+([\d.]+)\s+38\.50", b)]
-        parsed.append((no, wk, rep.group(1) if rep else None, lines))
-    gone = {r for _, _, r, _ in parsed if r}
-    for k, v in fig["ask_a_unsupported"].items():
-        wk = dt.date.fromisoformat(k)
-        cur = [p for p in parsed if p[1] == wk and p[0] not in gone]
-        assert len(cur) == 1
-        u = sum(max(0.0, h - weekly.get((ag, wk), 0.0)) for ag, h in cur[0][3])
-        check("Ask A week of %s unsupported %.1f (%s)" % (k, half_up(u, 1), cur[0][0]), half_up(u, 1) == v, "figures %.1f" % v)
+    # ---- delivery points: meter clock is standard time; billing months and hours prevailing
+    dst0, dst1 = dt.datetime(2026, 3, 8, 2, 0), dt.datetime(2026, 11, 1, 1, 0)
+    codes = {"VV-01": "RIVERSIDE", "VV-02": "MILL_SLOUGH", "VV-03": "BENCH", "VV-04": "CORWIN_ROAD"}
+    per_day = defaultdict(int)
+    A = defaultdict(float)
+    hourly = defaultdict(float)
+    for r in rows(f("hpa_dp_interval_export_2026.csv")):
+        t = dt.datetime.strptime(r["interval_end"], "%Y-%m-%d %H:%M")
+        if r["meter_no"] == "81-2207":
+            per_day[t.date()] += 1
+        if r["meter_no"] in ("81-2251", "81-3362", "81-1988", "81-4107"):
+            continue
+        if dst0 <= t < dst1:
+            t += dt.timedelta(hours=1)
+        k = codes[r["dp_code"]]
+        tm = t - dt.timedelta(minutes=1)
+        if tm.year == 2026 and tm.month in SEASON:
+            A[(k, tm.month)] += float(r["kwh"])
+        hourly[(k, tm.replace(minute=0))] += float(r["kwh"])
+    ok(per_day[dt.date(2026, 3, 8)] == 96, "meter clock: 96 intervals on 8 March")
+    for k in codes.values():
+        for m in SEASON:
+            ok(int(round(A[(k, m)])) == fig["a_" + k]["2026-%02d" % m], "A %s %d" % (k, m))
+    for r in rows(f("hpa_2026_monthly_system_peaks.csv")):
+        m = int(r["month"][5:7])
+        if m not in SEASON:
+            continue
+        he = int(r["hour_ending"][:2])
+        start = dt.datetime.fromisoformat(r["peak_date"]) + dt.timedelta(hours=he - 1)
+        for k in codes.values():
+            ok(int(round(hourly[(k, start)])) == fig["b_" + k]["2026-%02d" % m], "C %s %d" % (k, m))
 
-    # ------------------------------------------------------------------------------------- Ask B
-    ac = pd.read_csv(os.path.join(t, "acd_contact_detail_en_2026_deadline.csv"), dtype={"Session ID": str})
-    ac["q"] = pd.to_datetime(ac["Queued (UTC)"], format="%Y-%m-%dT%H:%M:%SZ")
-    started = dict(zip(crm["Interaction ID"], pd.to_datetime(crm["Started (UTC)"], format="%Y-%m-%dT%H:%M:%SZ")))
-    first_q = ac.groupby("Session ID")["q"].min()
-    conv = ac.dropna(subset=["CRM Interaction"]).groupby("Session ID")["CRM Interaction"].first()
-    w = pd.DataFrame({"joined": first_q.loc[conv.index], "start": conv.map(started)})
-    w["wait"] = (w["start"] - w["joined"]).dt.total_seconds()
-    w["date"] = (w["joined"] - pd.Timedelta(hours=4)).dt.date
-    for k, v in fig["ask_b_daily_wait"].items():
-        d = dt.date.fromisoformat(k)
-        mval = w.loc[w["date"] == d, "wait"].mean()
-        check("Ask B %s average wait %d s" % (k, int(half_up(mval))), int(half_up(mval)) == v, "%.3f" % mval)
-    for k, v in fig["ask_b_share"].items():
-        wk = dt.date.fromisoformat(k)
-        sel = w[(w["date"] >= wk) & (w["date"] <= wk + dt.timedelta(6))]
-        s = 100.0 * (sel["wait"] <= 180).mean()
-        check("Ask B week of %s within three minutes %.1f" % (k, half_up(s, 1)), half_up(s, 1) == v, "%.3f" % s)
-    # ------------------------------------------------------------------------------------- the text formats
-    import email
-    from email import policy
-    msg = email.message_from_bytes(open(os.path.join(t, "re_2027_deadline_booking.eml"), "rb").read(),
-                                   policy=policy.default)
-    body = msg.get_body(preferencelist=("plain",)).get_content()
-    check("the thread decodes and carries the recall's close", "150 of last season's English" in body
-          and len(body) > 300, "%d characters" % len(body))
-    notes = open(os.path.join(t, "crm_export_notes.txt"), encoding="utf-8").read()
-    check("the CRM notes define the start of an interaction", "when the conversation began" in notes)
-    guide = pdf_text(os.path.join(t, "acd_report_field_guide.pdf"))
-    check("the field guide defines the accept time", "When the agent accepted the offer." in guide and
-          "The customer's session on the expert queue." in guide)
-    sch = pdf_text(os.path.join(t, "hcs_msa_schedule_b_2026.pdf"))
-    check("Schedule B defines billable time and the agent-by-agent credit",
-          "in the Available, On Contact or" in sch and "HCS credits the difference" in sch)
-    check("the standard defines the wait and the service level", "to the start of their conversation with an" in std
-          and "three minutes or less" in std)
-    man = pd.read_csv(os.path.join(t, "data_pull_manifest_2026-10-30.csv"))
-    check("the manifest lists every other shipped file", set(man["File"]) == set(os.listdir(t)) -
-          {"data_pull_manifest_2026-10-30.csv"}, "%d files" % len(man))
-    print("%d checks, %d FAIL" % (len(OUT), OUT.count(False)))
-    return 0 if all(OUT) else 1
+    # ---- services by the delivery point their feeder was supplied from in the season
+    src = {}
+    for r in rows(f("vvpud_oms_feeder_sources.csv")):
+        if r["effective_from"] <= "2026-04-01" and (not r["effective_to"] or r["effective_to"] >= "2026-09-30"):
+            src[r["feeder"]] = codes[r["source_dp"]]
+    nb = defaultdict(int)
+    eb = defaultdict(float)
+    for r in rows(f("vvpud_gis_service_points_2026-09-30.csv")):
+        if r["svc_no"] in active:
+            k = src[r["feeder"]]
+            nb[k] += 1
+            eb[k] += season(r["svc_no"], 2026) / 1000.0
+    for k in codes.values():
+        ok(nb[k] == fig["c_" + k]["services"], "B services %s" % k)
+        ok(round(eb[k], 1) == fig["c_" + k]["billed_mwh"], "B energy %s" % k)
+
+    print("verify: %d failures" % len(fails))
+    for x in fails:
+        print("  FAIL", x)
+    return 1 if fails else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")))
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(TASK, "target")))
