@@ -7,7 +7,7 @@
   "stage": 2,
   "stage_name": "design",
   "updated": "2026-10-23",
-  "stump": "A competent analyst divides every 2025 examination result by the bias the October accuracy check measured against the reference method, applies the survey weights and files about 610,000 adults below 20 ng/mL; the check measured the one reagent lot and analyzer in use that week, the manufacturer's July recalibration and each later lot moved the assay, the second analyzer reads above the first and the lots' mean results move with the season, so only each lot's and analyzer's shift read from the survey's December re-assays of stored duplicate aliquots, added to the check, gives about 700,000.",
+  "stump": "A competent analyst pools the December re-assays of stored duplicates by the reagent lot and analyzer each original result carries, adds the October accuracy check's bias for the lot and analyzer it measured, weights each county and names the wrong counties, or divides every result by the check's bias and names fewer; the immunoassay's bias is set at each calibration, the calibrator lot changed on its own dates and every recalibration moved it, so only each result's own calibration's shift, read from the re-assays of results measured under it and anchored at the check's own calibration, names the golden set.",
   "architecture": 2,
   "loops": 0,
   "precut": {
@@ -20,7 +20,7 @@
   },
   "duplicate_check": {
     "heart": null,
-    "nearest": "task192 0.08"
+    "nearest": "task478 v5 0.10"
   },
   "judge": {
     "verdict": null,
@@ -28,7 +28,7 @@
     "report": null
   },
   "returned": [],
-  "resume": "Stage 2: write the default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet for architecture 2 (the survey's stored-duplicate re-assays carry the October accuracy check to every lot and analyzer), then the generator under task274/generator (the architecture 1 generator there is replaced).",
+  "resume": "Stage 2: build the world (the survey's eight county stands, the laboratory's calibrations with reagent lots, calibrator lots and analyzers, the October check and the December re-assays) and search seeds where the calibration family agrees and every lot-level route files another set; then the asks, the pack, prompt.txt and the design note's stage-2 sections to precut exit 0. The architecture 1 generator under task274/generator is replaced (postprocess.py and the document helpers kept).",
   "approved": null,
   "delivered": null,
   "portal": null,

@@ -5,11 +5,11 @@
   "slot_note": "seed DA24 (quantity only: a count on a distribution read against a fixed limit); architecture 2 re-rooted after architecture 1 was spent at stage 4",
   "domain": "survey-research-official-statistics",
   "subdomain": "nonresponse-calibration-measurement-error-adjustment",
-  "niche": "a state health and nutrition survey's statutory report of how many adults had serum vitamin D below 20 ng/mL on the reference method's scale in its 2025 examination wave, when one accuracy check measured one reagent lot on one analyzer at the survey's laboratory",
+  "niche": "a health district examination survey's 2025 wave, used to choose the counties where the district's 2027 vitamin D programme opens first (more than 30 per cent of adults below 20 ng/mL on the reference method's scale), when one accuracy check measured the laboratory's immunoassay under one calibration and the survey's December re-assays of stored duplicate aliquots, run under one later calibration, are the only link from it to every other calibration of the year",
   "objective": "descriptive-distribution",
-  "shape": "14",
-  "decision_type": "quantity_figure",
-  "answer_unit": "count",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
   "answer": "",
   "answer_source": "",
   "gap": [
@@ -20,20 +20,20 @@
   ],
   "generators": [
     "G4",
-    "G3"
+    "G2"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "parallel_run_overlap",
-  "stump_strategy": "decomposition_attribution",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "close_out_summary",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly divides every 2025 examination result by the bias the October accuracy check measured against the reference method, applies the survey weights and files about 610,000 adults below 20 ng/mL, against the golden's 700,000, because the check measured only the reagent lot and analyzer in use that week.",
-  "domain_test": "The deciding quantity is a population prevalence from survey biomarker measurements adjusted to a reference measurement procedure, each result's bias taken from the accuracy check for the lot and analyzer it measured and carried to every other lot and analyzer by the survey's own re-assays of stored duplicate aliquots (paired measurements of one specimen); comparing lots by their results confounds lot with season and respondent, so only the paired design separates them.",
+  "analyst_test": "A strong analyst who reads every file correctly pools the December re-assays of stored duplicates by the reagent lot and analyzer each original result carries, adds the October accuracy check's bias for the lot and analyzer it measured, weights each county and names a wrong set of counties: the immunoassay's bias is set at each calibration, the calibrator lot changed three times on its own dates and routine recalibrations moved it again, so the check speaks only for the calibration it ran under and each county's results sit under calibrations whose shifts differ from their reagent lot's pooled average; dividing every result by the check's bias files another wrong set.",
+  "domain_test": "The deciding quantity is a population prevalence from survey biomarker measurements standardised to a reference measurement procedure the way a survey laboratory standardises an immunoassay: each result's bias is the bias of the calibration it was measured under, carried from the one accuracy-based check to every calibration of the year by re-assays of stored duplicate aliquots in one run and read on the reference scale at the clinical cut-off; with a questionnaire score or a meter in place of the assay there is no calibration, no stored duplicate and no reference procedure to carry, and the task stops making sense.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:a reference bias measured once for one lot and analyzer, carried to every lot and analyzer by a survey's re-assays of stored duplicate aliquots on the checked lot, not by the lots' mean results",
+  "layer2_pattern": "own:a reference bias measured under one calibration, carried to every calibration of the year by re-assays of stored duplicates in one run, read per calibration rather than pooled by reagent lot",
   "layer1": [
     "laboratory results in local time against a run log in UTC across daylight saving",
     "results below and above the reportable range as text",
@@ -53,13 +53,24 @@
     "source": "synthetic"
   },
   "forum": "council_or_assembly",
-  "forcing_event": "launch_or_rollout",
+  "forcing_event": "vote_or_meeting",
   "org_family": "research_or_statistics_office",
   "world": {
     "geography": "United States (the health district, its survey, laboratory and people are fictional)",
     "currency": "USD",
-    "org_type": "regional health district's center for health statistics, which runs the health and nutrition examination survey, and its contracted laboratory",
-    "invented_names": [],
+    "org_type": "regional health district's center for health statistics, which runs the health and nutrition examination survey, and its contracted hospital laboratory",
+    "invented_names": [
+      "Merrivane Health District",
+      "Merrivane Health and Nutrition Examination Survey",
+      "Wexmoor County",
+      "Corvale County",
+      "Lassiter County",
+      "Ulverne County",
+      "Vellance County",
+      "Quennel County",
+      "Yarrowmere County",
+      "Inskeep County"
+    ],
     "people": [
       "Tanya Greene",
       "Bernard Weaver",
@@ -72,13 +83,15 @@
     "vitamin_d_status_2025.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "The decisive quantity is how many members of a weighted population fall below a line on a reference scale when one check measured the instrument's bias for one batch on one device, and the readings were made on many batches and devices in different seasons; applying the check's bias to every reading misplaces the line, and comparing batches by their readings mistakes the season for the batch, so each batch's and device's shift is read from a random subsample measured twice, once in its own batch and once in the checked one, and added to the check.",
-  "driver_concrete": "How many adults' 2025 examination 25-hydroxyvitamin D was below 20 ng/mL on the reference measurement procedure's scale, each result divided by its own reagent lot's and analyzer's bias: the October accuracy check's bias for the lot and analyzer it measured, plus each other lot's and analyzer's shift read from the December re-assays of the survey's stored duplicate aliquots; not the reported results, not the check's bias applied to every result, not lots compared by their mean results, and not lot or analyzer shifts alone.",
-  "stump": "A competent analyst divides every result by the accuracy check's measured bias, applies the weights and files about 610,000 adults (or reads the reported results and files about 430,000); the check measured one reagent lot on one analyzer, the manufacturer's mid-year recalibration and each later lot moved the assay and the second analyzer reads above the first, and the lots' mean results move with the season, so only each lot's and analyzer's shift read from the stored-duplicate re-assays, added to the check, gives about 700,000.",
+  "question_form": "which",
+  "driver": "The decisive quantity is which groups of a weighted population have more than a share below a line on a reference scale, when one check measured the instrument's bias under one calibration and a random subsample was measured again in one later run; the bias is set at each calibration, which changes more often than the labelled batch, so shifts pooled by batch leave the groups measured under calibrations far from their batch's average on the wrong side of the line, and only each reading's own calibration's shift, anchored at the calibration the check ran under, names the set.",
+  "driver_concrete": "Which of eight counties had more than 30 per cent of adults with 2025 examination serum 25-hydroxyvitamin D below 20 ng/mL on the reference measurement procedure's scale: each result divided by the bias of the calibration it was measured under, that calibration's shift read from the December re-assays of stored duplicate aliquots of results measured under it and anchored at the calibration the October accuracy check ran under; not the reported results, not the check's bias on every result, not the re-assay shifts pooled by reagent lot and analyzer.",
+  "stump": "A competent analyst pools the December re-assays by reagent lot and analyzer, adds the October accuracy check for the lot and analyzer it measured and names the wrong counties, or divides every result by the check's bias and names fewer; the calibrator lot changed on its own dates and every recalibration moved the assay's bias, so only each result's own calibration's shift, read from the re-assays of results measured under it and anchored at the check's own calibration, names the golden set.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task274": "architecture 1 rebuilt survivors forward from additions through a fitted survivor curve to recover unrecorded ages; this carries a measured instrument bias along a chain of paired measurements on shared specimens, with no curve, no ages and no survival"
+    "task274": "architecture 1 rebuilt survivors forward from additions through a fitted survivor curve to recover unrecorded ages; this carries a measured instrument bias to every calibration through paired measurements of the same specimens, with no curve, no ages and no survival",
+    "task243": "task243 recovers the share of a population's exits a register records from a growth balance between two counts disturbed by migration; this standardises a laboratory measurement to a reference scale per calibration through re-assays of the same specimens, with no balance, no exits and no migration",
+    "task450": "task450 links two forms through shared items answered by different groups and screens the drifting items; here the same specimens are measured twice, so no group difference is separated and nothing is screened, and the decisive move is the grain of the correction, each calibration rather than the labelled reagent lot"
   },
   "lineage": [
     {
@@ -108,6 +121,6 @@
     }
   ],
   "architecture_spent": null,
-  "notes": "Re-rooted 2026-10-23 after architecture 1 was spent at stage 4 (Gate F). Drawn from seed DA24's quantity only (a count on a distribution read against a fixed limit); world redrawn. WARNs answered in the design note's Draw. Two draws refused before this one: an engine-hours warranty risk set (the integration lever 0.92 to 1.07 of mean imputation) and a chain of lot verifications (estimator spread 900 to 5,600 on 18,000).",
-  "registered": "2026-10-23T08:52:15Z"
+  "notes": "Re-rooted 2026-10-23 after architecture 1 was spent at stage 4 (Gate F). Drawn from seed DA24's quantity only (a count on a distribution read against a fixed limit); world redrawn. Architecture 2 was first filed as a county-wide count corrected per reagent lot and analyzer (f2830db8); at stage 2 the count proved to need only the average bias, and per lot and analyzer pooling is the reflex a reader takes with re-assays in hand, so the call became a county designation and the decisive grain the calibration. Axes redrawn on re-registration: strategy decomposition_attribution (banned on task177 v3) to composition_mix, the honest family once the move is each county's own mix of calibrations against its reagent lot's pooled mix; context artifact filed_standard (task177 v3) to close_out_summary, the wave's fieldwork close-out that ships; forcing event launch_or_rollout (task178 v3) to vote_or_meeting, the board's vote on the programme's first counties. WARNs answered in the design note's Draw. Two draws refused before this one: an engine-hours warranty risk set (the integration lever 0.92 to 1.07 of mean imputation) and a chain of lot verifications (estimator spread 900 to 5,600 on 18,000).",
+  "registered": "2026-10-23T09:16:16Z"
 }
