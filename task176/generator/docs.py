@@ -78,7 +78,8 @@ POLICY = [
         "Friday).",
         "The full-time monthly rate is paid for a full month. For a part month it is prorated by the line's scheduled "
         "days over the Monday to Friday days of the month. A child authorised at two providers for the same days is paid "
-        "at half the monthly rate at each.",
+        "at half the monthly rate at each. Where one remittance pays for care at several homes, each home is paid the "
+        "amounts of its own lines.",
         "A remittance returned unpaid is voided and paid again in the next run."]),
     ("Section 4. Absence and notice", [
         "A provider is paid for scheduled days on which the child is absent, up to 20 days a year. When a child stops "

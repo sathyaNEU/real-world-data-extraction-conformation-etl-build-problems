@@ -9,7 +9,7 @@
  "updated": "2026-10-23",
  "stump": "A competent solver fits closure hazards by years licensed with provider age, county and the grant flag and files about 300 closures for 2027; the step that lands it there is reading closure on the home's tenure when it runs on the provider's youngest own child's kindergarten year.",
  "architecture": 2,
- "loops": 3,
+ "loops": 4,
  "card_registered": true,
  "precut": {
   "exit": 0,
@@ -25,9 +25,9 @@
   "nearest": "task133 0.05"
  },
  "judge": {
-  "verdict": "round 3 NOT_DETERMINISTIC (margin_or_boundary_fragility)",
-  "disposition": "repaired in the world; round 4 owes a fresh judge",
-  "report": "session scratchpad judge-task176c/verdict.md"
+  "verdict": "round 4 DETERMINISTIC/APPROVE",
+  "disposition": "advisory fork closed by the policy sentence; round 5 owes a fresh judge",
+  "report": "session scratchpad judge-task176d/verdict.md"
  },
  "returned": [
   {
@@ -50,6 +50,13 @@
    "call": "held 2/2 (300, 300); judge NOT_DETERMINISTIC margin_or_boundary_fragility, honest models 419 to 456 around 425",
    "asks": "held: readers E and F 2/22 each",
    "repair": "world retuned (kindergarten-summer excess 0.215 a month, world stream world/8); golden the honest family's centre 450.4, family of 16 at 437.2 to 463.6 asserted 10 or more inside both edges; child-days pinned by the date of the care; money device unchanged; worst-route pair on six readers 33.5"
+  },
+  {
+   "round": 4,
+   "zip": "b008c62c",
+   "call": "held 2/2 (300, 300); judge DETERMINISTIC/APPROVE, specs 435 to 464",
+   "asks": "reader G 22/22 (money device cracked by the line-pay share), reader H 2/22",
+   "repair": "policy sentence pays each home its own lines (care_days split closed); child-days dropped; asks three tables of ten by region and half (money, food program meals, split care), each on its own device; pair 37.7, each single crack 30.3 off the call"
   }
  ],
  "wave": "wave 8 (new), seed FC47: the world, the decision and the quantity kept (360 satellites for 2027, six rideshare launches of at most 60, release at 210 km, storm loss below 350 km, expected storm loss two or fewer per launch, the rest to 2028); the seed's onsets-against-storm-days mechanism set aside as a unit reading",
@@ -104,7 +111,7 @@
    "stage3": "checks.py 105 of 105, verify.py green (own IRLS 461.02), two byte-identical builds, figures_check 0, precut 0, leak.py REVIEW, guard heart WARN, surface no hard tell after the manifest schema change; asks re-sited (food program and visits cut to distractors) after the coordinator's stage 4 measurements"
   }
  },
- "resume": "stage 4 round 4: a fresh judge pass and two fresh scored readers",
+ "resume": "stage 4 round 5: a fresh judge pass and two fresh scored readers",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -179,21 +179,17 @@ def main(target):
         ok("R2 %s leaves the call" % name, cell(v) == cell(g), "%.1f" % v)
 
     # ---- asks: golden figures, devices and stops ---------------------------------------------------------------------
-    a = calc.ask_child_days(target)
-    a_sum = calc.ask_child_days(target, union=False)
-    a_reg = calc.ask_child_days(target, statewide=False)
     b = calc.ask_money(target)
+    meals = calc.ask_meals(target)
+    split = calc.ask_split(target)
     slug = {r: "R%d_%s" % (r, C.REGIONS[r].split()[-1]) for r in C.REGIONS}
-    ok("ASK A statewide matches figures", figs["a_statewide"] == {"H1": a[1], "H2": a[2]}, str(a))
-    ok("ASK A statewide equals the regions' sum (no child on two regions' books on one day)",
-       all(a[h] == sum(a_reg[(r, h)] for r in C.REGIONS) for h in (1, 2)), "")
-    ok("ASK A the summed lines differ from once a day (the prompt's clause decides)", all(a_sum[h] != a[h] for h in (1, 2)),
-       "%d %d" % (a_sum[1], a_sum[2]))
+    qcells = [(r, h) for r in C.REGIONS for h in (1, 2)]
     for r in C.REGIONS:
-        ok("ASK B %s matches figures" % slug[r], figs["b_" + slug[r]] == {"Q%d" % q: int(round(b[(r, q)])) for q in (1, 2, 3, 4)})
-        ok("ASK B %s every quarter clear of the half-dollar" % slug[r], all(C.edge(b[(r, q)], 1) >= 0.005 for q in (1, 2, 3, 4)),
-           ", ".join("%.2f" % b[(r, q)] for q in (1, 2, 3, 4)))
-    qcells = [(r, q) for r in C.REGIONS for q in (1, 2, 3, 4)]
+        ok("ASK B %s matches figures" % slug[r], figs["b_" + slug[r]] == {"H%d" % h: int(round(b[(r, h)])) for h in (1, 2)})
+        ok("ASK B %s every half clear of the half-dollar" % slug[r], all(C.edge(b[(r, h)], 1) >= 0.005 for h in (1, 2)),
+           ", ".join("%.2f" % b[(r, h)] for h in (1, 2)))
+        ok("ASK M %s matches figures" % slug[r], figs["m_" + slug[r]] == {"H%d" % h: meals[(r, h)] for h in (1, 2)})
+        ok("ASK S %s matches figures" % slug[r], figs["s_" + slug[r]] == {"H%d" % h: split.get((r, h), 0) for h in (1, 2)})
     stops = {}
     for key in ["lines"] + [k for k in calc.MONEY_KEYS if k != "remittance"]:
         stops[key] = calc.ask_money(target, key=key)
@@ -207,25 +203,28 @@ def main(target):
        all(int(round(bvp[k])) != int(round(b[k])) for k in qcells), "")
     # fairness: the shipped rows force the handling
     ccap = C.read_csv(os.path.join(target, C.F_CCAP))
-    ok("ASK A no child is paid at two homes in different regions on one day", cross_region_overlaps(target, ccap) == 0, "")
     ok("ASK B every line of a remittance carries one amount and status", remittance_consistent(ccap), "")
-    ok("ASK B remittances carrying several homes' children in every region and quarter", multi_home(target, ccap), "")
-    # the data force the unit: what each competing key is ruled out by, from the shipped rows and the filed rates
+    ok("ASK B remittances carrying several homes' children in every region and half", multi_home(target, ccap), "")
     tie = amount_ties(target, ccap)
     ok("ASK B every number, run and county office group is within its lines at the full-time rate, most equal to it",
        tie["over"] == 0 and tie["exact"] > 0.9 * tie["groups"], "%d of %d exact" % (tie["exact"], tie["groups"]))
-    ok("ASK B run and provider gives amounts the provider's own lines cannot earn, in every region and quarter",
-       len(tie["imp_cells"]) == 20 and min(tie["imp_cells"].values()) >= 3,
+    ok("ASK B run and provider gives amounts the provider's own lines cannot earn, in every region and half",
+       len(tie["imp_cells"]) == 10 and min(tie["imp_cells"].values()) >= 3,
        "%d groups, fewest in a cell %d" % (tie["imp"], min(tie["imp_cells"].values())))
     ok("ASK B one number in one run carries different amounts in different county offices", tie["nr_multi"] > 100,
        "%d of %d" % (tie["nr_multi"], tie["nr"]))
-    # SF10 the region of the home that gave the care: a remittance whose homes lie in several regions is shared by its
-    # lines' pay at the filed rates, which sums to its amount
+    # SF10 the region of the home that gave the care: a remittance whose homes lie in several regions pays each home the
+    # amounts of its own lines (policy section 3), which sum to its amount
     xr = cross_region(target, ccap)
     ok("SF10 every multi-region remittance's amount is its lines' pay at the filed rates (to the cent per line)",
        xr["groups"] > 50 and xr["off"] == 0, "%d groups" % xr["groups"])
-    ok("SF10 a remittance carrying homes of two or more regions touches every region and quarter",
-       len(xr["cells"]) == 20 and min(xr["cells"].values()) >= 2, "fewest in a cell %d" % min(xr["cells"].values()))
+    ok("SF10 a remittance carrying homes of two or more regions touches every region and half",
+       len(xr["cells"]) == 10 and min(xr["cells"].values()) >= 2, "fewest in a cell %d" % min(xr["cells"].values()))
+    pol_txt = pdf_text(os.path.join(target, C.F_POL))
+    ok("SF10 the policy pays each home the amounts of its own lines, and no filed text shares a remittance by care days",
+       "each home is paid the amounts of its own lines" in pol_txt and
+       not re.search(r"share[sd]? (of )?(a |the )?remittance|by care.?days|in proportion", pol_txt + open(
+           os.path.join(target, C.F_DICT), encoding="utf-8").read(), re.I), "")
     hits = []
     for key in calc.MONEY_KEYS:
         for region, alloc in (("home", "pay"), ("home", "days"), ("home", "first"), ("office", "pay")):
@@ -243,6 +242,35 @@ def main(target):
     ok("ASK B remittance numbers recur across county offices in every run and for a home across runs",
        shared_numbers(ccap), "")
 
+    # ---- Ask M: one claim is its sponsor and number, at its latest filing (SF12) ------------------------------------
+    cf = C.read_csv(os.path.join(target, C.F_CACFP))
+    mf = meal_facts(cf)
+    ok("SF12 a claim number filed twice by one sponsor names one site and month (a revision)", mf["rev_same"] == mf["rev"] > 100,
+       "%d of %d" % (mf["rev_same"], mf["rev"]))
+    ok("SF12 one claim number used by two sponsors names different sites or months (each sponsor's own sequence)",
+       mf["coll"] > 1000, "%d numbers" % mf["coll"])
+    ok("SF12 a sponsor's two claims for one site and month cover the month's days between them (a tier change)",
+       mf["split"] > 100 and mf["split_over"] == 0, "%d pairs, %d over the month" % (mf["split"], mf["split_over"]))
+    for key in [k for k in calc.MEAL_KEYS if k not in ("claim", "number_site")] + ["all"]:
+        got = calc.ask_meals(target, key=key)
+        ok("ASK M one claim taken as %s misses every cell" % key, all(got.get(c, 0) != meals[c] for c in qcells),
+           "%d to %d" % (min(got.get(c, 0) - meals[c] for c in qcells), max(got.get(c, 0) - meals[c] for c in qcells)))
+    got = calc.ask_meals(target, latest=False)
+    ok("ASK M each claim at its first filing misses every cell", all(got.get(c, 0) != meals[c] for c in qcells), "")
+    ok("ASK M every meal cell touched by a revision and by a tier change", mf["cells_rev"] == 10 and mf["cells_split"] == 10, "")
+
+    # ---- Ask S: split care, one home's days within the other's (SF13) ---------------------------------------------
+    sf = split_facts(target, ccap)
+    ok("SF13 every split pair has one home's days within the other's and every move overlap has neither",
+       sf["within_ok"], "%d split, %d move" % (sf["n_within"], sf["n_move"]))
+    ok("SF13 the remittance amounts pay split lines at half the rate and a move's notice lines at the full rate",
+       sf["tie_split"] and sf["tie_move"], "%d remittances with split lines, %d with notice lines" % (sf["r_split"], sf["r_move"]))
+    ok("SF13 no split pair crosses a region", sf["cross"] == 0, "")
+    ov = calc.ask_split(target, rule="overlap")
+    ok("ASK S every same-day overlap counted misses every cell", all(ov.get(c, 0) != split.get(c, 0) for c in qcells),
+       "%d to %d" % (min(ov.get(c, 0) - split.get(c, 0) for c in qcells), max(ov.get(c, 0) - split.get(c, 0) for c in qcells)))
+    ok("ASK S every cell holds a split child", all(split.get(c, 0) > 0 for c in qcells), "")
+
     # ---- separation: the call reads no ask row -----------------------------------------------------------------------
     ok("SEP the call reads only the licence extract, the crosswalk and the worksheets",
        set(calc_inputs()) == {C.F_LIC, C.F_XW, C.F_WS}, ", ".join(calc_inputs()))
@@ -254,7 +282,7 @@ def main(target):
         ok("DIS %s read by no figure" % f, f not in calc_inputs() + [C.F_CCAP, C.F_CTY], "")
 
     # ---- realism -------------------------------------------------------------------------------------------------------
-    counts = [a[1], a[2]] + [int(round(b[k])) for k in qcells]
+    counts = [int(round(b[k])) for k in qcells] + [meals[k] for k in qcells]
     dup = [c for c, k in collections.Counter(counts).items() if k > 1]
     ok("REAL no two graded counts identical", not dup, str(dup))
     ok("REAL no graded count a round hundred", all(c % 100 for c in counts), "")
@@ -408,7 +436,7 @@ def amount_ties(target, ccap):
         if float(v[0]["remittance_amount"]) > sum(full_rate(r) for r in v) + 0.01 * len(v):
             out["imp"] += 1
             if v[0]["provider_type"] in ("SFCC", "LFCC") and k[0].startswith("2026") and v[0]["remittance_status"] != "VOID":
-                out["imp_cells"][(reg[v[0]["county_fips"]], (int(k[0][5:7]) - 1) // 3 + 1)] += 1
+                out["imp_cells"][(reg[v[0]["county_fips"]], 1 if int(k[0][5:7]) <= 6 else 2)] += 1
     return out
 
 
@@ -426,8 +454,104 @@ def cross_region(target, ccap):
         out["groups"] += 1
         out["off"] += abs(float(v[0]["remittance_amount"]) - sum(calc.line_pay(r) for r in v)) > 0.01 * len(v)
         for rg in regs | {calc.regions_by_fips(target)[k[2]]}:
-            out["cells"][(rg, (int(k[1][5:7]) - 1) // 3 + 1)] += 1
+            out["cells"][(rg, 1 if int(k[1][5:7]) <= 6 else 2)] += 1
     return out
+
+
+def meal_facts(cf):
+    import calendar
+    rows = [r for r in cf if r["site_licence_no"].startswith("FC")]
+    by_num = collections.defaultdict(list)
+    for r in rows:
+        by_num[r["claim_no"]].append(r)
+    rev = rev_same = coll = 0
+    cells_rev, cells_split = set(), set()
+    reg = None
+    for no, v in by_num.items():
+        sp = collections.defaultdict(list)
+        for r in v:
+            sp[r["sponsor_id"]].append(r)
+        if len(sp) > 1:
+            coll += 1
+        for k, w in sp.items():
+            if len(w) > 1:
+                rev += 1
+                rev_same += len({(r["site_licence_no"], r["claim_month"]) for r in w}) == 1
+                cells_rev.add((w[0]["county_fips"], 1 if int(w[0]["claim_month"][5:7]) <= 6 else 2))
+    ssm = collections.defaultdict(dict)
+    for r in rows:
+        ssm[(r["sponsor_id"], r["site_licence_no"], r["claim_month"])][r["claim_no"]] = r
+    split = over = 0
+    for k, d in ssm.items():
+        if len(d) > 1:
+            split += 1
+            y, m = int(k[2][:4]), int(k[2][5:7])
+            wd = sum(1 for x in range(1, calendar.monthrange(y, m)[1] + 1) if dt.date(y, m, x).weekday() < 5)
+            over += sum(int(r["operating_days"]) for r in d.values()) > wd
+            r0 = next(iter(d.values()))
+            cells_split.add((r0["county_fips"], 1 if m <= 6 else 2))
+    rn = {}
+    for c in C.COUNTIES:
+        rn[c[1] + " County"] = c[2]
+    return dict(rev=rev, rev_same=rev_same, coll=coll, split=split, split_over=over,
+                cells_rev=len({(rn[c], h) for c, h in cells_rev}), cells_split=len({(rn[c], h) for c, h in cells_split}))
+
+
+def split_facts(target, ccap):
+    home = calc.home_regions(target)
+    by = calc._child_days_by_home(target)
+    n_within = n_move = 0
+    within_ok = True
+    split_days, move_lines = {}, set()
+    cross = 0
+    for ch, d in by.items():
+        if len(d) < 2:
+            continue
+        ps = sorted(d)
+        for x in range(len(ps)):
+            for y in range(x + 1, len(ps)):
+                p, q = ps[x], ps[y]
+                if not (d[p] & d[q]):
+                    continue
+                if d[p] <= d[q] or d[q] <= d[p]:
+                    n_within += 1
+                    split_days.setdefault(ch, set()).update(d[p] & d[q])
+                    cross += home[p] != home[q]
+                else:
+                    n_move += 1
+                    early = p if min(d[p]) < min(d[q]) else q
+                    move_lines.add((ch, early))
+    # the remittance tie: single-home remittances, each line's pay at the full rate, halved on split lines
+    g = collections.defaultdict(list)
+    for r in ccap:
+        if r["provider_type"] in ("SFCC", "LFCC") and r["remittance_status"] != "VOID":
+            g[(r["remittance_no"], r["pay_run_date"], r["county_fips"])].append(r)
+    r_split = r_move = 0
+    tie_split = tie_move = True
+    for k, v in g.items():
+        if len({r["provider_no"] for r in v}) > 1:
+            continue
+        amt = float(v[0]["remittance_amount"])
+        def half(r):
+            a0, b0 = dt.date.fromisoformat(r["service_from"]), dt.date.fromisoformat(r["service_to"])
+            sd = split_days.get(r["child_no"])
+            if not sd:
+                return False
+            wd = [a0 + dt.timedelta(days=k) for k in range((b0 - a0).days + 1)]
+            wd = [x for x in wd if x.weekday() < 5]
+            return bool(wd) and all(x in sd for x in wd)
+        pay = sum(calc.line_pay(r) * (0.5 if half(r) else 1.0) for r in v)
+        has_s = any(half(r) for r in v)
+        has_m = any((r["child_no"], r["provider_no"]) in move_lines for r in v)
+        ok_tie = abs(amt - pay) <= 0.01 * len(v)
+        if has_s:
+            r_split += 1
+            tie_split &= ok_tie
+        if has_m:
+            r_move += 1
+            tie_move &= ok_tie
+    return dict(n_within=n_within, n_move=n_move, within_ok=within_ok, tie_split=tie_split and r_split > 50,
+                tie_move=tie_move and r_move > 50, r_split=r_split, r_move=r_move, cross=cross)
 
 
 def multi_home(target, ccap):
@@ -436,8 +560,8 @@ def multi_home(target, ccap):
     for r in ccap:
         if r["provider_type"] in ("SFCC", "LFCC") and r["pay_run_date"].startswith("2026") and r["remittance_status"] != "VOID":
             by[(r["remittance_no"], r["pay_run_date"], r["county_fips"])].add(r["provider_no"])
-    cells = collections.Counter((reg[k[2]], (int(k[1][5:7]) - 1) // 3 + 1) for k, v in by.items() if len(v) > 1)
-    return len(cells) == 20 and min(cells.values()) >= 3
+    cells = collections.Counter((reg[k[2]], 1 if int(k[1][5:7]) <= 6 else 2) for k, v in by.items() if len(v) > 1)
+    return len(cells) == 10 and min(cells.values()) >= 3
 
 
 def shared_numbers(ccap):

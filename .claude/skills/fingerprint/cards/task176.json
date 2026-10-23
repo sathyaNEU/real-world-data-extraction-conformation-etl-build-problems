@@ -44,7 +44,8 @@
     "homes licensed before 2016 present only from their first renewal on the current record (delayed entry)",
     "county names in two spellings across files, mapped to regions by a lookup",
     "subsidy lines billed by service period across half-year boundaries, with notice-period payments to a home a child has left",
-    "every subsidy child line repeating its remittance's amount, remittance numbers restarting in each county office's run, network remittances issued by the base county's office for homes in other counties, voided remittances paid again in the next run"
+    "every subsidy child line repeating its remittance's amount, remittance numbers restarting in each county office's run, network remittances issued by the base county's office for homes in other counties, voided remittances paid again in the next run",
+    "food program claims numbered in each sponsor's own sequence, revisions filed again under the claim's number, a month filed as two claims when a home's tier changes"
   ],
   "stakeholder_role": "the child care supply analyst in the Department of Early Learning's Office of Child Care",
   "role_family": "capacity_planner",

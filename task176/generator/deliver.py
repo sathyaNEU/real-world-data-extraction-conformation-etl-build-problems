@@ -26,13 +26,15 @@ def history(homes):
 def compute(target):
     g = calc.golden(target)
     d = calc.default_route(g)
-    a = calc.ask_child_days(target)
     b = calc.ask_money(target)
+    m = calc.ask_meals(target)
+    sp = calc.ask_split(target)
     return dict(
         golden=g["golden"], call=C.rnd(g["golden"], 50), stock=g["stock"], nk=g["nk"], ksummers=g["ksummers"],
         kcloses=g["kcloses"], pk=g["pk"], default=d, default_r=C.rnd(d, 50),
         fam_lo=int(round(min(g["family"].values()))), fam_hi=int(round(max(g["family"].values()))),
-        a={k: a[k] for k in sorted(a)}, b={k: int(round(b[k])) for k in sorted(b)}, b_raw=b, history=history(g["homes"]))
+        b={k: int(round(b[k])) for k in sorted(b)}, b_raw=b, m={k: m[k] for k in sorted(m)},
+        s={k: sp.get(k, 0) for k in sorted(m)}, history=history(g["homes"]))
 
 
 def figures(x):
@@ -41,9 +43,12 @@ def figures(x):
          "call_family": {"low": x["fam_lo"], "high": x["fam_hi"]},
          "constants": {"as_of_day": C.RECORD_END.day, "rounding_step": 50, "age_terms": list(calc.AGE_TERMS),
                        "region_numbers": sorted(C.REGIONS)}}
-    f["a_statewide"] = {"H1": x["a"][1], "H2": x["a"][2]}
     for r in C.REGIONS:
-        f["b_" + SLUG[r]] = {"Q%d" % q: x["b"][(r, q)] for q in (1, 2, 3, 4)}
+        f["b_" + SLUG[r]] = {"H%d" % h: x["b"][(r, h)] for h in (1, 2)}
+    for r in C.REGIONS:
+        f["m_" + SLUG[r]] = {"H%d" % h: x["m"][(r, h)] for h in (1, 2)}
+    for r in C.REGIONS:
+        f["s_" + SLUG[r]] = {"H%d" % h: x["s"][(r, h)] for h in (1, 2)}
     return f
 
 
@@ -95,26 +100,37 @@ def submission(x):
              "their youngest's kindergarten summer, and summed each home's chance of closing; the same terms as logit, "
              "with tenure as a line or left out, fitted from 2020 or 2022, read as rates, or as annual rates give %s to %s, "
              "centred on %s to the nearest 50." % (n(x["stock"]), n(x["nk"]), n(x["fam_lo"]), n(x["fam_hi"]), n(x["call"])))
-    L.append("5. Child-days (ccap_payment_lines_2026.csv): kept SFCC and LFCC lines of remittances not voided, "
-             "expanded each line to its Monday to Friday days in 2026, and counted each child and day once.")
-    L.append("6. Money (ccap_payment_lines_2026.csv): kept SFCC and LFCC remittances paid in the 2026 runs and not voided, "
+    L.append("5. Money (ccap_payment_lines_2026.csv): kept SFCC and LFCC remittances paid in the 2026 runs and not voided, "
              "took each remittance once as its number, run date and county office, and credited it to the region of the "
              "home that gave the care (licence extract county). A remittance carrying homes in more than one region was "
              "shared by its lines' pay (the section 5 rate prorated by the line's days over the month's Monday to Friday "
-             "days), which sums to its amount; summed by the quarter of the run date.")
-    L.append("7. Allerton should plan for about %s homes closing during 2027." % n(x["call"]))
+             "days), which sums to its amount, each home paid the amounts of its own lines; summed by the half of the run date.")
+    L.append("6. Meals (cacfp_home_claims_2026.csv): kept the home sites' claims, took each claim once at its latest "
+             "filing as its sponsor and claim number (each sponsor numbers its claims in its own sequence, a revision "
+             "keeps the number, and a home whose tier changed in the month has two claims), and summed breakfasts, "
+             "lunches, suppers and snacks by the site's region and the half of the claim month.")
+    L.append("7. Split care (ccap_payment_lines_2026.csv): a child paid at two homes for the same days is in split care "
+             "when one home's days for the child lie within the other's; a child who moved has the home left paid "
+             "through its notice days while the next home starts, at the full rate, which the remittance amounts "
+             "confirm against the half rate of split care.")
+    L.append("8. Allerton should plan for about %s homes closing during 2027." % n(x["call"]))
     L.append("")
     L.append("## 4. Deliverable Answers")
     L.append("")
     L.append("### %s" % C.DELIVERABLE)
     L.append("")
     L.append("1. Homes licensed on 31 December 2026 that will close during 2027, to the nearest 50: %s." % n(x["call"]))
-    L.append("2. Child-days of subsidised care in family child care homes in Allerton, a child counted once on a day: "
-             "first half of 2026 %s, second half %s." % (n(x["a"][1]), n(x["a"][2])))
-    L.append("3. Money the subsidy paid to family child care homes, by the region of the home and quarter of the 2026 payment run, "
-             "nearest dollar, first to fourth quarter:")
+    L.append("2. Money the subsidy paid to family child care homes, by the region of the home and half of the 2026 "
+             "payment run, nearest dollar, first and second half:")
     for r in reg:
-        L.append("   - %s: USD %s" % (reg[r], ", ".join(n(x["b"][(r, q)]) for q in (1, 2, 3, 4))))
+        L.append("   - %s: USD %s and %s" % (reg[r], n(x["b"][(r, 1)]), n(x["b"][(r, 2)])))
+    L.append("3. Meals and snacks claimed through the food program at family child care homes, by region and half of "
+             "2026 by month of service:")
+    for r in reg:
+        L.append("   - %s: %s and %s" % (reg[r], n(x["m"][(r, 1)]), n(x["m"][(r, 2)])))
+    L.append("4. Children whose subsidised care was split between two family child care homes, by region and half of 2026:")
+    for r in reg:
+        L.append("   - %s: %s and %s" % (reg[r], n(x["s"][(r, 1)]), n(x["s"][(r, 2)])))
     return "\n".join(L) + "\n"
 
 
@@ -189,27 +205,20 @@ def workbook(path, x):
         s.set_column(1, len(cols), 16)
         s.freeze_panes(4, 1)
 
-    cd = wb.add_worksheet("Subsidy child-days")
-    cd.write(0, 0, "Child-days of subsidised care in family child care homes, Allerton, 2026", title)
-    cd.write(1, 0, "CCAP payment lines, SFCC and LFCC providers, lines not voided; each child counted once on a day "
-                   "(Monday to Friday) whatever the number of homes paid for that day.", sub)
-    cd.write(3, 0, "Half of 2026", hf)
-    cd.write(3, 1, "Child-days", hf)
-    cd.write(4, 0, "January to June")
-    cd.write_number(4, 1, x["a"][1], nf)
-    cd.write(5, 0, "July to December")
-    cd.write_number(5, 1, x["a"][2], nf)
-    cd.write(6, 0, "2026", bold)
-    cd.write_number(6, 1, x["a"][1] + x["a"][2], bold_n)
-    cd.set_column(0, 0, 22)
-    cd.set_column(1, 1, 16)
-    money = wb.add_format({"num_format": "#,##0"})
-    regional("Subsidy payments", "Money the subsidy paid to family child care homes, 2026 payment runs (USD)",
-             ("January to March", "April to June", "July to September", "October to December"),
-             lambda r: tuple(x["b"][(r, q)] for q in (1, 2, 3, 4)),
+    halves = ("January to June", "July to December")
+    regional("Subsidy payments", "Money the subsidy paid to family child care homes, 2026 payment runs (USD)", halves,
+             lambda r: (x["b"][(r, 1)], x["b"][(r, 2)]),
              "CCAP remittances for SFCC and LFCC homes by the date of the payment run and the region of the home that "
              "gave the care; voided remittances out, their reissues in; each remittance counted once (number, run and "
-             "county office), a remittance for homes in several regions shared by its lines' pay.")
+             "county office), each home paid the amounts of its own lines.")
+    regional("Food program meals", "Meals and snacks claimed for family child care homes, 2026", halves,
+             lambda r: (x["m"][(r, 1)], x["m"][(r, 2)]),
+             "CACFP claims for home sites by month of service; each claim (sponsor and claim number) at its latest "
+             "filing; breakfasts, lunches, suppers and snacks.")
+    regional("Split care", "Children in split care between two family child care homes, 2026", halves,
+             lambda r: (x["s"][(r, 1)], x["s"][(r, 2)]),
+             "Children paid at two homes for the same days under a split authorisation (CCAP policy sections 2 and 3); "
+             "a move's notice days are not split care. A child in split care in both halves is in both columns.")
     nt = wb.add_worksheet("Notes")
     notes = ("Prepared 14 January 2027 from the January 2027 supply folder (licensing extract of 8 January 2027).",
              "A home is a family child care home licence, small or large. A home closes during 2027 when "

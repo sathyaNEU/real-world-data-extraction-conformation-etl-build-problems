@@ -158,16 +158,6 @@ def main(target):
     slug = {r: "R%d_%s" % (r, names[r].split()[-1]) for r in names}
     cc = pd.read_csv(os.path.join(target, "ccap_payment_lines_2026.csv"), dtype=str)
     cc = cc[cc.provider_type.isin(["SFCC", "LFCC"]) & (cc.remittance_status != "VOID")]
-    days = []
-    for r in cc.itertuples():
-        a = max(dt.date.fromisoformat(r.service_from), dt.date(2026, 1, 1))
-        b = min(dt.date.fromisoformat(r.service_to), dt.date(2026, 12, 31))
-        for d in pd.bdate_range(a, b) if a <= b else []:
-            days.append((r.child_no, d.date(), reg_f[r.county_fips]))
-    D = pd.DataFrame(days, columns=["child", "day", "reg"]).drop_duplicates(["child", "day"])
-    D["half"] = np.where(pd.to_datetime(D.day).dt.month <= 6, "H1", "H2")
-    A = D.groupby("half").size().to_dict()
-    say("V ask A statewide", figs["a_statewide"] == {"H1": A["H1"], "H2": A["H2"]}, str(A))
     lic = pd.read_csv(os.path.join(target, "fcc_licence_extract_20261231.csv"), dtype=str)
     home_reg = dict(zip(lic.licence_no, lic.county.str.upper().map(reg_n)))
     m = cc[cc.pay_run_date.str.startswith("2026")].copy()
@@ -176,7 +166,7 @@ def main(target):
     nxt = (pd.to_datetime(m.service_from).dt.to_period("M") + 1).dt.start_time.values.astype("datetime64[D]")
     rate = m.provider_type.map({"SFCC": 812.0, "LFCC": 846.0})
     m["pay"] = rate * m.care_days.astype(int) / np.busday_count(first, nxt)
-    m["q"] = (m.pay_run_date.str[5:7].astype(int) - 1) // 3 + 1
+    m["q"] = np.where(m.pay_run_date.str[5:7].astype(int) <= 6, 1, 2)
     m["amt"] = m.remittance_amount.astype(float)
     key = ["remittance_no", "pay_run_date", "county_fips"]
     m["share"] = m.pay / m.groupby(key).pay.transform("sum")
@@ -184,7 +174,40 @@ def main(target):
     per["money"] = per.share * per.amt
     B = per.groupby(["reg", "q"]).money.sum().to_dict()
     for r in names:
-        say("V ask B %s" % slug[r], figs["b_" + slug[r]] == {"Q%d" % q: int(round(B[(r, q)])) for q in (1, 2, 3, 4)})
+        say("V ask B %s" % slug[r], figs["b_" + slug[r]] == {"H%d" % q: int(round(B[(r, q)])) for q in (1, 2)})
+    # meals: one claim per sponsor and number, the latest filing
+    cf = pd.read_csv(os.path.join(target, "cacfp_home_claims_2026.csv"), dtype=str)
+    cf = cf[cf.site_licence_no.str.startswith("FC")].sort_values(["received_date", "claim_no"])
+    cf = cf.drop_duplicates(["sponsor_id", "claim_no"], keep="last").copy()
+    cf["reg"] = cf.county_fips.str.replace(" County", "").str.upper().map(reg_n)
+    cf["h"] = np.where(cf.claim_month.str[5:7].astype(int) <= 6, 1, 2)
+    cf["n"] = cf[["breakfasts", "lunches", "suppers", "snacks"]].astype(int).sum(axis=1)
+    M = cf.groupby(["reg", "h"]).n.sum().to_dict()
+    for r in names:
+        say("V ask M %s" % slug[r], figs["m_" + slug[r]] == {"H%d" % h: int(M[(r, h)]) for h in (1, 2)})
+    # split care: a child at two homes on the same days where one home's days lie within the other's
+    rows = []
+    for r in cc.itertuples():
+        for d in pd.bdate_range(r.service_from, r.service_to):
+            rows.append((r.child_no, r.provider_no, d.date()))
+    E = pd.DataFrame(rows, columns=["child", "prov", "day"]).drop_duplicates()
+    multi = E.groupby("child").prov.nunique()
+    E = E[E.child.isin(multi[multi > 1].index)]
+    sets = {k: set(v.day) for k, v in E.groupby(["child", "prov"])}
+    byc = {}
+    for (c, p_), st in sets.items():
+        byc.setdefault(c, {})[p_] = st
+    got = {}
+    for c, d in byc.items():
+        ps = sorted(d)
+        for x in range(len(ps)):
+            for y in range(x + 1, len(ps)):
+                ov = d[ps[x]] & d[ps[y]]
+                if ov and (d[ps[x]] <= d[ps[y]] or d[ps[y]] <= d[ps[x]]):
+                    for h in {1 if t.month <= 6 else 2 for t in ov if t.year == 2026}:
+                        got.setdefault((home_reg[ps[x]], h), set()).add(c)
+    for r in names:
+        say("V ask S %s" % slug[r], figs["s_" + slug[r]] == {"H%d" % h: len(got.get((r, h), ())) for h in (1, 2)})
 
     # ---- every format read back -----------------------------------------------------------------------------------
     import openpyxl

@@ -53,7 +53,7 @@ F_DICT = "data_dictionary.txt"
 F_MAN = "export_manifest.csv"
 ALL_FILES = (F_LIC, F_XW, F_WS, F_GRANT, F_CCAP, F_CACFP, F_VIS, F_CTY, F_RULES, F_POL, F_SUP, F_QRIS, F_MRS,
              F_DICT, F_MAN)
-DISTRACTORS = (F_QRIS, F_MRS, F_CACFP, F_VIS)
+DISTRACTORS = (F_QRIS, F_MRS, F_VIS)
 DELIVERABLE = "fcc_closures_2027.xlsx"
 
 

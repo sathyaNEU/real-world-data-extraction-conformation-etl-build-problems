@@ -137,13 +137,21 @@ class Ccap:
                     na = b + dt.timedelta(days=1)
                     if s2 <= na <= e2:
                         nb = min(e2, na + dt.timedelta(days=int(r.integers(40, 300))))
-                        spells[-1][6] = min(add_bd(b, 10), e)
-                        spells.append([ch, cs, ident.cur[h2.hid], h2.ltype, h2.county, na, nb, rate])
+                        if nb > min(add_bd(b, 10), e):
+                            spells[-1][6] = min(add_bd(b, 10), e)
+                            spells.append([ch, cs, ident.cur[h2.hid], h2.ltype, h2.county, na, nb, rate])
                 elif u < 0.17 and peers:
                     # split care: a second home on the same days for part of each day
                     h2, (s2, e2) = peers[int(r.integers(0, len(peers)))]
                     xa, xb = max(a, s2), min(b, e2)
                     if xa < xb:
+                        # half the monthly rate at each home for the split days (policy section 3)
+                        first = spells.pop()
+                        if a < xa:
+                            spells.append(first[:5] + [a, xa - dt.timedelta(days=1), 1.0])
+                        spells.append(first[:5] + [xa, xb, 0.5])
+                        if xb < b:
+                            spells.append(first[:5] + [xb + dt.timedelta(days=1), b, 1.0])
                         spells.append([ch, cs, ident.cur[h2.hid], h2.ltype, h2.county, xa, xb, 0.5])
         # centres and exempt carers, in the same payment run
         for j in range(470):
@@ -265,10 +273,12 @@ class Cacfp:
         act = [(h, w) for h, w in act if w]
         rows = []
         cn = [0]
+        rt = C.stream("cacfp/tier")
 
         def claim_no():
+            # an internal claim id; each sponsor numbers the claims it receives in its own sequence (below)
             cn[0] += 1
-            return "%s%06d" % ("26", 100000 + cn[0] * 7 + int(r.integers(0, 7)))
+            return cn[0]
 
         for h, (s, e) in act:
             if r.random() > 0.61:
@@ -302,6 +312,13 @@ class Cacfp:
                     parts = [(sp, ms, min(me, cut)), (sw_to, cut + dt.timedelta(days=1), me)]
                 elif sw_m is not None and ms.month > sw_m:
                     parts = [(sw_to, ms, me)]
+                if len(parts) == 1 and rt.random() < 0.09:
+                    # the home's tier determination changed during the month: the sponsor files the month as two
+                    # claims, one for each tier period
+                    spn0, a0, b0 = parts[0]
+                    cut = a0 + dt.timedelta(days=int(rt.integers(6, 20)))
+                    if a0 < cut < b0 and weekdays(a0, cut) and weekdays(cut + dt.timedelta(days=1), b0):
+                        parts = [(spn0, a0, cut), (spn0, cut + dt.timedelta(days=1), b0)]
                 for spn, a, b in parts:
                     if b < a:
                         continue
@@ -319,7 +336,8 @@ class Cacfp:
                     rows.append(row)
                     if r.random() < 0.07:
                         f = r.uniform(0.9, 1.14)
-                        rev = [claim_no(), spn, row[2], row[3], row[4], sub + dt.timedelta(days=int(r.integers(8, 50))),
+                        # a revised claim is filed again under the claim's own number
+                        rev = [row[0], spn, row[2], row[3], row[4], sub + dt.timedelta(days=int(r.integers(8, 50))),
                                wd, kids] + [int(round(v * f)) for v in row[8:12]]
                         if rev[5] <= C.PULL:
                             rows.append(rev)
@@ -333,16 +351,29 @@ class Cacfp:
                     continue
                 rows.append([claim_no(), "", "CC%05d" % (20000 + j * 13), C.COUNTIES[j % len(C.COUNTIES)][0],
                              dt.date(2026, m, 1), sub, wd, k, k * wd // 2, k * wd, k * wd // 9, k * wd * 3 // 2])
-        rows.sort(key=lambda x: (x[5], x[0]))
+        # each sponsor (and the centres' direct intake) numbers the claims it receives in its own sequence, in order of
+        # receipt; a revision keeps the number of the claim it revises
+        first = {}
+        for x in sorted(rows, key=lambda x: (x[5], x[0])):
+            first.setdefault(x[0], x)
+        seq, num = {}, {}
+        for cid, x in sorted(first.items(), key=lambda kv: (kv[1][5], kv[0])):
+            seq[x[1]] = seq.get(x[1], 0) + 1
+            num[cid] = "26%06d" % (seq[x[1]] + (0 if x[1] else 500000))
+        self.claim_id = {}
+        for x in rows:
+            x.append(x[0])
+            x[0] = num[x[0]]
+        rows.sort(key=lambda x: (x[5], x[0], x[1]))
         self.rows = rows
 
     def truth_meals(self):
-        """by region and half: the latest claim of each sponsor for each home and month, every sponsor's claim kept"""
+        """by region and half: every claim once at its latest filing (a claim is its sponsor and its number)"""
         last = {}
         for row in self.rows:
             if not row[2].startswith("FC"):
                 continue
-            key = (row[1], row[2], row[4])
+            key = row[12]
             if key not in last or row[5] > last[key][5]:
                 last[key] = row
         out = {}

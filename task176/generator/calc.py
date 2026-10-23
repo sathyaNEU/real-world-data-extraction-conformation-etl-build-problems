@@ -471,7 +471,7 @@ def home_regions(target):
     return {r["licence_no"]: byname[r["county"].upper()] for r in C.read_csv(os.path.join(target, C.F_LIC))}
 
 
-def ask_money(target, key="remittance", drop_void=True, region="home", alloc="pay"):
+def ask_money(target, key="remittance", drop_void=True, region="home", alloc="pay", period="half"):
     """money the subsidy paid family child care homes in the 2026 runs by region and quarter of the run date: each
     remittance once (key names what is taken as one remittance; key='lines' sums the amount on every line).
     region='home' credits the region of the home that gave the care: a remittance whose homes lie in one region goes
@@ -487,7 +487,7 @@ def ask_money(target, key="remittance", drop_void=True, region="home", alloc="pa
             continue
         if drop_void and r["remittance_status"] == "VOID":
             continue
-        q = (int(r["pay_run_date"][5:7]) - 1) // 3 + 1
+        q = ((int(r["pay_run_date"][5:7]) - 1) // 3 + 1) if period == "quarter" else (1 if int(r["pay_run_date"][5:7]) <= 6 else 2)
         amt = float(r["remittance_amount"])
         rg = home.get(r["provider_no"], reg[r["county_fips"]]) if home else reg[r["county_fips"]]
         if key == "lines":
@@ -521,14 +521,23 @@ def ask_money_priced(target, drop_void=True):
             continue
         if drop_void and r["remittance_status"] == "VOID":
             continue
-        k = (home.get(r["provider_no"], reg[r["county_fips"]]), (int(r["pay_run_date"][5:7]) - 1) // 3 + 1)
+        k = (home.get(r["provider_no"], reg[r["county_fips"]]), 1 if int(r["pay_run_date"][5:7]) <= 6 else 2)
         tot[k] = tot.get(k, 0.0) + line_pay(r)
     return {k: round(v, 2) for k, v in tot.items()}
 
 
-def ask_meals(target, key="sponsor"):
-    """meals and snacks claimed for family child care homes by region and half of 2026: each sponsor's latest claim
-    for a home and month (key='sponsor'); key='site' keeps one claim per home and month; key='all' sums every claim"""
+MEAL_KEYS = {
+    "claim": lambda r: (r["sponsor_id"], r["claim_no"]),
+    "number": lambda r: r["claim_no"],
+    "sponsor_site_month": lambda r: (r["sponsor_id"], r["site_licence_no"], r["claim_month"]),
+    "site_month": lambda r: (r["site_licence_no"], r["claim_month"]),
+    "number_site": lambda r: (r["claim_no"], r["site_licence_no"]),
+}
+
+
+def ask_meals(target, key="claim", latest=True):
+    """meals and snacks claimed for family child care homes by region and half of 2026 by month of service: each
+    claim once at its latest filing (key names what is taken as one claim; key='all' sums every row)"""
     reg = regions_by_name(target)
     keep = {}
     rows = [r for r in C.read_csv(os.path.join(target, C.F_CACFP)) if r["site_licence_no"].startswith("FC")]
@@ -537,8 +546,9 @@ def ask_meals(target, key="sponsor"):
         sel = rows
     else:
         for r in rows:
-            k = (r["sponsor_id"], r["site_licence_no"], r["claim_month"]) if key == "sponsor" else (r["site_licence_no"], r["claim_month"])
-            if k not in keep or (r["received_date"], r["claim_no"]) > (keep[k]["received_date"], keep[k]["claim_no"]):
+            k = MEAL_KEYS[key](r)
+            o = (r["received_date"], r["claim_no"])
+            if k not in keep or ((o > (keep[k]["received_date"], keep[k]["claim_no"])) == latest):
                 keep[k] = r
         sel = keep.values()
     for r in sel:
@@ -546,6 +556,46 @@ def ask_meals(target, key="sponsor"):
         half = 1 if int(r["claim_month"][5:7]) <= 6 else 2
         out[(g, half)] = out.get((g, half), 0) + sum(int(r[c]) for c in ("breakfasts", "lunches", "suppers", "snacks"))
     return out
+
+
+def _child_days_by_home(target):
+    """per child: the set of service days at each family child care home, from the lines not voided"""
+    out = {}
+    for r in C.read_csv(os.path.join(target, C.F_CCAP)):
+        if r["provider_type"] not in ("SFCC", "LFCC") or r["remittance_status"] == "VOID":
+            continue
+        a, b = dt.date.fromisoformat(r["service_from"]), dt.date.fromisoformat(r["service_to"])
+        d = a
+        days = out.setdefault(r["child_no"], {}).setdefault(r["provider_no"], set())
+        while d <= b:
+            if d.weekday() < 5:
+                days.add(d)
+            d += dt.timedelta(days=1)
+    return out
+
+
+def ask_split(target, rule="within"):
+    """children whose subsidised care was split between two family child care homes, by the homes' region and half of
+    2026: a child counted in a half when it was paid at two homes for the same days in that half and, with
+    rule='within', one home's days for the child lie within the other's (split care, policy section 2) rather than a
+    move's notice days overlapping the next home's first days; rule='overlap' counts every same-day overlap"""
+    home = home_regions(target)
+    out = {}
+    for ch, by in _child_days_by_home(target).items():
+        if len(by) < 2:
+            continue
+        provs = sorted(by)
+        for x in range(len(provs)):
+            for y in range(x + 1, len(provs)):
+                p, q = provs[x], provs[y]
+                ov = by[p] & by[q]
+                if not ov:
+                    continue
+                if rule == "within" and not (by[p] <= by[q] or by[q] <= by[p]):
+                    continue
+                for h in {1 if d.month <= 6 else 2 for d in ov if d.year == 2026}:
+                    out.setdefault((home[p], h), set()).add(ch)
+    return {k: len(v) for k, v in out.items()}
 
 
 def ask_visits(target, key="arrival"):
