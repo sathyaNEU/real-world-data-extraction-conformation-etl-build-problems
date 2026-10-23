@@ -1,104 +1,104 @@
 {
   "task": "task179",
-  "architecture": "v2",
-  "drawn": "2026-10-21",
-  "slot_note": "redraw, second new cell this round: the ambulance surge pool (v1, never carded) and the macro-econometrics cell are spent without a card; see the design note's Tried and rejected",
-  "domain": "epidemiology-public-health",
-  "subdomain": "infectious-disease-transmission-modeling",
-  "niche": "a medical humanitarian organisation running two treatment centres in the fictional Dunmarrow Province projecting December's Tamberlow virus disease cases under the provincial response plan's central scenario, from the outbreak's own line list and transmission links",
+  "architecture": "v3",
+  "drawn": "2026-10-23",
+  "slot_note": "reopened from RETIRED under the author's rule that no number stays retired; rebuilt from scratch in the cell education-learning-sciences / learning-analytics-early-warning-models (Forecasting) after the product-analytics adoption and population-pharmacokinetics rebuild cells died at stage 1 without a card (design note, Tried and rejected)",
+  "domain": "education-learning-sciences",
+  "subdomain": "learning-analytics-early-warning-models",
+  "client_domain": "education-learning-sciences",
+  "niche": "a fictional university's planning office forecasting how many of its 2026 first-year entrants will not be enrolled at the 1 October 2027 census, the first intake that enrolled itself in classes after the Registry's allocation of first-year class groups ended at a student-records cutover, from seven intakes' census classes, week-6 progress ratings and next-census enrolment",
   "objective": "forecasting",
-  "shape": "single-figure",
+  "shape": "07",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Plan for about 3,250 of the 8,659 first-time entrants enrolled at the 1 October 2026 census not to be enrolled at the 1 October 2027 census.",
+  "answer_source": "task179/submission.md, block 1; continuing_enrolment_2027.xlsx (Projection)",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G12",
-    "G3",
-    "G13"
+    "G6",
+    "G14",
+    "G2"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "maturity_censoring",
+  "calibration_form": "realised_outcome_roster",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "capacity_report",
+  "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who dedups the line list, fits the serial interval to every source-to-case pair in the transmission links (11 days), takes the reproduction number from the six weeks' growth (1.5), halves it from 2 November and runs the renewal equation forward files about 4,000 cases for weeks 49 to 52 against 5,000, because the tracing system holds a link only once its case has fallen ill, so September's and October's sources appear only with the cases they infected quickly.",
-  "domain_test": "The deciding quantity is the outbreak's generation interval estimated from transmission pairs that are right-truncated at the extract while incidence grows, which is how infectious-disease modellers turn a growth rate into a reproduction number and project under a control scenario; swap in hospital admissions or shipments and there is no chain of who infected whom, no interval between linked onsets and no renewal equation, so the task stops reading.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "epidemiology-public-health/infectious-disease-transmission-modeling/1",
+  "analyst_test": "A strong analyst who stitches the SIRIUS and ARC extracts through the crosswalk, keeps the first-time bachelor's entrants enrolled at each census, reads leave as not enrolled and fits a validated early-warning model on every entrant attribute and the week-6 progress ratings files 2,250 (2,142) of the 2026 entrants not enrolled at the 1 October 2027 census, against 3,250, because the record's entrants mostly sat in allocated class groups and the 2026 entrants did not.",
+  "domain_test": "The deciding quantity is each first-year entrant's probability of not being enrolled at the next census, the early-warning model's own target, which persistence research ties to a student's academic and social integration; here integration is read from the co-enrolment network (the other entrants met in two or more of the entrant's own classes), and putting nurses and shifts in place of students and classes loses the census, the first-year class allocation, the living-learning community and the next year's re-enrolment that the quantity and its cause stand on.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:retention-read-on-repeat-classmates-after-class-allocation-ended",
   "layer1": [
-    "mixed date formats between field forms and laboratory-fed rows",
-    "a case notified in two districts under two case numbers with one laboratory sample",
-    "notified people later found not to be cases left in the line list with their final classification",
-    "suspected cases awaiting a result",
-    "probable cases from community deaths",
-    "transmission links entered with a certainty grade and links whose case was later discarded",
-    "a weekly situation report counting by notification week, not onset week"
+    "a student-records cutover: SIRIUS extracts with seven-digit student numbers and day-first dates for 2019 to 2025, ARC extracts with C-numbers, ISO dates and new class codes for 2026, joined through a crosswalk",
+    "census status codes and week-6 progress rating codes that differ between the two systems",
+    "students on approved leave carried on the census with a leave status",
+    "conjoint students on two programme attempts and two census rows",
+    "entrants with credit and returning students in the admissions workbook beside first-time entrants",
+    "an admissions workbook with one sheet per intake whose column names drift",
+    "a class timetable with one row per weekly meeting, room changes during semester and cancelled classes"
   ],
-  "stakeholder_role": "the organisation's medical planning lead for the Dunmarrow response",
-  "role_family": "capacity_planner",
-  "scoring_unit": "per episode",
+  "stakeholder_role": "the Planning Office's senior analyst who produces the continuing-enrolment projection behind the 2027 teaching plan",
+  "role_family": "research_desk",
+  "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "tvd_line_list_dunmarrow_2026-10-18.csv",
-    "rows": 0,
-    "entity": "one notified suspected, probable or confirmed case",
-    "grain": "case",
-    "source": "synthetic"
+    "file": "census_enrolments_2019_2026.csv",
+    "rows": 202057,
+    "entity": "one student's programme attempt on one 1 October census",
+    "grain": "student programme attempt x census",
+    "source": "constructed (the Registry's census history)"
   },
-  "forum": "operations_desk",
-  "forcing_event": "incident_or_complaint",
-  "org_family": "hospital_or_health_provider",
+  "forum": "executive_team",
+  "forcing_event": "other",
+  "org_family": "university_or_school",
   "world": {
-    "geography": "Republic of Orvanthe, Dunmarrow Province (fictional)",
-    "currency": "USD",
-    "org_type": "international medical humanitarian organisation running treatment centres",
+    "geography": "Republic of Aldmark (fictional), city of Corriemoor",
+    "currency": "AMD",
+    "org_type": "public university",
     "invented_names": [
-      "Republic of Orvanthe",
-      "Dunmarrow Province",
-      "Tamberlow virus disease",
-      "Larrowmede Medical Relief",
-      "Kettlebank",
-      "Tamberlow",
-      "Quillmarsh",
-      "Threlmarren",
-      "Wendlecombe",
-      "Brindlecourt"
+      "Corriemoor University",
+      "Republic of Aldmark",
+      "Aldmark Secondary Certificate",
+      "SIRIUS",
+      "ARC",
+      "Ferrier Hall",
+      "Ashby House",
+      "Linton Court",
+      "Stanmore Hall",
+      "Wexcombe Hall"
     ],
     "people": [
-      "Jacqueline Arnold",
-      "Tanner Molina",
-      "Kristin Sampson"
+      "Cillian Coholan",
+      "Malcolm Hussey",
+      "Keri Keating"
     ]
   },
   "deliverables": [
-    "tvd_projection_w49-w52.xlsx",
-    "tvd_projection_curve.svg"
+    "continuing_enrolment_2027.xlsx",
+    "s1_2026_teaching_groups.png"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "An interval between two linked events, read from the pairs a record holds at its cut-off, is shorter than the interval the process runs on while the process is growing, because a pair enters the record only once its later event has happened and the pairs still open at the cut-off are the long ones from the recent and most numerous earlier events; the reproduction number taken from the growth rate on the record's interval is too low, so a projection under a planned cut in transmission falls away too fast.",
-  "driver_concrete": "Each source-to-case link enters the tracing system only when the infected contact falls ill and is notified, so at the 18 October extract the cases of September and October are listed only with the contacts they infected quickly; the serial interval read off the links is shorter than the one the chains run on once each pair is read against the time its source had to the cut-off, the reproduction number from the six weeks' growth comes out too low, and the projection under the plan's halving of transmission shows weeks 49 to 52 about a quarter lower than they will be.",
-  "stump": "A competent analyst fits the serial interval to every source-to-case pair in the transmission links, takes the reproduction number from the growth of onsets over epidemiological weeks 36 to 41, halves it from 2 November and projects about 4,000 cases for weeks 49 to 52 instead of about 5,000, because the tracing system holds a link only once its case has fallen ill.",
+  "driver": "A member's chance of leaving falls steeply once it meets enough of the same peers in more than one of its own small groups, and the record's members were mostly placed in fixed groups by a process the forward members no longer pass through, so the record's leaving rate and a model on the members' own attributes understate the forward count; each forward member's chance has to be read at its own count of repeat peers, built from the group memberships, from the record's members who met as few.",
+  "driver_concrete": "Until 2025 the Registry's allocation run placed about four in five full-time entrants in a group of 28 who took UNIV101 and their faculty's two first-year papers together; from the 2026 ARC cutover entrants enrolled themselves and only the halls' living-learning communities were still placed together, so a 2026 entrant meets on average under one other entrant in two or more of their classes against about 26 in the allocated years, and an entrant who meets few others twice is about twice as likely not to be enrolled at the next census: about 3,250 of the 8,659 2026 entrants will not be enrolled on 1 October 2027, not the 2,250 the record's rate and an early-warning model on entrant attributes give.",
+  "stump": "A competent solver fits an early-warning model on the entrants' own attributes (secondary score, first in family, part-time, age, hardship grant, week-6 progress ratings, faculty, hall, living-learning community and acceptance date) to the 2019 to 2025 entrants' enrolment at the next census, scores the 2026 entrants and files 2,250 (2,142) not enrolled on 1 October 2027 against 3,250, because it never reads each entrant's chance at the number of other entrants met in two or more of the entrant's own classes, which the allocation run kept near 26 and self-enrolment leaves near one.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task98": "task98 v6 counts units leaving a score class by an improvement step read from treated and untreated twins in a flow model; here nothing crosses a threshold, the decisive quantity is a delay distribution read from linked pairs that the extract truncates while incidence grows, and it enters through a renewal equation",
-    "task468": "task468 v2 and v3 apply cost and persistence by each active unit's own time since start or since its current spell; here no unit's duration conditions its outcome, the record's pairs are a growth-weighted, right-truncated sample of one transmission interval, corrected by reading each pair against the time its source had at the cut-off",
-    "task126": "task126 splits units joined by a succession link that a certifying corpus blesses; here no units are joined or split, and the decisive step is a delay distribution corrected for right truncation at the extract",
-    "task138": "task138 rebuilds each unit's store at the forecast date from its inputs at the share that reaches the store, identified from monitored units; here there is no store or balance, the record's linked pairs are a truncated sample of one interval and the correction reads each pair against its source's time to the cut-off",
-    "task82": "task82 attributes one-off keyed records to holders through a second system's ledger and a transaction reference; here nothing is attributed or joined across systems, and the step is estimating an interval distribution under truncation",
-    "task133": "task133 enters each taken-over loan only from the takeover (left truncation of exposure time in a life table); here the truncation is on the right and by the later of two linked events, and the estimated quantity is a delay distribution feeding a renewal equation, not an outcome rate by age",
-    "task196": "task196 recovers how many events happened from the overlap of two capture channels; here nothing is uncounted, every case is in the line list, and the record's links are a growth-weighted, right-truncated sample of one interval",
-    "task180": "task180 completes small events masked by a daily noise cycle at the instruments; here the missing records are the long intervals whose later event has not yet happened at the extract, corrected by conditioning each pair on its source's time to the cut-off"
+    "task175": "task175 reads a vacant lot's permit chance at the homes already standing on its own street, a spatial fill the utility's service sequence sorted; here the unit is a person, the covariate is a count of repeat co-members in a bipartite class network that no column or key holds, the forward population differs because an administrative placement process ended at a records cutover rather than because service went where building was, and the quantity is a next-census re-enrolment",
+    "task143": "task143 carries a group effect shared by a pack's three cells into the joint chance that the weakest fails, a correlation inside a function of several draws; here nothing is a joint or tail quantity, each entrant's own chance is read at that entrant's count of repeat classmates and summed",
+    "task169": "task169 reroutes an outcome a closed processing route pre-empted through the remaining route's conversion; here no route is closed, the outcome process is the same and the forward population sits at the other end of an exposure the record measures",
+    "task177": "task177 decomposes default through one exit event whose forward rate another file shows; here no event is decomposed, the protective exposure is constructed from the class memberships of the record and of the forward cohort",
+    "task125": "task125 tracks an aggregate distorted by a recruitment filter carried by each intake through a fixed run of later periods; here no filter acts on recruitment and nothing compounds over periods, each forward entrant's own chance is read at the repeat classmates its own class memberships give",
+    "task150": "task150 splits a unit's next-period count into carried-on members, steady arrivals and sibling transfers so a ratio does not carry the past mix forward; here no count is split by source, the forward cohort's members sit at the other end of a co-enrolment exposure the record measures student by student",
+    "task501": "task501 rebuilds a contact matrix from the observation days of the coming season's regime and reads its eigenvalue; here no matrix or threshold is computed, the regime change ended an allocation process and the forward count sums each entrant's own chance read at that entrant's repeat classmates"
   },
   "lineage": [
     {
@@ -118,7 +118,6 @@
       "driver": "An interval between two linked events, read from the pairs a record holds at its cut-off, is shorter than the interval the process runs on while the process is growing, because a pair enters the record only once its later event has happened and the pairs still open at the cut-off are the long ones from the recent and most numerous earlier events; the reproduction number taken from the growth rate on the record's interval is too low, so a projection under a planned cut in transmission falls away too fast."
     }
   ],
-  "notes": "org_family hospital_or_health_provider: the organisation is a non-governmental medical humanitarian operator whose function here is running treatment centres; nonprofit_or_charity is in the live window (task486), and the health-provider key is the reviewer's reading of what it does in this build. Redrawn under the lock on 2026-10-21 after task178 entered the window: the decisive generator moved from G13 to G3 (record versus operation: the register's intervals against the transmission process's), which is as honest a reading of the step, G13 kept second; the context artifact moved from the provincial situation report (published_series) to the treatment centres' weekly bed-capacity report (capacity_report), which the planning lead works from and the pack ships either way; the chart moved to SVG. Re-sited on 2026-10-21 into a fictional setting (the Republic of Orvanthe, Dunmarrow Province, Tamberlow virus disease, Larrowmede Medical Relief): the first world named a real disease in a real province and was declined on that concern before anything but the card was committed. Mechanism, keys and measurements unchanged. At the re-site the decisive generator moved from G3 (task484 now holds it in the window) to G12 (absence of a record against a record of absence: the long intervals are missing from the links because their later event has not happened, not because they do not exist), which reads the step as honestly; G3 and G13 kept behind it. Architecture v2 spent at stage 4 Gate F: scored reader B applied the right-truncation correction outbreak analysts are taught as standard and landed 5,000, R 1.6 and 13 days (0 of 16 ask figures). task179 RETIRED (dead in its second new cell): a truncation correction the field teaches is the default path, not the stump.",
-  "registered": "2026-10-21T02:59:20Z",
-  "architecture_spent": true
+  "notes": "architecture v3 is a from-scratch rebuild in a new cell; v2 (the right-truncated serial interval, epidemiology) stays in lineage with its fate. org_family university_or_school: the forecasting organisation is a university's planning office. forcing_event other: the 2027 teaching plan and budget round, which has no vocabulary key of its own. Stump strategy composition_mix: the forward cohort differs from the record on a covariate the record measures at a finer grain (each entrant's class memberships) than any field or textbook model carries; gap time first (the record's intakes were allocated to class groups and the forecast bets on the first intake after the allocation ended), population second; decisive generator G6 (composition shift), with G14 (the conditioned yield that fixes it) and G2 (the exposure lives at the class-membership grain, finer than the entrant record) behind it. The first check BLOCKed test.same_puzzle and test.same_driver on (population, G6) against task175 in the batch: the gap was redrawn to time, which names the decisive difference as honestly (the forward intake is the first after the allocation ended), and the older (time, G6) builds are differentiated.",
+  "registered": "2026-10-23T11:02:26Z"
 }
