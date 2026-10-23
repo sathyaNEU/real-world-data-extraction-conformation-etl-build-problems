@@ -233,6 +233,44 @@ reconstructed from each unit's own history, gives **5.00 distinct paths of 5** a
 printed unit of 1, exact in only 3 of 20, with every licensed reconstruction (largest drop, local minima,
 cusum reset, sawtooth least squares, pooled modal period) giving a different path in every one of 20 worlds.
 
+**The one-number test for whether a candidate is in the closed family, whatever its nouns.** Over one full
+cycle compute `R = sum_q |G(q)| / |sum_q G(q)|` on the graded path, and count the path's sign changes. A
+genuine per-case correction returns **R = 1.000 with 0 sign changes**, measured at sd(log factor) 0.35, 1.00
+and 2.00 alike, because its operator acts inside a case and scales its value so every reported period moves
+the same way. **R = 1 is an identity for the closed family, not a tendency**, so any candidate measuring R = 1
+with no sign change IS a per-case correction in other nouns. Run it before any other screen; it costs one
+pass over the clean truth.
+
+**And it is what shows that ADDITIVITY DOES NOT ESCAPE THE CLOSED FAMILY'S BEHAVIOUR.** A propagation
+correction is additive in cohort-position cells, so none of the six laws has a term to bind, and that is
+true but not sufficient: three of four propagation members measured return **R = 1.000 with 0 sign changes**
+anyway. The one member returning R above 1 is a RE-PHASING, whose counterfactual has to re-time events that
+were never recorded, and that is exactly the member that then dies on determinacy: four licensed readings of
+the re-timing cadence spread the graded figure a mean of 13.32 and a maximum of 40.52 against a printed unit
+of one cent, about 1,330 times the unit, and the window-length dial does not open it (spread over signal runs
+294.7, 1.790, 2.219, 1.730, 1.718, 1.789 at 2 to 12 periods, because a one-day cadence difference compounds
+linearly in the window while the signal does not). **So R and determinacy are one dial read from two ends:**
+a path that moves both ways is a path whose counterfactual re-times something unrecorded.
+
+**The running-sum crossing is closed too, by an increment trichotomy**, which shuts the last non-multiplicative
+ground this lane had left. A crossing's increments are either definitionally open, which is indeterminacy; or
+recorded and exact, in which case the crossing date is a one-line cumulative sum over shipped columns, which is
+rule application; or not yet recorded, in which case the quantity is a predicted value the history pins, which
+is Forecasting and not this objective. The two apparent fourth cases collapse into the first: incomplete
+increments put a completion estimator in the deciding position, and an unobserved crossing level puts its
+estimator there, while a filed level is rule application.
+
+**Removal and addition are asymmetric, and only removal forces the reasoning.** A change that ADDS units
+leaves the counterfactual directly recorded with its own identifiers, so the construction is a filter on two
+columns and there is no unit-of-analysis carve-out at all. Only removal makes the counterfactual absent from
+the post-change record. Draw the removal side or draw nothing.
+
+**And count concurrent occupancy, not just the shipped corpus.** Three live slots sat on one family at once:
+the one that shipped it, one holding a cycle instance, one holding the exact-mixture-weights branch. **A
+fourth slot there clones a concurrent sibling even where it clears every shipped card**, and `guard.py check`
+cannot see it because those cards are not yet registered against each other. Run `guard.py slots` on the
+mechanism's nouns AND the setting's, and read the wave's allocation table, before pricing anything.
+
 **And the closed clause is wider than multiplicative: it covers an ADDITIVE per-case correction too, because
 there the escape and the kill are one property.** Grading a level-dependent count is the named escape from
 the monotone-summary kill and it does work, since no sorted column reaches the path. But the same level
