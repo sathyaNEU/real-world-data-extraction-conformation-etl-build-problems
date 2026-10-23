@@ -1,308 +1,319 @@
-# task170 design note: the cases Ruvari County's March 2027 net campaign will avert among the people sleeping under its nets
+# task170 design note: the employer match Vindeholm County Hospitals will pay in FY2027 on its first auto-enrolled intake
 
-Architecture 3, a from-scratch rebuild of a reopened number (Forecasting lane, sathya8571), in the cell the main
-session assigned: epidemiology-public-health / health-burden-impact-modeling. Architecture 1 (the paediatric ARV
-order) is summarised under `## Architecture 1 record`; architecture 2's two cells and the 2026-10-23
-expected-credit-loss cell died before any card (`## Tried and rejected`). The setting is fictional throughout: Ruvari
-County, its health department, Tulivu Health Partners, the Arnbridge Foundation, Ombeni fever (a mosquito-borne
-protozoal fever), its vector *Anopheles ruvariensis*, the KINGA-5 trial and the LulaNet R repellent sleeping net are
-invented, and no record is a real place's or a real outbreak's.
+Architecture 4, a from-scratch rebuild of a reopened number (Forecasting lane, sathya8571), in a cell this session
+chose under the main session's conditions (`## Rebuild`): psychology-behavioral-science /
+decision-making-computational-behavioral-modeling. Architecture 3 (the repellent net campaign) is summarised under
+`## Architecture 3 record`, architecture 1 (the paediatric ARV order) under `## Architecture 1 record`; architecture 2's
+cells and the expected-credit-loss cell died before any card (`## Tried and rejected`). The setting is fictional
+throughout, country included: Tarnland, Vindeholm County, Vindeholm County Hospitals and its six hospitals, the VCH
+Supplementary Savings Plan, Kestrel Pension Administration and Nordhavn Mutual are invented, and no record is a real
+employer's, administrator's or insurer's.
 
 ## Draw
 
-1. Card: `.claude/skills/fingerprint/cards/task170.json`, architecture v3, v1 moved into `lineage` with its fate.
-   `guard.py check` WARN (answered in item 9). Nearest drivers 0.09 (task121 v3, odour complaints against the wind at
-   the same clock hours), 0.08 (task474 v2 lineage), none flagged.
-2. Pairing: Epidemiology & Public Health (client domain) / `health-burden-impact-modeling` / Forecasting & Predictive
-   Modeling (the taxonomy lists the task type under F and OS). The deciding analysis is the impact model's carry of a
-   vector-control tool's trial efficacy to a new setting through the share of human exposure to the vector that falls
-   while people are in bed under the net. task149 is the one card in the task type (a recordable-injury hazard rising
-   with work pace) and is differentiated on the card.
-3. Niche: an implementing non-profit's cases-averted forecast for its donor's grant approval of a county-wide
-   distribution of repellent sleeping nets (one net to two people, distributed in March 2027), counted among the
-   people sleeping under the nets from April to December 2027.
-4. Call and shape: the Ombeni fever cases the campaign will avert among net users from April to December 2027, a count
-   (`quantity_figure`, how many). Shape `other`: the call with its critical components (the per-bite protection the
-   trial's sites share, the county's in-bed share of exposure, the share of the period's cases averted, and the cases
-   averted in each sub-county, which inherit the decisive step), and asks on rows the call never reads (the household
-   registration, the facility reports, the sentinel catches of the other species). The forecast across months (shape
-   `02`) was the first draw and was blocked inside the registration lock by task171's shape 02 and its forcing event;
-   criteria are counted in `## Ask sheet`.
-5. Mechanism keys: gap population (the trial sites' exposure against the county's), then time (the hour each bite
-   arrives against the hour each person goes to bed); pattern none; generators G7 (the operating window: a net stops
-   only the bites that arrive while its sleeper is in bed under it), G14 (the trial's pooled efficacy does not carry
-   to this population); Gate G `forecasting`; strategy `causal_design`, read as transportability (the card's notes
-   say why, and that `composition_mix`, in the ban window, also describes it); Layer 2 family `field_method`, pattern
-   `own:protective-efficacy-carried-through-the-in-bed-share-of-exposure`.
-6. Default path's answer against the golden: the trial's pooled protective efficacy (56.7 per cent) applied to
-   the plan's expected cases among users files 22,000 cases averted; multiplying that efficacy by the county's
-   in-bed share of exposure, without dividing out the sites' own share, files 8,000; the golden, the per-bite
-   protection the five sites share (0.80) carried through the county's in-bed share (0.36), files 11,000 (11,208
-   unrounded), 21 per cent of the 53,494 cases the county expects.
-7. **Data-native sentence.** The county's vector bites from dusk and peaks before most people are in bed, half its
-   bites land outdoors where the evening is spent, and the KINGA-5 sites' vectors bit after midnight indoors, so a
-   net that stops about four in five of the bites that reach its sleeper stopped most of a trial participant's
-   exposure and will stop well under half of a Ruvari resident's; the landing catches by hour and position and the
-   behaviour survey's clock times are the only records of that overlap, at a grain the trial's headline efficacy
-   does not carry.
-8. Sources, one line each. `layer2-rigor-patterns.md` health-burden cards 1 (the reference life table for YLL) and 2
-   (a potential impact fraction from the shifted exposure distribution, not a scaled PAF): card 2's shortcut is the
-   default path's family (a headline effect scaled by coverage), and the judgment beyond it is what the trial's
-   effect is a measure of, which the data settle through the five sites. Infectious-disease cards 1 and 2 (Rt and the
-   next-generation matrix) are not used: the estimand counts personal protection among users and no transmission
-   feedback. task149 (same task type, a hazard read within each unit against pace), task177 (an effect read at the
-   point of each unit's own cycle) and task172 (a deadline's bite moving with a step) were read for their drivers and
-   differ in the structure carrying the call (card `differentiation`). The seed FC41 is not used.
-9. WARN answers. `repeat.gate_g` and `overuse.gate_g` (forecasting in 5 of 12, beside task175 and task171): the objective is the
-   lane's; the mechanism is not task175's (a vacant lot's chance read at its street's build-out). `repeat.decision`
-   (quantity_figure beside task175): the call is a count of cases averted, the decision's own unit.
-   `repeat.deliverables` (xlsx plus png): reviewed at stage 3 against the deliverable a donor's impact forecast
-   takes. `repeat.question_form` (how-many, beside task175 and task171): a count asks how many.
-10. People (`guard.py names --geo Kenya --seed 170`): Dorcas Kagwiria (monitoring and evaluation lead, Tulivu Health
-    Partners), Elkana Karanja (county vector-borne disease control coordinator), Amos Simiyu (county entomologist).
-    None appears in the prompt.
-11. Furniture: forum `funder_or_donor` (the Arnbridge Foundation's grant approval), forcing event `budget_or_appropriation`
-    (the grant that funds the March 2027 distribution; `launch_or_rollout` was the first draw and task171 holds it in the
-    window), organisation family `nonprofit_or_charity`, role family `programme_officer`,
-    context artifact `other` (the KINGA-5 trial report), calibration form `other` (the trial's five site results).
+1. Card: `.claude/skills/fingerprint/cards/task170.json`, architecture v4, v3 moved into `lineage` with its fate
+   beside v1. `guard.py check` WARN (answered in item 9); nearest drivers 0.05 (task129 v1 lineage, task230 v1
+   lineage), none flagged.
+2. Pairing: Psychology & Behavioral Science (client domain) / `decision-making-computational-behavioral-modeling` /
+   Forecasting & Predictive Modeling (the taxonomy lists the task type under F only; no card on file in the pairing).
+   The deciding analysis is a choice model of a default: each hire holds a preference and a moment of active choice,
+   the default holds until that moment, and the forward default's take-up is rebuilt from the two, the way
+   behavioural models of defaults and procrastination separate preference from inertia.
+3. Niche: a county council's hospital group (about 9,000 staff in six hospitals) whose supplementary savings plan has
+   been opt-in since 2012 enrols every new hire automatically at 3 per cent from 1 January 2027; the reward and pensions
+   manager forecasts the employer's match on the 2027 intake for the FY2027 budget.
+4. Call and shape: the employer match on the 2027 intake over the January to December 2027 payrolls, a currency figure
+   (`quantity_figure`, how much). Shape `other`: the group figure with each hospital's (which inherit the decisive
+   step), the intake contributing on the December 2027 payroll, the two critical components (the share of hires who
+   join when joining is their own choice, the share who have made a choice by the twelfth payroll), and asks on rows
+   the call never reads (the 2026 payroll's match lines, the register's members from before 2019). Shapes 14 and 01
+   are banned by the last two builds; criteria are counted in `## Ask sheet`.
+5. Mechanism keys: gap time (when each hire makes a choice against the payroll months of 2027), then population (the
+   opt-in record shows only the hires who chose to join); pattern none; generators G7 (the default holds only until
+   the hire's own moment of choice) and G14 (the record's take-up does not carry to the opposite default); Gate G
+   `forecasting`; strategy `other` (a choice model of a default; the card's notes say why and that
+   `population_selection`, in the ban window against task274, also describes the plateau step); Layer 2 family
+   `field_method`, pattern `own:the-default-holds-until-each-hire-makes-an-active-choice-on-the-clock-the-opt-in-record-shows`.
+6. Default path's answer against the golden: carrying the income protection cover's cancellations by month of service
+   (the group's one record of hires leaving a default) as the plan's opt-outs files TNK 14.5 million (14,409,662);
+   reading the opt-in join curve as the share who have chosen files 14.0 million; the 43 per cent who join contributing
+   from the first payroll files 8.5 million; the golden, the hires not yet chosen at 3 per cent plus the joiners at
+   their own rates, files TNK 11.5 million (11,439,212 unrounded).
+7. **Data-native sentence.** Vindeholm's hires join an opt-in plan at a pace (a third at induction, the rest over the
+   following year) that the register shows only for the 43 per cent who join, while the 57 per cent who never join
+   leave no trace, and the one record of hires leaving a default (a cheap income protection cover) is set by a
+   preference only 16 per cent hold; so the clock on which every hire makes a choice is the join curve over its own
+   plateau, and under a 3 per cent default the hires who will opt out are the plateau's complement leaving on that
+   clock.
+8. Sources, one line each. `guide-to-prompt` domains README (the task type serves F); the behavioural literature on
+   defaults (Madrian and Shea 2001; Choi, Laibson, Madrian and Metrick 2004; Carroll, Choi, Laibson, Madrian and
+   Metrick 2009) for the structure only: preference against a cost of acting, take-up under opt-in and opt-out
+   converging on the same long-run share. No card or seed is used; the pitfall is re-found from the record's own
+   structure (only joiners are visible; the cover's level is a different preference). task136 (a scheduled
+   intervention enrolling units that were about to take up on their own) and task137 (a behavioural share at a
+   repricing) were read for their drivers and differ (card `differentiation`).
+9. WARN answers. `overuse.objective`, `overuse.gate_g` and `repeat.gate_g` (forecasting in 6 of 12, beside task178):
+   the objective is the lane's; the mechanism is not any recent build's. `repeat.decision` (quantity_figure beside
+   task274): the call is a budget line, the decision's own unit. `people.first` cleared by drawing replacements.
+10. People (`guard.py names --locale sv_SE --seed 170`; the country is fictional, so the locale is passed and named):
+    Caroline Hagman (reward and pensions manager), Erik Palm (director of finance), Alfred Sundberg (payroll services
+    lead). None appears in the prompt.
+11. Furniture: forum `committee_or_panel` (the county council's employment committee, which approved the enrolment
+    and signs off the FY2027 pay budget), forcing event `budget_or_appropriation`, organisation family
+    `hospital_or_health_provider`, role family `other` (HR's reward and pensions manager, a role the vocabulary does
+    not name), context artifact `other` (the plan amendment's committee paper), calibration form `other` (the income
+    protection cover, auto-enrolled with opt-out since 2019). The first draw sent the forecast through the director of
+    finance to the executive team (`finance_controller`, `executive_team`); the window moved under the registration
+    lock (task175 holds both), so the world was redrawn to the committee and the prompt's note goes to it.
+12. Cell choice (the main session's conditions, 2026-10-23). The forward window changes the process in a way not on
+    file: no Vindeholm plan has ever defaulted anyone in, so no record shows a hire under a plan default. The record is
+    not replayable (no opt-out pension history exists to copy), not one group-by (the take-up needs a censored join
+    curve, its plateau, the clock as their ratio and the recombination under the opposite default), and not a
+    field-standard correction (no textbook adjustment turns an opt-in record into an opt-out forecast; the field's
+    habit is a benchmark opt-out rate). The materials of the decisive step sit in three files from three systems (HR's
+    spells, Kestrel's register, the plan rules), and the one document that names the change (the committee paper)
+    states only the estimand. Excluded as spent: every cell in this note and in the siblings' `## Rebuild` sections as they stood when the
+    cell was chosen. task173 chose the same cell the same day and recorded it dead under its `## Rebuild` (commit
+    1d4ac1b9, landed while this draw was being measured) on a different mechanism: a reference-dependent courier
+    stopping rule whose lever is bounded by the size of a pay change. Nothing here turns on a pay change or a
+    stopping rule, no card of task173's sits in the pairing, and the overlap is reported to the main session.
 
 ## Default path
 
-The route a competent burden modeller takes from the prompt and the pack, every field read and every filed rule applied:
+The route a competent analyst takes from the prompt and the pack, every field read and every filed rule applied:
 
-1. Take the campaign's population and window from the plan's impact sentence (residents under a campaign net, April
-   to December 2027) and the expected cases by sub-county and month from obf_planning_baseline_2027.xlsx.
-2. Take the planned use by month from Table 2 of the plan, so the cases the users would have had are the baseline
-   times the use: 40,140 cases.
-3. Take LulaNet R's protective efficacy from the KINGA-5 report: the pooled 56.7 per cent of Table 1, the trial's
-   primary result across five sites and three countries, with nightly use verified.
-4. Cases averted are the users' expected cases times the efficacy, by sub-county and month, summed.
+1. Take the intake from the amendment's section 4: the approved requisitions of vch_hiring_plan_2027.xlsx (3,025),
+   each paid at the 2027 scale for its grade and FTE from its planned start month.
+2. Build how many of the group's hires since 2019 are still on the payroll by month of service from the HR history,
+   leavers dropping out at their month.
+3. Enrolment at 3 per cent means everyone contributes unless they opt out. The group already defaults every hire into
+   one benefit, the income protection cover, and Nordhavn's bordereau shows when hires cancel it: carry the cover's
+   cancellation share by month of service as the plan's opt-outs, everyone else at 3 per cent.
+4. The match on 3 per cent is 3 per cent of basic pay (rules, section 4); sum over each requisition's 2027 payrolls.
 
-Ends on: 22,000 cases averted (22,121 unrounded), 41 per cent of expected cases.
-Golden: 11,000 cases averted (11,208 unrounded), 21 per cent of expected cases.
+Ends on: TNK 14.5 million (14,409,662 unrounded).
+Golden: TNK 11.5 million (11,439,212 unrounded).
 
 ## Stump sentence
 
-A competent modeller applies the KINGA-5 pooled protective efficacy of 56.7 per cent to the plan's expected cases
-among net users and files 22,000 cases averted against 11,000; the step that lands it there is carrying an efficacy
-measured where most bites arrived after participants were in bed to a county whose vector bites early in the evening
-and half outdoors, where 0.36 of a resident's bites arrive in bed against 0.49 to 0.96 at the trial's sites, so the
-per-bite protection of 0.80 that every site shares reaches far less of a Ruvari resident's exposure.
+A competent analyst carries the income protection cover's cancellations, the group's one record of hires leaving a
+default, as the share of the 2027 intake that will opt out and files TNK 14.5 million against 11.5 million; the step
+that lands it there is reading a cancellation curve set by the 16 per cent of hires who want to drop a 0.4 per cent
+cover as the opt-outs of a plan 57 per cent of hires never join, when the opt-in record holds both what hires prefer
+(43 per cent join within five years) and how fast every hire makes a choice (the join curve over that plateau: 35 per
+cent by the first payroll, 90 per cent by the twelfth), so the intake's match is the not-yet-chosen at 3 per cent plus
+the joiners at their own rates.
 
 ## Three rules
 
-- Task type: epidemiology-public-health / health-burden-impact-modeling, which serves Forecasting in the taxonomy:
-  the cases a vector-control campaign will avert over a window not yet open.
-- Domain test: the deciding quantity is the campaign's protective effect carried from the trial to the county through
-  the share of human exposure to the vector that arrives while people are in bed under the net, built the way
-  vector-control impact models carry trial efficacy, from human landing catches by hour and position against a human
-  behaviour survey; nothing in it reads with hospital or school nouns, because it is a vector's biting rhythm against
-  people's sleeping hours.
-- Swap: "how many readmissions will the discharge calls avert among the patients called in 2027" keeps the
-  coverage-times-efficacy arithmetic and loses everything that decides here: there is no hourly exposure that the
-  intervention covers only while people are in one place, and no trial whose effect is that overlap at its own sites.
-- Layer 1: the entomology unit's catch sheets change hour-label format twice (24-hour ranges, a 12-hour clock in two
-  sub-counties' 2024 sheets, compact ranges from the July 2025 tablet app) and position labels once, carry absent and
-  relieved collectors and other species in the same rows, and record a village under its sub-county on the night;
-  the behaviour survey holds enumerators' clock times in three formats and revisits a third of round 1's households;
-  the trial's tables sit inside a PDF; the registration app replays records and its mop-up re-registers households
-  under new numbers; the KHIS export keeps each return under the hierarchy it was entered in, re-entered the realigned
-  ward's June returns, and the parent hospitals' returns carried their outreach clinics to March 2026. Each is what
-  the system writes; none is placed to be caught, and none moves the call (`generator/checks.py` R2 rows).
-- Layer 2: family `field_method`. The choice that flips the call is reading the trial's efficacy as a per-bite
-  protection times its sites' in-bed share of exposure, which the five sites' tables show, and carrying the
-  protection, not the efficacy, to the county's own in-bed share.
-- Decisive step: transport the protective efficacy through the proportion of exposure occurring while in bed, the
-  sites' and the county's, each built from hourly biting indoors and outdoors and the population's hourly location.
-- Not semantics: every term is read correctly on the default path (the population, the window, the baseline, the use,
-  the efficacy as the report defines it), and it still files 22,000, because no field, code, unit or definition says
-  that the efficacy is a property of the sites' biting and sleeping hours; the vector species, the hour labels and the
-  survey times converge under every reading (SF5, SF7, R2 rows).
-- Not rule application: no filed rule or procedure computes the cases averted, so executing every stated rule (the
-  plan's population, window, baseline and use; the report's efficacy) files the default path's 22,000. The enumerated
-  family of overlap constructions (in-bed share with outdoor exposure, indoor-only in-bed share, indoor share, a fixed
-  22:00 clock, the nearest site, the trial efficacy alone or times the county's share) spreads 7,960 to 22,121; the
-  standing family, the constructions that carry the per-bite protection through the in-bed share with outdoor exposure
-  counted, by five estimators of the protection and two readings of the survey, spreads 11,170 to 11,230 (0.54 per
-  cent), and what rules the rest out is the sites' own efficacies, whose ratio to the in-bed share holds at 0.77 to 0.85
-  while the indoor-only ratio runs 0.71 to 0.92 and the indoor ratio 0.71 to 0.80 across the sites.
-- Analyst test: a strong analyst who cleans the catches and the survey, reads the plan and the report correctly and
-  applies the trial's pooled efficacy to the users' expected cases files 22,000 cases averted (8,000 if it multiplies
-  that efficacy by the county's in-bed share without dividing out the sites'), against the golden 11,000.
-- Estimand: the plan (lulanet_r_distribution_plan_2027.docx, section 5) files the population (residents sleeping
-  under campaign nets, no others), the outcome (Ombeni fever cases averted), the window (April to December 2027), the
-  comparison (the county's 2027 planning baseline without the campaign) and the use (Table 2); the prompt fixes the
-  unit and the rounding.
-- No decoy: nothing is planted. The KINGA-5 pooled efficacy is the trial's correct primary result, no document applies
-  it to Ruvari or argues for it, no memo, draft or stakeholder figure carries any cases-averted number, and no file is
+- Task type: psychology-behavioral-science / decision-making-computational-behavioral-modeling, which serves
+  Forecasting in the taxonomy: the match a default will produce over a fiscal year not yet open.
+- Domain test: the deciding quantity is a choice model of a default, a preference and a moment of active choice per
+  hire, the default holding until that moment, recovered from a record that shows only one preference and carried to
+  the opposite default; with clinical or school nouns there is no default to sit in and no moment of choice to wait
+  for, because it is inertia against preference.
+- Swap: "how many patients will keep their follow-up appointment once clinics book one by default" keeps the
+  arithmetic of a share times a count and loses what decides here only if nothing in the record separates who wants
+  the appointment from when they act; with a record of opt-in bookings it is the same model, a behavioural default,
+  which is the domain's task type, not a backdrop.
+- Layer 1: HR's two employee-number schemes across the February 2026 cutover (the register and the bordereau keep the
+  number a membership or policy was opened under); LRC codes before the July 2024 merger; rehires as new spells under
+  the same number and new memberships under the same member number; the requisition tracker's cancelled and re-issued
+  rows; Nordhavn's old policy numbers before its July 2022 system change; rate changes at April pay awards; a payroll
+  that writes a person's match on each assignment's line and a reversed and re-run payroll. Each is what the system
+  writes; none is placed to be caught, and none moves the call (`generator/checks.py` R2 rows).
+- Layer 2: family `field_method`. The choice that flips the call is reading the opt-in record as a preference and a
+  clock (the join curve's plateau and the curve over it) and rebuilding the take-up under the opposite default, rather
+  than carrying any observed take-up or opt-out level.
+- Decisive step: the share of hires who have made a choice by each month of service is the opt-in join curve divided
+  by its own five-year plateau; under automatic enrolment the not-yet-chosen sit at 3 per cent and the chosen
+  contribute at their own rates or not at all.
+- Not semantics: every term is read correctly on the default path (the intake, FY2027, the default rate, the match,
+  the pay scale, the cover's cancellations), and it still files 14.5 million, because no field, code or definition
+  says that the cover's cancellations measure a different preference or that the register shows only joiners; the
+  employee numbers, hospital codes and requisition statuses converge under every reading (R2 rows).
+- Not rule application: no filed rule or procedure computes the take-up under the new default, so executing every
+  stated rule (the amendment's intake, enrolment and opt-out; the rules' match and timing; the scale) leaves the
+  opt-out pace to the analyst. The enumerated family of take-up constructions (the cover's cancellations as opt-outs,
+  with or without joiners at their rates, the join curve as the share who have chosen, nobody leaving, preference from
+  the first payroll at own rates or at 3, the opt-in record replayed) spreads 5.0 to 16.0 million; the standing family
+  (the join curve over its plateau read at three to seven years or at its end, Kaplan-Meier or complete cohorts for the
+  join curve and for staying on the payroll, the clock read from the cover's cancellations over their own plateau,
+  first spells only, joiners' rates at join or current, pay-weighted) spreads 11.40 to 11.50 million (0.85 per cent),
+  and what rules the rest out is the record itself: the cover's cancellation curve over its own plateau runs on the
+  join curve's clock (90.2 against 89.9 per cent by the twelfth payroll) at a level a third of the plan's non-joiners.
+- Analyst test: a strong analyst who cleans the HR history, the member register and the payroll lines, reads the plan
+  rules and the amendment correctly, and carries the cover's cancellations as the plan's opt-outs files TNK 14.5
+  million (14.0 million if it reads the join curve as the share who have chosen, 8.5 million if the 43 per cent who join
+  contribute from the first payroll and nobody else does), against the golden TNK 11.5 million.
+- Estimand: the amendment (vch_savings_plan_amendment_2027.docx, section 4) files the population (the approved
+  requisitions of the 2027 hiring plan, each filled at its planned start; nobody hired before 2027), the window (the
+  January to December 2027 payrolls), the pay (the 2027 scale for the grade and FTE), the comparison basis (the
+  group's hires since January 2019, all six hospitals taken together) and the outcome (the employer's match, rules
+  section 4); section 3 files the default and the opt-out; the prompt fixes the unit and the rounding.
+- No decoy: nothing is planted. The cover's bordereau is Nordhavn's ordinary record of a benefit the group has
+  defaulted hires into since 2019, needed for the clock's corroboration; no document applies it to the plan or argues
+  for it, no memo, draft or stakeholder figure carries a take-up, an opt-out rate or a match forecast, and no file is
   copied or backfilled.
-- No certified replay: no certified or published figure is reproduced to recover a method; the trial's five site
-  efficacies are outcomes of the per-bite protection at five overlaps, read forward, and nothing in the pack certifies
-  a cases-averted figure.
-- Lesson: a trial's efficacy is the effect of a tool in its sites' exposure pattern, and carrying it to a population
-  whose exposure arrives elsewhere in the day means dividing out the sites' pattern before applying the target's; no
-  build on file teaches an effect read through an hourly overlap of two independently measured rhythms (task177 reads
-  an effect at the point of a unit's own cycle; task149 a hazard against work pace).
+- No certified replay: no certified or published figure is reproduced to recover a method; the cover's cancellations
+  are outcomes of hires' own choices under a default, read forward, and nothing in the pack certifies a take-up or a
+  match forecast.
+- Lesson: a record kept under one default shows only the people whose preference differs from it, and only once they
+  have acted, so its take-up level carries to nothing and its curve is a selected view of the pace of acting; the
+  forward default's take-up is the not-yet-acted plus the acted who prefer it. No build on file teaches a default read
+  through a preference and a clock (task136 enrols units about to take up on their own; task137 reads a behavioural
+  share at a repricing).
 
 ## Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
-| R0 trial pooled efficacy | the report states it as the primary result | Table 1 | coverage times efficacy | none | no | one product | readable |
-| R1 pooled efficacy times the county's in-bed share | no | hourly tables invite an overlap | a correction for local biting | none | no | one product | readable |
-| R2 nearest site's efficacy | no | five site rows | analogue site | none | no | a lookup | readable |
-| R3 indoor-only in-bed share | no | indoor catches | the entomologist's in-bed share of indoor biting | none | no | no | readable |
-| R4 decisive: per-bite protection through the in-bed share with outdoor exposure, sites divided out | no sentence names the overlap, the protection or the division | no column holds a share or a protection; the overlap needs catches by hour and position against survey times at a person grain | the textbook carries the efficacy | the site efficacies refute R3 and R4 only once each site's share is built | no | a ratio of two sums over hours in two files | silent |
+| R0 the cover's cancellations as the plan's opt-outs | no sentence links the cover to the plan's opt-outs | the bordereau's cancellation dates | the in-house opt-out analogue | none | no | one curve times pay | readable |
+| R2 the join curve as the share who have chosen | no | register join dates against HR starts | the opt-in record as the choice record | none | no | one curve | readable |
+| R4 the joiners from the first payroll | no | the register's join share | preferences are stable, defaults change nothing | none | no | one share | readable |
+| R3 nobody opts out | no | none | inertia is total | none | no | a constant | readable |
+| R7 decisive: the not-yet-chosen at 3 per cent on the join curve over its plateau | no sentence names a clock, a plateau, a preference or the division | no column holds a choice date for non-joiners or a take-up; the curve needs HR spells against register joins across two number schemes with leavers censored | the textbook carries a benchmark opt-out rate | the cover's curve over its own plateau corroborates the clock only once both curves are built | no | a ratio of two curves recombined under the opposite default | silent |
 
 ## Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | cases averted "among the people sleeping under them" | residents under a campaign net only | community or non-user effects added | larger | plan section 5: "It counts no cases averted among residents who are not under a campaign net" |
-| SF2 | "from April to December 2027" | the nine baseline months | calendar 2027 | larger | the prompt and plan section 5; the baseline covers April to December only |
-| SF3 | the cases the county "would otherwise expect" | the planning baseline without the campaign | a trend fitted to KHIS | other | plan section 4 and the baseline's title line |
-| SF4 | how many sleep under the nets | Table 2's planned use by month | the registration's nets times two | other | plan section 5: "at the use in Table 2" |
-| SF5 | the vector | An. ruvariensis | every anopheline | same call (11,000) | data dictionary and trial report; asserted |
-| SF6 | the efficacy the trial measured | the report's one efficacy per site, nightly use verified | intention-to-treat against per-protocol | same call | the report reports one efficacy, use at 96 to 98 per cent of checks |
-| SF7 | the share at an hour | members indoors and in bed at the half hour, as the report's Table 3 | the share of each hour spent | same call (11,170) | asserted |
-| SF8 | which survey round | both rounds pooled | one round, or revisited members once | same call | asserted |
-| SF9 | landings per hour | per minute collected | per collector-hour row | same call | asserted under R2 |
-| SF10 | rounding path | unrounded by sub-county and month, rounded once per figure | sub-county figures rounded then summed | same call | prompt's rounding sentence; asserted |
-| SF11 | the per-bite protection's estimator | inverse-variance fit through the origin | unweighted, ratio of pooled, mean of ratios, with an intercept | same call (11,208 to 11,230) | asserted |
-| SF12 | case definition | confirmed cases in the baseline and the trial | clinical cases | same call | baseline title and report design; asserted |
+| SF1 | "the staff it hires in 2027" | the approved requisitions, each filled at its planned start | every requisition row; a hiring trend from the record | larger, other | amendment section 4: "the approved requisitions in the 2027 hiring plan, each filled at its planned start date" |
+| SF2 | FY2027 | the January to December 2027 payrolls | an April to March year | other | amendment section 4: "(the January to December 2027 payrolls)" |
+| SF3 | pay in 2027 | the 2027 scale for the grade times FTE | the 2026 scale, an April award | other | scale extract: "The 2027 scale applies to every payroll from January to December 2027." |
+| SF4 | the default | 3 per cent from the first payroll | from the second payroll | larger | amendment section 3: "at a contribution of 3 per cent of basic pay from the first payroll" |
+| SF5 | the match | 100 per cent to 3, 50 per cent from 3 to 6 | the whole contribution matched | other | rules section 4 |
+| SF6 | whose experience | all six hospitals together | each hospital from its own hires | hospital figures move | amendment section 4: "all six hospitals taken together" |
+| SF7 | the month of a choice | the payroll it applies to (the 10th cut-off) | calendar months from the start date | same call | rules section 3; joins dated by first contribution; asserted under SF10 |
+| SF8 | the join curve's plateau | its level at five years | three, four, six or seven years, or the curve's end | same call (11,429,909 to 11,447,798) | asserted |
+| SF9 | the estimator | Kaplan-Meier, leavers censored | complete cohorts for the join curve, for staying, or both | same call (11,400,683 to 11,497,776) | asserted |
+| SF10 | the clock's source | the plan's own join curve | the cover's cancellations over their own plateau | same call (11,470,958; 90.2 per cent by the twelfth payroll) | asserted |
+| SF11 | a joiner's rate | the rate at join | the current rate; pay-weighted | same call | asserted |
+| SF12 | rehires | each spell a hire (amendment section 2 counts rehires as new hires) | first spells only | same call (11,443,595) | asserted |
+| SF13 | "contributing on the December 2027 payroll" | a contribution deducted on that payroll, at the default or a chosen rate | members including those who opted out | other | the prompt's word "contributing"; asserted |
+| SF14 | who is in the line | the 2027 intake only | the whole workforce | larger | amendment section 4: "counts nobody hired before 2027" |
 
 ## Ladder
 
-| Rung | Construction | Cases averted | Rounded | Clearance from the golden's bin |
+| Rung | Construction | FY2027 match, TNK | Rounded | Clearance from the golden's bin |
 |---|---|---|---|---|
-| R0 | trial pooled efficacy 56.7 per cent on the users' expected cases | 22,121 | 22,000 | 1.92x |
-| R1 | pooled efficacy times the county's in-bed share 0.36 | 7,960 | 8,000 | 1.32x |
-| R2 | the nearest site's efficacy (Kibondeni, share 0.49) | 15,226 | 15,000 | 1.32x |
-| R3 | per-bite protection through the indoor-only in-bed share (0.45) | 14,316 | 14,000 | 1.25x |
-| R4 | through the indoor share (0.50) | 14,041 | 14,000 | 1.22x |
-| R5 | through the share of bites after a fixed 22:00 | 12,165 | 12,000 | 1.06x (ruled out by the survey's own bedtimes: children are in bed before 22:00 and members indoors awake or outdoors after it) |
-| golden | per-bite protection 0.80 through the in-bed share 0.36 with outdoor exposure counted | 11,208 | 11,000 | edge 292 |
+| R0 | the cover's cancellations as the plan's opt-outs, everyone else at 3 | 14,409,662 | 14,500,000 | 5.6 bins |
+| R1 | the same, the opt-in joiners at their own rates | 15,311,542 | 15,500,000 | 7.4 bins |
+| R2 | the join curve read as the share who have chosen | 14,064,941 | 14,000,000 | 4.9 bins |
+| R3 | nobody opts out | 16,025,948 | 16,000,000 | 8.8 bins |
+| R4 | the 43 per cent who join, from the first payroll, at their own rates | 8,359,207 | 8,500,000 | 5.8 bins |
+| R5 | the same at 3 per cent | 6,851,712 | 7,000,000 | 8.8 bins |
+| R6 | the opt-in record replayed | 5,001,013 | 5,000,000 | 12.5 bins |
+| golden | the not-yet-chosen at 3, the joiners at their own rates, on the join curve over its plateau | 11,439,212 | 11,500,000 | edge 189,212 |
 
-Position: the default path is the largest figure; every correction short of the decisive one lands in its own bin;
-the golden is bracketed (R1 below, R2 to R5 above). Worth: the decisive step moves the call 49 per cent off R0.
-The trial's draw is the shipped pack's (the generator's TRIAL_SEED): among 400 draws of the five sites' outcomes at
-the same per-bite protection, it is one of the 46 in which every estimator of the protection agrees within 0.8 per
-cent, so the standing family is closed on this pack; across draws the through-origin estimators stay within 1.5 per
-cent of each other and the intercept fit wanders, which is why the intercept fit is asserted on the shipped draw.
+Position: the default path and the near rungs sit above the golden (R0 to R3), the preference rungs below (R4 to R6);
+the golden is bracketed and every rung lands in its own bin. Worth: the decisive step moves the call 21 per cent off
+R0 and 27 per cent off R4. The hospital figures inherit the step (each rung moves every hospital by the same share);
+each hospital's golden sits 22,244 to 41,343 from its 100,000 bin's edge against a family spread of 0.85 per cent.
+The plan's monthly multipliers (1.06 in January, August and September, 0.98 otherwise) were chosen so that every
+standing-family member lands in the golden's bins on every graded figure.
 
 ## Closure table
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
-| 1 | Population | residents under a campaign net | plan section 5 (SF1) |
-| 2 | Unit of account | cases | the prompt |
-| 3 | Attribution window | the case's month in the baseline | C1: the baseline is monthly; the plan's months |
-| 4 | As-of dating | the pull of 12 October 2026 | dictionary header; no figure moves with it |
-| 5 | Version basis | plan v2.1, baseline run of 14 September 2026 | one version ships of each |
-| 6 | Denominator | the share's denominator is the period's expected cases | the prompt's "cases the county would otherwise expect in that period" |
-| 7 | Weighting | the overlap weights hours by landings; people equally | C1: survey members equally (SF8), estimators agree (SF11) |
-| 8 | Window length | catches 2024 to 2026, both survey rounds | C1: every round and the pooled read agree (SF8) |
-| 9 | Boundary inclusivity | a member is in bed at the half hour from the bedtime | C1 (SF7) |
-| 10 | Rounding path | rounded once per figure | SF10 |
-| 11 | Tie-break | none needed | no tie at any bin |
-| 12 | Maturity and censoring | none: the baseline is complete for the window | not applicable |
-| 13 | Order of operations | protection times share times use times baseline | commutative products |
-| 14 | Row order | none | sums and means |
-| 15 | Duplicate resolution | revisited survey members kept as second nights | C1 (R2 row) |
-| 16 | Identity normalisation | the five sites by name across Tables 1 to 3b | one spelling |
-| 17 | Netting against gross | none | not applicable |
-| 18 | Dimensional units | landings per minute in every hour | SF9 |
-| 19 | Code and status semantics | IN and Indoor, OUT and Outdoor; three hour-label formats | dictionary; C1 (R2 rows) |
+| 1 | Population | the approved 2027 requisitions | SF1, SF14 |
+| 2 | Unit of account | TNK of employer match | the prompt and rules section 4 |
+| 3 | Attribution window | the January to December 2027 payrolls | SF2 |
+| 4 | As-of dating | the pull of 9 November 2026, the October 2026 payroll the last | dictionary header; manifest |
+| 5 | Version basis | plan rules of February 2024, the committee paper as approved, the tracker of 4 November 2026 | one version ships of each |
+| 6 | Denominator | the December contributors over nobody: a count | the prompt |
+| 7 | Weighting | each hire equally in the curves; pay weights only in the match sum | SF11 asserted |
+| 8 | Window length | hires January 2019 to October 2026 | amendment section 4 ("since January 2019") |
+| 9 | Boundary inclusivity | a choice received by the 10th applies that month | rules section 3 (SF7) |
+| 10 | Rounding path | unrounded by requisition and month, rounded once per figure | the prompt's rounding sentence |
+| 11 | Tie-break | none needed | no figure on a bin edge |
+| 12 | Maturity and censoring | open spells and recent hires censored at the October 2026 payroll | SF9 asserted |
+| 13 | Order of operations | staying times pay times the expected match rate, summed | sums of products |
+| 14 | Row order | none | sums |
+| 15 | Duplicate resolution | rehires as spells, memberships placed on their spell | SF12 asserted |
+| 16 | Identity normalisation | V and E numbers through HR's crosswalk; LRC as Lidmark | dictionary; R2 rows |
+| 17 | Netting against gross | none on the call | not applicable |
+| 18 | Dimensional units | monthly basic pay, per cent rates | rules section 2; scale extract |
+| 19 | Code and status semantics | Approved only; Re-issued and Cancelled rows out | the tracker's Notes sheet |
 | 20 | Integerisation | none on the call | not applicable |
-| 21 | Clause scope | the plan's section 5 governs the grant report's figures, the realignment sentence its sub-county figures | plan section 5 |
-| 22 | Forward window contents | the baseline and the use for every month of the window | both ship for all nine months |
+| 21 | Clause scope | amendment section 4 governs the budget line; section 2 who is enrolled | amendment |
+| 22 | Forward window contents | every requisition's start month and grade for 2027 | the tracker ships all twelve months |
 
 ## Literal reader
 
-Executed word for word, the prompt and the plan fix the population, window, comparison and use, and the report's one
-efficacy per site; the literal reading that carries the report's pooled efficacy unchanged is the default path's easy
-method on the same literal estimand (22,000), not another reading of a term, and every term's alternatives converge
-or are ruled out by a quoted sentence (SF1 to SF12). Pass.
+Executed word for word, the prompt and the amendment fix the intake, the window, the pay, the default, the opt-out,
+the match and the comparison basis; the literal reading that carries the cover's cancellations, or any observed
+take-up, is the default path's easy method on the same literal estimand (14.5 million), not another reading of a term,
+and every term's alternatives converge or are ruled out by a quoted sentence (SF1 to SF14). Pass.
 
 ## Oracles
 
-None ties only under the golden. The trial's Table 1 confirms every site efficacy on every path; the baseline and the
-use are inputs on every path; no published cases-averted figure ships. The site efficacies refute the indoor-only and
-indoor overlaps only after each site's share is built, which is the decisive step itself.
+None ties only under the golden. The register's join dates, HR's spells and the bordereau are inputs on every path; no
+published take-up, opt-out rate or match forecast ships. The cover's curve over its own plateau corroborates the
+clock only after both curves are built, which is the decisive step itself.
 
 ## Ask sheet
 
-Asks, each on rows the call never reads (separation asserted in `checks.py`: the call's code reads no registration,
-KHIS or facility file).
+Asks, each on rows the call never reads (separation asserted in `checks.py`: the call's code reads no deduction line,
+and no membership opened before 2019 sits on a 2019 to 2026 hire).
 
-- Ask A, nets by sub-county (7 figures, whole numbers). H18 home: the procurement line of the grant case. Path:
-  nets_registration_2026.parquet (16 columns), the plan's allocation rule. Primary device (D1, the same records under
-  two keys, silent): the October mop-up re-registered 7,203 main-round households under new registration numbers,
-  usually under another member's name and a different or missing ID; the same household shows only as a mop-up row
-  matching a main-round row on its ward, dwelling mark, usual members, under-fives and sleeping spaces, while 11 per
-  cent of dwellings hold two or three genuine households that never match on all three counts (so a dedup by dwelling
-  mark deletes real households). Hazards: exact sync replays (battery), the cap of four nets. Stops: every row
-  575,791; replays dropped 574,079; same-ID re-registrations dropped 571,208; one household per dwelling 488,073;
-  golden 555,968. Realism: a registration app's sync replays and a mop-up round that re-registers households whose
-  slip was lost are what campaign registrations produce.
-- Ask B, confirmed cases January to September 2026 by sub-county (7 figures, whole numbers). H18 home: the reported
-  burden behind the grant case. Path: khis_moh705_obf_2024_2026.csv (11 columns), facility_list_2026.csv, the plan's
-  realignment sentence. Primary device (D6, a rollup above its parts, silent): each sub-county hospital's January to
-  March 2026 returns still carried its outreach clinic's outpatients while the clinic reported under its own code from
-  January, so the clinic's cases count twice; the only trace is a terse comment on the parent's rows and the facility
-  list's parent code. Hazards: the export's sub-county is the hierarchy at entry (D2, the realigned Lwala ward's
-  facilities sit under Kendagi to June 2026), and the ward's June 2026 returns were re-entered under Oyamo in July
-  (battery). Stops: export column, every row 39,960; facility list, every row 39,960 (other split); June once 39,791;
-  golden 39,331. Realism: a KHIS export keeps each value under the org unit it was entered against, and satellites
-  coming onto their own codes are entered by both parent and satellite until the next data review.
+- Ask A, the employer match paid on the January to October 2026 payrolls by hospital (6 figures, nearest TNK 1,000).
+  H18 home: the 2026 run-rate the budget line sits beside. Path: payroll_deductions_2025-11_2026-10.csv (10 columns),
+  the plan rules' section 2 (pensionable pay across every post), the dictionary's assignment field. Primary device (D6,
+  an event's quantity on every line it covers, silent): payroll computes the match on the person's pensionable pay
+  across assignments and writes it on each assignment's ERM line, so the 440 or so staff holding a bank post in a month carry
+  their match twice; nothing marks it, the bank post's ERM line equals its main post's exactly, and only a match
+  recomputed from each line's basic pay and rate shows it. Hazards: Rendholm's April 2026 payroll ran on the 2025 scale, was reversed
+  and run again (MAIN, REVERSAL and RERUN lines, all netting); V-numbers before the February 2026 cutover. Stops: every
+  ERM line summed (each hospital 6.1 to 8.3 per cent high); the reversal lines dropped (Rendholm 9.7 per cent high);
+  the first run only (Rendholm 0.3 per cent low); golden, each person's ERM once per payroll and run.
+- Ask B, members whose membership began before 2019 and who were still active on 1 November 2026, by the hospital that
+  paid them in October 2026 (6 figures, whole numbers). H18 home: the long-standing membership the plan's match
+  already carries. Path: kestrel_member_register_2026-10.xlsx (9 columns), hr_employment_history_2019_2026.csv, the
+  October 2026 deduction lines, the dictionary. Primary device (D2, the record is the latest accepted, not the latest
+  delivered, silent): Kestrel's register is the snapshot after the October contribution file and before the month-end
+  leavers file, so long-standing members whose employment ended on 31 October 2026 (6 to 11 a hospital, its
+  October retirements among them) still read Active; only HR's contract end shows it. Hazards: register references in V-numbers; hospital_at_join in LRC; rehired members'
+  later memberships under the same member number (anchoring on the member number's first membership counts them).
+  Stops: the register's Active rows by the hospital at join (every hospital 6 to 11 high); anchored on the first
+  membership (every hospital 1 to 4 high); golden.
 
 Measured by: generator/ceiling.py
 
-| Ask | Cracker (lands the call, runs the battery, applies the plan's rule and boundaries) | Figures kept | Verdict |
+| Ask | Cracker (lands the call, runs the battery, applies the rules, nets the re-run, maps both numbers) | Figures kept | Verdict |
 |---|---|---|---|
-| A nets by sub-county | drops replays and same-ID re-registrations, keeps the rest | 0 of 7 | miss |
-| B reported cases by sub-county | maps facilities to the realigned sub-counties, counts June once, keeps the outreach double count | 0 of 7 | miss |
-| call construction (share and sub-county averted) | on the call | 8 of 8 | yes |
+| A match paid 2026 by hospital | sums every ERM line of every run, exact duplicates removed (none) | 0 of 6 | miss |
+| B long-standing active members by hospital | the register's Active memberships opened before 2019, LRC read as Lidmark | 0 of 6 | miss |
+| call construction (hospitals and December contributors) | on the call | 7 of 7 | yes |
 
 Mirror leakage: 0.0 per cent of ask weight (the mirror stops at R0 and takes both asks on their natural reads).
-Pair ceiling: 38.5 ((65.0 + 12.0) / 2 on 38, 7 and 55), 47.2 if the cracker also reads the outreach comment.
-
-## Leak review
-
-`leak.py --asof 2026-10-12`: REVIEW, no LEAK. Each line answered:
-- kinga5_final_report_2024.pdf carries 56.7: the trial's pooled efficacy is its primary result and the default
-  path's input, stated where a trial report states it; it is a step figure, not the call.
-- lulanet_r_distribution_plan_2027.docx shares the call's words (campaign, cases, nets, April to December 2027): the
-  plan files the estimand (section 5) in the organisation's words; it carries no figure, efficacy or method.
-- The trial report and the plan each carry four of the note's stump-paragraph terms (efficacy, pooled, survey,
-  report; survey, report, register, catches): ordinary words of a trial report and a campaign plan; neither names
-  an overlap, a share of bites in bed, a per-bite protection or a transport (`checks.py` R1 and R3c rows).
-
-## Duplicate check
-
-`guard.py heart task170` (2026-10-23, after the final pull): WARN, the five WARNs answered in `## Draw` item 9;
-nearest text 0.05 (task121 v3). `guard.py surface task170`: one pair promoted, task168 against task170, two numbers
-apart, on the decisive gap (population) and the decision type (quantity_figure), surface 0.080 (corpus percentile
-46). Both axes are the honest labels here and both are broad; the mechanisms share nothing: task168 completes the
-demand of units observed only until they reached a cap from the build of units that never did, while this build
-carries a trial's efficacy through the hourly overlap of a vector's biting and residents' hours in bed. The trial's
-site names were renamed once (a site whose name read as a person beside the next column) so the persona sweep reads
-only the card's people.
+Pair ceiling: 38.6 ((65.3 + 12.0) / 2 on 38, 7 and 55), 47.3 if the cracker also cracks one ask's device.
 
 ## Layer 1 inventory
 
 | Item | System that writes it | File | Natural mishandling | Neutral |
 |---|---|---|---|---|
-| hour labels in three formats | paper sheets keyed by two teams, then the tablet app | hlc | dropping the 12-hour sheets | same call (R2) |
-| IN/OUT against Indoor/Outdoor | the tablet app from July 2025 | hlc | splitting positions four ways | asserted labels |
-| absent and relieved collectors | the field supervisor's sheet | hlc | counting rows, not minutes | same call (SF9) |
-| other species in the rows | the catch sheet | hlc | pooling anophelines | same call (SF5) |
-| village under its sub-county on the night | the sheet header | hlc | none on a county figure | not read |
-| three clock formats | enumerators | survey | none once parsed; all unambiguous | asserted parse |
-| revisited households | the round 2 design | survey | counting members once | same call (R2) |
-| tables inside a PDF | the trial's report | trial | none | verifier reads it |
-| sync replays, mop-up re-registrations | the registration app, CHVs | registration | ask A device | ask only |
-| hierarchy at entry, June re-entry, outreach in parents' returns | KHIS, the records office | KHIS | ask B device | ask only |
+| V-numbers and E-numbers | the HR and payroll cutover of February 2026 | HR, register, bordereau, deductions | joining on E-numbers alone (loses most joins, loud) | R2 asserted |
+| LRC before the merger | the old org structure | HR, register, bordereau | a seventh hospital | pooled; not in the 2027 plan |
+| rehires as new spells | HR | HR, register | first spells only | same call (SF12) |
+| cancelled and re-issued requisitions | the tracker | plan | counting every row | the call reads Approved (SF1) |
+| old policy numbers | Nordhavn's 2022 system change | bordereau | none on a count of cancellations | not read by the call |
+| rate changes at April awards | Kestrel | register | current rate for a joiner | same call (SF11) |
+| the person's match on every assignment line | payroll | deductions | ask A device | ask only |
+| reversed and re-run payroll | payroll | deductions | ask A hazard | ask only |
+| the register before the month-end leavers file | Kestrel | register | ask B device | ask only |
+
+## Architecture 3 record (spent 2026-10-23)
+
+Architecture 3, epidemiology-public-health / health-burden-impact-modeling (Forecasting), the main session's cell of
+2026-10-23: an implementing non-profit's forecast, for its donor, of the Ombeni fever cases the March 2027 county-wide
+distribution of LulaNet R repellent sleeping nets in Ruvari County (a fictional county in Kenya) would avert among the
+people sleeping under them from April to December 2027. The golden carried the KINGA-5 trial's per-bite protection
+(0.80, the five sites' efficacies over their own in-bed shares of exposure) through the county's in-bed share (0.36):
+11,000 cases averted against the default path's 22,000 (the pooled efficacy, 56.7 per cent, carried unchanged). Built
+to stage 3 (72676b37), judged DETERMINISTIC / APPROVE on zip 74728781, and spent at Gate F (the last line of
+`## Tried and rejected`). The full architecture 3 note is in git at cc9ca581.
 
 ## Architecture 1 record (spent 2026-10-18)
 
@@ -369,6 +380,10 @@ The full architecture 1 note (default path, ladder, closure, asks and the stage 
 - Rebuild of 2026-10-23 in banking-credit-financial-risk / expected-credit-loss-provisioning (never carded), the one candidate taken to code: a credit union's CECL allowance on its auto loans after a used-vehicle price surge, each defaulting loan's recovery forecast as its own vehicle's market value at its sale against a balance sized at its own purchase market, so the record's severities (vehicles bought at or below the market they sold at) carry nothing to the vehicles bought at the top. On the clean truth (40,655 open loans, 7,947 closed sales, three seeds) the golden family (five fits of resale over purchase price on the index at sale against the index at purchase, the ratio's coefficient free or fixed at one, point, smeared and residual-integrated) sat within 1.1 per cent of the truth and the rivals missed by a third or more (pre-surge severity 33 to 34 per cent low, the latest year's recovery rate scaled by the forecast index change 39 to 44, pooled severity 47, a valuation on the purchase price without the purchase market 64). It died on the shipped-proxy screen: the practitioner's macro-linked severity, the recovery rate regressed on the index's change over a holding horizon, filed 4.6 per cent high on a 12-month change where the fall sits in the forecast and 7 per cent low on a 24-month change where the fall comes before the report, because for loans that default 12 to 24 months after purchase the index's change over that horizon is the purchase-to-sale ratio; the horizon is a free knob whose range spans the golden, so some member lands in any world. A hedonic valuation on the vehicle's segment and age with no price information also landed (2 to 8 per cent high), and with the fall before the report the surge vintages' own realised severity shows the effect.
 - Expected-credit-loss cell, the rest on paper: rate resets and interest-only, promotional and grace-period expiries (task166's due units, task177's exposure end, task46's and task157's cohort crossing a step); a collections, extension, repossession or court-order change that closes one route for distressed loans, and negative equity routing distressed borrowers into default instead of a sale (task169's driver both times); drawdown before default capped by the limit (task168's cap completion); cure, re-ageing and delinquency momentum (conditioning on the account's own history is a stratification, the opponent's first group-by, `stumping` Part 6); guarantees, first-loss covers, forward-flow debt sales, deficiency and repossession statutes, the CECL collateral-dependent expedient and line-freeze policies (each a filed rule executed); indexed mortgage loan-to-value (the field's own indexation is the textbook route); a distributed lag from a county panel (the field's lag reflex, task160's readers landed a lag, and it moves only a 12-month window under staging rules); a cut in the state's unemployment-benefit duration turning more job losses into defaults (task172's cap moving into the bulk of a duration distribution, the exceedance share read straight off the record's spells); sector-linked defaults at a select-employee credit union and a sponsor's plant closure (composition, the metro or sector forecast a proxy or a signpost, the closure a dated cause); dealer price packing, electric-vehicle depreciation and force-placed insurance (each a column to stratify on); a retained first-loss tranche (its expected loss turns on the spread of ten vintages' losses). The cell's core estimation mechanics (survival to date, competing exits, the remaining-life base) are task133's.
 - Architecture 3 (epidemiology-public-health / health-burden-impact-modeling, the LulaNet R campaign's cases averted through the in-bed share of exposure) spent at Gate F at stage 4 on zip 74728781: the judge returned DETERMINISTIC / APPROVE with no fix, and blind reader A took the decisive step in its own words ("net protection only works while the person is in bed, so for each KINGA-5 site I computed the share of person-exposure to An. ruvariensis bites that falls in bed (survey in-bed/indoors by half hour x hourly indoor/outdoor landing rates). Trial protective efficacy divided by 0.97 net use, regressed through the origin on that share gave per-user efficacy = 0.824 x share in bed"), filing 12,000 against 11,000 and 22 against 21 per cent with 6 of 7 sub-counties landed (score_reader FAIL as landed), and took ask B ("outreach clinics' Jan-Mar 2026 rows dropped because parent hospitals' Jan-Mar returns already include outreach OPD"), 7 of 14 ask figures. Why: the trial report shipped each site's hourly biting and sleeping tables beside its widely varying efficacies, which laid the transport model out on one page, and a behaviour-time overlap is the field's standard entomological reasoning for nets, so it fails the library test at medium effort; an in-row comment is no silent device.
+- Cell choice after architecture 3 (2026-10-23, on paper, before the card): the console merger of two control-room operators' alarm streams (misses rise with concurrent load) replays the two journals onto one clock, so the record is replayable; a 12-hour shift roster's errors from a time-on-duty curve beyond eight hours rests on selected overtime and the field's fatigue index is the textbook route; a voting-age or compulsory-voting change carries a transport of turnout from a pilot province, architecture 3's shape; a party's withdrawal under an electoral pact is a transfer rule executed; a deductible cut extrapolates a truncated severity below its truncation point (the parametric family forks) and a deductible rise is the limited expected value, field-standard; a tempo-adjusted birth forecast is the Bongaarts-Feeney correction; select mortality wearing off after a scheme closes is task107's intake moving to the experienced rate; mortality displacement after an excess-death year is a dated cause read off the record; a removed second check is task169's route closure; a staggered decision-aid rollout is a difference-in-differences the rollout log lays out; flat dosing on an Emax curve is the popPK cell's grave.
+- Automatic enrolment with a common clock and no corroborating default on file (prototype `proto3/ae.py`): the golden's assumption that hires who prefer not to join choose on the joiners' clock rested on no record, so a judge could read it as an unfiled method; the income protection cover, auto-enrolled since 2019, was added as the clock's corroboration, its own cancellations drawn on the same law and independently of the plan's choice, so no hire's two choices share a date a reader could join on.
+- The FY2027 line to the nearest TNK 100,000 with hospitals to the nearest 10,000 (prototype `proto3/ae3.py`, `family.py`): complete-cohort estimators of the join curve sat 1.4 per cent from Kaplan-Meier on a 2,600-hire five-year cohort, outside both bins; the group grew to about 11,400 staff with longer tenures (the five-year cohort to 3,964), the family narrowed to 0.85 per cent, and the line is rounded to TNK 500,000 with hospitals to 100,000, the plan's monthly multipliers set so every member lands in every bin.
+- The share who have chosen by the sixth payroll as a critical component: the cover's clock read 71.4 against the join curve's 72.1 per cent, across a whole per cent; the twelfth payroll (89.8, 90.2, 89.8 and 89.9 across the family) holds.
 
 ## Retired
 
@@ -393,3 +408,11 @@ unchanged and no lineage was moved, since no new draw was registered.
 The main session then assigned epidemiology-public-health / health-burden-impact-modeling the same day, and
 architecture 3 (`## Draw`) was carded there: the repellent net campaign's cases averted, the trial efficacy carried
 through the county's in-bed share of exposure.
+
+The architecture 3 death was recorded the same day (cc9ca581), and the main session left the next cell to this
+session under four conditions: the forward window changes the process in a way not on file; the record is not
+replayable, not one group-by and not a field-standard correction; the materials of the decisive step do not sit side
+by side in one shipped report; and no cell in this note or the siblings' `## Rebuild` sections. Architecture 4 was
+carded in psychology-behavioral-science / decision-making-computational-behavioral-modeling (`## Draw`, item 12 for
+why): Vindeholm County Hospitals' FY2027 employer match on its first auto-enrolled intake, the opt-in record read as a
+preference and a clock.

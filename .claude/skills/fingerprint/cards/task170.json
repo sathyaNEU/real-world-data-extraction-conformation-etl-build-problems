@@ -1,21 +1,21 @@
 {
   "task": "task170",
-  "architecture": "v3",
+  "architecture": "v4",
   "drawn": "2026-10-23",
-  "slot_note": "architecture 3, a from-scratch rebuild of a reopened number: v1 (the paediatric ARV order) is in lineage; architecture 2's two cells (2026-10-19) and the expected-credit-loss cell (2026-10-23) died before any card (design note ## Tried and rejected)",
-  "domain": "epidemiology-public-health",
-  "subdomain": "health-burden-impact-modeling",
-  "client_domain": "epidemiology-public-health",
-  "niche": "an implementing non-profit's forecast, for its donor, of how many Ombeni fever cases the March 2027 county-wide distribution of repellent sleeping nets in Ruvari County will avert among the people sleeping under them from April to December 2027, when the county's vector bites earlier in the evening and more outdoors than at any site of the five-site trial that measured the nets' protective efficacy",
+  "slot_note": "architecture 4, a from-scratch rebuild of a reopened number: v1 (the paediatric ARV order) and v3 (the repellent net campaign, spent at Gate F) are in lineage; architecture 2's cells and the expected-credit-loss cell died before any card (design note ## Tried and rejected)",
+  "domain": "psychology-behavioral-science",
+  "subdomain": "decision-making-computational-behavioral-modeling",
+  "client_domain": "psychology-behavioral-science",
+  "niche": "a county hospital group's forecast, for its FY2027 budget, of the employer matching contributions its workplace pension plan will pay on the staff it hires in 2027, the first intake enrolled automatically at a 3 per cent default with the right to opt out, when every earlier intake had to opt in and the record shows only the hires who chose to join",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "About 11,000 Ombeni fever cases averted among the people sleeping under the March 2027 LulaNet R nets in Ruvari County from April to December 2027, 21 per cent of the 53,042 cases the county expects (11,208 unrounded from the shipped files).",
+  "answer_unit": "currency",
+  "answer": "About TNK 11.5 million in employer matching contributions on Vindeholm County Hospitals' 2027 intake over the January to December 2027 payrolls (TNK 11,439,212 unrounded from the shipped files), with about 1,600 of the intake contributing on the December 2027 payroll.",
   "answer_source": "submission.md, 1. Final Recommendation (generator/deliver.py from the pack; generator/verify.py recomputes)",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
@@ -26,70 +26,77 @@
   ],
   "gate_g": "forecasting",
   "calibration_form": "other",
-  "stump_strategy": "causal_design",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "other",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the entomology and survey records, reads the trial report and the campaign plan correctly and applies the trial's pooled protective efficacy (56.7 per cent) to the plan's expected cases among net users files 22,000 cases averted (8,000 when it multiplies that efficacy by the county's in-bed share of bites without dividing out the trial sites' own), when the per-bite protection the five sites share (0.80), carried through the county's in-bed share of exposure (0.36), files 11,000.",
-  "domain_test": "The deciding quantity is a vector-control tool's protective efficacy transported to a new setting through the share of human exposure to the vector that arrives while people are in bed under the net (the vector's hourly biting indoors and outdoors read against the population's hourly location), built from human landing catches and a human behaviour survey the way vector-control impact models carry trial efficacy; with hospital or school nouns there is no vector rhythm against people's sleeping hours for the protection to miss.",
+  "analyst_test": "A strong analyst who cleans the HR history, the member register and the payroll lines, reads the plan rules and the amendment correctly, and carries the income protection cover's cancellations by month of service, the group's one record of hires leaving a default, as the plan's opt-outs files TNK 14.5 million (14.0 million if it reads the opt-in join curve as the share who have chosen, 8.5 million if the 43 per cent who join contribute from the first payroll and nobody else does), when the hires who have not yet made a choice at 3 per cent plus the joiners at their own rates files TNK 11.5 million.",
+  "domain_test": "The deciding quantity is a choice model of a default: each hire carries a preference and a moment of active choice, and until that moment the default holds, so the forward default's take-up is the inactive share plus the active share who prefer to stay, the way behavioural models of defaults and procrastination separate preference from inertia; with clinical or school nouns there is no default to sit in and no moment of choice to wait for.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:protective-efficacy-carried-through-the-in-bed-share-of-exposure",
+  "layer2_pattern": "own:the-default-holds-until-each-hire-makes-an-active-choice-on-the-clock-the-opt-in-record-shows",
   "layer1": [
-    "human landing catch sheets at collector-hour grain with missing collector-nights and other species in the same rows",
-    "hour bins labelled two ways after a field-team change, and a 12-hour clock in one year's sheets",
-    "a human behaviour survey with self-reported clock times, am and pm slips and a second round re-asking a subset",
-    "the trial's site results and site entomology as tables inside a PDF report",
-    "county HMIS monthly facility reports with revisions resubmitted after the deadline",
-    "a sub-county boundary change moving villages and facilities",
-    "household registration lists from two rounds with re-registered households"
+    "monthly payroll deduction lines with reversals, arrears and a payroll re-run",
+    "rehired staff under reused employee numbers",
+    "a hiring plan with cancelled and re-issued requisitions",
+    "a cover's deductions under an older deduction code before a payroll system change",
+    "hospital codes renamed after a merger of two sites"
   ],
-  "stakeholder_role": "the monitoring and evaluation lead at the implementing partner, whose cases-averted forecast goes into the donor's 2027 grant approval for the Ruvari net campaign",
-  "role_family": "programme_officer",
+  "stakeholder_role": "the reward and pensions manager in the hospital group's HR, whose forecast of the employer match on the first auto-enrolled intake goes to the county council's employment committee before it signs off the FY2027 pay budget",
+  "role_family": "other",
   "scoring_unit": "other",
   "spine": {
-    "file": "hlc_sentinel_2024_2026.csv (the county entomology unit's human landing catches, indoor and outdoor, by collector-hour, at its sentinel villages)",
-    "rows": 44352,
-    "entity": "one collector's catch in one hour of one night at one position (indoor or outdoor) in one sentinel village",
-    "grain": "village x night x hour x position",
+    "file": "hr_employment_history_2019_2026.csv (HR's extract of every employment spell in post at any time from 1 January 2019, under both employee numbers)",
+    "rows": 31982,
+    "entity": "one employment spell of one employee",
+    "grain": "employee x spell",
     "source": "synthetic"
   },
-  "forum": "funder_or_donor",
+  "forum": "committee_or_panel",
   "forcing_event": "budget_or_appropriation",
-  "org_family": "nonprofit_or_charity",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "Kenya (Ruvari County, a fictional lakeshore county; its health department, the implementing partner, the donor, Ombeni fever, its vector, the trial and every record are fictional)",
-    "currency": "KES",
-    "org_type": "an implementing non-profit running vector control with the county health department",
+    "geography": "Tarnland (a fictional country; Vindeholm County, its hospital group, the pension plan, the cover and every record are fictional)",
+    "currency": "TNK",
+    "org_type": "a county council's hospital group employing about 9,000 staff in six hospitals",
     "invented_names": [
-      "Ruvari County",
-      "Ombeni fever",
-      "Anopheles ruvariensis",
-      "Tulivu Health Partners",
-      "Arnbridge Foundation",
-      "KINGA-5 trial",
-      "LulaNet R"
+      "Tarnland",
+      "Vindeholm County",
+      "Vindeholm County Hospitals",
+      "VCH Supplementary Savings Plan",
+      "Kestrel Pension Administration",
+      "Nordhavn Mutual",
+      "Rendholm",
+      "Askvik",
+      "Ostervall",
+      "Brannby",
+      "Lidmark"
     ],
     "people": [
-      "Dorcas Kagwiria",
-      "Elkana Karanja",
-      "Amos Simiyu"
+      "Caroline Hagman",
+      "Erik Palm",
+      "Alfred Sundberg"
     ]
   },
   "deliverables": [
-    "ruvari_cases_averted_2027.xlsx",
-    "cases_averted_by_subcounty.png"
+    "vindeholm_match_forecast_2027.xlsx",
+    "match_forecast_note_2027.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "A protection acts only on the exposure that arrives while the protected state holds, so an efficacy measured in a trial is a per-exposure protection times the share of its own sites' exposure that arrived in that state; the target's share is the overlap of when and where exposure arrives with when people are in the protected state, read hour by hour from two records at a finer grain than the trial's headline, and carrying the trial's efficacy, or multiplying it by the target's share without dividing out the sites' own, misstates the forward effect.",
-  "driver_concrete": "Ruvari County's Ombeni fever vector bites from dusk and half of it outdoors, so only 0.36 of a resident's bites arrive while in bed under a net, against 0.49 to 0.96 at the KINGA-5 sites; the nets' pooled protective efficacy of 56.7 per cent is a per-bite protection of 0.80 times each site's in-bed share, so the cases averted among users from April to December 2027 are the plan's baseline times the planned use times 0.80 times 0.36, not the trial's efficacy and not that efficacy times the county's share.",
-  "stump": "A competent solver applies the trial's pooled protective efficacy of 56.7 per cent to the plan's expected cases among net users and files 22,000 cases averted against 11,000; the step that lands it there is carrying an efficacy measured where most bites arrived after participants were in bed to a county whose vector bites early and half outdoors, where 0.36 of a resident's bites arrive in bed against 0.49 to 0.96 at the sites.",
+  "question_form": "how-much",
+  "driver": "When a default switches direction, the record from the old default shows only the units whose preference differs from it and only once they have acted, so the pace at which every unit acts is that record's take-up curve divided by its own plateau; under the new default every unit holds the default until it acts, and the forward take-up is the not-yet-acted share plus the acted share who prefer it, not the old take-up, not one minus it, and not the old curve read as the pace of acting.",
+  "driver_concrete": "Vindeholm's opt-in record shows 43 per cent of hires joining within five years at a pace where 35 per cent of hires have made a choice by their first payroll and 90 per cent by their twelfth; from January 2027 every hire contributes 3 per cent until choosing, so the intake's FY2027 match is the not-yet-chosen at 3 per cent plus the joiners at their own rates, TNK 11.5 million, not the cover's 16 per cent cancellation curve carried as the plan's opt-outs (14.5 million) and not the 43 per cent contributing from the first payroll (8.5 million).",
+  "stump": "A competent analyst carries the income protection cover's cancellations, the group's one record of hires leaving a default, as the share of the 2027 intake that will opt out and files TNK 14.5 million against 11.5 million; the step that lands it there is reading a cancellation curve set by the 16 per cent of hires who want to drop a 0.4 per cent cover as the opt-outs of a plan 57 per cent of hires never join, when the opt-in record holds both what hires prefer and how fast every hire makes a choice.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task177": "there an offer moves a subscriber mainly in the days before the subscriber's own recurring bill, so a test's average over the billing cycle does not carry; here no unit has a cycle of its own: a protection acts only while people are in bed, and the share of exposure it can reach is the hourly overlap of two independently measured rhythms (the vector's biting indoors and outdoors and the population's location), with the trial's own sites' overlap divided out of its headline efficacy",
-    "task149": "the same task type: there a hazard per hour rises with work pace read within each site; here a trial efficacy is transported through an exposure overlap"
+    "task136": "there a scheduled intervention mostly enrols units about to take up the outcome on their own; here the default itself holds every unit until it acts, and the act's pace must be recovered from a record where only one preference is visible",
+    "task170": "v3 carried a trial's efficacy through the share of exposure that reaches the protected state; here nothing is transported between settings: one population's own record under one default is read for two things it holds at once, a preference and a moment of choice, and the forward default is rebuilt from them",
+    "task161": "there a stock built ahead of a cost step drains at the steady share of use every earlier build drained at; here no stock drains: each hire holds a default until a moment of choice, and the choice's pace has to be recovered from a record that shows only one of the two preferences",
+    "task259": "there a level at a reference date is carried from earlier reports by how it moves at a fixed grade; here nothing is carried between dates, the forward take-up is rebuilt from a preference share and a timing curve read in the same record under the opposite default",
+    "task87": "there a schedule's exclusivity caps a delivered count; here no capacity or exclusivity binds, the gap is when each hire makes an active choice and what it chooses",
+    "task105": "there a new outlet wins only the part of its catchment nearer to it than to a sister; here there is no spatial competition, the forward default reverses who must act",
+    "task229": "there a convex conversion of a daily mean is biased by within-day swings; here there is no conversion or within-period swing, the selected view of a choice record is undone by dividing the join curve by its own plateau"
   },
   "lineage": [
     {
@@ -178,9 +185,23 @@
       "analyst_test": "With every field read, the 2026 dosing band applied as filed and the SOP's line 2 built as filed, a strong analyst projects each child's weighings forward on a fitted growth line, moves the child to TLD when the line reaches 30 kg and files line 2 at 10 pallets of 8,064 bottles, one pallet below the 11 the scheduled weighings imply.",
       "domain_test": "The line turns on the paediatric regimen-transition forecast of ARV quantification, the patient-months on TLD of children who will be weighed into the 30 kg band at their scheduled visits, built from each child's weighings, the clinics' weighing scatter, each child's dispensing interval and retention; with another field's nouns the dosing band applied at a clinic weighing, the dispensing interval and the cycle order's paediatric line stop meaning anything.",
       "fate": "spent 2026-10-18 at stage 4 on strength: with line 2 of the C7 order in whole pallets the first-passage lead was 1.03 pallets and routes with a chosen lead landed it; the number was retired 2026-10-19 after the redraw died in two cells on paper and reopened 2026-10-23, its rebuild cell (expected-credit-loss provisioning) dying on the shipped-proxy screen before this draw"
+    },
+    {
+      "architecture": "v3",
+      "drawn": "2026-10-23",
+      "niche": "an implementing non-profit's forecast, for its donor, of how many Ombeni fever cases the March 2027 county-wide distribution of repellent sleeping nets in Ruvari County will avert among the people sleeping under them from April to December 2027, when the county's vector bites earlier in the evening and more outdoors than at any site of the five-site trial that measured the nets' protective efficacy",
+      "domain": "epidemiology-public-health",
+      "subdomain": "health-burden-impact-modeling",
+      "objective": "forecasting",
+      "shape": "other",
+      "driver": "A protection acts only on the exposure that arrives while the protected state holds, so an efficacy measured in a trial is a per-exposure protection times the share of its own sites' exposure that arrived in that state; the target's share is the overlap of when and where exposure arrives with when people are in the protected state, read hour by hour from two records at a finer grain than the trial's headline, and carrying the trial's efficacy, or multiplying it by the target's share without dividing out the sites' own, misstates the forward effect.",
+      "driver_concrete": "Ruvari County's Ombeni fever vector bites from dusk and half of it outdoors, so only 0.36 of a resident's bites arrive while in bed under a net, against 0.49 to 0.96 at the KINGA-5 sites; the nets' pooled protective efficacy of 56.7 per cent is a per-bite protection of 0.80 times each site's in-bed share, so the cases averted among users from April to December 2027 are the plan's baseline times the planned use times 0.80 times 0.36, not the trial's efficacy and not that efficacy times the county's share.",
+      "stump": "A competent solver applies the trial's pooled protective efficacy of 56.7 per cent to the plan's expected cases among net users and files 22,000 cases averted against 11,000; the step that lands it there is carrying an efficacy measured where most bites arrived after participants were in bed to a county whose vector bites early and half outdoors, where 0.36 of a resident's bites arrive in bed against 0.49 to 0.96 at the sites.",
+      "layer2_pattern": "own:protective-efficacy-carried-through-the-in-bed-share-of-exposure",
+      "answer": "About 11,000 Ombeni fever cases averted among the people sleeping under the March 2027 LulaNet R nets in Ruvari County from April to December 2027, 21 per cent of the 53,042 cases the county expects (11,208 unrounded from the shipped files).",
+      "fate": "spent 2026-10-23 at stage 4 Gate F on zip 74728781: judge DETERMINISTIC / APPROVE; blind reader A regressed each trial site's efficacy on its in-bed share of exposure from the report's site tables and filed 12,000 against 11,000"
     }
   ],
-  "notes": "stump_strategy: causal_design, read as transportability (what the trial's own comparison measured, a per-bite protection times its sites' overlap, carried to a target with a different overlap); composition_mix (F5) also describes it and is in the ban window (task175), and is named here so the label is not read as chosen around the ban. calibration_form other: the trial's five site results, which test whether the per-bite protection is shared across sites. SPENT 2026-10-23 at stage 4 (Gate F) on zip 74728781: the judge returned DETERMINISTIC / APPROVE, and blind reader A took the decisive step (each KINGA-5 site's in-bed share of exposure from the report's Tables 2a to 3b, site efficacy over 0.97 use regressed through the origin on that share, 0.824 per unit of share) and filed 12,000 against 11,000 with 6 of 7 sub-counties landed; the outreach comment device fell to the same reader.",
-  "registered": "2026-10-23T04:47:31Z",
-  "architecture_spent": true
+  "notes": "stump_strategy other: a choice model of a default, a preference and a moment of active choice separated in a record that shows only one of the two preferences, then recombined under the opposite default. population_selection also describes the plateau step (the opt-in record shows only hires who chose to join) and is in the ban window (task274); it is named here so the label is not read as chosen around the ban. calibration_form other: the income protection cover, auto-enrolled with opt-out since 2019, whose opt-outs show that hires who decline a default act on the same clock as hires who join an opt-in plan. role_family other: an HR reward and pensions manager, a role the vocabulary does not name; the first draw put the forecast through the director of finance to the executive team (finance_controller, executive_team), and both axes were held by task175 when the window moved under the registration lock, so the world was redrawn to the employment committee that approved the enrolment and signs off the pay budget.",
+  "registered": "2026-10-23T07:11:10Z"
 }

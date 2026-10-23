@@ -1,35 +1,21 @@
 {
  "task": "task170",
  "owner": "sathya8571",
- "status": "PAUSED",
- "domain": "epidemiology-public-health/health-burden-impact-modeling",
+ "status": "DESIGN",
+ "domain": "psychology-behavioral-science/decision-making-computational-behavioral-modeling",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-23",
- "stump": "A competent solver applies the trial's pooled protective efficacy to the plan's baseline cases among net users and files about 21,000 cases averted against about 11,500; the step that lands it there is carrying an efficacy measured where most bites fell while people slept under the nets to a county whose vector bites early and outdoors, where only about two fifths of a resident's bites arrive in bed.",
- "architecture": 3,
+ "stump": "A competent analyst carries the income protection cover's cancellations as the share of the 2027 intake that will opt out and files TNK 14.5 million against 11.5 million; the step that lands it there is reading a cancellation curve set by the 16 per cent of hires who want to drop a cheap cover as the opt-outs of a plan 57 per cent of hires never join, when the opt-in record holds both the preference and the pace at which every hire makes a choice.",
+ "architecture": 4,
  "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-23",
-  "checks": 51
- },
- "leak": {
-  "leak_py": "REVIEW 2026-10-23 (--asof 2026-10-12), no LEAK; four lines answered in the note's Leak review",
-  "reader": "reader A (scored-task170a): call landed (12,000 against 11,000, 6 of 7 sub-counties), 7 of 14 asks; reader B stopped"
- },
- "duplicate_check": {
-  "heart": "WARN 2026-10-23 (five WARNs answered in Draw item 9), nearest text 0.05 task121",
-  "nearest": "surface: 1 pair promoted (task168, two numbers apart, gap population and quantity_figure, surface 0.080); answered in the note's Duplicate check"
- },
- "judge": {
-  "verdict": "DETERMINISTIC / APPROVE (no fix) on zip 74728781",
-  "disposition": "architecture 3 spent at Gate F: reader A landed the call",
-  "report": "scratchpad judge-task170n/verdict.md"
- },
+ "precut": null,
+ "leak": null,
+ "duplicate_check": null,
+ "judge": null,
  "returned": [],
- "resume": "architecture 3 spent at Gate F 2026-10-23; next: a new cell chosen by this session under the main session's conditions (design note ## Rebuild)",
+ "resume": "architecture 4 drawn 2026-10-23; stage 3 build next (generator written in the worktree)",
  "approved": null,
  "delivered": null,
  "portal": null,
