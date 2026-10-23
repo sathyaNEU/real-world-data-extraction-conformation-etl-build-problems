@@ -29,7 +29,7 @@
   "report": "scratchpad judge-task170v4/verdict.md"
  },
  "returned": [],
- "resume": "architecture 4 spent at stage 4 2026-10-23; the fifth to seventh cells found nothing (design note ## Tried and rejected); the eighth cell (healthcare-delivery-health-economics / patient-flow-beds-workforce-optimization) found nothing that holds: H1 built to code (generator in session scratchpad h170/h1_generator, golden 120 beds, rungs 150/60/80) and judged dead on the known-channel law before a card, fourteen more on paper; next: a cell the main session assigns",
+ "resume": "architecture 4 spent at stage 4 2026-10-23; cells five to eight found nothing (design note ## Tried and rejected); the ninth cell, chosen shape first (urban-regional-science / forecasting), found nothing that holds: U1 (an isolated bike-share cluster) measured with the textbook origin-destination gravity model within 0.1 per cent of the truth, U2 (a plateau phase read on each pair's climb) measured with the station elevation column landing within 16 per cent, seven more on paper, and the other open forecasting cells (recidivism, stress testing, retention, seasonal adjustment, macro, infectious disease) screened on paper; prototypes in the session scratchpad t170s/proto; no card registered past v4; next: a cell the main session assigns",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -469,6 +469,56 @@ The full architecture 1 note (default path, ladder, closure, asks and the stage 
   on recorded timestamps, a case-mix shift that one group-by on a recorded clinical covariate settles, or a split
   along the field's best-known channels (delayed discharge, boarding, weekend discharge), which a reader measures as
   soon as the fit date or the ward stay is in the file; the client cards' own queueing methods are the textbook route.
+- Ninth cell, chosen by this session shape first (2026-10-23, the main session's brief: a forward population at one
+  end of a covariate the record measures at a finer grain than the textbook model, the grain chosen by fit and named
+  nowhere; the cells the parallel rebuilds hold and this round's deaths excluded). The open forecasting cells were
+  recidivism-risk-assessment, stress-testing-capital, retention-cohort-lifetime-value-modeling, the forecasting side
+  of seasonal-adjustment-official-time-series-production, infectious-disease-transmission-modeling,
+  time-series-macro-econometrics and urban-regional-science / forecasting (load-forecasting is shut by the pairing ban
+  while task173 sits in the window). urban-regional-science / forecasting was taken because its records carry the
+  finest grain on file (flows between pairs of units) and its three client cards (the back-test origin, the control
+  total, developed parcels leaving the risk set) leave the distribution of trips untouched. U1 measured on code
+  (`t170s/proto/u1.py` in the session scratchpad, three seeds, 220 stations' weekday trips between pairs over 250
+  days): a bike-share scheme's 2027 phase of 32 stations as a separate town-centre cluster 7.5 km from the core, the
+  forecast the weekday trips started there. Truth 1,174 to 1,703 a weekday; the contiguous 2023 ring's starts per
+  station +11 to +58 per cent (the seed moves it, so no bin holds it as a rung); station-level land-use regressions
+  +143 to +188, with the stations within 1 km +150 to +212, with the distance to the core -23 to -41; the Poisson
+  origin-destination gravity model fitted on the existing pairs within 0.1 per cent in every seed, its exponential
+  decay chosen over the power form by about 500,000 AIC units. Dead on this round's textbook law: the cluster's
+  isolation is the trip-distribution model's own subject, so the golden is the field's textbook route and a reader
+  who fits the flows lands it.
+- Ninth cell, U2 measured on code (`t170s/proto/u2.py`, three seeds): a phase of 30 stations on a plateau 60 to 105 m
+  above the core, an existing hill quarter of 14 stations in the history so the climb is identified, the trips read
+  on each pair's uphill metres. Truth 807 to 830 weekday arrivals at the plateau; flows without the climb +98 to
+  +111 per cent; the pairwise climb within 0.3 per cent. Elevation has to ship, and as a station column it hands the
+  step over: arrivals regressed on land use and the station's elevation -16 to +2 per cent, the flow model with each
+  end's elevation -12 to -5, the hill quarter's arrivals per station +10 to +20; as a terrain layer it is a file with
+  one purpose, pointing at the step.
+- Ninth cell, paper screens in urban forecasting, each dead before code: a river crossing read on network distance
+  names itself in the phase plan, and network impedance is the field's standard; a new line's catchment read on the
+  walking network rather than a radial buffer is the design variable of the field's built-environment models
+  (intersection density), a textbook covariate; pupil yield read on a new estate's age is a column with an attaining
+  subset (earlier estates at the same age); residents' parking permits read on driveway frontage is a parcel column;
+  dock-capacity censoring is the field's unconstraining correction (task18's driver); trips taken from neighbouring
+  stations when an infill station opens are a dated step an event study reads; an e-bike fleet flattening the
+  distance decay rests on the e-bike riders' self-selection.
+- Ninth cell, the other open forecasting cells, screened on paper while choosing: recidivism-risk-assessment (an
+  offending rate read per year at liberty from custody spells, for a release of long-serving preventive-sentence
+  prisoners, is task46's insight, a rate stationary in a constructed exposure; a stock released under a capacity act
+  differs on sentence length and offence, columns a logistic reaches; detection, charging, recall and court routes
+  are task169's pre-emption or a filed rule replayed; co-defendants still in custody are a peer network close to
+  task179); stress-testing-capital (each hidden structure in a stressed loss is a channel the field names: joint
+  incomes, combined loan-to-value, foreclosure timelines by state, sector job losses (task177 v3's death), seasoning,
+  which is a timing exposure, and cure rates under collector load, a capacity that does not measure itself);
+  retention-cohort-lifetime-value-modeling (payer or household clusters reduce to a one-group-by size column, content
+  concentration and engagement are named churn channels, anniversary and card clocks are timing, and conversions
+  forced by a sharing crackdown have no history); the forecasting side of seasonal adjustment (rotation-group bias
+  moves a survey's unemployment rate by under a tenth of its level, and calendars are task146's and task162's);
+  time-series-macro-econometrics and infectious-disease-transmission-modeling are task179's screens and its v2 death.
+- The ninth cell's law, measured twice and argued across the rest: where the record holds the flows between units,
+  every geometric reason a new unit underperforms (isolation, reach, a barrier) is absorbed by the field's flow model
+  with its form chosen by fit, so the textbook route lands; where the geometry is not in the flows (a climb), it has
+  to ship as a column or a one-purpose layer, and either names the step.
 
 ## Retired
 
@@ -521,3 +571,8 @@ eighth cell. No candidate held: H1 (a moved take's beds, each stay split into th
 the home council's wait) was built to a working generator and judged dead on this round's known-channel law before any
 card, and fourteen more died on paper (`## Tried and rejected`, last three lines). No card registered past v4; PAUSED
 at stage 1 for another cell. The number is never retired.
+
+The ninth cell was left to this session, shape first. urban-regional-science / forecasting was screened (U1 and U2
+measured dead on code, seven more on paper) and the other open forecasting cells on paper while choosing (`## Tried and
+rejected`, last five lines). No card registered past v4; PAUSED at stage 1 for another cell. The number is never
+retired.
