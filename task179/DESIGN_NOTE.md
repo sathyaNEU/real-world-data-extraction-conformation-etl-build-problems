@@ -595,6 +595,51 @@ candidate touches them.
     golden is either a group-by visible on the surface or an extrapolation past the observed weeks on which the
     golden family forks.
 
+- **Second rebuild cell, 2026-10-23, chosen by this build: pharmacology-pharmacoepidemiology-safety /
+  `population-pharmacokinetics-exposure-response`, Forecasting** (no card on file in the task type; the domain is
+  outside the guard window of task178, task482 and task274). Why its window changes the process: a monoclonal
+  antibody's move from 300 mg every three weeks to 600 mg every six puts each patient's trough twice as far from the
+  dose, into the low concentrations where target-mediated elimination bends the decline and which the three-weekly
+  record reaches only during treatment holds; no patient in the record has run the six-weekly schedule, so it cannot
+  be replayed. The cell's four library cards (covariates inside the mixed model, allometric centring, exposure-response
+  confounded by clearance, below-quantification samples as censored) and the field's textbook route (a population
+  model fitted to the monitoring levels, each patient's own levels read by maximum a posteriori, the new schedule
+  simulated) were taken as the default path. One candidate measured on code (scratchpad b179n/screen2: `pk1.py`,
+  `pk1fit.py`; `pk_screen.out` byte-identical with `pk_screen_run2.out`) and eleven on paper; nothing holds.
+  - **Measured: target-mediated (Michaelis-Menten) elimination against the linear one-compartment model** (600
+    patients, clearance CV 35 per cent, troughs before half the infusions, a tenth of infusions with a peak, 5 to 15 per
+    cent of patients with a hold of 5 to 12 weeks sampled one to three times; graded figure the share of patients whose
+    six-weekly steady-state trough falls under 8 mg/L). With Km 2 mg/L the truth is 21.7 and 21.5 per cent on two
+    seeds; carrying the linear clearance alone would file 11.5 and 12.3, but the textbook per-patient linear fit files
+    21.2 and 21.0 (19.0 and 19.3 with the hold samples dropped), because each patient's own levels absorb the bend at
+    that patient's concentrations. With Km 6 mg/L and holds in 5 per cent of patients the truth is 33.5 and the linear
+    fit 28.8 (a lever of 14 per cent of the figure), and where the bend is strong enough for a 30 per cent lever the
+    hold samples show it on a log plot. Dead: the field's own precision-dosing route reads each unit at its own level,
+    and the only records of the forward region are the holds, an attaining subset.
+  - Paper: two-compartment kinetics against one compartment for the longer interval: the standard structural choice for
+    an antibody, tested by any population modeller, and three-weekly troughs already sit in the terminal phase.
+  - Paper: each patient's half-life from the loading-phase accumulation (first trough over steady trough): an identity
+    per patient, and the per-patient fit takes it anyway.
+  - Paper: time-varying clearance falling with time on treatment: each patient's latest levels carry it.
+  - Paper: anti-drug antibodies induced by lower troughs feeding faster clearance: the response is identified only by
+    the patients already at low troughs (an attaining subset), with reverse causation as an open fork.
+  - Paper: exposure-response confounded by clearance carried to the higher-exposure regimen: the cell's own card 3.
+  - Paper, dose-response-pk-pd-modeling: the same per-patient absorption, and the cell's cards (relative ED50, AUC to
+    infinity, hysteresis) are the textbook.
+  - Paper, election-polling-forecasting (the other untouched Forecasting cell): a move from plurality to instant
+    runoff (the upper house's ballot-level preferences are the obvious and only flow data), an election moved
+    on-cycle (the national electorate in the voter file is the attaining subset), compulsory voting (the
+    registered-voter sample is the cell's card 3), a party's withdrawal (districts it never contested are the
+    attaining subset), a lowered voting age or a new party (unidentified).
+  - Paper, banking deposit-liquidity-behaviour and credit-scoring-pd-modeling: a lower deposit-guarantee limit (the
+    balances already above the old limit), branch closures (earlier closures), a payroll client leaving (customers
+    who lost a salary credit), reject inference for a widened approval policy (rejects' bureau performance elsewhere),
+    a payment holiday ending (pre-holiday performance), forbearance withdrawn (task169's removed route by
+    abstraction).
+  - The cell finding: in exposure modelling the field's own forecast already conditions on each patient's levels, so a
+    forward schedule that stays near the record's concentrations is landed by the per-patient fit, and one that moves
+    far from them is informed only by the minority of records already there (holds, delays), which a filter reads.
+
 ## Retired
 
 Retired on 2026-10-21 under the author's rule for this round (a number that dies in its second new cell is
@@ -642,8 +687,13 @@ code (local contagion, the session clock, substitution inside the account) and s
 `## Tried and rejected` with the cell finding. No card registered, so architecture v2 stays the card's current identity
 and nothing moved into `lineage`; nothing cut. PAUSED at stage 1 for the coordinator to assign another cell.
 
+The coordinator then left the next cell to this build's choice: pharmacology-pharmacoepidemiology-safety /
+population-pharmacokinetics-exposure-response (Forecasting). One candidate measured dead on code (target-mediated
+elimination under a six-weekly schedule) and eleven directions on paper, with the election-polling and banking cells
+screened on paper beside it (`## Tried and rejected`). No card registered; PAUSED at stage 1 again.
+
 ## Resume
 
-PAUSED 2026-10-23 at stage 1 after the product-analytics / feature-adoption-diffusion-modeling rebuild screen found no
-draw that holds; resume at stage 1 in the next cell the coordinator assigns, reading `## Tried and rejected` first.
+PAUSED 2026-10-23 at stage 1 after the product-analytics / feature-adoption-diffusion-modeling and the
+population-pharmacokinetics-exposure-response rebuild screens found no draw that holds; resume at stage 1 in the next cell the coordinator assigns, reading `## Tried and rejected` first.
 (RETIRED 2026-10-21 before the reopening: architecture v2 spent at stage 4 Gate F.)

@@ -54,9 +54,16 @@
    "measured": "local account contagion against global Bass mixing (a1.py, a2.py: recent pace lands on 13 weeks at +1.4 and +4.5 per cent; on 52 weeks the nearest route Bass with the whole base -14.6 to -15.5 per cent while the two-stage account construction forks the golden family at -51 to -53); the session clock (b1.py: the eligible-denominator card's active-week hazard +10.5 to +13.1 per cent, the golden one divide and one group-by); substitution inside the account (c1.py: the decay-extrapolated pooled hazard lands -3.9 and -5.4 in some seeds, the decisive fact visible as about 1.2 adopters per adopting account)",
    "paper": "staged-rollout last wave or holdout release, an in-app prompt read as imitation, device or self-hosted upgrade echoes (task46, task162), renewal or business-review timing (task177 v2), a need pool by group-by, cross-market lead-lag, Norton-Bass generations, current-user influence after disadoption, hard-deleted churned accounts, churn as a competing exit, later adopters' lighter use, late-arriving telemetry, two-sided or artifact contagion (task144), a waitlist (task168), beta transported to general availability, interference in a user-randomised test",
    "prototypes": "scratchpad b179n/screen: a1.py, a2.py, b1.py, c1.py; screen179n.out byte-identical with screen179n_run2.out"
+  },
+  "rebuild_2026_10_23_cell2": {
+   "cell": "pharmacology-pharmacoepidemiology-safety / population-pharmacokinetics-exposure-response, forecasting (chosen by this build)",
+   "why_window_changes": "300 mg every three weeks to 600 mg every six puts each trough into the low concentrations where target-mediated elimination bends, reached in the record only during holds",
+   "measured": "pk1.py, pk1fit.py: Km 2 truth 21.7 and 21.5 per cent below 8 mg/L, the per-patient linear fit 21.2 and 21.0 (linear clearance alone 11.5 and 12.3); Km 6 with 5 per cent holds truth 33.5, linear fit 28.8 (lever 14 per cent)",
+   "paper": "two compartments, loading-phase half-life, time-varying clearance, induced anti-drug antibodies, confounded exposure-response, dose-response PK/PD; election-polling (instant runoff, on-cycle, compulsory voting, withdrawal, voting age); deposits and credit (guarantee limit, branch closures, payroll loss, reject inference, payment holiday end, forbearance withdrawn)",
+   "prototypes": "scratchpad b179n/screen2: pk1.py, pk1fit.py; pk_screen.out byte-identical with pk_screen_run2.out"
   }
  },
- "resume": "PAUSED 2026-10-23 at stage 1: the product-analytics / feature-adoption-diffusion-modeling rebuild screen found no draw that holds (three measured dead, sixteen on paper, ## Tried and rejected); no card registered, architecture v2 stays current; resume at stage 1 in the next cell the coordinator assigns",
+ "resume": "PAUSED 2026-10-23 at stage 1: the feature-adoption-diffusion-modeling and population-pharmacokinetics-exposure-response rebuild screens found no draw that holds (## Tried and rejected); no card registered, architecture v2 stays current; resume at stage 1 in the next cell the coordinator assigns",
  "approved": null,
  "delivered": null,
  "portal": null,
