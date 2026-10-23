@@ -1,40 +1,39 @@
 {
   "task": "task274",
   "owner": "sathay3012",
-  "status": "PAUSED",
-  "domain": "general-statistics-data-science",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics",
   "objective": "descriptive-distribution",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-23",
-  "stump": "A competent analyst who parses every brand and reads every account spreads the poles with no year of setting like the pre-1987 poles whose brand was read and files about 26,000 poles fifty or older (or, spreading them by each year's additions, about 35,300); brands fade with age, so the poles with no year are the oldest, and each year's survivors are its additions thinned by decades of retirements that climb after forty years, so only a survivor curve fitted to the ledger's balances, flexible enough to carry both the steady early losses and the wear-out, applied to each year's additions, says how many poles of each age still stand (33,000).",
-  "architecture": 1,
+  "stump": "A competent analyst divides every 2025 examination result by the bias the October accuracy check measured against the reference method, applies the survey weights and files about 610,000 adults below 20 ng/mL; the check measured the one reagent lot and analyzer in use that week, the manufacturer's July recalibration and each later lot moved the assay, the second analyzer reads above the first and the lots' mean results move with the season, so only each lot's and analyzer's shift read from the survey's December re-assays of stored duplicate aliquots, added to the check, gives about 700,000.",
+  "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-23"
+    "exit": null,
+    "date": null
   },
   "leak": {
-    "leak_py": "REVIEW (10 lines, all harmless: design note Build record)",
-    "reader": "r1 landed the call (33,000), asks 14 of 19 (score_reader exit 1)"
+    "leak_py": null,
+    "reader": null
   },
   "duplicate_check": {
-    "heart": "WARN",
-    "nearest": "task243 0.09"
+    "heart": null,
+    "nearest": "task192 0.08"
   },
   "judge": {
     "verdict": null,
     "disposition": null,
-    "report": null,
-    "note": "judge thread stopped: the architecture was spent on the reader before a verdict"
+    "report": null
   },
   "returned": [],
-  "resume": "Re-root: architecture 2 draw. Architecture 1 spent 10-23 at stage 4 on Gate F: the isolated reader fitted a survivor curve to the plant ledger's balances, rebuilt each vintage's survivors from its additions and landed 33,000 with 14 of 19 asks. Read the design note's Tried and rejected first; the next decisive step must be one the field's standard method, run the natural way, gets wrong on this data.",
+  "resume": "Stage 2: write the default path, stump sentence, three rules, readability screen, fork table, ladder, closure table, literal reader, oracles and ask sheet for architecture 2 (the survey's stored-duplicate re-assays carry the October accuracy check to every lot and analyzer), then the generator under task274/generator (the architecture 1 generator there is replaced).",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "seed": "DA24 (quantity only: a count on a distribution read against a fixed limit; world redrawn)"
+  "seed": "DA24 (quantity only: a count on a distribution read against a fixed limit; world redrawn twice)"
 }

@@ -1,17 +1,17 @@
 {
   "task": "task274",
-  "architecture": "v1",
+  "architecture": "v2",
   "drawn": "2026-10-23",
-  "slot_note": "task274/DESIGN_NOTE.md",
-  "domain": "general-statistics-data-science",
-  "subdomain": "missing-data-censoring-measurement-error",
-  "niche": "a rural electric cooperative's 2027 full groundline inspection, sized by how many of its wood poles will be 50 or older, when about one pole in nine in service carries no year of setting",
+  "slot_note": "seed DA24 (quantity only: a count on a distribution read against a fixed limit); architecture 2 re-rooted after architecture 1 was spent at stage 4",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+  "niche": "a state health and nutrition survey's statutory report of how many adults had serum vitamin D below 20 ng/mL on the reference method's scale in its 2025 examination wave, when one accuracy check measured one reagent lot on one analyzer at the survey's laboratory",
   "objective": "descriptive-distribution",
-  "shape": "07",
+  "shape": "14",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "33,000 poles 50 or older in 2027 (nearest thousand)",
-  "answer_source": "task274/generator/figures.json",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population"
   ],
@@ -20,81 +20,94 @@
   ],
   "generators": [
     "G4",
-    "G9"
+    "G3"
   ],
   "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "population_selection",
+  "calibration_form": "parallel_run_overlap",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "close_out_summary",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "a strong analyst who parses every brand and reads every account spreads the poles with no year of setting like the pre-1987 poles whose brand was read, or in proportion to each year's additions, and files a count of poles 50 or older thousands off (about 26,000 or 35,300 against 33,000)",
-  "domain_test": "the number of poles in service at or above each age when the install year is missing for one pole in seven and missing more often the older the pole: the surviving poles of each pre-conversion vintage are rebuilt as that vintage's additions times a survivor curve fitted to the unaged retirements of the pre-conversion poles (the simulated plant-record method), and the poles with no year are spread over what that leaves after the poles whose brand was read",
+  "analyst_test": "A strong analyst who reads every file correctly divides every 2025 examination result by the bias the October accuracy check measured against the reference method, applies the survey weights and files about 610,000 adults below 20 ng/mL, against the golden's 700,000, because the check measured only the reagent lot and analyzer in use that week.",
+  "domain_test": "The deciding quantity is a population prevalence from survey biomarker measurements adjusted to a reference measurement procedure, each result's bias taken from the accuracy check for the lot and analyzer it measured and carried to every other lot and analyzer by the survey's own re-assays of stored duplicate aliquots (paired measurements of one specimen); comparing lots by their results confounds lot with season and respondent, so only the paired design separates them.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:unrecorded install years rebuilt from vintage additions through a survivor curve fitted to the unaged retirements",
+  "layer2_pattern": "own:a reference bias measured once for one lot and analyzer, carried to every lot and analyzer by a survey's re-assays of stored duplicate aliquots on the checked lot, not by the lots' mean results",
   "layer1": [
-    "a pole register built from the mapping system: poles set since the 1987 conversion carry the work order's year and number, older poles carry the brand only where the 2016 to 2025 inspectors could read it, typed as it read (two or four digits, month and year, supplier or treatment codes, a few with a digit unread), blank for the rest",
-    "plant accounts in units: the ledger's poles added, retired and in service each year 1938 to 1986 typed up at the conversion, the pre-1987 poles carried as one group with a retirement count a year since, and the property records of poles set since 1987 by year set",
-    "retirements booked when the work order closes, sometimes in the following year, so the accounts and the register differ by the open orders",
-    "streetlight-only poles (account 373) in the register beside the distribution poles",
-    "two districts merged in 2019, with their feeders renumbered and poles not edited since still carrying the old district code",
-    "a work order extract at the grain of the order, raised against one location, with orders raised twice and cancelled and replacement orders still open"
+    "laboratory results in local time against a run log in UTC across daylight saving",
+    "results below and above the reportable range as text",
+    "re-assay records under the respondent's specimen identifier",
+    "amended results and recollected specimens",
+    "survey weights in a separate file keyed on respondent",
+    "the accuracy check's table inside a PDF report"
   ],
-  "stakeholder_role": "manager of system maintenance, rural electric cooperative",
-  "role_family": "operations_director",
-  "scoring_unit": "units served",
+  "stakeholder_role": "chief statistician, regional center for health statistics",
+  "role_family": "statistical_office_head",
+  "scoring_unit": "other",
   "spine": {
-    "file": "pole register",
-    "rows": 233174,
-    "entity": "one pole in service at the end of 2026",
-    "grain": "pole",
+    "file": "specimen and aliquot tracking log, 2025 examination wave",
+    "rows": 80000,
+    "entity": "one event on one serum aliquot (collected, received, stored, thawed, assayed)",
+    "grain": "aliquot x event",
     "source": "synthetic"
   },
-  "forum": "board_of_directors",
-  "forcing_event": "audit_or_inspection",
-  "org_family": "cooperative_or_member_body",
+  "forum": "council_or_assembly",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "research_or_statistics_office",
   "world": {
-    "geography": "United States (the cooperative, its service area and people are fictional)",
+    "geography": "United States (the health district, its survey, laboratory and people are fictional)",
     "currency": "USD",
-    "org_type": "member-owned rural electric distribution cooperative",
-    "invented_names": [
-      "Kestrin Valley Electric Cooperative",
-      "Dunmarrow",
-      "Thornbeck",
-      "Halvorne",
-      "Sowden Fork",
-      "Corrandale",
-      "Wrennick",
-      "Ashwren",
-      "Tamsett Utility Services",
-      "Dunmarrow Telephone Company"
-    ],
+    "org_type": "regional health district's center for health statistics, which runs the health and nutrition examination survey, and its contracted laboratory",
+    "invented_names": [],
     "people": [
-      "Kendra Dennis",
-      "Alexis Camacho",
-      "Becky Mcmillan",
-      "Chelsea Ross",
-      "Regina Mcdaniel",
-      "Christopher Riggs",
-      "Tara Gilbert",
-      "Paige Gibbs"
+      "Tanya Greene",
+      "Bernard Weaver",
+      "Kaylee Lyons",
+      "Kathryn Serrano",
+      "Anne Harrington"
     ]
   },
   "deliverables": [
-    "pole_inspection_2027.xlsx",
-    "pole_inspection_2027.png"
+    "vitamin_d_status_2025.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
-  "driver": "The decisive quantity is how many units in service are at least a given age when many units' start dates were never recorded and are missing more often the older the unit; the units still in service from each start year are that year's intake times the chance of lasting to its present age, a curve fitted to the yearly outflow of the unrecorded group, so the unrecorded units are spread over start years by what that leaves once the recorded ones are taken out, not like the recorded ones and not in proportion to intake.",
-  "driver_concrete": "How many of Kestrin Valley Electric Cooperative's distribution poles on the 30 September 2026 register were set in 1977 or earlier, with the poles that have no year of setting spread over the pre-1987 years as each year's additions times a survivor curve fitted to the ledger's year-end balances from 1938 to 2025, less the poles of that year whose brand was read; not spread like the poles whose year is known, not in proportion to additions, and not on a curve whose shape cannot follow the ledger.",
-  "stump": "A competent analyst who parses every brand and reads every account spreads the poles with no year of setting like the poles whose year is known, or in proportion to each year's additions, and files a count of poles 50 or older thousands off; brands fade with age, so the poles with no year are the oldest, and each year's survivors are its additions thinned by decades of retirements that climb after forty years, so only a survivor curve fitted to the ledger's balances, applied to each year's additions, says how many poles of each age are still standing.",
-  "mechanism_source": "own: the seed's quantity (a count on a distribution read against a fixed limit) kept; DA24's affordability world held no unspent analytical step (design note, Tried and rejected), so the world was redrawn to a cooperative's pole plant",
-  "differentiation": {},
-  "lineage": [],
-  "notes": "Drawn 2026-10-23 from seed DA24's quantity only (a count on a distribution read against a fixed limit); the seed's affordability world held no unspent analytical step and was redrawn (design note, Draw and Tried and rejected). WARNs answered in the design note's Draw.",
-  "registered": "2026-10-23T06:01:25Z",
-  "architecture_spent": true
+  "driver": "The decisive quantity is how many members of a weighted population fall below a line on a reference scale when one check measured the instrument's bias for one batch on one device, and the readings were made on many batches and devices in different seasons; applying the check's bias to every reading misplaces the line, and comparing batches by their readings mistakes the season for the batch, so each batch's and device's shift is read from a random subsample measured twice, once in its own batch and once in the checked one, and added to the check.",
+  "driver_concrete": "How many adults' 2025 examination 25-hydroxyvitamin D was below 20 ng/mL on the reference measurement procedure's scale, each result divided by its own reagent lot's and analyzer's bias: the October accuracy check's bias for the lot and analyzer it measured, plus each other lot's and analyzer's shift read from the December re-assays of the survey's stored duplicate aliquots; not the reported results, not the check's bias applied to every result, not lots compared by their mean results, and not lot or analyzer shifts alone.",
+  "stump": "A competent analyst divides every result by the accuracy check's measured bias, applies the weights and files about 610,000 adults (or reads the reported results and files about 430,000); the check measured one reagent lot on one analyzer, the manufacturer's mid-year recalibration and each later lot moved the assay and the second analyzer reads above the first, and the lots' mean results move with the season, so only each lot's and analyzer's shift read from the stored-duplicate re-assays, added to the check, gives about 700,000.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task274": "architecture 1 rebuilt survivors forward from additions through a fitted survivor curve to recover unrecorded ages; this carries a measured instrument bias along a chain of paired measurements on shared specimens, with no curve, no ages and no survival"
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "fate": "spent 2026-10-23 at stage 4 on Gate F: the isolated scored reader fitted a Makeham-Weibull survivor curve to the plant ledger's balances, rebuilt each pre-1987 vintage's survivors from its additions and committed the golden 33,000 (asks 14 of 19)",
+      "driver": "The decisive quantity is how many units in service are at least a given age when many units' start dates were never recorded and are missing more often the older the unit; the units still in service from each start year are that year's intake times the chance of lasting to its present age, a curve fitted to the yearly outflow of the unrecorded group, so the unrecorded units are spread over start years by what that leaves once the recorded ones are taken out, not like the recorded ones and not in proportion to intake.",
+      "driver_concrete": "How many of Kestrin Valley Electric Cooperative's distribution poles on the 30 September 2026 register were set in 1977 or earlier, with the poles that have no year of setting spread over the pre-1987 years as each year's additions times a survivor curve fitted to the ledger's year-end balances from 1938 to 2025, less the poles of that year whose brand was read; not spread like the poles whose year is known, not in proportion to additions, and not on a curve whose shape cannot follow the ledger.",
+      "stump": "A competent analyst who parses every brand and reads every account spreads the poles with no year of setting like the poles whose year is known, or in proportion to each year's additions, and files a count of poles 50 or older thousands off; brands fade with age, so the poles with no year are the oldest, and each year's survivors are its additions thinned by decades of retirements that climb after forty years, so only a survivor curve fitted to the ledger's balances, applied to each year's additions, says how many poles of each age are still standing.",
+      "niche": "a rural electric cooperative's 2027 full groundline inspection, sized by how many of its wood poles will be 50 or older, when about one pole in nine in service carries no year of setting",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G4",
+        "G9"
+      ],
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "population_selection",
+      "forum": "board_of_directors",
+      "forcing_event": "audit_or_inspection",
+      "org_family": "cooperative_or_member_body",
+      "subdomain": "missing-data-censoring-measurement-error",
+      "domain": "general-statistics-data-science"
+    }
+  ],
+  "architecture_spent": null,
+  "notes": "Re-rooted 2026-10-23 after architecture 1 was spent at stage 4 (Gate F). Drawn from seed DA24's quantity only (a count on a distribution read against a fixed limit); world redrawn. WARNs answered in the design note's Draw. Two draws refused before this one: an engine-hours warranty risk set (the integration lever 0.92 to 1.07 of mean imputation) and a chain of lot verifications (estimator spread 900 to 5,600 on 18,000).",
+  "registered": "2026-10-23T08:52:15Z"
 }
