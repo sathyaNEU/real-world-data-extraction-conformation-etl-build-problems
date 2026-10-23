@@ -398,27 +398,78 @@ MONEY_KEYS = {
 }
 
 
-def ask_money(target, key="remittance", drop_void=True):
+RATES = {"SFCC": 812.0, "LFCC": 846.0, "CTR": 1138.0, "EXEMPT": 402.0}   # CCAP policy section 5
+
+
+def month_weekdays(d):
+    a = dt.date(d.year, d.month, 1)
+    b = dt.date(d.year + (d.month == 12), d.month % 12 + 1, 1)
+    return sum(1 for k in range((b - a).days) if (a + dt.timedelta(days=k)).weekday() < 5)
+
+
+def line_pay(r):
+    """a line's pay at the full-time rate prorated by its days over the month's Monday to Friday days (section 3)"""
+    return RATES[r["provider_type"]] * int(r["care_days"]) / month_weekdays(dt.date.fromisoformat(r["service_from"]))
+
+
+def home_regions(target):
+    """licence number -> region of the home, from the licence extract's county"""
+    byname = regions_by_name(target)
+    return {r["licence_no"]: byname[r["county"].upper()] for r in C.read_csv(os.path.join(target, C.F_LIC))}
+
+
+def ask_money(target, key="remittance", drop_void=True, region="home", alloc="pay"):
     """money the subsidy paid family child care homes in the 2026 runs by region and quarter of the run date: each
-    remittance once (key names what is taken as one remittance; key='lines' sums the amount on every line)"""
+    remittance once (key names what is taken as one remittance; key='lines' sums the amount on every line).
+    region='home' credits the region of the home that gave the care: a remittance whose homes lie in one region goes
+    there whole, one whose homes lie in several is shared by its lines' pay at the filed rates (alloc='pay'), by their
+    care_days (alloc='days') or credited whole to its first line's home (alloc='first'); region='office' credits the
+    region of the county office that issued it (county_fips)."""
     reg = regions_by_fips(target)
-    seen = {}
+    home = home_regions(target) if region == "home" else None
+    groups = {}
     tot = {}
     for r in C.read_csv(os.path.join(target, C.F_CCAP)):
         if r["provider_type"] not in ("SFCC", "LFCC") or not r["pay_run_date"].startswith("2026"):
             continue
         if drop_void and r["remittance_status"] == "VOID":
             continue
-        g = (reg[r["county_fips"]], (int(r["pay_run_date"][5:7]) - 1) // 3 + 1)
+        q = (int(r["pay_run_date"][5:7]) - 1) // 3 + 1
         amt = float(r["remittance_amount"])
+        rg = home.get(r["provider_no"], reg[r["county_fips"]]) if home else reg[r["county_fips"]]
         if key == "lines":
-            tot[g] = tot.get(g, 0.0) + amt
+            tot[(rg, q)] = tot.get((rg, q), 0.0) + amt
             continue
         k = MONEY_KEYS[key](r)
-        if k not in seen:
-            seen[k] = (g, amt)
-    for g, amt in seen.values():
-        tot[g] = tot.get(g, 0.0) + amt
+        g = groups.setdefault(k, {"q": q, "amt": amt, "lines": []})
+        g["lines"].append((rg, line_pay(r), int(r["care_days"])))
+    for g in groups.values():
+        regs = {x[0] for x in g["lines"]}
+        if len(regs) == 1 or alloc == "first":
+            rg = g["lines"][0][0]
+            tot[(rg, g["q"])] = tot.get((rg, g["q"]), 0.0) + g["amt"]
+            continue
+        w = {}
+        for rg, pay, days in g["lines"]:
+            w[rg] = w.get(rg, 0.0) + (pay if alloc == "pay" else days)
+        sw = sum(w.values())
+        for rg, v in w.items():
+            tot[(rg, g["q"])] = tot.get((rg, g["q"]), 0.0) + g["amt"] * v / sw
+    return {k: round(v, 2) for k, v in tot.items()}
+
+
+def ask_money_priced(target, drop_void=True):
+    """every line priced at the filed full-time rate and summed by the home's region (no remittance amount read)"""
+    home = home_regions(target)
+    reg = regions_by_fips(target)
+    tot = {}
+    for r in C.read_csv(os.path.join(target, C.F_CCAP)):
+        if r["provider_type"] not in ("SFCC", "LFCC") or not r["pay_run_date"].startswith("2026"):
+            continue
+        if drop_void and r["remittance_status"] == "VOID":
+            continue
+        k = (home.get(r["provider_no"], reg[r["county_fips"]]), (int(r["pay_run_date"][5:7]) - 1) // 3 + 1)
+        tot[k] = tot.get(k, 0.0) + line_pay(r)
     return {k: round(v, 2) for k, v in tot.items()}
 
 

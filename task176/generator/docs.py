@@ -73,11 +73,12 @@ POLICY = [
         "provider caring for part of the day."]),
     ("Section 3. Payment runs and remittances", [
         "Providers are paid monthly in arrears, in one statewide payment run in the first week of the following month. "
-        "Each county office issues the run's remittances for the providers in its county. Each line of a "
+        "County offices issue the remittances of each run. Each line of a "
         "remittance covers one child for the days in the month on which care was authorised and scheduled (Monday to "
         "Friday).",
-        "The full-time monthly rate is paid for a full month and prorated by scheduled days for a part month. A child "
-        "authorised at two providers is paid at half the monthly rate at each.",
+        "The full-time monthly rate is paid for a full month. For a part month it is prorated by the line's scheduled "
+        "days over the Monday to Friday days of the month. A child authorised at two providers for the same days is paid "
+        "at half the monthly rate at each.",
         "A remittance returned unpaid is voided and paid again in the next run."]),
     ("Section 4. Absence and notice", [
         "A provider is paid for scheduled days on which the child is absent, up to 20 days a year. When a child stops "

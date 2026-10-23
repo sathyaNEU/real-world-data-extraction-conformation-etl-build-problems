@@ -13,8 +13,10 @@ a careful de-duplicator reaches for on the money ask:
              prompt's "counting a child once on a day" now closes, so B is priced both verbatim and with the clause read;
              money one amount per (pay_run_date, provider_no)
   reader C   PAID FCC lines, distinct (child_no, day); money one amount per (county, run date, remittance_no) "since the
-             amount repeats per line and covers multi-home payees" (round 2, with the numbering sentence then filed)
-  reader D   the same child-days; money one amount per (county, run date, remittance_no) (round 2, same pack)
+             amount repeats per line and covers multi-home payees", region from the issuing county (round 2)
+  reader D   the same child-days; money one amount per (county, run date, remittance_no), region by the county of the
+             remittance (round 2)
+Readers A and B also took the region from county_fips. Every other key is scored with the home's region.
 The mirror stops at the tenure rung (300), sums care_days and sums the amount on every line.
 Pair = (landed response + the best response off the call) / 2, gate 40."""
 from __future__ import annotations
@@ -55,13 +57,18 @@ def main(target):
     keys = ["lines"] + [k for k in calc.MONEY_KEYS if k != "remittance"]
     b = {k: calc.ask_money(target, key=k) for k in keys}
     b_gold = calc.ask_money(target)
+    b_office = calc.ask_money(target, region="office")
+    b_office_rp = calc.ask_money(target, key="run_provider", region="office")
     routes = {
-        "reader A verbatim": (a_once, b["run_provider"]),
-        "reader B verbatim": (a_sum, b["run_provider"]),
-        "reader B with the clause read": (a_once, b["run_provider"]),
-        "reader C verbatim": (a_once, b_gold),
-        "reader D verbatim": (a_once, b_gold),
-        "mirror": (a_sum, b["lines"]),
+        "reader A verbatim": (a_once, b_office_rp),
+        "reader B verbatim": (a_sum, b_office_rp),
+        "reader B with the clause read": (a_once, b_office_rp),
+        "home region, multi-region remittances by care_days": (a_once, calc.ask_money(target, alloc="days")),
+        "home region, multi-region remittances to the first line": (a_once, calc.ask_money(target, alloc="first")),
+        "home region, every line priced at the full rate": (a_once, calc.ask_money_priced(target)),
+        "reader C verbatim": (a_once, b_office),
+        "reader D verbatim": (a_once, b_office),
+        "mirror": (a_sum, calc.ask_money(target, key="lines", region="office")),
     }
     for k in keys:
         routes["once a day, money per %s" % k] = (a_once, b[k])
@@ -80,7 +87,7 @@ def main(target):
            (missed(kept["reader A verbatim"]) + missed(kept["reader B verbatim"])) / 2))
     print("mirror leakage: %.1f per cent of ask weight" % (100 * kept["mirror"] / N))
     k = score(figs, a_once, b_gold)
-    print("money cracked (number, run date and county office): keeps %d, landed %.1f, pair %.1f" %
+    print("money cracked (number, run date and county office, home region, lines' pay): keeps %d, landed %.1f, pair %.1f" %
           (k, landed(k), (landed(k) + missed(off)) / 2))
     return 0 if pair <= 40 else 1
 

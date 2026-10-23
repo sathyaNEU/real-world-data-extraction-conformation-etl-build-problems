@@ -188,7 +188,8 @@ year's rate, a trend), not from the rungs beneath it; every one of them lands at
 | SF5 | to the nearest 50 | 461.0 to 450 | 461.0 to 450 by any rounding rule | same call (14.0 homes from the half-cell boundary) | the golden is clear of 475 and 425 (asserted) |
 | SF6 | a home | one licence (one provider, one residence) | one provider | same call (one licence per provider, asserted) | rules 6.40.010: a licence is issued to one provider for one residence |
 | SF7 | own child living in the home | relationship C or OWN CHILD with lives_in_home Y | own child wherever the child lives | same call (every own child row is Y, asserted) | dictionary, worksheet relationship and lives_in_home |
-| SF9 | one remittance (Ask B) | the lines sharing a remittance number, run date and county office | one per run date and provider; per number, or number and run date; per run, county office and amount | same call (an ask row; the call reads no CCAP row) | the shipped rows at the section 5 rates: a number, run and office group is within its lines' full-time pay (19,074 of 20,269 exact); 1,176 run-and-provider groups carry more than their own lines can earn; one number in one run carries other amounts in other offices (asserted) |
+| SF9 | one remittance (Ask B) | the lines sharing a remittance number, run date and county office | one per run date and provider; per number, or number and run date; per run, county office and amount | same call (an ask row; the call reads no CCAP row) | the shipped rows at the section 5 rates: a number, run and office group is within its lines' full-time pay (19,040 of 19,988 exact); 975 run-and-provider groups carry more than their own lines can earn; one number in one run carries other amounts in other offices (asserted) |
+| SF10 | the region of the home that gave the care (Ask B) | the home's county in the licence extract; a remittance for homes in several regions shared by its lines' pay | the region of county_fips; shared by care_days; whole to one home | same call (an ask row) | the prompt names the home; county_fips is the issuing office (dictionary); the amount equals its lines' pay at the section 3 and 5 rates to the cent in all 186 multi-region remittances, so each home's share is its own lines' pay (asserted) |
 | SF8 | provider age | from provider_birth_year; blank years carry no age term | blank read as a year | same call (59 blank years, all pre-2009 homes, no age terms changes 450) | dictionary: blank where the legacy system did not hold it |
 
 ## Ladder
@@ -280,84 +281,96 @@ stage 4 measurements had readers break both shapes (a re-filed schedule against 
 trader and side), so both were cut and their files stay in the pack as distractors; their line is in `## Tried and
 rejected`.
 
-**Re-sited again after round 1 (zip 13d6ad18, 2026-10-23).** Both readers took one remittance per run date and
-provider (20 of 20 money cells each) and the judge named a fork in "child-days" (each paid line against each child once
-a day). The prompt now files the child-day by literal WHAT ("counting a child once on a day") and the child-days ask is
-shrunk to the two statewide halves, priced as carrying no device; the money device moved onto the payee, so that the
-readers' grouping is the wrong one. The line is in `## Tried and rejected`.
+**Re-sited after rounds 1 and 2 (2026-10-23).** Round 1 (zip 13d6ad18): both readers took one remittance per run date
+and provider (money 20 of 20 each) and the judge named a fork in "child-days"; the prompt now files the child-day by
+literal WHAT ("counting a child once on a day") and the ask is two statewide figures with no device. Round 2 (zip
+c0bd9f55): both readers keyed money on county, run date and remittance number, the unit an added policy sentence spelled
+out. The sentence is gone, the unit is forced by the data (SF9), and the device moved onto the region: the prompt files
+the money by the region of the home that gave the care, and network remittances are issued by the county office of the
+network's base for member homes in other regions. Both lines are in `## Tried and rejected`.
 
 **Ask A. The child-days of care the subsidy paid family child care homes for in each half of 2026 across Allerton,
 counting a child once on a day** (2 figures, whole numbers). H18 home: the subsidised care that rests on the homes the
 call says will close.
 - No device: the prompt's clause settles the one-child-two-lines reading (a child paid at the home left through its
   notice days while the new home's lines start, and a child in split care paid at two homes on the same days). Summing
-  care_days instead gives 135,010 and 154,218 against 125,938 and 137,949; with the clause read a careful reader lands
+  care_days instead gives 131,748 and 144,434 against 124,773 and 131,302; with the clause read a careful reader lands
   both figures, and the ask's surface is shrunk to two figures for that reason.
 - Hazards: centre and exempt lines in the same file, voided remittances paid again in the next run, December 2025
   service in the January 2026 run.
 
-**Ask B. For each region, the money the subsidy paid family child care homes in each quarter of 2026 by the date of
-the payment run** (20 figures, nearest dollar). H18 home: the subsidy income the homes' closures take out of the
-regions, the money the grant round is weighed against.
-- B1 (silent primary, what one payment is): every child line of a remittance carries the remittance's amount; a home in a family child care network is paid through the network's remittance, so
-  one remittance carries the children of two to five homes (496 of 12,387 home remittances, 207 homes), and the file
-  names on each line the home that gave the care. Since round 2 no filed sentence names the numbering; the data force
-  the unit (fork row SF9): every number, run and county office group is within its lines at the section 5 full-time
-  rates and 19,074 of 20,269 equal them exactly; 1,176 run-and-provider groups carry an amount their own lines cannot
-  earn at those rates, in all 20 cells (25 or more each); and 2,036 of 3,466 number-and-run groups carry different
-  amounts in different county offices. One payment is a remittance number, a run date and a county office, the only
-  key that reproduces every cell (asserted). The readers' grouping, one amount per run date and provider, counts a network's remittance once per
-  member home: every cell high by 31,084 to 169,269. Every other key a careful de-duplicator reaches for misses every
-  cell: number alone, number and run date, number and provider, number and amount, number and county office, provider
-  and amount, run and county office with amount, number with run and amount, number with run and provider (by 58,951 to
-  1,131,873 either way); summing every line is high by 146,698 to 849,004.
-- Hazards: voided remittances (keeping them adds 1,583 to 18,063 a cell), the January 2027 run (December service)
+**Ask B. For each region of the home that gave the care, the money the subsidy paid family child care homes in each
+quarter of 2026 by the date of the payment run** (20 figures, nearest dollar). H18 home: the subsidy income the homes'
+closures take out of the regions, the money the grant round is weighed against.
+- B1 (silent primary, whose region a payment is): a home in a family child care network is paid through the network's
+  remittance, issued by the county office of the network's base, and every line of it carries county_fips of that
+  office and the remittance's amount. 411 of 11,998 home remittances carry two to four homes (182 homes), and 286
+  remittances carry a home outside the issuing office's region; one or more cross-region remittances touch every
+  region and quarter (at least 3 a cell, asserted). The region of the home is its county in the licence extract. A
+  remittance whose homes lie in one region goes there whole; one whose homes lie in several is shared by its lines'
+  pay at the filed rates (policy section 3: the section 5 monthly rate, prorated for a part month by the line's days
+  over the month's Monday to Friday days), which sums to its amount to the cent (186 groups, asserted, SF10). Network
+  homes take no split-care or moved children, so every network line is paid at the full rate.
+- The careful route of round 2 (one amount per county, run date and remittance number, credited to the region of
+  county_fips) misses every cell, by -9,357 to +22,309. Sharing a multi-region remittance by care_days misses every
+  cell (-172 to +145), crediting it to its first line's home misses every cell (-17,283 to +17,082), and pricing every
+  line at the full rate without the remittance amount misses every cell (+2,599 to +35,559, the split-care lines).
+- The unit (SF9): one payment is a remittance number, a run date and a county office, forced by the rows: every such
+  group is within its lines' full-time pay (19,040 of 19,988 exactly), 975 run-and-provider groups carry more than the
+  provider's own lines can earn, and one number in one run carries different amounts in different offices (2,184 of
+  3,146). Every other key misses every cell: run and provider (+14,026 to +185,091 with the home's region; +13,860 to
+  +201,123 with the office's, round 1's path), number alone, number and run date, number and provider, number and
+  amount, number and county office, provider and amount, run and county office with amount, number with run and amount,
+  number with run and provider; summing every line is high by 114,761 to 571,151.
+- Hazards: voided remittances (keeping them adds 741 to 13,498 a cell), the January 2027 run (December service)
   outside 2026, centres and exempt carers in the same file.
-- Stops (asserted): lines summed and each of the eleven alternative keys (all 20); voids kept (all 20); voids kept on
-  the readers' key (all 20).
+- Stops (asserted): every key but the remittance, every region and allocation reading but the home's region by lines'
+  pay (all 20 each); voids kept (all 20).
 
 **Hazard table.**
 
 | Hazard | Root cause | Moves | Per-ask delta |
 |---|---|---|---|
-| H1 notice and split-care lines | a child paid at two homes on the same days | A | closed by the prompt's clause (summed: +9,072 and +16,269) |
-| H2 voided remittances paid again | a remittance returned unpaid, reissued in the next run | A, B | B +1,583 to +18,063 a cell |
-| H3 the remittance amount on every line | a remittance export at child-line grain | B | every cell, +146,698 to +849,004 when summed |
-| H4 network remittances | a home that joined a network is paid through the network's remittance | B | every cell, +31,084 to +169,269 on one per run and provider |
+| H1 notice and split-care lines | a child paid at two homes on the same days | A | closed by the prompt's clause (summed: +6,975 and +13,132) |
+| H2 voided remittances paid again | a remittance returned unpaid, reissued in the next run | B | +741 to +13,498 a cell |
+| H3 the remittance amount on every line | a remittance export at child-line grain | B | every cell, +114,761 to +571,151 when summed |
+| H4 network remittances | a network home is paid through the network's remittance | B | every cell, +13,860 to +201,123 on one per run and provider |
 | H5 remittance numbers per county office and run | each office numbers its run in its own sequence (not filed) | B | every cell under a key without the county office |
-| H6 the January 2027 run | December service paid in the first January run | B | outside the 2026 quarters (the run date files it) |
+| H6 the issuing office's county on every line | a network's remittance is issued by its base county's office | B | every cell, -9,357 to +22,309 when credited to county_fips |
+| H7 the January 2027 run | December service paid in the first January run | B | outside the 2026 quarters (the run date files it) |
 
-**Referee.** For B, the remittance's one amount and status on every line of a number, run and county office
-(asserted), the same number, run and office carrying lines of several homes in every region and quarter (asserted),
-and the same number carrying other providers in other offices and runs. Countable from the shipped rows with the section 5 rates;
-neither the numbering nor the network is named in any filed text.
+**Referee.** For B, the remittance's one amount and status on every line of a number, run and county office, the
+amount equal to its lines' pay at the filed rates wherever its homes lie in several regions, and the home's county in
+the licence extract (all asserted). Countable from the shipped rows and the section 3 and 5 sentences; no filed text
+names the numbering, the network or how a remittance is shared.
 
 **Ceiling sheet** (`generator/ceiling.py` on the cut pack; every route scored figure by figure against the golden)
 
 | Route | Child-days | Money | Kept of 22 | Landed | Off the call |
 |---|---|---|---|---|---|
-| reader A verbatim (each child and day once; one amount per run date and provider) | 2 | 0 | 2 | 50.0 | 17.0 |
-| reader B verbatim (care_days summed; one amount per run date and provider) | 0 | 0 | 0 | 45.0 | 12.0 |
+| reader A verbatim (each child and day once; one amount per run date and provider; region of county_fips) | 2 | 0 | 2 | 50.0 | 17.0 |
+| reader B verbatim (care_days summed; the same money path) | 0 | 0 | 0 | 45.0 | 12.0 |
 | reader B with the clause read | 2 | 0 | 2 | 50.0 | 17.0 |
-| reader C verbatim (round 2; one amount per county, run date and remittance_no) | 2 | 20 | 22 | 100.0 | 67.0 |
-| reader D verbatim (round 2; one amount per county, run date and remittance_no) | 2 | 20 | 22 | 100.0 | 67.0 |
-| each of the twelve alternative money keys, child-days once a day | 2 | 0 | 2 | 50.0 | 17.0 |
+| reader C verbatim (one amount per county, run date and remittance_no; region from the issuing county) | 2 | 0 | 2 | 50.0 | 17.0 |
+| reader D verbatim (the same key; region by the county of the remittance) | 2 | 0 | 2 | 50.0 | 17.0 |
+| home region, multi-region remittances by care_days, to the first line, or every line priced at the full rate | 2 | 0 | 2 | 50.0 | 17.0 |
+| each of the twelve alternative money keys with the home's region | 2 | 0 | 2 | 50.0 | 17.0 |
 | mirror (300, care_days summed, every line's amount) | 0 | 0 | 0 | 45.0 | 12.0 |
 
 **Cracker sheet** (the device-bearing ask only; the cracker lands the call, keeps the home lines, drops voided
-remittances, keeps the 2026 runs, and takes the repeated remittance amount once on its best key)
+remittances, keeps the 2026 runs, takes the repeated amount once per number, run date and county office and credits it
+to the region of the issuing office, round 2's path)
 
 | Ask row | Figures | Cracker's path | Device that holds | Verdict |
 |---|---|---|---|---|
-| Ask B, money by region and quarter | 20 | one amount per county, run date and remittance_no (readers C and D, round 2) | B1 | hit |
+| Ask B, money by region and quarter | 20 | one amount per county, run date and remittance_no, region of county_fips | B1 | miss |
 
 Ask A carries no device and is not a cracker row: the cracker lands both of its figures, and the ceiling sheet above
 prices them as landed on every route.
 
-Worst route: 22 of 22 (readers C and D verbatim), 100.0 landed; pair with the best reader off the call 83.5. The round-1
-paths alone give 33.5. Round 2's readers keyed the golden unit with the numbering sentence then filed; with it removed
-the unit is forced by the data, and a key that two readers already used prices as landed. B1 fails the worst-route
-gate and the ask needs a different device.
+Worst route: 2 of 22, 50.0 landed; pair with the best reader off the call 33.5. Both round-1 readers as filed: 17.0 and
+12.0. Money cracked (the remittance credited to the home's region, a multi-region one shared by its lines' pay): 22 of
+22, 100.0 landed, pair 58.5; the build stands on B1 holding.
 
 Measured by: `generator/ceiling.py` (run on the cut pack; Part 0's weights, the call and its components 38, the
 instructions 7, the asks 55 over the 22 ask figures; a response off the call keeps 5).
@@ -365,8 +378,8 @@ instructions 7, the asks 55 over the 22 ask figures; a response off the call kee
 Mirror leakage: 0.0 per cent of ask weight (the mirror, off the call at 300, sums care_days and the amount on every
 line and keeps none of the 22 figures).
 
-Pair ceiling: 83.5 measured on the cut pack (the worst route landed 100.0, readers C and D verbatim; the best reader
-off the call 67.0); over the gate, the ask device is open.
+Pair ceiling: 33.5 measured on the cut pack (the worst route landed 50.0, the best reader off the call 17.0); the
+worst single crack 58.5 (B1).
 
 **Call edge (round-1 judge, answered risk).** The full-record specifications sit at 442 to 461, inside the 450 bin;
 the judge reached 423 (fit on the years before 2023, the kindergarten flag only) and 474 to 487 (windows from 2024
@@ -387,7 +400,7 @@ candidates. Recorded as an answered risk; the call does not move.
 | L6 blank birth years for legacy providers | the legacy system | licence extract | blank read as a year | call unchanged (no age terms, 462.7) |
 | L7 county names, codes and spellings across files | each system's own | lookup and ask files | a region unmapped | every county maps (asserted) |
 | L8 notice and split-care lines, voided remittances, December 2025 service | CCAP payment system | ccap_payment_lines_2026.csv | lines summed | outside the call's files; Ask A hazards (the prompt's clause closes the reading) |
-| L9 the remittance amount on every child line; network remittances carrying several homes; numbers in each county office's sequence per run | CCAP payment system | ccap_payment_lines_2026.csv | amounts summed, or deduped per run and provider or on a partial key | outside the call's files; Ask B device |
+| L9 the remittance amount on every child line; network remittances carrying several homes, issued by the base county's office; numbers in each county office's sequence per run | CCAP payment system | ccap_payment_lines_2026.csv | amounts summed, deduped on a partial key, or credited to the issuing office's region | outside the call's files; Ask B device |
 | L10 revised food program claims and sponsor changes; twin visit records | CACFP claims and licensing systems | distractor files | none (no figure reads them) | distractors |
 
 ## Leak sweep
@@ -406,7 +419,7 @@ candidates. Recorded as an answered risk; the call does not move.
 
 ## Duplicate check
 
-Heart: BLOCK from post-draw cards, window fixed at draw (author's standing ruling). ban.forcing_event against task175 and ban.org_family against task171 v4 took their values after this card registered (DRAWN 6b4f56e1); the card is not relabelled. On the round-2 rebuild the window also moved back over task169 v2 (ban.role, ban.artifact) and task446 v3 (test.same_puzzle), both of which passed guard.py check when this card registered. Surface: exit 0, promoted pairs history only.
+Heart: BLOCK from post-draw cards, window fixed at draw (author's standing ruling). ban.forcing_event against task175 and ban.org_family against task171 v4 took their values after this card registered (DRAWN 6b4f56e1); the card is not relabelled. On the round-2 rebuild the window also moved back over task169 v2 (ban.role, ban.artifact) and task446 v3 (test.same_puzzle), both of which passed guard.py check when this card registered; the same ruling covers them. The card carries a differentiation line against task446 v3 (a banking flag-conversion mix across ownership links against a dependant's institutional-age clock; the shared labels time, G14 and quantity_figure are coarse). Surface: exit 0, promoted pairs history only.
 
 ## Earlier draws (screen record)
 
@@ -804,7 +817,8 @@ Prototypes are in the session scratchpad (r176/demog).
   remittance_no (22 of 22 each), the unit the added policy sentence ("each county office numbers the remittances it
   issues in a run in its own sequence") and dictionary line spelled out. The sentence and the line were removed and the
   unit forced by the data instead (SF9), but that key is now a verbatim reader path and prices at 83.5; B1 is spent as
-  the ask's device.
+  the ask's device. Re-sited onto the region (approved): money by the region of the home that gave the care, with
+  network remittances issued by the base county's office for homes in other regions.
 
 ## Retired
 

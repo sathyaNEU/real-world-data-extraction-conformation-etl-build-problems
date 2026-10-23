@@ -12,19 +12,15 @@
  "loops": 1,
  "card_registered": true,
  "precut": {
-  "exit": 1,
-  "date": "2026-10-23",
-  "fails": [
-   "pair ceiling 83.5",
-   "cracker keeps Ask B"
-  ]
+  "exit": 0,
+  "date": "2026-10-23"
  },
  "leak": {
   "leak_py": "REVIEW (no LEAK), lines answered in ## Leak sweep",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "BLOCK from post-draw cards, window fixed at draw (author's standing ruling): ban.forcing_event against task175 (SHIPPED 0a20bc43, 09:02) and ban.org_family against task171 v4 (c1e0ddaf, 11:04) took their values after this card registered (DRAWN 6b4f56e1, 08:49); on the round-2 rebuild the window also moved back over task169 v2 (ban.role, ban.artifact) and task446 v3 (test.same_puzzle), which passed guard.py check at registration; card not relabelled",
+  "heart": "BLOCK from post-draw cards, window fixed at draw (author's standing ruling): ban.forcing_event against task175, and, after the window moved back when other builds were marked spent, ban.role and ban.artifact against task169 v2 and test.same_puzzle against task446 v3; the card passed guard.py check at registration (DRAWN 6b4f56e1) and is not relabelled; differentiation line against task446 v3 on the card",
   "surface": "exit 0, promoted pairs history only",
   "nearest": "task133 0.05"
  },
@@ -46,7 +42,7 @@
    "zip": "c0bd9f55",
    "call": "held 4/4 (300, 400; judge DETERMINISTIC/APPROVE, tenure-inclusive 447 to 463)",
    "asks": "failed: readers C and D 22/22, money keyed (county, run date, remittance_no), the unit the added policy and dictionary sentences spelled out",
-   "repair": "numbering sentence and dictionary wording removed; the unit forced by the data (SF9 asserted); priced on all four readers the worst route is 83.5, so B1 is spent and the ask needs a different device"
+   "repair": "numbering sentence and dictionary wording removed, the unit forced by the data (SF9); the device re-sited (approved) onto the region of the home that gave the care, network remittances issued by the base county's office for homes in other regions (SF10); priced on readers A to D and the mirror the worst-route pair is 33.5"
   }
  ],
  "wave": "wave 8 (new), seed FC47: the world, the decision and the quantity kept (360 satellites for 2027, six rideshare launches of at most 60, release at 210 km, storm loss below 350 km, expected storm loss two or fewer per launch, the rest to 2028); the seed's onsets-against-storm-days mechanism set aside as a unit reading",
@@ -101,7 +97,7 @@
    "stage3": "checks.py 105 of 105, verify.py green (own IRLS 461.02), two byte-identical builds, figures_check 0, precut 0, leak.py REVIEW, guard heart WARN, surface no hard tell after the manifest schema change; asks re-sited (food program and visits cut to distractors) after the coordinator's stage 4 measurements"
   }
  },
- "resume": "stage 2 ask redesign: Ask B needs a device whose right unit is not a key a careful reader already used; the coordinator weighs the architecture",
+ "resume": "stage 4 round 3: a fresh judge pass and two fresh scored readers",
  "approved": null,
  "delivered": null,
  "portal": null,

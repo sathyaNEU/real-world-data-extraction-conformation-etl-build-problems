@@ -91,6 +91,29 @@ class Ccap:
             case[0] += 1
             return "%02d-%06d" % (int(r.integers(10, 99)), 400000 + case[0] * 3 + int(r.integers(0, 3)))
 
+        # family child care networks: a home that joins a network assigns its payments to the network, which is paid
+        # one remittance a run for the children of all its homes by the county office of the network's base; networks
+        # are small, three to six homes, most in the base county and some anywhere in the state
+        rn = C.stream("ccap/networks")
+        pool = [h for h, w in act if rn.random() < 0.12]
+        rn.shuffle(pool)
+        affil, office = {}, {}
+        k = 0
+        while pool:
+            k += 1
+            base = pool.pop()
+            net = "NET%02d" % k
+            office[net] = base.county
+            affil[ident.cur[base.hid]] = net
+            for _ in range(int(rn.integers(2, 6))):
+                if not pool:
+                    break
+                same = [x for x in pool if x.county == base.county]
+                h = same[0] if (same and rn.random() < 0.6) else pool[int(rn.integers(0, len(pool)))]
+                pool.remove(h)
+                affil[ident.cur[h.hid]] = net
+        self.affil, self.office = affil, office
+        home_cty = {ident.cur[h.hid]: h.county for h, w in act}
         spells = []   # (child, case, provider_no, ptype, county, start, end, rate)
         for h, (s, e) in act:
             if r.random() > 0.56:
@@ -105,7 +128,9 @@ class Ccap:
                 rate = 1.0
                 spells.append([ch, cs, ident.cur[h.hid], h.ltype, h.county, a, b, rate])
                 u = r.random()
-                peers = [x for x in by_cty[h.county] if x[0] is not h]
+                peers = [x for x in by_cty[h.county] if x[0] is not h and ident.cur[x[0].hid] not in affil]
+                if ident.cur[h.hid] in affil:
+                    peers = []
                 if u < 0.13 and peers and b < e:
                     # the child moves to another home in the county: the home left is paid ten business days of notice
                     h2, (s2, e2) = peers[int(r.integers(0, len(peers)))]
@@ -138,27 +163,11 @@ class Ccap:
         # one remittance to each payee (the provider, or its network), numbered in the county office's own sequence for that run, and every
         # child line of a remittance carries the remittance's amount
         rate_of = {"SFCC": 812.0, "LFCC": 846.0, "CTR": 1138.0, "EXEMPT": 402.0}
-        # family child care networks: a home that joins a network assigns its payments to the network, which is paid
-        # one remittance a run for the children of all its homes; networks are small, three to six homes of a county
-        rn = C.stream("ccap/networks")
-        members = {}
-        for h, w in act:
-            if rn.random() < 0.12:
-                members.setdefault(h.county, []).append(ident.cur[h.hid])
-        affil = {}
-        for cty in sorted(members):
-            lst = members[cty]
-            j, k = 0, 0
-            while j < len(lst):
-                n = int(rn.integers(3, 7))
-                k += 1
-                for pno in lst[j:j + n]:
-                    affil[pno] = "NET%s%02d" % (cty[2:], k)
-                j += n
-        self.affil = affil
-
         def payee_of(pno, cty):
             return affil.get(pno, pno)
+
+        def office_of(pno, cty):
+            return office[affil[pno]] if pno in affil else cty
         by_run = {}
         for ch, cs, pno, pt, cty, a, b, f in spells:
             for ms, me in months_between(max(a, dt.date(2025, 12, 1)), b):
@@ -170,7 +179,8 @@ class Ccap:
                 run = RUNS[(ms.year, ms.month)]
                 if run > C.PULL:
                     continue
-                by_run.setdefault(run, {}).setdefault((cty, payee_of(pno, cty)), []).append([cs, ch, ms, me, days, amt, pno, pt])
+                by_run.setdefault(run, {}).setdefault((office_of(pno, cty), payee_of(pno, cty)), []).append(
+                    [cs, ch, ms, me, days, amt, pno, pt])
         rows = []
         voided = []
         runs = sorted(by_run)
@@ -189,7 +199,8 @@ class Ccap:
                 tot = round(sum(x[5] for x in lines), 2)
                 status = "VOID" if (r.random() < 0.012 and k + 1 < len(runs)) else "PAID"
                 for x in lines:
-                    rows.append([no, run, cty, x[6], x[7], x[0], x[1], x[2], x[3], x[4], tot, status])
+                    rows.append([no, run, cty, x[6], x[7], x[0], x[1], x[2], x[3], x[4], tot, status, x[5],
+                                 home_cty.get(x[6], cty)])
                 if status == "VOID":
                     # the remittance is paid again in the next run, numbered in that run's sequence
                     nxt = runs[k + 1]
@@ -216,16 +227,15 @@ class Ccap:
         return {k: len(v) for k, v in out.items()}
 
     def truth_money(self):
-        """money paid to family child care homes in the 2026 runs, by region and quarter: each remittance once"""
-        seen = {}
+        """money paid for the care family child care homes gave, by the home's region and the quarter of the 2026 run:
+        each line's pay at the policy's rates, which sums to its remittance's amount"""
+        out = {}
         for row in self.lines:
             if row[11] == "VOID" or row[4] not in ("SFCC", "LFCC") or row[1].year != 2026:
                 continue
-            seen[(row[0], row[1], row[2])] = (C.COUNTY_REGION[row[2]], (row[1].month - 1) // 3 + 1, row[10])
-        out = {}
-        for reg, q, amt in seen.values():
-            out[(reg, q)] = round(out.get((reg, q), 0.0) + amt, 2)
-        return out
+            k = (C.COUNTY_REGION[row[13]], (row[1].month - 1) // 3 + 1)
+            out[k] = out.get(k, 0.0) + row[12]
+        return {k: round(v, 2) for k, v in out.items()}
 
 
 def month_end(d):

@@ -214,8 +214,27 @@ def main(target):
        "%d groups, fewest in a cell %d" % (tie["imp"], min(tie["imp_cells"].values())))
     ok("ASK B one number in one run carries different amounts in different county offices", tie["nr_multi"] > 100,
        "%d of %d" % (tie["nr_multi"], tie["nr"]))
-    hits = [k for k in calc.MONEY_KEYS if all(int(round(calc.ask_money(target, key=k).get(c, 0))) == int(round(b[c])) for c in qcells)]
-    ok("SF9 ASK B one key reproduces every cell (number, run date and county office)", hits == ["remittance"], str(hits))
+    # SF10 the region of the home that gave the care: a remittance whose homes lie in several regions is shared by its
+    # lines' pay at the filed rates, which sums to its amount
+    xr = cross_region(target, ccap)
+    ok("SF10 every multi-region remittance's amount is its lines' pay at the filed rates (to the cent per line)",
+       xr["groups"] > 50 and xr["off"] == 0, "%d groups" % xr["groups"])
+    ok("SF10 a remittance carrying homes of two or more regions touches every region and quarter",
+       len(xr["cells"]) == 20 and min(xr["cells"].values()) >= 2, "fewest in a cell %d" % min(xr["cells"].values()))
+    hits = []
+    for key in calc.MONEY_KEYS:
+        for region, alloc in (("home", "pay"), ("home", "days"), ("home", "first"), ("office", "pay")):
+            got = calc.ask_money(target, key=key, region=region, alloc=alloc)
+            if all(int(round(got.get(c, 0))) == int(round(b[c])) for c in qcells):
+                hits.append((key, region, alloc))
+    ok("SF9 SF10 ASK B one key and one allocation reproduce every cell (number, run date and county office; the "
+       "home's region; the lines' pay)", hits == [("remittance", "home", "pay")], str(hits))
+    for name, got in (("each remittance to its issuing office's region", calc.ask_money(target, region="office")),
+                      ("multi-region remittances shared by care_days", calc.ask_money(target, alloc="days")),
+                      ("multi-region remittances to the first line's home", calc.ask_money(target, alloc="first")),
+                      ("every line priced at the full-time rate", calc.ask_money_priced(target))):
+        ok("ASK B %s misses every cell" % name, all(int(round(got.get(c, 0))) != int(round(b[c])) for c in qcells),
+           "%.0f to %.0f" % (min(got.get(c, 0) - b[c] for c in qcells), max(got.get(c, 0) - b[c] for c in qcells)))
     ok("ASK B remittance numbers recur across county offices in every run and for a home across runs",
        shared_numbers(ccap), "")
 
@@ -384,6 +403,24 @@ def amount_ties(target, ccap):
             out["imp"] += 1
             if v[0]["provider_type"] in ("SFCC", "LFCC") and k[0].startswith("2026") and v[0]["remittance_status"] != "VOID":
                 out["imp_cells"][(reg[v[0]["county_fips"]], (int(k[0][5:7]) - 1) // 3 + 1)] += 1
+    return out
+
+
+def cross_region(target, ccap):
+    home = calc.home_regions(target)
+    g = collections.defaultdict(list)
+    for r in ccap:
+        if r["provider_type"] in ("SFCC", "LFCC") and r["pay_run_date"].startswith("2026") and r["remittance_status"] != "VOID":
+            g[(r["remittance_no"], r["pay_run_date"], r["county_fips"])].append(r)
+    out = {"groups": 0, "off": 0, "cells": collections.Counter()}
+    for k, v in g.items():
+        regs = {home[r["provider_no"]] for r in v}
+        if len(regs) < 2:
+            continue
+        out["groups"] += 1
+        out["off"] += abs(float(v[0]["remittance_amount"]) - sum(calc.line_pay(r) for r in v)) > 0.01 * len(v)
+        for rg in regs | {calc.regions_by_fips(target)[k[2]]}:
+            out["cells"][(rg, (int(k[1][5:7]) - 1) // 3 + 1)] += 1
     return out
 
 

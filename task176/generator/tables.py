@@ -143,7 +143,7 @@ DICT = [
                "every provider type. One row per child per remittance.", [
         ("remittance_no", "remittance number"),
         ("pay_run_date", "date of the payment run"),
-        ("county_fips", "county office that issued the remittance (the provider's county)"),
+        ("county_fips", "county office that issued the remittance"),
         ("provider_no", "licence number for family child care homes; CC centre number; LE license-exempt carer number"),
         ("provider_type", "SFCC small and LFCC large family child care home, CTR centre, EXEMPT license-exempt relative carer"),
         ("case_no", "family's assistance case"),

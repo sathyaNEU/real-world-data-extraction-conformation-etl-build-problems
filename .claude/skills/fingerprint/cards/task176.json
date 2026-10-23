@@ -44,7 +44,7 @@
     "homes licensed before 2016 present only from their first renewal on the current record (delayed entry)",
     "county names in two spellings across files, mapped to regions by a lookup",
     "subsidy lines billed by service period across half-year boundaries, with notice-period payments to a home a child has left",
-    "every subsidy child line repeating its remittance's amount, remittance numbers restarting in each county office's run, voided remittances paid again in the next run"
+    "every subsidy child line repeating its remittance's amount, remittance numbers restarting in each county office's run, network remittances issued by the base county's office for homes in other counties, voided remittances paid again in the next run"
   ],
   "stakeholder_role": "the child care supply analyst in the Department of Early Learning's Office of Child Care",
   "role_family": "capacity_planner",
@@ -85,7 +85,7 @@
   "differentiation": {
     "task134": "task134 v2 round 1 reads an inflow from an outside pool on a conversion hazard by time since entry after a surge; task176 reads closures on no clock of the unit's own (tenure is the wrong clock) but on a linked person's age, the provider's youngest own child reaching kindergarten, carried in a second file.",
     "task149": "task149 rescales a hazard per working hour by the pace a forward work plan sets; task176 has no plan or pace: the hazard follows a family life-course clock that each home already carries.",
-    "task446": "task446 converts flags at component-specific rates through ownership links; task176 counts unit endings whose hazard follows the youngest dependant's institutional age.",
+    "task446": "task446 v3 prices a banking flag-conversion mix, each group flag converted at the rate of the member that raised it through ownership links; task176 counts unit endings whose hazard follows the provider's youngest own child's kindergarten year on a person-month hazard. The labels they share (gap time, pattern G14, decision quantity_figure) are coarse; the drivers have nothing in common.",
     "task452": "task452 reweights stratified reference observations after a reclassification; task176 has no sample, stratum or reclassification."
   },
   "lineage": [],

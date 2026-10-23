@@ -95,10 +95,10 @@ def submission(x):
     L.append("5. Child-days (ccap_payment_lines_2026.csv): kept SFCC and LFCC lines of remittances not voided, "
              "expanded each line to its Monday to Friday days in 2026, and counted each child and day once.")
     L.append("6. Money (ccap_payment_lines_2026.csv): kept SFCC and LFCC remittances paid in the 2026 runs and not voided, "
-             "took each remittance once as its number, run date and county office, and summed the amounts by the quarter of "
-             "the run date. Every child line repeats the remittance's amount; one number recurs in other county offices "
-             "in the same run with other amounts; and one remittance can carry several homes' children, so the amount on "
-             "a home's lines can exceed what its own lines earn at the section 5 rates.")
+             "took each remittance once as its number, run date and county office, and credited it to the region of the "
+             "home that gave the care (licence extract county). A remittance carrying homes in more than one region was "
+             "shared by its lines' pay (the section 5 rate prorated by the line's days over the month's Monday to Friday "
+             "days), which sums to its amount; summed by the quarter of the run date.")
     L.append("7. Allerton should plan for about %s homes closing during 2027." % n(x["call"]))
     L.append("")
     L.append("## 4. Deliverable Answers")
@@ -108,7 +108,7 @@ def submission(x):
     L.append("1. Homes licensed on 31 December 2026 that will close during 2027, to the nearest 50: %s." % n(x["call"]))
     L.append("2. Child-days of subsidised care in family child care homes in Allerton, a child counted once on a day: "
              "first half of 2026 %s, second half %s." % (n(x["a"][1]), n(x["a"][2])))
-    L.append("3. Money the subsidy paid to family child care homes, by region and quarter of the 2026 payment run, "
+    L.append("3. Money the subsidy paid to family child care homes, by the region of the home and quarter of the 2026 payment run, "
              "nearest dollar, first to fourth quarter:")
     for r in reg:
         L.append("   - %s: USD %s" % (reg[r], ", ".join(n(x["b"][(r, q)]) for q in (1, 2, 3, 4))))
@@ -202,8 +202,9 @@ def workbook(path, x):
     regional("Subsidy payments", "Money the subsidy paid to family child care homes, 2026 payment runs (USD)",
              ("January to March", "April to June", "July to September", "October to December"),
              lambda r: tuple(x["b"][(r, q)] for q in (1, 2, 3, 4)),
-             "CCAP remittances for SFCC and LFCC homes by the date of the payment run; voided remittances out, "
-             "their reissues in; each remittance counted once (number, run and county office).")
+             "CCAP remittances for SFCC and LFCC homes by the date of the payment run and the region of the home that "
+             "gave the care; voided remittances out, their reissues in; each remittance counted once (number, run and "
+             "county office), a remittance for homes in several regions shared by its lines' pay.")
     nt = wb.add_worksheet("Notes")
     notes = ("Prepared 14 January 2027 from the January 2027 supply folder (licensing extract of 8 January 2027).",
              "A home is a family child care home licence, small or large. A home closes during 2027 when "

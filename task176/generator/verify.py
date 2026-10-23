@@ -168,11 +168,21 @@ def main(target):
     D["half"] = np.where(pd.to_datetime(D.day).dt.month <= 6, "H1", "H2")
     A = D.groupby("half").size().to_dict()
     say("V ask A statewide", figs["a_statewide"] == {"H1": A["H1"], "H2": A["H2"]}, str(A))
-    rm = cc[cc.pay_run_date.str.startswith("2026")].drop_duplicates(["remittance_no", "pay_run_date", "county_fips"]).copy()
-    rm["amt"] = rm.remittance_amount.astype(float)
-    rm["reg"] = rm.county_fips.map(reg_f)
-    rm["q"] = (rm.pay_run_date.str[5:7].astype(int) - 1) // 3 + 1
-    B = rm.groupby(["reg", "q"]).amt.sum().to_dict()
+    lic = pd.read_csv(os.path.join(target, "fcc_licence_extract_20261231.csv"), dtype=str)
+    home_reg = dict(zip(lic.licence_no, lic.county.str.upper().map(reg_n)))
+    m = cc[cc.pay_run_date.str.startswith("2026")].copy()
+    m["reg"] = m.provider_no.map(home_reg)
+    first = pd.to_datetime(m.service_from).dt.to_period("M").dt.start_time.values.astype("datetime64[D]")
+    nxt = (pd.to_datetime(m.service_from).dt.to_period("M") + 1).dt.start_time.values.astype("datetime64[D]")
+    rate = m.provider_type.map({"SFCC": 812.0, "LFCC": 846.0})
+    m["pay"] = rate * m.care_days.astype(int) / np.busday_count(first, nxt)
+    m["q"] = (m.pay_run_date.str[5:7].astype(int) - 1) // 3 + 1
+    m["amt"] = m.remittance_amount.astype(float)
+    key = ["remittance_no", "pay_run_date", "county_fips"]
+    m["share"] = m.pay / m.groupby(key).pay.transform("sum")
+    per = m.groupby(key + ["reg", "q"]).agg(share=("share", "sum"), amt=("amt", "first")).reset_index()
+    per["money"] = per.share * per.amt
+    B = per.groupby(["reg", "q"]).money.sum().to_dict()
     for r in names:
         say("V ask B %s" % slug[r], figs["b_" + slug[r]] == {"Q%d" % q: int(round(B[(r, q)])) for q in (1, 2, 3, 4)})
 

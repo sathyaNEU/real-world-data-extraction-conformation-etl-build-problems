@@ -21,7 +21,7 @@
 3. Fitted a monthly Poisson model of closure on those terms: the kindergarten summer, not the years licensed, carries the closures of parent-run homes (401 of 905 such homes closed that summer).
 4. Applied the model month by month through 2027 to the 3,081 homes licensed on 31 December 2026, 427 of them in their youngest's kindergarten summer, and summed each home's chance of closing: 450 to the nearest 50.
 5. Child-days (ccap_payment_lines_2026.csv): kept SFCC and LFCC lines of remittances not voided, expanded each line to its Monday to Friday days in 2026, and counted each child and day once.
-6. Money (ccap_payment_lines_2026.csv): kept SFCC and LFCC remittances paid in the 2026 runs and not voided, took each remittance once as its number, run date and county office, and summed the amounts by the quarter of the run date. Every child line repeats the remittance's amount; one number recurs in other county offices in the same run with other amounts; and one remittance can carry several homes' children, so the amount on a home's lines can exceed what its own lines earn at the section 5 rates.
+6. Money (ccap_payment_lines_2026.csv): kept SFCC and LFCC remittances paid in the 2026 runs and not voided, took each remittance once as its number, run date and county office, and credited it to the region of the home that gave the care (licence extract county). A remittance carrying homes in more than one region was shared by its lines' pay (the section 5 rate prorated by the line's days over the month's Monday to Friday days), which sums to its amount; summed by the quarter of the run date.
 7. Allerton should plan for about 450 homes closing during 2027.
 
 ## 4. Deliverable Answers
@@ -29,10 +29,10 @@
 ### fcc_closures_2027.xlsx
 
 1. Homes licensed on 31 December 2026 that will close during 2027, to the nearest 50: 450.
-2. Child-days of subsidised care in family child care homes in Allerton, a child counted once on a day: first half of 2026 125,938, second half 137,949.
-3. Money the subsidy paid to family child care homes, by region and quarter of the 2026 payment run, nearest dollar, first to fourth quarter:
-   - Region 1 North: USD 261,758, 299,956, 308,387, 323,302
-   - Region 2 Capital: USD 975,519, 1,059,175, 1,135,102, 1,137,021
-   - Region 3 Valley: USD 337,012, 353,636, 391,204, 421,264
-   - Region 4 South: USD 387,659, 418,645, 450,405, 455,636
-   - Region 5 Lakeshore: USD 365,521, 362,977, 400,530, 418,584
+2. Child-days of subsidised care in family child care homes in Allerton, a child counted once on a day: first half of 2026 124,773, second half 131,302.
+3. Money the subsidy paid to family child care homes, by the region of the home and quarter of the 2026 payment run, nearest dollar, first to fourth quarter:
+   - Region 1 North: USD 261,011, 284,679, 301,788, 351,377
+   - Region 2 Capital: USD 930,268, 956,164, 950,014, 968,166
+   - Region 3 Valley: USD 331,513, 335,325, 366,990, 368,805
+   - Region 4 South: USD 394,956, 413,421, 424,992, 478,850
+   - Region 5 Lakeshore: USD 431,566, 461,036, 453,954, 454,203
