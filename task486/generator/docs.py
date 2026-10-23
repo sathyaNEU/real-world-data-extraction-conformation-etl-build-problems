@@ -100,8 +100,9 @@ POLICY = [
       "Partnership counts people from the unit's findings for its run of 8 October 2026 on the FY2025 and FY2026 "
       "records."]),
     ("6. Timetable",
-     ["The Partnership prepares the table of people served and amounts for the Committee's meeting of 9 December "
-      "2026. Payments for 2027 follow the counties' contracts with each recipient."]),
+     ["Calvera County, the Fund's fiscal agent, renews each recipient's contract for 2027 from 1 January 2027 at "
+      "the amount this policy gives it. The Partnership prepares the table of people served and amounts for the "
+      "Committee's meeting of 9 December 2026, so that the renewals are signed before the year begins."]),
 ]
 
 
@@ -198,7 +199,7 @@ def write_method_note(path, summary):
 # ------------------------------------------------------------------------------------------------ the guide
 GUIDE = """CALVERA VALLEY HOMELESS DATA PARTNERSHIP
 Guide to the FY2026 integration extract
-Kathleen Carlson, data integration manager. 14 October 2026.
+Kathleen Carlson, director of data. 14 October 2026.
 
 The extract holds every record the region's sources hold for people served from 1 April 2024 to 30 September 2026, as
 sent to the State Data Linkage Unit for its run of 8 October 2026, and the unit's findings from that run. Dates are local
@@ -262,7 +263,7 @@ HMIS CONVENTIONS
   prefers not to answer, 99 not collected.
 
 WHO TO ASK
-  Extract and keys: Kathleen Carlson. The unit's findings: Andrew Camacho, State Data Linkage Unit.
+  Extract and keys: Kathleen Carlson. The unit's findings: Joshua Bell, State Data Linkage Unit.
 """
 
 

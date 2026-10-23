@@ -21,8 +21,8 @@ LINKAGE_UNIT = "State Data Linkage Unit"
 LINKAGE_DEPT = "Department of Health and Human Services"
 COMMITTEE = "Regional Fund Committee"
 FUND = "Calvera Valley Regional Homelessness Fund"
-PEOPLE = {"partnership_data": "Kathleen Carlson",   # data integration manager, the requester
-          "linkage": "Andrew Camacho",              # the linkage unit's lead
+PEOPLE = {"partnership_data": "Kathleen Carlson",   # director of data, the requester
+          "linkage": "Joshua Bell",                 # the linkage unit's lead
           "partnership_ed": "Gina Bryant"}          # the Partnership's executive director
 
 COCS = ["CAL", "MAR", "OST", "PEL"]
