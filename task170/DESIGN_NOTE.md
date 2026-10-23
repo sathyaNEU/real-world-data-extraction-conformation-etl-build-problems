@@ -424,6 +424,52 @@ The full architecture 1 note (default path, ladder, closure, asks and the stage 
 - Seventh cell, paper screens, each dead before code: a forward exposure, threshold, schedule or footprint replays on the hourly hazard record, the careful reader's move and the golden (a new line's crossings by storm swaths overlaid in GIS, tornado and downburst strike geometry, crosswind and de-icing frost on overnight-parked aircraft, ferry and crane wind limits, heat stoppages under a midday work ban, lightning stand-downs, snow-event and spill counting rules); a transfer to an unrecorded place or height lands on the field's own forms (sector and sea-breeze MCP, quantile mapping, extreme-wind shear at the standard's 0.11 within 5 per cent of a site's 0.09 against a mean 0.22, frost pockets read on height above the valley floor (cold-air pooling is the field's teaching and the grain search is task175's driver), in-cloud icing on ceilometer base, freezing rain from sounding profiles whose precipitation-type methods fork); an observing change is semantics or an organ (hail-pad densification, whose storm-footprint family forks and is the observation-effort driver; snow-board clearing frequency and observation time); tornado ratings capped by the damage indicators a path crossed (the paths crossing capable indicators are a filter and divide at EF2 and a few dozen events at EF4); a sheltered anemometer's stilling (reference homogenisation is field standard); conditioning on a forecastable slow state (QBO, ENSO, soil moisture, lake heat content: one group-by on the obvious covariate); an impact metric chosen by fit under a filed warming (index selection across ETCCDI and Hobday metrics is the careful reader's regression, and the lever is the metric's own nonlinearity); freeze-thaw cycles against freezing degree-hours for pavements (the exposure split reads the same with a generator's starts and hours, a backdrop); a record event's repeat probability with the triggering year in the fit (the GEV shape forks).
 - The seventh cell's law, measured twice and argued across the rest: the hazard is recorded at full resolution, so every forward difference in exposure, threshold, schedule or footprint is a replay of the record, which the careful reader runs and which is the golden; a hazard at an unrecorded place or variable needs a transfer whose textbook forms are the field's own and land; an intervention that censors the record leaves the tail beyond the censoring point to a distributional assumption whose family forks; a forecast-gated exposure needs the forecast process, which is a replayed filed rule or a proxy that forks; and the field's own extreme-value estimators fork at any sample a pack can carry. What would carry a stump here is an impact process whose exposure basis the data force, and that step is generic, so it fails the swap test.
 
+- Eighth cell, healthcare-delivery-health-economics / patient-flow-beds-workforce-optimization (2026-10-23, the main
+  session's allocation; the cell's four client cards (blocking probability, the hourly arrival curve, the downstream
+  bottleneck, per-shift ratios), cards task127 and task160 and the deaths recorded for this task type in task160,
+  task176 and task179 read first as spent or as the default path). H1 measured on code (generator in the session
+  scratchpad `h170/h1_generator`, pack cut, `checks.py` 84 green, `verify.py` independent on pandas green, never
+  registered): a regional health board's beds at its teaching hospital (Lisgarvan) for the emergency medical take of a
+  district hospital (Drumquill) that moves on 1 April 2027, each stay split into the clinical days the treating
+  hospital sets (Lisgarvan reviews seven days a week, Drumquill on weekdays: Drumquill's fitness dates never fall at a
+  weekend against 28.4 per cent of Lisgarvan's, and its clinical days run 1.68 times Lisgarvan's for the same diagnosis
+  and age) and the wait for the home council's care (3.2 and 10.5 days among patients who wait for Lisgarvan's two
+  councils at one hospital, whose clinical days agree at observed over expected 0.997 and 1.010, against 29.6 for the
+  district's). Golden 119.94 beds (120 to the nearest 10), 13 constructions of the method 118.76 to 120.22, bootstrap
+  sigma 3.07 beds; the take's own bed-days 153.66 (+28 per cent), Lisgarvan's stays for the take's case mix 63.74 (-47),
+  Lisgarvan's rural Ennamore residents as the analogue 78.98 (-34), the hedge midway 108.70; three asks of eight
+  figures (nursing hours across the e-roster and the bank timesheets, ambulance conveyances on the fleet register,
+  transport trips by vehicle and departure), cracker model 0 of 24, pair 28.5. Not taken to a card: dead on the law
+  this round's stage 4 measured on task177 v3 (a channel the field knows is measured as soon as the reader sees it).
+  The deciding step is the field's own handling of its best-known channel: every patient administration extract
+  carries the date a patient was fit to leave, delayed days waiting for council social care are what patient-flow
+  analysts measure first, and benchmarking the clinical days at the receiving hospital while the council's wait stays
+  is the textbook move. The exits are each spent: without the fit date the split needs a council seen at both
+  hospitals, and that bridge lets a regression of stays on hospital and council land within 3 per cent; a recording
+  convention that makes the measured wait short (fit dates set after the social work assessment) turns the step into
+  reading a field; and the guard holds the honest labels (G3 or G14 with decomposition_attribution) against task169,
+  task177 and task178's lineage. Two of the asks also match devices this round's readers took (re-keyed shifts matched
+  across two systems, jobs grouped by vehicle and time).
+- Eighth cell, paper screens, each dead before code: a waiting list cleared in turn by clinical priority (a filed access
+  policy is the rule executed, task130 v2, and leaving it unfiled is a withheld rule); delayed-discharge queues on a
+  council's fixed placements (the forecast is a small difference of two large flows, and stock and flow is the
+  analyst's first build); nurse leavers on years since registration rather than tenure (a group-by on experience at
+  hire, and staff retention reads the same in any profession); bed-days read on proximity to death (a lever of a few
+  per cent over a year); neonatal cot-days on postmenstrual age (stay by gestation band is the same quantity by
+  identity); falls or enhanced observation front-loaded in a new short-stay unit (the first 72 hours of every recorded
+  stay replayed); bank fill read on posting lead time (the swap test fails, and the posted-early shifts are the
+  attaining subset); a surgeon's learning curve on a new robotic list (the field's standard correction); the
+  prevalence round of a screening programme feeding surgery (a group-by on region and programme year); an induction
+  policy at 39 weeks (who is induced is replayed on gestation, the duration at 39 weeks is untransported); births and
+  neonatal admissions from booked due dates under a birth bump (a lever under 10 per cent); bronchiolitis beds on age
+  in weeks (the season's timing is task160's lag driver); census overlap at ward transfers and per-shift ratio peaks
+  (replays of the event log).
+- The eighth cell's law, measured once and argued across the rest: patient-flow quantities are lengths of stay,
+  occupancies, waits and staff hours, and in this task type each forward condition is either a filed change replayed
+  on recorded timestamps, a case-mix shift that one group-by on a recorded clinical covariate settles, or a split
+  along the field's best-known channels (delayed discharge, boarding, weekend discharge), which a reader measures as
+  soon as the fit date or the ward stay is in the file; the client cards' own queueing methods are the textbook route.
+
 ## Retired
 
 task170 retired on 2026-10-19 under the author's rule for this round (a number that dies in its second new cell retires),
@@ -469,3 +515,9 @@ lines). No card registered past v4; PAUSED at stage 1 for another cell.
 The main session then assigned physical-environmental-sciences / climate-weather-extremes as a seventh cell. No
 candidate held: F1 and G1 measured dead on code and about twenty more on paper (`## Tried and rejected`, last four
 lines). No card registered past v4; PAUSED at stage 1 for another cell.
+
+The main session then assigned healthcare-delivery-health-economics / patient-flow-beds-workforce-optimization as an
+eighth cell. No candidate held: H1 (a moved take's beds, each stay split into the treating hospital's clinical days and
+the home council's wait) was built to a working generator and judged dead on this round's known-channel law before any
+card, and fourteen more died on paper (`## Tried and rejected`, last three lines). No card registered past v4; PAUSED
+at stage 1 for another cell. The number is never retired.

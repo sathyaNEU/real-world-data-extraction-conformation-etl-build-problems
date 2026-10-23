@@ -29,7 +29,7 @@
   "report": "scratchpad judge-task170v4/verdict.md"
  },
  "returned": [],
- "resume": "architecture 4 spent at stage 4 2026-10-23; the fifth-cell search, the sixth cell (general-statistics-data-science / bayesian-modeling-posterior-inference: K2 and K1 dead on code, ten on paper) and the seventh cell (physical-environmental-sciences / climate-weather-extremes: F1 frost-machine censoring and G1 forecast-gated operations dead on code, about twenty on paper) found nothing that holds (design note ## Tried and rejected); next: a cell the main session assigns",
+ "resume": "architecture 4 spent at stage 4 2026-10-23; the fifth to seventh cells found nothing (design note ## Tried and rejected); the eighth cell (healthcare-delivery-health-economics / patient-flow-beds-workforce-optimization) found nothing that holds: H1 built to code (generator in session scratchpad h170/h1_generator, golden 120 beds, rungs 150/60/80) and judged dead on the known-channel law before a card, fourteen more on paper; next: a cell the main session assigns",
  "approved": null,
  "delivered": null,
  "portal": null,
