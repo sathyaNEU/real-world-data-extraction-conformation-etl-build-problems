@@ -115,3 +115,13 @@ air. It filed six plants, Larkmoor in (score_reader: call 0 of 1; 53 of 58 grade
 
 Every REVIEW line: harmless to both readers. Verdict: architecture 7 spent (reader A landed the call); the ask devices
 sat on both readers' paths.
+
+## Solver's-eye read
+
+Reader B (stage 4, architecture 8, zip ad958ec9), scored with `score_reader.py --call-key call.stores`: the call hit
+and 122 of 122 graded figures, exit 1. Question 1: the standard's 7.2 ("the temperature of the vaccine itself as it
+sits in storage"), 6.1 and the pilot plan's section 3, "neither says to correct logger readings ... I had to infer
+that from the overlap data". Question 2: none. Question 3: the monitoring roster and the item master, neither a
+distractor. Question 4: none. Question 5: standard 7.3, executed on the vaccine's own temperature, the six stores.
+Question 6: an analytical choice (a lagged low-pass filter fitted on the ten pilot overlaps). Every REVIEW line judged
+harmless; the pilot plan "comes closest to naming the move" without naming it. Reader A was stopped at the spend.

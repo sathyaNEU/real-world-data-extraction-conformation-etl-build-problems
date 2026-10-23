@@ -210,6 +210,7 @@
    "fate": "spent at stage 4, 2026-10-23 (zip 5ab18e48): reader A read the outlet floor off the test tables (Ashcombe's 2018 two-press test holding the same 45 ppmv at half the inlet), rebuilt each hour's outlet as the greater of the floor and 1.8 per cent of the inlet and landed the five and all 14 whole tons, Part 2 question 1 'none', question 6 'an analytical choice'; reader B carried each fixed-fan unit's test outlet to the year by the register's fan-drive column (rung R4, six plants). Both readers kept all 28 ask figures: the SDS revision log read, the washer vendor's payment lines parsed, Haldane's items matched on description past the renumbering."
   }
  ],
- "notes": "v8 drawn 2026-10-23; the clinic count, the default and golden sets and every figure in answer and stump are set at the build from generator/figures.json",
- "registered": "2026-10-23T08:14:46Z"
+ "notes": "v8 drawn 2026-10-23, built the same day; spent at stage 4 2026-10-23 (reader B landed the call and every graded figure); stage 3 renames under H21 (Coldline to Tellvane, Polarwatch to Brumal)",
+ "registered": "2026-10-23T08:14:46Z",
+ "architecture_spent": true
 }

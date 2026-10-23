@@ -375,6 +375,19 @@ Measured by: generator/ceiling.py on the cut pack.
   its error with the constant at the search bound, so none can be mishandled silently; the call holds under the first
   two and moves under the third (`checks.py` R2, one assertion per item).
 
+## Architecture 8 record (spent 2026-10-23)
+
+Architecture 8 carried each store's data logger record through the vaccine's thermal lag, a first-order response
+fitted per logger make on the two weeks each pilot store's old logger kept recording beside its new in-carton sensor
+(42.2, 42.2 and 41.9 minutes), against the loggers' readings taken as the vaccine's temperature (six stores against
+ten). At stage 4 (zip ad958ec9) reader B set the pilot stores' loggers beside their in-carton sensors over the overlap
+unprompted, fitted the lag as a first-order filter (0.21 of the gap closed per ten minutes, about 42 minutes) and
+landed the six stores and every store's whole hours, answering question 6 "an analytical choice" on standard 7.2; it
+kept every ask figure too (122 of 122 graded figures, exit 1): the counts' own closing times, the credits found when
+per-item balances went negative, the vial write-offs by cost over the per-dose cost, the tax switch by the
+maintenance-only invoices at Schedule B's prices, and the two-store routes split by Schedule B. Reader A and the judge
+thread were stopped at the spend.
+
 ## Architecture 7 record (spent 2026-10-23)
 
 Architecture 7 read each production day's oxidizer outlet from the relation the ten oxidizers' tests trace (a floor of
@@ -492,3 +505,9 @@ it hands all three the call, so the decisive step as designed does not stump and
   Coldline (a refrigeration manufacturer), Polarwatch (an ocean-data programme), Vaxtor, Homeline, Arctis, Glacier
   Medical, and the acquired chains Rookwood Drug and Saltash Apothecary; renamed Tellvane, Brumal, Stellane, Keswell,
   Brannon, Pendry Medical, Vollmer Drug and Lindqvist Apothecary before any reader saw the pack.
+- Architecture 8, 2026-10-23: spent at stage 4. Two instruments recording one unit side by side are compared by a
+  strong reader on reflex: the pilot stores' logger and in-carton series parted at every restock and defrost swing, so
+  reader B fitted a first-order lag on the overlap with no sentence asking for it. Every ask device had one natural
+  check that exposed it (per-item balances, cost per unit, a list price met exactly, one invoice on two sites).
+  Next architecture: a decisive step whose evidence no single side-by-side comparison shows, and ask devices that no
+  per-item reconciliation or unit-price check reveals.

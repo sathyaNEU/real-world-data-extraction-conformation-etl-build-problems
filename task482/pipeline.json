@@ -4,8 +4,8 @@
  "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-23",
  "stump": "The default path takes each store's data logger readings as its vaccine's temperature and replaces the refrigerators of stores 103, 106, 108, 201, 204, 206, 207, 301, 303 and 309; carried through the vaccine's response, a first-order lag whose time constant the two weeks each pilot store's old logger kept recording beside its new in-carton sensor fix at about 42 minutes, the records replace stores 103, 106, 109, 201, 206 and 303.",
  "architecture": 8,
@@ -15,8 +15,8 @@
   "date": "2026-10-23"
  },
  "leak": {
-  "leak_py": "REVIEW (store numbers in the agreement's and pilot plan's tables, ordinary vocabulary, lot expiry dates in 2027; no LEAK line)",
-  "reader": "running: two scored readers"
+  "leak_py": "REVIEW (no LEAK line)",
+  "reader": "reader B landed the call and 122 of 122 graded figures (score_reader exit 1); reader A stopped at the spend"
  },
  "duplicate_check": {
   "heart": "PASS",
@@ -26,12 +26,12 @@
  "judge": {
   "verdict": "",
   "disposition": "",
-  "report": ""
+  "report": "thread stopped at the spend"
  },
  "returned": [],
- "resume": "stage 4 of architecture 8: stage 3 green (86 checks, verify, byte-identical rebuilds, figures_check, precut, leak.py REVIEW, heart PASS); two scored readers (scratchpad leak-task482-A and -B) and the determinism judge (brief at /tmp/determinism-check-task482-r1) running; score each reader with score_reader.py --call-key call.stores, fix every finding in the generator in one pass, re-judge a FIX_NOW once, then ship",
+ "resume": "stage 1 of architecture 9: re-root on the author's standing rule (no retirement); architecture 8 spent at stage 4 (two instruments on one unit are compared on reflex, every ask device had one natural check); draw a decisive step whose evidence no single side-by-side comparison shows",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "re-root to a fresh world; architectures 1 to 7 spent at stage 4"
+ "source_note": "re-root to a fresh world; architectures 1 to 8 spent at stage 4"
 }
