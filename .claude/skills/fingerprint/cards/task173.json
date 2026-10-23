@@ -1,0 +1,129 @@
+{
+  "task": "task173",
+  "architecture": "v2",
+  "drawn": "2026-10-23",
+  "slot_note": "rebuild of a number marked RETIRED on 2026-10-22 and reopened by the author; architecture 1 (Ashdale Tax Live) and the two redraw cells were never carded",
+  "domain": "energy-systems-utilities",
+  "subdomain": "load-forecasting",
+  "niche": "a rural public utility district's April to September 2027 irrigation pumping energy forecast for the joint power authority that supplies it, the first season a river decree's watermaster holds the riparian and pre-1914 rights to a quarter of their allotments while the junior district's right is suspended",
+  "objective": "forecasting",
+  "shape": "single-figure",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G5",
+    "G14",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who joins the bills to the register, the decree rights and the well reports, reads the order correctly (the district's right suspended, the riparian and pre-1914 rights held to a quarter of their allotments) and carries the bench wells' fitted energy per acre-foot the district did not deliver onto the bottomland plants' cut files about 262,000 MWh, and dividing each bottomland plant's energy by its metered well extraction files about 200,000, against a golden of 155,000.",
+  "domain_test": "The deciding quantity is pumping energy, acre-feet moved times each pump's energy per acre-foot (its total dynamic head over its plant efficiency), with a combined plant's river lift and well separated on one meter by its own two metered volumes; with hospital nouns in there is no head, no lift and no pair of pumps behind one meter, and the task stops making sense.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:replacement-water-priced-at-each-combined-plants-own-well-and-lift",
+  "layer1": [
+    "legacy and converted CIS account numbers across the January 2020 conversion",
+    "meter exchanges as two read lines on one bill",
+    "estimated reads trued up on the next read",
+    "cancelled and re-issued bills with their reversals",
+    "register reads with meter multipliers",
+    "well reports in two layouts and a water year still coming in",
+    "service number written three ways across the co-op, agency and watermaster files",
+    "station days filled from neighbouring stations",
+    "a feeder moved between substations with the GIS label left as mapped",
+    "delivery-point meters on their own clock, a check meter stamping interval starts, a second bank's meter energised mid-season"
+  ],
+  "stakeholder_role": "power supply manager of the public utility district",
+  "role_family": "procurement_lead",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "vvec_ip_billing_2015-2026.csv",
+    "rows": 96153,
+    "entity": "one meter read line on a Schedule IP irrigation pumping bill",
+    "grain": "service x bill month x meter",
+    "source": "synthetic"
+  },
+  "forum": "customer_or_counterparty",
+  "forcing_event": "season_or_peak",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States, a fictional western river valley (the public utility district, the joint power authority, the river and its decree, the watermaster, the irrigation district, the groundwater agency, the county and the people are fictional)",
+    "currency": "USD",
+    "org_type": "public utility district (a publicly owned electric distribution utility)",
+    "invented_names": [
+      "Varner Valley Public Utility District",
+      "Tri-Basin Power Authority",
+      "Varner River",
+      "Lone Bench Irrigation District",
+      "Varner Subbasin Groundwater Agency",
+      "Kestrel County",
+      "Ostrom Pump Testing",
+      "Aldana Pump & Well"
+    ],
+    "people": [
+      "Mario Barnett",
+      "Kimberly Ball",
+      "Tammy Gibson"
+    ]
+  },
+  "deliverables": [
+    "irrigation_forecast_2027.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-much",
+  "driver": "A group cut for the first time replaces the lost volume from a second source that shares one meter with the first, so its added draw is the volume times the second source's own cost per unit less the first's, a pair each unit yields only when its metered total is fitted to its own two recorded volumes; reading the meter as one source, or carrying the cost per unit measured on the units cut before, whose second source costs several times as much, misstates the draw several fold.",
+  "driver_concrete": "Bottomland plants held to a quarter of their decreed allotments replace the diversion above the limit from shallow wells at about 180 kWh an acre-foot and idle river lifts at about 35, both behind one meter, so each plant's pair comes only from fitting its water-year energy to its own diversion statements and metered well extraction; the bench wells' fitted energy per curtailed acre-foot (about 770) carried over files the increase about six times too large, and a plant's energy over its water, or over its well water alone, files it a half too small or twice too large.",
+  "stump": "A competent solver files about 262,000 MWh by carrying the bench wells' fitted energy per acre-foot the district did not deliver onto the bottomland plants' cut, and one who carries the water and prices it at each plant's energy over its metered water files about 143,000 (or 200,000 over its well water alone); the step that lands them there is reading each bottomland meter as one pump, when it carries a river lift and a well whose energy per acre-foot differ about fivefold and only a fit of the plant's energy to its own diversions and well extraction separates them.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task98": "task98 v1 removed an outlet that absorbed a nightly residual; here nothing is removed from a population and the step is pricing replacement water at each unit's own lift.",
+    "task124": "task124 infers a unit's kind from the surviving records of its group; here every plant's kind is known and the step prices replacement water at its own fitted lift.",
+    "task132": "task132 restarts a wear curve at each replacement; here no rate depends on age and the step is a volume carried in water and priced per plant.",
+    "task144": "task144 grows seeded adoptions through follower reach; here no spread process exists and the response is a fixed volume per acre-foot cut.",
+    "task163": "task163 discounts marginal entrants' yield; here every unit cut replaces its whole shortfall and only its energy per unit volume differs.",
+    "task465": "task465 averages a capped payoff over prediction error; here no payoff or threshold applies and the step is a two-volume fit on each plant's own meter.",
+    "task175": "task175 reads each vacant unit's take-up at its own run's fill; here no take-up or fill exists, the bottomland plants replace every acre-foot cut, and the step is splitting one meter's energy between a river lift and a well.",
+    "task142": "task142 builds a period total's upper percentile from arriving units and their durations; here the quantity is a season's energy and the step splits one meter between two pumps.",
+    "task148": "task148 v1 sums the hazards of every unit behind a shared backer; here no hazard is shared, and the shared meter carries two pumps whose energy per acre-foot is fitted from the plant's own two water records."
+  },
+  "lineage": [
+    {
+      "architecture": "v1",
+      "drawn": "2026-10-18",
+      "fate": "abandoned unregistered on 2026-10-22 (the guard's window blocked it three days; the author chose a fresh draw), then the number was retired after two redraw cells died on code, and reopened by the author on 2026-10-23",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G6",
+        "G16"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "The forward load on a pooled service desk is set by how often a case comes back, which is set by who took its first contact and how long they had been on the desk, so a coming bench far from the record's mix of first-contact takers needs the comeback chance conditioned on each opener's group and tenure."
+    }
+  ],
+  "notes": "Registered after the window moved under the lock on 2026-10-23: task175 (registered minutes earlier) took G6, composition_mix and register, and with task171 the two honest organisation families. The decisive rung is the meter's decomposition into its two pumps (the silent rung; the composition step, carrying water rather than energy, is the readable rung below it), so the card leads with G2 (one billing row is two pumps), decomposition_attribution and the filed forecast standard as the stakeholder's file; G6, G14 and G5 stay beside it. The organisation was then a rural electric cooperative, and both of its honest families (cooperative_or_member_body against task171, utility_or_infrastructure against task175) were banned; the world was redrawn on that axis to a public utility district, a publicly owned electric distributor of the kind that serves irrigation pumping in western valleys, whose family is local_government, and its supplier to a joint power authority; nothing in the data, the decision or the mechanism moved.",
+  "registered": "2026-10-23T05:24:24Z"
+}
