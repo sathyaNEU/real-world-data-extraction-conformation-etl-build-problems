@@ -9,14 +9,14 @@
   "updated": "2026-10-23",
   "stump": "A competent solver applies the first-year permits per vacant lot of the earlier extension areas to the 2027 areas' vacant lots and files 500 permits for 2027 against 300, because it never reads each vacant lot's chance at the homes standing on the street it faces",
   "architecture": 1,
-  "loops": 2,
+  "loops": 3,
   "precut": {
     "exit": 0,
     "date": "2026-10-23"
   },
   "leak": {
     "leak_py": "REVIEW (3 lines, harmless, design note ## Stage 3 gates)",
-    "reader": "round 1: A 430, B 550, both kept 24 of 24 ask figures; round 2: C 500 (8 of 24), D 500 (20 of 24, every connection cell by a premise's first install)"
+    "reader": "round 1: A 430, B 550, both kept 24 of 24 ask figures; round 2: C 500 (8 of 24), D 500 (20 of 24, every connection cell by a premise's first install); round 3: E 550 (missed all 20 connection cells), F 550 (kept the 20 by one connection per normalised address)"
   },
   "duplicate_check": {
     "heart": "WARN (repeat.gate_g)",
@@ -24,8 +24,8 @@
   },
   "judge": {
     "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (round 2; advisory on the permit-issued reading, measured 279.3, row SF11)",
-    "report": "scratchpad/judge-task175b/verdict.md (round 2, zip cb34c3c7)"
+    "disposition": "APPROVE (pass 3 on zip 74802904; step 4 wording fixed, minors answered in the note)",
+    "report": "scratchpad/judge-task175c/verdict.md (pass 3, zip 74802904)"
   },
   "returned": [
     {
@@ -38,6 +38,12 @@
       "date": "2026-10-23",
       "portal": "stage 4 round 2 (in-house)",
       "repair": "rubric: ask A's primary re-sited to one lot under two premises; call, fees and every other figure frozen (Z1, Z2)",
+      "commit": "82a47b55"
+    },
+    {
+      "date": "2026-10-23",
+      "portal": "stage 4 round 3 (in-house)",
+      "repair": "rubric: ask A's identity moved from the address string to the lot (stale stub house numbers on the 2006 renumbered units); judge step 4 wording; call, fees and every figure frozen",
       "commit": ""
     }
   ],
@@ -46,7 +52,7 @@
     "human-factors-ergonomics/human-reliability-assessment under the round's G14 and composition_mix bans: a time-reliability race read at each demand's own window (rare trips, sigma 4 to 9 per cent, the window-band filter and divide inside the golden's seed range) and a factor slope flattened by a noisy record (lever exp(-b(1-lam)D), 7 to 9 per cent at realistic settings, the audited rows beating the correction)",
     "quantitative-finance/strategy-backtesting-evaluation under the round's bans: a capacity call's cost of the strategy's own flow (per-trade square-root is the default; impact carried across days splits into model classes 2.2 to 4.4 times apart on the strategy's runs and reversals, untestable from one-way executions; a no-trade band isolates the trades and the lever vanishes; own borrow demand is a minor line whose attaining band lands)"
   ],
-  "resume": "stage 4 round 3: two fresh scored readers on target.zip md5 74802904d5bebf7a633e577162080bfe (the judge re-runs only if a document or the prompt changes; neither changed in round 2)",
+  "resume": "stage 4 round 4: two fresh scored readers and one re-judge on target.zip md5 895c941978d37f8e919761ac4a10e454",
   "screens": {
     "harness": "scratchpad/b175/proto/ (proto2.py candidate 1, proto3.py candidate 2, pilot52.py subset arithmetic, proto1.py and sweep1.py the first sweep); session-scoped, rebuild from DESIGN_NOTE.md's harness section",
     "candidates_measured": 2,

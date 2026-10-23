@@ -240,17 +240,18 @@ def write_submission(path, o, f):
         "1 January of each year from YR_BUILT and the certificates of occupancy issued in 2026, which the 2026 roll does "
         "not yet show.",
         "Fitted served vacant lot-years 2008 to 2026 (exposure from each area's acceptance date to the permit) as a "
-        "year effect times a canal effect times the number of homes standing on the street.",
+        "Poisson rate: a year effect times a canal effect times a separate effect for each band of homes standing on "
+        "the street (0, 1, 2, 3, 4 to 5, 6 to 8, 9 to 12, 13 to 17, 18 or more), not a slope on the count.",
         "Applied the 2026 level, as the forecasting conventions require, to the %s vacant lots of the three areas by "
         "their streets and canals, each area served from its scheduled acceptance date and at the well and septic rate "
         "before it, and summed each lot's chance of a permit in 2027 (one less the exponential of its cumulative rate, "
         "the expected number of distinct lots the conventions define): %d permits." % (
             "{:,}".format(f["cc1_vacant_lots_total"]), f["call_total_permits_2027"]),
-        "Placed every premise in cis_premise_extract_20261231.csv on its lot by parcel or service address (street "
-        "types normalised) and took fiscal 2026 new connections from ami_headend_installs_fy25_fy26.csv as each lot's "
+        "Placed every premise in cis_premise_extract_20261231.csv on its lot by its parcel number where recorded and "
+        "otherwise by service address (street types normalised), and took fiscal 2026 new connections from ami_headend_installs_fy25_fy26.csv as each lot's "
         "first install in the log, when it falls in fiscal 2026 at a lot with no account in "
         "cis_account_history_20261231.csv opened before it: a lot carried under two premises (its stub and one set up "
-        "at the counter when a stalled build's meter was set again) is one connection, a later install at a lot is a "
+        "at the counter when a stalled build's meter was set again) is one connection whatever their address strings, a later install at a lot is a "
         "meter set again, and an install at a billed lot is a meter exchange; phases through the plat unit into the "
         "schedule's phases rather than by the premise's stored UEP_PHASE.",
         "Summed capacity_fee_receipts_fy2026.xlsx once per payment by receipt date, a payment being a receipt number "

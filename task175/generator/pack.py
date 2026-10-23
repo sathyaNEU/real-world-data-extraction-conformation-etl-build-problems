@@ -299,7 +299,10 @@ class Pack:
             phase = u.phase_stored[i]
             ph = "00" if phase == "Core" else "%02d" % int(phase)
             active = not np.isnat(u.meter_set[i]) and C.to_date(u.meter_set[i]) <= C.RECORDS_END and i not in self._pid2
-            rows.append([p, idn.addr_uc[i], parcel, ph, C.iso(cr), "RES-SF", "ACTIVE" if active else "STUB"])
+            addr = idn.addr_uc[i]
+            if int(w.L["unit"][i]) in u.renum_units:     # the program's lot list predates the 2006 renumbering
+                addr = "%d %s" % (int(idn.hnum[i]) + 2, addr.split(" ", 1)[1])
+            rows.append([p, addr, parcel, ph, C.iso(cr), "RES-SF", "ACTIVE" if active else "STUB"])
         for i, p in self._pid2.items():
             ph = "00" if u.phase_now[i] == "Core" else "%02d" % int(u.phase_now[i])
             last = idn.addr_uc[i].rsplit(" ", 1)     # the counter types the street type out in full

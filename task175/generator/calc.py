@@ -319,7 +319,8 @@ def connections_fy26(target, P=None):
         plot[r["PREMISE_ID"]] = P.ix[r["PARCEL_ID"]] if r["PARCEL_ID"] else P.ix_addr[norm_addr(r["SVC_ADDR"])]
     stored = {r["PREMISE_ID"]: r["UEP_PHASE"] for r in prem}
     status = {r["PREMISE_ID"]: r["STATUS"] for r in prem}
-    fa_p, fa_l, fi_p, fi_l = {}, {}, {}, {}
+    akey = {r["PREMISE_ID"]: norm_addr(r["SVC_ADDR"]) for r in prem}
+    fa_p, fa_l, fi_p, fi_l, fa_a, fi_a = {}, {}, {}, {}, {}, {}
 
     def lower(dct, k, v):
         if k not in dct or v < dct[k]:
@@ -328,12 +329,14 @@ def connections_fy26(target, P=None):
         s_ = _iso(r["SVC_START"])
         lower(fa_p, r["PREMISE_ID"], s_)
         lower(fa_l, plot[r["PREMISE_ID"]], s_)
+        lower(fa_a, akey[r["PREMISE_ID"]], s_)
     for r in ami:
         d = _iso(r["INSTALL_DATE"])
         lower(fi_p, r["PREMISE_ID"], d)
         lower(fi_l, plot[r["PREMISE_ID"]], d)
+        lower(fi_a, akey[r["PREMISE_ID"]], d)
     routes = {k: defaultdict(int) for k in ("golden", "cracker", "reader_a", "reader_b", "reader_d", "reader_e",
-                                            "stored_phase")}
+                                            "reader_f", "stored_phase")}
     for r in ami:
         d = _iso(r["INSTALL_DATE"])
         fy, q = C.fq(d)
@@ -355,6 +358,9 @@ def connections_fy26(target, P=None):
             routes["reader_d"][(ph, q)] += 1
             if status[pid] == "ACTIVE":
                 routes["reader_e"][(ph, q)] += 1
+        fa = fa_a.get(akey[pid])
+        if fi_a[akey[pid]] == d and (fa is None or fa >= d):
+            routes["reader_f"][(ph, q)] += 1
         fl = fa_l.get(lot)
         if fi_l[lot] == d and (fl is None or fl >= d):
             routes["golden"][(ph, q)] += 1

@@ -125,6 +125,7 @@ class Utility:
                         rs_lot.append(i); rs_day.append(d); have += 1
         self.resets = (np.array(rs_lot), np.array(rs_day, dtype="datetime64[D]"))
         self._second_premises(np.random.default_rng([w.seed, 29]))
+        self._readdressed(np.random.default_rng([w.seed, 31]))
         # capacity fee receipts: paid with the permit, at the fee of the permit's fiscal year
         self._receipts(g)
 
@@ -166,6 +167,31 @@ class Utility:
                 break
         self.reset_newprem = newp
         self.prem2 = {int(i): dd - np.timedelta64(int(g.integers(2, 12)), "D") for i, dd, nw in zip(lots, days, newp) if nw}
+
+    def _readdressed(self, g):
+        """the City renumbered the outer plat units' house numbers in 2006, after the program's lot list was compiled;
+        the CIS stubs were loaded from that list at each acceptance and keep the old numbers, while the roll, the
+        permits and premises set up at the counter carry the current ones"""
+        w = self.w
+        prog = [u for u, ai in zip(w.unit_no, w.unit_area) if AREAS[ai][0] != "Core" and AREAS[ai][3] is not None
+                and AREAS[ai][3] <= "2024-12-31"]
+        units = set(int(u) for u in g.choice(prog, size=int(round(0.4 * len(prog))), replace=False))
+        lots, days = self.resets
+        unit = self.w.L["unit"]
+
+        def cell(x):
+            x = np.datetime64(x, "D")
+            if not (FY26[0] <= x < FY26[1]):
+                return None
+            m = int(x.astype("datetime64[M]").astype(int) % 12) + 1
+            return ((m - 10) % 12) // 3
+        for ph in ["1", "2", "3", "4"]:
+            for k in range(4):
+                here = [j for j, (i, dd) in enumerate(zip(lots, days))
+                        if self.reset_newprem[j] and self.phase_now[i] == ph and cell(dd) == k]
+                if here and not any(int(unit[lots[j]]) in units for j in here):
+                    units.add(int(unit[lots[here[int(g.integers(0, len(here)))]]]))
+        self.renum_units = units
 
     def _receipts(self, g):
         w = self.w

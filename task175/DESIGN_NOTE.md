@@ -199,20 +199,24 @@ the schedule's lot counts and the roll agree under every route, and the special 
 - **Ask A, new single-family connections in fiscal 2026, core and four phases by quarter (20 figures).** H18 home:
   the actual connections the January report sets beside the forecast. Files: `ami_headend_installs_fy25_fy26.csv`,
   `cis_account_history_20261231.csv`, `cis_premise_extract_20261231.csv`, `pa_parcel_extract_2026.csv` (to place a
-  premise), schedule PDF. Primary (an identity, re-sited in the round 2 fix): when work resumes on a stalled build
-  the meter order goes through the cashier's counter, which sets up a premise from the service order (street type
-  typed out in full, no parcel number) unless the clerk reopens the stub; the stub keeps the first set in the
-  head-end log and returns to STUB, and the second set and the home's account sit on the counter's premise. Each
-  premise then shows a first install with no account before it, so a premise's first install counts the lot
-  twice; only placing both premises on the one lot (parcel on the stub, address on the counter's premise) and
-  taking the lot's first install finds one connection. No field, code or comment marks the pair: no parcel
-  number repeats and the two address strings differ for every street type but WAY (asserted A5, A6). 103 of
-  the 143 re-sets in fiscal 2025 and 2026 sit on a counter premise, at least one in every cell (A3). Hazards
-  (mirror devices): the re-set at its own stub, meter exchanges at billed homes, the stored UEP_PHASE from
-  before the 2021 regrouping, fiscal quarters, premises without a parcel number. Stops: every install
-  (cracker), the account rule with plat-unit phases (reader A), the account rule at 1,000 days with
-  set-up-date phases (reader B), a premise's first install (reader D, round 2), the same at ACTIVE premises
-  only (reader E), stored phases, the answer.
+  premise), schedule PDF. Primary (an identity, re-sited in the round 2 fix and again in the round 3 fix): which
+  premises are one lot. When work resumes on a stalled build the meter order goes through the cashier's counter,
+  which sets up a premise from the service order (current house number, street type typed out in full, no parcel
+  number) unless the clerk reopens the stub; the stub keeps the first set in the head-end log and returns to STUB,
+  and the second set and the home's account sit on the counter's premise. In the outer plat units the City
+  renumbered in 2006 (15 of the 37 program units accepted to 2024), the stubs were loaded from the program's lot list
+  compiled before the renumbering and keep the old house numbers, two above the current ones, which no roll address
+  carries; the stub's parcel number and the counter premise's address each name the lot. So a premise's first
+  install counts such a lot twice, and so does one connection per service address; only placing each premise on its
+  lot (parcel where recorded, address otherwise) and taking the lot's first install finds one connection. No field,
+  code or comment marks the pair or the renumbering (asserted A5 to A7). 103 of the 143 re-sets in fiscal 2025 and
+  2026 sit on a counter premise, at least one in every cell (A3) and at least one on a renumbered unit in every
+  phase cell. The core keeps its addresses (its premises predate 1998 and carry no parcel), so the address route
+  keeps the four core cells. Hazards (mirror devices): the re-set at its own stub, meter exchanges at billed homes,
+  the stored UEP_PHASE from before the 2021 regrouping, fiscal quarters, premises without a parcel number. Stops:
+  every install (cracker), the account rule with plat-unit phases (reader A), the account rule at 1,000 days with
+  set-up-date phases (reader B), a premise's first install (reader D, round 2), the same at ACTIVE premises only
+  (reader E), one connection per normalised service address (reader F, round 3), stored phases, the answer.
 - **Ask B, capacity fees received in each fiscal 2026 quarter (4 figures).** H18 home: the receipts line of the
   January report. File: `capacity_fee_receipts_fy2026.xlsx`. Primary (D1, keys recycled across payers, re-sited in
   the round 1 fix): receipt numbers run by drawer and day (YYDDD-NNN) and the export does not carry the drawer, so a
@@ -225,18 +229,21 @@ the schedule's lot counts and the roll agree under every route, and the special 
 - Main population zero-counts: no device row in the roll or either permit file; the asks' files are not read by the
   call (asserted S1, S2).
 
-| Ask | Figures | Cracker and round 1 and 2 readers' routes (installs, account rule, a premise's first install, plat-unit or set-up phases, one amount per receipt number or every line) | Verdict |
+| Ask | Figures | Cracker and the readers' routes keyed by premise (installs, account rule, a premise's first install, plat-unit or set-up phases, one amount per receipt number or every line) | Verdict |
 |---|---|---|---|
 | A core, Q1 to Q4 | 4 | the counter premise's first install counted | miss |
-| A Phase 1, Q1 to Q4 | 4 | the counter premise's first install counted | miss |
-| A Phase 2, Q1 to Q4 | 4 | the counter premise's first install counted | miss |
-| A Phase 3, Q1 to Q4 | 4 | the counter premise's first install counted | miss |
-| A Phase 4, Q1 to Q4 | 4 | the counter premise's first install counted | miss |
+| A Phase 1, Q1 to Q4 | 4 | the counter premise's first install counted (by premise, or by address on a renumbered unit) | miss |
+| A Phase 2, Q1 to Q4 | 4 | the counter premise's first install counted (by premise, or by address on a renumbered unit) | miss |
+| A Phase 3, Q1 to Q4 | 4 | the counter premise's first install counted (by premise, or by address on a renumbered unit) | miss |
+| A Phase 4, Q1 to Q4 | 4 | the counter premise's first install counted (by premise, or by address on a renumbered unit) | miss |
 | B Q1 to Q4 | 4 | shared receipt numbers merged (or lines summed) | miss |
 
-Pair ceiling: 28.5 (worst of six routes keeps 0 of 24; cracker 45.0, mirror 12.0, on weights 38, 7 and 55)
+Reader F's route (one connection per normalised service address) misses every phase cell and keeps the four core
+cells, whose premises keep their addresses.
 
-Mirror leakage: 0.0 per cent of ask weight
+Pair ceiling: 37.7 (worst of seven routes keeps 4 of 24, reader F's; cracker 54.2, mirror 21.2 on that route, on weights 38, 7 and 55)
+
+Mirror leakage: 16.7 per cent of ask weight (reader F's route; 0.0 on the other six)
 
 Measured by: generator/ceiling.py
 
@@ -270,23 +277,45 @@ Measured by: generator/ceiling.py
   on every route. The new randomness draws from its own stream: the call (293.225), all 20 connection cells and
   the four fee quarters are unchanged (asserted Z1, Z2). No document or the prompt changed.
 
-## Stage 3 gates (2026-10-23, re-run after the round 2 fix)
+## Stage 4 round 3 (on target.zip 74802904) and the fix pass
 
-- Generator: `python3 task175/generator/build.py`; `checks.py` 77 assertions green (input gates, R1, R2, R3a and
-  R3b against the bin, the honest family B1 to B3, SF1 to SF11, refutations L1 to L3, the ask devices on six
-  routes A1 to A6 and B4 to B7, the freeze Z1 and Z2, separation S1 and S2, documents, realism, distractor
+- Judge pass 3: DETERMINISTIC, APPROVE (every graded figure reproduced; the call 293 under every well-fitting
+  variant, 282 to 314; wrong routes 338 to 700). Its wording note: step 4 said "times the number of homes
+  standing", a slope on the count, while the golden fits a separate effect per homes band (about 1.6 per cent at
+  0 homes, 4.5 at 1, 5.5 at 3 or more); a literal linear count files 515. Step 4 now names the bands; no figure
+  moves.
+- Judge minors: the workbooks' zip entries carry 1980-01-01, the stamp Excel itself writes on every entry (H1's
+  band concerns the docProps timestamps, which sit in the setting; the scrub audit is clean), so they stay. North
+  6's scheduled acceptance of 4 January 2027 falls four days before the folder is assembled on 8 January: intended.
+  The schedule is the program's plan (Rev 12, 2026), the records end on 31 December 2026 (the CIS extract covers
+  premises at that date, so North 6 has none), and the call is the whole of calendar 2027, a window still open;
+  moving the date would move the unrounded call, so it stays.
+- Readers: E 550 and F 550 on the call (the call has held in 6 of 6 blind reads); fees held in both. E missed all
+  20 connection cells (one per premise at first install). F kept all 20 by one connection per normalised service
+  address, which collapsed the stub and the counter premise (supplemental-stumping 1.1e, address normalisation).
+- Fix: the identity moved from the address string to the lot. The 2006 renumbering leaves the stubs of 15 outer
+  units on old house numbers while their parcels and the counter premises carry the lot, so the address route
+  counts those lots twice (`## Ask sheet`). Measured in `ceiling.py` on seven routes: 0 of 24 on six, 4 of 24
+  (the core) on reader F's. The golden rule is unchanged (a lot's first install, the lot found by parcel where
+  recorded), so the 20 connection cells, the four fee quarters and the call are unchanged (Z1, Z2).
+
+## Stage 3 gates (2026-10-23, re-run after the round 3 fix)
+
+- Generator: `python3 task175/generator/build.py`; `checks.py` 79 assertions green (input gates, R1, R2, R3a and
+  R3b against the bin, the honest family B1 to B3, SF1 to SF11, refutations L1 to L3, the ask devices A1 to A7
+  and B4 to B7 on seven routes, the freeze Z1 and Z2, separation S1 and S2, documents, realism, distractor
   deletion); `verify.py` (pandas, pypdf, IRLS, its own path, the lot rule) recomputes 293.2 and every ask figure,
-  0 failed; two consecutive builds byte-identical over 19 files; `target.zip` md5 74802904d5bebf7a633e577162080bfe.
-- `figures_check.py` PASS (39 figures, figures.json unchanged from the round 1 fix); `precut.py` exit 0;
+  0 failed; two consecutive builds byte-identical over 19 files; `target.zip` md5 895c941978d37f8e919761ac4a10e454.
+- `figures_check.py` PASS (39 figures, figures.json unchanged since the round 1 fix); `precut.py` exit 0;
   `voice-check.py` PASS (734 characters, prompt unchanged); `guard.py heart` WARN (`repeat.gate_g`, answered at
-  the draw); container scrub audit clean on `golden/` and `target/`; `ceiling.py` 0 of 24 on all six routes, pair
-  ceiling 28.5.
+  the draw); container scrub audit clean on `golden/` and `target/`; `ceiling.py` 0 of 24 on six routes and 4 of 24
+  on reader F's, pair ceiling 37.7.
 - `leak.py --asof 2027-01-08` REVIEW, each line harmless: the dictionary and the conventions share common words
   (family, january, vacant, schedule, forecasting, expected) with the stump paragraph and name no move (D2 greps
   them for the street vocabulary with a positive control); the permit system's Expiration Date runs a year past
   issue, so permits issued in 2026 carry 2027 expiry dates.
 - Single-use test: no file or sentence serves only the street step.
-- Keys for the round 3 readers: the call `call_total_permits_2027`; the asks
+- Keys for the round 4 readers: the call `call_total_permits_2027`; the asks
   `ask_connections_fy2026_<core|phase1|phase2|phase3|phase4>_q<1..4>` and `ask_capacity_fees_fy2026_q<1..4>`;
   withhold `cc1_*`, `cc2_*`, `label_*` and `_unrounded`.
 
@@ -664,6 +693,10 @@ and 05 sit in the ban window, and this round's serial registrations will move it
   premise's first install with no account before it and kept all 20 cells; a per-premise first-install dedupe is the
   hygiene battery's duplicate and re-key repair (supplemental-stumping 1.1e), so the device was seen, never silent.
   The re-set stays as a mirror device; the primary moved to two premises at one lot.
+- **Ask A primary, the stub and a counter premise at one address** (round 2 fix, died at stage 4 round 3): reader F
+  normalised the counter's spelled-out street types and kept one connection per service address, which
+  collapses the pair; a shared address string is a duplicate key the hygiene battery repairs (1.1e). The pair
+  stays, and the identity now runs through the parcel where the 2006 renumbering left the stub's address stale.
 
 ## Retired
 

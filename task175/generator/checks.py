@@ -217,6 +217,13 @@ def main(target):
     check("A1 law 6: the golden handling reproduces the clean truth in every cell", exact)
     for rname in ("cracker", "reader_a", "reader_b", "reader_d", "reader_e", "stored_phase"):
         check("A2 every cell missed on the %s route" % rname, all(routes[rname][(ph, k)] != grid[(ph, k)] for ph in PH for k in (1, 2, 3, 4)))
+    check("A2 every phase cell missed on the reader_f route (one per service address; the core keeps its addresses)",
+          all(routes["reader_f"][(ph, k)] != grid[(ph, k)] for ph in PH[1:] for k in (1, 2, 3, 4)))
+    roll_addr = set(r["SITE_ADDR"] for r in csv.DictReader(open(os.path.join(target, C.F_ROLL))))
+    stale = [r for r in csv.DictReader(open(os.path.join(target, C.F_PREM)))
+             if r["PARCEL_ID"] and int(r["PARCEL_ID"].split("-")[3][1:]) in u.renum_units]
+    check("A7 the renumbered units' stubs carry house numbers the roll no longer has, and keep their parcel numbers",
+          len(stale) > 1000 and not any(r["SVC_ADDR"] in roll_addr for r in stale), "%d stubs" % len(stale))
     check("A3 the second-premise device is in every cell (a lot's first install on two premises)",
           all(routes["reader_d"][(ph, k)] > grid[(ph, k)] for ph in PH for k in (1, 2, 3, 4)))
     prem_rows = list(csv.DictReader(open(os.path.join(target, C.F_PREM))))
