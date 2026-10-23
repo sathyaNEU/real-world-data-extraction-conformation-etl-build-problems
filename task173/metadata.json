@@ -1,41 +1,14 @@
 {
- "task": "task173",
- "title": "Varner Valley Public Utility District's April to September 2027 irrigation pumping energy, the first season the Varner River watermaster holds the riparian and pre-1914 rights to a quarter of their allotments",
- "domain": "Energy Systems & Utilities",
- "client_domain": "Energy Systems & Utilities",
- "subdomain": "load forecasting (an irrigation rate class's season energy under a change in its surface water supply, built as acre-feet each pumping plant must move times that plant's own energy per acre-foot)",
- "objective": "Forecasting & Predictive Modeling",
- "prompt_shape": "one season energy in 5,000 MWh steps; delivery-point energy by billing month; delivery-point demand in each monthly system peak hour; irrigation services and billed energy by delivery point",
- "as_of": "2026-10-16",
- "deliverables": [
-  "irrigation_forecast_2027.xlsx"
- ],
- "distractor_files": [
-  "vvpud_pump_efficiency_program_2019-2026.xlsx",
-  "kestrel_county_crop_report_2025_excerpt.pdf"
- ],
- "distractors": [
-  {
-   "file": "vvpud_pump_efficiency_program_2019-2026.xlsx",
-   "wrong_basis": false,
-   "why_relevant": "the PUD's pump efficiency tests, with each tested plant's head, flow, input and energy per acre-foot",
-   "why_unused": "it covers only plants of 75 hp and more, all of them Lone Bench wells, whose 2027 energy the 2022 season already gives; no figure reads it",
-   "ruled_out_by": "the dictionary (plants of 75 hp and more) and the register's plant sizes"
-  },
-  {
-   "file": "kestrel_county_crop_report_2025_excerpt.pdf",
-   "wrong_basis": false,
-   "why_relevant": "the county's 2025 harvested acreage by crop, the crops the class irrigates",
-   "why_unused": "it is county-wide acreage and value, with no water or energy; no figure reads it",
-   "ruled_out_by": "its own heading (all of Kestrel County) and its columns"
-  }
- ],
- "stated_inputs": [
-  "2027",
-  "2026",
-  "5,000",
-  "1 April",
-  "30 September"
- ],
- "field_terms": []
+  "task": "task173",
+  "distractor_files": [
+    "target/valve_exercise_log_2019_2026.csv",
+    "target/unidirectional_flushing_plan_2027.pdf",
+    "target/hbx_airport_daily_weather_2012_2026.csv"
+  ],
+  "deliverables": [
+    "service_leak_forecast_2027.xlsx",
+    "service_leaks_by_month.png"
+  ],
+  "objective": "Forecasting & Predictive Modeling",
+  "domain": "Energy Systems & Utilities / Asset Condition & Maintenance"
 }

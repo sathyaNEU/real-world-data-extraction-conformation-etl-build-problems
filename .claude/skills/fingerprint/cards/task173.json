@@ -11,8 +11,8 @@
   "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "TBD at stage 3 (prototype about 1,950 service leak repairs in 2027)",
-  "answer_source": "task173/submission.md block 1",
+  "answer": "Enter 3,000 water service leak repairs as the Item 101 estimated quantity for 2027 (2,977.6 expected: about 1,900 without exchange visits and about 1.0 added repair per 100 of the 108,398 AMI meter exchanges).",
+  "answer_source": "task173/submission.md block 1; task173/golden/service_leak_forecast_2027.xlsx; task173/generator/figures.json (call.service_leak_repairs_2027)",
   "gap": [
     "time",
     "population"
@@ -33,7 +33,7 @@
   "validated_decoy": false,
   "context_artifact": "other",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stitches the two work order systems, counts one repair per leak, reads the utility-side boundary correctly and carries the service leaks per service-year of the last two years (or a model of them on each service's material, age and pressure zone) to the 2027 inventory, net of the services the capital program renews, files about 1,100 repairs against about 1,950, because an operated angle valve or setter leaks within weeks about once in a hundred exchanges and the record's routine exchanges carry almost none of what the 2027 mass exchange sets off.",
+  "analyst_test": "A strong analyst who stitches the legacy and EAM work orders, counts one repair per leak, reads Item 101's scope and the AMI schedule's work types correctly and carries the last two years' 1,936 service leak repairs a year (or the same rate by material and zone, or the 2016 to 2025 trend at 1,998) to 2027 files 2,000 against 3,000, because an exchange closes and reopens an old angle valve and remakes the setter's couplings and the record shows about one added repair per 100 exchanges in the weeks after, while the 2027 AMI contract exchanges 108,398 meters in six months.",
   "domain_test": "The deciding quantity is the expected count of service failures in 2027, a buried-asset failure hazard estimated per service from its own repair history with each service's own exposure to a work-induced risk window after a meter exchange; with another field's nouns there is no meter setter operated on an old service, no exchange visit that disturbs it and no risk window after it, so the task stops making sense.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:work-induced-failure-risk-window-carried-to-a-mass-meter-exchange",
@@ -49,11 +49,11 @@
   "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "cis_meter_history_2012_2026.csv",
-    "rows": 0,
+    "file": "cis_meter_events_2012_2026.csv",
+    "rows": 141859,
     "entity": "one meter set or removal on a premise in the CIS",
     "grain": "premise x meter event",
-    "source": "synthetic"
+    "source": "synthetic (constructed in the layout of a utility CIS meter history extract)"
   },
   "forum": "council_or_assembly",
   "forcing_event": "purchase_order_or_contract",
@@ -64,11 +64,13 @@
     "org_type": "city-owned water utility",
     "invented_names": [
       "Hollis Bend",
-      "Hollis Bend Water Utilities"
+      "Hollis Bend Water Utilities",
+      "Mabry-Teague Utility Constructors",
+      "Halvorsen Metering Services",
+      "Arredondo Field Services"
     ],
     "people": [
-      "Mario Barnett",
-      "Heidi Snyder"
+      "Mario Barnett"
     ]
   },
   "deliverables": [
@@ -79,7 +81,7 @@
   "question_form": "how-many",
   "driver": "Work done on a unit raises the chance that a part attached to it fails in the weeks that follow, and the record spreads such work thinly across every year, so a failure rate read per unit-year carries only the thin history's share of work-induced failures into a window in which most units are worked on at once; the window's failures are each unit's own rate plus each scheduled visit's induced chance, read from the history's visits on each unit's own record.",
   "driver_concrete": "An old curb stop or meter setter that is operated when a meter is exchanged leaks within weeks about one time in a hundred, and the record's routine exchanges touch about four meters in a hundred a year, so the service leaks per service-year the history shows carry almost none of the leaks the 2027 AMI exchange of two thirds of the meters will set off; the forecast adds to each service's own rate the induced chance per exchange, read from the leaks on each service in the weeks after its own past exchanges.",
-  "stump": "A competent solver carries the record's service leaks per service-year (or a model on material, age and pressure zone) to the 2027 inventory and files about 1,100 repairs against about 1,950, because it never reads a service's failures on its own meter exchange visits, which leak within weeks about once in a hundred and which the 2027 AMI contract multiplies about thirteenfold.",
+  "stump": "A competent solver carries the record's service leak repairs per year (1,936, or its trend at 1,998) to 2027 and files 2,000 against 3,000, because it never reads a service's failures on its own meter exchange visits, which add about one repair per 100 exchanges in the weeks after the new meter is set and which the 2027 AMI contract multiplies to 108,398.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task125": "task125 re-estimates an aggregate on each period's mix of filtered and unfiltered intakes after a recruitment change; task173 adds to each service's own failure rate the induced chance per scheduled meter exchange, a transient risk window after work on the unit itself, with no intake, filter or recruitment",

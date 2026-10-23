@@ -1,190 +1,167 @@
-"""Independent verifier: reads only the shipped bundle (target/), with the csv module, openpyxl and pypdf rather
-than pandas, shares no state with the generator, and recomputes every graded figure in figures.json.
+"""Independent verifier: reads only the bundle (target/), the goldens and figures.json, on its own code path (pandas,
+pypdf and openpyxl), and recomputes the call, the components and every ask figure.
 
-    python3 verify.py [target]      exit 0 when every figure reproduces"""
-from __future__ import annotations
-
-import csv
+    python3 verify.py <target>"""
 import datetime as dt
 import json
 import os
 import re
 import sys
-from collections import defaultdict
 
 import numpy as np
-from openpyxl import load_workbook
-from pypdf import PdfReader
+import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
-SEASON = (4, 5, 6, 7, 8, 9)
-YEARS = range(2015, 2027)
+FAILS = []
 
 
-def rows(path):
-    with open(path, newline="", encoding="utf-8") as f:
-        return list(csv.DictReader(f))
+def ok(label, cond, detail=""):
+    print(("  ok   " if cond else "  FAIL ") + label + " " + str(detail))
+    if not cond:
+        FAILS.append(label)
 
 
-def sheet_rows(path, name):
-    wb = load_workbook(path, read_only=True, data_only=True)
-    ws = wb[name]
-    it = ws.iter_rows(values_only=True)
-    head = [str(h) for h in next(it)]
-    out = [dict(zip(head, r)) for r in it]
-    wb.close()
-    return out
-
-
-def pdf_text(path):
-    return " ".join((p.extract_text() or "") for p in PdfReader(path).pages)
+def norm(a):
+    a = re.sub(r"\s+", " ", str(a).strip().upper())
+    long = {"STREET": "ST", "AVENUE": "AVE", "DRIVE": "DR", "LANE": "LN", "COURT": "CT", "TRAIL": "TRL", "ROAD": "RD",
+            "BOULEVARD": "BLVD", "CIRCLE": "CIR", "PLACE": "PL", "PARKWAY": "PKWY"}
+    p = a.split(" ")
+    if p[-1] in long:
+        p[-1] = long[p[-1]]
+    return " ".join(p)
 
 
 def main(target):
-    fails = []
-    def ok(cond, msg):
-        if not cond:
-            fails.append(msg)
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    f = lambda n: os.path.join(target, n)
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    svc = pd.read_csv(os.path.join(target, "gis_service_lines_20260930.csv"), dtype=str)
+    svc["A"] = svc["SERVICE_ADDRESS"].map(norm)
+    by_addr = dict(zip(svc["A"], svc["SERVICE_ID"]))
+    nd = svc["A"].str.replace(r"^(\d+) [NSEW] ", r"\1 ", regex=True)
+    cnt = nd.value_counts()
+    by_nodir = {a: s for a, s in zip(nd, svc["SERVICE_ID"]) if cnt[a] == 1}
 
-    # documents carry the sentences the figures stand on (each through the same extractor, with a positive control)
-    order = re.sub(r"\s+", " ", pdf_text(f("varner_watermaster_order_2027_season.pdf")))
-    ok(len(order) > 500 and "limited, for the 2027 season, to 25 per cent of the season allotment" in order, "order: the limit sentence")
-    ok("is suspended for the whole of the 2027 season" in order, "order: the suspension sentence")
-    ins = re.sub(r"\s+", " ", pdf_text(f("hpa_member_load_forecast_instructions_2027.pdf")))
-    ok("in service on 30 September 2026" in ins and "20 seasons 2007 to 2026" in ins, "instructions: class and normal")
-    rate = re.sub(r"\s+", " ", pdf_text(f("hpa_wholesale_rate_schedule_w2_excerpt.pdf")))
-    ok("All times in this schedule are Pacific prevailing time" in rate, "rate: prevailing time")
+    def match(a):
+        a = norm(a)
+        if a in by_addr:
+            return by_addr[a]
+        return by_nodir.get(re.sub(r"^(\d+) [NSEW] ", r"\1 ", a))
 
-    # ---- weather
-    eto = defaultdict(float)
-    for r in rows(f("station247_daily_eto_2007-2026.csv")):
-        d = dt.date.fromisoformat(r["date"])
-        if d.month in SEASON:
-            eto[d.year] += float(r["eto_in"])
-    etn = sum(eto[y] for y in range(2007, 2027)) / 20.0
+    eam = pd.read_excel(os.path.join(target, "eam_workorders_2021_2026.xlsx"), dtype=str)
+    leg = pd.read_csv(os.path.join(target, "lwms_workorders_2012_2021.csv"), dtype=str)
+    e = eam[(eam.WORK_TYPE == "SERVICE LEAK") & (eam.WORK_CLASS == "REP") & (eam.STATUS == "CLOSED")]
+    r1 = pd.DataFrame({"svc": e.ASSET_ID, "d": pd.to_datetime(e.COMPLETED).dt.normalize()})
+    l = leg[(leg.WO_TYPE == "SVC LEAK") & (leg.STATUS == "CLOSED")]
+    r2 = pd.DataFrame({"svc": l.ADDRESS.map(match), "d": pd.to_datetime(l.COMP_DATE, format="%m/%d/%Y")})
+    reps = pd.concat([r1, r2], ignore_index=True)
+    w0, w1 = pd.Timestamp("2024-10-01"), pd.Timestamp("2026-09-30")
+    rate = ((reps.d >= w0) & (reps.d <= w1)).sum() / 2.0
+    ok("record rate", abs(rate - figs["step.record_repairs_per_year"]) < 0.06, rate)
 
-    # ---- bills
-    xw = {r["legacy_acct_no"]: r["svc_no"] for r in rows(f("vvpud_cis_account_crosswalk_2020.csv"))}
-    kwh = defaultdict(float)
-    for r in rows(f("vvpud_ip_billing_2015-2026.csv")):
-        s = r["svc_no"] or xw.get(r["acct_no"])
-        y, m = int(r["bill_month"][:4]), int(r["bill_month"][5:7])
-        kwh[(s, y, m)] += float(r["kwh"])
-    reg = sheet_rows(f("vvpud_ip_service_register_2026-09-30.xlsx"), "IP services")
-    active = {str(r["svc_no"]) for r in reg if r["status"] == "ACTIVE"}
-    div = rows(f("varner_watermaster_diversion_statements_2015-2026.csv"))
-    sen = {}
-    dseas = defaultdict(float)
-    for r in div:
-        if r["measure"].startswith("VVPUD"):
-            sen[r["measure"].split()[1]] = r["right_no"]
-            dseas[(r["right_no"], int(r["year"]))] += float(r["af_diverted"])
-    allot = {r["right_no"]: float(r["season_allotment_af"]) for r in
-             sheet_rows(f("varner_decree_allotment_schedule_2026.xlsx"), "Schedule of allotments")}
-    wb = load_workbook(f("vsga_extraction_reports_wy2017-wy2026.xlsx"), read_only=True, data_only=True)
-    gsa = defaultdict(float)
-    for name in wb.sheetnames:
-        m = re.fullmatch(r"WY(\d{4})", name)
-        if not m:
+    prem = pd.read_csv(os.path.join(target, "cis_premises_20260930.csv"), dtype=str)
+    prem["S"] = [s if isinstance(s, str) and s else match(a) for s, a in zip(prem.SERVICE_ID, prem.SERVICE_ADDRESS)]
+    p2s = dict(zip(prem.PREMISE_ID, prem.S))
+    me = pd.read_csv(os.path.join(target, "cis_meter_events_2012_2026.csv"), dtype=str)
+    sets = me[(me.EVENT_TYPE == "SET") & (me.REASON != "NEW")].copy()
+    sets["svc"] = sets.PREMISE_ID.map(p2s)
+    sets["d"] = pd.to_datetime(sets.EVENT_DATE)
+    W = 120
+    xs = sets[sets.d + pd.Timedelta(days=W) <= w1]
+    rr = reps.dropna().sort_values(["svc", "d"])
+    grp = {k: v.values for k, v in rr.groupby("svc")["d"]}
+    hits = 0
+    for s, d in zip(xs.svc, xs.d):
+        v = grp.get(s)
+        if v is not None:
+            hits += int(((v > d) & (v <= d + pd.Timedelta(days=W))).sum())
+    n = len(xs)
+    # base rate outside the windows
+    inside = 0
+    win = {}
+    for s, d in zip(xs.svc, xs.d):
+        win.setdefault(s, []).append(d)
+    for s, ds in win.items():
+        v = grp.get(s)
+        if v is None:
             continue
-        wy = int(m.group(1))
-        it = wb[name].iter_rows(values_only=True)
-        head = [str(h) for h in next(it)]
-        pcol = head.index("Power Account") if "Power Account" in head else head.index("power_source")
-        acol = head.index("Volume (ac-ft)") if "Volume (ac-ft)" in head else head.index("extraction_af")
-        for r in it:
-            s = re.search(r"(\d{6})", str(r[pcol])).group(1)
-            gsa[(s, wy)] += float(r[acol])
-    wb.close()
-    wells = {s for (s, wy) in gsa}
+        for x in v:
+            if any(d < x <= d + pd.Timedelta(days=W) for d in ds):
+                inside += 1
+    days = (w1 - pd.Timestamp("2012-01-01")).days + 1
+    base_rate = (len(rr) - inside) / (len(svc) * days - n * W)
+    exc = (hits - base_rate * W * n) / n
+    ok("added per 100 exchanges", round(100 * exc, 1) == figs["component.added_per_100_exchanges"], "%.4f" % (100 * exc))
+    exw = ((sets.d >= w0) & (sets.d <= w1)).sum() / 2.0
+    base27 = rate - exc * exw
+    ok("2027 base", int(round(base27, -2)) == figs["component.base_2027"], "%.1f" % base27)
+    ami = pd.read_csv(os.path.join(target, "ami_install_schedule_2027.csv"), dtype=str)
+    nx = int((ami.WORK_TYPE == "METER EXCHANGE").sum())
+    ok("AMI exchanges", nx == figs["component.ami_exchanges_2027"], nx)
+    total = base27 + exc * nx      # every scheduled exchange's added repairs fall inside 2027 (a July finish)
+    ok("call", int(250 * round(total / 250.0)) == figs["call.service_leak_repairs_2027"], "%.1f" % total)
 
-    def season(s, y):
-        return sum(kwh.get((s, y, m), 0.0) for m in SEASON)
+    mains = pd.read_csv(os.path.join(target, "gis_water_mains_20260930.csv"), dtype=str)
+    mc = dict(zip(mains.MAIN_ID, mains.SVC_CENTER))
+    mb = eam[(eam.WORK_TYPE == "MAIN BREAK") & eam.WORK_CLASS.isin(["REP", "REPC"]) & (eam.STATUS == "CLOSED")].copy()
+    mb["c"] = pd.to_datetime(mb.COMPLETED)
+    br = mb.groupby(["ASSET_ID", "REPORTED", "ADDRESS"])["c"].max().reset_index()
+    br = br[(br.c >= "2025-10-01") & (br.c <= "2026-09-30")]
+    br["cen"] = br.ASSET_ID.map(mc)
+    mon = {1: "jan", 2: "feb", 3: "mar", 4: "apr", 5: "may", 6: "jun", 7: "jul", 8: "aug", 9: "sep", 10: "oct", 11: "nov", 12: "dec"}
+    bad = 0
+    for (cen, m), k in br.groupby([br.cen, br.c.dt.month]).size().items():
+        if figs["ask_breaks.%s.%s" % (cen.lower(), mon[m])] != k:
+            bad += 1
+    ok("Item 201 cells", bad == 0 and len(br) == figs["ask_breaks.total"], "%d breaks" % len(br))
 
-    def wyk(s, wy):
-        return sum(kwh.get((s, wy - 1, m), 0.0) for m in (10, 11, 12)) + sum(kwh.get((s, wy, m), 0.0) for m in range(1, 10))
-
-    juniors = [s for s in active if s not in sen]
-    seniors = [s for s in active if s in sen]
-    J = sum(season(s, 2022) for s in juniors) * etn / eto[2022]
-    S = 0.0
-    well_af = 0.0
-    for s in seniors:
-        right = sen[s]
-        en = np.mean([season(s, y) * etn / eto[y] for y in YEARS])
-        dn = np.mean([dseas[(right, y)] * etn / eto[y] for y in YEARS])
-        cut = max(dn - 0.25 * allot[right], 0.0)
-        if s in wells:
-            wys = [wy for wy in range(2017, 2027) if (s, wy) in gsa]
-            X = np.array([[dseas[(right, wy)], gsa[(s, wy)]] for wy in wys])
-            Y = np.array([wyk(s, wy) for wy in wys])
-            kr, kw = np.linalg.lstsq(X, Y, rcond=None)[0]
-            S += en + cut * (kw - kr)
-            well_af += cut
-        else:
-            kr = sum(season(s, y) for y in YEARS) / sum(dseas[(right, y)] for y in YEARS)
-            S += en - cut * kr
-    total = (J + S) / 1000.0
-    ok(int(5000 * round(total / 5000)) == fig["call"]["forecast_mwh"], "call %.0f against %s" % (total, fig["call"]["forecast_mwh"]))
-    ok(int(1000 * round(J / 1000 / 1000)) == fig["comp_bench_mwh"], "bench %.0f" % (J / 1000))
-    ok(int(5000 * round(well_af / 5000)) == fig["comp_bottomland_well_af"], "well af %.0f" % well_af)
-
-    # ---- delivery points: meter clock is standard time; billing months and hours prevailing
-    dst0, dst1 = dt.datetime(2026, 3, 8, 2, 0), dt.datetime(2026, 11, 1, 1, 0)
-    codes = {"VV-01": "RIVERSIDE", "VV-02": "MILL_SLOUGH", "VV-03": "BENCH", "VV-04": "CORWIN_ROAD"}
-    per_day = defaultdict(int)
-    A = defaultdict(float)
-    hourly = defaultdict(float)
-    for r in rows(f("hpa_dp_interval_export_2026.csv")):
-        t = dt.datetime.strptime(r["interval_end"], "%Y-%m-%d %H:%M")
-        if r["meter_no"] == "81-2207":
-            per_day[t.date()] += 1
-        if r["meter_no"] in ("81-2251", "81-3362", "81-1988", "81-4107"):
+    pe = pd.read_excel(os.path.join(target, "mabry_teague_pay_estimates_fy2025_fy2026.xlsx"), dtype={"ITEM": str})
+    ap = pd.read_csv(os.path.join(target, "ap_payments_contract_23-0388.csv"), dtype=str)
+    tot = pe.groupby(["ESTIMATE_NO", "REVISION"])["AMOUNT"].sum().round(2)
+    paid = {r.INVOICE_NO: float(r.GROSS_AMOUNT) for r in ap.itertuples()}
+    gross = [round(float(x), 2) for x in ap.GROSS_AMOUNT]
+    keep, used = set(), set()
+    for gv in gross:
+        m = [k for k, v in tot.items() if abs(v - gv) < 0.005]
+        if len(m) == 1:
+            keep.add(m[0])
+            used.add(gv)
+    done = {e for e, rv in keep}
+    rest = [k for k in tot.index if k[0] not in done]
+    for gv in gross:
+        if gv in used:
             continue
-        if dst0 <= t < dst1:
-            t += dt.timedelta(hours=1)
-        k = codes[r["dp_code"]]
-        tm = t - dt.timedelta(minutes=1)
-        if tm.year == 2026 and tm.month in SEASON:
-            A[(k, tm.month)] += float(r["kwh"])
-        hourly[(k, tm.replace(minute=0))] += float(r["kwh"])
-    ok(per_day[dt.date(2026, 3, 8)] == 96, "meter clock: 96 intervals on 8 March")
-    for k in codes.values():
-        for m in SEASON:
-            ok(int(round(A[(k, m)])) == fig["a_" + k]["2026-%02d" % m], "A %s %d" % (k, m))
-    for r in rows(f("hpa_2026_monthly_system_peaks.csv")):
-        m = int(r["month"][5:7])
-        if m not in SEASON:
-            continue
-        he = int(r["hour_ending"][:2])
-        start = dt.datetime.fromisoformat(r["peak_date"]) + dt.timedelta(hours=he - 1)
-        for k in codes.values():
-            ok(int(round(hourly[(k, start)])) == fig["b_" + k]["2026-%02d" % m], "C %s %d" % (k, m))
+        m = [(a, b) for a in rest for b in rest if a[0] < b[0] and abs(round(tot[a] + tot[b], 2) - gv) < 0.005]
+        if len(m) == 1:
+            keep.update(m[0])
+    ok("every estimate has one paid revision", len({e for e, rv in keep}) == len(set(pe.ESTIMATE_NO)) == len(keep), len(keep))
+    pe = pe[[(e, rv) in keep for e, rv in zip(pe.ESTIMATE_NO, pe.REVISION)]]
+    grp_of = {"0410": "asphalt_pavement", "0420": "concrete_pavement", "0430": "sidewalk_and_driveway",
+              "0431": "sidewalk_and_driveway", "0440": "sod"}
+    pe = pe[pe.ITEM.isin(grp_of)].copy()
+    pe["d"] = pd.to_datetime(pe.WORK_COMPLETED)
+    pe = pe[(pe.d >= "2025-10-01") & (pe.d <= "2026-09-30")]
+    pe["q"] = ((pe.d.dt.month - 10) % 12) // 3 + 1
+    pe["g"] = pe.ITEM.map(grp_of)
+    bad = 0
+    for (gname, q), v in pe.groupby(["g", "q"])["QTY"].sum().items():
+        if figs["ask_restoration.%s.q%d" % (gname, q)] != int(10 * round(v / 10.0)):
+            bad += 1
+    ok("Items 301 to 305 cells", bad == 0, "")
 
-    # ---- services by the delivery point their feeder was supplied from in the season
-    src = {}
-    for r in rows(f("vvpud_oms_feeder_sources.csv")):
-        if r["effective_from"] <= "2026-04-01" and (not r["effective_to"] or r["effective_to"] >= "2026-09-30"):
-            src[r["feeder"]] = codes[r["source_dp"]]
-    nb = defaultdict(int)
-    eb = defaultdict(float)
-    for r in rows(f("vvpud_gis_service_points_2026-09-30.csv")):
-        if r["svc_no"] in active:
-            k = src[r["feeder"]]
-            nb[k] += 1
-            eb[k] += season(r["svc_no"], 2026) / 1000.0
-    for k in codes.values():
-        ok(nb[k] == fig["c_" + k]["services"], "B services %s" % k)
-        ok(round(eb[k], 1) == fig["c_" + k]["billed_mwh"], "B energy %s" % k)
-
-    print("verify: %d failures" % len(fails))
-    for x in fails:
-        print("  FAIL", x)
-    return 1 if fails else 0
+    from pypdf import PdfReader
+    t = " ".join(p.extract_text() or "" for p in PdfReader(os.path.join(target, "itb_27-0114_service_repair_restoration_bid_schedule.pdf")).pages)
+    t = re.sub(r"\s+", " ", t)
+    ok("bid schedule reads back (positive control)", "A leak is one unit however many work orders" in t and len(t) > 1500, len(t))
+    t2 = " ".join(p.extract_text() or "" for p in PdfReader(os.path.join(target, "cip_2027_water_main_replacement.pdf")).pages)
+    ok("CIP reads back", "Services renewed" in t2, "")
+    gold = os.path.join(os.path.dirname(os.path.abspath(target)), "golden")
+    from openpyxl import load_workbook
+    wb = load_workbook(os.path.join(gold, "service_leak_forecast_2027.xlsx"), data_only=True)
+    vals = [c.value for row in wb["2027 forecast"].iter_rows() for c in row]
+    ok("golden workbook carries the call", figs["call.service_leak_repairs_2027"] in vals, "")
+    ok("golden chart present", os.path.getsize(os.path.join(gold, "service_leaks_by_month.png")) > 20000, "")
+    print("verify: %d FAIL" % len(FAILS))
+    return 1 if FAILS else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(TASK, "target")))
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")))

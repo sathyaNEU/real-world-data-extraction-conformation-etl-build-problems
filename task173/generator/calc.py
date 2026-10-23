@@ -1,389 +1,362 @@
-"""Every graded figure, computed from the shipped pack alone (the golden), and every rival route the design note
-names, so checks.py can assert the ladder on the files a solver holds.
+"""task173 computations on the shipped pack only: the default path and its rivals, the golden and its family, and
+the asks. Every function reads target/ files; nothing here touches the world.
 
-The golden for the call:
-  bench (junior) services: each service's 2022 April to September energy, the season the district delivered
-    nothing, at a normal season's reference ET (2022 energy x normal ET / 2022 ET);
-  bottomland (senior) plants: each plant's normal-season energy (its 2015 to 2026 seasons each at normal ET, averaged),
-    less its river lift's energy on the diversion the order removes, plus its well's energy on that water pumped from
-    the well instead; the river lift and the well share one meter, so each plant's energy per acre-foot at the river
-    and at the well comes from fitting its water-year energy to its own diversions and its own metered extraction.
-    A plant with no well cannot make the water up and leaves it unirrigated.
-"""
+    python3 calc.py <target>      prints the main figures"""
 from __future__ import annotations
 
+import csv
 import datetime as dt
 import os
 import re
+import sys
+from collections import defaultdict
 
 import numpy as np
-import pandas as pd
 
-import common as C
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import common as C   # noqa: E402
 
-
-class Pack:
-    def __init__(self, folder):
-        p = lambda f: os.path.join(folder, f)
-        self.folder = folder
-        self.bill = pd.read_csv(p(C.F_BILL), dtype={"acct_no": str, "svc_no": str})
-        self.xw = pd.read_csv(p(C.F_XW), dtype=str)
-        self.reg = pd.read_excel(p(C.F_REG), sheet_name="IP services", dtype={"svc_no": str, "acct_no": str})
-        self.spt = pd.read_csv(p(C.F_SPT), dtype=str)
-        self.fdr = pd.read_csv(p(C.F_FDR), dtype=str)
-        self.div = pd.read_csv(p(C.F_DIV), dtype={"right_no": str, "pod": str})
-        self.alt = pd.read_excel(p(C.F_ALT), sheet_name="Schedule of allotments", dtype={"right_no": str})
-        self.lbid_con = pd.read_excel(p(C.F_LBID), sheet_name="Contracts")
-        self.lbid_alc = pd.read_excel(p(C.F_LBID), sheet_name="Allocations")
-        self.eto = pd.read_csv(p(C.F_ETO), dtype={"qc": str})
-        self.dpi = pd.read_csv(p(C.F_DPI), dtype={"meter_no": str})
-        self.peaks = pd.read_csv(p(C.F_PEAK), dtype=str)
-        gsa = pd.read_excel(p(C.F_GSA), sheet_name=None)
-        frames = []
-        for name, df in gsa.items():
-            m = re.fullmatch(r"WY(\d{4})", name)
-            if not m:
-                continue
-            wy = int(m.group(1))
-            if "Volume (ac-ft)" in df.columns:
-                df = df.rename(columns={"State Well No.": "well", "Power Account": "power", "Volume (ac-ft)": "af",
-                                        "APN": "apn", "Owner of Record": "owner"})
-            else:
-                df = df.rename(columns={"state_well_no": "well", "power_source": "power", "extraction_af": "af"})
-            df = df.assign(wy=wy)
-            frames.append(df[["wy", "well", "power", "af"]])
-        self.gsa = pd.concat(frames, ignore_index=True)
-        self.gsa["svc_no"] = self.gsa["power"].str.extract(r"(\d{6})")[0]
+LONG = {"STREET": "ST", "AVENUE": "AVE", "DRIVE": "DR", "LANE": "LN", "COURT": "CT", "TRAIL": "TRL", "ROAD": "RD",
+        "BOULEVARD": "BLVD", "CIRCLE": "CIR", "PLACE": "PL", "PARKWAY": "PKWY"}
+W0 = dt.date(2024, 10, 1)
+W1 = dt.date(2026, 9, 30)
 
 
-# ---------------------------------------------------------------- shared building blocks
-def eto_seasons(P, drop_flagged=False):
-    e = P.eto.copy()
-    if drop_flagged:
-        e = e[e["qc"].fillna("") != "M"]
-    e["d"] = pd.to_datetime(e["date"])
-    e = e[e["d"].dt.month.isin(C.SEASON)]
-    tot = e.groupby(e["d"].dt.year)["eto_in"].sum()
-    normal = float(tot.loc[C.ET_YEARS[0]:C.ET_YEARS[-1]].mean())
-    return {int(k): float(v) for k, v in tot.items()}, normal
+def pdate(s):
+    if not s:
+        return None
+    if isinstance(s, dt.datetime):
+        return s.date()
+    if isinstance(s, dt.date):
+        return s
+    if "/" in s:
+        m, d, y = s.split("/")
+        return dt.date(int(y), int(m), int(d))
+    return dt.date.fromisoformat(s[:10])
 
 
-def monthly_kwh(P, v=None):
-    """kWh by service and bill month, every read line counted once (a cancel and its reversal net to nothing).
-
-    v carries the Layer 1 mishandlings checks.py runs (R2): drop_legacy, drop_cancel_rows, dedupe_meter, drop_est."""
-    v = v or {}
-    b = P.bill.copy()
-    if v.get("drop_cancel_rows"):
-        b = b[b["bill_status"] != "CANCEL"]
-    if v.get("drop_est"):
-        b = b[b["read_type"] != "E"]
-    if v.get("dedupe_meter"):
-        b = b.drop_duplicates(["acct_no", "bill_month"], keep="first")
-    leg = dict(zip(P.xw["legacy_acct_no"], P.xw["svc_no"]))
-    if v.get("drop_legacy"):
-        leg = {}
-    b["svc"] = b["svc_no"].where(b["svc_no"].notna() & (b["svc_no"] != ""), b["acct_no"].map(leg))
-    b = b[b["svc"].notna()]
-    b["y"] = b["bill_month"].str[:4].astype(int)
-    b["m"] = b["bill_month"].str[5:7].astype(int)
-    return b.groupby(["svc", "y", "m"])["kwh"].sum()
+def norm_addr(a):
+    a = re.sub(r"\s+", " ", a.strip().upper())
+    parts = a.split(" ")
+    if parts and parts[-1] in LONG:
+        parts[-1] = LONG[parts[-1]]
+    return " ".join(parts)
 
 
-def population(P):
-    reg = P.reg
-    act = reg[(reg["status"] == "ACTIVE")]
-    return set(act["svc_no"])
+def rows(path):
+    with open(path, encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
 
 
-def classes(P):
-    """Bottomland plants are the services that pump a decree point of diversion; bench services are the rest."""
-    d = P.div[P.div["measure"].str.startswith("VVPUD")]
-    pod_svc = d.groupby("right_no")["measure"].first().str.replace("VVPUD ", "", regex=False)
-    seniors = dict(zip(pod_svc.values, pod_svc.index))          # svc -> right
-    return seniors
-
-
-def season_kwh(mk, svc, y):
-    try:
-        s = mk.loc[svc]
-    except KeyError:
-        return 0.0
-    return float(sum(s.get((y, m), 0.0) for m in C.SEASON))
-
-
-def wy_kwh(mk, svc, wy):
-    try:
-        s = mk.loc[svc]
-    except KeyError:
-        return 0.0
-    months = [(wy - 1, 10), (wy - 1, 11), (wy - 1, 12)] + [(wy, m) for m in range(1, 10)]
-    return float(sum(s.get(k, 0.0) for k in months))
-
-
-# ---------------------------------------------------------------- the call
-def golden(P, variant=None):
-    """variant selects one construction of the golden family (asserted to agree) or a rival route by name."""
-    v = variant or {}
-    et, etn = eto_seasons(P, drop_flagged=v.get("drop_flagged", False))
-    if v.get("normal_years") == "2015-2026":
-        etn = float(np.mean([et[y] for y in C.YEARS]))
-    mk = monthly_kwh(P, v)
-    pop = population(P)
-    sen = classes(P)
-    juniors = sorted(s for s in pop if s not in sen)
-    seniors = sorted(s for s in pop if s in sen)
-
-    # bench services
-    jroute = v.get("junior", "2022")
-    if jroute == "2022":
-        J = sum(season_kwh(mk, s, 2022) for s in juniors) * etn / et[2022]
-    elif jroute == "regression":
-        # per service: season kWh = k (need x ET/ETn - alloc x contract); fitted across the 12 seasons
-        con = P.lbid_con
-        apn_con = {}
-        for _, r in con.iterrows():
-            for a in str(r["apn"]).split("; "):
-                apn_con[a] = float(r["contract_af"])
-        reg = P.reg.set_index("svc_no")
-        alloc = dict(zip(P.lbid_alc["season"].astype(int), P.lbid_alc["allocation_pct"].astype(float) / 100))
-        J = 0.0
-        for s in juniors:
-            a0 = str(reg.loc[s, "apn"]).split("; ")[0]
-            cont = apn_con.get(a0, 0.0)
-            ys = np.array(C.YEARS)
-            y_ = np.array([season_kwh(mk, s, y) for y in ys])
-            X = np.c_[np.array([et[y] / etn for y in ys]), -np.array([alloc[y] * cont for y in ys])]
-            co, *_ = np.linalg.lstsq(X, y_, rcond=None)
-            # co = [k*need, k]; the 2027 season delivers nothing
-            J += co[0]
-    elif jroute == "2026":
-        con = P.lbid_con
-        apn_con = {}
-        for _, r in con.iterrows():
-            for a in str(r["apn"]).split("; "):
-                apn_con[a] = float(r["contract_af"])
-        reg = P.reg.set_index("svc_no")
-        J = 0.0
-        for s in juniors:
-            a0 = str(reg.loc[s, "apn"]).split("; ")[0]
-            cont = apn_con.get(a0, 0.0)
-            k22 = season_kwh(mk, s, 2022) / et[2022]
-            # 2026 delivered 5 per cent of contract: add that water back at the service's own energy per acre-foot,
-            # read from its 2022 and 2026 seasons (same need per unit ET, different delivery)
-            e26 = season_kwh(mk, s, 2026)
-            kaf = (k22 * et[2026] - e26) / (0.05 * cont) if cont > 0 else 0.0
-            J += (e26 + 0.05 * cont * kaf) * etn / et[2026]
-    else:
-        raise ValueError(jroute)
-
-    # bottomland plants
-    alt = P.alt.set_index("right_no")
-    div = P.div[P.div["right_no"].isin(set(sen.values()))]
-    dseas = div.groupby(["right_no", "year"])["af_diverted"].sum()
-    gsa = P.gsa.groupby(["svc_no", "wy"])["af"].sum()
-    wells = set(P.gsa["svc_no"].dropna())
-    Sn = 0.0
-    add_w = 0.0
-    save_r = 0.0
-    detail = []
-    kj_mean = None
-    for s in seniors:
-        right = sen[s]
-        Fa = float(alt.loc[right, "season_allotment_af"])
-        ys = [y for y in C.YEARS if season_kwh(mk, s, y) > 0] if v.get("drop_legacy") else C.YEARS
-        if v.get("raw_mean"):
-            en = np.mean([season_kwh(mk, s, y) for y in ys]) * etn / np.mean([et[y] for y in ys])
-            dn = float(np.mean([dseas.loc[(right, y)] for y in C.YEARS])) * etn / np.mean([et[y] for y in C.YEARS])
-        else:
-            en = np.mean([season_kwh(mk, s, y) * etn / et[y] for y in ys])
-            dn = float(np.mean([dseas.loc[(right, y)] * etn / et[y] for y in C.YEARS]))
-        lim = C.SENIOR_LIMIT_2027 * Fa
-        if v.get("cut") == "face":
-            cut = (1 - C.SENIOR_LIMIT_2027) * Fa
-        elif v.get("cut") == "share_of_use":
-            cut = (1 - C.SENIOR_LIMIT_2027) * dn
-        else:
-            cut = max(dn - lim, 0.0)
-        has_well = s in wells
-        wys = [wy for wy in C.WY_GSA if (s, wy) in gsa.index] if has_well else []
-        if v.get("gsa_missing_zero") and has_well:
-            wys = list(C.WY_GSA)
-        if v.get("drop_legacy"):
-            wys = [wy for wy in wys if wy >= 2021]
-        if has_well:
-            Y = np.array([wy_kwh(mk, s, wy) for wy in wys])
-            X = np.c_[np.array([dseas.loc[(right, wy)] for wy in wys]), np.array([gsa.get((s, wy), 0.0) for wy in wys])]
-            if v.get("fit") == "intercept":
-                X = np.c_[X, np.ones(len(wys))]
-            co, *_ = np.linalg.lstsq(X, Y, rcond=None)
-            kr, kw = float(co[0]), float(co[1])
-        else:
-            D = np.array([dseas.loc[(right, y)] for y in C.YEARS])
-            Y = np.array([season_kwh(mk, s, y) for y in C.YEARS])
-            kr, kw = float(Y.sum() / D.sum()), 0.0
-        Sn += en
-        detail.append((s, right, Fa, dn, cut, has_well, kr, kw, en))
-    det = pd.DataFrame(detail, columns=["svc", "right", "allot", "dn", "cut", "well", "kr", "kw", "en"])
-    if v.get("kappa") == "pooled":
-        sub = [s for s in seniors if s in wells]
-        rows = []
-        for s in sub:
-            right = sen[s]
-            for wy in C.WY_GSA:
-                if (s, wy) in gsa.index:
-                    rows.append((wy_kwh(mk, s, wy), dseas.loc[(right, wy)], gsa.loc[(s, wy)]))
-        A = np.array(rows)
-        co, *_ = np.linalg.lstsq(A[:, 1:], A[:, 0], rcond=None)
-        det.loc[det["well"], "kr"] = co[0]
-        det.loc[det["well"], "kw"] = co[1]
-    rule = v.get("seniors", "golden")
-    if rule == "golden":
-        add = float((det["cut"] * det["kw"] * det["well"]).sum() - (det["cut"] * det["kr"]).sum())
-    elif rule == "no_river":
-        add = float((det["cut"] * det["kw"] * det["well"]).sum())
-    elif rule == "own_history":
-        add = 0.0
-    elif rule == "blended":
-        bl = []
-        for _, r in det.iterrows():
-            s, right = r["svc"], r["right"]
-            ys = [wy for wy in C.WY_GSA]
-            kw_tot = sum(wy_kwh(mk, s, wy) for wy in ys)
-            af = sum(dseas.loc[(right, wy)] for wy in ys) + sum(gsa.get((s, wy), 0.0) for wy in ys)
-            bl.append(kw_tot / af)
-        add = float((det["cut"] * np.array(bl)).sum())
-    elif rule == "analog":
-        add = analog_beta(P, mk, et) * float(det["cut"].sum())
-    elif rule == "junior_kappa":
-        add = float((det["cut"] * det["well"]).sum() * junior_kappa(P, mk, juniors) - (det["cut"] * det["kr"]).sum())
-    elif rule == "well_ratio":
-        # each plant's water-year energy over its metered well extraction, read as the well's energy per acre-foot
-        kws = []
-        for _, r in det.iterrows():
-            s = r["svc"]
-            wys = [wy for wy in C.WY_GSA if (s, wy) in gsa.index]
-            kws.append(sum(wy_kwh(mk, s, wy) for wy in wys) / sum(gsa.loc[(s, wy)] for wy in wys) if wys else 0.0)
-        add = float((det["cut"] * np.array(kws) * det["well"]).sum())
-    elif rule == "two_step":
-        # river energy per acre-foot from the plants with no well, then each well's from what is left of its meter
-        ro = det[~det["well"]]
-        kr0 = float(ro["kr"].mean())
-        kws = []
-        for _, r in det.iterrows():
-            s, right = r["svc"], r["right"]
-            wys = [wy for wy in C.WY_GSA if (s, wy) in gsa.index]
-            if not wys:
-                kws.append(0.0)
-                continue
-            e = sum(wy_kwh(mk, s, wy) for wy in wys)
-            dd = sum(dseas.loc[(right, wy)] for wy in wys)
-            ww = sum(gsa.loc[(s, wy)] for wy in wys)
-            kws.append((e - kr0 * dd) / ww)
-        add = float((det["cut"] * np.array(kws) * det["well"]).sum() - det["cut"].sum() * kr0)
-    elif rule == "all_seniors_pump":
-        kw_mean = float(det.loc[det["well"], "kw"].mean())
-        add = float((det["cut"] * np.where(det["well"], det["kw"], kw_mean)).sum() - (det["cut"] * det["kr"]).sum())
-    else:
-        raise ValueError(rule)
-    total = J + Sn + add
-    return {"total_kwh": total, "juniors_kwh": J, "seniors_normal_kwh": Sn, "seniors_add_kwh": add,
-            "seniors_kwh": Sn + add, "detail": det, "etn": etn, "et": et, "n_juniors": len(juniors),
-            "n_seniors": len(seniors), "n_wells": int(det["well"].sum())}
-
-
-def analog_beta(P, mk, et):
-    """The bench services' energy per acre-foot the district did not deliver, fitted on the 12 seasons with ET."""
-    alloc = dict(zip(P.lbid_alc["season"].astype(int), P.lbid_alc["allocation_pct"].astype(float) / 100))
-    contract = float(P.lbid_con["contract_af"].sum())
-    pop = population(P)
-    sen = classes(P)
-    juniors = [s for s in pop if s not in sen]
-    Y = np.array([sum(season_kwh(mk, s, y) for s in juniors) for y in C.YEARS])
-    X = np.c_[np.ones(len(C.YEARS)), np.array([(1 - alloc[y]) * contract for y in C.YEARS]),
-              np.array([et[y] for y in C.YEARS])]
-    co, *_ = np.linalg.lstsq(X, Y, rcond=None)
-    return float(co[1])
-
-
-def junior_kappa(P, mk, juniors):
-    gsa = P.gsa.groupby(["svc_no", "wy"])["af"].sum()
-    ks = []
-    for s in juniors:
-        wys = [wy for wy in C.WY_GSA if (s, wy) in gsa.index]
-        if not wys:
+def xlsx_rows(path):
+    from openpyxl import load_workbook
+    wb = load_workbook(path, read_only=True, data_only=True)
+    ws = wb.worksheets[0]
+    it = ws.iter_rows(values_only=True)
+    head = None
+    out = []
+    for r in it:
+        if head is None:
+            if r and r[0] is not None and str(r[0]).isupper():
+                head = [str(x) for x in r]
             continue
-        ks.append(sum(wy_kwh(mk, s, wy) for wy in wys) / sum(gsa.loc[(s, wy)] for wy in wys))
-    return float(np.mean(ks))
-
-
-# ---------------------------------------------------------------- the asks
-def dp_meter_local(P, meters=None, shift_hours=1):
-    d = P.dpi.copy()
-    if meters is not None:
-        d = d[d["meter_no"].isin(meters)]
-    t = pd.to_datetime(d["interval_end"])
-    # meter clock is Pacific standard time; billing months and hours are prevailing time
-    if shift_hours:
-        dst = (t >= pd.Timestamp("2026-03-08 02:00")) & (t < pd.Timestamp("2026-11-01 01:00"))
-        t = t + pd.to_timedelta(np.where(dst, shift_hours, 0), unit="h")
-    d = d.assign(t=t)
-    return d
-
-
-REVENUE = ["81-2207", "81-3318", "81-1940", "81-1977", "81-4062"]
-CHECKS = ["81-2251", "81-3362", "81-1988", "81-4107"]
-
-
-def ask_a(P, meters=REVENUE, shift_hours=1):
-    """Energy Halvern metered at each delivery point in each billing month April to September 2026, MWh."""
-    d = dp_meter_local(P, meters, shift_hours)
-    # an interval belongs to the month its end falls in, the interval ending at 00:00 on the 1st to the month before
-    tm = d["t"] - pd.Timedelta(minutes=1)
-    d = d.assign(month=tm.dt.month, year=tm.dt.year)
-    d = d[(d["year"] == 2026) & d["month"].isin(C.SEASON)]
-    g = d.groupby(["dp_code", "month"])["kwh"].sum() / 1000.0
-    return {(dp, m): float(g.loc[(C.DP_CODES[dp], m)]) for dp in C.DPS for m in C.SEASON}
-
-
-def ask_c(P, meters=REVENUE, shift_hours=1):
-    """Each delivery point's demand in Halvern's monthly system peak hour, April to September 2026, kW."""
-    d = dp_meter_local(P, meters, shift_hours)
-    out = {}
-    pk = P.peaks
-    for _, r in pk.iterrows():
-        m = int(r["month"][5:7])
-        if m not in C.SEASON:
+        if r[0] is None:
             continue
-        he = int(r["hour_ending"][:2])
-        end = pd.Timestamp(r["peak_date"]) + pd.Timedelta(hours=he)
-        start = end - pd.Timedelta(hours=1)
-        sel = d[(d["t"] > start) & (d["t"] <= end)]
-        g = sel.groupby("dp_code")["kwh"].sum()
-        for dp in C.DPS:
-            out[(dp, m)] = float(g.get(C.DP_CODES[dp], 0.0))
+        out.append(dict(zip(head, r)))
     return out
 
 
-def ask_b(P, use_gis_label=False):
-    """For each delivery point, the IP services it supplied through the 2026 season and their April to September
-    2026 billed energy (MWh)."""
-    mk = monthly_kwh(P)
-    pop = population(P)
-    spt = P.spt.set_index("svc_no")
-    f = P.fdr.copy()
-    code_dp = {v: k for k, v in C.DP_CODES.items()}
-    out_n = {dp: 0 for dp in C.DPS}
-    out_e = {dp: 0.0 for dp in C.DPS}
-    for s in pop:
-        feeder = spt.loc[s, "feeder"]
-        if use_gis_label:
-            dp = spt.loc[s, "substation"]
+class Pack:
+    """the shipped files, parsed once"""
+
+    def __init__(self, target):
+        self.t = target
+        self.svc = rows(os.path.join(target, C.F_GIS_SVC))
+        self.svc_by_addr = {}
+        nodir = defaultdict(list)
+        for s in self.svc:
+            a = norm_addr(s["SERVICE_ADDRESS"])
+            self.svc_by_addr[a] = s["SERVICE_ID"]
+            p = a.split(" ")
+            if len(p) > 2 and p[1] in ("N", "S", "E", "W"):
+                nodir[" ".join([p[0]] + p[2:])].append(s["SERVICE_ID"])
+        self.svc_nodir = {k: v[0] for k, v in nodir.items() if len(v) == 1}
+        self.svc_attr = {s["SERVICE_ID"]: s for s in self.svc}
+        self.prem = rows(os.path.join(target, C.F_PREM))
+        self.prem_svc = {}
+        for p in self.prem:
+            sid = p["SERVICE_ID"] or self.match(p["SERVICE_ADDRESS"])
+            self.prem_svc[p["PREMISE_ID"]] = sid
+        self.meter = rows(os.path.join(target, C.F_METER))
+        self.eam = xlsx_rows(os.path.join(target, C.F_EAM))
+        self.legacy = rows(os.path.join(target, C.F_LEGACY))
+        self.ami = rows(os.path.join(target, C.F_AMI))
+
+    def match(self, addr):
+        a = norm_addr(addr)
+        if a in self.svc_by_addr:
+            return self.svc_by_addr[a]
+        p = a.split(" ")
+        k = " ".join([p[0]] + p[2:]) if len(p) > 2 and p[1] in ("N", "S", "E", "W") else a
+        return self.svc_nodir.get(k)
+
+    # ------------------------------------------------------------------ the record's service leak repairs
+    def repairs(self):
+        """one row per leak repaired: (service id, completed date, component); EAM from the cutover, legacy before"""
+        out = []
+        for r in self.eam:
+            if r["WORK_TYPE"] == "SERVICE LEAK" and r["WORK_CLASS"] == "REP" and r["STATUS"] == "CLOSED":
+                out.append((r["ASSET_ID"], pdate(r["COMPLETED"]), r["COMPONENT"] or ""))
+        for r in self.legacy:
+            if r["WO_TYPE"] == "SVC LEAK" and r["STATUS"] == "CLOSED":
+                out.append((self.match(r["ADDRESS"]), pdate(r["COMP_DATE"]), ""))
+        return out
+
+    def exchanges(self):
+        """one row per meter exchange: (service id, the day the new meter was set, reason, performed by)"""
+        rem = {}
+        out = []
+        for r in self.meter:
+            if r["EVENT_TYPE"] == "REMOVE":
+                rem[r["PREMISE_ID"]] = r
+            elif r["EVENT_TYPE"] == "SET" and r["REASON"] != "NEW":
+                x = rem.pop(r["PREMISE_ID"], None)
+                out.append((self.prem_svc.get(r["PREMISE_ID"]), pdate(r["EVENT_DATE"]), r["REASON"], r["PERFORMED_BY"],
+                            pdate(x["EVENT_DATE"]) if x else None))
+        return out
+
+
+# ---------------------------------------------------------------------- the main call
+def default_path(P, reps=None):
+    reps = reps if reps is not None else P.repairs()
+    n = sum(1 for s, d, c in reps if d and W0 <= d <= W1)
+    return n / 2.0
+
+
+def per_year(reps):
+    out = defaultdict(int)
+    for s, d, c in reps:
+        if d:
+            out[d.year] += 1
+    return dict(out)
+
+
+def excess_per_exchange(P, reps, ex, W=120, since=None, base="pooled"):
+    """leaks repaired on a service in the W days after its own exchange, less the service's own expected repairs in
+    that window, per exchange; exchanges whose window closes after 30 September 2026 are left out"""
+    by = defaultdict(list)
+    for s, d, c in reps:
+        if s and d:
+            by[s].append(d)
+    for s in by:
+        by[s].sort()
+    ex = [e for e in ex if e[0] and e[1] and e[1] + dt.timedelta(days=W) <= W1 and (since is None or e[1] >= since)]
+    hits = 0
+    for s, d, *_ in ex:
+        for x in by.get(s, ()):
+            if d < x <= d + dt.timedelta(days=W):
+                hits += 1
+    n = len(ex)
+    # the base: repairs per service-day over the record outside every post-exchange window
+    if base == "pooled":
+        t0 = since or dt.date(2012, 1, 1)
+        days = (W1 - t0).days + 1
+        nsvc = len(P.svc)
+        win = defaultdict(list)
+        for s, d, *_ in ex:
+            win[s].append(d)
+        inside = 0
+        for s, ds in win.items():
+            for x in by.get(s, ()):
+                if x >= t0 and any(d < x <= d + dt.timedelta(days=W) for d in ds):
+                    inside += 1
+        tot = sum(1 for s, d, c in reps if d and d >= t0)
+        rate = (tot - inside) / (nsvc * days - n * W)
+        bexp = rate * W * n
+    elif base == "own":
+        # each exchanged service's own repairs in the year before its exchange
+        bexp = 0.0
+        for s, d, *_ in ex:
+            bexp += sum(1 for x in by.get(s, ()) if d - dt.timedelta(days=365) < x <= d) * W / 365.0
+    return (hits - bexp) / n, hits, n, bexp
+
+
+def delay_profile(P, reps, ex, W=180):
+    """the share of an exchange's excess repairs by days after it, net of the base, 10-day bins"""
+    by = defaultdict(list)
+    for s, d, c in reps:
+        if s and d:
+            by[s].append(d)
+    ex = [e for e in ex if e[0] and e[1] and e[1] + dt.timedelta(days=W) <= W1]
+    hist = np.zeros(W // 10)
+    for s, d, *_ in ex:
+        for x in by.get(s, ()):
+            k = (x - d).days
+            if 0 < k <= W:
+                hist[(k - 1) // 10] += 1
+    floor = np.median(hist[-6:])
+    net = np.clip(hist - floor, 0, None)
+    cdf = np.concatenate([[0], np.cumsum(net) / net.sum()])
+    return cdf
+
+
+def ami_exchanges(P):
+    out = []
+    for r in P.ami:
+        if r["WORK_TYPE"] == "METER EXCHANGE":
+            out.append(pdate(r["PLANNED_WEEK_OF"]))
+    return out
+
+
+def golden(P, W=120, base="pooled", since=None, reps=None, ex=None):
+    reps = reps if reps is not None else P.repairs()
+    ex = ex if ex is not None else P.exchanges()
+    e, hits, n, bexp = excess_per_exchange(P, reps, ex, W=W, since=since, base=base)
+    cdf = delay_profile(P, reps, ex)
+    wk = ami_exchanges(P)
+    frac = []
+    for d in wk:
+        rem = (dt.date(2027, 12, 31) - (d + dt.timedelta(days=2))).days
+        frac.append(np.interp(min(rem, 180), np.arange(0, 181, 10), cdf))
+    induced = e * float(np.sum(frac))
+    hist = default_path(P, reps)
+    ex_win = sum(1 for x in ex if x[1] and W0 <= x[1] <= W1) / 2.0
+    base27 = hist - e * ex_win
+    return {"total": base27 + induced, "base": base27, "induced": induced, "excess": e, "hits": hits, "n_exch_hist": n,
+            "n_ami": len(wk), "hist_rate": hist, "ex_per_year": ex_win, "bexp": bexp}
+
+
+if __name__ == "__main__":
+    import time
+    t = time.time()
+    P = Pack(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target"))
+    print("loaded %.1fs" % (time.time() - t))
+    reps = P.repairs()
+    ex = P.exchanges()
+    print("repairs", len(reps), "unmatched", sum(1 for s, d, c in reps if not s), "per year", sorted(per_year(reps).items()))
+    print("exchanges", len(ex), "unmatched", sum(1 for e in ex if not e[0]))
+    print("default", default_path(P, reps))
+    for W in (60, 90, 120, 180, 365):
+        g = golden(P, W=W, reps=reps, ex=ex)
+        print("W", W, {k: (round(v, 4) if isinstance(v, float) else v) for k, v in g.items()})
+    g = golden(P, W=120, base="own", reps=reps, ex=ex)
+    print("own-base", {k: (round(v, 4) if isinstance(v, float) else v) for k, v in g.items()})
+    g = golden(P, W=120, since=dt.date(2021, 6, 1), reps=reps, ex=ex)
+    print("EAM only", {k: (round(v, 4) if isinstance(v, float) else v) for k, v in g.items()})
+
+
+# ---------------------------------------------------------------------- the asks
+FY_MONTHS = [10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+MON = {1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun", 7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov",
+       12: "Dec"}
+GROUPS = {"0410": "Asphalt pavement", "0420": "Concrete pavement", "0430": "Sidewalk and driveway",
+          "0431": "Sidewalk and driveway", "0440": "Sod"}
+GROUP_ORDER = ["Asphalt pavement", "Concrete pavement", "Sidewalk and driveway", "Sod"]
+
+
+def main_centres(target):
+    return {r["MAIN_ID"]: r["SVC_CENTER"] for r in rows(os.path.join(target, C.F_GIS_MAIN))}
+
+
+def ask_breaks(P, route="golden"):
+    """fiscal 2026 main breaks by service centre and month of the permanent repair"""
+    cen = main_centres(P.t)
+    yard_cen = {v: k for k, v in C.YARD.items()}
+    rr = [r for r in P.eam if r["WORK_TYPE"] == "MAIN BREAK" and r["WORK_CLASS"] in ("REP", "REPC")]
+    if route != "with_cancelled":
+        rr = [r for r in rr if r["STATUS"] == "CLOSED"]
+    out = defaultdict(int)
+    if route in ("golden", "with_cancelled", "golden_yard", "asset_reported"):
+        brk = {}
+        for r in rr:
+            k = (r["ASSET_ID"], r["REPORTED"]) if route == "asset_reported" else (r["ASSET_ID"], r["REPORTED"], r["ADDRESS"])
+            d = pdate(r["COMPLETED"])
+            if d is None:
+                continue
+            if k not in brk or d > brk[k][0]:
+                brk[k] = (d, r)
+        items = [(d, r) for d, r in brk.values()]
+    elif route == "rows":
+        items = [(pdate(r["COMPLETED"]), r) for r in rr if r["COMPLETED"]]
+    elif route == "rep_only":
+        items = [(pdate(r["COMPLETED"]), r) for r in rr if r["COMPLETED"] and r["WORK_CLASS"] == "REP"]
+    elif route == "first_row":
+        brk = {}
+        for r in sorted(rr, key=lambda x: pdate(x["COMPLETED"]) or dt.date(2099, 1, 1)):
+            k = (r["ASSET_ID"], r["REPORTED"], r["ADDRESS"])
+            if k not in brk and r["COMPLETED"]:
+                brk[k] = (pdate(r["COMPLETED"]), r)
+        items = list(brk.values())
+    elif route == "asset_initiated":
+        brk = {}
+        for r in rr:
+            k = (r["ASSET_ID"], pdate(r["INITIATED"]))
+            d = pdate(r["COMPLETED"])
+            if d and (k not in brk or d > brk[k][0]):
+                brk[k] = (d, r)
+        items = list(brk.values())
+    for d, r in items:
+        if not (C.FY26[0] <= d <= C.FY26[1]):
+            continue
+        c = yard_cen[r["CREW_YARD"]] if route == "golden_yard" else cen.get(r["ASSET_ID"])
+        out[(c, d.month)] += 1
+    return {(c, m): out.get((c, m), 0) for c in C.CENTERS for m in FY_MONTHS}
+
+
+def paid_revisions(tot, revs, ap, route="golden"):
+    """the revision of each estimate that Finance paid: a voucher's gross equals one revision's total, or the sum of
+    two estimates' revisions where one invoice covered two months"""
+    gross = [round(float(r["GROSS_AMOUNT"]), 2) for r in ap]
+    pick = {}
+    if route in ("latest", "first"):
+        return {e: (max(rs) if route == "latest" else min(rs)) for e, rs in revs.items()}
+    left = []
+    for gv in gross:
+        m = [(e, rv) for (e, rv), t in tot.items() if abs(round(t, 2) - gv) < 0.005]
+        if len(m) == 1:
+            pick[m[0][0]] = m[0][1]
         else:
-            rows = f[f["feeder"] == feeder]
-            cur = rows[(rows["effective_from"] <= "2026-04-01") &
-                       ((rows["effective_to"].isna()) | (rows["effective_to"] >= "2026-09-30"))]
-            dp = code_dp[cur["source_dp"].iloc[0]]
-        out_n[dp] += 1
-        out_e[dp] += season_kwh(mk, s, 2026) / 1000.0
-    return out_n, out_e
+            left.append(gv)
+    if route in ("one_to_one_latest", "one_to_one_first"):
+        for e, rs in revs.items():
+            if e not in pick:
+                pick[e] = max(rs) if route.endswith("latest") else min(rs)
+        return pick
+    open_e = sorted(e for e in revs if e not in pick)
+    for gv in left:
+        hit = [(a, ra, b, rb) for i, a in enumerate(open_e) for b in open_e[i + 1:] for ra in revs[a] for rb in revs[b]
+               if abs(round(tot[(a, ra)] + tot[(b, rb)], 2) - gv) < 0.005]
+        if len(hit) == 1:
+            a, ra, b, rb = hit[0]
+            pick[a], pick[b] = ra, rb
+    return pick
+
+
+def ask_restoration(target, route="golden"):
+    """fiscal 2026 restoration square yards by surface type and quarter of completion, on the accepted revision"""
+    lines = xlsx_rows(os.path.join(target, C.F_PAYEST))
+    ap = rows(os.path.join(target, C.F_AP))
+    paid = {r["INVOICE_NO"]: float(r["GROSS_AMOUNT"]) for r in ap}
+    tot = defaultdict(float)
+    revs = defaultdict(set)
+    for x in lines:
+        tot[(x["ESTIMATE_NO"], int(x["REVISION"]))] += float(x["AMOUNT"])
+        revs[x["ESTIMATE_NO"]].add(int(x["REVISION"]))
+    pick = paid_revisions(tot, revs, ap, route)
+    out = defaultdict(float)
+    for x in lines:
+        g = GROUPS.get(str(x["ITEM"]))
+        if g is None:
+            continue
+        if route != "all" and int(x["REVISION"]) != pick.get(x["ESTIMATE_NO"]):
+            continue
+        d = pdate(x["WORK_COMPLETED"])
+        if route == "golden_period":
+            y, m = str(x["PERIOD"]).split("-")
+            d = dt.date(int(y), int(m), 1)
+        fy, q = C.fy_quarter(d)
+        if fy != 2026:
+            continue
+        out[(g, q)] += float(x["QTY"])
+    return {(g, q): out.get((g, q), 0.0) for g in GROUP_ORDER for q in (1, 2, 3, 4)}

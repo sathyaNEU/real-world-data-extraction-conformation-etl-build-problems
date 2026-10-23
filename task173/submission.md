@@ -1,45 +1,43 @@
 ## Tags
 
-**Domain:** Energy Systems & Utilities (load forecasting).
+**Domain:** Energy Systems & Utilities (asset condition and maintenance).
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**File 155,000 MWh as the irrigation class's April to September 2027 energy.** The Lone Bench services draw what they drew in 2022, when the district delivered nothing, and the bottomland plants make the diversion above a quarter of their allotments up from their own shallow wells, whose energy per acre-foot each plant's meter separates from its river lift's. Not the bench wells' energy per acre-foot carried onto the bottomland cut, which prices shallow water at deep lifts. Not each plant's energy over its water, which reads a river lift and a well on one meter as one pump.
+**Enter 3,000 water service leak repairs as the Item 101 estimated quantity for 2027.** The AMI contract exchanges 108,398 meters between February and July 2027, and every 100 exchanges add about 1.0 service leak repairs in the weeks after the new meters are set, on top of about 1,900 repairs the services need without the visits. Not the record's 1,936 repairs a year, which carry only the few exchanges the Meter Shop made each year.
 
 ## 2. Critical Components
 
-1. The Lone Bench services draw **118,000 MWh** in a normal season with no district water.
-2. The bottomland plants' wells make up **145,000 acre-feet** of diversion the order removes.
+1. 2027 service leak repairs without exchange visits: **1,900** (nearest 100).
+2. Added service leak repairs per 100 meter exchanges: **1.0**.
+3. AMI meter exchanges scheduled for 2027: **108,398**.
 
 ## 3. Step-by-Step Solution
 
-1. Summed every read line in vvpud_ip_billing_2015-2026.csv by service and bill month, legacy accounts mapped through vvpud_cis_account_crosswalk_2020.csv, and kept the services ACTIVE in vvpud_ip_service_register_2026-09-30.xlsx; a service is a bottomland plant when varner_watermaster_diversion_statements_2015-2026.csv names it as a point's measure.
-2. Took the April to September total of station247_daily_eto_2007-2026.csv in each season and their 2007 to 2026 mean, 38.97 in, as the normal season the forecast instructions define.
-3. Put the Lone Bench services at their 2022 April to September energy times the normal over 2022's ET: 118,000 MWh.
-4. Put each bottomland plant at its 2015 to 2026 seasons' energy, each at normal ET, averaged, and its diversion the same way; the order holds diversion to 25 per cent of the allotment in varner_decree_allotment_schedule_2026.xlsx, so the diversion above that is lost to the river and made up from a well where the plant has one in vsga_extraction_reports_wy2017-wy2026.xlsx: 145,000 acre-feet.
-5. Fitted each plant's October to September energy, without intercept, on its season diversion and its metered well extraction for water years 2017 to 2026 to get its river lift's and its well's kWh per acre-foot (a plant with no well: its energy over its diversion).
-6. Added each plant's well energy on the water made up and took off its river lift's energy on the diversion lost; with the Lone Bench services the class draws 155,000 MWh to the nearest 5,000.
-7. Read hpa_dp_interval_export_2026.csv as meter standard time (every meter carries 96 intervals on 8 March 2026), moved daylight-time intervals an hour forward, kept the revenue meters (each point's check meter repeats its revenue meter one interval early; Bench's second bank adds its own meter from 15 June) and summed each billing month, and each posted peak's clock hour from hpa_2026_monthly_system_peaks.csv.
-8. Put each service at the delivery point its feeder was supplied from through the season in vvpud_oms_feeder_sources.csv (two feeders moved by switching order, one in November 2025 and one in March 2026), not the GIS substation, and summed its April to September 2026 bills.
+1. Counted one repair per leak, the CLOSED REP orders of WORK_TYPE SERVICE LEAK in eam_workorders_2021_2026.xlsx and the CLOSED SVC LEAK orders in lwms_workorders_2012_2021.csv (MIGRATED orders are counted in EAM): 1,936 a year from October 2024 to September 2026.
+2. Tied each repair to its GIS service (EAM ASSET_ID, legacy ADDRESS) and each meter exchange in cis_meter_events_2012_2026.csv (a REMOVE and the next SET at the premise) to the premise's service in cis_premises_20260930.csv, by SERVICE_ID or address.
+3. Counted repairs on a service in the 120 days after its new meter was set, for the 65,620 exchanges whose window closes by 30 September 2026, less the service base rate outside those windows: 1.01 added repairs per 100 exchanges.
+4. Took the record's own exchange-visit repairs out of the record rate (4,848 exchanges a year in the window): 1,887.2 repairs in 2027 without exchange visits.
+5. Applied the added rate to the 108,398 METER EXCHANGE rows of ami_install_schedule_2027.csv, with the record's delay from exchange to repair, and added the two: 2,977.6 repairs, 3,000 at the nearest 250.
+6. Item 201: one break per main ASSET_ID and REPORTED time across its REP and REPC orders in eam_workorders_2021_2026.xlsx, counted at its latest COMPLETED date and by the main's SVC_CENTER in gis_water_mains_20260930.csv: 712 breaks in fiscal 2026.
+7. Items 301 to 305: for each estimate in mabry_teague_pay_estimates_fy2025_fy2026.xlsx the revision whose AMOUNT total equals the GROSS_AMOUNT paid in ap_payments_contract_23-0388.csv, QTY summed by surface type and quarter of WORK_COMPLETED.
 
 ## 4. Deliverable Answers
 
-### irrigation_forecast_2027.xlsx
+### service_leak_forecast_2027.xlsx
 
-1. Schedule IP energy, 1 April to 30 September 2027, normal season: 155,000 MWh.
-2. Energy Halvern metered at each delivery point, billing months April to September 2026, kWh:
-   - Riverside: April 4,337,023, May 4,792,475, June 4,918,970, July 5,198,818, August 4,883,322, September 4,371,873
-   - Mill Slough: April 1,970,622, May 2,376,369, June 2,592,761, July 2,795,017, August 2,504,076, September 2,082,669
-   - Bench: April 8,484,220, May 11,245,337, June 12,898,420, July 14,288,088, August 12,352,771, September 9,440,557
-   - Corwin Road: April 8,454,690, May 11,548,010, June 13,611,445, July 15,148,942, August 12,767,482, September 9,500,821
-3. Demand at each delivery point in Halvern's monthly system peak hour, April to September 2026, kW:
-   - Riverside: April 7,369, May 8,963, June 8,319, July 8,557, August 7,703, September 7,444
-   - Mill Slough: April 3,489, May 4,593, June 3,905, July 4,072, August 3,499, September 3,129
-   - Bench: April 15,332, May 20,712, June 16,878, July 18,550, August 14,537, September 12,645
-   - Corwin Road: April 14,084, May 21,893, June 16,380, July 18,058, August 14,481, September 12,235
-4. Irrigation services each delivery point supplied through the 2026 season and their April to September 2026 billed energy:
-   - Riverside: 186 services, 8,208.6 MWh
-   - Mill Slough: 198 services, 8,136.8 MWh
-   - Bench: 147 services, 55,488.3 MWh
-   - Corwin Road: 149 services, 59,619.7 MWh
+1. 2027 water service leak repairs: 3,000 (nearest 250).
+2. Fiscal 2026 main break repairs by service centre and month:
+   - North: Oct 40, Nov 19, Dec 18, Jan 25, Feb 26, Mar 14, Apr 18, May 12, Jun 10, Jul 26, Aug 32, Sep 48
+   - South: Oct 14, Nov 19, Dec 15, Jan 18, Feb 23, Mar 18, Apr 10, May 14, Jun 20, Jul 16, Aug 35, Sep 28
+   - West: Oct 15, Nov 13, Dec 8, Jan 8, Feb 19, Mar 17, Apr 9, May 17, Jun 10, Jul 13, Aug 32, Sep 33
+3. Fiscal 2026 restoration by surface type and quarter (Q1 October to December, Q2 January to March, Q3 April to June, Q4 July to September), square yards to the nearest 10:
+   - Asphalt pavement: Q1 2,910, Q2 2,180, Q3 2,060, Q4 3,740
+   - Concrete pavement: Q1 670, Q2 670, Q3 400, Q4 670
+   - Sidewalk and driveway: Q1 1,550, Q2 1,530, Q3 1,210, Q4 1,900
+   - Sod: Q1 4,660, Q2 3,940, Q3 3,670, Q4 6,000
+
+### service_leaks_by_month.png
+
+1. Monthly service leak repairs January 2021 to September 2026 as a line, and the 2027 forecast by month as stacked bars, without exchange visits and added by the AMI exchanges.

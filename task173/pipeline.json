@@ -1,27 +1,27 @@
 {
  "task": "task173",
  "owner": "sathya8571",
- "status": "DRAWING",
+ "status": "BUILD",
  "domain": "energy-systems-utilities / asset-condition-maintenance",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-23",
- "stump": "A competent solver carries the record's service leaks per service-year (or a model on material, age and pressure zone) to the 2027 inventory and files about 1,100 repairs against about 1,950, because it never reads a service's failures on its own meter exchange visits, which leak within weeks about once in a hundred and which the 2027 AMI contract multiplies about thirteenfold.",
+ "stump": "A competent solver carries the record's service leak repairs per year (1,936, or its trend at 1,998) to 2027 and files 2,000 against 3,000, because it never reads a service's failures on its own meter exchange visits, which add about one repair per 100 exchanges in the weeks after the new meter is set and which the 2027 AMI contract multiplies to 108,398.",
  "architecture": 3,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-23"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW, no LEAK (2026-10-23); every REVIEW line answered in ## Leak sweep",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN, no BLOCK (2026-10-23)",
+  "nearest": "guard.py surface exit 0; nearest drivers task149 and task183 at 0.10"
  },
  "judge": {
   "verdict": "",
@@ -30,13 +30,15 @@
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC44",
- "resume": "stage 2: design (ladder, fork table, closure, asks, prompt) for architecture 3",
+ "resume": "stage 4: two scored readers and the judge",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "target_zip_md5": "",
- "figures_call_keys": []
+ "target_zip_md5": "c3223db0bdc5ea36cfb4edd35d427dca",
+ "figures_call_keys": [
+  "call.service_leak_repairs_2027"
+ ]
 }

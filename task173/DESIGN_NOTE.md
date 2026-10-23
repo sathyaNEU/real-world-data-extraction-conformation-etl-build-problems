@@ -12,13 +12,15 @@ every world, cell and mechanism in `## Tried and rejected` is spent and is not r
 | Card | `.claude/skills/fingerprint/cards/task173.json`, architecture v3 (v1 and v2 in `lineage`, v2 marked spent) |
 | Domain / task type | `energy-systems-utilities`, task type `asset-condition-maintenance` (serves Forecasting): the deciding quantity is the count of buried service failures a water utility's crews will repair in 2027, a failure hazard per service carried to a year in which most services are worked on |
 | Objective | Forecasting & Predictive Modeling: utility-side service leak repairs completed in calendar 2027, a window not yet open; records run to 30 September 2026 |
-| Shape | `02`, a forecast with its history: the call (the 2027 count) and the asks' grids over the record (criteria in `## Ask sheet`) |
+| Shape | `02`, a forecast with its history: the call (the 2027 count, nearest 250), three critical components (the 2027 base, the added repairs per 100 exchanges, the scheduled exchanges), Form 3B's base-year grids (Item 201 by service centre and month, 36 figures; Items 301 to 305 by surface type and quarter, 16 figures), the monthly chart and the two files: about 58 criteria |
+| Spine | `cis_meter_events_2012_2026.csv`, one row per meter set or removal, 141,859 rows; with `gis_service_lines_20260930.csv` (147,361 services), `cis_premises_20260930.csv` and `ami_install_schedule_2027.csv` (155,460 premises each) |
+| Deliverables | `service_leak_forecast_2027.xlsx` (the forecast, its working, the two Form 3B tables, notes), `service_leaks_by_month.png` |
 | Decision | `quantity_figure`, answer unit `count`: the estimated quantity of service leak repairs in the 2027 service repair and restoration term contract |
 | Mechanism | gap time (decisive: the record spreads meter exchanges thinly, about one meter in twenty a year, and the forward year exchanges about two in three within six months), with population (the 2027 service-months sit mostly inside the weeks after an exchange, where the record has few); pattern none; generators G2 (decisive: the unit the failure rate is read on is each service's own exchange visit and the weeks after it, not the service-year, its route or its street), G7 (when the induced failures can happen is pinned by an operations file, the AMI deployment schedule), G6 (the forward year's service-months move to the post-exchange state); Gate G `forecasting`; strategy `causal_design` (a transient risk window after a discrete visit, identified on each service against its own baseline) |
 | Layer 2 family / pattern | `estimand_identification` (which exposure the failure rate is read on); `own:work-induced-failure-risk-window-carried-to-a-mass-meter-exchange` (Energy carries no client cards; the five families and the nearest domains' cards are the seeds) |
 | Furniture | forum `council_or_assembly` (the City Council awards term contracts above the purchasing threshold on the estimated quantities), forcing event `purchase_order_or_contract` (the 2027 service repair and restoration term contract goes to bid with estimated quantities), organisation `local_government` (the utility is a department of the City), role `operations_director`, context artifact `other` (the bid schedule of estimated quantities), calibration `none` |
 | World | Hollis Bend, a fictional Texas city of about 380,000 on shrink-swell clay; Hollis Bend Water Utilities, a city department, about 140,000 metered services with meters in curb boxes on setters with angle valves; meters exchanged at end of life by the utility's meter shop (and in 2022 by a contractor clearing stopped meters); a 2026 AMI contract exchanges every pre-2019 meter February to July 2027 and fits radio endpoints to the rest. All fictional; the field's method is real |
-| People | `guard.py names --geo us --seed 173`: Mario Barnett, Heidi Snyder (Michelle Russell dropped on a people.first WARN) |
+| People | `guard.py names --geo us --seed 173`: Mario Barnett (the planner; the golden workbook's author, in no pack file); Heidi Snyder drawn and not used; Michelle Russell dropped on a people.first WARN |
 
 **Why this cell, shape first.** The shape that held this round is a forward population sitting at one end of an
 exposure the record measures at a finer grain than the textbook model uses, the right exposure chosen by fit (task175),
@@ -65,25 +67,249 @@ their exchange, which is what the meter recorded, not what the visit set off.
 
 ## Default path
 
-1. Stitch the legacy work orders (to May 2021, by street address) and the new CMMS (from May 2021, by GIS service
-   ID), keep utility-side service leak repairs, one per leak (its repair work order, not its investigation or
-   restoration orders).
-2. Count completed repairs per year; take the last two full years to 30 September 2026 (or fit a model of each
-   service's leaks per service-year on material, install era and pressure zone).
-3. Carry the rate to the 2027 inventory, net of the services the 2027 capital program renews.
+The pipeline a strong analyst builds from the prompt, the bid schedule's measurement section and the files' grain,
+every filed rule applied.
 
-Ends on: about 1,100 repairs (prototype; set on the generator)
+1. Stitch the two work order systems: the legacy export to 14 May 2021 (keyed by typed street address) and the EAM
+   workbook from 17 May 2021 (keyed by GIS service ID), dropping CANCELLED orders and counting each MIGRATED order once,
+   in EAM.
+2. Count one repair per leak, as Item 101 measures it: the CLOSED REP orders of WORK_TYPE SERVICE LEAK (investigation
+   and restoration orders are not repairs; customer-side investigations carry no repair order), dated by COMPLETED.
+3. Take the last two full years of the record, October 2024 to September 2026: 3,872 repairs, 1,936 a year; the
+   2016 to 2025 trend (the 2021 freeze year left out) projects 1,998 for 2027, and the same rate by material and
+   pressure zone carried to the 2027 inventory gives 1,936.
+4. Carry the rate to 2027 (the CIP 2027 renewals move it by about 15, inside every bin).
 
-Golden: about 1,950 repairs (prototype; set on the generator)
+Ends on: 2,000 repairs (1,936.0 a year, the record's rate)
+
+Golden: 3,000 repairs (2,977.6 unrounded)
 
 ## Stump sentence
 
-A competent solver carries the service leaks per service-year of the record, or a model of them on each service's
-material, age and pressure zone, to the 2027 inventory and files about 1,100 repairs, because it never reads a
-service's failures on its own exchange visits: an exchange operates the old angle valve and remakes the setter's
-couplings and leaks within weeks about once in a hundred visits, the record's routine exchanges touch one meter in
-twenty a year, and the 2027 AMI contract exchanges two meters in three in six months, which puts the year at about
-1,950.
+A competent solver carries the record's service leak repairs per year (or the same rate by material and pressure
+zone, or its trend) to 2027 and files 2,000 repairs against 3,000, because it never reads a service's failures on its
+own meter exchange visits: an exchange closes and reopens the old angle valve and remakes the setter's couplings, and
+the record shows about one added repair per 100 exchanges in the weeks after the new meter is set, while the Meter
+Shop's routine change-outs touched about one meter in thirty a year and the AMI contract exchanges 108,398 meters
+between February and July 2027.
+
+## Three rules
+
+- Task type: asset-condition-maintenance (Energy Systems & Utilities), which serves Forecasting & Predictive Modeling: a
+  water utility's count of buried service failures for the contract year, a failure hazard per service carried forward.
+- Domain test: the deciding quantity is the expected number of utility-side service failures in 2027, estimated the
+  way buried-asset failure forecasting estimates it, a rate per service read on each service's own exposure, here the
+  weeks after each service's own meter exchange against the service's base rate, carried to a schedule that exchanges
+  two meters in three.
+- Swap: "how many infusion pump incidents will the hospital log in 2027, the year it replaces two thirds of its pumps"
+  keeps a replacement wave but loses what decides it: an old angle valve and setter operated on a buried service when
+  its meter is changed, failing in the weeks after; a new pump does not disturb an old part it sits on, so the task
+  collapses to a replacement count.
+- Layer 1: two work order systems across a May 2021 cutover (legacy by typed address, EAM by GIS service ID, MIGRATED
+  orders in both), investigation, repair and restoration orders for one leak, CANCELLED call-centre duplicates, a
+  premise-to-service crosswalk with 2.6 per cent of premises unlinked and multifamily premises sharing a service, meter
+  exchanges as REMOVE and SET rows a day or a weekend apart, material codes from two GIS conversions and unknown
+  install years, contract pay estimates resubmitted, payments in vouchers that cover two months, a fiscal year from
+  October against calendar counts; each written by its system and none placed to be caught (`## Layer 1 inventory`).
+- Layer 2: `estimand_identification`, which exposure the failure rate is read on: the record's rate per service-year
+  averages a thin share of service-years inside the weeks after an exchange, and the forward year puts most of its
+  service-years there.
+- Decisive step: read each service's leak repairs against its own meter exchange history (a risk window after each
+  exchange against the service's base rate) and carry the added rate per exchange to the 2027 exchange schedule.
+- Not semantics: every field, code and definition read correctly (a leak is one unit, utility side only, the
+  retrofit leaves the meter in place) still files 2,000, because no field, code or sentence says an exchange visit
+  raises a service's failure rate; the risk window exists only in the timing of each service's repairs against its own
+  meter history, two systems apart.
+- Not rule application: no filed rule or procedure links exchanges to leaks, so executing every stated rule files the
+  record's rate (1,936); once the exposure is read, the licensed family (windows of 90, 120, 180 and 365 days, the
+  pooled base or each service's own prior year, the full record or the EAM years only, the exchange dated by its SET or
+  its REMOVE) spreads 2,933.8 to 3,040.3, 0.43 of the printed unit of 250, all on 3,000; the standing family
+  (windows of 90 to 180 days) spreads 2,933.8 to 2,985.2; what rules the easy route out is the data's own excess, 929
+  repairs inside the 120-day windows of 65,620 exchanges against 269 expected from the base rate, a difference of
+  about 40 standard errors that no filed clause states.
+- Analyst test: a strong analyst who stitches both systems, counts one repair per leak and reads Item 101's scope
+  correctly carries the last two years' 1,936 repairs a year (or its trend, 1,998) to 2027 and files 2,000, against
+  3,000 (`Ends on:`).
+- Estimand: Item 101 of the bid schedule (`itb_27-0114_service_repair_restoration_bid_schedule.pdf`, section 02)
+  files the unit (one leak, however many work orders, on the City's portion of a service from the corporation stop
+  through the meter's outlet coupling), the period (completion), the population (City crews and the contractor
+  together, section 01) and the window (the contract year, 1 January to 31 December 2027, an estimate of the work the
+  year will require); the prompt asks for calendar 2027 to the nearest 250.
+- No decoy: nothing is planted; no memo, draft or stakeholder figure states a 2027 quantity, the AMI schedule and the
+  meter history are the organisation's own operational files, and no document argues for the record's rate.
+- No certified replay: no published or certified figure is reproduced by one method only; the method is not hidden and
+  recovered, it is the analysis of each service's own repairs against its own exchanges.
+- Lesson: a failure rate learned per unit-year carries to a period only at the period's own exposure to the visits that
+  raise it, so a forecaster reads the record's failures on each unit's own work history before carrying a rate into a
+  year when most units are worked on; no build on file reads a maintenance-induced risk window (task132 resets a wear
+  curve at replacement, task149 reads a hazard per unit of working time, task183 carries a part's own failure history).
+
+## Readability screen
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0 the record's repairs a year (two years) | none needed | the EAM count | yes | none | n/a | one count | readable |
+| R1 the same rate by material and pressure zone | none | GIS columns | yes (rate by attribute) | none | n/a | rates times counts | readable |
+| R2 the trend through 2016 to 2025 | none | yearly counts | yes | none | n/a | a fit on counts | readable |
+| R3 the exchange effect read on the route | none | ROUTE column | partly (an area grain) | none | n/a | no | readable |
+| R4 (decisive) each service's repairs in the weeks after its own exchange, against its base | no sentence names exchange visits and leaks together (asserted, R1d) | no column holds it; the meter history (CIS, by premise) and the repairs (EAM by service, legacy by address) join only through the premise-to-service crosswalk and a date window | no textbook leak forecast reads a meter history | none | no sweep joins meter events to repairs | a time-windowed join across two systems through a crosswalk, then a base subtraction | silent |
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | a repair | one per leak (the REP order) | every service leak order (INV, REP, RST) | 3,244 base, another call | Item 101: "A leak is one unit however many work orders or visits its repair takes" |
+| SF2 | the City's side | corporation stop through the meter outlet | customer-side investigations | same call (they carry no repair order) | Item 101's scope sentence |
+| SF3 | in 2027 | repair completed in 2027 | the report date | same call (2,974.2) | Item 101: counted in the period its repair is completed |
+| SF4 | who repairs | City crews and the contractor | the contractor's share only | the contractor's share is assigned later | section 01: the City's total |
+| SF5 | the window | calendar 2027 | fiscal 2027 | the prompt and section 01 | prompt, section 01 |
+| SF6 | the quantity | the expected count | a percentile or a cap | section 01: the City's estimate of the work the year will require | section 01 |
+| SF7 | the schedule | the deployment schedule as filed | four weeks' slippage | same call (2,972.2) | asserted |
+| SF8 | rounding | the unrounded total to the nearest 250 | rounding parts first | same call | prompt |
+| SF9 | HOLD - CIP 2027 rows | not exchanged by the AMI contractor | counted as exchanges | same call (2,981.2) | the CIP: services renewed, meter reset by the main contractor |
+| SF10 | ENDPOINT RETROFIT rows | the meter stays, no exchange | every AMI visit an exchange | 3,447.4, prints 3,500 | the schedule's WORK_TYPE definition in the field definitions (the meter in place keeps its register); the record measures exchanges only |
+| SF11 | Meter Shop change-outs before February 2027 | none scheduled (age change-outs stopped on the AMI award in April 2026) | continuing to March 2027 | same call (2,989.8) | asserted |
+| SF12 | CIP 2027 renewals | renewed services from completion | ignored | same call (within 15) | asserted |
+
+## Ladder
+
+| Rung | Construction | 2027 figure | Prints | Dies to |
+|---|---|---|---|---|
+| R0 | the record's repairs a year, Oct 2024 to Sep 2026 | 1,936.0 | 2,000 | the record's own excess after exchanges |
+| R1 | the same rate by material and pressure zone, carried to the 2027 inventory | 1,936.0 | 2,000 | the same |
+| R2 | the 2016 to 2025 trend (2021 left out) | 1,998.1 | 2,000 | the same |
+| R3 | the exchange effect read on the meter route | 1,954.7 | 2,000 | the fit: the excess sits on the exchanged service, not its route |
+| R4 | each service's repairs after its own exchange, against its base, carried to 108,398 exchanges | 2,977.6 | 3,000 | golden |
+| rival | every AMI visit read as an exchange (retrofits too) | 3,447.4 | 3,500 | SF10 |
+
+Margins: the golden sits 102.6 inside its bin's nearest edge (2,875) against a sampling sigma of 57.2 on the added
+repairs (asserted F2); the default sits 1,041.6 below the golden, more than four bins; the truth expectation is 3,004.6
+(3,000). Family members W90 2,974.0, W120 2,977.6, W180 2,980.2, W365 3,040.3, own base 2,933.8, EAM years 2,985.2,
+REMOVE date 2,977.6, all 3,000 (F1). Components: the 2027 base 1,887.2 (1,900 at the nearest 100; 1,884.3 to 1,887.4
+across windows) and 1.006 added repairs per 100 exchanges (1.0 at one decimal).
+
+## Closure table
+
+| # | Axis | Reading | Closure |
+|---|---|---|---|
+| 1 | Population | every utility-side service leak repaired in 2027, City crews and contractor | Item 101, section 01; C1 |
+| 2 | Unit of account | one leak | Item 101 sentence; SF1 asserted |
+| 3 | Attribution window | completion date in calendar 2027 | Item 101; SF3 C1 |
+| 4 | As-of dating | the record to 30 September 2026, schedule rev. 4 | manifest; SF7 C3 |
+| 5 | Version basis | the deployment schedule as filed | SF7 C3 |
+| 6 | Denominator | per exchange (the METER EXCHANGE rows) | the schedule's WORK_TYPE definition; SF10 C4 |
+| 7 | Weighting | pooled over exchanges | C1: own-base and pooled both 3,000 (F1) |
+| 8 | Window length | 90 to 365 days | C1 asserted (F1) |
+| 9 | Boundary inclusivity | a repair on the exchange day is outside the window | C1: none moves a bin |
+| 10 | Rounding path | the unrounded total to the nearest 250 | prompt; SF8 |
+| 11 | Tie-break | none | no candidates to tie |
+| 12 | Maturity and censoring | exchanges whose window closes after 30 September 2026 left out | C1 across windows |
+| 13 | Order of operations | base less the record's own exchange repairs, then the added repairs | C1: either order the same call |
+| 14 | Row order | none | sums |
+| 15 | Duplicate resolution | MIGRATED counted once, CANCELLED out | R2a, R2b asserted |
+| 16 | Identity normalisation | legacy addresses normalised to the GIS; premises to services by SERVICE_ID or address | R2c, R2d asserted |
+| 17 | Netting against gross | none | n/a |
+| 18 | Dimensional units | counts | n/a |
+| 19 | Code and status semantics | WORK_CLASS REP is the repair; INV, RST are not | dictionary; SF1 |
+| 20 | Integerisation | none before the final rounding | SF8 |
+| 21 | Clause scope | Item 101 applies to the contract year | section 01 |
+| 22 | Forward window contents | the AMI schedule (rev. 4) and the CIP 2027 program | shipped driver files |
+
+## Literal reader
+
+Executed word for word, the prompt and Item 101 ask for the expected count of leaks repaired on the City's side of
+services in calendar 2027; every literal reading of a term (SF1 to SF12) either files 3,000 or violates a quotable
+sentence (SF1, SF10). The easy answer (2,000) comes from an easy method on the same literal estimand, never from another
+reading.
+
+## Oracles
+
+none for the call: no shipped control, published figure or corpus ties under the record's rate or under the golden.
+For Items 301 to 305 the accounts payable vouchers are the referee (they confirm which revision was paid and hand over
+no square yards); for Item 201 nothing ties.
+
+## Ask sheet
+
+**Ask A, Item 201 base-year quantities: fiscal 2026 main break repairs by service centre and month (36 figures).**
+H18 home: Form 3B, the base-year quantities the bid schedule's Item 201 estimate is set against. Use: the bid form.
+Primary device (D1/D7, which records are one event): a break the crew clamps and the contractor repairs carries two
+repair orders (REP and REPC) with one REPORTED time and one location, counted once at the permanent repair; a second
+break found on the same call carries its own crew REP with the same REPORTED time at another location, a second unit.
+No field says which orders are one break. Hazards: CANCELLED duplicates; the crew yard against the GIS centre (mutual
+aid on 12 per cent of breaks); breaks reported in fiscal 2025 whose permanent repair falls in October 2025. Path:
+`eam_workorders_2021_2026.xlsx` (WORK_TYPE, WORK_CLASS, STATUS, ASSET_ID, ADDRESS, REPORTED, COMPLETED, CREW_YARD),
+`gis_water_mains_20260930.csv` (MAIN_ID, SVC_CENTER, STATUS). Stops: every REP and REPC row (0 of 36); crew REP rows only
+(4); the crew yard (7); one break per asset and reported time (11); the crew's completion date (12); per asset and
+initiated date (2). Realism: crews clamp and hand large breaks to the term contractor, and a crew pressurising a main
+finds a second break on the same call; both are how an EAM records it. Separation: no REPC class on any service leak
+order (asserted); the call reads no main break row.
+
+**Ask B, Items 301 to 305 base-year quantities: fiscal 2026 restoration in square yards by surface type and quarter
+(16 figures).** H18 home: Form 3B. Use: the bid form. Primary device (D9, a paper row covering several ledger lines):
+the contractor resubmits pay estimates (the inspector's re-measure paid at its revision; a later resubmission with
+added quantities returned unpaid), and in each fiscal 2026 quarter one invoice covers two months, one paid at its
+revision and one as first submitted, so no voucher matches either month alone. Hazards: quarter by the estimate's month
+against WORK_COMPLETED; every revision summed. Path: `mabry_teague_pay_estimates_fy2025_fy2026.xlsx` (ESTIMATE_NO, REVISION,
+ITEM, QTY, AMOUNT, WORK_COMPLETED), `ap_payments_contract_23-0388.csv` (GROSS_AMOUNT), the bid schedule's item
+crosswalk. Stops: the latest revision (0 of 16), the first (0), every revision (0), one-to-one reconciliation with the
+latest (0) or first (1) where no voucher matches, the estimate month for the quarter (5). Realism: contract
+administration systems keep every submission; a contractor invoices two months together over the holidays and at
+quarter ends. Separation: the call reads neither file (asserted).
+
+| Ask | Figures | Cracker path (lands the call, runs the battery, executes the filed rules, reconciles controls one to one) | Cracker keeps | Mirror path and keep | Cracker |
+|---|---|---|---|---|---|
+| A Item 201 by centre and month | 36 | every REP and REPC row once CANCELLED orders are out | 0 of 36 | the same, 0 of 36 | miss |
+| B Items 301-305 by surface type and quarter | 16 | each estimate matched one to one to a voucher's gross, the latest (or the first) revision where no voucher matches | 0 of 16 | the latest revision, 0 of 16 | miss |
+
+Pair ceiling: 28.5 (cracker keeps 0 of 52, 45.0; mirror keeps 0 of 52, 12.0; weights 38, 7, 55; every other priced reader route keeps at most 12 of 52, `generator/ceiling.py` output)
+
+Mirror leakage: 0.0 per cent of ask weight
+
+Measured by: generator/ceiling.py
+
+## Layer 1 inventory
+
+| Item | System that writes it | File | Natural mishandling | Neutral (asserted) |
+|---|---|---|---|---|
+| two work order systems across the 17 May 2021 cutover, MIGRATED in both | legacy WMS and EAM | lwms, eam | counting MIGRATED twice | R2a, same call |
+| typed legacy addresses (long suffixes, a dropped directional, a stray space) | legacy WMS | lwms | exact matching only | R2c, same call |
+| investigation, repair and restoration orders for one leak | EAM, legacy | both | counting every order | SF1, ruled out by Item 101 |
+| CANCELLED call-centre duplicates | EAM, legacy | both | counting them | R2b, same call |
+| premises with no SERVICE_ID, multifamily premises on one service | CIS | cis_premises | dropping them | R2d, same call |
+| REMOVE and SET a day or a weekend apart | CIS | cis_meter_events | dating by REMOVE | R2e, same call |
+| one-letter material codes, HDPE, UNK, blank install years | GIS conversions | gis_service_lines | reading them as classes | R2f, rung 1 only |
+| a 2022 stopped-meter contractor's exchanges | CIS | cis_meter_events | leaving them out | R2g, same call |
+| resubmitted pay estimates, combined invoices | contract system, AP | pay estimates, AP | latest revision | Ask B only |
+| fiscal year October to September | Finance | bid schedule | calendar quarters | asks only |
+
+## Leak sweep
+
+`leak.py task173 --asof 2026-10-21`: REVIEW, no LEAK. Each REVIEW line answered:
+- Sweep 3, `field_definitions.txt` and the bid schedule carry the call's nouns (water service leak repair, Item 101,
+  estimated quantity, 2027): the bid schedule asks the question the call answers and defines Item 101, and the field
+  definitions name the work types; neither carries a 2027 figure. Harmless.
+- Sweep 4, `field_definitions.txt` carries record, exchange, history, schedule, family, carried: the file describes
+  the CIS meter history (an exchange is a REMOVE and a SET), the deployment schedule, single-family premises and
+  orders carried into EAM; no sentence relates an exchange to a leak (asserted, R1d). Harmless.
+- Sweep 9, the AMI schedule's planned weeks in 2027: a forward plan on the allow-list (H16), as are the CIP's
+  completion months and the contract year. Harmless.
+- Single-use test: the AMI schedule's only use in the solution is the decisive step; it sits in the folder as one of
+  three 2027 programmes (the CIP, used by the default path to take renewed services out, and the flushing plan, a
+  distractor), so its presence is the planner's 2027 context, not a pointer. The meter history is the CIS's own
+  record and the default path reads none of it. Recorded for the stage 4 reader's question 3.
+
+## Stage 3 gates
+
+- `generator/checks.py`: 81 ok, 0 FAIL (input gates, R1, R2a to R2g, R3a to R3c, the golden family F1 to F5, SF1 to
+  SF12, the asks' devices and separation, documents, registers and realism).
+- `generator/verify.py` (pandas and pypdf, its own path): 0 FAIL; the call 2,977.9 against 2,977.6.
+- Two consecutive full builds byte-identical (16 target files, 2 golden files, the write-up).
+- `figures_check.py task173`: PASS, 51 figures, 0 absent.
+- `generator/ceiling.py`: pair ceiling 28.5, mirror leakage 0.0.
+- `leak.py --asof 2026-10-21`: REVIEW, no LEAK (`## Leak sweep`).
+- `scrub_producer_metadata.py` on `target/` and `golden/`: clean.
+- `precut.py task173`: exit 0; `voice-check.py task173`: PASS.
+- `guard.py surface task173`: exit 0, no persona in the cut pack. `guard.py heart task173`: WARN, no BLOCK (overuse of the lane's objective and Gate G; quantity_figure, how-many and xlsx with png against task175 and task176; nearest drivers task149 and task183 at 0.10).
 
 ## Tried and rejected
 
@@ -160,6 +386,17 @@ twenty a year, and the 2027 AMI contract exchanges two meters in three in six mo
   worst-first replacement (a level at selected units, the shrinkage law); fibre take-up by competitor presence (the
   forward areas' defining feature names the covariate); involuntary lapse at card expiry (a calendar-locked trigger,
   task162 by abstraction).
+- Architecture 3, stage 3 (2026-10-23), the asks re-sited three times on the cracker script before any reader:
+  Item 201 by service centre and quarter (12 figures) left the asks' weight on Items 301 to 305, which a cracker
+  reconciling each estimate to its voucher kept whole (16 of 52, pair 37.0), so Item 201 went to months (36); the
+  paid revision read one estimate to one voucher fell to that reconciliation, so each fiscal 2026 quarter now has one
+  invoice covering two months (one paid at its revision, one as first submitted), and the cracker keeps 0 of 16;
+  breaks counted once per main and reported time kept 11 of 36 with nothing to over-clean, so a second break found
+  on the same call carries its own crew repair at another location.
+- Architecture 3, stage 3, the induced chance per exchange at its first setting (about 1.4 per 100) put the 2027
+  forecast near 3,300 with the AMI's added repairs at seven tenths of the base, more than a planner would find
+  credible; it was lowered to about 1.0 per 100 (the record's routine exchanges carry about 3 per cent of its
+  repairs), which still leaves the record's rate 35 per cent under the expectation.
 
 ## Retired
 
