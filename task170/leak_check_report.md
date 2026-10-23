@@ -1,18 +1,26 @@
 # leak check, task170
 
-**Verdict: REVIEW.** 13 files read, 25 golden figures and 3 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 12 files read, 21 golden figures and 7 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: efficacy, family, exposure, golden, window, protection, in-bed, report, bottles, pooled, default, children, forecast, effect, survey, change, per-bite, inside, population, overlap, register, decisive, catches, pallet, distribution
+Stump terms swept: default, record, family, golden, choice, register, preference, take-up, change, plateau, opt-out, window, bottles, opt-in, million, children, chosen, member, architecture, decisive, cancellations, nothing, forward, landed, carries
 
-## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `kinga5_final_report_2024.pdf`: golden figure 56.7 appears: ...44.9) All sites 8,234 14,896.1 3,538 14,793.9 56.7 Protective efficacy is computed from the cases an...
-- **REVIEW** `lulanet_r_distribution_plan_2027.docx`: carries 15 of 17 distinctive words of the committed call: 'The March 2027 LulaNet R campaign will avert about 11,000 Ombeni fever cases among the people sleeping under its nets in'
+## 3 answer figures in the pack (REVIEW 1)
+- **REVIEW** `vch_savings_plan_amendment_2027.docx`: carries 9 of 11 distinctive words of the committed call: "Budget about TNK 11,500,000 for the employer's match on Vindeholm County Hospitals' 2027 intake in FY2027, with about 1,"
 
-## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `kinga5_final_report_2024.pdf`: 4 of 25 stump-paragraph terms appear (efficacy, report, pooled, survey); read whether the document names the move
-- **REVIEW** `lulanet_r_distribution_plan_2027.docx`: 5 of 25 stump-paragraph terms appear (report, survey, register, catches, distribution); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 3)
+- **REVIEW** `data_dictionary.txt`: 5 of 25 stump-paragraph terms appear (record, register, change, member, carries); read whether the document names the move
+- **REVIEW** `vch_savings_plan_amendment_2027.docx`: 4 of 25 stump-paragraph terms appear (default, choice, member, carries); read whether the document names the move
+- **REVIEW** `vch_savings_plan_rules_2024.pdf`: 3 of 25 stump-paragraph terms appear (register, change, member); read whether the document names the move
+
+## 6 ranking artifacts (REVIEW 1, INFO 1)
+- **REVIEW** `staff_benefits_survey_2025.xlsx`: names 6 of 7 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `data_dictionary.txt`: names 7 of 7 answer-set candidates; confirm it does not rank them on the decision question
+
+## 9 dates after the setting (REVIEW 2)
+- **REVIEW** `export_manifest.csv`: 1 ISO dates after 2026-11-09, e.g. 2027-01-01
+- **REVIEW** `vch_hiring_plan_2027.xlsx`: 3025 ISO dates after 2026-11-09, e.g. 2027-01-04, 2027-02-01, 2027-03-01, 2027-04-01, 2027-05-03
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -23,12 +31,8 @@ Stump terms swept: efficacy, family, exposure, golden, window, protection, in-be
 
 ## 5 announcements (clean)
 
-## 6 ranking artifacts (clean)
-
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
-
-## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)

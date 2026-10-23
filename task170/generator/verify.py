@@ -1,22 +1,23 @@
-"""task170 independent verifier: reads only the bundle in a target folder, on its own code path (csv, openpyxl,
-pyarrow and pypdf, no pandas, no calc.py), recomputes every graded figure and compares it with figures.json.
+"""task170 independent verifier: reads only the bundle in a target folder, on its own code path (csv and openpyxl, no
+pandas, no calc.py), recomputes every graded figure and compares it with figures.json.
 
     python3 task170/generator/verify.py task170/target"""
 from __future__ import annotations
 
 import csv
+import datetime as dt
 import json
-import math
 import os
-import re
 import sys
-import zipfile
 from collections import defaultdict
 
+from openpyxl import load_workbook
+
 HERE = os.path.dirname(os.path.abspath(__file__))
-SC = ["RTN", "MWR", "KDG", "OYM", "NDR", "KBR", "WKL"]
-SC_NAME = {"RTN": "Ruvari Town", "MWR": "Mwiri", "KDG": "Kendagi", "OYM": "Oyamo", "NDR": "Ndira", "KBR": "Kobura",
-           "WKL": "Wakula"}
+HOSP = ["VCS", "RDH", "ASK", "OSV", "BRB", "LDM"]
+SCALE27 = {"G1": 24900, "G2": 27300, "G3": 30100, "G4": 33800, "G5": 38600, "G6": 44900, "G7": 52700, "G8": 63400}
+LAST = 2026 * 12 + 9          # the October 2026 payroll as a month index
+FIRST = 2019 * 12             # January 2019
 FAILS = []
 
 
@@ -26,198 +27,143 @@ def ok(label, cond, detail=""):
         FAILS.append(label)
 
 
-def bin_of(label):
-    s = label.strip().lower()
-    if re.match(r"^\d{4}-\d{4}$", s):
-        h = int(s[:2])
-    elif re.match(r"^\d{2}:\d{2}-", s):
-        h = int(s[:2])
-    else:
-        m = re.match(r"^(\d{1,2})(am|pm)-", s)
-        h = int(m.group(1)) % 12 + (12 if m.group(2) == "pm" else 0)
-    return (h - 18) % 24
+def mi(d):
+    return d.year * 12 + d.month - 1
 
 
-def evening(s, morning=False):
-    s = str(s).strip()
-    m = re.match(r"^(\d{1,2})(:?)(\d{2})\s*([AaPp][Mm])?$", s)
-    h, mi = int(m.group(1)), int(m.group(3))
-    if m.group(4):
-        h = h % 12 + (12 if m.group(4).upper() == "PM" else 0)
-    t = h + mi / 60.0
-    if morning:
-        return t + 6
-    return t - 18 if t >= 12 else t + 6
+def iso(s):
+    return dt.date.fromisoformat(s)
 
 
-def entomology(target):
-    n = defaultdict(int)
-    mins = defaultdict(int)
-    with open(os.path.join(target, "hlc_sentinel_2024_2026.csv"), newline="", encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            if r["an_ruvariensis"] == "":
-                continue
-            pos = "IN" if r["position"] in ("IN", "Indoor") else "OUT"
-            b = bin_of(r["hour"])
-            n[(pos, b)] += int(r["an_ruvariensis"])
-            mins[(pos, b)] += int(r["minutes_collected"])
-    bi = [n[("IN", h)] / mins[("IN", h)] for h in range(12)]
-    bo = [n[("OUT", h)] / mins[("OUT", h)] for h in range(12)]
-    return bi, bo
+def match(rate):
+    r = float(rate)
+    return min(r, 3.0) + 0.5 * min(max(r - 3.0, 0.0), 3.0)
 
 
-def behaviour(target):
-    from openpyxl import load_workbook
-    wb = load_workbook(os.path.join(target, "human_behaviour_survey_2025.xlsx"), read_only=True)
-    people = []
-    for ws in wb.worksheets:
-        rows = ws.iter_rows(values_only=True)
-        head = list(next(rows))
-        i_in, i_bed, i_up = head.index("went_inside"), head.index("went_to_bed"), head.index("got_up")
-        for r in rows:
-            if r[0] is None:
-                continue
-            people.append((evening(r[i_in]), evening(r[i_bed]), evening(r[i_up], True)))
-    ind, inb = [], []
-    for h in range(12):
-        t = h + 0.5
-        ind.append(sum(1 for a, b, c in people if a <= t < c) / len(people))
-        inb.append(sum(1 for a, b, c in people if b <= t < c) / len(people))
-    return ind, inb, len(people)
+def rows_of(path, sheet=None):
+    wb = load_workbook(path, read_only=True, data_only=True)
+    ws = wb[sheet] if sheet else wb.worksheets[0]
+    it = ws.iter_rows(values_only=True)
+    head = [str(h) for h in next(it)]
+    return [dict(zip(head, r)) for r in it if any(v is not None for v in r)]
 
 
-def share(bi, bo, ind, inb):
-    num = sum(bi[h] * inb[h] for h in range(12))
-    den = sum(bi[h] * ind[h] + bo[h] * (1 - ind[h]) for h in range(12))
-    return num / den
+def as_date(v):
+    return v.date() if isinstance(v, dt.datetime) else (v if isinstance(v, dt.date) else iso(str(v)[:10]))
 
 
-def trial(target):
-    from pypdf import PdfReader
-    txt = "\n".join(p.extract_text() for p in PdfReader(os.path.join(target, "kinga5_final_report_2024.pdf")).pages)
-    sites = ["Mabwe", "Kisiriri", "Kibondeni", "Chibowa", "Lukonde"]
-    out = {}
-    for s in sites:
-        m = re.search(r"%s\s+([\d,]+)\s+([\d,]+\.\d)\s+([\d,]+)\s+([\d,]+\.\d)\s" % s, txt)
-        out[s] = [float(x.replace(",", "")) for x in m.groups()]
-    pooled = float(re.search(r"All sites\s+[\d,]+\s+[\d,.]+\s+[\d,]+\s+[\d,.]+\s+(\d+\.\d)", txt).group(1))
-
-    def table(title, labels):
-        seg = txt[txt.index(title):]
-        vals = []
-        for lab in labels:
-            m = re.search(r"%s((?:\s+[\d.]+){5})" % re.escape(lab), seg)
-            vals.append([float(x) for x in m.group(1).split()])
-        return [[vals[h][i] for h in range(12)] for i in range(5)]
-
-    hrs = ["%02d:00" % ((18 + h) % 24) for h in range(12)]
-    halves = ["%02d:30" % ((18 + h) % 24) for h in range(12)]
-    bi, bo = table("Table 2a", hrs), table("Table 2b", hrs)
-    ind, inb = table("Table 3a", halves), table("Table 3b", halves)
-    res = []
-    for i, s in enumerate(sites):
-        cc, pc, cn, pn = out[s]
-        E = 1 - (cn / pn) / (cc / pc)
-        f = share(bi[i], bo[i], [x / 100 for x in ind[i]], [x / 100 for x in inb[i]])
-        var = (1 - E) ** 2 * (1 / cn + 1 / cc)
-        res.append((E, f, var))
-    q = sum(E * f / v for E, f, v in res) / sum(f * f / v for E, f, v in res)
-    return q, pooled, ("96 to 98 per cent" in re.sub(r"\s+", " ", txt))
-
-
-def baseline_and_use(target):
-    from openpyxl import load_workbook
-    wb = load_workbook(os.path.join(target, "obf_planning_baseline_2027.xlsx"), read_only=True)
-    ws = wb.worksheets[0]
-    base = {}
-    for r in ws.iter_rows(min_row=4, values_only=True):
-        if r[0] in SC:
-            base[(r[0], r[2][:3])] = int(r[3])
-    with zipfile.ZipFile(os.path.join(target, "lulanet_r_distribution_plan_2027.docx")) as z:
-        x = z.read("word/document.xml").decode()
-    text = re.sub(r"<[^>]+>", "|", x)
-    use = {}
-    for mname in ("April", "May", "June", "July", "August", "September", "October", "November", "December"):
-        m = re.search(r"\|%s\|+(\d+)\|" % mname, text)
-        use[mname[:3]] = int(m.group(1)) / 100
-    return base, use
-
-
-def nets(target):
-    import pyarrow.parquet as pq
-    t = pq.read_table(os.path.join(target, "nets_registration_2026.parquet")).to_pylist()
-    seen, rows = set(), []
-    for r in t:
-        k = tuple(sorted((a, str(b)) for a, b in r.items()))
-        if k in seen:
-            continue
-        seen.add(k)
-        rows.append(r)
-    mkey = {(r["sub_county"], r["ward"], r["dwelling_mark"], r["usual_members"], r["under_five"], r["sleeping_spaces"])
-            for r in rows if r["round"] == "MAIN"}
-    out = defaultdict(int)
-    for r in rows:
-        k = (r["sub_county"], r["ward"], r["dwelling_mark"], r["usual_members"], r["under_five"], r["sleeping_spaces"])
-        if r["round"] == "MOPUP" and k in mkey:
-            continue
-        out[r["sub_county"]] += min(4, math.ceil(r["usual_members"] / 2))
-    return dict(out)
-
-
-def cases(target):
-    fac = {}
-    with open(os.path.join(target, "facility_list_2026.csv"), newline="") as fh:
-        for r in csv.DictReader(fh):
-            fac[r["mfl_code"]] = r
-    by = {}
-    with open(os.path.join(target, "khis_moh705_obf_2024_2026.csv"), newline="") as fh:
-        for r in csv.DictReader(fh):
-            if not ("202601" <= r["period"] <= "202609"):
-                continue
-            k = (r["period"], r["mfl_code"], r["age_group"])
-            if k not in by or r["last_updated"] > by[k]["last_updated"]:
-                by[k] = r
-    name = {v: k for k, v in SC_NAME.items()}
-    out = defaultdict(int)
-    for k, r in by.items():
-        v = int(r["confirmed_obf"])
-        if r["comment"].startswith("incl."):
-            sat = [c for c, f in fac.items() if f["parent_mfl_code"] == r["mfl_code"]]
-            for s in sat:
-                v -= int(by[(r["period"], s, r["age_group"])]["confirmed_obf"])
-        out[name[fac[r["mfl_code"]]["sub_county"]]] += v
-    return dict(out)
+def km(events, follow, n=96):
+    """events: list of month-of-event or None; follow: months observed. Returns cumulative incidence 1..n."""
+    at = defaultdict(int)
+    ev = defaultdict(int)
+    for e, f in zip(events, follow):
+        end = f if e is None else min(e, f)
+        at[end] += 1
+        if e is not None and e <= f:
+            ev[e] += 1
+    total = len(events)
+    leaving = 0
+    S, out = 1.0, []
+    removed = 0
+    for k in range(1, n + 1):
+        risk = total - removed
+        d = ev.get(k, 0)
+        S *= (1 - d / risk) if risk else 1.0
+        out.append(1 - S)
+        removed += at.get(k, 0)
+    return out
 
 
 def main(target):
     F = json.load(open(os.path.join(HERE, "figures.json")))
-    bi, bo = entomology(target)
-    ind, inb, n_people = behaviour(target)
-    phi = share(bi, bo, ind, inb)
-    q, pooled, use_note = trial(target)
-    base, use = baseline_and_use(target)
-    by = {s: sum(v * use[m] * q * phi for (sc, m), v in base.items() if sc == s) for s in SC}
-    total = sum(by.values())
-    ok("verify call", int(round(total / 1000.0)) * 1000 == F["call_cases_averted"], "%.1f" % total)
-    btot = sum(base.values())
-    ok("verify share", int(round(100 * total / btot)) == F["call_share_of_expected_pct"], "%.3f" % (100 * total / btot))
-    ok("verify expected cases", btot == F["step_expected_cases"], str(btot))
-    ok("verify per-bite protection", round(q, 2) == F["component_per_bite_protection"], "%.4f" % q)
-    ok("verify in-bed share", round(phi, 2) == F["component_in_bed_share"], "%.4f" % phi)
-    ok("verify trial pooled efficacy", abs(pooled - F["step_trial_pooled_efficacy_pct"]) < 1e-9, "%.1f" % pooled)
-    ok("verify rival", int(round(sum(v * use[m] for (sc, m), v in base.items()) * pooled / 100 / 1000.0)) * 1000
-       == F["rival_trial_efficacy_cases_averted"], "")
-    for s in SC:
-        ok("verify sub-county %s" % s, int(round(by[s] / 100.0)) * 100 == F["call_cases_averted_%s" % s], "%.1f" % by[s])
-    nv = nets(target)
-    for s in SC:
-        ok("verify nets %s" % s, nv.get(s) == F["ask_nets_%s" % s], str(nv.get(s)))
-    cv = cases(target)
-    for s in SC:
-        ok("verify reported cases %s" % s, cv.get(s) == F["ask_reported_cases_2026_%s" % s], str(cv.get(s)))
-    ok("verify trial positive control", use_note, "")
-    ok("verify survey read", n_people > 3000, str(n_people))
-    print("\n%d FAIL" % len(FAILS))
+    # hires: spells from January 2019
+    hr = list(csv.DictReader(open(os.path.join(target, "hr_employment_history_2019_2026.csv"), encoding="utf-8")))
+    idm = {}
+    for r in hr:
+        idm[r["legacy_employee_no"]] = r["employee_no"]
+        idm[r["employee_no"]] = r["employee_no"]
+    sp = []
+    for r in hr:
+        s = mi(iso(r["contract_start"]))
+        if s < FIRST:
+            continue
+        e = mi(iso(r["contract_end"])) if r["contract_end"] else None
+        sp.append(dict(emp=r["employee_no"], s=s, e=e, f=(min(e, LAST) if e is not None else LAST) - s + 1))
+    by_emp = defaultdict(list)
+    for i, x in enumerate(sp):
+        by_emp[x["emp"]].append(i)
+
+    def spell(emp, m):
+        for i in by_emp.get(emp, []):
+            x = sp[i]
+            if x["s"] <= m and (x["e"] is None or m <= x["e"]):
+                return i
+        return None
+
+    reg = rows_of(os.path.join(target, "ledstrand_member_register_2026-10.xlsx"))
+    join = {}
+    rate = {}
+    for r in reg:
+        m = mi(as_date(r["joined"]))
+        i = spell(idm.get(str(r["employer_ref"])), m)
+        if i is not None:
+            join[i] = m
+            rate[i] = int(r["rate_at_join_pct"])
+    Cj = km([(join[i] - x["s"] + 1) if i in join else None for i, x in enumerate(sp)], [x["f"] for x in sp])
+    p = Cj[59]
+    # staying on the payroll: P(still paid in month k)
+    left = [(x["e"] - x["s"] + 1) if (x["e"] is not None and x["e"] <= LAST) else None for x in sp]
+    Lc = km(left, [x["f"] for x in sp])
+    Se = [1.0] + [1 - v for v in Lc[:95]]
+    mb = sum(match(r) for r in rate.values()) / len(rate) / 100
+    ok("five-year join share", int(round(100 * p)) == F["component_prefer_to_save_pct"], "%.4f" % p)
+    ok("chosen by the twelfth payroll", int(round(100 * Cj[11] / p)) == F["component_chosen_by_12th_payroll_pct"],
+       "%.4f" % (Cj[11] / p))
+    plan = rows_of(os.path.join(target, "vch_hiring_plan_2027.xlsx"), "Requisitions")
+    by = defaultdict(float)
+    heads = 0.0
+    for r in plan:
+        m0 = as_date(r["planned_start"]).month
+        pay = SCALE27[r["grade"]] * float(r["fte"])
+        for k in range(1, 14 - m0):
+            A = Cj[k - 1] / p
+            by[r["hospital"]] += Se[k - 1] * pay * ((1 - A) * 0.03 + Cj[k - 1] * mb)
+            if k == 13 - m0:
+                heads += Se[k - 1] * ((1 - A) + Cj[k - 1])
+    tot = sum(by.values())
+    ok("FY2027 match, group", int(round(tot / 500000)) * 500000 == F["call_match_fy2027_tnk"], "%.0f" % tot)
+    for h in HOSP:
+        ok("FY2027 match, %s" % h, int(round(by[h] / 100000)) * 100000 == F["call_match_fy2027_%s" % h], "%.0f" % by[h])
+    ok("December 2027 contributors", int(round(heads / 100)) * 100 == F["call_contributing_dec2027"], "%.1f" % heads)
+    # ask A: ERM once per employee, payroll and run, January to October 2026
+    seen = set()
+    paid = defaultdict(float)
+    with open(os.path.join(target, "payroll_deductions_2025-11_2026-10.csv"), encoding="utf-8") as fh:
+        octo = {}
+        for r in csv.DictReader(fh):
+            if r["payroll"] == "202610" and r["assignment"] == "1":
+                octo.setdefault(r["employee_ref"], r["cost_centre"][:3])
+            if r["code"] != "ERM" or not ("202601" <= r["payroll"] <= "202610"):
+                continue
+            key = (r["payroll"], r["run"], r["employee_ref"])
+            if key in seen:
+                continue
+            seen.add(key)
+            paid[r["cost_centre"][:3]] += float(r["amount"])
+    for h in HOSP:
+        ok("ask A %s" % h, int(round(paid[h] / 1000)) * 1000 == F["ask_match_paid_2026_%s" % h], "%.2f" % paid[h])
+    # ask B: memberships opened before 2019, Active, employment not ended, by the October payroll's cost centre
+    open_spell = {r["employee_no"] for r in hr if not r["contract_end"]}
+    cnt = defaultdict(int)
+    for r in reg:
+        if r["status"] != "Active" or as_date(r["joined"]) >= dt.date(2019, 1, 1):
+            continue
+        emp = idm.get(str(r["employer_ref"]))
+        if emp in open_spell:
+            cnt[octo.get(emp)] += 1
+    for h in HOSP:
+        ok("ask B %s" % h, cnt[h] == F["ask_members_pre2019_%s" % h], str(cnt[h]))
+    print("\n%d failed" % len(FAILS))
     return 1 if FAILS else 0
 
 

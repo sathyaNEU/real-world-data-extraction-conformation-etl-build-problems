@@ -6,7 +6,7 @@ decision-making-computational-behavioral-modeling. Architecture 3 (the repellent
 `## Architecture 3 record`, architecture 1 (the paediatric ARV order) under `## Architecture 1 record`; architecture 2's
 cells and the expected-credit-loss cell died before any card (`## Tried and rejected`). The setting is fictional
 throughout, country included: Tarnland, Vindeholm County, Vindeholm County Hospitals and its six hospitals, the VCH
-Supplementary Savings Plan, Kestrel Pension Administration and Nordhavn Mutual are invented, and no record is a real
+Supplementary Savings Plan, Ledstrand Pension Administration and Tarnmark Mutual are invented, and no record is a real
 employer's, administrator's or insurer's.
 
 ## Draw
@@ -71,7 +71,7 @@ employer's, administrator's or insurer's.
     curve, its plateau, the clock as their ratio and the recombination under the opposite default), and not a
     field-standard correction (no textbook adjustment turns an opt-in record into an opt-out forecast; the field's
     habit is a benchmark opt-out rate). The materials of the decisive step sit in three files from three systems (HR's
-    spells, Kestrel's register, the plan rules), and the one document that names the change (the committee paper)
+    spells, Ledstrand's register, the plan rules), and the one document that names the change (the committee paper)
     states only the estimand. Excluded as spent: every cell in this note and in the siblings' `## Rebuild` sections as they stood when the
     cell was chosen. task173 chose the same cell the same day and recorded it dead under its `## Rebuild` (commit
     1d4ac1b9, landed while this draw was being measured) on a different mechanism: a reference-dependent courier
@@ -87,7 +87,7 @@ The route a competent analyst takes from the prompt and the pack, every field re
 2. Build how many of the group's hires since 2019 are still on the payroll by month of service from the HR history,
    leavers dropping out at their month.
 3. Enrolment at 3 per cent means everyone contributes unless they opt out. The group already defaults every hire into
-   one benefit, the income protection cover, and Nordhavn's bordereau shows when hires cancel it: carry the cover's
+   one benefit, the income protection cover, and Tarnmark's bordereau shows when hires cancel it: carry the cover's
    cancellation share by month of service as the plan's opt-outs, everyone else at 3 per cent.
 4. The match on 3 per cent is 3 per cent of basic pay (rules, section 4); sum over each requisition's 2027 payrolls.
 
@@ -118,8 +118,8 @@ the joiners at their own rates.
   which is the domain's task type, not a backdrop.
 - Layer 1: HR's two employee-number schemes across the February 2026 cutover (the register and the bordereau keep the
   number a membership or policy was opened under); LRC codes before the July 2024 merger; rehires as new spells under
-  the same number and new memberships under the same member number; the requisition tracker's cancelled and re-issued
-  rows; Nordhavn's old policy numbers before its July 2022 system change; rate changes at April pay awards; a payroll
+  the same number and new memberships under the same member number; Tarnmark's old policy numbers before its July
+  2022 system change; rate changes at April pay awards; a payroll
   that writes a person's match on each assignment's line and a reversed and re-run payroll. Each is what the system
   writes; none is placed to be caught, and none moves the call (`generator/checks.py` R2 rows).
 - Layer 2: family `field_method`. The choice that flips the call is reading the opt-in record as a preference and a
@@ -131,7 +131,7 @@ the joiners at their own rates.
 - Not semantics: every term is read correctly on the default path (the intake, FY2027, the default rate, the match,
   the pay scale, the cover's cancellations), and it still files 14.5 million, because no field, code or definition
   says that the cover's cancellations measure a different preference or that the register shows only joiners; the
-  employee numbers, hospital codes and requisition statuses converge under every reading (R2 rows).
+  employee numbers, hospital codes and rehire spells converge under every reading (R2 rows).
 - Not rule application: no filed rule or procedure computes the take-up under the new default, so executing every
   stated rule (the amendment's intake, enrolment and opt-out; the rules' match and timing; the scale) leaves the
   opt-out pace to the analyst. The enumerated family of take-up constructions (the cover's cancellations as opt-outs,
@@ -151,7 +151,7 @@ the joiners at their own rates.
   January to December 2027 payrolls), the pay (the 2027 scale for the grade and FTE), the comparison basis (the
   group's hires since January 2019, all six hospitals taken together) and the outcome (the employer's match, rules
   section 4); section 3 files the default and the opt-out; the prompt fixes the unit and the rounding.
-- No decoy: nothing is planted. The cover's bordereau is Nordhavn's ordinary record of a benefit the group has
+- No decoy: nothing is planted. The cover's bordereau is Tarnmark's ordinary record of a benefit the group has
   defaulted hires into since 2019, needed for the clock's corroboration; no document applies it to the plan or argues
   for it, no memo, draft or stakeholder figure carries a take-up, an opt-out rate or a match forecast, and no file is
   copied or backfilled.
@@ -178,7 +178,7 @@ the joiners at their own rates.
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
-| SF1 | "the staff it hires in 2027" | the approved requisitions, each filled at its planned start | every requisition row; a hiring trend from the record | larger, other | amendment section 4: "the approved requisitions in the 2027 hiring plan, each filled at its planned start date" |
+| SF1 | "the staff it hires in 2027" | the approved requisitions, each filled at its planned start | a hiring trend from the record; requisitions left unfilled at a vacancy rate | other | amendment section 4: "the approved requisitions in the 2027 hiring plan, each filled at its planned start date" |
 | SF2 | FY2027 | the January to December 2027 payrolls | an April to March year | other | amendment section 4: "(the January to December 2027 payrolls)" |
 | SF3 | pay in 2027 | the 2027 scale for the grade times FTE | the 2026 scale, an April award | other | scale extract: "The 2027 scale applies to every payroll from January to December 2027." |
 | SF4 | the default | 3 per cent from the first payroll | from the second payroll | larger | amendment section 3: "at a contribution of 3 per cent of basic pay from the first payroll" |
@@ -235,7 +235,7 @@ standing-family member lands in the golden's bins on every graded figure.
 | 16 | Identity normalisation | V and E numbers through HR's crosswalk; LRC as Lidmark | dictionary; R2 rows |
 | 17 | Netting against gross | none on the call | not applicable |
 | 18 | Dimensional units | monthly basic pay, per cent rates | rules section 2; scale extract |
-| 19 | Code and status semantics | Approved only; Re-issued and Cancelled rows out | the tracker's Notes sheet |
+| 19 | Code and status semantics | the register's Active and Deferred (asks only); the tracker holds approved rows only | the dictionary; the tracker's Notes sheet |
 | 20 | Integerisation | none on the call | not applicable |
 | 21 | Clause scope | amendment section 4 governs the budget line; section 2 who is enrolled | amendment |
 | 22 | Forward window contents | every requisition's start month and grade for 2027 | the tracker ships all twelve months |
@@ -270,9 +270,9 @@ and no membership opened before 2019 sits on a 2019 to 2026 hire).
   the first run only (Rendholm 0.3 per cent low); golden, each person's ERM once per payroll and run.
 - Ask B, members whose membership began before 2019 and who were still active on 1 November 2026, by the hospital that
   paid them in October 2026 (6 figures, whole numbers). H18 home: the long-standing membership the plan's match
-  already carries. Path: kestrel_member_register_2026-10.xlsx (9 columns), hr_employment_history_2019_2026.csv, the
+  already carries. Path: ledstrand_member_register_2026-10.xlsx (9 columns), hr_employment_history_2019_2026.csv, the
   October 2026 deduction lines, the dictionary. Primary device (D2, the record is the latest accepted, not the latest
-  delivered, silent): Kestrel's register is the snapshot after the October contribution file and before the month-end
+  delivered, silent): Ledstrand's register is the snapshot after the October contribution file and before the month-end
   leavers file, so long-standing members whose employment ended on 31 October 2026 (6 to 11 a hospital, its
   October retirements among them) still read Active; only HR's contract end shows it. Hazards: register references in V-numbers; hospital_at_join in LRC; rehired members'
   later memberships under the same member number (anchoring on the member number's first membership counts them).
@@ -290,6 +290,33 @@ Measured by: generator/ceiling.py
 Mirror leakage: 0.0 per cent of ask weight (the mirror stops at R0 and takes both asks on their natural reads).
 Pair ceiling: 38.6 ((65.3 + 12.0) / 2 on 38, 7 and 55), 47.3 if the cracker also cracks one ask's device.
 
+## Leak review
+
+`leak.py --asof 2026-11-09`: REVIEW, no LEAK. Each line answered:
+- vch_savings_plan_amendment_2027.docx shares the call's words (budget, match, intake, FY2027, hospitals): the
+  committee paper files the estimand (section 4) in the organisation's words; it carries no figure, rate, curve or
+  method.
+- The dictionary, the amendment and the rules carry three or four of the note's stump terms each (record, register,
+  change, member; default, choice): ordinary words of a payroll dictionary, a plan's rules and an enrolment paper;
+  none names a clock, a plateau, a take-up or an opt-out rate (`checks.py` R1 and R3c rows).
+- staff_benefits_survey_2025.xlsx names the six hospitals beside its survey shares: a distractor (awareness of the
+  match, satisfaction with reward), which ranks nothing on the FY2027 line.
+- The export manifest's "from 2027-01-01" and the tracker's planned start dates run past the pull: the forward plan's
+  own dates, which the estimand needs.
+
+## Duplicate check
+
+`guard.py heart task170` (2026-10-23, after the registration pull): WARN, the WARNs answered in `## Draw` item 9;
+nearest text 0.05 (task133 v2, task255 v1). `guard.py surface task170`: eight pairs promoted, every one on the card
+axes (gap time, pattern none with G7 among the generators, quantity_figure), none on text or a shared name. task169
+and task171 (the neighbouring numbers): task169 closes one exit route for released people and task171 prices an
+optional plan's take-up by each unit's own saving; neither has a default, a choice clock or a record that shows one
+preference. task172 (a deadline's bite moving with a step), task132 (a replacement restarting a wear curve), task229
+(a convex conversion of a daily mean), task161 (a pre-built stock drawn down at its usual share), task87 (an
+exclusivity capping a delivered count) and task259 (a level carried to a reference date) share only the broad
+labels; the card's `differentiation` carries one line for each the guard named. The surface tool still reads this
+number's ledger row as architecture 1's retirement.
+
 ## Layer 1 inventory
 
 | Item | System that writes it | File | Natural mishandling | Neutral |
@@ -297,12 +324,11 @@ Pair ceiling: 38.6 ((65.3 + 12.0) / 2 on 38, 7 and 55), 47.3 if the cracker also
 | V-numbers and E-numbers | the HR and payroll cutover of February 2026 | HR, register, bordereau, deductions | joining on E-numbers alone (loses most joins, loud) | R2 asserted |
 | LRC before the merger | the old org structure | HR, register, bordereau | a seventh hospital | pooled; not in the 2027 plan |
 | rehires as new spells | HR | HR, register | first spells only | same call (SF12) |
-| cancelled and re-issued requisitions | the tracker | plan | counting every row | the call reads Approved (SF1) |
-| old policy numbers | Nordhavn's 2022 system change | bordereau | none on a count of cancellations | not read by the call |
-| rate changes at April awards | Kestrel | register | current rate for a joiner | same call (SF11) |
+| old policy numbers | Tarnmark's 2022 system change | bordereau | none on a count of cancellations | not read by the call |
+| rate changes at April awards | Ledstrand | register | current rate for a joiner | same call (SF11) |
 | the person's match on every assignment line | payroll | deductions | ask A device | ask only |
 | reversed and re-run payroll | payroll | deductions | ask A hazard | ask only |
-| the register before the month-end leavers file | Kestrel | register | ask B device | ask only |
+| the register before the month-end leavers file | Ledstrand | register | ask B device | ask only |
 
 ## Architecture 3 record (spent 2026-10-23)
 
@@ -381,6 +407,9 @@ The full architecture 1 note (default path, ladder, closure, asks and the stage 
 - Expected-credit-loss cell, the rest on paper: rate resets and interest-only, promotional and grace-period expiries (task166's due units, task177's exposure end, task46's and task157's cohort crossing a step); a collections, extension, repossession or court-order change that closes one route for distressed loans, and negative equity routing distressed borrowers into default instead of a sale (task169's driver both times); drawdown before default capped by the limit (task168's cap completion); cure, re-ageing and delinquency momentum (conditioning on the account's own history is a stratification, the opponent's first group-by, `stumping` Part 6); guarantees, first-loss covers, forward-flow debt sales, deficiency and repossession statutes, the CECL collateral-dependent expedient and line-freeze policies (each a filed rule executed); indexed mortgage loan-to-value (the field's own indexation is the textbook route); a distributed lag from a county panel (the field's lag reflex, task160's readers landed a lag, and it moves only a 12-month window under staging rules); a cut in the state's unemployment-benefit duration turning more job losses into defaults (task172's cap moving into the bulk of a duration distribution, the exceedance share read straight off the record's spells); sector-linked defaults at a select-employee credit union and a sponsor's plant closure (composition, the metro or sector forecast a proxy or a signpost, the closure a dated cause); dealer price packing, electric-vehicle depreciation and force-placed insurance (each a column to stratify on); a retained first-loss tranche (its expected loss turns on the spread of ten vintages' losses). The cell's core estimation mechanics (survival to date, competing exits, the remaining-life base) are task133's.
 - Architecture 3 (epidemiology-public-health / health-burden-impact-modeling, the LulaNet R campaign's cases averted through the in-bed share of exposure) spent at Gate F at stage 4 on zip 74728781: the judge returned DETERMINISTIC / APPROVE with no fix, and blind reader A took the decisive step in its own words ("net protection only works while the person is in bed, so for each KINGA-5 site I computed the share of person-exposure to An. ruvariensis bites that falls in bed (survey in-bed/indoors by half hour x hourly indoor/outdoor landing rates). Trial protective efficacy divided by 0.97 net use, regressed through the origin on that share gave per-user efficacy = 0.824 x share in bed"), filing 12,000 against 11,000 and 22 against 21 per cent with 6 of 7 sub-counties landed (score_reader FAIL as landed), and took ask B ("outreach clinics' Jan-Mar 2026 rows dropped because parent hospitals' Jan-Mar returns already include outreach OPD"), 7 of 14 ask figures. Why: the trial report shipped each site's hourly biting and sleeping tables beside its widely varying efficacies, which laid the transport model out on one page, and a behaviour-time overlap is the field's standard entomological reasoning for nets, so it fails the library test at medium effort; an in-row comment is no silent device.
 - Cell choice after architecture 3 (2026-10-23, on paper, before the card): the console merger of two control-room operators' alarm streams (misses rise with concurrent load) replays the two journals onto one clock, so the record is replayable; a 12-hour shift roster's errors from a time-on-duty curve beyond eight hours rests on selected overtime and the field's fatigue index is the textbook route; a voting-age or compulsory-voting change carries a transport of turnout from a pilot province, architecture 3's shape; a party's withdrawal under an electoral pact is a transfer rule executed; a deductible cut extrapolates a truncated severity below its truncation point (the parametric family forks) and a deductible rise is the limited expected value, field-standard; a tempo-adjusted birth forecast is the Bongaarts-Feeney correction; select mortality wearing off after a scheme closes is task107's intake moving to the experienced rate; mortality displacement after an excess-death year is a dated cause read off the record; a removed second check is task169's route closure; a staggered decision-aid rollout is a difference-in-differences the rollout log lays out; flat dosing on an Emax curve is the popPK cell's grave.
+- The 2027 tracker with its cancelled and re-issued requisitions kept beside the approved rows: counting every row moved
+  the call by about 8 per cent on a status reading, mess on the call's path that is not neutral; the tracker exports the
+  approved plan only.
 - Automatic enrolment with a common clock and no corroborating default on file (prototype `proto3/ae.py`): the golden's assumption that hires who prefer not to join choose on the joiners' clock rested on no record, so a judge could read it as an unfiled method; the income protection cover, auto-enrolled since 2019, was added as the clock's corroboration, its own cancellations drawn on the same law and independently of the plan's choice, so no hire's two choices share a date a reader could join on.
 - The FY2027 line to the nearest TNK 100,000 with hospitals to the nearest 10,000 (prototype `proto3/ae3.py`, `family.py`): complete-cohort estimators of the join curve sat 1.4 per cent from Kaplan-Meier on a 2,600-hire five-year cohort, outside both bins; the group grew to about 11,400 staff with longer tenures (the five-year cohort to 3,964), the family narrowed to 0.85 per cent, and the line is rounded to TNK 500,000 with hospitals to 100,000, the plan's monthly multipliers set so every member lands in every bin.
 - The share who have chosen by the sixth payroll as a critical component: the cover's clock read 71.4 against the join curve's 72.1 per cent, across a whole per cent; the twelfth payroll (89.8, 90.2, 89.8 and 89.9 across the family) holds.

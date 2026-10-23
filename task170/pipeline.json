@@ -1,21 +1,31 @@
 {
  "task": "task170",
  "owner": "sathya8571",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "psychology-behavioral-science/decision-making-computational-behavioral-modeling",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-23",
  "stump": "A competent analyst carries the income protection cover's cancellations as the share of the 2027 intake that will opt out and files TNK 14.5 million against 11.5 million; the step that lands it there is reading a cancellation curve set by the 16 per cent of hires who want to drop a cheap cover as the opt-outs of a plan 57 per cent of hires never join, when the opt-in record holds both the preference and the pace at which every hire makes a choice.",
  "architecture": 4,
  "loops": 0,
- "precut": null,
- "leak": null,
- "duplicate_check": null,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-23",
+  "checks": 51
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-23 (--asof 2026-11-09), no LEAK; five lines answered in the note's Leak review",
+  "reader": null
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-23 (WARNs answered in Draw item 9), nearest text 0.05 task133",
+  "nearest": "surface: 8 pairs promoted on card axes only (gap time, G7, quantity_figure); answered in the note's Duplicate check"
+ },
  "judge": null,
  "returned": [],
- "resume": "architecture 4 drawn 2026-10-23; stage 3 build next (generator written in the worktree)",
+ "resume": "architecture 4 at stage 3 green 2026-10-23; next: stage 4 (leak reader and determinism judge, spawned by the main session)",
  "approved": null,
  "delivered": null,
  "portal": null,

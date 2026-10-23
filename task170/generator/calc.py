@@ -2,269 +2,244 @@
 only (deliver.py, checks.py and ceiling.py call these; verify.py has its own code path)."""
 from __future__ import annotations
 
-import math
+import datetime as dt
 import os
-import re
 
 import numpy as np
 import pandas as pd
 
 import common as C
 
-HALF = np.arange(12) + 0.5           # half hours after 18:00
-MONTHS = {"Apr": 4, "May": 5, "Jun": 6, "Jul": 7, "Aug": 8, "Sep": 9, "Oct": 10, "Nov": 11, "Dec": 12}
+K = 96                                   # months of follow-up the curves are read over
+PLATEAU = 60                             # the join curve's level at five years of service
 
 
-# ---------------------------------------------------------------------------------------------------- entomology
-def hour_bin(label):
-    """The bin index (0 = 18:00 to 19:00) from any of the sheets' hour labels."""
-    s = label.strip().lower()
-    m = re.match(r"^(\d{1,2})(?::?(\d{2}))?\s*(am|pm)?", s)
-    if re.match(r"^\d{4}-", s):
-        h = int(s[:2])
-    elif m and m.group(3):
-        h = int(m.group(1)) % 12 + (12 if m.group(3) == "pm" else 0)
-    else:
-        h = int(m.group(1))
-    return (h - 18) % 24
+def mi(d):
+    return d.year * 12 + d.month - 1
 
 
-def hlc_table(target, dedupe=True, per_minute=True, species=("an_ruvariensis",)):
-    df = pd.read_csv(os.path.join(target, "hlc_sentinel_2024_2026.csv"), dtype=str, keep_default_na=False)
-    if dedupe:
-        df = df.drop_duplicates()
-    df = df[df["an_ruvariensis"] != ""].copy()
-    df["bin"] = df["hour"].map(hour_bin)
-    df["pos"] = df["position"].str[:2].str.upper().map({"IN": "IN", "OU": "OUT"})
-    df["minutes"] = df["minutes_collected"].astype(int)
-    df["n"] = sum(df[s].astype(int) for s in species)
-    g = df.groupby(["pos", "bin"]).agg(n=("n", "sum"), minutes=("minutes", "sum"), rows=("n", "size"))
-    rate = (g["n"] / (g["minutes"] if per_minute else g["rows"])).unstack(0)
-    return rate["IN"].values, rate["OUT"].values, df
+def hires(target):
+    """Every spell that started on or after 1 January 2019, with its start month, last payroll month and follow-up
+    to the October 2026 payroll."""
+    hr = pd.read_csv(os.path.join(target, "hr_employment_history_2019_2026.csv"), dtype=str, keep_default_na=False)
+    start = [dt.date.fromisoformat(x) for x in hr["contract_start"]]
+    end = [dt.date.fromisoformat(x) if x else None for x in hr["contract_end"]]
+    last = C.mindex(C.LAST_PAYROLL)
+    S = [mi(x) for x in start]
+    E = [mi(x) if x else None for x in end]
+    hr["s"] = S
+    hr["e"] = pd.Series(E, dtype=object)
+    hr["f"] = [(min(e, last) if e is not None else last) - s + 1 for s, e in zip(S, E)]
+    hr["left_k"] = pd.Series([(e - s + 1) if (e is not None and e <= last) else None for s, e in zip(S, E)], dtype=object)
+    return hr
 
 
-# ---------------------------------------------------------------------------------------------------- behaviour
-def after_six(clock, morning=False):
-    if morning:
-        return clock + 6
-    return clock - 18 if clock >= 12 else clock + 6
+def id_map(hr):
+    m = dict(zip(hr["legacy_employee_no"], hr["employee_no"]))
+    m.update({e: e for e in hr["employee_no"]})
+    return m
 
 
-def parse_bare(s, morning):
-    """Times as the survey sheets hold them: 21:30, 2130, 9:30 PM, or a bare 9:30 meaning the evening."""
-    s = str(s).strip()
-    m = re.match(r"^(\d{1,2})(:?)(\d{2})\s*([AaPp][Mm])?$", s)
-    hs, colon, mi, ap = m.group(1), m.group(2), int(m.group(3)), m.group(4)
-    h = int(hs)
-    if ap:
-        h = h % 12 + (12 if ap.upper() == "PM" else 0)
-    elif colon and not hs.startswith("0") and h <= 12 and not morning:
-        h = 0 if h == 12 else (h if h <= 3 else h + 12)
-    return h + mi / 60
+def spell_of(hr_by_emp, emp, month):
+    for s, e, idx in hr_by_emp.get(emp, []):
+        if s <= month and (e is None or month <= e):
+            return idx
+    return None
 
 
-def hbs_table(target, rounds=(1, 2), first_only=False):
-    path = os.path.join(target, "human_behaviour_survey_2025.xlsx")
-    frames = []
-    for k, sheet in ((1, "Round 1 Apr 2025"), (2, "Round 2 Aug 2025")):
-        if k not in rounds:
-            continue
-        d = pd.read_excel(path, sheet_name=sheet, dtype=str)
-        d["round"] = k
-        frames.append(d)
-    df = pd.concat(frames, ignore_index=True)
-    if first_only:
-        df = df.drop_duplicates(["hh_no", "line_no"], keep="first")
-    df["t_in"] = [after_six(parse_bare(x, False)) for x in df["went_inside"]]
-    df["t_bed"] = [after_six(parse_bare(x, False)) for x in df["went_to_bed"]]
-    df["t_rise"] = [after_six(parse_bare(x, True), True) for x in df["got_up"]]
-    return df
-
-
-def shares(df, points=HALF):
-    ind = np.array([((df.t_in <= t) & (df.t_rise > t)).mean() for t in points])
-    inb = np.array([((df.t_bed <= t) & (df.t_rise > t)).mean() for t in points])
-    return ind, inb
-
-
-def shares_integral(df):
-    """Share of each hour spent indoors and in bed, averaged over people (an alternative to the half-hour read)."""
-    ind, inb = np.zeros(12), np.zeros(12)
-    for h in range(12):
-        a, b = h, h + 1
-        def frac(start, stop):
-            lo = np.clip(start, a, b)
-            hi = np.clip(stop, a, b)
-            return np.clip(hi - lo, 0, None).mean()
-        ind[h] = frac(df.t_in.values, df.t_rise.values)
-        inb[h] = frac(df.t_bed.values, df.t_rise.values)
-    return ind, inb
-
-
-def in_bed_share(b_in, b_out, ind, inb):
-    expo = b_in * ind + b_out * (1 - ind)
-    return float((b_in * inb).sum() / expo.sum())
-
-
-def indoor_share(b_in, b_out, ind, inb):
-    expo = b_in * ind + b_out * (1 - ind)
-    return float((b_in * ind).sum() / expo.sum())
-
-
-def indoor_only_share(b_in, b_out, ind, inb):
-    return float((b_in * inb).sum() / b_in.sum())
-
-
-# ---------------------------------------------------------------------------------------------------- trial
-def pdf_text(path):
-    import pdfplumber
-    with pdfplumber.open(path) as p:
-        return "\n".join(pg.extract_text() or "" for pg in p.pages)
-
-
-def trial_tables(target):
-    txt = pdf_text(os.path.join(target, "kinga5_final_report_2024.pdf"))
-    sites = ["Mabwe", "Kisiriri", "Kibondeni", "Chibowa", "Lukonde"]
-    t1 = {}
-    for s in sites:
-        m = re.search(r"^%s ([\d,]+) ([\d,]+\.\d) ([\d,]+) ([\d,]+\.\d) " % s, txt, re.M)
-        cc, pc, cn, pn = (float(x.replace(",", "")) for x in m.groups())
-        t1[s] = dict(cases_c=cc, py_c=pc, cases_n=cn, py_n=pn)
-    m = re.search(r"^All sites [\d,]+ [\d,.]+ [\d,]+ [\d,.]+ (\d+\.\d)", txt, re.M)
-    pooled = float(m.group(1)) / 100
-
-    def block(title, pattern_rows, conv):
-        start = txt.index(title)
-        seg = txt[start:]
-        rows = []
-        for lab in pattern_rows:
-            mm = re.search(r"^%s((?: [\d.]+){5})$" % re.escape(lab), seg, re.M)
-            rows.append([conv(x) for x in mm.group(1).split()])
-        return np.array(rows).T  # sites x hours
-
-    hrs = ["18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00", "01:00", "02:00", "03:00", "04:00", "05:00"]
-    halves = ["18:30", "19:30", "20:30", "21:30", "22:30", "23:30", "00:30", "01:30", "02:30", "03:30", "04:30", "05:30"]
-    b_in = block("Table 2a", hrs, float)
-    b_out = block("Table 2b", hrs, float)
-    ind = block("Table 3a", halves, float) / 100
-    inb = block("Table 3b", halves, float) / 100
-    out = []
-    for i, s in enumerate(sites):
-        r = dict(site=s, **t1[s], b_in=b_in[i], b_out=b_out[i], ind=ind[i], inb=inb[i])
-        r["E"] = 1 - (r["cases_n"] / r["py_n"]) / (r["cases_c"] / r["py_c"])
-        r["share"] = in_bed_share(r["b_in"], r["b_out"], r["ind"], r["inb"])
-        r["share_I"] = indoor_share(r["b_in"], r["b_out"], r["ind"], r["inb"])
-        r["share_in_only"] = indoor_only_share(r["b_in"], r["b_out"], r["ind"], r["inb"])
-        out.append(r)
-    return out, pooled
-
-
-def q_estimates(sites, key="share"):
-    E = np.array([s["E"] for s in sites])
-    f = np.array([s[key] for s in sites])
-    cc = np.array([s["cases_c"] for s in sites])
-    cn = np.array([s["cases_n"] for s in sites])
-    var = (1 - E) ** 2 * (1 / cn + 1 / cc)
-    b = np.linalg.lstsq(np.column_stack([np.ones(len(f)), f]), E, rcond=None)[0]
-    pooled_E = 1 - cn.sum() / np.array([s["py_n"] for s in sites]).sum() / (cc.sum() / np.array([s["py_c"] for s in sites]).sum())
-    pooled_f = (f * cc).sum() / cc.sum()
-    return dict(ivw_origin=float((E * f / var).sum() / (f * f / var).sum()),
-                ols_origin=float((E * f).sum() / (f * f).sum()),
-                mean_ratio=float(np.mean(E / f)),
-                ratio_pooled=float(pooled_E / pooled_f),
-                ols_intercept=(float(b[0]), float(b[1])))
-
-
-# ---------------------------------------------------------------------------------------------------- plan
-def baseline(target):
-    df = pd.read_excel(os.path.join(target, "obf_planning_baseline_2027.xlsx"), header=2)
-    df["m"] = df["month"].str[:3].map(MONTHS)
-    return {(r.sub_county_code, int(r.m)): int(r.expected_cases) for r in df.itertuples()}
-
-
-def usage(target):
-    from docx import Document
-    d = Document(os.path.join(target, "lulanet_r_distribution_plan_2027.docx"))
+def joins(target, hr):
+    """Each membership's first contribution month, placed on the spell it was made in."""
+    reg = pd.read_excel(os.path.join(target, "ledstrand_member_register_2026-10.xlsx"), dtype={"employer_ref": str})
+    idm = id_map(hr)
+    by_emp = {}
+    for idx, (emp, s, e) in enumerate(zip(hr["employee_no"], hr["s"], hr["e"])):
+        by_emp.setdefault(emp, []).append((s, None if e is None or e != e else int(e), idx))
     out = {}
-    import calendar
-    names = {calendar.month_name[m]: m for m in range(1, 13)}
-    for t in d.tables:
-        if t.rows[0].cells[0].text.startswith("Month"):
-            for r in t.rows[1:]:
-                out[names[r.cells[0].text]] = int(r.cells[1].text) / 100
+    rate = {}
+    for ref, joined, r0 in zip(reg["employer_ref"], reg["joined"], reg["rate_at_join_pct"]):
+        emp = idm.get(ref)
+        jm = mi(pd.Timestamp(joined).date())
+        idx = spell_of(by_emp, emp, jm)
+        if idx is not None:
+            out[idx] = jm
+            rate[idx] = int(r0)
+    return out, rate
+
+
+def ipc_cancels(target, hr):
+    """Each auto-enrolled policy's first payroll without a premium, from the date the cancellation was received."""
+    ipc = pd.read_csv(os.path.join(target, "tarnmark_ipc_bordereau_2019_2026.csv"), dtype=str, keep_default_na=False)
+    ipc = ipc[ipc["basis"] == "Auto"]
+    idm = id_map(hr)
+    by_emp = {}
+    for idx, (emp, s, e) in enumerate(zip(hr["employee_no"], hr["s"], hr["e"])):
+        by_emp.setdefault(emp, []).append((s, None if e is None or e != e else int(e), idx))
+    out = {}
+    for ref, start, recv in zip(ipc["employer_ref"], ipc["cover_start"], ipc["cancellation_received"]):
+        emp = idm.get(ref)
+        idx = spell_of(by_emp, emp, mi(dt.date.fromisoformat(start)))
+        if idx is None:
+            continue
+        if recv:
+            d = dt.date.fromisoformat(recv)
+            out[idx] = mi(d) + (1 if d.day > C.CUTOFF_DAY else 0)
     return out
 
 
-# ---------------------------------------------------------------------------------------------------- the call
+def km_incidence(event_k, follow):
+    """Cumulative incidence of an event by payroll month k (1 to K) with follow-up censoring (Kaplan-Meier)."""
+    ev = np.array([k if k is not None else 10 ** 6 for k in event_k])
+    fu = np.array(follow)
+    S, out = 1.0, []
+    for k in range(1, K + 1):
+        risk = (fu >= k) & (ev >= k)
+        d = ((ev == k) & (fu >= k)).sum()
+        n = risk.sum()
+        S *= (1 - d / n) if n else 1.0
+        out.append(1 - S)
+    return np.array(out)
+
+
+def on_payroll(hr):
+    """P(still on the payroll in month k), k = 1 to K, from the hires' leaving months (Kaplan-Meier)."""
+    ev = np.array([k if (k is not None and k == k) else 10 ** 6 for k in hr["left_k"]])
+    fu = np.array(hr["f"])
+    S, out = 1.0, [1.0]
+    for k in range(1, K):
+        risk = (fu >= k) & (ev >= k)
+        d = ((ev == k) & (fu >= k)).sum()
+        n = risk.sum()
+        S *= (1 - d / n) if n else 1.0
+        out.append(S)
+    return np.array(out)
+
+
+def plan(target):
+    p = pd.read_excel(os.path.join(target, "vch_hiring_plan_2027.xlsx"), sheet_name="Requisitions")
+    p = p.copy()
+    p["month"] = pd.to_datetime(p["planned_start"]).dt.month
+    p["pay"] = [C.SCALE_2027[g] * float(f) for g, f in zip(p["grade"], p["fte"])]
+    return p
+
+
+def curves(target, plateau=PLATEAU):
+    hr = hires(target)
+    h = hr[hr["s"] >= C.mindex(C.HIST_START)].reset_index(drop=True)
+    h["e"] = h["e"].astype(object).where(h["e"].notna(), None)
+    h["left_k"] = h["left_k"].astype(object).where(h["left_k"].notna(), None)
+    jm, rate = joins(target, h)
+    jk = [(jm[i] - s + 1) if i in jm else None for i, s in enumerate(h["s"])]
+    Cj = km_incidence(jk, h["f"])
+    cm = ipc_cancels(target, h)
+    ck = [(cm[i] - s + 1) if i in cm else None for i, s in enumerate(h["s"])]
+    G = km_incidence(ck, h["f"])
+    Se = on_payroll(h)
+    mb = float(np.mean([C.match_pct(r) for r in rate.values()])) / 100
+    return dict(hires=h, C=Cj, p=float(Cj[plateau - 1]), G=G, q=float(G[plateau - 1]), Se=Se, mb=mb,
+                n_hires=len(h), n_joins=len(jm))
+
+
+def forecast(target, cv=None, mode="golden", P=None):
+    """The FY2027 match on the 2027 intake by hospital, and the intake contributing on the December 2027 payroll."""
+    cv = cv or curves(target)
+    P = plan(target) if P is None else P
+    Cj, p, G, q, Se, mb = cv["C"], cv["p"], cv["G"], cv["q"], cv["Se"], cv["mb"]
+    d = C.DEFAULT_RATE / 100
+    by = {h: 0.0 for h in C.H_CODES}
+    heads = {h: 0.0 for h in C.H_CODES}
+    staff = {h: 0.0 for h in C.H_CODES}
+    for hosp, m, pay in zip(P["hospital"], P["month"], P["pay"]):
+        for k in range(1, 14 - int(m)):
+            i = k - 1
+            if mode == "golden":
+                A = Cj[i] / p
+                s, hd = (1 - A) * d + Cj[i] * cv["mb"], (1 - A) + Cj[i]
+            elif mode == "ipc_clock":
+                A = G[i] / q
+                s, hd = (1 - A) * d + A * p * mb, (1 - A) + A * p
+            elif mode == "ipc_carry":            # the cover's cancellations as the plan's opt-outs, all others at 3
+                s, hd = (1 - G[i]) * d, 1 - G[i]
+            elif mode == "ipc_carry_joiners":    # the same, with the opt-in record's joiners at their own rates
+                s, hd = (1 - G[i] - Cj[i]) * d + Cj[i] * mb, 1 - G[i]
+            elif mode == "joined_as_chosen":     # the join curve read as the share who have chosen
+                s, hd = (1 - Cj[i]) * d + Cj[i] * p * mb, (1 - Cj[i]) + Cj[i] * p
+            elif mode == "preference":           # only those who prefer to save, at their own rates, from month 1
+                s, hd = p * mb, p
+            elif mode == "preference_default":   # those who prefer to save, all at 3
+                s, hd = p * d, p
+            elif mode == "opt_in":               # the opt-in record replayed
+                s, hd = Cj[i] * mb, Cj[i]
+            elif mode == "nobody_leaves":        # every hire stays at 3 for the year
+                s, hd = d, 1.0
+            else:
+                raise ValueError(mode)
+            by[hosp] += Se[i] * pay * s
+            if k == 13 - int(m):
+                heads[hosp] += Se[i] * hd
+                staff[hosp] += Se[i]
+    return dict(by=by, total=sum(by.values()), heads=heads, staff=staff,
+                heads_total=sum(heads.values()), staff_total=sum(staff.values()))
+
+
 def golden(target):
-    b_in, b_out, _ = hlc_table(target)
-    hbs = hbs_table(target)
-    ind, inb = shares(hbs)
-    phi = in_bed_share(b_in, b_out, ind, inb)
-    sites, pooled = trial_tables(target)
-    q = q_estimates(sites)["ivw_origin"]
-    base = baseline(target)
-    use = usage(target)
-    by_sc = {sc: sum(base[(sc, m)] * use[m] * q * phi for (_, m) in C.WINDOW) for sc in C.SC_CODES}
-    by_month = {m: sum(base[(sc, m)] * use[m] * q * phi for sc in C.SC_CODES) for (_, m) in C.WINDOW}
-    total = sum(by_sc.values())
-    base_total = sum(base.values())
-    return dict(phi=phi, q=q, pooled=pooled, by_sc=by_sc, by_month=by_month, total=total, base_total=base_total,
-                share=total / base_total, base=base, use=use, sites=sites, b_in=b_in, b_out=b_out, ind=ind, inb=inb)
-
-
-def averted_with(G, eff_per_user):
-    """Cases averted at a constant per-user effect on the plan's baseline and use."""
-    return sum(G["base"][(sc, m)] * G["use"][m] * eff_per_user for sc in C.SC_CODES for (_, m) in C.WINDOW)
+    cv = curves(target)
+    P = plan(target)
+    F = forecast(target, cv, "golden", P)
+    F.update(cv=cv, P=P, chosen={k: float(cv["C"][k - 1] / cv["p"]) for k in (1, 3, 6, 12)})
+    return F
 
 
 # ---------------------------------------------------------------------------------------------------- the asks
-def nets_needed(target, mode="golden"):
-    """Nets by sub-county under the plan's rule. mode: golden (replays dropped, mop-up re-registrations of a main-round
-    household dropped), naive (every row), exact (replays only), dwelling (one household per dwelling mark), idonly
-    (replays and same-ID re-registrations dropped)."""
-    df = pd.read_parquet(os.path.join(target, "nets_registration_2026.parquet"))
-    if mode != "naive":
-        df = df.drop_duplicates()
-    if mode == "golden":
-        key = ["sub_county", "ward", "dwelling_mark", "usual_members", "under_five", "sleeping_spaces"]
-        main = df[df["round"] == "MAIN"][key].drop_duplicates()
-        mop = df[df["round"] == "MOPUP"].merge(main.assign(_m=1), on=key, how="left")
-        keep_mop = mop[mop["_m"].isna()].drop(columns="_m")
-        df = pd.concat([df[df["round"] == "MAIN"], keep_mop], ignore_index=True)
-    elif mode == "dwelling":
-        df = df.sort_values(["round", "reg_date", "reg_no"]).drop_duplicates(["sub_county", "ward", "dwelling_mark"])
-    elif mode == "idonly":
-        has = df[df["head_id_no"].notna()]
-        main_ids = set(has[has["round"] == "MAIN"]["head_id_no"])
-        df = df[~((df["round"] == "MOPUP") & df["head_id_no"].isin(main_ids))]
-    nets = np.minimum(C.NET_RULE[1], np.ceil(df["usual_members"].astype(int) / C.NET_RULE[0])).astype(int)
-    out = nets.groupby(df["sub_county"]).sum().to_dict()
-    return {sc: int(out.get(sc, 0)) for sc in C.SC_CODES}
+def deductions(target):
+    return pd.read_csv(os.path.join(target, "payroll_deductions_2025-11_2026-10.csv"), dtype=str, keep_default_na=False)
 
 
-def reported_cases(target, mode="golden"):
-    """Confirmed Ombeni fever, January to September 2026, by sub-county under the July 2026 boundaries.
-    mode: golden (facility list's sub-county, the June re-entry counted once, the parents' January to March returns
-    net of their outreach clinics), naive (the export's sub-county column, every row), mapped (facility list, every
-    row), dedup (facility list, the June re-entry once), export_dedup (the export's column, June once)."""
-    df = pd.read_csv(os.path.join(target, "khis_moh705_obf_2024_2026.csv"), dtype={"mfl_code": str, "period": str})
-    fac = pd.read_csv(os.path.join(target, "facility_list_2026.csv"), dtype={"mfl_code": str, "parent_mfl_code": str})
-    name_to_code = {n: c for c, n in C.SUBCOUNTIES}
-    df = df[df["period"].between("202601", "202609")].copy()
-    if mode in ("golden", "dedup", "export_dedup"):
-        df = df.sort_values("last_updated").drop_duplicates(["period", "mfl_code", "age_group"], keep="last")
-    if mode in ("naive", "export_dedup"):
-        sc = df["sub_county"].map(name_to_code)
+def match_paid_2026(target, mode="golden", ded=None):
+    """Ask A: the employer's match paid on the January to October 2026 payrolls, by hospital."""
+    d = deductions(target) if ded is None else ded
+    d = d[(d["code"] == "ERM") & (d["payroll"] >= "202601") & (d["payroll"] <= "202610")].copy()
+    d["amt"] = d["amount"].astype(float)
+    d["hosp"] = d["cost_centre"].str[:3]
+    if mode == "golden":            # the person's match is written on each assignment's line: count it once
+        d = d.drop_duplicates(["payroll", "run", "employee_ref"])
+    elif mode == "lines":           # every ERM line summed
+        pass
+    elif mode == "main_only":       # the first run only, deduplicated
+        d = d[d["run"] == "MAIN"].drop_duplicates(["payroll", "run", "employee_ref"])
+    elif mode == "no_negatives":    # reversal lines dropped, deduplicated
+        d = d[d["amt"] >= 0].drop_duplicates(["payroll", "run", "employee_ref"])
+    elif mode == "main_assignment": # assignment 1 lines only
+        d = d[d["assignment"] == "1"]
     else:
-        sc = df["mfl_code"].map(dict(zip(fac["mfl_code"], fac["sub_county"]))).map(name_to_code)
-    conf = df["confirmed_obf"].astype(int).copy()
-    if mode == "golden":
-        par = dict(zip(fac["mfl_code"], fac["parent_mfl_code"].fillna("")))
-        sat = df[df["mfl_code"].map(par).fillna("") != ""]
-        sat_key = {(par[r.mfl_code], r.period, r.age_group): int(r.confirmed_obf) for r in sat.itertuples()}
-        inc = df["comment"].fillna("").str.startswith("incl.")
-        sub = [sat_key.get((r.mfl_code, r.period, r.age_group), 0) if i else 0 for r, i in zip(df.itertuples(), inc)]
-        conf = conf - np.array(sub)
-    out = conf.groupby(sc.values).sum().to_dict()
-    return {s: int(out.get(s, 0)) for s in C.SC_CODES}
+        raise ValueError(mode)
+    g = d.groupby("hosp")["amt"].sum()
+    return {h: float(g.get(h, 0.0)) for h in C.H_CODES}
+
+
+def members_pre2019(target, mode="golden", ded=None):
+    """Ask B: members whose membership began before 1 January 2019 and who were still active members on 1 November
+    2026, by the hospital that paid them on the October 2026 payroll."""
+    reg = pd.read_excel(os.path.join(target, "ledstrand_member_register_2026-10.xlsx"), dtype={"employer_ref": str})
+    hr = pd.read_csv(os.path.join(target, "hr_employment_history_2019_2026.csv"), dtype=str, keep_default_na=False)
+    idm = dict(zip(hr["legacy_employee_no"], hr["employee_no"]))
+    idm.update({e: e for e in hr["employee_no"]})
+    reg["joined_d"] = pd.to_datetime(reg["joined"]).dt.date
+    reg["emp"] = reg["employer_ref"].map(idm)
+    if mode == "anchor_first":      # the member number's first membership read as the start
+        first = reg.groupby("member_no")["joined_d"].transform("min")
+        sel = reg[(first < dt.date(2019, 1, 1)) & (reg["status"] == "Active")]
+    else:
+        sel = reg[(reg["joined_d"] < dt.date(2019, 1, 1)) & (reg["status"] == "Active")]
+    if mode in ("golden", "anchor_first"):
+        open_ = hr[hr["contract_end"] == ""]
+        in_post = set(open_["employee_no"])
+        sel = sel[sel["emp"].isin(in_post)]
+        d = deductions(target) if ded is None else ded
+        octo = d[(d["payroll"] == "202610") & (d["assignment"] == "1")].drop_duplicates("employee_ref")
+        hosp = dict(zip(octo["employee_ref"], octo["cost_centre"].str[:3]))
+        g = sel["emp"].map(hosp).value_counts()
+    elif mode == "register":        # the register's Active rows by the hospital they joined at
+        g = sel["hospital_at_join"].replace({"LRC": "LDM"}).value_counts()
+    else:
+        raise ValueError(mode)
+    return {h: int(g.get(h, 0)) for h in C.H_CODES}

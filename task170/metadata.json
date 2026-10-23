@@ -1,38 +1,37 @@
 {
   "task": "task170",
-  "title": "How many Ombeni fever cases a county-wide repellent net campaign will avert among the people sleeping under its nets, when the county's vector bites earlier and more outdoors than at any site of the trial that measured the nets",
-  "domain": "Epidemiology & Public Health",
-  "client_domain": "Epidemiology & Public Health",
-  "subdomain": "health burden and impact modelling (a vector-control campaign's cases averted)",
+  "title": "What a hospital group will pay in employer pension matching in FY2027 on the first intake enrolled automatically, when every earlier intake had to opt in and the record shows only the hires who chose to join",
+  "domain": "Psychology & Behavioral Science",
+  "client_domain": "Psychology & Behavioral Science",
+  "subdomain": "decision-making and computational behavioural modelling (a default's take-up under inertia)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "the county's cases averted among net users with each sub-county's, the share of expected cases, the nets to distribute and the confirmed cases reported in 2026 by sub-county, and a chart",
-  "as_of": "2026-10-12",
+  "prompt_shape": "the FY2027 employer match on the 2027 intake by hospital and in total, the intake contributing on the December 2027 payroll, the match paid on the January to October 2026 payrolls and the long-standing active members by hospital, and a one-page budget note",
+  "as_of": "2026-11-09",
   "deliverables": [
-    "ruvari_cases_averted_2027.xlsx",
-    "cases_averted_by_subcounty.png"
+    "vindeholm_match_forecast_2027.xlsx",
+    "match_forecast_note_2027.docx"
   ],
   "distractor_files": [
-    "insecticide_susceptibility_2025.csv",
-    "rainfall_daily_2019_2026.csv"
+    "staff_benefits_survey_2025.xlsx",
+    "sickness_absence_2025_2026.csv"
   ],
   "input_gates": {
-    "files": 13,
+    "files": 12,
     "formats": [
       "csv",
       "docx",
-      "parquet",
       "pdf",
       "txt",
       "xlsx"
     ],
-    "largest_file": "nets_registration_2026.parquet",
-    "largest_file_rows": 228723
+    "largest_file": "payroll_deductions_2025-11_2026-10.csv",
+    "largest_file_rows": 344484
   },
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task170/generator/build.py (seeded, deterministic) around a fictional Kenyan county, its health department, an implementing non-profit, a donor, a fictional mosquito-borne fever, its vector and a fictional trial, in the layouts of human landing catch sheets, a behaviour survey, a campaign registration app, a KHIS export, a master facility list, a planning baseline and a trial report; no real organisation's records, outbreak or person is depicted.",
-      "date": "2026-10-12",
+      "origin": "constructed for this task by task170/generator/build.py (seeded, deterministic) around a fictional country (Tarnland), a fictional county and its hospital group, a fictional pension administrator and insurer, in the layouts of an HR history extract, a pension member register, an insurer's bordereau, a payroll deduction export, a requisition tracker, plan rules, a committee paper and a pay scale extract; no real organisation's records or person is depicted.",
+      "date": "2026-11-09",
       "license": "CC0-1.0 (original work)"
     }
   ]

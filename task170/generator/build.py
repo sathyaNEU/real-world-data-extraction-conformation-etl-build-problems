@@ -21,8 +21,8 @@ sys.path.insert(0, HERE)
 import pack as PK  # noqa: E402
 
 TASK = os.path.dirname(HERE)
-PULL_DONE = (2026, 10, 12, 16, 40, 0)                          # the pull's files assembled, local time (UTC+3)
-MTIME = calendar.timegm((2026, 10, 12, 13, 40, 0, 0, 0, 0))    # the same moment, UTC
+PULL_DONE = (2026, 11, 9, 15, 20, 0)                           # the pull's files assembled, local time (UTC+1)
+MTIME = calendar.timegm((2026, 11, 9, 14, 20, 0, 0, 0, 0))     # the same moment, UTC
 
 
 def build(out, quiet=False):

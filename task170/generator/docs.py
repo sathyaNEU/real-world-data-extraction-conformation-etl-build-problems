@@ -1,10 +1,8 @@
-"""task170 documents: the KINGA-5 trial report and the campaign's operational plan. Their text is kept here as data
-so checks.py and verify.py can quote it."""
+"""task170 documents: the plan rules, the 2027 amendment and the pay scales. Their text is kept here as data so
+checks.py and verify.py can quote it."""
 from __future__ import annotations
 
 import datetime as dt
-
-import numpy as np
 
 from reportlab import rl_config
 
@@ -24,12 +22,18 @@ FONT_DIR = "/usr/share/fonts/truetype/"
 for _n, _f in (("LibSans", "liberation/LiberationSans-Regular.ttf"), ("LibSans-Bold", "liberation/LiberationSans-Bold.ttf"),
                ("Carlito", "crosextra/Carlito-Regular.ttf"), ("Carlito-Bold", "crosextra/Carlito-Bold.ttf")):
     pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
-INK = colors.HexColor("#1d2126")
-GREY = colors.HexColor("#5b6169")
-ACCENT = colors.HexColor("#1f4e3d")
-RULE = colors.HexColor("#b9c4bd")
-HEAD = colors.HexColor("#e4ece7")
+INK = colors.HexColor("#1b1f24")
+GREY = colors.HexColor("#5a6068")
+ACCENT = colors.HexColor("#163f6b")
+RULE = colors.HexColor("#b7c2cf")
+HEAD = colors.HexColor("#e3eaf2")
 
+F_RULES = "vch_savings_plan_rules_2024.pdf"
+F_AMEND = "vch_savings_plan_amendment_2027.docx"
+F_SCALE = "vch_pay_scales_2026_2027.pdf"
+RULES_DATE = dt.date(2024, 2, 6)
+AMEND_DATE = dt.date(2026, 9, 22)
+SCALE_DATE = dt.date(2026, 6, 18)
 
 
 def styles(font="LibSans", bold="LibSans-Bold", size=9.6):
@@ -39,14 +43,14 @@ def styles(font="LibSans", bold="LibSans-Bold", size=9.6):
         sub=ParagraphStyle("s" + font, fontName=font, fontSize=8.6, leading=11.0, textColor=GREY, spaceAfter=8),
         h2=ParagraphStyle("h2" + font, fontName=bold, fontSize=10.2, leading=13.0, textColor=ACCENT, spaceBefore=5,
                           spaceAfter=2.5),
-        cell=ParagraphStyle("c" + font, fontName=font, fontSize=8.1, leading=9.8, textColor=INK),
-        cellr=ParagraphStyle("cr" + font, fontName=font, fontSize=8.1, leading=9.8, textColor=INK, alignment=2),
-        cellb=ParagraphStyle("cb" + font, fontName=bold, fontSize=8.1, leading=9.8, textColor=INK),
+        cell=ParagraphStyle("c" + font, fontName=font, fontSize=8.4, leading=10.2, textColor=INK),
+        cellr=ParagraphStyle("cr" + font, fontName=font, fontSize=8.4, leading=10.2, textColor=INK, alignment=2),
+        cellb=ParagraphStyle("cb" + font, fontName=bold, fontSize=8.4, leading=10.2, textColor=INK),
         small=ParagraphStyle("sm" + font, fontName=font, fontSize=7.8, leading=10.0, textColor=GREY, spaceAfter=3))
 
 
 def _doc(path, title, author):
-    return SimpleDocTemplate(path, pagesize=A4, leftMargin=21 * mm, rightMargin=21 * mm, topMargin=18 * mm,
+    return SimpleDocTemplate(path, pagesize=A4, leftMargin=22 * mm, rightMargin=22 * mm, topMargin=19 * mm,
                              bottomMargin=17 * mm, title=title, author=author, subject="", creator="", producer="")
 
 
@@ -55,8 +59,8 @@ def _footer(left, font="LibSans"):
         canvas.saveState()
         canvas.setFont(font, 7.4)
         canvas.setFillColor(GREY)
-        canvas.drawString(21 * mm, 9.5 * mm, left)
-        canvas.drawRightString(A4[0] - 21 * mm, 9.5 * mm, "Page %d" % doc.page)
+        canvas.drawString(22 * mm, 9.5 * mm, left)
+        canvas.drawRightString(A4[0] - 22 * mm, 9.5 * mm, "Page %d" % doc.page)
         canvas.restoreState()
     return draw
 
@@ -78,168 +82,129 @@ def _table(st, head, rows, widths, right=()):
 
 
 def pdf_stamp(d, hh=9, mi=0):
-    return ("D:%04d%02d%02d%02d%02d00+03'00'" % (d.year, d.month, d.day, hh, mi)).encode()
+    return ("D:%04d%02d%02d%02d%02d00+01'00'" % (d.year, d.month, d.day, hh, mi)).encode()
 
 
-
-from reportlab.platypus import KeepTogether  # noqa: E402
-
-import world as W  # noqa: E402
-
-F_TRIAL = "kinga5_final_report_2024.pdf"
-F_PLAN = "lulanet_r_distribution_plan_2027.docx"
-TRIAL_DATE = dt.date(2024, 3, 18)
-PLAN_DATE = dt.date(2026, 10, 2)
-
-HOUR_ROWS = ["18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00", "01:00", "02:00", "03:00", "04:00", "05:00"]
-HALF_ROWS = ["18:30", "19:30", "20:30", "21:30", "22:30", "23:30", "00:30", "01:30", "02:30", "03:30", "04:30", "05:30"]
-
-TRIAL_TITLE = "KINGA-5: a household-randomised trial of a transfluthrin-treated sleeping net against Ombeni fever"
-TRIAL_SUMMARY = [
-    "KINGA-5 tested LulaNet R, a polyester sleeping net treated with transfluthrin, at five rural sites in three "
-    "countries between February 2022 and January 2023. Households were randomised one to one to receive LulaNet R "
-    "nets for every sleeping space or no net, and every household member was followed for twelve months.",
-    "Participants were visited every month and tested by rapid diagnostic test when febrile; febrile participants "
-    "between visits were tested at the study clinic. The primary outcome was confirmed Ombeni fever. Field staff "
-    "checked sleeping spaces at unannounced night visits; participants in net households were under the net at 96 to "
-    "98 per cent of checks at every site. Protective efficacy is one minus the ratio of the incidence in net "
-    "households to the incidence in households without nets, by site and pooled across sites.",
-    "LulaNet R repels mosquitoes from the occupied net; it does not kill them. Mosquitoes were caught landing on "
-    "collectors indoors and outdoors at 24 houses at each site, every hour from 18:00 to 06:00, two nights a month "
-    "for the twelve months; the vector at every site was Anopheles ruvariensis. A survey of 300 households at each "
-    "site in the third month recorded each member's times of going indoors for the night, going to bed and rising.",
+# ---------------------------------------------------------------------------------------------------- plan rules (pdf)
+RULES_TITLE = "VCH Supplementary Savings Plan: plan rules (consolidated February 2024)"
+RULES = [
+    ("1. Who may join", [
+        "Every employee of Vindeholm County Hospitals may join the plan from the first day of employment. Membership "
+        "is voluntary: an employee joins by electing a contribution rate in the HR portal, and nobody is enrolled "
+        "without an election.",
+    ]),
+    ("2. Contributions", [
+        "A member contributes a whole percentage of basic pay from 1 to 10 per cent. Basic pay is the monthly salary "
+        "for the member's grade and contracted hours on the pay scale in force, across every post the member holds "
+        "with the employer, including bank posts. Overtime, allowances and arrears of other pay are not pensionable.",
+        "A member may change the rate, or stop contributing, at any time in the HR portal.",
+    ]),
+    ("3. Timing", [
+        "Salaries are paid monthly on the 25th, or the working day before when the 25th falls on a weekend. An "
+        "election or a change received by the 10th of a month applies to that month's payroll; one received later "
+        "applies to the next month's.",
+    ]),
+    ("4. The employer's match", [
+        "For every month a member contributes, the employer pays into the member's account 100 per cent of the "
+        "member's contribution up to 3 per cent of basic pay and 50 per cent of the contribution between 3 and 6 per "
+        "cent of basic pay. Contributions above 6 per cent are not matched. The match is paid through the same "
+        "payroll as the contribution.",
+    ]),
+    ("5. Leaving and rejoining", [
+        "Membership ends when employment ends; the account stays invested as a deferred account until the member "
+        "transfers or draws it. A former employee who is rehired may join again by making a new election, which opens "
+        "a new membership under the same member number.",
+    ]),
+    ("6. Administration", [
+        "Ledstrand Pension Administration keeps the member register and the accounts on the employer's behalf from the "
+        "monthly contribution file payroll sends after each payroll.",
+    ]),
 ]
-TRIAL_NOTE = ("Protective efficacy is computed from the cases and person-years shown. The pooled estimate stratifies "
-              "by site.")
-ENTO_NOTE = ("Mean An. ruvariensis landings per collector per hour of collection, two nights a month for twelve "
-             "months, 24 houses a site. Hours are the hour beginning.")
-BEHAV_NOTE = ("Per cent of household members indoors (in bed or not) and in bed at the half hour, from the third-month "
-              "survey, all ages.")
 
 
-def write_trial(out, sites):
+def write_rules(out):
     st = styles()
-    path = out + "/" + F_TRIAL
-    doc = _doc(path, TRIAL_TITLE, "KINGA-5 Trial Steering Committee")
-    flow = [Paragraph(esc(TRIAL_TITLE), st["h1"]),
-            Paragraph("Final report to the trial's funders, 18 March 2024. KINGA-5 Trial Steering Committee.", st["sub"]),
-            Paragraph("1. Design", st["h2"])]
-    for p in TRIAL_SUMMARY:
+    path = out + "/" + F_RULES
+    doc = _doc(path, RULES_TITLE, C.ORG)
+    flow = [Paragraph(esc(RULES_TITLE), st["h1"]),
+            Paragraph("Vindeholm County Hospitals, HR and Reward. Consolidated text of 6 February 2024, replacing the "
+                      "rules of 2012 as amended in 2017 and 2021.", st["sub"])]
+    for head, paras in RULES:
+        flow.append(Paragraph(esc(head), st["h2"]))
+        for p in paras:
+            flow.append(Paragraph(esc(p), st["body"]))
+    flow.append(Spacer(1, 6))
+    flow.append(Paragraph("Worked example. A member on a basic pay of TNK 30,000 a month contributing 5 per cent pays "
+                          "TNK 1,500; the employer pays TNK 900 on the first 3 per cent and TNK 300 on the next 2, a "
+                          "match of TNK 1,200.", st["small"]))
+    doc.build(flow, onFirstPage=_footer("VCH Supplementary Savings Plan rules, February 2024"),
+              onLaterPages=_footer("VCH Supplementary Savings Plan rules, February 2024"))
+    PP.normalize_pdf(path, pdf_stamp(RULES_DATE, 14, 22), pdf_stamp(RULES_DATE, 14, 22))
+
+
+# ---------------------------------------------------------------------------------------------------- pay scales (pdf)
+SCALE_TITLE = "Pay scales 2026 and 2027: monthly basic salary by grade"
+
+
+def write_scales(out):
+    st = styles()
+    path = out + "/" + F_SCALE
+    doc = _doc(path, SCALE_TITLE, C.ORG)
+    flow = [Paragraph(esc(SCALE_TITLE), st["h1"]),
+            Paragraph("Extract from the collective agreement between Vindeholm County Council and the health sector "
+                      "unions, signed 16 June 2026. Full-time monthly basic salary in TNK; part-time posts are paid "
+                      "pro rata to contracted hours.", st["sub"])]
+    rows = [[g, "{:,}".format(C.SCALE_2026[g]), "{:,}".format(C.SCALE_2027[g])] for g in C.GRADES]
+    flow.append(_table(st, ["Grade", "From 1 January 2026", "From 1 January 2027"], rows, [30, 45, 45], right=(1, 2)))
+    flow.append(Spacer(1, 6))
+    for p in ["The 2027 scale applies to every payroll from January to December 2027. No further award falls in 2027.",
+              "Bank posts are paid at the grade of the post on the same scale."]:
         flow.append(Paragraph(esc(p), st["body"]))
-    flow.append(Paragraph("2. Results", st["h2"]))
-    rows = []
-    for s in sites:
-        ic = s["cases_c"] / s["py_c"]
-        inn = s["cases_n"] / s["py_n"]
-        pe = 1 - inn / ic
-        se = (1 / s["cases_c"] + 1 / s["cases_n"]) ** 0.5
-        lo, hi = 1 - (inn / ic) * np.exp(1.96 * se), 1 - (inn / ic) * np.exp(-1.96 * se)
-        rows.append([s["site"], "{:,}".format(s["cases_c"]), "{:,.1f}".format(s["py_c"]), "{:,}".format(s["cases_n"]),
-                     "{:,.1f}".format(s["py_n"]), "%.1f (%.1f to %.1f)" % (100 * pe, 100 * lo, 100 * hi)])
-    cc, pc = sum(s["cases_c"] for s in sites), sum(s["py_c"] for s in sites)
-    cn, pn = sum(s["cases_n"] for s in sites), sum(s["py_n"] for s in sites)
-    # Mantel-Haenszel rate ratio across sites
-    num = sum(s["cases_n"] * s["py_c"] / (s["py_c"] + s["py_n"]) for s in sites)
-    den = sum(s["cases_c"] * s["py_n"] / (s["py_c"] + s["py_n"]) for s in sites)
-    pooled = 1 - num / den
-    rows.append(["All sites", "{:,}".format(cc), "{:,.1f}".format(pc), "{:,}".format(cn), "{:,.1f}".format(pn),
-                 "%.1f" % (100 * pooled)])
-    flow.append(Paragraph("Table 1. Confirmed Ombeni fever by site and arm, and protective efficacy (per cent, 95% CI)",
-                          st["cellb"]))
-    flow.append(_table(st, ["Site", "No-net cases", "No-net person-years", "Net cases", "Net person-years",
-                            "Protective efficacy"], rows, [24, 22, 28, 20, 26, 48], right=(1, 2, 3, 4)))
-    flow.append(Paragraph(esc(TRIAL_NOTE), st["small"]))
-    flow.append(Paragraph("3. Site entomology and sleeping times", st["h2"]))
-    sites_h = [s["site"] for s in sites]
-    for key, label, lab2 in (("b_in", "Table 2a. An. ruvariensis landings per collector per hour, indoors", "%.2f"),
-                             ("b_out", "Table 2b. An. ruvariensis landings per collector per hour, outdoors", "%.2f")):
-        rows_t = [[HOUR_ROWS[h]] + [lab2 % s[key][h] for s in sites] for h in range(12)]
-        flow.append(KeepTogether([Paragraph(label, st["cellb"]),
-                                  _table(st, ["Hour"] + sites_h, rows_t, [22] + [26] * 5, right=tuple(range(1, 6)))]))
-    flow.append(Paragraph(esc(ENTO_NOTE), st["small"]))
-    for key, label in (("ind", "Table 3a. Household members indoors, in bed or not (per cent)"),
-                       ("inb", "Table 3b. Household members in bed (per cent)")):
-        rows_t = [[HALF_ROWS[h]] + ["%d" % s[key][h] for s in sites] for h in range(12)]
-        flow.append(KeepTogether([Paragraph(label, st["cellb"]),
-                                  _table(st, ["Time"] + sites_h, rows_t, [22] + [26] * 5, right=tuple(range(1, 6)))]))
-    flow.append(Paragraph(esc(BEHAV_NOTE), st["small"]))
-    flow.append(Paragraph("4. Adverse events", st["h2"]))
-    flow.append(Paragraph("Skin or eye irritation was reported by 1.9 per cent of participants in net households in the "
-                          "first week, and by none after the first month. No serious adverse event was attributed to "
-                          "the net.", st["body"]))
-    doc.build(flow, onFirstPage=_footer("KINGA-5 final report, March 2024"), onLaterPages=_footer("KINGA-5 final report, March 2024"))
-    PP.normalize_pdf(path, pdf_stamp(TRIAL_DATE, 16, 10), pdf_stamp(TRIAL_DATE, 16, 10))
-    return dict(pooled=pooled)
+    doc.build(flow, onFirstPage=_footer("Collective agreement 2026 to 2027, pay scale extract"),
+              onLaterPages=_footer("Collective agreement 2026 to 2027, pay scale extract"))
+    PP.normalize_pdf(path, pdf_stamp(SCALE_DATE, 10, 5), pdf_stamp(SCALE_DATE, 10, 5))
 
 
-# ---------------------------------------------------------------------------------------------------- the plan (docx)
-PLAN_TITLE = "LulaNet R county-wide distribution, March 2027: operational plan"
-PLAN_PARAS = {
-    "scope": "Every household registered by community health volunteers in the seven sub-counties receives LulaNet R "
-             "nets at its village distribution point between 1 and 27 March 2027, sub-county by sub-county as Table "
-             "1 sets out. Registration ran from 7 to 26 September 2026, with a mop-up from 1 to 9 October 2026 for "
-             "households the first round missed.",
-    "product": "LulaNet R is a polyester sleeping net treated with transfluthrin, which repels mosquitoes from the "
-               "occupied net. It does not kill them. The supplier warrants three years of use.",
-    "rule": "One net for every two usual members of a household, rounded up, and no more than four nets to a "
-            "household. A usual member is a person who has slept in the household on most nights of the last three "
-            "months.",
-    "use": "Use is planned at the share of residents sleeping under a campaign net in Table 2, agreed with the "
-           "Arnbridge Foundation in August 2026 from the national programme's net-use curve for mass campaigns.",
-    "baseline": "Expected Ombeni fever cases without the campaign are the county's 2027 planning baseline, by "
-                "sub-county and month (obf_planning_baseline_2027.xlsx).",
-    "impact": "The grant report counts the Ombeni fever cases the nets avert among residents sleeping under campaign "
-              "nets from April to December 2027, against the planning baseline and at the use in Table 2. It counts "
-              "no cases averted among residents who are not under a campaign net. Sub-county figures in the grant report "
-              "follow the ward realignment of 1 July 2026.",
-    "monitoring": "Post-distribution surveys at three, six and nine months record nets present and used. The county "
-                  "entomology unit continues its sentinel catches through 2027.",
-}
-DIST_WEEKS = [("RTN", "1 to 6 March"), ("MWR", "1 to 6 March"), ("KDG", "8 to 13 March"), ("OYM", "8 to 13 March"),
-              ("NDR", "15 to 20 March"), ("KBR", "15 to 20 March"), ("WKL", "22 to 27 March")]
+# ---------------------------------------------------------------------------------------------------- amendment (docx)
+AMEND_TITLE = "VCH Supplementary Savings Plan: automatic enrolment of new hires from 1 January 2027"
+AMEND = [
+    ("1. Decision", "The county council's employment committee approved on 15 September 2026 that new hires are "
+     "enrolled in the plan automatically from 1 January 2027. The plan rules of February 2024 apply unchanged except "
+     "as set out here."),
+    ("2. Who is enrolled", "Every employee whose employment starts on or after 1 January 2027 is enrolled, including "
+     "a former employee rehired from that date. Staff whose employment started before 1 January 2027 are not "
+     "enrolled; their elections stand as they are."),
+    ("3. How enrolment works", "A new hire is enrolled at a contribution of 3 per cent of basic pay from the first "
+     "payroll of the employment, and the employer's match applies as for every member (rules, section 4). The new "
+     "hire may at any time choose another rate from 1 to 10 per cent, or opt out, in the HR portal; the choice applies "
+     "from the payroll the rules' timing gives it (section 3). Opting out stops contributions from that payroll; "
+     "contributions already paid stay in the account and are not refunded."),
+    ("4. Budget", "Finance's FY2027 budget (the January to December 2027 payrolls) carries the employer's match on the "
+     "2027 intake as a line of its own, by hospital. The intake is the approved requisitions in the 2027 hiring plan, "
+     "each filled at its planned start date and paid at the 2027 pay scale for its grade and FTE. The line is "
+     "forecast from the experience of the group's hires since January 2019, all six hospitals taken together, and "
+     "counts nobody hired before 2027. The committee reviews the line before it signs off the FY2027 pay budget in "
+     "December 2026."),
+    ("5. Communication", "Each new hire receives the enrolment notice with the contract and a reminder in the induction "
+     "pack. Payroll services sets up the default deduction at onboarding."),
+]
 
 
-def write_plan(out, usage):
+def write_amendment(out):
     from docx import Document
     from docx.shared import Pt
-    path = out + "/" + F_PLAN
+    path = out + "/" + F_AMEND
     d = Document()
     st = d.styles["Normal"]
     st.font.name = "Calibri"
     st.font.size = Pt(10.5)
-    d.add_heading(PLAN_TITLE, level=1)
-    d.add_paragraph("Ruvari County Department of Health and Tulivu Health Partners. Version 2.1, 2 October 2026. "
-                    "Contacts: Elkana Karanja (county vector-borne disease control), Dorcas Kagwiria (Tulivu, "
-                    "monitoring and evaluation).")
-    d.add_heading("1. Scope", level=2)
-    d.add_paragraph(PLAN_PARAS["scope"])
-    t = d.add_table(rows=1, cols=2)
-    t.style = "Table Grid"
-    t.rows[0].cells[0].text, t.rows[0].cells[1].text = "Sub-county", "Distribution"
-    for sc, w in DIST_WEEKS:
-        r = t.add_row().cells
-        r[0].text, r[1].text = C.SC_NAME[sc], w
-    d.add_paragraph("Table 1. Distribution weeks.")
-    d.add_heading("2. Product", level=2)
-    d.add_paragraph(PLAN_PARAS["product"])
-    d.add_heading("3. Allocation", level=2)
-    d.add_paragraph(PLAN_PARAS["rule"])
-    d.add_heading("4. Planning assumptions", level=2)
-    d.add_paragraph(PLAN_PARAS["use"])
-    t = d.add_table(rows=1, cols=2)
-    t.style = "Table Grid"
-    t.rows[0].cells[0].text, t.rows[0].cells[1].text = "Month (2027)", "Residents under a campaign net (per cent)"
-    import calendar
-    for m in range(4, 13):
-        r = t.add_row().cells
-        r[0].text, r[1].text = calendar.month_name[m], "%d" % round(usage[m] * 100)
-    d.add_paragraph("Table 2. Planned use.")
-    d.add_paragraph(PLAN_PARAS["baseline"])
-    d.add_heading("5. Impact reporting", level=2)
-    d.add_paragraph(PLAN_PARAS["impact"])
-    d.add_heading("6. Monitoring", level=2)
-    d.add_paragraph(PLAN_PARAS["monitoring"])
-    d.core_properties.title = PLAN_TITLE
+    d.add_heading(AMEND_TITLE, level=1)
+    d.add_paragraph("HR and Reward, Vindeholm County Hospitals. Committee paper as approved, 22 September 2026. "
+                    "Contact: %s, reward and pensions." % C.PEOPLE["me"])
+    for head, para in AMEND:
+        d.add_heading(head, level=2)
+        d.add_paragraph(para)
+    d.core_properties.title = AMEND_TITLE
     d.save(path)
-    PP.normalize_docx(path, C.PEOPLE["vbd"], C.PEOPLE["me"], "2026-08-11T06:42:00Z", "2026-10-02T12:18:00Z", 14, 412,
-                      seed=C.SEED, title=PLAN_TITLE, company=C.ORG)
+    PP.normalize_docx(path, C.PEOPLE["me"], C.PEOPLE["me"], "2026-08-27T07:12:00Z", "2026-09-22T13:41:00Z", 9, 268,
+                      seed=C.SEED, title=AMEND_TITLE, company=C.ORG)
