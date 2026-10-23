@@ -1,12 +1,12 @@
 {
  "task": "task179",
  "owner": "sathya8571",
- "status": "RETIRED",
+ "status": "PAUSED",
  "domain": "epidemiology-public-health",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
- "updated": "2026-10-21",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-23",
  "stump": "A competent analyst fits the serial interval to every source-to-case pair in the transmission links, takes the reproduction number implied by the growth of onsets over weeks 36 to 41, halves it from 2 November and projects about 4,000 cases for weeks 49 to 52 instead of about 5,000, because the tracing system holds a link only once its case has fallen ill.",
  "architecture": 2,
  "loops": 0,
@@ -46,9 +46,17 @@
    "measured": "survey balance against the mean move (s1_cp.py: nearest reflex about one golden sigma away, golden sd 12 per cent of the figure, separation only at an unprecedented spread); long memory (lm1.py: AR by AIC, AR(1) and estimated d agree, all miss through the sample mean); bottom-up regional persistence (d1.py: lever 0.108 against a golden error sd of 0.085); agreement catch-up (w1.py, w2.py: trailing-inflation regression within 5 to 17 per cent, symmetric against asymmetric catch-up split 0.4 points)",
    "paper": "dominant-currency pass-through (task145, task153), asymmetric error correction (task153), steady-pace recoveries (task161, strategy in window), rent-cap backlog (task161, task79), capacity-convex prices (task79, task149), mortgage lock-in (task166), lunar holiday (task162), indexation reset step and year-end appropriation spending (task146), downward wage rigidity (0.09-point lever, task16), cointegration and ECM variants (cards 1 and 2 as stated), signal extraction (IMA(1,1) lands), minimum wage bite (task165), shadow rate, trend-growth hold (variance-only), inventory payback and carry-over, tariff diversion",
    "prototypes": "scratchpad b179r/screen: s1_cp.py, lm1.py (lm1.out byte-identical with lm1_run2.out), d1.py, w1.py, w2.py, screen179r.py (screen179r.out byte-identical with screen179r_run2.out)"
+  },
+  "rebuild_2026_10_23": {
+   "cell": "product-analytics / feature-adoption-diffusion-modeling, forecasting (reopened from RETIRED under the author's rule; worktree b_179n)",
+   "window": "a544497: task173, task178, task482",
+   "default_path": "the field's textbook routes: a Bass curve fitted to the adoption series, analogue launches, a logistic on account features; the cell's three library cards; task144 and task162 drivers read as spent",
+   "measured": "local account contagion against global Bass mixing (a1.py, a2.py: recent pace lands on 13 weeks at +1.4 and +4.5 per cent; on 52 weeks the nearest route Bass with the whole base -14.6 to -15.5 per cent while the two-stage account construction forks the golden family at -51 to -53); the session clock (b1.py: the eligible-denominator card's active-week hazard +10.5 to +13.1 per cent, the golden one divide and one group-by); substitution inside the account (c1.py: the decay-extrapolated pooled hazard lands -3.9 and -5.4 in some seeds, the decisive fact visible as about 1.2 adopters per adopting account)",
+   "paper": "staged-rollout last wave or holdout release, an in-app prompt read as imitation, device or self-hosted upgrade echoes (task46, task162), renewal or business-review timing (task177 v2), a need pool by group-by, cross-market lead-lag, Norton-Bass generations, current-user influence after disadoption, hard-deleted churned accounts, churn as a competing exit, later adopters' lighter use, late-arriving telemetry, two-sided or artifact contagion (task144), a waitlist (task168), beta transported to general availability, interference in a user-randomised test",
+   "prototypes": "scratchpad b179n/screen: a1.py, a2.py, b1.py, c1.py; screen179n.out byte-identical with screen179n_run2.out"
   }
  },
- "resume": "RETIRED 2026-10-21 under the author's rule: architecture v2 (the right-truncated serial interval) spent at stage 4 Gate F, scored reader B landing 5,000, R 1.6 and 13 days on target.zip 9e1843f8 by the field's standard truncation correction; second and last cell (see ## Retired)",
+ "resume": "PAUSED 2026-10-23 at stage 1: the product-analytics / feature-adoption-diffusion-modeling rebuild screen found no draw that holds (three measured dead, sixteen on paper, ## Tried and rejected); no card registered, architecture v2 stays current; resume at stage 1 in the next cell the coordinator assigns",
  "approved": null,
  "delivered": null,
  "portal": null,

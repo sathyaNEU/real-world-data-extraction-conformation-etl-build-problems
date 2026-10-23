@@ -1,6 +1,6 @@
 # task179 design note
 
-**Status: RETIRED 2026-10-21 (see `## Retired`). Architecture v2, re-sited 2026-10-21 into a fictional setting inside the round's second new cell,
+**Status: PAUSED 2026-10-23 at stage 1 (reopened from RETIRED 2026-10-21; see `## Retired` and `## Rebuild (2026-10-23)`). Architecture v2, re-sited 2026-10-21 into a fictional setting inside the round's second new cell,
 Epidemiology & Public Health, `infectious-disease-transmission-modeling`, Forecasting.** The first cell (the
 ambulance surge pool, never carded) and the redraw cell in Economics & Econometrics (never carded) are spent; their
 records sit under `## First-cell record` and in `## Tried and rejected`. Re-screen nothing there.
@@ -528,6 +528,73 @@ candidate touches them.
     is the size of its lever, because macro aggregates rest on too few independent events. Micro registers give the
     precision and move the work out of this task type.
 
+- **Rebuild screen, 2026-10-23: product-analytics / `feature-adoption-diffusion-modeling`, Forecasting** (the number
+  reopened under the author's rule; worktree `b_179n`). The cell's three library cards (novelty against durable use,
+  the eligible denominator in a staged rollout, censored non-adopters) and the field's textbook routes (a Bass curve
+  fitted to the adoption series, analogue launches, a logistic on account features) were taken as the default path;
+  task144's spotlight cascade through follower feeds and task162's calendar-locked restart burst were read as spent.
+  `guard.py recent` at a544497 put task173, task178 and task482 in the window. Three candidates measured on code
+  (scratchpad b179n/screen: `a1.py`, `a2.py`, `b1.py`, `c1.py`; `screen179n.out` byte-identical with
+  `screen179n_run2.out`; seeds fixed before outcomes) and sixteen on the structural screens; no card was drafted.
+  - **Measured: contagion local to each customer account against the Bass curve's global mixing** (each non-adopter's
+    weekly hazard p plus q times the adopted share of the user's own account; 3,000 accounts, lognormal sizes median 6,
+    the feature live 39 weeks). Over a 13-week window the recent pace lands (+1.4 and +4.5 per cent on two seeds)
+    because account ignitions are a steady flow. Over 52 weeks the nearest textbook route is the Bass curve with the
+    whole base as its potential (-14.6 to -15.5 per cent), the recent pace +20.5 to +26.4 and the pooled hazard -31 to
+    -33, while the golden family splits: the account-share hazard by likelihood lands the truth, the count form is
+    rejected by about 5,000 log-likelihood units, but a two-stage account construction (ignition by size band, the
+    completion curve by weeks since ignition, held flat past the 39 observed weeks) files -51 to -53 per cent. Lever
+    about 15 per cent against a family that forks on the extrapolation: dead.
+  - **Measured: adoption on the session clock (a constant chance per session, heterogeneous session rates)** (30,000
+    users, lognormal rates sd 1.2, 52-week window). The per-session golden lands within 1 per cent (plug-in and
+    gamma-Poisson empirical Bayes agree), but the eligible-denominator card's own route (the hazard per active
+    non-adopter week times each non-adopter's active-week share) files +10.5 to +13.1 per cent and the pooled hazard
+    with a log-linear decay -7.5 to -15.6 (-0.1 at a tighter spread): the card is the golden to a tenth and a half,
+    and the golden is one divide and one group-by. Dead.
+  - **Measured: substitution inside the account (one adopter serves the team, teammates' hazard falling to a tenth
+    after the first adoption)** (4,000 accounts, median 8, 52-week window). The recent pace and the pooled hazard miss
+    by +31 to +60 per cent, but the pooled hazard's decay extrapolation lands in some seeds (-3.9, -5.4) and swings to
+    +90 in others, and the decisive fact is on the surface (two in three accounts adopted with about 1.2 adopters each),
+    so the golden is one group-by of ignitions per account-week by size band. Dead.
+  - Paper: a staged rollout's last wave or a long-term holdout released in the window is the eligible-denominator card
+    applied to a filed date, the first wave's early weeks the attaining subset.
+  - Paper: a growing in-app prompt read by the Bass curve as imitation (marketing effort against contagion): bucketed
+    prompts are the eligibility card, session-level prompts one divide per impression, and the recent pace lands once
+    the prompt is at its full share.
+  - Paper: a past device or plan purchase surge ageing into replacement in the window, and self-hosted instances
+    synchronised by a security upgrade wave: task46's cohort crossing a step and task162's burst by abstraction.
+  - Paper: adoption at each account's renewal, quarterly business review or payroll run: task177 v2's days to the next
+    bill by abstraction.
+  - Paper: a need pool (the users who can use the feature) pinned by a finer file: the class with zero adoption is the
+    attaining subset, one group-by.
+  - Paper: cross-market lead-lag spillover between staggered country launches: a handful of markets carry the
+    spillover coefficient, and the latest launch is the attaining analogue.
+  - Paper: a second generation substituting for the first (Norton-Bass): the first generation's base is a group-by.
+  - Paper: influence from current rather than cumulative users after disadoption: the definition of current is a free
+    window, and the recent pace lands once current users plateau.
+  - Paper: hard-deleted churned accounts inflating the analogue curves: a retention policy read (semantics) or a
+    reconciliation (Layer 1).
+  - Paper: churn as a competing exit against Kaplan-Meier: the textbook competing-risks correction.
+  - Paper: later adopters' lighter durable use for a usage-volume forecast: the cohort chain ladder carries each
+    cohort's level, and future cohorts' level is an extrapolation that forks.
+  - Paper: late-arriving telemetry from offline devices: the right-truncation reflex this number already spent.
+  - Paper: two-sided adoption through a counterparty graph, and contagion through feature-made artifacts: task144's
+    per-view rate through a graph by abstraction.
+  - Paper: a waitlist throttling admissions: task168's capacity-censored demand.
+  - Paper: beta testers' adoption transported to general availability: selection on observables is the logistic
+    route, on unobservables unidentified.
+  - Paper: interference in a user-randomised test of a collaborative feature, the full rollout at a team-treated share
+    of one: the network-interference card, small fully treated teams the attaining subset, and task177 v2's exposure
+    end by abstraction.
+  - The cell finding: an adoption forecast from a user or account event log is landed by one of three reflexes
+    whenever the process is stationary over the window (the recent pace on a short window, the eligible-denominator
+    hazard or a depletion-aware curve on a long one), so a lever of 30 to 50 per cent needs the window to change the
+    process; every predictable change this search found is a filed date (rollout, holdout, sunset, price), a cohort or
+    calendar alignment already on file (task46, task162, task177 v2), a cap or a pipeline in flight (task172, task77),
+    or a network cascade (task144). Where the structure is new (local contagion, substitution in the team), the
+    golden is either a group-by visible on the surface or an extrapolation past the observed weeks on which the
+    golden family forks.
+
 ## Retired
 
 Retired on 2026-10-21 under the author's rule for this round (a number that dies in its second new cell is
@@ -567,7 +634,16 @@ here as reusable records:
   added. Measured: the clock read as local missed every week's mean and within-24-hour share; the re-run after an
   indeterminate result is the hazard beside it.
 
+## Rebuild (2026-10-23)
+
+Reopened under the author's rule that no number stays retired, for a from-scratch rebuild in product-analytics /
+feature-adoption-diffusion-modeling (Forecasting), worktree `b_179n`. No candidate held at stage 1: three measured dead on
+code (local contagion, the session clock, substitution inside the account) and sixteen directions dead on paper, all in
+`## Tried and rejected` with the cell finding. No card registered, so architecture v2 stays the card's current identity
+and nothing moved into `lineage`; nothing cut. PAUSED at stage 1 for the coordinator to assign another cell.
+
 ## Resume
 
-RETIRED 2026-10-21: architecture v2 spent at stage 4 Gate F (scored reader B landed 5,000, R 1.6 and 13 days by the
-field's standard right-truncation correction); this was the number's second and last cell. Nothing to resume.
+PAUSED 2026-10-23 at stage 1 after the product-analytics / feature-adoption-diffusion-modeling rebuild screen found no
+draw that holds; resume at stage 1 in the next cell the coordinator assigns, reading `## Tried and rejected` first.
+(RETIRED 2026-10-21 before the reopening: architecture v2 spent at stage 4 Gate F.)
