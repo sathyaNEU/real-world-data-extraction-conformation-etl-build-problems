@@ -254,7 +254,7 @@ def write_note(path, F):
     st = doc.styles["Normal"]
     st.font.name = "Calibri"
     st.font.size = Pt(11)
-    for label, value in (("To", "Board of Directors"), ("From", "Paola Ayala, Finance"),
+    for label, value in (("To", "Board of Directors"), ("From", "Paola Ayala, Libranza Portfolio"),
                          ("Date", "26 January 2027"), ("Subject", "Libranza Empresarial launch: first-year defaults")):
         p = doc.add_paragraph()
         p.paragraph_format.space_after = Pt(0)
@@ -288,7 +288,7 @@ def write_note(path, F):
                       "recovered on the public loans that went into default in 2023 and 2024 are in the workbook.")
     foot = doc.sections[0].footer.paragraphs[0]
     foot.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    fr = foot.add_run("Coopservir. Finance. Internal. Page ")
+    fr = foot.add_run("Coopservir. Libranza Portfolio. Internal. Page ")
     fr.font.size = Pt(8)
     fld = OxmlElement("w:fldSimple")
     fld.set(qn("w:instr"), "PAGE")

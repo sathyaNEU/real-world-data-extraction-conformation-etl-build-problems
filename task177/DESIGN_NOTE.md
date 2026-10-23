@@ -29,7 +29,7 @@ below. Architectures 1 and 2 are kept as records further down.
 - **Decision:** `quantity_figure`, answer unit count, question form how-many. Forum `board_of_directors` (the
   cooperative's board approves the budget and its provisions), forcing event `budget_or_appropriation` (the 2027
   budget's provision for the first private-employer loans), org family `cooperative_or_member_body`, role family
-  `finance_controller` (the cooperative's finance manager books the provision).
+  `portfolio_manager` (the head of the payroll-deduction lending portfolio, who brings the forecast to the board).
 - **Strategy and family:** `decomposition_attribution`; Layer 2 family `estimand_identification`, pattern
   `own:pd-read-per-payroll-exit`. The forward default count splits into the route through a borrower leaving the
   employer's payroll while the loan is open and the small on-payroll route; the textbook PD reads the public book's
@@ -75,7 +75,7 @@ below. Architectures 1 and 2 are kept as records further down.
   savings bank to a public servants' savings and credit cooperative, which is the commonest payroll-deduction lender
   in the region this world borrows from and makes the deduction agreements and the employers' payroll registers the
   natural records; the forcing event is then the 2027 budget's provision for the first private-employer loans, the
-  role the finance manager who books it, and the forum the board that approves the budget.
+  role the finance manager who books it, and the forum the board that approves the budget. Third pass after registration (H31): task178 v3 was marked spent after this card filed, which pulled task175 into the live window and fired `ban.role` on `finance_controller`; the stakeholder is redrawn as the head of the payroll-deduction lending portfolio (`portfolio_manager`), who owns the book's forecast and brings it to the board, and the golden note is written from that unit.
 
 ## Screen
 
