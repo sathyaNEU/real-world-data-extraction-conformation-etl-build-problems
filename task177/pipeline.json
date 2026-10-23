@@ -30,7 +30,7 @@
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC48: the seed's world (drop-off recycling bins) died at stage 1 on measurement; redrawn in a new world in the cell psychology-behavioral-science / decision-making-computational-behavioral-modeling (Prairie Works Manitoba, the assistant's share of jobseekers' own contacts after eight assistant-first weeks)",
- "resume": "PAUSED 2026-10-23 at stage 1: reopened (no number stays retired) and screened from scratch in quantitative-finance / volatility-derivatives-pricing (Forecasting); nothing holds, no card registered, nothing cut. Resume at stage 1 in the next cell the coordinator assigns, reading the design note's ## Tried and rejected and ## Rebuild (2026-10-23) first. (RETIRED 2026-10-22 before the reopening; architectures 1 and 2 spent, both in the card's lineage.)",
+ "resume": "PAUSED 2026-10-23 at stage 1: reopened (no number stays retired) and screened from scratch in two cells, quantitative-finance / volatility-derivatives-pricing and then biomedical-clinical-research / survival-time-to-event-analysis (Forecasting); nothing holds in either, no card registered, nothing cut. Resume at stage 1 in the next cell the coordinator assigns, reading the design note's ## Tried and rejected and ## Rebuild (2026-10-23) first. (RETIRED 2026-10-22 before the reopening; architectures 1 and 2 spent, both in the card's lineage.)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -189,5 +189,14 @@
   "finding": "a volatility-level forecast carries a 5.6 to 14 per cent median model spread at realistic vol-of-vol, so only a lever near 50 per cent survives rounding; the mechanisms that move a volatility that far are textbook identities once the change is read, and dealer gamma gives 20 to 35 per cent at plausible strength",
   "prototypes": "scratchpad b177n/proto: g1.py to g5.py, screen177n.out (byte-identical with screen177n_run2.out)",
   "card": "none registered; cards/task177.json unchanged (lineage already holds architectures v1 and v2)"
+ },
+ "rebuild_2026_10_23_survival": {
+  "cell": "biomedical-clinical-research / survival-time-to-event-analysis, Forecasting (assigned 2026-10-23)",
+  "worktree": "/home/user/b_177n (origin/main 682b11dd)",
+  "measured": "H1, deaths in a quarter on the time since each member's last discharge after a December admission surge: at realistic strength the duration curve times the season share +0.6 per cent and the mean first-quarter rate +1.0 against a golden family of -3.8 to +4.9; at implausible strength (fivefold surge, tenfold excess) the best reflex -6.3 against -2.3 to +4.4. A1, graft failure on attained age: duration-only +0.8 to +9.5, age-at-transplant strata +0.8 to +10.0, against the attained-age golden -2.7 to +6.1",
+  "paper_deaths": "starts moved to discharge, acute-state marker selection, postmenstrual age, healthy-volunteer effect, case-cohort sample, lead time, stage migration, learning curve at new centres, rationed transplant supply, colonisation pressure, timing modifiers, run-in exclusions, relapse against reinfection, imminent re-fracture, essential heterogeneity, frailty-attenuated hazard ratio, too-sick delisting (task169), effect before a recurring session (architecture 2), distance to centre",
+  "finding": "a stationary clinical record absorbs any hazard clock into the duration curve with a season term, and after a synchronising event the duration curve times the season share stays within 0.6 to 6.3 per cent of the golden, even at strengths beyond any registry; a 30 per cent lever needs a forward change, which in this cell names its step, closes a competing route or repeats architecture 2",
+  "prototypes": "scratchpad b177s/proto: h1.py (h1_run2.out, h1_run3.out byte-identical; h1_strong.out), a1.py (a1.out; a1_r2.out, a1_r3.out byte-identical)",
+  "card": "none registered; cards/task177.json unchanged"
  }
 }

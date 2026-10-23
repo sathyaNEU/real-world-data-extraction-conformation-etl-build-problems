@@ -1149,6 +1149,73 @@ its group's surviving records), the same family by its label.
   - Barrier notes monitored on auction closes (observation noise lowers the minimum of the closes): a lever of 10 to 15
     per cent on thin stocks and none on an index.
 
+- **Rebuild cell, biomedical-clinical-research / survival-time-to-event-analysis (2026-10-23), candidate H1 measured
+  on code: the hazard on the time since each member's last discharge, with a December admission surge putting a
+  large share of a heart failure registry's members days from a discharge at the forecast date** (deaths in the first
+  quarter among members alive on 1 January, registry entry at the index discharge, a gamma frailty, a post-discharge
+  death multiplier decaying over 30 days, admissions seasonal and raised by an outbreak in the last six weeks of the
+  year; `h1.py`, scratchpad b177s/proto, byte-identical over two runs). Killed on the lever. At realistic strength (an
+  outbreak at 2.5 times the usual admission rate, a sixfold excess just after discharge; 30,748 members, truth 1,225
+  deaths) the duration curve times the history's first-quarter share lands at +0.6 per cent, the mean first-quarter
+  rate of 2018 to 2026 at +1.0, and the golden family (tsd bands fine or coarse, monthly, quarterly or January
+  landmarks) spreads -3.8 to +4.9. At strengths no registry shows (fivefold outbreak, tenfold excess) the best
+  reflex is still only -6.3 per cent (an admission in the last 90 days at -8.8, in the last 30 days at -1.0, inside
+  the golden family of -2.3 to +4.4). The surge's new entrants carry the duration curve, the season ratio carries the
+  rest, and the last-30-days indicator is the golden.
+- **Candidate A1 measured on code: graft failure on the recipient's attained age (a peak through ages 17 to 24) times
+  a duration curve, failures over three years among a paediatric programme's functioning grafts** (4,750 to 12,613
+  grafts, `a1.py`, byte-identical over two runs). Killed with no lever at all: the duration-only route lands at +0.8
+  to +9.5 per cent, stratifying by age at transplant at +0.8 to +10.0, a proportional age term at +0.7 to +8.9, against
+  the attained-age golden at -2.7 to +6.1. Attained age is age at transplant plus duration, and a stationary
+  programme's at-risk mix over the window is the history's, so every route absorbs the clock (task174's finding,
+  measured once more).
+- **Rebuild cell, paper deaths (2026-10-23), one line each.**
+  - Starts moved to the discharge day (a new initiation practice puts a drug's new starters days from a discharge,
+    where the history's started at stable visits; the new-user curve the default): the cohort already started is the
+    time-axis attaining subset, its observed first 45 days carrying about four fifths of the excess at a 30-day decay,
+    and a cohort wholly in the future needs the practice change stated, which names the step.
+  - Selection on a marker taken in an acute state (an in-hospital eGFR flagging patients for a kidney programme, the
+    hazard on the steady-state level): regression to the mean is absorbed whenever the record's model conditions on
+    the same kind of measurement, and where it is a different kind the call flips on reading what the value is (rule
+    3, semantics).
+  - Postmenstrual age in a neonatal network (onset on gestation at birth plus age): the same identity as A1, and
+    stratifying by gestation is the first reflex.
+  - The healthy-volunteer effect wearing off in a biobank cohort: 10 to 17 per cent at most on attained-age bands.
+  - A case-cohort biomarker sample read as a cohort: the sampling design is a filed protocol fact, so weighting is
+    rule application, and leaving it unfiled is a planted omission.
+  - Lead time from earlier diagnosis (screening, a rapid-access clinic): the new route's survival needs a
+    natural-history model that forks, and the recorded diagnostic delay is the shipped proxy.
+  - Stage migration after a staging technology change (Will Rogers): the overall curve ignoring stage is both the
+    reflex and the golden.
+  - A learning curve at new implanting centres: earlier centres' first cases are the attaining subset, the premise
+    names the new centres, and the swap test reads the same with new call-centre agents.
+  - Transplant hazard rationed by a flat donor supply while the list grows: a medium reader names the supply, and a
+    limit does not measure itself.
+  - Infection on a ward's colonisation pressure under an occupancy change: mass action against frequency dependence
+    forks the scaling.
+  - Timing modifiers carried from a trial (onset to treatment, time since menopause, time since injury, symptom onset
+    to an antiviral, surgery to adjuvant start): each is the field's best-known modifier and the forward change names
+    it.
+  - A run-in's exclusions carried to routine starters: the run-in log names the excluded, and the carry also needs a
+    covariate reweighting that forks.
+  - Relapse against reinfection after cure, carried to a lower-transmission district: genotype correction is the
+    field's standard, and without it the split by timing is a free-form mixture fit.
+  - Imminent re-fracture clustering read as a Poisson rate: time to first event is directly in the record.
+  - Clinicians having treated the patients who gain most, a forward rule treating all: needs an instrument, and the
+    instrument forks.
+  - A hazard ratio among survivors attenuated by frailty, carried to late switchers: needs a frailty law, which forks.
+  - Deferred deaths through exits removed as too sick, under a forward delisting rule: task169's driver in clinical
+    nouns.
+  - An effect landing before a recurring clinical session (the long dialysis gap, a refill due date): architecture 2's
+    own driver.
+  - Distance to the centre as the omitted covariate: a backdrop, the swap test reads the same.
+- **The cell's finding, measured twice more.** Over a clinical record of realistic size, any clock the hazard runs on
+  is absorbed by the duration curve with a season term when the population is stationary (A1: every route inside the
+  golden family), and after a synchronising event that moves the population off the history's mix the duration
+  curve times the season share stays within 0.6 to 6.3 per cent of the golden, even at strengths beyond any registry
+  (H1), because new entrants carry the duration curve and the season carries the calendar. A lever of 30 per cent needs a forward change, and in this cell each forward change
+  either names its step, closes a competing route (task169) or is architecture 2's driver.
+
 ## Retired
 
 Retired on 2026-10-22 under the author's rule for the final ask pass (if round 3 still fails, the number retires).
@@ -1205,9 +1272,16 @@ from an overwriting programme) measured dead on code in three forms and seventee
 `## Tried and rejected` with the cell's structural finding. No card registered (the card's lineage already carries both
 spent architectures), nothing cut; PAUSED at stage 1 for the coordinator to assign another cell.
 
+Second rebuild cell the same day, biomedical-clinical-research / survival-time-to-event-analysis (Forecasting),
+worktree `b_177n` on origin/main 682b11dd, with task171's and task174's deaths in this task type read first and the
+field's corrections (Kaplan-Meier, Aalen-Johansen, delayed entry, landmarks, new-user curves) taken as the default path.
+Two candidates measured on code (H1, the time since the last discharge after an admission surge; A1, attained age) and
+nineteen on paper, all in `## Tried and rejected` with the cell's finding. No card registered, nothing cut; PAUSED at
+stage 1 again for the coordinator to assign another cell.
+
 ## Resume
 
-PAUSED 2026-10-23 at stage 1 after the quantitative-finance / volatility-derivatives-pricing screen found no draw that
-holds; resume at stage 1 in the next cell the coordinator assigns, reading `## Tried and rejected` first. (RETIRED
-2026-10-22 before the reopening: architecture 2's asks never cleared two readers in one round; architecture 1 was spent
-at Gate F.)
+PAUSED 2026-10-23 at stage 1 after two rebuild cells found no draw that holds (quantitative-finance /
+volatility-derivatives-pricing, then biomedical-clinical-research / survival-time-to-event-analysis); resume at stage 1
+in the next cell the coordinator assigns, reading `## Tried and rejected` first. (RETIRED 2026-10-22 before the
+reopening: architecture 2's asks never cleared two readers in one round; architecture 1 was spent at Gate F.)
