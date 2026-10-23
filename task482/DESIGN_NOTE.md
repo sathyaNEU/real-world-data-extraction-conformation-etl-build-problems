@@ -1,417 +1,193 @@
 # task482 design note
 
-Status lives in `pipeline.json`; this note holds the design. Architecture 7, drawn 2026-10-23 after architectures 1
-to 6 were spent at stage 4: a fresh world and pack in the ETL objective, a state air agency's 2026 press VOC inventory
-of the printing and converting plants its new VOC rule would cover.
+Status lives in `pipeline.json`; this note holds the design. Architecture 8, drawn 2026-10-23 after architectures 1
+to 7 were spent at stage 4: a fresh world and pack in the ETL objective, a regional pharmacy chain choosing the stores
+whose vaccine refrigerators it replaces before the 2027 respiratory vaccine season, on the hours each store's vaccine
+spent above 8 degrees C in 2026.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task482.json` (architecture v7, lineage v1 to v6 spent), registered
-  2026-10-23 after a pull, `check` re-run on the filed card. Guard WARN only, answered here: `overuse.org_family`
-  (government_agency in 36 builds; the rule's applicability is a state air agency's call, and no other organisation
-  adopts it) and, after the pull, `repeat.question_form` (which, against task178 v2, retired: the decision is a set of plants
-  named, so the question asks which). Heart WARN on the organisation line only; nearest drivers 0.08 and below (task478 v6 and v7, then task181 at
-  0.06). The first check ran against the old card's registration stamp and BLOCKed on that stale window (pattern,
-  role, forum, organisation against task273 and task169); with the stamp dropped the window is today's.
-- **Pairing:** Physical & Environmental Sciences, task type `emissions-inventory`, which serves ETL: fourteen plants'
-  information-request returns (ink, coating, adhesive and solvent purchases with their safety data sheets, press
-  logs, oxidizer data-historian exports, capture determinations and oxidizer performance tests, each plant in its own
-  layout) conformed into the agency's 2026 press VOC inventory, the facility-by-process file the rule's applicability
-  list and the state's ozone plan read.
-- **The decision and the quantity:** the state's Department of Environmental Quality has drafted Rule 18-4 (Printing
-  and Converting Operations) for the Kestle Valley ozone nonattainment area. The rule applies from 2027 to every plant
-  whose presses emitted 25 tons or more of VOC in calendar year 2026, the VOC in the inks, coatings, adhesives and
-  press wash solvents its presses used less what its capture and control systems destroyed (the draft rule's
-  applicability section files this). The Environmental Quality Council votes on the rule with its applicability list.
-  The quantity is each plant's 2026 press VOC; the call is the set at or above 25 tons. Forward facing: the list sets
-  which plants carry the rule's controls and recordkeeping from 2027.
-- **Shape:** `01`, every candidate's figure and verdict and the first below the line: fourteen plants' 2026 press VOC
-  in whole tons, in or out, the nearest plant under 25 tons and its shortfall; two asks on records the call never
-  reads (each plant's cleaning VOC away from its presses, and the inks, coatings and adhesives each plant received
-  and cannot account for), a chart's named parts and the three files: about 70 criteria (1 call, 14 tons, 14
-  verdicts, 2 for the nearest below, 14 and 14 ask figures, 6 chart parts, 3 files).
-- **Strategy:** `other` (no family on the list states it: a control device's removal measured at one inlet condition
-  is carried to the inlet each operating day ran at, through the device's outlet floor that the tests across the
-  devices trace); Gate G `method_or_model_selection`; gap `objective` (a test's destruction efficiency is correct for
-  the concentrated inlet it was measured at, not for the year's dilute days); pattern none; generators G14 (does the
-  tested yield apply to this day's inlet, decisive) and G16. Layer 2 family `field_method`, pattern `own:an oxidizer's
-  destruction measured at maximum production carried to each operating day through the outlet-against-inlet relation
-  the tests trace, the day's inlet built from its captured VOC and its airflow`.
-- **World:** an unnamed U.S. state; the Department's air quality division; fourteen printing and converting plants in
-  the Kestle Valley (flexible packaging, gravure, labels, laminating, folding cartons), ten of them with regenerative
-  thermal oxidizers on their presses. People from `guard.py names --geo us --seed 482`: Jeremy Cortez (rule
-  development manager) and Audrey Bautista (emissions inventory lead). The first draw's names (Robert Meyers, Amanda
-  Beck) were set aside on `people.first` against task104.
-- **Forcing fact:** the Council votes on Rule 18-4 and its applicability list at its March 2027 meeting; the rule's
-  controls apply from 1 July 2027.
-- **Forum and forcing event:** council_or_assembly, vote_or_meeting. Organisation government_agency; role
-  policy_adviser.
-- **The physics:** a regenerative thermal oxidizer destroys about 98 per cent of a concentrated inlet, but its outlet
-  holds near a floor of VOC per cubic foot however dilute the inlet grows, so the share it destroys falls on a dilute
-  inlet (to the low 90s and below). Every oxidizer performance test runs at maximum production, as the permits
-  require; on the days a plant runs part of its presses, a fixed-speed fan still draws its full air through every
-  press's duct, so the inlet is dilute. Plants with variable-speed fans keep their inlets concentrated as presses
-  drop out.
-- **Data-native sentence:** the oxidizer tests were all run at maximum production while the press logs and the
-  oxidizer historians show most 2026 operating days at part production with the fixed-speed fans at full air, and the
-  tests across the plants trace an outlet that holds near a floor, so a test's destruction efficiency belongs to its
-  own concentrated inlet and not to the year's dilute days.
-- **Default path and golden, by name:** each plant's latest oxidizer test efficiency applied to its 2026 captured VOC
-  names Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging; each operating day's outlet read from the
-  floor relation at the inlet the day's captured VOC and airflow imply adds Ashcombe Flexible Packaging and Kelvedon
-  Laminates. Figures are set at the build from `generator/figures.json`.
-- **The WHAT screen.** Population: the fourteen plants in the nonattainment area and every press each operated in
-  2026. Outcome: the VOC the presses emitted (used less destroyed). Unit: tons. Window: calendar 2026. Comparison: 25
-  tons. The decisive step settles none of them: it is how much of each day's captured VOC the oxidizer destroyed,
-  which no filed rule or procedure states.
+- **Card:** `.claude/skills/fingerprint/cards/task482.json` (architecture v8, lineage v1 to v7 spent), registered
+  2026-10-23 after a pull, `check` re-run on the filed card: PASS. `test.same_driver_older` against task477 (gap
+  objective, G3, method or model selection) is answered by the card's differentiation: task477 re-composes a recorded
+  total by its payment schedules' weekdays; nothing here is re-dated, a temperature record is carried through a
+  measured lag before it is counted.
+- **Redrawn at the draw, and why the labels are the honest ones.** The first form of this draw was a public health
+  district's childhood vaccine program (government_agency, programme_officer, monitoring_export). After the pull,
+  task171 v4 (filed 07:49) put government_agency and programme_officer in the window and task478 v7 monitoring_export.
+  The world was redrawn rather than relabelled: a regional pharmacy chain that grew by buying three smaller chains,
+  each with its own logger make, replacing store refrigerators from its own capital program
+  (retailer_or_ecommerce; the director of pharmacy operations runs that program, operations_director; the chain's
+  capital committee approves the list, committee_or_panel). The context artifact is the stores' temperature logs
+  (operations_log): each store downloads its logger's log of the refrigerator's temperatures, and that log, not a
+  dashboard, is what the decision is read from; the pilot's cloud export is the minority record. The first personas
+  (Amanda Beck, then Darrell Cunningham) were set aside on `people.first` against task104 and task120, and the
+  geography is a Midwest state so it does not repeat task478 v7's unnamed state.
+- **Pairing:** General Statistics & Data Science, task type `data-integration-record-linkage-entity-resolution`, which
+  serves ETL: each store's vaccine refrigerator temperature record, kept through 2026 by one of three data logger
+  makes (each logging in its maker's layout, unit and clock) and, at ten pilot stores from mid-year, by a wireless
+  in-carton sensor, conformed into one record per store of the vaccine's temperature, the record the replacement list
+  reads. Two records of one refrigerator kept by instruments whose response differs are integrated by carrying one
+  through the other's response (the precedent is task466's two observation mechanisms in one record).
+- **The decision and the quantity:** Penwick Pharmacy runs thirty stores; every store stocks and administers vaccine
+  (influenza, COVID-19, RSV, pneumococcal, shingles, Tdap, hepatitis and the childhood series for its clinic stores).
+  Its Vaccine Storage and Handling Standard (revised 2026) puts into the 2027 capital program a new pharmaceutical-grade
+  refrigerator, installed before 1 September 2027, for every store whose vaccine spent a cumulative 24 hours or more
+  above 8.0 degrees C in calendar year 2026. The quantity is each store's 2026 hours with its vaccine above 8.0 degrees
+  C; the call is the set at or above 24. Forward facing: the list sets which stores' vaccine sits in new refrigerators
+  through the 2027 respiratory vaccine season.
+- **Shape:** `10`, a scorecard against one threshold: thirty stores' 2026 hours in whole hours, replaced or not, the
+  nearest store below the line and its shortfall; asks on records the call never reads (fixed at stage 2), a chart's
+  named parts and the two files.
+- **Strategy:** `other` (no family on the list states it: an instrument's record is carried through the response of
+  the quantity it stands for, measured where a direct instrument ran beside it); Gate G `method_or_model_selection`;
+  gap `objective` (a logger's readings are correct for its probe and are not the vaccine's temperature the
+  replacements are decided on); pattern none; generators G3 (the record against what the vaccine went through,
+  decisive) and G16. Layer 2 family `estimation_fit`, pattern `own:a fast instrument's record carried to a slow
+  quantity through the response a parallel run measures`. Calibration organ `parallel_run_overlap`: the two weeks each
+  pilot store's old logger kept recording after its in-carton sensor went in.
+- **World:** an unnamed U.S. Midwest state; Penwick Pharmacy and its pharmacy operations; logger makes Frostline,
+  Kelvra and Polarwatch (one per acquired chain); the Coldline wireless monitoring system from Tamberlane Sensing; the
+  chain's vaccine wholesaler, Meridale Pharmaceutical Distribution. People from `guard.py names --geo us --seed 482`
+  and `--seed 4821`: Breanna Graham (director of pharmacy operations) and Julia Kaufman (the pilot's project lead).
+- **Forcing fact:** the capital committee approves the 2027 refrigerator list in February 2027 so the units are
+  installed and qualified before 1 September 2027, ahead of the respiratory vaccine season.
+- **Forum and forcing event:** committee_or_panel, season_or_peak. Organisation retailer_or_ecommerce; role
+  operations_director.
+- **The physics:** a data logger's probe sits in a small sealed bottle of glycol (5 mL) and follows the refrigerator's
+  air with a time constant of a few minutes; the vaccine in its cartons on the shelf follows the same air with a time
+  constant of most of an hour. A delivery restock or inventory count holds the door open for minutes and the air near
+  the shelves climbs toward the room's temperature: the probe crosses 8 degrees C, the vaccine warms by a degree or two.
+  A busy afternoon of door openings keeps the air and the probe near 8 for hours; the vaccine follows the hourly
+  average. A power outage, a door left ajar overnight or a failing thermostat warms the cabinet for hours, and the
+  vaccine follows it up, late, and stays warm after the air has recovered.
+- **Data-native sentence:** at the ten pilot stores the old logger kept recording for two weeks after the Coldline
+  sensor went into a vaccine carton on the same shelf, and in those weeks the logger crossed 8 degrees C on every
+  restock while the in-carton sensor stayed under 8, and lagged the logger's rise and fall through every warm spell
+  by about three quarters of an hour, so a logger's hours above 8 belong to its probe and not to the vaccine.
+- **Default path and golden, by name:** each store's logger readings taken as its vaccine's temperature (each pilot
+  store's in-carton sensor from its installation) replace the refrigerator of every store whose probe crossed 8 through
+  restocks and busy hours, the busiest stores among them; the same records carried through the vaccine's response
+  fitted on the overlaps replace the stores whose vaccine itself warmed through outages, doors left ajar and failing
+  thermostats, about half as many. Names and figures are set at the build from `generator/figures.json`.
+- **The WHAT screen.** Population: the thirty stores and each one's vaccine refrigerator. Outcome: the hours the
+  vaccine spent above 8.0 degrees C. Unit: hours. Window: calendar 2026, local time. Comparison: 24 hours. The
+  decisive step settles none of them: it is what temperature the vaccine was at while only a logger recorded the
+  refrigerator, which no filed rule or procedure states.
 - **Sources, one line each:**
-  - EPA's Air Pollution Control Cost Manual (incinerators and oxidizers): thermal oxidizers are designed to 98 per cent
-    destruction or an outlet of about 20 ppmv, whichever is less stringent; the floor is the field's own model of a
-    dilute inlet.
-  - The printing and converting control techniques guidelines and the coating NESHAPs, which pair a destruction
-    efficiency with an outlet concentration alternative for the same reason.
-  - AP-42 and EIIP printing chapters: press VOC as material used, less retained, less captured times destroyed.
-- **Same-puzzle and same-driver tests:** (objective, none, designation_set) and (objective, none,
-  method_or_model_selection) against the last twelve builds, lineage included: no match (the guard's tests pass).
-- **Abstraction test:** the nearest drivers stripped of nouns: task478 v7 carries a spot rate across a period by a
-  property of a supplied input recorded by its supplier; task478 v6 along a clock since a part was replaced; task459
-  reads a unit's own ratio at a level on its operating curve; task263 unmixes blended samples. Here no input property,
-  clock or own curve moves the figure: a shared removal device's outlet holds a floor, and how much it removes on a
-  day follows the concentration its own fan delivers, the joint result of the presses running and the fan's drive.
+  - the national vaccine storage and handling guidance's description of digital data loggers with buffered probes
+    (a probe in a sealed bottle of glycol, glass beads or sand), read at intervals of 30 minutes or less;
+  - packaged pharmaceutical product temperature practice: a product's temperature follows its surroundings through
+    its packaging's thermal response, a first-order lag in the simplest description, measured by placing a sensor in
+    the product's own pack;
+  - first-order sensor dynamics: an instrument's reading follows its medium with its own time constant.
+- **Same-puzzle and same-driver tests:** (objective, none, designation_set) and (objective, G3,
+  method_or_model_selection) against the last twelve builds, lineage included: no match in the last twelve; the older
+  task477 match is differentiated on the card.
+- **Abstraction test:** the nearest drivers stripped of nouns: task189 averages measurements known only to lie below a
+  limit; task464 v2 links a new instrument's scale to an old one by a sample measured on both and warns against the
+  regression's shrinkage; task478 v5 divides each instrument's reading by a bias measured on a component of known size;
+  task466 enters two records kept under different observation mechanisms into one likelihood. Here no scale, bias or
+  censoring separates the instruments: each logger reads its own probe correctly, and the difference from the vaccine is
+  in time alone, a response measured where both instruments recorded one refrigerator and carried through every reading
+  before the hours above a limit are counted.
 
 ## Default path
 
-1. Read the draft rule's section 2: a plant in the Kestle Valley ozone nonattainment area is covered from 1 July 2027
-   if its presses emitted 25 tons or more of VOC in calendar year 2026, a press's VOC being the VOC in the inks,
-   coatings, adhesives and press wash solvents used on it less what the plant's capture and control systems destroyed.
-2. Converted each plant's 2026 press log to pounds of VOC used, press by press and day by day, through each product's
-   safety data sheet (gallons times density times the VOC weight fraction, or gallons times pounds of VOC per gallon
-   less water and exempt compounds), the job-based and the shift-based logs alike.
-3. Split each controlled plant's VOC into captured and uncaptured by its capture determination (a permanent total
-   enclosure verification at four plants, a capture test at six); the four plants without an oxidizer emit what
-   they used.
-4. Took each oxidizer's latest performance test, conformed both testing firms' inlet and outlet rates to one basis
-   and read its destruction efficiency (96.71 to 98.23 per cent across the ten oxidizers).
-5. Applied each plant's tested efficiency to its 2026 captured VOC, added the uncaptured VOC and compared each plant's
-   total with 25 tons.
+1. Read the Vaccine Storage and Handling Standard's section on the 2027 replacements: a store whose vaccine spent a
+   cumulative 24 hours or more above 8.0 degrees C in calendar year 2026 has its refrigerator replaced before
+   1 September 2027, each reading standing for the interval to the next.
+2. Conformed the three makes' exports to local time and degrees C (Kelvra's Fahrenheit and UTC, Polarwatch's standard
+   time all year), joined each logger to its store through the chain's device roster, a replaced logger's two
+   serials included.
+3. At each pilot store, took the Coldline in-carton sensor's readings from its installation date, the device of
+   record from that date, and the store's logger before it.
+4. Took each reading as the vaccine's temperature, counted each store's 2026 readings above 8.0 degrees C at the
+   interval to the next reading, and summed the hours.
+5. Compared each store's hours with 24.
 
-Ends on: Rule 18-4 covers Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging.
+Ends on: the 2027 replacements go to every store whose logger readings spent 24 hours or more above 8.0 degrees C,
+about twice as many stores as the golden, the busiest stores and the heaviest restockers among them (names
+set at the build).
 
-Golden: Rule 18-4 covers Ashcombe Flexible Packaging, Carrow Gravure, Kelvedon Laminates, Merrion Flexibles and Ravensbrook Gravure Packaging.
+Golden: the 2027 replacements go to the stores whose vaccine, carried through its response from the logger record,
+spent 24 hours or more above 8.0 degrees C (names set at the build).
 
 ## Stump sentence
 
-The default path applies each plant's latest oxidizer test efficiency to its 2026 captured VOC and finds Carrow
-Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging at or above 25 tons, because a regenerative thermal
-oxidizer's outlet holds near a floor (about 45 ppmv as carbon) however dilute its inlet, every test ran at maximum
-production, and at Ashcombe Flexible Packaging and Kelvedon Laminates the fixed-speed oxidizer fans drew their full
-air through days when the presses ran a fraction of their capacity, so those oxidizers destroyed far less than their
-tests show; each operating day's outlet read from the floor the ten oxidizers' tests trace, at the inlet the day's
-captured VOC and airflow imply, carries Ashcombe from 21 to 29 tons and Kelvedon from 20 to 28, and the rule covers
-five plants.
+The default path takes each store's data logger readings as its vaccine's temperature and replaces about twice as
+many refrigerators as the vaccine's own hours call for, because a logger's probe in its 5 mL glycol bottle follows the refrigerator's air
+within minutes while the vaccine in its cartons takes about three quarters of an hour, so the probe reads above 8
+degrees C through every restock, inventory count and busy afternoon the vaccine rode out; carried through the vaccine's
+response, a first-order lag whose time constant the fourteen days each pilot store's old logger kept recording beside
+its new in-carton sensor fix at about 45 minutes, the records replace only the stores whose vaccine itself warmed
+through outages, doors left ajar and failing thermostats.
 
 ## Three rules
 
-Task type: emissions-inventory (Physical & Environmental Sciences), a point-source VOC inventory conformed from each
-plant's material, production, control-device and test records, a task type serving Data Extraction & Conformation
-(ETL): fourteen plants' information-request returns, each in its own layout, conformed into the agency's 2026
-facility-by-process press VOC inventory that the rule's applicability list reads.
+Task type: data-integration-record-linkage-entity-resolution (General Statistics & Data Science), a task type serving
+Data Extraction & Conformation (ETL): thirty stores' refrigerator temperature records kept by three data logger makes and, at
+ten pilot stores from mid-2026, by an in-carton wireless sensor, conformed into one record per store of the vaccine's
+temperature through 2026, the record the replacement list reads.
 
-Domain test: stationary-source VOC inventory work: the deciding quantity is each plant's 2026 controlled press VOC,
-which needs how much of each operating day's captured VOC its oxidizer destroyed; a thermal oxidizer's outlet holds
-near a floor concentration whatever its inlet (the control cost manual's 98 per cent or about 20 ppmv), so its
-destruction falls as the inlet grows dilute, and the field's method reads each day's outlet from its inlet through
-the relation the performance tests trace; with hospital or traffic nouns there is no oxidizer, no outlet floor and no
-fan diluting a control device's inlet, so nothing is left to decide.
+Domain test: the deciding quantity is each store's 2026 hours with its vaccine above 8.0 degrees C; integrating two
+instruments whose response differs enters each logger record into the vaccine's record through the vaccine's thermal
+response, which the pilot stores' fourteen-day overlaps measure, and replacing that with the generic union of the two
+records (the logger's readings wherever no in-carton sensor ran) replaces about twice as many refrigerators.
 
-Swap: put "hospital" for "plant" or "megawatt-hours" for "pounds of VOC" and nothing reads: there is no captured
-stream, no add-on device whose removal depends on the concentration it is fed and no test at maximum production to
-carry to a part-production day; the abstract move (a removal measured at one inlet carried to another) needs the
-device's outlet relation and the day's inlet concentration, which only the oxidizer tests, the press logs and the
-historians supply together.
+Swap: General Statistics, so the swap is of the method: replace the response-carried record with the union of the
+instruments' readings and the set roughly doubles; and with another field's nouns ("beds occupied" for "vaccine
+temperature") there is no carton, no glycol bottle and no thermal response for a reading to be carried through.
 
-Layer 1: purchases from two ink suppliers' invoice layouts in gallons, VOC content from safety data sheets in per cent
-by weight or pounds per gallon less water and exempt compounds; press logs by shift at some plants and by job at
-others; oxidizer historian exports in per cent of fan speed at some plants (each fan's curve to airflow) and in UTC
-against the plants' local press logs; performance tests from two testing firms, one reporting VOC as carbon and the
-other as propane; capture by permanent total enclosure verification at some plants and by a capture test at others;
-a plant renamed after an acquisition, its older returns under the former name. Each is written by the system named
-and none is placed to be caught; read the natural wrong way, some leave the call where it is (UTC days, a shift's
-date, rated airflow, one carbon content) and some move it to another wrong set (pounds less water and exempt read as
-pounds per gallon, every capture at 100 per cent, the former name's rows dropped, propane read as carbon), and none
-turns the default path into the golden call (checks.py R2a to R2h).
+Layer 1: three logger makes' exports, each in its maker's layout (Kelvra in degrees Fahrenheit and UTC, Frostline in
+Celsius and local time, Polarwatch in local standard time all year), readings at 5, 10 and 15 minute intervals, a
+logger replaced mid-year under a new serial, battery-out gaps in quiet weeks, the pilot vendor's cloud export in UTC
+keyed by sensor id, and in the ask files the distributor's 11-digit NDCs against the registry's 10-digit forms and
+doses against vials: each is what these systems write, none is placed to be caught, and no reading of them moves the
+call (to be asserted in checks.py).
 
-Layer 2: field_method, a control device's tested efficiency carried to the operating day: a test's destruction
-efficiency is the oxidizer's removal at the test's concentrated inlet; the tests across the ten oxidizers trace an
-outlet that holds near a floor however dilute the inlet, and each operating day's outlet is read from that relation at
-the inlet the day's captured VOC and the oxidizer's airflow imply.
+Layer 2: estimation that fits the data (estimation_fit): the vaccine's temperature is not recorded at most stores for
+most of the year and has to be estimated from the logger record through the vaccine's response, a first-order lag
+whose time constant the pilot stores' overlaps fix; counting the logger's own time above 8 degrees C counts every
+restock and busy afternoon the vaccine rode out.
 
-Decisive step: reading each operating day's oxidizer outlet from the floor relation the performance tests trace, at
-the inlet concentration the day's captured VOC (press logs through the safety data sheets and the capture
-determination) and the oxidizer's airflow (the historian) imply, which lowers the year's destruction at the plants
-whose fixed-speed fans ran at full air through part-production days and carries Ashcombe Flexible Packaging and
-Kelvedon Laminates over 25 tons.
+Decisive step: carrying each logger record through the vaccine's thermal response, a first-order lag of about 45
+minutes measured on the pilot stores' fourteen-day overlaps where the old logger's probe and the in-carton sensor
+recorded the same unit, before the hours above 8.0 degrees C are counted.
 
-No decoy: nothing is planted: the purchases, data sheets, press logs, historians, capture determinations and tests
-are what each plant's systems and testing firms write; no memo, statement, permit condition or earlier inventory
-states a plant's 2026 press VOC, a destruction efficiency for 2026 or the outlet floor, and no document says how the
-tested efficiencies are to be applied.
+Not semantics: every field reads as written (each logger's probe temperature in its own unit and clock, the in-carton
+sensor's temperature, the roster's dates and serials); read correctly, the logger's readings are still its probe's,
+the easy route counts them as the vaccine's, and only the vaccine's response, which no field or definition states,
+separates the two.
 
-Not semantics: every field, unit, basis and clock read correctly (gallons to pounds of VOC through each data sheet,
-VOC as carbon against as propane, fan speed to airflow, UTC to local, the renamed plant) still leaves the careful
-route applying each plant's tested efficiency to its captured VOC; no field holds a day's destruction efficiency or
-says that a test's efficiency depends on its inlet; the step is an estimate (the outlet relation) and the carry it
-sets, not a reading.
+Not rule application: the standard files the WHAT (the vaccine's temperature, calendar 2026, above 8.0 degrees C, 24
+hours, each reading standing for the interval to the next) and no rule or procedure says how a logger's reading
+becomes the vaccine's temperature; the enumerated family (the readings as recorded, 30 and 60 minute duration
+filters, 45 and 90 minute moving averages, a pure delay, the first-order lag at the fitted constant) spreads the set
+from about six to about twenty-nine stores on the prototype, the standing family (first-order lags fitted pooled, by
+make and by store) files one set, and what rules out the rest is the overlaps' own fit (0.04 degrees C for the lag on
+the prototype against degrees for the readings as recorded); measured figures at stage 2.
 
-Not rule application: the draft rule files the population, the outcome (VOC used less destroyed), the year, the unit
-and the 25-ton comparison (the WHAT); no filed rule or procedure says how much of a day's captured VOC an oxidizer
-destroyed. The family the rule leaves open, measured on the cut pack (checks.py R0 to R5, G1 to G4): the enumerated
-family (each plant's latest test, the mean of its tests, the permits' minimum, the relation at the year's or each
-month's mean inlet, each test's outlet concentration or rate carried to the year, each oxidizer's own tests, the
-relation day by day) spans five designated sets of three to eight plants; the standing family (14 members: three
-estimators of the hard floor, three smooth knees, an interpolation of the tests, the relation fitted by vendor and by
-testing firm, the hour grain, two cut points) files one set and the same 14 whole tons, each plant's figure within
-0.37 tons across it, every member at least 0.19 tons from a rounding half; what rules out the tested-efficiency routes
-is the tests' own outlets, which hold within about 2 per cent of 45 ppmv as carbon while the dilute runs' inlets
-double, and what rules out the outlet-concentration routes is the runs above the knee, whose outlets rise with their
-inlets.
+Analyst test: with every field and rule read correctly, a strong analyst takes each store's logger readings as its
+vaccine's temperature, as a buffered probe is meant to give it (each pilot store's in-carton sensor from its
+installation), counts the 2026 hours above 8.0 degrees C and replaces about twice as many refrigerators as the golden: the
+default path's Ends on.
 
-Analyst test: a strong analyst who conforms every purchase to pounds of VOC from its safety data sheet, every press
-log to daily VOC used, applies each plant's capture determination and reads the draft rule and the information
-request correctly applies each plant's latest oxidizer test efficiency to its 2026 captured VOC and files "Rule 18-4
-covers Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging"; only each operating day's outlet read
-from the floor relation at the day's inlet adds Ashcombe Flexible Packaging and Kelvedon Laminates (checks.py R3a on
-the generator's clean truth).
+Estimand: the Vaccine Storage and Handling Standard (revised 2026), the 2027 replacement section: the population (the thirty
+stores' vaccine refrigerators), the outcome (the hours the vaccine spent above 8.0 degrees C,
+each reading standing for the interval to the next), the window (calendar 2026, local time), the unit (hours) and the
+comparison (24 hours).
 
-Estimand: draft Rule 18-4, section 2 (applicability): a plant in the Kestle Valley ozone nonattainment area is subject
-from 1 July 2027 if the VOC its printing presses emitted in calendar year 2026 was 25 tons or more, a press's VOC being
-the VOC in the inks, coatings, adhesives and press wash solvents used on it less the VOC the plant's capture and
-control systems destroyed; the information request's cover letter files which records each plant returned.
+No decoy: nothing is planted: every logger is a compliant buffered-probe logger recording as built, the overlaps are
+the pilot's routine changeover (the old logger collected at the first check-in visit), and no memo, draft, briefing or
+stakeholder figure argues the loggers' hours.
 
-No certified replay: no plant's 2026 press VOC, inventory figure or emissions statement ships, and no earlier
-inventory, permit record or memo states one; nothing certifies either route, so no figure ties under the default path.
+No certified replay: the method is not recovered by reproducing certified or published figures; the chain publishes
+no store's hours, and no figure in the pack ties only under the golden.
 
-Lesson: an add-on oxidizer's tested destruction efficiency belongs to the concentrated inlet it was tested at; its
-outlet holds near a floor, so on the days a plant runs part of its presses with the fan at full air the inlet is
-dilute and the device destroys less, and the year's controlled emissions need each day's inlet put through the outlet
-relation the tests trace; no build on file carries a control device's removal across the concentration its own fan
-delivers.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0, each plant's latest test efficiency on its 2026 captured VOC, the default path (Carrow, Merrion, Ravensbrook) | rule s.2 "less what ... destroyed" beside the tests' efficiencies: fires | the tests' efficiency column: fires | apply a measured control efficiency: fires | none | none | one product per plant | readable |
-| R1, the mean of each plant's tests (the same three) | as R0: fires | as R0: fires | average the tests: fires | none | none | one product per plant | readable |
-| R2, the permits' minimum destruction, 95 per cent, on every controlled plant (eight plants: the golden five, Elsworth, Hartmoor, Larkmoor) | the permits' control condition: fires | none | a conservative assumption: fires | none | none | one product per plant | readable |
-| R3, the floor relation at each plant's 2026 mean inlet, or each month's (Ashcombe, Carrow, Merrion, Ravensbrook) | none | none | none: it needs the floor first | none | none | one ratio per plant | silent |
-| R4, each oxidizer's latest test outlet (its concentration on each day's air, or its rate over the year's hours) (the golden five and Larkmoor) | none | the tests' outlet columns: fires | an outlet emission rate times hours: fires | none | none | one product per plant | readable |
-| R5, each oxidizer's own tests (Ashcombe, Carrow, Merrion, Ravensbrook) | none | none | fit each unit's own data: fires | none | none | one line per plant | readable |
-| G (decisive), each operating day's outlet from the floor the tests trace, at the inlet the day's captured VOC and airflow imply (Ashcombe, Carrow, Kelvedon, Merrion, Ravensbrook) | no sentence says an oxidizer's efficiency depends on its inlet | no column holds a day's inlet or efficiency | no reflex rebuilds a control device's inlet from press logs and fan airflow | none | none | none | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | VOC | the rule's definition, exempt compounds (acetone) excluded | every organic solvent | not the rule's; the call asserted under both | rule s.1; the safety data sheets' VOC less water and exempt compounds |
-| SF2 | VOC used on a press | inks, coatings, adhesives and press wash solvents logged to the press | cleaning away from the presses added | same call (asserted; Larkmoor comes to 24.7) | rule 18-4-3(b) and 18-4-5 |
-| SF3 | 2026 | local calendar days | the historians' UTC days | same call (asserted) | rule s.2; the request letter |
-| SF4 | captured | each plant's capture determination | 100 per cent at every plant | the call moves: the capture-tested plants lose their uncaptured VOC (asserted) | the register's Capture sheet, one determination per plant; the request letter |
-| SF5 | destroyed | what each oxidizer destroyed on each operating day | the latest test's efficiency; the permit's minimum | three plants (R0); six (R2) | rule s.2 (destroyed, not required or demonstrated); the tests' outlets refute one efficiency for every inlet (asserted) |
-| SF6 | the tests' VOC basis | one basis for inlets and outlets, as carbon | firm A's as-propane figures read as carbon | the floor estimate off by a factor of three at firm A's plants; ruled out | each test report's method section (Method 25A as propane; as carbon) |
-| SF7 | the carbon content of a plant's VOC | each return's reported carbon fraction | one default fraction | same call (asserted) | the request letter |
-| SF8 | the oxidizer's airflow | the historian's standard airflow, through the fan curve where the historian logs speed only | actual airflow | same call (asserted) | the historians' tag lists; the fan curves |
-| SF9 | an operating day's hours | the oxidizer's PROCESS hours, the press days' shifts | every hour not OFF | the call moves (asserted) | the historians' mode tag; the press logs' shift and job times |
-| SF10 | the floor relation's form | the greater of the floor and a fixed share of the inlet | a smooth fit of outlet on inlet | same call (asserted) | the tests |
-| SF11 | the floor's grouping | the ten oxidizers' tests together (one design, one combustion temperature) | each oxidizer's own tests | Kelvedon's own tests carry no dilute run and leave its dilute days unmeasured; the pooled floor holds within a narrow band at four plants | the tests; the plants' oxidizer descriptions |
-| SF12 | rounding | press VOC and the shortfall to the whole ton, cleaning VOC to a tenth, gallons whole, each from the unrounded figure | none | none | the prompt |
-| SF13 | retention in the substrate | none (inks and adhesives on films, foils and paperboard; no heatset press) | heatset retention | none applies | the plant register |
-| SF14 | the renamed plant | Kelvedon Laminates with its records as Thameside Laminating (facility 0117) before 1 May 2026 | the 0117 rows left out | Kelvedon falls to 18.9 and the call moves (asserted) | the request letter; the register's former name |
-| SF15 | press wash solvents | automatic blanket, plate and anilox wash logged to the presses | manual cleaning | Ask A's population | rule s.2 and s.4 |
-| SF16 | cleaning away from the presses (Ask A) | cleaning materials issued to ink kitchens, parts cleaning and roll cleaning, less the VOC shipped off site under the cleaning profiles, plus the parts washers' added less removed solvent | issues alone | 13 of 14 figures move (asserted) | rule 18-4-5(b) |
-| SF17 | the VOC in waste (Ask A) | the waste profile's solvent fraction times the manifest's weight times the solvent's VOC fraction | the manifest's weight as VOC | not rule s.4 | rule s.4; the waste profiles |
-| SF18 | a parts washer's VOC (Ask A) | fresh solvent added less spent solvent removed, from the service tickets | solvent added alone | not rule s.4 | rule s.4 |
-| SF19 | received in 2026 (Ask B) | delivered from 1 January to 31 December 2026, local dates | invoiced in 2026 | not the prompt's | the prompt ("received") |
-| SF20 | the stock counts (Ask B) | the physical counts of 1 January 2026 and 31 December 2026 | book stock | not the request letter's | the request letter |
-| SF21 | returns (Ask B) | inks, coatings and adhesives returned to the supplier for credit | none | not the request letter's | the request letter |
-| SF22 | a product sold by the pound (Ask B) | gallons through its safety data sheet's density | pounds read as gallons | not the prompt's | the prompt (gallons); the supplier's catalog |
-
-## Ladder
-
-Figures from the cut pack (`generator/bundle.py`), asserted by `generator/checks.py` (whole tons are the deliverable's).
-
-- **R0, each plant's latest test efficiency on its 2026 captured VOC, the default path: Carrow Gravure 37.1, Merrion
-  Flexibles 31.1 and Ravensbrook Gravure Packaging 55.6 tons covered; Ashcombe Flexible Packaging 21.3 and Kelvedon
-  Laminates 20.3.** Dies to the tests' own outlets: the runs under 2,000 ppmv as carbon hold within about 2 per cent of
-  45 while their inlets run from 926 to 1,915, so an efficiency belongs to its inlet, and the press logs and historians
-  put Ashcombe's and Kelvedon's 2026 days far more dilute than their tests (Ashcombe 980 to 1,871 against a test at
-  about 1,880; 58 per cent of Kelvedon's days near 1,100 against tests at about 4,300).
-- **R1, the mean of each plant's tests: Ashcombe (27.3) in, Kelvedon (20.1) out.** Ashcombe's 2018 test, run with two
-  presses installed, lowers its mean efficiency; Kelvedon's three tests all ran concentrated. Dies the same way.
-- **R2, the permits' minimum destruction (95 per cent) on every oxidizer: eight plants, the golden five with Elsworth
-  Film Converting (44.2), Hartmoor Packaging (29.6) and Larkmoor Graphics (33.7).** Dies to rule 18-4-3(b): destroyed,
-  not required; every test shows more.
-- **R3, the relation at each plant's 2026 mean inlet (or each month's, R3m): Kelvedon 23.1 (23.6 by month) out.** Dies
-  to Kelvedon's days: its mean inlet (about 2,190) sits under the knee while its concentrated days run near 4,100, and
-  a year's releases are the days' sum, not the relation at the mean.
-- **R4, each oxidizer's latest test outlet concentration on each day's air (R4m the mean of its tests' outlets, R4b the
-  latest outlet rate over the year's process hours): Larkmoor 31.1 in.** Dies to the runs above the knee, whose outlets
-  rise with their inlets: Larkmoor's tests ran on its concentrated gravure days, and 82 per cent of its 2026 days ran
-  only the flexo press, at about 1,100.
-- **R5, each oxidizer's own tests: Kelvedon 20.1 out.** Kelvedon's tests never ran dilute, so its own line has nothing
-  to say about its dilute days; the ten oxidizers share one design and set point and the floor shows at both vendors'
-  units and in both firms' tests.
-- **G: Ashcombe 28.9, Carrow 37.2, Kelvedon 27.9, Merrion 31.1 and Ravensbrook 56.1 covered (29, 37, 28, 31 and 56);
-  Larkmoor Graphics 20.9 the nearest below (21), 4 tons short.**
-- **Margins:** the 14 standing members file the same five and the same 14 whole tons; the lowest covered plant clears
-  25 by 2.9 tons and the nearest below falls 4.1 short; every member's every plant sits 0.19 tons or more from a
-  rounding half (checks.py G1 to G4). The refuted straight line also files the five (G6).
-- **Position, separation and dominance:** a set at a threshold; no decoy to dominate.
-- **Worth:** the call, every plant's 2026 press VOC and the nearest below; the default path keeps the nine plants whose
-  whole tons do not move (Garrowby and Norhaven move by one ton, Ashcombe, Kelvedon and Larkmoor by 8 or 9).
-
-## Closure table
-
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | the fourteen plants in the nonattainment area and every press each operated in 2026 (rule s.2); Ask A every plant's cleaning away from its presses (rule s.4); Ask B every plant's inks, coatings and adhesives |
-| 2 | Unit of account | the plant; tons of VOC; gallons |
-| 3 | Attribution window | calendar 2026, local dates (SF3, SF19) |
-| 4 | As-of dating | the returns as filed for the information request of 12 January 2027; the stock counts of 1 January 2026 and 31 December 2026 |
-| 5 | Version basis | each product's safety data sheet in force on the day it was used or issued (the revision log) |
-| 6 | Denominator | none |
-| 7 | Weighting | none: every pound counts once |
-| 8 | Window length | the calendar year |
-| 9 | Boundary inclusivity | 25 tons or more (rule s.2) |
-| 10 | Rounding path | press VOC and the shortfall to the whole ton, cleaning VOC to a tenth, gallons to the whole gallon, each from the unrounded figure (SF12) |
-| 11 | Tie-break | none: no plant sits within 2 tons of 25 (asserted) |
-| 12 | Maturity and censoring | the year closed on 31 December 2026; every return covers it |
-| 13 | Order of operations | used, then captured, then destroyed day by day, then summed; Ask A issued less waste plus washers; Ask B opening plus received less returns less closing less used |
-| 14 | Row order | none |
-| 15 | Duplicate resolution | the historians' daylight-saving hour once; no duplicate press log row ships |
-| 16 | Identity normalisation | the renamed plant (SF14); product codes through the safety data sheet master and its revision log; supplier item numbers through each plant's cross-reference and the supplier's catalog |
-| 17 | Netting | waste shipped and washer solvent removed net against cleaning issued (Ask A); returns net against received (Ask B) |
-| 18 | Dimensional units | gallons, pounds, ppmv as carbon and as propane, scfm and fan speed (SF6, SF8, SF22) |
-| 19 | Code and status semantics | the historians' mode tag; the press logs' material type codes; never the stump |
-| 20 | Integerisation | none: tons and gallons are continuous |
-| 21 | Clause scope | rule s.2 governs the call; rule s.4 governs Ask A; the request letter governs the returns' contents and Ask B |
-| 22 | Forward window contents | the rule applies from 1 July 2027 to the plants covered on their 2026 press VOC |
-
-## Literal reader
-
-Executed word for word, the draft rule fixes the estimand: the VOC each plant's presses emitted in calendar 2026,
-used less destroyed, against 25 tons. "Destroyed" is what each plant's oxidizer destroyed of what reached it, a
-property of how the oxidizer ran on the year's days, so the candidates are a test's efficiency held for the year and
-the efficiency each day's inlet implies. The data separate them: the ten oxidizers' 28 tests, all at maximum
-production, show outlets within about 2 per cent of 45 ppmv as carbon at inlets from 926 to 1,915 and 1.8 per cent of
-the inlet above 3,000, so an efficiency is a property of its inlet; the press logs and historians give each
-production day's captured VOC and airflow, hence its inlet, and every form of the outlet relation the tests support
-files the same five plants, while a test's efficiency held for the year files three (checks.py R3, G2). Every 2026
-production day's inlet falls inside the tested range at its low end (944 to 980 at the dilute plants against the
-runs' 926), so no member extrapolates the relation below the tests.
-
-WHAT screen (stumping 1.2): population, rule 18-4-3(a); outcome, rule 18-4-3(b) (used less destroyed); window, rule
-18-4-3(a) (calendar 2026); unit, tons; comparison, 25 tons. The decisive step settles none of them.
-
-## Oracles
-
-None. No plant's 2026 press VOC, emissions statement or earlier inventory ships, and no figure ties only under the
-golden: the tests certify efficiencies at their own inlets and say nothing about 2026. The asks' files carry no total
-that ties under one handling: the stores' issue totals, the hauler's manifest totals and the suppliers' statements
-tie under every handling of the devices.
-
-## Ask sheet
-
-The Council's packet carries each plant's cleaning VOC beside its press VOC, because rule 18-4-5's cleaning provisions
-apply to every plant in the area whether or not its presses are covered, and the inventory section's audit of each
-return: the inks, coatings and adhesives each plant received in 2026 that its stock counts and press logs leave
-unaccounted for (H18: an audit trail of the input the call consumes, through rows it never reads, to its control
-total). No ask device or hazard row sits in the call's population (checks.py X3): the call reads the press logs, the
-press materials' safety data sheet rows, the register, the historians and the tests; ask A reads the stores' issues,
-the cleaning materials' sheet rows and the revision log, the hauler's manifests and profiles, the washer tickets and
-the solvent vendors' payment lines; ask B reads the two suppliers' invoices, Haldane's catalog, the stock counts and
-the press logs' gallon totals, device-free (checks.py X1 and X2 compute each side from its own files).
-
-- **Ask A, each plant's 2026 VOC from cleaning away from its presses: 14 figures, tons to one decimal.** Path: the
-  stores' issues, the safety data sheet master and its revision log, the hauler's manifests and waste profiles, the
-  washer tickets, the solvent vendors' payment lines and rule 18-4-5(b) (seven files, about fourteen columns). Primary
-  device: D2, an attribute at the wrong vintage: Haldane reformulated its equipment cleaning solvent HW-CS-210 on 1
-  June 2026 from 7.10 to 3.20 pounds of VOC a gallon, the master carries the current revision, and the earlier formula
-  sits only in the revision log among nine benign revisions, so issues before June read through the master understate
-  every plant (every plant issues it; the least move is 0.11 tons). Hazards: D4, absence as the signal (at six plants
-  Wexcombe's tickets stop at the end of June when the washers moved to Ostrander, whose services sit only in the
-  payment lines with their gallons); D3, the hauler's weights in kilograms at two plants from its September system
-  change, the unit column saying so. Stops (measured, `generator/ceiling.py`): the master for every issue and the
-  tickets alone (the cracker and the mirror) 0 of 14; the revision log without the payment lines 8 of 14; the golden.
-  Realism: a supplier reformulates ahead of a cleaning-solvent limit and the master shows the sheet in force today.
-- **Ask B, each plant's 2026 inks, coatings and adhesives received that its stock counts and press logs leave
-  unaccounted for: 14 figures, whole gallons.** Path: Corvane's invoice export, Haldane's statement and catalog, the
-  stock counts, the press logs' gallons and the safety data sheet master's densities and product types (six files,
-  about twelve columns). Primary device: D7, codes reissued: Haldane renumbered its catalog on 1 April 2026 by
-  category, its documents before then carry the old numbers, and four of them (its 55-gallon drums of HW-CS-210,
-  HW-PW-710, HW-IK-260 and HW-RC-240) are now the numbers of its coating pails, so the statement joins the current
-  catalog without an unmatched line and every plant's January to March cleaning and press-wash drums read as coatings;
-  the catalog's replaces_item column is the chain (every plant's figure rises; the least move is 110 gallons). Hazards:
-  D8, deliveries shipped in late December 2025 and invoiced in January 2026, already in the 1 January count, and
-  deliveries shipped in late December 2026 and invoiced in January 2027 (the document date in place of the ship date
-  moves 13 of 14); D3, Haldane's adhesives sold by the pound with no unit on the line, the catalog's sold_by naming it
-  (Kelvedon). Stops (measured): the current catalog (the cracker and the mirror) 0 of 14; the replaces column 14 of 14.
-  Realism: an ERP catalog change keeps old numbers only as a replaces field.
-- **The construction layer:** the call, every plant's press VOC and the nearest below; the cracker has them.
-- **Main population zero-counts (asserted):** no press material is a cleaning material and the reformulated product is
-  never logged on a press; the renumbered items are cleaning and press-wash drums the call never reads (X3).
-- **Referee:** none.
-
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
-|---|---|---|
-| A, each plant's cleaning VOC away from its presses | issues on the master's current revision, cleaning-profile waste credited at its unit, washers from the tickets: 0 of 14 (measured on the cut pack) | miss |
-| B, each plant's unaccounted gallons | lines shipped in 2026 on the current catalog, pounds by density, returns netted: 0 of 14 (measured on the cut pack) | miss |
-
-Pair ceiling: 28.5 (weights 38 / 7 / 55, r 5: the cracker keeps the call, the 14 whole tons and the instructions,
-45.0; the mirror at the default path keeps r and the instructions, 12.0; neither keeps an ask figure; measured on the
-cut pack; a cracker who also reads the revision log and the payment lines, or walks the replaces column, keeps 72.5,
-which stage 4's readers measure)
-
-Mirror leakage: 0.0 per cent of ask weight
-
-Measured by: generator/ceiling.py
-
-## Layer 1 inventory
-
-| Item | System that writes it | File | Natural mishandling | Effect (checks.py) |
-|---|---|---|---|---|
-| VOC in per cent by weight or pounds per gallon less water and exempt compounds | the suppliers' safety data sheets | the sheet master | the less-water-and-exempt figure read as pounds per gallon of product | the water-based plants more than double; Garrowby reaches 25.0, a wrong set (R2a) |
-| press logs by shift and by job, a third shift across midnight | each plant's production system | the press logs | Merrion's third shift put on the day it ends | the call holds (R2b) |
-| fan speed in per cent at the speed-logging historians | the oxidizer vendors' historians | the historians, the register's rated airflow | the variable-speed fans read at their rated airflow | the call holds (R2d) |
-| UTC historians against local press logs | the historians | the historians | the hours joined on their UTC dates | the call holds (R2c) |
-| VOC as propane against as carbon | the two testing firms | the tests | Marlow's propane figures read as carbon | the relation stops fitting one floor and the call moves (R2e) |
-| capture by enclosure verification or capture test | the plants' compliance records | the register's Capture sheet | 100 per cent at every plant | the capture-tested plants lose their uncaptured VOC and the call moves (R2f) |
-| Thameside Laminating, facility 0117, before 1 May 2026 | the acquired plant's old systems | the press logs, issues, tickets, manifests, the historian tags | the 0117 rows left out | Kelvedon falls to 18.9 and the call moves (R2g) |
-
-None of these readings turns the default path into the golden call (R2h).
-
-## Pre-ship check
-
-1. Domain: stationary-source VOC inventory practice: a controlled press line's emissions are its uncaptured VOC plus
-   what its oxidizer lets through, and an oxidizer's outlet holds near a floor, so its destruction belongs to the inlet
-   it was tested at; with another field's nouns there is no captured stream, no oxidizer outlet and no fan diluting a
-   control device's inlet.
-2. Real work, nothing planted: every Layer 1 item is what the plants', the vendors', the testing firms' or the
-   suppliers' systems write (two VOC bases, shift and job logs, fan speed against airflow, UTC historians, propane
-   against carbon, two capture determinations, the acquired plant's former number); none is the decisive step
-   (checks.py R2a to R2h), and every test passed its permit's 95 per cent at maximum production.
-3. The step that flips the call is analytical: estimating the outlet relation the ten oxidizers' tests trace and
-   reading each production day's outlet from the inlet its captured VOC and airflow imply; no clause makes the choice
-   (rule 18-4-3(b) files used less destroyed, not how a test becomes a year).
-4. Analyst test: every field and rule read correctly, each plant's latest test efficiency files the default three on
-   the clean truth (R3a) and on the pack (R0); the decisive step alone files the golden five on the clean truth (R3b).
-5. The rule files the estimand (the area's plants, their presses' VOC, calendar 2026, tons, 25 or more); the 14
-   standing constructions file the golden five and the same 14 whole tons (G2); the asks' conventions are filed in
-   rule 18-4-5(b), the letter and the prompt, or closed by the data (SF15 to SF22).
-6. No decoy, no withheld rule against a stated one, no certified replay: no plant's 2026 press VOC or emission
-   statement ships, and the permits' 95 per cent is the permits' own condition, a rung the rule's wording rules out.
-7. The lesson is on no other card: nearest drivers 0.08 (task478 v7 and v6, a burner's tests carried by a supplied
-   gas property or a clock since a part change), 0.06 (task181), differentiated on the card.
+Lesson: a record kept by a fast instrument is not the slow quantity it stands for; integrating it with a direct
+record means carrying it through the slow quantity's response, measured where both recorded the same unit, before any
+threshold is counted; no build on file teaches carrying a record through a dynamic response.
 
 ## Architecture 7 record (spent 2026-10-23)
 
@@ -495,3 +271,21 @@ it hands all three the call, so the decisive step as designed does not stump and
   field knowledge both readers carried; the asks' devices each sat one file away from a careful reader's path (the
   master's revision log in the same workbook, the washer gallons in readable payment text, descriptions beside the
   renumbered items). Next architecture: a decisive step no table displays as a pattern and no column labels.
+- Architecture 8 draw (2026-10-23): re-rooted on the author's standing rule (no retirement) with a fresh world, aimed
+  at architecture 7's lesson (no table displays the decisive relation, no column labels it). Screened before it and
+  dead: vessel propulsion from AIS speed over ground carried to speed through the water by an estuary's tidal streams
+  (a port world beside task472 and task474, and a tidal stream table has no other use in an emissions pack, so its
+  presence announces the correction); container ships' at-berth auxiliary load by the reefers on board, calibrated on
+  shore power meters (a port world, and a reader calibrating on the meters sees the per-call spread with reefers its
+  first explanation); a tanker's boiler load at berth by its own steam cargo pumps on discharge (the at-berth tanker
+  rules' own reasoning, a reflex once the transfer log is joined); dairy lagoon methane through the lagoon's
+  temperature lag behind the air (the rate model is a filed procedure, and four inspection readings a year cannot fix
+  the lag deterministically); switcher locomotives' idling through the start-stop system's restart temperature (a
+  rate carried across a weather covariate, task478 v7's driver); crematory mercury by the decedents' dental cohort (a
+  composition mix one survey table hands over); breaker SF6 leak rates from temperature-uncompensated pressures (the
+  gas temperature at each reading is not recoverable). A cold-chain prototype (thirty-six refrigerators, probe 6 minutes,
+  carton 48) put the logger's own hours at two to ten times the vaccine's, the default qualifying 29 against 12, with
+  a 45-minute lag fitted on ten fourteen-day overlaps at 0.04 degrees C reproducing the carton's set exactly, while 30
+  and 60 minute duration filters (17 and 6) and a 45-minute moving average (20) fell elsewhere and a 90-minute moving
+  average missed by one refrigerator: the stage 2 world keeps the default's count plausible and every store clear of the
+  line under the standing family.
