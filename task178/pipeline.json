@@ -1,11 +1,11 @@
 {
  "task": "task178",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences/hydrology-flood-frequency",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-23",
  "stump": "One power-law rating fitted to all of TUM-02's 468 gaugings and carried through the 46 annual peak stages into the standard's weighted-skew log-Pearson Type III puts the 1 per cent flood at 10,000 cfs and files Alternative A (10,400 cfs); a rating with its own floodplain term above the fitted 10.28 ft break puts it at 14,000 cfs and files Alternative D (14,700 cfs).",
  "architecture": 2,
@@ -17,20 +17,20 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-23 (sweeps 3, 4, 5 answered in the design note's ## Leak sweep; no LEAK)",
-  "reader": ""
+  "reader": "scored readers C and D both landed the call (D, 14,000 cfs); C kept 32 of 32 ask figures, D cracked the purge, offset and radar-face devices"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-23 after re-registration (overuse.objective, overuse.gate_g, repeat.question_form; the moved window's four BLOCKs redrawn, ## Draw)",
   "nearest": "ledger task466 0.09, stump task229 0.06; drivers task249 v5 lineage 0.06, task170 v1 lineage 0.06"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC / APPROVE",
+  "disposition": "no fix; Gate F decided by the readers",
+  "report": "scratchpad/judge-task178r/verdict.md"
  },
  "returned": [],
  "wave": "rebuild 2026-10-23 of a reopened number in physical-environmental-sciences / hydrology-flood-frequency (Forecasting); architecture 1 (climate-weather-extremes) and the conjoint cell spent",
- "resume": "stage 4: two scored readers and the judge",
+ "resume": "architecture 2 (hydrology-flood-frequency, the rating's floodplain segment) spent at Gate F on pack cc9cb2f1; the number stays open and rests until the main session assigns another cell",
  "approved": null,
  "delivered": null,
  "portal": null,

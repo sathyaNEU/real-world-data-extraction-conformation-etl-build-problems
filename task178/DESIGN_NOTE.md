@@ -1,7 +1,8 @@
 # task178 design note
 
-**Status: BUILD, stage 3 green, PAUSED at stage 4 for the main session's two scored readers and the judge
-(2026-10-23).** Architecture 2, the rebuild. The number was RETIRED on 2026-10-21 and reopened under the author's
+**Status: PAUSED (2026-10-23). Architecture 2 spent at stage 4, Gate F (pack cc9cb2f1): the judge returned
+DETERMINISTIC / APPROVE, but both scored readers landed the call (`## Tried and rejected`). The number stays open
+and rests.** Architecture 2, the rebuild. The number was RETIRED on 2026-10-21 and reopened under the author's
 rule that no number stays retired (`## Rebuild (2026-10-23)`). Cell allocated by the main session:
 physical-environmental-sciences / hydrology-flood-frequency, Forecasting. Organisation, decision, quantity and
 mechanism were searched inside the cell; prototypes in the session scratchpad (b178n/proto: p1 to p4, the scans).
@@ -284,7 +285,9 @@ for architecture 1 moved into `lineage`. Architecture 2, the floodplain segment 
 the annual peak series, was registered and committed DRAWN on 2026-10-23 (9bb65027) and built the same day to stage 3
 green (checks 151 of 151, verifier 26 of 26, two byte-identical builds, precut and figures_check exit 0, leak.py
 REVIEW answered, guard surface exit 0 and heart WARN); it waits at stage 4 for the main session's two scored readers
-and the judge. The cell's other candidates are lines at the foot of `## Tried and rejected`.
+and the judge. The cell's other candidates are lines at the foot of `## Tried and rejected`. Stage 4 (pack cc9cb2f1):
+the judge approved, both readers landed the call, and architecture 2 is spent at Gate F; the card's re-registration
+(d4521939) is moot with the architecture spent, and the card is left as filed with `architecture_spent` set.
 
 ## FC49 screen record (world spent, kept for the record)
 
@@ -547,3 +550,14 @@ none is touched by either candidate.
     spread over any lever);
   - a construction-season maximum (the in-water work window): a reading of the window, ask material only.
   - Held and drawn: the rating's floodplain segment (`## Draw`), measured on code (p1 to p4) before the card.
+- **Architecture 2, the floodplain segment of the stage-discharge rating under the annual peak series: spent at stage 4,
+  Gate F (2026-10-23, pack cc9cb2f1).** The judge returned DETERMINISTIC / APPROVE with no fix, but both scored readers
+  landed the call. Reader C filed Alternative D and 14,000 cfs and kept 32 of 32 ask figures. Reader D also filed D and
+  14,000 cfs: "in-bank power law with a steeper overbank term above about 10.3 ft. It is stable across eras and fits within
+  about 5 percent". For the asks it found the purge spikes, the 0.47 ft offset and the stale radar face ("the sensor face
+  was surveyed at 199.84 ft in May 2023"). Why it died: a rating segmented at the bankfull break is the field's own
+  standard practice (a control change read off the gaugings), and with 79 gaugings above 10.3 ft the break shows plainly,
+  so a careful reader fits it by default; measurement 1 of the brief (a correction the field teaches as standard is the
+  default path) applies to hydrometry as it did to the tide table. The ask devices (a visit-log clock, a logged controller
+  offset, a resurveyed sensor face) are all 1.1e hygiene that careful readers execute. The card's re-registration
+  (d4521939) is moot now; the card is left as filed, marked spent.
