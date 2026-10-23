@@ -320,6 +320,8 @@ Measured by: generator/ceiling.py
   contract's bid (purchase_order_or_contract; vote_or_meeting, budget_or_appropriation and the filing kinds are
   banned there too), and the utility is a City department (local_government, against task478) or a water utility
   (utility_or_infrastructure, against task175). Left for the main session; no axis relabelled.
+- Ruling (main session, 2026-10-23): the heart BLOCK falls under the author's standing ruling "Ship, window fixed at
+  draw"; the card passed `check` under the lock and nothing is relabelled.
 
 ## Tried and rejected
 
@@ -408,6 +410,16 @@ Measured by: generator/ceiling.py
   credible; it was lowered to about 1.0 per 100 (the record's routine exchanges carry about 3 per cent of its
   repairs), which still leaves the record's rate 35 per cent under the expectation.
 
+- Architecture 3 (Hollis Bend Water Utilities' 2027 service leak repairs read on each service's own meter exchange
+  visits) spent 2026-10-23 at stage 4 on Gate F (zip c3223db0): blind reader A landed the call at 3,000 by the path
+  "About 1 percent of meter sets are followed by a leak repair on the same service within 90 days. I removed that
+  effect from history, then fitted seasonality and a linear trend with a February 2021 freeze dummy, giving about
+  1,916 organic leaks for 2027. I added about 1,055 meter-exchange leaks from the 108,398 METER EXCHANGE premises on
+  the AMI schedule."; the asks held at 11 of 52 (21.2 per cent, one break per main and reported time, the latest
+  revision). Reader B and the judge were stopped. Lesson: a shipped file that exists only to carry the forward change
+  (here the AMI schedule, whose one use was the decisive step) is joined to the outcome on sight; the forward
+  condition has to sit in a file the default path already reads for another reason.
+
 ## Retired
 
 **RETIRED 2026-10-22 under this round's rule that a number which dies in its second new cell is retired.** Three
@@ -433,3 +445,7 @@ Fourth cell (assigned by the main session): human-factors-ergonomics / human-rel
 
 Fifth cell (chosen by this build, 2026-10-23): energy-systems-utilities / asset-condition-maintenance (Forecasting),
 architecture 3, card v3 registered with v2 moved into `lineage` as spent, `pipeline.json` architecture 3.
+
+Architecture 3 (energy-systems-utilities / asset-condition-maintenance) spent at stage 4 on Gate F on zip c3223db0
+(`## Tried and rejected`); card v3 marked `architecture_spent`. PAUSED at stage 1; the next cell comes from the main
+session.

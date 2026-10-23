@@ -1,11 +1,11 @@
 {
  "task": "task173",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "energy-systems-utilities / asset-condition-maintenance",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-23",
  "stump": "A competent solver carries the record's service leak repairs per year (1,936, or its trend at 1,998) to 2027 and files 2,000 against 3,000, because it never reads a service's failures on its own meter exchange visits, which add about one repair per 100 exchanges in the weeks after the new meter is set and which the 2027 AMI contract multiplies to 108,398.",
  "architecture": 3,
@@ -17,20 +17,21 @@
  },
  "leak": {
   "leak_py": "REVIEW, no LEAK (2026-10-23); every REVIEW line answered in ## Leak sweep",
-  "reader": ""
+  "reader": "reader A: call landed (3,000), asks 11 of 52 (21.2 per cent); reader B stopped"
  },
  "duplicate_check": {
   "heart": "WARN before the final pull; BLOCK after it at c64ed370 (ban.forcing_event and ban.org_family against task478 v7, which entered the window when the cards drawn between were marked spent; check as drawn now: WARN)",
-  "nearest": "guard.py surface exit 0; nearest drivers task149 and task183 at 0.10"
+  "nearest": "guard.py surface exit 0; nearest drivers task149 and task183 at 0.10",
+  "ruling": "heart BLOCK after the final pull (task478 v7 entered the window when the cards drawn between were marked spent) falls under the author's standing ruling 'Ship, window fixed at draw'; nothing relabelled"
  },
  "judge": {
-  "verdict": "",
+  "verdict": "not run (stopped)",
   "disposition": "",
   "report": ""
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC44",
- "resume": "stage 4: two scored readers and the judge",
+ "resume": "stage 1: architecture 3 spent at stage 4 on Gate F (zip c3223db0, reader A landed 3,000 by joining meter sets to leak repairs and the AMI schedule); the next cell comes from the main session",
  "approved": null,
  "delivered": null,
  "portal": null,
