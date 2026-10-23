@@ -1,27 +1,27 @@
 {
  "task": "task178",
  "owner": "sathya8571",
- "status": "DRAWING",
+ "status": "BUILD",
  "domain": "quantitative-finance/volatility-derivatives-pricing",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-23",
- "stump": "A competent solver who takes the reference rate's realised volatility over 2024 to 2026 prices the 2027 options at 8 per cent, and one who adds the central bank's hourly trades back at the impact read from the hour's move on the market's net or customer flow prices at 9 or 10; the step that lands them there is reading the price impact off a regression whose flow the bank traded against within the same hour, when the customers' flow, scaled by the share of it the bank left to the market, gives the impact the float exposes and a 2027 volatility near 11.5 per cent, priced at 12.",
+ "stump": "A competent solver who calibrates the market's price impact the textbook way, the hour's move regressed on the order flow the dealers absorbed (customers less the central bank), puts the bank's trades back at that impact and prices the 2027 options at 8 per cent (7.4), or at 9 on customer flow alone; the step that lands it there is the regression itself, because the bank traded against each hour's own move, so only customer flow read as the instrument gives the depth the float exposes, a volatility between 11 and 12 per cent and a price of 12.",
  "architecture": 3,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-23"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-23 (sweeps 3, 4 and 9 answered in the design note's ## Leak sweep; no LEAK)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-10-23 (overuse.objective, overuse.gate_g, repeat.gate_g task482, repeat.deliverables task175)",
+  "nearest": "ledger task446 0.06, stump task446 0.06, driver task253 lineage 0.04"
  },
  "judge": {
   "verdict": "",
@@ -30,7 +30,7 @@
  },
  "returned": [],
  "wave": "rebuild 2026-10-23 of a reopened number; architecture 1 (climate-weather-extremes) and architecture 2 (hydrology-flood-frequency) spent at Gate F, the conjoint and population-pharmacokinetics cells registered no card; architecture 3 in quantitative-finance / volatility-derivatives-pricing",
- "resume": "stage 2 design: default path, ladder, fork table, closure, asks A and B (supplemental-stumping), prompt.txt, precut.py; then the generator",
+ "resume": "stage 4: two scored readers and the judge (figures.json call keys under call.: pricing_volatility_pct, expected_volatility_band_pct, settings.8 to settings.13)",
  "approved": null,
  "delivered": null,
  "portal": null,

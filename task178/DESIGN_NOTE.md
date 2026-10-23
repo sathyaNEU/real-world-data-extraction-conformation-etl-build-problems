@@ -1,6 +1,6 @@
 # task178 design note
 
-**Status: DRAWN (2026-10-23), architecture 3.** The number was RETIRED on 2026-10-21 and reopened under the author's
+**Status: BUILD, stage 3 green (2026-10-23), architecture 3; waiting at stage 4 for two scored readers and the judge.** The number was RETIRED on 2026-10-21 and reopened under the author's
 rule that no number stays retired (`## Rebuild (2026-10-23)`). Architecture 1 (the harbour trestle deck) and
 architecture 2 (the floodplain segment of a stage-discharge rating) were spent at Gate F; the conjoint and
 population-pharmacokinetics cells registered no card. Cell allocated by the main session for this draw:
@@ -12,9 +12,9 @@ and dealers. Prototypes in the session scratchpad (b178q/proto: c1_fx.py, c1b.py
 - **Pairing:** Quantitative Finance, task type `volatility-derivatives-pricing` (F). The deciding quantity is the
   realised volatility a freely floating exchange rate will show in 2027, the number an FX options desk prices its
   one-year options at.
-- **World (fictional):** the Republic of Arauquia, a small Andean economy whose currency, the arauquian peso, trades
+- **World (fictional):** the Republic of Tamarquia, a small Andean economy whose currency, the tamarquian peso, trades
   against the dollar on an interbank platform from 08:00 to 16:00 local time. From January 2024 to December 2026 its
-  central bank, the Banco Central de Arauquia, sold or bought dollars with the dealers in the hours the peso came
+  central bank, the Banco Central de Tamarquia, sold or bought dollars with the dealers in the hours the peso came
   under the most pressure; in October 2026 it announced that its spot operations end on 4 January 2027 and released,
   with the announcement, the hourly record of its operations and of the reporting dealers' net customer purchases for
   2024 to 2026. A domestic bank's FX options desk launches the country's first one-year dollar options to corporate
@@ -66,6 +66,259 @@ and dealers. Prototypes in the session scratchpad (b178q/proto: c1_fx.py, c1b.py
   png plus xlsx is a WARN against task175, answered: the chart is the desk's grid against the forecast, nothing
   like task175's).
 
+## Default path
+
+The pipeline a strong analyst builds from the prompt's words, the policy and the files' grain, with every field read
+and every filed rule applied:
+
+1. Reads the pricing policy (section 2): the 2027 expected volatility is the closing rate's volatility over the 2024 to
+   2026 sessions had the Banco Central not operated, as the annualised root mean square of daily log changes at 252
+   sessions, rounded up to the next whole per cent.
+2. Builds the customers' net dollar purchases each hour from the reports of record in
+   `dealer_customer_flows_hourly_2024-2026.csv` (the last report received per dealer and hour, Financiera Tres Valles'
+   July 2025 reports dropped per the dealer register), and the Bank's net dollar sales each hour from
+   `bct_spot_operations_2024-2026.csv` (ANULADA rows dropped, VENTA less COMPRA).
+3. Takes each hour's log change of the platform mid, joining an hour to the next where a mark is missing, and regresses
+   it on the order flow the dealers absorbed, the customers' purchases less the Bank's sales (FX microstructure's
+   textbook calibration of price impact): 0.07 per cent of the rate per 100 million dollars.
+4. Puts each session's Bank net sales back into the closing rate's daily log change at that impact and takes the
+   policy's root mean square at 252 sessions: 7.4 per cent.
+5. Rounds up: 8 per cent.
+
+- **Ends on:** 8 per cent
+- **Golden:** 12 per cent
+
+The neighbouring routes, each measured on the cut pack (`checks.py`, `cracker.py`): the record itself, 6.9 (7); the
+impact read on customer flow alone, 8.9 (9); on customer flow in the hours the Bank stayed out, 8.4 (9); the
+two-regressor fit taking the Bank's coefficient as the impact, 6.1 (7), or the customers' coefficient, 8.1 (9);
+the record scaled by the customers' flow variance against the net flow's, 8.2 (9); the sessions the Bank did not deal
+in, 4.2 (5).
+
+## Stump sentence
+
+A competent solver who calibrates the market's price impact the textbook way, the hour's move regressed on the order
+flow the dealers absorbed (customers less the Bank), puts the Bank's trades back at that impact and prices at 8 per
+cent (7.4); the step that lands it there is the regression itself, because the Bank sold in the hours the peso was
+falling hardest and bought in the hours it was rising hardest, so its trades answer the same hour's news and the
+customers' flow, the one flow that did not answer the move, read as the instrument (the reduced-form impact scaled by
+the share of it the Bank left to the market) gives the depth the float exposes, a 2024 to 2026 volatility between 11
+and 12 per cent and a price of 12.
+
+## Three rules
+
+- **Task type:** volatility-derivatives-pricing (Quantitative Finance), a task type the taxonomy serves with
+  Forecasting; the call is the volatility one-year options are priced at for a window not yet open.
+- **Domain test:** the deciding quantity is the realised volatility the peso's closing rate would show without the
+  central bank, which FX microstructure reaches through the price impact of customer order flow (the market's depth)
+  and an options desk prices at; with another field's nouns there is no order flow, no dealer depth and no central
+  bank trading against the same hour's move, and nothing in the call computes.
+- **Swap:** "Price the 2027 one-year dollar options at 12 per cent" becomes "staff the 2027 wards at 12 nurses a shift":
+  a hospital has no order flow that a central bank absorbs and no price that moves per dollar traded, so the sentence
+  stops making sense, and the reduced form scaled by the absorbed share has nothing to scale.
+- **Layer 1:** the Bank's dealing-system export with ANULADA rows for deals entered in error (its dealing desk); dealer
+  reports filed by 18:00 and refiled to correct, every receipt kept (the Bank's reporting portal); Financiera
+  Tres Valles' legacy feed still filing its former customers for July 2025 after the merger into Banco del Salitral
+  (the systems migration); hour marks missing after platform feed failures (the price feed); two holiday calendars
+  closing the platform; platform confirmations in UTC with CANCELLED executions (the platform); euro forwards, cancelled
+  deals and the Treasury desks' own deals in the deal-system export, window forwards kept at contract notional with
+  their drawdowns booked as outrights (the deal system's booking). Nothing placed to be caught; each item mishandled
+  leaves the call at 12 (`checks.py` R2).
+- **Layer 2:** estimand_identification. The counterfactual volatility needs the market's price impact, and the
+  Bank's reaction to each hour's own move makes every regression that puts the Bank's trades on the right-hand side
+  inconsistent; the customers' flow is the instrument.
+- **Decisive step:** identifying the market's price impact with the customers' own flow as the instrument for the
+  flow the dealers absorbed, equivalently the reduced-form impact divided by one less the share of customer flow the
+  Bank absorbed, because the Bank's trades answer the hour's own news.
+- **Not semantics:** every field read correctly (the report of record, ANULADA, the merger, the 16:00 close, 252
+  sessions, rounding up) still leaves the textbook regression of the hour's move on the net flow, which files 8;
+  nothing in any definition says how the impact is estimated, and the Bank's files say what a row is and nothing
+  about how its trades relate to the hour's move.
+- **Not rule application:** no filed rule estimates the impact or builds the counterfactual; the policy files only the
+  WHAT (the closing rate over the 2024 to 2026 sessions had the Bank not operated, customers' trading as it was).
+  Enumerated family, 14 constructions (record, net-flow OLS, customer-flow OLS, customer flow in Bank-free hours, the
+  two-regressor fit read two ways, the variance ratio, Bank-free sessions, and the six instrument constructions):
+  4.2 to 11.6 per cent, settings 5 to 12. Standing family, the six constructions consistent under the Bank's
+  same-hour reaction (customer flow as the instrument hourly, daily, by year and by its sign, the reduced form over one
+  less the absorbed share, the structural sum): 11.32 to 11.60 per cent, one setting, 12. The ruling-out is the
+  Bank's own purpose in its press release (moderating disorderly movements during the session) and the two-regressor
+  fit's wrong-signed Bank coefficient (minus 0.20 per cent per 100 million dollars: a Bank sale moving the rate up),
+  not a filed clause.
+- **Analyst test:** a strong analyst who takes the reports of record, drops the ANULADA deals and Financiera
+  Tres Valles' July 2025 reports, joins the hours with a missing mark and reads the policy's closing-rate, 252-session
+  and round-up conventions, then puts the Bank's trades back at the impact read from the hour's move regressed on the
+  market's net flow, prices at 8 per cent (7.4), or at 9 with customer flow alone (8.9).
+- **Estimand:** `cordillera_fx_options_pricing_policy_2027.pdf`, section 2: "For the 2027 launch the expected
+  volatility is the volatility the closing rate would have shown over the sessions of 2024 to 2026 had the Banco
+  Central not operated in the spot market, with customers' dollar trading and the news the market received as they
+  were." Population: the daily changes of the 16:00 closing rate between the release's sessions, 2 January 2024 to 29
+  December 2026 (727 changes); outcome: the annualised root mean square at 252 sessions; window: those sessions;
+  unit: per cent, rounded up to the whole per cent; comparison: none (a dial against the grid).
+- **No decoy:** nothing is planted to be caught: no memo, draft, staff estimate or Bank statement of its own effect on
+  volatility ships, no figure in the pack ranks the grid's settings, and the two distractors answer other questions
+  (the TRM is not the settlement rate; the monthly statistics are by value date).
+- **No certified replay:** no certified or published figure is reproduced to recover the method; the monthly
+  statistics sum the Bank's sales by value month and cannot identify an hourly impact, and nothing in the pack
+  states a volatility the method must match.
+- **Lesson:** a regression of price on order flow measures depth only where the flow is not answering the price;
+  under an agent that trades against the outcome it is regressed on, the record's damped market is undamped at the
+  depth the exogenous flow reveals. No build on file teaches it: task177's candidate G (dealer gamma) died before a
+  card on lever and spread, and task135's driver is nonsynchronous pricing.
+
+## Readability screen
+
+| Rung | Its handle in the pack | Verdict |
+|---|---|---|
+| R0 the record's realised volatility, 6.9 (7) | the 16:00 marks in the hourly mid file | readable |
+| R1 the Bank put back at the net-flow regression's impact, 7.4 (8) | the flows and operations files side by side | readable |
+| R2 the impact on customer flow alone, 8.9 (9) | the flows file | readable |
+| R3 the impact on customer flow in the hours the Bank stayed out, 8.4 (9) | the operations file's empty hours | readable |
+| R4 (decisive) customer flow as the instrument, 11.3 to 11.6 (12) | nothing names it: no file, column or sentence says the Bank's trades answer the hour's own move, names an instrument or an absorbed share; the press release says only that the Bank moderated disorderly movements during the session | silent |
+
+## Semantic fork table
+
+| ID | Term | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | "volatility" | annualised root mean square of daily log changes at 252 | demeaned standard deviation; simple changes; hourly realised variance plus the overnight | 12 each (asserted) | same call |
+| SF2 | "2024 to 2026" | the release's sessions, 2 January 2024 to 29 December 2026 | calendar years with the release's last days | 12 | same call (the release ends 29 December) |
+| SF3 | "had the Banco Central not operated" | the Bank's trades taken off the market, customers and news as they were | customers trading differently under a float | not computable | policy section 2 ("customers' dollar trading and the news the market received as they were") |
+| SF4 | "customers" | counterparties other than reporting dealers and the Bank | interbank or Bank trades included | the release note | release note section 2 |
+| SF5 | the Bank's operations | VIGENTE rows | ANULADA rows kept | 12 (11.68) | release note section 1, and same call |
+| SF6 | the hour of an operation | the dealing system's local time | UTC | the note | release note section 1 ("local time") |
+| SF7 | a dealer's report for an hour | the last received | the first received, or every receipt summed | 12 each (11.47, 11.49) | release note section 2, and same call |
+| SF8 | Financiera Tres Valles' July 2025 reports | not of record (to 30 June 2025) | kept | 12 (11.47) | the dealer register, and same call |
+| SF9 | an hour whose closing mark is missing | joined to the next hour | the pair of hours dropped | 12 | same call (asserted) |
+| SF10 | the grid | rounded up to the next whole per cent | nearest whole per cent | 11 or 12 at a 11.5 golden | policy section 2 ("rounded up to the next whole per cent") |
+| SF11 | "the closing rate" | the platform's 16:00 mark | the 08:00 open, the TRM | the policy | release note section 3, policy section 1 |
+| SF12 | the settlement series | the 16:00 closing rate | the TRM (its recorded changes run under the close's) | the policy | policy section 1 ("cash settled against the platform's 16:00 closing rate") |
+
+## Ladder
+
+| Rung | Route | Figure | Setting |
+|---|---|---|---|
+| R0 | the closing rate's recorded volatility | 6.9 | 7 |
+| R1 (default) | the Bank's trades put back at the hour's move regressed on the net flow | 7.4 | 8 |
+| R2 | the impact on customer flow alone (the reduced form) | 8.9 | 9 |
+| R3 | the impact on customer flow in the Bank-free hours (selected on small moves) | 8.4 | 9 |
+| R4 (decisive) | customer flow as the instrument for the absorbed flow | 11.32 to 11.60 | 12 |
+
+Separation: every rung below R4 files 9 or less, three settings or more under the call; the nearest rival sits 2.6
+points under the golden (11.50 against 8.92). The golden's own sigma over 80 hour bootstraps keeps 12 at two sigma
+(`checks.py`). The generator's free-float truth is 11.52.
+
+## Closure table
+
+| Axis | Reading here | Move |
+|---|---|---|
+| 1 Population | the daily closing changes between the release's sessions | filed (policy section 2), C1 against the calendar years |
+| 2 Unit of account | a session's closing change; an hour for the impact | the policy files the daily change; the hour is the record's grain |
+| 3 Attribution window | an operation belongs to the hour of its local time stamp | release note sections 1 and 2, one clock |
+| 4 As-of dating | the release of 30 December 2026 | filed in the release note |
+| 5 Version basis | the last report received for a dealer and hour | release note section 2; C1 (first or summed, same setting) |
+| 6 Denominator | 252 sessions a year | policy section 2 |
+| 7 Weighting | every session equally in the mean square | the definition (a root mean square of daily changes) |
+| 8 Window length | the three years | filed |
+| 9 Boundary inclusivity | a figure on an integer stays there under rounding up | C1, the golden 0.5 inside its bin |
+| 10 Rounding path | rounded once, up, at the end | policy section 2 |
+| 11 Tie-break | none needed | C1 |
+| 12 Maturity and censoring | none: the record is complete to its last session | C1 |
+| 13 Order of operations | the impact first, the daily changes after | C1 (the hourly and daily routes agree) |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | ANULADA deals out; refiled reports by receipt time | release note sections 1 and 2; C1 |
+| 16 Identity normalisation | the merged dealer's codes | the dealer register |
+| 17 Netting against gross | VENTA less COMPRA within the hour | release note section 1 |
+| 18 Dimensional units | both flows in thousands of dollars | the column names and the note |
+| 19 Code and status semantics | VENTA, COMPRA, ANULADA | release note section 1 |
+| 20 Integerisation | the grid's whole per cents | policy section 2 |
+| 21 Clause scope | the 2027 sentence governs the launch only | policy section 2 |
+| 22 Forward window contents | 2027 taken at the base years' customers and news | policy section 2 (the counterfactual) |
+
+## Literal reader
+
+Executing the prompt and every filed sentence word for word: the policy names the series (the 16:00 close), the
+measure (root mean square of daily log changes at 252), the window (the 2024 to 2026 sessions), the counterfactual
+(the Bank's operations taken off the market, customers' trading and news as they were) and the rounding (up to the
+next whole per cent); the release note defines every row the counterfactual needs. Nothing filed estimates the
+market's response to the trades removed, so the literal reader must estimate it, and the readings of every term
+converge on 12 (`## Semantic fork table`, each row asserted in `checks.py`); the easy answer, 8, comes from an easy
+estimator on the same literal estimand, never from another reading.
+
+## Oracles
+
+- The generator's free-float truth (the hourly path with the Bank's trades never applied): 11.52, against a golden of
+  11.50 read from the shipped files.
+- The independent verifier (`generator/verify.py`): pandas joins and a two-stage least squares on its own code path,
+  the impact 0.5 to 0.6 per cent per 100 million dollars and the volatility inside (11, 12].
+- The asks: the generator's own order and drawdown structure against the shipped files' grouping (`checks.py` ask A
+  and ask B blocks).
+
+## Ask sheet
+
+**Ask A, the desk's 2026 hedging cost.** Figures: 16 (four 2026 quarters times four order size bands), pesos per
+dollar to one decimal, dollar-weighted against the platform mid at each order's arrival. H18 home: a component of
+the option's price (the policy's hedging charge, section 3). Use: the charge the desk adds to the premium. File:
+`platform_confirmations_cordillera_2026.csv`, 10 columns, 3,000 rows. Primary device (D6, which records are one
+event): an order that takes several resting quotes is confirmed as one execution per quote, each carrying the
+order's millisecond stamp, trader, side and arrival bid and ask; nothing names the order. Read as orders, the
+executions put the large orders' deep fills into the small bands and leave the 10 million band empty in every
+quarter. Hazard: CANCELLED executions and their re-booked twins (moves 9 of 16 cells when kept); confirmations in UTC
+(no quarter boundary moves, texture). Benign twins: other traders' orders in the same second. Stops: executions as
+orders (every cell misses, the top band empty); CANCELLED kept (9 cells move); orders by second rather than by
+trader (benign twins, one cell). Realism: platform confirmations are per execution; the desk's order book export did
+not exist before 2026, so Treasury Operations costs orders from the confirmations.
+
+**Ask B, client dollar forwards falling due in 2027.** Figures: 8 (four 2027 quarters times exporters' sales and
+importers' purchases), millions of dollars to one decimal. H18 home: the policy's launch limit (section 4). Use: the
+vega limit quarter by quarter. Files: `cordillera_fx_forward_deals_2025-2026.xlsx` (11 columns, 949 rows) and
+`cordillera_corporate_client_register.csv` (5 columns). Primary device (D1 and D6, which records are one event): a
+window forward keeps its contract notional while each drawdown against it is booked as a separate outright at the
+window's rate, same client and side, maturing inside the window; nothing links them. Summed gross, every quarter's
+two figures run 4.0 to 25.0 million high. Hazards: euro forwards (7 figures move), cancelled deals, the Treasury
+desks' deals (segment TESORERIA). Stops: windows gross (every figure misses); windows dropped (misses the remainders);
+euros kept. Realism: deal systems book a window's drawdowns as new tickets and net them in the risk engine.
+
+**Main population zero-counts:** neither ask's files are read by the call (the call reads the flows, operations,
+mids, dealer register and calendar); no ask device row sits in a file the call reads (asserted by file in
+`checks.py`). Delete every ask device and the call is unchanged; delete the call's analysis and the asks are
+unchanged.
+
+**Hazard table:** CANCELLED executions (ask A, 9 cells); euro forwards (ask B, 7 figures); cancelled deals (ask B, 3
+figures). **Referee:** none needed; each device's evidence is an identity inside its own file.
+
+| Ask row | Cracker (lands the call, runs the battery, executes every filed rule) | Verdict |
+|---|---|---|
+| A, 16 cells | executions read as orders, CANCELLED dropped: 0 of 16 within the bin | miss |
+| B, 8 figures | live deals summed gross, euro, Treasury and cancelled deals dropped: 0 of 8 | miss |
+
+- **Measured by:** `generator/cracker.py` on the cut pack (scores every figure against `figures.json`).
+- **Mirror leakage:** 0.0 per cent of ask weight (the mirror, priced at 8, takes the same ask path: 0 of 24).
+- **Pair ceiling:** 28.5 (cracker 45.0 on 38, 7 and 55; mirror 12.0).
+
+## Leak sweep
+
+`leak.py task178 --asof 2026-12-30`: REVIEW, no LEAK. Answered line by line:
+- Sweep 3, answer figures: 1.0 and 2.1 are the pricing policy's version numbers in its revision table and footer, not
+  ask figures; the policy carries the call's words (one-year, dollar, options) because it is the product's own policy,
+  and it names no volatility, setting or grid outcome.
+- Sweep 4, design-note vocabulary: the release note, the press release and the policy share generic words with the stump
+  paragraph (record, customer, market, trades, hourly, measured); none says the Bank's trades answer the hour's move,
+  names an instrument, a regression, an impact or an absorbed share (asserted in `checks.py`: no document carries
+  instrument, endogen, simultane, price impact, regress, lean, drawdown, sweep or "execution per").
+- Sweep 9, dates after the setting: the forward deals' 2027 maturities (the ask's own subject) and the calendar's 31
+  December 2026 row (a calendar lists the year's remaining days).
+- Container metadata: `scrub_producer_metadata.py` reports target and golden clean.
+
+## Guard
+
+- `check` on the registered card: WARN only (overuse.objective and overuse.gate_g, the lane; repeat.gate_g against
+  task482, whose method selection is a hedonic index, nothing shared; repeat.deliverables png plus xlsx against task175,
+  answered at the draw).
+- `surface task178`: exit 0; the highest surface similarity is 0.10 (task179, task461, task458, about the corpus 98th to 99th percentile, no shared gap, pattern or decision family); personas in the cut pack are the card's.
+- `heart task178`: WARN, the nearest driver or stump on file at 0.06 (task446's group pricing, task253, task482); no
+  driver within the WARN floor's reach of an absorbing-agent identification.
+- Names (H21): the first cut named the country after a real Colombian department and three dealers after real banks
+  (Scotiabank, CorpBanca, Banco Agrario); every institution, the country, its capital and a branch were renamed before
+  any reader saw the pack.
+
 ## Retired
 
 Retired on 2026-10-21 under the author's rule for this round (a number that dies in its second new cell is
@@ -108,6 +361,9 @@ seventeen paper deaths, with its finding that a volatility level carries a 5 to 
 card were read first and kept spent. Fifteen directions died on paper and one candidate measured on code held at the
 screen (the cell's lines at the foot of `## Tried and rejected`): architecture 3, a central bank's leaning spot
 operations ending, registered on 2026-10-23 with architecture 2's identity moved into the card's `lineage`.
+Built the same day to stage 3 green (checks 91 of 91, verifier 33 of 33, two byte-identical builds, precut and
+figures_check exit 0, leak.py REVIEW answered, guard surface exit 0 and heart WARN); it waits at stage 4 for the main
+session's two scored readers and the judge.
 
 ## FC49 screen record (world spent, kept for the record)
 
@@ -478,3 +734,12 @@ none is touched by either candidate.
     one, so it is unidentified.
   - Held and drawn: the central bank's leaning spot operations ending (`## Draw`), measured on code (c1_fx.py to
     c1t.py) before the card.
+- **Architecture 3 at stage 3, tried and dropped while building (2026-10-23).** A clients-due count per quarter in ask
+  B: the window device moved it in only two of four quarters in every realisation scanned, so the count was cut and
+  ask B carries the eight notionals. The central bank's operations log in UTC and in millions beside the dealers'
+  local hours and thousands: mishandled, either conversion collapses the instrument route to the record's own
+  neighbourhood (8), so Layer 1 would have carried part of the call (R2 failed); both now share one clock and one
+  unit. Dealer refilings whose first report was a thousandfold keying error: summing receipts then broke the
+  instrument route (R2 failed); the first reports are now a sign error, the previous hour's figure or a partial
+  figure, and every handling of refilings keeps 12. A desk-orders realisation whose ask A cells sat within 0.002 of a
+  rounding edge: re-drawn (stream desk_orders/15, every cell 0.009 or more inside its bin).

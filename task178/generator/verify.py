@@ -1,174 +1,173 @@
-"""task178 independent verifier: reads only the shipped bundle (target/), with its own readers and fits, and recomputes
-the call, the critical component and every ask figure, then compares them with generator/figures.json.
+"""task178 independent verifier: reads only the shipped bundle (target/, figures.json, submission.md, golden/) on its
+own code path (pandas, a two-stage least squares, its own joins) and recomputes every graded figure.
 
-    python3 task178/generator/verify.py [target]"""
+    python3 task178/generator/verify.py task178/target"""
 from __future__ import annotations
 
-import datetime as dt
 import json
+import math
 import os
 import re
-import subprocess
 import sys
 
 import numpy as np
 import pandas as pd
-from scipy import optimize, stats
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-OK = [0, 0]
+OUT = []
 
 
-def chk(label, cond, detail=""):
-    OK[0] += 1
-    if not cond:
-        OK[1] += 1
-    print("%s  %s%s" % ("PASS" if cond else "FAIL", label, ("  [" + detail + "]") if detail else ""))
+def ok(label, cond, detail=""):
+    OUT.append((label, bool(cond)))
+    print(("PASS " if cond else "FAIL ") + label + ((": " + str(detail)) if detail else ""))
 
 
-def text(path):
-    return " ".join(subprocess.run(["pdftotext", path, "-"], capture_output=True, text=True, check=True).stdout.split())
+def find(target, prefix, ext):
+    hits = [f for f in os.listdir(target) if f.startswith(prefix) and f.endswith(ext)]
+    assert len(hits) == 1, (prefix, hits)
+    return os.path.join(target, hits[0])
 
 
-def pst_offset(t):
-    """hours to subtract from a Pacific wall-clock time to reach PST (1 in daylight time, 0 otherwise)"""
-    y = t.year
-    mar = dt.datetime(y, 3, 1) + dt.timedelta(days=(6 - dt.datetime(y, 3, 1).weekday()) % 7 + 7)
-    nov = dt.datetime(y, 11, 1) + dt.timedelta(days=(6 - dt.datetime(y, 11, 1).weekday()) % 7)
-    return 1 if mar.replace(hour=3) <= t < nov.replace(hour=1) else 0
+def hourly(target):
+    reg = pd.read_csv(find(target, "bct_reporting_dealers", ".csv"), dtype=str).fillna("")
+    to = {r.dealer_code: r.of_record_to for r in reg.itertuples()}
+    fl = pd.read_csv(find(target, "dealer_customer_flows_hourly", ".csv"), dtype={"report_date": str})
+    fl = fl[[not (to[c] and d > to[c]) for c, d in zip(fl.dealer_code, fl.report_date)]]
+    fl = fl.sort_values("received_at").groupby(["report_date", "hour", "dealer_code"], as_index=False).last()
+    fl["h"] = fl.hour.str[:2].astype(int)
+    cust = fl.groupby(["report_date", "h"]).net_customer_usd_k.sum() / 1000.0
+    op = pd.read_csv(find(target, "bct_spot_operations", ".csv"))
+    op = op[op.status != "ANULADA"]
+    t = pd.to_datetime(op.dealt_at)
+    op = op.assign(report_date=t.dt.strftime("%Y-%m-%d"), h=t.dt.hour,
+                   net=np.where(op.operation == "VENTA", op.amount_usd_k, -op.amount_usd_k) / 1000.0)
+    bank = op.groupby(["report_date", "h"]).net.sum()
+    md = pd.read_csv(find(target, "platform_hourly_mid", ".csv"), dtype={"session_date": str})
+    md["h"] = md.hour_mark.str[:2].astype(int)
+    rows = []
+    for d, g in md.groupby("session_date"):
+        marks = dict(zip(g.h, g.mid_tqp_per_usd))
+        prev, fsum, isum = 8, 0.0, 0.0
+        for hh in range(8, 16):
+            fsum += float(cust.get((d, hh), 0.0))
+            isum += float(bank.get((d, hh), 0.0))
+            if hh + 1 in marks:
+                rows.append((d, 100 * math.log(marks[hh + 1] / marks[prev]), fsum, isum))
+                prev, fsum, isum = hh + 1, 0.0, 0.0
+    h = pd.DataFrame(rows, columns=["d", "r", "f", "i"])
+    close = md[md.h == 16].set_index("session_date").mid_tqp_per_usd.sort_index()
+    return h, close
+
+
+def two_stage(y, x, z):
+    Z = np.column_stack([np.ones(len(z)), z])
+    xhat = Z @ np.linalg.lstsq(Z, x, rcond=None)[0]
+    X = np.column_stack([np.ones(len(xhat)), xhat])
+    return float(np.linalg.lstsq(X, y, rcond=None)[0][1])
+
+
+def vol_at(h, close, lam):
+    bank_day = h.groupby("d").i.sum().reindex(close.index).fillna(0.0)
+    ch = 100 * np.log(close / close.shift(1))
+    adj = (ch + lam * bank_day).iloc[1:]
+    return math.sqrt(252 * float((adj ** 2).mean()))
+
+
+def ask_a(target):
+    c = pd.read_csv(find(target, "platform_confirmations", ".csv"))
+    c = c[c.status == "CONFIRMED"].copy()
+    c["sg"] = np.where(c.side == "BUY", 1.0, -1.0)
+    c["cost"] = c.usd_amount_k * c.sg * (c.price - (c.bid_at_arrival + c.ask_at_arrival) / 2)
+    o = c.groupby(["trader", "side", "trade_time_utc"]).agg(size=("usd_amount_k", "sum"), cost=("cost", "sum")).reset_index()
+    loc = pd.to_datetime(o.trade_time_utc.str.rstrip("Z")) - pd.Timedelta(hours=5)
+    o["q"] = loc.dt.quarter
+    o["band"] = pd.cut(o["size"], [0, 1000, 3000, 10000, 1e12], right=False,
+                       labels=["under 1m", "1m to 3m", "3m to 10m", "10m and over"])
+    t = o.groupby(["q", "band"], observed=True).agg(cost=("cost", "sum"), size=("size", "sum"))
+    return {(int(q), str(b)): float(r["cost"] / r["size"]) for (q, b), r in t.iterrows()}
+
+
+def ask_b(target):
+    d = pd.read_excel(find(target, "cordillera_fx_forward_deals", ".xlsx"), sheet_name="Deals")
+    cl = pd.read_csv(find(target, "cordillera_corporate_client_register", ".csv"))
+    d = d.merge(cl[["client_no", "segment"]], left_on="Client No.", right_on="client_no", how="left")
+    d = d[(d.Status != "ANULADA") & (d.Pair == "USD/TQP") & (d.segment != "TESORERIA")]
+    w = d[d.Product == "WINDOW"]
+    o = d[d.Product == "OUTRIGHT"]
+    m = w.merge(o, on=["Client No.", "Client USD"], suffixes=("_w", "_o"))
+    m = m[(abs(m["Forward rate_w"] - m["Forward rate_o"]) < 0.005) & (m["Maturity date_o"] >= m["Window opens_w"])
+          & (m["Maturity date_o"] <= m["Maturity date_w"])]
+    used = m.groupby("Deal No._w")["Notional_o"].sum()
+    d = d.copy()
+    d["due"] = d.Notional - d["Deal No."].map(used).fillna(0.0).where(d.Product == "WINDOW", 0.0)
+    d = d[(d["Maturity date"].dt.year == 2027) & (d.due > 0.5)]
+    d["q"] = d["Maturity date"].dt.quarter
+    sell = d[(d.segment == "EXPORTADOR") & (d["Client USD"] == "VENDE")].groupby("q").due.sum() / 1e6
+    buy = d[(d.segment == "IMPORTADOR") & (d["Client USD"] == "COMPRA")].groupby("q").due.sum() / 1e6
+    return {q: float(sell.get(q, 0.0)) for q in range(1, 5)}, {q: float(buy.get(q, 0.0)) for q in range(1, 5)}
 
 
 def main(target):
-    figs = json.load(open(os.path.join(HERE, "figures.json")))
-    p = lambda f: os.path.join(target, f)
-    files = os.listdir(target)
-    find = lambda pat: [f for f in files if re.search(pat, f)][0]
-
-    # the standard and the study
-    std = text(p(find(r"engineering_standard")))
-    m = re.search(r"western Washington, (-?[\d.]+), whose mean square error is ([\d.]+)", std)
-    greg, mreg = float(m.group(1)), float(m.group(2))
-    chk("standard: generalized skew and its MSE read", (greg, mreg) == (figs["regional_skew"], figs["regional_skew_mse"]))
-    study = subprocess.run(["pdftotext", "-layout", p(find(r"alternatives_study")), "-"], capture_output=True, text=True).stdout
-    alts = [(a, int(c.replace(",", ""))) for a, c in re.findall(r"^\s+([A-G])\s{3,}.*?\s([\d]{2},\d{3})\s*$", study, re.M)]
-    chk("study: seven alternatives read", len(alts) == 7, str(alts))
-    chk("study: the selection rule read", "smallest whose capacity is at least the design discharge" in " ".join(study.split()))
-
-    # the peak stages
-    reg = pd.read_csv(p(find(r"annual_peaks_wy1980")), skiprows=4)
-    reg["h"] = reg["Gage height (ft)"] + np.where(reg["WY"] < 2010, 2.0, 0.0)
-    sta = text(p(find(r"station_description")))
-    chk("station description: the 2009 datum lowering of 2.00 ft read", "lowered 2.00 ft" in sta)
-    s15 = pd.read_csv(p(find(r"stage_15min")), comment="#")
-    s15 = s15.drop_duplicates("timestamp")
-    s15["t"] = pd.to_datetime(s15["timestamp"])
-    s15["wy"] = s15["t"].dt.year + (s15["t"].dt.month >= 10).astype(int)
-    rec = s15.loc[s15.groupby("wy")["stage_ft"].idxmax()]
-    peaks = np.concatenate([reg["h"].values, rec["stage_ft"].values])
-    chk("46 annual peak stages", len(peaks) == 46)
-
-    # the measurements
-    xl = pd.read_excel(p(find(r"measurement_notes")), sheet_name=None)
-    gh, q = [], []
-    for name, df in xl.items():
-        gcol = [c for c in df.columns if c in ("Gage ht (ft)", "Mean GH")][0]
-        qcol = [c for c in df.columns if c in ("Discharge (cfs)", "Q (cfs)")][0]
-        gh += list(df[gcol] + 2.0)
-        q += list(df[qcol])
-    db = pd.read_csv(p(find(r"measurements_wy2005")))
-    d = pd.to_datetime(db["meas_date"])
-    gh += list(db["mean_gh_ft"] + np.where(d < "2009-10-01", 2.0, 0.0))
-    q += list(db["discharge"] * np.where(db["discharge_unit"] == "m3/s", 35.3147, 1.0))
-    gh, q = np.array(gh), np.array(q)
-    chk("measurements read", len(q) == figs["measurements"], "%d" % len(q))
-
-    def pl(hh, qq):
-        f = lambda x, la, e, b: la + b * np.log(np.maximum(x - e, 1e-6))
-        popt, _ = optimize.curve_fit(f, hh, np.log(qq), p0=[4.6, min(hh) - 0.4, 1.8],
-                                     bounds=([-10, -5, 0.3], [20, min(hh) - 1e-3, 6]), maxfev=20000)
-        return lambda x: np.exp(f(np.asarray(x, float), *popt))
-
-    def compound(hh, qq, hb):
-        lo = hh < hb
-        fc = pl(hh[lo], qq[lo])
-        g = lambda x, a, b: np.log(fc(x) + a * np.maximum(x - hb, 0) ** b)
-        popt, _ = optimize.curve_fit(g, hh[~lo], np.log(qq[~lo]), p0=[800, 1.7], bounds=([1, 0.5], [1e5, 4]), maxfev=20000)
-        sse = np.sum(np.log(qq[lo] / fc(hh[lo])) ** 2) + np.sum((np.log(qq[~lo]) - g(hh[~lo], *popt)) ** 2)
-        return sse, (lambda x: np.exp(g(np.asarray(x, float), *popt)))
-
-    def lp3q(qp):
-        x = np.log10(qp)
-        n = len(x)
-        mu, sd = x.mean(), x.std(ddof=1)
-        g = n * np.sum((x - mu) ** 3) / ((n - 1) * (n - 2) * sd ** 3)
-        ag = abs(g)
-        A = -0.33 + 0.08 * ag if ag <= 0.9 else -0.52 + 0.30 * ag
-        B = 0.94 - 0.26 * ag if ag <= 1.5 else 0.55
-        mg = 10 ** (A - B * np.log10(n / 10))
-        gw = (mreg * g + mg * greg) / (mreg + mg)
-        return 10 ** (mu + stats.pearson3.ppf(0.99, gw) * sd), g
-
-    best = min((compound(gh, q, hb) + (hb,) for hb in np.arange(9.6, 11.0, 0.05)), key=lambda x: x[0])
-    q100, g = lp3q(best[1](peaks))
-    chk("golden: the 1 per cent flood rounds to the figures.json value", int(round(q100, -3)) == figs["call"]["design_discharge_cfs"], "%.0f" % q100)
-    pick = [a for a, c in alts if c >= q100][0]
-    chk("golden: the alternative", pick == figs["call"]["alternative"], pick)
-    chk("golden: the station skew", round(g, 1) == figs["crit"]["station_skew"], "%.3f" % g)
-    qd, gd = lp3q(pl(gh, q)(peaks))
-    chk("default: one power law files the default's alternative", [a for a, c in alts if c >= qd][0] == figs["default"]["alternative"], "%.0f" % qd)
-
-    # ask A: drop readings during visits (their local times put on PST), take off the controller offset
-    vis = pd.read_csv(p(find(r"site_visits")))
-    t = s15["t"].values
-    h = s15["stage_ft"].values.copy()
-    drop = np.zeros(len(h), bool)
-    for _, v in vis.iterrows():
-        a = dt.datetime.strptime(v["visit_date"] + " " + v["arrive"], "%Y-%m-%d %H:%M")
-        b = dt.datetime.strptime(v["visit_date"] + " " + v["depart"], "%Y-%m-%d %H:%M")
-        a -= dt.timedelta(hours=pst_offset(a))
-        b -= dt.timedelta(hours=pst_offset(b))
-        drop |= (t >= np.datetime64(a)) & (t <= np.datetime64(b))
-    sw = vis[vis["notes"].fillna("").str.contains("Controller replaced")].iloc[0]
-    fx = vis[vis["notes"].fillna("").str.contains("offset reset")].iloc[0]
-    off = round(fx["logger_ft"] - fx["staff_gage_ft"], 2)
-    a = dt.datetime.strptime(sw["visit_date"] + " " + sw["depart"], "%Y-%m-%d %H:%M")
-    b = dt.datetime.strptime(fx["visit_date"] + " " + fx["depart"], "%Y-%m-%d %H:%M")
-    a -= dt.timedelta(hours=pst_offset(a))
-    b -= dt.timedelta(hours=pst_offset(b))
-    mm = (t > np.datetime64(a)) & (t < np.datetime64(b))
-    h[mm] = np.round(h[mm] - off, 2)
-    for y in range(2016, 2026):
-        lo = np.datetime64(dt.datetime(y, 7, 14, 23, 0))
-        hi = np.datetime64(dt.datetime(y, 9, 15, 23, 0))
-        idx = np.flatnonzero((t >= lo) & (t < hi) & ~drop)
-        k = idx[np.argmax(h[idx])]
-        tl = pd.Timestamp(t[k]).to_pydatetime() + dt.timedelta(hours=1)
-        fa = figs["ask_a"][str(y)]
-        chk("ask A %d: %.2f ft on %s" % (y, fa["stage_ft"], fa["date"]), round(float(h[k]), 2) == fa["stage_ft"] and tl.date().isoformat() == fa["date"],
-            "%.2f %s" % (h[k], tl.date()))
-
-    # ask B: historian stamps UTC before the June 2022 replacement, local after; the level from the face less the distance
-    sc = pd.read_csv(p(find(r"scada_sauer")), skiprows=3)
-    ts = pd.to_datetime(sc["Timestamp"])
-    up = dt.datetime(2022, 6, 21, 10, 0)
-    pst = [x.to_pydatetime() - dt.timedelta(hours=8) if x.to_pydatetime() < up else
-           x.to_pydatetime() - dt.timedelta(hours=pst_offset(x.to_pydatetime())) for x in ts]
-    lev = re.findall(r"sensor face (\d+\.\d\d)", open(p(find(r"levels_log"))).read())
-    f0, f1 = float(lev[0]), float(lev[1])
-    br = dt.datetime(2022, 11, 16, 9, 30)
-    level = {}
-    for tt, dist in zip(pst, sc["SAUER_RAD1_DIST.PV"].values):
-        level.setdefault(tt, round((f1 if tt >= br else f0) - dist, 2))
-    for wy in range(2020, 2026):
-        r = rec[rec["wy"] == wy].iloc[0]
-        L = level.get(r["t"].to_pydatetime())
-        fb = figs["ask_b"][str(wy)]
-        fall = round(182.40 + r["stage_ft"] - L, 2) if L is not None else None
-        chk("ask B %d: %.2f ft, fall %.2f" % (wy, fb["pipe_level_ft"], fb["fall_ft"]), L == fb["pipe_level_ft"] and fall == fb["fall_ft"],
-            "%s %s" % (L, fall))
-    print("%d verified, %d failed" % (OK[0], OK[1]))
-    return 1 if OK[1] else 0
+    task = os.path.dirname(os.path.abspath(target))
+    figs = json.load(open(os.path.join(task, "generator", "figures.json")))
+    sub = open(os.path.join(task, "submission.md")).read()
+    h, close = hourly(target)
+    lam = two_stage(h.r.values, (h.f - h.i).values, h.f.values)
+    v = vol_at(h, close, lam)
+    ok("verify: two-stage impact recomputed from the bundle", 0.5 <= lam * 100 <= 0.6, round(lam * 100, 4))
+    ok("verify: expected volatility inside the filed band", figs["call"]["expected_volatility_band_pct"][0] < v
+       <= figs["call"]["expected_volatility_band_pct"][1], round(v, 3))
+    ok("verify: the setting", math.ceil(v) == figs["call"]["pricing_volatility_pct"] == 12)
+    rec = vol_at(h, close, 0.0)
+    ok("verify: the recorded volatility as the write-up states it", round(rec, 1) == figs["rivals"]["record_vol_pct"], round(rec, 3))
+    X = np.column_stack([np.ones(len(h)), (h.f - h.i).values])
+    ols_net = float(np.linalg.lstsq(X, h.r.values, rcond=None)[0][1])
+    X = np.column_stack([np.ones(len(h)), h.f.values])
+    rf = float(np.linalg.lstsq(X, h.r.values, rcond=None)[0][1])
+    ok("verify: the net-flow rival", round(vol_at(h, close, ols_net), 1) == figs["rivals"]["net_flow_impact_vol_pct"])
+    ok("verify: the customer-flow rival", round(vol_at(h, close, rf), 1) == figs["rivals"]["customer_flow_impact_vol_pct"])
+    a = ask_a(target)
+    ok("verify: ask A, 16 cells as figures.json", len(a) == 16 and all(
+        round(a[(q, b)], 1) == figs["ask_a_hedging_cost_tqp_per_usd"]["Q%d" % q][b] for (q, b) in a))
+    s, b = ask_b(target)
+    ok("verify: ask B, 8 figures as figures.json", all(
+        round(s[q], 1) == figs["ask_b_forwards_due_2027_usd_mn"]["Q%d" % q]["exporters_sell"] and
+        round(b[q], 1) == figs["ask_b_forwards_due_2027_usd_mn"]["Q%d" % q]["importers_buy"] for q in range(1, 5)))
+    # the write-up carries the same figures
+    for q in range(1, 5):
+        cells = figs["ask_a_hedging_cost_tqp_per_usd"]["Q%d" % q]
+        line = "Q%d 2026: under 1 million %.1f; 1 to 3 million %.1f; 3 to 10 million %.1f; 10 million and over %.1f" % (
+            q, cells["under 1m"], cells["1m to 3m"], cells["3m to 10m"], cells["10m and over"])
+        ok("verify: write-up ask A line Q%d" % q, line in sub)
+        bb = figs["ask_b_forwards_due_2027_usd_mn"]["Q%d" % q]
+        ok("verify: write-up ask B line Q%d" % q, "Q%d 2027: exporters sell %.1f; importers buy %.1f" % (
+            q, bb["exporters_sell"], bb["importers_buy"]) in sub)
+    ok("verify: write-up call sentence", "**Price the 2027 one-year dollar options at 12 per cent.**" in sub)
+    # every format read back, with a positive control on the same path
+    from pypdf import PdfReader
+    for f in sorted(os.listdir(target)):
+        p = os.path.join(target, f)
+        if f.endswith(".pdf"):
+            t = " ".join((pg.extract_text() or "") for pg in PdfReader(p).pages)
+            ok("verify: %s extracts text" % f, len(t) > 500 and ("Banco" in t))
+        elif f.endswith(".xlsx"):
+            x = pd.read_excel(p, sheet_name=None)
+            ok("verify: %s reads" % f, sum(len(v) for v in x.values()) > 10)
+        elif f.endswith(".csv"):
+            ok("verify: %s reads" % f, len(pd.read_csv(p)) > 5)
+    pol = " ".join((pg.extract_text() or "") for pg in PdfReader(find(target, "cordillera_fx_options_pricing_policy", ".pdf")).pages)
+    pol = re.sub(r"\s+", " ", pol)
+    ok("verify: the policy files the counterfactual and the convention",
+       "had the Banco Central not operated in the spot market" in pol and "rounded up to the next whole per cent" in pol
+       and "at 252 sessions a year" in pol)
+    golden = os.path.join(task, "golden")
+    gb = pd.read_excel(os.path.join(golden, "usd_options_vol_2027.xlsx"), sheet_name=None, header=None)
+    ok("verify: golden workbook carries the call", any("12%" in str(v) for v in gb["Pricing vol 2027"].values.ravel()))
+    ok("verify: golden chart exists and is a PNG", open(os.path.join(golden, "free_float_vol_2027.png"), "rb").read(8)
+       == b"\x89PNG\r\n\x1a\n")
+    bad = [o for o in OUT if not o[1]]
+    print("\n%d verifications, %d failed" % (len(OUT), len(bad)))
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")))
+    sys.exit(main(sys.argv[1]))

@@ -1,115 +1,92 @@
 {
- "annual_peaks": 46,
- "ask_a": {
-  "2016": {
-   "date": "2016-08-28",
-   "stage_ft": 3.4
+ "ask_a_hedging_cost_tqp_per_usd": {
+  "Q1": {
+   "10m and over": 3.5,
+   "1m to 3m": 1.5,
+   "3m to 10m": 2.1,
+   "under 1m": 1.3
   },
-  "2017": {
-   "date": "2017-07-26",
-   "stage_ft": 3.37
+  "Q2": {
+   "10m and over": 8.2,
+   "1m to 3m": 1.5,
+   "3m to 10m": 2.7,
+   "under 1m": 1.0
   },
-  "2018": {
-   "date": "2018-07-30",
-   "stage_ft": 3.29
+  "Q3": {
+   "10m and over": 3.9,
+   "1m to 3m": 0.9,
+   "3m to 10m": 1.3,
+   "under 1m": 0.8
   },
-  "2019": {
-   "date": "2019-08-14",
-   "stage_ft": 3.38
-  },
-  "2020": {
-   "date": "2020-08-13",
-   "stage_ft": 3.3
-  },
-  "2021": {
-   "date": "2021-08-10",
-   "stage_ft": 3.27
-  },
-  "2022": {
-   "date": "2022-08-21",
-   "stage_ft": 3.45
-  },
-  "2023": {
-   "date": "2023-08-18",
-   "stage_ft": 3.47
-  },
-  "2024": {
-   "date": "2024-08-08",
-   "stage_ft": 3.88
-  },
-  "2025": {
-   "date": "2025-08-09",
-   "stage_ft": 3.43
+  "Q4": {
+   "10m and over": 10.1,
+   "1m to 3m": 1.4,
+   "3m to 10m": 2.6,
+   "under 1m": 1.0
   }
  },
- "ask_b": {
-  "2020": {
-   "fall_ft": 1.14,
-   "pipe_level_ft": 191.86
+ "ask_b_forwards_due_2027_usd_mn": {
+  "Q1": {
+   "exporters_sell": 69.2,
+   "importers_buy": 97.5
   },
-  "2021": {
-   "fall_ft": 1.11,
-   "pipe_level_ft": 189.32
+  "Q2": {
+   "exporters_sell": 39.4,
+   "importers_buy": 49.1
   },
-  "2022": {
-   "fall_ft": 1.09,
-   "pipe_level_ft": 189.42
+  "Q3": {
+   "exporters_sell": 42.3,
+   "importers_buy": 29.1
   },
-  "2023": {
-   "fall_ft": 1.25,
-   "pipe_level_ft": 193.21
-  },
-  "2024": {
-   "fall_ft": 1.21,
-   "pipe_level_ft": 192.52
-  },
-  "2025": {
-   "fall_ft": 1.28,
-   "pipe_level_ft": 193.76
+  "Q4": {
+   "exporters_sell": 22.4,
+   "importers_buy": 28.4
   }
  },
- "breakpoint_ft": 10.28,
  "call": {
-  "alternative": "D",
-  "design_discharge_cfs": 14000
+  "expected_volatility_band_pct": [
+   11,
+   12
+  ],
+  "pricing_volatility_pct": 12,
+  "settings": {
+   "10": "falls short",
+   "11": "falls short",
+   "12": "covers",
+   "13": "covers",
+   "8": "falls short",
+   "9": "falls short"
+  }
  },
- "capacities_cfs": {
-  "A": 10400,
-  "B": 11600,
-  "C": 12900,
-  "D": 14700,
-  "E": 16200,
-  "F": 17800,
-  "G": 19500
+ "components": {
+  "golden_impact_pct_per_usd_100mn": 0.55,
+  "grid_settings_pct": [
+   8,
+   9,
+   10,
+   11,
+   12,
+   13
+  ],
+  "hourly_observations": 5821,
+  "impact_per_usd_mn": 100,
+  "price_impact_band_pct_per_usd_100mn": [
+   0.5,
+   0.6
+  ],
+  "sessions_per_year": 252
  },
- "cms_to_cfs": 35.3147,
- "controller_offset_ft": 0.47,
- "crit": {
-  "alternative_capacity_cfs": 14700,
-  "station_skew": -0.2
+ "rivals": {
+  "customer_flow_impact_vol_pct": 8.9,
+  "customer_flow_setting": 9,
+  "net_flow_impact_vol_pct": 7.4,
+  "net_flow_setting": 8,
+  "record_setting": 7,
+  "record_vol_pct": 6.9
  },
- "datum_shift_ft": 2.0,
- "default": {
-  "alternative": "A",
-  "design_discharge_cfs": 10000,
-  "station_skew": -0.9
- },
- "exact": {
-  "design_discharge_cfs": 13966.8,
-  "mean_log": 3.6921,
-  "sd_log": 0.2036,
-  "station_skew": -0.2152,
-  "weighted_skew": -0.137
- },
- "measurements": 468,
- "measurements_above_breakpoint": 79,
- "next_smaller_alternative": "C",
- "radar_face_install_ft": 199.34,
- "radar_face_new_ft": 199.84,
- "regional_skew": 0.05,
- "regional_skew_mse": 0.302,
- "rival_arithmetic_rating": {
-  "alternative": "C",
-  "design_discharge_cfs": 12000
+ "working": {
+  "drawdowns_netted": 281,
+  "golden_vol_pct": 11.5,
+  "orders_2026": 1444
  }
 }

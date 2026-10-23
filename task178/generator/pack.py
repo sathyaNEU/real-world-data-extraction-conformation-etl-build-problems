@@ -15,7 +15,7 @@ import postprocess as PP
 import world as W
 
 
-def wb_write(path, sheets, stamp, widths=None, bold_header=True):
+def wb_write(path, sheets, stamp, widths=None, formats=None, company=C.COMPANY):
     wb = openpyxl.Workbook()
     first = True
     for name, rows in sheets.items():
@@ -24,382 +24,277 @@ def wb_write(path, sheets, stamp, widths=None, bold_header=True):
         first = False
         for r in rows:
             ws.append(list(r))
-        if bold_header and rows:
+        if rows:
             for c in ws[1]:
                 c.font = Font(bold=True)
+        for col, fmt in (formats or {}).get(name, {}).items():
+            for cell in ws[col][1:]:
+                cell.number_format = fmt
         for k, w in (widths or {}).get(name, {}).items():
             ws.column_dimensions[k].width = w
     wb.save(path)
     creator, last_by, created, modified = stamp
-    PP.normalize_ooxml(path, creator, last_by, created, modified, excel=True, company=C.COMPANY)
+    PP.normalize_ooxml(path, creator, last_by, created, modified, excel=True, company=company)
     return sum(len(r) - 1 for r in sheets.values())
 
 
-def sig3(x):
-    if x <= 0:
-        return 0.0
-    d = 3 - int(math.floor(math.log10(abs(x)))) - 1
-    v = round(x, d)
-    return int(v) if d <= 0 else v
+_SHUT = C.closed_days()
 
 
-def mdy(d):
-    return "%d/%d/%d" % (d.month, d.day, d.year)
+def next_day(d, days_set=None):
+    """the next day the platform opens and both currencies settle"""
+    x = d + dt.timedelta(days=1)
+    while x.weekday() >= 5 or x in _SHUT:
+        x += dt.timedelta(days=1)
+    return x
 
 
-# --------------------------------------------------------------------------------------- the annual peak register
-REMARKS = {1986: "Crest-stage gage; recorder tape torn 11/23 to 11/26", 1997: "Peak from crest-stage gage, float line jammed",
-           2007: "Crest-stage gage; logger battery failed 12/3"}
+def mid_at(i, h, frac):
+    R, on, mids = W.path()
+    return mids[i, h] * math.exp(R[i, h] / 100.0 * frac)
 
 
-def write_peaks(out):
-    ph = W.peak_stages()
-    pd = W.peak_dates()
+# ------------------------------------------------------------------------------------------------ the Bank's operations
+def write_ops(out):
+    rng = C.stream("pack_ops")
+    days = W.days()
+    dset = set(days)
+    _, _, tickets = W.bank()
     rows = []
-    for i, wy in enumerate(C.REGISTER_WY):
-        h = ph[i] - (C.DATUM_SHIFT if wy < 2010 else 0.0)
-        t = pd[i]
-        tm = "" if wy in REMARKS else "%02d:%02d" % (t.hour, t.minute)
-        rows.append([wy, mdy(t.date()), tm, "%.2f" % h, REMARKS.get(wy, "")])
-    pre = ["Callender Paper Company, Sauer Mill Water Resources",
-           "TUM-02 Tumwick River near Sauer: annual peak stage register, water years 1980-2015",
-           "Gage height in feet on the gage datum in use at the time of the peak",
-           "Kept by S. Huber; exported from TUM02_peaks.xlsx 2016-03-02"]
-    return C.write_csv(os.path.join(out, C.F_PEAKS), ["WY", "Date", "Time", "Gage height (ft)", "Remarks"], rows,
-                       preamble=pre)
+    for (i, h, m, s, amt, dealer, cancel) in tickets:
+        t_loc = dt.datetime.combine(days[i], dt.time(C.HOURS[h], m, s))
+        price = round(mid_at(i, h, (m * 60 + s) / 3600.0) * (1 + (0.00004 if amt > 0 else -0.00004)), 2)
+        vd = next_day(days[i], dset)
+        op = "VENTA" if amt > 0 else "COMPRA"
+        if cancel:
+            wrong = abs(amt) + float(rng.choice([-2.0, -1.0, 1.0, 2.0, 5.0])) if abs(amt) > 2.5 else abs(amt) + 1.0
+            rows.append([t_loc - dt.timedelta(seconds=int(rng.integers(40, 170))), vd, op, wrong, dealer, price, "ANULADA"])
+        rows.append([t_loc, vd, op, abs(amt), dealer, price, "VIGENTE"])
+    rows.sort(key=lambda r: r[0])
+    out_rows, seq = [], {}
+    for r in rows:
+        y = r[0].year
+        seq[y] = seq.get(y, 0) + 1
+        out_rows.append(["OC%d-%05d" % (y, seq[y]), r[0].strftime("%Y-%m-%d %H:%M:%S"), r[1].isoformat(), r[2],
+                         "%d" % round(r[3] * 1000), r[4], "%.2f" % r[5], r[6]])
+    return C.write_csv(os.path.join(out, C.F_OPS), ["operation_id", "dealt_at", "value_date", "operation",
+                                                     "amount_usd_k", "counterparty_dealer", "price_tqp", "status"],
+                       out_rows)
 
 
-# ---------------------------------------------------------------------------------------- the 15-minute record
-def stage_rows():
-    """(index, stamp, value) rows of the export: every reading in PST, the telemetry's re-sent rows kept"""
-    h = W.stage_logged()
-    r = C.stream("resend")
-    dup = set(int(x) for x in r.choice(W.N15, size=640, replace=False))
-    gaps = set()
-    for _ in range(22):
-        a = int(r.integers(0, W.N15 - 40))
-        gaps.update(range(a, a + int(r.integers(1, 9))))
-    keep = W.protected_indices()
+# ------------------------------------------------------------------------------------------------ the dealers' reports
+def write_flows(out):
+    rng = C.stream("pack_flows")
+    days = W.days()
+    flows = W.dealer_flows()
+    fam_raw, jul = W.fam_legacy()
+    codes = [d[0] for d in W.DEALERS]
+    fam = codes.index("FTV")
     rows = []
-    for j in range(W.N15):
-        if j in gaps and j not in keep:
-            continue
-        rows.append(j)
-        if j in dup:
-            rows.append(j)
-    return rows
+    for i, d in enumerate(days):
+        for k, code in enumerate(codes):
+            if code == "FTV" and d >= C.MERGER_DATE and not jul[i]:
+                continue
+            base = dt.datetime.combine(d, dt.time(16, 0)) + dt.timedelta(seconds=int(rng.integers(240, 6900)))
+            for h, hh in enumerate(C.HOURS):
+                v = fam_raw[i, h] if (code == "FTV" and d >= C.MERGER_DATE) else flows[k, i, h]
+                lab = "%02d-%02d" % (hh, hh + 1)
+                rec = base + dt.timedelta(seconds=h * int(rng.integers(0, 3)))
+                if rng.random() < 0.0075:
+                    kind = rng.random()
+                    if kind < 0.35:
+                        first = -v
+                    elif kind < 0.6:
+                        first = flows[k, i, h - 1] if h > 0 else round(v * 0.5)
+                    else:
+                        first = round(v * rng.uniform(0.3, 0.8))
+                    rows.append([d, lab, code, int(first), rec])
+                    late = rec + dt.timedelta(minutes=int(rng.integers(35, 900)))
+                    rows.append([d, lab, code, int(v), late])
+                else:
+                    rows.append([d, lab, code, int(v), rec])
+    rows.sort(key=lambda r: (r[0], r[1], r[2], r[4]))
+    out_rows = [[r[0].isoformat(), r[1], r[2], r[3], r[4].strftime("%Y-%m-%d %H:%M:%S")] for r in rows]
+    return C.write_csv(os.path.join(out, C.F_FLOWS), ["report_date", "hour", "dealer_code", "net_customer_usd_k",
+                                                       "received_at"], out_rows)
 
 
-def write_stage(out):
-    h = W.stage_logged()
-    out_rows = []
-    for j in stage_rows():
-        out_rows.append([W.t_of(j).strftime("%Y-%m-%d %H:%M"), "%.2f" % h[j], "P", ""])
-    pre = ["# Callender Paper Company, Sauer mill hydrologic database export",
-           "# Location: TUM-02 Tumwick River near Sauer",
-           "# Parameter: Stage (gage height), ft; gage datum 182.40 ft NAVD88",
-           "# Time zone: UTC-08:00 (PST, no daylight saving time)",
-           "# Period: 2015-10-01 00:00 to 2025-09-30 23:45",
-           "# Grade P = provisional (record review outstanding)",
-           "# Exported 2026-01-20 09:12 by gwagner"]
-    return C.write_csv(os.path.join(out, C.F_STAGE), ["timestamp", "stage_ft", "grade", "qualifier"], out_rows,
-                       preamble=pre)
+# ------------------------------------------------------------------------------------------------ the hourly mids
+def write_mids(out):
+    days = W.days()
+    _, _, mids = W.path()
+    lost = set(W.OUTAGES)
+    rows = []
+    for i, d in enumerate(days):
+        for j in range(len(C.HOURS) + 1):
+            hh = C.OPEN_H + j
+            if (d, hh) in lost:
+                continue
+            rows.append([d.isoformat(), "%02d:00" % hh, "%.2f" % mids[i, j]])
+    return C.write_csv(os.path.join(out, C.F_MID), ["session_date", "hour_mark", "mid_tqp_per_usd"], rows)
 
 
-# ----------------------------------------------------------------------------------------- the measurements
-def geometry(q, h):
-    v = 1.75 * (q / 1000.0) ** 0.36
-    area = q / v
-    width = 118.0 + 4.0 * max(h - 6.0, 0.0) + (520.0 * max(h - W.HBF, 0.0) ** 0.55 if h > W.HBF else 0.0)
-    return width, area, v
+def write_dealers(out):
+    rows = []
+    for code, name, _ in W.DEALERS:
+        frm, to, note = "2024-01-02", "", ""
+        if code == "FTV":
+            to, note = "2025-06-30", "Merged into Banco del Salitral (BSL) effective 1 July 2025"
+        if code == "BSL":
+            note = "Reports include the former Financiera Tres Valles customers from 1 July 2025"
+        rows.append([code, name, frm, to, note])
+    return C.write_csv(os.path.join(out, C.F_DEALERS), ["dealer_code", "institution", "of_record_from", "of_record_to",
+                                                         "note"], rows)
 
 
-def numbered_measurements():
-    M = W.measurements()
-    out = []
-    r = C.stream("measfields")
-    for k, m in enumerate(M):
-        mm = dict(m)
-        mm["no"] = 101 + k
-        dur = int(r.integers(5, 12)) * 5 if m["method"] == "wading" else (int(r.integers(4, 9)) * 5 if m["method"] == "ADCP" else int(r.integers(8, 16)) * 5)
-        mm["start"] = m["time"]
-        mm["end"] = m["time"] + dt.timedelta(minutes=dur)
-        e = abs(np.log(m["q"] / m["q_true"]))
-        if m["method"] == "wading":
-            mm["rated"] = "E" if e < 0.02 and r.random() < 0.5 else ("G" if e < 0.06 else "F")
-        elif m["kind"] == "flood":
-            mm["rated"] = "F" if e < 0.08 or r.random() < 0.5 else "P"
+def write_calendar(out):
+    shut = C.closed_days()
+    rows, d = [], dt.date(2024, 1, 1)
+    while d <= dt.date(2026, 12, 31):
+        wd = d.strftime("%a")
+        if d.weekday() >= 5:
+            rows.append([d.isoformat(), wd, "CLOSED", "weekend"])
+        elif d in shut:
+            rows.append([d.isoformat(), wd, "CLOSED", "; ".join(shut[d])])
+        elif d > C.LAST_DAY:
+            rows.append([d.isoformat(), wd, "OPEN", "after the release period"])
         else:
-            mm["rated"] = "G" if e < 0.05 else "F"
-        mm["control"] = ["Clear", "Clear", "Clear", "Debris light", "Algae light"][int(r.integers(0, 5))] if m["kind"] == "routine" else "Drift"
-        out.append(mm)
+            rows.append([d.isoformat(), wd, "OPEN", ""])
+        d += dt.timedelta(days=1)
+    return C.write_csv(os.path.join(out, C.F_CAL), ["date", "weekday", "platform", "reason"], rows)
+
+
+# ------------------------------------------------------------------------------------------------ the TRM and the monthly statistics
+def trm_series():
+    rng = C.stream("trm")
+    days = W.days()
+    _, _, mids = W.path()
+    w = np.array([1.6, 1.3, 1.1, 0.9, 0.8, 0.9, 1.1, 1.5])
+    out = {}
+    for i, d in enumerate(days):
+        seg = (mids[i, :-1] + mids[i, 1:]) / 2
+        out[d] = round(float((seg * w).sum() / w.sum()) + rng.normal(0, 0.6), 2)
     return out
 
 
-def write_meas_old(out):
-    M = [m for m in numbered_measurements() if m["time"].date() < C.ADCP_FROM]
-    sheets = {}
-    s80 = [("No.", "Date", "Made by", "Width (ft)", "Area (sq ft)", "Velocity (ft/s)", "Gage ht (ft)", "Discharge (cfs)",
-            "Rated", "Remarks")]
-    s90 = [("No.", "Date", "Start", "End", "Made by", "Method", "Gage ht (ft)", "Width (ft)", "Area (sq ft)",
-            "Velocity (ft/s)", "Discharge (cfs)", "Rated", "Remarks")]
-    s00 = [("Meas no", "Date", "Start", "End", "Party", "Method", "GH start", "GH end", "Mean GH", "Width", "Area",
-            "Mean vel", "Q (cfs)", "Rating", "Control", "Remarks")]
-    r = C.stream("oldnotes")
-    words = {"E": "Excellent", "G": "Good", "F": "Fair", "P": "Poor"}
-    for m in M:
-        gh = m["gh"] - C.DATUM_SHIFT
-        q = sig3(m["q"])
-        w, a, v = geometry(q, m["gh"])
-        party = "RK" if m["time"].year < 1995 else ("RK/SH" if m["time"].year < 1999 else "SH")
-        meth = {"wading": "Wading", "bridge": "Cableway" if m["kind"] == "routine" else "Cableway and boat"}.get(m["method"], "Cableway")
-        rem = "Rising" if m["kind"] == "flood" and r.random() < 0.3 else ("Falling" if m["kind"] == "flood" else "")
-        if m["time"].year < 1990:
-            s80.append((m["no"], mdy(m["time"].date()), party, round(w), sig3(a), round(v, 2), round(gh, 2), q, m["rated"], rem))
-        elif m["time"].year < 2000:
-            s90.append((m["no"], mdy(m["time"].date()), m["start"].strftime("%H%M"), m["end"].strftime("%H%M"), party, meth,
-                        round(gh, 2), round(w), sig3(a), round(v, 2), q, words[m["rated"]], rem))
-        else:
-            d = float(r.normal(0, 0.006))
-            s00.append((m["no"], m["time"].strftime("%Y-%m-%d"), m["start"].strftime("%H:%M"), m["end"].strftime("%H:%M"),
-                        party, meth, round(gh - d, 2), round(gh + d, 2), round(gh, 2), round(w), sig3(a), round(v, 2), q,
-                        m["rated"], m["control"], rem))
-    sheets["1980-1989"] = s80
-    sheets["1990-1999"] = s90
-    sheets["2000-2004"] = s00
-    return wb_write(os.path.join(out, C.F_MEAS_OLD), sheets, ("Stacy Huber", "Stacy Huber", "2005-02-14T18:21:40Z",
-                    "2016-03-02T16:05:12Z"))
-
-
-def write_meas_new(out):
-    M = [m for m in numbered_measurements() if m["time"].date() >= C.ADCP_FROM]
-    rows = []
-    r = C.stream("newmeas")
-    for m in M:
-        gh = m["gh"] - (C.DATUM_SHIFT if m["time"].date() < C.DATUM_CHANGE else 0.0)
-        w, a, v = geometry(m["q"], m["gh"])
-        si = m["method"] == "ADCP" and m["time"].date() <= C.CMS_TO
-        if si:
-            q, unit = sig3(m["q"] / C.CFS_PER_CMS), "m3/s"
-            a_, w_, v_ = sig3(a * 0.092903), round(w * 0.3048, 1), round(v * 0.3048, 2)
-        else:
-            q, unit = sig3(m["q"]), "ft3/s"
-            a_, w_, v_ = sig3(a), round(w), round(v, 2)
-        party = "SH" if m["time"].year < 2016 else ("SH/GW" if m["time"].year < 2021 else ("GW/DM" if m["kind"] == "flood" else "GW"))
-        inst = "FlowTracker" if m["method"] == "wading" else ("RiverRay ADCP" if m["time"].year >= 2013 else "StreamPro ADCP")
-        rem = ""
-        if m["kind"] == "flood" and m["gh"] > W.HBF:
-            rem = "Cableway and boat" if r.random() < 0.6 else "Cableway; boat on left side"
-        elif m["kind"] == "flood":
-            rem = "From cableway"
-        ntr = "" if m["method"] == "wading" else int(r.integers(2, 7))
-        rows.append([m["no"], C.GAUGE_ID, m["time"].strftime("%Y-%m-%d"), m["start"].strftime("%H:%M"), m["end"].strftime("%H:%M"),
-                     party, inst, "%.2f" % gh, q, unit, a_, w_, v_, ntr,
-                     {"E": "Good", "G": "Good", "F": "Fair", "P": "Poor"}[m["rated"]], m["control"], rem])
-    head = ["meas_no", "station_id", "meas_date", "start_time", "end_time", "party", "instrument", "mean_gh_ft",
-            "discharge", "discharge_unit", "area", "width", "mean_velocity", "transects", "quality",
-            "control_condition", "remarks"]
-    return C.write_csv(os.path.join(out, C.F_MEAS_NEW), head, rows)
-
-
-# ------------------------------------------------------------------------------------------------- the visits
-def visit_rows():
-    """every visit 2016 to 2025: the routine visits and the flood-measurement visits"""
-    hl = W.stage_logged()
-    st = W.stage_true()
-    meas = [m for m in numbered_measurements() if m["time"] >= dt.datetime(2015, 10, 1)]
-    rows = []
-    for arrive, depart, purge, party in W.visits():
-        i = W.i_of(C.local_to_pst(arrive))
-        mn = [m["no"] for m in meas if m["kind"] == "routine" and arrive <= m["time"] <= depart]
-        work = ["download"]
-        if purge:
-            work.append("orifice line purged %s" % purge.strftime("%H:%M"))
-        work.append("staff check")
-        if mn:
-            work.append("Q meas")
-        notes = ""
-        if abs(arrive - C.LOGGER_SWAP) < dt.timedelta(hours=3):
-            notes = "Controller replaced (new unit); offset entered from staff"
-        if abs(arrive - C.LOGGER_FIX) < dt.timedelta(hours=3):
-            notes = "Logger 0.47 above staff; offset reset to staff"
-        staff = round(float(st[i]), 2)
-        if abs(arrive - C.LOGGER_FIX) < dt.timedelta(hours=3):
-            staff = round(float(hl[i]) - C.LOGGER_OFFSET_ERR, 2)
-        rows.append(dict(arrive=arrive, depart=depart, party=party, staff=staff, logger=float(hl[i]),
-                         meas=mn[0] if mn else "", work="; ".join(work), notes=notes))
-    floods = {}
-    for m in meas:
-        if m["kind"] == "flood":
-            floods.setdefault(m["time"].date(), []).append(m)
-    for d, ms in floods.items():
-        a = min(m["start"] for m in ms) - dt.timedelta(minutes=25)
-        b = max(m["end"] for m in ms) + dt.timedelta(minutes=30)
-        i = W.i_of(C.local_to_pst(a))
-        rows.append(dict(arrive=a, depart=b, party="GW/DM" if d.year >= 2021 else "SH/GW", staff=round(float(st[i]), 2),
-                         logger=float(hl[i]), meas=", ".join(str(m["no"]) for m in ms), work="Q meas (ADCP); staff check",
-                         notes="High water"))
-    rows.sort(key=lambda v: v["arrive"])
-    return rows
-
-
-def write_visits(out):
-    rows = []
-    for v in visit_rows():
-        rows.append([v["arrive"].strftime("%Y-%m-%d"), v["arrive"].strftime("%H:%M"), v["depart"].strftime("%H:%M"), v["party"],
-                     "%.2f" % v["staff"], "%.2f" % v["logger"], v["meas"], v["work"], v["notes"]])
-    head = ["visit_date", "arrive", "depart", "party", "staff_gage_ft", "logger_ft", "meas_no", "work_done", "notes"]
-    return C.write_csv(os.path.join(out, C.F_VISITS), head, rows)
-
-
-# ------------------------------------------------------------------------------------------------- SCADA
-def scada_stamp(j):
-    """the historian's stamp for the PST reading j: UTC before the June 2022 upgrade, local wall clock after"""
-    t = W.t_of(j)
-    if t < C.local_to_pst(C.SCADA_UPGRADE):
-        return C.pst_to_utc(t)
-    return C.pst_to_local(t)
-
-
-def scada_rows():
-    i0, pipe, dist, level = W.radar()
-    q, _ = W.series()
-    st = W.stage_true()
-    r = C.stream("scada")
-    legacy_end = W.i_of(C.local_to_pst(dt.datetime(2022, 6, 20, 20, 0)))
-    new_start = W.i_of(C.local_to_pst(C.SCADA_UPGRADE))
-    keep = W.protected_indices()
-    gaps = set()
-    for _ in range(30):
-        a = int(r.integers(i0, W.N15 - 20))
-        gaps.update(range(a, a + int(r.integers(1, 7))))
-    spikes = {}
-    flood = np.flatnonzero(st[i0:] > 9.0) + i0
-    for j in r.choice(flood, size=min(36, len(flood)), replace=False):
-        if j not in keep:
-            spikes[int(j)] = round(float(r.uniform(0.8, 3.2)), 2)
-    rows = []
-    hour = np.arange(W.N15) % 96 / 4.0
-    flow = 19.5 + 3.2 * np.sin(2 * np.pi * (hour - 8) / 24.0) + r.normal(0, 0.25, W.N15)
-    press = 91.0 - 0.08 * (flow - 19.5) + r.normal(0, 0.3, W.N15)
-    for j in range(i0, W.N15):
-        if legacy_end < j < new_start or (j in gaps and j not in keep):
-            continue
-        d = dist[j] - spikes.get(j, 0.0)
-        rows.append((j, scada_stamp(j), round(d, 2), round(C.RADAR_FACE_INSTALL - d, 2), round(float(flow[j]), 2),
-                     round(float(press[j]), 1)))
-    return rows
-
-
-def write_scada(out):
-    rows = [[s.strftime("%Y-%m-%d %H:%M:%S"), "%.2f" % d, "%.2f" % l, "%.2f" % f, "%.1f" % p] for _, s, d, l, f, p in scada_rows()]
-    pre = ["Historian export: SAUER crossing tags", "Interval 15 min, interpolated", "Exported 2026-01-12 14:03 by bdodson"]
-    return C.write_csv(os.path.join(out, C.F_SCADA), ["Timestamp", "SAUER_RAD1_DIST.PV", "SAUER_RAD1_LVL.PV",
-                       "SAUER_36IN_FLOW.PV", "SAUER_36IN_PRESS.PV"], rows, preamble=pre)
-
-
-# -------------------------------------------------------------------------------------------------- CMMS
-def work_orders():
-    r = C.stream("wo")
-    out = []
-    n = 24800
-    fixed = [(dt.datetime(2019, 3, 12, 8, 30), dt.datetime(2019, 3, 12, 15, 10), "PR", "SAUER-RAD1",
-              "Install level radar on pipe bridge downstream truss, conduit to RTU"),
-             (dt.datetime(2019, 3, 14, 9, 0), dt.datetime(2019, 3, 14, 11, 40), "PR", "SAUER-RTU",
-              "Configure RAD1 tags in SCADA, alarm at 191.5"),
-             (dt.datetime(2022, 6, 21, 6, 0), dt.datetime(2022, 6, 21, 17, 30), "PR", "SCADA-HIST",
-              "Historian server replacement, mill control room"),
-             (dt.datetime(2022, 11, 7, 7, 15), dt.datetime(2022, 11, 7, 12, 0), "CM", "SAUER-PB",
-              "Remove drift from upstream truss face after 11/5 high water"),
-             (dt.datetime(2022, 11, 16, 9, 30), dt.datetime(2022, 11, 16, 14, 45), "CM", "SAUER-RAD1",
-              "Replace damaged mounting bracket on level radar RAD1 (drift strike 11/5)"),
-             (dt.datetime(2025, 1, 8, 6, 40), dt.datetime(2025, 1, 10, 18, 0), "CM", "SAUER-PB",
-              "Isolate 36in main at Sauer valves, drift strike on truss and pipe"),
-             (dt.datetime(2025, 1, 13, 7, 0), dt.datetime(2025, 1, 21, 16, 30), "CM", "SAUER-PB",
-              "Temporary pipe supports at panel points 4 to 6, return main to service"),
-             (dt.datetime(2025, 3, 4, 8, 0), dt.datetime(2025, 3, 4, 15, 0), "CM", "SAUER-RAD1",
-              "Clean radar face, check echo profile")]
-    routine = [("PM", "SAUER-VLV1", "Exercise isolation valve V-1"), ("PM", "SAUER-VLV2", "Exercise isolation valve V-2"),
-               ("PM", "SAUER-CP", "Cathodic protection test station readings"), ("PM", "SAUER-PB", "Pipe bridge visual inspection"),
-               ("PM", "SAUER-RTU", "RTU battery and enclosure check"), ("PM", "SAUER-FM", "Flow meter verification"),
-               ("CM", "SAUER-PB", "Remove drift from truss"), ("CM", "SAUER-RTU", "Comms failure, reset modem")]
-    t = dt.datetime(2019, 1, 7, 8, 0)
-    while t < dt.datetime(2025, 9, 30):
-        typ, asset, desc = routine[int(r.integers(0, len(routine)))]
-        start = t.replace(hour=int(r.integers(7, 13)), minute=int(r.integers(0, 4)) * 15)
-        end = start + dt.timedelta(minutes=int(r.integers(4, 26)) * 15)
-        out.append((start, end, typ, asset, desc))
-        t += dt.timedelta(days=int(r.integers(9, 26)))
-    out += fixed
-    out.sort(key=lambda w: w[0])
-    rows = []
-    for k, (a, b, typ, asset, desc) in enumerate(out):
-        rows.append(["WO-%06d" % (n + 7 * k + int(r.integers(0, 6))), asset, a.strftime("%m/%d/%Y %H:%M"),
-                     b.strftime("%m/%d/%Y %H:%M"), typ, desc, "Closed"])
-    return rows
-
-
-def write_wo(out):
-    return C.write_csv(os.path.join(out, C.F_WO), ["wo_no", "asset", "opened", "completed", "type", "description", "status"],
-                       work_orders())
-
-
-# ---------------------------------------------------------------------------------------------- distractors
-def write_rain(out):
-    r = C.stream("rain")
-    rows = []
-    d = dt.date(1979, 10, 1)
-    q, ev = W.series()
-    storm_days = {}
-    for wy, t0, tp, size, kind in ev:
-        day = W.t_of(t0 + tp // 2).date()
-        storm_days[day] = storm_days.get(day, 0.0) + size
-    while d <= dt.date(2025, 9, 30):
-        doy = d.timetuple().tm_yday
-        wet = 0.55 + 0.35 * math.cos(2 * math.pi * (doy - 15) / 365.25)
-        p = 0.0
-        if r.random() < wet * 0.75:
-            p = float(r.gamma(0.8, 0.28 + 0.25 * wet))
-        if d in storm_days:
-            p += min(4.5, 0.0009 * storm_days[d] + float(r.uniform(0.2, 0.8)))
-        rows.append([d.isoformat(), "%.2f" % p, "M" if r.random() < 0.002 else ""])
+def write_trm(out):
+    days = W.days()
+    vw = trm_series()
+    rows, d, cur = [], dt.date(2024, 1, 3), vw[days[0]]
+    last_session = {}
+    idx = 0
+    while d <= dt.date(2026, 12, 30):
+        while idx < len(days) and days[idx] < d:
+            cur = vw[days[idx]]
+            idx += 1
+        rows.append([d.isoformat(), "%.2f" % cur])
         d += dt.timedelta(days=1)
-    return C.write_csv(os.path.join(out, C.F_RAIN), ["date", "precip_in", "flag"], rows,
-                       preamble=["Sauer mill wastewater plant rain gage (tipping bucket, heated), daily totals 08:00 to 08:00"])
+    return C.write_csv(os.path.join(out, C.F_TRM), ["fecha_vigencia", "trm_tqp_per_usd"], rows)
 
 
-def write_marten(out):
-    r = C.stream("marten")
+def write_stats(out):
+    rng = C.stream("stats")
+    days = W.days()
+    dset = set(days)
+    flows = W.dealer_flows().sum(axis=0) / 1000.0
+    _, _, tickets = W.bank()
+    by_value = {}
+    for (i, h, m, s, amt, dealer, cancel) in tickets:
+        vd = next_day(days[i], dset)
+        key = (vd.year, vd.month)
+        by_value[key] = by_value.get(key, 0.0) + amt
+    months = [(y, m) for y in (2024, 2025, 2026) for m in range(1, 13) if (y, m) <= (2026, 11)]
+    rows = [["Month", "Interbank turnover (USD mn)", "Dealers' net customer purchases (USD mn)",
+             "BCT net spot sales, value date (USD mn)", "International reserves, end of month (USD mn)"]]
+    res = 19850.0
+    for (y, m) in months:
+        idx = [i for i, d in enumerate(days) if (d.year, d.month) == (y, m)]
+        cust = float(flows[idx].sum()) if idx else 0.0
+        turn = sum(1180.0 * W.day_scale()[i] * rng.uniform(0.85, 1.15) for i in idx)
+        sales = by_value.get((y, m), 0.0)
+        res = res - sales + rng.normal(95.0, 140.0)
+        rows.append(["%04d-%02d" % (y, m), round(turn, 0), round(cust, 1), round(sales, 1), round(res, 0)])
+    return wb_write(os.path.join(out, C.F_STATS), {"Mercado cambiario": rows},
+                    ("Departamento de Estadísticas", "Departamento de Estadísticas", "2024-02-06T15:12:40Z",
+                     "2026-12-07T14:03:22Z"), widths={"Mercado cambiario": {"A": 10, "B": 26, "C": 36, "D": 34, "E": 38}},
+                    company=C.BANK)
+
+
+# ------------------------------------------------------------------------------------------------ the desk's records
+COUNTERPARTIES = [d[0] for d in W.DEALERS if d[0] not in ("BCO", "FTV")]
+
+
+def write_confirmations(out):
+    rng = C.stream("pack_conf")
     rows = []
-    pd = W.peak_dates()
-    for wy in range(1988, 2026):
-        z = float(r.normal(0, 1))
-        q = 10 ** (2.95 + 0.24 * z)
-        h = 1.2 + 0.62 * (q / 100.0) ** 0.55
-        t = pd[wy - C.WY_FIRST] + dt.timedelta(hours=float(r.uniform(-30, 20))) if r.random() < 0.7 else \
-            dt.datetime(wy - 1, 12, 1) + dt.timedelta(days=float(r.uniform(0, 90)))
-        rows.append([wy, t.strftime("%Y-%m-%d"), "%.2f" % h, int(round(q, -1)), "A"])
-    return C.write_csv(os.path.join(out, C.F_KESSEL), ["water_year", "peak_date", "gage_height_ft", "peak_discharge_cfs", "code"],
-                       rows, preamble=["MRT-01 Marten Creek at Hollis Road (Callender Paper Company, Sauer mill), annual peaks",
-                                       "Drainage area 41.2 sq mi. Discharge from rating 6 (stable rock control)."])
+    seq = 104300
+    for o in W.desk_orders():
+        utc = C.local_to_utc(o["local"])
+        stamp = utc.strftime("%Y-%m-%dT%H:%M:%S.") + "%03dZ" % (utc.microsecond // 1000)
+        for px, q in o["fills"]:
+            cp = COUNTERPARTIES[int(rng.integers(0, len(COUNTERPARTIES)))]
+            if rng.random() < 0.012:
+                seq += int(rng.integers(1, 4))
+                bad = round(px + (1 if rng.random() < 0.5 else -1) * float(rng.choice([10.0, 1.0, 100.0])), 2)
+                rows.append(["PL26-%07d" % seq, stamp, o["trader"], o["side"], int(q), "%.2f" % bad,
+                             "%.2f" % o["bid"], "%.2f" % o["ask"], cp, "CANCELLED"])
+            seq += int(rng.integers(1, 4))
+            rows.append(["PL26-%07d" % seq, stamp, o["trader"], o["side"], int(q), "%.2f" % px, "%.2f" % o["bid"],
+                         "%.2f" % o["ask"], cp, "CONFIRMED"])
+    return C.write_csv(os.path.join(out, C.F_CONF), ["confirmation_id", "trade_time_utc", "trader", "side",
+                                                      "usd_amount_k", "price", "bid_at_arrival", "ask_at_arrival",
+                                                      "counterparty", "status"], rows)
 
 
-# ------------------------------------------------------------------------------------------------- the build
+def write_clients(out):
+    rng = C.stream("pack_clients")
+    branches = ("Ilvara Centro", "Puerto Quindal", "Santa Ofelia", "Valle Lindo", "Corporate Banking")
+    rows = []
+    for c in sorted(W.clients(), key=lambda c: c["no"]):
+        since = dt.date(2009, 1, 1) + dt.timedelta(days=int(rng.integers(0, 5600)))
+        br = "Treasury" if c["segment"] == "TESORERIA" else branches[int(rng.integers(0, len(branches)))]
+        rows.append([c["no"], c["segment"], c["sector"], br, since.isoformat()])
+    return C.write_csv(os.path.join(out, C.F_CLIENTS), ["client_no", "segment", "sector", "relationship_unit",
+                                                         "client_since"], rows)
+
+
+def deal_status(d):
+    if d["cancelled"]:
+        return "ANULADA"
+    return "LIQUIDADA" if d["mat"] < C.AS_OF else "VIGENTE"
+
+
+def write_forwards(out):
+    rows = [["Deal No.", "Client No.", "Trade date", "Maturity date", "Product", "Window opens", "Client USD",
+             "Pair", "Notional", "Forward rate", "Status"]]
+    for d in W.forward_book():
+        rows.append([d["no"], d["client"], d["td"], d["mat"], d["product"], d["window_open"], d["side"], d["pair"],
+                     d["amount"], d["rate"], deal_status(d)])
+    return wb_write(os.path.join(out, C.F_FWD), {"Deals": rows},
+                    ("Gabriel Arias", "Luisa Molano", "2025-01-06T13:41:09Z", "2026-12-30T00:48:37Z"),
+                    widths={"Deals": {"A": 10, "B": 11, "C": 12, "D": 13, "E": 11, "F": 13, "G": 11, "H": 10, "I": 14,
+                                      "J": 12, "K": 11}},
+                    formats={"Deals": {"C": "yyyy-mm-dd", "D": "yyyy-mm-dd", "F": "yyyy-mm-dd", "I": "#,##0",
+                                       "J": "#,##0.00"}})
+
+
+def write_docs(out):
+    for f, doc in D.DOCS.items():
+        D.build_pdf(os.path.join(out, f), doc)
+
+
 def build_pack(out):
     os.makedirs(out, exist_ok=True)
     n = {}
-    n[C.F_PEAKS] = write_peaks(out)
-    n[C.F_STAGE] = write_stage(out)
-    n[C.F_MEAS_OLD] = write_meas_old(out)
-    n[C.F_MEAS_NEW] = write_meas_new(out)
-    D.write_station(out)
-    D.write_standard(out)
-    D.write_study(out)
-    D.write_levels(out)
-    n[C.F_VISITS] = write_visits(out)
-    n[C.F_SCADA] = write_scada(out)
-    n[C.F_WO] = write_wo(out)
-    n[C.F_RAIN] = write_rain(out)
-    n[C.F_KESSEL] = write_marten(out)
-    n[C.F_DICT] = D.write_dict(out, wb_write)
+    n[C.F_OPS] = write_ops(out)
+    n[C.F_FLOWS] = write_flows(out)
+    n[C.F_MID] = write_mids(out)
+    n[C.F_DEALERS] = write_dealers(out)
+    n[C.F_CAL] = write_calendar(out)
+    n[C.F_TRM] = write_trm(out)
+    n[C.F_STATS] = write_stats(out)
+    n[C.F_CONF] = write_confirmations(out)
+    n[C.F_CLIENTS] = write_clients(out)
+    n[C.F_FWD] = write_forwards(out)
+    write_docs(out)
     return n

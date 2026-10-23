@@ -11,8 +11,8 @@
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "rate_or_share",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Price the 2027 one-year dollar options at 12 per cent. The closing rate's volatility over the 2024 to 2026 sessions without the Banco Central's spot operations is between 11 and 12 per cent.",
+  "answer_source": "task178/submission.md, 1. Final Recommendation (bold markers removed); figures in task178/generator/figures.json, written with golden/usd_options_vol_2027.xlsx and golden/free_float_vol_2027.png by generator/deliver.py from target/ and recomputed by generator/verify.py",
   "gap": [
     "time"
   ],
@@ -32,46 +32,62 @@
   "validated_decoy": false,
   "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who puts the central bank's operations log on the dealers' trade dates and local hours, converts its millions to the dealers' thousands, drops superseded dealer resubmissions and merges the two codes of the dealer that merged in 2025, then adds the bank's hourly trades back to the reference rate at the price impact read from a regression of the hour's move on the market's customer flow net of the bank (or on the customer flow alone), still files a 2027 volatility near 9 per cent and prices at 9 or 10 per cent, because the bank traded against each hour's own move; the customers' impact divided by one less the share of their flow the bank absorbed files about 11.5 per cent and prices at 12.",
+  "analyst_test": "A strong analyst who takes the dealers' reports of record, drops the central bank's ANULADA deals and Financiera Tres Valles' July 2025 reports, joins the hours whose mark is missing and reads the pricing policy's closing-rate, 252-session and round-up conventions, then puts the bank's hourly trades back at the price impact read from the hour's move regressed on the market's net flow, prices at 8 per cent (7.4), or at 9 with customer flow alone (8.9), because the bank traded against each hour's own move; customer flow as the instrument puts the 2024 to 2026 volatility between 11 and 12 per cent and prices at 12.",
   "domain_test": "The deciding quantity is the volatility of a freely floating exchange rate, estimated the way FX microstructure estimates the price effect of order flow (the rate's move per unit of customer order flow, the market's own depth) and turned into the realised volatility an options desk prices at; with another field's nouns there is no order flow, no dealer price impact and no central bank trading against the same hour's move, and the task stops reading the same.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:price-impact-of-customer-flow-under-leaning-intervention",
   "layer1": [
-    "the central bank's operations log stamped in UTC and booked by value date (T+1), beside dealer reports stamped in local hours by trade date",
-    "dealer customer-flow reports in USD thousands, the central bank's operations in USD millions",
-    "dealer reports resubmitted for a window after a correction, the later submission superseding the earlier",
-    "two reporting dealers merged in 2025, the absorbed dealer's code continuing for a month",
-    "national holidays and US holidays on which spot does not settle, so the reference rate repeats",
-    "a reference rate published at 13:00 beside the 16:00 closing rate",
-    "hourly rate snapshots from the interbank platform with occasional missing hours after a platform outage"
+    "the central bank's dealing-system export with ANULADA rows for deals entered in error, each followed by the deal as dealt",
+    "dealer customer-flow reports refiled to correct them, every receipt kept with its receipt time, the last received of record",
+    "a merged dealer's legacy feed still filing its former customers for a month after the merger, already inside the absorbing dealer's reports",
+    "hour marks missing from the platform's hourly mid after price-feed failures",
+    "national and US holiday calendars closing the platform",
+    "platform trade confirmations stamped in UTC, one row per execution, with CANCELLED executions and their re-booked twins",
+    "a deal-system export with euro forwards, cancelled deals and the bank's own Treasury desks' deals beside client deals",
+    "window forwards kept at contract notional, their drawdowns booked as separate outrights at the window's rate"
   ],
   "stakeholder_role": "the head of FX options at a domestic bank, who sets the volatility the desk prices its first 2027 one-year dollar options at before the January launch",
   "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
     "file": "dealer_customer_flows_hourly_2024-2026.csv",
-    "rows": 85000,
-    "entity": "one reporting dealer's net customer purchases of dollars in one trading hour",
-    "grain": "dealer x trading hour",
+    "rows": 67662,
+    "entity": "one report received from one reporting dealer of its customers' net dollar purchases in one trading hour",
+    "grain": "dealer x trading hour x report",
     "source": "synthetic (constructed in the layout of a central bank's FX market statistics release)"
   },
   "forum": "operations_desk",
   "forcing_event": "launch_or_rollout",
   "org_family": "financial_institution",
   "world": {
-    "geography": "a fictional Andean republic (Arauquia); its central bank, currency, dealers and every record are fictional",
+    "geography": "a fictional Andean republic (Tamarquia); its central bank, currency, dealers and every record are fictional",
     "currency": "USD",
     "org_type": "a domestic commercial bank's FX options desk",
     "invented_names": [
-      "Republic of Arauquia",
-      "Banco Central de Arauquia",
-      "arauquian peso"
+      "Republic of Tamarquia",
+      "Banco Central de Tamarquia",
+      "tamarquian peso",
+      "Banco Cordillera",
+      "Banco del Salitral",
+      "Financiera Tres Valles",
+      "Banco Hacendario del Valle",
+      "Banco Rural de Fomento",
+      "Corporación Financiera Los Molles",
+      "Banco Interoceánico",
+      "Banco del Quindal",
+      "Banco Alameda",
+      "Caja Previsora del Sur",
+      "Banco Valle Lindo",
+      "Cambios Costanera",
+      "Ilvara"
     ],
     "people": [
       "Yanet Cáceres",
       "Miguel Rengifo",
       "Inés Quiroz",
-      "Edison Hurtado"
+      "Edison Hurtado",
+      "Luisa Molano",
+      "Gabriel Arias"
     ]
   },
   "deliverables": [
@@ -81,8 +97,8 @@
   "opening_move": "question-first",
   "question_form": "what",
   "driver": "The decisive quantity is a forward dispersion with an absorbing agent removed: the agent traded against each interval's own shock and will stop, so the forward dispersion needs the outcome's response to the flow the agent absorbed, and because the agent's trades respond to the same interval's shock, the response read on the flow net of the agent is biased toward zero and the response read on the outside flow alone is net of the agent's offset; only the outside flow's response divided by the share of it the agent did not absorb (the outside flow as the instrument) puts the absorbed flow back at the market's own response.",
-  "driver_concrete": "From 2024 to 2026 the Banco Central de Arauquia sold or bought dollars in the hours the peso moved most and absorbed a large share of each such hour's pressure, so the peso's realised volatility ran near 7 per cent; it stops on 4 January 2027. The hour's move regressed on the dealers' customer flow net of the bank's trades gives an impact biased low, because the bank traded against that hour's own move, and regressed on customer flow alone gives the impact net of the bank's offset; the customer flow's impact divided by one less the share of it the bank absorbed puts the bank's trades back at the market's own depth and gives a 2027 volatility near 11.5 per cent.",
-  "stump": "A competent solver who takes the reference rate's realised volatility over 2024 to 2026 prices the 2027 options at 8 per cent, and one who adds the central bank's hourly trades back at the impact read from the hour's move on the market's net or customer flow prices at 9 or 10; the step that lands them there is reading the price impact off a regression whose flow the bank traded against within the same hour, when the customers' flow, scaled by the share of it the bank left to the market, gives the impact the float exposes and a 2027 volatility near 11.5 per cent, priced at 12.",
+  "driver_concrete": "From 2024 to 2026 the Banco Central de Tamarquia sold dollars in the hours the peso fell hardest and bought in the hours it rose hardest, in about a third of all trading hours, so the closing rate's recorded volatility is 6.9 per cent; its operations end with 2026. The hour's move regressed on the dealers' absorbed flow (customers less the bank) gives an impact of 0.07 per cent per 100 million dollars because the bank's trades answer the same hour's news, and on customer flow alone 0.27, the impact net of the bank's offset; customer flow as the instrument, the reduced form over one less the half of customer flow the bank absorbed, gives 0.55 and a 2024 to 2026 volatility without the bank between 11 and 12 per cent, priced at 12 against 8 or 9.",
+  "stump": "A competent solver who calibrates the market's price impact the textbook way, the hour's move regressed on the order flow the dealers absorbed (customers less the central bank), puts the bank's trades back at that impact and prices the 2027 options at 8 per cent (7.4), or at 9 on customer flow alone; the step that lands it there is the regression itself, because the bank traded against each hour's own move, so only customer flow read as the instrument gives the depth the float exposes, a volatility between 11 and 12 per cent and a price of 12.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [

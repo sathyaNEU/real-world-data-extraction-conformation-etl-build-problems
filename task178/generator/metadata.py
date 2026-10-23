@@ -11,30 +11,29 @@ import common as C
 
 ORIGIN = "Constructed for this task (seeded, deterministic): "
 SOURCES = {
-    C.F_PEAKS: ("Callender Paper Company (fictional), Sauer mill, TUM-02 annual peak stage register, water years 1980 to 2015", "2016-03-02"),
-    C.F_STAGE: ("Callender Paper Company, Sauer mill, TUM-02 15-minute stage, hydrologic database export, water years 2016 to 2025", "2026-01-20"),
-    C.F_MEAS_OLD: ("Callender Paper Company, Sauer mill, TUM-02 discharge measurement notes transcribed from the field forms, 1980 to 2004", "2016-03-02"),
-    C.F_MEAS_NEW: ("Callender Paper Company, Sauer mill, TUM-02 discharge measurements, measurement database export, water years 2005 to 2025", "2026-01-20"),
-    C.F_STATION: ("Callender Paper Company, Sauer mill, TUM-02 station description, revised 2024-03-18", "2024-03-18"),
-    C.F_LEVELS: ("Callender Paper Company, Sauer mill, TUM-02 levels log", "2025-08-27"),
-    C.F_VISITS: ("Callender Paper Company, Sauer mill, TUM-02 site visit log, water years 2016 to 2025", "2026-01-20"),
-    C.F_STANDARD: ("Callender Paper Company, Sauer mill, Engineering Standard section 4 (hydrology), issue 3", "2021-04-26"),
-    C.F_STUDY: ("Crandell Hyde Engineering (fictional) for Callender, Sauer pipe bridge waterway alternatives study, draft", "2025-12-12"),
-    C.F_SCADA: ("Callender Paper Company, Sauer mill, SCADA historian export, Sauer crossing tags", "2026-01-12"),
-    C.F_WO: ("Callender Paper Company, Sauer mill, maintenance management system work orders, Sauer crossing assets", "2026-01-20"),
-    C.F_RAIN: ("Callender Paper Company, Sauer mill, wastewater plant rain gage, daily totals", "2026-01-20"),
-    C.F_KESSEL: ("Callender Paper Company, Sauer mill, MRT-01 Marten Creek annual peaks", "2026-01-20"),
-    C.F_DICT: ("Callender Paper Company, Sauer mill, data dictionary for the TUM-02 exports", "2025-11-04"),
+    C.F_OPS: ("Banco Central de Tamarquia (fictional), Market Operations, spot operations with reporting dealers, 2 January 2024 to 29 December 2026", "2026-12-30"),
+    C.F_FLOWS: ("Banco Central de Tamarquia, reporting dealers' hourly net customer purchases of US dollars, every report received", "2026-12-30"),
+    C.F_MID: ("Banco Central de Tamarquia, the interbank platform's mid rate at each hour mark of the session", "2026-12-30"),
+    C.F_DEALERS: ("Banco Central de Tamarquia, register of reporting dealers", "2026-12-30"),
+    C.F_CAL: ("Banco Central de Tamarquia, platform calendar 2024 to 2026", "2026-12-30"),
+    C.F_ANNOUNCE: ("Banco Central de Tamarquia, Press release 41/2026 (English version)", "2026-10-01"),
+    C.F_NOTE: ("Banco Central de Tamarquia, Market Operations, release note for the hourly data", "2026-12-30"),
+    C.F_POLICY: ("Banco Cordillera (fictional), Treasury, FX options pricing policy v2.1", "2026-12-15"),
+    C.F_CONF: ("Interbank platform trade confirmations for Banco Cordillera, 2026", "2026-12-30"),
+    C.F_FWD: ("Banco Cordillera, Treasury deal system, client FX forward deals traded 2025 to 2026", "2026-12-30"),
+    C.F_CLIENTS: ("Banco Cordillera, corporate client register (FX segment)", "2026-12-30"),
+    C.F_TRM: ("Banco Central de Tamarquia, representative market rate (TRM) by date of validity", "2026-12-30"),
+    C.F_STATS: ("Banco Central de Tamarquia, monthly foreign exchange market statistics, January 2024 to November 2026", "2026-12-07"),
 }
-TITLE = ("The waterway alternative for a paper mill's replacement raw-water pipe bridge, the smallest that passes the river's "
-         "1 per cent annual chance flood at the company's own stage gauge")
+TITLE = ("The volatility a domestic bank's FX options desk prices its first one-year dollar options at for 2027, once "
+         "the central bank's spot operations against the market's hourly moves end")
 
 
 def _rows(path):
     ext = path.rsplit(".", 1)[-1]
     if ext == "csv":
         with open(path, encoding="utf-8") as fh:
-            return sum(1 for line in fh if not line.startswith("#")) - 1
+            return sum(1 for _ in fh) - 1
     if ext == "xlsx":
         wb = load_workbook(path, read_only=True)
         return sum(max(0, ws.max_row - 1) for ws in wb.worksheets)
@@ -54,41 +53,43 @@ def write(task_dir):
         files.append(dict(path=f, format=f.rsplit(".", 1)[-1], bytes=os.path.getsize(p), rows=rows,
                           source=ORIGIN + src, date=date, license="CC0-1.0 (original work, constructed for this task)"))
     distractors = [
-        dict(file=C.F_RAIN, wrong_basis=False,
-             why_relevant="the rain at the mill in the same valley drives the floods the design flow is about",
-             why_unused="the design flood comes from the gage's own annual peaks; no figure reads the rain record",
-             ruled_out_by="the alternatives study section 3 and Engineering Standard 4.2.2 (the gage's annual peak series)"),
-        dict(file=C.F_KESSEL, wrong_basis=False,
-             why_relevant="the mill's other gage in the valley, with annual peak discharges from a stable rating",
-             why_unused="the generalized skew is set by the standard and the design flood is at TUM-02; no figure reads it",
-             ruled_out_by="Engineering Standard 4.2.2 and 4.2.4 (the structure's own gage, the filed generalized skew)"),
+        dict(file=C.F_TRM, wrong_basis=False,
+             why_relevant="the country's official dollar rate, published by the central bank every day of the period",
+             why_unused="the options settle on the platform's 16:00 closing rate and the policy measures the closing rate's "
+                        "daily changes; no figure reads the TRM",
+             ruled_out_by="the pricing policy, sections 1 and 2 (cash settlement against the 16:00 closing rate)"),
+        dict(file=C.F_STATS, wrong_basis=False,
+             why_relevant="the central bank's monthly market statistics, with its net spot sales and the dealers' net "
+                          "customer purchases by month",
+             why_unused="monthly totals by value date cannot separate the hours the Bank traded in; every figure reads the "
+                        "hourly record",
+             ruled_out_by="the release note, section 5 (the Bank's sales there are by value date and by month)"),
     ]
     meta = dict(
         task="task178", title=TITLE,
-        domain="Physical & Environmental Sciences", client_domain="Physical & Environmental Sciences",
-        subdomain="hydrology and flood frequency (the 1 per cent annual chance peak discharge at a stage-only gauge, "
-                  "from its annual peak stages and its field discharge measurements)",
+        domain="Quantitative Finance", client_domain="Quantitative Finance",
+        subdomain="volatility and derivatives pricing (the free-float volatility of an exchange rate whose record was "
+                  "produced under a central bank's leaning operations, for pricing one-year FX options)",
         objective="Forecasting & Predictive Modeling",
-        prompt_shape="one dial (seven waterway alternatives by capacity) against the 1 per cent design discharge; ten "
-                     "work windows' highest stages with dates; six water years' pipe-bridge levels and falls at the "
-                     "gauge's crest; a frequency-curve chart",
-        as_of="2026-01-20",
+        prompt_shape="one dial (the desk's whole-per-cent volatility grid, settings 8 to 13 per cent) against the "
+                     "expected 2027 volatility; a 2026 hedging-cost table by quarter and order size; 2027 client forward "
+                     "maturities by quarter and segment; a chart of the grid against the expected volatility",
+        as_of=C.AS_OF.isoformat(),
         deliverables=[C.G_BOOK, C.G_CHART],
         distractor_files=[d["file"] for d in distractors],
         distractors=distractors,
-        stated_inputs=["{:,}".format(c) for _, c in C.ALTERNATIVES] + ["15 July to 15 September", "2016 to 2025", "2020 to 2025",
-                                                                       "%.2f" % C.REG_SKEW, "%.3f" % C.REG_SKEW_MSE],
-        field_terms=["stage", "gage height", "annual exceedance probability", "log-Pearson Type III", "water year"],
+        stated_inputs=["252 sessions", "16:00 closing rate", "2024 to 2026", "31 December 2026", "UTC-5"],
+        field_terms=["realised volatility", "order flow", "price impact", "closing rate", "window forward", "arrival mid"],
         input_gates=dict(files=len(files), formats=sorted(set(x["format"] for x in files)), largest_file=big,
                          largest_file_rows=big_rows),
         sources=[dict(files="all files under target/",
                       origin="constructed for this task by task178/generator/build.py (seeded, deterministic) around a "
-                             "fictional western Washington pulp and paper mill (the Callender Paper Company Sauer mill), its river gage TUM-02 "
-                             "on the fictional Tumwick River and its engineering consultant. No real organisation's "
-                             "records or person is depicted.",
-                      date="2026-01-20", license="CC0-1.0 (original work)")],
+                             "fictional Andean republic (Tamarquia), its central bank, its currency, its reporting dealers "
+                             "and a fictional domestic bank (Banco Cordillera). No real organisation's records or person "
+                             "is depicted.",
+                      date=C.AS_OF.isoformat(), license="CC0-1.0 (original work)")],
         created="2026-10-23", generator="task178/generator/build.py", files=files)
     with open(os.path.join(task_dir, "metadata.json"), "w") as fh:
-        json.dump(meta, fh, indent=1)
+        json.dump(meta, fh, indent=1, ensure_ascii=False)
         fh.write("\n")
     return meta

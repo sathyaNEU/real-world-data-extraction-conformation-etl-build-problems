@@ -21,8 +21,8 @@ sys.path.insert(0, HERE)
 import pack as PK  # noqa: E402
 
 TASK = os.path.dirname(HERE)
-PULL_DONE = (2026, 1, 20, 9, 30, 0)                          # the pack assembled, Pacific time
-MTIME = calendar.timegm((2026, 1, 20, 17, 30, 0, 0, 0, 0))     # the same moment, UTC
+PULL_DONE = (2026, 12, 30, 18, 40, 0)                          # the pack assembled, Tamarquia time
+MTIME = calendar.timegm((2026, 12, 30, 23, 40, 0, 0, 0, 0))     # the same moment, UTC
 
 
 def build(out, quiet=False):
@@ -66,7 +66,10 @@ def full(root):
     build(target, quiet=root != TASK)
     gen = os.path.join(root, "generator") if root != TASK else HERE
     os.makedirs(gen, exist_ok=True)
-    deliver.main(target, os.path.join(root, "golden"), os.path.join(gen, "figures.json"), os.path.join(root, "submission.md"))
+    golden = os.path.join(root, "golden")
+    if os.path.isdir(golden):
+        shutil.rmtree(golden)
+    deliver.main(target, golden, os.path.join(gen, "figures.json"), os.path.join(root, "submission.md"))
     metadata.write(root)
 
 
@@ -88,7 +91,7 @@ def main():
     if r1.returncode or r2.returncode:
         sys.exit("checks %d verify %d" % (r1.returncode, r2.returncode))
     if not a.no_rebuild:
-        tmp = tempfile.mkdtemp(prefix="t178v2_rebuild_")
+        tmp = tempfile.mkdtemp(prefix="t178v3_rebuild_")
         try:
             full(tmp)
             mine = {k: v for k, v in digest(TASK).items() if k.split(os.sep)[0] in ("target", "golden")
