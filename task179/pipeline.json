@@ -1,28 +1,27 @@
 {
  "task": "task179",
  "owner": "sathya8571",
- "status": "PAUSED",
+ "status": "BUILD",
  "domain": "education-learning-sciences",
  "objective": "forecasting",
- "stage": 3,
- "stage_name": "build",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-23",
  "stump": "A competent solver fits an early-warning model on the entrants' own attributes to the 2019 to 2025 entrants' enrolment at the next census, validates it on the 2025 intake, scores the 8,659 2026 entrants and files 2,250 not enrolled on 1 October 2027 against 3,250, because it never reads each entrant's chance at the number of other entrants met in two or more of the entrant's own classes, which the Registry's allocation run kept near 26 and self-enrolment after the ARC cutover leaves near one.",
  "architecture": 3,
  "loops": 0,
- "card_registered": false,
+ "card_registered": true,
  "precut": {
-  "exit": 1,
-  "date": "2026-10-23",
-  "note": "only the task-type line fails, against the still-registered v2 card; clears on registering v3"
+  "exit": 0,
+  "date": "2026-10-23"
  },
  "leak": {
   "leak_py": "REVIEW (2026-10-23): estimand words in the conventions and dictionary; no figure, no decisive-step word",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "not run: card not registered",
-  "nearest": "guard check nearest driver 0.07 (task143)"
+  "heart": "WARN (2026-10-23): answered card WARNs; nearest stump 0.05 task458",
+  "nearest": "driver 0.07 task143; surface 0.10, history pairs only"
  },
  "judge": {
   "verdict": "",
@@ -70,10 +69,10 @@
    "paper": "exam bunching, a final-year mathematics gap, a hall closing, instructor mix, online sections, dual-enrolment credit, a grant ending (RD), a tutoring programme ending (RD), deadline anchoring, mid-semester grade reporting, the leaving age, siblings, school consolidation, LMS portability",
    "prototypes": "scratchpad b179x/screen",
    "stage3": "built and green: checks 61/61, verify 0 failed, byte-identical rebuild, figures_check PASS, voice-check PASS, ceiling 0 of 25 (pair 28.5, mirror 0.0), scrub clean; target.zip md5 fab8b152c3c15fd556fc4114233c2d8e; call 3,250 (3,269.3), default 2,250 (2,142)",
-   "registration": "blocked under the lock: ban.strategy composition_mix vs task274 (09:16Z), then ban.strategy, ban.pattern G6, ban.artifact register, ban.forum executive_team vs task175 once spent cards left the live window; composition_mix is the honest family, not relabelled"
+   "registration": "registered 2026-10-23 (4afaec0a) after two lock BLOCKs on the window (ban.strategy composition_mix vs task274, then vs task175); not relabelled"
   }
  },
- "resume": "PAUSED at stage 3 with the pack built and every free gate green except those that read the registered card. Next: when task175 leaves the last three live cards, run register_serial.sh with b179x/card/task179.json (forum and artifact may be honestly redrawn to committee_or_panel and other if they still block), then precut.py, guard.py surface and heart, set status BUILD stage 4, and the main session runs two scored readers and the judge",
+ "resume": "stage 4: two scored readers and the judge",
  "approved": null,
  "delivered": null,
  "portal": null,

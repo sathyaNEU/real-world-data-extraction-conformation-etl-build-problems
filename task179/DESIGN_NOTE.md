@@ -9,20 +9,18 @@ and the population-pharmacokinetics cell) is spent and kept below as history (`#
 
 ## Draw
 
-1. **Card.** Drafted at `b179x/card/task179.json` (session scratchpad), architecture v3, old identity (v2, spent) in
-   `lineage`. **Not registered:** `register_serial.sh` BLOCKed twice under the lock. First (09:20Z window) on
-   `ban.strategy` composition_mix against task274; then, after task274 and other builds were spent and dropped out of
-   the live window, on `ban.strategy`, `ban.pattern` (G6), `ban.artifact` (register) and `ban.forum` (executive_team)
-   against task175, which is again one of the last three live cards. composition_mix is this draw's honest family
-   (stumping strategies F5: a pooled rate does not fit a pool whose mix on a property rebuilt from a history differs),
-   so it is not relabelled; the forum and artifact have honest alternates (the university's Planning and Resources
-   Committee, `committee_or_panel`; the census history as `other`) but the strategy does not. The draw registers when
-   task175 leaves the live window. Before that, `guard.py check` WARN only (`overuse.objective`, `overuse.gate_g`,
-   `repeat.decision`, `repeat.question_form`, answered in item 9), with the older (time, G6) signatures differentiated
-   against task125, task150 and task501 v3; the first check BLOCKed `test.same_puzzle` and `test.same_driver` on
-   (population, G6) against task175, and the decisive gap was redrawn to time, which names the difference as honestly
-   (the record's intakes were placed in class groups by an allocation run and the forecast bets on the first intake
-   after the run ended), population kept second.
+1. **Card.** `cards/task179.json`, architecture v3, registered 2026-10-23 through `register_serial.sh` (commit
+   4afaec0a), the old identity (v2, spent) in `lineage`. Two earlier attempts BLOCKed under the lock: on `ban.strategy`
+   composition_mix against task274, then, once spent cards left the live window, on `ban.strategy`, `ban.pattern` (G6),
+   `ban.artifact` (register) and `ban.forum` (executive_team) against task175. composition_mix is this draw's honest
+   family (stumping strategies F5: a pooled rate does not fit a pool whose mix on a property rebuilt from a history
+   differs), so nothing was relabelled; the draw registered when task173's DRAWN pushed task175 out of the window.
+   `guard.py check` on the registered card: WARN only (`overuse.objective`, `overuse.gate_g`, `repeat.gate_g`,
+   `repeat.decision`, `repeat.question_form`, `repeat.deliverables`, answered in item 9), with the older (time, G6)
+   signatures differentiated against task125, task150 and task501 v3. The very first check BLOCKed `test.same_puzzle`
+   and `test.same_driver` on (population, G6) against task175; the decisive gap was redrawn to time, which names the
+   difference as honestly (the record's intakes were placed in class groups by an allocation run and the forecast bets
+   on the first intake after the run ended), population kept second.
 2. **Pairing.** Client domain education-learning-sciences, task type learning-analytics-early-warning-models (serves
    Forecasting; no earlier card sits in this task type); objective Forecasting & Predictive Modeling; decision a
    quantity figure (a count of students); shape 07, a grid: the call, with the asks' grids of Semester 1 2026 teaching
@@ -69,8 +67,9 @@ and the population-pharmacokinetics cell) is spent and kept below as history (`#
    a covariate the record measures at a finer grain) was read as the shape, never the template: its covariate is a
    spatial fill a service sequence sorted, this one a count of repeat co-members in a bipartite class network that
    no column or key holds, made different by an administrative placement that ended at a records cutover.
-9. **Guard WARNs answered.** `overuse.objective` and `overuse.gate_g`: the lane is Forecasting and its Gate G is the
-   forecast itself. `repeat.decision` (quantity_figure) and `repeat.question_form` (how-many): the decision is a count
+9. **Guard WARNs answered.** `overuse.objective`, `overuse.gate_g` and `repeat.gate_g`: the lane is Forecasting and its
+   Gate G is the forecast itself. `repeat.deliverables` (png and xlsx, against task173): a workbook and a chart are what
+   a planning office hands the leadership team; the chart is the ask's grid. `repeat.decision` (quantity_figure) and `repeat.question_form` (how-many): the decision is a count
    of students the teaching plan and the fee budget are sized on, so the honest form is how many.
 10. **Axes against the live window** (task274, task176, task177 at the draw): forum `executive_team` (the senior
     leadership team approves the teaching plan), forcing event `other` (the 2027 teaching plan and budget round,
@@ -302,8 +301,10 @@ Measured by: generator/ceiling.py
 - `leak.py --asof 2026-10-16` REVIEW, each line harmless: the conventions and the dictionary carry the estimand's words
   (first-time entrants, census, enrolled), which the conventions must file; no figure, no decisive-step word (asserted
   D2 and D3: allocation, block, classmate, peer, integration, repeat appear in no shipped document).
-- `precut.py`: every check passes but `task type serves the objective`, which reads the registered card (still v2's
-  epidemiology card) and clears when v3 registers. `guard.py surface` and `heart` wait on the registration too.
+- `precut.py` exit 0 (51 checks, 0 FAIL, 0 WARN) on the registered v3 card. `guard.py heart` WARN (the card's answered
+  WARNs; nearest stump 0.05, task458). `guard.py surface`: no hard tell; the promoted pairs sit at surface 0.10 and are
+  history severity (this number's retired v2 row); personas in the cut pack are the card's (Keri Keating, Malcolm
+  Hussey).
 - Main-call Gate F risk, written down before the readers: persistence through social integration is a channel the
   retention literature names (learning communities, Tinto), and the class extracts that carry it are in every
   reader's hands; nothing in the pack names the allocation, a block or a classmate (the cutover notes' line on batch
