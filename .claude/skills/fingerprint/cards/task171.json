@@ -1,0 +1,96 @@
+{
+  "task": "task171",
+  "architecture": "v3",
+  "drawn": "2026-10-23",
+  "slot_note": "redraw (author's no-retirement rule, 2026-10-23), cell economics-econometrics / discrete-choice-limited-dependent-variable-modeling; no seed world kept",
+  "domain": "economics-econometrics",
+  "subdomain": "discrete-choice-limited-dependent-variable-modeling",
+  "client_domain": "economics-econometrics",
+  "niche": "a member-owned electric cooperative's optional overnight residential rate opening in January 2027, its first-year take-up and the annual revenue it gives up, forecast from how members took the optional evening-peak rate offered in March 2024",
+  "objective": "forecasting",
+  "shape": "02",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "E"
+  ],
+  "generators": [
+    "G14",
+    "G3",
+    "G13"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "planning_thread",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who prices every member's bill on each rate correctly fits the evening-peak rate's first-year take-up on each member's own saving under that rate, but reads the saving on the members' latest year of use, after the evening rate's members had moved use out of the evening, and so carries a flattened response onto the overnight rate and files about half the overnight members and two thirds of the shortfall; the plainer routes (the evening rate's take-up applied at the average member's bill change, or its takers' profile carried over) file a shortfall near zero or far above it.",
+  "domain_test": "The deciding quantity is each standard-rate member's probability of taking the overnight rate within its first year, a binary choice in which the member's own bill saving on the use it could see is the price of the alternative, estimated on the evening-peak rate's first-year take-up and aggregated over the eligible members; replace the choice model with an average take-up and the shortfall, which is the covariance between take-up and saving, vanishes, so the call changes.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:optional-rate-take-up-priced-on-each-members-own-pre-offer-saving",
+  "layer1": [
+    "utc_vs_local_time",
+    "billing_cycles_vs_calendar_months",
+    "meter_exchanges_under_new_ids",
+    "two_keys_across_systems",
+    "estimated_reads",
+    "codes_renamed_in_a_system_upgrade",
+    "records_raised_again_under_new_ids",
+    "units_changed_in_one_export"
+  ],
+  "stakeholder_role": "the cooperative's manager of rate products, who files the overnight rate's 2027 enrolment and revenue forecast with the board's rates committee",
+  "role_family": "product_manager",
+  "scoring_unit": "per covered member",
+  "spine": {
+    "file": "",
+    "rows": 0,
+    "entity": "one meter's kWh in one load-research period of one billing month",
+    "grain": "meter x billing month x load-research period",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "United States, a fictional two-county service territory",
+    "currency": "USD",
+    "org_type": "a member-owned rural electric distribution cooperative",
+    "invented_names": [
+      "Sablewood Electric Cooperative"
+    ],
+    "people": [
+      "Wendy Morris",
+      "Bryan Castro"
+    ]
+  },
+  "deliverables": [],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "Units take up an optional plan by what the plan would save each of them on the behaviour it showed before the plan was offered, so a new optional plan's take-up and cost are priced on each unit's own saving under it, run through the response to own saving that an earlier optional plan's first-year take-up shows, read on the behaviour before that plan was offered because its takers changed theirs after taking it; an average take-up applied to every unit, the earlier takers' profile carried over, or a response read on present behaviour each misprices it.",
+  "driver_concrete": "Sablewood members took the March 2024 evening-peak rate by what it would save them on their own use in the year before it was offered, so the 2027 overnight rate's members and shortfall come from each standard-rate member's own overnight-rate saving on its 2026 use run through the first-year take-up response to own saving that the evening rate shows on the March 2023 to February 2024 use; the evening rate's members moved use out of the evening after joining, so the same response read on their later use comes out flat, and the evening rate's takers are evening-light members, not the overnight-heavy members the overnight rate pays.",
+  "stump": "A competent solver fits the evening-peak rate's first-year take-up on each member's saving under it read on the latest twelve months of use and runs the overnight-rate savings through it, filing about half the golden's overnight members at each quarter end and about two thirds of its shortfall; the step that lands it there is reading the saving on use the evening rate's members had already changed by joining, when they chose on the use of the year before the offer.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task137": "task137 splits a repricing share into two classes of unit rebuilt from each unit's price against its entry cohort's floor; here there is no class mixture: take-up is a continuous response to each member's own bill saving, read on the use before the earlier rate was offered because its takers changed their use after joining.",
+    "task155": "task155 prices a call-in offer's acceptance on its position against the casual's own rostered shift; here the choice is a member taking an optional rate, priced on the member's own bill saving under it, and the decisive read is which year of use the earlier rate's take-up is measured against.",
+    "task467": "task467 separates a temporary change's effect from a permanent change acting on the treated and comparison series with different component shares; here there is no comparison series: an optional rate's take-up is a binary choice on each member's own saving, carried from one optional rate to another.",
+    "task117": "task117 replays closed operations whose start times follow a shared slot; here nothing is replayed: each member's take-up probability is a function of its own saving, estimated on an earlier optional rate's first year and aggregated over the members eligible for the new one.",
+    "task166": "task166 splits a deposit stock into two parts that answer the same forward terms in opposite directions; here one choice, taking an optional rate, is priced on each member's own saving, and the earlier rate's takers' changed use is what misprices the response.",
+    "task37": "task37 recovers an unstated coupling rule from a closed outcome roll; here no rule is withheld or recovered: the take-up response is estimated from the earlier rate's enrolments and each member's metered use.",
+    "task44": "task44 splits a pilot's pooled effect by a behavioural moderator measured over a prior instance of the future window; here there is no pilot effect to split: the estimated quantity is a take-up probability on own saving, and the prior window is the year before the earlier rate was offered.",
+    "task97": "task97 carries a place's cumulative history across occupants through an account conversion; here nothing is carried across occupants, each member's take-up depends on its own saving on its own metered use.",
+    "task481": "task481 restates a count onto a new classification at conversion rates whose record mix differs between the measured window and the restated months; here nothing is restated or reclassified: each member's probability of taking an optional rate is a function of its own bill saving, and the earlier rate's response is read on the use its takers had before they changed it."
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-23T04:34:14Z"
+}

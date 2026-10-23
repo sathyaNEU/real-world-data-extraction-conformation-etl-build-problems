@@ -1,16 +1,16 @@
 {
  "task": "task171",
  "owner": "sathya8571",
- "status": "RETIRED",
- "domain": "",
+ "status": "DRAWING",
+ "domain": "economics-econometrics",
  "objective": "forecasting",
  "stage": 1,
- "stage_name": "retired",
- "updated": "2026-10-19",
+ "stage_name": "draw",
+ "updated": "2026-10-23",
  "stump": "",
- "architecture": 2,
+ "architecture": 3,
  "loops": 0,
- "card_registered": false,
+ "card_registered": true,
  "precut": {
   "exit": null,
   "date": ""
@@ -48,9 +48,13 @@
   "election_paper": "poll shares and margins fail on arithmetic; turnout after a surge (comparable-election reflex, or composition); remaining pool after early voting (unidentified); late count by stream (tiny lever, task181); mail returns by time since mailing (stated break, subset route, task134 v2 and screenA); threshold party (card 1 lands); phantom swing (sigma); notional results (single-purpose file, textbook); local swing pattern into a general election (fitted regression on the obvious covariate); cure deadline (task172), count holiday (task162-like), ranking cap (task168-like), signature duplicates and betting bias (swap test), seat quantile calibration (variance on few cycles)",
   "scaling_critical_batch": "cell general-statistics-data-science / scaling-laws: 1.5B at an 8M batch, tokens to a target loss; truth 383B; golden (Bcrit power law in L) -4 to +4; cards pooled +27 to +43, grid -19 to -45, batch covariate +36 to +41, one Bcrit +13 to +17; Bcrit in reducible loss fits the sweeps as well and lands +73 to +99 (+99 to +230 fixed-recipe variant); inside the sweep range the batch factor is a filter and a divide on the largest sweep",
   "scaling_holdout_direction": "overtrained 1B at about 250 tokens per parameter: where forms differ enough, every holdout and the in-sample fit pick the true form (RMSE 3.6 against 39 to 62 thousandths); a token budget near the size's loss limit swings -22 to +96 per cent across seeds under the true form",
-  "scaling_paper": "repeated data and learning-rate drift (filter and divide at the plan's condition, or an extrapolated dependence that spreads); downstream accuracy through loss (nearest external models); continued pretraining (matched pairs); back-test interval calibration (few origins); best-of-attempts selection (tiny lever); compute accounting, rolled-back tokens, eval drift (rule application or Layer 1)"
+  "scaling_paper": "repeated data and learning-rate drift (filter and divide at the plan's condition, or an extrapolated dependence that spreads); downstream accuracy through loss (nearest external models); continued pretraining (matched pairs); back-test interval calibration (few origins); best-of-attempts selection (tiny lever); compute accounting, rolled-back tokens, eval drift (rule application or Layer 1)",
+  "rebuild_2026-10-23_cell": "economics-econometrics / discrete-choice-limited-dependent-variable-modeling (author reopened the retired number; no number stays retired)",
+  "rebuild_paper": "congestion feedback (task253/228), co-worker interference (task131 v1), browse-log diversion (counterfactual set unobserved; stockouts filter and divide), own-propensity curvature (task165), skim measurement error (Berkson; GPS sees chosen mode only), unnamed nesting (back-test), choice-based sampling (calibrate to counts), crop rotation (lag covariate), reliability (mean proxies spread), failed-provider switching (task169)",
+  "rebuild_departure_time": "peak surcharge on 15-minute slots, scheduling truth, 18 settings: MNL with slot constants -1 to +40 per cent of the drop, early-bird read-across -28 to -72; golden a latent preferred-time structural model; the surcharge names peak spreading",
+  "rebuild_drawn": "architecture 3: optional overnight rate R-ON (2027) after the evening-peak rate R-TOU (March 2024); take-up on each member own pre-offer saving; golden family 0 to 3 per cent (count), -2 to +6 (shortfall); every rival misses one figure by 10 per cent or more (scratch b171n/proto/tou3.py, tou4.py); strategy forecast_method_backtest and role product_manager after task175 filed composition_mix and finance_controller under the lock"
  },
- "resume": "retired 2026-10-19: no card registered; the seed's world and both redraw cells dead on code (design note ## Retired)",
+ "resume": "stage 2: design (default path, ladder, fork table, closure, asks, prompt.txt) on architecture 3, the cooperative overnight rate; scratch b171n/proto/tou4.py holds the screen",
  "approved": null,
  "delivered": null,
  "portal": null,

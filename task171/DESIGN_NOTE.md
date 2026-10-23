@@ -1,6 +1,87 @@
 # task171 design note
 
-**Status: PAUSED at stage 1, no card ever registered, nothing cut.** The receiving-desk architecture was
+**Status: DRAWING, architecture 3 (rebuilt 2026-10-23 under the author's rule that no number stays retired).**
+The cell is economics-econometrics / discrete-choice-limited-dependent-variable-modeling; the draw is an electric
+cooperative's optional overnight rate. The earlier screens are kept below as history under `## Earlier screens`.
+
+## Draw
+
+- **Cell.** Client domain Economics & Econometrics, task type `discrete-choice-limited-dependent-variable-modeling`
+  (serves Forecasting). Objective Forecasting: the call is how many of the cooperative's standard-rate members will
+  have moved to the optional overnight rate by the end of each quarter of 2027, and the annual revenue those members
+  give up, a window not yet open, pinned by the record of the optional evening-peak rate offered from March 2024.
+- **World.** Sablewood Electric Cooperative, a fictional member-owned rural distribution cooperative in a fictional
+  two-county service territory in the United States (its people, systems and records are fictional; the field's
+  method is real). Residential members on the standard rate R-1 were offered the optional evening-peak rate R-TOU
+  (4 to 9 p.m. peak) from 1 March 2024; R-TOU closes to new members on 31 December 2026 and the optional overnight
+  rate R-ON (11 p.m. to 6 a.m. off-peak) opens to R-1 members on 1 January 2027, marketed the way R-TOU was. The
+  manager of rates and pricing files the 2027 enrolment and revenue forecast with the board's rates committee for the
+  2027 budget. Records to billing month October 2026: the AMI load-research export (meter by billing month by
+  load-research period), member and account records with rate history, the CRM's rate-change requests, meter
+  exchanges, the rate schedules, billing summaries.
+- **Card.** `domain` economics-econometrics, `subdomain` discrete-choice-limited-dependent-variable-modeling,
+  `objective` forecasting, `shape` 02, `decision_type` quantity_figure, `answer_unit` count, `gap` [time, population],
+  `pattern` [E], `generators` [G14, G3, G13], `gate_g` forecasting, `calibration_form` existing_book_actuals,
+  `stump_strategy` forecast_method_backtest, `context_artifact` planning_thread, `role_family` product_manager, `forum`
+  committee_or_panel, `forcing_event` launch_or_rollout, `org_family` cooperative_or_member_body; `stump_class`
+  analytical; `layer2_family` estimand_identification; `layer2_pattern`
+  own:optional-rate-take-up-priced-on-each-members-own-pre-offer-saving. People from `guard.py names --geo "United
+  States" --seed 171`: Wendy Morris, Bryan Castro.
+- **Axes, and why each value is the honest one.** The last three live cards (task273, task169, task478) hold
+  regulator_or_inspector, council_or_assembly and board_of_directors, vote_or_meeting, budget_or_appropriation and
+  purchase_order_or_contract, and government_agency, research_or_statistics_office and local_government. A
+  cooperative's rates are set by its own board on its rates committee's recommendation (committee_or_panel), the
+  forecast is forced by the overnight rate opening on 1 January 2027 (launch_or_rollout), and the organisation is a
+  member body (cooperative_or_member_body). The decisive gap is time (the evidence is the evening rate's first year
+  on the use members had before it was offered; the bet is the overnight rate's first year on 2026 use), which is
+  also what cleared test.same_driver against task177 (population first).
+- **Redrawn under the registration lock.** task175 filed composition_mix and finance_controller minutes before
+  this card. The strategy is now forecast_method_backtest, and it is the honester key: `strategies.md` F6 is a pooled
+  yield carried onto a moved base failing forward because the rate is stationary only in a constructed exposure,
+  which is this draw exactly (the evening rate's take-up is stationary across rate designs only as a response to
+  each member's own dollar saving on the use it chose on, rebuilt from the meter log, and the pooled take-up carried
+  onto the overnight rate fails). The role is product_manager: the manager of rate products owns the optional rates
+  the way a product manager owns a product line.
+- **Guard.** `guard.py check` WARN only: repeat.gate_g and overuse.gate_g (the objective is Forecasting and the
+  forecast itself carries the call, so `forecasting` is the honest mechanism); repeat.decision and
+  repeat.question_form against task175 (the call is a count of members and a dollar figure, so quantity_figure and
+  how-many are what the decision is). The older same-puzzle and same-driver
+  signatures (task117, task137, task155, task166, task37, task44, task97, task481) carry one differentiation line
+  each on the card. `slots` on the mechanism's words and on the setting's (tariff, optional rate, take-up, enrol,
+  time-of-use, meter) found no earlier screen of an optional rate's take-up.
+- **Strategy.** forecast_method_backtest: the members who take an optional rate are the members it pays, so a pooled
+  take-up carried from the evening rate onto the overnight rate fails forward; the invariant is the take-up response
+  to each member's own dollar saving, constructed from the meter log on the use each member chose on.
+- **Data-native sentence.** In Sablewood's record a member took the evening rate by what that rate would have saved
+  it on its own use in the year before the offer, and once on the rate it moved use out of 4 to 9 p.m., so the meter
+  data after March 2024 show the evening rate's members cheaper on it than the saving they chose on; only the twelve
+  billing months to February 2024 show the saving the choice was made against, and the overnight rate pays a
+  different set of members (overnight-heavy, not evening-light) than the evening rate's takers.
+- **Sources read, and how this differs.**
+  - `layer2-rigor-patterns.md` discrete-choice 1 (willingness to pay as a coefficient ratio), 2 (IIA and nesting for a
+    close new alternative), 3 (scale across samples): none is the decisive step; R-ON is not offered beside R-TOU, so
+    no substitution pattern decides, and the saving enters in dollars on one sample.
+  - task155 (this cell, shipped): a casual's acceptance of a call-in priced on its position against the casual's own
+    rostered shift. Here the choice is an optional rate priced on the member's own bill saving, and the decisive read
+    is which year of use the earlier rate's response is measured on.
+  - task137 (composition at a repricing, two classes rebuilt from entry cohorts), task177 (an effect conditioned on
+    days to each unit's own decision), task165 (a gain conditioned on own baseline): each conditions a measured rate
+    on a property rebuilt from history; here the property is a bill saving priced from metered use, and the
+    history's later use is contaminated by the earlier rate itself.
+- **Screens run as code** (scratch `b171n/proto/tou3.py`, `tou4.py`; 40,000 members, three seeds per setting): the
+  golden family (logit, logit with household covariates, probit, 25 saving bins, logit with consumption, a monthly
+  discrete-time hazard) agrees within 0 to 3 per cent on the year-end count and within -2 to +6 per cent on the
+  shortfall, with seed sigma about 1 per cent; the rivals measured against the golden logit (count / shortfall):
+  the evening rate's first-year take-up at the average member's change +14 to +18 / -103 to -105; its cumulative
+  take-up +41 to +45 / -104 to -106; its takers' overnight change carried +14 to +18 / +32 to +69; savers only +14 to
+  +18 / +11 to +46; the take-up response read on 2026 use -56 to -58 / -26 to -34; read on the average of pre-offer
+  and 2026 use -35 to -39 / -4 to +3; consumption and evening share as covariates -5 to +3 / -26 to -30; the saving in
+  per cent of the bill +3 / -10 to -12 (rejected by the likelihood); the cumulative take-up on the right saving +23 to
+  +27 / +3 to +10. Every rival misses at least one of the two figures by 10 per cent or more.
+
+## Earlier screens (architectures 1 and 2, kept as history)
+
+**The 2026-10-19 status: PAUSED at stage 1, no card registered, nothing cut.** The receiving-desk architecture was
 re-rooted on the coordinator's call, and the re-draw screened the actuarial mortality-longevity cell on code
 (three designs, prototypes a1 to a7 and b1) and the human-reliability cell on code (h1, h2). A second screen
 took the coordinator's two candidates on code (screenA: event prediction in an outcomes trial, then fatigue
@@ -69,6 +150,8 @@ with them.
 - **Scaling laws, the critical batch (general-statistics-data-science, scaling-laws; cbs_sim.py).** A planned 1.5B run forced to an 8M-token batch by a new pod, graded on the tokens to first reach a target validation loss, the judgment beyond the three cards being that tokens stop being the exposure once the batch passes the critical batch, which grows as the loss falls (the steps-against-tokens tradeoff, the critical batch read from the batch sweeps). Truth 383B tokens; the golden (critical batch a power law in the loss) -4 to +4 per cent; the cards' pooled fit +27 to +43, the standard-batch grid -19 to -45, a batch covariate +36 to +41, one pooled critical batch +13 to +17. It died on determinism: the critical batch as a power law in the reducible loss fits the sweeps as well (residual sd 0.046 to 0.070 against 0.039 to 0.066) and lands +73 to +99 per cent (+99 to +230 in a fixed-recipe variant with the plan near its own critical batch, where the cards miss by -42 to -53), and as a power law in data size it runs wild; with the target inside the sweeps' losses the batch factor at the target is a filter and a divide on the largest sweep. The single dial is the target's distance below the sweeps.
 - **Scaling laws, card 3's holdout direction against an overtrained plan (dir_sim.py).** A 1B model trained to about 250 tokens per parameter, the judgment being that the form is validated along the plan's tokens-per-parameter axis rather than on the largest compute. It died twice: where the forms differ enough to matter (a coupled truth against the additive form, RMSE 3.6 against 39 to 62 thousandths of a nat) every holdout and the in-sample fit pick the right form, so the card lands; and a token budget near the size's own loss limit swings -22 to +96 per cent across seeds under the true form itself.
 - **Scaling laws, paper screens.** Repeated data (the value of an epoch at the plan's count is measured by small multi-epoch runs, a filter and a divide, unless its dependence on model size is extrapolated, which spreads); learning-rate drift with scale (the same dilemma); downstream accuracy read through the loss (the external models nearest the predicted loss are the forecast); continued pretraining from a cooled checkpoint (matched continuation pairs measure the penalty); interval calibration by back-test distance (a handful of origins); best-of-attempts selection at the largest scale (a lever of a few thousandths of a nat); compute accounting from configs, rolled-back tokens and eval-set drift (rule application or Layer 1).
+- **Rebuild 2026-10-23, the discrete-choice cell, paper screens before any harness.** The client's three cards (willingness to pay as a ratio, IIA against nesting, scale across samples) are the default path, and each judgment drawn beyond them died on paper: congestion feedback when a toll moves trips onto a crossing that slows with its own volume (task253's and task228's fixed point); a randomised savings-plan invitation whose comparison arm is reached through co-workers (task131 architecture 1's household interference read where a group drew one arm); diversion after a product is withdrawn read from each buyer's browse log (the set a buyer would consider once the product is gone is not the viewed set less the product, and with stockout episodes the diversion is a filter and a divide); logit curvature at each unit's own propensity (task165's own-baseline gain); attenuation from skimmed travel times corrected on a GPS sub-study (skims are zone averages, so the error is Berkson and barely attenuates, and the sub-study sees only the chosen mode's time); a nesting dimension no category names (a likelihood back-test picks it, the election cell's death); choice-based sampling (calibrating constants to counts is the reflex); crop rotation after a price spike (the lagged crop is the obvious covariate); travel-time reliability (mean delay proxies its spread across routes and hours); a customer switching away from a plan whose provider fails (task169's two routes, one closed).
+- **Rebuild 2026-10-23, departure-time choice under a 2027 peak surcharge (scratch `b171n/proto/dt1.py`).** A bridge's commuters choosing 15-minute slots under a scheduling-model truth (preferred arrival times, early and late penalties, a lateness step), with an early-bird discount and planned roadworks in the record to calibrate on. Over 18 settings the peak window lost 24 to 46 per cent of its share; a multinomial logit with slot constants and its toll and time coefficients calibrated on the early bird and the roadworks overstated the drop by -1 to +40 per cent (median about +20), and the early bird's slot shifts scaled to the surcharge understated it by 28 to 72. It died three ways: the textbook route sits 15 to 25 per cent of the drop off in most settings, under the 30 per cent lever the held builds carried, and straddles zero in one; the golden is a structural scheduling model over a latent preferred-arrival distribution, so its outsider family is a set of specifications (preferred time from habit or fitted, linear or stepped lateness) rather than one construction; and a peak surcharge names peak spreading, so the adjacent-slot step is the question's own reflex.
 
 ## Retired
 
@@ -80,3 +163,7 @@ expected seats) and general-statistics-data-science / scaling-laws (96b18ed: eve
 cards is a common exposure the sweeps either measure, so a filter and a divide lands it, or cannot pin, so the family
 spreads past any rival). The lesson: in a field whose standard is a back-tested model choice, the back-test is the
 textbook route and it lands.
+
+## Rebuild (2026-10-23)
+
+Reopened under the author's rule that no number stays retired; rebuilt from scratch in economics-econometrics / discrete-choice-limited-dependent-variable-modeling as architecture 3 (`## Draw`), the receiving-desk seed and both redraw cells left spent.
