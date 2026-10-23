@@ -2687,3 +2687,29 @@ twice with byte-identical output.
   all 21 client domains: four carry zero AD cards, all four are undrawable on it, and no client domain is
   both unspent and drawable. All 14 legal AD task types are spent, so on this objective the only fresh
   thing available is the driver.
+
+- **Architecture 9 candidate 1, alarm rationalisation on a per-tag chatter correction.**
+  `human-factors-ergonomics/alarm-interface-evaluation` x `anomaly-detection`, a never-drawn subdomain and
+  clear of every axis ban, with the main file one row per alarm activation and a process-variable trace at
+  sub-second grain supplying each tag's own chatter multiplier (activations over physical excursions), which
+  is the one-correcting-quantity-per-case shape `stumping` Part 3 step three blesses. Refused on arithmetic,
+  measured twice byte-identical in `scratchpad/w8_182b/`.
+  - First form, the multiplier confined to the chattering minority: the designation screen fires. The drop
+    route, which discards any tag visibly chattering and re-ranks the rest on raw count, reaches the designed
+    top tag **15 of 20**, because the designed slate is algebraically rung 0's ranking restricted to the
+    unaffected tags and no estimate of the multiplier's size is needed.
+  - Second form, the multiplier spread across every tag by its own process time constant: the parameterised
+    prototype put both reflexes at 2 of 20 and the drop route at 3 of 20, which read as a pass. It was not
+    one. An AR(1) trace simulation that makes the multiplier and the excursion rate out of the one process
+    put the **raw activation count at 12 of 12** against the golden, and a global five-second collapse at
+    12 of 12 as well. The parameterised screen had drawn the factor and the base independently, which
+    flatters this shape.
+  - The general reason, now the multiplicative-correction floor in `stumping`: with `observed = base * factor`
+    the reflex stays correlated with the designed quantity at no less than `sqrt(1 - rho^2)` for `rho` =
+    sd(log factor) over sd(log base), and no correlation structure gets under that floor. This world measured
+    sd(log base excursions) 1.598, sd(log chatter multiplier) 0.766, `rho` 0.480 and corr(log base, log
+    factor) -0.7551, so the floor is +0.8773 and the candidate cannot reorder the tags at any parameter. Dead
+    without a dial sweep.
+  - What it leaves standing: the cell and the subdomain, which are fresh and unspent, and the finding that a
+    chatter correction is structurally unable to carry a ranking call because chatter multiplies a tag's count
+    while the excursion rate itself spans a far wider range.
