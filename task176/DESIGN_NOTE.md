@@ -95,19 +95,19 @@ The pipeline a strong analyst builds from the prompt, the rules and the files' g
 2. Build home-months from January 2016 to December 2026 and estimate the monthly closure rate by year of tenure (a
    life table), with the provider's age (63 or more, 68 or more), the June to August lift, the county and the 2023
    grant round's flag from startup_grant_awards_2023.xlsx as the obvious covariates.
-3. Apply the rates month by month through 2027 to the 3,081 homes licensed on 31 December 2026 and sum each home's
+3. Apply the rates month by month through 2027 to the 3,051 homes licensed on 31 December 2026 and sum each home's
    chance of closing.
 
-Ends on: 300 (323.1 unrounded; 252.3 with the grant round's own tenure rates, which file 250)
+Ends on: 300 (317.5 unrounded; 257.2 with the grant round's own tenure rates, which file 250)
 
-Golden: 450 (461.0)
+Golden: 450 (450.4, the centre of the honest family, 437.2 to 463.6)
 
 ## Stump sentence
 
 A competent solver fits closure rates by years licensed on the 2016 to 2026 home-months, with provider age and the
 summer months, and files 300 closures for 2027 (250 on the 2023 grant round's own rates so far); the step that lands
 it there is reading closure on the home's tenure, when a parent-run home closes in the June to August before the
-provider's youngest own child starts kindergarten, which 427 homes reach together in 2027, 336 of them from the 2023
+provider's youngest own child starts kindergarten, which 428 homes reach together in 2027, 333 of them from the 2023
 round whose providers were licensed with babies, so the count is 450.
 
 ## Three rules
@@ -143,10 +143,10 @@ round whose providers were licensed with babies, so the count is 450.
   school-age rule in the subsidy policy sets rates for subsidised children), so executing every stated rule files
   300. The family the estimand leaves open, enumerated (tenure tables; Poisson and logit hazards with provider age,
   summer, county and the grant flag; a child-under-six flag; the youngest's age as a line and in bands; any own
-  child's summer; the youngest's summer in six windows and forms and three fitting windows) spreads 252.3 to 463.2,
-  printed 250 to 450; the standing family (the 18 constructions the record's likelihood keeps, every one reading the
-  youngest's summer) spreads 432.1 to 463.2, every one printed 450; the ruling out is the record's own likelihood
-  (2 dlogL 1,528 for no clock, 795 for the age bands, 364 for any own child), never a filed clause.
+  child's summer; the youngest's summer in six windows and forms and three fitting windows) spreads 257.2 to 463.7,
+  printed 250 to 450; the standing family (the 34 constructions the record's likelihood keeps, every one reading the
+  youngest's summer) spreads 437.2 to 463.7, every one printed 450; the ruling out is the record's own likelihood
+  (2 dlogL 1,867 for no clock, 887 for the age bands, 478 for any own child), never a filed clause.
 - Analyst test: a strong analyst who joins the former and current licence numbers, keeps small and large homes,
   admits pre-2016 homes at their 2016 tenure and fits closure rates by years licensed with provider age, the summer
   months, county and the grant flag files 300 closures for 2027 (Ends on: 300), because a tenure clock spreads the
@@ -184,13 +184,14 @@ year's rate, a trend), not from the rungs beneath it; every one of them lands at
 | SF1 | licensed on 31 December 2026 | status ACTIVE in the extract, closure date blank | open at any time in December | same call (ACTIVE equals blank closure date, asserted) | the extract's status as at 31 December 2026 (dictionary) |
 | SF2 | close during 2027 | the licence's closure effective date in 1 January to 31 December 2027 | a closure recorded in 2027 | same call (the forecast is of licences ending in 2027) | rules 6.40.070: the licence ends on the closure effective date |
 | SF3 | family child care homes | small and large homes | small homes only (would file 400) | 400 | rules 6.40.010: "Family child care homes are licensed in two types" |
-| SF4 | kindergarten year of a child | the school year in the calendar year the child turns five on or before 1 September | turns five in the calendar year | same call (433.7, asserted) | CCAP payment policy, section 6 |
-| SF5 | to the nearest 50 | 461.0 to 450 | 461.0 to 450 by any rounding rule | same call (14.0 homes from the half-cell boundary) | the golden is clear of 475 and 425 (asserted) |
+| SF4 | kindergarten year of a child | the school year in the calendar year the child turns five on or before 1 September | turns five in the calendar year | same call (440.2, asserted) | CCAP payment policy, section 6 |
+| SF5 | to the nearest 50 | 450.4 to 450 | 450.4 to 450 by any rounding rule | same call (24.6 homes from the cell's edges) | the golden is clear of 475 and 425 (asserted) |
 | SF6 | a home | one licence (one provider, one residence) | one provider | same call (one licence per provider, asserted) | rules 6.40.010: a licence is issued to one provider for one residence |
 | SF7 | own child living in the home | relationship C or OWN CHILD with lives_in_home Y | own child wherever the child lives | same call (every own child row is Y, asserted) | dictionary, worksheet relationship and lives_in_home |
-| SF9 | one remittance (Ask B) | the lines sharing a remittance number, run date and county office | one per run date and provider; per number, or number and run date; per run, county office and amount | same call (an ask row; the call reads no CCAP row) | the shipped rows at the section 5 rates: a number, run and office group is within its lines' full-time pay (19,040 of 19,988 exact); 975 run-and-provider groups carry more than their own lines can earn; one number in one run carries other amounts in other offices (asserted) |
-| SF10 | the region of the home that gave the care (Ask B) | the home's county in the licence extract; a remittance for homes in several regions shared by its lines' pay | the region of county_fips; shared by care_days; whole to one home | same call (an ask row) | the prompt names the home; county_fips is the issuing office (dictionary); the amount equals its lines' pay at the section 3 and 5 rates to the cent in all 186 multi-region remittances, so each home's share is its own lines' pay (asserted) |
-| SF8 | provider age | from provider_birth_year; blank years carry no age term | blank read as a year | same call (59 blank years, all pre-2009 homes, no age terms changes 450) | dictionary: blank where the legacy system did not hold it |
+| SF9 | one remittance (Ask B) | the lines sharing a remittance number, run date and county office | one per run date and provider; per number, or number and run date; per run, county office and amount | same call (an ask row; the call reads no CCAP row) | the shipped rows at the section 5 rates: a number, run and office group is within its lines' full-time pay (18,897 of 19,860 exact); 907 run-and-provider groups carry more than their own lines can earn; one number in one run carries other amounts in other offices (asserted) |
+| SF10 | the region of the home that gave the care (Ask B) | the home's county in the licence extract; a remittance for homes in several regions shared by its lines' pay | the region of county_fips; shared by care_days; whole to one home | same call (an ask row) | the prompt names the home; county_fips is the issuing office (dictionary); the amount equals its lines' pay at the section 3 and 5 rates to the cent in all 179 multi-region remittances, so each home's share is its own lines' pay (asserted) |
+| SF8 | provider age | from provider_birth_year; blank years carry no age term | blank read as a year | same call (66 blank years, all pre-2009 homes, no age terms changes 450) | dictionary: blank where the legacy system did not hold it |
+| SF11 | the closure forecast's estimator (the method the estimand leaves open; the round-3 judge's variants) | the honest family's centre | banded or linear or no tenure; Poisson read as monthly probabilities or as a piecewise-exponential rate; logit; fitted from 2016, 2020 or 2022; annual stratified rates | same call (437.2 to 463.6, every member 10 or more homes inside both edges, asserted) | the record: every reasonable specification files 450, so nothing needs ruling out |
 
 ## Ladder
 
@@ -199,29 +200,40 @@ cut pack by `generator/checks.py` (RIV, FAM) and recomputed by `generator/verify
 
 | Rung | Construction | Figure | Printed | Dies to |
 |---|---|---|---|---|
-| 0 | closure rates by years licensed (the default path) | 323.1 | 300 | the kindergarten summers the record shows at every tenure, 401 closures in 905 such summers |
-| 1a | rung 0 with provider age | 321.6 | 300 | the same |
-| 1b | Poisson hazard on tenure, age and summer | 319.5 | 300 | the same |
-| 1c | rates by tenure split by the 2023 grant round | 252.3 | 250 | the round's homes measured while their youngest were babies |
-| 1d | the latest year's rate | 293.2 | 300 | the same, and no clock |
-| 2a | a child-under-six flag | 341.6 | 350 | the flag is on for years before the summer that closes the home |
-| 2b | the youngest's age as a straight line | 328.8 | 350 | the hazard is a spike in one summer, not a slope |
-| 2c | the youngest's age in yearly bands | 419.9 | 400 | the record's likelihood: 2 dlogL 795 against the summer clock |
-| 2d | any own child's kindergarten summer | 424.2 | 400 | the record's likelihood: 2 dlogL 364 (an older child's school entry closes nothing) |
-| 3 (decisive) | the youngest own child's kindergarten summer | 461.0 | 450 | (golden) |
+| 0 | closure rates by years licensed (the default path) | 317.5 | 300 | the kindergarten summers the record shows at every tenure, 459 closures in 903 such summers |
+| 1a | rung 0 with provider age | 315.7 | 300 | the same |
+| 1b | Poisson hazard on tenure, age and summer | 313.7 | 300 | the same |
+| 1c | rates by tenure split by the 2023 grant round | 257.2 | 250 | the round's homes measured while their youngest were babies |
+| 1d | the latest year's rate | 275.2 | 300 | the same, and no clock |
+| 2a | a child-under-six flag | 333.8 | 350 | the flag is on for years before the summer that closes the home |
+| 2b | the youngest's age as a straight line | 319.9 | 300 | the hazard is a spike in one summer, not a slope |
+| 2c | the youngest's age in yearly bands | 415.8 | 400 | the record's likelihood: 2 dlogL 887 against the summer clock |
+| 2d | any own child's kindergarten summer | 416.1 | 400 | the record's likelihood: 2 dlogL 478 (an older child's school entry closes nothing) |
+| 3 (decisive) | the youngest own child's kindergarten summer | 450.4 | 450 | (golden, the honest family's centre) |
 
 - Position and margins: every rung that reads no child's school year sits at 1.2 times or more below the cell's lower
-  edge (the nearest, 341.6, at 1.24); the two rungs that read children without the youngest's school year sit one
+  edge (the nearest, 333.8, at 1.27); the two rungs that read children without the youngest's school year sit one
   cell below, ruled out by the likelihood rather than by a margin, and a solver on either has taken the direction of
   the decisive step.
-- Standing family, 18 constructions (log and logit hazards; additive excess; the annual share; no summer, no age,
-  2020 and grandchild terms; tenure capped at five years; the whole kindergarten year and May to September windows,
-  each in log and additive form; fitting from 2016, 2019 and 2021; own children wherever they live; the step with the
-  age bands or any own child added): 432.1 to 463.2, every one printed 450, both edges clear by 7.1 and 11.8 homes.
-- Noise: one sigma of the summer's closure share (44.3 per cent on 905 summers) moves the call by 7.1 homes, inside
-  the golden's 14.0 homes to its upper edge and 36.0 to its lower; 401 closures carry the step.
-- Lever: the decisive step moves the figure from 323.1 to 461.0, 30 per cent of the graded figure, against a standing
-  family spread of 6.7 per cent of it.
+- Honest family (`calc.FAMILY` and `calc.family`, asserted in `checks.py` FAM): the banded Poisson hazard (tenure
+  years, age 63 and 68, summer, the youngest's kindergarten summer) and its banded logit; tenure to 8 and 9 or more;
+  the parsimonious Poisson and the logit with linear tenure; both without tenure; the banded and the linear-tenure
+  Poisson read as a piecewise-exponential rate (survival exp of minus the summed hazard); the banded Poisson, logit
+  and rate reading fitted on 2020 and on 2022 to 2026; annual stratified rates. 16 members, 437.2 to 463.6; the
+  golden is their centre, 450.4, and every member is 12.2 or more homes inside the cell's lower edge and 11.4 inside
+  its upper (asserted at 10). The judge's construction of round 3 (tenure as days over 365 plus one, the youngest born
+  by the month's start) on this pack gives 435.8 to 454.8 on the whole record and 449.6 and 468.7 fitted from 2022.
+- Wider family, 34 constructions (the 16 above; additive excess; no summer, no age, 2020 and grandchild terms; tenure
+  capped at five years; the whole kindergarten year and May to September windows, each in log and additive form;
+  fitting from 2019 and 2021; own children wherever they live; the step with the age bands or any own child added):
+  437.2 to 463.7, every one printed 450.
+- Retune (round 3 return): the world's kindergarten-summer excess is 0.215 a month (was 0.189) on the world stream
+  `world/8`, chosen among 36 measured draws as the one whose honest family sits centred in one cell with both margins
+  over 10; the world's own expectation for 2027 is 451.5.
+- Noise: one sigma of the summer's closure share (50.8 per cent on 903 summers) moves the call by 7.1 homes, inside
+  the golden's 24.6 homes to either edge; 459 closures carry the step.
+- Lever: the decisive step moves the figure from 317.5 to 450.4, 30 per cent of the graded figure, against an honest
+  family spread of 5.9 per cent of it.
 - Worth: delete every wrong number (none ships) and the difficulty stands: no file computes a forecast, and the
   tenure route is wrong on the clean truth (checks.py R3a).
 
@@ -289,12 +301,14 @@ out. The sentence is gone, the unit is forced by the data (SF9), and the device 
 the money by the region of the home that gave the care, and network remittances are issued by the county office of the
 network's base for member homes in other regions. Both lines are in `## Tried and rejected`.
 
-**Ask A. The child-days of care the subsidy paid family child care homes for in each half of 2026 across Allerton,
+**Ask A. The child-days of care the subsidy paid family child care homes for in each half of 2026 by the date of the
+care, across Allerton,
 counting a child once on a day** (2 figures, whole numbers). H18 home: the subsidised care that rests on the homes the
 call says will close.
 - No device: the prompt's clause settles the one-child-two-lines reading (a child paid at the home left through its
   notice days while the new home's lines start, and a child in split care paid at two homes on the same days). Summing
-  care_days instead gives 131,748 and 144,434 against 124,773 and 131,302; with the clause read a careful reader lands
+  care_days instead gives 132,162 and 143,219 against 124,785 and 129,743; the round-3 judge's reading by
+  the run that paid the care is closed by "by the date of the care" in the prompt; with the clause read a careful reader lands
   both figures, and the ask's surface is shrunk to two figures for that reason.
 - Hazards: centre and exempt lines in the same file, voided remittances paid again in the next run, December 2025
   service in the January 2026 run.
@@ -304,25 +318,25 @@ quarter of 2026 by the date of the payment run** (20 figures, nearest dollar). H
 closures take out of the regions, the money the grant round is weighed against.
 - B1 (silent primary, whose region a payment is): a home in a family child care network is paid through the network's
   remittance, issued by the county office of the network's base, and every line of it carries county_fips of that
-  office and the remittance's amount. 411 of 11,998 home remittances carry two to four homes (182 homes), and 286
+  office and the remittance's amount. 388 of 12,014 home remittances carry two to four homes (173 homes), and 361
   remittances carry a home outside the issuing office's region; one or more cross-region remittances touch every
-  region and quarter (at least 3 a cell, asserted). The region of the home is its county in the licence extract. A
+  region and quarter (at least 10 a cell, asserted). The region of the home is its county in the licence extract. A
   remittance whose homes lie in one region goes there whole; one whose homes lie in several is shared by its lines'
   pay at the filed rates (policy section 3: the section 5 monthly rate, prorated for a part month by the line's days
-  over the month's Monday to Friday days), which sums to its amount to the cent (186 groups, asserted, SF10). Network
+  over the month's Monday to Friday days), which sums to its amount to the cent (179 groups, asserted, SF10). Network
   homes take no split-care or moved children, so every network line is paid at the full rate.
 - The careful route of round 2 (one amount per county, run date and remittance number, credited to the region of
-  county_fips) misses every cell, by -9,357 to +22,309. Sharing a multi-region remittance by care_days misses every
-  cell (-172 to +145), crediting it to its first line's home misses every cell (-17,283 to +17,082), and pricing every
-  line at the full rate without the remittance amount misses every cell (+2,599 to +35,559, the split-care lines).
+  county_fips) misses every cell, by -18,272 to +20,541. Sharing a multi-region remittance by care_days misses every
+  cell (-76 to +119), crediting it to its first line's home misses every cell (-9,266 to +16,253), and pricing every
+  line at the full rate without the remittance amount misses every cell (+3,510 to +41,292, the split-care lines).
 - The unit (SF9): one payment is a remittance number, a run date and a county office, forced by the rows: every such
-  group is within its lines' full-time pay (19,040 of 19,988 exactly), 975 run-and-provider groups carry more than the
-  provider's own lines can earn, and one number in one run carries different amounts in different offices (2,184 of
-  3,146). Every other key misses every cell: run and provider (+14,026 to +185,091 with the home's region; +13,860 to
-  +201,123 with the office's, round 1's path), number alone, number and run date, number and provider, number and
+  group is within its lines' full-time pay (18,897 of 19,860 exactly), 907 run-and-provider groups carry more than the
+  provider's own lines can earn, and one number in one run carries different amounts in different offices (1,958 of
+  2,963). Every other key misses every cell: run and provider (+16,456 to +133,909 with the home's region, round 3's
+  paths; +7,152 to +149,942 with the office's, round 1's path), number alone, number and run date, number and provider, number and
   amount, number and county office, provider and amount, run and county office with amount, number with run and amount,
-  number with run and provider; summing every line is high by 114,761 to 571,151.
-- Hazards: voided remittances (keeping them adds 741 to 13,498 a cell), the January 2027 run (December service)
+  number with run and provider; summing every line is high by 116,918 to 597,317.
+- Hazards: voided remittances (keeping them adds 269 to 15,389 a cell), the January 2027 run (December service)
   outside 2026, centres and exempt carers in the same file.
 - Stops (asserted): every key but the remittance, every region and allocation reading but the home's region by lines'
   pay (all 20 each); voids kept (all 20).
@@ -331,12 +345,12 @@ closures take out of the regions, the money the grant round is weighed against.
 
 | Hazard | Root cause | Moves | Per-ask delta |
 |---|---|---|---|
-| H1 notice and split-care lines | a child paid at two homes on the same days | A | closed by the prompt's clause (summed: +6,975 and +13,132) |
-| H2 voided remittances paid again | a remittance returned unpaid, reissued in the next run | B | +741 to +13,498 a cell |
-| H3 the remittance amount on every line | a remittance export at child-line grain | B | every cell, +114,761 to +571,151 when summed |
-| H4 network remittances | a network home is paid through the network's remittance | B | every cell, +13,860 to +201,123 on one per run and provider |
+| H1 notice and split-care lines | a child paid at two homes on the same days | A | closed by the prompt's clause (summed: +7,377 and +13,476) |
+| H2 voided remittances paid again | a remittance returned unpaid, reissued in the next run | B | +269 to +15,389 a cell |
+| H3 the remittance amount on every line | a remittance export at child-line grain | B | every cell, +116,918 to +597,317 when summed |
+| H4 network remittances | a network home is paid through the network's remittance | B | every cell, +7,152 to +149,942 on one per run and provider |
 | H5 remittance numbers per county office and run | each office numbers its run in its own sequence (not filed) | B | every cell under a key without the county office |
-| H6 the issuing office's county on every line | a network's remittance is issued by its base county's office | B | every cell, -9,357 to +22,309 when credited to county_fips |
+| H6 the issuing office's county on every line | a network's remittance is issued by its base county's office | B | every cell, -18,272 to +20,541 when credited to county_fips |
 | H7 the January 2027 run | December service paid in the first January run | B | outside the 2026 quarters (the run date files it) |
 
 **Referee.** For B, the remittance's one amount and status on every line of a number, run and county office, the
@@ -353,6 +367,8 @@ names the numbering, the network or how a remittance is shared.
 | reader B with the clause read | 2 | 0 | 2 | 50.0 | 17.0 |
 | reader C verbatim (one amount per county, run date and remittance_no; region from the issuing county) | 2 | 0 | 2 | 50.0 | 17.0 |
 | reader D verbatim (the same key; region by the county of the remittance) | 2 | 0 | 2 | 50.0 | 17.0 |
+| reader E verbatim (round 3; one amount per remittance_no, run date and provider; the home's region) | 2 | 0 | 2 | 50.0 | 17.0 |
+| reader F verbatim (round 3; one amount per run date and provider; the home's region) | 2 | 0 | 2 | 50.0 | 17.0 |
 | home region, multi-region remittances by care_days, to the first line, or every line priced at the full rate | 2 | 0 | 2 | 50.0 | 17.0 |
 | each of the twelve alternative money keys with the home's region | 2 | 0 | 2 | 50.0 | 17.0 |
 | mirror (300, care_days summed, every line's amount) | 0 | 0 | 0 | 45.0 | 12.0 |
@@ -381,23 +397,24 @@ line and keeps none of the 22 figures).
 Pair ceiling: 33.5 measured on the cut pack (the worst route landed 50.0, the best reader off the call 17.0); the
 worst single crack 58.5 (B1).
 
-**Call edge (round-1 judge, answered risk).** The full-record specifications sit at 442 to 461, inside the 450 bin;
-the judge reached 423 (fit on the years before 2023, the kindergarten flag only) and 474 to 487 (windows from 2024
-on, with a kindergarten-by-tenure interaction). No filed WHAT removes them without filing the method: the population
-(homes licensed on 31 December 2026), the window (closures during 2027) and the unit (a home's licence) are filed, and
-choosing the fit window or an interaction is the method, which stays open with the record's likelihood separating the
-candidates. Recorded as an answered risk; the call does not move.
+**Call margin (round-3 judge, repaired in the world).** Round 3 returned NOT_DETERMINISTIC on the margin: the honest
+models spanned 419 to 456 around the 425 edge, chiefly because a Poisson hazard read as a rate (survival exp of minus
+the summed hazard) sits about 18 homes under the same model read as monthly probabilities when the kindergarten-summer
+hazard is near 0.2 a month. The question and the rounding stay; the world was retuned (`## Ladder`, Retune) so the
+family of 16, both readings included, spans 437.2 to 463.6 around a golden of 450.4, every member 10 or more homes
+inside both edges (asserted). The round-1 edge variants (423 and 474 to 487) are inside the same family's reach and
+now print 450.
 
 ## Layer 1 inventory
 
 | Item | System that writes it | File | Natural mishandling | R2 (checks.py) |
 |---|---|---|---|---|
-| L1 former licence numbers on worksheets before 1 July 2019 | licensing system replacement | worksheets and crosswalk | pre-2019 worksheets unmatched | call unchanged (437.5) |
-| L2 a child repeated at every renewal; a newborn only from the next worksheet | capacity worksheet process | worksheets | the latest worksheet only | call unchanged (466.0) |
+| L1 former licence numbers on worksheets before 1 July 2019 | licensing system replacement | worksheets and crosswalk | pre-2019 worksheets unmatched | call unchanged (433.1) |
+| L2 a child repeated at every renewal; a newborn only from the next worksheet | capacity worksheet process | worksheets | the latest worksheet only | call unchanged (458.9) |
 | L3 two relationship code sets and two date formats | licensing system replacement | worksheets | one set read | the same rows as L1 (call unchanged) |
-| L4 homes licensed before 2016 present from 2016 | the extract's scope | licence extract | tenure started at 2016 | call unchanged (444.6) |
+| L4 homes licensed before 2016 present from 2016 | the extract's scope | licence extract | tenure started at 2016 | call unchanged (472.1) |
 | L5 grandchildren, foster children, other relatives on the worksheet | rules 6.40.030 | worksheets | any child read as a provider's own | ruled out by SF7 and the likelihood (any own child) |
-| L6 blank birth years for legacy providers | the legacy system | licence extract | blank read as a year | call unchanged (no age terms, 462.7) |
+| L6 blank birth years for legacy providers | the legacy system | licence extract | blank read as a year | call unchanged (no age terms, 456.3) |
 | L7 county names, codes and spellings across files | each system's own | lookup and ask files | a region unmapped | every county maps (asserted) |
 | L8 notice and split-care lines, voided remittances, December 2025 service | CCAP payment system | ccap_payment_lines_2026.csv | lines summed | outside the call's files; Ask A hazards (the prompt's clause closes the reading) |
 | L9 the remittance amount on every child line; network remittances carrying several homes, issued by the base county's office; numbers in each county office's sequence per run | CCAP payment system | ccap_payment_lines_2026.csv | amounts summed, deduped on a partial key, or credited to the issuing office's region | outside the call's files; Ask B device |
@@ -819,6 +836,12 @@ Prototypes are in the session scratchpad (r176/demog).
   unit forced by the data instead (SF9), but that key is now a verbatim reader path and prices at 83.5; B1 is spent as
   the ask's device. Re-sited onto the region (approved): money by the region of the home that gave the care, with
   network remittances issued by the base county's office for homes in other regions.
+- Round 3 call margin (zip dc9da0c5, 2026-10-23): the call held 2 of 2 and the money device held both reads, but the
+  judge found the honest models at 419 to 456 around the 425 edge (the rate against the probability reading of the
+  same Poisson hazard, about 18 homes apart at a kindergarten-summer hazard near 0.2 a month, plus band noise at the
+  2023 round's fourth year). The question's estimand, rounding and default stayed; the world was retuned and the
+  golden made the family's centre. The judge's own repairs (the 427 homes named, a threshold, nearest 100) were
+  declined: the first hands over the step, the second makes the call a coin flip, the third straddles 450.
 
 ## Retired
 

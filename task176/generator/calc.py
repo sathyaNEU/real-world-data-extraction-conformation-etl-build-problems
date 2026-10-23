@@ -82,10 +82,13 @@ def frame(homes, start=FRAME_FROM, stop=FRAME_TO, kspec=None):
     return {k: np.concatenate(v) for k, v in cols.items()}, keys
 
 
+K_MONTHS = (6, 7, 8)
+
+
 def kflags(h, ms, kspec=None):
     """per month: the youngest own in-home child's kindergarten summer (or the variant kspec names), any own child's
     kindergarten summer, an own child under six, the youngest's age, a grandchild's kindergarten summer"""
-    spec = dict(months=(6, 7, 8), rule="cutoff", rel=("OWN",), in_home=True, whole=False)
+    spec = dict(months=K_MONTHS, rule="cutoff", rel=("OWN",), in_home=True, whole=False)
     spec.update(kspec or {})
     births = own_births(h, spec["rel"], spec["in_home"])
     allown = own_births(h, ("OWN",), True)
@@ -192,6 +195,8 @@ def design(F, feats, cap=10):
             a = F["yc_age"]
             for lo, hi in ((0, 2), (2, 4), (4, 5), (5, 6), (6, 13)):
                 X.append(((a >= lo) & (a < hi)).astype(float))
+        elif f == "tenlin":
+            X.append(np.minimum(F["t"] // 12, 12).astype(float))
         elif f == "y2020":
             yr = 2004 + F["m"] // 12
             X.append(((yr == 2020) & (mo >= 4)).astype(float))
@@ -235,6 +240,14 @@ def expected(S, hz):
     lh = np.log1p(-np.clip(hz[order], 0, 0.999))
     _, start = np.unique(ids, return_index=True)
     return float((1 - np.exp(np.add.reduceat(lh, start))).sum())
+
+
+def expected_rate(S, hz):
+    """the fitted monthly values read as a piecewise-exponential rate: survival exp of minus the summed hazard"""
+    order = np.argsort(S["i"], kind="stable")
+    ids = S["i"][order]
+    _, start = np.unique(ids, return_index=True)
+    return float((1 - np.exp(-np.add.reduceat(hz[order], start))).sum())
 
 
 def glm_route(F, S, feats, link="log", cap=10):
@@ -325,14 +338,54 @@ def golden(target):
     starts = set()
     closes = 0
     for j in np.where(on)[0]:
-        if F["m"][j] % 12 == 5:
+        if F["m"][j] % 12 == K_MONTHS[0] - 1:
             starts.add((int(F["i"][j]), int(2004 + F["m"][j] // 12)))
     for j in np.where(on & (F["ev"] == 1))[0]:
         if (int(F["i"][j]), int(2004 + F["m"][j] // 12)) in starts:
             closes += 1
     pk = closes / len(starts)
-    return dict(golden=g, stock=stock, nk=nk, ksummers=len(starts), kcloses=closes, pk=pk, homes=homes, F=F, S=S,
+    info = dict(homes=homes, F=F, S=S, keys=keys)
+    fam = family(info)
+    banded = g
+    g = (min(fam.values()) + max(fam.values())) / 2      # the golden is the honest family's centre
+    return dict(golden=g, banded=banded, family=fam, stock=stock, nk=nk, ksummers=len(starts), kcloses=closes, pk=pk, homes=homes, F=F, S=S,
                 keys=keys, fit=r)
+
+
+FAMILY = (
+    ("banded Poisson (tenure years, age 63 and 68, summer, kindergarten summer)", GOLD_FEATS, "log", 10),
+    ("banded logit", GOLD_FEATS, "logit", 10),
+    ("banded Poisson, tenure years to 8 and 9 or more", GOLD_FEATS, "log", 8),
+    ("parsimonious Poisson, linear tenure", GOLD_FEATS + ["tenlin"], "log", 0),
+    ("logit, linear tenure", GOLD_FEATS + ["tenlin"], "logit", 0),
+    ("Poisson without tenure", GOLD_FEATS, "log", 0),
+    ("logit without tenure", GOLD_FEATS, "logit", 0),
+)
+
+
+def family(info):
+    """the honest model family on the record: every member reads the kindergarten summer, each a different
+    reasonable specification; all survival-corrected month by month through 2027, plus annual stratified rates"""
+    F, S = info["F"], info["S"]
+    out = {}
+    for name, feats, link, cap in FAMILY:
+        out[name] = glm_route(F, S, feats, link, cap)[0]
+    for name, feats, cap in (("banded Poisson read as a piecewise-exponential rate", GOLD_FEATS, 10),
+                             ("Poisson with linear tenure read as a piecewise-exponential rate", GOLD_FEATS + ["tenlin"], 0)):
+        r, keep = fit_glm(F, feats, "log", cap)
+        out[name] = expected_rate(S, predict_glm(r, keep, S, feats, "log", cap))
+    for y0 in (2020, 2022):
+        sel = F["m"] >= (y0 - 2004) * 12
+        Fw = {k: v[sel] for k, v in F.items()}
+        for link in ("log", "logit"):
+            out["banded %s fitted on %d to 2026" % ("Poisson" if link == "log" else "logit", y0)] = glm_route(
+                Fw, S, GOLD_FEATS, link, 10)[0]
+        r, keep = fit_glm(Fw, GOLD_FEATS, "log", 10)
+        out["banded Poisson fitted on %d to 2026, read as a rate" % y0] = expected_rate(
+            S, predict_glm(r, keep, S, GOLD_FEATS, "log", 10))
+    out["annual stratified rates (kindergarten year share, tenure years otherwise)"] = annual_share_route(
+        info["homes"], info["keys"], F, S)[0]
+    return out
 
 
 def default_route(info):

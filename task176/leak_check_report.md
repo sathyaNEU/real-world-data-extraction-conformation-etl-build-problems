@@ -4,13 +4,13 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: record, summer, youngest, hazard, closure, golden, tenure, children, capacity, kindergarten, driver, worksheet, window, forecast, school, method, provider, decisive, phase-only, forecasting, forward, licence, nothing, reflex, windows
+Stump terms swept: summer, youngest, record, hazard, tenure, closure, golden, children, kindergarten, capacity, driver, worksheet, window, forecast, school, method, provider, decisive, phase-only, forecasting, forward, licence, nothing, reflex, windows
 
 ## 3 answer figures in the pack (REVIEW 4)
-- **REVIEW** `ccap_provider_payment_policy_2026.pdf`: carries 6 of 9 distinctive words of the committed call: 'About 450 of the 3,081 family child care homes licensed in Allerton on 31 December 2026 will close during 2027, to the n'
-- **REVIEW** `child_care_supply_report_2026q3.pdf`: carries 6 of 9 distinctive words of the committed call: 'About 450 of the 3,081 family child care homes licensed in Allerton on 31 December 2026 will close during 2027, to the n'
-- **REVIEW** `data_dictionary.txt`: carries 7 of 9 distinctive words of the committed call: 'About 450 of the 3,081 family child care homes licensed in Allerton on 31 December 2026 will close during 2027, to the n'
-- **REVIEW** `family_child_care_licensing_rules_2025.pdf`: carries 6 of 9 distinctive words of the committed call: 'About 450 of the 3,081 family child care homes licensed in Allerton on 31 December 2026 will close during 2027, to the n'
+- **REVIEW** `ccap_provider_payment_policy_2026.pdf`: carries 6 of 9 distinctive words of the committed call: 'About 450 of the 3,051 family child care homes licensed in Allerton on 31 December 2026 will close during 2027, to the n'
+- **REVIEW** `child_care_supply_report_2026q3.pdf`: carries 6 of 9 distinctive words of the committed call: 'About 450 of the 3,051 family child care homes licensed in Allerton on 31 December 2026 will close during 2027, to the n'
+- **REVIEW** `data_dictionary.txt`: carries 7 of 9 distinctive words of the committed call: 'About 450 of the 3,051 family child care homes licensed in Allerton on 31 December 2026 will close during 2027, to the n'
+- **REVIEW** `family_child_care_licensing_rules_2025.pdf`: carries 6 of 9 distinctive words of the committed call: 'About 450 of the 3,051 family child care homes licensed in Allerton on 31 December 2026 will close during 2027, to the n'
 
 ## 4 design-note vocabulary (REVIEW 4)
 - **REVIEW** `ccap_provider_payment_policy_2026.pdf`: 3 of 25 stump-paragraph terms appear (children, school, provider); read whether the document names the move
@@ -19,7 +19,7 @@ Stump terms swept: record, summer, youngest, hazard, closure, golden, tenure, ch
 - **REVIEW** `family_child_care_licensing_rules_2025.pdf`: 7 of 25 stump-paragraph terms appear (record, closure, children, capacity, worksheet, provider); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `qris_star_ratings_2026.csv`: 2025 ISO dates after 2027-01-14, e.g. 2027-01-30, 2027-01-31, 2027-02-01, 2027-02-02, 2027-02-03
+- **REVIEW** `qris_star_ratings_2026.csv`: 2006 ISO dates after 2027-01-14, e.g. 2027-01-30, 2027-01-31, 2027-02-01, 2027-02-02, 2027-02-03
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

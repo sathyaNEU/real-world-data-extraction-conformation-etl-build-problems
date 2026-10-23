@@ -11,7 +11,7 @@
   "shape": "single-figure",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "About 450 of the 3,081 family child care homes licensed in Allerton on 31 December 2026 will close during 2027, to the nearest 50 (461.0 expected on the golden model; the standing family 432.1 to 463.2).",
+  "answer": "About 450 of the 3,051 family child care homes licensed in Allerton on 31 December 2026 will close during 2027, to the nearest 50 (450.4, the centre of the honest family of 16, 437.2 to 463.6).",
   "answer_source": "task176/submission.md block 1; generator/figures.json",
   "gap": [
     "time",
@@ -80,7 +80,7 @@
   "question_form": "how-many",
   "driver": "The decisive quantity is the forward count of units that end in a window, where a unit ends mostly when the youngest of the dependants recorded beside it reaches a fixed institutional age rather than as its own tenure lengthens; a recent wave of entrants who joined when their dependants were younger than earlier entrants' had been reaches that age together inside the window, so a tenure-based hazard, however stratified, misplaces their endings.",
   "driver_concrete": "A family child care home closes mostly in the summer before its provider's youngest own child living in the home starts kindergarten, and the 2023 start-up grant round licensed many providers whose youngest were babies, so in 2027 hundreds of homes in their fourth year reach that summer together, which closure rates by years licensed (or by grant cohort, or with a has-young-children flag) spread thin.",
-  "stump": "A competent solver fits closure hazards by years licensed on the 2016 to 2026 home-months, with provider age and the summer months (or the grant round's own rates), and files 300 closures for 2027 (250 on the grant round's rates); the step that lands it there is reading closure on the home's tenure, when it runs on the provider's youngest own child's kindergarten summer, which 427 homes reach together in 2027, 336 of them from the 2023 round.",
+  "stump": "A competent solver fits closure hazards by years licensed on the 2016 to 2026 home-months, with provider age and the summer months (or the grant round's own rates), and files 300 closures for 2027 (250 on the grant round's rates); the step that lands it there is reading closure on the home's tenure, when it runs on the provider's youngest own child's kindergarten summer, which 428 homes reach together in 2027, 333 of them from the 2023 round.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task134": "task134 v2 round 1 reads an inflow from an outside pool on a conversion hazard by time since entry after a surge; task176 reads closures on no clock of the unit's own (tenure is the wrong clock) but on a linked person's age, the provider's youngest own child reaching kindergarten, carried in a second file.",

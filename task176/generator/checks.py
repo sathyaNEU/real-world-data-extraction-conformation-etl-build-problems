@@ -119,11 +119,16 @@ def main(target):
        "May %.4f June %.4f July %.4f Aug %.4f Sept %.4f" % (june[5], june[6], june[7], june[8], june[9]))
 
     # ---- the golden family, every member in the golden cell ---------------------------------------------------------
+    core = info["family"]
+    cv = list(core.values())
+    ok("FAM the golden is the honest family's centre", abs(g - (min(cv) + max(cv)) / 2) < 1e-9, "%.1f" % g)
+    ok("SF11 FAM every honest-family member 10 homes or more inside both edges of the golden cell",
+       min(cv) >= cell(g) - 25 + 10 and max(cv) <= cell(g) + 25 - 10, "%.1f to %.1f" % (min(cv), max(cv)))
     fam = family(info)
     for name, v in fam.items():
         ok("FAM %s in the golden cell" % name, cell(v) == cell(g), "%.1f" % v)
     vals = list(fam.values())
-    ok("FAM family clear of both cell edges by 4 homes", min(vals) >= 429 and max(vals) <= 471,
+    ok("FAM the wider family clear of both cell edges by 4 homes", min(vals) >= 429 and max(vals) <= 471,
        "%.1f to %.1f" % (min(vals), max(vals)))
 
     # ---- SF rows ----------------------------------------------------------------------------------------------------
@@ -310,7 +315,8 @@ def monthly_rates(F):
 def family(info):
     homes, F, S, keys = info["homes"], info["F"], info["S"], info["keys"]
     fam = {}
-    fam["log hazard, summer months"] = info["golden"]
+    fam = dict(info["family"])
+    fam["log hazard, summer months"] = info["banded"]
     fam["logit hazard"] = calc.glm_route(F, S, calc.GOLD_FEATS, link="logit")[0]
     fam["no summer term"] = calc.glm_route(F, S, ["age", "k"])[0]
     fam["2020 term"] = calc.glm_route(F, S, ["age", "summer", "k", "y2020"])[0]

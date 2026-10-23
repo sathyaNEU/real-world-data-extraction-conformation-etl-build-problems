@@ -23,7 +23,8 @@ P = dict(
     grant_hold=0.45, grant_hold_months=12,          # the grant's service condition: repay if closed in 12 months
     pandemic=1.20,                                  # April to December 2020
     retire1=(63, 0.010), retire2=(68, 0.016),
-    kx=0.189, kg=0.040, kmonths=(6, 7, 8),
+    kx=0.215, kg=0.040, kmonths=(6, 7, 8),
+    world_stream="world/8",
     birth_parent=0.07, birth_other=0.02,
     foster_p=0.04, relative_p=0.03, school_age_other=0.25,
     lfcc_p=0.18,
@@ -80,7 +81,7 @@ def hazard(h, m, p=P):
 
 
 def simulate(p=P):
-    rng = C.stream("world")
+    rng = C.stream(p.get("world_stream", "world"))
     ceff = {c[0]: float(x) for c, x in zip(C.COUNTIES, C.stream("county_eff").uniform(0.90, 1.10, len(C.COUNTIES)))}
     codes = [c[0] for c in C.COUNTIES]
     wts = np.array([c[3] for c in C.COUNTIES])

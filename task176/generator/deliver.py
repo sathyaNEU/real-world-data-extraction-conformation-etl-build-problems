@@ -31,12 +31,14 @@ def compute(target):
     return dict(
         golden=g["golden"], call=C.rnd(g["golden"], 50), stock=g["stock"], nk=g["nk"], ksummers=g["ksummers"],
         kcloses=g["kcloses"], pk=g["pk"], default=d, default_r=C.rnd(d, 50),
+        fam_lo=int(round(min(g["family"].values()))), fam_hi=int(round(max(g["family"].values()))),
         a={k: a[k] for k in sorted(a)}, b={k: int(round(b[k])) for k in sorted(b)}, b_raw=b, history=history(g["homes"]))
 
 
 def figures(x):
     f = {"call": {"closures_2027": x["call"]}, "cc1": x["stock"], "cc2": x["nk"], "cc3": x["ksummers"],
          "cc4": int(round(100 * x["pk"])), "cc5": x["kcloses"], "alt_tenure": x["default_r"],
+         "call_family": {"low": x["fam_lo"], "high": x["fam_hi"]},
          "constants": {"as_of_day": C.RECORD_END.day, "rounding_step": 50, "age_terms": list(calc.AGE_TERMS),
                        "region_numbers": sorted(C.REGIONS)}}
     f["a_statewide"] = {"H1": x["a"][1], "H2": x["a"][2]}
@@ -89,9 +91,10 @@ def submission(x):
     L.append("3. Fitted a monthly Poisson model of closure on those terms: the kindergarten summer, not the years "
              "licensed, carries the closures of parent-run homes (%s of %s such homes closed that summer)."
              % (n(x["kcloses"]), n(x["ksummers"])))
-    L.append("4. Applied the model month by month through 2027 to the %s homes licensed on 31 December 2026, "
-             "%s of them in their youngest's kindergarten summer, and summed each home's chance of closing: %s to the "
-             "nearest 50." % (n(x["stock"]), n(x["nk"]), n(x["call"])))
+    L.append("4. Applied it month by month through 2027 to the %s homes licensed on 31 December 2026, %s of them in "
+             "their youngest's kindergarten summer, and summed each home's chance of closing; the same terms as logit, "
+             "with tenure as a line or left out, fitted from 2020 or 2022, read as rates, or as annual rates give %s to %s, "
+             "centred on %s to the nearest 50." % (n(x["stock"]), n(x["nk"]), n(x["fam_lo"]), n(x["fam_hi"]), n(x["call"])))
     L.append("5. Child-days (ccap_payment_lines_2026.csv): kept SFCC and LFCC lines of remittances not voided, "
              "expanded each line to its Monday to Friday days in 2026, and counted each child and day once.")
     L.append("6. Money (ccap_payment_lines_2026.csv): kept SFCC and LFCC remittances paid in the 2026 runs and not voided, "
@@ -141,7 +144,9 @@ def workbook(path, x):
     ws.write(8, 0, "Method. Monthly closure chance for each home from a Poisson model fitted on home-months January 2016 to "
                    "December 2026: year of licence, provider aged 63 or more and 68 or more, June to August, and the June "
                    "to August before the provider's youngest own child starts kindergarten. Each home licensed on 31 "
-                   "December 2026 is carried month by month through 2027 and its chances of closing are summed.", wrap)
+                   "December 2026 is carried month by month through 2027 and its chances of closing are summed. Logit, "
+                   "straight-line and no tenure terms, fits from 2020 or 2022, rate readings and annual rates give %s "
+                   "to %s; the forecast is their centre." % (n(x["fam_lo"]), n(x["fam_hi"])), wrap)
     ws.write(9, 0, "In the record, %s homes were open on 1 June of the summer before their youngest own child's "
                    "kindergarten year and %s of them closed by 31 August (%d per cent); in other months a home's chance "
                    "of closing was well under 1 per cent a month." % (n(x["ksummers"]), n(x["kcloses"]), round(100 * x["pk"])), wrap)
@@ -159,7 +164,7 @@ def workbook(path, x):
                       "6.40.010). Sources: licensing extract of 8 January 2027; capacity worksheets 2016 to 2026.", sub)
     ws.set_column(0, 0, 96)
     ws.set_column(1, 2, 14)
-    ws.set_row(8, 60)
+    ws.set_row(8, 78)
     ws.set_row(9, 32)
     ws.set_row(12, 30)
 

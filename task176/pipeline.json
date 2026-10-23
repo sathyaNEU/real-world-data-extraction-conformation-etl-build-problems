@@ -9,7 +9,7 @@
  "updated": "2026-10-23",
  "stump": "A competent solver fits closure hazards by years licensed with provider age, county and the grant flag and files about 300 closures for 2027; the step that lands it there is reading closure on the home's tenure when it runs on the provider's youngest own child's kindergarten year.",
  "architecture": 2,
- "loops": 1,
+ "loops": 3,
  "card_registered": true,
  "precut": {
   "exit": 0,
@@ -25,9 +25,9 @@
   "nearest": "task133 0.05"
  },
  "judge": {
-  "verdict": "DETERMINISTIC/APPROVE (round 1, zip 13d6ad18)",
-  "disposition": "call edge recorded as answered risk in ## Ask sheet; child-days fork closed in the prompt",
-  "report": "session scratchpad judge-task176/verdict.md"
+  "verdict": "round 3 NOT_DETERMINISTIC (margin_or_boundary_fragility)",
+  "disposition": "repaired in the world; round 4 owes a fresh judge",
+  "report": "session scratchpad judge-task176c/verdict.md"
  },
  "returned": [
   {
@@ -43,6 +43,13 @@
    "call": "held 4/4 (300, 400; judge DETERMINISTIC/APPROVE, tenure-inclusive 447 to 463)",
    "asks": "failed: readers C and D 22/22, money keyed (county, run date, remittance_no), the unit the added policy and dictionary sentences spelled out",
    "repair": "numbering sentence and dictionary wording removed, the unit forced by the data (SF9); the device re-sited (approved) onto the region of the home that gave the care, network remittances issued by the base county's office for homes in other regions (SF10); priced on readers A to D and the mirror the worst-route pair is 33.5"
+  },
+  {
+   "round": 3,
+   "zip": "dc9da0c5",
+   "call": "held 2/2 (300, 300); judge NOT_DETERMINISTIC margin_or_boundary_fragility, honest models 419 to 456 around 425",
+   "asks": "held: readers E and F 2/22 each",
+   "repair": "world retuned (kindergarten-summer excess 0.215 a month, world stream world/8); golden the honest family's centre 450.4, family of 16 at 437.2 to 463.6 asserted 10 or more inside both edges; child-days pinned by the date of the care; money device unchanged; worst-route pair on six readers 33.5"
   }
  ],
  "wave": "wave 8 (new), seed FC47: the world, the decision and the quantity kept (360 satellites for 2027, six rideshare launches of at most 60, release at 210 km, storm loss below 350 km, expected storm loss two or fewer per launch, the rest to 2028); the seed's onsets-against-storm-days mechanism set aside as a unit reading",
@@ -97,7 +104,7 @@
    "stage3": "checks.py 105 of 105, verify.py green (own IRLS 461.02), two byte-identical builds, figures_check 0, precut 0, leak.py REVIEW, guard heart WARN, surface no hard tell after the manifest schema change; asks re-sited (food program and visits cut to distractors) after the coordinator's stage 4 measurements"
   }
  },
- "resume": "stage 4 round 3: a fresh judge pass and two fresh scored readers",
+ "resume": "stage 4 round 4: a fresh judge pass and two fresh scored readers",
  "approved": null,
  "delivered": null,
  "portal": null,
