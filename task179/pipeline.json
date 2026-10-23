@@ -9,24 +9,24 @@
  "updated": "2026-10-23",
  "stump": "A competent solver fits an early-warning model on the entrants' own attributes to the 2019 to 2025 entrants' enrolment at the next census, validates it on the 2025 intake, scores the 8,659 2026 entrants and files 2,250 not enrolled on 1 October 2027 against 3,250, because it never reads each entrant's chance at the number of other entrants met in two or more of the entrant's own classes, which the Registry's allocation run kept near 26 and self-enrolment after the ARC cutover leaves near one.",
  "architecture": 3,
- "loops": 0,
+ "loops": 1,
  "card_registered": true,
  "precut": {
   "exit": 0,
   "date": "2026-10-23"
  },
  "leak": {
-  "leak_py": "REVIEW (2026-10-23): estimand words in the conventions and dictionary; no figure, no decisive-step word",
-  "reader": ""
+  "leak_py": "REVIEW (2026-10-23, after the round 1 fix): estimand words in the conventions and dictionary; no figure, no decisive-step word",
+  "reader": "round 1 (fab8b152): call held 2 of 2 (both 2,250); asks A 10 of 25, B 25 of 25"
  },
  "duplicate_check": {
-  "heart": "WARN (2026-10-23): answered card WARNs; nearest stump 0.05 task458",
-  "nearest": "driver 0.07 task143; surface 0.10, history pairs only"
+  "heart": "BLOCK (2026-10-23) on four axes against task175 after task173 was spent and the live window re-formed; registered under the lock at WARN",
+  "nearest": "driver 0.07 task143"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC (round 1, fab8b152)",
+  "disposition": "FIX_NOW optional: form-dependence of the bucket (closed by SELECT_PIN, lowest AIC) and the transfer students faculty (ask dropped)",
+  "report": "scratchpad judge-task179x/verdict.md"
  },
  "returned": [],
  "wave": "new, seed FC50: the world, the decision and the quantity kept, the world moved honestly off local_government to a private ambulance company holding a city's 911 ambulance contract (the city the counterparty), deciding its own ten summer surge medic units for the weekend 20:00 to 24:00 block from June to August across three districts at the contract's 9-in-10 evenings standard at 1.2 unit-hours a call, the rest offered to the county's mutual-aid roster; the seed's filed staffing formula, the public dataset's suppression of one- and two-call cells and a pooling sentence were never candidates; redraw cell 1 econometrics time-series macro (2026-10-19, dead), redraw cell 2 epidemiology infectious-disease-transmission-modeling (2026-10-21, architecture v2, re-sited to the fictional Republic of Saldane after the first world was declined on the real-place records concern)",
@@ -72,11 +72,12 @@
    "registration": "registered 2026-10-23 (4afaec0a) after two lock BLOCKs on the window (ban.strategy composition_mix vs task274, then vs task175); not relabelled"
   }
  },
- "resume": "stage 4: two scored readers and the judge",
+ "resume": "stage 4 round 2: a fresh judge and two fresh scored readers on target.zip a9f8b878 (call frozen at 3,250; the ask re-sited to 20 teaching-group cells)",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "zip_md5": "a9f8b87819562bddbb81b28da63ac43a"
 }

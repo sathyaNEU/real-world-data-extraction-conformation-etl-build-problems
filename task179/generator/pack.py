@@ -274,7 +274,10 @@ class Pack:
         def place(x, nmeet, teacher, weeks="1-12"):
             f = x["fac"]
             need = x["enrolled"] if x.get("pair") is None else x["enrolled"] + self._mate(x)["enrolled"]
-            cand = [r for r in rooms[f] if r[1] >= need] or [max(rooms[f], key=lambda r: r[1])]
+            if x.get("combined"):
+                cand = [r for r in rooms[f] if need <= r[1] < 2 * need]
+            else:
+                cand = [r for r in rooms[f] if r[1] >= need] or [max(rooms[f], key=lambda r: r[1])]
             out = []
             days = list(g.permutation(DAYS))
             for d in days:
@@ -300,11 +303,12 @@ class Pack:
             mt = place(x, nmeet, teacher)
             meetings[key] = (teacher, mt)
             if x.get("pair") is not None:
-                # the honours paper's own coordinator is its teacher of record
+                # an ARC Scheduling combination carries one teacher of record; classes carried from SIRIUS keep each
+                # paper's own coordinator
                 t2 = staff[x["fac"]][int(g.integers(len(staff[x["fac"]])))]
                 while t2 == teacher:
                     t2 = staff[x["fac"]][int(g.integers(len(staff[x["fac"]])))]
-                meetings[x["pair"]] = (t2, mt)
+                meetings[x["pair"]] = (teacher if x.get("combined") else t2, mt)
         # rows
         g2 = C.stream("tt_hazards")
         cancel = set()
@@ -317,6 +321,9 @@ class Pack:
             title = TITLES.get(x["paper"]) or "%s %s" % (SUBJ[x["paper"][:4]], WORDS[(int(x["paper"][4:]) * 7) % len(WORDS)])
             status = "Cancelled" if key in cancel else "Active"
             enrolled = 0 if key in cancel else x["enrolled"]
+            if x.get("combined"):
+                # ARC Scheduling writes a combination's census enrolment on each of its classes
+                enrolled = x["enrolled"] + self._mate(x)["enrolled"]
             if key in cancel:
                 x["cancelled"] = True
             team = x["level"] >= 200 and x.get("pair") is None and g2.random() < 0.05 and key not in cancel
@@ -329,8 +336,10 @@ class Pack:
                             level=x["level"], day=d, start=st, end=end, room=r[0], cap=r[1], teacher=teacher,
                             enrolled=enrolled, status=status, weeks="1-12")
                 if moved:
-                    other = [rr for rr in rooms[x["fac"]] if rr[1] >= x["enrolled"] and rr[0] != r[0]]
+                    other = [rr for rr in rooms[x["fac"]] if rr[1] >= x["enrolled"] and rr[0] != r[0]
+                             and (rr[0], d, st) not in busy]
                     r2 = other[int(g2.integers(len(other)))]
+                    busy.add((r2[0], d, st))
                     self.tt.append(dict(base, weeks="1-4"))
                     self.tt.append(dict(base, weeks="5-12", room=r2[0], cap=r2[1]))
                 else:
@@ -341,12 +350,17 @@ class Pack:
         # half-semester papers sharing a slot, a teacher and a room (weeks 1-6 and 7-12): two groups
         self.halves = []
         for f in C.FAC_CODES:
-            for j in range(3):
+            for j in range(2):
                 stem = [k for k, v in SUBJ.items() if k in [p[:4] for p in self._papers_of(f)]][j % 3]
                 teacher = staff[f][int(g2.integers(len(staff[f])))]
-                pa, pb = "%s2%02d" % (stem, 50 + 2 * j), "%s2%02d" % (stem, 51 + 2 * j)
-                if any(r["paper"] in (pa, pb) for r in self.tt):
-                    continue
+                lvl = 200 if j == 0 else 300
+                taken = set(r["paper"] for r in self.tt) | set(x["paper"] for x in self.w.classes)
+                n0 = 50
+                while True:
+                    pa, pb = "%s%d%02d" % (stem, lvl // 100, n0), "%s%d%02d" % (stem, lvl // 100, n0 + 1)
+                    if pa not in taken and pb not in taken:
+                        break
+                    n0 += 2
                 r = [rr for rr in rooms[f] if rr[1] >= 40][int(g2.integers(4))]
                 while True:
                     d, st = DAYS[int(g2.integers(5))], STARTS[int(g2.integers(10))]
@@ -357,9 +371,9 @@ class Pack:
                 for pp, wk in ((pa, "1-6"), (pb, "7-12")):
                     n = int(g2.integers(16, 31))
                     self.tt.append(dict(code="%s-26S1-001" % pp, paper=pp, title="%s %s" % (SUBJ[stem], WORDS[(j * 5 + len(wk)) % len(WORDS)]),
-                                        fac=ARC_FAC[f], level=200, day=d, start=st, end="%02d:00" % (int(st[:2]) + 2),
+                                        fac=ARC_FAC[f], level=lvl, day=d, start=st, end="%02d:00" % (int(st[:2]) + 2),
                                         room=r[0], cap=r[1], teacher=teacher, enrolled=n, status="Active", weeks=wk))
-                    self.halves.append(dict(paper=pp, k=1, fac=f, level=200, enrolled=n, pair=None))
+                    self.halves.append(dict(paper=pp, k=1, fac=f, level=lvl, enrolled=n, pair=None))
         self.tt.sort(key=lambda r: (r["fac"], r["paper"], r["code"], DAYS.index(r["day"]), r["start"], r["weeks"]))
 
     def _mate(self, x):

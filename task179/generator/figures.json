@@ -1,32 +1,35 @@
 {
-  "_unrounded": {
-    "call_not_enrolled_2027": 3269.3
+  "_model_form": "ge10",
+  "_stated": {
+    "paper_levels": [
+      200,
+      300
+    ],
+    "rounding_of_the_call": 250
   },
-  "ask_continuing_2026_ass_y2": 1734,
-  "ask_continuing_2026_ass_y3": 1401,
-  "ask_continuing_2026_ass_y4": 429,
-  "ask_continuing_2026_bus_y2": 1621,
-  "ask_continuing_2026_bus_y3": 1426,
-  "ask_continuing_2026_bus_y4": 666,
-  "ask_continuing_2026_eng_y2": 1121,
-  "ask_continuing_2026_eng_y3": 1029,
-  "ask_continuing_2026_eng_y4": 803,
-  "ask_continuing_2026_hlt_y2": 1336,
-  "ask_continuing_2026_hlt_y3": 1147,
-  "ask_continuing_2026_hlt_y4": 351,
-  "ask_continuing_2026_sci_y2": 1517,
-  "ask_continuing_2026_sci_y3": 1253,
-  "ask_continuing_2026_sci_y4": 351,
-  "ask_groups_over30_s1_2026_ass": 82,
-  "ask_groups_over30_s1_2026_bus": 84,
-  "ask_groups_over30_s1_2026_eng": 65,
-  "ask_groups_over30_s1_2026_hlt": 62,
-  "ask_groups_over30_s1_2026_sci": 76,
-  "ask_groups_s1_2026_ass": 703,
-  "ask_groups_s1_2026_bus": 325,
-  "ask_groups_s1_2026_eng": 250,
-  "ask_groups_s1_2026_hlt": 269,
-  "ask_groups_s1_2026_sci": 315,
+  "_unrounded": {
+    "call_not_enrolled_2027": 3253.0
+  },
+  "ask_groups_s1_2026_ass_200_30orfewer": 11,
+  "ask_groups_s1_2026_ass_200_over30": 39,
+  "ask_groups_s1_2026_ass_300up_30orfewer": 16,
+  "ask_groups_s1_2026_ass_300up_over30": 45,
+  "ask_groups_s1_2026_bus_200_30orfewer": 10,
+  "ask_groups_s1_2026_bus_200_over30": 40,
+  "ask_groups_s1_2026_bus_300up_30orfewer": 19,
+  "ask_groups_s1_2026_bus_300up_over30": 45,
+  "ask_groups_s1_2026_eng_200_30orfewer": 15,
+  "ask_groups_s1_2026_eng_200_over30": 32,
+  "ask_groups_s1_2026_eng_300up_30orfewer": 21,
+  "ask_groups_s1_2026_eng_300up_over30": 34,
+  "ask_groups_s1_2026_hlt_200_30orfewer": 13,
+  "ask_groups_s1_2026_hlt_200_over30": 36,
+  "ask_groups_s1_2026_hlt_300up_30orfewer": 21,
+  "ask_groups_s1_2026_hlt_300up_over30": 32,
+  "ask_groups_s1_2026_sci_200_30orfewer": 11,
+  "ask_groups_s1_2026_sci_200_over30": 39,
+  "ask_groups_s1_2026_sci_300up_30orfewer": 18,
+  "ask_groups_s1_2026_sci_300up_over30": 38,
   "call_not_enrolled_2027": 3250,
   "cc1_intake_2026_at_census": 8659,
   "cc2_intake_2026_no_repeat_classmate": 3778,
@@ -66,12 +69,5 @@
       8411,
       2058
     ]
-  ],
-  "label_groups_30_or_fewer": {
-    "ass": 621,
-    "bus": 241,
-    "eng": 185,
-    "hlt": 207,
-    "sci": 239
-  }
+  ]
 }

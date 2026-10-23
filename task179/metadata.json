@@ -2,7 +2,9 @@
   "task": "task179",
   "distractor_files": [
     "target/hall_occupancy_weekly_2019_2026.csv",
-    "target/national_school_leavers_2019_2026.csv"
+    "target/national_school_leavers_2019_2026.csv",
+    "target/programme_transfers_2025_2026.csv",
+    "target/programme_catalogue_2026.csv"
   ],
   "deliverables": [
     "continuing_enrolment_2027.xlsx",

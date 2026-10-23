@@ -128,7 +128,7 @@ world (truth 3,190 to 3,207 over seven draws, about 37.6 per cent of 8,499 entra
 
 Ends on: 2,250 students not enrolled at the 1 October 2027 census (2,142 unrounded)
 
-Golden: 3,250 students not enrolled at the 1 October 2027 census (3,269 unrounded)
+Golden: 3,250 students not enrolled at the 1 October 2027 census (3,253 unrounded)
 
 ## Stump sentence
 
@@ -149,9 +149,9 @@ Layer 1: a student-records cutover (SIRIUS extracts with seven-digit numbers and
 Layer 2: estimand_identification: the record's intakes were placed in class groups and the forward intake was not, so neither the record's rate nor a model validated on a later allocated intake transfers; the comparison the data force is an entrant with as few repeat classmates as the forward entrant's own.
 Decisive step: read each entrant's chance of not being enrolled at the next census at the number of other entrants met in two or more of the entrant's own Semester 1 classes, from the 2019 to 2025 entrants' census classes and outcomes, and carry it to the 2026 entrants' own classes, instead of a model on entrant attributes validated on an intake that was still allocated.
 Not semantics: every field (census status, programme attempt, progress rating, crosswalk, class number, acceptance date) can be read correctly and the early-warning model still files 2,250; nothing in any file says an entrant's chance depends on classmates, and no column, key or code holds the number of repeat classmates or marks an allocated group.
-Not rule application: no filed rule or procedure says how an entrant's chance is estimated; the conventions fix only who is counted, the two censuses, leave as not enrolled and the rounding. The enumerated family (repeat-classmate bands of nine, five and four, indicators at five, seven and ten, saturating curves at scales 4 and 8, a linear term, a log term, fit windows of seven, four and three intakes) spreads 3,090.9 to 3,296.8 on the call; the standing family, every form within 16 log-likelihood units of the best and every fit window, spreads 3,172.5 to 3,296.8, one printed call (3,250), with the log and scale-4 forms (17 and 22 units worse) just outside; the ruling-out of the rivals is loud: the model without the exposure is 455 units worse and the yes-or-no exposure 216.
+Not rule application: no filed rule or procedure says how an entrant's chance is estimated or what goes into the model; the conventions fix who is counted, the two censuses, leave as not enrolled, the rounding, and that among models fitted to the same intakes the projection uses the lowest Akaike information criterion (SELECT_PIN, added in the round 1 fix to close the judge's functional-form note). The criterion picks among what the analyst fits and names no covariate: a model without the repeat-classmate count is 897 AIC units worse, but nothing tells the analyst to build that count. The enumerated family (bands of nine, five and four, indicators at 5, 7, 10, 15 and 22, saturating curves at 4 and 8, a linear, log and square-root term, fit windows of seven, four and three intakes) spreads 2,974.8 to 3,296.8; the standing family, every form within 12 AIC units of the best and every window, spreads 3,172.5 to 3,269.3, one printed call (3,250); the forms outside it are 20 or more AIC units worse (square root 20.3, log 23.0, scale-4 curve 32.9, the 22-classmate indicator 184.9).
 Analyst test: a strong analyst who stitches both systems through the crosswalk, keeps first-time entrants enrolled at each census, reads leave as not enrolled and fits a validated early-warning model on every entrant attribute and the week-6 ratings files 2,250 (Ends on) of the 2026 entrants not enrolled at the 1 October 2027 census, against 3,250.
-Estimand: the number of first-time bachelor's entrants with an enrolled programme attempt at the 1 October 2026 census who will have no enrolled programme attempt at the 1 October 2027 census (a student on approved leave not enrolled), to the nearest 250; filed in continuing_enrolment_projection_conventions_2027.pdf sections 2 and 3, the count asked in the prompt.
+Estimand: the number of first-time bachelor's entrants with an enrolled programme attempt at the 1 October 2026 census who will have no enrolled programme attempt at the 1 October 2027 census (a student on approved leave not enrolled), to the nearest 250; filed in continuing_enrolment_projection_conventions_2027.pdf sections 2 and 3 (with the model-selection criterion), the count asked in the prompt.
 No decoy: nothing is planted to be caught: no forecast, target, earlier projection, memo or stakeholder figure ships; the early-warning model is the solver's own arithmetic on the record, and the cutover notes and conventions state only facts the Registry and the Planning Office file.
 No certified replay: no certified or published figure is reproduced to recover the method; the conventions file the WHAT and no figure in the pack is an output of a forecasting method.
 Lesson: a retention model validated on a later intake is only as good as the process that produced that intake; a model learns to ask what changed in how the forward intake met its classmates, and to read the change at the class-membership grain no field carries, which no build on file teaches (task175 conditions on a street's build-out, task165 on a service headroom, task143 on a group effect inside a joint tail).
@@ -178,6 +178,7 @@ Lesson: a retention model validated on a later intake is only as good as the pro
 | SF7 | a forecast count | the expected number | a simulated count's median | 3,268, same call | same call (asserted) |
 | SF8 | age | 21 or over at entry | age as a number | 3,270.3, same call | same call (asserted) |
 | SF9 | an entrant's faculty | the admissions Faculty (first-listed programme) | the second programme's | same call | conjoint entrants are 3 per cent and the faculty terms are small (asserted under SF3) |
+| SF10 | the model's form for the repeat-classmate count | the lowest Akaike information criterion among the forms fitted (an indicator at 10, 3,253.0) | a log or square-root term (judge round 1: 3,115, 3,130), a 22-classmate indicator (2,976) | 3,000 | SELECT_PIN (conventions section 3); every form within 12 AIC prints the call (asserted SF10, B0, B1, B3) |
 
 ## Ladder
 
@@ -187,15 +188,15 @@ Lesson: a retention model validated on a later intake is only as good as the pro
 | 0b | the 2019 to 2025 pooled rate | 2,136.9 | 2,250 | 988 | same |
 | 1 | early-warning model on attributes and week-6 ratings (the default path) | 2,141.9 | 2,250 | 983 | same; 455 log-likelihood units worse than the golden |
 | 2a | a yes-or-no for any repeat classmate | 2,489.1 | 2,500 | 636 | a random shared pair is not a group; 216 units worse |
-| 2b | log(1 + repeat classmates) | 3,113.6 | 3,000 | 11 | the protection is near flat below five; 17 units worse |
-| 2c | a saturating curve at scale 4 | 3,090.9 | 3,000 | 34 | 22 units worse |
+| 2b | log(1 + repeat classmates) or its square root | 3,113.6 / 3,128.5 | 3,000 / 3,250 | 11 / inside | 23.0 and 20.3 AIC units worse (SELECT_PIN) |
+| 2c | a saturating curve at scale 4; an indicator at 22 repeat classmates | 3,090.9 / 2,974.8 | 3,000 | 34 / 150 | 32.9 and 184.9 AIC units worse |
 | 2d | the record's entrants with no repeat classmate, their plain rate times the 2026 intake | 3,824.4 | 3,750 | 449 | the living-learning communities stayed placed, and the covariates |
-| 3 | golden family (bands of nine, five and four; indicators at 5, 7 and 10; a saturating curve at 8; a linear term; fits on 2022 to 2025 and 2023 to 2025) | 3,172.5 to 3,296.8 | 3,250 | inside, 47.5 or more from each edge | |
+| 3 | golden family (every form within 12 AIC units: indicators at 10, 5, 7 and 15, bands of nine, five and four, a saturating curve at 8; the chosen form on 2022 to 2025 and 2023 to 2025) | 3,172.5 to 3,269.3 | 3,250 | inside, 47.5 or more from each edge | |
 
 Position and margins: the golden sits above every textbook rung and below the half-handled plain subset; the nearest
-refuted form (log) is 11 past the lower edge and is refuted by 17 log-likelihood units; the golden's own bootstrap
-sigma is 50.1 (1.5 per cent) and a one-sigma move keeps 3,250 (asserted R4). Worth: the step moves the call from 2,142
-to 3,269, 34.5 per cent of the golden.
+refuted form (log) is 11 past the lower edge and 23 AIC units worse; the golden's own bootstrap sigma is 37.1 (1.1 per
+cent) and a one-sigma move keeps 3,250 (asserted R4). Worth: the step moves the call from 2,142 to 3,253, 34.2 per cent
+of the golden.
 
 ## Closure table
 
@@ -213,7 +214,7 @@ to 3,269, 34.5 per cent of the golden.
 | 10 Rounding path | the count to the nearest 250 | the prompt and CALL_PIN; family inside one bin (B1) |
 | 11 Tie-break | none | no ranking |
 | 12 Maturity and censoring | every 2019 to 2025 outcome is observed at the next census | the 2026 census closes the 2025 outcomes |
-| 13 Order of operations | none non-commuting | B1 |
+| 13 Order of operations | the model form chosen before the forecast | SELECT_PIN (lowest AIC); B0 |
 | 14 Row order | none | n/a |
 | 15 Duplicate resolution | conjoint entrants once | SF3 |
 | 16 Identity normalisation | SIRIUS to ARC through the crosswalk | cutover notes section 2; mess neutral |
@@ -241,80 +242,94 @@ enrolment outcome.
 
 ## Ask sheet
 
-Weights on the generated rubric: about 38 recommendation and components, 7 instruction following, 55 asks over 25
-figures and the chart. Both asks sit on rows the call never reads (asserted S1 to S3).
+Weights on the generated rubric: about 38 recommendation and components, 7 instruction following, 55 asks over 20
+figures and the chart. The ask sits on rows the call never reads (asserted S2, S3). Round 1's continuing-students ask
+was dropped in the round 1 fix (`## Stage 4 round 1`); its files stay as distractors.
 
-- **Ask A, Semester 1 2026 teaching groups by faculty, and those over 30 students at the census (10 figures).** H18
-  home: the teaching plan sets this year's groups beside the projection when it sizes the second-year groups. Files:
-  `s1_2026_class_timetable.xlsx`, the conventions (GROUP_PIN: the students taught together, in one room at one time;
-  size the census enrolments it teaches; cancelled classes are not groups). Primary (an identity no field carries): a
-  300-level paper and an honours paper taught together meet in one room at one time over the same weeks, and each
-  class lists its own paper's teacher of record, so one group is two class codes with two teachers. Seven such pairs
-  per faculty, four of them over 30 only together. Hazards: half-semester papers that share a room, slot and teacher in
-  weeks 1 to 6 and 7 to 12 (three pairs a faculty, two groups each), classes that change room in week 5 (one class,
-  two rows), team-taught classes (one class, two teacher rows), cancelled classes. Routes: class codes miss every
-  cell; room, day, start and teacher (the time, place and person grouping readers reach for) miss every cell, because
-  the pairs list two teachers and the half-semester papers share one; room, day and start merge the half-semester
-  papers; room, day, start, weeks and teacher miss the pairs. Only the slot (room, day, start, teaching weeks) gives
-  the golden. Measured risk: a reader who groups by exactly the slot lands Ask A.
-- **Ask B, students in year 2, 3, and 4 or later enrolled at the 2026 census, by faculty (15 figures).** H18 home:
-  the continuing base the projection rolls into 2027. Files: `census_enrolments_2019_2026.csv` (2026 rows),
-  `programme_catalogue_2026.csv`, `programme_transfers_2025_2026.csv`, the conventions (CONT_PIN). Primary (which
-  records are one enrolment): transfers approved in ARC after the cutover left the old programme attempt enrolled
-  beside the new one, because the discontinuation keyed in SIRIUS's last days did not migrate; 38 of the 60 such
-  students moved between faculties, and 33 of the 38 moved into the second programme of an approved conjoint combination (BA
-  to LLB, BSc to BCom, BEng(Hons) to BCom, BCompSc to BSc, BHSc or BSpEx to BCom), so their two attempts read as a
-  conjoint on the catalogue. The interior population is the genuine conjoint students (about 3 per cent), counted in
-  the first-listed programme's faculty. Routes: the first attempt, every attempt, the latest attempt, the catalogue
-  with the latest or the first attempt for other pairs all miss every cell (asserted B3). Only matching the two
-  attempts to a transfer in the register gives the golden. Measured risk: a reader who joins the register to every
-  two-attempt student lands Ask B (the shape of this round's re-filed-schedule death).
-- **Chart (`s1_2026_teaching_groups.png`):** its segments are Ask A's cells.
-- Screened against 1.1e and this round's fallen devices: no duplicate row, comment, code or field names a group or a
-  stale attempt; Ask A's identity is a slot and not a time, place and person; Ask B's is a transfer matched to two
-  attempts, not a later row replacing an earlier one.
+- **The ask: Semester 1 2026 teaching groups at 200 level and at 300 level and above, by faculty, with 30 students or
+  fewer and with more than 30 at the census (20 figures).** H18 home: the teaching plan sets this year's upper-level
+  groups beside the projection when it sizes the second-year groups for 2027. Files: `s1_2026_class_timetable.xlsx`
+  and the conventions (GROUP_PIN: the students taught together, in one room at one time; the group's faculty and level
+  are its papers'; its size the census enrolment it teaches; cancelled classes are not groups).
+- **Primary (which records are one figure, a key the data forces).** Papers taught together share one room, slot and
+  teaching weeks. Combinations set up in ARC Scheduling after the cutover carry one teacher of record and ARC writes the
+  combination's census enrolment on each of its classes; combinations carried from SIRIUS keep each paper's teacher and
+  show each class's own enrolment. Nothing names either. A combination's figure is the slot plus whether its classes
+  repeat one enrolment that, added, would exceed the room: in every faculty and level, five ARC combinations (three over
+  30, two at 30 or under whose doubled figure crosses 30) and three SIRIUS pairs (one over 30 with unequal classes, one
+  over 30 with two equal classes, one at 30 or under). Fair: a grader confirms each ARC combination by its repeated
+  figure overfilling the room (asserted A2) and each SIRIUS pair by its own figures fitting it (A3).
+- **Why each reflex misses every cell (measured in `ceiling.py`).** Summing merged classes (both round 1 readers'
+  verbatim path) doubles the ARC combinations and moves the small ones over 30; reading a repeated figure once (the
+  battery's bulk-receipt repair) halves the SIRIUS pairs with equal classes; taking the larger class halves every
+  SIRIUS pair; grouping by teacher splits the SIRIUS pairs; ignoring teaching weeks merges one half-semester pair per
+  faculty and level; one group per class code double-counts every pair. Only the slot with the room-capacity reading
+  of a repeated figure gives the golden.
+- **Chart (`s1_2026_teaching_groups.png`):** its segments are the ask's cells.
+- Screened against 1.1e and this round's fallen devices: no duplicate row, comment, code or column marks a combination
+  or its origin; the identity is the slot plus the figure's repetition against the room, which the round 1 readers'
+  path (merge identical meeting sets, add) and the battery's repair (read a repeated total once) both miss.
 
-| Ask | Figures | Cracker (lands the call, runs the battery) and the routes in ceiling.py | Verdict |
+| Ask | Figures | Cracker and the round 1 readers' verbatim paths (ceiling.py routes) | Verdict |
 |---|---|---|---|
-| A groups by faculty | 5 | class codes; room, day, start, teacher; room, day, start; with weeks and teacher | miss |
-| A groups over 30 by faculty | 5 | the same four routes | miss |
-| B year 2 by faculty | 5 | first, every, latest attempt; catalogue then latest or first | miss |
-| B year 3 by faculty | 5 | the same five routes | miss |
-| B year 4 or later by faculty | 5 | the same five routes | miss |
+| 200 level, 30 or fewer, by faculty | 5 | class codes; reader A; reader B; repeated figure once; larger class; teacher | miss |
+| 200 level, more than 30, by faculty | 5 | the same routes | miss |
+| 300 and above, 30 or fewer, by faculty | 5 | the same routes | miss |
+| 300 and above, more than 30, by faculty | 5 | the same routes | miss |
 
-Pair ceiling: 28.5 (every route keeps 0 of 25; cracker 45.0, mirror 12.0 on weights 38, 7 and 55)
+Pair ceiling: 31.2 (worst route, room, day, start and teacher summed, keeps 1 of 20; cracker 47.8, mirror 14.8; both round 1 readers' verbatim paths keep 0 of 20)
 
-Mirror leakage: 0.0 per cent of ask weight (every route off the call keeps nothing)
+Mirror leakage: 5.0 per cent of ask weight (the teacher route; 0.0 on both readers' paths and the battery's)
 
 Measured by: generator/ceiling.py
 
-## Stage 3 gates (2026-10-23)
+## Stage 4 round 1 (on target.zip fab8b152) and the fix pass
 
-- Generator: `python3 task179/generator/build.py`; `checks.py` 61 assertions green (input gates G1 to G6, the call and
-  its bin R1 to R4, the golden family B1 and the refuted rivals B2 and L1, the three-rules block on the clean truth T1
-  to T4, SF1 to SF9, the ask routes A0, A1 and B3, separation S1 to S3, documents D1 to D4, realism Q1); `verify.py`
-  (csv and openpyxl readers, pair counting per class, statsmodels IRLS) recomputes the call (3,269.3, printed 3,250),
-  both components and all 25 ask figures, 0 failed; two consecutive builds byte-identical over 19 files; `target.zip`
-  md5 fab8b152c3c15fd556fc4114233c2d8e.
-- `figures_check.py` PASS (38 figures); `voice-check.py` PASS (718 characters); `ceiling.py` 0 of 25 on every route,
-  pair ceiling 28.5, mirror leakage 0.0; container scrub audit clean on `golden/` and `target/`.
-- `leak.py --asof 2026-10-16` REVIEW, each line harmless: the conventions and the dictionary carry the estimand's words
-  (first-time entrants, census, enrolled), which the conventions must file; no figure, no decisive-step word (asserted
-  D2 and D3: allocation, block, classmate, peer, integration, repeat appear in no shipped document).
-- `precut.py` exit 0 (51 checks, 0 FAIL, 0 WARN) on the registered v3 card. `guard.py heart` WARN (the card's answered
-  WARNs; nearest stump 0.05, task458). `guard.py surface`: no hard tell; the promoted pairs sit at surface 0.10 and are
-  history severity (this number's retired v2 row); personas in the cut pack are the card's (Keri Keating, Malcolm
-  Hussey).
-- Main-call Gate F risk, written down before the readers: persistence through social integration is a channel the
-  retention literature names (learning communities, Tinto), and the class extracts that carry it are in every
-  reader's hands; nothing in the pack names the allocation, a block or a classmate (the cutover notes' line on batch
-  jobs not carried into ARC was cut after this round's known-channel measurements), so a reader reaches it only by
-  pairing class members. Ask risk: Ask A falls to a reader who groups classes by the full slot (room, day, start,
-  teaching weeks); Ask B to a reader who joins the transfers register to every two-attempt student.
+- Readers: A and B both filed 2,250 on the call (the default path: a logistic model on attendance, week-6 ratings,
+  programme and background, back-tested on 2023 to 2025); neither looked at classmates. The call held 2 of 2.
+- Asks: reader A 10 of 25 (all ten teaching-group cells, by merging classes with identical room, day and time in every
+  meeting and adding; all fifteen continuing cells missed by keeping attempt 1 for 31 two-attempt students, which is the
+  judge's open fork, not the device); reader B 25 of 25 (identical meeting sets merged and added; the transfer register
+  joined to the two-attempt students). Both devices sat on the careful reader's path.
+- Judge: DETERMINISTIC, FIX_NOW optional, 3,270 and every ask cell reproduced. Notes: the nearest-250 bucket depends on
+  the exposure's form (log 3,115, square root 3,130, a 22-or-more indicator 2,976, each fitting worse, no criterion
+  filed); the faculty of a student with old and new attempts after a transfer is unfiled.
+- Fix 1, the form: the conventions file the model-selection criterion (SELECT_PIN: the lowest Akaike information
+  criterion among the models fitted to the same intakes). The data separate the candidates by it: the chosen form (an
+  indicator at 10 repeat classmates) prints 3,250 (3,253.0) and every form within 12 AIC units prints 3,250, while log,
+  square root and the 22 indicator are 20 to 185 units worse (asserted B0 to B3). No recent build files a selection
+  criterion (task175, task176, task171 and task173 checked). The printed call is unchanged; the unrounded golden moved
+  from 3,269.3 (nine bands) to 3,253.0 (the criterion's form).
+- Fix 2, the transfer fork: the continuing-students ask was dropped rather than pinned, since pinning the new programme
+  hands the ask over (reader B already joined the register); its files stay as distractors and no sentence about
+  continuing students remains in the conventions.
+- Fix 3, the ask layer: the teaching-groups ask was re-sited onto a figure whose identity the data force (`## Ask sheet`)
+  and widened to faculty, level and size band (20 cells), every cell moved by the device on every route.
+
+## Stage 3 gates (2026-10-23, re-run after the round 1 fix)
+
+- Generator: `python3 task179/generator/build.py`; `checks.py` 73 assertions green (input gates G1 to G6, the call and
+  its bin R1 to R4, the criterion's choice and the form family B0 to B4, L1, the three-rules block on the clean truth T1
+  to T4, SF1 to SF10, the ask's routes and device facts A0 to A5, separation S2 and S3, documents D1 to D4, realism Q1);
+  `verify.py` (csv and openpyxl readers, pair counting per class, statsmodels GLM over nine forms with its own AIC)
+  picks the same form and recomputes the call (3,253.0, printed 3,250), both components and all 20 ask figures, 0
+  failed; two consecutive builds byte-identical over 19 files; `target.zip` md5 in `pipeline.json`.
+- `figures_check.py` PASS (44 figures); `voice-check.py` PASS (651 characters); `ceiling.py` worst route 1 of 20, both
+  round 1 readers' paths 0 of 20, pair ceiling 31.2, mirror leakage 5.0; container scrub clean.
+- `leak.py --asof 2026-10-16` REVIEW, each line harmless: the conventions and dictionary carry the estimand's words; no
+  figure and no decisive-step word (asserted D2 and D3).
+- `precut.py` exit 0; `guard.py surface` no hard tell. `guard.py heart` now BLOCKs on four axes (`ban.strategy`
+  composition_mix, `ban.pattern` G6, `ban.artifact` register, `ban.forum` executive_team) against task175: the card
+  registered under the lock at WARN (4afaec0a) while task173 was live, and task173 was later spent, which re-formed the
+  live window around task175 (drawn before this build). Recorded per H27's reading of a re-run draw-time gate, not
+  relabelled; the main session decides whether the window has to move before ship. Driver and stump similarity stay
+  low (nearest 0.07, task143).
 - Keys for the readers: the call `call_not_enrolled_2027`; components `cc1_intake_2026_at_census`,
-  `cc2_intake_2026_no_repeat_classmate`; asks `ask_groups_s1_2026_<ass|bus|sci|eng|hlt>`,
-  `ask_groups_over30_s1_2026_<ass|bus|sci|eng|hlt>`, `ask_continuing_2026_<ass|bus|sci|eng|hlt>_y<2|3|4>`; withhold
-  `_unrounded`, `label_*` and `hist_*`.
+  `cc2_intake_2026_no_repeat_classmate`; the ask `ask_groups_s1_2026_<ass|bus|sci|eng|hlt>_<200|300up>_<30orfewer|over30>`;
+  withhold `_unrounded`, `_model_form`, `_stated`, `label_*` and `hist_*`.
+- Main-call Gate F risk stays as written at the draw: persistence through social integration is a channel the
+  retention literature names, carried by class extracts every reader opens; nothing in the pack names the allocation,
+  a block or a classmate, and both round 1 readers missed it.
 
 ## Architecture v2 record (spent, kept as history)
 
@@ -992,6 +1007,11 @@ candidate touches them.
     functional form (`wfam.py`: bands 2,936, a linear term 2,819, log 2,725), because the forward intake's repeat
     classmates sat at 1 to 4 where the record had little support; the world now makes the fourth paper a
     university-wide elective and the protection near flat below five repeat classmates (`## Screens`).
+  - Round 1 deaths of two ask devices (stage 4 on fab8b152): the co-taught pairs listing two teachers fell to both readers,
+    who merged classes with identical meeting sets (room, day, start, weeks) and added; the transfer left as a second
+    enrolled attempt fell to reader B's register join, and pinning its faculty (the judge's fork) would hand it to every
+    reader. Replaced by the combination's figure repeated on ARC classes against own figures on SIRIUS pairs, read
+    against the room (`## Ask sheet`).
 
 ## Retired
 

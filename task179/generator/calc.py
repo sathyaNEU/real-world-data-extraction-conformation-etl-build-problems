@@ -3,8 +3,8 @@
 The call: each 2019 to 2025 first-time entrant's enrolment at the next census, modelled on the entrant's attributes,
 the week-6 progress ratings and the number of other entrants of the intake the entrant meets in two or more of the
 entrant's own Semester 1 classes (repeat classmates, in bands); the model applied to the 2026 intake and summed.
-Ask A: Semester 1 2026 teaching groups by owning faculty, and those over 30 students. Ask B: continuing students at
-the 2026 census by faculty and year of study."""
+The ask: Semester 1 2026 teaching groups at 200 level and at 300 level and above by owning faculty, at 30 students or
+fewer and over 30. The model form is the one with the lowest Akaike information criterion, as the conventions file."""
 from __future__ import annotations
 
 import os
@@ -30,8 +30,6 @@ def load(target):
     d["prog"] = pd.read_csv(P(C.F_PROG), dtype={"STUDENT": str, "CLASS": str}, keep_default_na=False)
     d["adm"] = pd.read_excel(P(C.F_ADM), sheet_name=None, dtype={"Student No": str, "Student ID": str})
     d["tt"] = pd.read_excel(P(C.F_TT))
-    d["cat"] = pd.read_csv(P(C.F_CAT), dtype=str, keep_default_na=False)
-    d["trf"] = pd.read_csv(P(C.F_TRF), dtype=str)
     return d
 
 
@@ -157,6 +155,8 @@ def design(a, form):
         X.append(np.log1p(t))
     elif form.startswith("sat"):
         X.append(1 - np.exp(-t / float(form[3:])))
+    elif form == "sqrt":
+        X.append(np.sqrt(t))
     elif form == "none":
         pass
     else:
@@ -192,14 +192,20 @@ def forecast(a, form="bands", years=None):
     return float(p.sum()), ll, b
 
 
-# ------------------------------------------------------------------ ask A: teaching groups
-def teaching_groups(d):
-    tt = d["tt"]
+# ------------------------------------------------------------------ the ask: teaching groups
+LEVELS = ("200", "300+")
+
+
+def slot_groups(tt, cols=("Room", "Day", "Start", "Teaching Weeks")):
+    """active classes joined into groups by shared meetings on cols (None: one group per class)"""
     act = tt[tt["Class Status"] == "Active"]
-    meet = act[["Class Code", "Day", "Start", "Teaching Weeks", "Room", "Teacher"]].drop_duplicates()
-    # classes taught together: the same room, day, start and teaching weeks (the teacher of record is per class)
-    key = meet["Day"] + "|" + meet["Start"] + "|" + meet["Teaching Weeks"] + "|" + meet["Room"]
-    parent = {c: c for c in act["Class Code"].unique()}
+    cls = act.groupby("Class Code").agg(fac=("Owning Faculty", "first"), level=("Level", "first"),
+                                        n=("Enrolled at Census", "first"), cap=("Room Capacity", "max")).reset_index()
+    if not cols:
+        return cls.assign(grp=cls["Class Code"])
+    meet = act[["Class Code"] + list(cols)].drop_duplicates()
+    key = meet[list(cols)].astype(str).agg("|".join, axis=1)
+    parent = {c: c for c in cls["Class Code"]}
 
     def find(x):
         while parent[x] != x:
@@ -212,50 +218,50 @@ def teaching_groups(d):
             ra, rb = find(cs[0]), find(c)
             if ra != rb:
                 parent[rb] = ra
-    cls = act.drop_duplicates("Class Code")[["Class Code", "Owning Faculty", "Enrolled at Census"]].copy()
     cls["grp"] = cls["Class Code"].map(find)
-    grp = cls.groupby("grp").agg(fac=("Owning Faculty", "first"), n=("Enrolled at Census", "sum"),
-                                 facs=("Owning Faculty", "nunique"))
-    assert (grp["facs"] == 1).all()
-    out = {}
-    for f in ["FASS", "FBUS", "FSCI", "FENG", "FHLT"]:
-        gg = grp[grp["fac"] == f]
-        out[FAC_ARC[f]] = (int(len(gg)), int((gg["n"] > 30).sum()))
+    return cls
+
+
+def group_sizes(cls, rule="golden"):
+    """golden: classes of a group showing one and the same census enrolment that, added, would exceed the room are
+    the combination's enrolment written on each class, counted once; otherwise the classes' enrolments are added"""
+    out = []
+    for gid, g in cls.groupby("grp"):
+        ns = list(g["n"])
+        if rule == "sum" or len(ns) == 1:
+            size = sum(ns)
+        elif rule == "once":
+            size = max(ns)
+        else:
+            same = len(set(ns)) == 1
+            size = ns[0] if (same and sum(ns) > g["cap"].max()) else sum(ns)
+        lv = int(g["level"].min())
+        lev = "200" if lv == 200 else ("300+" if lv >= 300 else "100")
+        out.append((g["fac"].iloc[0], lev, size, g["fac"].nunique()))
     return out
 
 
-# ------------------------------------------------------------------ ask B: continuing students
-def continuing(d):
-    cz = d["census"].copy()
-    cz["Y"] = cz["CENSUS_DATE"].map(census_year)
-    c6 = cz[(cz["Y"] == 2026) & (cz["STATUS"] == "Enrolled") & (cz["YEAR_OF_STUDY"] >= 2)]
-    cat = d["cat"]
-    combos = {}
-    for _, r in cat[cat["TYPE"] == "Conjoint"].iterrows():
-        a, b = r["COMPONENTS"].split(";")
-        combos[frozenset((a, b))] = a
-    pfac = {r["CODE"]: FAC_ARC[r["OWNING_FACULTY"]] for _, r in cat[cat["TYPE"] == "Programme"].iterrows()}
-    trf = d["trf"]
-    moved = {}
-    for _, r in trf.iterrows():
-        moved.setdefault(r["STUDENT"], []).append((r["APPROVED"], r["FROM_PROGRAMME"], r["TO_PROGRAMME"]))
+def teaching_groups(d, cols=("Room", "Day", "Start", "Teaching Weeks"), rule="golden"):
+    gs = group_sizes(slot_groups(d["tt"], cols), rule)
     out = {}
-    n_stale = 0
-    for sid, g in c6.groupby("STUDENT_ID"):
-        progs = list(g.sort_values("ATTEMPT_SEQ")["PROGRAMME"])
-        yos = int(g["YEAR_OF_STUDY"].iloc[0])
-        tr = [m for m in moved.get(sid, []) if m[1] in progs and m[2] in progs]
-        if len(progs) == 1:
-            fac = pfac[progs[0]]
-        elif tr:
-            # an attempt left enrolled after the student transferred out of it: the student is in the new programme
-            fac = pfac[sorted(tr)[-1][2]]
-            n_stale += 1
-        else:
-            fac = pfac[combos[frozenset(progs)]]
-        k = (fac, min(yos, 4))
-        out[k] = out.get(k, 0) + 1
-    return out, n_stale
+    for f in ["FASS", "FBUS", "FSCI", "FENG", "FHLT"]:
+        for lev in LEVELS:
+            sz = [x[2] for x in gs if x[0] == f and x[1] == lev]
+            out[(FAC_ARC[f], lev)] = (sum(1 for v in sz if v <= 30), sum(1 for v in sz if v > 30))
+    return out, all(nf == 1 for *_, nf in gs)
+
+
+FORMS = ["none", "bands", "bands5", "bands4", "ge5", "ge7", "ge10", "ge15", "ge22", "any", "lin", "log", "sqrt",
+         "sat4", "sat8"]
+
+
+def aic_table(a, forms=FORMS):
+    """each form's forecast, log-likelihood and Akaike information criterion on the 2019 to 2025 intakes"""
+    out = {}
+    for form in forms:
+        f, ll, b = forecast(a, form)
+        out[form] = (f, ll, 2 * len(b) - 2 * ll)
+    return out
 
 
 def compute(target):
@@ -263,7 +269,9 @@ def compute(target):
     a = frame(d)
     res = {"frame": a, "data": d}
     res["n2026"] = int((a["intake"] == 2026).sum())
-    res["call"], res["ll"], res["coef"] = forecast(a, "bands")
-    res["groups"] = teaching_groups(d)
-    res["cont"], res["n_stale"] = continuing(d)
+    res["aic"] = aic_table(a)
+    res["form"] = min(res["aic"], key=lambda k: res["aic"][k][2])
+    res["call"], res["ll"], res["coef"] = forecast(a, res["form"])
+    res["groups"], one_fac = teaching_groups(d)
+    assert one_fac
     return res

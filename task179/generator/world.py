@@ -21,6 +21,7 @@ import common as C
 TRUTH = dict(icpt=-0.95, asc=-0.42, fif=0.30, pt=0.38, mature=0.22, hard=0.18, prisk=0.62, beta=1.05, mid=7.0, width=1.8)
 N0 = 7900          # 2019 first-time entrants (before growth)
 FIRST = 2019
+CHURN = 0.07       # an allocated entrant moved out of the group in one paper at add/drop
 EXTRA_FORWARD = 160   # the 2026 offer round took in more entrants than the trend
 GROWTH = 0.0105
 ALLOC_DAY = (7, 20)  # the allocation run's date each July (history)
@@ -189,7 +190,7 @@ class World:
             # add/drop moves before the census (history: a clash moves an allocated student out of the group)
             if history and is_core:
                 for i in takers:
-                    if blocked[i] and c.lc[i] == 0 and g.random() < 0.07:
+                    if blocked[i] and c.lc[i] == 0 and g.random() < CHURN:
                         opts = [j for j in range(1, ncls + 1) if fill.get(j, 0) < C.CLASS_CAP and j != assign[i][p]]
                         new = opts[g.integers(len(opts))]
                         fill[assign[i][p]] -= 1
@@ -443,28 +444,43 @@ class World:
                     for k in range(1, nk + 1):
                         classes.append(dict(paper=cd, k=k, fac=f, level=lev, enrolled=int(sz // nk + (k <= sz % nk)),
                                             pair=None))
-            # honours papers; eight of them taught with a 300-level paper, at least three of the eight groups over
-            # 30 students together and at least two at 30 or under
-            pool3 = sorted([x for x in classes if x["fac"] == f and x["level"] == 300 and x["k"] == 1
-                            and 6 <= x["enrolled"] <= 29], key=lambda x: x["paper"])
-            g.shuffle(pool3)
-            big = [x for x in pool3 if x["enrolled"] >= 16][:4]
-            small = [x for x in pool3 if x["enrolled"] <= 24 and x not in big][:3]
-            mates = big + small
-            assert len(big) == 4 and len(small) == 3, (f, len(big), len(small))
-            for j in range(12):
-                cd = code_for(stems[f][j % nst], 400)
-                rec = dict(paper=cd, k=1, fac=f, level=400, enrolled=int(g.integers(5, 17)), pair=None)
-                if j < len(mates):
-                    m = mates[j]
-                    if m in big:
-                        rec["enrolled"] = min(16, max(rec["enrolled"], 31 + int(g.integers(0, 4)) - m["enrolled"]))
+            # papers taught together, at 200 level (two 200-level papers in one class) and at 300 level (a 300-level
+            # paper and an honours paper): per faculty and level, five combinations set up in ARC Scheduling (three
+            # over 30 students, two at 30 or under), whose census enrolment ARC writes as the combination's on each
+            # class, and three carried from SIRIUS as separate classes sharing the room and slot, which show their own
+            # enrolments (over 30 together with unequal and with equal halves, and one at 30 or under)
+            kinds = [("arc", True, 0), ("arc", True, 0), ("arc", True, 0), ("arc", False, 0), ("arc", False, 0),
+                     ("sirius", True, 0), ("sirius", True, 1), ("sirius", False, 0)]
+            for lev in (200, 300):
+                pool = sorted([x for x in classes if x["fac"] == f and x["level"] == lev and x["k"] == 1
+                               and x.get("pair") is None and x["enrolled"] <= 60], key=lambda x: x["paper"])
+                g.shuffle(pool)
+                for kind, over, equal in kinds:
+                    m = pool.pop()
+                    if lev == 300:
+                        cd = code_for(stems[f][int(g.integers(nst))], 400)
+                        rec = dict(paper=cd, k=1, fac=f, level=400, enrolled=0, pair=None)
+                        classes.append(rec)
                     else:
-                        rec["enrolled"] = max(5, min(rec["enrolled"], 30 - m["enrolled"]))
-                    rec["pair"] = (m["paper"], m["k"])
-                    m["pair"] = (cd, 1)
+                        rec = pool.pop()
+                    if equal:
+                        v = int(g.integers(16, 21))
+                        m["enrolled"], rec["enrolled"] = v, v
+                    else:
+                        total = int(g.integers(31, 41)) if over else int(g.integers(21, 31))
+                        hi = 16 if lev == 300 else total - 5
+                        r = int(g.integers(5, min(hi, total - 5) + 1))
+                        if kind == "sirius" and 2 * r == total:
+                            r -= 1
+                        m["enrolled"], rec["enrolled"] = total - r, r
+                    for x, y in ((m, rec), (rec, m)):
+                        x["pair"] = (y["paper"], y["k"])
+                        x["combined"] = kind == "arc"
                     self.pairs.append((m, rec))
-                classes.append(rec)
+            # honours papers taught on their own
+            for j in range(4):
+                cd = code_for(stems[f][j % nst], 400)
+                classes.append(dict(paper=cd, k=1, fac=f, level=400, enrolled=int(g.integers(5, 17)), pair=None))
         self.classes = classes
 
     @staticmethod

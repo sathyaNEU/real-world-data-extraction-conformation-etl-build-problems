@@ -33,14 +33,11 @@ def main(target):
     bad = []
     # census: enrolled ids by year
     enrolled = defaultdict(set)
-    c26 = []
     for r in rows(P("census_enrolments_2019_2026.csv")):
         d = r["CENSUS_DATE"]
         y = int(d[-4:]) if "/" in d else int(d[:4])
         if r["STATUS"] in ("EN", "Enrolled"):
             enrolled[y].add(r["STUDENT_ID"])
-        if y == 2026 and r["STATUS"] == "Enrolled" and int(r["YEAR_OF_STUDY"]) >= 2:
-            c26.append(r)
     xw = {r["SIRIUS_STUDENT_NO"]: r["ARC_ID"] for r in rows(P("sirius_arc_student_crosswalk.csv"))}
     # admissions
     wb = openpyxl.load_workbook(P("admissions_entrants_2019_2026.xlsx"), read_only=True)
@@ -84,88 +81,85 @@ def main(target):
     for r in rows(P("progress_check_wk6_2019_2026.csv")):
         if r["RATING"] in val:
             pr[(int(r["YEAR"]), r["STUDENT"])].append(val[r["RATING"]])
-    edges = [0, 1, 2, 3, 4, 6, 9, 15, 22, 10 ** 9]
-    X, yv, Xf = [], [], []
+    base, tie, yv, isf = [], [], [], []
     for (y, sid), e in sorted(ent.items()):
-        t = rep.get((y, sid), 0)
-        band = [1.0 if lo <= t < hi else 0.0 for lo, hi in zip(edges[:-1], edges[1:])][1:]
         ps = pr.get((y, sid))
-        row = [1.0, (e["asc"] - 186) / 34, e["fif"], e["pt"], e["mature"], e["hard"], np.mean(ps) if ps else 0.5,
-               e["lc"], e["hall"], e["acc"] / 100.0] + [float(e["fac"] == f) for f in ("BUS", "SCI", "ENG", "HLT")] + band
-        if y == 2026:
-            Xf.append(row)
-        else:
-            X.append(row)
+        base.append([1.0, (e["asc"] - 186) / 34, e["fif"], e["pt"], e["mature"], e["hard"], np.mean(ps) if ps else 0.5,
+                     e["lc"], e["hall"], e["acc"] / 100.0] + [float(e["fac"] == f) for f in ("BUS", "SCI", "ENG", "HLT")])
+        tie.append(rep.get((y, sid), 0))
+        isf.append(y == 2026)
+        if y < 2026:
             nxt = enrolled[y + 1] if y < 2025 else enrolled[2026]
             key = sid if y < 2025 else xw.get(sid)
             yv.append(0.0 if key in nxt else 1.0)
-    m = sm.GLM(np.array(yv), np.array(X, float), family=sm.families.Binomial()).fit()
-    call = float(m.predict(np.array(Xf, float)).sum())
+    base, tie, isf = np.array(base, float), np.array(tie, float), np.array(isf)
+
+    def feats(form):
+        if form.startswith("ge"):
+            return (tie >= int(form[2:]))[:, None].astype(float)
+        if form == "log":
+            return np.log1p(tie)[:, None]
+        if form == "sqrt":
+            return np.sqrt(tie)[:, None]
+        e = {"bands": [0, 1, 2, 3, 4, 6, 9, 15, 22, 10 ** 9], "bands5": [0, 1, 3, 6, 10, 10 ** 9]}[form]
+        return np.column_stack([((tie >= lo) & (tie < hi)).astype(float) for lo, hi in zip(e[:-1], e[1:])][1:])
+    fits = {}
+    for form in ("bands", "bands5", "ge5", "ge7", "ge10", "ge15", "ge22", "log", "sqrt"):
+        Xa = np.column_stack([base, feats(form)])
+        m = sm.GLM(np.array(yv), Xa[~isf], family=sm.families.Binomial()).fit()
+        fits[form] = (float(m.predict(Xa[isf]).sum()), float(m.aic))
+    form = min(fits, key=lambda k: fits[k][1])
+    call = fits[form][0]
+    Xf = base[isf]
     printed = int(250 * round(call / 250.0))
     if printed != figs["call_not_enrolled_2027"]:
-        bad.append("call %.1f" % call)
+        bad.append("call %.1f (%s)" % (call, form))
     if len(Xf) != figs["cc1_intake_2026_at_census"]:
         bad.append("intake %d" % len(Xf))
     none2026 = sum(1 for (y, sid) in ent if y == 2026 and rep.get((y, sid), 0) == 0)
     if none2026 != figs["cc2_intake_2026_no_repeat_classmate"]:
         bad.append("no repeat %d" % none2026)
-    # teaching groups: classes meeting in one room, on one day, at one start and over the same weeks are one group
+    # teaching groups, 200 level and above: classes meeting in one room, on one day, at one start and over the same
+    # weeks are one group; a combination's enrolment written on each of its classes (the same figure on every class,
+    # more than the room seats when added) is counted once
     ws = openpyxl.load_workbook(P("s1_2026_class_timetable.xlsx"), read_only=True).worksheets[0]
     it = ws.iter_rows(values_only=True)
     head = list(next(it))
     slot_classes = defaultdict(set)
-    info = {}
+    info, caps = {}, defaultdict(int)
     for v in it:
         rec = dict(zip(head, v))
         if rec["Class Status"] != "Active":
             continue
-        info[rec["Class Code"]] = (rec["Owning Faculty"], rec["Enrolled at Census"])
+        info[rec["Class Code"]] = (rec["Owning Faculty"], rec["Enrolled at Census"], int(rec["Level"]))
+        caps[rec["Class Code"]] = max(caps[rec["Class Code"]], rec["Room Capacity"])
         slot_classes[(rec["Room"], rec["Day"], rec["Start"], rec["Teaching Weeks"])].add(rec["Class Code"])
     comp = {c: {c} for c in info}
     for cs in slot_classes.values():
-        cs = list(cs)
         merged = set().union(*(comp[c] for c in cs))
         for c in merged:
             comp[c] = merged
-    groups = {frozenset(s) for s in comp.values()}
-    cnt = defaultdict(lambda: [0, 0])
-    for gset in groups:
-        fac = FAC[info[next(iter(gset))][0]]
-        n = sum(info[c][1] for c in gset)
-        cnt[fac][0] += 1
-        cnt[fac][1] += n > 30
-    for f in ("ass", "bus", "sci", "eng", "hlt"):
-        if cnt[f][0] != figs["ask_groups_s1_2026_%s" % f]:
-            bad.append("groups %s %d" % (f, cnt[f][0]))
-        if cnt[f][1] != figs["ask_groups_over30_s1_2026_%s" % f]:
-            bad.append("over30 %s %d" % (f, cnt[f][1]))
-    # continuing students
-    cat = rows(P("programme_catalogue_2026.csv"))
-    pfac = {r["CODE"]: FAC[r["OWNING_FACULTY"]] for r in cat if r["TYPE"] == "Programme"}
-    combo = {frozenset(r["COMPONENTS"].split(";")): r["COMPONENTS"].split(";")[0] for r in cat if r["TYPE"] == "Conjoint"}
-    trf = defaultdict(list)
-    for r in rows(P("programme_transfers_2025_2026.csv")):
-        trf[r["STUDENT"]].append((r["FROM_PROGRAMME"], r["TO_PROGRAMME"]))
-    by = defaultdict(list)
-    for r in c26:
-        by[r["STUDENT_ID"]].append(r)
-    cont = defaultdict(int)
-    for sid, rs in by.items():
-        progs = {r["PROGRAMME"] for r in rs}
-        yos = min(int(rs[0]["YEAR_OF_STUDY"]), 4)
-        if len(progs) == 1:
-            p = progs.pop()
+    cnt = defaultdict(int)
+    for gset in {frozenset(x) for x in comp.values()}:
+        cs = sorted(gset)
+        vals = [info[c][1] for c in cs]
+        lv = min(info[c][2] for c in cs)
+        if lv < 200:
+            continue
+        if len(cs) > 1 and len(set(vals)) == 1 and sum(vals) > max(caps[c] for c in cs):
+            size = vals[0]
         else:
-            moves = [t for (f_, t) in trf.get(sid, []) if f_ in progs and t in progs]
-            p = moves[-1] if moves else combo[frozenset(progs)]
-        cont[(pfac[p], yos)] += 1
+            size = sum(vals)
+        tag = "200" if lv == 200 else "300up"
+        cnt[(FAC[info[cs[0]][0]], tag, "over30" if size > 30 else "30orfewer")] += 1
     for f in ("ass", "bus", "sci", "eng", "hlt"):
-        for yy in (2, 3, 4):
-            k = "ask_continuing_2026_%s_y%d" % (f, yy)
-            if cont[(f, yy)] != figs[k]:
-                bad.append("%s %d" % (k, cont[(f, yy)]))
-    print("verify: call %.1f -> %d, intake %d, %d graded figures checked, %d failed%s"
-          % (call, printed, len(Xf), 3 + 10 + 15, len(bad), (": " + "; ".join(bad)) if bad else ""))
+        for tag in ("200", "300up"):
+            for band in ("30orfewer", "over30"):
+                k = "ask_groups_s1_2026_%s_%s_%s" % (f, tag, band)
+                if cnt[(f, tag, band)] != figs[k]:
+                    bad.append("%s %d" % (k, cnt[(f, tag, band)]))
+    print("verify: call %.1f (%s) -> %d, intake %d, %d graded figures checked, %d failed%s"
+          % (call, form, printed, len(Xf), 3 + 20, len(bad), (": " + "; ".join(bad)) if bad else ""))
     return 1 if bad else 0
 
 

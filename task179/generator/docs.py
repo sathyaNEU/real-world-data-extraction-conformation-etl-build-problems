@@ -33,10 +33,8 @@ INTAKE_PIN = ("The first-year intake of a year is the first-time bachelor's entr
               "entrants.")
 CALL_PIN = ("The projection reports how many of the 2026 intake will not be enrolled at the 1 October 2027 census, to "
             "the nearest 250.")
-CONT_PIN = ("Continuing students are students in their second or later year of study, as the year of study is recorded "
-            "on the census. Each student is counted once: a student studying an approved conjoint combination is "
-            "counted in the faculty of the combination's first-listed programme, and every other student in the "
-            "faculty of the programme the student is enrolled in.")
+SELECT_PIN = ("Where several models of the same outcome are fitted to the same intakes, the projection uses the one "
+              "with the lowest Akaike information criterion.")
 GROUP_PIN = ("The teaching plan counts teaching groups: the students taught together, in one room at one time. A group "
              "belongs to the faculty that owns its paper, and its size is the number of students "
              "enrolled at the census whom it teaches. A cancelled class is not a teaching group.")
@@ -49,9 +47,8 @@ CONVENTIONS = [
         "November with the plan.",
         "These conventions govern the projection for 2027 and the working files behind it."]),
     ("2. Census and enrolment", ["The census is taken on 1 October.", ENROLLED_PIN]),
-    ("3. The first-year intake", [INTAKE_PIN, CALL_PIN]),
-    ("4. Continuing students", [CONT_PIN]),
-    ("5. Teaching groups", [GROUP_PIN,
+    ("3. The first-year intake", [INTAKE_PIN, CALL_PIN, SELECT_PIN]),
+    ("4. Teaching groups", [GROUP_PIN,
                             "Semester 1 groups are taken from the Semester 1 timetable as it stood at the census."]),
 ]
 
@@ -198,7 +195,7 @@ progress_check_wk6_2019_2026.csv  Student Success: week-6 progress check of firs
 
 s1_2026_class_timetable.xlsx  Timetabling: Semester 1 2026 timetable as at the census, one row per weekly meeting
   Class Code, Paper, Paper Title, Owning Faculty, Level, Day, Start, End, Teaching Weeks, Room, Room Capacity, Teacher,
-  Enrolled at Census (students enrolled in the class), Class Status
+  Enrolled at Census (the census enrolment ARC Scheduling holds for the class), Class Status
 
 programme_catalogue_2026.csv  Academic Office: bachelor's programmes and approved conjoint combinations
   TYPE, CODE, TITLE, OWNING_FACULTY, YEARS_FT, COMPONENTS (a combination's programmes, first-listed first)
