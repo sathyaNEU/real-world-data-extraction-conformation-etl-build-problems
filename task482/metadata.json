@@ -1,61 +1,70 @@
 {
  "task": "task482",
- "domain": "Education & Learning Sciences (item response theory and test equating)",
- "client_domain": "Education & Learning Sciences",
- "task_type": "item-response-theory-test-equating",
+ "domain": "Physical & Environmental Sciences (emissions inventory)",
+ "client_domain": "Physical & Environmental Sciences",
+ "task_type": "emissions-inventory",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "bpccs_fall_2026_headcount_by_college.csv",
-  "math_course_outcomes_fall_2026.xlsx"
+  "deq_press_register_2026.csv",
+  "kestle_valley_ozone_design_values_2024_2026.csv"
  ],
  "distractor_reasons": {
-  "bpccs_fall_2026_headcount_by_college.csv": "each college's fall 2026 headcount, FTE and first-time students: the colleges' size, not the students the QPI placed, and counted on a census date rather than by sitting",
-  "math_course_outcomes_fall_2026.xlsx": "fall 2026 course outcomes by college and course: how placed students fared, which neither sets a placement score nor counts placements"
+  "deq_press_register_2026.csv": "the Department's press register (type, maker, web width, rated speed, year installed and where each press exhausts): what each plant runs, not what its presses used or emitted in 2026",
+  "kestle_valley_ozone_design_values_2024_2026.csv": "the area's ozone monitors' fourth-highest eight-hour values and design values, 2024 to 2026: why the area is in nonattainment, which no plant's press VOC turns on"
  },
  "stated_inputs": [
-  "0.20",
-  "-0.70",
-  "60"
+  "25",
+  "2026",
+  "1 July 2027"
  ],
  "deliverables": [
-  "qpi_placement_review_2027.xlsx",
-  "qpi_form27a_score_conversion.csv",
-  "qpi_form27a_expected_score_curve.svg"
+  "deq_rule18-4_applicability_2027.xlsx",
+  "deq_printing_press_voc_2026.csv",
+  "deq_printing_press_voc_2026.svg"
  ],
- "as_of": "2027-02-05",
+ "as_of": "2027-02-26",
  "files": [
-  "bpccs_fall_2026_headcount_by_college.csv",
-  "bpccs_mathematics_placement_policy_4-12.pdf",
-  "itemstore_assembly_pool_2027-02-03.csv",
-  "kts_qpi_attempts_2026-03-01_to_2026-06-30.csv",
-  "kts_to_northgate_student_crosswalk.csv",
-  "math_course_outcomes_fall_2026.xlsx",
-  "northgate_attempts_2026-07-01_to_2027-01-31.csv",
-  "northgate_item_responses_2026-07-01_to_2027-01-31.csv",
-  "qpi_data_dictionary_2027.pdf",
-  "qpi_form_27A_assembly.csv",
-  "qpi_forms_26A_26B_layout.csv",
-  "qpi_score_reports_2026-03-01_to_2027-01-31.csv",
-  "qpi_session_review_log_2026.xlsx",
-  "qpi_technical_report_2027.pdf",
-  "qpi_testing_centres.csv"
+  "cantrell_bend_manifests_2026.csv",
+  "cantrell_bend_waste_profiles_2026.pdf",
+  "corvane_invoice_export_2026.csv",
+  "deq_information_request_2027-01-12.pdf",
+  "deq_press_register_2026.csv",
+  "deq_printing_plants_register_2027-02.xlsx",
+  "deq_rule_18-4_draft_2027-02-19.pdf",
+  "haldane_catalog_2026-04.csv",
+  "haldane_statement_2026.xlsx",
+  "kestle_valley_ozone_design_values_2024_2026.csv",
+  "oxidizer_historian_hourly_2026.csv",
+  "oxidizer_performance_tests_2017_2026.pdf",
+  "press_material_use_2026.csv",
+  "safety_data_sheet_master_2027-01.xlsx",
+  "solvent_vendor_payments_2026.csv",
+  "stock_counts_2026.csv",
+  "stores_cleaning_issues_2026.csv",
+  "wexcombe_service_tickets_2026.csv"
  ],
  "rows": {
-  "qpi_testing_centres.csv": 20,
-  "bpccs_fall_2026_headcount_by_college.csv": 14,
-  "kts_qpi_attempts_2026-03-01_to_2026-06-30.csv": 3288,
-  "qpi_forms_26A_26B_layout.csv": 200,
-  "qpi_form_27A_assembly.csv": 140,
-  "northgate_attempts_2026-07-01_to_2027-01-31.csv": 6493,
-  "northgate_item_responses_2026-07-01_to_2027-01-31.csv": 454510,
-  "itemstore_assembly_pool_2027-02-03.csv": 180,
-  "qpi_score_reports_2026-03-01_to_2027-01-31.csv": 10674,
-  "kts_to_northgate_student_crosswalk.csv": 3179
+  "haldane_catalog_2026-04.csv": 20,
+  "corvane_invoice_export_2026.csv": 1914,
+  "stock_counts_2026.csv": 284,
+  "haldane_statement_2026.xlsx": 1194,
+  "oxidizer_historian_hourly_2026.csv": 87600,
+  "stores_cleaning_issues_2026.csv": 1353,
+  "cantrell_bend_manifests_2026.csv": 298,
+  "kestle_valley_ozone_design_values_2024_2026.csv": 15,
+  "solvent_vendor_payments_2026.csv": 559,
+  "press_material_use_2026.csv": 80468,
+  "deq_press_register_2026.csv": 48,
+  "cantrell_bend_waste_profiles_2026.pdf": 28,
+  "deq_printing_plants_register_2027-02.xlsx": 14,
+  "safety_data_sheet_master_2027-01.xlsx": 30,
+  "oxidizer_performance_tests_2017_2026.pdf": 28,
+  "wexcombe_service_tickets_2026.csv": 214
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task482/generator); the community college system, its colleges, its placement test, the item bank, the delivery platforms, the students and the people are fictional",
-  "public_specifications": "the layouts are the pack's own, in the style of a computer-based test delivery export and an item bank export, described in its data dictionary",
+  "constructed": "every file is constructed for this task by its generator (task482/generator); the state agency, the nonattainment area, the rule, the plants, their suppliers, vendors and testing firms, and the people are fictional",
+  "public_specifications": "the layouts follow the style of a state air agency's information-request returns: production press logs, oxidizer data-historian exports, EPA Method 25A test summaries, safety data sheet masters, hazardous waste manifests and supplier statements",
   "licence": "CC0 1.0 (constructed data)",
-  "date": "2027-02-05"
+  "date": "2027-02-26"
  }
 }

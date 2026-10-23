@@ -1,36 +1,37 @@
 {
-  "task": "task482",
-  "owner": "oviya1301",
-  "status": "DESIGN",
-  "domain": "physical-environmental-sciences",
-  "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-23",
-  "stump": "The default path applies each plant's latest oxidizer performance test destruction efficiency to its 2026 captured VOC and names Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging; the golden reads each operating day's oxidizer outlet from the floor relation the plants' tests trace, at the inlet the day's captured VOC and airflow imply, and adds Ashcombe Flexible Packaging and Kelvedon Laminates (figures set at the build).",
-  "architecture": 7,
-  "loops": 0,
-  "precut": {
-    "exit": null,
-    "date": ""
-  },
-  "leak": {
-    "leak_py": "",
-    "reader": ""
-  },
-  "duplicate_check": {
-    "heart": "WARN (overuse.org_family, answered in the note)",
-    "nearest": "task478 v7 and v6 at 0.08"
-  },
-  "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
-  },
-  "returned": [],
-  "resume": "stage 2: architecture 7 drawn 2026-10-23 (a state VOC inventory of printing plants; oxidizer outlet floor at dilute inlets); write the default path, stump sentence, readability screen, fork table, ladder, closure, asks and prompt, then precut.py",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "source_note": "re-root to a fresh world; architectures 1 to 6 spent at stage 4"
+ "task": "task482",
+ "owner": "oviya1301",
+ "status": "PAUSED",
+ "domain": "physical-environmental-sciences",
+ "objective": "etl",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-23",
+ "stump": "The default path applies each plant's latest oxidizer test efficiency to its 2026 captured VOC and names Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging; a thermal oxidizer's outlet holds near a floor (about 45 ppmv as carbon) however dilute its inlet, every test ran at maximum production, and at Ashcombe Flexible Packaging and Kelvedon Laminates the fixed-speed fans drew their full air through days when the presses ran part of their capacity, so the oxidizers destroyed less than their tests show; each production day's outlet read from the relation the ten oxidizers' tests trace, at the inlet the day's captured VOC and airflow imply, carries Ashcombe from 21 to 29 tons and Kelvedon from 20 to 28, and the rule covers five plants.",
+ "architecture": 7,
+ "loops": 0,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-23"
+ },
+ "leak": {
+  "leak_py": "REVIEW (domain vocabulary, plant names, no ranking)",
+  "reader": "spent: reader A landed the call and 58 of 58 graded figures; reader B filed six (R4) and 53 of 58"
+ },
+ "duplicate_check": {
+  "heart": "WARN (overuse.org_family, repeat.question_form; answered in the note)",
+  "nearest": "task478 v7 and v6 at 0.08",
+  "surface": "clean (nearest 0.10)"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": "not run to a verdict: stopped at the spend"
+ },
+ "returned": [],
+ "resume": "architecture 7 spent at stage 4 2026-10-23 (reader A landed; the outlet floor read off the test tables; both asks cracked). Re-root to architecture 8 at stage 1: a fresh world and driver in ETL, read the note's Tried and rejected first (no oxidizer floor, no emissions-inventory cell while it sits in the last three, no SDS-revision, renumbered-catalog or vendor-switch device)",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "re-root to a fresh world; architectures 1 to 6 spent at stage 4"
 }

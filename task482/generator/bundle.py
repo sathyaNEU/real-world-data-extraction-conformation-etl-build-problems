@@ -1,389 +1,530 @@
-"""Read the cut pack the way an analyst would and run every route the design names on it. Nothing here reads
-world.py's truth; golden.py, checks.py, verify.py and ceiling.py all go through it.
+"""Reads task482's cut pack the way a solver must and computes every figure from it: each plant's 2026 press VOC (used,
+captured, destroyed, emitted) under the golden handling and under each rung and licensed variant, each plant's cleaning
+VOC away from its presses (ask A) and each plant's gallons received and unaccounted for (ask B). golden.py, checks.py
+and ceiling.py call it; verify.py recomputes the golden without it.
 
-    load(target)                      the bank, the forms, both platforms' attempts and responses conformed, the
-                                      score reports, the crosswalk, the centres and the session review log
-    responses(b, which)               the 2026 item responses as arrays (attempt, item, position, score)
-    fit_position(b, method, which)    the Rasch position term (logits per position) and the free difficulties
-    expected(b, theta, gamma, route)  Form 27A's expected raw score at an ability
-    placement_scores(b, gamma, route) the two placement scores
-    colleges(b, persons, college, sessions)  each college's 2026 placements, students placed and second sittings"""
+The golden handling of the press VOC: each production day's captured VOC (press logs through the safety data sheets,
+times the plant's capture efficiency) over the oxidizer's process hours that day, and the mean airflow over them (the
+historian, its UTC hours put on Central time, fan speed through the rated airflow), give the day's inlet as carbon
+through the plant's carbon content; the outlet is the relation the performance tests trace across the ten oxidizers
+(each test's runs on one basis, as carbon): the mean outlet of the runs with an inlet under 2,000 ppmv, and above the
+knee the mean share of the inlet passed by the runs over 3,000; the day's controlled VOC is that outlet over the
+day's air and hours."""
 import csv
 import datetime as dt
-import math
 import os
+import re
+from collections import defaultdict
 
 import numpy as np
 
+K = 3.1173e-8
+TONS = 2000.0
+DILUTE, CONC = 2000.0, 3000.0
+RENUMBERED = dt.date(2026, 4, 1)
+YEAR = 2026
 FILES = {
-    "report": "qpi_technical_report_2027.pdf",
-    "policy": "bpccs_mathematics_placement_policy_4-12.pdf",
-    "pool": "itemstore_assembly_pool_2027-02-03.csv",
-    "map27": "qpi_form_27A_assembly.csv",
-    "layout26": "qpi_forms_26A_26B_layout.csv",
-    "kts": "kts_qpi_attempts_2026-03-01_to_2026-06-30.csv",
-    "ng_att": "northgate_attempts_2026-07-01_to_2027-01-31.csv",
-    "ng_resp": "northgate_item_responses_2026-07-01_to_2027-01-31.csv",
-    "reports": "qpi_score_reports_2026-03-01_to_2027-01-31.csv",
-    "review": "qpi_session_review_log_2026.xlsx",
-    "xwalk": "kts_to_northgate_student_crosswalk.csv",
-    "centres": "qpi_testing_centres.csv",
+    "register": "deq_printing_plants_register_2027-02.xlsx", "press": "press_material_use_2026.csv",
+    "sds": "safety_data_sheet_master_2027-01.xlsx", "hist": "oxidizer_historian_hourly_2026.csv",
+    "tests": "oxidizer_performance_tests_2017_2026.pdf", "issues": "stores_cleaning_issues_2026.csv",
+    "manifests": "cantrell_bend_manifests_2026.csv", "profiles": "cantrell_bend_waste_profiles_2026.pdf",
+    "tickets": "wexcombe_service_tickets_2026.csv", "payments": "solvent_vendor_payments_2026.csv",
+    "corvane": "corvane_invoice_export_2026.csv", "haldane": "haldane_statement_2026.xlsx",
+    "catalog": "haldane_catalog_2026-04.csv", "counts": "stock_counts_2026.csv",
 }
-STANDARDS = {"CA": 0.20, "CCA": -0.70}       # QPI-TR-2027 section 6
-FT_POSITIONS = (61, 70)                      # QPI-TR-2027 section 3: the old platform's field-test section
-FORM27_POSITIONS = (21, 70)                  # QPI-TR-2027 section 3: unique and field-test items shuffled
-WINDOW = (dt.date(2026, 3, 1), dt.date(2027, 1, 31))
-LEVEL_KTS = {"131": "CA", "131C": "CCA", "091": "DM"}
-RANK = {"DM": 0, "CCA": 1, "CA": 2}
-CODES = ["%02d" % i for i in range(1, 15)]
 
 
-def _csv(path):
-    with open(path, newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
+def hround(x):
+    """Round half away from zero (the deliverables' rounding)."""
+    return int(np.floor(abs(x) + 0.5)) * (1 if x >= 0 else -1)
 
 
-def logit(bu):
-    return (float(bu) - 500.0) / 100.0
+def round1(x):
+    return float(np.floor(abs(x) * 10 + 0.5) / 10.0) * (1 if x >= 0 else -1)
 
 
-def central_offset(d):
-    y = d.year
-    m3 = dt.date(y, 3, 8)
-    s = m3 + dt.timedelta(days=(6 - m3.weekday()) % 7)
-    n1 = dt.date(y, 11, 1)
-    e = n1 + dt.timedelta(days=(6 - n1.weekday()) % 7)
-    return 5 if s <= d < e else 6
+def _csv(target, key):
+    with open(os.path.join(target, FILES[key]), newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
 
 
-def to_local(z):
-    t = dt.datetime.strptime(z, "%Y-%m-%dT%H:%M:%SZ")
-    for off in (5, 6):
-        loc = t - dt.timedelta(hours=off)
-        if central_offset(loc.date()) == off:
-            return loc
-    return t - dt.timedelta(hours=6)
-
-
-def mdy(s):
-    m, d, y = s.split("/")
-    return dt.date(int(y), int(m), int(d))
-
-
-def slot_of(t):
-    """The session an attempt started in: sessions start at 09:00, 13:00 and 17:30 and attempts begin within minutes."""
-    return "17:30" if t.hour >= 17 else ("13:00" if t.hour >= 12 else "09:00")
-
-
-def load(target):
-    f = lambda k: os.path.join(target, FILES[k])
-    b = {}
-    b["pool"] = {r["item_id"]: dict(r, logit=logit(r["difficulty_bu"])) for r in _csv(f("pool"))}
-    m27 = _csv(f("map27"))
-    b["anchors27"] = [(r["item_id"], int(r["position"])) for r in m27 if r["section"] == "anchor"]
-    b["unique27"] = [r["item_id"] for r in m27 if r["section"] == "unique"]
-    lay = _csv(f("layout26"))
-    b["key"] = {r["item_id"]: r["key"] for r in lay}
-    b["kts_item"] = {r["kts_item"]: r["item_id"] for r in lay if r["kts_item"]}
-    pos = {}
-    for r in lay:
-        forms = [r["form"]] if r["form"] in ("26A", "26B") else ["FT%s" % r["form"].split("-")[1]]
-        for fm in forms:
-            for v, col in (("A", "kts_position_version_A"), ("B", "kts_position_version_B")):
-                pos[(fm, v, int(r[col]))] = r["item_id"]
-    b["kts_pos"] = pos
-    b["anchor_ids"] = sorted(i for i, r in b["pool"].items() if r["status"] == "anchor")
-    cen = _csv(f("centres"))
-    b["centre_college"] = {r["centre"]: r["college"] for r in cen}
-    b["site_centre"] = {r["kts_site"]: r["centre"] for r in cen}
-    xw = {(r["kts_college"], r["kts_student_no"]): r["northgate_student_id"] for r in _csv(f("xwalk"))}
-    atts = []
-    for r in _csv(f("kts")):
-        d = mdy(r["test_date"])
-        hh, mm = r["start"].split(":")
-        start = dt.datetime(d.year, d.month, d.day, int(hh), int(mm))
-        centre = b["site_centre"][r["site"]]
-        atts.append(dict(key=r["attempt_id"], platform="old", form=r["form"], version=r["version"],
-                         ft_set=int(r["ft_set"]), start=start, date=d, centre=centre,
-                         session=(centre, d, slot_of(start)), college=r["college"],
-                         sid=xw.get((r["college"], r["student_no"])), kts_id=(r["college"], r["student_no"]),
-                         dob=mdy(r["birth_date"]), sex=r["sex"], hs=r["hs_code"], registered=mdy(r["registered"]),
-                         raw=int(r["raw_score"]), level=LEVEL_KTS[r["placement"]], responses=r["responses"]))
-    for r in _csv(f("ng_att")):
-        start = to_local(r["started_at"])
-        c, dstr, hm = r["session_ref"][1:].split("-")
-        sess = ("TC" + c, dt.date(int(dstr[:4]), int(dstr[4:6]), int(dstr[6:])), hm[:2] + ":" + hm[2:])
-        atts.append(dict(key=r["attempt_ref"], platform="new", form=r["form"], version="", ft_set=int(r["ft_set"]),
-                         start=start, date=start.date(), centre=r["centre"], session=sess, college=r["college"],
-                         sid=r["student_id"], kts_id=None, dob=dt.date.fromisoformat(r["birth_date"]), sex=r["sex"],
-                         hs=r["hs_code"], registered=dt.date.fromisoformat(r["registered"]), raw=int(r["raw_score"]),
-                         level=r["placement"]))
-    atts.sort(key=lambda a: (a["start"], a["key"]))
-    b["attempts"] = atts
-    b["by_key"] = {a["key"]: a for a in atts}
-    reps = {}
-    for r in _csv(f("reports")):
-        reps.setdefault(r["attempt"], []).append(r)
-    b["reports"] = reps
-    b["review"] = review_log(f("review"))
-    return b
-
-
-def review_log(path):
+def _sheet(target, key, name, header_row=1):
     import openpyxl
-    ws = openpyxl.load_workbook(path, read_only=True).active
-    rows = [r for r in ws.iter_rows(min_row=5, values_only=True) if r and r[0]]
-    out = []
-    for logged, centre, sdate, sstart, plat, ref, decision, n, note in rows:
-        sd = sdate.date() if isinstance(sdate, dt.datetime) else sdate
-        out.append(dict(logged=logged, session=(centre, sd, str(sstart)), decision=decision))
-    return out
+    wb = openpyxl.load_workbook(os.path.join(target, FILES[key]), read_only=True, data_only=True)
+    rows = list(wb[name].iter_rows(values_only=True))
+    head = rows[header_row - 1]
+    return [dict(zip(head, r)) for r in rows[header_row:] if any(v is not None for v in r)]
 
 
-def invalid_sessions(b, withdrawals=True):
-    state = {}
-    for r in sorted(b["review"], key=lambda r: r["logged"]):
-        if r["decision"] == "Attempts invalidated":
-            state[r["session"]] = True
-        elif r["decision"] == "Invalidation withdrawn" and withdrawals:
-            state[r["session"]] = False
-    return {s for s, v in state.items() if v}
+def pdf_text(path):
+    import pypdf
+    return "\n".join(p.extract_text() for p in pypdf.PdfReader(path).pages)
 
 
-# ------------------------------------------------------------------ the 2026 responses
-def responses(b, which="all", target=None):
-    """Arrays over every 2026 response: attempt index, item id index, delivered position, score. which: all, valid,
-    old or new. The old platform's responses are scored against the layout's keys at the positions its version
-    gives; the new platform's carry their position (seq) and score."""
-    cache = b.setdefault("_resp", {})
-    if which in cache:
-        return cache[which]
-    bad = invalid_sessions(b)
-    keep = []
-    for i, a in enumerate(b["attempts"]):
-        if which == "valid" and a["session"] in bad:
-            continue
-        if which in ("old", "new") and a["platform"] != which:
-            continue
-        keep.append(i)
-    keepset = set(keep)
-    A, I, X, Y = [], [], [], []
-    items = {}
+def central(utc):
+    """UTC to US Central (daylight time from 2:00 local on 8 March to 2:00 local on 1 November 2026)."""
+    if dt.datetime(2026, 3, 8, 8) <= utc < dt.datetime(2026, 11, 1, 7):
+        return utc - dt.timedelta(hours=5)
+    return utc - dt.timedelta(hours=6)
 
-    def idx(iid):
-        if iid not in items:
-            items[iid] = len(items)
-        return items[iid]
-    for i in keep:
-        a = b["attempts"][i]
-        if a["platform"] != "old":
-            continue
-        for p in range(1, 71):
-            fm = a["form"] if p <= 60 else "FT%d" % a["ft_set"]
-            iid = b["kts_pos"][(fm, a["version"], p)]
-            ch = a["responses"][p - 1]
-            A.append(i)
-            I.append(idx(iid))
-            X.append(p)
-            Y.append(1 if ch == b["key"][iid] else 0)
-    if which != "old":
-        tgt = b.get("_target")
-        with open(os.path.join(tgt, FILES["ng_resp"]), newline="", encoding="utf-8") as fh:
-            rd = csv.reader(fh)
-            next(rd)
-            att_index = {a["key"]: i for i, a in enumerate(b["attempts"])}
-            for ref, iid, seq, resp, score, rt, served in rd:
-                i = att_index[ref]
-                if i not in keepset:
+
+# ---------------------------------------------------------------------------------------------------------------------
+class Inputs:
+    def __init__(self, target):
+        self.target = target
+        reg = _sheet(target, "register", "Plants")
+        self.order = [r["Plant"] for r in reg]
+        self.fac, self.facno = {}, {}
+        self.cf, self.washers = {}, {}
+        for r in reg:
+            self.fac[r["Facility no."]] = r["Plant"]
+            self.facno[r["Plant"]] = r["Facility no."]
+            if r["Former name"]:
+                m = re.search(r"\(facility (\d{4})\)", r["Former name"])
+                self.fac[m.group(1)] = r["Plant"]
+            if r["Carbon content of VOC (lb C per lb VOC)"] is not None:
+                self.cf[r["Plant"]] = float(r["Carbon content of VOC (lb C per lb VOC)"])
+        self.ox = {}
+        self.tag = {}
+        for r in _sheet(target, "register", "Oxidizers"):
+            n = r["Plant"]
+            tags = re.findall(r"[A-Z]{3,4}-RTO\d?", r["Historian tag"])
+            for t in tags:
+                self.tag[t] = n
+            self.ox[n] = dict(vendor=r["Manufacturer"], fixed=r["Fan drive"].startswith("Fixed"),
+                              Q=float(r["Rated airflow (scfm)"]), logs=r["Historian logs"],
+                              qmin=(r["Minimum fan speed (%)"] or 100) / 100.0)
+        self.ce = {r["Plant"]: float(r["Capture efficiency (%)"]) / 100.0 for r in _sheet(target, "register",
+                                                                                           "Capture")}
+        self.controlled = [n for n in self.order if n in self.ox]
+        self._sds(target)
+        self._press(target)
+        self._hist(target)
+        self._tests(target)
+
+    # -- safety data sheets -------------------------------------------------------------------------------------------
+    def _sds(self, target):
+        self.prod = {}
+        for r in _sheet(target, "sds", "Products"):
+            self.prod[r["Product code"]] = dict(name=r["Product name"], supplier=r["Supplier"],
+                                                kind=r["Product type"].upper(), den=float(r["Density (lb/gal)"]),
+                                                basis=r["VOC basis"], voc=float(r["VOC"]),
+                                                water=float(r["Water (vol %)"] or 0),
+                                                exempt=float(r["Exempt compounds (vol %)"] or 0))
+        self.revs = []
+        for r in _sheet(target, "sds", "Revision log"):
+            m = re.search(r"density ([\d.]+) lb/gal and VOC ([\d.]+) per cent by weight under revision (\d+)",
+                          r["Change"] or "")
+            if m:
+                eff = r["Effective from"]
+                eff = eff.date() if isinstance(eff, dt.datetime) else eff
+                self.revs.append((r["Product code"], eff, float(m.group(1)), float(m.group(2))))
+
+    def vpg(self, code, d=None, vintage=True):
+        """lb of VOC per gallon of the product as used on date d: the revision in force that day (vintage) or the
+        master's current revision."""
+        p = self.prod[code]
+        if vintage and d is not None:
+            for c, eff, den, wt in self.revs:
+                if c == code and d < eff:
+                    return den * wt / 100.0
+        if p["basis"].startswith("%"):
+            return p["den"] * p["voc"] / 100.0
+        return p["voc"] * (1 - (p["water"] + p["exempt"]) / 100.0)
+
+    def vpg_misread(self, code):
+        """The natural misreading of a less-water-and-exempt figure: as pounds per gallon of the product."""
+        p = self.prod[code]
+        if p["basis"].startswith("%"):
+            return p["den"] * p["voc"] / 100.0
+        return p["voc"]
+
+    # -- press logs ---------------------------------------------------------------------------------------------------
+    def _press(self, target):
+        self.day_voc = defaultdict(lambda: defaultdict(float))       # plant -> production day -> lb VOC
+        self.day_voc_misread = defaultdict(lambda: defaultdict(float))
+        self.window = defaultdict(dict)                               # plant -> day -> (start, end)
+        self.gal_used = defaultdict(lambda: defaultdict(float))       # plant -> material -> gal
+        self.rows = defaultdict(list)                                 # plant -> (start, end, lb, day)
+        self.basis_rows = defaultdict(lambda: defaultdict(int))
+        self.day_voc_utc = defaultdict(lambda: defaultdict(float))
+        for r in _csv(target, "press"):
+            n = self.fac[r["facility_no"]]
+            d = dt.date.fromisoformat(r["log_date"])
+            code = r["material_code"]
+            q = float(r["quantity"])
+            gal = q / self.prod[code]["den"] if r["uom"] == "LB" else q
+            lb = gal * self.vpg(code, d)
+            st = dt.datetime.strptime(r["start_local"], "%Y-%m-%d %H:%M")
+            en = dt.datetime.strptime(r["end_local"], "%Y-%m-%d %H:%M")
+            self.day_voc[n][d] += lb
+            self.day_voc_misread[n][d] += gal * self.vpg_misread(code)
+            self.gal_used[n][code] += gal
+            w = self.window[n].get(d)
+            self.window[n][d] = (min(w[0], st), max(w[1], en)) if w else (st, en)
+            self.rows[n].append((st, en, lb, d))
+            self.basis_rows[n][r["record_basis"]] += 1
+
+    # -- historians ---------------------------------------------------------------------------------------------------
+    def _hist(self, target):
+        hours = defaultdict(dict)        # plant -> local hour -> production day
+        for n, w in self.window.items():
+            if n not in self.ox:
+                continue
+            for d, (st, en) in w.items():
+                t = st.replace(minute=0)
+                while t < en:
+                    hours[n][t] = d
+                    t += dt.timedelta(hours=1)
+        self.proc = defaultdict(lambda: defaultdict(list))     # plant -> day -> [flow, ...] (PROCESS hours)
+        self.proc_utc = defaultdict(lambda: defaultdict(list))  # plant -> UTC date -> [flow] (the UTC misreading)
+        self.all_hours = defaultdict(lambda: defaultdict(list))
+        self.hourly = defaultdict(dict)                         # plant -> local hour -> flow (PROCESS)
+        for r in _csv(target, "hist"):
+            n = self.tag[r["unit_tag"]]
+            ox = self.ox[n]
+            utc = dt.datetime.strptime(r["hour_beginning_utc"], "%Y-%m-%dT%H:%MZ")
+            lo = central(utc)
+            if r["exhaust_flow_scfm"]:
+                flow = float(r["exhaust_flow_scfm"])
+            else:
+                flow = ox["Q"] * float(r["fan_speed_pct"]) / 100.0
+            if r["mode"] == "PROCESS":
+                d = hours[n].get(lo)
+                if d is None:
+                    raise ValueError("process hour outside a production day: %s %s" % (n, lo))
+                self.proc[n][d].append(flow)
+                self.proc_utc[n][utc.date()].append(flow)
+                self.hourly[n][lo] = flow
+            if r["mode"] != "OFF":
+                self.all_hours[n][lo.date()].append(flow)
+
+    # -- performance tests --------------------------------------------------------------------------------------------
+    def _tests(self, target):
+        txt = pdf_text(os.path.join(target, FILES["tests"]))
+        flat = re.sub(r"\s+", " ", txt)
+        heads = list(re.finditer(r"([A-Z][A-Za-z ]+?) \(facility (\d{4})\), ([A-Z]{3,4}-RTO\d?)\. Test of (\d{1,2} "
+                                 r"[A-Za-z]+ \d{4}) by ([A-Za-z ]+?), report ([A-Z]+-\d{4}-\d+)\.", flat))
+        self.tests = []
+        for i, h in enumerate(heads):
+            body = flat[h.end(): heads[i + 1].start() if i + 1 < len(heads) else len(flat)]
+            basis = "propane" if "ppmv as propane" in body else "carbon"
+            mult = 3.0 if basis == "propane" else 1.0
+            runs = []
+            for m in re.finditer(r"(?<![\d.])([123]) (\d{2}:\d{2}) ([\d.]+) ([\d.]+) ([\d,]+) ([\d,]+) ([\d.]+) "
+                                 r"([\d.]+) ([\d.]+)", body):
+                runs.append(dict(ci=float(m.group(3)) * mult, co=float(m.group(4)) * mult,
+                                 qi=float(m.group(5).replace(",", "")), qo=float(m.group(6).replace(",", "")),
+                                 mi=float(m.group(7)), mo=float(m.group(8)), dre=float(m.group(9))))
+            avg = re.search(r"Average ([\d.]+) ([\d.]+) [\d,]+ [\d,]+ [\d.]+ [\d.]+ ([\d.]+)", body)
+            prod = re.search(r"Production during the test: (.+?)\.(?: [A-Z]| Run)", body)
+            plant = self.tag[h.group(3)]
+            self.tests.append(dict(plant=plant, date=dt.datetime.strptime(h.group(4), "%d %B %Y").date(),
+                                   firm=h.group(5), basis=basis, runs=runs[:3], dre=float(avg.group(3)),
+                                   prod=prod.group(1) if prod else ""))
+        assert len(self.tests) == 28 and all(len(t["runs"]) == 3 for t in self.tests), len(self.tests)
+        self.ci = np.array([r["ci"] for t in self.tests for r in t["runs"]])
+        self.co = np.array([r["co"] for t in self.tests for r in t["runs"]])
+
+    def latest(self, n):
+        return max((t for t in self.tests if t["plant"] == n), key=lambda t: t["date"])
+
+    # -- the year by production day -----------------------------------------------------------------------------------
+    def plant_days(self, n, utc=False):
+        """[(day, captured lb, process hours, mean scfm)] for a controlled plant."""
+        ce = self.ce[n]
+        out = []
+        if utc:
+            # the misreading: press days joined to the historian's UTC dates
+            for d in sorted(self.day_voc[n]):
+                fl = self.proc_utc[n].get(d)
+                if not fl:
                     continue
-                A.append(i)
-                I.append(idx(iid))
-                X.append(int(seq))
-                Y.append(int(score))
-    out = dict(A=np.array(A), I=np.array(I), X=np.array(X, float), Y=np.array(Y, float),
-               items=sorted(items, key=items.get))
-    cache[which] = out
-    return out
+                out.append((d, self.day_voc[n][d] * ce, float(len(fl)), float(np.mean(fl))))
+            return out
+        for d in sorted(self.day_voc[n]):
+            fl = self.proc[n][d]
+            out.append((d, self.day_voc[n][d] * ce, float(len(fl)), float(np.mean(fl))))
+        return out
 
 
-def _L(x):
-    return 1.0 / (1.0 + np.exp(-x))
-
-
-def fit_position(b, method="mml", which="all", nodes=41, positions=None):
-    """The Rasch model with a position term, the anchor block fixed at its bank difficulties (it sat in place when
-    calibrated, as on every form) and every other item's difficulty free: logit P = theta - d_i - gamma * position.
-    method: mml (normal ability, Gauss-Hermite EM), jml, or marginal (no ability term: a population-averaged slope).
-    positions (jml only): keep the free items' responses at positions lo to hi. Returns gamma in logits per position."""
-    r = responses(b, which)
-    ids = r["items"]
-    nI = len(ids)
-    anchor = np.array([i in b["pool"] and b["pool"][i]["status"] == "anchor" for i in ids])
-    bank = np.array([b["pool"][i]["logit"] if anchor[k] else 0.0 for k, i in enumerate(ids)])
-    A, I, X, Y = r["A"], r["I"], r["X"], r["Y"]
-    att, inv = np.unique(A, return_inverse=True)
-    N = len(att)
-    Xc = np.where(anchor[I], 0.0, X)
-    if method == "marginal":
-        m = ~anchor[I]
-        Iv, Xv, Yv = I[m], X[m], Y[m]
-        bi, g = np.zeros(nI), 0.0
-        for _ in range(80):
-            p = _L(-(bi[Iv] + g * Xv)); w = p * (1 - p); res = Yv - p
-            bi += np.bincount(Iv, -res, nI) / np.maximum(np.bincount(Iv, w, nI), 1e-9)
-            p = _L(-(bi[Iv] + g * Xv)); w = p * (1 - p); res = Yv - p
-            xc = Xv - np.bincount(Iv, w * Xv, nI)[Iv] / np.maximum(np.bincount(Iv, w, nI)[Iv], 1e-9)
-            g += np.sum(-res * xc) / np.sum(w * xc * xc)
-        return float(g)
-    if method == "jml":
-        if positions:
-            k = anchor[I] | ((X >= positions[0]) & (X <= positions[1]))
-            I, X, Y, Xc, inv = I[k], X[k], Y[k], Xc[k], inv[k]
-        th = np.zeros(N); bfree = bank.copy(); g = 0.0; m = ~anchor[I]
-        for _ in range(400):
-            d = bfree[I] + g * Xc; p = _L(th[inv] - d); w = p * (1 - p); res = Y - p
-            th += np.clip(np.bincount(inv, res, N) / np.maximum(np.bincount(inv, w, N), 1e-9), -1, 1)
-            d = bfree[I] + g * Xc; p = _L(th[inv] - d); w = p * (1 - p); res = Y - p
-            u = np.bincount(I, -res, nI) / np.maximum(np.bincount(I, w, nI), 1e-9); u[anchor] = 0
-            bfree += np.clip(u, -1, 1)
-            d = bfree[I] + g * Xc; p = _L(th[inv] - d); w = p * (1 - p); res = Y - p
-            xc = Xc - np.bincount(I, w * Xc, nI)[I] / np.maximum(np.bincount(I, w, nI)[I], 1e-9)
-            g += np.clip(np.sum(-res[m] * xc[m]) / np.sum(w[m] * xc[m] ** 2), -0.005, 0.005)
-        return float(g)
-    # MML: rows are attempts; build a dense attempts x 70 layout
-    order = np.lexsort((X, inv))
-    Ia, Xa, Ya = I[order].reshape(N, -1), Xc[order].reshape(N, -1), Y[order].reshape(N, -1)
-    q0, wq = np.polynomial.hermite_e.hermegauss(nodes)
-    wq = wq / wq.sum()
-    mu, sd = 0.0, 1.0
-    bfree = bank.copy()
-    g = 0.0
-    free = ~anchor
-    for _ in range(300):
-        q = mu + sd * q0
-        d = bfree[Ia] + g * Xa
-        lp = np.stack([(Ya * np.log(_L(t - d)) + (1 - Ya) * np.log(1 - _L(t - d))).sum(1) for t in q], 1) + np.log(wq)
-        lp -= lp.max(1, keepdims=True)
-        post = np.exp(lp)
-        post /= post.sum(1, keepdims=True)
-        mu = float((post * q).sum(1).mean())
-        sd = float(np.sqrt((post * (q[None, :] - mu) ** 2).sum(1).mean()))
-        q = mu + sd * q0
-        gb = np.zeros(nI); hb = np.zeros(nI); cr = np.zeros(nI); gg = 0.0; hg = 0.0
-        for j, t in enumerate(q):
-            p = _L(t - d); res = (Ya - p) * post[:, [j]]; w = p * (1 - p) * post[:, [j]]
-            gb += np.bincount(Ia.ravel(), (-res).ravel(), nI); hb += np.bincount(Ia.ravel(), w.ravel(), nI)
-            cr += np.bincount(Ia.ravel(), (w * Xa).ravel(), nI); gg += float((-res * Xa).sum())
-            hg += float((w * Xa * Xa).sum())
-        fr = free & (hb > 0)
-        hgs = hg - np.sum(cr[fr] ** 2 / hb[fr])
-        dg = (gg - np.sum(cr[fr] * gb[fr] / hb[fr])) / hgs
-        db = np.zeros(nI)
-        db[fr] = (gb[fr] - cr[fr] * dg) / hb[fr]
-        bfree += db
-        g += dg
-        if abs(dg) < 1e-8 and np.abs(db).max() < 1e-7:
+# ---------------------------------------------------------------------------------------------------------------------
+# the outlet relation
+def _gn(model, x0, ci, co, iters=100):
+    x = np.array(x0, float)
+    for _ in range(iters):
+        r = (model(x, ci) - co) / co
+        J = np.empty((len(ci), len(x)))
+        for j in range(len(x)):
+            dx = np.zeros_like(x)
+            dx[j] = 1e-6 * max(1.0, abs(x[j]))
+            J[:, j] = ((model(x + dx, ci) - co) / co - r) / dx[j]
+        step = np.linalg.lstsq(J, -r, rcond=None)[0]
+        x = x + step
+        if np.abs(step).max() < 1e-10:
             break
-    return float(g)
+    rms = float(np.sqrt(np.mean(((model(x, ci) - co) / co) ** 2)))
+    return x, rms
 
 
-# ------------------------------------------------------------------ Form 27A
-def form27(b):
-    anc = [(i, p, b["pool"][i]["logit"]) for i, p in b["anchors27"]]
-    uni = [(i, b["pool"][i]["logit"]) for i in b["unique27"]]
-    return anc, uni
+def hard(F, p):
+    return lambda c: np.maximum(F, p * np.asarray(c, float))
 
 
-def expected(b, theta, gamma=0.0, route="carried"):
-    """Form 27A's expected raw score at theta. route: carried (each unique item from the field-test section's mean
-    position to every position it can take on Form 27A, averaged over the shuffle); filed (the bank difficulties as
-    they stand); mean_position (each unique item moved to Form 27A's mean position only); all_items (every item,
-    the anchor block too, moved by the field-test section's offset); position_one (unique items moved to position 1)."""
-    anc, uni = form27(b)
-    lo, hi = FORM27_POSITIONS
-    ft_mean = (FT_POSITIONS[0] + FT_POSITIONS[1]) / 2.0
-    pos = np.arange(lo, hi + 1)
-    e = sum(_L(theta - d) for _, _, d in anc)
-    if route == "all_items":
-        e = sum(_L(theta - (d - gamma * (ft_mean - p))) for _, p, d in anc)
-    for _, d in uni:
-        if route == "filed" or gamma == 0.0:
-            e += _L(theta - d)
-        elif route in ("carried", "all_items"):
-            e += float(_L(theta - (d - gamma * (ft_mean - pos))).mean())
-        elif route == "mean_position":
-            e += _L(theta - (d - gamma * (ft_mean - pos.mean())))
-        elif route == "position_one":
-            e += _L(theta - (d - gamma * (ft_mean - 1)))
-    return float(e)
-
-
-def placement_scores(b, gamma=0.0, route="carried"):
-    return {lv: int(math.ceil(expected(b, STANDARDS[lv], gamma, route) - 1e-12)) for lv in ("CA", "CCA")}
-
-
-def conversion(scores):
-    return [(r, "CA" if r >= scores["CA"] else ("CCA" if r >= scores["CCA"] else "DM")) for r in range(61)]
-
-
-# ------------------------------------------------------------------ the asks
-def person_keys(b, how="four_fields"):
-    """A person key per attempt. four_fields: birth date, sex, high school code and registration date; ids: the
-    old platform's student number through the crosswalk, the new platform's student id as it stands; raw_ids: each
-    platform's own identifier; three_fields: birth date, sex and high school code."""
-    out = {}
-    for a in b["attempts"]:
-        if how == "four_fields":
-            out[a["key"]] = (a["dob"], a["sex"], a["hs"], a["registered"])
-        elif how == "three_fields":
-            out[a["key"]] = (a["dob"], a["sex"], a["hs"])
-        elif how == "ids":
-            out[a["key"]] = a["sid"] if a["sid"] else ("kts",) + a["kts_id"]
-        elif how == "raw_ids":
-            out[a["key"]] = ("kts",) + a["kts_id"] if a["platform"] == "old" else a["sid"]
-    return out
-
-
-def college_of(b, a, how="reports"):
-    """The college that placed the student on this sitting. reports: the automatic score report's college (the
-    college the student was registered through when they sat); export: the attempt record's college column;
-    centre: the testing centre's college; any_report: every college a report went to (first)."""
-    if how == "reports":
-        auto = [r for r in b["reports"].get(a["key"], []) if r["report"] == "automatic"]
-        return auto[0]["sent_to"]
-    if how == "export":
-        return a["college"]
-    if how == "centre":
-        return b["centre_college"][a["centre"]]
+def relation(I, how="golden", sel=None):
+    """The outlet (ppmv as carbon) as a function of the inlet, fitted to the tests' runs (sel: a test filter)."""
+    tests = [t for t in I.tests if sel is None or sel(t)]
+    ci = np.array([r["ci"] for t in tests for r in t["runs"]])
+    co = np.array([r["co"] for t in tests for r in t["runs"]])
+    if how in ("golden", "mean"):
+        F = co[ci < DILUTE].mean()
+        p = (co[ci > CONC] / ci[ci > CONC]).mean()
+        return hard(F, p), (F, p)
+    if how == "median":
+        F = float(np.median(co[ci < DILUTE]))
+        p = float(np.median(co[ci > CONC] / ci[ci > CONC]))
+        return hard(F, p), (F, p)
+    if how == "lsq":
+        x, rms = _gn(lambda x, c: np.maximum(x[0], x[1] * c), [45.0, 0.018], ci, co)
+        return hard(x[0], x[1]), (x[0], x[1], rms)
+    if how.startswith("smooth"):
+        k = float(how[6:])
+        m = lambda x, c: (x[0] ** k + (x[1] * c) ** k) ** (1.0 / k)
+        x, rms = _gn(m, [45.0, 0.018], ci, co)
+        return (lambda c: m(x, np.asarray(c, float))), (x[0], x[1], rms)
+    if how == "interp":
+        pts = sorted((np.mean([r["ci"] for r in t["runs"]]), 1 - np.mean([r["co"] for r in t["runs"]]) /
+                      np.mean([r["ci"] for r in t["runs"]])) for t in tests)
+        xs = np.array([a for a, b in pts])
+        ys = np.array([b for a, b in pts])
+        return (lambda c: (1 - np.interp(np.asarray(c, float), xs, ys)) * np.asarray(c, float)), (xs.min(), xs.max())
+    if how == "linear":
+        x, rms = _gn(lambda x, c: x[0] + x[1] * c, [30.0, 0.012], ci, co)
+        return (lambda c: x[0] + x[1] * np.asarray(c, float)), (x[0], x[1], rms)
     raise ValueError(how)
 
 
-def colleges(b, persons="four_fields", college="reports", sessions="review", window=True):
-    """Each college's students placed (in all, into College Algebra, into Corequisite College Algebra) and of them
-    those who sat twice, each student once at the college that placed them on their placing sitting (Policy 4.12)."""
-    keys = person_keys(b, persons)
-    bad = set() if sessions == "ignore" else invalid_sessions(b, withdrawals=(sessions == "review"))
-    groups = {}
-    for a in b["attempts"]:
-        if a["session"] in bad:
+def rms_of(I, f):
+    return float(np.sqrt(np.mean(((f(I.ci) - I.co) / I.co) ** 2)))
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+def controlled_lb(I, n, f, grain="day", utc=False):
+    """The year's VOC the oxidizer let through (lb) with the outlet relation f."""
+    cf = I.cf[n]
+    if grain == "hour":
+        # each log row's VOC spread over its hours, against the historian's hour
+        ce = I.ce[n]
+        lbh = defaultdict(float)
+        for st, en, lb, d in I.rows[n]:
+            hrs = max(1, int(round((en - st).total_seconds() / 3600)))
+            for k in range(hrs):
+                lbh[st.replace(minute=0) + dt.timedelta(hours=k)] += lb * ce / hrs
+        tot = 0.0
+        for t, q in I.hourly[n].items():
+            c = lbh.get(t, 0.0) * cf / (q * 60 * K)
+            tot += float(f(c)) * q * 60 * K / cf
+        return tot
+    tot = 0.0
+    for d, cap, h, q in I.plant_days(n, utc=utc):
+        c = cap / h * cf / (q * 60 * K)
+        tot += float(f(c)) * q * 60 * K / cf * h
+    return tot
+
+
+def press_tons(I, how="golden", grain="day", sel=None, f=None, utc=False, misread=False):
+    """Each plant's 2026 press VOC: dict plant -> dict(used, captured, destroyed, emitted) in tons."""
+    if f is None and (how in ("golden", "mean", "median", "lsq", "interp", "linear") or how.startswith("smooth")):
+        f, _ = relation(I, how, sel)
+    out = {}
+    for n in I.order:
+        src = I.day_voc_misread if misread else I.day_voc
+        used = sum(src[n].values()) / TONS
+        if n not in I.ox:
+            out[n] = dict(used=used, captured=0.0, destroyed=0.0, emitted=used)
             continue
-        if window and not (WINDOW[0] <= a["date"] <= WINDOW[1]):
-            continue
-        groups.setdefault(keys[a["key"]], []).append(a)
-    out = {c: dict(placed=0, CA=0, CCA=0, twice=0) for c in CODES}
-    for k in sorted(groups, key=str):
-        v = groups[k]
-        best = max(v, key=lambda a: (RANK[a["level"]], a["start"]))
-        c = college_of(b, best, college)
-        out[c]["placed"] += 1
-        if best["level"] in ("CA", "CCA"):
-            out[c][best["level"]] += 1
-        if len(v) >= 2:
-            out[c]["twice"] += 1
+        cap = used * I.ce[n]
+        ctl = controlled_lb(I, n, f, grain, utc) / TONS
+        out[n] = dict(used=used, captured=cap, destroyed=cap - ctl, emitted=used - cap + ctl)
     return out
 
 
-def open_pack(target):
-    b = load(target)
-    b["_target"] = target
-    return b
+def rung_tons(I, rung):
+    """The ladder's rungs: R0 latest test's efficiency, R1 the mean of the plant's tests, R2 the permit's 95 per cent,
+    R3 the relation at the year's mean inlet, R3m at each month's, R4 the latest test's outlet concentration on each
+    day's air, R4b the latest test's outlet rate (lb/hr) over the year's process hours, R5 each oxidizer's own tests."""
+    out = {}
+    fg, _ = relation(I, "golden")
+    for n in I.order:
+        used = sum(I.day_voc[n].values()) / TONS
+        if n not in I.ox:
+            out[n] = used
+            continue
+        cap = used * I.ce[n]
+        cf = I.cf[n]
+        days = I.plant_days(n)
+        own = [t for t in I.tests if t["plant"] == n]
+        lt = I.latest(n)
+        if rung == "R0":
+            ctl = cap * (1 - lt["dre"] / 100.0)
+        elif rung == "R1":
+            ctl = cap * (1 - np.mean([t["dre"] for t in own]) / 100.0)
+        elif rung == "R2":
+            ctl = cap * 0.05
+        elif rung in ("R3", "R3m"):
+            groups = defaultdict(list)
+            for d, c_, h, q in days:
+                groups[d.month if rung == "R3m" else 0].append((c_, h, q))
+            ctl = 0.0
+            for g in groups.values():
+                lb = sum(c_ for c_, h, q in g)
+                air = sum(q * 60 * K * h for c_, h, q in g)
+                cav = lb * cf / air
+                ctl += lb * float(fg(cav)) / cav / TONS
+        elif rung in ("R4", "R4m"):
+            co = (np.mean([r["co"] for r in lt["runs"]]) if rung == "R4" else
+                  np.mean([np.mean([r["co"] for r in t["runs"]]) for t in own]))
+            ctl = sum(co * q * 60 * K / cf * h for d, c_, h, q in days) / TONS
+        elif rung == "R4b":
+            co = np.mean([r["co"] for r in lt["runs"]])
+            qo = np.mean([r["qo"] for r in lt["runs"]])
+            hrs = sum(h for d, c_, h, q in days)
+            ctl = co * qo * 60 * K / cf * hrs / TONS
+        elif rung == "R5":
+            xs = np.array([r["ci"] for t in own for r in t["runs"]])
+            ys = np.array([r["co"] for t in own for r in t["runs"]])
+            if xs.max() / xs.min() < 1.4:
+                ctl = cap * (1 - np.mean([t["dre"] for t in own]) / 100.0)
+            else:
+                A = np.vstack([np.ones_like(xs), xs]).T
+                a, b = np.linalg.lstsq(A, ys, rcond=None)[0]
+                ctl = sum((a + b * (c_ / h * cf / (q * 60 * K))) * q * 60 * K / cf * h for d, c_, h, q in days) / TONS
+        else:
+            raise ValueError(rung)
+        out[n] = used - cap + ctl
+    return out
+
+
+def covered(t, key="emitted"):
+    vals = {n: (v[key] if isinstance(v, dict) else v) for n, v in t.items()}
+    return sorted(n for n, v in vals.items() if v >= 25.0)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ask A: cleaning VOC away from the presses
+def profiles(I):
+    txt = re.sub(r"\s+", " ", pdf_text(os.path.join(I.target, FILES["profiles"])))
+    out = {}
+    for m in re.finditer(r"(CB-\d{4}-0\d) .*? (Cleaning|Press operations) ([\d.]+) ", txt):
+        out[m.group(1)] = (m.group(2), float(m.group(3)))
+    return out
+
+
+def cleaning_tons(I, vintage=True, stellar=True, kg=True, press_issues=False, all_profiles=False, credit=True,
+                  washers=True, voc_pct=True, removed=True):
+    """Each plant's 2026 cleaning VOC away from its presses (tons). The flags are the readings checks.py and ceiling.py
+    put against the golden: the master's current revision for every issue (vintage), the tickets alone (stellar), a
+    manifest's KG read as pounds (kg), issues to the presses counted, every profile credited, no credit, no washers,
+    the waste's weight credited as VOC (voc_pct), and the solvent added alone (removed)."""
+    out = defaultdict(float)
+    for r in _csv(I.target, "issues"):
+        n = I.fac[r["facility_no"]]
+        if r["issued_to"].startswith("PRESS") and not press_issues:
+            continue
+        d = dt.date.fromisoformat(r["issue_date"])
+        out[n] += float(r["quantity"]) * I.vpg(r["material_code"], d, vintage)
+    prof = profiles(I)
+    for r in _csv(I.target, "manifests"):
+        n = I.fac[r["generator_facility_no"]]
+        src, voc = prof[r["waste_profile"]]
+        if (src != "Cleaning" and not all_profiles) or not credit:
+            continue
+        w = float(r["net_weight"]) * (2.20462 if (r["weight_unit"] == "KG" and kg) else 1.0)
+        out[n] -= w * (voc / 100.0 if voc_pct else 1.0)
+    if not washers:
+        return {n: out[n] / TONS for n in I.order}
+    for r in _csv(I.target, "tickets"):
+        n = I.fac[r["facility_no"]]
+        out[n] += (float(r["fresh_added_gal"]) - (float(r["spent_removed_gal"]) if removed else 0.0)) * \
+            I.vpg(r["solvent_product"])
+    if stellar:
+        for r in _csv(I.target, "payments"):
+            m = re.search(r"fresh ([\d.]+) gal (\S+), spent ([\d.]+) gal recovered", r["description"])
+            if m:
+                n = I.fac[r["facility_no"]]
+                out[n] += (float(m.group(1)) - (float(m.group(3)) if removed else 0.0)) * I.vpg(m.group(2))
+    return {n: out[n] / TONS for n in I.order}
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ask B: gallons received that the counts and the press logs leave unaccounted for
+ASK_B_KINDS = ("INK", "COATING", "ADHESIVE")
+
+
+def catalog(I):
+    cat = {}
+    for r in _csv(I.target, "catalog"):
+        cat[r["item_no"]] = dict(code=r["product_code"], sold=r["sold_by"], replaces=r["replaces_item"])
+    old = {r["replaces"]: item for item, r in cat.items() if r["replaces"]}
+    return cat, old
+
+
+def unaccounted_gal(I, chain=True, by_ship=True, lb=True, returns=True):
+    """Each plant's 2026 gallons of inks, coatings and adhesives received and unaccounted for. The flags: Haldane's old
+    item numbers read on the current catalog (chain), the document date for the ship date (by_ship), pounds read as
+    gallons (lb), returns left out (returns)."""
+    cat, old = catalog(I)
+    names = {}
+    for code, x in I.prod.items():
+        names[x["name"].upper()] = code
+    recv = defaultdict(float)
+    # Corvane: the item is the product code without its prefix, then the pack
+    for r in _csv(I.target, "corvane"):
+        n = _ship_to(I, r["SHIP_TO"])
+        d = dt.datetime.strptime(r["SHIP_DATE" if by_ship else "INVOICE_DATE"], "%Y%m%d").date()
+        if d.year != YEAR:
+            continue
+        code = "CV-" + r["ITEM"].rsplit("-", 1)[0]
+        if I.prod[code]["kind"] in ASK_B_KINDS and (returns or float(r["QTY"]) > 0):
+            recv[n] += float(r["QTY"])
+    for r in _sheet(I.target, "haldane", "Statement detail", header_row=2):
+        n = _ship_to(I, r["Ship to"])
+        d = r["Ship date" if by_ship else "Doc date"]
+        d = d.date() if isinstance(d, dt.datetime) else d
+        if d.year != YEAR:
+            continue
+        doc_d = r["Doc date"].date() if isinstance(r["Doc date"], dt.datetime) else r["Doc date"]
+        item = str(r["Item"])
+        if chain and doc_d < RENUMBERED and item in old:
+            item = old[item]
+        code, sold = cat[item]["code"], cat[item]["sold"]
+        if I.prod[code]["kind"] not in ASK_B_KINDS:
+            continue
+        q = float(r["Qty"])
+        if q < 0 and not returns:
+            continue
+        recv[n] += q / I.prod[code]["den"] if (sold == "LB" and lb) else q
+    stock = defaultdict(float)
+    for r in _csv(I.target, "counts"):
+        n = I.fac[r["facility_no"]]
+        code = r["material_code"]
+        if I.prod[code]["kind"] not in ASK_B_KINDS:
+            continue
+        q = float(r["quantity"])
+        g = q / I.prod[code]["den"] if r["uom"] == "LB" else q
+        stock[n] += g if r["count_date"].startswith("2026-01-01") else -g
+    out = {}
+    for n in I.order:
+        used = sum(g for code, g in I.gal_used[n].items() if I.prod[code]["kind"] in ASK_B_KINDS)
+        out[n] = stock[n] + recv[n] - used
+    return out
+
+
+def _ship_to(I, name):
+    name = name.strip().upper()
+    for fac, n in I.fac.items():
+        if n.upper() == name:
+            return n
+    if name == "THAMESIDE LAMINATING":
+        return [n for n in I.order if n.startswith("Kelvedon")][0]
+    raise KeyError(name)

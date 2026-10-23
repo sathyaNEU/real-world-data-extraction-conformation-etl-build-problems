@@ -1,57 +1,87 @@
 ## Tags
 
-**Domain:** Education & Learning Sciences (item response theory and test equating).
+**Domain:** Physical & Environmental Sciences, emissions inventory (a state air agency's 2026 press VOC inventory of fourteen printing and converting plants, conformed from press logs, safety data sheets, capture determinations, oxidizer historians and performance tests, each oxidizer's outlet carried to each production day's inlet).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Form 27A should place students into College Algebra from a raw score of 30 and into Corequisite College Algebra from 19.**
-A student at the College Algebra standard is expected to reach 29.5 of the form's 60 scored items and a student at the Corequisite College Algebra standard 18.5, once each unique item is carried from the field-test section it was calibrated in to the positions it takes on Northgate Assess. Not 29 and 18, the scores the bank difficulties give as filed (28.2 and 17.5), which hold every unique item as hard as it was at positions 61 to 70.
+**Rule 18-4 covers Ashcombe Flexible Packaging, Carrow Gravure, Kelvedon Laminates, Merrion Flexibles and Ravensbrook Gravure Packaging from 1 July 2027.**
+Their presses emitted 29, 37, 28, 31 and 56 tons of VOC in 2026, Kelvedon Laminates the lowest at 28, against Larkmoor Graphics 21 (4 short). Not the oxidizers' tested efficiencies, which put Ashcombe Flexible Packaging and Kelvedon Laminates at 21 and 20 tons: every test ran at maximum production, and on the part-production days of 2026 the fixed-speed fans drew their full air, so the oxidizers' outlets held near their floor and destroyed less than the tests show.
 
 ## 2. Critical Components
 
-1. Position term of the Rasch model fitted to the 2026 attempts, from the field-test section's mean position (65.5) to Form 27A's (45.5): **0.15** logits
-2. Expected raw score on Form 27A at the College Algebra standard (0.20 logits): **29.5**
-3. Expected raw score on Form 27A at the Corequisite College Algebra standard (-0.70 logits): **18.5**
+1. Across the 28 tests the outlet holds near **45** ppmv as carbon below an inlet of about **2,500** ppmv and passes **1.8** per cent of the inlet above it.
+2. Ashcombe Flexible Packaging's 2026 press VOC is **29** tons, against **21** on its latest test's efficiency.
+3. Kelvedon Laminates' 2026 press VOC is **28** tons, against **20** on its latest test's efficiency.
+4. Larkmoor Graphics, the nearest plant below the line, emitted **21** tons, **4** short.
 
 ## 3. Step-by-Step Solution
 
-1. Converted the Itemstore assembly pool's difficulties from bank units to logits (QPI-TR-2027 section 4) and took Form 27A's anchor block and 40 unique items from qpi_form_27A_assembly.csv.
-2. Scored every 2026 response: the Kestrel Testing Suite's response strings against the keys at their version's positions in qpi_forms_26A_26B_layout.csv, and Northgate Assess's item responses at their delivered seq.
-3. Fitted the Rasch model with a linear position term to all 2026 responses by marginal maximum likelihood, the anchor block fixed at its bank difficulties and every other item free: 0.15 logits over the 20 positions from the field-test section's mean to Form 27A's.
-4. Carried each unique item from the old platform's field-test section (mean position 65.5) to each of positions 21 to 70 on Northgate Assess and averaged its expected score over the shuffle; the anchor block, calibrated in place, kept its bank difficulties.
-5. Summed the 60 expected scores at each standard: 29.5 at College Algebra and 18.5 at Corequisite College Algebra.
-6. Matched each student across both platforms and both student identifiers on birth date, sex, high school code and registration date, and left out the attempts in sessions qpi_session_review_log_2026.xlsx leaves invalidated.
-7. Placed each student on their higher level (the later sitting on a tie) at the college their placing sitting's automatic score report went to in qpi_score_reports_2026-03-01_to_2027-01-31.csv: 8,970 students placed, 3,387 into College Algebra and 2,705 into Corequisite College Algebra, 775 of them sat twice.
-8. Set the placement scores at the lowest whole raw scores at or above the expected raw scores (QPI-TR-2027 section 7): College Algebra from 30, Corequisite College Algebra from 19.
+1. Converted every row of press_material_use_2026.csv (shift and job records alike, Thameside Laminating's facility 0117 rows to Kelvedon Laminates) to pounds of VOC through safety_data_sheet_master_2027-01.xlsx: per cent by weight times density, or pounds per gallon less water and exempt compounds times the share of the product that is neither, pound rows by density.
+2. Split each controlled plant's VOC by the capture efficiency on the Capture sheet of deq_printing_plants_register_2027-02.xlsx; the four plants without an oxidizer emit what they used.
+3. Put oxidizer_historian_hourly_2026.csv on Central time, took each production day's PROCESS hours and their mean airflow (fan speed times the register's rated airflow where the historian logs speed), and with the register's carbon content read each day's inlet as carbon from its captured VOC.
+4. Put the 84 runs in oxidizer_performance_tests_2017_2026.pdf on one basis (Marlow's propane figures times 3) and took the outlet as the mean of the runs under 2,000 ppmv, about 45, and above the knee the mean share the runs over 3,000 ppmv pass, 1.8 per cent.
+5. Read each day's outlet from its inlet, times its air and hours, for what the oxidizer let through, added the uncaptured VOC and compared each plant's year with 25 tons: Ravensbrook Gravure Packaging 56, Carrow Gravure 37, Merrion Flexibles 31, Ashcombe Flexible Packaging 29, Kelvedon Laminates 28, Larkmoor Graphics 21 and Garrowby Printing 19.
+6. For cleaning, priced each stores_cleaning_issues_2026.csv issue away from the presses at the revision in force on its date (HW-CS-210 at 7.10 lb a gallon before its 1 June 2026 reformulation, per the revision log), less cantrell_bend_manifests_2026.csv weights under each plant's Cleaning profile (KG rows times 2.20462), plus each washer's added less removed solvent in wexcombe_service_tickets_2026.csv and in Ostrander's lines in solvent_vendor_payments_2026.csv.
+7. For the gallons, took Corvane and Haldane lines shipped in 2026 (returns netted), read Haldane items on documents dated before 1 April 2026 through the replaces_item column of haldane_catalog_2026-04.csv, turned pound items into gallons by density, and set them against stock_counts_2026.csv and the press logs' use.
+8. Listed the plants at 25 tons or more: Ashcombe Flexible Packaging, Carrow Gravure, Kelvedon Laminates, Merrion Flexibles and Ravensbrook Gravure Packaging.
 
 ## 4. Deliverable Answers
 
-### qpi_placement_review_2027.xlsx
+### deq_rule18-4_applicability_2027.xlsx
 
-1. Placement scores: College Algebra 30, Corequisite College Algebra 19.
-2. Expected raw score at the standard: College Algebra 29.5, Corequisite College Algebra 18.5.
-3. Each college from 1 March 2026 to 31 January 2027, whole students (placed; College Algebra; Corequisite College Algebra; sat twice):
-   - 01 Ashgrove: 1,155 placed, 488 College Algebra, 356 Corequisite College Algebra, 116 sat twice
-   - 02 Bramblewood: 978 placed, 348 College Algebra, 297 Corequisite College Algebra, 89 sat twice
-   - 03 Calder Flats: 866 placed, 280 College Algebra, 272 Corequisite College Algebra, 88 sat twice
-   - 04 Dellwood: 821 placed, 372 College Algebra, 231 Corequisite College Algebra, 71 sat twice
-   - 05 Embervale: 743 placed, 275 College Algebra, 227 Corequisite College Algebra, 61 sat twice
-   - 06 Fennimore Ridge: 700 placed, 273 College Algebra, 226 Corequisite College Algebra, 50 sat twice
-   - 07 Gorseway: 639 placed, 177 College Algebra, 203 Corequisite College Algebra, 55 sat twice
-   - 08 Hartmoor Creek: 599 placed, 250 College Algebra, 158 Corequisite College Algebra, 38 sat twice
-   - 09 Iverton Prairie: 554 placed, 191 College Algebra, 170 Corequisite College Algebra, 54 sat twice
-   - 10 Juniper Lake: 518 placed, 201 College Algebra, 151 Corequisite College Algebra, 38 sat twice
-   - 11 Knollwood: 471 placed, 153 College Algebra, 141 Corequisite College Algebra, 38 sat twice
-   - 12 Lowland Mesa: 379 placed, 186 College Algebra, 99 Corequisite College Algebra, 23 sat twice
-   - 13 Marlow Fork: 308 placed, 96 College Algebra, 93 Corequisite College Algebra, 32 sat twice
-   - 14 Nettlefield: 239 placed, 97 College Algebra, 81 Corequisite College Algebra, 22 sat twice
-   - System: 8,970 placed, 3,387 College Algebra, 2,705 Corequisite College Algebra, 775 sat twice
+1. Plants Rule 18-4 covers from 1 July 2027: Ashcombe Flexible Packaging, Carrow Gravure, Kelvedon Laminates, Merrion Flexibles and Ravensbrook Gravure Packaging.
+2. Each plant's 2026 press VOC, whole tons, and whether the rule covers it:
+   - Ashcombe Flexible Packaging: 29, covered
+   - Brinsley Label Works: 9, not covered
+   - Carrow Gravure: 37, covered
+   - Dunsford Folding Cartons: 7, not covered
+   - Elsworth Film Converting: 16, not covered
+   - Garrowby Printing: 19, not covered
+   - Hartmoor Packaging: 18, not covered
+   - Ivers Lane Press: 11, not covered
+   - Kelvedon Laminates: 28, covered
+   - Larkmoor Graphics: 21, not covered
+   - Merrion Flexibles: 31, covered
+   - Norhaven Converting: 17, not covered
+   - Pellworth Label: 4, not covered
+   - Ravensbrook Gravure Packaging: 56, covered
+3. Nearest plant below the line: Larkmoor Graphics, 4 tons short.
+4. Each plant's 2026 VOC from cleaning away from its presses, tons to one decimal:
+   - Ashcombe Flexible Packaging: 5.2
+   - Brinsley Label Works: 1.3
+   - Carrow Gravure: 7.1
+   - Dunsford Folding Cartons: 1.2
+   - Elsworth Film Converting: 4.5
+   - Garrowby Printing: 2.0
+   - Hartmoor Packaging: 2.4
+   - Ivers Lane Press: 1.6
+   - Kelvedon Laminates: 3.9
+   - Larkmoor Graphics: 3.9
+   - Merrion Flexibles: 4.8
+   - Norhaven Converting: 1.9
+   - Pellworth Label: 1.1
+   - Ravensbrook Gravure Packaging: 9.3
+5. Gallons of inks, coatings and adhesives each plant received in 2026 that its stock counts and press logs leave unaccounted for, whole gallons:
+   - Ashcombe Flexible Packaging: 11,835
+   - Brinsley Label Works: 964
+   - Carrow Gravure: 16,927
+   - Dunsford Folding Cartons: 429
+   - Elsworth Film Converting: 9,601
+   - Garrowby Printing: 7,018
+   - Hartmoor Packaging: 4,564
+   - Ivers Lane Press: 419
+   - Kelvedon Laminates: 31,109
+   - Larkmoor Graphics: 9,409
+   - Merrion Flexibles: 10,585
+   - Norhaven Converting: 5,950
+   - Pellworth Label: 436
+   - Ravensbrook Gravure Packaging: 31,480
 
-### qpi_form27a_score_conversion.csv
+### deq_printing_press_voc_2026.csv
 
-4. Raw scores 0 to 18 Developmental Mathematics (MATH 091), 19 to 29 Corequisite College Algebra (MATH 131 with MATH 031), 30 to 60 College Algebra (MATH 131).
+6. Fourteen rows, each with the facility number, the plant, its 2026 press VOC as in item 2 and Y or N for coverage.
 
-### qpi_form27a_expected_score_curve.svg
+### deq_printing_press_voc_2026.svg
 
-5. Form 27A's expected raw score against ability in logits, the two standards marked (0.20 and -0.70) with their expected raw scores (29.5 and 18.5) and placement scores (30 and 19), and the curve from the bank difficulties as filed dashed.
+7. Horizontal bar chart of the fourteen plants' 2026 press VOC, highest first, each bar labelled with its whole tons, a vertical line at 25 tons, the five covered plants in blue and the rest in grey.

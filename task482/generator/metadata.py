@@ -3,37 +3,40 @@ import json
 
 import pack as P
 
-DISTRACTORS = [P.FILES["headcount"], P.FILES["outcomes"]]
+DISTRACTORS = [P.FILES["presses"], P.FILES["ozone"]]
 
 
 def write(path, n):
     meta = {
         "task": "task482",
-        "domain": "Education & Learning Sciences (item response theory and test equating)",
-        "client_domain": "Education & Learning Sciences",
-        "task_type": "item-response-theory-test-equating",
+        "domain": "Physical & Environmental Sciences (emissions inventory)",
+        "client_domain": "Physical & Environmental Sciences",
+        "task_type": "emissions-inventory",
         "objective": "Data Extraction & Conformation (ETL)",
         "distractor_files": DISTRACTORS,
         "distractor_reasons": {
-            P.FILES["headcount"]: "each college's fall 2026 headcount, FTE and first-time students: the colleges' size, "
-                                  "not the students the QPI placed, and counted on a census date rather than by sitting",
-            P.FILES["outcomes"]: "fall 2026 course outcomes by college and course: how placed students fared, which "
-                                 "neither sets a placement score nor counts placements",
+            P.FILES["presses"]: "the Department's press register (type, maker, web width, rated speed, year installed "
+                                "and where each press exhausts): what each plant runs, not what its presses used or "
+                                "emitted in 2026",
+            P.FILES["ozone"]: "the area's ozone monitors' fourth-highest eight-hour values and design values, 2024 to "
+                              "2026: why the area is in nonattainment, which no plant's press VOC turns on",
         },
-        "stated_inputs": ["0.20", "-0.70", "60"],
-        "deliverables": ["qpi_placement_review_2027.xlsx", "qpi_form27a_score_conversion.csv",
-                         "qpi_form27a_expected_score_curve.svg"],
-        "as_of": "2027-02-05",
+        "stated_inputs": ["25", "2026", "1 July 2027"],
+        "deliverables": ["deq_rule18-4_applicability_2027.xlsx", "deq_printing_press_voc_2026.csv",
+                         "deq_printing_press_voc_2026.svg"],
+        "as_of": "2027-02-26",
         "files": sorted(P.FILES.values()),
         "rows": {P.FILES[k]: v for k, v in sorted(n.items())},
         "sources": {
-            "constructed": "every file is constructed for this task by its generator (task482/generator); the community "
-                           "college system, its colleges, its placement test, the item bank, the delivery platforms, "
-                           "the students and the people are fictional",
-            "public_specifications": "the layouts are the pack's own, in the style of a computer-based test delivery "
-                                     "export and an item bank export, described in its data dictionary",
+            "constructed": "every file is constructed for this task by its generator (task482/generator); the state "
+                           "agency, the nonattainment area, the rule, the plants, their suppliers, vendors and testing "
+                           "firms, and the people are fictional",
+            "public_specifications": "the layouts follow the style of a state air agency's information-request returns: "
+                                     "production press logs, oxidizer data-historian exports, EPA Method 25A test "
+                                     "summaries, safety data sheet masters, hazardous waste manifests and supplier "
+                                     "statements",
             "licence": "CC0 1.0 (constructed data)",
-            "date": "2027-02-05",
+            "date": "2027-02-26",
         },
     }
     with open(path, "w", encoding="utf-8") as fh:

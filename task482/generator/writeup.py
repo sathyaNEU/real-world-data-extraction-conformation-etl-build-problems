@@ -1,5 +1,4 @@
-"""submission.md from figures.json: the tags, the call, the critical components, the steps and the deliverable
-answers, every figure emitted from the generator's own numbers."""
+"""submission.md, every figure read from generator/figures.json."""
 import json
 import os
 
@@ -7,89 +6,105 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 
 
-def n(x):
-    return "{:,}".format(x)
+def join(xs, word="and"):
+    xs = list(xs)
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " %s " % word + xs[-1]
+
+
+def pos(n):
+    return n + ("'" if n.endswith("s") else "'s")
 
 
 def main():
-    F = json.load(open(os.path.join(HERE, "figures.json")))
-    C, R, S = F["components"], F["rivals"], F["system"]
-    ca, cca = F["call"]["college_algebra_score"], F["call"]["corequisite_score"]
+    f = json.load(open(os.path.join(HERE, "figures.json")))
+    P = f["plants"]
+    c = f["components"]
+    st = f["stated"]
+    cov = f["call"]["plants"]
+    d = f["default"]
+    nb = c["nearest_below"]
+    added = [n for n in cov if n not in d["plants"]]
+    order = list(P)
     out = []
     out.append("## Tags\n")
-    out.append("**Domain:** Education & Learning Sciences (item response theory and test equating).")
+    out.append("**Domain:** Physical & Environmental Sciences, emissions inventory (a state air agency's 2026 press "
+               "VOC inventory of fourteen printing and converting plants, conformed from press logs, safety data "
+               "sheets, capture determinations, oxidizer historians and performance tests, each oxidizer's outlet "
+               "carried to each production day's inlet).")
     out.append("**Analytical objective:** Data Extraction & Conformation (ETL).\n")
     out.append("## 1. Final Recommendation\n")
-    out.append("**Form 27A should place students into College Algebra from a raw score of %d and into Corequisite "
-               "College Algebra from %d.**" % (ca, cca))
-    out.append("A student at the College Algebra standard is expected to reach %.1f of the form's 60 scored items and "
-               "a student at the Corequisite College Algebra standard %.1f, once each unique item is carried from the "
-               "field-test section it was calibrated in to the positions it takes on Northgate Assess. Not %d and %d, "
-               "the scores the bank difficulties give as filed (%.1f and %.1f), which hold every unique item as hard "
-               "as it was at positions 61 to 70.\n" % (C["expected_raw_ca"], C["expected_raw_cca"], R["filed_ca_score"],
-                                                       R["filed_cca_score"], R["filed_expected_ca"],
-                                                       R["filed_expected_cca"]))
+    out.append("**Rule 18-4 covers %s from 1 July 2027.**" % join(cov))
+    out.append("Their presses emitted %s tons of VOC in 2026, %s the lowest at %d, against %s %d (%d short). Not the "
+               "oxidizers' tested efficiencies, which put %s at %s tons: every test ran at maximum production, and on "
+               "the part-production days of 2026 the fixed-speed fans drew their full air, so the oxidizers' outlets "
+               "held near their floor and destroyed less than the tests show.\n"
+               % (join(["%d" % P[n]["press_voc_tons"] for n in cov]), c["lowest_covered"]["name"],
+                  c["lowest_covered"]["tons"], nb["name"], nb["tons"], nb["short_tons"], join(added),
+                  join(["%d" % d["tons"][n] for n in added])))
     out.append("## 2. Critical Components\n")
-    out.append("1. Position term of the Rasch model fitted to the 2026 attempts, from the field-test section's mean position "
-               "(65.5) to Form 27A's (45.5): **%.2f** logits" % C["carry_logits"])
-    out.append("2. Expected raw score on Form 27A at the College Algebra standard (0.20 logits): **%.1f**"
-               % C["expected_raw_ca"])
-    out.append("3. Expected raw score on Form 27A at the Corequisite College Algebra standard (-0.70 logits): **%.1f**\n"
-               % C["expected_raw_cca"])
+    out.append("1. Across the %d tests the outlet holds near **%.0f** ppmv as carbon below an inlet of about **%s** "
+               "ppmv and passes **%.1f** per cent of the inlet above it." % (c["tests"], c["floor_ppmc"],
+                                                                            "{:,}".format(c["knee_ppmc"]),
+                                                                            c["pass_pct"]))
+    for i, n in enumerate(added, 2):
+        out.append("%d. %s 2026 press VOC is **%d** tons, against **%d** on its latest test's efficiency."
+                   % (i, pos(n), P[n]["press_voc_tons"], d["tons"][n]))
+    out.append("%d. %s, the nearest plant below the line, emitted **%d** tons, **%d** short.\n"
+               % (len(added) + 2, nb["name"], nb["tons"], nb["short_tons"]))
     out.append("## 3. Step-by-Step Solution\n")
     steps = [
-        "Converted the Itemstore assembly pool's difficulties from bank units to logits (QPI-TR-2027 section 4) and "
-        "took Form 27A's anchor block and 40 unique items from qpi_form_27A_assembly.csv.",
-        "Scored every 2026 response: the Kestrel Testing Suite's response strings against the keys at their version's "
-        "positions in qpi_forms_26A_26B_layout.csv, and Northgate Assess's item responses at their delivered seq.",
-        "Fitted the Rasch model with a linear position term to all 2026 responses by marginal maximum likelihood, the "
-        "anchor block fixed at its bank difficulties and every other item free: %.2f logits over the 20 positions "
-        "from the field-test section's mean to Form 27A's." % C["carry_logits"],
-        "Carried each unique item from the old platform's field-test section (mean position %.1f) to each of positions "
-        "21 to 70 on Northgate Assess and averaged its expected score over the shuffle; the anchor block, calibrated "
-        "in place, kept its bank difficulties." % C["field_test_mean_position"],
-        "Summed the 60 expected scores at each standard: %.1f at College Algebra and %.1f at Corequisite College "
-        "Algebra." % (C["expected_raw_ca"], C["expected_raw_cca"]),
-        "Matched each student across both platforms and both student identifiers on birth date, sex, high school code "
-        "and registration date, and left out the attempts in sessions qpi_session_review_log_2026.xlsx leaves "
-        "invalidated.",
-        "Placed each student on their higher level (the later sitting on a tie) at the college their placing sitting's "
-        "automatic score report went to in qpi_score_reports_2026-03-01_to_2027-01-31.csv: %s students placed, %s "
-        "into College Algebra and %s into Corequisite College Algebra, %s of them sat twice."
-        % (n(S["placed"]), n(S["CA"]), n(S["CCA"]), n(S["twice"])),
-        "Set the placement scores at the lowest whole raw scores at or above the expected raw scores (QPI-TR-2027 "
-        "section 7): College Algebra from %d, Corequisite College Algebra from %d." % (ca, cca),
+        "Converted every row of press_material_use_2026.csv (shift and job records alike, Thameside Laminating's "
+        "facility 0117 rows to Kelvedon Laminates) to pounds of VOC through safety_data_sheet_master_2027-01.xlsx: "
+        "per cent by weight times density, or pounds per gallon less water and exempt compounds times the share of "
+        "the product that is neither, pound rows by density.",
+        "Split each controlled plant's VOC by the capture efficiency on the Capture sheet of "
+        "deq_printing_plants_register_2027-02.xlsx; the four plants without an oxidizer emit what they used.",
+        "Put oxidizer_historian_hourly_2026.csv on Central time, took each production day's PROCESS hours and their "
+        "mean airflow (fan speed times the register's rated airflow where the historian logs speed), and with the "
+        "register's carbon content read each day's inlet as carbon from its captured VOC.",
+        "Put the %d runs in oxidizer_performance_tests_2017_2026.pdf on one basis (Marlow's propane figures times %d) "
+        "and took the outlet as the mean of the runs under %s ppmv, about %.0f, and above the knee the mean share the "
+        "runs over %s ppmv pass, %.1f per cent." % (c["runs"], st["propane_to_carbon"],
+                                                  "{:,}".format(st["dilute_below_ppmc"]), c["floor_ppmc"],
+                                                  "{:,}".format(st["concentrated_above_ppmc"]), c["pass_pct"]),
+        "Read each day's outlet from its inlet, times its air and hours, for what the oxidizer let through, added the "
+        "uncaptured VOC and compared each plant's year with 25 tons: %s." % join(
+            ["%s %d" % (n, P[n]["press_voc_tons"]) for n in sorted(order, key=lambda n: -P[n]["press_voc_tons"])[:7]]),
+        "For cleaning, priced each stores_cleaning_issues_2026.csv issue away from the presses at the revision in "
+        "force on its date (HW-CS-210 at %.2f lb a gallon before its 1 June 2026 reformulation, per the revision log), "
+        "less cantrell_bend_manifests_2026.csv weights under each plant's Cleaning profile (KG rows times %.5f), plus "
+        "each washer's added less removed solvent in wexcombe_service_tickets_2026.csv and in Ostrander's lines in "
+        "solvent_vendor_payments_2026.csv." % (st["cs210_rev3_lb_gal"], st["kg_to_lb"]),
+        "For the gallons, took Corvane and Haldane lines shipped in 2026 (returns netted), read Haldane items on "
+        "documents dated before 1 April 2026 through the replaces_item column of haldane_catalog_2026-04.csv, turned "
+        "pound items into gallons by density, and set them against stock_counts_2026.csv and the press logs' use.",
+        "Listed the plants at 25 tons or more: %s." % join(cov),
     ]
-    for i, s in enumerate(steps):
-        out.append("%d. %s" % (i + 1, s))
-    out.append("\n## 4. Deliverable Answers\n")
-    out.append("### qpi_placement_review_2027.xlsx\n")
-    out.append("1. Placement scores: College Algebra %d, Corequisite College Algebra %d." % (ca, cca))
-    out.append("2. Expected raw score at the standard: College Algebra %.1f, Corequisite College Algebra %.1f."
-               % (C["expected_raw_ca"], C["expected_raw_cca"]))
-    out.append("3. Each college from 1 March 2026 to 31 January 2027, whole students (placed; College Algebra; "
-               "Corequisite College Algebra; sat twice):")
-    for code in sorted(F["colleges"]):
-        r = F["colleges"][code]
-        out.append("   - %s %s: %s placed, %s College Algebra, %s Corequisite College Algebra, %s sat twice"
-                   % (code, r["name"], n(r["placed"]), n(r["CA"]), n(r["CCA"]), n(r["twice"])))
-    out.append("   - System: %s placed, %s College Algebra, %s Corequisite College Algebra, %s sat twice\n"
-               % (n(S["placed"]), n(S["CA"]), n(S["CCA"]), n(S["twice"])))
-    conv = F["conversion"]
-    lo_cca = min(int(r) for r, v in conv.items() if v == "CCA")
-    lo_ca = min(int(r) for r, v in conv.items() if v == "CA")
-    out.append("### qpi_form27a_score_conversion.csv\n")
-    out.append("4. Raw scores 0 to %d Developmental Mathematics (MATH 091), %d to %d Corequisite College Algebra (MATH "
-               "131 with MATH 031), %d to 60 College Algebra (MATH 131).\n" % (lo_cca - 1, lo_cca, lo_ca - 1, lo_ca))
-    out.append("### qpi_form27a_expected_score_curve.svg\n")
-    out.append("5. Form 27A's expected raw score against ability in logits, the two standards marked (0.20 and -0.70) "
-               "with their expected raw scores (%.1f and %.1f) and placement scores (%d and %d), and the curve from the "
-               "bank difficulties as filed dashed." % (C["expected_raw_ca"], C["expected_raw_cca"], ca, cca))
-    text = "\n".join(out) + "\n"
-    assert "—" not in text and "–" not in text
-    open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8").write(text)
-    return text
+    for i, s in enumerate(steps, 1):
+        out.append("%d. %s" % (i, s))
+    out.append("")
+    out.append("## 4. Deliverable Answers\n")
+    out.append("### deq_rule18-4_applicability_2027.xlsx\n")
+    out.append("1. Plants Rule 18-4 covers from 1 July 2027: %s." % join(cov))
+    out.append("2. Each plant's 2026 press VOC, whole tons, and whether the rule covers it:")
+    for n in order:
+        out.append("   - %s: %d, %s" % (n, P[n]["press_voc_tons"], "covered" if P[n]["covered"] else "not covered"))
+    out.append("3. Nearest plant below the line: %s, %d tons short." % (nb["name"], nb["short_tons"]))
+    out.append("4. Each plant's 2026 VOC from cleaning away from its presses, tons to one decimal:")
+    for n in order:
+        out.append("   - %s: %.1f" % (n, P[n]["cleaning_voc_tons"]))
+    out.append("5. Gallons of inks, coatings and adhesives each plant received in 2026 that its stock counts and press "
+               "logs leave unaccounted for, whole gallons:")
+    for n in order:
+        out.append("   - %s: %s" % (n, "{:,}".format(P[n]["unaccounted_gal"])))
+    out.append("\n### deq_printing_press_voc_2026.csv\n")
+    out.append("6. Fourteen rows, each with the facility number, the plant, its 2026 press VOC as in item 2 and Y or N "
+               "for coverage.")
+    out.append("\n### deq_printing_press_voc_2026.svg\n")
+    out.append("7. Horizontal bar chart of the fourteen plants' 2026 press VOC, highest first, each bar labelled with "
+               "its whole tons, a vertical line at 25 tons, the five covered plants in blue and the rest in grey.")
+    open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8").write("\n".join(out) + "\n")
 
 
 if __name__ == "__main__":
-    print(main())
+    main()

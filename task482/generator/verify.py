@@ -1,178 +1,259 @@
-"""An independent recomputation of task482's golden from target/ alone, in code that shares nothing with bundle.py:
-pandas for the files, a joint maximum likelihood Rasch fit with a position term written here, and the placements by
-the policy's words. Exit 1 when any figure in figures.json does not recompute."""
+"""An independent recomputation of task482's golden from target/ alone, without bundle.py: pandas over the CSVs, openpyxl
+over the workbooks, pdfplumber over the PDFs' words. It checks figures.json and the three golden files.
+
+    python3 task482/generator/verify.py
+"""
+import datetime as dt
 import json
-import math
 import os
+import re
 import sys
+import warnings
 
 import numpy as np
-import openpyxl
 import pandas as pd
 
+warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 T = os.path.join(TASK, "target")
+G = os.path.join(TASK, "golden")
+K = 3.1173e-8
+FAIL = []
 
 
-def f(name):
-    return os.path.join(T, name)
+def say(name, ok):
+    print("%s  %s" % ("PASS" if ok else "FAIL", name))
+    if not ok:
+        FAIL.append(name)
+
+
+def half_up(x, nd=0):
+    m = 10 ** nd
+    return float(np.sign(x) * np.floor(abs(x) * m + 0.5) / m)
+
+
+def book(fn, sheet, skip=0):
+    return pd.read_excel(os.path.join(T, fn), sheet_name=sheet, skiprows=skip, dtype=object)
+
+
+def words(fn):
+    import pdfplumber
+    with pdfplumber.open(os.path.join(T, fn)) as pdf:
+        return " ".join(" ".join(w["text"] for w in pg.extract_words()) for pg in pdf.pages)
 
 
 def main():
-    F = json.load(open(os.path.join(HERE, "figures.json")))
-    fails = []
-    pool = pd.read_csv(f("itemstore_assembly_pool_2027-02-03.csv"), dtype=str)
-    pool["logit"] = (pool["difficulty_bu"].astype(float) - 500) / 100
-    m = pd.read_csv(f("qpi_form_27A_assembly.csv"), dtype=str)
-    anchors = m[m.section == "anchor"].item_id.tolist()
-    unique = m[m.section == "unique"].item_id.tolist()
-    d = dict(zip(pool.item_id, pool.logit))
+    f = json.load(open(os.path.join(HERE, "figures.json")))
+    plants = book("deq_printing_plants_register_2027-02.xlsx", "Plants")
+    oxs = book("deq_printing_plants_register_2027-02.xlsx", "Oxidizers")
+    capt = book("deq_printing_plants_register_2027-02.xlsx", "Capture")
+    name_of = dict(zip(plants["Facility no."].astype(str), plants["Plant"]))
+    for fn_, pl in zip(plants["Former name"], plants["Plant"]):
+        if isinstance(fn_, str):
+            name_of[re.search(r"facility (\d+)", fn_).group(1)] = pl
+    cf = dict(zip(plants["Plant"], plants["Carbon content of VOC (lb C per lb VOC)"]))
+    ce = dict(zip(capt["Plant"], capt["Capture efficiency (%)"].astype(float) / 100))
+    tag_of, rated = {}, {}
+    for _, r in oxs.iterrows():
+        for t in re.findall(r"[A-Z]{3,4}-RTO\d?", r["Historian tag"]):
+            tag_of[t] = r["Plant"]
+        rated[r["Plant"]] = float(r["Rated airflow (scfm)"])
 
-    # responses: old platform by version map, new platform by seq
-    lay = pd.read_csv(f("qpi_forms_26A_26B_layout.csv"), dtype=str)
-    key = dict(zip(lay.item_id, lay.key))
-    at = {}
-    for _, r in lay.iterrows():
-        fm = r.form if r.form in ("26A", "26B") else "FT" + r.form.split("-")[1]
-        at[(fm, "A", int(r.kts_position_version_A))] = r.item_id
-        at[(fm, "B", int(r.kts_position_version_B))] = r.item_id
-    old = pd.read_csv(f("kts_qpi_attempts_2026-03-01_to_2026-06-30.csv"), dtype=str)
-    rows = []
-    for _, r in old.iterrows():
-        for p in range(1, 71):
-            fm = r.form if p <= 60 else "FT" + r.ft_set
-            iid = at[(fm, r.version, p)]
-            rows.append((r.attempt_id, iid, p, int(r.responses[p - 1] == key[iid])))
-    resp = pd.concat([pd.DataFrame(rows, columns=["att", "item", "pos", "y"]),
-                      pd.read_csv(f("northgate_item_responses_2026-07-01_to_2027-01-31.csv"),
-                                  usecols=["attempt_ref", "item_id", "seq", "score"]).rename(
-                          columns={"attempt_ref": "att", "item_id": "item", "seq": "pos", "score": "y"})])
-    anchor = set(pool[pool.status == "anchor"].item_id)
-    A = pd.factorize(resp.att)[0]
-    items, I = np.unique(resp.item.values, return_inverse=True)
-    X = resp.pos.values.astype(float)
-    Y = resp.y.values.astype(float)
-    isA = np.array([i in anchor for i in items])
-    fixed = np.array([d.get(i, 0.0) for i in items])
-    Xc = np.where(isA[I], 0.0, X)
-    nI, nP = len(items), A.max() + 1
-    th = np.zeros(nP)
-    bb = fixed.copy()
-    g = 0.0
+    sds = book("safety_data_sheet_master_2027-01.xlsx", "Products").set_index("Product code")
+    log = book("safety_data_sheet_master_2027-01.xlsx", "Revision log")
 
-    def sig(z):
-        return 1 / (1 + np.exp(-z))
-    for _ in range(500):
-        pr = sig(th[A] - bb[I] - g * Xc)
-        w = pr * (1 - pr)
-        th += np.clip(np.bincount(A, Y - pr, nP) / np.maximum(np.bincount(A, w, nP), 1e-9), -1, 1)
-        pr = sig(th[A] - bb[I] - g * Xc)
-        w = pr * (1 - pr)
-        step = np.bincount(I, pr - Y, nI) / np.maximum(np.bincount(I, w, nI), 1e-9)
-        step[isA] = 0
-        bb += np.clip(step, -1, 1)
-        pr = sig(th[A] - bb[I] - g * Xc)
-        w = pr * (1 - pr)
-        free = ~isA[I]
-        xm = np.bincount(I, w * Xc, nI) / np.maximum(np.bincount(I, w, nI), 1e-9)
-        xc = Xc - xm[I]
-        g += np.clip(np.sum((pr - Y)[free] * xc[free]) / np.sum((w * xc * xc)[free]), -0.005, 0.005)
-    pos = np.arange(21, 71)
+    def lb_per_gal(code, d):
+        for _, r in log[log["Product code"] == code].iterrows():
+            m = re.search(r"density ([\d.]+) lb/gal and VOC ([\d.]+) per cent", str(r["Change"]))
+            if m and d < pd.Timestamp(r["Effective from"]).date():
+                return float(m.group(1)) * float(m.group(2)) / 100
+        s = sds.loc[code]
+        if str(s["VOC basis"]).startswith("%"):
+            return float(s["Density (lb/gal)"]) * float(s["VOC"]) / 100
+        num = lambda v: 0.0 if pd.isna(v) else float(v)
+        return float(s["VOC"]) * (1 - (num(s["Water (vol %)"]) + num(s["Exempt compounds (vol %)"])) / 100)
 
-    def expected(t, gam):
-        e = sum(sig(t - d[i]) for i in anchors)
-        return e + sum(float(sig(t - (d[i] - gam * (65.5 - pos))).mean()) for i in unique)
-    for lv, t, k_e, k_s in (("CA", 0.20, "expected_raw_ca", "college_algebra_score"),
-                            ("CCA", -0.70, "expected_raw_cca", "corequisite_score")):
-        e = expected(t, g)
-        if "%.1f" % e != "%.1f" % F["components"][k_e]:
-            fails.append("%s expected %.3f against %s" % (lv, e, F["components"][k_e]))
-        if math.ceil(e) != F["call"][k_s]:
-            fails.append("%s placement score %d against %s" % (lv, math.ceil(e), F["call"][k_s]))
-        e0 = expected(t, 0.0)
-        if math.ceil(e0) != F["rivals"]["filed_%s_score" % lv.lower()]:
-            fails.append("%s filed score" % lv)
-    if "%.2f" % (20 * g) != "%.2f" % F["components"]["carry_logits"]:
-        fails.append("carry %.4f against %s" % (20 * g, F["components"]["carry_logits"]))
-    print("verify: position term %.5f (JML), expected %.3f / %.3f" % (g, expected(0.2, g), expected(-0.7, g)))
+    # press VOC used, by plant and production day (the day's hours run from its first start to its last end)
+    pr = pd.read_csv(os.path.join(T, "press_material_use_2026.csv"), dtype=str)
+    pr["plant"] = pr["facility_no"].map(name_of)
+    pr["q"] = pr["quantity"].astype(float)
+    pr["dens"] = pr["material_code"].map(lambda c: float(sds.loc[c, "Density (lb/gal)"]))
+    pr["gal"] = np.where(pr["uom"] == "LB", pr["q"] / pr["dens"], pr["q"])
+    vpg = {(c, d): lb_per_gal(c, dt.date.fromisoformat(d)) for c, d in set(zip(pr["material_code"], pr["log_date"]))}
+    pr["lb"] = pr["gal"] * [vpg[(c, d)] for c, d in zip(pr["material_code"], pr["log_date"])]
+    pr["st"] = pd.to_datetime(pr["start_local"])
+    pr["en"] = pd.to_datetime(pr["end_local"])
+    day = pr.groupby(["plant", "log_date"]).agg(lb=("lb", "sum"), st=("st", "min"), en=("en", "max")).reset_index()
 
-    # the asks
-    new = pd.read_csv(f("northgate_attempts_2026-07-01_to_2027-01-31.csv"), dtype=str)
-    old["dob"] = pd.to_datetime(old.birth_date, format="%m/%d/%Y").dt.strftime("%Y-%m-%d")
-    old["reg"] = pd.to_datetime(old.registered, format="%m/%d/%Y").dt.strftime("%Y-%m-%d")
-    old["when"] = pd.to_datetime(old.test_date + " " + old.start, format="%m/%d/%Y %H:%M")
-    old["level"] = old.placement.map({"131": "CA", "131C": "CCA", "091": "DM"})
-    cen = pd.read_csv(f("qpi_testing_centres.csv"), dtype=str)
-    site = dict(zip(cen.kts_site, cen.centre))
-    old["centre"] = old.site.map(site)
-    old["sess_date"] = pd.to_datetime(old.test_date, format="%m/%d/%Y").dt.strftime("%Y-%m-%d")
-    hh = old.start.str.slice(0, 2).astype(int)
-    old["sess_start"] = np.where(hh >= 17, "17:30", np.where(hh >= 12, "13:00", "09:00"))
-    utc = pd.to_datetime(new.started_at, format="%Y-%m-%dT%H:%M:%SZ")
-    dst = (utc >= pd.Timestamp("2026-03-08 08:00")) & (utc < pd.Timestamp("2026-11-01 07:00"))
-    new["when"] = utc - pd.to_timedelta(np.where(dst, 5, 6), unit="h")
-    new["dob"], new["reg"], new["level"] = new.birth_date, new.registered, new.placement
-    parts = new.session_ref.str.split("-", expand=True)
-    new["centre"] = "TC" + parts[0].str.slice(1)
-    new["sess_date"] = pd.to_datetime(parts[1], format="%Y%m%d").dt.strftime("%Y-%m-%d")
-    new["sess_start"] = parts[2].str.slice(0, 2) + ":" + parts[2].str.slice(2)
-    cols = ["att", "dob", "sex", "hs_code", "reg", "when", "level", "centre", "sess_date", "sess_start"]
-    old2 = old.rename(columns={"attempt_id": "att"})[cols]
-    new2 = new.rename(columns={"attempt_ref": "att"})[cols]
-    allat = pd.concat([old2, new2], ignore_index=True)
-    ws = openpyxl.load_workbook(f("qpi_session_review_log_2026.xlsx"), read_only=True).active
-    log = [r for r in ws.iter_rows(min_row=5, values_only=True) if r and r[0]]
-    log.sort(key=lambda r: r[0])
-    state = {}
-    for logged, centre, sdate, sstart, plat, ref, decision, n, note in log:
-        k = (centre, pd.Timestamp(sdate).strftime("%Y-%m-%d"), str(sstart))
-        state[k] = decision == "Attempts invalidated"
-    bad = {k for k, v in state.items() if v}
-    allat["invalid"] = [(c, dd, s) in bad for c, dd, s in zip(allat.centre, allat.sess_date, allat.sess_start)]
-    allat = allat[~allat.invalid].copy()
-    rep = pd.read_csv(f("qpi_score_reports_2026-03-01_to_2027-01-31.csv"), dtype=str)
-    auto = rep[rep.report == "automatic"].set_index("attempt").sent_to
-    allat["college"] = allat.att.map(auto)
-    allat["person"] = allat.dob + "|" + allat.sex + "|" + allat.hs_code + "|" + allat.reg
-    allat["rank"] = allat.level.map({"DM": 0, "CCA": 1, "CA": 2})
-    allat = allat.sort_values(["person", "rank", "when"])
-    best = allat.groupby("person").tail(1)
-    n_sit = allat.groupby("person").size()
-    best = best.assign(twice=best.person.map(n_sit) >= 2)
-    for code in sorted(F["colleges"]):
-        sub = best[best.college == code]
-        got = dict(placed=len(sub), CA=int((sub.level == "CA").sum()), CCA=int((sub.level == "CCA").sum()),
-                   twice=int(sub.twice.sum()))
-        for k, v in got.items():
-            if v != F["colleges"][code][k]:
-                fails.append("college %s %s %d against %d" % (code, k, v, F["colleges"][code][k]))
-    for k in ("placed", "CA", "CCA", "twice"):
-        if sum(F["colleges"][c][k] for c in F["colleges"]) != F["system"][k]:
-            fails.append("system %s" % k)
-    conv = F["conversion"]
-    for r in range(61):
-        want = "CA" if r >= F["call"]["college_algebra_score"] else ("CCA" if r >= F["call"]["corequisite_score"]
-                                                                     else "DM")
-        if conv[str(r)] != want:
-            fails.append("conversion %d" % r)
-    g_csv = pd.read_csv(os.path.join(TASK, "golden", "qpi_form27a_score_conversion.csv"), dtype=str)
-    if list(g_csv.placement) != [conv[str(r)] for r in range(61)]:
-        fails.append("golden conversion file")
-    wb = openpyxl.load_workbook(os.path.join(TASK, "golden", "qpi_placement_review_2027.xlsx"), data_only=True)
-    s1 = wb["Form 27A"]
-    if (s1["D5"].value, s1["D6"].value) != (F["call"]["college_algebra_score"], F["call"]["corequisite_score"]):
-        fails.append("workbook placement scores")
-    s2 = wb["Colleges 2026"]
-    for row in s2.iter_rows(min_row=5, max_row=18, values_only=True):
-        c = row[0]
-        if [row[2], row[3], row[4], row[5]] != [F["colleges"][c][k] for k in ("placed", "CA", "CCA", "twice")]:
-            fails.append("workbook college %s" % c)
-    for x in fails:
-        print("FAIL  " + x)
-    print("%s  verify: %d figures and files recomputed independently, %d failures" % ("PASS" if not fails else "FAIL",
-                                                                                   4 + 56 + 61 + 4, len(fails)))
-    return 1 if fails else 0
+    # historians on Central time, PROCESS hours into their production day's window
+    h = pd.read_csv(os.path.join(T, "oxidizer_historian_hourly_2026.csv"), dtype=str)
+    h = h[h["mode"] == "PROCESS"].copy()
+    h["plant"] = h["unit_tag"].map(tag_of)
+    utc = pd.to_datetime(h["hour_beginning_utc"].str.rstrip("Z"))
+    cdt = (utc >= pd.Timestamp("2026-03-08 08:00")) & (utc < pd.Timestamp("2026-11-01 07:00"))
+    h["local"] = utc - pd.to_timedelta(np.where(cdt, 5, 6), unit="h")
+    h["flow"] = np.where(h["exhaust_flow_scfm"].notna() & (h["exhaust_flow_scfm"] != ""),
+                         pd.to_numeric(h["exhaust_flow_scfm"], errors="coerce"),
+                         pd.to_numeric(h["fan_speed_pct"], errors="coerce") / 100 * h["plant"].map(rated))
+    win = day[day["plant"].isin(rated)]
+    hk = []
+    for _, r in win.iterrows():
+        t = r["st"].floor("h")
+        while t < r["en"]:
+            hk.append((r["plant"], t, r["log_date"]))
+            t += pd.Timedelta(hours=1)
+    hk = pd.DataFrame(hk, columns=["plant", "local", "log_date"])
+    hh = h.merge(hk, on=["plant", "local"], how="left")
+    say("V every PROCESS hour falls in a production day's window", hh["log_date"].notna().all())
+    dd = hh.groupby(["plant", "log_date"]).agg(hours=("flow", "size"), flow=("flow", "mean")).reset_index()
+    day = day.merge(dd, on=["plant", "log_date"], how="left")
+
+    # the tests: words of the summary, runs on carbon
+    txt = words("oxidizer_performance_tests_2017_2026.pdf")
+    blocks = re.split(r"(?=\b[A-Z][a-z]+(?: [A-Z][a-z]+)* \(facility \d{4}\), [A-Z]{3,4}-RTO)", txt)
+    ci, co = [], []
+    n_tests = 0
+    for b in blocks:
+        if "(facility" not in b or "Test of" not in b:
+            continue
+        n_tests += 1
+        mult = 3.0 if "as propane" in b else 1.0
+        for m in re.finditer(r"\b([123]) \d{2}:\d{2} ([\d.]+) ([\d.]+) [\d,]+ [\d,]+ [\d.]+ [\d.]+ [\d.]+", b):
+            ci.append(float(m.group(2)) * mult)
+            co.append(float(m.group(3)) * mult)
+    ci, co = np.array(ci), np.array(co)
+    say("V %d tests, %d runs read from the summary" % (n_tests, len(ci)), n_tests == 28 and len(ci) == 84)
+    Fv = co[ci < 2000].mean()
+    pv = (co[ci > 3000] / ci[ci > 3000]).mean()
+    say("V the relation: floor %.2f ppmv as carbon, %.3f per cent above the knee (figures.json %.1f, %.2f)" %
+        (Fv, 100 * pv, f["components"]["floor_ppmc"], f["components"]["pass_pct"]),
+        round(Fv, 1) == f["components"]["floor_ppmc"] and round(100 * pv, 2) == f["components"]["pass_pct"])
+
+    tons = {}
+    for pl in plants["Plant"]:
+        dp = day[day["plant"] == pl]
+        used = dp["lb"].sum() / 2000
+        if pl not in rated:
+            tons[pl] = used
+            continue
+        cap_lb = dp["lb"] * ce[pl]
+        inlet = cap_lb / dp["hours"] * cf[pl] / (dp["flow"] * 60 * K)
+        out = np.maximum(Fv, pv * inlet)
+        ctl = (out * dp["flow"] * 60 * K / cf[pl] * dp["hours"]).sum() / 2000
+        tons[pl] = used * (1 - ce[pl]) + ctl
+    whole = {pl: int(half_up(v)) for pl, v in tons.items()}
+    say("V each plant's 2026 press VOC, whole tons, as figures.json",
+        all(whole[pl] == f["plants"][pl]["press_voc_tons"] for pl in whole))
+    cov = sorted(pl for pl, v in tons.items() if v >= 25)
+    say("V the call: %s" % cov, cov == f["call"]["plants"])
+    below = max((v, pl) for pl, v in tons.items() if pl not in cov)
+    nb = f["components"]["nearest_below"]
+    say("V the nearest below: %s %d, %d short" % (below[1], half_up(below[0]), half_up(25 - below[0])),
+        below[1] == nb["name"] and half_up(25 - below[0]) == nb["short_tons"])
+
+    # ask A
+    iss = pd.read_csv(os.path.join(T, "stores_cleaning_issues_2026.csv"), dtype=str)
+    iss = iss[~iss["issued_to"].str.startswith("PRESS")]
+    iss["plant"] = iss["facility_no"].map(name_of)
+    iss["lb"] = [float(q) * lb_per_gal(c, dt.date.fromisoformat(d)) for q, c, d in
+                 zip(iss["quantity"], iss["material_code"], iss["issue_date"])]
+    clean = iss.groupby("plant")["lb"].sum()
+    prof = {}
+    for m in re.finditer(r"(CB-\d{4}-0\d) .*? (Cleaning|Press operations) ([\d.]+) ", words("cantrell_bend_waste_profiles_2026.pdf")):
+        prof[m.group(1)] = (m.group(2), float(m.group(3)))
+    man = pd.read_csv(os.path.join(T, "cantrell_bend_manifests_2026.csv"), dtype=str)
+    man["plant"] = man["generator_facility_no"].map(name_of)
+    man = man[man["waste_profile"].map(lambda p_: prof[p_][0] == "Cleaning")]
+    man["lb"] = man["net_weight"].astype(float) * np.where(man["weight_unit"] == "KG", 2.20462, 1.0) * \
+        man["waste_profile"].map(lambda p_: prof[p_][1] / 100)
+    tk = pd.read_csv(os.path.join(T, "wexcombe_service_tickets_2026.csv"), dtype=str)
+    tk["plant"] = tk["facility_no"].map(name_of)
+    tk["lb"] = (tk["fresh_added_gal"].astype(float) - tk["spent_removed_gal"].astype(float)) * \
+        tk["solvent_product"].map(lambda c: lb_per_gal(c, dt.date(2026, 12, 31)))
+    pay = pd.read_csv(os.path.join(T, "solvent_vendor_payments_2026.csv"), dtype=str)
+    ex = pay["description"].str.extract(r"fresh ([\d.]+) gal (\S+), spent ([\d.]+) gal recovered").dropna()
+    st_lb = pd.Series([(float(a) - float(c)) * lb_per_gal(b, dt.date(2026, 12, 31)) for a, b, c in ex.values],
+                      index=ex.index)
+    st_pl = pay.loc[ex.index, "facility_no"].map(name_of)
+    a_t = {}
+    for pl in plants["Plant"]:
+        v = clean.get(pl, 0) - man[man["plant"] == pl]["lb"].sum() + tk[tk["plant"] == pl]["lb"].sum() + \
+            st_lb[st_pl == pl].sum()
+        a_t[pl] = half_up(v / 2000, 1)
+    say("V ask A: each plant's cleaning VOC to a tenth of a ton, as figures.json",
+        all(abs(a_t[pl] - f["plants"][pl]["cleaning_voc_tons"]) < 1e-9 for pl in a_t))
+
+    # ask B
+    cat = pd.read_csv(os.path.join(T, "haldane_catalog_2026-04.csv"), dtype=str).set_index("item_no")
+    repl = {r: i for i, r in cat["replaces_item"].dropna().items()}
+    hal = book("haldane_statement_2026.xlsx", "Statement detail", skip=1)
+    hal["Doc date"] = pd.to_datetime(hal["Doc date"])
+    hal["Ship date"] = pd.to_datetime(hal["Ship date"])
+    hal = hal[hal["Ship date"].dt.year == 2026].copy()
+    hal["item"] = [repl.get(str(i), str(i)) if dd_ < pd.Timestamp("2026-04-01") else str(i)
+                   for i, dd_ in zip(hal["Item"], hal["Doc date"])]
+    hal["code"] = hal["item"].map(cat["product_code"])
+    hal["sold"] = hal["item"].map(cat["sold_by"])
+    hal["kind"] = hal["code"].map(sds["Product type"]).str.upper()
+    hal = hal[hal["kind"].isin(["INK", "COATING", "ADHESIVE"])]
+    hal["gal"] = np.where(hal["sold"] == "LB", hal["Qty"].astype(float) /
+                          hal["code"].map(sds["Density (lb/gal)"]).astype(float), hal["Qty"].astype(float))
+    pn = {pl.upper(): pl for pl in plants["Plant"]}
+    pn["THAMESIDE LAMINATING"] = [pl for pl in plants["Plant"] if pl.startswith("Kelvedon")][0]
+    hal["plant"] = hal["Ship to"].map(pn)
+    cv = pd.read_csv(os.path.join(T, "corvane_invoice_export_2026.csv"), dtype=str)
+    cv = cv[cv["SHIP_DATE"].str.startswith("2026")].copy()
+    cv["code"] = "CV-" + cv["ITEM"].str.rsplit("-", n=1).str[0]
+    cv = cv[cv["code"].map(sds["Product type"]).str.upper().isin(["INK", "COATING", "ADHESIVE"])]
+    cv["plant"] = cv["SHIP_TO"].map(pn)
+    cnt = pd.read_csv(os.path.join(T, "stock_counts_2026.csv"), dtype=str)
+    cnt["kind"] = cnt["material_code"].map(sds["Product type"]).str.upper()
+    cnt = cnt[cnt["kind"].isin(["INK", "COATING", "ADHESIVE"])]
+    cnt["gal"] = np.where(cnt["uom"] == "LB", cnt["quantity"].astype(float) /
+                          cnt["material_code"].map(sds["Density (lb/gal)"]).astype(float),
+                          cnt["quantity"].astype(float))
+    cnt["plant"] = cnt["facility_no"].map(name_of)
+    cnt["signed"] = np.where(cnt["count_date"] == "2026-01-01", cnt["gal"], -cnt["gal"])
+    pk = pr[pr["material_code"].map(sds["Product type"]).str.upper().isin(["INK", "COATING", "ADHESIVE"])]
+    b_t = {}
+    for pl in plants["Plant"]:
+        v = cnt[cnt["plant"] == pl]["signed"].sum() + hal[hal["plant"] == pl]["gal"].sum() + \
+            cv[cv["plant"] == pl]["QTY"].astype(float).sum() - pk[pk["plant"] == pl]["gal"].sum()
+        b_t[pl] = int(half_up(v))
+    say("V ask B: each plant's unaccounted gallons, as figures.json",
+        all(b_t[pl] == f["plants"][pl]["unaccounted_gal"] for pl in b_t))
+
+    # the filed sentences, read back through the same extractor
+    rule = re.sub(r"\s+", " ", words("deq_rule_18-4_draft_2027-02-19.pdf"))
+    letter = re.sub(r"\s+", " ", words("deq_information_request_2027-01-12.pdf"))
+    say("V the rule files the applicability (25 tons or more in 2026, used less destroyed) and the cleaning record",
+        "VOC emitted from its presses in calendar year 2026 was 25 tons or more" in rule and
+        "less the VOC that the plant's capture systems and control devices destroyed" in rule and
+        "less the VOC in spent cleaning materials shipped off site" in rule)
+    say("V the letter files Central time and Thameside Laminating's records under facility 0117",
+        "local (Central) time" in letter and "Thameside Laminating (facility 0117)" in letter)
+
+    # the golden files
+    import openpyxl
+    wb = openpyxl.load_workbook(os.path.join(G, "deq_rule18-4_applicability_2027.xlsx"), data_only=True)
+    rows = list(wb["Plants"].iter_rows(min_row=2, values_only=True))
+    say("V the workbook's Plants sheet carries every plant's tons, coverage, cleaning VOC and gallons",
+        all(r[2] == f["plants"][r[0]]["press_voc_tons"] and (r[3] == "Yes") == f["plants"][r[0]]["covered"] and
+            abs(r[4] - f["plants"][r[0]]["cleaning_voc_tons"]) < 1e-9 and r[5] == f["plants"][r[0]]["unaccounted_gal"]
+            for r in rows) and len(rows) == 14)
+    app = [r[0] for r in wb["Appendix A"].iter_rows(min_row=5, values_only=True) if r[0] and r[1]]
+    say("V Appendix A lists the five", app == f["call"]["plants"])
+    gc = pd.read_csv(os.path.join(G, "deq_printing_press_voc_2026.csv"), dtype=str)
+    say("V the CSV carries the 14 whole tons and the Y/N", all(int(t) == f["plants"][p_]["press_voc_tons"] and
+                                                               (y == "Y") == f["plants"][p_]["covered"] for p_, t, y in
+                                                               zip(gc["plant"], gc["press_voc_2026_tons"],
+                                                                   gc["rule_18_4_from_2027_07_01"])))
+    svg = open(os.path.join(G, "deq_printing_press_voc_2026.svg"), encoding="utf-8").read()
+    say("V the chart labels every bar with its whole tons and draws the 25-ton line",
+        all(">%d<" % f["plants"][p_]["press_voc_tons"] in svg for p_ in f["plants"]) and "25 tons" in svg)
+    print("%s  verify: %d failed" % ("PASS" if not FAIL else "FAIL", len(FAIL)))
+    return 1 if FAIL else 0
 
 
 if __name__ == "__main__":
