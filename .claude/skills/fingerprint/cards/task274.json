@@ -1,0 +1,84 @@
+{
+  "task": "task274",
+  "architecture": "v1",
+  "drawn": "2026-10-23",
+  "slot_note": "task274/DESIGN_NOTE.md",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "niche": "a rural electric cooperative's 2027 full groundline inspection, sized by how many of its wood poles will be 50 or older, when one pole in seven in service carries no year of setting",
+  "objective": "descriptive-distribution",
+  "shape": "14",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G4",
+    "G9"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stump_class": "analytical",
+  "analyst_test": "a strong analyst who parses every brand and reads every account spreads the poles with no year of setting like the pre-1987 poles whose brand was read, or in proportion to each year's additions, and files a count of poles 50 or older thousands off (about 27,000 or 38,600 against about 33,000)",
+  "domain_test": "the number of poles in service at or above each age when the install year is missing for one pole in seven and missing more often the older the pole: the surviving poles of each pre-conversion vintage are rebuilt as that vintage's additions times a survivor curve fitted to the unaged retirements of the pre-conversion poles (the simulated plant-record method), and the poles with no year are spread over what that leaves after the poles whose brand was read",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:unrecorded install years rebuilt from vintage additions through a survivor curve fitted to the unaged retirements",
+  "layer1": [
+    "a pole register built at the 1987 conversion to a computerized plant system: poles set since carry the work order's year of setting, older poles carry one only where an inspector read the brand, typed as the brand reads (a treatment code and a two-digit year), with blanks and a 1900 placeholder for the rest",
+    "plant accounts kept in two systems: additions of poles by year from 1938 to 1986 transcribed from the ledgers at the conversion, and from 1987 the property system's additions and retirements by year of setting, with the pre-conversion poles' retirements booked as one count a year",
+    "retirements booked when the work order closes, sometimes in the following year, so the register and the accounts differ at year end by the open work orders",
+    "poles owned by the telephone company and streetlight-only poles in the register beside the cooperative's own distribution poles",
+    "two districts merged in 2019 under a new name, poles not touched since still carrying the old district code"
+  ],
+  "stakeholder_role": "manager of system maintenance, rural electric cooperative",
+  "role_family": "operations_director",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "pole register",
+    "rows": 0,
+    "entity": "one pole in service at the end of 2026",
+    "grain": "pole",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "audit_or_inspection",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "United States (the cooperative, its service area and people are fictional)",
+    "currency": "USD",
+    "org_type": "member-owned rural electric distribution cooperative",
+    "invented_names": [
+      "Quillfield Electric Cooperative",
+      "Thornbeck"
+    ],
+    "people": [
+      "Kendra Dennis",
+      "Alexis Camacho"
+    ]
+  },
+  "deliverables": [
+    "pole_inspection_2027.xlsx",
+    "pole_inspection_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is how many units in service are at least a given age when many units' start dates were never recorded and are missing more often the older the unit; the units still in service from each start year are that year's intake times the chance of lasting to its present age, a curve fitted to the yearly outflow of the unrecorded group, so the unrecorded units are spread over start years by what that leaves once the recorded ones are taken out, not like the recorded ones and not in proportion to intake.",
+  "driver_concrete": "How many of Quillfield Electric Cooperative's poles will be 50 or older on 1 January 2027, with the poles that have no year of setting spread over the pre-1987 vintages as each vintage's additions times a survivor curve fitted to the yearly retirements of the poles set before the 1987 conversion, less the poles of that vintage whose brand was read; not spread like the poles whose year is known, not in proportion to additions, and not by a curve fitted only to the poles set since 1987 and carried past the ages they have reached.",
+  "stump": "A competent analyst who parses every brand and reads every account spreads the poles with no year of setting like the poles whose year is known, or in proportion to each year's additions, and files a count of poles 50 or older thousands off; brands fade with age, so the poles with no year are the oldest, and each vintage's survivors are its additions thinned by decades of retirements, so only a survivor curve fitted to the yearly retirements of the poles set before the conversion, applied to each vintage's additions, says how many poles of each age are still standing.",
+  "mechanism_source": "own: the seed's quantity (a count on a distribution read against a fixed limit) kept; DA24's affordability world held no unspent analytical step (design note, Tried and rejected), so the world was redrawn to a cooperative's pole plant",
+  "differentiation": {},
+  "lineage": [],
+  "notes": "Drawn 2026-10-23 from seed DA24's quantity only (a count on a distribution read against a fixed limit); the seed's affordability world held no unspent analytical step and was redrawn (design note, Draw and Tried and rejected). WARNs answered in the design note's Draw.",
+  "registered": "2026-10-23T06:01:25Z"
+}

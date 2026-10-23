@@ -1,0 +1,39 @@
+{
+  "task": "task274",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "general-statistics-data-science",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-23",
+  "stump": "A competent analyst who parses every brand and reads every account spreads the poles with no year of setting like the pre-1987 poles whose brand was read and files about 27,000 poles 50 or older (or, spreading them by each year's additions, about 38,600); brands fade with age, so the poles with no year are the oldest, and each vintage's survivors are its additions thinned by decades of retirements that climb after forty years, so only a survivor curve fitted to the yearly retirements of the poles set before the conversion, applied to each vintage's additions, says how many poles of each age still stand (about 33,000).",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": null,
+    "reader": null
+  },
+  "duplicate_check": {
+    "heart": null,
+    "nearest": ""
+  },
+  "judge": {
+    "verdict": null,
+    "disposition": null,
+    "report": null
+  },
+  "returned": [],
+  "resume": "Stage 2: design (readability screen, fork table, ladder, closure table, literal reader, oracles, ask sheet, prompt.txt) to precut.py exit 0; the world is redrawn from DA24 to Quillfield Electric Cooperative's pole plant (design note, Draw).",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "seed": "DA24 (quantity only: a count on a distribution read against a fixed limit; world redrawn)"
+}
