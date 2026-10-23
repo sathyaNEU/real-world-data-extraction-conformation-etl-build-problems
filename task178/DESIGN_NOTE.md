@@ -289,6 +289,13 @@ and the judge. The cell's other candidates are lines at the foot of `## Tried an
 the judge approved, both readers landed the call, and architecture 2 is spent at Gate F; the card's re-registration
 (d4521939) is moot with the architecture spent, and the card is left as filed with `architecture_spent` set.
 
+The main session then assigned pharmacology-pharmacoepidemiology-safety / population-pharmacokinetics-exposure-response
+(Forecasting), worktree `b_178n` at 682b11dd, with fictional drug, sponsor and country. The task type's earlier screens
+were read first and kept spent (task179's target-mediated elimination and eleven on paper, task170 architecture 2's
+twenty). Two new candidates were measured dead on code and sixteen directions on paper (the cell's lines at the foot
+of `## Tried and rejected`). No card was registered, so architecture 2 stays the card's current identity, nothing moved
+into `lineage` and nothing was cut. PAUSED at stage 1 for the main session to assign another cell.
+
 ## FC49 screen record (world spent, kept for the record)
 
 **Status: PAUSED at stage 1, no card ever registered, nothing cut.** New, Forecasting, seed FC49: a
@@ -561,3 +568,62 @@ none is touched by either candidate.
   default path) applies to hydrometry as it did to the tide table. The ask devices (a visit-log clock, a logged controller
   offset, a resurveyed sensor face) are all 1.1e hygiene that careful readers execute. The card's re-registration
   (d4521939) is moot now; the card is left as filed, marked spent.
+- **Third rebuild cell, pharmacology-pharmacoepidemiology-safety / population-pharmacokinetics-exposure-response
+  (Forecasting), screened 2026-10-23; nothing held, no card.** The cell's four library cards (covariates inside the
+  mixed model, allometric centring, exposure-response confounded by clearance, BLQ as censored) and the field's
+  forecast (a population model on the monitoring levels, each patient read at its own levels, the new regimen
+  simulated) were taken as the default path. Two candidates measured on code (scratchpad `b178p/proto`: `titr.py`,
+  `ddi1.py` to `ddi3.py`; `pk_screen.out` byte-identical with `pk_screen_run2.out`), sixteen on paper.
+  - **Measured: a titration-to-goal phase 2 carried to a fixed-dose phase 3 arm** (600 patients, 10, 20 and 40 mg,
+    uptitrated at weeks 4 and 8 when the week's response missed goal, Emax on concentration, between and within SD 8,
+    EC50 CV 0 and 0.5, three seeds each; graded figure the 20 mg arm's mean week-12 response). The final-dose group,
+    a cross-sectional dose regression and the uptitrated patients' paired change (which carries regression to the mean
+    from selection on a noisy week) miss the truth (13.0 to 14.6) by 11 to 28 per cent, but the random-intercept mixed
+    model on every visit with the dose as a fixed effect, the reflex for repeated measures, lands it within 0.0 to 0.4
+    units in all six runs, because an uptitration made on the observed response is missing at random. Dead: the
+    golden is the reflex.
+  - **Measured: a strong CYP3A inhibitor's healthy-volunteer AUC ratio carried to renal-function bands** (dual
+    impairment: a drug about 45 per cent renally cleared, the inhibitor taking the non-renal pathway to about 0.3, a
+    triazole prophylaxis switch putting every 2027 patient on it; graded figure the dose per label band matching each
+    band's own exposure). The uniform ratio (1.53 to 1.70) overstates the dose by 22 to 29 per cent in the 30 to 59
+    mL/min band and 42 to 50 per cent in the 15 to 29 band, but the golden family (the two-pathway split by plain or
+    log-weighted fit of the patients' clearances, by the volunteers' urinary fraction or by their urine clearances,
+    times the inhibited remainder by the urine geometric mean, the ratio of means or the plasma ratio with the
+    urinary fraction) spreads 3.6 to 14.8 per cent of the dose in every band over eight seeds, because the inhibited
+    remainder is a difference of two measured clearances; and the fraction-weighted static interaction model is the
+    field's taught correction, which this round's lesson 1 places on the default path. Dead on measurement.
+  - Paper: the response read at the trough of a monthly regimen from draws spread over the dosing cycle (a phase 3
+    end point drawn before the week-24 injection): time-matched PK-PD is the field's route, and stripped of nouns it is
+    task177 v2's driver, an effect averaged over a recurring cycle carried to one point of it.
+  - Paper: QTc under a drug that raises heart rate (Fridericia against an individual correction): the correction is
+    the outcome's definition, so filing it is rule application and leaving the guidance's QTcF is a fork.
+  - Paper: toxicity read on the peak under a twice-daily to once-daily switch, and a hazard varying within the dosing
+    interval under an interval extension: the switch itself prompts the exposure-metric comparison every
+    exposure-response reader runs, and the extension's troughs sit below the record's, informed only by delayed
+    doses (the attaining subset, task179's death).
+  - Paper: regression dilution of an exposure-response slope fitted on sparse exposure estimates: the dose arms'
+    means are the reflex, and task501 killed it as a magnitude.
+  - Paper: flare-triggered monitoring samples biasing clearance upward: the inflammation markers the field already
+    puts on clearance absorb it, and without them it is unidentified.
+  - Paper: dose reductions after grade 2 toxicity that intercepted grade 3, carried to a fixed-dose combination with
+    no lower strength: identified only by the few patients not reduced, through a multistate fit whose form forks.
+  - Paper: an active metabolite carrying the effect under a forward CYP2D6 inhibitor: the poor metabolisers are the
+    attaining subset and the metabolite's potency is a dossier fact.
+  - Paper: prevalent against new users in a monitoring register (depletion of the susceptible): the new-user filter is
+    the sister task type's first card; monitored courses as the population for a hospital-wide dose table: reweighting
+    on the covariates that drive monitoring is a reflex, otherwise unidentified.
+  - Paper: lung epithelial lining fluid against plasma target attainment for a pneumonia dose: textbook, and the
+    bronchoscopy study is a single-purpose file; first-isolate de-duplication of the MIC distribution: hygiene a
+    medium reader runs; healthy-volunteer against patient clearance in a subcutaneous bridge: the standard bridge
+    transports absorption only.
+  - Paper: a time-dependent inhibitor or an inducer short of its new enzyme steady state in the interaction study:
+    the turnover model's form and degradation constant fork or are a literature constant; smoking cessation on
+    admission under a smoke-free policy de-inducing CYP1A2: the smoking covariate is textbook and cigarettes per day a
+    composition.
+  - Paper: degradation in late-processed specimens and immunoassay metabolite cross-reactivity: Layer 1 carrying the
+    stump.
+  - The cell finding, now on three builds (task170, task179, task178): the field's forecast already conditions each
+    patient on its own concentrations and names every elimination pathway, so what it misses is an extrapolation past
+    the record informed by an attaining minority, a correction the field teaches (fraction-weighted interactions,
+    time-matched PK-PD, a mixed model over a titration), or a difference of measured clearances whose estimator family
+    spreads as wide as its lever. The cell is spent for this round.
