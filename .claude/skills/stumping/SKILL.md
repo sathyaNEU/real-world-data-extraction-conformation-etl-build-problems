@@ -191,6 +191,18 @@ correcting factor whose log dispersion sits under the base quantity's cannot reo
 its correlation, and a draw of this shape is dead on arithmetic below about rho 0.8. Run the division on the
 clean truth before any design.
 
+**The floor is the worst case, so clearing it is necessary and not sufficient: the realised correlation is
+what decides, and its sign comes from the world.** The floor is attained only at corr(log factor, log base)
+= minus rho, and an honest world rarely sits there. On operations and payables ground the coupling runs
+**positive**, because the same driver raises both terms (duty severity drives utilisation and wear alike,
+catalogue complexity drives line count and mispricing alike), and a positive coupling pushes the realised
+correlation up rather than down: two candidates measured rho 1.913 and 1.615, so no floor bound them at all,
+and still realised corr(log observed, log base) +0.8825 and +0.8163 at couplings of +0.7408 and +0.5581,
+with the reflex taking the top candidate 51.7 and 41.7 per cent of the time. A third sat essentially exactly
+on its own floor, +0.8981 measured against 0.8992, because procurement maturity couples coverage and
+leakage negatively, and that best case the law allows was still dead. So compute rho, then compute the
+realised correlation at the world's own coupling, and read the second number.
+
 **And draw the factor and the base from one generating process, or the screen measures nothing.** The same
 alarm-rationalisation step scored the reflex at 2 of 20 in a parameterised prototype that drew the chatter
 multiplier and the excursion rate independently, and at 12 of 12 once a trace simulation coupled them through
@@ -1006,14 +1018,27 @@ the forcing is not enough either, because the construction it forces still has t
 above, and the screens between them leave exactly one shape standing. Three independent passes on three
 unrelated cells (a transit constabulary's patrol record, a public health unit's outbreak line list, a
 provider network's statutory returns) each ended by naming where a later pass should start, and the three
-notes describe one thing: **the correcting quantity is one per case, forced arithmetically by a second file
-at a finer grain than anything the main file carries, no part of the record escapes it, and the second
-file's quantity enters the construction linearly and by identity.** Each clause
+notes describe one thing: **the correcting quantity is one per case, forced by a second file
+at a finer grain than anything the main file carries, no part of the record escapes it, and the construction
+that recovers it has no free parameter, so its standard variants agree on the graded figure.** Each clause
 is a screen answered. One per case, not one per unit, clears the one-number screen and the benchmark screen
 at once, because a per-case correction cannot collapse into a single comparison. Nothing escaping it clears
 the partial-coverage screen and with it the attaining-subset screen, since there is no unaffected part to
-filter to. Forced arithmetically, rather than by a fit, clears the determinacy screen, because an estimator
-family is what returns more than one answer. Finer than any attribute the main file carries is what stops a
+filter to. No free parameter clears the determinacy screen, because an estimator family is what
+returns more than one answer. **That is 1.6a's test, do the standard variants agree on the graded figure, and
+it is not the stricter clause that the second file's quantity enter linearly and by identity.** The stricter
+clause is self-defeating and was measured so: hold it and the per-case quantity is a shipped quantity, so the
+graded quantity is a deterministic function of shipped columns and the construction IS the cheapest
+one-group-by route, measured at corr +1.000000 with a maximum absolute difference of exactly zero on a
+duration correction and 7.1e-15 on a count correction, with standing family spreads of 3.52e-06 against a
+printed unit of 0.01. That is rule application, which rule 3 bans as the decisive step. A fit is therefore
+licensed where the design fixes the functional form and leaves no free exponent, lag, decay or distribution
+family: the one build on file with Gate F strong recovers its per-case quantity by least squares on a linear
+ramp between two shipped endpoints, which is a fit that returns one answer, and it satisfies 1.6a's test
+while failing the identity clause. **Making the correcting quantity unobserved restores the analysis and
+reopens the estimator family in the same stroke**, so the clause to hold is no free parameter, never no fit:
+a free damage exponent spread one graded figure 165.9 per cent of its own level across 2.70 designated
+classes of 5, and a free matching tolerance spread another 22.2 printed units across 1.45 of 6. Finer than any attribute the main file carries is what stops a
 cross-sectional control, a stratification or a reweighting from reaching it. A candidate failing any one
 clause has a named route to the golden before a world is drawn, and the five closures are five instances of
 exactly that. **State the one-group-by route to the call, in one line, before the first harness**: the five
