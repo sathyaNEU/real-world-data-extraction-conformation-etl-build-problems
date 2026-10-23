@@ -1653,3 +1653,71 @@ application received inside the window is paid, and therefore claimed, in a mont
 after the window shut. The unit the change acts on is the application as received; the reported unit is the
 claim month; the structure is the partner's own backlog, which lengthens when the surge raises demand and
 drains afterwards. The effect therefore **outlasts the policy**, and the easy route files a rectangle.
+
+**Candidate A, measured, and it dies twice over.** Harness at
+`/tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/a5/queue.py` and
+`.../a5/dial.py`, both rerun byte-identically, every coupled quantity drawn from one generating
+process (a partner's programme intensity drives its application volume, its assessment capacity
+sublinearly, its award level and its shelter-repair propensity, so bigger partners carry longer
+backlogs by construction rather than by assumption).
+
+*The ladder it would have had, on the reference band's quarterly average award in pesos, Apr-Jun
+2026 to Jan-Mar 2028.* Golden `0.0, 253.1, 647.7, 729.4, 640.7, 458.4, 382.2, 260.2`: it ramps in
+as surge-received applications reach payment, peaks two quarters after the surge window shut and is
+**still 260 pesos a year later**, so the effect plainly outlasts the policy. The four reflexes each
+file a different wrong path and none is an affine rescaling of the golden: attributing to the
+reporting unit `0, 526, 789, 263, 0, 0, 0, 0` (a rectangle; max error 640.7, corr +0.3219,
+best-affine rms 219.2), carrying the first affected quarter's difference forward `flat 253.1` (max
+error 476.3, corr +0.6879, rms 168.1), applying the effect only while the change is in force
+(identical to the rectangle here, because the window shuts inside a quarter), and one scheme-level
+median lag `0, 0, 789, 789, 0, 0, 0, 0` (max error 640.7, corr +0.6659, rms 172.7). So the path
+object itself behaves exactly as the shape promises.
+
+*Kill 1, the invariance law, which is a theorem and was measured to be sure of it.* For a
+work-conserving queue the **received, resolved and backlog series are identical under every service
+order**: holding the completion counts fixed and running first-in-first-out, last-in-first-out and
+random service over them gives byte-identical received, resolved and backlog paths (True, True,
+True on all three). So the aggregate flow file that would have to ship for the weights to be
+computable carries **no information at all** about the order, and the order is what fixes the
+mixture. The three positions are then: an award-level file carrying both the receipt and the payment
+date, which makes the affected set a row predicate (readable, one filter); a filed sentence fixing
+the discipline, which makes the whole construction cumulative arithmetic on two shipped series (rule
+application); or aggregate flows alone, which do not identify it. There is no fourth position. This
+is the third horn of the linkage trichotomy a sibling slot measured the same day, reached from the
+queue side and with a theorem under it rather than an observation.
+
+*Kill 2, the dial, one-ended at every setting.* Sweeping the mean backlog from 13.30 months down to
+0.01 and reading, at each setting, the separation the design needs (golden against the
+reporting-unit reflex) against the spread the three licensed disciplines put on the same quarterly
+figures: spread over separation runs **1.50, 1.14, 0.75, 0.75, 0.64, 0.81, 0.15**. It falls under a
+half only where the backlog collapses below a month, and there the separation collapses with it
+(87.3 pesos at 0.01 months, where the golden path `0, 800, 1159, 311, 0, 0, 0, 0` IS the rectangle
+the reflex files). At every setting where the propagation is worth anything (backlog 1.8 months and
+up, separation 497 to 669 pesos) the family spreads **318 to 1,001 pesos**, which is 64 to 150 per
+cent of the separation and some hundreds of times the one-peso printed unit. No setting has both, so
+this is a refusal on arithmetic and not a dial to tune.
+
+### Architecture 5, the brief's central instruction withdrawn mid-pass (2026-10-23)
+
+The coordinator withdrew the propagation shape mid-pass: **it is spent as a driver**, and a faithful
+instance is a structural clone of task125, which shipped the same day. The guard refuses it
+mechanically (BLOCK on `test.same_puzzle_older` and `test.same_driver_older` against task125 v2,
+`driver.near` 0.19, three times the next nearest at 0.06), task125's card driver already reads, nouns
+stripped, "the unit the change acts on is the intake and not the period, so each period's distortion
+is a re-estimate on that period's own mix", and its `Lesson:` line states the generalisation verbatim,
+so any faithful instance fails task125's own Lesson test. A sibling measured the rest: on a strong
+instance the cheapest licensed route **is** the golden (one join, one two-way group-by on regime and
+position, one reweight, RMSE 0.0072 against the clean truth, 2.8 per cent of its own level), and the
+**linkage trichotomy** makes that structural rather than an accident of a generous register, since the
+mixture weights must be shipped for the path to be computable and the position variable ships with
+them. task125 shipped only because a true operational sentence made the one-line join look pointless,
+which is a **device** (re-skinnable) and not a driver (never).
+
+**Candidate A is therefore dead on the clone ground as well, and the two kills are independent.** The
+record above stands on its own terms: the queue instantiation dies on the invariance law and the
+one-ended dial whether or not the family were available, and the family is not available.
+
+**What of the brief's reasoning survives.** The one argument for the shape still holds: a propagation
+estimand escapes the grain pincer that spent architecture 2, because what gets filed is the
+estimand's comparison rather than the grain a level is taken at. That reasoning is sound and is worth
+carrying to the next pass; what was wrong is that the resulting driver is already on file.

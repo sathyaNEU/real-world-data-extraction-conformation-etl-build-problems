@@ -1163,6 +1163,103 @@ half is shut this sitting and open again three builds later.
   crossing object dead on determinacy at 24.38 days against a printed unit of one day. Two reasons, no screen
   spent.
 
+- **C8, the UNREGISTERED-POSITION member, the one direction the orchestrator left open: priced and dead on
+  both predicted horns at once, so the lane's standing law on per-unit quantities holds here too.** Prototype:
+  220 units in a staggered 16-period cycle, each unit's event rate falling at its cycle event and deteriorating
+  after it, a programme change narrowing the work done at the cycle events in one window, no register and no
+  cohort column, so each unit's position and regime have to be recovered from that unit's own count history.
+  - **The per-unit position estimator is hopeless at any realistic event volume.** Five licensed change-point
+    estimators (the smoothed-rate minimum, the running-maximum drop, a CUSUM, a Poisson profile likelihood, a
+    two-sided t scan) recover the unit's phase with a **mean error of 2.84, 3.04, 3.92, 5.23 and 5.26 periods
+    out of a 16-period cycle**, get the position cell right **8.6, 8.2, 15.5, 1.4 and 0.0 per cent** of the
+    time, and get the REGIME cell right only **84.6, 84.5, 77.9, 72.3 and 70.5 per cent**, so 15 to 30 per cent
+    of the mixture is assigned to the wrong regime before any arithmetic.
+  - **The parametric horn fires on the graded path.** The five estimators spread the path a **mean of 0.0528
+    and a maximum of 0.2343 events per unit per period against a printed unit of 0.001**, which is **1.439
+    times the mean absolute truth** and 234 times the printed unit, with the cusum and t-scan routes printing
+    the wrong SIGN in several periods.
+  - **And the construction fails even WITH the register, which is the second horn and the more interesting
+    one.** Given the exact position and regime for every cell, the same construction still misses the truth at
+    **RMSE 0.0265, which is 72.3 per cent of the mean absolute truth**, because the position profile is itself
+    estimated from the units' own counts. So the decisive step's own standard error is of the order of the
+    whole quantity it must print, and no pack of this event volume closes it: this is `stumping` Part 3's rule
+    that a quantity estimated per unit from that unit's own thin slice cannot carry a ladder.
+  - C8's truth also carries **R = 1.000 and 0 sign changes**, the closed family's signature, like C6 and K1.
+- **The running-sum crossing object, this lane's one measured non-multiplicative shape, is closed by a
+  trichotomy that costs no harness, and recording it is the point of this bullet.** Architecture 3's C3 died
+  because five licensed readings of its increment spread the graded figure 24.38 days against a printed unit of
+  one day; the standing hope was that a running sum with DETERMINATE increments would open the object. It does
+  not, because the increments have exactly three states. **Definitionally open** (what counts as one increment
+  is a licensed reading): C3's death, and the nearest other measurement on file at 1.57 distinct months.
+  **Recorded and exact** (a recorded currency amount, a count with one unambiguous definition): the crossing
+  date is then exact arithmetic over shipped columns, which is rule application and a one-line cumulative sum.
+  **Not yet recorded** (the increments lie in the forward window): the crossing date is a predicted value the
+  history pins, which is Forecasting by `guide-to-prompt`'s tag rule and not this number's objective. The two
+  variants that look like a fourth case collapse into the first: increments recorded but incomplete puts the
+  completion's estimator family back in the deciding position, and a crossing LEVEL that is unobserved puts the
+  level's estimator family there instead, while a filed level is rule application. **So the running-sum
+  crossing object is closed on this objective, and architecture 3's C3 was not an unlucky instance of an open
+  shape but the only state of it that is not rule application or another lane's objective.**
+
+- **Reconciliation with task194, which priced the same family in the same hours, and the one place this pass
+  sharpens it.** task194's note decomposes the graded path as `P(t) = sum_c w(c,t) * delta(t - c) * 1[c >= T]`
+  and concludes the shape is not in the closed family because the correction is ADDITIVE in cohort-position
+  cells, there is no per-case factor to measure `sd(log f)` on, and there is no candidate ranking for the six
+  laws to bound. Every word of that is right and this pass agrees with it. **What this pass adds is that
+  additivity is not sufficient to escape the closed family's BEHAVIOUR, and the measured discriminator says
+  which members do:** three of the four propagation members priced here (C6 the structure-length change, K1 the
+  removal member, C8 the unregistered-position member) return **R = 1.000 with 0 sign changes**, the closed
+  family's own exact signature, while the only member that returns R greater than 1 is C5, the re-phasing, and
+  C5 is precisely the member whose counterfactual has to re-time events that were never recorded. **So the
+  additive decomposition and the per-case form behave identically whenever the path is one-signed, and the one
+  thing that breaks the equivalence, a sign change in the path, is the same thing that makes the counterfactual
+  K2 and therefore indeterminate.** That is the sentence the two notes jointly earn and neither carries alone.
+- **The family is occupied by three concurrent slots, which settles the draw independently of the
+  measurements.** task194 holds the vegetation-cycle instance with the linkage trichotomy and the
+  cheapest-route kill; task202 holds the branch whose mixture weights are exact at a coarse reporting grain and
+  has already killed its surge-schedule queue candidate twice over; task125 holds the shipped driver and its
+  card's `Lesson:` line states the generalisation verbatim. A fourth slot drawing here would clone a concurrent
+  slot even where it cleared task125, so nothing in the family is taken to a card by this pass and **the family
+  is not to be re-screened from this number.**
+
+## Architecture 4's verdict: a measured refusal, with four members priced and three closures earned
+
+No card is filed and none must be registered. `architecture` moves to 4 because the pass is spent; nothing was
+cut, no world was drawn and no persona was generated. The harness is at
+`scratchpad/w9_200/` (`screen_a4.py`, `screen_a4b.py`, `screen_a4c.py`, `screen_a4d.py`, `screen_a4e.py`), each
+rerun to byte-identical output over two consecutive runs (2039, 1692, 1207, 1257 and 2169 bytes), every coupled
+quantity drawn from one generating process, every route scored against the world's own truth rather than
+against a quantile of a fitted statistic.
+
+**What is closed by this pass, and the closures are about shapes rather than about cells.**
+1. **The propagation family on this objective**, by the R-equals-determinacy dial above, by the
+   removal-versus-addition asymmetry, by the Forecasting-only status of its no-counterfactual variant, and by
+   three slots' concurrent occupancy.
+2. **The running-sum crossing object**, by the increment trichotomy, which closes the one shape architecture 3
+   left as the lane's open non-multiplicative ground.
+3. **The unregistered-position escape**, which was open ground rather than a recommendation and is now measured
+   on both horns, the parametric one at 1.439 times the truth and the per-unit precision one at 72.3 per cent
+   of the truth even with the register supplied.
+
+**What the next pass inherits, stated as what the measurements leave rather than as a direction.** Four
+families are now closed from this number by measurement (the multiplicative per-case clause, the propagation
+family, the running-sum crossing, the unregistered position), and the record's own survivor list on this
+objective is occupied build by build: two dependent capture channels (task196), a response against a scheduled
+trajectory (task197), a rate against the observation effort (task199), a density from grouped tests (task188),
+a transported audit error rate (task192), a paired difference's uncertainty (task195), a construction over
+orderings (task193, measured dead), a level at a selected unit (closed by task202 as a shrinkage target), and
+both non-level escapes from that rule spent. **The two directions the corpus still prints as unpriced, each
+with the reason it is expected to fail, so the next pass can kill them in one computation rather than a
+sitting:** a graded object that is a POSITION INSIDE a recovered vector rather than a monotone summary of it
+(`stumping` 1.2, named unpriced; expected to fail because the vector's recovery is the spent linear-solve
+member of the closed clause, so the position is likely the same driver in a new graded object), and a rank call
+shaped so that no certainty bar is needed (`stumping` 1.6a measured the determinacy half OPEN at 46 of 120
+adjacent pairs in the live middle; expected to fail because removing the bar relocates the criterion into the
+records, where it becomes arithmetic). **Neither is a recommendation.** The honest reading of four closures in
+four passes is that the mechanism search on this objective is what is spent rather than any one cell, and the
+cheapest next move is the author's call on whether this number's objective moves rather than a fifth
+mechanism hunt inside it.
+
 ## Resume
 
 Do not re-screen anything above: twenty-six mechanisms across four grounds are now measured or structurally
