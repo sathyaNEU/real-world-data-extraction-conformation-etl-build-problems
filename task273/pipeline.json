@@ -1,36 +1,36 @@
 {
   "task": "task273",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-22",
-  "stump": "A competent solver divides each use's caused crashes by its registered or permitted vehicles and covers the uses whose vehicles work long hours (ride-hail, taxi, parcel vans); one who knows induced exposure covers rental cars at their pooled not-at-fault share; the step that lands either there is taking a sample drawn by crash occurrence as a sample of miles, when only the not-at-fault share within each road class and hour, scaled by that stratum's VMT, measures miles.",
+  "stage": 5,
+  "stage_name": "ship",
+  "updated": "2026-10-23",
+  "stump": "A competent solver who reads every record and rule right takes the vehicles at-fault drivers struck, pooled over the five years, as each use's share of the miles (induced exposure) and covers airport shuttles and paratransit; the struck vehicles are drawn where crashes are frequent, so only each use's share of them within each road class, day type and hour, scaled by the Department's miles for that stratum, measures miles, which covers taxicabs, ride-hail, parcel delivery and app-based delivery.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": null
+    "exit": 0,
+    "date": "2026-10-22"
   },
   "leak": {
-    "leak_py": null,
-    "reader": null
+    "leak_py": "REVIEW, every line harmless (leak_check_report.md)",
+    "reader": "five isolated scored readers, every call off the golden (r273c, r273d, r273e and r273f the pooled pair, r273g road class alone); asks 0 of 14 on every cut but fdf66198's, where a dictionary clause since withdrawn let r273f keep all 14"
   },
   "duplicate_check": {
-    "heart": null,
+    "heart": "BLOCK on ban.pattern G14 and ban.artifact filed_standard against task482 v6 (registered ten minutes before this card); the forcing event redrawn in the pack; shipped under the author's override of 2026-10-23, recorded in the card's notes",
     "nearest": "0.07 task201 v2"
   },
   "judge": {
-    "verdict": null,
-    "disposition": null,
-    "report": null
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report_pass2.md (pass 1 NOT_DETERMINISTIC on the asks only, FIX_NOW: determinism_check_report.md)"
   },
   "returned": [],
-  "resume": "Architecture 2 drawn 2026-10-22 (card registered 17:48Z, guard WARN only): each commercial vehicle use's crashes caused per mile against private drivers, its miles recovered from its share of the not-at-fault vehicles within each road class, day type and hour, scaled by the state's mileage for that stratum. Next: stage 2, the design note's default path, stump sentence, three rules, ladder (per vehicle, crash share, pooled share, road-only and hour-only strata, the full construction), fork table, closure, asks off the call's population, prompt.txt, then precut.py; the world search tunes each partial stratification onto a different set.",
+  "resume": "Shipped 2026-10-23 on target.zip 73efe12945f11373da611367702e51a9: cover four uses (taxicabs, ride-hail, parcel delivery, app-based delivery). Checks 113, verify PASS, byte-identical rebuilds, figures_check 44 of 44, precut 51. Next: task274.",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-23",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
@@ -44,7 +44,7 @@
     {
       "architecture": 2,
       "drawn": "2026-10-22",
-      "fate": null,
+      "fate": "shipped 2026-10-23: five readers off the call, judge pass 2 DETERMINISTIC, APPROVE",
       "driver": "The decisive quantity is each group's rate of causing a two-party event per unit of travel when no record measures any group's travel; the uninvolved parties of those events measure it, but they are drawn where events are frequent, so their share overstates the travel of groups that travel at frequent-event times and places and has to be taken within each such stratum and scaled by the stratum's measured total travel."
     }
   ],

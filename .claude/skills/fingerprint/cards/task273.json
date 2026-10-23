@@ -10,8 +10,8 @@
   "shape": "14",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "cover four of the seven uses: taxicabs, ride-hail, parcel delivery and app-based delivery (1.7 to 2.1 times private drivers' rate per mile; limousines, airport shuttles and paratransit under 1.3)",
+  "answer_source": "submission.md, Final Recommendation; generator/figures.json call",
   "gap": [
     "population"
   ],
@@ -35,33 +35,35 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:induced exposure re-weighted to miles by each stratum's crash intensity",
   "layer1": [
-    "crash reports from four enforcement agencies on two form versions, the 2023 revision adding a ride-hail use code where the earlier form marked a personal vehicle carrying passengers for hire",
-    "crash times in 24-hour local time at three agencies and 12-hour time with a meridiem field at the city police, across daylight saving changes",
-    "functional class missing on city-street crashes and joined from the road inventory by route and milepost",
-    "supplemental reports that supersede an original, hit-and-run units with no use recorded",
-    "the state's vehicle-miles tables inside a PDF traffic report, daily VMT by functional class and hourly factors by day type",
-    "registrations and permits by use in a multi-sheet workbook with a block per year, app couriers reported by platform and quarter"
+    "crash reports from four enforcement agencies on two editions of the state form, the 2023 edition coding each passenger and delivery use where the 2016 edition has one code for hire and one for delivery and names the operator",
+    "State Patrol crash dates and times in UTC across daylight saving, the other agencies' local times in three formats (24-hour, 12-hour with a meridiem, HHMM without leading zeros)",
+    "2016 crashes located only by legacy route number and milepost, joined through the road inventory for their functional class",
+    "fault recorded per driver on the 2016 form and per crash on the 2023 form, hit-and-run units with no use recorded",
+    "the Department's vehicle-miles tables inside a PDF report, annual VMT in millions and daily VMT in thousands, and the count stations' hourly volumes in a wide file by station, day and direction with missing days",
+    "fleet returns by permit year from 1 July, platform reports by quarter (one platform by quarter end date), registrations in year blocks on one sheet"
   ],
   "stakeholder_role": "policy adviser, regional transportation commission",
   "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
-    "file": "",
-    "rows": 0,
-    "entity": "one vehicle unit in a police-reported crash",
-    "grain": "crash x vehicle",
+    "file": "crash_extract_2021_2025_units.csv",
+    "rows": 339100,
+    "entity": "one unit on a police-reported crash report",
+    "grain": "crash x unit",
     "source": "synthetic"
   },
   "forum": "regulator_or_inspector",
-  "forcing_event": "vote_or_meeting",
+  "forcing_event": "launch_or_rollout",
   "org_family": "government_agency",
   "world": {
     "geography": "United States (the region, commission, operators and people are fictional)",
     "currency": "USD",
     "org_type": "regional transportation commission",
     "invented_names": [
-      "Halloway Valley Regional Transportation Commission",
-      "Commercial Fleet Safety Programme"
+      "Stonereach Valley Regional Transportation Commission",
+      "Commercial Fleet Safety Programme",
+      "Kelderwick",
+      "Fairhollow"
     ],
     "people": [
       "Thomas Moyer",
@@ -75,8 +77,8 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "The decisive quantity is each group's rate of causing a two-party event per unit of travel when no record measures any group's travel; the uninvolved parties of those events measure it, but they are drawn where events are frequent, so their share overstates the travel of groups that travel at frequent-event times and places and has to be taken within each such stratum and scaled by the stratum's measured total travel.",
-  "driver_concrete": "Each commercial use's at-fault crash involvements per mile against private vehicles over 2021 to 2025, its miles recovered as its share of the not-at-fault vehicles in two-vehicle crashes within each road class, day type and hour, times that stratum's VMT from the state's traffic report; not crashes per registered or permitted vehicle, and not the pooled not-at-fault share, which counts the night and urban miles of ride-hail and app delivery at the crash intensity of those hours.",
-  "stump": "A competent solver divides each use's caused crashes by its registered or permitted vehicles and covers the uses whose vehicles work long hours (ride-hail, taxi, parcel vans); one who knows induced exposure covers rental cars at their pooled not-at-fault share; the step that lands either there is taking a sample drawn by crash occurrence as a sample of miles, when only the not-at-fault share within each road class and hour, scaled by that stratum's VMT, measures miles.",
+  "driver_concrete": "Each commercial use's crashes caused per mile against private drivers' over 2021 to 2025, its miles recovered as its share of the vehicles struck by the one at-fault driver of a crash between moving vehicles within each road class, day type and hour, times that stratum's miles from the Department's VMT and count-station hours; not crashes per registered or permitted vehicle, and not the pooled struck share, which over-weights the night streets and under-weights the freeways the shuttles drive.",
+  "stump": "A competent solver who reads every record and rule right takes the vehicles at-fault drivers struck, pooled over the five years, as each use's share of the miles (induced exposure) and covers airport shuttles and paratransit (1.78 and 1.71); the struck vehicles are drawn where crashes are frequent, so only each use's share of them within each road class, day type and hour, scaled by the Department's miles for that stratum, measures miles, which covers taxicabs, ride-hail, parcel delivery and app-based delivery. Per registered or permitted vehicle covers six; road class or hour alone leaves ride-hail or both delivery uses under the line.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task273": "architecture 1 rebuilt response times a closed-loop client never sent from each pod's pause record; architecture 2 has no closed loop and no missing events: every crash is recorded, and what is missing is the denominator, each use's miles, recovered from the not-at-fault vehicles and re-weighted by each stratum's crash intensity against the state's mileage tables",
@@ -117,6 +119,6 @@
       "fate": "spent 2026-10-22 at stage 4 (Gate F): both isolated scored readers named the closed-loop test's coordinated omission from the standard's population and pause clauses, rebuilt open arrivals per pod from each GC log and landed the five; reader B every ask figure (48 of 48), reader A 36 of 48; judge DETERMINISTIC, APPROVE"
     }
   ],
-  "notes": "architecture 2 drawn 2026-10-22 after the architecture 2 screens in the design note (Tried and rejected); induced exposure is unspent in the corpus (slots and cards searched for induced exposure, not-at-fault and culpability).",
+  "notes": "Shipped under the author's override, authorised in session on 2026-10-23 (AskUserQuestion answer 'Force and ship'), of guard heart's two remaining BLOCKs against task482 v6 (ban.pattern G14, ban.artifact filed_standard): task482 v6 was registered by another session at 2026-10-22T17:38:37Z, ten minutes before this card (17:48:04Z), and was not yet pulled when this card was checked, so its check passed clean. The third BLOCK (ban.forcing_event vote_or_meeting) was redrawn in the pack itself: the rule's section 5 and the prompt now make the programme's start the forcing event (operators told by 15 January 2027 so they can fit their vehicles before coverage starts on 1 July), with no scheduled vote, so launch_or_rollout is the true label. No honest re-key clears the other two: the decisive step is G14's own question (does the pooled struck share apply to each use's miles); G6 and G16, the only other true readings, block inside the batch against task251 and task177's lineage; the coverage rule is a filed standard. task482 is another lane's psychometric ETL build, so a reviewer holding both reads different worlds, data and objectives. Architecture 2 drawn 2026-10-22 after the architecture 2 screens in the design note (Tried and rejected); induced exposure is unspent in the corpus (slots and cards searched for induced exposure, not-at-fault and culpability).",
   "registered": "2026-10-22T17:48:04Z"
 }

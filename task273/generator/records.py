@@ -1,404 +1,376 @@
-"""The load-test evidence as the platform's own systems wrote it: JMeter's JTL results (until 12 November), k6's CSV
-output (from 16 November), the log platform's export of every pod's garbage-collection log, the cluster's pod events,
-and the platform register."""
+"""What the offices hold, written as they export it: the state crash records extract for the region (crashes, units,
+persons in injury crashes), the state's road fatality register, the linear referencing system's road inventory, the
+continuous count stations and their hourly volumes, the commission's operator register, the platforms' quarterly
+reports, the motor vehicle registrations, and the daily weather and work zone logs."""
 import csv
 import datetime as dt
-import zlib
+import math
+from zoneinfo import ZoneInfo
 
 import numpy as np
 
 import common as K
+import events as EV
+import roads as RD
 import world as W
 
-UTC = dt.timezone.utc
-EST = dt.timezone(dt.timedelta(hours=-5))
-HOST = "https://perf-api.mirrendale.internal"
-EPOCH = dt.datetime(1970, 1, 1)
-MARGIN = 300.0                       # seconds of each pod's GC log kept either side of a run
+PT = ZoneInfo(K.TZ)
+UTC = ZoneInfo("UTC")
 
-
-def wall(start, t):
-    return start + dt.timedelta(seconds=float(t))
-
-
-def ms_epoch(x):
-    return int(round((x - EPOCH).total_seconds() * 1000.0))
-
-
-def url_for(code, r):
-    path = K.PATH[code].split(" ", 1)[1]
-    if "{id}" in path:
-        pref = {"payroll-core": "PR", "filings": "FL", "employees": "E", "companies": "CO"}.get(K.SERVICE[code], "ID")
-        path = path.replace("{id}", "%s-%06d" % (pref, int(r.integers(100000, 999999))))
-    q = {"EP03": "?year=2026&employee=E-%06d", "EP04": "?year=2026&payee=V-%06d", "EP13": "?employee=E-%06d",
-         "EP19": "?q=W2+correction+%06d", "EP24": "?zip=%05d", "EP07": "?company=CO-%06d", "EP08": "?company=CO-%06d"}
-    if code in q:
-        path += q[code] % int(r.integers(10000, 99999))
-    return HOST + path
-
-
-def errors(seed, code, n):
-    """The rare server errors the platform returned during a run (a few hundredths of a per cent)."""
-    r = np.random.default_rng([seed, int(code[2:]), 21])
-    return r.random(n) < 0.0004
-
-
-def jmeter_rows(w):
-    """JMeter's JTL CSV, written as each sample completes, timeStamp at the sample's start (the plan's
-    sampleresult.timestamp.start=true), elapsed and Latency in whole milliseconds."""
-    head = ["timeStamp", "elapsed", "label", "responseCode", "responseMessage", "threadName", "dataType", "success",
-            "failureMessage", "bytes", "sentBytes", "grpThreads", "allThreads", "URL", "Latency", "IdleTime", "Connect",
-            "servedBy"]
-    out = []
-    for code in K.CODES:
-        s = w["sched"][code]
-        if s["tool"] != "jmeter":
-            continue
-        pods = w["pods"][K.SERVICE[code]]
-        th_n = w["eps"][code]["threads"]
-        for kind in ("aborted", "record"):
-            run = w["runs"][code] if kind == "record" else w["runs"][code].get("aborted")
-            if run is None:
-                continue
-            start = s["start"] if kind == "record" else s["aborted_start"]
-            r = np.random.default_rng([w["seed"], int(code[2:]), 31 if kind == "record" else 32])
-            err = errors(w["seed"] + (0 if kind == "record" else 1), code, len(run["rows"]))
-            group = "%s %s" % (code, K.SERVICE[code])
-            first = set()
-            for i, (th, pod, t, f, sv) in enumerate(run["rows"]):
-                el = int(round((f - t) * 1000.0))
-                bad = bool(err[i])
-                conn = 0
-                if th not in first:
-                    first.add(th)
-                    conn = int(r.integers(4, 16))
-                lat = max(1, el - int(r.integers(0, 4)))
-                nbytes = int(r.integers(900, 4200)) if not bad else 312
-                out.append((f, [ms_epoch(wall(start, t)), el, "%s %s" % (code, K.PATH[code]),
-                                "500" if bad else "200", "Internal Server Error" if bad else "OK",
-                                "%s 1-%d" % (group, th + 1), "text", "false" if bad else "true",
-                                "500 Internal Server Error" if bad else "", nbytes, int(r.integers(180, 900)),
-                                th_n, th_n, url_for(code, r), lat, 0, conn, pods[pod]], start))
-    out.sort(key=lambda x: wall(x[2], x[0]))
-    return head, [x[1] for x in out]
-
-
-def k6_rows(w):
-    """k6's CSV output with the plan's rfc3339_nano time format: one http_req_duration sample per request, stamped
-    when the response completed; the script tags each request with its virtual user and the X-Served-By pod."""
-    head = ["metric_name", "timestamp", "metric_value", "check", "error", "error_code", "expected_response", "group",
-            "method", "name", "proto", "scenario", "service", "status", "subproto", "tls_version", "url", "extra_tags",
-            "metadata"]
-    out = []
-    for code in K.CODES:
-        s = w["sched"][code]
-        if s["tool"] != "k6":
-            continue
-        pods = w["pods"][K.SERVICE[code]]
-        method = K.PATH[code].split(" ")[0]
-        for kind in ("aborted", "record"):
-            run = w["runs"][code] if kind == "record" else w["runs"][code].get("aborted")
-            if run is None:
-                continue
-            start = s["start"] if kind == "record" else s["aborted_start"]
-            r = np.random.default_rng([w["seed"], int(code[2:]), 41 if kind == "record" else 42])
-            err = errors(w["seed"] + (0 if kind == "record" else 1), code, len(run["rows"]))
-            scen = "peak_%s" % code.lower()
-            for i, (th, pod, t, f, sv) in enumerate(run["rows"]):
-                end = wall(start, f)
-                stamp = end.strftime("%Y-%m-%dT%H:%M:%S.") + "%06d%03dZ" % (end.microsecond, int(f * 1e9) % 1000)
-                val = "%.6f" % ((f - t) * 1000.0)
-                u = url_for(code, r)
-                bad = bool(err[i])
-                out.append((end, ["http_req_duration", stamp, val, "", "request failed" if bad else "",
-                                  "1500" if bad else "", "false" if bad else "true", "", method, u, "HTTP/1.1", scen,
-                                  "", "500" if bad else "200", "", "tls1.3", u,
-                                  "vu=%d&served_by=%s&endpoint=%s" % (th + 1, pods[pod], code), ""]))
-    out.sort(key=lambda x: x[0])
-    return head, [x[1] for x in out]
-
-
-def heap_mb(seed, svc):
-    """Each service's heap (-Xmx, megabytes): the same on every pod of the service."""
-    r = np.random.default_rng([seed, zlib.crc32(svc.encode()), 63])
-    gc = K.SERVICES[svc][0]
-    if gc == "parallel":
-        return int(r.choice([2048, 3072, 4096]))
-    if gc == "g1":
-        return int(r.choice([1024, 1536, 2048]))
-    return int(r.choice([4096, 6144]))
-
-
-def jvm_starts(w):
-    """When each pod's JVM started (UTC): every pod deployed on Monday 9 November, two restarted during the campaign."""
-    r = np.random.default_rng([w["seed"], 0, 51])
-    out = {}
-    base = dt.datetime(2026, 11, 9, 19, 12, 0)
-    restarts = {("tax-forms", 1): dt.datetime(2026, 11, 13, 3, 41, 7), ("banking", 0): dt.datetime(2026, 11, 14, 22, 5, 52)}
-    for svc, pods in w["pods"].items():
-        for i, pod in enumerate(pods):
-            t = base + dt.timedelta(seconds=float(r.uniform(0, 1800)))
-            run_for = float(r.uniform(6.5, 12.0))
-            out[pod] = [(t, run_for)]
-            if (svc, i) in restarts:
-                out[pod].append((restarts[(svc, i)], float(r.uniform(6.5, 12.0))))
-    return out
-
-
-def jvm_start_at(starts, pod, when):
-    """The JVM start in force at a moment: the latest start before it."""
-    best = None
-    for t, run_for in starts[pod]:
-        if t <= when:
-            best = t
-    return best
-
-
-def gc_lines(w):
-    """The log platform's export: '<ingested at> <pod> <the JVM's own log line>' for every GC event of every pod
-    during each run and five minutes either side. The JVM writes a pause's line when the pause ends."""
-    starts = jvm_starts(w)
-    events = []
-    for code in K.CODES:
-        svc = K.SERVICE[code]
-        gc = w["gcs"][svc]["gc"]
-        s = w["sched"][code]
-        for kind in ("aborted", "record"):
-            run = w["runs"][code] if kind == "record" else w["runs"][code].get("aborted")
-            if run is None:
-                continue
-            start = s["start"] if kind == "record" else s["aborted_start"]
-            run_s = K.RUN_S if kind == "record" else W.ABORTED[code]
-            r = np.random.default_rng([w["seed"], int(code[2:]), 61 if kind == "record" else 62])
-            P = [list(p) for p in run["pauses"]]
-            # the quieter minutes either side of the run: young collections only, at a third of the rate
-            for pi in range(len(P)):
-                for lo, hi in ((-MARGIN, -30.0), (run_s + 30.0, run_s + MARGIN)):
-                    for f in w["gcs"][svc]["fams"][:1]:
-                        t = lo + r.exponential(180.0 / f["rate"])
-                        while t < hi:
-                            d = float(np.exp(np.log(f["med"]) + f["sd"] * r.standard_normal())) / 1000.0
-                            P[pi].append((t, t + d, f["name"]))
-                            t += r.exponential(180.0 / f["rate"])
-                P[pi].sort()
-            cap = heap_mb(w["seed"], svc)
-            for pi, plist in enumerate(P):
-                pod = w["pods"][svc][pi]
-                for a, b, fam in plist:
-                    events.append((wall(start, b), pod, gc, fam, (b - a) * 1000.0, cap, svc))
-            for pi, t, conc, end in run.get("cycles", []):
-                pod = w["pods"][svc][pi]
-                # the cycle's closing line, written once Cleanup has finished, with the whole cycle's length
-                events.append((wall(start, end + 0.0004), pod, gc, "concurrent", (end - t) * 1000.0, 0, svc))
-    events.sort(key=lambda e: (e[1], e[0]))
-    out = []
-    gcn = {}
-    zseq = {}
-    rr = np.random.default_rng([w["seed"], 0, 64])
-    for end, pod, gc, fam, dur, cap, svc in events:
-        js = jvm_start_at(starts, pod, end)
-        n = gcn.get((pod, js), int(rr.integers(40, 400)))
-        if fam == "concurrent":
-            body = "GC(%d) Concurrent Mark Cycle %.3fms" % (n, dur)
-        elif gc == "parallel":
-            before = int(cap * rr.uniform(0.70, 0.95))
-            after = int(before * (rr.uniform(0.15, 0.35) if fam == "young" else rr.uniform(0.45, 0.65)))
-            label = "Pause Young (Allocation Failure)" if fam == "young" else "Pause Full (Ergonomics)"
-            body = "GC(%d) %s %dM->%dM(%dM) %.3fms" % (n, label, before, after, cap, dur)
-            gcn[(pod, js)] = n + 1
-        elif gc == "g1":
-            before = int(cap * rr.uniform(0.55, 0.92))
-            if fam == "remark":
-                body = "GC(%d) Pause Remark %dM->%dM(%dM) %.3fms" % (n, before, int(before * 0.98), cap, dur)
-            elif fam == "cleanup":
-                body = "GC(%d) Pause Cleanup %dM->%dM(%dM) %.3fms" % (n, before, before, cap, dur)
-                gcn[(pod, js)] = n + 1
-            else:
-                after = int(before * rr.uniform(0.12, 0.40))
-                label = "Pause Young (Normal) (G1 Evacuation Pause)" if fam == "young" else \
-                    "Pause Young (Mixed) (G1 Evacuation Pause)"
-                body = "GC(%d) %s %dM->%dM(%dM) %.3fms" % (n, label, before, after, cap, dur)
-                gcn[(pod, js)] = n + 1
-        else:
-            k = zseq.get(pod, 0)
-            zseq[pod] = (k + 1) % 3
-            body = "GC(%d) %s %.3fms" % (n, ("Pause Mark Start", "Pause Mark End", "Pause Relocate Start")[k], dur)
-            if k == 2:
-                used = int(cap * rr.uniform(0.2, 0.5))
-                out.append((end + dt.timedelta(milliseconds=float(rr.uniform(40, 160))), pod,
-                            "GC(%d) Garbage Collection (Allocation Rate) %dM(%d%%)->%dM(%d%%)" % (
-                                n, used, round(100 * used / cap), int(used * 0.45), round(45 * used / cap)), js, svc))
-                gcn[(pod, js)] = n + 1
-        out.append((end, pod, body, js, svc))
-    lines = []
-    for end, pod, body, js, svc in out:
-        if svc in W.UPTIME_SERVICES:
-            deco = "[%.3fs][info][gc]" % (end - js).total_seconds()
-        else:
-            loc = end.replace(tzinfo=UTC).astimezone(EST)
-            deco = "[%s.%03d-0500][info][gc]" % (loc.strftime("%Y-%m-%dT%H:%M:%S"), loc.microsecond // 1000)
-        if " Pause Mark " in body or " Pause Relocate " in body:
-            deco = deco.replace("[gc]", "[gc,phases]")
-        ing = end + dt.timedelta(seconds=float(rr.uniform(0.15, 2.5)))
-        lines.append((ing, "%sZ %s %s %s" % (ing.strftime("%Y-%m-%dT%H:%M:%S.") + "%03d" % (ing.microsecond // 1000),
-                                             pod, deco, body)))
-    lines.sort(key=lambda x: x[0])
-    return [x[1] for x in lines], starts
-
-
-def pod_events(w, starts):
-    """The cluster's pod events and each service's start-up line, which says how long its process had been running."""
-    r = np.random.default_rng([w["seed"], 0, 71])
-    app = {s: "".join(p.capitalize() for p in s.split("-")) + "Application" for s in K.SERVICES}
-    rows = []
-    for svc, pods in w["pods"].items():
-        for pod in pods:
-            for t, run_for in starts[pod]:
-                sched = t - dt.timedelta(seconds=float(r.uniform(8, 25)))
-                rows.append((sched, pod, "kubelet", "Scheduled", "Successfully assigned perf/%s to perf-node-%02d" % (
-                    pod, int(r.integers(1, 13)))))
-                rows.append((sched + dt.timedelta(seconds=float(r.uniform(1, 4))), pod, "kubelet", "Pulled",
-                             "Container image \"registry.mirrendale.internal/%s:2026.11.2\" already present on machine" % svc))
-                rows.append((t - dt.timedelta(seconds=float(r.uniform(0.2, 0.6))), pod, "kubelet", "Started",
-                             "Started container %s" % svc))
-                rows.append((t + dt.timedelta(seconds=run_for), pod, "app", "Log",
-                             "Started %s in %.3f seconds (process running for %.2f)" % (
-                                 app[svc], run_for - float(r.uniform(0.4, 1.1)), run_for)))
-            if len(starts[pod]) > 1:
-                t2 = starts[pod][1][0]
-                rows.append((t2 - dt.timedelta(seconds=float(r.uniform(20, 40))), pod, "kubelet", "Killing",
-                             "Stopping container %s" % svc))
-    rows.sort()
-    return [["time", "namespace", "pod", "source", "reason", "message"]] + [
-        [x[0].strftime("%Y-%m-%dT%H:%M:%S.") + "%03dZ" % (x[0].microsecond // 1000), "perf", x[1], x[2], x[3], x[4]]
-        for x in rows]
+BODY_V1 = {"PC": "01", "SUV": "02", "PU": "03", "VAN": "04", "CV": "05", "MB": "06", "BUS": "07", "SUT": "08",
+           "TT": "09", "MC": "10", "UNK": "99"}
+BODY_V2 = {"PC": "PASSENGER CAR", "SUV": "SPORT UTILITY", "PU": "PICKUP", "VAN": "VAN", "CV": "CARGO VAN",
+           "MB": "MINIBUS", "BUS": "BUS", "SUT": "SINGLE-UNIT TRUCK", "TT": "TRUCK-TRACTOR", "MC": "MOTORCYCLE",
+           "UNK": "UNKNOWN"}
+UTYPE_V1 = {"MV": "1", "PK": "2", "PED": "3", "CYC": "4"}
+UTYPE_V2 = {"MV": "MV IN TRANSPORT", "PK": "PARKED MV", "PED": "PEDESTRIAN", "CYC": "PEDALCYCLIST"}
+PTYPE_V1 = {"DRIVER": "1", "PASSENGER": "2", "PED": "3", "CYC": "4"}
+PTYPE_V2 = {"DRIVER": "DRIVER", "PASSENGER": "PASSENGER", "PED": "PEDESTRIAN", "CYC": "BICYCLIST"}
+SEV_V1 = {"K": "1", "A": "2", "B": "3", "C": "4", "O": "5"}
+FHE_V1 = {"MV": "01", "PK": "02", "PED": "03", "CYC": "04", "FIXED": "05", "OVERTURN": "06", "ANIMAL": "07",
+          "OTHER": "08"}
+FHE_V2 = {"MV": "MOTOR VEHICLE IN TRANSPORT", "PK": "PARKED MOTOR VEHICLE", "PED": "PEDESTRIAN",
+          "CYC": "PEDALCYCLIST", "FIXED": "FIXED OBJECT", "OVERTURN": "OVERTURN/ROLLOVER", "ANIMAL": "ANIMAL",
+          "OTHER": "OTHER OBJECT"}
+MANNER = [("REAR END", 0.38), ("ANGLE", 0.30), ("SIDESWIPE SAME DIRECTION", 0.16), ("SIDESWIPE OPPOSITE", 0.05),
+          ("HEAD ON", 0.04), ("OTHER", 0.07)]
+MANNER_V1 = {"REAR END": "1", "ANGLE": "2", "SIDESWIPE SAME DIRECTION": "3", "SIDESWIPE OPPOSITE": "4",
+             "HEAD ON": "5", "OTHER": "6"}
+CARRIER_OTHER = {"TB": ["STONEREACH VALLEY TRANSIT", "SV TRANSIT"], "SB": ["STONEREACH SCHOOL DIST", "KELDERWICK USD"],
+                 "GV": ["STONEREACH COUNTY", "CITY OF KELDERWICK", "CITY OF FAIRHOLLOW", "STATE DOT"],
+                 "EM": ["KELDERWICK FIRE", "STONEREACH CO EMS", "FAIRHOLLOW FIRE"]}
 
 
 def write_csv(path, head, rows):
     with open(path, "w", newline="", encoding="utf-8") as f:
-        wr = csv.writer(f, lineterminator="\n")
-        wr.writerow(head)
-        wr.writerows(rows)
+        w = csv.writer(f, lineterminator="\r\n")
+        w.writerow(head)
+        w.writerows(rows)
 
 
-# ------------------------------------------------------------------------------------- the ask records' exports
-def write_edge(path, rows):
-    write_csv(path, ["hour_start_utc", "route", "requests", "status_5xx", "bytes_out"], rows)
-    return len(rows)
+# ---------------------------------------------------------------------------------------------------------------
+# daily weather at the regional airport, and the light at a crash's hour
+def weather_days(seed=K.SEED):
+    rng = np.random.default_rng(seed * 1000 + 31)
+    out = {}
+    d = dt.date(2021, 1, 1)
+    wet = False
+    while d <= dt.date(2026, 9, 30):
+        m = d.month
+        pw = [0.62, 0.55, 0.52, 0.42, 0.32, 0.22, 0.08, 0.09, 0.18, 0.38, 0.58, 0.63][m - 1]
+        p = min(0.92, pw + (0.18 if wet else -0.08))
+        wet = bool(rng.random() < p)
+        tmax = 46 + 32 * math.sin(math.pi * (d.timetuple().tm_yday - 105) / 365.0) ** 2 * (1 if 3 < m < 11 else 0.4)
+        tmax = round(tmax + rng.normal(0, 5), 0)
+        tmin = round(tmax - 14 - rng.uniform(0, 8), 0)
+        prcp = round(float(rng.gamma(1.4, 0.18)), 2) if wet else 0.0
+        snow = round(prcp * 9.5, 1) if (wet and tmax < 36) else 0.0
+        out[d] = dict(prcp=prcp, snow=snow, tmax=tmax, tmin=tmin, awnd=round(float(rng.gamma(3.0, 2.4)), 1))
+        d += dt.timedelta(days=1)
+    return out
 
 
-def write_employers(path, emp):
-    rows = []
-    for eid in sorted(emp["snapshot"]):
-        s = emp["snapshot"][eid]
-        rows.append([eid, s["state"], s["hc"], s["freq"], s["plan"], s["since"].isoformat()])
-    write_csv(path, ["employer_id", "state", "headcount", "payroll_frequency", "plan", "subscription_start"], rows)
-    return len(rows)
+def light(day, minute, ur):
+    doy = day.timetuple().tm_yday
+    decl = 23.44 * math.sin(math.radians(360.0 * (284 + doy) / 365.0))
+    lat = 45.6
+    x = -math.tan(math.radians(lat)) * math.tan(math.radians(decl))
+    half = math.degrees(math.acos(max(-1.0, min(1.0, x)))) / 15.0
+    noon = 12.0 + 0.2 + (1.0 if _dst(day) else 0.0)
+    rise, sett = noon - half, noon + half
+    t = minute / 60.0
+    if abs(t - rise) < 0.4:
+        return "DAWN"
+    if abs(t - sett) < 0.4:
+        return "DUSK"
+    if rise < t < sett:
+        return "DAYLIGHT"
+    return "DARK-LIGHTED" if ur == "U" else "DARK-NOT LIGHTED"
 
 
-def write_subscription_events(path, emp):
-    rows = []
-    order = sorted(range(len(emp["events"])), key=lambda i: (emp["events"][i]["date"], i))
-    for n, i in enumerate(order):
-        e = emp["events"][i]
-        rows.append(["SE-26-%06d" % (n + 1), e["employer"], e["date"].isoformat(), e["kind"], e["plan_before"],
-                     e["plan_after"], e["hc_before"], e["hc_after"], e["reason"]])
-    write_csv(path, ["event_id", "employer_id", "effective_date", "event", "plan_before", "plan_after",
-                     "headcount_before", "headcount_after", "reason"], rows)
-    return len(rows)
+def _dst(day):
+    return bool(dt.datetime(day.year, day.month, day.day, 12, tzinfo=PT).dst())
 
 
-def write_legacy_credits(path, legacy):
-    rows = [[x["credit_no"], x["issued"].isoformat(), x["account"], x["incident"], x["cents"], x["status"]]
-            for x in sorted(legacy, key=lambda y: y["credit_no"]) if x["issued"] >= dt.date(2026, 1, 1)]
-    write_csv(path, ["credit_no", "issued_on", "account", "incident", "amount", "status"], rows)
-    return len(rows)
+# ---------------------------------------------------------------------------------------------------------------
+class Writer:
+    def __init__(self, w, seed=K.SEED):
+        self.w = w
+        self.seed = seed
+        self.rng = np.random.default_rng(seed * 1000 + 37)
+        self.wx = weather_days(seed)
+        self.segs = w["segs"]
+        self.assign_ids()
 
+    def assign_ids(self):
+        rng = self.rng
+        lag = {"SP6": (3, 12), "SCSO": (5, 30), "KPD": (2, 10), "FPD": (4, 20)}
+        rec = []
+        for i, cr in enumerate(self.w["crashes"]):
+            lo, hi = lag[cr["agency"]]
+            rec.append((cr["date"] + dt.timedelta(days=int(rng.integers(lo, hi + 1))), i))
+        seq = {}
+        for when, i in sorted(rec):
+            cr = self.w["crashes"][i]
+            y = cr["year"]
+            seq[y] = seq.get(y, 0) + 1 + int(rng.random() < 0.03)
+            cr["id"] = "%d-%06d" % (y, seq[y])
+        aseq = {}
+        for cr in self.w["crashes"]:
+            k = (cr["agency"], cr["year"])
+            aseq[k] = aseq.get(k, 0) + 1
+            n, yy = aseq[k], cr["year"] % 100
+            cr["rpt"] = {"SP6": "D6-%02d-%05d" % (yy, n), "SCSO": "SO%02d-%05d" % (yy, n),
+                         "KPD": "K%02d%06d" % (yy, n), "FPD": "%02dFH%05d" % (yy, n)}[cr["agency"]]
+            cr["v2"] = cr["date"] >= K.FORM_V2
+            cr["time_known"] = bool(rng.random() > (0.004 if cr["agency"] in ("SCSO", "KPD") else 0.0))
+            cr["manner"] = EV.pick(rng, MANNER) if cr["kind"] == "MV" else None
+            if cr["kind"] == "SV":
+                cr["fhe"] = EV.pick(rng, [("FIXED", 0.60), ("OVERTURN", 0.15), ("ANIMAL", 0.15 if cr["ur"] == "R"
+                                                                                          else 0.04), ("OTHER", 0.10)])
+            else:
+                cr["fhe"] = cr["kind"]
+            for v in cr["units"]:
+                v["name"] = ""
+                if v.get("use") in EV.OPERATORS and not v["fled"]:
+                    reg = [o for o in EV.OPERATORS[v["use"]] if o[0] == v["op"]][0]
+                    v["name"] = reg[1][int(rng.integers(0, len(reg[1])))]
+                    if (not cr["v2"]) and rng.random() < 0.02:
+                        v["name"] = ""
+                elif v.get("use") == "OC" and not v["fled"]:
+                    v["name"] = EV.OTHER_CARRIERS[int(rng.integers(0, len(EV.OTHER_CARRIERS)))]
+                elif v.get("use") in CARRIER_OTHER and not v["fled"]:
+                    v["name"] = CARRIER_OTHER[v["use"]][int(rng.integers(0, len(CARRIER_OTHER[v["use"]])))]
+                if v["fault"] or v.get("fault2"):
+                    v["code"] = (EV.NM_FAULT_CODES if v["type"] in ("PED", "CYC") else EV.AT_FAULT_CODES)[
+                        int(rng.integers(0, 4 if v["type"] in ("PED", "CYC") else len(EV.AT_FAULT_CODES)))]
 
-def write_new_credits(path, new):
-    import json
-    items = []
-    for x in new:
-        items.append({"id": x["id"], "created_at": x["created"].strftime("%Y-%m-%dT%H:%M:%SZ"), "account": x["account"],
-                      "incident": x["incident"], "type": x["kind"], "amount": "%.2f" % x["amount"], "currency": "USD",
-                      "memo": x["memo"], "reverses": x["reverses"]})
-    doc = {"export": {"system": "Billing", "object": "credit_notes", "exported_at": "2026-11-20T06:00:14Z",
-                      "created_from": "2026-05-01", "created_to": K.CREDITS_TO.isoformat(), "count": len(items)},
-           "credits": items}
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        json.dump(doc, f, indent=1)
-        f.write("\n")
-    return len(items)
+    # ---- the crash table
+    def crash_rows(self):
+        head = ["CRASH_ID", "FORM_VERSION", "AGENCY", "AGENCY_REPORT_NO", "CRASH_DATE", "CRASH_TIME", "TIME_ZONE",
+                "ROUTE_ID", "LOC_ROUTE", "MILEPOST", "F_SYSTEM", "URBAN_RURAL", "CITY", "FIRST_HARMFUL_EVENT",
+                "MANNER_OF_COLLISION", "NUM_UNITS", "AT_FAULT_UNIT", "HIT_AND_RUN", "LIGHT_CONDITION", "WEATHER",
+                "ROAD_SURFACE", "CRASH_SEVERITY", "NUM_KILLED", "NUM_INJURED"]
+        rows = []
+        for cr in sorted(self.w["crashes"], key=lambda c: c["id"]):
+            v2 = cr["v2"]
+            local = dt.datetime(cr["date"].year, cr["date"].month, cr["date"].day, cr["minute"] // 60,
+                                cr["minute"] % 60, tzinfo=PT)
+            if cr["agency"] == "SP6":
+                u = local.astimezone(UTC)
+                date, time, tz = u.date().isoformat(), "%02d:%02d" % (u.hour, u.minute), "UTC"
+            else:
+                date, tz = cr["date"].isoformat(), "PT"
+                h, mi = cr["minute"] // 60, cr["minute"] % 60
+                if cr["agency"] == "SCSO":
+                    time = "%02d:%02d" % (h, mi)
+                elif cr["agency"] == "KPD":
+                    time = "%d:%02d %s" % ((h % 12) or 12, mi, "AM" if h < 12 else "PM")
+                else:
+                    time = str(h * 100 + mi)
+            if not cr["time_known"]:
+                time = ""
+            if cr["located"]:
+                rid = cr["route"] if v2 else ""
+                old = "" if v2 else RD.old_route_id(cr["route"])
+                mp = "%.2f" % cr["mp"]
+                fs, ur = (str(cr["fc"]), cr["ur"]) if v2 else ("", "")
+            else:
+                rid = old = mp = fs = ur = ""
+            city = cr["city"].upper()
+            fault_units = [v["no"] for v in cr["units"] if v["fault"]]
+            if v2:
+                atf = "0" if cr["undetermined"] else str(fault_units[0])
+            else:
+                atf = ""
+            hr = "Y" if any(v["fled"] for v in cr["units"]) else "N"
+            wx = self.wx[cr["date"]]
+            rain = wx["prcp"] > 0.02 and self.rng.random() < 0.75
+            weather = ("SNOW" if wx["snow"] > 0 else "RAIN") if rain else ("CLOUDY" if self.rng.random() < 0.35
+                                                                            else "CLEAR")
+            surf = ("SNOW/ICE" if wx["snow"] > 0 else "WET") if rain else "DRY"
+            sev = min((p["sev"] for p in cr["persons"]), key="KABCO".index, default="O")
+            nk = sum(1 for p in cr["persons"] if p["sev"] == "K")
+            ni = sum(1 for p in cr["persons"] if p["sev"] in "ABC")
+            fhe = (FHE_V2 if v2 else FHE_V1)[cr["fhe"]]
+            manner = ""
+            if cr["kind"] == "MV":
+                manner = cr["manner"] if v2 else MANNER_V1[cr["manner"]]
+            rows.append([cr["id"], "PTCR-23" if v2 else "PTCR-16", cr["agency"], cr["rpt"], date, time, tz, rid, old,
+                         mp, fs, ur, city, fhe, manner, len(cr["units"]), atf, hr,
+                         light(cr["date"], cr["minute"], cr["ur"]), weather, surf,
+                         sev if v2 else SEV_V1[sev], nk, ni])
+        return head, rows
 
+    # ---- the unit table
+    def unit_rows(self):
+        head = ["CRASH_ID", "UNIT_NO", "UNIT_TYPE", "BODY_TYPE", "VEH_USE", "CARRIER_NAME", "CONTRIB_CODE",
+                "HIT_RUN_UNIT", "OCCUPANTS", "DRIVER_AGE", "MODEL_YEAR", "STRIKING_UNIT"]
+        rows = []
+        for cr in sorted(self.w["crashes"], key=lambda c: c["id"]):
+            v2 = cr["v2"]
+            veh = [v for v in cr["units"] if v["type"] in ("MV", "PK")]
+            for v in cr["units"]:
+                t = v["type"]
+                ut = (UTYPE_V2 if v2 else UTYPE_V1)[t]
+                if t in ("PED", "CYC"):
+                    body = use = name = occ = age = my = ""
+                    strike = str(veh[0]["no"]) if v2 else ""
+                else:
+                    strike = ""
+                    if v["fled"]:
+                        b, u = "UNK", "UNK"
+                    else:
+                        b, u = v["body"], ("PV" if v["use"] == "MC" else v["use"])
+                    body = (BODY_V2 if v2 else BODY_V1)[b]
+                    use = (K.USE_V2 if v2 else K.USE_V1)[u]
+                    name = v["name"]
+                    occ = "" if v["fled"] else str(v["occ"])
+                    age = "" if (v["fled"] or t == "PK") else str(v["age"])
+                    my = "" if v["fled"] else str(v["vyear"])
+                code = ""
+                if not v2:
+                    code = "00"
+                    if not cr["undetermined"] and (v["fault"] or v.get("fault2")):
+                        code = v["code"]
+                rows.append([cr["id"], v["no"], ut, body, use, name, code, "Y" if v["fled"] else "N", occ, age, my,
+                             strike])
+        return head, rows
 
-# ------------------------------------------------------------------------------------- the two distractors
-def write_apm(path, w):
-    """The APM tool's trace sample for 18 November (one request in a hundred, server-side span durations)."""
-    import json
-    r = np.random.default_rng([w["seed"], 0, 91])
-    spans = []
-    for code in K.CODES:
-        s = w["sched"][code]
-        if s["start"].date() != dt.date(2026, 11, 18):
-            continue
-        pods = w["pods"][K.SERVICE[code]]
-        for kind in ("aborted", "record"):
-            run = w["runs"][code] if kind == "record" else w["runs"][code].get("aborted")
-            if run is None:
+    # ---- persons in crashes with an injury on the report or a supplement
+    def person_rows(self):
+        head = ["CRASH_ID", "UNIT_NO", "PERSON_NO", "PERSON_TYPE", "SEAT_POSITION", "AGE", "SEX",
+                "INJURY_SEVERITY"]
+        rows = []
+        for cr in sorted(self.w["crashes"], key=lambda c: c["id"]):
+            ps = cr["persons"]
+            if not any(p["sev"] != "O" or p["final"] != "O" for p in ps):
                 continue
-            start = s["start"] if kind == "record" else s["aborted_start"]
-            for th, pod, t, f, sv in run["rows"]:
-                if r.random() >= 0.01:
-                    continue
-                srv = max(0.4, (f - t) * 1000.0 - float(r.uniform(0.3, 0.9)))
-                st = wall(start, t + 0.0002)
-                spans.append({"trace_id": "%032x" % int(r.integers(0, 2 ** 62)) ,
-                              "span_id": "%016x" % int(r.integers(0, 2 ** 62)),
-                              "service": K.SERVICE[code], "pod": pods[pod], "name": K.PATH[code],
-                              "start": st.strftime("%Y-%m-%dT%H:%M:%S.") + "%06dZ" % st.microsecond,
-                              "duration_ms": round(srv, 3), "http.status_code": 200})
-    spans.sort(key=lambda x: (x["start"], x["span_id"]))
-    doc = {"source": "apm", "environment": "perf", "date": "2026-11-18", "sampling": "head-based, 1 in 100 traces",
-           "spans": spans}
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        json.dump(doc, f, indent=1)
-        f.write("\n")
-    return len(spans)
+            v2 = cr["v2"]
+            n = 0
+            for p in ps:
+                n += 1
+                p["pno"] = n
+                rows.append(self._prow(cr, p, n, p["sev"], v2))
+            for p in ps:
+                if p["supp"]:
+                    n += 1
+                    rows.append(self._prow(cr, p, n, p["final"], v2))
+        return head, rows
+
+    @staticmethod
+    def _prow(cr, p, n, sev, v2):
+        return [cr["id"], p["unit"], n, (PTYPE_V2 if v2 else PTYPE_V1)[p["role"]], p["seat"], p["age"], p["sex"],
+                sev if v2 else SEV_V1[sev]]
+
+    # ---- the state's register of road deaths within 30 days
+    def fatality_rows(self):
+        head = ["REGISTER_NO", "COUNTY", "AGENCY", "AGENCY_REPORT_NO", "CRASH_DATE", "DATE_OF_DEATH", "VEHICLE_NO",
+                "PERSON_TYPE", "AGE", "SEX"]
+        out = []
+        for cr in self.w["crashes"]:
+            for p in cr["persons"]:
+                if p["died30"]:
+                    dd = cr["date"] + dt.timedelta(days=p["death_day"])
+                    out.append((dd, cr["date"], cr["agency"], cr["rpt"], p["unit"], PTYPE_V2[p["role"]], p["age"],
+                                p["sex"]))
+        out.sort()
+        rows = []
+        for i, (dd, cd, ag, rpt, unit, pt, age, sex) in enumerate(out, 1):
+            rows.append(["F%d-%04d" % (dd.year, i), "STONEREACH", K.AGENCIES[ag], rpt, cd.isoformat(), dd.isoformat(),
+                         unit, pt, age, sex])
+        return head, rows
+
+    # ---- weather (a distractor) and work zones (a distractor)
+    def weather_rows(self):
+        head = ["STATION", "NAME", "DATE", "AWND", "PRCP", "SNOW", "TMAX", "TMIN"]
+        rows = []
+        for d in sorted(self.wx):
+            if d > dt.date(2025, 12, 31):
+                continue
+            x = self.wx[d]
+            rows.append(["USW00094741", "KELDERWICK REGIONAL AIRPORT", d.isoformat(), "%.1f" % x["awnd"],
+                         "%.2f" % x["prcp"], "%.1f" % x["snow"], "%d" % x["tmax"], "%d" % x["tmin"]])
+        return head, rows
+
+    def workzone_rows(self):
+        rng = np.random.default_rng(self.seed * 1000 + 41)
+        cands = [s for s in self.segs if s["fc"] <= 4]
+        head = ["WZ_ID", "ROUTE_ID", "BEGIN_MP", "END_MP", "START_DATE", "END_DATE", "WORK_TYPE", "LANES_CLOSED",
+                "NIGHT_ONLY"]
+        rows = []
+        types = ["PAVING", "BRIDGE DECK", "STRIPING", "UTILITY", "SIGNAL UPGRADE", "GUARDRAIL", "SHOULDER WORK"]
+        for i in range(340):
+            s = cands[int(rng.integers(0, len(cands)))]
+            st = dt.date(2021, 3, 1) + dt.timedelta(days=int(rng.integers(0, 1700)))
+            en = st + dt.timedelta(days=int(rng.integers(2, 120)))
+            b = round(float(rng.uniform(s["b"], s["e"])), 2)
+            rows.append(["WZ%05d" % (21000 + i * 3), s["route"], "%.2f" % b, "%.2f" % min(s["e"], b + rng.uniform(0.2, 2.5)),
+                         st.isoformat(), en.isoformat(), types[int(rng.integers(0, len(types)))],
+                         int(rng.integers(0, 3)), "Y" if rng.random() < 0.3 else "N"])
+        rows.sort(key=lambda r: (r[4], r[0]))
+        return head, rows
 
 
-FINGERPRINTS = [
-    ("svc_payroll_core", "SELECT * FROM payroll_run_lines WHERE run_id = ? AND employee_id IN (?)"),
-    ("svc_payroll_core", "UPDATE payroll_runs SET status = ?, updated_at = ? WHERE id = ?"),
-    ("svc_tax_forms", "SELECT f.* FROM w2_forms f JOIN employees e ON e.id = f.employee_id WHERE f.tax_year = ? AND "
-                      "e.company_id = ?"),
-    ("svc_filings", "INSERT INTO filing_batches (company_id, form, tax_year, payload) VALUES (?, ?, ?, ?)"),
-    ("svc_reports", "SELECT company_id, SUM(gross), SUM(net) FROM payroll_run_lines WHERE pay_date BETWEEN ? AND ? "
-                    "GROUP BY company_id"),
-    ("svc_employees", "SELECT * FROM employees WHERE company_id = ? ORDER BY last_name LIMIT ? OFFSET ?"),
-    ("svc_deductions", "SELECT * FROM deductions WHERE employee_id = ? AND effective_to >= ?"),
-    ("svc_banking", "SELECT * FROM bank_accounts WHERE employee_id = ? FOR UPDATE"),
-    ("svc_search", "SELECT id, ts_rank(doc, q) FROM search_index, plainto_tsquery(?) q WHERE doc @@ q ORDER BY 2 DESC "
-                   "LIMIT ?"),
-    ("svc_accounting_sync", "SELECT * FROM journal_exports WHERE company_id = ? AND period = ?"),
-    ("svc_state_local", "SELECT rate FROM local_tax_rates WHERE zip = ? AND effective_from <= ? ORDER BY "
-                        "effective_from DESC LIMIT ?"),
-]
-
-
-def write_slow_queries(path, w):
-    """The perf database's slow query log (statements over 200 ms) for the campaign's days."""
-    r = np.random.default_rng([w["seed"], 0, 92])
+# ---------------------------------------------------------------------------------------------------------------
+# continuous count stations: hourly volumes, both directions, 2025
+def atr_rows(segs, sts, seed=K.SEED):
+    rng = np.random.default_rng(seed * 1000 + 43)
+    days = [dt.date(2025, 1, 1) + dt.timedelta(days=i) for i in range(365)]
+    spring = [d for d in days if d.month == 3 and d.weekday() == 6][1]
+    fall = [d for d in days if d.month == 11 and d.weekday() == 6][0]
+    head = ["STATION_ID", "COUNT_DATE", "DIR"] + ["HR%02d" % h for h in range(1, 25)]
     rows = []
-    for day in W.JMETER_DAYS + W.K6_DAYS:
-        for _ in range(int(r.integers(60, 130))):
-            t = dt.datetime.combine(day, dt.time(14, 0)) + dt.timedelta(seconds=float(r.uniform(0, 4 * 3600)))
-            user, fp = FINGERPRINTS[int(r.integers(len(FINGERPRINTS)))]
-            dur = float(np.exp(r.normal(np.log(420), 0.55)))
-            dur = max(201.0, dur)
-            ex = int(np.exp(r.normal(9.5, 1.4)))
-            rows.append([t.strftime("%Y-%m-%dT%H:%M:%S.") + "%03dZ" % (t.microsecond // 1000), "payroll_perf", user,
-                         "%.3f" % dur, ex, int(ex * r.uniform(0.0005, 0.05)), fp])
-    rows.sort()
-    write_csv(path, ["logged_at", "database", "db_user", "duration_ms", "rows_examined", "rows_sent",
-                     "query_fingerprint"], rows)
-    return len(rows)
+    for st in sts:
+        g = st["group"]
+        hours, wef = W.GROUP_HOURS[g]
+        ur = st["ur"]
+        nwd = sum(1 for d in days if d.weekday() < 5)
+        nwe = 365 - nwd
+        fw = 365.0 / (nwd + wef * nwe)
+        mf = W.MONTH[ur]
+        mean_m = sum(mf[d.month - 1] for d in days) / 365.0
+        dirs = ("1", "5") if st["route"].startswith(("I-", "SR-")) and int(st["route"].split("-")[1]) % 2 == 1 \
+            else ("3", "7")
+        out = set()
+        for _ in range(int(rng.poisson(1.6))):
+            s0 = int(rng.integers(0, 360))
+            for k in range(int(rng.integers(1, 10))):
+                out.add((s0 + k, "both"))
+        for _ in range(int(rng.poisson(1.0))):
+            out.add((int(rng.integers(0, 365)), dirs[int(rng.integers(0, 2))]))
+        for i, d in enumerate(days):
+            if (i, "both") in out:
+                continue
+            dtp = "we" if d.weekday() >= 5 else "wd"
+            daily = st["aadt"] * fw * (wef if dtp == "we" else 1.0) * mf[d.month - 1] / mean_m \
+                * float(np.exp(rng.normal(0, 0.05)))
+            prof = hours[dtp] * np.exp(rng.normal(0, 0.06, 24))
+            prof = prof / prof.sum()
+            vol = daily * prof
+            amp = 0.10 if ur == "U" else 0.04
+            share1 = 0.5 + amp * (W.bump(np.arange(24), 7.5, 1.6) - W.bump(np.arange(24), 17.0, 2.0))
+            for j, dr in enumerate(dirs):
+                if (i, dr) in out:
+                    continue
+                v = vol * (share1 if j == 0 else 1 - share1)
+                cells = [str(int(round(x))) for x in v]
+                if d == spring:
+                    cells[2] = ""
+                if d == fall:
+                    cells[1] = str(int(round(v[1] * 2)))
+                rows.append([st["id"], d.isoformat(), dr] + cells)
+    return head, rows
+
+
+def station_rows(sts, segs):
+    head = ["STATION_ID", "ROUTE_ID", "MILEPOST", "F_SYSTEM", "URBAN_RURAL", "FACTOR_GROUP", "LOCATION", "DIRECTIONS"]
+    gnum = {g: i + 1 for i, g in enumerate(K.GROUPS)}
+    rows = []
+    for st in sts:
+        s = segs[st["seg"]]
+        city = (s["city"] or "Stonereach County").replace("Stonereach County", "unincorporated")
+        dirs = "1,5" if st["route"].startswith(("I-", "SR-")) and int(st["route"].split("-")[1]) % 2 == 1 else "3,7"
+        rows.append([st["id"], st["route"], "%.2f" % st["mp"], st["fc"], st["ur"], gnum[st["group"]],
+                     "%s MP %.2f (%s)" % (st["route"], st["mp"], city), dirs])
+    return head, rows

@@ -1,101 +1,88 @@
-"""Constants for task273: Mirrendale Payroll's year-end readiness review. Every name, date and parameter the world, the
-records, the documents and the analysis share lives here."""
+"""Constants for task273: the Stonereach Valley Regional Transportation Commission's Commercial Fleet Safety
+Programme. Every name, date and parameter the world, the records, the documents and the analysis share lives here."""
 import datetime as dt
 
-SEED = 3152
-SLA_MS = 800.0                      # the readiness standard's 99th-percentile response time
-PCT = 99.0
-WARMUP_S = 180.0                    # the test plan's warm-up, excluded from the run of record
-MEASURE_S = 600.0                   # the measured ten minutes after it
-RUN_S = WARMUP_S + MEASURE_S
-TIMEOUT_S = 30.0                    # the test clients' request timeout
-FREEZE = dt.date(2026, 12, 4)
-ASSEMBLED = dt.datetime(2026, 11, 20, 16, 40, 0)
+SEED = 18
+YEARS = (2021, 2022, 2023, 2024, 2025)
+FORM_V2 = dt.date(2023, 1, 1)               # the state crash report's second version, crashes from this date
+THRESHOLD = 1.5                             # the coverage rule: at least 1.5 times private drivers' rate per mile
+VOTE = dt.date(2026, 12, 9)
+START = dt.date(2027, 7, 1)
+ASSEMBLED = dt.datetime(2026, 11, 16, 15, 20, 0)
+TZ = "America/Los_Angeles"
 
-COMPANY = "Mirrendale Payroll"
-REQUESTER = "Theresa Meyers"        # capacity planner
-OWNER = "Zachary Mendoza"           # vice president, platform engineering
+REGION = "Stonereach Valley"
+COMMISSION = "Stonereach Valley Regional Transportation Commission"
+COMMISSION_SHORT = "the Commission"
+PROGRAMME = "Commercial Fleet Safety Programme"
+COUNTY = "Stonereach County"
+CITY_A = "Kelderwick"
+CITY_B = "Fairhollow"
+REQUESTER = "Thomas Moyer"                  # policy adviser
+OWNER = "Amanda Barrera"                    # director of safety programmes
+DOT = "Department of Transportation"
+COMPANY = COMMISSION
 
-# service: (garbage collector, pods)
-SERVICES = {
-    "payroll-core":     ("parallel", 4),
-    "tax-forms":        ("parallel", 3),
-    "filings":          ("parallel", 5),
-    "reports":          ("g1", 4),
-    "employees":        ("g1", 4),
-    "time-entries":     ("g1", 3),
-    "pay-stubs":        ("g1", 5),
-    "deductions":       ("g1", 3),
-    "banking":          ("parallel", 2),
-    "companies":        ("zgc", 3),
-    "auth":             ("zgc", 4),
-    "search":           ("g1", 3),
-    "documents":        ("g1", 4),
-    "webhooks":         ("g1", 2),
-    "accounting-sync":  ("parallel", 3),
-    "state-local":      ("g1", 3),
-}
-
-# endpoint id: (method and path, service, kind) ; kind sets the service-time tail
-ENDPOINTS = [
-    ("EP01", "POST /v2/payroll-runs", "payroll-core", "plain"),
-    ("EP02", "GET /v2/payroll-runs/{id}/preview", "payroll-core", "plain"),
-    ("EP03", "GET /v2/tax-forms/w2", "tax-forms", "plain"),
-    ("EP04", "GET /v2/tax-forms/1099-nec", "tax-forms", "plain"),
-    ("EP05", "POST /v2/filings", "filings", "plain"),
-    ("EP06", "GET /v2/filings/{id}/status", "filings", "plain"),
-    ("EP07", "GET /v2/reports/payroll-register", "reports", "heavy"),
-    ("EP08", "GET /v2/reports/tax-liability", "reports", "heavy"),
-    ("EP09", "GET /v2/employees", "employees", "plain"),
-    ("EP10", "GET /v2/employees/{id}", "employees", "plain"),
-    ("EP11", "POST /v2/approvals", "employees", "plain"),
-    ("EP12", "POST /v2/time-entries", "time-entries", "plain"),
-    ("EP13", "GET /v2/pay-stubs", "pay-stubs", "plain"),
-    ("EP14", "GET /v2/deductions", "deductions", "plain"),
-    ("EP15", "POST /v2/garnishments", "deductions", "plain"),
-    ("EP16", "POST /v2/direct-deposits", "banking", "plain"),
-    ("EP17", "GET /v2/companies/{id}", "companies", "plain"),
-    ("EP18", "POST /v2/auth/token", "auth", "plain"),
-    ("EP19", "GET /v2/search", "search", "heavy"),
-    ("EP20", "POST /v2/documents", "documents", "heavy"),
-    ("EP21", "POST /v2/webhooks", "webhooks", "plain"),
-    ("EP22", "POST /v2/accounting-sync/exports", "accounting-sync", "plain"),
-    ("EP23", "POST /v2/state-filings", "state-local", "plain"),
-    ("EP24", "GET /v2/local-taxes", "state-local", "plain"),
+# the seven commercial uses the coverage rule names, in the rule's order: (code, rule name, short label)
+USES = [
+    ("TX", "Taxicabs", "Taxi"),
+    ("RH", "Ride-hail vehicles (transportation network companies)", "Ride-hail"),
+    ("LM", "Limousines and chauffeured cars", "Limousine"),
+    ("AS", "Airport and hotel shuttles", "Airport shuttle"),
+    ("PT", "Paratransit and non-emergency medical transport", "Paratransit"),
+    ("PD", "Parcel and courier delivery vans", "Parcel delivery"),
+    ("AD", "App-based delivery (delivery network company couriers)", "App delivery"),
 ]
-CODES = [e[0] for e in ENDPOINTS]
-PATH = {e[0]: e[1] for e in ENDPOINTS}
-SERVICE = {e[0]: e[2] for e in ENDPOINTS}
-KIND = {e[0]: e[3] for e in ENDPOINTS}
+CODES = [u[0] for u in USES]
+RULE_NAME = {u[0]: u[1] for u in USES}
+LABEL = {u[0]: u[2] for u in USES}
 
-# the pack, as the platform's systems and teams name their exports
-FILES = {
-    "contents": "contents.txt",
-    "standard": "yearend_readiness_standard_2026.pdf",
-    "plan": "yearend_peak_loadtest_plan_2026.docx",
-    "register": "public_api_endpoint_register.xlsx",
-    "jmeter": "loadtest_jmeter_results_2026-11-10_to_12.jtl",
-    "k6": "loadtest_k6_results_2026-11-16_to_19.csv",
-    "gc": "perf_gc_log_export_2026-11-10_to_19.log",
-    "events": "perf_cluster_pod_events_2026-11.csv",
-    "edge": "edge_requests_hourly_2026-01.csv",
-    "synthetic": "edge_uptime_monitors.yaml",
-    "changelog": "developer_portal_changelog_2026.html",
-    "employers": "crm_employer_accounts_2026-11-01.csv",
-    "subs": "billing_subscription_events_2026.csv",
-    "legacy": "legacy_billing_credits_2026-01_to_04.csv",
-    "credits": "billing_credits_2026-05-01_to_11-19.json",
-    "incidents": "status_page_incidents_2025-12_to_2026-11.xlsx",
-    "apm": "apm_traces_perf_2026-11-18.json",
-    "slowq": "payroll_db_slow_queries_2026-11.csv",
+# the report's form codes for a vehicle's use. Version 1 (crashes to 31 December 2022) and version 2 (from 1 January
+# 2023). Version 1 has one code for every passenger service for hire and one for every delivery; the operator's name
+# on the report says which.
+USE_V2 = {"PV": "00", "TX": "11", "RH": "12", "LM": "13", "AS": "14", "PT": "15", "PD": "21", "AD": "22",
+          "OC": "30", "TB": "41", "SB": "42", "GV": "50", "EM": "60", "UNK": "99"}
+USE_V1 = {"PV": "0", "TX": "1", "RH": "1", "LM": "1", "AS": "1", "PT": "1", "PD": "2", "AD": "2",
+          "OC": "3", "TB": "4", "SB": "4", "GV": "5", "EM": "6", "UNK": "9"}
+PRIVATE_BODIES = ("PC", "SUV", "PU", "VAN")   # private drivers: these bodies in personal use (the rule)
+
+# road classes: the state's functional system (1 to 7) in urban and rural areas, and the factor group the
+# Department's continuous count programme assigns each to
+FCLASS = [
+    (1, "U", "UF"), (2, "U", "UF"), (3, "U", "UA"), (4, "U", "UA"), (5, "U", "UL"), (7, "U", "UL"),
+    (1, "R", "RF"), (2, "R", "RF"), (3, "R", "RA"), (4, "R", "RA"), (5, "R", "RL"), (6, "R", "RL"), (7, "R", "RL")]
+GROUPS = ("UF", "UA", "UL", "RF", "RA", "RL")
+GROUP_NAME = {"UF": "Urban interstates, freeways and expressways", "UA": "Urban arterials",
+              "UL": "Urban collectors and local roads", "RF": "Rural interstates, freeways and expressways",
+              "RA": "Rural arterials", "RL": "Rural collectors and local roads"}
+GROUP_OF = {(fc, ur): g for fc, ur, g in FCLASS}
+
+AGENCIES = {
+    "SP6": "State Patrol, District 6",
+    "SCSO": "Stonereach County Sheriff's Office",
+    "KPD": "Kelderwick Police Department",
+    "FPD": "Fairhollow Police Department",
 }
-DISTRACTORS = ("apm", "slowq")
-DELIVERABLES = ("yearend_readiness_2027.xlsx", "yearend_readiness_2027.png")
-EDGE_HOST = "api.mirrendale.com"
-PERF_EDGE = "perf-api.mirrendale.internal"
-BUILD = "2026.11.2"
-REVIEW_YEAR = 2026
-WINDOW_FROM = dt.date(2026, 1, 1)          # Ask B: breaches from (Eastern date the incident began)
-WINDOW_TO = dt.date(2026, 10, 31)          # to, inclusive
-MIGRATION = dt.date(2026, 5, 1)            # billing moved to the new system
-CREDITS_TO = dt.date(2026, 11, 19)         # the new system's export runs to this day
+
+# the pack, as the systems and offices that keep them name their exports
+FILES = {
+    "contents": "README_pack_contents.txt",
+    "rule": "cfsp_coverage_rule_2026.pdf",
+    "crashes": "crash_extract_2021_2025_crashes.csv",
+    "units": "crash_extract_2021_2025_units.csv",
+    "persons": "crash_extract_2021_2025_persons_injury_crashes.csv",
+    "dictionary": "crash_extract_data_dictionary.pdf",
+    "inventory": "lrs_road_inventory_2025.xlsx",
+    "tmr": "travel_monitoring_report_2025.pdf",
+    "atr": "ccs_hourly_volumes_2025.csv",
+    "stations": "ccs_stations_2025.csv",
+    "operators": "commission_operator_register_2026.xlsx",
+    "platforms": "platform_vehicle_reports_2025.csv",
+    "deaths": "road_fatality_register_2021_2025.csv",
+    "costs": "dot_crash_unit_costs_2025.pdf",
+    "registrations": "dmv_registrations_stonereach_2021_2025.xlsx",
+    "weather": "noaa_daily_weather_kelderwick_2021_2025.csv",
+    "workzones": "work_zone_log_2021_2025.csv",
+}
+DISTRACTORS = ("weather", "workzones", "registrations", "platforms")
+DELIVERABLES = ("fleet_safety_programme_2027.xlsx", "fleet_safety_programme_2027.pptx")

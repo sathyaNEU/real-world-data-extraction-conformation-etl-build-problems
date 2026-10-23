@@ -1,246 +1,397 @@
-"""Every route's figures, computed from the cut pack: the call (each endpoint's 99th percentile at the forecast peak, by
-the golden and by every route a competent analyst might take) and the two supplementary questions."""
+"""The golden analysis on the cut pack, and every other route through it.
+
+The call: each use's crashes caused per mile driven, against private drivers'. The crashes come straight from the
+reports. The miles come from the vehicles the at-fault drivers struck in crashes between moving vehicles: within one
+road class, day type and hour, the struck vehicles are a draw from the traffic there, so each use's share of them is its
+share of that stratum's miles, and the Department's miles for the stratum (the class's annual VMT spread over the week
+by its count stations' hours) turn the shares into miles. The other routes are the rungs of the ladder and the members
+of the golden's family."""
 import datetime as dt
 import math
 
-import numpy as np
-
 import common as K
-import models as M
 import pack as P
 
-N_MC = 2_000_000
-EST = dt.timedelta(hours=-5)
+PRIV = ("PV",)
 
 
-def half_up(x):
-    return int(math.floor(x + 0.5))
+def half_up(x, nd=0):
+    q = 10 ** nd
+    return math.floor(x * q + 0.5 + 1e-9) / q
 
 
-# ------------------------------------------------------------------------------------------------ the call
-def call_inputs(target):
-    """Each endpoint's run of record, measurement window and its service's pods with their pauses."""
-    ep, svc = P.register(target)
-    rs = P.runs(P.requests(target))
-    pauses = P.gc_pauses(target)
+def per3(h):
+    return "night" if (h >= 21 or h < 6) else ("peak" if h in (7, 8, 16, 17, 18) else "day")
+
+
+class Data:
+    def __init__(self, target):
+        self.target = target
+        self.cr = P.load(target)
+        self.vmt = P.tmr_vmt(target)
+        self.atr = P.atr_totals(target)
+        self._dow = None
+
+    # ---- the Department's miles by stratum
+    def share(self, g):
+        cells = self.atr[g]
+        s = sum(cells.values())
+        return {k: v / s for k, v in cells.items()}
+
+    def dow_share(self, g):
+        if self._dow is None:
+            import csv
+            st = P.stations(self.target)
+            tot = {x: {} for x in K.GROUPS}
+            with open(P.path(self.target, "atr"), encoding="utf-8", newline="") as f:
+                for r in csv.DictReader(f):
+                    gg = st[r["STATION_ID"]]
+                    wd = dt.date.fromisoformat(r["COUNT_DATE"]).weekday()
+                    for h in range(24):
+                        v = r["HR%02d" % (h + 1)]
+                        if v != "":
+                            tot[gg][(wd, h)] = tot[gg].get((wd, h), 0.0) + float(v)
+            self._dow = {x: {k: v / sum(c.values()) for k, v in c.items()} for x, c in tot.items()}
+        return self._dow[g]
+
+    def avgday_share(self, g, year=2025):
+        """The count programme's average-day expansion: the mean day of each type at each hour, times the year's days
+        of that type."""
+        import csv
+        st = P.stations(self.target)
+        acc, nd = {}, {}
+        with open(P.path(self.target, "atr"), encoding="utf-8", newline="") as f:
+            for r in csv.DictReader(f):
+                if st[r["STATION_ID"]] != g:
+                    continue
+                d = dt.date.fromisoformat(r["COUNT_DATE"])
+                dtp = "we" if d.weekday() >= 5 else "wd"
+                key = (r["STATION_ID"], r["DIR"], dtp)
+                nd[key] = nd.get(key, 0) + 1
+                for h in range(24):
+                    v = r["HR%02d" % (h + 1)]
+                    if v != "":
+                        acc[(key, h)] = acc.get((key, h), 0.0) + float(v)
+        days = {"wd": 0, "we": 0}
+        x = dt.date(year, 1, 1)
+        while x.year == year:
+            days["we" if x.weekday() >= 5 else "wd"] += 1
+            x += dt.timedelta(days=1)
+        cell = {}
+        for (key, h), v in acc.items():
+            sid, dr, dtp = key
+            cell[(dtp, h)] = cell.get((dtp, h), 0.0) + v / nd[key] * days[dtp]
+        s = sum(cell.values())
+        return {k: v / s for k, v in cell.items()}
+
+    def stratum_miles(self, grain, shares="sum"):
+        """Miles (millions) in each stratum of the grain, 2021 to 2025."""
+        E = {}
+        for (fc, ur), byy in self.vmt.items():
+            g = K.GROUP_OF[(fc, ur)]
+            if grain == "dow":
+                sh = self.dow_share(g)
+                for (wd, h), s in sh.items():
+                    k = (g, wd, h)
+                    E[k] = E.get(k, 0.0) + sum(byy.values()) * s
+                continue
+            sh = self.share(g) if shares == "sum" else self.avgday_share(g)
+            for (d, h), s in sh.items():
+                for y, v in byy.items():
+                    k = key_of(grain, y, fc, ur, g, d, h)
+                    E[k] = E.get(k, 0.0) + v * s
+        return E
+
+    # ---- the crashes
+    def mv_crashes(self):
+        for c in self.cr.values():
+            if sum(1 for u in c["units"] if u["type"] == "MV") >= 2:
+                yield c
+
+    def numerators(self, priv=PRIV, mode="all"):
+        """Crashes caused, 2021 to 2025: each crash between moving vehicles once for each use whose driver was at
+        fault in it (rule 3.2 counts crashes, so two of a use's drivers at fault in one crash are one crash)."""
+        af = {}
+        for c in self.mv_crashes():
+            faults = [u for u in c["units"] if u["type"] == "MV" and u["fault"]]
+            if mode == "one" and len(faults) != 1:
+                continue
+            for use in {"PV" if u["use"] in priv else u["use"] for u in faults}:
+                af[use] = af.get(use, 0) + 1
+        return af
+
+    def exposure(self, grain, sample="all", priv=PRIV):
+        """The struck vehicles by stratum: n[(use, stratum)], tot[stratum]."""
+        n, tot = {}, {}
+        for c in self.mv_crashes():
+            mv = [u for u in c["units"] if u["type"] == "MV"]
+            faults = [u for u in mv if u["fault"]]
+            if sample == "undet":
+                if len(faults) > 1:
+                    continue
+            elif len(faults) != 1:
+                continue
+            if sample == "two" and len(mv) != 2:
+                continue
+            if sample == "nohr" and any(u["fled"] for u in mv):
+                continue
+            if c["group"] is None or c["hour"] is None:
+                continue
+            k = crash_key(grain, c)
+            for u in mv:
+                if u["fault"]:
+                    continue
+                use = "PV" if u["use"] in priv else u["use"]
+                n[(use, k)] = n.get((use, k), 0) + 1
+                tot[k] = tot.get(k, 0) + 1
+        if sample == "parked":
+            for c in self.cr.values():
+                if c["group"] is None or c["hour"] is None:
+                    continue
+                pk = [u for u in c["units"] if u["type"] == "PK"]
+                if not pk:
+                    continue
+                k = crash_key(grain, c)
+                for u in pk:
+                    use = "PV" if u["use"] in priv else u["use"]
+                    n[(use, k)] = n.get((use, k), 0) + 1
+                    tot[k] = tot.get(k, 0) + 1
+        return n, tot
+
+    def miles(self, grain="full", sample="all", priv=PRIV, shares="sum"):
+        E = self.stratum_miles(grain if grain in ("full", "fcl", "yr", "dow") else "full", shares)
+        if grain not in ("full", "fcl", "yr", "dow"):
+            E = coarsen(E, grain)
+        n, tot = self.exposure(grain, sample, priv)
+        out = {}
+        for (use, k), x in n.items():
+            out[use] = out.get(use, 0.0) + E[k] * x / tot[k]
+        return out, E, n, tot
+
+    def ratios(self, grain="full", sample="all", priv=PRIV, num="all", shares="sum"):
+        af = self.numerators(priv, "one" if num == "one" else "all")
+        if num == "hr_private":
+            hr = sum(1 for c in self.mv_crashes() if any(u["type"] == "MV" and u["fault"] and u["fled"]
+                                                          for u in c["units"])
+                     and not any(u["type"] == "MV" and u["fault"] and u["use"] in priv for u in c["units"]))
+            af["PV"] = af.get("PV", 0) + hr
+        mi, E, n, tot = self.miles(grain, sample, priv, shares)
+        rate = {u: af.get(u, 0) / mi[u] for u in mi if mi[u] > 0}
+        return {u: rate[u] / rate["PV"] for u in K.CODES}, af, mi, rate
+
+
+def key_of(grain, y, fc, ur, g, d, h):
+    if grain == "full":
+        return (g, d, h)
+    if grain == "fcl":
+        return (fc, ur, d, h)
+    if grain == "yr":
+        return (y, g, d, h)
+    raise ValueError(grain)
+
+
+def crash_key(grain, c):
+    g, d, h = c["group"], c["dtype"], c["hour"]
+    return {"full": (g, d, h), "fcl": (c["fc"], c["ur"], d, h), "yr": (c["year"], g, d, h),
+            "dow": (g, c["date"].weekday(), h), "coarse": (g, d, per3(h)), "road": g, "hour": (d, h),
+            "hour_only": h, "urb": (g[0], d, h), "road_dt": (g, d), "pooled": "all"}[grain]
+
+
+def coarsen(E, grain):
     out = {}
-    for c in K.CODES:
-        run = P.run_of_record(rs[c])
-        t0, t1 = run["t0"] + K.WARMUP_S, run["t0"] + K.RUN_S
-        pods = sorted(set(run["pod"]))
-        assert len(pods) == svc[ep[c]["service"]]["pods"], c
-        win = [[(a, b) for a, b in pauses.get(p, []) if b > t0 - 60.0 and a < t1 + 60.0] for p in pods]
-        out[c] = dict(run=run, t0=t0, t1=t1, pods=pods, pauses=win, n_runs=len(rs[c]))
+    for (g, d, h), v in E.items():
+        k = {"coarse": (g, d, per3(h)), "road": g, "hour": (d, h), "hour_only": h, "urb": (g[0], d, h),
+             "road_dt": (g, d), "pooled": "all"}[grain]
+        out[k] = out.get(k, 0.0) + v
     return out
 
 
-def routes(target, n_mc=N_MC, inputs=None):
-    """code -> every route's figure (milliseconds, unless named otherwise)."""
-    X = call_inputs(target) if inputs is None else inputs
-    out = {}
-    for c in K.CODES:
-        x = X[c]
-        run, t0, t1, pods, Pw = x["run"], x["t0"], x["t1"], x["pods"], x["pauses"]
-        idx = {p: i for i, p in enumerate(pods)}
-        m = (run["start"] >= t0) & (run["start"] < t1)
-        st, en = run["start"][m], run["end"][m]
-        lat = en - st
-        pod_i = np.array([idx[p] for p in run["pod"][m]])
-        ov = M.overlap_rows(list(zip(pod_i, st, en)), [[(a, b, "") for a, b in w] for w in Pw])
-        svc_t = np.maximum(lat - ov, 0.0005)
-        touched = ov > 0
-        threads = len(set(run["thread"]))
-        rate = len(st) / (t1 - t0)
-        interval = threads / rate
-        share = np.mean([sum(min(b, t1) - max(a, t0) for a, b in w if b > t0 and a < t1) / (t1 - t0) for w in Pw])
-        longest = max([b - a for w in Pw for a, b in w if b > t0 and a < t1], default=0.0) * 1000.0
-        pooled = [sorted({ab for w in Pw for ab in w})]
-        merged = []
-        for a, b in pooled[0]:
-            if merged and a <= merged[-1][1]:
-                merged[-1] = (merged[-1][0], max(merged[-1][1], b))
-            else:
-                merged.append((a, b))
-        seed = K.SEED * 100 + int(c[2:])
-        out[c] = dict(
-            raw=float(np.percentile(lat, K.PCT)) * 1000.0,
-            raw_warm=float(np.percentile(run["end"] - run["start"], K.PCT)) * 1000.0,
-            drop=float(np.percentile(lat[~touched], K.PCT)) * 1000.0,
-            hdr=M.backfill_p99(lat, interval),
-            hdr_gc=M.backfill_p99(lat, interval, touched),
-            hdr_gc_pods=M.backfill_p99(lat, interval * len(pods), touched),
-            lw=float(np.percentile(np.repeat(lat, np.maximum(1, np.rint(lat / interval)).astype(int)), K.PCT)) * 1000.0,
-            golden=M.golden_p99(svc_t, Pw, t0, t1, seed, n=n_mc),
-            golden_alt=M.golden_p99(svc_t, Pw, t0, t1, seed + 7919, n=max(n_mc // 2, 1)),
-            golden_untouched=M.golden_p99(lat[~touched], Pw, t0, t1, seed + 31, n=n_mc),
-            golden_rawsvc=M.golden_p99(lat, Pw, t0, t1, seed + 57, n=max(n_mc // 2, 1)),
-            pooled=M.golden_p99(svc_t, [merged], t0, t1, seed + 73, n=max(n_mc // 2, 1)),
-            share=share * 100.0, longest=longest, n=int(len(st)), rate=rate, pods=len(pods), threads=threads,
-            touched=int(touched.sum()), runs=x["n_runs"])
+def covered(r):
+    return sorted((u for u in K.CODES if r[u] >= K.THRESHOLD), key=K.CODES.index)
+
+
+# ---------------------------------------------------------------------------------------------------------------
+def golden(D):
+    r, af, mi, rate = D.ratios()
+    return dict(ratio=r, af=af, miles=mi, rate=rate, covered=covered(r))
+
+
+FAMILY = {
+    "fcl": dict(grain="fcl"), "yr": dict(grain="yr"), "dow": dict(grain="dow"),
+    "two": dict(sample="two"), "nohr": dict(sample="nohr"), "undet": dict(sample="undet"),
+    "mc_private": dict(priv=("PV", "MC")), "one_at_fault": dict(num="one"), "hr_private": dict(num="hr_private"),
+    "avgday": dict(shares="avgday"), "periods": dict(grain="coarse"),
+}
+RUNGS = {
+    "pooled": dict(grain="pooled"), "road": dict(grain="road"), "hour": dict(grain="hour"),
+    "urban_rural": dict(grain="urb"), "parked_in_sample": dict(sample="parked"),
+}
+
+
+def family(D):
+    return {k: D.ratios(**v)[0] for k, v in FAMILY.items()}
+
+
+def rungs(D):
+    out = {k: D.ratios(**v)[0] for k, v in RUNGS.items()}
+    out["adjusted"] = mantel_haenszel(D)
+    out["culpability"] = culpability(D)
+    out["per_vehicle"] = per_vehicle(D)
     return out
 
 
-GOLDEN_FAMILY = ("golden", "golden_alt", "golden_untouched")
-
-
-def verdicts(R, key="golden"):
-    return [c for c in K.CODES if R[c][key] > K.SLA_MS]
-
-
-# ------------------------------------------------------------------------------------------------ Ask A
-def route_codes(target, old_names=True):
-    ep, _ = P.register(target)
-    rc = {v["route"]: c for c, v in ep.items()}
-    if old_names:
-        for new, (old, ts) in P.renames(target).items():
-            rc[old] = rc[new]
-    return rc
-
-
-def synthetic_per_hour(target, before=dt.date(2026, 1, 1)):
-    rc = route_codes(target, old_names=False)
-    out = {c: 0 for c in K.CODES}
-    for ck in P.synthetic(target):
-        if ck["created"] <= before:
-            for s in ck["steps"]:
-                out[rc[s]] += (3600 // ck["every"]) * len(ck["locations"])
-    return out
-
-
-def january_series(target, ep=None, mode="golden"):
-    """Each endpoint's requests by clock hour of January as the edge counted them on the route that served it:
-    mode golden, the old path before the rename and the new path from it; current, the current path only; merged,
-    both paths in every hour."""
-    if ep is None:
-        ep, _ = P.register(target)
-    E = P.edge(target)
-    ren = P.renames(target)
-    out = {}
-    for c in K.CODES:
-        route = ep[c]["route"]
-        cur = dict(E.get(route, {}))
-        if route in ren and mode != "current":
-            old, ts = ren[route]
-            if mode == "golden":
-                s = {h: v for h, v in E[old].items() if h < ts}
-                s.update({h: v for h, v in cur.items() if h >= ts})
-            else:
-                s = dict(cur)
-                for h, v in E[old].items():
-                    s[h] = s.get(h, 0) + v
-            cur = s
-        out[c] = cur
-    return out
-
-
-def busiest(series, minus=None):
-    """(requests, hour) of the busiest clock hour, after taking each hour's synthetic requests off."""
-    out = {}
-    for c, s in series.items():
-        k = 0 if minus is None else minus[c]
-        h = max(s, key=lambda t: (s[t] - k, -t))
-        out[c] = (s[h] - k, h)
-    return out
-
-
-def january_states(target, events_only=False):
-    """Each account's (active, plan) on 1 January 2026: its state on 1 November with every 2026 event undone, latest
-    first."""
-    emp = P.employers(target)
-    state = {e: (True, r["plan"]) for e, r in emp.items()}
-    ev = P.subscription_events(target)
-    for e in sorted(ev, key=lambda x: (x["effective_date"], x["event_id"]), reverse=True):
-        eid = e["employer_id"]
-        act, plan = state.get(eid, (False, None))
-        if e["event"] == "new_subscription":
-            state[eid] = (False, None)
-        elif e["event"] == "cancellation":
-            state[eid] = (True, e["plan_before"])
-        elif e["event"] == "plan_change":
-            state[eid] = (act, e["plan_before"])
-    return state
-
-
-def growth(target, ep=None):
-    if ep is None:
-        ep, _ = P.register(target)
-    emp = P.employers(target)
-    jan = january_states(target)
-    out = {}
-    for c in K.CODES:
-        pl = set(ep[c]["plans"])
-        num = sum(1 for r in emp.values() if r["plan"] in pl)
-        den = sum(1 for act, p in jan.values() if act and p in pl)
-        out[c] = (num, den)
-    return out
-
-
-def ask_a(target):
-    ep, _ = P.register(target)
-    syn = synthetic_per_hour(target)
-    peaks = busiest(january_series(target, ep), syn)
-    g = growth(target, ep)
-    out = {}
-    for c in K.CODES:
-        n, h = peaks[c]
-        num, den = g[c]
-        x = n * num / den
-        out[c] = dict(peak=n, hour=h, num=num, den=den, synthetic=syn[c], forecast=half_up(x), exact=x)
-    return out
-
-
-# ------------------------------------------------------------------------------------------------ Ask B
-def ask_b(target):
-    rc = route_codes(target)
-    inc = P.incidents(target)
-    leg = P.legacy_credits(target)
-    new = P.new_credits(target)
-
-    def code_in_window(key):
-        i = inc[key]
-        d = (i["start"] + EST).date()
-        return rc.get(i["comp"]) if K.WINDOW_FROM <= d <= K.WINDOW_TO else None
-
-    cents = {c: 0 for c in K.CODES}
-    issued = {(x["account"], x["incident"]) for x in leg if x["status"] == "issued"}
-    for x in leg:
-        c = code_in_window(x["incident"])
-        if c and x["status"] == "issued":
-            cents[c] += int(x["amount"])
-    carried = 0
-    for x in new:
-        if x["type"] == "credit" and (x["account"], x["incident"]) in issued:
-            carried += 1
+def mantel_haenszel(D):
+    """The textbook relative crash propensity, adjusted over the full strata: what the at-fault drivers' odds are under
+    the same road, day and hour."""
+    A, N = {}, {}
+    for c in D.mv_crashes():
+        mv = [u for u in c["units"] if u["type"] == "MV"]
+        faults = [u for u in mv if u["fault"]]
+        if len(faults) != 1 or c["group"] is None or c["hour"] is None:
             continue
-        c = code_in_window(x["incident"])
-        if c:
-            cents[c] += int(round(float(x["amount"]) * 100))
-    return {c: dict(cents=v, dollars=half_up(v / 100.0)) for c, v in cents.items()}, carried
-
-
-def golden_only(inputs, n=400_000, seed_off=0, svc_from="golden"):
-    """Each endpoint's rebuilt 99th percentile alone (for the fork and separation checks), and the share of arrivals
-    answered within 800 ms."""
+        k = (c["group"], c["dtype"], c["hour"])
+        for u in mv:
+            use = u["use"]
+            if u["fault"]:
+                A[(use, k)] = A.get((use, k), 0) + 1
+            else:
+                N[(use, k)] = N.get((use, k), 0) + 1
+    ks = {k for (_, k) in list(A) + list(N)}
     out = {}
-    for c in K.CODES:
-        x = inputs[c]
-        run, t0, t1, pods, Pw = x["run"], x["t0"], x["t1"], x["pods"], x["pauses"]
-        idx = {p: i for i, p in enumerate(pods)}
-        m = (run["start"] >= t0) & (run["start"] < t1)
-        st, en = run["start"][m], run["end"][m]
-        lat = en - st
-        pod_i = np.array([idx[p] for p in run["pod"][m]])
-        ov = M.overlap_rows(list(zip(pod_i, st, en)), [[(a, b, "") for a, b in w] for w in Pw])
-        svc_t = np.maximum(lat - ov, 0.0005)
-        r = np.random.default_rng(K.SEED * 100 + int(c[2:]) + seed_off)
-        t = r.uniform(t0, t1, n)
-        pod = r.integers(len(Pw), size=n)
-        s = r.choice(svc_t, n)
-        resp = np.empty(n)
-        for p, w in enumerate(Pw):
-            k = pod == p
-            a = np.array([q[0] for q in w])
-            b = np.array([q[1] for q in w])
-            resp[k] = M.finish_vec(t[k], s[k], a, b) - t[k]
-        out[c] = dict(p99=float(np.percentile(resp, K.PCT)) * 1000.0, within=float(np.mean(resp <= K.SLA_MS / 1000.0)))
+    for x in K.CODES:
+        num = den = 0.0
+        for k in ks:
+            a, n0, ap, np_ = A.get((x, k), 0), N.get((x, k), 0), A.get(("PV", k), 0), N.get(("PV", k), 0)
+            t = a + n0 + ap + np_
+            if t:
+                num += a * np_ / t
+                den += ap * n0 / t
+        out[x] = num / den
     return out
+
+
+def culpability(D):
+    af, naf = {}, {}
+    for c in D.mv_crashes():
+        for u in c["units"]:
+            if u["type"] != "MV":
+                continue
+            d = af if u["fault"] else naf
+            d[u["use"]] = d.get(u["use"], 0) + 1
+    share = {x: af.get(x, 0) / (af.get(x, 0) + naf.get(x, 0)) for x in K.CODES + ["PV"]}
+    return {x: share[x] / share["PV"] for x in K.CODES}
+
+
+def vehicle_years(target):
+    """Vehicles a year, 2021 to 2025: fleet returns (permit years from 1 July, each calendar year the mean of the two
+    permit years it spans), the platforms' quarterly active vehicles (mean of the four quarters), and the private
+    registrations of cars, SUVs, pickups and vans."""
+    import openpyxl
+    wb = openpyxl.load_workbook(P.path(target, "operators"), read_only=True)
+    lab = {v: k for k, v in K.LABEL.items()}
+    fy = {}
+    for i, r in enumerate(wb["Fleet returns"].iter_rows(values_only=True)):
+        if i and r[0]:
+            fy[(lab[r[2]], int(r[3][:4]))] = fy.get((lab[r[2]], int(r[3][:4])), 0) + int(r[4])
+    vy = {}
+    for (u, y0), v in fy.items():
+        for y in (y0, y0 + 1):
+            if y in K.YEARS:
+                vy[u] = vy.get(u, 0.0) + 0.5 * v
+    plat = {}
+    names = P.operator_names(target)
+    for r in P.rows(target, "platforms"):
+        u = names[r["PLATFORM"].lower()]
+        plat[u] = plat.get(u, 0.0) + int(r["ACTIVE_VEHICLES"]) / 4.0
+    vy.update(plat)
+    wb2 = openpyxl.load_workbook(P.path(target, "registrations"), read_only=True)
+    pv = 0
+    for r in wb2["Registrations"].iter_rows(values_only=True):
+        if r and r[0] in ("Passenger cars", "Sport utility vehicles", "Pickups", "Vans"):
+            pv += int(r[1])
+    vy["PV"] = pv
+    return vy
+
+
+def per_vehicle(D):
+    af = D.numerators()
+    vy = vehicle_years(D.target)
+    r = {x: af.get(x, 0) / vy[x] for x in vy}
+    return {x: r[x] / r["PV"] for x in K.CODES}
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# the asks
+def caused_by(c):
+    """The uses whose drivers the officer recorded at fault in this crash (any kind of crash)."""
+    return {u["use"] for u in c["units"] if u["type"] in ("MV", "PK") and u["fault"] and u["use"] in K.CODES}
+
+
+def final_persons(D):
+    """Each person once, at their latest record (a person listed again in the same seat of the same unit, or the same
+    non-motorist, carries the later report), and K for every death in the state's 30-day register."""
+    ps = P.persons(D.target)
+    by_rpt = {(c["agency"], c["rpt"]): cid for cid, c in D.cr.items()}
+    dead = set()
+    for r in P.fatalities(D.target):
+        ag = {v: k for k, v in K.AGENCIES.items()}[r["AGENCY"]]
+        cid = by_rpt[(ag, r["AGENCY_REPORT_NO"])]
+        dead.add((cid, int(r["VEHICLE_NO"]), P.PTYPE[r["PERSON_TYPE"]], int(r["AGE"]), r["SEX"]))
+    out = {}
+    for cid, lst in ps.items():
+        latest = {}
+        for p in lst:
+            k = (p["unit"], p["seat"]) if p["seat"] else (p["unit"], p["ptype"])
+            if k not in latest or p["pno"] > latest[k]["pno"]:
+                latest[k] = p
+        final = []
+        for p in latest.values():
+            sev = "K" if (cid, p["unit"], p["ptype"], p["age"], p["sex"]) in dead else p["sev"]
+            final.append(dict(p, final=sev))
+        out[cid] = final
+    return out, dead
+
+
+def ask_people(D):
+    """The people killed or seriously injured in the crashes each use's drivers caused: a person once, killed when the
+    register holds the death, seriously injured when the latest record is A."""
+    fp, dead = final_persons(D)
+    ksi = {u: 0 for u in K.CODES}
+    for cid, c in D.cr.items():
+        uses = caused_by(c)
+        if not uses:
+            continue
+        n = sum(1 for p in fp.get(cid, ()) if p["final"] in ("K", "A"))
+        for u in uses:
+            ksi[u] += n
+    return ksi
+
+
+def ask_cost(D):
+    fp, dead = final_persons(D)
+    cost = P.costs(D.target)
+    tot = {u: 0 for u in K.CODES}
+    for cid, c in D.cr.items():
+        uses = caused_by(c)
+        if not uses:
+            continue
+        sev = min((p["final"] for p in fp.get(cid, ())), key="KABCO".index, default="O")
+        for u in uses:
+            tot[u] += cost[sev]
+    return {u: half_up(v / 1e6, 1) for u, v in tot.items()}, tot
+
+
+if __name__ == "__main__":
+    import os
+    import sys
+    T = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                                           "target")
+    D = Data(T)
+    g = golden(D)
+    print("golden", {u: round(g["ratio"][u], 3) for u in K.CODES}, g["covered"])
+    for k, v in family(D).items():
+        print("family %-13s" % k, {u: round(v[u], 3) for u in K.CODES}, covered(v))
+    for k, v in rungs(D).items():
+        print("rung   %-16s" % k, {u: round(v[u], 3) for u in K.CODES}, covered(v))
+    print("killed or seriously injured", ask_people(D))
+    print("cost", ask_cost(D)[0])

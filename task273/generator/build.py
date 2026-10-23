@@ -10,6 +10,8 @@ for _v in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"):
     os.environ.setdefault(_v, "1")
 import argparse      # noqa: E402
 import calendar      # noqa: E402
+import csv           # noqa: E402
+import datetime as dt  # noqa: E402
 import hashlib       # noqa: E402
 import json          # noqa: E402
 import shutil        # noqa: E402
@@ -19,56 +21,88 @@ import warnings      # noqa: E402
 warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import asks as A           # noqa: E402
 import common as K         # noqa: E402
 import docs as DC          # noqa: E402
+import events as EV        # noqa: E402
+import fleet as FL         # noqa: E402
 import records as R        # noqa: E402
+import roads as RD         # noqa: E402
 import world as W          # noqa: E402
 
 TASK = os.path.dirname(HERE)
 MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
 
 CONTENTS = [
-    ("standard", "Platform Engineering: Public API Year-End Readiness Standard, 2026 edition (approved 8 September "
-                 "2026)."),
-    ("plan", "Performance Engineering: Year-End Peak Load Test Plan, November 2026, with the campaign log."),
-    ("register", "Platform Engineering: the public API's endpoint register, the services that run the endpoints, and "
-                 "the plans."),
-    ("jmeter", "Load test results, JMeter runs of 10 to 12 November 2026 (JTL)."),
-    ("k6", "Load test results, k6 runs of 16 to 19 November 2026 (http_req_duration)."),
-    ("gc", "Log platform export: the performance cluster's garbage-collection logs, each run and five minutes either "
-           "side, 10 to 19 November 2026."),
-    ("events", "Performance cluster: pod events and service start-up lines, namespace perf, November 2026."),
-    ("edge", "API edge: requests by route and clock hour (UTC), January 2026, production."),
-    ("synthetic", "Site Reliability: the uptime monitors run against the production edge's public API."),
-    ("changelog", "Developer portal: the public API's 2026 changelog."),
-    ("employers", "CRM: employer accounts with an active subscription on 1 November 2026."),
-    ("subs", "Billing: subscription events from 1 January to 31 October 2026."),
-    ("legacy", "Legacy billing: service credits issued from 1 January to 30 April 2026."),
-    ("credits", "Billing: credit notes created from 1 May to 19 November 2026."),
-    ("incidents", "Status page: incidents from December 2025 to November 2026."),
-    ("apm", "APM: trace sample from the performance cluster, 18 November 2026."),
-    ("slowq", "Performance database: slow query log (statements over 200 ms), 10 to 19 November 2026."),
+    ("rule", "Stonereach Valley Regional Transportation Commission: Commercial Fleet Safety Programme, coverage rule "
+             "(adopted 14 October 2026)."),
+    ("crashes", "State crash records system, regional extract for Stonereach County, crashes of 2021 to 2025: one row "
+                "a crash (extract of 30 September 2026)."),
+    ("units", "The same extract: one row a unit on each crash report (vehicles, parked vehicles, pedestrians, "
+              "pedalcyclists)."),
+    ("persons", "The same extract: one row a person, for crashes with an injury recorded."),
+    ("dictionary", "The extract's data dictionary, with the codes of both report forms."),
+    ("deaths", "State road fatality register: deaths within 30 days of a crash in Stonereach County, 2021 to 2025."),
+    ("inventory", "Linear referencing system: road inventory of Stonereach County (31 December 2025), with the legacy "
+                  "route numbers."),
+    ("tmr", "Department of Transportation: Travel Monitoring Report 2025, Stonereach Valley region."),
+    ("stations", "Department of Transportation: continuous count stations in the region, 2025."),
+    ("atr", "Department of Transportation: hourly volumes at the continuous count stations, 2025."),
+    ("costs", "Department of Transportation: crash unit costs for safety analysis, 2025."),
+    ("operators", "The Commission's licensed operators, with the names officers write on crash reports, and the fleet "
+                  "returns of the operators that file them."),
+    ("platforms", "Quarterly reports of the ride-hail and delivery platforms to the Commission, 2021 to 2025."),
+    ("registrations", "Department of Motor Vehicles: registrations in force in Stonereach County, 2021 to 2025."),
+    ("weather", "Daily weather at Kelderwick Regional Airport, 2021 to 2025."),
+    ("workzones", "Department of Transportation: work zone log, Stonereach County, 2021 to 2025."),
 ]
 
 
-def achieved(w):
-    """Each endpoint's throughput in its run of record's measurement (requests a second)."""
-    out = {}
-    for c in K.CODES:
-        rows = w["runs"][c]["rows"]
-        out[c] = sum(1 for x in rows if K.WARMUP_S <= x[2] < K.RUN_S) / K.MEASURE_S
-    return out
-
-
-def worlds(seed=K.SEED):
-    w = W.world(seed)
-    emp = A.employer_world(seed)
-    growth = A.growth_truth(emp)
-    cust, redir = A.edge_hourly(seed, achieved(w), growth)
-    inc, cr = A.incident_world(seed, emp)
-    legacy, new = A.billing(seed, cr)
-    return dict(w=w, emp=emp, growth=growth, cust=cust, redir=redir, inc=inc, credits=cr, legacy=legacy, new=new)
+def tmr_tables(segs, atr_head, atr_rows, sts):
+    vmt = {fu: {y: round(W.vmt(y, fu) / 1e6, 1) for y in K.YEARS} for fu in W.VMT_SHARE}
+    daily = {}
+    for fu in W.VMT_SHARE:
+        cl = sum(s["e"] - s["b"] for s in segs if (s["fc"], s["ur"]) == fu)
+        daily[fu] = (cl, W.vmt(2025, fu) / 365.0 / 1000.0)
+    gnum = {i + 1: g for i, g in enumerate(K.GROUPS)}
+    st_rows = []
+    grp = {}
+    for st in sts:
+        st_rows.append([st["id"], st["route"], "%.2f" % st["mp"], str(st["fc"]), "Urban" if st["ur"] == "U" else
+                        "Rural", str(K.GROUPS.index(st["group"]) + 1)])
+        grp[st["id"]] = st["group"]
+    month = {g: [0.0] * 12 for g in K.GROUPS}
+    mdays = {g: [0] * 12 for g in K.GROUPS}
+    by = {}
+    for r in atr_rows:
+        key = (r[0], r[1])
+        v = sum(int(x) for x in r[3:] if x != "")
+        by[key] = by.get(key, 0) + v
+    for (sid, day), v in by.items():
+        g = grp[sid]
+        m = int(day[5:7]) - 1
+        month[g][m] += v
+        mdays[g][m] += 1
+    monthly = {}
+    for g in K.GROUPS:
+        avg = [month[g][m] / mdays[g][m] for m in range(12)]
+        ann = sum(month[g]) / sum(mdays[g])
+        monthly[g] = [a / ann for a in avg]
+    share = {u: FL.use_miles(u, 2025) if u == "PV" else W.SHARE[u][2025] * W.VMT_TOTAL[2025] for u in
+             ["PV"] + list(W.SHARE)}
+    tot = sum(share.values())
+    classes = [("Motorcycles", share["MC"] / tot),
+               ("Passenger cars", 0.47 * (share["PV"] + share["RH"] + share["AD"] + share["TX"] + share["LM"]) / tot),
+               ("Light trucks (pickups, SUVs, vans)", (0.53 * (share["PV"] + share["RH"] + share["AD"] + share["TX"]
+                                                               + share["LM"]) + share["GV"] * 0.8 + share["EM"] * 0.7
+                                                       + share["OC"] * 0.2 + share["PT"] * 0.6 + share["AS"] * 0.55
+                                                       + share["PD"] * 0.8) / tot),
+               ("Buses", (share["TB"] + share["SB"] + share["PT"] * 0.4 + share["AS"] * 0.45) / tot),
+               ("Single-unit trucks", (share["OC"] * 0.5 + share["PD"] * 0.2 + share["GV"] * 0.2 + share["EM"] * 0.3)
+                / tot),
+               ("Combination trucks", share["OC"] * 0.3 / tot)]
+    s = sum(c[1] for c in classes)
+    classes = [(c, v / s) for c, v in classes]
+    return vmt, daily, st_rows, monthly, classes
 
 
 def build(out, seed=K.SEED, keep=False):
@@ -76,49 +110,53 @@ def build(out, seed=K.SEED, keep=False):
         shutil.rmtree(out)
     os.makedirs(out)
     p = lambda k: os.path.join(out, K.FILES[k])
-    X = worlds(seed)
-    w = X["w"]
+    w = EV.world(seed)
+    wr = R.Writer(w, seed)
     n = {}
-    head, rows = R.jmeter_rows(w)
-    R.write_csv(p("jmeter"), head, rows)
-    n["jmeter"] = len(rows)
-    head, rows = R.k6_rows(w)
-    R.write_csv(p("k6"), head, rows)
-    n["k6"] = len(rows)
-    lines, starts = R.gc_lines(w)
-    with open(p("gc"), "w", encoding="utf-8", newline="\n") as f:
-        f.write("\n".join(lines) + "\n")
-    n["gc"] = len(lines)
-    ev = R.pod_events(w, starts)
-    R.write_csv(p("events"), ev[0], ev[1:])
-    n["events"] = len(ev) - 1
-    n["edge"] = R.write_edge(p("edge"), A.edge_rows(seed, X["cust"], X["redir"]))
-    n["employers"] = R.write_employers(p("employers"), X["emp"])
-    n["subs"] = R.write_subscription_events(p("subs"), X["emp"])
-    n["legacy"] = R.write_legacy_credits(p("legacy"), X["legacy"])
-    n["credits"] = R.write_new_credits(p("credits"), X["new"])
-    n["incidents"] = len(X["inc"])
-    n["apm"] = R.write_apm(p("apm"), w)
-    n["slowq"] = R.write_slow_queries(p("slowq"), w)
-    DC.write_standard(p("standard"))
-    DC.write_plan(p("plan"), w)
-    DC.write_register(p("register"), seed)
-    n["register"] = len(K.CODES)
-    DC.write_incidents(p("incidents"), X["inc"])
-    DC.write_changelog(p("changelog"))
-    DC.write_synthetic(p("synthetic"))
+    for key, fn in (("crashes", wr.crash_rows), ("units", wr.unit_rows), ("persons", wr.person_rows),
+                    ("deaths", wr.fatality_rows), ("weather", wr.weather_rows), ("workzones", wr.workzone_rows)):
+        head, rows = fn()
+        R.write_csv(p(key), head, rows)
+        n[key] = len(rows)
+    segs = w["segs"]
+    sts = RD.stations(segs, seed)
+    head, rows = R.station_rows(sts, segs)
+    R.write_csv(p("stations"), head, rows)
+    n["stations"] = len(rows)
+    ahead, arows = R.atr_rows(segs, sts, seed)
+    R.write_csv(p("atr"), ahead, arows)
+    n["atr"] = len(arows)
+    legacy = sorted({(RD.old_route_id(s["route"]), s["route"]) for s in segs})
+    DC.write_inventory(p("inventory"), segs, legacy)
+    n["inventory"] = len(segs)
+    vmt, daily, st_rows, monthly, classes = tmr_tables(segs, ahead, arows, sts)
+    DC.write_tmr(p("tmr"), vmt, daily, st_rows, monthly, classes)
+    DC.write_costs(p("costs"))
+    DC.write_rule(p("rule"))
+    DC.write_dictionary(p("dictionary"))
+    ops, _ = FL.operators(seed)
+    fr = FL.fleet_returns(seed)
+    DC.write_operators(p("operators"), ops, fr)
+    n["operators"] = len(ops)
+    ph, prow = FL.platform_quarters(seed)
+    R.write_csv(p("platforms"), ph, prow)
+    n["platforms"] = len(prow)
+    DC.write_registrations(p("registrations"), FL.registrations(seed))
     DC.write_contents(p("contents"), [(K.FILES[k], d) for k, d in CONTENTS])
-    return dict(X=X if keep else None, counts=n)
+    return dict(w=w if keep else None, counts=n)
 
 
-PDF_DATES = {"standard": ("D:20260904110200-04'00'", "D:20260908163000-04'00'")}
+PDF_DATES = {"rule": ("D:20261014093000-07'00'", "D:20261014093000-07'00'"),
+             "dictionary": ("D:20261002141500-07'00'", "D:20261002141500-07'00'"),
+             "tmr": ("D:20260818101000-07'00'", "D:20260818101000-07'00'"),
+             "costs": ("D:20250306113000-08'00'", "D:20250306113000-08'00'")}
 OOXML = {
-    "plan": ("Performance Engineering", "Performance Engineering", "2026-10-14T13:20:00Z", "2026-11-19T21:45:00Z",
-             "Year-End Peak Load Test Plan, November 2026", False),
-    "register": ("Platform Engineering", "Platform Engineering", "2024-03-11T14:02:00Z", "2026-11-09T18:40:00Z",
-                 "Public API endpoint register", True),
-    "incidents": ("Site Reliability", "Site Reliability", "2026-11-20T15:12:00Z", "2026-11-20T15:12:00Z",
-                  "Status page incidents", True),
+    "inventory": ("Transportation Data Office", "Transportation Data Office", "2023-02-06T17:20:00Z",
+                  "2026-01-12T22:41:00Z", "Road inventory, Stonereach County", True),
+    "operators": ("Licensing", "Amanda Barrera", "2019-05-14T16:02:00Z", "2026-10-28T23:15:00Z",
+                  "Operator register", True),
+    "registrations": ("DMV Research and Statistics", "DMV Research and Statistics", "2026-02-03T18:30:00Z",
+                      "2026-02-03T18:30:00Z", "Registrations in force", True),
 }
 
 
@@ -137,26 +175,30 @@ def finish(out):
 def finish_golden(golden):
     import postprocess as PP
     PP.COMPANY = K.COMPANY
-    PP.normalize_ooxml(os.path.join(golden, K.DELIVERABLES[0]), K.REQUESTER, K.REQUESTER, "2026-11-23T14:06:00Z",
-                       "2026-11-25T20:31:00Z", title="Year-end readiness 2027", excel=True)
+    PP.normalize_ooxml(os.path.join(golden, K.DELIVERABLES[0]), K.REQUESTER, K.REQUESTER, "2026-11-18T16:42:00Z",
+                       "2026-11-24T22:05:00Z", title="Commercial Fleet Safety Programme: coverage 2027", excel=True)
+    PP.normalize_ooxml(os.path.join(golden, K.DELIVERABLES[1]), K.REQUESTER, K.REQUESTER, "2026-11-20T15:10:00Z",
+                       "2026-11-25T19:48:00Z", title="Commercial Fleet Safety Programme: coverage 2027", excel=False)
     for f in os.listdir(golden):
         os.utime(os.path.join(golden, f), (MTIME, MTIME))
 
 
 def metadata(fig, counts):
-    src = ("constructed by the task generator (seeded); %s, its services, pods, customers, incidents, credits and "
-           "people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public "
-           "documentation" % K.COMPANY)
+    src = ("constructed by the task generator (seeded); %s, its cities, agencies, operators, platforms, crashes and "
+           "people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the "
+           "traffic counts the Federal Highway Administration's Traffic Monitoring Guide" % K.REGION)
     return {
         "task": "task273",
-        "title": "%s: the public API endpoints to fix before the 2026 code freeze" % K.COMPANY,
+        "title": "%s: the commercial vehicle uses the Commercial Fleet Safety Programme covers from 1 July 2027"
+                 % K.COMMISSION,
         "domain": "General Statistics & Data Science (missing data, censoring and measurement error)",
         "objective": "Descriptive & Distribution Analysis",
-        "distractors": [K.FILES[k] for k in K.DISTRACTORS],
+        "distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
+        "deliverables": list(K.DELIVERABLES),
         "provenance": {name: {"source": src, "date": "2026-10-22", "licence": "CC0 1.0 (constructed for this task)"}
                        for name in sorted(K.FILES.values())},
         "rows": {K.FILES[k]: v for k, v in sorted(counts.items())},
-        "answer": "%d endpoints to fix: %s" % (len(fig["call"]["fix"]), ", ".join(fig["call"]["fix"])),
+        "answer": "%d uses covered: %s" % (fig["call"]["count"], ", ".join(fig["call"]["covered"])),
     }
 
 
@@ -164,6 +206,8 @@ def main_build(target, golden, seed=K.SEED):
     import deliver as DV
     b = build(target, seed, keep=True)
     finish(target)
+    if os.path.exists(golden):
+        shutil.rmtree(golden)
     fig, res = DV.write(target, golden)
     finish_golden(golden)
     DV.write_figures(os.path.join(HERE, "figures.json"), fig)

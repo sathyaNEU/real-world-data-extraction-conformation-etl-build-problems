@@ -6,105 +6,107 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
+NAME = {"Taxi": "Taxicabs", "Ride-hail": "Ride-hail", "Limousine": "Limousines", "Airport shuttle": "Airport shuttles",
+        "Paratransit": "Paratransit", "Parcel delivery": "Parcel delivery", "App delivery": "App-based delivery"}
+ORDER = ["Taxi", "Ride-hail", "Limousine", "Airport shuttle", "Paratransit", "Parcel delivery", "App delivery"]
+WORD = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven"}
 
 
-def money(x):
-    return "$" + format(x, ",")
+def joined(xs):
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+
+
+def low(x):
+    return x.lower()
+
+
+def names(xs):
+    return joined([NAME[x].lower() for x in xs])
 
 
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    fix = f["call"]["fix"]
-    routes = dict(zip(fix, f["call"]["fix_routes"]))
-    rec = f["recorded_ms"]
-    raw = f["routes"]["raw"]
-    hdr_extra = [c for c in f["routes"]["hdr"] if c not in fix]
-    codes = sorted(f["ask_a"])
-    lo, hi = f["fix_share_range_pct"]
-    fix_list = ", ".join("%s (%s)" % (c, routes[c]) for c in fix[:-1]) + " and %s (%s)" % (fix[-1], routes[fix[-1]])
-    out = []
-    out.append("## Tags\n")
-    out.append("**Domain:** General Statistics & Data Science (missing data, censoring and measurement error).")
-    out.append("**Analytical objective:** Descriptive & Distribution Analysis.\n")
-    out.append("## 1. Final Recommendation\n")
-    words = {3: "three", 5: "five", 10: "ten"}
-    out.append("**The platform teams should fix %s of the %d public API endpoints before the 4 December code freeze: %s.**"
-               % (words[len(fix)], f["filed"]["endpoints"], fix_list))
-    out.append("")
-    out.append("At the forecast January peak each of the %s has a 99th-percentile response time above 800 ms for the "
-               "requests customers send, the nearest, %s, at about %.1f seconds, once every pod's garbage-collection "
-               "pauses in its run of record are met by requests that keep arriving while a pod is paused. Not the "
-               "%s the load test's recorded percentiles name (%s, at %s ms): each test client waited for its response "
-               "before sending again, so a paused pod's clients sent nothing and the record holds one slow request per "
-               "blocked client. Not the %s HdrHistogram's back-fill names: it credits each blocked client with every "
-               "request it would have sent while its pod was paused, as if that pod were the only one, and so also "
-               "names %s, whose full collections hold one pod in %s, and %s, whose slowest requests are slow on "
-               "their own.\n"
-               % (words[len(fix)], f["nearest_line"], f["nearest_s"], words[len(raw)], ", ".join(raw),
-                  ", ".join("{:,}".format(rec[c]) for c in raw), words[len(f["routes"]["hdr"])], hdr_extra[0],
-                  words[f["pods"][hdr_extra[0]]], ", ".join(hdr_extra[1:-1]) + " and " + hdr_extra[-1]))
-    out.append("## 2. Critical Components\n")
-    out.append("1. The runs of record are the last complete run of each of the **%d** endpoints, minutes 3 to 13; the "
-               "first runs of %s stopped early and are set aside." % (f["runs"]["endpoints"],
-                                                                     ", ".join(f["runs"]["stopped_early"])))
-    out.append("2. Each pod's stop-the-world pauses come from the GC log export, each line ending its pause; the "
-               "freeze-list endpoints' pods are paused, on average, for **%.1f to %.1f percent** of each measurement."
-               % (lo, hi))
-    out.append("3. Over the requests customers send, **%s endpoints** exceed 800 ms at the 99th percentile: %s; "
-               "recorded, %s sits at **%s ms** and %s at **%s ms**." % (
-                   words[len(fix)], ", ".join(fix), [c for c in fix if c not in raw][0],
-                   "{:,}".format(rec[[c for c in fix if c not in raw][0]]), [c for c in fix if c not in raw][1],
-                   "{:,}".format(rec[[c for c in fix if c not in raw][1]])))
-    out.append("")
-    out.append("## 3. Step-by-Step Solution\n")
-    out.append("1. Conformed loadtest_jmeter_results_2026-11-10_to_12.jtl (timeStamp is the start, plus elapsed) and "
-               "loadtest_k6_results_2026-11-16_to_19.csv (timestamp is the completion, less metric_value) into one "
-               "request log by endpoint and pod, and kept each endpoint's last complete run, minutes 3 to 13 "
-               "(standard 3.2): %d runs." % f["runs"]["endpoints"])
-    out.append("2. Built every pod's pauses from perf_gc_log_export_2026-11-10_to_19.log: Pause lines only, each "
-               "ending at its stamp, wall-clock stamps at UTC-05:00, uptime stamps placed from the JVM start that "
-               "perf_cluster_pod_events_2026-11.csv gives, after each pod's restart.")
-    out.append("3. Took each recorded request's own service time: its response time less the pause time on its pod "
-               "while it was in flight.")
-    out.append("4. Rebuilt the response times customers would see (standard 1.2, 2.1, 2.2): %s arrivals spread evenly "
-               "over each measurement window, each to one of the service's pods with equal chance, each taking a "
-               "recorded service time and held by its pod's pauses; the 99th percentile exceeds 800 ms for %s."
-               % ("{:,}".format(f["n_mc"]), ", ".join(fix)))
-    out.append("5. Compared the recorded 99th percentiles: over 800 ms only for %s." % ", ".join(raw))
-    out.append("6. Forecast peak-hour volume (standard 4.1, 4.2): each endpoint's busiest clock hour of January 2026 in "
-               "edge_requests_hourly_2026-01.csv on the route that served it (the old path up to the rename in "
-               "developer_portal_changelog_2026.html, the new path from it), less the monitors in edge_uptime_monitors.yaml "
-               "created before January, times the employers on its plans on 1 November in "
-               "crm_employer_accounts_2026-11-01.csv over those on 1 January, found by undoing every event in "
-               "billing_subscription_events_2026.csv, latest first.")
-    out.append("7. Service credits (standard 5.2): legacy_billing_credits_2026-01_to_04.csv (cents, void credits out) "
-               "and billing_credits_2026-05-01_to_11-19.json (credits and reversals) for incidents in "
-               "status_page_incidents_2025-12_to_2026-11.xlsx that began from 1 January to 31 October 2026 (Eastern), "
-               "by the route each hit, each legacy credit carried forward into the new system counted once at the "
-               "amount issued.")
-    out.append("8. %s endpoints go on the freeze list: %s." % (words[len(fix)].capitalize(),
-                                                                  ", ".join(fix[:-1]) + " and " + fix[-1]))
-    out.append("")
-    out.append("## 4. Deliverable Answers\n")
-    out.append("### yearend_readiness_2027.xlsx\n")
-    out.append("1. Verdicts, every endpoint:")
-    for c in codes:
-        out.append("   - %s: %s" % (c, "fix before the freeze" if c in fix else "meets the standard"))
-    out.append("2. Forecast peak-hour volume for January 2027, whole requests an hour:")
-    for c in codes:
-        out.append("   - %s: %s" % (c, "{:,}".format(f["ask_a"][c])))
-    out.append("3. Service credits for breaches from 1 January to 31 October 2026, net of reversals, to the nearest "
-               "dollar:")
-    for c in codes:
-        out.append("   - %s: %s" % (c, money(f["ask_b"][c])))
-    out.append("")
-    out.append("### yearend_readiness_2027.png\n")
-    out.append("1. Bar chart of every endpoint's 99th-percentile response time at the forecast peak against the 800 ms "
-               "line, the %d freeze-list endpoints highlighted and the recorded percentile marked on each bar." % len(fix))
-    text = "\n".join(out) + "\n"
-    assert "—" not in text
-    open(os.path.join(TASK, "submission.md"), "w").write(text)
+    cov = [NAME[u] for u in f["call"]["covered"]]
+    notc = [NAME[u] for u in f["call"]["not_covered"]]
+    u = f["uses"]
+    above_name, above = f["nearest"]["above"]
+    below_names, below = f["nearest"]["under"]
+    hi = max(f["call"]["covered"], key=lambda x: u[x]["ratio"])
+    s = f["sample"]
+    a = f["asks"]
+    out = ["## Tags", "",
+           "**Domain:** General Statistics & Data Science (missing data, censoring and measurement error).",
+           "**Analytical objective:** Descriptive & Distribution Analysis.", "",
+           "## 1. Final Recommendation", "",
+           "**The programme should cover %s of the seven uses: %s.**" % (WORD[len(cov)], names(f["call"]["covered"])),
+           "Their drivers caused crashes at %.1f to %.1f times private drivers' rate per mile, %s nearest the line at "
+           "%.1f, while %s all stay under %.1f. Not airport shuttles and paratransit, which the struck vehicles' share of the "
+           "whole five years puts over the line: their miles run on freeways and in daylight, where crashes per mile "
+           "are rare, so too few of them are struck for the miles they drive. Not a count of vehicles registered or "
+           "permitted, which covers six uses because a commercial vehicle drives several times a private car's miles. "
+           "Not road class or hour alone, each of which leaves ride-hail or both delivery uses under the line."
+           % (above, u[hi]["ratio"], low(NAME[above_name]), above, names(below_names), below),
+           "",
+           "## 2. Critical Components", "",
+           "1. Crashes caused between moving vehicles, 2021 to 2025: %s; private drivers **%s**."
+           % ("; ".join("%s **%s**" % (low(NAME[x]), format(u[x]["crashes_caused"], ",")) for x in ORDER),
+              format(f["private"]["crashes_caused"], ",")),
+           "2. The Department's miles for the five years: **%s** million on the region's roads, in **%d** road class, "
+           "day type and hour strata." % (format(int(f["region_miles_millions"]), ","), s["strata"]),
+           "3. Each use's miles come from the **%s** vehicles that at-fault drivers struck in crashes with one driver "
+           "at fault, each stratum's miles shared in proportion to them." % format(s["struck_vehicles"], ","),
+           "4. %s, the nearest use above the line, at **%.1f** times private drivers' rate; %s all under "
+           "**%.1f**." % (NAME[above_name], above, names(below_names), below),
+           "",
+           "## 3. Step-by-Step Solution", "",
+           "1. From crash_extract_2021_2025_crashes.csv and crash_extract_2021_2025_units.csv, kept the crashes with "
+           "two or more vehicles in transport (the coverage rule's crashes): %s crashes." % format(s["crashes_between_moving"], ","),
+           "2. Took each crash's at-fault drivers from the 2023 form's AT_FAULT_UNIT and the 2016 form's contributing "
+           "circumstance, gave each 2016 vehicle for hire or delivery the use of the operator named on the report "
+           "(commission_operator_register_2026.xlsx), and left out drivers who fled unidentified, as the rule says: private "
+           "drivers caused %s crashes." % format(f["private"]["crashes_caused"], ","),
+           "3. Placed each crash in its road class (2016 crashes by legacy route and milepost through "
+           "lrs_road_inventory_2025.xlsx), day type and Pacific hour (State Patrol times converted from UTC): %d strata."
+           % s["strata"],
+           "4. Gave each stratum the Department's miles: its road class's 2021 to 2025 VMT "
+           "(travel_monitoring_report_2025.pdf, Table 1) times the class's share of its count stations' 2025 traffic in "
+           "that day type and hour (ccs_hourly_volumes_2025.csv): %s million miles in all."
+           % format(int(f["region_miles_millions"]), ","),
+           "5. Shared each stratum's miles among the uses in proportion to the vehicles struck there by the one "
+           "at-fault driver of a crash: %s vehicles struck." % format(s["struck_vehicles"], ","),
+           "6. Divided each use's crashes caused by its miles and set the rate against private drivers': %s at "
+           "%.1f, %.1f, %.1f and %.1f times; %s under %.1f."
+           % (names(["Taxi", "Ride-hail", "Parcel delivery", "App delivery"]), u["Taxi"]["ratio"],
+              u["Ride-hail"]["ratio"], u["Parcel delivery"]["ratio"], u["App delivery"]["ratio"], names(below_names),
+              below),
+           "7. For the asks, read crash_extract_2021_2025_persons_injury_crashes.csv one person once (a person listed "
+           "again in the same seat of the same unit taken at the later record), with deaths from "
+           "road_fatality_register_2021_2025.csv, over every crash of any kind a use's driver caused, and costed each "
+           "crash once at its most severe final injury (dot_crash_unit_costs_2025.pdf): ride-hail %s people and USD "
+           "%s million." % (format(a["ksi"]["Ride-hail"], ","), format(a["cost_millions"]["Ride-hail"], ",.1f")),
+           "8. Recommended covering %s." % names(f["call"]["covered"]),
+           "",
+           "## 4. Deliverable Answers", "",
+           "### fleet_safety_programme_2027.xlsx", "",
+           "1. The coverage test, every use:"]
+    for x in ORDER:
+        out.append("   - %s: %s" % (NAME[x], "covered" if u[x]["covered"] else "not covered"))
+    out.append("2. People killed or seriously injured in all the crashes each use's drivers caused, 2021 to 2025 (whole "
+               "people):")
+    for x in ORDER:
+        out.append("   - %s: %s" % (NAME[x], format(a["ksi"][x], ",")))
+    out.append("3. Cost of those crashes at the Department's crash unit costs (millions of dollars, one decimal):")
+    for x in ORDER:
+        out.append("   - %s: %s" % (NAME[x], format(a["cost_millions"][x], ",.1f")))
+    out += ["", "### fleet_safety_programme_2027.pptx", "",
+            "1. One chart of each use's rate per mile of causing crashes against private drivers' rate with the line "
+            "at 1.5, the %s covered uses above it and highlighted (slide 2)." % WORD[len(cov)]]
+    txt = "\n".join(out) + "\n"
+    assert "—" not in txt
+    with open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8") as fh:
+        fh.write(txt)
+    return txt
 
 
 if __name__ == "__main__":
-    main()
+    print(main())

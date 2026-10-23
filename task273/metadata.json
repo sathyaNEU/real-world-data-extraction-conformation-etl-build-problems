@@ -1,118 +1,117 @@
 {
- "answer": "5 endpoints to fix: EP01, EP02, EP05, EP16, EP22",
- "distractors": [
-  "apm_traces_perf_2026-11-18.json",
-  "payroll_db_slow_queries_2026-11.csv"
+ "answer": "4 uses covered: Taxi, Ride-hail, Parcel delivery, App delivery",
+ "deliverables": [
+  "fleet_safety_programme_2027.xlsx",
+  "fleet_safety_programme_2027.pptx"
+ ],
+ "distractor_files": [
+  "target/noaa_daily_weather_kelderwick_2021_2025.csv",
+  "target/work_zone_log_2021_2025.csv",
+  "target/dmv_registrations_stonereach_2021_2025.xlsx",
+  "target/platform_vehicle_reports_2025.csv"
  ],
  "domain": "General Statistics & Data Science (missing data, censoring and measurement error)",
  "objective": "Descriptive & Distribution Analysis",
  "provenance": {
-  "apm_traces_perf_2026-11-18.json": {
+  "README_pack_contents.txt": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "billing_credits_2026-05-01_to_11-19.json": {
+  "ccs_hourly_volumes_2025.csv": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "billing_subscription_events_2026.csv": {
+  "ccs_stations_2025.csv": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "contents.txt": {
+  "cfsp_coverage_rule_2026.pdf": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "crm_employer_accounts_2026-11-01.csv": {
+  "commission_operator_register_2026.xlsx": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "developer_portal_changelog_2026.html": {
+  "crash_extract_2021_2025_crashes.csv": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "edge_requests_hourly_2026-01.csv": {
+  "crash_extract_2021_2025_persons_injury_crashes.csv": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "edge_uptime_monitors.yaml": {
+  "crash_extract_2021_2025_units.csv": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "legacy_billing_credits_2026-01_to_04.csv": {
+  "crash_extract_data_dictionary.pdf": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "loadtest_jmeter_results_2026-11-10_to_12.jtl": {
+  "dmv_registrations_stonereach_2021_2025.xlsx": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "loadtest_k6_results_2026-11-16_to_19.csv": {
+  "dot_crash_unit_costs_2025.pdf": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "payroll_db_slow_queries_2026-11.csv": {
+  "lrs_road_inventory_2025.xlsx": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "perf_cluster_pod_events_2026-11.csv": {
+  "noaa_daily_weather_kelderwick_2021_2025.csv": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "perf_gc_log_export_2026-11-10_to_19.log": {
+  "platform_vehicle_reports_2025.csv": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "public_api_endpoint_register.xlsx": {
+  "road_fatality_register_2021_2025.csv": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "status_page_incidents_2025-12_to_2026-11.xlsx": {
+  "travel_monitoring_report_2025.pdf": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   },
-  "yearend_peak_loadtest_plan_2026.docx": {
+  "work_zone_log_2021_2025.csv": {
    "date": "2026-10-22",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
-  },
-  "yearend_readiness_standard_2026.pdf": {
-   "date": "2026-10-22",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Mirrendale Payroll, its services, pods, customers, incidents, credits and people are fictional; JMeter, k6, JVM unified logging and Kubernetes event formats follow public documentation"
+   "source": "constructed by the task generator (seeded); Stonereach Valley, its cities, agencies, operators, platforms, crashes and people are fictional; the crash report fields follow the Model Minimum Uniform Crash Criteria and the traffic counts the Federal Highway Administration's Traffic Monitoring Guide"
   }
  },
  "rows": {
-  "apm_traces_perf_2026-11-18.json": 236,
-  "billing_credits_2026-05-01_to_11-19.json": 472,
-  "billing_subscription_events_2026.csv": 4341,
-  "crm_employer_accounts_2026-11-01.csv": 5424,
-  "edge_requests_hourly_2026-01.csv": 21050,
-  "legacy_billing_credits_2026-01_to_04.csv": 377,
-  "loadtest_jmeter_results_2026-11-10_to_12.jtl": 71962,
-  "loadtest_k6_results_2026-11-16_to_19.csv": 119387,
-  "payroll_db_slow_queries_2026-11.csv": 633,
-  "perf_cluster_pod_events_2026-11.csv": 230,
-  "perf_gc_log_export_2026-11-10_to_19.log": 29714,
-  "public_api_endpoint_register.xlsx": 24,
-  "status_page_incidents_2025-12_to_2026-11.xlsx": 133
+  "ccs_hourly_volumes_2025.csv": 17148,
+  "ccs_stations_2025.csv": 24,
+  "commission_operator_register_2026.xlsx": 34,
+  "crash_extract_2021_2025_crashes.csv": 176063,
+  "crash_extract_2021_2025_persons_injury_crashes.csv": 175896,
+  "crash_extract_2021_2025_units.csv": 339100,
+  "lrs_road_inventory_2025.xlsx": 6471,
+  "noaa_daily_weather_kelderwick_2021_2025.csv": 1826,
+  "platform_vehicle_reports_2025.csv": 100,
+  "road_fatality_register_2021_2025.csv": 2038,
+  "work_zone_log_2021_2025.csv": 340
  },
  "task": "task273",
- "title": "Mirrendale Payroll: the public API endpoints to fix before the 2026 code freeze"
+ "title": "Stonereach Valley Regional Transportation Commission: the commercial vehicle uses the Commercial Fleet Safety Programme covers from 1 July 2027"
 }

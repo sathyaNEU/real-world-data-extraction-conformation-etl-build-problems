@@ -1,59 +1,52 @@
-# determinism-check report, task273, 2026-10-22
+# determinism-check report, task273, 2026-10-22 (pass 1)
 
 ## Verdict
-DETERMINISTIC
-**Disposition:** APPROVE on determinism. Stump power is a separate matter (see Stump power): isolated reader r273b landed the main call and all 48 ask figures, so architecture 1 is spent at Gate F whatever this verdict says.
-**Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no (borderline, route to live testing), sole_data_defect: no
+NOT_DETERMINISTIC (asks 2 and 3 only; the main recommendation and ask 1 are forced)
+**Disposition:** FIX_NOW
+**Stumping type:** mechanism: method_or_model_selection (stratified induced exposure against a VMT denominator), stumping_family: method_selection, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-The standard (1.2, 2.1, 2.2) files the estimand as the 99th percentile over "the requests customers send", with every pod pause counted. The judge thread rebuilt it from the raw logs and got exactly five endpoints above 800 ms (EP01, EP02, EP05, EP16, EP22), each by 120 ms or more, with every other endpoint at 675 ms or below. The result held across round-robin pods, pod-specific service pools, Poisson arrivals, window by start, end or both, a 2 s run-start shift and another seed. All 24 volumes and all 24 credit figures reproduced. The judge thread was one isolated sonnet thread that saw only a fresh unzip and the inlined blocks (spawned by the main session because this runtime had no Agent tool).
+One isolated sonnet thread (fresh unzip of the target.zip with md5 4c8e07aac903ee4ceade58cf0fc79c5f, inlined blocks only) reproduced every golden figure, but the prompt said "all the crashes its drivers caused" while rule 4.1 defines "Crash" as two or more motor vehicles in transport and says single-vehicle events "are not counted". Read literally with the defined term, asks 2 and 3 give different figures from the golden, which counts crashes of any kind (competing_defensible_answer / prompt_ambiguity, Gate C). A softer issue: persons listed twice in the same unit (non-motorists with a blank seat) had to be collapsed, and register deaths matched one-to-one to persons, for the golden to reproduce. The dictionary never said persons are repeated.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Recorded p99 EP01 / EP05 | 574 / 740 ms | 573.7 / 740.4 | yes |
-| Recorded p99 EP02 / EP16 / EP22 | 874 / 963 / 1,084 ms | 874.3 / 962.8 / 1083.9 | yes |
-| Rebuilt p99, freeze list | all five over 800 ms | EP01 1065, EP02 976, EP05 920, EP16 1125, EP22 1238 | yes |
-| Rebuilt p99, nearest others | below 800 ms | EP08 675, EP20 602, EP09 587, EP06 448 | yes |
-| Runs of record | last complete run, minutes 3 to 13; EP05, EP13, EP20 first runs set aside | stops at 5.7, 1.6, 4.2 min confirmed | yes |
-| GC pauses | Pause lines only, two stamp kinds | 29,714 lines; ingest minus pause end 0.15 to 2.5 s for both kinds | yes |
-| 24 volumes | e.g. EP01 22,706; EP05 30,284; EP16 31,925; EP22 35,149 | exact, to the unit | yes |
-| 24 credits | e.g. EP01 6,989; EP22 23,872 | exact, to the dollar | yes |
+| Crashes with 2+ vehicles in transport | 124,753 | 124,753 | yes |
+| Crashes caused: taxi / ride-hail / limo / shuttle / paratransit / parcel / app / private | 1,564 / 6,762 / 558 / 648 / 865 / 3,317 / 3,282 / 91,211 | same | yes |
+| Strata; miles | 288; 60,420 M | 288; 60,420 M | yes |
+| Struck vehicles, single at-fault crashes | 134,224 | 134,224 | yes |
+| Ratios to private | 1.9 / 2.1 / 1.7 / 2.0 covered; 1.2 uncovered | 1.92 / 2.08 / 1.74 / 2.00; 1.21 / 1.22 / 1.22 | yes |
+| Ask 2 KSI (74/402/45/63/55/109/136) | as filed | same, only with the extra dedupe above | yes, conditionally |
+| Ask 3 cost USD M (505.9/1,979.6/242.4/299.5/279.5/641.9/699.9) | as filed | same, same condition | yes, conditionally |
 
 ## Competing answers that survived
-None survive. Rejected by the shipped text:
-- Recorded percentiles (3 endpoints): ruled out by standard 2.1 and 1.2 and by the plan's closed-loop statement.
-- HdrHistogram back-fill (10 endpoints, 9 to 10 with other intervals): ruled out by the plan's statement that the edge rotates pods; it also varies with the interval chosen.
-- Not subtracting the in-flight pause (EP06 reads 1030 ms): not licensed, since the recorded time already includes the pause.
-- Minor literal forks, closed by text: 5xx not subtracted from volumes (standard 4.1, "as the edge counted them", moves volumes 2 to 35); credits at the legacy issued amount (5.2, "issued"); no incident sits on the 1 Jan or 1 Nov Eastern boundary; no rounding ties.
+- Fork 1 (asks 2 and 3): crashes restricted to rule 4.1. KSI 52/274/30/50/41/63/75; cost 398.2/1,340.2/157.4/226.9/218.7/448.4/443.3. Every figure differs. Closing sentence needed in the prompt.
+- Dedupe fork (asks 2 and 3): collapsing duplicates by seat only gives ride-hail 403, parcel 110, app 137 and costs 700.8/642.0/1,981.3. Unstated in the dictionary.
+- Fork 2 (miles estimator, main call): fleet or registration counts put all seven uses above 1.5; class-only induced exposure puts ride-hail at 1.38 and paratransit at 1.42; class x hour gives the golden. The thread treated the main call as forced by the data for an expert, but the estimator is not filed.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 18 (17 data and documents plus contents.txt) | yes |
-| Formats | 3 or more | pdf, docx, xlsx, jtl, csv, log, json, yaml, html, txt | yes |
-| Large file | 25,000 rows or more | k6 csv 119,388 lines; JTL 71,963 | yes |
-| Distractors | 2 or more in metadata.json, none named in a file name | apm_traces_perf_2026-11-18.json, payroll_db_slow_queries_2026-11.csv; neither name labels one | yes |
-| Distractor behaviour | unused by the solution, relevant enough to weigh | unused by the golden path; judge flags them as relevant but unused | yes |
-| Deliverables | 1 to 3, all in the golden | 2 (xlsx, png), both present in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | 24 verdicts, 24 volumes (whole requests an hour), 24 credits (nearest dollar), chart; 48 ask figures plus verdicts | yes |
-| Prompt shape and rubric | shape identifiable, 25 or more criteria | cuts of a distribution (shape 14); 24 endpoints times three fields plus the call and chart exceeds 25 | yes |
-| LLM-generated tells | none | judge found none; build tell only (docx zip dates of 1980), FIX_NOW at most | yes, one minor note |
+| Files | 10+ | 16 plus README | yes |
+| Formats | 3+ | csv, xlsx, pdf | yes |
+| Large file | 25,000+ rows | crashes 176,063 | yes |
+| Distractors | 2+ in metadata.json, none in a file name | weather and work_zone_log named; thread also saw DMV registrations, platform reports and fleet returns carry a wrong basis | yes (see finding 3) |
+| Deliverables | 1 to 3, all in golden | xlsx and pptx, both in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | 7 uses x 3 asks, units and rounding stated | yes |
+| Rubric 25+ criteria, shape identifiable | 25+ | not verifiable from the folder (no rubric shipped); the 7 x 3 figures plus recommendation point to 25+ | unverified |
+| Reads as real, not LLM | yes | no exclusion-level finding from the thread; provenance recorded as constructed, CC0 | yes |
 
 ## Gate G reconciliation
-Judge: mechanism method_or_model_selection, family analytical_non_defect, surface_read_dependency no (borderline), sole_data_defect no. Design note and card: Gate G `method_or_model_selection`, strategy `population_selection`, `stump_class: analytical`. These match. The declared distractors (APM traces, slow-query log) are not the surface read carrying the task. The surface read is the recorded p99 of the load test (3 endpoints), a faithful figure of the closed-loop test and not a distractor or a wrong ranking shipped as an answer. Gate G: PASS. Borderline surface_read_dependency is routed to live testing.
-
-## Gate H
-domain: pass, layers: pass, decisive_step: analytical. The judge's reading and the design note's `## Three rules` agree (Layer 1: JMeter against k6 timestamps, UTC against Eastern, two GC stamp kinds with restarts, route renames, legacy billing carry-forward; Layer 2: coordinated-omission correction and open-arrival percentile rebuild). The thread classed it analytical, and it recomputed by the rebuild method itself, so this is the library's textbook-route case: the thread describes a call that the blind readers measure as landable (see below).
+Thread: mechanism method/model selection, family method_selection, surface_read_dependency no, sole_data_defect no. The design note (Three rules, Domain test) names induced exposure for a missing denominator, so mechanism and family match. The surface reads that file a wrong set (registration and platform vehicle counts, class-only or hour-only exposure) are not the declared distractors, which are the weather and work zone files. The thread did not class a declared distractor as carrying the task. Gate G: pass. Gate H: domain pass, layers pass, decisive_step analytical.
 
 ## Stump power (Gate F)
-The judge rated stump power good: the easy routes give 3 (recorded) or 10 (back-fill), and the clean-up chain before the rebuild is costly. The coordinator reports the measured result: isolated reader r273b landed the main call (EP01, EP02, EP05, EP16, EP22) and all 48 ask figures (score_reader FAIL), so architecture 1 is spent at Gate F regardless of this verdict. Coordinated omission and its correction are a known textbook route that a strong solver takes (stumping 1.3), and the filed text (standard 1.2, 2.1, 2.2, plan sections 2 and 3) closes the closed-loop and rotation facts so well that the rebuild is reachable. The main thread weighs this with the scored readers' result. This is not a determinism defect.
+The thread rates it strong: per-vehicle exposure and class-only exposure each file a wrong covered set. The decisive step is the standard traffic-safety method, which a strong solver takes, so the main thread weighs the thread's result with the scored readers' (stumping 1.3).
 
 ## Findings, ranked
-1. Gate F: r273b landed the call and every ask figure. The stump is too landable and the asks do not hold the top solver (outside determinism; main-thread decision, redesign or harden).
-2. Minor: docx zip timestamps of 1980 (build tell), FIX_NOW at most.
-3. Minor: contents.txt is the only README-like file; acceptable.
-4. Cross-batch clone check not run (the thread may not read other task folders); no duplicate asserted. The design note records seven older generator signatures, each differentiated on the card.
+1. Prompt population: "all the crashes" collides with rule 4.1's defined "Crash". Fix in the prompt (done in the rebuild, to be re-judged once).
+2. Person dedupe is unfiled mess; the dictionary should say persons can be listed again in a unit.
+3. The wrong-basis reads (DMV registrations, platform reports, fleet returns) rank the candidates wrongly (all seven above the line) but are not declared as distractors in metadata.json; declare them or confirm a shipped fact rules them out.
+4. The miles estimator is not filed; the thread accepted it as data-forced.
 
 ## Next action for the author
-Do not spend a determinism repair here: no fork is open. Decide on the Gate F result: harden or re-root the stump, and the supplemental asks, so that a solver who applies the standard's open-arrival rebuild does not also land the 48 ask figures.
+Pin the asks' population in the prompt and the person-listing rule in the dictionary, rebuild, and send the rebuilt pack to the one re-judge.
