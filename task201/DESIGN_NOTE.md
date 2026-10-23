@@ -1378,6 +1378,171 @@ actually reaches the answer, and the route that actually reaches the answer is n
 in the model, because it beats the designed construction on estimator precision rather than on bias.
 **The lead is refused, and `floor_screen.py`'s shipped-per-case-factor shape is refused with it.**
 
+
+### Architecture 12, step 2: the named harness artefact is real, and it sits in `recovery_screen.py`, not in the lead's own screen (2026-10-23)
+
+(`scratchpad/w12_201/recov2.py`, a faithful re-implementation of `recovery_screen.draw_world` in the
+same RNG draw order; it reproduces all four of that harness's cells exactly, asserted in the output's
+`fidelity` block, and runs twice byte-identical at md5 `a9842b50ac3a41d9f88aa61963996af2`.
+`recovery_screen.py` and `dense.py` were both re-run twice and both reproduce their preserved output at
+md5 `b302c85624a49e14f6a022cad88d44b4` and `13b3038ebf4f22559d29e33eb2539742`.)
+
+**The artefact.** `recovery_screen.py`'s dial condition `pass_cheap` is built on `set_hit`, which scores
+each cheap route against the top three of the DESIGNED statistic, and the designed statistic in that
+harness is the fitted recovery `D_fit`, not the world. In the extreme cells the fit is broken: the
+design-fixed least squares is extrapolated to the span mid-point from sampling times clipped into
+`[0, 1]`, so with a candidate-level clustering of 0.40 and a slope spread of 1.20 the fitted value
+falls to the `1e-9` clamp and `o / fhat` explodes. The tell is in the harness's own output and was
+read past: **cell D4 reports a margin of 478,516.257 and the designed route recovering truth 2 of 20**,
+and the lead's parameters on the same dials report a margin of 271,329.74 and the designed route 0 of 20,
+against a normal 1.5 to 1.8. Where the designed statistic is broken its top three is not the truth, so
+the condition scored the cheap routes against a broken comparator. **Measured in one cell at the widest
+possible gap: the per-case geometric mean of the raw observable scores 0 of 20 on the set and 20 of 20
+on the truth.** `dense.py` computed a truth-scored pass as well (`pass_all_on_truth` 0 of 24), so its
+verdict stands; `recovery_screen.py`'s own 81-cell dial does not, and its nine cells reported as
+killing every cheap route are not evidence. **Rule earned:** where a screen's comparator is the
+designed route's own OUTPUT rather than the world's truth, a cell that breaks the designed route
+reports every reflex as dead. Score on the world, and read a margin in the hundreds of thousands as a
+broken estimator rather than a wide one.
+
+**And the artefact does not rescue the lead, because the lead's own screen does not carry it.**
+`floor_screen.py`'s comparator is `B / M`, the world's own designed quantity, and at the lead the
+designed route recovers the truth 19 of 20, so its top three IS the truth in 19 draws of 20 and set and
+truth scoring differ by at most one draw on every one of eleven routes.
+
+### Architecture 12, step 3: the lead at the licensed shape, where the designed route never works (2026-10-23)
+
+Carrying the lead's parameters onto the shape the client licenses (the correcting quantity unobserved,
+recovered by a construction the design fixes with no free parameter), over 36 cells of the recovery
+dials: **`pass_designed` is 0 of 36.** The designed fit never reaches 18 of 20 on the world's truth,
+because `sd_log_s` 1.3 makes the candidate's arithmetic sum too noisy to rank on, while the per-case
+geometric mean of the raw observable reaches the truth **17 to 20 of 20 in every one of the 36**, at a
+lift over noise flat at 5.05 to 5.11 against the designed route's 0.17 to 5.13. At the harness's own
+base dials the reading is explicit: designed fit 17 of 20 at lift over noise 4.017, geometric mean 19 of
+20 at 5.146, and the geometric mean taken after dividing by the candidate's mean factor 20 of 20 at
+5.514. The ladder is inverted on the licensed shape as well as on the shipped-factor one.
+
+### Architecture 12, step 4: the three-jaw pincer, counted jointly over 41 cells, 0 passing (2026-10-23)
+
+(`scratchpad/w12_201/pincer.py` md5 `160dc8cc5522c367bead663b37320d05` and `corner.py` md5
+`ab7d2c16820d4a95d624ec99b65c84be`, each run twice byte-identical, every route scored on the world's
+truth.)
+
+The shape has three jaws, and the third is new. **Jaw 1** (candidate 16): the factor's candidate-level
+LEVEL is one group-by, so level variation hands the answer to a mean-factor route. **Jaw 2** (candidates
+17 and 18): the factor's per-case COUPLING to case size makes the designed route a power transform of
+the observable. **Jaw 3** (new): the per-case geometric mean of the raw observable estimates the
+candidate-level multiplier better than the designed arithmetic sum estimates its own quantity, and a
+power of case size leaves the geometric mean almost untouched, because the latent size's log has mean
+zero over the candidate's cases. Jaw 1 is escaped by moving the factor's variation out of its level and
+into its coupling; jaw 3 is escaped by the reverse. **So the two are one dial with no middle, and the
+joint count says so:** over 25 cells of the factor's level against the coupling's spread,
+`pass_group_by` holds in 10, `pass_power` in **0**, `pass_geomean` in **1**, and
+`pass_group_by and pass_geomean` in **0**. The single cell where the geometric mean dies has the
+factor's level dispersion at 1.00 and the coupling's spread at exactly zero, which is where the
+mean-factor group-by reaches the truth 19 of 20. **The corner probed on its own**, the factor's level
+dispersion 1.00 to 2.40 against the coupling's spread 0.90 to 2.40 and the cheap set widened to include
+the geometric mean taken after the group-by: 16 cells, `pass_raw` 16, `pass_group_by` 16, `pass_power`
+12, `pass_designed` 16, `pass_margin` 16, and **`pass_geomean` 0 of 16**, the geometric mean holding at
+3 to 7 of 20 everywhere. `pass_all` is **0 of 41 cells** across both sweeps and the binding condition is
+jaw 3 in every one.
+
+**The precision arithmetic behind jaw 3, which is why no dial reaches it.** At `k` cases a candidate's
+arithmetic mean of a log-normal base has relative sampling error `sqrt((exp(sd^2) - 1) / k)` against the
+geometric mean's `sd / sqrt(k)`, and the ratio is 1.0314 at `sd` 0.35, 1.0971 at 0.60, 1.2412 at 0.90,
+**1.6171 at 1.30** and 3.6605 at 2.00. So the dispersion law 4 demands (sd of the log factor at or above
+about 1.4, which needs a comparably dispersed base to keep rho under control) is the same dispersion
+that makes the geometric mean the better estimator. **Law 4's window and jaw 3's kill are one dial read
+from opposite sides**, which closes the multiplicative-correction shape from a fourth direction after
+the floor, the aggregation and the precision pincer.
+
+**Laws 1, 2 and 4 on the lead, as the brief required.** Per case the lead carries sd(log factor)
+**0.7816** against law 4's ceiling of about 1.4, so it is **under the ceiling**, and a per-case rho of
+**0.5987**, under law 1's 0.80 floor. Its reported rho of 1.3031 is a candidate-grain quantity: the
+coupling's spread converts a modest per-case factor dispersion into a large candidate-level distortion,
+which is a real mechanism and is exactly the mechanism jaw 3 is immune to. On law 2 the lead runs the
+other way from the law's stated form, rho at candidate grain **rising** with the case count (0.6661 at 3
+cases, 0.9422 at 10, 1.2017 at 30, 1.3031 at 40, 1.7471 at 100), because the distortion is the
+candidate's own coupling exponent and does not average away. That is law 2's own systematic mix term,
+and law 2's warning is what happens: the mix term is reachable, here by a power transform or a log-mean
+rather than by a stratification. **The case count pincers it from both ends:** the designed route needs
+30 or more cases (3, 11, 17, 19, 20 of 20 at 3, 10, 30, 40, 100 cases) and the geometric-mean route
+becomes precise on the same count (3, 6, 19, 20, 19), so there is no count at which the designed route
+reaches 18 and the cheap route stays under 3. **0 of 6 case counts pass.**
+
+### Architecture 12, step 5: the one escape jaw 3 leaves, measured dead from both ends (2026-10-23)
+
+Jaw 3 recovers the candidate's level only up to a monotone transform, so `stumping`'s own exit is a
+LEVEL-dependent graded object, and the sharpest is the count of a candidate's cases crossing an
+ABSOLUTE limit. Screened with the limit's own value, never a quantile of any route's statistic.
+
+**On the shipped-factor shape it works and is worthless.** Every cheap count is wrong in 20 of 20 worlds
+(the raw count off by 44.1 crossings of 181.4, the mean-factor group-by by 50.1, the median-factor
+group-by by 40.7, the pooled reading by 60.6) and the designed count is **exact in 20 of 20**. The
+exactness is the tell: with the factor shipped per case the count is one divide and one comparison on
+two shipped columns, which is the withdrawn identity clause and rule application.
+
+**On the licensed shape the same exactness is unreachable.** (`scratchpad/w12_201/escape.py` md5
+`a15aebe7f95f747c89ea4e74b6dad76d`, run twice byte-identical.) With the factor unobserved and recovered
+by the design-fixed fit, over 54 cells of the recovery dials: **`pass_designed` is 0 of 54**, the best
+cell reaching the exact count in 10 of 20 and only with a 60-row-per-case archive at a measurement noise
+of 0.05. A count across a limit is discontinuous, so any per-case estimation error misplaces the cases
+sitting near the limit, and the recovery always has one. **Both ends measured: 20 of 20 exact with the
+factor shipped, at most 10 of 20 with it recovered. The graded count's exactness and the construction's
+non-triviality are one dial.**
+
+**And banding the count does not separate the designed route from the cheapest one.** The per-case mean
+of the second file's own rows, one group-by at case grain with no construction, carries a relative count
+error of 0.0236 against the designed fit's 0.0235 at the lead's parameters, 0.0400 against 0.0386 at the
+harness's base, and 0.1735 against 0.1358 at a thin second file: the fit is between 1.0 and 2.5 times
+better, never more, so any band wide enough to admit the fit admits the cheap route. The band would
+separate the fit only from the raw, pooled, candidate-group-by and candidate-geometric-mean readings, at
+0.23 to 0.74. **That is candidate 19's death (the fit is decoration beside the per-case mean) restated in
+the level-dependent object's clothes, so the escape closes on the route that closed candidate 19.**
+
+**Verdict on the preserved lead: refused, as a cell property.** Its two failing conditions are not one
+thing. The group-by failure at a worst 3 of 20 was a grid-range artefact (`beta_sd` capped at 0.60 in the
+729-cell sweep, which is why `pass_group_by` came back 0 of 729 with a floor of exactly 3) and is
+repairable at `beta_sd` 0.90, where five of the six conditions hold together for the first time in this
+lane. The power failure at a worst 7 of 20 was understated threefold by a q grid that stopped at 0.50,
+and corrected it is 20 of 20 on the truth at q 0.05 to 0.20 and a better estimator than the designed
+construction. **Nothing in the model reaches jaw 3, on either shape, on the ranking object or on the
+count object, over 131 cells measured this pass.** Architecture 12 therefore refuses rather than draws,
+and the direction for architecture 13 is not another cell of this shape: it is a decisive step that is
+not a per-case correction of a per-case observable at all.
+
+
+### Architecture 12, the handover: jaw 3 is new to the corpus, and the window is open on the wrong axis again (2026-10-23)
+
+**`guard.py slots geometric log-mean logarithm --min-terms 1` places jaw 3 as a new law.** Three slots
+have met the per-case geometric mean before and all three met it from the determinacy side, as a
+convention that gives the same call: task272's rung R2 is "the same, geometric month means" naming the
+golden 16, task194 measured a geometric mean of 0.480 against its arithmetic form with "both forms named
+the same unit", and task243's SF18 reads the persons reaching each age as a geometric or an arithmetic
+mean at "same call, inside every interval". That agreement is jaw 3 seen from the other end and taken as
+harmless, which is what it is for a convention and is not what it is for a reach: none of the three
+recorded that the geometric form is the better ESTIMATOR, so none of them priced it as a route. task183's
+own dial is the nearest relative, 0 of 300 settings with "a cheap count form lands the call in all 32"
+of the unanimous cells. **So jaw 3 is drawn from this pass rather than rediscovered, and it belongs in
+`stumping` beside laws 1 to 4 as the fourth closure of the multiplicative-correction shape.**
+
+**The window, read at the moment of this refusal rather than copied.** `guard.py recent` puts the three
+live cards at task275 (`survey-research-official-statistics/nonresponse-calibration-measurement-error-adjustment`,
+descriptive-distribution, shape 10, pattern G3, `population_selection`, `compliance_or_audit`), task483
+(`survey-research-official-statistics/census-register-administrative-data-quality`, etl, shape 16,
+pattern G19, `grain_or_unit`, `programme_officer`) and task482
+(`supply-chain-logistics/transportation-network`, etl, shape 07, pattern G12,
+`method_or_model_selection`, `procurement_lead`). So **pattern G12 is inside the ban window**, which
+matters for this slot specifically because its own spent architecture 6 carried G12; the shape ban
+reaches the last two, so shapes 16 and 07 are closed; and no anomaly-detection subdomain sits in the
+window, so `ban.pairing` and `ban.subdomain` cannot fire on any AD cell, exactly as architecture 11
+found. Occupancy is not the constraint here and has not been for three passes. **The driver is, and the
+four laws plus jaw 3 now say which drivers are unavailable rather than merely untried: any decisive step
+that corrects a per-case observable by a per-case factor is closed, whether the factor is shipped (rule
+application) or recovered (the fit is decoration beside the per-case mean), on the ranking object (jaw 3)
+and on the level-dependent count object (exactness and non-triviality are one dial).** Architecture 13
+starts outside that family or not at all.
+
 ## Surface screen, answered
 
 `guard.py surface task201` screens 246 builds and promotes five pairs for adjudication. Four are corpus

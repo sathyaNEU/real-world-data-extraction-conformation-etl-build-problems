@@ -2061,6 +2061,39 @@ moved is `bws_2026_response_log.csv`, `enterprise_permit_crosswalk.csv`,
   one and never was, since every ask joins through it; the two declared distractors are the carrier
   log and the export notifications, which is what the file already says.
 
+- **Architecture 10's cell, fixed by reading the wave-7 allocation table before any search (2026-10-23).**
+  One command answered what architecture 9 paid an hour for: `grep -l wave7_cell task*/pipeline.json`
+  prints all seven concurrent slots' allocated cells, and every anomaly-detection cell this pass was
+  weighing belongs to a sibling (criminology/crime-incidence-hotspot is task182's, epidemiology/disease-
+  surveillance task194's, physical-environmental/environmental-monitoring-exceedance task198's,
+  general-statistics/exploratory-data-analysis task200's, survey-research/anomaly-detection task201's,
+  nonprofit/grant-award-portfolios task202's). This slot's own allocation is
+  `healthcare-delivery-health-economics/provider-quality-risk-adjustment`, which is the cell architecture 7
+  screened to a three-class refusal on 2026-10-20. The `slots` run on the setting nouns (case mix, risk
+  adjustment, standardised ratio) returns this slot's own architecture-7 section first, task194 second and
+  task201's line naming the same cell third, so the setting run works and the allocation table is the
+  cheaper read of the two. **Recorded as the generalisation of architecture 8's and 9's law: read the
+  wave's own allocation table, not just the neighbouring slot's resume.**
+- **Architecture 10 is therefore the one opening architecture 7 left on that cell, and it is the same
+  opening architecture 9 named from the other end.** Architecture 7's closing line: "the one direction this
+  pass did not close is a decisive step whose forcing input is a second file at a finer grain than any
+  patient attribute, so that no cross-sectional control reaches it". Architecture 9's: "the correcting
+  quantity is one per case, from a second file at a finer grain than anything the main file carries, no
+  part of the record escaping it, unobserved, and recovered by a construction whose functional form the
+  design fixes with no free exponent, lag, decay or distribution family". Two independent passes, one
+  opening, which is why architecture 10 screens the opening itself rather than hunting a fourth candidate
+  on the cell.
+- **The enumeration architecture 10 screens, written before any code, because the opening is a
+  construction class and not a candidate.** For a per-case latent quantity there are exactly five ways a
+  finer file can relate to it, and each carries its own named horn: (a) direct noisy replicates, where the
+  estimator is a mean and the construction is one group-by (the identity horn); (b) a fixed-form relation
+  with one unknown per case, fitted on that case's own rows; (c) a non-linear aggregation of the case's own
+  fine rows (a peak of an accumulation, an overlap, a longest run), which is deterministic and so has
+  eps zero, but whose aggregation needs a resolution; (d) fine observations that couple several cases at
+  once, inverted by a linear solve; (e) a fitted form carrying a shared parameter as well as per-case
+  levels, where the shared parameter's form is a free choice. (a) and (e) are dead on sight, (a) as the
+  identity horn and (e) as the free-form horn. (b), (c) and (d) are screened as code below.
+
 
 **Architecture 6, spent on Gate F, measured 2026-10-18.** The round-3 leak reader, a medium-effort thread
 holding only a fresh unzip of the pack and `prompt.txt`, reported the call and every graded figure: 43 of
