@@ -2430,3 +2430,124 @@ construction estimates), the silent-row readability screen and the full enumerat
   a separation: it is `sd(log f)` on its own clean truth and then the realised `corr(log reflex, log
   designed)` at its world's own coupling, because the coupling's sign is world-specific and a prototype
   that draws the factor independently of the base flatters every candidate of this shape.
+
+- **Architecture 16 opened (2026-10-23), on the shape task125 shipped this morning rather than on any
+  per-case correction. Record written as the pass runs.** The brief hands this slot the generalisation of
+  task125: a change acts on a unit that is NOT the unit the data is reported at, its effect propagates
+  through a structure the organisation's own process imposes (a rotating panel, an enrolment cohort, a
+  queue, a replacement or maintenance cycle, a vintage, a contract term), so each reported period is a
+  mixture of affected and unaffected units whose proportions move, and the graded object is the PATH of the
+  distortion over periods rather than a ranking. Harness in the builder's scratch directory
+  `<scratch>/a16_194/`.
+- **The per-case-correction test, written out first because this slot's whole history is in that family
+  and the brief requires it explicitly. The shape is NOT in it, and here is the algebra.** Write the graded
+  quantity for reported period `t` as `P(t) = R_pub(t) - R_cf(t)`, where `R_cf` is the same published
+  estimator on the units the change would have left. Decomposing over the cohorts `c` the structure holds
+  at `t`, `P(t) = sum_c w(c,t) * delta(t - c) * 1[c >= T]`: `w(c,t)` is cohort `c`'s observed share of
+  period `t`'s reporting population, `delta(a)` is the per-cohort contrast at position `a` in the
+  structure, and `T` is the first affected cohort. **Three properties decide the test.** (a) The
+  correction is ADDITIVE in cohort-position cells, not an observable divided by a per-case factor: there
+  is no `observed = base * factor` per case anywhere in it, so the floor `sqrt(1 - rho^2)`, the
+  one-over-root-n averaging law, the floor-versus-precision pincer, the geometric-mean route and the
+  dispersion ceiling have no term to bind. (b) The latent object is a PROFILE over positions, a vector of
+  length L shared by every cohort, not one factor per case, so there is no per-case dispersion to measure
+  `sd(log f)` on. (c) There is no candidate ranking at all, which is what every one of the six laws is
+  stated about: they bound `corr(log reflex, log designed)` across CANDIDATES, and this object has one
+  reporting series. **The one way back into the closed family, named so it can be checked on any
+  candidate: if the graded figure were a per-unit level recovered as an observable over a per-unit
+  factor and the call ranked units on it, all six laws apply.** A path of period-level distortions, each
+  a weighted sum of additive contrasts, is not that. Verified against the generating process below rather
+  than left as an argument: the harness prints `sd(log f)` as undefined because no per-case factor exists
+  in the model, and the decision has no candidate set to correlate over.
+- **The PATH object is real and this pass confirms the brief's point 2 before it kills the shape.** Candidate
+  V, the strongest instance the shape allows, was prototyped on one generating process (a distribution
+  network's four-year vegetation clearance cycle, 1,200 feeders, 44 quarters, a narrowed clearance envelope
+  issued for four quarters from quarter 20, a narrow clearance behaving like a wide one three quarters older,
+  faults Poisson on the resulting intensity; the clearance regime, the position in the cycle, the intensity and
+  the counts all come from that one process rather than from independent draws). The published indicator's
+  distortion path on the clean truth runs 0.0261, 0.0389, 0.0675, 0.1527, 0.2337, 0.1632, 0.1746, 0.2862,
+  0.3864, 0.2490, 0.2516, 0.3947, **0.5152**, 0.3231, 0.3192, 0.4915, 0.4786, 0.2025, 0.0935, 0.0000 faults per
+  100 circuit-km from quarter 20 to quarter 39, so it **peaks nine quarters after the last narrowed clearance**
+  and reaches zero only five years after the change. **Every reflex lands wrong in a different direction, as
+  predicted:** attributing to the reporting unit files 0.0713 for the four quarters the spec was issued and
+  **0.0000 at the peak** (root mean square error 0.1922 against a live level of 0.2552); carrying the first
+  period's difference forward files 0.0261 for ever, understated from quarter 22 on and never decaying (0.1790);
+  share times a mean effect files a flat 0.1092, overstating quarter 20 and understating the peak **4.7 times**
+  (0.1379); holding the weights fixed files 0.1092 past the point the cycle has cleared it (0.1360).
+- **And the shape dies on the cheapest licensed route, measured, which is the kill and it is structural rather
+  than particular to this world.** One join of the fault record to the clearance register, one two-way group-by
+  on (regime of last clearance, quarters since clearance), one reweight by the register's own composition
+  reproduces the golden path at **root mean square error 0.0072 and maximum absolute error 0.0170 on the clean
+  truth** (2.8 and 3.3 per cent of the path's own level), and at **0.0393 and 0.1053 on the realised counts**.
+  That route is not a clever construction: it is the opponent's first group-by, and on this ground it is also
+  the field's own standard output, the vegetation-fault rate by time since clearance. So the designed route and
+  the cheapest licensed route are **one route**, and the decisive step is not silent.
+- **The linkage trichotomy, which is why that result generalises and is not a property of a shipped register.**
+  For the path to be computable at all the mixture weights `w(c,t)` must be recoverable, so each reported row's
+  cohort must be derivable, and there are exactly three ways it can be. **(i) The reported row carries the
+  cohort or the regime directly** (a vintage column): one group-by, dead as above. **(ii) The reported row
+  carries a unit key and a register maps unit to cohort and regime:** one join plus one group-by, and a join is
+  one line, so the cost is identical to (i) and the measurement above is of exactly this case. **(iii) The
+  reported rows carry nothing that identifies the unit** (aggregate-only reporting), so there is no
+  within-period contrast between affected and unaffected units and the position profile can be identified only
+  from the published series itself, which is the quantity the call is about. Measured: a cubic trend with
+  seasonal terms reproduces **90.5 per cent** of the distortion path's variance over the live window (a cubic
+  alone 74.9 per cent), so the distortion is indistinguishable from a smooth real deterioration using the
+  series alone, and identifying it from the series assumes the answer. **There is no fourth case.** task125
+  sits in case (ii) and shipped because a true operational sentence in its own field instruction (telephone
+  interviews at waves 2 to 5 unchanged) made the one-line join look pointless. **That is a device, a true
+  sentence pointing the wrong way, and `stumping` Part 6 licenses re-skinning a device and never a driver.**
+- **The forward-facing form is the one configuration that escapes the group-by, and it dies on the hygiene
+  battery and on this slot's own architecture-1 closure.** Set the as-of so the affected cohorts have reached
+  only positions 0 to 7 while the forward path needs positions 8 to 15: the group-by cannot supply the late
+  positions, so the contrast must be **transported**, and that is a real residue. The enumerated transports
+  (an age shift, a constant multiple, a constant additive offset, linear in position, proportional to position)
+  spread the forward graded figures by a mean of **1.9345 and a maximum of 2.2991 over 20 worlds, 193 printed
+  units of 0.01 and 3.6 times the true forward peak of 0.5351**, and they disagree on which quarter the
+  distortion peaks (28, 32, 35, 35 and 36 against a true 32). **But the record selects one of them in 20 of 20
+  worlds:** excess Poisson deviance over the best fit is 723 to 1,417 for the constant multiple, 663 to 1,376
+  for linear in position and 7.6 to 30.4 for the constant additive, against a bar of 4.0, with exactly one
+  transport inside 2 log-likelihood units in **20 of 20** worlds. The designed route then recovers the offset
+  at **2.993 plus or minus 0.177 against a true 3.0** with a forward-path maximum error of 0.0253. So the
+  standing family is unanimous and Gate C would hold, and the decisive step has **moved off the brief's own
+  step**: it is no longer which unit the change acts on, which the register gives away in a column, but which
+  functional form carries the contrast to positions nobody has observed. **Fitting two forms and comparing
+  their deviance is the hygiene battery**, readability test 5, and it reaches the golden in 20 of 20 worlds.
+  Independently, a fitted counterfactual whose form is selected by the record is architecture 1's family, which
+  this slot's note closes outright; architecture 1's own rule is satisfied here (the forms ARE separated, at
+  663 to 1,417 against architecture 1's likelihood ratio of 1.02 to 1), so reopening it is an author decision
+  and not a builder's, and it is recorded as an escape rather than taken.
+- **The abstraction test and the guard both refuse the shape, and the guard's refusal is mechanical.**
+  `guard.py check` on the probe card (`<scratch>/a16_194/probe.json`, PROBE ONLY, not registered) returns
+  **BLOCK `test.same_puzzle_older` against task125 (v2)** (decisive gap, decisive pattern and decision type all
+  repeat) and **BLOCK `test.same_driver_older` against task125 (v2)** (decisive gap, decisive pattern and Gate G
+  mechanism all repeat), with `driver.near` at **0.19 against task125, the nearest driver on file by three
+  times over** (next 0.06, task129). Four further BLOCKs sit beside them and two are not clearable by
+  relabelling: `ban.strategy` composition_mix and `ban.pattern` G6 both against task179, plus
+  `overuse.strategy` at 3 of the last 12. The structural tests take a one-line differentiation, and **the line
+  cannot be written honestly**: stripped of nouns task125's own card driver already reads "the unit the change
+  acts on is the intake and not the period, so each period's distortion is a re-estimate on that period's own
+  mix of filtered and unfiltered intakes ... while the first-period gap repeated while the change lasts files
+  no change at all and the same gap applied at every position overstates every period", which is the candidate
+  including its reflex table. **And task125's `Lesson:` line states the brief's generalisation verbatim**, so
+  any faithful instance fails its own `Lesson:` test, which asks what a model learns that no build on file
+  already teaches. Redrawing gap, pattern, Gate G or decision type to clear the mechanical tests would be
+  writing a card to pass, which `fingerprint` Part 4 names as the failure mode.
+- **ARCHITECTURE 16 IS A MEASURED REFUSAL. Nothing drawn, no card registered, no file in `target/` or
+  `golden/` touched.** Harness in the builder's scratch directory `<scratch>/a16_194/`: `screen_v.py`,
+  `screen_fwd.py`, `screen_sep.py`, `screen_agg.py`, each rerunning byte-identically (md5
+  `e10628e0541245d3dfb5812ba2cb0e3b`, `289dd7ca1c674ff8caa865edf781fbba`, `cb12a0c7fe08eb72ac7154485da55188`
+  for the three that print a digest).
+- **What a later pass needs, stated so it is not paid for twice, and the general law first.** **For a change
+  acting on a unit coarser than the reporting unit, the decisive construction is one join plus one two-way
+  group-by on (regime, position) plus one reweight, because the mixture weights have to be shipped for the path
+  to be computable and the position variable is shipped with them.** The shape therefore carries a stump only
+  where a device hides that join, which is task125's and is spent, or where the positions the answer needs have
+  not been observed, which moves the decisive step onto a transport and into architecture 1's family. **Two
+  directions this pass did not spend a screen on.** The first is the path's **turning point** rather than its
+  levels, graded as the period in which the distortion peaks: the transports disagree on it (28, 32, 35, 35,
+  36 against 32), it is a discrete level-dependent object rather than a monotone summary, and the standing
+  family here is one member so it would be determinate; it is still the same driver, so it needs a ground
+  where the propagation is not task125's. The second is a structure whose **position is not registered at all**
+  and has to be reconstructed from each unit's own history, which makes the position an estimated quantity; it
+  is expected to die on the parametric horn by this lane's standing law, and nothing on file measures it.
