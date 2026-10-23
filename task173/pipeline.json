@@ -1,11 +1,11 @@
 {
  "task": "task173",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "energy-systems-utilities / load-forecasting",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-23",
  "stump": "A competent solver files about 260,000 MWh by carrying the bench wells' fitted energy per acre-foot the district withheld onto the bottomland plants' diversion above the limit, and one who carries the water at each plant's energy over its metered water files 145,000; the step that lands them there is reading each bottomland meter as one pump, when it carries a river lift and a well whose energy per acre-foot differ about fivefold.",
  "architecture": 2,
@@ -17,20 +17,20 @@
  },
  "leak": {
   "leak_py": "REVIEW, no LEAK (2026-10-23); every REVIEW line answered in ## Leak sweep",
-  "reader": ""
+  "reader": "reader A: call landed (155,000, the golden), 56 of 56 asks; reader B: 130,000 (the cap read as fallowing), 56 of 56 asks"
  },
  "duplicate_check": {
   "heart": "WARN (no BLOCK)",
   "nearest": "guard.py surface exit 0; task142 promoted on the card-level same-driver signature (population, G2, forecasting), differentiated on the card"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC",
+  "disposition": "FIX_NOW (revenue-meter pairing on asks 2 and 3)",
+  "report": "scratchpad judge-task173n/verdict.md"
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC44",
- "resume": "stage 4: two scored readers and the judge (target.zip be677673c249d2865ce57b76923b47c1; call key call.forecast_mwh = 155000; stage 3 gates green: checks 87/87, verify, byte-identical rebuild, figures_check, precut, voice-check, leak.py REVIEW, surface exit 0, heart WARN)",
+ "resume": "architecture 2 spent at Gate F on be677673 (a reader fitted each river-lift-plus-well service's energy on diverted and well water); the number stays open: stage 1, a new cell under the coordinator's conditions (the forward window changes the process in a way not on file, no field or plant string names the decisive quantity, no ask device is visible hygiene)",
  "approved": null,
  "delivered": null,
  "portal": null,
