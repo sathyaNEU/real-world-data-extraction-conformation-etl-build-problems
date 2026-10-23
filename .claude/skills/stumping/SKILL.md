@@ -203,6 +203,25 @@ on its own floor, +0.8981 measured against 0.8992, because procurement maturity 
 leakage negatively, and that best case the law allows was still dead. So compute rho, then compute the
 realised correlation at the world's own coupling, and read the second number.
 
+**A per-case correction averages out, so in the blessed shape rho is carried by the systematic mix and not by
+the per-case spread.** The candidate is ranked on an aggregate over its own cases, so the correcting factor's
+log dispersion AT CANDIDATE LEVEL falls as one over the square root of the case count. Measured with a
+per-case correction of log sd 1.00 against a base of log sd 0.35: rho runs **1.8808 at 3 cases per candidate,
+1.1282 at 10, 0.6826 at 30, 0.3779 at 100 and 0.2224 at 300**. The floor needs rho at or above about 0.80, so
+past roughly a dozen cases per candidate the per-case spread cannot supply it, and only a systematic mix term
+can: the same case counts with a mix of log sd 0.50 give 2.3986, 1.8425, 1.6481, 1.5059 and 1.5109, flat in
+the case count because the mix does not average away. **A systematic mix term is a stratification of the finer
+file**, which is exactly what a solver reaches for, so leaning on it to clear the floor hands over the route.
+
+**And the floor and the estimator's own precision close on the same parameter, which is this shape's pincer.**
+rho reaches 0.80 only at about 13 cases per candidate, and at 13 cases the designed signal's relative standard
+error is 0.2774 against an across-candidate log spread of 0.3500, so **the estimator's own noise is 0.79 of
+the entire spread it has to rank on** and the ranking is seed hostage exactly where the correction clears the
+floor. Add cases for precision (0.52 of the spread at 30, 0.29 at 100) and rho has fallen to 0.68 and 0.38,
+so the floor binds again. Price both ends on the same case count before a world is drawn: a shape that needs
+few cases to reorder and many cases to be precise has no setting, and that is a refusal on arithmetic rather
+than a dial to sweep.
+
 **And draw the factor and the base from one generating process, or the screen measures nothing.** The same
 alarm-rationalisation step scored the reflex at 2 of 20 in a parameterised prototype that drew the chatter
 multiplier and the excursion rate independently, and at 12 of 12 once a trace simulation coupled them through
