@@ -189,6 +189,29 @@ once: where the decisive step is whether the sub-unit values are identified at a
 exploits the identification is one line, so family unanimity IS the easy route landing. **Print the cheapest
 licensed member's own hit rate in the same table as the family's unanimity**, every time.
 
+**The shape that ships: a change acts on a unit the data is not reported at, and its effect propagates.**
+This is the positive specification, and it is worth more than the refusals because a build carries it. A
+rule, policy or change applies to one unit while the organisation reports another, and the effect
+PROPAGATES through a structure that organisation's own process imposes (a rotating panel, an enrolment
+cohort, a queue, a replacement or maintenance cycle, a vintage, a contract term), so every reported period
+is a MIXTURE of affected and unaffected units whose proportions move period by period. The decisive step is
+recognising which unit the change acts on; the easy route attributes the effect to the reporting unit.
+
+Three properties make it hold where the per-case correction family does not. **It is not multiplicative**,
+so none of the laws above bind it, which is also the test to run first: if the graded quantity can be
+written as an observable divided by a per-case factor, it is the closed family in other nouns. **The graded
+quantity is a PATH over periods rather than a ranking**, so a route with the ordering right still files a
+wrong answer, and each reflex errs in a different direction: on the shipped instance the golden path runs
+0.39, 0.53, 0.62, 0.47, 0.28 while attributing the change to the reporting unit gives 0.21, 0.21, 0.21,
+0.00, 0.00 (constant while the change runs, then nothing) and carrying the first period's difference
+forward gives 0.60, 0.85, 1.07, 0.95, 0.67 (overstated at every point). **And what has to be filed is the
+estimand's comparison**, the base period or population, which is the WHAT: three isolated readers each
+confirmed that naming the base period fixes a basis without shortening the work, and the propagation itself
+stays with the solver, so the pin cannot file the method. That last property is why this shape escapes the
+grain pincer: a step whose determinacy needs a sentence about the grain a level is taken at has no legal
+sentence, because every such sentence either collapses the distribution or files the method, while a
+propagation estimand needs only its comparison named.
+
 **The one-correcting-quantity-per-case clause is now closed as a clause, not merely on one cell.** For a
 per-case latent quantity there are five ways a finer file can relate to it, and all five are measured:
 direct noisy replicates (the estimator is a mean, one group-by, the identity horn); a fixed-form relation

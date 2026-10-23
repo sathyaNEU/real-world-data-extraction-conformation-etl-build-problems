@@ -487,3 +487,27 @@ An entry is a **class** a future build could repeat with other nouns; anything e
 note. Order: Defect, Cost, Line (if a legitimate twin exists), Check (a wireable assertion), Repair (its
 own failure modes), Tooling (only if a tool exists; say what it refuses to decide). No dates, file names
 or incident numbers.
+
+## H33. A build that reproduces its pack but not its gate, because a second entry point writes the figures
+
+**The general form.** A generator has more than one entry point, and the obvious one builds the pack while a
+second one ENRICHES `generator/figures.json` before writing the submission. Rebuild from the obvious entry
+point alone and the pack is byte-identical, every hash matches what is committed, and `figures.json` is
+quietly SHORTER than the committed copy, so the build passes a pack audit and fails a gate audit at the same
+moment. Measured on a shipped build: `build.py` alone cut 23 lines from `figures.json` (a `constants` block
+plus two count keys) while `target.zip` still matched at `ce23c1aa6f4a57e9`, and `figures_check.py` went
+from 91 of 91 to **4 absent**, naming figures the shipped write-up cites in its own steps (a site-episode
+pair count, a qualifying threshold and its dwell, a dead band, a span, a tolerance). Running the second
+entry point restored the file to the committed bytes exactly and the gate to 91 of 91.
+
+**What it costs when a reviewer finds it.** Worse than the defect: it invites a Gate A challenge on figures
+the write-up states and the generator appears not to emit, on a build that is actually sound. It also costs
+the author the audit itself, because the first reading of the evidence is that a shipped build has regressed.
+
+**The check.** A rebuild audit runs EVERY generator entry point that writes `figures.json`, in order, not
+just the one named `build.py`; enumerate them first (the modules carrying a `__main__` guard) rather than
+assuming one. And the clean-tree test is the cheap tell: after a full rebuild `git status` must be empty for
+the task folder, so a `figures.json` left modified is the signal that an entry point was missed, not that
+the build moved. Where a build does have two steps, its own record names them in order so the next audit
+does not have to rediscover it.
+
