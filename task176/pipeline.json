@@ -9,7 +9,7 @@
  "updated": "2026-10-23",
  "stump": "A competent solver fits closure hazards by years licensed with provider age, county and the grant flag and files about 300 closures for 2027; the step that lands it there is reading closure on the home's tenure when it runs on the provider's youngest own child's kindergarten year.",
  "architecture": 2,
- "loops": 0,
+ "loops": 1,
  "card_registered": true,
  "precut": {
   "exit": 0,
@@ -20,15 +20,24 @@
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (no BLOCK)",
-  "nearest": "task107 0.07"
+  "heart": "BLOCK on two draw bans only, both from cards that took the value after this card was registered (DRAWN 6b4f56e1 at 08:49): ban.forcing_event statutory_or_regulatory_filing against task175 (SHIPPED 0a20bc43, 09:02) and ban.org_family government_agency against task171 v4 (c1e0ddaf, 11:04); at stage 3 (3b1eb6ec) the heart was WARN with no BLOCK",
+  "surface": "exit 0, promoted pairs history only",
+  "nearest": "task133 0.05"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "DETERMINISTIC/APPROVE (round 1, zip 13d6ad18)",
+  "disposition": "call edge recorded as answered risk in ## Ask sheet; child-days fork closed in the prompt",
+  "report": "session scratchpad judge-task176/verdict.md"
  },
- "returned": [],
+ "returned": [
+  {
+   "round": 1,
+   "zip": "13d6ad18",
+   "call": "held 2/2 (both readers 300)",
+   "asks": "failed: reader A 30/30, reader B 20/30; money cracked by one remittance per run date and provider, child-days fork",
+   "repair": "child-days closed by 'counting a child once on a day' and shrunk to two statewide figures; money device moved onto network remittances (one remittance per number, run date and county office); call and every call figure frozen"
+  }
+ ],
  "wave": "wave 8 (new), seed FC47: the world, the decision and the quantity kept (360 satellites for 2027, six rideshare launches of at most 60, release at 210 km, storm loss below 350 km, expected storm loss two or fewer per launch, the rest to 2028); the seed's onsets-against-storm-days mechanism set aside as a unit reading",
  "screen": {
   "assigned": "new draw in the seed's world, the decisive step a forecasting judgment a space-weather or mission-assurance analyst would recognise, inferred from the data, with the rival rejected out of sample; ideas named: the solar cycle's phase, exposure below 350 km from the raising log and the season, cycle amplitude, a back-test on past declining phases",
@@ -81,7 +90,7 @@
    "stage3": "checks.py 105 of 105, verify.py green (own IRLS 461.02), two byte-identical builds, figures_check 0, precut 0, leak.py REVIEW, guard heart WARN, surface no hard tell after the manifest schema change; asks re-sited (food program and visits cut to distractors) after the coordinator's stage 4 measurements"
   }
  },
- "resume": "stage 4: two scored readers and the judge",
+ "resume": "stage 4 round 2: a fresh judge pass and two fresh scored readers on the re-sited asks",
  "approved": null,
  "delivered": null,
  "portal": null,

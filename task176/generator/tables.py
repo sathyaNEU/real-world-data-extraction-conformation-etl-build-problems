@@ -141,10 +141,10 @@ DICT = [
                 "sheet Notes.", []),
     (C.F_CCAP, "Child Care Assistance Program remittance lines from the payment runs of 5 January 2026 to 4 January 2027, "
                "every provider type. One row per child per remittance.", [
-        ("remittance_no", "remittance number"),
+        ("remittance_no", "remittance number, in the issuing county office's sequence for the run"),
         ("pay_run_date", "date of the payment run"),
         ("county_fips", "county office that issued the remittance (the provider's county)"),
-        ("provider_no", "licence number for family child care homes; CC centre number; LE license-exempt carer number"),
+        ("provider_no", "provider that gave the care: licence number for family child care homes; CC centre number; LE license-exempt carer number"),
         ("provider_type", "SFCC small and LFCC large family child care home, CTR centre, EXEMPT license-exempt relative carer"),
         ("case_no", "family's assistance case"),
         ("child_no", "child authorised for care"),

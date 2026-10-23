@@ -20,8 +20,8 @@
 2. Built home-months from January 2016 to December 2026 from fcc_licence_extract_20261231.csv (each home from the month after first issue or January 2016, to its closure month or December 2026), with the home's year of tenure, the provider's age of 63 or more and 68 or more, the June to August months, and whether the month falls in June to August of the year the youngest own child born by then starts kindergarten (the school-age rule in ccap_provider_payment_policy_2026.pdf, section 6).
 3. Fitted a monthly Poisson model of closure on those terms: the kindergarten summer, not the years licensed, carries the closures of parent-run homes (401 of 905 such homes closed that summer).
 4. Applied the model month by month through 2027 to the 3,081 homes licensed on 31 December 2026, 427 of them in their youngest's kindergarten summer, and summed each home's chance of closing: 450 to the nearest 50.
-5. Child-days (ccap_payment_lines_2026.csv): kept SFCC and LFCC lines of remittances not voided, expanded each line to its Monday to Friday days in 2026, and counted each child and day once, since a child who moved home is paid at the home left through its notice days and a child in split care is paid at two homes on the same days.
-6. Money (ccap_payment_lines_2026.csv): kept SFCC and LFCC remittances paid in the 2026 runs and not voided, took each remittance once as its number, run date and county office (each county office numbers its remittances afresh in every run, and every child line repeats the remittance's amount), and summed the amounts by the quarter of the run date.
+5. Child-days (ccap_payment_lines_2026.csv): kept SFCC and LFCC lines of remittances not voided, expanded each line to its Monday to Friday days in 2026, and counted each child and day once.
+6. Money (ccap_payment_lines_2026.csv): kept SFCC and LFCC remittances paid in the 2026 runs and not voided, took each remittance once as its number, run date and county office (each county office numbers its remittances in its own sequence every run, every child line repeats the remittance's amount, and one remittance can carry the children of several homes), and summed the amounts by the quarter of the run date.
 7. Allerton should plan for about 450 homes closing during 2027.
 
 ## 4. Deliverable Answers
@@ -29,15 +29,10 @@
 ### fcc_closures_2027.xlsx
 
 1. Homes licensed on 31 December 2026 that will close during 2027, to the nearest 50: 450.
-2. Child-days of subsidised care in family child care homes, by region, first half and second half of 2026:
-   - Region 1 North: 14,654 and 16,066
-   - Region 2 Capital: 53,667 and 56,957
-   - Region 3 Valley: 17,906 and 20,791
-   - Region 4 South: 21,072 and 23,008
-   - Region 5 Lakeshore: 18,639 and 21,127
+2. Child-days of subsidised care in family child care homes in Allerton, a child counted once on a day: first half of 2026 125,938, second half 137,949.
 3. Money the subsidy paid to family child care homes, by region and quarter of the 2026 payment run, nearest dollar, first to fourth quarter:
-   - Region 1 North: USD 261,758, 299,144, 308,776, 320,951
-   - Region 2 Capital: USD 976,233, 1,060,730, 1,130,314, 1,140,841
-   - Region 3 Valley: USD 337,784, 354,141, 389,809, 418,844
-   - Region 4 South: USD 386,069, 418,205, 453,653, 455,022
-   - Region 5 Lakeshore: USD 364,938, 364,407, 394,196, 423,531
+   - Region 1 North: USD 261,758, 299,956, 308,387, 323,302
+   - Region 2 Capital: USD 975,519, 1,059,175, 1,135,102, 1,137,021
+   - Region 3 Valley: USD 337,012, 353,636, 391,204, 421,264
+   - Region 4 South: USD 387,659, 418,645, 450,405, 455,636
+   - Region 5 Lakeshore: USD 365,521, 362,977, 400,530, 418,584

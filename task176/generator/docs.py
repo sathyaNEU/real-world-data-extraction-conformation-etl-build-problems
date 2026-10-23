@@ -73,7 +73,8 @@ POLICY = [
         "provider caring for part of the day."]),
     ("Section 3. Payment runs and remittances", [
         "Providers are paid monthly in arrears, in one statewide payment run in the first week of the following month. "
-        "A provider receives one remittance in a run, covering all its children for the month. Each line of a "
+        "Each payee receives one remittance in a run, covering all the children it is paid for that month, and each "
+        "county office numbers the remittances it issues in a run in its own sequence. Each line of a "
         "remittance covers one child for the days in the month on which care was authorised and scheduled (Monday to "
         "Friday).",
         "The full-time monthly rate is paid for a full month and prorated by scheduled days for a part month. A child "

@@ -176,34 +176,35 @@ def main(target):
     # ---- asks: golden figures, devices and stops ---------------------------------------------------------------------
     a = calc.ask_child_days(target)
     a_sum = calc.ask_child_days(target, union=False)
-    a_void = calc.ask_child_days(target, union=False, drop_void=False)
+    a_reg = calc.ask_child_days(target, statewide=False)
     b = calc.ask_money(target)
     slug = {r: "R%d_%s" % (r, C.REGIONS[r].split()[-1]) for r in C.REGIONS}
+    ok("ASK A statewide matches figures", figs["a_statewide"] == {"H1": a[1], "H2": a[2]}, str(a))
+    ok("ASK A statewide equals the regions' sum (no child on two regions' books on one day)",
+       all(a[h] == sum(a_reg[(r, h)] for r in C.REGIONS) for h in (1, 2)), "")
+    ok("ASK A the summed lines differ from once a day (the prompt's clause decides)", all(a_sum[h] != a[h] for h in (1, 2)),
+       "%d %d" % (a_sum[1], a_sum[2]))
     for r in C.REGIONS:
-        ok("ASK A %s matches figures" % slug[r], figs["a_" + slug[r]] == {"H1": a[(r, 1)], "H2": a[(r, 2)]})
         ok("ASK B %s matches figures" % slug[r], figs["b_" + slug[r]] == {"Q%d" % q: int(round(b[(r, q)])) for q in (1, 2, 3, 4)})
         ok("ASK B %s every quarter clear of the half-dollar" % slug[r], all(C.edge(b[(r, q)], 1) >= 0.005 for q in (1, 2, 3, 4)),
            ", ".join("%.2f" % b[(r, q)] for q in (1, 2, 3, 4)))
-    cells = [(r, h) for r in C.REGIONS for h in (1, 2)]
     qcells = [(r, q) for r in C.REGIONS for q in (1, 2, 3, 4)]
-    ok("ASK A the summed lines miss every cell", all(a_sum[k] != a[k] for k in cells),
-       "%.3f to %.3f" % (min(a_sum[k] / a[k] for k in cells), max(a_sum[k] / a[k] for k in cells)))
-    ok("ASK A voids kept and lines summed miss every cell", all(a_void[k] != a[k] for k in cells), "")
     stops = {}
-    for key in ("lines", "number", "number_run", "number_provider", "number_amount", "number_county", "provider_amount"):
+    for key in ["lines"] + [k for k in calc.MONEY_KEYS if k != "remittance"]:
         stops[key] = calc.ask_money(target, key=key)
         ok("ASK B one remittance taken as %s misses every cell" % key,
            all(int(round(stops[key].get(k, 0))) != int(round(b[k])) for k in qcells),
            "%.3f to %.3f" % (min(stops[key].get(k, 0) / b[k] for k in qcells), max(stops[key].get(k, 0) / b[k] for k in qcells)))
     bv = calc.ask_money(target, drop_void=False)
     ok("ASK B voided remittances kept miss every cell", all(int(round(bv[k])) != int(round(b[k])) for k in qcells), "")
-    # the remittance's provider is the key's payer: number, run and provider give the same remittances as number, run, county
-    ok("ASK B number, run and provider equal number, run and county", calc.ask_money(target, key="remittance") ==
-       money_by(target, lambda r: (r["remittance_no"], r["pay_run_date"], r["provider_no"])), "")
+    bvp = calc.ask_money(target, key="run_provider", drop_void=False)
+    ok("ASK B voids kept and one remittance per run and provider miss every cell",
+       all(int(round(bvp[k])) != int(round(b[k])) for k in qcells), "")
     # fairness: the shipped rows force the handling
     ccap = C.read_csv(os.path.join(target, C.F_CCAP))
     ok("ASK A no child is paid at two homes in different regions on one day", cross_region_overlaps(target, ccap) == 0, "")
-    ok("ASK B every line of a remittance carries one amount, provider and status", remittance_consistent(ccap), "")
+    ok("ASK B every line of a remittance carries one amount and status", remittance_consistent(ccap), "")
+    ok("ASK B remittances carrying several homes' children in every region and quarter", multi_home(target, ccap), "")
     ok("ASK B remittance numbers recur across county offices in every run and for a home across runs",
        shared_numbers(ccap), "")
 
@@ -218,7 +219,7 @@ def main(target):
         ok("DIS %s read by no figure" % f, f not in calc_inputs() + [C.F_CCAP, C.F_CTY], "")
 
     # ---- realism -------------------------------------------------------------------------------------------------------
-    counts = [a[k] for k in cells] + [int(round(b[k])) for k in qcells]
+    counts = [a[1], a[2]] + [int(round(b[k])) for k in qcells]
     dup = [c for c, k in collections.Counter(counts).items() if k > 1]
     ok("REAL no two graded counts identical", not dup, str(dup))
     ok("REAL no graded count a round hundred", all(c % 100 for c in counts), "")
@@ -341,23 +342,21 @@ def layer1_mishandled(target, info):
     return out
 
 
-def money_by(target, keyf):
-    reg = calc.regions_by_fips(target)
-    seen = {}
-    for r in C.read_csv(os.path.join(target, C.F_CCAP)):
-        if r["provider_type"] in ("SFCC", "LFCC") and r["pay_run_date"].startswith("2026") and r["remittance_status"] != "VOID":
-            seen.setdefault(keyf(r), ((reg[r["county_fips"]], (int(r["pay_run_date"][5:7]) - 1) // 3 + 1), float(r["remittance_amount"])))
-    out = {}
-    for g, amt in seen.values():
-        out[g] = out.get(g, 0.0) + amt
-    return {k: round(v, 2) for k, v in out.items()}
-
-
 def remittance_consistent(ccap):
     by = collections.defaultdict(set)
     for r in ccap:
-        by[(r["remittance_no"], r["pay_run_date"], r["county_fips"])].add((r["remittance_amount"], r["provider_no"], r["remittance_status"]))
+        by[(r["remittance_no"], r["pay_run_date"], r["county_fips"])].add((r["remittance_amount"], r["remittance_status"]))
     return all(len(v) == 1 for v in by.values())
+
+
+def multi_home(target, ccap):
+    reg = calc.regions_by_fips(target)
+    by = collections.defaultdict(set)
+    for r in ccap:
+        if r["provider_type"] in ("SFCC", "LFCC") and r["pay_run_date"].startswith("2026") and r["remittance_status"] != "VOID":
+            by[(r["remittance_no"], r["pay_run_date"], r["county_fips"])].add(r["provider_no"])
+    cells = collections.Counter((reg[k[2]], (int(k[1][5:7]) - 1) // 3 + 1) for k, v in by.items() if len(v) > 1)
+    return len(cells) == 20 and min(cells.values()) >= 3
 
 
 def shared_numbers(ccap):

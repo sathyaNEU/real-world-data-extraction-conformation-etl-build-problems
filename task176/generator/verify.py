@@ -164,12 +164,11 @@ def main(target):
         b = min(dt.date.fromisoformat(r.service_to), dt.date(2026, 12, 31))
         for d in pd.bdate_range(a, b) if a <= b else []:
             days.append((r.child_no, d.date(), reg_f[r.county_fips]))
-    D = pd.DataFrame(days, columns=["child", "day", "reg"]).drop_duplicates(["child", "day", "reg"])
+    D = pd.DataFrame(days, columns=["child", "day", "reg"]).drop_duplicates(["child", "day"])
     D["half"] = np.where(pd.to_datetime(D.day).dt.month <= 6, "H1", "H2")
-    A = D.groupby(["reg", "half"]).size().to_dict()
-    for r in names:
-        say("V ask A %s" % slug[r], figs["a_" + slug[r]] == {"H1": A[(r, "H1")], "H2": A[(r, "H2")]})
-    rm = cc[cc.pay_run_date.str.startswith("2026")].drop_duplicates(["remittance_no", "pay_run_date", "provider_no"]).copy()
+    A = D.groupby("half").size().to_dict()
+    say("V ask A statewide", figs["a_statewide"] == {"H1": A["H1"], "H2": A["H2"]}, str(A))
+    rm = cc[cc.pay_run_date.str.startswith("2026")].drop_duplicates(["remittance_no", "pay_run_date", "county_fips"]).copy()
     rm["amt"] = rm.remittance_amount.astype(float)
     rm["reg"] = rm.county_fips.map(reg_f)
     rm["q"] = (rm.pay_run_date.str[5:7].astype(int) - 1) // 3 + 1

@@ -135,9 +135,30 @@ class Ccap:
             b = a + dt.timedelta(days=int(r.integers(40, 300)))
             spells.append([new_child(), new_case(), pno, "EXEMPT", cty, max(a, dt.date(2025, 12, 1)), min(b, Y1), 1.0])
         # lines: one per child, provider and service month, paid in the statewide run after the month; each run issues
-        # one remittance to each provider, numbered in the county office's own sequence for that run, and every
+        # one remittance to each payee (the provider, or its network), numbered in the county office's own sequence for that run, and every
         # child line of a remittance carries the remittance's amount
         rate_of = {"SFCC": 812.0, "LFCC": 846.0, "CTR": 1138.0, "EXEMPT": 402.0}
+        # family child care networks: a home that joins a network assigns its payments to the network, which is paid
+        # one remittance a run for the children of all its homes; networks are small, three to six homes of a county
+        rn = C.stream("ccap/networks")
+        members = {}
+        for h, w in act:
+            if rn.random() < 0.12:
+                members.setdefault(h.county, []).append(ident.cur[h.hid])
+        affil = {}
+        for cty in sorted(members):
+            lst = members[cty]
+            j, k = 0, 0
+            while j < len(lst):
+                n = int(rn.integers(3, 7))
+                k += 1
+                for pno in lst[j:j + n]:
+                    affil[pno] = "NET%s%02d" % (cty[2:], k)
+                j += n
+        self.affil = affil
+
+        def payee_of(pno, cty):
+            return affil.get(pno, pno)
         by_run = {}
         for ch, cs, pno, pt, cty, a, b, f in spells:
             for ms, me in months_between(max(a, dt.date(2025, 12, 1)), b):
@@ -149,30 +170,30 @@ class Ccap:
                 run = RUNS[(ms.year, ms.month)]
                 if run > C.PULL:
                     continue
-                by_run.setdefault(run, {}).setdefault((cty, pno, pt), []).append([cs, ch, ms, me, days, amt])
+                by_run.setdefault(run, {}).setdefault((cty, payee_of(pno, cty)), []).append([cs, ch, ms, me, days, amt, pno, pt])
         rows = []
         voided = []
         runs = sorted(by_run)
-        payees = {}           # each county office's payee list, in the order providers were first paid
+        payees = {}           # each county office's payee list, in the order payees were first paid
         for k, run in enumerate(runs):
             rem = by_run[run]
-            for (cty, pno, pt) in sorted(rem, key=lambda x: (x[0], x[1])):
+            for (cty, pay) in sorted(rem):
                 lst = payees.setdefault(cty, {})
-                if pno not in lst:
-                    lst[pno] = len(lst)
+                if pay not in lst:
+                    lst[pay] = len(lst)
             seq = {}
-            for (cty, pno, pt) in sorted(rem, key=lambda x: (x[0], payees[x[0]][x[1]])):
-                lines = rem[(cty, pno, pt)]
+            for (cty, pay) in sorted(rem, key=lambda x: (x[0], payees[x[0]][x[1]])):
+                lines = rem[(cty, pay)]
                 seq[cty] = seq.get(cty, 0) + 1
                 no = "RM%04d" % seq[cty]
                 tot = round(sum(x[5] for x in lines), 2)
                 status = "VOID" if (r.random() < 0.012 and k + 1 < len(runs)) else "PAID"
                 for x in lines:
-                    rows.append([no, run, cty, pno, pt, x[0], x[1], x[2], x[3], x[4], tot, status])
+                    rows.append([no, run, cty, x[6], x[7], x[0], x[1], x[2], x[3], x[4], tot, status])
                 if status == "VOID":
                     # the remittance is paid again in the next run, numbered in that run's sequence
                     nxt = runs[k + 1]
-                    by_run[nxt].setdefault((cty, pno, pt), []).extend([list(x) for x in lines])
+                    by_run[nxt].setdefault((cty, pay), []).extend([list(x) for x in lines])
         rows.sort(key=lambda x: (x[1], x[2], x[0], x[6]))
         self.lines = rows
         self.spells = spells

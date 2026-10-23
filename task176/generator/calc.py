@@ -355,9 +355,10 @@ def regions_by_name(target):
     return out
 
 
-def ask_child_days(target, union=True, drop_void=True):
-    """subsidised child-days at family child care homes by region and half of 2026: each child's weekdays at a home
-    counted once whichever lines and homes cover them"""
+def ask_child_days(target, union=True, drop_void=True, statewide=True):
+    """subsidised child-days at family child care homes by half of 2026, statewide (keys 1 and 2) or by region (keys
+    (region, half)): each child's weekdays counted once whichever lines and homes cover them (union=False sums every
+    line's weekdays)"""
     reg = regions_by_fips(target)
     y0, y1 = dt.date(2026, 1, 1), dt.date(2026, 12, 31)
     sets, sums = {}, {}
@@ -374,7 +375,7 @@ def ask_child_days(target, union=True, drop_void=True):
         d = a
         while d <= b:
             if d.weekday() < 5:
-                k = (g, 1 if d.month <= 6 else 2)
+                k = (1 if d.month <= 6 else 2) if statewide else (g, 1 if d.month <= 6 else 2)
                 sets.setdefault(k, set()).add((r["child_no"], d))
                 sums[k] = sums.get(k, 0) + 1
             d += dt.timedelta(days=1)
@@ -389,6 +390,11 @@ MONEY_KEYS = {
     "number_amount": lambda r: (r["remittance_no"], r["remittance_amount"]),
     "number_county": lambda r: (r["remittance_no"], r["county_fips"]),
     "provider_amount": lambda r: (r["provider_no"], r["remittance_amount"]),
+    "run_provider": lambda r: (r["pay_run_date"], r["provider_no"]),
+    "run_provider_amount": lambda r: (r["pay_run_date"], r["provider_no"], r["remittance_amount"]),
+    "run_county_amount": lambda r: (r["pay_run_date"], r["county_fips"], r["remittance_amount"]),
+    "number_run_amount": lambda r: (r["remittance_no"], r["pay_run_date"], r["remittance_amount"]),
+    "number_run_provider": lambda r: (r["remittance_no"], r["pay_run_date"], r["provider_no"]),
 }
 
 

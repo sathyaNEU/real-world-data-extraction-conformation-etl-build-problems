@@ -45,9 +45,9 @@ spent; their record is `## Earlier draws (screen record)`, `## Tried and rejecte
   relationship, and the 2023 round's providers joined when their youngest were babies, so they reach that summer
   together in 2027, in their fourth year, where a tenure clock puts the record's lowest closure rate.
 - **Shape and criteria.** The call is one count to the nearest 50 (1). Two ask tables on rows the call never reads:
-  subsidised child-days of care in family child care homes by region and half of 2026 (10), and the money the subsidy
-  paid the homes by region and quarter of the 2026 payment run (20). The workbook and its tables (2 to 3). About 33
-  criteria, every one a cell of the prompt's shape.
+  the money the subsidy paid the homes by region and quarter of the 2026 payment run (20), and subsidised child-days
+  of care in family child care homes across Allerton in each half of 2026, a child counted once on a day (2). The
+  workbook and its tables (2 to 3). About 29 criteria, every one a cell of the prompt's shape.
 - **Data-native sentence.** In Allerton's licensing record a home's closure is written against the licence, but
   the clock that times it is in another file and another person's life: the capacity worksheet's own-child birth
   dates put most parent-run homes' closures in the summer before the youngest starts kindergarten, at whatever
@@ -279,64 +279,95 @@ stage 4 measurements had readers break both shapes (a re-filed schedule against 
 trader and side), so both were cut and their files stay in the pack as distractors; their line is in `## Tried and
 rejected`.
 
-**Ask A. For each region, the child-days of care the subsidy paid for in family child care homes in each half of
-2026** (10 figures, whole numbers). H18 home: the subsidised care that rests on the homes the call says will close.
-- A1 (silent primary, one child-day on two lines): a child who moves home is paid at the home left through up to ten
-  business days of notice after the last day attended while the new home's lines start, and a child in split care is
-  paid at two homes on the same days; a child-day is one child on one day, so each child and day count once. The
-  battery's path sums care_days on the home lines: every cell high by 1,149 to 6,931.
-- Hazards on the readers' path: centre and exempt lines in the same file, voided remittances paid again in the next
-  run (keeping both adds 186 to 722 a cell on the summing path), December 2025 service in the January 2026 run.
-- Stops (asserted): lines summed (all 10); voids kept and lines summed (all 10).
+**Re-sited again after round 1 (zip 13d6ad18, 2026-10-23).** Both readers took one remittance per run date and
+provider (20 of 20 money cells each) and the judge named a fork in "child-days" (each paid line against each child once
+a day). The prompt now files the child-day by literal WHAT ("counting a child once on a day") and the child-days ask is
+shrunk to the two statewide halves, priced as carrying no device; the money device moved onto the payee, so that the
+readers' grouping is the wrong one. The line is in `## Tried and rejected`.
+
+**Ask A. The child-days of care the subsidy paid family child care homes for in each half of 2026 across Allerton,
+counting a child once on a day** (2 figures, whole numbers). H18 home: the subsidised care that rests on the homes the
+call says will close.
+- No device: the prompt's clause settles the one-child-two-lines reading (a child paid at the home left through its
+  notice days while the new home's lines start, and a child in split care paid at two homes on the same days). Summing
+  care_days instead gives 135,010 and 154,218 against 125,938 and 137,949; with the clause read a careful reader lands
+  both figures, and the ask's surface is shrunk to two figures for that reason.
+- Hazards: centre and exempt lines in the same file, voided remittances paid again in the next run, December 2025
+  service in the January 2026 run.
 
 **Ask B. For each region, the money the subsidy paid family child care homes in each quarter of 2026 by the date of
 the payment run** (20 figures, nearest dollar). H18 home: the subsidy income the homes' closures take out of the
 regions, the money the grant round is weighed against.
-- B1 (silent primary, which lines are one payment): a provider receives one remittance in a run and every child line
-  of it carries the remittance's amount, and each county office numbers its remittances afresh in every run in the
-  order of its payee list, so a number recurs across the fourteen offices in one run and, for a home, from run to run.
-  One payment is a remittance number, a run date and a county office (or, equally, a provider). Summing the amount on
-  every line counts a remittance once per child (every cell high by 105,815 to 641,981); a careful de-duplicator who
-  sees the repeated amount and keys it by number alone, number and run date, number and provider, number and amount,
-  number and county office, or provider and amount misses every cell (by 20,629 to 1,131,705).
-- Hazards: voided remittances (keeping them adds 1,624 to 16,864 a cell), the January 2027 run (December service)
+- B1 (silent primary, what one payment is): each payee receives one remittance in a run and every child line of it
+  carries the remittance's amount; a home in a family child care network is paid through the network's remittance, so
+  one remittance carries the children of two to five homes (496 of 12,387 home remittances, 207 homes), and the file
+  names on each line the home that gave the care, not the payee. Each county office numbers its remittances in its
+  own sequence every run (policy section 3; the dictionary), so one payment is a remittance number, a run date and a
+  county office. The readers' grouping, one amount per run date and provider, counts a network's remittance once per
+  member home: every cell high by 31,084 to 169,269. Every other key a careful de-duplicator reaches for misses every
+  cell: number alone, number and run date, number and provider, number and amount, number and county office, provider
+  and amount, run and county office with amount, number with run and amount, number with run and provider (by 58,951 to
+  1,131,873 either way); summing every line is high by 146,698 to 849,004.
+- Hazards: voided remittances (keeping them adds 1,583 to 18,063 a cell), the January 2027 run (December service)
   outside 2026, centres and exempt carers in the same file.
-- Stops (asserted): lines summed (all 20); each of the six de-duplication keys (all 20); voids kept (all 20).
+- Stops (asserted): lines summed and each of the eleven alternative keys (all 20); voids kept (all 20); voids kept on
+  the readers' key (all 20).
 
 **Hazard table.**
 
 | Hazard | Root cause | Moves | Per-ask delta |
 |---|---|---|---|
-| H1 notice and split-care lines | a child paid at two homes on the same days | A | every cell, +1,149 to +6,931 |
-| H2 voided remittances paid again | a remittance returned unpaid, reissued in the next run | A, B | A +186 to +722 on the summing path; B +1,624 to +16,864 |
-| H3 the remittance amount on every line | a remittance export at child-line grain | B | every cell, +105,815 to +641,981 when summed |
-| H4 remittance numbers per county office and run | each office numbers its run from 1 in payee-list order | B | every cell, -20,629 to -1,131,705 under any partial key |
-| H5 the January 2027 run | December service paid in the first January run | B | outside the 2026 quarters (the run date files it) |
+| H1 notice and split-care lines | a child paid at two homes on the same days | A | closed by the prompt's clause (summed: +9,072 and +16,269) |
+| H2 voided remittances paid again | a remittance returned unpaid, reissued in the next run | A, B | B +1,583 to +18,063 a cell |
+| H3 the remittance amount on every line | a remittance export at child-line grain | B | every cell, +146,698 to +849,004 when summed |
+| H4 network remittances | a home that joined a network is paid through the network's remittance | B | every cell, +31,084 to +169,269 on one per run and provider |
+| H5 remittance numbers per county office and run | each office numbers its run in its own sequence | B | every cell under a key without the county office |
+| H6 the January 2027 run | December service paid in the first January run | B | outside the 2026 quarters (the run date files it) |
 
-**Referee.** For A, the overlap of one child's lines at two homes in one county on the same weekdays; for B, the
-remittance's one amount, provider and status on every line of a number, run and county office (asserted), against the
-same number carrying other providers in other offices and other runs. Each is countable from the shipped rows and
-none needs a filed definition.
+**Referee.** For B, the remittance's one amount and status on every line of a number, run and county office
+(asserted), the same number, run and office carrying lines of several homes in every region and quarter (asserted),
+and the same number carrying other providers in other offices and runs. Countable from the shipped rows; the identity
+is filed in policy section 3 and the dictionary, and the network is never named.
 
-**Cracker sheet** (the cracker lands the call, keeps the home lines, drops voided remittances, keeps 2026 service days
-and the 2026 runs, sums care_days, and takes the repeated remittance amount once per number on its best key:
-`generator/cracker.py` on the cut pack)
+**Ceiling sheet** (`generator/ceiling.py` on the cut pack; every route scored figure by figure against the golden)
+
+| Route | Child-days | Money | Kept of 22 | Landed | Off the call |
+|---|---|---|---|---|---|
+| reader A verbatim (each child and day once; one amount per run date and provider) | 2 | 0 | 2 | 50.0 | 17.0 |
+| reader B verbatim (care_days summed; one amount per run date and provider) | 0 | 0 | 0 | 45.0 | 12.0 |
+| reader B with the clause read | 2 | 0 | 2 | 50.0 | 17.0 |
+| each of the twelve alternative money keys, child-days once a day | 2 | 0 | 2 | 50.0 | 17.0 |
+| mirror (300, care_days summed, every line's amount) | 0 | 0 | 0 | 45.0 | 12.0 |
+
+**Cracker sheet** (the device-bearing ask only; the cracker lands the call, keeps the home lines, drops voided
+remittances, keeps the 2026 runs, and takes the repeated remittance amount once on its best key)
 
 | Ask row | Figures | Cracker's path | Device that holds | Verdict |
 |---|---|---|---|---|
-| Ask A, child-days by region and half | 10 | home lines not voided, care_days summed | A1 | miss |
-| Ask B, money by region and quarter | 20 | one amount per remittance number, or per number with run date, provider, amount or county office | B1 | miss |
+| Ask B, money by region and quarter | 20 | one amount per run date and provider (both readers), or any of the eleven other keys | B1 | miss |
 
-One crack at a time (`cracker.py`): A1 cracked, the cracker keeps 10 of 30 and the pair is 37.7; B1 alone, 20 and
-46.8; both, 30 and 56.0.
+Ask A carries no device and is not a cracker row: the cracker lands both of its figures, and the ceiling sheet above
+prices them as landed on every route.
 
-Measured by: `generator/cracker.py` (run on the cut pack; Part 0's weights, the call and its components 38, the
-instructions 7, the asks 55 over the 30 ask figures; a response off the call keeps 5).
+Worst route: 2 of 22, 50.0 landed; pair with the best reader off the call 33.5. Both readers as filed (both off the
+call at 300): 17.0 and 12.0. Money cracked (number, run date and county office): 22 of 22, 100.0 landed, pair 58.5; the
+build stands on B1 holding.
+
+Measured by: `generator/ceiling.py` (run on the cut pack; Part 0's weights, the call and its components 38, the
+instructions 7, the asks 55 over the 22 ask figures; a response off the call keeps 5).
 
 Mirror leakage: 0.0 per cent of ask weight (the mirror, off the call at 300, sums care_days and the amount on every
-line and keeps none of the 30 figures).
+line and keeps none of the 22 figures).
 
-Pair ceiling: 28.5 measured on the cut pack (the cracker 45.0, the mirror 12.0); the worst single crack 46.8 (B1).
+Pair ceiling: 33.5 measured on the cut pack (the worst route landed 50.0, the best reader off the call 17.0); the
+worst single crack 58.5 (B1).
+
+**Call edge (round-1 judge, answered risk).** The full-record specifications sit at 442 to 461, inside the 450 bin;
+the judge reached 423 (fit on the years before 2023, the kindergarten flag only) and 474 to 487 (windows from 2024
+on, with a kindergarten-by-tenure interaction). No filed WHAT removes them without filing the method: the population
+(homes licensed on 31 December 2026), the window (closures during 2027) and the unit (a home's licence) are filed, and
+choosing the fit window or an interaction is the method, which stays open with the record's likelihood separating the
+candidates. Recorded as an answered risk; the call does not move.
 
 ## Layer 1 inventory
 
@@ -349,15 +380,13 @@ Pair ceiling: 28.5 measured on the cut pack (the cracker 45.0, the mirror 12.0);
 | L5 grandchildren, foster children, other relatives on the worksheet | rules 6.40.030 | worksheets | any child read as a provider's own | ruled out by SF7 and the likelihood (any own child) |
 | L6 blank birth years for legacy providers | the legacy system | licence extract | blank read as a year | call unchanged (no age terms, 462.7) |
 | L7 county names, codes and spellings across files | each system's own | lookup and ask files | a region unmapped | every county maps (asserted) |
-| L8 notice and split-care lines, voided remittances, December 2025 service | CCAP payment system | ccap_payment_lines_2026.csv | lines summed | outside the call's files; Ask A device and hazards |
-| L9 the remittance amount on every child line; numbers restarting per county office and run | CCAP payment system | ccap_payment_lines_2026.csv | amounts summed, or deduped on a partial key | outside the call's files; Ask B device |
+| L8 notice and split-care lines, voided remittances, December 2025 service | CCAP payment system | ccap_payment_lines_2026.csv | lines summed | outside the call's files; Ask A hazards (the prompt's clause closes the reading) |
+| L9 the remittance amount on every child line; network remittances carrying several homes; numbers in each county office's sequence per run | CCAP payment system | ccap_payment_lines_2026.csv | amounts summed, or deduped per run and provider or on a partial key | outside the call's files; Ask B device |
 | L10 revised food program claims and sponsor changes; twin visit records | CACFP claims and licensing systems | distractor files | none (no figure reads them) | distractors |
 
 ## Leak sweep
 
 `leak.py task176 --asof 2027-01-14`: REVIEW, no LEAK. Each REVIEW line, answered:
-- An ask figure (a child-days count) appears in the food program claims as two adjacent CSV fields read as one number
-  (suppers then snacks); a coincidence of adjacent integers, in a distractor file.
 - The policy, the supply report, the dictionary and the rules carry six or seven of the call's words because they are
   the department's own vocabulary (family child care homes, licensed, Allerton, December); none states a count, a
   rate or a forecast.
@@ -756,6 +785,11 @@ Prototypes are in the session scratchpad (r176/demog).
   side), so neither is silent. Replaced by the subsidy money ask, whose device is a property of the payment run itself
   (the remittance amount on every child line and remittance numbers restarting in each county office's run); the two
   files stay as distractors.
+- Round 1 ask layer (zip 13d6ad18, 2026-10-23): both readers took one remittance per run date and provider, which the
+  per-county renumbering never touched because a remittance was one provider's (money 20 of 20 for each); reader B
+  summed care_days and the judge named the fork in "child-days". Died as built: the renumbering device sat on a
+  property the readers' natural unit made irrelevant. Child-days closed by the prompt and shrunk to two statewide
+  figures; money moved onto network remittances, where the run-and-provider unit is the wrong one.
 
 ## Retired
 
