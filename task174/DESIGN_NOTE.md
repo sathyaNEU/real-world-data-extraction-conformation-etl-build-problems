@@ -1,6 +1,6 @@
 # task174 design note
 
-**Status: PAUSED at stage 1 on 2026-10-23 after five rebuild screens, biomedical survival, media reach, healthcare demand, regression diagnostics and ratemaking (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
+**Status: PAUSED at stage 1 on 2026-10-23 after six rebuild screens, biomedical survival, media reach, healthcare demand, regression diagnostics, ratemaking and reserving (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
 Forecasting. Three worlds were screened on this number and none yields a draw that holds; the third, the
 product-analytics retention cell of the same day, is recorded in its own finding below and in the last block of
 `## Tried and rejected`. The first is seed FC45's: a north-east
@@ -133,6 +133,19 @@ policies already holding those attributes are the attaining subset) or on unreco
 behavioural rewirings the field documents (claims absorbed under a deductible or a no-claims scale, durations
 bunched past a retroactive day or a tort threshold) are task270's family, and a credibility weight on drifting risk
 is matched by the trailing-years reflex.
+
+**The sixth cell, chosen by this build: actuarial-science-insurance / reserving-development-triangles
+(Forecasting).** Why the shape lives there: the field's standard is the aggregate development triangle, while the
+claim-level transaction file is finer than anything the triangle carries, and per-claim quantities (each claim's
+limit or retention, its scheduled payments, its payment dates against a price index, its trial date) enter a
+projection of future payments linearly and by identity for every open claim, so no part of the record escapes them.
+One candidate measured on code (`lim1.py`, scratchpad b174n/proto6) and nine on the structural screens; nothing
+holds. The finding: each per-claim identity the triangle ignores is a cap (a limit, a retention, a deductible
+recoverable), a scheduled date (a trial date, a periodic-payment schedule), a price index or a closure-speed change.
+A cap that rarely bound in the older years and binds for most recent claims, and a date that fixes each claim's
+payment, are task172's driver (a per-unit ceiling or deadline that the record seldom reached and the forward units
+mostly reach). The index is the inflation-adjusted chain ladder, a textbook method. The closure-speed change is the
+Berquist-Sherman card.
 
 ## Tried and rejected
 
@@ -494,3 +507,32 @@ is matched by the trailing-years reflex.
 - **Named-driver cover widened to any driver**: the claims denied for unlisted drivers re-paid, rule application. On
   paper.
 - **Claims-made cover priced from occurrence experience**: task130. On paper.
+- **Rebuild of 2026-10-23, sixth cell (chosen by this build): actuarial-science-insurance /
+  reserving-development-triangles (Forecasting).** Each line is one candidate, written when it died; the measured one
+  first.
+- **A fixed per-claim limit that severity inflation has brought within reach of most recent claims**, measured on
+  `lim1.py` (seeds 174 to 177, 15 accident years of 400 claims, 7 per cent severity inflation, a 50,000 limit): the
+  volume-weighted chain ladder overstates the future paid of the open years by 36 to 47 per cent against the
+  claim-level projection capped at each claim's remaining limit, a large lever. It dies on the abstraction test: a
+  per-unit ceiling that cut only the older record's largest units and now binds for most forward units is task172's
+  driver, and reserving by limit band (the leveraged effect of inflation on a fixed limit) is the field's practice.
+- **Net reserves under a per-claim excess-of-loss retention**: the same cap, and the treaty terms are applied claim
+  by claim (rule application). On paper.
+- **Large-deductible recoverables billed back to the insured**: min(paid, deductible) per claim, rule application.
+  On paper.
+- **Litigated claims settling at their scheduled trial dates, with a court clearing its backlog in 2027**: each
+  claim's own date setting its payment is task172's per-unit deadline. On paper.
+- **Periodic-payment orders paying an indexed annual amount for life**: the schedule times survival is an annuity
+  calculation (rule application), and separating them from the triangle is the population (the WHAT screen). On
+  paper.
+- **Future payments re-inflated at a forward wage or medical index**: deflating each payment by its date's index,
+  developing in real terms and re-inflating is the inflation-adjusted chain ladder, a textbook method, and the
+  forward index is a filed assumption. On paper.
+- **Reopened claims after a closure drive**: the closure-rate change is the Berquist-Sherman card, and the reopening
+  echo of a synchronised closure is task157's wave. On paper.
+- **Formula case reserves replaced by adjuster estimates after a set number of days**: case-reserve adequacy, the
+  Berquist-Sherman card's incurred half. On paper.
+- **Shock claims inside the triangle**: removing large losses and loading them separately is standard practice. On
+  paper.
+- **A shift in the report-lag mix within accident years**: composition on a recorded attribute (the report date), and
+  the claims with the forward lag profile are the attaining subset. On paper.

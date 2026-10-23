@@ -39,7 +39,7 @@
   "forcing_event": "purchase_order_or_contract (the term sheet) was this world's honest key, banned by task170 and held for task165 at the time of the screen",
   "prototypes": "scratchpad b174/proto: physics.py, calib.py to calib3.py, lever.py, screen_common_exposure.py, slip_lever.py, vintage_proto.py to vintage_proto5.py"
  },
- "resume": "PAUSED 2026-10-23 at stage 1 after five rebuild screens (biomedical survival, media reach and frequency, healthcare demand, regression diagnostics, ratemaking): no card registered, nothing cut; the coordinator assigns another cell (screen_bio, screen_media, screen_health, screen_diagnostics, screen_ratemaking and the design note's ## Rebuild (2026-10-23)).",
+ "resume": "PAUSED 2026-10-23 at stage 1 after six rebuild screens (biomedical survival, media reach and frequency, healthcare demand, regression diagnostics, ratemaking, reserving): no card registered, nothing cut; the coordinator rests the number while other builds proceed (screen_bio, screen_media, screen_health, screen_diagnostics, screen_ratemaking, screen_reserving and the design note's ## Rebuild (2026-10-23)).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -99,5 +99,12 @@
   "paper": "fifteen on the structural screens (each a line in the design note): deductible change (subset, card default, task270), accident forgiveness (task270), retroactive period and no-fault threshold bunching (task270 family, fork), limits (card default, subset), ACV to replacement cost (rule, WHAT), mandatory coverage (subset or unidentified), new-business stop (subset), pay-per-mile (subset, premise), rate-change dislocation (subset or fork), group turnover (standard practice, subset), per-occurrence deductible (reading or rule), any-driver cover (rule), claims-made (task130)",
   "finding": "a forward coverage or benefit change is the benefit-change factor executed claim by claim (rule) or acts on the unobserved part of a severity distribution (the card's default or a fork); a change in who buys is selection on recorded attributes (subset) or unrecorded ones (unidentified); behavioural rewirings are task270's family; credibility on drifting risk is matched by the trailing reflex",
   "prototypes": "scratchpad b174n/proto5: cred1.py"
+ },
+ "screen_reserving": {
+  "assigned": "sixth cell 2026-10-23, chosen by this build: actuarial-science-insurance / reserving-development-triangles (Forecasting); why the shape lives there: per-claim quantities in the claim-level transaction file enter future payments by identity for every open claim while the field's standard is the aggregate triangle",
+  "measured_limits": "fixed per-claim limit reached by inflated severities (lim1.py, seeds 174-177): chain ladder +36 to +47 per cent against the claim-level capped projection; dies on the abstraction test against task172 (a per-unit ceiling the record seldom reached and the forward units mostly reach), and limit-band reserving is practice",
+  "paper": "nine on the structural screens (each a line in the design note): XL retention (cap, rule), deductible recoverables (rule), trial-date settlements (task172), periodic-payment orders (rule, WHAT), forward index (inflation-adjusted chain ladder, textbook), reopens after a closure drive (Berquist-Sherman, task157), formula case reserves (Berquist-Sherman), shock claims (practice), report-lag mix (subset)",
+  "finding": "each per-claim identity the triangle ignores is a cap or a scheduled date (task172's driver), a price index (textbook) or a closure-speed change (the Berquist-Sherman card)",
+  "prototypes": "scratchpad b174n/proto6: lim1.py"
  }
 }
