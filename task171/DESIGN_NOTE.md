@@ -1,294 +1,69 @@
 # task171 design note
 
-**Status: PAUSED, architecture 3 spent at Gate F on ce04ed65 (stage 4, 2026-10-23); the number stays open and the next cell is screened under `## Rebuild (2026-10-23)`.**
-The cell is economics-econometrics / discrete-choice-limited-dependent-variable-modeling; the draw is an electric
-cooperative's optional overnight rate. The earlier screens are kept below as history under `## Earlier screens`.
+**Status: DRAWING, architecture 4 (redrawn 2026-10-23 after architecture 3 was spent at Gate F; the number stays open).**
+The cell is economics-econometrics / forecasting-forecast-evaluation; the draw is a turnpike authority's first
+all-electronic tolling year and the toll it will collect on what it bills by mail. Architectures 1 to 3 are kept under
+`## Earlier screens`.
 
 ## Draw
 
-- **Cell.** Client domain Economics & Econometrics, task type `discrete-choice-limited-dependent-variable-modeling`
-  (serves Forecasting). Objective Forecasting: the call is how many of the cooperative's standard-rate members will
-  have moved to the optional overnight rate by the end of each quarter of 2027, and the annual revenue those members
-  give up, a window not yet open, pinned by the record of the optional evening-peak rate offered from March 2024.
-- **World.** Sablewood Electric Cooperative, a fictional member-owned rural distribution cooperative in a fictional
-  two-county service territory in the United States (its people, systems and records are fictional; the field's
-  method is real). Residential members on the standard rate R-1 were offered the optional evening-peak rate R-TOU
-  (4 to 9 p.m. peak) from 1 March 2024; R-TOU closes to new members on 31 December 2026 and the optional overnight
-  rate R-ON (11 p.m. to 6 a.m. off-peak) opens to R-1 members on 1 January 2027, marketed the way R-TOU was. The
-  manager of rates and pricing files the 2027 enrolment and revenue forecast with the board's rates committee for the
-  2027 budget. Records to billing month October 2026: the AMI load-research export (meter by billing month by
-  load-research period), member and account records with rate history, the CRM's rate-change requests, meter
-  exchanges, the rate schedules, billing summaries.
-- **Card.** `domain` economics-econometrics, `subdomain` discrete-choice-limited-dependent-variable-modeling,
-  `objective` forecasting, `shape` 02, `decision_type` quantity_figure, `answer_unit` count, `gap` [time, population],
-  `pattern` [E], `generators` [G14, G3, G13], `gate_g` forecasting, `calibration_form` existing_book_actuals,
-  `stump_strategy` forecast_method_backtest, `context_artifact` planning_thread, `role_family` product_manager, `forum`
-  committee_or_panel, `forcing_event` launch_or_rollout, `org_family` cooperative_or_member_body; `stump_class`
-  analytical; `layer2_family` estimand_identification; `layer2_pattern`
-  own:optional-rate-take-up-priced-on-each-members-own-pre-offer-saving. People from `guard.py names --geo "United
-  States" --seed 171`: Wendy Morris, Bryan Castro.
-- **Axes, and why each value is the honest one.** The last three live cards (task273, task169, task478) hold
-  regulator_or_inspector, council_or_assembly and board_of_directors, vote_or_meeting, budget_or_appropriation and
-  purchase_order_or_contract, and government_agency, research_or_statistics_office and local_government. A
-  cooperative's rates are set by its own board on its rates committee's recommendation (committee_or_panel), the
-  forecast is forced by the overnight rate opening on 1 January 2027 (launch_or_rollout), and the organisation is a
-  member body (cooperative_or_member_body). The decisive gap is time (the evidence is the evening rate's first year
-  on the use members had before it was offered; the bet is the overnight rate's first year on 2026 use), which is
-  also what cleared test.same_driver against task177 (population first).
-- **Redrawn under the registration lock.** task175 filed composition_mix and finance_controller minutes before
-  this card. The strategy is now forecast_method_backtest, and it is the honester key: `strategies.md` F6 is a pooled
-  yield carried onto a moved base failing forward because the rate is stationary only in a constructed exposure,
-  which is this draw exactly (the evening rate's take-up is stationary across rate designs only as a response to
-  each member's own dollar saving on the use it chose on, rebuilt from the meter log, and the pooled take-up carried
-  onto the overnight rate fails). The role is product_manager: the manager of rate products owns the optional rates
-  the way a product manager owns a product line.
-- **Guard.** `guard.py check` WARN only: repeat.gate_g and overuse.gate_g (the objective is Forecasting and the
-  forecast itself carries the call, so `forecasting` is the honest mechanism); repeat.decision and
-  repeat.question_form against task175 (the call is a count of members and a dollar figure, so quantity_figure and
-  how-many are what the decision is). The older same-puzzle and same-driver
-  signatures (task117, task137, task155, task166, task37, task44, task97, task481) carry one differentiation line
-  each on the card. `slots` on the mechanism's words and on the setting's (tariff, optional rate, take-up, enrol,
-  time-of-use, meter) found no earlier screen of an optional rate's take-up.
-- **Strategy.** forecast_method_backtest: the members who take an optional rate are the members it pays, so a pooled
-  take-up carried from the evening rate onto the overnight rate fails forward; the invariant is the take-up response
-  to each member's own dollar saving, constructed from the meter log on the use each member chose on.
-- **Data-native sentence.** In Sablewood's record a member took the evening rate by what that rate would have saved
-  it on its own use in the year before the offer, and once on the rate it moved use out of 4 to 9 p.m., so the meter
-  data after March 2024 show the evening rate's members cheaper on it than the saving they chose on; only the twelve
-  billing months to February 2024 show the saving the choice was made against, and the overnight rate pays a
-  different set of members (overnight-heavy, not evening-light) than the evening rate's takers.
-- **Sources read, and how this differs.**
-  - `layer2-rigor-patterns.md` discrete-choice 1 (willingness to pay as a coefficient ratio), 2 (IIA and nesting for a
-    close new alternative), 3 (scale across samples): none is the decisive step; R-ON is not offered beside R-TOU, so
-    no substitution pattern decides, and the saving enters in dollars on one sample.
-  - task155 (this cell, shipped): a casual's acceptance of a call-in priced on its position against the casual's own
-    rostered shift. Here the choice is an optional rate priced on the member's own bill saving, and the decisive read
-    is which year of use the earlier rate's response is measured on.
-  - task137 (composition at a repricing, two classes rebuilt from entry cohorts), task177 (an effect conditioned on
-    days to each unit's own decision), task165 (a gain conditioned on own baseline): each conditions a measured rate
-    on a property rebuilt from history; here the property is a bill saving priced from metered use, and the
-    history's later use is contaminated by the earlier rate itself.
-- **Screens run as code** (scratch `b171n/proto/tou3.py`, `tou4.py`; 40,000 members, three seeds per setting): the
-  golden family (logit, logit with household covariates, probit, 25 saving bins, logit with consumption, a monthly
-  discrete-time hazard) agrees within 0 to 3 per cent on the year-end count and within -2 to +6 per cent on the
-  shortfall, with seed sigma about 1 per cent; the rivals measured against the golden logit (count / shortfall):
-  the evening rate's first-year take-up at the average member's change +14 to +18 / -103 to -105; its cumulative
-  take-up +41 to +45 / -104 to -106; its takers' overnight change carried +14 to +18 / +32 to +69; savers only +14 to
-  +18 / +11 to +46; the take-up response read on 2026 use -56 to -58 / -26 to -34; read on the average of pre-offer
-  and 2026 use -35 to -39 / -4 to +3; consumption and evening share as covariates -5 to +3 / -26 to -30; the saving in
-  per cent of the bill +3 / -10 to -12 (rejected by the likelihood); the cumulative take-up on the right saving +23 to
-  +27 / +3 to +10. Every rival misses at least one of the two figures by 10 per cent or more.
-
-- **Stage 3 record.** `checks.py` 76 of 76, `verify.py` 0 problems, two byte-identical builds, `figures_check.py` 41 of
-  41, `precut.py` exit 0, `voice-check.py` PASS, `leak.py` REVIEW with four lines, each answered: the committee paper
-  carries the call's nouns because it is the request, without a figure; the schedules use "evening", "member",
-  "optional" and "record" as a tariff does; the service accounts and the billing summary name the districts beside
-  counts and rank nothing. `guard.py surface`: no persona pair; fifteen promoted pairs on axis collisions only (the
-  neighbouring numbers' gap and decision type, task167's pattern E and one shared column set), for the author's
-  adjudicated read if wanted. `guard.py heart` WARN only. Pair ceiling 29.6 by `generator/cracker.py`.
+- **Cell, and why this one.** The coordinator left the cell to this build on four conditions: the forward window
+  changes the process in a way no file states, the decisive step is not the textbook set-up of the obvious
+  calibration, no ask device is visible hygiene, and no cell named in this note or a sibling's `## Rebuild` is reused.
+  Client domain Economics & Econometrics (a public authority's revenue forecast is a fiscal read), task type
+  `forecasting-forecast-evaluation` (serves Forecasting). The healthcare utilization cell was screened first and died
+  on code (`## Tried and rejected`), and `urban-regional-science` with Forecasting is banned by `ban.pairing` against
+  task175, which is where a toll road would otherwise sit. In 2027 the Authority removes its cash booths: every vehicle
+  without a transponder is billed by mail. How much of that toll is eventually collected is not on file; it is
+  measured on the overnight hours since 3 March 2025, when the booths have been closed and the cash lanes' users
+  billed by mail. The textbook calibration matures those invoices by their own age (six months, a year). The
+  enforcement cycle does not: an in-state plate's invoice unpaid at 60 days is collected at the plate's next two-year
+  registration renewal, so in a twenty-month record most in-state invoices are still waiting, and the matured share is
+  read on the invoices whose plate has passed its renewal since the hold.
+- **World.** The Marrowfield Turnpike Authority, a fictional public authority running a fictional 48-mile toll road
+  with three mainline barrier plazas in an unnamed US state (people, systems and records fictional; the field's method
+  real). Its toll-by-mail back office invoices each plate monthly; the state Motor Vehicle Division places a
+  registration hold on in-state plates; a collection agency works out-of-state plates and returns what it cannot
+  collect. The AET programme manager files the first AET year's toll-by-mail revenue in the revenue certificate to the
+  bond trustee. Records to 31 October 2026.
+- **Card.** `domain` economics-econometrics, `subdomain` forecasting-forecast-evaluation, `objective` forecasting,
+  `shape` single-figure, `decision_type` quantity_figure, `answer_unit` currency, `gap` [time, population], `pattern`
+  [none, E], `generators` [G13, G14, G7], `gate_g` forecasting, `calibration_form` existing_book_actuals,
+  `stump_strategy` maturity_censoring, `context_artifact` planning_thread, `role_family` programme_officer, `forum`
+  customer_or_counterparty, `forcing_event` cutover_or_migration, `org_family` government_agency; `stump_class`
+  analytical; `layer2_family` estimation_fit; `layer2_pattern`
+  own:toll-by-mail-ultimate-collection-matured-on-each-plates-registration-renewal. People from `guard.py names --geo
+  us --seed 171`: Brittany Moon (AET programme manager), Zachary Mcneil (toll-by-mail back office).
+- **Axes, and why each value is the honest one.** The last three live cards (task170, task274, task175) hold
+  committee_or_panel, board_of_directors and executive_team; budget_or_appropriation, audit_or_inspection and
+  statutory_or_regulatory_filing; hospital_or_health_provider, cooperative_or_member_body and utility_or_infrastructure;
+  strategies other, population_selection and composition_mix; roles other, operations_director and finance_controller.
+  The forecast goes into the annual revenue certificate the trust agreement requires the Authority to deliver to the
+  bond trustee before the AET year, so `customer_or_counterparty` is the forum; the forcing event is the cutover
+  itself; a public authority is a `government_agency`; the requester runs the AET conversion programme
+  (`programme_officer`); the decisive move is a censoring construction on a clock each payer carries
+  (`maturity_censoring`); the population step (the cash lanes' own users, not the violators) is the supporting E.
+- **WARN answers.** `people.first` Zachary appears once in an older build (task141), a different surname and world.
+  `overuse.org_family` government_agency is honest for a public authority. `repeat.gate_g`, `overuse.gate_g` and
+  `repeat.decision` follow from a forecast quantity in the Forecasting lane. `repeat.deliverables` (one workbook) is the
+  product a revenue certificate's back-up is. The older same-puzzle and same-driver signatures are differentiated on the
+  card line by line (task102, task130, task134, task162, task178, task501, and this slot's architecture 3).
 
 ## Default path
 
-The strong analyst's route, every field read and every filed rule applied (the field's textbook for an optional
-rate's take-up: a binary choice on the member's own bill saving, fitted on the earlier rate and applied to the new one):
+(stage 2)
 
-1. Reads the committee paper (RC-26-19) for the population (R-1 services on the books at October 31, 2026 billed
-   for all twelve test-year months: 21,490), the outcome (R-ON in effect by December 31, 2027) and the revenue basis
-   (R-1 bill less R-ON bill on the 2027 schedules at test-year use, counted in full).
-2. Reads the rate schedules for the R-1, R-TOU and R-ON prices and the load-research periods, and the CIS rate
-   assignments for R-TOU's first year: 2,017 of the 25,559 R-1 services open on March 1, 2024 had R-TOU in effect by
-   the February 2025 read.
-3. Prices every service's bill on R-1 and on R-TOU from the load-research extract, on its latest twelve billing months
-   (November 2025 to October 2026), and fits the first-year take-up on that saving (logit, or a monthly hazard).
-4. Prices every population service's R-1 and R-ON bills on the same twelve months and runs the overnight-rate savings
-   through the fitted take-up.
-5. Sums the probabilities and the probability-weighted savings.
+## Earlier screens (architectures 1 to 3, kept as history)
 
-**Ends on:** 1,000 services and $100,000 (991 services and $109,934 unrounded; the hazard form 1,092 and $85,306,
-1,000 and $75,000).
-**Golden:** 2,250 services and $200,000 (2,213.3 and $195,499 unrounded), with the evening rate's saving read on
-each service's use in the twelve billing months before the offer (March 2023 to February 2024).
+**Architecture 3 (2026-10-23, spent at Gate F on ce04ed65).** Sablewood Electric Cooperative's optional overnight
+rate R-ON for 2027, its members and shortfall priced on each R-1 member's own bill saving through the first-year
+take-up of the March 2024 evening-peak rate R-TOU, read on the use of the year before that rate was offered because
+its takers moved use out of 4 to 9 p.m. after joining (golden 2,250 services and $200,000 against the default path's
+1,000 and $100,000). Stage 3 was green (checks 76 of 76, verify, byte-identical rebuilds, figures_check 41 of 41,
+precut 51 checks, voice-check PASS) and scored reader B landed the call and all 20 ask figures, calibrating the launch
+cohort on its pre-launch use by default; its card moved into `lineage` with that fate and its generator was replaced
+by architecture 4's. The death line is in `## Tried and rejected`.
 
-## Stump sentence
-
-A competent solver fits the evening-peak rate's first-year take-up on each service's saving under it, read on the
-latest twelve billing months, runs the overnight-rate savings through it and files 1,000 services and $100,000;
-the step that lands it there is reading the saving on use the evening rate's takers had already changed by taking
-it (their 4 p.m. to 9 p.m. share fell from 0.244 to 0.208 after joining while everyone else's held at 0.280), when
-they chose on the use of the year before the offer, so the response comes out flat and the takers look like members
-the rate barely paid.
-
-## Three rules
-
-- Task type: discrete-choice-limited-dependent-variable-modeling (Economics & Econometrics; serves Forecasting & Predictive Modeling).
-- Domain test: the deciding quantity is each eligible service's probability of taking an optional rate within its first year, a binary choice whose price term is the service's own bill saving on the use it could see, estimated as a discrete-time logit hazard on the 2024 evening rate's first year and aggregated over the 2026 population; the revenue figure is the covariance of that probability with the saving.
-- Swap: "which services will take an optional overnight rate, and what will it cost" read with hospital beds or school places for kWh has no member pricing its own alternative on its own bill and no record of who took the earlier option, so the choice model has nothing to price and the call stops making sense.
-- Layer 1: the meter data management system's load-research extract splits a read period across two meter rows at an exchange (the 2025 firmware programme, failed meters) and marks some reads estimated; a move-in starts a new service account at the same meter; the CIS export writes service dates as MM/DD/YYYY; the TOU enrolment module writes the R-TOU rate rows, re-issues them at the January 2026 price change and is not end-dated by the account-closure batch; the MDM re-collects an estimated month for a current R-TOU meter and keeps both rows; the CRM stamps times in UTC, keeps duplicate web submissions as closed cases, and keys a web request to the member's first service; the billing MIS reports by issuing office, Pike Ridge's bills issued from Brisco Bend since July 2025. None is placed to be caught, and none moves the call (checks.py R2 and SEP).
-- Layer 2: estimand_identification, own pattern: the take-up response that carries from one optional rate to another is the response to the saving on the use the member chose on, and the earlier rate's takers changed that use by taking it.
-- Decisive step: read the evening rate's take-up against each service's saving on the twelve billing months before the March 2024 offer, not on later use the rate itself changed, and carry that response to the overnight rate's savings on test-year use.
-- Not semantics: every field, period, price, rate row and date read correctly still leaves the analyst choosing which year of use prices the evening rate's saving, and the latest year, which the extract holds for every service and which the forecast's own revenue uses, files 1,000 and $100,000.
-- Not rule application: no filed rule says which use a take-up response is read on or that members respond to their own saving; executing the paper's population, outcome and revenue sentences and the tariff's prices leaves the take-up model open, whose standing family (monthly hazard, 12-month logit and probit, 20 and 40 saving bins, with consumption or district, closed services counted as declining) spreads 4.8 per cent on services and 2.7 per cent on dollars and lands one printed cell, while the enumerated family including the latest-use and all-years readings spreads 991 to 2,298 services; the ruling-out is the record's own shift (takers' evening share 0.244 to 0.208, others 0.281 to 0.280), visible only by comparing a service's years.
-- Analyst test: a strong analyst who prices every bill correctly and fits take-up on each service's own saving, read on the latest twelve billing months, files 1,000 services and $100,000 against the golden's 2,250 and $200,000.
-- Estimand: the committee paper RC-26-19 files the population (R-1 services on the books at October 31, 2026 billed for all twelve billing months November 2025 to October 2026, none closing), the outcome (R-ON in effect on December 31, 2027), the revenue (R-1 bill less R-ON bill on the 2027 schedules at test-year use, counted in full), and the prompt files the rounding.
-- No decoy: nothing is planted; no memo, draft, briefing or stakeholder figure carries a wrong count or shortfall; the shift in the takers' use is what an evening time-of-use rate does and is never stated.
-- No certified replay: no published or certified figure is reproduced to recover a method; the evening rate's first-year take-up is read from the CIS rows and the extract, and no shipped file prints a take-up or a saving.
-- Lesson: an earlier option's takers are its outcome as well as its evidence; a response measured after they took it is a response to the option's own effect, and the record shows the before only in the year before the offer. No build on file reads a choice response on pre-treatment covariates beside a post-treatment record of the same units.
-
-## Readability screen
-
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 the evening rate's first-year take-up at the average member's change (1,750, $50,000) | no | no | yes | no | no | yes | readable |
-| 1 the takers' own overnight change carried, or savers only (1,750, $175,000 or $75,000) | no | no | yes | no | no | yes | readable |
-| 2 take-up on consumption and evening share (1,750, $75,000); on all years' use (1,500, $175,000) | no | no | yes | no | no | no | readable |
-| 3 take-up on own saving read on the latest twelve months (1,000, $100,000) | no | no | yes | no | no | no | readable |
-| 4 (decisive) the saving read on the year before the offer (2,250, $200,000) | no: no sentence names a year of use for the response or says members' use changed | no: the extract carries every month alike, no flag on the takers | no: the reflex is the latest year, which the forecast's own revenue uses | no: no control ties only under the pre-offer year | no: the battery finds nothing, the rows are clean | no: a fitted response, not a ratio | silent |
-
-## Semantic fork table
-
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | R-1 services at October 31, 2026 | active, R-1 in effect, billed all twelve test-year months | active and not on R-TOU | same call (21,490 both) | asserted equal |
-| SF2 | moved by December 31, 2027 | R-ON in effect at a read on or before December 31 | a request received by then | not observable | the paper: "R-ON is in effect for it on that date" |
-| SF3 | none closing | the population as it stands | a closure hazard applied | about 4 per cent fewer | the paper: "no service is counted as closing or opening" |
-| SF4 | revenue they give up | the full twelve test-year months, whatever month of 2027 | months on R-ON in 2027 only | a lower bin | the paper: "counted in full whatever month of 2027 the service moves" |
-| SF5 | test-year use | billing months November 2025 to October 2026 | calendar 2026 | incomplete at the as-of | the paper names the billing months |
-| SF6 | the cohort's part-year services | kept on their months | left out of the fit | same call (asserted) | records converge; annualising them is rejected by the likelihood (SF6b) |
-| SF7 | customer charges | equal on R-1 and R-ON in 2027 | a fixed term | none | the schedules |
-| SF8 | services against members | service accounts | membership numbers | same call (asserted) | the prompt counts services |
-| SF9 | expected against likely count | the expected number | the median of draws | same call (asserted) | records converge |
-| SF10 | rounding | nearest 250 services, nearest $25,000 | finer | n/a | the prompt |
-
-## Ladder
-
-| Rung | Route | Services | Revenue | Printed | Dies to |
-|---|---|---|---|---|---|
-| 0 | first-year rate times the population, average change | 1,729 | $39,577 | 1,750, $50,000 | the takers' saving (enrollees saved, the average member does not) |
-| 0b | cumulative R-TOU share to October 2026 | 1,995 | $45,668 | 2,000, $50,000 | the first-year window and the takers' saving |
-| 1 | takers' profile carried | 1,729 | $170,211 | 1,750, $175,000 | the overnight rate pays different members |
-| 1b | savers only at the first-year rate | 1,729 | $79,945 | 1,750, $75,000 | take-up rises with the saving |
-| 2 | consumption and evening share as covariates | 1,636 | $81,742 | 1,750, $75,000 | the covariates do not price the overnight rate |
-| 2b | saving in per cent of the bill | 1,997 | $134,778 | 2,000, $125,000 | dollars fit by 40 log-likelihood units and more |
-| 2c | saving on all years' use | 1,411 | $163,500 | 1,500, $175,000 | half the years are after the change |
-| 3 | saving on the latest twelve months (logit; hazard 1,092 and $85,306) | 991 | $109,934 | 1,000, $100,000 | the takers changed that use |
-| 4 | saving on the year before the offer (golden) | 2,213.3 | $195,499 | 2,250, $200,000 | |
-
-Margins: the golden family (eight forms) sits in one printed cell on both figures, 68 services and $6,155 from the
-nearest edge at its tightest member; every rival misses both printed figures, the nearest by one 250 cell (per cent,
-cumulative) and two $25,000 cells. Worth: rung 3 to the golden moves services 2.2x and revenue 1.8x.
-
-## Closure table
-
-| Axis | Name | Reading | Closure |
-|---|---|---|---|
-| 1 | Population | R-1 services at Oct 31 2026, billed all twelve test-year months, none closing | filed in RC-26-19; SF1 asserted |
-| 2 | Unit of account | service account | the prompt says services; SF8 same call |
-| 3 | Attribution window | R-ON in effect by Dec 31 2027 | filed; reads in 2027 |
-| 4 | As-of dating | rate in effect at Oct 31 2026; extract to billing month Oct 2026 | filed; C1 |
-| 5 | Version basis | 2027 schedules for the forecast, 2024 for the evening rate's offer | the schedules' effective dates |
-| 6 | Denominator | expected services among the population | filed population |
-| 7 | Weighting | each service once | C1 |
-| 8 | Window length | twelve billing months each side | filed for the test year; the offer year by the schedules |
-| 9 | Boundary inclusivity | in effect on Dec 31 2027 inclusive | filed |
-| 10 | Rounding path | sum unrounded, round once | the prompt |
-| 11 | Tie-break | none needed | C1 |
-| 12 | Maturity and censoring | closures before a read leave the risk set | the record's service ends; family converges |
-| 13 | Order of operations | price bills, then take-up, then sum | C1 |
-| 14 | Row order | none matters | C1 |
-| 15 | Duplicate resolution | re-collected reads only on current R-TOU meters, outside the call's rows | SEP asserted |
-| 16 | Identity normalisation | service account throughout | dictionary |
-| 17 | Netting against gross | savings net per service, negative savers kept | filed revenue sentence |
-| 18 | Dimensional units | kWh and dollars per kWh | the schedules and dictionary |
-| 19 | Code and status semantics | R-1, R-TOU codes; Active and Final | dictionary |
-| 20 | Integerisation | the expected count is not integerised before rounding | C1 |
-| 21 | Clause scope | the paper's sentences govern the call; the tables' sentences the tables | the paper's headings |
-| 22 | Forward window contents | R-ON marketed the way R-TOU was | filed in RC-26-19 |
-
-## Literal reader
-
-Executed word for word, the paper's population, outcome and revenue sentences and the schedules' prices fix every
-input of the golden's quantity, and every literal reading of them (SF1 to SF10) lands the same call or is ruled out
-by a quoted sentence; the easy answer comes from the easy method (the latest year's saving) on the same literal
-estimand, never from another reading.
-
-## Oracles
-
-None tie only under the golden. The billing summary by office is a residential total of every schedule, matched by
-both the golden and the default path alike; the CRM ties the evening rate's completed enrolments to the rate rows
-under every reading; no shipped figure prints a take-up, a saving or a forecast.
-
-## Ask sheet
-
-**Main call's declared row population:** the extract's rows for the 25,559 cohort services in billing months March
-2023 to February 2024 and for the 21,490 population services in November 2025 to October 2026; the CIS R-1 rows in
-effect on March 1, 2024 and October 31, 2026 and the cohort's first R-TOU starts; service starts and ends. Device and
-hazard rows in it: 0 (`checks.py` SEP: no re-collected read in the cohort's year before the offer or on a population
-service; no open R-TOU row of a closed service in the population; every re-issued R-TOU row starts after the June 2025
-upgrade, after the cohort's first year; first-year joins read the same from rows or spells; the call never reads the
-CRM).
-
-**Ask A. For the services on R-TOU at October 31, 2026, by district: how many had been on it without a break since
-November 1, 2025 or earlier, and the kWh all of them used 4 p.m. to 9 p.m. and 11 p.m. to 6 a.m. in the test year**
-(15 figures, whole numbers). H18 home: the book R-TOU carries into 2027 as it closes to new service, the committee's
-second budget line beside R-ON. Path: the CIS rate rows and service accounts, the extract, the dictionary (four files,
-nine columns).
-- A1 (re-written rows; silent primary): since the June 2025 upgrade the TOU module re-writes a member's R-TOU row at
-  any account maintenance, so 1,052 rows end one day before a same-code row begins; the spell is the run of
-  contiguous rows, and the row in effect at October 31 starts at the last re-write. Every tenure cell moves (Arden
-  Flats 247 to 174, Brisco Bend 396 to 269, Kessel Mill 547 to 364, Pike Ridge 149 to 102, Tamsey 358 to 245).
-- A2 (re-collected reads; seen, reflex repair wrong): 697 estimated months of current R-TOU meters were re-collected
-  and the MDM keeps both rows, the estimate loaded first; the battery's keep-first drop keeps the estimate. Every kWh
-  cell moves (by 46 to 642 kWh).
-- A3 (open rows on closed services; shared hazard): the TOU module's rows are not end-dated by the closure batch,
-  424 closed services still show R-TOU open; a face-value read adds 56,769 to 155,548 kWh per district.
-- Stops (asserted): in-effect row's start (all 5 tenure cells); keep-first on duplicated meter-months (all 10 kWh
-  cells); open rows taken at face value (every cell).
-
-**Ask B. The R-TOU enrolment requests received March 1 to May 31, 2024, local time, by district, and how many came
-through the web form, a duplicate submission counted once, each in the district of the service it put on R-TOU**
-(10 figures). H18 home: R-ON is marketed the way R-TOU was, so the launch's request load by district and channel is
-the member services plan beside the forecast. Path: the CRM workbook, the CIS rate rows, the service accounts (three
-files, eight columns).
-- B1 (a web request keyed to the member's first service; silent primary): for a member holding a house in town and a
-  farm dwelling, the web form keys the case to the member's first service while the CIS change goes onto the
-  dwelling; the case's service never gets an R-TOU row and the member's other service gets one at the next read.
-  Every cell moves (Sedge Flats 159 and 93 to 175 and 107, Brisco Bend 277 and 152 to 284 and 159, Kessel Mill 364 and
-  224 to 354 and 215, Pike Ridge 71 and 37 to 70 and 36, Tamsey 267 and 148 to 255 and 137).
-- Hazards: UTC stamps (22 cases change month in local time), duplicate web submissions closed as duplicates.
-- Stops (asserted): the named service (all 10); UTC months and every case (the mirror, 9 of 10 miss).
-
-**Hazard table.**
-
-| Hazard | Root cause | Moves | Per-ask delta |
-|---|---|---|---|
-| H1 re-written TOU rows | account maintenance through the TOU module since June 2025 | A | tenure cells, -47 to -183 |
-| H2 re-collected reads | the MDM's TOU re-collection keeps the estimate | A | kWh cells, 46 to 642 |
-| H3 open TOU rows on closed services | the closure batch skips the module's rows | A | every cell of a face-value read |
-| H4 first-service keying | the web form keys to the member | B | every cell, 1 to 16 |
-| H5 UTC stamps, duplicate submissions | the CRM | B | the face-value read |
-
-**Referee.** A1: the contiguous same-code rows and the tariff's once-in-twelve-months term; A2: two rows of one meter
-and read period; B1: the R-TOU row on the member's other service at the read after the case. Each is countable from
-shipped rows.
-
-**Cracker sheet** (`generator/cracker.py` on the cut pack: the call landed, services open at October 31 filtered,
-every filed rule executed, the battery's keep-first repair, the in-effect row's start, the named service)
-
-| Ask row | Figures | Cracker's path | Device that holds | Verdict |
-|---|---|---|---|---|
-| Ask A, tenure and kWh by district | 15 | in-effect row's start; keep-first on duplicated meter-months | A1, A2 | miss |
-| Ask B, requests and web requests by district | 10 | local months, duplicates dropped, the named service | B1 | miss |
-
-Measured by: `generator/cracker.py` (Part 0's weights: the call and its components 38, the instructions 7, the asks
-55 over the 25 ask figures; a response off the call keeps 5).
-
-Mirror leakage: 4.0 per cent of ask weight (the mirror keeps 1 of 25: Pike Ridge's web count).
-
-Pair ceiling: 29.6 measured on the cut pack (the cracker 45.0, the mirror 14.2). The honest risk: A1 falls to a reader
-who builds spells from contiguous rows and A2 to one who keeps the actual read, so a reader taking both lifts the
-cracker by 22 points; B1 is the silent one.
-
-## Earlier screens (architectures 1 and 2, kept as history)
 
 **The 2026-10-19 status: PAUSED at stage 1, no card registered, nothing cut.** The receiving-desk architecture was
 re-rooted on the coordinator's call, and the re-draw screened the actuarial mortality-longevity cell on code
@@ -364,6 +139,8 @@ with them.
 
 - **Rebuild 2026-10-23, measured inside architecture 3 before the pack was frozen.** (1) A take-up truth with one decision and a fixed launch-response curve put the textbook discrete-time hazard 10 to 15 per cent under the 12-month logit on the shortfall, so the truth is the monthly logit hazard the field writes, and the 12-month logit, probit and saving bins sit within 4.8 per cent of it on services. (2) With the overnight rate's customer charge above R-1's, the overnight savings sat left of the evening rate's and every form extrapolated in the lower tail; equal customer charges and the overnight rate's top savers kept inside the evening rate's range removed it. (3) A forecast population with part-year services forked on annualising their saving (2,298 services and $206,671 against 2,216 and $201,673); the paper now files the population as the services billed in all twelve test-year months, and annualising the cohort's part-year savings is rejected by 235 log-likelihood units. (4) Ask B by district and month left 3 to 7 of 15 cells unmoved by the first-service keying, so it is graded by district, with the two-service members' homes in town and their farm dwellings out of town. (5) A re-issue of every R-TOU row at one date put every tenure cell at zero under the in-effect row's start, a loud failure; the re-writes now follow account maintenance after the June 2025 upgrade (42 per cent of spells). (6) Districts named Coldwater and Velma were renamed (Brisco Bend, Tamsey) for real places with utilities, and Arden Flats (Sedge Flats) for reading as a person's name.
 - **Architecture 3 (optional-rate take-up, Sablewood Electric Cooperative) spent at Gate F on ce04ed65, 2026-10-23.** Scored reader B filed 2,250 services and $200,000 and all 20 ask figures. Its path: "Cohort = R-1 services at launch, billed 12 months pre-launch, open through 2025-02-28; outcome = on R-TOU 12 months after launch. Logistic on annual dollar saving (R-1 minus R-TOU, 2024 rates, pre-launch use) fits best"; for the asks, "consecutive R-TOU rows (1-day gap) merged into spells ... after dropping the EST row of each EST/ACT duplicate" and "CRM times UTC converted to local ... 'Closed - duplicate' rows dropped". A careful reader calibrating take-up on a launch cohort reads the cohort's pre-launch covariates by default, because that is the textbook way to set up a launch cohort, so the decisive step was the default; and every ask device (spell gaps, estimate and actual duplicates, UTC, duplicate-closed rows) was visible hygiene the battery executes.
+- **Rebuild 2026-10-23, after architecture 3: a regional hospital emergency department's low-acuity walk-ins deterred by its posted wait, a 2027 fast-track holding that wait at 45 minutes (healthcare-delivery utilization-access-demand-forecasting; scratch `b171n/proto2/ed2.py`, `screen3.py`, `screen4.py`).** A slotted priority-queue ED with a queue-based hourly posted wait, deterrence exp(-beta x posted) on CTAS 4 and 5 walk-ins, unfilled physician shifts as the exogenous shifter. The lever is 15 to 25 per cent of the CTAS 4 and 5 count, and the naive Poisson with hour-of-week effects is biased by the shared demand shocks (beta 0.05 to 0.10 against 0.13 to 0.18). It died on the family: with the truth at beta 0.18 the deterrence-aware estimators split, Poisson with day effects 0.205 to 0.214, day-demeaned log OLS 0.123 to 0.174, the Wald ratio on the shortfall 0.135 to 0.151, 2SLS on logs 0.152 to 0.182, the control function 0.150 to 0.166, forecasts about 6 per cent either side, so no rounding holds the golden; and the decisive insight (patients answer the posted wait) is the one a reader reaches from the feed the plan's own target names.
+- **Rebuild 2026-10-23, paper and arithmetic screens beside it.** An index provider's 2027 watch list making every addition anticipated, the event desk's capture read on the rule-mandated additions (quantitative-finance strategy-backtesting-evaluation): a hedged five-day capture carries about 4.5 per cent of noise against a mean near 0.7, so 600 anticipated additions give a standard error of 27 per cent of the figure and 2 per cent would need about 37,000 events; the short-notice variant (off-cycle additions already at a one-day notice) is the very subset the rule change names. Cross-border fuel excise after a unilateral rate rise (time-series-macro): the neighbour's price survey on the textbook path names the mechanism and the one tax holiday in the record sizes it from a single episode. A kindergarten entry cut-off moved from 31 December to 1 September, delayed entry by relative age read from a second board already on 1 September (sociology population projection, spent by task176 besides): relative-age redshirting is common knowledge and the second board's pattern is the analogue a reader takes. A five-year mortgage reset's defaults on its payment shock (credit-scoring-pd): the payment shock is the covariate every reader fits. Bunching at a tax kink moved forward: the counterfactual density is a polynomial knob. Forestalling before a tax rise and a toll bridge's commuters were not taken further (the second is this note's dt1 world).
 
 ## Retired
 
@@ -379,3 +156,5 @@ textbook route and it lands.
 ## Rebuild (2026-10-23)
 
 Reopened under the author's rule that no number stays retired; rebuilt from scratch in economics-econometrics / discrete-choice-limited-dependent-variable-modeling as architecture 3 (`## Draw`), the receiving-desk seed and both redraw cells left spent.
+
+Architecture 3 was spent at Gate F at stage 4 the same day (the scored reader calibrated take-up on the launch cohort's pre-launch use by default); the coordinator left the next cell to this build, the healthcare utilization cell died on code, and architecture 4 was drawn in economics-econometrics / forecasting-forecast-evaluation: the Marrowfield Turnpike Authority's first all-electronic tolling year (`## Draw`).

@@ -1,96 +1,90 @@
 {
   "task": "task171",
-  "architecture": "v3",
+  "architecture": "v4",
   "drawn": "2026-10-23",
-  "slot_note": "redraw (author's no-retirement rule, 2026-10-23), cell economics-econometrics / discrete-choice-limited-dependent-variable-modeling; no seed world kept",
+  "slot_note": "redraw (author's no-retirement rule, 2026-10-23) after architecture 3 was spent at Gate F; cell economics-econometrics / forecasting-forecast-evaluation chosen by this build under the coordinator's conditions",
   "domain": "economics-econometrics",
-  "subdomain": "discrete-choice-limited-dependent-variable-modeling",
+  "subdomain": "forecasting-forecast-evaluation",
   "client_domain": "economics-econometrics",
-  "niche": "a member-owned electric cooperative's optional overnight residential rate opening in January 2027, its first-year take-up and the annual revenue it gives up, forecast from how members took the optional evening-peak rate offered in March 2024",
+  "niche": "a public turnpike authority's first all-electronic tolling year: how much of the toll it will bill by mail to the vehicles that pay cash at its booths today it will eventually collect, forecast from the overnight hours since March 2025 when the booths were already closed and those vehicles were billed by mail",
   "objective": "forecasting",
-  "shape": "other",
+  "shape": "single-figure",
   "decision_type": "quantity_figure",
-  "answer_unit": "count",
-  "answer": "2,250 R-1 services moved to R-ON by December 31, 2027, giving up $200,000 a year at test-year use",
-  "answer_source": "task171/generator/figures.json (call_members_2027, call_shortfall_2027_usd), written by generator/build.py",
+  "answer_unit": "currency",
+  "answer": "",
+  "answer_source": "task171/generator/figures.json (call keys), written by generator/build.py",
   "gap": [
     "time",
     "population"
   ],
   "pattern": [
+    "none",
     "E"
   ],
   "generators": [
+    "G13",
     "G14",
-    "G3",
-    "G13"
+    "G7"
   ],
   "gate_g": "forecasting",
   "calibration_form": "existing_book_actuals",
-  "stump_strategy": "forecast_method_backtest",
+  "stump_strategy": "maturity_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who prices every bill correctly and fits the evening-peak rate's first-year take-up on each service's own saving, read on the latest twelve billing months, files 1,000 services and $100,000 against the golden's 2,250 and $200,000, because the evening rate's takers had moved use out of 4 to 9 p.m. after joining, so their saving on later use is not the saving they chose on; the plainer routes (the first-year rate at the average member's change, the takers' profile carried over) file 1,750 services with $50,000 or $175,000.",
-  "domain_test": "The deciding quantity is each standard-rate member's probability of taking the overnight rate within its first year, a binary choice in which the member's own bill saving on the use it could see is the price of the alternative, estimated on the evening-peak rate's first-year take-up and aggregated over the eligible members; replace the choice model with an average take-up and the shortfall, which is the covariance between take-up and saving, vanishes, so the call changes.",
-  "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:optional-rate-take-up-priced-on-each-members-own-pre-offer-saving",
+  "analyst_test": "A strong analyst who builds every invoice correctly and reads the collected share of the overnight cash-lane invoices old enough to have run the reminder, the hold referral and the agency (six months, or a year) files about 83 per cent of the toll, because an in-state plate's invoice still unpaid at 60 days is paid only when the plate next renews its two-year registration, so most in-state invoices in a twenty-month record are still waiting on a renewal; read on the in-state invoices whose plate has already reached its next expiry since the hold, the share is about 94 per cent in-state and the call about 13.6 million dollars against 11.2.",
+  "domain_test": "The deciding quantity is the ultimate collection rate of video-billed tolls for the vehicles that pay cash today, the revenue leakage a traffic-and-revenue forecast carries into an all-electronic conversion year, read on the toll-by-mail experience of the cash lanes' own users and matured on the enforcement cycle that collects it (the motor vehicle registration hold at each plate's two-year renewal); put a hospital's patient bills in place of the turnpike and there is no registration renewal clock and no booth-closure natural experiment, so the task does not read the same.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:toll-by-mail-ultimate-collection-matured-on-each-plates-registration-renewal",
   "layer1": [
-    "utc_vs_local_time",
-    "billing_cycles_vs_calendar_months",
-    "meter_exchanges_under_new_ids",
     "two_keys_across_systems",
-    "estimated_reads",
-    "codes_renamed_in_a_system_upgrade",
-    "records_raised_again_under_new_ids",
-    "units_changed_in_one_export"
+    "units_changed_in_one_export",
+    "utc_vs_local_time"
   ],
-  "stakeholder_role": "the cooperative's manager of rate products, who files the overnight rate's 2027 enrolment and revenue forecast with the board's rates committee",
-  "role_family": "product_manager",
-  "scoring_unit": "per covered member",
+  "stakeholder_role": "the Authority's all-electronic tolling programme manager, who files the first AET year's toll-by-mail revenue in the annual revenue certificate to the bond trustee",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
   "spine": {
-    "file": "ami_load_research_extract_2023-03_2026-10.parquet",
-    "rows": 1127566,
-    "entity": "one meter's kWh in the four load-research periods of one read period, billed to one service account",
-    "grain": "meter x service account x billing month",
-    "source": "synthetic"
+    "file": "tbm_invoice_lines_2025-03_2026-10.parquet",
+    "rows": 0,
+    "entity": "one billed crossing on a toll-by-mail invoice",
+    "grain": "crossing x invoice",
+    "source": "synthetic (constructed in the layout of a toll back-office invoice line extract)"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "cooperative_or_member_body",
+  "forum": "customer_or_counterparty",
+  "forcing_event": "cutover_or_migration",
+  "org_family": "government_agency",
   "world": {
-    "geography": "United States, a fictional two-county service territory",
+    "geography": "United States, a fictional turnpike authority on a fictional three-plaza toll road in an unnamed state",
     "currency": "USD",
-    "org_type": "a member-owned rural electric distribution cooperative",
+    "org_type": "a public toll road authority",
     "invented_names": [
-      "Sablewood Electric Cooperative"
+      "Marrowfield Turnpike Authority"
     ],
     "people": [
-      "Wendy Morris",
-      "Bryan Castro"
+      "Brittany Moon",
+      "Zachary Mcneil"
     ]
   },
   "deliverables": [
-    "r-on_2027_forecast.xlsx"
+    "aet_2027_toll_by_mail_forecast.xlsx"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "Units take up an optional plan by what the plan would save each of them on the behaviour it showed before the plan was offered, so a new optional plan's take-up and cost are priced on each unit's own saving under it, run through the response to own saving that an earlier optional plan's first-year take-up shows, read on the behaviour before that plan was offered because its takers changed theirs after taking it; an average take-up applied to every unit, the earlier takers' profile carried over, or a response read on present behaviour each misprices it.",
-  "driver_concrete": "Sablewood members took the March 2024 evening-peak rate by what it would save them on their own use in the year before it was offered, so the 2027 overnight rate's members and shortfall come from each standard-rate member's own overnight-rate saving on its 2026 use run through the first-year take-up response to own saving that the evening rate shows on the March 2023 to February 2024 use; the evening rate's members moved use out of the evening after joining, so the same response read on their later use comes out flat, and the evening rate's takers are evening-light members, not the overnight-heavy members the overnight rate pays.",
-  "stump": "A competent solver fits the evening-peak rate's first-year take-up on each service's saving under it read on the latest twelve billing months, runs the overnight-rate savings through it and files 1,000 services and $100,000; the step that lands it there is reading the saving on use the evening rate's takers had already changed by taking it, when they chose on the use of the year before the offer.",
+  "question_form": "how-much",
+  "driver": "An unpaid bill is collected only when the payer's own recurring renewal next falls due after the bill reaches enforcement, so the collected share of a young book keeps rising until every payer's renewal has passed; the share a forward book will yield is read on the bills whose payer has already reached that renewal, from the payers who will receive the forward bills (the users of the channel being closed, billed when that channel was shut by the clock), not on bills old enough by age alone and not on bills sent to people billed for evading.",
+  "driver_concrete": "Under the Marrowfield enforcement policy an in-state plate's toll-by-mail invoice still unpaid at 60 days goes on a registration hold and is paid when the plate renews its two-year registration, so the overnight cash-lane invoices of the twenty months since the booths began closing at night collect about 94 per cent in-state once each plate's next expiry after the hold has passed, against about 75 per cent on in-state invoices six months old; out-of-state invoices finish with the agency inside a year at about 57 per cent. The 2027 forecast carries those shares to the toll the cash lanes' users will be billed by mail.",
+  "stump": "A competent solver reads the collected share of the overnight cash-lane invoices old enough to have run the reminder, the hold referral and the agency, applies it to the plan's 2027 toll by plate state and files about 11.2 million dollars; the step that lands it there is maturing in-state invoices by their own age when an invoice unpaid at 60 days is collected at its plate's next two-year registration renewal, which puts the in-state share at about 94 per cent and the call at about 13.6 million.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task137": "task137 splits a repricing share into two classes of unit rebuilt from each unit's price against its entry cohort's floor; here there is no class mixture: take-up is a continuous response to each member's own bill saving, read on the use before the earlier rate was offered because its takers changed their use after joining.",
-    "task155": "task155 prices a call-in offer's acceptance on its position against the casual's own rostered shift; here the choice is a member taking an optional rate, priced on the member's own bill saving under it, and the decisive read is which year of use the earlier rate's take-up is measured against.",
-    "task467": "task467 separates a temporary change's effect from a permanent change acting on the treated and comparison series with different component shares; here there is no comparison series: an optional rate's take-up is a binary choice on each member's own saving, carried from one optional rate to another.",
-    "task117": "task117 replays closed operations whose start times follow a shared slot; here nothing is replayed: each member's take-up probability is a function of its own saving, estimated on an earlier optional rate's first year and aggregated over the members eligible for the new one.",
-    "task166": "task166 splits a deposit stock into two parts that answer the same forward terms in opposite directions; here one choice, taking an optional rate, is priced on each member's own saving, and the earlier rate's takers' changed use is what misprices the response.",
-    "task37": "task37 recovers an unstated coupling rule from a closed outcome roll; here no rule is withheld or recovered: the take-up response is estimated from the earlier rate's enrolments and each member's metered use.",
-    "task44": "task44 splits a pilot's pooled effect by a behavioural moderator measured over a prior instance of the future window; here there is no pilot effect to split: the estimated quantity is a take-up probability on own saving, and the prior window is the year before the earlier rate was offered.",
-    "task97": "task97 carries a place's cumulative history across occupants through an account conversion; here nothing is carried across occupants, each member's take-up depends on its own saving on its own metered use.",
-    "task481": "task481 restates a count onto a new classification at conversion rates whose record mix differs between the measured window and the restated months; here nothing is restated or reclassified: each member's probability of taking an optional rate is a function of its own bill saving, and the earlier rate's response is read on the use its takers had before they changed it."
+    "task171": "architecture 3 priced an optional rate's take-up on each member's own pre-offer saving, a choice model; here nothing is chosen or priced: the deciding quantity is how much of a billed book is eventually collected, censored by each payer's own registration renewal date, and read on the invoices whose renewal has passed.",
+    "task102": "task102 moves scheduled payments to the next business day by a rule the payment history shows, a calendar shift of release dates; here no date is shifted: an unpaid invoice is collected at the payer's own two-year renewal, and the question is which invoices of a young book have had their collection clock run out.",
+    "task130": "task130 prices a cover that pays for events reported inside a short window from a history where reporting speed and cost are linked; here nothing is reported or priced: the forecast is the share of a billed toll book eventually collected, read on the invoices whose own registration renewal has passed.",
+    "task134": "task134's earlier architecture sized an inflow from a step in a threshold ending each member's duration clock; here no threshold moves: each in-state invoice's collection waits on its own plate's renewal date, spread across two years, so the matured share comes from the invoices whose renewal has passed.",
+    "task162": "task162 times version take-up to a monthly burst of restarts against a fixed first-week window; here no window is fixed and no burst exists: renewals fall evenly over two years, and the forecast is the ultimate collected share of a book, read on the invoices whose plate has renewed since the hold.",
+    "task178": "task178's earlier architecture counted threshold crossings from a known deterministic component of a series; here no series is decomposed: the quantity is a collection share of a billed book, censored by each payer's renewal date.",
+    "task501": "task501's earlier architecture drew down allotments against a hard deadline each unit faced; here no allotment or deadline exists: an unpaid invoice is collected only at the plate's own next registration renewal, and the forecast reads the share on invoices whose renewal has passed."
   },
   "lineage": [
     {
@@ -118,6 +112,5 @@
     }
   ],
   "notes": "",
-  "registered": "2026-10-23T04:34:14Z",
-  "architecture_spent": true
+  "registered": "2026-10-23T07:49:42Z"
 }

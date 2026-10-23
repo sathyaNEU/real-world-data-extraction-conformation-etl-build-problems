@@ -1,32 +1,32 @@
 {
   "task": "task171",
   "owner": "sathya8571",
-  "status": "PAUSED",
+  "status": "DRAWING",
   "domain": "economics-econometrics",
   "objective": "forecasting",
   "stage": 1,
   "stage_name": "draw",
   "updated": "2026-10-23",
-  "stump": "A competent solver fits the evening-peak rate's first-year take-up on each service's saving under it read on the latest twelve billing months, runs the overnight-rate savings through it and files 1,000 services and $100,000; the step that lands it there is reading the saving on use the evening rate's takers had already changed by taking it, when they chose on the use of the year before the offer.",
-  "architecture": 3,
+  "stump": "A competent solver reads the collected share of the overnight cash-lane invoices old enough to have run the reminder, the hold referral and the agency, applies it to the plan's 2027 toll by plate state and files about 11.2 million dollars; the step that lands it there is maturing in-state invoices by their own age when an invoice unpaid at 60 days is collected at its plate's next two-year registration renewal.",
+  "architecture": 4,
   "loops": 0,
   "card_registered": true,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-23"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW 2026-10-23 (four REVIEW lines answered in the design note; no LEAK)",
-    "reader": "reader B 2026-10-23 on ce04ed65: landed the call and every ask"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN 2026-10-23 (repeat.gate_g, repeat.decision, repeat.deliverables, repeat.question_form answered)",
-    "nearest": "task184 v1 lineage 0.07"
+    "heart": "",
+    "nearest": ""
   },
   "judge": {
-    "verdict": "not run (stopped)",
-    "disposition": "architecture 3 spent at Gate F",
-    "report": "reader B scored-task171b: 2,250 and USD 200,000, asks 20 of 20, score_reader FAIL"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
   "screen": {
@@ -55,7 +55,7 @@
     "rebuild_drawn": "architecture 3: optional overnight rate R-ON (2027) after the evening-peak rate R-TOU (March 2024); take-up on each member own pre-offer saving; golden family 0 to 3 per cent (count), -2 to +6 (shortfall); every rival misses one figure by 10 per cent or more (scratch b171n/proto/tou3.py, tou4.py); strategy forecast_method_backtest and role product_manager after task175 filed composition_mix and finance_controller under the lock",
     "rebuild_built": "stage 3 green 2026-10-23: checks 76/76, verify, byte-identical rebuild, figures_check, precut exit 0, voice-check PASS, leak.py REVIEW, guard surface (15 promoted pairs, axis collisions only, no persona pair), heart WARN; cracker pair 29.6, mirror leakage 4.0"
   },
-  "resume": "stage 1: architecture 3 spent at Gate F on ce04ed65 (reader B landed the call and 20 of 20 asks); draw a new cell under the coordinator's conditions in the design note's ## Rebuild section",
+  "resume": "stage 2: design architecture 4 (Marrowfield Turnpike Authority, toll-by-mail ultimate collection matured on each plate's registration renewal); default path, ladder, fork and closure tables, ask sheet, prompt, precut",
   "approved": null,
   "delivered": null,
   "portal": null,
