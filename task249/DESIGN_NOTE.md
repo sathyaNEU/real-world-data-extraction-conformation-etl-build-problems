@@ -303,7 +303,10 @@ and no file the call reads carries a device row (asserted: separation).
 Measured by: generator/pair.py on the cut pack 535886d8 (ask A re-sited after round 3): the cracker keeps 0 of the 20
 ask figures on every careful route, the mirror (each log's first reading: the WS_FAIL rows, every loss row) 0; the round
 2 readers' ask A route keeps 1 form. checks.py asserts every careful route misses all ten forms and every older read
-keeps two at most. The round 4 readers on this pack are the measurement.
+keeps two at most. The round 4 readers on this pack (both at medium) measured it: sonnet kept 0 of the 20 ask figures,
+opus 7 (ask A but C, E and H: it read a spare move as a failure where the workstation left rebooted before the candidate's
+own SESSION_END, not before the session's last; ask B none), a measured pair of 21.6 (12.0 and 31.3) with both off the
+call.
 
 Pair ceiling: 28.5 ((45.0 + 12.0) / 2), the cracker keeping none of the 20 ask figures and the mirror none.
 

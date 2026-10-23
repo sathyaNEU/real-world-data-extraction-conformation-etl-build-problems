@@ -1,6 +1,6 @@
 # perssathya: where work stopped
 
-Updated 2026-10-21 (wave 4 fully shipped, task243 to task248; wave 5: task250 SHIPPED; task251 SHIPPED 10-21 (architecture 5); task249's architecture 5 spent 10-20, architecture 6 drawn 10-21 and at stage 4; task252 SHIPPED 10-21 (architecture 2)). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
+Updated 2026-10-23 (the lane is fully shipped: wave 4 task243 to task248; wave 5 task250 SHIPPED 10-20, task251 and task252 SHIPPED 10-21, task249 SHIPPED 10-23 (architecture 6); `status.py wave perssathya` reports the lane fully taken, so the next numbers are the author's call). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5
 (a full refresh at the author's request) and SHIPPED 2026-10-15. Wave 2: task231 to task236 shipped. Wave 3: task237 to task242 shipped. Wave 4: task243 to task248 shipped.
@@ -46,18 +46,18 @@ reshipped), then the second-layer reviews in the order task232, task231, task229
 
 **task250: SHIPPED 2026-10-20** (run the 4.0 setting, 18 drift alerts a year within the plan's 28 visits).
 
-**task249: PAUSED 2026-10-21, architecture 6, ask layer v3 built after stage 4 round 2; round 3 next.**
+**task249: SHIPPED 2026-10-23 (architecture 6, target.zip 535886d8, at the author's choice); waiting on the portal.**
 - Architecture 6 (Psychology & Behavioral Science, psychometric measurement x DQ): the Institute of Healthcare Coding
-  Professionals' Certified Clinical Coder examination, four-hour open-book sittings, forms drawn at random. Call: which
-  of the ten 2027 forms gave their resit candidates more than one scored item per resit sitting from what an earlier
-  sitting or review had shown them (regulations 7.2, 7.3). Golden CC27-A, B, C, D, G and H; default path A, C, G, H.
-- Rounds 1 and 2: all four readers missed the call (round 2: opus A, C, G, H with the siblings; sonnet A, B, D, G with
-  the time freed and no siblings), judge DETERMINISTIC APPROVE; but the v2 asks fell 20 of 20 to both round 2 readers.
-- Ask layer v3: ask A counts a WS_FAIL only where the sitting stopped there (switched-off finished workstations and a
-  workstation's own connection also log one) and finds restarts in place by the WS_REBOOT rows with no booking; ask B
-  drops a loss one client logged alone and the two hall stops where every clock stopped before the router went off.
-  checks 28,520 passed, verifier agrees, pair ceiling 29.9, precut PASS.
-- Resume: run the round 3 readers (sonnet and opus) and the judge on the new target.zip, score them, ship.
+  Professionals' Certified Clinical Coder examination, four-hour open-book sittings, forms drawn at random. Call: flag
+  CC27-A, B, C, D, G and H (each gave its 2027 resit candidates more than one scored item per resit sitting from what an
+  earlier sitting or review had shown them, regulations 7.2 and 7.3); the direct excess on recognised items files A, C, G
+  and H and misses the two speeded forms, where the time recognised items free buys answers at the end of the form.
+- Stage 4: rounds 1 and 2, all four readers missed the call; round 3, a max-effort sonnet landed it (out of spec) and a
+  max-effort opus missed; round 4 (535886d8, both at medium), both missed (A, C, G and H each). Asks: sonnet kept 0 of 20,
+  opus 7 of 20 (ask A by the restart join with the candidate's own end as the window, losing C, E and H; ask B none);
+  measured pair 21.6. Judge DETERMINISTIC APPROVE (determinism_check_report_pass2.md).
+- If the portal returns it with the call landed and ask A kept whole, re-site ask A's spare-move device (the restart join
+  is found by careful readers; its window is the only thing the opus reader missed).
 
 **task230: RESHIPPED 2026-10-14 (architecture 3, re-rooted at the author's request); waiting on the portal.**
 - The Office of the Registrar General of Aldmere's 2026 census (Survey Research & Official Statistics,

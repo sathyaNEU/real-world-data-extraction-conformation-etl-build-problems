@@ -11,8 +11,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Flag CC27-A, CC27-B, CC27-C, CC27-D, CC27-G and CC27-H: each gave its 2027 resit candidates more than one scored item per resit sitting from what an earlier sitting or results review had shown them (1.4 or more on every licensed estimate), so their 2027 resit results carry the exposure flag and the six forms are reassembled before they are used again.",
+  "answer_source": "submission.md, 1. Final Recommendation",
   "gap": [
     "objective"
   ],
@@ -47,8 +47,8 @@
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
-    "file": "sittings",
-    "rows": 0,
+    "file": "results_export_r3_2026-02_to_2027-05.csv and results_export_r4_2027-08_to_2027-11.csv",
+    "rows": 33562,
     "entity": "one sitting by one candidate",
     "grain": "candidate x window",
     "source": "synthetic"
@@ -62,7 +62,8 @@
     "org_type": "professional certification institute",
     "invented_names": [
       "Institute of Healthcare Coding Professionals",
-      "Certified Clinical Coder"
+      "Certified Clinical Coder",
+      "Pariksha Delivery Services"
     ],
     "people": [
       "Abhiram Sarin",
