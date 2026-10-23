@@ -205,6 +205,17 @@ def main(target):
     ok("ASK A no child is paid at two homes in different regions on one day", cross_region_overlaps(target, ccap) == 0, "")
     ok("ASK B every line of a remittance carries one amount and status", remittance_consistent(ccap), "")
     ok("ASK B remittances carrying several homes' children in every region and quarter", multi_home(target, ccap), "")
+    # the data force the unit: what each competing key is ruled out by, from the shipped rows and the filed rates
+    tie = amount_ties(target, ccap)
+    ok("ASK B every number, run and county office group is within its lines at the full-time rate, most equal to it",
+       tie["over"] == 0 and tie["exact"] > 0.9 * tie["groups"], "%d of %d exact" % (tie["exact"], tie["groups"]))
+    ok("ASK B run and provider gives amounts the provider's own lines cannot earn, in every region and quarter",
+       len(tie["imp_cells"]) == 20 and min(tie["imp_cells"].values()) >= 3,
+       "%d groups, fewest in a cell %d" % (tie["imp"], min(tie["imp_cells"].values())))
+    ok("ASK B one number in one run carries different amounts in different county offices", tie["nr_multi"] > 100,
+       "%d of %d" % (tie["nr_multi"], tie["nr"]))
+    hits = [k for k in calc.MONEY_KEYS if all(int(round(calc.ask_money(target, key=k).get(c, 0))) == int(round(b[c])) for c in qcells)]
+    ok("SF9 ASK B one key reproduces every cell (number, run date and county office)", hits == ["remittance"], str(hits))
     ok("ASK B remittance numbers recur across county offices in every run and for a home across runs",
        shared_numbers(ccap), "")
 
@@ -347,6 +358,33 @@ def remittance_consistent(ccap):
     for r in ccap:
         by[(r["remittance_no"], r["pay_run_date"], r["county_fips"])].add((r["remittance_amount"], r["remittance_status"]))
     return all(len(v) == 1 for v in by.values())
+
+
+def amount_ties(target, ccap):
+    import asks
+    reg = calc.regions_by_fips(target)
+    rate = {"SFCC": 812.0, "LFCC": 846.0, "CTR": 1138.0, "EXEMPT": 402.0}   # policy section 5
+
+    def full_rate(r):
+        a = dt.date.fromisoformat(r["service_from"])
+        return rate[r["provider_type"]] * int(r["care_days"]) / asks.weekdays(dt.date(a.year, a.month, 1), asks.month_end(a))
+    g, gp, nr = collections.defaultdict(list), collections.defaultdict(list), collections.defaultdict(set)
+    for r in ccap:
+        g[(r["remittance_no"], r["pay_run_date"], r["county_fips"])].append(r)
+        gp[(r["pay_run_date"], r["provider_no"])].append(r)
+        nr[(r["remittance_no"], r["pay_run_date"])].add(r["remittance_amount"])
+    out = {"groups": len(g), "over": 0, "exact": 0, "imp": 0, "imp_cells": collections.Counter(),
+           "nr": len(nr), "nr_multi": sum(1 for v in nr.values() if len(v) > 1)}
+    for v in g.values():
+        amt, u = float(v[0]["remittance_amount"]), sum(full_rate(r) for r in v)
+        out["over"] += amt > u + 0.01 * len(v)
+        out["exact"] += abs(amt - u) <= 0.01 * len(v)
+    for k, v in gp.items():
+        if float(v[0]["remittance_amount"]) > sum(full_rate(r) for r in v) + 0.01 * len(v):
+            out["imp"] += 1
+            if v[0]["provider_type"] in ("SFCC", "LFCC") and k[0].startswith("2026") and v[0]["remittance_status"] != "VOID":
+                out["imp_cells"][(reg[v[0]["county_fips"]], (int(k[0][5:7]) - 1) // 3 + 1)] += 1
+    return out
 
 
 def multi_home(target, ccap):

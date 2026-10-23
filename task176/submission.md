@@ -21,7 +21,7 @@
 3. Fitted a monthly Poisson model of closure on those terms: the kindergarten summer, not the years licensed, carries the closures of parent-run homes (401 of 905 such homes closed that summer).
 4. Applied the model month by month through 2027 to the 3,081 homes licensed on 31 December 2026, 427 of them in their youngest's kindergarten summer, and summed each home's chance of closing: 450 to the nearest 50.
 5. Child-days (ccap_payment_lines_2026.csv): kept SFCC and LFCC lines of remittances not voided, expanded each line to its Monday to Friday days in 2026, and counted each child and day once.
-6. Money (ccap_payment_lines_2026.csv): kept SFCC and LFCC remittances paid in the 2026 runs and not voided, took each remittance once as its number, run date and county office (each county office numbers its remittances in its own sequence every run, every child line repeats the remittance's amount, and one remittance can carry the children of several homes), and summed the amounts by the quarter of the run date.
+6. Money (ccap_payment_lines_2026.csv): kept SFCC and LFCC remittances paid in the 2026 runs and not voided, took each remittance once as its number, run date and county office, and summed the amounts by the quarter of the run date. Every child line repeats the remittance's amount; one number recurs in other county offices in the same run with other amounts; and one remittance can carry several homes' children, so the amount on a home's lines can exceed what its own lines earn at the section 5 rates.
 7. Allerton should plan for about 450 homes closing during 2027.
 
 ## 4. Deliverable Answers

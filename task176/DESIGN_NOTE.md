@@ -184,10 +184,11 @@ year's rate, a trend), not from the rungs beneath it; every one of them lands at
 | SF1 | licensed on 31 December 2026 | status ACTIVE in the extract, closure date blank | open at any time in December | same call (ACTIVE equals blank closure date, asserted) | the extract's status as at 31 December 2026 (dictionary) |
 | SF2 | close during 2027 | the licence's closure effective date in 1 January to 31 December 2027 | a closure recorded in 2027 | same call (the forecast is of licences ending in 2027) | rules 6.40.070: the licence ends on the closure effective date |
 | SF3 | family child care homes | small and large homes | small homes only (would file 400) | 400 | rules 6.40.010: "Family child care homes are licensed in two types" |
-| SF4 | kindergarten year of a child | the school year in the calendar year the child turns five on or before 1 September | turns five in the calendar year | same call (433.7, asserted) | CCAP payment policy, section 5 |
+| SF4 | kindergarten year of a child | the school year in the calendar year the child turns five on or before 1 September | turns five in the calendar year | same call (433.7, asserted) | CCAP payment policy, section 6 |
 | SF5 | to the nearest 50 | 461.0 to 450 | 461.0 to 450 by any rounding rule | same call (14.0 homes from the half-cell boundary) | the golden is clear of 475 and 425 (asserted) |
 | SF6 | a home | one licence (one provider, one residence) | one provider | same call (one licence per provider, asserted) | rules 6.40.010: a licence is issued to one provider for one residence |
 | SF7 | own child living in the home | relationship C or OWN CHILD with lives_in_home Y | own child wherever the child lives | same call (every own child row is Y, asserted) | dictionary, worksheet relationship and lives_in_home |
+| SF9 | one remittance (Ask B) | the lines sharing a remittance number, run date and county office | one per run date and provider; per number, or number and run date; per run, county office and amount | same call (an ask row; the call reads no CCAP row) | the shipped rows at the section 5 rates: a number, run and office group is within its lines' full-time pay (19,074 of 20,269 exact); 1,176 run-and-provider groups carry more than their own lines can earn; one number in one run carries other amounts in other offices (asserted) |
 | SF8 | provider age | from provider_birth_year; blank years carry no age term | blank read as a year | same call (59 blank years, all pre-2009 homes, no age terms changes 450) | dictionary: blank where the legacy system did not hold it |
 
 ## Ladder
@@ -298,12 +299,14 @@ call says will close.
 **Ask B. For each region, the money the subsidy paid family child care homes in each quarter of 2026 by the date of
 the payment run** (20 figures, nearest dollar). H18 home: the subsidy income the homes' closures take out of the
 regions, the money the grant round is weighed against.
-- B1 (silent primary, what one payment is): each payee receives one remittance in a run and every child line of it
-  carries the remittance's amount; a home in a family child care network is paid through the network's remittance, so
+- B1 (silent primary, what one payment is): every child line of a remittance carries the remittance's amount; a home in a family child care network is paid through the network's remittance, so
   one remittance carries the children of two to five homes (496 of 12,387 home remittances, 207 homes), and the file
-  names on each line the home that gave the care, not the payee. Each county office numbers its remittances in its
-  own sequence every run (policy section 3; the dictionary), so one payment is a remittance number, a run date and a
-  county office. The readers' grouping, one amount per run date and provider, counts a network's remittance once per
+  names on each line the home that gave the care. Since round 2 no filed sentence names the numbering; the data force
+  the unit (fork row SF9): every number, run and county office group is within its lines at the section 5 full-time
+  rates and 19,074 of 20,269 equal them exactly; 1,176 run-and-provider groups carry an amount their own lines cannot
+  earn at those rates, in all 20 cells (25 or more each); and 2,036 of 3,466 number-and-run groups carry different
+  amounts in different county offices. One payment is a remittance number, a run date and a county office, the only
+  key that reproduces every cell (asserted). The readers' grouping, one amount per run date and provider, counts a network's remittance once per
   member home: every cell high by 31,084 to 169,269. Every other key a careful de-duplicator reaches for misses every
   cell: number alone, number and run date, number and provider, number and amount, number and county office, provider
   and amount, run and county office with amount, number with run and amount, number with run and provider (by 58,951 to
@@ -321,13 +324,13 @@ regions, the money the grant round is weighed against.
 | H2 voided remittances paid again | a remittance returned unpaid, reissued in the next run | A, B | B +1,583 to +18,063 a cell |
 | H3 the remittance amount on every line | a remittance export at child-line grain | B | every cell, +146,698 to +849,004 when summed |
 | H4 network remittances | a home that joined a network is paid through the network's remittance | B | every cell, +31,084 to +169,269 on one per run and provider |
-| H5 remittance numbers per county office and run | each office numbers its run in its own sequence | B | every cell under a key without the county office |
+| H5 remittance numbers per county office and run | each office numbers its run in its own sequence (not filed) | B | every cell under a key without the county office |
 | H6 the January 2027 run | December service paid in the first January run | B | outside the 2026 quarters (the run date files it) |
 
 **Referee.** For B, the remittance's one amount and status on every line of a number, run and county office
 (asserted), the same number, run and office carrying lines of several homes in every region and quarter (asserted),
-and the same number carrying other providers in other offices and runs. Countable from the shipped rows; the identity
-is filed in policy section 3 and the dictionary, and the network is never named.
+and the same number carrying other providers in other offices and runs. Countable from the shipped rows with the section 5 rates;
+neither the numbering nor the network is named in any filed text.
 
 **Ceiling sheet** (`generator/ceiling.py` on the cut pack; every route scored figure by figure against the golden)
 
@@ -336,6 +339,8 @@ is filed in policy section 3 and the dictionary, and the network is never named.
 | reader A verbatim (each child and day once; one amount per run date and provider) | 2 | 0 | 2 | 50.0 | 17.0 |
 | reader B verbatim (care_days summed; one amount per run date and provider) | 0 | 0 | 0 | 45.0 | 12.0 |
 | reader B with the clause read | 2 | 0 | 2 | 50.0 | 17.0 |
+| reader C verbatim (round 2; one amount per county, run date and remittance_no) | 2 | 20 | 22 | 100.0 | 67.0 |
+| reader D verbatim (round 2; one amount per county, run date and remittance_no) | 2 | 20 | 22 | 100.0 | 67.0 |
 | each of the twelve alternative money keys, child-days once a day | 2 | 0 | 2 | 50.0 | 17.0 |
 | mirror (300, care_days summed, every line's amount) | 0 | 0 | 0 | 45.0 | 12.0 |
 
@@ -344,14 +349,15 @@ remittances, keeps the 2026 runs, and takes the repeated remittance amount once 
 
 | Ask row | Figures | Cracker's path | Device that holds | Verdict |
 |---|---|---|---|---|
-| Ask B, money by region and quarter | 20 | one amount per run date and provider (both readers), or any of the eleven other keys | B1 | miss |
+| Ask B, money by region and quarter | 20 | one amount per county, run date and remittance_no (readers C and D, round 2) | B1 | hit |
 
 Ask A carries no device and is not a cracker row: the cracker lands both of its figures, and the ceiling sheet above
 prices them as landed on every route.
 
-Worst route: 2 of 22, 50.0 landed; pair with the best reader off the call 33.5. Both readers as filed (both off the
-call at 300): 17.0 and 12.0. Money cracked (number, run date and county office): 22 of 22, 100.0 landed, pair 58.5; the
-build stands on B1 holding.
+Worst route: 22 of 22 (readers C and D verbatim), 100.0 landed; pair with the best reader off the call 83.5. The round-1
+paths alone give 33.5. Round 2's readers keyed the golden unit with the numbering sentence then filed; with it removed
+the unit is forced by the data, and a key that two readers already used prices as landed. B1 fails the worst-route
+gate and the ask needs a different device.
 
 Measured by: `generator/ceiling.py` (run on the cut pack; Part 0's weights, the call and its components 38, the
 instructions 7, the asks 55 over the 22 ask figures; a response off the call keeps 5).
@@ -359,8 +365,8 @@ instructions 7, the asks 55 over the 22 ask figures; a response off the call kee
 Mirror leakage: 0.0 per cent of ask weight (the mirror, off the call at 300, sums care_days and the amount on every
 line and keeps none of the 22 figures).
 
-Pair ceiling: 33.5 measured on the cut pack (the worst route landed 50.0, the best reader off the call 17.0); the
-worst single crack 58.5 (B1).
+Pair ceiling: 83.5 measured on the cut pack (the worst route landed 100.0, readers C and D verbatim; the best reader
+off the call 67.0); over the gate, the ask device is open.
 
 **Call edge (round-1 judge, answered risk).** The full-record specifications sit at 442 to 461, inside the 450 bin;
 the judge reached 423 (fit on the years before 2023, the kindergarten flag only) and 474 to 487 (windows from 2024
@@ -397,6 +403,10 @@ candidates. Recorded as an answered risk; the call does not move.
 - Single-use test: the capacity worksheet's in-world use is capacity counting, it holds grandchildren, foster children
   and other relatives as well as own children, and the decisive step reads one derived flag from it; the school-age
   sentence's use is the subsidy's hours and rates.
+
+## Duplicate check
+
+Heart: BLOCK from post-draw cards, window fixed at draw (author's standing ruling). ban.forcing_event against task175 and ban.org_family against task171 v4 took their values after this card registered (DRAWN 6b4f56e1); the card is not relabelled. On the round-2 rebuild the window also moved back over task169 v2 (ban.role, ban.artifact) and task446 v3 (test.same_puzzle), both of which passed guard.py check when this card registered. Surface: exit 0, promoted pairs history only.
 
 ## Earlier draws (screen record)
 
@@ -790,6 +800,11 @@ Prototypes are in the session scratchpad (r176/demog).
   summed care_days and the judge named the fork in "child-days". Died as built: the renumbering device sat on a
   property the readers' natural unit made irrelevant. Child-days closed by the prompt and shrunk to two statewide
   figures; money moved onto network remittances, where the run-and-provider unit is the wrong one.
+- Round 2 ask layer (zip c0bd9f55, 2026-10-23): both readers keyed money as one amount per county, run date and
+  remittance_no (22 of 22 each), the unit the added policy sentence ("each county office numbers the remittances it
+  issues in a run in its own sequence") and dictionary line spelled out. The sentence and the line were removed and the
+  unit forced by the data instead (SF9), but that key is now a verbatim reader path and prices at 83.5; B1 is spent as
+  the ask's device.
 
 ## Retired
 

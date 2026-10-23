@@ -4,14 +4,17 @@ figures (child-days statewide by half, 2; money by region and quarter of the pay
 keeps 5 of the 38.
 
 Every ask figure is scored on the cut pack under each route, a hit only when the route's figure equals the golden at
-the asked rounding. The routes are the two round-1 readers' verbatim paths (scored-task176a and scored-task176b,
-reader_method.md), each with the call landed and with the call they filed (300), and every other grouping a careful
-de-duplicator reaches for on the money ask:
+the asked rounding. The routes are the four readers' verbatim paths (round 1 scored-task176a and scored-task176b, round 2
+scored-task176c and scored-task176d, reader_method.md), each with the call landed and off it, and every other grouping
+a careful de-duplicator reaches for on the money ask:
   reader A   PAID SFCC and LFCC lines, weekdays in 2026, each child and day once; money one amount per
              (pay_run_date, provider_no), PAID, 2026 runs, quarter of the run date
   reader B   the same filters; care_days summed over the lines (the dual-provider child at each home), which the
              prompt's "counting a child once on a day" now closes, so B is priced both verbatim and with the clause read;
              money one amount per (pay_run_date, provider_no)
+  reader C   PAID FCC lines, distinct (child_no, day); money one amount per (county, run date, remittance_no) "since the
+             amount repeats per line and covers multi-home payees" (round 2, with the numbering sentence then filed)
+  reader D   the same child-days; money one amount per (county, run date, remittance_no) (round 2, same pack)
 The mirror stops at the tenure rung (300), sums care_days and sums the amount on every line.
 Pair = (landed response + the best response off the call) / 2, gate 40."""
 from __future__ import annotations
@@ -56,6 +59,8 @@ def main(target):
         "reader A verbatim": (a_once, b["run_provider"]),
         "reader B verbatim": (a_sum, b["run_provider"]),
         "reader B with the clause read": (a_once, b["run_provider"]),
+        "reader C verbatim": (a_once, b_gold),
+        "reader D verbatim": (a_once, b_gold),
         "mirror": (a_sum, b["lines"]),
     }
     for k in keys:
@@ -65,7 +70,8 @@ def main(target):
     for name, k in kept.items():
         print("%-44s %2d/22 %8.1f %8.1f" % (name, k, landed(k), missed(k)))
     worst = max(kept.values())
-    off = max(kept["reader A verbatim"], kept["reader B with the clause read"])
+    readers = ("reader A verbatim", "reader B with the clause read", "reader C verbatim", "reader D verbatim")
+    off = max(kept[r] for r in readers)
     pair = (landed(worst) + missed(off)) / 2
     print("worst route keeps %d of 22: landed %.1f; best reader off the call %.1f; pair %.1f" %
           (worst, landed(worst), missed(off), pair))
