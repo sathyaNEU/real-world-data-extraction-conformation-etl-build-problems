@@ -1,0 +1,104 @@
+{
+  "task": "task275",
+  "architecture": "v1",
+  "drawn": "2026-10-23",
+  "slot_note": "Seed DA25's road-policing world screened and redrawn: impairment imputed for untested drivers is task473's driver and its inverse-testing weights task267's, collision times read as discovery times are task184's, a best-window winner's curse leaves the shrinkage open, and a second road-safety setting would sit beside task273; the seed's decision shape is kept (which of eight units join a programme, judged on a share against a fixed line).",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "nonresponse-calibration-measurement-error-adjustment",
+  "niche": "a fish producer organisation's 2025 discard shares by member fleet segment for its 2027 selectivity programme, raised from the at-sea observer scheme's trips, which land the undersized quota fish the discard ban requires and keep off the nursery grounds",
+  "objective": "descriptive-distribution",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G3",
+    "G12",
+    "G6"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "gold_standard_subsample",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "With every logbook and observer field read correctly, raising the observer scheme's discard share of catch, area by area, to each segment's hours fished names only the Nephrops trawlers, because observed trips land the undersized quota fish that unobserved trips throw back.",
+  "domain_test": "Discard estimation raises an at-sea observer sample of trips to the fleet, and under a discard ban the field's own threat to it is the observer effect; the deciding quantity is each segment's discard share with that effect removed, identified only by the fishery's catch structure (undersized quota fish declared almost only on observed trips, catch per hour fished by ground), and with another field's nouns the ban's incentive and the undersize signature are gone.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:observer effect in discard raising",
+  "layer1": [
+    "self-reported discards in the e-logbooks, mostly blank",
+    "observer haul subsampling raised within each trip",
+    "FAO species codes against the authority's quota list",
+    "BMS declared as a presentation code on its own logbook line",
+    "sales notes split across buyers and replaced",
+    "VMS positions in UTC against logbook local times",
+    "vessels re-registered after a sale"
+  ],
+  "stakeholder_role": "the producer organisation's science and compliance manager",
+  "role_family": "research_desk",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "elogbook_landings_2025.csv",
+    "rows": 50000,
+    "entity": "one species line of one trip's landing declaration",
+    "grain": "trip x species x presentation",
+    "source": "synthetic"
+  },
+  "forum": "board_of_directors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "cooperative_or_member_body",
+  "world": {
+    "geography": "England, United Kingdom (an invented coast)",
+    "currency": "GBP",
+    "org_type": "fish producer organisation",
+    "invented_names": [
+      "Wrayburn Coast Fish Producers' Organisation",
+      "Kestlemouth",
+      "Penmarrow",
+      "Brindlesea",
+      "Cauldwick",
+      "Gullsby",
+      "Dunsellan Bank",
+      "Marrowbank",
+      "Ravensker Deep",
+      "Ashcombe Bay",
+      "Corrieness"
+    ],
+    "people": [
+      "Aimee Hutchinson",
+      "Graham James",
+      "Ellie Arnold",
+      "Connor Rogers",
+      "Samantha Weston"
+    ]
+  },
+  "deliverables": [
+    "segment_discards_2025.xlsx",
+    "segment_discards_2025.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is the share of each group's output that is thrown away, measured directly only on a random subset of its operations, and being measured changes both how the unwanted output is handled and where the work is done; the unmeasured operations' share is rebuilt from what the measured operations catch per unit of effort, place by place, raised to the unmeasured effort and less what the unmeasured operations still declare, not from the measured operations' own thrown-away share.",
+  "driver_concrete": "Each fleet segment's 2025 discard share of catch, where observed trips land the undersized quota fish (BMS) the discard ban requires and fish less on the Ashcombe Bay and Corrieness nursery grounds while unobserved trips throw the undersized fish back: unobserved trips' discards are the unwanted catch per hour fished that observed trips show on each ground, times unobserved hours there, less the BMS unobserved trips declared; not the observed trips' discard share, pooled or by ground.",
+  "stump": "A competent analyst who sets aside the logbooks' blank discard fields raises the observer scheme's discard share by ground to each segment's hours fished and names only the Nephrops trawlers; observed trips land the undersized quota fish and keep off the nursery grounds, so only the unwanted catch per hour by ground, raised to unobserved hours and net of the BMS unobserved trips declared, names the golden four, while pooling the grounds drops the beam trawlers and forgetting the declared BMS adds the gillnetters.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task126": "task126 splits records a succession link joined, the new units marked on a separate ledger; here nothing is split or joined: the observed trips are a random draw whose behaviour changes because they are observed, and the unobserved trips' discards are rebuilt from catch per hour fished on each ground.",
+    "task450": "task450 v1 weighs sightings by whether a scheduled visit ends the event it finds; here observing ends nothing, it changes what the observed trip lands and where it fishes, so the unobserved trips' unwanted catch is raised from the observed trips' catch per hour on each ground.",
+    "task468": "task468 corrects outcome counts for a linker's false and missed links measured on control groups; here every record is exact and the observed trips are chosen at random, and only the vessels' behaviour while observed differs from the rest of the fleet's.",
+    "task469": "task469 reads a share seen in full only where an earlier allowance was already short, the rest censored by the record's own rule; here nothing is censored by a rule: the unobserved trips' discards go unrecorded because nobody is aboard to see them, and are rebuilt from the observed trips' catch per hour by ground less what the unobserved trips declared."
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-23T11:22:44Z"
+}

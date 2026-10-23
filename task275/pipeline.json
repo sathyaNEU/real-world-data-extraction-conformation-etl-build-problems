@@ -1,0 +1,39 @@
+{
+  "task": "task275",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-23",
+  "stump": "A competent analyst who sets aside the logbooks' blank discard fields raises the observer scheme's discard share by ground to each segment's hours fished and names only the Nephrops trawlers; observed trips land the undersized quota fish and keep off the nursery grounds, so only the unwanted catch per hour by ground, raised to unobserved hours and net of the BMS unobserved trips declared, names the golden four.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": null
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task268 v2 lineage 0.06"
+  },
+  "judge": {
+    "verdict": null,
+    "disposition": null,
+    "report": null
+  },
+  "returned": [],
+  "resume": "DRAWN 2026-10-23 (card registered at WARN). Next: stage 2, the default path, stump sentence, three rules, fork table, ladder, closure, asks and prompt.txt to precut exit 0; the prototype is in the scratchpad (t275/proto2.py, seed 1: golden TR1 TR2 NEP BT, pooled grounds TR1 TR2 NEP, un-netted TR1 TR2 NEP GN, legal discards only NEP).",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "seed": "DA25 (decision shape only: which of eight units join a programme on a share against a fixed line; world redrawn)"
+}
