@@ -11,22 +11,22 @@ import common as C
 
 ORIGIN = "Constructed for this task (seeded, deterministic): "
 SOURCES = {
-    C.F_PEAKS: ("Northfork Water Company (fictional), TUM-02 annual peak stage register, water years 1980 to 2015", "2016-03-02"),
-    C.F_STAGE: ("Northfork Water Company, TUM-02 15-minute stage, hydrologic database export, water years 2016 to 2025", "2026-01-20"),
-    C.F_MEAS_OLD: ("Northfork Water Company, TUM-02 discharge measurement notes transcribed from the field forms, 1980 to 2004", "2016-03-02"),
-    C.F_MEAS_NEW: ("Northfork Water Company, TUM-02 discharge measurements, measurement database export, water years 2005 to 2025", "2026-01-20"),
-    C.F_STATION: ("Northfork Water Company, TUM-02 station description, revised 2024-03-18", "2024-03-18"),
-    C.F_LEVELS: ("Northfork Water Company, TUM-02 levels log", "2025-08-27"),
-    C.F_VISITS: ("Northfork Water Company, TUM-02 site visit log, water years 2016 to 2025", "2026-01-20"),
-    C.F_STANDARD: ("Northfork Water Company, Engineering Design Standard section 4 (hydrology), issue 3", "2021-04-26"),
-    C.F_STUDY: ("Crandell Hyde Engineering (fictional) for Northfork, Sauer pipe bridge waterway alternatives study, draft", "2025-12-12"),
-    C.F_SCADA: ("Northfork Water Company, SCADA historian export, Sauer crossing tags", "2026-01-12"),
-    C.F_WO: ("Northfork Water Company, maintenance management system work orders, Sauer crossing assets", "2026-01-20"),
-    C.F_RAIN: ("Northfork Water Company, Sauer Flats treatment plant rain gage, daily totals", "2026-01-20"),
-    C.F_KESSEL: ("Northfork Water Company, MRT-01 Marten Creek annual peaks", "2026-01-20"),
-    C.F_DICT: ("Northfork Water Company, data dictionary for the TUM-02 exports", "2025-11-04"),
+    C.F_PEAKS: ("Callender Paper Company (fictional), Sauer mill, TUM-02 annual peak stage register, water years 1980 to 2015", "2016-03-02"),
+    C.F_STAGE: ("Callender Paper Company, Sauer mill, TUM-02 15-minute stage, hydrologic database export, water years 2016 to 2025", "2026-01-20"),
+    C.F_MEAS_OLD: ("Callender Paper Company, Sauer mill, TUM-02 discharge measurement notes transcribed from the field forms, 1980 to 2004", "2016-03-02"),
+    C.F_MEAS_NEW: ("Callender Paper Company, Sauer mill, TUM-02 discharge measurements, measurement database export, water years 2005 to 2025", "2026-01-20"),
+    C.F_STATION: ("Callender Paper Company, Sauer mill, TUM-02 station description, revised 2024-03-18", "2024-03-18"),
+    C.F_LEVELS: ("Callender Paper Company, Sauer mill, TUM-02 levels log", "2025-08-27"),
+    C.F_VISITS: ("Callender Paper Company, Sauer mill, TUM-02 site visit log, water years 2016 to 2025", "2026-01-20"),
+    C.F_STANDARD: ("Callender Paper Company, Sauer mill, Engineering Standard section 4 (hydrology), issue 3", "2021-04-26"),
+    C.F_STUDY: ("Crandell Hyde Engineering (fictional) for Callender, Sauer pipe bridge waterway alternatives study, draft", "2025-12-12"),
+    C.F_SCADA: ("Callender Paper Company, Sauer mill, SCADA historian export, Sauer crossing tags", "2026-01-12"),
+    C.F_WO: ("Callender Paper Company, Sauer mill, maintenance management system work orders, Sauer crossing assets", "2026-01-20"),
+    C.F_RAIN: ("Callender Paper Company, Sauer mill, wastewater plant rain gage, daily totals", "2026-01-20"),
+    C.F_KESSEL: ("Callender Paper Company, Sauer mill, MRT-01 Marten Creek annual peaks", "2026-01-20"),
+    C.F_DICT: ("Callender Paper Company, Sauer mill, data dictionary for the TUM-02 exports", "2025-11-04"),
 }
-TITLE = ("The waterway alternative for a water company's replacement pipe bridge, the smallest that passes the river's "
+TITLE = ("The waterway alternative for a paper mill's replacement raw-water pipe bridge, the smallest that passes the river's "
          "1 per cent annual chance flood at the company's own stage gauge")
 
 
@@ -55,13 +55,13 @@ def write(task_dir):
                           source=ORIGIN + src, date=date, license="CC0-1.0 (original work, constructed for this task)"))
     distractors = [
         dict(file=C.F_RAIN, wrong_basis=False,
-             why_relevant="the rain at the company's plant in the same valley drives the floods the design flow is about",
+             why_relevant="the rain at the mill in the same valley drives the floods the design flow is about",
              why_unused="the design flood comes from the gage's own annual peaks; no figure reads the rain record",
-             ruled_out_by="the alternatives study section 3 and Design Standard 4.2.2 (the gage's annual peak series)"),
+             ruled_out_by="the alternatives study section 3 and Engineering Standard 4.2.2 (the gage's annual peak series)"),
         dict(file=C.F_KESSEL, wrong_basis=False,
-             why_relevant="the company's other gage in the valley, with annual peak discharges from a stable rating",
+             why_relevant="the mill's other gage in the valley, with annual peak discharges from a stable rating",
              why_unused="the generalized skew is set by the standard and the design flood is at TUM-02; no figure reads it",
-             ruled_out_by="Design Standard 4.2.2 and 4.2.4 (the structure's own gage, the filed generalized skew)"),
+             ruled_out_by="Engineering Standard 4.2.2 and 4.2.4 (the structure's own gage, the filed generalized skew)"),
     ]
     meta = dict(
         task="task178", title=TITLE,
@@ -83,7 +83,7 @@ def write(task_dir):
                          largest_file_rows=big_rows),
         sources=[dict(files="all files under target/",
                       origin="constructed for this task by task178/generator/build.py (seeded, deterministic) around a "
-                             "fictional western Washington water utility (Northfork Water Company), its river gage TUM-02 "
+                             "fictional western Washington pulp and paper mill (the Callender Paper Company Sauer mill), its river gage TUM-02 "
                              "on the fictional Tumwick River and its engineering consultant. No real organisation's "
                              "records or person is depicted.",
                       date="2026-01-20", license="CC0-1.0 (original work)")],

@@ -114,12 +114,12 @@ def station_blocks():
             ["May 2008 to present", "Gas-purge pressure sensor, new orifice line (see Datum)", "Data logger, 15 min; cellular telemetry from 2011"]]
     return [
         ("h2", "Location"),
-        ("p", "Lat 47 38 12, long 121 49 05, on the left bank 0.6 mi upstream of the Sauer Flats intake and 900 ft upstream "
-              "of the Sauer pipe bridge (36-inch Tumwick transmission main). No tributary enters between the gage and the "
+        ("p", "Lat 47 38 12, long 121 49 05, on the left bank 0.6 mi upstream of the Sauer mill intake and 900 ft upstream "
+              "of the Sauer pipe bridge (the mill's 36-inch raw-water main). No tributary enters between the gage and the "
               "pipe bridge. Drainage area 238 square miles."),
         ("h2", "Establishment and operation"),
-        ("p", "Established October 1979 by Northfork Water Company for its water right and intake operations. Operated "
-              "by the company's Water Resources group. Discharge measurements are made by wading or from the cableway 120 "
+        ("p", "Established October 1979 by Callender Paper Company for the Sauer mill's water right and intake operations. "
+              "Operated by the mill's Water Resources group. Discharge measurements are made by wading or from the cableway 120 "
               "ft upstream of the gage at medium and high flows, by ADCP from water year 2005."),
         ("h2", "Gage"),
         ("table", hist, [36 * mm, 76 * mm, 58 * mm]),
@@ -150,7 +150,7 @@ def write_station(out):
 
 # ------------------------------------------------------------------------------- the design standard, section 4
 STANDARD_DATE = dt.date(2021, 4, 26)
-STANDARD_TITLE = "Engineering Design Standard, Section 4: Hydrology"
+STANDARD_TITLE = "Engineering Standard, Section 4: Hydrology"
 
 
 def mse_table():
@@ -164,7 +164,7 @@ def standard_blocks():
     return [
         ("h2", "4.1 Scope"),
         ("p", "This section sets the design floods for company structures in or over rivers and streams: intakes, "
-              "pipelines, pipe bridges and their piers and abutments."),
+              "pipelines, pipe bridges and their piers and abutments at company mills."),
         ("h2", "4.2 Design flood for crossings"),
         ("p", "4.2.1 A crossing is designed to pass the peak discharge with a 1 percent annual exceedance probability at "
               "the structure."),
@@ -191,7 +191,7 @@ def standard_blocks():
 
 def write_standard(out):
     _build(os.path.join(out, C.F_STANDARD), STANDARD_TITLE, "Engineering", C.COMPANY + " | Engineering",
-           "Issue 3, 26 April 2021.", standard_blocks(), "Northfork Engineering Design Standard 4, issue 3",
+           "Issue 3, 26 April 2021.", standard_blocks(), "Callender Engineering Standard 4, issue 3",
            pdf_stamp(STANDARD_DATE, 9, 48))
 
 
@@ -214,8 +214,8 @@ def study_blocks():
         alts.append([name, cfg, "%.2f" % soffit, "{:,}".format(cap)])
     return [
         ("h2", "1. Background"),
-        ("p", "Northfork's 36-inch Tumwick transmission main crosses the Tumwick River on a 1968 steel truss pipe bridge "
-              "900 ft downstream of the company's stage gage TUM-02. In the flood of 8 January 2025 drift struck the truss "
+        ("p", "The Sauer mill's 36-inch raw-water main crosses the Tumwick River on a 1968 steel truss pipe bridge 900 ft "
+              "downstream of the company's stage gage TUM-02. In the flood of 8 January 2025 drift struck the truss "
               "and the pipe; the main was isolated, the pipe re-supported, and the main returned to service on temporary "
               "supports. The bridge is to be replaced, with in-water work in the 2027 season."),
         ("h2", "2. Waterway alternatives"),
@@ -224,7 +224,7 @@ def study_blocks():
         ("table", alts, [24 * mm, 76 * mm, 36 * mm, 30 * mm]),
         ("h2", "3. Design discharge and selection"),
         ("p", "The design discharge is the peak discharge at TUM-02 with a 1 percent chance of being exceeded in any year, "
-              "estimated by Northfork Water Resources under Design Standard 4.2 from the gage's annual peaks of water "
+              "estimated by Callender Water Resources under Engineering Standard 4.2 from the gage's annual peaks of water "
               "years 1980 to 2025. The crossing's drainage area is the gage's. The alternative carried to design is the "
               "smallest whose capacity is at least the design discharge."),
         ("h2", "4. Model calibration"),
@@ -235,9 +235,9 @@ def study_blocks():
         ("p", "In-water work is limited to 15 July to 15 September. The contractor's work-area isolation is set from the "
               "highest stage the river reached at TUM-02 in the 15 July to 15 September window of each year 2016 to 2025."),
         ("h2", "6. Next steps"),
-        ("p", "Northfork to confirm the design discharge and the alternative; preliminary design of the selected "
+        ("p", "Callender to confirm the design discharge and the alternative; preliminary design of the selected "
               "alternative; HPA and shoreline permit applications in spring 2026."),
-        ("small", "Crandell Hyde Engineering for Northfork Water Company. Draft for owner review, 12 December 2025."),
+        ("small", "Crandell Hyde Engineering for Callender Paper Company. Draft for owner review, 12 December 2025."),
     ]
 
 
@@ -251,7 +251,7 @@ def write_study(out):
 def levels_text():
     L = [
         "TUM-02 TUMWICK RIVER NEAR SAUER -- LEVELS",
-        "Northfork Water Company, Water Resources",
+        "Callender Paper Company, Sauer Mill Water Resources",
         "Elevations in feet, NAVD88 (levels before 2004 converted from NGVD29 by +3.52, VERTCON at the gage).",
         "",
         "Reference marks",
@@ -306,8 +306,8 @@ DICT = {
                  ("work_done", "work at the visit"), ("notes", "free text")],
     C.F_SCADA: [("Timestamp", "historian timestamp"), ("SAUER_RAD1_DIST.PV", "radar RAD-1, distance from sensor to water, ft"),
                 ("SAUER_RAD1_LVL.PV", "radar RAD-1, water level, ft NAVD88 (computed in SCADA)"),
-                ("SAUER_36IN_FLOW.PV", "transmission main flow at the crossing meter, MGD"),
-                ("SAUER_36IN_PRESS.PV", "transmission main pressure at the crossing, psi")],
+                ("SAUER_36IN_FLOW.PV", "raw-water main flow at the crossing meter, MGD"),
+                ("SAUER_36IN_PRESS.PV", "raw-water main pressure at the crossing, psi")],
     C.F_WO: [("wo_no", "work order"), ("asset", "asset tag"), ("opened, completed", "local date and time"),
              ("type", "PM preventive, CM corrective, PR project"), ("description", "as entered")],
 }

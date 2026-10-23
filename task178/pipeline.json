@@ -20,7 +20,7 @@
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-23 (overuse.objective, overuse.gate_g, repeat.gate_g: the lane's objective, answered in ## Draw)",
+  "heart": "WARN 2026-10-23 after re-registration (overuse.objective, overuse.gate_g, repeat.question_form; the moved window's four BLOCKs redrawn, ## Draw)",
   "nearest": "ledger task466 0.09, stump task229 0.06; drivers task249 v5 lineage 0.06, task170 v1 lineage 0.06"
  },
  "judge": {

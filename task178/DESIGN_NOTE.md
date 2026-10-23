@@ -17,23 +17,33 @@ mechanism were searched inside the cell; prototypes in the session scratchpad (b
   trestle deck) is in the card's `lineage` with its fate; the conjoint cell registered no card and is named there.
 - **Window moves answered at the draw:** task173 registered while this card was drafted and BLOCKed `ban.artifact`
   (filed_standard), `ban.org_family` (local_government) and `test.same_driver` (population, G14, forecasting against
-  task173's lineage). Redrawn honestly: the organisation became an investor-owned water utility (the company that
-  runs the gauge and owns the pipe bridge, `utility_or_infrastructure`, free since task175 left the window); the
-  context artifact is the crossing alternatives study, which carries each alternative's capacity
-  (`capacity_report`, the honester label: the standard's section is an input, the study frames the decision); the
-  decisive generator is G3 (the recorded stage against the discharge the river carried, as the gaugings measure it)
-  with G14 second, the same two codes in the order the record reads them.
+  task173's lineage). Redrawn honestly then: the owner became the company that runs the gauge and owns the pipe
+  bridge (an investor-owned water utility, `utility_or_infrastructure`); the context artifact the crossing
+  alternatives study, which carries each alternative's capacity (`capacity_report`: the standard's section is an
+  input, the study frames the decision); the decisive generator G3 (the recorded stage against the discharge the river
+  carried, as the gaugings measure it) with G14 second, the same two codes in the order the record reads them.
+- **The window moved again after the PAUSED commit.** task170 and task173 were marked `architecture_spent` after this
+  card was filed, so the card's live window fell back onto task175, task478 and task169, and `check` and `heart` BLOCKed
+  `ban.org_family` (utility, task175), `ban.forcing_event` (purchase_order_or_contract, task478), `ban.artifact` and
+  `ban.pattern` (capacity_report and G3, task169). Redrawn where the world honestly allows: the owner is now a pulp and
+  paper mill, Callender Paper Company's Sauer mill, which runs TUM-02 for its water right and intake and carries its
+  raw-water main on the pipe bridge (`manufacturer`; nothing in the analysis, the pack's numbers or the prompt
+  changed, only the owner's name and the documents' voice), and the forcing event the 2027 in-water work season the
+  waterway choice must meet (`season_or_peak`; the design-build award follows from it). The card was re-registered
+  under the serial lock; at its new filing time the artifact and pattern clear with no change, which the card's notes
+  say in so many words.
 - **Pairing:** Physical & Environmental Sciences, task type `hydrology-flood-frequency` (F). The deciding quantity is
   the 1 per cent annual exceedance probability (AEP) peak discharge at a river gauge.
-- **World (fictional):** Northfork Water Company, an investor-owned water utility in a western Washington valley,
-  carries its 36-inch transmission main over the Tumwick River on the Sauer pipe bridge, 900 ft below its own stage
-  gauge TUM-02 (no tributary between). Drift struck the bridge in the January 2025 flood and it is being replaced;
-  the consultant's alternatives study gives seven waterway alternatives, A to G, passing 10,400, 11,600, 12,900,
-  14,700, 16,200, 17,800 and 19,500 cfs with the pipe's clearance. The design discharge is the 1 per cent AEP peak at
-  TUM-02 by the company's design standard from water years 1980 to 2025, and the alternative is the smallest that
-  passes it. The gauge records stage only; discharge comes from a rating fitted to the company's own 468 field
-  measurements (wading and cableway current meter to 2004, ADCP and FlowTracker from 2005), 79 of them made at
-  stages above the break, by cableway and boat while the river was on its pasture.
+- **World (fictional):** Callender Paper Company's Sauer mill, a pulp and paper mill in a western Washington valley,
+  carries its 36-inch raw-water main over the Tumwick River on the Sauer pipe bridge, 900 ft below its own stage gauge
+  TUM-02 (no tributary between), which the mill has run since 1979 for its water right and intake. Drift struck the
+  bridge in the January 2025 flood and it is being replaced, with in-water work in the 2027 season; the consultant's
+  alternatives study gives seven waterway alternatives, A to G, passing 10,400, 11,600, 12,900, 14,700, 16,200,
+  17,800 and 19,500 cfs with the pipe's clearance. The design discharge is the 1 per cent AEP peak at TUM-02 by the
+  company's engineering standard from water years 1980 to 2025, and the alternative is the smallest that passes it.
+  The gauge records stage only; discharge comes from a rating fitted to the mill's own 468 field measurements (wading
+  and cableway current meter to 2004, ADCP and FlowTracker from 2005), 79 of them made at stages above the break, by
+  cableway and boat while the river was on its pasture.
 - **Shape:** 04, setting one dial: the seven capacities against the design discharge, the committed alternative and
   the one below; asks A (ten work windows, stage and date) and B (six water years, pipe level and fall) supply the
   rest (`## Ask sheet`).
@@ -244,8 +254,9 @@ and coincides elsewhere by value); the study carries four of six words of the co
 
 ## Guard
 
-`guard.py check` on the registered card and `heart`: WARN (overuse.objective, overuse.gate_g, repeat.gate_g, the lane's
-objective, answered under `## Draw`); structural tests differentiated on the card. `surface`: exit 0; the one "persona"
+`guard.py check` on the re-registered card and `heart`: WARN (overuse.objective, overuse.gate_g, the lane's objective;
+repeat.question_form against task482, the decision being a pick among the study's alternatives), every BLOCK of the
+moved window redrawn (`## Draw`); structural tests differentiated on the card. `surface`: exit 0; the one "persona"
 it lifted (Gage Period) is a table header in the station description.
 
 ## Retired

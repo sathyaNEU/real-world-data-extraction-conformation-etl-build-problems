@@ -61,7 +61,7 @@ def write_peaks(out):
         t = pd[i]
         tm = "" if wy in REMARKS else "%02d:%02d" % (t.hour, t.minute)
         rows.append([wy, mdy(t.date()), tm, "%.2f" % h, REMARKS.get(wy, "")])
-    pre = ["Northfork Water Company, Water Resources",
+    pre = ["Callender Paper Company, Sauer Mill Water Resources",
            "TUM-02 Tumwick River near Sauer: annual peak stage register, water years 1980-2015",
            "Gage height in feet on the gage datum in use at the time of the peak",
            "Kept by S. Huber; exported from TUM02_peaks.xlsx 2016-03-02"]
@@ -95,7 +95,7 @@ def write_stage(out):
     out_rows = []
     for j in stage_rows():
         out_rows.append([W.t_of(j).strftime("%Y-%m-%d %H:%M"), "%.2f" % h[j], "P", ""])
-    pre = ["# Northfork Water Company hydrologic database export",
+    pre = ["# Callender Paper Company, Sauer mill hydrologic database export",
            "# Location: TUM-02 Tumwick River near Sauer",
            "# Parameter: Stage (gage height), ft; gage datum 182.40 ft NAVD88",
            "# Time zone: UTC-08:00 (PST, no daylight saving time)",
@@ -308,7 +308,7 @@ def work_orders():
              (dt.datetime(2019, 3, 14, 9, 0), dt.datetime(2019, 3, 14, 11, 40), "PR", "SAUER-RTU",
               "Configure RAD1 tags in SCADA, alarm at 191.5"),
              (dt.datetime(2022, 6, 21, 6, 0), dt.datetime(2022, 6, 21, 17, 30), "PR", "SCADA-HIST",
-              "Historian server replacement, Tolman control center"),
+              "Historian server replacement, mill control room"),
              (dt.datetime(2022, 11, 7, 7, 15), dt.datetime(2022, 11, 7, 12, 0), "CM", "SAUER-PB",
               "Remove drift from upstream truss face after 11/5 high water"),
              (dt.datetime(2022, 11, 16, 9, 30), dt.datetime(2022, 11, 16, 14, 45), "CM", "SAUER-RAD1",
@@ -365,7 +365,7 @@ def write_rain(out):
         rows.append([d.isoformat(), "%.2f" % p, "M" if r.random() < 0.002 else ""])
         d += dt.timedelta(days=1)
     return C.write_csv(os.path.join(out, C.F_RAIN), ["date", "precip_in", "flag"], rows,
-                       preamble=["Sauer Flats treatment plant rain gage (tipping bucket, heated), daily totals 08:00 to 08:00"])
+                       preamble=["Sauer mill wastewater plant rain gage (tipping bucket, heated), daily totals 08:00 to 08:00"])
 
 
 def write_marten(out):
@@ -380,7 +380,7 @@ def write_marten(out):
             dt.datetime(wy - 1, 12, 1) + dt.timedelta(days=float(r.uniform(0, 90)))
         rows.append([wy, t.strftime("%Y-%m-%d"), "%.2f" % h, int(round(q, -1)), "A"])
     return C.write_csv(os.path.join(out, C.F_KESSEL), ["water_year", "peak_date", "gage_height_ft", "peak_discharge_cfs", "code"],
-                       rows, preamble=["MRT-01 Marten Creek at Hollis Road (Northfork Water Company), annual peaks",
+                       rows, preamble=["MRT-01 Marten Creek at Hollis Road (Callender Paper Company, Sauer mill), annual peaks",
                                        "Drainage area 41.2 sq mi. Discharge from rating 6 (stable rock control)."])
 
 

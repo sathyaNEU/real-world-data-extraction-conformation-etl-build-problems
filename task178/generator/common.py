@@ -9,7 +9,7 @@ import io
 
 import numpy as np
 
-COMPANY = "Northfork Water Company"
+COMPANY = "Callender Paper Company"
 DIVISION = "Water Resources"
 GAUGE_ID = "TUM-02"
 GAUGE = "Tumwick River near Sauer"
@@ -23,11 +23,11 @@ F_MEAS_NEW = "tum02_measurements_wy2005-2025.csv"
 F_STATION = "tum02_station_description.pdf"
 F_LEVELS = "tum02_levels_log.txt"
 F_VISITS = "tum02_site_visits_2016-2025.csv"
-F_STANDARD = "nfw_design_standard_sec4_hydrology.pdf"
+F_STANDARD = "cpc_engineering_standard_sec4_hydrology.pdf"
 F_STUDY = "sauer_crossing_alternatives_study.pdf"
 F_SCADA = "scada_sauer_crossing_2019-2025.csv"
 F_WO = "cmms_work_orders_sauer_2019-2025.csv"
-F_RAIN = "sauer_flats_plant_rain_daily_1980-2025.csv"
+F_RAIN = "sauer_mill_rain_gage_daily_1980-2025.csv"
 F_KESSEL = "mrt01_marten_creek_annual_peaks.csv"
 F_DICT = "tum02_data_dictionary.xlsx"
 ALL_FILES = (F_PEAKS, F_STAGE, F_MEAS_OLD, F_MEAS_NEW, F_STATION, F_LEVELS, F_VISITS, F_STANDARD, F_STUDY, F_SCADA,

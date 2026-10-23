@@ -74,7 +74,7 @@ def write_book(f, g, path):
     ws.title = "Design flow"
     ws.append(["Sauer pipe bridge replacement: design discharge and waterway alternative"])
     ws["A1"].font = Font(bold=True, size=12)
-    ws.append(["TUM-02 Tumwick River near Sauer, annual peaks of water years 1980 to 2025, Design Standard 4.2"])
+    ws.append(["TUM-02 Tumwick River near Sauer, annual peaks of water years 1980 to 2025, Engineering Standard 4.2"])
     ws.append([])
     ws.append(["Alternative to carry forward", f["call"]["alternative"]])
     ws.append(["Its capacity (cfs)", f["crit"]["alternative_capacity_cfs"]])
@@ -180,7 +180,7 @@ def write_book(f, g, path):
         ("Measured discharges in m3/s (ADCP, through water year 2014) are converted at 35.3147 cfs per m3/s.",),
         ("Annual peaks are the largest instantaneous stage of each water year (1 October to 30 September): the register "
          "for 1980 to 2015, the 15-minute record for 2016 to 2025.",),
-        ("Frequency analysis per Design Standard 4.2 (issue 3). The design discharge is reported to the nearest 1,000 cfs.",),
+        ("Frequency analysis per Engineering Standard 4.2 (issue 3). The design discharge is reported to the nearest 1,000 cfs.",),
         ("Work windows: readings taken while a hydrographer was on site are left out (visit log times are local); the "
          "controller offset of 0.47 ft is removed from 11 June to 27 August 2025.",),
         ("Pipe crests: historian stamps before the 21 June 2022 server replacement are UTC; the radar level is the "
@@ -283,8 +283,8 @@ def submission(f):
     L.append("3. Fitted the rating as a power law below a break and a floodplain term added above it, the break found by "
              "least squares on log discharge at %.2f ft, and rated every peak stage through it." % f["breakpoint_ft"])
     L.append("4. Fitted log-Pearson Type III by moments of the logs with the station skew weighted with the generalized "
-             "skew of %.2f as nfw_design_standard_sec4_hydrology.pdf sets out: %s cfs at 1 per cent, so "
-             "Alternative %s." % (C.REG_SKEW, "{:,}".format(c["design_discharge_cfs"]), c["alternative"]))
+             "skew of %.2f as %s sets out: %s cfs at 1 per cent, so "
+             "Alternative %s." % (C.REG_SKEW, C.F_STANDARD, "{:,}".format(c["design_discharge_cfs"]), c["alternative"]))
     L.append("5. Work windows: dropped every 15-minute reading from arrival to departure of each visit in "
              "tum02_site_visits_2016-2025.csv, its times read on the local clock (orifice purges lift the readings "
              "inside the visit), and took the 0.47 ft controller offset off from the 11 June 2025 visit to the 27 August "

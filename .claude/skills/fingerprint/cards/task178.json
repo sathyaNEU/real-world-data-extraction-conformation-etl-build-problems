@@ -6,7 +6,7 @@
   "domain": "physical-environmental-sciences",
   "subdomain": "hydrology-flood-frequency",
   "client_domain": "physical-environmental-sciences",
-  "niche": "a western Washington water company's choice of waterway for the pipe bridge that carries its transmission main over the river just below its own stage gauge: the 1 per cent annual chance peak discharge from the gauge's 46 annual peak stages, each turned into a discharge through a rating the company's own field gaugings must supply, where about half the annual peaks rise onto the floodplain and the in-bank gaugings outnumber the floodplain ones ten to one",
+  "niche": "a western Washington paper mill's choice of waterway for the pipe bridge that carries its raw-water main over the river just below its own stage gauge: the 1 per cent annual chance peak discharge from the gauge's 46 annual peak stages, each turned into a discharge through a rating the mill's own field gaugings must supply, where about half the annual peaks rise onto the floodplain and the in-bank gaugings outnumber the floodplain ones five to one",
   "objective": "forecasting",
   "shape": "04",
   "decision_type": "dial_setting",
@@ -44,7 +44,7 @@
     "measurement quality ratings and remarks in free text",
     "telemetry gaps and re-sent rows in the 15-minute export"
   ],
-  "stakeholder_role": "the water company's water resources engineer, who sets the design discharge and the waterway alternative for the replacement pipe bridge",
+  "stakeholder_role": "the mill's water resources engineer, who sets the design discharge and the waterway alternative for the replacement pipe bridge before the 2027 in-water season",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
@@ -52,19 +52,20 @@
     "rows": 351228,
     "entity": "one 15-minute stage reading at the gauge",
     "grain": "gauge x 15 minutes",
-    "source": "synthetic (constructed in the layout of a utility hydrometric time-series export)"
+    "source": "synthetic (constructed in the layout of a hydrometric time-series export)"
   },
   "forum": "line_manager_or_team",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "utility_or_infrastructure",
+  "forcing_event": "season_or_peak",
+  "org_family": "manufacturer",
   "world": {
-    "geography": "United States, western Washington (the Tumwick River valley; the river, Northfork Water Company, its gauge TUM-02 and every record are fictional)",
+    "geography": "United States, western Washington (the Tumwick River valley; the river, Callender Paper Company and its Sauer mill, its gauge TUM-02 and every record are fictional)",
     "currency": "USD",
-    "org_type": "investor-owned regional water utility",
+    "org_type": "pulp and paper mill (a manufacturer) operating its own river gauge for its water right and intake",
     "invented_names": [
-      "Northfork Water Company",
+      "Callender Paper Company",
       "Tumwick River",
-      "Sauer pipe bridge"
+      "Sauer pipe bridge",
+      "Crandell Hyde Engineering"
     ],
     "people": [
       "Stacy Huber",
@@ -121,6 +122,6 @@
       "fate": "spent 2026-10-21 at stage 4, Gate F (pack d64099d2): scored reader A conditioned on the 2027 tide table and landed the call (11.60 ft, 0.4 and 2.3 tides); reader B filed the default 12.35 ft; the judge was stopped because the readers decided it. The number's second cell (marketing-consumer-research / conjoint-choice-willingness-to-pay-analysis) was screened the same day with no card registered and nothing held; it is spent too."
     }
   ],
-  "notes": "Rebuild of task178 (architecture 2 of the slot, after architecture 1 (the trestle deck); the FC49 seed screen and the conjoint cell registered no card; arch 1's card identity moved to lineage). Calibration physical_verification: the gaugings are field measurements the rating is fitted on. Gap population: the rating's evidence is mostly the in-bank population of measurements while the decision rests on the overbank peaks. Generators G3 (the recorded stage against the discharge the river carried, as the gaugings measure it) then G14 (the pooled relation does not hold for the overbank pool). Stump strategy other: a measurement relation that changes form, fitted per segment and carried through every unit, against one pooled relation (no listed family fits honestly). Context artifact capacity_report: the crossing alternatives study that gives each waterway alternative's capacity; the design standard's flood-frequency section is an input.",
-  "registered": "2026-10-23T05:30:02Z"
+  "notes": "Rebuild of task178 (architecture 2 of the slot, after architecture 1 (the trestle deck); the FC49 seed screen and the conjoint cell registered no card; arch 1's card identity moved to lineage). Calibration physical_verification: the gaugings are field measurements the rating is fitted on. Gap population: the rating's evidence is mostly the in-bank population of measurements while the decision rests on the overbank peaks. Generators G3 (the recorded stage against the discharge the river carried, as the gaugings measure it) then G14 (the pooled relation does not hold for the overbank pool). Stump strategy other: a measurement relation that changes form, fitted per segment and carried through every unit, against one pooled relation (no listed family fits honestly). Context artifact capacity_report: the crossing alternatives study that gives each waterway alternative's capacity; the engineering standard's flood-frequency section is an input. Re-registered 2026-10-23 after the PAUSED commit: task170 and task173 were marked architecture_spent after this card was filed, which moved its live window back onto task175, task478 and task169 and BLOCKed org family, forcing event, artifact and pattern; redrawn honestly where the world allows: the owner became a pulp and paper mill that runs its own gauge for its water right (manufacturer; the utility label was true of the first world, not a relabel), the forcing event the 2027 in-water work season that the waterway choice must meet (season_or_peak; the design-build award follows from it), the artifact and pattern unchanged and cleared by the filing window.",
+  "registered": "2026-10-23T06:51:26Z"
 }

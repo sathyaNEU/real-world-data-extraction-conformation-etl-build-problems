@@ -1,6 +1,6 @@
 {
  "task": "task178",
- "title": "The waterway alternative for a water company's replacement pipe bridge, the smallest that passes the river's 1 per cent annual chance flood at the company's own stage gauge",
+ "title": "The waterway alternative for a paper mill's replacement raw-water pipe bridge, the smallest that passes the river's 1 per cent annual chance flood at the company's own stage gauge",
  "domain": "Physical & Environmental Sciences",
  "client_domain": "Physical & Environmental Sciences",
  "subdomain": "hydrology and flood frequency (the 1 per cent annual chance peak discharge at a stage-only gauge, from its annual peak stages and its field discharge measurements)",
@@ -12,23 +12,23 @@
   "sauer_crossing_frequency_curve.svg"
  ],
  "distractor_files": [
-  "sauer_flats_plant_rain_daily_1980-2025.csv",
+  "sauer_mill_rain_gage_daily_1980-2025.csv",
   "mrt01_marten_creek_annual_peaks.csv"
  ],
  "distractors": [
   {
-   "file": "sauer_flats_plant_rain_daily_1980-2025.csv",
+   "file": "sauer_mill_rain_gage_daily_1980-2025.csv",
    "wrong_basis": false,
-   "why_relevant": "the rain at the company's plant in the same valley drives the floods the design flow is about",
+   "why_relevant": "the rain at the mill in the same valley drives the floods the design flow is about",
    "why_unused": "the design flood comes from the gage's own annual peaks; no figure reads the rain record",
-   "ruled_out_by": "the alternatives study section 3 and Design Standard 4.2.2 (the gage's annual peak series)"
+   "ruled_out_by": "the alternatives study section 3 and Engineering Standard 4.2.2 (the gage's annual peak series)"
   },
   {
    "file": "mrt01_marten_creek_annual_peaks.csv",
    "wrong_basis": false,
-   "why_relevant": "the company's other gage in the valley, with annual peak discharges from a stable rating",
+   "why_relevant": "the mill's other gage in the valley, with annual peak discharges from a stable rating",
    "why_unused": "the generalized skew is set by the standard and the design flood is at TUM-02; no figure reads it",
-   "ruled_out_by": "Design Standard 4.2.2 and 4.2.4 (the structure's own gage, the filed generalized skew)"
+   "ruled_out_by": "Engineering Standard 4.2.2 and 4.2.4 (the structure's own gage, the filed generalized skew)"
   }
  ],
  "stated_inputs": [
@@ -66,7 +66,7 @@
  "sources": [
   {
    "files": "all files under target/",
-   "origin": "constructed for this task by task178/generator/build.py (seeded, deterministic) around a fictional western Washington water utility (Northfork Water Company), its river gage TUM-02 on the fictional Tumwick River and its engineering consultant. No real organisation's records or person is depicted.",
+   "origin": "constructed for this task by task178/generator/build.py (seeded, deterministic) around a fictional western Washington pulp and paper mill (the Callender Paper Company Sauer mill), its river gage TUM-02 on the fictional Tumwick River and its engineering consultant. No real organisation's records or person is depicted.",
    "date": "2026-01-20",
    "license": "CC0-1.0 (original work)"
   }
@@ -77,45 +77,45 @@
   {
    "path": "cmms_work_orders_sauer_2019-2025.csv",
    "format": "csv",
-   "bytes": 14580,
+   "bytes": 14576,
    "rows": 150,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company, maintenance management system work orders, Sauer crossing assets",
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company, Sauer mill, maintenance management system work orders, Sauer crossing assets",
    "date": "2026-01-20",
+   "license": "CC0-1.0 (original work, constructed for this task)"
+  },
+  {
+   "path": "cpc_engineering_standard_sec4_hydrology.pdf",
+   "format": "pdf",
+   "bytes": 54800,
+   "rows": null,
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company, Sauer mill, Engineering Standard section 4 (hydrology), issue 3",
+   "date": "2021-04-26",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
    "path": "mrt01_marten_creek_annual_peaks.csv",
    "format": "csv",
-   "bytes": 1295,
+   "bytes": 1307,
    "rows": 40,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company, MRT-01 Marten Creek annual peaks",
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company, Sauer mill, MRT-01 Marten Creek annual peaks",
    "date": "2026-01-20",
-   "license": "CC0-1.0 (original work, constructed for this task)"
-  },
-  {
-   "path": "nfw_design_standard_sec4_hydrology.pdf",
-   "format": "pdf",
-   "bytes": 54802,
-   "rows": null,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company, Engineering Design Standard section 4 (hydrology), issue 3",
-   "date": "2021-04-26",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
    "path": "sauer_crossing_alternatives_study.pdf",
    "format": "pdf",
-   "bytes": 55289,
+   "bytes": 55308,
    "rows": null,
-   "source": "Constructed for this task (seeded, deterministic): Crandell Hyde Engineering (fictional) for Northfork, Sauer pipe bridge waterway alternatives study, draft",
+   "source": "Constructed for this task (seeded, deterministic): Crandell Hyde Engineering (fictional) for Callender, Sauer pipe bridge waterway alternatives study, draft",
    "date": "2025-12-12",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
-   "path": "sauer_flats_plant_rain_daily_1980-2025.csv",
+   "path": "sauer_mill_rain_gage_daily_1980-2025.csv",
    "format": "csv",
    "bytes": 302584,
    "rows": 16803,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company, Sauer Flats treatment plant rain gage, daily totals",
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company, Sauer mill, wastewater plant rain gage, daily totals",
    "date": "2026-01-20",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
@@ -124,34 +124,34 @@
    "format": "csv",
    "bytes": 10332936,
    "rows": 229713,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company, SCADA historian export, Sauer crossing tags",
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company, Sauer mill, SCADA historian export, Sauer crossing tags",
    "date": "2026-01-12",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
    "path": "tum02_annual_peaks_wy1980-2015.csv",
    "format": "csv",
-   "bytes": 1437,
+   "bytes": 1448,
    "rows": 40,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company (fictional), TUM-02 annual peak stage register, water years 1980 to 2015",
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company (fictional), Sauer mill, TUM-02 annual peak stage register, water years 1980 to 2015",
    "date": "2016-03-02",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
    "path": "tum02_data_dictionary.xlsx",
    "format": "xlsx",
-   "bytes": 11749,
+   "bytes": 11745,
    "rows": 35,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company, data dictionary for the TUM-02 exports",
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company, Sauer mill, data dictionary for the TUM-02 exports",
    "date": "2025-11-04",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
    "path": "tum02_levels_log.txt",
    "format": "txt",
-   "bytes": 1843,
+   "bytes": 1854,
    "rows": null,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company, TUM-02 levels log",
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company, Sauer mill, TUM-02 levels log",
    "date": "2025-08-27",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
@@ -160,7 +160,7 @@
    "format": "xlsx",
    "bytes": 20748,
    "rows": 212,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company, TUM-02 discharge measurement notes transcribed from the field forms, 1980 to 2004",
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company, Sauer mill, TUM-02 discharge measurement notes transcribed from the field forms, 1980 to 2004",
    "date": "2016-03-02",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
@@ -169,7 +169,7 @@
    "format": "csv",
    "bytes": 26640,
    "rows": 256,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company, TUM-02 discharge measurements, measurement database export, water years 2005 to 2025",
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company, Sauer mill, TUM-02 discharge measurements, measurement database export, water years 2005 to 2025",
    "date": "2026-01-20",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
@@ -178,25 +178,25 @@
    "format": "csv",
    "bytes": 10992,
    "rows": 117,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company, TUM-02 site visit log, water years 2016 to 2025",
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company, Sauer mill, TUM-02 site visit log, water years 2016 to 2025",
    "date": "2026-01-20",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
    "path": "tum02_stage_15min_wy2016-2025.csv",
    "format": "csv",
-   "bytes": 9134021,
+   "bytes": 9134033,
    "rows": 351228,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company, TUM-02 15-minute stage, hydrologic database export, water years 2016 to 2025",
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company, Sauer mill, TUM-02 15-minute stage, hydrologic database export, water years 2016 to 2025",
    "date": "2026-01-20",
    "license": "CC0-1.0 (original work, constructed for this task)"
   },
   {
    "path": "tum02_station_description.pdf",
    "format": "pdf",
-   "bytes": 55097,
+   "bytes": 55105,
    "rows": null,
-   "source": "Constructed for this task (seeded, deterministic): Northfork Water Company, TUM-02 station description, revised 2024-03-18",
+   "source": "Constructed for this task (seeded, deterministic): Callender Paper Company, Sauer mill, TUM-02 station description, revised 2024-03-18",
    "date": "2024-03-18",
    "license": "CC0-1.0 (original work, constructed for this task)"
   }

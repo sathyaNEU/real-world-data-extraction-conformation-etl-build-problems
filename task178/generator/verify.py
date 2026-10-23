@@ -45,7 +45,7 @@ def main(target):
     find = lambda pat: [f for f in files if re.search(pat, f)][0]
 
     # the standard and the study
-    std = text(p(find(r"design_standard")))
+    std = text(p(find(r"engineering_standard")))
     m = re.search(r"western Washington, (-?[\d.]+), whose mean square error is ([\d.]+)", std)
     greg, mreg = float(m.group(1)), float(m.group(2))
     chk("standard: generalized skew and its MSE read", (greg, mreg) == (figs["regional_skew"], figs["regional_skew_mse"]))
