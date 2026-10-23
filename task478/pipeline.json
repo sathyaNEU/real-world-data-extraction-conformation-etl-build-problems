@@ -1,40 +1,40 @@
 {
   "task": "task478",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "DESIGN",
   "domain": "physical-environmental-sciences/emissions-inventory",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
+  "stage": 2,
+  "stage_name": "design",
   "updated": "2026-10-23",
-  "stump": "The default path carries each unmonitored unit's latest source test across its 2026 fuel and names Ashgrove Refining, Haskett Ridge, Lindqvist Paperboard, Valmora Glass Works and Wexley Point Energy Center; a unit injecting ammonia open-loop emits NOx at a rate that climbs with the operating hours on its catalyst since the last replacement, so Sedge Hollow's and St. Aldric's tests, read weeks after new catalysts went in, understate engines that ran on them all 2026 and Haskett Ridge's, read on catalysts replaced that December, overstate it; the climb the test histories trace against catalyst hours (0.48 in the log a 10,000 hours), integrated day by day, names Ashgrove Refining, Sedge Hollow, St. Aldric Medical Center, Valmora Glass Works and Wexley Point Energy Center.",
+  "stump": "The default path carries each unmonitored burner's latest source test across its 2026 fuel and names Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Glass Works; a low-NOx burner that meters its combustion air by volume burns a richer gas hotter, so its NOx rises with the heating value of the gas its BTU area receives, which the Westside gas plant's ethane recovery moves from month to month: Merriwell Foods' boilers were last tested in August 2025 on lean gas and ran their 2026 season on rich gas, and Tamsett State University's were tested in May 2026 on rich gas and fired the winter on lean; the rise the monitored Lindqvist power boiler traces against the utility's monthly heat content, carried from each test's month to each 2026 month, names Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass Works.",
   "architecture": 7,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-23"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK): Appendix A roster, Method 19 and source test wording, DEVICE_NO columns",
-    "reader": "reader A landed the call (golden five as a set); reader B missed it (default five); asks leaked: A gas 14/14 and engines 7/14, B gas 3/14 and engines 14/14"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (Gate G repeat against task273 and overuse, answered at the draw)",
-    "nearest": "task474 v2 at 0.09",
-    "surface": "7 card-level promotions (task480, task477, task479, task476, task265, task190, task195; surface 0.084 to 0.100), answered by the card's differentiation lines; no persona or surface finding"
+    "heart": "",
+    "nearest": "task85 v2.5, task196 v1, task229 v3, task480 v1 at 0.06; this slot's v6 at 0.33, differentiated",
+    "surface": ""
   },
   "judge": {
-    "verdict": "DETERMINISTIC",
-    "disposition": "FIX_NOW (cosmetic: a placeholder in the guidance's file dictionary)",
-    "report": "determinism_check_report_v6.md"
+    "verdict": "",
+    "disposition": "",
+    "report": ""
   },
   "returned": [],
-  "resume": "stage 1: architecture 6 spent at stage 4 (reader A landed the call by fitting each unit's tests on its catalyst's operating hours; see the design note Architecture 6 record); re-root to architecture 7 with a fresh draw, read Tried and rejected first",
+  "resume": "stage 2: architecture 7 drawn 2026-10-23 (a low-NOx burner's rate carried by the gas utility's monthly heat content); write the readability screen, fork table, ladder, closure, the asks and prompt.txt, then precut.py; the generator follows (world.py is v6's and is rewritten)",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "source_note": "re-root to a fresh world (an air district's SCR-controlled combustion units); the pothole world was spent with architectures 1 to 4 and the turnpike weigh-in-motion world with architecture 5"
+  "source_note": "re-root keeping the district and corridor of architecture 6 with a new facility mix (Rule 4306 boilers and heaters, two BTU areas); the pothole world was spent with architectures 1 to 4, the turnpike weigh-in-motion world with architecture 5, and the SCR catalyst-hours stump with architecture 6"
 }

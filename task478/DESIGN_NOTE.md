@@ -1,339 +1,193 @@
-# task478 design note: the Tamsett Basin district's 2027 NOx agreements, by the NOx each facility's SCR-controlled units emitted in 2026
+# task478 design note: the Tamsett Basin district's 2027 NOx agreements, by the NOx each facility's Rule 4306 boilers and heaters emitted in 2026
 
-Status lives in `pipeline.json`; this note holds the design. Read the Tried and rejected section first. Architecture 6
-(re-rooted 2026-10-22); the records of architectures 1 to 5 are at the end.
+Status lives in `pipeline.json`; this note holds the design. Read the Tried and rejected section first. Architecture 7
+(re-rooted 2026-10-23); the records of architectures 1 to 6 are at the end.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task478.json` (architecture v6), registered 2026-10-22 after a pull, the
-  architecture 1 to 5 identities in its lineage. `check` on the registered card: WARN only, answered here.
+- **Card:** `.claude/skills/fingerprint/cards/task478.json` (architecture v7), registered 2026-10-23 after a pull, the
+  architecture 1 to 6 identities in its lineage. `check` on the registered card: WARN only, answered here.
   `repeat.gate_g` and `overuse.gate_g` (method_or_model_selection, task273 among the last two): the label is the honest
-  one, since the decisive step is the model of each unit's rate across the year, and the driver it carries (a spot test
-  integrated over the hours on a renewable component) is on no other card. `test.same_puzzle_older` and
-  `test.same_driver_older` (gap objective, G16, a ranked slate) against task190, task195 and task228 v2: differentiated
-  on the card, none of them carries a measured rate that climbs with a component's operating hours. Nearest drivers on
-  file at 0.09 (task474 v2 and v3, monitor gaps filled by the hour's state).
-- **Redrawn at the draw, and why the replacements are the honester labels.** The live window (task249, task273,
-  task169) bans the statutory filing, the budget cycle, the vote, the council, the regulator, the government agency, the
-  policy adviser and the capacity planner. The decision is the slate of the plan's NOx reduction agreements, contracts
-  the district signs with each named facility (`purchase_order_or_contract`); a regional air district is a local public
-  agency of the counties it serves (`local_government`), governed by its board of directors (`board_of_directors`), and
-  the plan is the planning and rules manager's (`programme_officer`). Gap time with G13 first BLOCKed against five older
-  builds on the same signature; gap objective is the honester one, since a source test is a correct reading of the test
-  day's rate and the plan is scored on the year's tons, and G16 leads because the decisive step is the model of the rate
-  across the year. Personas redrawn from `guard.py names --geo "United States" --seed 478` after Leslie, Ricardo,
-  Zachary and Mary each warned against an older build: Nancy Hansen (planning and rules manager), Brian Daniels (senior
-  air quality engineer, emission inventory).
+  one, since the decisive step is which construction carries a source test onto the year's emissions, pinned by the
+  monitored burner and the units' own tests, and the driver it carries (a spot rate that follows a property of the fuel
+  a third party supplies, carried by that supplier's monthly record) is on no other card. `test.same_puzzle_older` and
+  `test.same_driver_older` (gap objective, G16, a ranked slate, method selection) against task190, task195 and task228
+  v2: differentiated on the card. Nearest drivers on file at 0.06 (task85 v2.5, task196 v1, task229 v3, task480 v1);
+  this slot's architecture 6 at 0.33, differentiated (its rate followed a clock the unit's own maintenance builds).
+- **Redrawn at the draw, and why the replacements are the honester labels.** task482's architecture 6 is spent, so the
+  live window is task249, task273 and task169. G7 (operating window) as the decisive generator BLOCKed against task249
+  on the pattern ban and the same-driver test in the batch; G16 leads, because the decisive step is the method that
+  carries a spot test to the year, and G5 sits under it, because what moves the rate is provided by a record outside
+  the unit (the supplier's heat content). The decision's owner is the district's director of compliance, who negotiates
+  the enforceable agreements with each facility (`compliance_or_audit`); the board of directors adopts the plan
+  (`board_of_directors`), the agreements are contracts (`purchase_order_or_contract`) and the district is a local public
+  agency of the counties it serves (`local_government`). Personas from `guard.py names --geo "United States" --seed
+  478`: Kevin warned against task73 and was replaced; Andrew Greene (director of compliance), Anna Haynes (senior air
+  quality engineer, emission inventory).
 - **Pairing:** Physical & Environmental Sciences, task type `emissions-inventory`, which serves Data Extraction &
-  Conformation (ETL). The ETL work conforms thirty-five SCR-controlled combustion units at fourteen facilities onto one
-  2026 NOx inventory: nine units' continuous monitor hours (local standard time, substitute-data codes, the monitoring
-  plan's unit ids against the district's device numbers), twenty-six units' source tests from two test databases (one in
-  ppmvd at 15 or 3 per cent oxygen and lb/hr, one adding lb/MMBtu), the facilities' monthly fuel statements in therms,
-  MMscf and MMBtu, run-hour readings, and the compliance event log. Objective: Data Extraction & Conformation (ETL).
+  Conformation (ETL). The ETL work conforms the boilers, steam generators and process heaters at fourteen facilities onto
+  one 2026 NOx inventory: four units' continuous monitor hours (local standard time, substitute-data codes, the
+  monitoring plan's unit ids against the district's device numbers), about twenty-eight units' source tests from two
+  test databases (the older in ppmvd at 3 per cent oxygen, the newer adding lb/MMBtu), the facilities' monthly fuel
+  statements in therms, MMscf and MMBtu (MMscf at the gas utility's heat content for the facility's BTU area and month),
+  the utility's monthly heat content table and the compliance event log. Objective: Data Extraction & Conformation (ETL).
 - **The decision and the quantity:** the Tamsett Basin Air Pollution Control District (fictional) names in its 2027
-  Community Emissions Reduction Plan for the Lowry Creek corridor the five facilities, of the fourteen there with
-  SCR-controlled combustion units, whose units emitted the most NOx in calendar 2026, and signs a NOx reduction agreement
-  with each by 1 April 2027. A retrospective quantity with its reason: the plan sizes its agreements on the last closed
-  year's emissions, and the agreements run from 2027.
+  Community Emissions Reduction Plan for the Lowry Creek corridor the five facilities, of the fourteen in its Appendix A,
+  whose Rule 4306 units emitted the most NOx in calendar 2026, and signs a NOx reduction agreement with each by 1 April
+  2027. A retrospective quantity with its reason: the plan sizes its agreements on the last closed year's emissions, and
+  the agreements run from 2027.
 - **Shape:** 01, a ranked list under a cap of five: fourteen facilities' 2026 NOx at the whole ton (14), the five (1),
   a chart's named parts (the fourteen bars, the five marked, the labels: 3), the files (3), and the asks' figures (two
-  per facility, designed at stage 2: 28): 49.
-- **Strategy:** `other`, named on the card: a clock already in the data (the operating hours on each unit's catalyst
-  since it was last replaced), estimated from every unit that went through it. Gate G `method_or_model_selection`: the
-  conformed inventory is the object and no shipped artifact ranks the facilities. Gap objective, pattern none,
-  generators G16 (decisive) and G13. Layer 2 family `estimation_fit`, pattern `own:a spot test of an emission rate read
-  at its catalyst's age, carried across the year, against the rate integrated over each month's catalyst operating
-  hours by the climb the units' test histories trace`.
+  asks designed at stage 2, about 26): about 47.
+- **Strategy:** `other`, named on the card: a property of the fuel a third party supplies, recorded month by month in
+  its heat content table, carries each spot test across the year. Gate G `method_or_model_selection`: the conformed
+  inventory is the object and no shipped artifact ranks the facilities. Gap objective, pattern none, generators G16
+  (decisive) and G5. Layer 2 family `estimation_fit`, pattern `own:a spot test of an emission rate read on its day's
+  fuel, carried across the year month by month by the fuel's heating value, the sensitivity read from a monitored unit
+  of the same burner type and the units' own test histories against the supplier's monthly record`.
 - **World:** United States, an unnamed state's Tamsett Basin, its air district's Lowry Creek corridor with fourteen
-  facilities holding SCR-controlled boilers, process heaters, gas turbines, a glass furnace and lean-burn engines (a
-  combined-cycle plant, a refinery, a glass works, a paperboard mill, a peaking plant, a landfill gas plant, a
-  compressor station, a cannery, a medical centre, a university, a water reclamation plant, an almond processor, a tire
-  retreader and a data centre). The large units carry continuous monitors and close their ammonia injection on the
-  monitor's NOx; the rest inject ammonia open-loop on load and are source tested every one or two years under the
-  district's NOx rule.
+  facilities holding Rule 4306 boilers, steam generators and process heaters (a refinery, a paperboard mill, a
+  container glass plant, a tomato cannery, a creamery, a university central plant, a medical centre, an almond
+  processor, a poultry processor, a correctional facility, a commercial laundry, a tire retreader, a water reclamation
+  plant and a combined-cycle plant's auxiliary boiler). The refinery's heaters and boiler run SCR and close their
+  ammonia injection on their monitors' NOx; the paperboard mill's power boiler fires low-NOx burners under a monitor;
+  every other unit fires low-NOx burners whose combustion air is set by volume at tuning, with no oxygen trim, and is
+  source tested every one or two years under the district's NOx rule. The gas utility serves the corridor through two
+  BTU areas: Eastside on interstate gas of steady heat content, Westside blended with the Lowry Creek gas plant's
+  residue gas, whose heat content follows the plant's ethane recovery from month to month.
 - **Forcing fact:** the agreements are signed by 1 April 2027; the pack is as of 19 February 2027 (exports pulled 8 to
   16 February).
-- **Data-native sentence:** an SCR catalyst loses activity with every hour its unit fires, and a unit without a monitor
-  injects ammonia on load, open-loop, so its NOx rate climbs from the day its catalyst is replaced until the next, while
-  a source test reads the rate at whatever catalyst hours its test day fell on; the units' own test histories, set
-  against the operating hours their catalysts had run at each test, trace the climb.
-- **The WHAT screen.** Population: the SCR-controlled combustion units the district's NOx rule covers at the fourteen
+- **Data-native sentence:** a low-NOx burner whose combustion air is set by volume at its tuning burns a richer gas
+  hotter, so its NOx rate rises about six per cent for each per cent the gas's heating value rises; a source test reads
+  the rate on whatever gas its test month brought, and the Westside BTU area's heat content follows the gas plant's
+  ethane recovery from month to month, which the monitored Lindqvist power boiler's hours and the units' own test
+  histories trace against the utility's monthly heat content table.
+- **The WHAT screen.** Population: the boilers, steam generators and process heaters Rule 4306 covers at the fourteen
   facilities (plan section 2). Outcome: the NOx each unit emitted. Window: calendar 2026. Unit: tons a facility, summed
   over its units. Comparison: the five highest of fourteen. The decisive step settles none of them: it is how a source
   test's rate is carried onto the year's emissions, which nothing files.
 - **Sources, one line each:**
   - The stationary-source inventory field's own hierarchy (continuous monitors, then source tests, then factors) and its
     rule that a test is used only where it represents the year's operation: here a test is a correct reading of one day.
-  - SCR operating practice: catalyst activity falls with exposure, closed-loop ammonia control holds a monitored unit's
-    NOx while open-loop control lets an unmonitored one climb, and catalysts are replaced on hours and on test results.
-  - This slot's architecture 5 (an instrument's bias read on a load-independent component): the measurement here is
-    unbiased on its day; what moves is the rate itself, with the hours on a renewable part.
+  - Gas interchangeability practice: a burner tuned on gas of one heating value runs richer and hotter on gas of a
+    higher one when nothing trims its air, which is why utilities publish heat content by area and month and why such
+    burners are retuned when a supply changes; a gas processing plant that rejects ethane into its residue gas raises
+    that gas's heat content, and one that recovers it lowers it.
+  - This slot's architecture 6 (a rate climbing with a catalyst's operating hours): there the unit's own maintenance
+    clock moved the rate; here nothing at the unit changes and the cause is a property of a third party's delivery.
 - **Same-puzzle and same-driver tests:** (objective, G16, ranked_slate_under_cap) and (objective, G16,
-  method_or_model_selection) against the older builds: task190, task195, task228 v2, differentiated on the card.
-- **Abstraction test:** the nearest drivers stripped of nouns (task474 v2 and v3, monitor hours filled at the state the
-  gap ran in; task138, traces started from each unit's actual store) carry no spot measurement of a rate that climbs
-  with the operating hours on a renewable component, integrated over the hours a period ran through.
+  method_or_model_selection) against the older builds task190, task195 and task228 v2, differentiated on the card.
+- **Abstraction test:** the nearest drivers stripped of nouns (task85 v2.5, an observation window built from an
+  intermediary's lead time; task196 v1, a rate that is the product of two factors; task229 v3, a daily value through a
+  convex conversion; task480 v1, an instrument's under-recording) carry no spot measurement of a rate that follows a
+  property of a supplied input, carried month by month by the supplier's own record of that property.
 
 ## Default path
 
-1. Read the plan: the agreements go to the five facilities whose SCR-controlled units emitted the most NOx in 2026
+1. Read the plan: the agreements go to the five facilities whose Rule 4306 units emitted the most NOx in 2026
    (section 2), each unit's emissions as the district's inventory guidance computes them: the monitored units from their
    hourly NOx mass, the others from their fuel and an emission rate that represents the year's operation.
-2. Summed the nine monitored units' hourly NOx mass for 2026 (local standard time, substitute hours as reported).
-3. Converted every unmonitored unit's source tests to lb/MMBtu (lb/hr over the test's heat input, or ppmvd through the
-   fuel F-factor at the oxygen the test reports), took the latest test, and multiplied by the unit's 2026 heat input
-   from its fuel statements.
+2. Summed the four monitored units' hourly NOx mass for 2026 (local standard time, substitute hours as reported).
+3. Converted every unmonitored unit's source tests to lb/MMBtu (the newer database's lb/MMBtu, the older one's ppmvd at
+   3 per cent oxygen through Method 19), took the latest test, and multiplied by the unit's 2026 heat input from its
+   fuel statements (MMscf at the utility's heat content for the facility's BTU area and month).
 
-Ends on: Ashgrove Refining, Haskett Ridge Compressor Station, Lindqvist Paperboard, Valmora Glass Works and Wexley
-Point Energy Center (checks.py R3a and L0: 8 and 7 tons for Haskett Ridge and Lindqvist against Sedge Hollow's 5 and
-St. Aldric's 4).
+Ends on: Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Glass
+Works, with Merriwell Foods sixth (the prototype at the draw: Tamsett 3.4 tons against Merriwell 2.7; the figures are
+fixed at stage 3 in checks.py).
 
-Golden: Ashgrove Refining, Sedge Hollow Landfill Gas, St. Aldric Medical Center, Valmora Glass Works and Wexley
-Point Energy Center (8 and 8 tons for Sedge Hollow and St. Aldric against Lindqvist's 7 and Haskett Ridge's 6).
+Golden: Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass Works, with
+Tamsett State University sixth (prototype: Merriwell 3.6 tons against Tamsett 2.9).
 
 ## Stump sentence
 
-The default path carries each unmonitored unit's latest source test across its 2026 fuel and names Ashgrove Refining,
-Haskett Ridge, Lindqvist Paperboard, Valmora Glass and Wexley Point, because a unit that injects ammonia open-loop emits
-NOx at a rate that climbs with the operating hours on its catalyst since the last replacement: Sedge Hollow's engines
-and St. Aldric's cogeneration engine were tested weeks after new catalysts went in and ran on them through 2026, and
-Haskett Ridge's engines were tested on worn catalysts replaced that December; the climb the units' test histories trace
-against catalyst hours (0.48 in the log a 10,000 hours, about 5 per cent a 1,000), integrated day by day over 2026 at
-each day's catalyst hours, names Ashgrove Refining, Sedge Hollow, St. Aldric Medical Center, Valmora Glass and Wexley
-Point.
+The default path carries each unmonitored burner's latest source test across its 2026 fuel and names Ashgrove
+Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Glass Works; a low-NOx
+burner that meters its combustion air by volume burns a richer gas hotter, so its NOx rises with the heating value of
+the gas its BTU area receives, which the Westside gas plant's ethane recovery moves from month to month: Merriwell
+Foods' boilers were last tested in August 2025 on lean gas and ran their 2026 season on rich gas, and Tamsett State
+University's were tested in May 2026 on rich gas and fired the winter on lean; the rise the monitored Lindqvist power
+boiler traces against the utility's monthly heat content, carried from each test's month to each 2026 month, names
+Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass Works.
 
 ## Three rules
 
-Task type: emissions-inventory (Physical & Environmental Sciences): thirty-five SCR-controlled units' monitor hours,
-source tests, fuel statements, run hours and catalyst events conformed onto one 2026 NOx inventory, a task type
+Task type: emissions-inventory (Physical & Environmental Sciences): the Rule 4306 boilers' and heaters' monitor hours,
+source tests, fuel statements and the gas utility's heat content conformed onto one 2026 NOx inventory, a task type
 serving Data Extraction & Conformation (ETL).
 
 Domain test: stationary-source inventory practice: the deciding quantity is each facility's 2026 NOx, which for the
-units without a monitor is fuel times a rate that represents the year; an SCR catalyst loses activity with every hour
-it fires and open-loop ammonia injection does not follow it, so the field reads such a unit's rate along its catalyst's
-hours, not off one test day; with another field's nouns there is no catalyst, no ammonia control loop and no source test
-to carry, so nothing is left to decide.
+units without a monitor is fuel times a rate that represents the year; a low-NOx burner that meters its air by volume
+burns a richer gas hotter, so the field reads such a unit's rate on the heat content of each month's gas, not off one
+test day; with another field's nouns there is no burner air-fuel ratio, no gas heat content and no source test to
+carry, so nothing is left to decide.
 
-Swap: put "hospital" for "facility" or "visits" for "tons" and nothing reads: there is no renewable catalyst whose
-operating hours move a measured rate, no test day read against a year and no closed-loop control that holds some units
-flat; the abstract move (a spot measurement integrated over the hours on a renewable part) needs the field's own
-catalyst and control physics.
+Swap: put "hospital" for "facility" or "visits" for "tons" and nothing reads: there is no burner whose excess air a
+supplied gas's heating value moves, no test day read against a year and no monitored unit of the same burner; the
+abstract move (a spot measurement carried by a property of a third party's delivery) needs the field's own combustion
+physics and the gas utility's heat content record.
 
-Layer 1: the source tests split across two databases, the older reporting ppmvd at 15 per cent oxygen (turbines,
-engines) or 3 per cent (boilers, heaters) and lb/hr, the newer adding lb/MMBtu; the fuel statements in therms, MMscf or
-MMBtu by facility; monitor hours in local standard time with substitute-data codes and the monitoring plan's unit ids
-against the district's device numbers; an event log of mixed date formats and free text, with the notices, retests and
-corrective catalysts a failed test brings; a facility renumbered after a change of owner, its older rows under 0705;
-test-database keys without their leading zeros and device prefixes. Each is written by the system named, none is placed
-to be caught, and each read the natural wrong way leaves the call where it is (checks.py R2a to R2f).
+Layer 1: the source tests split across two databases, the older reporting ppmvd at 3 per cent oxygen and lb/hr, the
+newer adding lb/MMBtu; the fuel statements in therms, MMscf or MMBtu by facility, MMscf converted at the utility's heat
+content for the facility's BTU area and month; monitor hours in local standard time with substitute-data codes and the
+monitoring plan's unit ids against the district's device numbers; an event log of mixed date formats and free text, the
+notices and retests a failed test brings and a test deferred under a filed extension; a facility renumbered after a
+change of owner; test-database keys without their leading zeros and device prefixes. Each is written by the system
+named, none is placed to be caught, and each read the natural wrong way leaves the call where it is (asserted at stage
+3).
 
-Layer 2: estimation_fit, each unmonitored unit's NOx rate carried across 2026 along its catalyst's operating hours by
-the climb the units' test histories trace against those hours, instead of a test day's rate held for the year.
+Layer 2: estimation_fit, each unmonitored low-NOx burner's rate carried across 2026 from the heat content of its tests'
+months to each 2026 month's, by the rise of NOx with heat content the monitored burner of the same type and the units'
+own test histories trace against the utility's table, instead of a test day's rate held for the year.
 
-Decisive step: fitting each unmonitored unit's tests against the operating hours its catalyst had run at each test
-(a common climb, each unit its own level) and summing 2026 day by day at each day's catalyst hours, which moves
-the five from Ashgrove Refining, Haskett Ridge, Lindqvist Paperboard, Valmora Glass and Wexley Point to Ashgrove
-Refining, Sedge Hollow, St. Aldric Medical Center, Valmora Glass and Wexley Point.
+Decisive step: estimating the rise of a low-NOx burner's NOx rate with the gas's heat content (about six per cent a
+per cent, from the monitored Lindqvist boiler's hours against the Westside table and the units' tests against the table
+at their months) and carrying each unmonitored burner's tests from their months' heat content to each 2026 month's,
+which moves the five from Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and
+Valmora Glass Works to Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass
+Works.
 
-No decoy: nothing is planted: the monitor exports, the test databases, the fuel statements, the event log and the
-documents are what each system writes; no report ranks the facilities, states a unit's 2026 rate or says a test is
-unrepresentative; every catalyst's climb and every replacement is the kind every SCR fleet without monitors runs.
+No decoy: nothing is planted: the monitor exports, the test databases, the fuel statements, the heat content table, the
+event log and the documents are what each system writes; no report ranks the facilities, states a unit's 2026 rate or
+says a test is unrepresentative; the heat content moves as a gas plant's ethane recovery moves it, and every burner's
+response is the one low-NOx burners without oxygen trim have.
 
-Not semantics: every field, unit, oxygen basis, clock and code read correctly (ppmvd at 15 and 3 per cent, lb/hr, the
-F-factor, therms and MMscf, substitute hours, device numbers) still leaves the careful route on the latest test; no
-column holds a unit's 2026 rate or its catalyst hours and nothing says the rate moves with them; the step is an
-estimate (the climb and each unit's level) and the integration it sets, not a reading.
+Not semantics: every field, unit, oxygen basis, clock and code read correctly (ppmvd at 3 per cent, lb/hr, the
+F-factor, therms, MMscf at the area's monthly heat content, substitute hours, device numbers) still leaves the careful
+route on the latest test; the heat content is read correctly on the default path itself, to convert MMscf, and no
+column or sentence says a burner's NOx moves with it; the step is an estimate (the rise and each unit's level) and the
+carrying it sets, not a reading.
 
 Not rule application: the plan files the population, the outcome, the window and the cap (the WHAT) and the guidance
-the rate the unit operated at over the year; nothing filed says how a test becomes that rate, and the family the rule
-leaves open is wide: 15 enumerated constructions (latest, mean, median, last two, highest test, permit limit, a calendar
-trend, calendar age since the catalyst, and seven climbs on catalyst hours) file 4 different fives, with Sedge Hollow at
-5 to 13 tons, St. Aldric at 4 to 8 and Haskett Ridge at 6 to 10; the 7 the tests leave standing (the climb pooled, by
-kind, from 2022, anchored on each unit's latest test, as a power law, binned at 2,000 and at 3,000 hours, and on the
-older tests through Method 19) file one five and the same 14 whole tons, a spread of exactly zero; what rules the rest
-out is no clause and no group-by but each unit's own test history, where catalyst hours take the within-unit residual
-from 0.288 to 0.065 in the log (likelihood ratio 511.5 on one degree of freedom) against 0.269 for calendar time and
-0.173 for calendar age, once the hours are built from two files nothing joins.
+the rate the unit operated at over the year; nothing filed says how a test becomes that rate. Measured on the draw's
+prototype (re-measured on the generator's clean truth at stage 2): twelve enumerated constructions (latest, mean,
+median, last two, highest test, the permit limit, the limit for tests older than 2026, the monitored boiler's 2026
+months as an index, and four carried by heat content) file four different fives; the four the data leave standing (the
+rise from the monitored boiler or from the tests, each unit's level from all its tests or its latest) file one five,
+with Merriwell Foods at 3.53 to 3.58 tons and Valmora at 3.15 to 3.21 against Tamsett's 2.89 to 2.96; what rules the
+rest out is no clause but the monitored boiler's hours and the tests set against the utility's heat content by month, a
+join nothing in the pack invites, where heat content takes the within-unit residual of the Westside tests from 0.093
+to 0.029 in the log (prototype).
 
-Analyst test: a strong analyst who conforms every test to lb/MMBtu, every fuel statement to heat input and every
-monitor hour to 2026, and reads the plan and the guidance correctly, carries each unmonitored unit's latest test across
-its 2026 fuel and names Ashgrove Refining, Haskett Ridge, Lindqvist Paperboard, Valmora Glass and Wexley Point; only the
-rate integrated along each catalyst's hours names Ashgrove Refining, Sedge Hollow, St. Aldric Medical Center, Valmora
-Glass and Wexley Point (checks.py R3a and R3b on the generator's clean truth: the easy route files the default five,
-the decisive step alone the golden, and the true 2026 NOx gives the golden five, fifth over sixth 1.232).
+Analyst test: a strong analyst who conforms every test to lb/MMBtu, every fuel statement to heat input and every monitor
+hour to 2026, and reads the plan and the guidance correctly, carries each unmonitored burner's latest test (or the mean
+of its tests, or the monitored boiler's 2026 months as an index) across its 2026 fuel and names Ashgrove Refining,
+Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Glass Works; only each burner's tests
+carried by the heat content of each month's gas name Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge
+Hollow Creamery and Valmora Glass Works (asserted in checks.py on the generator's clean truth at stage 3).
 
-Estimand: the 2027 Community Emissions Reduction Plan section 2: the five facilities whose SCR-controlled combustion
-units covered by the district's NOx rule emitted the most NOx in calendar 2026, in tons, each facility the sum of its
-units.
+Estimand: the 2027 Community Emissions Reduction Plan section 2: the five facilities whose boilers, steam generators and
+process heaters covered by Rule 4306 emitted the most NOx in calendar 2026, in tons, each facility the sum of its units.
 
 No certified replay: no facility total, unit rate or 2026 inventory figure ships; the source tests are what each test
-day read and the monitor hours what each monitor read, so no published figure ties under either route.
+day read, the monitor hours what each monitor read and the heat content what the utility billed, so no published figure
+ties under either route.
 
-Lesson: a source test is a correct reading of one day's rate, and a year's emissions need the rate the year ran at; an
-SCR catalyst loses activity with its operating hours and open-loop ammonia does not follow it, so an unmonitored unit's
-rate is read along its catalyst's hours since the last replacement, which the units' own test histories trace, and a
-test taken weeks after a new catalyst understates a unit that ran on it all year while one taken on a worn catalyst
-overstates a unit replaced since.
-
-## Readability screen
-
-| Rung | What it takes | Verdict |
-|---|---|---|
-| 1 Monitored units | each 2026 CEMS hour's nox_mass_lb summed, joined to its device through the permit list's FAC_NO and CEMS_UNIT_ID (guidance section 2) | readable |
-| 2 Tests on one basis | the newer database's lb/MMBtu; the older one's NOX_LB_HR over fuel flow times heating value, or its ppm through Method 19 (guidance section 5) | readable |
-| 3 Heat input | the statements' therms, MMBtu and MMSCF at 1,037 Btu/scf or the reported heating value (guidance section 4) | readable |
-| 4 The rate along the catalyst's hours (decisive) | each unit's tests set against the hours its catalyst had run at each test, built from the log's SCR INSTALLED and CATALYST dates and the statements' monthly hours, fitted with one climb and a level for each unit | silent |
-| 5 The year integrated | each 2026 day's heat input at the rate the day's catalyst hours give | silent |
-
-Rung 4 is silent: no file holds a catalyst's hours or a unit's 2026 rate, no column or sentence says a rate moves with
-the hours on a catalyst, the catalyst dates are maintenance entries among 755 rows of the compliance log, and the
-guidance's "the NOx emission rate it operated at over the year" reads, on the default path, as the latest test's figure.
-Rungs 1 to 3 are conversions the guidance files and every route takes them.
-
-## Semantic fork table
-
-| ID | Term or convention | Alternative reading | Ruled out by |
-|---|---|---|---|
-| SF1 | NOx | NOx as NO and not NO2 | plan 2.1 "expressed as NO2"; the newer database's lb/MMBtu is Method 19's NO2 figure from its ppm (checks.py SF1) |
-| SF2 | a facility's units | its emergency engines or Rule 4307 units added | plan 2.2 names the Rule 4306 units; with the engines added the five stands; the Rule 4307 units have no fuel record (SF2) |
-| SF3 | calendar 2026 | the CEMS hours read as UTC | guidance section 2, local standard time; same call and 14 whole tons on UTC (R2c, SF3) |
-| SF4 | a monitored unit's NOx | substitute data hours left out | guidance section 2 counts them; same call without them (R2d, SF4) |
-| SF5 | heat input | landfill and digester gas at 1,037 Btu/scf | guidance section 4, the statement's heating value; same call at 1,037 (R2b, SF5) |
-| SF6 | a test's lb/MMBtu | the older tests through Method 19 from ppm, not lb/hr over heat input | guidance section 5 gives both as equal; same 14 whole tons (R2a, SF6) |
-| SF7 | catalyst hours at a test | at the end of the test day, not its start | same 14 whole tons (SF7) |
-| SF8 | the rate a day runs at | the day's start, not mid-day | same 14 whole tons (SF8) |
-| SF9 | a month's operating hours | all at the month's start, not spread over its days | same 14 whole tons (SF9) |
-| SF10 | the facility of a device | Haskett Ridge's rows under 0705 as another facility | the permit list's device numbers carry every test and statement row (R2e, SF10) |
-| SF11 | whole tons | half to even, not half up | no figure within 0.077 tons of a half under any standing construction (G3, SF11) |
-| SF12 | the five | a tie for fifth | fifth clears sixth by 18 per cent or more under every standing construction (G4, SF12) |
-| SF13 | the log's dates | the month-first dates up to 2020 read day first | guidance section 7 says month first; same call either way (R2f, SF13) |
-| SF14 | the gas delivered | the meter index times the multiplier and BTU factor, not the billed usage | plan 4.2 files the billed usage, and the corrector meters show no multiplier (SF14) |
-| SF15 | a read period's days | the day after the prior read through the current read | plan 4.2: from the day of the prior read to the day before the current read (SF15) |
-| SF16 | MMBtu | therms at another ratio | guidance section 4, therms divided by 10 (SF16) |
-| SF17 | a line's facility | an address read to two facilities | each service address matches one Appendix A address (SF17) |
-| SF18 | an engine's hours | the hour meters' differences, not the logs | guidance section 6, the hours the log records; the meters run through warm-up and cool-down (SF18) |
-| SF19 | grams a pound | 453.59237 | guidance section 6 writes 453.6 (SF19) |
-| SF20 | the engine a run is charged to | a run on a replacement day | no replaced engine runs on its replacement date or in the four days before (SF20) |
-| SF21 | the call's inputs | a billing line, log or inspection moving the call | the call and the 14 whole tons from the six call files alone (SF21) |
-
-## Ladder
-
-| Rung | Route | Five | Fifth over sixth |
-|---|---|---|---|
-| L0 | each unit's latest test across its 2026 heat input (the default path) | Wexley Point, Ashgrove, Valmora, Haskett Ridge, Lindqvist | 1.377 |
-| L1 | the mean, median or last two of each unit's tests | the same five | 1.178 to 1.337 |
-| L1 | each unit's highest test | Wexley Point, Ashgrove, Valmora, Haskett Ridge, St. Aldric | 1.211 |
-| L1 | each unit at its permit limit | Wexley Point, Ashgrove, Valmora, Sedge Hollow, Haskett Ridge | 1.184 |
-| L1 | each unit's tests trended on the calendar to mid-2026 | the default five | 1.337 |
-| L2 | the latest test on each unit's current catalyst | the default five | |
-| L3 | the climb on calendar age since the catalyst, not its hours | the default five | 1.035 |
-| L4 | the climb on catalyst operating hours, integrated day by day (the golden) | Wexley Point, Ashgrove, Valmora, Sedge Hollow, St. Aldric | 1.254 |
-
-Every route short of L4 keeps Haskett Ridge or Lindqvist in the five (checks.py L0 to L2). L3 is the near miss: age in
-years reads a seasonal unit's catalyst as older than its hours, so St. Aldric and Sedge Hollow tie Haskett Ridge at 6
-tons and fall out. The standing family (G2) files L4's five and 14 whole tons under every member.
-
-## Closure table
-
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | the 35 Rule 4306 devices at the fourteen Appendix A facilities (plan 2.2, the permit list's RULE column; SF2) |
-| 2 | Unit of account | the facility, the sum of its units; for the asks the facility's meters and its emergency engines |
-| 3 | Attribution window | calendar 2026 in local standard time (SF3); the gas by the days of each read period inside 2026 (SF15) |
-| 4 | As-of dating | the extracts of 3 to 16 February 2027; the plan of 19 February 2027 |
-| 5 | Version basis | the permit list as permitted in February 2027, devices keyed by number across owners (SF10, SF20) |
-| 6 | Denominator | none; tons, MMBtu and pounds are totals |
-| 7 | Weighting | each day's heat input (rung 5); the fit weights every test once |
-| 8 | Window length | one calendar year |
-| 9 | Boundary inclusivity | a read period from its prior read's day to the day before its current read (plan 4.2) |
-| 10 | Rounding path | half up from the unrounded figure: whole tons, whole MMBtu, whole pounds (SF11) |
-| 11 | Tie-break | none needed (SF12) |
-| 12 | Maturity and censoring | 2026 closed; St. Aldric's deferred October tests fall in 2027 and are not in the databases |
-| 13 | Order of operations | conform the tests and statements, build each day's catalyst hours, fit, integrate, sum by facility, rank |
-| 14 | Row order | none |
-| 15 | Duplicate resolution | none in the call's files; one billing line per meter and read period |
-| 16 | Identity normalisation | devices with and without their D- prefix, facility numbers with and without leading zeros, 0705 to 0912 |
-| 17 | Netting | none |
-| 18 | Dimensional units | ppmvd at 15 or 3 per cent oxygen, lb/hr, lb/MMBtu; therms, MMSCF, MMBtu; CCF and therms; hours and minutes |
-| 19 | Code and status semantics | substitute data code 12 counted (SF4); test results PASS and FAIL are both tests; never the stump |
-| 20 | Integerisation | whole tons, MMBtu and pounds |
-| 21 | Clause scope | plan 2 governs the call, 4.2 the gas, 4.3 and guidance 6 the engines |
-| 22 | Forward window contents | the 2027 agreements, signed by 1 April 2027, with the five |
-
-## Literal reader
-
-A literal reader executes plan 2.1 and 2.2 over the permit list's Rule 4306 devices and the guidance's sections 2 to
-5: sums the monitored hours, puts every test on lb/MMBtu and every statement on MMBtu, and multiplies each unmonitored
-unit's 2026 heat input by "the NOx emission rate it operated at over the year". Nothing filed names that rate, so the
-literal reading is an estimate of the year's rate from the unit's tests, and the tests themselves decide it: each
-unit's rate climbs with the hours on its catalyst and drops at each replacement, so a test-day figure is a reading of
-one point on that climb, and every construction the tests leave standing files the golden's five and its 14 whole tons
-(G2). The gas and engine asks execute plan 4.2 and guidance section 6 word for word, with the billed usage read in the
-unit the utility billed it and each run at the engine then installed.
-
-## Oracles
-
-- The main call has none: no shipped figure states a facility's or unit's 2026 NOx, a unit's rate for the year or a
-  climb, and the CEMS mass and the tests are each system's own readings, so nothing ties under one route only.
-- Ask A: the index-billed meters' identity (usage against read difference times multiplier, with or without the BTU
-  factor) sets the conversion date; it arbitrates the unit of every line from that date without handing over a level,
-  and the corrector meters show no multiplier to check.
-- Ask B: the hour meters arbitrate the log layout (read their own way every engine's log sits at 90 to 94 per cent of
-  its meter, the rest warm-up and cool-down) without handing over a figure; the replaced engines' meters are first read
-  after the replacement, so only the compliance log's EQUIPMENT entries carry the old engines.
-
-## Ask sheet
-
-Two asks, both on rows the call never reads (X1, X3): the plan's community tables beside each facility.
-
-- **Ask A, the gas Tamsett Valley Gas delivered in calendar 2026, whole MMBtu (14 figures).** User: the plan's fuel
-  balance (plan 4.2). Device, D2 a label stored before a silent switch: from the bills read on or after 1 July 2026 the
-  utility's new billing system bills therms, still in the USAGE_CCF column. The index-billed meters (multiplier shown)
-  show it by identity; the nine elevated-pressure meters bill on their volume correctors, show no multiplier and carry
-  it only through the same system's date (their usage per index unit steps 1.9 to 2.8 per cent at the first therm bill
-  and, read as therms, runs on). Rungs: every line CCF moves 14 of 14; every line therms 14; the meter index in place of
-  the billed usage 9; each line by its own identity, the corrector meters as CCF, 9; each bill in its current read's
-  year 14.
-- **Ask B, the emergency standby engines' 2026 NOx, whole pounds (14 figures).** User: the plan's community table
-  (plan 4.3, guidance section 6). Devices: D3 hours and minutes read as decimal hours at seven facilities (their sheets'
-  values never show minutes past 59, and the hour meters favour the reading), and D2 an attribute at the wrong vintage
-  at seven others: an engine replaced in 2026 under the same device number, the permit list showing the new engine, the
-  log's EQUIPMENT entry the old one's rating and tier. Each figure is moved by exactly one device; the decimal reading
-  moves 7, the current engine 7, both 14.
-
-| Ask | What the cracker does | Cracker |
-|---|---|---|
-| A | the dictionary's USAGE_CCF as corrected CCF times BTU_FACTOR, spread by plan 4.2 | miss |
-| B | the logs as decimal hours at each engine's permitted rating and tier (guidance section 6) | miss |
-
-Pair ceiling: 28.5 (cracker 45.0 on the call with 0 of 28 ask figures, mirror 12.0 off it with 0 of 28; a response that
-validates the usage against the index and the logs against the meters keeps 3 and 7, for a pair of 48.1).
-
-Mirror leakage: 0.0 per cent of ask weight.
-
-Measured by: generator/ceiling.py on the cut pack.
-
-## Pre-ship check
-
-1. Domain: stationary-source inventory practice's own estimate of an unmonitored unit's year from its source tests,
-   read along the operating hours on its SCR catalyst; with another field's nouns there is no catalyst, no ammonia
-   control loop and no test day to carry.
-2. Real work, nothing planted: every Layer 1 item is what the district's, the facilities' or the utility's systems
-   write (two test databases, oxygen bases, fuel units, the monitoring plan's ids, the log's two date formats, the
-   renumbered facility, the notices, retests and corrective catalysts a failed test brings); none is on the decisive
-   step (checks.py R2a to R2f).
-3. The step that flips the call is analytical: carrying each unit's tests along its catalyst's operating hours; no
-   clause makes the choice (the guidance files the rate the unit operated at over the year, not how a test becomes it).
-4. Analyst test: every field and rule read correctly, the latest test files the default five (asserted on the clean
-   truth, R3a, and on the pack, L0); the decisive step alone files the golden on the clean truth (R3b).
-5. The plan files the estimand (the Rule 4306 units, NOx, calendar 2026, tons by facility, the five) and the guidance
-   the year's rate; the 7 standing constructions file the golden five and the same 14 whole tons (G2), and the asks'
-   conventions are filed in plan 4.2 and guidance sections 4 and 6 (SF14 to SF20).
-6. No decoy, no withheld rule against a stated one, no certified replay.
-7. The lesson is on no other card: nearest drivers 0.09 (task474 v2 and v3); task190, task195 and task228 v2
-   differentiated on the card.
-8. Re-read against the built pack at stage 4 (zip md5 946c7506): reader A landed the call, so the architecture is
-   spent (Architecture 6 record below).
+Lesson: a source test is a correct reading of one day's rate on that day's fuel, and a year's emissions need the rate
+the year ran at; a low-NOx burner that meters its air by volume burns a richer gas hotter, so where a supply's heat
+content moves from month to month a burner's rate moves with it, and a test read on a lean month understates a season
+fired on rich gas while one read on a rich month overstates a winter on lean; no build on file carries a measured rate
+by a property of a third party's delivery.
 
 ## Architecture 6 record (spent 2026-10-23)
 
@@ -382,6 +236,19 @@ scattered reports into the precise units' potholes. Judge APPROVE (v2).
 
 ## Tried and rejected
 
+- Architecture 7 draw (2026-10-23): re-rooted on the author's standing rule (no retirement); the lesson of
+  architecture 6 taken first (a relation the units' own measurements show against a clock the pack builds is a fit a
+  strong reader makes), so the rate here follows a property of a third party's delivery that nothing at the unit
+  records and no maintenance log suggests. Screened before it and dead: low-load SCR dropout from a monitored unit's
+  low-load hours (the minimum injection temperature is common knowledge, and a seasonal processor's low winter fuel
+  invites it); cold starts before the catalyst warms (task273's screen); a reagent mass balance from the urea
+  deliveries (the delivery file announces what it is for); the combustion air's density with the season (a seasonal
+  index from the monitored units lands it); operators tuning before a test, read from portable-analyzer checks (two
+  measurements of one unit, a reader's pick); a CHP engine's fuel split from the electric utility's output (the
+  part-load heat rate forks it); a dairy lagoon's volatile solids carried across its emptying dates (either a filed
+  method or a kinetic fork); line-haul fuel by gross ton-miles against grade (a train-resistance model forks it);
+  Tier 4 standby generators whose SCR never warms on light-load test runs (the run log shows the load, and the
+  monitored sets show the step); fumigant VOC by application method (filed adjustment factors, rule application).
 - 2026-10-23, architecture 6 spent at stage 4 round 1 (zip md5 946c7506): reader A built each unit's operating hours
   since its last SCR INSTALLED or CATALYST entry from the statements and the compliance log, saw its test rates fall on a
   clean exponential in those hours (about 5 per cent scatter), fitted one shared climb (4.8e-5 an hour) with a level for

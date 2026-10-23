@@ -1,27 +1,26 @@
 {
   "task": "task478",
-  "architecture": "v6",
-  "drawn": "2026-10-22",
-  "slot_note": "architecture 6, re-rooted 2026-10-22 after architecture 5 was spent at stage 4 (reader C landed the call)",
+  "architecture": "v7",
+  "drawn": "2026-10-23",
+  "slot_note": "architecture 7, re-rooted 2026-10-23 after architecture 6 was spent at stage 4 (reader A landed the call)",
   "domain": "physical-environmental-sciences",
   "subdomain": "emissions-inventory",
-  "niche": "a regional air district's 2026 NOx inventory of its SCR-controlled boilers, turbines and engines, conformed from continuous monitors, source tests, fuel statements, run-hour readings and the compliance event log, to name the five facilities its 2027 community plan's NOx agreements cover",
+  "niche": "a regional air district's 2026 NOx inventory of the boilers and process heaters its NOx rule covers, conformed from continuous monitors, two source test databases, the facilities' fuel statements and the gas utility's monthly heat content by BTU area, to name the five facilities its 2027 community plan's NOx agreements cover",
   "objective": "etl",
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "Sign the 2027 NOx reduction agreements with Wexley Point Energy Center, Ashgrove Refining, Valmora Glass Works, Sedge Hollow Landfill Gas and St. Aldric Medical Center (24, 21, 22, 8 and 8 tons from their Rule 4306 units in 2026, against Lindqvist Paperboard's 7).",
-  "answer_source": "submission.md block 1, from generator/figures.json",
+  "answer": "Sign the 2027 NOx reduction agreements with Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass Works, against Tamsett State University in sixth (provisional at the draw; the tons come from generator/figures.json at stage 3).",
+  "answer_source": "design note at the draw; submission.md block 1 from generator/figures.json once built",
   "gap": [
-    "objective",
-    "time"
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
     "G16",
-    "G13"
+    "G5"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
@@ -31,27 +30,25 @@
   "validated_decoy": false,
   "context_artifact": "monitoring_export",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms every source test to lb/MMBtu, every fuel statement to heat input and every monitor hour to 2026, and reads the plan and its guidance correctly, carries each unmonitored unit's latest test across its 2026 fuel and names Ashgrove Refining, Haskett Ridge, Lindqvist Paperboard, Valmora Glass and Wexley Point; only the rate integrated along each catalyst's operating hours, which the units' test histories show climbing, names Ashgrove Refining, Sedge Hollow, St. Aldric Medical Center, Valmora Glass and Wexley Point.",
-  "domain_test": "Stationary-source inventory work: a source test is a three-run snapshot of a unit's emission rate and an SCR catalyst loses activity with every hour it fires, so the year's NOx needs the rate integrated over the catalyst hours the year ran through; with hospital or traffic nouns there is no catalyst, no operating-hour deactivation and no source test to carry, so nothing is left to decide.",
+  "analyst_test": "A strong analyst who conforms every source test to lb/MMBtu, every fuel statement to heat input (MMscf at the utility's heat content for the facility's BTU area and month) and every monitor hour to 2026, and reads the plan and its guidance correctly, carries each unmonitored burner's latest test (or the mean of its tests, or the monitored boiler's 2026 months as an index) across its 2026 fuel and names Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Glass Works; only each burner's tests carried from the heating value of their months' gas to each 2026 month's, by the rise of NOx with heating value that the monitored Lindqvist power boiler traces against the utility's monthly heat content, names Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass Works.",
+  "domain_test": "Stationary-source inventory work: a source test is a snapshot of a unit's NOx rate on its test day's fuel, and a low-NOx burner that meters its combustion air by volume burns a richer gas hotter, so its NOx rises several per cent for each per cent the supply's heating value rises; the year's NOx needs each test carried across the heating values the year's gas ran at; with hospital or traffic nouns there is no burner air-fuel ratio, no gas heating value and no source test to carry, so nothing is left to decide.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:a spot test of an emission rate read at its catalyst's age, carried across the year, against the rate integrated day by day over each catalyst's operating hours by the climb the units' test histories trace",
+  "layer2_pattern": "own:a spot test of an emission rate read on its day's fuel, carried across the year month by month by the fuel's heating value, the sensitivity read from a monitored unit of the same burner type and the units' own test histories against the supplier's monthly record",
   "layer1": [
-    "source tests in ppmvd at 15 and 3 per cent oxygen and in lb/hr, converted through the fuel F-factor",
-    "fuel statements in therms, MMscf and MMBtu by facility layout",
+    "source tests split across two databases, ppmvd at 3 per cent oxygen and lb/hr in the older, lb/MMBtu added in the newer",
+    "fuel statements in therms, MMscf and MMBtu by facility layout, MMscf converted at the utility's heat content for the facility's BTU area and month",
     "monitor hours in local standard time with substitute-data codes",
-    "district device numbers against the monitoring plan's unit ids",
-    "an event log with mixed date formats and free text, with the notices, retests and corrective catalysts a failed test brings",
+    "district device numbers against the monitoring plan's unit ids and the test databases' keys without leading zeros",
+    "an event log with mixed date formats and free text, the notices and retests a failed test brings",
     "a facility renumbered after a change of owner",
-    "test-database keys without their leading zeros and device prefixes",
-    "a gas utility's billed usage relabelled at a billing-system conversion, corrector meters without a multiplier",
-    "engine logs in hours and minutes at some facilities, and engines replaced under the same device number"
+    "a test deferred past its due date under a filed extension"
   ],
-  "stakeholder_role": "the district's planning and rules manager",
-  "role_family": "programme_officer",
+  "stakeholder_role": "the district's director of compliance",
+  "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
     "file": "tbapcd_cems_hourly_2026.csv",
-    "rows": 60257,
+    "rows": 35040,
     "entity": "one hour of one continuously monitored unit",
     "grain": "unit x hour",
     "source": "synthetic (constructed in the layout of a continuous emissions monitoring hourly export)"
@@ -66,17 +63,20 @@
     "invented_names": [
       "Tamsett Basin Air Pollution Control District",
       "Lowry Creek corridor",
-      "Wexley Point Energy Center",
       "Ashgrove Refining",
+      "Lindqvist Paperboard",
+      "Merriwell Foods",
+      "Sedge Hollow Creamery",
       "Valmora Glass Works",
-      "Sedge Hollow Landfill Gas",
-      "Haskett Ridge Compressor Station",
-      "St. Aldric Medical Center",
-      "Lindqvist Paperboard"
+      "Tamsett State University",
+      "Haskett Ridge Poultry",
+      "Quarry Lane Correctional Facility",
+      "Westside BTU area",
+      "Eastside BTU area"
     ],
     "people": [
-      "Nancy Hansen",
-      "Brian Daniels"
+      "Andrew Greene",
+      "Anna Haynes"
     ]
   },
   "deliverables": [
@@ -86,16 +86,15 @@
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive quantity is each unit's period total of an output whose rate climbs with the operating hours since a component was last renewed; most units are measured only by occasional spot tests, each taken at whatever renewal age its day fell on, so carrying a spot test across the period as a constant misstates the period, while the climb the units' own test histories trace against their hours since renewal, integrated over the hours the period ran through, does not.",
-  "driver_concrete": "Each facility's 2026 NOx from its SCR-controlled boilers, turbines and engines is the unmonitored units' fuel times a rate that climbs with the operating hours since each unit's catalyst was replaced; a source test reads the rate at the catalyst hours of its test day, so the latest test carried across 2026 understates a unit tested on a fresh catalyst and overstates one replaced since, while the climb the units' test histories trace against catalyst hours, integrated month by month, names the five.",
-  "stump": "The default path carries each unmonitored unit's latest source test across its 2026 fuel and names Ashgrove Refining, Haskett Ridge, Lindqvist Paperboard, Valmora Glass and Wexley Point; a unit injecting ammonia open-loop emits NOx at a rate that climbs with the operating hours on its catalyst since the last replacement, so Sedge Hollow's and St. Aldric's tests, read weeks after new catalysts went in, understate engines that ran on them all 2026 and Haskett Ridge's, read on catalysts replaced that December, overstate it, and the climb the test histories trace against catalyst hours names Ashgrove Refining, Sedge Hollow, St. Aldric Medical Center, Valmora Glass and Wexley Point.",
+  "driver": "The decisive quantity is each unit's period total of an output whose rate rises steeply with a property of an input a third party supplies, which the supplier records month by month for each supply area and which moves without any event at the unit; most units are measured only by occasional spot tests, each read on whatever input its day received, so carrying a spot test across the period, or averaging a unit's tests, misstates every unit whose period ran on a different input from its test days, while a continuously measured unit of the same kind and the units' own test histories trace the rate against the supplier's record, which carries each test from its test month's input to each month's.",
+  "driver_concrete": "Each facility's 2026 NOx from its Rule 4306 boilers and heaters is mostly its unmonitored low-NOx burners' fuel times a rate that rises about six per cent for each per cent the Westside BTU area's gas heating value rises, because a burner metering its air by volume burns a richer gas hotter; a source test reads the rate on its test day's gas, so Merriwell Foods' boilers, tested in the lean Augusts of odd years, understate a 2026 season that ran on rich gas, and Tamsett State University's, tested in rich Mays, overstate a winter fired on lean gas, while the monitored Lindqvist power boiler traces the rise against the utility's monthly heat content.",
+  "stump": "The default path carries each unmonitored burner's latest source test across its 2026 fuel and names Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Glass Works; a low-NOx burner that meters its combustion air by volume burns a richer gas hotter, so its NOx rises with the heating value of the gas its BTU area receives, which the Westside gas plant's ethane recovery moves from month to month: Merriwell Foods' boilers were last tested in August 2025 on lean gas and ran their 2026 season on rich gas, and Tamsett State University's were tested in May 2026 on rich gas and fired the winter on lean; the rise the monitored Lindqvist power boiler traces against the utility's monthly heat content, carried from each test's month to each 2026 month, names Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Glass Works.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task478": "architecture 5 put each WIM station's weights on the static basis through a load-independent axle; here a spot test of an emission rate is carried across a year in which the rate climbs with catalyst operating hours, and nothing is calibrated against a reference instrument",
-    "task132": "task132 ages a fitted module through band failure rates and restarts the curve at replacement for a spares buy; here no failure is counted: a measured rate's snapshot is integrated over the catalyst hours a year runs through",
-    "task190": "task190 judges a ratio's departure against its sampling error, the numerator complete and the denominator a stratified estimate; here no interval decides anything: a measured rate's snapshot is integrated over the catalyst hours a year runs through",
-    "task195": "task195 judges a paired difference between two screens by its own uncertainty; here nothing is tested against noise: each unit's spot test is carried to the year through the climb of its rate with catalyst operating hours",
-    "task228": "task228 identifies each instrument's random error from the covariances of independent measurements of one signal; here no error is separated: the measured rate itself climbs with the hours on a renewable component, and the year needs that climb integrated"
+    "task478": "architecture 6 carried each test along the operating hours on its catalyst, a clock the unit's own maintenance log builds; here no part ages and nothing at the unit changes: the rate follows a property of the fuel a third party supplies, recorded only in that supplier's monthly table",
+    "task190": "task190 judges a ratio's departure against its sampling error, the numerator complete and the denominator a stratified estimate; here no interval decides anything: each spot test is carried across the year by the heating value of the gas a third party delivered each month",
+    "task195": "task195 judges a paired difference between two screens by its own uncertainty; here nothing is tested against noise: each unit's spot test is carried to the year by the rise of its rate with the fuel's heating value",
+    "task228": "task228 identifies each instrument's random error from the covariances of independent measurements of one signal; here no error is separated: the measured rate itself follows a property of the delivered fuel, and the year needs it carried month by month"
   },
   "lineage": [
     {
@@ -174,10 +173,25 @@
       ],
       "domain": "supply-chain-logistics",
       "fate": "spent at stage 4 on 2026-10-22: reader C (round 2) landed the call by measuring each station's gain on the vehicle classes other than 9 against the four stations that agree, and kept all 24 ask figures"
+    },
+    {
+      "architecture": "v6",
+      "driver": "The decisive quantity is each unit's period total of an output whose rate climbs with the operating hours since a component was last renewed; most units are measured only by occasional spot tests, each taken at whatever renewal age its day fell on, so carrying a spot test across the period as a constant misstates the period, while the climb the units' own test histories trace against their hours since renewal, integrated over the hours the period ran through, does not.",
+      "stump": "The default path carries each unmonitored unit's latest source test across its 2026 fuel and names Ashgrove Refining, Haskett Ridge, Lindqvist Paperboard, Valmora Glass and Wexley Point; a unit injecting ammonia open-loop emits NOx at a rate that climbs with the operating hours on its catalyst since the last replacement, so Sedge Hollow's and St. Aldric's tests, read weeks after new catalysts went in, understate engines that ran on them all 2026 and Haskett Ridge's, read on catalysts replaced that December, overstate it, and the climb the test histories trace against catalyst hours names Ashgrove Refining, Sedge Hollow, St. Aldric Medical Center, Valmora Glass and Wexley Point.",
+      "subdomain": "emissions-inventory",
+      "gap": [
+        "objective",
+        "time"
+      ],
+      "generators": [
+        "G16",
+        "G13"
+      ],
+      "domain": "physical-environmental-sciences",
+      "fate": "spent at stage 4 on 2026-10-23: reader A (round 1) landed the call by fitting each unit's tests on the operating hours since its last catalyst event (one shared climb, a level per unit); reader B missed it"
     }
   ],
-  "notes": "architecture 6 drawn 2026-10-22 after architecture 5 was spent at stage 4; personas from guard.py names --geo 'United States' --seed 478",
+  "notes": "architecture 7 drawn 2026-10-23 after architecture 6 was spent at stage 4; strategy other: a property of the fuel a third party supplies, recorded month by month in its heat content table, carries each spot test across the year; personas from guard.py names --geo 'United States' --seed 478",
   "client_domain": "physical-environmental-sciences",
-  "registered": "2026-10-22T23:51:59Z",
-  "spent": "spent at stage 4 on 2026-10-23: reader A (round 1) landed the call by fitting each unit's tests on the operating hours since its last catalyst event (one shared climb, a level per unit); reader B missed it"
+  "registered": "2026-10-23T02:34:35Z"
 }
