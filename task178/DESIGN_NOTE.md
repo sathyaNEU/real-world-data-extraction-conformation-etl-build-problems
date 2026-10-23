@@ -365,6 +365,15 @@ Built the same day to stage 3 green (checks 91 of 91, verifier 33 of 33, two byt
 figures_check exit 0, leak.py REVIEW answered, guard surface exit 0 and heart WARN); it waits at stage 4 for the main
 session's two scored readers and the judge.
 
+Fourth rebuild cell the same day, chosen by this agent shape first (the brief's instruction after architecture 3
+died): no card registered, nothing cut, architecture 3 stays the card's current identity (marked spent). The search
+ran across every Forecasting task type the brief left open; one candidate held on code (the valve exercising
+programme's seizure clock) and could not be registered: the guard window BLOCKs it (pairing, subdomain, forcing
+event and organisation against task173 architecture 3, registered 11:00Z the same day; artifact and shape against
+task179), and task173's new draw is its sibling insight in the same world (a water utility's 2027 term-contract
+quantities read on which exposure the failures follow, with work on each unit recorded in another system). The lines
+are at the foot of `## Tried and rejected`. PAUSED at stage 1 for the main session to assign another cell.
+
 ## FC49 screen record (world spent, kept for the record)
 
 **Status: PAUSED at stage 1, no card ever registered, nothing cut.** New, Forecasting, seed FC49: a
@@ -752,3 +761,64 @@ none is touched by either candidate.
   the decisive step was a taught correction (lesson 1). Asks leaked 16 of 24 (66.7 per cent): ask A's sweep device was
   absent from the reader's path (it grouped fills by UTC time, trader and side and kept only confirmed rows); ask B held
   (window forwards kept by maturity date). Reader A and the judge were stopped; the card is marked spent.
+
+- **Fourth rebuild cell search (2026-10-23), shape first, no card registered.** Cells already held or spent this
+  round were excluded first (patient flow, discrete choice, event history, early warning, task174's six screens,
+  biomedical survival, credit PD, population PK, volatility, Bayesian, climate extremes, human reliability, and this
+  number's hydrology and conjoint cells); the strategy window then banned `composition_mix`, `causal_design` and
+  `time_semantics` (task179, task173, task176), so a design whose honest label is a mix shift or a clock was dead
+  before its screen. Measured on code (scratchpad `r178s/proto/p1.py`, `p2.py`, `p3.py`):
+  - **Escape of water read on the flats above (claims frequency, a housing association contents scheme in tower
+    blocks):** `p1.py`, three seeds, 27,000 flats and 8,300 claims. With the cascade from each floor above decaying at
+    0.55 the forward towers' expected claims sit only 19 to 22 per cent above the pooled flats rate, and grouping by
+    the block's storeys or kind lands within 1.5 per cent of the truth (the towers already in the book are the
+    attaining subset). Dead on lever and on the subset screen.
+  - **Valve seizure read on the years since each valve was last turned (asset condition, a city's valve exercising
+    programme):** `p2.py` then `p3.py` (16 valve zones on grid networks, 33,000 valves, about 60,000 programme visits
+    2005 to 2026, break isolations traced through the valve segments, two zones lined in 2019 to 2022 with every
+    lining job isolating its main). Against the 2027 expected truth for the two lined zones: the pooled rate 1.30 to
+    1.37, the rate on the years since the previous programme visit 1.50 to 1.74, break turns counted without the
+    lining turns 1.65 to 1.91, the zones' own previous cycle 1.46 to 1.57; the golden family (Weibull, complementary
+    log-log on the log clock and logistic on the clock, all on the years since the last turn of any kind) 0.94 to
+    0.97, within about 3 per cent of itself. It held on code and died on the draw: `guard.py check` BLOCKs
+    `ban.pairing`, `ban.subdomain`, `ban.forcing_event` and `ban.org_family` against task173 architecture 3 and
+    `ban.artifact` and `ban.shape` against task179, and task173's new draw (a city water utility's 2027 service-leak
+    term contract, read on the meter exchange visits recorded beside each service) is the same insight family in the
+    same world, work on each unit recorded in another system deciding which exposure the failures follow. The card
+    draft is `r178s/card/task178.json`; an electricity variant (ring main unit switches found inoperable at the
+    maintenance cycle, reset by fault and planned switching) is the same insight, waits on the same window and is
+    weaker, since a switching schedule names every switch it operates and so hands over the reset the water version
+    hides behind the isolation trace.
+- Dead on paper in the same search, one line each:
+  - deposit run-off at a bonus expiry read on the customer's primary relationship (salary credits), or on the balance
+    against the campaign's own cap: task137's driver (new-money specials against member money at the repricing);
+  - deposit attrition after branch closures read on each customer's distance to the nearest remaining branch: the
+    closure invites it and the regulator's closure guidance names distance, a taught channel;
+  - travel cover read per trip day for a long-stay product: the claim cause field splits cancellation from in-trip
+    claims, so the right exposure per cause is a reading;
+  - workers' compensation read per hour against per payroll under a minimum wage step: the step is announced and the
+    exposure trend is taught;
+  - ill-health retirement mortality read on the years since retirement for a guarantee lump-sum budget: a few dozen
+    deaths a year (sigma far above any bin) and the select effect is taught;
+  - pensioner mortality read on care home residence from address cardinality: no structural reason puts the forward
+    tranche at one end of it;
+  - turnout per registrant after automatic voter registration: announced, and the registration source is a column;
+  - sewer blockages read on the properties upstream of each segment for newly adopted estates: holds the shape but is
+    task175's world and default path (a utility's newly served areas carried an earlier areas' first-year rate);
+  - wind turbine gearbox exchanges read on cumulative energy rather than age for a life-extended farm: the consumed
+    fatigue life of a low-wind site is the field's taught life-extension argument, and the effective-age scaling lands;
+  - pole condemnations with storm-patrol inspections pooled into the cycle rate: the selection is generic, the swap
+    test reads the same with restaurant inspections;
+  - SaaS renewal churn read on the integrations the migrated accounts lost: API usage is the first churn feature a
+    reader builds;
+  - holiday-let claims read per occupied night: the booking feed in the pack invites it;
+  - roof-leak claims read on the latest roof replacement after a hail year: the hail spike and the permits invite it,
+    and hail-year variance swamps any bin;
+  - regular-saver inflows under a raised cap rebuilt from same-day overflow into easy access: overflow that leaves the
+    bank makes the truth unrecoverable;
+  - protection lapses after an adviser network moves to a competitor: announced, and earlier departures are the
+    analog;
+  - street-light crew visits after an LED conversion with cable faults dark across whole chains: visits are recorded,
+    so the converted districts' own post-conversion rate lands;
+  - out-migration read on the years at the current address after an inflow surge: the mover-stayer model is taught and
+    the honest label (a hazard by time since entry) is `time_semantics`, banned in the window.
