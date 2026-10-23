@@ -325,6 +325,31 @@ Prototypes are in the session scratchpad (r176/demog).
   Also a standing block: `guard.py check` on a probe card returns `ban.pairing` against task175
   (urban-regional-science with Forecasting, registered 2026-10-23 and still a live card in the last three).
 
+- **Fifth allocation, 2026-10-23, the cell left to this build's choice among the Forecasting task types outside the
+  exclusions (the three domains in the last three registrations, the two cells above, task174's five, task173's and
+  task177 to 179's), with the shape to look for named: the forcing input in a second file at a finer grain, entering
+  by identity, leaving no part of the record unaffected.** No cell was drawn, because each candidate instance died at
+  the draw:
+  - quantitative-finance / strategy-backtesting-evaluation (each fill's half-spread from the quote file, the forward
+    capital acting through each trade's participation): the spread and impact decomposition is the field's standard
+    transaction-cost analysis, and under a power-law impact the forward cost is the present cost times one factor;
+  - general-statistics-data-science / scaling-laws (training compute per run from the step log): 6 N D on the tokens
+    trained is already the textbook x-axis, and the intermediate-checkpoint and floor corrections are the cell's cards;
+  - human-factors-ergonomics / human-reliability-assessment (errors per opportunity from a step log, a forward work
+    plan changing the conditions): either the condition exists in the record (attaining subset) or its fatigue or
+    workload curve is extrapolated (form fork), and a second detection channel is a shipped mechanism;
+  - education-learning-sciences / learning-analytics-early-warning-models (credits earned by identity from the course
+    file under a new course size): within-student correlation of passes is task143's driver;
+  - energy-systems-utilities / asset-condition-maintenance (starts or cycles from a dispatch log, transformer aging by
+    the loading standard): per-start damage is one group-by, damage exponents fork, a filed aging equation is rule
+    application, and `utility_or_infrastructure` is banned against task175;
+  - healthcare-delivery-health-economics / patient-flow-beds-workforce-optimization (weekend discharge waits from the
+    discharge-ready date): replaying seven-day discharge on the recorded ready dates is rule application;
+  - actuarial-science-insurance / mortality-longevity and claims-frequency-severity (amount-weighted deaths, earned
+    exposure from mid-term changes): each is the cell's own card or a small lever.
+  The recurring death across the session: where a finer file forces a per-case quantity by identity, either the
+  forward change can be replayed on the corrected record, or the identity makes the correction one group-by.
+
 ## Retired
 
 **RETIRED 2026-10-19 under the author's rule that a number which dies in its second new cell this round is
@@ -344,3 +369,5 @@ and eight more directions dead on paper, all in `## Tried and rejected`. No card
 The main session then allocated urban-regional-science / municipal-service-demand-resource-allocation; nothing held there
 either (paper screens in `## Tried and rejected`, and `ban.pairing` against task175 standing), so the number stays PAUSED for
 another cell.
+A fifth allocation, left to this build's choice of cell, found no Forecasting task type where the named shape lives
+naturally (`## Tried and rejected`); the number stays PAUSED.
