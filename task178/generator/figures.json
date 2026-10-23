@@ -1,116 +1,115 @@
 {
- "ask_a": [
-  {
-   "date": "2026-10-28",
-   "level_ft": 14.68,
-   "rank": 1
+ "annual_peaks": 46,
+ "ask_a": {
+  "2016": {
+   "date": "2016-08-28",
+   "stage_ft": 3.4
   },
-  {
-   "date": "2018-01-04",
-   "level_ft": 14.64,
-   "rank": 2
-  },
-  {
-   "date": "2024-01-13",
-   "level_ft": 14.59,
-   "rank": 3
-  },
-  {
-   "date": "2018-03-02",
-   "level_ft": 14.32,
-   "rank": 4
-  },
-  {
-   "date": "2022-12-23",
-   "level_ft": 14.27,
-   "rank": 5
-  }
- ],
- "ask_b": {
   "2017": {
-   "at_street_level": 24,
-   "closures": 30
+   "date": "2017-07-26",
+   "stage_ft": 3.37
   },
   "2018": {
-   "at_street_level": 36,
-   "closures": 42
+   "date": "2018-07-30",
+   "stage_ft": 3.29
   },
   "2019": {
-   "at_street_level": 33,
-   "closures": 47
+   "date": "2019-08-14",
+   "stage_ft": 3.38
   },
   "2020": {
-   "at_street_level": 30,
-   "closures": 36
+   "date": "2020-08-13",
+   "stage_ft": 3.3
   },
   "2021": {
-   "at_street_level": 20,
-   "closures": 26
+   "date": "2021-08-10",
+   "stage_ft": 3.27
   },
   "2022": {
-   "at_street_level": 18,
-   "closures": 30
+   "date": "2022-08-21",
+   "stage_ft": 3.45
+  },
+  "2023": {
+   "date": "2023-08-18",
+   "stage_ft": 3.47
+  },
+  "2024": {
+   "date": "2024-08-08",
+   "stage_ft": 3.88
+  },
+  "2025": {
+   "date": "2025-08-09",
+   "stage_ft": 3.43
   }
  },
- "bracket_offset_ft": 0.08,
- "call_below_ft": 11.35,
- "call_deck_ft": 11.6,
- "call_expected_at_deck": 0.4,
- "call_expected_below": 2.3,
- "default_by_setting": {
-  "10.60": 30.7,
-  "10.85": 22.4,
-  "11.10": 16.5,
-  "11.35": 11.0,
-  "11.60": 7.4,
-  "11.85": 4.4,
-  "12.10": 2.1,
-  "12.35": 0.9,
-  "12.60": 0.1
+ "ask_b": {
+  "2020": {
+   "fall_ft": 1.14,
+   "pipe_level_ft": 191.86
+  },
+  "2021": {
+   "fall_ft": 1.11,
+   "pipe_level_ft": 189.32
+  },
+  "2022": {
+   "fall_ft": 1.09,
+   "pipe_level_ft": 189.42
+  },
+  "2023": {
+   "fall_ft": 1.25,
+   "pipe_level_ft": 193.21
+  },
+  "2024": {
+   "fall_ft": 1.21,
+   "pipe_level_ft": 192.52
+  },
+  "2025": {
+   "fall_ft": 1.28,
+   "pipe_level_ft": 193.76
+  }
  },
- "default_deck_ft": 12.35,
- "default_expected_at_deck": 7.4,
- "design_msl_ft": 5.4,
- "epoch_msl_ft": 5.12,
- "expected_by_setting": {
-  "10.60": 24.5,
-  "10.85": 14.7,
-  "11.10": 7.1,
-  "11.35": 2.3,
-  "11.60": 0.4,
-  "11.85": 0.1,
-  "12.10": 0.0,
-  "12.35": 0.0,
-  "12.60": 0.0
+ "breakpoint_ft": 10.28,
+ "call": {
+  "alternative": "D",
+  "design_discharge_cfs": 14000
  },
- "rival_picks": {
-  "2008 and 2009 seasons at 2027 sea level": 12.1,
-  "GEV on season maxima at 2027 sea level": 12.35,
-  "Poisson trend on counts": 12.6,
-  "climatology at 2027 sea level": 12.35,
-  "highest predicted tide plus a once-in-the-window surge": 12.1,
-  "last season (2026)": 12.1,
-  "last three seasons": 12.6,
-  "linear trend on counts": 12.35,
-  "peaks over threshold (GPD) at 2027 sea level": 12.35,
-  "pooled all-month surges (tide-aware)": 11.6,
-  "surges not moved off each year's sea level (tide-aware)": 11.85
+ "capacities_cfs": {
+  "A": 10400,
+  "B": 11600,
+  "C": 12900,
+  "D": 14700,
+  "E": 16200,
+  "F": 17800,
+  "G": 19500
  },
- "schedule_ft": [
-  10.6,
-  10.85,
-  11.1,
-  11.35,
-  11.6,
-  11.85,
-  12.1,
-  12.35,
-  12.6
- ],
- "season_skew_surges": 3756,
- "stnd_1995_below_mllw_ft": 4.21,
- "stnd_2026_below_mllw_ft": 4.09,
- "street_level_ft": 11.8,
- "window_high_waters": 118,
- "window_highest_predicted_ft": 11.1
+ "cms_to_cfs": 35.3147,
+ "controller_offset_ft": 0.47,
+ "crit": {
+  "alternative_capacity_cfs": 14700,
+  "station_skew": -0.2
+ },
+ "datum_shift_ft": 2.0,
+ "default": {
+  "alternative": "A",
+  "design_discharge_cfs": 10000,
+  "station_skew": -0.9
+ },
+ "exact": {
+  "design_discharge_cfs": 13966.8,
+  "mean_log": 3.6921,
+  "sd_log": 0.2036,
+  "station_skew": -0.2152,
+  "weighted_skew": -0.137
+ },
+ "measurements": 468,
+ "measurements_above_breakpoint": 79,
+ "next_smaller_alternative": "C",
+ "radar_face_install_ft": 199.34,
+ "radar_face_new_ft": 199.84,
+ "regional_skew": 0.05,
+ "regional_skew_mse": 0.302,
+ "rival_arithmetic_rating": {
+  "alternative": "C",
+  "design_discharge_cfs": 12000
+ }
 }

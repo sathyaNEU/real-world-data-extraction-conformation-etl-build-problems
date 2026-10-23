@@ -11,8 +11,8 @@
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Carry forward Alternative D (14,700 cfs) for the Sauer pipe bridge. The 1 per cent annual chance peak discharge at TUM-02 is 14,000 cfs, so Alternative C (12,900 cfs) falls short.",
+  "answer_source": "task178/submission.md, 1. Final Recommendation, first two sentences (bold markers removed); figures in task178/generator/figures.json, written with golden/sauer_crossing_design_flow.xlsx and golden/sauer_crossing_frequency_curve.svg by generator/deliver.py from target/ and recomputed by generator/verify.py",
   "gap": [
     "population"
   ],
@@ -31,7 +31,7 @@
   "validated_decoy": false,
   "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who puts every stage on the current gauge datum, converts the ADCP discharges from cubic metres a second, extracts the recent water years' peaks from the 15-minute record and fits the company's design standard's log-Pearson Type III with the weighted regional skew, but turns the 46 peak stages into discharges through one power-law rating fitted to all the gaugings, files a 1 per cent annual chance flood about 30 per cent low and the 10,000 cfs waterway (13,000 cfs if the rating is fitted in arithmetic units), because the 30-odd gaugings above bankfull, which show the floodplain carrying flow the channel's curve cannot, are outweighed by the 400-odd below it.",
+  "analyst_test": "A strong analyst who puts every stage on the current gauge datum, converts the ADCP discharges from cubic metres a second, extracts water years 2016 to 2025's peaks from the 15-minute record and fits the design standard's log-Pearson Type III with the weighted generalized skew, but turns the 46 peak stages into discharges through one power-law rating fitted to all 468 gaugings, files a 1 per cent flood of 10,000 cfs and Alternative A (10,400 cfs), three alternatives under Alternative D (14,700 cfs) at the golden's 14,000 cfs; the same curve fitted in arithmetic units files 12,000 cfs and Alternative C, because the 79 gaugings above the 10.3 ft break, which show the floodplain carrying flow the channel's curve cannot, are outweighed by the 389 below it.",
   "domain_test": "The deciding quantity is the 1 per cent annual exceedance discharge, estimated the way flood hydrology estimates it (a log-Pearson Type III on the annual peak series with a weighted regional skew), on peaks that a hydrographer turns from stage into discharge through a stage-discharge rating fitted to field measurements, which changes form where the river leaves its banks; with another field's nouns there is no stage, rating, bankfull control or floodplain for the measurement step or its pitfall to live in.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:floodplain-segment-of-the-rating-under-the-annual-peak-series",
@@ -49,7 +49,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "tum02_stage_15min_wy2016-2025.csv",
-    "rows": 350000,
+    "rows": 351228,
     "entity": "one 15-minute stage reading at the gauge",
     "grain": "gauge x 15 minutes",
     "source": "synthetic (constructed in the layout of a utility hydrometric time-series export)"
@@ -81,8 +81,8 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "Each unit's outcome is a recorded index converted through a relation fitted to a separate and much smaller set of direct measurements, and the relation changes form above a level that about half the units exceed while few measurements do; one relation fitted to all the measurements is set by the many below the level, understates every unit above it by more the higher it sits, and through the fitted distribution's shape understates the rare quantile far more than it misstates any single unit.",
-  "driver_concrete": "The 46 annual peak stages at TUM-02 become discharges only through a rating fitted to the county's gaugings; above about 10.2 ft the river spills onto its left-bank pasture floodplain and the 30-odd ADCP gaugings made there since 2005 run 15 to 45 per cent above any single power-law rating fitted to all 450 gaugings, so the peaks above bankfull are understated, the log-Pearson skew falls from near zero to about minus 0.9, and the 1 per cent flood drops about 30 per cent; a rating with its own floodplain segment, fitted on the overbank gaugings and carried through every peak stage, gives the waterway the design discharge needs.",
-  "stump": "A competent solver who fits one power-law rating to all the gaugings and runs the manual's weighted-skew log-Pearson Type III on the converted peaks files a 1 per cent flood near 10,000 cfs and the 10,000 cfs waterway (13,000 cfs in arithmetic units), because the floodplain gaugings that bend the rating above bankfull are a tenth of the record; the rating with a floodplain segment puts the 1 per cent flood near 14,500 cfs and the 14,500 cfs waterway.",
+  "driver_concrete": "The 46 annual peak stages at TUM-02 become discharges only through a rating fitted to the company's 468 gaugings; above about 10.3 ft the river spills onto its left-bank pasture and the 79 gaugings made there run 13 per cent and more above any single power-law rating fitted to all of them (in-bank residuals within 4 per cent), so the peaks above the bank are understated, the station skew falls from -0.2 to -0.9 and the 1 per cent flood from 14,000 to 10,000 cfs; a rating with its own floodplain term above a break fitted at 10.28 ft, carried through every peak stage, gives 14,000 cfs and Alternative D (14,700 cfs), every floodplain-honouring form agreeing within 2.3 per cent.",
+  "stump": "A competent solver who fits one power-law rating to all the gaugings and runs the standard's weighted-skew log-Pearson Type III on the converted peaks files a 1 per cent flood of 10,000 cfs and Alternative A (10,400 cfs), 12,000 cfs and Alternative C (12,900 cfs) if the curve is fitted in arithmetic units, because the floodplain gaugings that bend the rating upward above the bank are a sixth of the record; the rating with a floodplain term above the fitted 10.28 ft break puts the 1 per cent flood at 14,000 cfs and files Alternative D (14,700 cfs).",
   "mechanism_source": "design_note",
   "differentiation": {
     "task238": "task238 sets a survey-mode dial from an instrumented estimate of how a reporting channel changes reports (a randomised nudge's ratio of differences); here nothing is assigned or instrumented: a stage-discharge rating is fitted per control segment on field gaugings and carried through every annual peak before a flood-frequency fit.",

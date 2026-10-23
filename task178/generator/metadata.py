@@ -11,25 +11,23 @@ import common as C
 
 ORIGIN = "Constructed for this task (seeded, deterministic): "
 SOURCES = {
-    C.F_VER: ("City of Port Tessaly DPW (fictional), tide gauge PTG-01 verified 15-minute water level, in the layout "
-              "of a municipal data system export", "2026-12-08"),
-    C.F_TEL: ("City of Port Tessaly DPW, PTG-01 provisional 6-minute telemetry feed", "2026-12-08"),
-    C.F_BOARD: ("City of Port Tessaly harbormaster's office, hourly float tide board log", "2026-12-08"),
-    C.F_TABLES: ("City of Port Tessaly harbormaster's office, compiled annual tide tables 1995 to 2027 in three layouts. "
-                 "Predictions are computed from fictional harmonic constants with the standard astronomical arguments "
-                 "and nodal factors, so their timing follows the real Moon and Sun", "2026-10-01"),
-    C.F_LOG: ("City of Port Tessaly DPW, PTG-01 station log", "2026-11-02"),
-    C.F_DATUMS: ("City of Port Tessaly DPW, PTG-01 datum sheet revision 2026-06", "2026-06-15"),
-    C.F_SLR: ("City of Port Tessaly DPW, Sea Level and Coastal Flooding Guidance 2026 update", "2026-09-03"),
-    C.F_BASIS: ("City of Port Tessaly DPW, Granite Wharf trestle design basis revision B", "2026-11-20"),
-    C.F_CLOSE: ("City of Port Tessaly DPW, street closure work orders from its two work-order systems", "2026-12-08"),
-    C.F_WX: ("Port Tessaly municipal airport daily weather summary", "2026-12-08"),
-    C.F_RIVER: ("Pennock River at Tessaly Falls (fictional river gauge), daily mean discharge", "2026-12-08"),
-    C.F_DICT: ("City of Port Tessaly DPW, data dictionary for the exports", "2026-11-30"),
-    C.F_MANIFEST: ("City of Port Tessaly DPW, export manifest", "2026-12-08"),
+    C.F_PEAKS: ("Northfork Water Company (fictional), TUM-02 annual peak stage register, water years 1980 to 2015", "2016-03-02"),
+    C.F_STAGE: ("Northfork Water Company, TUM-02 15-minute stage, hydrologic database export, water years 2016 to 2025", "2026-01-20"),
+    C.F_MEAS_OLD: ("Northfork Water Company, TUM-02 discharge measurement notes transcribed from the field forms, 1980 to 2004", "2016-03-02"),
+    C.F_MEAS_NEW: ("Northfork Water Company, TUM-02 discharge measurements, measurement database export, water years 2005 to 2025", "2026-01-20"),
+    C.F_STATION: ("Northfork Water Company, TUM-02 station description, revised 2024-03-18", "2024-03-18"),
+    C.F_LEVELS: ("Northfork Water Company, TUM-02 levels log", "2025-08-27"),
+    C.F_VISITS: ("Northfork Water Company, TUM-02 site visit log, water years 2016 to 2025", "2026-01-20"),
+    C.F_STANDARD: ("Northfork Water Company, Engineering Design Standard section 4 (hydrology), issue 3", "2021-04-26"),
+    C.F_STUDY: ("Crandell Hyde Engineering (fictional) for Northfork, Sauer pipe bridge waterway alternatives study, draft", "2025-12-12"),
+    C.F_SCADA: ("Northfork Water Company, SCADA historian export, Sauer crossing tags", "2026-01-12"),
+    C.F_WO: ("Northfork Water Company, maintenance management system work orders, Sauer crossing assets", "2026-01-20"),
+    C.F_RAIN: ("Northfork Water Company, Sauer Flats treatment plant rain gage, daily totals", "2026-01-20"),
+    C.F_KESSEL: ("Northfork Water Company, MRT-01 Marten Creek annual peaks", "2026-01-20"),
+    C.F_DICT: ("Northfork Water Company, data dictionary for the TUM-02 exports", "2025-11-04"),
 }
-TITLE = ("The lowest deck elevation for a Maine city's April to May 2027 wharf-rebuild work trestle that high water is "
-         "expected to reach on no more than one tide")
+TITLE = ("The waterway alternative for a water company's replacement pipe bridge, the smallest that passes the river's "
+         "1 per cent annual chance flood at the company's own stage gauge")
 
 
 def _rows(path):
@@ -56,44 +54,40 @@ def write(task_dir):
         files.append(dict(path=f, format=f.rsplit(".", 1)[-1], bytes=os.path.getsize(p), rows=rows,
                           source=ORIGIN + src, date=date, license="CC0-1.0 (original work, constructed for this task)"))
     distractors = [
-        dict(file=C.F_WX, wrong_basis=False,
-             why_relevant="wind and pressure drive the storm surge on top of the tide",
-             why_unused="the surge the forecast needs is measured at the gauge itself; no figure reads the airport record",
-             ruled_out_by="the design basis sets every level at the gauge"),
-        dict(file=C.F_RIVER, wrong_basis=False,
-             why_relevant="the river's April snowmelt peak falls in the work window",
-             why_unused="the gauge's readings already carry whatever the river adds at Cutler Wharf; no figure reads it",
-             ruled_out_by="the design basis sets every level at the gauge"),
-        dict(file=C.F_BOARD, wrong_basis=False,
-             why_relevant="the harbormaster's own hourly readings of the water on the same pier",
-             why_unused="the design basis and both asks take the gauge's readings; the board is hourly on its own zero",
-             ruled_out_by="the design basis section 2 (the gauge's highest 15-minute reading)"),
+        dict(file=C.F_RAIN, wrong_basis=False,
+             why_relevant="the rain at the company's plant in the same valley drives the floods the design flow is about",
+             why_unused="the design flood comes from the gage's own annual peaks; no figure reads the rain record",
+             ruled_out_by="the alternatives study section 3 and Design Standard 4.2.2 (the gage's annual peak series)"),
+        dict(file=C.F_KESSEL, wrong_basis=False,
+             why_relevant="the company's other gage in the valley, with annual peak discharges from a stable rating",
+             why_unused="the generalized skew is set by the standard and the design flood is at TUM-02; no figure reads it",
+             ruled_out_by="Design Standard 4.2.2 and 4.2.4 (the structure's own gage, the filed generalized skew)"),
     ]
     meta = dict(
         task="task178", title=TITLE,
         domain="Physical & Environmental Sciences", client_domain="Physical & Environmental Sciences",
-        subdomain="climate and weather extremes (coastal extreme water levels: the expected number of high waters "
-                  "reaching each candidate deck elevation over a known April to May 2027 window)",
+        subdomain="hydrology and flood frequency (the 1 per cent annual chance peak discharge at a stage-only gauge, "
+                  "from its annual peak stages and its field discharge measurements)",
         objective="Forecasting & Predictive Modeling",
-        prompt_shape="one dial (the deck elevation on a nine-step pile schedule) with the expected tides at the chosen "
-                     "elevation and the one below; five survival tides with dates and levels; six years of street "
-                     "closures with those at the street's flooding level; a bar chart over the schedule",
-        as_of="2026-12-08",
+        prompt_shape="one dial (seven waterway alternatives by capacity) against the 1 per cent design discharge; ten "
+                     "work windows' highest stages with dates; six water years' pipe-bridge levels and falls at the "
+                     "gauge's crest; a frequency-curve chart",
+        as_of="2026-01-20",
         deliverables=[C.G_BOOK, C.G_CHART],
         distractor_files=[d["file"] for d in distractors],
         distractors=distractors,
-        stated_inputs=["1 April to 31 May 2027", "11.80 ft MLLW", "three hours", "2017 to 2022"] + ["%.2f" % x for x in C.DECK_SETTINGS],
-        field_terms=["MLLW", "high water", "tide"],
+        stated_inputs=["{:,}".format(c) for _, c in C.ALTERNATIVES] + ["15 July to 15 September", "2016 to 2025", "2020 to 2025",
+                                                                       "%.2f" % C.REG_SKEW, "%.3f" % C.REG_SKEW_MSE],
+        field_terms=["stage", "gage height", "annual exceedance probability", "log-Pearson Type III", "water year"],
         input_gates=dict(files=len(files), formats=sorted(set(x["format"] for x in files)), largest_file=big,
                          largest_file_rows=big_rows),
         sources=[dict(files="all files under target/",
                       origin="constructed for this task by task178/generator/build.py (seeded, deterministic) around a "
-                             "fictional Maine coastal city (Port Tessaly), its tide gauge, harbormaster's office and "
-                             "public works department. No real organisation's records or person is depicted. The tide "
-                             "predictions follow the real astronomy; the storms on the record are placed on the dates of "
-                             "real Gulf of Maine storms but their levels are constructed.",
-                      date="2026-12-08", license="CC0-1.0 (original work)")],
-        created="2026-10-21", generator="task178/generator/build.py", files=files)
+                             "fictional western Washington water utility (Northfork Water Company), its river gage TUM-02 "
+                             "on the fictional Tumwick River and its engineering consultant. No real organisation's "
+                             "records or person is depicted.",
+                      date="2026-01-20", license="CC0-1.0 (original work)")],
+        created="2026-10-23", generator="task178/generator/build.py", files=files)
     with open(os.path.join(task_dir, "metadata.json"), "w") as fh:
         json.dump(meta, fh, indent=1)
         fh.write("\n")

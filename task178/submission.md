@@ -1,48 +1,51 @@
 ## Tags
 
-**Domain:** Physical & Environmental Sciences (climate and weather extremes: the expected number of high waters reaching each candidate deck elevation of a temporary work trestle over a known April to May 2027 window at a Gulf of Maine harbor gauge, built from the window's own predicted high waters and the season's skew surges).
+**Domain:** Physical & Environmental Sciences, hydrology and flood frequency.
 **Analytical objective:** Forecasting & Predictive Modeling.
 
 ## 1. Final Recommendation
 
-**Cut the Granite Wharf trestle piles to a deck elevation of 11.60 ft MLLW.** High water is expected to reach that deck on 0.4 tides between 1 April and 31 May 2027 and the next elevation down, 11.35 ft, on 2.3, because the window's own high waters in the 2027 tide table sit low. Not 12.35 ft, the April and May record's exceedance rate moved to 2027 sea level, which expects 7.4 tides at 11.60 ft because it averages over tides much higher than this spring's.
+**Carry forward Alternative D (14,700 cfs) for the Sauer pipe bridge.** The 1 per cent annual chance peak discharge at TUM-02 is 14,000 cfs, so Alternative C (12,900 cfs) falls short. Not Alternative A, which a single power-law rating through every gauging gives, because that curve runs under every gauging above about 10.3 ft and understates the floodplain peaks.
 
 ## 2. Critical Components
 
-1. Tides expected to reach the deck from 1 April to 31 May 2027 at 11.60 ft MLLW: **0.4**.
-2. Tides expected to reach the next elevation down, 11.35 ft MLLW: **2.3**.
-3. The 2027 design mean sea level the deck is set at: **5.40 ft MLLW**.
+1. The station skew of the 46 annual peaks' base-10 logarithms is **-0.2**.
+2. The 1 per cent annual chance peak discharge at TUM-02 is **14,000 cfs**.
 
 ## 3. Step-by-Step Solution
 
-1. Read ptg_verified_15min_1995-01_2026-06.csv (quality V readings, less the 4.21 ft station datum offset of the datum sheet) and, after June 2026, ptg_telemetry_6min_2026-05_2026-11.csv (metres to feet, less the 4.09 ft of STND 2026) as one ft MLLW series.
-2. Converted every high water in port_tessaly_tide_tables_1995-2027.xlsx to UTC (EST all year to 2006, local EST/EDT from 2007) and took the series' highest reading within three hours of each.
-3. For the April and May high waters of 1995 to 2026, took the skew surge (observed less predicted high water) less that year's mean sea level above the epoch's 5.12 ft from sea_level_guidance_2026.pdf.
-4. For each of the 118 high waters of 1 April to 31 May 2027 in the 2027 sheet, took the share of those skew surges reaching each pile schedule elevation at the 5.40 ft design mean sea level, and summed them per elevation.
-5. The lowest elevation with one tide or fewer is 11.60 ft (0.4 tides), 11.35 ft expecting 2.3: cut the piles to 11.60 ft.
-6. Survival tides: the highest reading at each high water from 1 November 2016 to 30 November 2026, the verified readings between the bracket re-securing on 30 October 2017 and the sensor reset on 12 March 2018 raised 0.08 ft (station log and the datum sheet's levelling), the telemetry on STND 2026, five largest no two within three days.
-7. Street closures: Front Street FLOOD work orders in dpw_street_closures_2016-2026.csv, the WOMS times read as UTC (they precede high water only so read), a work order opened within three hours of the previous one's closing counted as the same closure, the gauge's highest reading within three hours of each closure's start against 11.80 ft.
+1. Took water years 1980 to 2015's peaks from tum02_annual_peaks_wy1980-2015.csv and water years 2016 to 2025's maxima from tum02_stage_15min_wy2016-2025.csv, adding 2.00 ft to stages before 1 October 2009 (tum02_station_description.pdf): 46 peak stages on the current datum.
+2. Stacked the measurements in tum02_measurement_notes_1980-2004.xlsx and tum02_measurements_wy2005-2025.csv, m3/s converted at 35.3147 and old-datum gage heights raised 2.00 ft: 468 measurements.
+3. Fitted the rating as a power law below a break and a floodplain term added above it, the break found by least squares on log discharge at 10.28 ft, and rated every peak stage through it.
+4. Fitted log-Pearson Type III by moments of the logs with the station skew weighted with the generalized skew of 0.05 as nfw_design_standard_sec4_hydrology.pdf sets out: 14,000 cfs at 1 per cent, so Alternative D.
+5. Work windows: dropped every 15-minute reading from arrival to departure of each visit in tum02_site_visits_2016-2025.csv, its times read on the local clock (orifice purges lift the readings inside the visit), and took the 0.47 ft controller offset off from the 11 June 2025 visit to the 27 August 2025 reset; the highest remaining reading in each 15 July to 15 September window gives the stages below.
+6. Pipe crests: read scada_sauer_crossing_2019-2025.csv's timestamps as UTC before the 21 June 2022 historian replacement (cmms_work_orders_sauer_2019-2025.csv) and local after, and the level as the sensor face less the distance, 199.34 ft before and 199.84 ft after the 16 November 2022 bracket replacement (tum02_levels_log.txt); read it at TUM-02's crest reading for the levels and falls below.
 
 ## 4. Deliverable Answers
 
-### granite_wharf_trestle_deck.xlsx
+### sauer_crossing_design_flow.xlsx
 
-1. Deck elevation: 11.60 ft MLLW.
-2. Tides expected to reach the deck from 1 April to 31 May 2027: 0.4 at 11.60 ft, 2.3 at 11.35 ft.
-3. Five highest tides at the gauge, 1 November 2016 to 30 November 2026, no two within three days:
-   - 1. 28 October 2026, 14.68 ft MLLW
-   - 2. 4 January 2018, 14.64 ft MLLW
-   - 3. 13 January 2024, 14.59 ft MLLW
-   - 4. 2 March 2018, 14.32 ft MLLW
-   - 5. 23 December 2022, 14.27 ft MLLW
-4. Front Street flooding closures by year, each closure once, and those with the gauge at 11.80 ft MLLW or higher within three hours either side of the start:
-   - 2017: 30 closures, 24 with the gauge at 11.80 ft or higher
-   - 2018: 42 closures, 36 with the gauge at 11.80 ft or higher
-   - 2019: 47 closures, 33 with the gauge at 11.80 ft or higher
-   - 2020: 36 closures, 30 with the gauge at 11.80 ft or higher
-   - 2021: 26 closures, 20 with the gauge at 11.80 ft or higher
-   - 2022: 30 closures, 18 with the gauge at 11.80 ft or higher
+1. Alternative carried forward: Alternative D.
+2. 1 per cent annual chance peak discharge at TUM-02: 14,000 cfs.
+3. Highest stage the river reached at TUM-02 in each 15 July to 15 September window, ft, with its date:
+   - 2016: 3.40 ft on 28 August 2016
+   - 2017: 3.37 ft on 26 July 2017
+   - 2018: 3.29 ft on 30 July 2018
+   - 2019: 3.38 ft on 14 August 2019
+   - 2020: 3.30 ft on 13 August 2020
+   - 2021: 3.27 ft on 10 August 2021
+   - 2022: 3.45 ft on 21 August 2022
+   - 2023: 3.47 ft on 18 August 2023
+   - 2024: 3.88 ft on 8 August 2024
+   - 2025: 3.43 ft on 9 August 2025
+4. Water level at the pipe bridge radar at TUM-02's crest reading, ft NAVD88, and the fall from TUM-02, ft:
+   - Water year 2020: 191.86 ft, fall 1.14 ft
+   - Water year 2021: 189.32 ft, fall 1.11 ft
+   - Water year 2022: 189.42 ft, fall 1.09 ft
+   - Water year 2023: 193.21 ft, fall 1.25 ft
+   - Water year 2024: 192.52 ft, fall 1.21 ft
+   - Water year 2025: 193.76 ft, fall 1.28 ft
 
-### trestle_deck_exposure.png
+### sauer_crossing_frequency_curve.svg
 
-1. Bar chart of the tides expected to reach the deck at each pile schedule elevation, 10.60 to 12.60 ft, with a dashed line at one tide and the 11.60 ft bar marked.
+1. The 46 annual peak discharges plotted at Weibull exceedance probabilities on a probability axis, the fitted log-Pearson Type III curve, the seven alternatives' capacities as horizontal lines with Alternative D highlighted, the 1 per cent point marked at 14,000 cfs, titled with the alternative carried forward.

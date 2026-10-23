@@ -1,27 +1,27 @@
 {
  "task": "task178",
  "owner": "sathya8571",
- "status": "DRAWING",
+ "status": "BUILD",
  "domain": "physical-environmental-sciences/hydrology-flood-frequency",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-23",
- "stump": "One power-law rating fitted to all of TUM-02's gaugings and carried through the 46 annual peak stages into the standard's weighted-skew log-Pearson Type III files Alternative A (10,000 cfs); a rating with its own floodplain segment, fitted on the overbank gaugings, files Alternative D (14,500 cfs).",
+ "stump": "One power-law rating fitted to all of TUM-02's 468 gaugings and carried through the 46 annual peak stages into the standard's weighted-skew log-Pearson Type III puts the 1 per cent flood at 10,000 cfs and files Alternative A (10,400 cfs); a rating with its own floodplain term above the fitted 10.28 ft break puts it at 14,000 cfs and files Alternative D (14,700 cfs).",
  "architecture": 2,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-23"
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW 2026-10-23 (sweeps 3, 4, 5 answered in the design note's ## Leak sweep; no LEAK)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": ""
+  "heart": "WARN 2026-10-23 (overuse.objective, overuse.gate_g, repeat.gate_g: the lane's objective, answered in ## Draw)",
+  "nearest": "ledger task466 0.09, stump task229 0.06; drivers task249 v5 lineage 0.06, task170 v1 lineage 0.06"
  },
  "judge": {
   "verdict": "",
@@ -30,7 +30,7 @@
  },
  "returned": [],
  "wave": "rebuild 2026-10-23 of a reopened number in physical-environmental-sciences / hydrology-flood-frequency (Forecasting); architecture 1 (climate-weather-extremes) and the conjoint cell spent",
- "resume": "stage 2: design (screen, fork table, ladder, closure, asks, prompt.txt) to precut exit 0",
+ "resume": "stage 4: two scored readers and the judge",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -4,7 +4,7 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "City of Port Tessaly"
+COMPANY = "Northfork Water Company"
 
 APP = {".xlsx": ("Microsoft Excel", "16.0300"), ".docx": ("Microsoft Office Word", "16.0000"),
        ".pptx": ("Microsoft Office PowerPoint", "16.0000")}

@@ -1,6 +1,6 @@
-"""task178 documents: the gauge's datum sheet, the city's sea-level guidance and the trestle design basis (PDFs), the
-station log and the data dictionary (Excel). Their text is held here as data so checks.py can quote it and
-verify.py can read it back."""
+"""task178 documents: the station description, the design standard's hydrology section and the crossing alternatives
+study (PDFs), the levels log (text) and the data dictionary (Excel). Their text is held here as data so checks.py can
+quote it and verify.py can read it back."""
 from __future__ import annotations
 
 import datetime as dt
@@ -26,7 +26,7 @@ for _n, _f in (("Carlito", "crosextra/Carlito-Regular.ttf"), ("Carlito-Bold", "c
     pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
 INK = colors.HexColor("#1d2329")
 GREY = colors.HexColor("#5a626b")
-ACCENT = colors.HexColor("#1f4e6e")
+ACCENT = colors.HexColor("#22543d")
 
 
 def esc(s):
@@ -34,13 +34,14 @@ def esc(s):
 
 
 def pdf_stamp(d, hh=10, mi=0):
-    off = -4 if 3 < d.month < 11 or (d.month == 3 and d.day >= 9) or (d.month == 11 and d.day < 2) else -5
+    a, b = C.dst_bounds_pst(d.year)
+    off = -7 if a.date() <= d < b.date() else -8
     return ("D:%04d%02d%02d%02d%02d00%+03d'00'" % (d.year, d.month, d.day, hh, mi, off)).encode()
 
 
 STYLES = dict(
     org=ParagraphStyle("org", fontName="Carlito-Bold", fontSize=9.5, leading=12, textColor=ACCENT, spaceAfter=2),
-    h1=ParagraphStyle("h1", fontName="LibSans-Bold", fontSize=15, leading=19, textColor=INK, spaceAfter=4),
+    h1=ParagraphStyle("h1", fontName="LibSans-Bold", fontSize=14.5, leading=18.5, textColor=INK, spaceAfter=4),
     sub=ParagraphStyle("sub", fontName="Carlito", fontSize=9.2, leading=12, textColor=GREY, spaceAfter=10),
     h2=ParagraphStyle("h2", fontName="LibSans-Bold", fontSize=10.5, leading=13.5, textColor=ACCENT, spaceBefore=8,
                       spaceAfter=3),
@@ -66,7 +67,7 @@ def _table(rows, widths, header=True):
     st = [("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#b9c2cc")), ("VALIGN", (0, 0), (-1, -1), "TOP"),
           ("LEFTPADDING", (0, 0), (-1, -1), 4), ("RIGHTPADDING", (0, 0), (-1, -1), 4)]
     if header:
-        st.append(("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e6edf3")))
+        st.append(("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e5efe8")))
     t.setStyle(TableStyle(st))
     return t
 
@@ -90,213 +91,231 @@ def _build(path, title, author, head, sub, blocks, foot, stamp):
     PP.normalize_pdf(path, stamp, stamp)
 
 
-# ------------------------------------------------------------------------------------------- the datum sheet
-DATUM_DATE = dt.date(2026, 6, 15)
-DATUM_TITLE = "Tide Gauge PTG-01: Datum Sheet"
+def text_blocks(blocks):
+    """the plain text of a document's blocks, the way checks.py and the leak sweep read them"""
+    out = []
+    for b in blocks:
+        if b[0] == "table":
+            out.extend(" | ".join(str(c) for c in r) for r in b[1])
+        else:
+            out.append(b[1])
+    return "\n".join(out)
 
 
-def datum_blocks(dat):
-    """dat: datums in ft above MLLW"""
-    stnd = C.STND_BELOW_MLLW
-    rows = [["Datum", "ft above STND (1995)", "ft above MLLW"]]
-    for k in ("MHHW", "MHW", "MSL", "MLW", "MLLW"):
-        rows.append([k, "%.2f" % (dat[k] + stnd), "%.2f" % dat[k]])
-    rows.append(["NAVD88", "%.2f" % (C.NAVD88_ABOVE_MLLW + stnd), "%.2f" % C.NAVD88_ABOVE_MLLW])
-    lev = [["Date", "Run", "Sensor reference against BM PTG 3", "Action"],
-           ["2013-05-21", "annual", "+0.01 ft", "none"], ["2014-05-13", "annual", "0.00 ft", "none"],
-           ["2015-05-19", "annual", "-0.01 ft", "none"], ["2016-05-24", "annual", "+0.01 ft", "none"],
-           ["2017-05-16", "annual", "0.00 ft", "none"], ["2018-03-12", "brought forward", "-0.08 ft", "sensor reset to reference"],
-           ["2019-05-14", "annual", "+0.01 ft", "none"], ["2020-06-09", "annual (delayed)", "0.00 ft", "none"],
-           ["2021-05-18", "annual", "-0.01 ft", "none"], ["2022-05-17", "annual", "+0.01 ft", "none"],
-           ["2023-05-23", "annual", "0.00 ft", "none"], ["2024-05-21", "annual", "-0.01 ft", "none"],
-           ["2025-05-20", "annual", "0.00 ft", "none"],
-           ["2026-04-28", "after pier repair", "new mount", "station datum re-established (STND 2026)"]]
-    bms = [["Bench mark", "Description", "ft above MLLW"],
-           ["PTG 1", "disk in granite curb, Cutler Wharf head", "15.94"], ["PTG 3", "disk in gauge pier cap", "13.27"],
-           ["PTG 4", "chiseled square, Town Landing steps", "18.62"], ["H 117", "regional survey disk, Ropewalk Rd", "21.05"]]
+# ------------------------------------------------------------------------------------- the station description
+STATION_DATE = dt.date(2024, 3, 18)
+STATION_TITLE = "TUM-02 Tumwick River near Sauer: Station Description"
+
+
+def station_blocks():
+    hist = [["Period", "Gage-height sensor", "Recording"],
+            ["Oct 1979 to Jun 1993", "Float in 24 in steel well, punched-paper recorder", "15 min, tape read at the office"],
+            ["Jul 1993 to Apr 2008", "Gas-purge pressure sensor (bubbler), orifice in the pool", "Data logger, 15 min"],
+            ["May 2008 to present", "Gas-purge pressure sensor, new orifice line (see Datum)", "Data logger, 15 min; cellular telemetry from 2011"]]
     return [
-        ("h2", "Station"),
-        ("p", "PTG-01 is the City of Port Tessaly's tide gauge on the gauge pier at the head of Cutler Wharf, installed "
-              "in November 1994 and run by the Waterfront and Harbor Engineering division of the Department of Public "
-              "Works. The primary sensor is in a stilling well on the pier: a float and encoder from 1994, an acoustic "
-              "sensor from 14 August 2012 and a radar sensor on the new mount from 28 April 2026. Readings are logged "
-              "every six minutes; the verified product carries one reading every 15 minutes."),
-        ("h2", "Tidal datums"),
-        ("p", "Datums are on the 1983-2001 National Tidal Datum Epoch, computed by comparison of simultaneous "
-              "observations with the regional control station. Heights are in feet."),
-        ("table", rows, [48 * mm, 50 * mm, 40 * mm]),
-        ("h2", "Station datum"),
-        ("p", "STND (1995) is 4.21 ft below MLLW. After the gauge pier repair the sensor was remounted and on 28 April "
-              "2026 the station datum was re-established 0.12 ft above STND (1995); STND 2026 is 4.09 ft below MLLW."),
-        ("h2", "Harbormaster tide board"),
-        ("p", "The harbormaster's float tide board on the gauge pier reads in feet above its own zero, which is 3.00 ft "
-              "below MLLW (levelled 2015-03-17, checked each spring since)."),
-        ("h2", "Levelling"),
-        ("table", lev, [24 * mm, 30 * mm, 52 * mm, 62 * mm]),
-        ("h2", "Bench marks"),
-        ("table", bms, [24 * mm, 92 * mm, 30 * mm]),
-        ("small", "Revision 2026-06, 15 June 2026: station datum STND 2026 added; levelling of 28 April 2026 added. "
-                  "Revision 2019-06: levelling table extended. Revision 2013-01: acoustic sensor."),
+        ("h2", "Location"),
+        ("p", "Lat 47 38 12, long 121 49 05, on the left bank 0.6 mi upstream of the Sauer Flats intake and 900 ft upstream "
+              "of the Sauer pipe bridge (36-inch Tumwick transmission main). No tributary enters between the gage and the "
+              "pipe bridge. Drainage area 238 square miles."),
+        ("h2", "Establishment and operation"),
+        ("p", "Established October 1979 by Northfork Water Company for its water right and intake operations. Operated "
+              "by the company's Water Resources group. Discharge measurements are made by wading or from the cableway 120 "
+              "ft upstream of the gage at medium and high flows, by ADCP from water year 2005."),
+        ("h2", "Gage"),
+        ("table", hist, [36 * mm, 76 * mm, 58 * mm]),
+        ("p", "Reference gages: a 0 to 14 ft enamel staff in the pool, read at each visit; a crest-stage gage on the shelter "
+              "pier, serviced at visits. Logger clock set to Pacific Standard Time throughout the year."),
+        ("h2", "Datum"),
+        ("p", "Gage datum is 182.40 ft NAVD88 from 1 October 2009. From October 1979 to 30 September 2009 the datum was "
+              "184.40 ft NAVD88; it was lowered 2.00 ft when the orifice was reset below the low-water line after the "
+              "2008 gravel removal downstream. Records are kept on the datum in use at the time."),
+        ("h2", "Control"),
+        ("p", "Low water: bedrock ledge across the channel 140 ft below the gage, stable. Medium and high water: the channel "
+              "for about 1,200 ft below the gage. Right bank high, on a wooded terrace. Left bank a fenced pasture with "
+              "a farm road to the cableway."),
+        ("h2", "Records"),
+        ("p", "Annual peak stages for water years 1980 to 2015 are kept in the annual peak register. From water year 2016 "
+              "the 15-minute stage record is held in the hydrologic database; its record review is outstanding and the "
+              "series carries the provisional grade. Discharge measurements to water year 2004 are in the transcribed field "
+              "notes; from water year 2005 in the measurement database."),
+        ("small", "Revised 18 March 2024 (S. Huber): telemetry and records sections updated. Previous revision 14 June 2011."),
     ]
 
 
-def write_datums(out, dat):
-    _build(os.path.join(out, C.F_DATUMS), DATUM_TITLE, "Waterfront and Harbor Engineering",
-           C.CITY + " | " + C.DEPT, "Port Tessaly tide gauge, Cutler Wharf. Revision 2026-06.", datum_blocks(dat),
-           "PTG-01 datum sheet, revision 2026-06", pdf_stamp(DATUM_DATE, 14, 12))
+def write_station(out):
+    _build(os.path.join(out, C.F_STATION), STATION_TITLE, "Water Resources", C.COMPANY + " | " + C.DIVISION,
+           "Station TUM-02. Revised 18 March 2024.", station_blocks(), "TUM-02 station description, rev. 2024-03",
+           pdf_stamp(STATION_DATE, 15, 7))
 
 
-# ------------------------------------------------------------------------------------ the sea-level guidance
-SLR_DATE = dt.date(2026, 9, 3)
-SLR_TITLE = "Sea Level and Coastal Flooding Guidance, 2026 Update"
+# ------------------------------------------------------------------------------- the design standard, section 4
+STANDARD_DATE = dt.date(2021, 4, 26)
+STANDARD_TITLE = "Engineering Design Standard, Section 4: Hydrology"
 
 
-def slr_blocks(annual, design, trend_ft):
-    t1 = [["Year", "Annual mean sea level (ft MLLW)", "Year", "Annual mean sea level (ft MLLW)"]]
-    ys = sorted(annual)
-    half = (len(ys) + 1) // 2
-    for i in range(half):
-        a = ys[i]
-        b = ys[i + half] if i + half < len(ys) else None
-        t1.append([a, "%.2f" % annual[a], b if b else "", ("%.2f" % annual[b]) if b else ""])
-    proj = [["Year", "Intermediate-Low (ft MLLW)", "Intermediate (ft MLLW)", "High (ft MLLW)"],
-            ["2030", "5.48", "5.55", "5.66"], ["2050", "5.71", "6.02", "6.52"], ["2070", "5.96", "6.66", "7.86"],
-            ["2100", "6.43", "7.95", "10.21"]]
+def mse_table():
+    return [["|G|", "A", "B"],
+            ["0.00 to 0.90", "-0.33 + 0.08 |G|", "0.94 - 0.26 |G|"],
+            ["0.90 to 1.50", "-0.52 + 0.30 |G|", "0.94 - 0.26 |G|"],
+            ["above 1.50", "-0.52 + 0.30 |G|", "0.55"]]
+
+
+def standard_blocks():
     return [
-        ("h2", "1. Purpose"),
-        ("p", "This guidance gives city departments the sea level to design to for projects built, used or rebuilt "
-              "on the waterfront, and the flooding levels the city uses for its streets and wharves. It replaces the "
-              "2021 update."),
-        ("h2", "2. The record"),
-        ("p", "Mean sea level at the Port Tessaly gauge (PTG-01) has risen %.4f ft a year since 1995. Table 1 gives "
-              "the annual means from the verified record." % trend_ft),
-        ("table", t1, [18 * mm, 58 * mm, 18 * mm, 58 * mm]),
-        ("h2", "3. Design mean sea level"),
-        ("p", "Projects built or in use in 2027 are designed to a mean sea level of %.2f ft MLLW at the gauge, the "
-              "record's trend line at mid-2027." % design),
-        ("h2", "4. Projections"),
-        ("p", "For assets with a design life past 2030 use Table 2, which follows the state's 2024 sea-level scenarios "
-              "applied to the gauge."),
-        ("table", proj, [18 * mm, 46 * mm, 46 * mm, 40 * mm]),
-        ("h2", "5. Flooding levels"),
-        ("p", "Front Street floods at its low point near Cutler Wharf when the water at the gauge reaches about "
-              "11.8 ft MLLW. Ferry Lane floods at about 12.4 ft MLLW and Water Street at about 12.9 ft MLLW."),
-        ("small", "Prepared by Waterfront and Harbor Engineering with the Office of Sustainability. Issued 3 September "
-                  "2026."),
+        ("h2", "4.1 Scope"),
+        ("p", "This section sets the design floods for company structures in or over rivers and streams: intakes, "
+              "pipelines, pipe bridges and their piers and abutments."),
+        ("h2", "4.2 Design flood for crossings"),
+        ("p", "4.2.1 A crossing is designed to pass the peak discharge with a 1 percent annual exceedance probability at "
+              "the structure."),
+        ("p", "4.2.2 Where the company gages the river at the structure, the design flood is estimated from that gage's "
+              "annual peak series: the largest instantaneous discharge in each complete water year (1 October to 30 "
+              "September) of the period the project names."),
+        ("p", "4.2.3 The annual peaks are fitted with the log-Pearson Type III distribution by the method of moments of "
+              "the base-10 logarithms of the peaks: the mean, the standard deviation (divisor n - 1) and the station skew "
+              "G = n S(x - m)^3 / ((n - 1)(n - 2) s^3)."),
+        ("p", "4.2.4 The station skew is weighted with the generalized skew for western Washington, %.2f, whose mean "
+              "square error is %.3f: Gw = (%.3f G + MSE_G (%.2f)) / (%.3f + MSE_G), with MSE_G = 10^(A - B log10(n/10)) "
+              "from Table 4.2." % (C.REG_SKEW, C.REG_SKEW_MSE, C.REG_SKEW_MSE, C.REG_SKEW, C.REG_SKEW_MSE)),
+        ("table", mse_table(), [34 * mm, 50 * mm, 50 * mm]),
+        ("p", "4.2.5 The design discharge is 10^(m + K s), with K the Pearson Type III frequency factor at the weighted "
+              "skew for a 1 percent exceedance probability."),
+        ("p", "4.2.6 The series is checked for monotonic trend by the Mann-Kendall test at the 5 percent level, two-sided. "
+              "A significant trend is referred to the Manager, Water Resources, before the design flood is used."),
+        ("h2", "4.3 Other streams"),
+        ("p", "Ungaged streams use the state's regional regression equations at the structure's drainage area, with the "
+              "standard error stated in the design memorandum."),
+        ("small", "Issue 3, 26 April 2021. Supersedes Issue 2 (2014). Approved: Director of Engineering."),
     ]
 
 
-def write_slr(out, annual, design, trend_ft):
-    _build(os.path.join(out, C.F_SLR), SLR_TITLE, "Waterfront and Harbor Engineering", C.CITY + " | " + C.DEPT,
-           "Issued 3 September 2026. Applies to city projects from 1 October 2026.", slr_blocks(annual, design, trend_ft),
-           "City of Port Tessaly, sea level guidance 2026", pdf_stamp(SLR_DATE, 11, 26))
+def write_standard(out):
+    _build(os.path.join(out, C.F_STANDARD), STANDARD_TITLE, "Engineering", C.COMPANY + " | Engineering",
+           "Issue 3, 26 April 2021.", standard_blocks(), "Northfork Engineering Design Standard 4, issue 3",
+           pdf_stamp(STANDARD_DATE, 9, 48))
 
 
-# ---------------------------------------------------------------------------------- the trestle design basis
-BASIS_DATE = dt.date(2026, 11, 20)
-BASIS_TITLE = "Granite Wharf Reconstruction: Temporary Work Trestle Design Basis"
+# ------------------------------------------------------------------------------ the crossing alternatives study
+STUDY_DATE = dt.date(2025, 12, 12)
+STUDY_TITLE = "Sauer Pipe Bridge Replacement: Waterway Alternatives Study"
+STUDY_CONFIG = {"A": ("two spans, one pier at the channel's right third", 196.10),
+                "B": ("two spans, pier at the left bank", 196.40),
+                "C": ("three spans, two piers left of the channel", 196.70),
+                "D": ("single 210 ft span, abutments set back 40 ft", 197.10),
+                "E": ("single 240 ft span, left abutment on the terrace", 197.40),
+                "F": ("single 240 ft span, raised profile", 197.90),
+                "G": ("single 270 ft span, raised profile", 198.30)}
 
 
-def basis_blocks():
-    settings = ", ".join("%.2f" % s for s in C.DECK_SETTINGS)
+def study_blocks():
+    alts = [["Alternative", "Configuration", "Pipe soffit (ft NAVD88)", "Capacity (cfs)"]]
+    for name, cap in C.ALTERNATIVES:
+        cfg, soffit = STUDY_CONFIG[name]
+        alts.append([name, cfg, "%.2f" % soffit, "{:,}".format(cap)])
     return [
-        ("h2", "1. The work"),
-        ("p", "The Granite Wharf deck, pile caps and timber bulkhead are replaced in 2027. The contractor works from a "
-              "temporary pile-supported trestle along the wharf face from 1 April to 31 May 2027. The dates are set by "
-              "the lobster fleet's return to the wharf moorings on 1 June and by the delivery of the new steel."),
-        ("h2", "2. Deck elevation"),
-        ("p", "The trestle piles are cut off to one of the deck elevations on the pile schedule: %s ft MLLW. The deck is "
-              "set at the lowest of these at which high water is expected to reach the deck on no more than one tide "
-              "between 00:00 on 1 April 2027 and 24:00 on 31 May 2027." % settings),
-        ("p", "Water levels are those at the Port Tessaly gauge (PTG-01), in feet above MLLW of the 1983-2001 epoch, "
-              "at the 2027 design mean sea level of the city's 2026 sea level guidance. A tide reaches the deck when the "
-              "gauge's highest 15-minute reading at that high water is at or above the deck elevation."),
-        ("h2", "3. Survival check"),
-        ("p", "The trestle frame and bracing are checked for the five highest tides at the gauge from 1 November 2016 "
-              "to 30 November 2026, taking no two within three days of each other."),
-        ("h2", "4. Access"),
-        ("p", "Materials reach the trestle by Front Street, which DPW closes when it floods. The schedule's access "
-              "allowance is taken from the street's closures in the six years 2017 to 2022."),
-        ("h2", "5. Program"),
-        ("p", "Pile order to the fabricator: 15 January 2027. Mobilization: 22 March 2027. Trestle removed by 7 June 2027."),
-        ("small", "Revision B, 20 November 2026. Revision A (2 October 2026) gave a work period of 8 March to 28 May; the "
-                  "steel delivery moved it."),
+        ("h2", "1. Background"),
+        ("p", "Northfork's 36-inch Tumwick transmission main crosses the Tumwick River on a 1968 steel truss pipe bridge "
+              "900 ft downstream of the company's stage gage TUM-02. In the flood of 8 January 2025 drift struck the truss "
+              "and the pipe; the main was isolated, the pipe re-supported, and the main returned to service on temporary "
+              "supports. The bridge is to be replaced, with in-water work in the 2027 season."),
+        ("h2", "2. Waterway alternatives"),
+        ("p", "Each alternative's capacity is the discharge its waterway passes with 3.0 ft between the water surface and "
+              "the pipe soffit, from the reach model (HEC-RAS, steady flow, cross sections surveyed October 2025)."),
+        ("table", alts, [24 * mm, 76 * mm, 36 * mm, 30 * mm]),
+        ("h2", "3. Design discharge and selection"),
+        ("p", "The design discharge is the peak discharge at TUM-02 with a 1 percent chance of being exceeded in any year, "
+              "estimated by Northfork Water Resources under Design Standard 4.2 from the gage's annual peaks of water "
+              "years 1980 to 2025. The crossing's drainage area is the gage's. The alternative carried to design is the "
+              "smallest whose capacity is at least the design discharge."),
+        ("h2", "4. Model calibration"),
+        ("p", "The reach model is checked against the water levels observed at the crest of each water year 2020 to 2025: "
+              "the stage at TUM-02 at the reading that recorded the water year's highest stage, and the water level at the "
+              "existing pipe bridge's radar at the same moment."),
+        ("h2", "5. Construction"),
+        ("p", "In-water work is limited to 15 July to 15 September. The contractor's work-area isolation is set from the "
+              "highest stage the river reached at TUM-02 in the 15 July to 15 September window of each year 2016 to 2025."),
+        ("h2", "6. Next steps"),
+        ("p", "Northfork to confirm the design discharge and the alternative; preliminary design of the selected "
+              "alternative; HPA and shoreline permit applications in spring 2026."),
+        ("small", "Crandell Hyde Engineering for Northfork Water Company. Draft for owner review, 12 December 2025."),
     ]
 
 
-def write_basis(out):
-    _build(os.path.join(out, C.F_BASIS), BASIS_TITLE, "Waterfront and Harbor Engineering", C.CITY + " | " + C.DEPT,
-           "Project WF-2025-07. Revision B, 20 November 2026.", basis_blocks(),
-           "WF-2025-07 Granite Wharf, trestle design basis rev B", pdf_stamp(BASIS_DATE, 16, 3))
+def write_study(out):
+    _build(os.path.join(out, C.F_STUDY), STUDY_TITLE, "Crandell Hyde Engineering", C.COMPANY + " | Sauer crossing",
+           "Project NW-2025-14. Draft for owner review, 12 December 2025.", study_blocks(),
+           "NW-2025-14 Sauer pipe bridge, waterway alternatives (draft)", pdf_stamp(STUDY_DATE, 16, 41))
 
 
-# ---------------------------------------------------------------------------------------------- station log
-LOG = [
-    ("1994-11-18", "RL", "Gauge installed on the gauge pier, Cutler Wharf. Float and encoder in 12 in stilling well. Logging 6 min."),
-    ("1994-12-02", "RL", "Station datum set; first levelling to BM PTG 1 and PTG 3."),
-    ("1995-01-01", "RL", "Verified product begins (15 min)."),
-    ("1997-03-04", "RL", "Float wire replaced."),
-    ("1999-10-12", "RL", "Logger replaced (same model). Clock checked against GPS."),
-    ("2001-02-06", "RL", "Ice in well 2/4 to 2/6, heater element replaced."),
-    ("2003-12-09", "RL", "Modem replaced after lightning."),
-    ("2006-07-18", "RL", "Stilling well intake cleaned (mussels)."),
-    ("2008-11-25", "RL", "Pier ladder and well bracket repainted."),
-    ("2010-04-02", "RL", "Shore power upgrade on the gauge pier."),
-    ("2012-08-14", "SH", "Acoustic sensor installed beside float; datum transferred by simultaneous readings over 30 days, no offset."),
-    ("2012-09-13", "SH", "Float and encoder removed."),
-    ("2014-01-03", "SH", "Ice in well, heater reset."),
-    ("2015-03-17", "SH", "Harbormaster tide board float levelled; hourly logging at the office begins."),
-    ("2016-02-08", "SH", "Comms down 0300 to 1100, logger buffered."),
-    ("2017-10-30", "SH", "After the storm: sensor mount bracket found loose on the well, re-secured 1500."),
-    ("2018-01-05", "SH", "Storm of 1/4: no damage to gauge. Pier deck damaged at Cutler Wharf."),
-    ("2018-03-12", "SH", "Levelling brought forward. Sensor reference -0.08 ft against PTG 3. Sensor reset to reference 1430."),
-    ("2019-07-22", "SH", "Data system migrated to the new server; verified product exports unchanged."),
-    ("2020-06-09", "SH", "Annual levelling (delayed by building access)."),
-    ("2021-02-02", "SH", "Ice in well, heater replaced."),
-    ("2022-12-23", "SH", "Storm. Gauge ran through. Water over Front St and Cutler Wharf head."),
-    ("2024-01-10", "SH", "Storm. Gauge ran through."),
-    ("2024-01-13", "SH", "Storm. Shore power dipped twice on the pier; logger rode through on battery."),
-    ("2024-01-16", "SH", "UPS on order for the gauge pier."),
-    ("2024-03-05", "SH", "UPS installed."),
-    ("2025-09-30", "SH", "Gauge pier repair contract awarded; gauge to stay in service except during the remount."),
-    ("2026-04-21", "SH", "Sensor off for the pier cap replacement 4/21 to 4/28."),
-    ("2026-04-28", "SH", "Radar sensor installed on new mount. Levelling: new station datum (see datum sheet rev 2026-06)."),
-    ("2026-05-01", "SH", "6-min telemetry feed to the city data system starts (provisional)."),
-    ("2026-07-14", "SH", "Verified product through June 2026 issued."),
-    ("2026-10-28", "SH", "Storm. Gauge ran through; telemetry continuous."),
-]
+# ------------------------------------------------------------------------------------------------ the levels log
+def levels_text():
+    L = [
+        "TUM-02 TUMWICK RIVER NEAR SAUER -- LEVELS",
+        "Northfork Water Company, Water Resources",
+        "Elevations in feet, NAVD88 (levels before 2004 converted from NGVD29 by +3.52, VERTCON at the gage).",
+        "",
+        "Reference marks",
+        "  RM1  chiseled cross on bedrock outcrop, left bank 60 ft upstream of shelter ........ 199.86",
+        "  RM2  brass disk in shelter pier, top of pier ............................................ 197.42",
+        "  RM3  rebar with cap, farm road at cableway anchor ........................................ 201.13",
+        "",
+        "Date        By     Run                                Result",
+        "1979-10-04  RK     establish datum                    gage datum 184.40; staff zero set to datum",
+        "1984-08-21  RK     annual check                       staff and well tape within 0.01",
+        "1989-09-12  RK     annual check                       staff +0.01, left",
+        "1993-07-14  RK     bubbler installed                  orifice referenced to staff; no offset",
+        "1998-08-25  SH     check                              staff 0.00; orifice 0.00",
+        "2003-09-09  SH     check                              staff -0.01, left",
+        "2008-05-13  SH     new orifice line after gravel removal  orifice referenced to staff; no offset",
+        "2009-09-29  SH     datum lowered                      gage datum 182.40 from 2009-10-01; staff renumbered (+2.00)",
+        "2013-08-20  SH     check                              staff 0.00; orifice 0.00",
+        "2017-08-16  SH     check                              staff +0.01, left; CSG reference 0.00",
+        "2019-03-12  SH/GW  pipe bridge radar RAD-1 installed  sensor face 199.34 (shot from RM2)",
+        "2021-08-24  GW     check                              staff 0.00; orifice 0.00",
+        "2023-05-03  GW/DM  check; pipe bridge radar           staff 0.00; RAD-1 sensor face 199.84 (shot from RM2)",
+        "2025-08-27  GW     after controller swap             orifice referenced to staff; offset reset (see visit)",
+        "",
+    ]
+    return "\r\n".join(L)
 
 
-def write_log(out, wb_factory):
-    rows = [("Date", "By", "Entry")] + [(d, by, txt) for d, by, txt in LOG]
-    return wb_factory(os.path.join(out, C.F_LOG), {"Log": rows}, ("Stacy Huber", "Stacy Huber",
-                      "2012-08-20T13:02:11Z", "2026-11-02T19:41:37Z"))
+def write_levels(out):
+    with open(os.path.join(out, C.F_LEVELS), "w", encoding="utf-8", newline="") as fh:
+        fh.write(levels_text())
 
 
+# ------------------------------------------------------------------------------------------- the data dictionary
 DICT = {
-    C.F_VER: [("timestamp_utc", "time of the reading, UTC"), ("water_level_ft", "height of the water above the station datum STND (1995), feet"),
-              ("quality", "V verified; I interpolated across a gap of six hours or less; M missing")],
-    C.F_TEL: [("time_utc", "time of the reading, UTC"), ("wl_m", "height of the water above the station datum, metres"),
-              ("qc", "P provisional (not yet verified)")],
-    C.F_BOARD: [("reading_time", "harbormaster's office clock"), ("board_ft", "reading on the float tide board, feet")],
-    C.F_TABLES: [("(each sheet)", "one year's predicted high and low waters as published in the harbor's tide tables; heights in feet above MLLW; times local")],
-    C.F_CLOSE: [("wo_number", "work order number"), ("system", "work order system holding the record"),
-                ("source", "who asked for the closure: DPW crew, or HM the harbormaster"),
-                ("opened", "date and time the work order was opened, as recorded by the system"),
-                ("closed", "date and time the work order was closed, as recorded by the system"),
-                ("location", "street location as entered"), ("reason", "closure reason code"), ("notes", "free text")],
-    C.F_WX: [("date", "local date"), ("tmax_f", "maximum temperature, F"), ("tmin_f", "minimum temperature, F"),
-             ("precip_in", "precipitation, inches"), ("slp_mb_mean", "mean sea-level pressure, mb"),
-             ("gust_mph", "peak gust, mph"), ("gust_dir_deg", "direction of the peak gust, degrees")],
-    C.F_RIVER: [("date", "local date"), ("discharge_cfs", "daily mean discharge, cubic feet per second"),
-                ("code", "A approved, P provisional, e estimated")],
+    C.F_PEAKS: [("WY", "water year (1 October to 30 September), named for the year it ends"),
+                ("Date, Time", "date and local time of the peak"),
+                ("Gage height (ft)", "peak gage height, feet above the gage datum in use on the date"),
+                ("Remarks", "how the peak was obtained where not from the recorder")],
+    C.F_STAGE: [("timestamp", "time of the reading (see file header)"), ("stage_ft", "gage height recorded by the logger, feet"),
+                ("grade", "P provisional"), ("qualifier", "blank, or E estimated")],
+    C.F_MEAS_OLD: [("(sheets by decade)", "discharge measurement notes transcribed from the field forms, 1980 to 2004"),
+                   ("Gage ht", "mean gage height during the measurement, feet"), ("Discharge", "cubic feet per second"),
+                   ("Rated", "the hydrographer's rating of the measurement: E excellent, G good, F fair, P poor")],
+    C.F_MEAS_NEW: [("meas_no", "measurement number, continuing the field-note series"),
+                   ("start_time, end_time", "local time"),
+                   ("mean_gh_ft", "mean gage height during the measurement, feet"),
+                   ("discharge, discharge_unit", "measured discharge and its unit"),
+                   ("area, width, mean_velocity", "in the units of the discharge (square metres or square feet, metres or feet)"),
+                   ("quality", "Good, Fair, Poor"), ("control_condition", "condition of the control at the visit")],
+    C.F_VISITS: [("arrive, depart", "time on site"), ("staff_gage_ft", "staff reading on arrival"),
+                 ("logger_ft", "logger reading on arrival"), ("meas_no", "discharge measurement made at the visit"),
+                 ("work_done", "work at the visit"), ("notes", "free text")],
+    C.F_SCADA: [("Timestamp", "historian timestamp"), ("SAUER_RAD1_DIST.PV", "radar RAD-1, distance from sensor to water, ft"),
+                ("SAUER_RAD1_LVL.PV", "radar RAD-1, water level, ft NAVD88 (computed in SCADA)"),
+                ("SAUER_36IN_FLOW.PV", "transmission main flow at the crossing meter, MGD"),
+                ("SAUER_36IN_PRESS.PV", "transmission main pressure at the crossing, psi")],
+    C.F_WO: [("wo_no", "work order"), ("asset", "asset tag"), ("opened, completed", "local date and time"),
+             ("type", "PM preventive, CM corrective, PR project"), ("description", "as entered")],
 }
 
 
 def write_dict(out, wb_factory):
     sheets = {}
     for f, cols in DICT.items():
-        name = f.split("_")[0][:10] + "_" + f.split("_")[1][:8] if "_" in f else f[:20]
-        sheets[name[:31]] = [("File", "Column", "Meaning")] + [(f, c, m) for c, m in cols]
-    return wb_factory(os.path.join(out, C.F_DICT), sheets, ("Stacy Huber", "Stacy Huber",
-                      "2019-07-29T15:20:03Z", "2026-11-30T21:08:45Z"))
+        sheets[f.split(".")[0][:31]] = [("File", "Field", "Meaning")] + [(f, c, m) for c, m in cols]
+    return wb_factory(os.path.join(out, C.F_DICT), sheets, ("Stacy Huber", "Gary Wagner",
+                      "2016-03-02T17:44:09Z", "2025-11-04T23:10:52Z"))

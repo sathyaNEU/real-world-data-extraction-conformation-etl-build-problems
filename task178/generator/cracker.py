@@ -1,10 +1,11 @@
-"""task178 cracker: the careful solver's path on the asks, run on the cut pack, and the pair arithmetic of
-supplemental-stumping Part 0. The cracker lands the call, reads every file and dictionary note, converts every datum
-the datum sheet states for the file it reads, dedups exact and same-number work orders, and reads each system's times
-as the wall-clock times the dictionary describes. The mirror stops on the default path for the call and walks the
-same ask path.
+"""task178 cracker and mirror on the cut pack. The cracker lands the call and runs the careful path on every ask: it
+executes every filed sentence, de-duplicates the re-sent rows, puts the 15-minute export on its stated clock (PST),
+drops the readings inside each logged visit with the visit times read on that same clock, takes the controller offset
+off from the visit log's own readings, and reads the historian's stamps and level tag as exported (its stamps on the
+gage's clock, or on the local wall clock). The mirror is the default path's response, off the call, on the same asks.
+Prints each graded ask figure group's hits, the pair ceiling on the 38 / 7 / 55 weights and the mirror's leakage.
 
-    python3 task178/generator/cracker.py task178/target"""
+    python3 task178/generator/cracker.py [target]"""
 from __future__ import annotations
 
 import json
@@ -17,49 +18,44 @@ import calc  # noqa: E402
 import common as C  # noqa: E402
 
 
-def cells(a, b):
-    out = {}
-    for i, (d, lv, _) in enumerate(a):
-        out["A%d date" % (i + 1)] = d
-        out["A%d level" % (i + 1)] = "%.2f" % lv
-    for y, (c, h) in b.items():
-        out["B%d closures" % y] = c
-        out["B%d at 11.80" % y] = h
-    return out
-
-
 def main(target):
-    gold = cells(calc.ask_a(target), calc.ask_b(target))
-    paths = {
-        "careful": cells(calc.ask_a(target, bracket=False, telemetry_datum="1995"),
-                         calc.ask_b(target, legacy_clock="local", same_tide=False, bracket=False)),
-        "careful + bracket offset": cells(calc.ask_a(target, bracket=True, telemetry_datum="1995"),
-                                          calc.ask_b(target, legacy_clock="local", same_tide=False, bracket=True)),
-        "careful + STND 2026": cells(calc.ask_a(target, bracket=False, telemetry_datum="2026"),
-                                     calc.ask_b(target, legacy_clock="local", same_tide=False, bracket=False)),
-        "careful + reset work orders merged": cells(calc.ask_a(target, bracket=False, telemetry_datum="1995"),
-                                                     calc.ask_b(target, legacy_clock="local", same_tide=True, bracket=False)),
-        "careful + legacy clock as UTC": cells(calc.ask_a(target, bracket=False, telemetry_datum="1995"),
-                                                calc.ask_b(target, legacy_clock="utc", same_tide=False, bracket=False)),
-    }
-    n = len(gold)
-    keep = {p: sum(1 for k, v in c.items() if gold[k] == v) for p, c in paths.items()}
-    for p, x in keep.items():
-        print("%-40s keeps %2d of %d ask cells" % (p, x, n))
-    lc = keep["careful"] / n
-    best_one = max(v for p, v in keep.items() if p != "careful") / n
-    r = 5.0
-    C_on = 38 + 7 + 55 * lc
-    S_off = r + 7 + 55 * lc            # the mirror walks the same ask path
-    pair = (C_on + S_off) / 2
-    C_one = 38 + 7 + 55 * best_one
-    pair_one = (C_one + S_off) / 2
-    both_on = (C_on + C_on) / 2
-    res = dict(cells=n, keep=keep, pair_ceiling=round(pair, 1), pair_with_one_device=round(pair_one, 1),
-               pair_both_on_call=round(both_on, 1), mirror_leakage_pct=round(100 * lc, 1))
-    print(json.dumps(res, indent=1))
-    return res
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    st = calc.read_stage(target)
+    V = calc.read_visits(target)
+    a_file = calc.ask_a(target, st, V, visit_clock="as-file", fix_offset=True)
+    a_nolog = calc.ask_a(target, st, [dict(arrive=v["arrive"].replace(year=1900), depart=v["depart"].replace(year=1900),
+                                            notes=v["notes"], staff=v["staff"], logger=v["logger"]) for v in V],
+                         visit_clock="as-file", fix_offset=True)
+    b_pst = calc.ask_b(target, st, clock_fix=False, face_fix=False)
+    b_loc = calc.ask_b(target, st, clock_fix=False, face_fix=False, as_local=True)
+    groups = []
+    ga = figs["ask_a"]
+    gb = figs["ask_b"]
+
+    sa = sum(1 for y in ga if a_file[int(y)][0] == ga[y]["stage_ft"])
+    da = sum(1 for y in ga if a_file[int(y)][1] == ga[y]["date"])
+    sa2 = sum(1 for y in ga if a_nolog[int(y)][0] == ga[y]["stage_ft"])
+    da2 = sum(1 for y in ga if a_nolog[int(y)][1] == ga[y]["date"])
+    lb = max(sum(1 for y in gb if b[int(y)][0] == gb[y]["pipe_level_ft"]) for b in (b_pst, b_loc))
+    fb = max(sum(1 for y in gb if b[int(y)][1] == gb[y]["fall_ft"]) for b in (b_pst, b_loc))
+    groups.append(("Ask A, ten window stages", max(sa, sa2), len(ga)))
+    groups.append(("Ask A, ten window dates", max(da, da2), len(ga)))
+    groups.append(("Ask B, six pipe levels", lb, len(gb)))
+    groups.append(("Ask B, six falls", fb, len(gb)))
+    n = sum(g[2] for g in groups)
+    kept = sum(g[1] for g in groups)
+    lc = kept / n
+    ls = lc                                  # the asks are decoupled: the mirror's ask path is the cracker's
+    C_ = 38 + 7 + 55 * lc
+    S_ = 5 + 7 + 55 * ls
+    for name, h, tot in groups:
+        print("%-28s %d of %d  %s" % (name, h, tot, "miss" if h == 0 else "keeps"))
+    print("cracker keeps %d of %d ask figures; mirror (off the call) keeps %d of %d" % (kept, n, kept, n))
+    print("pair ceiling %.1f  (cracker %.1f, mirror %.1f)" % ((C_ + S_) / 2, C_, S_))
+    print("mirror leakage %.1f per cent of ask weight" % (100 * ls))
+    print("decoupled: no ask reads the rating, the peaks' discharges or the frequency fit (checks.py SEP rows)")
+    return 0 if kept == 0 else 1
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target"))
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")))
