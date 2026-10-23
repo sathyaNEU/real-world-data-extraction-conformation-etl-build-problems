@@ -309,7 +309,17 @@ Measured by: generator/ceiling.py
 - `leak.py --asof 2026-10-21`: REVIEW, no LEAK (`## Leak sweep`).
 - `scrub_producer_metadata.py` on `target/` and `golden/`: clean.
 - `precut.py task173`: exit 0; `voice-check.py task173`: PASS.
-- `guard.py surface task173`: exit 0, no persona in the cut pack. `guard.py heart task173`: WARN, no BLOCK (overuse of the lane's objective and Gate G; quantity_figure, how-many and xlsx with png against task175 and task176; nearest drivers task149 and task183 at 0.10).
+- `guard.py surface task173`: exit 0, no persona in the cut pack. `guard.py heart task173` before the final pull
+  (corpus at 3c961849's parent): WARN, no BLOCK (overuse of the lane's objective and Gate G; quantity_figure, how-many
+  and xlsx with png against task175 and task176; nearest drivers task149 and task183 at 0.10).
+- Re-read after the final pull (corpus at c64ed370, H31): `heart` BLOCKs on `ban.forcing_event`
+  (purchase_order_or_contract) and `ban.org_family` (local_government) against task478 v7, registered 02:34Z on 23
+  October, before this card (11:00Z). It entered this card's three-build window because the live cards drawn between
+  the two have since been marked spent; under the registration lock `check` passed, and `guard.py check` on this card
+  as if drawn now passes with WARN only. No honest redraw clears it inside that window: the forcing event is the
+  contract's bid (purchase_order_or_contract; vote_or_meeting, budget_or_appropriation and the filing kinds are
+  banned there too), and the utility is a City department (local_government, against task478) or a water utility
+  (utility_or_infrastructure, against task175). Left for the main session; no axis relabelled.
 
 ## Tried and rejected
 

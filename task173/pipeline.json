@@ -20,7 +20,7 @@
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN, no BLOCK (2026-10-23)",
+  "heart": "WARN before the final pull; BLOCK after it at c64ed370 (ban.forcing_event and ban.org_family against task478 v7, which entered the window when the cards drawn between were marked spent; check as drawn now: WARN)",
   "nearest": "guard.py surface exit 0; nearest drivers task149 and task183 at 0.10"
  },
  "judge": {
