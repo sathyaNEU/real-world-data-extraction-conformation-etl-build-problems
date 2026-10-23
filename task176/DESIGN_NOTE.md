@@ -1,4 +1,91 @@
-# task176 design note
+# task176 design note: Allerton's 2027 family child care home closures
+
+**Status: architecture 2, drawn 2026-10-23 in sociology-demography / event-history-life-course-analysis
+(Forecasting), the sixth allocation of the rebuild.** The card is
+`.claude/skills/fingerprint/cards/task176.json`. Every earlier world, cell and mechanism on this number is
+spent; their record is `## Earlier draws (screen record)`, `## Tried and rejected`, `## Retired` and
+`## Rebuild (2026-10-23)`. Prototypes for this draw: session scratchpad `b176e/proto` (`fcc1.py` to `fcc5.py`).
+
+## Draw
+
+- **Cell.** Client domain Sociology & Demography, task type `event-history-life-course-analysis` (serves
+  Forecasting & Predictive Modeling). Objective Forecasting: the call is how many of the family child care
+  homes licensed in Allerton on 31 December 2026 will close during 2027, a window not yet open, pinned by the
+  licensing record of 2016 to 2026. The call faces forward.
+- **World.** The State of Allerton (fictional; its counties, agencies, programmes, providers and records are
+  invented; the field's method is real). The Department of Early Learning (DEL) licenses child care and runs the
+  child care subsidy. Its Office of Child Care sets the size of the 2027 round of the Home Child Care Start-Up
+  Grant from the homes expected to close during 2027. The 2023 round, paid from federal relief money, licensed
+  about 1,250 new homes in one year, four times the usual intake.
+- **Card.** `domain` sociology-demography, `subdomain` event-history-life-course-analysis, `objective`
+  forecasting, `shape` single-figure, `decision_type` quantity_figure, `answer_unit` count, `gap` [time,
+  population], `pattern` [none], `generators` [G14, G6, G13], `gate_g` method_or_model_selection,
+  `calibration_form` none, `stump_strategy` time_semantics, `context_artifact` capacity_report, `role_family`
+  capacity_planner, `forum` minister_or_cabinet, `forcing_event` statutory_or_regulatory_filing, `org_family`
+  government_agency; `stump_class` analytical; `layer2_family` field_method; `layer2_pattern`
+  own:linked-lives-clock-youngest-own-child-school-entry. People from `guard.py names --geo "United States"
+  --seed 176`: Misty Hawkins, Leroy Parker (Paula Fields and Cory Villegas dropped on people.first WARNs).
+- **Guard.** `guard.py check` WARN only after two axes were redrawn at the probe: `forum` executive_team blocked
+  against task175, and the call goes to the Secretary of Early Learning, who sets the round (minister_or_cabinet);
+  `forcing_event` budget_or_appropriation blocked against task170 and launch_or_rollout against task178 (which
+  registered while this card waited for the lock), and what forces the figure is the department's statutory supply
+  report to the General Assembly, due 1 February 2027, which carries the forecast the round is sized on
+  (statutory_or_regulatory_filing). `gate_g` forecasting tripped test.same_driver against task169's lineage on
+  (time, G14, forecasting); the honest mechanism is the choice of the hazard's clock, which the record separates by
+  deviance, so method_or_model_selection, and the older same-puzzle and same-driver matches (task134 v2 round 1,
+  task149, task446, task452) carry differentiation lines on the card. WARNs answered: strategy_risk (the analyst
+  test below names the analytical route that still fails with every field and rule read), overuse of the
+  organisation family and objective (a state agency is who forecasts licensed supply; Forecasting is this lane),
+  repeat.decision (a count is what the round is sized on).
+- **Strategy.** time_semantics in its legal form (stumping strategies F1): a clock process already in the data,
+  estimated by the field's method from every home that went through it. A family child care home's closure
+  follows its provider's family life course: most homes run by a parent of young children close in the summer
+  before her youngest own child living in the home starts kindergarten. The record reads that clock through the
+  annual capacity worksheet, which lists every child who counts toward a home's capacity with a birth date and a
+  relationship, and the 2023 round's providers joined when their youngest were babies, so they reach that summer
+  together in 2027, in their fourth year, where a tenure clock puts the record's lowest closure rate.
+- **Shape and criteria.** The call is one count to the nearest 50 (1). Three ask tables on rows the call never
+  reads: subsidised child-days of care in family child care homes by region and half of 2026 (10), food program
+  meals claimed by homes by region and half of 2026 (10), and monitoring coverage by region in 2026 (10). The
+  workbook and its tables (2 to 3). About 33 criteria, every one a cell of the prompt's shape.
+- **Data-native sentence.** In Allerton's licensing record a home's closure is written against the licence, but
+  the clock that times it is in another file and another person's life: the capacity worksheet's own-child birth
+  dates put most parent-run homes' closures in the summer before the youngest starts kindergarten, at whatever
+  tenure that falls, and the 2023 grant round licensed its providers when their youngest were babies rather than
+  toddlers, so their kindergarten summer falls together in 2027 at a tenure where the record's other homes close
+  least.
+- **Sources read, and how this differs.**
+  - `layer2-rigor-patterns.md` sociology-demography event-history-life-course-analysis 1 (competing events as
+    cumulative incidence), 2 (cause-specific against subdistribution hazards), 3 (repeated spells), 4 (late entry
+    as left truncation): 4 is a lower rung here (homes licensed before 2016 enter the risk set at their 2016
+    tenure, which the careful default does), 1 to 3 do not bite (a closure is the one ending, a home has one
+    spell); the golden is none of them applied as stated.
+  - task266 (this cell): competing endings read as cumulative incidence. Here nothing competes and nothing is
+    censored wrongly; the hazard's clock is the judgment.
+  - task265, task133: delayed entry and left truncation. Here delayed entry is handled on the default path.
+  - task134 v2, task468: a hazard by time since entry after a surge. Here time since entry is the wrong clock.
+  - task177 v2 (held): an effect measured across a cycle carried to a population at one end of it. Here no effect
+    is carried; the forward cohort sits at one point of a clock the record already shows in full.
+  - task162 (held): a calendar-locked restart burst. Here the school year fixes the month, but what is decisive is
+    whose clock it is (a linked person's age), not the calendar.
+- **Screens run as code** (prototypes `fcc1.py` to `fcc5.py`, six seeds each, the generator's checks repeat them
+  on the cut pack):
+  - Lever: the tenure life table files 0.613 to 0.647 of the golden (the golden 1.58 times it); every reflex on
+    the obvious covariates stays at or below 0.71 (provider age, the grant cohort, a has-a-parent flag at
+    licensing, a child-under-six flag, the number of own children, the youngest's age as a straight line, the
+    latest year's rate, the three-year mean rate); the youngest's age in bands without the school year reaches
+    0.87 to 0.91; the kindergarten year of any own child, not the youngest, 0.84 to 0.88 and is rejected by a
+    deviance of 532 to 641 against the youngest.
+  - Golden family (log, logit and additive monthly hazards, the summer or the whole kindergarten year, an
+    annual share, fitting windows from 2014, 2016 and 2019, with and without a summer term): 0.946 to 1.025 of
+    the log-hazard golden over six seeds; the seed-to-seed sigma of the golden about 2 per cent.
+  - Simulated forward truth: 0.958 to 1.019 of the golden.
+  - Partial-coverage, common-exposure and null-region screens: the unaffected home-months estimate only the
+    non-kindergarten hazard, so no filter of them reaches the call; the homes already in a kindergarten summer are
+    the golden's own construction and need the clock to be found. Dispersion and truncation direction do not
+    apply (a level, nothing suppressed); variance-only passes (the step moves the point).
+
+## Earlier draws (screen record)
 
 **Status: PAUSED at stage 1, no card ever registered, nothing cut.** Wave 8, new, Forecasting, seed FC47: a
 broadband satellite operator with 360 satellites ready for 2027 and six rideshare launches (February, April,
@@ -350,6 +437,33 @@ Prototypes are in the session scratchpad (r176/demog).
   The recurring death across the session: where a finer file forces a per-case quantity by identity, either the
   forward change can be replayed on the corrected record, or the identity makes the correction one group-by.
 
+- **Sixth allocation, 2026-10-23 (cell sociology-demography / event-history-life-course-analysis, Forecasting),
+  paper screens before the draw, each dead before a harness.** The cell's cards (competing endings as cumulative
+  incidence, cause-specific against subdistribution hazards, repeated spells, left truncation) are the careful
+  reader's routes, and task266 (competing endings) and task265 (late entry) are spent on file.
+  - A state pension age moving from 66 to 67 for one birth cohort, retirements read on years to the pension age:
+    the careful reflex shifts the spike with the pension age, and the golden differs from that full shift only by
+    the age gradient at a fixed distance to the pension age, a few per cent; the record's earlier pension-age
+    steps are a natural experiment a reader runs by default.
+  - Divorce applications in the first year after a no-fault act removes the two and five year separation facts:
+    the backlog of waiting couples is the reflex the act invites, and sizing it needs reconciliations during the
+    wait that no record holds (a behavioural fork) or a right-truncation completion the field teaches as standard.
+  - Benefit closures detected only at eligibility reviews when reviews move from annual to quarterly: the swap test
+    fails (failures found at inspections reads the same), so the domain is a backdrop.
+  - Care home self-funders crossing a raised capital limit: a deterministic shift of each depletion time,
+    replayed, and social care finance rather than the life course.
+  - Temporary layoffs ending in recall to the same employer removed by a short-time work scheme: labour economics,
+    and a filter on the recall spells once the rule is read.
+  - Care entry or moves by time since widowhood after a mortality shock, and childminders or foster carers whose
+    exits follow a surge of entries: the hazard-by-time-since-entry-after-a-surge family (task134 v2, task468).
+  - Naturalisation after a residence requirement falls from 8 to 5 years: either the language and income
+    conditions are filed (rule application on a conjunction) or the transport from shorter-eligibility groups is
+    confounded by who those groups are (a fork).
+  - Joint retirement of spouses after one spouse's pension age moves: the lever on any population's total is a few
+    per cent, capped by the share of couples the change reaches.
+  - Same-sex couples marrying after a bar lifts (unselected long-duration couples): an analogue from one past
+    legalisation, and a behavioural uptake.
+
 ## Retired
 
 **RETIRED 2026-10-19 under the author's rule that a number which dies in its second new cell this round is
@@ -371,3 +485,6 @@ either (paper screens in `## Tried and rejected`, and `ban.pairing` against task
 another cell.
 A fifth allocation, left to this build's choice of cell, found no Forecasting task type where the named shape lives
 naturally (`## Tried and rejected`); the number stays PAUSED.
+A sixth allocation, sociology-demography / event-history-life-course-analysis (Forecasting), drew architecture 2 on
+2026-10-23: Allerton's 2027 family child care home closures, each home's hazard read on its provider's youngest
+own child's kindergarten year (`## Draw`); the number is live again.

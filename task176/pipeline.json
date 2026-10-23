@@ -1,16 +1,16 @@
 {
  "task": "task176",
  "owner": "sathya8571",
- "status": "PAUSED",
- "domain": "",
+ "status": "DRAWING",
+ "domain": "sociology-demography",
  "objective": "forecasting",
  "stage": 1,
  "stage_name": "draw",
  "updated": "2026-10-23",
- "stump": "",
- "architecture": 1,
+ "stump": "A competent solver fits closure hazards by years licensed with provider age, county and the grant flag and files about 300 closures for 2027; the step that lands it there is reading closure on the home's tenure when it runs on the provider's youngest own child's kindergarten year.",
+ "architecture": 2,
  "loops": 0,
- "card_registered": false,
+ "card_registered": true,
  "precut": {
   "exit": null,
   "date": ""
@@ -71,9 +71,16 @@
   "redraw5_2026_10_23": {
    "cell": "own choice among Forecasting task types outside the exclusions; none drawn",
    "paper": "strategy-backtesting (TCA decomposition standard, power-law impact is one factor); scaling-laws (6ND textbook, cards); human-reliability (attaining subset or curve fork, second channel shipped); learning-analytics (task143 within-student correlation); asset-condition (one group-by, exponent fork, filed aging equation, utility org banned); patient-flow (weekend discharge replay); mortality-longevity and claims frequency (cards, small lever)"
+  },
+  "redraw6_2026_10_23": {
+   "cell": "sociology-demography / event-history-life-course-analysis / forecasting, allocated by the main session; the cell's cards (/1 cumulative incidence, /2 cause-specific against subdistribution, /3 repeated spells, /4 left truncation) treated as the careful reader's routes; task266 the cell's earlier card",
+   "drawn": "Allerton's 2027 family child care home closures; closure hazard read on the provider's youngest own child's kindergarten summer (capacity worksheet birth dates), the 2023 start-up grant cohort reaching it together in 2027",
+   "screens": "fcc5.py six seeds: tenure life table 0.613 to 0.647 of the golden; obvious-covariate reflexes at or below 0.71; youngest's age bands 0.87 to 0.91; any own child's kindergarten year 0.84 to 0.88 (deviance 532 to 641 against the youngest); golden family 0.946 to 1.025; forward truth 0.958 to 1.019",
+   "paper": "pension age step (full-shift reflex is the golden), no-fault divorce backlog (behavioural, right truncation), review-detected closures (swap fails), care capital limit (replay), recall layoffs (labour economics), time since widowhood and surge-of-entry carers (task134 v2 family), naturalisation residence cut (rule conjunction or fork), joint retirement (lever capped), barred couples marrying (analogue, behavioural)",
+   "prototypes": "session scratchpad b176e/proto: fcc1.py to fcc5.py"
   }
  },
- "resume": "PAUSED 2026-10-23: three allocations screened this session with no architecture holding (Bayesian posterior inference with E1 and C1 dead on code; municipal service demand on paper with ban.pairing against task175; the own-choice cell search on paper); no card registered; the main session assigns another cell, and the number is never retired.",
+ "resume": "stage 2: design note sections (precut), then the generator at stage 3",
  "approved": null,
  "delivered": null,
  "portal": null,
