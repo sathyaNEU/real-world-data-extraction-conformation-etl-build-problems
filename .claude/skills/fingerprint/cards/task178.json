@@ -1,102 +1,126 @@
 {
   "task": "task178",
-  "architecture": "v1",
-  "drawn": "2026-10-21",
-  "slot_note": "redraw in a new cell (physical-environmental-sciences / climate-weather-extremes, Forecasting, allocated by the main session); seed FC49's product-security world was spent at stage 1 with no card registered (two candidates dead on measurement, recorded in the design note); this world, decision, quantity and mechanism are drawn fresh in the cell",
+  "architecture": "v2",
+  "drawn": "2026-10-23",
+  "slot_note": "rebuild 2026-10-23 of a number reopened under the author's rule that no number stays retired; cell physical-environmental-sciences / hydrology-flood-frequency (Forecasting) allocated by the main session; world, decision, quantity and mechanism drawn fresh in the cell; arch 1 (the trestle deck) and the conjoint cell are spent and kept in lineage",
   "domain": "physical-environmental-sciences",
-  "subdomain": "climate-weather-extremes",
+  "subdomain": "hydrology-flood-frequency",
   "client_domain": "physical-environmental-sciences",
-  "niche": "a Maine coastal city's (Port Tessaly) waterfront engineering office setting the deck elevation of the temporary work trestle for an April to May 2027 wharf rebuild, so that high water is expected to reach the deck on no more than one tide, at a harbor gauge where the extreme levels come from perigean spring tides plus storm surge",
+  "niche": "a western Washington water company's choice of waterway for the pipe bridge that carries its transmission main over the river just below its own stage gauge: the 1 per cent annual chance peak discharge from the gauge's 46 annual peak stages, each turned into a discharge through a rating the company's own field gaugings must supply, where about half the annual peaks rise onto the floodplain and the in-bank gaugings outnumber the floodplain ones ten to one",
   "objective": "forecasting",
   "shape": "04",
   "decision_type": "dial_setting",
   "answer_unit": "named_option",
-  "answer": "11.60 ft MLLW (0.4 tides expected to reach the deck from 1 April to 31 May 2027; 2.3 at 11.35 ft)",
-  "answer_source": "task178/generator/calc.py golden() on the cut pack; generator/figures.json call_deck_ft, call_expected_at_deck, call_expected_below",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "time"
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G13",
-    "G7"
+    "G3",
+    "G14"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "none",
-  "stump_strategy": "time_semantics",
+  "calibration_form": "physical_verification",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "The textbook seasonal extreme-value route (peaks over threshold, or the season counts' climatology or trend, on the gauge's April and May high waters since 1995 at the 2027 design sea level) expects 7.4 tides at 11.60 ft and ends on 12.35 ft, three schedule steps too high, because it averages over every spring's tides while April and May 2027 sit at the 18.6-year low of the semidiurnal tide with perigee at the quarter moons.",
-  "domain_test": "The deciding quantity is the expected number of high waters exceeding a level in a known window, built the way coastal extreme-sea-level analysis builds it from the window's astronomical high waters and the season's skew surges; with hospital or grid nouns there is no forcing known years ahead and no surge on top of it, so the task stops making sense.",
+  "analyst_test": "A strong analyst who puts every stage on the current gauge datum, converts the ADCP discharges from cubic metres a second, extracts the recent water years' peaks from the 15-minute record and fits the company's design standard's log-Pearson Type III with the weighted regional skew, but turns the 46 peak stages into discharges through one power-law rating fitted to all the gaugings, files a 1 per cent annual chance flood about 30 per cent low and the 10,000 cfs waterway (13,000 cfs if the rating is fitted in arithmetic units), because the 30-odd gaugings above bankfull, which show the floodplain carrying flow the channel's curve cannot, are outweighed by the 400-odd below it.",
+  "domain_test": "The deciding quantity is the 1 per cent annual exceedance discharge, estimated the way flood hydrology estimates it (a log-Pearson Type III on the annual peak series with a weighted regional skew), on peaks that a hydrographer turns from stage into discharge through a stage-discharge rating fitted to field measurements, which changes form where the river leaves its banks; with another field's nouns there is no stage, rating, bankfull control or floodplain for the measurement step or its pitfall to live in.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:skew-surge-joint-probability-over-a-known-tidal-window",
+  "layer2_pattern": "own:floodplain-segment-of-the-rating-under-the-annual-peak-series",
   "layer1": [
-    "a 15-minute verified export with a preamble, on the 1995 station datum, quality flags V, I and M, a week missing for the April 2026 pier repair",
-    "a 6-minute provisional telemetry feed in metres on the 2026 station datum, overlapping the verified export in May and June 2026",
-    "a tide-table workbook in three layouts across 33 years, Eastern Standard Time all year to 2006 and local EST/EDT under each year's daylight rule after",
-    "a datum sheet relating STND 1995, STND 2026, MLLW, MSL and NAVD88 on the 1983-2001 epoch",
-    "work orders from two systems (one storing UTC with no zone, one local time) with different date formats and reset work orders on the same flooding"
+    "a gauge datum lowered 2.00 ft in October 2009, older stages and gaugings on the old datum (the levels log)",
+    "gaugings in two systems and layouts: transcribed paper measurement notes in cfs to 2004, the measurement database export with ADCP discharges in cubic metres a second from 2005",
+    "the annual peak register kept in a spreadsheet to water year 2015, later peaks only in the time-series system's 15-minute export",
+    "15-minute stage in UTC against local water years (October to September)",
+    "a peak taken from a crest-stage gauge when the logger failed, recorded in the visit log",
+    "measurement quality ratings and remarks in free text",
+    "telemetry gaps and re-sent rows in the 15-minute export"
   ],
-  "stakeholder_role": "the city's waterfront project engineer, who sets the trestle deck elevation in the wharf rebuild's construction documents",
+  "stakeholder_role": "the water company's water resources engineer, who sets the design discharge and the waterway alternative for the replacement pipe bridge",
   "role_family": "field_unit_lead",
   "scoring_unit": "other",
   "spine": {
-    "file": "ptg_verified_15min_1995-01_2026-06.csv",
-    "rows": 1104384,
-    "entity": "one 15-minute water-level reading at the harbor gauge",
+    "file": "tum02_stage_15min_wy2016-2025.csv",
+    "rows": 350000,
+    "entity": "one 15-minute stage reading at the gauge",
     "grain": "gauge x 15 minutes",
-    "source": "synthetic"
+    "source": "synthetic (constructed in the layout of a utility hydrometric time-series export)"
   },
-  "forum": "other",
-  "forcing_event": "season_or_peak",
-  "org_family": "local_government",
+  "forum": "line_manager_or_team",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "United States, Maine (a fictional coastal city, Port Tessaly, its tide gauge PTG-01 and its waterfront)",
+    "geography": "United States, western Washington (the Tumwick River valley; the river, Northfork Water Company, its gauge TUM-02 and every record are fictional)",
     "currency": "USD",
-    "org_type": "city public works department, waterfront engineering",
+    "org_type": "investor-owned regional water utility",
     "invented_names": [
-      "Port Tessaly",
-      "PTG-01",
-      "Granite Wharf",
-      "Cutler Wharf",
-      "Front Street",
-      "Ropewalk Road",
-      "Ferry Lane",
-      "Pennock River",
-      "WOMS",
-      "PWWorks"
+      "Northfork Water Company",
+      "Tumwick River",
+      "Sauer pipe bridge"
     ],
     "people": [
       "Stacy Huber",
-      "Regina Lang"
+      "Gary Wagner",
+      "Timothy Morse",
+      "Brenda Dodson",
+      "Dalton Maxwell"
     ]
   },
   "deliverables": [
-    "trestle_deck_2027.xlsx",
-    "spring_2027_deck_exposure.png"
+    "sauer_crossing_design_flow.xlsx",
+    "sauer_crossing_frequency_curve.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "A forward period's count of threshold crossings is set by a component of the series that is deterministic and already known for that period, whose size in the period departs from its long-run average on cycles longer than a season, so the count has to be built from the period's own known component combined with the random remainder measured on the same grain in the same season, not read from the record's average crossing rate however it is trended.",
-  "driver_concrete": "April and May 2027's high waters are already in the tide table and fall at the 18.6-year low of the semidiurnal tide with perigee at the quarter moons, so the expected number of tides reaching each deck elevation is the sum over the window's predicted high waters of the chance that an April or May skew surge (observed minus predicted high water on the 1995 to 2026 record, at 2027 sea level) covers the gap, not the seasonal exceedance rate of the record's observed high waters.",
-  "stump": "The seasonal exceedance rate of the record's April and May high waters at 2027 sea level (or a peaks-over-threshold rate, a GEV or a count trend) expects 7.4 tides at 11.60 ft and files a 12.35 ft deck; the window's own 118 predicted high waters with the season's skew surges expect 0.4 tides there and 2.3 at 11.35 ft, and file 11.60 ft.",
+  "question_form": "which",
+  "driver": "Each unit's outcome is a recorded index converted through a relation fitted to a separate and much smaller set of direct measurements, and the relation changes form above a level that about half the units exceed while few measurements do; one relation fitted to all the measurements is set by the many below the level, understates every unit above it by more the higher it sits, and through the fitted distribution's shape understates the rare quantile far more than it misstates any single unit.",
+  "driver_concrete": "The 46 annual peak stages at TUM-02 become discharges only through a rating fitted to the county's gaugings; above about 10.2 ft the river spills onto its left-bank pasture floodplain and the 30-odd ADCP gaugings made there since 2005 run 15 to 45 per cent above any single power-law rating fitted to all 450 gaugings, so the peaks above bankfull are understated, the log-Pearson skew falls from near zero to about minus 0.9, and the 1 per cent flood drops about 30 per cent; a rating with its own floodplain segment, fitted on the overbank gaugings and carried through every peak stage, gives the waterway the design discharge needs.",
+  "stump": "A competent solver who fits one power-law rating to all the gaugings and runs the manual's weighted-skew log-Pearson Type III on the converted peaks files a 1 per cent flood near 10,000 cfs and the 10,000 cfs waterway (13,000 cfs in arithmetic units), because the floodplain gaugings that bend the rating above bankfull are a tenth of the record; the rating with a floodplain segment puts the 1 per cent flood near 14,500 cfs and the 14,500 cfs waterway.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task162": "task162's forward weeks are set by where a release date falls against a monthly restart burst (timing of take-up); here nothing is timed against anything: the level a known astronomical forcing reaches in the window, its 18.6-year and perigean modulation, sets a tail-exceedance count through a convolution with an independent surge.",
-    "task160": "task160 carries which groups' recurring waves fall inside a fixed window from lags between groups; here there are no groups or lags, the window's own deterministic component is read exactly from the tide table and combined with the season's surge distribution.",
-    "task461": "task461 extends a short record through a correlated auxiliary series to reach a low quantile; here there is no auxiliary series and no record extension: the forward window's own tide is known exactly and the long record supplies only the surge on top of it.",
-    "task102": "task102 moves scheduled payments across a period end by a next-business-day rule the history shows; here no item moves between periods, a known astronomical level in the window sets how far a random surge must reach.",
-    "task130": "task130 prices a short reporting window from the reporting lag and its cost profile (maturity of reports); here nothing is reported late, the count is of physical exceedances whose forward deterministic part is published.",
-    "task134": "task134's lineage forecasts inflow through a duration hazard and an announced threshold step; here there is no hazard and no step, the window's tide sits low on the 18.6-year and perigean cycles and is read from the tide table.",
-    "task501": "task501's lineage sizes a facility buffer from a back-test or a deadline-driven draw; here nothing is back-tested or paced, the expected crossings are a convolution of the window's predicted high waters with the season's surge distribution."
+    "task238": "task238 sets a survey-mode dial from an instrumented estimate of how a reporting channel changes reports (a randomised nudge's ratio of differences); here nothing is assigned or instrumented: a stage-discharge rating is fitted per control segment on field gaugings and carried through every annual peak before a flood-frequency fit.",
+    "task134": "task134 prices a raised allowance through a rebuild hazard that starts once a best-paying option beats what stands (pattern E's conditioned yield on parcels); here no unit responds to anything: a measurement relation changes form above bankfull and the pooled fit understates the overbank peaks, through the fitted distribution's skew.",
+    "task146": "task146 splits a weekly count's period-turn step into a released pool by segment; here no pool, segment share or calendar turn exists: each annual peak's discharge is rebuilt from its stage through a rating with its own floodplain segment.",
+    "task165": "task165 conditions a service upgrade's gain on each unit's untreated share (a gain on baseline); here no treatment or gain: the conditioning is of a fitted physical relation on the stage band its measurements sit in, the floodplain segment fitted where the overbank gaugings are.",
+    "task249": "task249's v5 lineage conditions a sampled concentration rating on the rise-and-fall phase that sampler access selects; here no phase, selection or sampling access: the rating changes form at a fixed stage, the floodplain, and the default's error is the pooled fit's weight on in-bank gaugings, not a hysteresis.",
+    "task229": "task229 biases a daily mean discharge through a convex rating under within-day peaking swings (Jensen at the daily grain), a data-quality call; here the rating's own form above bankfull is the step, the grain is the annual peak, and the call is a design flood quantile.",
+    "task452": "task452 v1 applied a concentration-discharge rating to every day for a load and set a kinked relation aside because data above the kink were too thin to fix its form (the curves split across standard fits); here 30-odd gaugings span the floodplain up to the flood of record, the segmented fits agree within about 1 per cent on the 1 per cent flood, and the kink is the bankfull stage.",
+    "task466": "task466 fits a low-flow quantile to a censored historical record of threshold years; here no year is censored: every peak stage is recorded and the step is the stage-discharge rating that turns it into a discharge.",
+    "task138": "task138 calibrates an irrigation application efficiency on soil moisture stations' season and carries it through every field's balance to a start state; here no balance or start state: a stage-discharge rating's floodplain segment is fitted on overbank gaugings and carried through every annual peak stage into a flood-frequency fit.",
+    "task173": "task173 v2 splits each shared pumping meter into river lift and well lift by fitted plant curves for a season's energy; here no meter is split: one stage record is converted through a rating whose floodplain segment the overbank gaugings fix, for a flood quantile.",
+    "task101": "task101 cuts a funding threshold from a published distribution net of the decision's own earlier payments filed under intermediaries; here no payment or population is netted: each annual peak's discharge is rebuilt from its stage through a rating with its own floodplain segment, before a design quantile is set.",
+    "task469": "task469 reads a share of tasks needing more than a new allowance from the tasks whose old allowance was already shorter (censoring by allowance); here nothing is censored: every peak stage is recorded and the step is the form of the stage-discharge rating above bankfull."
   },
-  "lineage": [],
-  "notes": "Architecture 1 of task178 under its redraw; FC49's world was screened at stage 1 and never registered. stump_strategy time_semantics is the F1 family (the window the decision bets on), not a field reading: no code, unit or definition flips the call. context_artifact redrawn 2026-10-21 from published_series to filed_standard after the window moved (task251 and task478 marked spent pulled task481, published_series, into it): the trestle design basis is the stakeholder's own filed document, the honester label. Architecture 1 spent at stage 4 Gate F on 2026-10-21: scored reader A conditioned on the 2027 tide table and landed 11.60 ft, 0.4 and 2.3; reader B filed the default 12.35 ft.",
-  "registered": "2026-10-21T01:16:21Z",
-  "architecture_spent": true
+  "lineage": [
+    {
+      "domain": "physical-environmental-sciences",
+      "subdomain": "climate-weather-extremes",
+      "objective": "forecasting",
+      "gap": [
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "dial_setting",
+      "driver": "A forward period's count of threshold crossings is set by a component of the series that is deterministic and already known for that period, whose size in the period departs from its long-run average on cycles longer than a season, so the count has to be built from the period's own known component combined with the random remainder measured on the same grain in the same season, not read from the record's average crossing rate however it is trended.",
+      "stump_strategy": "time_semantics",
+      "generators": [
+        "G13",
+        "G7"
+      ],
+      "architecture": "redraw architecture 1 (climate-weather-extremes, the harbour trestle deck)",
+      "fate": "spent 2026-10-21 at stage 4, Gate F (pack d64099d2): scored reader A conditioned on the 2027 tide table and landed the call (11.60 ft, 0.4 and 2.3 tides); reader B filed the default 12.35 ft; the judge was stopped because the readers decided it. The number's second cell (marketing-consumer-research / conjoint-choice-willingness-to-pay-analysis) was screened the same day with no card registered and nothing held; it is spent too."
+    }
+  ],
+  "notes": "Rebuild of task178 (architecture 2 of the slot, after architecture 1 (the trestle deck); the FC49 seed screen and the conjoint cell registered no card; arch 1's card identity moved to lineage). Calibration physical_verification: the gaugings are field measurements the rating is fitted on. Gap population: the rating's evidence is mostly the in-bank population of measurements while the decision rests on the overbank peaks. Generators G3 (the recorded stage against the discharge the river carried, as the gaugings measure it) then G14 (the pooled relation does not hold for the overbank pool). Stump strategy other: a measurement relation that changes form, fitted per segment and carried through every unit, against one pooled relation (no listed family fits honestly). Context artifact capacity_report: the crossing alternatives study that gives each waterway alternative's capacity; the design standard's flood-frequency section is an input.",
+  "registered": "2026-10-23T05:30:02Z"
 }

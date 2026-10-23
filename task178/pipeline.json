@@ -1,36 +1,36 @@
 {
  "task": "task178",
  "owner": "sathya8571",
- "status": "RETIRED",
- "domain": "physical-environmental-sciences/climate-weather-extremes",
+ "status": "DRAWING",
+ "domain": "physical-environmental-sciences/hydrology-flood-frequency",
  "objective": "forecasting",
  "stage": 1,
  "stage_name": "draw",
- "updated": "2026-10-21",
- "stump": "The seasonal exceedance rate of the record's April and May high waters at 2027 sea level (or a peaks-over-threshold rate, a GEV or a count trend) expects 7.4 tides at 11.60 ft and files a 12.35 ft deck; the window's own 118 predicted high waters with the season's skew surges expect 0.4 tides there and 2.3 at 11.35 ft, and file 11.60 ft.",
- "architecture": 1,
+ "updated": "2026-10-23",
+ "stump": "One power-law rating fitted to all of TUM-02's gaugings and carried through the 46 annual peak stages into the standard's weighted-skew log-Pearson Type III files Alternative A (10,000 cfs); a rating with its own floodplain segment, fitted on the overbank gaugings, files Alternative D (14,500 cfs).",
+ "architecture": 2,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-21"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-21 (two lines, sweeps 3 and 9, answered in the design note's ## Leak sweep; no LEAK)",
-  "reader": "scored-task178a landed the call (11.60, 0.4, 2.3) and 15 of 22 ask figures; scored-task178b filed 12.35 and 16 of 22 ask figures; both missed all six at-11.80 counts"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-21 (time_semantics strategy risk and Gate G repeat, answered in ## Draw)",
-  "nearest": "drivers task465 lineage 0.07, task228 lineage 0.06, task262 0.05; surface top pair task449 0.123"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "not run",
-  "disposition": "stopped by the coordinator: the readers decided Gate F",
+  "verdict": "",
+  "disposition": "",
   "report": ""
  },
  "returned": [],
- "wave": "redraw in a new cell (physical-environmental-sciences / climate-weather-extremes, Forecasting); FC49's world spent at stage 1",
- "resume": "RETIRED 2026-10-21 under the author's rule: architecture 1 (climate-weather-extremes) spent at Gate F; the second cell (marketing-consumer-research / conjoint-choice-willingness-to-pay-analysis) yielded no candidate that holds (see ## Retired)",
+ "wave": "rebuild 2026-10-23 of a reopened number in physical-environmental-sciences / hydrology-flood-frequency (Forecasting); architecture 1 (climate-weather-extremes) and the conjoint cell spent",
+ "resume": "stage 2: design (screen, fork table, ladder, closure, asks, prompt.txt) to precut exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
