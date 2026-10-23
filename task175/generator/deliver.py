@@ -1,4 +1,4 @@
-"""The goldens (the forecast workbook and the fiscal 2026 connections chart), generator/figures.json, submission.md and
+"""The goldens (the forecast workbook and the fiscal 2026 capacity fees chart), generator/figures.json, submission.md and
 metadata.json, all computed from the shipped files through calc.py."""
 from __future__ import annotations
 
@@ -38,8 +38,9 @@ def compute(target):
     out["vacant"] = {nm: int((P.area[fl] == nm).sum()) for nm in calc.FORWARD}
     out["empty"] = {nm: int(((P.area[fl] == nm) & (n27 == 0)).sum()) for nm in calc.FORWARD}
     routes = calc.connections_fy26(target, P)
-    fees, lines, by_no = calc.fees_fy26(target)
-    out.update(grid=routes["golden"], routes=routes, fees=fees, lines=lines, by_no=by_no)
+    fees, lines, by_no = calc.fees_fy26(target, P)
+    conn = {ph: int(sum(routes["golden"][(ph, q)] for q in (1, 2, 3, 4))) for ph in PHASES}
+    out.update(grid=routes["golden"], conn=conn, routes=routes, fees=fees, lines=lines, by_no=by_no)
     return out
 
 
@@ -50,14 +51,17 @@ def figures(o):
     for nm in calc.FORWARD:
         f["cc1_vacant_lots_" + nm.lower().replace(" ", "")] = o["vacant"][nm]
     f["cc2_vacant_lots_subset_total"] = sum(o["empty"].values())
+    for ph in PHASES[1:]:
+        f["ask_connections_fy2026_phase%s" % ph] = o["conn"][ph]
     for ph in PHASES:
         for q in (1, 2, 3, 4):
-            f["ask_connections_fy2026_%s_q%d" % (ph.lower() if ph == "Core" else "phase" + ph, q)] = int(o["grid"][(ph, q)])
-    for q in (1, 2, 3, 4):
-        f["ask_capacity_fees_fy2026_q%d" % q] = int(round(o["fees"][q]))
+            f["ask_capacity_fees_fy2026_%s_q%d" % (ph.lower() if ph == "Core" else "phase" + ph, q)] = int(round(o["fees"][(ph, q)]))
     # numbers inside the area names (North 6, North 7, Northwest 3), which the write-up prints beside figures
     f["label_area_name_numbers"] = [6, 7, 3]
     f["label_call_rounding"] = 50
+    # the phase numbers and the fiscal year named beside the ask figures
+    f["label_phase_numbers"] = [1, 2, 3, 4]
+    f["label_fiscal_year"] = 2026
     # unrounded values for the bin checks
     f["_unrounded"] = {k: round(v, 3) for k, v in g.items()}
     return f
@@ -115,57 +119,58 @@ def write_workbook(path, o, f):
     ws2["A1"] = "New single-family connections, fiscal 2026"
     ws2["A1"].font = Font(bold=True, size=13)
     ws2["A2"] = ("A lot's first meter install, at a lot with no account opened before it, premises placed on lots by "
-                 "parcel or service address; quarter of the install date.")
+                 "parcel or service address; October 2025 to September 2026.")
     ws2["A2"].font = Font(italic=True, size=9)
-    hdr2 = ["Phase"] + [QLABEL[q] for q in (1, 2, 3, 4)] + ["Fiscal 2026"]
-    for j, h in enumerate(hdr2, 1):
+    for j, h in enumerate(["Phase", "Connections"], 1):
         c = ws2.cell(row=4, column=j, value=h); c.font = bold; c.fill = head_fill
-        c.alignment = Alignment(wrap_text=True, vertical="top")
     r = 5
-    for ph in PHASES:
+    for ph in PHASES[1:]:
         ws2.cell(row=r, column=1, value=PHASE_LABEL[ph])
-        for q in (1, 2, 3, 4):
-            c = ws2.cell(row=r, column=1 + q, value=int(o["grid"][(ph, q)])); c.number_format = "#,##0"
-        c = ws2.cell(row=r, column=6, value=int(sum(o["grid"][(ph, q)] for q in (1, 2, 3, 4)))); c.number_format = "#,##0"
+        c = ws2.cell(row=r, column=2, value=f["ask_connections_fy2026_phase" + ph]); c.number_format = "#,##0"
         r += 1
-    ws2.cell(row=r, column=1, value="All served areas").font = bold
-    for q in (1, 2, 3, 4):
-        c = ws2.cell(row=r, column=1 + q, value=int(sum(o["grid"][(ph, q)] for ph in PHASES))); c.number_format = "#,##0"; c.font = bold
-    c = ws2.cell(row=r, column=6, value=int(sum(o["grid"].values()))); c.number_format = "#,##0"; c.font = bold
-    for j in range(1, 7):
+    ws2.cell(row=r, column=1, value="Phases 1 to 4").font = bold
+    c = ws2.cell(row=r, column=2, value=sum(f["ask_connections_fy2026_phase" + ph] for ph in PHASES[1:]))
+    c.number_format = "#,##0"; c.font = bold
+    for j in (1, 2):
         ws2.cell(row=r, column=j).border = top
     ws2.cell(row=r + 2, column=1, value=("AMI head-end installs at lots already billed before the install are meter "
                                          "exchanges, and a later install at a lot, on its stub or on a premise set up at the counter, is a meter set again, not a connection. "
                                          "Phases as the program schedule groups the areas.")).font = Font(size=9)
-    for col, wv in zip("ABCDEF", [20, 13, 13, 13, 13, 12]):
-        ws2.column_dimensions[col].width = wv
-    ws2.row_dimensions[4].height = 30
+    ws2.column_dimensions["A"].width = 20
+    ws2.column_dimensions["B"].width = 14
     ws2.freeze_panes = "B5"
 
     ws3 = wb.create_sheet("FY2026 capacity fees")
-    ws3["A1"] = "Water and sewer capacity fees received, fiscal 2026"
+    ws3["A1"] = "Water and sewer capacity fees received, fiscal 2026 (USD)"
     ws3["A1"].font = Font(bold=True, size=13)
-    ws3["A2"] = "Cashiering receipts, fee code CAPWS, by receipt date; each payment (receipt number and payer) counted once."
+    ws3["A2"] = ("Cashiering receipts, fee code CAPWS, by receipt date; each payment (receipt number and payer) counted "
+                 "once, in the phase of its permits' lots.")
     ws3["A2"].font = Font(italic=True, size=9)
-    for j, h in enumerate(["Quarter", "Receipts", "Fees received (USD)"], 1):
+    hdr3 = ["Phase"] + [QLABEL[q] for q in (1, 2, 3, 4)] + ["Fiscal 2026"]
+    for j, h in enumerate(hdr3, 1):
         c = ws3.cell(row=4, column=j, value=h); c.font = bold; c.fill = head_fill
+        c.alignment = Alignment(wrap_text=True, vertical="top")
     r = 5
-    for q in (1, 2, 3, 4):
-        ws3.cell(row=r, column=1, value=QLABEL[q])
-        c = ws3.cell(row=r, column=3, value=f["ask_capacity_fees_fy2026_q%d" % q]); c.number_format = "#,##0"
+    key = lambda ph, q: "ask_capacity_fees_fy2026_%s_q%d" % (ph.lower() if ph == "Core" else "phase" + ph, q)
+    for ph in PHASES:
+        ws3.cell(row=r, column=1, value=PHASE_LABEL[ph])
+        for q in (1, 2, 3, 4):
+            c = ws3.cell(row=r, column=1 + q, value=f[key(ph, q)]); c.number_format = "#,##0"
+        c = ws3.cell(row=r, column=6, value=sum(f[key(ph, q)] for q in (1, 2, 3, 4))); c.number_format = "#,##0"
         r += 1
-    ws3.delete_cols(2)
-    ws3.cell(row=4, column=2, value="Fees received (USD)").font = bold
-    ws3.cell(row=4, column=2).fill = head_fill
-    ws3.cell(row=r, column=1, value="Fiscal 2026").font = bold
-    c = ws3.cell(row=r, column=2, value=sum(f["ask_capacity_fees_fy2026_q%d" % q] for q in (1, 2, 3, 4)))
+    ws3.cell(row=r, column=1, value="All served areas").font = bold
+    for q in (1, 2, 3, 4):
+        c = ws3.cell(row=r, column=1 + q, value=sum(f[key(ph, q)] for ph in PHASES)); c.number_format = "#,##0"; c.font = bold
+    c = ws3.cell(row=r, column=6, value=sum(f[key(ph, q)] for ph in PHASES for q in (1, 2, 3, 4)))
     c.number_format = "#,##0"; c.font = bold
-    for j in (1, 2):
+    for j in range(1, 7):
         ws3.cell(row=r, column=j).border = top
     ws3.cell(row=r + 2, column=1, value=("A builder's receipt covering several permits carries the receipt amount on each "
                                          "permit line; receipt numbers run by drawer and day.")).font = Font(size=9)
-    ws3.column_dimensions["A"].width = 20
-    ws3.column_dimensions["B"].width = 20
+    for col, wv in zip("ABCDEF", [20, 14, 14, 14, 14, 14]):
+        ws3.column_dimensions[col].width = wv
+    ws3.row_dimensions[4].height = 30
+    ws3.freeze_panes = "B5"
     wb.save(path)
     PP.normalize_ooxml(path, "Melissa Payne", "Melissa Payne", "2027-01-11T15:30:00Z", "2027-01-12T21:05:00Z", excel=True)
 
@@ -175,23 +180,25 @@ def write_chart(path, o):
     matplotlib.use("Agg")
     matplotlib.rcParams["svg.hashsalt"] = "task175"
     import matplotlib.pyplot as plt
+    import matplotlib.ticker
     fig, ax = plt.subplots(figsize=(8.6, 5.4), dpi=150)
     fig.patch.set_facecolor("#fcfcfb"); ax.set_facecolor("#fcfcfb")
     qs = [1, 2, 3, 4]
     bottom = np.zeros(4)
     for ph, col in zip(PHASES, COLORS):
-        vals = np.array([o["grid"][(ph, q)] for q in qs], dtype=float)
+        vals = np.array([round(o["fees"][(ph, q)]) for q in qs], dtype=float)
         bars = ax.bar(range(4), vals, bottom=bottom, color=col, width=0.62, edgecolor="#fcfcfb", linewidth=2,
                       label=PHASE_LABEL[ph])
         for k, (v, b) in enumerate(zip(vals, bottom)):
-            ax.text(k, b + v / 2, "%d" % v, ha="center", va="center", fontsize=9, color="#0b0b0b")
+            ax.text(k, b + v / 2, "{:,}".format(int(v)), ha="center", va="center", fontsize=8, color="#0b0b0b")
         bottom += vals
     for k, tot in enumerate(bottom):
-        ax.text(k, tot + 6, "%d" % tot, ha="center", va="bottom", fontsize=9.5, color="#52514e", fontweight="bold")
+        ax.text(k, tot + 60000, "{:,}".format(int(tot)), ha="center", va="bottom", fontsize=9, color="#52514e", fontweight="bold")
     ax.set_xticks(range(4))
     ax.set_xticklabels([QLABEL[q].replace(" ", "\n", 1) for q in qs], fontsize=9, color="#52514e")
-    ax.set_ylabel("New single-family connections", fontsize=9.5, color="#52514e")
-    ax.set_title("Fiscal 2026 new single-family connections by quarter: {:,} in all".format(int(bottom.sum())), fontsize=11.5,
+    ax.set_ylabel("Capacity fees received (USD millions)", fontsize=9.5, color="#52514e")
+    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: "%.0f" % (v / 1e6)))
+    ax.set_title("Fiscal 2026 water and sewer capacity fees by quarter: USD {:,} in all".format(int(bottom.sum())), fontsize=11.5,
                  loc="left", color="#0b0b0b")
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
@@ -200,7 +207,7 @@ def write_chart(path, o):
     ax.tick_params(colors="#52514e", labelsize=9)
     ax.set_ylim(0, bottom.max() * 1.12)
     ax.legend(loc="upper left", bbox_to_anchor=(1.0, 1.0), frameon=False, fontsize=9)
-    fig.text(0.01, 0.01, "Source: AMI head-end installs and CIS account history; first install per lot only, meter exchanges at billed homes excluded. "
+    fig.text(0.01, 0.01, "Source: cashiering receipts, fee code CAPWS, by receipt date, one amount per payment; phase of the permits' lots. "
              "Port Ardell Utilities, Revenue and Rates.", fontsize=7.5, color="#52514e")
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     fig.savefig(path, facecolor=fig.get_facecolor(), metadata={"Software": None})
@@ -256,7 +263,8 @@ def write_submission(path, o, f):
         "schedule's phases rather than by the premise's stored UEP_PHASE.",
         "Summed capacity_fee_receipts_fy2026.xlsx once per payment by receipt date, a payment being a receipt number "
         "and its payer: a receipt covering several permits repeats its amount on each permit line, and receipt "
-        "numbers run by drawer and day, so two payers' receipts can share a number.",
+        "numbers run by drawer and day, so two payers' receipts can share a number; each payment placed in the phase "
+        "of its permits' lots through the parcel numbers in bldg_permits_2019_2026.xlsx.",
     ]
     for k, s in enumerate(steps, 1):
         lines.append("%d. %s" % (k, s))
@@ -264,17 +272,17 @@ def write_submission(path, o, f):
     lines.append("## 4. Deliverable Answers\n")
     lines.append("### %s\n" % C.DELIV_XLSX)
     lines.append("1. Single-family building permits in 2027 in the three areas together: **%d** (nearest 50)" % f["call_total_permits_2027"])
-    lines.append("2. New single-family connections in fiscal 2026, by quarter (Q1 October to December 2025 through Q4 July to September 2026):")
+    lines.append("2. New single-family connections in fiscal 2026: " + ", ".join(
+        "Phase %s **%d**" % (ph, f["ask_connections_fy2026_phase" + ph]) for ph in PHASES[1:]))
+    lines.append("3. Water and sewer capacity fees received in fiscal 2026 (Q1 October to December 2025 through Q4 July to September 2026), USD:")
     for ph in PHASES:
-        key = ph.lower() if ph == "Core" else "phase" + ph
-        lines.append("   - %s: Q1 %d, Q2 %d, Q3 %d, Q4 %d" % ((PHASE_LABEL[ph],) + tuple(
-            f["ask_connections_fy2026_%s_q%d" % (key, q)] for q in (1, 2, 3, 4))))
-    lines.append("3. Water and sewer capacity fees received in fiscal 2026: Q1 **USD %s**, Q2 **USD %s**, Q3 **USD %s**, Q4 **USD %s**" % tuple(
-        "{:,}".format(f["ask_capacity_fees_fy2026_q%d" % q]) for q in (1, 2, 3, 4)))
+        k = ph.lower() if ph == "Core" else "phase" + ph
+        lines.append("   - %s: Q1 **%s**, Q2 **%s**, Q3 **%s**, Q4 **%s**" % ((PHASE_LABEL[ph],) + tuple(
+            "{:,}".format(f["ask_capacity_fees_fy2026_%s_q%d" % (k, q)]) for q in (1, 2, 3, 4))))
     lines.append("")
     lines.append("### %s\n" % C.DELIV_PNG)
     lines.append("1. One stacked bar per fiscal 2026 quarter with a segment for the core service area and each of Phases 1 to 4, "
-                 "each segment labelled with its connection count as in answer 2 above.")
+                 "each segment labelled with its fees in whole dollars as in answer 3 above.")
     with open(path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
 

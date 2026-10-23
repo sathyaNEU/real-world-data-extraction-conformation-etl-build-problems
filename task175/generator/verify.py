@@ -173,23 +173,25 @@ def main(target):
     ami["first"] = ami.lot.map(first)
     newc = ami[(ami.d == firstset[ami.index]) & (ami["first"].isna() | (pd.to_datetime(ami["first"]) >= ami.d))].copy()
     newc["phase"] = newc.lot.map(lambda i: "Core" if roll.area[int(i)] == "Core" else areas[roll.area[int(i)]][0])
-    newc["q"] = ((newc.d.dt.month - 10) % 12) // 3 + 1
-    cnt = newc.groupby(["phase", "q"]).size()
-    good = all(int(cnt.get((ph, q), 0)) == fig["ask_connections_fy2026_%s_q%d" % ("core" if ph == "Core" else "phase" + ph, q)]
-               for ph in ["Core", "1", "2", "3", "4"] for q in (1, 2, 3, 4))
-    ok("V7 every fiscal 2026 connection cell recomputes", good)
+    cnt = newc.groupby("phase").size()
+    good = all(int(cnt.get(ph, 0)) == fig["ask_connections_fy2026_phase" + ph] for ph in ["1", "2", "3", "4"])
+    ok("V7 every fiscal 2026 phase connection total recomputes", good)
     fees = pd.read_excel(os.path.join(target, "capacity_fee_receipts_fy2026.xlsx"))
+    allp = pd.read_excel(os.path.join(target, "bldg_permits_2019_2026.xlsx"), dtype={"Legacy Permit #": str})
+    lot_of = allp.set_index("Permit Number")["Parcel ID"].map(by_strap)
     rec = fees.drop_duplicates(["Receipt No", "Payer"]).copy()
     rec["q"] = ((pd.to_datetime(rec["Receipt Date"]).dt.month - 10) % 12) // 3 + 1
-    fq = rec.groupby("q").Amount.sum()
-    ok("V8 every fiscal 2026 fee quarter recomputes", all(int(round(fq[q])) == fig["ask_capacity_fees_fy2026_q%d" % q] for q in (1, 2, 3, 4)))
+    rec["phase"] = rec["Permit No"].map(lot_of).map(lambda i: "Core" if roll.area[int(i)] == "Core" else areas[roll.area[int(i)]][0])
+    fq = rec.groupby(["phase", "q"]).Amount.sum()
+    ok("V8 every fiscal 2026 fee cell recomputes", all(int(round(fq[(ph, q)])) == fig["ask_capacity_fees_fy2026_%s_q%d" % (
+        "core" if ph == "Core" else "phase" + ph, q)] for ph in ["Core", "1", "2", "3", "4"] for q in (1, 2, 3, 4)))
     # goldens read back
     gx = os.path.join(task, "golden", "uep_2027_permit_forecast.xlsx")
     wb = pd.read_excel(gx, sheet_name=None, header=None)
     flat = " ".join(str(v) for df in wb.values() for v in df.values.ravel() if str(v) != "nan")
     ok("V9 the golden workbook carries the call and every ask figure",
        all(str(fig[k]) in flat for k in fig if k.startswith(("call_", "ask_", "cc"))))
-    ok("V10 the golden chart exists", os.path.getsize(os.path.join(task, "golden", "fy2026_new_connections.png")) > 20000)
+    ok("V10 the golden chart exists", os.path.getsize(os.path.join(task, "golden", "fy2026_capacity_fees.png")) > 20000)
     print("\n%d failed" % len(FAIL))
     sys.exit(1 if FAIL else 0)
 

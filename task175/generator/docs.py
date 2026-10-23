@@ -35,7 +35,7 @@ ESTIMAND_PIN = ("A permit forecast is the expected number of distinct lots that 
 PERMIT_PIN = ("Permit forecasts count City building permits of work class Residential New Single Family (legacy type "
               "RES NEW SFR) by issue date in the calendar year forecast, and an area's permits are the permits on lots "
               "in the plat units the program schedule lists for it.")
-CONN_PIN = "New connections are reported in the quarter the meter is installed."
+CONN_PIN = "A new connection is counted once for its lot, in the period the lot's first meter is installed."
 FY_PIN = ("The Utility's fiscal year runs from 1 October to 30 September: fiscal 2026 ran from 1 October 2025 to "
           "30 September 2026, in quarters of October to December, January to March, April to June and July to "
           "September.")

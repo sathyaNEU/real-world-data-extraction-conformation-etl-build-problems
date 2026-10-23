@@ -367,29 +367,56 @@ def connections_fy26(target, P=None):
     return routes
 
 
-def fees_fy26(target):
-    """capacity fees received by fiscal quarter: one amount per payment, a payment being a receipt number and its payer
-    (receipt numbers run by drawer and day, and a receipt repeats its amount on each permit line). Returns the golden,
-    the sum of every line and the sum of one amount per receipt number."""
+def fees_fy26(target, P=None, extra=False):
+    """capacity fees received by phase and fiscal quarter: one amount per payment, a payment being a receipt number and
+    its payer (receipt numbers run by drawer and day, and a receipt repeats its amount on each permit line), placed in
+    the schedule's phase of its permits' lots through the permit's parcel. Returns the golden, the sum of every line and
+    the sum of one amount per receipt number (the first line in the file), each keyed (phase, quarter)."""
     from openpyxl import load_workbook
+    P = P or Pack(target)
+    wb = load_workbook(os.path.join(target, C.F_PNEW), read_only=True)
+    it = wb.worksheets[0].iter_rows(values_only=True)
+    head = list(next(it))
+    ipn, ipar = head.index("Permit Number"), head.index("Parcel ID")
+    parcel = {r[ipn]: r[ipar] for r in it}
     wb = load_workbook(os.path.join(target, C.F_FEES), read_only=True)
     it = wb.worksheets[0].iter_rows(values_only=True)
     head = list(next(it))
     rows = [dict(zip(head, r)) for r in it]
+
+    def phase(pn):
+        a = P.area[P.ix[parcel[pn]]]
+        return "Core" if a == "Core" else P.areas[a]["phase"]
     pay, by_no = {}, {}
     lines = defaultdict(float)
     for r in rows:
         d = r["Receipt Date"].date() if isinstance(r["Receipt Date"], dt.datetime) else r["Receipt Date"]
         fy, q = C.fq(d)
-        pay[(r["Receipt No"], r["Payer"])] = (q, float(r["Amount"]))
-        by_no.setdefault(r["Receipt No"], (q, float(r["Amount"])))
-        lines[q] += float(r["Amount"])
+        k = (phase(r["Permit No"]), q)
+        pay.setdefault((r["Receipt No"], r["Payer"]), (k, float(r["Amount"])))
+        by_no.setdefault(r["Receipt No"], (k, float(r["Amount"])))
+        lines[k] += float(r["Amount"])
     golden, number = defaultdict(float), defaultdict(float)
-    for q, amt in pay.values():
-        golden[q] += amt
-    for q, amt in by_no.values():
-        number[q] += amt
+    for k, amt in pay.values():
+        golden[k] += amt
+    for k, amt in by_no.values():
+        number[k] += amt
+    if extra:
+        last, no_amt, no_date = {}, {}, {}
+        for r in rows:
+            d = r["Receipt Date"].date() if isinstance(r["Receipt Date"], dt.datetime) else r["Receipt Date"]
+            k = (phase(r["Permit No"]), C.fq(d)[1])
+            last[r["Receipt No"]] = (k, float(r["Amount"]))
+            no_amt.setdefault((r["Receipt No"], r["Amount"]), (k, float(r["Amount"])))
+            no_date.setdefault((r["Receipt No"], d), (k, float(r["Amount"])))
+        out = {}
+        for nm, src in (("number_last", last), ("number_amount", no_amt), ("number_date", no_date)):
+            out[nm] = defaultdict(float)
+            for k, amt in src.values():
+                out[nm][k] += amt
+        return golden, lines, number, out
     return golden, lines, number
+
 
 def routes(P, season=None):
     """every priced route to the 2027 total, keyed by name: the golden family and the rivals"""

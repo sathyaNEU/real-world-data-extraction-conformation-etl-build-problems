@@ -33,7 +33,7 @@ F_ACS = "acs_2020_2024_port_ardell_tracts.csv"
 F_SAR = "uep_special_assessment_roll_2026.csv"
 
 DELIV_XLSX = "uep_2027_permit_forecast.xlsx"
-DELIV_PNG = "fy2026_new_connections.png"
+DELIV_PNG = "fy2026_capacity_fees.png"
 DISTRACTORS = [F_ACS, F_SAR]
 
 

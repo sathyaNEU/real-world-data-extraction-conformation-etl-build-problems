@@ -199,7 +199,7 @@ class Utility:
         # builders: production builders pay several permits on one receipt
         wts = np.r_[np.full(12, 0.24 / 12), np.full(128, 0.76 / 128)]
         self.builder = g.choice(140, size=w.N, p=wts)
-        rows = []
+        ph = self.phase_now
         order = sel[np.argsort(w.issued[sel], kind="stable")]
         paid = set()
         payments = []
@@ -207,39 +207,92 @@ class Utility:
             if lot in paid:
                 continue
             day = w.issued[lot]
-            same = [lot]
-            if self.builder[lot] < 12:   # production builders pay the week's permits on one receipt
-                for o in order[k + 1:k + 60]:
+            same = [int(lot)]
+            if self.builder[lot] < 12:   # production builders pay the week's permits in one phase on one receipt
+                for o in order[k + 1:k + 80]:
                     if (w.issued[o] - day) > np.timedelta64(6, "D") or len(same) >= 4:
                         break
-                    if o not in paid and self.builder[o] == self.builder[lot]:
-                        same.append(o)
+                    if o not in paid and self.builder[o] == self.builder[lot] and ph[o] == ph[lot]:
+                        same.append(int(o))
             paid.update(same)
             rdate = max(w.issued[x] for x in same) + np.timedelta64(int(g.integers(0, 4)), "D")
-            fee = FEE[int(fiscal_year(np.array([rdate]))[0])]
-            amts = [int(round(fee * (2.5 if self.size1[x] else 1.0))) for x in same]
-            payments.append((rdate, same, amts, "UTL" if g.random() < 0.12 else "BLD"))
+            payments.append({"rdate": rdate, "same": same, "drawer": "UTL" if g.random() < 0.12 else "BLD", "partner": None})
+        self._force_cells(payments, np.random.default_rng([w.seed, 37]))
+        for p in payments:
+            fee = FEE[int(fiscal_year(np.array([p["rdate"]]))[0])]
+            p["amts"] = [int(round(fee * (2.5 if self.size1[x] else 1.0))) for x in p["same"]]
         # receipt numbers run by drawer and day (YYDDD-NNN); the export does not carry the drawer
-        payments.sort(key=lambda p: (p[0], p[3], p[1][0]))
-        used = {}
-        for rdate, same, amts, drawer in payments:
-            dd = C_date(rdate)
-            key = (dd, drawer)
-            n = used.get(key, 0) + 1
-            if drawer == "UTL":
+        payments.sort(key=lambda p: (p["rdate"], p["drawer"], 0 if p["partner"] is not None else 1, p["same"][0]))
+        from collections import defaultdict
+        bld, last, utl_used, number = defaultdict(dict), defaultdict(int), defaultdict(set), {}
+        rows = []
+        for p in payments:
+            dd = C_date(p["rdate"])
+            same, amts = p["same"], p["amts"]
+            if p["drawer"] == "BLD":
+                n = last[(dd, "BLD")] + 1
+                last[(dd, "BLD")] = n
+                bld[dd][n] = p
+            elif p["partner"] is not None:
+                n = number[id(p["partner"])]
+                utl_used[dd].add(n)
+            else:
                 # the second drawer's sequence restarts each day too; a number already issued at the first drawer
                 # that day is shared only by a payment of the same amount from another payer, else it moves on
+                n = last[(dd, "UTL")] + 1
                 while True:
-                    other = [p for p in rows if p[0] == "%s-%03d" % (dd.strftime("%y") + "%03d" % dd.timetuple().tm_yday, n)]
-                    if not other or (len(same) == 1 and len(other) == 1 and other[0][4] == amts[0]
-                                     and self.builder[other[0][2]] != self.builder[same[0]]):
+                    o = bld[dd].get(n)
+                    if n not in utl_used[dd] and (o is None or (len(same) == 1 and len(o["same"]) == 1 and o["amts"][0] == amts[0]
+                                                               and self.builder[o["same"][0]] != self.builder[same[0]])):
                         break
                     n += 1
-            used[key] = n
+                last[(dd, "UTL")] = n
+                utl_used[dd].add(n)
+            number[id(p)] = n
             rno = "%s%03d-%03d" % (dd.strftime("%y"), dd.timetuple().tm_yday, n)
             for x, am in zip(same, amts):
-                rows.append((rno, rdate, int(x), am, sum(amts), len(same), drawer))
+                rows.append((rno, p["rdate"], int(x), am, sum(amts), len(same), p["drawer"]))
         self.receipts = rows
+
+    def _force_cells(self, payments, g):
+        """every phase and fiscal 2026 quarter holds a receipt covering several permits and a receipt number the two
+        drawers both issued that day to payments of the same amount from two builders"""
+        w, ph = self.w, self.phase_now
+
+        def cell(p):
+            x = p["rdate"]
+            if not (FY26[0] <= x < FY26[1]):
+                return None
+            m = int(x.astype("datetime64[M]").astype(int) % 12) + 1
+            return (ph[p["same"][0]], ((m - 10) % 12) // 3 + 1)
+        for P in ["Core", "1", "2", "3", "4"]:
+            for q in (1, 2, 3, 4):
+                here = [p for p in payments if cell(p) == (P, q)]
+                if not any(len(p["same"]) > 1 for p in here):
+                    singles = [p for p in here if len(p["same"]) == 1]
+                    pairs = [(a, b) for i, a in enumerate(singles) for b in singles[i + 1:]
+                             if self.builder[a["same"][0]] == self.builder[b["same"][0]]
+                             and abs(int((w.issued[a["same"][0]] - w.issued[b["same"][0]]).astype(int))) <= 21]
+                    assert pairs, ("no bulk receipt possible", P, q)
+                    a, b = pairs[int(g.integers(0, len(pairs)))]
+                    a["same"] = a["same"] + b["same"]
+                    a["rdate"] = max(w.issued[x] for x in a["same"]) + np.timedelta64(int(g.integers(0, 3)), "D")
+                    payments.remove(b)
+                    here = [p for p in payments if cell(p) == (P, q)]
+                if any(p["partner"] is not None for p in here):
+                    continue
+                singles = [p for p in here if len(p["same"]) == 1 and p["partner"] is None]
+                pairs = [(a, b) for i, a in enumerate(singles) for b in singles[i + 1:]
+                         if self.builder[a["same"][0]] != self.builder[b["same"][0]]
+                         and self.size1[a["same"][0]] == self.size1[b["same"][0]]
+                         and abs(int((w.issued[a["same"][0]] - w.issued[b["same"][0]]).astype(int))) <= 3]
+                assert pairs, ("no shared receipt number possible", P, q)
+                a, b = pairs[int(g.integers(0, len(pairs)))]
+                day = max(w.issued[a["same"][0]], w.issued[b["same"][0]])
+                if cell(dict(a, rdate=day)) != (P, q):
+                    continue
+                a["rdate"] = b["rdate"] = day
+                a["drawer"], b["drawer"], b["partner"] = "BLD", "UTL", a
 
     def connections_fy26(self):
         """new single-family connections in fiscal 2026: first meter set at a premise, by phase and fiscal quarter"""

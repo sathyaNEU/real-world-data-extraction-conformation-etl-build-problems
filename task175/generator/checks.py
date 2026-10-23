@@ -213,19 +213,17 @@ def main(target):
     grid = routes["golden"]
     new, q = u.connections_fy26()
     PH = ["Core", "1", "2", "3", "4"]
+    tot = lambda rt, ph: sum(routes[rt][(ph, k)] for k in (1, 2, 3, 4))
     exact = all(grid[(ph, k)] == int(((u.phase_now == ph) & new & (q == k - 1)).sum()) for ph in PH for k in (1, 2, 3, 4))
-    check("A1 law 6: the golden handling reproduces the clean truth in every cell", exact)
-    for rname in ("cracker", "reader_a", "reader_b", "reader_d", "reader_e", "stored_phase"):
-        check("A2 every cell missed on the %s route" % rname, all(routes[rname][(ph, k)] != grid[(ph, k)] for ph in PH for k in (1, 2, 3, 4)))
-    check("A2 every phase cell missed on the reader_f route (one per service address; the core keeps its addresses)",
-          all(routes["reader_f"][(ph, k)] != grid[(ph, k)] for ph in PH[1:] for k in (1, 2, 3, 4)))
+    check("A1 law 6: the golden handling reproduces the clean truth in every phase and quarter", exact)
+    for rname in ("cracker", "reader_a", "reader_b", "reader_d", "reader_e", "reader_f", "stored_phase"):
+        check("A2 every phase total missed on the %s route" % rname, all(tot(rname, ph) != tot("golden", ph) for ph in PH[1:]))
+    check("A3 the second-premise device is in every phase total", all(tot("reader_d", ph) > tot("golden", ph) for ph in PH[1:]))
     roll_addr = set(r["SITE_ADDR"] for r in csv.DictReader(open(os.path.join(target, C.F_ROLL))))
     stale = [r for r in csv.DictReader(open(os.path.join(target, C.F_PREM)))
              if r["PARCEL_ID"] and int(r["PARCEL_ID"].split("-")[3][1:]) in u.renum_units]
     check("A7 the renumbered units' stubs carry house numbers the roll no longer has, and keep their parcel numbers",
           len(stale) > 1000 and not any(r["SVC_ADDR"] in roll_addr for r in stale), "%d stubs" % len(stale))
-    check("A3 the second-premise device is in every cell (a lot's first install on two premises)",
-          all(routes["reader_d"][(ph, k)] > grid[(ph, k)] for ph in PH for k in (1, 2, 3, 4)))
     prem_rows = list(csv.DictReader(open(os.path.join(target, C.F_PREM))))
     by_addr_raw = defaultdict(int)
     for r in prem_rows:
@@ -237,25 +235,36 @@ def main(target):
           (sum(1 for v in by_addr_raw.values() if v > 1), len(u.prem2)))
     check("A6 no field names the device: the premise and install headers are unchanged",
           list(prem_rows[0].keys()) == ["PREMISE_ID", "SVC_ADDR", "PARCEL_ID", "UEP_PHASE", "CREATED_DT", "PREMISE_TYPE", "STATUS"])
-    FROZEN_CONN = [47, 35, 42, 29, 52, 37, 56, 61, 71, 61, 97, 64, 107, 97, 130, 128, 98, 101, 96, 101]
-    FROZEN_FEES = [5307260, 5266345, 6353515, 5330640]
-    check("Z1 frozen: the call total, every connection cell and every fee quarter equal the round 1 fix figures",
-          abs(g["total"] - 293.225) < 0.0006 and [grid[(ph, k)] for ph in PH for k in (1, 2, 3, 4)] == FROZEN_CONN)
-    check("A4 the asks' figures in figures.json are the golden",
-          all(fig["ask_connections_fy2026_%s_q%d" % (ph.lower() if ph == "Core" else "phase" + ph, k)] == grid[(ph, k)]
-              for ph in PH for k in (1, 2, 3, 4)))
-    fees, lines, by_no = calc.fees_fy26(target)
-    check("B4 summing receipt lines misses every quarter", all(abs(lines[k] - fees[k]) > 1000 for k in (1, 2, 3, 4)))
-    check("B5 one amount per receipt number misses every quarter", all(abs(by_no[k] - fees[k]) > 1000 for k in (1, 2, 3, 4)))
+    check("SF12 fork closed: the conventions count a connection once per lot at its first meter (the second install reading "
+          "moves totals)", D.CONN_PIN in conv)
+    check("Z1 frozen: the call total equals the round 1 fix figure", abs(g["total"] - 293.225) < 0.0006)
+    check("A4 the connection figures in figures.json are the golden",
+          all(fig["ask_connections_fy2026_phase%s" % ph] == tot("golden", ph) for ph in PH[1:]) and
+          not any(k.startswith("ask_connections") and k.endswith(("_q1", "_q2", "_q3", "_q4")) for k in fig))
+    fees, lines, by_no, fx = calc.fees_fy26(target, P, extra=True)
+    cells = [(ph, k) for ph in PH for k in (1, 2, 3, 4)]
+    check("B4 summing receipt lines misses every phase and quarter", all(abs(lines[c] - fees[c]) > 1000 for c in cells))
+    check("B5 one amount per receipt number misses every phase and quarter (first line kept)",
+          all(abs(by_no[c] - fees[c]) > 1000 for c in cells))
+    for nm in ("number_last", "number_amount", "number_date"):
+        check("B5 the %s dedupe misses every phase and quarter" % nm, all(abs(fx[nm][c] - fees[c]) > 1000 for c in cells))
     tru = {}
     for (rno, rdate, lot, amt, total, nl, drawer) in u.receipts:
         d = C.to_date(rdate); fy, qq = C.fq(d)
         if fy == 2026:
-            tru[(rno, drawer)] = (qq, total)
-    tq = {k: sum(v for qq, v in tru.values() if qq == k) for k in (1, 2, 3, 4)}
-    check("B6 law 6: one amount per payment (receipt number and payer) reproduces the cash received", all(abs(tq[k] - fees[k]) < 0.5 for k in tq))
-    check("B7 figures.json fees are the golden", all(fig["ask_capacity_fees_fy2026_q%d" % k] == round(fees[k]) for k in (1, 2, 3, 4)))
-    check("Z2 frozen: every fee quarter equals the round 1 fix figure", [round(fees[k]) for k in (1, 2, 3, 4)] == FROZEN_FEES)
+            tru[(rno, drawer)] = ((u.phase_now[lot], qq), total)
+    tq = defaultdict(float)
+    for c_, v in tru.values():
+        tq[c_] += v
+    check("B6 law 6: one amount per payment (receipt number and payer) reproduces the cash received in every cell",
+          all(abs(tq[c] - fees[c]) < 0.5 for c in cells) and len(tq) == 20)
+    ph_of = defaultdict(set)
+    for (rno, rdate, lot, amt, total, nl, drawer) in u.receipts:
+        ph_of[(rno, drawer)].add(u.phase_now[lot])
+    check("B8 every payment's permits lie in one phase", all(len(v) == 1 for v in ph_of.values()))
+    check("B7 figures.json fees are the golden",
+          all(fig["ask_capacity_fees_fy2026_%s_q%d" % (ph.lower() if ph == "Core" else "phase" + ph, k)] == round(fees[(ph, k)])
+              for ph, k in cells))
     from pack import Identity
     to_p = np.array([P.ix[s] for s in Identity(w).strap])
     exch_lots = set(int(to_p[i]) for i in u.changeouts[0])
@@ -288,7 +297,7 @@ def main(target):
         Pd = calc.Pack(tmp)
         gd, _ = calc.forecast(Pd)
         gr2 = calc.connections_fy26(tmp, Pd)["golden"]
-        fd = calc.fees_fy26(tmp)[0]
+        fd = calc.fees_fy26(tmp, Pd)[0]
         check("X1 the call unchanged without the distractors", printed(gd) == gp)
         check("X2 the asks unchanged without the distractors", gr2 == grid and fd == fees)
     finally:
