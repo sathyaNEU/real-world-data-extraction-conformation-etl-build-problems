@@ -1,11 +1,11 @@
 {
  "task": "task177",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "banking-credit-financial-risk/credit-scoring-pd-modeling",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-23",
  "stump": "A PD model fitted on the public book's borrower attributes and scored on the launch file files about 50 of the 2,400 loans in default by 31 January 2028; the public book's defaults run almost wholly through borrowers leaving the payroll with the loan open, which the private employers' own salary batches show five to six times as often, so the count is about 250.",
  "architecture": 3,
@@ -30,7 +30,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 4: two scored readers and the judge (main session); stage 3 green on target.zip 2db9de82",
+ "resume": "PAUSED 2026-10-23: architecture 3 spent at stage 4 on Gate F (target.zip 2db9de82); the next cell comes from the main session; resume at stage 1 reading the design note's ## Tried and rejected first",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -272,5 +272,9 @@
   ],
   "context_keys": "counts.* and parameters.* (provenance, not graded)",
   "score_reader": "python3 .claude/skills/leak-check/score_reader.py task177 <reader.json> --call-key call_total --call-key call_share"
+ },
+ "architecture_3_fate": "spent at stage 4 Gate F on target.zip 2db9de82: reader B landed the call 7 of 7 (250; 20/10/10/10/10/5) via LIQUIDACION-based separation hazards and the 53.5 per cent SIN SALARIO pass-through; reader A filed 450; asks 20 of 20 for both readers; judge stopped by the main session",
+ "readers": {
+  "stage4_round1": "target.zip 2db9de82: reader A call 450 (missed), asks 20 of 20; reader B call 250 and all sector shares (7 of 7), asks 20 of 20"
  }
 }

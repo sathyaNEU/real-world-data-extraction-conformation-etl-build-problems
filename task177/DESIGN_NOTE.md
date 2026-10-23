@@ -1,6 +1,6 @@
 # task177 design note
 
-**Status: architecture 3, stage 3 green 2026-10-23, waiting on stage 4 (rebuild from scratch).** The number was RETIRED on 2026-10-22 and
+**Status: PAUSED 2026-10-23, architecture 3 spent at stage 4 on Gate F (rebuild from scratch).** The number was RETIRED on 2026-10-22 and
 reopened the next day under the author's rule that no number stays retired. Two rebuild cells found nothing that
 holds (quantitative-finance volatility, biomedical survival; `## Tried and rejected`, `## Rebuild (2026-10-23)`);
 the third cell, banking-credit-financial-risk / credit-scoring-pd-modeling (Forecasting), carries architecture 3
@@ -1551,6 +1551,19 @@ its group's surviving records), the same family by its label.
   bureau records (identified only from a single past event); income verification (task192's audit-subsample
   driver); distance to branch in a mobile expansion (the forward population's defining feature names the
   covariate).
+- **Architecture 3 spent at stage 4 on Gate F (target.zip 2db9de82, 2026-10-23): the payroll-deduction PD read per
+  exit from the employer's payroll.** Blind reader B landed the call 7 of 7 (250; shares 20, 10, 10, 10, 10, 5), its
+  path verbatim: "sector separation hazards from the LIQUIDACION rows in the employer payroll registers ... Only
+  separations up to about 30 September 2027 ... can be 90 days past due by 31 January 2028. Public SIN SALARIO runs
+  reach default 53.5% of the time, and I applied that to separations. The expected total is about 260." Blind reader A
+  took the turnover-scaling rival and filed 450 (missed). The asks fell whole: both readers kept 20 of 20. On Ask A both
+  read a re-filed schedule repeating the same members as replacing the earlier one and one with only new members as
+  adding to it, found the three conduit payers and split their transfers by the partners' schedules; on Ask B both
+  excluded only transfers from the borrower's own 0731 savings account and counted other members' accounts as
+  recovered. Lesson: payroll exit as the default channel is field knowledge, so once a reader sees the public defaults
+  run through exits it measures the private exit hazard and the pass-through itself; and all three devices sat on the
+  careful reader's path, the hygiene battery of supplemental-stumping 1.1e (a superseding re-filing, a conduit payer
+  matched by amount, an own-account identity read off the ledger the ask's wording points to).
 
 ## Retired
 
@@ -1624,7 +1637,6 @@ six times as often. The card's v2 identity is already in its lineage; v3 registe
 
 ## Resume
 
-Architecture 3, stage 3 green on 2026-10-23 (target.zip 2db9de82): precut.py exit 0, checks.py 158 of 158,
-verify.py 40 of 40, two byte-identical builds, figures_check.py exit 0, voice-check PASS, leak.py REVIEW answered,
-guard.py surface exit 0 and heart WARN. Resume at stage 4: two scored readers and the determinism judge, run by the
-main session on this pack.
+PAUSED 2026-10-23: architecture 3 (banking-credit-financial-risk / credit-scoring-pd-modeling) spent at stage 4 on
+Gate F on target.zip 2db9de82 (`## Tried and rejected`). Resume at stage 1 in the next cell the main session assigns,
+reading `## Tried and rejected` first; architectures 1, 2 and 3 are spent and in the card's lineage notes.
