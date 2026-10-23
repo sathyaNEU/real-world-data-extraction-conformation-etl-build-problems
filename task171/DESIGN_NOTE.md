@@ -1,6 +1,6 @@
 # task171 design note
 
-**Status: BUILD, architecture 4, stage 3 green and parked at stage 4 for the main session's two scored readers and the judge (redrawn 2026-10-23 after architecture 3 was spent at Gate F).**
+**Status: PAUSED, architecture 4 spent at Gate F at stage 4 on 9451b6bd (2026-10-23); the number stays open and the next cell comes from the main session.**
 The cell is economics-econometrics / forecasting-forecast-evaluation; the draw is a turnpike authority's first
 all-electronic tolling year and the toll it will collect on what it bills by mail. Architectures 1 to 3 are kept under
 `## Earlier screens`.
@@ -28,7 +28,7 @@ all-electronic tolling year and the toll it will collect on what it bills by mai
   bond trustee. Records to 31 October 2026.
 - **Card.** `domain` economics-econometrics, `subdomain` forecasting-forecast-evaluation, `objective` forecasting,
   `shape` single-figure, `decision_type` quantity_figure, `answer_unit` currency, `gap` [time, population], `pattern`
-  [E], `generators` [G14, G13, G7], `gate_g` forecasting, `calibration_form` existing_book_actuals,
+  [none, E], `generators` [G13, G14, G7], `gate_g` forecasting, `calibration_form` existing_book_actuals,
   `stump_strategy` maturity_censoring, `context_artifact` planning_thread, `role_family` programme_officer, `forum`
   customer_or_counterparty, `forcing_event` cutover_or_migration, `org_family` government_agency; `stump_class`
   analytical; `layer2_family` estimation_fit; `layer2_pattern`
@@ -43,11 +43,7 @@ all-electronic tolling year and the toll it will collect on what it bills by mai
   itself; a public authority is a `government_agency`; the requester runs the AET conversion programme
   (`programme_officer`); the decisive move is a censoring construction on a clock each payer carries
   (`maturity_censoring`); the population step (the cash lanes' own users, not the violators) is the supporting E.
-- **Pattern, redrawn at stage 3.** The draw registered with the decisive pattern `none` (the guard reads that as G13);
-  at stage 3 a re-registered card moved task178's lineage (time, G13, forecasting) inside the last twelve, so the
-  decisive pattern is now E, which is the honest label too: the golden reads the held invoices' collected share on the
-  subset whose registration on file has expired, a conditioned yield on a subset another file's dates set, and the
-  older E builds are differentiated on the card.
+- **Pattern labels.** The stage-3 relabel (decisive pattern E, generators reordered) was reverted to the draw's labels, pattern [none, E] and generators [G13, G14, G7], which pass `guard.py check` with WARN only.
 - **Stage 3 record (2026-10-23).** `generator/build.py`: checks 69 of 69, verify 0 problems, two byte-identical
   rebuilds, target.zip 9451b6bdf0182a8eff3f67f3dc4e30d6; figures_check 43 of 43; precut 51 checks, 0 FAIL;
   voice-check PASS (967 characters). `leak.py` REVIEW, four lines answered: the plan and the policy share the call's
@@ -350,6 +346,7 @@ with them.
 - **Rebuild 2026-10-23, after architecture 3: a regional hospital emergency department's low-acuity walk-ins deterred by its posted wait, a 2027 fast-track holding that wait at 45 minutes (healthcare-delivery utilization-access-demand-forecasting; scratch `b171n/proto2/ed2.py`, `screen3.py`, `screen4.py`).** A slotted priority-queue ED with a queue-based hourly posted wait, deterrence exp(-beta x posted) on CTAS 4 and 5 walk-ins, unfilled physician shifts as the exogenous shifter. The lever is 15 to 25 per cent of the CTAS 4 and 5 count, and the naive Poisson with hour-of-week effects is biased by the shared demand shocks (beta 0.05 to 0.10 against 0.13 to 0.18). It died on the family: with the truth at beta 0.18 the deterrence-aware estimators split, Poisson with day effects 0.205 to 0.214, day-demeaned log OLS 0.123 to 0.174, the Wald ratio on the shortfall 0.135 to 0.151, 2SLS on logs 0.152 to 0.182, the control function 0.150 to 0.166, forecasts about 6 per cent either side, so no rounding holds the golden; and the decisive insight (patients answer the posted wait) is the one a reader reaches from the feed the plan's own target names.
 - **Rebuild 2026-10-23, paper and arithmetic screens beside it.** An index provider's 2027 watch list making every addition anticipated, the event desk's capture read on the rule-mandated additions (quantitative-finance strategy-backtesting-evaluation): a hedged five-day capture carries about 4.5 per cent of noise against a mean near 0.7, so 600 anticipated additions give a standard error of 27 per cent of the figure and 2 per cent would need about 37,000 events; the short-notice variant (off-cycle additions already at a one-day notice) is the very subset the rule change names. Cross-border fuel excise after a unilateral rate rise (time-series-macro): the neighbour's price survey on the textbook path names the mechanism and the one tax holiday in the record sizes it from a single episode. A kindergarten entry cut-off moved from 31 December to 1 September, delayed entry by relative age read from a second board already on 1 September (sociology population projection, spent by task176 besides): relative-age redshirting is common knowledge and the second board's pattern is the analogue a reader takes. A five-year mortgage reset's defaults on its payment shock (credit-scoring-pd): the payment shock is the covariate every reader fits. Bunching at a tax kink moved forward: the counterfactual density is a polynomial knob. Forestalling before a tax rise and a toll bridge's commuters were not taken further (the second is this note's dt1 world).
 - **Architecture 4 at design, 2026-10-23: agency settlements as Ask B's device, replaced before the pack was frozen.** A violation account settled at 65 per cent in one payment with no invoice number, its invoices listed in the reference and applied oldest first, toll before fees: the unmatched join the hygiene battery runs surfaces the payment and a policy sentence then hands the allocation over (a filed rule adjudicating the device), so the device became the violation agency's whole-account remittance named on the oldest invoice.
+- **Architecture 4 (the Marrowfield Turnpike's toll-by-mail collection, matured on each in-state plate's registration renewal) spent at Gate F on 9451b6bd, 2026-10-23.** Blind reader B landed $13.75 million: "used toll-by-mail (closed booth) invoices, not violation invoices, as the comparison group. Out-of-state: ultimate toll-weighted collection of matured cohorts issued Apr-Oct 2025 (agency window closed) = 0.600. In-state: share paid before DMV referral 0.610, DMV holds 0.378 (converting at 0.862 at renewal, measured on holds whose registration expiry has passed, right-censoring handled) ... In-state ultimate about 0.938." Lessons: a collection channel the policy states (the hold paid at renewal, 4.1 and 4.2) with its clock on file (reg_expires) is measured on sight, the law that killed task177 v3; both ask devices held, 0 of 22 (the classifier-split phantoms found only by same-lane sub-second timing against the commercial postings, and the whole-account agency remittance named on the oldest invoice), so neither sat on the reader's path; and "the in-state and out-of-state shares behind it" forked, read as the collected toll's composition (81 and 19 per cent) rather than the collection rates (94 and 60), so a share in a prompt names its numerator and denominator.
 
 ## Retired
 
@@ -367,3 +364,5 @@ textbook route and it lands.
 Reopened under the author's rule that no number stays retired; rebuilt from scratch in economics-econometrics / discrete-choice-limited-dependent-variable-modeling as architecture 3 (`## Draw`), the receiving-desk seed and both redraw cells left spent.
 
 Architecture 3 was spent at Gate F at stage 4 the same day (the scored reader calibrated take-up on the launch cohort's pre-launch use by default); the coordinator left the next cell to this build, the healthcare utilization cell died on code, and architecture 4 was drawn in economics-econometrics / forecasting-forecast-evaluation: the Marrowfield Turnpike Authority's first all-electronic tolling year (`## Draw`). Stage 3 went green the same day and the build is parked at stage 4 for the readers and the judge.
+
+Architecture 4 was spent at Gate F at stage 4 the same day (a blind reader measured the renewal-hold channel the policy states); the number is PAUSED for the main session's next cell.

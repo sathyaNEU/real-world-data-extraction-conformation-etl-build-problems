@@ -18,11 +18,12 @@
     "population"
   ],
   "pattern": [
+    "none",
     "E"
   ],
   "generators": [
-    "G14",
     "G13",
+    "G14",
     "G7"
   ],
   "gate_g": "forecasting",
@@ -118,6 +119,7 @@
       "fate": "spent at Gate F on ce04ed65 (stage 4, 2026-10-23): scored reader B filed 2,250 services and USD 200,000 and all 20 ask figures; it set the cohort as R-1 services at launch billed the 12 months before launch and fitted a logistic on annual saving on pre-launch use, the textbook covariate window for a launch cohort, so the decisive step was the default; the ask devices (spell merging, EST/ACT duplicates, UTC, duplicate-closed CRM rows) were visible hygiene"
     }
   ],
-  "notes": "",
-  "registered": "2026-10-23T07:49:42Z"
+  "notes": "Architecture 4 (Marrowfield Turnpike toll-by-mail ultimate collection) spent at Gate F at stage 4 on 9451b6bd, 2026-10-23: blind reader B landed $13.75 million, using the closed-booth toll-by-mail invoices (not the violations), the out-of-state share on agency-matured cohorts (0.600) and the in-state share as 0.610 paid before referral plus the held share converted at 0.862 on holds whose registration expiry had passed; the renewal hold stated in policy 4.1 and 4.2 with reg_expires on file is a channel measured on sight. Both ask devices held (0 of 22): the classifier-split phantoms (cross-file same-lane timing) and the whole-account agency remittance named on the oldest invoice. The prompt's 'shares behind it' forked: read as the collected toll's composition (81 and 19), not the collection rates (94 and 60).",
+  "registered": "2026-10-23T07:49:42Z",
+  "architecture_spent": true
 }
