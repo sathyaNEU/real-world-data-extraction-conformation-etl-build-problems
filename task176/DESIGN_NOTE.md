@@ -1,6 +1,6 @@
 # task176 design note: Allerton's 2027 family child care home closures
 
-**Status: architecture 2, drawn 2026-10-23 in sociology-demography / event-history-life-course-analysis
+**Status: architecture 2 spent at stage 4 on Gate F (round 5, 2026-10-23); PAUSED for the next cell. Drawn 2026-10-23 in sociology-demography / event-history-life-course-analysis
 (Forecasting), the sixth allocation of the rebuild.** The card is
 `.claude/skills/fingerprint/cards/task176.json`. Every earlier world, cell and mechanism on this number is
 spent; their record is `## Earlier draws (screen record)`, `## Tried and rejected`, `## Retired` and
@@ -863,6 +863,19 @@ Prototypes are in the session scratchpad (r176/demog).
   child-days table went (its two device-free figures make a single crack under 40 impossible with two devices), the
   money table shrank to ten cells, and two tables of ten were added on devices of other kinds (the claim's identity in
   the food program's record; split care against a move's notice days).
+- Round 4 paths (zip b008c62c): reader G landed 300 off the call but cracked money, "remittance_amount is a total per
+  (run, remittance_no, county office), so allocated to lines by prorated rate share (rate*care_days/weekdays in
+  month) ... region from the home's county in the licence extract"; reader H keyed one amount per run and provider and
+  held (2 of 22).
+- Round 5 (zip 9c6c4976, 2026-10-23): architecture 2 spent at stage 4 on Gate F. Reader J landed the call at 450 on a
+  stratified annual rate ("about 51% in a year when the home's youngest own child starts school, versus about 8.5%
+  otherwise ... 428 x 0.51 + 2,623 x 0.085 = 441") and hit 30 of 30 asks: money "rebuilt each line as rate x care days
+  / weekdays ... lines for a child with identical service dates at two providers are halved. This reproduces every
+  remittance total"; meals kept the latest revision and summed "different claim numbers for the same site and month"
+  as partial-period claims; split care read as identical dates at two homes. Reader I missed the call (250) and hit 26
+  of 30 on the same money and meals routes, flagging split care by service-month half against pay-run half. Lesson: a
+  device whose key the data force through a reconciliation to filed rates is cracked by every reader who reconciles;
+  the call fell once in nine blind reads, to a stratified rate on the youngest child's school-start year.
 
 ## Retired
 
