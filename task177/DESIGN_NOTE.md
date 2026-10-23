@@ -1564,6 +1564,80 @@ its group's surviving records), the same family by its label.
   run through exits it measures the private exit hazard and the pass-through itself; and all three devices sat on the
   careful reader's path, the hygiene battery of supplemental-stumping 1.1e (a superseding re-filing, a conduit payer
   matched by amount, an own-account identity read off the ledger the ask's wording points to).
+- **Fourth rebuild cell, chosen by this build shape first: actuarial-science-insurance / claims-frequency-severity
+  (Forecasting), 2026-10-23, worktree `b_177n` on origin/main 2811e60c.** Read first as spent: this note's earlier
+  cells, task170's fifth cell in this task type (delivery stops, deferred periods, per-occurrence deductibles,
+  storm clustering, stop-loss), task176's and task174's lines, the three client cards (the exposure offset, censored
+  and truncated severity, the compound aggregate; each the default path), and the brief's five dead covariate types.
+  The candidate sought: a forward book whose claims are generated at a grain the per-policy frequency model does not
+  use, with the grain forced by the record. Prototypes in scratchpad `b177w/proto`, every output byte-identical over
+  two runs.
+  - **T1 measured, school-trip pupils detached from the party** (`t1.py`): an insurer's per-passenger cancellation
+    protection on a leisure book, where a booking cancels when any traveller or a relative at home falls ill and
+    every traveller on it claims, carried to a school-travel partner's pupils, whose trip goes ahead without a pupil
+    who drops out. 300,000 history bookings, three seeds, truth 144 pupil claims: the per-policy rate of the 11 to 17
+    band +458 to +472 per cent, booking events per traveller +93 to +98, solo adults +207 to +221; the golden family
+    (the any-member decomposition, complementary log-log and linear) -19.0 to +1.2 per cent, because the relatives
+    term per booking kind and the adults' per-person slope are collinear across booking kinds (adults' rate 0.0054
+    against 0.014 on seed 2). Dead on determinacy, and on paper twice more: the pupil's own-illness wording is a
+    filed clause that sends the reader to the decomposition (readability test 1), and covering relatives instead
+    makes a pupil's at-home relatives a transport the record cannot settle.
+  - **T3 and T4 measured, multi-generation villa bookings** (`t3.py` to `t3d.py`, `t4.py`): the same per-passenger
+    process carried to a villa partner whose bookings hold two grandparents, two parents and children, which the
+    leisure history holds almost never. T3 (no lead time; truth about 4,130 claims on 24,000 passengers): the
+    per-passenger rate by own age -45 per cent, own band by party size -29 to -31, own band by the oldest member -36
+    to -39, per-passenger logits with party size and seniors +35 to +40 (with every band's count +39 to +54), the
+    booking-level logit +45 to +57, complementary log-log on counts (log-additive) +51 to +65, probit +32 to +42; the
+    structural product (each traveller's chance of going, multiplied) -1.0 to +1.8, the linear probability model +1.2
+    to +4.9; the product beats the logit by only 17 to 26 log-likelihood units at equal parameters. T4 (each
+    traveller's illness a daily hazard over the lead time, the villa bookings booked about 190 days ahead; seed 1's
+    full sweep, truth 3,184 claims on 21,008 passengers): booking logit +89 per cent, booking log-link Poisson with a
+    lead offset +143, booking linear probability -35, per-passenger logit -56, with party size and seniors +56, a
+    gradient-boosted per-passenger model -37; the additive hazard +1.1 to +2.1 over three band grains, beating the
+    logit by 68 log-likelihood units. The ladder brackets the golden at every reflex, and still it dies on the
+    v3 law (`t4s.py`): the cover's own wording names the companion channel, and once a reader sees that every
+    traveller on a cancelled booking claims, the solo travellers publish each adult band's hazard and two-parent
+    families less their parents publish the children's, so a filter, a subtraction and a sum land at +3 to +15 per
+    cent with no fit at all; and the premise that a party of six cancels whole when one grandparent falls ill is a
+    behaviour the leisure record (couples and nuclear families) shows only for small parties, so a reader who lets
+    the parents and children travel on forks the call. Making the joint cancellation mechanical (a joint-life or
+    key-person cover) is the actuarial textbook's first-death function.
+  - **Paper deaths, one line each.**
+    - Delivery vans read on stops or engine-running drops: task170's death (lever capped by parcel growth, a
+      circumstance-code group-by).
+    - Pool against assigned fleet vehicles (distinct drivers per vehicle from a driver log): the first feature anyone
+      computes from such a log.
+    - Ticket refund protection by party: orders are parties, so order size is a column a binned rate reaches; group
+      orders that are not parties are either in the record (the attaining subset) or not (an unidentified
+      behaviour).
+    - Burglary or theft by building size built from flat addresses, and parked-car damage by kerb density: the
+      address-built neighbourhood count is task175's device and driver by abstraction, and theft frequency carries
+      several per cent of sigma on any book a pack holds.
+    - Destination stations within riding range for a bike-share expansion (urban forecasting): a neighbourhood count
+      at a fit-chosen scale against an area analog, task175's driver in transport nouns; parcel-locker infill is a
+      nearest-locker replay; a crosstown route's fare per boarding is read off existing crosstown routes.
+    - Escape of water from flats above, by floor and building height: a lever of 15 to 20 per cent, and the dwelling
+      type column takes most of it.
+    - Holiday lets read per turnover rather than per night, baggage claims per connection, cargo per handling, plant
+      hire per hire: each a count a log-link regression with the obvious group-by reaches, and each named by the
+      forward book's own description.
+    - Workers' compensation on hours rather than payroll after a minimum-wage step: the wage on-level is the textbook
+      step.
+    - Leak shut-off valves by plumbing type, a component platform shared across appliance models, pet crossbreeds
+      on their parents' breeds: a join and a heterogeneity check, or a transport that forks.
+    - Crop guarantees on county transitional yields, enterprise against optional units: a programme rule replayed
+      on field yields, or a correlation-by-distance fit that forks.
+    - Pre-existing-condition exclusions dropped for a transferred pet book, other insurance on a dual-insured device,
+      a package operator's own refund duty: task169's route closure each time.
+    - Bonus hunger lifted by protected no-claims discounts, the bundled-cover awareness gap, voluntary group cover by
+      participation rate: either the attaining subset is a column or the response is an unidentified behaviour, and
+      the participation screen is the group actuary's first check.
+- **The cell's finding (2026-10-23).** In claims frequency every exposure a forward book can differ on is a rating
+  factor, a usage measure or a count the book's own files carry, so the per-policy GLM with the obvious group-by
+  reaches it; the one structure that escapes the GLM is a claim generated by an event of the policy's group (a
+  booking, an order, a building), and there the forward book's lever comes exactly from groups the record never
+  watched, whose joint behaviour is then an assumption, while every mechanical group event is the actuarial
+  textbook's joint-life or per-occurrence function.
 
 ## Retired
 
@@ -1635,8 +1709,16 @@ fourteen directions on paper (`## Tried and rejected`); candidate P held at the 
 carried from a public-servant book to private employers whose own salary batches show their staff leaving five to
 six times as often. The card's v2 identity is already in its lineage; v3 registered on the filing day.
 
+Fourth rebuild cell the same day, chosen by this build shape first after the coordinator's exclusions:
+actuarial-science-insurance / claims-frequency-severity (Forecasting), worktree `b_177n` on origin/main 2811e60c. Three
+candidates measured on code (T1, school-trip pupils detached from their party; T3 and T4, multi-generation villa
+bookings whose claims are booking events) and about twenty on paper, all in `## Tried and rejected` with the cell's
+finding. T4's numbers bracketed the golden at every reflex, and it died on architecture 3's law: the cover names the
+companion channel and the solo travellers publish each adult band's hazard. No card registered, nothing cut; PAUSED at
+stage 1 for the coordinator to assign another cell.
+
 ## Resume
 
-PAUSED 2026-10-23: architecture 3 (banking-credit-financial-risk / credit-scoring-pd-modeling) spent at stage 4 on
-Gate F on target.zip 2db9de82 (`## Tried and rejected`). Resume at stage 1 in the next cell the main session assigns,
-reading `## Tried and rejected` first; architectures 1, 2 and 3 are spent and in the card's lineage notes.
+PAUSED 2026-10-23: the fourth rebuild cell (actuarial-science-insurance / claims-frequency-severity) found no draw that
+holds (`## Tried and rejected`); architectures 1, 2 and 3 are spent and in the card's lineage notes, and the card is
+unchanged. Resume at stage 1 in the next cell the main session assigns, reading `## Tried and rejected` first.
