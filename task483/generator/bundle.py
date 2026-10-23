@@ -484,8 +484,8 @@ ASK_A_BASES = ("decimal", "resent", "decimal_resent", "by_end", "completers")
 # ask B
 def ask_b(I, basis="golden"):
     """each degree program's 2024-25 completers who borrowed Direct Subsidized or Unsubsidized Loans at the college and
-    the median of all the principal they borrowed there, to the nearest 10 dollars: {program: (borrowers, median,
-    unrounded)}. The golden: every disbursement's amount before July 2024 with returns netted, and from July 2024, where
+    the median of all the principal they borrowed there and their total, to the nearest 10 dollars: {program:
+    (borrowers, median, unrounded median, total)}. The golden: every disbursement's amount before July 2024 with returns netted, and from July 2024, where
     each of a loan's rows carries the loan's amount for its award year, each loan's amount once; parent PLUS loans out.
     rows: every row as exported. per_loan: one amount per loan in every year. dedupe: rows alike in borrower, loan,
     amount and status kept once. with_plus, disbursed_only, ay2425 (one award year), gross_up (amounts read as net)"""
@@ -519,7 +519,7 @@ def ask_b(I, basis="golden"):
     for p in I.degree:
         vals = sorted(per[s] for prog, s in I.completers if prog == p and per.get(s, 0.0) > 0.005)
         med = float(np.median(vals)) if vals else 0.0
-        out[p] = (len(vals), hround(med / 10.0) * 10, med)
+        out[p] = (len(vals), hround(med / 10.0) * 10, med, hround(sum(vals) / 10.0) * 10)
     return out
 
 

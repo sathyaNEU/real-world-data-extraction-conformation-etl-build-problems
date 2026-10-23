@@ -29,12 +29,12 @@ AID_SWITCH = D(2024, 7, 1)           # the aid system that writes a loan's amoun
 LOAN_VARIANT = 8                     # the loan draw's seed variant, set by tuning
 FEE = 0.01057                        # Direct Loan origination fee (the cost of attendance states it; amounts are gross)
 LATE = 0.05                          # share of a section's participants who enroll after its census day
-ATT_VARIANT = 17                     # the attendance draw's seed variant, set by tuning
-ABSENT, PARTIAL = 0.05, 0.07         # a session missed; a session attended in part (late or early, 15 to 150 minutes)
+ATT_VARIANT = 30                     # the attendance draw's seed variant, set by tuning
+ABSENT, PARTIAL = 0.05, 0.10         # a session missed; a session attended in part (late or early, 5 to 150 minutes)
 RESENT = (D(2025, 3, 3), D(2025, 3, 7))          # the week the attendance export carries twice
 # sessions per section and minutes per session: their product is the inventory's clock hours
-SESSIONS = {"CDL": (20, 480), "CNA": (16, 450), "PHL": (20, 420), "PHT": (40, 450), "EMT": (24, 450),
-            "WLF": (40, 480), "MCD": (48, 450), "ITS": (40, 450), "HVC": (32, 450), "WHS": (10, 480), "FRK": (5, 480)}
+SESSIONS = {"CDL": (20, 480), "CNA": (20, 360), "PHL": (20, 420), "PHT": (50, 360), "EMT": (30, 360),
+            "WLF": (40, 480), "MCD": (60, 360), "ITS": (50, 360), "HVC": (40, 360), "WHS": (10, 480), "FRK": (5, 480)}
 OLD_SIS, NEW_SIS = ("A", "B"), ("C", "D")
 
 # short-term programs: tuition per participant, materials and testing fee per section, dollars
@@ -165,7 +165,7 @@ def attendance(P):
                 continue
             if r.random() < ABSENT:
                 continue
-            m = mins - (int(r.integers(15, 151)) if r.random() < PARTIAL else 0)
+            m = mins - (5 * int(r.integers(1, 31)) if r.random() < PARTIAL else 0)
             rows.append(dict(pid=p["pid"], code=p["code"], crn=p["section_id"], date=d, minutes=m))
     return rows
 
@@ -278,8 +278,8 @@ def loans(P):
 
 def ask_b(P, rows, basis="golden"):
     """each degree program's 2024-25 completers who borrowed Direct Loans (subsidized or unsubsidized) at the college,
-    and the median of all the principal they borrowed there, to the nearest 10 dollars: {program: (borrowers, median,
-    unrounded)}.
+    the median of all the principal they borrowed there, to the nearest 10 dollars, and their total: {program:
+    (borrowers, median, unrounded median, total)}.
     golden: each disbursement's gross amount before July 2024 (returns netted), each loan's amount once from July
     2024, parent PLUS loans left out. rows: every row's amount as exported. per_loan: one amount per loan in every year.
     dedupe: rows alike in borrower, loan, amount and status kept once. with_plus: the parent loans kept.
@@ -317,5 +317,5 @@ def ask_b(P, rows, basis="golden"):
     for code in W.DEGREE:
         vals = sorted(per[c["ssid"]] for c in P["degree"] if c["code"] == code and per.get(c["ssid"], 0) > 0.005)
         med = float(np.median(vals)) if vals else 0.0
-        out[code] = (len(vals), int(np.floor(med / 10.0 + 0.5)) * 10, med)
+        out[code] = (len(vals), int(np.floor(med / 10.0 + 0.5)) * 10, med, int(np.floor(sum(vals) / 10.0 + 0.5)) * 10)
     return out

@@ -1,17 +1,17 @@
 {
  "_unrounded": {
   "clock_hours": {
-   "Commercial Driver License, Class A": 13131.833333333336,
-   "Emergency Medical Technician": 9526.099999999999,
-   "Forklift and Material Handling": 805.2999999999998,
-   "HVAC Fundamentals": 10005.216666666665,
-   "IT Support Specialist": 16197.666666666664,
-   "Medical Coding": 11435.716666666669,
-   "Nursing Assistant": 12357.800000000003,
-   "Pharmacy Technician": 12430.300000000003,
-   "Phlebotomy Technician": 3650.3000000000015,
-   "Warehouse and Logistics Technician": 10601.383333333335,
-   "Welding Fundamentals": 16654.316666666666
+   "Commercial Driver License, Class A": 13127.333333333334,
+   "Emergency Medical Technician": 9503.666666666666,
+   "Forklift and Material Handling": 803.0,
+   "HVAC Fundamentals": 9772.000000000002,
+   "IT Support Specialist": 16040.250000000004,
+   "Medical Coding": 11193.25,
+   "Nursing Assistant": 12322.000000000004,
+   "Pharmacy Technician": 12439.666666666664,
+   "Phlebotomy Technician": 3670.7500000000005,
+   "Warehouse and Logistics Technician": 10553.250000000002,
+   "Welding Fundamentals": 16485.0
   },
   "default": 83.83067314365024,
   "degree_half_alone": 76.8910478834143,
@@ -102,6 +102,7 @@
    "completers_2024_25": 50,
    "figure_thousands": 44,
    "loan_median_usd": 12480,
+   "loan_total_usd": 411160,
    "passes": true,
    "test": "earnings",
    "tested": true,
@@ -112,6 +113,7 @@
    "completers_2024_25": 134,
    "figure_thousands": 40,
    "loan_median_usd": 13260,
+   "loan_total_usd": 751230,
    "passes": true,
    "test": "earnings",
    "tested": true,
@@ -122,13 +124,14 @@
    "completers_2024_25": 64,
    "figure_thousands": 28,
    "loan_median_usd": 17000,
+   "loan_total_usd": 374660,
    "passes": false,
    "test": "earnings",
    "tested": true,
    "with_earnings": 124
   },
   "Commercial Driver License, Class A": {
-   "clock_hours_fy2025": 13132,
+   "clock_hours_fy2025": 13127,
    "completers_2024_25": 87,
    "figure_pct": 63,
    "grant_completers": 79,
@@ -142,6 +145,7 @@
    "completers_2024_25": 58,
    "figure_thousands": 27,
    "loan_median_usd": 15300,
+   "loan_total_usd": 381360,
    "passes": false,
    "test": "earnings",
    "tested": true,
@@ -152,6 +156,7 @@
    "completers_2024_25": 21,
    "figure_thousands": 28,
    "loan_median_usd": 13560,
+   "loan_total_usd": 118810,
    "passes": false,
    "test": "earnings",
    "tested": true,
@@ -162,13 +167,14 @@
    "completers_2024_25": 39,
    "figure_thousands": 52,
    "loan_median_usd": 15500,
+   "loan_total_usd": 340130,
    "passes": true,
    "test": "earnings",
    "tested": true,
    "with_earnings": 77
   },
   "Emergency Medical Technician": {
-   "clock_hours_fy2025": 9526,
+   "clock_hours_fy2025": 9504,
    "completers_2024_25": 56,
    "figure_pct": 44,
    "grant_completers": 50,
@@ -178,7 +184,7 @@
    "working": 22
   },
   "Forklift and Material Handling": {
-   "clock_hours_fy2025": 805,
+   "clock_hours_fy2025": 803,
    "completers_2024_25": 20,
    "figure_pct": null,
    "grant_completers": 18,
@@ -188,7 +194,7 @@
    "working": null
   },
   "HVAC Fundamentals": {
-   "clock_hours_fy2025": 10005,
+   "clock_hours_fy2025": 9772,
    "completers_2024_25": 43,
    "figure_pct": 92,
    "grant_completers": 39,
@@ -198,7 +204,7 @@
    "working": 36
   },
   "IT Support Specialist": {
-   "clock_hours_fy2025": 16198,
+   "clock_hours_fy2025": 16040,
    "completers_2024_25": 60,
    "figure_pct": 83,
    "grant_completers": 52,
@@ -212,6 +218,7 @@
    "completers_2024_25": 58,
    "figure_thousands": 50,
    "loan_median_usd": 12150,
+   "loan_total_usd": 256850,
    "passes": true,
    "test": "earnings",
    "tested": true,
@@ -222,13 +229,14 @@
    "completers_2024_25": 100,
    "figure_thousands": 33,
    "loan_median_usd": 7250,
+   "loan_total_usd": 369390,
    "passes": false,
    "test": "earnings",
    "tested": true,
    "with_earnings": 180
   },
   "Medical Coding": {
-   "clock_hours_fy2025": 11436,
+   "clock_hours_fy2025": 11193,
    "completers_2024_25": 34,
    "figure_pct": 50,
    "grant_completers": 30,
@@ -238,7 +246,7 @@
    "working": 15
   },
   "Nursing Assistant": {
-   "clock_hours_fy2025": 12358,
+   "clock_hours_fy2025": 12322,
    "completers_2024_25": 112,
    "figure_pct": 91,
    "grant_completers": 98,
@@ -252,13 +260,14 @@
    "completers_2024_25": 12,
    "figure_thousands": null,
    "loan_median_usd": 9860,
+   "loan_total_usd": 66980,
    "passes": null,
    "test": "earnings",
    "tested": false,
    "with_earnings": 0
   },
   "Pharmacy Technician": {
-   "clock_hours_fy2025": 12430,
+   "clock_hours_fy2025": 12440,
    "completers_2024_25": 44,
    "figure_pct": 87,
    "grant_completers": 39,
@@ -268,7 +277,7 @@
    "working": 34
   },
   "Phlebotomy Technician": {
-   "clock_hours_fy2025": 3650,
+   "clock_hours_fy2025": 3671,
    "completers_2024_25": 28,
    "figure_pct": 88,
    "grant_completers": 25,
@@ -282,6 +291,7 @@
    "completers_2024_25": 25,
    "figure_thousands": 65,
    "loan_median_usd": 12190,
+   "loan_total_usd": 182810,
    "passes": true,
    "test": "earnings",
    "tested": true,
@@ -292,13 +302,14 @@
    "completers_2024_25": 156,
    "figure_thousands": 71,
    "loan_median_usd": 14750,
+   "loan_total_usd": 1422960,
    "passes": true,
    "test": "earnings",
    "tested": true,
    "with_earnings": 227
   },
   "Warehouse and Logistics Technician": {
-   "clock_hours_fy2025": 10601,
+   "clock_hours_fy2025": 10553,
    "completers_2024_25": 136,
    "figure_pct": 90,
    "grant_completers": 124,
@@ -308,7 +319,7 @@
    "working": 112
   },
   "Welding Fundamentals": {
-   "clock_hours_fy2025": 16654,
+   "clock_hours_fy2025": 16485,
    "completers_2024_25": 56,
    "figure_pct": 90,
    "grant_completers": 50,
@@ -322,6 +333,7 @@
    "completers_2024_25": 80,
    "figure_thousands": 47,
    "loan_median_usd": 13880,
+   "loan_total_usd": 459320,
    "passes": true,
    "test": "earnings",
    "tested": true,

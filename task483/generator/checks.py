@@ -314,14 +314,13 @@ def main():
     for r in I.attendance:
         usual.setdefault(I.crn_program[r["crn"]], {}).setdefault(r["hours"], 0)
         usual[I.crn_program[r["crn"]]][r["hours"]] += 1
-    half = sorted(p for p, c in usual.items() if max(c, key=c.get).endswith(".30"))
-    check("A2 no entry runs past 59 after the point (%d rows); %d completers who attended every full session total "
-          "the inventory's clock hours read as hours and minutes (%d programs, %d of them among the %d whose sessions "
-          "run to the half hour), and each of those falls short read as decimal hours" % (
-              len(after), sum(len(v) for v in full.values()), sum(1 for p in I.short if full[p]),
-              sum(1 for p in half if full[p]), len(half)),
-          max(after) <= 59 and sum(len(v) for v in full.values()) >= 50 and sum(1 for p in half if full[p]) >= 3
-          and all(dec[pid] < inv[p] - 1 for p in half for pid in full[p]))
+    whole = all(max(c, key=c.get).endswith(".00") for c in usual.values())
+    cut = [m for m in after if m]
+    check("A2 every program's full sessions are whole hours (%d completers at every full session total the inventory's "
+          "clock hours either way); the %d entries a late arrival or early departure cut short carry minutes after "
+          "the point, none past 59 and every one a whole five" % (sum(len(v) for v in full.values()), len(cut)),
+          whole and len(cut) >= 1000 and max(cut) <= 59 and all(m % 5 == 0 for m in cut)
+          and sum(len(v) for v in full.values()) >= 50)
     rowset = [(r["participant_id"], r["crn"], r["session_date"], r["hours"]) for r in I.attendance]
     dup = len(rowset) - len(set(rowset))
     tail = rowset[len(rowset) - dup:] if dup else []
@@ -370,8 +369,9 @@ def main():
           "borrowers; one row never does" % len(over), len(over) >= 300 and once and "4,500 subsidized" in coa)
     b_pl, b_dd, b_ay, b_gu = (B.ask_b(I, x) for x in ("per_loan", "dedupe", "ay2425", "gross_up"))
     check("B3 the rows summed, one amount per loan in every year, alike rows kept once, the one award year and every "
-          "amount read as net each miss all 12 medians", all(all(x[p][1] != b_gold[p][1] for p in I.degree)
-                                                            for x in (b_rows, b_pl, b_dd, b_ay, b_gu)))
+          "amount read as net each miss all 12 medians and all 12 totals",
+          all(all(x[p][1] != b_gold[p][1] and x[p][3] != b_gold[p][3] for p in I.degree)
+              for x in (b_rows, b_pl, b_dd, b_ay, b_gu)))
     b_dis = B.ask_b(I, "disbursed_only")
     check("B4 returned rows dropped keep %d of 12; parent loans kept keep %d" % (
         sum(b_dis[p][1] == b_gold[p][1] for p in I.degree), sum(b_plus[p][1] == b_gold[p][1] for p in I.degree)),

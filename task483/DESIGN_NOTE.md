@@ -249,8 +249,8 @@ counts reconcile (every completer with pay in the quarter is counted once).
 | SF14 | comparing a figure with its line | as computed, before rounding | the rounded figure | same call | standard 5.3; asserted: the nearest figures are 1,143 dollars and 6.7 points from their lines |
 | SF15 | which test a program takes | credit programs (Medical Assisting and Paralegal Studies certificates of 34 and 32 credits included) the earnings test; clock-hour programs the placement test | a certificate read as short-term | not a live reading | standard 2.2 ("of one academic year (30 credits) or more") and the inventory's lengths; asserted |
 | SF16 | ask A's year | the sessions dated 1 July 2024 to 30 June 2025 | the sessions of the sections that ended in the year | ask figures only | the asking sentence ("attended from July 2024 to June 2025"); asserted |
-| SF17 | ask A's hours | each session's time read as hours and minutes after the point, the repeated rows once | decimal hours; the repeated week kept | ask figures only | C4 separate: no entry runs past 59 after the point, and a completer at every full session totals the inventory's clock hours only as hours and minutes (225 completers); the repeated rows are the same participant, section, date and time twice; asserted |
-| SF18 | ask B's principal | every subsidized and unsubsidized dollar the completer borrowed at the college in any award year: each disbursement before July 2024, returns netted, and each 2024-25 loan's amount once | the rows summed as exported; one amount per loan in every year; the 2024-25 award year alone; the parent PLUS loans | ask figures only | the asking sentence ("all the Direct Subsidized and Unsubsidized Loan principal they borrowed at the college") and the cost of attendance's annual limits and installments: two rows of a 2024-25 subsidized loan summed run past the subsidized annual limit for 1,136 borrowers, one row never does; asserted |
+| SF17 | ask A's hours | each session's time read as hours and minutes after the point, the repeated rows once | decimal hours; the repeated week kept | ask figures only | C4 separate: every program's full sessions are whole hours, and of the entries a late arrival or early departure cut short none runs past 59 after the point and every one is a whole five minutes; the repeated rows are the same participant, section, date and time twice; asserted |
+| SF18 | ask B's principal | every subsidized and unsubsidized dollar the completer borrowed at the college in any award year: each disbursement before July 2024, returns netted, and each 2024-25 loan's amount once; the median and the total over the program's completers who borrowed | the rows summed as exported; one amount per loan in every year; the 2024-25 award year alone; the parent PLUS loans | ask figures only | the asking sentence ("all the Direct Subsidized and Unsubsidized Loan principal they borrowed at the college") and the cost of attendance's annual limits and installments: two rows of a 2024-25 subsidized loan summed run past the subsidized annual limit for over a thousand borrowers, one row never does; asserted |
 | SF19 | rounding | each figure from its unrounded value, rounded once, halves up | per line or per cell | same call, same figures | asserted: no graded figure within a tenth of a rounding unit of an edge |
 
 ## Ladder
@@ -336,18 +336,18 @@ extracts they join to are read by the call only for counts the devices do not to
   hours (11 figures).** H18 home: the instruction the grant bought, program by program, beside the outcomes it is
   judged on. User: the board's grant office, reporting training hours delivered under the grant. Primary device: D3
   units set per source, hours and minutes in a decimal column (the attendance system writes a session's time as hours
-  and minutes after a point, 7.30 for seven and a half hours; nothing in the export or the documents says so). The
-  evidence is the inventory's clock hours: a completer at every full session totals them only read as hours and
-  minutes (225 completers), and no entry runs past 59 after the point. Every program carries it, the six scheduled in
-  half hours through every full session and the whole-hour ones through the sessions attended in part; read as decimal
-  hours the figures fall 1.3 to 431.9 hours short. Hazards: the export appends the week of 3 March 2025 a second time
-  at its end (exact duplicates), late enrollees and leavers attend only part of a section, the sessions of sections
-  that straddle the year's ends. Files and columns: the attendance export (participant, course reference number,
-  session date, hours), the roster (participant, program, course reference number, section dates, enrolled on, exit
-  date), the inventory (clock hours). Stops: the times as decimal hours (0 of 11), the repeated week kept (3), both
-  (0), the sections that ended in the year (4), the completers' sessions alone (0), the golden.
-- **Ask B, each credit program's median, over its 2024-25 completers who borrowed, of all the Direct Subsidized and
-  Unsubsidized Loan principal they borrowed at the college, nearest 10 dollars (12 figures).** H18 home: the debt side
+  and minutes after a point; nothing in the export or the documents says so). Every program meets in whole-hour
+  sessions, so a full session reads the same either way and a completer at every session totals the inventory's clock
+  hours under both readings; the device lives in the sessions a late arrival or early departure cut short (a tenth of
+  them, each cut by a whole five minutes), whose entries never run past 59 after the point: read as decimal hours the
+  figures fall 2 to 45 hours short. Hazards: the export appends the week of 3 March 2025 a second time at its end
+  (exact duplicates), late enrollees and leavers attend only part of a section, the sessions of sections that
+  straddle the year's ends. Files and columns: the attendance export (participant, course reference number, session
+  date, hours), the roster (participant, program, course reference number, section dates, enrolled on, exit date),
+  the inventory (clock hours). Stops: the times as decimal hours (0 of 11), the repeated week kept (3), both (0), the
+  sections that ended in the year (4 or fewer), the completers' sessions alone (0), the golden.
+- **Ask B, each credit program's median and total, over its 2024-25 completers who borrowed, of all the Direct
+  Subsidized and Unsubsidized Loan principal they borrowed at the college, nearest 10 dollars (24 figures).** H18 home: the debt side
   of the same completers' workforce value, a measure every credit program carries that the call does not turn on.
   User: the board's grant office and the college's consumer information. Primary device: D6 an event's quantity on
   every line it covers (the aid system that went live on 1 July 2024 writes the loan's gross amount for its award year
@@ -357,9 +357,9 @@ extracts they join to are read by the call only for counts the devices do not to
   one row never does), with its over-cleaning half (one amount per loan, or alike rows kept once, in every year halves
   the old system's two-installment loans). Hazards: returned disbursements as negative rows under status Returned,
   parent PLUS loans under two code sets, two ID formats for the state student ID, the cost of attendance's origination
-  fee (the export's amounts are gross). Stops: the rows summed as exported (0 of 12), one amount per loan in every year
-  (0), alike rows kept once (0), the 2024-25 award year alone (0), every amount read as net (0), returned rows dropped
-  (5), parent loans kept (2), the golden. Every program's borrower count is odd and every completer's principal a whole
+  fee (the export's amounts are gross). Stops: the rows summed as exported (0 of 12 medians, 0 of 12 totals), one
+  amount per loan in every year (0, 0), alike rows kept once (0, 0), the 2024-25 award year alone (0, 0), every amount
+  read as net (0, 0), returned rows dropped (5 medians), parent loans kept (2 medians), the golden. Every program's borrower count is odd and every completer's principal a whole
   10 dollars, so each median is one completer's principal at the centre of its bin.
 
 | Ask | What the cracker does | Cracker |
@@ -368,8 +368,9 @@ extracts they join to are read by the call only for counts the devices do not to
 | B | each completer's Subsidized and Unsubsidized rows as exported, returns netted, parent loans left out | miss |
 
 Measured partial handlings on the cut pack: ask A keeps 11 of 11 once the session times are read as hours and minutes
-and 3 of 11 if the repeated week is then kept; ask B keeps 12 of 12 once each 2024-25 loan counts once and 0 of 12 when
-every loan counts once. A response that finds both devices scores 100; one that finds neither scores 45 on the call.
+and 3 of 11 if the repeated week is then kept; ask B keeps 24 of 24 once each 2024-25 loan counts once and 0 of 24 when
+every loan counts once. A response that finds both devices scores 100; one that finds neither scores 45 on the call; one
+that finds only ask A's keeps under a third of the 35 ask figures.
 
 Pair ceiling: 28.5 (the cracker 38 + 7 with none of 23 ask figures, the mirror 5 + 7 with none).
 
@@ -435,3 +436,8 @@ Measured by: generator/ceiling.py on the cut pack.
   ID, 11 of 11 each, while the call (77 per cent, renews) and ask B (0 of 12) held; the tuition reconciliation runs on
   three files that check one another line by line, so no device on its path stays silent. Replaced by each short-term
   program's clock hours attended, read from an attendance export that writes hours and minutes.
+- Ask A's clock hours from sessions scheduled to the half hour (7.30 on every full session of six programs): both
+  round 3 readers read the hours as hours and minutes, one from the 7.30 entries and one because only that reading
+  gave the inventory's clock hours, 11 of 11 each; reader F also caught ask B (two subsidized rows of 4,500 over the
+  4,500 limit), 23 of 23, while every reader of three rounds missed the call. Kept with whole-hour sessions, the
+  minutes only in the sessions cut short, and ask B doubled to each program's median and total.

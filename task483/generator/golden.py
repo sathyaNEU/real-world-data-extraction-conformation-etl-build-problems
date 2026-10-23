@@ -27,7 +27,8 @@ def compute(target):
         programs[p] = {"test": "earnings", "tested": x["tested"], "completers_2024_25": I.c2425.get(p, 0),
                        "with_earnings": x["n"],
                        "figure_thousands": None if not x["tested"] else B.hround(x["figure"] / 1000.0),
-                       "passes": x["passes"], "loan_median_usd": b[p][1], "borrowers": b[p][0]}
+                       "passes": x["passes"], "loan_median_usd": b[p][1], "loan_total_usd": b[p][3],
+                       "borrowers": b[p][0]}
     for p in I.short:
         x = c["short"][p]
         programs[p] = {"test": "placement", "tested": x["tested"], "completers_2024_25": I.c2425.get(p, 0),
@@ -158,17 +159,20 @@ def write_xlsx(path, f):
     s2.freeze_panes = "A2"
 
     s3 = wb.create_sheet("Loan principal")
-    s3.append(["Program", "Median Direct Loan principal, 2024-25 completers who borrowed (USD)"])
+    s3.append(["Program", "Median Direct Loan principal, 2024-25 completers who borrowed (USD)",
+               "Total Direct Loan principal, the same completers (USD)"])
     for c in s3[1]:
         c.font = bold
         c.alignment = Alignment(wrap_text=True, vertical="bottom")
         c.border = Border(bottom=thin)
     for p in [p for p in pr if pr[p]["test"] == "earnings"]:
-        s3.append([p, pr[p]["loan_median_usd"]])
+        s3.append([p, pr[p]["loan_median_usd"], pr[p]["loan_total_usd"]])
     for row in s3.iter_rows(min_row=2, max_row=s3.max_row):
         row[1].number_format = "#,##0"
+        row[2].number_format = "#,##0"
     s3.column_dimensions["A"].width = 30
     s3.column_dimensions["B"].width = 26
+    s3.column_dimensions["C"].width = 26
     s3.row_dimensions[1].height = 46
     s3.freeze_panes = "A2"
 

@@ -167,7 +167,8 @@ def main():
         v = v[v > 0.005]
         m = float(np.median(v)) if len(v) else 0.0
         ok &= fig["programs"][prog]["loan_median_usd"] == half_up(m / 10.0) * 10
-    say("every credit program's median loan principal, nearest 10 dollars", ok)
+        ok &= fig["programs"][prog]["loan_total_usd"] == half_up(float(v.sum()) / 10.0) * 10
+    say("every credit program's median and total loan principal, nearest 10 dollars", ok)
 
     # the golden workbook carries the same figures
     wb = pd.read_excel(os.path.join(GOLD, "larkspur_workforce_value_2027-28.xlsx"), sheet_name=None, header=None)
@@ -183,7 +184,9 @@ def main():
     tu = {str(r[0]): r[1] for r in wb["Clock hours FY2025"].itertuples(index=False)}
     lo = {str(r[0]): r[1] for r in wb["Loan principal"].itertuples(index=False)}
     ok &= all(tu[p] == x["clock_hours_fy2025"] for p, x in fig["programs"].items() if x["test"] == "placement")
-    ok &= all(lo[p] == x["loan_median_usd"] for p, x in fig["programs"].items() if x["test"] == "earnings")
+    lt = {str(r[0]): r[2] for r in wb["Loan principal"].itertuples(index=False)}
+    ok &= all(lo[p] == x["loan_median_usd"] and lt[p] == x["loan_total_usd"] for p, x in fig["programs"].items()
+              if x["test"] == "earnings")
     say("the golden workbook states the call, the share and every figure", ok)
     svg = open(os.path.join(GOLD, "larkspur_program_tests_2027-28.svg"), encoding="utf-8").read()
     say("the golden chart states the call and the share", ("lapses" in svg) and ("%d per cent" % fig["call"]["share_pct"])

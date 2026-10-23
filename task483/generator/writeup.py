@@ -85,15 +85,16 @@ def main():
         "tested programs' %s completers in passing programs: %s, %d per cent." % (c(cl["tested"]), c(cl["in_passing"]),
                                                                               cl["share_pct"]),
         "For the clock hours, took larkspur_ctg_attendance_2023-2026.csv, dropped the rows it repeats (one week of "
-        "March 2025 appended again at its end), read each session's time as hours and minutes after the point (no "
-        "entry runs past fifty-nine after it, and the full sessions of a program scheduled in half hours read point "
-        "thirty, so a completer at every session totals the inventory's clock hours only that way), and summed the "
-        "sessions dated 1 July 2024 to 30 June 2025 under the program of each session's section in the roster.",
+        "March 2025 appended again at its end), read each session's time as hours and minutes after the point (the "
+        "full sessions are whole hours, and of the entries a late arrival or early departure cut short none runs "
+        "past fifty-nine after the point and every one is a whole five minutes), and summed the sessions dated 1 "
+        "July 2024 to 30 June 2025 under the program of each session's section in the roster.",
         "For the loan principal, joined each credit program's 2024-25 completers by state student ID to "
         "larkspur_direct_loan_disbursements_2019-2026.csv, kept subsidized and unsubsidized loans, summed each "
         "disbursement before 1 July 2024 with returns netted and counted each loan from then once, since that aid "
         "system writes the loan's amount for the award year on each of its disbursements (two such rows run past the "
-        "annual limits in larkspur_cost_of_attendance_2024-25.pdf); the median to the nearest 10 dollars.",
+        "annual limits in larkspur_cost_of_attendance_2024-25.pdf); the median and the total to the nearest 10 "
+        "dollars.",
     ]
     for i, s in enumerate(steps, 1):
         o.append("%d. %s" % (i, s))
@@ -122,8 +123,11 @@ def main():
              "completers who borrowed took out at the college, nearest 10 dollars:")
     for p in deg:
         o.append("   - %s: %s" % (p, c(pr[p]["loan_median_usd"])))
+    o.append("8. Each credit program's total of that principal over the same completers, nearest 10 dollars:")
+    for p in deg:
+        o.append("   - %s: %s" % (p, c(pr[p]["loan_total_usd"])))
     o.append("\n### larkspur_program_tests_2027-28.svg\n")
-    o.append("8. Two bar panels, one bar per tested program, each labelled with its figure: the %d credit programs' "
+    o.append("9. Two bar panels, one bar per tested program, each labelled with its figure: the %d credit programs' "
              "median earnings in thousands of dollars against a dashed line at 34.2, and the %d short-term programs' "
              "day-180 shares against a dashed line at 70 per cent; passing programs in blue, failing in orange; the "
              "title states the call and the %d per cent share."

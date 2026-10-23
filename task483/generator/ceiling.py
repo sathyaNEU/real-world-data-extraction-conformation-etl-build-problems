@@ -42,11 +42,12 @@ def figures(I, deg_route, short_route, a_basis, b_basis):
         out["A|" + p] = v[0]
     for p, v in B.ask_b(I, b_basis).items():
         out["B|" + p] = v[1]
+        out["B2|" + p] = v[3]
     return out
 
 
 def score(gold, resp):
-    asks = [k for k in gold if k[:2] in ("A|", "B|")]
+    asks = [k for k in gold if k.split("|")[0] in ("A", "B", "B2")]
     main = [k for k in gold if k.startswith("m|")] + ["share", "fail"]
     kept = [k for k in asks if resp[k] == gold[k]]
     call = resp["call"] == gold["call"]
@@ -70,8 +71,8 @@ def main(target=None):
         sc, kept, asks, call, mk, nm = score(gold, resp)
         out[name] = (sc, kept, asks)
         ka = sum(1 for k in kept if k.startswith("A|"))
-        kb = sum(1 for k in kept if k.startswith("B|"))
-        print("%-64s call %-5s main %2d/%d  ask A %2d/11  ask B %2d/12  score %.1f" % (name, call, mk, nm, ka, kb, sc))
+        kb = sum(1 for k in kept if k.startswith("B"))
+        print("%-64s call %-5s main %2d/%d  ask A %2d/11  ask B %2d/24  score %.1f" % (name, call, mk, nm, ka, kb, sc))
     sc, sm = out["cracker"][0], out["mirror"][0]
     print("Pair ceiling: %.1f" % ((sc + sm) / 2))
     print("Mirror leakage: %.1f per cent of ask weight" % (100.0 * len(out["mirror"][1]) / len(out["mirror"][2])))
