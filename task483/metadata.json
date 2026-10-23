@@ -1,0 +1,68 @@
+{
+ "task": "task483",
+ "domain": "Survey Research & Official Statistics (census, register and administrative data quality)",
+ "client_domain": "Survey Research & Official Statistics",
+ "task_type": "census-register-administrative-data-quality",
+ "objective": "Data Extraction & Conformation (ETL)",
+ "distractor_files": [
+  "state_occupational_wage_estimates_may2025.xlsx",
+  "in_demand_occupations_list_2026-27.pdf"
+ ],
+ "distractor_reasons": {
+  "state_occupational_wage_estimates_may2025.xlsx": "the state's May 2025 occupational wage estimates for the occupations the college trains for: what the occupations pay statewide, not what the programs' own completers earned",
+  "in_demand_occupations_list_2026-27.pdf": "the board's in-demand occupations list for its outreach and sector partnerships: which occupations the board promotes, which no test in the designation standard reads"
+ },
+ "stated_inputs": [
+  "2027-28 grant year",
+  "July 2024 to June 2025 fiscal year",
+  "whole thousands of dollars",
+  "whole per cent",
+  "whole dollars",
+  "nearest 10 dollars"
+ ],
+ "deliverables": [
+  "larkspur_workforce_value_2027-28.xlsx",
+  "larkspur_program_tests_2027-28.svg"
+ ],
+ "as_of": "2026-10-16",
+ "files": [
+  "copper_flats_antelope_springs_completions_2024-25.csv",
+  "ctg_participant_roster_2023-2026.csv",
+  "ctg_participant_wage_records_2022q3-2026q2.csv",
+  "ctg_provider_payments_fy2024-fy2026.csv",
+  "earnings_outcomes_technical_notes_2025.pdf",
+  "fennimore_ridgefield_completions_2024-25.xlsx",
+  "in_demand_occupations_list_2026-27.pdf",
+  "larkspur_cost_of_attendance_2024-25.pdf",
+  "larkspur_ctg_invoice_register_2023-2026.xlsx",
+  "larkspur_direct_loan_disbursements_2019-2026.csv",
+  "larkspur_program_inventory_2025-26.xlsx",
+  "postsecondary_earnings_outcomes_2024_edition.xlsx",
+  "postsecondary_earnings_outcomes_2025_edition.csv",
+  "state_occupational_wage_estimates_may2025.xlsx",
+  "workforce_value_designation_standard_2027-28.pdf"
+ ],
+ "rows": {
+  "larkspur_cost_of_attendance_2024-25.pdf": 1,
+  "in_demand_occupations_list_2026-27.pdf": 1,
+  "larkspur_program_inventory_2025-26.xlsx": 23,
+  "ctg_provider_payments_fy2024-fy2026.csv": 5298,
+  "larkspur_direct_loan_disbursements_2019-2026.csv": 19593,
+  "copper_flats_antelope_springs_completions_2024-25.csv": 375,
+  "earnings_outcomes_technical_notes_2025.pdf": 1,
+  "state_occupational_wage_estimates_may2025.xlsx": 22,
+  "fennimore_ridgefield_completions_2024-25.xlsx": 1098,
+  "larkspur_ctg_invoice_register_2023-2026.xlsx": 2478,
+  "postsecondary_earnings_outcomes_2024_edition.xlsx": 235,
+  "postsecondary_earnings_outcomes_2025_edition.csv": 1242,
+  "ctg_participant_roster_2023-2026.csv": 2207,
+  "workforce_value_designation_standard_2027-28.pdf": 1,
+  "ctg_participant_wage_records_2022q3-2026q2.csv": 27640
+ },
+ "sources": {
+  "constructed": "every file is constructed for this task by its generator (task483/generator); the state, its workforce board and data center, the college and its campuses, the other colleges and training providers, the employers and the people are fictional, and every identifier (student, participant, employer account, loan, invoice, payment) is invented",
+  "public_specifications": "the layouts follow the style of state postsecondary earnings outcome releases (campus by program by cohort cells with earnings percentiles and small-cell suppression), unemployment insurance quarterly wage records, workforce grant participant rosters and provider payment exports, a college's completion extracts from two student systems, an invoice register and a Direct Loan disbursement export",
+  "licence": "CC0 1.0 (constructed data)",
+  "date": "2026-10-16"
+ }
+}

@@ -1,27 +1,27 @@
 {
   "task": "task483",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "survey-research-official-statistics/census-register-administrative-data-quality",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-23",
-  "stump": "The default path averages each degree program's campus-by-cohort medians by completers and counts a short-term completer as working on day 180 whenever any employer paid them in the quarter holding that day, keeping the system's workforce-value designation at about 80 per cent; the pooled half points rebuilt from the release's five percentiles and the jobs dated from their own partial-quarter pay put the share near 71 per cent, and either correction alone leaves it above 75 (figures set at the build).",
+  "stump": "The default path averages each credit program's campus-by-cohort medians by completers and counts a short-term completer as working on day 180 whenever any employer paid them in the quarter holding that day, keeping the designation at 84 per cent; Medical Assisting's pooled median (33 thousand dollars) and the CDL program's jobs dated from their own pay (63 per cent) put the share at 71 per cent, and either correction alone leaves it at 77 or 78.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-23"
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW, no LEAK (2026-10-23, --asof 2026-10-16)",
+    "reader": "two isolated scored readers running"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task229 v3 at 0.07, task457 v1 at 0.06; task39 differentiated (same_driver_older)",
-    "surface": ""
+    "heart": "WARN (strategy risk answered; government_agency overused; task39 differentiated)",
+    "nearest": "task266 card stump 0.07, task477 ledger row 0.05; task229 v3 driver 0.07",
+    "surface": "people clean (Kathryn Petersen, Rodney Randall); task481 pairing promoted for adjudication only (author-triggered)"
   },
   "judge": {
     "verdict": "",
@@ -29,7 +29,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: architecture 1 drawn 2026-10-23 (a conjunction: degree programs' pooled medians rebuilt from the outcomes release's campus-by-cohort percentiles, short-term programs' day-180 work status dated from each job's partial-quarter pay); write the readability screen, fork table, ladder, closure, the asks and prompt.txt, then precut.py; size the halves in the generator so either correction alone leaves the share at or above 75 per cent",
+  "resume": "stage 4 running: two isolated scored readers (scratchpad copies of prompt.txt and target.zip 4d7bd054) and the determinism judge's isolated thread (brief /tmp/determinism-check-task483-1792762464) spawned 2026-10-23; on their return score each reader with score_reader.py (--call-key call.renews), read the judge's verdict back through the determinism-judge agent, fix every finding in the generator in one pass, rebuild, rerun the free gates, then ship; stage 3 gates green (76 checks, verify, figures_check 79, precut 51, leak.py REVIEW, byte-identical rebuilds)",
   "approved": null,
   "delivered": null,
   "portal": null,

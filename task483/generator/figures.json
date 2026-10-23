@@ -1,0 +1,336 @@
+{
+ "_unrounded": {
+  "default": 83.83067314365024,
+  "degree_half_alone": 76.8910478834143,
+  "figures": {
+   "Automotive Technology": 44119.56828125524,
+   "Business Administration": 40014.47070025228,
+   "Child Development": 27982.01504848536,
+   "Commercial Driver License, Class A": 63.29113924050633,
+   "Criminal Justice": 27036.69313432745,
+   "Culinary Arts": 27844.70510835514,
+   "Diesel Technology": 52041.48122417365,
+   "Emergency Medical Technician": 44.0,
+   "Forklift and Material Handling": null,
+   "HVAC Fundamentals": 92.3076923076923,
+   "IT Support Specialist": 82.6923076923077,
+   "Information Technology": 50134.09784692287,
+   "Medical Assisting": 33057.259698804715,
+   "Medical Coding": 50.0,
+   "Nursing Assistant": 90.81632653061224,
+   "Paralegal Studies": null,
+   "Pharmacy Technician": 87.17948717948718,
+   "Phlebotomy Technician": 88.0,
+   "Radiologic Technology": 65017.774491954886,
+   "Registered Nursing": 71001.95548519335,
+   "Warehouse and Logistics Technician": 90.3225806451613,
+   "Welding Fundamentals": 90.0,
+   "Welding Technology": 47089.186436394826
+  },
+  "loan_median": {
+   "Automotive Technology": 14830.0,
+   "Business Administration": 12740.0,
+   "Child Development": 12000.0,
+   "Criminal Justice": 12000.0,
+   "Culinary Arts": 11500.0,
+   "Diesel Technology": 10660.0,
+   "Information Technology": 11070.0,
+   "Medical Assisting": 7750.0,
+   "Paralegal Studies": 3580.0,
+   "Radiologic Technology": 16040.0,
+   "Registered Nursing": 14750.0,
+   "Welding Technology": 12240.0
+  },
+  "share": 70.85357390700902,
+  "short_half_alone": 77.79319916724496
+ },
+ "call": {
+  "failing": [
+   "Child Development",
+   "Commercial Driver License, Class A",
+   "Criminal Justice",
+   "Culinary Arts",
+   "Emergency Medical Technician",
+   "Medical Assisting",
+   "Medical Coding"
+  ],
+  "in_passing": 1021,
+  "line_pct": 75,
+  "renews": false,
+  "share_pct": 71,
+  "tested": 1441
+ },
+ "components": {
+  "cdl": {
+   "completers": 87,
+   "dated_pct": 63,
+   "grant_completers": 79,
+   "quarter_pct": 91,
+   "working": 50
+  },
+  "default_in_passing": 1208,
+  "default_share_pct": 84,
+  "degree_half_alone_pct": 77,
+  "medical_assisting": {
+   "averaged_thousands": 36,
+   "completers": 100,
+   "pooled_thousands": 33
+  },
+  "short_half_alone_pct": 78,
+  "untested": [
+   "Forklift and Material Handling",
+   "Paralegal Studies"
+  ]
+ },
+ "programs": {
+  "Automotive Technology": {
+   "borrowers": 27,
+   "completers_2024_25": 50,
+   "figure_thousands": 44,
+   "loan_median_usd": 14830,
+   "passes": true,
+   "test": "earnings",
+   "tested": true,
+   "with_earnings": 101
+  },
+  "Business Administration": {
+   "borrowers": 67,
+   "completers_2024_25": 134,
+   "figure_thousands": 40,
+   "loan_median_usd": 12740,
+   "passes": true,
+   "test": "earnings",
+   "tested": true,
+   "with_earnings": 199
+  },
+  "Child Development": {
+   "borrowers": 31,
+   "completers_2024_25": 64,
+   "figure_thousands": 28,
+   "loan_median_usd": 12000,
+   "passes": false,
+   "test": "earnings",
+   "tested": true,
+   "with_earnings": 124
+  },
+  "Commercial Driver License, Class A": {
+   "completers_2024_25": 87,
+   "figure_pct": 63,
+   "grant_completers": 79,
+   "passes": false,
+   "test": "placement",
+   "tested": true,
+   "tuition_fy2025_usd": 388825,
+   "working": 50
+  },
+  "Criminal Justice": {
+   "borrowers": 21,
+   "completers_2024_25": 58,
+   "figure_thousands": 27,
+   "loan_median_usd": 12000,
+   "passes": false,
+   "test": "earnings",
+   "tested": true,
+   "with_earnings": 108
+  },
+  "Culinary Arts": {
+   "borrowers": 10,
+   "completers_2024_25": 21,
+   "figure_thousands": 28,
+   "loan_median_usd": 11500,
+   "passes": false,
+   "test": "earnings",
+   "tested": true,
+   "with_earnings": 37
+  },
+  "Diesel Technology": {
+   "borrowers": 14,
+   "completers_2024_25": 39,
+   "figure_thousands": 52,
+   "loan_median_usd": 10660,
+   "passes": true,
+   "test": "earnings",
+   "tested": true,
+   "with_earnings": 77
+  },
+  "Emergency Medical Technician": {
+   "completers_2024_25": 56,
+   "figure_pct": 44,
+   "grant_completers": 50,
+   "passes": false,
+   "test": "placement",
+   "tested": true,
+   "tuition_fy2025_usd": 116900,
+   "working": 22
+  },
+  "Forklift and Material Handling": {
+   "completers_2024_25": 20,
+   "figure_pct": null,
+   "grant_completers": 18,
+   "passes": null,
+   "test": "placement",
+   "tested": false,
+   "tuition_fy2025_usd": 7470,
+   "working": null
+  },
+  "HVAC Fundamentals": {
+   "completers_2024_25": 43,
+   "figure_pct": 92,
+   "grant_completers": 39,
+   "passes": true,
+   "test": "placement",
+   "tested": true,
+   "tuition_fy2025_usd": 121920,
+   "working": 36
+  },
+  "IT Support Specialist": {
+   "completers_2024_25": 60,
+   "figure_pct": 83,
+   "grant_completers": 52,
+   "passes": true,
+   "test": "placement",
+   "tested": true,
+   "tuition_fy2025_usd": 177545,
+   "working": 43
+  },
+  "Information Technology": {
+   "borrowers": 20,
+   "completers_2024_25": 58,
+   "figure_thousands": 50,
+   "loan_median_usd": 11070,
+   "passes": true,
+   "test": "earnings",
+   "tested": true,
+   "with_earnings": 90
+  },
+  "Medical Assisting": {
+   "borrowers": 53,
+   "completers_2024_25": 100,
+   "figure_thousands": 33,
+   "loan_median_usd": 7750,
+   "passes": false,
+   "test": "earnings",
+   "tested": true,
+   "with_earnings": 180
+  },
+  "Medical Coding": {
+   "completers_2024_25": 34,
+   "figure_pct": 50,
+   "grant_completers": 30,
+   "passes": false,
+   "test": "placement",
+   "tested": true,
+   "tuition_fy2025_usd": 118900,
+   "working": 15
+  },
+  "Nursing Assistant": {
+   "completers_2024_25": 112,
+   "figure_pct": 91,
+   "grant_completers": 98,
+   "passes": true,
+   "test": "placement",
+   "tested": true,
+   "tuition_fy2025_usd": 136560,
+   "working": 89
+  },
+  "Paralegal Studies": {
+   "borrowers": 2,
+   "completers_2024_25": 12,
+   "figure_thousands": null,
+   "loan_median_usd": 3580,
+   "passes": null,
+   "test": "earnings",
+   "tested": false,
+   "with_earnings": 0
+  },
+  "Pharmacy Technician": {
+   "completers_2024_25": 44,
+   "figure_pct": 87,
+   "grant_completers": 39,
+   "passes": true,
+   "test": "placement",
+   "tested": true,
+   "tuition_fy2025_usd": 137840,
+   "working": 34
+  },
+  "Phlebotomy Technician": {
+   "completers_2024_25": 28,
+   "figure_pct": 88,
+   "grant_completers": 25,
+   "passes": true,
+   "test": "placement",
+   "tested": true,
+   "tuition_fy2025_usd": 48820,
+   "working": 22
+  },
+  "Radiologic Technology": {
+   "borrowers": 11,
+   "completers_2024_25": 25,
+   "figure_thousands": 65,
+   "loan_median_usd": 16040,
+   "passes": true,
+   "test": "earnings",
+   "tested": true,
+   "with_earnings": 46
+  },
+  "Registered Nursing": {
+   "borrowers": 86,
+   "completers_2024_25": 156,
+   "figure_thousands": 71,
+   "loan_median_usd": 14750,
+   "passes": true,
+   "test": "earnings",
+   "tested": true,
+   "with_earnings": 227
+  },
+  "Warehouse and Logistics Technician": {
+   "completers_2024_25": 136,
+   "figure_pct": 90,
+   "grant_completers": 124,
+   "passes": true,
+   "test": "placement",
+   "tested": true,
+   "tuition_fy2025_usd": 81300,
+   "working": 112
+  },
+  "Welding Fundamentals": {
+   "completers_2024_25": 56,
+   "figure_pct": 90,
+   "grant_completers": 50,
+   "passes": true,
+   "test": "placement",
+   "tested": true,
+   "tuition_fy2025_usd": 219040,
+   "working": 45
+  },
+  "Welding Technology": {
+   "borrowers": 36,
+   "completers_2024_25": 80,
+   "figure_thousands": 47,
+   "loan_median_usd": 12240,
+   "passes": true,
+   "test": "earnings",
+   "tested": true,
+   "with_earnings": 145
+  }
+ },
+ "stated": {
+  "award_years": [
+   "2020-21",
+   "2021-22"
+  ],
+  "benchmark_thousands": 34.2,
+  "benchmark_usd": 34200,
+  "cpi_factor": 1.0294,
+  "day": 180,
+  "earnings_years": [
+   2024,
+   2025
+  ],
+  "fee_pct": 1.057,
+  "min_grant_completers": 20,
+  "min_with_earnings": 30,
+  "placement_line_pct": 70,
+  "share_line_pct": 75
+ }
+}
