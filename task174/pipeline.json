@@ -39,7 +39,7 @@
   "forcing_event": "purchase_order_or_contract (the term sheet) was this world's honest key, banned by task170 and held for task165 at the time of the screen",
   "prototypes": "scratchpad b174/proto: physics.py, calib.py to calib3.py, lever.py, screen_common_exposure.py, slip_lever.py, vintage_proto.py to vintage_proto5.py"
  },
- "resume": "PAUSED 2026-10-23 at stage 1 after three rebuild screens (biomedical survival, media reach and frequency, healthcare demand): no card registered, nothing cut; the coordinator assigns another cell (screen_bio, screen_media, screen_health and the design note's ## Rebuild (2026-10-23)).",
+ "resume": "PAUSED 2026-10-23 at stage 1 after four rebuild screens (biomedical survival, media reach and frequency, healthcare demand, regression diagnostics): no card registered, nothing cut; the coordinator assigns another cell (screen_bio, screen_media, screen_health, screen_diagnostics and the design note's ## Rebuild (2026-10-23)).",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -85,5 +85,12 @@
   "paper": "fifteen on the structural screens (each a line in the design note): PIFU (task169), self-referral (unobserved, pilot subset), deductible spot price (fork), site closure and new site (swap, subset), ED streaming (rule), telehealth ending (not-yet-treated card), booking lead time (subset), readmission chain (group-by), follow-up cascade (swap, 15), time to death (2 a year), HDHP selection (subset or fork), frequent attenders (task130 v3), step-down beds (binding pincer), screening rounds (rule)",
   "finding": "a forward access or payment change here acts on a variable it names (the units already at the new level are the attaining subset), needs a behaviour never observed before (elasticity default or fork), is a filed mechanic (rule application), or reroutes through a pre-empting route (task169) or a drain while waiting (task148)",
   "prototypes": "scratchpad b174n/proto3: wait1.py"
+ },
+ "screen_diagnostics": {
+  "assigned": "fourth cell 2026-10-23, general-statistics-data-science / regression-classification-model-diagnostics (Forecasting), task158 and task172 drivers avoided; default path the fitted model scored forward under cross-validation and calibration checks; criterion: an unnamed quantity no record unit reached, revealed by the data",
+  "measured_telematics": "direct-book frequency model on a noisy two-week telematics average carried to a comparison-site book whose driving sits lower (tel1.py, tel2.py, seeds 174-181): textbook -26.8 per cent (sd 0.8); de-attenuated slope with the new book's own prior -0.1 (sd 2.2) conditioned on rating factors, -3.2 pooled; died on the abstraction test against task262 (a reliability ratio is the population's, the noise carries); card draft also blocked on the window (composition_mix, filing forcing event against task175), never registered",
+  "paper": "eleven on the structural screens (each a line in the design note): device or version change (rule or task262), short feature windows (task262), selective labels (task141), base-rate shift (task446), shared group effect (task143), retransformation (task135), old intervention masking labels (RD forks, premise names it), range extrapolation (fork), collinear covariates decoupled (unidentified), top-coding (visible, fork), target leakage (reading, subset)",
+  "finding": "the cell's homes for an unnamed, unreached quantity are each spent (covariate noise task262, selective labels task141, base rate task446, group effect task143, retransformation task135), and the rest is unidentified in the record so the method forks",
+  "prototypes": "scratchpad b174n/proto4: me1.py, me2.py, tel1.py, tel2.py; card draft scratchpad b174n/card/task174.json (never registered)"
  }
 }

@@ -1,6 +1,6 @@
 # task174 design note
 
-**Status: PAUSED at stage 1 on 2026-10-23 after three rebuild screens, biomedical survival, media reach and healthcare demand (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
+**Status: PAUSED at stage 1 on 2026-10-23 after four rebuild screens, biomedical survival, media reach, healthcare demand and regression diagnostics (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
 Forecasting. Three worlds were screened on this number and none yields a draw that holds; the third, the
 product-analytics retention cell of the same day, is recorded in its own finding below and in the last block of
 `## Tried and rejected`. The first is seed FC45's: a north-east
@@ -109,6 +109,18 @@ sends the solver to them. It needs a behavioural response never observed before 
 cost-sharing, telehealth, plan choice), which is a literature elasticity, the default, or a fork. It is a filed
 mechanic (a triage streaming rule, a capacity queue, a screening round plan), which is rule application. Or it
 reroutes demand through a route that used to pre-empt it (task169's driver) or a drain while waiting (task148's).
+
+**The fourth cell of the day, general-statistics-data-science / regression-classification-model-diagnostics
+(Forecasting),** task158's and task172's drivers avoided. Screened against the coordinator's criterion (the forward
+condition acts through a quantity the change does not name and no unit in the record has reached, the data reveal
+it, and the textbook validation passes because the hold-out shares the training regime). One candidate met the
+criterion and measured well on code (`tel1.py`, `tel2.py`, scratchpad b174n/proto4), and it died on the abstraction
+test against task262; eleven others died on the structural screens. The finding: the cell's natural homes for an
+unnamed, unreached quantity are each spent. The noise in a covariate is task262 (a reliability ratio is a property
+of the population, the noise variance carries), the selection that produced the labels is task141, a moved base
+rate is task446, a group effect shared by a new group is task143, a retransformed log-scale mean is task135, and
+what is left (a range extrapolated, an interaction the record never varied, a covariate collinear in the record)
+is unidentified in the record, so the method forks.
 
 ## Tried and rejected
 
@@ -401,3 +413,37 @@ reroutes demand through a route that used to pre-empt it (task169's driver) or a
   pincer. On paper.
 - **Screening invitations on a rolling round plan**: the round plan is filed (rule application) and calendar-locked.
   On paper.
+- **Rebuild of 2026-10-23, fourth cell: general-statistics-data-science / regression-classification-model-diagnostics
+  (Forecasting).** Each line is one candidate, written when it died; the measured one first.
+- **A motor insurer's direct-book frequency model on a telematics onboarding score (the average of a driver's
+  daily scores over the days driven in a two-week assessment) carried to drivers bound through a comparison site,
+  whose driving sits well below the direct book**, measured on `me1.py`, `me2.py`, `tel1.py` and `tel2.py` (seeds
+  174 to 181, 80,000 direct drivers, 8,000 comparison-site drivers, daily-score noise three times the spread of
+  true driving). The cross-validated textbook model files -26.8 per cent (sd 0.8); the slope freed of the daily
+  scores' noise with each new driver read against the new book's own spread lands at -0.1 (sd 2.2) with the prior
+  conditioned on the rating factors and -3.2 pooled; the data reveal the noise through the slope steepening with
+  driving days. A real lever, and it died on the abstraction test: task262 already ships the insight (a reliability
+  ratio is a property of the population, the noise variance carries, so a ratio taken from one population
+  misprices another), and the forecasting version's extra lever (shrinkage toward the record's mean) is the same
+  conditional expectation. `guard.py check` put task262 nearest at 0.12, and the draft card also BLOCKed on the
+  window (composition_mix and a filing as the forcing event against task175, registered while this was screened),
+  which a redraw clears; the driver does not. Never registered.
+- **A score's version or device changing for the new population, with a dual-device sample**: a filed conversion
+  (rule application) or the same reliability insight (task262). On paper.
+- **New customers' features averaged over one month of history against twelve in the record**: covariate noise
+  again, task262. On paper.
+- **Outcomes recorded only for the units an earlier decision let through**: task141's selective labels. On paper.
+- **A classifier's yield carried to a population whose base rate moved**: task446. On paper.
+- **A new group's members sharing an unmodelled group effect**: task143. On paper.
+- **A log-scale regression's retransformed mean**: task135 architecture 1. On paper.
+- **The old model's own intervention depressing the labels above its threshold** (the programme ends forward): the
+  untreated risk above the threshold is never observed, the effect at the threshold is a regression discontinuity
+  whose bandwidth and extrapolation fork, and the programme's end names the step. On paper.
+- **A forward population beyond the record's predictor range**: no unit reached it and nothing forces the
+  functional form, so the method forks. On paper.
+- **Two covariates collinear in the record and decoupled forward**: unidentified in the record by construction.
+  On paper.
+- **A top-coded covariate meeting an uncapped forward feed**: the pile at the cap is visible, and the tail above it
+  forks on its form. On paper.
+- **Target leakage, a feature built over the outcome window**: the feature's own definition settles it (a reading),
+  and the as-of rebuild from the logs is the attaining subset. On paper.
