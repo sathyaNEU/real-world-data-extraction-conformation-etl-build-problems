@@ -1,48 +1,46 @@
 ## Tags
 
-**Domain:** Epidemiology & Public Health, infectious disease transmission modeling (renewal-equation projection under a control scenario).
-**Analytical objective:** Forecasting & Predictive Modeling.
+**Domain:** Education and learning sciences, learning analytics and early-warning models.  
+**Analytical objective:** Forecasting and predictive modeling.
 
 ## 1. Final Recommendation
 
-**Plan the treatment centres for about 5,000 new cases (confirmed and probable, by onset) in weeks 49 to 52.**
-Read against the time each source had to the 11 October cut-off, the transmission links give a 13-day serial interval and a reproduction number of 1.6 for weeks 36 to 41, so even with transmission halved from 2 November December still brings about 5,000 cases. Not 4,000, which the links taken as they stand give (11 days, 1.5): a link is entered only once its case has fallen ill, so the long intervals of September's and October's sources are missing from the extract.
+**Plan for about 3,250 of the 8,659 first-time entrants enrolled at the 1 October 2026 census not to be enrolled at the 1 October 2027 census, to the nearest 250.**
+The figure reads each entrant's chance at the number of other entrants met in two or more of the entrant's own Semester 1 classes, and 3,778 of the 2026 entrants meet no other entrant twice. Not an early-warning model on entrant attributes and week-6 ratings alone, validated on intakes in which most full-time entrants shared three classes with the same 27 others. Not the earlier intakes' rate, for the same reason.
 
 ## 2. Critical Components
 
-1. Mean serial interval, right-truncated at 11 October: **13 days**
-2. Reproduction number implied by the growth of onsets over weeks 36 to 41: **1.6**
-3. New cases in weeks 49 to 52 under the central scenario: **5,000**
+1. First-time entrants enrolled at the 1 October 2026 census: **8,659**
+2. 2026 entrants who meet no other entrant in two or more of their classes: **3,778**
 
 ## 3. Step-by-Step Solution
 
-1. From tvd_line_list_dunmarrow_2026-10-18.csv, kept Confirmed and Probable rows, counted a case notified twice under two numbers once by its sample_id, and built daily onsets to 11 October (complete to that date per the planning note).
-2. From tvd_transmission_links_2026-10-18.csv, joined each Source person and Target person to those cases (a duplicate number mapped to the first) and kept the 2,449 pairs whose case fell ill by 11 October.
-3. Fitted a discretised gamma serial interval by maximum likelihood with each pair conditioned on its interval being no longer than 11 October less its source's onset: mean 13 days (the same pairs read as complete give 11).
-4. Fitted the log-linear growth of daily onsets over 31 August to 11 October (0.038 a day) and converted it through that interval to a reproduction number of 1.6, the central scenario's base in planning_note_phase3_2026-10-19.pdf.
-5. Ran the renewal equation forward from 12 October on daily onsets with the reproduction number halved for every source with onset from 2 November, and summed 30 November to 27 December: 5,000 cases.
-6. In contact_registry_dunmarrow_w36-w42.csv, grouped listings into people by district, household_code, initials, sex and age_years, then joined each PHD paper listing to the LMR tablet listing of the same source_case_number, household, initials and sex listed within a day of it with the age one to three years apart (the paper form's estimate); took the people whose first listing fell 7 to 27 September and counted a person completed when a listing of theirs ending on their last follow_up_end closed Follow-up completed (either team, per the planning note).
-7. In tamberlow_field_lab_pcr_w36-w42.xlsx, kept Diagnostic rows, took each sample's final result (the re-run after Indeterminate), and added one hour to Result time (analyser), which runs on UTC (otherwise some results land less than the 92-minute cartridge run after reception, and positives fall on the day before the line list's lab_result_date); averaged collection to final result by ISO week of collection.
-8. Plan for about 5,000 new cases in weeks 49 to 52.
+1. Took each intake's first-time entrants (Entry Basis First-time) from admissions_entrants_2019_2026.xlsx with an enrolled attempt at their own census in census_enrolments_2019_2026.csv: 8,659 in 2026.
+2. Marked each 2019 to 2025 entrant not enrolled at the next census when no EN or Enrolled attempt is there (leave is not enrolled, per the conventions), the 2025 intake through sirius_arc_student_crosswalk.csv.
+3. Counted for every entrant the other entrants of the same intake met in two or more of the entrant's Semester 1 classes (sirius_fy_cohort_classes_2019_2025.csv by term and class number, arc_s1_2026_first_year_classes.csv by class code): 3,778 of the 2026 entrants meet none.
+4. Fitted a logistic model of not being enrolled at the next census on the 2019 to 2025 entrants: ASC points, first in family, part-time, aged 21 or over, hardship grant, mean week-6 rating (Satisfactory 0, Some concern 1, At risk 2), living-learning community, hall, offer acceptance day, faculty, and that count in bands of 0, 1, 2, 3, 4 to 5, 6 to 8, 9 to 14, 15 to 21 and 22 or more.
+5. Counted Semester 1 2026 teaching groups in s1_2026_class_timetable.xlsx: active classes meeting in the same room on the same day, start and teaching weeks are one group whatever teacher of record each lists, a group's size is its classes' census enrolments added, by owning faculty.
+6. Counted students in year of study 2 or later with an enrolled attempt at the 2026 census once each: a student whose two attempts match a transfer in programme_transfers_2025_2026.csv is in the transfer's new programme, other two-attempt students are conjoint and go to the combination's first-listed programme in programme_catalogue_2026.csv.
+7. Applied the model to the 2026 entrants and summed their probabilities: 3,269.3, about 3,250 to the nearest 250.
 
 ## 4. Deliverable Answers
 
-### tvd_projection_w49-w52.xlsx
+### continuing_enrolment_2027.xlsx
 
-1. New cases in weeks 49 to 52 under the central scenario: 5,000
-2. Reproduction number the projection starts from: 1.6
-3. Mean serial interval behind it: 13 days
-4. Contacts first listed in weeks 37 to 39, different people and percentage who completed follow-up:
-   - Tamberlow: 3,416 people, 73.4%
-   - Quillmarsh: 2,154 people, 72.7%
-   - Kettlebank North: 1,025 people, 65.1%
-   - Brindlecourt: 491 people, 73.3%
-5. Tamberlow field laboratory, diagnostic samples by week of collection, average hours from collection to final result and percentage resulted within 24 hours:
-   - Week 38: 12.7 hours, 87.2%
-   - Week 39: 12.9 hours, 85.7%
-   - Week 40: 14.1 hours, 81.1%
-   - Week 41: 14.8 hours, 80.2%
+1. First-time entrants enrolled at the 1 October 2026 census not enrolled at the 1 October 2027 census: **3,250** (nearest 250)
+2. Semester 1 2026 teaching groups and groups of more than 30 students at the census, by faculty:
+   - Arts and Social Sciences: **703** groups, **82** of them over thirty students
+   - Business and Law: **325** groups, **84** of them over thirty students
+   - Science: **315** groups, **76** of them over thirty students
+   - Engineering and Computing: **250** groups, **65** of them over thirty students
+   - Health Sciences: **269** groups, **62** of them over thirty students
+3. Students in their second, third, and fourth or later year of study enrolled at the 1 October 2026 census, by faculty:
+   - Arts and Social Sciences: second year **1,734**, third year **1,401**, fourth year or later **429**
+   - Business and Law: second year **1,621**, third year **1,426**, fourth year or later **666**
+   - Science: second year **1,517**, third year **1,253**, fourth year or later **351**
+   - Engineering and Computing: second year **1,121**, third year **1,029**, fourth year or later **803**
+   - Health Sciences: second year **1,336**, third year **1,147**, fourth year or later **351**
 
-### tvd_projection_curve.svg
+### s1_2026_teaching_groups.png
 
-1. Bar chart of weekly cases by week of onset from week 30, observed to week 41 and projected to week 52, with the start of phase 3 (2 November, week 45) marked by a dashed line and weeks 49 to 52 shaded.
+1. One stacked bar per faculty, groups of 30 students or fewer and groups of more than 30, each segment labelled with its count as in answer 2 above.

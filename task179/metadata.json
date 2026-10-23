@@ -1,63 +1,86 @@
 {
- "task": "task179",
- "domain": "Epidemiology & Public Health (infectious disease transmission modeling)",
- "client_domain": "Epidemiology & Public Health",
- "task_type": "infectious-disease-transmission-modeling",
- "objective": "Forecasting & Predictive Modeling",
- "setting": "fictional: the Republic of Orvanthe, its Dunmarrow Province and districts, the Dunmarrow Provincial Health Directorate, its laboratories, Larrowmede Medical Relief, Tamberlow virus disease and every person named are invented; no real place, agency, organisation, pathogen or outbreak is described",
- "distractor_files": [
-  "kettlebank_phl_results_w36-w42.csv",
-  "lmr_treatment_centre_admissions_2026-10-18.xlsx",
-  "safe_burials_log_2026-10-18.csv"
- ],
- "distractor_reasons": {
-  "kettlebank_phl_results_w36-w42.csv": "the Kettlebank public health laboratory's results for the same weeks; the turnaround check is the Tamberlow field laboratory's alone and no case count or interval is read from laboratory rows",
-  "lmr_treatment_centre_admissions_2026-10-18.xlsx": "admissions to the organisation's two treatment centres; the planning figure is every case in the seven districts by onset, and the centres' share is applied by the desk afterwards",
-  "safe_burials_log_2026-10-18.csv": "the safe burial teams' log; deaths and burials enter neither the interval, the reproduction number nor the asks"
- },
- "stated_inputs": [
-  "50",
-  "92",
-  "24",
-  "21"
- ],
- "deliverables": [
-  "tvd_projection_w49-w52.xlsx",
-  "tvd_projection_curve.svg"
- ],
- "as_of": "2026-10-19",
- "files": [
-  "contact_registry_dunmarrow_w36-w42.csv",
-  "data_dictionary_tvd_response_2026-10.xlsx",
-  "dunmarrow_districts.csv",
-  "export_manifest_2026-10-19.csv",
-  "kettlebank_phl_results_w36-w42.csv",
-  "lmr_bed_capacity_w36-w42.xlsx",
-  "lmr_treatment_centre_admissions_2026-10-18.xlsx",
-  "phd_situation_report_w41.pdf",
-  "planning_note_phase3_2026-10-19.pdf",
-  "safe_burials_log_2026-10-18.csv",
-  "tamberlow_field_lab_pcr_w36-w42.xlsx",
-  "tvd_line_list_dunmarrow_2026-10-18.csv",
-  "tvd_transmission_links_2026-10-18.csv"
- ],
- "rows": {
-  "contact_registry_dunmarrow_w36-w42.csv": 33996,
-  "data_dictionary_tvd_response_2026-10.xlsx": 33,
-  "dunmarrow_districts.csv": 7,
-  "export_manifest_2026-10-19.csv": 12,
-  "kettlebank_phl_results_w36-w42.csv": 5728,
-  "lmr_bed_capacity_w36-w42.xlsx": 14,
-  "lmr_treatment_centre_admissions_2026-10-18.xlsx": 1957,
-  "safe_burials_log_2026-10-18.csv": 859,
-  "tamberlow_field_lab_pcr_w36-w42.xlsx": 5681,
-  "tvd_line_list_dunmarrow_2026-10-18.csv": 4204,
-  "tvd_transmission_links_2026-10-18.csv": 3019
- },
- "sources": {
-  "constructed": "every file is synthetic, generated for this task by its generator (task179/generator) from a simulated outbreak; the setting, the organisations, the pathogen and the people are fictional",
-  "public_specifications": "the layouts follow common outbreak line lists, contact-tracing registries, transmission-link exports and laboratory analyser exports in general form; no real system's export, template or report is reproduced",
-  "licence": "CC0 1.0 (synthetic data)",
-  "date": "2026-10-19"
- }
+  "task": "task179",
+  "distractor_files": [
+    "target/hall_occupancy_weekly_2019_2026.csv",
+    "target/national_school_leavers_2019_2026.csv"
+  ],
+  "deliverables": [
+    "continuing_enrolment_2027.xlsx",
+    "s1_2026_teaching_groups.png"
+  ],
+  "objective": "Forecasting & Predictive Modeling",
+  "domain": "Education & Learning Sciences / Learning Analytics & Early-Warning Models",
+  "setting": "Corriemoor University and the Republic of Aldmark are fictional; every record is synthetic, built by the task's generator, and no real institution, student system or person is represented.",
+  "sources": {
+    "sirius_fy_cohort_classes_2019_2025.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "arc_s1_2026_first_year_classes.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "census_enrolments_2019_2026.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "sirius_arc_student_crosswalk.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "admissions_entrants_2019_2026.xlsx": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "progress_check_wk6_2019_2026.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "s1_2026_class_timetable.xlsx": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "programme_catalogue_2026.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "programme_transfers_2025_2026.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "arc_cutover_notes_registry.pdf": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "continuing_enrolment_projection_conventions_2027.pdf": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "data_dictionary.txt": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "hall_occupancy_weekly_2019_2026.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    },
+    "national_school_leavers_2019_2026.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-10-16",
+      "license": "CC0-1.0"
+    }
+  }
 }

@@ -1,210 +1,282 @@
-"""Golden deliverables, figures.json and submission.md, all from the shipped pack through calc.py."""
-import datetime as dt
-import io
+"""task179 goldens: the projection workbook and the teaching-groups chart, figures.json, submission.md and
+metadata.json, every figure computed once here from the pack."""
+from __future__ import annotations
+
 import json
 import os
-import re
+
 import numpy as np
-from openpyxl import Workbook
-from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
-from openpyxl.utils import get_column_letter
+
+import common as C
 import calc
-import util
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.abspath(os.path.join(HERE, ".."))
-GOLDEN = os.path.join(TASK, "golden")
-F_XLSX = "tvd_projection_w49-w52.xlsx"
-F_SVG = "tvd_projection_curve.svg"
+FAC_NAME = dict(C.FACULTIES)
+FAC_SHORT = {"ASS": "Arts and Social Sciences", "BUS": "Business and Law", "SCI": "Science",
+             "ENG": "Engineering and Computing", "HLT": "Health Sciences"}
 
 
-def r1(v):
-    return float("%.1f" % (v + 1e-9))
+def r250(x):
+    return int(250 * round(x / 250.0))
 
 
-def figures():
-    g = calc.the_call()
-    naive = calc.the_call(gi="naive_gamma")
-    con = calc.ask_contacts()
-    lab = calc.ask_lab()
-    F = {"call": {"cases_w49_52": int(round(g["total"], -3))},
-         "components": {"serial_interval_days": int(round(g["mean_si"])), "R": r1(g["R"]),
-                        "growth_per_day": float("%.3f" % g["r"]), "pairs": g["n_pairs"]},
-         "rivals": {"register_interval_days": int(round(naive["mean_si"])), "register_R": r1(naive["R"]),
-                    "register_cases_w49_52": int(round(naive["total"], -3))},
-         "phase3_cut_pct": 50,
-         "context": {"weeks_base": [36, 41], "weeks_window": [49, 52], "week_contacts": [37, 39], "weeks_lab": [38, 39, 40, 41],
-                     "week_phase3": 45, "week_chart_first": 30, "cartridge_run_minutes": calc.cartridge_run_minutes(), "hours_window": 24}}
-    for z, (n, s) in con.items():
-        F["a1_%s" % z] = {"people": int(n), "pct_completed": r1(s)}
-    for w, (m, s, n) in lab.items():
-        F["a2_w%d" % w] = {"mean_hours": r1(m), "pct_within_24h": r1(s)}
-    return F, g
+def compute(target):
+    r = calc.compute(target)
+    a = r["frame"]
+    f = a[a["intake"] == 2026]
+    o = dict(r)
+    o["call_r"] = r250(r["call"])
+    o["no_repeat_2026"] = int((f["ties"] == 0).sum())
+    hist = []
+    for y in range(2019, 2026):
+        h = a[a["intake"] == y]
+        hist.append((y, int(len(h)), int(h["gone"].sum())))
+    o["hist"] = hist
+    return o
 
 
-def workbook(F, g):
+def figures(o):
+    F = {"call_not_enrolled_2027": o["call_r"],
+         "_unrounded": {"call_not_enrolled_2027": round(o["call"], 1)},
+         "cc1_intake_2026_at_census": o["n2026"],
+         "cc2_intake_2026_no_repeat_classmate": o["no_repeat_2026"]}
+    for fc in C.FAC_CODES:
+        n, big = o["groups"][fc]
+        F["ask_groups_s1_2026_%s" % fc.lower()] = n
+        F["ask_groups_over30_s1_2026_%s" % fc.lower()] = big
+    for fc in C.FAC_CODES:
+        for yv in (2, 3, 4):
+            F["ask_continuing_2026_%s_y%d" % (fc.lower(), yv)] = o["cont"].get((fc, yv), 0)
+    F["label_groups_30_or_fewer"] = {fc.lower(): o["groups"][fc][0] - o["groups"][fc][1] for fc in C.FAC_CODES}
+    F["hist_intake_entrants_not_enrolled"] = [list(x) for x in o["hist"]]
+    return F
+
+
+def write_workbook(path, o):
+    import xlsx_writer as XW
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment
     wb = Workbook()
     ws = wb.active
-    ws.title = "Projection W49-W52"
+    ws.title = "Projection"
     bold = Font(bold=True)
-    head = PatternFill("solid", fgColor="DDE7F0")
-    ws["A1"] = ("Dunmarrow TVD: about %s new cases in weeks 49 to 52 (30 Nov to 27 Dec 2026) even with transmission halved "
-                "from 2 November (phase 3 central scenario)" % format(F["call"]["cases_w49_52"], ","))
+    fill = PatternFill("solid", fgColor="D9E1F2")
+    ws["A1"] = "Continuing enrolment projection 2027: first-year intake"
     ws["A1"].font = Font(bold=True, size=12)
-    ws["A2"] = "Cases confirmed and probable by date of symptom onset, seven districts. Extract of 18/10/2026; onsets complete to 11/10/2026."
-    rows = [("New cases, weeks 49 to 52 (planning figure, nearest thousand)", F["call"]["cases_w49_52"]),
-            ("Reproduction number, weeks 36 to 41 (from the growth of onsets)", F["components"]["R"]),
-            ("Mean serial interval, days", F["components"]["serial_interval_days"]),
-            ("Growth of daily onsets, weeks 36 to 41, per day", F["components"]["growth_per_day"]),
-            ("Reproduction number from 2 November (central scenario, half)", float("%.2f" % (g["R"] / 2))),
-            ("Source-to-case pairs used (case onset to 11/10)", F["components"]["pairs"])]
-    r = 4
-    for k, v in rows:
-        ws.cell(r, 1, k)
-        c = ws.cell(r, 2, v)
-        c.alignment = Alignment(horizontal="right")
-        r += 1
-    ws.cell(4, 1).font = bold
-    ws.cell(4, 2).font = bold
-    for rr, f in zip(range(4, 10), ("#,##0", "0.0", "0", "0.000", "0.00", "#,##0")):
-        ws.cell(rr, 2).number_format = f
-    r += 1
-    ws.cell(r, 1, "Week").font = bold
-    ws.cell(r, 2, "Monday").font = bold
-    ws.cell(r, 3, "Cases by onset (observed)").font = bold
-    ws.cell(r, 4, "Cases (projected)").font = bold
-    for c in range(1, 5):
-        ws.cell(r, c).fill = head
-    x = g["series"]
-    r += 1
-    first = r
-    for wk in range(30, 53):
-        d0 = (wk - 22) * 7
-        mon = calc.DAY0 + dt.timedelta(days=d0)
-        ws.cell(r, 1, wk)
-        ws.cell(r, 2, mon.strftime("%d/%m/%Y"))
-        obs = float(x[d0:d0 + 7].sum()) if d0 + 6 <= 139 else None
-        if obs is not None:
-            ws.cell(r, 3, int(round(obs)))
-        if d0 + 6 > 139:
-            ws.cell(r, 4, int(round(float(x[d0:d0 + 7].sum()), -1)))
-        r += 1
-    for row in ws.iter_rows(min_row=first, max_row=r - 1, min_col=3, max_col=4):
-        for c in row:
-            c.number_format = "#,##0"
-    ws.cell(r + 1, 1, "Week 42 holds onsets to 18/10 and is not complete, so it is projected; projected weeks are rounded to the nearest ten.")
+    ws["A2"] = "Planning and Insight, prepared 16 October 2026 from the 1 October 2026 census"
+    rows = [("2026 intake enrolled at the 1 October 2026 census", o["n2026"]),
+            ("Projected not enrolled at the 1 October 2027 census (nearest 250)", o["call_r"]),
+            ("Model sum of probabilities", round(o["call"], 1)),
+            ("2026 entrants meeting no other entrant in two or more classes", o["no_repeat_2026"])]
+    for i, (k, v) in enumerate(rows, 4):
+        ws.cell(row=i, column=1, value=k)
+        c = ws.cell(row=i, column=2, value=v)
+        c.number_format = "#,##0.0" if isinstance(v, float) else "#,##0"
+    ws.cell(row=5, column=1).font = bold
+    ws.cell(row=5, column=2).font = bold
+    ws.cell(row=9, column=1, value="Earlier intakes").font = bold
+    for j, h in enumerate(["Intake", "Entrants at census", "Not enrolled at next census", "Share"], 1):
+        c = ws.cell(row=10, column=j, value=h)
+        c.font = bold
+        c.fill = fill
+    for i, (y, n, g) in enumerate(o["hist"], 11):
+        ws.cell(row=i, column=1, value=y)
+        ws.cell(row=i, column=2, value=n).number_format = "#,##0"
+        ws.cell(row=i, column=3, value=g).number_format = "#,##0"
+        ws.cell(row=i, column=4, value="=C%d/B%d" % (i, i)).number_format = "0.0%"
     ws.column_dimensions["A"].width = 62
-    ws.column_dimensions["B"].width = 13
-    ws.column_dimensions["C"].width = 22
-    ws.column_dimensions["D"].width = 18
-    ws.freeze_panes = "A4"
-    # ask 1
-    a = wb.create_sheet("Contacts W37-W39")
-    a.append(["Follow-up of contacts first listed in weeks 37 to 39 (7 to 27 September 2026)"])
-    a["A1"].font = Font(bold=True, size=11)
-    a.append([])
-    a.append(["District", "People first listed", "Completed follow-up (%)"])
-    for c in a[3]:
+    for col in "BCD":
+        ws.column_dimensions[col].width = 16
+    ws2 = wb.create_sheet("Teaching groups S1 2026")
+    head = ["Faculty", "Teaching groups", "Over 30 students", "30 or fewer"]
+    for j, h in enumerate(head, 1):
+        c = ws2.cell(row=1, column=j, value=h)
         c.font = bold
-        c.fill = head
-    for z in calc.ASK_ZONES:
-        d = F["a1_%s" % z]
-        a.append([z, d["people"], d["pct_completed"]])
-    a.append([])
-    a.append(["A person listed by both the tablet team and the directorate's paper list for the same source case is counted once."])
-    a.append(["Completed: the 21-day follow-up that ends last for the person recorded as completed by either team."])
-    for col, w in zip("ABC", [16, 20, 24]):
-        a.column_dimensions[col].width = w
-    for row in a.iter_rows(min_row=4, max_row=7):
-        row[2].number_format = "0.0"
-    # ask 2
-    b = wb.create_sheet("Tamberlow field lab")
-    b.append(["Tamberlow field laboratory: diagnostic samples by week of collection"])
-    b["A1"].font = Font(bold=True, size=11)
-    b.append([])
-    b.append(["Week", "Average hours, collection to final result", "Final result within 24 h (%)"])
-    for c in b[3]:
+        c.fill = fill
+    for i, fc in enumerate(C.FAC_CODES, 2):
+        n, big = o["groups"][fc]
+        ws2.cell(row=i, column=1, value=FAC_SHORT[fc])
+        ws2.cell(row=i, column=2, value=n)
+        ws2.cell(row=i, column=3, value=big)
+        ws2.cell(row=i, column=4, value="=B%d-C%d" % (i, i))
+    ws2.cell(row=7, column=1, value="Total").font = bold
+    for col in "BCD":
+        ws2["%s7" % col] = "=SUM(%s2:%s6)" % (col, col)
+        ws2["%s7" % col].font = bold
+    ws2.column_dimensions["A"].width = 28
+    for col in "BCD":
+        ws2.column_dimensions[col].width = 17
+    ws3 = wb.create_sheet("Continuing 2026 census")
+    head = ["Faculty", "Year 2", "Year 3", "Year 4 or later", "Total"]
+    for j, h in enumerate(head, 1):
+        c = ws3.cell(row=1, column=j, value=h)
         c.font = bold
-        c.fill = head
-    for w in (38, 39, 40, 41):
-        d = F["a2_w%d" % w]
-        b.append([w, d["mean_hours"], d["pct_within_24h"]])
-    b.append([])
-    b.append(["The analyser writes result times in UTC; one hour is added to bring them to Orvanthe Standard Time like the collection and reception times."])
-    b.append(["A sample re-run after an indeterminate result counts once, at its final result."])
-    for col, w in zip("ABC", [10, 38, 30]):
-        b.column_dimensions[col].width = w
-    for row in b.iter_rows(min_row=4, max_row=7):
-        row[1].number_format = "0.0"
-        row[2].number_format = "0.0"
-    n = wb.create_sheet("Notes")
-    for line in [
-            ["Notes"],
-            [],
-            ["Cases", "Confirmed and probable under the provincial case definition, as classified in the line list extract of 18/10/2026 23:59; not a case and suspected rows excluded; a case notified twice under two numbers with one sample counted once."],
-            ["Weeks", "ISO weeks, Monday to Sunday, by date of symptom onset. Weeks 49 to 52 run 30/11/2026 to 27/12/2026."],
-            ["Scenario", "Planning note PN-DMW-07, central scenario: every case with onset on or after 02/11/2026 causes half as many new cases as over weeks 36 to 41."],
-            ["Serial interval", "From the transmission links, each source-to-case pair read against the time its source had to 11/10/2026, the last complete day of onsets."],
-            ["Reproduction number", "Implied by the exponential growth rate of daily onsets, 31/08/2026 to 11/10/2026, through the serial interval."],
-            ["Rounding", "Planning figure to the nearest thousand from the unrounded projection; projected weeks to the nearest ten."]]:
-        n.append(line)
-    n["A1"].font = Font(bold=True, size=11)
-    n.column_dimensions["A"].width = 20
-    n.column_dimensions["B"].width = 120
-    for row in n.iter_rows(min_row=3):
-        row[0].font = bold
-        row[1].alignment = Alignment(wrap_text=True, vertical="top")
-    ws.print_title_rows = "1:3"
-    os.makedirs(GOLDEN, exist_ok=True)
-    util.save_workbook(wb, os.path.join(GOLDEN, F_XLSX), title="TVD projection W49-W52")
+        c.fill = fill
+    for i, fc in enumerate(C.FAC_CODES, 2):
+        ws3.cell(row=i, column=1, value=FAC_SHORT[fc])
+        for j, yv in enumerate((2, 3, 4), 2):
+            ws3.cell(row=i, column=j, value=o["cont"].get((fc, yv), 0)).number_format = "#,##0"
+        ws3.cell(row=i, column=5, value="=SUM(B%d:D%d)" % (i, i)).number_format = "#,##0"
+    ws3.cell(row=7, column=1, value="Total").font = bold
+    for col in "BCDE":
+        ws3["%s7" % col] = "=SUM(%s2:%s6)" % (col, col)
+        ws3["%s7" % col].number_format = "#,##0"
+        ws3["%s7" % col].font = bold
+    ws3.column_dimensions["A"].width = 28
+    ws4 = wb.create_sheet("Notes")
+    notes = [
+        "Definitions follow Continuing Enrolment Projection 2027: Conventions (Planning and Insight, 5 October 2026).",
+        "Intake: first-time bachelor's entrants with an enrolled programme attempt at the 1 October census; entrants "
+        "with credit are excluded. Approved leave counts as not enrolled.",
+        "Earlier intakes: enrolment at the next census from the census history; the 2025 intake through the "
+        "SIRIUS to ARC crosswalk.",
+        "Projection: logistic model fitted on the 2019 to 2025 intakes (admissions attributes, week-6 progress check, "
+        "faculty, and the number of other entrants met in two or more Semester 1 classes, banded), applied to the "
+        "2026 intake; reported to the nearest 250.",
+        "Teaching groups: active Semester 1 2026 classes meeting in one room, on one day, at one start, over the same "
+        "teaching weeks count as one group; size is the census enrolment of its classes.",
+        "Continuing students: one row per student at the 2026 census; an attempt left enrolled after a transfer "
+        "approved in ARC is not counted; conjoint students in the first-listed programme's faculty.",
+        "Sources: Registry census history and first-year cohort extracts; Admissions; Student Success week-6 "
+        "progress check; Timetabling Semester 1 2026 timetable at the census; Academic Office catalogue; Registry "
+        "transfers register.",
+    ]
+    ws4["A1"] = "Notes"
+    ws4["A1"].font = bold
+    for i, t in enumerate(notes, 3):
+        ws4.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
+    ws4.column_dimensions["A"].width = 110
+    for ws_ in (ws2, ws3):
+        ws_.freeze_panes = "A2"
+    wb.save(path)
+    import postprocess as PP
+    PP.normalize_ooxml(path, "Cillian Coholan", "Cillian Coholan", "2026-10-15T22:05:00Z", "2026-10-16T03:31:00Z",
+                       excel=True)
 
 
-def chart(g):
+def write_chart(path, o):
     import matplotlib
     matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    import matplotlib.ticker
     matplotlib.rcParams["svg.hashsalt"] = "task179"
-    matplotlib.rcParams["font.family"] = "DejaVu Sans"
-    x = g["series"]
-    wks = list(range(30, 53))
-    obs, proj = [], []
-    for wk in wks:
-        d0 = (wk - 22) * 7
-        s = float(x[d0:d0 + 7].sum())
-        if d0 + 6 <= 139:
-            obs.append((wk, s))
-        else:
-            proj.append((wk, s))
-    fig, ax = plt.subplots(figsize=(8.6, 4.4), dpi=100)
-    ax.bar([w for w, _ in obs], [v for _, v in obs], color="#3B6E8F", width=0.75, label="Observed, by week of onset")
-    ax.bar([w for w, _ in proj], [v for _, v in proj], color="#E2A13B", width=0.75, label="Projected, phase 3 central scenario")
-    ax.axvline(44.5, color="#7A1F1F", lw=1.2, ls="--")
-    ax.text(44.6, max(v for _, v in proj) * 1.02, "Phase 3 from 2 Nov (week 45)", color="#7A1F1F", fontsize=8.5)
-    ax.axvspan(48.5, 52.5, color="#E2A13B", alpha=0.12, lw=0)
-    ax.text(48.7, max(v for _, v in proj) * 0.9, "Weeks 49-52: about %s cases" % format(int(round(g["total"], -3)), ","), fontsize=8.5)
-    ax.set_xlabel("ISO week, 2026")
-    ax.set_ylabel("New cases (confirmed and probable)")
-    ax.set_title("Dunmarrow TVD: about %s cases in weeks 49 to 52 even with transmission halved from 2 November" % format(int(round(g["total"], -3)), ","), fontsize=10, loc="left")
-    ax.set_xticks(wks[::2])
-    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: format(int(v), ",")))
+    import matplotlib.pyplot as plt
+    labels = [FAC_SHORT[f].replace(" and ", " and\n") for f in C.FAC_CODES]
+    small = [o["groups"][f][0] - o["groups"][f][1] for f in C.FAC_CODES]
+    big = [o["groups"][f][1] for f in C.FAC_CODES]
+    fig, ax = plt.subplots(figsize=(8.6, 5.2), dpi=110)
+    x = np.arange(len(labels))
+    b1 = ax.bar(x, small, 0.62, color="#9db9d8", label="30 students or fewer")
+    b2 = ax.bar(x, big, 0.62, bottom=small, color="#2f5d8c", label="More than 30 students")
+    for i in range(len(x)):
+        ax.text(x[i], small[i] / 2, "{:,}".format(small[i]), ha="center", va="center", fontsize=9)
+        ax.text(x[i], small[i] + big[i] / 2, "{:,}".format(big[i]), ha="center", va="center", fontsize=9, color="white")
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels, fontsize=9)
+    ax.set_ylabel("Teaching groups")
+    ax.set_title("Arts and Social Sciences ran %s of the university's %s Semester 1 groups; most groups over 30 are upper-level"
+                 % ("{:,}".format(o["groups"]["ASS"][0]), "{:,}".format(sum(o["groups"][f][0] for f in C.FAC_CODES))),
+                 fontsize=10, loc="left")
+    fig.text(0.01, 0.01, "Source: Timetabling, Semester 1 2026 timetable at the 1 October 2026 census. Groups as taught.",
+             fontsize=7.5, color="#555555")
     ax.spines[["top", "right"]].set_visible(False)
-    ax.legend(frameon=False, fontsize=8.5, loc="upper left")
-    ax.grid(axis="y", color="#DDDDDD", lw=0.6)
-    ax.set_axisbelow(True)
-    fig.tight_layout()
-    bio = io.StringIO()
-    fig.savefig(bio, format="svg", metadata={"Date": None, "Creator": "LMR epidemiology cell", "Format": None, "Type": None})
+    ax.legend(frameon=False, fontsize=9, loc="upper right")
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    fig.savefig(path, metadata={"Software": None})
     plt.close(fig)
-    util.write_text(os.path.join(GOLDEN, F_SVG), bio.getvalue().replace('id="matplotlib.axis_', 'id="axis_'))
 
 
-if __name__ == "__main__":
-    F, g = figures()
-    with open(os.path.join(HERE, "figures.json"), "w") as f:
-        json.dump(F, f, indent=1, ensure_ascii=False)
-        f.write("\n")
-    workbook(F, g)
-    chart(g)
-    print(json.dumps(F, indent=1, ensure_ascii=False))
-    print([round(float(g["series"][(wk - 22) * 7:(wk - 22) * 7 + 7].sum())) for wk in range(40, 53)])
+def write_submission(path, o, F):
+    g = o["groups"]
+    cont = o["cont"]
+    L = []
+    L.append("## Tags\n")
+    L.append("**Domain:** Education and learning sciences, learning analytics and early-warning models.  ")
+    L.append("**Analytical objective:** Forecasting and predictive modeling.\n")
+    L.append("## 1. Final Recommendation\n")
+    L.append("**Plan for about %s of the %s first-time entrants enrolled at the 1 October 2026 census not to be "
+             "enrolled at the 1 October 2027 census, to the nearest 250.**" % ("{:,}".format(o["call_r"]),
+                                                                              "{:,}".format(o["n2026"])))
+    L.append("The figure reads each entrant's chance at the number of other entrants met in two or more of the "
+             "entrant's own Semester 1 classes, and %s of the 2026 entrants meet no other entrant twice. Not an "
+             "early-warning model on entrant attributes and week-6 ratings alone, validated on intakes in which most "
+             "full-time entrants shared three classes with the same 27 others. Not the earlier intakes' rate, for "
+             "the same reason." % "{:,}".format(o["no_repeat_2026"]))
+    L.append("")
+    L.append("## 2. Critical Components\n")
+    L.append("1. First-time entrants enrolled at the 1 October 2026 census: **%s**" % "{:,}".format(o["n2026"]))
+    L.append("2. 2026 entrants who meet no other entrant in two or more of their classes: **%s**"
+             % "{:,}".format(o["no_repeat_2026"]))
+    L.append("")
+    L.append("## 3. Step-by-Step Solution\n")
+    L.append("1. Took each intake's first-time entrants (Entry Basis First-time) from admissions_entrants_2019_2026.xlsx "
+             "with an enrolled attempt at their own census in census_enrolments_2019_2026.csv: %s in 2026."
+             % "{:,}".format(o["n2026"]))
+    L.append("2. Marked each 2019 to 2025 entrant not enrolled at the next census when no EN or Enrolled attempt is "
+             "there (leave is not enrolled, per the conventions), the 2025 intake through "
+             "sirius_arc_student_crosswalk.csv.")
+    L.append("3. Counted for every entrant the other entrants of the same intake met in two or more of the entrant's "
+             "Semester 1 classes (sirius_fy_cohort_classes_2019_2025.csv by term and class number, "
+             "arc_s1_2026_first_year_classes.csv by class code): %s of the 2026 entrants meet none."
+             % "{:,}".format(o["no_repeat_2026"]))
+    L.append("4. Fitted a logistic model of not being enrolled at the next census on the 2019 to 2025 entrants: ASC "
+             "points, first in family, part-time, aged 21 or over, hardship grant, mean week-6 rating (Satisfactory "
+             "0, Some concern 1, At risk 2), living-learning community, hall, offer acceptance day, faculty, and "
+             "that count in bands of 0, 1, 2, 3, 4 to 5, 6 to 8, 9 to 14, 15 to 21 and 22 or more.")
+    L.append("5. Counted Semester 1 2026 teaching groups in s1_2026_class_timetable.xlsx: active classes meeting in "
+             "the same room on the same day, start and teaching weeks are one group whatever teacher of record each "
+             "lists, a group's size is its classes' census enrolments added, by owning faculty.")
+    L.append("6. Counted students in year of study 2 or later with an enrolled attempt at the 2026 census once each: "
+             "a student whose two attempts match a transfer in programme_transfers_2025_2026.csv is in the "
+             "transfer's new programme, other two-attempt students are conjoint and go to the combination's "
+             "first-listed programme in programme_catalogue_2026.csv.")
+    L.append("7. Applied the model to the 2026 entrants and summed their probabilities: %s, about %s to the "
+             "nearest 250." % ("{:,.1f}".format(o["call"]), "{:,}".format(o["call_r"])))
+    L.append("")
+    L.append("## 4. Deliverable Answers\n")
+    L.append("### %s\n" % C.DELIV_XLSX)
+    L.append("1. First-time entrants enrolled at the 1 October 2026 census not enrolled at the 1 October 2027 census: "
+             "**%s** (nearest 250)" % "{:,}".format(o["call_r"]))
+    L.append("2. Semester 1 2026 teaching groups and groups of more than 30 students at the census, by faculty:")
+    for fc in C.FAC_CODES:
+        L.append("   - %s: **%s** groups, **%s** of them over thirty students" % (FAC_SHORT[fc], "{:,}".format(g[fc][0]), g[fc][1]))
+    L.append("3. Students in their second, third, and fourth or later year of study enrolled at the 1 October 2026 census, by faculty:")
+    for fc in C.FAC_CODES:
+        L.append("   - %s: second year **%s**, third year **%s**, fourth year or later **%s**"
+                 % (FAC_SHORT[fc], "{:,}".format(cont.get((fc, 2), 0)), "{:,}".format(cont.get((fc, 3), 0)),
+                    "{:,}".format(cont.get((fc, 4), 0))))
+    L.append("")
+    L.append("### %s\n" % C.DELIV_PNG)
+    L.append("1. One stacked bar per faculty, groups of 30 students or fewer and groups of more than 30, each "
+             "segment labelled with its count as in answer 2 above.")
+    open(path, "w", encoding="utf-8").write("\n".join(L) + "\n")
+
+
+def write_metadata(path):
+    meta = {"task": C.TASK,
+            "distractor_files": ["target/" + f for f in C.DISTRACTORS],
+            "deliverables": [C.DELIV_XLSX, C.DELIV_PNG],
+            "objective": "Forecasting & Predictive Modeling",
+            "domain": "Education & Learning Sciences / Learning Analytics & Early-Warning Models",
+            "setting": "Corriemoor University and the Republic of Aldmark are fictional; every record is synthetic, "
+                       "built by the task's generator, and no real institution, student system or person is "
+                       "represented.",
+            "sources": {f: {"source": "synthetic (task generator)", "date": "2026-10-16", "license": "CC0-1.0"}
+                        for f in [C.F_SCLS, C.F_ACLS, C.F_CENSUS, C.F_XWALK, C.F_ADM, C.F_PROG, C.F_TT, C.F_CAT,
+                                  C.F_TRF, C.F_CUT, C.F_CONV, C.F_DICT, C.F_HALL, C.F_NSL]}}
+    json.dump(meta, open(path, "w"), indent=2)
+    open(path, "a").write("\n")
+
+
+def main(target, golden, figpath, subpath, metapath, quiet=False):
+    os.makedirs(golden, exist_ok=True)
+    o = compute(target)
+    F = figures(o)
+    json.dump(F, open(figpath, "w"), indent=2, sort_keys=True)
+    open(figpath, "a").write("\n")
+    write_workbook(os.path.join(golden, C.DELIV_XLSX), o)
+    write_chart(os.path.join(golden, C.DELIV_PNG), o)
+    write_submission(subpath, o, F)
+    write_metadata(metapath)
+    if not quiet:
+        print("call %.1f -> %d; intake %d; no repeat %d; stale %d" % (o["call"], o["call_r"], o["n2026"],
+                                                                     o["no_repeat_2026"], o["n_stale"]))
+        print("groups", o["groups"])
+        print("continuing", sorted(o["cont"].items()))

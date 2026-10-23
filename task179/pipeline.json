@@ -2,30 +2,31 @@
  "task": "task179",
  "owner": "sathya8571",
  "status": "PAUSED",
- "domain": "epidemiology-public-health",
+ "domain": "education-learning-sciences",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 3,
+ "stage_name": "build",
  "updated": "2026-10-23",
- "stump": "A competent analyst fits the serial interval to every source-to-case pair in the transmission links, takes the reproduction number implied by the growth of onsets over weeks 36 to 41, halves it from 2 November and projects about 4,000 cases for weeks 49 to 52 instead of about 5,000, because the tracing system holds a link only once its case has fallen ill.",
- "architecture": 2,
+ "stump": "A competent solver fits an early-warning model on the entrants' own attributes to the 2019 to 2025 entrants' enrolment at the next census, validates it on the 2025 intake, scores the 8,659 2026 entrants and files 2,250 not enrolled on 1 October 2027 against 3,250, because it never reads each entrant's chance at the number of other entrants met in two or more of the entrant's own classes, which the Registry's allocation run kept near 26 and self-enrolment after the ARC cutover leaves near one.",
+ "architecture": 3,
  "loops": 0,
- "card_registered": true,
+ "card_registered": false,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-21"
+  "exit": 1,
+  "date": "2026-10-23",
+  "note": "only the task-type line fails, against the still-registered v2 card; clears on registering v3"
  },
  "leak": {
-  "leak_py": "REVIEW (2026-10-21): answer-word and vocabulary overlaps in the planning note, situation report and prompt for the reader; no LEAK",
-  "reader": "scored reader B landed the call and both components, 0 of 16 ask figures; reader A and the judge stopped"
+  "leak_py": "REVIEW (2026-10-23): estimand words in the conventions and dictionary; no figure, no decisive-step word",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "PASS (2026-10-21)",
-  "nearest": "task251 v5 0.07"
+  "heart": "not run: card not registered",
+  "nearest": "guard check nearest driver 0.07 (task143)"
  },
  "judge": {
   "verdict": "",
-  "disposition": "stopped: Gate F failed on reader B",
+  "disposition": "",
   "report": ""
  },
  "returned": [],
@@ -61,9 +62,18 @@
    "measured": "pk1.py, pk1fit.py: Km 2 truth 21.7 and 21.5 per cent below 8 mg/L, the per-patient linear fit 21.2 and 21.0 (linear clearance alone 11.5 and 12.3); Km 6 with 5 per cent holds truth 33.5, linear fit 28.8 (lever 14 per cent)",
    "paper": "two compartments, loading-phase half-life, time-varying clearance, induced anti-drug antibodies, confounded exposure-response, dose-response PK/PD; election-polling (instant runoff, on-cycle, compulsory voting, withdrawal, voting age); deposits and credit (guarantee limit, branch closures, payroll loss, reject inference, payment holiday end, forbearance withdrawn)",
    "prototypes": "scratchpad b179n/screen2: pk1.py, pk1fit.py; pk_screen.out byte-identical with pk_screen_run2.out"
+  },
+  "rebuild_2026_10_23_cell3": {
+   "cell": "education-learning-sciences / learning-analytics-early-warning-models, forecasting (assigned by the main session; worktree b_179n)",
+   "architecture": "v3: an intake's next-census non-enrolment read at each entrant's repeat classmates (other entrants met in two or more of the entrant's own classes) after the Registry's class allocation ended at the ARC cutover",
+   "measured": "u1.py to u1e.py, u1sum.py (stylised worlds), wfam.py and wseeds.py on the generator world over seven salts: default early-warning model -33.6 to -34.7 per cent; the flexible golden family within 1 to 2 per cent of itself and -1.8 to +2.2 of the truth; the golden's own spread 1.3 per cent; the first generator world forked 7 per cent on functional form and was repaired in the world",
+   "paper": "exam bunching, a final-year mathematics gap, a hall closing, instructor mix, online sections, dual-enrolment credit, a grant ending (RD), a tutoring programme ending (RD), deadline anchoring, mid-semester grade reporting, the leaving age, siblings, school consolidation, LMS portability",
+   "prototypes": "scratchpad b179x/screen",
+   "stage3": "built and green: checks 61/61, verify 0 failed, byte-identical rebuild, figures_check PASS, voice-check PASS, ceiling 0 of 25 (pair 28.5, mirror 0.0), scrub clean; target.zip md5 fab8b152c3c15fd556fc4114233c2d8e; call 3,250 (3,269.3), default 2,250 (2,142)",
+   "registration": "blocked under the lock: ban.strategy composition_mix vs task274 (09:16Z), then ban.strategy, ban.pattern G6, ban.artifact register, ban.forum executive_team vs task175 once spent cards left the live window; composition_mix is the honest family, not relabelled"
   }
  },
- "resume": "PAUSED 2026-10-23 at stage 1: the feature-adoption-diffusion-modeling and population-pharmacokinetics-exposure-response rebuild screens found no draw that holds (## Tried and rejected); no card registered, architecture v2 stays current; resume at stage 1 in the next cell the coordinator assigns",
+ "resume": "PAUSED at stage 3 with the pack built and every free gate green except those that read the registered card. Next: when task175 leaves the last three live cards, run register_serial.sh with b179x/card/task179.json (forum and artifact may be honestly redrawn to committee_or_panel and other if they still block), then precut.py, guard.py surface and heart, set status BUILD stage 4, and the main session runs two scored readers and the judge",
  "approved": null,
  "delivered": null,
  "portal": null,

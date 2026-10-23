@@ -1,19 +1,18 @@
 # leak check, task179
 
-**Verdict: REVIEW.** 13 files read, 20 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 22 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: golden, driver, district, summer, routes, window, screen, record, october, growth, family, summers, truncation, quantity, spread, evenings, standard, districts, decisive, outbreak, complete, reflex, percentile, forecasting, contact
+Stump terms swept: intake, entrant, record, repeat, planning, interval, classes, window, classmates, decisive, family, quantity, forward, forecasting, projection, exposure, population, nothing, truncation, decision, fictional, student, november, early-warning, allocated
 
 ## 3 answer figures in the pack (REVIEW 2)
-- **REVIEW** `phd_situation_report_w41.pdf`: carries 5 of 8 distinctive words of the committed call: 'Plan the treatment centres for about 5,000 new cases (confirmed and probable, by onset) in weeks 49 to 52.'
-- **REVIEW** `planning_note_phase3_2026-10-19.pdf`: carries 8 of 8 distinctive words of the committed call: 'Plan the treatment centres for about 5,000 new cases (confirmed and probable, by onset) in weeks 49 to 52.'
+- **REVIEW** `continuing_enrolment_projection_conventions_2027.pdf`: carries 11 of 11 distinctive words of the committed call: 'Plan for about 3,250 of the 8,659 first-time entrants enrolled at the 1 October 2026 census not to be enrolled at the 1 '
+- **REVIEW** `data_dictionary.txt`: carries 9 of 11 distinctive words of the committed call: 'Plan for about 3,250 of the 8,659 first-time entrants enrolled at the 1 October 2026 census not to be enrolled at the 1 '
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `phd_situation_report_w41.pdf`: 3 of 25 stump-paragraph terms appear (district, october, contact); read whether the document names the move
-- **REVIEW** `planning_note_phase3_2026-10-19.pdf`: 8 of 25 stump-paragraph terms appear (district, record, october, growth, districts, outbreak); read whether the document names the move
-- **REVIEW** `prompt`: prompt sentence carries two or more stump terms: "Build tvd_projection_w49-w52.xlsx for the December order with that figure and the reproduction number and mean serial interval it rests on, plus the note's two checks: the people first listed as contacts in weeks 37 to 3"
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `continuing_enrolment_projection_conventions_2027.pdf`: 7 of 25 stump-paragraph terms appear (intake, entrant, record, planning, projection, student); read whether the document names the move
+- **REVIEW** `data_dictionary.txt`: 6 of 25 stump-paragraph terms appear (intake, entrant, planning, family, projection, student); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

@@ -1,268 +1,269 @@
-"""The golden and the routes around it, computed from the shipped files under target/ only."""
-import datetime as dt
+"""task179 golden computation, from the pack alone (target/), the way the Planning Office's analyst works it.
+
+The call: each 2019 to 2025 first-time entrant's enrolment at the next census, modelled on the entrant's attributes,
+the week-6 progress ratings and the number of other entrants of the intake the entrant meets in two or more of the
+entrant's own Semester 1 classes (repeat classmates, in bands); the model applied to the 2026 intake and summed.
+Ask A: Semester 1 2026 teaching groups by owning faculty, and those over 30 students. Ask B: continuing students at
+the 2026 census by faculty and year of study."""
+from __future__ import annotations
+
 import os
+
 import numpy as np
 import pandas as pd
-import core as C
+import scipy.sparse as sp
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-TARGET = os.path.join(HERE, "..", "target")
-DAY0 = dt.date(2026, 5, 25)
-COMPLETE = dt.date(2026, 10, 11)
-BASE0 = dt.date(2026, 8, 31)
-CUT_FROM = dt.date(2026, 11, 2)
-WIN0, WIN1 = dt.date(2026, 11, 30), dt.date(2026, 12, 27)
-CUT = 0.5
+import common as C
+
+FAC_ARC = {"FASS": "ASS", "FBUS": "BUS", "FSCI": "SCI", "FENG": "ENG", "FHLT": "HLT"}
+RATE = {"S": 0, "C": 1, "R": 2, "Satisfactory": 0, "Some concern": 1, "At risk": 2}
+BANDS = [0, 1, 2, 3, 4, 6, 9, 15, 22, 10 ** 9]
 
 
-def day(d):
-    return (d - DAY0).days
+def load(target):
+    P = lambda f: os.path.join(target, f)
+    d = {}
+    d["scls"] = pd.read_csv(P(C.F_SCLS), dtype={"STUDENT_NO": str})
+    d["acls"] = pd.read_csv(P(C.F_ACLS), dtype=str)
+    d["census"] = pd.read_csv(P(C.F_CENSUS), dtype={"STUDENT_ID": str})
+    d["xwalk"] = pd.read_csv(P(C.F_XWALK), dtype=str)
+    d["prog"] = pd.read_csv(P(C.F_PROG), dtype={"STUDENT": str, "CLASS": str}, keep_default_na=False)
+    d["adm"] = pd.read_excel(P(C.F_ADM), sheet_name=None, dtype={"Student No": str, "Student ID": str})
+    d["tt"] = pd.read_excel(P(C.F_TT))
+    d["cat"] = pd.read_csv(P(C.F_CAT), dtype=str, keep_default_na=False)
+    d["trf"] = pd.read_csv(P(C.F_TRF), dtype=str)
+    return d
 
 
-def parse_date(s):
-    s = str(s).strip()
-    if not s or s == "nan":
-        return None
-    if "-" in s:
-        return dt.date.fromisoformat(s[:10])
-    return dt.datetime.strptime(s, "%d/%m/%Y").date()
+def census_year(s):
+    s = str(s)
+    return int(s[-4:]) if "/" in s else int(s[:4])
 
 
-def load(target=TARGET):
-    ll = pd.read_csv(os.path.join(target, "tvd_line_list_dunmarrow_2026-10-18.csv"), dtype=str,
-                     encoding="utf-8-sig", keep_default_na=False)
-    ch = pd.read_csv(os.path.join(target, "tvd_transmission_links_2026-10-18.csv"), dtype=str, keep_default_na=False)
-    return ll, ch
+def enrolled_sets(d):
+    """census year -> set of student ids with an enrolled programme attempt (leave is not enrolled)"""
+    cz = d["census"].copy()
+    cz["Y"] = cz["CENSUS_DATE"].map(census_year)
+    en = cz[cz["STATUS"].isin(["EN", "Enrolled"])]
+    return {y: set(g["STUDENT_ID"]) for y, g in en.groupby("Y")}
 
 
-def cases_table(ll, dedup=True):
-    c = ll[ll["classification"].isin(["Confirmed", "Probable"])].copy()
-    c["onset"] = [day(parse_date(x)) for x in c["date_of_onset"]]
-    c["notif"] = [day(parse_date(x)) for x in c["date_of_notification"]]
-    alias = {}
-    if dedup:
-        conf = c[c["sample_id"] != ""].sort_values(["notif", "case_number"], kind="stable")
-        first = {}
-        keep = []
-        for r in conf.itertuples():
-            if r.sample_id in first:
-                alias[r.case_number] = first[r.sample_id]
-            else:
-                first[r.sample_id] = r.case_number
-        c = c[~c["case_number"].isin(alias)]
-    return c, alias
+def entrants(d):
+    """first-time entrants per intake, one row each, with the admissions attributes"""
+    out = []
+    for name, df in d["adm"].items():
+        y = int(name.split()[0])
+        df = df.copy()
+        idc = "Student No" if "Student No" in df.columns else "Student ID"
+        df = df.rename(columns={idc: "sid", "ASC Points": "asc", "ASC Score": "asc"})
+        df["intake"] = y
+        out.append(df)
+    a = pd.concat(out, ignore_index=True)
+    a = a[a["Entry Basis"] == "First-time"].copy()
+    a["sid"] = a["sid"].astype(str)
+    return a
 
 
-def pairs(c, ch, alias, last_day):
-    onset = dict(zip(c["case_number"], c["onset"]))
-    s = [alias.get(x, x) for x in ch["Source person"]]
-    t = [alias.get(x, x) for x in ch["Target person"]]
-    pi, pj = [], []
-    seen = set()
-    for a, b in zip(s, t):
-        if a in onset and b in onset and (a, b) not in seen:
-            seen.add((a, b))
-            if onset[b] <= last_day:
-                pi.append(onset[a])
-                pj.append(onset[b])
-    pi, pj = np.array(pi), np.array(pj)
-    return pi, pj, pj - pi
+def ties(pairs):
+    """pairs: DataFrame with columns sid, cls. Repeat classmates: other students met in two or more classes."""
+    sids = pd.Index(pairs["sid"].unique())
+    cls = pd.Index(pairs["cls"].unique())
+    r = sids.get_indexer(pairs["sid"])
+    c = cls.get_indexer(pairs["cls"])
+    A = sp.csr_matrix((np.ones(len(r)), (r, c)), shape=(len(sids), len(cls)))
+    M = (A @ A.T).tocsr()
+    M.setdiag(0)
+    M.eliminate_zeros()
+    t2 = np.asarray((M >= 2).sum(1)).ravel()
+    return pd.Series(t2, index=sids)
 
 
-def daily_counts(c, last_day):
-    on = c["onset"].values
-    return np.bincount(on[on <= last_day], minlength=last_day + 1).astype(float)
+def frame(d):
+    a = entrants(d)
+    en = enrolled_sets(d)
+    xw = dict(zip(d["xwalk"]["SIRIUS_STUDENT_NO"], d["xwalk"]["ARC_ID"]))
+    a = a[[sid in en.get(y, set()) for sid, y in zip(a["sid"], a["intake"])]].copy()
+    nxt = []
+    for sid, y in zip(a["sid"], a["intake"]):
+        if y >= 2026:
+            nxt.append(np.nan)
+        elif y + 1 < 2026:
+            nxt.append(0 if sid in en[y + 1] else 1)
+        else:
+            nxt.append(0 if xw.get(sid) in en[2026] else 1)
+    a["gone"] = nxt
+    # classes
+    s = d["scls"].rename(columns={"STUDENT_NO": "sid"})
+    s["cls"] = s["TERM"] + ":" + s["CLASS_NBR"].astype(str)
+    s["intake"] = s["COHORT_YR"]
+    r = d["acls"].rename(columns={"arc_student_id": "sid"})
+    r["cls"] = r["class_code"]
+    r["intake"] = 2026
+    t = []
+    for y, g in pd.concat([s[["sid", "cls", "intake"]], r[["sid", "cls", "intake"]]]).groupby("intake"):
+        tt = ties(g)
+        t.append(pd.DataFrame({"sid": tt.index, "intake": y, "ties": tt.values}))
+    t = pd.concat(t)
+    a = a.merge(t, on=["sid", "intake"], how="left")
+    a["ties"] = a["ties"].fillna(0)
+    # week-6 progress ratings
+    pr = d["prog"].copy()
+    pr["v"] = pr["RATING"].map(RATE)
+    m = pr.groupby(["STUDENT", "YEAR"])["v"].mean().rename("prisk").reset_index()
+    m = m.rename(columns={"STUDENT": "sid", "YEAR": "intake"})
+    a = a.merge(m, on=["sid", "intake"], how="left")
+    a["prisk"] = a["prisk"].fillna(0.5)
+    # attributes
+    a["fif"] = (a["First in Family"] == "Y").astype(float)
+    a["pt"] = (a["Attendance"] == "PT").astype(float)
+    a["hard"] = (a["Hardship Grant"] == "Y").astype(float)
+    a["lc"] = (a["Living-Learning Community"] == "Y").astype(float)
+    a["hall"] = (~a["Accommodation"].isin(["Family home", "Private"])).astype(float)
+    dob = pd.to_datetime(a["Date of Birth"])
+    a["age"] = a["intake"] - dob.dt.year
+    a["mature"] = (a["age"] >= 21).astype(float)
+    acc = pd.to_datetime(a["Offer Accepted"])
+    a["acc_day"] = (acc - pd.to_datetime(a["intake"].astype(str) + "-01-01")).dt.days
+    a["asc"] = a["asc"].astype(float)
+    return a
 
 
-def the_call(target=TARGET, gi="trunc_gamma", growth="ols_daily", dedup=True, last=None):
-    ll, ch = load(target)
-    c, alias = cases_table(ll, dedup)
-    T = day(COMPLETE) if last is None else last
-    pi, pj, lags = pairs(c, ch, alias, T)
-    lags_ok = lags >= 1
-    pi, pj, lags = pi[lags_ok], pj[lags_ok], lags[lags_ok]
-    daily = daily_counts(c, day(COMPLETE))
-    if gi == "trunc_gamma":
-        w, _ = C.fit_lags(lags, pi, T, "gamma", True)
-    elif gi == "trunc_weibull":
-        w, _ = C.fit_lags(lags, pi, T, "weibull", True)
-    elif gi == "trunc_lognorm":
-        w, _ = C.fit_lags(lags, pi, T, "lognorm", True)
-    elif gi == "npmle":
-        w = C.reverse_time_npmle(lags, pi, T)
-    elif gi.startswith("complete"):
-        k = int(gi.split("_")[1])
-        w = C.empirical(lags[pi <= T - k])
-    elif gi == "naive_gamma":
-        w, _ = C.fit_lags(lags, pi, T, "gamma", False)
-    elif gi == "naive_empirical":
-        w = C.empirical(lags)
-    elif gi == "literature":
-        w = C.dgamma_pmf(15.3, 9.3)
-    b0, b1 = day(BASE0), day(COMPLETE)
-    if growth == "ols_daily":
-        r = C.growth_rate(daily, b0, b1)
-    elif growth == "poisson_daily":
-        r = C.growth_rate_poisson(daily, b0, b1)
-    elif growth == "ols_weekly":
-        wk = np.array([daily[d:d + 7].sum() for d in range(b0, b1 + 1, 7)])
-        r = float(np.polyfit(np.arange(len(wk)) * 7.0, np.log(wk), 1)[0])
-    R = C.R_from_growth(r, w)
-    x = C.project(daily, b1, R, w, CUT, day(CUT_FROM), day(WIN1))
-    total = float(x[day(WIN0):day(WIN1) + 1].sum())
-    weekly = [float(x[day(WIN0) + 7 * k: day(WIN0) + 7 * k + 7].sum()) for k in range(4)]
-    return {"total": total, "weekly": weekly, "R": R, "r": r, "mean_si": C.mean_of(w), "n_pairs": int(len(lags)),
-            "n_cases": int((c["onset"] <= b1).sum()), "series": x}
+BASE = ["asc", "fif", "pt", "mature", "hard", "prisk", "lc", "hall", "acc_day"]
 
 
-if __name__ == "__main__":
-    for gi in ["trunc_gamma", "trunc_weibull", "npmle", "trunc_lognorm", "complete_50", "complete_60", "naive_gamma", "naive_empirical", "literature"]:
-        o = the_call(gi=gi)
-        print("%-16s total %8.0f R %.3f mean %.2f pairs %d cases %d" % (gi, o["total"], o["R"], o["mean_si"], o["n_pairs"], o["n_cases"]))
-    for g in ["poisson_daily", "ols_weekly"]:
-        o = the_call(growth=g); print(g, round(o["total"]), round(o["R"], 3))
-
-
-def variant(kind, target=TARGET):
-    """Routes around the golden for the screens: Layer 1 mishandlings and reflexes."""
-    ll, ch = load(target)
-    T = day(COMPLETE)
-    if kind == "no_dedup":
-        c, alias = cases_table(ll, dedup=False)
+def design(a, form):
+    X = [a[c].values.astype(float) for c in BASE]
+    X[0] = (X[0] - 186.0) / 34.0
+    X[-1] = X[-1] / 100.0
+    for f in ["BUS", "SCI", "ENG", "HLT"]:
+        X.append((a["Faculty"] == f).values.astype(float))
+    t = a["ties"].values.astype(float)
+    if form == "bands":
+        e = BANDS
+        X += [((t >= lo) & (t < hi)).astype(float) for lo, hi in zip(e[:-1], e[1:])][1:]
+    elif form == "bands5":
+        e = [0, 1, 3, 6, 10, 10 ** 9]
+        X += [((t >= lo) & (t < hi)).astype(float) for lo, hi in zip(e[:-1], e[1:])][1:]
+    elif form == "bands4":
+        e = [0, 1, 3, 6, 10 ** 9]
+        X += [((t >= lo) & (t < hi)).astype(float) for lo, hi in zip(e[:-1], e[1:])][1:]
+    elif form.startswith("ge"):
+        X.append((t >= int(form[2:])).astype(float))
+    elif form == "any":
+        X.append((t >= 1).astype(float))
+    elif form == "lin":
+        X.append(t)
+    elif form == "log":
+        X.append(np.log1p(t))
+    elif form.startswith("sat"):
+        X.append(1 - np.exp(-t / float(form[3:])))
+    elif form == "none":
+        pass
     else:
-        c, alias = cases_table(ll, dedup=True)
-    if kind == "with_noncases":
-        c2 = ll[ll["classification"].isin(["Confirmed", "Probable", "Not a case"])].copy()
-        c2["onset"] = [day(parse_date(x)) for x in c2["date_of_onset"]]
-        c2["notif"] = [day(parse_date(x)) for x in c2["date_of_notification"]]
-        c = c2[~c2["case_number"].isin(alias)]
-    chv = ch
-    if kind == "drop_low":
-        chv = ch[ch["Certainty level"] != "Low"]
-    lastp = T
-    if kind == "trunc_at_extract":
-        lastp = day(dt.date(2026, 10, 18))
-    pi, pj, lags = pairs(c, chv, alias, lastp)
-    ok = lags >= 1
-    pi, pj, lags = pi[ok], pj[ok], lags[ok]
-    if kind == "drop_recent_created":
-        cr = {}
-        for a, b, d in zip(ch["Source person"], ch["Target person"], ch["Created on"]):
-            cr[(alias.get(a, a), alias.get(b, b))] = day(dt.date.fromisoformat(d))
-    daily = daily_counts(c, T)
-    if kind == "naive_drop_last14":
-        m = pj <= T - 14
-        w = C.empirical(lags[m])
-    elif kind in ("naive",):
-        w = C.empirical(lags)
-    else:
-        w, _ = C.fit_lags(lags, pi, lastp, "gamma", True)
-    r = C.growth_rate(daily, day(BASE0), T)
-    R = C.R_from_growth(r, w)
-    x = C.project(daily, T, R, w, CUT, day(CUT_FROM), day(WIN1))
-    return float(x[day(WIN0):day(WIN1) + 1].sum()), R, C.mean_of(w)
+        raise KeyError(form)
+    return np.column_stack([np.ones(len(a))] + X)
 
 
-ASK_ZONES = ["Tamberlow", "Quillmarsh", "Kettlebank North", "Brindlecourt"]
-WK37, WK39_END = dt.date(2026, 9, 7), dt.date(2026, 9, 27)
+def logit_fit(X, y, it=60):
+    """Newton-Raphson maximum likelihood for a logistic model; returns coefficients and the log-likelihood"""
+    b = np.zeros(X.shape[1])
+    for _ in range(it):
+        eta = X @ b
+        p = 1 / (1 + np.exp(-eta))
+        W = p * (1 - p)
+        g = X.T @ (y - p)
+        H = (X * W[:, None]).T @ X
+        step = np.linalg.solve(H + 1e-9 * np.eye(len(b)), g)
+        b += step
+        if np.max(np.abs(step)) < 1e-10:
+            break
+    p = 1 / (1 + np.exp(-(X @ b)))
+    ll = float(np.sum(y * np.log(p) + (1 - y) * np.log(1 - p)))
+    return b, ll
 
 
-def load_contacts(target=TARGET):
-    rg = pd.read_csv(os.path.join(target, "contact_registry_dunmarrow_w36-w42.csv"), dtype=str,
-                     encoding="utf-8-sig", keep_default_na=False)
-    for col in ("date_listed", "date_last_exposure", "follow_up_end", "status_date"):
-        rg[col] = [parse_date(x) for x in rg[col]]
-    rg["age_years"] = rg["age_years"].astype(int)
-    rg["days_seen"] = rg["days_seen"].astype(int)
-    return rg
+def forecast(a, form="bands", years=None):
+    h = a[a["intake"] < 2026]
+    if years is not None:
+        h = h[h["intake"].isin(years)]
+    f = a[a["intake"] == 2026]
+    b, ll = logit_fit(design(h, form), h["gone"].values.astype(float))
+    p = 1 / (1 + np.exp(-(design(f, form) @ b)))
+    return float(p.sum()), ll, b
 
 
-def person_ids(rg, mode="golden"):
-    """Group listings into people. golden: the exact person key, then a provincial paper listing joined to a
-    tablet listing of the same source case, household, initials and sex, listed within a day, age within three
-    years. exact: the exact key only. loose: household, initials and sex, age ignored."""
-    key_exact = list(zip(rg["district"], rg["household_code"], rg["initials"], rg["sex"], rg["age_years"]))
-    if mode == "ids":
-        return list(rg["contact_id"])
-    if mode == "loose":
-        return list(zip(rg["district"], rg["household_code"], rg["initials"], rg["sex"]))
-    pid = list(key_exact)
-    if mode == "exact":
-        return pid
-    tab = rg[rg["follow_up_team"] == "LMR"]
-    idx = {}
-    for i, r in zip(tab.index, tab.itertuples()):
-        idx.setdefault((r.source_case_number, r.household_code, r.initials, r.sex), []).append((i, r.date_listed, r.age_years))
-    pos = {i: k for k, i in enumerate(rg.index)}
-    for i, r in zip(rg.index, rg.itertuples()):
-        if r.follow_up_team != "PHD":
-            continue
-        for j, dl, ag in idx.get((r.source_case_number, r.household_code, r.initials, r.sex), []):
-            if abs((r.date_listed - dl).days) <= 1 and abs(r.age_years - ag) <= 3 and ag != r.age_years:
-                pid[pos[i]] = key_exact[pos[j]]
-                break
-    return pid
+# ------------------------------------------------------------------ ask A: teaching groups
+def teaching_groups(d):
+    tt = d["tt"]
+    act = tt[tt["Class Status"] == "Active"]
+    meet = act[["Class Code", "Day", "Start", "Teaching Weeks", "Room", "Teacher"]].drop_duplicates()
+    # classes taught together: the same room, day, start and teaching weeks (the teacher of record is per class)
+    key = meet["Day"] + "|" + meet["Start"] + "|" + meet["Teaching Weeks"] + "|" + meet["Room"]
+    parent = {c: c for c in act["Class Code"].unique()}
 
-
-def ask_contacts(target=TARGET, mode="golden", per_record=False):
-    rg = load_contacts(target)
-    rg = rg.assign(pid=person_ids(rg, mode))
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    for _, g in meet.assign(k=key).groupby("k"):
+        cs = sorted(g["Class Code"].unique())
+        for c in cs[1:]:
+            ra, rb = find(cs[0]), find(c)
+            if ra != rb:
+                parent[rb] = ra
+    cls = act.drop_duplicates("Class Code")[["Class Code", "Owning Faculty", "Enrolled at Census"]].copy()
+    cls["grp"] = cls["Class Code"].map(find)
+    grp = cls.groupby("grp").agg(fac=("Owning Faculty", "first"), n=("Enrolled at Census", "sum"),
+                                 facs=("Owning Faculty", "nunique"))
+    assert (grp["facs"] == 1).all()
     out = {}
-    for z in ASK_ZONES:
-        sub = rg[rg["district"] == z]
-        first = sub.groupby("pid")["date_listed"].min()
-        people = first[(first >= WK37) & (first <= WK39_END)].index
-        s2 = sub[sub["pid"].isin(set(people))]
-        if per_record:
-            done = (s2["status"] == "Follow-up completed").mean()
-            out[z] = (len(s2), 100 * done)
-            continue
-        last_end = s2.groupby("pid")["follow_up_end"].transform("max")
-        fin = s2[s2["follow_up_end"] == last_end]
-        comp = fin.groupby("pid")["status"].apply(lambda v: (v == "Follow-up completed").any())
-        out[z] = (int(len(people)), float(100 * comp.mean()))
+    for f in ["FASS", "FBUS", "FSCI", "FENG", "FHLT"]:
+        gg = grp[grp["fac"] == f]
+        out[FAC_ARC[f]] = (int(len(gg)), int((gg["n"] > 30).sum()))
     return out
 
 
-def load_mobile_lab(target=TARGET):
-    import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(target, "tamberlow_field_lab_pcr_w36-w42.xlsx"), read_only=True)
-    rows = []
-    for ws in wb.worksheets:
-        it = ws.iter_rows(values_only=True)
-        head = next(it)
-        for r in it:
-            rows.append(dict(zip(head, r)))
-    df = pd.DataFrame(rows)
-    f = lambda s: dt.datetime.strptime(s, "%d/%m/%Y %H:%M")
-    df["coll"] = df["Collected"].map(f)
-    df["rec"] = df["Received at lab"].map(f)
-    df["res"] = df["Result time (analyser)"].map(f)
-    return df
-
-
-def ask_lab(target=TARGET, shift_h=1.0, final="last"):
-    df = load_mobile_lab(target)
-    d = df[df["Reason"] == "Diagnostic"].copy()
-    d["res"] = d["res"] + dt.timedelta(hours=shift_h)
-    d = d.sort_values(["Sample no.", "res"], kind="stable")
-    g = d.groupby("Sample no.").tail(1) if final == "last" else d.groupby("Sample no.").head(1)
-    g = g.assign(h=[(a - b).total_seconds() / 3600 for a, b in zip(g["res"], g["coll"])],
-                 wk=[x.isocalendar()[1] for x in g["coll"]])
+# ------------------------------------------------------------------ ask B: continuing students
+def continuing(d):
+    cz = d["census"].copy()
+    cz["Y"] = cz["CENSUS_DATE"].map(census_year)
+    c6 = cz[(cz["Y"] == 2026) & (cz["STATUS"] == "Enrolled") & (cz["YEAR_OF_STUDY"] >= 2)]
+    cat = d["cat"]
+    combos = {}
+    for _, r in cat[cat["TYPE"] == "Conjoint"].iterrows():
+        a, b = r["COMPONENTS"].split(";")
+        combos[frozenset((a, b))] = a
+    pfac = {r["CODE"]: FAC_ARC[r["OWNING_FACULTY"]] for _, r in cat[cat["TYPE"] == "Programme"].iterrows()}
+    trf = d["trf"]
+    moved = {}
+    for _, r in trf.iterrows():
+        moved.setdefault(r["STUDENT"], []).append((r["APPROVED"], r["FROM_PROGRAMME"], r["TO_PROGRAMME"]))
     out = {}
-    for wk in (38, 39, 40, 41):
-        s = g[g["wk"] == wk]["h"]
-        out[wk] = (float(np.mean(s)), float(100 * (s <= 24).mean()), int(len(s)))
-    return out
+    n_stale = 0
+    for sid, g in c6.groupby("STUDENT_ID"):
+        progs = list(g.sort_values("ATTEMPT_SEQ")["PROGRAMME"])
+        yos = int(g["YEAR_OF_STUDY"].iloc[0])
+        tr = [m for m in moved.get(sid, []) if m[1] in progs and m[2] in progs]
+        if len(progs) == 1:
+            fac = pfac[progs[0]]
+        elif tr:
+            # an attempt left enrolled after the student transferred out of it: the student is in the new programme
+            fac = pfac[sorted(tr)[-1][2]]
+            n_stale += 1
+        else:
+            fac = pfac[combos[frozenset(progs)]]
+        k = (fac, min(yos, 4))
+        out[k] = out.get(k, 0) + 1
+    return out, n_stale
 
 
-def cartridge_run_minutes(target=TARGET):
-    """The cartridge run time as the data dictionary states it."""
-    import openpyxl
-    import re
-    wb = openpyxl.load_workbook(os.path.join(target, "data_dictionary_tvd_response_2026-10.xlsx"), read_only=True)
-    for row in wb["Tamberlow field laboratory"].iter_rows(values_only=True):
-        m = re.search(r"runs (\d+) minutes", str(row[1]))
-        if m:
-            return int(m.group(1))
-    raise ValueError("run time not found in the dictionary")
+def compute(target):
+    d = load(target)
+    a = frame(d)
+    res = {"frame": a, "data": d}
+    res["n2026"] = int((a["intake"] == 2026).sum())
+    res["call"], res["ll"], res["coef"] = forecast(a, "bands")
+    res["groups"] = teaching_groups(d)
+    res["cont"], res["n_stale"] = continuing(d)
+    return res

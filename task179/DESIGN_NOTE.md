@@ -1,11 +1,325 @@
 # task179 design note
 
-**Status: PAUSED 2026-10-23 at stage 1 (reopened from RETIRED 2026-10-21; see `## Retired` and `## Rebuild (2026-10-23)`). Architecture v2, re-sited 2026-10-21 into a fictional setting inside the round's second new cell,
-Epidemiology & Public Health, `infectious-disease-transmission-modeling`, Forecasting.** The first cell (the
-ambulance surge pool, never carded) and the redraw cell in Economics & Econometrics (never carded) are spent; their
-records sit under `## First-cell record` and in `## Tried and rejected`. Re-screen nothing there.
+**Architecture v3, drawn 2026-10-23: a from-scratch rebuild in education-learning-sciences /
+learning-analytics-early-warning-models (Forecasting).** The number was RETIRED on 2026-10-21 and reopened under the
+author's rule that no number stays retired. Every world, cell and mechanism worked on it before (the ambulance surge
+pool, the macro-econometrics cell, architecture v2's truncated serial interval, the product-analytics adoption cell
+and the population-pharmacokinetics cell) is spent and kept below as history (`## Architecture v2 record`,
+`## First-cell record`, `## Tried and rejected`, `## Retired`, `## Rebuild (2026-10-23)`).
 
 ## Draw
+
+1. **Card.** Drafted at `b179x/card/task179.json` (session scratchpad), architecture v3, old identity (v2, spent) in
+   `lineage`. **Not registered:** `register_serial.sh` BLOCKed twice under the lock. First (09:20Z window) on
+   `ban.strategy` composition_mix against task274; then, after task274 and other builds were spent and dropped out of
+   the live window, on `ban.strategy`, `ban.pattern` (G6), `ban.artifact` (register) and `ban.forum` (executive_team)
+   against task175, which is again one of the last three live cards. composition_mix is this draw's honest family
+   (stumping strategies F5: a pooled rate does not fit a pool whose mix on a property rebuilt from a history differs),
+   so it is not relabelled; the forum and artifact have honest alternates (the university's Planning and Resources
+   Committee, `committee_or_panel`; the census history as `other`) but the strategy does not. The draw registers when
+   task175 leaves the live window. Before that, `guard.py check` WARN only (`overuse.objective`, `overuse.gate_g`,
+   `repeat.decision`, `repeat.question_form`, answered in item 9), with the older (time, G6) signatures differentiated
+   against task125, task150 and task501 v3; the first check BLOCKed `test.same_puzzle` and `test.same_driver` on
+   (population, G6) against task175, and the decisive gap was redrawn to time, which names the difference as honestly
+   (the record's intakes were placed in class groups by an allocation run and the forecast bets on the first intake
+   after the run ended), population kept second.
+2. **Pairing.** Client domain education-learning-sciences, task type learning-analytics-early-warning-models (serves
+   Forecasting; no earlier card sits in this task type); objective Forecasting & Predictive Modeling; decision a
+   quantity figure (a count of students); shape 07, a grid: the call, with the asks' grids of Semester 1 2026 teaching
+   groups by faculty and continuing students by faculty and year of study.
+3. **World, fictional throughout.** Corriemoor University, a public university of about 30,000 students in the city of
+   Corriemoor, Republic of Aldmark (both invented; no real university, ministry, student system or student record is
+   used, and `metadata.json` says the setting is fictional and the data synthetic). Five faculties, thirteen bachelor's
+   programmes and eight conjoint combinations; about 8,000 first-time entrants a year. A first-year full-time entrant
+   takes UNIV101 Academic Communication, the faculty's two first-year papers and one first-year elective in Semester 1,
+   in classes of up to 30. Until 2025 the Registry's student system SIRIUS ran a class allocation each July that
+   placed confirmed full-time entrants in groups of 28 taking UNIV101 and the faculty's two papers together; entrants
+   confirmed after the run, part-time entrants and a few others enrolled in remaining seats. On 1 June 2026 the
+   university moved to ARC; the allocation was not rebuilt, and the 2026 entrants enrolled themselves through ARC from
+   6 July. The halls office kept placing its living-learning communities (about 11 per cent of entrants) together.
+   Personas from `guard.py names --locale en_IE --seed 179`: Cillian Coholan (Planning Office senior analyst, owner of
+   the projection), Malcolm Hussey (Registry systems manager, author of the cutover notes), Keri Keating (Director of
+   Planning and Insight, author of the projection conventions). None is in the prompt.
+4. **Decision and call.** The Planning Office's continuing-enrolment projection sets the 2027 teaching plan (how many
+   second-year teaching groups each faculty schedules) and the 2027 fee budget, and goes to the senior leadership team
+   in November. The call, forward facing (the window closes on 1 October 2027): how many of the first-time bachelor's
+   entrants enrolled at the 1 October 2026 census will not be enrolled at the 1 October 2027 census, to the nearest
+   250.
+5. **The quantity.** Each 2026 entrant's probability of not being enrolled at the next census, the early-warning
+   model's own target, summed over the 2026 entrants.
+6. **Mechanism keys.** Gap time (the record's intakes sat in allocated class groups, the forecast intake did not),
+   then population; generators G6 (composition shift: the 2026 intake sits at the other end of an exposure the record
+   measures), G14 (the conditioned yield that fixes it), G2 (the exposure lives at the class-membership grain, finer
+   than any entrant field). Gate G `forecasting`. Strategy `composition_mix`. Layer 2 family
+   `estimand_identification`, pattern `own:retention-read-on-repeat-classmates-after-class-allocation-ended`. The
+   library card learning-analytics-early-warning-models 1 (features that exist at alert time, validated on a later
+   cohort) is the default path and passes here, because the later cohort it validates on (2025) was still
+   allocated; the judgment the card takes for granted is that the forward intake was produced the way the
+   validation intake was.
+7. **Data-native sentence.** The record holds every entrant's Semester 1 classes at the census; in the allocated
+   years about four in five full-time entrants shared UNIV101 and two faculty papers with the same 27 others, so the
+   number of other entrants an entrant meets in two or more classes runs from none to about 27, and an entrant who
+   meets few others twice is about twice as likely not to be back at the next census; the 2026 entrants enrolled
+   themselves, and outside the living-learning communities they meet on average under one other entrant twice.
+8. **Sources read (stumping 1.3).** The cell's four library cards (alert-time features and a later cohort; cut-off
+   by support capacity; regression discontinuity at the risk-score cut-off; error rates by group): the first is the
+   default path, the other three are not this decision. task176's death in this cell (credits by identity under a
+   new course size, a function of several draws: task143's driver) and task143's card were read as spent: nothing
+   here is a joint or tail quantity. task175 (the shape that shipped clean: a forward population at the other end of
+   a covariate the record measures at a finer grain) was read as the shape, never the template: its covariate is a
+   spatial fill a service sequence sorted, this one a count of repeat co-members in a bipartite class network that
+   no column or key holds, made different by an administrative placement that ended at a records cutover.
+9. **Guard WARNs answered.** `overuse.objective` and `overuse.gate_g`: the lane is Forecasting and its Gate G is the
+   forecast itself. `repeat.decision` (quantity_figure) and `repeat.question_form` (how-many): the decision is a count
+   of students the teaching plan and the fee budget are sized on, so the honest form is how many.
+10. **Axes against the live window** (task274, task176, task177 at the draw): forum `executive_team` (the senior
+    leadership team approves the teaching plan), forcing event `other` (the 2027 teaching plan and budget round,
+    which has no vocabulary key), organisation `university_or_school`, role `research_desk`, artifact `register` (the
+    census history), calibration `realised_outcome_roster` (earlier intakes' next-census enrolment), shape 07.
+
+## Screens (stumping 1.2, as code)
+
+Prototypes in the session scratchpad, b179x/screen (`u1.py` to `u1e.py`, `u1sum.py` on a stylised world; then
+`wfam.py`, `wseeds.py` on the generator's own world, seven world draws by salt, seeds fixed before outcomes).
+Figures are the 2026 intake's expected non-enrolment at the 2027 census against each route, on the generator's
+world (truth 3,190 to 3,207 over seven draws, about 37.6 per cent of 8,499 entrants against the record's 24.7; the shipped world then set the 2026 intake at 8,659).
+
+- **The default family lands a third low and tightly:** a logistic early-warning model on every entrant attribute
+  -33.6 to -34.7 per cent; the last intake's rate times the 2026 intake -40 per cent; the pooled rate -34 per cent.
+- **The golden family converges where the data close it:** repeat classmates in bands (0, 1, 2, 3, 4 to 5, 6 to 8, 9
+  to 14, 15 to 21, 22 or more), five bands, four bands, and an indicator at five, seven or ten repeat classmates file
+  within 1 to 2 per cent of each other on every draw and -1.8 to +2.2 per cent of the truth (bands). Forms the data
+  reject sit lower: a saturating curve at scale 8 (4 to 26 log-likelihood units worse) -0.5 to -4.3, a linear term (10
+  to 35 worse) -1.2 to -4.4, log(1 + repeat classmates) (12 to 45 worse) -1.4 to -6.8.
+- **Wrong constructions of the exposure are loud:** any repeat classmate as a yes or no (about 237 units worse) -30
+  per cent; classmates met in three or more classes (about 145 worse) -15; the largest number of classes shared with
+  one classmate -13 to -15; a full-group indicator at 20 repeat classmates (about 54 worse) -1 to -7.
+- **Dispersion:** the decisive quantity is a level (the isolated entrant's rate), not a spread.
+- **Variance-only:** the step moves the point by a third of the figure.
+- **Common-exposure subset:** the record's entrants who met few others twice are the attaining subset, and their
+  rate, adjusted for the covariates, is the golden's own construction once the exposure is built; their plain rate
+  times the 2026 intake overshoots by about 8 per cent because the living-learning communities stayed placed.
+  Building the exposure from class memberships is the decisive step, and no column, key or code holds it.
+- **Truncation direction:** no suppressing threshold on the path.
+- **The functional-form fork, found and closed in the world.** In the first world the forward intake's repeat
+  classmates sat at 1 to 4, where the record had little support, and the forms forked 7 per cent (`wfam.py` on the
+  first generator world: bands 2,936 against a linear term's 2,819 and log's 2,725). Two facts of the world close it:
+  the fourth first-year paper is a university-wide elective (so self-enrolled entrants meet few others twice, as the
+  record's late entrants did), and the protection a group gives is near flat below five repeat classmates.
+- **Precision:** the golden's own spread over seven world draws is 1.3 per cent of the figure; with the call to the
+  nearest 250 (3.8 per cent either side of the centre) the standing family and a one-sigma move stay inside one bin
+  (asserted in `checks.py`).
+- `guard.py slots` on the driver and on the setting's words (timetabling, retention, classmates, self-enrolment,
+  allocation, census, persistence, peers, contagion, network): vocabulary hits only; task179's own product-analytics
+  screen recorded local contagion of adoption inside customer accounts, a different mechanism.
+
+## Default path
+
+1. Read the projection conventions: the population is the first-time bachelor's entrants with an enrolled programme
+   attempt at the 1 October 2026 census (entrants with credit and returning students are not first-time); an entrant
+   counts as enrolled at the 1 October 2027 census when any programme attempt is enrolled there, and a student on
+   approved leave is not enrolled.
+2. Stitch the SIRIUS extracts (2019 to 2025 intakes) and the ARC extracts (2026) through the student crosswalk, keep
+   each intake's first-time entrants enrolled at their own census, and take each 2019 to 2025 entrant's outcome from
+   the next census (the 2025 intake's from the ARC census of 2026).
+3. Fit the early-warning model on every entrant attribute the record carries: Aldmark Secondary Certificate points,
+   first in family, part-time study, age at entry, hardship grant, the week-6 progress ratings, faculty, hall
+   residence, living-learning community and acceptance date; validate it on the 2025 intake held out (calibrated).
+4. Score the 2026 entrants and sum their probabilities.
+
+Ends on: 2,250 students not enrolled at the 1 October 2027 census (2,142 unrounded)
+
+Golden: 3,250 students not enrolled at the 1 October 2027 census (3,269 unrounded)
+
+## Stump sentence
+
+A competent solver fits an early-warning model on the entrants' own attributes (secondary score, first in family,
+part-time study, age, hardship grant, week-6 progress ratings, faculty, hall, living-learning community and acceptance
+date) to the 2019 to 2025 entrants' enrolment at the next census, validates it on the 2025 intake, scores the 8,659
+2026 entrants and files 2,250 not enrolled on 1 October 2027 (2,142), against 3,250, because it never reads each
+entrant's chance at the number of other entrants met in two or more of the entrant's own classes: the Registry's
+allocation run kept that near 26 for four in five entrants of every intake it validates on, and the 2026 entrants,
+who enrolled themselves after the ARC cutover, meet on average under one other entrant twice.
+
+## Three rules
+
+Task type: learning-analytics-early-warning-models (education-learning-sciences), which serves Forecasting: the forward count of an intake's students who will not be enrolled at the next census, worked from the record's entrants student by student.
+Domain test: the deciding quantity is each first-year entrant's probability of not being enrolled at the next census, the early-warning model's own target, which persistence research ties to the student's academic and social integration; here integration is read from the co-enrolment network, the other entrants met in two or more of the entrant's own classes, and carried to an intake whose classes were not allocated.
+Swap: "how many of the 2026 hires will not be on the payroll in 2027" keeps a rate times a population, but there is no census, no class allocation run, no living-learning community, no class co-enrolment and no re-enrolment year, so the step that moves the answer has nothing to stand on.
+Layer 1: a student-records cutover (SIRIUS extracts with seven-digit numbers and day-first dates, ARC extracts with C-numbers, ISO dates and new class codes, a crosswalk between them, Registry); census and progress-rating codes that differ between the systems; students on approved leave carried on the census; conjoint students on two attempts and two rows; entrants with credit and returning students in the admissions workbook beside first-time entrants, one sheet per intake with drifting column names (Admissions); a class timetable with one row per weekly meeting, room changes and cancelled classes (Timetabling); nothing placed to be caught.
+Layer 2: estimand_identification: the record's intakes were placed in class groups and the forward intake was not, so neither the record's rate nor a model validated on a later allocated intake transfers; the comparison the data force is an entrant with as few repeat classmates as the forward entrant's own.
+Decisive step: read each entrant's chance of not being enrolled at the next census at the number of other entrants met in two or more of the entrant's own Semester 1 classes, from the 2019 to 2025 entrants' census classes and outcomes, and carry it to the 2026 entrants' own classes, instead of a model on entrant attributes validated on an intake that was still allocated.
+Not semantics: every field (census status, programme attempt, progress rating, crosswalk, class number, acceptance date) can be read correctly and the early-warning model still files 2,250; nothing in any file says an entrant's chance depends on classmates, and no column, key or code holds the number of repeat classmates or marks an allocated group.
+Not rule application: no filed rule or procedure says how an entrant's chance is estimated; the conventions fix only who is counted, the two censuses, leave as not enrolled and the rounding. The enumerated family (repeat-classmate bands of nine, five and four, indicators at five, seven and ten, saturating curves at scales 4 and 8, a linear term, a log term, fit windows of seven, four and three intakes) spreads 3,090.9 to 3,296.8 on the call; the standing family, every form within 16 log-likelihood units of the best and every fit window, spreads 3,172.5 to 3,296.8, one printed call (3,250), with the log and scale-4 forms (17 and 22 units worse) just outside; the ruling-out of the rivals is loud: the model without the exposure is 455 units worse and the yes-or-no exposure 216.
+Analyst test: a strong analyst who stitches both systems through the crosswalk, keeps first-time entrants enrolled at each census, reads leave as not enrolled and fits a validated early-warning model on every entrant attribute and the week-6 ratings files 2,250 (Ends on) of the 2026 entrants not enrolled at the 1 October 2027 census, against 3,250.
+Estimand: the number of first-time bachelor's entrants with an enrolled programme attempt at the 1 October 2026 census who will have no enrolled programme attempt at the 1 October 2027 census (a student on approved leave not enrolled), to the nearest 250; filed in continuing_enrolment_projection_conventions_2027.pdf sections 2 and 3, the count asked in the prompt.
+No decoy: nothing is planted to be caught: no forecast, target, earlier projection, memo or stakeholder figure ships; the early-warning model is the solver's own arithmetic on the record, and the cutover notes and conventions state only facts the Registry and the Planning Office file.
+No certified replay: no certified or published figure is reproduced to recover the method; the conventions file the WHAT and no figure in the pack is an output of a forecasting method.
+Lesson: a retention model validated on a later intake is only as good as the process that produced that intake; a model learns to ask what changed in how the forward intake met its classmates, and to read the change at the class-membership grain no field carries, which no build on file teaches (task175 conditions on a street's build-out, task165 on a service headroom, task143 on a group effect inside a joint tail).
+
+## Readability screen
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 0 the record's non-enrolment rate, or the 2025 intake's, times the 2026 intake | no | yes (census history) | yes (carry the rate forward) | no | no | yes | readable |
+| 1 an early-warning model on entrant attributes and week-6 ratings, validated on the 2025 intake | no | yes (admissions, progress check) | yes (the field's textbook model, card 1's later-cohort validation) | yes (2025 predicted 2,068 against 2,058 actual) | no | no | readable |
+| 2 a yes-or-no for any repeat classmate, or the plain rate of the record's entrants with none | no | no (no column holds it) | no | no | no | no | silent |
+| 3 (decisive) repeat classmates counted from each entrant's own classes, the chance read in bands and carried to the 2026 classes | no | no (built from the class extracts by pairing class members) | no (the opponent's reflexes are pool, analogue, validate on the latest cohort, add the visible attributes) | no | no | no | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | not enrolled at the 2027 census | no enrolled attempt; approved leave is not enrolled | leave read as enrolled | 3,037, prints 3,000 | ENROLLED_PIN (conventions section 2) |
+| SF2 | first-time entrants | Entry Basis First-time | credit-transfer entrants included | another population | INTAKE_PIN (section 3) |
+| SF3 | conjoint entrants (two attempts, two rows) | one student | two | same call (asserted) | same call; INTAKE_PIN counts entrants |
+| SF4 | a blank week-6 rating | the middle value | the median of the ratings | 3,268.7, same call | same call (asserted) |
+| SF5 | ASC points across intakes | raw points | standardised within each intake | 3,268.8, same call | same call (asserted) |
+| SF6 | whose classmates count | other first-time entrants of the intake (the extracts hold no one else) | every student in the class | same call | the class extracts are first-time entrants only (asserted) |
+| SF7 | a forecast count | the expected number | a simulated count's median | 3,268, same call | same call (asserted) |
+| SF8 | age | 21 or over at entry | age as a number | 3,270.3, same call | same call (asserted) |
+| SF9 | an entrant's faculty | the admissions Faculty (first-listed programme) | the second programme's | same call | conjoint entrants are 3 per cent and the faculty terms are small (asserted under SF3) |
+
+## Ladder
+
+| Rung | Route | 2026 intake not enrolled at the 2027 census | Printed (nearest 250) | Distance from the golden's bin (3,125 to 3,375) | Dies to |
+|---|---|---|---|---|---|
+| 0a | the 2025 intake's rate times the 2026 intake | 2,118.7 | 2,000 | 1,006 | the record's intakes sat in allocated class groups |
+| 0b | the 2019 to 2025 pooled rate | 2,136.9 | 2,250 | 988 | same |
+| 1 | early-warning model on attributes and week-6 ratings (the default path) | 2,141.9 | 2,250 | 983 | same; 455 log-likelihood units worse than the golden |
+| 2a | a yes-or-no for any repeat classmate | 2,489.1 | 2,500 | 636 | a random shared pair is not a group; 216 units worse |
+| 2b | log(1 + repeat classmates) | 3,113.6 | 3,000 | 11 | the protection is near flat below five; 17 units worse |
+| 2c | a saturating curve at scale 4 | 3,090.9 | 3,000 | 34 | 22 units worse |
+| 2d | the record's entrants with no repeat classmate, their plain rate times the 2026 intake | 3,824.4 | 3,750 | 449 | the living-learning communities stayed placed, and the covariates |
+| 3 | golden family (bands of nine, five and four; indicators at 5, 7 and 10; a saturating curve at 8; a linear term; fits on 2022 to 2025 and 2023 to 2025) | 3,172.5 to 3,296.8 | 3,250 | inside, 47.5 or more from each edge | |
+
+Position and margins: the golden sits above every textbook rung and below the half-handled plain subset; the nearest
+refuted form (log) is 11 past the lower edge and is refuted by 17 log-likelihood units; the golden's own bootstrap
+sigma is 50.1 (1.5 per cent) and a one-sigma move keeps 3,250 (asserted R4). Worth: the step moves the call from 2,142
+to 3,269, 34.5 per cent of the golden.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | first-time bachelor's entrants enrolled at the 1 October 2026 census | INTAKE_PIN |
+| 2 Unit of account | students | the question names it |
+| 3 Attribution window | the 1 October 2027 census | the question and CALL_PIN |
+| 4 As-of dating | records to the 2026 census, assembled 16 October 2026 | dictionary and cutover notes |
+| 5 Version basis | the census history as loaded in ARC | cutover notes section 1 |
+| 6 Denominator | the 8,659 entrants of 2026 | INTAKE_PIN; every route counts the same (cc1) |
+| 7 Weighting | student by student | the estimand sums students |
+| 8 Window length | seven intakes, 2019 to 2025 | B1: fits on 2022 to 2025 and 2023 to 2025 print the call |
+| 9 Boundary inclusivity | census day inclusive | the census is one day |
+| 10 Rounding path | the count to the nearest 250 | the prompt and CALL_PIN; family inside one bin (B1) |
+| 11 Tie-break | none | no ranking |
+| 12 Maturity and censoring | every 2019 to 2025 outcome is observed at the next census | the 2026 census closes the 2025 outcomes |
+| 13 Order of operations | none non-commuting | B1 |
+| 14 Row order | none | n/a |
+| 15 Duplicate resolution | conjoint entrants once | SF3 |
+| 16 Identity normalisation | SIRIUS to ARC through the crosswalk | cutover notes section 2; mess neutral |
+| 17 Netting against gross | none | n/a |
+| 18 Dimensional units | counts | n/a |
+| 19 Code and status semantics | EN and Enrolled; LV and On leave | ENROLLED_PIN; cutover notes Table 1; SF1 |
+| 20 Integerisation | rounding of an expected count | SF7 |
+| 21 Clause scope | the conventions govern the 2027 projection | conventions section 1 |
+| 22 Forward window contents | the 2026 intake's classes at the census | the ARC first-year extract |
+
+## Literal reader
+
+Executed word for word, the prompt and the conventions fix the count (first-time bachelor's entrants enrolled at the
+1 October 2026 census, not enrolled at the 1 October 2027 census, approved leave not enrolled, to the nearest 250) and
+leave the estimate of each entrant's chance to the data. Every reading of SF1 to SF9 either violates a quoted sentence
+or files the same call, and the easy answer (2,250) comes from an easy method on the same literal estimand, not from
+another reading.
+
+## Oracles
+
+none: no control, published figure or reconciliation column in the pack confirms either the early-warning model or
+the golden; the 2025 intake validates the default model (2,068 predicted, 2,058 actual), which is the default path's
+own check and says nothing about 2026; the hall occupancy and school-leaver files (the distractors) carry no
+enrolment outcome.
+
+## Ask sheet
+
+Weights on the generated rubric: about 38 recommendation and components, 7 instruction following, 55 asks over 25
+figures and the chart. Both asks sit on rows the call never reads (asserted S1 to S3).
+
+- **Ask A, Semester 1 2026 teaching groups by faculty, and those over 30 students at the census (10 figures).** H18
+  home: the teaching plan sets this year's groups beside the projection when it sizes the second-year groups. Files:
+  `s1_2026_class_timetable.xlsx`, the conventions (GROUP_PIN: the students taught together, in one room at one time;
+  size the census enrolments it teaches; cancelled classes are not groups). Primary (an identity no field carries): a
+  300-level paper and an honours paper taught together meet in one room at one time over the same weeks, and each
+  class lists its own paper's teacher of record, so one group is two class codes with two teachers. Seven such pairs
+  per faculty, four of them over 30 only together. Hazards: half-semester papers that share a room, slot and teacher in
+  weeks 1 to 6 and 7 to 12 (three pairs a faculty, two groups each), classes that change room in week 5 (one class,
+  two rows), team-taught classes (one class, two teacher rows), cancelled classes. Routes: class codes miss every
+  cell; room, day, start and teacher (the time, place and person grouping readers reach for) miss every cell, because
+  the pairs list two teachers and the half-semester papers share one; room, day and start merge the half-semester
+  papers; room, day, start, weeks and teacher miss the pairs. Only the slot (room, day, start, teaching weeks) gives
+  the golden. Measured risk: a reader who groups by exactly the slot lands Ask A.
+- **Ask B, students in year 2, 3, and 4 or later enrolled at the 2026 census, by faculty (15 figures).** H18 home:
+  the continuing base the projection rolls into 2027. Files: `census_enrolments_2019_2026.csv` (2026 rows),
+  `programme_catalogue_2026.csv`, `programme_transfers_2025_2026.csv`, the conventions (CONT_PIN). Primary (which
+  records are one enrolment): transfers approved in ARC after the cutover left the old programme attempt enrolled
+  beside the new one, because the discontinuation keyed in SIRIUS's last days did not migrate; 38 of the 60 such
+  students moved between faculties, and 33 of the 38 moved into the second programme of an approved conjoint combination (BA
+  to LLB, BSc to BCom, BEng(Hons) to BCom, BCompSc to BSc, BHSc or BSpEx to BCom), so their two attempts read as a
+  conjoint on the catalogue. The interior population is the genuine conjoint students (about 3 per cent), counted in
+  the first-listed programme's faculty. Routes: the first attempt, every attempt, the latest attempt, the catalogue
+  with the latest or the first attempt for other pairs all miss every cell (asserted B3). Only matching the two
+  attempts to a transfer in the register gives the golden. Measured risk: a reader who joins the register to every
+  two-attempt student lands Ask B (the shape of this round's re-filed-schedule death).
+- **Chart (`s1_2026_teaching_groups.png`):** its segments are Ask A's cells.
+- Screened against 1.1e and this round's fallen devices: no duplicate row, comment, code or field names a group or a
+  stale attempt; Ask A's identity is a slot and not a time, place and person; Ask B's is a transfer matched to two
+  attempts, not a later row replacing an earlier one.
+
+| Ask | Figures | Cracker (lands the call, runs the battery) and the routes in ceiling.py | Verdict |
+|---|---|---|---|
+| A groups by faculty | 5 | class codes; room, day, start, teacher; room, day, start; with weeks and teacher | miss |
+| A groups over 30 by faculty | 5 | the same four routes | miss |
+| B year 2 by faculty | 5 | first, every, latest attempt; catalogue then latest or first | miss |
+| B year 3 by faculty | 5 | the same five routes | miss |
+| B year 4 or later by faculty | 5 | the same five routes | miss |
+
+Pair ceiling: 28.5 (every route keeps 0 of 25; cracker 45.0, mirror 12.0 on weights 38, 7 and 55)
+
+Mirror leakage: 0.0 per cent of ask weight (every route off the call keeps nothing)
+
+Measured by: generator/ceiling.py
+
+## Stage 3 gates (2026-10-23)
+
+- Generator: `python3 task179/generator/build.py`; `checks.py` 61 assertions green (input gates G1 to G6, the call and
+  its bin R1 to R4, the golden family B1 and the refuted rivals B2 and L1, the three-rules block on the clean truth T1
+  to T4, SF1 to SF9, the ask routes A0, A1 and B3, separation S1 to S3, documents D1 to D4, realism Q1); `verify.py`
+  (csv and openpyxl readers, pair counting per class, statsmodels IRLS) recomputes the call (3,269.3, printed 3,250),
+  both components and all 25 ask figures, 0 failed; two consecutive builds byte-identical over 19 files; `target.zip`
+  md5 fab8b152c3c15fd556fc4114233c2d8e.
+- `figures_check.py` PASS (38 figures); `voice-check.py` PASS (718 characters); `ceiling.py` 0 of 25 on every route,
+  pair ceiling 28.5, mirror leakage 0.0; container scrub audit clean on `golden/` and `target/`.
+- `leak.py --asof 2026-10-16` REVIEW, each line harmless: the conventions and the dictionary carry the estimand's words
+  (first-time entrants, census, enrolled), which the conventions must file; no figure, no decisive-step word (asserted
+  D2 and D3: allocation, block, classmate, peer, integration, repeat appear in no shipped document).
+- `precut.py`: every check passes but `task type serves the objective`, which reads the registered card (still v2's
+  epidemiology card) and clears when v3 registers. `guard.py surface` and `heart` wait on the registration too.
+- Main-call Gate F risk, written down before the readers: persistence through social integration is a channel the
+  retention literature names (learning communities, Tinto), and the class extracts that carry it are in every
+  reader's hands; nothing in the pack names the allocation, a block or a classmate (the cutover notes' line on batch
+  jobs not carried into ARC was cut after this round's known-channel measurements), so a reader reaches it only by
+  pairing class members. Ask risk: Ask A falls to a reader who groups classes by the full slot (room, day, start,
+  teaching weeks); Ask B to a reader who joins the transfers register to every two-attempt student.
+- Keys for the readers: the call `call_not_enrolled_2027`; components `cc1_intake_2026_at_census`,
+  `cc2_intake_2026_no_repeat_classmate`; asks `ask_groups_s1_2026_<ass|bus|sci|eng|hlt>`,
+  `ask_groups_over30_s1_2026_<ass|bus|sci|eng|hlt>`, `ask_continuing_2026_<ass|bus|sci|eng|hlt>_y<2|3|4>`; withhold
+  `_unrounded`, `label_*` and `hist_*`.
+
+## Architecture v2 record (spent, kept as history)
+
+The v2 design as it stood when it was spent at stage 4 Gate F; every heading below is history.
+
+### v2 Draw
 
 1. Card: `.claude/skills/fingerprint/cards/task179.json`, architecture v2, first registered 2026-10-21 and
    re-registered at the re-site. `guard.py check` WARN only: `repeat.gate_g` against task178 (answered in item 5);
@@ -69,7 +383,7 @@ records sit under `## First-cell record` and in `## Tried and rejected`. Re-scre
     recent and appear only with the cases they infected within the few weeks they have had, which bends the links'
     intervals short in exactly the cohort the renewal equation's growth window reads.
 
-## Screens (stumping 1.2, as code)
+### v2 Screens (stumping 1.2, as code)
 
 Prototypes in the session scratchpad, b179e/screen (`a1.py` to `a4.py`, `e1.py`; seeds fixed before outcomes,
 the outbreaks that died out before 2,500 cases skipped). The world screened is a discrete-day onset process,
@@ -103,7 +417,7 @@ each route against the golden (truncated maximum likelihood, gamma) on the same 
 - `guard.py slots --driver`: vocabulary hits only (task194, task190, task253, task117, task501); no slot records
   a truncated delay distribution or a serial interval dying.
 
-## Default path
+### v2 Default path
 
 1. Daily onsets of confirmed and probable cases from the line list (people found not to be cases and suspected cases
    left out, a case notified twice under two numbers kept once by its sample), complete to 11 October.
@@ -117,7 +431,7 @@ each route against the golden (truncated maximum likelihood, gamma) on the same 
 Ends on: 4,000 cases
 Golden: 5,000 cases
 
-## Stump sentence
+### v2 Stump sentence
 
 A competent analyst fits the serial interval to every source-to-case pair in the transmission links (11 days), takes
 the reproduction number implied by the growth of onsets over weeks 36 to 41 (1.5), halves it from 2 November and
@@ -126,7 +440,7 @@ once its case has fallen ill, so September's and October's sources appear only w
 read against the time each source had to 11 October, the links give the 13-day interval the chains run on, a
 reproduction number of 1.6 and a December that holds a quarter higher.
 
-## Three rules
+### v2 Three rules
 
 Task type: infectious-disease-transmission-modeling (Epidemiology & Public Health): the outbreak's line list and transmission links turned into a serial interval, a reproduction number and a renewal-equation projection of cases under the response plan's central scenario, a projection serving Forecasting & Predictive Modeling.
 
@@ -154,7 +468,7 @@ No certified replay: no certified or published serial interval, reproduction num
 
 Lesson: a delay read from linked records that exist only once the later event has happened is truncated at the extract, and while the process grows that truncation sits on the recent sources, which are most of the record; no build on file estimates a delay distribution from linked pairs read against each pair's own horizon.
 
-## Readability screen
+### v2 Readability screen
 
 Each rung, the sentence or file a reader would have to read to take it, and whether any shipped text hands it over.
 
@@ -166,7 +480,7 @@ Each rung, the sentence or file a reader would have to read to take it, and whet
 | R1b the pairs whose case fell ill in the last fortnight dropped | the hygiene reflex on the links' dates | readable |
 | R2 (decisive) each pair read against its source's time to 11 October | nothing: no sentence names truncation, the interval's bias, a cohort of complete sources or an estimator; the dictionary says when a link is entered and nothing about what that does to the intervals | silent |
 
-## Semantic fork table
+### v2 Semantic fork table
 
 | ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -181,7 +495,7 @@ Each rung, the sentence or file a reader would have to read to take it, and whet
 | SF9 | rounding | the unrounded projection to the nearest thousand | none | prompt | prompt.txt |
 | SF10 | the projection's start | the renewal equation from 12 October on onsets to 11 October | the onsets of 12 to 18 October read as complete (4,241) | not the filed record | planning note section 3, "onsets to Sunday 11 October are complete in the extract"; SF10 |
 
-## Ladder
+### v2 Ladder
 
 Built values from the cut pack (generator/checks.py R1 to R3c, SF1 to SF10), cases in weeks 49 to 52.
 
@@ -200,7 +514,7 @@ Built values from the cut pack (generator/checks.py R1 to R3c, SF1 to SF10), cas
   cannot do unless the record is cut off; read against each source's horizon, the truncated fit's interval holds
   (sources 50 days old or more, whose cases have all fallen ill, give 13.15 days).
 
-## Closure table
+### v2 Closure table
 
 | # | Axis | Reading | Move |
 |---|---|---|---|
@@ -227,7 +541,7 @@ Built values from the cut pack (generator/checks.py R1 to R3c, SF1 to SF10), cas
 | 21 | Clause scope | the halving applies to every source in every district from 2 November | filed (SF5) |
 | 22 | Forward window contents | cases not yet ill, the scenario's halving the only change | filed (planning note 2) |
 
-## Literal reader
+### v2 Literal reader
 
 The planning note executed word for word asks for the cases with onset in weeks 49 to 52 under a scenario whose base
 is the reproduction number the growth of weeks 36 to 41 implies through the outbreak's serial interval; the literal
@@ -236,7 +550,7 @@ fallen ill. A literal reader who fits the links as they stand has assumed the ex
 sources will produce, which the falling mean interval by source month contradicts; every other reading converges or
 violates a quoted sentence (fork table). Re-run on the finished pack.
 
-## Oracles
+### v2 Oracles
 
 - No shipped file carries a serial interval, a reproduction number, a projection or a published parameter for the
   virus; the planning note says none comes from elsewhere.
@@ -245,7 +559,7 @@ violates a quoted sentence (fork table). Re-run on the finished pack.
 - The situation report counts cases by week of notification as notified at 13 October; it projects nothing.
 - No control ties only under the golden on the asks.
 
-## Ask sheet
+### v2 Ask sheet
 
 - **Ask A, contacts first listed in weeks 37 to 39 in Tamberlow, Quillmarsh, Kettlebank North and Brindlecourt:
   different people and the percentage who completed follow-up (eight figures, whole numbers and one decimal).**
@@ -640,6 +954,44 @@ candidate touches them.
     forward schedule that stays near the record's concentrations is landed by the per-patient fit, and one that moves
     far from them is informed only by the minority of records already there (holds, delays), which a filter reads.
 
+- **Third rebuild cell, 2026-10-23: education-learning-sciences / `learning-analytics-early-warning-models`,
+  Forecasting** (assigned by the main session; worktree `b_179n`). The cell's four library cards and the earlier
+  death in this task type (task176's credits by identity under a new course size, task143's driver) were read first;
+  the textbook routes (a validated early-warning model on entrant attributes, the last intake's rate, analogue
+  intakes) were taken as the default path. Architecture v3 (the co-enrolment exposure after the class allocation
+  ended) was drawn from this cell; the directions below died on paper before it.
+  - Paper: exam bunching under a compressed exam period: the compression is the forcing fact and names the covariate,
+    and the record's same-day sittings are a filter on a timetable column.
+  - Paper: a curriculum reform making final-year school mathematics optional: the reform names the covariate and the
+    transcript file is single-purpose.
+  - Paper: a hall of residence closing so more entrants commute: housing status is a column, a filter and a divide.
+  - Paper: a shift in the instructor mix of gateway papers: the instructor is a field on the class, and shrunken
+    instructor effects are the multilevel card.
+  - Paper: a move of first-year sections online: a modality column.
+  - Paper: dual-enrolment credit expanding in the forward intake: incoming credit is an admissions field the textbook
+    model carries.
+  - Paper: a grant that ends after the first year, read by a regression discontinuity at the renewal grade: the
+    discontinuity gives a local effect and carrying it to every recipient forks.
+  - Paper: an early-alert tutoring programme ending, so the record's outcomes are post-treatment: card 3's
+    discontinuity at the old cut-off, local, a filed forward condition, and the transport to every flagged student
+    forks.
+  - Paper: completion anchored on deadlines under an extended deadline: task162's calendar-locked burst by
+    abstraction, and modules with longer windows are the attaining subset.
+  - Paper: mid-semester grades reported for every student after a new system (deficiency notices before): the
+    feature's meaning changed, which is data semantics.
+  - Paper: dropout timed on the legal leaving age, with a school-entry cut-off change moving the forward cohort's birth
+    months: `time_semantics` (banned against task176 in the window) and task46's cohort crossing a step.
+  - Paper: younger siblings of a cohort that left during a local crisis: the recent rate brackets the golden and the
+    sibling link is a single-purpose join on the guardian.
+  - Paper: school consolidation lengthening travel: the plan names the covariate, the record's distance bands are a
+    filter, and the service-sequence selection is task175's template.
+  - Paper: click counts across courses of different design (portability): within-course standardisation is the
+    field's standard caution, and a forward course with no history is unidentified.
+  - Measured and repaired, not dead: the co-enrolment mechanism's first generator world forked 7 per cent on
+    functional form (`wfam.py`: bands 2,936, a linear term 2,819, log 2,725), because the forward intake's repeat
+    classmates sat at 1 to 4 where the record had little support; the world now makes the fourth paper a
+    university-wide elective and the protection near flat below five repeat classmates (`## Screens`).
+
 ## Retired
 
 Retired on 2026-10-21 under the author's rule for this round (a number that dies in its second new cell is
@@ -692,8 +1044,8 @@ population-pharmacokinetics-exposure-response (Forecasting). One candidate measu
 elimination under a six-weekly schedule) and eleven directions on paper, with the election-polling and banking cells
 screened on paper beside it (`## Tried and rejected`). No card registered; PAUSED at stage 1 again.
 
-## Resume
-
-PAUSED 2026-10-23 at stage 1 after the product-analytics / feature-adoption-diffusion-modeling and the
-population-pharmacokinetics-exposure-response rebuild screens found no draw that holds; resume at stage 1 in the next cell the coordinator assigns, reading `## Tried and rejected` first.
-(RETIRED 2026-10-21 before the reopening: architecture v2 spent at stage 4 Gate F.)
+The main session then assigned a third cell: education-learning-sciences / learning-analytics-early-warning-models
+(Forecasting), worktree `b_179n`. Architecture v3 was drawn there (an intake's next-census non-enrolment read at each
+entrant's repeat classmates after the Registry's class allocation ended) and built through stage 3; its card is
+drafted with the old identity in `lineage` (v2, spent) and waits on the guard window (`## Draw` item 1). The v2 artifacts (generator, golden, write-up, pack) were
+removed for the rebuild.
