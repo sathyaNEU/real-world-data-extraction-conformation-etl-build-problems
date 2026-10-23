@@ -4,8 +4,8 @@
   "status": "PAUSED",
   "domain": "general-statistics-data-science/data-integration-record-linkage-entity-resolution",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-23",
   "stump": "Merging every record the linkage unit linked, directly or through other records, files the region and Halvering short of the people they served in FY2026 and moves the 2027 fund away from Halvering, because records carrying only a birth year link to every client of that name and year, so chains of links join people one Continuum's own HMIS keeps apart.",
   "architecture": 2,
@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (no LEAK), 2026-10-23",
-    "reader": ""
+    "reader": "reader A landed the call (score_reader FAIL: 5 of 5 call, 22 of 32 asks); reader B stopped at the spend"
   },
   "duplicate_check": {
     "heart": "WARN (strategy risk, Gate G repeat beside task483)",
@@ -25,15 +25,20 @@
   "judge": {
     "verdict": "",
     "disposition": "",
-    "report": ""
+    "report": "judge thread stopped at the spend; no report"
   },
   "returned": [],
-  "resume": "stage 4 in flight: two isolated scored readers (sonnet, medium) on fresh copies of prompt.txt and target/ in the session scratchpad, and the determinism judge thread on /tmp/determinism-check-task486-225152 (the judge agent wrote the brief and waits to be re-invoked with verdict.md); on their return score each reader with score_reader.py (call keys amount|HAL, amount|MEL, amount|OND, amount|PYR, amount|DVC), have the judge write determinism_check_report.md, fix every finding in one generator pass, then ship or record the spend. The free gates are green on the final cut (48 checks, verify, two byte-identical builds, figures_check 73/73, precut 0 FAIL, leak.py REVIEW answered, surface clean, heart WARN); target.zip is rebuilt by build.py",
+  "resume": "stage 1 of architecture 3: architecture 2 (pairwise findings resolved into people under each source's grain) spent at stage 4 when scored reader A counted merged groups' records by source and resolved them; re-root fresh in the lane's objective with a new draw, reading Tried and rejected first (the decisive structure must not be a relation a per-group check shows, and the grain or rule that makes the answer determinate must not double as the cue)",
   "approved": null,
   "delivered": null,
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "architectures": []
+  "architectures": [
+    {
+      "architecture": 2,
+      "fate": "spent 2026-10-23 at stage 4: scored reader A landed the call"
+    }
+  ]
 }

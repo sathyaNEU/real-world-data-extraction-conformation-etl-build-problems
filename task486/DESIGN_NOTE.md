@@ -375,3 +375,11 @@ checks.py T1 and T4; the standing family agrees exactly (F1, 4,438 member runs);
   and New Hope near the rest; renamed Halvering, Melbray, Ondrava, Pyrenna, Wayfarer Street Health, Hearthstone, Elm
   Street and Brightwater, Stepping Stone and Kestrel Commons, with Continuum codes HAL, MEL, OND and PYR chosen to keep
   the old codes' alphabetical order so no draw moved (every figure unchanged, asserted by the rebuild).
+- 2026-10-23, architecture 2 (the unit's pairwise findings resolved into people so no person holds two records of one
+  source), spent at stage 4: scored reader A, on a fresh copy of the prompt and the pack, merged the LINK findings,
+  counted each merged group's records by source, found the 225 groups holding two records of one source ("which cannot
+  be one person"), clustered strongest first refusing a shared source or a NONLINK and landed the call exactly (all five
+  amounts and people; score_reader FAIL, 22 of 32 ask figures, every night cell, no wait). It named the guide's
+  one-record-per-person sentences as what decided it: the grains the determinism needs are the cue, and a conflict a
+  per-group count shows is a visible relation. Reader B and the judge thread were stopped at the spend. Re-rooted fresh
+  by the author's rule (no retirement).
