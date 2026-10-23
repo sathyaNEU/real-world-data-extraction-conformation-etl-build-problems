@@ -1,0 +1,40 @@
+{
+  "task": "task483",
+  "owner": "oviya1301",
+  "status": "DESIGN",
+  "domain": "survey-research-official-statistics/census-register-administrative-data-quality",
+  "objective": "etl",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-23",
+  "stump": "The default path averages each degree program's campus-by-cohort medians by completers and counts a short-term completer as working on day 180 whenever any employer paid them in the quarter holding that day, keeping the system's workforce-value designation at about 80 per cent; the pooled half points rebuilt from the release's five percentiles and the jobs dated from their own partial-quarter pay put the share near 71 per cent, and either correction alone leaves it above 75 (figures set at the build).",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": ""
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task229 v3 at 0.07, task457 v1 at 0.06; task39 differentiated (same_driver_older)",
+    "surface": ""
+  },
+  "judge": {
+    "verdict": "",
+    "disposition": "",
+    "report": ""
+  },
+  "returned": [],
+  "resume": "stage 2: architecture 1 drawn 2026-10-23 (a conjunction: degree programs' pooled medians rebuilt from the outcomes release's campus-by-cohort percentiles, short-term programs' day-180 work status dated from each job's partial-quarter pay); write the readability screen, fork table, ladder, closure, the asks and prompt.txt, then precut.py; size the halves in the generator so either correction alone leaves the share at or above 75 per cent",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "source_note": "new number from seed ET40 (world, decision and quantity kept); the earnings test alone and the placement test alone screened at the draw and rejected as single steps (Tried and rejected)"
+}

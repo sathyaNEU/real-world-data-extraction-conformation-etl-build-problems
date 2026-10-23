@@ -1,0 +1,89 @@
+{
+  "task": "task483",
+  "architecture": "v1",
+  "drawn": "2026-10-23",
+  "slot_note": "task483/DESIGN_NOTE.md",
+  "domain": "survey-research-official-statistics",
+  "subdomain": "census-register-administrative-data-quality",
+  "niche": "a state workforce board's grant programs office deciding whether a multi-campus community college system keeps its 2027-28 workforce-value designation, where degree programs pass on their completers' median earnings rebuilt from the state outcomes release's campus-by-cohort percentiles and short-term programs pass on the share of grant completers working on the 180th day after completing, dated from employer-quarter wage records",
+  "objective": "etl",
+  "shape": "16",
+  "decision_type": "renew_replace_lapse",
+  "answer_unit": "rate_or_share",
+  "answer": "",
+  "answer_source": "generator/figures.json (set at the build)",
+  "gap": [
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G19",
+    "G16"
+  ],
+  "gate_g": "etl_conformance",
+  "calibration_form": "none",
+  "stump_strategy": "grain_or_unit",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "filed_standard",
+  "stump_class": "analytical",
+  "analyst_test": "With every field read and the board's standard applied, the easy route rolls each degree program's campus-by-cohort rows of the outcomes release up to a completer-weighted average of their median earnings and counts a short-term completer as working on day 180 whenever the wage return shows pay from an employer in the quarter holding that day, which passes programs that fail and files a share that keeps the designation the system loses.",
+  "domain_test": "The call turns on two quantities administrative employment statistics estimate from outcome releases and employer wage records, a program's median earnings as the half point of its campus-by-cohort cells' released distributions pooled by completers, and a completer's work status on the 180th day dated from a job's pay in its first or last quarter against its pay in a full quarter; with a hospital's nouns (wards' median stays, patients at home on day 180) dated claims and unit records make both steps disappear.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:a program median rebuilt from its cells' released percentiles, and a day's work status dated from a job's pay inside its first or last quarter",
+  "layer1": [
+    "campus student-system extracts in two layouts",
+    "an outcomes release whose layout changed between its 2024 and 2025 editions",
+    "suppressed release cells",
+    "employer-quarter wage rows with amended rows superseding filed ones",
+    "several employers per completer",
+    "award posting dates against section end dates",
+    "CIP 2010 to CIP 2020 recodes"
+  ],
+  "stakeholder_role": "the board's grant programs office",
+  "role_family": "programme_officer",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "wage return for the short-term completers (employer x quarter pay)",
+    "rows": 30000,
+    "entity": "one employer's pay to one completer in one calendar quarter",
+    "grain": "completer x employer x quarter",
+    "source": "synthetic"
+  },
+  "forum": "funder_or_donor",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "United States, an unnamed Mountain West state",
+    "currency": "USD",
+    "org_type": "a multi-campus community college system",
+    "invented_names": [],
+    "people": [
+      "Kathryn Petersen",
+      "Rodney Randall"
+    ]
+  },
+  "deliverables": [
+    "the system's 2027-28 workforce-value workbook (.xlsx, named at the build)",
+    "a chart of every program's test figure against its line (.svg, named at the build)"
+  ],
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "Two quantities a decision counts are recorded at a coarser grain than the decision reads: a group's half point is published only for its parts as each part's percentiles, so it is the half point of the parts' rebuilt distributions pooled, not a weighted mean of the parts' half points; and a unit's state on one day is recorded only as each source's amount for the whole period holding that day, so a source's start or end inside the period is dated from its amount there against its amount in a full period.",
+  "driver_concrete": "Each degree program's median earnings is the half point of its campus-by-cohort release cells' distributions, rebuilt from each cell's five released percentiles and pooled by completers with earnings, and a short-term completer works on day 180 only when a job's pay in the quarter holding that day, set against that job's pay in a full quarter, dates its start on or before day 180 or its exit on or after it.",
+  "stump": "The default path averages each degree program's cell medians by completers and counts a short-term completer as placed on any pay in the quarter holding day 180, which passes programs that fail and files the system's share above 75 per cent; either correction alone still files it above, and only both together put it below, so the designation lapses.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task477": "same world furniture (a workforce board, quarterly wage records) and no shared move: task477 re-dates a recorded total by its payment schedules' weekdays, here a job's start or exit is dated inside its quarter from that job's own pay against a full quarter, and a program median is rebuilt from released percentiles",
+    "task476": "task476 starts an interval-censored onset from a seasonal profile carried in from a second record; here each job dates itself from its own pay, and the even-spread share is one wrong rung among several",
+    "task123": "task123 allocates a billing period's total to calendar months by an activity indicator; here no total is allocated, a status on one day is read from a job's partial-quarter pay",
+    "task39": "task39 recovers a stop rule from a corpus of settled disputes and prices a duration from event codes; here nothing is recovered from a corpus: a program median is rebuilt from released percentiles and a day's work status is dated from a job's own partial-quarter pay"
+  },
+  "lineage": [],
+  "notes": "Drawn 2026-10-23 from seed ET40 (world, decision and quantity kept). The seed's earnings-premium test alone admits one enumerable choice (average the cells' medians or rebuild them) and the placement test alone lands near the default at quarter edges, so the decisive step is the conjunction, each half on a different set of programs, sized so either half alone leaves the share on the wrong side of 75 per cent. Strategy grain_or_unit after time_semantics was in the window (task176); forcing event budget_or_appropriation after statutory_or_regulatory_filing was (task176); the window moved twice at the draw: first government_agency, programme_officer and shape 10 were in it (task171, task176, task274), then after the pull task275, task179 v3 and task173 v3 put university_or_school, research_desk, shape 07 and G2 in it; the board's own grant programs office is the honest analyst (it holds the grant completers' wage records and only the public release for degree programs), shape 16 (each program's test is an indicator of the system's share) and G19 (contract conformance: the board's standard reads a program's median and a completer's work on one day, the records hold cells' percentiles and quarters' pay; G2 and G3 were in the window against task173 v3 and task275).",
+  "client_domain": "survey-research-official-statistics",
+  "registered": "2026-10-23T11:44:34Z"
+}
