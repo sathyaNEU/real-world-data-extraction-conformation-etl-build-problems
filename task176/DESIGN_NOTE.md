@@ -294,6 +294,37 @@ Prototypes are in the session scratchpad (r176/demog).
   - a Bayesian sequential or stop-rule forecast: executing the filed protocol is rule application, and replaying it
     on the record's tests lands it.
 
+- **Fourth redraw, 2026-10-23 (cell urban-regional-science / municipal-service-demand-resource-allocation,
+  Forecasting, allocated by the main session with the criterion that the forward condition acts through a quantity
+  the change does not name and no unit in the record has reached), paper screens, each dead at the draw.** The cards
+  on the cell, task148 (a queue drained by callers who give up) and task165 (a gain conditioned on each unit's prior
+  coverage), and the cell's client cards (complaints as reporting, small-area rate rankings, percentile standards)
+  were read as spent or as the default path. The common grave: a forward change that is a deterministic transform
+  of recorded cases is replayed on the record (apply it to last year's cases, a filter and a sum), and one that needs
+  a behavioural or physical response beyond the record's range extrapolates a fitted curve whose form forks.
+  - ambulance unit-hours after a hospital closes (each transport's distance to the nearest open hospital): the extra
+    time is linear in distance, so the aggregate (affected transports times mean extra distance) equals the per-call
+    sum, and replaying the closure on last year's geocoded calls lands it; the duration-times-count quantity is
+    task142's driver and task179's slot screened the same ground; the receiving hospital's offload delay rising with
+    its load extrapolates a congestion curve past the record's range;
+  - garbage route-hours when collection moves from weekly to every other week (disposal trips set by tonnage over
+    payload, not by visits): summing each pair of last year's route-days and re-counting the trips replays it;
+  - water demand of a new low-yard housing type (indoor per person, outdoor per irrigable square metre): existing
+    yardless metered units give the indoor per-capita rate, one group-by times the plan's persons per unit;
+  - pickup requests under a new per-household cap, e-book licences that now expire after a set number of loans, the
+    5 cm plowing trigger replacing 10 cm: each is the filed mechanic applied to last year's records, rule
+    application plus a replay;
+  - assessment appeals after a revaluation with jumps larger than any past cycle, 311 reports rising with faster
+    response, paratransit trips under distance-based fares: response curves extrapolated past the record, the form a
+    fork;
+  - a proactive rental-inspection cycle pre-empting complaint inspections (complaints by time since the last
+    inspection): the record's post-inspection units are complaint-selected, so the transfer needs a unit frailty
+    whose form forks, and units inspected within three years are an attaining subset;
+  - a permit review step moved past a statutory refund deadline: task172's driver; a triage line closing so its
+    diverted calls return to ambulances: task169's driver.
+  Also a standing block: `guard.py check` on a probe card returns `ban.pairing` against task175
+  (urban-regional-science with Forecasting, registered 2026-10-23 and still a live card in the last three).
+
 ## Retired
 
 **RETIRED 2026-10-19 under the author's rule that a number which dies in its second new cell this round is
@@ -310,3 +341,6 @@ slots`.
 Reopened under the author's rule that no number stays retired, for a from-scratch rebuild in general-statistics-data-science
 / bayesian-modeling-posterior-inference (worktree `b_176n`). No candidate held at stage 1: E1 and C1 measured dead on code
 and eight more directions dead on paper, all in `## Tried and rejected`. No card registered; PAUSED for another cell.
+The main session then allocated urban-regional-science / municipal-service-demand-resource-allocation; nothing held there
+either (paper screens in `## Tried and rejected`, and `ban.pairing` against task175 standing), so the number stays PAUSED for
+another cell.
