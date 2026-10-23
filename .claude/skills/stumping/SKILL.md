@@ -189,28 +189,46 @@ once: where the decisive step is whether the sub-unit values are identified at a
 exploits the identification is one line, so family unanimity IS the easy route landing. **Print the cheapest
 licensed member's own hit rate in the same table as the family's unanimity**, every time.
 
-**The shape that ships: a change acts on a unit the data is not reported at, and its effect propagates.**
-This is the positive specification, and it is worth more than the refusals because a build carries it. A
-rule, policy or change applies to one unit while the organisation reports another, and the effect
-PROPAGATES through a structure that organisation's own process imposes (a rotating panel, an enrolment
-cohort, a queue, a replacement or maintenance cycle, a vintage, a contract term), so every reported period
-is a MIXTURE of affected and unaffected units whose proportions move period by period. The decisive step is
-recognising which unit the change acts on; the easy route attributes the effect to the reporting unit.
+**The shape that shipped, and why it is SPENT AS A DRIVER rather than a shape to draw.** A rule or change
+applies to one unit while the organisation reports another, and the effect propagates through a structure
+that organisation's own process imposes (a rotating panel, a cohort, a cycle, a vintage), so every reported
+period is a mixture of affected and unaffected units whose proportions move. Read it to understand what a
+winning build looks like; **do not draw it**. It is one shipped build's driver, the guard refuses a faithful
+instance mechanically (BLOCK on both `test.same_puzzle_older` and `test.same_driver_older` against it, with
+`driver.near` 0.19, the nearest driver on file by three times against a next of 0.06), and the honest
+differentiation line cannot be written, because that card's driver already states the shape with its nouns
+stripped and its `Lesson:` line states the generalisation verbatim, so any faithful instance fails its own
+`Lesson:` test. **Reusing a proven device is legitimate; reusing a driver is not** (Part 6), and what made
+that build ship was a device: a TRUE operational sentence that made the one decisive join look pointless.
 
-Three properties make it hold where the per-case correction family does not. **It is not multiplicative**,
-so none of the laws above bind it, which is also the test to run first: if the graded quantity can be
-written as an observable divided by a per-case factor, it is the closed family in other nouns. **The graded
-quantity is a PATH over periods rather than a ranking**, so a route with the ordering right still files a
-wrong answer, and each reflex errs in a different direction: on the shipped instance the golden path runs
-0.39, 0.53, 0.62, 0.47, 0.28 while attributing the change to the reporting unit gives 0.21, 0.21, 0.21,
-0.00, 0.00 (constant while the change runs, then nothing) and carrying the first period's difference
-forward gives 0.60, 0.85, 1.07, 0.95, 0.67 (overstated at every point). **And what has to be filed is the
-estimand's comparison**, the base period or population, which is the WHAT: three isolated readers each
-confirmed that naming the base period fixes a basis without shortening the work, and the propagation itself
-stays with the solver, so the pin cannot file the method. That last property is why this shape escapes the
-grain pincer: a step whose determinacy needs a sentence about the grain a level is taken at has no legal
-sentence, because every such sentence either collapses the distribution or files the method, while a
-propagation estimand needs only its comparison named.
+**The linkage trichotomy, which is why the shape carries no stump without that device.** The mixture weights
+have to be SHIPPED for the path to be computable at all, and the position variable ships with them, so a
+reported row falls into exactly one of three cases and there is no fourth. It carries its cohort or regime
+directly, and the construction is one group-by. It carries a unit key a register maps, and the construction
+is one join plus one group-by, the same cost. Or it carries nothing identifying the unit, in which case
+there is no within-period contrast and the profile is identifiable only from the published series, which is
+the quantity the call is about: measured, a cubic trend with seasonal terms reproduces **90.5 per cent** of
+the distortion path's variance (a cubic alone 74.9), so the distortion cannot be told from a real
+deterioration. In the first two cases the designed route and the cheapest licensed route are ONE route,
+measured at RMSE **0.0072** and a maximum of 0.0170 against the golden path on the clean truth, 2.8 and 3.3
+per cent of its own level, by one join, one two-way group-by on (regime, position) and one reweight, which
+is both the opponent's first move and the field's own standard output.
+
+**The forward-facing variant escapes the group-by and lands in another family.** Set the as-of so the
+affected cohorts have reached only the early positions while the graded path needs the later ones, and the
+contrast has to be transported. The record does select one transport (excess Poisson deviance 723 to 1,417
+for a constant multiple and 663 to 1,376 for linear in position against 7.6 to 30.4 for a constant additive,
+on a bar of 4.0, with the designed route recovering the offset at 2.993 plus or minus 0.177 against a true
+3.0), so determinacy holds, but the decisive step has moved onto choosing a functional form, and fitting two
+forms and comparing deviance is readability test 5 and reaches the golden 20 of 20. That is the fitted
+counterfactual family, not this one.
+
+**What the shape still leaves open**, both unpriced and neither a recommendation: grading the path's
+TURNING POINT rather than its levels, where the enumerated transports genuinely disagree (28, 32, 35, 35, 36
+against a true 32) on a discrete level-dependent object whose standing family is one member, which needs a
+propagation that is not the shipped build's; and a structure whose POSITION IS NOT REGISTERED at all, so the
+position is itself an estimated quantity, which this lane's standing law expects to die on the parametric
+horn and which nothing on file measures.
 
 **The one-correcting-quantity-per-case clause is now closed as a clause, not merely on one cell.** For a
 per-case latent quantity there are five ways a finer file can relate to it, and all five are measured:
