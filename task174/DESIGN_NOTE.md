@@ -1,6 +1,6 @@
 # task174 design note
 
-**Status: PAUSED at stage 1 on 2026-10-23 after four rebuild screens, biomedical survival, media reach, healthcare demand and regression diagnostics (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
+**Status: PAUSED at stage 1 on 2026-10-23 after five rebuild screens, biomedical survival, media reach, healthcare demand, regression diagnostics and ratemaking (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
 Forecasting. Three worlds were screened on this number and none yields a draw that holds; the third, the
 product-analytics retention cell of the same day, is recorded in its own finding below and in the last block of
 `## Tried and rejected`. The first is seed FC45's: a north-east
@@ -121,6 +121,18 @@ of the population, the noise variance carries), the selection that produced the 
 rate is task446, a group effect shared by a new group is task143, a retransformed log-scale mean is task135, and
 what is left (a range extrapolated, an interaction the record never varied, a covariate collinear in the record)
 is unidentified in the record, so the method forks.
+
+**The fifth cell of the day, actuarial-science-insurance / pricing-ratemaking-credibility (Forecasting),** task130's
+and task270's drivers avoided. Screened with trended and developed loss ratios, credibility against the complement
+and a GLM relativity carried forward as the default path. One candidate measured on code (`cred1.py`, scratchpad
+b174n/proto5) and fifteen on the structural screens; nothing holds. The finding: a forward coverage or benefit
+change is either applied claim by claim, which is the field's benefit-change factor executed (rule application), or
+acts on the unobserved part of a claim-size distribution, which is the censored and truncated severity card (the
+default) or an extrapolation that forks. A forward change in who buys is selection on recorded attributes (the
+policies already holding those attributes are the attaining subset) or on unrecorded ones (unidentified). The
+behavioural rewirings the field documents (claims absorbed under a deductible or a no-claims scale, durations
+bunched past a retroactive day or a tort threshold) are task270's family, and a credibility weight on drifting risk
+is matched by the trailing-years reflex.
 
 ## Tried and rejected
 
@@ -447,3 +459,38 @@ is unidentified in the record, so the method forks.
   forks on its form. On paper.
 - **Target leakage, a feature built over the outcome window**: the feature's own definition settles it (a reading),
   and the as-of rebuild from the logs is the attaining subset. On paper.
+- **Rebuild of 2026-10-23, fifth cell: actuarial-science-insurance / pricing-ratemaking-credibility (Forecasting).**
+  Each line is one candidate, written when it died; the measured one first.
+- **Credibility on territory risk that drifts year to year** (older experience years worth less than Buhlmann's
+  equal weights), measured on `cred1.py` (seeds 174 to 183, 40 territories, six experience years, forecast two
+  years out): mean absolute error on the log frequency 0.0517 for the equal-weight five years, 0.0393 for the
+  local-level filter fitted by likelihood and 0.0409 for the trailing two years; the lever is about 3 per cent per
+  territory and the trailing reflex lands within 0.002 of the golden.
+- **A deductible raised or lowered**: losses between the two deductibles are recorded (the attaining subset) or lie
+  below every recorded loss (the censored and truncated severity card, then an extrapolation), and the small claims
+  policyholders absorb near a deductible are task270's driver. On paper.
+- **Accident forgiveness added**: task270's absorbed small claims released, the same driver reversed. On paper.
+- **A workers' compensation retroactive period moved**: durations bunched past the retroactive day are an
+  incentive response in task270's family, and the counterfactual density forks on the bunching estimator's
+  polynomial and window. On paper.
+- **A no-fault monetary threshold moved**: the same bunching, the same fork. On paper.
+- **Limits raised**: increased-limits factors from a severity fit censored at the old limit (the card's default),
+  and the policies already at the higher limit are the attaining subset. On paper.
+- **Roofs moved from actual cash value to replacement cost**: each claim re-paid on the depreciation schedule (rule
+  application), and whether claims closed without payment enter is the population (the WHAT screen). On paper.
+- **A coverage made mandatory, so the former decliners buy**: selection on recorded attributes leaves the buyers with
+  the decliners' profile as the attaining subset, and on unrecorded ones it is unidentified (task141's selective
+  record). On paper.
+- **New business stopped in a territory**: tenure is a rating variable, and the renewal policies are the attaining
+  subset. On paper.
+- **A pay-per-mile product drawing low-mileage drivers** (frequency concave in miles): the existing low-mileage
+  drivers are the attaining subset, and frequency against miles is the product's own premise. On paper.
+- **A large rate change re-sorting who renews**: past renewals offered similar increases are the attaining subset,
+  and increases beyond them extrapolate the elasticity (a fork). On paper.
+- **An experience-rated group whose membership turned over**: removing departed members' claims and pooling shock
+  claims is standard practice, and the continuing members' own experience is the attaining subset. On paper.
+- **A per-occurrence deductible replacing a per-claim one**: grouping claims into occurrences is identity resolution
+  (a reading) or a catastrophe code (a rule). On paper.
+- **Named-driver cover widened to any driver**: the claims denied for unlisted drivers re-paid, rule application. On
+  paper.
+- **Claims-made cover priced from occurrence experience**: task130. On paper.
