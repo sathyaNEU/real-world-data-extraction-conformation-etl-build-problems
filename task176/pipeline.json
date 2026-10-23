@@ -1,12 +1,12 @@
 {
  "task": "task176",
  "owner": "sathya8571",
- "status": "RETIRED",
+ "status": "PAUSED",
  "domain": "",
  "objective": "forecasting",
  "stage": 1,
- "stage_name": "retired",
- "updated": "2026-10-19",
+ "stage_name": "draw",
+ "updated": "2026-10-23",
  "stump": "",
  "architecture": 1,
  "loops": 0,
@@ -54,9 +54,17 @@
    "d1_diaspora_returns": "returns from a diaspora wave (left 1995-2010) ageing into 55-69: 2027-31 return flow, card-2 OD rates 0.62 of the truth, linear trend 0.81, latest year carried about 0.75; 55-74 population level moved about 4 per cent; abstraction is task134 v2 round 1's driver (an inflow from a pool outside the record at a hazard on that pool); birthplace column makes the split a row predicate. Dead",
    "paper": "mover-stayer (task134 slot measured about 1 per cent; task468, task134 v2 driver); gross vs net (task150 shipped, task134 slot: gross variants split); births echo (time-since-entry family); housing-constrained (housing-unit method textbook, task79); vacancy chains (task132); special populations (population_selection in window via task270, census practice); control-total gap by component (readable, careful route lands); births-based base (about 5 per cent); correlated intervals (variance-only); shrinkage (stumping 1.2); tempo (assumption); cohort mortality 85+ (mortality card); group returns (task157); two-sex (form open); method back-test (forecast_method_backtest in window via task177); ageing-out caseload (task172 cap); education-specific rates (visible column); error-of-closure base (one past event)",
    "prototypes": "session scratchpad r176/demog: d1_diaspora.py"
+  },
+  "redraw3_2026_10_23": {
+   "cell": "general-statistics-data-science / bayesian-modeling-posterior-inference / forecasting, allocated by the main session; the cell's cards (/1 partial pooling, /2 posterior predictive, /3 scale-prior sensitivity) and task143 (card 2, members sharing a group effect) treated as the careful reader's routes",
+   "e1_adopted_test_winners": "direct-mail fundraising, 2027 gifts from changes adopted off 2026 split tests at one-sided z 1.96: tests' own lifts 1.57 to 2.23 of the golden, normal-prior EB 0.62 to 0.85, t-prior 0.78 to 0.84, Storey-discounted 1.07 to 1.66, lfdr-weighted 1.13 to 1.57; shape-aware family within 1 to 2 per cent on a one-slab truth; dead: BH 10 per cent then face value 0.96 to 1.07 on average over four configurations (z above 2.5 at face value 1.03 to 1.16), and outside re-implementations spread 4 to 10 per cent (absolute scale, by type, recent seasons, delta-method SE, single slab on a two-slab truth)",
+   "c1_sampling_design_change": "monthly mean of four samples against one: confirmation pairs give the split (0.0917 against 0.09), pair-route forecast 0.0331 against 0.0333; task143 and task246 abstraction",
+   "paper": "Good-Toulmin unseen classes (curve fit is the rarefaction, lands to t of 1); label-shift prior re-estimation (Rogan-Gladen lands, task192); drifting effects and hidden states (panel replay); slot effects inherited by successors (card 1, regression interpolates, frailty tail forks); volume-dependent shrinkage targets (attaining subset or form fork); marginal against conditional GLMM prediction (crude rate is right); instrument or gauge change (task246); sequential stop rules (rule application, replay)",
+   "slots": "guard.py slots on winner shrinkage, empirical Bayes prior, normal prior, posterior mean prior shape, variance components sampling, measurement error replicate, fundraising appeal donor, direct mail lettershop keycode, and the E1 driver: task471 and task200 carry the winner's-curse verdicts, task118 normal EB as a rung, task246 the repeat-agreement split; no fundraising world on file",
+   "prototypes": "session scratchpad b176n/proto: m1.py, d1.py to d7.py, w1.py to w5.py"
   }
  },
- "resume": "RETIRED 2026-10-19 under the author's rule (a number that dies in its second new cell this round is retired): the seed's world, actuarial reserving triangles and sociology population projection all screened at stage 1 with no architecture holding; no card registered. Read the design note's ## Retired and ## Tried and rejected.",
+ "resume": "PAUSED 2026-10-23 after the author's reopening: the third redraw cell, general-statistics-data-science / bayesian-modeling-posterior-inference, screened at stage 1 with no architecture holding (E1 and C1 dead on code, eight directions on paper; DESIGN_NOTE ## Tried and rejected and ## Rebuild (2026-10-23)); no card registered; the main session assigns another cell, and the number is never retired.",
  "approved": null,
  "delivered": null,
  "portal": null,

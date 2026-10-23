@@ -245,6 +245,55 @@ Prototypes are in the session scratchpad (r176/demog).
   - education-specific rates: a mix on a visible column;
   - an error-of-closure correction of the base: one past event per area and a back-test organ.
 
+- **Third redraw E1, 2026-10-23 (cell general-statistics-data-science / bayesian-modeling-posterior-inference):
+  the extra gifts a direct-mail fundraising programme's 2027 budget can count on from the package changes it adopts
+  off its 2026 split tests, each adopted because its test cell beat control at a one-sided z of 1.96 or more**
+  (prototypes `d2.py` to `d7.py`, `w1.py` to `w5.py` in the session scratchpad `b176n/proto`). The golden was the
+  posterior mean of each adopted change's lift under the distribution of true lifts the programme's whole test
+  record identifies (most changes near nil, a minority real), times the change's 2027 projected standard-pack gifts;
+  the default path the tests' own lifts carried; the reflex a normal-prior empirical Bayes shrinkage. Measured on
+  binomial test cells (1,980 to 4,850 tests, 20 to 50 adopted changes, 6 to 10 seeds a setting), as shares of the
+  golden: the tests' own lifts 1.57 to 2.23, normal-prior shrinkage 0.62 to 0.85, a scaled-t prior 0.78 to 0.84, the
+  lifts discounted by a Storey null share 1.07 to 1.66, the lifts weighted by one less the local false discovery rate
+  1.13 to 1.57; the shape-aware family (grid NPMLE, a spike plus one normal, two and three normals) within 1 to 2 per
+  cent where the truth is one spike and one slab, and the normal prior rejected by a likelihood ratio of about 500.
+  Dead on two counts, both measured:
+  - a Benjamini-Hochberg filter at 10 per cent on the season's tests, the survivors then counted at face value, lands
+    at 0.96 to 1.07 of the golden on average in four configurations (0.53 to 1.28 seed by seed), and the survivors of
+    z above 2.5 at face value at 1.03 to 1.16: a sparse prior's posterior mean is a soft threshold and an FDR filter
+    is a hard one placed close to it, so the multiple-testing reflex reaches the call;
+  - outside re-implementations of the golden itself spread 4 to 10 per cent: the prior fitted on absolute rather than
+    relative differences 0.86 to 1.11 at 1,980 tests (0.97 to 1.02 at 4,850), fitted by test type 0.92 to 1.12, fitted
+    on the 2023 to 2026 seasons only 0.88 to 1.09, the delta-method standard error on the linear lift 0.91 to 0.94
+    against the null standard error, and a single slab 1.02 to 1.17 where the truth carries two.
+  The house rule on levels at selected units and the winner's-curse verdicts in task200's and task471's notes say the
+  same from the other side.
+- **Third redraw C1, 2026-10-23: a permit's monthly compliance value moving from one grab sample to the mean of four,
+  forecast as the 2027 count of monthly exceedances, the decisive split being the within-month variation the
+  averaging removes against the month-level variation it keeps** (prototype `m1.py`). The confirmation re-samples
+  taken after an exceedance give that split by a pair difference with almost no selection bias (measurement variance
+  0.0917 against a true 0.09, the pair-route forecast 0.0331 against the golden 0.0333), so one group-by lands it, and
+  the abstraction (a function of several new draws must carry what they share) is task143's driver in this cell,
+  with the repeat-agreement split task246's.
+- **Third redraw paper screens, 2026-10-23, each dead before or at a first harness:**
+  - unseen classes still to appear (Good-Toulmin from the frequency of frequencies): the accumulation curve is the
+    rarefaction of the same counts, so a best-fitting curve extrapolated to t of 1 or less reaches the Good-Toulmin
+    figure (exactly, b ln 2, under a log-series truth), and past t of 1 the empirical Bayes family itself forks;
+  - class shares re-estimated for a new intake under label shift: Rogan-Gladen on the validation sensitivity and
+    specificity is a one-line textbook route to the golden, and the abstraction is task192's transported audit error;
+  - drifting group effects or hidden states with a forward selection on recent results: the panel replays the same
+    selection in past periods, a filter and a divide;
+  - a slot's effect inherited by its next holder (positions, storefronts, sites): partial pooling by slot is card 1
+    itself, the successor-on-predecessor regression interpolates the transfer, and past the record's range the
+    frailty's tail forks it;
+  - a volume-dependent shrinkage target for new small units: the record's units at that volume are the attaining
+    subset, and below the record's range the curve's form forks;
+  - marginal against conditional prediction for new groups in a log-link model: the pooled crude rate reaches the
+    marginal mean, so the reflex is right and only the sophisticated route is wrong;
+  - a forward sampling or instrument change read through a gauge or reference study: task246's driver;
+  - a Bayesian sequential or stop-rule forecast: executing the filed protocol is rule application, and replaying it
+    on the record's tests lands it.
+
 ## Retired
 
 **RETIRED 2026-10-19 under the author's rule that a number which dies in its second new cell this round is
@@ -255,3 +304,9 @@ retired.** Three worlds were screened at stage 1 and none held:
 
 No card was ever registered, so no guard axis is held. The screens above are the number's record for `guard.py
 slots`.
+
+## Rebuild (2026-10-23)
+
+Reopened under the author's rule that no number stays retired, for a from-scratch rebuild in general-statistics-data-science
+/ bayesian-modeling-posterior-inference (worktree `b_176n`). No candidate held at stage 1: E1 and C1 measured dead on code
+and eight more directions dead on paper, all in `## Tried and rejected`. No card registered; PAUSED for another cell.
