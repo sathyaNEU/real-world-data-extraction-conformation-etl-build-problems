@@ -421,6 +421,20 @@ Each is cheap, each is run as code before any separation is measured, and each c
   the crude route, the subset and the designed route all where a ladder needs them. **This is one line to
   ask of a candidate and it is asked before any harness is written.** A correction that leaves no part of
   the record alone is the shape the screen does not reach.
+- **The designation form of that screen, which is sharper and kills faster.** Where the decisive correction
+  acts on a named **minority of the decision's own candidates**, the unaffected majority is not merely a
+  subset estimating the same quantity: it is **algebraically the designed ranking restricted to those
+  candidates**, because the correcting factor is about 1 on every one of them. So the designed route and the
+  route that simply drops the affected candidates are **one ranking**, they share a top element whenever the
+  designated candidate is an unaffected one, and no dial separates them. Measured on a protest-incidence
+  draw: on the eight candidates whose exposure did not move, the designed score equalled the raw rise at
+  corr **+0.993114** with identical order, mean 2.87 per cent apart, so dropping the three moved candidates
+  and ranking the rest on the raw rise named the same city and printed the same graded figures with no
+  denominator at all, while the ask layer already required that exact group-by. **The one line to ask at the
+  draw: is the correcting factor 1 for the candidate you intend to designate?** If it is, the correction is
+  decoration on the answer and the build is drawn elsewhere. The escape is the shape step three blesses, a
+  correcting quantity **one per case** forced arithmetically by a second file at a finer grain, with no
+  candidate escaping it.
 - **The benchmark screen, which sits beside the one-number screen and is not cleared by it.** Where the
   decisive construction is a **benchmark a statistic is read against**, ask whether the benchmark is a
   single number once the second file is read. It usually is, however elaborately it was built, and then the

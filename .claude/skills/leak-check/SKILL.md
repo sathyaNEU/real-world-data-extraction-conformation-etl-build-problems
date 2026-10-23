@@ -119,6 +119,21 @@ exits 1. Readers on one pack differ by whole asks and by the call itself: three 
 frozen call split two landed and one missed, and on task162 and task165 one of two readers found an ask
 device the other never saw. A call any reader lands is spent, whatever the other reader does.
 
+## The scored read, and how its own harness leaks
+
+A scored read hands the reader a list of figure names so its answers can be matched to the golden. **Those
+names are part of the pack as the reader sees them, so a key that states the decisive quantity in words hands
+over the step.** One audit handed a reader `sections_twice_failed_in_service` per candidate, and the reader's
+own report then said nothing had told it to use a recurrent-failure model and that it inferred the repeat
+pattern itself, which was false: the key names said it. Another was handed `rung0_count`, which is the
+author's own ladder vocabulary.
+
+So the handed list is built from the **Deliverable Answers the prompt actually asks for**, under the prompt's
+own words, and the Critical Components keys are either relabelled neutrally (`cc1`, `cc2`) or withheld. Sweep
+the list for the design's vocabulary exactly as sweep 2 sweeps the pack, since a key name is a shipped string
+for the length of the read. Where a scored read has already run on a contaminated list, its Gate F evidence is
+contaminated too: say so, and re-establish the verdict from the clean truth rather than from the read.
+
 ## Not a leak
 
 - A figure the prompt states or `stated_inputs` lists.

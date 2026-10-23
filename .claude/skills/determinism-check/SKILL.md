@@ -36,6 +36,16 @@ position where both gates hold. Before drawing a decisive step, name which of th
 it is one of them, it is WHAT, it must be filed, and the stump has to live somewhere else. The HOW is
 how a fully filed estimand is computed, and the data must force that.
 
+**Where the decisive step is an estimator choice, the assertions run over its GROUPINGS, not only over its
+placements and penalisations.** One build asserted a single grouping refuted and left three untested; of those
+three, two named another candidate at 1.648x and 1.676x and a third pooled the designated unit with its
+neighbour, so the shipped refutation sentence was weaker there than the note claimed. A 16-member standing
+family with two names rode through 233 green assertions and three judge passes. Enumerate the groupings the
+records license (per unit, per parent, shrunk to the pool, collapsed to a binary) and assert each, because a
+grouping the data cannot reject is the hardest member to see: the groups genuinely share the quantity, so the
+rival differs from the golden only by estimation noise and the question is whether the decision's own margin
+clears the noise the grouping adds.
+
 **Two candidate denominators can be unseparable in principle, and the test is cheap.** Where the open HOW is
 which exposure base a rate is built on, the record separates the candidates only if their period profiles
 differ inside the unit the decision is made at. Profile both bases' period counts against the realised events

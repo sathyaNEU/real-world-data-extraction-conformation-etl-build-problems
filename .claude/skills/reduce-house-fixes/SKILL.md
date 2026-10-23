@@ -454,6 +454,33 @@ Clear a similarity finding with a differentiation line, never by relabelling an 
 only by redrawing the axis, and when the ban arrives from a build registered **after** this card, that is
 still a redraw and not an exemption. Read the verdict line rather than the exit code where a tool prints both.
 
+## H32. A gate that reads a block's form and never its content
+
+**The defect.** A gate checks that a required block is present, that its labelled lines exist and that each
+carries more than a word. It never reads what the lines say. So a design note whose own text records that the
+build FAILS its own rules passes the gate, and a reviewer reading the exit status sees a compliant build.
+
+**The measured instances.** Two builds in one day. One rewrote its thirteen labelled lines to the measured
+truth, with five of them opening on the word FAILS, and its gate still printed "51 checks, 0 FAIL, 0 WARN",
+including a PASS on a `Lesson:` line whose text begins "as drawn there is none a model can take". The same gate
+printed PASS for "decisive rung silent" by reading the verdict word out of the note's own table while all three
+readability tells were measured firing. A second build's rework was refused on measurement and its state file
+still satisfied every field the resume gate tests, so the board offered it as freely resumable.
+
+**What it costs.** A refused architecture reads as compliant, and the refusal has to be rediscovered by whoever
+next picks the number up. It also cuts the other way: an author who writes the honest failure gets the same
+green as one who writes to pass, so the gate gives no reason to be honest.
+
+**The line.** Presence is checkable mechanically and is worth checking. A verdict is content, and a gate that
+cannot read content should not print a verdict about it. Where a line's own text carries the answer, the gate
+reports what it read rather than a PASS.
+
+**The check.** Two cheap ones, both additive and neither blocking. Scan each labelled line's content for a
+leading failure verdict (FAILS, dead, spent, none, not drawable) and emit a WARN naming the line, so the exit
+status stops disagreeing with the prose. And have the resume gate test the note's verdicts rather than the
+existence of its fields, so a build refused on measurement cannot read as resumable. Until a gate does that,
+read the note before trusting the gate: on a rework the note is the record and the exit status is a formality.
+
 ## Adding an entry
 
 An entry is a **class** a future build could repeat with other nouns; anything else goes in the design
