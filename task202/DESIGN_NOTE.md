@@ -1609,3 +1609,21 @@ build on file fits a linear ramp between two shipped endpoints.
 v1/v2 card carries no `architecture_spent`, so its axes still fence off ground no live build occupies, and
 `guard.py names --geo PH` has no locale mapped and returns the en_US pool. Nothing was registered in this
 pass and no card was filed.
+
+### Architecture 5, the propagation draw: in progress (2026-10-23)
+
+The brief: do not repeat architecture 4's world search, and do not draw the per-case-correction family
+again (closed as a clause by measurement, six laws). Draw instead the shape that shipped today, task125's:
+a change acts on a unit the data is not reported at, and its effect propagates through a structure the
+organisation's own process imposes, so each reported period is a mixture of affected and unaffected units
+whose proportions move. Record written as the work proceeds, per the brief.
+
+**Read first (so a later pass does not repeat it):** `task202/pipeline.json` resume, the tail of this
+section, `task125/DESIGN_NOTE.md` (the shipped shape), the wave 7 contract, `guard.py recent` and all
+seven `wave7_cell` allocations. All seven wave 7 slots are on `anomaly-detection`; this slot is the only
+one that keeps its world (`nonprofit-grant-making/grant-award-portfolios`).
+
+**The live window has moved since the contract was written.** `guard.py recent` of 2026-10-23 gives the
+last three registered builds as task275, task483 and task482, not task269 to task271, so the contract's
+copied ban table is stale in both directions exactly as `stumping` Part 3's role rule predicts. Bans are
+read off `guard.py check` at the moment the card is drafted, not off the table.
