@@ -8,11 +8,11 @@
   "client_domain": "economics-econometrics",
   "niche": "a member-owned electric cooperative's optional overnight residential rate opening in January 2027, its first-year take-up and the annual revenue it gives up, forecast from how members took the optional evening-peak rate offered in March 2024",
   "objective": "forecasting",
-  "shape": "02",
+  "shape": "other",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "2,250 R-1 services moved to R-ON by December 31, 2027, giving up $200,000 a year at test-year use",
+  "answer_source": "task171/generator/figures.json (call_members_2027, call_shortfall_2027_usd), written by generator/build.py",
   "gap": [
     "time",
     "population"
@@ -33,7 +33,7 @@
   "validated_decoy": false,
   "context_artifact": "planning_thread",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who prices every member's bill on each rate correctly fits the evening-peak rate's first-year take-up on each member's own saving under that rate, but reads the saving on the members' latest year of use, after the evening rate's members had moved use out of the evening, and so carries a flattened response onto the overnight rate and files about half the overnight members and two thirds of the shortfall; the plainer routes (the evening rate's take-up applied at the average member's bill change, or its takers' profile carried over) file a shortfall near zero or far above it.",
+  "analyst_test": "A strong analyst who prices every bill correctly and fits the evening-peak rate's first-year take-up on each service's own saving, read on the latest twelve billing months, files 1,000 services and $100,000 against the golden's 2,250 and $200,000, because the evening rate's takers had moved use out of 4 to 9 p.m. after joining, so their saving on later use is not the saving they chose on; the plainer routes (the first-year rate at the average member's change, the takers' profile carried over) file 1,750 services with $50,000 or $175,000.",
   "domain_test": "The deciding quantity is each standard-rate member's probability of taking the overnight rate within its first year, a binary choice in which the member's own bill saving on the use it could see is the price of the alternative, estimated on the evening-peak rate's first-year take-up and aggregated over the eligible members; replace the choice model with an average take-up and the shortfall, which is the covariance between take-up and saving, vanishes, so the call changes.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:optional-rate-take-up-priced-on-each-members-own-pre-offer-saving",
@@ -51,10 +51,10 @@
   "role_family": "product_manager",
   "scoring_unit": "per covered member",
   "spine": {
-    "file": "",
-    "rows": 0,
-    "entity": "one meter's kWh in one load-research period of one billing month",
-    "grain": "meter x billing month x load-research period",
+    "file": "ami_load_research_extract_2023-03_2026-10.parquet",
+    "rows": 1127566,
+    "entity": "one meter's kWh in the four load-research periods of one read period, billed to one service account",
+    "grain": "meter x service account x billing month",
     "source": "synthetic"
   },
   "forum": "committee_or_panel",
@@ -72,12 +72,14 @@
       "Bryan Castro"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "r-on_2027_forecast.xlsx"
+  ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "Units take up an optional plan by what the plan would save each of them on the behaviour it showed before the plan was offered, so a new optional plan's take-up and cost are priced on each unit's own saving under it, run through the response to own saving that an earlier optional plan's first-year take-up shows, read on the behaviour before that plan was offered because its takers changed theirs after taking it; an average take-up applied to every unit, the earlier takers' profile carried over, or a response read on present behaviour each misprices it.",
   "driver_concrete": "Sablewood members took the March 2024 evening-peak rate by what it would save them on their own use in the year before it was offered, so the 2027 overnight rate's members and shortfall come from each standard-rate member's own overnight-rate saving on its 2026 use run through the first-year take-up response to own saving that the evening rate shows on the March 2023 to February 2024 use; the evening rate's members moved use out of the evening after joining, so the same response read on their later use comes out flat, and the evening rate's takers are evening-light members, not the overnight-heavy members the overnight rate pays.",
-  "stump": "A competent solver fits the evening-peak rate's first-year take-up on each member's saving under it read on the latest twelve months of use and runs the overnight-rate savings through it, filing about half the golden's overnight members at each quarter end and about two thirds of its shortfall; the step that lands it there is reading the saving on use the evening rate's members had already changed by joining, when they chose on the use of the year before the offer.",
+  "stump": "A competent solver fits the evening-peak rate's first-year take-up on each service's saving under it read on the latest twelve billing months, runs the overnight-rate savings through it and files 1,000 services and $100,000; the step that lands it there is reading the saving on use the evening rate's takers had already changed by taking it, when they chose on the use of the year before the offer.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task137": "task137 splits a repricing share into two classes of unit rebuilt from each unit's price against its entry cohort's floor; here there is no class mixture: take-up is a continuous response to each member's own bill saving, read on the use before the earlier rate was offered because its takers changed their use after joining.",
