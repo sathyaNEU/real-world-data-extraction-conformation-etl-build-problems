@@ -223,12 +223,42 @@ on a bar of 4.0, with the designed route recovering the offset at 2.993 plus or 
 forms and comparing deviance is readability test 5 and reaches the golden 20 of 20. That is the fitted
 counterfactual family, not this one.
 
-**What the shape still leaves open**, both unpriced and neither a recommendation: grading the path's
-TURNING POINT rather than its levels, where the enumerated transports genuinely disagree (28, 32, 35, 35, 36
-against a true 32) on a discrete level-dependent object whose standing family is one member, which needs a
-propagation that is not the shipped build's; and a structure whose POSITION IS NOT REGISTERED at all, so the
-position is itself an estimated quantity, which this lane's standing law expects to die on the parametric
-horn and which nothing on file measures.
+**Both directions the shape appeared to leave open are now priced, and both are dead.** Grading the path's
+TURNING POINT instead of its levels gives **2.95 distinct turning points of 5** across the licensed family,
+and it carries a trap that reads as a pass: **19 of 20 worlds have SOME family member naming the true
+turning point** while the family spreads it across four quarters of an eight-quarter window (a true plus 7
+against a family of plus 3, 4, 6 and 7). **Naming it is not the family agreeing on it**, and a screen that
+reports the former has measured nothing. A structure whose POSITION IS NOT REGISTERED, so the position is
+reconstructed from each unit's own history, gives **5.00 distinct paths of 5** at a spread of 4.72 against a
+printed unit of 1, exact in only 3 of 20, with every licensed reconstruction (largest drop, local minima,
+cusum reset, sawtooth least squares, pooled modal period) giving a different path in every one of 20 worlds.
+
+**And the closed clause is wider than multiplicative: it covers an ADDITIVE per-case correction too, because
+there the escape and the kill are one property.** Grading a level-dependent count is the named escape from
+the monotone-summary kill and it does work, since no sorted column reaches the path. But the same level
+dependence is why the per-case error does not average away: a count across a limit is discontinuous, so a
+recovery always misplaces the cases nearest the limit. One property buys the escape and pays for the kill,
+measured at 4.80 distinct paths of 5 for an unrecorded additive effect, a spread of 3.11 against a printed
+unit of 1, and **0 of 16 joint cells**. So state the closed family as a per-case correction, additive or
+multiplicative, rather than as a multiplicative one.
+
+**The one-ended dial here reads off a single table, which is the cheapest-licensed-member law in its sharpest
+form.** Sweeping a parallel run's coverage and precision, the standing family falls from 4.70 members to
+2.00 while the cheapest licensed member's own hit rate on the golden path rises from 4 of 20 to 19 of 20,
+and **0 of 16 cells** have both a unanimous standing family and the cheapest member missing. Determinacy and
+reach are the same column read from two ends.
+
+**The axis that is actually open, as a constraint and not a mechanism: the number of unknowns against the
+number of cases.** Six grounds now return one dichotomy, the decisive construction being either exact
+arithmetic on a shipped structure or a fit with one unknown per case, and that holds for additive
+corrections and level-dependent counts as well. A construction whose unknowns are **strictly fewer than its
+cases** is overidentified by the data, which closes the estimator family WITHOUT filing a method, and it is
+the only structure ever measured in this lane that opened a two-ended dial. Its one instance on file, a
+linear solve over coupled observations, is spent as a shipped driver in other nouns, so what is open is a
+shared-parameter construction that is not that one. The first test at the draw: does the organisation's own
+process impose a design that identifies a FEW shared parameters across MANY cases jointly? And draw it on
+ground whose spent drivers are not all about how the instrument or the record sees the quantity, because
+that ground has no room left for a propagation or a design.
 
 **The one-correcting-quantity-per-case clause is now closed as a clause, not merely on one cell.** For a
 per-case latent quantity there are five ways a finer file can relate to it, and all five are measured:
