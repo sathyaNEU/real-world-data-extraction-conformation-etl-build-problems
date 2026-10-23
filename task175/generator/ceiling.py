@@ -1,4 +1,4 @@
-"""The pair ceiling, run on the cut pack, against the routes the stage 4 readers actually took on round 1 as well as
+"""The pair ceiling, run on the cut pack, against the routes the stage 4 readers actually took on rounds 1 and 2 as well as
 the cracker. Every route lands the call (worst case) and works the asks its own way:
 
   cracker   counts every fiscal 2026 install and sums every receipt line
@@ -7,6 +7,9 @@ the cracker. Every route lands the call (worst case) and works the asks its own 
   reader B  drops installs at premises whose first account started more than 1,000 days before the install, places
             premises through their set-up date, dedupes receipts by receipt number
   stored    reader A with the premise's stored UEP_PHASE
+  reader D  round 2: a premise's first install, at a premise with no account opened before it, placed through the plat
+            unit of the parcel number (address where the parcel is blank); sums Amount on every receipt line
+  reader E  reader D counting only premises the extract shows ACTIVE, dedupes receipts by receipt number
 
 The asks read nothing the call's construction produces, so the mirror (the analog on the call) works them the same
 way. Weights 38, 7, 55 (supplemental-stumping Part 0); a hit only when exact at the stated rounding.
@@ -32,6 +35,8 @@ def main(target):
         "reader A": [r["reader_a"][(ph, q)] for ph in PHASES for q in (1, 2, 3, 4)] + [round(by_no[q]) for q in (1, 2, 3, 4)],
         "reader B": [r["reader_b"][(ph, q)] for ph in PHASES for q in (1, 2, 3, 4)] + [round(by_no[q]) for q in (1, 2, 3, 4)],
         "stored": [r["stored_phase"][(ph, q)] for ph in PHASES for q in (1, 2, 3, 4)] + [round(by_no[q]) for q in (1, 2, 3, 4)],
+        "reader D": [r["reader_d"][(ph, q)] for ph in PHASES for q in (1, 2, 3, 4)] + [round(lines[q]) for q in (1, 2, 3, 4)],
+        "reader E": [r["reader_e"][(ph, q)] for ph in PHASES for q in (1, 2, 3, 4)] + [round(by_no[q]) for q in (1, 2, 3, 4)],
     }
     n = len(golden)
     keep = {k: sum(1 for a, b in zip(golden, v) if a == b) for k, v in paths.items()}

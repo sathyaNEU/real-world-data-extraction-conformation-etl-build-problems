@@ -10,6 +10,7 @@ import re
 import shutil
 import sys
 import tempfile
+from collections import defaultdict
 
 import numpy as np
 
@@ -151,6 +152,9 @@ def main(target):
     LYp = calc.lot_years(Pp, season, "street")
     ll_perm = calc.fit_poisson(LYp, np.digitize(LYp["n"], calc.COUNT_BINS), len(calc.COUNT_BINS) + 1)[3]
     check("L3 homes completed beat homes permitted by 30 units or more", ll_street - ll_perm > 30, "%.1f" % (ll_street - ll_perm))
+    gperm, _ = calc.forecast(Pp, season)
+    check("SF11 a permit issued counted as a home standing: same call, 4 or more inside the bin's edge",
+          printed(gperm) == gp and edge(gperm["total"], 50) >= 4, "%.1f, %.1f from the edge" % (gperm["total"], edge(gperm["total"], 50)))
 
     print("semantic fork table")
     pools = sum(1 for r in csv.DictReader(open(os.path.join(target, C.F_PLEG))) if r["PERMIT_TYPE"] != "RES NEW SFR")
@@ -211,9 +215,25 @@ def main(target):
     PH = ["Core", "1", "2", "3", "4"]
     exact = all(grid[(ph, k)] == int(((u.phase_now == ph) & new & (q == k - 1)).sum()) for ph in PH for k in (1, 2, 3, 4))
     check("A1 law 6: the golden handling reproduces the clean truth in every cell", exact)
-    for rname in ("cracker", "reader_a", "reader_b", "stored_phase"):
+    for rname in ("cracker", "reader_a", "reader_b", "reader_d", "reader_e", "stored_phase"):
         check("A2 every cell missed on the %s route" % rname, all(routes[rname][(ph, k)] != grid[(ph, k)] for ph in PH for k in (1, 2, 3, 4)))
-    check("A3 the re-set device is in every cell (premises installed twice)", all(routes["reader_a"][(ph, k)] > grid[(ph, k)] for ph in PH for k in (1, 2, 3, 4)))
+    check("A3 the second-premise device is in every cell (a lot's first install on two premises)",
+          all(routes["reader_d"][(ph, k)] > grid[(ph, k)] for ph in PH for k in (1, 2, 3, 4)))
+    prem_rows = list(csv.DictReader(open(os.path.join(target, C.F_PREM))))
+    by_addr_raw = defaultdict(int)
+    for r in prem_rows:
+        by_addr_raw[r["SVC_ADDR"]] += 1
+    parcels = [r["PARCEL_ID"] for r in prem_rows if r["PARCEL_ID"]]
+    check("A5 silent: no parcel number repeats in the premise extract and fewer than one counter premise in five repeats "
+          "its stub's address string", len(parcels) == len(set(parcels)) and
+          sum(1 for v in by_addr_raw.values() if v > 1) < 0.2 * len(u.prem2), "%d repeated strings of %d" %
+          (sum(1 for v in by_addr_raw.values() if v > 1), len(u.prem2)))
+    check("A6 no field names the device: the premise and install headers are unchanged",
+          list(prem_rows[0].keys()) == ["PREMISE_ID", "SVC_ADDR", "PARCEL_ID", "UEP_PHASE", "CREATED_DT", "PREMISE_TYPE", "STATUS"])
+    FROZEN_CONN = [47, 35, 42, 29, 52, 37, 56, 61, 71, 61, 97, 64, 107, 97, 130, 128, 98, 101, 96, 101]
+    FROZEN_FEES = [5307260, 5266345, 6353515, 5330640]
+    check("Z1 frozen: the call total, every connection cell and every fee quarter equal the round 1 fix figures",
+          abs(g["total"] - 293.225) < 0.0006 and [grid[(ph, k)] for ph in PH for k in (1, 2, 3, 4)] == FROZEN_CONN)
     check("A4 the asks' figures in figures.json are the golden",
           all(fig["ask_connections_fy2026_%s_q%d" % (ph.lower() if ph == "Core" else "phase" + ph, k)] == grid[(ph, k)]
               for ph in PH for k in (1, 2, 3, 4)))
@@ -228,6 +248,7 @@ def main(target):
     tq = {k: sum(v for qq, v in tru.values() if qq == k) for k in (1, 2, 3, 4)}
     check("B6 law 6: one amount per payment (receipt number and payer) reproduces the cash received", all(abs(tq[k] - fees[k]) < 0.5 for k in tq))
     check("B7 figures.json fees are the golden", all(fig["ask_capacity_fees_fy2026_q%d" % k] == round(fees[k]) for k in (1, 2, 3, 4)))
+    check("Z2 frozen: every fee quarter equals the round 1 fix figure", [round(fees[k]) for k in (1, 2, 3, 4)] == FROZEN_FEES)
     from pack import Identity
     to_p = np.array([P.ix[s] for s in Identity(w).strap])
     exch_lots = set(int(to_p[i]) for i in u.changeouts[0])

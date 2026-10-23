@@ -272,14 +272,21 @@ class Pack:
         w, u = self.w, self.u
         g = C.stream("premise")
         idx = np.where(u.has_premise)[0]
-        order = idx[np.lexsort((self.idn.strap[idx], u.created[idx]))]
-        pid = {}
+        ent = [(u.created[i], self.idn.strap[i], 0, int(i)) for i in idx]
+        ent += [(c, self.idn.strap[i], 1, int(i)) for i, c in u.prem2.items()]
+        ent.sort()
+        pid, pid2 = {}, {}
         k = 1003000
-        for i in order:
+        for (_, _, kind, i) in ent:
             k += int(g.integers(1, 6))
-            pid[int(i)] = "%07d" % k
-        self._pid = pid
+            (pid2 if kind else pid)[i] = "%07d" % k
+        self._pid, self._pid2 = pid, pid2
         return pid
+
+    def premise_now(self, i):
+        """the premise a lot's meter and account sit on at the extract"""
+        self.premise_ids()
+        return self._pid2.get(int(i), self._pid[int(i)])
 
     def write_premises(self, out):
         w, u, idn = self.w, self.u, self.idn
@@ -291,8 +298,14 @@ class Pack:
             parcel = idn.strap[i] if cr >= dt.date(1998, 1, 1) else ""
             phase = u.phase_stored[i]
             ph = "00" if phase == "Core" else "%02d" % int(phase)
-            active = not np.isnat(u.meter_set[i]) and C.to_date(u.meter_set[i]) <= C.RECORDS_END
+            active = not np.isnat(u.meter_set[i]) and C.to_date(u.meter_set[i]) <= C.RECORDS_END and i not in self._pid2
             rows.append([p, idn.addr_uc[i], parcel, ph, C.iso(cr), "RES-SF", "ACTIVE" if active else "STUB"])
+        for i, p in self._pid2.items():
+            ph = "00" if u.phase_now[i] == "Core" else "%02d" % int(u.phase_now[i])
+            last = idn.addr_uc[i].rsplit(" ", 1)     # the counter types the street type out in full
+            rows.append([p, last[0] + " " + SUFFIX_LONG.get(last[1].title(), last[1]), "", ph, C.iso(C.to_date(u.prem2[i])),
+                         "RES-SF", "ACTIVE"])
+        rows.sort(key=lambda r: r[0])
         return C.write_csv(os.path.join(out, C.F_PREM), ["PREMISE_ID", "SVC_ADDR", "PARCEL_ID", "UEP_PHASE", "CREATED_DT",
                                                           "PREMISE_TYPE", "STATUS"], rows)
 
@@ -301,11 +314,11 @@ class Pack:
         g = C.stream("accounts")
         pid = self.premise_ids()
         rows = []
-        acc = sorted(u.accounts, key=lambda r: (r[1], pid[r[0]]))
+        acc = sorted(u.accounts, key=lambda r: (r[1], self.premise_now(r[0])))
         k = 4400000
         for (i, s, e) in acc:
             k += int(g.integers(1, 4))
-            rows.append(["%08d" % k, pid[i], C.iso(C.to_date(s)), C.iso(C.to_date(e)) if e is not None else "",
+            rows.append(["%08d" % k, self.premise_now(i), C.iso(C.to_date(s)), C.iso(C.to_date(e)) if e is not None else "",
                          "RES1", "%02d" % (1 + int(g.integers(0, 20)))])
         return C.write_csv(os.path.join(out, C.F_ACCT), ["ACCOUNT_NO", "PREMISE_ID", "SVC_START", "SVC_STOP", "RATE_CLASS",
                                                           "BILL_CYCLE"], rows)
@@ -323,7 +336,8 @@ class Pack:
             ev.append((C.to_date(day), int(i), "exch"))
         for i, day in zip(*u.resets):
             ev.append((C.to_date(day), int(i), "reset"))
-        ev.sort(key=lambda r: (r[0], pid[r[1]]))
+        prem = {(i, kind): (self.premise_now(i) if kind == "reset" else pid[i]) for (_, i, kind) in ev}
+        ev.sort(key=lambda r: (r[0], prem[(r[1], r[2])]))
         rows = []
         ser = 25030000
         eid = 81100000
@@ -334,7 +348,7 @@ class Pack:
                 size = "5/8X3/4" if g.random() < 0.83 else "1"
             else:
                 size = "1" if u.size1[i] else "5/8X3/4"
-            rows.append(["%d" % eid, "%dA" % ser, pid[i], C.iso(day), "%02d:%02d" % (hh, mm), size,
+            rows.append(["%d" % eid, "%dA" % ser, prem[(i, kind)], C.iso(day), "%02d:%02d" % (hh, mm), size,
                          "C%02d" % int(g.integers(1, 15))])
         self.ami_events = ev
         return rows

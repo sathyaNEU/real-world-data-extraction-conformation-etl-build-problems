@@ -124,8 +124,48 @@ class Utility:
                     if self.meter_set[i] + np.timedelta64(40, "D") <= d < lim:
                         rs_lot.append(i); rs_day.append(d); have += 1
         self.resets = (np.array(rs_lot), np.array(rs_day, dtype="datetime64[D]"))
+        self._second_premises(np.random.default_rng([w.seed, 29]))
         # capacity fee receipts: paid with the permit, at the fee of the permit's fiscal year
         self._receipts(g)
+
+    def _second_premises(self, g):
+        """when work resumes on a stalled build the meter order goes through the cashier's counter, which sets up a
+        premise from the service order unless the clerk reopens the stub; the stub keeps the first set in the head-end
+        log and goes back to STUB, and the home's account opens on the counter's premise"""
+        lots, days = self.resets
+        ms = self.meter_set
+
+        def cell(x):
+            x = np.datetime64(x, "D")
+            if not (FY26[0] <= x < FY26[1]):
+                return None
+            m = int(x.astype("datetime64[M]").astype(int) % 12) + 1
+            return ((m - 10) % 12) // 3
+
+        cells = [(self.phase_now[i], cell(dd)) for i, dd in zip(lots, days)]
+        first = [(self.phase_now[i], cell(ms[i])) for i in lots]
+        newp = g.random(len(lots)) < 0.7
+        PH = ["Core", "1", "2", "3", "4"]
+        for _ in range(60):
+            changed = False
+            for ph in PH:
+                for k in range(4):
+                    here = [j for j, c in enumerate(cells) if c == (ph, k)]
+                    n_new = sum(1 for j in here if newp[j])
+                    out = sum(1 for j, c in enumerate(first) if newp[j] and c == (ph, k) and cells[j] != c)
+                    inn = sum(1 for j in here if newp[j] and first[j] != cells[j])
+                    if n_new == 0 or inn == out:
+                        free = [j for j in here if not newp[j]]
+                        if free:
+                            newp[free[int(g.integers(0, len(free)))]] = True
+                        else:
+                            j = here[int(g.integers(0, len(here)))]
+                            newp[j] = not newp[j]
+                        changed = True
+            if not changed:
+                break
+        self.reset_newprem = newp
+        self.prem2 = {int(i): dd - np.timedelta64(int(g.integers(2, 12)), "D") for i, dd, nw in zip(lots, days, newp) if nw}
 
     def _receipts(self, g):
         w = self.w

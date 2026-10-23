@@ -4,11 +4,11 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: family, street, golden, window, analog, strategy, forward, schedule, expected, spread, driver, demand, forecasting, january, vacant, chance, earlier, screen, uplift, default, conditioned, member, orders, capped, composition
+Stump terms swept: family, street, golden, window, analog, strategy, forward, forecasting, expected, spread, driver, demand, january, vacant, chance, earlier, screen, schedule, uplift, default, conditioned, honest, member, orders, capped
 
 ## 4 design-note vocabulary (REVIEW 2)
 - **REVIEW** `field_definitions.txt`: 3 of 25 stump-paragraph terms appear (family, january, vacant); read whether the document names the move
-- **REVIEW** `revenue_sufficiency_forecast_conventions_fy2027.pdf`: 5 of 25 stump-paragraph terms appear (family, schedule, expected, forecasting, january); read whether the document names the move
+- **REVIEW** `revenue_sufficiency_forecast_conventions_fy2027.pdf`: 5 of 25 stump-paragraph terms appear (family, forecasting, expected, january, schedule); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `bldg_permits_2019_2026.xlsx`: 2596 ISO dates after 2027-01-08, e.g. 2027-01-09, 2027-01-10, 2027-01-11, 2027-01-12, 2027-01-13

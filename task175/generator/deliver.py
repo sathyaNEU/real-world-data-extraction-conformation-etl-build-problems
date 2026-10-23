@@ -114,8 +114,8 @@ def write_workbook(path, o, f):
     ws2 = wb.create_sheet("FY2026 connections")
     ws2["A1"] = "New single-family connections, fiscal 2026"
     ws2["A1"].font = Font(bold=True, size=13)
-    ws2["A2"] = ("A premise's first meter install, at a premise with no account opened before it; quarter of the install "
-                 "date.")
+    ws2["A2"] = ("A lot's first meter install, at a lot with no account opened before it, premises placed on lots by "
+                 "parcel or service address; quarter of the install date.")
     ws2["A2"].font = Font(italic=True, size=9)
     hdr2 = ["Phase"] + [QLABEL[q] for q in (1, 2, 3, 4)] + ["Fiscal 2026"]
     for j, h in enumerate(hdr2, 1):
@@ -134,9 +134,9 @@ def write_workbook(path, o, f):
     c = ws2.cell(row=r, column=6, value=int(sum(o["grid"].values()))); c.number_format = "#,##0"; c.font = bold
     for j in range(1, 7):
         ws2.cell(row=r, column=j).border = top
-    ws2.cell(row=r + 2, column=1, value=("AMI head-end installs at premises already billed before the install are meter "
-                                         "exchanges, and a second install at a premise is a meter set again, not connections. Phases as the program schedule groups the areas; "
-                                         "premises are placed by parcel or service address.")).font = Font(size=9)
+    ws2.cell(row=r + 2, column=1, value=("AMI head-end installs at lots already billed before the install are meter "
+                                         "exchanges, and a later install at a lot, on its stub or on a premise set up at the counter, is a meter set again, not a connection. "
+                                         "Phases as the program schedule groups the areas.")).font = Font(size=9)
     for col, wv in zip("ABCDEF", [20, 13, 13, 13, 13, 12]):
         ws2.column_dimensions[col].width = wv
     ws2.row_dimensions[4].height = 30
@@ -200,7 +200,7 @@ def write_chart(path, o):
     ax.tick_params(colors="#52514e", labelsize=9)
     ax.set_ylim(0, bottom.max() * 1.12)
     ax.legend(loc="upper left", bbox_to_anchor=(1.0, 1.0), frameon=False, fontsize=9)
-    fig.text(0.01, 0.01, "Source: AMI head-end installs and CIS account history; first installs only, meter exchanges at billed premises excluded. "
+    fig.text(0.01, 0.01, "Source: AMI head-end installs and CIS account history; first install per lot only, meter exchanges at billed homes excluded. "
              "Port Ardell Utilities, Revenue and Rates.", fontsize=7.5, color="#52514e")
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     fig.savefig(path, facecolor=fig.get_facecolor(), metadata={"Software": None})
@@ -246,10 +246,12 @@ def write_submission(path, o, f):
         "before it, and summed each lot's chance of a permit in 2027 (one less the exponential of its cumulative rate, "
         "the expected number of distinct lots the conventions define): %d permits." % (
             "{:,}".format(f["cc1_vacant_lots_total"]), f["call_total_permits_2027"]),
-        "Took fiscal 2026 new connections from ami_headend_installs_fy25_fy26.csv as each premise's first install in "
-        "the log, when it falls in fiscal 2026 at a premise with no account in cis_account_history_20261231.csv opened "
-        "before it: a second install at a premise is a meter set again after a stalled build, and an install at a "
-        "billed premise is a meter exchange; placed by parcel or service address through the plat unit into the "
+        "Placed every premise in cis_premise_extract_20261231.csv on its lot by parcel or service address (street "
+        "types normalised) and took fiscal 2026 new connections from ami_headend_installs_fy25_fy26.csv as each lot's "
+        "first install in the log, when it falls in fiscal 2026 at a lot with no account in "
+        "cis_account_history_20261231.csv opened before it: a lot carried under two premises (its stub and one set up "
+        "at the counter when a stalled build's meter was set again) is one connection, a later install at a lot is a "
+        "meter set again, and an install at a billed lot is a meter exchange; phases through the plat unit into the "
         "schedule's phases rather than by the premise's stored UEP_PHASE.",
         "Summed capacity_fee_receipts_fy2026.xlsx once per payment by receipt date, a payment being a receipt number "
         "and its payer: a receipt covering several permits repeats its amount on each permit line, and receipt "

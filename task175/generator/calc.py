@@ -306,37 +306,44 @@ def analog(P, season=None, scaled=False):
 
 
 def connections_fy26(target, P=None):
-    """new single-family connections in fiscal 2026: a premise's first meter install, made in fiscal 2026 at a premise
-    with no account opened before it, by the schedule's phase (placed by parcel or address) and fiscal quarter.
-    Returns the golden grid and the grids of the routes the ceiling prices."""
+    """new single-family connections in fiscal 2026: a lot's first meter install, made in fiscal 2026 at a lot with no
+    account opened before it, by the schedule's phase and fiscal quarter. Premises are placed on lots by parcel number or
+    service address, and a lot carried under two premises is one connection. Returns the golden grid and the grids of the
+    routes the ceiling prices."""
     P = P or Pack(target)
     prem = _csv(os.path.join(target, C.F_PREM))
     acct = _csv(os.path.join(target, C.F_ACCT))
     ami = _csv(os.path.join(target, C.F_AMI))
-    first_acct = {}
-    for r in acct:
-        s_ = _iso(r["SVC_START"])
-        if r["PREMISE_ID"] not in first_acct or s_ < first_acct[r["PREMISE_ID"]]:
-            first_acct[r["PREMISE_ID"]] = s_
     plot = {}
     for r in prem:
         plot[r["PREMISE_ID"]] = P.ix[r["PARCEL_ID"]] if r["PARCEL_ID"] else P.ix_addr[norm_addr(r["SVC_ADDR"])]
     stored = {r["PREMISE_ID"]: r["UEP_PHASE"] for r in prem}
-    first_install = {}
+    status = {r["PREMISE_ID"]: r["STATUS"] for r in prem}
+    fa_p, fa_l, fi_p, fi_l = {}, {}, {}, {}
+
+    def lower(dct, k, v):
+        if k not in dct or v < dct[k]:
+            dct[k] = v
+    for r in acct:
+        s_ = _iso(r["SVC_START"])
+        lower(fa_p, r["PREMISE_ID"], s_)
+        lower(fa_l, plot[r["PREMISE_ID"]], s_)
     for r in ami:
         d = _iso(r["INSTALL_DATE"])
-        if r["PREMISE_ID"] not in first_install or d < first_install[r["PREMISE_ID"]]:
-            first_install[r["PREMISE_ID"]] = d
-    routes = {k: defaultdict(int) for k in ("golden", "cracker", "reader_a", "reader_b", "stored_phase")}
+        lower(fi_p, r["PREMISE_ID"], d)
+        lower(fi_l, plot[r["PREMISE_ID"]], d)
+    routes = {k: defaultdict(int) for k in ("golden", "cracker", "reader_a", "reader_b", "reader_d", "reader_e",
+                                            "stored_phase")}
     for r in ami:
         d = _iso(r["INSTALL_DATE"])
         fy, q = C.fq(d)
         if fy != 2026:
             continue
         pid = r["PREMISE_ID"]
-        a = P.area[plot[pid]]
+        lot = plot[pid]
+        a = P.area[lot]
         ph = "Core" if a == "Core" else P.areas[a]["phase"]
-        f = first_acct.get(pid)
+        f = fa_p.get(pid)
         routes["cracker"][(ph, q)] += 1
         if f is None or f >= d:
             routes["reader_a"][(ph, q)] += 1
@@ -344,7 +351,12 @@ def connections_fy26(target, P=None):
             routes["stored_phase"][(sph, q)] += 1
         if f is None or (d - f).days <= 1000:
             routes["reader_b"][(ph, q)] += 1
-        if first_install[pid] == d and (f is None or f >= d):
+        if fi_p[pid] == d and (f is None or f >= d):
+            routes["reader_d"][(ph, q)] += 1
+            if status[pid] == "ACTIVE":
+                routes["reader_e"][(ph, q)] += 1
+        fl = fa_l.get(lot)
+        if fi_l[lot] == d and (fl is None or fl >= d):
             routes["golden"][(ph, q)] += 1
     return routes
 
