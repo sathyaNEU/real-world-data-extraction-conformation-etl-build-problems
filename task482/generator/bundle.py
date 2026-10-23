@@ -1,37 +1,39 @@
-"""Reads task482's cut pack the way a solver must and computes every figure from it: each plant's 2026 press VOC (used,
-captured, destroyed, emitted) under the golden handling and under each rung and licensed variant, each plant's cleaning
-VOC away from its presses (ask A) and each plant's gallons received and unaccounted for (ask B). golden.py, checks.py
-and ceiling.py call it; verify.py recomputes the golden without it.
+"""Reads task482's cut pack the way a solver must and computes every figure from it: each store's 2026 hours with its
+vaccine above 8.0 degrees C under the golden handling and under each rung and licensed variant, each store's doses
+unaccounted for (ask A) and each store's Brannon service spend (ask B). golden.py, checks.py and ceiling.py call it;
+verify.py recomputes the golden without it.
 
-The golden handling of the press VOC: each production day's captured VOC (press logs through the safety data sheets,
-times the plant's capture efficiency) over the oxidizer's process hours that day, and the mean airflow over them (the
-historian, its UTC hours put on Central time, fan speed through the rated airflow), give the day's inlet as carbon
-through the plant's carbon content; the outlet is the relation the performance tests trace across the ten oxidizers
-(each test's runs on one basis, as carbon): the mean outlet of the runs with an inlet under 2,000 ppmv, and above the
-knee the mean share of the inlet passed by the runs over 3,000; the day's controlled VOC is that outlet over the
-day's air and hours."""
+The golden handling of the hours: every record put on UTC (Frostline's offsets, Kelvra's UTC and Fahrenheit,
+Brumal's standard time, Tellvane's UTC) and joined to its store through the monitoring roster; at each pilot store
+the in-carton sensor from its first reading, the store's logger before it. The vaccine's temperature behind a logger
+record is the logger record carried through a first-order lag, each record holding over the ten minutes it stands for,
+with the time constant fitted per logger make on the pilot stores' overlaps (the old logger's records after the
+in-carton sensor's first reading, against the sensor). A record counts its ten minutes when the vaccine's temperature
+at its time stamp is above 8.0."""
 import csv
 import datetime as dt
 import os
-import re
 from collections import defaultdict
 
 import numpy as np
 
-K = 3.1173e-8
-TONS = 2000.0
-DILUTE, CONC = 2000.0, 3000.0
-RENUMBERED = dt.date(2026, 4, 1)
-YEAR = 2026
+LIMIT, LINE = 8.0, 24.0
+STEP = 10
+Y0, Y1 = 360, 360 + 525600                       # the local (Central) year in UTC minutes from 2026-01-01T00:00Z
+UPDATE = dt.datetime(2026, 6, 1)
+PLATFORM = dt.date(2026, 7, 1)
+TAX = 0.06
 FILES = {
-    "register": "deq_printing_plants_register_2027-02.xlsx", "press": "press_material_use_2026.csv",
-    "sds": "safety_data_sheet_master_2027-01.xlsx", "hist": "oxidizer_historian_hourly_2026.csv",
-    "tests": "oxidizer_performance_tests_2017_2026.pdf", "issues": "stores_cleaning_issues_2026.csv",
-    "manifests": "cantrell_bend_manifests_2026.csv", "profiles": "cantrell_bend_waste_profiles_2026.pdf",
-    "tickets": "wexcombe_service_tickets_2026.csv", "payments": "solvent_vendor_payments_2026.csv",
-    "corvane": "corvane_invoice_export_2026.csv", "haldane": "haldane_statement_2026.xlsx",
-    "catalog": "haldane_catalog_2026-04.csv", "counts": "stock_counts_2026.csv",
+    "stores": "penwick_store_list_2027-01.xlsx", "roster": "refrigerator_monitoring_roster_2026.xlsx",
+    "frostline": "frostline_temperature_logs_2026.csv", "kelvra": "kelvra_logger_export_2026.csv",
+    "brumal": "brumal_downloads_2026.txt", "tellvane": "tellvane_sensor_readings_2026.csv",
+    "invoices": "meridale_vaccine_invoices_2026.csv", "items": "vaccine_item_master_2026.xlsx",
+    "admin": "pharmacy_vaccine_administrations_2026.csv", "writeoffs": "vaccine_writeoff_log_2026.csv",
+    "credits": "meridale_credit_memos_2026.csv", "transfers": "vaccine_store_transfers_2026.csv",
+    "inventory": "vaccine_physical_inventory_ye2025_ye2026.xlsx", "brannon": "brannon_service_history_2026-01_2027-01.xlsx",
+    "agreement": "brannon_service_agreement_2025.pdf",
 }
+_D0 = dt.date(2026, 1, 1).toordinal()
 
 
 def hround(x):
@@ -39,12 +41,10 @@ def hround(x):
     return int(np.floor(abs(x) + 0.5)) * (1 if x >= 0 else -1)
 
 
-def round1(x):
-    return float(np.floor(abs(x) * 10 + 0.5) / 10.0) * (1 if x >= 0 else -1)
-
-
-def _csv(target, key):
+def _csv(target, key, skip=0):
     with open(os.path.join(target, FILES[key]), newline="", encoding="utf-8") as f:
+        for _ in range(skip):
+            f.readline()
         return list(csv.DictReader(f))
 
 
@@ -57,474 +57,431 @@ def _sheet(target, key, name, header_row=1):
 
 
 def pdf_text(path):
-    import pypdf
-    return "\n".join(p.extract_text() for p in pypdf.PdfReader(path).pages)
+    import subprocess
+    return subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True, check=True).stdout
 
 
-def central(utc):
-    """UTC to US Central (daylight time from 2:00 local on 8 March to 2:00 local on 1 November 2026)."""
-    if dt.datetime(2026, 3, 8, 8) <= utc < dt.datetime(2026, 11, 1, 7):
-        return utc - dt.timedelta(hours=5)
-    return utc - dt.timedelta(hours=6)
+def _day(y, m, d):
+    return dt.date(y, m, d).toordinal() - _D0
 
 
-# ---------------------------------------------------------------------------------------------------------------------
+def ifilter(x, c, y0, block=800):
+    """y[n] = c[n] * y[n-1] + (1 - c[n]) * x[n], y[-1] = y0"""
+    x = np.asarray(x, float)
+    c = np.broadcast_to(np.asarray(c, float), x.shape)
+    y = np.empty_like(x)
+    prev = float(y0)
+    for s in range(0, len(x), block):
+        xs, cs = x[s:s + block], c[s:s + block]
+        p = np.cumprod(cs)
+        y[s:s + block] = p * (prev + np.cumsum((1.0 - cs) * xs / p))
+        prev = y[s + len(xs) - 1]
+    return y
+
+
 class Inputs:
+    """every file the figures read, parsed once"""
+
     def __init__(self, target):
         self.target = target
-        reg = _sheet(target, "register", "Plants")
-        self.order = [r["Plant"] for r in reg]
-        self.fac, self.facno = {}, {}
-        self.cf, self.washers = {}, {}
-        for r in reg:
-            self.fac[r["Facility no."]] = r["Plant"]
-            self.facno[r["Plant"]] = r["Facility no."]
-            if r["Former name"]:
-                m = re.search(r"\(facility (\d{4})\)", r["Former name"])
-                self.fac[m.group(1)] = r["Plant"]
-            if r["Carbon content of VOC (lb C per lb VOC)"] is not None:
-                self.cf[r["Plant"]] = float(r["Carbon content of VOC (lb C per lb VOC)"])
-        self.ox = {}
-        self.tag = {}
-        for r in _sheet(target, "register", "Oxidizers"):
-            n = r["Plant"]
-            tags = re.findall(r"[A-Z]{3,4}-RTO\d?", r["Historian tag"])
-            for t in tags:
-                self.tag[t] = n
-            self.ox[n] = dict(vendor=r["Manufacturer"], fixed=r["Fan drive"].startswith("Fixed"),
-                              Q=float(r["Rated airflow (scfm)"]), logs=r["Historian logs"],
-                              qmin=(r["Minimum fan speed (%)"] or 100) / 100.0)
-        self.ce = {r["Plant"]: float(r["Capture efficiency (%)"]) / 100.0 for r in _sheet(target, "register",
-                                                                                           "Capture")}
-        self.controlled = [n for n in self.order if n in self.ox]
-        self._sds(target)
-        self._press(target)
-        self._hist(target)
-        self._tests(target)
+        st = _sheet(target, "stores", "Stores")
+        self.order = [int(r["Store"]) for r in st]
+        self.make = {}
+        self.ship_to = {str(r["Meridale ship-to"]): int(r["Store"]) for r in st}
+        self.former = {r["Former name"]: int(r["Store"]) for r in st if r["Former name"]}
+        self.site = {r["Brannon site"]: int(r["Store"]) for r in st}
+        self.unit = {int(r["Store"]): r["Vaccine refrigerator"] for r in st}
+        ro = _sheet(target, "roster", "Devices")
+        self.serial = {}
+        self.sensor = {}
+        for r in ro:
+            no = int(r["Store"])
+            if r["Device type"] == "Data logger":
+                self.serial[r["Serial or sensor id"]] = no
+                self.make[no] = r["Make"]
+            else:
+                self.sensor[r["Serial or sensor id"]] = no
+        self.pilot = sorted(self.sensor.values())
+        self._temps()
+        self._stock()
+        self._service()
 
-    # -- safety data sheets -------------------------------------------------------------------------------------------
-    def _sds(self, target):
-        self.prod = {}
-        for r in _sheet(target, "sds", "Products"):
-            self.prod[r["Product code"]] = dict(name=r["Product name"], supplier=r["Supplier"],
-                                                kind=r["Product type"].upper(), den=float(r["Density (lb/gal)"]),
-                                                basis=r["VOC basis"], voc=float(r["VOC"]),
-                                                water=float(r["Water (vol %)"] or 0),
-                                                exempt=float(r["Exempt compounds (vol %)"] or 0))
-        self.revs = []
-        for r in _sheet(target, "sds", "Revision log"):
-            m = re.search(r"density ([\d.]+) lb/gal and VOC ([\d.]+) per cent by weight under revision (\d+)",
-                          r["Change"] or "")
+    # ------------------------------------------------------------------------------------------------ temperatures
+    def _temps(self):
+        rec = defaultdict(list)
+        with open(os.path.join(self.target, FILES["frostline"]), encoding="utf-8") as f:
+            f.readline()
+            for line in f:
+                ser, loc, ts, v = line.rstrip("\n").split(",")
+                d = _day(int(ts[0:4]), int(ts[5:7]), int(ts[8:10]))
+                off = int(ts[20:22]) * 60
+                rec[self.serial[ser]].append((d * 1440 + int(ts[11:13]) * 60 + int(ts[14:16]) + off, float(v)))
+        with open(os.path.join(self.target, FILES["kelvra"]), encoding="utf-8") as f:
+            for _ in range(4):
+                f.readline()
+            for line in f:
+                ser, d_, t_, v = line.rstrip("\n").split(",")
+                d = _day(int(d_[6:10]), int(d_[0:2]), int(d_[3:5]))
+                rec[self.serial[ser]].append((d * 1440 + int(t_[0:2]) * 60 + int(t_[3:5]),
+                                              (float(v) - 32.0) * 5.0 / 9.0))
+        ser = None
+        with open(os.path.join(self.target, FILES["brumal"]), encoding="utf-8") as f:
+            for line in f:
+                if line.startswith("Serial number:"):
+                    ser = line.split(":", 1)[1].strip()
+                elif len(line) > 10 and line[2] == "/" and "\t" in line:
+                    d_, t_, v = line.rstrip("\n").split("\t")
+                    d = _day(int(d_[6:10]), int(d_[0:2]), int(d_[3:5]))
+                    rec[self.serial[ser]].append((d * 1440 + int(t_[0:2]) * 60 + int(t_[3:5]) + 360, float(v)))
+        self.rec = {}
+        self.dups = 0
+        for no, lst in rec.items():
+            lst.sort()
+            u = np.array([a for a, _ in lst], dtype=np.int64)
+            x = np.array([b for _, b in lst])
+            keep = np.ones(len(u), bool)
+            keep[1:] = u[1:] != u[:-1]
+            self.dups += int((~keep).sum())
+            self.rec[no] = (u[keep], x[keep])
+        cl = defaultdict(list)
+        with open(os.path.join(self.target, FILES["tellvane"]), encoding="utf-8") as f:
+            f.readline()
+            for line in f:
+                sid, ts, v = line.rstrip("\n").split(",")
+                d = _day(int(ts[0:4]), int(ts[5:7]), int(ts[8:10]))
+                cl[self.sensor[sid]].append((d * 1440 + int(ts[11:13]) * 60 + int(ts[14:16]), float(v)))
+        self.cl = {}
+        for no, lst in cl.items():
+            lst.sort()
+            self.cl[no] = (np.array([a for a, _ in lst], dtype=np.int64), np.array([b for _, b in lst]))
+        self.switch = {no: int(self.cl[no][0][0]) for no in self.cl}
+
+    # ------------------------------------------------------------------------------------------------------ stock
+    def _stock(self):
+        items = _sheet(self.target, "items", "Vaccine items")
+        self.dpp = {r["NDC"]: int(r["Doses per package"]) for r in items}
+        self.vial = {r["NDC"]: "vial" in str(r["Package"]) for r in items}
+        self.ndc_of11 = {}
+        for n10 in self.dpp:
+            a, b, c = n10.split("-")
+            self.ndc_of11[a.zfill(5) + b.zfill(4) + c.zfill(2)] = n10
+        self.counts = {}
+        for yr in (2025, 2026):
+            rows = _sheet(self.target, "inventory", "YE %d" % yr)
+            tot = defaultdict(int)
+            when = {}
+            for r in rows:
+                no = int(r["Store"])
+                tot[no] += int(r["Doses on hand"])
+                when[no] = r["Count closed"]
+            self.counts[yr] = (dict(tot), when)
+        self.receipts = []
+        for r in _csv(self.target, "invoices"):
+            no = self.ship_to.get(r["SHIP_TO"])
+            if no is None:
+                no = self.former["Lindqvist Apothecary #%d" % int(r["SHIP_TO_NAME"].split("#")[1])]
+            n10 = self.ndc_of11[r["NDC"]]
+            self.receipts.append((no, dt.datetime.strptime(r["DELIVERED"], "%m/%d/%Y %H:%M"),
+                                  dt.datetime.strptime(r["INVOICE_DATE"], "%m/%d/%Y"),
+                                  int(r["QTY_SHIPPED"]) * self.dpp[n10]))
+        self.admin = [(int(r["store"]), dt.datetime.strptime(r["administered_at"], "%Y-%m-%d %H:%M"),
+                       int(r["doses"])) for r in _csv(self.target, "admin")]
+        self.writeoffs = [(int(r["store"]), dt.datetime.strptime(r["written_off_at"], "%Y-%m-%d %H:%M"), r["ndc"],
+                           int(r["quantity"]), float(r["cost"])) for r in _csv(self.target, "writeoffs")]
+        self.credits = []
+        for r in _csv(self.target, "credits"):
+            no = self.ship_to.get(r["SHIP_TO"])
+            n10 = self.ndc_of11[r["NDC"]]
+            per_unit = self.dpp[n10] if r["UOM"] == "VL" else 1
+            self.credits.append((no, dt.datetime.strptime(r["MEMO_DATE"], "%m/%d/%Y"), int(r["QTY"]) * per_unit))
+        self.transfers = [(int(r["from_store"]), int(r["to_store"]),
+                           dt.datetime.strptime(r["shipped_at"], "%Y-%m-%d %H:%M"),
+                           dt.datetime.strptime(r["received_at"], "%Y-%m-%d %H:%M"), int(r["doses"]))
+                          for r in _csv(self.target, "transfers")]
+
+    # ---------------------------------------------------------------------------------------------------- service
+    def _service(self):
+        import re
+        self.pm_price = {}
+        for line in pdf_text(os.path.join(self.target, FILES["agreement"])).splitlines():
+            m = re.match(r"\s*(\w+ [A-Z]{1,2}-\d+)\s+(Pharmaceutical-grade|Household-style)\s+(\d+\.\d\d)\s*$", line)
             if m:
-                eff = r["Effective from"]
-                eff = eff.date() if isinstance(eff, dt.datetime) else eff
-                self.revs.append((r["Product code"], eff, float(m.group(1)), float(m.group(2))))
-
-    def vpg(self, code, d=None, vintage=True):
-        """lb of VOC per gallon of the product as used on date d: the revision in force that day (vintage) or the
-        master's current revision."""
-        p = self.prod[code]
-        if vintage and d is not None:
-            for c, eff, den, wt in self.revs:
-                if c == code and d < eff:
-                    return den * wt / 100.0
-        if p["basis"].startswith("%"):
-            return p["den"] * p["voc"] / 100.0
-        return p["voc"] * (1 - (p["water"] + p["exempt"]) / 100.0)
-
-    def vpg_misread(self, code):
-        """The natural misreading of a less-water-and-exempt figure: as pounds per gallon of the product."""
-        p = self.prod[code]
-        if p["basis"].startswith("%"):
-            return p["den"] * p["voc"] / 100.0
-        return p["voc"]
-
-    # -- press logs ---------------------------------------------------------------------------------------------------
-    def _press(self, target):
-        self.day_voc = defaultdict(lambda: defaultdict(float))       # plant -> production day -> lb VOC
-        self.day_voc_misread = defaultdict(lambda: defaultdict(float))
-        self.window = defaultdict(dict)                               # plant -> day -> (start, end)
-        self.gal_used = defaultdict(lambda: defaultdict(float))       # plant -> material -> gal
-        self.rows = defaultdict(list)                                 # plant -> (start, end, lb, day)
-        self.basis_rows = defaultdict(lambda: defaultdict(int))
-        self.day_voc_utc = defaultdict(lambda: defaultdict(float))
-        for r in _csv(target, "press"):
-            n = self.fac[r["facility_no"]]
-            d = dt.date.fromisoformat(r["log_date"])
-            code = r["material_code"]
-            q = float(r["quantity"])
-            gal = q / self.prod[code]["den"] if r["uom"] == "LB" else q
-            lb = gal * self.vpg(code, d)
-            st = dt.datetime.strptime(r["start_local"], "%Y-%m-%d %H:%M")
-            en = dt.datetime.strptime(r["end_local"], "%Y-%m-%d %H:%M")
-            self.day_voc[n][d] += lb
-            self.day_voc_misread[n][d] += gal * self.vpg_misread(code)
-            self.gal_used[n][code] += gal
-            w = self.window[n].get(d)
-            self.window[n][d] = (min(w[0], st), max(w[1], en)) if w else (st, en)
-            self.rows[n].append((st, en, lb, d))
-            self.basis_rows[n][r["record_basis"]] += 1
-
-    # -- historians ---------------------------------------------------------------------------------------------------
-    def _hist(self, target):
-        hours = defaultdict(dict)        # plant -> local hour -> production day
-        for n, w in self.window.items():
-            if n not in self.ox:
-                continue
-            for d, (st, en) in w.items():
-                t = st.replace(minute=0)
-                while t < en:
-                    hours[n][t] = d
-                    t += dt.timedelta(hours=1)
-        self.proc = defaultdict(lambda: defaultdict(list))     # plant -> day -> [flow, ...] (PROCESS hours)
-        self.proc_utc = defaultdict(lambda: defaultdict(list))  # plant -> UTC date -> [flow] (the UTC misreading)
-        self.all_hours = defaultdict(lambda: defaultdict(list))
-        self.hourly = defaultdict(dict)                         # plant -> local hour -> flow (PROCESS)
-        for r in _csv(target, "hist"):
-            n = self.tag[r["unit_tag"]]
-            ox = self.ox[n]
-            utc = dt.datetime.strptime(r["hour_beginning_utc"], "%Y-%m-%dT%H:%MZ")
-            lo = central(utc)
-            if r["exhaust_flow_scfm"]:
-                flow = float(r["exhaust_flow_scfm"])
-            else:
-                flow = ox["Q"] * float(r["fan_speed_pct"]) / 100.0
-            if r["mode"] == "PROCESS":
-                d = hours[n].get(lo)
-                if d is None:
-                    raise ValueError("process hour outside a production day: %s %s" % (n, lo))
-                self.proc[n][d].append(flow)
-                self.proc_utc[n][utc.date()].append(flow)
-                self.hourly[n][lo] = flow
-            if r["mode"] != "OFF":
-                self.all_hours[n][lo.date()].append(flow)
-
-    # -- performance tests --------------------------------------------------------------------------------------------
-    def _tests(self, target):
-        txt = pdf_text(os.path.join(target, FILES["tests"]))
-        flat = re.sub(r"\s+", " ", txt)
-        heads = list(re.finditer(r"([A-Z][A-Za-z ]+?) \(facility (\d{4})\), ([A-Z]{3,4}-RTO\d?)\. Test of (\d{1,2} "
-                                 r"[A-Za-z]+ \d{4}) by ([A-Za-z ]+?), report ([A-Z]+-\d{4}-\d+)\.", flat))
-        self.tests = []
-        for i, h in enumerate(heads):
-            body = flat[h.end(): heads[i + 1].start() if i + 1 < len(heads) else len(flat)]
-            basis = "propane" if "ppmv as propane" in body else "carbon"
-            mult = 3.0 if basis == "propane" else 1.0
-            runs = []
-            for m in re.finditer(r"(?<![\d.])([123]) (\d{2}:\d{2}) ([\d.]+) ([\d.]+) ([\d,]+) ([\d,]+) ([\d.]+) "
-                                 r"([\d.]+) ([\d.]+)", body):
-                runs.append(dict(ci=float(m.group(3)) * mult, co=float(m.group(4)) * mult,
-                                 qi=float(m.group(5).replace(",", "")), qo=float(m.group(6).replace(",", "")),
-                                 mi=float(m.group(7)), mo=float(m.group(8)), dre=float(m.group(9))))
-            avg = re.search(r"Average ([\d.]+) ([\d.]+) [\d,]+ [\d,]+ [\d.]+ [\d.]+ ([\d.]+)", body)
-            prod = re.search(r"Production during the test: (.+?)\.(?: [A-Z]| Run)", body)
-            plant = self.tag[h.group(3)]
-            self.tests.append(dict(plant=plant, date=dt.datetime.strptime(h.group(4), "%d %B %Y").date(),
-                                   firm=h.group(5), basis=basis, runs=runs[:3], dre=float(avg.group(3)),
-                                   prod=prod.group(1) if prod else ""))
-        assert len(self.tests) == 28 and all(len(t["runs"]) == 3 for t in self.tests), len(self.tests)
-        self.ci = np.array([r["ci"] for t in self.tests for r in t["runs"]])
-        self.co = np.array([r["co"] for t in self.tests for r in t["runs"]])
-
-    def latest(self, n):
-        return max((t for t in self.tests if t["plant"] == n), key=lambda t: t["date"])
-
-    # -- the year by production day -----------------------------------------------------------------------------------
-    def plant_days(self, n, utc=False):
-        """[(day, captured lb, process hours, mean scfm)] for a controlled plant."""
-        ce = self.ce[n]
-        out = []
-        if utc:
-            # the misreading: press days joined to the historian's UTC dates
-            for d in sorted(self.day_voc[n]):
-                fl = self.proc_utc[n].get(d)
-                if not fl:
-                    continue
-                out.append((d, self.day_voc[n][d] * ce, float(len(fl)), float(np.mean(fl))))
-            return out
-        for d in sorted(self.day_voc[n]):
-            fl = self.proc[n][d]
-            out.append((d, self.day_voc[n][d] * ce, float(len(fl)), float(np.mean(fl))))
-        return out
+                self.pm_price[m.group(1)] = float(m.group(3))
+        rows = _sheet(self.target, "brannon", "Service history", header_row=4)
+        self.visits = []
+        for r in rows:
+            vd = r["Visit date"]
+            idt = r["Invoice date"]
+            self.visits.append(dict(store=self.site[r["Site"]], wo=r["Work order"], visit=int(r["Visit"]),
+                                    date=vd.date() if hasattr(vd, "date") else vd, invoice=str(r["Invoice"]),
+                                    invoice_date=idt.date() if hasattr(idt, "date") else idt,
+                                    amount=float(r["Invoice amount"])))
 
 
-# ---------------------------------------------------------------------------------------------------------------------
-# the outlet relation
-def _gn(model, x0, ci, co, iters=100):
-    x = np.array(x0, float)
-    for _ in range(iters):
-        r = (model(x, ci) - co) / co
-        J = np.empty((len(ci), len(x)))
-        for j in range(len(x)):
-            dx = np.zeros_like(x)
-            dx[j] = 1e-6 * max(1.0, abs(x[j]))
-            J[:, j] = ((model(x + dx, ci) - co) / co - r) / dx[j]
-        step = np.linalg.lstsq(J, -r, rcond=None)[0]
-        x = x + step
-        if np.abs(step).max() < 1e-10:
-            break
-    rms = float(np.sqrt(np.mean(((model(x, ci) - co) / co) ** 2)))
-    return x, rms
+# ---------------------------------------------------------------------------------------------------- the hours
+def states(u, x, tau, prev=False):
+    """the lag's state at each record's time stamp: the input over each interval is the record that opens it (or,
+    prev=True, the record that closes it)"""
+    c = np.exp(-np.diff(u).astype(float) / tau)
+    v = np.empty(len(x))
+    v[0] = x[0]
+    v[1:] = ifilter(x[1:] if prev else x[:-1], c, x[0])
+    return v
 
 
-def hard(F, p):
-    return lambda c: np.maximum(F, p * np.asarray(c, float))
+def overlap(I, no):
+    u, x = I.rec[no]
+    cu, cx = I.cl[no]
+    k = (cu >= I.switch[no]) & (cu < u[-1] + STEP)
+    return cu[k], cx[k]
 
 
-def relation(I, how="golden", sel=None):
-    """The outlet (ppmv as carbon) as a function of the inlet, fitted to the tests' runs (sel: a test filter)."""
-    tests = [t for t in I.tests if sel is None or sel(t)]
-    ci = np.array([r["ci"] for t in tests for r in t["runs"]])
-    co = np.array([r["co"] for t in tests for r in t["runs"]])
-    if how in ("golden", "mean"):
-        F = co[ci < DILUTE].mean()
-        p = (co[ci > CONC] / ci[ci > CONC]).mean()
-        return hard(F, p), (F, p)
-    if how == "median":
-        F = float(np.median(co[ci < DILUTE]))
-        p = float(np.median(co[ci > CONC] / ci[ci > CONC]))
-        return hard(F, p), (F, p)
-    if how == "lsq":
-        x, rms = _gn(lambda x, c: np.maximum(x[0], x[1] * c), [45.0, 0.018], ci, co)
-        return hard(x[0], x[1]), (x[0], x[1], rms)
-    if how.startswith("smooth"):
-        k = float(how[6:])
-        m = lambda x, c: (x[0] ** k + (x[1] * c) ** k) ** (1.0 / k)
-        x, rms = _gn(m, [45.0, 0.018], ci, co)
-        return (lambda c: m(x, np.asarray(c, float))), (x[0], x[1], rms)
-    if how == "interp":
-        pts = sorted((np.mean([r["ci"] for r in t["runs"]]), 1 - np.mean([r["co"] for r in t["runs"]]) /
-                      np.mean([r["ci"] for r in t["runs"]])) for t in tests)
-        xs = np.array([a for a, b in pts])
-        ys = np.array([b for a, b in pts])
-        return (lambda c: (1 - np.interp(np.asarray(c, float), xs, ys)) * np.asarray(c, float)), (xs.min(), xs.max())
-    if how == "linear":
-        x, rms = _gn(lambda x, c: x[0] + x[1] * c, [30.0, 0.012], ci, co)
-        return (lambda c: x[0] + x[1] * np.asarray(c, float)), (x[0], x[1], rms)
-    raise ValueError(how)
+def sse(I, nos, tau):
+    s, n = 0.0, 0
+    for no in nos:
+        u, x = I.rec[no]
+        v = states(u, x, tau)
+        cu, cx = overlap(I, no)
+        k = np.searchsorted(u, cu, side="right") - 1
+        est = x[k] + (v[k] - x[k]) * np.exp(-(cu - u[k]) / tau)
+        s += float(((est - cx) ** 2).sum())
+        n += len(cx)
+    return s, n
 
 
-def rms_of(I, f):
-    return float(np.sqrt(np.mean(((f(I.ci) - I.co) / I.co) ** 2)))
-
-
-# ---------------------------------------------------------------------------------------------------------------------
-def controlled_lb(I, n, f, grain="day", utc=False):
-    """The year's VOC the oxidizer let through (lb) with the outlet relation f."""
-    cf = I.cf[n]
-    if grain == "hour":
-        # each log row's VOC spread over its hours, against the historian's hour
-        ce = I.ce[n]
-        lbh = defaultdict(float)
-        for st, en, lb, d in I.rows[n]:
-            hrs = max(1, int(round((en - st).total_seconds() / 3600)))
-            for k in range(hrs):
-                lbh[st.replace(minute=0) + dt.timedelta(hours=k)] += lb * ce / hrs
-        tot = 0.0
-        for t, q in I.hourly[n].items():
-            c = lbh.get(t, 0.0) * cf / (q * 60 * K)
-            tot += float(f(c)) * q * 60 * K / cf
-        return tot
-    tot = 0.0
-    for d, cap, h, q in I.plant_days(n, utc=utc):
-        c = cap / h * cf / (q * 60 * K)
-        tot += float(f(c)) * q * 60 * K / cf * h
-    return tot
-
-
-def press_tons(I, how="golden", grain="day", sel=None, f=None, utc=False, misread=False):
-    """Each plant's 2026 press VOC: dict plant -> dict(used, captured, destroyed, emitted) in tons."""
-    if f is None and (how in ("golden", "mean", "median", "lsq", "interp", "linear") or how.startswith("smooth")):
-        f, _ = relation(I, how, sel)
-    out = {}
-    for n in I.order:
-        src = I.day_voc_misread if misread else I.day_voc
-        used = sum(src[n].values()) / TONS
-        if n not in I.ox:
-            out[n] = dict(used=used, captured=0.0, destroyed=0.0, emitted=used)
-            continue
-        cap = used * I.ce[n]
-        ctl = controlled_lb(I, n, f, grain, utc) / TONS
-        out[n] = dict(used=used, captured=cap, destroyed=cap - ctl, emitted=used - cap + ctl)
-    return out
-
-
-def rung_tons(I, rung):
-    """The ladder's rungs: R0 latest test's efficiency, R1 the mean of the plant's tests, R2 the permit's 95 per cent,
-    R3 the relation at the year's mean inlet, R3m at each month's, R4 the latest test's outlet concentration on each
-    day's air, R4b the latest test's outlet rate (lb/hr) over the year's process hours, R5 each oxidizer's own tests."""
-    out = {}
-    fg, _ = relation(I, "golden")
-    for n in I.order:
-        used = sum(I.day_voc[n].values()) / TONS
-        if n not in I.ox:
-            out[n] = used
-            continue
-        cap = used * I.ce[n]
-        cf = I.cf[n]
-        days = I.plant_days(n)
-        own = [t for t in I.tests if t["plant"] == n]
-        lt = I.latest(n)
-        if rung == "R0":
-            ctl = cap * (1 - lt["dre"] / 100.0)
-        elif rung == "R1":
-            ctl = cap * (1 - np.mean([t["dre"] for t in own]) / 100.0)
-        elif rung == "R2":
-            ctl = cap * 0.05
-        elif rung in ("R3", "R3m"):
-            groups = defaultdict(list)
-            for d, c_, h, q in days:
-                groups[d.month if rung == "R3m" else 0].append((c_, h, q))
-            ctl = 0.0
-            for g in groups.values():
-                lb = sum(c_ for c_, h, q in g)
-                air = sum(q * 60 * K * h for c_, h, q in g)
-                cav = lb * cf / air
-                ctl += lb * float(fg(cav)) / cav / TONS
-        elif rung in ("R4", "R4m"):
-            co = (np.mean([r["co"] for r in lt["runs"]]) if rung == "R4" else
-                  np.mean([np.mean([r["co"] for r in t["runs"]]) for t in own]))
-            ctl = sum(co * q * 60 * K / cf * h for d, c_, h, q in days) / TONS
-        elif rung == "R4b":
-            co = np.mean([r["co"] for r in lt["runs"]])
-            qo = np.mean([r["qo"] for r in lt["runs"]])
-            hrs = sum(h for d, c_, h, q in days)
-            ctl = co * qo * 60 * K / cf * hrs / TONS
-        elif rung == "R5":
-            xs = np.array([r["ci"] for t in own for r in t["runs"]])
-            ys = np.array([r["co"] for t in own for r in t["runs"]])
-            if xs.max() / xs.min() < 1.4:
-                ctl = cap * (1 - np.mean([t["dre"] for t in own]) / 100.0)
-            else:
-                A = np.vstack([np.ones_like(xs), xs]).T
-                a, b = np.linalg.lstsq(A, ys, rcond=None)[0]
-                ctl = sum((a + b * (c_ / h * cf / (q * 60 * K))) * q * 60 * K / cf * h for d, c_, h, q in days) / TONS
+def fit(I, nos, lo=20.0, hi=80.0):
+    g = 0.6180339887498949
+    a, b = lo, hi
+    for _ in range(70):
+        c, d = b - (b - a) * g, a + (b - a) * g
+        if sse(I, nos, c)[0] < sse(I, nos, d)[0]:
+            b = d
         else:
-            raise ValueError(rung)
-        out[n] = used - cap + ctl
+            a = c
+    t = (a + b) / 2
+    return t, float(np.sqrt(sse(I, nos, t)[0] / sse(I, nos, t)[1]))
+
+
+def taus(I, group="make"):
+    """the fitted time constant behind each store: per make (golden), pooled, or each pilot store's own"""
+    if group == "pooled":
+        t = fit(I, I.pilot)[0]
+        return {no: t for no in I.order}
+    by = {}
+    for mk in sorted(set(I.make.values())):
+        by[mk] = fit(I, [no for no in I.pilot if I.make[no] == mk])[0]
+    out = {no: by[I.make[no]] for no in I.order}
+    if group == "store":
+        for no in I.pilot:
+            out[no] = fit(I, [no])[0]
     return out
 
 
-def covered(t, key="emitted"):
-    vals = {n: (v[key] if isinstance(v, dict) else v) for n, v in t.items()}
-    return sorted(n for n, v in vals.items() if v >= 25.0)
+def _dur(u, end):
+    return np.clip(np.minimum(np.diff(np.append(u, end)), STEP), 0, None)
 
 
-# ---------------------------------------------------------------------------------------------------------------------
-# ask A: cleaning VOC away from the presses
-def profiles(I):
-    txt = re.sub(r"\s+", " ", pdf_text(os.path.join(I.target, FILES["profiles"])))
+def _count(u, y, end):
+    m = (u >= Y0) & (u < Y1)
+    return float((_dur(u, end) * (y > LIMIT) * m).sum()) / 60.0
+
+
+def logger_part(I, no):
+    u, x = I.rec[no]
+    end = I.switch.get(no, Y1)
+    k = u < end
+    return u, x, k, min(end, Y1)
+
+
+def tellvane_hours(I, no):
+    if no not in I.cl:
+        return 0.0
+    cu, cx = I.cl[no]
+    return _count(cu, cx, Y1)
+
+
+def store_hours(I, no, est):
+    """hours above 8.0: the logger estimate before the switch, the in-carton sensor after"""
+    u, x, k, end = logger_part(I, no)
+    return _count(u[k], est[k], end) + tellvane_hours(I, no)
+
+
+def golden_hours(I, tau=None, prev=False, conv="start", shift=0.0):
+    tau = tau or taus(I)
     out = {}
-    for m in re.finditer(r"(CB-\d{4}-0\d) .*? (Cleaning|Press operations) ([\d.]+) ", txt):
-        out[m.group(1)] = (m.group(2), float(m.group(3)))
+    for no in I.order:
+        u, x = I.rec[no]
+        t = tau[no] + shift
+        v = states(u, x, t, prev=prev)
+        if conv == "mean":
+            dts = np.minimum(np.diff(np.append(u, u[-1] + STEP)), STEP).astype(float)
+            v = x + (v - x) * t / dts * (1 - np.exp(-dts / t))
+        elif conv == "end":
+            v = np.append(states(u, x, t)[1:], x[-1])
+        out[no] = store_hours(I, no, v)
     return out
 
 
-def cleaning_tons(I, vintage=True, stellar=True, kg=True, press_issues=False, all_profiles=False, credit=True,
-                  washers=True, voc_pct=True, removed=True):
-    """Each plant's 2026 cleaning VOC away from its presses (tons). The flags are the readings checks.py and ceiling.py
-    put against the golden: the master's current revision for every issue (vintage), the tickets alone (stellar), a
-    manifest's KG read as pounds (kg), issues to the presses counted, every profile credited, no credit, no washers,
-    the waste's weight credited as VOC (voc_pct), and the solvent added alone (removed)."""
+def runs(I, no, keep):
+    """the logger's runs above 8.0 (pre-switch), kept by a rule on (duration in minutes, peak, start)"""
+    u, x, k, end = logger_part(I, no)
+    u, x = u[k], x[k]
+    d = _dur(u, end)
+    m = (u >= Y0) & (u < Y1)
+    hot = (x > LIMIT) & m
+    tot, i = 0.0, 0
+    n = len(u)
+    while i < n:
+        if not hot[i]:
+            i += 1
+            continue
+        j = i
+        while j < n and hot[j]:
+            j += 1
+        dur = float(d[i:j].sum())
+        if keep(dur, float(x[i:j].max()), int(u[i])):
+            tot += dur
+        i = j
+    return tot / 60.0 + tellvane_hours(I, no)
+
+
+def trailing(u, x, k):
+    cs = np.concatenate([[0.0], np.cumsum(x)])
+    lo = np.searchsorted(u, u - k + 1e-9, side="left")
+    idx = np.arange(len(x))
+    return (cs[idx + 1] - cs[lo]) / (idx + 1 - lo)
+
+
+def overlap_ratio(I):
+    """in-carton hours over logger hours above 8.0 across the pilot stores' overlaps"""
+    a = b = 0.0
+    for no in I.pilot:
+        u, x = I.rec[no]
+        k = u >= I.switch[no]
+        b += _count(u[k], x[k], u[-1] + STEP)
+        cu, cx = overlap(I, no)
+        a += _count(cu, cx, cu[-1] + STEP if len(cu) else Y1)
+    return a / b if b else 0.0
+
+
+def rung_hours(I, rung):
+    """each wrong rung's hours by store"""
+    out = {}
+    if rung == "R3":
+        ratio = overlap_ratio(I)
+    if rung == "R6":
+        dl = defaultdict(list)
+        for (no, t, inv, doses) in I.receipts:
+            dl[no].append(local_to_u(t))
+    for no in I.order:
+        u, x = I.rec[no]
+        if rung == "R0":
+            out[no] = store_hours(I, no, x)
+        elif rung in ("R1a", "R1b"):
+            lim = 30 if rung == "R1a" else 60
+            out[no] = runs(I, no, lambda dur, pk, st: dur >= lim)
+        elif rung == "R1c":
+            out[no] = runs(I, no, lambda dur, pk, st: pk > 10.0)
+        elif rung.startswith("MA"):
+            out[no] = store_hours(I, no, trailing(u, x, int(rung[2:])))
+        elif rung == "R3":
+            uu, xx, k, end = logger_part(I, no)
+            out[no] = _count(uu[k], xx[k], end) * ratio + tellvane_hours(I, no)
+        elif rung == "R4":
+            out[no] = runs(I, no, lambda dur, pk, st: not (pk < 9.5 and 25 <= dur <= 75))
+        elif rung == "R6":
+            ds = np.array(sorted(dl[no]))
+            out[no] = runs(I, no, lambda dur, pk, st: not np.any((st >= ds - 10) & (st <= ds + 50)))
+        else:
+            raise KeyError(rung)
+    return out
+
+
+def local_to_u(t):
+    """a Central local wall time to UTC minutes"""
+    d = t.date().toordinal() - _D0
+    m = d * 1440 + t.hour * 60 + t.minute
+    dst = dt.datetime(2026, 3, 8, 2) <= t < dt.datetime(2026, 11, 1, 1)
+    return m + (300 if dst else 360)
+
+
+def covered(h):
+    return sorted(no for no, v in h.items() if v >= LINE)
+
+
+def nearest_below(h):
+    below = [(v, no) for no, v in h.items() if v < LINE]
+    if not below:
+        return None
+    v, no = max(below)
+    return no, v, LINE - v
+
+
+# ------------------------------------------------------------------------------------------------------- ask A
+def unaccounted(I, cut=True, vials=True, credits=False):
+    """each store's doses unaccounted for: its count at the start of the year and its receipts, less what left its
+    stock and its count at the year's end. cut=True takes the flows between the two counts' own times (False: the
+    calendar year, the counts read as the year's ends); vials=True reads the write-off log's multi-dose vial quantities
+    before the 1 June 2026 update as vials; credits=True also takes Meridale's return credits off"""
+    (o, ow), (c, cw) = I.counts[2025], I.counts[2026]
+    a = {no: ow[no] if cut else dt.datetime(2026, 1, 1) for no in I.order}
+    b = {no: cw[no] if cut else dt.datetime(2026, 12, 31, 23, 59, 59) for no in I.order}
+
+    def inside(no, t):
+        return (a[no] < t <= b[no]) if cut else (a[no] <= t <= b[no])
+    bal = {no: o.get(no, 0) - c.get(no, 0) for no in I.order}
+    for (no, t, inv, doses) in I.receipts:
+        if inside(no, t):
+            bal[no] += doses
+    for (no, t, doses) in I.admin:
+        if inside(no, t):
+            bal[no] -= doses
+    for (no, t, ndc, q, cost) in I.writeoffs:
+        if inside(no, t):
+            bal[no] -= q * (I.dpp[ndc] if (vials and I.vial[ndc] and t < UPDATE) else 1)
+    for (fr, to, ts, tr, doses) in I.transfers:
+        if inside(fr, ts):
+            bal[fr] -= doses
+        if inside(to, tr):
+            bal[to] += doses
+    if credits:
+        for (no, t, doses) in I.credits:
+            if inside(no, t):
+                bal[no] -= doses
+    return bal
+
+
+# ------------------------------------------------------------------------------------------------------- ask B
+def service(I, tax=True, by_invoice_date=True, dedupe=True, completed=True, split=True):
+    """each store's Brannon spend for work completed in 2026, as invoiced with sales tax: one amount per invoice
+    (dedupe), the tax added to the invoices from before the 1 July 2026 platform move (by invoice date, or False: by
+    the visit's date), work completed in 2026 (or False: each visit's own date), and an invoice whose visits are at
+    several stores (a maintenance route) split by each store's unit's maintenance price (split; False: the whole
+    amount to each of its stores)"""
+    wo = defaultdict(list)
+    for v in I.visits:
+        wo[v["invoice"]].append(v)
     out = defaultdict(float)
-    for r in _csv(I.target, "issues"):
-        n = I.fac[r["facility_no"]]
-        if r["issued_to"].startswith("PRESS") and not press_issues:
-            continue
-        d = dt.date.fromisoformat(r["issue_date"])
-        out[n] += float(r["quantity"]) * I.vpg(r["material_code"], d, vintage)
-    prof = profiles(I)
-    for r in _csv(I.target, "manifests"):
-        n = I.fac[r["generator_facility_no"]]
-        src, voc = prof[r["waste_profile"]]
-        if (src != "Cleaning" and not all_profiles) or not credit:
-            continue
-        w = float(r["net_weight"]) * (2.20462 if (r["weight_unit"] == "KG" and kg) else 1.0)
-        out[n] -= w * (voc / 100.0 if voc_pct else 1.0)
-    if not washers:
-        return {n: out[n] / TONS for n in I.order}
-    for r in _csv(I.target, "tickets"):
-        n = I.fac[r["facility_no"]]
-        out[n] += (float(r["fresh_added_gal"]) - (float(r["spent_removed_gal"]) if removed else 0.0)) * \
-            I.vpg(r["solvent_product"])
-    if stellar:
-        for r in _csv(I.target, "payments"):
-            m = re.search(r"fresh ([\d.]+) gal (\S+), spent ([\d.]+) gal recovered", r["description"])
-            if m:
-                n = I.fac[r["facility_no"]]
-                out[n] += (float(m.group(1)) - (float(m.group(3)) if removed else 0.0)) * I.vpg(m.group(2))
-    return {n: out[n] / TONS for n in I.order}
-
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ask B: gallons received that the counts and the press logs leave unaccounted for
-ASK_B_KINDS = ("INK", "COATING", "ADHESIVE")
-
-
-def catalog(I):
-    cat = {}
-    for r in _csv(I.target, "catalog"):
-        cat[r["item_no"]] = dict(code=r["product_code"], sold=r["sold_by"], replaces=r["replaces_item"])
-    old = {r["replaces"]: item for item, r in cat.items() if r["replaces"]}
-    return cat, old
-
-
-def unaccounted_gal(I, chain=True, by_ship=True, lb=True, returns=True):
-    """Each plant's 2026 gallons of inks, coatings and adhesives received and unaccounted for. The flags: Haldane's old
-    item numbers read on the current catalog (chain), the document date for the ship date (by_ship), pounds read as
-    gallons (lb), returns left out (returns)."""
-    cat, old = catalog(I)
-    names = {}
-    for code, x in I.prod.items():
-        names[x["name"].upper()] = code
-    recv = defaultdict(float)
-    # Corvane: the item is the product code without its prefix, then the pack
-    for r in _csv(I.target, "corvane"):
-        n = _ship_to(I, r["SHIP_TO"])
-        d = dt.datetime.strptime(r["SHIP_DATE" if by_ship else "INVOICE_DATE"], "%Y%m%d").date()
-        if d.year != YEAR:
-            continue
-        code = "CV-" + r["ITEM"].rsplit("-", 1)[0]
-        if I.prod[code]["kind"] in ASK_B_KINDS and (returns or float(r["QTY"]) > 0):
-            recv[n] += float(r["QTY"])
-    for r in _sheet(I.target, "haldane", "Statement detail", header_row=2):
-        n = _ship_to(I, r["Ship to"])
-        d = r["Ship date" if by_ship else "Doc date"]
-        d = d.date() if isinstance(d, dt.datetime) else d
-        if d.year != YEAR:
-            continue
-        doc_d = r["Doc date"].date() if isinstance(r["Doc date"], dt.datetime) else r["Doc date"]
-        item = str(r["Item"])
-        if chain and doc_d < RENUMBERED and item in old:
-            item = old[item]
-        code, sold = cat[item]["code"], cat[item]["sold"]
-        if I.prod[code]["kind"] not in ASK_B_KINDS:
-            continue
-        q = float(r["Qty"])
-        if q < 0 and not returns:
-            continue
-        recv[n] += q / I.prod[code]["den"] if (sold == "LB" and lb) else q
-    stock = defaultdict(float)
-    for r in _csv(I.target, "counts"):
-        n = I.fac[r["facility_no"]]
-        code = r["material_code"]
-        if I.prod[code]["kind"] not in ASK_B_KINDS:
-            continue
-        q = float(r["quantity"])
-        g = q / I.prod[code]["den"] if r["uom"] == "LB" else q
-        stock[n] += g if r["count_date"].startswith("2026-01-01") else -g
-    out = {}
-    for n in I.order:
-        used = sum(g for code, g in I.gal_used[n].items() if I.prod[code]["kind"] in ASK_B_KINDS)
-        out[n] = stock[n] + recv[n] - used
-    return out
-
-
-def _ship_to(I, name):
-    name = name.strip().upper()
-    for fac, n in I.fac.items():
-        if n.upper() == name:
-            return n
-    if name == "THAMESIDE LAMINATING":
-        return [n for n in I.order if n.startswith("Kelvedon")][0]
-    raise KeyError(name)
+    for inv, vs in wo.items():
+        last = max(v["date"] for v in vs)
+        stores = sorted(set(v["store"] for v in vs))
+        if dedupe:
+            first = {}
+            for v in vs:
+                first.setdefault(v["store"], v)
+            rows = [first[no] for no in stores]
+        else:
+            rows = vs
+        prices = {no: I.pm_price[I.unit[no]] for no in stores}
+        for v in rows:
+            when = last if completed else v["date"]
+            if when.year != 2026:
+                continue
+            amt = v["amount"]
+            pre = (v["invoice_date"] < PLATFORM) if by_invoice_date else (v["date"] < PLATFORM)
+            if tax and pre:
+                amt = round(amt + round(amt * TAX + 1e-9, 2), 2)
+            if split and len(stores) > 1:
+                amt = amt * prices[v["store"]] / sum(prices.values())
+            out[v["store"]] += amt
+    return {no: round(out[no], 2) for no in I.order}

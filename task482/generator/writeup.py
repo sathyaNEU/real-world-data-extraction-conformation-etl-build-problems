@@ -7,103 +7,108 @@ TASK = os.path.dirname(HERE)
 
 
 def join(xs, word="and"):
-    xs = list(xs)
+    xs = [str(x) for x in xs]
     return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " %s " % word + xs[-1]
-
-
-def pos(n):
-    return n + ("'" if n.endswith("s") else "'s")
 
 
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    P = f["plants"]
+    st = f["stores"]
     c = f["components"]
-    st = f["stated"]
-    cov = f["call"]["plants"]
     d = f["default"]
     nb = c["nearest_below"]
-    added = [n for n in cov if n not in d["plants"]]
-    order = list(P)
-    out = []
-    out.append("## Tags\n")
-    out.append("**Domain:** Physical & Environmental Sciences, emissions inventory (a state air agency's 2026 press "
-               "VOC inventory of fourteen printing and converting plants, conformed from press logs, safety data "
-               "sheets, capture determinations, oxidizer historians and performance tests, each oxidizer's outlet "
-               "carried to each production day's inlet).")
-    out.append("**Analytical objective:** Data Extraction & Conformation (ETL).\n")
-    out.append("## 1. Final Recommendation\n")
-    out.append("**Rule 18-4 covers %s from 1 July 2027.**" % join(cov))
-    out.append("Their presses emitted %s tons of VOC in 2026, %s the lowest at %d, against %s %d (%d short). Not the "
-               "oxidizers' tested efficiencies, which put %s at %s tons: every test ran at maximum production, and on "
-               "the part-production days of 2026 the fixed-speed fans drew their full air, so the oxidizers' outlets "
-               "held near their floor and destroyed less than the tests show.\n"
-               % (join(["%d" % P[n]["press_voc_tons"] for n in cov]), c["lowest_covered"]["name"],
-                  c["lowest_covered"]["tons"], nb["name"], nb["tons"], nb["short_tons"], join(added),
-                  join(["%d" % d["tons"][n] for n in added])))
-    out.append("## 2. Critical Components\n")
-    out.append("1. Across the %d tests the outlet holds near **%.0f** ppmv as carbon below an inlet of about **%s** "
-               "ppmv and passes **%.1f** per cent of the inlet above it." % (c["tests"], c["floor_ppmc"],
-                                                                            "{:,}".format(c["knee_ppmc"]),
-                                                                            c["pass_pct"]))
-    for i, n in enumerate(added, 2):
-        out.append("%d. %s 2026 press VOC is **%d** tons, against **%d** on its latest test's efficiency."
-                   % (i, pos(n), P[n]["press_voc_tons"], d["tons"][n]))
-    out.append("%d. %s, the nearest plant below the line, emitted **%d** tons, **%d** short.\n"
-               % (len(added) + 2, nb["name"], nb["tons"], nb["short_tons"]))
-    out.append("## 3. Step-by-Step Solution\n")
+    tau = c["tau_minutes"]
+    cov = [str(n) for n in f["call"]["stores"]]
+    dflt = [str(n) for n in d["stores"]]
+    out_ = [n for n in dflt if n not in cov]
+    in_ = [n for n in cov if n not in dflt]
+    order = sorted(st, key=int)
+    o = []
+    o.append("## Tags\n")
+    o.append("**Domain:** General Statistics & Data Science, data integration, record linkage and entity resolution "
+             "(thirty pharmacy stores' 2026 vaccine refrigerator temperature records, kept by three data logger makes "
+             "and at ten pilot stores from mid-year by an in-carton sensor, conformed into one record of the "
+             "vaccine's temperature per store).")
+    o.append("**Analytical objective:** Data Extraction & Conformation (ETL).\n")
+    o.append("## 1. Final Recommendation\n")
+    o.append("**Penwick Pharmacy replaces the vaccine refrigerators of stores %s before the 2027 respiratory "
+             "season.**" % join(cov))
+    o.append("Their vaccine spent %s hours above 8 °C in 2026 against the 24-hour line; the nearest store below it, "
+             "%d %s, spent %d, %d short. Not the loggers' own readings, which put %s over the line at %s hours and "
+             "%s under it at %s: a logger's probe in its glycol bottle crosses 8 °C through every defrost swing, "
+             "restock and busy hour the vaccine in its cartons rode out, and ends a propped-door delivery's "
+             "excursion before the vaccine has cooled.\n"
+             % (join([st[n]["hours"] for n in cov]), nb["store"], nb["town"], nb["hours"], nb["short_hours"],
+                join(out_), join([d["hours"][n] for n in out_]), join(in_), join([d["hours"][n] for n in in_])))
+    o.append("## 2. Critical Components\n")
+    o.append("1. On the pilot stores' overlaps the in-carton sensor trails its logger's record by a first-order lag "
+             "of **%.1f** minutes at the Frostline stores, **%.1f** at the Kelvra stores and **%.1f** at the "
+             "Brumal stores." % (tau["Frostline"], tau["Kelvra"], tau["Brumal"]))
+    k = 2
+    for n in in_:
+        o.append("%d. Store %s's vaccine spent **%d** hours above 8 °C, %d on its logger's readings."
+                 % (k, n, st[n]["hours"], d["hours"][n]))
+        k += 1
+    o.append("%d. Stores %s, over the line on their loggers' readings, spent **%s** hours." % (
+        k, join(out_), join([st[n]["hours"] for n in out_])))
+    o.append("%d. The nearest store below the line is %d %s at **%d** hours, **%d** short.\n"
+             % (k + 1, nb["store"], nb["town"], nb["hours"], nb["short_hours"]))
+    o.append("## 3. Step-by-Step Solution\n")
     steps = [
-        "Converted every row of press_material_use_2026.csv (shift and job records alike, Thameside Laminating's "
-        "facility 0117 rows to Kelvedon Laminates) to pounds of VOC through safety_data_sheet_master_2027-01.xlsx: "
-        "per cent by weight times density, or pounds per gallon less water and exempt compounds times the share of "
-        "the product that is neither, pound rows by density.",
-        "Split each controlled plant's VOC by the capture efficiency on the Capture sheet of "
-        "deq_printing_plants_register_2027-02.xlsx; the four plants without an oxidizer emit what they used.",
-        "Put oxidizer_historian_hourly_2026.csv on Central time, took each production day's PROCESS hours and their "
-        "mean airflow (fan speed times the register's rated airflow where the historian logs speed), and with the "
-        "register's carbon content read each day's inlet as carbon from its captured VOC.",
-        "Put the %d runs in oxidizer_performance_tests_2017_2026.pdf on one basis (Marlow's propane figures times %d) "
-        "and took the outlet as the mean of the runs under %s ppmv, about %.0f, and above the knee the mean share the "
-        "runs over %s ppmv pass, %.1f per cent." % (c["runs"], st["propane_to_carbon"],
-                                                  "{:,}".format(st["dilute_below_ppmc"]), c["floor_ppmc"],
-                                                  "{:,}".format(st["concentrated_above_ppmc"]), c["pass_pct"]),
-        "Read each day's outlet from its inlet, times its air and hours, for what the oxidizer let through, added the "
-        "uncaptured VOC and compared each plant's year with 25 tons: %s." % join(
-            ["%s %d" % (n, P[n]["press_voc_tons"]) for n in sorted(order, key=lambda n: -P[n]["press_voc_tons"])[:7]]),
-        "For cleaning, priced each stores_cleaning_issues_2026.csv issue away from the presses at the revision in "
-        "force on its date (HW-CS-210 at %.2f lb a gallon before its 1 June 2026 reformulation, per the revision log), "
-        "less cantrell_bend_manifests_2026.csv weights under each plant's Cleaning profile (KG rows times %.5f), plus "
-        "each washer's added less removed solvent in wexcombe_service_tickets_2026.csv and in Ostrander's lines in "
-        "solvent_vendor_payments_2026.csv." % (st["cs210_rev3_lb_gal"], st["kg_to_lb"]),
-        "For the gallons, took Corvane and Haldane lines shipped in 2026 (returns netted), read Haldane items on "
-        "documents dated before 1 April 2026 through the replaces_item column of haldane_catalog_2026-04.csv, turned "
-        "pound items into gallons by density, and set them against stock_counts_2026.csv and the press logs' use.",
-        "Listed the plants at 25 tons or more: %s." % join(cov),
+        "Put frostline_temperature_logs_2026.csv (local times with their offsets), kelvra_logger_export_2026.csv "
+        "(UTC and Fahrenheit, its one day exported twice counted once), brumal_downloads_2026.txt (UTC-6 all "
+        "year) and tellvane_sensor_readings_2026.csv (UTC) on one clock in degrees C, and joined every serial and "
+        "sensor id to its store through refrigerator_monitoring_roster_2026.xlsx, the replaced loggers at stores 207 "
+        "and 302 in sequence.",
+        "Took 2026 as the stores' local (Central) year and, at the ten pilot stores, the in-carton sensor from its "
+        "first reading, the logger before it (standard PO-114 section 6.4).",
+        "Fitted the vaccine's response on the weeks each pilot store's logger kept recording after its sensor's first "
+        "reading: a first-order lag with each record holding over its ten minutes (section 6.3), %.1f, %.1f and %.1f "
+        "minutes for Frostline, Kelvra and Brumal." % (tau["Frostline"], tau["Kelvra"], tau["Brumal"]),
+        "Carried every logger record through its make's lag and counted ten minutes for each record whose vaccine "
+        "temperature at its time stamp is above 8.0 °C (section 7.3), with the in-carton readings above 8.0: stores "
+        "%s at 24 hours or more, %d nearest below at %d." % (join(cov), nb["store"], nb["hours"]),
+        "For doses unaccounted for (section 8.2), took the YE 2025 count in "
+        "vaccine_physical_inventory_ye2025_ye2026.xlsx, added meridale_vaccine_invoices_2026.csv deliveries "
+        "(packages times vaccine_item_master_2026.xlsx doses per package, the Lindqvist stores' accounts before April by "
+        "their former names) and transfers in from vaccine_store_transfers_2026.csv, took off "
+        "pharmacy_vaccine_administrations_2026.csv, vaccine_writeoff_log_2026.csv and transfers out and the YE 2026 "
+        "count, each flow between the two counts' own closing times, so the stores that counted on 30 December keep "
+        "the next day's flows out of the year they close or in the year they open.",
+        "Read the write-off log's multi-dose vial quantities before the %s inventory update as vials of ten doses "
+        "(their cost is a vial's) and left meridale_credit_memos_2026.csv out, every credited unit being an expired "
+        "2025-26 dose already written off on 1 July." % f["stated"]["inventory_update"],
+        "For Brannon spend (section 9.2), took each invoice in brannon_service_history_2026-01_2027-01.xlsx once for "
+        "work orders whose last visit is in 2026, added %.1f per cent sales tax to invoices dated before %s (the old "
+        "platform's amounts are before tax, as its maintenance-only invoices at the agreement's Schedule B prices "
+        "show), and split each two-store maintenance route by Schedule B's price for each store's unit."
+        % (f["stated"]["tax_pct"], f["stated"]["platform"]),
+        "Listed the stores at 24 hours or more: %s." % join(cov),
     ]
     for i, s in enumerate(steps, 1):
-        out.append("%d. %s" % (i, s))
-    out.append("")
-    out.append("## 4. Deliverable Answers\n")
-    out.append("### deq_rule18-4_applicability_2027.xlsx\n")
-    out.append("1. Plants Rule 18-4 covers from 1 July 2027: %s." % join(cov))
-    out.append("2. Each plant's 2026 press VOC, whole tons, and whether the rule covers it:")
+        o.append("%d. %s" % (i, s))
+    o.append("")
+    o.append("## 4. Deliverable Answers\n")
+    o.append("### penwick_refrigerator_replacements_2027.xlsx\n")
+    o.append("1. Stores that get a new refrigerator before the 2027 respiratory season: %s." % join(cov))
+    o.append("2. Each store's 2026 hours with its vaccine above 8 °C, whole hours, and whether it gets a new "
+             "refrigerator:")
     for n in order:
-        out.append("   - %s: %d, %s" % (n, P[n]["press_voc_tons"], "covered" if P[n]["covered"] else "not covered"))
-    out.append("3. Nearest plant below the line: %s, %d tons short." % (nb["name"], nb["short_tons"]))
-    out.append("4. Each plant's 2026 VOC from cleaning away from its presses, tons to one decimal:")
+        o.append("   - Store %s %s: %d, %s" % (n, st[n]["town"], st[n]["hours"], "yes" if st[n]["replaced"] else "no"))
+    o.append("3. Nearest store below the line: %d %s, %d hours, %d short." % (nb["store"], nb["town"], nb["hours"],
+                                                                            nb["short_hours"]))
+    o.append("4. Each store's 2026 vaccine doses its stock records leave unaccounted for, whole doses:")
     for n in order:
-        out.append("   - %s: %.1f" % (n, P[n]["cleaning_voc_tons"]))
-    out.append("5. Gallons of inks, coatings and adhesives each plant received in 2026 that its stock counts and press "
-               "logs leave unaccounted for, whole gallons:")
+        o.append("   - Store %s: %d" % (n, st[n]["doses_unaccounted"]))
+    o.append("5. Each store's 2026 refrigerator service spend with Brannon, whole dollars:")
     for n in order:
-        out.append("   - %s: %s" % (n, "{:,}".format(P[n]["unaccounted_gal"])))
-    out.append("\n### deq_printing_press_voc_2026.csv\n")
-    out.append("6. Fourteen rows, each with the facility number, the plant, its 2026 press VOC as in item 2 and Y or N "
-               "for coverage.")
-    out.append("\n### deq_printing_press_voc_2026.svg\n")
-    out.append("7. Horizontal bar chart of the fourteen plants' 2026 press VOC, highest first, each bar labelled with "
-               "its whole tons, a vertical line at 25 tons, the five covered plants in blue and the rest in grey.")
-    open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8").write("\n".join(out) + "\n")
+        o.append("   - Store %s: %s" % (n, "{:,}".format(st[n]["service_usd"])))
+    o.append("\n### penwick_vaccine_hours_2026.svg\n")
+    o.append("6. Horizontal bar chart of the thirty stores' 2026 hours with the vaccine above 8 °C, highest first, each "
+             "bar labelled with its whole hours, a vertical line at 24 hours, the %d stores that get a new "
+             "refrigerator in blue and the rest in grey, and the nearest store below the line named in the subtitle."
+             % len(cov))
+    open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8").write("\n".join(o) + "\n")
 
 
 if __name__ == "__main__":

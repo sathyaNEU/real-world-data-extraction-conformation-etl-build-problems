@@ -1,70 +1,76 @@
 {
  "task": "task482",
- "domain": "Physical & Environmental Sciences (emissions inventory)",
- "client_domain": "Physical & Environmental Sciences",
- "task_type": "emissions-inventory",
+ "domain": "General Statistics & Data Science (data integration, record linkage and entity resolution)",
+ "client_domain": "General Statistics & Data Science",
+ "task_type": "data-integration-record-linkage-entity-resolution",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "deq_press_register_2026.csv",
-  "kestle_valley_ozone_design_values_2024_2026.csv"
+  "pharmaceutical_refrigerator_quotes_2027.pdf",
+  "regional_weather_daily_2026.csv"
  ],
  "distractor_reasons": {
-  "deq_press_register_2026.csv": "the Department's press register (type, maker, web width, rated speed, year installed and where each press exhausts): what each plant runs, not what its presses used or emitted in 2026",
-  "kestle_valley_ozone_design_values_2024_2026.csv": "the area's ozone monitors' fourth-highest eight-hour values and design values, 2024 to 2026: why the area is in nonattainment, which no plant's press VOC turns on"
+  "pharmaceutical_refrigerator_quotes_2027.pdf": "procurement's quotations for the new pharmaceutical refrigerators (models, prices, installation, qualification, lead times): what a replacement costs, not which stores get one",
+  "regional_weather_daily_2026.csv": "the region's daily weather at its airport station, 2026, the storm days marked: the weather behind the outages, which no store's hours or stock turn on"
  },
  "stated_inputs": [
-  "25",
+  "8 C",
+  "24 hours",
   "2026",
-  "1 July 2027"
+  "whole hours",
+  "whole doses",
+  "whole dollars"
  ],
  "deliverables": [
-  "deq_rule18-4_applicability_2027.xlsx",
-  "deq_printing_press_voc_2026.csv",
-  "deq_printing_press_voc_2026.svg"
+  "penwick_refrigerator_replacements_2027.xlsx",
+  "penwick_vaccine_hours_2026.svg"
  ],
- "as_of": "2027-02-26",
+ "as_of": "2027-01-25",
  "files": [
-  "cantrell_bend_manifests_2026.csv",
-  "cantrell_bend_waste_profiles_2026.pdf",
-  "corvane_invoice_export_2026.csv",
-  "deq_information_request_2027-01-12.pdf",
-  "deq_press_register_2026.csv",
-  "deq_printing_plants_register_2027-02.xlsx",
-  "deq_rule_18-4_draft_2027-02-19.pdf",
-  "haldane_catalog_2026-04.csv",
-  "haldane_statement_2026.xlsx",
-  "kestle_valley_ozone_design_values_2024_2026.csv",
-  "oxidizer_historian_hourly_2026.csv",
-  "oxidizer_performance_tests_2017_2026.pdf",
-  "press_material_use_2026.csv",
-  "safety_data_sheet_master_2027-01.xlsx",
-  "solvent_vendor_payments_2026.csv",
-  "stock_counts_2026.csv",
-  "stores_cleaning_issues_2026.csv",
-  "wexcombe_service_tickets_2026.csv"
+  "brannon_service_agreement_2025.pdf",
+  "brannon_service_history_2026-01_2027-01.xlsx",
+  "brumal_downloads_2026.txt",
+  "frostline_temperature_logs_2026.csv",
+  "kelvra_logger_export_2026.csv",
+  "meridale_credit_memos_2026.csv",
+  "meridale_vaccine_invoices_2026.csv",
+  "penwick_store_list_2027-01.xlsx",
+  "pharmaceutical_refrigerator_quotes_2027.pdf",
+  "pharmacy_vaccine_administrations_2026.csv",
+  "refrigerator_monitoring_roster_2026.xlsx",
+  "regional_weather_daily_2026.csv",
+  "tellvane_pilot_plan_2026.pdf",
+  "tellvane_sensor_readings_2026.csv",
+  "vaccine_item_master_2026.xlsx",
+  "vaccine_physical_inventory_ye2025_ye2026.xlsx",
+  "vaccine_storage_handling_standard_po-114_rev6.pdf",
+  "vaccine_store_transfers_2026.csv",
+  "vaccine_writeoff_log_2026.csv"
  ],
  "rows": {
-  "haldane_catalog_2026-04.csv": 20,
-  "corvane_invoice_export_2026.csv": 1914,
-  "stock_counts_2026.csv": 284,
-  "haldane_statement_2026.xlsx": 1194,
-  "oxidizer_historian_hourly_2026.csv": 87600,
-  "stores_cleaning_issues_2026.csv": 1353,
-  "cantrell_bend_manifests_2026.csv": 298,
-  "kestle_valley_ozone_design_values_2024_2026.csv": 15,
-  "solvent_vendor_payments_2026.csv": 559,
-  "press_material_use_2026.csv": 80468,
-  "deq_press_register_2026.csv": 48,
-  "cantrell_bend_waste_profiles_2026.pdf": 28,
-  "deq_printing_plants_register_2027-02.xlsx": 14,
-  "safety_data_sheet_master_2027-01.xlsx": 30,
-  "oxidizer_performance_tests_2017_2026.pdf": 28,
-  "wexcombe_service_tickets_2026.csv": 214
+  "pharmacy_vaccine_administrations_2026.csv": 49606,
+  "brannon_service_agreement_2025.pdf": 1,
+  "brannon_service_history_2026-01_2027-01.xlsx": 89,
+  "brumal_downloads_2026.txt": 426744,
+  "meridale_credit_memos_2026.csv": 33,
+  "frostline_temperature_logs_2026.csv": 431158,
+  "vaccine_physical_inventory_ye2025_ye2026.xlsx": 539,
+  "meridale_vaccine_invoices_2026.csv": 5129,
+  "vaccine_item_master_2026.xlsx": 13,
+  "kelvra_logger_export_2026.csv": 441365,
+  "tellvane_pilot_plan_2026.pdf": 1,
+  "pharmaceutical_refrigerator_quotes_2027.pdf": 1,
+  "refrigerator_monitoring_roster_2026.xlsx": 42,
+  "vaccine_storage_handling_standard_po-114_rev6.pdf": 1,
+  "penwick_store_list_2027-01.xlsx": 30,
+  "tellvane_sensor_readings_2026.csv": 297285,
+  "vaccine_store_transfers_2026.csv": 15,
+  "regional_weather_daily_2026.csv": 365,
+  "vaccine_writeoff_log_2026.csv": 312
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task482/generator); the state agency, the nonattainment area, the rule, the plants, their suppliers, vendors and testing firms, and the people are fictional",
-  "public_specifications": "the layouts follow the style of a state air agency's information-request returns: production press logs, oxidizer data-historian exports, EPA Method 25A test summaries, safety data sheet masters, hazardous waste manifests and supplier statements",
+  "constructed": "every file is constructed for this task by its generator (task482/generator); the pharmacy chain, its stores and the chains it bought, the logger makes, the monitoring vendor, the wholesaler, the manufacturers, the service contractor and the people are fictional, and the NDCs and lot numbers are invented",
+  "public_specifications": "the layouts follow the style of digital data logger exports (CSV and download reports), a wireless monitoring system's cloud export, a pharmaceutical wholesaler's invoice and credit memo lines with 11-digit NDCs, a pharmacy system's administration and inventory extracts, and a field service portal's visit history",
   "licence": "CC0 1.0 (constructed data)",
-  "date": "2027-02-26"
+  "date": "2027-01-25"
  }
 }

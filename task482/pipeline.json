@@ -1,27 +1,27 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "general-statistics-data-science",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-23",
- "stump": "The default path takes each store's data logger readings as its vaccine's temperature and replaces about twice as many refrigerators as the vaccine's own hours call for, because a logger's probe in its 5 mL glycol bottle follows the refrigerator's air within minutes while the vaccine in its cartons takes about three quarters of an hour; carried through the vaccine's response, a first-order lag whose time constant the two weeks each pilot store's old logger kept recording beside its new in-carton sensor fix at about 45 minutes, the records replace only the stores whose vaccine itself warmed through outages, doors left ajar and failing thermostats.",
+ "stump": "The default path takes each store's data logger readings as its vaccine's temperature and replaces the refrigerators of stores 103, 106, 108, 201, 204, 206, 207, 301, 303 and 309; carried through the vaccine's response, a first-order lag whose time constant the two weeks each pilot store's old logger kept recording beside its new in-carton sensor fix at about 42 minutes, the records replace stores 103, 106, 109, 201, 206 and 303.",
  "architecture": 8,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-23"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW (store numbers in the agreement's and pilot plan's tables, ordinary vocabulary, lot expiry dates in 2027; no LEAK line)",
+  "reader": "running: two scored readers"
  },
  "duplicate_check": {
-  "heart": "",
-  "nearest": "task189 at 0.07 (check on the filed card PASS)",
-  "surface": ""
+  "heart": "PASS",
+  "nearest": "task189 at 0.07",
+  "surface": "3 promoted on card labels (task481 calibration form, task477 gap/pattern/Gate G, task484 pattern/decision type), none on a driver; answered in the Draw"
  },
  "judge": {
   "verdict": "",
@@ -29,7 +29,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2 of architecture 8 (drawn 2026-10-23): tune the thirty-store world (default count plausible, every store clear of the 24-hour line under the standing lag family), the readability screen, fork table, ladder and closure, the asks on files the call never reads, prompt.txt, then precut.py",
+ "resume": "stage 4 of architecture 8: stage 3 green (86 checks, verify, byte-identical rebuilds, figures_check, precut, leak.py REVIEW, heart PASS); two scored readers (scratchpad leak-task482-A and -B) and the determinism judge (brief at /tmp/determinism-check-task482-r1) running; score each reader with score_reader.py --call-key call.stores, fix every finding in the generator in one pass, re-judge a FIX_NOW once, then ship",
  "approved": null,
  "delivered": null,
  "portal": null,

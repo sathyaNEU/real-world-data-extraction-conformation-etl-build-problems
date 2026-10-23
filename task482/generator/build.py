@@ -17,31 +17,39 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 warnings.filterwarnings("ignore")
 
+import asks as A         # noqa: E402
 import pack as P         # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
-STAMP = (2027, 2, 26, 10, 15, 0)
-GSTAMP = (2027, 3, 3, 16, 40, 0)
+STAMP = (2027, 1, 25, 9, 40, 0)
+GSTAMP = (2027, 2, 8, 15, 37, 0)
+OPS = "Pharmacy Operations"
 
 
-def build_pack(out, e):
+def build_pack(out):
     import postprocess as PP
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
-    n = P.build_pack(out, e)
+    E = W.everything()
+    F = A.simulate_stock(E)
+    wos = A.brannon_history()
+    n = P.build_pack(out, E, F, wos)
     f = lambda k: os.path.join(out, P.FILES[k])
-    PP.normalize_pdf(f("rule"), b"D:20270219141507-06'00'", b"D:20270219141507-06'00'")
-    PP.normalize_pdf(f("letter"), b"D:20270112093012-06'00'", b"D:20270112093012-06'00'")
-    PP.normalize_pdf(f("tests"), b"D:20270202161944-06'00'", b"D:20270202161944-06'00'")
-    PP.normalize_pdf(f("profiles"), b"D:20270108111205-06'00'", b"D:20270108111205-06'00'")
-    PP.normalize_ooxml(f("register"), W.PEOPLE["inventory"], W.PEOPLE["inventory"], "2026-11-03T15:10:00Z",
-                       "2027-02-24T20:41:37Z", excel=True, company=PP.COMPANY)
-    PP.normalize_ooxml(f("sds"), "Emissions Inventory Section", W.PEOPLE["inventory"], "2027-01-19T16:02:00Z",
-                       "2027-01-26T14:55:12Z", excel=True, company=PP.COMPANY)
-    PP.normalize_ooxml(f("haldane"), "HCA Customer Service", "HCA Customer Service", "2027-02-03T13:20:00Z",
-                       "2027-02-03T13:20:41Z", excel=True, company=W.SUPPLIERS["B"])
+    PP.normalize_pdf(f("standard"), b"D:20251212101507-06'00'", b"D:20251219144033-06'00'")
+    PP.normalize_pdf(f("pilot"), b"D:20260409113012-05'00'", b"D:20260414090245-05'00'")
+    PP.normalize_pdf(f("agreement"), b"D:20241203152240-06'00'", b"D:20241216101118-06'00'")
+    PP.normalize_pdf(f("quotes"), b"D:20270115160405-06'00'", b"D:20270118083951-06'00'")
+    PP.normalize_ooxml(f("stores"), "Store Operations", W.PEOPLE["director"], "2024-07-08T15:02:00Z",
+                       "2027-01-06T16:44:21Z", excel=True)
+    PP.normalize_ooxml(f("roster"), OPS, W.PEOPLE["pilot"], "2024-02-01T14:10:00Z", "2026-12-14T19:05:37Z", excel=True)
+    PP.normalize_ooxml(f("items"), "Pharmacy Purchasing", "Pharmacy Purchasing", "2025-07-21T13:30:00Z",
+                       "2026-08-11T15:12:09Z", excel=True)
+    PP.normalize_ooxml(f("inventory"), "Inventory Control", "Inventory Control", "2026-01-02T15:20:00Z",
+                       "2027-01-04T14:58:46Z", excel=True)
+    PP.normalize_ooxml(f("brannon"), "Brannon Customer Portal", "Brannon Customer Portal", "2027-01-22T17:31:05Z",
+                       "2027-01-22T17:31:05Z", excel=True, company="Brannon Refrigeration Service, LLC")
     return n
 
 
@@ -67,11 +75,11 @@ def main():
     ap.add_argument("--fast", action="store_true")
     ap.add_argument("--pack-only", action="store_true")
     a = ap.parse_args()
-    e = W.everything()
-    n = build_pack(os.path.join(TASK, "target"), e)
+    n = build_pack(os.path.join(TASK, "target"))
     stamp(os.path.join(TASK, "target"))
     big = max(n.items(), key=lambda t: t[1])
-    print("pack: %d files, largest %s (%d rows)" % (len(os.listdir(os.path.join(TASK, "target"))), P.FILES[big[0]], big[1]))
+    print("pack: %d files, largest %s (%d rows)" % (len(os.listdir(os.path.join(TASK, "target"))), P.FILES[big[0]],
+                                                   big[1]))
     if a.pack_only:
         return 0
     import golden as G
@@ -90,8 +98,7 @@ def main():
         return 0
     first = digest(os.path.join(TASK, "target"))
     gfirst = digest(os.path.join(TASK, "golden"))
-    e2 = W.everything()
-    build_pack(os.path.join(TASK, "target"), e2)
+    build_pack(os.path.join(TASK, "target"))
     stamp(os.path.join(TASK, "target"))
     G.main(os.path.join(TASK, "target"))
     stamp(os.path.join(TASK, "golden"), GSTAMP)

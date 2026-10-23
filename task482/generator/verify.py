@@ -1,14 +1,15 @@
-"""An independent recomputation of task482's golden from target/ alone, without bundle.py: pandas over the CSVs, openpyxl
-over the workbooks, pdfplumber over the PDFs' words. It checks figures.json and the three golden files.
+"""task482's independent verifier: reads only the shipped bundle (target/), the golden deliverables and
+generator/figures.json, recomputes every graded figure with its own code (pandas, no generator module), and compares.
 
     python3 task482/generator/verify.py
 """
-import datetime as dt
 import json
 import os
 import re
+import subprocess
 import sys
 import warnings
+from collections import defaultdict
 
 import numpy as np
 import pandas as pd
@@ -17,243 +18,193 @@ warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 T = os.path.join(TASK, "target")
-G = os.path.join(TASK, "golden")
-K = 3.1173e-8
-FAIL = []
+GOLD = os.path.join(TASK, "golden")
+FAILS = []
 
 
 def say(name, ok):
     print("%s  %s" % ("PASS" if ok else "FAIL", name))
     if not ok:
-        FAIL.append(name)
+        FAILS.append(name)
 
 
-def half_up(x, nd=0):
-    m = 10 ** nd
-    return float(np.sign(x) * np.floor(abs(x) * m + 0.5) / m)
+def half_up(x):
+    return int(np.floor(abs(x) + 0.5)) * (1 if x >= 0 else -1)
 
 
-def book(fn, sheet, skip=0):
-    return pd.read_excel(os.path.join(T, fn), sheet_name=sheet, skiprows=skip, dtype=object)
+def utc_minutes(ts):
+    """pandas timestamps (UTC) to minutes from 2026-01-01T00:00Z"""
+    return ((ts - pd.Timestamp("2026-01-01", tz="UTC")).dt.total_seconds() // 60).astype(np.int64).values
 
 
-def words(fn):
-    import pdfplumber
-    with pdfplumber.open(os.path.join(T, fn)) as pdf:
-        return " ".join(" ".join(w["text"] for w in pg.extract_words()) for pg in pdf.pages)
+def lag(u, x, tau):
+    """the vaccine's estimate at each record's time stamp: each record holds over the interval it opens"""
+    from itertools import accumulate
+    c = np.exp(-np.diff(u) / tau)
+    steps = zip(c.tolist(), ((1 - c) * x[:-1]).tolist())
+    return np.array(list(accumulate(steps, lambda v, p: p[0] * v + p[1], initial=float(x[0]))))
 
 
 def main():
+    stores = pd.read_excel(os.path.join(T, "penwick_store_list_2027-01.xlsx"))
+    roster = pd.read_excel(os.path.join(T, "refrigerator_monitoring_roster_2026.xlsx"))
+    ser2store = dict(zip(roster["Serial or sensor id"], roster["Store"]))
+    make = {r["Store"]: r["Make"] for _, r in roster.iterrows() if r["Device type"] == "Data logger"}
+    # loggers
+    fr = pd.read_csv(os.path.join(T, "frostline_temperature_logs_2026.csv"))
+    fr_u = utc_minutes(pd.to_datetime(fr["Timestamp"], utc=True))
+    kv = pd.read_csv(os.path.join(T, "kelvra_logger_export_2026.csv"), skiprows=3).drop_duplicates()
+    kv_u = utc_minutes(pd.to_datetime(kv["Date"] + " " + kv["Time"], format="%m/%d/%Y %H:%M:%S").dt.tz_localize("UTC"))
+    rows = []
+    serial = None
+    for line in open(os.path.join(T, "brumal_downloads_2026.txt"), encoding="utf-8"):
+        m = re.match(r"Serial number:\s+(\S+)", line)
+        if m:
+            serial = m.group(1)
+        elif re.match(r"\d\d/\d\d/2026\t", line):
+            d, t, v = line.split("\t")
+            rows.append((serial, d + " " + t, float(v)))
+    pw = pd.DataFrame(rows, columns=["serial", "ts", "c"])
+    pw_u = utc_minutes((pd.to_datetime(pw["ts"], format="%m/%d/%Y %H:%M") + pd.Timedelta(hours=6)).dt.tz_localize("UTC"))
+    rec = pd.concat([pd.DataFrame({"store": fr["Serial"].map(ser2store), "u": fr_u, "c": fr["Temperature (C)"]}),
+                     pd.DataFrame({"store": kv["Logger ID"].map(ser2store), "u": kv_u,
+                                   "c": (kv["Temperature (F)"] - 32) * 5 / 9}),
+                     pd.DataFrame({"store": pw["serial"].map(ser2store), "u": pw_u, "c": pw["c"]})])
+    rec = rec.sort_values(["store", "u"]).drop_duplicates(["store", "u"])
+    cl = pd.read_csv(os.path.join(T, "tellvane_sensor_readings_2026.csv"))
+    cl["store"] = cl["sensor_id"].map(ser2store)
+    cl["u"] = utc_minutes(pd.to_datetime(cl["reading_time_utc"], utc=True))
+    cl = cl.sort_values(["store", "u"])
+    y0, y1 = 360, 360 + 525600
+    first = cl.groupby("store")["u"].min().to_dict()
+    R = {no: (g["u"].values, g["c"].values) for no, g in rec.groupby("store")}
+    C = {no: (g["u"].values, g["temperature_c"].values) for no, g in cl.groupby("store")}
+
+    def sse(nos, tau):
+        s = 0.0
+        for no in nos:
+            u, x = R[no]
+            v = lag(u, x, tau)
+            cu, cx = C[no]
+            k = (cu >= first[no]) & (cu < u[-1] + 10)
+            cu, cx = cu[k], cx[k]
+            j = np.searchsorted(u, cu, side="right") - 1
+            s += float(((x[j] + (v[j] - x[j]) * np.exp(-(cu - u[j]) / tau) - cx) ** 2).sum())
+        return s
+
+    taus = {}
+    for mk in sorted(set(make.values())):
+        nos = [no for no in first if make[no] == mk]
+        a, b = 30.0, 60.0
+        while b - a > 0.002:                                  # ternary search on the sum of squares
+            m1, m2 = a + (b - a) / 3, b - (b - a) / 3
+            if sse(nos, m1) < sse(nos, m2):
+                b = m2
+            else:
+                a = m1
+        taus[mk] = (a + b) / 2
+
+    def count(u, y, end):
+        d = np.clip(np.minimum(np.diff(np.append(u, end)), 10), 0, None)
+        m = (u >= y0) & (u < y1)
+        return float((d * (y > 8.0) * m).sum()) / 60.0
+
+    hours = {}
+    for no in sorted(R):
+        u, x = R[no]
+        v = lag(u, x, taus[make[no]])
+        sw = first.get(no, y1)
+        k = u < sw
+        h = count(u[k], v[k], min(sw, y1))
+        if no in C:
+            h += count(C[no][0], C[no][1], y1)
+        hours[no] = h
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    plants = book("deq_printing_plants_register_2027-02.xlsx", "Plants")
-    oxs = book("deq_printing_plants_register_2027-02.xlsx", "Oxidizers")
-    capt = book("deq_printing_plants_register_2027-02.xlsx", "Capture")
-    name_of = dict(zip(plants["Facility no."].astype(str), plants["Plant"]))
-    for fn_, pl in zip(plants["Former name"], plants["Plant"]):
-        if isinstance(fn_, str):
-            name_of[re.search(r"facility (\d+)", fn_).group(1)] = pl
-    cf = dict(zip(plants["Plant"], plants["Carbon content of VOC (lb C per lb VOC)"]))
-    ce = dict(zip(capt["Plant"], capt["Capture efficiency (%)"].astype(float) / 100))
-    tag_of, rated = {}, {}
-    for _, r in oxs.iterrows():
-        for t in re.findall(r"[A-Z]{3,4}-RTO\d?", r["Historian tag"]):
-            tag_of[t] = r["Plant"]
-        rated[r["Plant"]] = float(r["Rated airflow (scfm)"])
-
-    sds = book("safety_data_sheet_master_2027-01.xlsx", "Products").set_index("Product code")
-    log = book("safety_data_sheet_master_2027-01.xlsx", "Revision log")
-
-    def lb_per_gal(code, d):
-        for _, r in log[log["Product code"] == code].iterrows():
-            m = re.search(r"density ([\d.]+) lb/gal and VOC ([\d.]+) per cent", str(r["Change"]))
-            if m and d < pd.Timestamp(r["Effective from"]).date():
-                return float(m.group(1)) * float(m.group(2)) / 100
-        s = sds.loc[code]
-        if str(s["VOC basis"]).startswith("%"):
-            return float(s["Density (lb/gal)"]) * float(s["VOC"]) / 100
-        num = lambda v: 0.0 if pd.isna(v) else float(v)
-        return float(s["VOC"]) * (1 - (num(s["Water (vol %)"]) + num(s["Exempt compounds (vol %)"])) / 100)
-
-    # press VOC used, by plant and production day (the day's hours run from its first start to its last end)
-    pr = pd.read_csv(os.path.join(T, "press_material_use_2026.csv"), dtype=str)
-    pr["plant"] = pr["facility_no"].map(name_of)
-    pr["q"] = pr["quantity"].astype(float)
-    pr["dens"] = pr["material_code"].map(lambda c: float(sds.loc[c, "Density (lb/gal)"]))
-    pr["gal"] = np.where(pr["uom"] == "LB", pr["q"] / pr["dens"], pr["q"])
-    vpg = {(c, d): lb_per_gal(c, dt.date.fromisoformat(d)) for c, d in set(zip(pr["material_code"], pr["log_date"]))}
-    pr["lb"] = pr["gal"] * [vpg[(c, d)] for c, d in zip(pr["material_code"], pr["log_date"])]
-    pr["st"] = pd.to_datetime(pr["start_local"])
-    pr["en"] = pd.to_datetime(pr["end_local"])
-    day = pr.groupby(["plant", "log_date"]).agg(lb=("lb", "sum"), st=("st", "min"), en=("en", "max")).reset_index()
-
-    # historians on Central time, PROCESS hours into their production day's window
-    h = pd.read_csv(os.path.join(T, "oxidizer_historian_hourly_2026.csv"), dtype=str)
-    h = h[h["mode"] == "PROCESS"].copy()
-    h["plant"] = h["unit_tag"].map(tag_of)
-    utc = pd.to_datetime(h["hour_beginning_utc"].str.rstrip("Z"))
-    cdt = (utc >= pd.Timestamp("2026-03-08 08:00")) & (utc < pd.Timestamp("2026-11-01 07:00"))
-    h["local"] = utc - pd.to_timedelta(np.where(cdt, 5, 6), unit="h")
-    h["flow"] = np.where(h["exhaust_flow_scfm"].notna() & (h["exhaust_flow_scfm"] != ""),
-                         pd.to_numeric(h["exhaust_flow_scfm"], errors="coerce"),
-                         pd.to_numeric(h["fan_speed_pct"], errors="coerce") / 100 * h["plant"].map(rated))
-    win = day[day["plant"].isin(rated)]
-    hk = []
-    for _, r in win.iterrows():
-        t = r["st"].floor("h")
-        while t < r["en"]:
-            hk.append((r["plant"], t, r["log_date"]))
-            t += pd.Timedelta(hours=1)
-    hk = pd.DataFrame(hk, columns=["plant", "local", "log_date"])
-    hh = h.merge(hk, on=["plant", "local"], how="left")
-    say("V every PROCESS hour falls in a production day's window", hh["log_date"].notna().all())
-    dd = hh.groupby(["plant", "log_date"]).agg(hours=("flow", "size"), flow=("flow", "mean")).reset_index()
-    day = day.merge(dd, on=["plant", "log_date"], how="left")
-
-    # the tests: words of the summary, runs on carbon
-    txt = words("oxidizer_performance_tests_2017_2026.pdf")
-    blocks = re.split(r"(?=\b[A-Z][a-z]+(?: [A-Z][a-z]+)* \(facility \d{4}\), [A-Z]{3,4}-RTO)", txt)
-    ci, co = [], []
-    n_tests = 0
-    for b in blocks:
-        if "(facility" not in b or "Test of" not in b:
-            continue
-        n_tests += 1
-        mult = 3.0 if "as propane" in b else 1.0
-        for m in re.finditer(r"\b([123]) \d{2}:\d{2} ([\d.]+) ([\d.]+) [\d,]+ [\d,]+ [\d.]+ [\d.]+ [\d.]+", b):
-            ci.append(float(m.group(2)) * mult)
-            co.append(float(m.group(3)) * mult)
-    ci, co = np.array(ci), np.array(co)
-    say("V %d tests, %d runs read from the summary" % (n_tests, len(ci)), n_tests == 28 and len(ci) == 84)
-    Fv = co[ci < 2000].mean()
-    pv = (co[ci > 3000] / ci[ci > 3000]).mean()
-    say("V the relation: floor %.2f ppmv as carbon, %.3f per cent above the knee (figures.json %.1f, %.2f)" %
-        (Fv, 100 * pv, f["components"]["floor_ppmc"], f["components"]["pass_pct"]),
-        round(Fv, 1) == f["components"]["floor_ppmc"] and round(100 * pv, 2) == f["components"]["pass_pct"])
-
-    tons = {}
-    for pl in plants["Plant"]:
-        dp = day[day["plant"] == pl]
-        used = dp["lb"].sum() / 2000
-        if pl not in rated:
-            tons[pl] = used
-            continue
-        cap_lb = dp["lb"] * ce[pl]
-        inlet = cap_lb / dp["hours"] * cf[pl] / (dp["flow"] * 60 * K)
-        out = np.maximum(Fv, pv * inlet)
-        ctl = (out * dp["flow"] * 60 * K / cf[pl] * dp["hours"]).sum() / 2000
-        tons[pl] = used * (1 - ce[pl]) + ctl
-    whole = {pl: int(half_up(v)) for pl, v in tons.items()}
-    say("V each plant's 2026 press VOC, whole tons, as figures.json",
-        all(whole[pl] == f["plants"][pl]["press_voc_tons"] for pl in whole))
-    cov = sorted(pl for pl, v in tons.items() if v >= 25)
-    say("V the call: %s" % cov, cov == f["call"]["plants"])
-    below = max((v, pl) for pl, v in tons.items() if pl not in cov)
-    nb = f["components"]["nearest_below"]
-    say("V the nearest below: %s %d, %d short" % (below[1], half_up(below[0]), half_up(25 - below[0])),
-        below[1] == nb["name"] and half_up(25 - below[0]) == nb["short_tons"])
-
+    say("tau per make %s against figures.json %s" % ({k: round(v, 2) for k, v in taus.items()},
+                                                     f["components"]["tau_minutes"]),
+        all(abs(round(taus[k], 1) - f["components"]["tau_minutes"][k]) <= 0.1 for k in taus))
+    say("every store's whole hours", all(half_up(hours[no]) == f["stores"][str(no)]["hours"] for no in hours))
+    cov = sorted(no for no, h in hours.items() if h >= 24)
+    say("the replaced stores %s" % cov, cov == f["call"]["stores"])
+    nb = max((h, no) for no, h in hours.items() if h < 24)
+    say("nearest below %d at %.2f, %d short" % (nb[1], nb[0], half_up(24 - nb[0])),
+        nb[1] == f["components"]["nearest_below"]["store"] and half_up(24 - nb[0]) ==
+        f["components"]["nearest_below"]["short_hours"])
     # ask A
-    iss = pd.read_csv(os.path.join(T, "stores_cleaning_issues_2026.csv"), dtype=str)
-    iss = iss[~iss["issued_to"].str.startswith("PRESS")]
-    iss["plant"] = iss["facility_no"].map(name_of)
-    iss["lb"] = [float(q) * lb_per_gal(c, dt.date.fromisoformat(d)) for q, c, d in
-                 zip(iss["quantity"], iss["material_code"], iss["issue_date"])]
-    clean = iss.groupby("plant")["lb"].sum()
-    prof = {}
-    for m in re.finditer(r"(CB-\d{4}-0\d) .*? (Cleaning|Press operations) ([\d.]+) ", words("cantrell_bend_waste_profiles_2026.pdf")):
-        prof[m.group(1)] = (m.group(2), float(m.group(3)))
-    man = pd.read_csv(os.path.join(T, "cantrell_bend_manifests_2026.csv"), dtype=str)
-    man["plant"] = man["generator_facility_no"].map(name_of)
-    man = man[man["waste_profile"].map(lambda p_: prof[p_][0] == "Cleaning")]
-    man["lb"] = man["net_weight"].astype(float) * np.where(man["weight_unit"] == "KG", 2.20462, 1.0) * \
-        man["waste_profile"].map(lambda p_: prof[p_][1] / 100)
-    tk = pd.read_csv(os.path.join(T, "wexcombe_service_tickets_2026.csv"), dtype=str)
-    tk["plant"] = tk["facility_no"].map(name_of)
-    tk["lb"] = (tk["fresh_added_gal"].astype(float) - tk["spent_removed_gal"].astype(float)) * \
-        tk["solvent_product"].map(lambda c: lb_per_gal(c, dt.date(2026, 12, 31)))
-    pay = pd.read_csv(os.path.join(T, "solvent_vendor_payments_2026.csv"), dtype=str)
-    ex = pay["description"].str.extract(r"fresh ([\d.]+) gal (\S+), spent ([\d.]+) gal recovered").dropna()
-    st_lb = pd.Series([(float(a) - float(c)) * lb_per_gal(b, dt.date(2026, 12, 31)) for a, b, c in ex.values],
-                      index=ex.index)
-    st_pl = pay.loc[ex.index, "facility_no"].map(name_of)
-    a_t = {}
-    for pl in plants["Plant"]:
-        v = clean.get(pl, 0) - man[man["plant"] == pl]["lb"].sum() + tk[tk["plant"] == pl]["lb"].sum() + \
-            st_lb[st_pl == pl].sum()
-        a_t[pl] = half_up(v / 2000, 1)
-    say("V ask A: each plant's cleaning VOC to a tenth of a ton, as figures.json",
-        all(abs(a_t[pl] - f["plants"][pl]["cleaning_voc_tons"]) < 1e-9 for pl in a_t))
-
+    items = pd.read_excel(os.path.join(T, "vaccine_item_master_2026.xlsx"))
+    dpp = dict(zip(items["NDC"], items["Doses per package"]))
+    vial = dict(zip(items["NDC"], items["Package"].str.contains("vial")))
+    n11 = {}
+    for n in dpp:
+        a, b, c = n.split("-")
+        n11[a.zfill(5) + b.zfill(4) + c.zfill(2)] = n
+    inv = pd.read_excel(os.path.join(T, "vaccine_physical_inventory_ye2025_ye2026.xlsx"), sheet_name=None)
+    o = inv["YE 2025"].groupby("Store").agg(doses=("Doses on hand", "sum"), t=("Count closed", "max"))
+    c = inv["YE 2026"].groupby("Store").agg(doses=("Doses on hand", "sum"), t=("Count closed", "max"))
+    st = stores.set_index("Store")
+    ship = {str(v): k for k, v in st["Meridale ship-to"].items()}
+    former = {v: k for k, v in st["Former name"].dropna().items()}
+    mer = pd.read_csv(os.path.join(T, "meridale_vaccine_invoices_2026.csv"), dtype={"SHIP_TO": str, "NDC": str})
+    mer["store"] = [ship.get(a) or former["Lindqvist Apothecary #%d" % int(n.split("#")[1])]
+                    for a, n in zip(mer["SHIP_TO"], mer["SHIP_TO_NAME"])]
+    mer["t"] = pd.to_datetime(mer["DELIVERED"], format="%m/%d/%Y %H:%M")
+    mer["doses"] = mer["QTY_SHIPPED"] * mer["NDC"].map(n11).map(dpp)
+    adm = pd.read_csv(os.path.join(T, "pharmacy_vaccine_administrations_2026.csv"), parse_dates=["administered_at"])
+    wo = pd.read_csv(os.path.join(T, "vaccine_writeoff_log_2026.csv"), parse_dates=["written_off_at"])
+    wo["doses"] = np.where(wo["ndc"].map(vial) & (wo["written_off_at"] < "2026-06-01"),
+                           wo["quantity"] * wo["ndc"].map(dpp), wo["quantity"])
+    tr = pd.read_csv(os.path.join(T, "vaccine_store_transfers_2026.csv"), parse_dates=["shipped_at", "received_at"])
+    gold_a = {}
+    for no in st.index:
+        a, b = o.loc[no, "t"], c.loc[no, "t"]
+        w = lambda s: (s > a) & (s <= b)
+        v = (o.loc[no, "doses"] + mer.loc[(mer["store"] == no) & w(mer["t"]), "doses"].sum()
+             + tr.loc[(tr["to_store"] == no) & w(tr["received_at"]), "doses"].sum()
+             - adm.loc[(adm["store"] == no) & w(adm["administered_at"]), "doses"].sum()
+             - wo.loc[(wo["store"] == no) & w(wo["written_off_at"]), "doses"].sum()
+             - tr.loc[(tr["from_store"] == no) & w(tr["shipped_at"]), "doses"].sum() - c.loc[no, "doses"])
+        gold_a[no] = int(v)
+    say("ask A, every store's doses unaccounted for", all(gold_a[no] == f["stores"][str(no)]["doses_unaccounted"]
+                                                         for no in gold_a))
     # ask B
-    cat = pd.read_csv(os.path.join(T, "haldane_catalog_2026-04.csv"), dtype=str).set_index("item_no")
-    repl = {r: i for i, r in cat["replaces_item"].dropna().items()}
-    hal = book("haldane_statement_2026.xlsx", "Statement detail", skip=1)
-    hal["Doc date"] = pd.to_datetime(hal["Doc date"])
-    hal["Ship date"] = pd.to_datetime(hal["Ship date"])
-    hal = hal[hal["Ship date"].dt.year == 2026].copy()
-    hal["item"] = [repl.get(str(i), str(i)) if dd_ < pd.Timestamp("2026-04-01") else str(i)
-                   for i, dd_ in zip(hal["Item"], hal["Doc date"])]
-    hal["code"] = hal["item"].map(cat["product_code"])
-    hal["sold"] = hal["item"].map(cat["sold_by"])
-    hal["kind"] = hal["code"].map(sds["Product type"]).str.upper()
-    hal = hal[hal["kind"].isin(["INK", "COATING", "ADHESIVE"])]
-    hal["gal"] = np.where(hal["sold"] == "LB", hal["Qty"].astype(float) /
-                          hal["code"].map(sds["Density (lb/gal)"]).astype(float), hal["Qty"].astype(float))
-    pn = {pl.upper(): pl for pl in plants["Plant"]}
-    pn["THAMESIDE LAMINATING"] = [pl for pl in plants["Plant"] if pl.startswith("Kelvedon")][0]
-    hal["plant"] = hal["Ship to"].map(pn)
-    cv = pd.read_csv(os.path.join(T, "corvane_invoice_export_2026.csv"), dtype=str)
-    cv = cv[cv["SHIP_DATE"].str.startswith("2026")].copy()
-    cv["code"] = "CV-" + cv["ITEM"].str.rsplit("-", n=1).str[0]
-    cv = cv[cv["code"].map(sds["Product type"]).str.upper().isin(["INK", "COATING", "ADHESIVE"])]
-    cv["plant"] = cv["SHIP_TO"].map(pn)
-    cnt = pd.read_csv(os.path.join(T, "stock_counts_2026.csv"), dtype=str)
-    cnt["kind"] = cnt["material_code"].map(sds["Product type"]).str.upper()
-    cnt = cnt[cnt["kind"].isin(["INK", "COATING", "ADHESIVE"])]
-    cnt["gal"] = np.where(cnt["uom"] == "LB", cnt["quantity"].astype(float) /
-                          cnt["material_code"].map(sds["Density (lb/gal)"]).astype(float),
-                          cnt["quantity"].astype(float))
-    cnt["plant"] = cnt["facility_no"].map(name_of)
-    cnt["signed"] = np.where(cnt["count_date"] == "2026-01-01", cnt["gal"], -cnt["gal"])
-    pk = pr[pr["material_code"].map(sds["Product type"]).str.upper().isin(["INK", "COATING", "ADHESIVE"])]
-    b_t = {}
-    for pl in plants["Plant"]:
-        v = cnt[cnt["plant"] == pl]["signed"].sum() + hal[hal["plant"] == pl]["gal"].sum() + \
-            cv[cv["plant"] == pl]["QTY"].astype(float).sum() - pk[pk["plant"] == pl]["gal"].sum()
-        b_t[pl] = int(half_up(v))
-    say("V ask B: each plant's unaccounted gallons, as figures.json",
-        all(b_t[pl] == f["plants"][pl]["unaccounted_gal"] for pl in b_t))
-
-    # the filed sentences, read back through the same extractor
-    rule = re.sub(r"\s+", " ", words("deq_rule_18-4_draft_2027-02-19.pdf"))
-    letter = re.sub(r"\s+", " ", words("deq_information_request_2027-01-12.pdf"))
-    say("V the rule files the applicability (25 tons or more in 2026, used less destroyed) and the cleaning record",
-        "VOC emitted from its presses in calendar year 2026 was 25 tons or more" in rule and
-        "less the VOC that the plant's capture systems and control devices destroyed" in rule and
-        "less the VOC in spent cleaning materials shipped off site" in rule)
-    say("V the letter files Central time and Thameside Laminating's records under facility 0117",
-        "local (Central) time" in letter and "Thameside Laminating (facility 0117)" in letter)
-
-    # the golden files
-    import openpyxl
-    wb = openpyxl.load_workbook(os.path.join(G, "deq_rule18-4_applicability_2027.xlsx"), data_only=True)
-    rows = list(wb["Plants"].iter_rows(min_row=2, values_only=True))
-    say("V the workbook's Plants sheet carries every plant's tons, coverage, cleaning VOC and gallons",
-        all(r[2] == f["plants"][r[0]]["press_voc_tons"] and (r[3] == "Yes") == f["plants"][r[0]]["covered"] and
-            abs(r[4] - f["plants"][r[0]]["cleaning_voc_tons"]) < 1e-9 and r[5] == f["plants"][r[0]]["unaccounted_gal"]
-            for r in rows) and len(rows) == 14)
-    app = [r[0] for r in wb["Appendix A"].iter_rows(min_row=5, values_only=True) if r[0] and r[1]]
-    say("V Appendix A lists the five", app == f["call"]["plants"])
-    gc = pd.read_csv(os.path.join(G, "deq_printing_press_voc_2026.csv"), dtype=str)
-    say("V the CSV carries the 14 whole tons and the Y/N", all(int(t) == f["plants"][p_]["press_voc_tons"] and
-                                                               (y == "Y") == f["plants"][p_]["covered"] for p_, t, y in
-                                                               zip(gc["plant"], gc["press_voc_2026_tons"],
-                                                                   gc["rule_18_4_from_2027_07_01"])))
-    svg = open(os.path.join(G, "deq_printing_press_voc_2026.svg"), encoding="utf-8").read()
-    say("V the chart labels every bar with its whole tons and draws the 25-ton line",
-        all(">%d<" % f["plants"][p_]["press_voc_tons"] in svg for p_ in f["plants"]) and "25 tons" in svg)
-    print("%s  verify: %d failed" % ("PASS" if not FAIL else "FAIL", len(FAIL)))
-    return 1 if FAIL else 0
+    txt = subprocess.run(["pdftotext", "-layout", os.path.join(T, "brannon_service_agreement_2025.pdf"), "-"],
+                         capture_output=True, text=True).stdout
+    price = {m.group(1): float(m.group(2)) for m in
+             re.finditer(r"(\w+ [A-Z]+-\d+)\s+(?:Pharmaceutical-grade|Household-style)\s+(\d+\.\d\d)", txt)}
+    unit = dict(zip(st.index, st["Vaccine refrigerator"]))
+    site = {v: k for k, v in st["Brannon site"].items()}
+    ar = pd.read_excel(os.path.join(T, "brannon_service_history_2026-01_2027-01.xlsx"), skiprows=3)
+    ar["store"] = ar["Site"].map(site)
+    spend = defaultdict(float)
+    for invno, g in ar.groupby("Invoice"):
+        if g["Visit date"].max().year != 2026:
+            continue
+        amt = float(g["Invoice amount"].iloc[0])
+        if g["Invoice date"].iloc[0] < pd.Timestamp("2026-07-01"):
+            amt = round(amt + round(amt * 0.06 + 1e-9, 2), 2)
+        ss = sorted(set(g["store"]))
+        tot = sum(price[unit[s]] for s in ss)
+        for s in ss:
+            spend[s] += amt * (price[unit[s]] / tot if len(ss) > 1 else 1.0)
+    say("ask B, every store's Brannon spend", all(half_up(round(spend[no], 2)) == f["stores"][str(no)]["service_usd"]
+                                                for no in st.index))
+    # the golden workbook carries the same figures
+    gx = pd.read_excel(os.path.join(GOLD, "penwick_refrigerator_replacements_2027.xlsx"), sheet_name=None, header=None)
+    rep = gx["2027 replacements"]
+    body = rep.iloc[4:4 + len(st)]
+    ok = all(int(r[2]) == f["stores"][str(int(r[0]))]["hours"] and (r[3] == "Yes") == f["stores"][str(int(r[0]))]
+             ["replaced"] for _, r in body.iterrows())
+    s2 = gx["Stock and service"].iloc[1:1 + len(st)]
+    ok2 = all(int(r[2]) == f["stores"][str(int(r[0]))]["doses_unaccounted"] and int(r[3]) ==
+              f["stores"][str(int(r[0]))]["service_usd"] for _, r in s2.iterrows())
+    say("the golden workbook carries every store's hours, replacement, doses and spend", ok and ok2)
+    svg = open(os.path.join(GOLD, "penwick_vaccine_hours_2026.svg"), encoding="utf-8").read()
+    say("the golden chart labels the 24-hour line and every store", "24 hours" in svg and
+        all(("%s %s" % (no, st.loc[no, "Town"])) in svg for no in st.index))
+    sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
+    say("submission.md states the call", ("stores %s" % ", ".join(map(str, cov[:-1]))) in sub)
+    print("%d failed" % len(FAILS))
+    return 1 if FAILS else 0
 
 
 if __name__ == "__main__":

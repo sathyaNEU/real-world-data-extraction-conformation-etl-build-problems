@@ -1,205 +1,215 @@
 {
-  "task": "task482",
-  "architecture": "v8",
-  "drawn": "2026-10-23",
-  "slot_note": "architecture 8, re-rooted 2026-10-23 after architecture 7 was spent at stage 4 (reader A read the oxidizer outlet floor off the test tables and landed the call); a fresh world: a regional pharmacy chain choosing the stores whose vaccine refrigerators it replaces before the 2027 respiratory vaccine season, on the hours each store's vaccine spent above 8 degrees C in 2026",
-  "domain": "general-statistics-data-science",
-  "subdomain": "data-integration-record-linkage-entity-resolution",
-  "client_domain": "general-statistics-data-science",
-  "niche": "a regional pharmacy chain's 2027 vaccine refrigerator replacements, given to the stores whose vaccine spent 24 hours or more above 8 degrees C in 2026, conformed from three data logger makes' temperature logs (one per chain the company bought) and a wireless in-carton monitoring pilot whose sensors ran beside the old loggers for two weeks at each pilot store",
-  "objective": "etl",
-  "shape": "10",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
-    "objective"
+ "task": "task482",
+ "architecture": "v8",
+ "drawn": "2026-10-23",
+ "slot_note": "architecture 8, re-rooted 2026-10-23 after architecture 7 was spent at stage 4 (reader A read the oxidizer outlet floor off the test tables and landed the call); a fresh world: a regional pharmacy chain choosing the stores whose vaccine refrigerators it replaces before the 2027 respiratory vaccine season, on the hours each store's vaccine spent above 8 degrees C in 2026",
+ "domain": "general-statistics-data-science",
+ "subdomain": "data-integration-record-linkage-entity-resolution",
+ "client_domain": "general-statistics-data-science",
+ "niche": "a regional pharmacy chain's 2027 vaccine refrigerator replacements, given to the stores whose vaccine spent 24 hours or more above 8 degrees C in 2026, conformed from three data logger makes' temperature logs (one per chain the company bought) and a wireless in-carton monitoring pilot whose sensors ran beside the old loggers for two weeks at each pilot store",
+ "objective": "etl",
+ "shape": "10",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "",
+ "answer_source": "",
+ "gap": [
+  "objective"
+ ],
+ "pattern": [
+  "none"
+ ],
+ "generators": [
+  "G3",
+  "G16"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "parallel_run_overlap",
+ "stump_strategy": "other",
+ "decisive_rule_filed": false,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "operations_log",
+ "stump_class": "analytical",
+ "analyst_test": "With every temperature log and standard clause read correctly, a strong analyst takes each store's data logger readings as its vaccine's temperature, as a buffered probe is meant to give it, counts the 2026 hours above 8 degrees C (each pilot store's in-carton sensor from its installation) and replaces far more refrigerators than the vaccine's own hours call for, the busiest stores and the heaviest restockers among them.",
+ "domain_test": "The deciding quantity is each store's 2026 hours with its vaccine above 8 degrees C, which cold-chain practice estimates from the refrigerator's logger record through the vaccine's own thermal response, measured where an in-carton sensor ran beside the logger; a generic union of the two records (the logger's readings wherever no in-carton sensor ran) replaces a different set, and the response time of vaccine in its cartons has no counterpart in another field's records.",
+ "layer2_family": "estimation_fit",
+ "layer2_pattern": "own:a fast instrument's record carried to a slow quantity through the response a parallel run measures",
+ "layer1": [
+  "three logger makes' temperature logs, one per chain the company bought, each in its maker's layout (degrees Fahrenheit and UTC in one, Celsius and local time in another, local standard time all year in the third)",
+  "readings at 5, 10 and 15 minute intervals",
+  "a logger replaced mid-year under a new serial",
+  "battery-out gaps in quiet weeks",
+  "the pilot vendor's cloud export in UTC keyed by sensor id",
+  "in the ask files, the wholesaler's 11-digit NDCs against the dispensing system's 10-digit forms, and doses against vials"
+ ],
+ "stakeholder_role": "the chain's director of pharmacy operations",
+ "role_family": "operations_director",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "frostline_temperature_logs_2026.csv",
+  "rows": 0,
+  "entity": "one data logger reading",
+  "grain": "logger x reading time, 2026",
+  "source": "synthetic (constructed in the layout of digital data logger exports)"
+ },
+ "forum": "committee_or_panel",
+ "forcing_event": "season_or_peak",
+ "org_family": "retailer_or_ecommerce",
+ "world": {
+  "geography": "an unnamed U.S. Midwest state",
+  "currency": "USD",
+  "org_type": "a regional pharmacy chain's pharmacy operations",
+  "invented_names": [
+   "Penwick Pharmacy",
+   "Tamberlane Sensing",
+   "Tellvane",
+   "Frostline",
+   "Kelvra",
+   "Brumal",
+   "Meridale Pharmaceutical Distribution",
+   "Brannon Refrigeration Service",
+   "Vollmer Drug",
+   "Lindqvist Apothecary",
+   "Halvorsen Vaccines",
+   "Corbel Biologics",
+   "Brightwater Biopharma",
+   "Aldane Pharmaceuticals",
+   "Northcold Scientific",
+   "Stellane Cold Chain",
+   "Pendry Medical"
   ],
-  "pattern": [
+  "people": [
+   "Breanna Graham",
+   "Julia Kaufman"
+  ]
+ },
+ "deliverables": [
+  "penwick_refrigerator_replacements_2027.xlsx",
+  "penwick_vaccine_hours_2026.svg"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "The decisive quantity is how long a slowly responding quantity spent beyond a limit, recorded for most units only by an instrument that follows a fast-responding quantity; the slow quantity follows the fast one through a lag measured where a direct instrument ran beside the fast one for a short overlap, so counting the fast record's time beyond the limit counts every brief swing the slow quantity never felt, and each record has to be carried through the measured lag before it is counted.",
+ "driver_concrete": "Each store's 2026 hours with its vaccine above 8 degrees C count what the vaccine in its cartons felt, which follows the refrigerator's air with a time constant of about three quarters of an hour, while the data logger's probe in a 5 mL glycol bottle follows the air within minutes; so the logger reads above 8 degrees C through every delivery restock and busy afternoon the vaccine rode out, and the two weeks each pilot store's old logger kept running beside its new in-carton sensor measure the lag that carries every logger record to the vaccine's hours.",
+ "stump": "The default path takes each store's logger readings as its vaccine's temperature and replaces the refrigerators of most of the busiest stores and heaviest restockers; carried through the vaccine's response fitted on the pilot stores' two-week overlaps, the readings replace a smaller set, the stores whose vaccine itself warmed through outages, doors left ajar and failing thermostats.",
+ "mechanism_source": "design_note",
+ "differentiation": {
+  "task477": "task477 restates a period's recorded total by the weekday and holiday composition of the payment schedules inside it; here nothing is re-dated or re-composed: each clinic's temperature record is carried through the vaccine's thermal lag, measured on a fourteen-day parallel run, before the time above a limit is counted"
+ },
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: round 1 readers split each parent's return by FTE or total credit hours and missed the call (asks kept 50 per cent on the reissued ids, re-sited); both round 2 readers (target.zip b160b2ca) fitted cost per credit hour by level on the standalone campuses and landed the call (score_reader exit 1); the judge returned DETERMINISTIC APPROVE on round 1. A cost-by-level fit is natural to a strong reader once a credit hour file by level sits beside a consolidated return.",
+   "driver": "A combined return reports one total for several units, and each unit's share is split by its head count, which gives every unit the group's average; but the item follows an activity whose unit cost differs several-fold across kinds, and the units inside the return do mostly the cheap kind, which the units that report alone measure, so the split by head count overstates the units inside and keeps them out of the lowest ranks.",
+   "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and files 214506, 214682, 214858, 214946 and 215298 awarded, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs per student on average: the campuses that report alone show a lower-division credit hour costing under a third of a graduate hour, and three branches priced at the hours they teach have the lowest instruction expense per FTE in the state.",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
     "none"
-  ],
-  "generators": [
-    "G3",
-    "G16"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "parallel_run_overlap",
-  "stump_strategy": "other",
-  "decisive_rule_filed": false,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "operations_log",
-  "stump_class": "analytical",
-  "analyst_test": "With every temperature log and standard clause read correctly, a strong analyst takes each store's data logger readings as its vaccine's temperature, as a buffered probe is meant to give it, counts the 2026 hours above 8 degrees C (each pilot store's in-carton sensor from its installation) and replaces far more refrigerators than the vaccine's own hours call for, the busiest stores and the heaviest restockers among them.",
-  "domain_test": "The deciding quantity is each store's 2026 hours with its vaccine above 8 degrees C, which cold-chain practice estimates from the refrigerator's logger record through the vaccine's own thermal response, measured where an in-carton sensor ran beside the logger; a generic union of the two records (the logger's readings wherever no in-carton sensor ran) replaces a different set, and the response time of vaccine in its cartons has no counterpart in another field's records.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:a fast instrument's record carried to a slow quantity through the response a parallel run measures",
-  "layer1": [
-    "three logger makes' temperature logs, one per chain the company bought, each in its maker's layout (degrees Fahrenheit and UTC in one, Celsius and local time in another, local standard time all year in the third)",
-    "readings at 5, 10 and 15 minute intervals",
-    "a logger replaced mid-year under a new serial",
-    "battery-out gaps in quiet weeks",
-    "the pilot vendor's cloud export in UTC keyed by sensor id",
-    "in the ask files, the wholesaler's 11-digit NDCs against the dispensing system's 10-digit forms, and doses against vials"
-  ],
-  "stakeholder_role": "the chain's director of pharmacy operations",
-  "role_family": "operations_director",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "frostline_temperature_logs_2026.csv",
-    "rows": 0,
-    "entity": "one data logger reading",
-    "grain": "logger x reading time, 2026",
-    "source": "synthetic (constructed in the layout of digital data logger exports)"
+   ],
+   "gate_g": "etl_conformance",
+   "niche": "a state higher-education coordinating board's 2027-28 instructional investment grant to the five public four-year reporting units with the lowest instruction expense per FTE student in fiscal 2026, from the federal finance and enrollment returns, where six branch campuses' finances are reported inside their parent campuses' returns"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "season_or_peak",
-  "org_family": "retailer_or_ecommerce",
-  "world": {
-    "geography": "an unnamed U.S. Midwest state",
-    "currency": "USD",
-    "org_type": "a regional pharmacy chain's pharmacy operations",
-    "invented_names": [
-      "Penwick Pharmacy",
-      "Tamberlane Sensing",
-      "Coldline",
-      "Frostline",
-      "Kelvra",
-      "Polarwatch",
-      "Meridale Pharmaceutical Distribution"
-    ],
-    "people": [
-      "Breanna Graham",
-      "Julia Kaufman"
-    ]
+  {
+   "architecture": "v2",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: both readers (target.zip bacb3a67) compared the audit's referred share (35 per cent) with the register's (8 per cent), weighted each stratum to the 30 April register and landed the call, and both resolved the UTC quarter and the restorations (asks 28 of 28)",
+   "driver": "A rate over a whole list is read from an audit of a sample drawn at very different rates for the members a screen flagged and the rest, and the flagged members carry the outcome far more often; the audited share overstates the rate wherever flagged members are a small part of the list, and only weighting each audited member by the inverse of its chance of being drawn, a chance recorded only in the screen's own output, recovers the list's rate.",
+   "stump": "The default path takes each region's share of its audited records in error and files AR01, AR02, AR04, AR05, AR06, AR07, AR08, AR10, AR11, AR12 and AR13 chosen, because it never asks how the audit drew its records: it took close to a quarter of the records the May risk screen referred and one in twenty-five of the rest, the referred records are in error far more often, and a region's register error rate is its strata's audited rates carried to the records each stratum holds.",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "etl_conformance",
+   "niche": "a national statistics office's decision at its November 2026 quality board on which regional business registers go to a 2027 re-validation exercise because their share of records in error exceeds 4 per cent, estimated from the summer 2026 quality audit, whose sample took records flagged by the register's automated risk screen at a far higher rate than unflagged ones"
   },
-  "deliverables": [
-    "penwick_refrigerator_replacements_2027.xlsx",
-    "penwick_vaccine_hours_2026.svg"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "The decisive quantity is how long a slowly responding quantity spent beyond a limit, recorded for most units only by an instrument that follows a fast-responding quantity; the slow quantity follows the fast one through a lag measured where a direct instrument ran beside the fast one for a short overlap, so counting the fast record's time beyond the limit counts every brief swing the slow quantity never felt, and each record has to be carried through the measured lag before it is counted.",
-  "driver_concrete": "Each store's 2026 hours with its vaccine above 8 degrees C count what the vaccine in its cartons felt, which follows the refrigerator's air with a time constant of about three quarters of an hour, while the data logger's probe in a 5 mL glycol bottle follows the air within minutes; so the logger reads above 8 degrees C through every delivery restock and busy afternoon the vaccine rode out, and the two weeks each pilot store's old logger kept running beside its new in-carton sensor measure the lag that carries every logger record to the vaccine's hours.",
-  "stump": "The default path takes each store's logger readings as its vaccine's temperature and replaces the refrigerators of most of the busiest stores and heaviest restockers; carried through the vaccine's response fitted on the pilot stores' two-week overlaps, the readings replace a smaller set, the stores whose vaccine itself warmed through outages, doors left ajar and failing thermostats.",
-  "mechanism_source": "design_note",
-  "differentiation": {
-    "task477": "task477 restates a period's recorded total by the weekday and holiday composition of the payment schedules inside it; here nothing is re-dated or re-composed: each clinic's temperature record is carried through the vaccine's thermal lag, measured on a fourteen-day parallel run, before the time above a limit is counted"
+  {
+   "architecture": "v3",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: both readers (target.zip 29ab3b38) read the board paper's 'those still open on it', censored the open applications at their age, took the product-limit median and landed the call; both kept all 28 ask figures by dating payments on the batch terminal day (score_reader exit 1); the judge returned DETERMINISTIC APPROVE. A duration cohort with an open caseload shipped beside it is read as right-censored by a strong reader.",
+   "driver": "A cohort's median duration is read while part of the cohort is still running, and the still-running members are the slow ones; the median of the finished members understates it, and so does counting the unfinished at their age, so only the product-limit estimate that keeps each unfinished member at risk until its age recovers the cohort's median.",
+   "stump": "The default path takes each office's median working days over its registered third-quarter applications and files CRO-FM and CRO-MG planned, because it never asks how long the applications still open at the extract will take: they are the slow ones, so the four offices with a backlog look quick on what they have registered, and only the product-limit median over registered and open applications, each open one at risk until its age, gives the quarter's median.",
+   "gap": [
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "etl_conformance",
+   "niche": "a business registry's choice of the regional registration offices placed on a timeliness improvement plan because the median working days from a complete application to registration, for applications received in the third quarter of 2026, exceed 20, when at the October extract a share of each office's applications is still open and sits only in the open caseload snapshot"
   },
-  "lineage": [
-    {
-      "architecture": "v1",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: round 1 readers split each parent's return by FTE or total credit hours and missed the call (asks kept 50 per cent on the reissued ids, re-sited); both round 2 readers (target.zip b160b2ca) fitted cost per credit hour by level on the standalone campuses and landed the call (score_reader exit 1); the judge returned DETERMINISTIC APPROVE on round 1. A cost-by-level fit is natural to a strong reader once a credit hour file by level sits beside a consolidated return.",
-      "driver": "A combined return reports one total for several units, and each unit's share is split by its head count, which gives every unit the group's average; but the item follows an activity whose unit cost differs several-fold across kinds, and the units inside the return do mostly the cheap kind, which the units that report alone measure, so the split by head count overstates the units inside and keeps them out of the lowest ranks.",
-      "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and files 214506, 214682, 214858, 214946 and 215298 awarded, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs per student on average: the campuses that report alone show a lower-division credit hour costing under a third of a graduate hour, and three branches priced at the hours they teach have the lowest instruction expense per FTE in the state.",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "etl_conformance",
-      "niche": "a state higher-education coordinating board's 2027-28 instructional investment grant to the five public four-year reporting units with the lowest instruction expense per FTE student in fiscal 2026, from the federal finance and enrollment returns, where six branch campuses' finances are reported inside their parent campuses' returns"
-    },
-    {
-      "architecture": "v2",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: both readers (target.zip bacb3a67) compared the audit's referred share (35 per cent) with the register's (8 per cent), weighted each stratum to the 30 April register and landed the call, and both resolved the UTC quarter and the restorations (asks 28 of 28)",
-      "driver": "A rate over a whole list is read from an audit of a sample drawn at very different rates for the members a screen flagged and the rest, and the flagged members carry the outcome far more often; the audited share overstates the rate wherever flagged members are a small part of the list, and only weighting each audited member by the inverse of its chance of being drawn, a chance recorded only in the screen's own output, recovers the list's rate.",
-      "stump": "The default path takes each region's share of its audited records in error and files AR01, AR02, AR04, AR05, AR06, AR07, AR08, AR10, AR11, AR12 and AR13 chosen, because it never asks how the audit drew its records: it took close to a quarter of the records the May risk screen referred and one in twenty-five of the rest, the referred records are in error far more often, and a region's register error rate is its strata's audited rates carried to the records each stratum holds.",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "etl_conformance",
-      "niche": "a national statistics office's decision at its November 2026 quality board on which regional business registers go to a 2027 re-validation exercise because their share of records in error exceeds 4 per cent, estimated from the summer 2026 quality audit, whose sample took records flagged by the register's automated risk screen at a far higher rate than unflagged ones"
-    },
-    {
-      "architecture": "v3",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: both readers (target.zip 29ab3b38) read the board paper's 'those still open on it', censored the open applications at their age, took the product-limit median and landed the call; both kept all 28 ask figures by dating payments on the batch terminal day (score_reader exit 1); the judge returned DETERMINISTIC APPROVE. A duration cohort with an open caseload shipped beside it is read as right-censored by a strong reader.",
-      "driver": "A cohort's median duration is read while part of the cohort is still running, and the still-running members are the slow ones; the median of the finished members understates it, and so does counting the unfinished at their age, so only the product-limit estimate that keeps each unfinished member at risk until its age recovers the cohort's median.",
-      "stump": "The default path takes each office's median working days over its registered third-quarter applications and files CRO-FM and CRO-MG planned, because it never asks how long the applications still open at the extract will take: they are the slow ones, so the four offices with a backlog look quick on what they have registered, and only the product-limit median over registered and open applications, each open one at risk until its age, gives the quarter's median.",
-      "gap": [
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "etl_conformance",
-      "niche": "a business registry's choice of the regional registration offices placed on a timeliness improvement plan because the median working days from a complete application to registration, for applications received in the third quarter of 2026, exceed 20, when at the October extract a share of each office's applications is still open and sits only in the open caseload snapshot"
-    },
-    {
-      "architecture": "v4",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: reader 9 (target.zip 9e21c3d9) fitted a hedonic regression with the address point file's electoral division and landed the call (score_reader exit 1, asks 14 of 48 from the shared changes); reader 10 fitted it without location and missed (0 of 48); the judge was stopped once the call landed. A hedonic regression is a strong reader's reflex once a methodology note cites the RPPI handbook beside a valuation register, and location is one join away.",
-      "driver": "A unit's price change is read from the units of a heterogeneous stock that happened to trade in each period, and the traded mix shifts between periods by location, size and newness, with location held in a separate register; every summary of the traded units, raw, per unit of size or reweighted by a coarse type, moves with the mix, and only a regression of log price on the units' characteristics and fine location with a period term gives the change for an unchanged unit.",
-      "stump": "The default path compares each area's sales between the two years dwelling type by dwelling type, weights the changes by the census stock and files Annaghvale, Ballymarne, Carrigvore, Glenaskin, Innishrue, Kilbrannagh, Moyrath and Rathgowan designated, because it never asks whether the homes that sold within each type were the same kind of home in both years: in several areas the second year sold more homes in the cheaper or the dearer electoral divisions, or new homes at a premium, and only a hedonic regression on type, floor area, new-dwelling status and electoral division gives each area's change for an unchanged dwelling.",
-      "gap": [
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, read against the housing ministry's 8 per cent line for designating rapid price growth areas, when each area's sales in a year are a shifting sample of its dwelling stock and the dwellings' attributes and small-area locations sit in the valuation register and the address point file, not in the price register"
-    },
-    {
-      "architecture": "v5",
-      "drawn": "2026-10-22",
-      "driver": "A stock's value change is estimated from a regression on the units that traded, but the unit types' prices move at different rates and the traded mix over-represents one type against the stock, so the regression's one period effect is a traded-mix average of the types' changes; the stock's change takes each type's own period effect, holding characteristics and location fixed, weighted by the stock's value of that type.",
-      "stump": "The default path fits one regression of log price on dwelling type, floor area, new-dwelling status and the address point file's electoral division with a single year term and designates Ardcullen, Annaghvale, Dunmarra, Drumshallon, Glenaskin, Innishrue and Kilbrannagh, because the one year term averages the types' changes over what sold, and in Moyrath and Carrigvore the flat apartments are a third of the sales while in Innishrue and Drumshallon the rising ones are; each type's own year effect weighted by the census stock's value of that type designates Carrigvore and Moyrath in their place.",
-      "gap": [
-        "objective"
-      ],
-      "pattern": [
-        "D"
-      ],
-      "gate_g": "method_or_model_selection",
-      "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, the change in the market value of each area's census dwelling stock, read against the housing ministry's 8 per cent line, when the dwelling types' prices move apart and each area's sales over- or under-represent apartments against its stock",
-      "fate": "spent at stage 4 on 2026-10-22: both scored readers and the judge's first derivation weighted dwelling types by the census stock by reflex and missed only on the electoral-division control, which the judge read as unfiled (r5a); filing it hands them the call; re-rooted fresh by the author's rule (no retirement)",
-      "subdomain": "census-register-administrative-data-quality",
-      "domain": "survey-research-official-statistics"
-    },
-    {
-      "architecture": "v6",
-      "drawn": "2026-10-22",
-      "driver": "The decisive quantity is a sum over a fixed set of measuring items of each item's expected outcome at one fixed level, where each item's parameter was calibrated in the slot it occupied on an earlier instrument and an item's outcome worsens the later its slot; the slot effect is estimated from earlier administrations that presented the same items in varied orders, and each item is carried from its calibration slot to its new slot before summing, while summing the parameters as filed, or shifting every item by one average drift, sets the dial elsewhere.",
-      "stump": "The default path computes Form 27A's expected raw score at each standard from the bank difficulties as filed (28.2 and 17.5) and sets College Algebra from 29, Corequisite College Algebra from 18; the golden carries each of the 40 field-test-calibrated unique items from the field-test section's mean position (65.5) to the positions 21 to 70 it takes on Northgate Assess by the position term the 2026 attempts measure (0.0075 logits a position, 0.15 over the carry), which puts the expected raw scores at 29.5 and 18.5 and the placement scores at 30 and 19.",
-      "gap": [
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "niche": "a state community college system's 2027 mathematics placement form, pre-equated from a Rasch item bank before it goes live on 1 March 2027: the raw score that places a student into college algebra, where most of the form's scored items were calibrated in the unscored field-test section at the end of earlier forms",
-      "fate": "spent at stage 4 on 2026-10-22: reader A fitted a Rasch model with a position term to the rebuilt attempts with the anchor block fixed and landed both placement scores exactly (30 and 19); a context effect measured by an obvious model term is a reflex for the field's own analysts; re-rooted fresh by the author's rule (no retirement)",
-      "subdomain": "item-response-theory-test-equating",
-      "domain": "education-learning-sciences"
-    },
-    {
-      "architecture": "v7",
-      "drawn": "2026-10-23",
-      "driver": "The decisive quantity is each unit's period total of an output that leaves through a removal device whose outlet holds near a floor concentration, so the share the device removes falls as its inlet grows dilute; each device's removal is measured in tests run at the unit's maximum rate, and on the days the unit runs below it the device's fan still draws its full air, so the inlet is dilute and the device removes less than its test shows; applying a test's removal across the period overstates the removal at every unit whose days ran dilute, while the tests across all the devices trace the outlet against the inlet, and each day's inlet, built from the day's throughput and air, carries the removal to the day.",
-      "stump": "The default path applies each plant's latest oxidizer test efficiency to its 2026 captured VOC and names Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging; a thermal oxidizer's outlet holds near a floor (about 45 ppmv as carbon) however dilute its inlet, every test ran at maximum production, and at Ashcombe Flexible Packaging and Kelvedon Laminates the fixed-speed fans drew their full air through days when the presses ran part of their capacity, so the oxidizers destroyed less than their tests show; each production day's outlet read from the relation the ten oxidizers' tests trace, at the inlet the day's captured VOC and airflow imply, carries Ashcombe from 21 to 29 tons and Kelvedon from 20 to 28, and the rule covers five plants.",
-      "gap": [
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "niche": "a state air agency's 2026 press VOC inventory of fourteen printing and converting plants in an ozone nonattainment area, conformed from the plants' information-request returns (ink and coating purchases with their safety data sheets, press logs, oxidizer data-historian exports, capture determinations and oxidizer performance tests), to name the plants a new rule covers from 2027 at 25 tons of 2026 press VOC",
-      "subdomain": "emissions-inventory",
-      "domain": "physical-environmental-sciences",
-      "fate": "spent at stage 4, 2026-10-23 (zip 5ab18e48): reader A read the outlet floor off the test tables (Ashcombe's 2018 two-press test holding the same 45 ppmv at half the inlet), rebuilt each hour's outlet as the greater of the floor and 1.8 per cent of the inlet and landed the five and all 14 whole tons, Part 2 question 1 'none', question 6 'an analytical choice'; reader B carried each fixed-fan unit's test outlet to the year by the register's fan-drive column (rung R4, six plants). Both readers kept all 28 ask figures: the SDS revision log read, the washer vendor's payment lines parsed, Haldane's items matched on description past the renumbering."
-    }
-  ],
-  "notes": "v8 drawn 2026-10-23; the clinic count, the default and golden sets and every figure in answer and stump are set at the build from generator/figures.json",
-  "registered": "2026-10-23T08:14:46Z"
+  {
+   "architecture": "v4",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: reader 9 (target.zip 9e21c3d9) fitted a hedonic regression with the address point file's electoral division and landed the call (score_reader exit 1, asks 14 of 48 from the shared changes); reader 10 fitted it without location and missed (0 of 48); the judge was stopped once the call landed. A hedonic regression is a strong reader's reflex once a methodology note cites the RPPI handbook beside a valuation register, and location is one join away.",
+   "driver": "A unit's price change is read from the units of a heterogeneous stock that happened to trade in each period, and the traded mix shifts between periods by location, size and newness, with location held in a separate register; every summary of the traded units, raw, per unit of size or reweighted by a coarse type, moves with the mix, and only a regression of log price on the units' characteristics and fine location with a period term gives the change for an unchanged unit.",
+   "stump": "The default path compares each area's sales between the two years dwelling type by dwelling type, weights the changes by the census stock and files Annaghvale, Ballymarne, Carrigvore, Glenaskin, Innishrue, Kilbrannagh, Moyrath and Rathgowan designated, because it never asks whether the homes that sold within each type were the same kind of home in both years: in several areas the second year sold more homes in the cheaper or the dearer electoral divisions, or new homes at a premium, and only a hedonic regression on type, floor area, new-dwelling status and electoral division gives each area's change for an unchanged dwelling.",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, read against the housing ministry's 8 per cent line for designating rapid price growth areas, when each area's sales in a year are a shifting sample of its dwelling stock and the dwellings' attributes and small-area locations sit in the valuation register and the address point file, not in the price register"
+  },
+  {
+   "architecture": "v5",
+   "drawn": "2026-10-22",
+   "driver": "A stock's value change is estimated from a regression on the units that traded, but the unit types' prices move at different rates and the traded mix over-represents one type against the stock, so the regression's one period effect is a traded-mix average of the types' changes; the stock's change takes each type's own period effect, holding characteristics and location fixed, weighted by the stock's value of that type.",
+   "stump": "The default path fits one regression of log price on dwelling type, floor area, new-dwelling status and the address point file's electoral division with a single year term and designates Ardcullen, Annaghvale, Dunmarra, Drumshallon, Glenaskin, Innishrue and Kilbrannagh, because the one year term averages the types' changes over what sold, and in Moyrath and Carrigvore the flat apartments are a third of the sales while in Innishrue and Drumshallon the rising ones are; each type's own year effect weighted by the census stock's value of that type designates Carrigvore and Moyrath in their place.",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "D"
+   ],
+   "gate_g": "method_or_model_selection",
+   "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, the change in the market value of each area's census dwelling stock, read against the housing ministry's 8 per cent line, when the dwelling types' prices move apart and each area's sales over- or under-represent apartments against its stock",
+   "fate": "spent at stage 4 on 2026-10-22: both scored readers and the judge's first derivation weighted dwelling types by the census stock by reflex and missed only on the electoral-division control, which the judge read as unfiled (r5a); filing it hands them the call; re-rooted fresh by the author's rule (no retirement)",
+   "subdomain": "census-register-administrative-data-quality",
+   "domain": "survey-research-official-statistics"
+  },
+  {
+   "architecture": "v6",
+   "drawn": "2026-10-22",
+   "driver": "The decisive quantity is a sum over a fixed set of measuring items of each item's expected outcome at one fixed level, where each item's parameter was calibrated in the slot it occupied on an earlier instrument and an item's outcome worsens the later its slot; the slot effect is estimated from earlier administrations that presented the same items in varied orders, and each item is carried from its calibration slot to its new slot before summing, while summing the parameters as filed, or shifting every item by one average drift, sets the dial elsewhere.",
+   "stump": "The default path computes Form 27A's expected raw score at each standard from the bank difficulties as filed (28.2 and 17.5) and sets College Algebra from 29, Corequisite College Algebra from 18; the golden carries each of the 40 field-test-calibrated unique items from the field-test section's mean position (65.5) to the positions 21 to 70 it takes on Northgate Assess by the position term the 2026 attempts measure (0.0075 logits a position, 0.15 over the carry), which puts the expected raw scores at 29.5 and 18.5 and the placement scores at 30 and 19.",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "niche": "a state community college system's 2027 mathematics placement form, pre-equated from a Rasch item bank before it goes live on 1 March 2027: the raw score that places a student into college algebra, where most of the form's scored items were calibrated in the unscored field-test section at the end of earlier forms",
+   "fate": "spent at stage 4 on 2026-10-22: reader A fitted a Rasch model with a position term to the rebuilt attempts with the anchor block fixed and landed both placement scores exactly (30 and 19); a context effect measured by an obvious model term is a reflex for the field's own analysts; re-rooted fresh by the author's rule (no retirement)",
+   "subdomain": "item-response-theory-test-equating",
+   "domain": "education-learning-sciences"
+  },
+  {
+   "architecture": "v7",
+   "drawn": "2026-10-23",
+   "driver": "The decisive quantity is each unit's period total of an output that leaves through a removal device whose outlet holds near a floor concentration, so the share the device removes falls as its inlet grows dilute; each device's removal is measured in tests run at the unit's maximum rate, and on the days the unit runs below it the device's fan still draws its full air, so the inlet is dilute and the device removes less than its test shows; applying a test's removal across the period overstates the removal at every unit whose days ran dilute, while the tests across all the devices trace the outlet against the inlet, and each day's inlet, built from the day's throughput and air, carries the removal to the day.",
+   "stump": "The default path applies each plant's latest oxidizer test efficiency to its 2026 captured VOC and names Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging; a thermal oxidizer's outlet holds near a floor (about 45 ppmv as carbon) however dilute its inlet, every test ran at maximum production, and at Ashcombe Flexible Packaging and Kelvedon Laminates the fixed-speed fans drew their full air through days when the presses ran part of their capacity, so the oxidizers destroyed less than their tests show; each production day's outlet read from the relation the ten oxidizers' tests trace, at the inlet the day's captured VOC and airflow imply, carries Ashcombe from 21 to 29 tons and Kelvedon from 20 to 28, and the rule covers five plants.",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "niche": "a state air agency's 2026 press VOC inventory of fourteen printing and converting plants in an ozone nonattainment area, conformed from the plants' information-request returns (ink and coating purchases with their safety data sheets, press logs, oxidizer data-historian exports, capture determinations and oxidizer performance tests), to name the plants a new rule covers from 2027 at 25 tons of 2026 press VOC",
+   "subdomain": "emissions-inventory",
+   "domain": "physical-environmental-sciences",
+   "fate": "spent at stage 4, 2026-10-23 (zip 5ab18e48): reader A read the outlet floor off the test tables (Ashcombe's 2018 two-press test holding the same 45 ppmv at half the inlet), rebuilt each hour's outlet as the greater of the floor and 1.8 per cent of the inlet and landed the five and all 14 whole tons, Part 2 question 1 'none', question 6 'an analytical choice'; reader B carried each fixed-fan unit's test outlet to the year by the register's fan-drive column (rung R4, six plants). Both readers kept all 28 ask figures: the SDS revision log read, the washer vendor's payment lines parsed, Haldane's items matched on description past the renumbering."
+  }
+ ],
+ "notes": "v8 drawn 2026-10-23; the clinic count, the default and golden sets and every figure in answer and stump are set at the build from generator/figures.json",
+ "registered": "2026-10-23T08:14:46Z"
 }

@@ -3,40 +3,41 @@ import json
 
 import pack as P
 
-DISTRACTORS = [P.FILES["presses"], P.FILES["ozone"]]
+DISTRACTORS = [P.FILES["quotes"], P.FILES["weather"]]
 
 
 def write(path, n):
     meta = {
         "task": "task482",
-        "domain": "Physical & Environmental Sciences (emissions inventory)",
-        "client_domain": "Physical & Environmental Sciences",
-        "task_type": "emissions-inventory",
+        "domain": "General Statistics & Data Science (data integration, record linkage and entity resolution)",
+        "client_domain": "General Statistics & Data Science",
+        "task_type": "data-integration-record-linkage-entity-resolution",
         "objective": "Data Extraction & Conformation (ETL)",
         "distractor_files": DISTRACTORS,
         "distractor_reasons": {
-            P.FILES["presses"]: "the Department's press register (type, maker, web width, rated speed, year installed "
-                                "and where each press exhausts): what each plant runs, not what its presses used or "
-                                "emitted in 2026",
-            P.FILES["ozone"]: "the area's ozone monitors' fourth-highest eight-hour values and design values, 2024 to "
-                              "2026: why the area is in nonattainment, which no plant's press VOC turns on",
+            P.FILES["quotes"]: "procurement's quotations for the new pharmaceutical refrigerators (models, prices, "
+                               "installation, qualification, lead times): what a replacement costs, not which stores "
+                               "get one",
+            P.FILES["weather"]: "the region's daily weather at its airport station, 2026, the storm days marked: the "
+                                "weather behind the outages, which no store's hours or stock turn on",
         },
-        "stated_inputs": ["25", "2026", "1 July 2027"],
-        "deliverables": ["deq_rule18-4_applicability_2027.xlsx", "deq_printing_press_voc_2026.csv",
-                         "deq_printing_press_voc_2026.svg"],
-        "as_of": "2027-02-26",
+        "stated_inputs": ["8 C", "24 hours", "2026", "whole hours", "whole doses", "whole dollars"],
+        "deliverables": ["penwick_refrigerator_replacements_2027.xlsx", "penwick_vaccine_hours_2026.svg"],
+        "as_of": "2027-01-25",
         "files": sorted(P.FILES.values()),
         "rows": {P.FILES[k]: v for k, v in sorted(n.items())},
         "sources": {
-            "constructed": "every file is constructed for this task by its generator (task482/generator); the state "
-                           "agency, the nonattainment area, the rule, the plants, their suppliers, vendors and testing "
-                           "firms, and the people are fictional",
-            "public_specifications": "the layouts follow the style of a state air agency's information-request returns: "
-                                     "production press logs, oxidizer data-historian exports, EPA Method 25A test "
-                                     "summaries, safety data sheet masters, hazardous waste manifests and supplier "
-                                     "statements",
+            "constructed": "every file is constructed for this task by its generator (task482/generator); the "
+                           "pharmacy chain, its stores and the chains it bought, the logger makes, the monitoring "
+                           "vendor, the wholesaler, the manufacturers, the service contractor and the people are "
+                           "fictional, and the NDCs and lot numbers are invented",
+            "public_specifications": "the layouts follow the style of digital data logger exports (CSV and download "
+                                     "reports), a wireless monitoring system's cloud export, a pharmaceutical "
+                                     "wholesaler's invoice and credit memo lines with 11-digit NDCs, a pharmacy "
+                                     "system's administration and inventory extracts, and a field service portal's "
+                                     "visit history",
             "licence": "CC0 1.0 (constructed data)",
-            "date": "2027-02-26",
+            "date": "2027-01-25",
         },
     }
     with open(path, "w", encoding="utf-8") as fh:

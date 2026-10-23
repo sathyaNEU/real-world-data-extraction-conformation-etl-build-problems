@@ -47,7 +47,7 @@ spent above 8 degrees C in 2026.
   quantity through the response a parallel run measures`. Calibration organ `parallel_run_overlap`: the two weeks each
   pilot store's old logger kept recording after its in-carton sensor went in.
 - **World:** an unnamed U.S. Midwest state; Penwick Pharmacy and its pharmacy operations; logger makes Frostline,
-  Kelvra and Polarwatch (one per acquired chain); the Coldline wireless monitoring system from Tamberlane Sensing; the
+  Kelvra and Brumal (one per acquired chain); the Tellvane wireless monitoring system from Tamberlane Sensing; the
   chain's vaccine wholesaler, Meridale Pharmaceutical Distribution. People from `guard.py names --geo us --seed 482`
   and `--seed 4821`: Breanna Graham (director of pharmacy operations) and Julia Kaufman (the pilot's project lead).
 - **Forcing fact:** the capital committee approves the 2027 refrigerator list in February 2027 so the units are
@@ -61,7 +61,7 @@ spent above 8 degrees C in 2026.
   A busy afternoon of door openings keeps the air and the probe near 8 for hours; the vaccine follows the hourly
   average. A power outage, a door left ajar overnight or a failing thermostat warms the cabinet for hours, and the
   vaccine follows it up, late, and stays warm after the air has recovered.
-- **Data-native sentence:** at the ten pilot stores the old logger kept recording for two weeks after the Coldline
+- **Data-native sentence:** at the ten pilot stores the old logger kept recording for two weeks after the Tellvane
   sensor went into a vaccine carton on the same shelf, and in those weeks the logger crossed 8 degrees C on every
   restock while the in-carton sensor stayed under 8, and lagged the logger's rise and fall through every warm spell
   by about three quarters of an hour, so a logger's hours above 8 belong to its probe and not to the vaccine.
@@ -81,6 +81,12 @@ spent above 8 degrees C in 2026.
     its packaging's thermal response, a first-order lag in the simplest description, measured by placing a sensor in
     the product's own pack;
   - first-order sensor dynamics: an instrument's reading follows its medium with its own time constant.
+- **Surface screen (stage 3):** `guard.py surface` promoted three pairs on card labels, none on a driver. task481
+  (shipped) shares the calibration form, a parallel-run overlap: there a dual-coded window gives conversion rates
+  whose case mix differs from the months restated; here an old logger's last two weeks beside an in-carton sensor
+  give a dynamic response, a shared organ under two drivers (clone-check's shape echo). task477 (shipped) shares gap,
+  pattern and Gate G, answered on the card (re-dating payments by schedule against carrying a record through a lag).
+  task484 (this lane, paused at stage 1) shares the pattern and decision type; its re-root draws off both.
 - **Same-puzzle and same-driver tests:** (objective, none, designation_set) and (objective, G3,
   method_or_model_selection) against the last twelve builds, lineage included: no match in the last twelve; the older
   task477 match is differentiated on the card.
@@ -94,34 +100,32 @@ spent above 8 degrees C in 2026.
 
 ## Default path
 
-1. Read the Vaccine Storage and Handling Standard's section on the 2027 replacements: a store whose vaccine spent a
+1. Read the Vaccine Storage and Handling Standard's section 7.3 on the 2027 replacements: a store whose vaccine spent a
    cumulative 24 hours or more above 8.0 degrees C in calendar year 2026 has its refrigerator replaced before
-   1 September 2027, each reading standing for the interval to the next.
-2. Conformed the three makes' exports to local time and degrees C (Kelvra's Fahrenheit and UTC, Polarwatch's standard
-   time all year), joined each logger to its store through the chain's device roster, a replaced logger's two
-   serials included.
-3. At each pilot store, took the Coldline in-carton sensor's readings from its installation date, the device of
-   record from that date, and the store's logger before it.
-4. Took each reading as the vaccine's temperature, counted each store's 2026 readings above 8.0 degrees C at the
-   interval to the next reading, and summed the hours.
+   1 September 2027, a record counting its ten minutes when the vaccine's temperature at its time stamp was above 8.0.
+2. Conformed the three makes' exports to UTC and degrees C (Frostline's local times with their offsets, Kelvra's
+   Fahrenheit and UTC with its one repeated day, Brumal's UTC-6 all year), joined each logger to its store through
+   the monitoring roster, a replaced logger's two serials in sequence.
+3. At each pilot store, took the Tellvane in-carton sensor's readings from its first reading (the device of record from
+   installation, standard 6.4) and the store's logger before it.
+4. Took each logger reading as the vaccine's temperature, as a buffered probe is meant to give it, counted each store's
+   2026 records above 8.0 degrees C at ten minutes each, and summed the hours.
 5. Compared each store's hours with 24.
 
-Ends on: the 2027 replacements go to every store whose logger readings spent 24 hours or more above 8.0 degrees C,
-about twice as many stores as the golden, the busiest stores and the heaviest restockers among them (names
-set at the build).
+Ends on: the 2027 replacements go to stores 103, 106, 108, 201, 204, 206, 207, 301, 303 and 309.
 
-Golden: the 2027 replacements go to the stores whose vaccine, carried through its response from the logger record,
-spent 24 hours or more above 8.0 degrees C (names set at the build).
+Golden: the 2027 replacements go to stores 103, 106, 109, 201, 206 and 303.
 
 ## Stump sentence
 
-The default path takes each store's data logger readings as its vaccine's temperature and replaces about twice as
-many refrigerators as the vaccine's own hours call for, because a logger's probe in its 5 mL glycol bottle follows the refrigerator's air
-within minutes while the vaccine in its cartons takes about three quarters of an hour, so the probe reads above 8
-degrees C through every restock, inventory count and busy afternoon the vaccine rode out; carried through the vaccine's
-response, a first-order lag whose time constant the fourteen days each pilot store's old logger kept recording beside
-its new in-carton sensor fix at about 45 minutes, the records replace only the stores whose vaccine itself warmed
-through outages, doors left ajar and failing thermostats.
+The default path takes each store's data logger readings as its vaccine's temperature and replaces the refrigerators
+of stores 103, 106, 108, 201, 204, 206, 207, 301, 303 and 309, because a logger's probe in its 5 mL glycol bottle
+follows the refrigerator's air within minutes while the vaccine in its cartons takes most of an hour, so the probe
+reads above 8 degrees C through every defrost swing, quick restock and busy afternoon the vaccine rode out, and ends a
+propped-door delivery's excursion long before the vaccine cools; carried through the vaccine's response, a first-order
+lag whose time constant the two weeks each pilot store's old logger kept recording beside its new in-carton sensor fix
+at about 42 minutes, the records replace stores 103, 106, 109, 201, 206 and 303: five of the default's ten (108, 204,
+207, 301 and 309) drop out and store 109, whose season of propped-door deliveries the logger cut short, comes in.
 
 ## Three rules
 
@@ -139,44 +143,49 @@ Swap: General Statistics, so the swap is of the method: replace the response-car
 instruments' readings and the set roughly doubles; and with another field's nouns ("beds occupied" for "vaccine
 temperature") there is no carton, no glycol bottle and no thermal response for a reading to be carried through.
 
-Layer 1: three logger makes' exports, each in its maker's layout (Kelvra in degrees Fahrenheit and UTC, Frostline in
-Celsius and local time, Polarwatch in local standard time all year), readings at 5, 10 and 15 minute intervals, a
-logger replaced mid-year under a new serial, battery-out gaps in quiet weeks, the pilot vendor's cloud export in UTC
-keyed by sensor id, and in the ask files the distributor's 11-digit NDCs against the registry's 10-digit forms and
-doses against vials: each is what these systems write, none is placed to be caught, and no reading of them moves the
-call (to be asserted in checks.py).
+Layer 1: three logger makes' exports, each in its maker's layout (Frostline in Celsius with local times and their
+UTC offsets, the November fall-back hour twice; Kelvra in Fahrenheit and UTC behind a three-line preamble, one day
+exported twice; Brumal in monthly download reports on UTC-6 all year), two loggers replaced mid-year under new
+serials, battery-change gaps in quiet hours, the pilot vendor's cloud export in UTC keyed by sensor id, and in the ask
+files the wholesaler's 11-digit NDCs against the item master's 10-digit forms, packages against doses, the Lindqvist
+stores' old wholesaler accounts before April, and work finished in December invoiced in January: each is what these
+systems write, none is placed to be caught, and no reading of them moves the call (asserted in checks.py, X1 and
+X3).
 
 Layer 2: estimation that fits the data (estimation_fit): the vaccine's temperature is not recorded at most stores for
 most of the year and has to be estimated from the logger record through the vaccine's response, a first-order lag
 whose time constant the pilot stores' overlaps fix; counting the logger's own time above 8 degrees C counts every
 restock and busy afternoon the vaccine rode out.
 
-Decisive step: carrying each logger record through the vaccine's thermal response, a first-order lag of about 45
-minutes measured on the pilot stores' fourteen-day overlaps where the old logger's probe and the in-carton sensor
-recorded the same unit, before the hours above 8.0 degrees C are counted.
+Decisive step: carrying each logger record through the vaccine's thermal response, a first-order lag of about 42
+minutes measured on the pilot stores' two-week overlaps where the old logger's probe and the in-carton sensor recorded
+the same unit, before the hours above 8.0 degrees C are counted.
 
 Not semantics: every field reads as written (each logger's probe temperature in its own unit and clock, the in-carton
 sensor's temperature, the roster's dates and serials); read correctly, the logger's readings are still its probe's,
 the easy route counts them as the vaccine's, and only the vaccine's response, which no field or definition states,
 separates the two.
 
-Not rule application: the standard files the WHAT (the vaccine's temperature, calendar 2026, above 8.0 degrees C, 24
-hours, each reading standing for the interval to the next) and no rule or procedure says how a logger's reading
-becomes the vaccine's temperature; the enumerated family (the readings as recorded, 30 and 60 minute duration
-filters, 45 and 90 minute moving averages, a pure delay, the first-order lag at the fitted constant) spreads the set
-from about six to about twenty-nine stores on the prototype, the standing family (first-order lags fitted pooled, by
-make and by store) files one set, and what rules out the rest is the overlaps' own fit (0.04 degrees C for the lag on
-the prototype against degrees for the readings as recorded); measured figures at stage 2.
+Not rule application: the standard files the WHAT (the vaccine's temperature, calendar 2026 local time, above 8.0
+degrees C, 24 hours, a record counting its ten minutes by the vaccine's temperature at its time stamp) and no rule or
+procedure says how a logger's reading becomes the vaccine's temperature; the enumerated family (the readings as
+recorded, 30 and 60 minute duration filters, a 10-degree peak filter, the defrost swings dropped, the delivery
+excursions dropped, the overlaps' hours ratio, 30 to 120 minute moving averages, the first-order lag) spreads the set
+from one store to eleven across eleven distinct sets; the standing family (the lag fitted per make, pooled and per
+pilot store, half a minute either side, the record opening or closing its interval) files one set and every store's
+whole hours identically; and what rules out the rest is the overlaps' own fit, which a reader reaches only by using
+the logger's two weeks past the device of record's start: 0.06 degrees C for the lag against 0.39 for the readings as
+recorded and 0.12 for the best moving average (checks.py G1, G5).
 
 Analyst test: with every field and rule read correctly, a strong analyst takes each store's logger readings as its
-vaccine's temperature, as a buffered probe is meant to give it (each pilot store's in-carton sensor from its
-installation), counts the 2026 hours above 8.0 degrees C and replaces about twice as many refrigerators as the golden: the
-default path's Ends on.
+vaccine's temperature, as a buffered probe is meant to give it (each pilot store's in-carton sensor from its first
+reading), counts the 2026 hours above 8.0 degrees C and replaces stores 103, 106, 108, 201, 204, 206, 207, 301, 303
+and 309: the default path's Ends on (checks.py T1 on the clean truth, T2 on the pack).
 
 Estimand: the Vaccine Storage and Handling Standard (revised 2026), the 2027 replacement section: the population (the thirty
 stores' vaccine refrigerators), the outcome (the hours the vaccine spent above 8.0 degrees C,
-each reading standing for the interval to the next), the window (calendar 2026, local time), the unit (hours) and the
-comparison (24 hours).
+each record standing for the ten minutes that follow its time stamp), the window (calendar 2026, local time), the
+unit (hours) and the comparison (24 hours), in sections 6.3 and 7.2 to 7.3.
 
 No decoy: nothing is planted: every logger is a compliant buffered-probe logger recording as built, the overlaps are
 the pilot's routine changeover (the old logger collected at the first check-in visit), and no memo, draft, briefing or
@@ -188,6 +197,183 @@ no store's hours, and no figure in the pack ties only under the golden.
 Lesson: a record kept by a fast instrument is not the slow quantity it stands for; integrating it with a direct
 record means carrying it through the slow quantity's response, measured where both recorded the same unit, before any
 threshold is counted; no build on file teaches carrying a record through a dynamic response.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0, each logger's readings as the vaccine's temperature (the default path: ten stores) | the standard's "the vaccine's temperature" beside the loggers it requires: fires | each make's temperature column: fires | a buffered probe stands for the vaccine: fires | none | the clocks and units conformed: fires | a count of records above 8.0 | readable |
+| R1, a minimum excursion length (30 or 60 minutes) or a peak above 10.0 before a run counts | none | the runs above 8.0 in the records: fires | brief door openings do not count: fires | none | none | one filter per run | readable |
+| R2, a moving average of the logger record (30 to 120 minutes) | none | none | smoothing a noisy record: fires | none | none | one rolling mean | readable |
+| R3, the overlaps' ratio of in-carton hours to logger hours applied to each store | none | the roster's two devices in the pilot stores' changeover weeks | scale by a calibration ratio: fires | the overlap weeks | none | one factor | readable |
+| R4, the defrost swings dropped (runs under 9.5 degrees C lasting 25 to 75 minutes) | none | the twice-daily pattern in the household units' records | recognise and drop a defrost cycle: fires | none | none | one pattern filter | readable |
+| R6, the excursions that start at a Meridale delivery dropped | the standard's delivery days | the invoices' delivery times beside the records | a restock is not a failure: fires | none | none | one join and a filter | readable |
+| R5, the lag fitted on the overlaps and carried through every logger record before the hours are counted (decisive) | none: the standard files the vaccine's temperature and the counting, not how a logger record becomes it | none: no column holds a time constant or a carton's temperature outside the pilot stores' weeks after installation | none: the field's convention is that a buffered probe is the vaccine | the overlaps exist only implicitly, a collected logger's record running two weeks past its store's installation date in the roster | none | an exponential filter whose constant only a fit gives | silent |
+
+R5 is silent: the in-carton sensor is the device of record from installation, so a solver never needs the old
+logger's last two weeks; nothing labels those weeks a parallel run; the probe's 5 mL bottle is the national guidance's
+buffered probe, the one the field treats as the vaccine; and the default path's answer reconciles (every logger reading
+above 8.0 is counted, no record conflicts with another device of record).
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the vaccine's temperature | the temperature of the vaccine in its cartons (standard 7.2), read by the in-carton sensor where one ran and estimated from the logger record elsewhere | the logger's probe reading | the default ten | standard 7.2's definition, and the overlaps, where the probe crosses 8.0 at every restock while the carton stays under it (fit 0.39 degrees C as recorded against 0.06 through the lag); asserted |
+| SF2 | above 8.0 degrees C | strictly above | at or above | same call; store 206's whole hours move from 52 to 54 on in-carton readings of exactly 8.0 | standard 7.3's "above 8.0"; asserted |
+| SF3 | a cumulative 24 hours or more | at or above 24.0 | above 24.0 | same call | asserted: no store within an hour of 24 (the nearest at 20.17 and 27.17) |
+| SF4 | calendar year 2026 | local (Central) time, 1 January 00:00 to 31 December 24:00 | the UTC year | same call, same whole hours | standard 7.3 ("local time at the store") and the store list's time zone; asserted |
+| SF5 | each record stands for the ten minutes that follow its time stamp | the record holds over the next ten minutes | the record stands for the ten minutes before it | same call, same whole hours | standard 6.3; asserted |
+| SF6 | the device of record at a pilot store | the in-carton sensor from its first reading | the logger until it was collected | same call, same whole hours | standard 6.4; asserted |
+| SF7 | each make's clock | Frostline local with its offset, Kelvra UTC, Brumal UTC-6 all year, Tellvane UTC | Brumal read as daylight time; Kelvra's UTC read as local | the overlaps' fit fails (0.24 and 0.38 degrees C against 0.06) | each export's own header; asserted |
+| SF8 | Kelvra's unit | degrees Fahrenheit, converted | read as Celsius | not a live reading: every Kelvra store far over the line | the export header; asserted |
+| SF9 | gaps in a record (a battery change, a replaced logger) | each record covers its own ten minutes; a gap's time is covered by no record | the last record held through the gap | same call, same whole hours | standard 6.3; asserted |
+| SF10 | the lag's grouping | one constant per make, fitted on that make's pilot stores (42.2, 42.2 and 41.9 minutes) | one pooled constant (42.1); each pilot store's own (41.5 to 43.6) | same call, same whole hours | asserted over the three groupings and half a minute either side |
+| SF11 | the estimate's start | the first record of the year | the carton at the 5.0 setpoint | same call, same whole hours | asserted |
+| SF12 | a store with a replaced logger | one record for the store's refrigerator, the two loggers in sequence | two units | same call | the roster's serial history; asserted |
+| SF13 | ask A's balance | the 2025 year-end count, plus receipts by delivery time and transfers in, less doses administered, written off and transferred out, less the 2026 year-end count, each flow between the two counts' own closing times | the calendar year's flows with the counts as its ends | ask figures only | the data: each count's own closing time (a device, Ask sheet); asserted |
+| SF14 | ask A's doses | doses, packages times the item master's doses per package | packages | ask figures only | the item master; asserted |
+| SF15 | ask B's spend | what Brannon invoiced, sales tax included, for work completed in 2026 | the export's amount column summed by row | ask figures only | the data (devices, Ask sheet); the agreement's tax clause; asserted |
+| SF16 | rounding | each store's hours from the unrounded estimate, rounded once to the whole hour; doses whole; dollars whole | rounding per record or per month | same call, same figures | asserted |
+| SF17 | a record's vaccine temperature | the estimate at the record's time stamp | the mean of the estimate over the record's ten minutes | same call; five stores' whole hours move by one | standard 7.3's counting sentence ("a record counts its ten minutes when the vaccine's temperature at its time stamp was above 8.0"); asserted |
+
+## Ladder
+
+Measured on the cut pack (thirty stores, the overlaps' lag fitted per make at 42.2, 42.2 and 41.9 minutes) and
+asserted in `checks.py`.
+
+| Rung | Construction | Stores at 24 hours or more |
+|---|---|---|
+| R0 (default) | each logger's readings as the vaccine's temperature | ten: 103, 106, 108, 201, 204, 206, 207, 301, 303, 309 |
+| R1a | runs above 8.0 counted only from 30 minutes | eight: 103, 106, 201, 204, 206, 301, 303, 309 |
+| R1b | runs counted only from 60 minutes | three: 106, 201, 206 |
+| R1c | runs counted only when they peak above 10.0 | five: 103, 108, 206, 207, 303 |
+| R2 | moving averages of 30, 45, 60, 90 and 120 minutes | eleven, nine, seven, seven and seven, each a different set from the golden (306, 108, 301 or 208 in) |
+| R3 | the overlaps' hours ratio applied to every store | one: 206 |
+| R4 | the defrost swings dropped | nine: 103, 106, 108, 201, 204, 206, 207, 301, 303 |
+| R6 | the excursions that start at a Meridale delivery dropped | six: 106, 201, 204, 206, 301, 309 |
+| R5 (golden) | the lag fitted on the overlaps, per make or pooled, carried through every record | six: 103, 106, 109, 201, 206, 303 |
+
+The default path's error is two-sided: it replaces five refrigerators the vaccine did not need (the household units
+204, 301 and 309 on their defrost swings, the twice-weekly restockers 108 and 207) and misses 109, whose season-long
+propped-door deliveries the vaccine felt for longer than the logger recorded them.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | the thirty stores in the chain's store list, each one's vaccine refrigerator | filed (standard 7.3, the store list); C1 |
+| 2 Unit of account | one store, one refrigerator | the question names the store; SF12 |
+| 3 Attribution window | calendar 2026, local time | filed (standard 7.3); SF4, asserted |
+| 4 As-of dating | the records as exported in January 2027 | the exports' own ranges; C1 |
+| 5 Version basis | one export per make, no revisions | C1 |
+| 6 Denominator | none: an hours total, not a rate | not live |
+| 7 Weighting | none: each record stands for its ten minutes | filed (standard 6.3) |
+| 8 Window length | the full year | filed |
+| 9 Boundary inclusivity | above 8.0; 24 or more | filed; SF2, SF3 asserted |
+| 10 Rounding path | from the unrounded estimate, once | SF16, asserted |
+| 11 Tie-break | none: no store at 24.0 | C1, asserted margin |
+| 12 Maturity and censoring | the year is closed; every store's record complete | C1 |
+| 13 Order of operations | conform clocks and units, carry through the lag, count | the counting is filed; the lag follows conforming; C1 |
+| 14 Row order | records ordered by time; Frostline's fall-back hour by its offset | C1, asserted over shuffled rows |
+| 15 Duplicate resolution | one Kelvra day exported twice | exact duplicates collapse; same call, asserted |
+| 16 Identity normalisation | logger serials to stores through the roster | the roster; C1 |
+| 17 Netting against gross | none | not live |
+| 18 Dimensional units | Kelvra in Fahrenheit, the rest Celsius | SF8, asserted |
+| 19 Code and status semantics | the roster's device roles | dictionary semantics; never the stump |
+| 20 Integerisation | whole hours, whole doses, whole dollars | SF16 |
+| 21 Clause scope | the replacement clause covers the year's vaccine hours at each store | filed (standard 7.3) |
+| 22 Forward window contents | the 2027 replacements go to the stores the 2026 hours name | filed (standard 7.3) |
+
+## Literal reader
+
+Executed word for word, the prompt and standard 7.2 to 7.3 ask for each store's 2026 hours with its vaccine (the
+vaccine in its cartons) above 8.0 degrees C, each record standing for its ten minutes; standard 6.4 makes the in-carton
+sensor the device of record from each pilot store's installation; nothing files the vaccine's temperature as the logger's
+reading, and the overlaps show they differ, so the literal estimand is unobserved outside the pilot stores' later
+months and has to be estimated from the logger record. The only estimator that fits the overlaps at their noise is the
+lag (measured fits: 0.39 degrees C as recorded, 0.12 to 0.25 for moving averages, 0.06 for the lag), and its
+groupings file one set (SF10). The golden is the literal estimand's estimate, not a reading of a term.
+
+## Oracles
+
+None ties only under the golden. The in-carton sensor's readings are the vaccine's temperature where they exist and are
+used directly by every route; the store list, the roster and the makes' headers are conversions every route takes. No
+file reports any store's hours above 8.0 or ranks the stores on them; no export carries a time-above-limit summary.
+
+## Leak sweep
+
+`leak.py --asof 2027-01-25` (stage 3, the renamed pack): REVIEW, no LEAK line. One line per REVIEW class:
+
+- Store numbers in Schedule A of the Brannon agreement and in the Tellvane pilot plan's store table: identifiers in
+  each document's own table, beside sites, units and installation weeks, never beside hours; harmless.
+- The standard carries the call's words (Penwick Pharmacy, vaccine refrigerators, stores, 2027 respiratory): it is
+  the governing standard whose section 7.3 files the criterion; harmless.
+- Design-note vocabulary in the quotes, the pilot plan and the standard (logger, temperature, record, standard,
+  minutes, sensor): the field's ordinary words; none of the three names a lag, a response, the vaccine trailing the
+  probe or any use of the logger's last two weeks (`checks.py` I4 sweeps lag, time constant, parallel run and
+  overlap); harmless.
+- Dates after the as-of in the write-off log: lot expiration dates, future by nature; harmless.
+
+## Ask sheet
+
+Two asks, both on files the call never reads: Meridale's invoices, the administrations, the write-off log, Meridale's
+credit memos, the store transfers and the two year-end physical inventories (ask A); Brannon's service history and its
+agreement (ask B).
+
+- **Ask A, each store's 2026 vaccine doses its stock records leave unaccounted for, whole doses (30 figures).** User:
+  the capital committee's packet on vaccine loss. Devices: D8 a clock against a cutoff, at both ends (eight stores
+  closed their 2025 year-end count on 30 December 2025 and eight others their 2026 count on 30 December 2026, each
+  count's own closing time says so, so the next day's administrations fall after it: in the year the first group
+  opens, out of the year the second closes); D1 the same doses in two records (the expired 2025-26 standard-dose
+  influenza doses Halvorsen takes back were written off as expired on 1 July and then credited by Meridale, so the
+  credits are not a second outflow; Corbel's high-dose leftovers are written off and never credited); D2 a label stored
+  before a silent switch (the write-off log recorded multi-dose vials as vials until the 1 June 2026 inventory update
+  and as doses after, the quantity column unchanged, the cost column a vial's before and a dose's after). Every store
+  carries D1 and at least one of D2 and D8. Hazards: packages against doses, 11-digit against 10-digit NDCs, the
+  Lindqvist stores' old ship-to accounts before April.
+- **Ask B, each store's 2026 refrigerator service spend with Brannon, whole dollars as invoiced with sales tax
+  (30 figures).** User: the packet's maintenance-cost line. Devices: D2 a label stored before a silent switch (the
+  amount column is before sales tax on invoices dated before Brannon's 1 July 2026 platform move and includes it after;
+  every store has an invoice from before it, and the maintenance-only invoices at Schedule B's prices show it); D6 an
+  allocation at the wrong weight (before the move each morning's two-store maintenance route was one work order and one
+  invoice, its amount on both stores' rows, split by each unit's Schedule B price); D6 an event's quantity on every
+  line it covers (a multi-visit work order's amount repeated on each visit's row). Hazard: work finished in December
+  invoiced in January, both years.
+
+| Ask | What the cracker does | Cracker |
+|---|---|---|
+| A | the balance with every flow over the calendar year, the counts as the year's ends, write-offs as logged and return credits both taken off | miss |
+| B | each invoice's amount once, by the work's completion date, the amounts as exported, a route's amount to each of its stores | miss |
+
+Measured partial handlings on the cut pack: ask A keeps at most 14 of 30 under any handling short of all three devices
+(the count times and the credits, 10; the vials and the credits, 14); ask B keeps 10 of 30 with the tax switch found
+and the routes missed, 30 with both.
+
+Pair ceiling: 28.5 (the cracker 38 + 7 with none of 60 ask figures, the mirror 5 + 7 with none).
+
+Mirror leakage: 0.0 per cent of ask weight.
+
+Measured by: generator/ceiling.py on the cut pack.
+
+## Layer 1 inventory
+
+- Three logger makes, one per chain the company is made of (Frostline at the Penwick stores, Kelvra at the stores
+  bought from Vollmer Drug, Brumal at the stores bought from Lindqvist Apothecary), each exporting in its maker's
+  layout: Frostline CSV in Celsius with ISO local times and UTC offsets (the November fall-back hour twice), Kelvra CSV
+  in Fahrenheit and UTC behind a three-line preamble, Brumal tab-separated monthly download reports on UTC-6 all
+  year, the Lindqvist stores under their old names.
+- Tellvane's cloud export in UTC keyed by sensor id; the roster maps sensors and loggers to stores.
+- Two loggers replaced mid-year under new serials; battery-change gaps in quiet hours; one Kelvra day exported twice.
+- In the ask files: Meridale's 11-digit NDCs against the item master's 10-digit forms, packages against doses, the
+  Lindqvist stores' old ship-to accounts before April, the stock extracts running from 30 December 2025, and Brannon's
+  invoice dates against work dates, its site names still the acquired chains'.
+- Each item is what these systems write; none is placed to be caught, and no reading of any of them moves the call
+  (asserted in `checks.py`, X1 and X3).
+- The clocks are the overlap fit's prerequisite, so they are loud rather than neutral: each misread (Brumal's UTC-6
+  read as daylight time, Kelvra's UTC read as local, Frostline's offsets dropped) puts the fit at four to seven times
+  its error with the constant at the search bound, so none can be mishandled silently; the call holds under the first
+  two and moves under the third (`checks.py` R2, one assertion per item).
 
 ## Architecture 7 record (spent 2026-10-23)
 
@@ -289,3 +475,20 @@ it hands all three the call, so the decisive step as designed does not stump and
   and 60 minute duration filters (17 and 6) and a 45-minute moving average (20) fell elsewhere and a 90-minute moving
   average missed by one refrigerator: the stage 2 world keeps the default's count plausible and every store clear of the
   line under the standing family.
+- v8 stage 3, 2026-10-23: standard 7.1 first read "the records of each store's device of record are its vaccine
+  temperature records", which a literal reader takes as the logger's readings being the vaccine's temperature (an
+  official decoy for the default path); it became a records-custody clause.
+- v8 stage 3, 2026-10-23: under the interval-mean reading of a record's vaccine temperature five stores' whole hours
+  moved by one while the call held; 7.3 now files the counting (a record counts its ten minutes by the vaccine's
+  temperature at its time stamp), WHAT and not HOW (SF17).
+- v8 stage 3, 2026-10-23: return credits from both manufacturers put the cracker's balance below zero at eleven
+  stores, a loud failure that points at the double count; only Halvorsen's standard-dose products are returnable, the
+  leftovers leaner and the unrecorded losses scaled to each store's volume (cracker 15 doses or more, A6).
+- v8 stage 3, 2026-10-23: maintenance-only invoices at one price per unit type tied ten stores' service figures (a
+  constant response would have kept them); per-model prices and add-on parts at some visits, every store's figure now
+  distinct (B5). With the tax switch as ask B's only silent device a reader who found it kept 23 to 30 of 30; the
+  pre-move two-store maintenance routes on one invoice were added, so the tax switch alone keeps 10.
+- v8 stage 3, 2026-10-23: the first names sat on real organisations, products or places in or near the field (H21):
+  Coldline (a refrigeration manufacturer), Polarwatch (an ocean-data programme), Vaxtor, Homeline, Arctis, Glacier
+  Medical, and the acquired chains Rookwood Drug and Saltash Apothecary; renamed Tellvane, Brumal, Stellane, Keswell,
+  Brannon, Pendry Medical, Vollmer Drug and Lindqvist Apothecary before any reader saw the pack.

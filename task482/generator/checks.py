@@ -1,16 +1,19 @@
-"""task482's assertions on the cut pack and the generator's clean truth: the three rules (R1 to R3c), every semantic fork
-row (SF1 to SF22), the ladder (R0 to R5), the golden's licensed family and margins (G1 to G5), the asks' devices
-(A and B), the separation line (X1 to X4), the input gates and the realism sweep.
+"""task482's assertions on the cut pack and the generator's clean truth: the three rules (R1, R2 by Layer 1 item,
+R3a to R3c), every semantic fork row (SF1 to SF17), the ladder (R0 to R6, MA30 to MA120), the golden's standing family
+and margins (G1 to G7), the asks' devices (A1 to A9, B1 to B7), the separation line (X1 to X3), the realism sweep (S1
+to S4) and the input gates (I1 to I5).
 
     python3 task482/generator/checks.py
 """
 import copy
-import csv
 import datetime as dt
+import csv
+import itertools
 import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 import warnings
@@ -29,9 +32,8 @@ import world as W     # noqa: E402
 
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
-GOLD = ["Ashcombe Flexible Packaging", "Carrow Gravure", "Kelvedon Laminates", "Merrion Flexibles",
-        "Ravensbrook Gravure Packaging"]
-DEFAULT = ["Carrow Gravure", "Merrion Flexibles", "Ravensbrook Gravure Packaging"]
+GOLD = [103, 106, 109, 201, 206, 303]
+DEFAULT = [103, 106, 108, 201, 204, 206, 207, 301, 303, 309]
 RESULTS = []
 
 
@@ -40,20 +42,76 @@ def check(name, ok):
     print("%s  %s" % ("PASS" if ok else "FAIL", name))
 
 
-def whole(t):
-    return {n: B.hround(v["emitted"] if isinstance(v, dict) else v) for n, v in t.items()}
+def whole(h):
+    return {no: B.hround(v) for no, v in h.items()}
 
 
-def tenth(t):
-    return {n: B.round1(v) for n, v in t.items()}
+def count(u, y, end, y0=B.Y0, y1=B.Y1, ge=False, hold=False):
+    d = np.diff(np.append(u, end)).astype(float)
+    if not hold:
+        d = np.minimum(d, B.STEP)
+    d = np.clip(d, 0, None)
+    m = (u >= y0) & (u < y1)
+    hot = (y >= B.LIMIT) if ge else (y > B.LIMIT)
+    return float((d * hot * m).sum()) / 60.0
 
 
-def gal(t):
-    return {n: B.hround(v) for n, v in t.items()}
+def hours_v(I, tau, ge=False, y0=B.Y0, y1=B.Y1, hold=False, until_collected=False, start=None):
+    """the golden's hours under one reading of a convention"""
+    out = {}
+    for no in I.order:
+        u, x = I.rec[no]
+        if start is not None:
+            c = np.exp(-np.diff(u).astype(float) / tau[no])
+            v = np.empty(len(x))
+            v[0] = start
+            v[1:] = B.ifilter(x[:-1], c, start)
+            v = np.concatenate([[start], v[1:]])
+        else:
+            v = B.states(u, x, tau[no])
+        sw = I.switch.get(no, y1)
+        if until_collected and no in I.cl:
+            sw = int(u[-1]) + B.STEP
+        k = u < sw
+        h = count(u[k], v[k], min(sw, y1), y0, y1, ge, hold)
+        if no in I.cl:
+            cu, cx = I.cl[no]
+            j = cu >= sw
+            h += count(cu[j], cx[j], y1, y0, y1, ge, hold)
+        out[no] = h
+    return out
 
 
-def moved(a, b):
-    return [n for n in a if a[n] != b[n]]
+def clean_truth(E):
+    """the analyst test on the generator's clean truth: each store's records straight from the world (UTC minutes,
+    degrees C, no duplicates, no conversions), the easy route and the decisive step alone"""
+    J = type("Clean", (), {})()
+    J.order = sorted(W.BY_NO)
+    J.make = {no: W.MAKES[W.make_of(no)][0] for no in J.order}
+    J.pilot = sorted(W.PILOT)
+    J.rec, J.cl, J.switch = {}, {}, {}
+    for no in J.order:
+        e = E[no]
+        J.rec[no] = (e["rec_t"].astype(np.int64), np.round(e["rec_x"], 1))
+        if no in W.PILOT:
+            J.cl[no] = (e["cl_t"].astype(np.int64), np.round(e["cl_x"], 1))
+            J.switch[no] = int(e["cl_t"][0])
+    return J
+
+
+def truth_hours(E):
+    """the vaccine itself: the carton at each logger record's time stamp, the in-carton sensor after its first reading"""
+    out = {}
+    for no in sorted(W.BY_NO):
+        e = E[no]
+        u = e["rec_t"].astype(np.int64)
+        sw = int(e["cl_t"][0]) if no in W.PILOT else B.Y1
+        k = u < sw
+        h = count(u[k], e["carton_at"][k], min(sw, B.Y1))
+        if no in W.PILOT:
+            h += count(e["cl_t"], np.round(e["cl_x"], 1), B.Y1)
+        out[no] = h
+    return out
 
 
 def subset(keys):
@@ -63,464 +121,431 @@ def subset(keys):
     return d
 
 
-def doc_text(key):
-    return re.sub(r"\s+", " ", B.pdf_text(os.path.join(TARGET, P.FILES[key])))
-
-
-def with_tests(I, fn):
-    """A copy of the inputs whose test runs pass through fn(test, run) -> run."""
-    J = copy.copy(I)
-    J.tests = [dict(t, runs=[fn(t, dict(r)) for r in t["runs"]]) for t in I.tests]
-    J.ci = np.array([r["ci"] for t in J.tests for r in t["runs"]])
-    J.co = np.array([r["co"] for t in J.tests for r in t["runs"]])
-    return J
-
-
-def clean_truth(e):
-    """The analyst test on the generator's clean truth: each plant's VOC used and captured from the world's own press
-    days, each oxidizer's tests at the world's relation without run noise, every filed rule applied."""
-    out = {"latest": {}, "mean": {}, "golden": {}}
-    for p in W.PLANTS:
-        rec = e["plants"][p["code"]]
-        used = sum(rec["used"].values()) / 2000.0
-        if not p["ox"]:
-            for k in out:
-                out[k][p["name"]] = used
-            continue
-        ox = p["ox"]
-        cap = used * ox["CE"]
-        dres = []
-        for code, d, note, fac in sorted(W.TESTS, key=lambda x: x[1]):
-            if code == p["code"]:
-                c = W.full_inlet(p) * fac
-                dres.append(1 - max(W.FLOOR, W.PASS * c) / c)
-        ctl = 0.0
-        for d in rec["days"]:
-            h, q = rec["daily"][d]
-            c = rec["used"][d] * ox["CE"] / h * ox["cf"] / (q * 60 * W.K)
-            ctl += max(W.FLOOR, W.PASS * c) * q * 60 * W.K / ox["cf"] * h
-        out["latest"][p["name"]] = used - cap + cap * (1 - dres[-1])
-        out["mean"][p["name"]] = used - cap + cap * (1 - np.mean(dres))
-        out["golden"][p["name"]] = used - cap + ctl / 2000.0
-    return out
-
-
-def tons_with(I, day_voc=None, flows=None, hours=None, f=None, cf=None, ce=None):
-    """The golden handling with one input replaced: day_voc {plant: {day: lb}}, flows {plant: {day: scfm}}, hours
-    {plant: {day: h}}, cf or ce {plant: value}."""
-    f = f or B.relation(I, "golden")[0]
-    out = {}
-    for n in I.order:
-        dv = (day_voc or {}).get(n, I.day_voc[n])
-        used = sum(dv.values()) / B.TONS
-        if n not in I.ox:
-            out[n] = used
-            continue
-        ce_ = (ce or {}).get(n, I.ce[n])
-        cf_ = (cf or {}).get(n, I.cf[n])
-        ctl = 0.0
-        for d, lb in dv.items():
-            fl = I.proc[n].get(d)
-            if not fl:
-                continue
-            h = (hours or {}).get(n, {}).get(d, float(len(fl)))
-            q = (flows or {}).get(n, {}).get(d, float(np.mean(fl)))
-            c = lb * ce_ / h * cf_ / (q * 60 * B.K)
-            ctl += float(f(c)) * q * 60 * B.K / cf_ * h
-        out[n] = used - used * ce_ + ctl / B.TONS
-    return out
-
-
 def main():
-    f = json.load(open(os.path.join(HERE, "figures.json")))
+    E = W.everything()
+    F = A.simulate_stock(E)
+    wos = A.brannon_history()
     I = B.Inputs(TARGET)
-    g = B.press_tons(I, "golden")
-    gw = whole(g)
-    cov = B.covered(g)
-    fg, (F, pp) = B.relation(I, "golden")
-    e = W.everything()
-    press = list(csv.DictReader(open(os.path.join(TARGET, P.FILES["press"]), encoding="utf-8")))
-    hist = list(csv.DictReader(open(os.path.join(TARGET, P.FILES["hist"]), encoding="utf-8")))
-    ca = B.cleaning_tons(I)
-    ub = B.unaccounted_gal(I)
-    ca1, ub1 = tenth(ca), gal(ub)
+    tau = B.taus(I)
+    G = B.golden_hours(I, tau)
+    gw = whole(G)
+    gset = B.covered(G)
 
-    # ---------------------------------------------------------------- R1: the field's raw material ships
-    check("R1 the press logs ship one row per press, shift or job and material (%d rows, both record bases)" %
-          len(press), len(press) >= 25000 and {r["record_basis"] for r in press} == {"SHIFT", "JOB"})
-    check("R1 the historians ship every hour of 2026 for the ten oxidizers (%d rows)" % len(hist),
-          len(hist) == 10 * 8760 and len({r["unit_tag"] for r in hist}) == 11)
-    check("R1 the test summary ships %d tests of three runs on the ten oxidizers, both firms' bases" % len(I.tests),
-          len(I.tests) == 28 and {t["basis"] for t in I.tests} == {"propane", "carbon"} and
-          {t["plant"] for t in I.tests} == set(I.controlled))
+    # ---------------------------------------------------------------------------------------------- the three rules
+    J = clean_truth(E)
+    r0c = {no: B.store_hours(J, no, J.rec[no][1]) for no in J.order}
+    tc = B.taus(J)
+    gc = B.golden_hours(J, tc)
     heads = []
-    for kk, fn in P.FILES.items():
-        p_ = os.path.join(TARGET, fn)
+    for k, fn in P.FILES.items():
+        path = os.path.join(TARGET, fn)
         if fn.endswith(".csv"):
-            heads += open(p_, encoding="utf-8").readline().strip().lower().split(",")
+            with open(path, encoding="utf-8") as fh:
+                for line in fh:
+                    if "," in line and not line.startswith(("Kelvra", "Exported", "All times")):
+                        heads.append((fn, line.strip()))
+                        break
         elif fn.endswith(".xlsx"):
             import openpyxl
-            for ws in openpyxl.load_workbook(p_, read_only=True).worksheets:
-                for row in ws.iter_rows(min_row=1, max_row=2, values_only=True):
-                    heads += [str(v).lower() for v in row if v is not None]
-    bad = [h for h in heads if re.search(r"inlet|outlet|destruction efficiency|\bdre\b|floor|dilut|press voc|"
-                                         r"emitted|emission|controlled|2026 total|annual", h)]
-    check("R1 no shipped column holds an inlet, an outlet, a destruction efficiency for 2026, a floor, a press VOC or "
-          "an emission (%s)" % bad, not bad)
-    docs = " ".join(doc_text(k) for k in ("rule", "letter", "profiles")).lower()
-    intro = doc_text("tests").lower().split("ashcombe flexible packaging (facility")[0]
-    check("R1 the documents read back (positive control: the rule's applicability sentence, the letter's Central time, "
-          "the profiles' cleaning source and the tests' basis sentence)",
-          "25 tons or more" in docs and "local (central) time" in docs and "cleaning" in docs and
-          "reports concentrations and mass rates as propane" in intro)
-    check("R1 no document sentence says an oxidizer's destruction depends on its inlet, names a floor, a dilute inlet, "
-          "part production, turndown or a fan's air, or says how a test is carried to a year",
-          not re.search(r"floor|dilut|part.production|turndown|whichever|less stringent|depends on|varies with|"
-                        r"low load|fan(?! speed)|airflow|represent|carried|each day|per day", docs + " " + intro))
+            wb = openpyxl.load_workbook(path, read_only=True)
+            for ws in wb.worksheets:
+                for row in ws.iter_rows(max_row=4, values_only=True):
+                    heads.append((fn, " ".join(str(v) for v in row if v is not None)))
+    held = [h for h in heads if re.search(r"(?i)hours? (above|over|out)|excursion|time above|above 8|vaccine temp",
+                                          h[1])]
+    check("R1 the field's raw material ships (paired logger and in-carton readings on the overlaps) and no shipped "
+          "column holds the deciding quantity %s" % held, not held and all(len(B.overlap(I, no)[0]) > 1500
+                                                                           for no in I.pilot))
+    check("R3a analyst test on the clean truth: the loggers' own readings file the default %s" % B.covered(r0c),
+          B.covered(r0c) == DEFAULT)
+    check("R3b the decisive step alone on the clean truth (the lag fitted on the overlaps) files the golden %s"
+          % B.covered(gc), B.covered(gc) == GOLD)
+    check("R3b the cut pack files the golden %s and the default %s" % (gset, B.covered(B.rung_hours(I, "R0"))),
+          gset == GOLD and B.covered(B.rung_hours(I, "R0")) == DEFAULT)
+    tr = truth_hours(E)
+    check("R3b the vaccine itself (cartons at the record times, the in-carton sensor after it) puts the same stores "
+          "over the line %s" % B.covered(tr), B.covered(tr) == GOLD)
+    check("R3b the default and the golden read the same records over the same window: the difference is the "
+          "estimator alone", all(len(I.rec[no][0]) == len(J.rec[no][0]) -
+                                 int((J.rec[no][0] < B.Y0).sum() + (J.rec[no][0] >= B.Y1).sum()) for no in I.order))
+    rep = 0
+    for no in I.order:
+        u, x = I.rec[no]
+        w = 72
+        seen = {}
+        for i in range(0, len(x) - w, w):
+            key = tuple(np.round(x[i:i + w], 1))
+            if key in seen and u[i] - seen[key] > 1440:
+                rep += 1
+            seen.setdefault(key, u[i])
+    check("R3c no plant: no twelve-hour block of any store's record repeats at another time (%d), no memo, draft or "
+          "stakeholder figure ships" % rep, rep == 0)
 
-    # ---------------------------------------------------------------- R3: the analyst test on the clean truth
-    tr = clean_truth(e)
-    check("R3a the easy route on the clean truth (each plant's latest test efficiency on its captured VOC, every filed "
-          "rule applied) files the default path's three: %s" % B.covered(tr["latest"]), B.covered(tr["latest"]) == DEFAULT)
-    check("R3a the mean of each plant's tests on the clean truth files a wrong set too: %s" % B.covered(tr["mean"]),
-          B.covered(tr["mean"]) != GOLD)
-    check("R3b the decisive step alone on the clean truth (each day's outlet from the relation at the day's inlet) files "
-          "the golden five", B.covered(tr["golden"]) == GOLD)
-    dev = max(abs(g[n]["emitted"] - tr["golden"][n]) for n in I.order)
-    check("R3 every golden plant figure sits within 0.25 tons of the generator's truth (largest gap %.3f)" % dev,
-          dev < 0.25 and gw == whole(tr["golden"]))
-    r0 = B.rung_tons(I, "R0")
-    check("R3a the default path on the cut pack files the same three", B.covered(r0) == DEFAULT)
-    tk = [(t["plant"], t["date"]) for t in I.tests]
-    pairs = [(r["ci"], r["co"]) for t in I.tests for r in t["runs"]]
-    check("R3c no plant: no oxidizer has two tests on a day, no run repeats another's, every test passed the permit's "
-          "95 per cent (least %.2f)" % min(t["dre"] for t in I.tests),
-          len(set(tk)) == len(tk) and len(set(pairs)) == len(pairs) and min(t["dre"] for t in I.tests) >= 95.0)
-    check("R3c no plant: every test ran at maximum production, as the permits require",
-          all(t["prod"].startswith("maximum production") for t in I.tests))
+    # ------------------------------------------------------------------------------------------- standing family
+    fam = {"pooled": B.golden_hours(I, B.taus(I, "pooled")), "per store": B.golden_hours(I, B.taus(I, "store")),
+           "tau-0.5": B.golden_hours(I, tau, shift=-0.5), "tau+0.5": B.golden_hours(I, tau, shift=0.5),
+           "record closes its interval": B.golden_hours(I, tau, prev=True),
+           "state at the interval's end": B.golden_hours(I, tau, conv="end")}
+    for k, v in fam.items():
+        check("G1 standing family, %s: the same stores and every store's whole hours" % k,
+              B.covered(v) == GOLD and whole(v) == gw)
+    mean = B.golden_hours(I, tau, conv="mean")
+    moved = {no: (gw[no], B.hround(mean[no])) for no in I.order if B.hround(mean[no]) != gw[no]}
+    check("SF17 the interval mean (ruled out by 7.3, a record counts by its time stamp) keeps the call; moves %s"
+          % moved, B.covered(mean) == GOLD)
+    edge = min((0.5 - abs(G[no] - np.floor(G[no] + 0.5)), no) for no in I.order)
+    check("G2 every store's hours sit at least a third of an hour inside their whole-hour bin (tightest %.3f, store %d)"
+          % edge, edge[0] >= 0.33)
+    lo_in = min(G[no] for no in gset)
+    hi_out = max(G[no] for no in I.order if no not in gset)
+    check("G3 the line's margins: lowest replaced %.2f, highest not replaced %.2f" % (lo_in, hi_out),
+          lo_in >= 27.0 and hi_out <= 21.0)
+    nb = B.nearest_below(G)
+    second = sorted((v for no, v in G.items() if v < B.LINE), reverse=True)[1]
+    check("G4 nearest below the line: store %d at %.2f, %.2f short; the next %.2f" % (nb[0], nb[1], nb[2], second),
+          nb[0] == 306 and nb[1] - second >= 1.0 and all(B.nearest_below(v)[0] == 306 and
+                                                       B.hround(B.nearest_below(v)[2]) == B.hround(nb[2])
+                                                       for v in fam.values()))
+    rms = {mk: B.fit(I, [no for no in I.pilot if I.make[no] == mk])[1] for mk in set(I.make.values())}
 
-    # ---------------------------------------------------------------- R2: every Layer 1 item, mishandled
-    ml = whole(B.press_tons(I, "golden", misread=True))
-    mlr = B.press_tons(I, "golden", misread=True)
-    check("R2a the less-water-and-exempt figures read as pounds per gallon of product: the water-based plants more "
-          "than double (%s move) and Garrowby reaches %.2f, a wrong set" % (moved(ml, gw), mlr["Garrowby Printing"]
-                                                                            ["emitted"]),
-          B.covered(ml) != GOLD and set(moved(ml, gw)) <= {"Brinsley Label Works", "Dunsford Folding Cartons",
-                                                           "Garrowby Printing", "Ivers Lane Press",
-                                                           "Norhaven Converting", "Pellworth Label"})
-    sh = defaultdict(lambda: defaultdict(float))
-    for n, rows in I.rows.items():
-        for st, en, lb, d in rows:
-            sh[n][d + dt.timedelta(days=1) if (st.hour == 22 and n.startswith("Merrion")) else d] += lb
-    s3 = whole(tons_with(I, day_voc={"Merrion Flexibles": dict(sh["Merrion Flexibles"])}))
-    check("R2b Merrion's third shift put on the day it ends: the call holds (%s move)" % moved(s3, gw),
-          B.covered(s3) == GOLD)
-    ut = whole(B.press_tons(I, "golden", utc=True))
-    check("R2c the historians' hours joined on their UTC dates: the call holds (%s move)" % moved(ut, gw),
-          B.covered(ut) == GOLD)
-    rated = {n: {d: I.ox[n]["Q"] for d in I.proc[n]} for n in I.ox if not I.ox[n]["fixed"]}
-    rq = whole(tons_with(I, flows=rated))
-    check("R2d the variable-speed fans read at their rated airflow, not the logged speed: the call holds (%s move)" %
-          moved(rq, gw), B.covered(rq) == GOLD)
-    J = with_tests(I, lambda t, r: dict(r, ci=r["ci"] / 3, co=r["co"] / 3) if t["basis"] == "propane" else r)
-    pr = whole(B.press_tons(J, "golden"))
-    check("R2e Marlow's propane figures read as carbon: the outlet relation no longer fits one floor (rms %.3f against "
-          "%.3f) and the call moves (%s)" % (B.rms_of(J, B.relation(J)[0]), B.rms_of(I, fg), B.covered(pr)),
-          B.rms_of(J, B.relation(J)[0]) > 3 * B.rms_of(I, fg) and B.covered(pr) != GOLD)
-    c100 = whole(tons_with(I, ce={n: 1.0 for n in I.ox}))
-    check("R2f every capture taken at 100 per cent: the capture-tested plants lose their uncaptured VOC and the call "
-          "moves (%s)" % B.covered(c100), B.covered(c100) != GOLD and
-          set(moved(c100, gw)) <= {n for n in I.ox if I.ce[n] < 1.0})
-    dv_k = defaultdict(float)
-    for r in press:
-        if r["facility_no"] == "0142":
-            d = dt.date.fromisoformat(r["log_date"])
-            code = r["material_code"]
-            q = float(r["quantity"])
-            gl_ = q / I.prod[code]["den"] if r["uom"] == "LB" else q
-            dv_k[d] += gl_ * I.vpg(code, d)
-    kk_ = tons_with(I, day_voc={"Kelvedon Laminates": dict(dv_k)})
-    check("R2g Thameside Laminating's rows (facility 0117) left out: Kelvedon falls to %.1f tons and the call moves" %
-          kk_["Kelvedon Laminates"], kk_["Kelvedon Laminates"] < 25 and B.covered(kk_) != GOLD)
+    def rms_of(f):
+        s, n = 0.0, 0
+        for no in I.pilot:
+            u, x = I.rec[no]
+            y = f(u, x)
+            cu, cx = B.overlap(I, no)
+            k = np.searchsorted(u, cu, side="right") - 1
+            s += float(((y[k] - cx) ** 2).sum())
+            n += len(cx)
+        return np.sqrt(s / n)
+    asrec = rms_of(lambda u, x: x)
+    best_ma = min((rms_of(lambda u, x, k=k: B.trailing(u, x, k)), k) for k in (30, 45, 60, 90, 120))
+    check("G5 the overlaps separate the estimators: the lag fits at %s C, the readings as recorded at %.3f, the best "
+          "moving average (%d minutes) at %.3f" % ({k: round(v, 3) for k, v in rms.items()}, asrec, best_ma[1],
+                                                   best_ma[0]),
+          max(rms.values()) < 0.1 and asrec > 0.3 and best_ma[0] > 1.4 * max(rms.values()))
+    check("G6 the per-make constants: %s" % {k: round(v, 2) for k, v in tau.items() if k in (101, 201, 301)},
+          all(40.0 < v < 45.0 for v in tau.values()))
+    tfam = [B.golden_hours(I, tau, shift=s) for s in (-1.0, -0.75, 0.75, 1.0)]
+    check("G7 the call holds a full minute either side of each make's constant", all(B.covered(v) == GOLD for v in tfam))
 
-    Jm = copy.copy(I)
-    Jm.day_voc = I.day_voc_misread
-    Jc = copy.copy(I)
-    Jc.ce = {n: 1.0 for n in I.ce}
-    l1 = {"misread": B.covered(B.rung_tons(Jm, "R0")), "capture": B.covered(B.rung_tons(Jc, "R0")),
-          "propane": B.covered(B.rung_tons(J, "R0"))}
-    check("R2h no Layer 1 misreading turns the default path into the golden call (%s)" % l1,
-          all(v != GOLD for v in l1.values()))
+    # ----------------------------------------------------------------------------------------------------- ladder
+    ladder = {}
+    for r in ("R0", "R1a", "R1b", "R1c", "R3", "R4", "R6", "MA30", "MA45", "MA60", "MA90", "MA120"):
+        h = B.rung_hours(I, r)
+        ladder[r] = B.covered(h)
+        check("ladder %s files %s (not the golden)" % (r, ladder[r]), ladder[r] != GOLD)
 
-    # ---------------------------------------------------------------- the ladder
-    sets = {r: B.covered(B.rung_tons(I, r)) for r in ("R0", "R1", "R2", "R3", "R3m", "R4", "R4m", "R4b", "R5")}
-    check("R0 each plant's latest test efficiency: the default three", sets["R0"] == DEFAULT)
-    check("R1 the mean of each plant's tests: Ashcombe in, Kelvedon out (%s)" % sets["R1"],
-          sets["R1"] == sorted(DEFAULT + ["Ashcombe Flexible Packaging"]))
-    check("R2 the permits' 95 per cent on every oxidizer: %d plants" % len(sets["R2"]),
-          len(sets["R2"]) >= 7 and set(GOLD) < set(sets["R2"]))
-    check("R3 the relation at each plant's 2026 mean inlet: Kelvedon out (%s)" % sets["R3"],
-          sets["R3"] == sorted(DEFAULT + ["Ashcombe Flexible Packaging"]))
-    check("R3m the relation at each month's mean inlet: Kelvedon out", sets["R3m"] == sets["R3"])
-    check("R4 the latest test's outlet concentration on each day's air: Larkmoor in (%s)" % sets["R4"],
-          sets["R4"] == sorted(GOLD + ["Larkmoor Graphics"]))
-    check("R4m the mean of the tests' outlets on each day's air: Larkmoor in", sets["R4m"] == sets["R4"])
-    check("R4b the latest test's outlet rate over the year's process hours: Larkmoor in", sets["R4b"] == sets["R4"])
-    check("R5 each oxidizer's own tests only (Kelvedon's all concentrated): Kelvedon out", sets["R5"] == sets["R3"])
-    rk = {r: B.rung_tons(I, r) for r in ("R0", "R3", "R4")}
-    check("L the rungs' margins: the default puts Ashcombe at %.1f and Kelvedon at %.1f, the year's mean inlet puts "
-          "Kelvedon at %.1f, the test outlet puts Larkmoor at %.1f" % (rk["R0"]["Ashcombe Flexible Packaging"],
-                                                                     rk["R0"]["Kelvedon Laminates"],
-                                                                     rk["R3"]["Kelvedon Laminates"],
-                                                                     rk["R4"]["Larkmoor Graphics"]),
-          rk["R0"]["Ashcombe Flexible Packaging"] < 23 and rk["R0"]["Kelvedon Laminates"] < 23 and
-          rk["R3"]["Kelvedon Laminates"] < 24 and rk["R4"]["Larkmoor Graphics"] > 27)
+    # --------------------------------------------------------------------------------------------------- fork rows
+    check("SF1 the probe read as the vaccine files the default, and the overlaps refute it (%.3f C against %.3f)"
+          % (asrec, max(rms.values())), ladder["R0"] == DEFAULT and asrec > 4 * max(rms.values()))
+    geq = hours_v(I, tau, ge=True)
+    mv = {no: (gw[no], B.hround(geq[no])) for no in I.order if B.hround(geq[no]) != gw[no]}
+    check("SF2 at or above 8.0 (ruled out by 7.3's 'above 8.0'): the same call; moves %s, only in-carton readings at "
+          "exactly 8.0" % mv, B.covered(geq) == GOLD and all(no in I.cl for no in mv))
+    check("SF3 above 24.0: the same call (no store within an hour of the line)",
+          all(abs(v - 24.0) > 1.0 for v in G.values()))
+    check("SF4 the UTC year: the same whole hours", whole(hours_v(I, tau, y0=0, y1=525600)) == gw)
+    check("SF5 a record standing for the ten minutes before it: the same whole hours", whole(fam["record closes its "
+                                                                                               "interval"]) == gw)
+    check("SF6 the pilot loggers until collection, the in-carton sensor after: the same whole hours",
+          whole(hours_v(I, tau, until_collected=True)) == gw)
 
-    # ---------------------------------------------------------------- the golden's licensed family
-    fam = {}
-    for how in ("golden", "median", "lsq", "smooth8", "smooth16", "smooth32", "interp"):
-        fam[how] = B.press_tons(I, how)
-    for v in sorted({o["vendor"] for o in I.ox.values()}):
-        fv = B.relation(I, "golden", sel=lambda t, v=v: I.ox[t["plant"]]["vendor"] == v)[0]
-        fam["vendor " + v] = {n: (B.press_tons(I, f=fv, how=None)[n] if I.ox.get(n, {}).get("vendor") == v else g[n])
-                              for n in I.order}
-    for firm in sorted({t["firm"] for t in I.tests}):
-        fam["firm " + firm] = B.press_tons(I, f=B.relation(I, "golden", sel=lambda t, x=firm: t["firm"] == x)[0],
-                                           how=None)
-    fam["hour grain"] = B.press_tons(I, "golden", grain="hour")
-    alt = {}
-    for lo, hi in ((1500.0, 3500.0), (2200.0, 2800.0)):
-        ci, co = I.ci, I.co
-        Fx, px = co[ci < lo].mean(), (co[ci > hi] / ci[ci > hi]).mean()
-        alt["cut %d/%d" % (lo, hi)] = B.press_tons(I, f=B.hard(Fx, px), how=None)
-    fam.update(alt)
-    rms = {how: B.rms_of(I, B.relation(I, how)[0]) for how in ("golden", "median", "lsq", "smooth8", "smooth16",
-                                                               "smooth32", "interp", "linear")}
-    check("G1 every standing member fits the runs within 1.2 times the hard floor's residual (%s); the straight line "
-          "does not (%.3f)" % (", ".join("%s %.4f" % kv for kv in rms.items() if kv[0] != "linear"), rms["linear"]),
-          all(v <= 1.2 * rms["golden"] for k, v in rms.items() if k != "linear") and rms["linear"] > 3 * rms["golden"])
-    check("G2 every member (%d: estimators, forms, groupings by vendor and firm, the hour grain, the cut points) files "
-          "the golden five and the 14 whole tons" % len(fam),
-          all(B.covered(t) == GOLD and whole(t) == gw for t in fam.values()))
-    lo_cov = min(g[n]["emitted"] for n in GOLD)
-    hi_out = max(g[n]["emitted"] for n in I.order if n not in GOLD)
-    check("G3 the lowest covered plant clears 25 by %.1f tons and the nearest below falls %.1f short" %
-          (lo_cov - 25, 25 - hi_out), lo_cov - 25 >= 2.0 and 25 - hi_out >= 2.0)
-    edge = min(min(abs((t[n]["emitted"] % 1.0) - 0.5) for n in I.order) for t in fam.values())
-    check("G4 every member's every plant sits 0.15 tons or more from a rounding half (least %.3f)" % edge, edge >= 0.15)
-    check("G5 no golden plant figure is a round figure before rounding",
-          all(abs(g[n]["emitted"] - round(g[n]["emitted"])) > 0.03 for n in I.order))
-    ln = whole(B.press_tons(I, "linear"))
-    check("G6 even the refuted straight line files the golden five (its figures move: %s)" % moved(ln, gw),
-          B.covered(ln) == GOLD)
+    def refit_shifted(make, shift_fn):
+        K = copy.copy(I)
+        K.rec = dict(I.rec)
+        for no in I.order:
+            if I.make[no] == make:
+                u, x = I.rec[no]
+                K.rec[no] = (u + shift_fn(u), x)
+        return B.fit(K, [no for no in K.pilot if K.make[no] == make])[1]
 
-    # ---------------------------------------------------------------- SF1 to SF22
-    J = copy.copy(I)
-    J.prod = copy.deepcopy(I.prod)
-    for code, x in J.prod.items():
-        x["exempt"] = 0.0
-    sf1 = defaultdict(lambda: defaultdict(float))
-    for r in press:
-        n = I.fac[r["facility_no"]]
-        d = dt.date.fromisoformat(r["log_date"])
-        code = r["material_code"]
-        q = float(r["quantity"])
-        gl_ = q / I.prod[code]["den"] if r["uom"] == "LB" else q
-        sf1[n][d] += gl_ * J.vpg(code, d)
-    t1 = whole(tons_with(I, day_voc={n: dict(v) for n, v in sf1.items()}))
-    check("SF1 acetone counted as VOC in the press washes: the call holds (%s move)" % moved(t1, gw),
-          B.covered(t1) == GOLD)
-    t2 = {n: g[n]["emitted"] + ca[n] for n in I.order}
-    check("SF2 cleaning away from the presses added to the press VOC: the call holds (least gap below %.1f)" %
-          (25 - max(v for n, v in t2.items() if n not in GOLD)), B.covered(t2) == GOLD)
-    days = [dt.date.fromisoformat(r["log_date"]) for r in press]
-    proc_utc = [r["hour_beginning_utc"] for r in hist if r["mode"] == "PROCESS"]
-    check("SF3 2026 by local or UTC days: every press day and PROCESS hour falls inside 2026 either way",
-          min(days) >= dt.date(2026, 1, 2) and max(days) <= dt.date(2026, 12, 30) and
-          min(proc_utc) >= "2026-01-02" and max(proc_utc) < "2026-12-31")
-    check("SF4 every capture at 100 per cent moves the call (R2f); the register's Capture sheet gives each plant's "
-          "determination", B.covered(c100) != GOLD and all(n in I.ce for n in I.ox))
-    check("SF5 the tested efficiencies (R0) and the permits' minimum (R2) are rungs, not readings of 'destroyed'",
-          sets["R0"] == DEFAULT and sets["R2"] != GOLD)
-    check("SF6 each test report states its basis, propane or carbon, and read on one basis the relation fits (R2e)",
-          all(t["basis"] in ("propane", "carbon") for t in I.tests) and B.rms_of(I, fg) < 0.02)
-    cf1 = whole(tons_with(I, cf={n: 0.55 for n in I.ox}))
-    check("SF7 one carbon content (0.55) for every plant: the call holds (%s move)" % moved(cf1, gw),
-          B.covered(cf1) == GOLD)
-    check("SF8 the historians' airflow is standard (scfm), the speed-logging units at their rated airflow times speed "
-          "(R2d for the rated airflow alone)", B.covered(rq) == GOLD and
-          all(I.ox[n]["logs"].startswith(("Exhaust", "Fan")) for n in I.ox))
-    allh = {n: {d: float(len(I.all_hours[n].get(d, []))) for d in I.proc[n]} for n in I.ox}
-    t9 = tons_with(I, hours=allh)
-    check("SF9 every non-OFF hour of a production day's date counted as process time: the call moves (%s), so the "
-          "PROCESS mode is the oxidizer's treating time the press days fill" % B.covered(t9),
-          all(len(I.proc[n][d]) <= 25 for n in I.ox for d in I.proc[n]))
-    check("SF10 the relation's form: the hard floor, the smooth knees and the interpolation agree (G2)",
-          all(B.covered(fam[k]) == GOLD for k in ("smooth8", "smooth16", "smooth32", "interp")))
-    check("SF11 the floor pooled across the ten oxidizers, by vendor or by firm: the same call; each oxidizer's own "
-          "tests leave Kelvedon's dilute days unmeasured (R5)", sets["R5"] != GOLD and
-          all(B.covered(fam[k]) == GOLD for k in fam if k.startswith(("vendor", "firm"))))
-    check("SF12 figures.json's tons, tenths and gallons round from the unrounded figures",
-          all(f["plants"][n]["press_voc_tons"] == gw[n] and f["plants"][n]["cleaning_voc_tons"] == ca1[n] and
-              f["plants"][n]["unaccounted_gal"] == ub1[n] for n in I.order))
-    check("SF13 no heatset press and no retention: no shipped file names heatset, retention or a retained share",
-          not re.search(r"heatset|retention|retained", " ".join(heads) + docs))
-    k0117 = sum(1 for r in press if r["facility_no"] == "0117")
-    check("SF14 Thameside Laminating's rows (%d) carry facility 0117 before 1 May 2026 and the register names it "
-          "Kelvedon's former name (R2g)" % k0117, k0117 > 0 and all(dt.date.fromisoformat(r["log_date"]) < W.ACQUIRED
-                                                                   for r in press if r["facility_no"] == "0117"))
-    t15 = tenth(B.cleaning_tons(I, press_issues=True))
-    check("SF15 press wash issued to the presses counted as cleaning: every ask A figure moves (%d of 14)" %
-          len(moved(t15, ca1)), len(moved(t15, ca1)) == 14)
-    t16 = tenth(B.cleaning_tons(I, credit=False, washers=False))
-    check("SF16 the issues alone: %d of 14 ask A figures move" % len(moved(t16, ca1)), len(moved(t16, ca1)) >= 12)
-    t17 = tenth(B.cleaning_tons(I, voc_pct=False))
-    check("SF17 the waste's weight credited as VOC: every ask A figure moves", len(moved(t17, ca1)) == 14)
-    t18 = tenth(B.cleaning_tons(I, removed=False))
-    check("SF18 the washers' solvent added alone: every ask A figure moves", len(moved(t18, ca1)) == 14)
-    t19 = gal(B.unaccounted_gal(I, by_ship=False))
-    check("SF19 received by document date in place of ship date: %d of 14 ask B figures move" % len(moved(t19, ub1)),
-          len(moved(t19, ub1)) >= 8)
-    cd = {r["count_date"] for r in csv.DictReader(open(os.path.join(TARGET, P.FILES["counts"]), encoding="utf-8"))}
-    check("SF20 the stock counts are the two physical counts the letter names: %s" % sorted(cd),
-          cd == {"2026-01-01", "2026-12-31"})
-    t21 = gal(B.unaccounted_gal(I, returns=False))
-    check("SF21 returns left out: %d of 14 ask B figures move" % len(moved(t21, ub1)), len(moved(t21, ub1)) >= 5)
-    t22 = gal(B.unaccounted_gal(I, lb=False))
-    check("SF22 pounds read as gallons: Kelvedon's figure moves", "Kelvedon Laminates" in moved(t22, ub1))
+    dst = lambda u: np.where((u >= B.local_to_u(dt.datetime(2026, 3, 8, 3))) &
+                             (u < B.local_to_u(dt.datetime(2026, 11, 1, 1))), -60, 0)
+    pw_mis = refit_shifted("Brumal", dst)
+    kv_mis = refit_shifted("Kelvra", lambda u: np.where(dst(u) < 0, 300, 360))
+    check("SF7 a clock misread shows on the overlaps: Brumal as daylight time %.3f C, Kelvra's UTC as local %.3f C"
+          % (pw_mis, kv_mis), pw_mis > 3 * rms["Brumal"] and kv_mis > 3 * rms["Kelvra"])
+    kf = copy.copy(I)
+    kf.rec = {no: ((u, x * 9 / 5 + 32) if I.make[no] == "Kelvra" else (u, x)) for no, (u, x) in I.rec.items()}
+    kh = {no: B.store_hours(kf, no, kf.rec[no][1]) for no in I.order}
+    check("SF8 Kelvra's Fahrenheit read as Celsius puts every Kelvra store far over the line (not a live reading)",
+          all(kh[no] > 1000 for no in I.order if I.make[no] == "Kelvra"))
+    check("SF9 the last record held through each gap: the same whole hours", whole(hours_v(I, tau, hold=True)) == gw)
+    check("SF10 the lag's grouping (pooled, per make, per store): the same whole hours",
+          whole(fam["pooled"]) == gw and whole(fam["per store"]) == gw)
+    check("SF11 the estimate started at the 5.0 setpoint: the same whole hours", whole(hours_v(I, tau, start=5.0)) == gw)
+    two = {}
+    for no in W.REPLACED:
+        ser = P.logger_serials(no)
+        two[no] = len(ser) == 2 and all(s in I.serial for s in ser)
+    check("SF12 a replaced logger's two serials are one store's record in sequence %s" % two, all(two.values()))
+    ua = B.unaccounted(I)
+    cal = B.unaccounted(I, cut=False)
+    check("SF13 ask A's balance between the counts' own times differs from the calendar year at the 30 December "
+          "stores", all(ua[no] != cal[no] for no in A.COUNT_30DEC_2025 + W.COUNT_30DEC))
+    check("SF14 ask A's receipts in doses: packages times doses per package (the item master)",
+          all(d % 1 == 0 for (_, _, _, d) in I.receipts) and sum(d for (_, _, _, d) in I.receipts) >
+          5 * sum(1 for _ in I.receipts))
+    sv = B.service(I)
+    check("SF15 ask B as invoiced with tax for work completed in 2026 (devices on the ask sheet)",
+          all(B.hround(sv[no]) != B.hround(B.service(I, tax=False)[no]) for no in I.order))
+    check("SF16 hours rounded once from the unrounded estimate: every store's figure equals the whole of its sum",
+          all(isinstance(gw[no], int) for no in I.order))
 
-    # ---------------------------------------------------------------- ask A devices
-    truth_a = {W.BY[c]["name"]: v["tons"] for c, v in e["ask_a"]["truth"].items()}
-    check("A fair: the golden handling reproduces the generator's cleaning VOC to the pound",
-          max(abs(ca[n] - truth_a[n]) for n in I.order) < 1e-6)
-    a_v = tenth(B.cleaning_tons(I, vintage=False))
-    check("A primary (D2): HW-CS-210 on the master's current revision for every issue moves every figure (%d of 14), "
-          "least move %.2f tons" % (len(moved(a_v, ca1)), min(abs(B.cleaning_tons(I, vintage=False)[n] - ca[n])
-                                                               for n in I.order)), len(moved(a_v, ca1)) == 14)
-    a_s = tenth(B.cleaning_tons(I, stellar=False))
-    check("A hazard (D4): Ostrander's washer services left out moves the six plants that moved (%s)" % moved(a_s, ca1),
-          sorted(moved(a_s, ca1)) == sorted(W.BY[c]["name"] for c in A.STELLAR))
-    a_k = tenth(B.cleaning_tons(I, kg=False))
-    check("A hazard (D3): the KG manifests read as pounds moves the two plants (%s)" % moved(a_k, ca1),
-          sorted(moved(a_k, ca1)) == sorted(W.BY[c]["name"] for c in A.KG_PLANTS))
-    a_cr = tenth(B.cleaning_tons(I, vintage=False, stellar=False))
-    check("A the cracker (master revision, tickets only, every filed rule): 0 of 14", not (set(n for n in I.order if
-                                                                                         a_cr[n] == ca1[n])))
-    revlog = I.revs
-    check("A silent: the master carries HW-CS-210's current revision only; the earlier formula sits on the revision log "
-          "with its date, among %d benign revisions" % (len(W.REVISIONS) - 1),
-          len(revlog) == 1 and revlog[0][0] == "HW-CS-210" and revlog[0][1] == W.REFORMULATED)
-    tick = list(csv.DictReader(open(os.path.join(TARGET, P.FILES["tickets"]), encoding="utf-8")))
-    last = defaultdict(str)
-    for r in tick:
-        last[I.fac[r["facility_no"]]] = max(last[I.fac[r["facility_no"]]], r["service_date"])
-    check("A fair (D4): Wexcombe's tickets stop in June at the six plants and Ostrander's payment lines carry the gallons",
-          all(last[W.BY[c]["name"]] < "2026-07-01" for c in A.STELLAR) and
-          all(last[n] >= "2026-11-15" for n in I.order if n not in [W.BY[c]["name"] for c in A.STELLAR]))
+    # ------------------------------------------------------------------------------- R2, the Layer 1 items one by one
+    def mishandled(fn):
+        K = copy.copy(I)
+        K.rec = dict(I.rec)
+        for no in I.order:
+            r = fn(no, *I.rec[no])
+            if r is not None:
+                u, x = r
+                o = np.argsort(u, kind="stable")
+                u, x = u[o], x[o]
+                keep = np.ones(len(u), bool)
+                keep[1:] = u[1:] != u[:-1]
+                K.rec[no] = (u[keep], x[keep])
+        t = B.taus(K)
+        h = B.golden_hours(K, t)
+        rr = {mk: B.fit(K, [no for no in K.pilot if K.make[no] == mk])[1] for mk in set(K.make.values())}
+        return B.covered(h), rr, t
+    indst = lambda u: (u >= B.local_to_u(dt.datetime(2026, 3, 8, 3))) & (u < B.local_to_u(dt.datetime(2026, 11, 1, 1)))
+    for name, mk, fn in [
+            ("Brumal's UTC-6 read as daylight time", "Brumal",
+             lambda no, u, x: (u - 60 * indst(u), x) if I.make[no] == "Brumal" else None),
+            ("Kelvra's UTC read as Central wall time", "Kelvra",
+             lambda no, u, x: (u + np.where(indst(u), 300, 360), x) if I.make[no] == "Kelvra" else None),
+            ("Frostline's offsets dropped", "Frostline",
+             lambda no, u, x: (u - np.where(indst(u), 300, 360), x) if I.make[no] == "Frostline" else None)]:
+        cov, rr, t = mishandled(fn)
+        loud = rr[mk] > 3 * rms[mk] and max(v for no, v in t.items() if I.make[no] == mk) > 70
+        check("R2 %s: the overlap fit fails loudly (%.3f C against %.3f, the constant at the search bound), call %s"
+              % (name, rr[mk], rms[mk], "held" if cov == GOLD else "moved"), loud)
+    kd = copy.copy(I)
+    kd.rec = dict(I.rec)
+    u, x = I.rec[204]
+    day = (u >= 349920) & (u < 349920 + 1440)
+    kd.rec[204] = (np.concatenate([u, u[day]]), np.concatenate([x, x[day]]))
+    o = np.argsort(kd.rec[204][0], kind="stable")
+    kd.rec[204] = (kd.rec[204][0][o], kd.rec[204][1][o])
+    check("R2 Kelvra's repeated day kept: the call and every store's whole hours unchanged",
+          whole(B.golden_hours(kd, tau)) == gw)
+    for no in W.REPLACED:
+        ser = P.logger_serials(no)
+        a_, b_ = P.replaced_at(no)
+        for keep_old in (True, False):
+            kr = copy.copy(I)
+            kr.rec = dict(I.rec)
+            u, x = I.rec[no]
+            k = u < a_ if keep_old else u >= a_
+            kr.rec[no] = (u[k], x[k])
+            check("R2 store %d's %s logger dropped from the roster join: the call unchanged" % (no, "new" if keep_old
+                                                                                              else "old"),
+                  B.covered(B.golden_hours(kr, tau)) == GOLD)
+    check("R2 the battery gaps held over: the call and every store's whole hours unchanged",
+          whole(hours_v(I, tau, hold=True)) == gw)
+    check("R2 the ask files' items (NDC forms, packages, the Lindqvist accounts, invoice against work dates) move only "
+          "the asks: the call reads none of their files (X1)", True)
 
-    # ---------------------------------------------------------------- ask B devices
-    truth_b = {W.BY[c]["name"]: v["gallons"] for c, v in e["ask_b"]["truth"].items()}
-    check("B fair: the golden handling reproduces the generator's unaccounted gallons (largest gap %.4f)" %
-          max(abs(ub[n] - truth_b[n]) for n in I.order), max(abs(ub[n] - truth_b[n]) for n in I.order) < 0.01)
-    b_c = B.unaccounted_gal(I, chain=False)
-    check("B primary (D7): Haldane's pre-April item numbers read on the current catalog move every figure (%d of 14), "
-          "least move %.0f gal" % (len(moved(gal(b_c), ub1)), min(abs(b_c[n] - ub[n]) for n in I.order)),
-          len(moved(gal(b_c), ub1)) == 14 and min(abs(b_c[n] - ub[n]) for n in I.order) >= 20)
-    check("B silent (D7): on the current catalog the old numbers all join (no unmatched line) and every figure rises",
-          all(b_c[n] > ub[n] for n in I.order))
-    cat, old = B.catalog(I)
-    hal = B._sheet(TARGET, "haldane", "Statement detail", header_row=2)
-    items = {str(r["Item"]) for r in hal}
-    check("B silent: every statement item is a catalog item number (%d items)" % len(items), items <= set(cat))
-    check("B fair: each old number a current item replaces is the number the statement carried before 1 April",
-          all(any(str(r["Item"]) == o and (r["Doc date"].date() if isinstance(r["Doc date"], dt.datetime) else
-                                            r["Doc date"]) < B.RENUMBERED for r in hal) for o in old))
-    check("B no marker: the pre-April lines carry the same columns, account numbers and description style as the rest",
-          len({tuple(sorted(k for k in r if r[k] is not None)) for r in hal}) == 1)
+    # --------------------------------------------------------------------------------------------------- ask A
+    U = A.unaccounted_truth(F)
+    check("A1 ask A's golden equals the world's unrecorded losses at every store", all(ua[no] == U[no] for no in I.order))
+    crack = B.unaccounted(I, cut=False, vials=False, credits=True)
+    check("A2 the cracker (calendar year, write-offs as logged, credits off) misses all 30 (hits %d)"
+          % sum(crack[no] == ua[no] for no in I.order), all(crack[no] != ua[no] for no in I.order))
+    worst = 0
+    for cut, vials, cred in itertools.product([True, False], repeat=3):
+        if (cut, vials, cred) == (True, True, False):
+            continue
+        v = B.unaccounted(I, cut=cut, vials=vials, credits=cred)
+        worst = max(worst, sum(v[no] == ua[no] for no in I.order))
+    check("A3 no partial handling keeps more than 14 of 30 (worst %d)" % worst, worst <= 14)
+    cred = defaultdict(int)
+    for (no, t, d) in I.credits:
+        cred[no] += d
+    vial = defaultdict(int)
+    for (no, t, ndc, q, cost) in I.writeoffs:
+        if I.vial[ndc] and t < B.UPDATE:
+            vial[no] += q
+    d8 = set(A.COUNT_30DEC_2025) | set(W.COUNT_30DEC)
+    check("A4 every store carries the credit device and a vial or count device",
+          all(cred[no] > 0 and (vial[no] > 0 or no in d8) for no in I.order))
+    combos = [(t, B.unaccounted(I, cut=t[0], vials=t[1], credits=t[2])) for t in itertools.product([True, False],
+                                                                                                    repeat=3)
+              if t != (True, True, False)]
+    check("A5 no mix of mishandled devices composes back to the golden at a store that carries them",
+          all(x[no] != ua[no] for no in I.order for (c, v, k), x in combos
+              if (not c and no in d8) or (not v and vial[no] > 0) or k))
+    check("A6 the cracker's figures look like stock records (none below 5: %d)" % min(crack.values()),
+          min(crack.values()) >= 5)
+    wo_lot = defaultdict(int)
+    for (no, t, key, lot, doses, logged, reason) in [(no,) + x for no in F for x in F[no]["writeoffs"]]:
+        if reason == "EXPIRED":
+            wo_lot[(no, lot)] += doses
+    cr_lot = defaultdict(int)
+    for no in F:
+        for (key, lot, units, doses) in F[no]["credits"]:
+            cr_lot[(no, lot)] += doses
+    check("A7 every credited dose was first written off as expired at its store (lot by lot)",
+          all(wo_lot[k] >= v for k, v in cr_lot.items()))
+    rows = list(csv.DictReader(open(os.path.join(TARGET, P.FILES["writeoffs"]), encoding="utf-8")))
+    pre = [r for r in rows if r["product"].endswith("MDV") and r["written_off_at"] < "2026-06-01"]
+    post = [r for r in rows if r["product"].endswith("MDV") and r["written_off_at"] >= "2026-06-01"]
+    check("A8 the vial write-offs before the update cost a vial each (%d rows), the ones after a dose each (%d rows)"
+          % (len(pre), len(post)), pre and all(abs(float(r["cost"]) / int(r["quantity"]) - (158.40 if "25-26" in
+                                                                                               r["product"] else 162.30))
+                                               < 0.01 for r in pre)
+          and all(abs(float(r["cost"]) / int(r["quantity"]) - (15.84 if "25-26" in r["product"] else 16.23)) < 0.01
+                  for r in post))
+    d31 = defaultdict(int)
+    d3125 = defaultdict(int)
+    for (no, t, d) in I.admin:
+        if t.date() == dt.date(2026, 12, 31):
+            d31[no] += d
+        if t.date() == dt.date(2025, 12, 31):
+            d3125[no] += d
+    check("A9 the 30 December counts: at least three doses given on 31 December at each of them",
+          all(d31[no] >= 3 for no in W.COUNT_30DEC) and all(d3125[no] >= 3 for no in A.COUNT_30DEC_2025))
 
-    # ---------------------------------------------------------------- separation and distractors
-    call_keys = ("register", "press", "sds", "hist", "tests")
-    ask_keys = ("issues", "manifests", "profiles", "tickets", "payments", "corvane", "haldane", "catalog", "counts")
-    dX = subset(call_keys)
-    IX = B.Inputs(dX)
-    check("X1 the call from its own five files alone: the golden five and the 14 whole tons",
-          whole(B.press_tons(IX, "golden")) == gw)
-    shutil.rmtree(dX)
-    dA = subset(ask_keys + ("register", "sds", "press", "hist", "tests"))
-    IA = B.Inputs(dA)
-    check("X2 the asks from their files (with the register, the master and the press logs' gallons)",
-          tenth(B.cleaning_tons(IA)) == ca1 and gal(B.unaccounted_gal(IA)) == ub1)
-    shutil.rmtree(dA)
-    pmat = {r["material_code"] for r in press}
-    check("X3 no ask device row sits in the call's population: no press material is a cleaning material, the "
-          "reformulated product is never logged on a press, and the renumbered items are cleaning and press-wash drums",
-          "HW-CS-210" not in pmat and all(I.prod[m]["kind"] != "CLEANING" for m in pmat) and
-          {cat[new]["code"] for new in old.values()} == {c for c, _ in A.OLD_ITEM})
-    dD = subset([k for k in P.FILES if k not in ("presses", "ozone")])
-    ID = B.Inputs(dD)
-    check("X4 the distractors deleted: the call, the 14 whole tons and both asks unchanged",
-          whole(B.press_tons(ID, "golden")) == gw and tenth(B.cleaning_tons(ID)) == ca1 and
-          gal(B.unaccounted_gal(ID)) == ub1)
-    shutil.rmtree(dD)
+    # --------------------------------------------------------------------------------------------------- ask B
+    T = A.service_truth(wos)
+    check("B1 ask B's golden equals the work orders' truth at every store", all(abs(sv[no] - T[no]) < 0.011
+                                                                              for no in I.order))
+    nb_ = B.service(I, tax=False)
+    check("B2 the cracker (each invoice once, amounts as exported) misses all 30",
+          all(B.hround(nb_[no]) != B.hround(sv[no]) for no in I.order))
+    part = {"no split": B.service(I, split=False), "tax by visit date": B.service(I, by_invoice_date=False),
+            "rows summed": B.service(I, dedupe=False), "visit year": B.service(I, completed=False)}
+    hits = {k: sum(B.hround(v[no]) == B.hround(sv[no]) for no in I.order) for k, v in part.items()}
+    check("B3 partial handlings keep %s of 30" % hits, hits["no split"] <= 12 and min(hits.values()) <= 12)
+    pre_inv = defaultdict(int)
+    for w in wos:
+        if w["completed"].year == 2026 and w["invoice_date"] < A.PLATFORM:
+            for no in set(w["stores"]):
+                pre_inv[no] += 1
+    check("B4 every store has an invoice from before the platform move for 2026 work",
+          all(pre_inv[no] > 0 for no in I.order))
+    e2 = min((0.5 - abs(sv[no] - np.floor(sv[no] + 0.5)), no) for no in I.order)
+    check("B5 every store's spend sits at least 15 cents inside its whole-dollar bin (tightest %.2f, store %d)" % e2,
+          e2[0] >= 0.15)
+    by_inv = defaultdict(list)
+    for v in I.visits:
+        by_inv[v["invoice"]].append(v)
+    single = [vs[0] for vs in by_inv.values() if len(vs) == 1]
+    pm_rows = [r for r in single if r["amount"] in (145.0, 128.0, 152.0, 120.0, 124.0, 153.7, 135.68, 161.12, 127.2,
+                                                    131.44)]
+    pre_ok = all(abs(r["amount"] - I.pm_price[I.unit[r["store"]]]) < 0.005 for r in pm_rows
+                 if r["invoice_date"] < B.PLATFORM)
+    post_ok = all(abs(r["amount"] - round(I.pm_price[I.unit[r["store"]]] * 1.06, 2)) < 0.005 for r in pm_rows
+                  if r["invoice_date"] >= B.PLATFORM)
+    n_pre = sum(1 for r in pm_rows if r["invoice_date"] < B.PLATFORM)
+    n_post = sum(1 for r in pm_rows if r["invoice_date"] >= B.PLATFORM)
+    check("B6 the tax switch is recoverable: maintenance-only invoices at Schedule B's price before July (%d) and at "
+          "that price plus 6.0 per cent after (%d)" % (n_pre, n_post), pre_ok and post_ok and n_pre >= 2 and
+          n_post >= 10)
+    routes = [vs for vs in by_inv.values() if len(set(v["store"] for v in vs)) > 1]
+    r_ok = all(abs(vs[0]["amount"] - sum(I.pm_price[I.unit[v["store"]]] for v in vs)) < 0.005 for vs in routes)
+    check("B7 each maintenance route's amount is its stores' Schedule B prices (%d routes)" % len(routes),
+          r_ok and len(routes) >= 10)
 
-    # ---------------------------------------------------------------- input gates
-    files = os.listdir(TARGET)
+    # ------------------------------------------------------------------------------------------- separation line
+    d = subset(["stores", "roster", "frostline", "kelvra", "brumal", "tellvane"])
+    for k in ("invoices", "admin", "writeoffs", "credits", "transfers"):
+        open(os.path.join(d, P.FILES[k]), "w").write(open(os.path.join(TARGET, P.FILES[k])).readline())
+    for k in ("items", "inventory", "brannon", "agreement"):
+        shutil.copy(os.path.join(TARGET, P.FILES[k]), os.path.join(d, P.FILES[k]))
+    try:
+        K = B.Inputs(d)
+        same = whole(B.golden_hours(K, B.taus(K))) == gw
+    except Exception as ex:                                       # noqa: BLE001
+        print("   ", ex)
+        same = False
+    shutil.rmtree(d)
+    check("X1 the call reads no ask file: the hours with the stock files emptied are unchanged", same)
+    check("X2 the asks read no temperature file (asks.py and the ask functions in bundle.py take none)",
+          "rec" not in B.unaccounted.__code__.co_names and "rec" not in B.service.__code__.co_names)
+    dk = tempfile.mkdtemp(prefix="t482k_")
+    for k in P.FILES:
+        if k != "kelvra":
+            os.symlink(os.path.join(TARGET, P.FILES[k]), os.path.join(dk, P.FILES[k]))
+    seen, lines = set(), []
+    for line in open(os.path.join(TARGET, P.FILES["kelvra"]), encoding="utf-8"):
+        if line in seen and line[:1] == "K":
+            continue
+        seen.add(line)
+        lines.append(line)
+    open(os.path.join(dk, P.FILES["kelvra"]), "w").write("".join(lines))
+    K = B.Inputs(dk)
+    gk = B.golden_hours(K, B.taus(K))
+    rk = B.rung_hours(K, "R0")
+    shutil.rmtree(dk)
+    check("X3 clean-data test (Kelvra's repeated day removed): the golden and the default unchanged and still apart",
+          whole(gk) == gw and B.covered(rk) == DEFAULT and B.covered(gk) != B.covered(rk))
+
+    # ------------------------------------------------------------------------------------------- realism sweep
+    adm_tot = defaultdict(int)
+    for (no, t, d) in I.admin:
+        adm_tot[no] += d
+    reccount = [len(I.rec[no][0]) for no in I.order]
+    check("S1 no identical counts across stores: administrations %d distinct of 30, logger records %d distinct"
+          % (len(set(adm_tot.values())), len(set(reccount))), len(set(adm_tot.values())) == 30 and
+          len(set(reccount)) >= 20)
+    longest = 0
+    for no in I.order:
+        x = I.rec[no][1]
+        x = np.round(x * 9 / 5 + 32, 1) if I.make[no] == "Kelvra" else np.round(x, 1)     # each export's own unit
+        ch = np.flatnonzero(np.diff(x) != 0)
+        runs = np.diff(np.concatenate([[-1], ch, [len(x) - 1]]))
+        longest = max(longest, int(runs.max()))
+    check("S2 no constant stream: the longest unchanged run in any logger record is %d records" % longest,
+          longest <= 72)
+    persons = set(re.findall(r"\b(Breanna Graham|Julia Kaufman)\b", subprocess.run(
+        ["pdftotext", os.path.join(TARGET, P.FILES["pilot"]), "-"], capture_output=True, text=True).stdout))
+    check("S3 every persona is the card's (%s)" % sorted(persons), persons <= {"Breanna Graham", "Julia Kaufman"})
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    roundish = [no for no, x in figs["stores"].items() if x["service_usd"] % 100 == 0 or
+                (x["doses_unaccounted"] % 100 == 0 and x["doses_unaccounted"] > 0)]
+    check("S4 no round ask figure (a whole hundred) %s" % roundish, len(roundish) <= 1)
+
+    # ----------------------------------------------------------------------------------------------- input gates
+    fl = sorted(os.listdir(TARGET))
+    exts = sorted(set(os.path.splitext(x)[1] for x in fl))
     meta = json.load(open(os.path.join(TASK, "metadata.json")))
-    check("I ten or more files (%d)" % len(files), len(files) >= 10)
-    check("I three or more formats (%s)" % sorted({fn.rsplit(".", 1)[1] for fn in files}),
-          len({fn.rsplit(".", 1)[1] for fn in files}) >= 3)
-    check("I one file of 25,000 rows or more (press logs %d, historians %d)" % (len(press), len(hist)),
-          len(press) >= 25000)
-    check("I two distractors named in metadata.json, none in a file name",
-          len(meta["distractor_files"]) >= 2 and all(d_ in files for d_ in meta["distractor_files"]) and
-          not any("distract" in fn for fn in files))
-
-    # ---------------------------------------------------------------- realism
-    win = I.window
-    ok = all(len(I.proc[n][d]) in (15, 16, 17, 23, 24, 25) for n in I.ox for d in I.proc[n])
-    check("Z every production day's PROCESS hours are its shifts' (16 or 24, a daylight-saving hour either way)", ok)
-    run_ok = all(abs(r["mi"] - r["ci"] * r["qi"] * 60 * (W.K_PROPANE if t["basis"] == "propane" else W.K))
-                 <= 0.011 + 0.0006 * r["mi"] for t in I.tests for r in t["runs"])
-    check("Z every test run's inlet mass rate is its concentration times its flow on its firm's basis", run_ok)
-    check("Z every test's destruction is the firm's mass-rate figure, within its printed precision",
-          all(abs(100 * (1 - r["mo"] / r["mi"]) - r["dre"]) < 0.02 for t in I.tests for r in t["runs"]))
-    dates = [dt.date.fromisoformat(r["log_date"]) for r in press]
-    check("Z no press row on a Sunday, a holiday or the year-end shutdown",
-          all(d.weekday() != 6 and d not in W.HOLIDAYS for d in dates))
-    ea = min(abs((ca[n] * 10) % 1.0 - 0.5) for n in I.order)
-    eb = min(abs(ub[n] % 1.0 - 0.5) for n in I.order)
-    check("Z every ask A figure sits 0.005 tons or more from a rounding half (least %.4f) and every ask B figure "
-          "0.05 gallons or more (least %.3f)" % (ea / 10, eb), ea >= 0.05 and eb >= 0.05)
-    gcsv = list(csv.DictReader(open(os.path.join(TASK, "golden", "deq_printing_press_voc_2026.csv"), encoding="utf-8")))
-    check("Z the golden CSV carries the 14 whole tons in register order",
-          [r["plant"] for r in gcsv] == I.order and [int(r["press_voc_2026_tons"]) for r in gcsv] ==
-          [gw[n] for n in I.order])
-    cnt = defaultdict(int)
-    mon = defaultdict(lambda: defaultdict(float))
-    for r in press:
-        cnt[I.fac[r["facility_no"]]] += 1
-    for n, dv in I.day_voc.items():
-        for d, lb in dv.items():
-            mon[n][d.month] += lb
-    check("Z no two plants share a press log row count, and no plant repeats a month's VOC to the pound",
-          len(set(cnt.values())) == len(cnt) and all(len({round(v) for v in m.values()}) == len(m) for m in mon.values()))
-    fl = defaultdict(list)
-    for r in hist:
-        if r["mode"] == "PROCESS" and r["fan_speed_pct"]:
-            fl[r["unit_tag"]].append(r["fan_speed_pct"])
-    blocks = [tuple(v[i:i + 24]) for v in fl.values() for i in range(0, len(v) - 24, 24)]
-    check("Z no 24-hour block of a speed-logging historian repeats another", len(set(blocks)) == len(blocks))
-    pay_txt = [r["description"] for r in csv.DictReader(open(os.path.join(TARGET, P.FILES["payments"]),
-                                                              encoding="utf-8"))]
-    st_lines = [x for x in pay_txt if x.startswith("Washer")]
-    check("Z every Ostrander service line is its own (washer, date, gallons), none repeated",
-          len(set(st_lines)) == len(st_lines) and len(st_lines) > 0)
-    inv = list(csv.DictReader(open(os.path.join(TARGET, P.FILES["corvane"]), encoding="utf-8")))
-    check("Z Corvane's export carries deliveries shipped from late December 2025 and invoiced to January 2027",
-          min(r["SHIP_DATE"] for r in inv) < "20260101" and max(r["INVOICE_DATE"] for r in inv) >= "20270101")
-
-    n_fail = sum(1 for _, ok_ in RESULTS if not ok_)
-    print("%s  task482 checks: %d assertions, %d failed" % ("PASS" if not n_fail else "FAIL", len(RESULTS), n_fail))
+    rowsn = meta["rows"]
+    check("I1 %d files in %d formats %s" % (len(fl), len(exts), exts), len(fl) >= 10 and len(exts) >= 3)
+    check("I2 a file of 25,000 rows or more (%d)" % max(rowsn.values()), max(rowsn.values()) >= 25000)
+    check("I3 two distractors named in metadata.json, neither named so in a file name",
+          len(meta["distractor_files"]) >= 2 and not any("distract" in x for x in fl))
+    bad = []
+    for x in fl:
+        p = os.path.join(TARGET, x)
+        if x.endswith(".pdf"):
+            txt = subprocess.run(["pdftotext", p, "-"], capture_output=True, text=True).stdout
+        elif x.endswith(".xlsx"):
+            import zipfile
+            txt = " ".join(zipfile.ZipFile(p).read(n).decode("utf-8", "ignore") for n in zipfile.ZipFile(p).namelist())
+        else:
+            txt = open(p, encoding="utf-8").read()
+        for word in ("—", "–", "ReportLab", "openpyxl", "matplotlib", "lag", "time constant", "parallel run",
+                     "overlap"):
+            if word in txt and not (word == "lag" and not re.search(r"\blag\b", txt)):
+                bad.append((x, word))
+    check("I4 no dash, toolchain signature or stump word in a shipped file %s" % bad, not bad)
+    last = {}
+    last["administrations"] = max(t for (_, t, _) in I.admin)
+    last["write-offs"] = max(t for (_, t, _, _, _) in I.writeoffs)
+    last["deliveries"] = max(t for (_, t, _, _) in I.receipts)
+    last["credits"] = max(t for (_, t, _) in I.credits)
+    last["transfers"] = max(t for (_, _, _, t, _) in I.transfers)
+    last["service invoices"] = max(dt.datetime.combine(v["invoice_date"], dt.time()) for v in I.visits)
+    last["records"] = max(max(int(u[-1]) for (u, x) in I.rec.values()), max(int(u[-1]) for (u, x) in I.cl.values()))
+    check("I5 the extracts end where they say: %s" % {k: str(v) for k, v in last.items()},
+          last["service invoices"] <= dt.datetime(2027, 1, 22) and
+          all(v <= dt.datetime(2026, 12, 31, 23, 59) for k, v in last.items() if k not in ("service invoices", "records"))
+          and last["records"] < B.Y1)
+    n_fail = sum(1 for _, ok in RESULTS if not ok)
+    print("%d checks, %d failed" % (len(RESULTS), n_fail))
     return 1 if n_fail else 0
 
 

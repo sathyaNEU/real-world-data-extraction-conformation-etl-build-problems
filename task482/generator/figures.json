@@ -1,320 +1,485 @@
 {
  "_unrounded": {
-  "cleaning": {
-   "Ashcombe Flexible Packaging": 5.2314,
-   "Brinsley Label Works": 1.3403,
-   "Carrow Gravure": 7.0865,
-   "Dunsford Folding Cartons": 1.2369,
-   "Elsworth Film Converting": 4.4753,
-   "Garrowby Printing": 2.0444,
-   "Hartmoor Packaging": 2.3631,
-   "Ivers Lane Press": 1.5613,
-   "Kelvedon Laminates": 3.901,
-   "Larkmoor Graphics": 3.8574,
-   "Merrion Flexibles": 4.8215,
-   "Norhaven Converting": 1.9447,
-   "Pellworth Label": 1.0669,
-   "Ravensbrook Gravure Packaging": 9.3336
-  },
   "default": {
-   "Ashcombe Flexible Packaging": 21.3441,
-   "Brinsley Label Works": 9.2106,
-   "Carrow Gravure": 37.1102,
-   "Dunsford Folding Cartons": 6.8285,
-   "Elsworth Film Converting": 15.6546,
-   "Garrowby Printing": 17.9097,
-   "Hartmoor Packaging": 17.9595,
-   "Ivers Lane Press": 11.2639,
-   "Kelvedon Laminates": 20.2738,
-   "Larkmoor Graphics": 12.065,
-   "Merrion Flexibles": 31.0723,
-   "Norhaven Converting": 15.5983,
-   "Pellworth Label": 3.8581,
-   "Ravensbrook Gravure Packaging": 55.6255
+   "101": 14.5,
+   "102": 0.5,
+   "103": 39.8333,
+   "104": 12.1667,
+   "105": 8.3333,
+   "106": 76.5,
+   "107": 0.3333,
+   "108": 38.1667,
+   "109": 22.0,
+   "110": 20.3333,
+   "201": 63.8333,
+   "202": 12.6667,
+   "203": 1.0,
+   "204": 142.1667,
+   "205": 14.5,
+   "206": 50.1667,
+   "207": 32.1667,
+   "208": 13.6667,
+   "209": 5.0,
+   "210": 19.0,
+   "301": 146.1667,
+   "302": 8.3333,
+   "303": 46.6667,
+   "304": 0.8333,
+   "305": 9.8333,
+   "306": 20.8333,
+   "307": 14.1667,
+   "308": 18.3333,
+   "309": 74.8333,
+   "310": 21.5
   },
-  "floor": 45.120666666666665,
-  "gallons": {
-   "Ashcombe Flexible Packaging": 11835.0,
-   "Brinsley Label Works": 964.3,
-   "Carrow Gravure": 16927.2,
-   "Dunsford Folding Cartons": 429.1,
-   "Elsworth Film Converting": 9600.8,
-   "Garrowby Printing": 7017.9,
-   "Hartmoor Packaging": 4564.2,
-   "Ivers Lane Press": 419.0,
-   "Kelvedon Laminates": 31108.685,
-   "Larkmoor Graphics": 9409.1,
-   "Merrion Flexibles": 10584.8,
-   "Norhaven Converting": 5950.1,
-   "Pellworth Label": 436.2,
-   "Ravensbrook Gravure Packaging": 31480.1
+  "hours": {
+   "101": 11.0,
+   "102": 0.0,
+   "103": 44.1667,
+   "104": 0.0,
+   "105": 0.0,
+   "106": 63.1667,
+   "107": 0.0,
+   "108": 4.0,
+   "109": 27.1667,
+   "110": 18.8333,
+   "201": 56.8333,
+   "202": 0.0,
+   "203": 0.0,
+   "204": 0.0,
+   "205": 6.8333,
+   "206": 51.8333,
+   "207": 0.0,
+   "208": 16.8333,
+   "209": 0.0,
+   "210": 15.0,
+   "301": 0.0,
+   "302": 4.1667,
+   "303": 60.1667,
+   "304": 0.0,
+   "305": 6.8333,
+   "306": 20.1667,
+   "307": 0.0,
+   "308": 17.1667,
+   "309": 0.8333,
+   "310": 8.0
   },
-  "pass": 0.017955641819618385,
-  "press": {
-   "Ashcombe Flexible Packaging": {
-    "captured": 896.8107,
-    "destroyed": 867.9309,
-    "emitted": 28.8798,
-    "used": 896.8107
-   },
-   "Brinsley Label Works": {
-    "captured": 0.0,
-    "destroyed": 0.0,
-    "emitted": 9.2106,
-    "used": 9.2106
-   },
-   "Carrow Gravure": {
-    "captured": 1120.1912,
-    "destroyed": 1100.0774,
-    "emitted": 37.1725,
-    "used": 1137.2499
-   },
-   "Dunsford Folding Cartons": {
-    "captured": 0.0,
-    "destroyed": 0.0,
-    "emitted": 6.8285,
-    "used": 6.8285
-   },
-   "Elsworth Film Converting": {
-    "captured": 884.4434,
-    "destroyed": 868.5627,
-    "emitted": 15.8807,
-    "used": 884.4434
-   },
-   "Garrowby Printing": {
-    "captured": 209.3931,
-    "destroyed": 201.226,
-    "emitted": 19.1878,
-    "used": 220.4138
-   },
-   "Hartmoor Packaging": {
-    "captured": 365.566,
-    "destroyed": 358.9991,
-    "emitted": 17.8731,
-    "used": 376.8722
-   },
-   "Ivers Lane Press": {
-    "captured": 0.0,
-    "destroyed": 0.0,
-    "emitted": 11.2639,
-    "used": 11.2639
-   },
-   "Kelvedon Laminates": {
-    "captured": 1120.0975,
-    "destroyed": 1092.1581,
-    "emitted": 27.9393,
-    "used": 1120.0975
-   },
-   "Larkmoor Graphics": {
-    "captured": 674.0223,
-    "destroyed": 653.1617,
-    "emitted": 20.8606,
-    "used": 674.0223
-   },
-   "Merrion Flexibles": {
-    "captured": 811.1143,
-    "destroyed": 796.5502,
-    "emitted": 31.1174,
-    "used": 827.6677
-   },
-   "Norhaven Converting": {
-    "captured": 184.3088,
-    "destroyed": 177.0906,
-    "emitted": 16.9186,
-    "used": 194.0092
-   },
-   "Pellworth Label": {
-    "captured": 0.0,
-    "destroyed": 0.0,
-    "emitted": 3.8581,
-    "used": 3.8581
-   },
-   "Ravensbrook Gravure Packaging": {
-    "captured": 2000.8459,
-    "destroyed": 1964.9194,
-    "emitted": 56.137,
-    "used": 2021.0565
-   }
+  "service": {
+   "101": 372.17,
+   "102": 336.13,
+   "103": 322.24,
+   "104": 1131.33,
+   "105": 295.85,
+   "106": 1107.97,
+   "107": 348.85,
+   "108": 312.81,
+   "109": 588.78,
+   "110": 1237.12,
+   "201": 2070.87,
+   "202": 682.21,
+   "203": 666.79,
+   "204": 350.81,
+   "205": 995.77,
+   "206": 367.77,
+   "207": 1108.66,
+   "208": 780.16,
+   "209": 1027.24,
+   "210": 644.9,
+   "301": 316.94,
+   "302": 774.12,
+   "303": 296.96,
+   "304": 612.15,
+   "305": 713.75,
+   "306": 349.96,
+   "307": 313.92,
+   "308": 736.97,
+   "309": 297.7,
+   "310": 581.84
+  },
+  "tau": {
+   "101": 42.162194034137976,
+   "102": 42.162194034137976,
+   "103": 42.162194034137976,
+   "104": 42.162194034137976,
+   "105": 42.162194034137976,
+   "106": 42.162194034137976,
+   "107": 42.162194034137976,
+   "108": 42.162194034137976,
+   "109": 42.162194034137976,
+   "110": 42.162194034137976,
+   "201": 42.240811080153556,
+   "202": 42.240811080153556,
+   "203": 42.240811080153556,
+   "204": 42.240811080153556,
+   "205": 42.240811080153556,
+   "206": 42.240811080153556,
+   "207": 42.240811080153556,
+   "208": 42.240811080153556,
+   "209": 42.240811080153556,
+   "210": 42.240811080153556,
+   "301": 41.852050774554385,
+   "302": 41.852050774554385,
+   "303": 41.852050774554385,
+   "304": 41.852050774554385,
+   "305": 41.852050774554385,
+   "306": 41.852050774554385,
+   "307": 41.852050774554385,
+   "308": 41.852050774554385,
+   "309": 41.852050774554385,
+   "310": 41.852050774554385
   }
  },
  "call": {
-  "count": 5,
-  "of": 14,
-  "plants": [
-   "Ashcombe Flexible Packaging",
-   "Carrow Gravure",
-   "Kelvedon Laminates",
-   "Merrion Flexibles",
-   "Ravensbrook Gravure Packaging"
+  "count": 6,
+  "of": 30,
+  "stores": [
+   103,
+   106,
+   109,
+   201,
+   206,
+   303
   ]
  },
  "components": {
-  "area_tons": 303,
-  "covered_tons": 181,
-  "floor_ppmc": 45.1,
-  "knee_ppmc": 2500,
-  "lowest_covered": {
-   "name": "Kelvedon Laminates",
-   "tons": 28
+  "fit_rms_c": {
+   "Brumal": 0.056,
+   "Frostline": 0.062,
+   "Kelvra": 0.057
   },
   "nearest_below": {
-   "name": "Larkmoor Graphics",
-   "short_tons": 4,
-   "tons": 21
+   "hours": 20,
+   "short_hours": 4,
+   "store": 306,
+   "town": "Padbury"
   },
-  "oxidizers": 10,
-  "pass_pct": 1.8,
-  "runs": 84,
-  "tests": 28
+  "pilot_stores": 10,
+  "replaced_hours": {
+   "103": 44,
+   "106": 63,
+   "109": 27,
+   "201": 57,
+   "206": 52,
+   "303": 60
+  },
+  "tau_minutes": {
+   "Brumal": 41.9,
+   "Frostline": 42.2,
+   "Kelvra": 42.2
+  },
+  "tau_pooled_minutes": 42.1
  },
  "default": {
-  "latest_dre_pct": {
-   "Ashcombe Flexible Packaging": 97.62,
-   "Carrow Gravure": 98.21,
-   "Elsworth Film Converting": 98.23,
-   "Garrowby Printing": 96.71,
-   "Hartmoor Packaging": 98.18,
-   "Kelvedon Laminates": 98.19,
-   "Larkmoor Graphics": 98.21,
-   "Merrion Flexibles": 98.21,
-   "Norhaven Converting": 96.8,
-   "Ravensbrook Gravure Packaging": 98.23
+  "count": 10,
+  "hours": {
+   "101": 15,
+   "102": 1,
+   "103": 40,
+   "104": 12,
+   "105": 8,
+   "106": 77,
+   "107": 0,
+   "108": 38,
+   "109": 22,
+   "110": 20,
+   "201": 64,
+   "202": 13,
+   "203": 1,
+   "204": 142,
+   "205": 15,
+   "206": 50,
+   "207": 32,
+   "208": 14,
+   "209": 5,
+   "210": 19,
+   "301": 146,
+   "302": 8,
+   "303": 47,
+   "304": 1,
+   "305": 10,
+   "306": 21,
+   "307": 14,
+   "308": 18,
+   "309": 75,
+   "310": 22
   },
-  "plants": [
-   "Carrow Gravure",
-   "Merrion Flexibles",
-   "Ravensbrook Gravure Packaging"
-  ],
-  "tons": {
-   "Ashcombe Flexible Packaging": 21,
-   "Brinsley Label Works": 9,
-   "Carrow Gravure": 37,
-   "Dunsford Folding Cartons": 7,
-   "Elsworth Film Converting": 16,
-   "Garrowby Printing": 18,
-   "Hartmoor Packaging": 18,
-   "Ivers Lane Press": 11,
-   "Kelvedon Laminates": 20,
-   "Larkmoor Graphics": 12,
-   "Merrion Flexibles": 31,
-   "Norhaven Converting": 16,
-   "Pellworth Label": 4,
-   "Ravensbrook Gravure Packaging": 56
-  }
- },
- "plants": {
-  "Ashcombe Flexible Packaging": {
-   "cleaning_voc_tons": 5.2,
-   "covered": true,
-   "facility_no": "0213",
-   "press_voc_tons": 29,
-   "unaccounted_gal": 11835
-  },
-  "Brinsley Label Works": {
-   "cleaning_voc_tons": 1.3,
-   "covered": false,
-   "facility_no": "0236",
-   "press_voc_tons": 9,
-   "unaccounted_gal": 964
-  },
-  "Carrow Gravure": {
-   "cleaning_voc_tons": 7.1,
-   "covered": true,
-   "facility_no": "0327",
-   "press_voc_tons": 37,
-   "unaccounted_gal": 16927
-  },
-  "Dunsford Folding Cartons": {
-   "cleaning_voc_tons": 1.2,
-   "covered": false,
-   "facility_no": "0355",
-   "press_voc_tons": 7,
-   "unaccounted_gal": 429
-  },
-  "Elsworth Film Converting": {
-   "cleaning_voc_tons": 4.5,
-   "covered": false,
-   "facility_no": "0388",
-   "press_voc_tons": 16,
-   "unaccounted_gal": 9601
-  },
-  "Garrowby Printing": {
-   "cleaning_voc_tons": 2.0,
-   "covered": false,
-   "facility_no": "0451",
-   "press_voc_tons": 19,
-   "unaccounted_gal": 7018
-  },
-  "Hartmoor Packaging": {
-   "cleaning_voc_tons": 2.4,
-   "covered": false,
-   "facility_no": "0476",
-   "press_voc_tons": 18,
-   "unaccounted_gal": 4564
-  },
-  "Ivers Lane Press": {
-   "cleaning_voc_tons": 1.6,
-   "covered": false,
-   "facility_no": "0427",
-   "press_voc_tons": 11,
-   "unaccounted_gal": 419
-  },
-  "Kelvedon Laminates": {
-   "cleaning_voc_tons": 3.9,
-   "covered": true,
-   "facility_no": "0142",
-   "press_voc_tons": 28,
-   "unaccounted_gal": 31109
-  },
-  "Larkmoor Graphics": {
-   "cleaning_voc_tons": 3.9,
-   "covered": false,
-   "facility_no": "0503",
-   "press_voc_tons": 21,
-   "unaccounted_gal": 9409
-  },
-  "Merrion Flexibles": {
-   "cleaning_voc_tons": 4.8,
-   "covered": true,
-   "facility_no": "0539",
-   "press_voc_tons": 31,
-   "unaccounted_gal": 10585
-  },
-  "Norhaven Converting": {
-   "cleaning_voc_tons": 1.9,
-   "covered": false,
-   "facility_no": "0562",
-   "press_voc_tons": 17,
-   "unaccounted_gal": 5950
-  },
-  "Pellworth Label": {
-   "cleaning_voc_tons": 1.1,
-   "covered": false,
-   "facility_no": "0580",
-   "press_voc_tons": 4,
-   "unaccounted_gal": 436
-  },
-  "Ravensbrook Gravure Packaging": {
-   "cleaning_voc_tons": 9.3,
-   "covered": true,
-   "facility_no": "0604",
-   "press_voc_tons": 56,
-   "unaccounted_gal": 31480
-  }
+  "stores": [
+   103,
+   106,
+   108,
+   201,
+   204,
+   206,
+   207,
+   301,
+   303,
+   309
+  ]
  },
  "stated": {
-  "applies_from": "1 July 2027",
-  "concentrated_above_ppmc": 3000,
-  "cs210_rev3_lb_gal": 7.1,
-  "cs210_rev4_lb_gal": 3.2,
-  "dilute_below_ppmc": 2000,
-  "former_facility_no": "0117",
-  "kg_to_lb": 2.20462,
-  "propane_to_carbon": 3,
-  "reformulated": "1 June 2026",
-  "renumbered": "1 April 2026",
-  "rule": "18-4",
-  "threshold_tons": 25,
+  "bud_days": 28,
+  "installed_by": "1 September 2027",
+  "inventory_update": "1 June 2026",
+  "limit_c": 8.0,
+  "line_hours": 24,
+  "platform": "1 July 2026",
+  "record_minutes": 10,
+  "replaced_loggers": [
+   207,
+   302
+  ],
+  "sections": {
+   "criterion": 7.3,
+   "device_of_record": 6.4,
+   "recording": 6.3,
+   "service": 9.2,
+   "unaccounted": 8.2
+  },
+  "tax_pct": 6.0,
   "year": 2026
+ },
+ "store_numbers": [
+  101,
+  102,
+  103,
+  104,
+  105,
+  106,
+  107,
+  108,
+  109,
+  110,
+  201,
+  202,
+  203,
+  204,
+  205,
+  206,
+  207,
+  208,
+  209,
+  210,
+  301,
+  302,
+  303,
+  304,
+  305,
+  306,
+  307,
+  308,
+  309,
+  310
+ ],
+ "stores": {
+  "101": {
+   "doses_unaccounted": 51,
+   "hours": 11,
+   "replaced": false,
+   "service_usd": 372,
+   "town": "Corriden"
+  },
+  "102": {
+   "doses_unaccounted": 46,
+   "hours": 0,
+   "replaced": false,
+   "service_usd": 336,
+   "town": "Dalmore"
+  },
+  "103": {
+   "doses_unaccounted": 100,
+   "hours": 44,
+   "replaced": true,
+   "service_usd": 322,
+   "town": "Edgecott"
+  },
+  "104": {
+   "doses_unaccounted": 137,
+   "hours": 0,
+   "replaced": false,
+   "service_usd": 1131,
+   "town": "Farrowby"
+  },
+  "105": {
+   "doses_unaccounted": 86,
+   "hours": 0,
+   "replaced": false,
+   "service_usd": 296,
+   "town": "Gisborne"
+  },
+  "106": {
+   "doses_unaccounted": 67,
+   "hours": 63,
+   "replaced": true,
+   "service_usd": 1108,
+   "town": "Hatherley"
+  },
+  "107": {
+   "doses_unaccounted": 73,
+   "hours": 0,
+   "replaced": false,
+   "service_usd": 349,
+   "town": "Ilsington"
+  },
+  "108": {
+   "doses_unaccounted": 138,
+   "hours": 4,
+   "replaced": false,
+   "service_usd": 313,
+   "town": "Keverne"
+  },
+  "109": {
+   "doses_unaccounted": 63,
+   "hours": 27,
+   "replaced": true,
+   "service_usd": 589,
+   "town": "Marcham"
+  },
+  "110": {
+   "doses_unaccounted": 61,
+   "hours": 19,
+   "replaced": false,
+   "service_usd": 1237,
+   "town": "Oldcastle"
+  },
+  "201": {
+   "doses_unaccounted": 43,
+   "hours": 57,
+   "replaced": true,
+   "service_usd": 2071,
+   "town": "Thurlby"
+  },
+  "202": {
+   "doses_unaccounted": 157,
+   "hours": 0,
+   "replaced": false,
+   "service_usd": 682,
+   "town": "Ulverston"
+  },
+  "203": {
+   "doses_unaccounted": 23,
+   "hours": 0,
+   "replaced": false,
+   "service_usd": 667,
+   "town": "Vexley"
+  },
+  "204": {
+   "doses_unaccounted": 56,
+   "hours": 0,
+   "replaced": false,
+   "service_usd": 351,
+   "town": "Wedmore"
+  },
+  "205": {
+   "doses_unaccounted": 102,
+   "hours": 7,
+   "replaced": false,
+   "service_usd": 996,
+   "town": "Yelverton"
+  },
+  "206": {
+   "doses_unaccounted": 117,
+   "hours": 52,
+   "replaced": true,
+   "service_usd": 368,
+   "town": "Abbotsley"
+  },
+  "207": {
+   "doses_unaccounted": 87,
+   "hours": 0,
+   "replaced": false,
+   "service_usd": 1109,
+   "town": "Braxted"
+  },
+  "208": {
+   "doses_unaccounted": 38,
+   "hours": 17,
+   "replaced": false,
+   "service_usd": 780,
+   "town": "Chelwood"
+  },
+  "209": {
+   "doses_unaccounted": 122,
+   "hours": 0,
+   "replaced": false,
+   "service_usd": 1027,
+   "town": "Embleton"
+  },
+  "210": {
+   "doses_unaccounted": 56,
+   "hours": 15,
+   "replaced": false,
+   "service_usd": 645,
+   "town": "Greystoke"
+  },
+  "301": {
+   "doses_unaccounted": 75,
+   "hours": 0,
+   "replaced": false,
+   "service_usd": 317,
+   "town": "Haddow"
+  },
+  "302": {
+   "doses_unaccounted": 78,
+   "hours": 4,
+   "replaced": false,
+   "service_usd": 774,
+   "town": "Inkpen"
+  },
+  "303": {
+   "doses_unaccounted": 91,
+   "hours": 60,
+   "replaced": true,
+   "service_usd": 297,
+   "town": "Lexden"
+  },
+  "304": {
+   "doses_unaccounted": 38,
+   "hours": 0,
+   "replaced": false,
+   "service_usd": 612,
+   "town": "Mowbray"
+  },
+  "305": {
+   "doses_unaccounted": 105,
+   "hours": 7,
+   "replaced": false,
+   "service_usd": 714,
+   "town": "Nettlecombe"
+  },
+  "306": {
+   "doses_unaccounted": 87,
+   "hours": 20,
+   "replaced": false,
+   "service_usd": 350,
+   "town": "Padbury"
+  },
+  "307": {
+   "doses_unaccounted": 118,
+   "hours": 0,
+   "replaced": false,
+   "service_usd": 314,
+   "town": "Quarndon"
+  },
+  "308": {
+   "doses_unaccounted": 72,
+   "hours": 17,
+   "replaced": false,
+   "service_usd": 737,
+   "town": "Ruddington"
+  },
+  "309": {
+   "doses_unaccounted": 72,
+   "hours": 1,
+   "replaced": false,
+   "service_usd": 298,
+   "town": "Tilney"
+  },
+  "310": {
+   "doses_unaccounted": 75,
+   "hours": 8,
+   "replaced": false,
+   "service_usd": 582,
+   "town": "Upwood"
+  }
  }
 }
