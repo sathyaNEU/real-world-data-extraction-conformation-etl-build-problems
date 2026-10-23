@@ -1,6 +1,6 @@
 # task174 design note
 
-**Status: PAUSED at stage 1 on 2026-10-23 after two rebuild screens, biomedical survival and media reach (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
+**Status: PAUSED at stage 1 on 2026-10-23 after three rebuild screens, biomedical survival, media reach and healthcare demand (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
 Forecasting. Three worlds were screened on this number and none yields a draw that holds; the third, the
 product-analytics retention cell of the same day, is recorded in its own finding below and in the last block of
 `## Tried and rejected`. The first is seed FC45's: a north-east
@@ -97,6 +97,18 @@ survival curve by time since entry it absorbs every stationary structure of the 
 the record never ran, and each such plan is either a delivery mechanic (a cap, a pacing rule, an ad load), which is
 rule application once filed and a hidden rule or a fork when not (the `binding_constraint` pincer of `stumping`
 1.2), or a new vehicle, season or audience whose own panelists are the attaining subset.
+
+**The third cell of the day, healthcare-delivery-health-economics / utilization-access-demand-forecasting
+(Forecasting),** task170 v1's world and first-passage driver avoided. Screened with the field's demand routes as the
+default path (age-sex rates on the projected population, last year's utilization grown by trend, a literature
+elasticity applied to a price or access change). One candidate measured on code (`wait1.py`, scratchpad
+b174n/proto3) and fifteen on the structural screens; nothing holds. The finding: a forward access or payment change
+in this cell does one of four things. It acts on a variable the change itself names (a wait, a booking lead time, a
+travel time, a pilot area), so the record's units already at the new level are the attaining subset and the premise
+sends the solver to them. It needs a behavioural response never observed before the change (self-referral,
+cost-sharing, telehealth, plan choice), which is a literature elasticity, the default, or a fork. It is a filed
+mechanic (a triage streaming rule, a capacity queue, a screening round plan), which is rule application. Or it
+reroutes demand through a route that used to pre-empt it (task169's driver) or a drain while waiting (task148's).
 
 ## Tried and rejected
 
@@ -348,3 +360,44 @@ rule application once filed and a hidden rule or a fork when not (the `binding_c
   base rate, task446's driver. On paper.
 - **A rising ad load or a sold-out peak hour capping a platform's opportunities**: a filed capacity, so rule
   application, the same pincer as the cap. On paper.
+- **Rebuild of 2026-10-23, third cell: healthcare-delivery-health-economics / utilization-access-demand-forecasting
+  (Forecasting).** Each line is one candidate, written when it died; the measured one first.
+- **Spontaneous resolution while waiting, with a 2027 pathway guaranteeing a first appointment in three weeks**
+  (procedures per referral rise once fewer patients resolve before they are seen), measured on `wait1.py` (seeds 174
+  to 179, 40,000 referrals): historical conversion -25 per cent, a real lever; but the patients seen within six
+  weeks in locum spells (5 per cent of referrals) land at -3 to -5 per cent (the attaining subset, which the premise
+  points at), the current-status logistic forks between log wait (-3 to -4) and wait (-12) where that subset is thin,
+  and a drain while waiting is task148's driver.
+- **Patient-initiated follow-up replacing scheduled reviews**: flares that fall in the weeks before a scheduled visit
+  wait for it, so the unscheduled contacts understate the flare rate; that is task169's driver (one route pre-empting
+  the other, the change closing it) in outpatient nouns. On paper.
+- **A referral requirement removed** (self-referral to physiotherapy or audiology): the self-referral propensity is
+  never observed before the change; a pilot area is the attaining subset and a literature uplift the default. On
+  paper.
+- **A deductible or copay change read through the spot price each member faces in the year**: the response by
+  deductible status is the dynamic-incentive identification the literature contests (a fork), and averaged it is the
+  default elasticity. On paper.
+- **A site closure redistributing patients by travel time with distance decay**: reads the same for a store closure
+  under a Huff model (the swap test). On paper.
+- **A new site inducing demand along the distance-decay curve**: the same swap, and the areas already at short
+  travel times are the attaining subset. On paper.
+- **ED streaming of low-acuity arrivals to a co-located GP service**: the streamed share is the triage rule executed
+  (rule application), and induced attendances are sized from a pilot. On paper.
+- **Telehealth reimbursement ending**: the share of telehealth that substituted for in-person visits, read from
+  staggered practice adoption, is the not-yet-treated card (the default; proto21 died on it). On paper.
+- **A shorter booking horizon cutting did-not-attend losses**: the premise names lead time, and short-lead bookings
+  are the attaining subset. On paper.
+- **Readmissions removed with the index admissions an avoidance pathway diverts**: readmissions per index admission
+  of the diverted type is one group-by. On paper.
+- **The follow-up cascade after first-appointment capacity rises**: a delay-kernel convolution, generic under the
+  swap test, about 15 per cent in-year. On paper.
+- **Time to death against age** (the red-herring hypothesis): about 2 per cent a year from mortality decline; a
+  larger lever needs a dated mortality shock. On paper.
+- **Adverse selection when a high-deductible option is added**: who switches is sized from another employer (the
+  attaining subset) or a choice model (a fork). On paper.
+- **Case management for frequent attenders**: regression to the mean in a selected unit (task130 v3 landed), and
+  shrinkage is the reflex. On paper.
+- **Delayed transfers of care after new step-down beds**: a queue on a filed capacity, the binding_constraint
+  pincer. On paper.
+- **Screening invitations on a rolling round plan**: the round plan is filed (rule application) and calendar-locked.
+  On paper.
