@@ -1,6 +1,6 @@
 # task178 design note
 
-**Status: BUILD, stage 3 green (2026-10-23), architecture 3; waiting at stage 4 for two scored readers and the judge.** The number was RETIRED on 2026-10-21 and reopened under the author's
+**Status: PAUSED (2026-10-23). Architecture 3 spent at stage 4, Gate F (zip 6a710f5b): blind reader B landed the call by instrumenting the Bank's endogenous trades (`## Tried and rejected`). The next cell comes from the main session.** The number was RETIRED on 2026-10-21 and reopened under the author's
 rule that no number stays retired (`## Rebuild (2026-10-23)`). Architecture 1 (the harbour trestle deck) and
 architecture 2 (the floodplain segment of a stage-discharge rating) were spent at Gate F; the conjoint and
 population-pharmacokinetics cells registered no card. Cell allocated by the main session for this draw:
@@ -743,3 +743,12 @@ none is touched by either candidate.
   instrument route (R2 failed); the first reports are now a sign error, the previous hour's figure or a partial
   figure, and every handling of refilings keeps 12. A desk-orders realisation whose ask A cells sat within 0.002 of a
   rounding edge: re-drawn (stream desk_orders/15, every cell 0.009 or more inside its bin).
+- **Architecture 3, the central bank's leaning spot operations ending: spent at stage 4, Gate F (2026-10-23, zip
+  6a710f5b).** Blind reader B landed the call, 7 of 7 call figures (12 per cent, settings 12 and 13 covering): "Hourly log
+  mid change regressed on customer net dollar flow and BCT net sales; BCT trades when the hourly move exceeds ~5 pesos so it
+  is endogenous, so estimated by 2SLS with hinge terms of customer flow as instruments ... counterfactual about 11.4 per
+  cent (11.0-11.6 over the kappa range), rounded up to 12". The paper risk named at the draw came true: an agent that leans
+  against each hour's move is an endogeneity a medium reader spots in the operations file and instruments by itself, so
+  the decisive step was a taught correction (lesson 1). Asks leaked 16 of 24 (66.7 per cent): ask A's sweep device was
+  absent from the reader's path (it grouped fills by UTC time, trader and side and kept only confirmed rows); ask B held
+  (window forwards kept by maturity date). Reader A and the judge were stopped; the card is marked spent.

@@ -1,7 +1,7 @@
 {
  "task": "task178",
  "owner": "sathya8571",
- "status": "BUILD",
+ "status": "PAUSED",
  "domain": "quantitative-finance/volatility-derivatives-pricing",
  "objective": "forecasting",
  "stage": 4,
@@ -17,20 +17,20 @@
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-23 (sweeps 3, 4 and 9 answered in the design note's ## Leak sweep; no LEAK)",
-  "reader": ""
+  "reader": "scored reader B landed the call (7 of 7 call figures, 2SLS with hinge terms of customer flow as instruments) and kept 16 of 24 ask figures (ask A fell, ask B held); reader A stopped"
  },
  "duplicate_check": {
   "heart": "WARN 2026-10-23 (overuse.objective, overuse.gate_g, repeat.gate_g task482, repeat.deliverables task175)",
   "nearest": "ledger task446 0.06, stump task446 0.06, driver task253 lineage 0.04"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
+  "verdict": "not run (stopped by the main session after reader B)",
+  "disposition": "architecture 3 spent at Gate F",
   "report": ""
  },
  "returned": [],
  "wave": "rebuild 2026-10-23 of a reopened number; architecture 1 (climate-weather-extremes) and architecture 2 (hydrology-flood-frequency) spent at Gate F, the conjoint and population-pharmacokinetics cells registered no card; architecture 3 in quantitative-finance / volatility-derivatives-pricing",
- "resume": "stage 4: two scored readers and the judge (figures.json call keys under call.: pricing_volatility_pct, expected_volatility_band_pct, settings.8 to settings.13)",
+ "resume": "architecture 3 (leaning central bank operations, volatility-derivatives-pricing) spent at stage 4, Gate F, on zip 6a710f5b; the next cell comes from the main session, reading ## Tried and rejected first",
  "approved": null,
  "delivered": null,
  "portal": null,
