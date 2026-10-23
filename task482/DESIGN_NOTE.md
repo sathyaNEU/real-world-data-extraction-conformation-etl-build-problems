@@ -548,3 +548,18 @@ it hands all three the call, so the decisive step as designed does not stump and
   announces its own repair. Next architecture: a quantity every file visibly lacks (so no surface read stands in for it),
   estimated by a method the data forces, and ask devices whose wrong reading is plausible rather than absurd and whose
   evidence no log lists outright.
+- Architecture 10 draw (2026-10-23), no card filed. The guard's window closes survey research for ETL (ban.pairing and
+  ban.subdomain against task483, so census-register and seasonal adjustment are both out) and the strategies grain_or_unit,
+  population_selection and composition_mix (task483, task275, task179); payment claims, emissions, IRT equating and data
+  integration clear it. Screened on those four and dead on file or on measurement: competing exits against censoring
+  (task169, task266; the competing exit is a reflex, task133); pooled-test infection rates (task188); age-length keys
+  (post-stratification, a reflex once the aged subsample's design ships); a pooled tail share from parts' means and spreads
+  (task483's lesson); a population's share past a cut from short matrix-sampled booklets (task464's shrinkage lesson);
+  direct against indirect adjustment of a net series (task453 v2's fork); time-series consistency by splicing (task123's
+  screen); chance agreement on name and birth date in a voter roll (task468's common-identifier lesson); credibility for
+  site emission factors (the regulatory standard takes the site's own tests, a fork); tracer flux ratios (the integrated
+  ratio is the method's own definition, so the default is the golden); flows traced through intermediaries to end markets
+  (task451 v1's swap failure); uncompensated gas meters (a unit read, data semantics); correlated systematic errors in an
+  activity-data uncertainty (the call is a monitoring decision, Data Quality); cohort waits from cumulative counts under
+  first-in-first-out (generic queueing, the swap reads the same); a pick log matched to put-aways by each lane's access
+  order (drive-in lanes are last-in-first-out, field knowledge a strong reader carries, architecture 7's death).
