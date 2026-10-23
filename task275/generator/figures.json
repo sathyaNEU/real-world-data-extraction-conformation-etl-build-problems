@@ -1,0 +1,169 @@
+{
+ "call": {
+  "count": 4,
+  "designated": [
+   "TR1",
+   "TR2",
+   "NEP",
+   "BT"
+  ],
+  "nearest_over": "TR2",
+  "nearest_under": "SN",
+  "not_designated": [
+   "SN",
+   "GN",
+   "LL",
+   "POT"
+  ]
+ },
+ "default_path": {
+  "BT": 2.9,
+  "GN": 4.6,
+  "LL": 2.6,
+  "NEP": 12.0,
+  "POT": 6.3,
+  "SN": 3.3,
+  "TR1": 4.0,
+  "TR2": 4.1
+ },
+ "inshore_hours_share": {
+  "BT": {
+   "observed": 39,
+   "unobserved": 69
+  },
+  "GN": {
+   "observed": 36,
+   "unobserved": 34
+  },
+  "LL": {
+   "observed": 0,
+   "unobserved": 0
+  },
+  "NEP": {
+   "observed": 29,
+   "unobserved": 30
+  },
+  "POT": {
+   "observed": 67,
+   "unobserved": 63
+  },
+  "SN": {
+   "observed": 13,
+   "unobserved": 17
+  },
+  "TR1": {
+   "observed": 0,
+   "unobserved": 0
+  },
+  "TR2": {
+   "observed": 12,
+   "unobserved": 20
+  }
+ },
+ "segments": {
+  "BT": {
+   "bms_kg_per_hour_observed": 4.66,
+   "bms_kg_per_hour_unobserved": 0.06,
+   "days_at_sea": 2128,
+   "designated": true,
+   "first_sale_gbp_thousands": 9649.8,
+   "name": "Beam trawl",
+   "observed_trips": 56,
+   "share": 12,
+   "trips": 664,
+   "vessels": 11
+  },
+  "GN": {
+   "bms_kg_per_hour_observed": 1.87,
+   "bms_kg_per_hour_unobserved": 1.08,
+   "days_at_sea": 2419,
+   "designated": false,
+   "first_sale_gbp_thousands": 1719.9,
+   "name": "Set gillnet",
+   "observed_trips": 154,
+   "share": 7,
+   "trips": 2329,
+   "vessels": 17
+  },
+  "LL": {
+   "bms_kg_per_hour_observed": 0.67,
+   "bms_kg_per_hour_unobserved": 0.07,
+   "days_at_sea": 1362,
+   "designated": false,
+   "first_sale_gbp_thousands": 693.8,
+   "name": "Set longline",
+   "observed_trips": 74,
+   "share": 5,
+   "trips": 1156,
+   "vessels": 10
+  },
+  "NEP": {
+   "bms_kg_per_hour_observed": 1.44,
+   "bms_kg_per_hour_unobserved": 0.11,
+   "days_at_sea": 3517,
+   "designated": true,
+   "first_sale_gbp_thousands": 8053.4,
+   "name": "Nephrops trawl",
+   "observed_trips": 125,
+   "share": 14,
+   "trips": 1761,
+   "vessels": 15
+  },
+  "POT": {
+   "bms_kg_per_hour_observed": 0.0,
+   "bms_kg_per_hour_unobserved": 0.0,
+   "days_at_sea": 2593,
+   "designated": false,
+   "first_sale_gbp_thousands": 2332.9,
+   "name": "Pots and creels",
+   "observed_trips": 171,
+   "share": 6,
+   "trips": 2526,
+   "vessels": 16
+  },
+  "SN": {
+   "bms_kg_per_hour_observed": 6.82,
+   "bms_kg_per_hour_unobserved": 0.05,
+   "days_at_sea": 1737,
+   "designated": false,
+   "first_sale_gbp_thousands": 3561.4,
+   "name": "Seine",
+   "observed_trips": 94,
+   "share": 8,
+   "trips": 1176,
+   "vessels": 9
+  },
+  "TR1": {
+   "bms_kg_per_hour_observed": 25.28,
+   "bms_kg_per_hour_unobserved": 2.1,
+   "days_at_sea": 2236,
+   "designated": true,
+   "first_sale_gbp_thousands": 12062.3,
+   "name": "Demersal otter trawl, 18 m and over",
+   "observed_trips": 44,
+   "share": 13,
+   "trips": 474,
+   "vessels": 12
+  },
+  "TR2": {
+   "bms_kg_per_hour_observed": 9.97,
+   "bms_kg_per_hour_unobserved": 0.84,
+   "days_at_sea": 3032,
+   "designated": true,
+   "first_sale_gbp_thousands": 7174.4,
+   "name": "Demersal otter trawl, 12 m to under 18 m",
+   "observed_trips": 138,
+   "share": 12,
+   "trips": 1914,
+   "vessels": 17
+  }
+ },
+ "threshold": 10.0,
+ "totals": {
+  "days_at_sea": 19024,
+  "first_sale_gbp_thousands": 45247.9,
+  "observed_trips": 856,
+  "trips": 12000,
+  "vessels": 107
+ }
+}

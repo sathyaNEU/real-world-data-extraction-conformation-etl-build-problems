@@ -1,0 +1,116 @@
+{
+ "answer": "4 segments designated: TR1, TR2, NEP, BT",
+ "deliverables": [
+  "segment_discards_2025.xlsx",
+  "segment_discards_2025.png"
+ ],
+ "distractor_files": [
+  "target/quota_uptake_2025.xlsx",
+  "target/gear_specifications_2025.csv"
+ ],
+ "domain": "Survey Research & Official Statistics (nonresponse, calibration and measurement error)",
+ "objective": "Descriptive & Distribution Analysis",
+ "provenance": {
+  "README_files.txt": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "elogbook_landings_2025.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "elogbook_trips_2025.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "fishing_grounds.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "gear_specifications_2025.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "observer_deployments_2025.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "observer_hauls_2025.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "observer_scheme_manual_2025.pdf": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "port_limits.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "quota_uptake_2025.xlsx": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "sales_notes_2025.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "selectivity_programme_terms_2027.pdf": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "species_list.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "vessel_register.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "vms_positions_2025.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "vms_transponders.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  },
+  "wcfpo_data_dictionary_2025.pdf": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Wrayburn Coast Fish Producers' Organisation, its vessels, ports, grounds, buyers, observers and people are fictional; the records follow the forms of UK electronic logbooks, landing declarations, sales notes, VMS reports and at-sea observer programmes"
+  }
+ },
+ "rows": {
+  "elogbook_landings_2025.csv": 75303,
+  "elogbook_trips_2025.csv": 12000,
+  "fishing_grounds.csv": 5,
+  "gear_specifications_2025.csv": 119,
+  "observer_deployments_2025.csv": 1058,
+  "observer_hauls_2025.csv": 64783,
+  "port_limits.csv": 5,
+  "sales_notes_2025.csv": 99137,
+  "species_list.csv": 19,
+  "vessel_register.csv": 107,
+  "vms_positions_2025.csv": 197077,
+  "vms_transponders.csv": 107
+ },
+ "task": "task275",
+ "title": "Wrayburn Coast Fish Producers' Organisation: the fleet segments designated for the 2027 Selectivity Programme"
+}

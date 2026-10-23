@@ -1,36 +1,36 @@
 {
   "task": "task275",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "SHIPPED",
   "domain": "survey-research-official-statistics",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-23",
   "stump": "A competent analyst who sets aside the logbooks' blank discard fields raises the observer scheme's discard share by ground to each segment's hours fished and names only the Nephrops trawlers; observed trips land the undersized quota fish and keep off the nursery grounds, so only the unwanted catch per hour by ground, raised to unobserved hours and net of the BMS unobserved trips declared, names the golden four.",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-23"
   },
   "leak": {
-    "leak_py": "",
-    "reader": null
+    "leak_py": "REVIEW (grade fields beside weight fields in the sales notes, clause numbers in the terms; the documents' scheme vocabulary), read harmless by six readers",
+    "reader": "three rounds, six isolated scored readers all off the call (NEP alone); round 3 on 04c5972e: r275e and r275f 6 of 32 ask figures each, exit 0, both re-sited devices held"
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN (deliverable-pair overuse only); surface exit 0, promoted pairs answered on the card",
     "nearest": "task268 v2 lineage 0.06"
   },
   "judge": {
-    "verdict": null,
-    "disposition": null,
-    "report": null
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "determinism_check_report.md (round 1, b24d9e4b), determinism_check_report_pass2.md (round 2, d6cd71d9), determinism_check_report_pass3.md (round 3, 04c5972e); Gate G method_or_model_selection / analytical_non_defect, Gate H domain pass, layers pass, decisive_step analytical"
   },
   "returned": [],
-  "resume": "DRAWN 2026-10-23 (card registered at WARN). Next: stage 2, the default path, stump sentence, three rules, fork table, ladder, closure, asks and prompt.txt to precut exit 0; the prototype is in the scratchpad (t275/proto2.py, seed 1: golden TR1 TR2 NEP BT, pooled grounds TR1 TR2 NEP, un-netted TR1 TR2 NEP GN, legal discards only NEP).",
+  "resume": "Shipped on target.zip ce3d9e72 after round 3 (both readers off the call at 6 of 32 ask figures; judge APPROVE on 04c5972e, its optional grade-key note and the readers' lawful-discard uniformity remark fixed in the generator on the APPROVE disposition, stage-3 gates re-run green). Next: the portal result.",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-23",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
