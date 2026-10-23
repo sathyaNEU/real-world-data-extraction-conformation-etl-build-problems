@@ -1,6 +1,6 @@
 # task174 design note
 
-**Status: PAUSED at stage 1 on 2026-10-23 after six rebuild screens, biomedical survival, media reach, healthcare demand, regression diagnostics, ratemaking and reserving, and a second pass over fourteen fresh cells left to the build (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
+**Status: PAUSED at stage 1 on 2026-10-23 after six rebuild screens, biomedical survival, media reach, healthcare demand, regression diagnostics, ratemaking and reserving, a second pass over fourteen fresh cells left to the build and a third over stress testing, seasonal adjustment and urban forecasting (`## Rebuild (2026-10-23)`); RETIRED at stage 1 on 2026-10-19, no card ever registered, nothing cut (`## Retired`).** Wave 8, new,
 Forecasting. Three worlds were screened on this number and none yields a draw that holds; the third, the
 product-analytics retention cell of the same day, is recorded in its own finding below and in the last block of
 `## Tried and rejected`. The first is seed FC45's: a north-east
@@ -98,6 +98,31 @@ covariates reaches exactly; a contagion of the same outcome among neighbours, pe
 driver and task144's; or a timing exposure, which is task177 v2's. Where the forward condition is a schedule or a rule
 applied to units the record already holds, it replays on the record (the careful reader's move and the golden). The
 number is PAUSED at stage 1 again for the coordinator to assign a cell.
+
+**Third rebuild pass (2026-10-23, the cell left to the build, shape first, brief rb-task174s).** Read first: this
+note's `## Tried and rejected` and `## Retired`, the parallel rebuilds' cells (task176 event history, task179 early
+warning, task173's valve world, task170 and task177 still choosing with no DRAWN commit at c9563ae3) and the cells that
+died this round in other notes. The F task types left after those exclusions were stress-testing-capital,
+seasonal-adjustment-official-time-series-production, urban-regional-science / forecasting (none screened this round),
+and, as cross-checks, health-burden-impact-modeling, infectious-disease-transmission-modeling (fictional settings),
+dose-response-pk-pd-modeling and recidivism-risk-assessment. The window at the screen (`guard.py recent`): task173,
+task179 and task275 live, so `causal_design`, `composition_mix` and `population_selection` are banned (task275, drawn
+after the brief's measurement, took `population_selection`). That closes task175's shape outright, because its honest
+label is `composition_mix` (a forward population at one end of a covariate the history's rate was measured across),
+and leaves task169's shape (`decomposition_attribution`) needing a decomposition other than a pre-empting route.
+About twenty-three candidates died on the structural screens, none reached code, no card was registered and nothing
+was cut; every death is a line at the foot of `## Tried and rejected`.
+
+**The finding of the third pass.** In the three fresh cells the field's textbook route already sits on the structure a
+forward condition activates: roll rates read off the jump-off delinquency buckets, loan-level current LTV, the last
+years' seasonal shares, exposures read off the timetable feed. What is left is one of four things, each closed: an
+expectation additive over units (a joint default or a shared event moves only the tail, so the variance-only screen
+fires), a single-purpose operations file that names the channel (a collections dialer log), a forward population
+shifted on a covariate (`composition_mix`, banned in the window), or a route that pre-empted the recorded outcome
+(task169's driver by abstraction). task170's ninth cell (1e08bf94, pushed during this pass) screened urban-regional-science / forecasting in parallel and
+found the same: its bike-share phase was landed by the textbook origin-destination gravity model and its plateau phase
+handed over by a station elevation column. The number is PAUSED at stage 1 again for the main session to assign a
+cell.
 
 **The finding, and the first thing a later pass should read.** A forecast of events over a cohort's current risk
 set, made from a hazard by time since entry with the field's corrections applied and each member's own follow-up
@@ -618,3 +643,65 @@ Berquist-Sherman card.
   clustered total**: task142's independent unit. **Weighting a poll to recalled against recorded past vote**: a
   choice between two columns, a reading. **A conjoint share under store-level assortment**: the distribution-weighted
   simulator is practice. On paper.
+
+- **Third rebuild pass (2026-10-23), the cell left to the build, shape first (rb-task174s).** Window at the screen:
+  task173, task179, task275 (`causal_design`, `composition_mix`, `population_selection` banned). All on paper:
+- **Stress-testing-capital, joint default of multi-product borrowers after a cross-sell** (one borrower's default
+  charges off a card and a personal loan): expected loss is additive over accounts whatever the joint structure, so
+  only the tail moves; the variance-only screen fires and a scenario's expected loss has no lever. On paper.
+- **A large jump-off delinquency pipeline after a bad 2025 vintage under the 2027 adverse scenario**: the roll-rate
+  (flow-rate) model on the delinquency buckets is the field's standard retail stress method and lands; the top-down
+  loss-rate regression is the default path but not the stump. On paper.
+- **First-year losses small because defaults lag unemployment and charge-offs lag defaults by foreclosure regime**: a
+  distributed lag chosen by AIC is the taught construction, and the charge-off clock is accounting the record shows by
+  state. On paper.
+- **Double-trigger mortgage default under a 30 per cent house-price fall**: the mortgage-default literature's own
+  model, and indexed current LTV is a two-column join the loan-level logit carries. On paper.
+- **Collections capacity binding when delinquencies triple, cures falling with contacts per account**: the dialer log
+  is a single-purpose file that names the channel, and cure on contact is confounded by collectors' prioritisation, so
+  the golden family forks. On paper.
+- **A card book's loss rate stationary per revolving balance while a rewards launch adds transactors**: revolve rate
+  is a named card metric and the mix shift is `composition_mix`, banned in the window. On paper.
+- **Junior notes of A/B commercial real estate loans under the scenario**: the capital stack is the sector's core
+  vocabulary and the waterfall a filed rule. On paper.
+- **A cooperative moving from group to individual liability, peers' covering payments masking members' shortfalls**:
+  task169's pre-empting route by abstraction (the route closes forward, the recorded outcome understates). On paper.
+- **Seasonal-adjustment F, a seasonal break after a school-calendar or trading-hours law**: the last two or three years'
+  monthly shares land, as the cemetery's smooth drain did, and an annual total carries no seasonal lever. On paper.
+- **A lunar festival moving across months in a fictional office's monthly series**: task162's calendar-locked wave.
+  On paper.
+- **Late responders' growth against the flash estimate**: a revision nowcast that retags to data quality, and
+  imputing the large missing returns from their own history is the careful reader's move. On paper.
+- **Dwelling completions lagging consents by building size after an apartment surge**: building type is a consent
+  column, the per-type lag a two-column construction, and the pipeline in flight is task77's. On paper.
+- **Withholding receipts in months with a third fortnightly payday**: task102's calendar, a few per cent. On paper.
+- **Urban forecasting, passenger incidents per stop departure under a stop-consolidation redesign**: a Poisson on
+  vehicle-km and stop departures, both read off the timetable feed, is a two-column regression that lands, and
+  per-start against per-km reads the same for any fleet (the swap test fails, task170's seventh-cell law). On paper.
+- **Boardings against linked journeys under a grid redesign that adds transfers**: linked and unlinked trips are the
+  industry's vocabulary, and the golden needs path choice on the new network, whose rules fork. On paper.
+- **Delivery stops per building rather than per household for a high-rise area**: obvious in the trade and carried by
+  the stop log. On paper.
+- **Redevelopment read per ownership assemblage of contiguous same-owner parcels**: task175's lots-and-permits world
+  with a grain chosen by fit (a reviewer reads one project), and lot area already proxies the assembled size. On paper.
+- **Turnover in a newly let development whose movers select into new homes**: a hazard by time since entry (task134
+  v2), the timing exposure. On paper.
+- **Group-quarters residents after a dormitory opens, missed by the housing-unit method**: the method's own standard
+  correction. On paper.
+- **Health-burden, a PIF on the individual exposure distribution against group means under a curved relative risk**:
+  the lever is the fitted curvature's own sensitivity; **first-year burden after an exposure change read on time since
+  the change**: a timing exposure and the named cessation lag. On paper.
+- **Infectious (fictional, subcritical, every chain seeded by an import) after a new direct air route**: cases per
+  import times forward imports is a filter and a divide, a regression of cases on lagged arrivals lands, and
+  elimination-setting branching is the field's named model; contagion world besides (task144, task175, task501). On
+  paper.
+- **Recidivism: churn under shorter revocation terms and time at risk net of jail days**: task169's world and
+  act-driven shape, street time a named correction; **exclusion-zone breaches read on home-to-victim distance**:
+  `composition_mix` and the GPS traces replay any radius; **the controlling sentence across concurrent sentences**: a
+  sentence-computation term carried by a column. On paper.
+- **Distinct units with at least one event after a programme thins events at random**: the thinning identity over
+  each unit's own count is one group-by (rule application by arithmetic) and fails the swap test. On paper.
+- **Social relets set off by a 2027 completion wave through vacancy chains read on linked address histories**: the
+  chain is the housing literature's own construct, the direct transfers into new affordable homes are obvious, and the
+  private-market chains that reach a social tenancy inside the year are rare, so the lever over the relet trend is a
+  few per cent. On paper.
