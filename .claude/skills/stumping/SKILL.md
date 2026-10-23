@@ -179,6 +179,25 @@ design's own readability screen had scored the decisive rung as not linear, and 
 wrong by arithmetic. **Write the one-group-by route to the call in one line before the first harness, and do the
 algebra on it.**
 
+**The multiplicative-correction floor, and it is one division.** Where the designed quantity is an observable
+divided by a per-case correcting factor (`observed = base * factor`, the shape Part 3 step three blesses), the
+reflex that ranks on the observable stays correlated with the designed quantity at no less than
+`sqrt(1 - rho^2)`, for `rho` = sd(log factor) over sd(log base). The floor is exact and no correlation structure
+between factor and base gets under it, because the minimising correlation is minus one over rho and that is
+unreachable until rho is at least 1. Measured over 600 redraws of 40 candidates: at rho 0.20 the floor is
++0.9798 and the reflex takes the top candidate 77.7 per cent of the time, at 0.48 it is +0.8773 and 48.8 per
+cent, at 0.80 it is +0.6000 and 18.3 per cent, and at rho 1.00 it collapses to +0.0707 and 2.8 per cent. So a
+correcting factor whose log dispersion sits under the base quantity's cannot reorder the candidates, whatever
+its correlation, and a draw of this shape is dead on arithmetic below about rho 0.8. Run the division on the
+clean truth before any design.
+
+**And draw the factor and the base from one generating process, or the screen measures nothing.** The same
+alarm-rationalisation step scored the reflex at 2 of 20 in a parameterised prototype that drew the chatter
+multiplier and the excursion rate independently, and at 12 of 12 once a trace simulation coupled them through
+the process that makes both. The honest world measured rho 0.480 with corr(log base, log factor) at -0.7551,
+a floor of +0.8773, and the candidate was refused. A prototype that draws the correcting factor independently
+of the base flatters every candidate of this shape.
+
 **The comparison's value has no third position, so do not draw there.** Where the decisive step is the value of
 a comparison the estimand files, and the field has one null for that comparison, the trichotomy closes: state the
 null and the construction follows from the sentence (rule application); name its inputs instead and the signpost
