@@ -12,7 +12,7 @@
   "decision_type": "quantity_figure",
   "answer_unit": "count",
   "answer": "Port Ardell will issue about 300 single-family building permits in 2027 on lots in North 6, North 7 and Northwest 3 together, to the nearest 50 (293.2 expected distinct lots).",
-  "answer_source": "task175/submission.md block 1; task175/golden/uep_2027_permit_forecast.xlsx; generator/figures.json",
+  "answer_source": "task175/submission.md block 1; task175/golden/uep_2027_permit_forecast.xlsx; task175/generator/figures.json (call_total_permits_2027)",
   "gap": [
     "population",
     "time"
@@ -48,7 +48,7 @@
   "role_family": "finance_controller",
   "scoring_unit": "units served",
   "spine": {
-    "file": "lot_master_2026.csv",
+    "file": "pa_parcel_extract_2026.csv",
     "rows": 98512,
     "entity": "one platted lot on the property appraiser's 2026 roll",
     "grain": "lot",

@@ -1,11 +1,11 @@
 {
   "task": "task175",
   "owner": "sathya8571",
-  "status": "BUILD",
+  "status": "SHIPPED",
   "domain": "urban-regional-science/land-use-spatial-development-modeling",
   "objective": "forecasting",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-23",
   "stump": "A competent solver applies the first-year permits per vacant lot of the earlier extension areas to the 2027 areas' vacant lots and files 500 permits for 2027 against 300, because it never reads each vacant lot's chance at the homes standing on the street it faces",
   "architecture": 1,
@@ -16,7 +16,7 @@
   },
   "leak": {
     "leak_py": "REVIEW (3 lines, harmless, design note ## Stage 3 gates)",
-    "reader": "round 1: A 430, B 550, both kept 24 of 24 ask figures; round 2: C 500 (8 of 24), D 500 (20 of 24, every connection cell by a premise's first install); round 3: E 550 (missed all 20 connection cells), F 550 (kept the 20 by one connection per normalised address); round 4: H 550 (0 of 24 asks), G about 535 reported 550 (kept the 20 connection cells by lot placement); fees held in 8 of 8"
+    "reader": "round 1: A 430, B 550, both kept 24 of 24 ask figures; round 2: C 500 (8 of 24), D 500 (20 of 24, every connection cell by a premise's first install); round 3: E 550 (missed all 20 connection cells), F 550 (kept the 20 by one connection per normalised address); round 4: H 550 (0 of 24 asks), G about 535 reported 550 (kept the 20 connection cells by lot placement); fees held in 8 of 8; round 5 on e478f14b: I 550 (4 of 24 asks, the connection totals), J 500 (4 of 24), both PASS; the call held in 10 of 10 blind reads, no fee cell hit"
   },
   "duplicate_check": {
     "heart": "WARN (repeat.gate_g)",
@@ -24,8 +24,8 @@
   },
   "judge": {
     "verdict": "DETERMINISTIC",
-    "disposition": "APPROVE (pass 4 on zip 895c9419, no FIX_NOW; the stub-and-counter note closed by CONN_PIN, SF12); the restructure owes pass 5",
-    "report": "scratchpad/judge-task175d/verdict.md (pass 4, zip 895c9419)"
+    "disposition": "APPROVE (pass 5 on e478f14b, no fix; call 291 to 322 across the right model class; Gate G analytical_non_defect; Gate H pass)",
+    "report": "scratchpad/judge-task175e/verdict.md (pass 5, zip e478f14b)"
   },
   "returned": [
     {
@@ -50,7 +50,7 @@
       "date": "2026-10-23",
       "portal": "stage 4 round 4 (in-house)",
       "repair": "rubric: ask layer restructured, connections to four phase totals, fees to twenty phase and quarter cells, chart to the fees, prompt and CONN_PIN changed; call frozen",
-      "commit": ""
+      "commit": "7455fbe5"
     }
   ],
   "grounds_closed": [
@@ -58,7 +58,7 @@
     "human-factors-ergonomics/human-reliability-assessment under the round's G14 and composition_mix bans: a time-reliability race read at each demand's own window (rare trips, sigma 4 to 9 per cent, the window-band filter and divide inside the golden's seed range) and a factor slope flattened by a noisy record (lever exp(-b(1-lam)D), 7 to 9 per cent at realistic settings, the audited rows beating the correction)",
     "quantitative-finance/strategy-backtesting-evaluation under the round's bans: a capacity call's cost of the strategy's own flow (per-trade square-root is the default; impact carried across days splits into model classes 2.2 to 4.4 times apart on the strategy's runs and reversals, untestable from one-way executions; a no-trade band isolates the trades and the lever vanishes; own borrow demand is a minor line whose attaining band lands)"
   ],
-  "resume": "stage 4 round 5: a fresh judge pass and two fresh scored readers on target.zip md5 e478f14b087f32cbfe5d2297a8af7515",
+  "resume": "",
   "screens": {
     "harness": "scratchpad/b175/proto/ (proto2.py candidate 1, proto3.py candidate 2, pilot52.py subset arithmetic, proto1.py and sweep1.py the first sweep); session-scoped, rebuild from DESIGN_NOTE.md's harness section",
     "candidates_measured": 2,
@@ -89,10 +89,11 @@
     }
   },
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-23",
   "portal": null,
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",
-  "reopened": "2026-10-23: the author's rule that no number stays retired; rebuilt from scratch as architecture 1"
+  "reopened": "2026-10-23: the author's rule that no number stays retired; rebuilt from scratch as architecture 1",
+  "target_zip_md5": "e478f14b087f32cbfe5d2297a8af7515"
 }

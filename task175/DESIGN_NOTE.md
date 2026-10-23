@@ -316,6 +316,15 @@ Measured by: generator/ceiling.py
   The call side is unchanged (293.225, asserted Z1); the prompt, the conventions (CONN_PIN) and the ask figures
   moved, so the build owes a fresh judge pass and two fresh readers.
 
+## Stage 4 round 5 (on target.zip e478f14b) and ship
+
+- Readers: I 550 and J 500 on the call, each 4 of 24 asks (the connection totals), no fee cell; the call held in 10
+  of 10 blind reads. Judge pass 5: DETERMINISTIC, APPROVE, no fix (call 291 to 322 across the right model class,
+  every ask figure reproduced, Gate G analytical_non_defect, Gate H pass).
+- Answered risk (judge pass 5 note): STUB premises carry AMI installs; the literal reading (CONN_PIN, a lot's first
+  meter) gives 206, 293, 462 and 396, and ignoring installs at STUB premises gives 210, 295, 469 and 399; the filed
+  text forces the golden, so the pack stays as it is.
+
 ## Stage 3 gates (2026-10-23, re-run after the round 4 restructure)
 
 - Generator: `python3 task175/generator/build.py`; `checks.py` 83 assertions green (input gates, R1, R2, R3a and
