@@ -40,7 +40,7 @@ AREAS = [
     ("Northwest 2", "4", "4", "2024-01-22", 2, 0.12, 0.78, 0.11),
     ("North 6", "5", "5", "2027-01-04", 3, 0.022, 0.13, 0.05),
     ("North 7", "5", "5", "2027-02-01", 3, 0.020, 0.12, 0.04),
-    ("Northwest 3", "5", "5", "2027-04-06", 3, 0.024, 0.14, 0.06),
+    ("Northwest 3", "5", "5", "2027-04-13", 3, 0.024, 0.14, 0.06),
     ("North 8", "6", "6", "2028-03-01", 2, 0.018, 0.11, 0.05),
     ("North 9", "6", "6", "2029-03-01", 2, 0.016, 0.10, 0.04),
     ("Northwest 4", "6", "6", "2029-09-01", 2, 0.019, 0.11, 0.05),
@@ -250,7 +250,7 @@ class World:
         for name in FORWARD:
             ai = self.area_names.index(name)
             sel = self.L["area"] == ai
-            out[name] = float(self.exp27[sel].sum())
+            out[name] = float((1 - np.exp(-self.exp27[sel])).sum())   # expected distinct lots permitted
         out["total"] = sum(out[n] for n in FORWARD)
         return out
 

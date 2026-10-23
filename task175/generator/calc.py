@@ -14,6 +14,7 @@ import numpy as np
 import common as C
 
 FORWARD = ["North 6", "North 7", "Northwest 3"]
+EXACT = [True]      # the filed estimand: expected distinct lots permitted, 1 - exp(-cumulative rate) per lot
 SUFFIX_ABBR = {"STREET": "ST", "TERRACE": "TER", "PLACE": "PL", "LANE": "LN", "COURT": "CT", "WAY": "WAY"}
 
 
@@ -280,7 +281,7 @@ def forecast(P, season=None, groups_fn=None, neighbourhood="street", level_years
         sel = P.area[fl] == nm
         w = served_weight(P.areas[nm]["accepted"], 2027, season, _mdays)
         lam = lvl * ce[P.canal[fl][sel].astype(int)] * ge[g27[sel]]
-        out[nm] = float(np.sum(lam * w + u * (1 - w)))
+        out[nm] = float(np.sum(1 - np.exp(-(lam * w + u * (1 - w))))) if EXACT[0] else float(np.sum(lam * w + u * (1 - w)))
     out["total"] = sum(out[n] for n in FORWARD)
     return out, dict(ye=ye, ce=ce, ge=ge, ll=ll, season=season, u=u, n27=n27, fl=fl)
 
@@ -305,63 +306,72 @@ def analog(P, season=None, scaled=False):
 
 
 def connections_fy26(target, P=None):
-    """new single-family connections in fiscal 2026: meters installed at premises with no account opened before
-    the install, by current program phase and fiscal quarter"""
+    """new single-family connections in fiscal 2026: a premise's first meter install, made in fiscal 2026 at a premise
+    with no account opened before it, by the schedule's phase (placed by parcel or address) and fiscal quarter.
+    Returns the golden grid and the grids of the routes the ceiling prices."""
     P = P or Pack(target)
     prem = _csv(os.path.join(target, C.F_PREM))
     acct = _csv(os.path.join(target, C.F_ACCT))
     ami = _csv(os.path.join(target, C.F_AMI))
     first_acct = {}
     for r in acct:
-        s = _iso(r["SVC_START"])
-        if r["PREMISE_ID"] not in first_acct or s < first_acct[r["PREMISE_ID"]]:
-            first_acct[r["PREMISE_ID"]] = s
+        s_ = _iso(r["SVC_START"])
+        if r["PREMISE_ID"] not in first_acct or s_ < first_acct[r["PREMISE_ID"]]:
+            first_acct[r["PREMISE_ID"]] = s_
     plot = {}
     for r in prem:
-        if r["PARCEL_ID"]:
-            plot[r["PREMISE_ID"]] = P.ix[r["PARCEL_ID"]]
-        else:
-            plot[r["PREMISE_ID"]] = P.ix_addr[norm_addr(r["SVC_ADDR"])]
+        plot[r["PREMISE_ID"]] = P.ix[r["PARCEL_ID"]] if r["PARCEL_ID"] else P.ix_addr[norm_addr(r["SVC_ADDR"])]
     stored = {r["PREMISE_ID"]: r["UEP_PHASE"] for r in prem}
-    grid = defaultdict(int)
-    grid_stored = defaultdict(int)
-    naive = defaultdict(int)
+    first_install = {}
+    for r in ami:
+        d = _iso(r["INSTALL_DATE"])
+        if r["PREMISE_ID"] not in first_install or d < first_install[r["PREMISE_ID"]]:
+            first_install[r["PREMISE_ID"]] = d
+    routes = {k: defaultdict(int) for k in ("golden", "cracker", "reader_a", "reader_b", "stored_phase")}
     for r in ami:
         d = _iso(r["INSTALL_DATE"])
         fy, q = C.fq(d)
         if fy != 2026:
             continue
         pid = r["PREMISE_ID"]
-        i = plot[pid]
-        a = P.area[i]
+        a = P.area[plot[pid]]
         ph = "Core" if a == "Core" else P.areas[a]["phase"]
-        sph = "Core" if stored[pid] == "00" else str(int(stored[pid]))
-        naive[(ph, q)] += 1
         f = first_acct.get(pid)
+        routes["cracker"][(ph, q)] += 1
         if f is None or f >= d:
-            grid[(ph, q)] += 1
-            grid_stored[(sph, q)] += 1
-    return grid, naive, grid_stored
+            routes["reader_a"][(ph, q)] += 1
+            sph = "Core" if stored[pid] == "00" else str(int(stored[pid]))
+            routes["stored_phase"][(sph, q)] += 1
+        if f is None or (d - f).days <= 1000:
+            routes["reader_b"][(ph, q)] += 1
+        if first_install[pid] == d and (f is None or f >= d):
+            routes["golden"][(ph, q)] += 1
+    return routes
 
 
 def fees_fy26(target):
+    """capacity fees received by fiscal quarter: one amount per payment, a payment being a receipt number and its payer
+    (receipt numbers run by drawer and day, and a receipt repeats its amount on each permit line). Returns the golden,
+    the sum of every line and the sum of one amount per receipt number."""
     from openpyxl import load_workbook
     wb = load_workbook(os.path.join(target, C.F_FEES), read_only=True)
     it = wb.worksheets[0].iter_rows(values_only=True)
     head = list(next(it))
     rows = [dict(zip(head, r)) for r in it]
-    by_receipt = {}
+    pay, by_no = {}, {}
     lines = defaultdict(float)
     for r in rows:
         d = r["Receipt Date"].date() if isinstance(r["Receipt Date"], dt.datetime) else r["Receipt Date"]
         fy, q = C.fq(d)
-        by_receipt[r["Receipt No"]] = (q, float(r["Amount"]))
+        pay[(r["Receipt No"], r["Payer"])] = (q, float(r["Amount"]))
+        by_no.setdefault(r["Receipt No"], (q, float(r["Amount"])))
         lines[q] += float(r["Amount"])
-    golden = defaultdict(float)
-    for q, amt in by_receipt.values():
+    golden, number = defaultdict(float), defaultdict(float)
+    for q, amt in pay.values():
         golden[q] += amt
-    return golden, lines
-
+    for q, amt in by_no.values():
+        number[q] += amt
+    return golden, lines, number
 
 def routes(P, season=None):
     """every priced route to the 2027 total, keyed by name: the golden family and the rivals"""
@@ -415,7 +425,7 @@ def _project(P, fl, lvl, ce, ge_lots, season, u):
         sel = P.area[fl] == nm
         w = served_weight(P.areas[nm]["accepted"], 2027, season, _mdays)
         lam = lvl * ce[P.canal[fl][sel].astype(int)] * ge_lots[sel]
-        out[nm] = float(np.sum(lam * w + u * (1 - w)))
+        out[nm] = float(np.sum(1 - np.exp(-(lam * w + u * (1 - w))))) if EXACT[0] else float(np.sum(lam * w + u * (1 - w)))
     out["total"] = sum(out[n] for n in FORWARD)
     return out
 
@@ -425,6 +435,79 @@ def _flat(P, fl, rate, season, u):
     for nm in FORWARD:
         sel = P.area[fl] == nm
         w = served_weight(P.areas[nm]["accepted"], 2027, season, _mdays)
-        out[nm] = float(sel.sum() * (rate * w + u * (1 - w)))
+        out[nm] = float(sel.sum() * ((1 - np.exp(-(rate * w + u * (1 - w)))) if EXACT[0] else (rate * w + u * (1 - w))))
     out["total"] = sum(out[n] for n in FORWARD)
     return out
+
+
+def _subset(LY, mask):
+    return {k: v[mask] for k, v in LY.items()}
+
+
+def glm_forecast(P, LY, info, season, form, years=None, level_years=(2026,)):
+    """parametric street forms by Poisson IRLS on cells (year, canal, homes on the street): 'zero' an indicator for a
+    street with no home, 'zero_linear' that indicator plus a linear term in the homes standing"""
+    if years is not None:
+        LY = _subset(LY, np.isin(LY["y"], years))
+    n = np.minimum(LY["n"], 40)
+    keys = np.stack([LY["y"], LY["canal"], n], axis=1)
+    uk, inv = np.unique(keys, axis=0, return_inverse=True)
+    inv = inv.ravel()
+    X_ = np.bincount(inv, weights=LY["exp"]); E_ = np.bincount(inv, weights=LY["ev"])
+    yrs = np.unique(uk[:, 0])
+    cols = [(uk[:, 0] == y).astype(float) for y in yrs] + [uk[:, 1].astype(float), (uk[:, 2] == 0).astype(float)]
+    if form == "zero_linear":
+        cols.append(uk[:, 2].astype(float))
+    D = np.column_stack(cols)
+    beta = np.zeros(D.shape[1]); beta[:len(yrs)] = np.log(E_.sum() / X_.sum())
+    for _ in range(60):
+        mu = X_ * np.exp(D @ beta)
+        W = mu
+        z = D @ beta + (E_ - mu) / np.maximum(mu, 1e-12)
+        beta = np.linalg.solve((D * W[:, None]).T @ D + 1e-9 * np.eye(D.shape[1]), (D * W[:, None]).T @ z)
+    yeff = dict(zip(yrs.tolist(), beta[:len(yrs)]))
+    lvl = np.mean([yeff[y] for y in level_years])
+    fl = info["fl"]; n27 = np.minimum(info["n27"], 40)
+    eta = lvl + beta[len(yrs)] * P.canal[fl] + beta[len(yrs) + 1] * (n27 == 0)
+    if form == "zero_linear":
+        eta = eta + beta[len(yrs) + 2] * n27
+    lam = np.exp(eta)
+    out = {}
+    for nm in FORWARD:
+        sel = P.area[fl] == nm
+        w = served_weight(P.areas[nm]["accepted"], 2027, season, _mdays)
+        r = lam[sel] * w + info["u"] * (1 - w)
+        out[nm] = float(np.sum(1 - np.exp(-r))) if EXACT[0] else float(np.sum(r))
+    out["total"] = sum(out[k] for k in FORWARD)
+    return out
+
+
+def family(P, season=None):
+    """the honest family on the filed estimand (and the rate form beside it), totals and areas"""
+    season = season_shares(P) if season is None else season
+    LY = lot_years(P, season, "street")
+    fam = {}
+    g, info = forecast(P, season, LY=LY)
+    fam["count bins (golden)"] = g
+    sh = LY["n"] / P.seg_n[P.seg[LY["lot"].astype(int)]]
+    fl = info["fl"]
+    sh27 = info["n27"] / P.seg_n[P.seg[fl]]
+    for nm, edges in (("share bins 5 points", np.concatenate([[1e-9], np.arange(0.05, 1.0, 0.05)])),
+                      ("share bins 10 points", np.concatenate([[1e-9], np.arange(0.10, 1.0, 0.10)]))):
+        ye, ce, ge, _ = fit_poisson(LY, np.digitize(sh, edges), len(edges) + 1)
+        fam[nm] = _project(P, fl, ye[2026], ce, ge[np.digitize(sh27, edges)], season, info["u"])
+    EXACT[0] = False
+    fam["count bins, rate times exposure"] = forecast(P, season, LY=LY)[0]
+    EXACT[0] = True
+    for nm, yrs in (("fit 2019 to 2026", list(range(2019, 2027))), ("fit 2025 to 2026", [2025, 2026]),
+                    ("fit 2013 to 2026", list(range(2013, 2027)))):
+        sub = _subset(LY, np.isin(LY["y"], yrs))
+        fam[nm] = forecast(P, season, LY=sub)[0]
+    fam["level 2023 to 2026 averaged"] = forecast(P, season, LY=LY, level_years=(2023, 2024, 2025, 2026))[0]
+    ye1, _, ge1, _ = fit_poisson(dict(LY, canal=np.zeros(len(LY["y"]), dtype=int)), np.digitize(LY["n"], COUNT_BINS),
+                                 len(COUNT_BINS) + 1)
+    fam["no canal term"] = _project(P, fl, ye1[2026], np.array([1.0, 1.0]),
+                                    ge1[np.minimum(np.digitize(info["n27"], COUNT_BINS), len(COUNT_BINS))], season, info["u"])
+    fam["zero-homes indicator"] = glm_forecast(P, LY, info, season, "zero")
+    fam["zero indicator plus linear count"] = glm_forecast(P, LY, info, season, "zero_linear")
+    return fam, info

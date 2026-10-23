@@ -1,14 +1,14 @@
 {
   "_unrounded": {
-    "North 6": 89.806,
-    "North 7": 114.853,
-    "Northwest 3": 95.349,
-    "total": 300.009
+    "North 6": 88.465,
+    "North 7": 113.263,
+    "Northwest 3": 91.496,
+    "total": 293.225
   },
-  "ask_capacity_fees_fy2026_q1": 4290230,
-  "ask_capacity_fees_fy2026_q2": 4196710,
-  "ask_capacity_fees_fy2026_q3": 4991630,
-  "ask_capacity_fees_fy2026_q4": 4348680,
+  "ask_capacity_fees_fy2026_q1": 5307260,
+  "ask_capacity_fees_fy2026_q2": 5266345,
+  "ask_capacity_fees_fy2026_q3": 6353515,
+  "ask_capacity_fees_fy2026_q4": 5330640,
   "ask_connections_fy2026_core_q1": 47,
   "ask_connections_fy2026_core_q2": 35,
   "ask_connections_fy2026_core_q3": 42,
@@ -29,9 +29,6 @@
   "ask_connections_fy2026_phase4_q2": 101,
   "ask_connections_fy2026_phase4_q3": 96,
   "ask_connections_fy2026_phase4_q4": 101,
-  "call_permits_2027_north6": 90,
-  "call_permits_2027_north7": 115,
-  "call_permits_2027_northwest3": 95,
   "call_total_permits_2027": 300,
   "cc1_vacant_lots_north6": 3893,
   "cc1_vacant_lots_north7": 5363,
@@ -42,5 +39,6 @@
     6,
     7,
     3
-  ]
+  ],
+  "label_call_rounding": 50
 }

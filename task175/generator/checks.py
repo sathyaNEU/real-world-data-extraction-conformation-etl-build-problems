@@ -40,8 +40,12 @@ def r10(x):
     return int(10 * round(x / 10.0))
 
 
+def r50(x):
+    return int(50 * round(x / 50.0))
+
+
 def printed(g):
-    return (r10(g["total"]),) + tuple(r5(g[n]) for n in calc.FORWARD)
+    return (r50(g["total"]),)
 
 
 def edge(v, u):
@@ -71,8 +75,8 @@ def main(target):
     g = res["golden (homes on the street, count bins)"]
     gp = printed(g)
     print("figures.json")
-    check("F1 the call in figures.json is the golden", (fig["call_total_permits_2027"], fig["call_permits_2027_north6"],
-          fig["call_permits_2027_north7"], fig["call_permits_2027_northwest3"]) == gp, str(gp))
+    check("F1 the call in figures.json is the golden", (fig["call_total_permits_2027"],) == gp and
+          not any(k.startswith("call_") and k != "call_total_permits_2027" for k in fig), str(gp))
 
     print("R1 the field's raw material ships")
     roll_head = open(os.path.join(target, C.F_ROLL)).readline().strip().split(",")
@@ -99,29 +103,34 @@ def main(target):
     check("R3a the analog on the clean truth files a wrong answer (30 per cent or more above the 2027 expectation)",
           an_truth > 1.30 * truth["total"], "analog %.0f against truth %.0f" % (an_truth, truth["total"]))
     d0 = res["default: first-year analog, raw"]
-    check("R3a the default path on the pack ends on 520", printed(d0)[0] == 520, str(printed(d0)))
+    check("R3a the default path on the pack ends two bins or more from the golden", abs(d0["total"] - g["total"]) >= 100,
+          "%.1f printed %s" % (d0["total"], printed(d0)))
     check("R3b the decisive step alone (the street) lands the golden", gp[0] == fig["call_total_permits_2027"] and gp[0] != printed(d0)[0], str(gp))
+    lo, hi = gp[0] - 25, gp[0] + 25
     for k in ("default: first-year analog, market-scaled", "rival: analog regressed on built share at service",
-              "rival: served lot model without the street", "rival: homes on the plat block", "rival: street started or not (two bins)"):
-        pk = printed(res[k])
-        check("R3b single correction short of the street stays wrong: %s" % k,
-              abs(pk[0] - gp[0]) >= 20 and all(abs(a - b) >= 5 for a, b in zip(pk[1:], gp[1:])), str(pk))
+              "rival: served lot model without the street", "rival: homes on the plat block"):
+        t = res[k]["total"]
+        check("R3b single correction short of the street stays out of the golden's bin by half a bin or more: %s" % k,
+              t >= hi + 25 or t < lo - 25, "%.1f against the bin %d to %d" % (t, lo, hi))
+    for t, who in ((430, "reader A, round 1"), (550, "reader B, round 1")):
+        check("R3b the round 1 readers' totals stay outside the golden's bin: %s" % who, t >= hi or t < lo, str(t))
     check("R3b the golden is within 10 per cent of the generator's 2027 expectation (estimation from the record)",
           abs(g["total"] / truth["total"] - 1) < 0.10, "%.1f against %.1f" % (g["total"], truth["total"]))
 
-    print("standing family and bins")
-    fam = [res[k] for k in ("golden (homes on the street, count bins)", "golden family: share of the street built, 5-point bins",
-                            "golden family: share of the street built, 10-point bins")]
-    check("B1 every standing family member prints the golden", all(printed(f) == gp for f in fam),
-          str([printed(f) for f in fam]))
-    spread = max(f["total"] for f in fam) - min(f["total"] for f in fam)
-    check("B2 the total sits clear of its bin edge by more than the family's spread", edge(g["total"], 10) > spread + 1.0,
-          "edge %.2f spread %.2f" % (edge(g["total"], 10), spread))
-    for n in calc.FORWARD:
-        sp = max(f[n] for f in fam) - min(f[n] for f in fam)
-        check("B3 %s clear of its bin edge" % n, edge(g[n], 5) > sp + 0.5, "%.2f edge %.2f spread %.2f" % (g[n], edge(g[n], 5), sp))
-    check("SF9 the total rounded from the unrounded sum equals the sum of the rounded areas", gp[0] == sum(gp[1:]),
-          "%d against %d" % (gp[0], sum(gp[1:])))
+    print("the honest family and the bin (nearest 50)")
+    fam, _ = calc.family(P, season)
+    for k, v in fam.items():
+        m = min(v["total"] - lo, hi - v["total"])
+        check("B1 family member inside the golden's bin with 5 or more to spare: %s" % k, m >= 5,
+              "%.1f, margin %.1f" % (v["total"], m))
+    check("B2 the golden centred: both edges 8 or more away", edge(g["total"], 50) >= 8, "edge %.1f" % edge(g["total"], 50))
+    span = [min(v[n] for v in fam.values()) for n in calc.FORWARD], [max(v[n] for v in fam.values()) for n in calc.FORWARD]
+    rd = lambda x, u_: int(u_ * round(x / u_))
+    split = {u_: [n for n, a, b in zip(calc.FORWARD, *span) if rd(a, u_) != rd(b, u_)] for u_ in (5, 10, 25)}
+    check("B3 at the nearest 5, 10 and 25 some area's family straddles a line, so no area figure is graded",
+          all(split[u_] for u_ in split), "; ".join("%s %.1f to %.1f" % (n, a, b) for n, a, b in zip(calc.FORWARD, *span))
+          + " | " + "; ".join("%d: %s" % (u_, ", ".join(v)) for u_, v in split.items()))
+    check("SF9 the rate-times-exposure form files the same call", printed(fam["count bins, rate times exposure"]) == gp)
 
     print("refutations, as log-likelihood on the record")
     LY = calc.lot_years(P, season, "street")
@@ -154,6 +163,7 @@ def main(target):
     check("SF4 areas by the schedule's plat units, and every forward lot maps to one", "plat units the program schedule lists" in conv
           and all(len(P.areas[n]["units"]) == 3 for n in calc.FORWARD))
     lvl = printed(res["golden family: level of 2024 to 2026"])
+    check("SF10 the estimand is filed as expected distinct lots", "a lot being permitted at most once" in conv)
     check("SF5 the 2024 to 2026 level files the same call, and the conventions pin 2026", lvl == gp and
           "its calendar 2026 level" in conv, str(lvl))
     sched = re.sub(r"\s+", " ", calc.pdf_text(os.path.join(target, C.F_SCHED)))
@@ -195,26 +205,29 @@ def main(target):
     print("asks: devices, fairness, separation")
     from utility import Utility
     u = Utility(w)
-    grid, naive, stored = calc.connections_fy26(target, P)
+    routes = calc.connections_fy26(target, P)
+    grid = routes["golden"]
     new, q = u.connections_fy26()
-    exact = all(grid[(ph, k)] == int(((u.phase_now == ph) & new & (q == k - 1)).sum()) for ph in ["Core", "1", "2", "3", "4"] for k in (1, 2, 3, 4))
+    PH = ["Core", "1", "2", "3", "4"]
+    exact = all(grid[(ph, k)] == int(((u.phase_now == ph) & new & (q == k - 1)).sum()) for ph in PH for k in (1, 2, 3, 4))
     check("A1 law 6: the golden handling reproduces the clean truth in every cell", exact)
-    check("A2 P1 every cell carries exchanges (installs counted miss every cell)", all(naive[k] > grid[k] for k in grid))
-    check("A3 P2 the stored phase moves Phases 1 to 3 in every quarter",
-          all(stored[(ph, k)] != grid[(ph, k)] for ph in ("1", "2", "3") for k in (1, 2, 3, 4)))
+    for rname in ("cracker", "reader_a", "reader_b", "stored_phase"):
+        check("A2 every cell missed on the %s route" % rname, all(routes[rname][(ph, k)] != grid[(ph, k)] for ph in PH for k in (1, 2, 3, 4)))
+    check("A3 the re-set device is in every cell (premises installed twice)", all(routes["reader_a"][(ph, k)] > grid[(ph, k)] for ph in PH for k in (1, 2, 3, 4)))
     check("A4 the asks' figures in figures.json are the golden",
           all(fig["ask_connections_fy2026_%s_q%d" % (ph.lower() if ph == "Core" else "phase" + ph, k)] == grid[(ph, k)]
-              for ph in ["Core", "1", "2", "3", "4"] for k in (1, 2, 3, 4)))
-    fees, lines = calc.fees_fy26(target)
-    check("B1 P3 summing receipt lines misses every quarter", all(abs(lines[k] - fees[k]) > 1000 for k in (1, 2, 3, 4)))
+              for ph in PH for k in (1, 2, 3, 4)))
+    fees, lines, by_no = calc.fees_fy26(target)
+    check("B4 summing receipt lines misses every quarter", all(abs(lines[k] - fees[k]) > 1000 for k in (1, 2, 3, 4)))
+    check("B5 one amount per receipt number misses every quarter", all(abs(by_no[k] - fees[k]) > 1000 for k in (1, 2, 3, 4)))
     tru = {}
-    for (rno, rdate, lot, fee, total, nl) in u.receipts:
+    for (rno, rdate, lot, amt, total, nl, drawer) in u.receipts:
         d = C.to_date(rdate); fy, qq = C.fq(d)
         if fy == 2026:
-            tru[(rno)] = (qq, total)
+            tru[(rno, drawer)] = (qq, total)
     tq = {k: sum(v for qq, v in tru.values() if qq == k) for k in (1, 2, 3, 4)}
-    check("B2 law 6: one amount per receipt reproduces the cash received", all(abs(tq[k] - fees[k]) < 0.5 for k in tq))
-    check("B3 figures.json fees are the golden", all(fig["ask_capacity_fees_fy2026_q%d" % k] == round(fees[k]) for k in (1, 2, 3, 4)))
+    check("B6 law 6: one amount per payment (receipt number and payer) reproduces the cash received", all(abs(tq[k] - fees[k]) < 0.5 for k in tq))
+    check("B7 figures.json fees are the golden", all(fig["ask_capacity_fees_fy2026_q%d" % k] == round(fees[k]) for k in (1, 2, 3, 4)))
     from pack import Identity
     to_p = np.array([P.ix[s] for s in Identity(w).strap])
     exch_lots = set(int(to_p[i]) for i in u.changeouts[0])
@@ -246,8 +259,8 @@ def main(target):
                 shutil.copy(os.path.join(target, f), tmp)
         Pd = calc.Pack(tmp)
         gd, _ = calc.forecast(Pd)
-        gr2, _, _ = calc.connections_fy26(tmp, Pd)
-        fd, _ = calc.fees_fy26(tmp)
+        gr2 = calc.connections_fy26(tmp, Pd)["golden"]
+        fd = calc.fees_fy26(tmp)[0]
         check("X1 the call unchanged without the distractors", printed(gd) == gp)
         check("X2 the asks unchanged without the distractors", gr2 == grid and fd == fees)
     finally:

@@ -20,6 +20,28 @@ def _ord(n):
     return "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
 
 
+def plat_records(w):
+    """plat book, page and recording date of each unit: the land company recorded its units in order, 1958 to
+    1971, each plat running to several pages of the county's plat books"""
+    g = C.stream("platbooks")
+    out = {}
+    book, page = 12, int(g.integers(20, 60))
+    day = dt.date(1958, 3, 11)
+    n = len(w.unit_no)
+    for k, u in enumerate(sorted(w.unit_no)):
+        pages = int(g.integers(9, 31))
+        if page + pages > 100:
+            book += 1
+            page = 1
+        out[u] = (book, page, day)
+        page += pages
+        span = (dt.date(1971, 9, 30) - day).days
+        day = day + dt.timedelta(days=int(max(20, g.normal(span / max(n - k - 1, 1), 25))))
+        if day > dt.date(1971, 11, 30):
+            day = dt.date(1971, 11, 30)
+    return out
+
+
 class Identity:
     """Street names, addresses, straps and legal descriptions for every lot."""
 
@@ -67,7 +89,8 @@ class Identity:
         unit_rng = {u: 22 + u % 3 for u in w.unit_no}
         self.strap = np.array(["%02d-%d-%d-P%02d-%05d.%04d" % (unit_sec[u], unit_twp[u], unit_rng[u], u, b + 1, ln * 10)
                                for u, b, ln in zip(L["unit"], L["block"], L["lotno"])], dtype=object)
-        book = {u: bk for u, bk in zip(w.unit_no, w.unit_book)}
+        recs = plat_records(w)
+        book = {u: (recs[u][0], recs[u][1]) for u in w.unit_no}
         self.legal = np.array(["PORT ARDELL UNIT %d BLK %d PB %d PG %d LOT %d" % (u, b + 1, book[u][0], book[u][1], ln)
                                for u, b, ln in zip(L["unit"], L["block"], L["lotno"])], dtype=object)
         assert len(set(self.addr)) == w.N and len(set(self.strap)) == w.N
@@ -231,13 +254,13 @@ class Pack:
 
     def write_plat(self, out):
         w = self.w
-        g = C.stream("plat")
+        recs = plat_records(w)
         rows = []
-        for u, ai, bk in zip(w.unit_no, w.unit_area, w.unit_book):
+        for u in sorted(w.unit_no):
             sel = w.L["unit"] == u
             blks = w.L["block"][sel]
-            rec = dt.date(1958 + (u * 13) // 47 % 14, 1 + u % 12, 1 + (u * 5) % 27)
-            rows.append([u, "PORT ARDELL UNIT %d" % u, bk[0], bk[1], C.iso(rec), int(blks.min()) + 1, int(blks.max()) + 1,
+            bk, pg, rec = recs[u]
+            rows.append([u, "PORT ARDELL UNIT %d" % u, bk, pg, C.iso(rec), int(blks.min()) + 1, int(blks.max()) + 1,
                          int(sel.sum())])
         return C.write_csv(os.path.join(out, C.F_PLAT), ["UNIT", "PLAT_NAME", "PLAT_BOOK", "PAGE", "RECORDED", "BLOCK_FROM",
                                                           "BLOCK_TO", "LOTS"], rows)
@@ -298,6 +321,8 @@ class Pack:
             ev.append((C.to_date(u.meter_set[i]), int(i), "new"))
         for i, day in zip(*u.changeouts):
             ev.append((C.to_date(day), int(i), "exch"))
+        for i, day in zip(*u.resets):
+            ev.append((C.to_date(day), int(i), "reset"))
         ev.sort(key=lambda r: (r[0], pid[r[1]]))
         rows = []
         ser = 25030000
@@ -305,7 +330,10 @@ class Pack:
         for (day, i, kind) in ev:
             ser += int(g.integers(1, 40)); eid += int(g.integers(1, 30))
             hh = int(g.integers(7, 16)); mm = int(g.integers(0, 60))
-            size = "5/8X3/4" if g.random() < 0.83 else "1"
+            if kind == "exch":
+                size = "5/8X3/4" if g.random() < 0.83 else "1"
+            else:
+                size = "1" if u.size1[i] else "5/8X3/4"
             rows.append(["%d" % eid, "%dA" % ser, pid[i], C.iso(day), "%02d:%02d" % (hh, mm), size,
                          "C%02d" % int(g.integers(1, 15))])
         self.ami_events = ev
@@ -318,17 +346,16 @@ class Pack:
 
     def receipt_rows(self):
         u = self.u
-        g = C.stream("receipts")
         rows = []
-        for (rno, rdate, lot, fee, total, nlines) in u.receipts:
+        for (rno, rdate, lot, amt, total, nlines, drawer) in u.receipts:
             d = C.to_date(rdate)
             fy, q = C.fq(d)
             if fy != 2026:
                 continue
             pn = self.sf_permit_no[lot]
-            rows.append([str(rno), d, self.builders[int(u.builder[lot])], pn, "CAPWS", total,
-                         ["CHECK", "ACH", "CARD", "CHECK", "ACH"][rno % 5]])
-        rows.sort(key=lambda r: (r[0], r[3]))
+            rows.append([rno, d, self.builders[int(u.builder[lot])], pn, "CAPWS", total,
+                         ["CHECK", "ACH", "CARD", "CHECK", "ACH"][(int(rno[-3:]) + lot) % 5]])
+        rows.sort(key=lambda r: (r[1], r[0], r[3]))
         return rows
 
     def write_fees(self, out):

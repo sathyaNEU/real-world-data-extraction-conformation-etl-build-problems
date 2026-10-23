@@ -2,6 +2,10 @@
 asks read). Built from the World's lots, homes and permits; nothing here is read by the main call."""
 import numpy as np
 import datetime as dt
+
+
+def C_date(x):
+    return dt.date.fromisoformat(str(np.datetime64(x, "D")))
 from world import World, AREAS, d
 
 FY26 = (np.datetime64("2025-10-01"), np.datetime64("2026-10-01"))
@@ -88,6 +92,38 @@ class Utility:
                     days.append(int((qstart[k] - day0).astype(int)) + int(g.integers(0, 80)))
                     have += 1
         self.changeouts = (np.array(pick), day0 + np.array(days).astype("timedelta64[D]"))
+        # meter size: one-inch services (fire sprinklers, larger homes) on about one new home in six
+        self.size1 = g.random(N) < 0.17
+        # meters pulled when a build stalls and set again when work resumes: the head-end logs the second set too
+        first_acc = {}
+        for (i, s_, e_) in acc_rows:
+            if i not in first_acc or s_ < first_acc[i]:
+                first_acc[i] = s_
+        lo, hi = np.datetime64("2024-10-01"), np.datetime64("2026-09-30")
+        cand = np.where(self.has_premise & (yb == 0) & ~np.isnat(self.meter_set) & (self.meter_set >= lo) & (self.meter_set < hi))[0]
+        rs_lot, rs_day = [], []
+        for i in cand:
+            if g.random() < 0.055:
+                d = self.meter_set[i] + np.timedelta64(int(g.integers(45, 221)), "D")
+                lim = min(first_acc.get(int(i), np.datetime64("2100-01-01")), hi)
+                if d < lim:
+                    rs_lot.append(int(i)); rs_day.append(d)
+        qs = [np.datetime64(x) for x in ("2025-10-01", "2026-01-01", "2026-04-01", "2026-07-01", "2026-10-01")]
+        for ph in ["Core", "1", "2", "3", "4"]:
+            pool = [int(i) for i in cand if self.phase_now[i] == ph]
+            for k in range(4):
+                have = sum(1 for i, d in zip(rs_lot, rs_day) if self.phase_now[i] == ph and qs[k] <= d < qs[k + 1])
+                tries = 0
+                while have < 2 and tries < 5000:
+                    tries += 1
+                    i = pool[int(g.integers(0, len(pool)))]
+                    if i in rs_lot:
+                        continue
+                    d = qs[k] + np.timedelta64(int(g.integers(0, 88)), "D")
+                    lim = min(first_acc.get(i, np.datetime64("2100-01-01")), hi)
+                    if self.meter_set[i] + np.timedelta64(40, "D") <= d < lim:
+                        rs_lot.append(i); rs_day.append(d); have += 1
+        self.resets = (np.array(rs_lot), np.array(rs_day, dtype="datetime64[D]"))
         # capacity fee receipts: paid with the permit, at the fee of the permit's fiscal year
         self._receipts(g)
 
@@ -98,9 +134,9 @@ class Utility:
         wts = np.r_[np.full(12, 0.24 / 12), np.full(128, 0.76 / 128)]
         self.builder = g.choice(140, size=w.N, p=wts)
         rows = []
-        rno = 2610000
         order = sel[np.argsort(w.issued[sel], kind="stable")]
         paid = set()
+        payments = []
         for k, lot in enumerate(order):
             if lot in paid:
                 continue
@@ -113,11 +149,30 @@ class Utility:
                     if o not in paid and self.builder[o] == self.builder[lot]:
                         same.append(o)
             paid.update(same)
-            rno += int(g.integers(1, 9))
             rdate = max(w.issued[x] for x in same) + np.timedelta64(int(g.integers(0, 4)), "D")
             fee = FEE[int(fiscal_year(np.array([rdate]))[0])]
-            for x in same:
-                rows.append((rno, rdate, int(x), fee, fee * len(same), len(same)))
+            amts = [int(round(fee * (2.5 if self.size1[x] else 1.0))) for x in same]
+            payments.append((rdate, same, amts, "UTL" if g.random() < 0.12 else "BLD"))
+        # receipt numbers run by drawer and day (YYDDD-NNN); the export does not carry the drawer
+        payments.sort(key=lambda p: (p[0], p[3], p[1][0]))
+        used = {}
+        for rdate, same, amts, drawer in payments:
+            dd = C_date(rdate)
+            key = (dd, drawer)
+            n = used.get(key, 0) + 1
+            if drawer == "UTL":
+                # the second drawer's sequence restarts each day too; a number already issued at the first drawer
+                # that day is shared only by a payment of the same amount from another payer, else it moves on
+                while True:
+                    other = [p for p in rows if p[0] == "%s-%03d" % (dd.strftime("%y") + "%03d" % dd.timetuple().tm_yday, n)]
+                    if not other or (len(same) == 1 and len(other) == 1 and other[0][4] == amts[0]
+                                     and self.builder[other[0][2]] != self.builder[same[0]]):
+                        break
+                    n += 1
+            used[key] = n
+            rno = "%s%03d-%03d" % (dd.strftime("%y"), dd.timetuple().tm_yday, n)
+            for x, am in zip(same, amts):
+                rows.append((rno, rdate, int(x), am, sum(amts), len(same), drawer))
         self.receipts = rows
 
     def connections_fy26(self):

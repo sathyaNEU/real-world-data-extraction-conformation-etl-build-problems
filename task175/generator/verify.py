@@ -148,14 +148,13 @@ def main(target):
         a = areas[nm][2]
         wserved = 1 - frac(a)
         lam = np.exp(coef["y_2026"] + coef["canal"] * s.canal + s.bin.map(lambda b: coef.get("b%d" % b, 0.0)))
-        out[nm] = float((lam * wserved + u * (1 - wserved)).sum())
+        out[nm] = float((1 - np.exp(-(lam * wserved + u * (1 - wserved)))).sum())
     tot = sum(out.values())
-    r5 = lambda v: int(5 * round(v / 5.0))
-    ok("V3 the total recomputes", int(10 * round(tot / 10.0)) == fig["call_total_permits_2027"], "%.2f" % tot)
-    for nm in out:
-        k = "call_permits_2027_" + nm.lower().replace(" ", "")
-        ok("V4 %s recomputes" % nm, r5(out[nm]) == fig[k], "%.2f" % out[nm])
-    ok("V5 vacant lots recompute", len(fw) == fig["cc1_vacant_lots_total"], str(len(fw)))
+    ok("V3 the total recomputes (expected distinct lots, nearest 50)", int(50 * round(tot / 50.0)) == fig["call_total_permits_2027"],
+       "%.2f" % tot)
+    ok("V4 the total sits 8 or more from its bin edges", 25 - abs(tot - 50 * round(tot / 50.0)) >= 8)
+    ok("V5 vacant lots recompute", len(fw) == fig["cc1_vacant_lots_total"] and all(
+        int((fw.area == nm).sum()) == fig["cc1_vacant_lots_" + nm.lower().replace(" ", "")] for nm in out), str(len(fw)))
     ok("V6 lots on streets with no home recompute", int((homes[fw.index] == 0).sum()) == fig["cc2_vacant_lots_subset_total"])
     # asks
     prem = pd.read_csv(os.path.join(target, "cis_premise_extract_20261231.csv"), dtype=str, keep_default_na=False)
@@ -165,9 +164,10 @@ def main(target):
     prem["lot"] = np.where(prem.PARCEL_ID != "", prem.PARCEL_ID.map(by_strap), prem.SVC_ADDR.map(by_addr))
     prem["phase"] = prem.lot.map(lambda i: "Core" if roll.area[int(i)] == "Core" else areas[roll.area[int(i)]][0])
     ami["d"] = pd.to_datetime(ami.INSTALL_DATE)
-    ami = ami[(ami.d >= "2025-10-01") & (ami.d < "2026-10-01")]
+    firstset = ami.groupby("PREMISE_ID").d.transform("min")
+    ami = ami[(ami.d >= "2025-10-01") & (ami.d < "2026-10-01")].copy()
     ami["first"] = ami.PREMISE_ID.map(first)
-    newc = ami[ami["first"].isna() | (pd.to_datetime(ami["first"]) >= ami.d)].copy()
+    newc = ami[(ami.d == firstset[ami.index]) & (ami["first"].isna() | (pd.to_datetime(ami["first"]) >= ami.d))].copy()
     newc["phase"] = newc.PREMISE_ID.map(prem.set_index("PREMISE_ID").phase)
     newc["q"] = ((newc.d.dt.month - 10) % 12) // 3 + 1
     cnt = newc.groupby(["phase", "q"]).size()
@@ -175,7 +175,7 @@ def main(target):
                for ph in ["Core", "1", "2", "3", "4"] for q in (1, 2, 3, 4))
     ok("V7 every fiscal 2026 connection cell recomputes", good)
     fees = pd.read_excel(os.path.join(target, "capacity_fee_receipts_fy2026.xlsx"))
-    rec = fees.drop_duplicates("Receipt No")
+    rec = fees.drop_duplicates(["Receipt No", "Payer"]).copy()
     rec["q"] = ((pd.to_datetime(rec["Receipt Date"]).dt.month - 10) % 12) // 3 + 1
     fq = rec.groupby("q").Amount.sum()
     ok("V8 every fiscal 2026 fee quarter recomputes", all(int(round(fq[q])) == fig["ask_capacity_fees_fy2026_q%d" % q] for q in (1, 2, 3, 4)))

@@ -30,6 +30,8 @@ INK = colors.HexColor("#1b1b1b")
 GREY = colors.HexColor("#555555")
 
 MARKET_PIN = "Forecasts hold the building market at its calendar 2026 level."
+ESTIMAND_PIN = ("A permit forecast is the expected number of distinct lots that receive such a permit in the year, a "
+                "lot being permitted at most once.")
 PERMIT_PIN = ("Permit forecasts count City building permits of work class Residential New Single Family (legacy type "
               "RES NEW SFR) by issue date in the calendar year forecast, and an area's permits are the permits on lots "
               "in the plat units the program schedule lists for it.")
@@ -49,13 +51,14 @@ CONVENTIONS = [
         "building permits the City will issue in the areas the Utility Extension Program serves, and the fiscal "
         "year's actual connections and capacity fee receipts.",
         "These conventions apply to the report filed in January 2027 and to the working files behind it."]),
-    ("2. Permit forecasts", [PERMIT_PIN, MARKET_PIN,
+    ("2. Permit forecasts", [PERMIT_PIN, ESTIMAND_PIN, MARKET_PIN,
                              "Areas are named as in the program schedule, Revision 12 or later."]),
     ("3. Connections and fees", [FY_PIN, CONN_PIN, FEE_PIN,
                                  "Program phases are those of the program schedule. The core service area is reported "
                                  "on its own line."]),
-    ("4. Fee schedule", ["Single-family water and sewer capacity fee, per connection: fiscal 2024 USD %s; fiscal 2025 "
-                         "USD %s; fiscal 2026 USD %s; fiscal 2027 USD %s (Resolution 2026-41)." %
+    ("4. Fee schedule", ["Single-family water and sewer capacity fee per equivalent residential connection (ERC): fiscal "
+                         "2024 USD %s; fiscal 2025 USD %s; fiscal 2026 USD %s; fiscal 2027 USD %s. A 5/8 by 3/4 inch "
+                         "meter is one ERC and a 1 inch meter 2.5 ERCs (Resolution 2026-41)." %
                          tuple("{:,}".format(FEE[y]) for y in (2024, 2025, 2026, 2027))]),
 ]
 
