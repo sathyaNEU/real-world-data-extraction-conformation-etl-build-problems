@@ -258,6 +258,49 @@ transform of a count at all, such as a crossing of a running sum, which sits out
 price its determinacy first, since one such candidate's five licensed readings spread the graded figure 24.38
 days on average against a printed unit of one day.
 
+**The geometric-mean route, which closes the multiplicative-correction family from the side the floor leaves
+open.** Where the decisive step corrects a per-case observable by a per-case factor, the per-case
+**geometric mean of the raw observable** estimates the candidate-level multiplier better than the designed
+arithmetic sum estimates its own quantity, and a power of case size barely touches it, because the latent
+size's log has mean zero over a candidate's cases. The arithmetic mean's relative sampling error is
+`sqrt((exp(sd^2) - 1) / k)` against the geometric mean's `sd / sqrt(k)`, a ratio of 1.0314 at sd 0.35, 1.2412
+at 0.90, **1.6171 at 1.30** and 3.6605 at 2.00. So **the dispersion ceiling and this kill are one dial read
+from opposite sides**: raising the factor's level spread to clear the floor walks into the geometric mean,
+and moving the variation into the coupling instead to escape the geometric mean walks back under the floor.
+Measured **0 of 131 cells** across four joint sweeps scored on the world's own truth, with this route the
+binding condition in every one. It is also why a candidate-grain rho can flatter a dead step: one lead
+reported rho 1.3031 at candidate grain while its per-case rho was 0.5987 and its per-case sd(log factor)
+0.7816, both under the bars, the candidate-grain figure being produced by the coupling's spread, which is
+exactly the mechanism the geometric mean is immune to.
+
+**And the aggregation law runs backwards where the distortion is the candidate's own exponent.** rho there
+RISES with the case count (0.6661 at 3 cases, 1.3031 at 40, 1.7471 at 100) because a coupling exponent does
+not average away. That is the systematic mix term, and it is still reachable: by a log-mean rather than by a
+stratification. The count pincers both ends anyway, the designed route needing 30 or more cases to be precise
+and the geometric mean becoming precise on the same count, measured 0 of 6 counts passing.
+
+**The level-dependent count object, measured dead from both ends.** Scored against the limit's own value it
+does defeat every monotone route, but only when the per-case factor is shipped (designed exact 20 of 20,
+every cheap count off by 37 to 139 crossings of 101 to 181), and a shipped per-case factor makes the count
+one divide and one comparison on two shipped columns, which is rule application. Recover the factor instead
+and the designed count is exact at most 10 of 20 over 54 cells, because a count across a limit is
+discontinuous and a recovery always misplaces the cases nearest the limit. **Exactness of the graded count
+and non-triviality of the construction are one dial.** Banding does not open it: the per-case mean of the
+second file's own rows carries relative count error 0.0236 against the designed fit's 0.0235, 0.0400 against
+0.0386, and 0.1735 against 0.1358, so any band wide enough to admit the fit admits the cheap route.
+
+**Two harness laws, because both of these were nearly missed by a screen that reported a pass.**
+**Score every route against the WORLD'S TRUTH**, never against a quantile of the designed statistic and never
+against a quantile of a fitted recovery: one screen scored cheap routes against the top three of its own
+fitted value, and where that fit broke (a design-fixed least squares extrapolated from clipped sampling
+times, hitting a `1e-9` clamp) a route measured 0 of 20 on the set and 20 of 20 on the truth. **A margin in
+the hundreds of thousands is a broken fit, not a strong separation**: the tell sat in that harness's own
+output as a margin of 478,516.257 with the designed route at 2 of 20, against a normal 1.5 to 1.8, and was
+read past. And **sweep the competing route's own exponent to its floor, not just over the pretty range**: a
+power route capped at 0.50 scored 7 of 20, while the same route at 0.20 and 0.05 reached truth 20 of 20 with
+a lift of 5.561 against the designed construction's 4.601, so the ladder was inverted and the screen's grid
+hid it.
+
 **Two harness defects that make a screen report a pass it did not measure.** A reflex on a threshold-count
 object must be scored against **the limit's own value**, never against a quantile of the reflex statistic,
 which hands the reflex the right count 98.3 per cent of the time and measures nothing. And where the
