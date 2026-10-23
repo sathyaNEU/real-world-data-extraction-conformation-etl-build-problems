@@ -9,6 +9,7 @@ the task compared byte for byte, and target.zip cut from the final build.
 import argparse
 import datetime as dt
 import hashlib
+import json
 import os
 import shutil
 import sys
@@ -19,81 +20,78 @@ sys.path.insert(0, HERE)
 warnings.filterwarnings("ignore")
 
 import pack as P         # noqa: E402
+import sim as S          # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
-LOCAL = dt.timezone(dt.timedelta(hours=-5))
+LOCAL = dt.timezone(dt.timedelta(hours=-7))
 
-PDF_STAMPS = {
-    "notes": (b"D:20230612142210-05'00'", b"D:20240214101533-06'00'"),
-    "instructions": (b"D:20260813160455-05'00'", b"D:20260814091207-05'00'"),
-}
+PDF_STAMPS = {"note": (b"D:20260603101422-07'00'", b"D:20261009154807-07'00'")}
 OOXML = {   # creator, last modified by, created, modified, company, excel
-    "policy": (W.PEOPLE["aging"], W.PEOPLE["aging"], "2023-08-30T15:20:00Z", "2023-09-21T20:41:16Z", W.OFFICE, False),
-    "facilities": ("Licensing and Certification", W.PEOPLE["planning"], "2026-09-02T13:10:00Z", "2026-09-08T19:22:47Z",
-                   W.OFFICE, True),
-    "providers": (W.PEOPLE["aging"], W.PEOPLE["aging"], "2023-07-05T14:02:00Z", "2026-10-09T15:31:02Z", W.OFFICE, True),
+    "dvc": ("hvcs.data", "hvcs.data", "2026-10-06T16:02:00Z", "2026-10-06T16:02:00Z", W.COALITION, True),
+    "register": (W.PEOPLE["partnership_data"], W.PEOPLE["partnership_data"], "2024-02-12T17:20:00Z",
+                 "2026-10-02T21:41:16Z", W.PARTNERSHIP, True),
+    "hic": ("HMIS Team", W.PEOPLE["partnership_data"], "2026-01-29T18:05:00Z", "2026-04-28T22:13:40Z", W.PARTNERSHIP,
+            True),
+    "policy": (W.PEOPLE["partnership_ed"], W.PEOPLE["partnership_ed"], "2026-08-11T15:30:00Z", "2026-09-16T23:02:51Z",
+               W.PARTNERSHIP, False),
 }
+RECEIVED = {"client": "2026-10-07", "enrollment": "2026-10-07", "exit": "2026-10-07", "services": "2026-10-07",
+            "dvc": "2026-10-06", "vsm": "2026-10-06", "hot": "2026-10-05", "pairs": "2026-10-09", "note": "2026-10-09",
+            "policy": "2026-09-16", "guide": "2026-10-14", "register": "2026-10-02", "pit": "2026-04-28",
+            "hic": "2026-04-28", "inventory": "2026-10-14"}
 
 
-def received():
-    import docs as DC
-    by_name = {r[0]: r[4] for r in DC.INVENTORY}
-    out = {}
-    for k, name in P.FILES.items():
-        out[k] = by_name.get(name, "2026-10-09")
-    return out
+def run_summary(world):
+    received = {s: sum(1 for r in world.records if r["src"] == s) for s in W.SOURCES}
+    no_year = {s: sum(1 for r in world.records if r["src"] == s and r["by"] is None) for s in W.SOURCES}
+    returned = sum(1 for i, j, sc, c in world.pairs if sc >= 4.0)
+    links = sum(1 for i, j, sc, c in world.pairs if sc >= W.THRESHOLD)
+    return {"received": received, "no_year": no_year, "returned": returned, "links": links}
 
 
-def build(out, b=None, quiet=False):
+def build(out, world=None, quiet=False):
     import docs as DC
     import postprocess as PP
-    from bundle import Bundle
     if os.path.exists(out):
         shutil.rmtree(out)
     os.makedirs(out)
     f = lambda k: os.path.join(out, P.FILES[k])
-    b = b or Bundle()
+    w = world or S.World()
+    keys = P.Keys(w)
     n = {}
-    p12_cols = ["GEO_ID", "NAME"] + P.P12_CODES
-    p12_labs = ["Geography", "Geographic Area Name"] + P.p12_labels()
-    n["blocks"] = P.write_csv(f("blocks"), P.BLOCK_COLS, P.blocks_long(b))
-    n["bgs"] = P.write_csv(f("bgs"), p12_cols, P.bg_rows(b), extra_header=p12_labs)
-    n["tracts"] = P.write_csv(f("tracts"), p12_cols, P.tract_rows(b), extra_header=p12_labs)
-    n["hu"] = P.write_csv(f("hu"), ["GEO_ID", "NAME", "H1_001N"], P.hu_rows(b),
-                          extra_header=["Geography", "Geographic Area Name", " !!Total"])
-    n["colmeta"] = P.write_csv(f("colmeta"), P.COLMETA_COLS, P.colmeta_rows())
-    n["assign"] = P.write_csv(f("assign"), P.ASSIGN_COLS, P.assign_rows(b))
-    n["points"] = P.write_csv(f("points"), P.POINTS_COLS, P.points_rows(b, W.SEED))
-    acols, alabs = P.acs_header()
-    n["acs"] = P.write_csv(f("acs"), acols, P.acs_rows(b, W.SEED), extra_header=alabs)
-    n["roster"] = P.write_csv(f("roster"), P.ROSTER_COLS, P.roster_rows(b))
-    n["episodes"] = P.write_csv(f("episodes"), P.EPISODE_COLS, P.episode_rows(b, W.SEED))
-    n["log"] = P.write_csv(f("log"), P.LOG_COLS, P.log_rows(b))
-    n["items"] = P.write_csv(f("items"), P.ITEM_COLS, P.item_rows())
-    n["deaths"] = P.write_csv(f("deaths"), P.DEATH_COLS, P.death_rows(b, W.SEED))
-    n["links"] = P.write_csv(f("links"), P.LINK_COLS, P.link_rows(b, W.SEED))
-    DC.write_inventory(f("inventory"))
-    n["inventory"] = len(DC.INVENTORY)
-    DC.write_guide(f("guide"))
-    DC.write_notes(f("notes"))
-    DC.write_instructions(f("instructions"))
+    n["client"] = P.write_csv(f("client"), P.CLIENT_COLS, P.client_rows(w, keys))
+    enr, exits, servs = P.enrollment_rows(w, keys)
+    n["enrollment"] = P.write_csv(f("enrollment"), P.ENR_COLS, enr)
+    n["exit"] = P.write_csv(f("exit"), P.EXIT_COLS, exits)
+    n["services"] = P.write_csv(f("services"), P.SERV_COLS, servs)
+    n["dvc"] = P.dvc_workbook(f("dvc"), w, keys)
+    n["vsm"] = P.write_csv(f("vsm"), P.VSM_COLS, P.vsm_rows(w, keys))
+    lines = P.hot_lines(w, keys)
+    with open(f("hot"), "w", encoding="utf-8", newline="\n") as fh:
+        for line in lines:
+            fh.write(json.dumps(line) + "\n")
+    n["hot"] = len(lines)
+    n["pairs"] = P.write_csv(f("pairs"), P.PAIR_COLS, P.pair_rows(w, keys))
+    DC.write_method_note(f("note"), run_summary(w))
     DC.write_policy(f("policy"))
-    DC.write_facilities(f("facilities"), b, P.geoid_block)
-    DC.write_providers(f("providers"))
+    DC.write_guide(f("guide"))
+    n["register"] = DC.write_register(f("register"), w, P.SITE_NAME, P.SITE_COC)
+    n["pit"] = P.write_csv(f("pit"), DC.PIT_COLS, DC.pit_rows(w))
+    n["hic"] = DC.write_hic(f("hic"), w)
+    n["inventory"] = DC.write_inventory(f("inventory"), P.FILES, n)
     for k, (c, m) in PDF_STAMPS.items():
         PP.normalize_pdf(f(k), c, m)
     for k, (cr, lb, c0, m0, co, xl) in OOXML.items():
         PP.normalize_ooxml(f(k), cr, lb, c0, m0, excel=xl, company=co)
-    rec = received()
     for i, k in enumerate(P.FILES):
-        y, m, d = (int(v) for v in rec[k].split("-"))
+        y, m, d = (int(v) for v in RECEIVED[k].split("-"))
         ts = dt.datetime(y, m, d, 8 + (i * 5) % 9, (i * 13) % 60, tzinfo=LOCAL).timestamp()
         os.utime(f(k), (ts, ts))
     if not quiet:
         big = max(n, key=lambda k: n[k])
         print("pack: %d files, largest %s (%d rows)" % (len(P.FILES), P.FILES[big], n[big]))
-    return n, b
+    return n, w
 
 
 def digest(folder):
@@ -114,22 +112,22 @@ def cut_zip(root):
     return zp
 
 
-def everything(root, b=None, quiet=False):
+def everything(root, world=None, quiet=False):
     import golden as GO
     import metadata as MD
     import writeup as WU
-    n, b = build(os.path.join(root, "target"), b=b, quiet=quiet)
+    n, w = build(os.path.join(root, "target"), world=world, quiet=quiet)
     gdir = os.path.join(root, "golden")
     if os.path.exists(gdir):
         shutil.rmtree(gdir)
     fig = os.path.join(root, "generator", "figures.json")
     GO.main(os.path.join(root, "target"), gdir, fig)
-    MD.write(os.path.join(root, "target"), os.path.join(root, "metadata.json"), sorted(os.listdir(gdir)), n)
+    MD.write(os.path.join(root, "metadata.json"), n)
     WU.write(fig, os.path.join(root, "submission.md"))
     if not quiet:
         print("built %s: %d pack files, %d golden files" % (root, len(os.listdir(os.path.join(root, "target"))),
                                                            len(os.listdir(gdir))))
-    return n, b
+    return n, w
 
 
 def main(fast=False):
@@ -137,10 +135,10 @@ def main(fast=False):
     import zipfile
     import checks as CK
     import verify as V
-    n, b = everything(TASK)
-    good = CK.run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), b=b,
+    n, w = everything(TASK)
+    good = CK.run(os.path.join(TASK, "target"), os.path.join(TASK, "golden"), world=w,
                   meta_path=os.path.join(TASK, "metadata.json"), fig_path=os.path.join(HERE, "figures.json"))
-    good &= bool(V.main(os.path.join(TASK, "target"), os.path.join(TASK, "golden")))
+    good &= V.main(os.path.join(TASK, "target"), os.path.join(TASK, "golden")) == 0
     if fast:
         if not good:
             raise SystemExit("checks failed")

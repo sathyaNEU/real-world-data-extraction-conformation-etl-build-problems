@@ -35,28 +35,41 @@ CHILD_M = ("Liam", "Noah", "Mateo", "Santiago", "Ethan", "Elijah", "Jayden", "Se
 # HMIS project types (FY2024 and later data standards): 0 ES entry/exit, 1 ES night by night, 2 TH, 3 PSH, 4 SO, 8 SH,
 # 13 RRH
 PROJECTS = {
-    "CAL": [(1012, 0, "Calvera Mission Men's Shelter"), (1015, 0, "Harbor Street Family Shelter"),
-            (1019, 0, "Lantern House Women's Shelter"), (1023, 0, "Calvera Navigation Center"),
-            (1027, 1, "Calvera Winter Respite"), (1031, 4, "Calvera County Street Outreach"),
-            (1034, 4, "Downtown Outreach Collaborative"), (1038, 8, "Riverside Safe Haven"),
-            (1042, 2, "New Hope Transitional Housing"), (1046, 2, "Second Street Youth Transitional"),
-            (1051, 13, "Calvera Rapid Re-Housing"), (1055, 13, "Families First Rapid Re-Housing"),
-            (1058, 13, "Calvera Veterans Rapid Re-Housing"), (1062, 3, "Ridgeway Apartments"),
-            (1066, 3, "Calvera Scattered Site Supportive Housing"), (1069, 3, "Mercy Commons")],
-    "MAR": [(311, 0, "Mardell County Shelter"), (314, 0, "Lighthouse Family Shelter"), (318, 4, "Mardell Outreach"),
-            (322, 2, "Gateway Transitional Housing"), (326, 13, "Mardell Rapid Re-Housing"),
-            (329, 13, "Housing Now Rapid Re-Housing"), (333, 3, "Mardell Supportive Housing"),
+    "HAL": [(1012, 0, "Halvering Mission Men's Shelter"), (1015, 0, "Harbor Street Family Shelter"),
+            (1019, 0, "Lantern House Women's Shelter"), (1023, 0, "Halvering Navigation Center"),
+            (1027, 1, "Halvering Winter Respite"), (1031, 4, "Halvering County Street Outreach"),
+            (1034, 4, "Downtown Outreach Collaborative"), (1038, 8, "Elm Street Safe Haven"),
+            (1042, 2, "Stepping Stone Transitional Housing"), (1046, 2, "Second Street Youth Transitional"),
+            (1051, 13, "Halvering Rapid Re-Housing"), (1055, 13, "Families First Rapid Re-Housing"),
+            (1058, 13, "Halvering Veterans Rapid Re-Housing"), (1062, 3, "Ridgeway Apartments"),
+            (1066, 3, "Halvering Scattered Site Supportive Housing"), (1069, 3, "Kestrel Commons")],
+    "MEL": [(311, 0, "Melbray County Shelter"), (314, 0, "Lighthouse Family Shelter"), (318, 4, "Melbray Outreach"),
+            (322, 2, "Gateway Transitional Housing"), (326, 13, "Melbray Rapid Re-Housing"),
+            (329, 13, "Housing Now Rapid Re-Housing"), (333, 3, "Melbray Supportive Housing"),
             (337, 3, "Oak Terrace")],
-    "OST": [(5104, 0, "Ostry Emergency Shelter"), (5108, 0, "Ostry Family Center"), (5113, 4, "Ostry Outreach"),
-            (5117, 13, "Ostry Rapid Re-Housing"), (5119, 13, "Ostry Youth and Family Rapid Re-Housing"),
-            (5121, 3, "Ostry Supportive Housing")],
-    "PEL": [(7203, 0, "Pellam Shelter"), (7205, 0, "Pellam Family Shelter"), (7207, 4, "Pellam Outreach"),
-            (7211, 13, "Pellam Rapid Re-Housing"), (7213, 13, "Pellam County Rapid Re-Housing (ESG)"),
-            (7215, 3, "Pellam Supportive Housing")],
+    "OND": [(5104, 0, "Ondrava Emergency Shelter"), (5108, 0, "Ondrava Family Center"), (5113, 4, "Ondrava Outreach"),
+            (5117, 13, "Ondrava Rapid Re-Housing"), (5119, 13, "Ondrava Youth and Family Rapid Re-Housing"),
+            (5121, 3, "Ondrava Supportive Housing")],
+    "PYR": [(7203, 0, "Pyrenna Shelter"), (7205, 0, "Pyrenna Family Shelter"), (7207, 4, "Pyrenna Outreach"),
+            (7211, 13, "Pyrenna Rapid Re-Housing"), (7213, 13, "Pyrenna County Rapid Re-Housing (ESG)"),
+            (7215, 3, "Pyrenna Supportive Housing")],
 }
+TRANSFER, SWAP = 0.20, 0.85         # rapid re-housing stays that change project before move-in; heads re-drawn
+# log-days from rapid re-housing entry to move-in, by Continuum and household type (with children, adults only)
+RRH_MU = {("HAL", True): 3.621, ("HAL", False): 3.625, ("MEL", True): 3.601, ("MEL", False): 3.602,
+          ("OND", True): 3.559, ("OND", False): 3.554, ("PYR", True): 3.597, ("PYR", False): 3.602}
 TYPE_NAME = {0: "ES", 1: "NBN", 2: "TH", 3: "PSH", 4: "SO", 8: "SH", 13: "RRH"}
 LENGTH = {"ES": (3.3, 1.0), "NBN": (3.6, 0.9), "SO": (4.6, 0.8), "TH": (5.3, 0.5), "RRH": (5.2, 0.6),
           "PSH": (6.4, 0.6), "SH": (4.2, 0.8)}      # lognormal stay length in days
+
+
+def _winter(d):
+    """The winter respite's season: 1 November to 31 March."""
+    return d.month >= 11 or d.month <= 3
+
+
+def _season(d):
+    return d.year if d.month >= 11 else d.year - 1
 
 
 def soundex(s):
@@ -88,7 +101,7 @@ def project_rows():
 
 
 class World:
-    def __init__(self, seed=W.SEED, n_households=24000):
+    def __init__(self, seed=W.SEED, n_households=44000):
         self.seed = seed
         self.projects = project_rows()
         self.by_kind = collections.defaultdict(list)
@@ -98,6 +111,7 @@ class World:
         self._histories(np.random.default_rng(seed + 1))
         self.records = self._records(np.random.default_rng(seed + 2))
         self.tidy()
+        self.moves()
 
     # ------------------------------------------------------------------------------------------------ people
     def _person(self, rng, pid, home, sex, hisp, by, role, ln=None, ln2=None):
@@ -115,7 +129,7 @@ class World:
                 "role": role}
 
     def _people(self, rng, n_hh):
-        hisp_share = {"CAL": 0.68, "MAR": 0.46, "OST": 0.32, "PEL": 0.26}
+        hisp_share = {"HAL": 0.68, "MEL": 0.46, "OND": 0.32, "PYR": 0.26}
         coc_w = np.array([0.47, 0.24, 0.17, 0.12])
         people, households = [], []
         for h in range(n_hh):
@@ -139,7 +153,7 @@ class World:
                                       ln=hoh["ln"], ln2=hoh["ln2"])
                     people.append(ch)
                     members.append(ch["pid"])
-            street = (not family) and rng.random() < (0.46 if home == "CAL" else 0.28)
+            street = (not family) and rng.random() < (0.46 if home == "HAL" else 0.28)
             dv = rng.random() < ((0.22 if family else 0.07) if sex == "F" else 0.02)
             households.append({"hid": h, "home": home, "family": family, "members": members, "street": street,
                                "dv": dv, "dv_only": dv and rng.random() < 0.55})
@@ -160,18 +174,20 @@ class World:
     def _histories(self, rng):
         last = W.FY26[1]
         span = (last - W.HISTORY_START).days
-        enr, beds, dv, enc, con = [], [], [], [], []
+        enr, beds, dv, enc, con, stays = [], [], [], [], [], []
         eid = [400000]
 
-        def add(hh, coc, proj, entry, exit_, move_in=None):
-            eid[0] += int(rng.integers(1, 9))
+        ids = np.random.default_rng(self.seed * 19 + 3)        # enrollment numbering, apart from the world's draws
+
+        def add(hh, coc, proj, entry, exit_, move_in=None, members=None):
+            eid[0] += int(ids.integers(1, 9))
             hid = "%s-H%07d" % (coc, eid[0] * 3 + 11)
-            for k, m in enumerate(hh["members"]):
+            for k, m in enumerate(members or hh["members"]):
                 rel = 1 if k == 0 else (3 if self.people[m]["role"] == "adult" else 2)
                 enr.append({"eid": eid[0] * 10 + k, "pid": m, "coc": coc, "project": proj["id"],
                             "kind": proj["kind"], "entry": entry, "exit": exit_, "hh_id": hid, "rel": rel,
                             "move_in": move_in if k == 0 else None, "hh": hh["hid"]})
-            return eid[0]
+            return enr[-len(members or hh["members"]):]
 
         for hh in self.households:
             start = W.HISTORY_START + dt.timedelta(days=int(rng.integers(0, span - 10)))
@@ -183,6 +199,7 @@ class World:
             k = 0 if hh["dv_only"] else int(min(5, 1 + rng.poisson(0.8)))
             day = start
             force_es = None
+            order = list(hh["members"])
             for e in range(k):
                 coc = cocs[0] if (len(cocs) == 1 or e == 0 or rng.random() < 0.5) else cocs[1]
                 if e == k - 1 and len(cocs) > 1 and all(x["coc"] != cocs[1] for x in enr[-3:]):
@@ -193,7 +210,7 @@ class World:
                     kind = rng.choice(["SO", "ES", "NBN", "SH", "RRH", "PSH"], p=[0.38, 0.27, 0.10, 0.07, 0.12, 0.06])
                 else:
                     kind = rng.choice(["ES", "NBN", "TH", "RRH", "PSH", "SO"], p=[0.42, 0.06, 0.13, 0.25, 0.09, 0.05])
-                if kind == "NBN" and coc != "CAL":
+                if kind == "NBN" and (coc != "HAL" or not _winter(day)):
                     kind = "ES"
                 if force_es is not None:
                     coc, kind = force_es, "ES"
@@ -206,34 +223,51 @@ class World:
                 if entry > last:
                     break
                 exit_ = entry + dt.timedelta(days=length)
+                if exit_ == W.FY26[0]:
+                    exit_ += DAY            # no stay ends on the year's first day (the policy and the nights agree)
                 if exit_ > W.PULL - dt.timedelta(days=16):
                     exit_ = None
                 move_in = None
-                if kind in ("RRH", "PSH"):
-                    wait = int(round(rng.lognormal(3.6 if kind == "RRH" else 2.6, 0.7)))
-                    if kind == "PSH" and rng.random() < 0.25:
+                if kind == "PSH":
+                    wait = int(round(rng.lognormal(2.6, 0.7)))
+                    if rng.random() < 0.25:
                         wait = 0
                     mi = entry + dt.timedelta(days=wait)
                     if (exit_ is None or mi < exit_) and mi <= last:
                         move_in = mi
-                    # a transfer to another rapid re-housing project before the household moves in
-                    if kind == "RRH" and move_in is not None and wait > 20 and rng.random() < 0.14:
-                        pool = [p for p in self.by_kind[(coc, "RRH")] if p["id"] != proj["id"]]
-                        if pool:
-                            x = entry + dt.timedelta(days=int(rng.integers(6, wait - 6)))
-                            add(hh, coc, proj, entry, x, None)
-                            proj = pool[int(rng.integers(len(pool)))]
-                            entry = x
+                stay = None
+                if kind == "RRH":
+                    # a move to another rapid re-housing project of the Continuum before the household is housed;
+                    # the receiving project may enrol the other adult as head of household (the one on the lease
+                    # it is placing the household in). The waits to move-in are drawn after the world is fixed.
+                    t_u, t_a, t_p, t_s = rng.random(), int(rng.integers(6, 46)), rng.random(), rng.random()
+                    stay = {"coc": coc, "start": entry, "x": None, "exit": exit_, "first": None}
+                    pool = [p for p in self.by_kind[(coc, "RRH")] if p["id"] != proj["id"]]
+                    if t_u < TRANSFER and pool and (exit_ is None or (exit_ - entry).days > t_a + 30) and \
+                            entry + dt.timedelta(days=t_a) <= last - dt.timedelta(days=7):
+                        x = entry + dt.timedelta(days=t_a)
+                        if x == W.FY26[0]:
+                            x += DAY
+                        stay["first"] = add(hh, coc, proj, entry, x, None, order)
+                        proj = pool[int(t_p * len(pool))]
+                        entry = x
+                        stay["x"] = x
+                        if len(order) > 1 and self.people[order[1]]["role"] == "adult" and t_s < SWAP:
+                            order = [order[1], order[0]] + order[2:]
                 if kind == "NBN":
                     nights = [entry + dt.timedelta(days=d) for d in range(length) if rng.random() < 0.68 or d == 0]
-                    nights = [n for n in nights if n <= last]
+                    nights = [n for n in nights if n <= last and _winter(n) and n >= entry]
+                    nights = [n for n in nights if (n - entry).days < 200 and _season(n) == _season(entry)]
                     exit_ = nights[-1] + DAY if nights[-1] + dt.timedelta(days=31) <= W.PULL else None
-                    eid_ = add(hh, coc, proj, entry, exit_, None)
+                    made = add(hh, coc, proj, entry, exit_, None)
                     for n in nights:
-                        for k2, m in enumerate(hh["members"]):
-                            beds.append({"eid": eid_ * 10 + k2, "pid": m, "coc": coc, "date": n})
+                        for row in made:
+                            beds.append({"eid": row["eid"], "pid": row["pid"], "coc": coc, "date": n})
                 else:
-                    add(hh, coc, proj, entry, exit_, move_in)
+                    made = add(hh, coc, proj, entry, exit_, move_in, order)
+                    if stay is not None:
+                        stay["final"] = made
+                        stays.append(stay)
                 # a shelter stay left open after the client moved on: the next entry comes before the exit
                 gap = int(rng.integers(3, 160))
                 if kind == "ES" and exit_ is not None and e < k - 1 and rng.random() < 0.09:
@@ -246,8 +280,11 @@ class World:
                     if d0 > last or d0 < W.HISTORY_START:
                         break
                     ln = max(2, int(round(rng.lognormal(3.3, 0.8))))
+                    end = d0 + dt.timedelta(days=ln)
+                    if end == W.FY26[0]:
+                        end += DAY
                     for m in hh["members"]:
-                        dv.append({"pid": m, "start": d0, "end": d0 + dt.timedelta(days=ln)})
+                        dv.append({"pid": m, "start": d0, "end": end})
                     d0 = d0 + dt.timedelta(days=ln + int(rng.integers(20, 300)))
             adult = hh["members"][0]
             if not hh["dv_only"] and rng.random() < (0.36 if hh["street"] else 0.17):
@@ -255,8 +292,12 @@ class World:
                     d = start + dt.timedelta(days=int(rng.integers(0, 420)))
                     if d <= last:
                         enc.append({"pid": adult, "date": d, "site": self._site(hh, rng),
-                                    "status": rng.choice(["Street", "Shelter", "Transitional"], p=[0.5, 0.4, 0.1])})
-            if hh["street"] and hh["home"] == "CAL" and not hh["dv_only"] and rng.random() < 0.72:
+                                    "status": str(rng.choice(["Street", "Homeless Shelter", "Transitional", "Doubling Up",
+                                                              "Unknown"], p=[0.42, 0.33, 0.08, 0.12, 0.05]))})
+            # the City's outreach team works downtown: most street households, and single adults it meets at meal
+            # sites, shelters' doors and the library
+            if hh["home"] == "HAL" and not hh["dv_only"] and not hh["family"] and \
+                    rng.random() < (0.72 if hh["street"] else 0.30):
                 for v in range(int(1 + rng.poisson(3.0))):
                     d = start + dt.timedelta(days=int(rng.integers(-30, 300)))
                     if W.HISTORY_START <= d <= last:
@@ -265,14 +306,37 @@ class World:
                             minute -= 8 * 60                    # no late-evening contact on a year's last day
                         con.append({"pid": adult, "date": d, "minute": minute})
         self.enrollments, self.bed_nights, self.dv_stays, self.encounters, self.contacts = enr, beds, dv, enc, con
-        # Ostry's HMIS vendor writes the household's move-in date on every member's enrollment, not only the head's
-        hoh_mi = {(e["hh_id"]): e["move_in"] for e in enr if e["rel"] == 1 and e["move_in"] is not None}
-        self.member_move_in = {e["eid"]: hoh_mi[e["hh_id"]] for e in enr
-                               if e["rel"] != 1 and e["coc"] == "OST" and e["hh_id"] in hoh_mi}
+        self.rrh_stays = stays
+
+    def moves(self, mu=None):
+        """Each rapid re-housing stay's move-in, from its own stream so the waits can be set without moving anything
+        else: a wait from the stay's first entry, lognormal by Continuum, longer where the household changed project
+        (the move comes at least a week after it arrives), and a move-in only before the stay's exit and by 30
+        September 2026. Ondrava's HMIS vendor writes the household's move-in date on every member's enrollment."""
+        mu = mu or RRH_MU
+        rng = np.random.default_rng(self.seed * 17 + 9)
+        last = W.FY26[1]
+        for e in self.enrollments:
+            if e["kind"] == "RRH":
+                e["move_in"] = None
+        for st in self.rrh_stays:
+            z = rng.normal()
+            fam = any(r["rel"] == 2 for r in st["final"])
+            wait = int(round(np.exp(mu[(st["coc"], fam)] + 0.7 * z)))
+            if st["x"] is not None:
+                wait = max(wait, (st["x"] - st["start"]).days + 7) + int(rng.integers(0, 15))
+            else:
+                rng.integers(0, 15)
+            mi = st["start"] + dt.timedelta(days=wait)
+            if (st["exit"] is None or mi < st["exit"]) and mi <= last:
+                st["final"][0]["move_in"] = mi
+        hoh_mi = {(e["hh_id"]): e["move_in"] for e in self.enrollments if e["rel"] == 1 and e["move_in"] is not None}
+        self.member_move_in = {e["eid"]: hoh_mi[e["hh_id"]] for e in self.enrollments
+                               if e["rel"] != 1 and e["coc"] == "OND" and e["hh_id"] in hoh_mi}
 
     @staticmethod
     def _site(hh, rng):
-        sites = {"CAL": ["VSM-01", "VSM-02", "VSM-05"], "MAR": ["VSM-03"], "OST": ["VSM-04"], "PEL": ["VSM-MP"]}
+        sites = {"HAL": ["WSH-01", "WSH-02", "WSH-05"], "MEL": ["WSH-03"], "OND": ["WSH-04"], "PYR": ["WSH-MP"]}
         lst = sites[hh["home"]]
         return lst[int(rng.integers(len(lst)))]
 
@@ -284,7 +348,7 @@ class World:
         for s in self.dv_stays:
             srcs[s["pid"]].add("DVC")
         for e in self.encounters:
-            srcs[e["pid"]].add("VSM")
+            srcs[e["pid"]].add("WSH")
         for c in self.contacts:
             srcs[c["pid"]].add("HOT")
         recs = []
@@ -300,14 +364,14 @@ class World:
             full = False                                    # the coalition sends birth year only, by policy
         elif s == "HOT":
             full = rng.random() < 0.15                      # most give an age, a few a date of birth
-        elif s == "VSM":
+        elif s == "WSH":
             full = True
         else:
-            approx = (0.52 if p["home"] == "CAL" else 0.24) if hh["street"] else 0.04
+            approx = (0.52 if p["home"] == "HAL" else 0.24) if hh["street"] else 0.04
             full = not (rng.random() < approx)
         ssn = None
         if p["ssn4"] is not None and ((s.startswith("HMIS") and rng.random() < 0.62) or
-                                      (s == "VSM" and rng.random() < 0.88)):
+                                      (s == "WSH" and rng.random() < 0.88)):
             ssn = p["ssn4"]
         fn = p["fn"]
         if rng.random() < 0.06 and fn in NICK:
@@ -321,7 +385,7 @@ class World:
 
     # ------------------------------------------------------------------------------------------------ the unit
     WEIGHTS = {"fn": {"A": 4.5, "P": 2.0, "D": -2.5}, "ln": {"A": 5.0, "P": 2.5, "D": -3.0},
-               "by": {"A": 2.0}, "bm": {"A": 2.0, "D": -3.0, "M": 0.0}, "bd": {"A": 2.5, "D": -3.5, "M": 0.0},
+               "by": {"A": 2.0}, "bm": {"A": 2.0, "D": -6.0, "M": 0.0}, "bd": {"A": 2.5, "D": -6.0, "M": 0.0},
                "sex": {"A": 0.5, "D": -2.0}, "ssn": {"A": 6.0, "D": -4.0, "M": 0.0}}
 
     @classmethod
@@ -356,8 +420,9 @@ class World:
     def tidy(self, rounds=60):
         """Redraw identity until (1) every person's records link to one another directly, (2) every link between two
         people's records sits where a source's grain shows it, so resolving the findings within each source's grain
-        recovers the people, and (3) the resolution's people and recipients do not depend on how a tie between equal
-        links is broken and match the people actually served."""
+        recovers the people, and (3) every licensed resolution of a linked group (strongest first under any order of
+        equal links, and each optimum of the constrained splits) returns the people actually served there and their
+        recipients."""
         import methods as MT
         rng = np.random.default_rng(self.seed * 13 + 5)
         self.tidy_log = []
@@ -413,7 +478,7 @@ class World:
             if f2:
                 self.tidy_log.append((it, 0, f2, 0))
                 continue
-            bad = MT.tie_sensitive(self, links)
+            bad = MT.family_sensitive(self, links, pairs)
             for q in sorted(set(bad)):
                 self._rename(q, rng)
             f3 = len(set(bad))

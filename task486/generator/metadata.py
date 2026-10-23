@@ -1,70 +1,50 @@
-"""metadata.json: the task's title, tags, deliverables, distractors, input gates and each file's source, date and
-license."""
+"""metadata.json in the task folder, outside target/: the distractors by bundle path and the portal's keys."""
 import json
-import os
 
 import pack as P
 
-SOURCES = {
-    "blocks": ("2020 Census Demographic and Housing Characteristics File, table P12, blocks of Kelvane County, long "
-               "form kept by the agency's planning staff", "2026-10-02"),
-    "bgs": ("2020 Census Demographic and Housing Characteristics File, table P12, block groups", "2026-10-02"),
-    "tracts": ("2020 Census Demographic and Housing Characteristics File, table P12, the county and its tracts",
-               "2026-10-02"),
-    "hu": ("2020 Census Demographic and Housing Characteristics File, table H1, blocks", "2026-10-02"),
-    "colmeta": ("2020 Census DHC download: column metadata for P12 and H1", "2026-10-02"),
-    "notes": ("State Data Center: technical bulletin 2023-04, notes for local users of the 2020 DHC", "2024-02-14"),
-    "assign": ("Kelvane County Department of Planning and Development: provider area of each census block",
-               "2026-10-02"),
-    "points": ("Kelvane County Department of Planning and Development: address points register", "2026-10-02"),
-    "acs": ("American Community Survey 2018-2022 five-year estimates, table B01001, block groups", "2026-10-02"),
-    "instructions": ("State Department on Aging: program instruction AP-27-02, FY2027 area plan update",
-                     "2026-08-14"),
-    "policy": ("Kelvane Area Agency on Aging: Board policy N-3, provider allocation of nutrition funds", "2023-09-21"),
-    "facilities": ("State licensing list of residential care facilities in Kelvane County, census blocks added by the "
-                   "agency", "2026-09-08"),
-    "providers": ("Kelvane Area Agency on Aging: provider directory", "2026-10-09"),
-    "roster": ("Kelvane Area Agency on Aging case management system: home-delivered meal client roster",
-               "2026-10-09"),
-    "episodes": ("Kelvane Area Agency on Aging case management system: home-delivered meal episodes", "2026-10-09"),
-    "log": ("Route tablet system: home-delivered meal delivery log, FY2026", "2026-10-06"),
-    "items": ("Kelvane Area Agency on Aging: route item codes", "2026-10-06"),
-    "deaths": ("State Department on Aging: monthly death match runs, statewide", "2026-10-06"),
-    "links": ("State Department on Aging: participant registry number links, statewide", "2026-10-06"),
-    "inventory": ("Kelvane Area Agency on Aging: data inventory of the planning files", "2026-10-09"),
-    "guide": ("Kelvane Area Agency on Aging: field guide to the planning files", "2026-10-09"),
-}
-DISTRACTORS = ["kelvane_address_points_2026-10-02.csv", "acs2022_5yr_kelvane_block_groups_b01001.csv",
-               "licensed_residential_care_kelvane.xlsx"]
+DISTRACTORS = [P.FILES["pit"], P.FILES["hic"]]
 
 
-def write(target, path, golden_files, counts):
-    files = sorted(os.listdir(target))
-    fmts = sorted({os.path.splitext(n)[1].lstrip(".") for n in files})
-    big = max(counts, key=lambda k: counts[k])
+def write(path, n):
     meta = {
         "task": "task486",
-        "architecture": 1,
-        "title": ("How many residents aged 60 and over, and aged 75 and over, lived in each of Kelvane County's six "
-                  "senior-services provider areas on census day in 2020, with each provider's home-delivered meals "
-                  "in FY2026 and its active home-delivered meal clients on 30 September 2026"),
-        "domain": "General Statistics & Data Science",
-        "subdomain": ("data-integration-record-linkage-entity-resolution (an area agency on aging fuses a formally "
-                      "private census release's block group and block tables with census-day housing counts into "
-                      "counts of older residents for provider areas whose boundaries cut block groups, and conforms "
-                      "its route tablets' delivery log, its case records and the state's death match into each "
-                      "provider's service figures)"),
+        "domain": "General Statistics & Data Science (data integration, record linkage and entity resolution)",
+        "client_domain": "General Statistics & Data Science",
+        "task_type": "data-integration-record-linkage-entity-resolution",
         "objective": "Data Extraction & Conformation (ETL)",
-        "prompt_shape": "14: cuts of a distribution per segment, two age cuts for each of six provider areas, beside "
-                        "two service figures for each provider",
-        "as_of": "2026-10-09",
-        "deliverables": golden_files,
         "distractor_files": DISTRACTORS,
-        "input_gates": {"files": len(files), "formats": fmts, "largest_file": P.FILES[big],
-                        "largest_file_rows": counts[big]},
-        "files": [{"file": P.FILES[k], "source": SOURCES[k][0], "date": SOURCES[k][1],
-                   "license": "Synthetic data generated for this task; no real records. CC BY 4.0."}
-                  for k in P.FILES],
+        "distractor_reasons": {
+            P.FILES["pit"]: "the region's 2026 point-in-time count by Continuum, people sheltered and unsheltered on the "
+                            "night of 28 January 2026; a one-night count, not the FY2026 people served that policy "
+                            "RF-2027 section 2 splits the fund on, so no figure reads it",
+            P.FILES["hic"]: "the 2026 housing inventory count, each project's beds and units on that night; a capacity "
+                            "inventory that no people-served count, night or wait is computed from",
+        },
+        "wrong_basis_distractors": {
+            P.FILES["pit"]: "ranks the Continuums by one night's count; ruled out by RF-2027 section 2, which splits the "
+                            "fund in proportion to the people each recipient served in FY2026",
+        },
+        "stated_inputs": ["policy RF-2027", "FY2026", "2027 Fund", "each quarter of FY2026", "whole dollars",
+                          "whole numbers", "one decimal"],
+        "deliverables": ["halvering_2027_fund_allocation.xlsx"],
+        "as_of": "2026-10-14",
+        "files": sorted(P.FILES.values()),
+        "rows": {P.FILES[k]: v for k, v in sorted(n.items())},
+        "sources": {
+            "constructed": "every file is constructed for this task by its generator (task486/generator); the Halvering "
+                           "Valley region, its counties, Continuums of Care, the Homeless Data Partnership, the "
+                           "coalition, the clinic, the outreach team, the State Data Linkage Unit, their staff and every "
+                           "record and number in the files are fictional",
+            "public_specifications": "the HMIS files follow the HUD HMIS CSV layout and the HMIS Data Standards' project "
+                                     "types, relationship, date-of-birth quality and destination codes (FY2024, and "
+                                     "FY2022 for one vendor); the clinic's housing statuses are HRSA's UDS categories; "
+                                     "the pair file follows the layout a privacy-preserving linkage service returns "
+                                     "(per-field agreement codes and Fellegi-Sunter style scores)",
+            "licence": "CC0 1.0 (constructed data)",
+            "date": "2026-10-14",
+        },
     }
     with open(path, "w", encoding="utf-8") as fh:
         json.dump(meta, fh, indent=1)
+        fh.write("\n")

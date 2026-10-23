@@ -1,6 +1,7 @@
 """task486 documents and workbooks: the Regional Fund Committee's allocation policy RF-2027, the State Data Linkage
 Unit's method note with the run summary, the Partnership's guide to the integration extract, its project register, the
 coalition's comparable-database export, the 2026 point-in-time count and housing inventory, and the data inventory."""
+import collections
 import csv
 import datetime as dt
 
@@ -19,6 +20,7 @@ from reportlab.pdfbase import pdfmetrics                                        
 from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
+import sim as S     # noqa: E402
 import world as W    # noqa: E402
 
 FONT_DIR = "/usr/share/fonts/truetype/liberation/"
@@ -70,29 +72,30 @@ def _table(rows, widths, head="#e2e7ee"):
 # ------------------------------------------------------------------------------------------------ policy RF-2027
 POLICY = [
     ("1. Purpose",
-     ["The counties of Calvera, Mardell, Ostry and Pellam pool the Calvera Valley Regional Homelessness Fund under "
+     ["The counties of Halvering, Melbray, Ondrava and Pyrenna pool the Halvering Valley Regional Homelessness Fund under "
       "their joint agreement of 2021. This policy sets how the Fund's 2027 amount is split among the region's four "
-      "Continuums of Care and the Calvera Valley Coalition for Survivors."]),
+      "Continuums of Care and the Halvering Valley Coalition for Survivors."]),
     ("2. The amount and the split",
-     ["The 2027 Fund is $18,750,000. The Calvera Valley Homeless Data Partnership keeps 4 per cent of it for "
+     ["The 2027 Fund is $18,750,000. The Halvering Valley Homeless Data Partnership keeps 4 per cent of it for "
       "administration and the regional data integration. The rest is split among the five recipients in proportion "
       "to the people each served in federal fiscal year 2026 (1 October 2025 to 30 September 2026). Each recipient's "
-      "amount is rounded to the nearest dollar."]),
+      "amount is rounded to the nearest dollar, and the Partnership's share takes up any dollar the rounding leaves "
+      "over or short."]),
     ("3. People served",
      ["A person is counted once for the region if any record of theirs shows service in FY2026:",
       "(a) an enrollment in a Continuum's HMIS emergency shelter, safe haven, transitional housing, street outreach, "
       "rapid re-housing or permanent supportive housing project that was open on any day of the year, that is, "
       "entered on or before 30 September 2026 and not exited before 1 October 2025;",
       "(b) a stay in a coalition shelter on any night of the year;",
-      "(c) a Valley Street Medicine encounter in the year at which the patient's housing status was recorded as "
+      "(c) a Wayfarer Street Health encounter in the year at which the patient's housing status was recorded as "
       "street, shelter or transitional housing; or",
-      "(d) a contact by the City of Calvera Homeless Outreach Team in the year.",
+      "(d) a contact by the City of Halvering Homeless Outreach Team in the year.",
       "Dates are the local dates the sources record."]),
     ("4. Recipient",
      ["Each person served is placed with one recipient: the Continuum of their latest HMIS enrollment open in the "
       "year, latest by entry date; for a person with no such enrollment, the coalition if they stayed in a coalition "
       "shelter in the year; otherwise the Continuum where their latest outreach contact or clinic encounter of the "
-      "year took place. The outreach team works in Calvera, and the Partnership's register gives each clinic site's "
+      "year took place. The outreach team works in Halvering, and the Partnership's register gives each clinic site's "
       "Continuum."]),
     ("5. One person across the sources",
      ["Each source holds people under its own identifiers. Records in different sources are matched by the State Data "
@@ -100,7 +103,7 @@ POLICY = [
       "Partnership counts people from the unit's findings for its run of 8 October 2026 on the FY2025 and FY2026 "
       "records."]),
     ("6. Timetable",
-     ["Calvera County, the Fund's fiscal agent, renews each recipient's contract for 2027 from 1 January 2027 at "
+     ["Halvering County, the Fund's fiscal agent, renews each recipient's contract for 2027 from 1 January 2027 at "
       "the amount this policy gives it. The Partnership prepares the table of people served and amounts for the "
       "Committee's meeting of 9 December 2026, so that the renewals are signed before the year begins."]),
 ]
@@ -112,7 +115,7 @@ def write_policy(path):
     st.font.name = "Calibri"
     st.font.size = Pt(10.5)
     t = d.add_paragraph()
-    r = t.add_run("Calvera Valley Regional Homelessness Fund")
+    r = t.add_run("Halvering Valley Regional Homelessness Fund")
     r.bold = True
     r.font.size = Pt(15)
     r.font.color.rgb = RGBColor(0x1F, 0x3A, 0x5F)
@@ -156,28 +159,25 @@ def write_method_note(path, summary):
           "record is in."]),
         ("Which records are compared",
          ["Two records are compared only when they come from different sources, share the year of birth and share "
-          "the Soundex code of the first surname. Records without a year of birth are not compared. The unit does not "
-          "compare two records of one source: each source keeps its own records free of duplicates."]),
+          "the Soundex code of the first surname. Records without a year of birth are not compared."]),
         ("Scores and findings",
          ["Each identifier is coded A (agree), P (agree in part), D (disagree) or M (missing on either record), and "
           "the score is the sum of the weights below, year of birth included. A pair scoring 9.0 or more is returned "
           "as a LINK, one scoring from 4.0 to 8.9 as a NONLINK, and pairs under 4.0 are not returned.",
           "A LINK is the unit's finding that the two records very probably belong to the same person, and a NONLINK "
-          "that they very probably do not. Findings are made pair by pair: the unit does not group records into "
-          "people, and an agency counting people from the findings does that itself."]),
+          "that they very probably do not. Each finding concerns one pair of records; the unit does not group "
+          "records into people."]),
     ]
     for head, ps in paras:
         story.append(Paragraph(head, h2))
         for p in ps:
             story.append(Paragraph(p, SANS))
-    wt = [["Identifier", "A", "P", "D", "M"],
-          ["First name", "4.5", "2.0", "-2.5", "not used"],
-          ["Surname", "5.0", "2.5", "-3.0", "not used"],
-          ["Year of birth", "2.0", "", "", ""],
-          ["Month of birth", "2.0", "", "-3.0", "0.0"],
-          ["Day of birth", "2.5", "", "-3.5", "0.0"],
-          ["Sex", "0.5", "", "-2.0", ""],
-          ["SSN, last four", "6.0", "", "-4.0", "0.0"]]
+    wt = [["Identifier", "A", "P", "D", "M"]]
+    for key, label in (("fn", "First name"), ("ln", "Surname"), ("by", "Year of birth"), ("bm", "Month of birth"),
+                       ("bd", "Day of birth"), ("sex", "Sex"), ("ssn", "SSN, last four")):
+        wts = S.World.WEIGHTS[key]
+        wt.append([label] + ["%.1f" % wts[c] if c in wts else ("not used" if c == "M" and key in ("fn", "ln") else "")
+                             for c in "APDM"])
     story.append(_table(wt, [1.6 * inch, 0.7 * inch, 0.7 * inch, 0.7 * inch, 0.8 * inch]))
     story.append(Spacer(1, 8))
     story.append(Paragraph("Run summary: %s, run of 8 October 2026" % W.PARTNERSHIP, h2))
@@ -197,7 +197,7 @@ def write_method_note(path, summary):
 
 
 # ------------------------------------------------------------------------------------------------ the guide
-GUIDE = """CALVERA VALLEY HOMELESS DATA PARTNERSHIP
+GUIDE = """HALVERING VALLEY HOMELESS DATA PARTNERSHIP
 Guide to the FY2026 integration extract
 Kathleen Carlson, director of data. 14 October 2026.
 
@@ -209,7 +209,7 @@ FILES AND WHAT A ROW IS
 
 hmis_client_fy2025_fy2026.csv
   One row per client record in a Continuum's HMIS. The four Continuums run separate HMIS implementations
-  (SourceCoC: CAL Calvera, MAR Mardell, OST Ostry, PEL Pellam). PersonalID identifies a person within a Continuum's
+  (SourceCoC: HAL Halvering, MEL Melbray, OND Ondrava, PYR Pyrenna). PersonalID identifies a person within a Continuum's
   HMIS: the HMIS lead's monthly duplicate review merges any two client records found to be the same person, so within
   one Continuum a person has one PersonalID. A person served in two Continuums has a record in each. Identifying fields
   are not in the extract; YearOfBirth and the data quality codes are.
@@ -222,27 +222,29 @@ hmis_exit_fy2025_fy2026.csv
 hmis_services_fy2025_fy2026.csv
   Bed nights at the night-by-night shelter (RecordType 200): one row per night a client slept there.
 dvc_comparable_db_export.xlsx
-  The Calvera Valley Coalition for Survivors' comparable database (domestic violence programs do not enter clients
-  in HMIS). Sheet Clients: one client record per survivor; ClientKey identifies the survivor. Birth year only, by the
-  coalition's confidentiality policy. Sheet Stays: one row per shelter stay (StayStart, the first night; StayEnd, the
-  day the stay ended).
-vsm_hch_encounters_fy2025_fy2026.csv
-  Valley Street Medicine's health care for the homeless encounters: one row per encounter. PatientKey identifies a
-  patient. HousingStatus is the housing status recorded at the encounter, in the HRSA categories.
+  The Halvering Valley Coalition for Survivors' comparable database (domestic violence programs do not enter clients
+  in HMIS). Sheet Clients: one client record per survivor, ClientKey identifying the survivor (intake looks up a
+  returning survivor before opening a record). Birth year only, by the coalition's confidentiality policy. Sheet
+  Stays: one row per shelter stay (StayStart, the first night; StayEnd, the day the stay ended).
+wsh_hch_encounters_fy2025_fy2026.csv
+  Wayfarer Street Health's health care for the homeless encounters: one row per encounter. PatientKey identifies a
+  patient, the clinic registering each patient once. HousingStatus is the patient's housing status recorded at the
+  encounter, in the HRSA categories (Street, Homeless Shelter, Transitional, Doubling Up, Unknown).
 hot_field_app_contacts.jsonl
-  The City of Calvera Homeless Outreach Team's field app: one line per contact, client_key identifying the client
-  in the app, contact_time in local time with its UTC offset.
+  The City of Halvering Homeless Outreach Team's field app: one line per contact. client_key identifies the client,
+  the app keeping one key per client; contact_time is local time with its UTC offset; birth_year is the client's
+  year of birth as the app holds it and dob_on_file whether it also holds the full date.
 sdlu_linkage_pairs_run_20261008.csv
   The State Data Linkage Unit's findings: one row per pair of records the unit compared and returned. source_a and
-  source_b are the sources (HMIS-CAL, HMIS-MAR, HMIS-OST, HMIS-PEL, DVC, VSM, HOT); record_a and record_b are the
+  source_b are the sources (HMIS-HAL, HMIS-MEL, HMIS-OND, HMIS-PYR, DVC, WSH, HOT); record_a and record_b are the
   record keys as the source sent them. The unit's method note gives the agreement codes and weights.
 partnership_project_register.xlsx
-  The HMIS projects of the four Continuums, Valley Street Medicine's sites and the outreach team's area.
+  The HMIS projects of the four Continuums, Wayfarer Street Health's sites and the outreach team's area.
 pit_2026_counts_by_coc.csv, hic_2026_inventory.xlsx
   The region's 2026 point-in-time count (night of 28 January 2026) and housing inventory, as submitted to HUD.
 
 RECORD KEYS
-  HMIS PersonalIDs are each vendor's own: Calvera and Pellam numeric, Mardell with an M- prefix, Ostry eight
+  HMIS PersonalIDs are each vendor's own: Halvering and Pyrenna numeric, Melbray with an M- prefix, Ondrava eight
   hexadecimal characters. The coalition's ClientKey (DV-), the clinic's PatientKey (numeric) and the outreach app's
   client_key (C-) are sent as held.
 
@@ -252,7 +254,7 @@ HMIS CONVENTIONS
   re-housing.
   A client is in a project on each night from the entry date to the night before the exit date. An enrollment with
   no exit was still open when the extract was taken.
-  At the night-by-night shelter (Calvera Winter Respite) each night a client sleeps there is a bed-night service.
+  At the night-by-night shelter (Halvering Winter Respite) each night a client sleeps there is a bed-night service.
   Under the Partnership's HMIS policy its enrollments are exited on the day after the last bed night once 30 days
   pass without one.
   HouseholdID groups the clients of one household's enrollment. RelationshipToHoH: 1 head of household, 2 child,
@@ -270,3 +272,149 @@ WHO TO ASK
 def write_guide(path):
     with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
         fh.write(GUIDE)
+
+
+# ------------------------------------------------------------------------------------------------ register, PIT, HIC
+TYPE_LABEL = {0: "Emergency Shelter - Entry Exit", 1: "Emergency Shelter - Night-by-Night", 2: "Transitional Housing",
+              3: "PH - Permanent Supportive Housing", 4: "Street Outreach", 8: "Safe Haven",
+              13: "PH - Rapid Re-Housing"}
+OPENED = {1012: "2009-07-01", 1015: "2014-03-01", 1019: "2011-10-01", 1023: "2019-01-15", 1027: "2016-11-01",
+          1031: "2010-01-01", 1034: "2021-05-01", 1038: "2012-06-01", 1042: "2008-09-01", 1046: "2017-02-01",
+          1051: "2013-10-01", 1055: "2018-07-01", 1058: "2015-10-01", 1062: "2012-04-01", 1066: "2016-01-01",
+          1069: "2022-08-01"}
+DV_PROGRAMS = [("Hearthstone Emergency Shelter", "HAL", "ES"), ("Haven House", "MEL", "ES"),
+               ("Bridges Transitional Program", "OND", "TH")]
+
+
+def _sheet(ws, head, rows, widths):
+    ws.append(head)
+    for r in rows:
+        ws.append(r)
+    for c in ws[1]:
+        c.font = Font(bold=True, color="FFFFFF")
+        c.fill = PatternFill("solid", fgColor="1F3A5F")
+        c.alignment = Alignment(vertical="center", wrap_text=True)
+    ws.freeze_panes = "A2"
+    for k, wd in enumerate(widths):
+        ws.column_dimensions[chr(65 + k)].width = wd
+
+
+def write_register(path, world, site_name, site_coc):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "HMIS projects"
+    rows = []
+    for p in sorted(world.projects, key=lambda p: (W.COCS.index(p["coc"]), p["id"])):
+        note = "Open 1 November to 31 March each winter." if p["ptype"] == 1 else None
+        rows.append([p["coc"], p["id"], p["name"], p["ptype"], TYPE_LABEL[p["ptype"]],
+                     OPENED.get(p["id"], "2015-07-01"), None, note])
+    _sheet(ws, ["SourceCoC", "ProjectID", "ProjectName", "ProjectType", "ProjectTypeName", "OperatingStartDate",
+                "OperatingEndDate", "Notes"], rows, [10, 10, 40, 11, 34, 17, 16, 40])
+    ws2 = wb.create_sheet("Clinic sites")
+    _sheet(ws2, ["Site", "SiteName", "CoC"], [[k, site_name[k], site_coc[k]] for k in sorted(site_name)], [10, 62, 8])
+    ws3 = wb.create_sheet("Outreach")
+    _sheet(ws3, ["Team", "Area", "CoC"],
+           [[W.OUTREACH, "City of Halvering, downtown and riverside zones Z01 to Z14", "HAL"]], [40, 52, 8])
+    ws4 = wb.create_sheet("Coalition programs")
+    _sheet(ws4, ["Program", "CoC", "Type"], [[n, c, t] for n, c, t in DV_PROGRAMS], [36, 8, 8])
+    wb.save(path)
+    return len(rows)
+
+
+PIT_NIGHT = dt.date(2026, 1, 28)
+
+
+def pit_rows(world):
+    """The 2026 point-in-time count by Continuum (night of 28 January 2026), as each Continuum submitted it: sheltered
+    people from its shelters' and the coalition's records for the night, unsheltered from the street count."""
+    night = PIT_NIGHT
+    sh = {c: collections.defaultdict(set) for c in W.COCS}
+    for e in world.enrollments:
+        if e["kind"] in ("ES", "SH", "TH") and e["entry"] <= night and (e["exit"] is None or e["exit"] > night):
+            sh[e["coc"]][e["kind"]].add(e["pid"])
+    for n in world.bed_nights:
+        if n["date"] == night:
+            sh[n["coc"]]["ES"].add(n["pid"])
+    for s in world.dv_stays:
+        if s["start"] <= night < s["end"]:
+            name, coc, kind = DV_PROGRAMS[s["pid"] % 3]
+            sh[coc][kind].add(("DV", s["pid"]))
+    street = collections.Counter()
+    for e in world.enrollments:
+        if e["kind"] == "SO" and e["entry"] <= night and (e["exit"] is None or e["exit"] > night):
+            if world.households[world.people[e["pid"]]["hh"]]["street"]:
+                street[e["coc"]] += 1
+    rows = []
+    for c in W.COCS:
+        es, th, sf = len(sh[c]["ES"]), len(sh[c]["TH"]), len(sh[c]["SH"])
+        un = int(round(street[c] * (1.9 if c == "HAL" else 1.4)))
+        rows.append([c, W.COC_NAME[c], es, th, sf, es + th + sf, un, es + th + sf + un])
+    return rows
+
+
+PIT_COLS = ["CoC", "CoCName", "Sheltered_ES", "Sheltered_TH", "Sheltered_SH", "Sheltered_Total", "Unsheltered",
+            "Total"]
+
+
+def write_hic(path, world):
+    """The 2026 housing inventory count: beds and units by project on the night of 28 January 2026."""
+    night = PIT_NIGHT
+    occ = collections.defaultdict(set)
+    peak = collections.Counter()
+    for e in world.enrollments:
+        if e["entry"] <= night and (e["exit"] is None or e["exit"] > night):
+            occ[e["project"]].add(e["pid"])
+    for n in world.bed_nights:
+        if n["date"] == night:
+            occ[1027].add(n["pid"])
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Inventory"
+    rows = []
+    for p in sorted(world.projects, key=lambda p: (W.COCS.index(p["coc"]), p["id"])):
+        if p["ptype"] == 4:
+            continue
+        n = len(occ[p["id"]])
+        beds = int(5 * round((n * (1.08 if p["ptype"] in (0, 1, 8) else 1.12) + 4) / 5))
+        units = int(round(beds / (1.0 if p["ptype"] in (0, 1, 8, 2) else 1.7)))
+        seasonal = beds if p["ptype"] == 1 else 0
+        rows.append([p["coc"], p["id"], p["name"], TYPE_LABEL[p["ptype"]], beds - seasonal, seasonal, units,
+                     "Yes" if p["ptype"] != 1 else "Seasonal"])
+    _sheet(ws, ["CoC", "ProjectID", "ProjectName", "ProjectType", "YearRoundBeds", "SeasonalBeds", "Units",
+                "Availability"], rows, [8, 10, 40, 34, 14, 13, 8, 13])
+    wb.save(path)
+    return len(rows)
+
+
+INVENTORY = []
+
+
+def write_inventory(path, files, rows):
+    """The Partnership's list of what the extract holds, as its data team keeps it."""
+    meta = {
+        "client": ("Four Continuums' HMIS (stacked)", "Client records, FY2025 and FY2026", "2026-10-07"),
+        "enrollment": ("Four Continuums' HMIS (stacked)", "Project enrollments", "2026-10-07"),
+        "exit": ("Four Continuums' HMIS (stacked)", "Exits", "2026-10-07"),
+        "services": ("Four Continuums' HMIS (stacked)", "Bed nights at the night-by-night shelter", "2026-10-07"),
+        "dvc": (W.COALITION, "Comparable database export: clients and shelter stays", "2026-10-06"),
+        "vsm": (W.CLINIC, "Health care for the homeless encounters", "2026-10-06"),
+        "hot": (W.OUTREACH, "Field app contacts", "2026-10-05"),
+        "pairs": (W.LINKAGE_UNIT, "Pairwise findings, run of 8 October 2026", "2026-10-09"),
+        "note": (W.LINKAGE_UNIT, "Method note v3 with the run summary", "2026-10-09"),
+        "policy": (W.COMMITTEE, "Allocation policy RF-2027", "2026-09-16"),
+        "guide": (W.PARTNERSHIP, "Guide to the FY2026 integration extract", "2026-10-14"),
+        "register": (W.PARTNERSHIP, "Project register", "2026-10-02"),
+        "pit": (W.PARTNERSHIP, "2026 point-in-time count by Continuum, as submitted", "2026-04-28"),
+        "hic": (W.PARTNERSHIP, "2026 housing inventory count, as submitted", "2026-04-28"),
+        "inventory": (W.PARTNERSHIP, "This list", "2026-10-14"),
+    }
+    INVENTORY[:] = []
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh, lineterminator="\r\n")
+        w.writerow(["file", "from", "what", "rows", "received"])
+        for k, name in files.items():
+            frm, what, rec = meta[k]
+            n = rows.get(k, "")
+            w.writerow([name, frm, what, n, rec])
+            INVENTORY.append((name, frm, what, n, rec))
+    return len(INVENTORY)

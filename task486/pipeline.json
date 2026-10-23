@@ -1,25 +1,25 @@
 {
   "task": "task486",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science/data-integration-record-linkage-entity-resolution",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 4,
+  "stage_name": "check",
   "updated": "2026-10-23",
-  "stump": "Merging every record the linkage unit linked, directly or through other records, files the region and Calvera short of the people they served in FY2026 and moves the 2027 fund away from Calvera, because records carrying only a birth year link to every client of that name and year, so chains of links join people one Continuum's own HMIS keeps apart.",
+  "stump": "Merging every record the linkage unit linked, directly or through other records, files the region and Halvering short of the people they served in FY2026 and moves the 2027 fund away from Halvering, because records carrying only a birth year link to every client of that name and year, so chains of links join people one Continuum's own HMIS keeps apart.",
   "architecture": 2,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-23"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (no LEAK), 2026-10-23",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN (strategy risk, Gate G repeat beside task483)",
     "nearest": "task471 v3 lineage 0.07"
   },
   "judge": {
@@ -28,7 +28,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2, architecture 2, card re-filed 2026-10-23 (forcing event purchase_order_or_contract, role statistical_office_head, linkage contact Joshua Bell). Generator: world.py, names.py, sim.py, methods.py, pack.py, docs.py written; golden, checks, verify, writeup, metadata, ceiling, build still to write; postprocess COMPANY still the old build's; pack.py hot_lines reads a nonexistent world.records_by_key. Next: the design note's stage 2 sections, the asks, prompt.txt, precut",
+  "resume": "stage 4 in flight: two isolated scored readers (sonnet, medium) on fresh copies of prompt.txt and target/ in the session scratchpad, and the determinism judge thread on /tmp/determinism-check-task486-225152 (the judge agent wrote the brief and waits to be re-invoked with verdict.md); on their return score each reader with score_reader.py (call keys amount|HAL, amount|MEL, amount|OND, amount|PYR, amount|DVC), have the judge write determinism_check_report.md, fix every finding in one generator pass, then ship or record the spend. The free gates are green on the final cut (48 checks, verify, two byte-identical builds, figures_check 73/73, precut 0 FAIL, leak.py REVIEW answered, surface clean, heart WARN); target.zip is rebuilt by build.py",
   "approved": null,
   "delivered": null,
   "portal": null,

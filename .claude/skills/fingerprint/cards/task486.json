@@ -6,13 +6,13 @@
   "domain": "general-statistics-data-science",
   "subdomain": "data-integration-record-linkage-entity-resolution",
   "client_domain": "general-statistics-data-science",
-  "niche": "resolving a privacy-preserving linkage service's pairwise findings across four Continuums of Care's HMIS exports, a domestic violence coalition's comparable database and a health care for the homeless clinic into the people a regional homelessness authority served once each in FY2026, the count its 2027 regional fund is split on",
+  "niche": "resolving a state linkage unit's pairwise findings across four Continuums of Care's HMIS exports, a domestic violence coalition's comparable database, a health care for the homeless clinic and a city outreach app into the people a region served once each in FY2026, the count its 2027 regional fund is split on",
   "objective": "etl",
-  "shape": "03",
+  "shape": "05",
   "decision_type": "allocation_to_total",
   "answer_unit": "currency",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Halvering City and County CoC 7,993,704 dollars on 17,774 people served; Melbray County CoC 4,283,337 on 9,524; Ondrava County CoC 2,962,447 on 6,587; Pyrenna County CoC 2,125,478 on 4,726; the Halvering Valley Coalition for Survivors 635,035 on 1,412; the region 40,023 people",
+  "answer_source": "task486/submission.md block 1, task486/golden/halvering_2027_fund_allocation.xlsx",
   "gap": [
     "population"
   ],
@@ -31,24 +31,25 @@
   "validated_decoy": false,
   "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "With the data cleaned and every rule read correctly, the analyst merges every record the linkage service linked, directly or through other records, counts the merged groups active in FY2026 and files the region and the downtown Continuum of Care short by about one person in fifty, the downtown share of the 2027 fund with them; resolving the service's pairwise findings into people so that no person holds two client records of one CoC's HMIS, each chain cut at its weakest link, gives the count, because a record carrying only a birth year links to every client of that name and year.",
+  "analyst_test": "With every field read and every rule applied, the analyst merges every record the linkage unit linked, directly or through other records, counts the merged groups with FY2026 service and files the downtown Continuum 7,964,889 dollars on 17,644 people and the region 39,874 people; resolving the findings strongest first so that no person holds two records of one source gives 7,993,704 dollars on 17,774 people and the region 40,023, because a record carrying only a birth year links to every client of that name, year and sex and 225 merged groups hold two records of one source.",
   "domain_test": "The deciding quantity is the number of distinct people across sources, the object of entity resolution: a linkage service's pairwise findings resolved into persons consistently with each source's own deduplication, because pairwise matches are not transitive; the field resolves them by constrained clustering over the match graph, and replacing that with the generic merge (connected components) changes every Continuum's count. Put another setting's nouns in and the task still turns on resolving pairwise matches into entities, which is this task type's own analysis rather than a backdrop for it.",
   "layer2_family": "field_method",
   "layer2_pattern": "general-statistics-data-science/data-integration-record-linkage-entity-resolution/3",
   "layer1": [
-    "each CoC's HMIS export in the HUD HMIS CSV layout, one CoC still exporting the earlier destination code list and its own date format",
-    "the DV coalition's comparable database in its own workbook, birth year only and its own gender and race codes",
-    "the clinic's encounter extract with homeless status flagged per encounter, not per patient",
-    "the linkage service's pair file keyed by source-prefixed record keys, scores and per-field agreement codes, run across both years",
-    "approximate dates of birth flagged by data quality codes, enrollments left open in night-by-night shelters, projects moved between CoCs at a redraw"
+    "each Continuum's HMIS export in the HUD CSV layout stacked as sent, four record-key schemes, one vendor writing month/day/year dates and another the FY2022 destination list",
+    "the DV coalition's comparable database in its own workbook, birth year only by its confidentiality policy, with its own gender and race codes",
+    "the clinic's encounter extract with housing status per encounter in the HRSA categories",
+    "the outreach app's JSON lines in local time with UTC offsets",
+    "the linkage unit's pair file in each source's own keys, per-field agreement codes and scores, across both fiscal years",
+    "approximate dates of birth under data quality codes, the winter respite's bed nights and 30-day exit rule, shelter stays left open after a client moved on, rapid re-housing households moving between projects, one vendor writing the household's move-in date on every member"
   ],
-  "stakeholder_role": "the director of data at the Calvera Valley Homeless Data Partnership, the nonprofit HMIS lead for the region's four Continuums of Care, who heads its data office and compiles the region's FY2026 count of people served and the 2027 allocation table from which the counties renew each recipient's contract",
+  "stakeholder_role": "the director of data at the Halvering Valley Homeless Data Partnership, the nonprofit HMIS lead for the region's four Continuums of Care, who heads its data office and compiles the region's FY2026 count of people served and the 2027 allocation table from which the counties renew each recipient's contract",
   "role_family": "statistical_office_head",
   "scoring_unit": "units served",
   "spine": {
     "file": "sdlu_linkage_pairs_run_20261008.csv",
-    "rows": 45000,
-    "entity": "one comparison of two client records from different sources by the linkage service",
+    "rows": 99546,
+    "entity": "one comparison of two client records from different sources by the linkage unit",
     "grain": "record pair",
     "source": "synthetic (constructed in the layout of a privacy-preserving record linkage service's pairwise output)"
   },
@@ -56,15 +57,15 @@
   "forcing_event": "purchase_order_or_contract",
   "org_family": "nonprofit_or_charity",
   "world": {
-    "geography": "United States, an unnamed state (the Calvera Valley region, its counties, agencies and people are fictional)",
+    "geography": "United States, an unnamed state (the Halvering Valley region, its counties, agencies and people are fictional)",
     "currency": "USD",
     "org_type": "a nonprofit HMIS lead for four Continuums of Care, which runs the region's data integration and prepares the allocation of the four counties' pooled regional fund",
     "invented_names": [
-      "Calvera Valley",
-      "Calvera Valley Homeless Data Partnership",
-      "Mardell County",
-      "Ostry County",
-      "Pellam County"
+      "Halvering Valley",
+      "Halvering Valley Homeless Data Partnership",
+      "Melbray County",
+      "Ondrava County",
+      "Pyrenna County"
     ],
     "people": [
       "Kathleen Carlson",
@@ -73,13 +74,13 @@
     ]
   },
   "deliverables": [
-    "calvera_2027_fund_allocation.xlsx"
+    "halvering_2027_fund_allocation.xlsx"
   ],
   "opening_move": "question-first",
   "question_form": "how-much",
   "driver": "The decisive quantity is a count of distinct units across several lists that each hold a unit once, joined only by pairwise findings; a record carrying fewer identifiers matches several units at once, so merging every chain of findings joins units one list keeps apart, and the count follows only when the findings are resolved so that no group holds two rows of one list, each chain cut at its weakest finding.",
-  "driver_concrete": "Four Continuums of Care's HMIS exports, a domestic violence coalition's database and a homeless clinic's patients are linked by a privacy-preserving linkage service that reports scored pairwise links; outreach records with an approximate date of birth and the coalition's birth-year-only records link to every client of that name and birth year, so merging every chain of links joins two clients one CoC's HMIS keeps apart; resolving the links so no person holds two records of one source, cutting each such chain at its weakest link, restores them.",
-  "stump": "Merging every record the linkage service linked, directly or through other records, files the region and the downtown Continuum of Care short of the people they served in FY2026 and moves the 2027 fund away from downtown, because records carrying only a birth year link to every client of that name and year, so chains of links join people one CoC's own HMIS keeps apart.",
+  "driver_concrete": "Four Continuums of Care's HMIS exports, a domestic violence coalition's database, a homeless clinic's patients and a city outreach app's clients are linked by a state linkage unit that reports scored pairwise findings; outreach contacts, coalition survivors and street intakes carrying only a birth year link to every client of that name, year and sex, so merging every chain of links joins two clients one source keeps apart; resolving the findings strongest first so no person holds two records of one source, cutting each such chain at its weakest link, restores them.",
+  "stump": "Merging every record the linkage unit linked, directly or through other records, files the region at 39,874 people and the downtown Continuum at 17,644 people and 7,964,889 dollars, 28,815 dollars short, because a record carrying only a year of birth links to every client of that name, year and sex, so 225 merged groups hold two records one source keeps apart.",
   "mechanism_source": "design_note",
   "differentiation": {},
   "lineage": [
@@ -109,6 +110,6 @@
       "fate": "spent at stage 4 on 2026-10-21: the determinism judge returned NOT_DETERMINISTIC (competing_defensible_answer, SEND_BACK): the release's block counts summed over each area were a defensible reading because nothing shipped separated them from the housing-unit split of the block groups' counts; both isolated readers missed the call but kept every ask figure (the replay cap and the prior-number death chain sat on the careful path); re-rooted fresh by the author's rule (no retirement)"
     }
   ],
-  "notes": "stump_strategy identity_resolution, carrying the strategy-risk warning: the decisive step is not a key reading but the resolution of pairwise findings into persons (the client's own Layer 2 pattern 3 for this task type), and reading every key and grain right still leaves connected components on the wrong count. gate_g etl_conformance: the call is the region's count of people served conformed across six sources and the resolution of the linkage service's findings inside that conformance is the stump; a judge may read it as method_or_model_selection (how pairwise matches become entities), which the first draft carried until the guard's same-driver test placed population, G2 or G12 and method selection on four older builds; G17 leads because the step is the rigor of resolving matches, with G2 (the pair grain against the person grain) beside it. Axes redrawn at the draw after task251 v5 entered the window: organisation local_government to nonprofit_or_charity (the region's HMIS lead is a nonprofit, as many are, and it prepares the allocation for the counties' committee), context artifact operations_log to published_series (the January point-in-time count by Continuum, published, answering how many people one night held), forum committee_or_panel (the counties' Regional Fund Committee). Re-filed 2026-10-23 at stage 2 against that day's window (task483, task275, task179): the forcing event budget_or_appropriation and the role research_desk were banned, so the forcing event is the counties' 2027 contract renewals with each recipient, written at the adopted amounts from 1 January 2027 (purchase_order_or_contract, the event that makes the figure due now; the committee's meeting is the forum), and the requester heads the Partnership's data office, the HMIS lead's own data function (statistical_office_head); the linkage unit's contact redrawn from guard.py names --geo us --seed 486 (Andrew appeared in task478; Joshua Bell is the first drawn name no build carries).",
+  "notes": "stump_strategy identity_resolution, carrying the strategy-risk warning: the decisive step is not a key reading but the resolution of pairwise findings into persons (the client's own Layer 2 pattern 3 for this task type), and reading every key and grain right still leaves connected components on the wrong count. gate_g etl_conformance: the call is the region's count of people served conformed across six sources and the resolution of the linkage service's findings inside that conformance is the stump; a judge may read it as method_or_model_selection (how pairwise matches become entities), which the first draft carried until the guard's same-driver test placed population, G2 or G12 and method selection on four older builds; G17 leads because the step is the rigor of resolving matches, with G2 (the pair grain against the person grain) beside it. Axes redrawn at the draw after task251 v5 entered the window: organisation local_government to nonprofit_or_charity (the region's HMIS lead is a nonprofit, as many are, and it prepares the allocation for the counties' committee), context artifact operations_log to published_series (the January point-in-time count by Continuum, published, answering how many people one night held), forum committee_or_panel (the counties' Regional Fund Committee). Re-filed 2026-10-23 at stage 2 against that day's window (task483, task275, task179): the forcing event budget_or_appropriation and the role research_desk were banned, so the forcing event is the counties' 2027 contract renewals with each recipient, written at the adopted amounts from 1 January 2027 (purchase_order_or_contract, the event that makes the figure due now; the committee's meeting is the forum), and the requester heads the Partnership's data office, the HMIS lead's own data function (statistical_office_head); the linkage unit's contact redrawn from guard.py names --geo us --seed 486 (Andrew appeared in task478; Joshua Bell is the first drawn name no build carries). Shape 03 to 05 at stage 2 (2026-10-23): the bridge's opening items, each source's records with FY2026 service, are linkage-free and every response banks them, so the graded structure is the allocation's five buckets (people served and amount) and the region's people; shape 05 is clear of the last two builds (16, 10).",
   "registered": "2026-10-23T21:04:33Z"
 }
