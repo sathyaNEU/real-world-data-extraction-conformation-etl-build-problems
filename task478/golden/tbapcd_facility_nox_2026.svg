@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="691.2pt" height="374.4pt" viewBox="0 0 691.2 374.4" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Compliance Division</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 374.4 
+L 691.2 374.4 
+L 691.2 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 179.712 329.472 
+L 677.376 329.472 
+L 677.376 63.648 
+L 179.712 63.648 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <path d="M 179.712 329.472 
+L 179.712 63.648 
+" clip-path="url(#p917225abb4)" style="fill: none; stroke: #e6e8eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_2">
+      <defs>
+       <path id="mef1a5bcf38" d="M 0 0 
+L 0 3.5 
+" style="stroke: #59636e; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#mef1a5bcf38" x="179.712" y="329.472" style="fill: #59636e; stroke: #59636e; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 8.5px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: middle; fill: #59636e" x="179.712" y="342.930008" transform="rotate(-0 179.712 342.930008)">0</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_3">
+      <path d="M 265.279052 329.472 
+L 265.279052 63.648 
+" clip-path="url(#p917225abb4)" style="fill: none; stroke: #e6e8eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#mef1a5bcf38" x="265.279052" y="329.472" style="fill: #59636e; stroke: #59636e; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 8.5px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: middle; fill: #59636e" x="265.279052" y="342.930008" transform="rotate(-0 265.279052 342.930008)">5</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_5">
+      <path d="M 350.846105 329.472 
+L 350.846105 63.648 
+" clip-path="url(#p917225abb4)" style="fill: none; stroke: #e6e8eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#mef1a5bcf38" x="350.846105" y="329.472" style="fill: #59636e; stroke: #59636e; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 8.5px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: middle; fill: #59636e" x="350.846105" y="342.930008" transform="rotate(-0 350.846105 342.930008)">10</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_7">
+      <path d="M 436.413157 329.472 
+L 436.413157 63.648 
+" clip-path="url(#p917225abb4)" style="fill: none; stroke: #e6e8eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#mef1a5bcf38" x="436.413157" y="329.472" style="fill: #59636e; stroke: #59636e; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 8.5px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: middle; fill: #59636e" x="436.413157" y="342.930008" transform="rotate(-0 436.413157 342.930008)">15</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_9">
+      <path d="M 521.980209 329.472 
+L 521.980209 63.648 
+" clip-path="url(#p917225abb4)" style="fill: none; stroke: #e6e8eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#mef1a5bcf38" x="521.980209" y="329.472" style="fill: #59636e; stroke: #59636e; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <text style="font-size: 8.5px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: middle; fill: #59636e" x="521.980209" y="342.930008" transform="rotate(-0 521.980209 342.930008)">20</text>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_11">
+      <path d="M 607.547261 329.472 
+L 607.547261 63.648 
+" clip-path="url(#p917225abb4)" style="fill: none; stroke: #e6e8eb; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_12">
+      <g>
+       <use xlink:href="#mef1a5bcf38" x="607.547261" y="329.472" style="fill: #59636e; stroke: #59636e; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 8.5px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: middle; fill: #59636e" x="607.547261" y="342.930008" transform="rotate(-0 607.547261 342.930008)">25</text>
+     </g>
+    </g>
+    <g id="text_7">
+     <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: middle; fill: #59636e" x="428.544" y="355.810594" transform="rotate(-0 428.544 355.810594)">NOx from Rule 4306 units, 2026 (tons)</text>
+    </g>
+   </g>
+   <g id="axis_2">
+    <g id="ytick_1">
+     <g id="line2d_13">
+      <defs>
+       <path id="m86eb64cae7" d="M 0 0 
+L -3.5 0 
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="81.568918" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="84.988215" transform="rotate(-0 172.712 84.988215)">Ashgrove Refining</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_14">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="99.259854" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="102.67915" transform="rotate(-0 172.712 102.67915)">Lindqvist Paperboard</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_15">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="116.950789" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_10">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="120.370086" transform="rotate(-0 172.712 120.370086)">Merriwell Foods</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_16">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="134.641725" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_11">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="138.061022" transform="rotate(-0 172.712 138.061022)">Valmora Renewable Fuels</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_17">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="152.332661" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_12">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="155.751958" transform="rotate(-0 172.712 155.751958)">Sedge Hollow Creamery</text>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_18">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="170.023596" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_13">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="173.442893" transform="rotate(-0 172.712 173.442893)">Tamsett State University</text>
+     </g>
+    </g>
+    <g id="ytick_7">
+     <g id="line2d_19">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="187.714532" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_14">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="191.133829" transform="rotate(-0 172.712 191.133829)">Haskett Ridge Poultry</text>
+     </g>
+    </g>
+    <g id="ytick_8">
+     <g id="line2d_20">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="205.405468" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_15">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="208.824765" transform="rotate(-0 172.712 208.824765)">St. Aldric Medical Center</text>
+     </g>
+    </g>
+    <g id="ytick_9">
+     <g id="line2d_21">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="223.096404" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_16">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="226.5157" transform="rotate(-0 172.712 226.5157)">Penrose Tire Retreading</text>
+     </g>
+    </g>
+    <g id="ytick_10">
+     <g id="line2d_22">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="240.787339" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_17">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="244.206636" transform="rotate(-0 172.712 244.206636)">Harrow Linen Services</text>
+     </g>
+    </g>
+    <g id="ytick_11">
+     <g id="line2d_23">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="258.478275" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_18">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="261.897572" transform="rotate(-0 172.712 261.897572)">Orchard Basin Almond Growers</text>
+     </g>
+    </g>
+    <g id="ytick_12">
+     <g id="line2d_24">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="276.169211" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_19">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="279.588508" transform="rotate(-0 172.712 279.588508)">Briar Flats Water Reclamation</text>
+     </g>
+    </g>
+    <g id="ytick_13">
+     <g id="line2d_25">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="293.860146" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_20">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="297.279443" transform="rotate(-0 172.712 297.279443)">Quarry Lane Correctional Facility</text>
+     </g>
+    </g>
+    <g id="ytick_14">
+     <g id="line2d_26">
+      <g>
+       <use xlink:href="#m86eb64cae7" x="179.712" y="311.551082" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_21">
+      <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: end; fill: #1f2328" x="172.712" y="314.970379" transform="rotate(-0 172.712 314.970379)">Wexley Point Energy Center</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_3">
+    <path d="M 179.712 329.472 
+L 179.712 63.648 
+" style="fill: none; stroke: #9aa1a9; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 179.712 87.406927 
+L 624.054857 87.406927 
+L 624.054857 75.730909 
+L 179.712 75.730909 
+z
+" clip-path="url(#p917225abb4)" style="fill: #2a6fb0; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 179.712 105.097862 
+L 386.702122 105.097862 
+L 386.702122 93.421845 
+L 179.712 93.421845 
+z
+" clip-path="url(#p917225abb4)" style="fill: #2a6fb0; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 179.712 122.788798 
+L 334.408674 122.788798 
+L 334.408674 111.112781 
+L 179.712 111.112781 
+z
+" clip-path="url(#p917225abb4)" style="fill: #2a6fb0; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 179.712 140.479734 
+L 318.722522 140.479734 
+L 318.722522 128.803716 
+L 179.712 128.803716 
+z
+" clip-path="url(#p917225abb4)" style="fill: #2a6fb0; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 179.712 158.17067 
+L 318.058521 158.17067 
+L 318.058521 146.494652 
+L 179.712 146.494652 
+z
+" clip-path="url(#p917225abb4)" style="fill: #2a6fb0; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 179.712 175.861605 
+L 298.689564 175.861605 
+L 298.689564 164.185588 
+L 179.712 164.185588 
+z
+" clip-path="url(#p917225abb4)" style="fill: #c3c8ce; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 179.712 193.552541 
+L 246.283167 193.552541 
+L 246.283167 181.876523 
+L 179.712 181.876523 
+z
+" clip-path="url(#p917225abb4)" style="fill: #c3c8ce; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 179.712 211.243477 
+L 214.274244 211.243477 
+L 214.274244 199.567459 
+L 179.712 199.567459 
+z
+" clip-path="url(#p917225abb4)" style="fill: #c3c8ce; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 179.712 228.934412 
+L 199.221288 228.934412 
+L 199.221288 217.258395 
+L 179.712 217.258395 
+z
+" clip-path="url(#p917225abb4)" style="fill: #c3c8ce; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 179.712 246.625348 
+L 197.925803 246.625348 
+L 197.925803 234.94933 
+L 179.712 234.94933 
+z
+" clip-path="url(#p917225abb4)" style="fill: #c3c8ce; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 179.712 264.316284 
+L 197.11805 264.316284 
+L 197.11805 252.640266 
+L 179.712 252.640266 
+z
+" clip-path="url(#p917225abb4)" style="fill: #c3c8ce; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 179.712 282.007219 
+L 195.82941 282.007219 
+L 195.82941 270.331202 
+L 179.712 270.331202 
+z
+" clip-path="url(#p917225abb4)" style="fill: #c3c8ce; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 179.712 299.698155 
+L 194.037636 299.698155 
+L 194.037636 288.022138 
+L 179.712 288.022138 
+z
+" clip-path="url(#p917225abb4)" style="fill: #c3c8ce; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 179.712 317.389091 
+L 182.166063 317.389091 
+L 182.166063 305.713073 
+L 179.712 305.713073 
+z
+" clip-path="url(#p917225abb4)" style="fill: #c3c8ce; stroke: #ffffff; stroke-width: 2; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_22">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #1f2328" x="628.33321" y="83.906809" transform="rotate(-0 628.33321 83.906809)">26</text>
+   </g>
+   <g id="text_23">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #1f2328" x="390.980475" y="101.597744" transform="rotate(-0 390.980475 101.597744)">12</text>
+   </g>
+   <g id="text_24">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #1f2328" x="338.687026" y="119.28868" transform="rotate(-0 338.687026 119.28868)">9</text>
+   </g>
+   <g id="text_25">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #1f2328" x="323.000874" y="136.979616" transform="rotate(-0 323.000874 136.979616)">8</text>
+   </g>
+   <g id="text_26">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #1f2328" x="322.336874" y="154.670551" transform="rotate(-0 322.336874 154.670551)">8</text>
+   </g>
+   <g id="text_27">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #59636e" x="302.967916" y="172.361487" transform="rotate(-0 302.967916 172.361487)">7</text>
+   </g>
+   <g id="text_28">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #59636e" x="250.561519" y="190.052423" transform="rotate(-0 250.561519 190.052423)">4</text>
+   </g>
+   <g id="text_29">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #59636e" x="218.552596" y="207.743358" transform="rotate(-0 218.552596 207.743358)">2</text>
+   </g>
+   <g id="text_30">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #59636e" x="203.499641" y="225.434294" transform="rotate(-0 203.499641 225.434294)">1</text>
+   </g>
+   <g id="text_31">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #59636e" x="202.204155" y="243.12523" transform="rotate(-0 202.204155 243.12523)">1</text>
+   </g>
+   <g id="text_32">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #59636e" x="201.396402" y="260.816166" transform="rotate(-0 201.396402 260.816166)">1</text>
+   </g>
+   <g id="text_33">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #59636e" x="200.107763" y="278.507101" transform="rotate(-0 200.107763 278.507101)">1</text>
+   </g>
+   <g id="text_34">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #59636e" x="198.315989" y="296.198037" transform="rotate(-0 198.315989 296.198037)">1</text>
+   </g>
+   <g id="text_35">
+    <text style="font-size: 9px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #59636e" x="186.444416" y="313.888973" transform="rotate(-0 186.444416 313.888973)">0</text>
+   </g>
+   <g id="text_36">
+    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; fill: #59636e" transform="translate(179.712 40.898)">Tons of NOx from each facility's Rule 4306 units; the five in blue get the plan's 2027 agreements.</text>
+    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; fill: #59636e" transform="translate(179.712 53.648)">Next in line: Tamsett State University, 7 tons.</text>
+   </g>
+   <g id="legend_1">
+    <g id="patch_18">
+     <path d="M 508.530141 307.029344 
+L 525.530141 307.029344 
+L 525.530141 301.079344 
+L 508.530141 301.079344 
+z
+" style="fill: #2a6fb0; stroke: #2a6fb0; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_37">
+     <text style="font-size: 8.5px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start" x="532.330141" y="307.029344" transform="rotate(-0 532.330141 307.029344)">NOx reduction agreement, 2027</text>
+    </g>
+    <g id="patch_19">
+     <path d="M 508.530141 319.780008 
+L 525.530141 319.780008 
+L 525.530141 313.830008 
+L 508.530141 313.830008 
+z
+" style="fill: #c3c8ce; stroke: #c3c8ce; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_38">
+     <text style="font-size: 8.5px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start" x="532.330141" y="319.780008" transform="rotate(-0 532.330141 319.780008)">No agreement</text>
+    </g>
+   </g>
+  </g>
+  <g id="text_39">
+   <text style="font-weight: 700; font-size: 11.5px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #1f2328" x="8.2944" y="16.226203" transform="rotate(-0 8.2944 16.226203)">Five facilities' boilers and heaters emitted the most NOx in the Lowry Creek corridor in 2026</text>
+  </g>
+  <g id="text_40">
+   <text style="font-size: 7.5px; font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif; text-anchor: start; fill: #59636e" x="8.2944" y="369.9072" transform="rotate(-0 8.2944 369.9072)">Source: Tamsett Basin APCD 2026 point source inventory (CEMS, source tests, emission statements, Tamsett Valley Gas heat content).</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p917225abb4">
+   <rect x="179.712" y="63.648" width="497.664" height="265.824"/>
+  </clipPath>
+ </defs>
+</svg>

@@ -121,7 +121,7 @@ def main():
              (b["READ_TO"] - b["READ_FROM"]).dt.days)
     gas = (b["therms"] * share / 10.0).groupby(b["fac"]).sum().to_dict()
 
-    # ask B: hours and minutes from each facility's e-logbook start, bank lines at the outage, replaced engines
+    # ask B: every log as hours and minutes, bank lines at the outage, replaced engines
     xl = pd.ExcelFile(p("tbapcd_rule4702_engine_logs_2026.xlsx"))
     logs = []
     for sh in xl.sheet_names:
@@ -132,16 +132,7 @@ def main():
     logs = pd.concat(logs, ignore_index=True)
     logs["date"] = pd.to_datetime(logs["date"])
     frac = lambda v: np.round((v - np.floor(v + 1e-9)) * 100)
-    start = {}
-    for f, g in logs.groupby("fac"):
-        g = g.sort_values("date")
-        rd = g[g["why"].str.startswith("Testing")]
-        for d in sorted(g["date"].unique()):
-            later, before = rd[rd["date"] >= d], rd[rd["date"] < d]
-            if (frac(g[g["date"] >= d]["v"]) <= 59).all() and len(later) >= 4 and later["v"].max() < 0.4 and \
-                    len(before) and before["v"].min() >= 0.4:
-                start[f] = d
-                break
+    minutes = bool((frac(logs["v"]) <= 59).all())
     hm = lambda v: np.floor(v + 1e-9) + frac(v) / 60.0
     ev = pd.read_csv(p("tbapcd_compliance_events_2018_2026.csv"), dtype=str)
     ev["d"] = [pd.Timestamp(dt.datetime.strptime(x, "%m/%d/%Y")) if "/" in x else pd.Timestamp(x)
@@ -156,7 +147,7 @@ def main():
     allp = pm.set_index("DEVICE_NO")
     lbs = {f: 0.0 for f in order}
     for r in logs.itertuples():
-        h = hm(r.v) if (r.fac in start and r.date >= start[r.fac]) else r.v
+        h = hm(r.v) if minutes else r.v
         if r.why.startswith("Emergency") and (r.fac, r.date) in outage:
             h = min(h, outage[(r.fac, r.date)])
         bhp, t = float(allp.loc[r.dev, "RATING"]), allp.loc[r.dev, "ENGINE_TIER"]
@@ -174,8 +165,8 @@ def main():
     say("the rise: %.2f in the log a unit of heat content over 1.035, about %d per cent a per cent"
         % (rise, round(100 * (np.exp(rise / 100) - 1))),
         fig["components"]["rise_pct_per_pct"] == int(round(100 * (np.exp(rise / 100) - 1))))
-    say("the e-logbook starts: %d facilities" % len(start),
-        {f: str(d.date()) for f, d in start.items()} == fig["ask_b"]["elog"])
+    say("the logs hold hours and minutes: no entry's fraction reaches .60 (%d entries)" % len(logs),
+        minutes and fig["ask_b"]["minutes"] is True)
     rows = list(csv.DictReader(open(os.path.join(G, "tbapcd_nox_inventory_2026.csv"), encoding="utf-8")))
     say("the golden CSV's 14 rows", [int(r["rule_4306_nox_tons_2026"]) for r in rows] ==
         [half_up(tons[f]) for f in order])

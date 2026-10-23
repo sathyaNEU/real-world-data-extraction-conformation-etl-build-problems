@@ -1,11 +1,11 @@
 {
   "task": "task478",
   "owner": "oviya1301",
-  "status": "PAUSED",
+  "status": "SHIPPED",
   "domain": "physical-environmental-sciences/emissions-inventory",
   "objective": "etl",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 5,
+  "stage_name": "ship",
   "updated": "2026-10-23",
   "stump": "The default path carries each unmonitored burner's latest source test across its 2026 fuel and names Ashgrove Refining, Lindqvist Paperboard, Sedge Hollow Creamery, Tamsett State University and Valmora Renewable Fuels, Tamsett at 8 tons against Merriwell Foods' 7; a low-NOx burner that meters its combustion air by volume burns a richer gas hotter, so its NOx rises with the heat content of the gas its BTU area receives, which the Westside gas plant's ethane recovery moves from month to month: Merriwell Foods' boilers were last tested in August 2025 on lean gas and fired their 2026 canning season on rich gas, and Tamsett State University's were tested in May 2026 on rich gas and fired the winter on lean; the rise the monitored Lindqvist power boiler traces against the utility's monthly heat content (about 6 per cent a per cent), carried from each test's month to each 2026 month, names Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Renewable Fuels.",
   "architecture": 7,
@@ -15,8 +15,8 @@
     "date": "2026-10-23"
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK): Appendix A roster, plan and guidance wording, DEVICE_NO columns",
-    "reader": ""
+    "leak_py": "REVIEW (no LEAK): Appendix A roster, plan and guidance wording, DEVICE_NO columns; every line harmless to four readers",
+    "reader": "four isolated scored readers in two rounds all missed the call (the default five, Tamsett State in at 8 tons, Merriwell sixth at 6.82), question 1 none from all four; round 1 (zip 2936a1ef) ask B leaked to reader v7b (engines 5 of 5) and was re-sited; round 2 (zip 77f6a96a) gas 0 of 14 and engines 0 of 14 for both, 11 of 42 deliverable figures each (construction-layer tons only), score_reader exit 2 twice"
   },
   "duplicate_check": {
     "heart": "WARN (Gate G repeat against task273 and overuse, answered at the draw)",
@@ -24,14 +24,14 @@
     "surface": "clean but for 'Almond Growers' read as a persona (part of Orchard Basin Almond Growers, a company name)"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE (pass 2, after pass 1 FIX_NOW on a log cut-over, the gas boundary, the rise's basis and two fork rows, all fixed)",
+    "report": "determinism_check_report_v7.md, determinism_check_report_v7b.md"
   },
   "returned": [],
-  "resume": "stage 4: architecture 7 built (zip md5 2936a1ef); re-spawn the two scored readers (fresh copies leak-task478-v7a and v7b) and the judge thread on /tmp/determinism-check-task478-v7r1/judge_brief.md (the container restart stopped the first spawn); score both with score_reader.py; a call any reader lands is spent",
+  "resume": "",
   "approved": null,
-  "delivered": null,
+  "delivered": "2026-10-23",
   "portal": null,
   "portal_id": "",
   "portal_status": "",

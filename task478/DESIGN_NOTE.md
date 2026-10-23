@@ -239,6 +239,8 @@ route takes them.
 | SF24 | an estimated read | trued up against a later read | each estimated meter's next read is actual and the extract carries no adjustment line (SF24) |
 | SF25 | the rise's grouping | the low-NOx burners' own rise apart from the ultra-low NOx burners' | the low-NOx class's own tests give 6.04 (se 1.53) against 6.13 and the monitor's 6.01; same five and 14 whole tons (SF25) |
 | SF26 | the rise's grouping | each facility's own rise from its own tests | Merriwell Foods' tests all sit on lean August gas, so its own rise is unidentified (se 3.23) and a fit pools; with each facility's own rise where its tests identify it, same five and 14 whole tons (SF26) |
+| SF27 | the billing conversion's boundary | the bill date in place of the read date | no line read before 1 July 2026 was billed on or after it, so both boundaries split the extract alike (SF27) |
+| SF28 | the logs' "Run hours" | decimal hours | no entry's fraction reaches .60 in 1,557 entries, and the hour meters agree with hours and minutes at every engine (SF28, B fair) |
 
 ## Ladder
 
@@ -307,10 +309,10 @@ once, the log read in the unit its logbook wrote it, and each run at the engine 
 - Ask A: the plan units' own fuel in the emission statements arbitrates the unit of the billed usage (read as labelled,
   the bills fall below the units' fuel on 45 of 62 periods read before July 2026 and on none of 82 after) without
   handing over a level; the combined accounts show by their meters carrying identical usage every period.
-- Ask B: the hour meters arbitrate the log layout (read their own way, every engine's log over the first inspection
-  interval sits at 0.90 to 0.93 of its meter, the rest warm-up and cool-down; read as decimal hours the e-logbook
-  engines fall to 0.69 to 0.89) without handing over a figure; the compliance log's OUTAGE entries give each outage's
-  hours, which the banked engines' emergency lines double; the replaced engines' meters are first read after the
+- Ask B: the hour meters arbitrate the log's unit (read as hours and minutes, every engine's meter runs 0.06 to 0.07
+  hours a start beyond its log over the first inspection interval, the warm-up and cool-down; read as decimal hours,
+  0.23 to 0.26) without handing over a figure; the compliance log's OUTAGE entries give each outage's whole hours,
+  which the banked engines' emergency lines double; the replaced engines' meters are first read after the
   replacement, so only the EQUIPMENT entries carry the old engines.
 
 ## Ask sheet
@@ -325,25 +327,59 @@ Two asks, both on rows the call never reads (X1, X3): the plan's community table
   usage once 14; every line CCF times its factor 14; the conversion handled, every line summed, 5; each bill in its
   current read's year 14.
 - **Ask B, the emergency standby engines' 2026 NOx, whole pounds (14 figures).** User: the plan's community table
-  (plan 4.3, guidance section 6). Devices: D3 hours and minutes read as decimal hours at the seven facilities that moved
-  their logs to the e-logbook during 2026 (the hour meters favour the reading, and the weekly readiness runs drop from
-  0.40 to 0.60 to 0.24 to 0.36 at the move); D6 the banked engines' emergency lines at four facilities carrying the
-  bank's engine-hours (twice the outage the compliance log records); and D2 an attribute at the wrong vintage at two (an
-  engine replaced in 2026 under the same device number, the permit list showing the new engine, the EQUIPMENT entry the
-  old one's rating and tier). Each of 13 figures is moved by exactly one device: the decimal reading moves 7, the bank
-  lines 4, the current engine 2; Lindqvist Paperboard's single engine carries none.
+  (plan 4.3, guidance section 6). Devices: D3 hours and minutes in the "Run hours" column at every facility (the
+  District's e-logbook writes 0.30 for half an hour; no entry's fraction reaches .60, where the same runs in decimal
+  hours would show one on about a fifth of entries, and the hour meters run 0.06 to 0.07 hours a start beyond the logs
+  read that way against 0.23 to 0.26 read as decimal hours); D6 the banked engines' emergency lines at four facilities
+  carrying the bank's engine-hours (twice the outage the compliance log records); and D2 an attribute at the wrong
+  vintage at two (an engine replaced in 2026 under the same device number, the permit list showing the new engine, the
+  EQUIPMENT entry the old one's rating and tier). The decimal reading moves all 14 figures, the bank lines 4, the
+  current engine 2. The outages are whole hours, so no outage entry reads differently either way.
 
 | Ask | What the cracker does | Cracker |
 |---|---|---|
 | A | USAGE_THERMS as the dictionary names it (the usage billed), each combined account's repeated usage once, spread by plan 4.2 | miss |
-| B | the logs as decimal hours at each engine's permitted rating and tier (guidance section 6) | miss |
+| B | the logs as decimal hours, the bank lines at the compliance log's outage hours, each replaced engine's earlier runs at the old engine (guidance section 6, as both round 1 readers did) | miss |
 
-Pair ceiling: 30.5 (cracker 47.0 on the call with 1 of 28 ask figures, mirror 14.0 off it with 1 of 28; a response that
-reconciles the usage against the plan units' fuel and the logs against the meters keeps 24 of 28, for a pair of 75.6).
+Pair ceiling: 28.5 (cracker 45.0 on the call with 0 of 28 ask figures, mirror 12.0 off it with 0 of 28; a response that
+reconciles the billed usage against the plan units' fuel keeps 14 of 28, for a pair of 56.0 with one on the call).
 
-Mirror leakage: 3.6 per cent of ask weight.
+Mirror leakage: 0.0 per cent of ask weight.
 
 Measured by: generator/ceiling.py on the cut pack.
+
+Measured at stage 4 (score_reader.py): round 1 (zip 2936a1ef) gas 0 of 5 for both readers, engines 4 of 5 and 5 of 5,
+so ask B was re-sited (Tried and rejected); round 2 (zip 77f6a96a) both readers 0 of 14 gas and 0 of 14 engines, 11 of
+42 deliverable figures each, every hit a ton the default path keeps at a facility the heat content does not move.
+
+## Pre-ship check
+
+1. Domain: stationary-source inventory practice's own estimate of an unmonitored low-NOx burner's year from its source
+   tests, read on the heat content of each month's gas; with another field's nouns there is no burner air-fuel ratio,
+   no supplied heating value and no test day to carry.
+2. Real work, nothing planted: every Layer 1 item is what the district's, the facilities' or the utility's systems
+   write (two test databases, oxygen bases, fuel units, the monitoring plan's ids, the renumbered facility, the deferred
+   test); none is on the decisive step (checks.py R2a to R2f), and every test passed its limit.
+3. The step that flips the call is analytical: estimating the rise of a burner's NOx with heat content and carrying
+   each burner's tests to each 2026 month's gas; no clause makes the choice (the guidance files the NOx emitted over the
+   year, not how a test becomes it).
+4. Analyst test: every field and rule read correctly, the latest test files the default five (asserted on the clean
+   truth, R3a, and on the pack, L0); the decisive step alone files the golden on the clean truth (R3b).
+5. The plan files the estimand (the Rule 4306 units, NOx, calendar 2026, tons by facility, the five) and the guidance
+   the year's NOx from heat input and rate; the thirty standing constructions file the golden five and the same 14 whole
+   tons (G2), the rise by burner class and by facility where identified files them too (SF25, SF26), and the asks'
+   conventions are filed in plan 4.2 and guidance sections 4 and 6 or closed by the data (SF16 to SF24, SF27, SF28).
+6. No decoy, no withheld rule against a stated one, no certified replay.
+7. The lesson is on no other card: nearest drivers 0.06 (task85 v2.5, task196 v1, task229 v3, task480 v1); this
+   slot's architecture 6 at 0.33, differentiated.
+8. Re-read against the built pack at stage 4: four isolated readers over two rounds filed the default five, none
+   joined a burner's tests or the monitored boiler's hours to the heat content, and each answered question 1 "none".
+9. Judge pass 1 (zip 2936a1ef) DETERMINISTIC, FIX_NOW on Wexley Point's log cut-over, the gas conversion's read-to
+   boundary, the rise's basis and two fork rows (fixed: logs in hours and minutes all year, the June reads moved off the
+   month's last days, SF27 and SF28 asserted, step 5 names READ_TO); pass 2 (zip 77f6a96a) DETERMINISTIC, APPROVE, Gate G
+   method_or_model_selection and analytical_non_defect, Gate H domain pass, layers pass, decisive step analytical, the
+   five stable for any rise from about 4 to 8. Its optional pin (a month's rate is the rate at that month's delivered
+   gas, in guidance section 3) declined: it names the decisive step's object and leans the call easier.
 
 ## Architecture 6 record (spent 2026-10-23)
 
@@ -392,6 +428,12 @@ scattered reports into the precise units' potholes. Judge APPROVE (v2).
 
 ## Tried and rejected
 
+- Ask B's hours-and-minutes log switched mid-2026 at seven facilities (2026-10-23, stage 4 round 1): reader v7b read
+  the switch off the weekly readiness runs, which dropped from 0.40 to 0.60 to 0.24 to 0.36 at each facility's first
+  e-logbook entry, and off an outage logged 14.30 against the compliance log's 14.5 hours, and kept every engine figure
+  it reported; reader v7a missed it. A switch inside the year is a step any reader who plots the weekly runs sees, and
+  a fractional outage is an oracle for the unit. Re-sited to hours and minutes all year at every facility with
+  whole-hour outages, the meters the arbiter.
 - Architecture 7 draw (2026-10-23): re-rooted on the author's standing rule (no retirement); the lesson of
   architecture 6 taken first (a relation the units' own measurements show against a clock the pack builds is a fit a
   strong reader makes), so the rate here follows a property of a third party's delivery that nothing at the unit

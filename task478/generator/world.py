@@ -319,8 +319,8 @@ METERS = {
     "F09": [("TV-07715", "7709-0332", 18, 1.0)],
     "F10": [("TV-26651", "7710-2804", 3, .64), ("TV-26652", "7710-2804", 3, .36)],
     "F11": [("TV-45020", "7711-0019", 14, 1.0)],
-    "F12": [("TV-19388", "7712-5126", 27, 1.0)],
-    "F13": [("TV-19507", "7713-5130", 27, 1.0)],
+    "F12": [("TV-19388", "7712-5126", 26, 1.0)],
+    "F13": [("TV-19507", "7713-5130", 26, 1.0)],
     "F14": [("TV-30876", "7714-0691", 8, .60), ("TV-30877", "7714-0692", 8, .40)],
 }
 COMBINED = sorted({a for ms in METERS.values() for (_, a, _, _) in ms
@@ -329,8 +329,8 @@ COMBINED = sorted({a for ms in METERS.values() for (_, a, _, _) in ms
 OTHER_GAS = {"F01": (60, .2), "F02": (420, .15), "F03": (140, .25), "F04": (40, .3), "F05": (60, .3), "F06": (55, .9),
              "F07": (180, .2), "F08": (95, 1.0), "F09": (7, .6), "F10": (40, .3), "F11": (12, .5), "F12": (16, .5),
              "F13": (22, .5), "F14": (30, .3)}
-GAS_DRAW = {"F06": 3, "F10": 1, "F12": 1, "F13": 2, "F14": 1}  # which draw of a facility's day-to-day gas the world uses
-ESTIMATED = {("TV-09931", D(2026, 2, 2)), ("TV-19388", D(2026, 1, 27)), ("TV-45020", D(2026, 12, 14)),
+GAS_DRAW = {"F06": 3, "F10": 1, "F12": 1, "F14": 1}  # which draw of a facility's day-to-day gas the world uses
+ESTIMATED = {("TV-09931", D(2026, 2, 2)), ("TV-19388", D(2026, 1, 26)), ("TV-45020", D(2026, 12, 14)),
              ("TV-30877", D(2026, 3, 9))}
 
 
@@ -458,13 +458,11 @@ ENGINES = [
 ENGINE = {e[0]: dict(zip(("device", "facility", "bhp", "tier", "model", "installed", "bank", "replaced"), e))
           for e in ENGINES}
 # power outages each facility's engines carried in 2026 (date, hours)
-OUTAGES = {"F02": [(D(2026, 8, 19), 6.4)], "F06": [(D(2026, 1, 9), 3.1), (D(2026, 9, 2), 11.6)],
-           "F08": [(D(2026, 9, 2), 9.8)], "F10": [(D(2026, 8, 19), 4.2)], "F12": [(D(2026, 9, 2), 14.5)],
-           "F13": [(D(2026, 9, 2), 14.5)], "F14": [(D(2026, 3, 23), 2.2), (D(2026, 9, 2), 11.3)]}
-# the month each facility moved its Rule 4702 log to the District's e-logbook, which records run time as hours and
-# minutes; the first e-logbook entry is the facility's first readiness run from that date (elog_date)
-ELOG_FROM = {"F01": D(2026, 5, 4), "F04": D(2026, 3, 16), "F05": D(2026, 8, 3), "F09": D(2026, 6, 1),
-             "F11": D(2026, 4, 6), "F12": D(2026, 7, 13), "F13": D(2026, 9, 14)}
+OUTAGES = {"F02": [(D(2026, 8, 19), 6.0)], "F06": [(D(2026, 1, 9), 3.0), (D(2026, 9, 2), 11.0)],
+           "F08": [(D(2026, 9, 2), 10.0)], "F10": [(D(2026, 8, 19), 4.0)], "F12": [(D(2026, 9, 2), 14.0)],
+           "F13": [(D(2026, 9, 2), 14.0)], "F14": [(D(2026, 3, 23), 2.0), (D(2026, 9, 2), 11.0)]}
+# every facility keeps its Rule 4702 log in the District's e-logbook (since 2025), which records run time as hours and
+# minutes: 0.30 is half an hour (pack.log_rows)
 
 
 @functools.lru_cache(maxsize=None)
@@ -487,22 +485,6 @@ def engine_runs(dev):
     for day, h in OUTAGES.get(e["facility"], []):
         out.append((day, h, "emergency"))
     return tuple(sorted(out))
-
-
-@functools.lru_cache(maxsize=None)
-def elog_date(code):
-    """The facility's first e-logbook entry: its first readiness run on or after ELOG_FROM whose preceding entry at
-    the facility is also a readiness run, so no load test or outage sits between the last paper entry and it."""
-    if code not in ELOG_FROM:
-        return None
-    rows = sorted((d, why) for dev, e in ENGINE.items() if e["facility"] == code for d, _, why in engine_runs(dev))
-    for i, (d, why) in enumerate(rows):
-        if d >= ELOG_FROM[code] and why == "readiness" and i and rows[i - 1][1] == "readiness" and rows[i - 1][0] < d:
-            return d
-    raise ValueError(code)
-
-
-ELOG = {c: elog_date(c) for c in ELOG_FROM}
 
 
 @functools.lru_cache(maxsize=None)
