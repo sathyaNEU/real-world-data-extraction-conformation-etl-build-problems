@@ -1,55 +1,55 @@
 {
-  "task": "task125",
-  "owner": "oviya13ya",
-  "status": "BUILD",
-  "domain": "survey-research-official-statistics",
-  "objective": "anomaly-detection",
-  "stage": 3,
-  "stage_name": "build",
-  "updated": "2026-10-21",
-  "stump": "A competent solver finds the cap in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves a wave-1 intake (0.21 point) and files that one gap for every quarter the cap is issued and 0.00 from April to June 2027, with none of the 0.27-point July to September rise the cap, so the rise is real; the step that lands it there is taking the unit the change acts on to be the quarter's fieldwork, when it is the intake, which the panel keeps for five quarters, so the gap compounds to 0.62 point by January to March 2027 and the change between two capped quarters is the change in the mix, not zero.",
-  "architecture": 2,
-  "loops": 1,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-21"
+ "task": "task125",
+ "owner": "oviya13ya",
+ "status": "BUILD",
+ "domain": "survey-research-official-statistics",
+ "objective": "anomaly-detection",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-23",
+ "stump": "A competent solver finds the cap in the field instruction, measures how much dropping the households first interviewed at a fourth to sixth visit moves a wave-1 intake (0.21 point) and files that one gap for every quarter the cap is issued and 0.00 from April to June 2027, with none of the 0.27-point July to September rise the cap, so the rise is real; the step that lands it there is taking the unit the change acts on to be the quarter's fieldwork, when it is the intake, which the panel keeps for five quarters, so the gap compounds to 0.62 point by January to March 2027 and the change between two capped quarters is the change in the mix, not zero.",
+ "architecture": 2,
+ "loops": 1,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-21"
+ },
+ "leak": {
+  "leak_py": "REVIEW (sweep 4 only, generic survey vocabulary; sweeps 1 to 3 and 5 to 11 clean)",
+  "reader": "clean: nothing announces the decisive step, no ranking file, no helper file, no figure reads as the answer, and question 6 answered (a) an analytical choice. Two realism findings, one fixed at source (identical 25-34 male and female population controls) and one ruled harmless (the methods note sections 4 to 6 are standard content)."
+ },
+ "duplicate_check": {
+  "heart": "WARN",
+  "nearest": "0.08 task500 v2"
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": "running: isolated thread on brief /tmp/determinism-check-task125-174852b/judge_brief.md against target.zip sha256 5314b654417ae84b. determinism_check_report_pass2.md is VOID (scoped to a superseded ladder)."
+ },
+ "returned": [
+  {
+   "date": "2026-10-13",
+   "portal": "author audit: 10/10 alignment",
+   "repair": "alignment",
+   "commit": ""
   },
-  "leak": {
-    "leak_py": "REVIEW (domain vocabulary only; sweeps 1 to 3 and 5 to 8 clean)",
-    "reader": ""
-  },
-  "duplicate_check": {
-    "heart": "WARN",
-    "nearest": "0.08 task500 v2"
-  },
-  "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": "task125/determinism_check_report_pass2.md (void: scoped to the first ladder's pack)"
-  },
-  "returned": [
-    {
-      "date": "2026-10-13",
-      "portal": "author audit: 10/10 alignment",
-      "repair": "alignment",
-      "commit": ""
-    },
-    {
-      "date": "2026-10-21",
-      "portal": "blind reader audit: call landed (2 of 2), asks 38 of 53, Gate F failed; the methods note's section 5 stated the method",
-      "repair": "design (stage-2 re-root of the ladder)",
-      "commit": ""
-    }
-  ],
-  "resume": "Stage 4 is owed on the re-rooted pack: spawn the leak reader and the determinism judge together at medium effort (the pass-2 APPROVE is void, every graded figure moved). Stage 3 gates are green: 300 checks, independent verifier, two byte-identical builds, figures_check 155 figures, precut 51 of 51, leak.py REVIEW, voice-check PASS, guard.py validate.",
-  "approved": null,
-  "delivered": null,
-  "portal": null,
-  "lineage": [
-    {
-      "architecture": 1,
-      "fate": "FAILED_TO_STUMP: in-house solves (rounds 1, 2) and judge SEND_BACK on hygiene, 2026-10-10"
-    }
-  ],
-  "alignment_pass": "stage-2 re-root 2026-10-21: section 5's procedure sentence removed, the base quarter settled by the call-record file's coverage, the cap moved to the 2026/27 field year so the decisive step carries the headline"
+  {
+   "date": "2026-10-21",
+   "portal": "blind reader audit: call landed (2 of 2), asks 38 of 53, Gate F failed; the methods note's section 5 stated the method",
+   "repair": "design (stage-2 re-root of the ladder)",
+   "commit": ""
+  }
+ ],
+ "resume": "stage 4, awaiting the isolated determinism judge's verdict. Everything else is done and green. The free gates on the final pack: 300 generator assertions, verify OK, two byte-identical builds at sha256 052a1c1b078e0b29, target.zip at sha256 5314b654417ae84b, figures_check 155 of 155, voice-check PASS at 998 characters, leak.py REVIEW not LEAK, guard.py surface clean. The stage-4 leak reader is run and clean, and answered the rule-3 question independently as an analytical choice. Its realism finding was fixed at source: FEMALE[1] in generator/models.py was exactly 0.500, making the 25-34 male and female population controls identical in all 20 rows, now 0.497, and exactly one of 33 figure keys moved (the ask figure total_weekly_hours_thousand), with submission.md block 4 item 5 updated and every main-recommendation and critical-component figure unchanged. The card is registered with the author's --force over exactly one BLOCK, ban.strategy on composition_mix against task446 (v3), authorised on the measure that driver similarity is 0.07 against a 0.12 warn line. Two BLOCKs that registration surfaced after that authorisation were NOT forced: forcing_event was corrected to budget_or_appropriation on accuracy and a truthful differentiation line was added against task179. ON THE JUDGE'S VERDICT: APPROVE ships (cut target.zip from the final rebuild, write the ledger row, commit SHIPPED); FIX_NOW is fixed in the generator and re-judged once; SEND_BACK re-roots at stage 1.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "lineage": [
+  {
+   "architecture": 1,
+   "fate": "FAILED_TO_STUMP: in-house solves (rounds 1, 2) and judge SEND_BACK on hygiene, 2026-10-10"
+  }
+ ],
+ "alignment_pass": "stage-2 re-root 2026-10-21: section 5's procedure sentence removed, the base quarter settled by the call-record file's coverage, the cap moved to the 2026/27 field year so the decisive step carries the headline"
 }

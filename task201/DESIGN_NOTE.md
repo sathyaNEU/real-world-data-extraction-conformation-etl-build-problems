@@ -1300,6 +1300,84 @@ completeness estimate, a valuation, a population restriction), with `guard.py ch
 nearest driver of 0.06 on each. The second is the risk-adjustment publication trap above. **So the ground
 question on this objective is settled and the driver question is the only open one, which is what
 `guard.py coverage` says in its own words.**
+
+### Architecture 12, step 1: the preserved lead is dead, and the harness understated its death (2026-10-23)
+
+(Harness `scratchpad/w11_201/floor_screen.py` re-run twice, both at md5 `08d4d741f149b9774befea96ce1ed8dd`,
+byte-identical with the preserved `run1.json`, so architecture 11's measurements stand. New harness
+`scratchpad/w12_201/lead.py`, run twice byte-identical at md5 `c96070e928fe513111631dfba982206d`.)
+
+The lead (`sd_log_s` 1.3, `sd_log_A` 0.12, `sd_log_F` 0.05, `beta_sd` 0.6, `beta_mean` 0.0, lift 3.5;
+designed route 19 of 20, raw 2 of 20, margin 1.7213, rho 1.3031) was to be re-read to decide whether its
+two failing conditions, the group-by route at a worst 3 of 20 and the power route at a worst 7 of 20, are
+a property of the cell or of the harness's route definitions. **Both answers are now measured, and they
+point opposite ways: the group-by failure is a grid-range artefact that is repairable, and the power
+failure is a cell property that the harness understated by a factor of three.**
+
+**The scoring is not the artefact.** Every route's `set_hit` is scored against the top three of the
+designed statistic, which is a quantile of the designed statistic itself, so it was the first suspect.
+Measured at the lead with both scorings side by side, they differ by at most one draw in twenty on every
+one of eleven routes (raw 2 against 2, mean-factor 3 against 3, median-factor 1 against 1,
+harmonic-factor 1 against 1, power-0.50 7 against 8, designed 20 against 19). The reason is arithmetic:
+the designed route recovers the world's own elevated set 19 of 20, so its top three IS the truth in 19 of
+20 draws and the two comparators coincide. **Rule earned:** scoring a reflex against the designed
+statistic's own answer set is only an artefact where the designed route is a poor recoverer of truth;
+where it recovers 19 of 20 the two scorings are the same measurement, and the defect caught elsewhere
+today (a reflex scored against a quantile of its own statistic) does not apply.
+
+**The power route is a cell property, and the harness swept the wrong range.** `floor_screen.py` scores
+`sum(o_i ** q)` for q in 0.50 to 0.90 only, and at those exponents the route peaks at 7 of 20. Extending
+the grid downward, with nothing else changed: **q 0.30 reaches the truth 18 of 20, q 0.20 reaches it 20 of
+20 at corr +0.9167, and q 0.10 and q 0.05 reach it 20 of 20 at lift over noise 5.375 and 5.561, against
+the designed route's own 4.601.** So the cheapest competing route is not merely alive, it is **a better
+estimator of the decision's signal than the designed construction**, and the ladder is inverted. The
+harness understated the strongest cheap route by 13 of 20 draws.
+
+**The mechanism, which closes the whole `floor_screen` shape rather than this cell.** As q falls,
+`mean(o_i ** q)` converges to ranking on `mean(log o_i)`, the per-case geometric mean of the observable.
+In this generating process `log o_i = log A_u + log F_u + (1 + beta_u) log s_i`, and the latent size's log
+has mean zero over cases, so the correcting factor's whole contribution to the geometric mean is
+`beta_u` times the sample mean of `log s`, which is noise of order `sd_log_s` over the root of the case
+count and not a distortion of the candidate's level. The lift sits on `A_u`, a candidate-level
+multiplier, so it survives the transform undiminished in relative terms. Against that, the designed route
+is the arithmetic mean of a heavy-tailed per-case quantity, whose relative sampling error is
+`sqrt((exp(sd_log_s ** 2) - 1) / k)` against the geometric mean's `sd_log_s / sqrt(k)`, and the first
+exceeds the second at every positive dispersion. **Rule earned:** where the decision's lift sits on a
+candidate-level multiplier and the designed quantity is a sum over cases of that multiplier times a
+heavy-tailed per-case term, the per-case geometric mean of the raw observable is a one-group-by route that
+estimates the lift with LESS noise than the designed construction estimates its own quantity. The
+correcting factor is irrelevant to it. This is the same death as candidate 17 (a power transform of the
+observable whose exponent nothing files) reached from the estimator-precision side, and it does not need
+the factor to be a deterministic power of case size.
+
+**The factor's own independent component is not what buys the group-by kill.** Every cell in
+architecture 11's `best_group_by` list carries `sd_log_eta` exactly 0.0, which read as candidate 17 again.
+Measured at the lead with `sd_log_eta` swept 0.00, 0.10, 0.20, 0.40, 0.60, 0.80: the worst group-by route
+moves only 3, 3, 3, 4, 4, 4 of 20 and the best power route holds at 19 of 20 on the set and **20 of 20 on
+the truth at every one of the six**, with its lift over noise 5.561, 5.595, 5.598, 5.521, 5.363, 5.152
+against the designed route's flat 4.601. So the eta association in the sweep's own best cells is
+incidental, and the geometric-mean route is indifferent to the factor's independent component.
+
+**The group-by failure is a grid-range artefact, and repairing it changes nothing.** `beta_sd` was capped
+at 0.60 in the 729-cell sweep, which is why `pass_group_by` came back 0 of 729 with a floor of exactly 3:
+the condition is reachable, just not on that grid. Extending it at the lead, `beta_sd` 0.90 gives worst
+group-by **2** of 20 with raw 1, margin 1.7213, rho 1.9046 and the designed route still 19 of 20, and
+`beta_sd` 1.20 gives worst group-by 2 with raw 0. So the designed, margin, raw, rho AND group-by
+conditions hold together off the grid, which is the first time five of the six have held in this lane.
+**The power route does not follow**: 19, 19, 18, 14 and 12 of 20 at `beta_sd` 0.60, 0.90, 1.20, 1.60 and
+2.00, never reaching the condition, and still 12 of 20 at a coupling spread of 2.00 that no record would
+carry. The two failures are therefore not one dial, and the one that is repairable is not the one that
+kills.
+
+**Why no setting exists, stated as the shape's own arithmetic.** The group-by route is killed by making
+the correcting factor's coupling to case size differ strongly by candidate, because a candidate-mean
+factor cannot undo a per-case power. The geometric-mean route is immune to exactly that move, because a
+power of the case's size enters the log-mean through the sample mean of `log s` alone, which the coupling's
+spread does not inflate. So the dial that buys the group-by kill spends nothing against the route that
+actually reaches the answer, and the route that actually reaches the answer is not reachable by any dial
+in the model, because it beats the designed construction on estimator precision rather than on bias.
+**The lead is refused, and `floor_screen.py`'s shipped-per-case-factor shape is refused with it.**
+
 ## Surface screen, answered
 
 `guard.py surface task201` screens 246 builds and promotes five pairs for adjudication. Four are corpus

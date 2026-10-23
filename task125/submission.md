@@ -63,9 +63,9 @@ The cap removes the households found only at a fourth to sixth visit, mostly adu
    - Tirrin: 30.12 (25 of 83)
    - Dunmarrow: 29.03 (27 of 93)
 5. Total weekly hours actually worked by the employed, July to September 2026, thousands:
-   - Velmouth: 26,679.2
-   - Carrowdene: 16,125.5
-   - Pellard: 12,659.2
-   - Haskvale: 10,623.9
-   - Tirrin: 9,735.5
-   - Dunmarrow: 7,648.6
+   - Velmouth: 26,679.5
+   - Carrowdene: 16,124.7
+   - Pellard: 12,659.1
+   - Haskvale: 10,624.5
+   - Tirrin: 9,734.0
+   - Dunmarrow: 7,648.3

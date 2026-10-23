@@ -7,7 +7,7 @@ import numpy as np
 import world as W
 
 AGE_SHARE = np.array([0.156, 0.171, 0.160, 0.153, 0.146, 0.115, 0.099])
-FEMALE = np.array([0.490, 0.500, 0.505, 0.510, 0.515, 0.525, 0.575])
+FEMALE = np.array([0.490, 0.497, 0.505, 0.510, 0.515, 0.525, 0.575])
 
 
 def controls(q):

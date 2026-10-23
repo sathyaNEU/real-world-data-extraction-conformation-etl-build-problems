@@ -483,3 +483,65 @@ plant.
   is arithmetic. Same dial, both ends. Recorded as the architecture's structural ceiling: no stage-2 move puts an
   estimated quantity in the deciding position on this draw, and a third measured Gate F failure retires the number
   rather than hardening it.
+
+## Pre-ship check, architecture 2 (2026-10-23)
+
+**The free gates, all re-run on the final pack.** Generator checks 300 assertions passed; `verify` OK with
+18 regional figures recomputed independently; two builds byte-identical at sha256 `052a1c1b078e0b29`;
+`target.zip` cut from that build at sha256 `5314b654417ae84b`, 12 files each identical to `target/`;
+`figures_check.py` PASS at 155 figures in blocks 1 to 4 with none absent from `figures.json`;
+`voice-check.py` PASS with the prompt at 998 characters; `leak.py --asof 2026-10-20` REVIEW, not LEAK, with
+sweeps 1 to 3 and 5 to 11 clean; `guard.py surface` clean on the hard-tell screen.
+
+**The 10/10 rules re-read against the built pack.** The decisive step is still the unit of analysis, the
+intake rather than the quarter, which is analysis and not a reading or a procedure; the mess is still
+Layer 1 only (the serial gaining a tenth check-digit character in the 2026Q3 run, local-time call stamps,
+the 2025-based control rebase); nothing is planted to be caught. The isolated stage-4 reader independently
+answered the rule-3 question as **(a) an analytical choice** and found no sentence that announces the
+decisive step, which is the external confirmation Gate H wants.
+
+**The stage-4 reader's six answers.** Question 1, nothing announces the decisive step; the nearest pointers
+are the methods note's section 4 ("Every quarter's sample is therefore made of five intakes, one at each
+wave") and section 6, which "tell you to re-rake and to use matched people, but they do not say a visit cap
+shifts who responds". Question 2, no file ranks or scores the candidates; the release tables stop at April
+to June 2026 and carry no six-visit counterfactual. Question 3, no file exists only to help the analyst.
+Question 4, no figure reads as the answer. Question 5, the filed sentences fix the rate definitions, the
+raked weights, the unweighted matched-pair flow base and the unrounded-then-rounded convention, and the
+reader's own summary is that they "fix the definitions and the population, but not the counterfactual
+method", which is exactly the WHAT filed and the HOW left open. Question 6, an analytical choice.
+
+**Its two realism findings, one fixed at source and one ruled harmless.**
+- **Fixed.** `population_controls_2023q1_2027q4.xlsx`, sheet "Age and sex": `25-34 male` and `25-34 female`
+  were byte-identical in all 20 rows, which no real control table would be. The cause was `FEMALE[1] = 0.500`
+  in `generator/models.py`, where every other band sits off 0.5 (ratios 1.04082, 0.9802, 0.96078, 0.94175,
+  0.90476, 0.73913). Corrected to 0.497, which keeps the array monotone in age, and rebuilt. Exactly one of
+  33 figure keys moved, the ask figure `total_weekly_hours_thousand`, and `submission.md` block 4 item 5 was
+  updated to its six new values. Every main-recommendation and critical-component figure is unchanged: the
+  gap path 0.39/0.53/0.62/0.47/0.28, rung 0 0.21/0.21/0.21/0.00/0.00, rung 1 0.60/0.85/1.07/0.95/0.67, and
+  the cap's share of the rise 0.180 against rung 0 0.000, rung 1 0.282 and rung 2 0.208.
+- **Harmless, no change.** The reader judged the methods note to read "partly as teaching a method", naming
+  sections 4, 5 and 6. Declined on `leak-check`'s own test, would the sentence exist without the trap: a
+  rotating panel's wave structure, raking by iterative proportional fitting to region and age-by-sex
+  controls, the quarter-on-quarter caveat that consecutive samples share four intakes, and the matched-pair
+  unweighted flow base are all standard content of a real labour-force methods note, and the asks need the
+  flow and hours definitions to be determinate at all, so trimming them would cost Gate B and make the
+  document less realistic, not more. The reader itself found no announcement of the decisive step.
+- `leak.py`'s REVIEW is sweep 4 alone, five documents sharing generic survey vocabulary (change, population,
+  intakes, statistics, records, controls, instruction, telephone, weights, quarters). Ordinary domain words.
+
+**The guard's state at ship, and the author's override.** One BLOCK remains, `ban.strategy` on
+`composition_mix` against task446 (v3), carried on the author's explicit `--force` with the reason on the
+card. The measured case: driver similarity is 0.07 against a 0.12 WARN line and a 0.30 BLOCK line, the
+nearest of 280 cards; `heart` found nothing above 0.07 against any driver, lineage driver, stump or ledger
+row; and task446 sits on banking-credit-financial-risk/credit-scoring-pd-modeling under forecasting, so
+only the coarse label collides. Two BLOCKs that registration surfaced after the author's decision were NOT
+forced and were corrected on accuracy instead: `forcing_event` from `statutory_or_regulatory_filing` to
+`budget_or_appropriation`, because nothing here is filed to a regulator and the pack's own field instruction
+says the cap exists to bring fieldwork within the field budget; and a truthful differentiation line against
+task179 (v3), which `test.same_puzzle_older` raised on three coarse labels alone.
+**The three WARNs answered:** `people.first` and `people.last`, the persona Aaron Tucker shares a first name
+and a surname with task267, one older build, which the rule scores as WARN rather than BLOCK and which is
+not worth a pack churn that would void the reader's pass; `repeat.gate_g`, `decomposition_attribution`
+repeats task252 (v2), and the Gate G mechanism is the one axis this build cannot rotate without changing
+the decisive step itself, which the 10/10 rules fix.
+
