@@ -28,7 +28,7 @@ def compute(target):
     eng = B.engine_lb(target)
     bl = B.read_billing(target)
     comb = B.combined_accounts(bl)
-    el = B.elog_dates(target)
+    minutes = B.minutes_logged(target)
     outs = B.outages(target)
     rep = B.replacements(target)
     unit = B.unit_lb(I, "golden", k)
@@ -36,8 +36,8 @@ def compute(target):
     burners = [d for d in I.open if "burner" in I.control[d]]
     f = {
         "call": {"facilities": five, "count": 5, "of": 14},
-        "facilities": {n: {"number": NUMBER[n], "nox_tons": B.hround(tons[n]), "agreement": "Yes" if n in five else "No",
-                           "gas_mmbtu": B.hround(gas[n]), "engine_nox_lb": B.hround(eng[n])} for n in B.ORDER},
+        "facilities": {n: {"number": NUMBER[n], "nox_tons": B.hround(tons[n]), "gas_mmbtu": B.hround(gas[n]),
+                           "engine_nox_lb": B.hround(eng[n])} for n in B.ORDER},
         "components": {
             "rise_pct_per_pct": int(round(100 * (math.exp(k * 0.01) - 1))),
             "fifth": {"name": rank[4], "tons": B.hround(tons[rank[4]])},
@@ -53,7 +53,7 @@ def compute(target):
         },
         "default": {"facilities": B.five(default), "tons": {n: B.hround(default[n]) for n in B.ORDER}},
         "ask_a": {"combined_accounts": sorted(comb), "lines": int(len(bl)), "first_therm_read": "July 2026"},
-        "ask_b": {"elog": {n: str(el[n]) for n in B.ORDER if n in el}, "replaced": sorted(rep),
+        "ask_b": {"minutes": minutes, "replaced": sorted(rep),
                   "bank_facilities": sorted(n for n in outs if n in ("Ashgrove Refining", "St. Aldric Medical Center",
                                                                      "Tamsett State University",
                                                                      "Quarry Lane Correctional Facility"))},
@@ -123,8 +123,9 @@ def write_xlsx(path, f):
     fill = PatternFill("solid", fgColor="DDEBF7")
     for n in B.ORDER:
         x = f["facilities"][n]
-        s2.append([n, x["number"], x["nox_tons"], x["agreement"], x["gas_mmbtu"], x["engine_nox_lb"]])
-        if x["agreement"] == "Yes":
+        agree = "Yes" if n in f["call"]["facilities"] else "No"
+        s2.append([n, x["number"], x["nox_tons"], agree, x["gas_mmbtu"], x["engine_nox_lb"]])
+        if agree == "Yes":
             for c in s2[s2.max_row]:
                 c.fill = fill
     tot = s2.max_row + 1
@@ -160,12 +161,12 @@ def write_xlsx(path, f):
          "line's BTU factor they are the therms billed); from the July reads the column is therms. The five "
          "combined-billing accounts carry the account's usage on each of their meters' lines, taken once a period."),
         ("Emergency engines' NOx", "Plan 4.3 and the inventory guidance section 6: hours x rated bhp x 0.74 x the "
-         "tier's g/bhp-hr. Seven facilities moved their logs to the District's e-logbook during 2026, which records "
-         "run time as hours and minutes (0.30 is half an hour); their engines' hour meters bear that reading out. At "
-         "the four facilities whose engines run in parallel during an outage, each engine's emergency line carries the "
-         "bank's engine-hours: each engine ran the outage the compliance log records. An engine replaced under the "
-         "Clean Standby Engine program keeps its device number; its runs before the replacement date are the old "
-         "engine's, at the old rating and tier the compliance log records."),
+         "tier's g/bhp-hr. Every facility keeps its Rule 4702 log in the District's e-logbook, which records run time as "
+         "hours and minutes (0.30 is half an hour); the engines' hour meters bear that reading out. At the four "
+         "facilities whose engines run in parallel during an outage, each engine's emergency line carries the bank's "
+         "engine-hours: each engine ran the outage the compliance log records. An engine replaced under the Clean "
+         "Standby Engine program keeps its device number; its runs before the replacement date are the old engine's, "
+         "at the old rating and tier the compliance log records."),
         ("Rounding", "Tons to the whole ton, gas to the whole MMBtu and engine NOx to the whole pound, each from the "
          "unrounded figure."),
         ("Sources", "CEMS hourly export 2026, source test databases 2018 to 2021 and 2022 to 2026, emission statements "
@@ -197,7 +198,7 @@ def write_svg(path, f):
     matplotlib.rcParams["font.family"] = "DejaVu Sans"
     names = sorted(B.ORDER, key=lambda n: -f["_unrounded"]["tons"][n])
     vals = [f["_unrounded"]["tons"][n] for n in names]
-    on = [f["facilities"][n]["agreement"] == "Yes" for n in names]
+    on = [n in f["call"]["facilities"] for n in names]
     blue, grey, ink, muted = "#2a6fb0", "#c3c8ce", "#1f2328", "#59636e"
     fig, ax = plt.subplots(figsize=(9.6, 5.2), dpi=100)
     ys = np.arange(len(names))[::-1]

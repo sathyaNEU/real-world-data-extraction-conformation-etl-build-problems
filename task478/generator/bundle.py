@@ -339,23 +339,11 @@ def _as_hmm(v):
     return whole + round((v - whole) * 100) / 60.0
 
 
-def elog_dates(folder):
-    """The date from which each facility's log holds hours and minutes: from it every value's fraction is a count of
-    minutes (never .60 or more) and the weekly readiness runs, about half an hour, read 0.24 to 0.36 where before they
-    read 0.40 to 0.60. The hour meters agree with that reading (checks.py B1)."""
+def minutes_logged(folder):
+    """True when the logs hold hours and minutes: no entry's fraction is 60 hundredths or more (in decimal hours about
+    two entries in five would be), and the hour meters agree with that reading (checks.py B)."""
     logs = read_engine_logs(folder)
-    out = {}
-    for fac, g in logs.groupby("facility"):
-        g = g.sort_values("date")
-        ready = g[g["purpose"].str.startswith("Testing")]
-        for d in sorted(set(g["date"])):
-            after, before = g[g["date"] >= d], ready[ready["date"] < d]
-            ra = ready[ready["date"] >= d]
-            frac_ok = all(round((v - np.floor(v + 1e-9)) * 100) <= 59 for v in after["value"])
-            if frac_ok and len(ra) >= 4 and ra["value"].max() < 0.40 and len(before) and before["value"].min() >= 0.40:
-                out[fac] = d
-                break
-    return out
+    return bool(all(round((v - np.floor(v + 1e-9)) * 100) <= 59 for v in logs["value"]))
 
 
 def outages(folder):
@@ -380,18 +368,18 @@ def replacements(folder):
 
 def engine_lb(folder, handling="golden"):
     """lb of NOx each facility's emergency engines emitted in 2026: hours x bhp x 0.74 x the tier's g/bhp-hr.
-    golden: each facility's log read as hours and minutes from its e-logbook date, an emergency line that carries
-    more than the outage the event log records read as the outage's hours, and a replaced engine's runs before its
-    replacement at the engine then in place. Rungs: 'naive' (every value as decimal hours, every line as logged, the
-    engines now permitted), 'no_elog', 'no_bank', 'current' (each device alone undone)."""
+    golden: every log read as hours and minutes, an emergency line that carries more than the outage the event log
+    records read as the outage's hours, and a replaced engine's runs before its replacement at the engine then in
+    place. Rungs: 'naive' (every value as decimal hours, every line as logged, the engines now permitted), 'decimal'
+    (decimal hours, the bank lines and replacements handled), 'no_bank', 'current' (each device alone undone)."""
     logs = read_engine_logs(folder)
     pm = read_permits(folder).set_index("DEVICE_NO")
-    el = elog_dates(folder) if handling in ("golden", "no_bank", "current") else {}
-    outs = outages(folder) if handling in ("golden", "no_elog", "current") else {}
-    rep = replacements(folder) if handling in ("golden", "no_elog", "no_bank") else {}
+    hmm = minutes_logged(folder) and handling in ("golden", "no_bank", "current")
+    outs = outages(folder) if handling in ("golden", "decimal", "current") else {}
+    rep = replacements(folder) if handling in ("golden", "decimal", "no_bank") else {}
     out = {n: 0.0 for n in ORDER}
     for r in logs.itertuples():
-        h = _as_hmm(r.value) if (r.facility in el and r.date >= el[r.facility]) else r.value
+        h = _as_hmm(r.value) if hmm else r.value
         if r.purpose.startswith("Emergency") and r.facility in outs and r.date in outs[r.facility]:
             h = min(h, outs[r.facility][r.date])
         bhp, tier = float(pm.loc[r.device, "RATING"]), pm.loc[r.device, "ENGINE_TIER"]

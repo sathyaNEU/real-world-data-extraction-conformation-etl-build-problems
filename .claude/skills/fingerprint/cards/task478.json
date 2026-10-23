@@ -11,7 +11,7 @@
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
   "answer": "Sign the 2027 NOx reduction agreements with Ashgrove Refining, Lindqvist Paperboard, Merriwell Foods, Sedge Hollow Creamery and Valmora Renewable Fuels (26, 12, 9, 8 and 8 tons from their Rule 4306 units in 2026), against Tamsett State University's 7 in sixth.",
-  "answer_source": "design note at the draw; submission.md block 1 from generator/figures.json once built",
+  "answer_source": "submission.md block 1 from generator/figures.json",
   "gap": [
     "objective"
   ],
@@ -191,7 +191,7 @@
       "fate": "spent at stage 4 on 2026-10-23: reader A (round 1) landed the call by fitting each unit's tests on the operating hours since its last catalyst event (one shared climb, a level per unit); reader B missed it"
     }
   ],
-  "notes": "architecture 7 drawn 2026-10-23 after architecture 6 was spent at stage 4; strategy other: a property of the fuel a third party supplies, recorded month by month in its heat content table, carries each spot test across the year; personas from guard.py names --geo 'United States' --seed 478; built 2026-10-23 (zip md5 2936a1ef), fork rows SF1 to SF26 asserted, thirty standing constructions file one five and the same 14 whole tons",
+  "notes": "architecture 7 drawn 2026-10-23 after architecture 6 was spent at stage 4; strategy other: a property of the fuel a third party supplies, recorded month by month in its heat content table, carries each spot test across the year; personas from guard.py names --geo 'United States' --seed 478; built 2026-10-23 (zip md5 2936a1ef), fork rows SF1 to SF26 asserted, thirty standing constructions file one five and the same 14 whole tons; shipped 2026-10-23 (zip md5 77f6a96a), four readers in two rounds missed the call, judge pass 2 DETERMINISTIC APPROVE",
   "client_domain": "physical-environmental-sciences",
   "registered": "2026-10-23T02:34:35Z"
 }

@@ -322,9 +322,9 @@ def _hmm(h):
 
 
 def log_rows(e):
-    """Each facility's 2026 log entries: [date, device, value, purpose, from the e-logbook]. From its e-logbook date a
-    facility's run time is hours and minutes; an outage on engines run in parallel stands on each engine's line as
-    the bank's engine-hours."""
+    """Each facility's 2026 log entries: [date, device, value, purpose]. The District's e-logbook writes run time as
+    hours and minutes; an outage on engines run in parallel stands on each engine's line as the bank's
+    engine-hours."""
     out = {}
     for code in W.FAC_NAME:
         devs = [d for d, en in W.ENGINE.items() if en["facility"] == code]
@@ -334,10 +334,9 @@ def log_rows(e):
             bank = [d for d in devs if en["bank"] and W.ENGINE[d]["bank"] == en["bank"]]
             for d, h, why in e["runs"][dev]:
                 hours = h * len(bank) if (why == "emergency" and bank) else h
-                elog = code in W.ELOG and d >= W.ELOG[code]
-                v = float(_hmm(hours)) if elog else round(hours, 2)
-                rows.append([d, dev, v, {"readiness": "Testing (weekly)", "load test": "Maintenance (load bank)",
-                                         "emergency": "Emergency (utility outage)"}[why], elog])
+                rows.append([d, dev, float(_hmm(hours)), {"readiness": "Testing (weekly)",
+                                                          "load test": "Maintenance (load bank)",
+                                                          "emergency": "Emergency (utility outage)"}[why]])
         rows.sort(key=lambda r: (r[0], r[1]))
         out[code] = rows
     return out

@@ -7,18 +7,18 @@
    "D-1701": 16568.79
   },
   "engine_lb": {
-   "Ashgrove Refining": 817.923,
+   "Ashgrove Refining": 810.97,
    "Briar Flats Water Reclamation": 347.683,
    "Harrow Linen Services": 91.551,
    "Haskett Ridge Poultry": 235.009,
    "Lindqvist Paperboard": 348.986,
-   "Merriwell Foods": 372.203,
-   "Orchard Basin Almond Growers": 269.445,
-   "Penrose Tire Retreading": 90.772,
-   "Quarry Lane Correctional Facility": 3136.535,
+   "Merriwell Foods": 370.975,
+   "Orchard Basin Almond Growers": 266.963,
+   "Penrose Tire Retreading": 89.94,
+   "Quarry Lane Correctional Facility": 3107.209,
    "Sedge Hollow Creamery": 201.703,
-   "St. Aldric Medical Center": 2097.426,
-   "Tamsett State University": 1257.842,
+   "St. Aldric Medical Center": 2070.512,
+   "Tamsett State University": 1262.969,
    "Valmora Renewable Fuels": 264.623,
    "Wexley Point Energy Center": 473.71
   },
@@ -29,8 +29,8 @@
    "Haskett Ridge Poultry": 1585709.27,
    "Lindqvist Paperboard": 3183063.774,
    "Merriwell Foods": 1893296.221,
-   "Orchard Basin Almond Growers": 237401.126,
-   "Penrose Tire Retreading": 285787.764,
+   "Orchard Basin Almond Growers": 238396.212,
+   "Penrose Tire Retreading": 285821.836,
    "Quarry Lane Correctional Facility": 247463.295,
    "Sedge Hollow Creamery": 2044613.986,
    "St. Aldric Medical Center": 567144.142,
@@ -124,15 +124,7 @@
    "St. Aldric Medical Center",
    "Tamsett State University"
   ],
-  "elog": {
-   "Briar Flats Water Reclamation": "2026-06-04",
-   "Harrow Linen Services": "2026-04-07",
-   "Haskett Ridge Poultry": "2026-08-04",
-   "Orchard Basin Almond Growers": "2026-07-14",
-   "Penrose Tire Retreading": "2026-09-18",
-   "Sedge Hollow Creamery": "2026-03-17",
-   "Wexley Point Energy Center": "2026-05-05"
-  },
+  "minutes": true,
   "replaced": [
    "D-3301",
    "D-4001"
@@ -154,14 +146,14 @@
   "cems_tons": 32,
   "corridor_tons": 81,
   "devices": 38,
-  "engine_total_lb": 10005,
+  "engine_total_lb": 9943,
   "fifth": {
    "name": "Sedge Hollow Creamery",
    "tons": 8
   },
   "five_tons_high": 26,
   "five_tons_low": 8,
-  "gas_total_mmbtu": 22371085,
+  "gas_total_mmbtu": 22372114,
   "monitored_units": 4,
   "open_units": 34,
   "rise_pct_per_pct": 6,
@@ -198,98 +190,84 @@
  },
  "facilities": {
   "Ashgrove Refining": {
-   "agreement": "Yes",
-   "engine_nox_lb": 818,
+   "engine_nox_lb": 811,
    "gas_mmbtu": 8373008,
    "nox_tons": 26,
    "number": "0102"
   },
   "Briar Flats Water Reclamation": {
-   "agreement": "No",
    "engine_nox_lb": 348,
    "gas_mmbtu": 244409,
    "nox_tons": 1,
    "number": "1102"
   },
   "Harrow Linen Services": {
-   "agreement": "No",
    "engine_nox_lb": 92,
    "gas_mmbtu": 292098,
    "nox_tons": 1,
    "number": "1318"
   },
   "Haskett Ridge Poultry": {
-   "agreement": "No",
    "engine_nox_lb": 235,
    "gas_mmbtu": 1585709,
    "nox_tons": 4,
    "number": "0912"
   },
   "Lindqvist Paperboard": {
-   "agreement": "Yes",
    "engine_nox_lb": 349,
    "gas_mmbtu": 3183064,
    "nox_tons": 12,
    "number": "0233"
   },
   "Merriwell Foods": {
-   "agreement": "Yes",
-   "engine_nox_lb": 372,
+   "engine_nox_lb": 371,
    "gas_mmbtu": 1893296,
    "nox_tons": 9,
    "number": "0645"
   },
   "Orchard Basin Almond Growers": {
-   "agreement": "No",
-   "engine_nox_lb": 269,
-   "gas_mmbtu": 237401,
+   "engine_nox_lb": 267,
+   "gas_mmbtu": 238396,
    "nox_tons": 1,
    "number": "0880"
   },
   "Penrose Tire Retreading": {
-   "agreement": "No",
-   "engine_nox_lb": 91,
-   "gas_mmbtu": 285788,
+   "engine_nox_lb": 90,
+   "gas_mmbtu": 285822,
    "nox_tons": 1,
    "number": "1027"
   },
   "Quarry Lane Correctional Facility": {
-   "agreement": "No",
-   "engine_nox_lb": 3137,
+   "engine_nox_lb": 3107,
    "gas_mmbtu": 247463,
    "nox_tons": 1,
    "number": "1455"
   },
   "Sedge Hollow Creamery": {
-   "agreement": "Yes",
    "engine_nox_lb": 202,
    "gas_mmbtu": 2044614,
    "nox_tons": 8,
    "number": "1240"
   },
   "St. Aldric Medical Center": {
-   "agreement": "No",
-   "engine_nox_lb": 2097,
+   "engine_nox_lb": 2071,
    "gas_mmbtu": 567144,
    "nox_tons": 2,
    "number": "0761"
   },
   "Tamsett State University": {
-   "agreement": "No",
-   "engine_nox_lb": 1258,
+   "engine_nox_lb": 1263,
    "gas_mmbtu": 1233721,
    "nox_tons": 7,
    "number": "0350"
   },
   "Valmora Renewable Fuels": {
-   "agreement": "Yes",
    "engine_nox_lb": 265,
    "gas_mmbtu": 2120819,
    "nox_tons": 8,
    "number": "0577"
   },
   "Wexley Point Energy Center": {
-   "agreement": "No",
    "engine_nox_lb": 474,
    "gas_mmbtu": 62550,
    "nox_tons": 0,

@@ -1,5 +1,5 @@
 """task478's assertions on the cut pack and the generator's clean truth: the three rules (R1 to R3c), every semantic fork
-row (SF1 to SF26), the ladder, the golden's licensed family and margins, the asks' devices, the separation line, the
+row (SF1 to SF28), the ladder, the golden's licensed family and margins, the asks' devices, the separation line, the
 distractors, the input gates and the realism sweep.
 
     python3 task478/generator/checks.py
@@ -408,7 +408,7 @@ def main():
     insp["date"] = [dt.date.fromisoformat(x) for x in insp["INSPECTION_DATE"]]
     insp["read"] = insp["HOUR_METER"].astype(float)
     logs = B.read_engine_logs(TARGET)
-    el = B.elog_dates(TARGET)
+    mins = B.minutes_logged(TARGET)
     repl = B.replacements(TARGET)
     outs = B.outages(TARGET)
     meter_lb = {n: 0.0 for n in B.ORDER}
@@ -433,7 +433,7 @@ def main():
     banks = {d_: [x for x in W.ENGINE if W.ENGINE[x]["facility"] == W.ENGINE[d_]["facility"] and W.ENGINE[d_]["bank"]
                   and W.ENGINE[x]["bank"] == W.ENGINE[d_]["bank"]] for d_ in W.ENGINE}
     for r in logs.itertuples():
-        h = B._as_hmm(r.value) if (r.facility in el and r.date >= el[r.facility]) else r.value
+        h = B._as_hmm(r.value) if mins else r.value
         emer = r.purpose.startswith("Emergency") and r.facility in outs and r.date in outs[r.facility]
         if emer and h > outs[r.facility][r.date] + 1e-9:
             h = h / len(banks[r.device])
@@ -443,6 +443,12 @@ def main():
         half[r.facility] += h * bhp * B.ENGINE_LF * B.TIER_NOX[tier] / B.G_LB
     check("SF23 a banked engine's emergency line at the compliance log's outage hours or halved: the same 14 whole "
           "pounds", {n: B.hround(half[n]) for n in B.ORDER} == ebw)
+    raw_b = pd.read_csv(os.path.join(TARGET, P.FILES["billing"]), dtype=str)
+    bdate = {bid: dt.datetime.strptime(x, "%m/%d/%Y").date() for bid, x in zip(raw_b["BILL_ID"], raw_b["BILL_DATE"])}
+    straddle = [r for r in bl.itertuples() if r.READ_TO < B.CONVERSION <= bdate[r.BILL_ID]]
+    check("SF27 the billing conversion read on the bill date in place of the read date: no line read before 1 July "
+          "2026 was billed on or after it, so both boundaries put the same %d lines on each side" % len(bl),
+          not straddle)
     est = bl[bl["READ_TYPE"] == "E"]
     check("SF24 the %d estimated reads stand as billed: each meter's next read is actual and the extract carries no "
           "adjustment line" % len(est), len(est) == len(W.ESTIMATED) and set(bl["READ_TYPE"]) == {"A", "E"})
@@ -553,14 +559,16 @@ def main():
     check("B the golden's engine figures are the generator's on all 14",
           all(ebw[n] == B.hround(truth_e[n]) for n in B.ORDER) and
           all(f["facilities"][n]["engine_nox_lb"] == ebw[n] for n in B.ORDER))
-    eh = {h: B.engine_lb(TARGET, h) for h in ("naive", "no_elog", "no_bank", "current")}
+    eh = {h: B.engine_lb(TARGET, h) for h in ("naive", "decimal", "no_bank", "current")}
     mvb = {h: sum(B.hround(v[n]) != ebw[n] for n in B.ORDER) for h, v in eh.items()}
-    check("B the decimal reading moves the seven e-logbook facilities, the bank lines the four banked, the current "
-          "engine the two with a replacement, all three 13 or 14 (%s)" % ", ".join("%s %d" % kv for kv in mvb.items()),
-          mvb["no_elog"] == 7 and mvb["no_bank"] == 4 and mvb["current"] == 2 and mvb["naive"] >= 13)
-    check("B fair: the logs' own values give each e-logbook facility's first entry, the generator's (%d facilities)"
-          % len(el), {n: str(d_) for n, d_ in el.items()} == {W.FAC_NAME[c]: str(d_) for c, d_ in W.ELOG.items()})
-    band, low = {}, {}
+    check("B the decimal reading moves all 14 facilities, the bank lines the four banked, the current engine the two "
+          "with a replacement (%s)" % ", ".join("%s %d" % kv for kv in mvb.items()),
+          mvb["naive"] == 14 and mvb["decimal"] == 14 and mvb["no_bank"] == 4 and mvb["current"] == 2)
+    fr = ((logs["value"] - np.floor(logs["value"] + 1e-9)) * 100).round().astype(int)
+    share = np.mean([(h % 1.0) >= 0.595 for dev in W.ENGINE for _, h, _ in W.engine_runs(dev)])
+    check("B fair: no entry's fraction reaches .60 in %d entries, where the same runs in decimal hours would show one "
+          "on %.0f per cent of entries (SF28)" % (len(logs), 100 * share), mins and (fr <= 59).all() and share > 0.2)
+    exc, exd = [], []
     for d_, g in insp.groupby("DEVICE_NO"):
         if d_ in repl:
             continue
@@ -572,27 +580,16 @@ def main():
         def ran(dec):
             t = 0.0
             for r in lg.itertuples():
-                h = B._as_hmm(r.value) if (not dec and n_ in el and r.date >= el[n_]) else r.value
+                h = r.value if dec else B._as_hmm(r.value)
                 if r.purpose.startswith("Emergency") and n_ in outs and r.date in outs[n_]:
                     h = min(h, outs[n_][r.date])
                 t += h
-            return t / span
-        band[d_] = ran(False)
-        if n_ in el:
-            low.setdefault(n_, []).append(ran(True))
-    lo, hi = min(band.values()), max(band.values())
-    below = [n for n, v in low.items() if max(v) < lo]
-    check("B fair: over the first inspection interval every engine's log, read as hours and minutes from its "
-          "facility's first e-logbook entry, sits at %.3f to %.3f of its hour meter's advance (the rest warm-up and "
-          "cool-down); read as decimal hours the e-logbook engines fall to %.3f to %.3f, below the band at %d of 7 "
-          "facilities" % (lo, hi, min(min(v) for v in low.values()), max(max(v) for v in low.values()), len(below)),
-          hi - lo < 0.06 and hi < 0.97 and len(below) >= 6)
-    rdy = logs[logs["purpose"].str.startswith("Testing")]
-    steps_ok = all(rdy[(rdy["facility"] == n) & (rdy["date"] < d_)]["value"].min() >= 0.40 and
-                   rdy[(rdy["facility"] == n) & (rdy["date"] >= d_)]["value"].max() <= 0.36 for n, d_ in el.items())
-    check("B fair: at each e-logbook facility the weekly readiness runs read 0.40 to 0.60 before its first e-logbook "
-          "entry and 0.24 to 0.36 from it, the same 24 to 36 minutes, and the other facilities' read 0.40 to 0.60 all "
-          "year", steps_ok and rdy[~rdy["facility"].isin(el)]["value"].between(0.40, 0.60).all())
+            return t
+        exc.append((span - ran(False)) / len(lg))
+        exd.append((span - ran(True)) / len(lg))
+    check("B fair: over the first inspection interval each engine's hour meter runs %.3f to %.3f hours a start beyond "
+          "its log read as hours and minutes (warm-up and cool-down), against %.3f to %.3f read as decimal hours"
+          % (min(exc), max(exc), min(exd), max(exd)), 0.02 < min(exc) and max(exc) < 0.11 and min(exd) > max(exc))
     obanks = {n for n in outs if any(len(banks[d_]) > 1 for d_ in W.ENGINE if W.FAC_NAME[W.ENGINE[d_]["facility"]] == n)}
     over = [r for r in logs.itertuples() if r.purpose.startswith("Emergency") and r.facility in outs and
             r.date in outs[r.facility] and r.value > outs[r.facility][r.date] + 1e-9]
@@ -606,10 +603,9 @@ def main():
     first = insp.groupby("DEVICE_NO")["date"].min()
     check("B silent: no replaced engine's hour meter is read before its replacement, so no meter restarts",
           all(first[d_] > rd for d_, (rd, _, _) in repl.items()))
-    vals = logs.assign(frac=(logs["value"] * 100).round().astype(int) % 100)
-    dec = vals[[not (n in el and d_ >= el[n]) for n, d_ in zip(vals["facility"], vals["date"])]]
-    check("B no marker: the sheets keep one header and one number format, and the decimal entries' fractions sit under "
-          ".60 on %.0f per cent of rows" % (100 * (dec["frac"] < 60).mean()), (dec["frac"] < 60).mean() > 0.5)
+    check("B no marker: every sheet keeps one header ('Run hours') and one number format, and every outage the "
+          "compliance log records is a whole number of hours, so no outage entry reads differently either way",
+          all(float(h).is_integer() for v_ in outs.values() for h in v_.values()))
 
     # ---------------------------------------------------------------- separation and distractors
     dX = subset([kk_ for kk_ in P.FILES if kk_ not in ("cems", "tests_old", "tests_new", "statements", "heat")])
@@ -669,19 +665,15 @@ def main():
     check("Z every meter's read periods chain from bill to bill", chain)
     check("Z the heat table's Btu/scf is its therms a CCF times 1,000 to the whole Btu",
           (abs(heat["BTU_FACTOR"].astype(float) * 1000 - heat["HEAT_CONTENT_BTU_SCF"].astype(float)) <= 0.5).all())
-    check("Z every engine's log sums below its meter's advance over each inspection round",
-          all(sum(B._as_hmm(v_) if (r_n in el and d__ >= el[r_n]) else v_ for v_, r_n, d__ in
-                  zip(logs[(logs["device"] == d_) & (logs["date"] >= g.sort_values("date").iloc[0]["date"]) &
-                           (logs["date"] < g.sort_values("date").iloc[1]["date"]) &
-                           ~logs["purpose"].str.startswith("Emergency")]["value"],
-                      logs[(logs["device"] == d_) & (logs["date"] >= g.sort_values("date").iloc[0]["date"]) &
-                           (logs["date"] < g.sort_values("date").iloc[1]["date"]) &
-                           ~logs["purpose"].str.startswith("Emergency")]["facility"],
-                      logs[(logs["device"] == d_) & (logs["date"] >= g.sort_values("date").iloc[0]["date"]) &
-                           (logs["date"] < g.sort_values("date").iloc[1]["date"]) &
-                           ~logs["purpose"].str.startswith("Emergency")]["date"]))
-              <= g.sort_values("date").iloc[1]["read"] - g.sort_values("date").iloc[0]["read"]
-              for d_, g in insp.groupby("DEVICE_NO") if d_ not in repl))
+    under = []
+    for d_, g in insp.groupby("DEVICE_NO"):
+        if d_ in repl:
+            continue
+        g = g.sort_values("date")
+        lg = logs[(logs["device"] == d_) & (logs["date"] >= g.iloc[0]["date"]) & (logs["date"] < g.iloc[1]["date"]) &
+                  ~logs["purpose"].str.startswith("Emergency")]
+        under.append(sum(B._as_hmm(v_) for v_ in lg["value"]) <= g.iloc[1]["read"] - g.iloc[0]["read"])
+    check("Z every engine's log sums below its meter's advance over each inspection round", all(under))
     check("Z no facility figure is a round figure before rounding", all(abs(gold[n] - round(gold[n])) > 0.01
                                                                        for n in B.ORDER))
     import csv as _csv

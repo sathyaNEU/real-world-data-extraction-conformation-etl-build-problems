@@ -41,7 +41,6 @@ def main():
     dflt = f["default"]
     in_default = [n for n in dflt["facilities"] if n not in five]
     out_default = [n for n in five if n not in dflt["facilities"]]
-    el = f["ask_b"]["elog"]
     rep = f["ask_b"]["replaced"]
     banked = f["ask_b"]["bank_facilities"]
     by_rank = sorted(five, key=rank.index)
@@ -87,18 +86,16 @@ def main():
             join(["%s %d" % (SHORT[n], F[n]["nox_tons"]) for n in rank[:5]]),
             join(["%s %d" % (SHORT[n], F[n]["nox_tons"]) for n in rank[5:7]])),
         "For the gas, matched each line of tvg_commercial_billing_extract_2027-02.csv to its facility by service "
-        "address, took USAGE_THERMS on the lines read before 1 July 2026 as corrected CCF times BTU_FACTOR (read as "
+        "address, took USAGE_THERMS on the lines whose READ_TO falls before 1 July 2026 as corrected CCF times BTU_FACTOR (read as "
         "therms they fall below the plan units' own fuel in the emission statements) and as therms from the July reads, "
         "took the usage of the combined-billing accounts %s once a period, not once a meter, then divided by 10 and "
         "spread each bill as plan section 4.2 says: %s MMBtu in all." % (
             join(f["ask_a"]["combined_accounts"]), "{:,}".format(c["gas_total_mmbtu"])),
-        "For the engines, read the logs of %s as hours and minutes from their first e-logbook entries (%s; 0.30 is half "
-        "an hour, as the hour meters in tbapcd_engine_inspections_2025_2027.csv bear out), took the emergency lines of "
-        "the engines run in parallel at %s at the outage hours the compliance log's OUTAGE entries record, each run of "
-        "%s before its 2026 replacement at the removed engine's rating and tier in the EQUIPMENT entry, and applied "
-        "guidance section 6: %s lb in all." % (
-            join(SHORT[n] for n in B.ORDER if n in el), join("%s %s" % (SHORT[n], day(el[n])) for n in B.ORDER
-                                                             if n in el),
+        "For the engines, read every log in tbapcd_rule4702_engine_logs_2026.xlsx as hours and minutes (0.30 is half an "
+        "hour: no entry's fraction reaches .60, and the hour meters in tbapcd_engine_inspections_2025_2027.csv bear the "
+        "reading out), took the emergency lines of the engines run in parallel at %s at the outage hours the compliance "
+        "log's OUTAGE entries record, each run of %s before its 2026 replacement at the removed engine's rating and tier "
+        "in the EQUIPMENT entry, and applied guidance section 6: %s lb in all." % (
             join(SHORT[n] for n in banked), join(rep), "{:,}".format(c["engine_total_lb"])),
         "Recommended the five highest: %s." % join(five),
     ]
