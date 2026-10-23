@@ -1,19 +1,74 @@
 # task175 design note
 
-**Status: PAUSED at stage 1. No card has been written or registered, which is deliberate.** Three screens
-have run on this number and none produced a design that meets the bar (every reflex route a full bin
-from the golden, the right family inside a quarter-bin of the bin centre with one sigma, a lever of 30
-per cent or more of the graded figure with sigma near 1 per cent). The first (2026-10-18) took the seed
-FC46's world, decision and quantity and measured two capped-cost candidates dead over three seeds each.
-The second (2026-10-19) redrew the number in the cell the coordinator allocated,
-human-factors-ergonomics / human-reliability-assessment for Forecasting, set nine candidates aside on
-paper against the deaths already on file in this cell and measured the two survivors dead on code
-(`## Redraw screen: human-reliability-assessment` below). The third (2026-10-19) took the coordinator's
-next cell, quantitative-finance / strategy-backtesting-evaluation, measured three capacity mechanisms
-dead on code and set the rest aside on paper (`## Redraw screen: strategy-backtesting-evaluation`).
-Nothing was cut, `architecture` stays 0, and no axis of the guard's window was spent.
+**Architecture 1 (rebuild of 2026-10-23).** The number was reopened under the author's rule that no number stays
+retired, and is rebuilt from scratch in the cell urban-regional-science / land-use-spatial-development-modeling
+for Forecasting. Everything screened on this number before 2026-10-23 (the seed FC46's world, the
+human-reliability cell and the strategy-backtesting cell) is spent and kept below as history
+(`## Earlier screens (2026-10-18 and 2026-10-19)`, `## Tried and rejected`, `## Retired`).
 
-## What was screened
+## Draw
+
+- **Card.** `cards/task175.json`, filed 2026-10-23 through `register_serial.sh`; `guard.py check` WARN on
+  `repeat.gate_g` only (answered below), with the older same-puzzle and same-driver signatures differentiated
+  against task124, task132, task144, task163, task465 and task165.
+- **Pairing.** Client domain urban-regional-science, task type land-use-spatial-development-modeling (serves
+  Forecasting); objective Forecasting & Predictive Modeling; decision a quantity figure (a count of permits);
+  shape 07, a grid (each 2027 extension area by quarter, with the area totals and the call).
+- **World.** Port Ardell, a fictional Gulf Coast Florida city of about 95,000 residents, platted lot by lot by the
+  Ardell Gulf Land Company between 1958 and 1971 (about 110,000 quarter-acre lots in numbered plat units) and
+  built one home at a time. The city-owned utility runs the Ardell Utility Extension Program: water, sewer and
+  irrigation lines are carried into one area at a time, paid for by special assessments on the lots, and an
+  area's lots can connect once its lines are accepted. The program sewered the areas with the most septic tanks
+  first. Its 2027 phase connects three areas from January 2027: North 6, North 7 and Northwest 3.
+- **Decision and call.** The utility's bond resolution requires a revenue sufficiency report each January, and
+  its capacity fee line, the 2027 meter purchases and the connection crew hours rest on the number of
+  single-family building permits the city will issue in 2027 on lots in the three areas (forward facing: the
+  window is not yet open). The call: that count, in total, by area and by quarter.
+- **The quantity.** Each vacant lot's chance of a single-family permit in 2027 once its lines are accepted,
+  summed over the three areas' vacant lots at the 2026 market.
+- **Strategy and family.** `composition_mix` (pattern none, G6 then G14), Layer 2 family
+  `estimand_identification`, `layer2_pattern` urban-regional-science/land-use-spatial-development-modeling/3
+  translated: the card's pitfall is that a land-use change lands where growth already was, and its shortcut
+  (the treated areas' before and after, or the area average) is this build's default path; here the city served
+  its most built-up areas first, and the comparison the data force is lot by lot on the street each lot faces.
+- **Data-native sentence.** Port Ardell's lots were sold to distant buyers in the 1960s and are built one at a
+  time, and a builder puts a spec home where homes already stand on the street it faces; the utility sewered the
+  areas with the most septic tanks first, so every earlier extension area was connected with most of its streets
+  started, and the 2027 areas are the empty end of the city.
+- **The screen, measured before the card** (`scratchpad/b175n/proto/a1.py` to `a4.py`, five seeds, a 76,000-lot
+  world with 15 earlier extension areas served 2010 to 2024 and three forward areas, about 20,000 permits on
+  360,000 served lot-years). Against the 2027 expected truth: the first-year analog 58 to 77 per cent high
+  (market-scaled) or 36 to 62 per cent (raw); a regression of the analog on each area's built share at service
+  37 to 75 per cent high once the earlier areas' started-street share is realistic; the lot hazard on the plat
+  block's build-out 28 to 39 per cent high; on adjacent lots 32 to 38 per cent high; a log-share parametric form
+  of the street exposure 10 to 15 per cent high; homes within 110 metres minus 9 to plus 10 per cent; the golden
+  (served lot-years binned on the street segment's build-out with year effects, applied at 2026) within
+  0.2 to 0.6 per cent of itself across 5 and 10 point bins and minus 1.5 to plus 6 per cent of the truth. The
+  street exposure beats the plat block, the radius and the adjacent lots by 550 to 1,000 log-likelihood units.
+- **Sources.** The library card (land-use 3, upzoning goes where growth already was): taught the shortcut and
+  the comparison; this build differs in that the decisive comparison is a neighbourhood term no area-level
+  comparison reaches. task134 (the cell's only earlier card): the yield of a raised allowance through
+  feasibility; nothing here is a zoning allowance or a feasibility test. task165 (the nearest held shape): a gain
+  that is the headroom the old service left; here there is no dose or headroom, the street's build-out
+  multiplies a hazard. task484: lease-up of new buildings, not their building.
+- **Guard, the relabel and the WARN.** The first check BLOCKed `ban.pattern` on G14 against task273 (live in
+  the last three). G6 (composition shift) is the decisive label because the error the default path makes is
+  carrying a rate measured on one composition of streets to a population of a different one, and the
+  conditioned yield (G14) that fixes it is stable; both codes stay on the card. `repeat.gate_g`: the lane's
+  objective is Forecasting and its Gate G is the forecast itself; the mechanism is the street-level hazard, new
+  to the forecasting corpus. Personas Melissa Payne and Steven Burke from `guard.py names --geo us --seed 175`.
+- **Axes against the live window** (task273, task169, task478): forum `executive_team`, forcing event
+  `statutory_or_regulatory_filing`, organisation `utility_or_infrastructure`, role `finance_controller`,
+  artifact `register` (the extension program schedule), shape 07. The forcing event was first drawn as
+  `launch_or_rollout` (the three areas go live in January 2027) and BLOCKed under the registration lock
+  against task273; the honest replacement is the January revenue sufficiency report the bond resolution
+  requires, which is the filing that carries this forecast, and the go-live stays in the world as a fact.
+
+## Earlier screens (2026-10-18 and 2026-10-19)
+
+History, kept as written; every world, cell and mechanism in it is spent.
+
+### What was screened
 
 - **Seed** FC46, header and Situation only (`status.py task175`). Kept: an online music retailer gives
   its 25,000 best customers a free two-day shipping membership for 52 weeks; the programme pays at most
@@ -36,7 +91,7 @@ Nothing was cut, `architecture` stays 0, and no axis of the guard's window was s
   tankful; task142 and task143 spend "the distribution, not the point" on a percentile and a joint
   chance. No screen on file touches cart sessions or order batching.
 
-## The harness
+### The harness
 
 `scratchpad/b175/proto/` in this session (session-scoped; rebuild from this section). `proto2.py` is
 candidate 1, `proto3.py` candidate 2, `pilot52.py` the subset arithmetic, `proto1.py` and `sweep1.py`
@@ -52,7 +107,7 @@ analyst computes from the pack: a negative binomial fitted by maximum likelihood
 counts and exposure, each member's posterior predictive for the membership year, the pilot's estimates,
 and the cap applied to each member's predictive cost distribution.
 
-## The structural finding: a member-level capped forecast is a continuum, and the cap cancels
+### The structural finding: a member-level capped forecast is a continuum, and the cap cancels
 
 The truncation-direction screen passes (the cap hides the top, and the latent quantity is the upper tail
 of each member's coming year), and the variance-only screen passes (every spread moves the point figure
@@ -86,7 +141,7 @@ inside one bin; at bins wide enough to hold the family (6 to 10 per cent), the p
 and analog routes land in the golden's bin or the next. This is the same dial at both ends
 that `stumping` 1.6a and `determinism-check` section 1 record for task194, met here on a capped sum.
 
-## Redraw screen: human-reliability-assessment (2026-10-19)
+### Redraw screen: human-reliability-assessment (2026-10-19)
 
 - **Cell and fences.** human-factors-ergonomics / human-reliability-assessment (serves Forecasting), a
   pairing never built. The round's bans: pattern G14, `composition_mix`, `local_government`,
@@ -119,7 +174,7 @@ that `stumping` 1.6a and `determinism-check` section 1 record for task194, met h
   harness rebuilds from this note. `guard.py slots` on both driver sentences returned lexical overlaps
   only (task182, task194, task117, task132, task201), no screen of either mechanism.
 
-## Redraw screen: strategy-backtesting-evaluation (2026-10-19)
+### Redraw screen: strategy-backtesting-evaluation (2026-10-19)
 
 - **Cell and fences.** quantitative-finance / strategy-backtesting-evaluation (serves Forecasting), the
   graded call forward facing (a capacity, a capital or a net return at a planned capital, never a
@@ -144,6 +199,37 @@ that `stumping` 1.6a and `determinism-check` section 1 record for task194, met h
   firm's netting, borrow demand) is a reflex control, a shared-pool clone or a minor cost line.
 - **The harness.** `scratchpad/r175/proto/qf_runs.py`, `qf_family.py`, `qf1c.py` and `qf6.py`,
   session-scoped and deterministic per seed; settings and figures are in the Tried and rejected lines.
+
+### Resume as written on 2026-10-19
+
+No screen left a live design, so the next move is the coordinator's or the author's: move the number to
+another Forecasting cell, or come back to human reliability or strategy evaluation when the round's G14
+and `composition_mix` bans lapse. Do not re-screen, in any of the three worlds, anything in
+`## Tried and rejected`:
+
+1. **The seed's world (FC46).** The three laws close the per-member capped forecast for any decisive step
+   that refines a member's predictive year, because the refinements form a continuum wider than a
+   quarter-bin and the cap makes the common-factor and point-forecast errors cancel.
+2. **Human reliability under this round's bans.** The cell's own form is a conditioned error probability,
+   which is G14 by an honest label, and its non-mix structures are spent on file (the redraw screen's list).
+   A time-reliability race dies on rare trips and the window-band filter and divide; a flattened factor
+   slope dies on its lever and on the audited rows. A further draw here would start from a file the
+   organisation keeps whose forcing input no stratification of the error log reproduces, and would price
+   the four unscreened card seeds first, with their predicted deaths: labels that exist only above a
+   review line (a verified subsample, spent, and a filter and a divide on it); reviewer-capacity yield (a
+   binding constraint on a filed integer of hours); an error-risk score's calibration against its ranking
+   (the card applied as stated, the library test); blocking probability against occupancy for a staffed
+   desk (queueing, the swap test).
+3. **Strategy evaluation under this round's bans.** A capacity call turns on how the market answers the
+   strategy's own flow; the per-trade square-root cost is the default and the only data-forced refinement
+   is how impact carries across days, whose model classes part 2.2 to 4.4 times on a strategy's runs and
+   reversals while agreeing on every one-way execution a desk records. A further draw here needs an
+   execution record that itself contains the strategy's runs and reversals, or a decisive step that is not
+   a cost of the strategy's own trading.
+
+Window facts on 2026-10-19 after the b7a54be refresh: task249 is spent and skipped, so patterns G6, G2 and
+G13, strategies `population_selection`, `decomposition_attribution` and `composition_mix`, and shapes 04
+and 05 sit in the ban window, and this round's serial registrations will move it again.
 
 ## Tried and rejected
 
@@ -302,37 +388,40 @@ that `stumping` 1.6a and `determinism-check` section 1 record for task194, met h
   alpha carried through cross-sectional dispersion (task446 v2 and task194's invariant abstraction);
   post-publication decay read across older signals (a filter and a divide, and a known result); carry read
   off today's curve (observable ex ante).
-
-## Resume
-
-No screen left a live design, so the next move is the coordinator's or the author's: move the number to
-another Forecasting cell, or come back to human reliability or strategy evaluation when the round's G14
-and `composition_mix` bans lapse. Do not re-screen, in any of the three worlds, anything in
-`## Tried and rejected`:
-
-1. **The seed's world (FC46).** The three laws close the per-member capped forecast for any decisive step
-   that refines a member's predictive year, because the refinements form a continuum wider than a
-   quarter-bin and the cap makes the common-factor and point-forecast errors cancel.
-2. **Human reliability under this round's bans.** The cell's own form is a conditioned error probability,
-   which is G14 by an honest label, and its non-mix structures are spent on file (the redraw screen's list).
-   A time-reliability race dies on rare trips and the window-band filter and divide; a flattened factor
-   slope dies on its lever and on the audited rows. A further draw here would start from a file the
-   organisation keeps whose forcing input no stratification of the error log reproduces, and would price
-   the four unscreened card seeds first, with their predicted deaths: labels that exist only above a
-   review line (a verified subsample, spent, and a filter and a divide on it); reviewer-capacity yield (a
-   binding constraint on a filed integer of hours); an error-risk score's calibration against its ranking
-   (the card applied as stated, the library test); blocking probability against occupancy for a staffed
-   desk (queueing, the swap test).
-3. **Strategy evaluation under this round's bans.** A capacity call turns on how the market answers the
-   strategy's own flow; the per-trade square-root cost is the default and the only data-forced refinement
-   is how impact carries across days, whose model classes part 2.2 to 4.4 times on a strategy's runs and
-   reversals while agreeing on every one-way execution a desk records. A further draw here needs an
-   execution record that itself contains the strategy's runs and reversals, or a decisive step that is not
-   a cost of the strategy's own trading.
-
-Window facts on 2026-10-19 after the b7a54be refresh: task249 is spent and skipped, so patterns G6, G2 and
-G13, strategies `population_selection`, `decomposition_attribution` and `composition_mix`, and shapes 04
-and 05 sit in the ban window, and this round's serial registrations will move it again.
+- **Rebuild screen, urban-regional-science / land-use-spatial-development-modeling (2026-10-23), set aside on
+  paper or by a first harness before the card:**
+  - Subdivision absorption by community count, opening ramp and sell-out: once each subdivision is capped at
+    its remaining platted lots and new plats are added at the pace past openings kept, the ramp and the
+    builder count move a county's year by under 10 per cent, and the per-subdivision run rate is the
+    homebuilder's textbook route, so the golden would be the default.
+  - The builder's section as the unit of pace (pace proportional to builders, not lots): the swap test reads it
+    as stores in a mall, and the lever on a realistic roster is under 10 per cent.
+  - Shared submarket demand among concurrent subdivisions or lease-ups: demand-limited absorption makes the
+    trend the golden; lease-up after completion is task484's driver.
+  - Upzoning yield refinements (applicant against city-initiated rezonings, land assembly against holdouts,
+    network walksheds around stations): each is task134's world (homes from an upzoning), and an assembled site
+    is a unit the records do not define, so the forecast forks on it.
+  - Cellular-automaton contagion over a five-year window: the dynamic feedback moves a total by 10 to 15 per
+    cent while the neighbourhood weights and the simulation open the estimator family.
+  - Latecomer parcels in developer-financed sewer extensions (the financing developer's own parcels selected,
+    the third parties exogenous): greenfield development is lumpy, about 70 parcel events across eight basins,
+    so the golden's sigma sits near 12 per cent.
+  - Student yield by the age of housing: a population-estimation task type, not this cell, and year built makes
+    it a stratification a reader reaches by reflex.
+  - Construction duration lengthening under pipeline load: swaps to any queue (rule 1), and the forward load
+    sits beyond the history.
+  - Entitlement conversion by approval age, vesting waves before a downzoning, a lifted growth cap, a moratorium
+    lifted: task167's hazard by time since entry, task161's drawn-down stock and task168 and task172's cap.
+  - Developer-built roads and mains leaking into a land-change logit: the point-in-time correction is standard
+    and the forward extensions are themselves endogenous.
+  - Transit capitalization at announcement for value capture: one subtraction of the current premium from the
+    mature one lands it.
+  - Candidate alpha, first harness (`a1.py`, `a2.py`): with a neighbourhood effect also acting before service the
+    2027 areas' own unserved rate times the earlier areas' service uplift lands the golden (minus 9 to plus
+    2 per cent), and with the earlier areas' started-street share drawn loosely the area-level regression lands
+    on one seed in three (minus 4 per cent). Kept by making the unserved building flat (owner-builders on well
+    and septic, not spec builders) and the earlier areas' started share realistic (78 to 92 per cent), which
+    `a4.py` measures.
 
 ## Retired
 
@@ -344,3 +433,7 @@ trips, and the flattened factor slope is a 7 to 9 per cent lever the audited row
 strategy-backtesting-evaluation (248746c: impact carried across days splits into model classes no one-way execution
 record can tell apart, and own borrow demand is a minor line whose attaining band lands). The lesson: a lever that
 needs a record the organisation does not keep is a fork, and one the record does keep is a filter and a divide.
+
+## Rebuild (2026-10-23)
+
+Reopened under the author's rule that no number stays retired; rebuilt from scratch as architecture 1 in urban-regional-science / land-use-spatial-development-modeling (`## Draw`).

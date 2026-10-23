@@ -1,0 +1,96 @@
+{
+  "task": "task175",
+  "architecture": "v1",
+  "drawn": "2026-10-23",
+  "slot_note": "rebuilt from scratch on 2026-10-23 after the number was reopened (it had retired on 2026-10-19 with no card ever written); the seed's world and the human-reliability and strategy-backtesting cells are spent and recorded in the design note's Tried and rejected and Retired sections",
+  "domain": "urban-regional-science",
+  "subdomain": "land-use-spatial-development-modeling",
+  "client_domain": "urban-regional-science",
+  "niche": "a Gulf Coast city platted lot by lot by a 1960s land sales company, whose utility forecasts, for the revenue sufficiency report its bond resolution requires each January, the single-family building permits the three areas its 2027 utility extension connects will draw in 2027, lot by lot on the street each lot faces",
+  "objective": "forecasting",
+  "shape": "07",
+  "decision_type": "quantity_figure",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G6",
+    "G14"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who stitches the two permit systems, maps every lot to its extension area through the plat units in the program schedule and holds the 2026 market as the budget instructions say takes the permits per vacant lot that each earlier extension area drew in its first year of service and applies it to the 2027 areas' vacant lots, filing about 540 permits for 2027 against a golden near 330, because the city served its most built-up areas first and a vacant lot's chance of a permit rises steeply with the homes already standing on its own street.",
+  "domain_test": "The deciding quantity is the development probability of each vacant platted lot once water and sewer reach it, which land-use change models estimate lot by lot with a neighbourhood term (the share of the street already built) and which here must be carried to areas whose streets are nearly empty; with another field's nouns there is no platted lot, no street segment, no utility extension sequence chosen by existing septic density and no first home on a street, so the task stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "urban-regional-science/land-use-spatial-development-modeling/3",
+  "layer1": [
+    "two building permit systems, a legacy export to 2018 keyed by site address and a newer one keyed by the appraiser's strap number, overlapping in a migration year",
+    "legal descriptions (unit, block, lot) and site addresses that must be parsed to reach plat units and street segments",
+    "the utility extension program schedule as a table inside a PDF, with service dates by area and plat unit",
+    "lots combined under one home (unity of title), so parcel and lot counts differ",
+    "the appraiser's year built as completion, beside permit issue dates and certificate of occupancy dates",
+    "a fiscal year from October to September in the utility's budget documents against calendar-year permit counts"
+  ],
+  "stakeholder_role": "revenue and rates analyst in the city utility's finance division, forecasting the 2027 connections the extension areas will bring",
+  "role_family": "finance_controller",
+  "scoring_unit": "units served",
+  "spine": {
+    "file": "lot_master_2026.csv",
+    "rows": 110000,
+    "entity": "one platted lot on the property appraiser's 2026 roll",
+    "grain": "lot",
+    "source": "synthetic (constructed in the layout of a Florida county property appraiser's parcel extract)"
+  },
+  "forum": "executive_team",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "United States, Florida Gulf Coast (a fictional pre-platted city of about 95,000 residents)",
+    "currency": "USD",
+    "org_type": "city-owned water and sewer utility running a utility extension program financed by special assessments",
+    "invented_names": [
+      "Port Ardell",
+      "Ardell Gulf Land Company",
+      "Port Ardell Utilities",
+      "Ardell Utility Extension Program"
+    ],
+    "people": [
+      "Melissa Payne",
+      "Steven Burke"
+    ]
+  },
+  "deliverables": [
+    "uep_2027_permit_forecast.xlsx",
+    "uep_2027_permit_forecast.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "A vacant unit's chance of being taken in a period rises steeply with how many of the units on its own short run are already taken, and access was extended first to the places whose runs were already well taken, so the take-up those places showed once access arrived averages over filled runs and overstates the take-up of places whose runs are nearly all empty; each unit's chance has to be read at its own run's fill and carried to the new places run by run.",
+  "driver_concrete": "Once water and sewer reach a vacant platted lot its yearly chance of a single-family permit depends steeply on how many homes already stand on the street segment it faces (both sides of its hundred-block), and the city connected its most built-up areas first, so the permits per vacant lot the earlier extension areas drew in their first year overstate what North 6, North 7 and Northwest 3, whose streets are mostly empty, will draw in 2027; the forecast takes each vacant lot's chance from served lots on streets as built as its own and sums it lot by lot.",
+  "stump": "A competent solver applies the first-year permits per vacant lot of the earlier extension areas (or a regression of that rate on each area's built share at service) to the 2027 areas' vacant lots and files about 540 permits for 2027 against a golden near 330, because it never reads each lot's chance at the build-out of its own street, where the earlier areas were well built and the 2027 areas are nearly empty.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task124": "task124 takes an unexamined unit's outcome from the kind of group it was laid down in, read off its group's surviving records, against samples drawn toward flagged groups; task175 takes a vacant lot's permit chance from served lots whose street holds as many homes as its own, a neighbourhood effect on an event hazard, with no unexamined outcome or sampling bias in it",
+    "task132": "task132 resets a wear-out curve when a failed item is replaced in its position; task175 has no failure or replacement: a lot is built once, and its yearly chance rises with the homes already on its street",
+    "task144": "task144 grows adoptions through a follower branching process seeded by an intervention; task175 sums independent yearly lot chances, each set by the homes already standing on the lot's own street at the start of the year, with no seeding or branching ratio",
+    "task163": "task163 prices the marginal entrants a cost cut draws in against a common regional rise, read treated against untreated regions; task175 has no marginal entrant and no comparison region: the earlier extension areas are served lots on built streets and the 2027 areas lots on empty ones, and the forecast reads each lot at its own street's build-out",
+    "task465": "task465 counts units carrying two traits no large source records together, joined through a small source recording both; task175 forecasts a lot-level permit hazard carried to new lots by their street's build-out, with every input recorded in one history",
+    "task165": "task165 subtracts what the old service level already gave each street from its upgraded level, a headroom per unit; task175 multiplies a lot's permit chance by the build-out of the street it faces, a neighbourhood effect with no dose or headroom, and the 2027 areas sit at the empty end because the city sewered its densest septic areas first"
+  },
+  "lineage": [],
+  "notes": "Reopened 2026-10-23 for a from-scratch rebuild (the number retired 2026-10-19 with no card). Coding: decisive gap population (the lots the forecast covers sit at the empty end of the street build-out the history spread over), time second (a service arrival the 2027 areas have not had); pattern none with G14 decisive (a permit chance conditioned on the street's build-out, carried to a forward population at one end) and G6 second. Layer 2 family estimand_identification: card land-use-spatial-development-modeling/3 translated, service went where building already was; the card's shortcut (treated areas before and after, or the area average) is the default path, and the comparison the data force is lot by lot on the street each lot faces.",
+  "registered": "2026-10-23T04:26:40Z"
+}

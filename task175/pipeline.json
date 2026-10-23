@@ -1,14 +1,14 @@
 {
   "task": "task175",
   "owner": "sathya8571",
-  "status": "RETIRED",
-  "domain": "quantitative-finance/strategy-backtesting-evaluation",
+  "status": "DRAWING",
+  "domain": "urban-regional-science/land-use-spatial-development-modeling",
   "objective": "forecasting",
   "stage": 1,
-  "stage_name": "retired",
-  "updated": "2026-10-19",
-  "stump": "",
-  "architecture": 0,
+  "stage_name": "draw",
+  "updated": "2026-10-23",
+  "stump": "A competent solver applies the first-year permits per vacant lot of the earlier extension areas to the 2027 areas' vacant lots and files about 540 permits for 2027 against a golden near 330, because it never reads each lot's chance at the build-out of the street it faces",
+  "architecture": 1,
   "loops": 0,
   "precut": {
     "exit": null,
@@ -33,7 +33,7 @@
     "human-factors-ergonomics/human-reliability-assessment under the round's G14 and composition_mix bans: a time-reliability race read at each demand's own window (rare trips, sigma 4 to 9 per cent, the window-band filter and divide inside the golden's seed range) and a factor slope flattened by a noisy record (lever exp(-b(1-lam)D), 7 to 9 per cent at realistic settings, the audited rows beating the correction)",
     "quantitative-finance/strategy-backtesting-evaluation under the round's bans: a capacity call's cost of the strategy's own flow (per-trade square-root is the default; impact carried across days splits into model classes 2.2 to 4.4 times apart on the strategy's runs and reversals, untestable from one-way executions; a no-trade band isolates the trades and the lever vanishes; own borrow demand is a minor line whose attaining band lands)"
   ],
-  "resume": "retired 2026-10-19: no card written; the seed's world and both redraw cells dead on code (design note ## Retired)",
+  "resume": "stage 2: design note sections, prompt, asks; then the generator (screen harness scratchpad/b175n/proto/a4.py)",
   "screens": {
     "harness": "scratchpad/b175/proto/ (proto2.py candidate 1, proto3.py candidate 2, pilot52.py subset arithmetic, proto1.py and sweep1.py the first sweep); session-scoped, rebuild from DESIGN_NOTE.md's harness section",
     "candidates_measured": 2,
@@ -68,5 +68,6 @@
   "portal": null,
   "portal_id": "",
   "portal_status": "",
-  "portal_status_date": ""
+  "portal_status_date": "",
+  "reopened": "2026-10-23: the author's rule that no number stays retired; rebuilt from scratch as architecture 1"
 }
