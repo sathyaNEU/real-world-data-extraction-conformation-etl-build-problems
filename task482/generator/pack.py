@@ -1,10 +1,14 @@
-"""Writes task482's evidence pack from world.py and asks.py: the store list, the chain's storage standard, the
-monitoring roster, the three logger makes' exports, the Tellvane readings and the pilot's plan, Meridale's invoices and
-credit memos, the item master, the administrations, the write-off log, the transfers, the two year-end physical
-inventories, Brannon's service history and agreement, and the two distractors (the documents are docs.py's)."""
+"""Writes task482's evidence pack from world.py and asks.py: the City's archive of Northlane's station status feed,
+Northlane's trips, fleet moves and rider fault reports, the GBFS station information snapshot, the City's station
+list, the pay-station vendor's sales export, alarm log, work orders and register, and the two distractors (the
+documents are docs.py's)."""
+import bisect
 import csv
 import datetime as dt
+import json
+import math
 import os
+from collections import defaultdict
 
 import numpy as np
 
@@ -13,36 +17,30 @@ import docs as D
 import world as W
 
 FILES = {
-    "stores": "penwick_store_list_2027-01.xlsx",
-    "standard": "vaccine_storage_handling_standard_po-114_rev6.pdf",
-    "roster": "refrigerator_monitoring_roster_2026.xlsx",
-    "frostline": "frostline_temperature_logs_2026.csv",
-    "kelvra": "kelvra_logger_export_2026.csv",
-    "brumal": "brumal_downloads_2026.txt",
-    "tellvane": "tellvane_sensor_readings_2026.csv",
-    "pilot": "tellvane_pilot_plan_2026.pdf",
-    "invoices": "meridale_vaccine_invoices_2026.csv",
-    "items": "vaccine_item_master_2026.xlsx",
-    "admin": "pharmacy_vaccine_administrations_2026.csv",
-    "writeoffs": "vaccine_writeoff_log_2026.csv",
-    "credits": "meridale_credit_memos_2026.csv",
-    "transfers": "vaccine_store_transfers_2026.csv",
-    "inventory": "vaccine_physical_inventory_ye2025_ye2026.xlsx",
-    "brannon": "brannon_service_history_2026-01_2027-01.xlsx",
-    "agreement": "brannon_service_agreement_2025.pdf",
-    "quotes": "pharmaceutical_refrigerator_quotes_2027.pdf",
-    "weather": "regional_weather_daily_2026.csv",
+    "status": "wellhaven_station_status_archive_2026q4.csv",
+    "notes": "station_status_archive_notes.pdf",
+    "trips": "northlane_trips_2026q4.csv",
+    "moves": "northlane_fleet_moves_2026q4.csv",
+    "reports": "northlane_rider_fault_reports_2026q4.csv",
+    "gbfs": "gbfs_station_information_2027-01-11.json",
+    "stations": "wellhaven_bike_share_station_list.xlsx",
+    "agreement": "bike_share_operating_agreement_schedules.pdf",
+    "sales": "paystation_sales_2026q4.csv",
+    "alarms": "paystation_alarm_log_2026q4.csv",
+    "workorders": "paystation_work_orders_2026q4.xlsx",
+    "register": "paystation_register_2027-01-08.xlsx",
+    "weather": "wellhaven_daily_weather_2026q4.csv",
+    "report": "northlane_wellhaven_quarterly_report_2026q4.pdf",
 }
-Y0, Y1 = W.WARM, W.WARM + 525600
-STREETS = ["Main Street", "Oak Avenue", "Market Street", "Mill Road", "Church Street", "Prairie Avenue", "Elm Street",
-           "Station Road", "Commerce Drive", "Lincoln Way", "Maple Street", "Ridge Road", "Union Street", "High Street",
-           "Cedar Lane"]
+LAT0, LON0 = 44.3012, -78.3197
+KIND = {"core": "Downtown", "campus": "Campus", "hub": "Transit hub", "res": "Neighbourhood", "park": "Park"}
+OPENED = {"core": dt.date(2019, 5, 17), "campus": dt.date(2019, 5, 17), "hub": dt.date(2019, 5, 17),
+          "res": dt.date(2021, 6, 4), "park": dt.date(2022, 5, 13)}
+TRIP0 = 4806000
 
 
-def write_csv(path, head, rows, pre=()):
+def write_csv(path, head, rows):
     with open(path, "w", newline="", encoding="utf-8") as f:
-        for line in pre:
-            f.write(line + "\n")
         w = csv.writer(f, lineterminator="\n")
         w.writerow(head)
         n = 0
@@ -52,163 +50,165 @@ def write_csv(path, head, rows, pre=()):
     return n
 
 
-def logger_serials(no):
-    """the store's data logger serials in order of service"""
-    mk = W.make_of(no)
-
-    def one(k):
-        h = (no * 2654435761 + k * 40503 + 977) % 2 ** 32
-        if mk == "F":
-            return "FL2-%06X" % (h & 0xFFFFFF)
-        if mk == "K":
-            return "K10%07d" % (h % 10 ** 7)
-        return "BR2-%06d" % (h % 10 ** 6)
-    return [one(0), one(1)] if no in W.REPLACED else [one(0)]
+def epoch(t):
+    return int(t.timestamp())
 
 
-def sensor_id(no):
-    return "TV4-%06X" % ((no * 7393 + 811) * 2246822519 % 2 ** 24)
+def iso_z(t):
+    return t.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def replaced_at(no):
-    d, hh, mm, g = W.REPLACED[no]
-    a = W.at(d, hh, mm)
-    return a, a + g
+def local_str(t):
+    return W.to_local(t).strftime("%Y-%m-%d %H:%M:%S")
 
 
-def records(e):
-    """(physical minute, probe reading in C, serial) for the local year"""
-    no = e["store"]["no"]
-    t, x = e["rec_t"], e["rec_x"]
-    k = (t >= Y0) & (t < Y1)
-    t, x = t[k], x[k]
-    ser = logger_serials(no)
-    if no in W.REPLACED:
-        a, b = replaced_at(no)
-        s = np.where(t < a, ser[0], ser[1])
-    else:
-        s = np.full(len(t), ser[0])
-    return t, x, s
+def latlon(x, y):
+    return (round(LAT0 + y / 111.0, 6), round(LON0 + x / (111.32 * math.cos(math.radians(LAT0))), 6))
 
 
-def iso_local(m):
-    loc, off = W.local_of(m)
-    return loc.strftime("%Y-%m-%dT%H:%M:%S") + ("-05:00" if off == -5 else "-06:00")
+def station_name(f, sid):
+    return f.st[sid]["name"]
 
 
-def location(no):
-    s = W.BY_NO[no]
-    return "Penwick %d %s vaccine fridge" % (no, s["town"])
+# ------------------------------------------------------------------------------------------------- the feed archive
+def poller_gaps():
+    """the spells the City's poller was down (local start, minutes)"""
+    r = np.random.default_rng([W.SEED, 9])
+    out = []
+    while len(out) < 7:
+        day = W.DAY0 + dt.timedelta(days=int(r.integers(3, 105)))
+        start = dt.datetime(day.year, day.month, day.day) + dt.timedelta(minutes=int(r.integers(0, 24 * 60)))
+        mins = int(r.integers(16, 150))
+        if any(abs((start - s).total_seconds()) < 3 * 86400 for s, _ in out):
+            continue
+        if day in (dt.date(2026, 11, 1), dt.date(2026, 11, 2), dt.date(2026, 11, 9), dt.date(2026, 11, 23)):
+            continue
+        out.append((start, mins))
+    return sorted(out)
 
 
-def former_name(no):
-    if no // 100 == 2:
-        return "Vollmer Drug #%d" % A.LEGACY_NO[no]
-    if no // 100 == 3:
-        return "Lindqvist Apothecary #%d" % A.LEGACY_NO[no]
-    return None
+def event_instants(E):
+    """each station's status-changing instants (aware UTC), sorted"""
+    f, sec = E["f"], E["sec"]
+    ev = defaultdict(list)
+    for t in f.trips:
+        ev[t["start_station"]].append(A.utc_s(t["start_minute"], sec[t["start_seq"]]))
+        if "end_seq" in t:
+            ev[t["end_station"]].append(A.utc_s(t["end_minute"], sec[t["end_seq"]]))
+    for mv in f.moves:
+        ev[mv["station"]].append(A.utc_s(mv["minute"], sec[mv["seq"]]))
+    for fl in f.flags:
+        ev[fl["station"]].append(A.utc_s(fl["minute"], sec[fl["seq"]]))
+    for s in ev:
+        ev[s].sort()
+    return ev
 
 
-# ----------------------------------------------------------------------------------------------------- temperatures
-def write_frostline(path, E):
-    n = 0
-    with open(path, "w", encoding="utf-8", newline="") as f:
-        f.write("Serial,Location,Timestamp,Temperature (C)\n")
-        for s in W.STORES:
-            if s["make"] != "F":
+def status_rows(E):
+    """one row per station each time a poll finds its status changed, and every station at the first poll after
+    a spell the poller was down; polls run at the top of each minute (UTC epoch seconds)"""
+    f = E["f"]
+    ev = event_instants(E)
+    gaps = [(W.minute_of(s), W.minute_of(s) + m) for s, m in poller_gaps()]
+    down = np.zeros(W.NMIN + 1, dtype=bool)
+    for a, b in gaps:
+        down[a:b] = True
+    ids = list(f.public)
+    last = {}
+    rows = []
+    for m in range(1, W.NMIN):
+        if down[m]:
+            continue
+        full = m == 1 or down[m - 1]
+        t = A.utc_s(m)
+        for s in ids:
+            if not f.active[s][m - 1]:
                 continue
-            t, x, ser = records(E[s["no"]])
-            loc = location(s["no"])
-            out = ["%s,%s,%s,%.1f\n" % (ser[i], loc, iso_local(t[i]), x[i]) for i in range(len(t))]
-            f.write("".join(out))
-            n += len(out)
-    return n
+            v = (int(f.listed[s][m - 1]), int(f.disabled[s][m - 1]), int(f.docks[s][m - 1]))
+            if full or last.get(s) != v:
+                lst = ev.get(s, [])
+                i = bisect.bisect_left(lst, t)
+                beat = epoch(t) - 1 - ((epoch(t) - 1 - (s * 47) % 300) % 300)      # the station's 5-minute heartbeat
+                lr = max(epoch(lst[i - 1]) if i else 0, beat)
+                rows.append([epoch(t), s, v[0], v[1], v[2], 0, 1, 1, 1, lr])
+                last[s] = v
+    return rows
 
 
-def write_kelvra(path, E):
-    n = 0
-    with open(path, "w", encoding="utf-8", newline="") as f:
-        f.write("Kelvra LogView 4 export\nExported 2027-01-07 16:42 by pharmacy.ops\nAll times UTC\n")
-        f.write("Logger ID,Date,Time,Temperature (F)\n")
-        for s in W.STORES:
-            if s["make"] != "K":
-                continue
-            t, x, ser = records(E[s["no"]])
-            utc = [W.utc_of(m) for m in t]
-            month = np.array([u.year * 12 + u.month for u in utc])
-            idx = np.arange(len(t))
-            for mo in sorted(set(month.tolist())):
-                blk = idx[month == mo].tolist()
-                if s["no"] == 204 and mo == 2026 * 12 + 9:
-                    blk = [i for i in idx[month == mo - 1].tolist() if utc[i].date() == dt.date(2026, 8, 31)] + blk
-                out = ["%s,%s,%s,%.1f\n" % (ser[i], utc[i].strftime("%m/%d/%Y"), utc[i].strftime("%H:%M:%S"),
-                                            x[i] * 9 / 5 + 32) for i in blk]
-                f.write("".join(out))
-                n += len(out)
-    return n
+# ------------------------------------------------------------------------------------------------- trips and moves
+def trip_rows(E):
+    f, sec, rtype = E["f"], E["sec"], E["rtype"]
+    rows = []
+    for t in f.trips:
+        if "end_seq" not in t:
+            continue
+        a = A.utc_s(t["start_minute"], sec[t["start_seq"]])
+        b = A.utc_s(t["end_minute"], sec[t["end_seq"]])
+        if b >= W.END:
+            continue
+        rows.append([TRIP0 + t["trip"], t["bike"], local_str(a), t["start_station"], station_name(f, t["start_station"]),
+                     local_str(b), t["end_station"], station_name(f, t["end_station"]), int((b - a).total_seconds()),
+                     rtype[t["trip"]]])
+    # Northlane's export appended the week of 16 November a second time when that week was re-run
+    wk = [r for r in rows if "2026-11-16" <= r[2][:10] <= "2026-11-22"]
+    return rows + wk
 
 
-def write_brumal(path, E):
-    n = 0
-    r = np.random.default_rng(W.SEED * 1000 + 1301)
-    with open(path, "w", encoding="utf-8", newline="") as f:
-        for s in W.STORES:
-            if s["make"] != "P":
-                continue
-            t, x, ser = records(E[s["no"]])
-            std = [W.utc_of(m) - dt.timedelta(hours=6) for m in t]
-            month = np.array([u.month for u in std])
-            idx = np.arange(len(t))
-            for mo in range(1, 13):
-                blk = idx[month == mo].tolist()
-                if not blk:
-                    continue
-                for sr in sorted(set(ser[i] for i in blk), key=lambda z: logger_serials(s["no"]).index(z)):
-                    b2 = [i for i in blk if ser[i] == sr]
-                    nxt = dt.date(2026 + mo // 12, mo % 12 + 1, 1)
-                    got = dt.datetime(nxt.year, nxt.month, int(r.integers(2, 5)), 9, int(r.integers(0, 59)))
-                    if mo == 3 and s["no"] == 302 and sr == logger_serials(302)[0]:
-                        got = W.local_of(replaced_at(302)[0])[0] + dt.timedelta(minutes=12)
-                    f.write("=" * 64 + "\n")
-                    f.write("Brumal BR-20  Data Download Report\n")
-                    f.write("Serial number:      %s\n" % sr)
-                    f.write("Description:        Lindqvist #%d %s vaccine fridge\n" % (A.LEGACY_NO[s["no"]], s["town"]))
-                    f.write("Download time:      %s\n" % got.strftime("%m/%d/%Y %H:%M"))
-                    f.write("Logging interval:   10 min\n")
-                    f.write("Clock:              UTC-06:00, daylight saving time not applied\n")
-                    f.write("First record:       %s\n" % std[b2[0]].strftime("%m/%d/%Y %H:%M"))
-                    f.write("Last record:        %s\n" % std[b2[-1]].strftime("%m/%d/%Y %H:%M"))
-                    f.write("Records:            %d\n" % len(b2))
-                    f.write("-" * 64 + "\n")
-                    f.write("Date\tTime\tTemperature (C)\n")
-                    f.write("".join("%s\t%s\t%.1f\n" % (std[i].strftime("%m/%d/%Y"), std[i].strftime("%H:%M"), x[i])
-                                    for i in b2))
-                    n += len(b2)
-    return n
+def move_rows(E):
+    f, sec = E["f"], E["sec"]
+    acts = {"pickup": "Pick up", "drop": "Drop off"}
+    rows = []
+    for mv in sorted(f.moves, key=lambda x: x["seq"]):
+        t = A.utc_s(mv["minute"], sec[mv["seq"]])
+        rows.append([local_str(t), mv["van"], mv["station"], acts[mv["action"]], "WHB-%04d" % mv["bike"]])
+    return rows
 
 
-def write_tellvane(path, E):
-    n = 0
-    with open(path, "w", encoding="utf-8", newline="") as f:
-        f.write("sensor_id,reading_time_utc,temperature_c\n")
-        for no in sorted(W.PILOT):
-            e = E[no]
-            ct, cx = e["cl_t"], e["cl_x"]
-            k = ct < Y1
-            sid = sensor_id(no)
-            out = ["%s,%s,%.1f\n" % (sid, W.utc_of(m).strftime("%Y-%m-%dT%H:%M:%SZ"), v) for m, v in zip(ct[k], cx[k])]
-            f.write("".join(out))
-            n += len(out)
-    return n
+CATS = (("Flat tire", 0.34), ("Chain", 0.18), ("Brakes", 0.20), ("Gears", 0.10), ("Seat or seat post", 0.08),
+        ("Other", 0.10))
 
 
-# ----------------------------------------------------------------------------------------------------------- office
+def report_rows(E):
+    f = E["f"]
+    r = np.random.default_rng([W.SEED, 10])
+    rows = []
+    for k, rep in enumerate(f.reports):
+        t = A.utc_s(rep["minute"], int(r.integers(25, 59)) if rep["how"] == "seen" else 0)
+        if rep["how"] == "ride":
+            t = t + dt.timedelta(seconds=int(r.integers(70, 300)))
+        u = r.random()
+        acc, cat = 0.0, CATS[-1][0]
+        for c, p in CATS:
+            acc += p
+            if u < acc:
+                cat = c
+                break
+        rows.append([iso_z(t), rep["bike"], rep["station"], cat])
+    rows.sort()
+    return [["FR-%05d" % (20410 + i)] + row for i, row in enumerate(rows)]
+
+
+# ------------------------------------------------------------------------------------------------- stations
+def gbfs_json(f):
+    stations = []
+    for sid in sorted(f.public):
+        if not f.st[sid].get("open", True):
+            continue
+        a = f.st[sid]
+        lat, lon = latlon(a["x"], a["y"])
+        stations.append({"station_id": str(sid), "name": a["name"], "lat": lat, "lon": lon, "capacity": a["cap"],
+                         "rental_methods": ["KEY", "CREDITCARD", "APPLEPAY", "ANDROIDPAY"],
+                         "is_virtual_station": False})
+    stations.sort(key=lambda x: int(x["station_id"]))
+    return {"last_updated": epoch(W.END), "ttl": 60, "version": "2.3", "data": {"stations": stations}}
+
+
 def _book():
     import openpyxl
     return openpyxl.Workbook()
 
 
-def _style(ws, widths, fmt=None, header=1):
+def _style(ws, widths, header=1):
     import openpyxl
     from openpyxl.styles import Alignment, Font
     for c in ws[header]:
@@ -217,300 +217,216 @@ def _style(ws, widths, fmt=None, header=1):
     for i, wd in enumerate(widths):
         ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = wd
     ws.freeze_panes = ws.cell(row=header + 1, column=1).coordinate
-    for col, f in (fmt or {}).items():
-        for row in ws.iter_rows(min_row=header + 1):
-            if len(row) > col:
-                row[col].number_format = f
 
 
-def write_stores(path):
+def write_stations(path, f):
     wb = _book()
     ws = wb.active
-    ws.title = "Stores"
-    ws.append(["Store", "Store name", "Town", "Address", "Former name", "Joined Penwick", "Time zone",
-               "Pharmacy hours", "Vaccine refrigerator", "Unit type", "Meridale ship-to", "Brannon site"])
-    for s in W.STORES:
-        no = s["no"]
-        mk, md, _ = A.model_of(no)
-        joined = {1: None, 2: dt.date(2024, 7, 1), 3: dt.date(2025, 3, 1)}[no // 100]
-        ws.append([no, "Penwick Pharmacy %s" % s["town"], s["town"],
-                   "%d %s" % (100 + (no * 37) % 1900, STREETS[(no * 7 + no // 100) % len(STREETS)]),
-                   former_name(no), joined, "Central", "Mon-Fri 8:00-21:00, Sat 9:00-18:00, Sun 10:00-18:00",
-                   "%s %s" % (mk, md), "Pharmaceutical-grade" if s["unit"] == "pharma" else "Household-style",
-                   str(A.SHIP_TO[no]), A.BRANNON_SITE[no]])
-    _style(ws, (7, 28, 13, 22, 22, 13, 9, 44, 18, 20, 13, 11), {5: "yyyy-mm-dd"})
-    wb.save(path)
-    return len(W.STORES)
-
-
-def roster_rows(E):
-    r = np.random.default_rng(W.SEED * 1000 + 1401)
-    rows = []
-    for s in W.STORES:
-        no = s["no"]
-        mk, md = W.MAKES[s["make"]]
-        first = {"F": dt.date(2024, 2, 5), "K": dt.date(2023, 5, 8), "P": dt.date(2024, 9, 9)}[s["make"]]
-        inst = first + dt.timedelta(days=int(r.integers(0, 40)))
-        ser = logger_serials(no)
-        e = E[no]
-        if no in W.REPLACED:
-            day = W.local_of(replaced_at(no)[0])[0].date()
-            rows.append([no, "Data logger", mk, md, ser[0], inst, day, inst, day,
-                         "Replaced: would not download" if no == 302 else "Replaced: probe lead damaged"])
-            rows.append([no, "Data logger", mk, md, ser[1], day, None, day, None, None])
-        elif no in W.PILOT:
-            ins = W.local_of(e["inst"])[0].date()
-            col = W.local_of(e["coll"])[0].date()
-            rows.append([no, "Data logger", mk, md, ser[0], inst, col, inst, ins, "Collected at pilot check-in visit"])
-            rows.append([no, "In-carton sensor", "Tellvane (Tamberlane Sensing)", "TV-4", sensor_id(no), ins, None, ins,
-                         None, "Pilot store"])
-        else:
-            rows.append([no, "Data logger", mk, md, ser[0], inst, None, inst, None, None])
-    return rows
-
-
-def write_roster(path, E):
-    wb = _book()
-    ws = wb.active
-    ws.title = "Devices"
-    ws.append(["Store", "Device type", "Make", "Model", "Serial or sensor id", "Installed", "Removed",
-               "Device of record from", "Device of record to", "Notes"])
-    rows = roster_rows(E)
-    for row in rows:
-        ws.append(row)
-    _style(ws, (7, 16, 28, 12, 18, 12, 12, 12, 12, 34), {5: "yyyy-mm-dd", 6: "yyyy-mm-dd", 7: "yyyy-mm-dd",
-                                                         8: "yyyy-mm-dd"})
-    wb.save(path)
-    return len(rows)
-
-
-def write_items(path):
-    wb = _book()
-    ws = wb.active
-    ws.title = "Vaccine items"
-    ws.append(["NDC", "Description", "Manufacturer", "Package", "Doses per package", "Season", "Package cost (USD)"])
-    for k, it in A.ITEM.items():
-        ws.append([it["ndc"], it["desc"], A.LABELERS[it["ndc"].split("-")[0]], it["package"], it["dpp"],
-                   it["season"] or None, it["cost"]])
-    _style(ws, (14, 64, 22, 24, 9, 10, 11), {6: "#,##0.00"})
-    wb.save(path)
-    return len(A.ITEM)
-
-
-MERIDALE_DESC = {"F25S": "FLU VAC TRIV 25-26 PFS 0.5ML 10X", "F25V": "FLU VAC TRIV 25-26 MDV 5ML",
-                 "F25H": "FLU VAC HD 25-26 PFS 0.5ML 10X", "F26S": "FLU VAC TRIV 26-27 PFS 0.5ML 10X",
-                 "F26V": "FLU VAC TRIV 26-27 MDV 5ML", "F26H": "FLU VAC HD 26-27 PFS 0.5ML 10X",
-                 "C25": "COVID-19 VAC 25-26 PFS 0.5ML 10X", "C26": "COVID-19 VAC 26-27 PFS 0.5ML 10X",
-                 "RSV": "RSV VAC ADJ SDV KIT 1X", "PCV": "PNEUMO CONJ VAC 21V PFS 0.5ML 10X",
-                 "RZV": "ZOSTER VAC RECOMB ADJ KIT 10X", "TDP": "TDAP VAC PFS 0.5ML 10X",
-                 "HPB": "HEP B VAC ADULT PFS 1ML 10X"}
-
-
-def ship_to(no, d):
-    if no in A.OLD_SHIP_TO and d < A.ACCOUNTS_MOVED:
-        return str(A.OLD_SHIP_TO[no]), "LINDQVIST APOTHECARY #%02d" % A.LEGACY_NO[no]
-    return str(A.SHIP_TO[no]), "PENWICK PHARMACY #%d" % no
-
-
-def invoice_rows(F):
-    lst = []
-    for no in sorted(F):
-        for (t, inv, lines) in F[no]["receipts"]:
-            lst.append((inv, no, t, lines))
-    lst.sort(key=lambda x: (x[0], x[1], x[2]))
-    r = np.random.default_rng(W.SEED * 1000 + 1501)
-    rows = []
-    num = 4417300
-    for inv, no, t, lines in lst:
-        num += int(r.integers(4, 90))
-        acct, name = ship_to(no, inv)
-        for (key, pk, k) in lines:
-            it = A.ITEM[key]
-            lot = A.lots_name(key, k)
-            rows.append(["MPD%07d" % num, inv.strftime("%m/%d/%Y"), acct, name, A.ndc11(it["ndc"]), MERIDALE_DESC[key],
-                         lot, A.LOT_EXP[lot].strftime("%m/%d/%Y"), pk, it["uom"], "%.2f" % it["cost"],
-                         "%.2f" % (pk * it["cost"]), t.strftime("%m/%d/%Y %H:%M")])
-    return rows
-
-
-def admin_rows(F):
-    lst = []
-    for no in sorted(F):
-        for (t, key, lot) in F[no]["admin"]:
-            lst.append((t, no, key, lot))
-    lst.sort(key=lambda x: (x[0], x[1]))
-    seq = {no: 0 for no in F}
-    rows = []
-    for t, no, key, lot in lst:
-        seq[no] += 1
-        rows.append([no, t.strftime("%Y-%m-%d %H:%M"), "V%d%06d" % (no, seq[no]), A.ITEM[key]["ndc"], A.SHORT[key],
-                     lot, 1])
-    return rows
-
-
-def writeoff_rows(F):
-    lst = []
-    for no in sorted(F):
-        for (t, key, lot, doses, logged, reason) in F[no]["writeoffs"]:
-            lst.append((t, no, key, lot, logged, reason))
-    lst.sort(key=lambda x: (x[0], x[1]))
-    rows = []
-    for t, no, key, lot, logged, reason in lst:
-        it = A.ITEM[key]
-        unit = it["cost"] if (it["mdv"] and t.date() < A.UPDATE) else it["cost"] / it["dpp"]
-        rows.append([no, t.strftime("%Y-%m-%d %H:%M"), it["ndc"], A.SHORT[key], lot,
-                     A.LOT_EXP[lot].strftime("%Y-%m-%d"), logged, reason, "%.2f" % (logged * unit)])
-    return rows
-
-
-def credit_rows(F):
-    r = np.random.default_rng(W.SEED * 1000 + 1601)
-    rows = []
-    memo = 208114
-    order = sorted(F, key=lambda no: (int((no * 13) % 31), no))
-    for i, no in enumerate(order):
-        d = dt.date(2026, 7, 14) + dt.timedelta(days=int(i * 1.2) + int(r.integers(0, 3)))
-        while d.weekday() >= 5:
-            d += dt.timedelta(days=1)
-        memo += int(r.integers(3, 30))
-        acct, name = ship_to(no, d)
-        for (key, lot, units, doses) in F[no]["credits"]:
-            if units <= 0:
-                continue
-            it = A.ITEM[key]
-            rows.append(["CM%06d" % memo, d.strftime("%m/%d/%Y"), acct, name, A.ndc11(it["ndc"]), MERIDALE_DESC[key],
-                         lot, units, "VL" if it["mdv"] else "EA", "%.2f" % (units * it["cost"] / it["upp"]),
-                         "SEASONAL RETURN - EXPIRED"])
-    rows.sort(key=lambda x: (x[0], x[4]))
-    return rows
-
-
-def transfer_rows(F):
-    rows = []
-    for no in sorted(F):
-        for (t, key, lot, q, nb, tno, tr) in F[no]["t_out"]:
-            rows.append([tno, t.strftime("%Y-%m-%d %H:%M"), no, nb, A.ITEM[key]["ndc"], A.SHORT[key], lot, q,
-                         tr.strftime("%Y-%m-%d %H:%M")])
-    rows.sort(key=lambda x: (x[1], x[0]))
-    return rows
-
-
-def write_inventory(path, F):
-    wb = _book()
-    r = np.random.default_rng(W.SEED * 1000 + 1701)
-    n = 0
-    for j, yr in enumerate((2025, 2026)):
-        ws = wb.active if j == 0 else wb.create_sheet()
-        ws.title = "YE %d" % yr
-        ws.append(["Store", "NDC", "Description", "Doses on hand", "Count closed", "Counted by"])
-        for no in sorted(F):
-            t, have = F[no]["counts"][yr]
-            who = "E%05d" % (10000 + (no * 41 + yr * 7 + int(r.integers(0, 3))) % 89999)
-            for key in A.ITEM:
-                if have[key] > 0:
-                    ws.append([no, A.ITEM[key]["ndc"], A.ITEM[key]["desc"], have[key], t, who])
-                    n += 1
-        _style(ws, (7, 14, 64, 10, 17, 10), {4: "yyyy-mm-dd hh:mm"})
-    wb.save(path)
-    return n
-
-
-def brannon_site_name(no):
-    s = W.BY_NO[no]
-    if no // 100 == 1:
-        return "PENWICK PHARMACY #%d %s" % (no, s["town"].upper())
-    return "%s %s" % (former_name(no).upper(), s["town"].upper())
-
-
-def brannon_rows(wos):
-    rows = []
-    for w in wos:
-        if not (dt.date(2026, 1, 1) <= w["invoice_date"] <= dt.date(2027, 1, 22)):
+    ws.title = "Stations"
+    ws.append(["Station", "Name", "Area", "Feed station ID", "In service from", "In service to", "Docks",
+               "Pay station", "Notes"])
+    for s in W.STATIONS:
+        sid, name, kind = s[0], s[1], s[2]
+        no = sid - 100
+        cap = f.st[sid]["cap"]
+        if sid == W.RELOCATION["old"]:
+            ws.append(["W-%02d" % no, name, KIND[kind], sid, OPENED[kind], dt.date(2026, 11, 8), cap, "Yes",
+                       "South side of Linden Ave at Hale St; moved across the street on the evening of 8 Nov 2026"])
+            ws.append(["W-%02d" % no, name, KIND[kind], W.RELOCATION["new"], dt.date(2026, 11, 8), None, cap, "Yes",
+                       "North side of Linden Ave at Hale St (sidewalk widening on the south side)"])
             continue
-        for i, (vd, tt, h) in enumerate(w["visits"]):
-            arr = dt.datetime(vd.year, vd.month, vd.day, int(tt[:2]), int(tt[3:]))
-            dep = arr + dt.timedelta(minutes=int(round(h * 60)))
-            no = w["stores"][i]
-            rows.append([A.BRANNON_SITE[no], brannon_site_name(no), w["wo"], i + 1, vd,
-                         arr.strftime("%H:%M"), dep.strftime("%H:%M"), w["tech"],
-                         "Preventive maintenance" if w["pm"] else "Service call", w["work"][i], w["invoice"],
-                         w["invoice_date"], w["amount"]])
-    rows.sort(key=lambda x: (x[0], x[4], x[2], x[3]))
-    return rows
+        note = None
+        if sid in W.EXPANSIONS:
+            when, c = W.EXPANSIONS[sid]
+            note = "Expanded from %d to %d docks %s" % (W.STATIONS[[x[0] for x in W.STATIONS].index(sid)][5], c,
+                                                       when.strftime("%-d %b %Y"))
+        ws.append(["W-%02d" % no, name, KIND[kind], sid, OPENED[kind], None, cap, "Yes", note])
+    for row in ws.iter_rows(min_row=2):
+        for c in (row[4], row[5]):
+            c.number_format = "yyyy-mm-dd"
+    _style(ws, (9, 20, 14, 10, 12, 12, 7, 9, 60))
+    wb.save(path)
+    return ws.max_row - 1
 
 
-def write_brannon(path, wos):
-    from openpyxl.styles import Font
+# ------------------------------------------------------------------------------------------------- pay stations
+def sales_rows(E):
+    lab = {}
+    final = E["final"]
+    for no, ser in final.items():
+        lab[ser] = no
+    stock = {ser for ser, _ in E["stock"]}
+    for s in E["swaps"]:
+        if s["removed"] in stock:
+            lab[s["removed"]] = s["no"]
+    names = {s[0] - 100: s[1] for s in W.STATIONS}
+    rows = []
+    for i, s in enumerate(E["sales"]):
+        no = lab[s["terminal"]]
+        rows.append((s["when"], ["", iso_z(s["when"]), s["terminal"], "W-%02d" % no, names[no], s["product"],
+                                 "%.2f" % s["amount"], "SALE", ""], i))
+    vo = {}
+    for v in E["voids"]:
+        s = E["sales"][v["of"]]
+        no = lab[s["terminal"]]
+        rows.append((v["when"], ["", iso_z(v["when"]), s["terminal"], "W-%02d" % no, names[no], s["product"],
+                                 "-%.2f" % s["amount"], "VOID", v["of"]], None))
+    rows.sort(key=lambda x: (x[0], 0 if x[2] is not None else 1))
+    ids = {}
+    for k, (t, row, i) in enumerate(rows):
+        if i is not None:
+            ids[i] = "PS%07d" % (3301120 + k)
+    final_rows = []
+    k = 0
+    for (t, row, i) in rows:
+        row = list(row)
+        row[0] = "PS%07d" % (3301120 + k)
+        if row[7] == "VOID":
+            row[8] = ids[row[8]]
+        final_rows.append(row)
+        k += 1
+    return final_rows
+
+
+DETAIL = {"COMMS_LOST": "Modem: no network registration", "COMMS_RESTORED": "Modem: network registered",
+          "READER_FAULT": "Card reader: no response", "READER_OK": "Card reader: ready",
+          "PAPER_LOW": "Receipt printer: paper low", "PAPER_OK": "Receipt printer: paper loaded",
+          "TEMP_LOW": "Cabinet below 0 C: heater on", "TEMP_OK": "Cabinet temperature normal: heater off",
+          "DOOR_OPEN": "Service door opened", "DOOR_CLOSED": "Service door closed"}
+
+
+def alarm_rows(E):
+    rows = []
+    swaps = {A.W.utc_of_local(s["restart"]): s for s in E["swaps"]}
+    for no in range(1, 25):
+        evs = E["events"][no]
+        for k, e in enumerate(evs):
+            t, code = e[0], e[1]
+            if code == "RESTART":
+                if t in swaps:
+                    det = "Restart after service"
+                else:
+                    loc = W.to_local(t)
+                    det = "Scheduled restart" if loc.hour == 3 and loc.minute <= 1 else "Watchdog restart (no network 60 min)"
+            else:
+                det = DETAIL[code]
+                if code == "READER_FAULT" and any(abs((t - W.utc_of_local(s["start"])).total_seconds()) < 1
+                                                  for s in E["swaps"] if s["no"] == no):
+                    det = "Card reader: not detected"
+            rows.append((t, no, k, ["W-%02d" % no, iso_z(t), code, det]))
+    rows.sort(key=lambda x: (x[0], x[1], x[2]))
+    return [["AL%07d" % (880400 + k)] + r[3] for k, r in enumerate(rows)]
+
+
+def write_workorders(path, E):
+    import openpyxl  # noqa: F401
+    names = {s[0] - 100: s[1] for s in W.STATIONS}
+    r = np.random.default_rng([W.SEED, 11])
+    items = []
+    for s in E["swaps"]:
+        items.append((s["start"] - dt.timedelta(minutes=int(r.integers(4, 12))), s["restart"] + dt.timedelta(minutes=int(r.integers(3, 9))),
+                      s["no"], "Card terminal replacement (refurbishment program)", s["removed"], s["installed"],
+                      "Tech %02d" % (10 + s["tech"]), "Refurbished terminal installed; pay station restarted"))
+    for no in range(1, 25):
+        for (t, kind) in E["visits"][no]:
+            loc = W.to_local(t)
+            if kind == "reader":
+                items.append((loc - dt.timedelta(minutes=int(r.integers(12, 35))), loc + dt.timedelta(minutes=int(r.integers(2, 8))),
+                              no, "Card reader fault", None, None, "Tech %02d" % (11 + int(r.integers(0, 4))),
+                              "Reader reseated and tested" if r.random() < 0.6 else "Reader cable replaced"))
+            else:
+                items.append((loc - dt.timedelta(minutes=int(r.integers(2, 6))), loc + dt.timedelta(minutes=int(r.integers(2, 5))),
+                              no, "Receipt paper", None, None, "Tech %02d" % (11 + int(r.integers(0, 4))), "Paper roll replaced"))
+    items.sort(key=lambda x: x[0])
     wb = _book()
     ws = wb.active
-    ws.title = "Service history"
-    ws.append(["Brannon Refrigeration Service, customer portal"])
-    ws.append(["Service history for Penwick Pharmacy, Inc., invoices dated 01/01/2026 to 01/22/2027"])
-    ws.append([])
-    ws.append(["Site", "Site name", "Work order", "Visit", "Visit date", "Arrive", "Depart", "Technician", "Call type",
-               "Work performed", "Invoice", "Invoice date", "Invoice amount"])
-    rows = brannon_rows(wos)
-    for row in rows:
-        ws.append(row)
-    _style(ws, (10, 34, 11, 6, 11, 7, 7, 10, 20, 70, 9, 11, 12), {4: "mm/dd/yyyy", 11: "mm/dd/yyyy", 12: "#,##0.00"},
-           header=4)
-    ws["A1"].font = Font(bold=True, size=12)
+    ws.title = "Work orders"
+    ws.append(["WO", "Pay station", "Station", "Opened", "Closed", "Work type", "Terminal removed", "Terminal installed",
+               "Technician", "Notes"])
+    for k, it in enumerate(items):
+        o, c, no, wt, rm, ins, tech, note = it
+        ws.append(["WO-26-%05d" % (31207 + k), "W-%02d" % no, names[no], o.replace(second=0, microsecond=0),
+                   c.replace(second=0, microsecond=0), wt, rm, ins, tech, note])
+    for row in ws.iter_rows(min_row=2):
+        for c in (row[3], row[4]):
+            c.number_format = "yyyy-mm-dd hh:mm"
+    _style(ws, (13, 10, 20, 16, 16, 44, 15, 15, 10, 50))
     wb.save(path)
-    return len(rows)
+    return len(items)
 
 
-def weather_rows():
-    r = np.random.default_rng(W.SEED * 1000 + 1801)
-    rows = []
-    storms = {W.STORMS["S1"][0]: "Freezing rain and ice; scattered power outages",
-              W.STORMS["S2"][0]: "Severe thunderstorms, damaging winds; power outages",
-              W.STORMS["S3"][0] - 1: "Line of severe storms after midnight; widespread power outages"}
-    for d in range(365):
-        day = dt.date(2026, 1, 1) + dt.timedelta(days=d)
-        mean = 50 - 28 * np.cos(2 * np.pi * (d + 1 - 20) / 365.0)
-        hi = mean + 10 + r.normal(0, 6)
-        lo = mean - 10 + r.normal(0, 5)
-        rain = max(0.0, r.gamma(0.5, 0.25) - 0.05) if r.random() < 0.32 else 0.0
-        snow = round(rain * 10 * r.uniform(0.6, 1.2), 1) if (hi < 34 and rain > 0) else 0.0
-        gust = int(round(max(8, r.normal(24, 7))))
-        note = storms.get(d, "")
-        if note:
-            gust = int(r.integers(52, 71))
-            rain = max(rain, round(r.uniform(0.6, 1.6), 2))
-        rows.append([day.isoformat(), "CORRIDEN REGIONAL AIRPORT", int(round(hi)), int(round(lo)), "%.2f" % rain,
-                     "%.1f" % snow, gust, note.upper()])
-    return rows
+def write_register(path, E):
+    names = {s[0] - 100: s[1] for s in W.STATIONS}
+    inst = {s["no"]: s["install"].date() for s in E["swaps"]}
+    wb = _book()
+    ws = wb.active
+    ws.title = "Pay stations"
+    ws.append(["Pay station", "Station", "Model", "Card terminal", "Terminal model", "Terminal installed", "Firmware"])
+    for no in range(1, 25):
+        ws.append(["W-%02d" % no, names[no], A.MODEL, E["final"][no], A.TERMINAL_MODEL, inst[no], "4.18.2"])
+    for row in ws.iter_rows(min_row=2):
+        row[5].number_format = "yyyy-mm-dd"
+    _style(ws, (11, 20, 24, 15, 13, 16, 9))
+    ws2 = wb.create_sheet("Terminals in stock")
+    ws2.append(["Card terminal", "Terminal model", "Status", "Last pay station", "Received from workshop"])
+    last = {s["removed"]: s["no"] for s in E["swaps"]}
+    for ser, ready in E["stock"]:
+        no = last.get(ser)
+        ws2.append([ser, A.TERMINAL_MODEL, "In stock, refurbished", "W-%02d" % no if no else None, ready.date()])
+    for row in ws2.iter_rows(min_row=2):
+        row[4].number_format = "yyyy-mm-dd"
+    _style(ws2, (15, 13, 22, 15, 20))
+    ws3 = wb.create_sheet("Alarm codes")
+    ws3.append(["Code", "Meaning", "Card payments"])
+    for code, mean, pay in (("COMMS_LOST", "The modem has lost its network registration", "Stopped"),
+                            ("COMMS_RESTORED", "The modem has registered on the network", "Resumed"),
+                            ("READER_FAULT", "The card reader does not respond, or no card reader is detected", "Stopped"),
+                            ("READER_OK", "The card reader responds and is ready", "Resumed"),
+                            ("PAPER_LOW", "Receipt paper is low or out (receipts are optional)", "Not affected"),
+                            ("PAPER_OK", "Receipt paper loaded", "Not affected"),
+                            ("DOOR_OPEN", "The service door has been opened", "Not affected"),
+                            ("DOOR_CLOSED", "The service door has been closed", "Not affected"),
+                            ("TEMP_LOW", "The cabinet is below 0 C and its heater is on", "Not affected"),
+                            ("TEMP_OK", "The cabinet temperature is back to normal", "Not affected"),
+                            ("RESTART", "The pay station has restarted", None)):
+        ws3.append([code, mean, pay])
+    _style(ws3, (16, 62, 14))
+    wb.save(path)
+    return 24 + len(E["stock"])
 
 
-def build_pack(out, E, F, wos):
-    f = lambda k: os.path.join(out, FILES[k])
+# ------------------------------------------------------------------------------------------------- distractors
+def weather_rows(E):
+    return [[d.isoformat(), "%.1f" % w[0], "%.1f" % w[1], "%.1f" % w[2], "%.1f" % w[3]] for d, w in sorted(A.WEATHER.items())]
+
+
+def build_pack(out, E):
+    f = E["f"]
+    p = lambda k: os.path.join(out, FILES[k])
     n = {}
-    n["frostline"] = write_frostline(f("frostline"), E)
-    n["kelvra"] = write_kelvra(f("kelvra"), E)
-    n["brumal"] = write_brumal(f("brumal"), E)
-    n["tellvane"] = write_tellvane(f("tellvane"), E)
-    n["stores"] = write_stores(f("stores"))
-    n["roster"] = write_roster(f("roster"), E)
-    n["items"] = write_items(f("items"))
-    n["invoices"] = write_csv(f("invoices"), ["INVOICE_NO", "INVOICE_DATE", "SHIP_TO", "SHIP_TO_NAME", "NDC",
-                                              "ITEM_DESCRIPTION", "LOT", "EXP_DATE", "QTY_SHIPPED", "UOM",
-                                              "UNIT_PRICE", "EXT_PRICE", "DELIVERED"], invoice_rows(F))
-    n["admin"] = write_csv(f("admin"), ["store", "administered_at", "transaction_id", "ndc", "product", "lot",
-                                        "doses"], admin_rows(F))
-    n["writeoffs"] = write_csv(f("writeoffs"), ["store", "written_off_at", "ndc", "product", "lot", "expiration",
-                                                "quantity", "reason", "cost"], writeoff_rows(F))
-    n["credits"] = write_csv(f("credits"), ["CREDIT_MEMO", "MEMO_DATE", "SHIP_TO", "SHIP_TO_NAME", "NDC",
-                                            "ITEM_DESCRIPTION", "LOT", "QTY", "UOM", "CREDIT_AMT", "REASON"],
-                             credit_rows(F))
-    n["transfers"] = write_csv(f("transfers"), ["transfer_no", "shipped_at", "from_store", "to_store", "ndc",
-                                                "product", "lot", "doses", "received_at"], transfer_rows(F))
-    n["inventory"] = write_inventory(f("inventory"), F)
-    n["brannon"] = write_brannon(f("brannon"), wos)
-    n["weather"] = write_csv(f("weather"), ["DATE", "STATION", "TMAX", "TMIN", "PRCP", "SNOW", "WSFG", "REMARKS"],
-                             weather_rows())
-    D.write_standard(f("standard"))
-    D.write_pilot(f("pilot"), [(no, W.local_of(E[no]["inst"])[0].date()) for no in W.PILOT])
-    D.write_agreement(f("agreement"))
-    D.write_quotes(f("quotes"))
-    n["standard"] = n["pilot"] = n["agreement"] = n["quotes"] = 1
+    n["status"] = write_csv(p("status"), ["polled_at", "station_id", "num_bikes_available", "num_bikes_disabled",
+                                          "num_docks_available", "num_docks_disabled", "is_installed", "is_renting",
+                                          "is_returning", "last_reported"], status_rows(E))
+    n["trips"] = write_csv(p("trips"), ["trip_id", "bike_id", "start_time", "start_station_id", "start_station_name",
+                                        "end_time", "end_station_id", "end_station_name", "duration_s", "rider_type"],
+                           trip_rows(E))
+    n["moves"] = write_csv(p("moves"), ["logged_at", "vehicle", "station_id", "action", "bike"], move_rows(E))
+    n["reports"] = write_csv(p("reports"), ["report_id", "reported_at", "bike_id", "station_id", "category"],
+                             report_rows(E))
+    with open(p("gbfs"), "w", encoding="utf-8") as fh:
+        json.dump(gbfs_json(f), fh, indent=1)
+        fh.write("\n")
+    n["gbfs"] = len(gbfs_json(f)["data"]["stations"])
+    n["stations"] = write_stations(p("stations"), f)
+    n["sales"] = write_csv(p("sales"), ["sale_id", "sold_at", "terminal", "pay_station", "pay_station_name", "product",
+                                        "amount", "transaction", "original_sale"], sales_rows(E))
+    n["alarms"] = write_csv(p("alarms"), ["event_id", "pay_station", "event_time", "event", "detail"], alarm_rows(E))
+    n["workorders"] = write_workorders(p("workorders"), E)
+    n["register"] = write_register(p("register"), E)
+    n["weather"] = write_csv(p("weather"), ["Date/Time", "Max Temp (\u00b0C)", "Min Temp (\u00b0C)", "Total Rain (mm)",
+                                            "Total Snow (cm)"], weather_rows(E))
+    D.write_notes(p("notes"), poller_gaps())
+    D.write_agreement(p("agreement"))
+    D.write_report(p("report"), E)
+    n["notes"] = n["agreement"] = n["report"] = 1
     return n

@@ -1,5 +1,6 @@
 """The golden: every owed figure computed from the cut pack (bundle.py), written to generator/figures.json, and the two
-deliverables, penwick_refrigerator_replacements_2027.xlsx and penwick_vaccine_hours_2026.svg."""
+deliverables, priority_stations_2027q1.xlsx and station_availability_2026q4.html."""
+import html
 import io
 import json
 import os
@@ -9,217 +10,243 @@ import numpy as np
 import bundle as B
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-XLSX = "penwick_refrigerator_replacements_2027.xlsx"
-SVG = "penwick_vaccine_hours_2026.svg"
+XLSX = "priority_stations_2027q1.xlsx"
+HTML = "station_availability_2026q4.html"
+MONTH = {10: "October", 11: "November", 12: "December"}
+KEY = {10: "oct", 11: "nov", 12: "dec"}
 
 
-def town_of(target):
-    rows = B._sheet(target, "stores", "Stores")
-    return {int(r["Store"]): r["Town"] for r in rows}
+def label(I, no):
+    return "W-%02d %s" % (no, I.name[no])
 
 
 def compute(target):
     I = B.Inputs(target)
-    town = town_of(target)
-    tau = B.taus(I)
-    pooled = B.taus(I, "pooled")
-    h = B.golden_hours(I, tau)
-    r0 = B.rung_hours(I, "R0")
-    ua = B.unaccounted(I)
-    sv = B.service(I)
-    cov = B.covered(h)
-    nb, nbv, short = B.nearest_below(h)
-    makes = {}
-    for no in I.order:
-        makes.setdefault(I.make[no], round(tau[no], 1))
-    fit_lag = {mk: round(B.fit(I, [no for no in I.pilot if I.make[no] == mk])[1], 3) for mk in makes}
+    g = B.golden(I)
+    d = B.default(I)
+    pr = B.designated(g)
+    dp = B.designated(d)
+    nb, margin = B.nearest_clear(g)
+    nb_mo = min(B.MONTHS, key=lambda mo: g[nb][mo])
+    sales = B.sales(I)
+    down = B.downtime(I)
     fig = {
-        "call": {"stores": cov, "count": len(cov), "of": len(I.order)},
-        "stores": {str(no): {"town": town[no], "hours": B.hround(h[no]), "replaced": no in cov,
-                             "doses_unaccounted": int(ua[no]), "service_usd": B.hround(sv[no])} for no in I.order},
+        "call": {"priority": [label(I, no) for no in pr], "count": len(pr), "of": len(I.nos)},
+        "stations": {},
         "components": {
-            "nearest_below": {"store": nb, "town": town[nb], "hours": B.hround(nbv), "short_hours": B.hround(short)},
-            "tau_minutes": makes, "tau_pooled_minutes": round(pooled[I.order[0]], 1),
-            "pilot_stores": len(I.pilot),
-            "fit_rms_c": fit_lag,
-            "replaced_hours": {str(no): B.hround(h[no]) for no in cov},
+            "nearest": {"station": "W-%02d" % nb, "name": I.name[nb], "month": MONTH[nb_mo],
+                        "availability": int(B.hround(g[nb][nb_mo], 0)), "margin_points": B.hround(margin)},
         },
-        "default": {"stores": B.covered(r0), "count": len(B.covered(r0)),
-                    "hours": {str(no): B.hround(r0[no]) for no in I.order}},
-        "stated": {"limit_c": 8.0, "line_hours": 24, "year": 2026, "installed_by": "1 September 2027",
-                   "tax_pct": 6.0, "platform": "1 July 2026", "inventory_update": "1 June 2026",
-                   "record_minutes": 10, "bud_days": 28,
-                   "sections": {"recording": 6.3, "device_of_record": 6.4, "criterion": 7.3, "unaccounted": 8.2,
-                                "service": 9.2},
-                   "replaced_loggers": sorted(no for no in I.order if sum(1 for s, n in I.serial.items()
-                                                                           if n == no) > 1)},
-        "store_numbers": list(I.order),
-        "_unrounded": {"hours": {str(no): round(h[no], 4) for no in I.order},
-                       "default": {str(no): round(r0[no], 4) for no in I.order},
-                       "service": {str(no): sv[no] for no in I.order},
-                       "tau": {str(no): tau[no] for no in I.order}},
+        "default": {"priority": [label(I, no) for no in dp], "count": len(dp),
+                    "lowest": {"W-%02d" % no: int(B.hround(min(d[no].values()), 0)) for no in I.nos}},
+        "stated": {"line_per_cent": 90, "linden_avenue_feed_ids": [117, 125], "service_hours": "6:00 to midnight Eastern", "quarter": "Q4 2026",
+                   "next_quarter": "Q1 2027", "notice_by": "15 January 2027", "fares_cad": {"single": 3.25, "day": 11.50}},
+        "_unrounded": {"availability": {"W-%02d" % no: {KEY[mo]: round(g[no][mo], 6) for mo in B.MONTHS} for no in I.nos},
+                       "default": {"W-%02d" % no: {KEY[mo]: round(d[no][mo], 6) for mo in B.MONTHS} for no in I.nos},
+                       "hours_no_card": {"W-%02d" % no: down[no] for no in I.nos},
+                       "margin": round(margin, 6)},
     }
+    for no in I.nos:
+        lo = min(B.MONTHS, key=lambda mo: g[no][mo])
+        fig["stations"]["W-%02d" % no] = {
+            "name": I.name[no], "oct": B.hround(g[no][10]), "nov": B.hround(g[no][11]), "dec": B.hround(g[no][12]),
+            "lowest": int(B.hround(g[no][lo], 0)), "lowest_month": MONTH[lo], "priority": no in pr,
+            "sales_cad": round(sales[no], 2), "hours_no_card": int(B.hround(down[no], 0))}
     return fig
 
 
 def write_xlsx(path, f):
     import openpyxl
-    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+    from openpyxl.styles import Alignment, Font, PatternFill
+    from openpyxl.utils import get_column_letter
     wb = openpyxl.Workbook()
-    bold = Font(name="Calibri", size=11, bold=True)
-    thin = Side(style="thin", color="808080")
-    fill = PatternFill("solid", fgColor="DDEBF7")
-    st = f["stores"]
-    nb = f["components"]["nearest_below"]
-
     ws = wb.active
-    ws.title = "2027 replacements"
-    n_rep = f["call"]["count"]
-    words = {1: "One store gets", 2: "Two stores get", 3: "Three stores get", 4: "Four stores get", 5: "Five stores get",
-             6: "Six stores get", 7: "Seven stores get", 8: "Eight stores get"}
-    ws["A1"] = "%s a new vaccine refrigerator before the 2027 respiratory season" % words.get(n_rep, "%d stores get" % n_rep)
-    ws["A1"].font = Font(name="Calibri", size=14, bold=True)
-    ws["A2"] = ("Pharmacy Operations, for the capital committee, February 2027. Standard PO-114 section 7.3: 24 hours or "
-                "more with the vaccine above 8.0 \u00b0C in 2026.")
-    ws["A2"].font = Font(name="Calibri", size=9, italic=True, color="555555")
+    ws.title = "Priority stations"
+    bold = Font(bold=True)
+    ws["A1"] = "Wellhaven Bike Share: Schedule C priority stations for Q1 2027"
+    ws["A1"].font = Font(bold=True, size=12)
+    ws["A2"] = ("Availability in each month of Q4 2026: the share of the month's service minutes (6:00 to midnight) "
+                "that began with at least one bike in working order docked at the station.")
     ws.append([])
-    ws.append(["Store", "Town", "Hours above 8.0 \u00b0C, 2026", "New refrigerator"])
+    ws.append(["Station", "Name", "October 2026 (%)", "November 2026 (%)", "December 2026 (%)", "Lowest month",
+               "Lowest month (%)", "Priority station for Q1 2027"])
     for c in ws[4]:
         c.font = bold
-        c.alignment = Alignment(wrap_text=True, vertical="bottom")
-        c.border = Border(bottom=thin)
-    for no in sorted(st, key=lambda k: (-f["_unrounded"]["hours"][k], int(k))):
-        x = st[no]
-        ws.append([int(no), x["town"], x["hours"], "Yes" if x["replaced"] else "No"])
-        if x["replaced"]:
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    shade = PatternFill("solid", fgColor="FCE8D8")
+    for k in sorted(f["stations"]):
+        s = f["stations"][k]
+        ws.append([k, s["name"], s["oct"], s["nov"], s["dec"], s["lowest_month"], s["lowest"],
+                   "Yes" if s["priority"] else "No"])
+        if s["priority"]:
             for c in ws[ws.max_row]:
-                c.fill = fill
-    last = ws.max_row
-    for row in ws.iter_rows(min_row=5, max_row=last):
-        row[2].number_format = "#,##0"
-        row[3].alignment = Alignment(horizontal="center")
-    ws.cell(row=last + 2, column=1, value="Nearest store below the line: %d %s, %d hours, %d short of 24."
-            % (nb["store"], nb["town"], nb["hours"], nb["short_hours"]))
-    ws.cell(row=last + 2, column=1).font = Font(name="Calibri", size=10, bold=True)
-    for col, wd in zip("ABCD", (8, 14, 14, 13)):
-        ws.column_dimensions[col].width = wd
-    ws.row_dimensions[4].height = 30
-    ws.freeze_panes = "A5"
+                c.fill = shade
+    for row in ws.iter_rows(min_row=5, max_row=ws.max_row):
+        for c in row[2:5]:
+            c.number_format = "0.0"
+        row[6].number_format = "0"
+    ws.append([])
+    nb = f["components"]["nearest"]
+    ws.append(["Priority stations", ", ".join(f["call"]["priority"])])
+    ws.append(["Nearest station above the line", "%s %s: %d per cent in %s, %.1f points above 90 per cent"
+               % (nb["station"], nb["name"], nb["availability"], nb["month"], nb["margin_points"])])
+    for r in (ws.max_row - 1, ws.max_row):
+        ws.cell(row=r, column=1).font = bold
+    for i, w in enumerate((9, 20, 12, 12, 12, 11, 11, 14)):
+        ws.column_dimensions[get_column_letter(i + 1)].width = w
+    ws.freeze_panes = "C5"
 
-    s2 = wb.create_sheet("Stock and service")
-    s2.append(["Store", "Town", "2026 vaccine doses unaccounted for", "2026 Brannon refrigerator service (USD)"])
-    for c in s2[1]:
+    s2 = wb.create_sheet("Pay stations")
+    s2["A1"] = "Pay stations, Q4 2026"
+    s2["A1"].font = Font(bold=True, size=12)
+    s2["A2"] = ("Card sales are approved sales less voids, at the pay station where each sale was made; hours are the "
+                "service hours (6:00 to midnight) in which the pay station could not take a card payment.")
+    s2.append([])
+    s2.append(["Station", "Name", "Card sales (CAD)", "Service hours unable to take a card"])
+    for c in s2[4]:
         c.font = bold
-        c.alignment = Alignment(wrap_text=True, vertical="bottom")
-        c.border = Border(bottom=thin)
-    for no in sorted(st, key=int):
-        x = st[no]
-        s2.append([int(no), x["town"], x["doses_unaccounted"], x["service_usd"]])
-    s2.append(["All stores", None, sum(x["doses_unaccounted"] for x in st.values()),
-               int(round(sum(f["_unrounded"]["service"].values())))])
-    for c in s2[s2.max_row]:
-        c.font = bold
-        c.border = Border(top=thin)
-    for row in s2.iter_rows(min_row=2, max_row=s2.max_row):
-        row[2].number_format = "#,##0"
-        row[3].number_format = "#,##0"
-    for col, wd in zip("ABCD", (8, 14, 16, 18)):
-        s2.column_dimensions[col].width = wd
-    s2.row_dimensions[1].height = 46
-    s2.freeze_panes = "A2"
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    for k in sorted(f["stations"]):
+        s = f["stations"][k]
+        s2.append([k, s["name"], s["sales_cad"], s["hours_no_card"]])
+    for row in s2.iter_rows(min_row=5, max_row=s2.max_row):
+        row[2].number_format = "#,##0.00"
+        row[3].number_format = "0"
+    for i, w in enumerate((9, 20, 15, 18)):
+        s2.column_dimensions[get_column_letter(i + 1)].width = w
 
-    s3 = wb.create_sheet("Notes")
-    tau = f["components"]["tau_minutes"]
+    s3 = wb.create_sheet("Method")
     notes = [
-        ("Hours above 8.0 \u00b0C", "Each logger record put on UTC and joined to its store through the monitoring roster "
-         "(Kelvra converted from Fahrenheit, Brumal from standard time, one Kelvra day exported twice counted "
-         "once). A logger's probe follows the air in minutes and the vaccine follows it in most of an hour, so each "
-         "logger record is carried through the vaccine's response, a first-order lag with each record holding over its "
-         "ten minutes. Its time constant is fitted on the two weeks each pilot store's logger kept recording after its "
-         "in-carton sensor went in: %.1f minutes for Frostline, %.1f for Kelvra and %.1f for Brumal. A record counts "
-         "its ten minutes when the estimated vaccine temperature at its time stamp is above 8.0 \u00b0C; at the pilot stores "
-         "the in-carton sensor's readings count from its first reading." % (tau["Frostline"], tau["Kelvra"],
-                                                                            tau["Brumal"])),
-        ("Doses unaccounted for", "The 2025 year-end count, plus Meridale deliveries and transfers in, less doses "
-         "administered, written off and transferred out, less the 2026 year-end count, each flow taken between the two "
-         "counts' own closing times. Write-offs of multi-dose vials before the 1 June 2026 inventory update are in "
-         "vials (ten doses each). Meridale's return credits are the expired 2025-26 doses already written off and are "
-         "not taken off again."),
-        ("Brannon service", "Each invoice once, for work completed in 2026 (its last visit). Invoices dated before "
-         "Brannon's 1 July 2026 platform move show the amount before sales tax, so 6.0 per cent is added to them. A "
-         "maintenance route invoiced for two stores is split by each unit's maintenance price in Schedule B of the "
-         "agreement."),
-        ("Rounding", "Hours, doses and dollars to the whole unit, each from the unrounded figure."),
+        ("Bikes in working order",
+         "The status feed counts a docked bike as available until Northlane marks it out of service, so a bike that "
+         "broke on a ride and was docked unreported stayed in the available count. Each bike's time at each station "
+         "was rebuilt from the trips and the fleet moves; a docked bike is taken as out of working order from the end "
+         "of the ride that left it until the van took it to the depot, when it then stayed at the depot a day or more "
+         "for repair (every other van pickup was back on the street within hours)."),
+        ("Minutes", "A minute counts when a bike in working order was docked at its start; Linden Avenue's two feed IDs "
+                    "are one station; the trips' repeated week of 16 November is counted once."),
+        ("Pay-station sales", "The sales export names each sale's pay station from where its terminal is now; sales "
+                              "are placed at the pay station the terminal was in when the sale was made, from the "
+                              "terminal replacements in the work orders."),
+        ("Card downtime", "A card-stopping alarm (COMMS_LOST, READER_FAULT) runs from its raise to its clear or to the "
+                          "pay station's next restart, after which it is raised again if the fault is still there; "
+                          "overlapping alarms are counted once, inside service hours."),
     ]
-    s3.append(["Item", "Note"])
-    for c in s3[1]:
-        c.font = bold
-    for k, v in notes:
-        s3.append([k, v])
-    for row in s3.iter_rows(min_row=2):
+    for a, b in notes:
+        s3.append([a, b])
+    for row in s3.iter_rows():
+        row[0].font = bold
         row[1].alignment = Alignment(wrap_text=True, vertical="top")
         row[0].alignment = Alignment(vertical="top")
     s3.column_dimensions["A"].width = 22
     s3.column_dimensions["B"].width = 100
     wb.save(path)
     import postprocess as PP
-    PP.normalize_ooxml(path, "Pharmacy Operations", "Pharmacy Operations", "2027-02-01T14:20:00Z",
-                       "2027-02-08T21:37:44Z", excel=True, company="Penwick Pharmacy, Inc.")
+    PP.normalize_ooxml(path, "Transportation Services", "Transportation Services", "2027-01-12T14:20:00Z",
+                       "2027-01-14T21:37:44Z", excel=True, company="City of Wellhaven")
 
 
-def write_svg(path, f):
+def chart_svg(f):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     from matplotlib.patches import Patch
-    matplotlib.rcParams["svg.hashsalt"] = "task482-penwick"
+    matplotlib.rcParams["svg.hashsalt"] = "task482-wellhaven"
     matplotlib.rcParams["svg.fonttype"] = "none"
     matplotlib.rcParams["font.family"] = "DejaVu Sans"
-    un = f["_unrounded"]["hours"]
-    st = f["stores"]
-    names = sorted(st, key=lambda k: (-un[k], int(k)))
-    vals = [un[k] for k in names]
-    on = [st[k]["replaced"] for k in names]
-    blue, grey, ink, muted, line = "#2a6fb0", "#c3c8ce", "#1f2328", "#59636e", "#b3261e"
-    fig, ax = plt.subplots(figsize=(8.6, 8.4), dpi=100)
-    ys = np.arange(len(names))[::-1]
-    ax.barh(ys, vals, height=0.68, color=[blue if o else grey for o in on], edgecolor="white", linewidth=1.5, zorder=3)
-    for y, k, v, o in zip(ys, names, vals, on):
-        ax.text(v + 0.8, y, "%d" % st[k]["hours"], ha="left", va="center", fontsize=8.5,
+    un = f["_unrounded"]["availability"]
+    st = f["stations"]
+    keys = sorted(st, key=lambda k: (min(un[k].values()), k))
+    vals = [min(un[k].values()) for k in keys]
+    on = [st[k]["priority"] for k in keys]
+    accent, grey, ink, muted = "#c2562b", "#b9c1ca", "#1f2328", "#59636e"
+    fig, ax = plt.subplots(figsize=(8.8, 8.6), dpi=100)
+    ys = np.arange(len(keys))[::-1]
+    ax.barh(ys, [v - 80 for v in vals], left=80, height=0.62, color=[accent if o else grey for o in on],
+            edgecolor="white", linewidth=1.5, zorder=3)
+    for y, k, v, o in zip(ys, keys, vals, on):
+        ax.text(v + 0.15, y, "%d" % st[k]["lowest"], ha="left", va="center", fontsize=8.5,
                 color=ink if o else muted, fontweight="bold" if o else "normal")
-    ax.axvline(24, color=line, linewidth=1.5, zorder=4)
-    ax.text(24.6, ys[0] + 0.6, "24 hours", color=line, fontsize=8.5, va="bottom")
+    ax.axvline(90, color=ink, linewidth=1.3, linestyle=(0, (4, 3)), zorder=4)
+    ax.text(90.12, ys[0] + 0.7, "90 per cent", color=ink, fontsize=8.5, va="bottom")
     ax.set_yticks(ys)
-    ax.set_yticklabels(["%s %s" % (k, st[k]["town"]) for k in names], fontsize=8.5, color=ink)
-    ax.set_xlabel("Hours with the vaccine above 8.0 \u00b0C in 2026", fontsize=9, color=muted)
-    ax.set_xlim(0, max(vals) * 1.12)
-    ax.set_ylim(-0.7, len(names) - 0.1)
+    ax.set_yticklabels(["%s %s (%s)" % (k, st[k]["name"], st[k]["lowest_month"][:3]) for k in keys], fontsize=8.5,
+                       color=ink)
+    ax.set_xlabel("Availability in the station's lowest month of Q4 2026 (per cent of service minutes)", fontsize=9,
+                  color=muted)
+    ax.set_xlim(80, 100.9)
+    ax.set_ylim(-0.7, len(keys) - 0.1)
     ax.tick_params(axis="x", labelsize=8.5, colors=muted)
     ax.grid(axis="x", color="#e6e8eb", linewidth=0.8, zorder=0)
     for side in ("top", "right", "bottom"):
         ax.spines[side].set_visible(False)
     ax.spines["left"].set_color("#9aa1a9")
-    ax.legend(handles=[Patch(color=blue, label="New refrigerator before the 2027 season"),
-                       Patch(color=grey, label="Under 24 hours")], loc="lower right", frameon=False, fontsize=8.5)
-    nb = f["components"]["nearest_below"]
-    n = f["call"]["count"]
-    word = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight"}.get(n, str(n))
-    fig.suptitle("%s stores' vaccine spent 24 hours or more above 8 \u00b0C in 2026" % word, x=0.012, ha="left",
-                 fontsize=11.5, fontweight="bold", color=ink)
-    ax.set_title("Hours by store, from each store's temperature record carried to the vaccine.\n"
-                 "Nearest below the line: %d %s, %d hours, %d short." % (nb["store"], nb["town"], nb["hours"],
-                                                                        nb["short_hours"]),
-                 loc="left", fontsize=8.5, color=muted, pad=10, linespacing=1.5)
-    fig.text(0.012, 0.01, "Source: Penwick Pharmacy, Pharmacy Operations; store data loggers and Tellvane in-carton "
-             "sensors, 2026.", fontsize=7.5, color=muted)
-    fig.subplots_adjust(left=0.18, right=0.97, top=0.9, bottom=0.08)
+    ax.legend(handles=[Patch(color=accent, label="Priority station for Q1 2027"),
+                       Patch(color=grey, label="90 per cent or more in every month")], loc="upper right",
+              frameon=False, fontsize=8.5)
+    fig.subplots_adjust(left=0.27, right=0.97, top=0.98, bottom=0.07)
     buf = io.StringIO()
-    fig.savefig(buf, format="svg", metadata={"Date": None, "Creator": "Pharmacy Operations"})
+    fig.savefig(buf, format="svg", metadata={"Date": None, "Creator": "Transportation Services"})
     plt.close(fig)
     svg = buf.getvalue().replace('id="matplotlib.', 'id="').replace("'DejaVu Sans'",
                                                                    "'DejaVu Sans', Arial, Helvetica, sans-serif")
+    svg = svg[svg.index("<svg"):]
     assert "matplotlib" not in svg.lower()
-    open(path, "w", encoding="utf-8", newline="\n").write(svg)
+    return svg
+
+
+def write_html(path, f):
+    svg = chart_svg(f)
+    n = f["call"]["count"]
+    word = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven"}.get(n, str(n))
+    nb = f["components"]["nearest"]
+    rows = []
+    for k in sorted(f["stations"]):
+        s = f["stations"][k]
+        rows.append("<tr%s><td>%s</td><td>%s</td><td>%.1f</td><td>%.1f</td><td>%.1f</td><td>%s</td></tr>" % (
+            ' class="p"' if s["priority"] else "", k, html.escape(s["name"]), s["oct"], s["nov"], s["dec"],
+            "Priority" if s["priority"] else ""))
+    page = """<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Station availability, Q4 2026</title>
+<style>
+body {{ font-family: Arial, Helvetica, sans-serif; color: #1f2328; background: #ffffff; margin: 24px auto; max-width: 900px; padding: 0 16px; }}
+h1 {{ font-size: 20px; margin: 0 0 6px; }}
+p {{ font-size: 14px; line-height: 1.45; color: #3a4148; margin: 0 0 10px; }}
+figure {{ margin: 12px 0 18px; }}
+figure svg {{ width: 100%; height: auto; }}
+table {{ border-collapse: collapse; font-size: 13px; width: 100%; }}
+th, td {{ text-align: left; padding: 4px 8px; border-bottom: 1px solid #e3e6ea; }}
+th {{ border-bottom: 1px solid #1f2328; }}
+td:nth-child(n+3):not(:last-child) {{ text-align: right; font-variant-numeric: tabular-nums; }}
+tr.p td {{ background: #fce8d8; }}
+.src {{ font-size: 12px; color: #59636e; }}
+</style>
+</head>
+<body>
+<h1>{word} stations fell under 90 per cent availability in a month of Q4 2026</h1>
+<p>Each bar is a station's availability in its lowest month: the share of that month's service minutes (6:00 to midnight)
+that began with at least one bike in working order docked. Stations under 90 per cent in any month are Schedule C
+priority stations for Q1 2027. The nearest station above the line is {nbs} {nbn}, {nbv:d} per cent in {nbm}.</p>
+<figure>
+{svg}
+</figure>
+<table>
+<thead><tr><th>Station</th><th>Name</th><th>October (%)</th><th>November (%)</th><th>December (%)</th><th>Q1 2027</th></tr></thead>
+<tbody>
+{rows}
+</tbody>
+</table>
+<p class="src">City of Wellhaven, Transportation Services, from Northlane Mobility's trip records and fleet moves
+log and the City's archive of the station status feed, 23 September 2026 to 10 January 2027.</p>
+</body>
+</html>
+""".format(word=word, nbs=nb["station"], nbn=html.escape(nb["name"]), nbv=nb["availability"], nbm=nb["month"],
+           svg=svg, rows="\n".join(rows))
+    open(path, "w", encoding="utf-8", newline="\n").write(page)
 
 
 def main(target=None):
@@ -231,11 +258,11 @@ def main(target=None):
     for fn in os.listdir(out):
         os.remove(os.path.join(out, fn))
     write_xlsx(os.path.join(out, XLSX), f)
-    write_svg(os.path.join(out, SVG), f)
+    write_html(os.path.join(out, HTML), f)
     return f
 
 
 if __name__ == "__main__":
     import sys
     f = main(sys.argv[1] if len(sys.argv) > 1 else None)
-    print(json.dumps({k: v for k, v in f.items() if not k.startswith("_")}, indent=1)[:4000])
+    print(json.dumps({k: v for k, v in f.items() if not k.startswith("_")}, indent=1)[:3000])

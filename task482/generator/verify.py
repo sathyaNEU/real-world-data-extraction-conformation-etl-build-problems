@@ -1,12 +1,13 @@
 """task482's independent verifier: reads only the shipped bundle (target/), the golden deliverables and
-generator/figures.json, recomputes every graded figure with its own code (pandas, no generator module), and compares.
+generator/figures.json, recomputes every graded figure with its own code (pandas and numpy, no generator module), and
+compares.
 
     python3 task482/generator/verify.py
 """
+import datetime as dt
 import json
 import os
 import re
-import subprocess
 import sys
 import warnings
 from collections import defaultdict
@@ -20,6 +21,8 @@ TASK = os.path.dirname(HERE)
 T = os.path.join(TASK, "target")
 GOLD = os.path.join(TASK, "golden")
 FAILS = []
+UTC = dt.timezone.utc
+FALL = pd.Timestamp("2026-11-01 06:00")             # UTC, naive: every instant below is naive UTC
 
 
 def say(name, ok):
@@ -28,182 +31,237 @@ def say(name, ok):
         FAILS.append(name)
 
 
-def half_up(x):
-    return int(np.floor(abs(x) + 0.5)) * (1 if x >= 0 else -1)
+def half_up(x, d=0):
+    q = 10 ** d
+    return np.floor(x * q + 0.5) / q
 
 
-def utc_minutes(ts):
-    """pandas timestamps (UTC) to minutes from 2026-01-01T00:00Z"""
-    return ((ts - pd.Timestamp("2026-01-01", tz="UTC")).dt.total_seconds() // 60).astype(np.int64).values
-
-
-def lag(u, x, tau):
-    """the vaccine's estimate at each record's time stamp: each record holds over the interval it opens"""
-    from itertools import accumulate
-    c = np.exp(-np.diff(u) / tau)
-    steps = zip(c.tolist(), ((1 - c) * x[:-1]).tolist())
-    return np.array(list(accumulate(steps, lambda v, p: p[0] * v + p[1], initial=float(x[0]))))
+def to_utc(s, later=False):
+    """Eastern wall-clock strings to UTC; in the repeated hour the first reading unless later"""
+    t = pd.to_datetime(s)
+    a = t + pd.Timedelta(hours=4)
+    b = t + pd.Timedelta(hours=5)
+    first = a.where(a < FALL, b)
+    if not later:
+        return first
+    return b.where((a < FALL) & (b >= FALL), first)
 
 
 def main():
-    stores = pd.read_excel(os.path.join(T, "penwick_store_list_2027-01.xlsx"))
-    roster = pd.read_excel(os.path.join(T, "refrigerator_monitoring_roster_2026.xlsx"))
-    ser2store = dict(zip(roster["Serial or sensor id"], roster["Store"]))
-    make = {r["Store"]: r["Make"] for _, r in roster.iterrows() if r["Device type"] == "Data logger"}
-    # loggers
-    fr = pd.read_csv(os.path.join(T, "frostline_temperature_logs_2026.csv"))
-    fr_u = utc_minutes(pd.to_datetime(fr["Timestamp"], utc=True))
-    kv = pd.read_csv(os.path.join(T, "kelvra_logger_export_2026.csv"), skiprows=3).drop_duplicates()
-    kv_u = utc_minutes(pd.to_datetime(kv["Date"] + " " + kv["Time"], format="%m/%d/%Y %H:%M:%S").dt.tz_localize("UTC"))
-    rows = []
-    serial = None
-    for line in open(os.path.join(T, "brumal_downloads_2026.txt"), encoding="utf-8"):
-        m = re.match(r"Serial number:\s+(\S+)", line)
-        if m:
-            serial = m.group(1)
-        elif re.match(r"\d\d/\d\d/2026\t", line):
-            d, t, v = line.split("\t")
-            rows.append((serial, d + " " + t, float(v)))
-    pw = pd.DataFrame(rows, columns=["serial", "ts", "c"])
-    pw_u = utc_minutes((pd.to_datetime(pw["ts"], format="%m/%d/%Y %H:%M") + pd.Timedelta(hours=6)).dt.tz_localize("UTC"))
-    rec = pd.concat([pd.DataFrame({"store": fr["Serial"].map(ser2store), "u": fr_u, "c": fr["Temperature (C)"]}),
-                     pd.DataFrame({"store": kv["Logger ID"].map(ser2store), "u": kv_u,
-                                   "c": (kv["Temperature (F)"] - 32) * 5 / 9}),
-                     pd.DataFrame({"store": pw["serial"].map(ser2store), "u": pw_u, "c": pw["c"]})])
-    rec = rec.sort_values(["store", "u"]).drop_duplicates(["store", "u"])
-    cl = pd.read_csv(os.path.join(T, "tellvane_sensor_readings_2026.csv"))
-    cl["store"] = cl["sensor_id"].map(ser2store)
-    cl["u"] = utc_minutes(pd.to_datetime(cl["reading_time_utc"], utc=True))
-    cl = cl.sort_values(["store", "u"])
-    y0, y1 = 360, 360 + 525600
-    first = cl.groupby("store")["u"].min().to_dict()
-    R = {no: (g["u"].values, g["c"].values) for no, g in rec.groupby("store")}
-    C = {no: (g["u"].values, g["temperature_c"].values) for no, g in cl.groupby("store")}
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    st = pd.read_excel(os.path.join(T, "wellhaven_bike_share_station_list.xlsx"), sheet_name="Stations")
+    city = {int(r["Feed station ID"]): int(str(r["Station"])[2:]) for _, r in st.iterrows()}
+    name = {int(str(r["Station"])[2:]): r["Name"] for _, r in st.iterrows()}
+    nos = sorted(name)
 
-    def sse(nos, tau):
-        s = 0.0
-        for no in nos:
-            u, x = R[no]
-            v = lag(u, x, tau)
-            cu, cx = C[no]
-            k = (cu >= first[no]) & (cu < u[-1] + 10)
-            cu, cx = cu[k], cx[k]
-            j = np.searchsorted(u, cu, side="right") - 1
-            s += float(((x[j] + (v[j] - x[j]) * np.exp(-(cu - u[j]) / tau) - cx) ** 2).sum())
-        return s
+    # ------------------------------------------------------------------------------------------ the records
+    tr = pd.read_csv(os.path.join(T, "northlane_trips_2026q4.csv"))
+    n0 = len(tr)
+    tr = tr.drop_duplicates()
+    say("the trips' repeated rows dropped (%d of %d)" % (n0 - len(tr), n0), n0 - len(tr) > 3000 and tr.trip_id.is_unique)
+    a1, a2 = to_utc(tr.start_time), to_utc(tr.start_time, True)
+    b1, b2 = to_utc(tr.end_time), to_utc(tr.end_time, True)
+    dur = pd.to_timedelta(tr.duration_s, unit="s")
+    start = a1.copy()
+    end = b1.copy()
+    for (x, y) in ((a1, b1), (a1, b2), (a2, b1), (a2, b2)):
+        m = (y - x) == dur
+        start = start.where(~m, x)
+        end = end.where(~m, y)
+    say("every trip's start and end resolve on its duration", ((end - start) == dur).all())
+    mv = pd.read_csv(os.path.join(T, "northlane_fleet_moves_2026q4.csv"))
+    mv["t"] = to_utc(mv.logged_at)
+    mv["bike_no"] = mv.bike.str.replace("WHB-", "", regex=False).astype(int)
+    ev = pd.concat([
+        pd.DataFrame({"bike": tr.bike_id.values, "t": start.values, "o": 2, "kind": "rent", "s": tr.start_station_id.values}),
+        pd.DataFrame({"bike": tr.bike_id.values, "t": end.values, "o": 1, "kind": "dock", "s": tr.end_station_id.values}),
+        pd.DataFrame({"bike": mv.bike_no.values, "t": mv.t.values, "o": np.where(mv.action == "Pick up", 0, 1),
+                      "kind": np.where(mv.action == "Pick up", "pickup", "drop"), "s": mv.station_id.values}),
+    ], ignore_index=True)
+    ev["k"] = np.arange(len(ev))
+    ev = ev.sort_values(["bike", "t", "o", "k"]).reset_index(drop=True)
+    origin = pd.Timestamp("2026-09-24 00:00")
+    extract = pd.Timestamp("2027-01-11 01:00")
+    grid = int((extract - origin).total_seconds() // 60) + 2
 
-    taus = {}
-    for mk in sorted(set(make.values())):
-        nos = [no for no in first if make[no] == mk]
-        a, b = 30.0, 60.0
-        while b - a > 0.002:                                  # ternary search on the sum of squares
-            m1, m2 = a + (b - a) / 3, b - (b - a) / 3
-            if sse(nos, m1) < sse(nos, m2):
-                b = m2
+    def idx(t):
+        s = (t - origin).total_seconds()
+        k = int(s // 60)
+        return k if s == k * 60 else k + 1
+
+    spells = []
+    for b, g in ev.groupby("bike", sort=False):
+        rows = list(zip(g.t, g.kind, g.s))
+        cur, a = (rows[0][2], origin) if rows[0][1] in ("rent", "pickup") else (None, None)
+        for i, (t, kind, s) in enumerate(rows):
+            if kind in ("rent", "pickup"):
+                if cur is not None:
+                    back = None
+                    if kind == "pickup":
+                        back = next((x[0] for x in rows[i + 1:] if x[1] in ("drop", "dock")), None)
+                    spells.append((b, cur, a, t, kind, back))
+                cur, a = None, None
             else:
-                a = m1
-        taus[mk] = (a + b) / 2
+                cur, a = s, t
+        if cur is not None:
+            spells.append((b, cur, a, None, "open", None))
+    starts = defaultdict(list)
+    for s, t in zip(tr.start_station_id, start):
+        starts[s].append(t)
+    for s in starts:
+        starts[s] = np.array(sorted(starts[s]), dtype="datetime64[ns]")
 
-    def count(u, y, end):
-        d = np.clip(np.minimum(np.diff(np.append(u, end)), 10), 0, None)
-        m = (u >= y0) & (u < y1)
-        return float((d * (y > 8.0) * m).sum()) / 60.0
+    def passed(s, a, z):
+        arr = starts.get(s)
+        if arr is None or z is None:
+            return False
+        lo = np.searchsorted(arr, np.datetime64(a), side="right")
+        hi = np.searchsorted(arr, np.datetime64(z), side="left")
+        return hi > lo
 
-    hours = {}
-    for no in sorted(R):
-        u, x = R[no]
-        v = lag(u, x, taus[make[no]])
-        sw = first.get(no, y1)
-        k = u < sw
-        h = count(u[k], v[k], min(sw, y1))
-        if no in C:
-            h += count(C[no][0], C[no][1], y1)
-        hours[no] = h
-    f = json.load(open(os.path.join(HERE, "figures.json")))
-    say("tau per make %s against figures.json %s" % ({k: round(v, 2) for k, v in taus.items()},
-                                                     f["components"]["tau_minutes"]),
-        all(abs(round(taus[k], 1) - f["components"]["tau_minutes"][k]) <= 0.1 for k in taus))
-    say("every store's whole hours", all(half_up(hours[no]) == f["stores"][str(no)]["hours"] for no in hours))
-    cov = sorted(no for no, h in hours.items() if h >= 24)
-    say("the replaced stores %s" % cov, cov == f["call"]["stores"])
-    nb = max((h, no) for no, h in hours.items() if h < 24)
-    say("nearest below %d at %.2f, %d short" % (nb[1], nb[0], half_up(24 - nb[0])),
-        nb[1] == f["components"]["nearest_below"]["store"] and half_up(24 - nb[0]) ==
-        f["components"]["nearest_below"]["short_hours"])
-    # ask A
-    items = pd.read_excel(os.path.join(T, "vaccine_item_master_2026.xlsx"))
-    dpp = dict(zip(items["NDC"], items["Doses per package"]))
-    vial = dict(zip(items["NDC"], items["Package"].str.contains("vial")))
-    n11 = {}
-    for n in dpp:
-        a, b, c = n.split("-")
-        n11[a.zfill(5) + b.zfill(4) + c.zfill(2)] = n
-    inv = pd.read_excel(os.path.join(T, "vaccine_physical_inventory_ye2025_ye2026.xlsx"), sheet_name=None)
-    o = inv["YE 2025"].groupby("Store").agg(doses=("Doses on hand", "sum"), t=("Count closed", "max"))
-    c = inv["YE 2026"].groupby("Store").agg(doses=("Doses on hand", "sum"), t=("Count closed", "max"))
-    st = stores.set_index("Store")
-    ship = {str(v): k for k, v in st["Meridale ship-to"].items()}
-    former = {v: k for k, v in st["Former name"].dropna().items()}
-    mer = pd.read_csv(os.path.join(T, "meridale_vaccine_invoices_2026.csv"), dtype={"SHIP_TO": str, "NDC": str})
-    mer["store"] = [ship.get(a) or former["Lindqvist Apothecary #%d" % int(n.split("#")[1])]
-                    for a, n in zip(mer["SHIP_TO"], mer["SHIP_TO_NAME"])]
-    mer["t"] = pd.to_datetime(mer["DELIVERED"], format="%m/%d/%Y %H:%M")
-    mer["doses"] = mer["QTY_SHIPPED"] * mer["NDC"].map(n11).map(dpp)
-    adm = pd.read_csv(os.path.join(T, "pharmacy_vaccine_administrations_2026.csv"), parse_dates=["administered_at"])
-    wo = pd.read_csv(os.path.join(T, "vaccine_writeoff_log_2026.csv"), parse_dates=["written_off_at"])
-    wo["doses"] = np.where(wo["ndc"].map(vial) & (wo["written_off_at"] < "2026-06-01"),
-                           wo["quantity"] * wo["ndc"].map(dpp), wo["quantity"])
-    tr = pd.read_csv(os.path.join(T, "vaccine_store_transfers_2026.csv"), parse_dates=["shipped_at", "received_at"])
-    gold_a = {}
-    for no in st.index:
-        a, b = o.loc[no, "t"], c.loc[no, "t"]
-        w = lambda s: (s > a) & (s <= b)
-        v = (o.loc[no, "doses"] + mer.loc[(mer["store"] == no) & w(mer["t"]), "doses"].sum()
-             + tr.loc[(tr["to_store"] == no) & w(tr["received_at"]), "doses"].sum()
-             - adm.loc[(adm["store"] == no) & w(adm["administered_at"]), "doses"].sum()
-             - wo.loc[(wo["store"] == no) & w(wo["written_off_at"]), "doses"].sum()
-             - tr.loc[(tr["from_store"] == no) & w(tr["shipped_at"]), "doses"].sum() - c.loc[no, "doses"])
-        gold_a[no] = int(v)
-    say("ask A, every store's doses unaccounted for", all(gold_a[no] == f["stores"][str(no)]["doses_unaccounted"]
-                                                         for no in gold_a))
-    # ask B
-    txt = subprocess.run(["pdftotext", "-layout", os.path.join(T, "brannon_service_agreement_2025.pdf"), "-"],
-                         capture_output=True, text=True).stdout
-    price = {m.group(1): float(m.group(2)) for m in
-             re.finditer(r"(\w+ [A-Z]+-\d+)\s+(?:Pharmaceutical-grade|Household-style)\s+(\d+\.\d\d)", txt)}
-    unit = dict(zip(st.index, st["Vaccine refrigerator"]))
-    site = {v: k for k, v in st["Brannon site"].items()}
-    ar = pd.read_excel(os.path.join(T, "brannon_service_history_2026-01_2027-01.xlsx"), skiprows=3)
-    ar["store"] = ar["Site"].map(site)
-    spend = defaultdict(float)
-    for invno, g in ar.groupby("Invoice"):
-        if g["Visit date"].max().year != 2026:
+    def broken(x):
+        b, s, a, z, kind, back = x
+        if kind != "pickup":
+            return False
+        if back is not None and (back - z) < pd.Timedelta(hours=20):
+            return False
+        return passed(s, a, z)
+
+    work = {no: np.zeros(grid + 1, dtype=np.int32) for no in nos}
+    for x in spells:
+        if broken(x):
             continue
-        amt = float(g["Invoice amount"].iloc[0])
-        if g["Invoice date"].iloc[0] < pd.Timestamp("2026-07-01"):
-            amt = round(amt + round(amt * 0.06 + 1e-9, 2), 2)
-        ss = sorted(set(g["store"]))
-        tot = sum(price[unit[s]] for s in ss)
-        for s in ss:
-            spend[s] += amt * (price[unit[s]] / tot if len(ss) > 1 else 1.0)
-    say("ask B, every store's Brannon spend", all(half_up(round(spend[no], 2)) == f["stores"][str(no)]["service_usd"]
-                                                for no in st.index))
-    # the golden workbook carries the same figures
-    gx = pd.read_excel(os.path.join(GOLD, "penwick_refrigerator_replacements_2027.xlsx"), sheet_name=None, header=None)
-    rep = gx["2027 replacements"]
-    body = rep.iloc[4:4 + len(st)]
-    ok = all(int(r[2]) == f["stores"][str(int(r[0]))]["hours"] and (r[3] == "Yes") == f["stores"][str(int(r[0]))]
-             ["replaced"] for _, r in body.iterrows())
-    s2 = gx["Stock and service"].iloc[1:1 + len(st)]
-    ok2 = all(int(r[2]) == f["stores"][str(int(r[0]))]["doses_unaccounted"] and int(r[3]) ==
-              f["stores"][str(int(r[0]))]["service_usd"] for _, r in s2.iterrows())
-    say("the golden workbook carries every store's hours, replacement, doses and spend", ok and ok2)
-    svg = open(os.path.join(GOLD, "penwick_vaccine_hours_2026.svg"), encoding="utf-8").read()
-    say("the golden chart labels the 24-hour line and every store", "24 hours" in svg and
-        all(("%s %s" % (no, st.loc[no, "Town"])) in svg for no in st.index))
-    sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
-    say("submission.md states the call", ("stores %s" % ", ".join(map(str, cov[:-1]))) in sub)
-    print("%d failed" % len(FAILS))
+        b, s, a, z, kind, back = x
+        i, j = idx(a), (idx(z) if z is not None else grid)
+        if j > i:
+            work[city[s]][i] += 1
+            work[city[s]][j] -= 1
+    work = {no: np.cumsum(v)[:grid] for no, v in work.items()}
+
+    def service(mo):
+        out = []
+        d = dt.date(2026, mo, 1)
+        while d.month == mo:
+            a = to_utc(pd.Series([str(dt.datetime(d.year, d.month, d.day, 6, 0))])).iloc[0]
+            b = to_utc(pd.Series([str(dt.datetime(d.year, d.month, d.day) + dt.timedelta(days=1))])).iloc[0]
+            out.append(np.arange(idx(a), idx(b)))
+            d += dt.timedelta(days=1)
+        return np.concatenate(out)
+    svc = {mo: service(mo) for mo in (10, 11, 12)}
+    av = {no: {mo: 100.0 * float((work[no][svc[mo]] >= 1).mean()) for mo in svc} for no in nos}
+    pr = sorted(no for no in nos if min(av[no].values()) < 90)
+    gs = fig["stations"]
+    say("the priority stations recompute: %s" % pr,
+        ["W-%02d %s" % (no, name[no]) for no in pr] == fig["call"]["priority"])
+    say("each station's lowest month recomputes in whole per cent",
+        all(int(half_up(min(av[no].values()))) == gs["W-%02d" % no]["lowest"] for no in nos))
+    clear = sorted((min(av[no].values()), no) for no in nos if min(av[no].values()) >= 90)
+    v, nb = clear[0]
+    say("the nearest station above the line and its margin recompute (W-%02d, %.1f)" % (nb, half_up(v - 90, 1)),
+        fig["components"]["nearest"]["station"] == "W-%02d" % nb and
+        abs(fig["components"]["nearest"]["margin_points"] - half_up(v - 90, 1)) < 1e-9)
+
+    # the default: the archive's available count taken as the bikes in working order
+    ss = pd.read_csv(os.path.join(T, "wellhaven_station_status_archive_2026q4.csv"))
+    ss["k"] = ((ss.polled_at - int((origin - pd.Timestamp("1970-01-01")).total_seconds())) // 60).astype(int)
+    feed = {no: np.zeros(grid, dtype=np.int32) for no in nos}
+    first = ss.groupby("station_id").k.min().to_dict()
+    for sid, g in ss.groupby("station_id"):
+        later = [first[x] for x in first if x != sid and city[x] == city[sid] and first[x] > first[sid]]
+        stop = min(later) if later else grid
+        ks = g.k.values
+        vs = g.num_bikes_available.values
+        for i in range(len(ks)):
+            hi = min(ks[i + 1] if i + 1 < len(ks) else grid, stop)
+            if hi > ks[i]:
+                feed[city[sid]][ks[i]:hi] += vs[i]
+    dav = {no: {mo: 100.0 * float((feed[no][svc[mo]] >= 1).mean()) for mo in svc} for no in nos}
+    dpr = sorted(no for no in nos if min(dav[no].values()) < 90)
+    say("the default path (the feed's available count) recomputes to W-16 alone", dpr == [16])
+
+    # ------------------------------------------------------------------------------------------ ask A
+    sa = pd.read_csv(os.path.join(T, "paystation_sales_2026q4.csv"))
+    wo = pd.read_excel(os.path.join(T, "paystation_work_orders_2026q4.xlsx"))
+    sw = wo[wo["Work type"].str.startswith("Card terminal")].sort_values("Opened")
+    hist = defaultdict(list)
+    for _, r in sw.iterrows():
+        no = int(r["Pay station"][2:])
+        if not hist[r["Terminal removed"]]:
+            hist[r["Terminal removed"]].append((pd.Timestamp.min, no))
+        hist[r["Terminal installed"]].append((r["Closed"], no))
+    sa["u"] = pd.to_datetime(sa.sold_at, utc=True).dt.tz_convert(None)
+    off = np.where(sa.u < FALL, 4, 5)
+    sa["loc"] = sa.u - pd.to_timedelta(off, unit="h")
+    voided = set(sa.loc[sa.transaction == "VOID", "original_sale"])
+    q = sa[(sa.transaction == "SALE") & (~sa.sale_id.isin(voided)) & (sa["loc"] >= "2026-10-01") & (sa["loc"] < "2027-01-01")]
+
+    def where(r):
+        found = None
+        for since, no in hist[r["terminal"]]:
+            if since <= r["loc"]:
+                found = no
+        return found
+    q = q.assign(no=q.apply(where, axis=1))
+    say("every fourth-quarter sale has a pay station from its terminal's history", q.no.notna().all())
+    tot = q.groupby("no").amount.sum().round(2).to_dict()
+    say("each station's pay-station card sales recompute to the cent",
+        all(abs(tot.get(no, 0.0) - gs["W-%02d" % no]["sales_cad"]) < 0.005 for no in nos))
+
+    # ------------------------------------------------------------------------------------------ ask B
+    al = pd.read_csv(os.path.join(T, "paystation_alarm_log_2026q4.csv"))
+    al["u"] = pd.to_datetime(al.event_time, utc=True).dt.tz_convert(None)
+    al = al.sort_values(["pay_station", "u", "event_id"])
+    windows = []
+    d = dt.date(2026, 10, 1)
+    while d <= dt.date(2026, 12, 31):
+        a = to_utc(pd.Series([str(dt.datetime(d.year, d.month, d.day, 6, 0))])).iloc[0]
+        b = to_utc(pd.Series([str(dt.datetime(d.year, d.month, d.day) + dt.timedelta(days=1))])).iloc[0]
+        windows.append((a, b))
+        d += dt.timedelta(days=1)
+    clears = {"COMMS_RESTORED": "COMMS_LOST", "READER_OK": "READER_FAULT"}
+    hours = {}
+    for ps, g in al.groupby("pay_station"):
+        spans, open_ = [], {}
+        for t, e in zip(g.u, g.event):
+            if e == "RESTART":
+                spans += [(a, t) for a in open_.values()]
+                open_ = {}
+            elif e in ("COMMS_LOST", "READER_FAULT"):
+                open_.setdefault(e, t)
+            elif e in clears and clears[e] in open_:
+                spans.append((open_.pop(clears[e]), t))
+        spans += [(a, extract) for a in open_.values()]
+        merged = []
+        for a, b in sorted(spans):
+            if merged and a <= merged[-1][1]:
+                merged[-1] = (merged[-1][0], max(merged[-1][1], b))
+            else:
+                merged.append((a, b))
+        s = 0.0
+        for a, b in merged:
+            for x, y in windows:
+                lo, hi = max(a, x), min(b, y)
+                if hi > lo:
+                    s += (hi - lo).total_seconds()
+        hours[int(ps[2:])] = s / 3600.0
+    say("each station's service hours without card payments recompute in whole hours",
+        all(int(half_up(hours[no])) == gs["W-%02d" % no]["hours_no_card"] for no in nos))
+
+    # ------------------------------------------------------------------------------------------ the golden files
+    wb = pd.read_excel(os.path.join(GOLD, "priority_stations_2027q1.xlsx"), sheet_name="Priority stations", header=3)
+    wb = wb[wb["Station"].astype(str).str.match(r"W-\d\d$")]
+    say("the golden workbook carries every station's lowest month and designation",
+        all(int(r["Lowest month (%)"]) == gs[r["Station"]]["lowest"] and (r["Priority station for Q1 2027"] == "Yes")
+            == gs[r["Station"]]["priority"] for _, r in wb.iterrows()) and len(wb) == 24)
+    ps = pd.read_excel(os.path.join(GOLD, "priority_stations_2027q1.xlsx"), sheet_name="Pay stations", header=3)
+    ps = ps[ps["Station"].astype(str).str.match(r"W-\d\d$")]
+    say("the golden workbook carries every station's sales and hours",
+        all(abs(r["Card sales (CAD)"] - gs[r["Station"]]["sales_cad"]) < 0.005 and
+            int(r["Service hours unable to take a card"]) == gs[r["Station"]]["hours_no_card"] for _, r in ps.iterrows()))
+    page = open(os.path.join(GOLD, "station_availability_2026q4.html"), encoding="utf-8").read()
+    say("the golden page names the priority stations' count and carries an inline chart",
+        "<svg" in page and "90 per cent" in page and page.count('class="p"') == len(pr))
+    print("\n%d FAIL" % len(FAILS))
     return 1 if FAILS else 0
 
 

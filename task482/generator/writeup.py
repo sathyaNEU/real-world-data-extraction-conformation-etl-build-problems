@@ -13,101 +13,94 @@ def join(xs, word="and"):
 
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    st = f["stores"]
+    st = f["stations"]
     c = f["components"]
     d = f["default"]
-    nb = c["nearest_below"]
-    tau = c["tau_minutes"]
-    cov = [str(n) for n in f["call"]["stores"]]
-    dflt = [str(n) for n in d["stores"]]
-    out_ = [n for n in dflt if n not in cov]
-    in_ = [n for n in cov if n not in dflt]
-    order = sorted(st, key=int)
+    nb = c["nearest"]
+    pr = f["call"]["priority"]
+    keys = [p.split()[0] for p in pr]
+    dkeys = [p.split()[0] for p in d["priority"]]
+    missed = [k for k in keys if k not in dkeys]
     o = []
     o.append("## Tags\n")
-    o.append("**Domain:** General Statistics & Data Science, data integration, record linkage and entity resolution "
-             "(thirty pharmacy stores' 2026 vaccine refrigerator temperature records, kept by three data logger makes "
-             "and at ten pilot stores from mid-year by an in-carton sensor, conformed into one record of the "
-             "vaccine's temperature per store).")
+    o.append("**Domain:** General Statistics & Data Science, data integration, record linkage and entity resolution (a "
+             "city bike-share programme's archive of its operator's station status feed, the operator's trips, fleet "
+             "moves and rider fault reports, and its pay-station vendor's sales, work orders, register and alarm log, "
+             "conformed into each station's Schedule C availability and pay-station figures for the fourth quarter "
+             "of 2026).")
     o.append("**Analytical objective:** Data Extraction & Conformation (ETL).\n")
     o.append("## 1. Final Recommendation\n")
-    o.append("**Penwick Pharmacy replaces the vaccine refrigerators of stores %s before the 2027 respiratory "
-             "season.**" % join(cov))
-    o.append("Their vaccine spent %s hours above 8 °C in 2026 against the 24-hour line; the nearest store below it, "
-             "%d %s, spent %d, %d short. Not the loggers' own readings, which put %s over the line at %s hours and "
-             "%s under it at %s: a logger's probe in its glycol bottle crosses 8 °C through every defrost swing, "
-             "restock and busy hour the vaccine in its cartons rode out, and ends a propped-door delivery's "
-             "excursion before the vaccine has cooled.\n"
-             % (join([st[n]["hours"] for n in cov]), nb["store"], nb["town"], nb["hours"], nb["short_hours"],
-                join(out_), join([d["hours"][n] for n in out_]), join(in_), join([d["hours"][n] for n in in_])))
+    words = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight"}
+    o.append("**The City names %s priority stations for the first quarter of 2027 under Schedule C: %s, each under 90 "
+             "per cent availability in October 2026 (%s per cent).**"
+             % (words.get(f["call"]["count"], f["call"]["count"]), join(pr), join([st[k]["lowest"] for k in keys])))
+    o.append("The station that cleared the line by the least is %s %s, %d per cent in %s, %.1f points above 90. Not %s "
+             "alone: the status feed counts a docked bike as available until Northlane marks it out of service, and "
+             "bikes that broke on rides and were docked unreported stayed listed while renters took the bikes around "
+             "them, so read as the bikes in working order the feed puts %s at %s per cent in October.\n"
+             % (nb["station"], nb["name"], nb["availability"], nb["month"], nb["margin_points"],
+                join(d["priority"]), join(["%s %s" % (k, st[k]["name"]) for k in missed]),
+                join([d["lowest"][k] for k in missed])))
     o.append("## 2. Critical Components\n")
-    o.append("1. On the pilot stores' overlaps the in-carton sensor trails its logger's record by a first-order lag "
-             "of **%.1f** minutes at the Frostline stores, **%.1f** at the Kelvra stores and **%.1f** at the "
-             "Brumal stores." % (tau["Frostline"], tau["Kelvra"], tau["Brumal"]))
-    k = 2
-    for n in in_:
-        o.append("%d. Store %s's vaccine spent **%d** hours above 8 °C, %d on its logger's readings."
-                 % (k, n, st[n]["hours"], d["hours"][n]))
-        k += 1
-    o.append("%d. Stores %s, over the line on their loggers' readings, spent **%s** hours." % (
-        k, join(out_), join([st[n]["hours"] for n in out_])))
-    o.append("%d. The nearest store below the line is %d %s at **%d** hours, **%d** short.\n"
-             % (k + 1, nb["store"], nb["town"], nb["hours"], nb["short_hours"]))
+    o.append("1. With each docked bike that broke on a ride counted out of working order from the end of that ride "
+             "until a van took it to the depot, the lowest month of Q4 2026 puts %s."
+             % join(["%s at **%d** per cent" % (k, st[k]["lowest"]) for k in keys]))
+    o.append("2. The feed's available bikes taken as the bikes in working order put them at %s per cent and name %s "
+             "alone." % (join([d["lowest"][k] for k in keys]), join(d["priority"])))
+    o.append("3. The nearest station above the line is %s %s at **%d** per cent in %s, **%.1f** points clear.\n"
+             % (nb["station"], nb["name"], nb["availability"], nb["month"], nb["margin_points"]))
     o.append("## 3. Step-by-Step Solution\n")
     steps = [
-        "Put frostline_temperature_logs_2026.csv (local times with their offsets), kelvra_logger_export_2026.csv "
-        "(UTC and Fahrenheit, its one day exported twice counted once), brumal_downloads_2026.txt (UTC-6 all "
-        "year) and tellvane_sensor_readings_2026.csv (UTC) on one clock in degrees C, and joined every serial and "
-        "sensor id to its store through refrigerator_monitoring_roster_2026.xlsx, the replaced loggers at stores 207 "
-        "and 302 in sequence.",
-        "Took 2026 as the stores' local (Central) year and, at the ten pilot stores, the in-carton sensor from its "
-        "first reading, the logger before it (standard PO-114 section 6.4).",
-        "Fitted the vaccine's response on the weeks each pilot store's logger kept recording after its sensor's first "
-        "reading: a first-order lag with each record holding over its ten minutes (section 6.3), %.1f, %.1f and %.1f "
-        "minutes for Frostline, Kelvra and Brumal." % (tau["Frostline"], tau["Kelvra"], tau["Brumal"]),
-        "Carried every logger record through its make's lag and counted ten minutes for each record whose vaccine "
-        "temperature at its time stamp is above 8.0 °C (section 7.3), with the in-carton readings above 8.0: stores "
-        "%s at 24 hours or more, %d nearest below at %d." % (join(cov), nb["store"], nb["hours"]),
-        "For doses unaccounted for (section 8.2), took the YE 2025 count in "
-        "vaccine_physical_inventory_ye2025_ye2026.xlsx, added meridale_vaccine_invoices_2026.csv deliveries "
-        "(packages times vaccine_item_master_2026.xlsx doses per package, the Lindqvist stores' accounts before April by "
-        "their former names) and transfers in from vaccine_store_transfers_2026.csv, took off "
-        "pharmacy_vaccine_administrations_2026.csv, vaccine_writeoff_log_2026.csv and transfers out and the YE 2026 "
-        "count, each flow between the two counts' own closing times, so the stores that counted on 30 December keep "
-        "the next day's flows out of the year they close or in the year they open.",
-        "Read the write-off log's multi-dose vial quantities before the %s inventory update as vials of ten doses "
-        "(their cost is a vial's) and left meridale_credit_memos_2026.csv out, every credited unit being an expired "
-        "2025-26 dose already written off on 1 July." % f["stated"]["inventory_update"],
-        "For Brannon spend (section 9.2), took each invoice in brannon_service_history_2026-01_2027-01.xlsx once for "
-        "work orders whose last visit is in 2026, added %.1f per cent sales tax to invoices dated before %s (the old "
-        "platform's amounts are before tax, as its maintenance-only invoices at the agreement's Schedule B prices "
-        "show), and split each two-store maintenance route by Schedule B's price for each store's unit."
-        % (f["stated"]["tax_pct"], f["stated"]["platform"]),
-        "Listed the stores at 24 hours or more: %s." % join(cov),
+        "Mapped each feed station ID to its City station in wellhaven_bike_share_station_list.xlsx (W-17 Linden Avenue "
+        "under 117 until its move on the evening of 8 November and 125 after) and read northlane_trips_2026q4.csv once "
+        "per trip (its week of 16 November is repeated at the end), its times on Eastern time with a trip in the "
+        "repeated hour of 1 November placed by its duration, and northlane_fleet_moves_2026q4.csv with the WHB- prefix "
+        "dropped from its bike numbers.",
+        "Rebuilt every bike's spells docked at a station from the trips (staff rides too, since they moved bikes) and "
+        "the fleet moves: from a ride's end or a van's drop to the next ride's start or a van's pickup, a bike first "
+        "recorded leaving a station counted as docked there from the start of the records.",
+        "Counted a docked bike out of working order from the end of the ride that left it when renters took other bikes "
+        "from its station while it stood there and a van then took it to the depot, where it stayed a day or more "
+        "before it was back on the street, and every other docked bike in working order; a bike counted out this way "
+        "that a full station's surplus or a storage run took decides no minute, since a bike a rider then took was "
+        "docked beside it.",
+        "For each station and each minute of service hours (6:00 to midnight Eastern) from October to December 2026, "
+        "counted the minute available when a bike in working order was docked at its start (Schedule C, C.1), and "
+        "divided each month's available minutes by its service minutes (C.2).",
+        "Listed the stations under 90 per cent in a month (C.3): %s; the lowest month above the line is %s's %s, "
+        "%d per cent." % (join(keys), nb["station"], nb["month"], nb["availability"]),
+        "For pay-station sales, kept paystation_sales_2026q4.csv's sales not voided and sold in the fourth quarter on "
+        "Eastern time, and placed each at the pay station its terminal was in when it was sold, from the terminal "
+        "replacements in paystation_work_orders_2026q4.xlsx (the export's pay_station column is each terminal's "
+        "present pay station in paystation_register_2027-01-08.xlsx).",
+        "For the hours without card payments, ran each COMMS_LOST and READER_FAULT alarm in "
+        "paystation_alarm_log_2026q4.csv (the register's codes that stop card payments) from its raise to its clear or "
+        "to the pay station's next restart, after which a fault still present is raised again in the same second, "
+        "merged overlapping alarms and summed the service hours of October to December.",
     ]
     for i, s in enumerate(steps, 1):
         o.append("%d. %s" % (i, s))
     o.append("")
     o.append("## 4. Deliverable Answers\n")
-    o.append("### penwick_refrigerator_replacements_2027.xlsx\n")
-    o.append("1. Stores that get a new refrigerator before the 2027 respiratory season: %s." % join(cov))
-    o.append("2. Each store's 2026 hours with its vaccine above 8 °C, whole hours, and whether it gets a new "
-             "refrigerator:")
-    for n in order:
-        o.append("   - Store %s %s: %d, %s" % (n, st[n]["town"], st[n]["hours"], "yes" if st[n]["replaced"] else "no"))
-    o.append("3. Nearest store below the line: %d %s, %d hours, %d short." % (nb["store"], nb["town"], nb["hours"],
-                                                                            nb["short_hours"]))
-    o.append("4. Each store's 2026 vaccine doses its stock records leave unaccounted for, whole doses:")
-    for n in order:
-        o.append("   - Store %s: %d" % (n, st[n]["doses_unaccounted"]))
-    o.append("5. Each store's 2026 refrigerator service spend with Brannon, whole dollars:")
-    for n in order:
-        o.append("   - Store %s: %s" % (n, "{:,}".format(st[n]["service_usd"])))
-    o.append("\n### penwick_vaccine_hours_2026.svg\n")
-    o.append("6. Horizontal bar chart of the thirty stores' 2026 hours with the vaccine above 8 °C, highest first, each "
-             "bar labelled with its whole hours, a vertical line at 24 hours, the %d stores that get a new "
-             "refrigerator in blue and the rest in grey, and the nearest store below the line named in the subtitle."
-             % len(cov))
+    o.append("### priority_stations_2027q1.xlsx\n")
+    o.append("1. The priority stations for Q1 2027: %s." % join(pr))
+    o.append("2. Each station's availability in its lowest month of Q4 2026, whole per cent, and whether it is a "
+             "priority station:")
+    for k in sorted(st):
+        o.append("   - %s %s: %d, %s" % (k, st[k]["name"], st[k]["lowest"], "priority" if st[k]["priority"] else "not"))
+    o.append("3. The station that cleared the line by the least: %s %s, %d per cent in %s, %.1f points above 90."
+             % (nb["station"], nb["name"], nb["availability"], nb["month"], nb["margin_points"]))
+    o.append("4. Each station's Q4 2026 pay-station card sales, dollars to the cent:")
+    for k in sorted(st):
+        o.append("   - %s %s: %s" % (k, st[k]["name"], "{:,.2f}".format(st[k]["sales_cad"])))
+    o.append("5. Each station's Q4 2026 service hours its pay station could not take a card payment, whole hours:")
+    for k in sorted(st):
+        o.append("   - %s %s: %d" % (k, st[k]["name"], st[k]["hours_no_card"]))
+    o.append("\n### station_availability_2026q4.html\n")
+    o.append("6. A horizontal bar chart of the %d stations' availability in their lowest month of Q4 2026, lowest first, "
+             "each bar labelled with its whole per cent and its month, a dashed line at 90 per cent, the %d priority "
+             "stations in orange and the rest in grey, with each station's monthly figures in a table beneath."
+             % (f["call"]["of"], f["call"]["count"]))
     open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8").write("\n".join(o) + "\n")
 
 

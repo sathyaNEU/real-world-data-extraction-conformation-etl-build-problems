@@ -1,485 +1,607 @@
 {
  "_unrounded": {
+  "availability": {
+   "W-01": {
+    "dec": 99.841697,
+    "nov": 98.104938,
+    "oct": 94.31601
+   },
+   "W-02": {
+    "dec": 99.602748,
+    "nov": 96.731481,
+    "oct": 88.210872
+   },
+   "W-03": {
+    "dec": 99.333931,
+    "nov": 97.771605,
+    "oct": 94.531063
+   },
+   "W-04": {
+    "dec": 99.775986,
+    "nov": 96.018519,
+    "oct": 93.873955
+   },
+   "W-05": {
+    "dec": 99.256272,
+    "nov": 95.740741,
+    "oct": 90.875149
+   },
+   "W-06": {
+    "dec": 99.498208,
+    "nov": 96.907407,
+    "oct": 95.564516
+   },
+   "W-07": {
+    "dec": 99.295102,
+    "nov": 96.061728,
+    "oct": 94.73417
+   },
+   "W-08": {
+    "dec": 100.0,
+    "nov": 98.601852,
+    "oct": 94.746117
+   },
+   "W-09": {
+    "dec": 99.740143,
+    "nov": 95.895062,
+    "oct": 90.68399
+   },
+   "W-10": {
+    "dec": 99.796894,
+    "nov": 98.231481,
+    "oct": 97.204301
+   },
+   "W-11": {
+    "dec": 99.360812,
+    "nov": 96.657407,
+    "oct": 97.789725
+   },
+   "W-12": {
+    "dec": 98.07049,
+    "nov": 94.345679,
+    "oct": 87.65233
+   },
+   "W-13": {
+    "dec": 97.368578,
+    "nov": 95.567901,
+    "oct": 91.842891
+   },
+   "W-14": {
+    "dec": 99.904421,
+    "nov": 94.848765,
+    "oct": 91.771207
+   },
+   "W-15": {
+    "dec": 100.0,
+    "nov": 97.861111,
+    "oct": 94.758065
+   },
+   "W-16": {
+    "dec": 98.378136,
+    "nov": 92.953704,
+    "oct": 85.755675
+   },
+   "W-17": {
+    "dec": 98.921744,
+    "nov": 95.080247,
+    "oct": 91.239546
+   },
+   "W-18": {
+    "dec": 98.897849,
+    "nov": 95.182099,
+    "oct": 92.882318
+   },
+   "W-19": {
+    "dec": 96.630824,
+    "nov": 93.82716,
+    "oct": 88.100358
+   },
+   "W-20": {
+    "dec": 100.0,
+    "nov": 98.719136,
+    "oct": 94.707288
+   },
+   "W-21": {
+    "dec": 98.781362,
+    "nov": 94.62963,
+    "oct": 92.028076
+   },
+   "W-22": {
+    "dec": 100.0,
+    "nov": 100.0,
+    "oct": 100.0
+   },
+   "W-23": {
+    "dec": 100.0,
+    "nov": 100.0,
+    "oct": 100.0
+   },
+   "W-24": {
+    "dec": 99.868578,
+    "nov": 99.373457,
+    "oct": 99.139785
+   }
+  },
   "default": {
-   "101": 14.5,
-   "102": 0.5,
-   "103": 39.8333,
-   "104": 12.1667,
-   "105": 8.3333,
-   "106": 76.5,
-   "107": 0.3333,
-   "108": 38.1667,
-   "109": 22.0,
-   "110": 20.3333,
-   "201": 63.8333,
-   "202": 12.6667,
-   "203": 1.0,
-   "204": 142.1667,
-   "205": 14.5,
-   "206": 50.1667,
-   "207": 32.1667,
-   "208": 13.6667,
-   "209": 5.0,
-   "210": 19.0,
-   "301": 146.1667,
-   "302": 8.3333,
-   "303": 46.6667,
-   "304": 0.8333,
-   "305": 9.8333,
-   "306": 20.8333,
-   "307": 14.1667,
-   "308": 18.3333,
-   "309": 74.8333,
-   "310": 21.5
+   "W-01": {
+    "dec": 99.841697,
+    "nov": 98.91358,
+    "oct": 95.454002
+   },
+   "W-02": {
+    "dec": 99.602748,
+    "nov": 96.731481,
+    "oct": 91.015532
+   },
+   "W-03": {
+    "dec": 99.333931,
+    "nov": 97.771605,
+    "oct": 94.531063
+   },
+   "W-04": {
+    "dec": 99.775986,
+    "nov": 96.169753,
+    "oct": 94.232378
+   },
+   "W-05": {
+    "dec": 99.256272,
+    "nov": 95.740741,
+    "oct": 92.051971
+   },
+   "W-06": {
+    "dec": 99.498208,
+    "nov": 96.907407,
+    "oct": 96.412784
+   },
+   "W-07": {
+    "dec": 99.444444,
+    "nov": 96.200617,
+    "oct": 95.899044
+   },
+   "W-08": {
+    "dec": 100.0,
+    "nov": 98.601852,
+    "oct": 95.528674
+   },
+   "W-09": {
+    "dec": 99.740143,
+    "nov": 96.70679,
+    "oct": 90.68399
+   },
+   "W-10": {
+    "dec": 99.796894,
+    "nov": 98.231481,
+    "oct": 97.258065
+   },
+   "W-11": {
+    "dec": 99.360812,
+    "nov": 96.657407,
+    "oct": 97.822581
+   },
+   "W-12": {
+    "dec": 98.085424,
+    "nov": 95.268519,
+    "oct": 91.789128
+   },
+   "W-13": {
+    "dec": 99.363799,
+    "nov": 97.734568,
+    "oct": 92.368578
+   },
+   "W-14": {
+    "dec": 99.904421,
+    "nov": 96.015432,
+    "oct": 94.474313
+   },
+   "W-15": {
+    "dec": 100.0,
+    "nov": 99.145062,
+    "oct": 94.758065
+   },
+   "W-16": {
+    "dec": 98.378136,
+    "nov": 93.459877,
+    "oct": 87.491039
+   },
+   "W-17": {
+    "dec": 98.921744,
+    "nov": 96.845679,
+    "oct": 93.632019
+   },
+   "W-18": {
+    "dec": 99.761051,
+    "nov": 95.216049,
+    "oct": 92.882318
+   },
+   "W-19": {
+    "dec": 98.862007,
+    "nov": 93.765432,
+    "oct": 92.093787
+   },
+   "W-20": {
+    "dec": 100.0,
+    "nov": 99.506173,
+    "oct": 94.707288
+   },
+   "W-21": {
+    "dec": 98.781362,
+    "nov": 95.91358,
+    "oct": 92.028076
+   },
+   "W-22": {
+    "dec": 100.0,
+    "nov": 100.0,
+    "oct": 100.0
+   },
+   "W-23": {
+    "dec": 100.0,
+    "nov": 100.0,
+    "oct": 100.0
+   },
+   "W-24": {
+    "dec": 99.868578,
+    "nov": 99.373457,
+    "oct": 99.139785
+   }
   },
-  "hours": {
-   "101": 11.0,
-   "102": 0.0,
-   "103": 44.1667,
-   "104": 0.0,
-   "105": 0.0,
-   "106": 63.1667,
-   "107": 0.0,
-   "108": 4.0,
-   "109": 27.1667,
-   "110": 18.8333,
-   "201": 56.8333,
-   "202": 0.0,
-   "203": 0.0,
-   "204": 0.0,
-   "205": 6.8333,
-   "206": 51.8333,
-   "207": 0.0,
-   "208": 16.8333,
-   "209": 0.0,
-   "210": 15.0,
-   "301": 0.0,
-   "302": 4.1667,
-   "303": 60.1667,
-   "304": 0.0,
-   "305": 6.8333,
-   "306": 20.1667,
-   "307": 0.0,
-   "308": 17.1667,
-   "309": 0.8333,
-   "310": 8.0
+  "hours_no_card": {
+   "W-01": 86.1464,
+   "W-02": 6.2225,
+   "W-03": 67.1453,
+   "W-04": 86.975,
+   "W-05": 70.5811,
+   "W-06": 22.69,
+   "W-07": 65.7875,
+   "W-08": 65.8419,
+   "W-09": 47.2494,
+   "W-10": 45.7189,
+   "W-11": 9.9444,
+   "W-12": 30.1367,
+   "W-13": 35.6808,
+   "W-14": 52.6497,
+   "W-15": 99.3797,
+   "W-16": 51.0811,
+   "W-17": 37.0636,
+   "W-18": 43.8703,
+   "W-19": 104.9172,
+   "W-20": 52.2378,
+   "W-21": 77.6089,
+   "W-22": 55.2267,
+   "W-23": 5.9008,
+   "W-24": 67.2992
   },
-  "service": {
-   "101": 372.17,
-   "102": 336.13,
-   "103": 322.24,
-   "104": 1131.33,
-   "105": 295.85,
-   "106": 1107.97,
-   "107": 348.85,
-   "108": 312.81,
-   "109": 588.78,
-   "110": 1237.12,
-   "201": 2070.87,
-   "202": 682.21,
-   "203": 666.79,
-   "204": 350.81,
-   "205": 995.77,
-   "206": 367.77,
-   "207": 1108.66,
-   "208": 780.16,
-   "209": 1027.24,
-   "210": 644.9,
-   "301": 316.94,
-   "302": 774.12,
-   "303": 296.96,
-   "304": 612.15,
-   "305": 713.75,
-   "306": 349.96,
-   "307": 313.92,
-   "308": 736.97,
-   "309": 297.7,
-   "310": 581.84
-  },
-  "tau": {
-   "101": 42.162194034137976,
-   "102": 42.162194034137976,
-   "103": 42.162194034137976,
-   "104": 42.162194034137976,
-   "105": 42.162194034137976,
-   "106": 42.162194034137976,
-   "107": 42.162194034137976,
-   "108": 42.162194034137976,
-   "109": 42.162194034137976,
-   "110": 42.162194034137976,
-   "201": 42.240811080153556,
-   "202": 42.240811080153556,
-   "203": 42.240811080153556,
-   "204": 42.240811080153556,
-   "205": 42.240811080153556,
-   "206": 42.240811080153556,
-   "207": 42.240811080153556,
-   "208": 42.240811080153556,
-   "209": 42.240811080153556,
-   "210": 42.240811080153556,
-   "301": 41.852050774554385,
-   "302": 41.852050774554385,
-   "303": 41.852050774554385,
-   "304": 41.852050774554385,
-   "305": 41.852050774554385,
-   "306": 41.852050774554385,
-   "307": 41.852050774554385,
-   "308": 41.852050774554385,
-   "309": 41.852050774554385,
-   "310": 41.852050774554385
-  }
+  "margin": 0.68399
  },
  "call": {
-  "count": 6,
-  "of": 30,
-  "stores": [
-   103,
-   106,
-   109,
-   201,
-   206,
-   303
+  "count": 4,
+  "of": 24,
+  "priority": [
+   "W-02 Queen and Albert",
+   "W-12 Maple Grove",
+   "W-16 Birch Hill",
+   "W-19 Willow Crescent"
   ]
  },
  "components": {
-  "fit_rms_c": {
-   "Brumal": 0.056,
-   "Frostline": 0.062,
-   "Kelvra": 0.057
-  },
-  "nearest_below": {
-   "hours": 20,
-   "short_hours": 4,
-   "store": 306,
-   "town": "Padbury"
-  },
-  "pilot_stores": 10,
-  "replaced_hours": {
-   "103": 44,
-   "106": 63,
-   "109": 27,
-   "201": 57,
-   "206": 52,
-   "303": 60
-  },
-  "tau_minutes": {
-   "Brumal": 41.9,
-   "Frostline": 42.2,
-   "Kelvra": 42.2
-  },
-  "tau_pooled_minutes": 42.1
+  "nearest": {
+   "availability": 91,
+   "margin_points": 0.7,
+   "month": "October",
+   "name": "Science Quad",
+   "station": "W-09"
+  }
  },
  "default": {
-  "count": 10,
-  "hours": {
-   "101": 15,
-   "102": 1,
-   "103": 40,
-   "104": 12,
-   "105": 8,
-   "106": 77,
-   "107": 0,
-   "108": 38,
-   "109": 22,
-   "110": 20,
-   "201": 64,
-   "202": 13,
-   "203": 1,
-   "204": 142,
-   "205": 15,
-   "206": 50,
-   "207": 32,
-   "208": 14,
-   "209": 5,
-   "210": 19,
-   "301": 146,
-   "302": 8,
-   "303": 47,
-   "304": 1,
-   "305": 10,
-   "306": 21,
-   "307": 14,
-   "308": 18,
-   "309": 75,
-   "310": 22
+  "count": 1,
+  "lowest": {
+   "W-01": 95,
+   "W-02": 91,
+   "W-03": 95,
+   "W-04": 94,
+   "W-05": 92,
+   "W-06": 96,
+   "W-07": 96,
+   "W-08": 96,
+   "W-09": 91,
+   "W-10": 97,
+   "W-11": 97,
+   "W-12": 92,
+   "W-13": 92,
+   "W-14": 94,
+   "W-15": 95,
+   "W-16": 87,
+   "W-17": 94,
+   "W-18": 93,
+   "W-19": 92,
+   "W-20": 95,
+   "W-21": 92,
+   "W-22": 100,
+   "W-23": 100,
+   "W-24": 99
   },
-  "stores": [
-   103,
-   106,
-   108,
-   201,
-   204,
-   206,
-   207,
-   301,
-   303,
-   309
+  "priority": [
+   "W-16 Birch Hill"
   ]
  },
  "stated": {
-  "bud_days": 28,
-  "installed_by": "1 September 2027",
-  "inventory_update": "1 June 2026",
-  "limit_c": 8.0,
-  "line_hours": 24,
-  "platform": "1 July 2026",
-  "record_minutes": 10,
-  "replaced_loggers": [
-   207,
-   302
+  "fares_cad": {
+   "day": 11.5,
+   "single": 3.25
+  },
+  "linden_avenue_feed_ids": [
+   117,
+   125
   ],
-  "sections": {
-   "criterion": 7.3,
-   "device_of_record": 6.4,
-   "recording": 6.3,
-   "service": 9.2,
-   "unaccounted": 8.2
-  },
-  "tax_pct": 6.0,
-  "year": 2026
+  "line_per_cent": 90,
+  "next_quarter": "Q1 2027",
+  "notice_by": "15 January 2027",
+  "quarter": "Q4 2026",
+  "service_hours": "6:00 to midnight Eastern"
  },
- "store_numbers": [
-  101,
-  102,
-  103,
-  104,
-  105,
-  106,
-  107,
-  108,
-  109,
-  110,
-  201,
-  202,
-  203,
-  204,
-  205,
-  206,
-  207,
-  208,
-  209,
-  210,
-  301,
-  302,
-  303,
-  304,
-  305,
-  306,
-  307,
-  308,
-  309,
-  310
- ],
- "stores": {
-  "101": {
-   "doses_unaccounted": 51,
-   "hours": 11,
-   "replaced": false,
-   "service_usd": 372,
-   "town": "Corriden"
+ "stations": {
+  "W-01": {
+   "dec": 99.8,
+   "hours_no_card": 86,
+   "lowest": 94,
+   "lowest_month": "October",
+   "name": "Market Square",
+   "nov": 98.1,
+   "oct": 94.3,
+   "priority": false,
+   "sales_cad": 1660.25
   },
-  "102": {
-   "doses_unaccounted": 46,
-   "hours": 0,
-   "replaced": false,
-   "service_usd": 336,
-   "town": "Dalmore"
+  "W-02": {
+   "dec": 99.6,
+   "hours_no_card": 6,
+   "lowest": 88,
+   "lowest_month": "October",
+   "name": "Queen and Albert",
+   "nov": 96.7,
+   "oct": 88.2,
+   "priority": true,
+   "sales_cad": 1913.0
   },
-  "103": {
-   "doses_unaccounted": 100,
-   "hours": 44,
-   "replaced": true,
-   "service_usd": 322,
-   "town": "Edgecott"
+  "W-03": {
+   "dec": 99.3,
+   "hours_no_card": 67,
+   "lowest": 95,
+   "lowest_month": "October",
+   "name": "City Hall",
+   "nov": 97.8,
+   "oct": 94.5,
+   "priority": false,
+   "sales_cad": 1573.5
   },
-  "104": {
-   "doses_unaccounted": 137,
-   "hours": 0,
-   "replaced": false,
-   "service_usd": 1131,
-   "town": "Farrowby"
+  "W-04": {
+   "dec": 99.8,
+   "hours_no_card": 87,
+   "lowest": 94,
+   "lowest_month": "October",
+   "name": "Wharf Street",
+   "nov": 96.0,
+   "oct": 93.9,
+   "priority": false,
+   "sales_cad": 1516.5
   },
-  "105": {
-   "doses_unaccounted": 86,
-   "hours": 0,
-   "replaced": false,
-   "service_usd": 296,
-   "town": "Gisborne"
+  "W-05": {
+   "dec": 99.3,
+   "hours_no_card": 71,
+   "lowest": 91,
+   "lowest_month": "October",
+   "name": "Courthouse",
+   "nov": 95.7,
+   "oct": 90.9,
+   "priority": false,
+   "sales_cad": 1580.5
   },
-  "106": {
-   "doses_unaccounted": 67,
-   "hours": 63,
-   "replaced": true,
-   "service_usd": 1108,
-   "town": "Hatherley"
+  "W-06": {
+   "dec": 99.5,
+   "hours_no_card": 23,
+   "lowest": 96,
+   "lowest_month": "October",
+   "name": "Library Plaza",
+   "nov": 96.9,
+   "oct": 95.6,
+   "priority": false,
+   "sales_cad": 1630.75
   },
-  "107": {
-   "doses_unaccounted": 73,
-   "hours": 0,
-   "replaced": false,
-   "service_usd": 349,
-   "town": "Ilsington"
+  "W-07": {
+   "dec": 99.3,
+   "hours_no_card": 66,
+   "lowest": 95,
+   "lowest_month": "October",
+   "name": "General Hospital",
+   "nov": 96.1,
+   "oct": 94.7,
+   "priority": false,
+   "sales_cad": 1634.5
   },
-  "108": {
-   "doses_unaccounted": 138,
-   "hours": 4,
-   "replaced": false,
-   "service_usd": 313,
-   "town": "Keverne"
+  "W-08": {
+   "dec": 100.0,
+   "hours_no_card": 66,
+   "lowest": 95,
+   "lowest_month": "October",
+   "name": "University Commons",
+   "nov": 98.6,
+   "oct": 94.7,
+   "priority": false,
+   "sales_cad": 1184.5
   },
-  "109": {
-   "doses_unaccounted": 63,
-   "hours": 27,
-   "replaced": true,
-   "service_usd": 589,
-   "town": "Marcham"
+  "W-09": {
+   "dec": 99.7,
+   "hours_no_card": 47,
+   "lowest": 91,
+   "lowest_month": "October",
+   "name": "Science Quad",
+   "nov": 95.9,
+   "oct": 90.7,
+   "priority": false,
+   "sales_cad": 854.5
   },
-  "110": {
-   "doses_unaccounted": 61,
-   "hours": 19,
-   "replaced": false,
-   "service_usd": 1237,
-   "town": "Oldcastle"
+  "W-10": {
+   "dec": 99.8,
+   "hours_no_card": 46,
+   "lowest": 97,
+   "lowest_month": "October",
+   "name": "Central Station",
+   "nov": 98.2,
+   "oct": 97.2,
+   "priority": false,
+   "sales_cad": 1994.0
   },
-  "201": {
-   "doses_unaccounted": 43,
-   "hours": 57,
-   "replaced": true,
-   "service_usd": 2071,
-   "town": "Thurlby"
+  "W-11": {
+   "dec": 99.4,
+   "hours_no_card": 10,
+   "lowest": 97,
+   "lowest_month": "November",
+   "name": "Eastgate Terminal",
+   "nov": 96.7,
+   "oct": 97.8,
+   "priority": false,
+   "sales_cad": 1897.0
   },
-  "202": {
-   "doses_unaccounted": 157,
-   "hours": 0,
-   "replaced": false,
-   "service_usd": 682,
-   "town": "Ulverston"
+  "W-12": {
+   "dec": 98.1,
+   "hours_no_card": 30,
+   "lowest": 88,
+   "lowest_month": "October",
+   "name": "Maple Grove",
+   "nov": 94.3,
+   "oct": 87.7,
+   "priority": true,
+   "sales_cad": 1124.25
   },
-  "203": {
-   "doses_unaccounted": 23,
-   "hours": 0,
-   "replaced": false,
-   "service_usd": 667,
-   "town": "Vexley"
+  "W-13": {
+   "dec": 97.4,
+   "hours_no_card": 36,
+   "lowest": 92,
+   "lowest_month": "October",
+   "name": "Elmwood Park",
+   "nov": 95.6,
+   "oct": 91.8,
+   "priority": false,
+   "sales_cad": 967.5
   },
-  "204": {
-   "doses_unaccounted": 56,
-   "hours": 0,
-   "replaced": false,
-   "service_usd": 351,
-   "town": "Wedmore"
+  "W-14": {
+   "dec": 99.9,
+   "hours_no_card": 53,
+   "lowest": 92,
+   "lowest_month": "October",
+   "name": "Riverbend",
+   "nov": 94.8,
+   "oct": 91.8,
+   "priority": false,
+   "sales_cad": 900.25
   },
-  "205": {
-   "doses_unaccounted": 102,
-   "hours": 7,
-   "replaced": false,
-   "service_usd": 996,
-   "town": "Yelverton"
+  "W-15": {
+   "dec": 100.0,
+   "hours_no_card": 99,
+   "lowest": 95,
+   "lowest_month": "October",
+   "name": "Cedar Heights",
+   "nov": 97.9,
+   "oct": 94.8,
+   "priority": false,
+   "sales_cad": 736.5
   },
-  "206": {
-   "doses_unaccounted": 117,
-   "hours": 52,
-   "replaced": true,
-   "service_usd": 368,
-   "town": "Abbotsley"
+  "W-16": {
+   "dec": 98.4,
+   "hours_no_card": 51,
+   "lowest": 86,
+   "lowest_month": "October",
+   "name": "Birch Hill",
+   "nov": 93.0,
+   "oct": 85.8,
+   "priority": true,
+   "sales_cad": 1073.0
   },
-  "207": {
-   "doses_unaccounted": 87,
-   "hours": 0,
-   "replaced": false,
-   "service_usd": 1109,
-   "town": "Braxted"
+  "W-17": {
+   "dec": 98.9,
+   "hours_no_card": 37,
+   "lowest": 91,
+   "lowest_month": "October",
+   "name": "Linden Avenue",
+   "nov": 95.1,
+   "oct": 91.2,
+   "priority": false,
+   "sales_cad": 791.75
   },
-  "208": {
-   "doses_unaccounted": 38,
-   "hours": 17,
-   "replaced": false,
-   "service_usd": 780,
-   "town": "Chelwood"
+  "W-18": {
+   "dec": 98.9,
+   "hours_no_card": 44,
+   "lowest": 93,
+   "lowest_month": "October",
+   "name": "Orchard Lane",
+   "nov": 95.2,
+   "oct": 92.9,
+   "priority": false,
+   "sales_cad": 746.0
   },
-  "209": {
-   "doses_unaccounted": 122,
-   "hours": 0,
-   "replaced": false,
-   "service_usd": 1027,
-   "town": "Embleton"
+  "W-19": {
+   "dec": 96.6,
+   "hours_no_card": 105,
+   "lowest": 88,
+   "lowest_month": "October",
+   "name": "Willow Crescent",
+   "nov": 93.8,
+   "oct": 88.1,
+   "priority": true,
+   "sales_cad": 1098.0
   },
-  "210": {
-   "doses_unaccounted": 56,
-   "hours": 15,
-   "replaced": false,
-   "service_usd": 645,
-   "town": "Greystoke"
+  "W-20": {
+   "dec": 100.0,
+   "hours_no_card": 52,
+   "lowest": 95,
+   "lowest_month": "October",
+   "name": "Ashdale",
+   "nov": 98.7,
+   "oct": 94.7,
+   "priority": false,
+   "sales_cad": 613.25
   },
-  "301": {
-   "doses_unaccounted": 75,
-   "hours": 0,
-   "replaced": false,
-   "service_usd": 317,
-   "town": "Haddow"
+  "W-21": {
+   "dec": 98.8,
+   "hours_no_card": 78,
+   "lowest": 92,
+   "lowest_month": "October",
+   "name": "Fernwood",
+   "nov": 94.6,
+   "oct": 92.0,
+   "priority": false,
+   "sales_cad": 1127.75
   },
-  "302": {
-   "doses_unaccounted": 78,
-   "hours": 4,
-   "replaced": false,
-   "service_usd": 774,
-   "town": "Inkpen"
+  "W-22": {
+   "dec": 100.0,
+   "hours_no_card": 55,
+   "lowest": 100,
+   "lowest_month": "October",
+   "name": "Waterfront Trail",
+   "nov": 100.0,
+   "oct": 100.0,
+   "priority": false,
+   "sales_cad": 866.75
   },
-  "303": {
-   "doses_unaccounted": 91,
-   "hours": 60,
-   "replaced": true,
-   "service_usd": 297,
-   "town": "Lexden"
+  "W-23": {
+   "dec": 100.0,
+   "hours_no_card": 6,
+   "lowest": 100,
+   "lowest_month": "October",
+   "name": "Pier Park",
+   "nov": 100.0,
+   "oct": 100.0,
+   "priority": false,
+   "sales_cad": 933.75
   },
-  "304": {
-   "doses_unaccounted": 38,
-   "hours": 0,
-   "replaced": false,
-   "service_usd": 612,
-   "town": "Mowbray"
-  },
-  "305": {
-   "doses_unaccounted": 105,
-   "hours": 7,
-   "replaced": false,
-   "service_usd": 714,
-   "town": "Nettlecombe"
-  },
-  "306": {
-   "doses_unaccounted": 87,
-   "hours": 20,
-   "replaced": false,
-   "service_usd": 350,
-   "town": "Padbury"
-  },
-  "307": {
-   "doses_unaccounted": 118,
-   "hours": 0,
-   "replaced": false,
-   "service_usd": 314,
-   "town": "Quarndon"
-  },
-  "308": {
-   "doses_unaccounted": 72,
-   "hours": 17,
-   "replaced": false,
-   "service_usd": 737,
-   "town": "Ruddington"
-  },
-  "309": {
-   "doses_unaccounted": 72,
-   "hours": 1,
-   "replaced": false,
-   "service_usd": 298,
-   "town": "Tilney"
-  },
-  "310": {
-   "doses_unaccounted": 75,
-   "hours": 8,
-   "replaced": false,
-   "service_usd": 582,
-   "town": "Upwood"
+  "W-24": {
+   "dec": 99.9,
+   "hours_no_card": 67,
+   "lowest": 99,
+   "lowest_month": "October",
+   "name": "Lighthouse Point",
+   "nov": 99.4,
+   "oct": 99.1,
+   "priority": false,
+   "sales_cad": 1025.75
   }
  }
 }

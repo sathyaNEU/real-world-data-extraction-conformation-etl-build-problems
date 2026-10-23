@@ -1,487 +1,456 @@
-"""Reads task482's cut pack the way a solver must and computes every figure from it: each store's 2026 hours with its
-vaccine above 8.0 degrees C under the golden handling and under each rung and licensed variant, each store's doses
-unaccounted for (ask A) and each store's Brannon service spend (ask B). golden.py, checks.py and ceiling.py call it;
-verify.py recomputes the golden without it.
+"""Reads task482's pack as a solver holds it (target/ only) and computes every graded figure from it: each station's
+monthly availability under Schedule C, the priority stations, the station that cleared the line by the least, each
+station's Q4 pay-station card sales and the service hours its pay station could not take a card payment. It also
+computes the rungs a solver can stop on, for the checks, the verifier and the ceiling script.
 
-The golden handling of the hours: every record put on UTC (Frostline's offsets, Kelvra's UTC and Fahrenheit,
-Brumal's standard time, Tellvane's UTC) and joined to its store through the monitoring roster; at each pilot store
-the in-carton sensor from its first reading, the store's logger before it. The vaccine's temperature behind a logger
-record is the logger record carried through a first-order lag, each record holding over the ten minutes it stands for,
-with the time constant fitted per logger make on the pilot stores' overlaps (the old logger's records after the
-in-carton sensor's first reading, against the sensor). A record counts its ten minutes when the vaccine's temperature
-at its time stamp is above 8.0."""
+Nothing here imports the simulation: what it knows comes from the files."""
+import bisect
 import csv
 import datetime as dt
 import os
+import re
 from collections import defaultdict
 
 import numpy as np
 
-LIMIT, LINE = 8.0, 24.0
-STEP = 10
-Y0, Y1 = 360, 360 + 525600                       # the local (Central) year in UTC minutes from 2026-01-01T00:00Z
-UPDATE = dt.datetime(2026, 6, 1)
-PLATFORM = dt.date(2026, 7, 1)
-TAX = 0.06
 FILES = {
-    "stores": "penwick_store_list_2027-01.xlsx", "roster": "refrigerator_monitoring_roster_2026.xlsx",
-    "frostline": "frostline_temperature_logs_2026.csv", "kelvra": "kelvra_logger_export_2026.csv",
-    "brumal": "brumal_downloads_2026.txt", "tellvane": "tellvane_sensor_readings_2026.csv",
-    "invoices": "meridale_vaccine_invoices_2026.csv", "items": "vaccine_item_master_2026.xlsx",
-    "admin": "pharmacy_vaccine_administrations_2026.csv", "writeoffs": "vaccine_writeoff_log_2026.csv",
-    "credits": "meridale_credit_memos_2026.csv", "transfers": "vaccine_store_transfers_2026.csv",
-    "inventory": "vaccine_physical_inventory_ye2025_ye2026.xlsx", "brannon": "brannon_service_history_2026-01_2027-01.xlsx",
-    "agreement": "brannon_service_agreement_2025.pdf",
+    "status": "wellhaven_station_status_archive_2026q4.csv",
+    "notes": "station_status_archive_notes.pdf",
+    "trips": "northlane_trips_2026q4.csv",
+    "moves": "northlane_fleet_moves_2026q4.csv",
+    "reports": "northlane_rider_fault_reports_2026q4.csv",
+    "gbfs": "gbfs_station_information_2027-01-11.json",
+    "stations": "wellhaven_bike_share_station_list.xlsx",
+    "agreement": "bike_share_operating_agreement_schedules.pdf",
+    "sales": "paystation_sales_2026q4.csv",
+    "alarms": "paystation_alarm_log_2026q4.csv",
+    "workorders": "paystation_work_orders_2026q4.xlsx",
+    "register": "paystation_register_2027-01-08.xlsx",
+    "weather": "wellhaven_daily_weather_2026q4.csv",
+    "report": "northlane_wellhaven_quarterly_report_2026q4.pdf",
 }
-_D0 = dt.date(2026, 1, 1).toordinal()
+UTC = dt.timezone.utc
+FALLBACK = dt.datetime(2026, 11, 1, 6, 0, tzinfo=UTC)          # 2:00 EDT, clocks back to 1:00 EST
+ORIGIN = dt.datetime(2026, 9, 24, 0, 0, tzinfo=UTC)            # 20:00 on 23 September, where the records start
+MONTHS = (10, 11, 12)
+LINE = 90.0
 
 
-def hround(x):
-    """Round half away from zero (the deliverables' rounding)."""
-    return int(np.floor(abs(x) + 0.5)) * (1 if x >= 0 else -1)
+def utc_of_local(t, second=False):
+    """Eastern wall-clock time to UTC; in the repeated hour of 1 November the first (EDT) unless second"""
+    edt = (t + dt.timedelta(hours=4)).replace(tzinfo=UTC)
+    est = (t + dt.timedelta(hours=5)).replace(tzinfo=UTC)
+    if edt < FALLBACK and est >= FALLBACK and second:
+        return est
+    return edt if edt < FALLBACK else est
 
 
-def _csv(target, key, skip=0):
-    with open(os.path.join(target, FILES[key]), newline="", encoding="utf-8") as f:
-        for _ in range(skip):
-            f.readline()
+def to_local(u):
+    off = -4 if u < FALLBACK else -5
+    return (u + dt.timedelta(hours=off)).replace(tzinfo=None)
+
+
+def parse_local(s):
+    return dt.datetime.strptime(s, "%Y-%m-%d %H:%M:%S")
+
+
+def parse_z(s):
+    return dt.datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
+
+
+def minute_index(u):
+    """the grid minute whose start is u or the first start after it (a state set at u holds from that minute)"""
+    s = (u - ORIGIN).total_seconds()
+    k = int(s // 60)
+    return k if s == k * 60 else k + 1
+
+
+def month_service_minutes(mo):
+    """grid minute indices of the minutes of service hours (6:00 to midnight Eastern) in a month of Q4 2026"""
+    out = []
+    d = dt.date(2026, mo, 1)
+    while d.month == mo:
+        a = utc_of_local(dt.datetime(d.year, d.month, d.day, 6, 0))
+        b = utc_of_local(dt.datetime(d.year, d.month, d.day) + dt.timedelta(days=1))
+        out.append(np.arange(minute_index(a), minute_index(b)))
+        d += dt.timedelta(days=1)
+    return np.concatenate(out)
+
+
+SERVICE = {mo: month_service_minutes(mo) for mo in MONTHS}
+EXTRACT = dt.datetime(2027, 1, 11, 1, 0, tzinfo=UTC)          # 20:00 on 10 January, where they end
+GRID = minute_index(EXTRACT) + 2
+
+
+def rows(target, key):
+    with open(os.path.join(target, FILES[key]), encoding="utf-8", newline="") as f:
         return list(csv.DictReader(f))
 
 
-def _sheet(target, key, name, header_row=1):
+def sheet(target, key, name):
     import openpyxl
     wb = openpyxl.load_workbook(os.path.join(target, FILES[key]), read_only=True, data_only=True)
-    rows = list(wb[name].iter_rows(values_only=True))
-    head = rows[header_row - 1]
-    return [dict(zip(head, r)) for r in rows[header_row:] if any(v is not None for v in r)]
+    ws = wb[name]
+    it = ws.iter_rows(values_only=True)
+    head = [str(h) for h in next(it)]
+    out = [dict(zip(head, r)) for r in it if any(v is not None for v in r)]
+    wb.close()
+    return out
 
 
-def pdf_text(path):
-    import subprocess
-    return subprocess.run(["pdftotext", "-layout", path, "-"], capture_output=True, text=True, check=True).stdout
+def pdf_text(target, key):
+    from pypdf import PdfReader
+    return "\n".join(p.extract_text() for p in PdfReader(os.path.join(target, FILES[key])).pages)
 
 
-def _day(y, m, d):
-    return dt.date(y, m, d).toordinal() - _D0
-
-
-def ifilter(x, c, y0, block=800):
-    """y[n] = c[n] * y[n-1] + (1 - c[n]) * x[n], y[-1] = y0"""
-    x = np.asarray(x, float)
-    c = np.broadcast_to(np.asarray(c, float), x.shape)
-    y = np.empty_like(x)
-    prev = float(y0)
-    for s in range(0, len(x), block):
-        xs, cs = x[s:s + block], c[s:s + block]
-        p = np.cumprod(cs)
-        y[s:s + block] = p * (prev + np.cumsum((1.0 - cs) * xs / p))
-        prev = y[s + len(xs) - 1]
-    return y
+def bike_no(s):
+    return int(re.sub(r"\D", "", str(s)))
 
 
 class Inputs:
-    """every file the figures read, parsed once"""
-
-    def __init__(self, target):
+    def __init__(self, target, dedup=True, staff=True):
         self.target = target
-        st = _sheet(target, "stores", "Stores")
-        self.order = [int(r["Store"]) for r in st]
-        self.make = {}
-        self.ship_to = {str(r["Meridale ship-to"]): int(r["Store"]) for r in st}
-        self.former = {r["Former name"]: int(r["Store"]) for r in st if r["Former name"]}
-        self.site = {r["Brannon site"]: int(r["Store"]) for r in st}
-        self.unit = {int(r["Store"]): r["Vaccine refrigerator"] for r in st}
-        ro = _sheet(target, "roster", "Devices")
-        self.serial = {}
-        self.sensor = {}
-        for r in ro:
-            no = int(r["Store"])
-            if r["Device type"] == "Data logger":
-                self.serial[r["Serial or sensor id"]] = no
-                self.make[no] = r["Make"]
-            else:
-                self.sensor[r["Serial or sensor id"]] = no
-        self.pilot = sorted(self.sensor.values())
-        self._temps()
-        self._stock()
-        self._service()
-
-    # ------------------------------------------------------------------------------------------------ temperatures
-    def _temps(self):
-        rec = defaultdict(list)
-        with open(os.path.join(self.target, FILES["frostline"]), encoding="utf-8") as f:
-            f.readline()
-            for line in f:
-                ser, loc, ts, v = line.rstrip("\n").split(",")
-                d = _day(int(ts[0:4]), int(ts[5:7]), int(ts[8:10]))
-                off = int(ts[20:22]) * 60
-                rec[self.serial[ser]].append((d * 1440 + int(ts[11:13]) * 60 + int(ts[14:16]) + off, float(v)))
-        with open(os.path.join(self.target, FILES["kelvra"]), encoding="utf-8") as f:
-            for _ in range(4):
-                f.readline()
-            for line in f:
-                ser, d_, t_, v = line.rstrip("\n").split(",")
-                d = _day(int(d_[6:10]), int(d_[0:2]), int(d_[3:5]))
-                rec[self.serial[ser]].append((d * 1440 + int(t_[0:2]) * 60 + int(t_[3:5]),
-                                              (float(v) - 32.0) * 5.0 / 9.0))
-        ser = None
-        with open(os.path.join(self.target, FILES["brumal"]), encoding="utf-8") as f:
-            for line in f:
-                if line.startswith("Serial number:"):
-                    ser = line.split(":", 1)[1].strip()
-                elif len(line) > 10 and line[2] == "/" and "\t" in line:
-                    d_, t_, v = line.rstrip("\n").split("\t")
-                    d = _day(int(d_[6:10]), int(d_[0:2]), int(d_[3:5]))
-                    rec[self.serial[ser]].append((d * 1440 + int(t_[0:2]) * 60 + int(t_[3:5]) + 360, float(v)))
-        self.rec = {}
-        self.dups = 0
-        for no, lst in rec.items():
-            lst.sort()
-            u = np.array([a for a, _ in lst], dtype=np.int64)
-            x = np.array([b for _, b in lst])
-            keep = np.ones(len(u), bool)
-            keep[1:] = u[1:] != u[:-1]
-            self.dups += int((~keep).sum())
-            self.rec[no] = (u[keep], x[keep])
-        cl = defaultdict(list)
-        with open(os.path.join(self.target, FILES["tellvane"]), encoding="utf-8") as f:
-            f.readline()
-            for line in f:
-                sid, ts, v = line.rstrip("\n").split(",")
-                d = _day(int(ts[0:4]), int(ts[5:7]), int(ts[8:10]))
-                cl[self.sensor[sid]].append((d * 1440 + int(ts[11:13]) * 60 + int(ts[14:16]), float(v)))
-        self.cl = {}
-        for no, lst in cl.items():
-            lst.sort()
-            self.cl[no] = (np.array([a for a, _ in lst], dtype=np.int64), np.array([b for _, b in lst]))
-        self.switch = {no: int(self.cl[no][0][0]) for no in self.cl}
-
-    # ------------------------------------------------------------------------------------------------------ stock
-    def _stock(self):
-        items = _sheet(self.target, "items", "Vaccine items")
-        self.dpp = {r["NDC"]: int(r["Doses per package"]) for r in items}
-        self.vial = {r["NDC"]: "vial" in str(r["Package"]) for r in items}
-        self.ndc_of11 = {}
-        for n10 in self.dpp:
-            a, b, c = n10.split("-")
-            self.ndc_of11[a.zfill(5) + b.zfill(4) + c.zfill(2)] = n10
-        self.counts = {}
-        for yr in (2025, 2026):
-            rows = _sheet(self.target, "inventory", "YE %d" % yr)
-            tot = defaultdict(int)
-            when = {}
-            for r in rows:
-                no = int(r["Store"])
-                tot[no] += int(r["Doses on hand"])
-                when[no] = r["Count closed"]
-            self.counts[yr] = (dict(tot), when)
-        self.receipts = []
-        for r in _csv(self.target, "invoices"):
-            no = self.ship_to.get(r["SHIP_TO"])
-            if no is None:
-                no = self.former["Lindqvist Apothecary #%d" % int(r["SHIP_TO_NAME"].split("#")[1])]
-            n10 = self.ndc_of11[r["NDC"]]
-            self.receipts.append((no, dt.datetime.strptime(r["DELIVERED"], "%m/%d/%Y %H:%M"),
-                                  dt.datetime.strptime(r["INVOICE_DATE"], "%m/%d/%Y"),
-                                  int(r["QTY_SHIPPED"]) * self.dpp[n10]))
-        self.admin = [(int(r["store"]), dt.datetime.strptime(r["administered_at"], "%Y-%m-%d %H:%M"),
-                       int(r["doses"])) for r in _csv(self.target, "admin")]
-        self.writeoffs = [(int(r["store"]), dt.datetime.strptime(r["written_off_at"], "%Y-%m-%d %H:%M"), r["ndc"],
-                           int(r["quantity"]), float(r["cost"])) for r in _csv(self.target, "writeoffs")]
-        self.credits = []
-        for r in _csv(self.target, "credits"):
-            no = self.ship_to.get(r["SHIP_TO"])
-            n10 = self.ndc_of11[r["NDC"]]
-            per_unit = self.dpp[n10] if r["UOM"] == "VL" else 1
-            self.credits.append((no, dt.datetime.strptime(r["MEMO_DATE"], "%m/%d/%Y"), int(r["QTY"]) * per_unit))
-        self.transfers = [(int(r["from_store"]), int(r["to_store"]),
-                           dt.datetime.strptime(r["shipped_at"], "%Y-%m-%d %H:%M"),
-                           dt.datetime.strptime(r["received_at"], "%Y-%m-%d %H:%M"), int(r["doses"]))
-                          for r in _csv(self.target, "transfers")]
-
-    # ---------------------------------------------------------------------------------------------------- service
-    def _service(self):
-        import re
-        self.pm_price = {}
-        for line in pdf_text(os.path.join(self.target, FILES["agreement"])).splitlines():
-            m = re.match(r"\s*(\w+ [A-Z]{1,2}-\d+)\s+(Pharmaceutical-grade|Household-style)\s+(\d+\.\d\d)\s*$", line)
-            if m:
-                self.pm_price[m.group(1)] = float(m.group(3))
-        rows = _sheet(self.target, "brannon", "Service history", header_row=4)
-        self.visits = []
-        for r in rows:
-            vd = r["Visit date"]
-            idt = r["Invoice date"]
-            self.visits.append(dict(store=self.site[r["Site"]], wo=r["Work order"], visit=int(r["Visit"]),
-                                    date=vd.date() if hasattr(vd, "date") else vd, invoice=str(r["Invoice"]),
-                                    invoice_date=idt.date() if hasattr(idt, "date") else idt,
-                                    amount=float(r["Invoice amount"])))
-
-
-# ---------------------------------------------------------------------------------------------------- the hours
-def states(u, x, tau, prev=False):
-    """the lag's state at each record's time stamp: the input over each interval is the record that opens it (or,
-    prev=True, the record that closes it)"""
-    c = np.exp(-np.diff(u).astype(float) / tau)
-    v = np.empty(len(x))
-    v[0] = x[0]
-    v[1:] = ifilter(x[1:] if prev else x[:-1], c, x[0])
-    return v
-
-
-def overlap(I, no):
-    u, x = I.rec[no]
-    cu, cx = I.cl[no]
-    k = (cu >= I.switch[no]) & (cu < u[-1] + STEP)
-    return cu[k], cx[k]
-
-
-def sse(I, nos, tau):
-    s, n = 0.0, 0
-    for no in nos:
-        u, x = I.rec[no]
-        v = states(u, x, tau)
-        cu, cx = overlap(I, no)
-        k = np.searchsorted(u, cu, side="right") - 1
-        est = x[k] + (v[k] - x[k]) * np.exp(-(cu - u[k]) / tau)
-        s += float(((est - cx) ** 2).sum())
-        n += len(cx)
-    return s, n
-
-
-def fit(I, nos, lo=20.0, hi=80.0):
-    g = 0.6180339887498949
-    a, b = lo, hi
-    for _ in range(70):
-        c, d = b - (b - a) * g, a + (b - a) * g
-        if sse(I, nos, c)[0] < sse(I, nos, d)[0]:
-            b = d
-        else:
-            a = c
-    t = (a + b) / 2
-    return t, float(np.sqrt(sse(I, nos, t)[0] / sse(I, nos, t)[1]))
-
-
-def taus(I, group="make"):
-    """the fitted time constant behind each store: per make (golden), pooled, or each pilot store's own"""
-    if group == "pooled":
-        t = fit(I, I.pilot)[0]
-        return {no: t for no in I.order}
-    by = {}
-    for mk in sorted(set(I.make.values())):
-        by[mk] = fit(I, [no for no in I.pilot if I.make[no] == mk])[0]
-    out = {no: by[I.make[no]] for no in I.order}
-    if group == "store":
-        for no in I.pilot:
-            out[no] = fit(I, [no])[0]
-    return out
-
-
-def _dur(u, end):
-    return np.clip(np.minimum(np.diff(np.append(u, end)), STEP), 0, None)
-
-
-def _count(u, y, end):
-    m = (u >= Y0) & (u < Y1)
-    return float((_dur(u, end) * (y > LIMIT) * m).sum()) / 60.0
-
-
-def logger_part(I, no):
-    u, x = I.rec[no]
-    end = I.switch.get(no, Y1)
-    k = u < end
-    return u, x, k, min(end, Y1)
-
-
-def tellvane_hours(I, no):
-    if no not in I.cl:
-        return 0.0
-    cu, cx = I.cl[no]
-    return _count(cu, cx, Y1)
-
-
-def store_hours(I, no, est):
-    """hours above 8.0: the logger estimate before the switch, the in-carton sensor after"""
-    u, x, k, end = logger_part(I, no)
-    return _count(u[k], est[k], end) + tellvane_hours(I, no)
-
-
-def golden_hours(I, tau=None, prev=False, conv="start", shift=0.0):
-    tau = tau or taus(I)
-    out = {}
-    for no in I.order:
-        u, x = I.rec[no]
-        t = tau[no] + shift
-        v = states(u, x, t, prev=prev)
-        if conv == "mean":
-            dts = np.minimum(np.diff(np.append(u, u[-1] + STEP)), STEP).astype(float)
-            v = x + (v - x) * t / dts * (1 - np.exp(-dts / t))
-        elif conv == "end":
-            v = np.append(states(u, x, t)[1:], x[-1])
-        out[no] = store_hours(I, no, v)
-    return out
-
-
-def runs(I, no, keep):
-    """the logger's runs above 8.0 (pre-switch), kept by a rule on (duration in minutes, peak, start)"""
-    u, x, k, end = logger_part(I, no)
-    u, x = u[k], x[k]
-    d = _dur(u, end)
-    m = (u >= Y0) & (u < Y1)
-    hot = (x > LIMIT) & m
-    tot, i = 0.0, 0
-    n = len(u)
-    while i < n:
-        if not hot[i]:
-            i += 1
-            continue
-        j = i
-        while j < n and hot[j]:
-            j += 1
-        dur = float(d[i:j].sum())
-        if keep(dur, float(x[i:j].max()), int(u[i])):
-            tot += dur
-        i = j
-    return tot / 60.0 + tellvane_hours(I, no)
-
-
-def trailing(u, x, k):
-    cs = np.concatenate([[0.0], np.cumsum(x)])
-    lo = np.searchsorted(u, u - k + 1e-9, side="left")
-    idx = np.arange(len(x))
-    return (cs[idx + 1] - cs[lo]) / (idx + 1 - lo)
-
-
-def overlap_ratio(I):
-    """in-carton hours over logger hours above 8.0 across the pilot stores' overlaps"""
-    a = b = 0.0
-    for no in I.pilot:
-        u, x = I.rec[no]
-        k = u >= I.switch[no]
-        b += _count(u[k], x[k], u[-1] + STEP)
-        cu, cx = overlap(I, no)
-        a += _count(cu, cx, cu[-1] + STEP if len(cu) else Y1)
-    return a / b if b else 0.0
-
-
-def rung_hours(I, rung):
-    """each wrong rung's hours by store"""
-    out = {}
-    if rung == "R3":
-        ratio = overlap_ratio(I)
-    if rung == "R6":
-        dl = defaultdict(list)
-        for (no, t, inv, doses) in I.receipts:
-            dl[no].append(local_to_u(t))
-    for no in I.order:
-        u, x = I.rec[no]
-        if rung == "R0":
-            out[no] = store_hours(I, no, x)
-        elif rung in ("R1a", "R1b"):
-            lim = 30 if rung == "R1a" else 60
-            out[no] = runs(I, no, lambda dur, pk, st: dur >= lim)
-        elif rung == "R1c":
-            out[no] = runs(I, no, lambda dur, pk, st: pk > 10.0)
-        elif rung.startswith("MA"):
-            out[no] = store_hours(I, no, trailing(u, x, int(rung[2:])))
-        elif rung == "R3":
-            uu, xx, k, end = logger_part(I, no)
-            out[no] = _count(uu[k], xx[k], end) * ratio + tellvane_hours(I, no)
-        elif rung == "R4":
-            out[no] = runs(I, no, lambda dur, pk, st: not (pk < 9.5 and 25 <= dur <= 75))
-        elif rung == "R6":
-            ds = np.array(sorted(dl[no]))
-            out[no] = runs(I, no, lambda dur, pk, st: not np.any((st >= ds - 10) & (st <= ds + 50)))
-        else:
-            raise KeyError(rung)
-    return out
-
-
-def local_to_u(t):
-    """a Central local wall time to UTC minutes"""
-    d = t.date().toordinal() - _D0
-    m = d * 1440 + t.hour * 60 + t.minute
-    dst = dt.datetime(2026, 3, 8, 2) <= t < dt.datetime(2026, 11, 1, 1)
-    return m + (300 if dst else 360)
-
-
-def covered(h):
-    return sorted(no for no, v in h.items() if v >= LINE)
-
-
-def nearest_below(h):
-    below = [(v, no) for no, v in h.items() if v < LINE]
-    if not below:
-        return None
-    v, no = max(below)
-    return no, v, LINE - v
-
-
-# ------------------------------------------------------------------------------------------------------- ask A
-def unaccounted(I, cut=True, vials=True, credits=False):
-    """each store's doses unaccounted for: its count at the start of the year and its receipts, less what left its
-    stock and its count at the year's end. cut=True takes the flows between the two counts' own times (False: the
-    calendar year, the counts read as the year's ends); vials=True reads the write-off log's multi-dose vial quantities
-    before the 1 June 2026 update as vials; credits=True also takes Meridale's return credits off"""
-    (o, ow), (c, cw) = I.counts[2025], I.counts[2026]
-    a = {no: ow[no] if cut else dt.datetime(2026, 1, 1) for no in I.order}
-    b = {no: cw[no] if cut else dt.datetime(2026, 12, 31, 23, 59, 59) for no in I.order}
-
-    def inside(no, t):
-        return (a[no] < t <= b[no]) if cut else (a[no] <= t <= b[no])
-    bal = {no: o.get(no, 0) - c.get(no, 0) for no in I.order}
-    for (no, t, inv, doses) in I.receipts:
-        if inside(no, t):
-            bal[no] += doses
-    for (no, t, doses) in I.admin:
-        if inside(no, t):
-            bal[no] -= doses
-    for (no, t, ndc, q, cost) in I.writeoffs:
-        if inside(no, t):
-            bal[no] -= q * (I.dpp[ndc] if (vials and I.vial[ndc] and t < UPDATE) else 1)
-    for (fr, to, ts, tr, doses) in I.transfers:
-        if inside(fr, ts):
-            bal[fr] -= doses
-        if inside(to, tr):
-            bal[to] += doses
-    if credits:
-        for (no, t, doses) in I.credits:
-            if inside(no, t):
-                bal[no] -= doses
-    return bal
-
-
-# ------------------------------------------------------------------------------------------------------- ask B
-def service(I, tax=True, by_invoice_date=True, dedupe=True, completed=True, split=True):
-    """each store's Brannon spend for work completed in 2026, as invoiced with sales tax: one amount per invoice
-    (dedupe), the tax added to the invoices from before the 1 July 2026 platform move (by invoice date, or False: by
-    the visit's date), work completed in 2026 (or False: each visit's own date), and an invoice whose visits are at
-    several stores (a maintenance route) split by each store's unit's maintenance price (split; False: the whole
-    amount to each of its stores)"""
-    wo = defaultdict(list)
-    for v in I.visits:
-        wo[v["invoice"]].append(v)
-    out = defaultdict(float)
-    for inv, vs in wo.items():
-        last = max(v["date"] for v in vs)
-        stores = sorted(set(v["store"] for v in vs))
-        if dedupe:
-            first = {}
-            for v in vs:
-                first.setdefault(v["store"], v)
-            rows = [first[no] for no in stores]
-        else:
-            rows = vs
-        prices = {no: I.pm_price[I.unit[no]] for no in stores}
-        for v in rows:
-            when = last if completed else v["date"]
-            if when.year != 2026:
+        st = sheet(target, "stations", "Stations")
+        self.city = {}            # feed station id -> City station number
+        self.name = {}            # City station number -> name
+        for r in st:
+            no = int(str(r["Station"]).split("-")[1])
+            self.city[int(r["Feed station ID"])] = no
+            self.name[no] = r["Name"]
+        self.nos = sorted(self.name)
+        # trips, the re-run week's repeats dropped (the same trip id, every field the same)
+        seen = set()
+        self.trips = []
+        self.dup_rows = 0
+        for r in rows(target, "trips"):
+            key = tuple(r.values())
+            if key in seen:
+                self.dup_rows += 1
+                if dedup:
+                    continue
+            seen.add(key)
+            if not staff and r["rider_type"] == "staff":
                 continue
-            amt = v["amount"]
-            pre = (v["invoice_date"] < PLATFORM) if by_invoice_date else (v["date"] < PLATFORM)
-            if tax and pre:
-                amt = round(amt + round(amt * TAX + 1e-9, 2), 2)
-            if split and len(stores) > 1:
-                amt = amt * prices[v["store"]] / sum(prices.values())
-            out[v["store"]] += amt
-    return {no: round(out[no], 2) for no in I.order}
+            a_l, b_l = parse_local(r["start_time"]), parse_local(r["end_time"])
+            dur = int(r["duration_s"])
+            a = b = None
+            for x in (utc_of_local(a_l), utc_of_local(a_l, True)):
+                for y in (utc_of_local(b_l), utc_of_local(b_l, True)):
+                    if (y - x).total_seconds() == dur:
+                        a, b = x, y
+                        break
+                if a:
+                    break
+            assert a is not None, r
+            self.trips.append(dict(id=int(r["trip_id"]), bike=int(r["bike_id"]), a=a, b=b,
+                                   s0=int(r["start_station_id"]), s1=int(r["end_station_id"]), who=r["rider_type"]))
+        self.moves = []
+        for r in rows(target, "moves"):
+            self.moves.append(dict(t=utc_of_local(parse_local(r["logged_at"])), van=r["vehicle"], s=int(r["station_id"]),
+                                   act="pickup" if r["action"] == "Pick up" else "drop", bike=bike_no(r["bike"])))
+        self.reports = [dict(t=parse_z(r["reported_at"]), bike=int(r["bike_id"]), s=int(r["station_id"]))
+                        for r in rows(target, "reports")]
+
+    # ------------------------------------------------------------------------------------------------- spells
+    def events(self):
+        ev = defaultdict(list)
+        for k, t in enumerate(self.trips):
+            ev[t["bike"]].append((t["a"], 2, "rent", t["s0"], k))
+            ev[t["bike"]].append((t["b"], 1, "dock", t["s1"], k))
+        for k, m in enumerate(self.moves):
+            ev[m["bike"]].append((m["t"], 0 if m["act"] == "pickup" else 1, m["act"], m["s"], k))
+        for b in ev:
+            ev[b].sort(key=lambda e: (e[0], e[1], e[4]))
+        return ev
+
+    def spells(self):
+        """each bike's spells docked at a station: (bike, feed station, from, to, how it ended, back on the street).
+        A bike whose first record takes it from a station was docked there from the start of the records."""
+        out = []
+        for b, seq in self.events().items():
+            cur, a = None, None
+            if seq[0][2] in ("rent", "pickup"):
+                cur, a = seq[0][3], ORIGIN
+            for i, (t, _, kind, s, _) in enumerate(seq):
+                if kind in ("rent", "pickup"):
+                    if cur is not None:
+                        back = None
+                        if kind == "pickup":
+                            back = next((e[0] for e in seq[i + 1:] if e[2] in ("drop", "dock")), None)
+                        out.append((b, cur, a, t, kind, back))
+                    cur, a = None, None
+                else:
+                    cur, a = s, t
+            if cur is not None:
+                out.append((b, cur, a, None, "open", None))
+        return out
+
+    def rentals(self):
+        out = defaultdict(list)
+        for t in self.trips:
+            out[t["s0"]].append(t["a"])
+        for s in out:
+            out[s].sort()
+        return out
+
+
+# ----------------------------------------------------------------------------------------------------- availability
+def counts(I, spells, keep):
+    """bikes docked at the start of each grid minute, per City station, over the spells keep() admits"""
+    diff = {no: np.zeros(GRID + 1, dtype=np.int32) for no in I.nos}
+    for sp in spells:
+        if not keep(sp):
+            continue
+        b, s, a, z, kind, back = sp
+        no = I.city[s]
+        i = minute_index(a)
+        j = minute_index(z) if z is not None else GRID
+        if j > i:
+            diff[no][i] += 1
+            diff[no][j] -= 1
+    return {no: np.cumsum(diff[no])[:GRID] for no in I.nos}
+
+
+def availability(I, series):
+    return {no: {mo: 100.0 * float((series[no][SERVICE[mo]] >= 1).mean()) for mo in MONTHS} for no in I.nos}
+
+
+def designated(av, line=LINE):
+    return sorted(no for no, d in av.items() if min(d.values()) < line)
+
+
+def nearest_clear(av, line=LINE):
+    """the station whose lowest month cleared the line by the least, and its margin in points"""
+    clear = [(min(d.values()), no) for no, d in av.items() if min(d.values()) >= line]
+    v, no = min(clear)
+    return no, v - line
+
+
+def broken_by_stay(I, hours=20.0):
+    """the golden reading: a docked bike was out of working order from the end of the ride that left it until the
+    van took it to the depot, where it stayed for repair (a day or more) before it was ridden or dropped again"""
+    def f(sp):
+        b, s, a, z, kind, back = sp
+        if kind != "pickup":
+            return False
+        return back is None or (back - z).total_seconds() >= hours * 3600
+    return f
+
+
+def broken_by_pass(I):
+    """a docked bike passed over by a renter at its station and then taken away by the van"""
+    rent = I.rentals()
+
+    def f(sp):
+        b, s, a, z, kind, back = sp
+        if kind != "pickup" or (back is not None and (back - z).total_seconds() < 3600):
+            return False
+        arr = rent.get(s, [])
+        return bisect.bisect_left(arr, z) - bisect.bisect_right(arr, a) >= 1
+    return f
+
+
+def broken_by_pass_and_stay(I, hours=20.0):
+    """the write-up's reading: passed over by a renter at its station, then taken by a van and kept at the depot
+    a day or more"""
+    a, b = broken_by_pass(I), broken_by_stay(I, hours)
+    return lambda sp: a(sp) and b(sp)
+
+
+def broken_by_van(I):
+    """every bike a van took away rather than a rider, the station move's bikes excepted (back within the hour)"""
+    def f(sp):
+        b, s, a, z, kind, back = sp
+        return kind == "pickup" and not (back is not None and (back - z).total_seconds() < 3600)
+    return f
+
+
+def working_counts(I, broken):
+    sp = I.spells()
+    return counts(I, sp, lambda x: not broken(x))
+
+
+def golden(I):
+    return availability(I, working_counts(I, broken_by_pass_and_stay(I)))
+
+
+# ----------------------------------------------------------------------------------------------------- the default
+def feed_counts(I, field="num_bikes_available"):
+    """the archive's count at the start of each grid minute, per City station: each feed station's last row at or
+    before the minute, carried across the spells the poller was down; a station that moved is read under its old
+    feed ID until its new ID's first row"""
+    by = defaultdict(list)
+    for r in rows(I.target, "status"):
+        t = dt.datetime.fromtimestamp(int(r["polled_at"]), UTC)
+        by[int(r["station_id"])].append((minute_index(t), int(r[field])))
+    first = {s: min(k for k, _ in lst) for s, lst in by.items()}
+    stop = {}
+    for s in by:
+        later = [first[x] for x in by if x != s and I.city[x] == I.city[s] and first[x] > first[s]]
+        stop[s] = min(later) if later else GRID
+    out = {no: np.zeros(GRID, dtype=np.int32) for no in I.nos}
+    for s, lst in by.items():
+        no = I.city[s]
+        lst.sort()
+        for (k, v), nxt in zip(lst, lst[1:] + [(stop[s], None)]):
+            hi = min(nxt[0], stop[s])
+            if hi > k:
+                out[no][k:hi] += v
+    return out
+
+
+def poller_gap_minutes(I):
+    """grid minutes with no poll (the spells the notes list)"""
+    polled = set()
+    for r in rows(I.target, "status"):
+        polled.add(minute_index(dt.datetime.fromtimestamp(int(r["polled_at"]), UTC)))
+    return polled
+
+
+def default(I):
+    return availability(I, feed_counts(I))
+
+
+# ----------------------------------------------------------------------------------------------------- ask A
+QA = utc_of_local(dt.datetime(2026, 10, 1))
+QB = utc_of_local(dt.datetime(2027, 1, 1))
+
+
+def terminal_history(I):
+    """each terminal's pay stations over time from the work orders: a list of (installed from, pay station number),
+    the first entry (None) its pay station before the refurbishment; a terminal stays where it was installed until a
+    work order installs it elsewhere"""
+    wos = sheet(I.target, "workorders", "Work orders")
+    swaps = sorted((r for r in wos if r["Work type"].startswith("Card terminal replacement")), key=lambda r: r["Opened"])
+    hist = defaultdict(list)
+    for r in swaps:
+        no = int(r["Pay station"].split("-")[1])
+        if not hist[r["Terminal removed"]]:
+            hist[r["Terminal removed"]].append((None, no))
+        hist[r["Terminal installed"]].append((r["Closed"], no))
+    return hist
+
+
+def placed(hist, ser, loc):
+    """the pay station terminal ser was at, local time loc"""
+    no = None
+    for since, n in hist.get(ser, []):
+        if since is None or since <= loc:
+            no = n
+    return no
+
+
+def sales(I, attribution="history", tz="local", voids=True):
+    hist = terminal_history(I)
+    tot = defaultdict(float)
+    vo = set()
+    rs = rows(I.target, "sales")
+    if voids:
+        vo = {r["original_sale"] for r in rs if r["transaction"] == "VOID"}
+    for r in rs:
+        if r["transaction"] != "SALE" or r["sale_id"] in vo:
+            continue
+        u = parse_z(r["sold_at"])
+        if tz == "local":
+            if not (QA <= u < QB):
+                continue
+        else:
+            if not (dt.datetime(2026, 10, 1, tzinfo=UTC) <= u < dt.datetime(2027, 1, 1, tzinfo=UTC)):
+                continue
+        if attribution == "column":
+            no = int(r["pay_station"].split("-")[1])
+        else:
+            no = placed(hist, r["terminal"], to_local(u))
+            assert no is not None, r
+        tot[no] += float(r["amount"])
+    return {no: round(tot[no], 2) for no in I.nos}
+
+
+# ----------------------------------------------------------------------------------------------------- ask B
+BLOCK = ("COMMS_LOST", "READER_FAULT")
+CLEAR = {"COMMS_RESTORED": "COMMS_LOST", "READER_OK": "READER_FAULT"}
+
+
+def service_windows(d0=dt.date(2026, 10, 1), d1=dt.date(2026, 12, 31)):
+    out = []
+    d = d0
+    while d <= d1:
+        out.append((utc_of_local(dt.datetime(d.year, d.month, d.day, 6, 0)),
+                    utc_of_local(dt.datetime(d.year, d.month, d.day) + dt.timedelta(days=1))))
+        d += dt.timedelta(days=1)
+    return out
+
+
+WINDOWS = service_windows()
+
+
+def union(spans):
+    out = []
+    for a, b in sorted(spans):
+        if out and a <= out[-1][1]:
+            out[-1] = (out[-1][0], max(out[-1][1], b))
+        else:
+            out.append((a, b))
+    return out
+
+
+def in_service_s(spans, windows=WINDOWS):
+    tot = 0.0
+    for a, b in spans:
+        for x, y in windows:
+            lo, hi = max(a, x), min(b, y)
+            if hi > lo:
+                tot += (hi - lo).total_seconds()
+    return tot
+
+
+def down_spans(I, pairing="restart", merge=True, codes=BLOCK):
+    """each pay station's spans with a blocking alarm active. pairing='restart': an alarm runs from its raise to its
+    clear or the pay station's next restart; 'clear': to the next clear of its code (a raise while one is open is
+    the same alarm); 'drop': raises with no clear before the next restart are left out; 'next_same': to the next
+    clear or raise of its code; 'next_any': to the pay station's next event of any kind"""
+    ev = defaultdict(list)
+    for k, r in enumerate(rows(I.target, "alarms")):
+        ev[int(r["pay_station"].split("-")[1])].append((parse_z(r["event_time"]), k, r["event"]))
+    end = EXTRACT
+    out = {}
+    for no in I.nos:
+        spans = []
+        open_ = {}
+        for t, _, code in sorted(ev[no]):
+            if pairing == "next_any" and open_:
+                for c, a in open_.items():
+                    spans.append((a, t))
+                open_ = {}
+            if code == "RESTART":
+                if pairing == "restart":
+                    for c, a in open_.items():
+                        spans.append((a, t))
+                    open_ = {}
+                elif pairing == "drop":
+                    open_ = {}
+                continue
+            if code in codes:
+                if code in open_ and pairing == "next_same":
+                    spans.append((open_.pop(code), t))
+                if code not in open_:
+                    open_[code] = t
+            elif code in CLEAR and CLEAR[code] in codes:
+                c = CLEAR[code]
+                if c in open_:
+                    spans.append((open_.pop(c), t))
+        for c, a in open_.items():
+            spans.append((a, end))
+        out[no] = union(spans) if merge else sorted(spans)
+    return out
+
+
+def downtime(I, **kw):
+    sp = down_spans(I, **kw)
+    return {no: round(in_service_s(sp[no]) / 3600.0, 4) for no in I.nos}
+
+
+def hround(x, d=1):
+    """half up at d decimals, the rounding the figures are stated in"""
+    q = 10 ** d
+    return float(np.floor(x * q + 0.5) / q)

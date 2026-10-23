@@ -1,44 +1,24 @@
 # leak check, task482
 
-**Verdict: REVIEW.** 19 files read, 67 golden figures and 1 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 14 files read, 26 golden figures and 19 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: logger, temperature, record, architecture, reader, carried, standard, minutes, sensor, beside, decisive, readers, measured, degrees, pattern, reflex, operations, in-carton, follows, constant, default, readable, asserted, driver, window
+Stump terms swept: architecture, docked, reader, minute, decisive, working, minutes, record, eastern, default, readers, carried, screened, available, records, reflex, operator, northlane, golden, counted, standing, renter, listed, register, population
 
-## 3 answer figures in the pack (REVIEW 24)
-- **REVIEW** `brannon_service_agreement_2025.pdf`: golden figure 205 appears: ...S-27696 Northcold PG-12 204 S-20166 Keswell HR-18 205 S-20555 Northcold PG-23 206 S-20944 Northcold PG-...
-- **REVIEW** `brannon_service_agreement_2025.pdf`: golden figure 102 appears: ...ore Brannon site Unit 101 S-27613 Northcold PG-23 102 S-20083 Northcold PG-12 103 S-20472 Stellane V-26...
-- **REVIEW** `brannon_service_agreement_2025.pdf`: golden figure 209 appears: ...S-21333 Stellane V-26 208 S-21722 Northcold PG-23 209 S-22111 Northcold PG-12 210 S-22500 Stellane V-26...
-- **REVIEW** `brannon_service_agreement_2025.pdf`: golden figure 104 appears: ...S-20083 Northcold PG-12 103 S-20472 Stellane V-26 104 S-20861 Northcold PG-23 105 S-21250 Keswell HR-18...
-- **REVIEW** `brannon_service_agreement_2025.pdf`: golden figure 203 appears: ...ore Brannon site Unit 202 S-27307 Northcold PG-23 203 S-27696 Northcold PG-12 204 S-20166 Keswell HR-18...
-- **REVIEW** `brannon_service_agreement_2025.pdf`: golden figure 303 appears: ...1 S-26223 Keswell HR-18 302 S-26612 Stellane V-26 303 S-27001 Keswell HR-18 304 S-27390 Northcold PG-12...
-- **REVIEW** `brannon_service_agreement_2025.pdf`: golden figure 309 appears: ...S-20638 Northcold PG-12 308 S-21027 Stellane V-26 309 S-21416 Keswell HR-18 310 S-21805 Northcold PG-12...
-- **REVIEW** `brannon_service_agreement_2025.pdf`: golden figure 210 appears: ...21722 Northcold PG-23 209 S-22111 Northcold PG-12 210 S-22500 Stellane V-26 301 S-26223 Keswell HR-18 3...
-- **REVIEW** `brannon_service_agreement_2025.pdf`: golden figure 307 appears: ...S-27779 Stellane V-26 306 S-20249 Northcold PG-23 307 S-20638 Northcold PG-12 308 S-21027 Stellane V-26...
-- **REVIEW** `brannon_service_agreement_2025.pdf`: golden figure 207 appears: ...20555 Northcold PG-23 206 S-20944 Northcold PG-12 207 S-21333 Stellane V-26 208 S-21722 Northcold PG-23...
-- **REVIEW** `brannon_service_agreement_2025.pdf`: golden figure 110 appears: ...S-22417 Northcold PG-12 109 S-22806 Stellane V-26 110 S-23195 Keswell HR-21 201 S-26918 Stellane V-26...
-- **REVIEW** `brannon_service_agreement_2025.pdf`: golden figure 206 appears: ...S-20166 Keswell HR-18 205 S-20555 Northcold PG-23 206 S-20944 Northcold PG-12 207 S-21333 Stellane V-26...
-- **REVIEW** `brannon_service_agreement_2025.pdf`: and 19 more golden figures
-- **REVIEW** `tellvane_pilot_plan_2026.pdf`: golden figure 209 appears: ...otsley Kelvra Pharmaceutical-grade Week of 1 June 209 Embleton Kelvra Pharmaceutical-grade Week of 15 J...
-- **REVIEW** `tellvane_pilot_plan_2026.pdf`: golden figure 309 appears: ...ngton Brumal Pharmaceutical-grade Week of 29 June 309 Tilney Brumal Household-style Week of 6 July 3 Th...
-- **REVIEW** `tellvane_pilot_plan_2026.pdf`: golden figure 110 appears: ...ton Frostline Pharmaceutical-grade Week of 11 May 110 Oldcastle Frostline Household-style Week of 18 Ma...
-- **REVIEW** `tellvane_pilot_plan_2026.pdf`: golden figure 206 appears: ...erston Kelvra Pharmaceutical-grade Week of 25 May 206 Abbotsley Kelvra Pharmaceutical-grade Week of 1 J...
-- **REVIEW** `tellvane_pilot_plan_2026.pdf`: golden figure 304 appears: ...leton Kelvra Pharmaceutical-grade Week of 15 June 304 Mowbray Brumal Pharmaceutical-grade Week of 15 Ju...
-- **REVIEW** `tellvane_pilot_plan_2026.pdf`: golden figure 107 appears: ...Gisborne Frostline Household-style Week of 4 May 107 Ilsington Frostline Pharmaceutical-grade Week of...
-- **REVIEW** `tellvane_pilot_plan_2026.pdf`: golden figure 305 appears: ...wbray Brumal Pharmaceutical-grade Week of 15 June 305 Nettlecombe Brumal Pharmaceutical-grade Week of 2...
-- **REVIEW** `tellvane_pilot_plan_2026.pdf`: golden figure 105 appears: ...Store Town Data logger Unit Planned installation 105 Gisborne Frostline Household-style Week of 4 May...
-- **REVIEW** `tellvane_pilot_plan_2026.pdf`: golden figure 308 appears: ...combe Brumal Pharmaceutical-grade Week of 22 June 308 Ruddington Brumal Pharmaceutical-grade Week of 29...
-- **REVIEW** `tellvane_pilot_plan_2026.pdf`: golden figure 202 appears: ...ldcastle Frostline Household-style Week of 18 May 202 Ulverston Kelvra Pharmaceutical-grade Week of 25...
-- **REVIEW** `vaccine_storage_handling_standard_po-114_rev6.pdf`: carries 5 of 8 distinctive words of the committed call: 'Penwick Pharmacy replaces the vaccine refrigerators of stores 103, 106, 109, 201, 206 and 303 before the 2027 respirator'
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `bike_share_operating_agreement_schedules.pdf`: 10 of 25 stump-paragraph terms appear (docked, minute, working, minutes, record, eastern); read whether the document names the move
+- **REVIEW** `station_status_archive_notes.pdf`: 6 of 25 stump-paragraph terms appear (docked, minute, minutes, eastern, available, northlane); read whether the document names the move
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `pharmaceutical_refrigerator_quotes_2027.pdf`: 3 of 25 stump-paragraph terms appear (logger, temperature, record); read whether the document names the move
-- **REVIEW** `tellvane_pilot_plan_2026.pdf`: 8 of 25 stump-paragraph terms appear (logger, temperature, record, standard, minutes, sensor); read whether the document names the move
-- **REVIEW** `vaccine_storage_handling_standard_po-114_rev6.pdf`: 9 of 25 stump-paragraph terms appear (logger, temperature, record, standard, minutes, sensor); read whether the document names the move
-
-## 9 dates after the setting (REVIEW 1)
-- **REVIEW** `vaccine_writeoff_log_2026.csv`: 175 ISO dates after 2027-01-25, e.g. 2027-06-30, 2027-07-30, 2027-08-29, 2027-09-30, 2027-11-30
+## 6 ranking artifacts (REVIEW 7, INFO 1)
+- **REVIEW** `gbfs_station_information_2027-01-11.json`: names 19 of 19 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `northlane_trips_2026q4.csv`: names 19 of 19 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `paystation_register_2027-01-08.xlsx`: names 19 of 19 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `paystation_sales_2026q4.csv`: names 19 of 19 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `paystation_work_orders_2026q4.xlsx`: names 19 of 19 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `station_status_archive_notes.pdf`: names 3 of 19 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `wellhaven_bike_share_station_list.xlsx`: names 19 of 19 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `northlane_wellhaven_quarterly_report_2026q4.pdf`: names 3 of 19 answer-set candidates; confirm it does not rank them on the decision question
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -47,13 +27,15 @@ Stump terms swept: logger, temperature, record, architecture, reader, carried, s
 
 ## 2 author vocabulary (clean)
 
-## 5 announcements (clean)
+## 3 answer figures in the pack (clean)
 
-## 6 ranking artifacts (clean)
+## 5 announcements (clean)
 
 ## 7 hidden content (clean)
 
 ## 8 column names (clean)
+
+## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
 

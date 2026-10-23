@@ -1,302 +1,563 @@
-"""task482 world: Penwick Pharmacy's thirty stores, each vaccine refrigerator's 2026 air, logger probe and vaccine.
+"""The Wellhaven Bike Share fleet, 24 September 2026 to 10 January 2027: the truth task482's pack is cut from.
 
-Physical time is one minute per step from 2025-12-31 18:00 Central (the warm-up) to 2027-01-01 06:00 Central. The
-air in each refrigerator relaxes to its target (the setpoint and its control swing, a defrost swing at the household
-units, the room's air while a door stands open, the room's air slowly through an outage, a door left ajar, a failing
-thermostat). The logger's probe in its 5 mL glycol bottle follows the air with TAU_P minutes; the vaccine in its
-cartons follows it with TAU_V. Every logger is set, as the chain's standard requires, to record the mean of its probe
-over each ten minutes, stamped at the interval's start; the pilot's in-carton sensor reads the vaccine every ten
-minutes. Nothing in the pack states either constant.
+Minute steps on the absolute clock (UTC), every routine keyed to local time (Eastern, the clocks going back on
+1 November 2026). Each minute: renters arrive at each station (Poisson by station type, hour, day type,
+month and weather), take a bike in working order of the type they want (or of the other type), ride, and dock at
+the end of the ride (a full station sends them to the nearest free dock). A bike breaks on a ride with a small
+probability; its rider docks it, and some riders report it, after which the operator takes it out of rental. A renter
+who finds only broken bikes listed sometimes reports one too. The vans fill the stations each morning, answer the
+feed's empty and full alerts, and the mechanics check every station on a cycle and take broken bikes to the depot,
+where they are repaired. December nights take bikes off the street for the winter.
+
+The status feed counts a docked bike as available until the operator has taken it out of rental, so a broken bike no
+one reported stays listed, and a station whose only listed bikes are broken raises no empty alert.
 """
+import collections
 import datetime as dt
+import math
 
 import numpy as np
 
-SEED = 482
-T0 = dt.datetime(2026, 1, 1)                 # local midnight, Central standard time = UTC-6
-WARM = 360                                   # minutes simulated before local midnight
-TAIL = 360                                   # minutes simulated after the local year
-N = WARM + 525600 + TAIL
-TAU_P, TAU_V, TAU_OPEN, ROOM = 3.0, 46.0, 15.0, 21.5
-LIMIT, LINE = 8.0, 24.0
-STEP = 10                                    # every logger and the in-carton sensor record every ten minutes
-DST0 = (dt.datetime(2026, 3, 8, 2) - T0).days * 1440 + 120      # standard-time minute of the spring change
-DST1 = (dt.datetime(2026, 11, 1, 1) - T0).days * 1440 + 60      # standard-time minute of the autumn change
-UTC0 = dt.datetime(2026, 1, 1, 6, 0)         # local midnight in UTC
-HOLIDAYS = [0, 329, 358]                     # New Year's Day, Thanksgiving, Christmas Day: pharmacies closed
-
-PEOPLE = {"director": "Breanna Graham", "pilot": "Julia Kaufman"}
-CHAINS = {"F": "Penwick Pharmacy", "K": "Vollmer Drug", "P": "Lindqvist Apothecary"}
-MAKES = {"F": ("Frostline", "FL-200 Cloud"), "K": ("Kelvra", "KV-10"), "P": ("Brumal", "BR-20")}
-VENDORS = {"sensor": "Tamberlane Sensing", "system": "Tellvane", "wholesaler": "Meridale Pharmaceutical Distribution",
-           "service": "Brannon Refrigeration Service"}
-COMPANY = "Penwick Pharmacy, Inc."
+SEED = 1076
+UTC = dt.timezone.utc
+FALLBACK_UTC = dt.datetime(2026, 11, 1, 6, 0, tzinfo=UTC)     # 2:00 EDT becomes 1:00 EST
+START = dt.datetime(2026, 9, 24, 0, 0, tzinfo=UTC)           # 20:00 on 23 September, Eastern daylight time
+NMIN = 157020
+END = START + dt.timedelta(minutes=NMIN)                      # 20:00 on 10 January, the City's extract
 
 
-def doy(mo, d):
-    return (dt.date(2026, mo, d) - dt.date(2026, 1, 1)).days
+def offset_hours(utc):
+    return -4 if utc < FALLBACK_UTC else -5
 
 
-STORMS = {"S1": (doy(2, 9), 15, 40), "S2": (doy(6, 18), 17, 5), "S3": (doy(8, 3), 2, 30)}
-
-# number, town, unit (pharma: purpose-built pharmaceutical refrigerator; household: household-style), setpoint,
-# routine door openings a day, delivery-day door minutes, month-end count minutes, extras
-_D = {
-    101: ("Corriden", "pharma", 4.6, 22, 6, 9, {"storms": ["S1", "S3"]}),
-    102: ("Dalmore", "pharma", 4.3, 12, 4, 8, {}),
-    103: ("Edgecott", "pharma", 4.7, 24, 29, 9, {}),
-    104: ("Farrowby", "pharma", 4.9, 40, 8, 9, {}),
-    105: ("Gisborne", "household", 4.7, 20, 5, 8, {"defrost": (8.8, 46)}),
-    106: ("Hatherley", "household", 5.1, 17, 6, 9, {"drift": [(doy(7, 6), 3900, 8.9)]}),
-    107: ("Ilsington", "pharma", 4.5, 16, 5, 9, {}),
-    108: ("Keverne", "pharma", 5.2, 46, 13, 9, {"twice": True}),
-    109: ("Marcham", "pharma", 4.6, 22, 6, 9, {"propped": (33, 9, 12, 2)}),
-    110: ("Oldcastle", "household", 5.0, 15, 6, 9, {"ajar": [(doy(3, 27), 650), (doy(11, 20), 440)]}),
-    201: ("Thurlby", "pharma", 4.8, 21, 6, 9, {"drift": [(doy(4, 20), 2100, 9.2), (doy(12, 2), 1500, 9.0)]}),
-    202: ("Ulverston", "pharma", 5.1, 42, 12, 9, {"twice": True}),
-    203: ("Vexley", "pharma", 4.4, 10, 4, 8, {}),
-    204: ("Wedmore", "household", 4.5, 16, 6, 8, {"defrost": (8.7, 44)}),
-    205: ("Yelverton", "pharma", 4.6, 25, 7, 9, {"storms": ["S3"]}),
-    206: ("Abbotsley", "pharma", 4.8, 26, 31, 9, {}),
-    207: ("Braxted", "pharma", 4.7, 28, 13, 9, {"twice": True}),
-    208: ("Chelwood", "pharma", 4.5, 13, 5, 8, {"propped": (38, 10, 11, 2)}),
-    209: ("Embleton", "pharma", 5.0, 44, 9, 9, {}),
-    210: ("Greystoke", "pharma", 4.7, 20, 6, 9, {"storms": ["S2"], "ajar": [(doy(10, 14), 600)]}),
-    301: ("Haddow", "household", 4.6, 18, 5, 8, {"defrost": (8.7, 45)}),
-    302: ("Inkpen", "pharma", 4.7, 19, 6, 9, {"storms": ["S2"]}),
-    303: ("Lexden", "household", 5.0, 22, 27, 9, {}),
-    304: ("Mowbray", "pharma", 4.2, 14, 5, 8, {}),
-    305: ("Nettlecombe", "pharma", 4.8, 26, 7, 9, {"ajar": [(doy(5, 22), 400)]}),
-    306: ("Padbury", "pharma", 4.7, 20, 6, 9, {"propped": (27, 9, 12, 2)}),
-    307: ("Quarndon", "pharma", 4.8, 38, 9, 9, {}),
-    308: ("Ruddington", "pharma", 4.5, 18, 5, 9, {"storms": ["S1", "S2", "S3"]}),
-    309: ("Tilney", "household", 4.7, 22, 6, 9, {"defrost": (8.8, 45)}),
-    310: ("Upwood", "pharma", 4.9, 30, 8, 9, {"storms": ["S1"]}),
-}
-PILOT = [105, 107, 110, 202, 206, 209, 304, 305, 308, 309]
-VARIANT = {101: 1, 103: 1, 106: 4, 108: 9, 109: 55, 110: 55, 202: 2, 206: 3, 210: 1, 301: 1, 303: 1, 306: 1,
-           310: 2}                            # per-store seed variants, set by tuning so every figure sits mid-bin
-COUNT_30DEC = [102, 105, 110, 203, 208, 209, 306, 307]   # year-end inventory taken on 30 December
-REPLACED = {302: (doy(3, 14), 13, 20, 190), 207: (doy(9, 9), 22, 40, 150)}   # day, hh, mm, gap minutes
+def to_local(utc):
+    """local wall-clock time (naive) of an absolute instant"""
+    return (utc + dt.timedelta(hours=offset_hours(utc))).replace(tzinfo=None)
 
 
-def seed(no, k):
-    return SEED * 1000 + no * 7 + k + 100003 * VARIANT.get(no, 0)
+def utc_of_local(t):
+    """the absolute instant of a local wall-clock time; in the repeated hour the first one"""
+    first = (t - dt.timedelta(hours=-4)).replace(tzinfo=UTC)
+    if first < FALLBACK_UTC:
+        return first
+    return (t - dt.timedelta(hours=-5)).replace(tzinfo=UTC)
 
 
-def make_of(no):
-    return {1: "F", 2: "K", 3: "P"}[no // 100]
+def minute_of(t):
+    """minute index of a local wall-clock time (or of an aware instant)"""
+    u = t if t.tzinfo is not None else utc_of_local(t)
+    return int((u - START).total_seconds() // 60)
 
 
-STORES = [dict(no=no, town=v[0], unit=v[1], sp=v[2], door=v[3], restock=v[4], count=v[5], ex=v[6], make=make_of(no),
-               chain=CHAINS[make_of(no)]) for no, v in sorted(_D.items())]
-BY_NO = {s["no"]: s for s in STORES}
+QSTART = dt.datetime(2026, 10, 1)
+QEND = dt.datetime(2027, 1, 1)
+# The fleet's own clock: the local minute of the day and the local day (days since 24 September) at each minute. It
+# keeps Eastern time from the window's start and turns back an hour four hours early, at 22:00 on 31 October, which
+# moves nothing the pack records; the first four hours (the evening of 23 September) run on day -1.
+_fb = 54840
+_idx = np.arange(NMIN)
+_local_min = _idx - 4 * 60
+_local_min[_fb:] -= 60
+LOCAL_MOD = (_local_min % 1440).astype(np.int32)
+LOCAL_DAY = (_local_min // 1440).astype(np.int32)           # days since 24 September 2026 local
+# Eastern time itself at each minute, for the Schedule C minutes and anything the pack states
+_fb_true = int((FALLBACK_UTC - START).total_seconds() // 60)
+_true_min = _idx - 4 * 60
+_true_min[_fb_true:] -= 60
+TRUE_MOD = (_true_min % 1440).astype(np.int32)
+TRUE_DAY = (_true_min // 1440).astype(np.int32)
+DAY0 = dt.date(2026, 9, 24)
+SERVICE = (6 * 60, 24 * 60)
+MONTHS = (10, 11, 12)
 
-# the local wall clock for every physical minute
-_m = np.arange(N)
-_std = _m - WARM
-WALL = _std + ((_std >= DST0) & (_std < DST1)) * 60
-WDAY = np.floor_divide(WALL, 1440)
-WMIN = WALL - WDAY * 1440
-_DATES = [dt.date(2026, 1, 1) + dt.timedelta(days=int(d)) for d in range(-1, 368)]
-MONTH = np.array([d.month for d in _DATES])[np.clip(WDAY + 1, 0, 368)]
-DOW = (WDAY + 3) % 7
-SEASON = np.where(MONTH >= 9, 2.4, np.where(MONTH <= 2, 1.3, 1.0))
-_open = (((DOW < 5) & (WMIN >= 480) & (WMIN < 1260)) | ((DOW == 5) & (WMIN >= 540) & (WMIN < 1080))
-         | ((DOW == 6) & (WMIN >= 600) & (WMIN < 1080)))
-OPEN = _open & ~np.isin(WDAY, HOLIDAYS) & (WDAY >= 0) & (WDAY < 365)
-TOD = np.interp(WMIN, [480, 600, 720, 840, 960, 1080, 1260], [0.6, 1.0, 1.4, 1.0, 1.3, 1.5, 0.7])
-WARM_SEASON = (MONTH >= 5) & (MONTH <= 9)
+P = dict(p_break=0.0080, break_per_km=0.0026, p_report=0.35, p_report_seen=0.012, flag_lo=20, flag_hi=150,
+         p_find_alert=0.5, p_find_morning=0.0, alert_lo=15, alert_hi=50, queue_step=25, check_lo=10 * 60,
+         check_hi=15 * 60, repair_lo=1, repair_hi=3, prefer_e=0.45, take_other=0.85, fill_target=0.68,
+         alert_fill=0.55, full_trim=0.7, p_staff=0.01,
+         res_cycle={112: 3, 113: 4, 114: 4, 115: 4, 116: 3, 117: 4, 118: 4, 119: 3, 120: 4, 121: 4, 122: 4, 123: 4,
+                    124: 4},
+         check_lo_res=13 * 60, check_hi_res=17 * 60)
+MONTH_SCALE = {9: 1.0, 10: 0.88, 11: 0.62, 12: 0.34, 1: 0.30}
+DAILY = {"core": 46, "campus": 38, "hub": 58, "res": 30, "park": 16}
+MULT = {112: 1.55, 116: 1.6, 113: 1.25, 117: 1.3, 119: 1.35, 121: 1.3, 114: 1.1, 118: 1.0, 115: 0.9, 120: 0.85}
+STORAGE_NIGHTS = (dt.date(2026, 12, 1), dt.date(2026, 12, 8), dt.date(2026, 12, 15))
 
-
-def at(day, hh, mm):
-    """physical minute of a local wall time on a day of 2026 (0-based)"""
-    w = day * 1440 + hh * 60 + mm
-    s = w - (60 if (DST0 + 60 <= w < DST1 + 60) else 0)
-    return s + WARM
-
-
-def utc_of(m):
-    return UTC0 + dt.timedelta(minutes=int(m) - WARM)
-
-
-def local_of(m):
-    """local wall time and its UTC offset in hours"""
-    u = utc_of(m)
-    std = int(m) - WARM
-    off = -5 if DST0 <= std < DST1 else -6
-    return u + dt.timedelta(hours=off), off
-
-
-def ifilter(x, c, y0, block=800):
-    """y[n] = c[n] * y[n-1] + (1 - c[n]) * x[n], y[-1] = y0"""
-    x = np.asarray(x, float)
-    c = np.broadcast_to(np.asarray(c, float), x.shape)
-    y = np.empty_like(x)
-    prev = float(y0)
-    for s in range(0, len(x), block):
-        xs, cs = x[s:s + block], c[s:s + block]
-        p = np.cumprod(cs)
-        y[s:s + block] = p * (prev + np.cumsum((1.0 - cs) * xs / p))
-        prev = y[s + len(xs) - 1]
-    return y
-
-
-def deliveries(s):
-    """(physical minute, door minutes, propped) for each delivery: Tuesdays all year, Fridays September to November
-    and at the twice-weekly stores all year; the propped stores' season deliveries are unloaded with the door held"""
-    r = np.random.default_rng(seed(s["no"], 1))
-    out = []
-    ex = s["ex"]
-    for d in range(365):
-        dd = _DATES[d + 1]
-        if d in HOLIDAYS:
-            continue
-        if not (dd.weekday() == 1 or (dd.weekday() == 4 and (9 <= dd.month <= 11 or ex.get("twice")))):
-            continue
-        a = at(d, 10, int(r.integers(0, 110)))
-        k = int(max(2, round(r.normal(s["restock"], s["restock"] * 0.15))))
-        pp = ex.get("propped")
-        propped = bool(pp and pp[1] <= dd.month <= pp[2] and (dd.weekday() == 1 or pp[3] == 2))
-        if propped:
-            k = int(max(5, round(r.normal(pp[0], 1.5))))
-        out.append((a, k, propped))
-    return out
+# id, name, kind, x km, y km, docks
+STATIONS = [
+    (101, "Market Square", "core", 0.0, 0.0, 27),
+    (102, "Queen and Albert", "core", 0.4, 0.2, 23),
+    (103, "City Hall", "core", -0.3, 0.3, 19),
+    (104, "Wharf Street", "core", 0.2, -0.4, 23),
+    (105, "Courthouse", "core", 0.7, -0.1, 19),
+    (106, "Library Plaza", "core", -0.6, -0.2, 19),
+    (107, "General Hospital", "core", 0.1, 0.7, 15),
+    (108, "University Commons", "campus", 2.4, 1.1, 23),
+    (109, "Science Quad", "campus", 2.8, 0.6, 15),
+    (110, "Central Station", "hub", -1.1, 0.5, 27),
+    (111, "Eastgate Terminal", "hub", 1.3, -0.9, 23),
+    (112, "Maple Grove", "res", 2.29, 0.71, 11),
+    (113, "Elmwood Park", "res", 2.06, 2.36, 15),
+    (114, "Riverbend", "res", 0.71, 3.23, 13),
+    (115, "Cedar Heights", "res", -0.71, 2.29, 19),
+    (116, "Birch Hill", "res", -2.36, 2.06, 11),
+    (117, "Linden Avenue", "res", -3.23, 0.71, 15),
+    (118, "Orchard Lane", "res", -2.29, -0.71, 13),
+    (119, "Willow Crescent", "res", -2.06, -2.36, 11),
+    (120, "Ashdale", "res", -0.71, -3.23, 15),
+    (121, "Fernwood", "res", 0.71, -2.29, 13),
+    (122, "Waterfront Trail", "park", -0.8, -1.6, 15),
+    (123, "Pier Park", "park", 0.6, -1.7, 19),
+    (124, "Lighthouse Point", "park", 1.9, -1.5, 11),
+]
+# Linden Avenue moves across the street on 9 November under a new id; Birch Hill and Willow Crescent gain four docks
+RELOCATION = dict(old=117, new=125, when=dt.datetime(2026, 11, 8, 23, 0), dx=0.05, dy=0.02)
+EXPANSIONS = {116: (dt.datetime(2026, 11, 1, 23, 0), 15), 119: (dt.datetime(2026, 11, 22, 23, 0), 15)}
 
 
-def counts(s):
-    """month-end cycle counts on the last business day of January to November, from about 15:00, and the year-end
-    physical inventory after closing, shelf by shelf with the door shut between shelves: on 30 December at the
-    stores in COUNT_30DEC, on 31 December at the rest"""
-    r = np.random.default_rng(seed(s["no"], 2))
-    out = []
-    for mo in range(1, 12):
-        last = dt.date(2026, mo + 1, 1) - dt.timedelta(days=1)
-        while last.weekday() >= 5:
-            last -= dt.timedelta(days=1)
-        out.append((at((last - dt.date(2026, 1, 1)).days, 15, int(r.integers(0, 40))),
-                    int(max(5, round(r.normal(s["count"], 1.5))))))
-    day = doy(12, 30) if s["no"] in COUNT_30DEC else doy(12, 31)
-    a = at(day, 21, int(r.integers(5, 25)))
-    for _ in range(3):
-        k = int(r.integers(3, 6))
-        out.append((a, k))
-        a += k + int(r.integers(4, 7))
-    return out
+def profile(kind, weekend):
+    h = np.zeros(24)
+    if weekend:
+        base = {"core": 0.5, "campus": 0.4, "hub": 0.7, "res": 0.7, "park": 1.4}[kind]
+        for t in range(24):
+            h[t] = base * max(0.0, math.sin(math.pi * (t - 8) / 14)) if 8 <= t <= 22 else 0.02
+        return h
+    peaks = {
+        "res": {7: 2.6, 8: 3.0, 9: 1.4, 12: 0.4, 17: 0.6, 18: 0.7, 19: 0.6, 20: 0.4},
+        "core": {8: 0.3, 9: 0.3, 12: 1.0, 13: 0.8, 16: 1.6, 17: 2.8, 18: 1.8, 19: 0.6, 21: 0.3},
+        "hub": {7: 1.6, 8: 2.0, 9: 0.8, 12: 0.5, 16: 1.0, 17: 1.8, 18: 1.2, 19: 0.4},
+        "campus": {9: 0.8, 10: 1.2, 11: 1.2, 12: 1.4, 13: 1.2, 14: 1.0, 15: 1.0, 16: 1.2, 17: 0.9, 20: 0.4},
+        "park": {11: 0.4, 12: 0.6, 14: 0.6, 16: 0.7, 17: 0.8, 18: 0.6},
+    }[kind]
+    for t in range(24):
+        h[t] = peaks.get(t, 0.08 if 6 <= t <= 22 else 0.01)
+    return h
 
 
-def year_end_count(s):
-    """the physical minute the year-end physical inventory closed: after the last shelf"""
-    return counts(s)[-1][0] + counts(s)[-1][1] + 2
+def dest_weights(kind_from, hour, weekend):
+    if weekend:
+        return {"core": 1.0, "campus": 0.3, "hub": 0.8, "res": 1.0, "park": 1.6}
+    if hour < 11:
+        if kind_from in ("res", "hub"):
+            return {"core": 3.0, "campus": 1.6, "hub": 1.4, "res": 0.3, "park": 0.2}
+        return {"core": 1.0, "campus": 1.0, "hub": 1.0, "res": 0.6, "park": 0.3}
+    if hour < 15:
+        return {"core": 1.4, "campus": 0.8, "hub": 0.8, "res": 0.6, "park": 0.6}
+    if kind_from in ("core", "campus", "hub"):
+        return {"core": 0.5, "campus": 0.4, "hub": 1.0, "res": 3.2, "park": 0.4}
+    return {"core": 1.0, "campus": 0.4, "hub": 0.8, "res": 1.0, "park": 0.6}
 
 
-def events(s):
-    """outages, doors left ajar and failing thermostats: (kind, start minute, minutes, level)"""
-    r = np.random.default_rng(seed(s["no"], 3))
-    out = []
-    for name in s["ex"].get("storms", []):
-        d, hh, mm = STORMS[name]
-        out.append(("outage", at(d, hh, mm) + int(r.integers(-25, 25)), int(r.uniform(200, 560)), ROOM))
-    for (d, k) in s["ex"].get("ajar", []):
-        out.append(("ajar", at(d, 21, int(r.integers(5, 40))), k, 13.5))
-    for (d, k, lvl) in s["ex"].get("drift", []):
-        out.append(("thermostat", at(d, int(r.integers(0, 23)), 0), k, lvl))
-    return out
-
-
-def simulate(s):
-    r = np.random.default_rng(seed(s["no"], 0))
-    amp, per = (0.25, 14) if s["unit"] == "pharma" else (0.7, 36)
-    target = s["sp"] + amp * np.sign(np.sin(2 * np.pi * (_m + r.integers(0, per)) / per))
-    tau = np.full(N, 5.0 if s["unit"] == "pharma" else 9.0)
-    lam = s["door"] / 780.0 * SEASON * TOD * OPEN
-    opens = np.where(r.random(N) < lam)[0]
-    for a in opens:
-        target[a] = ROOM
-        tau[a] = TAU_OPEN / r.uniform(0.25, 0.7)
-    if "defrost" in s["ex"]:
-        peak, dur = s["ex"]["defrost"]
-        for k in range(0, N, 720):
-            off = k + 200 + int(r.integers(-15, 15))
-            lvl = (peak if WARM_SEASON[min(off, N - 1)] else peak - 1.6) + r.normal(0, 0.15)
-            d = int(dur + r.normal(0, 4))
-            target[off:off + d] = lvl
-            tau[off:off + d] = 9.0
-    for (a, k, _) in deliveries(s):
-        target[a:a + k] = ROOM
-        tau[a:a + k] = TAU_OPEN
-    for (a, k) in counts(s):
-        target[a:a + k] = ROOM
-        tau[a:a + k] = TAU_OPEN
-    for (kind, a, k, lvl) in events(s):
-        target[a:a + k] = lvl
-        tau[a:a + k] = {"outage": 210.0, "ajar": 22.0, "thermostat": 45.0}[kind]
-    air = ifilter(target, np.exp(-1.0 / tau), s["sp"])
-    probe = ifilter(air, np.exp(-1.0 / TAU_P), s["sp"])
-    carton = ifilter(air, np.exp(-1.0 / TAU_V), s["sp"])
-    return air, probe, carton, opens
-
-
-def pilot_dates(no):
-    """installation and logger collection (physical minutes) for a pilot store"""
-    r = np.random.default_rng(seed(no, 4))
-    k = PILOT.index(no)
-    day = 125 + 7 * k + int(r.integers(0, 4))          # one store a week from early May
-    if dt.date(2026, 1, 1).toordinal() + day and (dt.date(2026, 1, 1) + dt.timedelta(days=day)).weekday() >= 5:
-        day += 2
-    inst = at(day, int(r.integers(9, 15)), int(r.integers(0, 59)))
-    coll = inst + int(r.integers(13, 16)) * 1440 + int(r.integers(-120, 120))
-    return inst, coll
-
-
-def gaps(s, rec_t):
-    """record indices dropped: a logger replacement and battery changes, all in quiet hours"""
-    r = np.random.default_rng(seed(s["no"], 5))
-    drop = np.zeros(len(rec_t), bool)
-    spans = []
-    if s["no"] in REPLACED:
-        d, hh, mm, g = REPLACED[s["no"]]
-        a = at(d, hh, mm)
-        spans.append((a, a + g, "replaced"))
-    for _ in range(int(r.integers(1, 3))):
-        d = int(r.integers(20, 340))
-        a = at(d, 2, int(r.integers(0, 50)))
-        spans.append((a, a + int(r.integers(20, 50)), "battery"))
-    for a, b, _ in spans:
-        drop |= (rec_t >= a) & (rec_t < b)
-    return drop, spans
-
-
-def everything():
-    """every store's records and the truth they come from"""
+def weather(seed):
+    """daily demand factor from the season's weather (rain and snow days ride less)"""
+    rng = np.random.default_rng([seed, 7])
     out = {}
-    for s in STORES:
-        air, probe, carton, opens = simulate(s)
-        r = np.random.default_rng(seed(s["no"], 6))
-        rec_t = np.arange(0, N - STEP + 1, STEP)
-        cs = np.concatenate([[0.0], np.cumsum(probe)])
-        rec_x = (cs[rec_t + STEP] - cs[rec_t]) / STEP + r.normal(0, 0.03, len(rec_t))
-        e = dict(store=s, rec_t=rec_t, rec_x=rec_x, carton_at=carton[rec_t], air=None)
-        drop, spans = gaps(s, rec_t)
-        e["gaps"] = spans
-        keep = ~drop
-        if s["no"] in PILOT:
-            inst, coll = pilot_dates(s["no"])
-            e["inst"], e["coll"] = inst, coll
-            keep &= rec_t < coll
-            c0 = inst + int(r.integers(0, STEP))
-            ct = np.arange(c0, N - 1, STEP)
-            e["cl_t"] = ct
-            e["cl_x"] = carton[ct] + r.normal(0, 0.04, len(ct))
-        e["rec_t"], e["rec_x"], e["carton_at"] = rec_t[keep], rec_x[keep], e["carton_at"][keep]
-        e["carton"] = carton
-        e["deliveries"] = deliveries(s)
-        e["counts"] = counts(s)
-        e["opens"] = opens
-        e["events"] = events(s)
-        out[s["no"]] = e
+    d = DAY0
+    while d < dt.date(2027, 1, 12):
+        f = 1.0
+        r = rng.random()
+        if d.month >= 11 and r < 0.18:
+            f = 0.45          # snow or freezing rain
+        elif r < 0.22:
+            f = 0.65          # rain
+        out[d] = f
+        d += dt.timedelta(days=1)
     return out
 
 
-def in_year(t):
-    return (t >= WARM) & (t < WARM + 525600)
+class Fleet:
+    def __init__(self, seed=SEED, params=None, mult=None):
+        self.seed = seed
+        self.P = dict(P, **(params or {}))
+        self.mult = dict(MULT)
+        self.mult.update(mult or {})
+        self.rng = np.random.default_rng(seed)
+        self.st = {s[0]: dict(id=s[0], name=s[1], kind=s[2], x=s[3], y=s[4], cap=s[5]) for s in STATIONS}
+        self.public = [s[0] for s in STATIONS]
+        self.wx = weather(seed)
+        self.btype = {}
+        for k in range(310):
+            self.btype[1000 + k] = "classic"
+        bikes = list(self.btype)
+        self.rng.shuffle(bikes)
+        self.docked = {s: [] for s in self.public}
+        it = iter(bikes)
+        for s in self.public:
+            for _ in range(int(0.55 * self.st[s]["cap"])):
+                self.docked[s].append(next(it))
+        self.depot = list(it)
+        self.broken = set()
+        self.flagged = set()
+        self.flag_due = {}
+        self.repair_due = {}
+        self.in_ride = {}
+        self.trips = []
+        self.moves = []
+        self.pending = {}
+        self.checks_today = []
+        self.trip_id = 0
+        self.flags = []
+        self.reports = []
+        self.breaks = []          # dicts: bike, station, docked minute, reported, removed minute
+        self.open_break = {}      # bike -> index into breaks
+        self.lost = collections.Counter()
+        self.listed = {s: np.zeros(NMIN, dtype=np.int16) for s in self.public}
+        self.work = {s: np.zeros(NMIN, dtype=np.int16) for s in self.public}
+        self.disabled = {s: np.zeros(NMIN, dtype=np.int16) for s in self.public}
+        self.docks = {s: np.zeros(NMIN, dtype=np.int16) for s in self.public}
+        self.active = {s: np.zeros(NMIN, dtype=bool) for s in self.public}
+        self.relocated = False
+        self.rs = {}
+        self.seq = 0
+        self.dock_min = {}
+        self.last_rent = {}
+
+    def r(self, *key):
+        """an independent random stream per purpose and station, so one station's dials move little else"""
+        if key not in self.rs:
+            self.rs[key] = np.random.default_rng([self.seed] + [int(k) for k in key])
+        return self.rs[key]
+
+    # ----------------------------------------------------------------------------------------------------------
+    def cap(self, s):
+        return self.st[s]["cap"]
+
+    def listed_n(self, s):
+        return sum(1 for b in self.docked[s] if b not in self.flagged)
+
+    def working(self, s, kind=None):
+        return [b for b in self.docked[s] if b not in self.broken and (kind is None or self.btype[b] == kind)]
+
+    def station_ids(self):
+        return [s for s in self.public if self.st[s].get("open", True)]
+
+    def to_depot(self, b, m, repair):
+        self.depot.append(b)
+        if b in self.open_break:
+            self.breaks[self.open_break.pop(b)]["removed"] = m
+        if repair:
+            rb = self.r(5, b)
+            days = int(rb.integers(self.P["repair_lo"], self.P["repair_hi"] + 1))
+            self.repair_due[b] = m + days * 1440 + int(rb.integers(-180, 180))
+
+    def depot_ready(self):
+        return [b for b in self.depot if b not in self.broken]
+
+    def finish_repairs(self, m):
+        for b in [b for b, d in self.repair_due.items() if d <= m]:
+            self.broken.discard(b)
+            self.flagged.discard(b)
+            del self.repair_due[b]
+
+    def tick(self):
+        self.seq += 1
+        return self.seq
+
+    def log_move(self, m, van, station, action, bikes):
+        for b in bikes:
+            self.moves.append(dict(minute=m, van=van, station=station, action=action, bike=b, seq=self.tick()))
+
+    def van_visit(self, m, s, van, target, p_find):
+        rf = self.r(4, s)
+        found = [b for b in self.docked[s] if b in self.broken and (b in self.flagged or (self.idle(s, b) and rf.random() < p_find))]
+        for b in found:
+            self.docked[s].remove(b)
+            self.to_depot(b, m, True)
+        self.log_move(m, van, s, "pickup", found)
+        n = len(self.docked[s])
+        if n < target:
+            ready = self.depot_ready()
+            take = ready[: max(0, min(target - n, len(ready)))]
+            for b in take:
+                self.depot.remove(b)
+                self.docked[s].append(b)
+                self.dock_min[b] = m
+            self.log_move(m, van, s, "drop", take)
+        elif n > target:
+            # the crew pulls the bikes nearest the van, the ones docked last
+            extra = [b for b in reversed(self.docked[s]) if b not in self.broken][: n - target]
+            for b in extra:
+                self.docked[s].remove(b)
+                self.to_depot(b, m, False)
+            self.log_move(m, van, s, "pickup", extra)
+
+    def idle(self, s, b):
+        """on the operator's idle-bike list: a renter took another bike at its station after it was docked"""
+        return self.last_rent.get(s, -1) > self.dock_min.get(b, 10 ** 9)
+
+    def check_visit(self, m, s):
+        found = [b for b in self.docked[s] if b in self.broken and (b in self.flagged or self.idle(s, b))]
+        for b in found:
+            self.docked[s].remove(b)
+            self.to_depot(b, m, True)
+        self.log_move(m, "V%d" % (1 + (s + m // 1440) % 3), s, "pickup", found)
+
+    def nearest_free(self, s):
+        a = self.st[s]
+        for x in sorted(self.station_ids(), key=lambda x: (self.st[x]["x"] - a["x"]) ** 2 + (self.st[x]["y"] - a["y"]) ** 2):
+            if len(self.docked[x]) < self.cap(x):
+                return x
+        return s
+
+    # ----------------------------------------------------------------------------------------------------------
+    def relocate(self, m):
+        """Linden Avenue's bikes are moved by van to its new site across the street, under a new station id"""
+        old, new = RELOCATION["old"], RELOCATION["new"]
+        a = self.st[old]
+        self.st[new] = dict(id=new, name=a["name"], kind=a["kind"], x=a["x"] + RELOCATION["dx"],
+                            y=a["y"] + RELOCATION["dy"], cap=a["cap"])
+        self.public.append(new)
+        self.docked[new] = []
+        for arr in (self.listed, self.work, self.disabled, self.docks):
+            arr[new] = np.zeros(NMIN, dtype=np.int16)
+        self.active[new] = np.zeros(NMIN, dtype=bool)
+        moving = list(self.docked[old])
+        self.docked[old] = []
+        self.log_move(m, "V1", old, "pickup", moving)
+        self.in_van = (m + 25, new, moving)
+        self.st[old]["open"] = False
+        self.mult[new] = self.mult.get(old, 1.0)
+        self.relocated = True
+
+    def run(self):
+        rng = self.rng
+        P = self.P
+        lam_cache = {}
+        day0 = DAY0
+        rel_m = minute_of(RELOCATION["when"])
+        exp_m = {minute_of(t): (s, c) for s, (t, c) in EXPANSIONS.items()}
+        days = [DAY0 + dt.timedelta(days=int(k)) for k in range(int(LOCAL_DAY[-1]) + 1)]
+        seen_midnight = set()
+        for m in range(NMIN):
+            mod = int(LOCAL_MOD[m])
+            day = days[int(LOCAL_DAY[m])]
+            weekend = day.weekday() >= 5
+            if m == rel_m:
+                self.relocate(m)
+            if getattr(self, "in_van", None) and self.in_van[0] == m:
+                _, new, moving = self.in_van
+                self.docked[new].extend(moving)
+                for b in moving:
+                    self.dock_min[b] = m
+                self.log_move(m, "V1", new, "drop", moving)
+                self.in_van = None
+            if m in exp_m:
+                s, c = exp_m[m]
+                self.st[s]["cap"] = c
+            if mod == 0 and day not in seen_midnight:
+                seen_midnight.add(day)
+                self.finish_repairs(m)
+                self.checks_today = []
+                for s in self.station_ids():
+                    inner = self.st[s]["kind"] in ("core", "hub", "campus")
+                    every = 1 if inner else self.P["res_cycle"].get(s, 3)
+                    lo, hi = (P["check_lo"], P["check_hi"]) if inner else (P["check_lo_res"], P["check_hi_res"])
+                    if (day - day0).days % every == (s % every):
+                        self.checks_today.append((int(self.r(3, s).integers(lo, hi)), s))
+            for b in [b for b, d in self.flag_due.items() if d <= m]:
+                if b in self.broken:
+                    self.flagged.add(b)
+                    where = next((s for s in self.public if b in self.docked[s]), None)
+                    if where is not None:
+                        self.flags.append(dict(minute=m, seq=self.tick(), bike=b, station=where))
+                    if b in self.open_break and self.breaks[self.open_break[b]].get("flagged") is None:
+                        self.breaks[self.open_break[b]]["flagged"] = m
+                del self.flag_due[b]
+            if mod == 4 * 60 + 30:
+                for s in self.station_ids():
+                    if self.st[s]["kind"] in ("res", "hub", "park", "campus"):
+                        self.van_visit(m, s, "V1", int(P["fill_target"] * self.cap(s)), P["p_find_morning"])
+                    elif len(self.docked[s]) > 0.8 * self.cap(s):
+                        self.van_visit(m, s, "V2", int(0.6 * self.cap(s)), P["p_find_morning"])
+            if day in STORAGE_NIGHTS and mod == 60:
+                for s in self.station_ids():
+                    keep = int(0.45 * self.cap(s))
+                    if len(self.docked[s]) > keep:
+                        self.van_visit(m, s, "V2", keep, 0.0)
+            for (cm, s) in self.checks_today:
+                if cm == mod and self.st[s].get("open", True):
+                    self.check_visit(m, s)
+            # trips ending
+            for tid in [tid for tid, v in self.in_ride.items() if v[2] <= m]:
+                b, dest, end, broke, rec, rep, fdelay = self.in_ride.pop(tid)
+                if not self.st[dest].get("open", True):
+                    dest = RELOCATION["new"]
+                s = dest
+                if len(self.docked[s]) >= self.cap(s) and not rec.get("diverted"):
+                    # a full station: the rider rides on to the nearest free dock, four minutes on
+                    s = self.nearest_free(s)
+                    rec["end_minute"] = m + 4
+                    rec["end_station"] = s
+                    rec["diverted"] = True
+                    self.in_ride[tid] = (b, s, m + 4, broke, rec, rep, fdelay)
+                    continue
+                if len(self.docked[s]) >= self.cap(s):
+                    s = self.nearest_free(s)
+                    rec["end_minute"] = m
+                self.docked[s].append(b)
+                self.dock_min[b] = m
+                rec["end_station"] = s
+                rec["end_seq"] = self.tick()
+                if broke:
+                    self.broken.add(b)
+                    if rep:
+                        self.flag_due[b] = m + fdelay
+                        self.reports.append(dict(minute=rec["end_minute"], bike=b, station=s, how="ride"))
+                    self.open_break[b] = len(self.breaks)
+                    self.breaks.append(dict(bike=b, station=s, docked=rec["end_minute"], reported=rep, removed=None,
+                                            flagged=None))
+            # alerts on the feed's counts
+            if SERVICE[0] <= mod < SERVICE[1] - 30:
+                for s in self.station_ids():
+                    if s in self.pending:
+                        kind, due = self.pending[s]
+                        if due <= m:
+                            del self.pending[s]
+                            tgt = P["alert_fill"] if kind == "empty" else P["full_trim"]
+                            self.van_visit(m, s, "V3", int(tgt * self.cap(s)), P["p_find_alert"])
+                        continue
+                    delay = int(self.r(6, s).integers(P["alert_lo"], P["alert_hi"])) + P["queue_step"] * max(0, len(self.pending) - 1)
+                    if self.listed_n(s) == 0:
+                        self.pending[s] = ("empty", m + delay)
+                    elif len(self.docked[s]) >= self.cap(s):
+                        self.pending[s] = ("full", m + delay)
+            # renters arrive
+            hour = mod // 60
+            key = (hour, weekend, day.month, self.wx[day], self.relocated)
+            ids = self.station_ids()
+            if key not in lam_cache:
+                lam_cache[key] = np.array([DAILY[self.st[s]["kind"]] * self.mult.get(s, 1.0)
+                                           * profile(self.st[s]["kind"], weekend)[hour]
+                                           / profile(self.st[s]["kind"], weekend).sum() / 60.0
+                                           * MONTH_SCALE[day.month] * self.wx[day] for s in ids])
+            lam = lam_cache[key]
+            for i, s in enumerate(ids):
+                k_arr = int(self.r(1, s).poisson(lam[i]))
+                rr = self.r(2, s)
+                for _ in range(k_arr):
+                    want = "e" if rr.random() < P["prefer_e"] else "classic"
+                    pool = self.working(s, want)
+                    if not pool:
+                        other = "classic" if want == "e" else "e"
+                        pool = self.working(s, other) if rr.random() < P["take_other"] else []
+                    if not pool:
+                        self.lost[(s, day)] += 1
+                        seen = [b for b in self.docked[s] if b in self.broken and b not in self.flagged
+                                and b not in self.flag_due]
+                        if seen and rr.random() < P["p_report_seen"]:
+                            self.flag_due[seen[0]] = m + int(rr.integers(P["flag_lo"], P["flag_hi"]))
+                            self.reports.append(dict(minute=m, bike=seen[0], station=s, how="seen"))
+                        continue
+                    b = pool[int(rr.integers(len(pool)))]
+                    self.docked[s].remove(b)
+                    self.last_rent[s] = m
+                    w = dest_weights(self.st[s]["kind"], hour, weekend)
+                    cands = [x for x in ids if x != s]
+                    wt = np.array([w[self.st[x]["kind"]] for x in cands], dtype=float)
+                    dest = cands[int(rr.choice(len(cands), p=wt / wt.sum()))]
+                    a, c = self.st[s], self.st[dest]
+                    km = 1.25 * math.hypot(a["x"] - c["x"], a["y"] - c["y"]) + 0.2
+                    speed = 17.0 if self.btype[b] == "e" else 12.0
+                    dur = max(2, int(round(km / speed * 60 * rr.lognormal(0, 0.18))))
+                    broke = rr.random() < (P["break_per_km"] * km if P.get("break_per_km") else P["p_break"])
+                    rep = rr.random() < P["p_report"]
+                    fdelay = int(rr.integers(P["flag_lo"], P["flag_hi"]))
+                    self.trip_id += 1
+                    rec = dict(trip=self.trip_id, bike=b, btype=self.btype[b], start_station=s, start_minute=m,
+                               end_station=dest, end_minute=m + dur,
+                               user="staff" if rr.random() < P["p_staff"] else "rider", start_seq=self.tick())
+                    self.trips.append(rec)
+                    self.in_ride[self.trip_id] = (b, dest, m + dur, broke, rec, rep, fdelay)
+            for s in self.station_ids():
+                d = self.docked[s]
+                nl = nw = nd = 0
+                for b in d:
+                    if b in self.flagged:
+                        nd += 1
+                    else:
+                        nl += 1
+                    if b not in self.broken:
+                        nw += 1
+                self.listed[s][m] = nl
+                self.work[s][m] = nw
+                self.disabled[s][m] = nd
+                self.docks[s][m] = self.cap(s) - len(d)
+                self.active[s][m] = True
+        return self
+
+
+# ---------------------------------------------------------------------------------------------------------------
+def month_minutes(mo):
+    """the minutes of a month's service hours (6:00 to midnight local); minute m holds the state at the start of
+    the minute that follows it, so the service minute starting at 6:00 is the state recorded at 5:59"""
+    a = minute_of(dt.datetime(2026, mo, 1))
+    b = minute_of(dt.datetime(2026, mo + 1, 1)) if mo < 12 else minute_of(QEND)
+    idx = np.arange(a, b)
+    mod = TRUE_MOD[idx]
+    return idx[(mod >= SERVICE[0]) & (mod < SERVICE[1])] - 1
+
+
+PEAKS = ((7 * 60, 10 * 60), (16 * 60, 19 * 60))
+
+
+def peak_minutes(mo):
+    """the weekday peak minutes of a month (7:00 to 10:00 and 16:00 to 19:00 local)"""
+    a = minute_of(dt.datetime(2026, mo, 1))
+    b = minute_of(dt.datetime(2026, mo + 1, 1)) if mo < 12 else minute_of(QEND)
+    idx = np.arange(a, b)
+    mod = TRUE_MOD[idx]
+    wdm = np.array([(DAY0 + dt.timedelta(days=int(k))).weekday() < 5 for k in TRUE_DAY[idx]])
+    inpk = np.zeros(len(idx), dtype=bool)
+    for lo, hi in PEAKS:
+        inpk |= (mod >= lo) & (mod < hi)
+    return idx[inpk & wdm]
+
+
+def station_series(f, arr, name):
+    """a public station's series across a relocation (the old id until it closed, the new one after)"""
+    ids = [s for s in f.public if f.st[s]["name"] == name]
+    out = np.zeros(NMIN, dtype=np.int32)
+    for s in ids:
+        out += np.where(f.active[s], arr[s], 0)
+    return out
+
+
+def availability(f, arr, months=MONTHS, peak=False):
+    out = {}
+    pick = peak_minutes if peak else month_minutes
+    names = []
+    for s in f.public:
+        if f.st[s]["name"] not in names:
+            names.append(f.st[s]["name"])
+    for name in names:
+        ser = station_series(f, arr, name)
+        out[name] = {mo: 100.0 * float((ser[pick(mo)] >= 1).mean()) for mo in months}
+    return out
+
+
+def designated(av, line=90.0):
+    return sorted(n for n, d in av.items() if min(d.values()) < line)
+
+
+_FLEET = {}
+
+
+def fleet(seed=SEED):
+    """the fleet run once per process (a run takes about half a minute)"""
+    if seed not in _FLEET:
+        _FLEET[seed] = Fleet(seed).run()
+    return _FLEET[seed]
+
+
+if __name__ == "__main__":
+    import sys
+    import time
+    t0 = time.time()
+    f = Fleet(int(sys.argv[1]) if len(sys.argv) > 1 else SEED).run()
+    print("ran in %.1fs: trips %d, breaks %d (reported %d), moves %d" % (
+        time.time() - t0, len(f.trips), len(f.breaks), sum(1 for b in f.breaks if b["reported"]), len(f.moves)))
+    d = availability(f, f.listed)
+    g = availability(f, f.work)
+    for n in d:
+        print("%-20s" % n, " ".join("%5.1f/%5.1f" % (d[n][mo], g[n][mo]) for mo in MONTHS))
+    print("default", designated(d))
+    print("golden ", designated(g))

@@ -2,75 +2,69 @@
  "task": "task482",
  "domain": "General Statistics & Data Science (data integration, record linkage and entity resolution)",
  "client_domain": "General Statistics & Data Science",
+ "house_domain": "supply-chain-logistics (transportation network)",
  "task_type": "data-integration-record-linkage-entity-resolution",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "pharmaceutical_refrigerator_quotes_2027.pdf",
-  "regional_weather_daily_2026.csv"
+  "wellhaven_daily_weather_2026q4.csv",
+  "northlane_wellhaven_quarterly_report_2026q4.pdf"
  ],
  "distractor_reasons": {
-  "pharmaceutical_refrigerator_quotes_2027.pdf": "procurement's quotations for the new pharmaceutical refrigerators (models, prices, installation, qualification, lead times): what a replacement costs, not which stores get one",
-  "regional_weather_daily_2026.csv": "the region's daily weather at its airport station, 2026, the storm days marked: the weather behind the outages, which no store's hours or stock turn on"
+  "wellhaven_daily_weather_2026q4.csv": "Wellhaven's daily temperatures, rain and snow for the period: the weather behind the season's ridership and the pay stations' cold-weather faults, which no station's availability, sales or card downtime is computed from",
+  "northlane_wellhaven_quarterly_report_2026q4.pdf": "Northlane's quarterly report to the City: monthly trips, casual trips, fleet moves and fault reports for the whole system, and the quarter's operations notes; it states no station's availability, sales or downtime"
  },
  "stated_inputs": [
-  "8 C",
-  "24 hours",
-  "2026",
-  "whole hours",
-  "whole doses",
-  "whole dollars"
+  "Schedule C",
+  "90 per cent",
+  "service hours 6:00 to midnight Eastern",
+  "Q4 2026",
+  "Q1 2027",
+  "whole per cent",
+  "one decimal of a point",
+  "dollars to the cent",
+  "whole hours"
  ],
  "deliverables": [
-  "penwick_refrigerator_replacements_2027.xlsx",
-  "penwick_vaccine_hours_2026.svg"
+  "priority_stations_2027q1.xlsx",
+  "station_availability_2026q4.html"
  ],
- "as_of": "2027-01-25",
+ "as_of": "2027-01-12",
  "files": [
-  "brannon_service_agreement_2025.pdf",
-  "brannon_service_history_2026-01_2027-01.xlsx",
-  "brumal_downloads_2026.txt",
-  "frostline_temperature_logs_2026.csv",
-  "kelvra_logger_export_2026.csv",
-  "meridale_credit_memos_2026.csv",
-  "meridale_vaccine_invoices_2026.csv",
-  "penwick_store_list_2027-01.xlsx",
-  "pharmaceutical_refrigerator_quotes_2027.pdf",
-  "pharmacy_vaccine_administrations_2026.csv",
-  "refrigerator_monitoring_roster_2026.xlsx",
-  "regional_weather_daily_2026.csv",
-  "tellvane_pilot_plan_2026.pdf",
-  "tellvane_sensor_readings_2026.csv",
-  "vaccine_item_master_2026.xlsx",
-  "vaccine_physical_inventory_ye2025_ye2026.xlsx",
-  "vaccine_storage_handling_standard_po-114_rev6.pdf",
-  "vaccine_store_transfers_2026.csv",
-  "vaccine_writeoff_log_2026.csv"
+  "bike_share_operating_agreement_schedules.pdf",
+  "gbfs_station_information_2027-01-11.json",
+  "northlane_fleet_moves_2026q4.csv",
+  "northlane_rider_fault_reports_2026q4.csv",
+  "northlane_trips_2026q4.csv",
+  "northlane_wellhaven_quarterly_report_2026q4.pdf",
+  "paystation_alarm_log_2026q4.csv",
+  "paystation_register_2027-01-08.xlsx",
+  "paystation_sales_2026q4.csv",
+  "paystation_work_orders_2026q4.xlsx",
+  "station_status_archive_notes.pdf",
+  "wellhaven_bike_share_station_list.xlsx",
+  "wellhaven_daily_weather_2026q4.csv",
+  "wellhaven_station_status_archive_2026q4.csv"
  ],
  "rows": {
-  "pharmacy_vaccine_administrations_2026.csv": 49606,
-  "brannon_service_agreement_2025.pdf": 1,
-  "brannon_service_history_2026-01_2027-01.xlsx": 89,
-  "brumal_downloads_2026.txt": 426744,
-  "meridale_credit_memos_2026.csv": 33,
-  "frostline_temperature_logs_2026.csv": 431158,
-  "vaccine_physical_inventory_ye2025_ye2026.xlsx": 539,
-  "meridale_vaccine_invoices_2026.csv": 5129,
-  "vaccine_item_master_2026.xlsx": 13,
-  "kelvra_logger_export_2026.csv": 441365,
-  "tellvane_pilot_plan_2026.pdf": 1,
-  "pharmaceutical_refrigerator_quotes_2027.pdf": 1,
-  "refrigerator_monitoring_roster_2026.xlsx": 42,
-  "vaccine_storage_handling_standard_po-114_rev6.pdf": 1,
-  "penwick_store_list_2027-01.xlsx": 30,
-  "tellvane_sensor_readings_2026.csv": 297285,
-  "vaccine_store_transfers_2026.csv": 15,
-  "regional_weather_daily_2026.csv": 365,
-  "vaccine_writeoff_log_2026.csv": 312
+  "bike_share_operating_agreement_schedules.pdf": 1,
+  "paystation_alarm_log_2026q4.csv": 11083,
+  "gbfs_station_information_2027-01-11.json": 24,
+  "northlane_fleet_moves_2026q4.csv": 22035,
+  "station_status_archive_notes.pdf": 1,
+  "paystation_register_2027-01-08.xlsx": 32,
+  "northlane_wellhaven_quarterly_report_2026q4.pdf": 1,
+  "northlane_rider_fault_reports_2026q4.csv": 165,
+  "paystation_sales_2026q4.csv": 6184,
+  "wellhaven_bike_share_station_list.xlsx": 25,
+  "wellhaven_station_status_archive_2026q4.csv": 93441,
+  "northlane_trips_2026q4.csv": 50254,
+  "wellhaven_daily_weather_2026q4.csv": 109,
+  "paystation_work_orders_2026q4.xlsx": 246
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task482/generator); the pharmacy chain, its stores and the chains it bought, the logger makes, the monitoring vendor, the wholesaler, the manufacturers, the service contractor and the people are fictional, and the NDCs and lot numbers are invented",
-  "public_specifications": "the layouts follow the style of digital data logger exports (CSV and download reports), a wireless monitoring system's cloud export, a pharmaceutical wholesaler's invoice and credit memo lines with 11-digit NDCs, a pharmacy system's administration and inventory extracts, and a field service portal's visit history",
+  "constructed": "every file is constructed for this task by its generator (task482/generator); the City of Wellhaven, its bike-share stations, the operator Northlane Mobility, the pay-station vendor, their staff and every number in the files are fictional",
+  "public_specifications": "the station status archive follows the General Bikeshare Feed Specification (GBFS 2.3) station_status and station_information fields; the trip export, fleet moves log, rider fault reports, pay-station sales export, alarm log, work orders and asset register follow the layouts bike-share operators and kiosk vendors commonly publish or hand to their cities",
   "licence": "CC0 1.0 (constructed data)",
-  "date": "2027-01-25"
+  "date": "2027-01-12"
  }
 }

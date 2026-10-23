@@ -3,7 +3,7 @@ import json
 
 import pack as P
 
-DISTRACTORS = [P.FILES["quotes"], P.FILES["weather"]]
+DISTRACTORS = [P.FILES["weather"], P.FILES["report"]]
 
 
 def write(path, n):
@@ -11,33 +11,35 @@ def write(path, n):
         "task": "task482",
         "domain": "General Statistics & Data Science (data integration, record linkage and entity resolution)",
         "client_domain": "General Statistics & Data Science",
+        "house_domain": "supply-chain-logistics (transportation network)",
         "task_type": "data-integration-record-linkage-entity-resolution",
         "objective": "Data Extraction & Conformation (ETL)",
         "distractor_files": DISTRACTORS,
         "distractor_reasons": {
-            P.FILES["quotes"]: "procurement's quotations for the new pharmaceutical refrigerators (models, prices, "
-                               "installation, qualification, lead times): what a replacement costs, not which stores "
-                               "get one",
-            P.FILES["weather"]: "the region's daily weather at its airport station, 2026, the storm days marked: the "
-                                "weather behind the outages, which no store's hours or stock turn on",
+            P.FILES["weather"]: "Wellhaven's daily temperatures, rain and snow for the period: the weather behind the "
+                                "season's ridership and the pay stations' cold-weather faults, which no station's "
+                                "availability, sales or card downtime is computed from",
+            P.FILES["report"]: "Northlane's quarterly report to the City: monthly trips, casual trips, fleet moves and "
+                               "fault reports for the whole system, and the quarter's operations notes; it states no "
+                               "station's availability, sales or downtime",
         },
-        "stated_inputs": ["8 C", "24 hours", "2026", "whole hours", "whole doses", "whole dollars"],
-        "deliverables": ["penwick_refrigerator_replacements_2027.xlsx", "penwick_vaccine_hours_2026.svg"],
-        "as_of": "2027-01-25",
+        "stated_inputs": ["Schedule C", "90 per cent", "service hours 6:00 to midnight Eastern", "Q4 2026", "Q1 2027",
+                          "whole per cent", "one decimal of a point", "dollars to the cent", "whole hours"],
+        "deliverables": ["priority_stations_2027q1.xlsx", "station_availability_2026q4.html"],
+        "as_of": "2027-01-12",
         "files": sorted(P.FILES.values()),
         "rows": {P.FILES[k]: v for k, v in sorted(n.items())},
         "sources": {
-            "constructed": "every file is constructed for this task by its generator (task482/generator); the "
-                           "pharmacy chain, its stores and the chains it bought, the logger makes, the monitoring "
-                           "vendor, the wholesaler, the manufacturers, the service contractor and the people are "
-                           "fictional, and the NDCs and lot numbers are invented",
-            "public_specifications": "the layouts follow the style of digital data logger exports (CSV and download "
-                                     "reports), a wireless monitoring system's cloud export, a pharmaceutical "
-                                     "wholesaler's invoice and credit memo lines with 11-digit NDCs, a pharmacy "
-                                     "system's administration and inventory extracts, and a field service portal's "
-                                     "visit history",
+            "constructed": "every file is constructed for this task by its generator (task482/generator); the City of "
+                           "Wellhaven, its bike-share stations, the operator Northlane Mobility, the pay-station "
+                           "vendor, their staff and every number in the files are fictional",
+            "public_specifications": "the station status archive follows the General Bikeshare Feed Specification "
+                                     "(GBFS 2.3) station_status and station_information fields; the trip export, fleet "
+                                     "moves log, rider fault reports, pay-station sales export, alarm log, work orders "
+                                     "and asset register follow the layouts bike-share operators and kiosk vendors "
+                                     "commonly publish or hand to their cities",
             "licence": "CC0 1.0 (constructed data)",
-            "date": "2027-01-25",
+            "date": "2027-01-12",
         },
     }
     with open(path, "w", encoding="utf-8") as fh:

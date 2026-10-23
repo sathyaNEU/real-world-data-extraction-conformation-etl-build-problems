@@ -1,131 +1,111 @@
 ## Tags
 
-**Domain:** General Statistics & Data Science, data integration, record linkage and entity resolution (thirty pharmacy stores' 2026 vaccine refrigerator temperature records, kept by three data logger makes and at ten pilot stores from mid-year by an in-carton sensor, conformed into one record of the vaccine's temperature per store).
+**Domain:** General Statistics & Data Science, data integration, record linkage and entity resolution (a city bike-share programme's archive of its operator's station status feed, the operator's trips, fleet moves and rider fault reports, and its pay-station vendor's sales, work orders, register and alarm log, conformed into each station's Schedule C availability and pay-station figures for the fourth quarter of 2026).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Penwick Pharmacy replaces the vaccine refrigerators of stores 103, 106, 109, 201, 206 and 303 before the 2027 respiratory season.**
-Their vaccine spent 44, 63, 27, 57, 52 and 60 hours above 8 °C in 2026 against the 24-hour line; the nearest store below it, 306 Padbury, spent 20, 4 short. Not the loggers' own readings, which put 108, 204, 207, 301 and 309 over the line at 38, 142, 32, 146 and 75 hours and 109 under it at 22: a logger's probe in its glycol bottle crosses 8 °C through every defrost swing, restock and busy hour the vaccine in its cartons rode out, and ends a propped-door delivery's excursion before the vaccine has cooled.
+**The City names four priority stations for the first quarter of 2027 under Schedule C: W-02 Queen and Albert, W-12 Maple Grove, W-16 Birch Hill and W-19 Willow Crescent, each under 90 per cent availability in October 2026 (88, 88, 86 and 88 per cent).**
+The station that cleared the line by the least is W-09 Science Quad, 91 per cent in October, 0.7 points above 90. Not W-16 Birch Hill alone: the status feed counts a docked bike as available until Northlane marks it out of service, and bikes that broke on rides and were docked unreported stayed listed while renters took the bikes around them, so read as the bikes in working order the feed puts W-02 Queen and Albert, W-12 Maple Grove and W-19 Willow Crescent at 91, 92 and 92 per cent in October.
 
 ## 2. Critical Components
 
-1. On the pilot stores' overlaps the in-carton sensor trails its logger's record by a first-order lag of **42.2** minutes at the Frostline stores, **42.2** at the Kelvra stores and **41.9** at the Brumal stores.
-2. Store 109's vaccine spent **27** hours above 8 °C, 22 on its logger's readings.
-3. Stores 108, 204, 207, 301 and 309, over the line on their loggers' readings, spent **4, 0, 0, 0 and 1** hours.
-4. The nearest store below the line is 306 Padbury at **20** hours, **4** short.
+1. With each docked bike that broke on a ride counted out of working order from the end of that ride until a van took it to the depot, the lowest month of Q4 2026 puts W-02 at **88** per cent, W-12 at **88** per cent, W-16 at **86** per cent and W-19 at **88** per cent.
+2. The feed's available bikes taken as the bikes in working order put them at 91, 92, 87 and 92 per cent and name W-16 Birch Hill alone.
+3. The nearest station above the line is W-09 Science Quad at **91** per cent in October, **0.7** points clear.
 
 ## 3. Step-by-Step Solution
 
-1. Put frostline_temperature_logs_2026.csv (local times with their offsets), kelvra_logger_export_2026.csv (UTC and Fahrenheit, its one day exported twice counted once), brumal_downloads_2026.txt (UTC-6 all year) and tellvane_sensor_readings_2026.csv (UTC) on one clock in degrees C, and joined every serial and sensor id to its store through refrigerator_monitoring_roster_2026.xlsx, the replaced loggers at stores 207 and 302 in sequence.
-2. Took 2026 as the stores' local (Central) year and, at the ten pilot stores, the in-carton sensor from its first reading, the logger before it (standard PO-114 section 6.4).
-3. Fitted the vaccine's response on the weeks each pilot store's logger kept recording after its sensor's first reading: a first-order lag with each record holding over its ten minutes (section 6.3), 42.2, 42.2 and 41.9 minutes for Frostline, Kelvra and Brumal.
-4. Carried every logger record through its make's lag and counted ten minutes for each record whose vaccine temperature at its time stamp is above 8.0 °C (section 7.3), with the in-carton readings above 8.0: stores 103, 106, 109, 201, 206 and 303 at 24 hours or more, 306 nearest below at 20.
-5. For doses unaccounted for (section 8.2), took the YE 2025 count in vaccine_physical_inventory_ye2025_ye2026.xlsx, added meridale_vaccine_invoices_2026.csv deliveries (packages times vaccine_item_master_2026.xlsx doses per package, the Lindqvist stores' accounts before April by their former names) and transfers in from vaccine_store_transfers_2026.csv, took off pharmacy_vaccine_administrations_2026.csv, vaccine_writeoff_log_2026.csv and transfers out and the YE 2026 count, each flow between the two counts' own closing times, so the stores that counted on 30 December keep the next day's flows out of the year they close or in the year they open.
-6. Read the write-off log's multi-dose vial quantities before the 1 June 2026 inventory update as vials of ten doses (their cost is a vial's) and left meridale_credit_memos_2026.csv out, every credited unit being an expired 2025-26 dose already written off on 1 July.
-7. For Brannon spend (section 9.2), took each invoice in brannon_service_history_2026-01_2027-01.xlsx once for work orders whose last visit is in 2026, added 6.0 per cent sales tax to invoices dated before 1 July 2026 (the old platform's amounts are before tax, as its maintenance-only invoices at the agreement's Schedule B prices show), and split each two-store maintenance route by Schedule B's price for each store's unit.
-8. Listed the stores at 24 hours or more: 103, 106, 109, 201, 206 and 303.
+1. Mapped each feed station ID to its City station in wellhaven_bike_share_station_list.xlsx (W-17 Linden Avenue under 117 until its move on the evening of 8 November and 125 after) and read northlane_trips_2026q4.csv once per trip (its week of 16 November is repeated at the end), its times on Eastern time with a trip in the repeated hour of 1 November placed by its duration, and northlane_fleet_moves_2026q4.csv with the WHB- prefix dropped from its bike numbers.
+2. Rebuilt every bike's spells docked at a station from the trips (staff rides too, since they moved bikes) and the fleet moves: from a ride's end or a van's drop to the next ride's start or a van's pickup, a bike first recorded leaving a station counted as docked there from the start of the records.
+3. Counted a docked bike out of working order from the end of the ride that left it when renters took other bikes from its station while it stood there and a van then took it to the depot, where it stayed a day or more before it was back on the street, and every other docked bike in working order; a bike counted out this way that a full station's surplus or a storage run took decides no minute, since a bike a rider then took was docked beside it.
+4. For each station and each minute of service hours (6:00 to midnight Eastern) from October to December 2026, counted the minute available when a bike in working order was docked at its start (Schedule C, C.1), and divided each month's available minutes by its service minutes (C.2).
+5. Listed the stations under 90 per cent in a month (C.3): W-02, W-12, W-16 and W-19; the lowest month above the line is W-09's October, 91 per cent.
+6. For pay-station sales, kept paystation_sales_2026q4.csv's sales not voided and sold in the fourth quarter on Eastern time, and placed each at the pay station its terminal was in when it was sold, from the terminal replacements in paystation_work_orders_2026q4.xlsx (the export's pay_station column is each terminal's present pay station in paystation_register_2027-01-08.xlsx).
+7. For the hours without card payments, ran each COMMS_LOST and READER_FAULT alarm in paystation_alarm_log_2026q4.csv (the register's codes that stop card payments) from its raise to its clear or to the pay station's next restart, after which a fault still present is raised again in the same second, merged overlapping alarms and summed the service hours of October to December.
 
 ## 4. Deliverable Answers
 
-### penwick_refrigerator_replacements_2027.xlsx
+### priority_stations_2027q1.xlsx
 
-1. Stores that get a new refrigerator before the 2027 respiratory season: 103, 106, 109, 201, 206 and 303.
-2. Each store's 2026 hours with its vaccine above 8 °C, whole hours, and whether it gets a new refrigerator:
-   - Store 101 Corriden: 11, no
-   - Store 102 Dalmore: 0, no
-   - Store 103 Edgecott: 44, yes
-   - Store 104 Farrowby: 0, no
-   - Store 105 Gisborne: 0, no
-   - Store 106 Hatherley: 63, yes
-   - Store 107 Ilsington: 0, no
-   - Store 108 Keverne: 4, no
-   - Store 109 Marcham: 27, yes
-   - Store 110 Oldcastle: 19, no
-   - Store 201 Thurlby: 57, yes
-   - Store 202 Ulverston: 0, no
-   - Store 203 Vexley: 0, no
-   - Store 204 Wedmore: 0, no
-   - Store 205 Yelverton: 7, no
-   - Store 206 Abbotsley: 52, yes
-   - Store 207 Braxted: 0, no
-   - Store 208 Chelwood: 17, no
-   - Store 209 Embleton: 0, no
-   - Store 210 Greystoke: 15, no
-   - Store 301 Haddow: 0, no
-   - Store 302 Inkpen: 4, no
-   - Store 303 Lexden: 60, yes
-   - Store 304 Mowbray: 0, no
-   - Store 305 Nettlecombe: 7, no
-   - Store 306 Padbury: 20, no
-   - Store 307 Quarndon: 0, no
-   - Store 308 Ruddington: 17, no
-   - Store 309 Tilney: 1, no
-   - Store 310 Upwood: 8, no
-3. Nearest store below the line: 306 Padbury, 20 hours, 4 short.
-4. Each store's 2026 vaccine doses its stock records leave unaccounted for, whole doses:
-   - Store 101: 51
-   - Store 102: 46
-   - Store 103: 100
-   - Store 104: 137
-   - Store 105: 86
-   - Store 106: 67
-   - Store 107: 73
-   - Store 108: 138
-   - Store 109: 63
-   - Store 110: 61
-   - Store 201: 43
-   - Store 202: 157
-   - Store 203: 23
-   - Store 204: 56
-   - Store 205: 102
-   - Store 206: 117
-   - Store 207: 87
-   - Store 208: 38
-   - Store 209: 122
-   - Store 210: 56
-   - Store 301: 75
-   - Store 302: 78
-   - Store 303: 91
-   - Store 304: 38
-   - Store 305: 105
-   - Store 306: 87
-   - Store 307: 118
-   - Store 308: 72
-   - Store 309: 72
-   - Store 310: 75
-5. Each store's 2026 refrigerator service spend with Brannon, whole dollars:
-   - Store 101: 372
-   - Store 102: 336
-   - Store 103: 322
-   - Store 104: 1,131
-   - Store 105: 296
-   - Store 106: 1,108
-   - Store 107: 349
-   - Store 108: 313
-   - Store 109: 589
-   - Store 110: 1,237
-   - Store 201: 2,071
-   - Store 202: 682
-   - Store 203: 667
-   - Store 204: 351
-   - Store 205: 996
-   - Store 206: 368
-   - Store 207: 1,109
-   - Store 208: 780
-   - Store 209: 1,027
-   - Store 210: 645
-   - Store 301: 317
-   - Store 302: 774
-   - Store 303: 297
-   - Store 304: 612
-   - Store 305: 714
-   - Store 306: 350
-   - Store 307: 314
-   - Store 308: 737
-   - Store 309: 298
-   - Store 310: 582
+1. The priority stations for Q1 2027: W-02 Queen and Albert, W-12 Maple Grove, W-16 Birch Hill and W-19 Willow Crescent.
+2. Each station's availability in its lowest month of Q4 2026, whole per cent, and whether it is a priority station:
+   - W-01 Market Square: 94, not
+   - W-02 Queen and Albert: 88, priority
+   - W-03 City Hall: 95, not
+   - W-04 Wharf Street: 94, not
+   - W-05 Courthouse: 91, not
+   - W-06 Library Plaza: 96, not
+   - W-07 General Hospital: 95, not
+   - W-08 University Commons: 95, not
+   - W-09 Science Quad: 91, not
+   - W-10 Central Station: 97, not
+   - W-11 Eastgate Terminal: 97, not
+   - W-12 Maple Grove: 88, priority
+   - W-13 Elmwood Park: 92, not
+   - W-14 Riverbend: 92, not
+   - W-15 Cedar Heights: 95, not
+   - W-16 Birch Hill: 86, priority
+   - W-17 Linden Avenue: 91, not
+   - W-18 Orchard Lane: 93, not
+   - W-19 Willow Crescent: 88, priority
+   - W-20 Ashdale: 95, not
+   - W-21 Fernwood: 92, not
+   - W-22 Waterfront Trail: 100, not
+   - W-23 Pier Park: 100, not
+   - W-24 Lighthouse Point: 99, not
+3. The station that cleared the line by the least: W-09 Science Quad, 91 per cent in October, 0.7 points above 90.
+4. Each station's Q4 2026 pay-station card sales, dollars to the cent:
+   - W-01 Market Square: 1,660.25
+   - W-02 Queen and Albert: 1,913.00
+   - W-03 City Hall: 1,573.50
+   - W-04 Wharf Street: 1,516.50
+   - W-05 Courthouse: 1,580.50
+   - W-06 Library Plaza: 1,630.75
+   - W-07 General Hospital: 1,634.50
+   - W-08 University Commons: 1,184.50
+   - W-09 Science Quad: 854.50
+   - W-10 Central Station: 1,994.00
+   - W-11 Eastgate Terminal: 1,897.00
+   - W-12 Maple Grove: 1,124.25
+   - W-13 Elmwood Park: 967.50
+   - W-14 Riverbend: 900.25
+   - W-15 Cedar Heights: 736.50
+   - W-16 Birch Hill: 1,073.00
+   - W-17 Linden Avenue: 791.75
+   - W-18 Orchard Lane: 746.00
+   - W-19 Willow Crescent: 1,098.00
+   - W-20 Ashdale: 613.25
+   - W-21 Fernwood: 1,127.75
+   - W-22 Waterfront Trail: 866.75
+   - W-23 Pier Park: 933.75
+   - W-24 Lighthouse Point: 1,025.75
+5. Each station's Q4 2026 service hours its pay station could not take a card payment, whole hours:
+   - W-01 Market Square: 86
+   - W-02 Queen and Albert: 6
+   - W-03 City Hall: 67
+   - W-04 Wharf Street: 87
+   - W-05 Courthouse: 71
+   - W-06 Library Plaza: 23
+   - W-07 General Hospital: 66
+   - W-08 University Commons: 66
+   - W-09 Science Quad: 47
+   - W-10 Central Station: 46
+   - W-11 Eastgate Terminal: 10
+   - W-12 Maple Grove: 30
+   - W-13 Elmwood Park: 36
+   - W-14 Riverbend: 53
+   - W-15 Cedar Heights: 99
+   - W-16 Birch Hill: 51
+   - W-17 Linden Avenue: 37
+   - W-18 Orchard Lane: 44
+   - W-19 Willow Crescent: 105
+   - W-20 Ashdale: 52
+   - W-21 Fernwood: 78
+   - W-22 Waterfront Trail: 55
+   - W-23 Pier Park: 6
+   - W-24 Lighthouse Point: 67
 
-### penwick_vaccine_hours_2026.svg
+### station_availability_2026q4.html
 
-6. Horizontal bar chart of the thirty stores' 2026 hours with the vaccine above 8 °C, highest first, each bar labelled with its whole hours, a vertical line at 24 hours, the 6 stores that get a new refrigerator in blue and the rest in grey, and the nearest store below the line named in the subtitle.
+6. A horizontal bar chart of the 24 stations' availability in their lowest month of Q4 2026, lowest first, each bar labelled with its whole per cent and its month, a dashed line at 90 per cent, the 4 priority stations in orange and the rest in grey, with each station's monthly figures in a table beneath.
