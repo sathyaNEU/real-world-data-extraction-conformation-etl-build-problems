@@ -1,44 +1,42 @@
 {
  "task": "task173",
  "owner": "sathya8571",
- "status": "PAUSED",
- "domain": "energy-systems-utilities / load-forecasting",
+ "status": "DRAWING",
+ "domain": "energy-systems-utilities / asset-condition-maintenance",
  "objective": "forecasting",
  "stage": 1,
  "stage_name": "draw",
  "updated": "2026-10-23",
- "stump": "A competent solver files about 260,000 MWh by carrying the bench wells' fitted energy per acre-foot the district withheld onto the bottomland plants' diversion above the limit, and one who carries the water at each plant's energy over its metered water files 145,000; the step that lands them there is reading each bottomland meter as one pump, when it carries a river lift and a well whose energy per acre-foot differ about fivefold.",
- "architecture": 2,
+ "stump": "A competent solver carries the record's service leaks per service-year (or a model on material, age and pressure zone) to the 2027 inventory and files about 1,100 repairs against about 1,950, because it never reads a service's failures on its own meter exchange visits, which leak within weeks about once in a hundred and which the 2027 AMI contract multiplies about thirteenfold.",
+ "architecture": 3,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-23"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (2026-10-23); every REVIEW line answered in ## Leak sweep",
-  "reader": "reader A: call landed (155,000, the golden), 56 of 56 asks; reader B: 130,000 (the cap read as fallowing), 56 of 56 asks"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (no BLOCK)",
-  "nearest": "guard.py surface exit 0; task142 promoted on the card-level same-driver signature (population, G2, forecasting), differentiated on the card"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC",
-  "disposition": "FIX_NOW (revenue-meter pairing on asks 2 and 3)",
-  "report": "scratchpad judge-task173n/verdict.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
  "wave": "wave 8 (new), seed FC44",
- "resume": "stage 1: architecture 2 spent at Gate F on be677673; the third cell (psychology-behavioral-science / decision-making-computational-behavioral-modeling) and the fourth (human-factors-ergonomics / human-reliability-assessment, assigned by the main session) yielded nothing that holds: route-knowledge decay under a depot merger (lever capped by the merge, about 3 per cent), a blockade diversion over a route driven only at long recency (the diversion's own short-recency runs land within 4 to 10 per cent, the default only 23 to 26 per cent above the golden, golden scatter about 5), and operator errors per operation against per console-hour (single-exposure routes 13 to 17 per cent off, the intercept's basis a form fork) dead on code, eight more on paper; the number stays open for another cell",
+ "resume": "stage 2: design (ladder, fork table, closure, asks, prompt) for architecture 3",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
- "target_zip_md5": "be677673c249d2865ce57b76923b47c1",
- "figures_call_keys": [
-  "call.forecast_mwh"
- ]
+ "target_zip_md5": "",
+ "figures_call_keys": []
 }

@@ -1,106 +1,95 @@
 {
   "task": "task173",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-10-23",
-  "slot_note": "rebuild of a number marked RETIRED on 2026-10-22 and reopened by the author; architecture 1 (Ashdale Tax Live) and the two redraw cells were never carded",
+  "slot_note": "rebuild of a number marked RETIRED on 2026-10-22 and reopened by the author; v2 (load forecasting) spent at Gate F, two later cells died at stage 1 uncarded",
   "domain": "energy-systems-utilities",
-  "subdomain": "load-forecasting",
-  "niche": "a rural public utility district's April to September 2027 irrigation pumping energy forecast for the joint power authority that supplies it, the first season a river decree's watermaster holds the riparian and pre-1914 rights to a quarter of their allotments while the junior district's right is suspended",
+  "subdomain": "asset-condition-maintenance",
+  "client_domain": "energy-systems-utilities",
+  "niche": "a Texas clay-soil city's water utility forecasting the utility-side service leaks its crews will repair in calendar 2027, the year its AMI contractor exchanges about two thirds of the city's meters in six months, for the estimated quantities of its 2027 service repair and restoration term contract",
   "objective": "forecasting",
-  "shape": "single-figure",
+  "shape": "02",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "File 155,000 MWh as the irrigation class's April to September 2027 energy.",
-  "answer_source": "task173/submission.md, block 1",
+  "answer": "TBD at stage 3 (prototype about 1,950 service leak repairs in 2027)",
+  "answer_source": "task173/submission.md block 1",
   "gap": [
-    "population",
-    "time"
+    "time",
+    "population"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
     "G2",
-    "G5",
-    "G14",
+    "G7",
     "G6"
   ],
   "gate_g": "forecasting",
   "calibration_form": "none",
-  "stump_strategy": "decomposition_attribution",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "other",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins the bills to the register, the decree rights and the well reports, reads the order correctly (the district's right suspended, the riparian and pre-1914 rights held to a quarter of their allotments) and carries the bench wells' fitted energy per acre-foot the district did not deliver onto the bottomland plants' cut files about 262,000 MWh, and dividing each bottomland plant's energy by its metered well extraction files about 200,000, against a golden of 155,000.",
-  "domain_test": "The deciding quantity is pumping energy, acre-feet moved times each pump's energy per acre-foot (its total dynamic head over its plant efficiency), with a combined plant's river lift and well separated on one meter by its own two metered volumes; with hospital nouns in there is no head, no lift and no pair of pumps behind one meter, and the task stops making sense.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:replacement-water-priced-at-each-combined-plants-own-well-and-lift",
+  "analyst_test": "A strong analyst who stitches the two work order systems, counts one repair per leak, reads the utility-side boundary correctly and carries the service leaks per service-year of the last two years (or a model of them on each service's material, age and pressure zone) to the 2027 inventory, net of the services the capital program renews, files about 1,100 repairs against about 1,950, because an operated angle valve or setter leaks within weeks about once in a hundred exchanges and the record's routine exchanges carry almost none of what the 2027 mass exchange sets off.",
+  "domain_test": "The deciding quantity is the expected count of service failures in 2027, a buried-asset failure hazard estimated per service from its own repair history with each service's own exposure to a work-induced risk window after a meter exchange; with another field's nouns there is no meter setter operated on an old service, no exchange visit that disturbs it and no risk window after it, so the task stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:work-induced-failure-risk-window-carried-to-a-mass-meter-exchange",
   "layer1": [
-    "legacy and converted CIS account numbers across the January 2020 conversion",
-    "meter exchanges as two read lines on one bill",
-    "estimated reads trued up on the next read",
-    "cancelled and re-issued bills with their reversals",
-    "register reads with meter multipliers",
-    "well reports in two layouts and a water year still coming in",
-    "service number written three ways across the co-op, agency and watermaster files",
-    "station days filled from neighbouring stations",
-    "a feeder moved between substations with the GIS label left as mapped",
-    "delivery-point meters on their own clock, a check meter stamping interval starts, a second bank's meter energised mid-season"
+    "two work order systems either side of a 2021 CMMS cutover, the legacy one keyed by street address and the new one by GIS service ID",
+    "one leak carried on several work orders (investigation, repair, restoration)",
+    "a premise-to-service crosswalk that is not one to one (multi-unit premises on one service)",
+    "meter history as separate remove and install rows in the CIS",
+    "material codes from two GIS conversions",
+    "a fiscal year from October to September in the utility's budget against calendar-year counts"
   ],
-  "stakeholder_role": "power supply manager of the public utility district",
-  "role_family": "procurement_lead",
+  "stakeholder_role": "distribution maintenance planner in the city water utility, sizing the 2027 service repair and restoration term contract",
+  "role_family": "operations_director",
   "scoring_unit": "other",
   "spine": {
-    "file": "vvpud_ip_billing_2015-2026.csv",
-    "rows": 96151,
-    "entity": "one meter read line on a Schedule IP irrigation pumping bill",
-    "grain": "service x bill month x meter",
+    "file": "cis_meter_history_2012_2026.csv",
+    "rows": 0,
+    "entity": "one meter set or removal on a premise in the CIS",
+    "grain": "premise x meter event",
     "source": "synthetic"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "season_or_peak",
+  "forum": "council_or_assembly",
+  "forcing_event": "purchase_order_or_contract",
   "org_family": "local_government",
   "world": {
-    "geography": "United States, a fictional western river valley (the public utility district, the joint power authority, the river and its decree, the watermaster, the irrigation district, the groundwater agency, the county and the people are fictional)",
+    "geography": "United States, Texas (a fictional clay-soil city of about 380,000)",
     "currency": "USD",
-    "org_type": "public utility district (a publicly owned electric distribution utility)",
+    "org_type": "city-owned water utility",
     "invented_names": [
-      "Varner Valley Public Utility District",
-      "Halvern Power Authority",
-      "Varner River",
-      "Lone Bench Irrigation District",
-      "Varner Subbasin Groundwater Agency",
-      "Kestrel County",
-      "Ostrom Pump Testing",
-      "Aldana Pump & Well"
+      "Hollis Bend",
+      "Hollis Bend Water Utilities"
     ],
     "people": [
       "Mario Barnett",
-      "Kimberly Ball",
-      "Tammy Gibson"
+      "Heidi Snyder"
     ]
   },
   "deliverables": [
-    "irrigation_forecast_2027.xlsx"
+    "service_leak_forecast_2027.xlsx",
+    "service_leaks_by_month.png"
   ],
   "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "A group cut for the first time replaces the lost volume from a second source that shares one meter with the first, so its added draw is the volume times the second source's own cost per unit less the first's, a pair each unit yields only when its metered total is fitted to its own two recorded volumes; reading the meter as one source, or carrying the cost per unit measured on the units cut before, whose second source costs several times as much, misstates the draw several fold.",
-  "driver_concrete": "Bottomland plants held to a quarter of their decreed allotments replace the diversion above the limit from shallow wells at about 180 kWh an acre-foot and idle river lifts at about 35, both behind one meter, so each plant's pair comes only from fitting its water-year energy to its own diversion statements and metered well extraction; the bench wells' fitted energy per curtailed acre-foot (about 770) carried over files the increase about six times too large, and a plant's energy over its water, or over its well water alone, files it a half too small or twice too large.",
-  "stump": "A competent solver files about 262,000 MWh by carrying the bench wells' fitted energy per acre-foot the district did not deliver onto the bottomland plants' cut, and one who carries the water and prices it at each plant's energy over its metered water files about 143,000 (or 200,000 over its well water alone); the step that lands them there is reading each bottomland meter as one pump, when it carries a river lift and a well whose energy per acre-foot differ about fivefold and only a fit of the plant's energy to its own diversions and well extraction separates them.",
+  "question_form": "how-many",
+  "driver": "Work done on a unit raises the chance that a part attached to it fails in the weeks that follow, and the record spreads such work thinly across every year, so a failure rate read per unit-year carries only the thin history's share of work-induced failures into a window in which most units are worked on at once; the window's failures are each unit's own rate plus each scheduled visit's induced chance, read from the history's visits on each unit's own record.",
+  "driver_concrete": "An old curb stop or meter setter that is operated when a meter is exchanged leaks within weeks about one time in a hundred, and the record's routine exchanges touch about four meters in a hundred a year, so the service leaks per service-year the history shows carry almost none of the leaks the 2027 AMI exchange of two thirds of the meters will set off; the forecast adds to each service's own rate the induced chance per exchange, read from the leaks on each service in the weeks after its own past exchanges.",
+  "stump": "A competent solver carries the record's service leaks per service-year (or a model on material, age and pressure zone) to the 2027 inventory and files about 1,100 repairs against about 1,950, because it never reads a service's failures on its own meter exchange visits, which leak within weeks about once in a hundred and which the 2027 AMI contract multiplies about thirteenfold.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task98": "task98 v1 removed an outlet that absorbed a nightly residual; here nothing is removed from a population and the step is pricing replacement water at each unit's own lift.",
-    "task124": "task124 infers a unit's kind from the surviving records of its group; here every plant's kind is known and the step prices replacement water at its own fitted lift.",
-    "task132": "task132 restarts a wear curve at each replacement; here no rate depends on age and the step is a volume carried in water and priced per plant.",
-    "task144": "task144 grows seeded adoptions through follower reach; here no spread process exists and the response is a fixed volume per acre-foot cut.",
-    "task163": "task163 discounts marginal entrants' yield; here every unit cut replaces its whole shortfall and only its energy per unit volume differs.",
-    "task465": "task465 averages a capped payoff over prediction error; here no payoff or threshold applies and the step is a two-volume fit on each plant's own meter.",
-    "task175": "task175 reads each vacant unit's take-up at its own run's fill; here no take-up or fill exists, the bottomland plants replace every acre-foot cut, and the step is splitting one meter's energy between a river lift and a well.",
-    "task142": "task142 builds a period total's upper percentile from arriving units and their durations; here the quantity is a season's energy and the step splits one meter between two pumps.",
-    "task148": "task148 v1 sums the hazards of every unit behind a shared backer; here no hazard is shared, and the shared meter carries two pumps whose energy per acre-foot is fitted from the plant's own two water records."
+    "task125": "task125 re-estimates an aggregate on each period's mix of filtered and unfiltered intakes after a recruitment change; task173 adds to each service's own failure rate the induced chance per scheduled meter exchange, a transient risk window after work on the unit itself, with no intake, filter or recruitment",
+    "task150": "task150 projects a unit's count from its own members, steady outside arrivals and sibling transfers; task173 forecasts failures as each unit's own rate plus a risk window opened by work done on it, read from each unit's own past work",
+    "task501": "task501 reads a transmission matrix's eigenvalue under the season's mixing regime; task173 has no transmission or threshold: failures are independent per service, raised for weeks after an exchange visit",
+    "task132": "task132 resets a wear-out curve when a failed item is replaced in its position; task173's exchanged meter is not the failing part: the visit disturbs the old setter and service it sits on, which fail in the weeks after",
+    "task183": "task183 carries each part's own prior failures forward as a frailty; task173's raised risk comes from work done on the unit, not from its failure history, and lasts weeks",
+    "task149": "task149 reads a hazard per unit of working time against how fast engineered work is done; task173's hazard is per service-day, raised in a window after a discrete visit",
+    "task480": "task480 v1 read old meters' under-registration at their exchange (what the meter had recorded); task173 reads the service leaks the exchange visit sets off on the old setter and service, nothing about what the meter recorded",
+    "task177": "task177 v3 read a default almost only through an exit whose forward hazard a second register shows (a behaviour, estimated per sector); task173's trigger is the organisation's own scheduled visit, its forward count filed, the failures it sets off a few per cent of the record's, and the decisive estimate is the transient excess over each service's own baseline in the weeks after its own past visits"
   },
   "lineage": [
     {
@@ -122,9 +111,32 @@
       "gate_g": "forecasting",
       "decision_type": "quantity_figure",
       "driver": "The forward load on a pooled service desk is set by how often a case comes back, which is set by who took its first contact and how long they had been on the desk, so a coming bench far from the record's mix of first-contact takers needs the comeback chance conditioned on each opener's group and tenure."
+    },
+    {
+      "architecture": "v2",
+      "drawn": "2026-10-23",
+      "fate": "spent 2026-10-23 at stage 4 on Gate F (zip be677673): a blind reader fitted each combined plant's river lift and well per service and landed the call; the next two cells (psychology decision-making, human reliability) died at stage 1 with no card",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G2",
+        "G5",
+        "G14",
+        "G6"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "A group cut for the first time replaces the lost volume from a second source that shares one meter with the first, so its added draw is the volume times the second source's own cost per unit less the first's, a pair each unit yields only when its metered total is fitted to its own two recorded volumes; reading the meter as one source, or carrying the cost per unit measured on the units cut before, whose second source costs several times as much, misstates the draw several fold.",
+      "domain": "energy-systems-utilities",
+      "subdomain": "load-forecasting",
+      "stump_strategy": "decomposition_attribution"
     }
   ],
-  "notes": "Registered after the window moved under the lock on 2026-10-23: task175 (registered minutes earlier) took G6, composition_mix and register, and with task171 the two honest organisation families. The decisive rung is the meter's decomposition into its two pumps (the silent rung; the composition step, carrying water rather than energy, is the readable rung below it), so the card leads with G2 (one billing row is two pumps), decomposition_attribution and the filed forecast standard as the stakeholder's file; G6, G14 and G5 stay beside it. The organisation was then a rural electric cooperative, and both of its honest families (cooperative_or_member_body against task171, utility_or_infrastructure against task175) were banned; the world was redrawn on that axis to a public utility district, a publicly owned electric distributor of the kind that serves irrigation pumping in western valleys, whose family is local_government, and its supplier to a joint power authority; nothing in the data, the decision or the mechanism moved. SPENT 2026-10-23 at stage 4 (Gate F) on zip be677673: the judge returned DETERMINISTIC / FIX_NOW (revenue-meter pairing only), and blind reader A took the decisive step (each river-lift-plus-well service's energy fitted on its diverted and its well acre-feet, 2017 to 2026, the diversion above 25 per cent of the allotment pumped from the service's own well) and filed 155,000, the golden; reader B filed 130,000; both readers hit all 56 ask figures.",
-  "registered": "2026-10-23T05:24:24Z",
-  "architecture_spent": true
+  "notes": "Architecture 3 of a reopened number. Coding: decisive gap time (the record holds meter exchanges thinly, the forward year massively), population second (the 2027 service-months sit mostly inside the post-exchange window). G2 decisive (the unit the failure rate is read on is each service's own exchange visit and the weeks after it, not the service-year, its route or its street), G7 second (when the induced failures can happen is pinned by an operations file, the AMI deployment schedule), G6 third (the forward year's service-months move to the post-exchange state). Layer 2 family estimand_identification: which exposure the failure rate is read on; Energy carries no client cards, so own: pattern.",
+  "registered": "2026-10-23T11:00:40Z"
 }
