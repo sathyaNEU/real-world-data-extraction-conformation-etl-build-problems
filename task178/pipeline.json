@@ -1,36 +1,36 @@
 {
  "task": "task178",
  "owner": "sathya8571",
- "status": "PAUSED",
- "domain": "physical-environmental-sciences/hydrology-flood-frequency",
+ "status": "DRAWING",
+ "domain": "quantitative-finance/volatility-derivatives-pricing",
  "objective": "forecasting",
  "stage": 1,
  "stage_name": "draw",
  "updated": "2026-10-23",
- "stump": "One power-law rating fitted to all of TUM-02's 468 gaugings and carried through the 46 annual peak stages into the standard's weighted-skew log-Pearson Type III puts the 1 per cent flood at 10,000 cfs and files Alternative A (10,400 cfs); a rating with its own floodplain term above the fitted 10.28 ft break puts it at 14,000 cfs and files Alternative D (14,700 cfs).",
- "architecture": 2,
+ "stump": "A competent solver who takes the reference rate's realised volatility over 2024 to 2026 prices the 2027 options at 8 per cent, and one who adds the central bank's hourly trades back at the impact read from the hour's move on the market's net or customer flow prices at 9 or 10; the step that lands them there is reading the price impact off a regression whose flow the bank traded against within the same hour, when the customers' flow, scaled by the share of it the bank left to the market, gives the impact the float exposes and a 2027 volatility near 11.5 per cent, priced at 12.",
+ "architecture": 3,
  "loops": 0,
  "card_registered": true,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-23"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW 2026-10-23 (sweeps 3, 4, 5 answered in the design note's ## Leak sweep; no LEAK)",
-  "reader": "scored readers C and D both landed the call (D, 14,000 cfs); C kept 32 of 32 ask figures, D cracked the purge, offset and radar-face devices"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN 2026-10-23 after re-registration (overuse.objective, overuse.gate_g, repeat.question_form; the moved window's four BLOCKs redrawn, ## Draw)",
-  "nearest": "ledger task466 0.09, stump task229 0.06; drivers task249 v5 lineage 0.06, task170 v1 lineage 0.06"
+  "heart": "",
+  "nearest": ""
  },
  "judge": {
-  "verdict": "DETERMINISTIC / APPROVE",
-  "disposition": "no fix; Gate F decided by the readers",
-  "report": "scratchpad/judge-task178r/verdict.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "wave": "rebuild 2026-10-23 of a reopened number; architecture 1 (climate-weather-extremes), the conjoint cell and architecture 2 (hydrology-flood-frequency) spent; the population-pharmacokinetics-exposure-response cell screened after and found no draw that holds",
- "resume": "stage 1 in the next cell the main session assigns, reading ## Tried and rejected first; architecture 2 (hydrology-flood-frequency) spent at Gate F on pack cc9cb2f1; the population-pharmacokinetics-exposure-response screen (2026-10-23) measured two candidates dead on code and sixteen on paper, no card registered",
+ "wave": "rebuild 2026-10-23 of a reopened number; architecture 1 (climate-weather-extremes) and architecture 2 (hydrology-flood-frequency) spent at Gate F, the conjoint and population-pharmacokinetics cells registered no card; architecture 3 in quantitative-finance / volatility-derivatives-pricing",
+ "resume": "stage 2 design: default path, ladder, fork table, closure, asks A and B (supplemental-stumping), prompt.txt, precut.py; then the generator",
  "approved": null,
  "delivered": null,
  "portal": null,

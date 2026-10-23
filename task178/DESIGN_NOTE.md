@@ -1,264 +1,70 @@
 # task178 design note
 
-**Status: PAUSED (2026-10-23). Architecture 2 spent at stage 4, Gate F (pack cc9cb2f1): the judge returned
-DETERMINISTIC / APPROVE, but both scored readers landed the call (`## Tried and rejected`). The number stays open
-and rests.** Architecture 2, the rebuild. The number was RETIRED on 2026-10-21 and reopened under the author's
-rule that no number stays retired (`## Rebuild (2026-10-23)`). Cell allocated by the main session:
-physical-environmental-sciences / hydrology-flood-frequency, Forecasting. Organisation, decision, quantity and
-mechanism were searched inside the cell; prototypes in the session scratchpad (b178n/proto: p1 to p4, the scans).
+**Status: DRAWN (2026-10-23), architecture 3.** The number was RETIRED on 2026-10-21 and reopened under the author's
+rule that no number stays retired (`## Rebuild (2026-10-23)`). Architecture 1 (the harbour trestle deck) and
+architecture 2 (the floodplain segment of a stage-discharge rating) were spent at Gate F; the conjoint and
+population-pharmacokinetics cells registered no card. Cell allocated by the main session for this draw:
+quantitative-finance / volatility-derivatives-pricing, Forecasting, with a fictional country, central bank, currency
+and dealers. Prototypes in the session scratchpad (b178q/proto: c1_fx.py, c1b.py, c1h.py, c1n.py, c1f.py, c1t.py).
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task178.json`, registered and committed DRAWN on 2026-10-23 (9bb65027);
-  guard `check` on the registered card WARN only: overuse.objective and overuse.gate_g (the lane is Forecasting),
-  repeat.gate_g forecasting against task170 and task173 (the lane's objective, a different mechanism). Structural
-  tests same_puzzle_older (task238, task101, task469) and same_driver_older (task138 and its round 2 lineage)
-  differentiated on the card, one line each, with lines added unasked against task229, task249's v5 lineage,
-  task452, task466 and task173, the nearest hydrometric and same-day ground. Architecture 1's identity (the harbour
-  trestle deck) is in the card's `lineage` with its fate; the conjoint cell registered no card and is named there.
-- **Window moves answered at the draw:** task173 registered while this card was drafted and BLOCKed `ban.artifact`
-  (filed_standard), `ban.org_family` (local_government) and `test.same_driver` (population, G14, forecasting against
-  task173's lineage). Redrawn honestly then: the owner became the company that runs the gauge and owns the pipe
-  bridge (an investor-owned water utility, `utility_or_infrastructure`); the context artifact the crossing
-  alternatives study, which carries each alternative's capacity (`capacity_report`: the standard's section is an
-  input, the study frames the decision); the decisive generator G3 (the recorded stage against the discharge the river
-  carried, as the gaugings measure it) with G14 second, the same two codes in the order the record reads them.
-- **The window moved again after the PAUSED commit.** task170 and task173 were marked `architecture_spent` after this
-  card was filed, so the card's live window fell back onto task175, task478 and task169, and `check` and `heart` BLOCKed
-  `ban.org_family` (utility, task175), `ban.forcing_event` (purchase_order_or_contract, task478), `ban.artifact` and
-  `ban.pattern` (capacity_report and G3, task169). Redrawn where the world honestly allows: the owner is now a pulp and
-  paper mill, Callender Paper Company's Sauer mill, which runs TUM-02 for its water right and intake and carries its
-  raw-water main on the pipe bridge (`manufacturer`; nothing in the analysis, the pack's numbers or the prompt
-  changed, only the owner's name and the documents' voice), and the forcing event the 2027 in-water work season the
-  waterway choice must meet (`season_or_peak`; the design-build award follows from it). The card was re-registered
-  under the serial lock; at its new filing time the artifact and pattern clear with no change, which the card's notes
-  say in so many words.
-- **Pairing:** Physical & Environmental Sciences, task type `hydrology-flood-frequency` (F). The deciding quantity is
-  the 1 per cent annual exceedance probability (AEP) peak discharge at a river gauge.
-- **World (fictional):** Callender Paper Company's Sauer mill, a pulp and paper mill in a western Washington valley,
-  carries its 36-inch raw-water main over the Tumwick River on the Sauer pipe bridge, 900 ft below its own stage gauge
-  TUM-02 (no tributary between), which the mill has run since 1979 for its water right and intake. Drift struck the
-  bridge in the January 2025 flood and it is being replaced, with in-water work in the 2027 season; the consultant's
-  alternatives study gives seven waterway alternatives, A to G, passing 10,400, 11,600, 12,900, 14,700, 16,200,
-  17,800 and 19,500 cfs with the pipe's clearance. The design discharge is the 1 per cent AEP peak at TUM-02 by the
-  company's engineering standard from water years 1980 to 2025, and the alternative is the smallest that passes it.
-  The gauge records stage only; discharge comes from a rating fitted to the mill's own 468 field measurements (wading
-  and cableway current meter to 2004, ADCP and FlowTracker from 2005), 79 of them made at stages above the break, by
-  cableway and boat while the river was on its pasture.
-- **Shape:** 04, setting one dial: the seven capacities against the design discharge, the committed alternative and
-  the one below; asks A (ten work windows, stage and date) and B (six water years, pipe level and fall) supply the
-  rest (`## Ask sheet`).
-- **Strategy:** `other` (a measurement relation that changes form, fitted per segment and carried through every
-  annual peak, against one pooled relation), gap population (the rating's evidence is mostly in-bank measurements;
-  the decision rests on the overbank peaks), G3 then G14, Gate G forecasting, layer2_family field_method,
-  layer2_pattern own:floodplain-segment-of-the-rating-under-the-annual-peak-series.
-- **Data-native sentence:** the Tumwick leaves its banks onto a wide left-bank pasture at about 10.3 ft on the gauge,
-  which about half its annual peaks pass, while the hydrographers' routine measurements are made every five to seven
-  weeks at wading and cableway stages, so the gauging record holds about five in-bank measurements for every overbank
-  one, and any single stage-discharge curve fitted to it bends to the in-bank control and runs under the floodplain
-  flows that set the upper tail of the annual peak series.
-- **Sources (one line each):** no client card exists for this domain; the five families
-  (`two-layer-task-design.md`): field_method, the field's own method done right (the stage-discharge rating fitted by
-  control segment), with estimation_fit's "the data's real structure" behind it; the textbook route (a Bulletin
-  17-style log-Pearson Type III on the annual maximum series with a weighted regional skew, or a GEV, with a trend
-  check on the obvious covariate) is the default path and takes the peak discharges as given; task452's record (a
-  kinked concentration-discharge rating set aside because data above the kink were too thin to fix its form) is the
-  warning this draw answers by measuring the segmented family's spread with gaugings up to the flood of record.
-- **Measured lever (checks.py on the cut pack; the scans on 40 worlds in the session scratchpad):** one power law
-  fitted to every gauging on logs files 9,983 cfs (10,000, Alternative A), 28.5 per cent under the golden's 13,967
-  (14,000, Alternative D); in arithmetic units 12,070 (Alternative C); a log-log quadratic 10,103 and a wide smooth
-  10,318 (both A); GEV on the default's peaks 8,049; station skew alone 9,026; generalized skew alone 11,758; a
-  log-linear trend to 2027 10,204. Across 40 seeds the single curve lands 22 to 48 per cent under. The standing
-  family (21 constructions: channel plus floodplain and two separate power laws with the break at 9.9 to 10.5 ft, the
-  fitted break, local smooths at spans 0.12 and 0.18, Poor measurements dropped, measurements from 1990 or 2005) runs
-  13,804 to 14,126 cfs, a 2.3 per cent spread, every member printing 14,000 and D. One sigma of the golden over 200
-  resampled gauging records is 343 cfs, which keeps 14,000 and D; D holds in 97.5 per cent of them.
-
-## Default path
-
-The field's textbook route for a design flood at a gauged site: the annual maximum series, discharges from the
-gauge's rating, a log-Pearson Type III with the standard's weighted generalized skew.
-
-1. Read the annual peak register (`tum02_annual_peaks_wy1980-2015.csv`) and take water years 2016 to 2025's maxima
-   from the 15-minute export (`tum02_stage_15min_wy2016-2025.csv`, PST, water years October to September), all 46
-   peak stages on the current gauge datum (2.00 ft onto the stages before October 2009).
-2. Stack the two measurement files, converting the ADCP discharges from cubic metres a second and the pre-2009 gage
-   heights to the current datum: 468 measurements.
-3. Fit the rating Q = C (h - e)^b to every measurement (least squares on logs, the offset fitted).
-4. Turn each of the 46 peak stages into a discharge through it.
-5. Fit the standard's log-Pearson Type III (moments of the base-10 logs, station skew weighted with the generalized
-   skew of 0.05 by their mean square errors) and read the 1 per cent AEP discharge: 9,983 cfs, which the smallest
-   alternative passes.
-
-Ends on: Alternative A (10,400 cfs)
-Golden: Alternative D (14,700 cfs)
-
-## Stump sentence
-
-One power-law rating fitted to all of TUM-02's 468 gaugings and carried through the 46 annual peak stages into the
-standard's weighted-skew log-Pearson Type III puts the 1 per cent flood at 10,000 cfs and files Alternative A
-(10,400 cfs), because the 79 gaugings that bend the rating upward above the bank at about 10.3 ft are a sixth of the
-record and the fit follows the in-bank control; a rating with its own floodplain term above the break, fitted on
-those gaugings and carried through every peak stage, puts it at 14,000 cfs and files Alternative D (14,700 cfs).
-
-## Three rules
-
-Task type: physical-environmental-sciences / hydrology-flood-frequency (F): the 1 per cent annual exceedance discharge at a gauged river site, for a crossing's design.
-Domain test: the deciding quantity is the 1 per cent AEP peak discharge, estimated the way flood hydrology estimates it (a log-Pearson Type III on the annual maximum series with a weighted generalized skew), on peaks a hydrographer turns from stage into discharge through a stage-discharge rating fitted to field measurements, which changes form where the river leaves its banks; with hospital or grid nouns there is no stage, control, bank or floodplain for the measurement step to live in, and the task stops making sense.
-Swap: "which ward expansion is the smallest that holds the 1 per cent busiest day of admissions, from 46 years of a census index converted through a staffing ratio fitted to audits" reads, but nothing in a ward converts through a relation that changes form at a physical level about half the peaks cross, so the decisive step has nothing to act on.
-Layer 1: the gauge datum lowered 2.00 ft in October 2009 with older stages and measurements on the old datum (the station description and the levels log); measurement notes transcribed from paper in three decade layouts in cfs to 2004 against the measurement database's export with ADCP discharges in cubic metres a second through water year 2014 (two systems); the peak register kept in a spreadsheet to water year 2015 and later peaks only in the time-series system's 15-minute export on PST; telemetry re-sent rows and short gaps; three peaks from a crest-stage gauge noted in the register's remarks; measurement ratings and remarks in free text; nothing is placed to be caught.
-Layer 2: field_method: the annual peaks' discharges come from a stage-discharge rating fitted by control segment, with a floodplain term fitted on the measurements above the bank and carried through every peak stage, not from one curve fitted to every measurement; the frequency fit then follows the standard.
-Decisive step: fitting the rating with its own segment above the bank, where the floodplain adds conveyance the channel's power law cannot carry, from the overbank gaugings, and turning every annual peak stage into discharge through it before the frequency analysis.
-Not semantics: every field, datum, unit and clock read correctly (the 2009 datum, cubic metres a second to cfs, the PST export, the crest-stage remarks), one power law fitted to all the gaugings still files Alternative A; no column, code or remark carries the break, and the measurements' discharges are plain numbers.
-Not rule application: no shipped sentence says how to build the rating, where it breaks or which measurements to weight; the standard files the frequency method and the study the capacities and the selection rule, and executing every filed sentence with one fitted curve files Alternative A. Enumerated family (one power law on logs or in arithmetic units with the offset fitted or fixed, a log-log quadratic, a wide smooth, the floodplain term from a break at 9.9 to 10.5 ft or fitted, as a channel-plus-floodplain sum or a separate power law, local smooths): 1 per cent floods from 8,049 to 14,126 cfs, Alternatives A to D; standing family (the forms the gaugings above the break do not refute): 13,804 to 14,126, a 2.3 per cent spread, all printing 14,000 and D; the ruling-out: one power law leaves the gaugings above 11 ft a median 13 per cent above it while the in-bank residuals stay within 4 per cent, a structured residual the curve's overall fit statistic hides.
-Analyst test: a strong analyst who reads every file correctly, extracts all 46 peaks on the current datum, converts the ADCP discharges and runs the standard's weighted-skew log-Pearson Type III, but rates the peaks through one power law fitted to all the gaugings, files a 1 per cent flood of 10,000 cfs and Alternative A (10,400 cfs), against Alternative D (14,700 cfs); fitted in arithmetic units the same curve files Alternative C.
-Estimand: the crossing alternatives study (section 3) and the design standard (4.2.2 to 4.2.5): the peak discharge at TUM-02 with a 1 per cent chance of being exceeded in any year, from the gauge's annual peaks of water years 1980 to 2025 (the largest instantaneous discharge of each water year), by the standard's log-Pearson Type III; the alternative is the smallest whose capacity is at least that discharge.
-No decoy: no published discharge, rating table, earlier flood study, memo or contractor figure ships; the study gives only capacities and the rule, the standard only the frequency method and the generalized skew; nothing in the pack converts a stage to a discharge or names an alternative as the answer.
-No certified replay: no figure in the pack is produced by the golden method; the gaugings are field measurements every route uses, and nothing certified is reproduced to recover a method.
-Lesson: a flood-frequency estimate is only as good as the discharges under it, and at a stage gauge those come from a rating whose top is where the river leaves its channel; a curve fitted to the whole gauging record follows the many in-bank measurements and understates every overbank peak, and through the fitted skew it understates the rare flood far more than any single peak. No build on file teaches the rating's form under the annual peak series.
-
-## Readability screen
-
-| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| 0 one power law on logs, standard LP3 (Alternative A, 9,983 cfs) | no | no | yes (the textbook route) | no | no | no | readable |
-| 1 GEV, station or generalized skew alone, a trend to 2027 on the same peaks (8,049 to 11,758) | no | no | yes | no | no | no | readable |
-| 2 one power law in arithmetic units, a log-log quadratic, a wide smooth (Alternatives A and C) | no | no | partly | no | no | no | readable |
-| 3 the rating with its own floodplain term above the break, carried through every peak (decisive) | no sentence names a break, a floodplain or a segment | the gaugings are one register in two systems, read by every route to fit the rating | not the textbook reflex for a rating, which is one power law | no control ties to it | no | no: the peaks' discharges enter the fit through the skew of their logs | silent |
-
-## Semantic fork table
-
-| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | the water year | 1 October to 30 September, local | the PST export's dates | same call | same call (no peak within two days of 1 October) |
-| SF2 | the 15-minute export's re-sent rows | collapsed | kept | same call | same call (exact repeats) |
-| SF3 | the register's crest-stage years (1986, 1997, 2007) | entered as recorded | dropped | same call | same call |
-| SF4 | Poor-rated measurements | kept | dropped | same call | same call (13,850, D) |
-| SF5 | low outliers | none flagged | Grubbs-Beck applied | same call | same call (no low outlier, golden or default) |
-| SF6 | trend check (4.2.6) | not significant | significant | same call | same call (Mann-Kendall p above 0.05 both ways) |
-| SF7 | "at least the design discharge" | capacity at or above | strictly above | same call | same call (no capacity within 4 per cent) |
-| SF9 | the 2000-04 notes' gage height | Mean GH | mean of start and end | same call | same call (within 0.01 on every row) |
-| SF10 | measured discharge precision | three significant figures as shipped | the field values | same call | same call (under 0.5 per cent) |
-
-## Ladder
-
-| Rung | Route | 1 per cent flood (cfs) | Alternative | Dies to |
-|---|---|---|---|---|
-| 0 | one power law on logs, the standard's LP3 (default) | 9,983 | A | the gaugings above 11 ft, a median 13 per cent over the curve |
-| 1 | the same peaks: GEV, station skew alone, generalized skew alone, a log-linear trend to 2027 | 8,049 to 11,758 | A or B | the same, and the standard |
-| 2 | one power law in arithmetic units; a log-log quadratic; a wide smooth (span 2/3) | 12,070; 10,103; 10,318 | C; A; A | the same residuals above the bank |
-| 3 | the floodplain term above a fitted break (golden), or any of the 21 standing forms | 13,967 (13,804 to 14,126) | D | |
-
-Position: the golden is the highest of every route; every route that keeps one curve through the record sits one to
-three alternatives under it. Margin: D's 14,700 cfs clears the golden by 5.2 per cent and C's 12,900 sits 7.6 per cent
-under it; one sigma (343 cfs over 200 resampled gauging records) stays inside both and inside the 14,000 bin. Worth:
-the decisive step moves the call three alternatives and the design discharge 4,000 cfs.
-
-## Closure table
-
-| # | Axis | Reading | Closure |
-|---|---|---|---|
-| 1 | Population | the 46 water years 1980 to 2025 | study section 3; standard 4.2.2 |
-| 2 | Unit of account | one water year's peak | standard 4.2.2 |
-| 3 | Attribution window | 1 October to 30 September | standard 4.2.2; SF1 same call |
-| 4 | As-of dating | pack pulled 2026-01-20; record to 30 September 2025 | the files' own dates |
-| 5 | Version basis | the 15-minute export for 2016 to 2025, the register before | station description, Records |
-| 6 | Denominator | n of the 46 logs (n - 1 for the standard deviation) | standard 4.2.3 |
-| 7 | Weighting | station and generalized skew by their MSEs | standard 4.2.4 |
-| 8 | Window length | water years 1980 to 2025 | study section 3 |
-| 9 | Boundary inclusivity | capacity at least the discharge | study section 3; SF7 same call |
-| 10 | Rounding path | the discharge printed to the nearest 1,000 cfs after the pick | prompt; 467 cfs inside its bin |
-| 11 | Tie-break | the smallest qualifying alternative | study section 3 |
-| 12 | Maturity and censoring | none: every water year complete | standard 4.2.2 |
-| 13 | Order of operations | rate each peak stage, then fit | standard 4.2.2 (discharges are fitted) |
-| 14 | Row order | none | n/a |
-| 15 | Duplicate resolution | re-sent rows collapsed | SF2 same call |
-| 16 | Identity normalisation | gauge TUM-02 throughout | n/a |
-| 17 | Netting against gross | none | n/a |
-| 18 | Dimensional units | cfs; m3/s through water year 2014 | the export's discharge_unit column |
-| 19 | Code and status semantics | quality Good, Fair, Poor; E, G, F, P | dictionary; SF4 same call |
-| 20 | Integerisation | none on the call | n/a |
-| 21 | Clause scope | 4.2 applies to the crossing at the gauge | study section 3 (the drainage area is the gage's) |
-| 22 | Forward window contents | any year of the bridge's service, stationary record | standard 4.2.1; SF6 same call |
-
-## Literal reader
-
-Executed word for word, the study and the standard file the population (the 46 water years' annual peaks at TUM-02),
-the outcome (the largest instantaneous discharge of each water year), the distribution and its fitting, the
-generalized skew and its weighting, the 1 per cent exceedance and the selection rule; they leave the discharge of each
-peak, and so the rating, open. Every literal reading of their terms (SF1 to SF10) gives 14,000 cfs and Alternative D
-from the golden method, and the default path's Alternative A comes from an easier rating on the same literal
-estimand, never from another reading. The asks' terms: "the highest stage the river reached" is the river's stage,
-which a reading lifted by an orifice purge inside a logged visit is not (the lift follows each logged purge time by 0 to
-15 minutes on the local clock, asserted on every purge); "the water level at the pipe bridge's radar" is the water's
-elevation, the sensor face less the measured distance, and "the moment TUM-02 recorded each water year's crest" is
-the gauge's crest reading, both forced by the records (the historian's legacy stamps read as UTC put the radar's
-hydrograph 0 to 30 minutes behind the gauge's, read as local eight hours late; the levels log puts the face at 199.34
-ft at install and 199.84 ft in 2023, with the bracket work order of 16 November 2022 between).
-
-## Oracles
-
-none. No control, published figure or reconciliation ties under one route only: no discharge, rating table or
-earlier flood study ships; the alternatives' capacities and the generalized skew are inputs every route uses.
-
-## Ask sheet
-
-Criteria: the alternative (1), the design discharge (1), the station skew (1), the chosen and next-smaller capacities
-(2), ask A's twenty cells (ten stages and ten dates), ask B's twelve cells (six levels and six falls), the chart (the
-peaks, the curve, the seven capacities with D marked, the 1 per cent point, the title: 5), the two files (2): 44.
-
-- Ask A, the contractor's work-area isolation (study section 5): the highest stage the river reached at TUM-02 in each
-  15 July to 15 September window, 2016 to 2025, with its date. Rows: the 15-minute export's summer readings and the
-  visit log, which the call never reads (the call reads each water year's single highest reading, all in winter).
-  A1 (D8, primary, split evidence): the hydrographers purge the bubbler's orifice line at visits, which lifts the next
-  two readings 0.3 to 1.45 ft; the visit log records arrival, departure and purge times on the local wall clock while
-  the export is on PST, so in daylight time a careful path that drops the visit's readings on the export's clock drops
-  the hour after the lift and keeps it. Every window's highest raw reading is a purge lift.
-  A2 (hazard): the 11 June 2025 controller swap entered an offset 0.47 ft high until the 27 August reset; the visit
-  log's logger and staff readings give it.
-  Stops: the careful path (visit readings dropped on the export's clock, the offset taken off) keeps 0 of 10 stages and
-  0 of 10 dates; with no visit handling, the same.
-- Ask B, the reach model's calibration (study section 4): the water level at the pipe bridge's radar at TUM-02's crest
-  reading in each water year 2020 to 2025, and the fall from the gauge to the pipe at that moment. Rows: the SCADA
-  historian export, which the call never reads, and the gauge's six crest readings.
-  B1 (D8, primary): the historian replaced on 21 June 2022 (work order) stored its legacy stamps in UTC with no zone in
-  the export and the new one local wall clock; read on one clock, 2020 to 2022's crest moments land eight hours away.
-  B2 (D2, primary, split evidence): the radar's bracket was replaced on 16 November 2022 (work order) and its face
-  resurveyed 0.50 ft higher on 3 May 2023 (levels log), while SCADA kept computing the level from the install face, so
-  the level tag reads 0.50 ft low from the bracket on.
-  Hazards: debris spikes in the radar's distance during floods, short comms gaps, the daylight-time repeat hour.
-  Stops: the careful path (stamps and level tag as exported) keeps 0 of 12; the clock fixed alone keeps 3 levels and 3
-  falls, the face fixed alone 3 and 3.
-- Zero device rows in the call's population: no purge lift or offset at any water year's crest reading, every lift a
-  foot or more under its water year's crest, and the call reads no SCADA, visit or work-order file (asserted, SEP).
-
-Pair ceiling: 28.5 (the cracker on the call keeps 0 of 32 ask figures, 45.0; the mirror off the call keeps 0 of 32,
-12.0)
-Mirror leakage: 0.0 per cent of ask weight
-Measured by: generator/cracker.py
-
-| Ask | Cracker sheet (every filed sentence executed, re-sent rows collapsed, the export on PST, visit times on the export's clock, the offset from the visit log, historian stamps and level tag as exported) | Hits | Verdict |
-|---|---|---|---|
-| Ask A, ten window stages | a purge lift kept in every window | 0 of 10 | miss |
-| Ask A, ten window dates | the same | 0 of 10 | miss |
-| Ask B, six pipe levels | legacy stamps eight hours off; the level tag 0.50 ft low after the bracket | 0 of 6 | miss |
-| Ask B, six falls | the same | 0 of 6 | miss |
-
-## Leak sweep
-
-`leak.py --asof 2026-01-20` REVIEW, every line answered. Sweep 3: five ask B figures appear as SCADA level-tag
-readings because the golden is a reading (the level tag at the true moment equals the water level before the bracket,
-and coincides elsewhere by value); the study carries four of six words of the committed call because it is the WHAT
-(the alternatives, the bridge). Sweep 4: the study and the station description use ordinary words of the field
-(record, standard, reading, channel) and name no move. Sweep 5: the prompt's question. No decisive vocabulary
-(floodplain, overbank, bankfull, breakpoint, rating curve, segment) appears in any shipped file (asserted in checks.py).
-
-## Guard
-
-`guard.py check` on the re-registered card and `heart`: WARN (overuse.objective, overuse.gate_g, the lane's objective;
-repeat.question_form against task482, the decision being a pick among the study's alternatives), every BLOCK of the
-moved window redrawn (`## Draw`); structural tests differentiated on the card. `surface`: exit 0; the one "persona"
-it lifted (Gage Period) is a table header in the station description.
+- **Pairing:** Quantitative Finance, task type `volatility-derivatives-pricing` (F). The deciding quantity is the
+  realised volatility a freely floating exchange rate will show in 2027, the number an FX options desk prices its
+  one-year options at.
+- **World (fictional):** the Republic of Arauquia, a small Andean economy whose currency, the arauquian peso, trades
+  against the dollar on an interbank platform from 08:00 to 16:00 local time. From January 2024 to December 2026 its
+  central bank, the Banco Central de Arauquia, sold or bought dollars with the dealers in the hours the peso came
+  under the most pressure; in October 2026 it announced that its spot operations end on 4 January 2027 and released,
+  with the announcement, the hourly record of its operations and of the reporting dealers' net customer purchases for
+  2024 to 2026. A domestic bank's FX options desk launches the country's first one-year dollar options to corporate
+  clients in January 2027 and must set the volatility it prices them at; its pricing policy prices at the volatility
+  the reference rate is expected to realise over the option's life, rounded up to the next whole per cent, and it
+  delegates the figure to the head of the desk, who sets it before launch (forum: the desk itself).
+- **The call:** the 2027 pricing volatility, a dial on the desk's whole-per-cent grid. Golden (prototype, the hourly
+  instrument family on the record's three years): a free-float volatility near 11.5 per cent, priced at 12. Default
+  path: the reference rate's realised volatility over 2024 to 2026, near 7.2, priced at 8.
+- **Shape:** 04, setting one dial: the grid's settings, each covering or failing the 2027 expected volatility, the
+  committed setting and the one below; asks A and B supply the rest (stage 2, `## Ask sheet`).
+- **Strategy:** `causal_design` (simultaneity: the central bank's trades respond to the same hour's move, so the
+  comparison the design implies is the customers' own flow, not the net flow), gap time (the record was produced
+  under the smoothing operations, the decision bets on the float), G5 then G16 and G17, Gate G
+  method_or_model_selection, layer2_family estimand_identification, layer2_pattern
+  own:price-impact-of-customer-flow-under-leaning-intervention.
+- **Data-native sentence:** the central bank sold dollars in the hours the peso fell hardest and bought in the hours it
+  rose hardest, so in the record its trades are largest exactly when the hour's own news was largest; the customers'
+  flow is the only flow in the record that did not answer the hour's move, and the market's depth is read on it, net
+  of the share of it the bank took off the market.
+- **Sources (one line each):** the client's derivative-pricing, market-data and counterparty cards (calibrated model,
+  discrete monitoring, early exercise, total-variance arbitrage, curve repricing, netting) are pricing methods that
+  take the volatility as given, so none supplies this pitfall; the field's textbook routes for the forecast (the
+  record's realised volatility, a GARCH or HAR fit to it, the latest quarter) are the default path; FX microstructure's
+  textbook calibration (the rate's move regressed on order flow) is the first rung, and the simultaneity it ignores
+  under a leaning central bank is the stump. task177's unregistered candidate G (dealer gamma damping index moves,
+  the programme winding up) is the nearest screen on file and died on lever and family spread at plausible strength;
+  task135 (nonsynchronous unit prices under a volatility cap) is the cell's shipped card and shares no driver.
+- **Measured lever (prototype, 10 to 20 worlds a configuration, hourly grain over 756 days):** with the bank absorbing
+  part of every hour's pressure beyond about 0.1 per cent, the record's volatility sits at 0.58 to 0.75 of the
+  free-float truth; the impact read on the net flow puts the bank back at 0.56 to 0.85; the two-regressor fit, whose
+  bank coefficient has the wrong sign, 0.35 to 0.63; customer flow alone (the reduced form) 0.75 to 0.89; customer
+  flow in the hours the bank stayed out 0.60 to 0.81; scaling the record by the net flow's variance ratio 0.72 to
+  0.94; the bank-hours volatility 0.70 to 0.94. The instrument family (the customer flow as the instrument hourly and
+  daily, its sign, year by year, the reduced form over one less the absorbed share, the structural sum) lands 0.90 to
+  1.09 of the truth, median spread 3.6 to 4.4 per cent within a world, the hourly members 1 to 2 per cent of each
+  other; the whole-per-cent grid with the expected volatility mid-bin holds every member on one setting.
+- **Guard (`check` on the draft):** WARN only, overuse.objective (the lane is Forecasting) and overuse.gate_g
+  (method_or_model_selection is the honest label: two defensible estimators of the market's price impact, the data's
+  structure pinning one). Earlier drafts BLOCKed and were redrawn honestly before filing: decisive G16 repeated
+  task478's pattern (ban.pattern) and decisive G3 repeated task169's signature (test.same_driver on time, G3 and
+  forecasting), so the decisive generator is G5 (the customers' dollar need was partly met by the central bank, so the
+  record's prices never absorbed it), which is what the record shows; Gate G forecasting with G5 matched task111 and
+  task86, and the identification is the mechanism, so method_or_model_selection is the label the design earns.
+  Personas drawn with `guard.py names --locale es_CO --seed 178`; Rosa, Eduardo and Alexander replaced on
+  people.first. Under the serial lock the window had moved: ban.forum committee_or_panel against task482, so the
+  figure is the desk head's own under the pricing policy (operations_desk, which is how a trading desk sets a
+  pricing parameter), and the deliverable pair became a workbook and a PNG chart (svg plus xlsx repeated task482;
+  png plus xlsx is a WARN against task175, answered: the chart is the desk's grid against the forecast, nothing
+  like task175's).
 
 ## Retired
 
@@ -295,6 +101,13 @@ were read first and kept spent (task179's target-mediated elimination and eleven
 twenty). Two new candidates were measured dead on code and sixteen directions on paper (the cell's lines at the foot
 of `## Tried and rejected`). No card was registered, so architecture 2 stays the card's current identity, nothing moved
 into `lineage` and nothing was cut. PAUSED at stage 1 for the main session to assign another cell.
+
+Third rebuild cell the same day, assigned by the main session: quantitative-finance / volatility-derivatives-pricing
+(Forecasting), worktree `b_178n` at d020f687, fictional settings. task177's screen of the same cell (candidate G and
+seventeen paper deaths, with its finding that a volatility level carries a 5 to 14 per cent model spread) and task135's
+card were read first and kept spent. Fifteen directions died on paper and one candidate measured on code held at the
+screen (the cell's lines at the foot of `## Tried and rejected`): architecture 3, a central bank's leaning spot
+operations ending, registered on 2026-10-23 with architecture 2's identity moved into the card's `lineage`.
 
 ## FC49 screen record (world spent, kept for the record)
 
@@ -627,3 +440,41 @@ none is touched by either candidate.
     the record informed by an attaining minority, a correction the field teaches (fraction-weighted interactions,
     time-matched PK-PD, a mixed model over a titration), or a difference of measured clearances whose estimator family
     spreads as wide as its lever. The cell is spent for this round.
+- **Third rebuild cell, quantitative-finance / volatility-derivatives-pricing (Forecasting), screened 2026-10-23.**
+  task177's screen of the same cell read first (candidate G, dealer gamma, measured dead; seventeen on paper; a
+  volatility level carries a 5 to 14 per cent model spread), with the field's routes (the record's realised volatility,
+  GARCH or HAR on it, implied volatility, event-volatility stripping, the term structure) taken as the default path.
+  Dead on paper, one line each:
+  - a results day carrying a preliminary trading statement's news once statements are abolished: one step once the
+    rule change is read (add the statement day's variance);
+  - semiannual reporting doubling each report's accumulated news: one step once read, and the semiannual reporters
+    already on file are the attaining subset;
+  - limit-lock runs merged into latent moves under a widened daily price limit: for the variance the multi-day return
+    lands (task135's estimator), for the tail the censored-t fit is the taught correction, and the new limit replayed
+    on latent moves is rule application;
+  - a narrowed limit splitting moves for a variance swap on daily settlements: the filed limit rule executed on the
+    record's moves is rule application;
+  - employee stock options' expected term read on moneyness: the exercise-multiple lattice is the field's taught method
+    and the simplified-method term sits near the golden;
+  - a currency near the edge of a credible band: the reflected terminal distribution follows from the filed band
+    (rule application) and the compression is a fitted nonlinearity;
+  - commodity option volatility on hub-level days of cover: a regression on the obvious covariate (the brief's measured
+    death), with past low-stock days the attaining subset;
+  - rate volatility on a normal-against-CEV backbone with the forward level outside the record: a fitted nonlinearity
+    extrapolated, forking on the exponent;
+  - a calendar strip or average-price option: the averaging formula is textbook and the strip's own price series is the
+    attaining subset;
+  - same-day and morning-settled options: the record measures each window directly, or the settlement time is a
+    contract reading (semantics);
+  - an exporter's surrender requirement routing its dollars through the market: task169's driver in FX nouns (a
+    closed route's events through the remaining route's conversion), and the signature BLOCKs against task169;
+  - the results season's single-stock jumps on each name's own baseline: event-volatility stripping is textbook and the
+    lever is under 10 per cent of the volatility;
+  - a central bank answering the customer flow it sees rather than the move: the net-flow regression is consistent and
+    the reflex lands;
+  - leveraged-fund rebalancing amplifying closes, the fund closing: candidate G's twin with the sign reversed, a
+    regression on a shipped covariate;
+  - pre-announced intervention auctions as the instrument: the impact of an anticipated flow differs from a surprise
+    one, so it is unidentified.
+  - Held and drawn: the central bank's leaning spot operations ending (`## Draw`), measured on code (c1_fx.py to
+    c1t.py) before the card.

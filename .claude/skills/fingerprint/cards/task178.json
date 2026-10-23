@@ -1,104 +1,90 @@
 {
   "task": "task178",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-10-23",
-  "slot_note": "rebuild 2026-10-23 of a number reopened under the author's rule that no number stays retired; cell physical-environmental-sciences / hydrology-flood-frequency (Forecasting) allocated by the main session; world, decision, quantity and mechanism drawn fresh in the cell; arch 1 (the trestle deck) and the conjoint cell are spent and kept in lineage",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "hydrology-flood-frequency",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "a western Washington paper mill's choice of waterway for the pipe bridge that carries its raw-water main over the river just below its own stage gauge: the 1 per cent annual chance peak discharge from the gauge's 46 annual peak stages, each turned into a discharge through a rating the mill's own field gaugings must supply, where about half the annual peaks rise onto the floodplain and the in-bank gaugings outnumber the floodplain ones five to one",
+  "slot_note": "rebuild 2026-10-23 of a number reopened under the author's rule that no number stays retired; cell quantitative-finance / volatility-derivatives-pricing (Forecasting) allocated by the main session after the population-pharmacokinetics cell found nothing; world, decision, quantity and mechanism drawn fresh in the cell; architecture 1 (the trestle deck) and architecture 2 (the floodplain rating) spent at Gate F, the FC49 seed, conjoint and pharmacokinetics screens registered no card",
+  "domain": "quantitative-finance",
+  "subdomain": "volatility-derivatives-pricing",
+  "client_domain": "quantitative-finance",
+  "niche": "a domestic bank's FX options desk in a fictional Andean republic setting the volatility it prices its first one-year dollar options at for 2027, once the central bank ends the spot operations it ran against the market's largest hourly moves from 2024 to 2026, from the hourly record of those operations and of the dealers' customer flows that the central bank released with its float announcement",
   "objective": "forecasting",
   "shape": "04",
   "decision_type": "dial_setting",
-  "answer_unit": "named_option",
-  "answer": "Carry forward Alternative D (14,700 cfs) for the Sauer pipe bridge. The 1 per cent annual chance peak discharge at TUM-02 is 14,000 cfs, so Alternative C (12,900 cfs) falls short.",
-  "answer_source": "task178/submission.md, 1. Final Recommendation, first two sentences (bold markers removed); figures in task178/generator/figures.json, written with golden/sauer_crossing_design_flow.xlsx and golden/sauer_crossing_frequency_curve.svg by generator/deliver.py from target/ and recomputed by generator/verify.py",
+  "answer_unit": "rate_or_share",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population"
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G3",
-    "G14"
+    "G5",
+    "G16",
+    "G17"
   ],
-  "gate_g": "forecasting",
-  "calibration_form": "physical_verification",
-  "stump_strategy": "other",
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "capacity_report",
+  "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who puts every stage on the current gauge datum, converts the ADCP discharges from cubic metres a second, extracts water years 2016 to 2025's peaks from the 15-minute record and fits the design standard's log-Pearson Type III with the weighted generalized skew, but turns the 46 peak stages into discharges through one power-law rating fitted to all 468 gaugings, files a 1 per cent flood of 10,000 cfs and Alternative A (10,400 cfs), three alternatives under Alternative D (14,700 cfs) at the golden's 14,000 cfs; the same curve fitted in arithmetic units files 12,000 cfs and Alternative C, because the 79 gaugings above the 10.3 ft break, which show the floodplain carrying flow the channel's curve cannot, are outweighed by the 389 below it.",
-  "domain_test": "The deciding quantity is the 1 per cent annual exceedance discharge, estimated the way flood hydrology estimates it (a log-Pearson Type III on the annual peak series with a weighted regional skew), on peaks that a hydrographer turns from stage into discharge through a stage-discharge rating fitted to field measurements, which changes form where the river leaves its banks; with another field's nouns there is no stage, rating, bankfull control or floodplain for the measurement step or its pitfall to live in.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:floodplain-segment-of-the-rating-under-the-annual-peak-series",
+  "analyst_test": "A strong analyst who puts the central bank's operations log on the dealers' trade dates and local hours, converts its millions to the dealers' thousands, drops superseded dealer resubmissions and merges the two codes of the dealer that merged in 2025, then adds the bank's hourly trades back to the reference rate at the price impact read from a regression of the hour's move on the market's customer flow net of the bank (or on the customer flow alone), still files a 2027 volatility near 9 per cent and prices at 9 or 10 per cent, because the bank traded against each hour's own move; the customers' impact divided by one less the share of their flow the bank absorbed files about 11.5 per cent and prices at 12.",
+  "domain_test": "The deciding quantity is the volatility of a freely floating exchange rate, estimated the way FX microstructure estimates the price effect of order flow (the rate's move per unit of customer order flow, the market's own depth) and turned into the realised volatility an options desk prices at; with another field's nouns there is no order flow, no dealer price impact and no central bank trading against the same hour's move, and the task stops reading the same.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:price-impact-of-customer-flow-under-leaning-intervention",
   "layer1": [
-    "a gauge datum lowered 2.00 ft in October 2009, older stages and gaugings on the old datum (the levels log)",
-    "gaugings in two systems and layouts: transcribed paper measurement notes in cfs to 2004, the measurement database export with ADCP discharges in cubic metres a second from 2005",
-    "the annual peak register kept in a spreadsheet to water year 2015, later peaks only in the time-series system's 15-minute export",
-    "15-minute stage in UTC against local water years (October to September)",
-    "a peak taken from a crest-stage gauge when the logger failed, recorded in the visit log",
-    "measurement quality ratings and remarks in free text",
-    "telemetry gaps and re-sent rows in the 15-minute export"
+    "the central bank's operations log stamped in UTC and booked by value date (T+1), beside dealer reports stamped in local hours by trade date",
+    "dealer customer-flow reports in USD thousands, the central bank's operations in USD millions",
+    "dealer reports resubmitted for a window after a correction, the later submission superseding the earlier",
+    "two reporting dealers merged in 2025, the absorbed dealer's code continuing for a month",
+    "national holidays and US holidays on which spot does not settle, so the reference rate repeats",
+    "a reference rate published at 13:00 beside the 16:00 closing rate",
+    "hourly rate snapshots from the interbank platform with occasional missing hours after a platform outage"
   ],
-  "stakeholder_role": "the mill's water resources engineer, who sets the design discharge and the waterway alternative for the replacement pipe bridge before the 2027 in-water season",
-  "role_family": "field_unit_lead",
+  "stakeholder_role": "the head of FX options at a domestic bank, who sets the volatility the desk prices its first 2027 one-year dollar options at before the January launch",
+  "role_family": "portfolio_manager",
   "scoring_unit": "other",
   "spine": {
-    "file": "tum02_stage_15min_wy2016-2025.csv",
-    "rows": 351228,
-    "entity": "one 15-minute stage reading at the gauge",
-    "grain": "gauge x 15 minutes",
-    "source": "synthetic (constructed in the layout of a hydrometric time-series export)"
+    "file": "dealer_customer_flows_hourly_2024-2026.csv",
+    "rows": 85000,
+    "entity": "one reporting dealer's net customer purchases of dollars in one trading hour",
+    "grain": "dealer x trading hour",
+    "source": "synthetic (constructed in the layout of a central bank's FX market statistics release)"
   },
-  "forum": "line_manager_or_team",
-  "forcing_event": "season_or_peak",
-  "org_family": "manufacturer",
+  "forum": "operations_desk",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "financial_institution",
   "world": {
-    "geography": "United States, western Washington (the Tumwick River valley; the river, Callender Paper Company and its Sauer mill, its gauge TUM-02 and every record are fictional)",
+    "geography": "a fictional Andean republic (Arauquia); its central bank, currency, dealers and every record are fictional",
     "currency": "USD",
-    "org_type": "pulp and paper mill (a manufacturer) operating its own river gauge for its water right and intake",
+    "org_type": "a domestic commercial bank's FX options desk",
     "invented_names": [
-      "Callender Paper Company",
-      "Tumwick River",
-      "Sauer pipe bridge",
-      "Crandell Hyde Engineering"
+      "Republic of Arauquia",
+      "Banco Central de Arauquia",
+      "arauquian peso"
     ],
     "people": [
-      "Stacy Huber",
-      "Gary Wagner",
-      "Timothy Morse",
-      "Brenda Dodson",
-      "Dalton Maxwell"
+      "Yanet Cáceres",
+      "Miguel Rengifo",
+      "Inés Quiroz",
+      "Edison Hurtado"
     ]
   },
   "deliverables": [
-    "sauer_crossing_design_flow.xlsx",
-    "sauer_crossing_frequency_curve.svg"
+    "usd_options_vol_2027.xlsx",
+    "free_float_vol_2027.png"
   ],
   "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "Each unit's outcome is a recorded index converted through a relation fitted to a separate and much smaller set of direct measurements, and the relation changes form above a level that about half the units exceed while few measurements do; one relation fitted to all the measurements is set by the many below the level, understates every unit above it by more the higher it sits, and through the fitted distribution's shape understates the rare quantile far more than it misstates any single unit.",
-  "driver_concrete": "The 46 annual peak stages at TUM-02 become discharges only through a rating fitted to the company's 468 gaugings; above about 10.3 ft the river spills onto its left-bank pasture and the 79 gaugings made there run 13 per cent and more above any single power-law rating fitted to all of them (in-bank residuals within 4 per cent), so the peaks above the bank are understated, the station skew falls from -0.2 to -0.9 and the 1 per cent flood from 14,000 to 10,000 cfs; a rating with its own floodplain term above a break fitted at 10.28 ft, carried through every peak stage, gives 14,000 cfs and Alternative D (14,700 cfs), every floodplain-honouring form agreeing within 2.3 per cent.",
-  "stump": "A competent solver who fits one power-law rating to all the gaugings and runs the standard's weighted-skew log-Pearson Type III on the converted peaks files a 1 per cent flood of 10,000 cfs and Alternative A (10,400 cfs), 12,000 cfs and Alternative C (12,900 cfs) if the curve is fitted in arithmetic units, because the floodplain gaugings that bend the rating upward above the bank are a sixth of the record; the rating with a floodplain term above the fitted 10.28 ft break puts the 1 per cent flood at 14,000 cfs and files Alternative D (14,700 cfs).",
+  "question_form": "what",
+  "driver": "The decisive quantity is a forward dispersion with an absorbing agent removed: the agent traded against each interval's own shock and will stop, so the forward dispersion needs the outcome's response to the flow the agent absorbed, and because the agent's trades respond to the same interval's shock, the response read on the flow net of the agent is biased toward zero and the response read on the outside flow alone is net of the agent's offset; only the outside flow's response divided by the share of it the agent did not absorb (the outside flow as the instrument) puts the absorbed flow back at the market's own response.",
+  "driver_concrete": "From 2024 to 2026 the Banco Central de Arauquia sold or bought dollars in the hours the peso moved most and absorbed a large share of each such hour's pressure, so the peso's realised volatility ran near 7 per cent; it stops on 4 January 2027. The hour's move regressed on the dealers' customer flow net of the bank's trades gives an impact biased low, because the bank traded against that hour's own move, and regressed on customer flow alone gives the impact net of the bank's offset; the customer flow's impact divided by one less the share of it the bank absorbed puts the bank's trades back at the market's own depth and gives a 2027 volatility near 11.5 per cent.",
+  "stump": "A competent solver who takes the reference rate's realised volatility over 2024 to 2026 prices the 2027 options at 8 per cent, and one who adds the central bank's hourly trades back at the impact read from the hour's move on the market's net or customer flow prices at 9 or 10; the step that lands them there is reading the price impact off a regression whose flow the bank traded against within the same hour, when the customers' flow, scaled by the share of it the bank left to the market, gives the impact the float exposes and a 2027 volatility near 11.5 per cent, priced at 12.",
   "mechanism_source": "design_note",
-  "differentiation": {
-    "task238": "task238 sets a survey-mode dial from an instrumented estimate of how a reporting channel changes reports (a randomised nudge's ratio of differences); here nothing is assigned or instrumented: a stage-discharge rating is fitted per control segment on field gaugings and carried through every annual peak before a flood-frequency fit.",
-    "task134": "task134 prices a raised allowance through a rebuild hazard that starts once a best-paying option beats what stands (pattern E's conditioned yield on parcels); here no unit responds to anything: a measurement relation changes form above bankfull and the pooled fit understates the overbank peaks, through the fitted distribution's skew.",
-    "task146": "task146 splits a weekly count's period-turn step into a released pool by segment; here no pool, segment share or calendar turn exists: each annual peak's discharge is rebuilt from its stage through a rating with its own floodplain segment.",
-    "task165": "task165 conditions a service upgrade's gain on each unit's untreated share (a gain on baseline); here no treatment or gain: the conditioning is of a fitted physical relation on the stage band its measurements sit in, the floodplain segment fitted where the overbank gaugings are.",
-    "task249": "task249's v5 lineage conditions a sampled concentration rating on the rise-and-fall phase that sampler access selects; here no phase, selection or sampling access: the rating changes form at a fixed stage, the floodplain, and the default's error is the pooled fit's weight on in-bank gaugings, not a hysteresis.",
-    "task229": "task229 biases a daily mean discharge through a convex rating under within-day peaking swings (Jensen at the daily grain), a data-quality call; here the rating's own form above bankfull is the step, the grain is the annual peak, and the call is a design flood quantile.",
-    "task452": "task452 v1 applied a concentration-discharge rating to every day for a load and set a kinked relation aside because data above the kink were too thin to fix its form (the curves split across standard fits); here 30-odd gaugings span the floodplain up to the flood of record, the segmented fits agree within about 1 per cent on the 1 per cent flood, and the kink is the bankfull stage.",
-    "task466": "task466 fits a low-flow quantile to a censored historical record of threshold years; here no year is censored: every peak stage is recorded and the step is the stage-discharge rating that turns it into a discharge.",
-    "task138": "task138 calibrates an irrigation application efficiency on soil moisture stations' season and carries it through every field's balance to a start state; here no balance or start state: a stage-discharge rating's floodplain segment is fitted on overbank gaugings and carried through every annual peak stage into a flood-frequency fit.",
-    "task173": "task173 v2 splits each shared pumping meter into river lift and well lift by fitted plant curves for a season's energy; here no meter is split: one stage record is converted through a rating whose floodplain segment the overbank gaugings fix, for a flood quantile.",
-    "task101": "task101 cuts a funding threshold from a published distribution net of the decision's own earlier payments filed under intermediaries; here no payment or population is netted: each annual peak's discharge is rebuilt from its stage through a rating with its own floodplain segment, before a design quantile is set.",
-    "task469": "task469 reads a share of tasks needing more than a new allowance from the tasks whose old allowance was already shorter (censoring by allowance); here nothing is censored: every peak stage is recorded and the step is the form of the stage-discharge rating above bankfull."
-  },
+  "differentiation": {},
   "lineage": [
     {
       "domain": "physical-environmental-sciences",
@@ -120,9 +106,55 @@
       ],
       "architecture": "redraw architecture 1 (climate-weather-extremes, the harbour trestle deck)",
       "fate": "spent 2026-10-21 at stage 4, Gate F (pack d64099d2): scored reader A conditioned on the 2027 tide table and landed the call (11.60 ft, 0.4 and 2.3 tides); reader B filed the default 12.35 ft; the judge was stopped because the readers decided it. The number's second cell (marketing-consumer-research / conjoint-choice-willingness-to-pay-analysis) was screened the same day with no card registered and nothing held; it is spent too."
+    },
+    {
+      "architecture": "redraw architecture 2 (hydrology-flood-frequency, the Sauer pipe bridge floodplain rating)",
+      "drawn": "2026-10-23",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "hydrology-flood-frequency",
+      "niche": "a western Washington paper mill's choice of waterway for the pipe bridge that carries its raw-water main over the river just below its own stage gauge: the 1 per cent annual chance peak discharge from the gauge's 46 annual peak stages, each turned into a discharge through a rating the mill's own field gaugings must supply, where about half the annual peaks rise onto the floodplain and the in-bank gaugings outnumber the floodplain ones five to one",
+      "objective": "forecasting",
+      "shape": "04",
+      "decision_type": "dial_setting",
+      "answer_unit": "named_option",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G3",
+        "G14"
+      ],
+      "gate_g": "forecasting",
+      "calibration_form": "physical_verification",
+      "stump_strategy": "other",
+      "context_artifact": "capacity_report",
+      "role_family": "field_unit_lead",
+      "forum": "line_manager_or_team",
+      "forcing_event": "season_or_peak",
+      "org_family": "manufacturer",
+      "layer2_family": "field_method",
+      "layer2_pattern": "own:floodplain-segment-of-the-rating-under-the-annual-peak-series",
+      "driver": "Each unit's outcome is a recorded index converted through a relation fitted to a separate and much smaller set of direct measurements, and the relation changes form above a level that about half the units exceed while few measurements do; one relation fitted to all the measurements is set by the many below the level, understates every unit above it by more the higher it sits, and through the fitted distribution's shape understates the rare quantile far more than it misstates any single unit.",
+      "driver_concrete": "The 46 annual peak stages at TUM-02 become discharges only through a rating fitted to the company's 468 gaugings; above about 10.3 ft the river spills onto its left-bank pasture and the 79 gaugings made there run 13 per cent and more above any single power-law rating fitted to all of them (in-bank residuals within 4 per cent), so the peaks above the bank are understated, the station skew falls from -0.2 to -0.9 and the 1 per cent flood from 14,000 to 10,000 cfs; a rating with its own floodplain term above a break fitted at 10.28 ft, carried through every peak stage, gives 14,000 cfs and Alternative D (14,700 cfs), every floodplain-honouring form agreeing within 2.3 per cent.",
+      "stump": "A competent solver who fits one power-law rating to all the gaugings and runs the standard's weighted-skew log-Pearson Type III on the converted peaks files a 1 per cent flood of 10,000 cfs and Alternative A (10,400 cfs), 12,000 cfs and Alternative C (12,900 cfs) if the curve is fitted in arithmetic units, because the floodplain gaugings that bend the rating upward above the bank are a sixth of the record; the rating with a floodplain term above the fitted 10.28 ft break puts the 1 per cent flood at 14,000 cfs and files Alternative D (14,700 cfs).",
+      "answer": "Carry forward Alternative D (14,700 cfs) for the Sauer pipe bridge. The 1 per cent annual chance peak discharge at TUM-02 is 14,000 cfs, so Alternative C (12,900 cfs) falls short.",
+      "spine": {
+        "file": "tum02_stage_15min_wy2016-2025.csv",
+        "rows": 351228,
+        "entity": "one 15-minute stage reading at the gauge",
+        "grain": "gauge x 15 minutes",
+        "source": "synthetic (constructed in the layout of a hydrometric time-series export)"
+      },
+      "deliverables": [
+        "sauer_crossing_design_flow.xlsx",
+        "sauer_crossing_frequency_curve.svg"
+      ],
+      "fate": "spent 2026-10-23 at stage 4, Gate F (pack cc9cb2f1): the judge approved and both scored readers landed the call (Alternative D, 14,000 cfs); a rating segmented at the bankfull break is the field's standard practice and the 79 overbank gaugings show the break plainly"
     }
   ],
-  "notes": "Rebuild of task178 (architecture 2 of the slot, after architecture 1 (the trestle deck); the FC49 seed screen and the conjoint cell registered no card; arch 1's card identity moved to lineage). Calibration physical_verification: the gaugings are field measurements the rating is fitted on. Gap population: the rating's evidence is mostly the in-bank population of measurements while the decision rests on the overbank peaks. Generators G3 (the recorded stage against the discharge the river carried, as the gaugings measure it) then G14 (the pooled relation does not hold for the overbank pool). Stump strategy other: a measurement relation that changes form, fitted per segment and carried through every unit, against one pooled relation (no listed family fits honestly). Context artifact capacity_report: the crossing alternatives study that gives each waterway alternative's capacity; the engineering standard's flood-frequency section is an input. Re-registered 2026-10-23 after the PAUSED commit: task170 and task173 were marked architecture_spent after this card was filed, which moved its live window back onto task175, task478 and task169 and BLOCKed org family, forcing event, artifact and pattern; redrawn honestly where the world allows: the owner became a pulp and paper mill that runs its own gauge for its water right (manufacturer; the utility label was true of the first world, not a relabel), the forcing event the 2027 in-water work season that the waterway choice must meet (season_or_peak; the design-build award follows from it), the artifact and pattern unchanged and cleared by the filing window. Architecture 2 (v2) spent 2026-10-23 at stage 4, Gate F (pack cc9cb2f1): the judge approved, but both scored readers landed Alternative D and 14,000 cfs. Reader D's path: an in-bank power law with a steeper overbank term above about 10.3 ft; readers C and D also cracked the ask devices (purge spikes, the 0.47 ft offset, the resurveyed radar face). A segmented rating at the bankfull break is standard hydrometric practice and the overbank gaugings show it plainly.",
-  "registered": "2026-10-23T06:51:26Z",
-  "architecture_spent": true
+  "notes": "Rebuild of task178, architecture 3 of the slot. stump_strategy causal_design: simultaneity, the agent's trades respond to the same hour's shock, so the comparison the design implies is the exogenous customer flow (not the net flow); not maturity_censoring, not composition_mix. Gate G method_or_model_selection: two defensible estimators of the market's price impact (the hour's move on the net or the customer flow, against the customer flow scaled by the share the bank left to the market, the customer flow as the instrument), the right one pinned by the data's structure, since the bank's trades grow with the same hour's move. Decisive generator G5 (provision elsewhere: the customers' dollar need was partly met by the central bank, so the record's prices never absorbed it), G16 (which estimator of the impact the data entitle), G17 (the margin of the instrument family against the pricing grid, asserted). task177's unregistered candidate G (dealer gamma damping) was the nearest screen and died on lever and family spread at plausible strength; here the absorbing agent's share is large and documented in its own log, and the family spread is measured at 2 to 4 per cent against a 30 per cent lever.",
+  "registered": "2026-10-23T08:42:51Z"
 }
