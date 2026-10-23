@@ -1192,6 +1192,114 @@ escapes and closing both: "draw a task type of education-learning-sciences that 
 (none in this domain), or another domain". `precut.py`'s `Task type:` line refuses it on the same rule, so
 the `## Three rules` block cannot be written to pass. No screen, harness or world could have changed this,
 and the education ground is closed for this objective by the taxonomy rather than by a measurement.
+
+### Candidate 16, a per-case correcting factor varying only between candidates, killed on measurement (2026-10-23)
+
+(Architecture 11, screen 0, `scratchpad/w11_201/floor_screen.py`, run twice byte-identical on a coupled
+clean truth before any file was cut, 20 world draws of 12 candidates.) The briefed shape: a correcting
+quantity one per case, forced by a second file at a finer grain, no case escaping it. Here the factor's
+level differs by candidate and not by case within it. The raw total dies as designed (1 of 20 on the
+designated three, corr +0.4992), and **one group-by on the second file reaches the designed set 14 of 20
+at corr +0.9708 with a maximum absolute difference of 0.0247**. **Rule earned:** the part of a per-case
+factor that defeats the raw total is its between-candidate level, and that level is one group-by, so the
+same variation that buys the ladder hands the answer to a one-line route.
+
+### Candidate 17, the factor a deterministic power of the case's own size, killed on measurement (2026-10-23)
+
+(Architecture 11, screen 0, same harness.) The factor rises with the case's size uniformly across
+candidates and carries no component of its own, so the within-candidate covariance of base and factor is
+first order and the between-candidate level is flat. It dies three ways at once: the per-case divide is
+then a **power transform of the observable**, so five licensed exponents reach the designed set 5 of 20 and
+the designated top 9 to 15 of 20 (the free-exponent death task198's architecture 11 earned); the
+mean-factor group-by reaches it 11 of 20 at corr +0.9434; and rho is 0.7255 against the floor's 0.80, so
+the raw total is still bound at +0.8571. **Rule earned:** a factor with no independent component of its own
+is a function of the quantity it corrects, so the construction is a transform whose exponent nothing files.
+
+### Candidate 18, the coupling's strength differing by candidate, killed on measurement (2026-10-23)
+
+(Architecture 11, screen 0, same harness, plus the 729-cell joint sweep.) The one cell the pincer leaves:
+the factor keeps its own independent component, its level is flat across candidates, and the strength of
+its coupling to the case's size differs by candidate, so only the per-case divide is right. Measured, the
+mean-factor group-by still reaches the designed set 5 of 20 at corr +0.7778, and the designed route itself
+recovers the world's elevated three only 3 of 20. **The sweep settles it jointly rather than marginally:
+729 cells over the case-size spread, the coupling's mean and spread, the factor's own noise, its
+between-candidate level, the lift and the baseline spread. 245 cells kill the raw total, 536 clear rho,
+486 clear the margin, 324 have the designed route recovering the truth, and 0 cells kill every
+one-group-by route. The weakest group-by cell on file sits at 3 of 20 and has the factor's own noise at
+exactly zero, which is candidate 17.** **Rule earned:** the blessed shape's two requirements are one dial.
+A per-case factor reorders the candidates only through its between-candidate level, which a group-by
+removes, or through the within-candidate covariance, which makes it a transform of the observable.
+
+### The identity clause, measured dead from the group-by side (2026-10-23)
+
+The clause briefed as "forced arithmetically, linearly and by identity" was withdrawn mid-pass and the
+withdrawal is confirmed independently here. A shipped per-case factor makes the designed construction the
+cheapest one-group-by route (the orchestrator's own measurement: corr +1.000000, maximum absolute
+difference exactly zero), which is rule application; and screen 0 adds that it fails the group-by pincer
+too, at 0 of 729 cells. Both horns, one clause.
+
+### Candidate 19, the factor unobserved and recovered with no free parameter, killed on measurement (2026-10-23)
+
+(Architecture 11, screen 0b, `scratchpad/w11_201/recovery_screen.py` and `dense.py`, each run twice with
+identical output.) The corrected shape: the per-case factor is unobserved, the second file carries the
+case's own trajectory at a finer grain, the design fixes the form as linear so least squares returns one
+answer, and the second file's sampling times are clustered per case so the per-case mean of its rows is
+biased by the clustering times the slope. One dial, both ends, nothing between them. **Symmetric sampling:
+the per-case mean of the second file's rows reaches the designed set 20 of 20 at corr +0.999799, so the fit
+is decoration. Clustered sampling: the per-case mean route drops to 15 or 16 of 20 on the designed set and
+reaches the world's own quantity 20 of 20 against the designed fit's 15 or 16, so the ladder inverts and
+the cheap route is the better estimator. Thin and steep: every cheap route dies at 1 to 3 of 20 and the fit
+dies with them, recovering the truth 0 of 20, because three to six rows a case cannot carry it.** The dial
+counted jointly over 81 cells: 9 kill every cheap route, 27 have the fit recovering the truth, **0 do
+both**. A density sweep to 150 rows a case (24 cells, task197's own region) returns **0 of 24**, and the
+decisive cell is explicit: at a candidate-varying clustering of 0.40 and a slope spread of 1.20 the
+per-case mean route dies at 3 of 20 and corr +0.2292, and **the candidate-level group-by survives in the
+same cell at 14 of 20 and corr +0.9038**, rising to 18 of 20 and +0.9275 when the baseline is tightened to
+widen the margin. **Rule earned:** making the correcting quantity unobserved restores the analysis and
+restores nothing else, because the recovery's precision and the cheap route's error are set by the same
+two numbers, the rows a case and the trajectory's slope.
+
+### The driver is spent in task452's lineage, at the text screen's blind spot (2026-10-23)
+
+`guard.py nearest` on the probe card scores the candidate driver at **0.08**, under the 0.12 WARN floor,
+with **task452 v1 (lineage) nearest**: "a period total of the product of two series, one recorded at every
+interval and one sampled on a few intervals that mostly catch the quiet state; the sampled factor rises
+with the recorded one, so carrying the sampled values across the unsampled intervals, by averaging or
+interpolating, misprices the busy intervals that carry most of the total". With the nouns stripped that is
+candidates 17 to 19 exactly, and the live region screen 0b leaves (a dense second file, a steep per-case
+slope, asymmetric sampling) is the region task452 v1 and task197 already occupy. This is the third time
+this slot has met the 0.08 signature, after candidate 12 (task237) and candidate 14 (task202).
+
+### The mandated-indicator filter, answered in writing for every AD ground (2026-10-23)
+
+The filter architecture 10 earned was applied before any candidate was scored, by writing down who is
+obliged to publish what about the process whose record forces the quantity. It drops
+`survey-research-official-statistics/anomaly-detection` (the office publishes the response, link, edit and
+imputation rates), `epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection`
+(surveillance completeness and timeliness indicators), `pharmacology-pharmacoepidemiology-safety/safety-signal-detection`
+(the reporting rate against exposure, in every periodic safety report),
+`healthcare-delivery-health-economics/provider-quality-risk-adjustment` (the risk-adjusted indicator is
+the mandated publication, which task194's architecture 6 measured),
+`physical-environmental-sciences/environmental-monitoring-exceedance` (monitor data availability, and spill
+duration returns), `criminology-justice/crime-incidence-hotspot-analysis` where the forcing file is the
+force's own occurrence record (recording-accuracy audit), and
+`human-factors-ergonomics/safety-incident-error-analysis` (the recordable incident frequency rate). It
+passes a ground only where the forcing file belongs to a party with no publication duty over it, which on
+this objective means a provider's, a scheme's, a laboratory's or a counterparty's record read by someone
+else. **The filter is sound and it is not the binding constraint: candidates 16 to 19 were drawn on ground
+that passes it and died on the group-by pincer instead.**
+
+### The cell audit, which closes the ground question for this objective (2026-10-23)
+
+Read before any candidate: every one of the 14 AD-serving task types carries a live sibling at stage 1 or 2
+except `healthcare-delivery-health-economics/payment-claims-health-plan-analytics` and
+`provider-quality-risk-adjustment`. The first has been screened to death twice by task182, whose
+architectures 6 and 7 are recorded in its own note and which no `guard.py` subcommand surfaces: six
+affordances across two file pairs, the enumeration closed at four exhaustive forms (a conversion, a
+completeness estimate, a valuation, a population restriction), with `guard.py check` returning PASS at a
+nearest driver of 0.06 on each. The second is the risk-adjustment publication trap above. **So the ground
+question on this objective is settled and the driver question is the only open one, which is what
+`guard.py coverage` says in its own words.**
 ## Surface screen, answered
 
 `guard.py surface task201` screens 246 builds and promotes five pairs for adjudication. Four are corpus
@@ -1311,3 +1419,23 @@ burned on its own earlier passes is wider than its card shows and is recorded ab
 candidates 1 and 1b spent GWAS ground (`biomedical-clinical-research/genomics-gwas-high-dimensional-association`,
 one card) and candidate 15 spent the survey-office key-quality route, so the single-card appearance of those
 two cells understates them for this number specifically.
+
+- **Architecture 11, three candidates, all dead; the pass's own report was lost to a container restart and the
+  harness is preserved.** Measurements read off `scratchpad/w11_201/run1.json`, byte-identical with `run2.json`
+  (md5 08d4d741f149b9774befea96ce1ed8dd). The three candidates shared one fatal property: **the designed route
+  itself recovers the truth only 3 of 20**, so there was nothing for a dial to protect.
+  - `C16_between_only`, rho **1.7099** and no binding floor, margin **1.1085** (already under the 1.15 rung
+    floor), designed truth **3 of 20**, and the mean-factor route reaching the designed designation **17 of
+    20** at `corr` 0.9708.
+  - `C17_coupled_no_eta`, rho **0.7255** against a floor of **0.6883**, so essentially on its own floor;
+    designed truth 3 of 20, raw route already at `corr` 0.8571.
+  - `C18_coupling_heterogeneous`, rho **1.2744**, designed truth 3 of 20, best cheap route `corr` 0.8231.
+  - **The live lead this pass leaves, and it is the strongest separation on file in this lane.** Its parameter
+    sweep found a cell at `sd_log_s` 1.3, `sd_log_A` 0.12, `sd_log_F` 0.05, `beta_sd` 0.6 and lift 3.5 where
+    the **designed route recovers the truth 19 of 20 while the raw reflex takes 2 of 20**, at a margin of
+    **1.7213** and rho **1.3031**, clearing the designed, margin, raw and rho conditions together. It fails on
+    the group-by and power-route conditions (worst cases 3 and 7 of 20), and the pass's reading of why is lost
+    with its report. That cell is where architecture 12 starts: re-run `recovery_screen.py` and `dense.py` at
+    those parameters and establish whether the two failing conditions are a property of the cell or of the
+    harness's route definitions.
+

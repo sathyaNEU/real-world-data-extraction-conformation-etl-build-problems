@@ -904,6 +904,104 @@ stderr included (6,913 bytes).
   `Lesson:`, since a model that learns this has already learned task202's. The second death above would have
   killed it independently.
 
+### Fifth pass, architecture 3: the blessed shape itself priced and refused (2026-10-23)
+
+Ground: the lane's allocation was read from `guard.py` rather than from a table. `recent` puts the live
+three-build window at task273 (`population_selection`), task169 (`decomposition_attribution`) and task478
+(`other`), so **no anomaly-detection subdomain is inside it** and `ban.subdomain` blocks no AD cell; what
+binds a redraw is the driver, exactly as `coverage` states. `mechanisms --objective anomaly-detection`
+prints 34 builds, and the per-case correction families they spend are the whole of the list a candidate
+would reach for: exposure or at-risk time (task54, task201), size or length bias (task182), detection or
+ascertainment (task180, task196, task199), opportunity count (task181), orderings and position (task193),
+measurement basis (task185, task189, task192), shared-cause share (task103), record lag (task194), state
+dependence (task183), per-group summary (task202), grouped tests (task188), interval censoring (task184).
+Cell taken for the screens: `epidemiology-public-health` / `disease-surveillance-outbreak-anomaly-detection`
+(one card, task188), chosen because the forcing-file inversion is clean there and the spent driver is a
+single one. Nothing was cut and no card was filed.
+
+**What this pass priced is not three candidates but the SHAPE `stumping` Part 3 step three blesses**, and
+the four deaths below are one finding: the shape is closed as a family on this objective for a
+multiplicative per-case correction. Harness `scratchpad/w8_200/screen_a3.py`, run with `python3 -I`, two
+consecutive runs byte-identical at 8,186 bytes with stderr included, every number on the clean truth with
+the correcting factor and the base quantity drawn from ONE generating process.
+
+- The multiplicative-correction floor, validated on this harness before it was used: at rho 0.20, 0.48,
+  0.80 and 1.00 the floor runs 0.9798, 0.8773, 0.6000 and 0.0000 and the reflex takes the top candidate
+  0.778, 0.505, 0.230 and 0.023 of the time, reproducing the filed law.
+- **The aggregation theorem, and it is the pass's first general finding** (2026-10-23, measured): in the
+  blessed shape the correction is one per CASE while the decision is per CANDIDATE, so the candidate-level
+  factor is an average and `sd(log factor)` falls as one over the square root of the case count. With a
+  per-case correction of log sd 1.00 against a base of log sd 0.35, candidate-level rho measures 1.8808,
+  1.1282, 0.6826, 0.3779 and 0.2224 at 3, 10, 30, 100 and 300 cases per candidate, so rho clears 0.80 only
+  below about 13 cases per candidate. **Both horns are deaths.** At 13 cases the estimator's own relative
+  standard error is 0.2774 against an across-candidate signal log sd of 0.35, which is 0.79 of the whole
+  spread, so the ranking is seed hostage exactly where the correction clears the floor; and the only other
+  way to carry rho is a systematic candidate-level mix term (rho stays above 1.50 at every case count with
+  a mix of log sd 0.50), which is a stratification of the finer file and so one group-by.
+- C1, ascertainment one per case (each notified case standing for `1/d` with `d` built per case from the
+  specimen register's own specimen-taken, test-used and onset-to-collection-delay structure), 20 world
+  draws, posture coupling both arms: **clears both floor tests and dies on the proxy screen and the
+  abstraction test.** rho 1.0506 so no floor binds it, realised `corr(log true, log reflex) = +0.1183` and
+  the reflex names the top in 2 of 20, which is a real separation; but the one-group-by route, the notified
+  count divided by the facility's own mean ascertainment, matches the designed Horvitz-Thompson
+  construction at **corr +0.9881**, names the top in **14 of 20 against the designed route's 14 of 20**,
+  and does it at a **smaller** mean absolute error (0.001050 against 0.001146). That is architecture 2's
+  death in another skin. It is also task199's live driver (a rate read against the observation effort that
+  produced it) with task196 and task180 beside it, so the `Lesson:` line fails anyway.
+- C2, a per-case denominator from the roster (each case's own wing roll on the day of onset), coupled
+  through facility size: **dead on the floor and on the algebra.** rho 0.6362 against a floor of 0.7716,
+  realised corr +0.8884, and the ladder is inverted, the reflex naming the top in **12 of 20 against the
+  designed route's 1 of 20**. Screen 3 as algebra says why with certainty: `roll = S/wings * eps`, so the
+  designed sum is `reflex * wings * E[1/eps]`, **affine in the roster's own published wing count**, and one
+  join and one multiply by that column is the construction.
+- C3, a gate non-linear in the rows (the days on which concurrently symptomatic residents exceed the
+  facility's own single-room count, from the register's onset and clearance dates): **outside the floor law
+  and dead three ways.** The raw count is genuinely weak, `corr = +0.4774` and the top in 7 of 20, but the
+  cheap routes are not: Little's law over rooms reaches **+0.9486 and 16 of 20** and the count per room
+  **+0.9475 and 18 of 20**, one divide by a column of the room register. The standing family is worse: five
+  defensible readings of "concurrently symptomatic" (register onset to clearance, a fixed 48-hour
+  infectious period, specimen date to clearance, both endpoint days counted, clearance at the next negative
+  specimen) give **1.90 distinct top facilities per draw (min 1, max 4)** and spread the graded figure
+  **24.38 days on average and 52 days at worst against a printed unit of 1 day**. Screen 4 counted jointly
+  over 72 cells of burstiness by single-room share: 21 cells where the cheap route misses, 20 where the
+  family is unanimous, 42 where the margin clears 1.15x, and **2 passing all three at once**.
+- C4, **the corrected shape itself** (the per-case quantity UNOBSERVED and recovered with no free
+  parameter), priced on its own dial because that is the question the correction leaves open: **the
+  no-free-parameter clause fixes the determinacy screen and does not touch the proxy screen.** Whatever
+  recovers the per-case values, the cheap route is the main file's count divided by the finer file's
+  group-by mean of the correction, and the two constructions have the same expectation, so they separate
+  only through the correction's WITHIN-candidate dispersion (Jensen, `E[1/d]` against `1/E[d]`). That same
+  dispersion is what gives `1/d` its heavy tail, so the lever and the noise are one number and the dial
+  fails at both ends: as `sd(log d)` runs 0.20, 0.50, 0.90, 1.40 the designed-against-cheap correlation
+  runs **+0.9999, +0.9974, +0.9815, +0.9396** while the designed route's hit rate **falls 15, 14, 13, 10 of
+  20** and the cheap route's **rises 15, 14, 15, 16 of 20**. Swept jointly over dispersion by coupling by
+  case volume, **45 cells: 14 where the cheap route misses, 0 where the designed route holds at 19 of 20,
+  and 0 passing cheap-misses with designed-holds and raw-misses together.**
+
+**The law this pass earns, and it is general rather than about this cell.** For a per-case correction that
+enters MULTIPLICATIVELY, the cheap route is the count divided by the finer file's own group-by mean of the
+correction; that route shares the designed construction's expectation, so the two can only separate through
+the correction's within-candidate dispersion, and that dispersion is the designed estimator's own variance.
+So the blessed shape's multiplicative case is closed by arithmetic: the floor law closes it from above
+(rho under 0.80 cannot reorder) and this closes it from below (rho over 0.80 needs either 13 cases per
+candidate, which is seed hostage, or a candidate-level mix term, which is one group-by). **The one opening
+left is a per-case correction that does NOT enter multiplicatively, and a non-multiplicative per-case
+correction is non-linear in the forcing quantity, which reopens the free exponent the fleet wear-life death
+measured at 2.55 distinct designated units of 5.** That is the next pass's one computation.
+
+**Two directions closed from the record rather than by a screen, which cost one read each.** The fourth
+pass left "a construction over **orderings** rather than over values" as the one unpriced direction; it is
+**task193's live driver** on this objective (how many units would show one of two orderings if the
+treatment had no bearing on it, each unit's room for each ordering set by where its first exposure falls),
+and `strategies.md` Part 6 records it measured dead there: an ordering expectation over a window against a
+level comparator is `n` times the window's end less the other side's mean date, over the window's length,
+an identity, so the decisive construction is one group-by, one subtraction and one divide, which referred
+the committed set 20 of 20 at corr +0.9954, and a blind reader at medium effort landed the call. So the
+direction is both occupied and dead, and no harness was spent on it. And the records-fixed half of
+`stumping` 1.2a, the half that needs the records to force a selection, is `population_selection`, which
+`ban.strategy` BLOCKs against task273 in the live window; differentiation never clears an axis ban, so that
+half is shut this sitting and open again three builds later.
+
 ## Resume
 
 Do not re-screen anything above: twenty-six mechanisms across four grounds are now measured or structurally
@@ -999,3 +1097,38 @@ Gate G `method_or_model_selection` BLOCKs on `test.same_driver` against task473 
 `test.same_driver_older` against seven earlier builds, so that signature needs redrawing rather than
 differentiating wherever it is taken next. Read the window from `guard.py check` at the end of a pass as well
 as the start; a table written an hour earlier is wrong in both directions.
+
+- **Architecture 3, four candidates on a facility surveillance world, refused; the pass's two general results
+  are now laws in `stumping`.** Measurements recovered from the harness at `scratchpad/w8_200/`, whose three
+  runs are byte-identical (md5 18690b6ee7b02edc6cc916777aa2f9b2); the agent's own report was lost when the
+  container restarted, so what follows is read off the preserved output rather than from its summary.
+  - **C1 ascertainment**, a Horvitz-Thompson count from per-case detection probabilities: the one candidate
+    the floor law lets through, at rho **1.0506** with `corr(log true, log reflex)` **0.1183** and the reflex
+    naming the top facility **2 of 20** against the designed route's 14 of 20. It died on screen 3 instead:
+    `corr(designed, count over facility-mean ascertainment)` **0.9881**, and the one-group-by route names the
+    top **14 of 20 at a mean absolute error of 0.001050 against the designed estimator's 0.001146**, so the
+    cheap route is not merely as good but marginally better.
+  - **C2 a per-case denominator from the roster**: rho **0.6362** against a floor of **0.7716**, dead on
+    arithmetic. Algebraically the designed quantity is affine in the roster's own wing count, so one join and
+    one multiply by a published column IS the construction.
+  - **C3 the gate**, exceedance days of a running count of concurrently symptomatic cases: genuinely outside
+    the floor law, since a crossing of a running sum is not a transform of the case count at all. It died on
+    determinacy. Five licensed readings of "concurrently symptomatic", every one defensible off the register,
+    spread the graded figure **24.38 days on average and 52.00 days at worst against a printed unit of one
+    day**, with **1.90 distinct top facilities** across the family on average. The joint dial count is **2 of
+    72 cells**, where a cell needs the cheap route to miss, the family to be unanimous and the margin to
+    clear 1.15x all at once.
+  - **C4 the corrected shape** (an unobserved per-case quantity recovered with no free parameter), run as a
+    direct test of the clause this day's correction installed: **0 of 45 cells** pass cheap-route-misses and
+    designed-route-holds and raw-count-misses together, because the cheap route is the count over a group-by
+    mean of the correction and tracks the designed route at `corr` 0.9999 to 0.9396 as the within-candidate
+    dispersion is widened.
+  - **The two general results, which explain the lane's failure pattern rather than this candidate's.** A
+    per-case correction AVERAGES OUT: rho at candidate level falls as one over the root of the case count,
+    measured 1.8808, 1.1282, 0.6826, 0.3779 and 0.2224 at 3, 10, 30, 100 and 300 cases, so past about a dozen
+    cases only a systematic mix term can clear the floor, and a systematic mix term is a stratification of the
+    finer file. And the floor and the estimator's precision close on the same parameter: rho reaches 0.80 only
+    at about 13 cases, where the designed signal's relative standard error is 0.2774 against an
+    across-candidate spread of 0.3500, so the estimator's noise is **0.79 of the whole spread it must rank
+    on** exactly where the correction starts to reorder.
+

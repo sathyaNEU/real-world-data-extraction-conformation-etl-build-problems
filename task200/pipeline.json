@@ -1,36 +1,40 @@
 {
-  "architecture": 2,
-  "architecture_note": "architecture 1 was drawn far enough to be screened as code and is dead; nothing was cut, no card was registered, and the card recording it carries architecture_spent true at scratchpad/w6_200/task200_card.json. The next pass starts architecture 2.",
-  "grounds_closed": [
-    "physical-environmental-sciences/environmental-monitoring-exceedance",
-    "criminology-justice/crime-incidence-hotspot-analysis",
-    "supply-chain-logistics(general-statistics-data-science)/multiple-testing-selective-inference",
-    "biomedical-clinical-research/genomics-gwas-high-dimensional-association"
-  ],
-  "loops": 0,
-  "objective": "anomaly-detection",
-  "owner": "oviya13ya",
-  "precut": {
-    "date": "2026-10-18",
-    "exit": 1
-  },
-  "resume": "architecture 2 lands no registrable draw: three candidates dead on the general-statistics distribution-assessment cell, the fifth ground closed. The measured one, recovering one melting line's own lower-tail share from a blend the gauge never attributes, died on algebra rather than magnitude: the mixture is affine in the shift log's published share column, so one regression on that column reached mean absolute error 0.0026 against the designed estimator's 0.0028, marginally better, at corr +0.9582 with an identical verdict 20 of 20, and the estimator family spread the graded figure 7.7x the permitted width besides. Screens 10 and 11 did not reach it. The other two died on the readability pincer around inverting a documented transformation, and as task202's driver in other nouns. Earned two laws now in stumping: run the proxy screen as algebra before the correlation, and a documented transformation of recorded values cannot carry a silent rung, so the forcing file pins a structure and never a transformation. The note's closing table prices all eleven ways a record can depart from the distribution a decision needs; the one direction meeting all three deaths' constraints and never priced here is a construction over orderings rather than over values.",
-  "screens": {
-    "command": "python3 -I screen1.py",
-    "door_left_open": "the determinacy half of the rank-verified pincer does not close on this ground: 46 of 120 adjacent pairs sit between one and ten family-spreads (median 12.30), so what blocks a rank verified is the certainty bar, not determinacy",
-    "harness": "scratchpad/w6_200/screen1.py, screen1b.py, screen1c.py, screen2_rank_pricing.py",
-    "mechanisms_dead_this_pass": 11,
-    "mechanisms_dead_total": 26,
-    "reproducible": "two consecutive runs of screen1.py byte-identical, 1763 bytes, stderr included",
-    "screens": 4
-  },
-  "stage": 1,
-  "stage_name": "draw",
-  "status": "PAUSED",
-  "task": "task200",
-  "updated": "2026-10-20",
-  "wave6_cell": "biomedical-clinical-research/genomics-gwas-high-dimensional-association (fourth ground, closed on measurement)",
-  "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race.",
-  "wave7_cell": "general-statistics-data-science/exploratory-data-analysis-distribution-assessment",
-  "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
+ "architecture": 3,
+ "architecture_note": "architectures 1 and 2 are dead and nothing was cut; architecture 3 priced the blessed shape itself (stumping Part 3 step three) rather than three arbitrary candidates and refused it with measurements. No card was filed and none must be registered. The next pass starts architecture 4.",
+ "grounds_closed": [
+  "physical-environmental-sciences/environmental-monitoring-exceedance",
+  "criminology-justice/crime-incidence-hotspot-analysis",
+  "supply-chain-logistics(general-statistics-data-science)/multiple-testing-selective-inference",
+  "biomedical-clinical-research/genomics-gwas-high-dimensional-association",
+  "epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection (screening ground for architecture 3; the cell is not closed, the multiplicative blessed shape is)"
+ ],
+ "loops": 0,
+ "objective": "anomaly-detection",
+ "owner": "oviya13ya",
+ "precut": {
+  "date": "2026-10-18",
+  "exit": 1
+ },
+ "resume": "architecture 4. Architecture 3 refused, four candidates, measurements preserved in scratchpad/w8_200/ (three byte-identical runs) although the pass's own report was lost to a container restart. C1 ascertainment is the one shape the floor law lets through (rho 1.0506, reflex 2 of 20) and still died on screen 3, the one-group-by route matching it at corr 0.9881 and a marginally BETTER mean absolute error (0.001050 against 0.001146). C2 is affine in the roster's wing count at rho 0.6362 under a floor of 0.7716. C3, a running-count exceedance, is genuinely outside the floor law and died on determinacy instead: five licensed readings spread the graded figure 24.38 days mean against a printed unit of one day, 1.90 distinct top facilities, joint dial 2 of 72. C4, the corrected no-free-parameter shape, passed 0 of 45 cells. The pass's two general results are now laws in stumping: a per-case correction averages out so rho falls as one over the root of the case count, and the floor and the estimator's precision close on the same case count, which is a pincer rather than a dial. Next draw must price BOTH ends on one case count before a world is drawn, and should prefer a graded quantity that is not a transform of a count at all (C3's property) while fixing the determinacy C3 lost.",
+ "screens": {
+  "candidates_dead_this_pass": 4,
+  "command": "python3 -I screen_a3.py",
+  "coupling": "every prototype draws the correcting factor and the base quantity from ONE generating process, never from two independent distributions",
+  "floor_law_validated": "rho 0.20/0.48/0.80/1.00 gives floor 0.9798/0.8773/0.6000/0.0000 and reflex-top 0.778/0.505/0.230/0.023 on this harness",
+  "harness": "scratchpad/w8_200/screen_a3.py",
+  "mechanisms_dead_total": 33,
+  "reproducible": "three consecutive runs byte-identical, 8186 bytes, stderr included",
+  "screens": 6
+ },
+ "stage": 1,
+ "stage_name": "draw",
+ "status": "PAUSED",
+ "task": "task200",
+ "updated": "2026-10-23",
+ "wave6_cell": "biomedical-clinical-research/genomics-gwas-high-dimensional-association (fourth ground, closed on measurement)",
+ "wave6_note": "Wave 6 allocation, 2026-10-18: re-rooted onto this cell with every banned axis reserved disjointly across the five concurrent draws. The allocation table is /tmp/claude-0/-home-user/5ec7cb86-793f-5895-a00b-808e36976e12/scratchpad/wave6/ALLOCATION.md. All 14 client task types serving anomaly-detection already carry a card, so no AD cell is virgin and none is closed: a cell is drawable again three builds later and what binds a redraw is the driver. Each allocated cell carries exactly one spent AD driver, named in the table. The card is registered by the parent session, not the draw, so the five cannot race.",
+ "wave7_cell": "general-statistics-data-science/exploratory-data-analysis-distribution-assessment",
+ "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard.",
+ "wave8_cell": "epidemiology-public-health/disease-surveillance-outbreak-anomaly-detection",
+ "wave8_note": "Wave 8, 2026-10-23: the lane's least spent slot, two architectures against eight, ten and fourteen elsewhere. Allocation read from guard.py at the start AND the end of the pass: the live three-build window is task273 (population_selection), task169 (decomposition_attribution), task478 (other), so no anomaly-detection subdomain sits inside it and ban.subdomain blocks no AD cell. What binds is the driver. ban.strategy therefore BLOCKs population_selection, decomposition_attribution and other; of the twelve left, five carry the semantics-risk flag rule 3 bars from deciding a call, uncertainty_hold is withdrawn on this objective by this number's own fourth ground, binding_constraint is structurally rule application or a fork, and composition_mix sits at 3 of 12."
 }
