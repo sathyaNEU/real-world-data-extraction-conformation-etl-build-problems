@@ -48,7 +48,7 @@
  "scoring_unit": "other",
  "spine": {
   "file": "ctg_participant_wage_records_2022q3-2026q2.csv (employer x quarter pay of the grant participants)",
-  "rows": 27640,
+  "rows": 27704,
   "entity": "one employer's pay to one completer in one calendar quarter",
   "grain": "completer x employer x quarter",
   "source": "synthetic"

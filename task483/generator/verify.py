@@ -145,27 +145,21 @@ def main():
     ok = all(fig["programs"][p]["figure_pct"] == (None if place[p] is None else half_up(place[p])) for p in place)
     say("every short-term program's day-180 share, whole per cent", ok)
 
-    # ask A
-    led = pd.read_csv(os.path.join(T, "ctg_provider_payments_fy2024-fy2026.csv"), dtype=str)
-    led = led[led["provider_id"] == "TP-0417"]
-    paid = led.groupby("invoice_number")["payment_date"].first()
-    fy = set(paid[(paid >= "2024-07-01") & (paid <= "2025-06-30")].index)
-    reg = pd.read_excel(os.path.join(T, "larkspur_ctg_invoice_register_2023-2026.xlsx"), sheet_name="Invoice lines",
-                        dtype={"Participant": str})
-    reg = reg[reg["Invoice"].isin(fy)].copy()
-    who = dict(zip(ros["participant_id"], ros["prog"]))
-    credit = reg["Line"].str.startswith("Refund")
-    reg["prog"] = np.where(credit, reg["Participant"].map(who), reg["Program"])
-    a = reg.groupby("prog")["Amount"].sum()
-    ok = all(fig["programs"][p]["tuition_fy2025_usd"] == half_up(a.get(p, 0.0)) for p in place)
-    say("every short-term program's fiscal 2025 grant tuition, whole dollars", ok)
+    # ask A: every attended session dated in the year once, its time as hours and minutes after the point
+    att = pd.read_csv(os.path.join(T, "larkspur_ctg_attendance_2023-2026.csv"), dtype=str).drop_duplicates()
+    att = att[(att["session_date"] >= "2024-07-01") & (att["session_date"] <= "2025-06-30")].copy()
+    hm = att["hours"].str.split(".", expand=True).astype(int)
+    att["h"] = hm[0] + hm[1] / 60.0
+    att["prog"] = att["crn"].map(dict(zip(ros["section_id"], ros["prog"])))
+    tot = att.groupby("prog")["h"].sum()
+    ok = all(fig["programs"][p]["clock_hours_fy2025"] == half_up(tot.get(p, 0.0)) for p in place)
+    say("every short-term program's fiscal 2025 clock hours attended, whole hours", ok)
 
-    # ask B
+    # ask B: before July 2024 every disbursement (returns netted); from July 2024 each loan once
     ln = pd.read_csv(os.path.join(T, "larkspur_direct_loan_disbursements_2019-2026.csv"), dtype={"SSID": str})
     ln = ln[~ln["LOAN_TYPE"].str.contains("PLUS")].copy()
-    newsys = pd.to_datetime(ln["DISB_DATE"]) >= "2023-07-01"
-    ln["principal"] = np.where(newsys, np.round(ln["DISB_AMT"] / (1 - 0.01057)), ln["DISB_AMT"])
-    per = ln.groupby("SSID")["principal"].sum()
+    newsys = pd.to_datetime(ln["DISB_DATE"]) >= "2024-07-01"
+    per = pd.concat([ln[~newsys], ln[newsys].drop_duplicates("LOAN_ID")]).groupby("SSID")["GROSS_AMT"].sum()
     ok = True
     for prog in med:
         s = comps.loc[comps["prog"] == prog, "ssid"]
@@ -186,9 +180,9 @@ def main():
             ok &= r[1] == x["figure_thousands"] and r[3] == ("Passes" if x["passes"] else "Fails")
         if x["test"] == "placement" and x["tested"]:
             ok &= r[2] == x["figure_pct"] and r[4] == ("Passes" if x["passes"] else "Fails")
-    tu = {str(r[0]): r[1] for r in wb["Grant tuition FY2025"].itertuples(index=False)}
+    tu = {str(r[0]): r[1] for r in wb["Clock hours FY2025"].itertuples(index=False)}
     lo = {str(r[0]): r[1] for r in wb["Loan principal"].itertuples(index=False)}
-    ok &= all(tu[p] == x["tuition_fy2025_usd"] for p, x in fig["programs"].items() if x["test"] == "placement")
+    ok &= all(tu[p] == x["clock_hours_fy2025"] for p, x in fig["programs"].items() if x["test"] == "placement")
     ok &= all(lo[p] == x["loan_median_usd"] for p, x in fig["programs"].items() if x["test"] == "earnings")
     say("the golden workbook states the call, the share and every figure", ok)
     svg = open(os.path.join(GOLD, "larkspur_program_tests_2027-28.svg"), encoding="utf-8").read()

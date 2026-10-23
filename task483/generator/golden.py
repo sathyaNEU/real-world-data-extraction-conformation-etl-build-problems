@@ -34,7 +34,7 @@ def compute(target):
                        "grant_completers": x["n"],
                        "figure_pct": None if not x["tested"] else B.hround(x["figure"]),
                        "working": None if not x["tested"] else int(round(x["working"])),
-                       "passes": x["passes"], "tuition_fy2025_usd": a[p]}
+                       "passes": x["passes"], "clock_hours_fy2025": a[p][0]}
     fail = sorted(p for p, v in programs.items() if v["tested"] and not v["passes"])
     ma, cdl = "Medical Assisting", "Commercial Driver License, Class A"
     fig = {
@@ -47,19 +47,20 @@ def compute(target):
                                   "completers": I.c2425[ma]},
             "cdl": {"dated_pct": programs[cdl]["figure_pct"], "quarter_pct": B.hround(d0["short"][cdl]["figure"]),
                     "completers": I.c2425[cdl], "grant_completers": programs[cdl]["grant_completers"],
-                    "working": programs[cdl]["working"]},
+                    "working": programs[cdl]["working"], "quarter_working": int(round(d0["short"][cdl]["working"]))},
             "default_share_pct": B.hround(d0["share"]), "default_in_passing": d0["num"],
             "degree_half_alone_pct": B.hround(d_deg["share"]), "short_half_alone_pct": B.hround(d_short["share"]),
             "untested": sorted(p for p, v in programs.items() if not v["tested"]),
         },
         "stated": {"benchmark_usd": 34200, "benchmark_thousands": 34.2, "placement_line_pct": 70, "share_line_pct": 75, "cpi_factor": 1.0294,
-                   "min_with_earnings": 30, "min_grant_completers": 20, "day": 180, "fee_pct": 1.057,
+                   "min_with_earnings": 30, "min_grant_completers": 20, "day": 180,
                    "award_years": ["2020-21", "2021-22"], "earnings_years": [2024, 2025]},
         "_unrounded": {"share": c["share"], "default": d0["share"], "degree_half_alone": d_deg["share"],
                        "short_half_alone": d_short["share"],
                        "figures": {p: (c["deg"][p]["figure"] if p in c["deg"] else c["short"][p]["figure"])
                                    for p in programs},
-                       "loan_median": {p: b[p][2] for p in I.degree}},
+                       "loan_median": {p: b[p][2] for p in I.degree},
+                       "clock_hours": {p: a[p][1] for p in I.short}},
     }
     return fig
 
@@ -137,15 +138,15 @@ def write_xlsx(path, f):
         ws.column_dimensions[col].width = wd
     ws.freeze_panes = "B5"
 
-    s2 = wb.create_sheet("Grant tuition FY2025")
-    s2.append(["Short-term program", "Grant tuition and fees paid, July 2024 to June 2025 (USD)"])
+    s2 = wb.create_sheet("Clock hours FY2025")
+    s2.append(["Short-term program", "Clock hours attended by grant participants, July 2024 to June 2025"])
     for c in s2[1]:
         c.font = bold
         c.alignment = Alignment(wrap_text=True, vertical="bottom")
         c.border = Border(bottom=thin)
     for p in [p for p in pr if pr[p]["test"] == "placement"]:
-        s2.append([p, pr[p]["tuition_fy2025_usd"]])
-    s2.append(["All short-term programs", sum(pr[p]["tuition_fy2025_usd"] for p in pr if pr[p]["test"] == "placement")])
+        s2.append([p, pr[p]["clock_hours_fy2025"]])
+    s2.append(["All short-term programs", sum(pr[p]["clock_hours_fy2025"] for p in pr if pr[p]["test"] == "placement")])
     for c in s2[s2.max_row]:
         c.font = bold
         c.border = Border(top=thin)
@@ -182,13 +183,13 @@ def write_xlsx(path, f):
          "start or an exit inside the quarter dated from that job's pay there against its pay in its adjacent full "
          "quarter. Amended wage reports replace the originals. Forklift and Material Handling has 18 grant completers "
          "and is not tested."),
-        ("Grant tuition", "The board's payments dated July 2024 to June 2025, each split by the college's invoice lines: "
-         "tuition and the section fee to the section's program, each refund credit to the program of the participant "
-         "it refunds."),
-        ("Loan principal", "Each completer's Direct Subsidized and Unsubsidized disbursements at the college, returns "
-         "netted and parent PLUS loans left out. Disbursements from 1 July 2023 are exported net of the 1.057 per cent "
-         "origination fee and are grossed back to the amount borrowed."),
-        ("Rounding", "Earnings to whole thousands of dollars, shares to whole per cent, tuition to whole dollars and loan "
+        ("Clock hours", "Every session in the college's attendance export dated July 2024 to June 2025, counted once "
+         "(the export repeats one week of March 2025 at its end), each session's time read as hours and minutes "
+         "after the point, under the program of the session's section."),
+        ("Loan principal", "Each completer's Direct Subsidized and Unsubsidized Loans at the college, parent PLUS loans "
+         "left out. Before July 2024 each disbursement counts, returns netted; from July 2024 the aid system writes "
+         "the loan's amount for the year on each of its disbursements, so each loan counts once."),
+        ("Rounding", "Earnings to whole thousands of dollars, shares to whole per cent, clock hours to whole hours and loan "
          "principal to the nearest 10 dollars, each from the unrounded figure; each figure is compared with its line "
          "before rounding."),
     ]

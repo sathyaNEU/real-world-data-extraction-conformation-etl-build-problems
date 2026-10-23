@@ -4,11 +4,13 @@ The cracker lands the call (every program's median rebuilt from its cells' poole
 completer's day-180 status dated from each job's own pay) and every program's figure, runs the hygiene battery (keys
 unique, amended wage reports superseding originals, every program joined through the inventory, both student systems'
 ID formats, both loan-type code sets) and executes every filed rule it is pointed at: ask A as the board's payments to
-the college in its 2025 fiscal year by payment date, each payment row under its program; ask B as each completer's
+the attendance export's sessions dated in fiscal 2025, exact duplicates dropped, each time read as decimal hours; ask
+B as each completer's
 Direct Subsidized and Unsubsidized disbursements as exported, returns netted, parent PLUS loans left out. The mirror
 stops at the default path (cell medians averaged, any pay in the quarter holding day 180) and reads every ask the same
-way, since the asks consume nothing the call's construction produces (checks.py X1 and X2 assert the separation). A hit
-is a figure inside half a unit of its stated rounding.
+way, since the asks consume nothing the call's construction produces (checks.py X1 and X2 assert the separation). The
+other rows give the cracker one more repair at a time: the session times read as hours and minutes, each 2024-25 loan
+counted once. A hit is a figure inside half a unit of its stated rounding.
 
     python3 task483/generator/ceiling.py [target]
 """
@@ -37,7 +39,7 @@ def figures(I, deg_route, short_route, a_basis, b_basis):
         if d["tested"]:
             out["m|" + p] = B.hround(d["figure"])
     for p, v in B.ask_a(I, a_basis).items():
-        out["A|" + p] = v
+        out["A|" + p] = v[0]
     for p, v in B.ask_b(I, b_basis).items():
         out["B|" + p] = v[1]
     return out
@@ -57,12 +59,11 @@ def main(target=None):
     target = target or os.path.join(os.path.dirname(HERE), "target")
     I = B.Inputs(target)
     gold = figures(I, "golden", "golden", "golden", "golden")
-    rows = {"cracker": figures(I, "golden", "golden", "ledger", "net"),
-            "mirror": figures(I, "naive", "quarter", "ledger", "net"),
-            "cracker who reconciles the payments to the invoice register": figures(I, "golden", "golden", "register",
-                                                                                   "net"),
-            "cracker who also carries each refund to its participant": figures(I, "golden", "golden", "golden", "net"),
-            "cracker who grosses up the aid system's net amounts": figures(I, "golden", "golden", "ledger", "golden"),
+    rows = {"cracker": figures(I, "golden", "golden", "decimal", "rows"),
+            "mirror": figures(I, "naive", "quarter", "decimal", "rows"),
+            "cracker who reads the session times as hours and minutes": figures(I, "golden", "golden", "golden",
+                                                                               "rows"),
+            "cracker who counts each 2024-25 loan once": figures(I, "golden", "golden", "decimal", "golden"),
             "cracker who does both asks": figures(I, "golden", "golden", "golden", "golden")}
     out = {}
     for name, resp in rows.items():
@@ -70,7 +71,7 @@ def main(target=None):
         out[name] = (sc, kept, asks)
         ka = sum(1 for k in kept if k.startswith("A|"))
         kb = sum(1 for k in kept if k.startswith("B|"))
-        print("%-62s call %-5s main %2d/%d  ask A %2d/11  ask B %2d/12  score %.1f" % (name, call, mk, nm, ka, kb, sc))
+        print("%-64s call %-5s main %2d/%d  ask A %2d/11  ask B %2d/12  score %.1f" % (name, call, mk, nm, ka, kb, sc))
     sc, sm = out["cracker"][0], out["mirror"][0]
     print("Pair ceiling: %.1f" % ((sc + sm) / 2))
     print("Mirror leakage: %.1f per cent of ask weight" % (100.0 * len(out["mirror"][1]) / len(out["mirror"][2])))

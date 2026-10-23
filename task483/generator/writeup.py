@@ -45,10 +45,10 @@ def main():
              "%d per cent of the Commercial Driver License program's grant completers were working on day 180, under "
              "70. Not %d per cent: averaging each program's campus-by-cohort medians puts Medical Assisting at %d "
              "thousand, and counting any pay in the quarter holding day 180 puts the CDL program at %d per cent, "
-             "though 22 of its 79 grant completers had left their first carrier weeks before day 180 or started at the "
+             "though %d of its %d grant completers had left their first carrier weeks before day 180 or started at the "
              "next weeks after it, inside that quarter.\n"
              % (ma["pooled_thousands"], cdl["dated_pct"], k["default_share_pct"], ma["averaged_thousands"],
-                cdl["quarter_pct"]))
+                cdl["quarter_pct"], cdl["quarter_working"] - cdl["working"], cdl["grant_completers"]))
     o.append("## 2. Critical Components\n")
     o.append("1. Medical Assisting's median earnings, its six campus-by-cohort cells pooled, are **%d** thousand "
              "dollars; its cells' medians averaged by completers give %d." % (ma["pooled_thousands"],
@@ -84,16 +84,16 @@ def main():
         "copper_flats_antelope_springs_completions_2024-25.csv, grant participants or not, and took the share of the "
         "tested programs' %s completers in passing programs: %s, %d per cent." % (c(cl["tested"]), c(cl["in_passing"]),
                                                                               cl["share_pct"]),
-        "For the grant tuition, took the board's payments to the college in ctg_provider_payments_fy2024-fy2026.csv "
-        "dated 1 July 2024 to 30 June 2025 and split each by its invoice's lines in "
-        "larkspur_ctg_invoice_register_2023-2026.xlsx: tuition and the section fee (once per section, though the "
-        "board's line export from January 2025 carries it on every participant's line) to the section's program, each "
-        "refund credit to the program of the participant it refunds (the roster), not the invoice that carried it.",
+        "For the clock hours, took larkspur_ctg_attendance_2023-2026.csv, dropped the rows it repeats (one week of "
+        "March 2025 appended again at its end), read each session's time as hours and minutes after the point (no "
+        "entry runs past fifty-nine after it, and the full sessions of a program scheduled in half hours read point "
+        "thirty, so a completer at every session totals the inventory's clock hours only that way), and summed the "
+        "sessions dated 1 July 2024 to 30 June 2025 under the program of each session's section in the roster.",
         "For the loan principal, joined each credit program's 2024-25 completers by state student ID to "
-        "larkspur_direct_loan_disbursements_2019-2026.csv, kept subsidized and unsubsidized disbursements with "
-        "returns netted, and grossed the aid system's amounts from 1 July 2023 back up by the %.3f per cent "
-        "origination fee they are net of (larkspur_cost_of_attendance_2024-25.pdf); the median to the nearest "
-        "10 dollars." % st["fee_pct"],
+        "larkspur_direct_loan_disbursements_2019-2026.csv, kept subsidized and unsubsidized loans, summed each "
+        "disbursement before 1 July 2024 with returns netted and counted each loan from then once, since that aid "
+        "system writes the loan's amount for the award year on each of its disbursements (two such rows run past the "
+        "annual limits in larkspur_cost_of_attendance_2024-25.pdf); the median to the nearest 10 dollars.",
     ]
     for i, s in enumerate(steps, 1):
         o.append("%d. %s" % (i, s))
@@ -114,12 +114,12 @@ def main():
     o.append("4. The programs that fail: %s." % join(fail_deg + fail_sht))
     o.append("5. The share of the 2024-25 completers of tested programs in passing programs: %d per cent (%s of %s)."
              % (cl["share_pct"], c(cl["in_passing"]), c(cl["tested"])))
-    o.append("6. Each short-term program's grant tuition and fees the board paid in its July 2024 to June 2025 fiscal "
-             "year, whole dollars:")
+    o.append("6. Each short-term program's clock hours its grant participants attended from July 2024 to June 2025, "
+             "whole hours:")
     for p in sht:
-        o.append("   - %s: %s" % (p, c(pr[p]["tuition_fy2025_usd"])))
-    o.append("7. Each credit program's median Direct Loan principal among its 2024-25 completers who borrowed, nearest "
-             "10 dollars:")
+        o.append("   - %s: %s" % (p, c(pr[p]["clock_hours_fy2025"])))
+    o.append("7. Each credit program's median of all the Direct Subsidized and Unsubsidized Loan principal its 2024-25 "
+             "completers who borrowed took out at the college, nearest 10 dollars:")
     for p in deg:
         o.append("   - %s: %s" % (p, c(pr[p]["loan_median_usd"])))
     o.append("\n### larkspur_program_tests_2027-28.svg\n")

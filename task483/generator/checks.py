@@ -206,19 +206,18 @@ def main():
     check("SF15 every credit program's length is in credits and every short-term program's under 600 clock hours",
           all("credits" in lengths[p] for p in I.degree)
           and all(int(lengths[p].split()[0]) < 600 for p in I.short))
-    a_post = B.ask_a(I, "posted")
-    a_inv = B.ask_a(I, "invoice_date")
-    a_gold = B.ask_a(I)
-    check("SF16 ask A by posting or invoice date moves %d and %d figures" % (
-        sum(a_post[p] != a_gold[p] for p in I.short), sum(a_inv[p] != a_gold[p] for p in I.short)),
-          sum(a_post[p] != a_gold[p] for p in I.short) >= 1 and sum(a_inv[p] != a_gold[p] for p in I.short) >= 3)
-    a_reg = B.ask_a(I, "register")
-    check("SF17 ask A's credits under the carrying invoice's section move %d figures" %
-          sum(a_reg[p] != a_gold[p] for p in I.short), sum(a_reg[p] != a_gold[p] for p in I.short) >= 8)
-    b_gold, b_net, b_plus = B.ask_b(I), B.ask_b(I, "net"), B.ask_b(I, "with_plus")
-    check("SF18 ask B's amounts as exported move all 12 medians; parent loans kept move %d" %
+    a_full = B.ask_a(I)
+    a_gold = {p: v[0] for p, v in a_full.items()}
+    a_end = {p: v[0] for p, v in B.ask_a(I, "by_end").items()}
+    check("SF16 ask A's year as the sections that ended in it instead of the sessions dated in it moves %d figures" %
+          sum(a_end[p] != a_gold[p] for p in I.short), sum(a_end[p] != a_gold[p] for p in I.short) >= 6)
+    a_dec = {p: v[0] for p, v in B.ask_a(I, "decimal").items()}
+    check("SF17 ask A's session times read as decimal hours instead of hours and minutes move %d figures" %
+          sum(a_dec[p] != a_gold[p] for p in I.short), sum(a_dec[p] != a_gold[p] for p in I.short) == 11)
+    b_gold, b_rows, b_plus = B.ask_b(I), B.ask_b(I, "rows"), B.ask_b(I, "with_plus")
+    check("SF18 ask B's rows summed as exported move all 12 medians; parent loans kept move %d" %
           sum(b_plus[p][1] != b_gold[p][1] for p in I.degree),
-          all(b_net[p][1] != b_gold[p][1] for p in I.degree) and sum(b_plus[p][1] != b_gold[p][1] for p in I.degree) >= 4)
+          all(b_rows[p][1] != b_gold[p][1] for p in I.degree) and sum(b_plus[p][1] != b_gold[p][1] for p in I.degree) >= 6)
     e_deg = min(edge(gdeg[p]["figure"], 1000) for p in I.degree if gdeg[p]["tested"])
     e_sh = min(edge(gsh[p]["figure"], 1) for p in I.short if gsh[p]["tested"])
     e_b = min(edge(b_gold[p][2], 10) for p in I.degree)
@@ -269,7 +268,9 @@ def main():
     check("G2 every program's pooled median lies between every one of its cells' 10th and 90th percentiles", inside)
     fam_sh = all(all(B.short_figures(I, "family%d" % k)[p]["working"] == gsh[p]["working"] for p in I.short
                      if gsh[p]["tested"]) for k in range(len(B.FAMILY)))
-    check("G3 the twelve job-level pay-ratio variants file the same count for every program", fam_sh)
+    check("G3 the %d job-level pay-ratio variants (the reference quarter adjacent, the full quarters' mean, the two "
+          "beside the partial one or the job's median quarter; shifted 0, 7 or 14 days; calendar or 91-day quarters) "
+          "file the same count for every program" % len(B.FAMILY), fam_sh)
     undated = sum(1 for prog in I.short for pid, comp in I.grant.get(prog, [])
                   if B.ratio_status(I.rec.get(pid, {}), comp + dt.timedelta(days=B.DAY))[1])
     check("G4 no grant completer's record leaves a job paid in the day-180 quarter undated (%d)" % undated, undated == 0)
@@ -278,72 +279,115 @@ def main():
     check("G6 no short-term figure exactly on a half", all(abs(gsh[p]["figure"] * 2 - round(gsh[p]["figure"] * 2)) > 1e-9
                                                            or round(gsh[p]["figure"] * 2) % 2 == 0
                                                            for p in I.short if gsh[p]["tested"]))
-    check("G7 ask A's amounts carry no half dollar", all(abs(v - round(v)) < 1e-9 for v in a_gold.values()))
-    shuffled = list(I.register)
+    e_a = min(edge(a_full[p][1], 1) for p in I.short)
+    check("G7 every program's clock hours clear of the rounding edge (nearest %.2f hours of the half)" % e_a, e_a >= 0.1)
+    shuffled = list(I.attendance)
     random.Random(7).shuffle(shuffled)
-    keep = I.register
-    I.register = shuffled
-    a_sh = B.ask_a(I)
-    I.register = keep
-    check("G8 row order: ask A unchanged over shuffled invoice lines", a_sh == a_gold)
+    keep = I.attendance
+    I.attendance = shuffled
+    a_sh = {p: v[0] for p, v in B.ask_a(I).items()}
+    I.attendance = keep
+    check("G8 row order: ask A unchanged over shuffled attendance rows", a_sh == a_gold)
 
     # ---------------------------------------------------------------------------------------------------------------
     # A: ask A's devices
-    a_led, a_ledp = B.ask_a(I, "ledger"), B.ask_a(I, "ledger_posted")
-    check("A1 the board's rows by program miss all 11 (by payment date) and all 11 (by posting date)",
-          all(a_led[p] != a_gold[p] for p in I.short) and all(a_ledp[p] != a_gold[p] for p in I.short))
-    led = [r for r in I.ledger if B.iso(r["payment_date"]) >= A.PAY_SWITCH and r["participant_id"]]
-    fee_rep = {}
-    for r in led:
-        fee_rep.setdefault((r["invoice_number"], r["etp_program_id"]), []).append(float(r["fees"] or 0))
-    fy25_progs = {I.by_etp[r["etp_program_id"]] for r in led if B.FY25[0] <= B.iso(r["payment_date"]) <= B.FY25[1]
-                  and float(r["fees"] or 0) > 0}
-    check("A2 from January 2025 a section's fee rides on every participant line: %d programs carry it in fiscal 2025"
-          % len(fy25_progs), len(fy25_progs) == 11)
-    reg_fee = {}
-    for l in I.register:
-        if str(l["Line"]).startswith("Materials"):
-            reg_fee[(l["Invoice"], l["Section"])] = float(l["Amount"])
-    check("A3 the register carries each section's fee once", len(reg_fee) == sum(1 for l in I.register
-                                                                                  if str(l["Line"]).startswith("Materials")))
-    cross = 0
-    for l in I.register:
-        if str(l["Line"]).startswith("Refund") and I.program_of[l["Participant"]] != l["Program"]:
-            cross += 1
-    check("A4 refund credits written under another program's section (%d)" % cross, cross >= 10)
-    check("A5 the register's lines by their written section keep 2 of 11, posting dates 10, invoice dates 8, no credits 2",
-          [sum(B.ask_a(I, b)[p] == a_gold[p] for p in I.short) for b in ("register", "posted", "invoice_date",
-                                                                         "no_credits")] == [2, 10, 8, 2])
-    tot_led = sum(float(r["amount"]) for r in I.ledger if B.FY25[0] <= B.iso(r["payment_date"]) <= B.FY25[1])
-    check("A6 no file reports the fiscal year's payments by program, and the ledger's fiscal total (%.0f) differs from the "
-          "register's (%d), so no control ties under the golden" % (tot_led, sum(a_gold.values())),
-          abs(tot_led - sum(a_gold.values())) > 1000)
+    a_d = B.ask_a(I, "decimal")
+    miss = {p: a_full[p][1] - a_d[p][1] for p in I.short}
+    check("A1 the session times read as decimal hours miss all 11 figures, by %.1f to %.1f hours" % (
+        min(miss.values()), max(miss.values())), all(a_dec[p] != a_gold[p] for p in I.short) and min(miss.values()) >= 1)
+    after = [int(r["hours"].split(".")[1]) for r in I.attendance]
+    inv = {r["Program"]: int(str(r["Length"]).split()[0]) for r in B.sheet(os.path.join(TARGET, P.FILES["inventory"]),
+                                                                          "Programs") if "clock hours" in str(r["Length"])}
+    done = {r["participant_id"]: I.program_of[r["participant_id"]] for r in I.roster if r["exit_reason"] == "Completed"}
+    tot, dec = {}, {}
+    seen = set()
+    for r in I.attendance:
+        key = (r["participant_id"], r["crn"], r["session_date"], r["hours"])
+        if key in seen or r["participant_id"] not in done:
+            continue
+        seen.add(key)
+        tot[r["participant_id"]] = tot.get(r["participant_id"], 0.0) + B.hours(r["hours"])
+        dec[r["participant_id"]] = dec.get(r["participant_id"], 0.0) + float(r["hours"])
+    full = {p: [pid for pid, prog in done.items() if prog == p and abs(tot.get(pid, 0) - inv[p]) < 1e-6]
+            for p in I.short}
+    usual = {}
+    for r in I.attendance:
+        usual.setdefault(I.crn_program[r["crn"]], {}).setdefault(r["hours"], 0)
+        usual[I.crn_program[r["crn"]]][r["hours"]] += 1
+    half = sorted(p for p, c in usual.items() if max(c, key=c.get).endswith(".30"))
+    check("A2 no entry runs past 59 after the point (%d rows); %d completers who attended every full session total "
+          "the inventory's clock hours read as hours and minutes (%d programs, %d of them among the %d whose sessions "
+          "run to the half hour), and each of those falls short read as decimal hours" % (
+              len(after), sum(len(v) for v in full.values()), sum(1 for p in I.short if full[p]),
+              sum(1 for p in half if full[p]), len(half)),
+          max(after) <= 59 and sum(len(v) for v in full.values()) >= 50 and sum(1 for p in half if full[p]) >= 3
+          and all(dec[pid] < inv[p] - 1 for p in half for pid in full[p]))
+    rowset = [(r["participant_id"], r["crn"], r["session_date"], r["hours"]) for r in I.attendance]
+    dup = len(rowset) - len(set(rowset))
+    tail = rowset[len(rowset) - dup:] if dup else []
+    week = [k for k in rowset[:len(rowset) - dup] if "2025-03-03" <= k[2] <= "2025-03-07"]
+    a_rs = {p: v[0] for p, v in B.ask_a(I, "resent").items()}
+    check("A3 the export carries %d sessions twice, the week of 3 March 2025 appended again at its end; kept, they move "
+          "%d figures" % (dup, sum(a_rs[p] != a_gold[p] for p in I.short)),
+          dup > 100 and tail == week and sum(a_rs[p] != a_gold[p] for p in I.short) >= 6)
+    a_cp = {p: v[0] for p, v in B.ask_a(I, "completers").items()}
+    check("A4 the sections that ended in the year keep %d of 11, the completers' sessions alone %d" % (
+        sum(a_end[p] == a_gold[p] for p in I.short), sum(a_cp[p] == a_gold[p] for p in I.short)),
+          sum(a_end[p] != a_gold[p] for p in I.short) >= 6 and all(a_cp[p] != a_gold[p] for p in I.short))
+    ros = {r["participant_id"]: r for r in I.roster}
+    inside = all(max(B.iso(ros[r["participant_id"]]["section_start"]), B.iso(ros[r["participant_id"]]["enrolled_on"]))
+                 <= B.iso(r["session_date"]) <= min(B.iso(ros[r["participant_id"]]["section_end"]),
+                                                    B.iso(ros[r["participant_id"]]["exit_date"]))
+                 and r["crn"] == ros[r["participant_id"]]["section_id"] for r in I.attendance)
+    check("A5 every session lies inside its participant's section, from the day they enrolled to the day they left, "
+          "under the roster's course reference number", inside)
+    check("A6 no file states a program's hours attended; the inventory's clock hours are one participant's schedule",
+          True)
 
     # ---------------------------------------------------------------------------------------------------------------
     # B: ask B's devices
     rows = I.loans
-    post = [r for r in rows if B.iso(r["DISB_DATE"]) >= A.AID_SWITCH and "PLUS" not in r["LOAN_TYPE"]]
-    pre = [r for r in rows if B.iso(r["DISB_DATE"]) < A.AID_SWITCH and "PLUS" not in r["LOAN_TYPE"]]
-    exact = all(abs(round(float(r["DISB_AMT"]) / (1 - A.FEE)) - round(float(r["DISB_AMT"]) / (1 - A.FEE), 2)) < 0.02
-                for r in post)
-    check("B1 every new-system amount is a whole-dollar gross less its fee to the cent (%d rows)" % len(post), exact)
-    check("B2 every old-system amount is whole dollars (%d rows)" % len(pre),
-          all(abs(float(r["DISB_AMT"]) - round(float(r["DISB_AMT"]))) < 1e-9 for r in pre))
-    check("B3 the amounts as exported miss all 12 medians", all(b_net[p][1] != b_gold[p][1] for p in I.degree))
+    new = [r for r in rows if B.iso(r["DISB_DATE"]) >= A.AID_SWITCH]
+    old_rows = [r for r in rows if B.iso(r["DISB_DATE"]) < A.AID_SWITCH]
+    by_loan = {}
+    for r in new:
+        by_loan.setdefault(r["LOAN_ID"], set()).add(r["GROSS_AMT"])
+    two = {}
+    for r in new:
+        two[r["LOAN_ID"]] = two.get(r["LOAN_ID"], 0) + 1
+    check("B1 from July 2024 every loan's rows carry one amount (%d loans, %d with two disbursements); no row from then "
+          "is a return" % (len(by_loan), sum(1 for v in two.values() if v == 2)),
+          all(len(v) == 1 for v in by_loan.values()) and all(r["DISB_STATUS"] == "Disbursed" for r in new))
+    coa = re.sub(r"\s+", " ", subprocess.run(["pdftotext", os.path.join(TARGET, P.FILES["coa"]), "-"],
+                                              capture_output=True, text=True).stdout)
+    over = set()
+    for r in new:
+        if "Sub" in r["LOAN_TYPE"] and "Unsub" not in r["LOAN_TYPE"] and two.get(r["LOAN_ID"]) == 2 \
+                and 2 * float(r["GROSS_AMT"]) > 4500:
+            over.add(r["SSID"])
+    once = all(float(r["GROSS_AMT"]) <= 4500 for r in new if r["LOAN_TYPE"] == "DL Sub")
+    check("B2 two rows of a 2024-25 subsidized loan summed run past the 4,500-dollar subsidized annual limit for %d "
+          "borrowers; one row never does" % len(over), len(over) >= 300 and once and "4,500 subsidized" in coa)
+    b_pl, b_dd, b_ay, b_gu = (B.ask_b(I, x) for x in ("per_loan", "dedupe", "ay2425", "gross_up"))
+    check("B3 the rows summed, one amount per loan in every year, alike rows kept once, the one award year and every "
+          "amount read as net each miss all 12 medians", all(all(x[p][1] != b_gold[p][1] for p in I.degree)
+                                                            for x in (b_rows, b_pl, b_dd, b_ay, b_gu)))
     b_dis = B.ask_b(I, "disbursed_only")
     check("B4 returned rows dropped keep %d of 12; parent loans kept keep %d" % (
         sum(b_dis[p][1] == b_gold[p][1] for p in I.degree), sum(b_plus[p][1] == b_gold[p][1] for p in I.degree)),
-          sum(b_dis[p][1] == b_gold[p][1] for p in I.degree) <= 4 and sum(b_plus[p][1] == b_gold[p][1]
-                                                                          for p in I.degree) <= 6)
+          sum(b_dis[p][1] == b_gold[p][1] for p in I.degree) <= 6 and sum(b_plus[p][1] == b_gold[p][1]
+                                                                          for p in I.degree) <= 4)
     per = {}
-    for r in rows:
+    for r in old_rows:
         if "PLUS" not in r["LOAN_TYPE"]:
-            per[r["SSID"]] = per.get(r["SSID"], 0.0) + float(r["DISB_AMT"])
+            per[r["SSID"]] = per.get(r["SSID"], 0.0) + float(r["GROSS_AMT"])
     zero = sum(1 for p, s in I.completers if s in per and abs(per[s]) < 0.005)
-    check("B5 no completer's subsidized and unsubsidized disbursements net to zero (%d)" % zero, zero == 0)
-    coa = subprocess.run(["pdftotext", os.path.join(TARGET, P.FILES["coa"]), "-"], capture_output=True, text=True).stdout
-    check("B6 the cost of attendance states the 1.057 per cent fee and that the borrower repays the full amount",
-          "1.057" in coa and "repays the full amount" in re.sub(r"\s+", " ", coa))
+    check("B5 no completer's subsidized and unsubsidized disbursements before July 2024 net to zero (%d), and every "
+          "program's borrower count is odd and its median a whole 10 dollars" % zero,
+          zero == 0 and all(b_gold[p][0] % 2 == 1 and abs(b_gold[p][2] - b_gold[p][1]) < 1e-9 for p in I.degree))
+    check("B6 the cost of attendance states the annual limits and that each loan is disbursed in installments, "
+          "normally one each semester", "6,500 dollars (no more than 4,500 subsidized)" in coa
+          and "disbursed in installments, normally one each semester" in coa)
 
     # ---------------------------------------------------------------------------------------------------------------
     # X: the separation line
@@ -351,22 +395,21 @@ def main():
     try:
         for fn in os.listdir(TARGET):
             shutil.copy(os.path.join(TARGET, fn), os.path.join(tmp, fn))
-        for k, head in (("ledger", None), ("loans", None)):
+        for k, head in (("attendance", None), ("loans", None)):
             path = os.path.join(tmp, P.FILES[k])
             first = open(path, encoding="utf-8").readline()
             open(path, "w", encoding="utf-8").write(first)
         I2 = B.Inputs(tmp)
-        I2.register = []
         g2 = B.call(I2)
         same = g2["share"] == gold["share"] and all(
             (g2["deg"][p]["figure"], g2["deg"][p]["passes"]) == (gdeg[p]["figure"], gdeg[p]["passes"]) for p in I.degree)
         same &= all((g2["short"][p]["figure"], g2["short"][p]["passes"]) == (gsh[p]["figure"], gsh[p]["passes"])
                     for p in I.short)
-        check("X1 the call and every main figure are unchanged with the payments, the register and the loans emptied",
+        check("X1 the call and every main figure are unchanged with the attendance export and the loans emptied",
               same)
     finally:
         shutil.rmtree(tmp)
-    check("X2 the asks' device rows sit in files no step of the call reads (payments, register, loans)", True)
+    check("X2 the asks' device rows sit in files no step of the call reads (the attendance export, the loans)", True)
     window_pids = {pid for v in I.grant.values() for pid, _ in v}
     loan_ssids = {r["SSID"] for r in rows}
     check("X3 no short-term grant completer borrows in the loan file; the asks' joins touch the call's rows only for "
@@ -387,7 +430,9 @@ def main():
           len(meta["distractor_files"]) >= 2 and not any("distract" in x for x in fl))
     bad = []
     stump = ("pooled", "mixture", "partial quarter", "partial-quarter", "full quarter", "full-quarter", "half point",
-             "interpolat", "start date", "separation date", "gross", "net of", "repeated", "consolidated", "averag")
+             "interpolat", "start date", "separation date", "net of", "repeated", "averag", "invoice header", "first section", "supplementary",
+             "hand-keyed", "keyed by hand", "late enrol", "after the census", "every line", "each line", "loan amount",
+             "annual amount", "per loan", "hours and minutes", "minutes after")
     for x in fl:
         p = os.path.join(TARGET, x)
         if x.endswith(".pdf"):
@@ -405,10 +450,10 @@ def main():
     last = {}
     last["wages"] = max((int(r["year"]), int(r["quarter"])) for r in B.rows_csv(os.path.join(TARGET, P.FILES["wages"])))
     last["roster"] = max(r["exit_date"] for r in I.roster)
-    last["payments"] = max(r["payment_date"] for r in B.rows_csv(os.path.join(TARGET, P.FILES["ledger"])))
+    last["attendance"] = max(r["session_date"] for r in I.attendance)
     last["loans"] = max(r["DISB_DATE"] for r in rows)
     check("I5 the extracts end where they say and before the 16 October 2026 as-of: %s" % last,
-          last["wages"] == (2026, 2) and last["roster"] <= "2026-06-30" and last["payments"] <= "2026-06-30"
+          last["wages"] == (2026, 2) and last["roster"] <= "2026-06-30" and last["attendance"] <= "2026-06-30"
           and last["loans"] <= "2026-06-30")
     check("S1 the release's other colleges and other years-after rows are present (%d Larkspur three-year cells)" %
           sum(len(v) for v in I.cells.values()), sum(len(v) for v in I.cells.values()) == 60)

@@ -247,10 +247,10 @@ counts reconcile (every completer with pay in the quarter is counted once).
 | SF12 | a program's 2024-25 completers | the completion extracts' completers at every campus, grant participants or not | the grant completers for short-term programs | same call (70.68 and 83.73) | standard 5.2; asserted |
 | SF13 | programs not tested | in neither the numerator nor the denominator | in the denominator as not passing | same call (69.31 and 82.01) | standard 5.2; asserted |
 | SF14 | comparing a figure with its line | as computed, before rounding | the rounded figure | same call | standard 5.3; asserted: the nearest figures are 1,143 dollars and 6.7 points from their lines |
-| SF15 | which test a program takes | credit programs (Medical Assisting and Paralegal Studies certificates of 34 and 32 credits included) the earnings test; clock-hour programs the placement test | a certificate read as short-term | not a live reading | standard 2.2 and the inventory's lengths; asserted |
-| SF16 | ask A's fiscal year | payments dated 1 July 2024 to 30 June 2025 | posting dates; invoice dates | ask figures only | the asking sentence ("by payment date"); asserted |
-| SF17 | ask A's refund credits | each credit taken from the program whose participant it refunds | from the program of the invoice that carried it | ask figures only | the asking sentence ("refund credits to the program's own participants"); asserted |
-| SF18 | ask B's principal | the gross amount of each kept disbursement, returns netted | the amounts as exported; the parent PLUS loans | ask figures only | the asking sentence and the cost-of-attendance statement that the borrower repays the full amount including the fee; asserted |
+| SF15 | which test a program takes | credit programs (Medical Assisting and Paralegal Studies certificates of 34 and 32 credits included) the earnings test; clock-hour programs the placement test | a certificate read as short-term | not a live reading | standard 2.2 ("of one academic year (30 credits) or more") and the inventory's lengths; asserted |
+| SF16 | ask A's year | the sessions dated 1 July 2024 to 30 June 2025 | the sessions of the sections that ended in the year | ask figures only | the asking sentence ("attended from July 2024 to June 2025"); asserted |
+| SF17 | ask A's hours | each session's time read as hours and minutes after the point, the repeated rows once | decimal hours; the repeated week kept | ask figures only | C4 separate: no entry runs past 59 after the point, and a completer at every full session totals the inventory's clock hours only as hours and minutes (225 completers); the repeated rows are the same participant, section, date and time twice; asserted |
+| SF18 | ask B's principal | every subsidized and unsubsidized dollar the completer borrowed at the college in any award year: each disbursement before July 2024, returns netted, and each 2024-25 loan's amount once | the rows summed as exported; one amount per loan in every year; the 2024-25 award year alone; the parent PLUS loans | ask figures only | the asking sentence ("all the Direct Subsidized and Unsubsidized Loan principal they borrowed at the college") and the cost of attendance's annual limits and installments: two rows of a 2024-25 subsidized loan summed run past the subsidized annual limit for 1,136 borrowers, one row never does; asserted |
 | SF19 | rounding | each figure from its unrounded value, rounded once, halves up | per line or per cell | same call, same figures | asserted: no graded figure within a tenth of a rounding unit of an edge |
 
 ## Ladder
@@ -295,7 +295,7 @@ of the line.
 | 14 Row order | none: every figure is a set computation | asserted over shuffled rows |
 | 15 Duplicate resolution | amended over original wage reports; a person once per program in the release | filed (4.2; technical notes); SF9 |
 | 16 Identity normalisation | programs through the inventory (SIS codes, numeric IDs, CIP before and after 2022, grant program IDs); students by state ID with or without dashes | the inventory; C1, every row joins; SF5 |
-| 17 Netting against gross | none on the main path; ask A's credits net against their own program; ask B's returns net against their loan | SF17, SF18 |
+| 17 Netting against gross | none on the main path; ask B's returns net against their loan | SF18 |
 | 18 Dimensional units | dollars of 2024 and 2025; per cent | filed (3.2); SF3 |
 | 19 Code and status semantics | exit reason Completed; suppression S; loan types old and new | dictionary and file semantics; never the stump; SF10, SF4 |
 | 20 Integerisation | completer counts whole; shares of whole counts | C1 by construction |
@@ -311,7 +311,7 @@ share of 2024-25 completers of tested programs in passing programs. Neither the 
 a day is published: the release carries campus-by-cohort cells and the wage records carry quarters' pay, so the
 literal estimand is unobserved on both halves and is estimated from the records. The standing estimators agree on the
 graded figures (every interpolation through the released percentiles files one whole-thousand cell per program; the
-twelve job-level pay-ratio variants file one count per program), and every reading of every term in the fork table
+24 job-level pay-ratio variants file one count per program), and every reading of every term in the fork table
 files the same call or is ruled out by a quoted sentence. The golden is the literal estimand's estimate, not a reading
 of a term.
 
@@ -320,50 +320,56 @@ of a term.
 None ties only under the golden. No file publishes a program's pooled median, a pooled share at the benchmark or any
 completer's start or exit date; the release's percentiles and the wage amounts are the data the golden is built from,
 and every route reads them. No file ranks the programs on their tests or reports the system's share. For the asks: the
-board's payments are not summarised by program anywhere, the college's invoice totals equal the board's payments under
-every handling, and the loan export carries no gross column.
+attendance export is not summarised by program anywhere and states no session's length, the inventory's clock hours
+are one participant's schedule (the referee that separates the readings of a session's time without handing over any
+program's total); the loan export carries no column of a loan's amount beside its disbursements' amounts, and no file
+states a completer's principal.
 
 ## Ask sheet
 
-Two asks, both on files the call never reads: the board's provider payments and the college's invoice register (ask
-A); the college's Direct Loan disbursements and its cost-of-attendance statement (ask B). Zero device rows sit in the
-call's population: the payments, invoices and loans are read by no step of the call, and the roster and completion
+Two asks, both on files the call never reads: the college's attendance export for the grant's participants (ask A);
+the college's Direct Loan disbursements and its cost-of-attendance statement (ask B). Zero device rows sit in the
+call's population: the attendance and the loans are read by no step of the call, and the roster and completion
 extracts they join to are read by the call only for counts the devices do not touch (asserted, X1 and X2).
 
-- **Ask A, each short-term program's grant tuition and fees the board paid in its July 2024 to June 2025 fiscal year
-  by payment date, net of refund credits to the program's own participants, whole dollars (11 figures).** H18 home:
-  the money the designation governs, program by program. User: the board's grant office, sizing what lapses with the
-  designation. Primary devices: D6 an event's quantity on every line it covers (the board's payment system that took
-  over in January 2025 exports one row per invoice line and carries a section's materials and testing fee on every
-  participant's line of it; the college's register shows the fee once per section); D7 records billed to another
-  holder (until December 2024 a withdrawal's refund credit rode on the campus's next invoice, whatever its program,
-  and the board's row for that payment carries the invoice's program; the register names the participant). Hazards:
-  payments made in the last days of June posted in July (the posted basis moves Warehouse and Logistics), invoice dates
-  against payment dates, other providers' payments. Files and columns: the payments (payment date, posted date,
-  invoice number, program ID, participant, tuition, fees, credits, amount), the register (invoice, section, program,
-  participant, line, amount), the roster (participant, program), the inventory (program IDs, the fee per section).
-  Stops: the board's rows by program (0 of 11), the same by posting date (0), the register's lines by the section each
-  is written under (2), the register by posting date (10), by invoice date (8), without the credits (2), the golden.
-- **Ask B, each credit program's median Direct Subsidized and Unsubsidized Loan principal borrowed at the college by
-  its 2024-25 completers who borrowed, nearest 10 dollars (12 figures).** H18 home: the debt side of the same
-  completers' workforce value, a measure every credit program carries that the call does not turn on. User: the
-  board's grant office and the college's consumer information. Primary device: D2 a label stored before a silent
-  switch (the aid system that went live on 1 July 2023 writes each disbursement net of the 1.057 per cent origination
-  fee in the same DISB_AMT column the old system filled with the gross amount; the cost-of-attendance statement says
-  the borrower repays the full amount including the fee, and every new-system amount is a round gross less its fee to
-  the cent). Hazards: returned disbursements as negative rows under status Returned, parent PLUS loans under two code
-  sets, two ID formats for the state student ID. Stops: the amounts as exported (0 of 12), returned rows dropped (3),
-  parent loans kept (4), the golden.
+- **Ask A, each short-term program's clock hours its grant participants attended from July 2024 to June 2025, whole
+  hours (11 figures).** H18 home: the instruction the grant bought, program by program, beside the outcomes it is
+  judged on. User: the board's grant office, reporting training hours delivered under the grant. Primary device: D3
+  units set per source, hours and minutes in a decimal column (the attendance system writes a session's time as hours
+  and minutes after a point, 7.30 for seven and a half hours; nothing in the export or the documents says so). The
+  evidence is the inventory's clock hours: a completer at every full session totals them only read as hours and
+  minutes (225 completers), and no entry runs past 59 after the point. Every program carries it, the six scheduled in
+  half hours through every full session and the whole-hour ones through the sessions attended in part; read as decimal
+  hours the figures fall 1.3 to 431.9 hours short. Hazards: the export appends the week of 3 March 2025 a second time
+  at its end (exact duplicates), late enrollees and leavers attend only part of a section, the sessions of sections
+  that straddle the year's ends. Files and columns: the attendance export (participant, course reference number,
+  session date, hours), the roster (participant, program, course reference number, section dates, enrolled on, exit
+  date), the inventory (clock hours). Stops: the times as decimal hours (0 of 11), the repeated week kept (3), both
+  (0), the sections that ended in the year (4), the completers' sessions alone (0), the golden.
+- **Ask B, each credit program's median, over its 2024-25 completers who borrowed, of all the Direct Subsidized and
+  Unsubsidized Loan principal they borrowed at the college, nearest 10 dollars (12 figures).** H18 home: the debt side
+  of the same completers' workforce value, a measure every credit program carries that the call does not turn on.
+  User: the board's grant office and the college's consumer information. Primary device: D6 an event's quantity on
+  every line it covers (the aid system that went live on 1 July 2024 writes the loan's gross amount for its award year
+  on each of the loan's disbursements, in the GROSS_AMT column the old system filled with each disbursement's gross
+  amount; the cost of attendance's annual limits and "disbursed in installments, normally one each semester" are the
+  evidence: two rows of a 2024-25 subsidized loan summed run past the 4,500-dollar subsidized limit for 1,136 borrowers,
+  one row never does), with its over-cleaning half (one amount per loan, or alike rows kept once, in every year halves
+  the old system's two-installment loans). Hazards: returned disbursements as negative rows under status Returned,
+  parent PLUS loans under two code sets, two ID formats for the state student ID, the cost of attendance's origination
+  fee (the export's amounts are gross). Stops: the rows summed as exported (0 of 12), one amount per loan in every year
+  (0), alike rows kept once (0), the 2024-25 award year alone (0), every amount read as net (0), returned rows dropped
+  (5), parent loans kept (2), the golden. Every program's borrower count is odd and every completer's principal a whole
+  10 dollars, so each median is one completer's principal at the centre of its bin.
 
 | Ask | What the cracker does | Cracker |
 |---|---|---|
-| A | the board's payment rows to the college dated in fiscal 2025, each under its program ID, credits as the rows carry them | miss |
-| B | each completer's Subsidized and Unsubsidized disbursements as exported, returns netted, parent loans left out | miss |
+| A | the attendance export's sessions dated in fiscal 2025, exact duplicates dropped, each time read as decimal hours | miss |
+| B | each completer's Subsidized and Unsubsidized rows as exported, returns netted, parent loans left out | miss |
 
-Measured partial handlings on the cut pack: ask A keeps 2 of 11 when the register's lines replace the payment rows and
-the credits stay under the sections they are written under, 11 of 11 once each credit goes to its participant's
-program; ask B keeps 12 of 12 once the new system's amounts are grossed up. A response that finds both scores 100;
-one that finds neither scores 45 on the call.
+Measured partial handlings on the cut pack: ask A keeps 11 of 11 once the session times are read as hours and minutes
+and 3 of 11 if the repeated week is then kept; ask B keeps 12 of 12 once each 2024-25 loan counts once and 0 of 12 when
+every loan counts once. A response that finds both devices scores 100; one that finds neither scores 45 on the call.
 
 Pair ceiling: 28.5 (the cracker 38 + 7 with none of 23 ask figures, the mirror 5 + 7 with none).
 
@@ -411,3 +417,21 @@ Measured by: generator/ceiling.py on the cut pack.
   record shape is the migration duplicates both top responses removed on the portal (16 rev 3).
 - Borrower counts beside ask B's medians: every handling that leaves out parent loans and nets returns lands all 12,
   so the counts were free to the cracker; cut.
+- Ask A's device a section's fee on every participant line of the board's line export from January 2025: the judge read
+  the export's amounts summed as what the board paid (a fork, not a device), and reader A kept all 11 figures through
+  the inventory's fee per section and the register; replaced by the invoice header's program on every old line and the
+  hand-keyed invoices outside the register.
+- Ask B's device the aid system writing disbursements net of the origination fee from July 2023: both readers grossed
+  the amounts up from the cost of attendance's fee sentence and the cents the net amounts carried (12 of 12 each);
+  replaced by the loan's amount on each of its disbursements from July 2024.
+- Day-180 status accepted when the golden's job dating agreed with the simulation: the judge's two other references
+  (the adjacent and far quarters averaged, the job's median quarter) moved the CDL figure 50 to 54 of 79 through exits
+  whose far quarter was a few weeks' pay. Requiring every dating reading to agree and redrawing in the shared stream
+  moved every later path and put the half-quarter threshold under the line for the CDL program (53 of 79, landing the
+  call); kept with the four disagreeing completers redrawn from their own streams.
+- Ask A's second devices, the old billing system writing the invoice header's program on every register line and the
+  hand-keyed supplementary invoices outside the register: both round 2 readers compared each register line's program
+  with its participant's program in the roster (507 and 434 lines flagged) and kept the CE invoices by their program
+  ID, 11 of 11 each, while the call (77 per cent, renews) and ask B (0 of 12) held; the tuition reconciliation runs on
+  three files that check one another line by line, so no device on its path stays silent. Replaced by each short-term
+  program's clock hours attended, read from an attendance export that writes hours and minutes.

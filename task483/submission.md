@@ -22,8 +22,8 @@ Medical Assisting's completers earn a median 33 thousand dollars, under the 34.2
 3. Took the grant completers from ctg_participant_roster_2023-2026.csv (exit reason Completed, sections ending 1 July 2024 to 30 June 2025; Forklift and Material Handling has 18, under 20, and is not tested) and day 180 as the section's last day plus 180 days.
 4. In ctg_participant_wage_records_2022q3-2026q2.csv kept the latest report for each participant, employer and quarter, and counted a completer as working when a job paid in the quarter holding day 180 was paid in the quarters before and after too, or when its start (paid in the next quarter only) or its exit (paid in the one before only) dated from its pay in the quarter against its pay in its adjacent full quarter falls on the working side of day 180.
 5. Counted each program's 2024-25 completers in fennimore_ridgefield_completions_2024-25.xlsx and copper_flats_antelope_springs_completions_2024-25.csv, grant participants or not, and took the share of the tested programs' 1,441 completers in passing programs: 1,021, 71 per cent.
-6. For the grant tuition, took the board's payments to the college in ctg_provider_payments_fy2024-fy2026.csv dated 1 July 2024 to 30 June 2025 and split each by its invoice's lines in larkspur_ctg_invoice_register_2023-2026.xlsx: tuition and the section fee (once per section, though the board's line export from January 2025 carries it on every participant's line) to the section's program, each refund credit to the program of the participant it refunds (the roster), not the invoice that carried it.
-7. For the loan principal, joined each credit program's 2024-25 completers by state student ID to larkspur_direct_loan_disbursements_2019-2026.csv, kept subsidized and unsubsidized disbursements with returns netted, and grossed the aid system's amounts from 1 July 2023 back up by the 1.057 per cent origination fee they are net of (larkspur_cost_of_attendance_2024-25.pdf); the median to the nearest 10 dollars.
+6. For the clock hours, took larkspur_ctg_attendance_2023-2026.csv, dropped the rows it repeats (one week of March 2025 appended again at its end), read each session's time as hours and minutes after the point (no entry runs past fifty-nine after it, and the full sessions of a program scheduled in half hours read point thirty, so a completer at every session totals the inventory's clock hours only that way), and summed the sessions dated 1 July 2024 to 30 June 2025 under the program of each session's section in the roster.
+7. For the loan principal, joined each credit program's 2024-25 completers by state student ID to larkspur_direct_loan_disbursements_2019-2026.csv, kept subsidized and unsubsidized loans, summed each disbursement before 1 July 2024 with returns netted and counted each loan from then once, since that aid system writes the loan's amount for the award year on each of its disbursements (two such rows run past the annual limits in larkspur_cost_of_attendance_2024-25.pdf); the median to the nearest 10 dollars.
 
 ## 4. Deliverable Answers
 
@@ -57,31 +57,31 @@ Medical Assisting's completers earn a median 33 thousand dollars, under the 34.2
    - Welding Fundamentals: 90
 4. The programs that fail: Child Development; Criminal Justice; Culinary Arts; Medical Assisting; Commercial Driver License, Class A; Emergency Medical Technician; and Medical Coding.
 5. The share of the 2024-25 completers of tested programs in passing programs: 71 per cent (1,021 of 1,441).
-6. Each short-term program's grant tuition and fees the board paid in its July 2024 to June 2025 fiscal year, whole dollars:
-   - Commercial Driver License, Class A: 388,825
-   - Emergency Medical Technician: 116,900
-   - Forklift and Material Handling: 7,470
-   - HVAC Fundamentals: 121,920
-   - IT Support Specialist: 177,545
-   - Medical Coding: 118,900
-   - Nursing Assistant: 136,560
-   - Pharmacy Technician: 137,840
-   - Phlebotomy Technician: 48,820
-   - Warehouse and Logistics Technician: 81,300
-   - Welding Fundamentals: 219,040
-7. Each credit program's median Direct Loan principal among its 2024-25 completers who borrowed, nearest 10 dollars:
-   - Automotive Technology: 14,830
-   - Business Administration: 12,740
-   - Child Development: 12,000
-   - Criminal Justice: 12,000
-   - Culinary Arts: 11,500
-   - Diesel Technology: 10,660
-   - Information Technology: 11,070
-   - Medical Assisting: 7,750
-   - Paralegal Studies: 3,580
-   - Radiologic Technology: 16,040
+6. Each short-term program's clock hours its grant participants attended from July 2024 to June 2025, whole hours:
+   - Commercial Driver License, Class A: 13,132
+   - Emergency Medical Technician: 9,526
+   - Forklift and Material Handling: 805
+   - HVAC Fundamentals: 10,005
+   - IT Support Specialist: 16,198
+   - Medical Coding: 11,436
+   - Nursing Assistant: 12,358
+   - Pharmacy Technician: 12,430
+   - Phlebotomy Technician: 3,650
+   - Warehouse and Logistics Technician: 10,601
+   - Welding Fundamentals: 16,654
+7. Each credit program's median of all the Direct Subsidized and Unsubsidized Loan principal its 2024-25 completers who borrowed took out at the college, nearest 10 dollars:
+   - Automotive Technology: 12,480
+   - Business Administration: 13,260
+   - Child Development: 17,000
+   - Criminal Justice: 15,300
+   - Culinary Arts: 13,560
+   - Diesel Technology: 15,500
+   - Information Technology: 12,150
+   - Medical Assisting: 7,250
+   - Paralegal Studies: 9,860
+   - Radiologic Technology: 12,190
    - Registered Nursing: 14,750
-   - Welding Technology: 12,240
+   - Welding Technology: 13,880
 
 ### larkspur_program_tests_2027-28.svg
 

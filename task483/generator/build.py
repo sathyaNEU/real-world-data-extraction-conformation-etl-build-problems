@@ -42,8 +42,6 @@ def build_pack(out):
                        "2025-05-12T16:40:00Z", "2025-08-19T20:11:32Z", excel=True)
     PP.normalize_ooxml(f("older"), "Institutional Research", "Institutional Research", "2025-07-21T14:05:00Z",
                        "2025-07-21T14:05:00Z", excel=True)
-    PP.normalize_ooxml(f("register"), "Business Office", "Business Office", "2023-06-05T15:30:00Z",
-                       "2026-07-09T17:48:20Z", excel=True)
     PP.normalize_ooxml(f("oews"), "Labor Market Information", "Labor Market Information", "2026-03-30T14:00:00Z",
                        "2026-04-02T15:26:51Z", excel=True, company="State Department of Workforce Services")
     return n

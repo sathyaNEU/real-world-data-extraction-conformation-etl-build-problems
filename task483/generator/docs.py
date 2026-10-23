@@ -59,7 +59,8 @@ def write_standard(path):
              "appropriation is committed to designated providers' programs from 1 July 2027."])
     s += [Paragraph("2 Programs and their tests", HEAD)]
     s += _p(["2.1 Every program on the provider's 2025-26 program inventory is reviewed.",
-             "2.2 A degree program or a certificate program of one academic year or more (a credit program) takes "
+             "2.2 A degree program or a certificate program of one academic year (30 credits) or more (a credit "
+             "program) takes "
              "the earnings test in section 3. A short-term program (a clock-hour program of under 600 clock hours) "
              "takes the placement test in section 4."])
     s += [Paragraph("3 Earnings test", HEAD)]

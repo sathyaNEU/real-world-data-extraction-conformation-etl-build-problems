@@ -1,8 +1,8 @@
 """Writes task483's evidence pack from world.py and asks.py: the board's designation standard, the outcomes release's
 2024 and 2025 editions and their technical notes, the college's program inventory and its two completion extracts, the
-grant's participant roster, the participants' wage records, the board's provider payments, the college's invoice
-register, the college's Direct Loan disbursements and its cost of attendance, and the two distractors (the documents
-are docs.py's)."""
+grant's participant roster, the participants' wage records, the college's attendance export for the grant's
+participants, its Direct Loan disbursements and its cost of attendance, and the two distractors (the documents are
+docs.py's)."""
 import csv
 import datetime as dt
 import os
@@ -25,8 +25,7 @@ FILES = {
     "newer": "copper_flats_antelope_springs_completions_2024-25.csv",
     "roster": "ctg_participant_roster_2023-2026.csv",
     "wages": "ctg_participant_wage_records_2022q3-2026q2.csv",
-    "ledger": "ctg_provider_payments_fy2024-fy2026.csv",
-    "register": "larkspur_ctg_invoice_register_2023-2026.xlsx",
+    "attendance": "larkspur_ctg_attendance_2023-2026.csv",
     "loans": "larkspur_direct_loan_disbursements_2019-2026.csv",
     "coa": "larkspur_cost_of_attendance_2024-25.pdf",
     "oews": "state_occupational_wage_estimates_may2025.xlsx",
@@ -252,7 +251,7 @@ def write_inventory(path):
             "Information Technology and Criminal Justice were recoded in fall 2022 with their curriculum revisions; "
             "awards conferred before then carry the earlier CIP code.",
             "Short-term programs run in sections; a section's grant participants are billed to the State Workforce "
-            "Development Board on the section's census day.",
+            "Development Board as of the section's census day.",
             "Fennimore and Ridgefield record students in the college's older student system, Copper Flats and Antelope "
             "Springs in the newer one; each system has its own student identifiers, and both carry the state student "
             "ID."]:
@@ -325,9 +324,10 @@ def write_roster(path, P):
     for p in sorted(P["participants"], key=lambda p: (p["section"][0], p["code"], p["campus"], p["pid"])):
         s, e = p["section"]
         why, cred = exit_reason(p, r)
+        enrolled = s - TD(days=int(r.integers(6, 35)))
         rows.append([p["pid"], p["ssid"], PROVIDER[0], PROVIDER[1], ETP[p["code"]], W.SHORT[p["code"]][0],
                      W.CAMPUS[p["campus"]], p["section_id"], s.isoformat(), e.isoformat(),
-                     (s - TD(days=int(r.integers(6, 35)))).isoformat(), p["exit_day"].isoformat(), why, cred])
+                     (p["late"] or enrolled).isoformat(), p["exit_day"].isoformat(), why, cred])
     return write_csv(path, ["participant_id", "state_student_id", "provider_id", "provider_name", "etp_program_id",
                             "program_name", "campus", "section_id", "section_start", "section_end", "enrolled_on",
                             "exit_date", "exit_reason", "credential_earned"], rows)
@@ -416,77 +416,21 @@ def wage_rows(P):
 
 
 # ---------------------------------------------------------------------------------------------------------------------
-# the board's payments and the college's invoices
-def ledger_rows(P, invs):
-    rows = []
-    for x in A.ledger_rows(invs):
-        rows.append([PROVIDER[0], PROVIDER[1], x["payment_id"], x["paid"].isoformat(), x["posted"].isoformat(),
-                     x["invoice"], ETP[x["program"]], x["pid"],
-                     "" if x["tuition"] is None else "%.2f" % x["tuition"],
-                     "" if x["fees"] is None else "%.2f" % x["fees"],
-                     "" if x["credits"] is None else "%.2f" % x["credits"], "%.2f" % x["amount"]])
-    r = np.random.default_rng(W.SEED * 11 + 3)
-    ids = A.Ids(W.SEED * 11 + 5)
-    ids.seen |= {p["pid"] for p in P["participants"]}
-    for prov, name in OTHER_PROV:
-        progs = ["ETP-%05d" % int(r.integers(10000, 19999)) for _ in range(int(r.integers(3, 8)))]
-        day = D(2023, 7, 10) + TD(days=int(r.integers(0, 20)))
-        while day < D(2026, 6, 20):
-            prog = progs[int(r.integers(0, len(progs)))]
-            n = int(r.integers(3, 16))
-            tu = float(int(r.integers(30, 420)) * 10)
-            fee = float(int(r.integers(5, 90)) * 10)
-            pay = A._business(day + TD(days=int(r.integers(18, 41))))
-            post = A._business(pay + TD(days=int(r.integers(0, 3))))
-            if pay.month == 6 and pay.day >= 25:
-                post = A._business(D(pay.year, 7, 1))
-            pmt = "PMT%07d" % int(r.integers(1000000, 9999999))
-            inv = "%s-%s-%03d" % (prov[3:], day.strftime("%y%m"), int(r.integers(1, 999)))
-            if pay < A.PAY_SWITCH:
-                rows.append([prov, name, pmt, pay.isoformat(), post.isoformat(), inv, prog, "", "", "", "",
-                             "%.2f" % (n * tu + fee)])
-            else:
-                for k in range(n):
-                    rows.append([prov, name, pmt, pay.isoformat(), post.isoformat(), inv, prog, ids.participant(),
-                                 "%.2f" % tu, "%.2f" % fee, "0.00", "%.2f" % (tu + fee)])
-            day += TD(days=int(r.integers(4, 15)))
-    rows = [x for x in rows if "2023-07-01" <= x[3] <= "2026-06-30"]      # the board's fiscal years 2024 to 2026
-    rows.sort(key=lambda x: (x[3], x[0], x[2], x[7]))
-    return rows
-
-
-def write_register(path, invs):
-    wb = _book()
-    ws = wb.active
-    ws.title = "Invoice lines"
-    ws.append(["Invoice", "Invoice date", "Campus", "Section", "Program", "Participant", "Line", "Amount"])
-    n = 0
-    for inv in sorted(invs, key=lambda i: (i["date"], i["invoice"])):
-        if inv["date"] < D(2023, 6, 1):
-            continue
-        for l in inv["lines"]:
-            what = {"tuition": "Tuition", "fee": "Materials and testing fee",
-                    "credit": "Refund credit, withdrew %s" % l.get("left", D(2000, 1, 1)).strftime("%m/%d/%Y")}[l["kind"]]
-            ws.append([inv["invoice"], inv["date"], W.CAMPUS[inv["campus"]], l["section_id"], W.SHORT[l["code"]][0],
-                       l["pid"] or None, what, l["amount"]])
-            n += 1
-    _style(ws, (16, 11, 16, 13, 36, 12, 34, 11), {1: "yyyy-mm-dd", 7: "#,##0.00;-#,##0.00"})
-    ws2 = wb.create_sheet("Invoices")
-    ws2.append(["Invoice", "Invoice date", "Campus", "Lines", "Invoice total"])
-    for inv in sorted(invs, key=lambda i: (i["date"], i["invoice"])):
-        if inv["date"] < D(2023, 6, 1):
-            continue
-        ws2.append([inv["invoice"], inv["date"], W.CAMPUS[inv["campus"]], len(inv["lines"]),
-                    round(sum(l["amount"] for l in inv["lines"]), 2)])
-    _style(ws2, (16, 11, 16, 7, 13), {1: "yyyy-mm-dd", 4: "#,##0.00"})
-    wb.save(path)
-    return n
+# the college's attendance export
+def attendance_rows(rows):
+    """one row per session a grant participant attended, in date order; the week the export carries twice is appended
+    again at its end"""
+    rows = sorted(rows, key=lambda x: (x["date"], x["crn"], x["pid"]))
+    out = [[x["pid"], x["crn"], x["date"].isoformat(), A.hmm(x["minutes"])] for x in rows]
+    out += [[x["pid"], x["crn"], x["date"].isoformat(), A.hmm(x["minutes"])] for x in rows
+            if A.RESENT[0] <= x["date"] <= A.RESENT[1]]
+    return out
 
 
 def loan_rows(rows):
     out = []
     for x in rows:
-        new = x["date"] >= A.AID_SWITCH
+        new = x["ay"] >= "2024-25"
         typ = {"Sub": "DL Sub", "Unsub": "DL Unsub", "PLUS": "DL PLUS Parent"}[x["type"]] if new else \
             {"Sub": "SUB", "Unsub": "UNSUB", "PLUS": "PLUS"}[x["type"]]
         out.append([x["ssid"], x["ay"], typ, x["loan_id"], x["no"], x["date"].isoformat(), "%.2f" % x["amount"],
@@ -534,7 +478,7 @@ def write_oews(path):
 def build_pack(out):
     f = lambda k: os.path.join(out, FILES[k])
     P = A.people()
-    invs = A.invoices(P)
+    att = A.attendance(P)
     loans = A.loans(P)
     n = {}
     n["release24"] = write_release24(f("release24"))
@@ -545,12 +489,10 @@ def build_pack(out):
     n["roster"] = write_roster(f("roster"), P)
     n["wages"] = write_csv(f("wages"), ["participant_id", "ui_account", "naics", "year", "quarter", "wages",
                                         "report_type", "received_date"], wage_rows(P))
-    n["ledger"] = write_csv(f("ledger"), ["provider_id", "provider_name", "payment_id", "payment_date", "posted_date",
-                                          "invoice_number", "etp_program_id", "participant_id", "tuition", "fees",
-                                          "credits", "amount"], ledger_rows(P, invs))
-    n["register"] = write_register(f("register"), invs)
+    n["attendance"] = write_csv(f("attendance"), ["participant_id", "crn", "session_date", "hours"],
+                                attendance_rows(att))
     n["loans"] = write_csv(f("loans"), ["SSID", "AWARD_YEAR", "LOAN_TYPE", "LOAN_ID", "DISB_NO", "DISB_DATE",
-                                        "DISB_AMT", "DISB_STATUS"], loan_rows(loans))
+                                        "GROSS_AMT", "DISB_STATUS"], loan_rows(loans))
     n["oews"] = write_oews(f("oews"))
     DOC.write_standard(f("standard"))
     DOC.write_notes(f("notes"))

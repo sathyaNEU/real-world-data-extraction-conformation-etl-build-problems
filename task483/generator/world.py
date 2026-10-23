@@ -357,6 +357,10 @@ def ratio_status(rec, d180, ref="adjacent", shift=0, qlen=None):
         if ref == "mean":
             fq = full_quarters(rec, e)
             base = float(np.mean([rec[(e, k)] for k in fq])) if fq else rec[(e, adj)]
+        elif ref == "two":                      # the adjacent quarter and the one beyond it, averaged
+            base = (rec[(e, adj)] + rec[(e, far)]) / 2.0
+        elif ref == "median":                   # the job's median quarter, partial quarters included
+            base = float(np.median([v for (ee, k), v in rec.items() if ee == e and k != q]))
         else:
             base = rec[(e, adj)]
         frac = min(rec[(e, q)] / base, 1.0)
@@ -369,7 +373,13 @@ def ratio_status(rec, d180, ref="adjacent", shift=0, qlen=None):
     return on, undated
 
 
-FAMILY = [dict(ref=r, shift=sh, qlen=ql) for r in ("adjacent", "mean") for sh in (0, 7, 14) for ql in (None, 91)]
+FAMILY = [dict(ref=r, shift=sh, qlen=ql) for r in ("adjacent", "mean", "two", "median") for sh in (0, 7, 14)
+          for ql in (None, 91)]
+
+
+def dated_alike(rec, d180, truth):
+    """every dating variant files the completer's true day-180 status"""
+    return all(ratio_status(rec, d180, **f)[0] == truth for f in FAMILY)
 
 
 def participants(code):
@@ -377,7 +387,8 @@ def participants(code):
     their day 180), completers a year before it and a year after it, and those who left a section; each with jobs [(employer, start, end,
     weekly wage, weeks per pay period)] and the employer-quarter pay those jobs leave. The completers' paths (a job held
     through the program and kept or left, a new job found or not, found late, left in the cluster, a further job) are
-    dealt in the program's shares; only a path's days are drawn again until the record dates day 180"""
+    dealt in the program's shares; only a path's days are drawn again until the record dates day 180, and then again
+    from the completer's own stream until every dating reading in FAMILY files the same day-180 status"""
     name, cip, hours, weeks, _, p = SHORT[code]
     r = np.random.default_rng(seed(code, 2))
     emps = ["%s%02d" % (code, k) for k in range(1, 31)]
@@ -410,6 +421,16 @@ def participants(code):
                     break
             else:
                 raise RuntimeError("no clear record for %s path %s" % (code, path))
+            if kind == "window" and not left and not dated_alike(rec, d180, truth_status(jobs, d180)):
+                rr = np.random.default_rng([seed(code, 5), idx])     # its own stream, so no other path moves
+                for attempt in range(4000):
+                    jobs = person_jobs(rr, p, comp, emps, path)
+                    rec = quarterly(np.random.default_rng([seed(code, 6), idx, attempt]), jobs)
+                    if clear(jobs, d180) and not ratio_status(rec, d180)[1] and dated_alike(rec, d180,
+                                                                                            truth_status(jobs, d180)):
+                        break
+                else:
+                    raise RuntimeError("no record every dating reading agrees on for %s path %s" % (code, path))
             out.append(dict(code=code, kind=kind, left=left, campus=camp, section=(s, e),
                             completed=None if left else comp, exit_day=comp, jobs=jobs, rec=rec, path=path))
     return out

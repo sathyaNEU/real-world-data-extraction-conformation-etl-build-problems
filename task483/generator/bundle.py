@@ -1,7 +1,7 @@
 """Reads task483's cut pack the way a solver must and computes every figure from it: each program's test figure under
 the golden construction and under each rung and licensed variant, the system's share and the call, each short-term
-program's fiscal 2025 grant tuition (ask A) and each degree program's borrowers and median Direct Loan principal
-(ask B). golden.py, checks.py and ceiling.py call it; verify.py recomputes the golden without it.
+program's clock hours attended in fiscal 2025 (ask A) and each degree program's borrowers and median Direct Loan
+principal (ask B). golden.py, checks.py and ceiling.py call it; verify.py recomputes the golden without it.
 
 The golden construction. A degree program's median is the half point of its campus-by-cohort cells' earnings
 distributions pooled by completers with earnings: each published cell's distribution is rebuilt from its five
@@ -24,7 +24,7 @@ BENCH, CPI, PLACED, SHARE = 34200.0, 1.0294, 70.0, 75.0
 MIN_DEGREE, MIN_SHORT, DAY = 30, 20, 180
 WINDOW = (D(2024, 7, 1), D(2025, 6, 30))
 FY25 = WINDOW
-AID_SWITCH, FEE = D(2023, 7, 1), 0.01057
+AID_SWITCH, FEE = D(2024, 7, 1), 0.01057
 SYSTEM = "Larkspur Basin Community College"
 PROVIDER = "TP-0417"
 PS = (0.10, 0.25, 0.50, 0.75, 0.90)
@@ -37,8 +37,7 @@ FILES = {
     "newer": "copper_flats_antelope_springs_completions_2024-25.csv",
     "roster": "ctg_participant_roster_2023-2026.csv",
     "wages": "ctg_participant_wage_records_2022q3-2026q2.csv",
-    "ledger": "ctg_provider_payments_fy2024-fy2026.csv",
-    "register": "larkspur_ctg_invoice_register_2023-2026.xlsx",
+    "attendance": "larkspur_ctg_attendance_2023-2026.csv",
     "loans": "larkspur_direct_loan_disbursements_2019-2026.csv",
 }
 
@@ -111,8 +110,7 @@ class Inputs:
         self._roster(f("roster"))
         self._wage_path = f("wages")
         self._wages(f("wages"))
-        self.ledger = [r for r in rows_csv(f("ledger")) if r["provider_id"] == PROVIDER]
-        self.register = sheet(f("register"), "Invoice lines")
+        self.attendance = rows_csv(f("attendance"))
         self.loans = rows_csv(f("loans"))
 
     def _release(self, p24, p25):
@@ -162,6 +160,7 @@ class Inputs:
     def _roster(self, path):
         self.roster = rows_csv(path)
         self.program_of = {}
+        self.crn_program = {r["section_id"]: self.by_etp[r["etp_program_id"]] for r in self.roster}
         self.grant = defaultdict(list)     # program -> [(participant, completion day)]
         for r in self.roster:
             prog = self.by_etp[r["etp_program_id"]]
@@ -328,6 +327,10 @@ def ratio_status(rec, d180, ref="adjacent", shift=0, qlen=None):
         if ref == "mean":
             fq = full_quarters(rec, e)
             base = float(np.mean([rec[(e, k)] for k in fq])) if fq else rec[(e, adj)]
+        elif ref == "two":
+            base = (rec[(e, adj)] + rec[(e, far)]) / 2.0
+        elif ref == "median":
+            base = float(np.median([v for (ee, k), v in rec.items() if ee == e and k != q]))
         else:
             base = rec[(e, adj)]
         frac = min(rec[(e, q)] / base, 1.0)
@@ -338,7 +341,8 @@ def ratio_status(rec, d180, ref="adjacent", shift=0, qlen=None):
     return on, undated
 
 
-FAMILY = [dict(ref=r, shift=sh, qlen=ql) for r in ("adjacent", "mean") for sh in (0, 7, 14) for ql in (None, 91)]
+FAMILY = [dict(ref=r, shift=sh, qlen=ql) for r in ("adjacent", "mean", "two", "median") for sh in (0, 7, 14)
+          for ql in (None, 91)]
 
 
 def status(rec, comp, route="golden"):
@@ -438,52 +442,77 @@ def call(I, deg_route="golden", short_route="golden"):
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ask A
+def hours(v, basis="golden"):
+    """a session's time in hours: the export writes hours and minutes after a point (7.30 is seven hours thirty)"""
+    if basis in ("decimal", "decimal_resent"):
+        return float(v)
+    h, m = v.split(".")
+    return int(h) + int(m) / 60.0
+
+
 def ask_a(I, basis="golden"):
-    """each short-term program's net grant tuition and fees the board paid in fiscal 2025, whole dollars"""
+    """each short-term program's clock hours its grant participants attended from July 2024 to June 2025, whole hours:
+    {program: (hours, unrounded)}. The golden: every session dated in the year once (the export's repeated rows
+    dropped), its time read as hours and minutes, each to the program of the participant's section.
+    decimal: the times read as decimal hours. resent: the repeated rows kept. decimal_resent: both. by_end: the
+    sessions of the sections that ended in the year. completers: the completers' sessions only"""
     out = {p: 0.0 for p in I.short}
-    inside = lambda d: FY25[0] <= d <= FY25[1]
-    if basis in ("ledger", "ledger_posted"):
-        for r in I.ledger:
-            d = iso(r["posted_date"] if basis == "ledger_posted" else r["payment_date"])
-            if inside(d):
-                out[I.by_etp[r["etp_program_id"]]] += float(r["amount"])
-        return {p: hround(v) for p, v in out.items()}
-    pay = {}
-    for r in I.ledger:
-        pay[r["invoice_number"]] = iso(r["posted_date"] if basis == "posted" else r["payment_date"])
-    for l in I.register:
-        inv = l["Invoice"]
-        if basis == "invoice_date":
-            d = l["Invoice date"].date() if hasattr(l["Invoice date"], "date") else l["Invoice date"]
-        else:
-            d = pay.get(inv)
-        if d is None or not inside(d):
+    seen = set()
+    ends = {r["section_id"]: iso(r["section_end"]) for r in I.roster}
+    done = {r["participant_id"] for r in I.roster if r["exit_reason"] == "Completed"}
+    for r in I.attendance:
+        key = (r["participant_id"], r["crn"], r["session_date"], r["hours"])
+        if basis not in ("resent", "decimal_resent"):
+            if key in seen:
+                continue
+            seen.add(key)
+        if basis == "by_end":
+            if not (FY25[0] <= ends[r["crn"]] <= FY25[1]):
+                continue
+        elif not (FY25[0] <= iso(r["session_date"]) <= FY25[1]):
             continue
-        credit = str(l["Line"]).startswith("Refund credit")
-        if credit and basis == "no_credits":
+        if basis == "completers" and r["participant_id"] not in done:
             continue
-        prog = I.program_of[l["Participant"]] if (credit and basis != "register") else l["Program"]
-        out[prog] += float(l["Amount"])
-    return {p: hround(v) for p, v in out.items()}
+        out[I.crn_program[r["crn"]]] += hours(r["hours"], basis)
+    return {p: (hround(v), v) for p, v in out.items()}
 
 
-ASK_A_BASES = ("ledger", "ledger_posted", "register", "posted", "invoice_date", "no_credits")
+ASK_A_BASES = ("decimal", "resent", "decimal_resent", "by_end", "completers")
 
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ask B
 def ask_b(I, basis="golden"):
     """each degree program's 2024-25 completers who borrowed Direct Subsidized or Unsubsidized Loans at the college and
-    the median principal they borrowed, to the nearest 10 dollars: {program: (borrowers, median, unrounded)}"""
-    per = defaultdict(float)
+    the median of all the principal they borrowed there, to the nearest 10 dollars: {program: (borrowers, median,
+    unrounded)}. The golden: every disbursement's amount before July 2024 with returns netted, and from July 2024, where
+    each of a loan's rows carries the loan's amount for its award year, each loan's amount once; parent PLUS loans out.
+    rows: every row as exported. per_loan: one amount per loan in every year. dedupe: rows alike in borrower, loan,
+    amount and status kept once. with_plus, disbursed_only, ay2425 (one award year), gross_up (amounts read as net)"""
+    per, seen = defaultdict(float), set()
     for r in I.loans:
-        plus = "PLUS" in r["LOAN_TYPE"]
-        if plus and basis != "with_plus":
+        if "PLUS" in r["LOAN_TYPE"] and basis != "with_plus":
             continue
         if basis == "disbursed_only" and r["DISB_STATUS"] != "Disbursed":
             continue
-        v = float(r["DISB_AMT"])
-        if basis != "net" and iso(r["DISB_DATE"]) >= AID_SWITCH:
+        if basis == "ay2425" and r["AWARD_YEAR"] != "2024-25":
+            continue
+        if basis == "per_loan":
+            if r["DISB_STATUS"] == "Disbursed":
+                if r["LOAN_ID"] in seen:
+                    continue
+                seen.add(r["LOAN_ID"])
+        elif basis == "dedupe":
+            key = (r["SSID"], r["LOAN_ID"], r["GROSS_AMT"], r["DISB_STATUS"])
+            if key in seen:
+                continue
+            seen.add(key)
+        elif basis != "rows" and iso(r["DISB_DATE"]) >= AID_SWITCH:
+            if r["LOAN_ID"] in seen:
+                continue
+            seen.add(r["LOAN_ID"])
+        v = float(r["GROSS_AMT"])
+        if basis == "gross_up":
             v = round(v / (1 - FEE))
         per[r["SSID"]] += v
     out = {}
@@ -494,4 +523,4 @@ def ask_b(I, basis="golden"):
     return out
 
 
-ASK_B_BASES = ("net", "disbursed_only", "with_plus")
+ASK_B_BASES = ("rows", "per_loan", "dedupe", "with_plus", "disbursed_only", "ay2425", "gross_up")

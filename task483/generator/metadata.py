@@ -20,8 +20,8 @@ def write(path, n):
             P.FILES["demand"]: "the board's in-demand occupations list for its outreach and sector partnerships: which "
                                "occupations the board promotes, which no test in the designation standard reads",
         },
-        "stated_inputs": ["2027-28 grant year", "July 2024 to June 2025 fiscal year", "whole thousands of dollars",
-                          "whole per cent", "whole dollars", "nearest 10 dollars"],
+        "stated_inputs": ["2027-28 grant year", "July 2024 to June 2025", "whole thousands of dollars",
+                          "whole per cent", "whole hours", "nearest 10 dollars"],
         "deliverables": ["larkspur_workforce_value_2027-28.xlsx", "larkspur_program_tests_2027-28.svg"],
         "as_of": "2026-10-16",
         "files": sorted(P.FILES.values()),
@@ -30,13 +30,12 @@ def write(path, n):
             "constructed": "every file is constructed for this task by its generator (task483/generator); the state, "
                            "its workforce board and data center, the college and its campuses, the other colleges and "
                            "training providers, the employers and the people are fictional, and every identifier "
-                           "(student, participant, employer account, loan, invoice, payment) is invented",
+                           "(student, participant, section, employer account, loan) is invented",
             "public_specifications": "the layouts follow the style of state postsecondary earnings outcome releases "
                                      "(campus by program by cohort cells with earnings percentiles and small-cell "
                                      "suppression), unemployment insurance quarterly wage records, workforce grant "
-                                     "participant rosters and provider payment exports, a college's completion "
-                                     "extracts from two student systems, an invoice register and a Direct Loan "
-                                     "disbursement export",
+                                     "participant rosters, a college's completion extracts from two student systems, "
+                                     "an attendance export and a Direct Loan disbursement export",
             "licence": "CC0 1.0 (constructed data)",
             "date": "2026-10-16",
         },

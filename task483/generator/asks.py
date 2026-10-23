@@ -3,19 +3,18 @@
 People. Every student the pack names carries a state student ID (SSID, ten digits) and the ID of the student system
 of the campus that served them: the older system at Fennimore and Ridgefield (seven-digit numbers), the newer one at
 Copper Flats and Antelope Springs (LB and six digits). Career Training Grant participants carry a participant ID per
-enrollment.
+enrollment, and each section a five-digit course reference number (CRN) in the college's schedule.
 
-Ask A, the grant tuition. The college bills the board for each section's grant participants on the section's census
-day (its eleventh day): a tuition line per participant and one materials and testing fee line per section. A
-participant who leaves after the census day before the section's midpoint is refunded half the tuition, credited on
-the campus's next invoice. From January 2025 the college's new billing office sends one invoice per campus per month,
-covering every section whose census day fell in that month. The board pays each invoice in one payment. Its payment
-system until December 2024 kept one row per payment under the invoice's program; the system that replaced it from
-January 2025 exports one row per invoice line, and carries a section's fee on every participant's line of it.
+Ask A, the clock hours. The college's attendance system records each grant participant's attended time at every
+session of their section, from the day they enrolled to the day they left or completed, and exports a session's time as
+hours and minutes after a point (7.30 for seven hours and thirty minutes). A section meets on its weekdays, and a
+program's clock hours are its sessions times their length. A participant misses a session now and then, and arrives
+late or leaves early at some. The export carries the week of 3 March 2025 twice.
 
 Ask B, the federal loans. The college's aid office exports every Direct Loan disbursement it made since 2019-20 by
-SSID. The aid system that went live on 1 July 2023 writes a disbursement's amount net of the origination fee; the one
-before it wrote the gross amount. A borrower's principal is the gross amount of every disbursement they kept.
+SSID. The aid system before 1 July 2024 wrote each disbursement's gross amount; the one that went live on 1 July 2024
+writes the loan's gross amount for its award year on each of the loan's disbursements. A borrower's principal is the
+gross amount of every disbursement they kept.
 """
 import datetime as dt
 
@@ -26,11 +25,16 @@ import world as W
 D = dt.date
 TD = dt.timedelta
 FY25 = (D(2024, 7, 1), D(2025, 6, 30))
-BILL_SWITCH = D(2025, 1, 1)          # consolidated monthly invoices from this invoice date
-PAY_SWITCH = D(2025, 1, 1)           # the board's line-level payment export for payments from this date
-AID_SWITCH = D(2023, 7, 1)           # the aid system that writes net disbursements
-LOAN_VARIANT = 10                    # the loan draw's seed variant, set by tuning
-FEE = 0.01057                        # Direct Loan origination fee, loans first disbursed from 1 October 2020
+AID_SWITCH = D(2024, 7, 1)           # the aid system that writes a loan's amount on each of its disbursements
+LOAN_VARIANT = 8                     # the loan draw's seed variant, set by tuning
+FEE = 0.01057                        # Direct Loan origination fee (the cost of attendance states it; amounts are gross)
+LATE = 0.05                          # share of a section's participants who enroll after its census day
+ATT_VARIANT = 17                     # the attendance draw's seed variant, set by tuning
+ABSENT, PARTIAL = 0.05, 0.07         # a session missed; a session attended in part (late or early, 15 to 150 minutes)
+RESENT = (D(2025, 3, 3), D(2025, 3, 7))          # the week the attendance export carries twice
+# sessions per section and minutes per session: their product is the inventory's clock hours
+SESSIONS = {"CDL": (20, 480), "CNA": (16, 450), "PHL": (20, 420), "PHT": (40, 450), "EMT": (24, 450),
+            "WLF": (40, 480), "MCD": (48, 450), "ITS": (40, 450), "HVC": (32, 450), "WHS": (10, 480), "FRK": (5, 480)}
 OLD_SIS, NEW_SIS = ("A", "B"), ("C", "D")
 
 # short-term programs: tuition per participant, materials and testing fee per section, dollars
@@ -69,8 +73,33 @@ class Ids:
         return self.draw("CTG-%06d", 100000, 999999)
 
 
+_CRN = {}
+
+
 def section_id(code, campus, end):
-    return "%s%s%s" % (code, campus, end.strftime("%y%m%d"))
+    """the section's course reference number in the college's schedule"""
+    if not _CRN:
+        ids = Ids(W.SEED * 31 + 23)
+        keys = sorted({(e + TD(weeks=k), c, camp) for c in W.SHORT for camp, s, e, per in W.sections(c)
+                       for k in (-52, 0, 52)})
+        for e, c, camp in keys:
+            _CRN[(c, camp, e)] = ids.draw("%05d", 20000, 59999)
+    return _CRN[(code, campus, end)]
+
+
+def late_adds(parts):
+    """mark the participants who enrolled after their section's census day, a share of each section of three weeks or
+    more: p["late"] is the day they enrolled, or None"""
+    r = np.random.default_rng(W.SEED * 31 + 29)
+    by_sec = {}
+    for p in parts:
+        p["late"] = None
+        by_sec.setdefault((p["code"], p["campus"], p["section"]), []).append(p)
+    for code, camp, (s, e) in sorted(by_sec, key=lambda k: (k[2], k[0], k[1])):
+        for p in sorted(by_sec[(code, camp, (s, e))], key=lambda p: p["pid"]):
+            cen = s + TD(days=10)
+            if (e - s).days >= 17 and (not p["left"] or p["exit_day"] > cen + TD(days=8)) and r.random() < LATE:
+                p["late"] = s + TD(days=10 + int(r.integers(1, 5)))
 
 
 def people():
@@ -102,141 +131,64 @@ def people():
             camp, s, e = secs[int(r.integers(0, len(secs)))]
             extra.append(dict(code=code, campus=camp, ssid=ids.ssid(), sis=ids.sis(camp), section=(s, e),
                               section_id=section_id(code, camp, e)))
+    late_adds(parts)
     return dict(participants=parts, degree=degree, short_extra=extra)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ask A: invoices and the board's payments
+# ask A: the attendance export
 def _business(d):
     while d.weekday() >= 5:
         d += TD(days=1)
     return d
 
 
-def _month_end(d):
-    n = D(d.year + (d.month == 12), 1 if d.month == 12 else d.month + 1, 1) - TD(days=1)
-    while n.weekday() >= 5:
-        n -= TD(days=1)
-    return n
+def sessions(code, start, end):
+    """a section's session days (its weekdays, evenly spread) and the minutes of a session"""
+    days = [start + TD(days=k) for k in range((end - start).days + 1) if (start + TD(days=k)).weekday() < 5]
+    n, mins = SESSIONS[code]
+    pick = [int(round(i * (len(days) - 1) / (n - 1))) for i in range(n)] if n > 1 else [0]
+    return [days[i] for i in pick], mins
 
 
-def invoices(P):
-    """the college's invoice register: [dict(invoice, date, campus, lines=[dict(section_id, code, pid, kind, amount)])]"""
-    r = np.random.default_rng(W.SEED * 31 + 13)
-    by_sec = {}
-    for p in P["participants"]:
-        by_sec.setdefault((p["code"], p["campus"], p["section"]), []).append(p)
-    secs = []
-    for (code, camp, (s, e)), ps in by_sec.items():
-        census = s + TD(days=10)
-        billed = [p for p in ps if not (p["left"] and p["exit_day"] < census)]
-        secs.append(dict(code=code, campus=camp, start=s, end=e, census=census, billed=billed,
-                         section_id=section_id(code, camp, e)))
-    # refunds: left after census and before the midpoint, half the tuition
-    credits = []
-    for sc in secs:
-        mid = sc["start"] + (sc["end"] - sc["start"]) / 2
-        for p in sc["billed"]:
-            if p["left"] and p["exit_day"] < mid:
-                credits.append(dict(campus=sc["campus"], day=p["exit_day"], section_id=sc["section_id"],
-                                    code=sc["code"], pid=p["pid"], amount=-round(TUITION[sc["code"]][0] / 2.0, 2)))
-    out = []
-    seq = {"A": 4100, "B": 5200, "C": 6300, "D": 7400}
-
-    def number(camp, day):
-        seq[camp] += 1
-        return "LB%s-%s-%04d" % (camp, day.strftime("%y%m"), seq[camp])
-    # per-section invoices on the census day before the switch; monthly campus invoices after
-    sec_inv = sorted((sc for sc in secs if sc["census"] < BILL_SWITCH), key=lambda sc: (sc["census"], sc["section_id"]))
-    month_inv = {}
-    for sc in secs:
-        if sc["census"] >= BILL_SWITCH:
-            month_inv.setdefault((sc["campus"], _month_end(sc["census"])), []).append(sc)
-    events = [(sc["census"], sc["campus"], "sec", sc) for sc in sec_inv]
-    events += [(day, camp, "month", scs) for (camp, day), scs in month_inv.items()]
-    events.sort(key=lambda t: (t[0], t[1], t[2]))
-    pending = sorted(credits, key=lambda c: (c["day"], c["pid"]))
-    for day, camp, kind, obj in events:
-        scs = [obj] if kind == "sec" else sorted(obj, key=lambda sc: (sc["code"], sc["section_id"]))
-        lines = []
-        for sc in scs:
-            for p in sorted(sc["billed"], key=lambda p: p["pid"]):
-                lines.append(dict(section_id=sc["section_id"], code=sc["code"], true_code=sc["code"], pid=p["pid"],
-                                  kind="tuition", amount=float(TUITION[sc["code"]][0])))
-            lines.append(dict(section_id=sc["section_id"], code=sc["code"], true_code=sc["code"], pid="", kind="fee",
-                              amount=float(TUITION[sc["code"]][1])))
-        take = [c for c in pending if c["campus"] == camp and c["day"] < day]
-        for c in take:
-            pending.remove(c)
-            # the old billing process wrote a credit under the section of the invoice that carried it; the monthly
-            # invoices name the section the credit refunds
-            sid, code = (obj["section_id"], obj["code"]) if kind == "sec" else (c["section_id"], c["code"])
-            lines.append(dict(section_id=sid, code=code, true_code=c["code"], true_section=c["section_id"], pid=c["pid"],
-                              kind="credit", amount=c["amount"], left=c["day"]))
-        out.append(dict(invoice=number(camp, day), date=day, campus=camp, lines=lines,
-                        program=max(sorted({l["code"] for l in lines if l["kind"] != "credit"}),
-                                    key=lambda c: sum(l["amount"] for l in lines if l["code"] == c and l["kind"] != "credit"))))
-    # the board's payments: 18 to 40 days after the invoice, posted the same day to two business days later, payments
-    # in the last days of June posted in July
-    for inv in out:
-        pay = _business(inv["date"] + TD(days=int(r.integers(18, 41))))
-        lag = int(r.integers(0, 3))
-        post = pay + TD(days=lag)
-        if pay.month == 6 and pay.day >= 25:
-            post = _business(D(pay.year, 7, 1) + TD(days=lag))
-        inv["paid"] = pay
-        inv["posted"] = _business(post)
-        inv["payment_id"] = "PMT%07d" % int(r.integers(1000000, 9999999))
-    return out
-
-
-def ledger_rows(invs):
-    """the board's payment rows for Larkspur as its two systems export them: one row per payment under the invoice's
-    program until December 2024, one row per invoice line from January 2025 with the section's fee on every
-    participant's line"""
+def attendance(P):
+    """[dict(pid, code, crn, date, minutes)]: every session each grant participant attended, from the day they enrolled
+    (the section's first day, or a late enrollee's day) to the day they left or the section's last day"""
+    r = np.random.default_rng(W.SEED * 31 + 43 + 1000 * ATT_VARIANT)
     rows = []
-    for inv in invs:
-        if inv["paid"] < PAY_SWITCH:
-            rows.append(dict(payment_id=inv["payment_id"], paid=inv["paid"], posted=inv["posted"], invoice=inv["invoice"],
-                             program=inv["program"], pid="", tuition=None, fees=None, credits=None,
-                             amount=round(sum(l["amount"] for l in inv["lines"]), 2)))
-            continue
-        fee = {l["section_id"]: l["amount"] for l in inv["lines"] if l["kind"] == "fee"}
-        for l in inv["lines"]:
-            if l["kind"] == "fee":
+    for p in sorted(P["participants"], key=lambda p: (p["section"][0], p["code"], p["campus"], p["pid"])):
+        s, e = p["section"]
+        days, mins = sessions(p["code"], s, e)
+        first, last = p["late"] or s, p["exit_day"] if p["left"] else e
+        for d in days:
+            if d < first or d > last:
                 continue
-            if l["kind"] == "tuition":
-                t, f, c = l["amount"], fee[l["section_id"]], 0.0
-            else:
-                t, f, c = 0.0, 0.0, l["amount"]
-            rows.append(dict(payment_id=inv["payment_id"], paid=inv["paid"], posted=inv["posted"], invoice=inv["invoice"],
-                             program=l["true_code"], pid=l["pid"], tuition=t, fees=f, credits=c, amount=round(t + f + c, 2)))
+            if r.random() < ABSENT:
+                continue
+            m = mins - (int(r.integers(15, 151)) if r.random() < PARTIAL else 0)
+            rows.append(dict(pid=p["pid"], code=p["code"], crn=p["section_id"], date=d, minutes=m))
     return rows
 
 
-def ask_a(invs, basis="golden"):
-    """each short-term program's net grant tuition paid in fiscal 2025, whole dollars.
-    golden: the invoice lines of every payment made in the fiscal year, each line to its own section's program and
-    each credit to the program of the participant it refunds. ledger: the board's rows as exported, by their program;
-    ledger_posted: the same by posting date. register: the invoice lines by the section each is written under.
-    posted: the golden by posting date. invoice_date: by invoice date. no_credits: the golden without the credits"""
+def hmm(minutes):
+    """a session's time as the attendance export writes it: hours and minutes after a point"""
+    return "%d.%02d" % divmod(minutes, 60)
+
+
+def ask_a(rows, basis="golden"):
+    """each short-term program's clock hours its grant participants attended from July 2024 to June 2025, whole hours:
+    {code: (hours, unrounded)}.
+    golden: every session dated in the year once, its time read as hours and minutes. decimal: the time read as decimal
+    hours. resent: the re-sent week counted twice. decimal_resent: both. by_end: the sessions of the sections that ended
+    in the year. completers: the completers' sessions only"""
     out = {c: 0.0 for c in W.SHORT}
-    inside = lambda d: FY25[0] <= d <= FY25[1]
-    if basis in ("ledger", "ledger_posted"):
-        for row in ledger_rows(invs):
-            d = row["posted"] if basis == "ledger_posted" else row["paid"]
-            if inside(d):
-                out[row["program"]] += row["amount"]
-        return {c: int(np.floor(v + 0.5)) for c, v in out.items()}
-    for inv in invs:
-        d = inv["posted"] if basis == "posted" else inv["date"] if basis == "invoice_date" else inv["paid"]
-        if not inside(d):
+    for x in rows:
+        if not (FY25[0] <= x["date"] <= FY25[1]):
             continue
-        for l in inv["lines"]:
-            if basis == "no_credits" and l["kind"] == "credit":
-                continue
-            out[l["code"] if basis == "register" else l["true_code"]] += l["amount"]
-    return {c: int(np.floor(v + 0.5)) for c, v in out.items()}
+        h = float(hmm(x["minutes"])) if basis in ("decimal", "decimal_resent") else x["minutes"] / 60.0
+        k = 2 if (basis in ("resent", "decimal_resent") and RESENT[0] <= x["date"] <= RESENT[1]) else 1
+        out[x["code"]] += k * h
+    return {c: (int(np.floor(v + 0.5)), v) for c, v in out.items()}
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -263,7 +215,8 @@ def _split(g):
 
 def loans(P):
     """[dict(ssid, ay, type, loan_id, no, date, gross, amount, status)] for the 2024-25 degree completers and the
-    college's other borrowers, amount as the aid system of the day wrote it"""
+    college's other borrowers: gross is the disbursement's gross amount, amount what the aid system of the day wrote
+    (the disbursement's gross before July 2024, the loan's gross for its award year from July 2024)"""
     r = np.random.default_rng(W.SEED * 31 + 17 + 1000 * LOAN_VARIANT)
     ids = Ids(W.SEED * 31 + 19)
     ids.seen |= {p["ssid"] for p in P["participants"]} | {c["ssid"] for c in P["degree"]} | \
@@ -283,8 +236,8 @@ def loans(P):
                 uns = 6000 if indep else 2000
                 full = r.random() < 0.6
                 if not full:
-                    sub = int(round(sub * r.uniform(0.45, 0.95), -1))
-                    uns = int(round(uns * r.uniform(0.3, 0.9), -1)) if r.random() < 0.7 else 0
+                    sub = int(round(sub * r.uniform(0.45, 0.95) / 20.0)) * 20
+                    uns = int(round(uns * r.uniform(0.3, 0.9) / 20.0)) * 20 if r.random() < 0.7 else 0
                 plans += [("Sub", sub), ("Unsub", uns)]
             if (not indep and r.random() < 0.06) or plus_only:
                 plans.append(("PLUS", int(round(r.uniform(2000, 6000), -2))))
@@ -293,16 +246,24 @@ def loans(P):
                     continue
                 lid = ids.draw("DL%09d", 100000000, 999999999)
                 parts = _split(g) if len(dates) == 2 else [int(g // 2)]
+                new = dates[0] >= AID_SWITCH
+                loan = float(sum(parts))
                 for no, (dd, gg) in enumerate(zip(dates, parts), 1):
-                    net = round(gg - round(gg * FEE, 2), 2) if dd >= AID_SWITCH else float(gg)
                     rows.append(dict(ssid=ssid, ay=AY(y), type=typ, loan_id=lid, no=no, date=dd, gross=float(gg),
-                                     amount=net, status="Disbursed"))
-                    if r.random() < 0.025:
+                                     amount=loan if new else float(gg), status="Disbursed"))
+                    if not new and r.random() < 0.025:
                         back = dd + TD(days=int(r.integers(14, 110)))
                         rows.append(dict(ssid=ssid, ay=AY(y), type=typ, loan_id=lid, no=no, date=back, gross=-float(gg),
-                                         amount=-net, status="Returned"))
-    for c in P["degree"]:
-        u = r.random()
+                                         amount=-float(gg), status="Returned"))
+    # who borrows: each program's share, its borrower count made odd by the one completer nearest the line
+    dec = np.random.default_rng(W.SEED * 31 + 41 + 1000 * LOAN_VARIANT)
+    us = [dec.random() for c in P["degree"]]
+    for code in W.DEGREE:
+        idx = [i for i, c in enumerate(P["degree"]) if c["code"] == code]
+        if sum(us[i] < BORROW[code] for i in idx) % 2 == 0:
+            i = min(idx, key=lambda i: abs(us[i] - BORROW[code]))
+            us[i] = BORROW[code] + 0.03 if us[i] < BORROW[code] else BORROW[code] - 1e-6
+    for c, u in zip(P["degree"], us):
         if u < BORROW[c["code"]]:
             borrower(c["ssid"], _loan_years(r, c["award"], c["conferred"]), c["conferred"])
         elif u < BORROW[c["code"]] + 0.02:
@@ -317,20 +278,40 @@ def loans(P):
 
 def ask_b(P, rows, basis="golden"):
     """each degree program's 2024-25 completers who borrowed Direct Loans (subsidized or unsubsidized) at the college,
-    and the median principal they borrowed, to the nearest 10 dollars.
-    golden: each disbursement's gross amount (the aid system's net amounts from July 2023 grossed up), returns netted,
-    parent PLUS loans left out. net: the amounts as exported. disbursed_only: returned rows dropped. with_plus: the
-    parent loans kept"""
-    per = {}
+    and the median of all the principal they borrowed there, to the nearest 10 dollars: {program: (borrowers, median,
+    unrounded)}.
+    golden: each disbursement's gross amount before July 2024 (returns netted), each loan's amount once from July
+    2024, parent PLUS loans left out. rows: every row's amount as exported. per_loan: one amount per loan in every year.
+    dedupe: rows alike in borrower, loan, amount and status kept once. with_plus: the parent loans kept.
+    disbursed_only: returned rows dropped. ay2425: the 2024-25 award year alone. gross_up: the golden with every amount
+    read as net of the origination fee"""
+    per, seen = {}, set()
     for x in rows:
         if x["type"] == "PLUS" and basis != "with_plus":
             continue
         if basis == "disbursed_only" and x["status"] != "Disbursed":
             continue
-        if basis == "net":
-            v = x["amount"]
-        else:
-            v = x["amount"] if x["date"] < AID_SWITCH else round(x["amount"] / (1 - FEE))
+        if basis == "ay2425" and x["ay"] != "2024-25":
+            continue
+        if basis == "rows":
+            pass
+        elif basis == "per_loan":
+            if x["status"] == "Disbursed":
+                if x["loan_id"] in seen:
+                    continue
+                seen.add(x["loan_id"])
+        elif basis == "dedupe":
+            key = (x["ssid"], x["loan_id"], x["amount"], x["status"])
+            if key in seen:
+                continue
+            seen.add(key)
+        elif x["date"] >= AID_SWITCH:
+            if x["loan_id"] in seen:
+                continue
+            seen.add(x["loan_id"])
+        v = x["amount"]
+        if basis == "gross_up":
+            v = round(v / (1 - FEE))
         per[x["ssid"]] = per.get(x["ssid"], 0.0) + v
     out = {}
     for code in W.DEGREE:
