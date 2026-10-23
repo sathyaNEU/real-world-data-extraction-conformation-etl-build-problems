@@ -2139,6 +2139,44 @@ author file's standing no-retirement rule.
   architecture 6's pin pincer rules out as a decisive step. Recorded so the next pass on this cell starts
   from the task-type read.
 
+- **Architecture 9's cell, chosen on `coverage` and killed by `slots` before a candidate was screened
+  (2026-10-23).** `physical-environmental-sciences` / `environmental-monitoring-exceedance` was picked as
+  the thinnest anomaly-detection cell outside this slot's lineage (two cards, task180 and task189, neither
+  near the shape being hunted) and it is clear on every axis ban against the live three (task273, task169,
+  task478): no `ban.pairing`, since that rule keys on domain plus objective and task478 sits on the same
+  domain with objective etl, and no `ban.subdomain`. The kill cost one command: `guard.py slots` on the
+  setting nouns returned task198, whose `pipeline.json` names
+  `physical-environmental-sciences/environmental-monitoring-exceedance` as its own `wave7_cell` and whose
+  architecture 10 screened **three** constructions dead there on 2026-10-20 (holding-time restoration,
+  the season's percentile against the flow-duration curve, the exceedance count prorated over service
+  intervals), having first retired the cell's whole air half free on task245. Four of the cell's natural
+  devices are spent besides: the exceedance-day count scaled for lost capture (task245), the convex
+  conversion of a daily mean (task229), the holding-time decay restoration (task248) and the laboratory
+  recovery correction (task249). `recent`, `coverage`, `mechanisms` and `nearest` all print the cell as
+  open. The law is the one architecture 8 earned and this is its second confirmation: the neighbouring
+  slot's `pipeline.json` and one `slots` run on the **setting** nouns are worth more than the first hour
+  of search, and no `guard.py` subcommand surfaces either.
+- **Architecture 9's three candidates on that cell, enumerated by the inverted draw and all three dead,
+  with the useful part being that none of them died of this slot's own death shape.** P1, the per-day load
+  basis (the consent is a load, the register holds a concentration and the gauge record holds the volume);
+  P2, the per-batch recovery correction from the laboratory's own quality-control file; P3, the per-day
+  flow-weighted mean rebuilt from the autosampler's aliquot log. All three grade a **count of cases
+  crossing an absolute limit**, which is level-dependent and so **passes the monotonicity screen**, and two
+  of the three pass the multiplicative-correction floor as well (P1 at rho 1.6077 with a realised
+  correlation of only +0.1634 at a coupling of -0.4755, the strongest floor pass measured on this slot;
+  P2 at rho 0.1815, floor +0.9829, realised +0.9830, so dead for a ranking and alive for a count, where
+  the pro-rata reflex files the exact count only 18.0 per cent of the time). They die on the other horn.
+  P1 is a deterministic function of two shipped columns, so it is the identity horn task198's architecture
+  12 measured at corr +1.000000 (log load is not affine in log concentration, R squared 0.0321, and that
+  buys nothing because the construction is one join, one multiply and one count). P2 is a planted defect
+  under rule 3's first ban, carries a filed reporting convention, and is task249. P3 is 1.2b case three,
+  the within-day concentration profile being held only as one composite per day, and its pooled rescue is
+  a power law with a free exponent, which is task198's architecture 10 M2 measured at 2.85 distinct worst
+  points of 5 and a graded spread of 3.744x at the median. **The harness defect worth recording: P1's
+  reflex was first scored against the concentration's own eightieth percentile, which hands it the right
+  count by construction (98.3 per cent) and measures nothing; a reflex on a threshold-count object has to
+  be scored against the limit's own value, never a quantile of the reflex statistic.**
+
 ## Architecture 4, abandoned on a model constraint rather than a design finding
 
 Architecture 4 is abandoned, and not because the design failed. Two builder sessions were terminated by an
@@ -2615,3 +2653,88 @@ book exists to record money in and is specifically **not** a record of what any 
 looked like, so screen 2 passed structurally on M2 and the measurement agreed, corr **+0.1889** with the
 one-divide route landing only **14 of 30**. M2 then died on the reflex and on determinacy instead, which is
 the pattern to expect: clearing screen 2 moves the kill rather than removing it.
+
+## Architecture 9, no draw: the level-dependent graded object priced, and the blessed shape's one live branch named (2026-10-23)
+
+No card is registered and none is filed. The pass was briefed to break the shape all three of architecture
+8's candidates died on, a monotone summary of a recovered vector, and the break is measured and holds; what
+it did not find is a candidate, because the cell it drew into is a sibling's and the correcting-quantity
+family it was sent after had already been enumerated on the identity side. Screens are
+`screen_A_floor_vs_level.py`, `screen_B_joint_dial.py`, `screen_C_candidates.py` and `screen_D_window.py`
+in the pass's scratch directory, each run twice to byte-identical output on a clean truth, no file cut.
+
+**The break, stated and then measured, which is the pass's one positive result.** A monotone summary of a
+recovered vector is reachable by any route that gets the vector's order roughly right, which is why
+reciprocal allocation agreed with a plain column 29 of 30 at corr +0.9985 and flow tracing lost 30 of 30 to
+a disclosed internal share. The break is to grade a quantity that depends on the recovered vector's
+**levels** rather than its order, the count of cases crossing an absolute threshold, so a route with the
+order right and the levels wrong files a wrong count. Measured on a coupled generating process (one latent
+intensity driving both the base quantity and the correcting factor, never two independent draws), 600
+redraws of 40 cases, sd(log base) 0.90:
+
+- The multiplicative-correction floor reproduces exactly. The realised correlation tracks
+  `sqrt(1 - rho^2)` where the coupling sits at minus rho (0.8708 measured against a floor of 0.8773 at rho
+  0.48), and at a coupling of minus one with rho under one the correlation is +1.0000 and the ranking
+  reflex takes the top candidate in 100 per cent of worlds. For a ranking object the shape is dead below
+  about rho 0.8, as the law says.
+- The level-dependent object escapes it. At rho 0.20, where the ranking reflex takes the top candidate 74.8
+  to 100 per cent of the time, the pro-rata reflex (the observable rescaled so its total matches the
+  published total) files the **exact count** in only 26.8 to 37.3 per cent of worlds and the **exact set**
+  in 6.2 to 37.3 per cent; at rho 0.48 and above the exact set is **0.0 per cent** at every coupling. So
+  the recovery pays on a count where it does not pay on an order, and that is the shape to carry forward.
+
+**What binds the level-dependent object is not rho, and the identity behind it.** A case flips under the
+reflex exactly when `abs(log factor_i - log g)` exceeds `abs(log base_i - log T)`, so **every flipped case
+is by definition closer to the threshold than the correction's own per-case magnitude**. Measured: the
+median clearance of the cases the reflex flips runs 0.0176 to 0.0329 in log units against factor
+dispersions of 0.09 to 0.90. That is task198's architecture 10 M3 objection in general form, and it is
+arithmetic rather than a tuning accident. Counted jointly over 600 redraws, determinacy (every graded case
+at least 6 per cent clear of the threshold) holds in **4.2 per cent** of drawn worlds and is **independent
+of rho**, so the world has to be designed rather than drawn, which is what a generator does anyway.
+
+**The feasible window, in a designed world, and it is the number the next pass needs.** Three quantities
+compete on one axis, all in log units of the graded quantity: `eps`, the construction's own spread across
+its standard variants; `c`, the clearance every case keeps from the threshold; `sf`, sd(log correcting
+factor). 36 designed cases, 12 above the threshold, five standard variants, 400 redraws, passing only when
+all five variants file the same count **and** the same set **and** both equal the truth, **and** the
+pro-rata reflex files a wrong count, **and** every flipped case clears the floor:
+
+| c | sf | eps | determinate | separated | joint |
+|---|---|---|---|---|---|
+| 0.06 | 0.20 | 0.020 | 98.5 | 65.5 | **64.2** |
+| 0.06 | 0.35 | 0.020 | 98.5 | 75.8 | **74.2** |
+| 0.12 | 0.20 | 0.020 | 100.0 | 58.5 | **58.5** |
+| 0.12 | 0.35 | 0.050 | 91.5 | 69.0 | 63.7 |
+| 0.06 | 0.05 | 0.020 | 98.5 | 21.0 | 20.8 |
+| 0.02 | 0.20 | 0.050 | 1.2 | 68.5 | 1.0 |
+| 0.12 | 0.05 | 0.020 | 100.0 | 2.0 | 2.0 |
+
+So the window is **`eps` under about a third of `c`, and `sf` at least two to three times `c`**, and inside
+it the joint cell holds in 58.5 to 74.2 per cent of redraws, against the 0 of 16, 0 of 320 and 0 of 36
+joint cells that killed five siblings. The operative consequence: the construction has to recover the
+per-case factor to roughly **a tenth of that factor's own dispersion**, which means the second file carries
+many observations per case, and a per-case fit on a thin slice cannot reach it.
+
+**The blessed shape's branches, now enumerated, and the one that is left.** The identity branch is
+complete and dead: task198's architecture 12 enumerated the whole set of correcting-quantity types that
+branch admits (a duration, a count, a currency amount entering linearly), measured them at corr +1.000000
+with maximum absolute differences of exactly zero and 7.1e-15, and returned a joint dial of 0 of 36 twice,
+because a per-case quantity that enters by identity is a **shipped** quantity and the designed construction
+simply is the cheapest one-group-by route. P1 above is that horn again in another setting. The branch that
+is left is the corrected clause: the correcting quantity is one per case, from a second file at a finer
+grain than anything the main file carries, no part of the record escaping it, **unobserved**, and recovered
+by a construction whose functional form the design fixes with **no free exponent, lag, decay or
+distribution family**. One build on file sits in it (task197, least squares on a linear ramp between two
+shipped endpoints, Gate F strong). The tension the next pass has to price is the one both horns share:
+making the correcting quantity unobserved restores the analysis and reopens the estimator family in the
+same stroke, so the pass is won or lost on `eps`, and `eps` is a property of how many observations the
+finer file carries per case, not of the cleverness of the construction.
+
+**What to hand the next pass, in one line each.** The cell is free to be any anomaly-detection cell outside
+the live three-build window, since what binds a redraw is the driver; `physical-environmental-sciences` /
+`environmental-monitoring-exceedance` is not free, because it is task198's `wave7_cell`. Grade a
+level-dependent object, never a monotone summary. Draw the correcting factor and the base from one
+generating process in the prototype, because an independent draw flatters every candidate of this shape.
+Compute rho, then the realised correlation at the world's own coupling, and read the second number. Then
+compute `eps`, `c` and `sf` and check `eps / c` at or under a third and `sf / c` at two or more before any
+magnitude is tuned.

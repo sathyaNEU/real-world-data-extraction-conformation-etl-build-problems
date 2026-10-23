@@ -1,134 +1,134 @@
 {
-  "approved": null,
-  "architecture": 8,
-  "build_gates": {
-    "archive": "target.zip cut from the final rebuild, 17 members, md5 bbf01fae98537ad271c72b80206f113c, sha256 1d1d797e1e62b9052d92e900bb9ace344ddd31ef131e188dc6397e8e73ce21c9, every member byte-equal to the tree",
-    "ceiling": "pair ceiling 28.5 (gate 40), mirror leakage 0.0 per cent, measured on the cut pack; 46.2 if both top responses resolve A3's association returns, measured and recorded in the design note's ask sheet",
-    "figures_check": "exit 0, 181 figures in blocks 1 to 4, 0 absent from figures.json",
-    "generator_checks": "PASS, 75 checks, 0 FAIL, exit 0 (was 53; blocks H and J added for the repair pass)",
-    "input_gates": "17 files, 3 formats, three csv files above 25,000 rows (80,104 / 41,466 / 41,369), 2 declared distractors, every file licence-clean with source and date",
-    "precut": "exit 0, 51 checks, 0 FAIL, 0 WARN; voice-check.py exit 0 on the 994-character prompt",
-    "realism": "golden-realism pass on both goldens after the figures froze; container audit clean on target/ and golden/; realism sweep clean (no constant column, no repeated block, no round total, no dominating text value, personas drawn); register realism asserted in checks.py block J",
-    "rebuilds": "two consecutive rebuilds byte-identical on all 19 files",
-    "verify": "PASS, 53 checks, 0 FAIL, exit 0 (was 43; reads only target/ and golden/)"
+ "approved": null,
+ "architecture": 9,
+ "build_gates": {
+  "archive": "target.zip cut from the final rebuild, 17 members, md5 bbf01fae98537ad271c72b80206f113c, sha256 1d1d797e1e62b9052d92e900bb9ace344ddd31ef131e188dc6397e8e73ce21c9, every member byte-equal to the tree",
+  "ceiling": "pair ceiling 28.5 (gate 40), mirror leakage 0.0 per cent, measured on the cut pack; 46.2 if both top responses resolve A3's association returns, measured and recorded in the design note's ask sheet",
+  "figures_check": "exit 0, 181 figures in blocks 1 to 4, 0 absent from figures.json",
+  "generator_checks": "PASS, 75 checks, 0 FAIL, exit 0 (was 53; blocks H and J added for the repair pass)",
+  "input_gates": "17 files, 3 formats, three csv files above 25,000 rows (80,104 / 41,466 / 41,369), 2 declared distractors, every file licence-clean with source and date",
+  "precut": "exit 0, 51 checks, 0 FAIL, 0 WARN; voice-check.py exit 0 on the 994-character prompt",
+  "realism": "golden-realism pass on both goldens after the figures froze; container audit clean on target/ and golden/; realism sweep clean (no constant column, no repeated block, no round total, no dominating text value, personas drawn); register realism asserted in checks.py block J",
+  "rebuilds": "two consecutive rebuilds byte-identical on all 19 files",
+  "verify": "PASS, 53 checks, 0 FAIL, exit 0 (was 43; reads only target/ and golden/)"
+ },
+ "delivered": null,
+ "domain": "survey-research-official-statistics/anomaly-detection",
+ "duplicate_check": {
+  "check": "WARN, no BLOCK, with the architecture-6 card live in the window",
+  "heart": "WARN against the architecture-6 card (BLOCK against the stale registered card is that card matching its own architecture-4 driver at 1.00)",
+  "surface": "one promoted pair, task190 vs task195 at surface 0.084 (corpus percentile 70), on the gap, decisive generator and Gate G triple; differentiated in writing on the card"
+ },
+ "judge": {
+  "disposition": "",
+  "report": "determinism_check_report.md holds rounds 1 and 2, both DETERMINISTIC",
+  "verdict": "not run on round 3 (stopped: the pack had already failed Gate F on the reader)"
+ },
+ "leak": {
+  "leak_py": "REVIEW 0 LEAK (target.zip ee222a17)",
+  "reader": "round 3: landed the call and 43 of 43 graded figures; Gate F failed, see leak_check_report.md"
+ },
+ "loops": 0,
+ "next_step": "stage 1, architecture 10: cell and driver. The design note's Architecture 9 section carries the feasible window (eps/c at or under a third, sf/c at two or more) and the one live branch of the blessed shape. No card was written and none is registered.",
+ "objective": "anomaly-detection",
+ "owner": "oviya13ya",
+ "pins_pass": {
+  "closure_changed": "SF3's confirmation-date window now differs from the filed despatch-date window by 1.0 to 4.2 per cent a stream (0.73 per cent before) because of the confirmation tail. The fork is still closed: the call is metal and only metal, at 3.13 standard errors under that reading against 4.57 under the filed one, with no second stream above 1.07. SF3b's January 2027 count moves from 762 to 972.",
+  "date": "2026-10-18",
+  "frozen": "every key of generator/figures.json is byte-identical to the judged pack: 193 keys, 0 moved. 70,384 t over 124,354 t, 56.6 per cent, interval 55.4 to 57.8, SE 0.63, metal 4.57 SEs, mixed commercial and industrial 1.45, all eight attainment rows, all 32 stage-chain cells and 24 pass-through rates, all five field-day rows, all eight 2025 tonnages, all five municipal rows. Both goldens are byte-identical to the judged pack (png 99df340d..., xlsx ba2565b8...).",
+  "gates": {
+   "archive": "target.zip re-cut from the final rebuild, 17 members, sha256 99ea6de2ec6cce1c0cac665bb149f1aaeca9333eaa2ce7eb5988a2763424cad9, stable over two cuts",
+   "ceiling": "pair ceiling 38.3 (gate 40), mirror leakage 0.0 per cent, measured on the cut pack; 48.1 if both top responses resolve A1 in full, 67.8 if they also find A3",
+   "figures_check": "exit 0, 181 figures in blocks 1 to 4, 0 absent from figures.json",
+   "generator_checks": "PASS, 78 checks, 0 FAIL, exit 0 (was 75; H7b, J9 and J10 added, H7 and J4 rewritten)",
+   "heart": "not run: it BLOCKs on an organisation-family ban against the stale registered card, which is an author decision",
+   "input_gates": "17 files, 3 formats, three csv files above 25,000 rows (80,104 / 41,228 / 41,607), 2 declared distractors, every file licence-clean with source, date and licence",
+   "leak_py": "REVIEW, 0 LEAK, sweep 11 (prompt gate) clean; the same four REVIEW lines as round 2, already adjudicated. leak.py overwrote leak_check_report.md and both solver's-eye rounds have been restored under the fresh sweep output, with a note on what the pins made stale",
+   "precut": "exit 1, 51 checks, 1 FAIL, 0 WARN: 'cracker misses every ask' fails on A1 because pin 2 files the grain. Pair ceiling and mirror leakage both PASS. Nothing else moved",
+   "realism": "checks block J, 10 of 10 ok; both goldens byte-identical to the judged pack so golden-realism needs no fresh pass; leak sweep 10 container audit reports no writer signature",
+   "rebuilds": "two consecutive rebuilds byte-identical on all 19 files",
+   "surface": "exit 0, one promoted pair, task190 vs task195 at surface 0.084 (corpus percentile 70), unchanged by this pass: it is a card-axis finding on gap, pattern and Gate G mechanism",
+   "verify": "PASS, 55 checks, 0 FAIL, exit 0 (was 53; the 30 June cut re-derived inside the verifier)",
+   "voice_check": "exit 0 on the 995-character prompt"
   },
-  "delivered": null,
-  "domain": "survey-research-official-statistics/anomaly-detection",
-  "duplicate_check": {
-    "check": "WARN, no BLOCK, with the architecture-6 card live in the window",
-    "heart": "WARN against the architecture-6 card (BLOCK against the stale registered card is that card matching its own architecture-4 driver at 1.00)",
-    "surface": "one promoted pair, task190 vs task195 at surface 0.084 (corpus percentile 70), on the gap, decisive generator and Gate G triple; differentiated in writing on the card"
+  "hygiene": [
+   "1 solved-backwards read, partly cleared and the residual proved: the 24 stream and stage totals are no longer whole numbers (they sit 0.02 to 0.38 of a tonne off, inside the printed tonne; world.CLASS_RESID, asserted in build.cell, checks J4 and verify.py). The eight rates still recompute within 0.002 pp of their printed tenth and cannot be moved: with the recovered tonnage and the arisings both printed and frozen, metal's rate is pinned to 56.5991 to 56.6003 and every stream's band is at most 0.006 pp wide. Clearing it needs one printed tonnage a stream to move by 0.6 to 16 t, which is a graded figure.",
+   "2 the unconfirmed 2026 despatches now rise towards the extract: 33, 48, 31, 37, 51, 47, 49, 55, 65, 71, 104, 139 by month against 51 to 72 flat before, the last quarter 2.8 times the first (checks J9). Three clocks behind it (world.CONF_MID_P 0.110, CONF_LONG_P 0.040) and the censored despatch dates placed by the survival of the lag at the distance to the cut.",
+   "3 the optional hardening (quote the 2025 CV for the activity-class domain) is DECLINED with a proof: rung 1's measured arithmetic is built on the published 3.4 per cent, so holding the rung holds the number and holding the number holds the nudge; the domain enters neither calculation, and the 2026 micro-data ships nace_division so a class CV would be recomputable for 2026, relocating the check rather than removing it."
+  ],
+  "pins": [
+   "1 the 2025 release's stated reason is now true of the records: the published recovered column is carried off the register at the 30 June 2026 extract the release names, the register holds 230 confirmation legs of 2025 consignments after that cut (longest despatch-to-confirmation lag 626 days), and those confirmations are 3,913 t of the 5,323 t distance, on every one of the eight streams. The column is not reconciled: world.PRIOR_DRIFT moves it 0.24 to 0.76 per cent a stream off the nearest basis (12 to 461 t), one sign, no constant ratio, so no basis reproduces it and it cannot settle ask A2's dedup choice (checks H7, H7b; verify.py re-derives the cut from the shipped legs alone).",
+   "2 the visit grain is filed: bws_2026_design_and_weighting.pdf section 5 now states that a visit covers several enterprises in one region on one trip and that the visit's field days are recorded on each case the visit covered, under the visit reference the log carries. The misleading clause ('with the field days attributed to the contact') is gone. Cost, measured: ask A1's primary stops being silent, the cracker resolves its ten figures, the pair ceiling moves 28.5 to 38.3 (gate 40, leakage still 0.0) and precut.py's 'cracker misses every ask' now FAILS on the A1 row. Author decision: waive the rule for a judge-pinned grain, or route A1 to /fix-rubric for a fresh silent device.",
+   "3 prompt.txt names the four chain stages (arising, despatched, confirmed at a final operation, confirmed at a recovery operation), 995 characters, voice-check exit 0; paid for by shortening six clauses with no requirement, unit or rounding dropped."
+  ],
+  "trigger": "stage 4 judge round 2: DETERMINISTIC, FIX_NOW, three note-level pins plus three hygiene findings"
+ },
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": "",
+ "precut": {
+  "checks": "51 checks, 0 FAIL, 0 WARN against the architecture-6 card; 1 FAIL against the card registered in the repo, which is still architecture 4's and which this builder is barred from registering",
+  "date": "2026-10-18",
+  "exit": 0
+ },
+ "repair_pass": {
+  "closure_changed": "SF3's convergence is now asserted on the confirmation-date window read over both register files, where no stream moves by more than 0.73 per cent and metal alone is established; SF3b records that the half reading (2026 despatches only) loses the extract's 762 January confirmations, establishes two streams and so contradicts the memo's one-stream clause. The despatch-date pin is unchanged.",
+  "date": "2026-10-18",
+  "frozen": "the main call and every figure behind it are byte-identical to the judged pack: 70,384 t over 124,354 t, 56.6 per cent, interval 55.4 to 57.8, se 0.635, metal 4.57 se, mixed commercial and industrial 1.45 se, all eight streams' rates and targets, the chain sheet's 32 cells and the 2025 and municipal ask figures",
+  "moved": "a1_Norte.usable_returns 542 to 538 and a1_Norte.returns_per_day 16.66 to 16.53; figures.json's national CV key renamed and the published 2025 figure added (3.4). Nothing else in figures.json moved.",
+  "repairs": [
+   "1 Gate A: a usable return is counted per collection case, not per log row; the five regions tie to the micro-data's 1,630 records (checks A7)",
+   "2 Gate B and E: the field day of eight hours is filed in the survey's own collection documentation, section 5 (checks H1 to H3, verify's own read-back with a positive control)",
+   "3 the oracle: the release published the 2026 round's own CV, which reproduced at 3.915 with the finite-population correction and 4.091 without; it now publishes the 2025 round's measure, 3.4 per cent, which no estimator of the 2026 round reproduces and nothing in the bundle recomputes (checks H4, H5)",
+   "4 the calibration: the 2025 release's recovered column is the register as at the 30 June 2026 extract, stated in the release, 3.3 to 5.0 per cent below a recompute on the shipped extract; it still pins R1 as recovery and rules out a first-operation-only read (checks H7 to H10)",
+   "5 realism: lag distributions with a tail and a weekday and holiday structure, weighbridge net tonnages summing to the designed whole tonnes, drawn facility and carrier names, and the capacity note rewritten as a memo (checks J1 to J8)",
+   "6 the two thin forks: 'by origin region' in the prompt and the municipal series' counting convention in the memo (SF13, SF14)"
+  ],
+  "trigger": "stage 4 judge: NOT_DETERMINISTIC, FIX_NOW, both failures on the ask side"
+ },
+ "resume": "architecture 10. Architecture 9 landed no draw and the pass's report was lost to a container restart, but its record is in the design note. Two results. The BREAK WORKED: grading a count of cases crossing an ABSOLUTE threshold is level-dependent, so it passes the monotonicity screen that killed architecture 8's three candidates, and P1 (a per-day load basis) is the strongest floor pass measured on this slot, rho 1.6077 with a realised correlation of only +0.1634 at a coupling of -0.4755. But all three candidates died on the other horn: P1 is a deterministic function of two shipped columns (the identity horn), P2 is a planted defect under rule 3 and is task249, P3's pooled rescue is a power law with a free exponent and is task198's architecture 10 M2. The cell itself was killed before any candidate was screened: physical-environmental-sciences/environmental-monitoring-exceedance is task198's own wave7_cell with three constructions already dead there, and recent, coverage, mechanisms and nearest all print it as open, so run guard.py slots on the SETTING nouns and read the neighbouring slot's pipeline.json FIRST. Harness defect to avoid repeating: a reflex on a threshold-count object must be scored against the limit's own value, never against a quantile of the reflex statistic, which hands it the right count 98.3 per cent of the time and measures nothing.",
+ "returned": [],
+ "rubric_pass": {
+  "asks_resited": [
+   "A1: field days and usable returns per field day by region, replaced by the contacts the 2026 round made and those contacts per usable return, by the region of the enterprise contacted; primary D7 keys, the permit numbers the agency's January 2027 licensing runs reissued, resolved only by an as-of join on the contact date",
+   "A3: same figures and same goldens, primary replaced; D9 self-validation, five municipalities whose December return row is the year's own confirmation and does not sum with its eleven. The inter-municipal associations' rollup, which the memo's convention resolved, is demoted to hazard H5"
+  ],
+  "date": "2026-10-18",
+  "files_moved": [
+   "target/bws_2026_response_log.csv",
+   "target/enterprise_permit_crosswalk.csv",
+   "target/municipal_waste_returns_2026.csv",
+   "prompt.txt (the A1 ask sentence and the rounding clause only)",
+   "golden/recovery_attainment_2026.xlsx",
+   "submission.md (block 4 item 3)"
+  ],
+  "files_unchanged": "14 of the 17 shipped files, including every file the call reads and both distractors",
+  "gates": "checks.py 85/0, verify.py 58/0, two byte-identical rebuilds over 20 files, figures_check 181/0, precut.py 51 checks 0 FAIL 0 WARN, voice-check PASS at 991 characters, leak.py REVIEW with sweep 11 clean and no REVIEW line on a moved file, ceiling.py exit 0, freeze.py check --mode rubric PASS",
+  "measured": {
+   "cracker_ask_figures_kept": "0 of 28",
+   "mirror_ask_figures_kept": "0 of 28",
+   "mirror_leakage_pct": 0.0,
+   "pair_ceiling": 28.5,
+   "sensitivity_both_on_the_call": 45.0,
+   "sensitivity_both_on_the_call_one_whole_ask_found": 54.8,
+   "sensitivity_one_response_on_the_call": 28.5
   },
-  "judge": {
-    "disposition": "",
-    "report": "determinism_check_report.md holds rounds 1 and 2, both DETERMINISTIC",
-    "verdict": "not run on round 3 (stopped: the pack had already failed Gate F on the reader)"
-  },
-  "leak": {
-    "leak_py": "REVIEW 0 LEAK (target.zip ee222a17)",
-    "reader": "round 3: landed the call and 43 of 43 graded figures; Gate F failed, see leak_check_report.md"
-  },
-  "loops": 0,
-  "next_step": "stage 4: the leak reader and the determinism judge on the re-sited asks A1 and A3; nothing on the recommendation side changed.",
-  "objective": "anomaly-detection",
-  "owner": "oviya13ya",
-  "pins_pass": {
-    "closure_changed": "SF3's confirmation-date window now differs from the filed despatch-date window by 1.0 to 4.2 per cent a stream (0.73 per cent before) because of the confirmation tail. The fork is still closed: the call is metal and only metal, at 3.13 standard errors under that reading against 4.57 under the filed one, with no second stream above 1.07. SF3b's January 2027 count moves from 762 to 972.",
-    "date": "2026-10-18",
-    "frozen": "every key of generator/figures.json is byte-identical to the judged pack: 193 keys, 0 moved. 70,384 t over 124,354 t, 56.6 per cent, interval 55.4 to 57.8, SE 0.63, metal 4.57 SEs, mixed commercial and industrial 1.45, all eight attainment rows, all 32 stage-chain cells and 24 pass-through rates, all five field-day rows, all eight 2025 tonnages, all five municipal rows. Both goldens are byte-identical to the judged pack (png 99df340d..., xlsx ba2565b8...).",
-    "gates": {
-      "archive": "target.zip re-cut from the final rebuild, 17 members, sha256 99ea6de2ec6cce1c0cac665bb149f1aaeca9333eaa2ce7eb5988a2763424cad9, stable over two cuts",
-      "ceiling": "pair ceiling 38.3 (gate 40), mirror leakage 0.0 per cent, measured on the cut pack; 48.1 if both top responses resolve A1 in full, 67.8 if they also find A3",
-      "figures_check": "exit 0, 181 figures in blocks 1 to 4, 0 absent from figures.json",
-      "generator_checks": "PASS, 78 checks, 0 FAIL, exit 0 (was 75; H7b, J9 and J10 added, H7 and J4 rewritten)",
-      "heart": "not run: it BLOCKs on an organisation-family ban against the stale registered card, which is an author decision",
-      "input_gates": "17 files, 3 formats, three csv files above 25,000 rows (80,104 / 41,228 / 41,607), 2 declared distractors, every file licence-clean with source, date and licence",
-      "leak_py": "REVIEW, 0 LEAK, sweep 11 (prompt gate) clean; the same four REVIEW lines as round 2, already adjudicated. leak.py overwrote leak_check_report.md and both solver's-eye rounds have been restored under the fresh sweep output, with a note on what the pins made stale",
-      "precut": "exit 1, 51 checks, 1 FAIL, 0 WARN: 'cracker misses every ask' fails on A1 because pin 2 files the grain. Pair ceiling and mirror leakage both PASS. Nothing else moved",
-      "realism": "checks block J, 10 of 10 ok; both goldens byte-identical to the judged pack so golden-realism needs no fresh pass; leak sweep 10 container audit reports no writer signature",
-      "rebuilds": "two consecutive rebuilds byte-identical on all 19 files",
-      "surface": "exit 0, one promoted pair, task190 vs task195 at surface 0.084 (corpus percentile 70), unchanged by this pass: it is a card-axis finding on gap, pattern and Gate G mechanism",
-      "verify": "PASS, 55 checks, 0 FAIL, exit 0 (was 53; the 30 June cut re-derived inside the verifier)",
-      "voice_check": "exit 0 on the 995-character prompt"
-    },
-    "hygiene": [
-      "1 solved-backwards read, partly cleared and the residual proved: the 24 stream and stage totals are no longer whole numbers (they sit 0.02 to 0.38 of a tonne off, inside the printed tonne; world.CLASS_RESID, asserted in build.cell, checks J4 and verify.py). The eight rates still recompute within 0.002 pp of their printed tenth and cannot be moved: with the recovered tonnage and the arisings both printed and frozen, metal's rate is pinned to 56.5991 to 56.6003 and every stream's band is at most 0.006 pp wide. Clearing it needs one printed tonnage a stream to move by 0.6 to 16 t, which is a graded figure.",
-      "2 the unconfirmed 2026 despatches now rise towards the extract: 33, 48, 31, 37, 51, 47, 49, 55, 65, 71, 104, 139 by month against 51 to 72 flat before, the last quarter 2.8 times the first (checks J9). Three clocks behind it (world.CONF_MID_P 0.110, CONF_LONG_P 0.040) and the censored despatch dates placed by the survival of the lag at the distance to the cut.",
-      "3 the optional hardening (quote the 2025 CV for the activity-class domain) is DECLINED with a proof: rung 1's measured arithmetic is built on the published 3.4 per cent, so holding the rung holds the number and holding the number holds the nudge; the domain enters neither calculation, and the 2026 micro-data ships nace_division so a class CV would be recomputable for 2026, relocating the check rather than removing it."
-    ],
-    "pins": [
-      "1 the 2025 release's stated reason is now true of the records: the published recovered column is carried off the register at the 30 June 2026 extract the release names, the register holds 230 confirmation legs of 2025 consignments after that cut (longest despatch-to-confirmation lag 626 days), and those confirmations are 3,913 t of the 5,323 t distance, on every one of the eight streams. The column is not reconciled: world.PRIOR_DRIFT moves it 0.24 to 0.76 per cent a stream off the nearest basis (12 to 461 t), one sign, no constant ratio, so no basis reproduces it and it cannot settle ask A2's dedup choice (checks H7, H7b; verify.py re-derives the cut from the shipped legs alone).",
-      "2 the visit grain is filed: bws_2026_design_and_weighting.pdf section 5 now states that a visit covers several enterprises in one region on one trip and that the visit's field days are recorded on each case the visit covered, under the visit reference the log carries. The misleading clause ('with the field days attributed to the contact') is gone. Cost, measured: ask A1's primary stops being silent, the cracker resolves its ten figures, the pair ceiling moves 28.5 to 38.3 (gate 40, leakage still 0.0) and precut.py's 'cracker misses every ask' now FAILS on the A1 row. Author decision: waive the rule for a judge-pinned grain, or route A1 to /fix-rubric for a fresh silent device.",
-      "3 prompt.txt names the four chain stages (arising, despatched, confirmed at a final operation, confirmed at a recovery operation), 995 characters, voice-check exit 0; paid for by shortening six clauses with no requirement, unit or rounding dropped."
-    ],
-    "trigger": "stage 4 judge round 2: DETERMINISTIC, FIX_NOW, three note-level pins plus three hygiene findings"
-  },
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
-  "precut": {
-    "checks": "51 checks, 0 FAIL, 0 WARN against the architecture-6 card; 1 FAIL against the card registered in the repo, which is still architecture 4's and which this builder is barred from registering",
-    "date": "2026-10-18",
-    "exit": 0
-  },
-  "repair_pass": {
-    "closure_changed": "SF3's convergence is now asserted on the confirmation-date window read over both register files, where no stream moves by more than 0.73 per cent and metal alone is established; SF3b records that the half reading (2026 despatches only) loses the extract's 762 January confirmations, establishes two streams and so contradicts the memo's one-stream clause. The despatch-date pin is unchanged.",
-    "date": "2026-10-18",
-    "frozen": "the main call and every figure behind it are byte-identical to the judged pack: 70,384 t over 124,354 t, 56.6 per cent, interval 55.4 to 57.8, se 0.635, metal 4.57 se, mixed commercial and industrial 1.45 se, all eight streams' rates and targets, the chain sheet's 32 cells and the 2025 and municipal ask figures",
-    "moved": "a1_Norte.usable_returns 542 to 538 and a1_Norte.returns_per_day 16.66 to 16.53; figures.json's national CV key renamed and the published 2025 figure added (3.4). Nothing else in figures.json moved.",
-    "repairs": [
-      "1 Gate A: a usable return is counted per collection case, not per log row; the five regions tie to the micro-data's 1,630 records (checks A7)",
-      "2 Gate B and E: the field day of eight hours is filed in the survey's own collection documentation, section 5 (checks H1 to H3, verify's own read-back with a positive control)",
-      "3 the oracle: the release published the 2026 round's own CV, which reproduced at 3.915 with the finite-population correction and 4.091 without; it now publishes the 2025 round's measure, 3.4 per cent, which no estimator of the 2026 round reproduces and nothing in the bundle recomputes (checks H4, H5)",
-      "4 the calibration: the 2025 release's recovered column is the register as at the 30 June 2026 extract, stated in the release, 3.3 to 5.0 per cent below a recompute on the shipped extract; it still pins R1 as recovery and rules out a first-operation-only read (checks H7 to H10)",
-      "5 realism: lag distributions with a tail and a weekday and holiday structure, weighbridge net tonnages summing to the designed whole tonnes, drawn facility and carrier names, and the capacity note rewritten as a memo (checks J1 to J8)",
-      "6 the two thin forks: 'by origin region' in the prompt and the municipal series' counting convention in the memo (SF13, SF14)"
-    ],
-    "trigger": "stage 4 judge: NOT_DETERMINISTIC, FIX_NOW, both failures on the ask side"
-  },
-  "resume": "architecture 8 lands no draw: three candidates measured on a group finance function, three dead, and binding_constraint refused on measurement rather than banked on its open label. The pass established the general reason the family is vacant across all 34 AD cards: a limit does not measure itself, so it is either filed (rule application, a one-join route) or unrecorded (unforced), and its one escape, whose limit it is, is identity or grain, which rule 3 bars. Its structural signature is spent in 10 earlier builds besides. The three deaths share one shape: each graded a monotone summary of a recovered vector, and each was reached by a one-pass attribution or a plain column (reciprocal allocation 29 of 30 at corr +0.9985 against the plain own-cost column and 30 of 30 against direct and step-down; flow tracing 30 of 30 by the disclosed internal share; the collection kernel, which alone cleared the proxy screen at corr +0.1889 and 14 of 30, then fell to the pro-rata reflex 30 of 30). The opening left is a graded object that is a position inside the recovered vector rather than a summary of it. Also found: task198's architecture 7 had already screened this exact cell with three measured deaths, in a pipeline.json resume line no guard subcommand surfaces.",
-  "returned": [],
-  "rubric_pass": {
-    "asks_resited": [
-      "A1: field days and usable returns per field day by region, replaced by the contacts the 2026 round made and those contacts per usable return, by the region of the enterprise contacted; primary D7 keys, the permit numbers the agency's January 2027 licensing runs reissued, resolved only by an as-of join on the contact date",
-      "A3: same figures and same goldens, primary replaced; D9 self-validation, five municipalities whose December return row is the year's own confirmation and does not sum with its eleven. The inter-municipal associations' rollup, which the memo's convention resolved, is demoted to hazard H5"
-    ],
-    "date": "2026-10-18",
-    "files_moved": [
-      "target/bws_2026_response_log.csv",
-      "target/enterprise_permit_crosswalk.csv",
-      "target/municipal_waste_returns_2026.csv",
-      "prompt.txt (the A1 ask sentence and the rounding clause only)",
-      "golden/recovery_attainment_2026.xlsx",
-      "submission.md (block 4 item 3)"
-    ],
-    "files_unchanged": "14 of the 17 shipped files, including every file the call reads and both distractors",
-    "gates": "checks.py 85/0, verify.py 58/0, two byte-identical rebuilds over 20 files, figures_check 181/0, precut.py 51 checks 0 FAIL 0 WARN, voice-check PASS at 991 characters, leak.py REVIEW with sweep 11 clean and no REVIEW line on a moved file, ceiling.py exit 0, freeze.py check --mode rubric PASS",
-    "measured": {
-      "cracker_ask_figures_kept": "0 of 28",
-      "mirror_ask_figures_kept": "0 of 28",
-      "mirror_leakage_pct": 0.0,
-      "pair_ceiling": 28.5,
-      "sensitivity_both_on_the_call": 45.0,
-      "sensitivity_both_on_the_call_one_whole_ask_found": 54.8,
-      "sensitivity_one_response_on_the_call": 28.5
-    },
-    "owed": "a fresh leak reader round and the determinism judge's re-read of the three re-sited ask sentences; the orchestrator owns stage 4",
-    "pins_held": [
-      "the design documentation's visit-grain clause",
-      "the four chain stages named in the prompt",
-      "the 2025 release's extract date and stated reason"
-    ],
-    "scope": "the supplemental asks only; the main recommendation side frozen, proved by `freeze.py check task190 --mode rubric` (PASS) and by `checks.py` A10, which holds the digest of every file the call reads against the shipped pack",
-    "trigger": "precut.py exit 1 on `cracker misses every ask`: the pins pass had made ask A1's primary a filed rule, so a response reading section 5 of the design documentation resolved all ten of its figures. The gate's number still passed (38.3 against 40) and the thing it protects did not: both top responses reading the pinned clause measured 48.1, and with A3's convention found as well 67.8, against a house bar of 50."
-  },
-  "stage": 1,
-  "stage_name": "draw",
-  "status": "PAUSED",
-  "stump": "Each waste stream's 2026 recovery rate is a complete register tonnage over a design-based estimate of the stream's arisings, so all of the rate's sampling error is the denominator's and none comes from the stratum the survey enumerates completely; 95.8 per cent of metal arisings sit in that stratum, giving it a 1.1 per cent CV against mixed commercial and industrial's 5.7, so metal's 2.9 point shortfall is 4.57 standard errors while mixed C&I's larger 4.9 point shortfall is 1.45. Every route that ranks the shortfall, or tests it against the published national CV or the stream's reporting-enterprise count, files mixed commercial and industrial.",
-  "task": "task190",
-  "updated": "2026-10-20",
-  "wave7_cell": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
-  "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
+  "owed": "a fresh leak reader round and the determinism judge's re-read of the three re-sited ask sentences; the orchestrator owns stage 4",
+  "pins_held": [
+   "the design documentation's visit-grain clause",
+   "the four chain stages named in the prompt",
+   "the 2025 release's extract date and stated reason"
+  ],
+  "scope": "the supplemental asks only; the main recommendation side frozen, proved by `freeze.py check task190 --mode rubric` (PASS) and by `checks.py` A10, which holds the digest of every file the call reads against the shipped pack",
+  "trigger": "precut.py exit 1 on `cracker misses every ask`: the pins pass had made ask A1's primary a filed rule, so a response reading section 5 of the design documentation resolved all ten of its figures. The gate's number still passed (38.3 against 40) and the thing it protects did not: both top responses reading the pinned clause measured 48.1, and with A3's convention found as well 67.8, against a house bar of 50."
+ },
+ "stage": 1,
+ "stage_name": "draw",
+ "status": "PAUSED",
+ "stump": "Each waste stream's 2026 recovery rate is a complete register tonnage over a design-based estimate of the stream's arisings, so all of the rate's sampling error is the denominator's and none comes from the stratum the survey enumerates completely; 95.8 per cent of metal arisings sit in that stratum, giving it a 1.1 per cent CV against mixed commercial and industrial's 5.7, so metal's 2.9 point shortfall is 4.57 standard errors while mixed C&I's larger 4.9 point shortfall is 1.45. Every route that ranks the shortfall, or tests it against the published national CV or the stream's reporting-enterprise count, files mixed commercial and industrial.",
+ "task": "task190",
+ "updated": "2026-10-23",
+ "wave7_cell": "healthcare-delivery-health-economics/provider-quality-risk-adjustment",
+ "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
 }

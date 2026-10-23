@@ -2346,3 +2346,87 @@ construction estimates), the silent-row readability screen and the full enumerat
   update predicts, 8 of the last 12 carrying that gate. **`org_family` is the one axis that was redrawn and
   the honest label is the one that passes, not the other way round:** `government_agency` BLOCKed against
   task471 and a New Zealand public health unit genuinely sits inside the district health service.
+
+- **Architecture 15, the one-benchmark-per-case shape itself, screened to a measured refusal
+  (2026-10-23). Nothing drawn, no card registered, no file in `target/` or `golden/` touched.** The
+  resume line this pass was handed ("a second file supplying one benchmark per case, not one for the
+  cluster") was tested as algebra rather than as three arbitrary candidates, and the shape has a real
+  window that the per-case quantity cannot reach. Harness in the builder's scratch directory
+  `<scratch>/a15_194/`: `verify_floor.py`, `screen_c1.py`, `screen_pincer.py`, `screen_heavy.py`,
+  `screen_joint.py`, `screen_perworld.py`, `screen_last.py`, `screen2.py`, every one rerunning
+  byte-identically.
+- **The floor law verified and one clause of it corrected.** For `log designed = log reflex - log factor`
+  the minimum of `corr(log reflex, log designed)` over the coupling is exactly `sqrt(1 - rho^2)`, attained
+  at a coupling of plus or minus rho and not at the reciprocal (that stationary point returns zero and is
+  unreachable below rho of 1). Reproduced at 0.9798, 0.8773 and 0.6000 for rho of 0.20, 0.48 and 0.80,
+  with the reflex taking the top candidate 79.0, 51.5 and 21.2 per cent of the time over 600 redraws of 40
+  candidates. **The practical correction: a factor coupled NEGATIVELY to the base, which is the intuitive
+  "the under-counted cases are the big ones" direction, returns a correlation of exactly 1, so that
+  direction makes the reflex more rank-equivalent rather than less.**
+- **The aggregation finding, which is this pass's own and closes the shape from the arithmetic side.** The
+  decision is at candidate grain and the correction is at case grain, so the decision's own aggregation
+  averages n per-case factors and cuts their log dispersion by about the square root of n: measured
+  `sd(log f)` at case grain 0.285 against `sd(log F)` at candidate grain 0.0676 at n of 2, and 0.289
+  against 0.0265 at n of 120. **So the shape that passes screen 1 by construction (a factor of about 1 on
+  no candidate, measured share 0.00) fails the floor by construction**, and the two are different screens.
+- **Candidate C1, the clause's own licensed form, dead four separate ways.** Each case's own observed span
+  as the correcting duration, `Q = D sum(y_i/d_i)` against the pooled exposure offset `D n sum(y)/sum(d)`,
+  which is the Poisson maximum likelihood with a log-span offset and is the one-group-by route. The
+  algebra is exact: `Q - B1 = n cov(y, D/d)` within the candidate, so the construction is the group-by
+  plus a within-candidate covariance and is not affine in it. It does not reorder anything. Over nine
+  cells of events-per-case 0.9 to 21.4 by coupling 0.8 to 3.0, rho never exceeded 0.120, the floor never
+  fell below 0.9926, `corr(log B1, log Q)` ran plus 0.9944 to plus 0.9993 and the count form plus 0.9902
+  to plus 0.9956, every reflex named the golden as often as the designed route did (0.75 to 1.00), and **0
+  of 9 cells passed, then 0 of 45 over a wider sweep.** Independently dead on Gate C: the enumerated
+  family spreads the graded figure 679.46 on a level of 1,203.15, 56.5 per cent of the figure, and the
+  **standing family alone (per-case sum, precision-shrunk per-case, trimmed per-case, strata of the span)
+  still spreads it 46.32, 3.8 per cent of the figure and 463 times a printed precision of 0.1**, which is
+  architecture 3's death in new nouns. Independently dead on readability: the only thing that rules the
+  pooled route out is a within-candidate regression of the per-case rate on the per-case span, which is
+  the hygiene battery.
+- **The window, measured, and it is real.** Requiring rho at or above 0.80 means
+  `sd(log f) >= 0.80 sqrt(n) sd(log Q)`: at `sd(log Q)` of 0.35 that is 0.48 at n of 3, 1.40 at n of 25
+  and 1.98 at n of 50. Counting the share of worlds in which all seven requirements hold at once (realised
+  correlation at or under 0.80, the designed route naming the golden in at least 38 of 40 record redraws,
+  the golden 4th to 8th of 12 under the raw reflex, no reflex ever naming it, each reflex's own top
+  clearing its runner-up by 1.15x, designed margin over the designed figure's coefficient of variation at
+  or above 1.15, and the standing family unanimous), the sweep gives **0 of 40 worlds at `sd(log f)` of
+  1.3, 2 to 5 at 2.0, 4 to 10 at 2.5 and 8 to 12 at 3.0, best 12 of 40 at n of 25.** A passing world reads
+  rho 3.61, realised correlation plus 0.151, designed 40 of 40, every reflex 0 of 40, golden 5th of 12,
+  rung clearances 1.38 and 2.02, margin over coefficient of variation 3.5, standing family 40 of 40. **So
+  the dial is not one-ended here, which is new on this number: what closes the window is the realisability
+  of the per-case quantity, not the ladder.**
+- **The pincer that closes it, and the two jaws meet.** The only per-case quantities carrying
+  `sd(log f)` at or above 1.4 are unbounded magnitudes, measured at 2.00 and 2.80 for a loss severity and
+  2.07 for a network reach; **every quantity the surviving clause licenses is bounded by the window, the
+  roster or the contract and sits under the requirement: a window share 0.38, a coverage share 0.71, an
+  inclusion probability from a daily capacity 0.57, an opportunity count of 1 to 20 at 0.79, a duration in
+  days 0.89, a currency amount capped by a contract 0.80.** And an unbounded magnitude is exactly what
+  task198's filed intensity law refuses, because converting intensity into the decision's own quantity
+  needs an exponent the record does not carry (2.55 distinct designated classes of 5 there, the graded
+  figure spread 107.9 per cent of its level). The third jaw is the retraction of the identity clause: a
+  per-case quantity that is a shipped column makes the target shipped-determined, so the designed
+  construction is the cheapest group-by route. **So the floor law and the intensity law are two jaws of
+  one pincer on step three's shape, and the dispersion the first demands is available only from the
+  inputs the second refuses.**
+- **Two candidates refused before a harness, on the two screens that are cheaper than one.** An exact
+  per-case inclusion probability from a capacity or queue identity is refused on algebra: an exact design
+  weight is a property of a sampling cell that both files carry (the day, the unit, the stratum), so the
+  one-group-by on that cell reproduces it exactly, and the one form that is genuinely per case is a filed
+  design weight, which is rule application and is task190's architecture 3 with its Gate B death. An
+  unobserved heavy-tailed per-case COUNT recovered with no free parameter, which is the one corner the
+  arithmetic leaves open at `sd(log f)` of 1.43 to 2.07, is refused on the corpus: `guard.py slots` on the
+  setting's nouns returns **task201 line 133, where "each interruption's interrupted customer-hours as the
+  customers behind the device times the hours without supply" is the DEFAULT PATH and the `SF1` row, and
+  task183's ask 2 on the same construction.** Run on the mechanism's nouns the same screen returns
+  nothing, which is the lexical blind spot for the seventh measured time; the setting run was made before
+  the first harness this pass, as the skill now requires, and it cost one command.
+- **What a later pass needs, stated so it is not paid for twice.** The window is `sd(log f)` of 2.5 to 3.0
+  at about 25 cases per candidate, and a candidate must satisfy four clauses at once that nothing on file
+  yet does: the per-case quantity is UNOBSERVED (else choosing it over the plain count is the estimand's
+  outcome and the WHAT screen takes it), it is recovered with NO FREE PARAMETER (no exponent, lag, decay or
+  distribution family), it is UNBOUNDED enough to carry a log dispersion of 2.5, and it is not a reach
+  through a network (spent as task201's default path). The first measurement such a candidate makes is not
+  a separation: it is `sd(log f)` on its own clean truth and then the realised `corr(log reflex, log
+  designed)` at its world's own coupling, because the coupling's sign is world-specific and a prototype
+  that draws the factor independently of the base flatters every candidate of this shape.

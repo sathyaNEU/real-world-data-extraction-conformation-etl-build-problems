@@ -1,98 +1,98 @@
 {
-  "architecture": 3,
-  "architecture_note": "v2 re-roots the graded quantity on clause 9.1's candidate grid: the ceiling is the lowest whole multiple of one thousand pesos, the call moves PHP 7,800 -> PHP 8,000 and the default path PHP 5,800 -> PHP 6,000, the preceding candidate fails by 0.8471 points against 0.0432 and the committed one clears by 0.4122 against 0.0571, and 7 of 7 licensed readings of the measured shape file PHP 8,000 where 3 of 7 filed PHP 7,800. BASE reset 3311.5 -> 3253.4 so every graded share prints clear of its rounding boundary. Ask A's filed convention replaced by the asking sentence, Ask B widened to the passed side, Ask C's primary not replaced; reader-calibrated pair 39.5.",
-  "card_registered": true,
-  "dependence_ground_screen": {
-    "assigned": "an exceedance call decided by how much independent evidence an autocorrelated monitored series holds",
-    "candidates_killed": 5,
-    "cell": "physical-environmental-sciences / environmental-monitoring-exceedance, anomaly-detection",
-    "corpus_check": "C5 is task452 architecture v1's driver in other nouns, same domain, shipped 2026-10-13 and re-rooted at the author's request because the concentration-discharge rating curve is the field's standard method that careful solvers reach for, its rejected hardening prototypes being a dense automated sampler and a kinked relation. It scores 0.07 on driver.near and fires no rule: the third measured instance of that blind spot inside this slot.",
-    "guard_verdict": "guard.py check on the strongest candidate card BLOCKed on ban.artifact (monitoring_export vs task170), ban.org_family (government_agency vs task170), test.same_driver_older (vs task240) and two card-completeness rules, and never mentioned the clone.",
-    "kills": {
-      "C1a variance inflation / effective sample size": "level-spread reflex within 2x of the correct SE in 23 of 36 live settings (0.64), 1.05-1.81 at every ladder-carrying setting; escape needs m > 4f^2 periods (36 at f=3); run null published at a glance, P(run of 4 in a compliant 16-period record at rho 0.8) = 0.68; sign wrong, point estimate identical and the correction only moves exceedance to clear (0.32 -> 0.14 on compliant series)",
-      "C1b variance bias in a parametric upper percentile": "lever/noise never reaches 1 across the whole VIF/n range (0.19 at 0.05, 0.59 at 0.40, 0.89 at 0.70); intended separation holds in 11/40, 10/40 and 7/40 seeds; the golden itself runs 0.64-2.75x the limit while the truth never moves",
-      "C2 long-term average over an averaging period the monitors do not produce": "three readings of one filed phrase at 45.88 / 38.61 / 38.64 on one cut, a spread of 7.27; the readings are the estimand's unit, which the WHAT screen forbids a decisive step from settling (task200's recorded death)",
-      "C3 forward exceedance probability from a declustered tail": "declustered rate 78.0 to 29.7 events a year across runs declustering at 1-72 h, a factor of 2.6, with nothing separating the choices (task194's chain-ladder death); graded figure 0.000 under every declustering choice against 2.636 undeclustered, so the sign is wrong too",
-      "C5 consented load carried by the complete record through a fitted transfer": "right sign and a large lever (grab mean x volume files 0.510 of the truth over 40 years, 0.376 on the cut year) but the same dial at both ends: narrow calibration window forks the honest variants by 910.5 kg in the decisive month and splits the run-start month 13/None/None/None, wide window makes the grab-fitted calibration land within 1-3 per cent of the campaign-fitted one (0.961/0.968/0.995/0.935 against 0.964/0.944/0.988/0.917); 0/5 seeds met all four pass conditions"
-    },
-    "mechanisms_screened": 4,
-    "method": "the pricing computations of stumping Part 3 and the WHAT screen of Part 1.2, each run as code on clean truth before any row was cut, then guard.py nearest and check",
-    "not_run": "no design note section beyond '## Tried and rejected', no prompt, no generator, no pack. precut.py was never reached because no candidate survived its screen.",
-    "pincer_test": "Run in writing on all five candidates on the coordinator's instruction of 2026-10-18 (the instruction itself was addressed to a grid-reliability-outage-analysis draw, which is energy-systems-utilities, not this cell). C1a, C1b and C5 pass it: their decisive quantities are estimated, so none died on estimand filing and none is revivable by filing the estimand better. C2 fails on the unit (already its recorded kill). C3's verdict changes and hardens: the declustering run length fixes the unit of the count and no parameter-free reading fixes it, so the measured 2.6x fork in the declustered rate is the symptom and task192 architecture v1 is the recorded death on that shape; C3 is not revivable by filing a selection criterion for the run length.",
-    "rigor_pattern_block": "None on this ground: layer2-rigor-patterns.md carries 14 domain sections and physical-environmental-sciences is not among them, and environmental-monitoring-exceedance appears in no block, so layer2_pattern takes own:<name> as task189's card does. The swap test was never this cell's problem; the decisive step's arithmetic was."
+ "architecture": 4,
+ "architecture_note": "v2 re-roots the graded quantity on clause 9.1's candidate grid: the ceiling is the lowest whole multiple of one thousand pesos, the call moves PHP 7,800 -> PHP 8,000 and the default path PHP 5,800 -> PHP 6,000, the preceding candidate fails by 0.8471 points against 0.0432 and the committed one clears by 0.4122 against 0.0571, and 7 of 7 licensed readings of the measured shape file PHP 8,000 where 3 of 7 filed PHP 7,800. BASE reset 3311.5 -> 3253.4 so every graded share prints clear of its rounding boundary. Ask A's filed convention replaced by the asking sentence, Ask B widened to the passed side, Ask C's primary not replaced; reader-calibrated pair 39.5.",
+ "card_registered": true,
+ "dependence_ground_screen": {
+  "assigned": "an exceedance call decided by how much independent evidence an autocorrelated monitored series holds",
+  "candidates_killed": 5,
+  "cell": "physical-environmental-sciences / environmental-monitoring-exceedance, anomaly-detection",
+  "corpus_check": "C5 is task452 architecture v1's driver in other nouns, same domain, shipped 2026-10-13 and re-rooted at the author's request because the concentration-discharge rating curve is the field's standard method that careful solvers reach for, its rejected hardening prototypes being a dense automated sampler and a kinked relation. It scores 0.07 on driver.near and fires no rule: the third measured instance of that blind spot inside this slot.",
+  "guard_verdict": "guard.py check on the strongest candidate card BLOCKed on ban.artifact (monitoring_export vs task170), ban.org_family (government_agency vs task170), test.same_driver_older (vs task240) and two card-completeness rules, and never mentioned the clone.",
+  "kills": {
+   "C1a variance inflation / effective sample size": "level-spread reflex within 2x of the correct SE in 23 of 36 live settings (0.64), 1.05-1.81 at every ladder-carrying setting; escape needs m > 4f^2 periods (36 at f=3); run null published at a glance, P(run of 4 in a compliant 16-period record at rho 0.8) = 0.68; sign wrong, point estimate identical and the correction only moves exceedance to clear (0.32 -> 0.14 on compliant series)",
+   "C1b variance bias in a parametric upper percentile": "lever/noise never reaches 1 across the whole VIF/n range (0.19 at 0.05, 0.59 at 0.40, 0.89 at 0.70); intended separation holds in 11/40, 10/40 and 7/40 seeds; the golden itself runs 0.64-2.75x the limit while the truth never moves",
+   "C2 long-term average over an averaging period the monitors do not produce": "three readings of one filed phrase at 45.88 / 38.61 / 38.64 on one cut, a spread of 7.27; the readings are the estimand's unit, which the WHAT screen forbids a decisive step from settling (task200's recorded death)",
+   "C3 forward exceedance probability from a declustered tail": "declustered rate 78.0 to 29.7 events a year across runs declustering at 1-72 h, a factor of 2.6, with nothing separating the choices (task194's chain-ladder death); graded figure 0.000 under every declustering choice against 2.636 undeclustered, so the sign is wrong too",
+   "C5 consented load carried by the complete record through a fitted transfer": "right sign and a large lever (grab mean x volume files 0.510 of the truth over 40 years, 0.376 on the cut year) but the same dial at both ends: narrow calibration window forks the honest variants by 910.5 kg in the decisive month and splits the run-start month 13/None/None/None, wide window makes the grab-fitted calibration land within 1-3 per cent of the campaign-fitted one (0.961/0.968/0.995/0.935 against 0.964/0.944/0.988/0.917); 0/5 seeds met all four pass conditions"
   },
-  "designation_set_screen": {
-    "assigned": "carry task194 architecture 6's designation-set device onto human-factors-ergonomics / safety-incident-error-analysis, screening against task181 first",
-    "cell_finding": "the assigned cell is the one spent pairing in this domain. human-factors-ergonomics has 2 builds in total and 6 never-built pairings (forecasting, root-cause, experiment-causal, etl, opportunity-sizing-decision, data-quality-monitoring) plus 4 never-drawn subdomains (usability-task-performance-studies, workload-fatigue-shift-analysis, human-reliability-assessment, alarm-interface-evaluation). The compatibility proof and the clone risk are the same fact.",
-    "corpus_check": "my forming claim that a designation set must decide a forward rate was refused by the corpus before reporting: 32 designation_set builds, only 4 on anomaly-detection, 13 on data-quality-monitoring and 8 on ETL, mostly designating a property rather than a rate.",
-    "device_verdict": "the designation set still discretises a free weighting away, which is intact and portable. It does not supply a driver. On this cell every driver a tolerance-exceedance call can carry is on file, three inside task181's own slot.",
-    "guard_blind_spot": "two of the six clones score under the 0.12 WARN line (0.11 against task181, 0.06 against task106) and are the same driver on all three abstraction elements. The lexical score cannot see a mechanism told in other nouns.",
-    "method": "guard.py nearest on each candidate driver, then the abstraction test on latent structure, default path and correction",
-    "not_run": "the published-adjustment sweep, the sixth screen and the four unspent screens, all of which take a candidate that survives the first screen.",
-    "proposed_redirect": "keep the device and the domain, move the cell off task181's. The device's densest home is data-quality-monitoring (13 of 32) and human-factors-ergonomics x data-quality-monitoring is a never-built pairing; alarm-interface-evaluation is a never-drawn subdomain whose call (is the alarm stream fit for the operator to use) is a monitoring decision about a signal stream's health by the objective's own definition, and whose furniture is counts and timestamps with no standardisation. Needs the coordinator's call because it moves the objective.",
-    "result": "six candidate drivers, six kills, all at the first screen. C1 unpublished exposure driver = task181 v4 (guard 0.11). C2 peak set by within-period clustering = dichotomy, a peak is records-fixed, plus task181 v3's data structure. C3 joint miss of two checks = readability test 6, escaped over committed is one group-by. C4 practice curve over staff experience = task183, plus tenure is a visible attribute. C5 classification lag = guard 0.36 against task181 v2, a driver.text BLOCK on a recorded death. C6 marginal contribution under overlap = task106 (guard 0.06)."
+  "mechanisms_screened": 4,
+  "method": "the pricing computations of stumping Part 3 and the WHAT screen of Part 1.2, each run as code on clean truth before any row was cut, then guard.py nearest and check",
+  "not_run": "no design note section beyond '## Tried and rejected', no prompt, no generator, no pack. precut.py was never reached because no candidate survived its screen.",
+  "pincer_test": "Run in writing on all five candidates on the coordinator's instruction of 2026-10-18 (the instruction itself was addressed to a grid-reliability-outage-analysis draw, which is energy-systems-utilities, not this cell). C1a, C1b and C5 pass it: their decisive quantities are estimated, so none died on estimand filing and none is revivable by filing the estimand better. C2 fails on the unit (already its recorded kill). C3's verdict changes and hardens: the declustering run length fixes the unit of the count and no parameter-free reading fixes it, so the measured 2.6x fork in the declustered rate is the symptom and task192 architecture v1 is the recorded death on that shape; C3 is not revivable by filing a selection criterion for the run length.",
+  "rigor_pattern_block": "None on this ground: layer2-rigor-patterns.md carries 14 domain sections and physical-environmental-sciences is not among them, and environmental-monitoring-exceedance appears in no block, so layer2_pattern takes own:<name> as task189's card does. The swap test was never this cell's problem; the decisive step's arithmetic was."
+ },
+ "designation_set_screen": {
+  "assigned": "carry task194 architecture 6's designation-set device onto human-factors-ergonomics / safety-incident-error-analysis, screening against task181 first",
+  "cell_finding": "the assigned cell is the one spent pairing in this domain. human-factors-ergonomics has 2 builds in total and 6 never-built pairings (forecasting, root-cause, experiment-causal, etl, opportunity-sizing-decision, data-quality-monitoring) plus 4 never-drawn subdomains (usability-task-performance-studies, workload-fatigue-shift-analysis, human-reliability-assessment, alarm-interface-evaluation). The compatibility proof and the clone risk are the same fact.",
+  "corpus_check": "my forming claim that a designation set must decide a forward rate was refused by the corpus before reporting: 32 designation_set builds, only 4 on anomaly-detection, 13 on data-quality-monitoring and 8 on ETL, mostly designating a property rather than a rate.",
+  "device_verdict": "the designation set still discretises a free weighting away, which is intact and portable. It does not supply a driver. On this cell every driver a tolerance-exceedance call can carry is on file, three inside task181's own slot.",
+  "guard_blind_spot": "two of the six clones score under the 0.12 WARN line (0.11 against task181, 0.06 against task106) and are the same driver on all three abstraction elements. The lexical score cannot see a mechanism told in other nouns.",
+  "method": "guard.py nearest on each candidate driver, then the abstraction test on latent structure, default path and correction",
+  "not_run": "the published-adjustment sweep, the sixth screen and the four unspent screens, all of which take a candidate that survives the first screen.",
+  "proposed_redirect": "keep the device and the domain, move the cell off task181's. The device's densest home is data-quality-monitoring (13 of 32) and human-factors-ergonomics x data-quality-monitoring is a never-built pairing; alarm-interface-evaluation is a never-drawn subdomain whose call (is the alarm stream fit for the operator to use) is a monitoring decision about a signal stream's health by the objective's own definition, and whose furniture is counts and timestamps with no standardisation. Needs the coordinator's call because it moves the objective.",
+  "result": "six candidate drivers, six kills, all at the first screen. C1 unpublished exposure driver = task181 v4 (guard 0.11). C2 peak set by within-period clustering = dichotomy, a peak is records-fixed, plus task181 v3's data structure. C3 joint miss of two checks = readability test 6, escaped over committed is one group-by. C4 practice curve over staff experience = task183, plus tenure is a visible attribute. C5 classification lag = guard 0.36 against task181 v2, a driver.text BLOCK on a recorded death. C6 marginal contribution under overlap = task106 (guard 0.06)."
+ },
+ "gates_run": {
+  "cracker.py": "pair ceiling 28.5, mirror leakage 0.0 per cent, cracker keeps 0 of 18",
+  "figures_check.py": "77 figures in blocks 1 to 4, 0 absent from generator/figures.json",
+  "freeze.py check task202 --mode rubric": "PASS: the main call, the stump and every frozen figure are unchanged",
+  "generator/make.py": "292 assertions passed; verify: 2161 independent checks; byte-identical rebuild",
+  "guard.py heart": "NOT RUN (the brief excludes it)",
+  "guard.py surface task202": "exit 0, highest promoted pair 0.102 (card-level, on the frozen draw)",
+  "input gates": "17 files, 5 formats (csv, eml, md, pdf, xlsx), largest portal_awards_2025-01_2027-03.csv at 26,195 rows, 3 distractors",
+  "leak.py --asof 2027-04-30": "verdict REVIEW (not LEAK), sweep 11 prompt gate clean",
+  "precut.py task202": "51 checks, 0 FAIL, 0 WARN, exit 0",
+  "two byte-identical rebuilds": "PASS, and target.zip identical across two separate cuts",
+  "verify.py": "2161 independent checks passed from the bundle alone; call PHP 7,800",
+  "voice-check.py": "PASS, exit 0, 996 characters"
+ },
+ "judge": {
+  "accepted": "yes, architecture 2 is spent; the recommended repair was declined because it files the method",
+  "disposition": "SEND_BACK",
+  "label": "underspecified_objective, with margin_or_boundary_fragility as an independent second failure",
+  "report": "see the judge section in DESIGN_NOTE.md and scratchpad/task202_verdict.md",
+  "verdict": "NOT_DETERMINISTIC"
+ },
+ "leak": {
+  "leak_py": "REVIEW, 0 LEAK, sweep 11 clean (target.zip 9311e9d6)",
+  "reader": "wave 6: missed the call (filed PHP 6,000, rung 1) and hit 19 of 19 ask figures it attempted, so 18 of 30 graded ask figures kept, pair 61.5 against a bar of 50. Scored by score_reader.py. The ask layer fails, measured, for the second time."
+ },
+ "loops": 0,
+ "nonprofit_ground_screen": {
+  "cell": "nonprofit-grant-making (client domain general-statistics-data-science) / grant-award-portfolios, task type exploratory-data-analysis-distribution-assessment, anomaly-detection, shape 14",
+  "kills": {
+   "S1 band boundaries on a latent distribution reached by a noise correction": "three defensible deconvolution estimators spread 10.8 to 21.5 times the printed unit against the 0.4 bar; lever over noise never reaches 2.5 across the range (0.30 at noise 0.3 to 2.11 at 1.5) and rises on the same single dial that opens the family; the well-measured-units subset beats the designed route from noise 0.6 up (7.65 against 9.83 printed units, 9.48 against 19.79); and a coverage commitment is struck on the quantity the decision can see, so the boundary is the recorded distribution's own percentile",
+   "S2 first setting, portal drawn by level": "pool-and-rescale-by-one-ratio reached the golden exactly (+0.0 printed units, same printed value on 3 of 12 seeds) because the portal was a miniature of the portfolio carrying both variance components; pool, stratify and reweight are all listed reflexes, so the setting spent the stump",
+   "S2 second setting, 5.4k portal awards": "a correctly specified two-component fit forked the graded ceiling by 8.2 printed units, because the cut is a tail functional of a shape",
+   "S3 the designating ask": "dropped on the sixth screen: the golden's own estimator family returns 2 distinct designated partner sets over 12 bootstrap redraws of the portal, set sizes 11 and 12, so neither the set nor its count is gradable"
   },
-  "gates_run": {
-    "cracker.py": "pair ceiling 28.5, mirror leakage 0.0 per cent, cracker keeps 0 of 18",
-    "figures_check.py": "77 figures in blocks 1 to 4, 0 absent from generator/figures.json",
-    "freeze.py check task202 --mode rubric": "PASS: the main call, the stump and every frozen figure are unchanged",
-    "generator/make.py": "292 assertions passed; verify: 2161 independent checks; byte-identical rebuild",
-    "guard.py heart": "NOT RUN (the brief excludes it)",
-    "guard.py surface task202": "exit 0, highest promoted pair 0.102 (card-level, on the frozen draw)",
-    "input gates": "17 files, 5 formats (csv, eml, md, pdf, xlsx), largest portal_awards_2025-01_2027-03.csv at 26,195 rows, 3 distractors",
-    "leak.py --asof 2027-04-30": "verdict REVIEW (not LEAK), sweep 11 prompt gate clean",
-    "precut.py task202": "51 checks, 0 FAIL, 0 WARN, exit 0",
-    "two byte-identical rebuilds": "PASS, and target.zip identical across two separate cuts",
-    "verify.py": "2161 independent checks passed from the bundle alone; call PHP 7,800",
-    "voice-check.py": "PASS, exit 0, 996 characters"
+  "limit_reported": "measuring the award shape on a subset of the portal (one band, or one tercile of portal partner level) moves the ceiling by up to 7.0 printed units, more than three of the seven rung separations. SF4 closes it by the pack's own band-homogeneity test, which does not reject, so the closure rests on a test rather than on the records: point the determinism judge here first.",
+  "mechanisms_screened": 3,
+  "not_run": "no generator, no pack, no goldens, no metadata.json, no submission.md, no verify.py, no figures.json; precut.py FAILs on 'card registered' and 'ceiling measured by a script'.",
+  "rigor_patterns": "both of the client's patterns for the task type are dead as stated on the estimand pincer: /1 pins the anomaly rule (rule application), /2 pins the grouping (the estimand's unit). layer2_pattern takes own:.",
+  "survivor": "the aggregation mechanism at the locked setting: the committed share has to be cut on the award-level distribution, which the claim returns (every partner's own average) and the portal (the within-partner shape) hold one half each. Default path 20.3 printed units low and refers 9.6 per cent against the committed 6.0; minimum separation across the seven wrong routes 1.8 printed units; golden stable 10 of 10 seeds; the portal refuses every smoothed shape at KS 12.5, 18.8 and 23.0 times the five per cent critical value; within-partner spread scales with partner level (corr 0.98) which refuses an additive shape."
+ },
+ "objective": "anomaly-detection",
+ "owner": "oviya13ya",
+ "resume": "architecture 5. Architecture 4 refused on the STEP, and it corrected this slot's own record twice. FIRST, the numbers the previous resume line cited (margin 0.8471 against 0.0432, licensed readings 7 of 7) are ARCHITECTURE 2's, not architecture 3's: architecture 3 reports three candidates and three measured deaths and no held step at all, so the instruction to find a world for a held step rested on a misattribution, and any future pass should stop repeating it. SECOND, architecture 2's step fails for a reason that is a property of the step and not of the world, so the old conclusion was backwards: closing the cell-grain fork needs a sentence fixing the grain a level is taken at, and such a sentence read literally says the awards are AT those levels, collapsing the within-cell distribution onto the default path, while the only sentence that avoids the collapse files the method. That pincer travels with the step into any world. Measured against Part 3 step three as corrected, the step fails clause 1 (one law for all 62,818 prototype cases), clause 3 (0.6827 of the prototype and 0.7607 of the real pack escape identification) and clause 4 (the distribution family is a free parameter; counted as a cross product the family has 48 members, three distinct calls, two standing). Its floor is also unreachable BY ALGEBRA: the factor is a case's value over its own cell mean, so it is a within-cell deviation and corr(log base, log factor) is pinned near zero (+0.0013 to -0.0405) against the minimising -0.8099, leaving the realised correlation at 0.77 to 0.79. Note for prototypes here: drawing base and factor independently UNDERSTATES rho on this shape (0.7716 against 0.8099) while flattering the realised reach, so it misleads in both directions at once.",
+ "rubric_fix": {
+  "diagnosis": "every graded figure was the call's own construction over the call's own population (ban 4, Part 1.2), so no device could sit under it (Part 2.1's corollary)",
+  "finding": "precut.py exit 1 on 'pair ceiling 65.5 (ceiling 40)' and 'cracker misses every ask: cracker keeps A1, A2, A3, A4, D1, D2'",
+  "frozen": "freeze.py check --mode rubric PASS; the call sentence in prompt.txt byte-identical, prompt 996 characters",
+  "measured": {
+   "cracker_keeps": "0 of 18",
+   "deepest_stop": "C3 keeps 5 of 18, pair 43.8",
+   "mirror_leakage": 0.0,
+   "one_whole_ask_cracked": "6 of 18, pair 46.8",
+   "pair_ceiling": 28.5
   },
-  "judge": {
-    "accepted": "yes, architecture 2 is spent; the recommended repair was declined because it files the method",
-    "disposition": "SEND_BACK",
-    "label": "underspecified_objective, with margin_or_boundary_fragility as an independent second failure",
-    "report": "see the judge section in DESIGN_NOTE.md and scratchpad/task202_verdict.md",
-    "verdict": "NOT_DETERMINISTIC"
-  },
-  "leak": {
-    "leak_py": "REVIEW, 0 LEAK, sweep 11 clean (target.zip 9311e9d6)",
-    "reader": "wave 6: missed the call (filed PHP 6,000, rung 1) and hit 19 of 19 ask figures it attempted, so 18 of 30 graded ask figures kept, pair 61.5 against a bar of 50. Scored by score_reader.py. The ask layer fails, measured, for the second time."
-  },
-  "loops": 0,
-  "nonprofit_ground_screen": {
-    "cell": "nonprofit-grant-making (client domain general-statistics-data-science) / grant-award-portfolios, task type exploratory-data-analysis-distribution-assessment, anomaly-detection, shape 14",
-    "kills": {
-      "S1 band boundaries on a latent distribution reached by a noise correction": "three defensible deconvolution estimators spread 10.8 to 21.5 times the printed unit against the 0.4 bar; lever over noise never reaches 2.5 across the range (0.30 at noise 0.3 to 2.11 at 1.5) and rises on the same single dial that opens the family; the well-measured-units subset beats the designed route from noise 0.6 up (7.65 against 9.83 printed units, 9.48 against 19.79); and a coverage commitment is struck on the quantity the decision can see, so the boundary is the recorded distribution's own percentile",
-      "S2 first setting, portal drawn by level": "pool-and-rescale-by-one-ratio reached the golden exactly (+0.0 printed units, same printed value on 3 of 12 seeds) because the portal was a miniature of the portfolio carrying both variance components; pool, stratify and reweight are all listed reflexes, so the setting spent the stump",
-      "S2 second setting, 5.4k portal awards": "a correctly specified two-component fit forked the graded ceiling by 8.2 printed units, because the cut is a tail functional of a shape",
-      "S3 the designating ask": "dropped on the sixth screen: the golden's own estimator family returns 2 distinct designated partner sets over 12 bootstrap redraws of the portal, set sizes 11 and 12, so neither the set nor its count is gradable"
-    },
-    "limit_reported": "measuring the award shape on a subset of the portal (one band, or one tercile of portal partner level) moves the ceiling by up to 7.0 printed units, more than three of the seven rung separations. SF4 closes it by the pack's own band-homogeneity test, which does not reject, so the closure rests on a test rather than on the records: point the determinism judge here first.",
-    "mechanisms_screened": 3,
-    "not_run": "no generator, no pack, no goldens, no metadata.json, no submission.md, no verify.py, no figures.json; precut.py FAILs on 'card registered' and 'ceiling measured by a script'.",
-    "rigor_patterns": "both of the client's patterns for the task type are dead as stated on the estimand pincer: /1 pins the anomaly rule (rule application), /2 pins the grouping (the estimand's unit). layer2_pattern takes own:.",
-    "survivor": "the aggregation mechanism at the locked setting: the committed share has to be cut on the award-level distribution, which the claim returns (every partner's own average) and the portal (the within-partner shape) hold one half each. Default path 20.3 printed units low and refers 9.6 per cent against the committed 6.0; minimum separation across the seven wrong routes 1.8 printed units; golden stable 10 of 10 seeds; the portal refuses every smoothed shape at KS 12.5, 18.8 and 23.0 times the five per cent critical value; within-partner spread scales with partner level (corr 0.98) which refuses an additive shape."
-  },
-  "objective": "anomaly-detection",
-  "owner": "oviya13ya",
-  "resume": "architecture 3 screened dead. The grid lever reopened and held on paper (margin 0.8471 against 0.0432, licensed readings 7-of-7 against 3-of-7, bootstrap 0-of-400 for the neighbour) and the architecture still cannot be drawn inside this world as it stands, which is a finding about the world rather than about the three candidates. A re-root here changes the world, not the step.",
-  "rubric_fix": {
-    "diagnosis": "every graded figure was the call's own construction over the call's own population (ban 4, Part 1.2), so no device could sit under it (Part 2.1's corollary)",
-    "finding": "precut.py exit 1 on 'pair ceiling 65.5 (ceiling 40)' and 'cracker misses every ask: cracker keeps A1, A2, A3, A4, D1, D2'",
-    "frozen": "freeze.py check --mode rubric PASS; the call sentence in prompt.txt byte-identical, prompt 996 characters",
-    "measured": {
-      "cracker_keeps": "0 of 18",
-      "deepest_stop": "C3 keeps 5 of 18, pair 43.8",
-      "mirror_leakage": 0.0,
-      "one_whole_ask_cracked": "6 of 18, pair 46.8",
-      "pair_ceiling": 28.5
-    },
-    "repair": "the 24 schedule figures scored in the recommendation block where they belong; the ask band re-sited onto three closed-period asks with one silent primary each (D6 an instruction standing on the run lines it covers, D3 a stock read as a flow, D4 a blank that means two things), 18 figures"
-  },
-  "stage": 1,
-  "stage_name": "draw",
-  "status": "PAUSED",
-  "task": "task202",
-  "updated": "2026-10-20",
-  "wave7_cell": "nonprofit-grant-making/grant-award-portfolios (world kept, decisive step re-rooted)",
-  "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
+  "repair": "the 24 schedule figures scored in the recommendation block where they belong; the ask band re-sited onto three closed-period asks with one silent primary each (D6 an instruction standing on the run lines it covers, D3 a stock read as a flow, D4 a blank that means two things), 18 figures"
+ },
+ "stage": 1,
+ "stage_name": "draw",
+ "status": "PAUSED",
+ "task": "task202",
+ "updated": "2026-10-23",
+ "wave7_cell": "nonprofit-grant-making/grant-award-portfolios (world kept, decisive step re-rooted)",
+ "wave7_note": "Wave 7, 2026-10-20: all seven stage-1 builds drawing together on the author's instruction to complete them. Contract at scratchpad/wave7/CONTRACT.md, carrying the nine screens the eight closures of 2026-10-19 earned, the inverted draw with its proxy step two, the laws on filed levels and on pins, and the axis rules. Each build has a cell it has never been on, except task202 which keeps its built and verified world and re-roots the decisive step inside it. The agents choose and declare their own axes and find their own mechanisms; the orchestrator allocates the cell and the constraints only, because the two mechanisms it prescribed in wave 6 both died. Cards stay unregistered until this session verifies each, so seven concurrent draws cannot race the guard."
 }

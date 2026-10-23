@@ -1493,3 +1493,119 @@ a closed accounting world whose only unobservedness is the portal's partial cove
 architecture 2 spent, so a re-root here has to change the world rather than the step. The cheapest honest
 options, in order, are to retire the number, or to redraw the cell with a world whose records are
 genuinely partial in a second place, and neither is this pass's call to make.
+
+### Architecture 4, the hunt for a world that carries the step: refused on the step (2026-10-23)
+
+The brief was to decide whether the step architecture 3's resume line records as holding really holds,
+and if it does to find a world whose records carry it. **The record is wrong twice and the second error
+is the one that matters.**
+
+**First, the numbers the resume line cites are architecture 2's, not architecture 3's.** The margin
+0.8471 against 0.0432 and the licensed readings 7 of 7 against 3 of 7 are the candidate-grid repair of
+2026-10-18, two sections above; the bootstrap 0 of 400 is the committed candidate's own separation in
+`## Default path`. Architecture 3's section reports three candidates and three measured deaths and no
+held step at all. So the step those numbers belong to is architecture 2's, the one this slot built and
+verified: cut the committed share on the award-level distribution rebuilt from each partner-band's own
+stated average times a scale-free within-partner shape measured on the portal.
+
+**Second, that step's live failure is a property of the step and not of the world, so the resume line's
+conclusion is backwards.** What spent architecture 2 was the pin: closing the cell-grain fork needs a
+sentence fixing the grain a level is taken at, and such a sentence read literally says the awards are
+**at** those levels, which collapses the within-cell distribution and files the default path's PHP 6,000.
+The only sentence that avoids the collapse says how the distribution is recovered, which files the
+method. Three positions, all dead, and none of them is about Philippine relief awards: the pincer follows
+from the correcting object being an estimated within-cell law over a record the main file only aggregates.
+It travels with the step into any world.
+
+**The step against `stumping` Part 3 step three as corrected (the identity clause withdrawn, the clause
+to hold being no free parameter), measured on a prototype's clean truth, harness run twice byte-identical
+(`out1.txt` and `out2.txt` at md5 `45884d7b8fa508b6592be97f5d155d08`):**
+
+| clause | verdict |
+|---|---|
+| 1 correcting quantity one per case | **FAIL**, one law for all 62,818 prototype cases, and 49,265 in the real pack |
+| 2 a second file at a finer grain than the main file carries | PASS, case against cell |
+| 3 no part of the record escapes it | **FAIL**, 0.6827 of the prototype escapes its identification and 0.7607 of the real pack (11,788 of 49,265 window awards, 22 of 88 partners) |
+| 4 the recovery has no free parameter | **FAIL** on the distribution family, which the corrected clause names outright, and on two groupings |
+
+Clause 4's free parameters, enumerated: the within-cell shape's distribution family, the grain the shape
+is measured at, the grain the main file's cells are taken at, and the weighting. Counted as the cross
+product rather than as one method in three hats, that is 48 members giving three distinct calls
+enumerated (a spread of two printed units) and two standing. The 7-of-7 licensed readings on file vary
+the shape measurement only, holding the family at empirical and the cell grain at the twelve-month
+aggregate, so it is a family counted too narrowly.
+
+**The screens, each on the prototype's clean truth, base and correcting factor drawn from ONE generating
+process (a unit's programme intensity drives both its level and its capital-item propensity).**
+
+- **Screen 0, the multiplicative-correction floor.** rho = sd(log factor)/sd(log base) = 0.8099 at the
+  honest coupling, floor 0.5865, so the step is not dead on the floor. **But the floor is unreachable for
+  this shape by algebra:** the factor is a case's value over its own cell's mean, so it is a within-cell
+  deviation and corr(log base, log factor) is pinned near zero, measured +0.0013, -0.0089, -0.0272 and
+  -0.0405 across couplings 0.00 to 0.90, against the minimising -rho of -0.8099 the floor needs. The
+  realised corr(log base, log designed) therefore sits at 0.7920, 0.7805, 0.7703 and 0.7720, never near
+  the floor. Drawing the two independently would have read rho 0.7716, so the independent prototype
+  understates rho here rather than flattering it; what it flatters is the realised reach, which runs
+  0.2253 to 0.4598 as the coupling rises.
+- **Screen 1, the designation screen in the dial's form.** PASS, and not narrowly. The correction acts on
+  every candidate of the dial, so there is no unaffected majority to restrict a ranking to and the
+  algebraic horn cannot fire. The correcting factor runs 0.7688, 0.8851, 1.4060, 1.8517 and 1.9706 across
+  the candidates PHP 4,000 to PHP 8,000 and is unbounded at the committed PHP 9,000 and above, because the
+  distribution of cell averages has no mass at all above the band ceilings there: the easy route refers
+  exactly zero cases at the committed candidate. The factor is nowhere near 1 where the dial is read.
+- **Screen 2, the family's spread.** Enumerated 48 members, three calls, spread two printed units;
+  standing 16 members, two calls, spread one printed unit; restricted to the genuinely within-cell
+  groupings, unanimous at the shipped setting. Loudness of the ruling-out: the fine file's own goodness
+  of fit rejects the lognormal at 12.415x and the gamma at 16.732x the five per cent critical value, and
+  the other requirement, reproducing each cell's stated average, rules out **nothing**, to 2.64e-13,
+  because a scale-free shape applied to a cell's own mean reproduces that mean at every grain.
+- **Screen 3, the cheapest construction.** PASS. The one-group-by route is to group the main file by
+  cell, divide total by count and cut that column; the easy route is wrong by two printed units. The
+  designed per-case value is linear in the cell average by identity, but the graded share is a tail
+  functional of the convolution, so it is not affine in the forcing column: corr(designed share, easy
+  share) +0.975313 over the candidate range with a maximum absolute difference of 7.4903 points. Every
+  reflex was enumerated in both its rate and its count form and the two forms file the same candidate,
+  because the committed cap and the case total are both constants of the window.
+- **Screen 4, the dial as its pass condition, counted jointly over 324 settings.** Real separation 64,
+  unanimous standing family 75, **both 5**; adding the rung floor, a mid-bin call and no rejected smooth
+  form on the call leaves **5 of 324**, and four of those five sit at the sweep's edge. The one dial reads
+  off rho directly: mean rho 0.9122 where the separation is real against 0.7091 where the family is
+  unanimous, corr(rho, separation) +0.2099 and corr(rho, unanimity) -0.2913. So the window exists and is
+  1.5 per cent of the grid, which is why this is refused on the clauses above rather than on the dial.
+- **Screen 5, a clearance for every rung.** **FAIL.** At the shipped setting the gamma-smoothed shape
+  files the committed call although the pack's own goodness of fit rejects it at 16.7x, and so does the
+  decisive step taken at the file's own month grain. Across the sweep a KS-rejected smooth form files the
+  committed call at **233 of 324** settings. A reflex reaching the golden spends the stump even when a
+  shipped fact rejects the reflex's distributional form, because the solver still files the figure.
+
+**The prototype of the blessed shape, built and measured, which is why clause 1 cannot be bought.** Give
+the second file a per-case factor identified for 1.0000 of the record and apportion each cell's total by
+it: the standing family over both cell grains collapses to one call and the standing spread is **exactly
+zero**, because the case-level values are then determined by one identity and the quantity the step
+exists to recover is observed. The determinacy screen passes exactly where the rule-application ban
+fires. That reproduces independently the measurement that withdrew the identity clause.
+
+**The corpus kill, which is the brief's own question already answered twice.** `guard.py slots` on the
+mechanism's nouns returns two sibling slots that carried this driver into two other worlds on 2026-10-20
+and refused it on measurement. task200's fifth ground put it in a blend-unmixing world and killed it on
+the abstraction test against this slot's own card ("a model that learns this has already learned
+task202's lesson"), on the cheapest construction (affine in the forcing column, 0.0026 against 0.0028)
+and on an estimator family 7.7 times the permitted width. task201's candidate 14 put it in a
+repeat-measurement world and filed the general rule: the within-against-between variance decomposition of
+a distribution's cuts is one driver whichever end of it a design stands on, so a candidate that moves a
+tail by removing or adding a within-unit variance component is spent while task202 stands. **Two worlds
+were already tried and both were refused on the driver rather than on the world.**
+
+**Rule earned, which is the reason behind task201's precedent rather than the precedent.** Where the
+unobserved quantity is the within-group distribution of the records' own values, the corrected blessed
+shape is unreachable in every world: clauses 1 and 3 can be met only by observing every case, which
+determines the values and makes the step a join, and where they are not met the recovery carries a
+distribution family and two groupings, which clause 4 names. So no world carries this step, and the
+positive specification for this slot's next pass is a per-case quantity that stays unobserved while a
+finer file pins it through a form the design fixes with no free parameter, the way the one Gate F strong
+build on file fits a linear ramp between two shipped endpoints.
+
+**Two housekeeping findings stand unresolved from architecture 3 and both still block the successor:** the
+v1/v2 card carries no `architecture_spent`, so its axes still fence off ground no live build occupies, and
+`guard.py names --geo PH` has no locale mapped and returns the en_US pool. Nothing was registered in this
+pass and no card was filed.
