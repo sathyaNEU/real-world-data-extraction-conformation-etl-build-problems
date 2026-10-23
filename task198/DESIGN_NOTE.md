@@ -2350,3 +2350,53 @@ files that name the operational quantities the field decides on. Rule 1 pushes t
 towards something the field estimates, and readability test 1 pushes it away from anything a filed sentence
 names, and on this ground those two pull in opposite directions. The quantities with no entry in anybody's
 dictionary turned out, three times running, to be the ones that are not operations quantities at all.
+
+- **Architecture 12, four candidates on `accounting-audit-forensic`/`payables-expenses`, refused.** The pass
+  enumerated the correcting-quantity types the blessed shape admits (a duration, a count, a currency amount)
+  and killed all three, so the refusal is structural rather than three misses.
+  - **D1 duration**, failures per powered hour from an asset event log: `corr` with the cheapest
+    one-group-by route **+1.000000** and a maximum absolute difference of **exactly zero on every draw**,
+    standing family **1.00 distinct designated classes of 4** at a spread of **3.52e-06** against a printed
+    unit of 0.01, and the designed route never clears its own rung floor (median clearance 1.0388 against
+    1.15). This is architecture 11's prescribed re-placement, and it cures that determinacy death by landing
+    on the rule-application horn instead.
+  - **D2 count**, breaches per priced line: `corr` **+1.000000**, unrounded maximum absolute difference
+    **7.1e-15**, because breaches over lines is identically (breaches per invoice) over (lines per invoice).
+  - **D3 currency**, leakage per unit of contract-covered spend: cleared the designation screen (factor
+    1.5096 mean, drop-the-affected route 0 of 20) and the cheapest-construction screen (`corr` +0.7928,
+    cheap route 9 of 20 against the designed 17 of 20), then died on a pincer with both horns measured.
+    Coverage filed: one clause puts the binary-collapse rival **66.1 printed units** from the golden, so the
+    decisive step is reading a shipped field, which is data semantics. Coverage recovered by matching invoice
+    lines to contract items: **1.45 distinct designated suppliers of 6** and a graded-figure spread of
+    **22.2 printed units** across the match tolerance, which is a knob and this slot's architecture-1 death
+    verbatim. The joint dial count is **0 of 36 cells, twice over**, with requirement R3 failing in every one
+    of the 36 at 40.1 to 341.2 printed units, monotone in the only honest lever on separation.
+  - **Two corrections the pass made to its brief, both re-measured here before being accepted.** First, the
+    two cells `guard.py coverage` prints as never-built on this objective are a house-domain label artefact:
+    neither carries a card under its own label, but the client task types a house draw must route through
+    are carded, **4** on the types `accounting-audit-forensic` inherits (task182, task185, task191, task196)
+    and **6** on those `business-operations-analytics` inherits (task181, task182, task185, task191,
+    task194, task198). So the pairing is unbuilt while the ground is not, and the conclusion that the only
+    renewable axis here is the driver is strengthened rather than weakened. Second, the shape's identity
+    clause was wrong and is now corrected in `stumping`: see below.
+  - **The general result, and it is why the three candidates died together.** Requiring the second file's
+    quantity to enter linearly and by identity makes the per-case correcting quantity a shipped quantity, so
+    the graded quantity is a deterministic function of shipped columns and the construction IS the cheapest
+    one-group-by route. Making it unobserved restores the analysis and reopens the estimator family in the
+    same stroke: architecture 11's free exponent (2.70 designated classes of 5, 165.9 per cent of level) and
+    D3's match tolerance (1.45 of 6, 22.2 printed units) are one failure in two worlds. The operative test
+    is 1.6a's, do the standard variants agree on the graded figure, and the clause to hold is **no free
+    parameter, never no fit**, since task197 recovers its per-case quantity by least squares on a linear ramp
+    between two shipped endpoints and is the one build on file with Gate F strong.
+  - **Fresh axis read for the next pass.** On a probe card carrying the accounting cell, `guard.py check`
+    BLOCKs on three axes that are functions of the cell and not of any mechanism: `test.own_lineage` against
+    this slot's own v4 on the triple (gap `objective`, pattern G1, Gate G `method_or_model_selection`),
+    `ban.role` on `compliance_or_audit` against task478, and `ban.shape` on shape 01 against task478. A
+    sweep of nine strategy values returned an identical verdict every time, so no `ban.strategy` fires on
+    this cell today and the BLOCKs are not clearable by relabelling the strategy.
+  - **Where to draw next:** ground whose organisation keeps a file pinning a structure, an order or a
+    condition it is **not obliged to publish**, rather than another administrative or payables record. The
+    four grounds measured so far on this slot (claims ledger, safety record, barrier investigation record,
+    payables ledger) all return the same dichotomy, exact arithmetic on a shipped structure or a fit that
+    opens the family.
+
