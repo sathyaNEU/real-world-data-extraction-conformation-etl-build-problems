@@ -1002,6 +1002,167 @@ direction is both occupied and dead, and no harness was spent on it. And the rec
 `ban.strategy` BLOCKs against task273 in the live window; differentiation never clears an axis ban, so that
 half is shut this sitting and open again three builds later.
 
+- **Architecture 4 opens on the propagation family, 2026-10-23, and this bullet is written before the first
+  harness so the plan is on record with its predicted failure modes.** The closed family is not re-entered: the
+  "correcting quantity one per case from a second file at a finer grain" clause is shut as a clause and all six of
+  its laws (the floor, the averaging-out, the pincer, the dispersion ceiling, the geometric mean, the
+  cheapest-licensed-member) are taken as given. The ground drawn instead is the one task125 shipped on today: a
+  change acts on a unit that is NOT the unit the data is reported at, and propagates through a structure the
+  organisation's own process imposes, so each reported period is a mixture of regimes whose proportions move.
+  **The family's binding screen is not separation and not the floor law; it is the abstraction test against
+  task125**, whose own driver is the rotating-panel member of this family, so a candidate must differ in the
+  LATENT STRUCTURE and in the CORRECTION, since the default path ("attribute the effect to the reporting unit")
+  is shared by every member of the family by construction and therefore cannot differentiate anything.
+- **Two members of the family killed structurally before any harness, each for one line's reason.**
+  - **The queue's duration-selection member** (the change acts at entry, the statistic is measured on leavers, and
+    the first post-change leavers are the fast ones) is the common-exposure subset screen's time-axis form, which
+    `stumping` 1.2 measures dead: "use the entry cohorts old enough to be complete" is a filter and a divide with
+    no model, reaching the truth 14 of 20, and the record's own completion date, one group-by and one divide,
+    reaching 20 of 20. It is also `maturity_censoring`, which task194 holds as its live driver on this objective
+    and task201 and task171 carry beside it.
+  - **The staggered-conversion member whose conversion ORDER carries the selection** (a cycle brings the highest
+    units through first, so the aggregate overshoots and comes back) dies on readability tests 2 and 3 together:
+    the cycle's order is a risk band or a due date, both columns, so "stratify on the visible attribute and
+    reweight" is the opponent's first reflex and it reaches the mixture directly. The member survives only where
+    the affected unit's identity is NOT a column, which is the property task125 had to build (no field marks a
+    later-wave record as recruited under the cap).
+- **The one shape in the family whose CORRECTION differs from task125's, and the pass's lead candidate: a
+  re-phasing.** Where the change moves WHEN a unit's recorded quantity falls rather than how large it is, the
+  operator preserves each case's total and moves it across reporting periods, so the graded path sums to
+  approximately zero over one full cycle and reverses sign partway through. task125's correction propagates a
+  LEVEL gap through a fixed run and is one-signed in every period of that run. Predicted failure mode, to be
+  priced first: the counterfactual schedule is exact arithmetic on recorded fields, so the `Not rule
+  application:` line is argued from the unit-of-analysis carve-out rather than measured, exactly as task125's own
+  note records of itself; and the determinacy screen passes trivially for the same reason (task125 measured 3e-06
+  point of spread across six licensed variants), so this family trades the horn C3 died on for the horn task125
+  survived by carve-out.
+
+- **The not-a-per-case-correction test, written out and MEASURED as a discriminator rather than asserted.**
+  The closed family's operator acts inside a case and scales its value, so the graded quantity is
+  `sum_c obs_c (1 - 1/d_c)` and every reported period moves the SAME way; the propagation family's operator
+  preserves each case's total and moves it across reporting periods. Two statistics separate them exactly:
+  `R = sum_q |G(q)| / |sum_q G(q)|` over one full cycle, and the number of sign changes in the graded path.
+  Measured on one world, with a genuine per-case correction built on the SAME rows as the control:
+  the per-case correction returns **R = 1.000 and 0 sign changes at sd(log d) of 0.35, 1.00 and 2.00**
+  (G/obs stays inside -0.073 to -0.053, -0.674 to -0.581 and -6.971 to -5.079 respectively, never crossing
+  zero), while the re-phasing candidate returns **R = 4.393 with 1 sign change and G/obs running -0.0546 to
+  +0.1072**. So R equal to 1 is an identity for the closed family rather than a tendency, and any candidate
+  measuring R = 1 with no sign change IS a per-case correction in other nouns whatever its nouns are. **This
+  test belongs in the next pass's first ten lines of code**, before any separation or determinacy work: it
+  costs one aggregation and it is exact.
+- **C5, the re-phasing member (a 30-day to 90-day fill-size change applied at each member's own prescription
+  renewal, graded as the published spend per member per month in each reported period): separates strongly and
+  dies on DETERMINACY, measured, which is C3's horn in new nouns.** Separation is real and every reflex lands
+  wrong in a different direction, golden path per quarter from 2026Q1 **+0.00, +0.04, +11.40, +13.17, +0.52,
+  -3.72, -5.80, -6.29 USD PMPM** against the "change acts on the period" route's constant **0.00** (max error
+  13.17), the "apply it where it is visibly in force" route's **-0.00, -0.00, -1.30, -2.96, -6.17, -6.85,
+  -6.94, -6.98** (max error 16.13, and the WRONG SIGN in the two roll-in quarters), the carried-forward route's
+  constant **+11.40** (max error 17.69) and the cross-sectional 90-day-against-30-day route's **+28.94,
+  +46.78, +48.78, +33.46, +113.73, +115.16** (max error 121.44). The kill: the counterfactual has to project
+  each member's own refill CADENCE across the whole graded window, and four licensed readings of that cadence
+  (the benefit's own 30 days; the member's own observed median interval; the member's own realised interval
+  sequence; the plan-wide median interval) spread the graded figure a **mean of 13.32 and a maximum of 40.52
+  USD PMPM against a printed unit of one cent**, about 1,330 times the printed unit on average and 13 times
+  even at a printed unit of one dollar. **The window-length dial does not open it:** spread over mean absolute
+  golden runs **294.7 at 2 periods, 1.790 at 4, 2.219 at 6, 1.730 at 8, 1.718 at 10 and 1.789 at 12**, so the
+  licensed family is about twice the signal it has to carry at every window length, because a one-day
+  difference in a licensed cadence compounds linearly in the window while the signal does not.
+- **The law the C5 kill earns, and it is about the family rather than about pharmacy.** A counterfactual over
+  a propagation structure is exactly one of two kinds. **K1, a re-selection or reweighting of RECORDED rows**
+  (task125: drop the capped-out households from a pre-change quarter and re-rake), which is exact arithmetic,
+  so the licensed family's spread is essentially zero (task125 measured 3e-06 point across six variants) and
+  the `Not rule application:` line has to be argued from the unit-of-analysis carve-out. **K2, a re-timing or
+  re-generation of events that were NEVER recorded**, which needs a behavioural quantity projected over the
+  window, so the family spread compounds in the window length and the determinacy screen fires. The two are
+  exhaustive: either the counterfactual's rows sit in the record as rows belonging to other units or other
+  positions of the structure, or they do not exist and must be generated. **So price which kind a candidate is
+  before anything else; K2 is closed by this measurement and K1 is where the family's one shipped build sits.**
+
+- **C6, the structure-length member (the term of the structure itself shortens, here a 12-month
+  prior-authorisation term cut to 6 at each authorisation's next renewal, graded as discontinuations per 1,000
+  on therapy per quarter): dead twice over, and its first death is the useful one.** By the S1 test it carries
+  **the closed family's own signature, R = 1.000 with 0 sign changes**, because shortening the structure's term
+  can only add review opportunities, so every reported period moves the same way and the graded path is a
+  per-unit level correction propagated through a calendar: the six closed laws therefore apply to it and the
+  orchestrator's point 1 is answered by measurement rather than by argument. It also dies on determinacy on its
+  own account: the counterfactual needs a drop-off outcome for reviews that never happened, and the five
+  licensed hazard forms an analyst would estimate off the pre-change record (pooled, by class, by duration band,
+  class by duration, a logistic fit on duration) spread the graded path a **mean of 11.33 and a maximum of
+  33.24 per 1,000 against a printed unit of 0.1**, about 113 times the printed unit and **4.293 times the mean
+  absolute truth**, with the pooled and by-class forms printing the wrong SIGN in eight periods of ten.
+- **K1, the determinate kind, priced for a FRESH draw rather than taken on task125's result, and it is held by
+  its own two pack conditions rather than by the family.** Prototype: units enter in cohorts, each cohort
+  occupies five consecutive reported periods, a change at entry removes a class whose outcome gap decays with
+  position, everything drawn from one process (a cohort's season drives its size, its affected share and the
+  gap together).
+  - **A, the rebuild period is a licensed choice and it is NOT free.** Rebuilding the removed class's position
+    profile on each of the five pre-change cohorts spreads the graded path a **mean of 0.1038 and a maximum of
+    0.1582 index points against a printed unit of 0.01**, 10 to 16 times the printed unit and **0.287 of the
+    mean absolute truth**. task125 drove that to nothing with its SF4 row by showing exactly one quarter
+    qualifies (every earlier uncapped quarter is missing visit histories for 15 per cent or more of the sample
+    and every later quarter is itself capped). That is a property of task125's own pack, not of the family, so a
+    fresh K1 draw has to reproduce the same condition.
+  - **B, the generic data condition hands over the route.** With the affected class flagged at every position,
+    which is what most structures do (a priority class, a scheme code, a tariff flag rides on every row), the
+    one-group-by route (group by flag and position over recorded rows, add back) lands the golden path at
+    **maximum absolute difference 0.0337 index points and corr +0.9979**. So K1 is drawable only where no column
+    marks an affected unit at the later positions of the structure, which is again task125's own stated
+    condition ("no column marks a later-wave record as recruited under the cap").
+  - **C, K1's graded path carries R = 1.000 and 0 sign changes**, the closed family's signature, like C6.
+- **The law the three candidates jointly earn, and it is the pass's main result: in the propagation family,
+  R = 1 and determinacy are the same end of one dial.** A one-signed graded path (R = 1) means the correction is
+  a per-unit LEVEL correction propagated through the structure, whose counterfactual is a re-selection of
+  recorded rows: determinate, and carrying the closed family's own signature, so the six laws bind it. A graded
+  path that changes sign (R greater than 1) means the counterfactual has to re-time or re-generate events that
+  were never recorded, so its licensed family's spread compounds in the graded window and the determinacy
+  screen fires. Measured at both ends in one pass: C5 **R 4.393** with a family spread of **1.7 to 2.2 times**
+  the signal at every window length from 2 to 12 periods; C6 **R 1.000** with a spread of **4.293 times**; K1
+  **R 1.000** with a spread of **0.287 times** and the cheap route at **corr +0.9979** once the affected class
+  is flagged. The one unpriced cell of that dial is a path that changes sign while its counterfactual stays a
+  re-selection of recorded rows, which needs the selected class's gap to reverse sign with position; that is
+  the next measurement and it is priced below.
+- **Two further members closed by arithmetic rather than by a screen, because each costs one line.**
+  - **Removal and addition are not symmetric, and only removal forces the reasoning.** A change that ADDS units
+    at entry leaves the counterfactual directly recorded, because the added units and all their later rows are
+    in the pack with their own identifiers, so the counterfactual is a filter on two recorded columns and
+    nothing is left to decide: rule application with no unit-of-analysis carve-out. A change that REMOVES units
+    leaves the counterfactual absent from the post-change record, which is exactly what forces the analyst to
+    ask at which positions of the structure the removed class would have sat and to rebuild on a period that
+    observes it at every one. So the family's forcing configuration is removal, and task125 holds it.
+  - **The no-counterfactual variant of the family is Forecasting and not this lane.** Grading the forward value
+    of the published series itself needs no counterfactual, so the K1-versus-K2 pincer does not bite it at all,
+    and the structure's own calendar pins each future period's mixture. But a predicted value the history pins
+    is Forecasting by `guide-to-prompt`'s own tag rule, and separating a real event from an artifact on
+    anomaly-detection IS a counterfactual comparison, so on this objective the family must grade a
+    counterfactual and the pincer is binding. The family's live member sits on another objective.
+
+- **The propagation shape is withdrawn as a driver mid-pass by the orchestrator, and this slot's own
+  measurement had reached the same wall from the other side, independently and before the correction arrived.**
+  The sibling's kill is that the cheapest licensed route IS the golden (one join to the register, one two-way
+  group-by on regime by position, one reweight, RMSE 0.0072 and max 0.0170, 2.8 and 3.3 per cent of its own
+  level) and that this is structural by a LINKAGE TRICHOTOMY: the mixture weights must be shipped for the path
+  to be computable and the position variable ships with them, so a row carries its cohort directly (one
+  group-by), or carries a key a register maps (one join plus one group-by, the same cost), or carries nothing
+  identifying the unit, in which case the profile is recoverable only from the published series, which is the
+  quantity in question (a cubic trend with seasonal terms reproduces 90.5 per cent of the distortion path's
+  variance). **Measurement B above is the same finding reached from this slot's own prototype**: with the
+  affected class flagged at every position, the one-group-by route lands the golden path at corr **+0.9979** and
+  max absolute difference **0.0337 index points**, so the two passes agree that the family's cheap route is its
+  golden wherever the position is linkable. The guard refuses it besides, BLOCK on `test.same_puzzle_older` and
+  `test.same_driver_older` against task125 (v2) with `driver.near` 0.19, and task125's own `Lesson:` line states
+  the generalisation verbatim, so no differentiation line can be written honestly. **Nothing in the propagation
+  family is taken to a card by this pass.** The measurements above stand as the family's closure from this
+  slot's side and are not to be re-screened: C5 on determinacy, C6 on determinacy and on the closed signature,
+  K1 on the rebuild-period family and the flagged-position cheap route, plus the removal-versus-addition
+  asymmetry and the Forecasting-only no-counterfactual variant.
+- **The turning-point direction is refused without a harness, for one line's reason.** Grading the path's
+  turning point instead of its levels changes the graded object and not the driver, and the orchestrator's own
+  note concedes it "remains task125's driver unless the propagation is not task125's". A level-dependent
+  discrete object on this lane is also proven ground rather than new (task164 and task263 grade a
+  level-dependent threshold count), and this slot's architecture 3 already measured the nearest discrete
+  crossing object dead on determinacy at 24.38 days against a printed unit of one day. Two reasons, no screen
+  spent.
+
 ## Resume
 
 Do not re-screen anything above: twenty-six mechanisms across four grounds are now measured or structurally

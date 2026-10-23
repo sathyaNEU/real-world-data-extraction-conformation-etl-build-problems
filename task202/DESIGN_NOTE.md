@@ -1627,3 +1627,29 @@ one that keeps its world (`nonprofit-grant-making/grant-award-portfolios`).
 last three registered builds as task275, task483 and task482, not task269 to task271, so the contract's
 copied ban table is stale in both directions exactly as `stumping` Part 3's role rule predicts. Bans are
 read off `guard.py check` at the moment the card is drafted, not off the table.
+
+**`guard.py slots` on the propagation shape, both runs (the mechanism's nouns and the setting's).** Run on the
+driver sentence and on `propagation cohort mixture intake --min-terms 2`. Nothing kills the shape; three
+hits were read in full and none is this insight: task177's "free trials withdrawn so that the post-change
+cohort is a mixture" died because **its mixture weights and a third type forked the family**, which is the
+measurement my candidate has to pass rather than a kill on the shape; task171's blinded-trial enrolment
+amendment died on a hazard carried into unobserved durations; task125's own line keeps a cohort run-off at
+rung 3. So the live question for this pass is **determinacy of the mixture weights**, and that is what the
+harness below prices.
+
+**The structural constraint this world puts on the shape, written before any candidate was coded.** The
+reported file is the monthly claim return at partner-band-month (count and total, nothing else) and
+award-level detail exists only for 2 of 8 provinces (the portal). So a propagation whose affected set is a
+row predicate in the portal is handed over to the solver, and one whose affected set has to be recovered
+award by award for the other six provinces is the per-case-correction family this slot has already closed.
+What is left is a propagation whose **mixture weights are exact at partner-month grain**. Three structures in
+this world can supply them: the partner's three-year accreditation term (clause 1.3), the scheme year, and
+the partner's assessment queue between receipt of an application and payment of the award (clause 4.5 makes
+the claim month the month the partner paid).
+
+**Candidate A, taken to code: the surge-schedule queue.** The Board authorises a surge assistance schedule
+for applications **received** in a bounded window after a typhoon; partners work their own backlogs, so an
+application received inside the window is paid, and therefore claimed, in a month that may fall months
+after the window shut. The unit the change acts on is the application as received; the reported unit is the
+claim month; the structure is the partner's own backlog, which lengthens when the surge raises demand and
+drains afterwards. The effect therefore **outlasts the policy**, and the easy route files a rectangle.

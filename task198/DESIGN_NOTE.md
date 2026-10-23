@@ -2400,3 +2400,150 @@ dictionary turned out, three times running, to be the ones that are not operatio
     payables ledger) all return the same dichotomy, exact arithmetic on a shipped structure or a fit that
     opens the family.
 
+
+### Architecture 13, the propagation-through-structure shape on the wave-7 cell (2026-10-23)
+
+**The slot and the cell.** Architecture 12 refused on `accounting-audit-forensic`/`payables-expenses`
+after the complete enumeration of the correcting-quantity types the blessed shape admits. This pass
+returns to the wave-7 allocated cell, `physical-environmental-sciences` /
+`environmental-monitoring-exceedance`, objective anomaly-detection, which the taxonomy serves (AD and
+DQ) and which no sibling in the wave holds: the wave-7 table reads task182 criminology-justice,
+task190 healthcare-delivery, task194 epidemiology-public-health, task200 general-statistics,
+task201 survey-research, task202 nonprofit-grant-making. The accounting cell is not drawable at all
+today, since `guard.py check` BLOCKs there on `test.own_lineage`, `ban.role` and `ban.shape`, none of
+them strategy-clearable, so no driver makes it registrable.
+
+**What the cell has already spent, read off the cards rather than off `coverage`.** Two AD cards
+(task180, a detection threshold masking the smallest events through a diurnal noise cycle; task189, a
+per-unit average over values known only to lie below instrument-specific limits) and four DQM cards on
+the same ground (task245, a count over a cycle from a record whose gaps follow the source's own wind
+bearing; task247, a running sum built from gap-filled days that understate during a warm spell;
+task229 and task252, sensor-calibration). task263 (`emissions-inventory`, descriptive) holds the
+mixture-of-sources driver and is named spent in the brief. So the cell's spent drivers are all about
+how the instrument or the record sees the quantity, and none is a propagation shape.
+
+**The shape this pass is sent to hunt, and the one thing it has to escape.** A change, rule or policy
+acts on a unit that is NOT the unit the data is reported at, and its effect propagates through a
+structure the organisation's own process imposes, so each reported period is a mixture of affected and
+unaffected units whose proportions move period by period. task125 shipped on it 2026-10-23 with the
+measured path 0.39, 0.53, 0.62, 0.47, 0.28 against rung 0's 0.21, 0.21, 0.21, 0.00, 0.00 and rung 1's
+0.60, 0.85, 1.07, 0.95, 0.67. `guard.py slots` on the mechanism's own phrasing ("unit the change acts
+on", "acts on the cohort", "mix of affected and unaffected", "proportion of affected units") returns
+task125 alone, so no other slot has screened it; the setting nouns (exceedance, permit, consent,
+discharge, borehole, abstraction) return nothing at two or more terms.
+
+**The engine of the shape, named before anything was screened, because it decides what can carry it.**
+task125 works on four ingredients and not on three: a documented change; the affected set identifiable
+only by a join to a finer-grain file; the affected units' influence persisting into later reported
+periods through a structure; and a **true, shipped, operational sentence that makes the easy route
+believe the influence does not persist** ("telephone interviews at waves 2 to 5 are unchanged", which
+is true of the protocol and which the easy route misreads as a fact about the sample). The fourth is
+the organ, and it is why the default path ends wrong rather than merely long. Any candidate for this
+shape is screened on all four.
+
+**Three propagation organs were drafted as driver sentences and measured against the corpus before any
+world was named.** `guard.py nearest` on probe cards carrying only the driver:
+
+| Probe | organ | nearest driver | task125 |
+|---|---|---|---|
+| H1 | membership of the reported population, retained for a programme term | 0.07 task125 | 0.07 |
+| H2 | an accumulated stock whose vintages enter on the organisation's rota | 0.08 task457 | under 0.04 |
+| H3 | a capacity-limited queue whose service order changes | 0.06 task125, 0.06 task148 | 0.06 |
+
+**H1 is dead at the draw on the abstraction test, and the lexical score is exactly the trap the
+abstraction test exists for.** Stripped of nouns H1 reads: a change alters which units enter the
+statistic's population, each entering unit persists for a term, so each period mixes regimes and the
+first period's gap is neither the later gap nor zero. That is task125's latent structure, default path
+and correction, in three words' difference, at a driver score of 0.07 which is under the 0.12 WARN
+floor. `stumping` Part 6 is explicit that an insight told in other nouns is the same driver at any
+similarity, so H1 is not drawable however fresh the ground. Recorded because the lexical screen
+cleared it and the abstraction test did not.
+
+**H3 is dead at the draw on rule 3 without a measurement.** A queue's service order is a stated
+discipline: the pack must ship the prioritisation rule for the world to be realistic, and the
+counterfactual is then produced by re-running that stated rule over the recorded arrivals with the
+recorded capacity. The only residue is the capacity, which is recorded. So the decisive step is
+executing a filed procedure, which `CLAUDE.md` rule 3 bans as the decisive step, and the one thing
+that is not rule application (that a reordering is near zero-sum in throughput while the count over a
+limit is non-linear in waiting time) is a loop-fixable slip rather than a rung.
+
+**H2 is the only organ whose latent structure differs from task125's**, so it was taken to measurement.
+
+**H2 measured, and it dies on the identity horn at max absolute difference exactly zero.** World
+(clean truth, one generating process, 20 draws, screen run twice to byte-identical output): a county's
+biosolids-to-land programme, 60 fields on 12 farms, each field dressed once per turn of its farm's
+three-to-five-year rotation, soil zinc conservative in the sampled horizon so the level is a running
+sum of every past dressing, the regulator counting each year the fields over the statutory 200 mg/kg.
+A tighter sludge metal specification binds the 2026 and 2027 dressings only. Graded object: the path
+of the distortion the specification contributes to the published count, 2026 to 2030.
+
+| route | seed 1 | seed 5 | seed 4 |
+|---|---|---|---|
+| golden (mass balance, post-2026 dressings at the old specification) | 1, 2, 2, 2, 1 | 1, 2, 2, 2, 2 | 0, 1, 1, 1, 1 |
+| R0 attribute to the reporting year (this year's lost increment) | 1, 1, 0, 0, 0 | 2, 1, 0, 0, 0 | 1, 3, 0, 0, 0 |
+| R1 carry the first graded year's difference forward | 1, 1, 1, 1, 1 | 1, 1, 1, 1, 1 | 0, 0, 0, 0, 0 |
+| R2 only the fields dressed that year | 1, 1, 0, 0, 0 | 1, 1, 0, 0, 0 | 0, 1, 0, 0, 0 |
+| R3 hold the rota weights fixed (a flat 1/L each year) | 0, 2, 0, 1, 0 | 1, 0, 1, 1, 2 | 1, 0, 0, 0, 0 |
+| **cheapest licensed route** | **= golden** | **= golden** | **= golden** |
+
+The reflexes do separate, and they separate in different directions as the shape requires. The kill is
+the last row: **the cheapest licensed route is the golden, at a maximum absolute difference of exactly
+0 over all 20 worlds and all 5 graded years.** The reason is structural rather than a tuning accident.
+The counterfactual here is the same mass balance over the same shipped application register with one
+shipped column swapped (the batch specification), so the construction IS the register's own arithmetic
+and the propagation happens for free: the register records each dressing's vintage, so summing it
+propagates whether or not the solver has had the insight. That is architecture 12's D1 and D2 kill in
+other nouns (corr +1.000000, maximum absolute difference exactly zero and 7.1e-15 there). Second,
+smaller finding: the graded counts have no resolution either, the golden peak distortion averaging
+1.30 fields of 60 over the 20 worlds with a maximum of 4, so even without the identity the path would
+be seed hostage.
+
+**Horn (c), the effect unrecorded, measured on the same cell and dead on determinacy.** World: a
+regional air quality network of 42 stations; from 2026 the agency's new micro-siting guidance puts a
+station replaced or relocated at the worst-case kerbside position; a station keeps its position for
+life; the programme replaces about a seventh of the network a year in a risk-weighted order; the
+published statistic is the count of stations over the 40 ug/m3 annual mean. One generating process
+drives traffic exposure, the base level, the siting increment and the replacement order together.
+Graded object: the path of the distortion the guidance contributes to the published count, 2026 to
+2032. The siting increment is unrecorded, so the counterfactual needs an estimate; the agency
+parallel-ran four stations for one year.
+
+The separation is real and the reflexes land wrong in different directions (seed 1: golden
+4, 8, 13, 11, 19, 21, 19 against a pooled step's 3, 2, 4, 5, 5, 10, 11). It dies on the family:
+**4.80 distinct graded paths of 5 over 20 worlds, a mean per-year spread of 3.11 stations against a
+printed unit of 1 station, and only 7 of 20 worlds in which any family member reproduces the golden
+path exactly.**
+
+**And the dial is one-ended, measured jointly over 16 cells and not as two marginal patterns.**
+Sweeping the only honest lever on the family's spread, how many stations were parallel-run (4, 8, 16,
+42) by how precisely (sd 0.90, 0.45, 0.15, 0.03): **0 of 16 cells** give family unanimity with all
+four reflexes wrong and distinct. Re-run on the STANDING family (dropping the pooled members once the
+parallel-run data visibly refutes a one-number increment) the two ends read off one table: the
+standing family falls from 4.70 members to 2.00 while the cheapest licensed member's own hit rate on
+the golden path rises **4 of 20 at (4, 0.90) to 19 of 20 at (42, 0.03)**, and **0 of 16 cells** have a
+unanimous standing family with the cheapest member missing. Convergence and reach are one column
+here, exactly as `stumping` states for an estimator-choice decisive step.
+
+### The orchestrator's correction, and what my own three horns had already measured (2026-10-23)
+
+Mid-pass the orchestrator withdrew the shape: it is spent as a driver, a faithful instance is a
+structural clone of task125, and a sibling measured a probe card returning BLOCK on
+`test.same_puzzle_older` and `test.same_driver_older` against task125 (v2) with `driver.near` 0.19,
+the nearest driver on file by three times. Its linkage trichotomy (a reported row carries its cohort,
+or carries a key a register maps at identical cost, or carries nothing and the profile is
+unidentifiable, a cubic with seasonal terms reproducing 90.5 per cent of the distortion path's
+variance) is the same finding my H2 measurement reached from the other side, and its "the cheapest
+licensed route IS the golden at RMSE 0.0072" is my H2's maximum absolute difference of exactly zero.
+**Three horns, measured independently here, say the same thing and together they are exhaustive**,
+because the counterfactual statistic can differ from the published one only in which rows enter or in
+what the rows contain:
+
+| horn | the change acts on | why it dies | the number |
+|---|---|---|---|
+| (a) membership | which units enter the statistic's population | task125's own latent structure, default path and correction; the differentiation line cannot be written | driver 0.07 lexically here and 0.19 on the sibling's probe, with the structural tests BLOCKing |
+| (b) recorded content | a column the register already carries per event | swapping that column in the register's own arithmetic is the whole construction, so the propagation is free | max abs difference exactly 0, 20 of 20 worlds, 5 graded years |
+| (c) unrecorded content | a quantity no file records | the estimator family forks the graded path | 4.80 distinct paths of 5, spread 3.11 against a printed unit of 1, 0 of 16 joint cells |
+
+**So the shape is closed as a clause on this ground and not merely on one cell**, and the three horns
+are the reason rather than three misses. The device that made task125 ship (a true operational
+sentence that makes the one-line join look pointless) is re-skinnable; the driver is not.
