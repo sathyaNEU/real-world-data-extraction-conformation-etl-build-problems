@@ -177,18 +177,19 @@ no field holds a pooled median or a start date.
 Not rule application: no filed rule says how a group's median is computed from released cells or how a day's status is
 read from quarterly pay. Measured on the cut pack. The degree half's enumerated family (cells' medians averaged,
 unweighted or their median, the percentile points pooled as a sample, a log-normal through each cell's five points,
-and the interpolations) spreads the graded figures 1,919 to 4,789 dollars, Medical Assisting 32,411 to 37,099; the
+and the interpolations) spreads the graded figures 1,919 to 4,789 dollars, Medical Assisting 32,411 to 37,100; the
 standing family (every interpolation through the released percentiles: straight in dollars, straight in log dollars,
 monotone cubic, any tail anchors) spreads 69 to 149 dollars and files one whole-thousand cell for every program. The
 short-term half's enumerated family (pay in the quarter, the second quarter after exit, earnings floors of 500, 1,000
 and 2,500 dollars, beginning-, end- and full-quarter employment, the position-chosen point-in-time measure, a
 day-proportional share, a half-quarter pay threshold, a person-level pay ratio) spreads the CDL figure 59 to 91 per
-cent, 31.6 points; the standing family (the job-level pay ratio with the adjacent or the mean full quarter, a pay-lag
-correction of 0, 7 or 14 days, a calendar or a 91-day quarter: twelve variants) spreads it by zero on every program.
+cent, 31.6 points; the standing family (the job-level pay ratio against the adjacent full quarter, the full quarters'
+mean, the two beside the partial one or the job's median quarter, a pay-lag correction of 0, 7 or 14 days, a calendar
+or a 91-day quarter: twenty-four variants) spreads it by zero on every program.
 What rules out the rest is the data, never a clause: the log-normal misses a released percentile by up to 57.7 per
-cent (median 7.7), the percentile points pooled as a sample do not pass through the cells' own percentiles, and the
-30 jobs that put 22 CDL completers in the quarter route's count paid a median 23 per cent of their own full quarter
-there (8 to 67), the mark of a job that ended or began inside the quarter.
+cent (a median 7.7 at each cell's worst point), the percentile points pooled as a sample do not pass through the cells'
+own percentiles, and the 31 jobs that put 22 CDL completers in the quarter route's count paid a median 20 per cent of
+their own full quarter there (8 to 67), the mark of a job that ended or began inside the quarter.
 
 Analyst test: with every field read and the board's standard applied, the easy route averages the cells' medians and
 counts pay in the day-180 quarter as work on day 180, and files the designation as renewed at 84 per cent; the golden
@@ -265,7 +266,7 @@ programs; the line is 75).
 | R2 | averaged | beginning-, end-, position-chosen or full-quarter employment; prorated; half-quarter; person ratio | 75.85 to 83.83 | renews |
 | R3 (one half) | pooled through the percentiles | any pay in the quarter, and every R1, R2 and R4 reading but full-quarter | 76.89 | renews |
 | R4 (other half) | averaged, unweighted or median of medians | each job dated from its own pay | 77.79 | renews |
-| R5 (golden) | pooled through the percentiles (straight, log or monotone cubic) | each job dated from its own pay (twelve variants) | 70.85 | lapses |
+| R5 (golden) | pooled through the percentiles (straight, log or monotone cubic) | each job dated from its own pay (twenty-four variants) | 70.85 | lapses |
 
 Two routes off the ladder also lapse, and neither files the golden: full-quarter employment with pooled medians
 (68.91, Phlebotomy failing at 64 per cent and every short-term figure moved), and the crude poolings (the percentile
@@ -359,7 +360,7 @@ extracts they join to are read by the call only for counts the devices do not to
   parent PLUS loans under two code sets, two ID formats for the state student ID, the cost of attendance's origination
   fee (the export's amounts are gross). Stops: the rows summed as exported (0 of 12 medians, 0 of 12 totals), one
   amount per loan in every year (0, 0), alike rows kept once (0, 0), the 2024-25 award year alone (0, 0), every amount
-  read as net (0, 0), returned rows dropped (5 medians), parent loans kept (2 medians), the golden. Every program's borrower count is odd and every completer's principal a whole
+  read as net (0, 0), returned rows dropped (5 medians, 0 totals), parent loans kept (2 medians, 2 totals), the golden. Every program's borrower count is odd and every completer's principal a whole
   10 dollars, so each median is one completer's principal at the centre of its bin.
 
 | Ask | What the cracker does | Cracker |
@@ -372,11 +373,47 @@ and 3 of 11 if the repeated week is then kept; ask B keeps 24 of 24 once each 20
 every loan counts once. A response that finds both devices scores 100; one that finds neither scores 45 on the call; one
 that finds only ask A's keeps under a third of the 35 ask figures.
 
-Pair ceiling: 28.5 (the cracker 38 + 7 with none of 23 ask figures, the mirror 5 + 7 with none).
+Pair ceiling: 28.5 (the cracker 38 + 7 with none of 35 ask figures, the mirror 5 + 7 with none).
 
 Mirror leakage: 0.0 per cent of ask weight.
 
 Measured by: generator/ceiling.py on the cut pack.
+
+## Pre-ship check
+
+1. Domain: administrative employment statistics' own estimates from an outcomes release and employer-quarter wage
+   records, a program's median earnings as the half point of its cells' released distributions pooled by completers
+   and a completer's status on the 180th day dated from a job's pay inside its first or last quarter; with a hospital's
+   nouns no released cell hides a pooled median and no quarter hides the day a job began or ended.
+2. Real work, nothing planted: every Layer 1 item is what the producing system writes (two student systems' extracts,
+   two release editions with the CIP recodes and Paralegal Studies' suppression, amended wage reports, the roster's
+   withdrawals and the cohorts outside the window, the attendance export's minutes after the point and its re-sent
+   week, the new aid system's annual amount on each disbursement); none is on the decisive step, and no ask device row
+   sits in the call's population (X1 and X2).
+3. The step that flips the call is analytical: pooling the released distributions and dating each job from its own
+   partial pay; no clause makes either choice (standard 3.1 files the group taken as one and 4.1 the 180th day, not how
+   a released cell becomes a median or a quarter's pay a day's status).
+4. Analyst test: every field and rule read correctly, the averaged medians and any pay in the day-180 quarter file the
+   designation as renewed at 84 per cent (asserted on the clean truth and on the pack); either correction alone files
+   78 or 77, both together 71, lapsed.
+5. The standard files the estimand (population, outcomes, windows, units and comparisons in sections 3 to 5) and no
+   estimator; the standing family (every interpolation through the released percentiles with any tails, and the 24
+   job-level pay-ratio variants) files one whole-thousand cell per credit program and one count per short-term program
+   (G1, G3), and the asks' conventions are filed in their asking sentences or closed by the data (SF16 to SF18).
+6. No decoy, no withheld rule against a stated one, no certified replay.
+7. The lesson is on no other card: nearest task266's stump at 0.07, task477's ledger row at 0.05 and task229 v3's driver
+   at 0.07; task39 differentiated on the card.
+8. Re-read against the built pack at stage 4: eight isolated readers over four rounds filed the designation as renewed
+   at 77 per cent (the pooled medians with any pay in the quarter), and none dated a job from its own pay; the round 4
+   readers on the shipped cut (zip 7d3d1845) kept 0 and 11 of the 35 ask figures (0 and 31.4 per cent).
+9. Judge pass 1 DETERMINISTIC, FIX_NOW (ask A's counting and ask B's window not literally filed, the credit programs'
+   year undefined, the CDL figure moved under two further dating references: ask A re-sited, ask B's window put in its
+   asking sentence, standard 2.2's 30 credits filed, the dating family widened to 24 variants with every completer
+   dated alike); passes 2 to 4 DETERMINISTIC, APPROVE, Gate G method_or_model_selection and analytical_non_defect,
+   Gate H domain pass, layers pass, decisive step analytical. Pass 4, on the shipped cut, kept no competing answer and
+   left two minor notes: the attendance export does not label its hours (the data forces hours and minutes, SF17), and
+   the dating step sits near data semantics (it is the unit-of-analysis choice between a day inside the quarter and the
+   quarter itself).
 
 ## Tried and rejected
 
