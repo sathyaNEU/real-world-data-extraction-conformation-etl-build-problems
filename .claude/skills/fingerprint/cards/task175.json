@@ -11,8 +11,8 @@
   "shape": "07",
   "decision_type": "quantity_figure",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Port Ardell will issue about 300 single-family building permits in 2027 on lots in North 6, North 7 and Northwest 3: 90 in North 6, 115 in North 7 and 95 in Northwest 3.",
+  "answer_source": "task175/submission.md block 1; task175/golden/uep_2027_permit_forecast.xlsx; generator/figures.json",
   "gap": [
     "population",
     "time"
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who stitches the two permit systems, maps every lot to its extension area through the plat units in the program schedule and holds the 2026 market as the budget instructions say takes the permits per vacant lot that each earlier extension area drew in its first year of service and applies it to the 2027 areas' vacant lots, filing about 540 permits for 2027 against a golden near 330, because the city served its most built-up areas first and a vacant lot's chance of a permit rises steeply with the homes already standing on its own street.",
+  "analyst_test": "A strong analyst who stitches the two permit systems, maps every lot to its extension area through the plat units in the program schedule and holds the 2026 market as the budget instructions say takes the permits per vacant lot that each earlier extension area drew in its first year of service and applies it to the 2027 areas' vacant lots, filing about 520 permits for 2027 against 300, because the city served its most built-up areas first and a vacant lot's chance of a permit rises steeply with the homes already standing on its own street.",
   "domain_test": "The deciding quantity is the development probability of each vacant platted lot once water and sewer reach it, which land-use change models estimate lot by lot with a neighbourhood term (the share of the street already built) and which here must be carried to areas whose streets are nearly empty; with another field's nouns there is no platted lot, no street segment, no utility extension sequence chosen by existing septic density and no first home on a street, so the task stops making sense.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "urban-regional-science/land-use-spatial-development-modeling/3",
@@ -49,7 +49,7 @@
   "scoring_unit": "units served",
   "spine": {
     "file": "lot_master_2026.csv",
-    "rows": 110000,
+    "rows": 98512,
     "entity": "one platted lot on the property appraiser's 2026 roll",
     "grain": "lot",
     "source": "synthetic (constructed in the layout of a Florida county property appraiser's parcel extract)"
@@ -74,13 +74,13 @@
   },
   "deliverables": [
     "uep_2027_permit_forecast.xlsx",
-    "uep_2027_permit_forecast.png"
+    "fy2026_new_connections.png"
   ],
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "A vacant unit's chance of being taken in a period rises steeply with how many of the units on its own short run are already taken, and access was extended first to the places whose runs were already well taken, so the take-up those places showed once access arrived averages over filled runs and overstates the take-up of places whose runs are nearly all empty; each unit's chance has to be read at its own run's fill and carried to the new places run by run.",
   "driver_concrete": "Once water and sewer reach a vacant platted lot its yearly chance of a single-family permit depends steeply on how many homes already stand on the street segment it faces (both sides of its hundred-block), and the city connected its most built-up areas first, so the permits per vacant lot the earlier extension areas drew in their first year overstate what North 6, North 7 and Northwest 3, whose streets are mostly empty, will draw in 2027; the forecast takes each vacant lot's chance from served lots on streets as built as its own and sums it lot by lot.",
-  "stump": "A competent solver applies the first-year permits per vacant lot of the earlier extension areas (or a regression of that rate on each area's built share at service) to the 2027 areas' vacant lots and files about 540 permits for 2027 against a golden near 330, because it never reads each lot's chance at the build-out of its own street, where the earlier areas were well built and the 2027 areas are nearly empty.",
+  "stump": "A competent solver applies the first-year permits per vacant lot of the earlier extension areas (or that rate rescaled to the 2026 market, or regressed on each area's built share at service) to the 2027 areas' vacant lots and files about 520 permits for 2027 (580 rescaled, 570 regressed) against 300, because it never reads each lot's chance at the homes standing on the street it faces, where the earlier areas were well built and 10,309 of the 2027 areas' 14,232 vacant lots stand on streets with no home.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task124": "task124 takes an unexamined unit's outcome from the kind of group it was laid down in, read off its group's surviving records, against samples drawn toward flagged groups; task175 takes a vacant lot's permit chance from served lots whose street holds as many homes as its own, a neighbourhood effect on an event hazard, with no unexamined outcome or sampling bias in it",

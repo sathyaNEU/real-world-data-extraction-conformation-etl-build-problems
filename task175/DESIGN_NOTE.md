@@ -13,7 +13,8 @@ human-reliability cell and the strategy-backtesting cell) is spent and kept belo
   against task124, task132, task144, task163, task465 and task165.
 - **Pairing.** Client domain urban-regional-science, task type land-use-spatial-development-modeling (serves
   Forecasting); objective Forecasting & Predictive Modeling; decision a quantity figure (a count of permits);
-  shape 07, a grid (each 2027 extension area by quarter, with the area totals and the call).
+  shape 07, a grid: the call in total and by area, with the asks' grid of fiscal 2026 connections (the core and
+  four phases by quarter) and the four quarters' capacity fee receipts.
 - **World.** Port Ardell, a fictional Gulf Coast Florida city of about 95,000 residents, platted lot by lot by the
   Ardell Gulf Land Company between 1958 and 1971 (about 110,000 quarter-acre lots in numbered plat units) and
   built one home at a time. The city-owned utility runs the Ardell Utility Extension Program: water, sewer and
@@ -23,7 +24,7 @@ human-reliability cell and the strategy-backtesting cell) is spent and kept belo
 - **Decision and call.** The utility's bond resolution requires a revenue sufficiency report each January, and
   its capacity fee line, the 2027 meter purchases and the connection crew hours rest on the number of
   single-family building permits the city will issue in 2027 on lots in the three areas (forward facing: the
-  window is not yet open). The call: that count, in total, by area and by quarter.
+  window is not yet open). The call: that count, in total and by area.
 - **The quantity.** Each vacant lot's chance of a single-family permit in 2027 once its lines are accepted,
   summed over the three areas' vacant lots at the 2026 market.
 - **Strategy and family.** `composition_mix` (pattern none, G6 then G14), Layer 2 family
@@ -45,6 +46,8 @@ human-reliability cell and the strategy-backtesting cell) is spent and kept belo
   (served lot-years binned on the street segment's build-out with year effects, applied at 2026) within
   0.2 to 0.6 per cent of itself across 5 and 10 point bins and minus 1.5 to plus 6 per cent of the truth. The
   street exposure beats the plat block, the radius and the adjacent lots by 550 to 1,000 log-likelihood units.
+- **On the generator** (`task175/generator/`, 98,512 lots, 18,700 single-family permits 2008 to 2026): the golden
+  300 (90, 115, 95) against a 2027 expectation of 280; the default 520, every rival a bin or more away (`## Ladder`).
 - **Sources.** The library card (land-use 3, upzoning goes where growth already was): taught the shortcut and
   the comparison; this build differs in that the decisive comparison is a neighbourhood term no area-level
   comparison reaches. task134 (the cell's only earlier card): the yield of a raised allowance through
@@ -63,6 +66,193 @@ human-reliability cell and the strategy-backtesting cell) is spent and kept belo
   `launch_or_rollout` (the three areas go live in January 2027) and BLOCKed under the registration lock
   against task273; the honest replacement is the January revenue sufficiency report the bond resolution
   requires, which is the filing that carries this forecast, and the go-live stays in the world as a fact.
+
+## Default path
+
+1. Read the prompt and the forecasting conventions: single-family permits by issue date in calendar 2027, on lots in
+   the plat units the schedule lists for North 6, North 7 and Northwest 3, the market held at its 2026 level.
+2. Map every lot to its area through the plat unit in `LEGAL_DESC` and the schedule's table; take each earlier
+   extension area's acceptance date from the same table.
+3. Stitch the two permit systems (the legacy file by site address, the new file by parcel, carried-over permits
+   once) and count, for each of the fifteen earlier areas, the single-family permits issued in the twelve months
+   after its lines were accepted over the lots still vacant at acceptance.
+4. Apply the pooled first-year rate (4.2 per cent of vacant lots) to the 14,232 vacant lots of the three 2027 areas,
+   each from its scheduled acceptance date.
+
+Ends on: 520 permits in 2027 (North 6 about 160, North 7 about 205, Northwest 3 about 155)
+
+Golden: 300 permits in 2027 (North 6 90, North 7 115, Northwest 3 95)
+
+## Stump sentence
+
+A competent solver applies the permits per vacant lot that the earlier extension areas drew in their first year of
+service to the 2027 areas' vacant lots and files 520 permits (or 580 with the first years rescaled to the 2026
+market, 570 with the rate regressed on each area's built share at service), against 300, because it never reads
+each vacant lot's chance at the number of homes standing on the street it faces: the city connected its most
+built-up areas first, so every earlier first year was drawn from streets that already had homes, while 10,309 of the
+14,232 vacant lots in North 6, North 7 and Northwest 3 stand on streets with no home at all.
+
+## Three rules
+
+Task type: land-use-spatial-development-modeling (urban-regional-science), which serves Forecasting: the forward count of lots a utility extension turns into building sites, worked lot by lot.
+Domain test: the deciding quantity is each vacant platted lot's yearly chance of a single-family permit once water and sewer reach it, which land-use change models estimate lot by lot with a neighbourhood term (the homes already standing on the lot's street), carried here to areas whose streets are nearly empty.
+Swap: "how many prescriptions will the three new clinics fill in 2027" keeps the arithmetic of a rate times a population, but there is no platted lot, no street segment of a hundred-block, no utility extension sequence chosen by septic density and no first home on a street, so the step that moves the answer has nothing to stand on.
+Layer 1: a legacy permit system keyed by address and a 2019 system keyed by parcel, overlapping on carried-over permits (Building Division systems); legal descriptions and site addresses to parse to plat units and hundred-blocks (appraiser's roll); the roll as of 1 January 2026, so 2026 completions show only as certificates of occupancy (appraiser's cycle); the program schedule as a table in a PDF (Capital Program Division); fiscal against calendar years, premises without parcel numbers, an AMI head-end log and a cashiering export at permit-line grain (utility systems); nothing placed to be caught.
+Layer 2: estimand_identification, card land-use 3 translated: service went where building already was, so the treated areas' first year is not the comparison; the comparison the data force is a served vacant lot on a street with as many homes standing as the forecast lot's own.
+Decisive step: read each vacant lot's chance of a permit at the build-out of the street it faces, from served vacant lot-years 2008 to 2026 with the homes standing on the street on 1 January, and sum it over the 2027 areas' lots street by street, instead of carrying an area-level first-year rate.
+Not semantics: every field (plat unit, hundred-block, year built, certificate of occupancy, acceptance date) can be read correctly and the analog route still files 520; nothing in any file says a lot's chance depends on its street, and no column holds a street's build-out.
+Not rule application: no filed rule or procedure says how a lot's chance is estimated; the conventions fix only what is counted (permits, issue date, plat units, calendar 2027, the 2026 market). The enumerated family (homes-on-street count bins, 5-point and 10-point share-of-street bins, each with and without the canal term) spreads 300.0 to 305.4 on the total; the standing family, the street-binned fits that keep the canal term the data require (dropping it costs 249 log-likelihood units), spreads 300.0 to 302.3, 0.8 per cent, one printed total and one printed figure per area; the ruling-out is loud and nothing filed does it: the street exposure beats the plat block by 354 log-likelihood units and homes permitted rather than completed by 42.
+Analyst test: a strong analyst who stitches both permit systems, maps every lot through its plat unit, reads the acceptance dates and holds the 2026 market takes the earlier areas' first-year permits per vacant lot and files 520 permits (Ends on), or 580 rescaled to 2026, against 300.
+Estimand: single-family building permits (work class Residential New Single Family) issued in calendar 2027 on lots in the plat units the schedule lists for North 6, North 7 and Northwest 3, the building market held at its calendar 2026 level; filed in revenue_sufficiency_forecast_conventions_fy2027.pdf section 2 with the schedule's table.
+No decoy: nothing is planted to be caught: no forecast, target, earlier estimate, memo or stakeholder figure ships; the analog is the solver's own arithmetic on the permit record, and the schedule and conventions state only facts the organisation files.
+No certified replay: no certified or published figure is reproduced to recover the method; the conventions file the WHAT and no figure in the pack is a published output of the forecasting method.
+Lesson: a development rate measured where a utility (or any infrastructure) went first is conditioned on the build-out that sent it there; a model learns to read the forward lots at their own neighbourhood's build-out, which no build on file teaches (task134 conditions on feasibility, task165 on a service headroom, task484 on months since completion).
+
+## Readability screen
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 0 first-year analog of the earlier areas | no | no | yes (the absorption analog) | no | no | yes | readable |
+| 1 analog rescaled to the 2026 market, or regressed on each area's built share | no | yes (acceptance dates, YR_BUILT) | yes | no | no | yes | readable |
+| 2 lot model on parcel attributes, canal and plat block | no | yes (WATERFRONT, BLK in LEGAL_DESC) | yes (add the visible attributes) | no | no | no | readable |
+| 3 (decisive) homes standing on the lot's street (hundred-block, both sides) on 1 January | no | no (no street key; the hundred-block is built from SITE_ADDR) | no (the opponent's reflexes are pool, analog, control, reweight, shrink) | no | no | no | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | single-family building permits | work class Residential New Single Family, legacy RES NEW SFR | any residential permit (pools, re-roofs, additions) | thousands | conventions section 2, PERMIT_PIN |
+| SF2 | issue | the issue date | application or certificate of occupancy date | other years' permits | PERMIT_PIN, "by issue date" |
+| SF3 | in 2027 | calendar 2027 | fiscal 2027 (October 2026 to September 2027) | another window | PERMIT_PIN, "in the calendar year forecast" |
+| SF4 | on lots in North 6, North 7 and Northwest 3 | lots in the plat units the schedule lists for each area | areas by street prefix or by the special assessment roll | other lots | PERMIT_PIN, "plat units the program schedule lists" |
+| SF5 | the 2026 market | the 2026 year's level | 2024 to 2026 average (295.6) | same call (asserted, 300) | same call; MARKET_PIN, "its calendar 2026 level" |
+| SF6 | carried-over permits | counted once | both copies kept | same call (asserted) | same call |
+| SF7 | when a lot is served | from the acceptance date | from the following month | North 6 and Northwest 3 lower | ACCEPT_PIN, "may connect from that date" |
+| SF8 | permits before an area is served | counted at the well and septic rate | left out | same call (asserted) | same call |
+| SF9 | total rounding | the unrounded sum to the nearest 10 | the sum of the rounded areas | same call (asserted, 300 both) | same call |
+
+## Ladder
+
+| Rung | Route | 2027 total | Areas (N6, N7, NW3) | Printed | Bins from the golden | Dies to |
+|---|---|---|---|---|---|---|
+| 0 | first-year analog, raw | 520.1 | 160.6, 206.4, 153.1 | 520 | 22 | the street exposure: the earlier areas' first years were drawn on built streets |
+| 1a | analog rescaled to the 2026 market | 583.2 | 180.1, 231.5, 171.6 | 580 | 28 | same |
+| 1b | analog regressed on built share at service | 565.0 | 174.5, 224.3, 166.3 | 570 | 27 | an area's built share is not its streets' |
+| 2a | served lot model without the street | 628.4 | 192.3, 246.3, 189.8 | 630 | 33 | same |
+| 2b | lot model on the plat block's homes | 406.1 | 124.2, 157.2, 124.7 | 410 | 11 | the block mixes two streets' lots; 354 log-likelihood units worse |
+| 2c | street started or not (two bins) | 323.5 | 95.8, 123.7, 104.1 | 320 | 2 | one home is not a built street; the count bins fit better |
+| 3 | golden: homes standing on the street, count bins | 300.0 | 89.8, 114.9, 95.3 | 300 | 0 | |
+
+Position and margins: the golden is the lowest figure on the ladder and every correction short of the street walks
+the figure down toward it from above; the nearest wrong rung (2c) sits 2 bins out on the total and 1 to 2 on each
+area. Worth: the street step moves the total from 520 to 300 (42 per cent of the default, 73 per cent of the
+golden), against a standing-family spread of 0.8 per cent; the bins hold the standing family with the total 4.99
+from its edge and each area at least 2.15 from its edge.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | lots in the three areas' plat units, vacant on 1 January 2027 | filed (PERMIT_PIN and the schedule) |
+| 2 Unit of account | permits | the question names it |
+| 3 Attribution window | issue date in calendar 2027 | PERMIT_PIN |
+| 4 As-of dating | records to 31 December 2026; roll as of 1 January 2026 | dictionary (ROLL_YR) and manifest |
+| 5 Version basis | schedule Revision 12 | the schedule and conventions name it |
+| 6 Denominator | vacant lots | C1: every route counts the same 14,232 |
+| 7 Weighting | lot by lot | the estimand sums lots; C1 |
+| 8 Window length | 2008 to 2026 history | C3: the golden family agrees within 0.5 per cent across fitting windows from 2013 |
+| 9 Boundary inclusivity | acceptance day inclusive | ACCEPT_PIN |
+| 10 Rounding path | areas to 5, total from the unrounded sum to 10 | the prompt; C1 (SF9) |
+| 11 Tie-break | none | no ranking |
+| 12 Maturity and censoring | lots permitted in 2026 are not at risk | C1: the vacant count excludes them in every route |
+| 13 Order of operations | none non-commuting | C1 |
+| 14 Row order | none | C1 |
+| 15 Duplicate resolution | carried-over permits once | SF6, same call asserted |
+| 16 Identity normalisation | legacy addresses to the roll | dictionary semantics; mess neutral (R2) |
+| 17 Netting against gross | none | n/a, nothing nets |
+| 18 Dimensional units | counts | n/a |
+| 19 Code and status semantics | work class and use codes | dictionary semantics, never the stump |
+| 20 Integerisation | rounding of expected counts | the prompt's rounding |
+| 21 Clause scope | the conventions govern the January 2027 report | the conventions say so |
+| 22 Forward window contents | the 2027 acceptance dates | the schedule's scheduled dates |
+
+## Literal reader
+
+Executed word for word, the prompt and the conventions fix the count (single-family permits, issue date, calendar
+2027, plat units, 2026 market, lots served from their acceptance dates) and leave the estimate of each lot's chance
+to the data; every reading of SF1 to SF9 either violates a quoted sentence or files the same call, and the easy
+answer (520) comes from an easy method on the same literal estimand, not from another reading.
+
+## Oracles
+
+none: no control, published figure or reconciliation column in the pack confirms either the analog or the golden;
+the schedule's lot counts and the roll agree under every route, and the special assessment roll and the ACS tracts
+(the distractors) carry no permit counts.
+
+## Ask sheet
+
+- **Ask A, new single-family connections in fiscal 2026, core and four phases by quarter (20 figures).** H18 home:
+  the actual connections the January report sets beside the forecast (the audit trail of the capacity fee line).
+  Files: `ami_headend_installs_fy25_fy26.csv` (7 columns), `cis_account_history_20261231.csv` (6),
+  `cis_premise_extract_20261231.csv` (7), `pa_parcel_extract_2026.csv` (3 read), schedule PDF. Primary P1 (D1, a
+  replay under fresh ids at a kept premise): the head-end logs every endpoint installed, so meter exchanges at
+  homes already billed appear as installs; silent (one install per premise in the window, no reason column), found
+  only by the account history at another grain. Primary P2 (D2, a label stored before a silent switch): the
+  premise's UEP_PHASE is the phase its area had when the premise was set up, before the 2021 regrouping, so
+  Southwest 7, North 2 and Southwest 8 sit under their old phases; found only by placing the premise through its
+  parcel or address. Hazards: fiscal quarters; premises without a parcel number (core, set up before 1998).
+  Stops: installs counted (every cell high by the exchanges), stored phases (Phases 1 to 3 moved), first account
+  start (dated at occupancy, months late), the answer. Realism: an AMI head-end records endpoint installs, not
+  service orders; a CIS keeps the attributes a premise was created with.
+- **Ask B, capacity fees received in each fiscal 2026 quarter (4 figures).** H18 home: the receipts line of the
+  January report. File: `capacity_fee_receipts_fy2026.xlsx` (7 columns). Primary P3 (D6, an event's quantity on
+  every line it covers, grain unstated): a production builder's receipt covering several permits repeats the
+  receipt amount on each permit line; summing lines overstates every quarter by 16 to 23 per cent. Hazard: fiscal
+  quarters. Realism: cashiering exports at allocation-line grain with the header amount are common.
+- **Chart (fy2026_new_connections.png):** its segment labels are Ask A's cells, so it inherits P1 and P2.
+- Main population zero-counts: no device row in the roll or either permit file (asserted in checks.py); the asks'
+  files are not read by the call.
+- Referee: none needed; each device's handling reproduces the truth exactly (law 6), asserted.
+
+| Ask | Figures | Cracker (lands the call, counts installs, sums receipt lines) | Verdict |
+|---|---|---|---|
+| A core, Q1 to Q4 | 4 | installs incl. exchanges | miss |
+| A Phase 1, Q1 to Q4 | 4 | installs incl. exchanges | miss |
+| A Phase 2, Q1 to Q4 | 4 | installs incl. exchanges | miss |
+| A Phase 3, Q1 to Q4 | 4 | installs incl. exchanges | miss |
+| A Phase 4, Q1 to Q4 | 4 | installs incl. exchanges | miss |
+| B Q1 to Q4 | 4 | receipt lines summed | miss |
+
+Pair ceiling: 28.5 (cracker 45.0, mirror 12.0, on weights 38, 7 and 55)
+
+Mirror leakage: 0.0 per cent of ask weight
+
+Measured by: generator/ceiling.py
+
+## Stage 3 gates (2026-10-23)
+
+- Generator: `python3 task175/generator/build.py` writes the pack, the goldens, `figures.json`, `submission.md` and
+  `metadata.json`; `checks.py` 56 assertions green (input gates, R1, R2a to R2c, R3a to R3c, SF1 to SF9, the
+  ladder, the bins, the refutations L1 to L3, the asks' devices A1 to A4 and B1 to B3, separation S1 and S2,
+  documents, realism, distractor deletion); `verify.py` (pandas, pypdf, a Poisson GLM by IRLS, its own code
+  path) recomputes the call at 300.01 and every ask figure, 0 failed; two consecutive builds byte-identical over
+  19 files; `target.zip` md5 0c46c78137be2cffa79250695bc8d0a7.
+- `figures_check.py` PASS (47 figures); `precut.py` exit 0 (51 checks); `voice-check.py` PASS (785 characters);
+  `guard.py heart` WARN (`repeat.gate_g`, answered at the draw), `guard.py surface` no axis or name collision,
+  personas Melissa Payne and Steven Burke only; container scrub audit clean on `target/` and `golden/`.
+- `leak.py --asof 2027-01-08` REVIEW, each line harmless: the schedule carries the area names North 6, North 7
+  and Northwest 3, which are the question's own nouns, not figures; the dictionary and the conventions share
+  common words (family, january, vacant, schedule) with the stump paragraph and name no move (checks D2 greps
+  them for the street vocabulary with a positive control); the permit system's Expiration Date runs a year past
+  issue, so permits issued in 2026 carry 2027 expiry dates, which is the field's meaning.
+- Single-use test: no file or sentence serves only the street step; the roll, the permit files and the schedule
+  carry every route on the ladder, and no shipped column, sentence or file names a street, a hundred-block or a
+  build-out.
+- Stage 4 is the main session's: two blind scored readers and the judge on `target.zip` 0c46c781. Keys for the
+  readers: the call `call_total_permits_2027`, `call_permits_2027_north6`, `call_permits_2027_north7`,
+  `call_permits_2027_northwest3`; the asks `ask_connections_fy2026_<core|phase1|phase2|phase3|phase4>_q<1..4>`
+  and `ask_capacity_fees_fy2026_q<1..4>`; the critical components `cc1_*` and `cc2_*` are withheld from the
+  readers' list.
 
 ## Earlier screens (2026-10-18 and 2026-10-19)
 
@@ -422,6 +612,12 @@ and 05 sit in the ban window, and this round's serial registrations will move it
     on one seed in three (minus 4 per cent). Kept by making the unserved building flat (owner-builders on well
     and septic, not spec builders) and the earlier areas' started share realistic (78 to 92 per cent), which
     `a4.py` measures.
+  - Build iteration (generator, 2026-10-23): a street term continuous in the share of the street built (0.15 at
+    an empty street rising with scale 0.06) left the golden family 0 to 4 per cent apart across 5-point, 10-point and
+    homes-count bins, too wide for the printed total; replaced by a term on the homes standing (empty, one home, then
+    rising), where the family sits within 0.8 per cent. A pre-service rate of 0.025 of the served one put enough
+    2026 completions on the 2027 areas' streets that reading the roll alone moved the total a bin (R2a); set to
+    0.012, a well and septic home being rarer than a sewered one.
 
 ## Retired
 

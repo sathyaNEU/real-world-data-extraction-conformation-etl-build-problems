@@ -1,0 +1,13 @@
+{
+  "task": "task175",
+  "distractor_files": [
+    "target/acs_2020_2024_port_ardell_tracts.csv",
+    "target/uep_special_assessment_roll_2026.csv"
+  ],
+  "deliverables": [
+    "uep_2027_permit_forecast.xlsx",
+    "fy2026_new_connections.png"
+  ],
+  "objective": "Forecasting & Predictive Modeling",
+  "domain": "Urban & Regional Science / Land Use & Spatial Development Modeling"
+}
