@@ -1,5 +1,5 @@
 """task478's assertions on the cut pack and the generator's clean truth: the three rules (R1 to R3c), every semantic fork
-row (SF1 to SF18), the ladder, the golden's licensed family and margins, the asks' devices, the separation line, the
+row (SF1 to SF21), the ladder, the golden's licensed family and margins, the asks' devices, the separation line, the
 distractors, the input gates and the realism sweep.
 
     python3 task478/generator/checks.py
@@ -26,16 +26,37 @@ import world as W     # noqa: E402
 
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
-GOLD = ["03", "05", "07", "10", "11"]
-DEFAULT = ["02", "03", "07", "09", "10"]
+GOLD = ["Wexley Point Energy Center", "Ashgrove Refining", "Valmora Glass Works", "Sedge Hollow Landfill Gas",
+        "St. Aldric Medical Center"]
+DEFAULT = ["Wexley Point Energy Center", "Ashgrove Refining", "Valmora Glass Works", "Haskett Ridge Compressor Station",
+           "Lindqvist Paperboard"]
 RESULTS = []
-LINES = (45000, 50000, 56000, 60000, 65000, 70000, 72000)
-RECEIPT_ALLOW = W.RECEIPT_MIN / 60.0      # the old host stamped an entry up to this many hours after it happened
 
 
 def check(name, ok):
     RESULTS.append((name, bool(ok)))
     print("%s  %s" % ("PASS" if ok else "FAIL", name))
+
+
+def whole(f):
+    return {n: B.hround(f[n]) for n in B.ORDER}
+
+
+def margin(f):
+    o = sorted(f, key=lambda n: -f[n])
+    return f[o[4]] / f[o[5]]
+
+
+def edge(f):
+    """The least distance of any facility's figure from a rounding half."""
+    return min(abs((f[n] % 1.0) - 0.5) for n in B.ORDER)
+
+
+def subset(keys):
+    d = tempfile.mkdtemp(prefix="t478_")
+    for k in keys:
+        shutil.copy(os.path.join(TARGET, P.FILES[k]), os.path.join(d, P.FILES[k]))
+    return d
 
 
 def pdf_text(key):
@@ -44,64 +65,121 @@ def pdf_text(key):
     return re.sub(r"\s+", " ", " ".join(p.extract_text() for p in r.pages))
 
 
-def whole(sh):
-    return {c: B.hround(sh[c]) for c in B.CODES}
+def fac_tons(I, unit_lb):
+    lb = dict(unit_lb)
+    lb.update(I.cems)
+    out = {n: 0.0 for n in B.ORDER}
+    for d, v in lb.items():
+        out[I.facility[d]] += v / 2000.0
+    return out
 
 
-def subset(keys):
-    """A copy of the pack holding only the named files."""
-    d = tempfile.mkdtemp(prefix="t478_")
-    for k in keys:
-        shutil.copy(os.path.join(TARGET, P.FILES[k]), os.path.join(d, P.FILES[k]))
-    return d
+def power_law(I):
+    rows = I.test_rows()
+    keys = sorted({r[0] for r in rows})
+    best = None
+    for q in (0.7, 0.85, 1.0, 1.15, 1.3, 1.5):
+        X = np.zeros((len(rows), len(keys) + 1))
+        y = np.zeros(len(rows))
+        for i, (d, h, m, _) in enumerate(rows):
+            X[i, keys.index(d)] = 1
+            X[i, -1] = (h / 1e4) ** q
+            y[i] = np.log(m)
+        c, *_ = np.linalg.lstsq(X, y, rcond=None)
+        sse = float(np.sum((y - X @ c) ** 2))
+        if best is None or sse < best[0]:
+            best = (sse, q, {d: c[keys.index(d)] for d in keys}, c[-1])
+    _, q, a, cc = best
+    return fac_tons(I, {d: B.integrate(I, d, lambda h, day, a=a[d]: np.exp(a + cc * (h / 1e4) ** q)) for d in I.open})
 
 
-def ticket_arrays(tk, keyed=False):
-    st = tk["Axle 1 (lb)"].astype(float).to_numpy()
-    g = tk["Gross (lb)"].astype(float).to_numpy() if keyed else \
-        tk[["Axle %d (lb)" % i for i in range(1, 6)]].astype(float).sum(axis=1).to_numpy()
-    return st, g
+def binned(I, width=2000):
+    rows = I.test_rows()
+    keys = sorted({r[0] for r in rows})
+    edges = np.arange(0, 30001, width)
+    nb = len(edges) - 1
+    X = np.zeros((len(rows), len(keys) + nb - 1))
+    y = np.zeros(len(rows))
+    for i, (d, h, m, _) in enumerate(rows):
+        X[i, keys.index(d)] = 1
+        k = min(int(h // width), nb - 1)
+        if k > 0:
+            X[i, len(keys) + k - 1] = 1
+        y[i] = np.log(m)
+    c, *_ = np.linalg.lstsq(X, y, rcond=None)
+    offs = np.concatenate([[0.0], c[len(keys):]])
+    mids = edges[:-1] + width / 2
+    return fac_tons(I, {d: B.integrate(I, d, lambda h, day, a=c[keys.index(d)]: np.exp(a + np.interp(h, mids, offs)))
+                        for d in I.open})
 
 
-def factors_by(df, tst, tg, line=50000, agg=np.median, ragg=np.median):
-    return {c: agg(df[df["section"] == c]["steer"].to_numpy()[df[df["section"] == c]["gross"].to_numpy() > line])
-            / ragg(tst[tg > line]) for c in B.CODES}
+def variant(I, test_shift=0.0, day_at=0.5, month_step=False):
+    """The golden with its conventions moved: catalyst hours at a test read later in the day, the day's rate read at
+    another point in the day, or each month's hours all counted at the month's start."""
+    cat = I.cat
+    if month_step:
+        cat = {}
+        for d in I.open:
+            c, out = I.cat[d], {}
+            for day in c:
+                out[day] = c[day.replace(day=1)]
+            cat[d] = out
+    rows = []
+    for r in I.tests.itertuples():
+        if r.device in cat:
+            rows.append((r.device, cat[r.device][r.date] + test_shift * I.hours[r.device].get(r.date, 0.0),
+                         r.lb_mmbtu, r.date))
+    lv, b, _ = B.fit_climb(rows)
+    out = {}
+    for d in I.open:
+        tot = 0.0
+        for day, hi in I.heat[d].items():
+            if day.year == B.YEAR and hi > 0:
+                tot += hi * np.exp(lv[d] + b[d] * (cat[d][day] + I.hours[d][day] * day_at))
+        out[d] = tot
+    return fac_tons(I, out)
 
 
-def world_routes(e):
-    """The clean truth: every station's readings and the tickets before any file is written."""
-    R = {r["code"]: (r["read"].sum(axis=1), r["read"][:, 0], r["gross"]) for r in e["wim"]}
-    tg, ts = e["tickets"]["gross"], e["tickets"]["axles"][:, 0]
+def truth_routes(e):
+    """The clean truth: every unit's tests, its true daily hours and its catalyst's hours before any file is written."""
+    U = e["units"]
+    hi26 = {d: sum(v for x, v in U[d]["hours"].items() if x.year == W.YEAR) * W.heat_rate(d) for d in W.OPEN}
 
-    def sh(fa):
-        return {c: 100.0 * np.mean(R[c][0] / fa[c] > W.LIMIT) for c in R}
-    out = {"raw": sh({c: 1.0 for c in R}),
-           "loaded": sh({c: np.median(R[c][1][R[c][0] > 50000]) / np.median(ts[tg > 50000]) for c in R}),
-           "pooled": sh({c: np.median(R[c][1]) / np.median(ts) for c in R}),
-           "empty": sh({c: np.median(R[c][1][R[c][0] <= 50000]) / np.median(ts[tg <= 50000]) for c in R}),
-           "gross": sh({c: np.median(R[c][0]) / np.median(tg) for c in R}),
-           "truth": {c: 100.0 * np.mean(R[c][2] > W.LIMIT) for c in R}}
+    def fac(unit_lb):
+        f = {}
+        for d in W.UNIT:
+            v = unit_lb[d] if d in unit_lb else U[d]["nox_2026"]
+            n = W.FAC_NAME[W.UNIT[d]["facility"]]
+            f[n] = f.get(n, 0.0) + v / 2000.0
+        return f
+    out = {"truth": fac({})}
+    out["latest"] = fac({d: hi26[d] * max(U[d]["tests"], key=lambda t: t["date"])["measured"] for d in W.OPEN})
+    rows = [(d, t["cat_hours"], t["measured"], t["date"]) for d in W.OPEN for t in U[d]["tests"]]
+    lv, b, _ = B.fit_climb(rows)
+    hr = {d: W.heat_rate(d) for d in W.OPEN}
+
+    def integ(d):
+        hrs, cat = U[d]["hours"], U[d]["cat"]
+        return sum(hrs[x] * hr[d] * np.exp(lv[d] + b[d] * (cat[x] + hrs[x] / 2)) for x in hrs
+                   if x.year == W.YEAR and hrs[x] > 0)
+    out["climb"] = fac({d: integ(d) for d in W.OPEN})
     return out
 
 
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    wim_all = B.read_wim(TARGET)
-    df = B.class9(wim_all)
-    tk = B.read_tickets(TARGET)
-    tst, tg = ticket_arrays(tk)
-    fa = B.factors(df, tk, "loaded")
-    sh = B.shares(df, fa)
-    gw = whole(sh)
-    five = B.five(sh)
-    rank = sorted(B.CODES, key=lambda c: -sh[c])
+    I = B.Inputs(TARGET)
+    gold = B.facility_tons(I, "golden")
+    gw = whole(gold)
+    five = B.five(gold)
     e = W.everything()
 
     # ---------------------------------------------------------------- R1: the field's raw material ships
-    check("R1 the WIM exports ship one record per vehicle with every axle's weight (%d class 9 weighings)" % len(df),
-          len(df) > 150000 and df["steer"].notna().all())
-    check("R1 the scale house tickets ship each truck's five static axle weights (%d tickets)" % len(tk),
-          len(tk) == 2600 and tk[["Axle %d (lb)" % i for i in range(1, 6)]].notna().all().all())
+    cems = pd.read_csv(os.path.join(TARGET, P.FILES["cems"]), dtype=str)
+    check("R1 the CEMS export ships one row per operating hour of the nine monitored units (%d rows)" % len(cems),
+          len(cems) > 25000 and cems.groupby(["facility_id", "unit_id"]).ngroups == 9)
+    check("R1 the two source test databases ship %d tests of the %d unmonitored units" % (len(I.tests), len(I.open)),
+          len(I.tests) == f["components"]["tests"] and set(I.tests["device"]) == set(I.open))
     heads = []
     for k, fn in P.FILES.items():
         p = os.path.join(TARGET, fn)
@@ -109,332 +187,317 @@ def main():
             heads += open(p, encoding="utf-8").readline().strip().lower().split(",")
         elif fn.endswith(".xlsx"):
             import openpyxl
-            ws = openpyxl.load_workbook(p, read_only=True).active
-            heads += [str(v).lower() for v in next(ws.iter_rows(values_only=True))]
-    check("R1 no shipped column holds a calibration, factor, bias, correction or static-basis weight",
-          not any(re.search(r"calib|factor|bias|correct|adjust|static|true_", h) for h in heads))
+            for ws in openpyxl.load_workbook(p, read_only=True).worksheets:
+                for row in ws.iter_rows(min_row=1, max_row=2, values_only=True):
+                    heads += [str(v).lower() for v in row if v is not None]
+    check("R1 no shipped column holds a unit's 2026 rate, its catalyst hours, a climb, an age or a facility total",
+          not any(re.search(r"catalyst|\bage\b|climb|deterior|2026 rate|\bannual\b|\btotal\b|represent|degrad", h)
+                  for h in heads))
+    docs = (pdf_text("plan") + " " + pdf_text("guidance")).lower()
+    check("R1 neither document says a rate moves with a catalyst's hours or that a test is unrepresentative",
+          not re.search(r"catalyst (age|hours)|deteriorat|degrad|climb|unrepresentative|operating hours on", docs))
 
     # ---------------------------------------------------------------- R3: the analyst test on the clean truth
-    wr = world_routes(e)
-    check("R3a the easy route on the clean truth (the gross as each station read it, every filed rule applied) files "
-          "%s, the default path's answer" % B.five(wr["raw"]), B.five(wr["raw"]) == DEFAULT)
-    check("R3a the default path on the cut pack files the same five", B.five(B.shares(df)) == DEFAULT)
-    check("R3b the easy route with only the decisive step (each station's loaded steer axles against the loaded "
-          "tickets') files the golden on the clean truth", B.five(wr["loaded"]) == GOLD)
-    check("R3b each lower rung's single correction leaves a wrong five on the clean truth (pooled %s, empty %s, "
-          "gross %s)" % (B.five(wr["pooled"]), B.five(wr["empty"]), B.five(wr["gross"])),
-          all(B.five(wr[k]) != GOLD for k in ("pooled", "empty", "gross")))
-    check("R3 the trucks' true gross (the generator's truth) puts the golden five on top", B.five(wr["truth"]) == GOLD)
-    check("R3 every golden share sits within 2.5 points of the true share (the stations' random error only)",
-          all(abs(sh[c] - wr["truth"][c]) < 2.5 for c in B.CODES))
-    pz = open(os.path.join(TARGET, P.FILES["piezo"]), encoding="ascii").read().splitlines()
-    bp = pd.read_csv(os.path.join(TARGET, P.FILES["bending"]), dtype=str)
-    check("R3c no plant: no WIM record repeats another exactly (piezo %d, bending %d)" % (len(pz), len(bp)),
-          len(set(pz)) == len(pz) and not bp.duplicated().any())
-    days = df.assign(day=df["local"].dt.date).groupby(["section", "day"])["gross"].apply(lambda s: tuple(np.round(s, -1)))
-    check("R3c no plant: no station's day of class 9 weighings repeats another day", days.nunique() == len(days))
-    wax = set()
-    for ln in pz:
-        if ln[26:28] == "09":
-            wax.add(tuple(int(ln[35 + 4 * k:39 + 4 * k]) // 5 for k in range(5)))
-    for r in bp[bp["fhwa_class"] == "9"][["ax%d_kg" % i for i in range(1, 6)]].astype(int).itertuples(index=False):
-        wax.add(tuple(int(round(x / B.KG / 10.0)) // 5 for x in r))
-    tax = tk[["Axle %d (lb)" % i for i in range(1, 6)]].astype(int).to_numpy()
-    hits = sum(tuple(int(x // 10) // 5 for x in row) in wax for row in tax)
-    check("R3c no plant: no scale house ticket copies a WIM weighing (all five axles to 50 lb; %d)" % hits, hits <= 2)
+    tr = truth_routes(e)
+    check("R3a the easy route on the clean truth (each unit's latest test across its 2026 heat input, every filed rule "
+          "applied) files the default path's five: %s" % B.five(tr["latest"]), B.five(tr["latest"]) == DEFAULT)
+    check("R3b the decisive step alone on the clean truth (the units' tests fitted on their catalysts' hours, one "
+          "climb, each unit its level, integrated over each day) files the golden five", B.five(tr["climb"]) == GOLD)
+    check("R3 the generator's true 2026 NOx puts the golden five on top (fifth over sixth %.3f)" % margin(tr["truth"]),
+          B.five(tr["truth"]) == GOLD and margin(tr["truth"]) > 1.15)
+    truth = {W.FAC_NAME[c]: v for c, v in e["facility_tons"].items()}
+    dev = max(abs(gold[n] - truth[n]) for n in B.ORDER)
+    check("R3 every golden facility figure sits within 0.25 tons of the true 2026 NOx (largest gap %.3f)" % dev,
+          dev < 0.25 and gw == whole(truth))
+    lat = B.facility_tons(I, "latest")
+    check("R3a the default path on the cut pack files the same five", B.five(lat) == DEFAULT)
+    keys = [(r.device, r.date) for r in I.tests.itertuples()]
+    old_ = pd.read_csv(os.path.join(TARGET, P.FILES["tests_old"]), dtype=str)
+    new_ = pd.read_excel(os.path.join(TARGET, P.FILES["tests_new"]), sheet_name="Results")
+    check("R3c no plant: no unit has two tests on one day and no test repeats another's ppm, lb/hr and fuel or heat "
+          "input", len(set(keys)) == len(keys) and not old_.duplicated(["NOX_PPMVD", "NOX_LB_HR", "FUEL_FLOW_SCFH"]).any()
+          and not new_.duplicated(["NOx (ppmvd @ ref O2)", "NOx (lb/hr)", "Heat Input (MMBtu/hr)"]).any())
+    st = pd.read_csv(os.path.join(TARGET, P.FILES["statements"]), dtype=str)
+    rep = st.groupby(["DEVICE_NO", "STMT_YEAR"])["HOURS"].apply(lambda s: ",".join(s)).reset_index()
+    check("R3c no plant: no unit's year of monthly hours repeats another year's", not rep.duplicated(["DEVICE_NO", "HOURS"]).any())
 
     # ---------------------------------------------------------------- R2: every Layer 1 item, mishandled
-    kg = wim_all.copy()
-    isb = kg["station"].str.startswith("CT")
-    kg.loc[isb, "gross"] = kg.loc[isb, "gross"] * B.KG
-    kg.loc[isb, "steer"] = kg.loc[isb, "steer"] * B.KG
-    raw_kg = B.shares(B.class9(kg))
-    bend = [s[0] for s in W.SECTIONS if s[4] == "bending"]
-    check("R2a kilograms read as pounds put every bending-plate station at zero over the limit (a loud failure no "
-          "careful route keeps)", all(raw_kg[c] == 0 for c in bend))
-    check("R2b the controllers' standard time read as daylight time leaves the call and the twelve shares (the year's "
-          "ends are in standard time)", True if df["local"].min().year == 2026 and df["local"].max().year == 2026
-          else False)
-    keep = df[~((df["station"] == P.STATION_ID[P.RELANED[0]]) & (df["lane"] > 2))]
-    check("R2c Foxbriar's renumbered lanes 3 and 4 dropped leaves the call",
-          B.five(B.shares(keep, B.factors(keep, tk))) == GOLD)
-    check("R2d the re-sited station at its previous milepost (%.1f) stays in its section" % P.RESITED[1],
-          B.section_at(P.RESITED[1]) == P.RESITED[0])
-    allr = wim_all[wim_all["cls"] == 9]
-    check("R2e the rejected weighings kept leaves the call", B.five(B.shares(allr, B.factors(allr, tk))) == GOLD)
-    ks, kgr = ticket_arrays(tk, keyed=True)
-    fk = factors_by(df, ks, kgr)
-    check("R2f the tickets' keyed gross trusted over their axles leaves the call and the twelve shares",
-          whole(B.shares(df, fk)) == gw)
-    wk = B.weekday_entries(TARGET)
-    wk_utc = B.weekday_entries(TARGET, clock="utc")
-    ci_utc = B.citations_by_section(TARGET, clock="utc")
-    ci0 = B.citations_by_section(TARGET)
-    check("R2g every toll stamp read as UTC moves only the asks (ask B in %d sections, ask A in %d)"
-          % (sum(B.hround(wk[c]) != B.hround(wk_utc[c]) for c in B.CODES), sum(ci_utc[c] != ci0[c] for c in B.CODES)),
-          sum(B.hround(wk[c]) != B.hround(wk_utc[c]) for c in B.CODES) >= 1 and
-          sum(ci_utc[c] != ci0[c] for c in B.CODES) == 12)
-    wk_cur = B.weekday_entries(TARGET, plazas="current")
-    check("R2h plaza code P23 read by the list as it stands moves only Brannock's and Halbrook's ask figures",
-          [c for c in B.CODES if B.hround(wk[c]) != B.hround(wk_cur[c])] == ["02", "08"])
+    Ip = B.Inputs(TARGET, conv="ppm")
+    check("R2a the older tests through Method 19 from ppm in place of lb/hr over heat input: the call and the 14 whole "
+          "tons (SF6)", whole(B.facility_tons(Ip, "golden")) == gw)
+    st_raw = pd.read_csv(os.path.join(TARGET, P.FILES["statements"]), dtype=str)
+    bad = st_raw.copy()
+    bad.loc[bad["HHV_BTU_SCF"].notna(), "HHV_BTU_SCF"] = "1037"
+    dB = subset(list(P.FILES))
+    bad.to_csv(os.path.join(dB, P.FILES["statements"]), index=False)
+    check("R2b landfill and digester gas at the natural gas heating value leaves the call (SF5)",
+          B.five(B.facility_tons(B.Inputs(dB), "golden")) == GOLD)
+    shutil.rmtree(dB)
+    utc = cems.copy()
+    ts = pd.to_datetime(utc["op_date"]) + pd.to_timedelta(utc["op_hour"].astype(int), unit="h") + pd.Timedelta(hours=8)
+    keep = ts.dt.year == 2026
+    lb_utc = {}
+    pm = B.read_permits(TARGET)
+    key = {(r.FAC_NO, r.CEMS_UNIT_ID): r.DEVICE_NO for r in pm.itertuples() if isinstance(r.CEMS_UNIT_ID, str)}
+    for (fa, un), g in utc[keep].groupby(["facility_id", "unit_id"]):
+        lb_utc[key[(fa, un)]] = g["nox_mass_lb"].astype(float).sum()
+    f_utc = fac_tons(I, {**B.unit_lb(I, "golden"), **lb_utc})
+    check("R2c the CEMS hours read as UTC leave the call and the 14 whole tons (SF3)", whole(f_utc) == gw)
+    sub = {k: g["nox_mass_lb"].astype(float).sum() for k, g in
+           cems[cems["nox_rate_modc"] != "12"].assign(dev=[key[(a, b)] for a, b in zip(
+               cems[cems["nox_rate_modc"] != "12"]["facility_id"], cems[cems["nox_rate_modc"] != "12"]["unit_id"])])
+           .groupby("dev")}
+    check("R2d the substitute data hours dropped leave the call (SF4)", B.five(fac_tons(I, {**B.unit_lb(I, "golden"),
+                                                                                            **sub})) == GOLD)
+    old = pd.read_csv(os.path.join(TARGET, P.FILES["tests_old"]), dtype=str)
+    check("R2e Haskett Ridge's tests and statements under its old number 0705 carry its device numbers (SF10)",
+          set(old[old["FAC_NO"] == "705"]["DEVICE_NO"]) <= {"1501", "1502", "1503"} and
+          set(st_raw[st_raw["FAC_NO"] == "0705"]["DEVICE_NO"]) == {"D-1501", "D-1502", "D-1503"})
+    ev = B.read_events(TARGET)
+    cats_dm = {}
+    for r in ev[ev["EVENT_TYPE"].isin(["SCR INSTALLED", "CATALYST"])].itertuples():
+        d = r.date
+        if "/" in r.EVENT_DATE and d.day <= 12:
+            d = dt.date(d.year, d.day, d.month)
+        cats_dm.setdefault(r.DEVICE_NO, []).append(d)
+    Idm = B.Inputs(TARGET)
+    Idm.cats = {k: sorted(v) for k, v in cats_dm.items()}
+    Idm.cat = {d: B.cat_hours(Idm.hours[d], Idm.cats.get(d, [])) for d in Idm.open}
+    check("R2f the event log's month-first dates up to 2020 read day first leave the call (SF13)",
+          B.five(B.facility_tons(Idm, "golden")) == GOLD)
 
     # ---------------------------------------------------------------- the ladder
-    raw = B.shares(df)
-    check("L0 the gross as recorded files %s" % B.five(raw), B.five(raw) == DEFAULT)
-    tr = lambda fs, ft: B.shares(df, {c: fs(df[df["section"] == c]["gross"].to_numpy(),
-                                            df[df["section"] == c]["steer"].to_numpy()) / ft(tg, tst) for c in B.CODES})
-    med, mean = np.median, np.mean
-    gross_routes = {
-        "median gross": tr(lambda g, s: med(g), lambda g, s: med(g)),
-        "mean gross": tr(lambda g, s: mean(g), lambda g, s: mean(g)),
-        "loaded median gross": tr(lambda g, s: med(g[g > 50000]), lambda g, s: med(g[g > 50000])),
-        "loaded mean gross": tr(lambda g, s: mean(g[g > 50000]), lambda g, s: mean(g[g > 50000])),
-        "empty median gross": tr(lambda g, s: med(g[g <= 50000]), lambda g, s: med(g[g <= 50000])),
-        "90th percentile gross": tr(lambda g, s: np.percentile(g, 90), lambda g, s: np.percentile(g, 90)),
-        "99th percentile gross": tr(lambda g, s: np.percentile(g, 99), lambda g, s: np.percentile(g, 99)),
-        "steer share of gross": tr(lambda g, s: med(s / g), lambda g, s: med(s / g)),
-    }
-    for k, v in gross_routes.items():
-        check("L1 every station scaled to the tickets' %s misses (%s)" % (k, B.five(v)), B.five(v) != GOLD)
-    pooled = B.shares(df, B.factors(df, tk, "pooled"))
-    pooled_mean = B.shares(df, B.factors(df, tk, "pooled", agg="mean", ragg="mean"))
-    check("L2 each station's steer axles pooled, empty and loaded, file %s (median) and %s (mean)"
-          % (B.five(pooled), B.five(pooled_mean)), B.five(pooled) != GOLD and B.five(pooled_mean) != GOLD)
-    empty = B.shares(df, B.factors(df, tk, "empty"))
-    peak = B.shares(df, B.factors(df, tk, "empty_peak"))
-    check("L3 the empty tractors' steer axles (%s) and the empty gross peak (%s) miss" % (B.five(empty), B.five(peak)),
-          B.five(empty) != GOLD and B.five(peak) != GOLD)
+    check("L0 each unit's latest test across its 2026 heat input files %s" % ", ".join(n.split()[0] for n in B.five(lat)),
+          B.five(lat) == DEFAULT)
+    reflex = {m: B.facility_tons(I, m) for m in ("mean", "median", "max", "last2", "limit", "caltrend", "calendar_age")}
+    for m, v in reflex.items():
+        check("L1 the %s route misses the golden five (%s)" % (m, ", ".join(n.split()[0] for n in B.five(v))),
+              B.five(v) != GOLD)
+    since = {}
+    for r in I.tests.sort_values("date").itertuples():
+        since.setdefault(r.device, [])
+        if r.date >= max(c for c in I.cats[r.device] if c <= r.date):
+            since[r.device].append(r)
+    post = {}
+    for d in I.open:
+        last_cat = max(I.cats[d])
+        ok = [r for r in since[d] if r.date >= last_cat]
+        r = ok[-1] if ok else I.tests[I.tests["device"] == d].sort_values("date").iloc[-1]
+        post[d] = I.hi26[d] * (r.lb_mmbtu if ok else r["lb_mmbtu"])
+    check("L2 the latest test on each unit's current catalyst (the latest test where none) misses the golden five",
+          B.five(fac_tons(I, post)) != GOLD)
+    check("L the default path keeps the five's whole tons at most at Wexley Point, Valmora and Ashgrove (%d of 14 "
+          "whole tons)" % sum(whole(lat)[n] == gw[n] for n in B.ORDER), sum(whole(lat)[n] == gw[n] for n in B.ORDER) <= 11)
 
-    def net(fn):
-        v = {c: fn(df[df["section"] == c]["gross"].to_numpy(), df[df["section"] == c]["steer"].to_numpy())
-             for c in B.CODES}
-        m = np.median(list(v.values()))
-        return B.shares(df, {c: v[c] / m for c in B.CODES})
-    for k, fn in (("loaded median gross", lambda g, s: med(g[g > 50000])), ("median gross", lambda g, s: med(g)),
-                  ("empty median gross", lambda g, s: med(g[g <= 50000])), ("pooled steer", lambda g, s: med(s))):
-        v = net(fn)
-        check("L4 every station scaled to the network's median %s misses (%s)" % (k, B.five(v)), B.five(v) != GOLD)
-    nl = net(lambda g, s: med(s[g > 50000]))
-    check("L5 the loaded steer axles against the network's median station (no static reference) file the golden five",
-          B.five(nl) == GOLD)
-    check("L the default path keeps four of twelve whole shares at most (%d)"
-          % sum(B.hround(raw[c]) == gw[c] for c in B.CODES), sum(B.hround(raw[c]) == gw[c] for c in B.CODES) <= 4)
+    # ---------------------------------------------------------------- the golden and its licensed family
+    check("G1 the golden five: %s" % five, five == GOLD and f["call"]["facilities"] == GOLD)
+    check("G1 figures.json carries the 14 whole tons", all(f["facilities"][n]["nox_tons"] == gw[n] for n in B.ORDER))
+    fam = {"pooled": gold, "by kind": B.facility_tons(I, "bykind"), "since 2022": B.facility_tons(I, "since2022"),
+           "anchored on the latest test": B.facility_tons(I, "anchor"), "power law": power_law(I),
+           "binned": binned(I), "binned 3,000 h": binned(I, 3000), "Method 19": B.facility_tons(Ip, "golden")}
+    check("G2 every licensed member (%s) files the golden five" % ", ".join(fam),
+          all(B.five(v) == GOLD for v in fam.values()))
+    check("G2 every licensed member prints the same 14 whole tons", all(whole(v) == gw for v in fam.values()))
+    lm = min(edge(v) for v in fam.values())
+    check("G3 every member's every figure sits 0.04 tons or more from a rounding half (least %.3f) (SF11)" % lm, lm >= 0.04)
+    mm = min(margin(v) for v in fam.values())
+    check("G4 fifth clears sixth by 15 per cent or more under every member (least %.3f) (SF12)" % mm, mm >= 1.15)
+    lv, b, sd = B.fit_climb(I.test_rows())
+    beta = list(b.values())[0]
+    lin = [(d, h, lb, t) for d, h, lb, t in I.test_rows()]
+    keys_ = sorted({r[0] for r in lin})
+    X = np.zeros((len(lin), len(keys_) + 1))
+    y = np.zeros(len(lin))
+    for i, (d, h, lb, _) in enumerate(lin):
+        X[i, keys_.index(d)] = 1
+        X[i, -1] = h
+        y[i] = lb
+    c, *_ = np.linalg.lstsq(X, y, rcond=None)
+    rel = float(np.std((y - X @ c) / y))
+    check("G5 the tests refute an additive climb (relative residual sd %.3f against the log fit's %.3f)" % (rel, sd),
+          rel > 2 * sd)
+    check("G5 the fitted climb: %.2f in the log a 10,000 hours, %d per cent a 1,000 (figures.json)"
+          % (beta * 1e4, f["components"]["climb_pct_per_1000h"]),
+          "%.2f" % (beta * 1e4) == f["components"]["climb_log_per_10000h"] and abs(beta - W.BETA) < 0.05 * W.BETA)
+    six = sorted(B.ORDER, key=lambda n: -gold[n])[5]
+    check("G6 sixth as figures.json states (%s, %d)" % (six, gw[six]), f["components"]["sixth"]["name"] == six and
+          f["components"]["sixth"]["tons"] == gw[six])
 
-    # ---------------------------------------------------------------- the golden and its family
-    check("G1 the golden five: %s" % [B.NAMES[c] for c in five], five == GOLD)
-    check("G1 figures.json carries the golden five and the twelve shares",
-          sorted(B.CODES[B.CODES.index(f["sections"][n]["section"])] for n in f["call"]["equip"]) == GOLD and
-          all(f["sections"][B.NAMES[c]]["share_pct"] == gw[c] for c in B.CODES))
-    fam = {}
-    for line in LINES:
-        for a in ("median", "mean"):
-            for b in ("median", "mean"):
-                fam[(line, a, b)] = B.shares(df, B.factors(df, tk, "loaded", line, a, b))
-    check("G2 every licensed member (%d: the loaded line from 45,000 to 72,000 lb, the station's median or mean, the "
-          "tickets' median or mean) files the golden five" % len(fam), all(B.five(v) == GOLD for v in fam.values()))
-    check("G2 every licensed member prints the same twelve whole per cents", all(whole(v) == gw for v in fam.values()))
-    marg = min(abs((v[c] % 1) - 0.5) for v in fam.values() for c in B.CODES)
-    check("G3 every member's every share sits 0.15 points or more inside its whole-per-cent bin (least %.2f)" % marg,
-          marg >= 0.15)
-    gaps = [sorted(v.values())[-5] - sorted(v.values())[-6] for v in fam.values()]
-    check("G4 fifth clears sixth by 3.5 points or more under every member (least %.2f)" % min(gaps), min(gaps) >= 3.5)
-    reads = lambda fv: {c: B.hround(abs(fv[c] - 1) * 100) for c in ("02", "09", "05", "11")}
-    r0 = reads(fa)
-    check("G5 the critical component (Brannock and Ingram Mill %d and %d per cent heavy, Elk Ferry and Kettle Run %d "
-          "and %d light) holds under every member" % (r0["02"], r0["09"], r0["05"], r0["11"]),
-          all(reads(B.factors(df, tk, "loaded", line, a, b)) == r0 for line in LINES for a in ("median", "mean")
-              for b in ("median", "mean")) and all(abs((abs(fa[c] - 1) * 100) % 1 - 0.5) > 0.12 for c in r0))
-    check("G5 the critical component's sides: Brannock and Ingram Mill read heavy, Elk Ferry and Kettle Run light",
-          fa["02"] > 1 and fa["09"] > 1 and fa["05"] < 1 and fa["11"] < 1)
-    check("G6 the lowest of the five (%d) and sixth (%s, %d) as figures.json states"
-          % (gw[rank[4]], B.NAMES[rank[5]], gw[rank[5]]),
-          f["components"]["sixth"]["name"] == B.NAMES[rank[5]] and f["components"]["sixth"]["share_pct"] == gw[rank[5]]
-          and min(gw[c] for c in GOLD) == 11)
-
-    # ---------------------------------------------------------------- SF1 to SF18
-    prog = pdf_text("program")
-    dic = pdf_text("dictionary")
-    check("SF1 the program files gross vehicle weight as the static scale's, and the gross as recorded files another "
-          "five", "on a certified static scale" in prog and B.five(raw) != GOLD)
-    ge = B.shares(df, fa)
-    ge2 = {c: 100.0 * float(np.mean(df[df["section"] == c]["gross"].to_numpy() / fa[c] >= W.LIMIT)) for c in B.CODES}
-    check("SF2 at or above 80,000 lb gives the same call and twelve shares", whole(ge2) == whole(ge) and
-          "exceeded 80,000 lb" in prog)
-    five_ax = wim_all[(wim_all["axles"] == 5) & (wim_all["rejected"] == 0)]
-    check("SF3 every five-axle vehicle in place of class 9 gives the same call",
-          B.five(B.shares(five_ax, B.factors(five_ax, tk))) == GOLD and "FHWA vehicle class 9" in prog)
-    check("SF4 every record in place of the accepted weighings gives the same call (R2e)",
-          B.five(B.shares(allr, B.factors(allr, tk))) == GOLD)
-    utc = df[(df["local"] + pd.Timedelta(hours=5)).dt.year == 2026]
-    check("SF5 UTC dates for the controllers' clocks give the same call and twelve shares",
-          whole(B.shares(utc, B.factors(utc, tk))) == gw and "Eastern Standard Time all year" in dic)
-    check("SF6 the station list's previous milepost keeps the station in its section", B.section_at(29.7) == "02")
-    lane1 = df[df["lane"] == 1]
-    check("SF7 the first lane alone gives the same call", B.five(B.shares(lane1, B.factors(lane1, tk))) == GOLD and
-          "in every lane and in both directions" in prog)
-    fall = factors_by(df, tst, np.full(len(tst), 99999.0), line=50000)
-    check("SF8 every ticket in place of the loaded tickets as the reference gives the same call and twelve shares "
-          "(%d empty tickets)" % int((tg <= 50000).sum()), whole(B.shares(df, fall)) == gw)
-    check("SF9 the loaded line anywhere from 45,000 to 72,000 lb gives the same call and shares (G2)",
-          all(whole(fam[(l, "median", "median")]) == gw for l in LINES))
-    check("SF10 the mean in place of the median, either side, gives the same call and shares (G2)",
-          all(whole(fam[(50000, a, b)]) == gw for a in ("median", "mean") for b in ("median", "mean")))
-    check("SF11 half up and half to even agree on the twelve shares (no share at a half)",
-          all(B.hround(sh[c]) == int(np.round(sh[c])) for c in B.CODES))
-    check("SF12 no tie for fifth (%.2f points clear)" % (sh[rank[4]] - sh[rank[5]]), sh[rank[4]] - sh[rank[5]] >= 3.5)
-    ent = B.entries_clean(TARGET)
-    wkd = ent[np.array([d.weekday() < 5 for d in ent["date"]])]
-    hol = wkd[wkd["date"].isin(set(W.HOLIDAYS))]
-    check("SF13 the program counts holidays among the 261 weekdays, and leaving them out moves the figures (%d holiday "
-          "entries)" % len(hol), "holidays included" in prog and "261" in prog and len(hol) > 1000)
-    check("SF14 the program dates an entry by its local date; the UTC date moves ask B (R2g)",
-          "by the local date of the entry" in prog and wk_utc != wk)
-    pl = pd.read_csv(os.path.join(TARGET, P.FILES["plazas"]))
-    sched = pdf_text("schedule")
-    check("SF15 the plaza list dates P41 and the reissued P23, and the 2025 schedule places P23 at Brannock Road",
-          set(pl.loc[pl["in_service_from"].notna(), "plaza"]) == {"P41", "P23"} and "P23 Brannock Road 38.1" in sched)
-    ci = B.citations_by_section(TARGET)
-    cr = B.read_citations(TARGET)
-    ent_s = ent.sort_values("local")
-    by_tag = {t: v for t, v in ent_s.groupby("tag_id")}
-    tkt = tk.assign(when=pd.to_datetime(tk["Date"].astype(str).str[:10] + " " + tk["Time"]))
-    over = tkt[tg > 80000]
-    ps = B.plaza_section(TARGET)
-    cnt = {}
-    for tag, when in zip(over["Tag"], over["when"]):
-        v = by_tag[tag]
-        row = v[v["local"] <= when].iloc[-1]
-        s_ = ps(row["plaza"], row["date"])
-        cnt[s_] = cnt.get(s_, 0) + 1
-    check("SF16 a ticket over 80,000 lb is not a citation: counting tickets moves ask A (%d sections), and the program "
-          "names violation code G" % sum(cnt.get(c, 0) != ci[c] for c in B.CODES),
-          sum(cnt.get(c, 0) != ci[c] for c in B.CODES) >= 8 and "violation code G" in prog)
-    lg = B.citations_by_section(TARGET, "logged")
-    check("SF17 the program places a citation at the trip weighed; the log's entry plaza moves all twelve (A1)",
-          "on the trip on which the scale house weighed it" in prog and all(lg[c] != ci[c] for c in B.CODES))
-    d18 = subset(["piezo", "bending", "stations", "tickets"])
-    df18 = B.class9(B.read_wim(d18))
-    s18 = B.shares(df18, B.factors(df18, B.read_tickets(d18)))
-    check("SF18 the call and twelve shares from the WIM exports, the station list and the tickets alone",
-          whole(s18) == gw and B.five(s18) == GOLD)
-    shutil.rmtree(d18)
-
-    # ---------------------------------------------------------------- the asks
-    mv = lambda a: sum(B.hround(a[c]) != B.hround(wk[c]) for c in B.CODES)
-    var = {k: B.weekday_entries(TARGET, dedup=k) for k in ("none", "exact", "pair60", "cut_first", "cut_last",
-                                                             "sameday")}
-    check("A2 every section's weekday entries move under every reflex (%s)"
-          % ", ".join("%s %d" % (k, mv(v)) for k, v in var.items()), all(mv(v) == 12 for v in var.values()))
-    raw_e = B.read_entries(TARGET)
-    old, new = raw_e[raw_e["old"]], raw_e[~raw_e["old"]]
-    back = B._twins(old, new, -60, 16 * 60)
-    gen = P.entry_rows(e)
-    n_back = sum(1 for r in gen if r[5] == "backfill")
-    check("A2 fair: the new-host rows stamped up to 16 minutes before an old-host row of the same tag and plaza are "
-          "exactly the backfill (%d rows), each with one twin" % len(back),
-          len(back) == n_back and len(B._twins(old, new, -16 * 60, 16 * 60)) == n_back and
-          not raw_e.duplicated(["txn_id"]).any())
-    last_old = old.groupby("plaza")["stamp"].max()
-    per_cut = set(i for i, r in new.iterrows() if r["plaza"] in last_old.index and r["stamp"] <= last_old[r["plaza"]])
-    check("A2 fair: a cut at each plaza's last old-host stamp drops the same rows as the twins", per_cut == back)
-    check("A2 fair: no live new-host row has an old-host twin within four hours either side",
-          len(B._twins(old, new.drop(index=sorted(back)), -4 * 3600, 4 * 3600)) == 0)
-    sw = {p: W.switch_time(p) for p in W.SWITCH}
-    check("A2 the plazas moved on %d different days from %s to %s" % (len(set(sw.values())), min(sw.values()).date(),
-          max(sw.values()).date()), len(set(sw.values())) >= 15)
-    live = new.drop(index=sorted(back))
-    loc_new = B.to_local(live["stamp"])
-    order_ok = (pd.concat([loc_new, new.loc[sorted(back), "stamp"]]).reindex(new.index)
-                .loc[new.sort_values("txn_id").index].is_monotonic_increasing)
-    check("A2 no marker: the new host's ids run in entry order through its backfill and its own entries", order_ok)
-    oh = old["stamp"].dt.hour.value_counts().sort_index()
-    lh = live["stamp"].dt.hour.value_counts().sort_index()
-    check("A1 fair: the old host's stamps peak in local working hours (%d:00) and the new host's own four or five hours "
-          "later (%d:00), as UTC" % (oh.idxmax(), lh.idxmax()), 6 <= oh.idxmax() <= 14 and 3 <= lh.idxmax() - oh.idxmax() <= 6)
-    ci = ci0
-    var_a = {"the log's entry plaza": B.citations_by_section(TARGET, "logged"), "every stamp as UTC": ci_utc,
-             "no stamp converted": B.citations_by_section(TARGET, clock="none"),
-             "exact duplicates, every stamp as UTC": B.citations_by_section(TARGET, dedup="exact", clock="utc")}
-    check("A1 every section's gross citations move under every reflex (%s; ten or more with no stamp converted)"
-          % ", ".join("%s %d" % (k, sum(v[c] != ci[c] for c in B.CODES)) for k, v in var_a.items()),
-          all(sum(v[c] != ci[c] for k, v in var_a.items() for c in B.CODES if k == k0) >= (10 if "no stamp" in k0 else 12)
-              for k0 in var_a))
-    cr = B.read_citations(TARGET)
-    g = cr[cr["violation"] == "G"]
-    mp = dict(zip(pl["plaza"], pl["milepost"]))
-    house_mp = {"West Scale House": 0.6, "East Scale House": 283.4}
-    ent_u = B.entries_clean(TARGET, clock="utc").sort_values("local")
-    by_u = {t: v for t, v in ent_u.groupby("tag_id")}
-    feas, odd = True, 0
-    for _, r in g.iterrows():
-        v = by_tag[r["tag_id"]]
-        trip = v[v["local"] <= r["issued_local"]].iloc[-1]
-        miles = abs((38.1 if trip["plaza"] == "P23" and trip["date"] < dt.date(2026, 5, 1) else mp[trip["plaza"]])
-                    - house_mp[r["scale_house"]])
-        hours = (r["issued_local"] - trip["local"]).total_seconds() / 3600
-        feas &= 0 < hours and miles / (hours + RECEIPT_ALLOW) < 80
-        u = by_u[r["tag_id"]]
-        tu = u[u["local"] <= r["issued_local"]].iloc[-1]
-        odd += tu["plaza"] in ("P01", "P32") and tu["plaza"] == ("P01" if r["scale_house"].startswith("West") else "P32")
-    check("A1 fair: on the golden's clocks every gross citation's trip reaches its scale house at under 80 mph, allowing "
-          "the old host's receipt delay", feas)
-    check("A1 fair: read as UTC, %d citations' trips would start at their own scale house's barrier, a truck weighed "
-          "on the way out entering where it is weighed" % odd, odd > 150)
-    moved_rows, paper, later_ok = 0, 0, True
-    for _, r in g.iterrows():
-        v = by_tag[r["tag_id"]]
-        trip = v[v["local"] <= r["issued_local"]].iloc[-1]
-        if trip["plaza"] != r["entry_plaza"]:
-            moved_rows += 1
-            keyed = pd.to_datetime(r["keyed"], format="%m/%d/%Y %H:%M")
-            after = v[(v["local"] > r["issued_local"]) & (v["local"] <= keyed + pd.Timedelta(minutes=1))]
-            later_ok &= r["entry_plaza"] in set(after["plaza"])
-        paper += r["citation_no"].startswith("C")
-    check("A1 fair: every citation whose log plaza is not its trip's carries the tag's later entry between the stop and "
-          "the keying (%d rows)" % moved_rows, later_ok and moved_rows > 100)
-    check("A1 no marker: those citations are under 80 per cent of the paper citations (%d of %d)" % (moved_rows, paper),
-          0.2 < moved_rows / paper < 0.8)
-    trip_cur = B.citations_by_section(TARGET, plazas="current")
-    check("A hazard: P23 by the current list moves Brannock's and Halbrook's citations",
-          [c for c in B.CODES if trip_cur[c] != ci[c]] == ["02", "08"])
-    check("A the golden's ask figures are figures.json's", all(
-        f["sections"][B.NAMES[c]]["weekday_entries"] == B.hround(wk[c]) and
-        f["sections"][B.NAMES[c]]["gross_citations"] == ci[c] for c in B.CODES))
-    sec_of = lambda code, kind: ("02" if kind == "old" else "08") if code == "P23" else \
-        [p_[2] for p_ in W.PLAZAS if p_[0] == code][0]
-    truthB, pureB = {}, {}
-    for tid, code, stamp, tag, local, kind in gen:
-        if kind == "backfill":
+    # ---------------------------------------------------------------- SF1 to SF21
+    new = pd.read_excel(os.path.join(TARGET, P.FILES["tests_new"]), sheet_name="Results")
+    m19 = new["NOx (ppmvd @ ref O2)"] * 1.194e-7 * [B.FD[pm.set_index("DEVICE_NO").loc[d_, "FUEL"]] for d_ in new["Device No."]] \
+        * 20.9 / (20.9 - new["Ref O2 (%)"])
+    check("SF1 the newer database's lb/MMBtu is Method 19's NO2 figure from its ppm, within the two columns' printed "
+          "precision", (abs(m19 / new["NOx (lb/MMBtu)"] - 1) < 0.004).all())
+    eng = B.engine_lb(TARGET)
+    with_eng = {n: gold[n] + eng[n] / 2000.0 for n in B.ORDER}
+    check("SF2 the emergency engines added to each facility leave the call; the Rule 4307 units have no fuel record",
+          B.five(with_eng) == GOLD and not set(pm[pm["RULE"] == "4307"]["DEVICE_NO"]) & set(st_raw["DEVICE_NO"]))
+    check("SF3 the CEMS hours on UTC (R2c)", whole(f_utc) == gw)
+    check("SF4 the substitute data hours dropped (R2d)", B.five(fac_tons(I, {**B.unit_lb(I, "golden"), **sub})) == GOLD)
+    check("SF5 landfill and digester gas at 1,037 Btu/scf (R2b)", True)
+    check("SF6 the older tests through Method 19 give the same 14 whole tons (R2a)", whole(fam["Method 19"]) == gw)
+    v7 = variant(I, test_shift=1.0)
+    check("SF7 catalyst hours at the end of the test day in place of its start: the same 14 whole tons", whole(v7) == gw)
+    v8 = variant(I, day_at=0.0)
+    check("SF8 each day's rate at the day's start in place of mid-day: the same 14 whole tons", whole(v8) == gw)
+    v9 = variant(I, month_step=True)
+    check("SF9 each month's hours counted at the month's start in place of spread over its days: the same 14 whole "
+          "tons", whole(v9) == gw)
+    check("SF10 every test and statement row joins a Rule 4306 device of the permit list",
+          set(I.tests["device"]) <= set(I.devices) and set(st_raw["DEVICE_NO"]) <= set(I.devices))
+    check("SF11 no figure at a half (G3)", lm >= 0.04)
+    check("SF12 no tie for fifth (G4)", mm >= 1.15)
+    check("SF13 the month-first dates read day first (R2f)", B.five(B.facility_tons(Idm, "golden")) == GOLD)
+    ga = B.gas_2026(TARGET)
+    gwa = {n: B.hround(ga[n]) for n in B.ORDER}
+    reads = B.gas_2026(TARGET, "reads")
+    check("SF14 plan 4.2 files the billed usage; the meter reads in its place move %d of 14 gas figures"
+          % sum(B.hround(reads[n]) != gwa[n] for n in B.ORDER), sum(B.hround(reads[n]) != gwa[n] for n in B.ORDER) >= 9
+          and "billed usage spread evenly over the days of its read period, from the day of its prior read to the day "
+          "before its current read" in pdf_text("plan"))
+    bl = B.read_billing(TARGET)
+    cut = B.conversion(bl)
+    alt = {n: 0.0 for n in B.ORDER}
+    for r in bl.itertuples():
+        therms = r.USAGE_CCF if r.READ_TO >= cut else r.USAGE_CCF * r.BTU_FACTOR
+        n_ = (r.READ_TO - r.READ_FROM).days
+        a_ = max(r.READ_FROM + dt.timedelta(days=1), B.D0)
+        z_ = min(r.READ_TO + dt.timedelta(days=1), B.D1)
+        alt[r.facility] += therms * max(0, (z_ - a_).days) / n_ / 10.0
+    check("SF15 the read period from the day after the prior read through the current read moves gas figures, and plan "
+          "4.2 files the other (%d moved)" % sum(B.hround(alt[n]) != gwa[n] for n in B.ORDER),
+          sum(B.hround(alt[n]) != gwa[n] for n in B.ORDER) > 0)
+    check("SF16 therms to MMBtu at 10 (guidance section 4)", "therms divided by 10" in pdf_text("guidance"))
+    check("SF17 every billing line's service address matches exactly one Appendix A facility (%d lines)" % len(bl),
+          bl["facility"].notna().all() and bl.groupby("METER_NO")["facility"].nunique().max() == 1)
+    eb = B.engine_lb(TARGET)
+    ebw = {n: B.hround(eb[n]) for n in B.ORDER}
+    insp = pd.read_csv(os.path.join(TARGET, P.FILES["inspections"]), dtype=str)
+    insp["date"] = [dt.date.fromisoformat(x) for x in insp["INSPECTION_DATE"]]
+    insp["read"] = insp["HOUR_METER"].astype(float)
+    logs = B.read_engine_logs(TARGET)
+    hmm = B.hmm_facilities(TARGET)
+    repl = B.replacements(TARGET)
+    meter_lb = {n: 0.0 for n in B.ORDER}
+    pmi = pm.set_index("DEVICE_NO")
+    for d_, g in insp.groupby("DEVICE_NO"):
+        g = g.sort_values("date")
+        n_ = B.FAC_OF_NO[g.iloc[0]["FAC_NO"]]
+        lg = logs[logs["device"] == d_]
+        hrs_log = sum(B._as_hmm(v) if n_ in hmm else v for v in lg["value"])
+        span = g.iloc[1]["read"] - g.iloc[0]["read"]
+        if d_ in repl:
             continue
-        day = dt.datetime.strptime(stamp, "%Y-%m-%d %H:%M").date() if kind == "old" else local.date()
-        if day.weekday() < 5 and day.year == 2026:
-            truthB[sec_of(code, kind)] = truthB.get(sec_of(code, kind), 0) + 1
-        if local.weekday() < 5:
-            pureB[sec_of(code, kind)] = pureB.get(sec_of(code, kind), 0) + 1
-    check("A the golden's weekday entries are the generator's, each entry once on its host's own clock",
-          all(abs(truthB[c] / B.WEEKDAYS_2026 - wk[c]) < 1e-9 for c in B.CODES))
-    check("A the old host's late receipt stamps move no whole figure from the entries' true local dates",
-          all(B.hround(pureB[c] / B.WEEKDAYS_2026) == B.hround(wk[c]) for c in B.CODES))
-    truthA = {}
-    for c_ in e["citations"]:
-        if c_["code"] == "G":
-            s_ = W.section_of(e["entries"], c_["trip"])
-            truthA[s_] = truthA.get(s_, 0) + 1
-    check("A the golden's citations are the generator's truth", all(truthA.get(c, 0) == ci[c] for c in B.CODES))
-    n_re = sum(1 for d_, i_, t_, s__ in e["entries"][e["n_entries"]:])
-    check("A %d trucks cited for gross weight came back through their barrier after offloading" % n_re, n_re > 500)
+        scale = span / hrs_log if hrs_log else 1.0
+        bhp, tier = float(pmi.loc[d_, "RATING"]), pmi.loc[d_, "ENGINE_TIER"]
+        meter_lb[n_] += hrs_log * scale * bhp * B.ENGINE_LF * B.TIER_NOX[tier] / B.G_LB
+    for d_, (rd, ob, ot) in repl.items():
+        n_ = B.FAC_OF_NO[pmi.loc[d_, "FAC_NO"]]
+        lg = logs[logs["device"] == d_]
+        for r in lg.itertuples():
+            h = B._as_hmm(r.value) if n_ in hmm else r.value
+            bhp, tier = (ob, ot) if r.date < rd else (float(pmi.loc[d_, "RATING"]), pmi.loc[d_, "ENGINE_TIER"])
+            meter_lb[n_] += h * bhp * B.ENGINE_LF * B.TIER_NOX[tier] / B.G_LB
+    moved = sum(B.hround(meter_lb[n]) != ebw[n] for n in B.ORDER)
+    check("SF18 guidance 6 takes the hours the logs record; the hour meters, which run through warm-up and cool-down, "
+          "in their place move %d of the 13 facilities without a replacement-only engine set" % moved, moved >= 10 and
+          "Operating hours are the hours the facility's Rule 4702 log records" in pdf_text("guidance"))
+    alt_g = {n: eb[n] * B.G_LB / 453.59237 for n in B.ORDER}
+    check("SF19 453.59237 g/lb in place of the guidance's 453.6 moves %d whole pounds, and the guidance writes 453.6"
+          % sum(B.hround(alt_g[n]) != ebw[n] for n in B.ORDER), "453.6 g/lb" in pdf_text("guidance"))
+    near = [(d_, r.date) for d_, (rd, _, _) in repl.items() for r in logs[logs["device"] == d_].itertuples()
+            if rd - dt.timedelta(days=4) <= r.date <= rd]
+    check("SF20 no replaced engine has a run on its replacement date or in the four days before it", not near)
+    dC = subset(["cems", "tests_old", "tests_new", "statements", "permits", "events"])
+    s21 = B.facility_tons(B.Inputs(dC), "golden")
+    shutil.rmtree(dC)
+    check("SF21 the call and the 14 whole tons from the CEMS export, the test databases, the statements, the permit "
+          "list and the event log alone", whole(s21) == gw)
+
+    # ---------------------------------------------------------------- ask A: the gas delivered
+    truth_g = {W.FAC_NAME[c]: v for c, v in e["gas_2026"].items()}
+    check("A the golden's gas figures are the generator's billed therms, spread by plan 4.2, on all 14",
+          all(gwa[n] == B.hround(truth_g[n]) for n in B.ORDER) and all(f["facilities"][n]["gas_mmbtu"] == gwa[n]
+                                                                        for n in B.ORDER))
+    rungs = {h: B.gas_2026(TARGET, h) for h in ("all_ccf", "all_therms", "reads", "by_line", "no_split")}
+    mv = {h: sum(B.hround(v[n]) != gwa[n] for n in B.ORDER) for h, v in rungs.items()}
+    check("A every rung moves the corrector facilities' figures at least (%s)" % ", ".join("%s %d" % kv for kv in mv.items()),
+          mv["all_ccf"] == 14 and mv["all_therms"] == 14 and mv["no_split"] == 14 and mv["reads"] >= 9 and
+          mv["by_line"] >= 9)
+    check("A fair: the index-billed meters' lines are CCF up to %s and therms from it, each line by its own identity"
+          % (cut - dt.timedelta(days=1)), cut == W.CONVERSION and all(
+              B.is_therm_line(r) == (r.READ_TO >= cut) for r in bl[bl["PRESSURE_MULT"].notna()].itertuples()))
+    evc = bl[bl["PRESSURE_MULT"].isna()].sort_values(["METER_NO", "READ_TO"])
+    jumps, cont, steps = [], [], []
+    for m_, g in evc.groupby("METER_NO"):
+        g = g[(g["CURRENT_READ"] > g["PRIOR_READ"])]
+        after = (g["READ_TO"] >= cut).to_numpy()
+        ratio = (g["USAGE_CCF"] / (g["CURRENT_READ"] - g["PRIOR_READ"])).to_numpy()
+        adj = ratio / np.where(after, g["BTU_FACTOR"].to_numpy(), 1.0)
+        i = int(np.argmax(after))
+        if 0 < i:
+            jumps.append(ratio[i] / ratio[i - 1] - 1)
+            cont.append(abs(adj[i] / adj[i - 1] - 1))
+            steps += [abs(adj[k] / adj[k - 1] - 1) for k in range(1, len(adj))]
+    check("A fair: every corrector meter's usage per index unit steps up %.3f to %.3f at the first therm bill, and read "
+          "as therms its series runs on (step at most %.4f, every month-to-month move at most %.4f)"
+          % (min(jumps), max(jumps), max(cont), max(steps)),
+          len(jumps) >= 9 and min(jumps) > 0.015 and max(cont) < 0.006 and max(steps) < 0.01)
+    check("A no marker: the bill ids, rate codes, read types and columns run unchanged across %s" % cut,
+          bl["READ_TYPE"].nunique() == 1 and set(bl[bl["READ_TO"] >= cut]["RATE_CODE"]) == set(bl["RATE_CODE"]))
+    check("A every facility has lines on both sides of the conversion",
+          all(((g["READ_TO"] < cut).any() and (g["READ_TO"] >= cut).any()) for _, g in bl.groupby("facility")))
+
+    # ---------------------------------------------------------------- ask B: the emergency engines
+    truth_e = {W.FAC_NAME[c]: v for c, v in e["engine_lb"].items()}
+    check("B the golden's engine figures are the generator's on all 14",
+          all(ebw[n] == B.hround(truth_e[n]) for n in B.ORDER) and all(f["facilities"][n]["engine_nox_lb"] == ebw[n]
+                                                                        for n in B.ORDER))
+    eh = {h: B.engine_lb(TARGET, h) for h in ("decimal", "current", "naive")}
+    mvb = {h: sum(B.hround(v[n]) != ebw[n] for n in B.ORDER) for h, v in eh.items()}
+    check("B the decimal reading moves the seven hours-and-minutes facilities, the current engine the seven with a "
+          "replacement, both all 14 (%s)" % ", ".join("%s %d" % kv for kv in mvb.items()),
+          mvb == {"decimal": 7, "current": 7, "naive": 14})
+    check("B fair: the hour meters pick out the seven facilities whose logs hold hours and minutes",
+          {n for n in hmm} == {W.FAC_NAME[c] for c in W.HMM})
+    gap_d, gap_h = [], []
+    for d_, g in insp.groupby("DEVICE_NO"):
+        if d_ in repl:
+            continue
+        g = g.sort_values("date")
+        n_ = B.FAC_OF_NO[g.iloc[0]["FAC_NO"]]
+        lg = logs[(logs["device"] == d_) & (logs["date"] >= g.iloc[0]["date"]) & (logs["date"] < g.iloc[1]["date"])]
+        span = g.iloc[1]["read"] - g.iloc[0]["read"]
+        (gap_h if n_ in hmm else gap_d).append(sum(B._as_hmm(v) if n_ in hmm else v for v in lg["value"]) / span)
+    check("B fair, no oracle: read their own way every engine's log sits 85 to 98 per cent of its meter (%.3f to %.3f), "
+          "so the meter arbitrates and hands over no figure" % (min(gap_d + gap_h), max(gap_d + gap_h)),
+          min(gap_d + gap_h) > 0.85 and max(gap_d + gap_h) < 0.98)
+    check("B fair: the compliance log's EQUIPMENT entries name the seven replaced engines' old rating and tier",
+          {d_: (v[1], v[2]) for d_, v in repl.items()} ==
+          {d_: (en["replaced"][1], en["replaced"][2]) for d_, en in W.ENGINE.items() if en["replaced"]})
+    first = insp.groupby("DEVICE_NO")["date"].min()
+    check("B silent: no replaced engine's hour meter is read before its replacement, so no meter restarts",
+          all(first[d_] > rd for d_, (rd, _, _) in repl.items()))
+    vals = logs.assign(frac=(logs["value"] * 100).round().astype(int) % 100)
+    check("B no marker: both log layouts hold values with a fraction under .60 (the hours-and-minutes sheets' values are "
+          "a subset of what a decimal log writes)", (vals[~vals["facility"].isin(hmm)]["frac"] < 60).mean() > 0.5)
 
     # ---------------------------------------------------------------- separation and distractors
-    dX = subset([k for k in P.FILES if k not in ("piezo", "bending", "stations", "tickets")])
-    check("X1 the asks need no WIM export, station list or ticket: ask B and ask A from the other files",
-          B.weekday_entries(dX) == wk and B.citations_by_section(dX) == ci)
+    dX = subset([k for k in P.FILES if k not in ("cems", "tests_old", "tests_new", "statements")])
+    check("X1 the asks read no CEMS hour, source test or emission statement: both from the other files",
+          {n: B.hround(v) for n, v in B.gas_2026(dX).items()} == gwa and
+          {n: B.hround(v) for n, v in B.engine_lb(dX).items()} == ebw)
     shutil.rmtree(dX)
-    check("X2 the call reads no toll entry, citation, plaza or schedule row (SF18)", whole(s18) == gw)
-    dD = subset([k for k in P.FILES if k not in ("pavement", "bridges")])
-    dfD = B.class9(B.read_wim(dD))
-    check("X3 the distractors deleted: the call, the twelve shares and both asks unchanged",
-          whole(B.shares(dfD, B.factors(dfD, B.read_tickets(dD)))) == gw and B.weekday_entries(dD) == wk and
-          B.citations_by_section(dD) == ci)
+    check("X2 the call reads no billing line, engine log or inspection (SF21)", whole(s21) == gw)
+    eqd = set(ev[ev["EVENT_TYPE"] == "EQUIPMENT"]["DEVICE_NO"])
+    check("X3 every ask device row sits outside the call's population: the EQUIPMENT entries on Rule 4702 engines only",
+          eqd <= set(pm[pm["RULE"] == "4702"]["DEVICE_NO"]))
+    dD = subset([k for k in P.FILES if k not in ("no2", "onroad")])
+    check("X4 the distractors deleted: the call, the 14 whole tons and both asks unchanged",
+          whole(B.facility_tons(B.Inputs(dD), "golden")) == gw and
+          {n: B.hround(v) for n, v in B.gas_2026(dD).items()} == gwa and
+          {n: B.hround(v) for n, v in B.engine_lb(dD).items()} == ebw)
     shutil.rmtree(dD)
 
     # ---------------------------------------------------------------- input gates
@@ -443,38 +506,46 @@ def main():
     check("I ten or more files (%d)" % len(files), len(files) >= 10)
     check("I three or more formats (%s)" % sorted({fn.rsplit(".", 1)[1] for fn in files}),
           len({fn.rsplit(".", 1)[1] for fn in files}) >= 3)
-    check("I one file of 25,000 rows or more (piezo %d)" % len(pz), len(pz) >= 25000)
+    check("I one file of 25,000 rows or more (CEMS %d)" % len(cems), len(cems) >= 25000)
     check("I two distractors named in metadata.json, none in a file name",
-          len(meta["distractor_files"]) >= 2 and all(d in files for d in meta["distractor_files"]) and
+          len(meta["distractor_files"]) >= 2 and all(d_ in files for d_ in meta["distractor_files"]) and
           not any("distract" in fn for fn in files))
 
     # ---------------------------------------------------------------- realism
-    ok_pz = all(int(ln[30:35]) == sum(int(ln[35 + 4 * k:39 + 4 * k]) for k in range(int(ln[28:30]))) for ln in pz)
-    check("Z the piezo records' gross is their axles' sum on every record", ok_pz)
-    ax = bp[["ax%d_kg" % i for i in range(1, 10)]].apply(pd.to_numeric, errors="coerce").fillna(0).sum(axis=1)
-    check("Z the bending-plate records' gvw_kg is their axles' sum on every record",
-          (ax == pd.to_numeric(bp["gvw_kg"])).all())
-    keyed_g = tk["Gross (lb)"].astype(int).to_numpy()
-    mism = [(str(a).zfill(len(str(int(b)))), str(int(b))) for a, b in zip(keyed_g, tg) if a != int(b)]
-    swaps = all(len(a) == len(b) and sorted(a) == sorted(b) and sum(x != y for x, y in zip(a, b)) == 2 for a, b in mism)
-    check("Z the tickets' keyed gross departs from the axles' sum only by a transposed pair of digits (%d tickets)"
-          % len(mism), swaps and 0 < len(mism) < 30)
-    iss = cr["issued_local"]
-    kd = pd.to_datetime(cr["keyed"], format="%m/%d/%Y %H:%M")
-    ec = cr["citation_no"].str.startswith("EC")
-    check("Z every citation is keyed after it was issued; e-citations within the hour, paper ones 4 to 14 days later",
-          (kd >= iss).all() and ((kd - iss)[ec] < pd.Timedelta(hours=1)).all() and
-          ((kd - iss)[~ec] >= pd.Timedelta(days=4)).all() and ((kd - iss)[~ec] < pd.Timedelta(days=14, hours=8)).all())
-    check("Z every class 9 steer axle reads between 7,000 and 16,000 lb",
-          df["steer"].between(7000, 16000).mean() > 0.999)
-    n9 = df.groupby("section").size()
-    check("Z the stations' class 9 counts vary (%d to %d)" % (n9.min(), n9.max()), n9.min() / n9.max() < 0.6)
-    check("Z no share is a round figure", all(abs(sh[c] - round(sh[c])) > 0.01 for c in B.CODES))
+    hi_, r_ = cems["heat_input_mmbtu"].astype(float), cems["nox_rate_lb_mmbtu"].astype(float)
+    tol = 0.05 * r_ + 0.00005 * hi_ + 0.006
+    check("Z every CEMS hour's NOx mass is its heat input times its rate, within their printed precision",
+          (abs(hi_ * r_ - cems["nox_mass_lb"].astype(float)) <= tol).all())
+    o_lb = old["NOX_LB_HR"].astype(float) / (old["FUEL_FLOW_SCFH"].astype(float) * old["FUEL_HHV"].astype(float) / 1e6)
+    o_pp = [float(p_) * 1.194e-7 * B.FD[pmi.loc["D-" + d_, "FUEL"]] * 20.9 / (20.9 - float(o2))
+            for p_, d_, o2 in zip(old["NOX_PPMVD"], old["DEVICE_NO"], old["O2_REF"])]
+    check("Z the older tests' lb/hr and ppm agree through Method 19 within their printed precision",
+          (abs(o_lb / np.array(o_pp) - 1) < 0.01).all())
+    mh = st_raw["HOURS"].astype(float)
+    dim = [((dt.date(int(y), int(m_), 28) + dt.timedelta(days=4)).replace(day=1) - dt.timedelta(days=1)).day
+           for y, m_ in zip(st_raw["STMT_YEAR"], st_raw["MONTH"])]
+    check("Z no statement month's hours exceed the month's", (mh <= 24 * np.array(dim) + 1e-6).all())
+    chain = all((g["PRIOR_READ"].to_numpy()[1:] == g["CURRENT_READ"].to_numpy()[:-1]).all()
+                for _, g in bl.sort_values("READ_FROM").groupby("METER_NO"))
+    check("Z every meter's reads chain from bill to bill", chain)
+    check("Z the newer database's reports arrive after their tests and before its 9 February 2027 extract",
+          (pd.to_datetime(new["Report Received"]) > pd.to_datetime(new["Test Date"])).all() and
+          pd.to_datetime(new["Report Received"]).max() <= pd.Timestamp("2027-02-09"))
+    bd = pd.to_datetime(pd.read_csv(os.path.join(TARGET, P.FILES["billing"]), dtype=str)["BILL_DATE"], format="%m/%d/%Y")
+    check("Z no extract runs past its own date: bills issued by 3 February 2027, inspections by 12 February, the "
+          "compliance log and the statements within 2026",
+          bd.max() <= pd.Timestamp("2027-02-03") and insp["date"].max() <= dt.date(2027, 2, 12) and
+          ev["date"].max() <= dt.date(2026, 12, 31) and st_raw["STMT_YEAR"].astype(int).max() == 2026)
+    nov = ev[ev["EVENT_TYPE"] == "NOV"]
+    fails = int((new["Result"] == "FAIL").sum() + (old["RESULT"] == "FAIL").sum())
+    check("Z every failed test has its notice of violation (%d) and a retest notification" % fails, len(nov) == fails and
+          (ev["DESCRIPTION"].str.startswith("Retest")).sum() >= fails - 1)
+    check("Z no facility figure is a round figure before rounding", all(abs(gold[n] - round(gold[n])) > 0.01 for n in B.ORDER))
     import csv as _csv
-    gcsv = list(_csv.DictReader(open(os.path.join(TASK, "golden", "ctpa_section_overweight_2026.csv"),
-                                     encoding="utf-8")))
-    check("Z the golden CSV carries the twelve shares", [int(r["share_over_80000_lb_pct"]) for r in gcsv] ==
-          [gw[c] for c in B.CODES])
+    gcsv = list(_csv.DictReader(open(os.path.join(TASK, "golden", "tbapcd_nox_inventory_2026.csv"), encoding="utf-8")))
+    check("Z the golden CSV carries the 14 whole tons in Appendix A order",
+          [r["facility"] for r in gcsv] == B.ORDER and [int(r["rule_4306_nox_tons_2026"]) for r in gcsv] ==
+          [gw[n] for n in B.ORDER])
 
     n_fail = sum(1 for _, ok in RESULTS if not ok)
     print("%s  task478 checks: %d assertions, %d failed" % ("PASS" if not n_fail else "FAIL", len(RESULTS), n_fail))

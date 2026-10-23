@@ -20,6 +20,8 @@ import pack as P         # noqa: E402
 import world as W        # noqa: E402
 
 TASK = os.path.dirname(HERE)
+PACK_STAMP = (2027, 2, 19, 9, 40, 0)
+GOLDEN_STAMP = (2027, 2, 19, 16, 37, 0)
 
 
 def build_pack(out, e=None):
@@ -30,20 +32,16 @@ def build_pack(out, e=None):
     os.makedirs(out)
     e, n = P.build_pack(out, e)
     f = lambda k: os.path.join(out, P.FILES[k])
-    n["stations"] = len(W.CODES)
-    n["plazas"] = sum(1 for p in W.PLAZAS if p[6] is None)
-    n["pavement"] = 2 * len(W.CODES)
-    n["bridges"] = sum(1 for _ in open(f("bridges"), encoding="utf-8")) - 1
-    DC.write_program(f("program"))
-    DC.write_dictionary(f("dictionary"), n)
-    DC.write_schedule(f("schedule"))
-    PP.normalize_pdf(f("program"), b"D:20270212091512-05'00'", b"D:20270212091512-05'00'")
-    PP.normalize_pdf(f("dictionary"), b"D:20270209163205-05'00'", b"D:20270209163205-05'00'")
-    PP.normalize_pdf(f("schedule"), b"D:20241118110430-05'00'", b"D:20241118110430-05'00'")
-    PP.normalize_ooxml(f("tickets"), "CTPA Enforcement", "CTPA Enforcement", "2027-01-04T14:20:00Z",
-                       "2027-02-06T16:05:44Z", excel=True, company=PP.COMPANY)
-    PP.normalize_ooxml(f("pavement"), "CTPA Pavement Management", "CTPA Pavement Management", "2026-07-20T13:11:00Z",
-                       "2026-07-22T20:42:19Z", excel=True, company=PP.COMPANY)
+    DC.write_plan(f("plan"))
+    DC.write_guidance(f("guidance"), n)
+    PP.normalize_pdf(f("plan"), b"D:20270219084512-08'00'", b"D:20270219084512-08'00'")
+    PP.normalize_pdf(f("guidance"), b"D:20270217140306-08'00'", b"D:20270217140306-08'00'")
+    PP.normalize_ooxml(f("tests_new"), "TBAPCD Source Test Unit", "TBAPCD Source Test Unit", "2022-01-10T17:02:00Z",
+                       "2027-02-09T22:14:51Z", excel=True, company=PP.COMPANY)
+    PP.normalize_ooxml(f("engine_logs"), "TBAPCD Compliance", "TBAPCD Compliance", "2027-01-15T18:30:00Z",
+                       "2027-02-12T00:06:19Z", excel=True, company=PP.COMPANY)
+    PP.normalize_ooxml(f("onroad"), "TBAPCD Mobile Sources", "TBAPCD Mobile Sources", "2026-11-02T19:41:00Z",
+                       "2026-12-08T23:55:02Z", excel=True, company=PP.COMPANY)
     return e, n
 
 
@@ -56,7 +54,7 @@ def digest(folder):
     return out
 
 
-def stamp(folder, when=(2027, 2, 12, 10, 15, 0)):
+def stamp(folder, when=PACK_STAMP):
     import time
     t = time.mktime((*when, 0, 0, -1))
     for root, _, files in os.walk(folder):
@@ -82,7 +80,7 @@ def main():
     G.main(os.path.join(TASK, "target"))
     WU.main()
     MD.write(os.path.join(TASK, "metadata.json"), n)
-    stamp(os.path.join(TASK, "golden"), (2027, 2, 12, 14, 47, 0))
+    stamp(os.path.join(TASK, "golden"), GOLDEN_STAMP)
     import subprocess
     rc = subprocess.run([sys.executable, os.path.join(HERE, "checks.py")]).returncode
     rv = subprocess.run([sys.executable, os.path.join(HERE, "verify.py")]).returncode
@@ -96,7 +94,7 @@ def main():
     build_pack(os.path.join(TASK, "target"))
     stamp(os.path.join(TASK, "target"))
     G.main(os.path.join(TASK, "target"))
-    stamp(os.path.join(TASK, "golden"), (2027, 2, 12, 14, 47, 0))
+    stamp(os.path.join(TASK, "golden"), GOLDEN_STAMP)
     same = first == digest(os.path.join(TASK, "target")) and gfirst == digest(os.path.join(TASK, "golden"))
     print("%s  two consecutive builds byte-identical (target and golden)" % ("PASS" if same else "FAIL"))
     if not same:
@@ -105,7 +103,7 @@ def main():
     zp = os.path.join(TASK, "target.zip")
     with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
         for fn in sorted(os.listdir(os.path.join(TASK, "target"))):
-            zi = zipfile.ZipInfo(fn, date_time=(2027, 2, 12, 10, 15, 0))
+            zi = zipfile.ZipInfo(fn, date_time=PACK_STAMP)
             zi.compress_type = zipfile.ZIP_DEFLATED
             z.writestr(zi, open(os.path.join(TASK, "target", fn), "rb").read())
     print("zip: %s (%s)" % (zp, hashlib.md5(open(zp, "rb").read()).hexdigest()))

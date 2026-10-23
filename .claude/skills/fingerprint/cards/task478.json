@@ -34,22 +34,24 @@
   "analyst_test": "A strong analyst who conforms every source test to lb/MMBtu, every fuel statement to heat input and every monitor hour to 2026, and reads the plan and its guidance correctly, carries each unmonitored unit's latest test across its 2026 fuel and names Ashgrove Refining, Haskett Ridge, Lindqvist Paperboard, Valmora Glass and Wexley Point; only the rate integrated along each catalyst's operating hours, which the units' test histories show climbing, names Ashgrove Refining, Sedge Hollow, St. Aldric Medical Center, Valmora Glass and Wexley Point.",
   "domain_test": "Stationary-source inventory work: a source test is a three-run snapshot of a unit's emission rate and an SCR catalyst loses activity with every hour it fires, so the year's NOx needs the rate integrated over the catalyst hours the year ran through; with hospital or traffic nouns there is no catalyst, no operating-hour deactivation and no source test to carry, so nothing is left to decide.",
   "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:a spot test of an emission rate read at its catalyst's age, carried across the year, against the rate integrated over each month's catalyst operating hours by the climb the units' test histories trace",
+  "layer2_pattern": "own:a spot test of an emission rate read at its catalyst's age, carried across the year, against the rate integrated day by day over each catalyst's operating hours by the climb the units' test histories trace",
   "layer1": [
     "source tests in ppmvd at 15 and 3 per cent oxygen and in lb/hr, converted through the fuel F-factor",
     "fuel statements in therms, MMscf and MMBtu by facility layout",
     "monitor hours in local standard time with substitute-data codes",
     "district device numbers against the monitoring plan's unit ids",
-    "an event log with mixed date formats and free text",
-    "a facility renamed after a change of owner",
-    "run-hour meter readings across a meter replacement"
+    "an event log with mixed date formats and free text, with the notices, retests and corrective catalysts a failed test brings",
+    "a facility renumbered after a change of owner",
+    "test-database keys without their leading zeros and device prefixes",
+    "a gas utility's billed usage relabelled at a billing-system conversion, corrector meters without a multiplier",
+    "engine logs in hours and minutes at some facilities, and engines replaced under the same device number"
   ],
   "stakeholder_role": "the district's planning and rules manager",
   "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
     "file": "tbapcd_cems_hourly_2026.csv",
-    "rows": 0,
+    "rows": 60257,
     "entity": "one hour of one continuously monitored unit",
     "grain": "unit x hour",
     "source": "synthetic (constructed in the layout of a continuous emissions monitoring hourly export)"

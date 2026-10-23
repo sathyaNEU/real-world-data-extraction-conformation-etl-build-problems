@@ -1,5 +1,6 @@
-"""Writes task478's evidence pack from world.py: the two WIM exports, the station list, the scale houses' tickets, the
-citation log, the toll entries, the plaza list and the two distractors (the documents are docs.py's)."""
+"""Writes task478's evidence pack from world.py: the monitors' hourly export, the two source test databases, the
+emission statements, the permit list, the compliance event log, the gas utility's billing extract, the facilities'
+emergency engine logs and inspections, and the two distractors (the documents are docs.py's)."""
 import csv
 import datetime as dt
 import os
@@ -9,384 +10,439 @@ import numpy as np
 import world as W
 
 FILES = {
-    "program": "ctpa_freight_compliance_program_2027.pdf",
-    "dictionary": "ctpa_data_exports_dictionary.pdf",
-    "schedule": "ctpa_toll_schedule_2025.pdf",
-    "piezo": "ctpa_wim_piezo_2026.txt",
-    "bending": "ctpa_wim_bendingplate_2026.csv",
-    "stations": "ctpa_wim_stations.csv",
-    "tickets": "ctpa_scale_house_tickets_2026.xlsx",
-    "citations": "ctpa_citations_2026.csv",
-    "entries": "ctpa_toll_entries_5axle_2026.csv",
-    "plazas": "ctpa_toll_plazas.csv",
-    "pavement": "ctpa_pavement_condition_2026.xlsx",
-    "bridges": "ctpa_bridge_postings_2026.csv",
+    "plan": "tbapcd_lowry_creek_cerp_2027.pdf",
+    "guidance": "tbapcd_emission_inventory_guidance_2026.pdf",
+    "cems": "tbapcd_cems_hourly_2026.csv",
+    "tests_old": "tbapcd_source_tests_2018_2021.csv",
+    "tests_new": "tbapcd_source_tests_2022_2026.xlsx",
+    "statements": "tbapcd_emission_statements_2017_2026.csv",
+    "permits": "tbapcd_permit_devices.csv",
+    "events": "tbapcd_compliance_events_2017_2026.csv",
+    "billing": "tvg_commercial_billing_extract_2027-02.csv",
+    "engine_logs": "tbapcd_rule4702_engine_logs_2026.xlsx",
+    "inspections": "tbapcd_engine_inspections_2025_2027.csv",
+    "no2": "tbapcd_lowry_creek_no2_hourly_2026.csv",
+    "onroad": "tbapcd_lowry_creek_onroad_nox_2026.xlsx",
 }
-# station ids as each vendor numbers them; the station list ties them to mileposts
-STATION_ID = {"01": "511", "02": "514", "03": "CT03", "04": "522", "05": "CT05", "06": "527", "07": "CT07",
-              "08": "533", "09": "538", "10": "CT10", "11": "544", "12": "CT12"}
-STATION_MP = {"01": 9.4, "02": 33.0, "03": 57.6, "04": 75.2, "05": 101.3, "06": 119.8, "07": 146.1, "08": 166.5,
-              "09": 191.0, "10": 220.4, "11": 243.7, "12": 270.9}
-RESITED = ("02", 29.7, dt.date(2025, 8, 18))       # Brannock's station moved from milepost 29.7 in August 2025
-RELANED = ("06", dt.date(2026, 4, 14))             # Foxbriar's controller replaced; its lanes renumbered 1 to 4
-KG = 0.45359237
+# the monitoring plan's unit ids for the monitored devices
+CEMS_ID = {"D-1101": "CT1", "D-1102": "CT2", "D-1201": "H101", "D-1202": "H102", "D-1301": "MF1", "D-1701": "PB1",
+           "D-1801": "GT3", "D-2101": "1", "D-2102": "2"}
+ADDRESS = {"F01": "2200 Wexley Point Rd", "F02": "1 Refinery Ave", "F03": "880 Furnace St", "F04": "15500 Sedge Hollow Rd",
+           "F05": "4917 Haskett Ridge Rd", "F06": "1300 Aldric Blvd", "F07": "60 Mill Race Ln", "F08": "500 University Dr",
+           "F09": "7700 Briar Flats Rd", "F10": "210 Cannery Row", "F11": "3150 Harrow Ln", "F12": "4410 Orchard Way",
+           "F13": "4486 Orchard Way", "F14": "9 Quarry Lane"}
+# what each facility put its fuel in on its statements from 2021 (before that, every statement in MMSCF)
+STATEMENT_UNIT = {"F01": "MMBTU", "F02": "THERMS", "F03": "MMSCF", "F04": "MMSCF", "F05": "MMSCF", "F06": "THERMS",
+                  "F07": "MMBTU", "F08": "THERMS", "F09": "MMSCF", "F10": "MMSCF", "F11": "MMBTU", "F12": "THERMS",
+                  "F13": "THERMS", "F14": "MMBTU"}
+HHV_BIO = {"lfg": 534.0, "dg": 612.0}
+EXTRACT_BILLING = dt.date(2027, 2, 3)
+TESTERS = ("Basin Source Testing", "Delta Stack Services", "Westridge Emissions Measurement")
 
 
-def _rng():
-    return np.random.default_rng(W.SEED + 7)
+def _rng(k):
+    return np.random.default_rng([W.SEED, 900 + k])
 
 
-def _times(rng, n):
-    """Seconds after local standard midnight, trucks spread over the day with a morning and afternoon peak."""
-    hours = rng.choice(24, size=n, p=_HOURS)
-    return np.sort(hours * 3600 + rng.integers(0, 3600, n))
+def fac_no(code, d=None):
+    """The district's facility number on date d (Haskett Ridge was 0705 before its change of owner)."""
+    if d is not None and code == W.RENUMBERED[0] and d < W.RENUMBERED[2]:
+        return W.RENUMBERED[1]
+    return W.FAC_NO[code]
 
 
-_H = np.array([2, 2, 2, 3, 5, 8, 10, 11, 11, 10, 10, 10, 10, 10, 10, 10, 9, 8, 6, 5, 4, 3, 3, 2], float)
-_HOURS = _H / _H.sum()
-
-
-def _others(rng, cls, n):
-    """Axle weights (lb) and spacings (ft) for the other truck classes, plausible and never class 9."""
-    if cls == 5:
-        ax = np.stack([rng.normal(6500, 900, n), rng.normal(9000, 2500, n)], 1)
-        sp = np.stack([rng.normal(16, 2, n)], 1)
-    elif cls == 6:
-        ax = np.stack([rng.normal(11000, 1200, n), rng.normal(13000, 3500, n), rng.normal(13000, 3500, n)], 1)
-        sp = np.stack([rng.normal(18, 2, n), np.full(n, 4.3)], 1)
-    elif cls == 7:
-        ax = np.stack([rng.normal(12000, 1200, n)] + [rng.normal(12500, 3500, n) for _ in range(3)], 1)
-        sp = np.stack([rng.normal(17, 2, n), np.full(n, 4.3), np.full(n, 4.3)], 1)
-    elif cls == 8:
-        ax = np.stack([rng.normal(10000, 900, n), rng.normal(15000, 4000, n), rng.normal(13000, 4000, n),
-                       rng.normal(13000, 4000, n)], 1)
-        sp = np.stack([rng.normal(16, 2, n), rng.normal(30, 4, n), np.full(n, 4.1)], 1)
-    elif cls == 10:
-        ax = np.stack([rng.normal(11500, 900, n)] + [rng.normal(14500, 3500, n) for _ in range(5)], 1)
-        sp = np.stack([rng.normal(17, 2, n), np.full(n, 4.3), rng.normal(32, 4, n), np.full(n, 4.1), np.full(n, 4.1)], 1)
-    elif cls == 11:
-        ax = np.stack([rng.normal(10500, 900, n)] + [rng.normal(12500, 3000, n) for _ in range(4)], 1)
-        sp = np.stack([rng.normal(12, 1.5, n), rng.normal(22, 2, n), rng.normal(9, 1, n), rng.normal(22, 2, n)], 1)
-    elif cls == 12:
-        ax = np.stack([rng.normal(11000, 900, n)] + [rng.normal(12500, 3000, n) for _ in range(5)], 1)
-        sp = np.stack([rng.normal(15, 2, n), np.full(n, 4.3), rng.normal(22, 2, n), rng.normal(9, 1, n),
-                       rng.normal(22, 2, n)], 1)
-    else:
-        ax = np.stack([rng.normal(11500, 900, n)] + [rng.normal(13500, 3000, n) for _ in range(6)], 1)
-        sp = np.stack([rng.normal(15, 2, n), np.full(n, 4.3), rng.normal(22, 2, n), np.full(n, 4.1),
-                       rng.normal(10, 1, n), rng.normal(22, 2, n)], 1)
-    return np.clip(ax, 2500, None), np.clip(sp, 3.5, None)
-
-
-def wim_rows(e):
-    """Per-vehicle records of every station, truth read through the station: class 9 from world.py, the other classes
-    drawn here. Times in local standard time all year (the controllers keep no daylight time)."""
-    rng = _rng()
-    out = {}
-    for r in e["wim"]:
-        code = r["code"]
-        rows = []
-        n9 = len(r["gross"])
-        # class 9 spacings: steer to drive, drive tandem, drive to trailer, trailer tandem (spread on flatbeds)
-        sp9 = np.stack([rng.normal(17.5, 1.6, n9), rng.normal(4.3, 0.1, n9), rng.normal(33.5, 3.2, n9),
-                        np.where(r["trailer"] == 1, rng.normal(9.5, 0.6, n9), rng.normal(4.2, 0.15, n9))], 1)
-        per_day = {}
-        for k, di in enumerate(r["dayidx"]):
-            per_day.setdefault(int(di), []).append(("9", k))
-        for cls, m in r["others"]:
-            n = int(m.sum())
-            if n == 0:
-                continue
-            ax, sp = _others(rng, cls, n)
-            read = ax * r["bias"] * rng.normal(1, W.AXLE_SD[r["tech"]], ax.shape)
-            idx = np.repeat(np.arange(len(m)), m)
-            for k in range(n):
-                per_day.setdefault(int(idx[k]), []).append((cls, read[k], sp[k]))
-        for di in sorted(per_day):
-            day = r["days"][di]
-            items = per_day[di]
-            secs = _times(rng, len(items))
-            order = rng.permutation(len(items))
-            for t, j in zip(secs, order):
-                it = items[j]
-                direction = "E" if rng.random() < 0.5 else "W"
-                lane = 1 if rng.random() < 0.83 else 2
-                if code == RELANED[0] and day >= RELANED[1] and direction == "W":
-                    lane += 2           # the replacement controller numbers the four lanes across the road
-                speed = float(np.clip(rng.normal(61, 5), 30, 79))
-                flag = 0
-                if rng.random() < 0.012:
-                    flag = 1
-                    speed = float(rng.choice([rng.uniform(4, 14), rng.uniform(81, 92)]))
-                if it[0] == "9":
-                    k = it[1]
-                    ax = r["read"][k]
-                    sp = sp9[k]
-                    cls = 9
-                else:
-                    cls, ax, sp = it
-                rows.append((day, int(t), direction, lane, speed, cls, ax, sp, flag))
-        out[code] = rows
-    return out
-
-
-def write_piezo(path, rows):
-    """Fixed-width per-vehicle records: station, direction, lane, date, time (hundredths), speed (tenths of mph),
-    class, axles, gross and axle weights (tens of pounds), axle spacings (tenths of feet), validity flag."""
-    with open(path, "w", encoding="ascii", newline="\n") as fh:
-        for code in sorted(rows):
-            if W.SECTIONS[W.CODES.index(code)][4] != "piezo":
-                continue
-            sid = STATION_ID[code]
-            for day, t, direction, lane, speed, cls, ax, sp, flag in rows[code]:
-                hh, mm, ss = t // 3600, (t % 3600) // 60, t % 60
-                cs = (t * 37) % 100
-                w = np.rint(np.asarray(ax) / 10).astype(int)
-                g = int(w.sum())
-                axw = "".join("%04d" % x for x in w) + "    " * (9 - len(w))
-                spc = "".join("%03d" % int(round(x * 10)) for x in sp) + "   " * (8 - len(sp))
-                fh.write("%-4s%s%d%s%02d%02d%02d%02d%04d%02d%02d%05d%s%s%d\n" % (
-                    sid, direction, lane, day.strftime("%Y%m%d"), hh, mm, ss, cs, int(round(speed * 10)), cls,
-                    len(w), g, axw, spc, flag))
-
-
-def write_bending(path, rows):
-    cols = ["site", "dir", "lane", "local_time", "speed_kph", "fhwa_class", "axles", "gvw_kg"] + \
-           ["ax%d_kg" % i for i in range(1, 10)] + ["sp%d_m" % i for i in range(1, 9)] + ["status"]
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        w = csv.writer(fh, lineterminator="\r\n")
-        w.writerow(cols)
-        for code in sorted(rows):
-            if W.SECTIONS[W.CODES.index(code)][4] != "bending":
-                continue
-            sid = STATION_ID[code]
-            for day, t, direction, lane, speed, cls, ax, sp, flag in rows[code]:
-                stamp = dt.datetime.combine(day, dt.time()) + dt.timedelta(seconds=int(t))
-                kg = [int(round(x * KG)) for x in ax]
-                row = [sid, "EB" if direction == "E" else "WB", lane, stamp.strftime("%Y-%m-%d %H:%M:%S"),
-                       "%.1f" % (speed * 1.609344), cls, len(kg), sum(kg)] + kg + [""] * (9 - len(kg)) + \
-                      ["%.2f" % (x * 0.3048) for x in sp] + [""] * (8 - len(sp)) + ["REJ" if flag else "OK"]
-                w.writerow(row)
-
-
-def write_stations(path):
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        w = csv.writer(fh, lineterminator="\r\n")
-        w.writerow(["station_id", "milepost", "technology", "lanes", "in_service", "previous_milepost",
-                    "moved"])
-        for code in W.CODES:
-            tech = W.SECTIONS[W.CODES.index(code)][4]
-            prev, moved = ("", "")
-            if code == RESITED[0]:
-                prev, moved = "%.1f" % RESITED[1], RESITED[2].isoformat()
-            w.writerow([STATION_ID[code], "%.1f" % STATION_MP[code],
-                        "quartz piezoelectric" if tech == "piezo" else "bending plate", 4,
-                        "2019-06-01" if tech == "piezo" else "2014-09-15", prev, moved])
-
-
-def entry_host(p):
-    """Which host recorded a plaza's entries: the switch time, or "old" or "new" for a plaza only ever on one."""
-    if p[6] is not None and p[6] < dt.date(2026, 7, 1):
-        return "old"
-    if p[5] is not None and p[5] >= dt.date(2026, 7, 1):
-        return "new"
-    return W.switch_time(p[0])
-
-
-def entry_rows(e):
-    """The toll back office's five-axle entries as exported from the new host: the old host's entries up to each
-    plaza's move (numeric ids; the old host's receipt stamp, local time to the minute), the new host's own entries
-    from the move (its ids; UTC to the second) and its backfill of each plaza's last days before the move, read from
-    the lanes' logs (its ids; local time to the second). Rows: id, plaza, stamp text, tag, true local time, host."""
-    rng = np.random.default_rng(W.SEED + 11)
-    out = []
-    for d, i, tag, s_ in sorted(e["entries"], key=lambda r: (r[0], r[3], r[1], r[2])):
-        p = W.PLAZAS[i]
-        local = dt.datetime.combine(d, dt.time()) + dt.timedelta(seconds=s_)
-        utc = local + dt.timedelta(hours=W.eastern_offset(d))
-        host = entry_host(p)
-        if host == "old" or (host != "new" and local < host):
-            got = local + dt.timedelta(seconds=float(rng.uniform(0, W.RECEIPT_MIN * 60)))
-            out.append(["OLD", p[0], got.strftime("%Y-%m-%d %H:%M"), tag, local, "old"])
-            if host != "old" and local >= host - dt.timedelta(days=W.BACKFILL_DAYS):
-                out.append(["NEW", p[0], local.strftime("%Y-%m-%d %H:%M:%S"), tag, local, "backfill"])
-        else:
-            out.append(["NEW", p[0], utc.strftime("%Y-%m-%d %H:%M:%S"), tag, local, "live"])
-    # the old host numbered entries as it received them; the new host's ids follow the lanes' own sequence
-    old_id, new_id = 40250000, 0
-    for r in sorted((r for r in out if r[0] == "OLD"), key=lambda r: (r[2], r[1], r[3])):
-        old_id += int(rng.integers(1, 4))
-        r[0] = "%d" % old_id
-    for r in sorted((r for r in out if r[0] == "NEW"), key=lambda r: (r[4], r[1], r[3])):
-        new_id += 1
-        r[0] = "T26%08d" % new_id
-    out.sort(key=lambda r: (r[2], r[1], r[0]))
-    return [tuple(r) for r in out]
-
-
-def write_entries(path, rows):
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        w = csv.writer(fh, lineterminator="\n")
-        w.writerow(["txn_id", "plaza", "entry_utc", "axle_class", "tag_id"])
-        for tid, plaza, stamp, tag, _, _ in rows:
-            w.writerow([tid, plaza, stamp, 5, tag])
-
-
-def write_plazas(path):
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        w = csv.writer(fh, lineterminator="\r\n")
-        w.writerow(["plaza", "plaza_name", "milepost", "in_service_from"])
-        for p in W.PLAZAS:
-            if p[6] is not None:
-                continue
-            w.writerow([p[0], p[1], "%.1f" % p[3], p[5].isoformat() if p[5] else ""])
-
-
-def citation_rows(e):
+def write_cems(path, e):
     rows = []
-    paper_no, e_no = 26000400, 1
-    tk_no = ticket_numbers(e)
-    for c in sorted(e["citations"], key=lambda c: (c["local"], c["code"])):
-        stp = e["stops"][c["ticket"]]
-        if c["paper"]:
-            paper_no += 1
-            num = "C%d" % paper_no
-        else:
-            num = "EC-%s-%05d" % (c["local"].strftime("%y%m"), e_no)
-            e_no += 1
-        logged = W.PLAZAS[e["entries"][c["logged"]][1]][0]
-        rows.append((num, c["local"].strftime("%m/%d/%Y %H:%M"), c["keyed"].strftime("%m/%d/%Y %H:%M"),
-                     W.SCALE_HOUSES[stp["house"]][0], tk_no[c["ticket"]], stp["tag"], c["code"], logged))
-    return rows
+    for dev in W.MONITORED:
+        u = W.UNIT[dev]
+        for t, op, hi, r, sub in e["units"][dev]["cems"]:
+            rows.append((W.FAC_NO[u["facility"]], CEMS_ID[dev], t.strftime("%Y-%m-%d"), t.hour, "%.2f" % op,
+                         "%.1f" % hi, "%.4f" % r, "12" if sub else "01", "%.2f" % round(hi * r, 2)))
+    rows.sort(key=lambda r: (r[0], r[1], r[2], r[3]))
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["facility_id", "unit_id", "op_date", "op_hour", "op_time", "heat_input_mmbtu", "nox_rate_lb_mmbtu",
+                    "nox_rate_modc", "nox_mass_lb"])
+        w.writerows(rows)
+    return len(rows)
 
 
-def ticket_numbers(e):
-    order = sorted(range(len(e["stops"])), key=lambda j: e["stops"][j]["local"])
-    nums = {}
-    cnt = {"W": 0, "E": 0}
-    for j in order:
-        h = e["stops"][j]["house"]
-        cnt[h] += 1
-        nums[j] = "%s26-%05d" % (h, cnt[h])
-    return nums
+def _test_fields(dev, t, rng):
+    """A test's reported quantities: heat input at the test load, ppm at the reference oxygen, lb/hr, fuel flow."""
+    u = W.UNIT[dev]
+    load = float(np.clip(u["load"] * rng.normal(1.0, 0.03), 0.6, 1.0))
+    hi = u["rating"] * load
+    fd = W.FD_NG if u["fuel"] == "ng" else W.FD_BIO
+    o2ref = W.KINDS[u["kind"]][2]
+    ppm = W.lb_to_ppm(t["measured"], o2ref, fd)
+    hhv = W.HHV_NG if u["fuel"] == "ng" else HHV_BIO[u["fuel"]] * float(rng.uniform(0.97, 1.03))
+    return dict(load=load, hi=hi, ppm=ppm, o2ref=o2ref, lbhr=t["measured"] * hi, scfh=hi * 1e6 / hhv, hhv=hhv)
 
 
-def write_citations(path, rows):
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        w = csv.writer(fh, lineterminator="\r\n")
-        w.writerow(["citation_no", "issued", "keyed", "scale_house", "ticket_no", "tag_id", "violation",
-                    "entry_plaza"])
-        for r in rows:
-            w.writerow(r)
-
-
-BODY = {0: "Van", 1: "Flatbed", 2: "Dump", 3: "Container chassis", 4: "Tank"}
-
-
-def write_tickets(path, e):
-    """The scale houses' class 9 tickets, keyed at the scale: every axle and the gross as the officer typed it."""
+def write_tests(old_path, new_path, e):
     import openpyxl
-    from openpyxl.styles import Alignment, Font
-    rng = np.random.default_rng(W.SEED + 13)
-    tk, st = e["tickets"], e["stops"]
-    nums = ticket_numbers(e)
-    cited = {}
-    for c in e["citations"]:
-        cited.setdefault(c["ticket"], []).append(c["code"])
+    from openpyxl.styles import Font, Alignment
+    old, new = [], []
+    tno = 18030
+    for dev in sorted(W.OPEN):
+        rng = _rng(int(dev[2:]))
+        u = W.UNIT[dev]
+        lim = W.KINDS[u["kind"]][1]
+        for t in e["units"][dev]["tests"]:
+            tno += int(rng.integers(5, 30))
+            f = _test_fields(dev, t, rng)
+            res = "PASS" if f["ppm"] <= lim else "FAIL"
+            if t["date"].year <= 2021:
+                old.append([str(tno), fac_no(u["facility"], t["date"]).lstrip("0"), dev[2:],
+                            t["date"].strftime("%m/%d/%Y"), "%.2f" % f["ppm"], "%.0f" % f["o2ref"],
+                            "%.3f" % f["lbhr"], "%.0f" % f["scfh"], "%.0f" % f["hhv"], "%.0f" % (100 * f["load"]), res])
+            else:
+                new.append(["ST-%d" % tno, fac_no(u["facility"], t["date"]), dev, t["date"], 3, round(f["ppm"], 2),
+                            int(f["o2ref"]), round(t["measured"], 5), round(f["lbhr"], 3), round(f["hi"], 1),
+                            round(100 * f["load"]), TESTERS[int(rng.integers(0, 3))], t["report"], res])
+    old.sort(key=lambda r: dt.datetime.strptime(r[3], "%m/%d/%Y"))
+    with open(old_path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["TEST_NO", "FAC_NO", "DEVICE_NO", "TEST_DATE", "NOX_PPMVD", "O2_REF", "NOX_LB_HR", "FUEL_FLOW_SCFH",
+                    "FUEL_HHV", "LOAD_PCT", "RESULT"])
+        w.writerows(old)
+    new.sort(key=lambda r: (r[3], r[2]))
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Tickets 2026"
-    head = ["Ticket", "Scale house", "Date", "Time", "Tag", "Body", "Axle 1 (lb)", "Axle 2 (lb)", "Axle 3 (lb)",
-            "Axle 4 (lb)", "Axle 5 (lb)", "Gross (lb)", "Result"]
+    ws.title = "Results"
+    head = ["Test ID", "Facility No.", "Device No.", "Test Date", "Runs", "NOx (ppmvd @ ref O2)", "Ref O2 (%)",
+            "NOx (lb/MMBtu)", "NOx (lb/hr)", "Heat Input (MMBtu/hr)", "Load (%)", "Source Tester", "Report Received",
+            "Result"]
     ws.append(head)
-    for cell in ws[1]:
-        cell.font = Font(bold=True)
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
-    order = sorted(range(len(st)), key=lambda j: st[j]["local"])
-    for j in order:
-        s_ = st[j]
-        local = s_["local"]
-        ax = [int(round(x / 20.0) * 20) for x in tk["axles"][j]]
-        gross = sum(ax)
-        if rng.random() < 0.006:
-            g = list("%d" % gross)
-            k = int(rng.integers(0, len(g) - 1))
-            g[k], g[k + 1] = g[k + 1], g[k]
-            gross = int("".join(g))
-        res = "Cited " + "/".join(cited[j]) if j in cited else "Passed"
-        ws.append([nums[j], W.SCALE_HOUSES[s_["house"]][0], local.date(), local.strftime("%H:%M"), s_["tag"],
-                   BODY[int(tk["trailer"][j])]] + ax + [gross, res])
+    for c in ws[1]:
+        c.font = Font(bold=True)
+        c.alignment = Alignment(wrap_text=True, vertical="top")
+    for r in new:
+        ws.append(r)
     for row in ws.iter_rows(min_row=2):
-        row[2].number_format = "m/d/yyyy"
-        for c in row[6:12]:
-            c.number_format = "#,##0"
-    widths = [12, 17, 11, 7, 13, 17, 11, 11, 11, 11, 11, 11, 12]
+        row[3].number_format = "yyyy-mm-dd"
+        row[12].number_format = "yyyy-mm-dd"
+        row[7].number_format = "0.00000"
+    widths = [11, 10, 10, 11, 6, 12, 8, 12, 10, 11, 8, 30, 12, 8]
     for i, wd in enumerate(widths):
         ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = wd
     ws.freeze_panes = "A2"
-    wb.save(path)
+    ns = wb.create_sheet("Field notes")
+    for line in (["Source test results database (new system, from January 2022)"],
+                 ["Results are the average of the test's runs (normally three), corrected to the reference oxygen of"
+                  " the device's permit limit."],
+                 ["lb/MMBtu is computed by the tester under EPA Method 19 from the fuel's F-factor; lb/hr from the"
+                  " measured stack flow."],
+                 ["Tests before 2022 are in the earlier database's export."]):
+        ns.append(line)
+    ns.column_dimensions["A"].width = 110
+    wb.save(new_path)
+    return len(old), len(new)
 
 
-def write_pavement(path):
-    """Distractor: the 2026 pavement condition survey by section and direction."""
+def write_statements(path, e):
+    rows = []
+    for dev in sorted(W.UNIT):
+        u = W.UNIT[dev]
+        hrs = e["units"][dev]["hours"] if not u["monitored"] else W.run_hours(dev)
+        hr = W.heat_rate(dev)
+        rng = _rng(100 + int(dev[2:]))
+        for y in range(2017, 2027):
+            for m in range(1, 13):
+                days = [d for d in hrs if d.year == y and d.month == m]
+                h = sum(hrs[d] for d in days)
+                if u["monitored"] and y == W.YEAR:
+                    h = sum(op for t, op, _, _, _ in e["units"][dev]["cems"] if t.month == m)
+                    mmbtu = sum(hi for t, _, hi, _, _ in e["units"][dev]["cems"] if t.month == m)
+                else:
+                    mmbtu = h * hr
+                unit = "MMSCF" if y <= 2020 else STATEMENT_UNIT[u["facility"]]
+                hhv = ""
+                if u["fuel"] != "ng":
+                    unit = "MMSCF"
+                    hhv = "%.0f" % (HHV_BIO[u["fuel"]] * float(rng.uniform(0.97, 1.03)))
+                    qty = "%.4f" % (mmbtu / float(hhv))
+                elif unit == "MMSCF":
+                    qty = "%.4f" % (mmbtu / W.HHV_NG)
+                elif unit == "THERMS":
+                    qty = "%.0f" % (mmbtu * 10)
+                else:
+                    qty = "%.1f" % mmbtu
+                fuel = {"ng": "NATURAL GAS", "lfg": "LANDFILL GAS", "dg": "DIGESTER GAS"}[u["fuel"]]
+                rows.append([str(y), fac_no(u["facility"], dt.date(y, m, 1)), dev, str(m), fuel, qty, unit, hhv,
+                             "%.1f" % h])
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["STMT_YEAR", "FAC_NO", "DEVICE_NO", "MONTH", "FUEL", "QUANTITY", "UNIT", "HHV_BTU_SCF", "HOURS"])
+        w.writerows(rows)
+    return len(rows)
+
+
+# devices the permit list carries beyond the plan's units and the standby engines (small units under Rule 4307)
+SMALL = [("F02", "D-1290", "process water heater", 4.2), ("F03", "D-1390", "annealing lehr burner", 3.6),
+         ("F06", "D-1690", "kitchen water heater", 2.4), ("F07", "D-1790", "space heater bank", 4.8),
+         ("F08", "D-1890", "laboratory boiler", 3.0), ("F10", "D-2090", "can washer heater", 2.0),
+         ("F12", "D-2290", "office boiler", 1.2), ("F13", "D-2390", "curing press boiler", 4.6),
+         ("F14", "D-2490", "space heating boiler", 2.8)]
+REISSUED = {"D-1102": dt.date(2026, 3, 30), "D-1801": dt.date(2026, 3, 30), "D-1701": dt.date(2026, 6, 15),
+            "D-3202": dt.date(2026, 6, 1), "D-4402": dt.date(2026, 9, 21), "D-1290": dt.date(2026, 2, 9)}
+
+
+def write_permits(path):
+    rows = []
+    for dev in sorted(W.UNIT):
+        u = W.UNIT[dev]
+        k = W.KINDS[u["kind"]]
+        issued = W.RENUMBERED[2] if u["facility"] == W.RENUMBERED[0] else (u["catalysts"][0] if u["catalysts"] else dt.date(2017, 9, 1))
+        issued = REISSUED.get(dev, issued)
+        rows.append([W.FAC_NO[u["facility"]], W.FAC_NAME[u["facility"]], dev, u["desc"], "4306",
+                     "%g" % u["rating"], "MMBtu/hr", {"ng": "natural gas", "lfg": "landfill gas", "dg": "digester gas"}[u["fuel"]],
+                     "SCR", "CEMS" if u["monitored"] else "source test", CEMS_ID.get(dev, ""),
+                     "" if u["kind"] == "furnace" else "%g" % k[1], "" if u["kind"] == "furnace" else "%g" % k[2],
+                     "" if u["monitored"] else str(12 * u["cycle"]), "", "", issued.isoformat()])
+    for dev, e in sorted(W.ENGINE.items()):
+        issued = e["replaced"][0] if e["replaced"] else e["installed"]
+        issued = REISSUED.get(dev, issued)
+        rows.append([W.FAC_NO[e["facility"]], W.FAC_NAME[e["facility"]], dev, "emergency standby diesel engine", "4702",
+                     str(e["bhp"]), "bhp", "diesel", "", "", "", "", "", "", e["model"], e["tier"], issued.isoformat()])
+    for code, dev, desc, rating in SMALL:
+        rows.append([W.FAC_NO[code], W.FAC_NAME[code], dev, desc, "4307", "%g" % rating, "MMBtu/hr", "natural gas",
+                     "low-NOx burner", "tune-up", "", "", "", "", "", "", REISSUED.get(dev, dt.date(2019, 5, 6)).isoformat()])
+    rows.sort(key=lambda r: (r[0], r[2]))
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["FAC_NO", "FACILITY", "DEVICE_NO", "DESCRIPTION", "RULE", "RATING", "RATING_UNITS", "FUEL",
+                    "NOX_CONTROL", "MONITORING", "CEMS_UNIT_ID", "NOX_LIMIT_PPMVD", "REF_O2_PCT", "TEST_FREQ_MO",
+                    "ENGINE_MODEL", "ENGINE_TIER", "PERMIT_ISSUED"])
+        w.writerows(rows)
+    return len(rows)
+
+
+CAT_TEXT = ("SCR catalyst replaced, two layers (vendor changeout)", "Catalyst modules replaced in SCR reactor",
+            "SCR catalyst changeout completed; unit returned to service", "New SCR catalyst installed",
+            "Replaced spent SCR catalyst")
+
+
+def events(e):
+    """The compliance event log's rows: (date, facility code, device, type, description)."""
+    out = []
+    for dev, u in W.UNIT.items():
+        rng = _rng(300 + int(dev[2:]))
+        cats = list(W.schedule(dev)[0])
+        for i, c in enumerate(cats):
+            if i == 0:
+                out.append((c, u["facility"], dev, "SCR INSTALLED", "SCR system installed and started up (Rule 4306"
+                            " retrofit, compliance date 1 January 2018)"))
+            else:
+                out.append((c, u["facility"], dev, "CATALYST", CAT_TEXT[int(rng.integers(0, len(CAT_TEXT)))]))
+        for t in e["units"][dev].get("tests", []):
+            if t["kind"] == "retest":
+                out.append((t["date"] - dt.timedelta(days=int(rng.integers(10, 21))), u["facility"], dev,
+                            "SOURCE TEST", "Retest notification received; test scheduled %s"
+                            % t["date"].strftime("%m/%d/%Y")))
+            else:
+                out.append((t["date"] - dt.timedelta(days=int(rng.integers(30, 45))), u["facility"], dev,
+                            "SOURCE TEST", "Source test notification received; test scheduled %s"
+                            % t["date"].strftime("%m/%d/%Y")))
+            if t["nov"] and t["nov"] <= W.END:
+                out.append((t["nov"], u["facility"], dev, "NOV", "Notice of violation: NOx at the source test of %s "
+                            "above the permit limit; corrective action and a retest required"
+                            % t["date"].strftime("%m/%d/%Y")))
+        for ch in u["calendar"]:
+            if ch[0] == "defer":
+                out.append((ch[1] - dt.timedelta(days=9), u["facility"], dev, "TEST DEFERRAL",
+                            "Source test due %s deferred to %s: unit out of service for a scheduled engine overhaul"
+                            % (ch[1].strftime("%m/%d/%Y"), ch[2].strftime("%m/%d/%Y"))))
+        if dev in W.DOWN:
+            a, b = W.DOWN[dev]
+            out.append((a, u["facility"], dev, "BREAKDOWN", "Unit shut down for scheduled overhaul; returned to service"
+                        " %s" % b.strftime("%m/%d/%Y")))
+        for y in range(2017, 2027):
+            if rng.random() < 0.45:
+                d = dt.date(y, int(rng.integers(1, 13)), int(rng.integers(1, 28)))
+                out.append((d, u["facility"], dev, "BREAKDOWN", "Breakdown reported: %s; corrected within 24 hours"
+                            % ("ammonia injection skid trip", "burner management fault", "SCR inlet temperature low",
+                               "control system communication loss")[int(rng.integers(0, 4))]))
+            if rng.random() < 0.6:
+                d = dt.date(y, int(rng.integers(1, 13)), int(rng.integers(1, 28)))
+                out.append((d, u["facility"], dev, "INSPECTION", "Annual compliance inspection; no violations noted"))
+        if u["monitored"]:
+            for y in range(2017, 2027):
+                out.append((dt.date(y, 4 + int(rng.integers(0, 4)), int(rng.integers(1, 28))), u["facility"], dev,
+                            "RATA", "CEMS relative accuracy test audit passed"))
+    for dev, en in W.ENGINE.items():
+        rng = _rng(500 + int(dev[2:]))
+        if en["replaced"]:
+            d, bhp, tier, model = en["replaced"]
+            out.append((d, en["facility"], dev, "EQUIPMENT", "Emergency engine replaced under the district's Clean"
+                        " Standby Engine program: removed %s (%s bhp, %s); installed %s (%s bhp, %s)"
+                        % (model, "{:,}".format(bhp), tier, en["model"], "{:,}".format(en["bhp"]), en["tier"])))
+        if rng.random() < 0.5:
+            out.append((dt.date(2026, int(rng.integers(1, 13)), int(rng.integers(1, 28))), en["facility"], dev,
+                        "INSPECTION", "Emergency engine inspection; hour meter and log reviewed"))
+    code, old, d, prev, new = W.RENUMBERED
+    out.append((d, code, "", "OWNERSHIP", "Change of ownership: %s to %s; facility number %s replaced by %s"
+                % (prev, new, old, W.FAC_NO[code])))
+    out.append((dt.date(2026, 3, 30), "F01", "D-1102", "PERMIT MOD", "Permit reissued: administrative amendment"
+                " (monitoring plan update)"))
+    return sorted((r for r in out if r[0] <= W.END), key=lambda r: (r[0], r[2], r[3]))
+
+
+def write_events(path, e):
+    rows = events(e)
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["EVENT_ID", "FAC_NO", "DEVICE_NO", "EVENT_DATE", "EVENT_TYPE", "DESCRIPTION"])
+        for i, (d, code, dev, typ, desc) in enumerate(rows):
+            date = d.strftime("%m/%d/%Y") if d.year <= 2020 else d.isoformat()
+            w.writerow(["E%06d" % (100000 + 7 * i + 3), fac_no(code, d), dev, date, typ, desc])
+    return len(rows)
+
+
+def write_billing(path, e):
+    rows = []
+    for b in e["bills"]:
+        if b["read_to"] + dt.timedelta(days=3) > EXTRACT_BILLING:
+            continue                    # billed after the utility pulled the extract
+        code = b["facility"]
+        rows.append([str(b["bill"]), b["account"], ADDRESS[code].upper().replace(" RD", " RD").replace("WAY", "WY"),
+                     b["meter"], b["read_from"].strftime("%m/%d/%Y"), b["read_to"].strftime("%m/%d/%Y"),
+                     str(b["prior"]), str(b["current"]), "A", "" if b["evc"] else "%.3f" % b["mult"],
+                     "%.3f" % b["btu"], str(b["usage"]),
+                     "G-20" if b["mult"] > 1 else "G-10",
+                     (b["read_to"] + dt.timedelta(days=3)).strftime("%m/%d/%Y")])
+    rows.sort(key=lambda r: (r[1], r[3], dt.datetime.strptime(r[4], "%m/%d/%Y")))
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["BILL_ID", "ACCOUNT_NO", "SERVICE_ADDRESS", "METER_NO", "READ_FROM", "READ_TO", "PRIOR_READ",
+                    "CURRENT_READ", "READ_TYPE", "PRESSURE_MULT", "BTU_FACTOR", "USAGE_CCF", "RATE_CODE", "BILL_DATE"])
+        w.writerows(rows)
+    return len(rows)
+
+
+def _hmm(h):
+    """Hours as the paper logs write them: whole hours, a point, minutes."""
+    mins = int(round(h * 60))
+    return "%d.%02d" % (mins // 60, mins % 60)
+
+
+def write_engine_logs(path, e):
     import openpyxl
     from openpyxl.styles import Font
-    rng = np.random.default_rng(W.SEED + 17)
+    wb = openpyxl.Workbook()
+    wb.remove(wb.active)
+    n = 0
+    for code in sorted(W.FAC_NAME, key=lambda c: W.FAC_NO[c]):
+        devs = [d for d, en in W.ENGINE.items() if en["facility"] == code]
+        if not devs:
+            continue
+        ws = wb.create_sheet(W.FAC_NO[code])
+        ws.append(["%s (facility %s): Rule 4702 emergency engine operating log, calendar 2026"
+                   % (W.FAC_NAME[code], W.FAC_NO[code])])
+        ws["A1"].font = Font(bold=True)
+        if code in W.HMM:
+            ws.append(["Date", "Engine (device no.)", "Hours", "Reason"])
+        else:
+            ws.append(["Date", "Device", "Run hours", "Purpose"])
+        for c in ws[2]:
+            c.font = Font(bold=True)
+        rows = []
+        for dev in devs:
+            for d, h, why in e["runs"][dev]:
+                v = _hmm(h) if code in W.HMM else "%.1f" % h
+                rows.append([d, dev, float(v), {"readiness": "Testing (weekly)", "load test": "Maintenance (load bank)",
+                                                "emergency": "Emergency (utility outage)"}[why]])
+        rows.sort(key=lambda r: (r[0], r[1]))
+        for r in rows:
+            ws.append(r)
+            n += 1
+        for row in ws.iter_rows(min_row=3):
+            row[0].number_format = "mm/dd/yyyy"
+            row[2].number_format = "0.00" if code in W.HMM else "0.0"
+        ws.column_dimensions["A"].width = 12
+        ws.column_dimensions["B"].width = 18
+        ws.column_dimensions["C"].width = 10
+        ws.column_dimensions["D"].width = 28
+    wb.save(path)
+    return n
+
+
+def write_inspections(path, e):
+    rows = []
+    insp = ("J. Okafor", "M. Delgado", "S. Whitfield")
+    for i, (dev, d, read) in enumerate(sorted(e["inspections"], key=lambda r: (r[1], r[0]))):
+        rows.append([dev, W.FAC_NO[W.ENGINE[dev]["facility"]], d.isoformat(), "%.1f" % read, insp[i % 3], "compliant"])
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["DEVICE_NO", "FAC_NO", "INSPECTION_DATE", "HOUR_METER", "INSPECTOR", "RESULT"])
+        w.writerows(rows)
+    return len(rows)
+
+
+def write_no2(path):
+    rng = _rng(77)
+    sites = (("LC-01", "Lowry Creek Elementary"), ("LC-02", "Harrow Lane Park"), ("LC-03", "Seddon Flats Library"))
+    rows = []
+    for code, _ in sites:
+        base = float(rng.uniform(9, 14))
+        for d in W.DAYS:
+            if d.year != W.YEAR:
+                continue
+            for h in range(24):
+                v = base * (1 + .5 * np.cos(2 * np.pi * (h - 7) / 24) + .3 * np.cos(2 * np.pi * (d.timetuple().tm_yday - 15) / 365))
+                v *= float(np.exp(rng.normal(0, .25)))
+                q = "" if rng.random() > 0.008 else "AN"
+                rows.append([code, d.isoformat(), str(h), "" if q else "%.1f" % v, q])
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["site_id", "date_lst", "hour_lst", "no2_ppb", "qualifier"])
+        w.writerows(rows)
+    return len(rows)
+
+
+def write_onroad(path):
+    import openpyxl
+    from openpyxl.styles import Font
+    rng = _rng(78)
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Condition 2026"
-    ws.append(["Section", "Section name", "Direction", "Lane-miles", "IRI (in/mi)", "Rut depth (in)",
-               "Cracking (% of area)", "Survey date"])
+    ws.title = "Links 2026"
+    ws.append(["Link ID", "Road", "From", "To", "Length (mi)", "AADT", "Heavy-duty share", "VMT (million)",
+               "NOx (tons)"])
     for c in ws[1]:
         c.font = Font(bold=True)
-    for s in W.SECTIONS:
-        for d in ("EB", "WB"):
-            lm = round((s[3] - s[2]) * 2, 1)
-            ws.append([s[0], s[1], d, lm, int(rng.normal(88, 18)), round(float(rng.uniform(0.12, 0.38)), 2),
-                       round(float(rng.uniform(0.5, 9.0)), 1),
-                       dt.date(2026, 5, 4) + dt.timedelta(days=int(rng.integers(0, 40)))])
-    for row in ws.iter_rows(min_row=2):
-        row[7].number_format = "m/d/yyyy"
+    roads = ("State Route 41", "Lowry Creek Pkwy", "Harrow Ln", "Orchard Way", "Refinery Ave", "Seddon Flats Rd",
+             "Interstate 7")
+    k = 0
+    for road in roads:
+        for j in range(int(rng.integers(3, 7))):
+            k += 1
+            ln = round(float(rng.uniform(0.4, 2.6)), 2)
+            aadt = int(rng.integers(4000, 61000))
+            hd = round(float(rng.uniform(0.03, 0.18)), 3)
+            vmt = ln * aadt * 365 / 1e6
+            nox = vmt * (0.18 + 2.1 * hd) / 2000 * 1e6 / 453.6 * 0.4536
+            ws.append(["L%03d" % k, road, "node %d" % (k * 2), "node %d" % (k * 2 + 1), ln, aadt, hd, round(vmt, 2),
+                       round(nox / 1000, 2)])
+    for col, wd in zip("ABCDEFGHI", (9, 18, 10, 10, 10, 9, 14, 13, 10)):
+        ws.column_dimensions[col].width = wd
     ws.freeze_panes = "A2"
-    for i, wd in enumerate([9, 16, 10, 11, 11, 13, 19, 12]):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = wd
     wb.save(path)
+    return k
 
 
-def write_bridges(path):
-    """Distractor: bridges on the roads crossing the turnpike near its interchanges with posted weight limits."""
-    rng = np.random.default_rng(W.SEED + 19)
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        w = csv.writer(fh, lineterminator="\r\n")
-        w.writerow(["structure_no", "carries", "near_plaza", "milepost", "posted_limit_tons", "posted_since"])
-        k = 0
-        for p in W.PLAZAS:
-            if p[6] is not None or p[0] in ("P01", "P32"):
-                continue
-            for _ in range(int(rng.integers(0, 3))):
-                k += 1
-                w.writerow(["%07d" % (4180000 + 37 * k), "County Road %d" % int(rng.integers(100, 990)), p[0],
-                            "%.1f" % (p[3] + rng.uniform(-1.5, 1.5)), int(rng.choice([15, 20, 24, 30, 36])),
-                            (dt.date(2012, 1, 1) + dt.timedelta(days=int(rng.integers(0, 4800)))).isoformat()])
-
-
-def build_pack(target, e=None):
-    """Write every file but the PDFs; returns the world and the row counts."""
+def build_pack(out, e=None):
     e = e or W.everything()
-    os.makedirs(target, exist_ok=True)
-    rows = wim_rows(e)
-    write_piezo(os.path.join(target, FILES["piezo"]), rows)
-    write_bending(os.path.join(target, FILES["bending"]), rows)
-    write_stations(os.path.join(target, FILES["stations"]))
-    write_tickets(os.path.join(target, FILES["tickets"]), e)
-    cr = citation_rows(e)
-    write_citations(os.path.join(target, FILES["citations"]), cr)
-    er = entry_rows(e)
-    write_entries(os.path.join(target, FILES["entries"]), er)
-    write_plazas(os.path.join(target, FILES["plazas"]))
-    write_pavement(os.path.join(target, FILES["pavement"]))
-    write_bridges(os.path.join(target, FILES["bridges"]))
-    n = {"piezo": sum(len(v) for k, v in rows.items() if W.SECTIONS[W.CODES.index(k)][4] == "piezo"),
-         "bending": sum(len(v) for k, v in rows.items() if W.SECTIONS[W.CODES.index(k)][4] == "bending"),
-         "entries": len(er), "citations": len(cr), "tickets": len(e["stops"])}
+    f = lambda k: os.path.join(out, FILES[k])
+    n = {}
+    n["cems"] = write_cems(f("cems"), e)
+    n["tests_old"], n["tests_new"] = write_tests(f("tests_old"), f("tests_new"), e)
+    n["statements"] = write_statements(f("statements"), e)
+    n["permits"] = write_permits(f("permits"))
+    n["events"] = write_events(f("events"), e)
+    n["billing"] = write_billing(f("billing"), e)
+    n["engine_logs"] = write_engine_logs(f("engine_logs"), e)
+    n["inspections"] = write_inspections(f("inspections"), e)
+    n["no2"] = write_no2(f("no2"))
+    n["onroad"] = write_onroad(f("onroad"))
     return e, n

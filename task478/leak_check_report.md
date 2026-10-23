@@ -1,32 +1,30 @@
 # leak check, task478
 
-**Verdict: REVIEW.** 12 files read, 7 golden figures and 8 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 13 files read, 26 golden figures and 18 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: architecture, loaded, reader, decisive, program, pothole, pounds, readers, landed, window, sentence, tickets, latency, covers, garnet, instrument, stations, matched, static, median, hollow, jessup, potholes, detections, orders
+Stump terms swept: architecture, reader, catalyst, section, decisive, pothole, method, landed, readers, loaded, district, source, golden, window, reading, standard, device, covers, operating, carried, station, checks, potholes, latency, detections
 
-## 3 answer figures in the pack (REVIEW 9)
-- **REVIEW** `ctpa_freight_compliance_program_2027.pdf`: golden figure 178 appears: ...1.0 07 Garnet Ridge 131.0 152.8 08 Halbrook 152.8 178.3 09 Ingram Mill 178.3 203.5 10 Jessup Fork 203.5...
-- **REVIEW** `ctpa_wim_piezo_2026.txt`: golden figure 178 appears: ...6061005020167006311039 178 0 511 E2202601290838307005690...
-- **REVIEW** `ctpa_wim_piezo_2026.txt`: golden figure 168 appears: ...0061405020153005990931 168 0 511 E1202602102158151505630...
-- **REVIEW** `ctpa_wim_piezo_2026.txt`: golden figure 107 appears: ...1058505020199306131380 107 0 514 E2202605182105549805720...
-- **REVIEW** `ctpa_wim_piezo_2026.txt`: golden figure 165 appears: ...6066305020181704741343 165 0 511 W1202601060520093305970...
-- **REVIEW** `ctpa_wim_piezo_2026.txt`: golden figure 173 appears: ...2066605020142006600760 173 0 511 E1202601131828563206610...
-- **REVIEW** `ctpa_wim_piezo_2026.txt`: golden figure 121 appears: ...6058505020094505160429 121 0 511 W2202606241750027406160...
-- **REVIEW** `ctpa_freight_compliance_program_2027.pdf`: carries 11 of 12 distinctive words of the committed call: 'Equip Cole Hollow, Elk Ferry, Garnet Ridge, Jessup Fork and Kettle Run with the 2027 virtual weigh stations.'
-- **REVIEW** `ctpa_toll_schedule_2025.pdf`: carries 8 of 12 distinctive words of the committed call: 'Equip Cole Hollow, Elk Ferry, Garnet Ridge, Jessup Fork and Kettle Run with the 2027 virtual weigh stations.'
+## 3 answer figures in the pack (REVIEW 1)
+- **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: carries 17 of 18 distinctive words of the committed call: 'Sign the 2027 NOx reduction agreements with Wexley Point Energy Center, Ashgrove Refining, Valmora Glass Works, Sedge Ho'
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `ctpa_data_exports_dictionary.pdf`: 4 of 25 stump-paragraph terms appear (program, pounds, stations, static); read whether the document names the move
-- **REVIEW** `ctpa_freight_compliance_program_2027.pdf`: 6 of 25 stump-paragraph terms appear (program, garnet, stations, static, hollow, jessup); read whether the document names the move
-- **REVIEW** `ctpa_toll_schedule_2025.pdf`: 3 of 25 stump-paragraph terms appear (garnet, hollow, jessup); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 2)
+- **REVIEW** `tbapcd_emission_inventory_guidance_2026.pdf`: 10 of 25 stump-paragraph terms appear (catalyst, section, method, district, source, reading); read whether the document names the move
+- **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: 6 of 25 stump-paragraph terms appear (district, source, device, operating, station, checks); read whether the document names the move
 
-## 6 ranking artifacts (REVIEW 3, INFO 1)
-- **REVIEW** `ctpa_freight_compliance_program_2027.pdf`: names 7 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `ctpa_pavement_condition_2026.xlsx`: names 7 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **REVIEW** `ctpa_toll_schedule_2025.pdf`: names 7 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
-- **INFO** `ctpa_toll_plazas.csv`: names 7 of 8 answer-set candidates; confirm it does not rank them on the decision question
+## 6 ranking artifacts (REVIEW 2, INFO 1)
+- **REVIEW** `tbapcd_lowry_creek_cerp_2027.pdf`: names 15 of 18 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `tbapcd_rule4702_engine_logs_2026.xlsx`: names 14 of 18 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `tbapcd_permit_devices.csv`: names 14 of 18 answer-set candidates; confirm it does not rank them on the decision question
+
+## 8 column names (REVIEW 6)
+- **REVIEW** `tbapcd_compliance_events_2017_2026.csv`: columns a generator names and an organisation does not: DEVICE_NO
+- **REVIEW** `tbapcd_emission_statements_2017_2026.csv`: columns a generator names and an organisation does not: DEVICE_NO
+- **REVIEW** `tbapcd_engine_inspections_2025_2027.csv`: columns a generator names and an organisation does not: DEVICE_NO
+- **REVIEW** `tbapcd_permit_devices.csv`: columns a generator names and an organisation does not: DEVICE_NO
+- **REVIEW** `tbapcd_rule4702_engine_logs_2026.xlsx`: columns a generator names and an organisation does not: Device
+- **REVIEW** `tbapcd_source_tests_2018_2021.csv`: columns a generator names and an organisation does not: DEVICE_NO
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -39,11 +37,10 @@ Stump terms swept: architecture, loaded, reader, decisive, program, pothole, pou
 
 ## 7 hidden content (clean)
 
-## 8 column names (clean)
-
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 

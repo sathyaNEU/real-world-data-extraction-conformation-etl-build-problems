@@ -2,101 +2,112 @@
 import json
 import os
 
+import bundle as B
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-CODES = ["%02d" % i for i in range(1, 13)]
+SHORT = {"Wexley Point Energy Center": "Wexley Point", "Ashgrove Refining": "Ashgrove", "Valmora Glass Works": "Valmora",
+         "Sedge Hollow Landfill Gas": "Sedge Hollow", "Haskett Ridge Compressor Station": "Haskett Ridge",
+         "St. Aldric Medical Center": "St. Aldric", "Lindqvist Paperboard": "Lindqvist",
+         "Tamsett State University": "Tamsett State", "Briar Flats Water Reclamation": "Briar Flats",
+         "Merriwell Foods": "Merriwell", "Harrow Peaking Station": "Harrow", "Orchard Basin Almond Growers": "Orchard Basin",
+         "Penrose Tire Retreading": "Penrose", "Quarry Lane Data Center": "Quarry Lane"}
 
 
 def join(xs, word="and"):
+    xs = list(xs)
     return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " %s " % word + xs[-1]
 
 
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    by = {x["section"]: (n, x) for n, x in f["sections"].items()}
-    five = [by[c][0] for c in CODES if by[c][1]["equip"] == "Yes"]
-    S = lambda n: f["sections"][n]
+    F = f["facilities"]
     c = f["components"]
+    five = f["call"]["facilities"]
+    rank = f["rank"]
     six = c["sixth"]
-    raw_in = [n for n in f["default"]["equip"] if n not in five]
-    pooled_in = [n for n in f["pooled"]["equip"] if n not in five]
-    heavy = [n for n in raw_in]
-    light = [n for n in five if n not in f["default"]["equip"]]
-    low = min(S(n)["share_pct"] for n in five)
+    dflt = f["default"]
+    out_default = [n for n in dflt["facilities"] if n not in five]
+    in_default = [n for n in five if n not in dflt["facilities"]]
+    hmm = f["ask_b"]["hmm_facilities"]
+    rep = f["ask_b"]["replaced"]
+    by_rank = sorted(five, key=rank.index)
     out = []
     out.append("## Tags\n")
-    out.append("**Domain:** General Statistics & Data Science (data integration: a turnpike authority's twelve "
-               "weigh-in-motion stations of two sensor types conformed onto the static scale's weight basis through each "
-               "station's loaded class 9 steer axles against the scale houses' tickets, then counted against the 80,000-lb "
-               "gross limit by section).")
+    out.append("**Domain:** Physical & Environmental Sciences, emissions inventory (an air district's 2026 NOx inventory "
+               "of fourteen facilities' SCR-controlled combustion units, conformed from continuous monitor hours, two "
+               "source test databases, monthly emission statements and the compliance log, each unmonitored unit's "
+               "rate carried along the operating hours on its catalyst).")
     out.append("**Analytical objective:** Data Extraction & Conformation (ETL).\n")
     out.append("## 1. Final Recommendation\n")
-    out.append("**Equip %s with the 2027 virtual weigh stations.**" % join(five))
-    out.append("With each station's weights on the static scale's basis, %s per cent of the class 9 trucks their "
-               "stations weighed in 2026 ran over 80,000 lb, against %s's %d per cent in sixth. Not %s, which lead on "
-               "the weights as recorded (%s per cent) only because their stations read %s per cent heavy; not %s, which "
-               "comes in only when the steer axles of empty and loaded tractors are pooled.\n"
-               % (join(["%d" % S(n)["share_pct"] for n in five]), six["name"], six["share_pct"], join(raw_in, "or"),
-                  join(["%d" % S(n)["raw_share_pct"] for n in raw_in]), join(["%d" % S(n)["reads_pct"] for n in heavy]),
-                  join(pooled_in, "or")))
+    out.append("**Sign the 2027 NOx reduction agreements with %s.**" % join(five))
+    hask = "Haskett Ridge Compressor Station"
+    out.append("Their Rule 4306 units emitted %s tons of NOx in 2026, against %s's %d in sixth. Not %s, whose %d tons "
+               "on its latest source tests rest on two engines tested on worn catalysts it replaced in December "
+               "2025; along the hours on the new catalysts its units emitted %d. Not %s, which makes the five on the latest "
+               "tests only because they read %s weeks after new catalysts went in.\n"
+               % (join(["%d" % F[n]["nox_tons"] for n in five]), six["name"], six["tons"], hask, dflt["tons"][hask],
+                  F[hask]["nox_tons"], six["name"], join(["%s's" % SHORT[n] for n in in_default]) + " engines"))
     out.append("## 2. Critical Components\n")
-    out.append("1. Against the scale houses' loaded static tickets, on the steer axles of loaded class 9 trucks, %s "
-               "stations read **%s** per cent heavy and %s **%s** per cent light."
-               % (join(["%s's" % n for n in heavy]), join(["%d" % S(n)["reads_pct"] for n in heavy]),
-                  join(["%s's" % n for n in light]), join(["%d" % -S(n)["reads_pct"] for n in light])))
-    out.append("2. The lowest of the five shares is **%d** per cent, against %s's **%d** in sixth.\n"
-               % (low, six["name"], six["share_pct"]))
+    out.append("1. %s's units emitted **%d** tons and %s's **%d**, the lowest two of the five, against %s's **%d** in "
+               "sixth." % (by_rank[3], F[by_rank[3]]["nox_tons"], by_rank[4], F[by_rank[4]]["nox_tons"], six["name"],
+                           six["tons"]))
+    out.append("2. Haskett Ridge Compressor Station's units emitted **%d** tons.\n"
+               % F["Haskett Ridge Compressor Station"]["nox_tons"])
     out.append("## 3. Step-by-Step Solution\n")
     steps = [
-        "Read ctpa_wim_piezo_2026.txt (fixed width, tens of pounds) and ctpa_wim_bendingplate_2026.csv (kilograms), "
-        "kept the class 9 weighings the controllers did not reject and put each station in its section by its milepost "
-        "in ctpa_wim_stations.csv: {:,} class 9 trucks weighed.".format(c["class9_weighed"]),
-        "Took the loaded trucks in ctpa_scale_house_tickets_2026.xlsx (five axles summing over 50,000 lb): their steer "
-        "axle's median on the static scale is {:,} lb.".format(c["ticket_loaded_steer_lb"]),
-        "Divided each station's median steer axle of its loaded class 9 trucks (gross over 50,000 lb as recorded) by "
-        "that median: factors from %s (%s) to %s (%s)." % (c["factor_low"]["factor"], c["factor_low"]["name"],
-                                                           c["factor_high"]["factor"], c["factor_high"]["name"]),
-        "Divided every weighing's gross by its station's factor and took each section's share over 80,000 lb (program "
-        "3.2): %s lead, %s is sixth at %d per cent."
-        % (join(["%s %d" % (n, S(n)["share_pct"]) for n in five]), six["name"], six["share_pct"]),
-        "For the weekday entries, took each entry in ctpa_toll_entries_5axle_2026.csv once: a T26 row stamped up to 16 "
-        "minutes before a numeric-id row of the same tag and plaza is the new host's backfill of that entry (the plazas "
-        "moved one by one in May and June) and goes; the numeric-id rows are the old host's local stamps and the other "
-        "T26 rows UTC; placed plaza P23 at Brannock Road to 30 April (ctpa_toll_schedule_2025.pdf) and at Halbrook East "
-        "from 1 September (ctpa_toll_plazas.csv), and averaged over the 261 weekdays (program 5): {:,} five-axle entries "
-        "a weekday on the turnpike.".format(c["entries_weekday_total"]),
-        "For the citations, placed each violation G row of ctpa_citations_2026.csv at its tag's last toll entry before "
-        "the stop, the trip weighed (program 6.2), on those entries with the old host's stamps read as local time (read "
-        "as UTC, the entry a cited truck makes coming back through the barrier after offloading falls before its stop), "
-        "not at its entry_plaza, which the toll system returned when the citation was keyed: {:,} gross overweight "
-        "citations.".format(c["gross_citations_total"]),
-        "Recommended the five highest shares: %s." % join(five),
+        "Took the %d Rule 4306 devices in tbapcd_permit_devices.csv, %d with a CEMS, and summed each monitored "
+        "device's 2026 nox_mass_lb in tbapcd_cems_hourly_2026.csv, matched by facility_id and unit_id to the permit "
+        "list's FAC_NO and CEMS_UNIT_ID (guidance section 2): %s tons." % (c["devices"], c["monitored_units"],
+                                                                          "{:,}".format(c["cems_tons"])),
+        "Put every source test of the other %d units on lb/MMBtu, the 2022 to 2026 database's own column and the 2018 "
+        "to 2021 database's NOX_LB_HR over FUEL_FLOW_SCFH times FUEL_HHV (guidance section 5): %d tests."
+        % (c["open_units"], c["tests"]),
+        "Spread each unit's monthly heat input (guidance section 4) and operating hours in "
+        "tbapcd_emission_statements_2017_2026.csv evenly over the month's days, and counted each day's operating "
+        "hours on the catalyst in service since the unit's last SCR INSTALLED or CATALYST date in "
+        "tbapcd_compliance_events_2017_2026.csv.",
+        "Fitted the log of each test's lb/MMBtu on its unit's catalyst hours at the start of the test day, one level "
+        "for each unit and one climb for all: %s in the log for every 10,000 hours, about %d per cent for every 1,000 "
+        "hours." % (c["climb_log_per_10000h"], c["climb_pct_per_1000h"]),
+        "Summed each unit's 2026 heat input day by day at the rate its level and the climb give at the day's mid-day "
+        "catalyst hours, and each facility's units: %s, then %s." % (
+            join(["%s %d" % (SHORT[n], F[n]["nox_tons"]) for n in rank[:5]]),
+            join(["%s %d" % (SHORT[n], F[n]["nox_tons"]) for n in rank[5:7]])),
+        "For the gas, matched each line of tvg_commercial_billing_extract_2027-02.csv to its facility by service "
+        "address and took USAGE_CCF as therms where it equals the read difference times PRESSURE_MULT times BTU_FACTOR "
+        "(the %d lines the utility's new billing system issued, read from %s on) and as CCF times BTU_FACTOR where it "
+        "equals the read difference times PRESSURE_MULT (the earlier lines), then divided by 10 and spread each bill "
+        "as plan section 4.2 says: %s MMBtu in all." % (f["ask_a"]["therm_lines"], f["ask_a"]["first_therm_month"],
+                                                         "{:,}".format(c["gas_total_mmbtu"])),
+        "For the engines, read the logs of %s, which sum to their engines' hour meter differences in "
+        "tbapcd_engine_inspections_2025_2027.csv only as hours and minutes, that way (1.30 is an hour and a half), "
+        "took each run of %s before its 2026 replacement date at the removed engine's rating and tier in the "
+        "compliance log's EQUIPMENT entry, and applied guidance section 6: %s lb in all."
+        % (join(SHORT[n] for n in hmm), join(rep), "{:,}".format(c["engine_total_lb"])),
+        "Recommended the five highest: %s." % join(five),
     ]
     for i, s in enumerate(steps, 1):
         out.append("%d. %s" % (i, s))
     out.append("")
     out.append("## 4. Deliverable Answers\n")
-    out.append("### ctpa_vws_sections_2027.xlsx\n")
-    out.append("1. The five sections to equip: %s." % join(five))
-    out.append("2. Share of the class 9 trucks each section's station weighed in 2026 that were over 80,000 lb, whole "
-               "per cent:")
-    for code in CODES:
-        n, x = by[code]
-        out.append("   - %s: %d per cent" % (n, x["share_pct"]))
-    out.append("3. Average five-axle trucks a weekday entering at each section's interchanges in 2026, whole trucks:")
-    for code in CODES:
-        n, x = by[code]
-        out.append("   - %s: %d" % (n, x["weekday_entries"]))
-    out.append("4. Gross overweight citations the scale houses issued in 2026 to five-axle trucks that had entered at "
-               "each section, whole citations:")
-    for code in CODES:
-        n, x = by[code]
-        out.append("   - %s: %d" % (n, x["gross_citations"]))
-    out.append("\n### ctpa_section_overweight_2026.csv\n")
-    out.append("5. Twelve rows, one per section west to east, each with its share as in item 2.")
-    out.append("\n### ctpa_overweight_share_2026.svg\n")
-    out.append("6. Bar chart of the twelve shares west to east, each labelled with its whole per cent, the five sections "
-               "to equip in blue and the others in grey.")
+    out.append("### tbapcd_cerp_facilities_2027.xlsx\n")
+    out.append("1. The five facilities for the 2027 NOx reduction agreements: %s." % join(five))
+    out.append("2. Each facility's 2026 NOx from its Rule 4306 units, whole tons:")
+    for n in B.ORDER:
+        out.append("   - %s: %d" % (n, F[n]["nox_tons"]))
+    out.append("3. Natural gas Tamsett Valley Gas delivered to each facility in calendar 2026, whole MMBtu:")
+    for n in B.ORDER:
+        out.append("   - %s: %s" % (n, "{:,}".format(F[n]["gas_mmbtu"])))
+    out.append("4. NOx each facility's emergency standby engines emitted in 2026, whole pounds:")
+    for n in B.ORDER:
+        out.append("   - %s: %s" % (n, "{:,}".format(F[n]["engine_nox_lb"])))
+    out.append("\n### tbapcd_nox_inventory_2026.csv\n")
+    out.append("5. Fourteen rows in Appendix A order, each with the facility number, the facility and its tons as in "
+               "item 2.")
+    out.append("\n### tbapcd_facility_nox_2026.svg\n")
+    out.append("6. Horizontal bar chart of the fourteen facilities' 2026 NOx from their Rule 4306 units, highest first, "
+               "each bar labelled with its whole tons, the five agreement facilities in blue and the others in grey.")
     open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8").write("\n".join(out) + "\n")
 
 

@@ -1,216 +1,209 @@
-"""verify.py: recompute every graded figure from the shipped bundle alone, on its own code path (no generator module),
-and compare with generator/figures.json and the golden files. Reads every format the pack ships, each through one
-extractor with a positive control.
+"""An independent recompute of task478's graded figures from the cut pack, sharing no code with bundle.py: each
+facility's 2026 NOx from its Rule 4306 units, the five, the gas Tamsett Valley Gas delivered and the emergency engines'
+NOx; then the same figures read back from figures.json, submission.md and the three goldens.
 
-    python3 task478/generator/verify.py [target]
+    python3 task478/generator/verify.py
 """
 import csv
 import datetime as dt
 import json
 import os
 import re
-import statistics
 import sys
-import zipfile
-from collections import defaultdict
-from zoneinfo import ZoneInfo
+import warnings
 
+import numpy as np
+import pandas as pd
+
+warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-ET = ZoneInfo("America/New_York")
-UTC = dt.timezone.utc
+T = os.path.join(TASK, "target")
+G = os.path.join(TASK, "golden")
 OK = []
-LB_PER_KG = 1 / 0.45359237
 
 
-def ok(name, cond):
-    OK.append((name, bool(cond)))
-    print("%s  %s" % ("PASS" if cond else "FAIL", name))
-
-
-def rows(path):
-    with open(path, encoding="utf-8", newline="") as f:
-        return list(csv.DictReader(f))
-
-
-def sheet(path, name):
-    """A worksheet's rows through the workbook's XML: shared strings and inline values, no spreadsheet library."""
-    import xml.etree.ElementTree as ET_
-    ns = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
-    with zipfile.ZipFile(path) as z:
-        wb = ET_.fromstring(z.read("xl/workbook.xml"))
-        names = [s.get("name") for s in wb.find("m:sheets", ns)]
-        idx = names.index(name) + 1
-        sst = []
-        if "xl/sharedStrings.xml" in z.namelist():
-            for si in ET_.fromstring(z.read("xl/sharedStrings.xml")).findall("m:si", ns):
-                sst.append("".join(t.text or "" for t in si.iter("{%s}t" % ns["m"])))
-        data = ET_.fromstring(z.read("xl/worksheets/sheet%d.xml" % idx))
-    out = []
-    for r in data.find("m:sheetData", ns):
-        vals = {}
-        for c in r.findall("m:c", ns):
-            col = re.match(r"[A-Z]+", c.get("r")).group(0)
-            v = c.find("m:v", ns)
-            if v is None:
-                continue
-            vals[col] = sst[int(v.text)] if c.get("t") == "s" else v.text
-        out.append(vals)
-    return out
-
-
-def table(raw, header_row=0):
-    head = raw[header_row]
-    cols = sorted(head, key=lambda c: (len(c), c))
-    return [{head[c]: r.get(c) for c in cols} for r in raw[header_row + 1:]]
-
-
-def pdf_text(path):
-    import pdfplumber
-    with pdfplumber.open(path) as pdf:
-        return "\n".join(pg.extract_text() or "" for pg in pdf.pages)
+def say(name, ok):
+    OK.append(bool(ok))
+    print("%s  %s" % ("PASS" if ok else "FAIL", name))
 
 
 def half_up(x):
-    return int(x + 0.5)
+    return int(np.floor(x + 0.5))
 
 
-def main(target=None):
-    T = target or os.path.join(TASK, "target")
-    j = lambda n: os.path.join(T, n)
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
+def days_of(y, m):
+    return (dt.date(y + m // 12, m % 12 + 1, 1) - dt.date(y, m, 1)).days
 
-    prog = pdf_text(j("ctpa_freight_compliance_program_2027.pdf"))
-    flat = re.sub(r"\s+", " ", prog)
-    ok("pdf read back: the program's limit (control)", "gross vehicle weight above 80,000 lb" in flat)
-    secs = [(m.group(1), m.group(2), float(m.group(3)), float(m.group(4)))
-            for m in re.finditer(r"^(\d\d) ([A-Z][A-Za-z ]+?) (\d+\.\d) (\d+\.\d)$", prog, re.M)]
-    ok("pdf read back: the program's section table has twelve sections", len(secs) == 12)
-    name = {c: n for c, n, a, b in secs}
 
-    def section_at(mp):
-        return next(c for c, n, a, b in secs if a <= mp < b)
-    dic = re.sub(r"\s+", " ", pdf_text(j("ctpa_data_exports_dictionary.pdf")))
-    ok("pdf read back: the dictionary's piezo layout (control)", "31-35 gross weight, tens of pounds" in dic)
-    sched = re.sub(r"\s+", " ", pdf_text(j("ctpa_toll_schedule_2025.pdf")))
-    ok("pdf read back: the 2025 schedule's P23 (control)", "P23 Brannock Road 38.1" in sched)
+def main():
+    p = lambda fn: os.path.join(T, fn)
+    pm = pd.read_csv(p("tbapcd_permit_devices.csv"), dtype=str)
+    app = {}
+    for r in pm.drop_duplicates("FAC_NO").itertuples():
+        app[r.FAC_NO] = r.FACILITY
+    order = list(pd.read_csv(os.path.join(G, "tbapcd_nox_inventory_2026.csv"), dtype=str)["facility"])
+    u = pm[pm["RULE"] == "4306"].set_index("DEVICE_NO")
+    fac_of = u["FACILITY"].to_dict()
+    fd = {"natural gas": 8710.0, "landfill gas": 9570.0, "digester gas": 9570.0}
 
-    st = {r["station_id"]: section_at(float(r["milepost"])) for r in rows(j("ctpa_wim_stations.csv"))}
-    ok("csv read back: the station list places twelve stations, one a section", sorted(st.values()) == sorted(name))
-    recs = defaultdict(list)                  # section -> (gross lb, steer lb)
-    with open(j("ctpa_wim_piezo_2026.txt"), encoding="ascii") as fh:
-        n_pz = 0
-        for ln in fh:
-            n_pz += 1
-            if ln[26:28] != "09" or ln[95] != "0":
+    # monitored units: the hourly mass, joined through the monitoring plan's unit id
+    cems = pd.read_csv(p("tbapcd_cems_hourly_2026.csv"), dtype={"facility_id": str, "unit_id": str})
+    plan_id = u[u["MONITORING"] == "CEMS"].reset_index()[["FAC_NO", "CEMS_UNIT_ID", "DEVICE_NO"]]
+    cems = cems.merge(plan_id, left_on=["facility_id", "unit_id"], right_on=["FAC_NO", "CEMS_UNIT_ID"], how="left")
+    assert cems["DEVICE_NO"].notna().all()
+    lb = cems.groupby("DEVICE_NO")["nox_mass_lb"].sum().to_dict()
+
+    # unmonitored units: tests in lb/MMBtu, monthly heat input and hours spread by day, catalyst dates from the log
+    o = pd.read_csv(p("tbapcd_source_tests_2018_2021.csv"), dtype=str)
+    tests = pd.DataFrame({"dev": "D-" + o["DEVICE_NO"], "date": pd.to_datetime(o["TEST_DATE"], format="%m/%d/%Y"),
+                          "lb": o["NOX_LB_HR"].astype(float) / (o["FUEL_FLOW_SCFH"].astype(float) *
+                                                                o["FUEL_HHV"].astype(float) / 1e6)})
+    n = pd.read_excel(p("tbapcd_source_tests_2022_2026.xlsx"), sheet_name="Results")
+    tests = pd.concat([tests, pd.DataFrame({"dev": n["Device No."], "date": pd.to_datetime(n["Test Date"]),
+                                            "lb": n["NOx (lb/MMBtu)"].astype(float)})], ignore_index=True)
+    st = pd.read_csv(p("tbapcd_emission_statements_2017_2026.csv"), dtype=str)
+    q = st["QUANTITY"].astype(float)
+    hhv = pd.to_numeric(st["HHV_BTU_SCF"], errors="coerce").fillna(1037.0)
+    st["mmbtu"] = np.select([st["UNIT"] == "THERMS", st["UNIT"] == "MMBTU", st["UNIT"] == "MMSCF"], [q / 10, q, q * hhv])
+    st["hours"] = st["HOURS"].astype(float)
+    ev = pd.read_csv(p("tbapcd_compliance_events_2017_2026.csv"), dtype=str)
+    ev["d"] = [pd.Timestamp(dt.datetime.strptime(x, "%m/%d/%Y")) if "/" in x else pd.Timestamp(x) for x in ev["EVENT_DATE"]]
+    cats = ev[ev["EVENT_TYPE"].isin(["SCR INSTALLED", "CATALYST"])].groupby("DEVICE_NO")["d"].apply(sorted).to_dict()
+    open_units = [d for d in u.index if u.loc[d, "MONITORING"] != "CEMS"]
+    daily = {}
+    for d in open_units:
+        s = st[st["DEVICE_NO"] == d]
+        rows = []
+        for r in s.itertuples():
+            y, m = int(r.STMT_YEAR), int(r.MONTH)
+            k = days_of(y, m)
+            for i in range(k):
+                rows.append((pd.Timestamp(y, m, 1) + pd.Timedelta(days=i), r.hours / k, r.mmbtu / k))
+        df = pd.DataFrame(rows, columns=["day", "h", "q"]).sort_values("day").reset_index(drop=True)
+        seg = np.searchsorted(np.array(cats[d], dtype="datetime64[ns]"), df["day"].to_numpy(), side="right")
+        df["seg"] = seg
+        df["cat"] = df.groupby("seg")["h"].cumsum() - df["h"]
+        df.loc[df["seg"] == 0, "cat"] = 0.0
+        daily[d] = df.set_index("day")
+    tests["h"] = [daily[r.dev].loc[r.date, "cat"] for r in tests.itertuples()]
+    devs = sorted(tests["dev"].unique())
+    X = np.zeros((len(tests), len(devs) + 1))
+    X[np.arange(len(tests)), [devs.index(d) for d in tests["dev"]]] = 1.0
+    X[:, -1] = tests["h"]
+    coef = np.linalg.lstsq(X, np.log(tests["lb"].to_numpy()), rcond=None)[0]
+    beta = coef[-1]
+    for d in open_units:
+        df = daily[d]
+        y = df[(df.index.year == 2026) & (df["q"] > 0)]
+        lb[d] = float((y["q"] * np.exp(coef[devs.index(d)] + beta * (y["cat"] + y["h"] / 2))).sum())
+    tons = {f: 0.0 for f in order}
+    for d, v in lb.items():
+        tons[fac_of[d]] += v / 2000.0
+    five = sorted(sorted(order, key=lambda f: -tons[f])[:5], key=order.index)
+
+    # ask A: billed usage in therms, the conversion date read off the meters billed from their index
+    b = pd.read_csv(p("tvg_commercial_billing_extract_2027-02.csv"), dtype=str)
+    for c in ("READ_FROM", "READ_TO"):
+        b[c] = pd.to_datetime(b[c], format="%m/%d/%Y")
+    for c in ("PRIOR_READ", "CURRENT_READ", "USAGE_CCF"):
+        b[c] = b[c].astype(float)
+    b["mult"] = pd.to_numeric(b["PRESSURE_MULT"], errors="coerce")
+    b["btu"] = b["BTU_FACTOR"].astype(float)
+    ix = b[b["mult"].notna()]
+    corr = (ix["CURRENT_READ"] - ix["PRIOR_READ"]) * ix["mult"]
+    therm = (ix["USAGE_CCF"] - corr * ix["btu"]).abs() < (ix["USAGE_CCF"] - corr).abs()
+    cut = ix[therm]["READ_TO"].min()
+    assert (therm == (ix["READ_TO"] >= cut)).all()
+    b["therms"] = np.where(b["READ_TO"] >= cut, b["USAGE_CCF"], b["USAGE_CCF"] * b["btu"])
+    key = lambda a: re.sub(r"[^A-Z0-9]", "", re.sub(r"\b(ROAD|AVENUE|STREET|BOULEVARD|LANE|DRIVE|WAY)\b",
+                                                         lambda m: {"ROAD": "RD", "AVENUE": "AVE", "STREET": "ST",
+                                                                    "BOULEVARD": "BLVD", "LANE": "LN", "DRIVE": "DR",
+                                                                    "WAY": "WY"}[m.group(1)], a.upper()))
+    import pypdf
+    plan = re.sub(r"\s+", " ", " ".join(pg.extract_text() for pg in pypdf.PdfReader(
+        p("tbapcd_lowry_creek_cerp_2027.pdf")).pages))
+    addr = {}
+    for f in order:
+        m = re.search(re.escape(f) + r" \d{4} (\d+ [A-Z][\w. ]+?(?:Road|Avenue|Street|Boulevard|Lane|Drive|Way|Row))", plan)
+        addr[key(m.group(1))] = f
+    b["fac"] = [addr[key(a)] for a in b["SERVICE_ADDRESS"]]
+    y0, y1 = pd.Timestamp(2026, 1, 1), pd.Timestamp(2027, 1, 1)
+    share = ((np.minimum(b["READ_TO"], y1) - np.maximum(b["READ_FROM"], y0)).dt.days.clip(lower=0) /
+             (b["READ_TO"] - b["READ_FROM"]).dt.days)
+    gas = (b["therms"] * share / 10.0).groupby(b["fac"]).sum().to_dict()
+
+    # ask B: the logs, hours and minutes where the meters say so, replaced engines at the removed engine's rating
+    xl = pd.ExcelFile(p("tbapcd_rule4702_engine_logs_2026.xlsx"))
+    logs = []
+    for sh in xl.sheet_names:
+        df = pd.read_excel(xl, sheet_name=sh, header=1)
+        df.columns = ["date", "dev", "v", "why"]
+        df["fac"] = app[sh]
+        logs.append(df)
+    logs = pd.concat(logs, ignore_index=True)
+    logs["date"] = pd.to_datetime(logs["date"])
+    hm = lambda v: np.floor(v + 1e-9) + np.round((v - np.floor(v + 1e-9)) * 100) / 60.0
+    eq = ev[ev["EVENT_TYPE"] == "EQUIPMENT"]
+    old = {}
+    for r in eq.itertuples():
+        m = re.search(r"removed .*?\(([\d,]+) bhp, (Tier [^)]+)\)", r.DESCRIPTION)
+        old[r.DEVICE_NO] = (r.d, float(m.group(1).replace(",", "")), m.group(2))
+    ins = pd.read_csv(p("tbapcd_engine_inspections_2025_2027.csv"), dtype=str)
+    ins["d"] = pd.to_datetime(ins["INSPECTION_DATE"])
+    ins["r"] = ins["HOUR_METER"].astype(float)
+    hmm = set()
+    for f, g in logs.groupby("fac"):
+        e_dec = e_hmm = 0.0
+        for d, gd in g.groupby("dev"):
+            if d in old:
                 continue
-            recs[st[ln[0:4].strip()]].append((int(ln[30:35]) * 10, int(ln[35:39]) * 10))
-    ok("fixed-width read back: %d piezo records (control: first station 511)" % n_pz, "511" in st and n_pz > 100000)
-    n_bp = 0
-    for r in rows(j("ctpa_wim_bendingplate_2026.csv")):
-        n_bp += 1
-        if r["fhwa_class"] != "9" or r["status"] != "OK":
-            continue
-        recs[st[r["site"]]].append((int(r["gvw_kg"]) * LB_PER_KG, int(r["ax1_kg"]) * LB_PER_KG))
-    ok("csv read back: %d bending-plate records" % n_bp, n_bp > 50000)
+            i = ins[ins["DEVICE_NO"] == d].sort_values("d")
+            w = gd[(gd["date"] >= i.iloc[0]["d"]) & (gd["date"] < i.iloc[1]["d"])]["v"]
+            span = i.iloc[1]["r"] - i.iloc[0]["r"]
+            e_dec += abs(w.sum() - span)
+            e_hmm += abs(hm(w).sum() - span)
+        if e_hmm < e_dec:
+            hmm.add(f)
+    tier = {"Tier 1": 6.9, "Tier 2": 4.8, "Tier 3": 3.0, "Tier 4 Final": 0.30}
+    allp = pm.set_index("DEVICE_NO")
+    lbs = {f: 0.0 for f in order}
+    for r in logs.itertuples():
+        h = hm(r.v) if r.fac in hmm else r.v
+        bhp, t = float(allp.loc[r.dev, "RATING"]), allp.loc[r.dev, "ENGINE_TIER"]
+        if r.dev in old and r.date < old[r.dev][0]:
+            bhp, t = old[r.dev][1], old[r.dev][2]
+        lbs[r.fac] += h * bhp * 0.74 * tier[t] / 453.6
 
-    tk = table(sheet(j("ctpa_scale_house_tickets_2026.xlsx"), "Tickets 2026"))
-    ok("xlsx read back: %d tickets with five axles each (control)" % len(tk), len(tk) == 2600 and
-       all(r["Axle 5 (lb)"] for r in tk))
-    t_loaded = [float(r["Axle 1 (lb)"]) for r in tk if sum(float(r["Axle %d (lb)" % i]) for i in range(1, 6)) > 50000]
-    ref = statistics.median(t_loaded)
-    share = {}
-    for c in name:
-        f = statistics.median([s for g, s in recs[c] if g > 50000]) / ref
-        share[c] = 100.0 * sum(1 for g, s in recs[c] if g / f > 80000) / len(recs[c])
-    five = sorted(sorted(share, key=lambda c: -share[c])[:5])
-    ok("the five recompute: %s" % [name[c] for c in five],
-       [name[c] for c in five] == fig["call"]["equip"])
-    ok("the twelve shares recompute at whole per cent",
-       all(half_up(share[c]) == fig["sections"][name[c]]["share_pct"] for c in name))
-    ok("the tickets' loaded steer median recomputes (%d lb)" % ref,
-       int(round(ref)) == fig["components"]["ticket_loaded_steer_lb"])
-
-    # ask B: weekday entries
-    pl = rows(j("ctpa_toll_plazas.csv"))
-    since = {r["plaza"]: (section_at(float(r["milepost"])), r["in_service_from"]) for r in pl}
-    old_code = {m.group(1): section_at(float(m.group(2)))
-                for m in re.finditer(r"(P\d\d) [A-Z][A-Za-z0-9 ]+? (\d+\.\d) ", sched)}
-
-    def sec_of(code, day):
-        s, frm = since[code]
-        if frm and day < dt.date.fromisoformat(frm):
-            return old_code[code]
-        return s
-    ent = rows(j("ctpa_toll_entries_5axle_2026.csv"))
-    ok("csv read back: %d toll entries (control: an old-host id)" % len(ent), ent[0]["txn_id"].isdigit())
-    # the old host's rows (numeric ids) carry its local receipt stamp to the minute; a new-host row stamped within 16
-    # minutes before (or the minute after) an old-host row of the same tag and plaza is the backfill of that entry
-    parse = lambda t: dt.datetime.strptime(t, "%Y-%m-%d %H:%M:%S" if len(t) > 16 else "%Y-%m-%d %H:%M")
-    olds = defaultdict(list)
-    for r in ent:
-        if r["txn_id"].isdigit():
-            olds[(r["tag_id"], r["plaza"])].append(parse(r["entry_utc"]))
-    keep = []
-    for r in ent:
-        t = parse(r["entry_utc"])
-        if r["txn_id"].isdigit():
-            keep.append((r["tag_id"], r["plaza"], t))
-            continue
-        if any(-60 <= (o - t).total_seconds() <= 960 for o in olds.get((r["tag_id"], r["plaza"]), ())):
-            continue
-        keep.append((r["tag_id"], r["plaza"], t.replace(tzinfo=UTC).astimezone(ET).replace(tzinfo=None)))
-    wk = defaultdict(int)
-    for tag, p, loc in keep:
-        if loc.year == 2026 and loc.weekday() < 5:
-            wk[sec_of(p, loc.date())] += 1
-    days = sum(1 for k in range(365) if (dt.date(2026, 1, 1) + dt.timedelta(days=k)).weekday() < 5)
-    ok("261 weekdays in 2026 (%d)" % days, days == 261)
-    ok("ask B recomputes: every section's weekday entries",
-       all(half_up(wk[c] / days) == fig["sections"][name[c]]["weekday_entries"] for c in name))
-
-    # ask A: gross citations by the trip's entry
-    by_tag = defaultdict(list)
-    for tag, p, loc in keep:
-        by_tag[tag].append((loc, p))
-    for v in by_tag.values():
-        v.sort()
-    cit = rows(j("ctpa_citations_2026.csv"))
-    ok("csv read back: %d citation rows (control: violation codes G and T)" % len(cit),
-       {r["violation"] for r in cit} == {"G", "T"})
-    ca = defaultdict(int)
-    for r in cit:
-        if r["violation"] != "G":
-            continue
-        when = dt.datetime.strptime(r["issued"], "%m/%d/%Y %H:%M")
-        loc, p = [x for x in by_tag[r["tag_id"]] if x[0] <= when][-1]
-        ca[sec_of(p, loc.date())] += 1
-    ok("ask A recomputes: every section's gross citations",
-       all(ca[c] == fig["sections"][name[c]]["gross_citations"] for c in name))
-
-    # the golden files read back
-    gx = os.path.join(TASK, "golden", "ctpa_vws_sections_2027.xlsx")
-    s2 = table(sheet(gx, "Sections"))
-    body = [r for r in s2 if r.get("Section") in name]
-    ok("golden xlsx read back: twelve sections, the shares, entries and citations as recomputed",
-       len(body) == 12 and all(half_up(float(r["Share of class 9 trucks over 80,000 lb"]) * 100) == half_up(share[r["Section"]])
-                               and int(r["Five-axle entries a weekday"]) == half_up(wk[r["Section"]] / days)
-                               and int(r["Gross overweight citations"]) == ca[r["Section"]] for r in body))
-    ok("golden xlsx: the five marked Yes are the recomputed five",
-       sorted(r["Section"] for r in body if r["Equip 2027"] == "Yes") == five)
-    s1 = sheet(gx, "Sites 2027")
-    sites = [r.get("A") for r in s1 if r.get("A") in name]
-    ok("golden xlsx: the Sites sheet lists the five", sorted(sites) == five)
-    gc = rows(os.path.join(TASK, "golden", "ctpa_section_overweight_2026.csv"))
-    ok("golden csv read back: twelve rows matching the recomputed shares",
-       [(r["section"], int(r["share_over_80000_lb_pct"])) for r in gc] == [(c, half_up(share[c])) for c in sorted(name)])
-    svg = open(os.path.join(TASK, "golden", "ctpa_overweight_share_2026.svg"), encoding="utf-8").read()
-    ok("golden svg read back: an SVG with every section's name", svg.lstrip().startswith("<?xml") and
-       all(name[c] in svg for c in name))
-    n_fail = sum(1 for _, c in OK if not c)
-    print("%s  task478 verify: %d checks, %d failed" % ("PASS" if not n_fail else "FAIL", len(OK), n_fail))
-    return 1 if n_fail else 0
+    # read back
+    fig = json.load(open(os.path.join(HERE, "figures.json")))
+    say("the five: %s" % five, fig["call"]["facilities"] == five)
+    say("the 14 whole tons", all(fig["facilities"][f]["nox_tons"] == half_up(tons[f]) for f in order))
+    say("the 14 gas figures, whole MMBtu", all(fig["facilities"][f]["gas_mmbtu"] == half_up(gas[f]) for f in order))
+    say("the 14 engine figures, whole pounds", all(fig["facilities"][f]["engine_nox_lb"] == half_up(lbs[f]) for f in order))
+    say("the climb: %.2f in the log a 10,000 hours" % (beta * 1e4), fig["components"]["climb_log_per_10000h"] ==
+        "%.2f" % (beta * 1e4))
+    rows = list(csv.DictReader(open(os.path.join(G, "tbapcd_nox_inventory_2026.csv"), encoding="utf-8")))
+    say("the golden CSV's 14 rows", [int(r["rule_4306_nox_tons_2026"]) for r in rows] == [half_up(tons[f]) for f in order])
+    import openpyxl
+    wb = openpyxl.load_workbook(os.path.join(G, "tbapcd_cerp_facilities_2027.xlsx"))
+    ag = [r[0] for r in wb["Agreements 2027"].iter_rows(min_row=5, max_row=9, values_only=True)]
+    say("the workbook's agreements sheet names the five", ag == five)
+    fr = {r[0]: r for r in wb["Facilities"].iter_rows(min_row=2, values_only=True) if r[0] in order}
+    say("the workbook's facilities sheet: tons, agreement, gas and engines on all 14",
+        all(fr[f][2] == half_up(tons[f]) and fr[f][3] == ("Yes" if f in five else "No") and fr[f][4] == half_up(gas[f])
+            and fr[f][5] == half_up(lbs[f]) for f in order))
+    svg = open(os.path.join(G, "tbapcd_facility_nox_2026.svg"), encoding="utf-8").read()
+    say("the chart labels every facility and its whole tons", all(f in svg for f in order) and
+        all(re.search(r">%d<" % half_up(tons[f]), svg) for f in order))
+    sub = open(os.path.join(TASK, "submission.md"), encoding="utf-8").read()
+    say("submission.md block 4 carries every graded figure",
+        all("%s: %d" % (f, half_up(tons[f])) in sub and "%s: %s" % (f, "{:,}".format(half_up(gas[f]))) in sub and
+            "%s: %s" % (f, "{:,}".format(half_up(lbs[f]))) in sub for f in order))
+    bad = sum(1 for x in OK if not x)
+    print("%s  task478 verify: %d checks, %d failed" % ("PASS" if not bad else "FAIL", len(OK), bad))
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else None))
+    sys.exit(main())

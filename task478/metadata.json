@@ -1,116 +1,123 @@
 {
  "task": "task478",
- "title": "Calderwick Turnpike virtual weigh station sections, 2027 contract",
- "setting": "A fictional toll road authority in an unnamed U.S. state; every record is synthetic.",
- "as_of": "2027-02-12",
+ "title": "Tamsett Basin APCD, Lowry Creek NOx reduction agreements 2027",
+ "setting": "A fictional regional air pollution control district in an unnamed U.S. state; every record is synthetic.",
+ "as_of": "2027-02-19",
  "files": [
   {
-   "file": "ctpa_bridge_postings_2026.csv",
-   "source": "Calderwick Turnpike Authority (fictional), structures section, from the state's bridge inventory; synthetic records",
-   "date": "2026-12-01",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 23
-  },
-  {
-   "file": "ctpa_citations_2026.csv",
-   "source": "Calderwick Turnpike Authority (fictional), enforcement unit citation log; synthetic records",
+   "file": "tbapcd_cems_hourly_2026.csv",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), continuous emissions monitoring data system; synthetic records",
    "date": "2027-02-08",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 2872
+   "rows": 60257
   },
   {
-   "file": "ctpa_data_exports_dictionary.pdf",
-   "source": "Calderwick Turnpike Authority (fictional), Office of Freight Operations, WIM program; synthetic records",
-   "date": "2027-02-09",
+   "file": "tbapcd_compliance_events_2017_2026.csv",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), compliance tracking system; synthetic records",
+   "date": "2027-02-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 755
+  },
+  {
+   "file": "tbapcd_emission_inventory_guidance_2026.pdf",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), Engineering Division; synthetic records",
+   "date": "2027-02-17",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "ctpa_freight_compliance_program_2027.pdf",
-   "source": "Calderwick Turnpike Authority (fictional), Office of Freight Operations; synthetic records",
+   "file": "tbapcd_emission_statements_2017_2026.csv",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), emission statements database; synthetic records",
+   "date": "2027-02-16",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 4200
+  },
+  {
+   "file": "tbapcd_engine_inspections_2025_2027.csv",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), engine inspection records; synthetic records",
    "date": "2027-02-12",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
+   "rows": 59
   },
   {
-   "file": "ctpa_pavement_condition_2026.xlsx",
-   "source": "Calderwick Turnpike Authority (fictional), pavement management section; synthetic records",
-   "date": "2026-07-22",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 24
-  },
-  {
-   "file": "ctpa_scale_house_tickets_2026.xlsx",
-   "source": "Calderwick Turnpike Authority (fictional), enforcement unit, West and East Scale Houses; synthetic records",
-   "date": "2027-02-06",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 2600
-  },
-  {
-   "file": "ctpa_toll_entries_5axle_2026.csv",
-   "source": "Calderwick Turnpike Authority (fictional), toll back office; synthetic records",
-   "date": "2027-02-04",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 162926
-  },
-  {
-   "file": "ctpa_toll_plazas.csv",
-   "source": "Calderwick Turnpike Authority (fictional), toll back office; synthetic records",
-   "date": "2027-02-04",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 20
-  },
-  {
-   "file": "ctpa_toll_schedule_2025.pdf",
-   "source": "Calderwick Turnpike Authority (fictional), Board of the Authority; synthetic records",
-   "date": "2024-11-18",
+   "file": "tbapcd_lowry_creek_cerp_2027.pdf",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), Planning and Rules Division; synthetic records",
+   "date": "2027-02-19",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "ctpa_wim_bendingplate_2026.csv",
-   "source": "Calderwick Turnpike Authority (fictional), WIM program, bending-plate vendor software; synthetic records",
-   "date": "2027-02-05",
+   "file": "tbapcd_lowry_creek_no2_hourly_2026.csv",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), community air monitoring network; synthetic records",
+   "date": "2027-01-20",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 69155
+   "rows": 26280
   },
   {
-   "file": "ctpa_wim_piezo_2026.txt",
-   "source": "Calderwick Turnpike Authority (fictional), WIM program, piezoelectric station controllers; synthetic records",
-   "date": "2027-02-05",
+   "file": "tbapcd_lowry_creek_onroad_nox_2026.xlsx",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), Mobile Sources Section, county-scale MOVES run; synthetic records",
+   "date": "2026-12-08",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 141557
+   "rows": 34
   },
   {
-   "file": "ctpa_wim_stations.csv",
-   "source": "Calderwick Turnpike Authority (fictional), WIM program; synthetic records",
-   "date": "2027-02-05",
+   "file": "tbapcd_permit_devices.csv",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), permit system, device list; synthetic records",
+   "date": "2027-02-10",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 12
+   "rows": 66
+  },
+  {
+   "file": "tbapcd_rule4702_engine_logs_2026.xlsx",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), facilities' Rule 4702 operating logs as submitted; synthetic records",
+   "date": "2027-02-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1425
+  },
+  {
+   "file": "tbapcd_source_tests_2018_2021.csv",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), source test results database (to 2021); synthetic records",
+   "date": "2027-02-09",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 77
+  },
+  {
+   "file": "tbapcd_source_tests_2022_2026.xlsx",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), source test results database (from 2022); synthetic records",
+   "date": "2027-02-09",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 95
+  },
+  {
+   "file": "tvg_commercial_billing_extract_2027-02.csv",
+   "source": "Tamsett Basin Air Pollution Control District (fictional), Tamsett Valley Gas (fictional) under the District's data sharing agreement; synthetic records",
+   "date": "2027-02-03",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 253
   }
  ],
  "distractor_files": [
-  "ctpa_pavement_condition_2026.xlsx",
-  "ctpa_bridge_postings_2026.csv"
+  "tbapcd_lowry_creek_no2_hourly_2026.csv",
+  "tbapcd_lowry_creek_onroad_nox_2026.xlsx"
  ],
  "distractors": [
   {
-   "file": "ctpa_pavement_condition_2026.xlsx",
-   "why": "the 2026 pavement condition survey by section: damage heavy trucks do, not the share of them over the gross limit the program sites on"
+   "file": "tbapcd_lowry_creek_no2_hourly_2026.csv",
+   "why": "the corridor's community NO2 monitors: what residents breathe from every source, not what each facility's units emitted"
   },
   {
-   "file": "ctpa_bridge_postings_2026.csv",
-   "why": "posted bridges on the crossing roads near the interchanges: where an overweight truck may not go off the turnpike, not how many run on it"
+   "file": "tbapcd_lowry_creek_onroad_nox_2026.xlsx",
+   "why": "on-road NOx on the corridor's road links: traffic emissions the plan's facility agreements do not cover"
   }
  ],
  "deliverables": [
-  "ctpa_vws_sections_2027.xlsx",
-  "ctpa_section_overweight_2026.csv",
-  "ctpa_overweight_share_2026.svg"
+  "tbapcd_cerp_facilities_2027.xlsx",
+  "tbapcd_nox_inventory_2026.csv",
+  "tbapcd_facility_nox_2026.svg"
  ],
  "stated_inputs": [
-  "80,000 lb",
-  "five of twelve sections",
+  "Rule 4306 units",
+  "five of fourteen facilities",
   "calendar 2026"
  ]
 }

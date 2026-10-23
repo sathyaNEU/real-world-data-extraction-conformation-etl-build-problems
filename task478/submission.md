@@ -1,77 +1,84 @@
 ## Tags
 
-**Domain:** General Statistics & Data Science (data integration: a turnpike authority's twelve weigh-in-motion stations of two sensor types conformed onto the static scale's weight basis through each station's loaded class 9 steer axles against the scale houses' tickets, then counted against the 80,000-lb gross limit by section).
+**Domain:** Physical & Environmental Sciences, emissions inventory (an air district's 2026 NOx inventory of fourteen facilities' SCR-controlled combustion units, conformed from continuous monitor hours, two source test databases, monthly emission statements and the compliance log, each unmonitored unit's rate carried along the operating hours on its catalyst).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**Equip Cole Hollow, Elk Ferry, Garnet Ridge, Jessup Fork and Kettle Run with the 2027 virtual weigh stations.**
-With each station's weights on the static scale's basis, 11, 16, 21, 11 and 11 per cent of the class 9 trucks their stations weighed in 2026 ran over 80,000 lb, against Dunmere's 7 per cent in sixth. Not Brannock or Ingram Mill, which lead on the weights as recorded (9 and 10 per cent) only because their stations read 6 and 5 per cent heavy; not Dunmere, which comes in only when the steer axles of empty and loaded tractors are pooled.
+**Sign the 2027 NOx reduction agreements with Wexley Point Energy Center, Ashgrove Refining, Valmora Glass Works, Sedge Hollow Landfill Gas and St. Aldric Medical Center.**
+Their Rule 4306 units emitted 24, 21, 22, 8 and 8 tons of NOx in 2026, against Lindqvist Paperboard's 7 in sixth. Not Haskett Ridge Compressor Station, whose 8 tons on its latest source tests rest on two engines tested on worn catalysts it replaced in December 2025; along the hours on the new catalysts its units emitted 6. Not Lindqvist Paperboard, which makes the five on the latest tests only because they read Sedge Hollow's and St. Aldric's engines weeks after new catalysts went in.
 
 ## 2. Critical Components
 
-1. Against the scale houses' loaded static tickets, on the steer axles of loaded class 9 trucks, Brannock's and Ingram Mill's stations read **6 and 5** per cent heavy and Elk Ferry's and Kettle Run's **5 and 4** per cent light.
-2. The lowest of the five shares is **11** per cent, against Dunmere's **7** in sixth.
+1. St. Aldric Medical Center's units emitted **8** tons and Sedge Hollow Landfill Gas's **8**, the lowest two of the five, against Lindqvist Paperboard's **7** in sixth.
+2. Haskett Ridge Compressor Station's units emitted **6** tons.
 
 ## 3. Step-by-Step Solution
 
-1. Read ctpa_wim_piezo_2026.txt (fixed width, tens of pounds) and ctpa_wim_bendingplate_2026.csv (kilograms), kept the class 9 weighings the controllers did not reject and put each station in its section by its milepost in ctpa_wim_stations.csv: 155,032 class 9 trucks weighed.
-2. Took the loaded trucks in ctpa_scale_house_tickets_2026.xlsx (five axles summing over 50,000 lb): their steer axle's median on the static scale is 11,420 lb.
-3. Divided each station's median steer axle of its loaded class 9 trucks (gross over 50,000 lb as recorded) by that median: factors from 0.951 (Elk Ferry) to 1.066 (Foxbriar).
-4. Divided every weighing's gross by its station's factor and took each section's share over 80,000 lb (program 3.2): Cole Hollow 11, Elk Ferry 16, Garnet Ridge 21, Jessup Fork 11 and Kettle Run 11 lead, Dunmere is sixth at 7 per cent.
-5. For the weekday entries, took each entry in ctpa_toll_entries_5axle_2026.csv once: a T26 row stamped up to 16 minutes before a numeric-id row of the same tag and plaza is the new host's backfill of that entry (the plazas moved one by one in May and June) and goes; the numeric-id rows are the old host's local stamps and the other T26 rows UTC; placed plaza P23 at Brannock Road to 30 April (ctpa_toll_schedule_2025.pdf) and at Halbrook East from 1 September (ctpa_toll_plazas.csv), and averaged over the 261 weekdays (program 5): 502 five-axle entries a weekday on the turnpike.
-6. For the citations, placed each violation G row of ctpa_citations_2026.csv at its tag's last toll entry before the stop, the trip weighed (program 6.2), on those entries with the old host's stamps read as local time (read as UTC, the entry a cited truck makes coming back through the barrier after offloading falls before its stop), not at its entry_plaza, which the toll system returned when the citation was keyed: 1,279 gross overweight citations.
-7. Recommended the five highest shares: Cole Hollow, Elk Ferry, Garnet Ridge, Jessup Fork and Kettle Run.
+1. Took the 35 Rule 4306 devices in tbapcd_permit_devices.csv, 9 with a CEMS, and summed each monitored device's 2026 nox_mass_lb in tbapcd_cems_hourly_2026.csv, matched by facility_id and unit_id to the permit list's FAC_NO and CEMS_UNIT_ID (guidance section 2): 74 tons.
+2. Put every source test of the other 26 units on lb/MMBtu, the 2022 to 2026 database's own column and the 2018 to 2021 database's NOX_LB_HR over FUEL_FLOW_SCFH times FUEL_HHV (guidance section 5): 172 tests.
+3. Spread each unit's monthly heat input (guidance section 4) and operating hours in tbapcd_emission_statements_2017_2026.csv evenly over the month's days, and counted each day's operating hours on the catalyst in service since the unit's last SCR INSTALLED or CATALYST date in tbapcd_compliance_events_2017_2026.csv.
+4. Fitted the log of each test's lb/MMBtu on its unit's catalyst hours at the start of the test day, one level for each unit and one climb for all: 0.48 in the log for every 10,000 hours, about 5 per cent for every 1,000 hours.
+5. Summed each unit's 2026 heat input day by day at the rate its level and the climb give at the day's mid-day catalyst hours, and each facility's units: Wexley Point 24, Valmora 22, Ashgrove 21, St. Aldric 8 and Sedge Hollow 8, then Lindqvist 7 and Haskett Ridge 6.
+6. For the gas, matched each line of tvg_commercial_billing_extract_2027-02.csv to its facility by service address and took USAGE_CCF as therms where it equals the read difference times PRESSURE_MULT times BTU_FACTOR (the 126 lines the utility's new billing system issued, read from July 2026 on) and as CCF times BTU_FACTOR where it equals the read difference times PRESSURE_MULT (the earlier lines), then divided by 10 and spread each bill as plan section 4.2 says: 18,290,110 MMBtu in all.
+7. For the engines, read the logs of Wexley Point, Sedge Hollow, Lindqvist, Briar Flats, Harrow, Orchard Basin and Penrose, which sum to their engines' hour meter differences in tbapcd_engine_inspections_2025_2027.csv only as hours and minutes, that way (1.30 is an hour and a half), took each run of D-3201, D-3301, D-3501, D-3602, D-3801, D-4001 and D-4403 before its 2026 replacement date at the removed engine's rating and tier in the compliance log's EQUIPMENT entry, and applied guidance section 6: 10,523 lb in all.
+8. Recommended the five highest: Wexley Point Energy Center, Ashgrove Refining, Valmora Glass Works, Sedge Hollow Landfill Gas and St. Aldric Medical Center.
 
 ## 4. Deliverable Answers
 
-### ctpa_vws_sections_2027.xlsx
+### tbapcd_cerp_facilities_2027.xlsx
 
-1. The five sections to equip: Cole Hollow, Elk Ferry, Garnet Ridge, Jessup Fork and Kettle Run.
-2. Share of the class 9 trucks each section's station weighed in 2026 that were over 80,000 lb, whole per cent:
-   - Ashford Gap: 5 per cent
-   - Brannock: 3 per cent
-   - Cole Hollow: 11 per cent
-   - Dunmere: 7 per cent
-   - Elk Ferry: 16 per cent
-   - Foxbriar: 3 per cent
-   - Garnet Ridge: 21 per cent
-   - Halbrook: 6 per cent
-   - Ingram Mill: 4 per cent
-   - Jessup Fork: 11 per cent
-   - Kettle Run: 11 per cent
-   - Lowfield: 5 per cent
-3. Average five-axle trucks a weekday entering at each section's interchanges in 2026, whole trucks:
-   - Ashford Gap: 58
-   - Brannock: 58
-   - Cole Hollow: 26
-   - Dunmere: 55
-   - Elk Ferry: 23
-   - Foxbriar: 55
-   - Garnet Ridge: 22
-   - Halbrook: 31
-   - Ingram Mill: 52
-   - Jessup Fork: 27
-   - Kettle Run: 41
-   - Lowfield: 54
-4. Gross overweight citations the scale houses issued in 2026 to five-axle trucks that had entered at each section, whole citations:
-   - Ashford Gap: 65
-   - Brannock: 173
-   - Cole Hollow: 68
-   - Dunmere: 178
-   - Elk Ferry: 52
-   - Foxbriar: 168
-   - Garnet Ridge: 61
-   - Halbrook: 107
-   - Ingram Mill: 165
-   - Jessup Fork: 63
-   - Kettle Run: 121
-   - Lowfield: 58
+1. The five facilities for the 2027 NOx reduction agreements: Wexley Point Energy Center, Ashgrove Refining, Valmora Glass Works, Sedge Hollow Landfill Gas and St. Aldric Medical Center.
+2. Each facility's 2026 NOx from its Rule 4306 units, whole tons:
+   - Wexley Point Energy Center: 24
+   - Ashgrove Refining: 21
+   - Valmora Glass Works: 22
+   - Sedge Hollow Landfill Gas: 8
+   - Haskett Ridge Compressor Station: 6
+   - St. Aldric Medical Center: 8
+   - Lindqvist Paperboard: 7
+   - Tamsett State University: 4
+   - Briar Flats Water Reclamation: 3
+   - Merriwell Foods: 3
+   - Harrow Peaking Station: 2
+   - Orchard Basin Almond Growers: 1
+   - Penrose Tire Retreading: 1
+   - Quarry Lane Data Center: 1
+3. Natural gas Tamsett Valley Gas delivered to each facility in calendar 2026, whole MMBtu:
+   - Wexley Point Energy Center: 6,389,903
+   - Ashgrove Refining: 4,715,504
+   - Valmora Glass Works: 1,486,386
+   - Sedge Hollow Landfill Gas: 3,909
+   - Haskett Ridge Compressor Station: 498,762
+   - St. Aldric Medical Center: 597,323
+   - Lindqvist Paperboard: 2,306,679
+   - Tamsett State University: 1,000,112
+   - Briar Flats Water Reclamation: 3,043
+   - Merriwell Foods: 629,912
+   - Harrow Peaking Station: 213,011
+   - Orchard Basin Almond Growers: 169,003
+   - Penrose Tire Retreading: 180,590
+   - Quarry Lane Data Center: 95,973
+4. NOx each facility's emergency standby engines emitted in 2026, whole pounds:
+   - Wexley Point Energy Center: 474
+   - Ashgrove Refining: 523
+   - Valmora Glass Works: 273
+   - Sedge Hollow Landfill Gas: 91
+   - Haskett Ridge Compressor Station: 182
+   - St. Aldric Medical Center: 2,254
+   - Lindqvist Paperboard: 349
+   - Tamsett State University: 644
+   - Briar Flats Water Reclamation: 348
+   - Merriwell Foods: 111
+   - Harrow Peaking Station: 89
+   - Orchard Basin Almond Growers: 143
+   - Penrose Tire Retreading: 90
+   - Quarry Lane Data Center: 4,954
 
-### ctpa_section_overweight_2026.csv
+### tbapcd_nox_inventory_2026.csv
 
-5. Twelve rows, one per section west to east, each with its share as in item 2.
+5. Fourteen rows in Appendix A order, each with the facility number, the facility and its tons as in item 2.
 
-### ctpa_overweight_share_2026.svg
+### tbapcd_facility_nox_2026.svg
 
-6. Bar chart of the twelve shares west to east, each labelled with its whole per cent, the five sections to equip in blue and the others in grey.
+6. Horizontal bar chart of the fourteen facilities' 2026 NOx from their Rule 4306 units, highest first, each bar labelled with its whole tons, the five agreement facilities in blue and the others in grey.

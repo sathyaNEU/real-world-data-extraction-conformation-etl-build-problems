@@ -1,26 +1,27 @@
 {
   "task": "task478",
   "owner": "oviya1301",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "physical-environmental-sciences/emissions-inventory",
   "objective": "etl",
-  "stage": 2,
-  "stage_name": "design",
-  "updated": "2026-10-22",
-  "stump": "The default path carries each unmonitored unit's latest source test across its 2026 fuel and names Ashgrove Refining, Haskett Ridge, Lindqvist Paperboard, Valmora Glass and Wexley Point; a unit injecting ammonia open-loop emits NOx at a rate that climbs with the operating hours on its catalyst since the last replacement, so Sedge Hollow's and St. Aldric's tests, read weeks after new catalysts went in, understate engines that ran on them all 2026 and Haskett Ridge's, read on catalysts replaced that December, overstate it, and the climb the test histories trace against catalyst hours names Ashgrove Refining, Sedge Hollow, St. Aldric Medical Center, Valmora Glass and Wexley Point.",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-23",
+  "stump": "The default path carries each unmonitored unit's latest source test across its 2026 fuel and names Ashgrove Refining, Haskett Ridge, Lindqvist Paperboard, Valmora Glass Works and Wexley Point Energy Center; a unit injecting ammonia open-loop emits NOx at a rate that climbs with the operating hours on its catalyst since the last replacement, so Sedge Hollow's and St. Aldric's tests, read weeks after new catalysts went in, understate engines that ran on them all 2026 and Haskett Ridge's, read on catalysts replaced that December, overstate it; the climb the test histories trace against catalyst hours (0.48 in the log a 10,000 hours), integrated day by day, names Ashgrove Refining, Sedge Hollow, St. Aldric Medical Center, Valmora Glass Works and Wexley Point Energy Center.",
   "architecture": 6,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-23"
   },
   "leak": {
-    "leak_py": "",
+    "leak_py": "REVIEW (no LEAK): Appendix A roster, Method 19 and source test wording, DEVICE_NO columns",
     "reader": ""
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task474 v2 at 0.09"
+    "heart": "WARN (Gate G repeat against task273 and overuse, answered at the draw)",
+    "nearest": "task474 v2 at 0.09",
+    "surface": "7 card-level promotions (task480, task477, task479, task476, task265, task190, task195; surface 0.084 to 0.100), answered by the card's differentiation lines; no persona or surface finding"
   },
   "judge": {
     "verdict": "",
@@ -28,7 +29,7 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 2: architecture 6 drawn (an air district's 2026 NOx inventory, each unmonitored unit's source test carried along its catalyst's operating hours); the generator prototype is in the scratchpad; write the readability screen, fork table, ladder, closure and the ask sheet, prompt.txt, then precut",
+  "resume": "stage 4: architecture 6 built (precut exit 0, free gates green, zip md5 946c7506); two scored readers (scratchpad t478v6/readA and readB, reader.json each) and the judge thread (/tmp/determinism-check-task478-run1, verdict.md, then the determinism-judge agent for the report) are out; score each reader with score_reader.py --call-key call.facilities, fix every finding in one generator pass, then ship",
   "approved": null,
   "delivered": null,
   "portal": null,
