@@ -1,26 +1,26 @@
 {
   "task": "task482",
   "owner": "oviya1301",
-  "status": "PAUSED",
-  "domain": "education-learning-sciences",
+  "status": "DESIGN",
+  "domain": "physical-environmental-sciences",
   "objective": "etl",
-  "stage": 1,
-  "stage_name": "draw",
-  "updated": "2026-10-22",
-  "stump": "The default path computes Form 27A's expected raw score at each standard from the bank difficulties as filed (28.2 and 17.5) and sets College Algebra from 29, Corequisite College Algebra from 18; the golden carries each of the 40 field-test-calibrated unique items from the field-test section's mean position (65.5) to the positions 21 to 70 it takes on Northgate Assess by the position term the 2026 attempts measure (0.0075 logits a position, 0.15 over the carry), which puts the expected raw scores at 29.5 and 18.5 and the placement scores at 30 and 19.",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-23",
+  "stump": "The default path applies each plant's latest oxidizer performance test destruction efficiency to its 2026 captured VOC and names Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging; the golden reads each operating day's oxidizer outlet from the floor relation the plants' tests trace, at the inlet the day's captured VOC and airflow imply, and adds Ashcombe Flexible Packaging and Kelvedon Laminates (figures set at the build).",
   "architecture": 7,
   "loops": 0,
   "precut": {
-    "exit": 0,
-    "date": "2026-10-22"
+    "exit": null,
+    "date": ""
   },
   "leak": {
-    "leak_py": "REVIEW, no LEAK (2026-10-22)",
-    "reader": "architecture 6: reader A landed the call (score_reader: call 2 of 2, asks 13 of 62) by fitting a position term to the rebuilt attempts; reader B and the judge thread stopped at the spend"
+    "leak_py": "",
+    "reader": ""
   },
   "duplicate_check": {
-    "heart": "WARN (repeat.gate_g against task273, answered in the note)",
-    "nearest": "task190 at 0.07"
+    "heart": "WARN (overuse.org_family, answered in the note)",
+    "nearest": "task478 v7 and v6 at 0.08"
   },
   "judge": {
     "verdict": "",
@@ -28,9 +28,9 @@
     "report": ""
   },
   "returned": [],
-  "resume": "stage 1: architecture 6 spent at stage 4 (reader A landed the call; see the design note Architecture 6 record); re-root to architecture 7 with a fresh draw, read Tried and rejected first",
+  "resume": "stage 2: architecture 7 drawn 2026-10-23 (a state VOC inventory of printing plants; oxidizer outlet floor at dilute inlets); write the default path, stump sentence, readability screen, fork table, ladder, closure, asks and prompt, then precut.py",
   "approved": null,
   "delivered": null,
   "portal": null,
-  "source_note": "re-root to a fresh world; the seed ET39 world was spent with architectures 1 to 5"
+  "source_note": "re-root to a fresh world; architectures 1 to 6 spent at stage 4"
 }

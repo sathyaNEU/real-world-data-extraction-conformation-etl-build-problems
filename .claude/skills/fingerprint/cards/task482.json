@@ -1,18 +1,18 @@
 {
   "task": "task482",
-  "architecture": "v6",
-  "drawn": "2026-10-22",
-  "slot_note": "re-root after architectures 1 to 5 were spent at stage 4; a fresh world in the ETL objective: a state community college system pre-equates its 2027 mathematics placement form from a Rasch item bank and must publish the college algebra placement score before the form goes live",
-  "domain": "education-learning-sciences",
-  "client_domain": "education-learning-sciences",
-  "subdomain": "item-response-theory-test-equating",
-  "niche": "a state community college system's 2027 mathematics placement form, pre-equated from a Rasch item bank before it goes live on 1 March 2027: the raw score that places a student into college algebra, where most of the form's scored items were calibrated in the unscored field-test section at the end of earlier forms",
+  "architecture": "v7",
+  "drawn": "2026-10-23",
+  "slot_note": "architecture 7, re-rooted 2026-10-23 after architecture 6 was spent at stage 4 (reader A landed the call); a fresh world: a state air agency's 2026 VOC inventory of the printing and converting plants its new VOC rule would cover",
+  "domain": "physical-environmental-sciences",
+  "client_domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "a state air agency's 2026 press VOC inventory of fourteen printing and converting plants in an ozone nonattainment area, conformed from the plants' information-request returns (ink and coating purchases with their safety data sheets, press logs, oxidizer data-historian exports, capture determinations and oxidizer performance tests), to name the plants a new rule covers from 2027 at 25 tons of 2026 press VOC",
   "objective": "etl",
-  "shape": "04",
-  "decision_type": "dial_setting",
-  "answer_unit": "index_or_score",
-  "answer": "Form 27A should place students into College Algebra from a raw score of 30 and into Corequisite College Algebra from 19.",
-  "answer_source": "task482/submission.md, block 1",
+  "shape": "01",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "Rule 18-4 covers Ashcombe Flexible Packaging, Carrow Gravure, Kelvedon Laminates, Merrion Flexibles and Ravensbrook Gravure Packaging (figures set at the build), the nearest plant below the line named at the build.",
+  "answer_source": "submission.md block 1 from generator/figures.json (set at the build)",
   "gap": [
     "objective"
   ],
@@ -29,59 +29,77 @@
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the bank's units, joins Form 27A's assembly to the pool and reads the technical report correctly sums the bank difficulties as filed and sets College Algebra from 29, Corequisite College Algebra from 18 (expected raw scores 28.2 and 17.5); only the difficulties carried from the field-test section to Form 27A's positions give 30 and 19.",
-  "domain_test": "Psychometrics: pre-equating a fixed form from a Rasch item bank. The deciding quantity is the form's test characteristic curve at the standard, which needs each item's difficulty where it sits on the form; the field estimates item position effects from administrations that vary item order and carries bank parameters from their calibration positions to their operational positions before pre-equating. With hospital or energy nouns there is no form, no item position, no characteristic curve and no standard on a latent scale, so nothing is left to decide.",
+  "analyst_test": "A strong analyst who conforms every ink, coating and solvent purchase to pounds of VOC from its safety data sheet, every press log to daily VOC used, applies each plant's capture determination, reads the rule and the information request correctly and applies each plant's oxidizer performance test destruction efficiency (the latest, or the mean of its tests) to its 2026 captured VOC names Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging; only each operating day's oxidizer outlet read from the outlet-against-inlet relation the plants' tests trace (an outlet that holds near a floor concentration however dilute the inlet), at the inlet that day's captured VOC and the oxidizer's airflow imply, adds Ashcombe Flexible Packaging and Kelvedon Laminates.",
+  "domain_test": "Stationary-source VOC inventory work: an add-on oxidizer's destruction efficiency is measured in a performance test run at maximum production, and a thermal oxidizer's outlet holds near a floor concentration whatever its inlet, so the share it destroys falls as its inlet grows dilute; a plant whose oxidizer fan draws its full air while the presses run at part production feeds the oxidizer a dilute inlet on most days, so the year's controlled VOC needs each day's inlet put through the outlet relation the tests trace; with hospital or traffic nouns there is no oxidizer, no outlet floor and no dilution of a control device's inlet, so nothing is left to decide.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:bank difficulties carried from their calibration position to their operational position before pre-equating",
+  "layer2_pattern": "own:an oxidizer's destruction measured at maximum production carried to each operating day through the outlet-against-inlet relation the tests trace, the day's inlet built from its captured VOC and its airflow",
   "layer1": [
-    "the item bank in two systems, logits in the legacy bank and a bank unit of 100 plus 10 per logit in the new one",
-    "the old platform's wide export in two fixed versions against the new platform's long export in random order",
-    "item identifiers in two formats joined through the bank's crosswalk",
-    "the delivery platform cutover on 1 July 2026",
-    "retests, invalidated sessions and accommodated sessions",
-    "UTC timestamps on the new platform against local time on the old"
+    "ink, coating and solvent purchases from two suppliers' invoice layouts, in gallons, with VOC content from safety data sheets in per cent by weight or pounds per gallon less water and exempt compounds",
+    "press logs by shift at some plants and by job at others",
+    "oxidizer data-historian exports in per cent of fan speed at some plants, converted to airflow by each fan's curve, in UTC against local press logs",
+    "performance tests from two testing firms, one reporting VOC as carbon and the other as propane",
+    "capture by permanent total enclosure verification at some plants and by capture test at others",
+    "a plant renamed after an acquisition, its older returns under the former name"
   ],
-  "stakeholder_role": "the system office's director of placement and developmental mathematics, who takes the 2027 placement scores to the State Board of Community Colleges",
-  "role_family": "programme_officer",
-  "scoring_unit": "index points",
+  "stakeholder_role": "the air division's rule development manager, who takes the applicability list to the state's Environmental Quality Council",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
   "spine": {
-    "file": "northgate_item_responses_2026-07-01_to_2027-01-31.csv",
-    "rows": 454510,
-    "entity": "one item response in one attempt on the new delivery platform, scored or field-test",
-    "grain": "attempt x item",
-    "source": "synthetic (constructed in the layout of a computer-based test delivery export)"
+    "file": "press_daily_log_2026.csv",
+    "rows": 30000,
+    "entity": "one press's production day",
+    "grain": "press x day",
+    "source": "synthetic (constructed in the layout of printing plants' press production logs)"
   },
-  "forum": "trustees_or_governors",
+  "forum": "council_or_assembly",
   "forcing_event": "vote_or_meeting",
-  "org_family": "university_or_school",
+  "org_family": "government_agency",
   "world": {
-    "geography": "an unnamed state of the United States (the community college system, its colleges and its placement test are fictional)",
+    "geography": "an unnamed U.S. state",
     "currency": "USD",
-    "org_type": "a state community college system's office of assessment and placement",
+    "org_type": "a state department of environmental quality's air quality division",
     "invented_names": [
-      "Brackett Plains Community College System",
-      "Quantitative Placement Inventory"
+      "Kestle Valley ozone nonattainment area",
+      "Rule 18-4 (Printing and Converting Operations)",
+      "Ashcombe Flexible Packaging",
+      "Brinsley Label Works",
+      "Carrow Gravure",
+      "Dunsford Folding Cartons",
+      "Elsworth Film Converting",
+      "Garrowby Printing",
+      "Hartmoor Packaging",
+      "Ivers Lane Press",
+      "Kelvedon Laminates",
+      "Larkmoor Graphics",
+      "Merrion Flexibles",
+      "Norhaven Converting",
+      "Pellworth Label",
+      "Ravensbrook Gravure Packaging"
     ],
     "people": [
-      "Breanna Graham",
-      "John Huang"
+      "Jeremy Cortez",
+      "Audrey Bautista"
     ]
   },
   "deliverables": [
-    "qpi_form27a_score_conversion.csv",
-    "qpi_placement_review_2027.xlsx",
-    "qpi_form27a_expected_score_curve.svg"
+    "deq_rule18-4_applicability_2027.xlsx",
+    "deq_printing_press_voc_2026.csv",
+    "deq_printing_press_voc_2026.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "The decisive quantity is a sum over a fixed set of measuring items of each item's expected outcome at one fixed level, where each item's parameter was calibrated in the slot it occupied on an earlier instrument and an item's outcome worsens the later its slot; the slot effect is estimated from earlier administrations that presented the same items in varied orders, and each item is carried from its calibration slot to its new slot before summing, while summing the parameters as filed, or shifting every item by one average drift, sets the dial elsewhere.",
-  "driver_concrete": "Form 27A's two placement scores are the lowest whole raw scores at or above the expected raw score of a student at each standard (0.20 and -0.70 logits); its 40 unique items carry bank difficulties calibrated in the old platform's field-test section (positions 61 to 70), and a student's chance on an item falls with its position; the 2026 attempts (two fixed orders on the old platform, a fresh order for every sitting on the new) measure the position term, and carrying each unique item to the positions 21 to 70 it takes on Form 27A raises the expected raw scores from 28.2 and 17.5 to 29.5 and 18.5, so the placement scores are 30 and 19, not 29 and 18.",
-  "stump": "The default path computes Form 27A's expected raw score at each standard from the bank difficulties as filed (28.2 and 17.5) and sets College Algebra from 29, Corequisite College Algebra from 18; the golden carries each of the 40 field-test-calibrated unique items from the field-test section's mean position (65.5) to the positions 21 to 70 it takes on Northgate Assess by the position term the 2026 attempts measure (0.0075 logits a position, 0.15 over the carry), which puts the expected raw scores at 29.5 and 18.5 and the placement scores at 30 and 19.",
+  "question_form": "which",
+  "driver": "The decisive quantity is each unit's period total of an output that leaves through a removal device whose outlet holds near a floor concentration, so the share the device removes falls as its inlet grows dilute; each device's removal is measured in tests run at the unit's maximum rate, and on the days the unit runs below it the device's fan still draws its full air, so the inlet is dilute and the device removes less than its test shows; applying a test's removal across the period overstates the removal at every unit whose days ran dilute, while the tests across all the devices trace the outlet against the inlet, and each day's inlet, built from the day's throughput and air, carries the removal to the day.",
+  "driver_concrete": "Each plant's 2026 press VOC is its uncaptured VOC plus what its oxidizer lets through; a regenerative thermal oxidizer's outlet holds near a floor of VOC per cubic foot however dilute its inlet, so its destruction falls from about 98 per cent at a concentrated inlet to the low 90s and below at a dilute one; every performance test ran at maximum production, while the flexographic and laminating plants with fixed-speed oxidizer fans ran most 2026 days well below it with the fan drawing full air, so Ashcombe Flexible Packaging and Kelvedon Laminates, under 25 tons on their tests' efficiencies, cross it once each day's outlet is read from the floor.",
+  "stump": "The default path applies each plant's oxidizer performance test destruction efficiency to its 2026 captured VOC and names Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging; a thermal oxidizer's outlet holds near a floor concentration however dilute its inlet, every test ran at maximum production, and at Ashcombe Flexible Packaging and Kelvedon Laminates the oxidizer fans draw their full air while the presses ran most 2026 days at part production, so their inlets were dilute and their oxidizers destroyed far less than the tests show; each operating day's outlet read from the outlet-against-inlet relation the plants' tests trace, at the inlet the day's captured VOC and airflow imply, adds Ashcombe Flexible Packaging and Kelvedon Laminates.",
   "mechanism_source": "design_note",
-  "differentiation": {},
-  "notes": "architecture 6 drawn 2026-10-22 after architecture 5 was spent at stage 4; personas from guard.py names --geo 'United States' --seed 482; forum, forcing event and role family redrawn at the draw (committee_or_panel and research_desk BLOCKed against task249, launch_or_rollout against task177)",
+  "differentiation": {
+    "task478": "task478 carries each burner's spot test across the year by the heating value of the gas a supplier delivered, a property of the input recorded in the supplier's monthly table; here no input property moves: a control device's outlet holds a floor, so its removal falls on days its own fan dilutes the inlet, set by how many presses ran against a fan that draws its full air",
+    "task459": "task459 reads a plant's input-to-output ratio at its contract output along its own operating curve; here no unit's own efficiency curve is read at a level: a shared control device removes a share set by its inlet concentration, the joint result of the day's throughput and the fan's drive, through an outlet floor the tests trace across devices",
+    "task263": "task263 unmixes entry-point samples blended from the wells pumping at collection; here nothing is unmixed: one device's outlet is read from its inlet through a floor relation and summed by day",
+    "task464": "task464 counts units below a cut on a new instrument where a regression shrinks predictions; here nothing is predicted across instruments: a measured removal is carried from test conditions to each day's dilution"
+  },
   "lineage": [
     {
       "architecture": "v1",
@@ -159,8 +177,26 @@
       "fate": "spent at stage 4 on 2026-10-22: both scored readers and the judge's first derivation weighted dwelling types by the census stock by reflex and missed only on the electoral-division control, which the judge read as unfiled (r5a); filing it hands them the call; re-rooted fresh by the author's rule (no retirement)",
       "subdomain": "census-register-administrative-data-quality",
       "domain": "survey-research-official-statistics"
+    },
+    {
+      "architecture": "v6",
+      "drawn": "2026-10-22",
+      "driver": "The decisive quantity is a sum over a fixed set of measuring items of each item's expected outcome at one fixed level, where each item's parameter was calibrated in the slot it occupied on an earlier instrument and an item's outcome worsens the later its slot; the slot effect is estimated from earlier administrations that presented the same items in varied orders, and each item is carried from its calibration slot to its new slot before summing, while summing the parameters as filed, or shifting every item by one average drift, sets the dial elsewhere.",
+      "stump": "The default path computes Form 27A's expected raw score at each standard from the bank difficulties as filed (28.2 and 17.5) and sets College Algebra from 29, Corequisite College Algebra from 18; the golden carries each of the 40 field-test-calibrated unique items from the field-test section's mean position (65.5) to the positions 21 to 70 it takes on Northgate Assess by the position term the 2026 attempts measure (0.0075 logits a position, 0.15 over the carry), which puts the expected raw scores at 29.5 and 18.5 and the placement scores at 30 and 19.",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "gate_g": "method_or_model_selection",
+      "niche": "a state community college system's 2027 mathematics placement form, pre-equated from a Rasch item bank before it goes live on 1 March 2027: the raw score that places a student into college algebra, where most of the form's scored items were calibrated in the unscored field-test section at the end of earlier forms",
+      "fate": "spent at stage 4 on 2026-10-22: reader A fitted a Rasch model with a position term to the rebuilt attempts with the anchor block fixed and landed both placement scores exactly (30 and 19); a context effect measured by an obvious model term is a reflex for the field's own analysts; re-rooted fresh by the author's rule (no retirement)",
+      "subdomain": "item-response-theory-test-equating",
+      "domain": "education-learning-sciences"
     }
   ],
-  "registered": "2026-10-22T17:38:37Z",
-  "architecture_spent": true
+  "notes": "v7 drawn 2026-10-23; figures in answer and stump are set at the build from generator/figures.json",
+  "architecture_spent": true,
+  "registered": "2026-10-23T05:35:07Z"
 }

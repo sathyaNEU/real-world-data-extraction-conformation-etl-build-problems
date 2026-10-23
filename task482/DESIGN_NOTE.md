@@ -1,341 +1,162 @@
 # task482 design note
 
-Status lives in `pipeline.json`; this note holds the design. Architecture 6, drawn 2026-10-22 after architectures 1
-to 5 were spent at stage 4: a fresh world and pack in the ETL objective, a community college system pre-equating its
-2027 mathematics placement form from a Rasch item bank.
+Status lives in `pipeline.json`; this note holds the design. Architecture 7, drawn 2026-10-23 after architectures 1
+to 6 were spent at stage 4: a fresh world and pack in the ETL objective, a state air agency's 2026 press VOC inventory
+of the printing and converting plants its new VOC rule would cover.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task482.json` (architecture v6, lineage v1 to v5 spent), registered
-  2026-10-22 after a pull, `check` re-run on the filed card. Guard WARN only, answered here: `repeat.gate_g` (task273,
-  live, decides a descriptive cut over censored records by the method its censoring entitles; here the method carries
-  an item parameter across the measurement condition it was calibrated under). Nearest drivers 0.07 and below.
-- **Redrawn at the draw, and why the replacements are the honester labels.** The first draft BLOCKed on `ban.role`
-  (research_desk) and `ban.forum` (committee_or_panel), both against task249 v6, and on `ban.forcing_event`
-  (launch_or_rollout) against task177 v2. Placement scores in this system are policy the State Board of Community
-  Colleges approves, so the forum is trustees_or_governors and the forcing event the Board's approval meeting
-  (vote_or_meeting) ahead of the form's go-live; the stakeholder runs the placement programme rather than a research
-  office, so the role family is programme_officer.
-- **Pairing:** Education & Learning Sciences, task type `item-response-theory-test-equating`, which serves ETL: the
-  item bank in two systems, the two delivery platforms' exports of the 2026 attempts, the form maps and the technical
-  report conformed into Form 27A's score conversion, the load file the new platform reads to place each student.
-- **The decision and the quantity:** the Brackett Plains Community College System places entering students into
-  college algebra, corequisite college algebra or developmental mathematics by their raw score on the Quantitative
-  Placement Inventory (QPI). Form 27A goes live on 1 March 2027 and its two placement scores must be approved by the
-  State Board on 18 February, before any student sits it, so the form is pre-equated from the bank. Each placement
-  score is the lowest whole raw score at or above the expected raw score, on Form 27A, of a student standing exactly
-  at that placement's standard on the bank scale (the technical report files both standards from the 2022 standard
-  setting). Forward facing: the scores govern every placement from 1 March 2027.
-- **Shape:** `04`, setting one dial twice: the two placement scores and the expected raw score each rests on, the
-  default path's scores as the rivals, the conversion's placement level at every raw score near each cut; the asks
-  carry each college's 2026 placements by level (14 colleges by two levels, 28) and the 2026 field test's accepted
-  items by content strand; a curve chart's named parts and the three files. About 50 criteria, sized at stage 2.
-- **Strategy:** `other` (no family on the list states it: a parameter calibrated under one measurement condition is
-  carried to another by the condition's effect, measured where the same items were presented in varied orders); Gate
-  G `method_or_model_selection`; gap `objective` (the bank's difficulty is a correct figure for the slot it was
-  calibrated in, not the difficulty the form's curve needs); pattern none; generators G14 (does the calibrated value
-  apply under this condition, decisive) and G16. Layer 2 family `field_method`, pattern `own:bank difficulties carried
-  from their calibration position to their operational position before pre-equating`.
-- **World:** an unnamed state of the United States; the Brackett Plains Community College System, fourteen colleges,
-  about 9,600 QPI attempts in the 2026 testing year (1 February 2026 to 31 January 2027) on two delivery platforms,
-  the old one until 30 June 2026 and the new one from 1 July. People from `guard.py names --geo 'United States' --seed
-  482`: Breanna Graham (Director of Placement and Developmental Mathematics) and John Huang (Psychometrician).
-- **Forcing fact:** the State Board approves Form 27A's placement scores on 18 February 2027; the form goes live on 1
-  March 2027.
-- **Forum and forcing event:** trustees_or_governors, vote_or_meeting. Organisation university_or_school; role
-  programme_officer.
-- **Form design (both platforms, every form):** 60 scored items, a 20-item anchor block in positions 1 to 20 kept in
-  place on every form, then 40 unique items, then an unscored 10-item field-test section in positions 61 to 70. The old
-  platform delivered each form in two fixed versions (the unique section and the field-test section in reverse order on
-  version B); the new platform shuffles the unique section and the field-test section for each attempt. Field-test
-  items are calibrated with the anchor block fixed at its bank values; unique items are retired after their
-  operational year. Form 27A's 40 unique items are new: every one was calibrated in a field-test section.
-- **Data-native sentence:** at the same ability a student answers an item less often the later it comes, by about
-  0.0075 logits per position in the 2026 attempts, so a difficulty calibrated in the field-test section (positions 61
-  to 70) states the item harder than it will be at positions 21 to 60 on Form 27A, by about 0.19 logits; the bank's
-  difficulties as filed put the expected raw score at the college algebra standard near 27.9 (placement score 28), the
-  difficulties carried to their Form 27A positions near 29.5 (placement score 30).
-- **The WHAT screen.** Population: Form 27A's 60 scored items as students will sit them (the unique section shuffled
-  for each attempt). Outcome: the expected raw score of a student at each standard. Unit: the whole raw score.
-  Comparison: the lowest whole raw score at or above that expectation. Window: the form's live period from 1 March
-  2027. The decisive step settles none of them: it is how each item's difficulty on Form 27A is estimated from a bank
-  difficulty calibrated elsewhere on an earlier form, which nothing files.
+- **Card:** `.claude/skills/fingerprint/cards/task482.json` (architecture v7, lineage v1 to v6 spent), registered
+  2026-10-23 after a pull, `check` re-run on the filed card. Guard WARN only, answered here: `overuse.org_family`
+  (government_agency in 36 builds; the rule's applicability is a state air agency's call, and no other organisation
+  adopts it) and, after the pull, `repeat.question_form` (which, against task178 v2, retired: the decision is a set of plants
+  named, so the question asks which). Heart WARN on the organisation line only; nearest drivers 0.08 and below (task478 v6 and v7, then task181 at
+  0.06). The first check ran against the old card's registration stamp and BLOCKed on that stale window (pattern,
+  role, forum, organisation against task273 and task169); with the stamp dropped the window is today's.
+- **Pairing:** Physical & Environmental Sciences, task type `emissions-inventory`, which serves ETL: fourteen plants'
+  information-request returns (ink, coating, adhesive and solvent purchases with their safety data sheets, press
+  logs, oxidizer data-historian exports, capture determinations and oxidizer performance tests, each plant in its own
+  layout) conformed into the agency's 2026 press VOC inventory, the facility-by-process file the rule's applicability
+  list and the state's ozone plan read.
+- **The decision and the quantity:** the state's Department of Environmental Quality has drafted Rule 18-4 (Printing
+  and Converting Operations) for the Kestle Valley ozone nonattainment area. The rule applies from 2027 to every plant
+  whose presses emitted 25 tons or more of VOC in calendar year 2026, the VOC in the inks, coatings, adhesives and
+  press wash solvents its presses used less what its capture and control systems destroyed (the draft rule's
+  applicability section files this). The Environmental Quality Council votes on the rule with its applicability list.
+  The quantity is each plant's 2026 press VOC; the call is the set at or above 25 tons. Forward facing: the list sets
+  which plants carry the rule's controls and recordkeeping from 2027.
+- **Shape:** `01`, every candidate's figure and verdict and the first below the line: fourteen plants' 2026 press VOC,
+  in or out, the nearest plant under 25 tons; the asks on populations the call never reads (the plants' VOC outside
+  their presses, and their combustion emissions), a chart's named parts and the three files. About 50 criteria,
+  sized at stage 2.
+- **Strategy:** `other` (no family on the list states it: a control device's removal measured at one inlet condition
+  is carried to the inlet each operating day ran at, through the device's outlet floor that the tests across the
+  devices trace); Gate G `method_or_model_selection`; gap `objective` (a test's destruction efficiency is correct for
+  the concentrated inlet it was measured at, not for the year's dilute days); pattern none; generators G14 (does the
+  tested yield apply to this day's inlet, decisive) and G16. Layer 2 family `field_method`, pattern `own:an oxidizer's
+  destruction measured at maximum production carried to each operating day through the outlet-against-inlet relation
+  the tests trace, the day's inlet built from its captured VOC and its airflow`.
+- **World:** an unnamed U.S. state; the Department's air quality division; fourteen printing and converting plants in
+  the Kestle Valley (flexible packaging, gravure, labels, laminating, folding cartons), ten of them with regenerative
+  thermal oxidizers on their presses. People from `guard.py names --geo us --seed 482`: Jeremy Cortez (rule
+  development manager) and Audrey Bautista (emissions inventory lead). The first draw's names (Robert Meyers, Amanda
+  Beck) were set aside on `people.first` against task104.
+- **Forcing fact:** the Council votes on Rule 18-4 and its applicability list at its March 2027 meeting; the rule's
+  controls apply from 1 July 2027.
+- **Forum and forcing event:** council_or_assembly, vote_or_meeting. Organisation government_agency; role
+  policy_adviser.
+- **The physics:** a regenerative thermal oxidizer destroys about 98 per cent of a concentrated inlet, but its outlet
+  holds near a floor of VOC per cubic foot however dilute the inlet grows, so the share it destroys falls on a dilute
+  inlet (to the low 90s and below). Every oxidizer performance test runs at maximum production, as the permits
+  require; on the days a plant runs part of its presses, a fixed-speed fan still draws its full air through every
+  press's duct, so the inlet is dilute. Plants with variable-speed fans keep their inlets concentrated as presses
+  drop out.
+- **Data-native sentence:** the oxidizer tests were all run at maximum production while the press logs and the
+  oxidizer historians show most 2026 operating days at part production with the fixed-speed fans at full air, and the
+  tests across the plants trace an outlet that holds near a floor, so a test's destruction efficiency belongs to its
+  own concentrated inlet and not to the year's dilute days.
+- **Default path and golden, by name:** each plant's latest oxidizer test efficiency applied to its 2026 captured VOC
+  names Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging; each operating day's outlet read from the
+  floor relation at the inlet the day's captured VOC and airflow imply adds Ashcombe Flexible Packaging and Kelvedon
+  Laminates. Figures are set at the build from `generator/figures.json`.
+- **The WHAT screen.** Population: the fourteen plants in the nonattainment area and every press each operated in
+  2026. Outcome: the VOC the presses emitted (used less destroyed). Unit: tons. Window: calendar 2026. Comparison: 25
+  tons. The decisive step settles none of them: it is how much of each day's captured VOC the oxidizer destroyed,
+  which no filed rule or procedure states.
 - **Sources, one line each:**
-  - The client's IRT equating rigor patterns (anchor screening; nonequivalent groups through anchors): here no groups
-    are linked and no anchor drifts; the item's own parameter is carried across a presentation condition.
-  - Kingston and Dorans (1984), item location effects in IRT equating and adaptive testing; Debeer and Janssen (2013),
-    position effects as a Rasch facet: the field's method (a position term in the Rasch model, estimated where order
-    varies) is what the golden runs.
-  - Kolen and Brennan, Test Equating, Scaling, and Linking: pre-equating rests on item parameters holding in their
-    operational context.
-- **Same-puzzle and same-driver tests:** (objective, none, dial_setting) and (objective, none,
+  - EPA's Air Pollution Control Cost Manual (incinerators and oxidizers): thermal oxidizers are designed to 98 per cent
+    destruction or an outlet of about 20 ppmv, whichever is less stringent; the floor is the field's own model of a
+    dilute inlet.
+  - The printing and converting control techniques guidelines and the coating NESHAPs, which pair a destruction
+    efficiency with an outlet concentration alternative for the same reason.
+  - AP-42 and EIIP printing chapters: press VOC as material used, less retained, less captured times destroyed.
+- **Same-puzzle and same-driver tests:** (objective, none, designation_set) and (objective, none,
   method_or_model_selection) against the last twelve builds, lineage included: no match (the guard's tests pass).
-- **Abstraction test:** the nearest drivers stripped of nouns (task190's size-proportional sample, task255's floored
-  record, task87's capped procedure) neither carry a calibrated parameter across a condition nor measure the
-  condition's effect from varied orderings; within this objective the IRT builds link groups through anchors
-  (task450), convert by distribution matching (task464), or rejected a judged anchor (task471 v2) and rapid guessing
-  (task479 v4) as planted, and none moves an item's own parameter.
-
-## Default path
-
-1. Read QPI-TR-2027: a placement score is the lowest whole raw score at or above the raw score a student exactly at
-   the standard is expected to obtain on the form's 60 scored items (section 7); the standards are 0.20 and -0.70
-   logits on the bank scale (section 6); Itemstore holds difficulties in bank units, 500 plus 100 times the logit
-   (section 4).
-2. Converted the assembly pool's difficulties to logits and took Form 27A's 20 anchor items and 40 unique items from
-   qpi_form_27A_assembly.csv.
-3. Summed the 60 items' Rasch probabilities at each standard, the form's test characteristic curve from the bank
-   difficulties as filed: 28.2 at College Algebra (28.204) and 17.5 at Corequisite College Algebra (17.489).
-4. Took the lowest whole raw scores at or above them.
-
-Ends on: College Algebra from 29, Corequisite College Algebra from 18.
-
-Golden: College Algebra from 30, Corequisite College Algebra from 19.
-
-## Stump sentence
-
-The default path reads each item's bank difficulty as its difficulty on Form 27A and sets College Algebra from 29,
-Corequisite College Algebra from 18, because the form's 40 unique items carry the difficulties of their field tests,
-calibrated in the old platform's field-test section at positions 61 to 70, and at the same ability a student answers
-an item less often the later it comes (0.0075 logits a position across the 2026 attempts, two fixed orders on the old
-platform and a fresh order for every sitting on the new one); carried from the section's mean position, 65.5, to the
-positions 21 to 70 they take on Northgate Assess (mean 45.5), each unique item is 0.15 logits easier than its bank
-record says, the expected raw scores at the standards rise from 28.2 and 17.5 to 29.5 and 18.5, and the placement
-scores to 30 and 19.
+- **Abstraction test:** the nearest drivers stripped of nouns: task478 v7 carries a spot rate across a period by a
+  property of a supplied input recorded by its supplier; task478 v6 along a clock since a part was replaced; task459
+  reads a unit's own ratio at a level on its operating curve; task263 unmixes blended samples. Here no input property,
+  clock or own curve moves the figure: a shared removal device's outlet holds a floor, and how much it removes on a
+  day follows the concentration its own fan delivers, the joint result of the presses running and the fan's drive.
 
 ## Three rules
 
-Task type: item-response-theory-test-equating (Education & Learning Sciences), pre-equating a new form's raw scores
-to the bank scale's standards before it goes live, a task type serving Data Extraction & Conformation (ETL): the bank,
-the two delivery platforms' exports and the forms' layouts conformed into Form 27A's score conversion, the load file
-the new platform reads to place each student.
+Task type: emissions-inventory (Physical & Environmental Sciences), a point-source VOC inventory conformed from each
+plant's material, production, control-device and test records, a task type serving Data Extraction & Conformation
+(ETL): fourteen plants' information-request returns, each in its own layout, conformed into the agency's 2026
+facility-by-process press VOC inventory that the rule's applicability list reads.
 
-Domain test: psychometrics: the deciding quantity is Form 27A's test characteristic curve at each standard, which
-needs each item's difficulty where it sits on the form as delivered; the field estimates item position effects as a
-facet of the Rasch model from administrations that vary item order (Kingston and Dorans, 1984; Debeer and Janssen,
-2013) and carries field-test difficulties to their operational positions before pre-equating; with another field's
-nouns there is no form, no item position, no characteristic curve and no standard on a latent scale, so nothing is
-left to decide.
+Domain test: stationary-source VOC inventory work: the deciding quantity is each plant's 2026 controlled press VOC,
+which needs how much of each operating day's captured VOC its oxidizer destroyed; a thermal oxidizer's outlet holds
+near a floor concentration whatever its inlet (the control cost manual's 98 per cent or about 20 ppmv), so its
+destruction falls as the inlet grows dilute, and the field's method reads each day's outlet from its inlet through
+the relation the performance tests trace; with hospital or traffic nouns there is no oxidizer, no outlet floor and no
+fan diluting a control device's inlet, so nothing is left to decide.
 
-Swap: put "hospital" for "college" or "megawatt-hours" for "raw score" and nothing reads: there is no item calibrated
-in a field-test section, no shuffled form and no expected number correct at a latent standard; the abstract move (a
-parameter calibrated under one condition carried to another) needs the field's own estimator, the Rasch model with a
-position term fitted to responses at the person-by-item grain, which no other field's data supply.
+Swap: put "hospital" for "plant" or "megawatt-hours" for "pounds of VOC" and nothing reads: there is no captured
+stream, no add-on device whose removal depends on the concentration it is fed and no test at maximum production to
+carry to a part-production day; the abstract move (a removal measured at one inlet carried to another) needs the
+device's outlet relation and the day's inlet concentration, which only the oxidizer tests, the press logs and the
+historians supply together.
 
-Layer 1: the item bank in Itemstore's bank units; the old platform's wide export (a 70-character response string per
-sitting in its version's delivered order, US dates, local time) against the new platform's long item-response export
-(UTC, delivered seq, field-test items scored but not counted); item identifiers in two schemes (Itemstore and the old
-platform's) joined through the layout; the old platform's student numbers per college joined to the new platform's
-identifiers through the cutover crosswalk; the review log's decisions at the session grain, three of them withdrawn;
-omitted items as an asterisk or a blank. Each is written by the system named, none is placed to be caught, and each
-read the natural wrong way leaves the call where it is (checks.py R2a to R2g).
+Layer 1: purchases from two ink suppliers' invoice layouts in gallons, VOC content from safety data sheets in per cent
+by weight or pounds per gallon less water and exempt compounds; press logs by shift at some plants and by job at
+others; oxidizer historian exports in per cent of fan speed at some plants (each fan's curve to airflow) and in UTC
+against the plants' local press logs; performance tests from two testing firms, one reporting VOC as carbon and the
+other as propane; capture by permanent total enclosure verification at some plants and by a capture test at others;
+a plant renamed after an acquisition, its older returns under the former name. Each is written by the system named,
+none is placed to be caught, and each read the natural wrong way leaves the call where it is (checks.py, stage 3).
 
-Layer 2: field_method, an item position effect in pre-equating: a field-test difficulty is the item's difficulty at
-the field-test section's positions; the 2026 attempts' varied orders identify the position term within each item, and
-each unique item is carried to the positions it takes on Form 27A before the curve is summed.
+Layer 2: field_method, a control device's tested efficiency carried to the operating day: a test's destruction
+efficiency is the oxidizer's removal at the test's concentrated inlet; the tests across the ten oxidizers trace an
+outlet that holds near a floor however dilute the inlet, and each operating day's outlet is read from that relation at
+the inlet the day's captured VOC and the oxidizer's airflow imply.
 
-Decisive step: estimating the position term from the 2026 attempts (0.0075 logits a position, 0.15 over the 20
-positions between the field-test section's mean and Form 27A's) and carrying each of Form 27A's 40 unique items to the
-positions 21 to 70, which moves the expected raw scores at the standards from 28.2 and 17.5 to 29.5 and 18.5 and the
-placement scores from 29 and 18 to 30 and 19.
+Decisive step: reading each operating day's oxidizer outlet from the floor relation the performance tests trace, at
+the inlet concentration the day's captured VOC (press logs through the safety data sheets and the capture
+determination) and the oxidizer's airflow (the historian) imply, which lowers the year's destruction at the plants
+whose fixed-speed fans ran at full air through part-production days and carries Ashcombe Flexible Packaging and
+Kelvedon Laminates over 25 tons.
 
-No decoy: nothing is planted: the bank, the forms, both platforms' exports and the documents are what each system
-writes; no memo, report or earlier figure proposes scores for Form 27A, states a position effect or says how any
-form's scores were computed; the 2026 forms' approved scores ship as history for forms whose unique items are retired
-and absent from the pool.
+No decoy: nothing is planted: the purchases, data sheets, press logs, historians, capture determinations and tests
+are what each plant's systems and testing firms write; no memo, statement, permit condition or earlier inventory
+states a plant's 2026 press VOC, a destruction efficiency for 2026 or the outlet floor, and no document says how the
+tested efficiencies are to be applied.
 
-Not semantics: every field, unit, code and clock read correctly (bank units to logits, the versions' delivered order,
-the new platform's seq, the unscored field-test sets) still leaves the careful route summing the bank difficulties as
-filed; no field holds a carried or operational difficulty and nothing says one is needed; the step is an estimate
-(the position term) and the carry it sets, not a reading.
+Not semantics: every field, unit, basis and clock read correctly (gallons to pounds of VOC through each data sheet,
+VOC as carbon against as propane, fan speed to airflow, UTC to local, the renamed plant) still leaves the careful
+route applying each plant's tested efficiency to its captured VOC; no field holds a day's destruction efficiency or
+says that a test's efficiency depends on its inlet; the step is an estimate (the outlet relation) and the carry it
+sets, not a reading.
 
-Not rule application: the report files the standards, the raw score, the placement score's definition and how Form
-27A is delivered (the WHAT); no filed rule or procedure says how an item's difficulty on a form is obtained from its
-bank record or that position matters.
+Not rule application: the draft rule files the population, the outcome (VOC used less destroyed), the year, the unit
+and the 25-ton comparison (the WHAT); no filed rule or procedure says how much of a day's captured VOC an oxidizer
+destroyed. The family the rule leaves open, measured on the generator's clean truth at stage 3 (checks.py R3): the
+enumerated family (each plant's latest test, the mean of its tests, the permit's minimum efficiency, the floor
+relation at the year's mean inlet, the floor relation day by day, a smooth outlet-against-inlet fit day by day) spans
+three designated sets; the standing family the data leave defensible (the outlet relation carried to each day's
+inlet, by any functional form the tests support) files one set, and what rules out the tested-efficiency routes is
+the tests' own outlets, which hold within a narrow band across the dilute tests while their inlets vary several fold.
 
-Analyst test: a strong analyst who conforms the bank's units, joins Form 27A's assembly to the pool and reads the
-report correctly sums the bank difficulties as filed and sets College Algebra from 29, Corequisite College Algebra
-from 18 (expected raw scores 28.2 and 17.5); only the difficulties carried from the field-test section to Form 27A's
-positions give 30 and 19 (checks.py R3a on the generator's clean truth: 29.429 and 18.436 against the bank's 28.204
-and 17.489).
+Analyst test: a strong analyst who conforms every purchase to pounds of VOC from its safety data sheet, every press
+log to daily VOC used, applies each plant's capture determination and reads the draft rule and the information
+request correctly applies each plant's latest oxidizer test efficiency to its 2026 captured VOC and names Carrow
+Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging; only each operating day's outlet read from the floor
+relation at the day's inlet adds Ashcombe Flexible Packaging and Kelvedon Laminates (checks.py R3a on the generator's
+clean truth, set at stage 3).
 
-Estimand: QPI-TR-2027 section 7: each placement score is the lowest whole raw score at or above the raw score that a
-student whose ability is exactly at the standard (section 6: 0.20 and -0.70 logits) is expected to obtain on the
-form's 60 scored items; section 3 files how Form 27A is delivered (the anchor block in positions 1 to 20, the unique
-items and the field-test set shuffled in positions 21 to 70 for every sitting).
+Estimand: draft Rule 18-4, section 2 (applicability): a plant in the Kestle Valley ozone nonattainment area is subject
+from 1 July 2027 if the VOC its printing presses emitted in calendar year 2026 was 25 tons or more, a press's VOC being
+the VOC in the inks, coatings, adhesives and press wash solvents used on it less the VOC the plant's capture and
+control systems destroyed; the information request's cover letter files which records each plant returned.
 
-No certified replay: no conversion of Form 27A ships; the 2026 forms' approved scores cannot be recomputed by either
-route (their unique items are retired and not in the pool), so no certified figure ties under the default path.
+No certified replay: no plant's 2026 press VOC, inventory figure or emissions statement ships, and no earlier
+inventory, permit record or memo states one; nothing certifies either route, so no figure ties under the default path.
 
-Lesson: a bank difficulty is the item's difficulty where it was calibrated; where a student's chance on an item falls
-with its position, a form's expected scores need each item at the positions it will take, estimated from
-administrations that varied the order, and a field-test section at the end of the form makes every new item look
-harder than it will be.
-
-## Readability screen
-
-| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
-|---|---|---|---|---|---|---|---|
-| R0, the bank difficulties as filed, the default path (29 and 18) | report s.7 the estimand: fires | difficulty_bu: fires | a form's characteristic curve from bank difficulties: fires | none | none | one sum | readable |
-| R1, the 2026 forms' scores carried over by analogy (28 and 18) | report s.7's history table: fires | none | last year's scores: fires | none | none | a lookup | readable |
-| R2, the anchor block carried too, or every item carried to position 1 (32 and 21; 33 and 21) | none | seq: fires | remove a nuisance effect from every item: fires | none | none | a shift | readable |
-| G (decisive), the position term fitted to the 2026 attempts and each unique item carried from 65.5 to positions 21 to 70 (30 and 19) | no sentence says position matters or how a bank difficulty applies on a form | no column holds a position term or a carried difficulty | no reflex refits the 2026 responses to price a bank record | none | none | none | silent |
-
-## Semantic fork table
-
-| SF | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | raw score | number correct of the 60 scored items | all 70 delivered | not the report's | report s.2; every old-platform raw score recomputes on 60 (asserted) |
-| SF2 | the standards' scale | logits, 0.20 and -0.70 | bank units, 520 and 430 | same call (asserted) | report s.4, s.6 |
-| SF3 | expected to obtain | the Rasch expected number correct on the form's 60 scored items | an observed median of students near the standard | none observed: no student has sat Form 27A | report s.7 |
-| SF4 | lowest whole raw score at or above | the ceiling of the expected raw score | the nearest whole number | 29 and 18 under marginal maximum likelihood (29.48 and 18.50): not the report's | report s.7 ("at or above") |
-| SF5 | Form 27A as delivered | the shuffle averaged over positions 21 to 70 | each unique item at the mean position 45.5 | same call (asserted) | report s.3 |
-| SF6 | the anchor block on Form 27A | its bank difficulties, calibrated in place | carried like the unique items | 32 and 21: not the report's | report s.2 (the block kept in positions 1 to 20 on every form) and s.4 (its 2022 base calibration fixed the scale) |
-| SF7 | a field-test calibration's position | the section's mean, 65.5, on both versions | an item's version A slot only | same carry for every slot (61 to 70 on A, 70 to 61 on B) | report s.3 |
-| SF8 | the 2026 attempts the position term rests on | every attempt | valid sittings only | same call (asserted) | not a filed choice; both converge |
-| SF9 | the position term's estimator | marginal maximum likelihood, the anchor block fixed | joint maximum likelihood; a population-averaged slope | same call (asserted); the conditional estimators agree on 29.5 and 18.5 | report s.4 (Rasch) |
-| SF10 | the position term's form | linear over positions 21 to 70 | fitted on 21 to 45 or 46 to 70 alone | same call (asserted) | the data (0.0068 and 0.0077) |
-| SF11 | the platforms | both | either alone | same call (asserted) | the data |
-| SF12 | rounding | half up to one decimal from the unrounded sum | none | none | the prompt's rounding |
-| SF13 | the college that placed a student | the college they were registered through when they sat the placing sitting | the college now on the student record | every college's placements differ: not the policy's | Policy 4.12 s.3 |
-| SF14 | a student | one person across both platforms and both identifiers | each identifier | every college's students placed and second sittings differ: not the policy's | Policy 4.12 s.3 (a student's placement, once) |
-| SF15 | invalidated sessions | left out, withdrawn invalidations restored | all attempts; invalidations without their withdrawals | figures differ: not the policy's | Policy 4.12 s.4 |
-| SF16 | sat twice | two sittings | two attempts, an invalidated one included | not the policy's | Policy 4.12 s.4 |
-| SF17 | the window's dates | local dates, 1 March 2026 to 31 January 2027 | UTC dates | same figures (asserted: both boundary days are Sundays) | the prompt |
-| SF18 | a tie between two sittings | the later sitting places the student | the earlier | 32 students' colleges differ: not the policy's | Policy 4.12 s.3 |
-| SF19 | the files the call reads | the pool, the Form 27A assembly, the 2026 layout, both platforms' responses, the report | the attempt records, score reports, review log, crosswalk, centres | same call (asserted, X1) | the estimand |
-
-## Ladder
-
-Built figures, read from the cut pack by `generator/bundle.py` (expected raw score at each standard, then the placement
-scores).
-
-- **R0, the bank difficulties as filed, the default path: 28.2 and 17.5, College Algebra from 29, Corequisite College
-  Algebra from 18.** Dies to the field-test section: the 40 unique items were calibrated at positions 61 to 70 and will
-  sit at 21 to 70.
-- **R1, the 2026 forms' approved scores carried over by analogy (28 and 18).** Dies to the forms: Form 27A's items are
-  not Form 26A's, and the history table records approvals, not a method.
-- **R2, the anchor block carried too (32 and 21), or every unique item carried to position 1 (33 and 21).** Dies to
-  the report's sections 2 and 4: the block is kept in positions 1 to 20 on every form and was calibrated there, and an
-  item on Form 27A takes positions 21 to 70, not 1.
-- **G: 29.5 and 18.5, College Algebra from 30, Corequisite College Algebra from 19.** The position term (0.0075 by
-  marginal maximum likelihood; 0.15 logits over the carry) applied to each unique item at each position it can take.
-- **Margins:** every licensed member (marginal maximum likelihood at 41 or 21 nodes, joint maximum likelihood, valid
-  sittings only, either platform alone, a population-averaged slope, the slope fitted on 21 to 45 or 46 to 70, each
-  item at the mean position) files 30 and 19, every one 0.2 or more inside both bins (checks.py G2, G5); the
-  conditional estimators on every 2026 attempt agree on 29.5, 18.5 and the 0.15 carry (G3, G4).
-- **Position, separation and dominance:** a dial set twice, not a ranking; there is no decoy to dominate.
-- **Worth:** the call, the two expected raw scores and the carry; the default path keeps none of them.
-
-## Closure table
-
-| # | Axis | Reading and closure |
-|---|---|---|
-| 1 | Population | Form 27A's 60 scored items as delivered (SF1, SF5); for the asks every student with a sitting from 1 March 2026 to 31 January 2027, once (SF14) |
-| 2 | Unit of account | the whole raw score; the student |
-| 3 | Attribution window | the asks: 1 March 2026 to 31 January 2027, local dates (SF17); the call: the form's live period from 1 March 2027 |
-| 4 | As-of dating | the pool export of 3 February 2027; the attempts to 31 January 2027 |
-| 5 | Version basis | QPI-TR-2027 supersedes the 2026 report; the pool's difficulties are their calibrations' |
-| 6 | Denominator | none |
-| 7 | Weighting | none: every scored item counts once |
-| 8 | Window length | the call's form year; the asks' eleven months |
-| 9 | Boundary inclusivity | "at or above" the expected raw score (SF4) |
-| 10 | Rounding path | the ceiling of the unrounded expected raw score; reported half up to one decimal (SF12) |
-| 11 | Tie-break | the later sitting places the student on a tie (SF18) |
-| 12 | Maturity and censoring | the asks' window closed on 31 January 2027; no sitting is open |
-| 13 | Order of operations | conform the bank's units, score the 2026 responses, fit the position term, carry the unique items, sum, take the ceiling |
-| 14 | Row order | none |
-| 15 | Duplicate resolution | one student across identifiers (SF14); no duplicate rows ship |
-| 16 | Identity normalisation | item identifiers through the layout; old-platform student numbers through the crosswalk; students across identifiers on birth date, sex, high school code and registration date |
-| 17 | Netting | none |
-| 18 | Dimensional units | logits and bank units (SF2); raw scores; students |
-| 19 | Code and status semantics | the old platform's placement codes (131, 131C, 091); the review log's decisions; never the stump |
-| 20 | Integerisation | the placement score is whole by definition |
-| 21 | Clause scope | report s.7 governs Form 27A's scores; Policy 4.12 governs the 2026 placements |
-| 22 | Forward window contents | Form 27A from 1 March 2027, placing every first sitting until Form 28A |
-
-## Literal reader
-
-Executed word for word, the report fixes the estimand: the lowest whole raw score at or above the raw score a student
-exactly at each standard is expected to obtain on Form 27A's 60 scored items, with the form delivered as section 3
-says (the anchor block in positions 1 to 20, the unique items and the field-test set shuffled in 21 to 70). The
-expected score of a student at a standard is a property of how students answer the form as delivered, so the
-candidates are the bank difficulties as filed and the difficulties the items will have where they sit. The data
-separate them: in the 2026 attempts every unique and field-test item was answered at 20 or more positions, and at the
-same ability its chance falls by 0.0075 logits a position, linear across 21 to 70 (0.0068 on 21 to 45, 0.0077 on 46
-to 70); the pool's items were calibrated at the field-test section's positions, 61 to 70, and every estimator of the
-term files 30 and 19, while the bank difficulties as filed file 29 and 18 (checks.py G2, R3b).
-
-WHAT screen (stumping 1.2): population, report s.2 and s.3; outcome, s.7; window, s.8; unit, the raw score; comparison,
-s.6 and s.7. The decisive step settles none of them.
-
-## Oracles
-
-None. No control, published figure or conversion ties only under the golden: the 2026 forms' approved scores cannot be
-recomputed (their unique items are not in the pool), and no figure for Form 27A ships. The asks' files carry no total
-that ties under one handling: the score reports, the review log and the crosswalk tie under every handling of the
-devices.
-
-## Ask sheet
-
-The Board's packet carries each college's 2026 placements beside the scores it approves, the baseline the colleges
-plan their fall 2027 sections against (H18: a component of the call's case, the input the call consumes, the 2026
-sittings, traced to the colleges that placed their students). The asks read no row the call reads in the columns the
-call reads: the call uses the 2026 responses' items, positions and scores; the asks use the sittings' identities,
-colleges, levels and sessions (checks.py X1 to X3).
-
-- **Ask A, each college's students placed into College Algebra and into Corequisite College Algebra: 28 figures, whole
-  students.** Path: both platforms' attempt records, the score reports, the review log, the crosswalk and Policy 4.12
-  (five files, eleven columns). Primary device: D7, a field overwritten later: the new platform's attempt records
-  carry the college now on the student's record, so a student who moved their registration after sitting shows the new
-  college on the earlier sitting (384 sittings, every college gaining and losing); only the score report sent
-  automatically at the sitting records the college that placed them (Policy 4.12 s.3). Every college's two figures
-  move (checks.py A1). Hazards: the re-keyed students (Ask B's primary) put a second sitting's lower level in as another
-  student (Corequisite College Algebra 107 high across the System); the review log (A5, A6). Stops: the attempt
-  records' college (the cracker and the mirror: every figure off); the score reports' college with identifiers as
-  recorded (9 Corequisite figures still off); the golden. Realism: a delivery platform's export joins the student
-  record as it stands.
-- **Ask B, each college's students placed in all and how many of them sat twice: 28 figures, whole students.** Path:
-  the same files. Primary device: D1, the same students under two identifiers: from 1 October 2026 the new platform
-  keys students by a new nine-digit identifier, the same form as the old, so the 259 students who sat before and after
-  the change appear as two students who each sat once; only birth date, sex, high school code and registration date
-  together tie them (three of the four over-merge 109 students, checks.py A4). Every college's two figures move (A2).
-  Hazards: the moved registrations (Ask A's primary) and the review log. Stops: identifiers as recorded (256 students
-  too many, 256 second sittings too few, across the System); three fields (109 too few, 84 second sittings too many);
-  the golden. Realism: a student identifier changes with no history kept, and a nine-digit number looks like a
-  nine-digit number.
-- **The construction layer:** the call, the two expected raw scores, the carry, the conversion and the curve; the
-  cracker has them.
-- **Main population zero-counts (asserted):** the call reads no attempt record's identity, college, level or session
-  field and no score report, review log or crosswalk row (X1); the device rows leave the position term within 0.0001
-  (X3).
-- **Hazard table (asserted):** the review log ignored moves 18 figures and its withdrawals ignored 14 (A5, A6); the
-  three-field link moves 51 of 56 (A4).
-- **Referee:** none.
-
-| Ask | Cracker (lands the call, runs the battery, executes every filed rule it points at) | Verdict |
-|---|---|---|
-| A, each college's placements into the two levels | the crosswalk applied, the review log with its withdrawals, Policy 4.12's higher level and later sitting, each sitting's college from its attempt record: 0 of 28 | miss |
-| B, each college's students placed and second sittings | the same, students as their identifiers: 0 of 28, and 0 of the four System totals | miss |
-
-Pair ceiling: 28.5 (weights 38 / 7 / 55, r 5: the cracker keeps the call and the instructions, 45.0; the mirror at the
-default path keeps r and the instructions, 12.0; the asks read alike under both, 0 of 60)
-
-Mirror leakage: 0.0 per cent of ask weight
-
-Measured by: generator/ceiling.py
-
-## Layer 1 inventory
-
-| Item | System that writes it | File | Natural mishandling | Effect (asserted) |
-|---|---|---|---|---|
-| bank units | Itemstore | the pool export | logits read as bank units | none once the standards are taken in the same unit (R2a) |
-| version B in reverse order | Kestrel Testing Suite | the old platform's attempts | every sitting read in version A's order | the call holds (R2b) |
-| item identifiers in two schemes | Itemstore, Kestrel Testing Suite | the layout, both exports | the old platform's rows dropped | the call holds (R2c) |
-| field-test items scored but not counted | Northgate Assess | the item responses | field-test responses left out of the fit | the call holds (R2d) |
-| invalidated and withdrawn sessions | the Office | the review log | ignored | the call holds (R2e); ledgered asks move (A5, A6) |
-| omitted items | both platforms | both exports | dropped rather than scored 0 | the call holds (R2f) |
-| UTC against local time; the cutover crosswalk; the session grain | both platforms, the migration, the Office | the exports, the crosswalk, the review log | each misread | the call reads none of them (R2g, X1); ledgered asks only |
+Lesson: an add-on oxidizer's tested destruction efficiency belongs to the concentrated inlet it was tested at; its
+outlet holds near a floor, so on the days a plant runs part of its presses with the fan at full air the inlet is
+dilute and the device destroys less, and the year's controlled emissions need each day's inlet put through the outlet
+relation the tests trace; no build on file carries a control device's removal across the concentration its own fan
+delivers.
 
 ## Architecture 6 record (spent 2026-10-22)
 
@@ -381,3 +202,14 @@ it hands all three the call, so the decisive step as designed does not stump and
 - Architecture 4, areas' house price change for the rapid price growth designation read from a shifting sample of the stock (2026-10-21, spent at stage 4): reader 9 fitted log price on type, floor area, age, newness and the address point file's electoral division with a year term and landed the call; reader 10 left location out and missed; the block purchases' one consideration on every line held both readers (0 ask totals of 32). A constant-quality index is a strong reader's reflex once the note cites the handbook and the attributes ship; location one join away is not a hidden dimension.
 - A district's register error rise tested with the spread of the audit's sampled blocks (2026-10-21, screened at the draw): the guard put it beside task261 (subgroup statistics from one clustered sample, their difference's error from the clusters), the same driver.
 - Regional quarterly output benchmarked to annual totals by Denton against pro-rata (2026-10-21, screened): Denton's extrapolation holds the end-of-year ratio, which sits within a few tenths of a point of pro-rata's annual ratio, while a trending ratio puts the truth far from both; the separation is too small and the truth not recoverable without forecasting the ratio.
+- Architecture 7 draw (2026-10-23): re-rooted on the author's standing rule (no retirement) with a fresh world.
+  Screened before it and dead: gross labour-force flows corrected for reinterview misclassification (task244's
+  driver); speededness on a timed form (task249's screen); a winner's curse in form assembly (task471's shrinkage
+  coin flip); generic price erosion by entrant count (task484 v1's ramp, screened at task478's draw); percent-of-charges
+  hospital contracts carried to each hospital's current chargemaster (the swap test reads it as any list-price
+  contract); laboratory results harmonised by proficiency-test bias (the reported result is the measurement, so the
+  correction is a fork); a cancer registry's completeness by the flow method (task249's screen); common-stack
+  apportionment from single-unit hours (task263's unmixing); a concentration-discharge load (task452 v1, task135);
+  change of support for block grades (task270, task254, task273 screens); linkage on an address the outcome changes
+  (task468's linker error); calculator-type DIF and released-item drift on the item bank (architecture 6's lesson: a
+  context an obvious model term measures).
