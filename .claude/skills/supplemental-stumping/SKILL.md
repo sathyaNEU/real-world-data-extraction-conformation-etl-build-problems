@@ -65,6 +65,22 @@ So stamp each row with the pack digest it was measured on, treat any row whose d
 model again, and re-measure before the row is read as a gate. The cheapest form of this rule: a pass that
 re-sites a device owes a reader on the pack it cut, not the pair arithmetic of the pack before it.
 
+**1.1e The hygiene battery a medium reader runs unprompted.** Fourteen blind scored reads across seven builds
+measured it: every one of these repairs was applied by reflex, so a device resting on any of them is seen,
+never silent, and keeps nothing:
+- exact or near-exact duplicate rows, and a repeated total on every line of a bulk receipt;
+- a second series repeating the first one interval early (a check meter), dropped as a duplicate;
+- a clock in UTC or standard time, found from a missing DST gap or an hour profile, and converted;
+- carried-over or re-keyed records matched across two systems, and rows after a system's close;
+- consecutive spells merged across a one-day gap;
+- an estimate row dropped where its actual reading exists;
+- a rescinded or reversed row removed by its rescind or credit;
+- a code or phase field contradicted by a parcel, plat or schedule, re-derived from the finer key;
+- a visible rate code or half-price line read as the discount;
+- a comment column ("incl. outreach") read for what it says.
+
+The devices that held against two readers in one round (task169's one order per hearing, task177 v2's credit lines on bills raised before acceptance, task177 v1's day-cut pairs and the vendor desk) shared one property: the repair needed a judgment the hygiene battery does not make, about which records are one event, taken from a cardinality or an identity in the data, with no field, comment or code announcing it. Screen every primary device against the list above before cutting the pack.
+
 **1.1c The cracker table is a model, the isolated reader is the measurement, and the reader wins.** Score
 every figure the stage 4 reader reports against `generator/figures.json`, key by key, before reading its
 verdict: that scoring is the only number on the ask layer that was not written by the author. A reader hit
