@@ -92,7 +92,32 @@
     "task97": "task97 carries a place's cumulative history across occupants through an account conversion; here nothing is carried across occupants, each member's take-up depends on its own saving on its own metered use.",
     "task481": "task481 restates a count onto a new classification at conversion rates whose record mix differs between the measured window and the restated months; here nothing is restated or reclassified: each member's probability of taking an optional rate is a function of its own bill saving, and the earlier rate's response is read on the use its takers had before they changed it."
   },
-  "lineage": [],
+  "lineage": [
+    {
+      "architecture": "3 (optional-rate take-up, Sablewood Electric Cooperative)",
+      "drawn": "2026-10-23",
+      "domain": "economics-econometrics",
+      "subdomain": "discrete-choice-limited-dependent-variable-modeling",
+      "objective": "forecasting",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "E"
+      ],
+      "generators": [
+        "G14",
+        "G3",
+        "G13"
+      ],
+      "gate_g": "forecasting",
+      "decision_type": "quantity_figure",
+      "driver": "Units take up an optional plan by what the plan would save each of them on the behaviour it showed before the plan was offered, so a new optional plan's take-up and cost are priced on each unit's own saving under it, run through the response to own saving that an earlier optional plan's first-year take-up shows, read on the behaviour before that plan was offered because its takers changed theirs after taking it; an average take-up applied to every unit, the earlier takers' profile carried over, or a response read on present behaviour each misprices it.",
+      "fate": "spent at Gate F on ce04ed65 (stage 4, 2026-10-23): scored reader B filed 2,250 services and USD 200,000 and all 20 ask figures; it set the cohort as R-1 services at launch billed the 12 months before launch and fitted a logistic on annual saving on pre-launch use, the textbook covariate window for a launch cohort, so the decisive step was the default; the ask devices (spell merging, EST/ACT duplicates, UTC, duplicate-closed CRM rows) were visible hygiene"
+    }
+  ],
   "notes": "",
-  "registered": "2026-10-23T04:34:14Z"
+  "registered": "2026-10-23T04:34:14Z",
+  "architecture_spent": true
 }
