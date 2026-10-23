@@ -1,96 +1,90 @@
 {
   "task": "task177",
-  "architecture": "v2",
-  "drawn": "2026-10-21",
-  "slot_note": "Second redraw cell of the round (product-analytics / churn-propensity-uplift-modeling, Forecasting) after architecture v1 (psychology-behavioral-science, a provincial employment service) was spent at Gate F; the seed FC48 world (drop-off recycling bins) died at stage 1 on measurement before any card.",
-  "domain": "product-analytics",
-  "subdomain": "churn-propensity-uplift-modeling",
-  "client_domain": "product-analytics",
-  "niche": "a UK news publisher's forecast of the share of its January at-risk list of monthly digital subscribers that a half-price retention offer keeps through March, carried from last January's half-and-half test after billing moved to the 1st of the month",
+  "architecture": "v3",
+  "drawn": "2026-10-23",
+  "slot_note": "Reopened 2026-10-23 under the author's rule that no number stays retired; rebuilt from scratch in banking-credit-financial-risk / credit-scoring-pd-modeling (Forecasting) after the quantitative-finance and biomedical survival rebuild cells found nothing that holds; v1 and v2 are in lineage with their fates.",
+  "domain": "banking-credit-financial-risk",
+  "subdomain": "credit-scoring-pd-modeling",
+  "client_domain": "banking-credit-financial-risk",
+  "niche": "a public servants' savings and credit cooperative forecasting how many of the first payroll-deduction loans it disburses to members employed by private firms will be in default a year later, from ten years of payroll loans to public-servant members and the monthly payroll registers the private employers send under their deduction agreements",
   "objective": "forecasting",
-  "shape": "single-figure",
+  "shape": "other",
   "decision_type": "quantity_figure",
-  "answer_unit": "rate_or_share",
-  "answer": "20 per cent",
-  "answer_source": "submission.md block 1",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
   "gap": [
     "population",
     "time"
   ],
   "pattern": [
-    "E"
+    "C"
   ],
   "generators": [
     "G14",
-    "G7",
-    "G6"
+    "G6",
+    "G3"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "pilot_log",
-  "stump_strategy": "composition_mix",
+  "calibration_form": "settled_transaction_ledger",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "planning_thread",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins last January's test arms to the cancellations, reads a subscriber as subscribed on 31 March until the end of the last paid period, fits a two-model or transformed-outcome uplift on the subscriber features and scores this year's list files about 10 per cent, where the share is about 20 per cent.",
-  "domain_test": "The deciding quantity is the retention offer's effect conditional on how many days before a subscriber's next monthly bill it lands, estimated from last January's randomised half-and-half test the way uplift modelling estimates a conditional treatment effect and carried to a list whose bills all fall six days after the send; with patients, reminder letters or tariff notices in place of subscribers the call loses the recurring bill at which a subscriber decides whether to keep paying, the clock the effect runs on, and the two discounted bills it buys.",
+  "analyst_test": "A strong analyst who reads every file correctly, takes each public loan's default within twelve months of disbursement, fits a PD model on the borrower attributes (age, salary, tenure, contract type, instalment and term) and scores the 2,400 launch loans files about 50 in default by 31 January 2028, where the answer is about 250.",
+  "domain_test": "The deciding quantity is the launch loans' first-year probability of default, which payroll-deduction lending reads as the chance the borrower leaves the paying employer while the loan is open times the share of such loans that then default, the leaving rate taken from each employer's own payroll and the conversion from the public book; with patients, students or customers in place of borrowers the call loses the deduction at source that makes leaving the payroll the route to default.",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "product-analytics/churn-propensity-uplift-modeling/1",
+  "layer2_pattern": "own:pd-read-per-payroll-exit",
   "layer1": [
-    "the billing platform replaced from the October 2026 bill run: legacy invoices on each subscription's anniversary day in their own layout and identifiers, the new platform's invoices on the 1st with a pro-rated first invoice per migrated subscription, an identifier crosswalk issued",
-    "cancellations exported as requests with the end of the paid period, so a subscriber stays live until the last paid day",
-    "the email platform's send, open and click log in UTC against the subscription records in UK local time",
-    "the offers engine's acceptances keyed by its own customer reference, joined through the crosswalk",
-    "partner-paid and staff access set up as ordinary monthly subscriptions, told apart only on the invoices",
-    "test accounts and duplicate sends in the campaign tool's exports",
-    "plan and price changes over the year, zero-rated VAT on digital news, refunds and credit notes as separate rows",
-    "the at-risk lists cut by the retention model on their own dates, with its score and band"
+    "the loan book carried from the legacy core (loans to June 2021, amounts in thousands of pesos, contract type as a letter) into the new core under new loan numbers with a crosswalk",
+    "the national treasury's monthly deduction returns listing only the loan-months not applied, under a coarse two-code scheme and a 2023 layout change, re-sent months duplicated",
+    "the private employers' monthly payroll registers sent under their deduction agreements since 2025, fortnightly and monthly payers side by side, mid-year and December bonus registers, vacation and final-settlement lines, re-sent registers and a payee-key change when the cooperative's intake portal was upgraded",
+    "the launch file of pre-approved applications with the employer's tenure certificate dates and the employer agreements register",
+    "the default register with 90-days-past-due entry dates, cures and re-entries"
   ],
-  "stakeholder_role": "head of subscriber retention in the audience revenue team",
-  "role_family": "product_manager",
-  "scoring_unit": "per active unit per period",
+  "stakeholder_role": "the cooperative's finance manager, who books the 2027 budget's loan-loss provision for the first private-employer loans from their first-year default forecast",
+  "role_family": "finance_controller",
+  "scoring_unit": "other",
   "spine": {
-    "file": "legacy_billing_invoices.csv",
-    "rows": 735727,
-    "entity": "one line of a legacy invoice raised on a subscription's billing day (the plan's charge, a discount or a credit), for the subscriptions on either retention list and their add-ons",
-    "grain": "invoice line (subscription x bill date x line type)",
-    "source": "synthetic (constructed in the layout of a legacy subscription billing system's invoice line export)"
+    "file": "libranza_loans_2017_2026.csv",
+    "rows": 0,
+    "entity": "one payroll-deduction loan disbursed to a public servant (or, for the legacy core, one loan as migrated)",
+    "grain": "loan",
+    "source": "synthetic"
   },
-  "forum": "executive_team",
-  "forcing_event": "launch_or_rollout",
-  "org_family": "media_or_publishing",
+  "forum": "board_of_directors",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "cooperative_or_member_body",
   "world": {
-    "geography": "United Kingdom",
-    "currency": "GBP",
-    "org_type": "national news publisher's digital subscriptions (fictional)",
+    "geography": "Republica de Valdemora (fictional)",
+    "currency": "VMP (fictional Valdemoran peso)",
+    "org_type": "public servants' savings and credit cooperative, payroll-deduction lending (fictional)",
     "invented_names": [
-      "The Daily Lantern",
-      "Daily Lantern Media"
+      "Cooperativa Servidores de Valdemora",
+      "Coopservir",
+      "Valdemora"
     ],
     "people": [
-      "Bernard Peacock",
-      "Natalie Taylor"
+      "Paola Ayala",
+      "Esteban Ospina"
     ]
   },
   "deliverables": [
-    "retention_offer_forecast_2027.xlsx",
-    "january_offer_note.docx"
+    "libranza_empresarial_default_forecast.xlsx",
+    "launch_default_note.docx"
   ],
   "opening_move": "question-first",
-  "question_form": "what",
-  "driver": "An intervention moves a unit mainly when it lands in the days before the unit's own recurring decision, so the effect a randomised test measured while those decisions fell at every point of the units' cycles is an average over the cycle, and it does not carry to a delivery that now lands a few days before every unit's decision; only the effect the test read on its units whose decision fell as close to their delivery does.",
-  "driver_concrete": "A half-price retention offer keeps a subscriber mainly when it lands in the fortnight before their next monthly bill, so last January's half-and-half test, sent while bills fell on every day of the month, kept about 9 in 100 across the cycle, while this January's list, every bill on 1 February six days after the send since billing moved to the 1st, is kept at the rate the test measured on subscribers billed within two weeks of it, about 20 in 100.",
-  "stump": "An uplift model on last January's half-and-half test (two-model or transformed outcome on the subscriber features) scored on this year's list files about 10 per cent; the test's subscribers whose next bill fell within two weeks of the send were kept at about twice the overall rate and almost none of the rest, and every bill on this year's list falls six days after the send, so the share is about 20 per cent.",
+  "question_form": "how-many",
+  "driver": "A unit reaches the outcome almost only through one event, leaving the body that collects its payments while its obligation is still open, so its rate over a window is that event's rate times the share of such events that convert; the record's units leave rarely, and the ones that leave often hold obligations set to end before they go, so a model of the outcome on the units' own attributes reads the rarity of the event as their quality, while the forward units belong to bodies whose own payment records show them leaving several times as often.",
+  "driver_concrete": "A payroll-deduction loan defaults almost only when its borrower leaves the employer's payroll while the loan is open, about 55 in 100 such loans reaching 90 days past due within months, so the public-servant book's first-year default of under 2 per cent is the rarity of permanent staff leaving, temporaries' loans being capped to end before their contracts; the private employers' own monthly payroll registers show their staff leaving five to six times as often, so about 250 of the 2,400 launch loans default by 31 January 2028, not the 50 a PD model on borrower attributes scores.",
+  "stump": "A PD model fitted on the public book's borrower attributes and scored on the launch file gives about 50 of the 2,400 loans in default by 31 January 2028; the public book's defaults run almost wholly through borrowers leaving the payroll with the loan open, which the private employers' payroll registers show five to six times as often, so the count is about 250.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task167": "task167 infers which of two unnamed drawdown schedules each unit follows from its own first-year draws; here no per-unit schedule is inferred: a randomised offer's effect is read by how many days before each subscriber's next bill it landed and carried to a list the billing calendar has put six days before every bill.",
-    "task31": "task31 splits a lag absolutely on a prior approval with the same counterparty, a standing property recovered through a multi-file join; here the split is the days between the offer's delivery and each subscriber's own next bill, which no record of the subscriber holds and which the move to billing on the 1st set for the whole target at once.",
-    "task44": "task44 decomposes a pilot's pooled gain over a behavioural moderator, a trait of each unit measured over a prior window; here the moderator is not a trait at all but where the unit's own recurring bill falls relative to the delivery, so one subscriber is persuadable one fortnight and not the next, and the target's position comes from the billing calendar.",
-    "task56": "task56 restores a population billed on a different basis that is known only by its absence from the event streams; here nobody is missing or restored: every list member is present, and the effect each is credited with turns on the days from the send to their next bill.",
-    "task57": "task57 v19 separates candidate measures that reproduce their own year by identity, on a held-out year; here no measure is chosen by a back-test: a randomised effect is conditioned on where the delivery fell in each subscriber's billing cycle.",
-    "task76": "task76 cuts a forward count by a class with zero observed conversion rebuilt from a log of failed contacts; here no class has zero conversion: the offer converts well when it lands within two weeks of the bill and hardly at all before that, and the forecast list sits wholly in the first band.",
-    "task124": "task124 prices newcomers from analogs whose measured value the organisation's own dispatch held down; here no evidence is suppressed by an intervention: the evidence is a randomised test whose effect varies with the delivery's place in each subscriber's billing cycle."
+    "task75": "task75 adds a second arrival channel found as the residual between two internal counts and timed by a recurrence; here nothing is missing from any count: the default rate is read per exit from the employer's payroll with the loan open, and each forward employer's own payroll registers give how often its staff leave.",
+    "task45": "task45 nets a serviceable share of a contracted scope against a holding position rebuilt from a movement ledger; here the share built behind the join is how many launch loans' borrowers leave their employer's payroll while the loan is open, priced at the default rate the public book shows per such exit.",
+    "task177": "v2 conditioned a randomised offer's effect on the days to each subscriber's next bill; v3 has no test and no timing within a cycle: a default rate is read per payroll exit and carried to borrowers whose employers' payroll registers show exits five to six times as often."
   },
   "lineage": [
     {
@@ -170,7 +164,6 @@
       "fate": "RETIRED 2026-10-22 at stage 4 after the author's final ask pass: the call held in every blind read (readers A to E filed the default 10 per cent) and the round 3 re-judge was DETERMINISTIC and APPROVE on target.zip c2789bda, but the asks never cleared two readers in one round (round 1: 9 and 21 of 21; round 2: 0 and 9; round 3: reader E 12 of 21, keeping ask B through the filed qty convention); an ask device whose determinism needs a filed convention dies when the convention is filed"
     }
   ],
-  "notes": "Re-rooted 2026-10-21 to architecture v2 in the second cell the main session assigned this round; v1's identity is in lineage with its fate. Architecture v2 RETIRED 2026-10-22 (the number's second and last architecture): the call held in every blind read and was approved, but the asks never cleared two readers in one round; its identity is in lineage with its fate. Heart BLOCKed on 2026-10-22 against task446 v3 (registered 13 minutes earlier in another session, visible only after round 1); no axis was relabelled.",
-  "registered": "2026-10-21T05:48:20Z",
-  "architecture_spent": true
+  "notes": "Architecture v3 (2026-10-23): rebuild from scratch in the banking credit-scoring cell; v1 (psychology, spent at Gate F) and v2 (product analytics, retired 2026-10-22) in lineage. stump_strategy decomposition_attribution: the forward default count splits into the payroll-exit route and the on-payroll route, and the textbook PD reads the record's low rate as borrower quality instead of rare exits. Pattern C read as the launch loans' leaving share, an absolute share built behind the join of loans to payroll payees, never a column; G14 leads the generators. Axes redrawn at the draw (first pass) against the live window: calibration existing_book_actuals to settled_transaction_ledger (task171), role compliance_or_audit to portfolio_manager (task478), shape 07 to other (task175), forum executive_team to trustees_or_governors (task175). Second pass under the lock (task178 v3 registered first): the world redrawn from a state savings bank to a public servants' savings and credit cooperative (org financial_institution to cooperative_or_member_body), the forcing event from the launch to the 2027 budget's provision (launch_or_rollout to budget_or_appropriation), the role to the cooperative's finance manager (portfolio_manager to finance_controller), the forum to its board of directors.",
+  "registered": "2026-10-23T08:47:44Z"
 }

@@ -1,12 +1,165 @@
 # task177 design note
 
-**Status: RETIRED 2026-10-22 (see `## Retired`).** Architecture 2 (product-analytics /
-churn-propensity-uplift-modeling, Forecasting) held its call in every blind read and was approved by the round 3
-re-judge, but its asks never cleared two readers in one round; the author's final ask pass failed on round 3 (reader E
-kept ask B's twelve cells). Architecture 1 (psychology-behavioral-science) was spent at Gate F on target.zip 3be16ba3;
-its record is kept below under `## Architecture 1 record`.
+**Status: architecture 3, drawn 2026-10-23 (rebuild from scratch).** The number was RETIRED on 2026-10-22 and
+reopened the next day under the author's rule that no number stays retired. Two rebuild cells found nothing that
+holds (quantitative-finance volatility, biomedical survival; `## Tried and rejected`, `## Rebuild (2026-10-23)`);
+the third cell, banking-credit-financial-risk / credit-scoring-pd-modeling (Forecasting), carries architecture 3
+below. Architectures 1 and 2 are kept as records further down.
 
 ## Draw
+
+- **Card:** `.claude/skills/fingerprint/cards/task177.json`, architecture v3 (v1 and v2 in its lineage with their
+  fates).
+- **Pairing:** client domain Banking, Credit & Financial Risk, task type credit-scoring-pd-modeling, which serves
+  Forecasting & Predictive Modeling. The committed figure is a forward count: how many of the 2,400 payroll-deduction
+  loans the cooperative disburses on 1 February 2027 to members employed by private firms will be in default (90 days past due) by
+  31 January 2028, a window not yet open.
+- **World (fictional throughout):** Coopservir (Cooperativa Servidores de Valdemora), the savings and credit
+  cooperative of the Republica de Valdemora's public servants (pesos, VMP), has lent payroll-deduction loans
+  (libranzas) to its members since 2014, the instalment taken at source by the Tesoreria General's central payroll.
+  In 2025 it opened membership to the staff of 38 private employers in six sectors (contact centres, retail chains,
+  security services, logistics and courier, food processing, private clinics) under deduction agreements that
+  require each employer to send its payroll register every pay period, so members' deduction margins can be checked.
+  The cooperative's rules lend only after twelve months of member savings, so the first private-employer loans are
+  disbursed together on 1 February 2027 from a file of 2,400 approved applications. The board books the 2027
+  budget's provision for them from the first-year default forecast.
+- **Shape:** `other` on the card (the total and its split over six employer sectors, plus the asks' cells).
+  Criteria: the call's total (1), the six sector counts (6), the asks' cells (designed at stage 2, at least 15),
+  the two files (2): 24 before the asks' qualifiers, over 25 with them.
+- **Decision:** `quantity_figure`, answer unit count, question form how-many. Forum `board_of_directors` (the
+  cooperative's board approves the budget and its provisions), forcing event `budget_or_appropriation` (the 2027
+  budget's provision for the first private-employer loans), org family `cooperative_or_member_body`, role family
+  `finance_controller` (the cooperative's finance manager books the provision).
+- **Strategy and family:** `decomposition_attribution`; Layer 2 family `estimand_identification`, pattern
+  `own:pd-read-per-payroll-exit`. The forward default count splits into the route through a borrower leaving the
+  employer's payroll while the loan is open and the small on-payroll route; the textbook PD reads the public book's
+  low default as borrower quality when it is the rarity of the leaving event.
+- **Gap, pattern, generators:** gap population (the public-servant book is not the private-employer launch), then
+  time; pattern C read as the launch loans' leaving share, an absolute share the analyst builds behind the join of
+  loans to payroll payees, never a column; generators G14 (the pooled rate does not apply to this pool), G6, G3.
+- **Data-native sentence:** a payroll-deduction loan is paid by the employer's payroll at source, so its borrower
+  can fall behind almost only by leaving that payroll with the loan still open, and the record of public servants,
+  who rarely leave (and whose temporary staff hold loans capped to end before their contracts), carries that event
+  so seldom that a model of default on the borrowers' own attributes reads its rarity as their quality; the private
+  employers' own payroll registers, at employee-period grain, show how often their staff leave.
+- **Sources, one line each.** Client cards credit-scoring-underwriting 1 to 4 (through-the-door, prior correction,
+  out-of-time, fairness at the cutoff): each is a textbook route the opponent takes, none is the stump; this build's
+  default path is card 3's out-of-time PD model scored on a new population. Card 3 of credit-default-risk-modeling
+  (structural PD) is not this ground. task446 (the one earlier card in this task type) prices a flag by the kind of
+  member raising it; here no flag exists, the rate is read per exit event. task169 closes one of two routes to the
+  outcome; here no route closes, the forward population sits at the high end of the one route the record rarely
+  takes. task177 v2 conditioned a test's effect on the days to each unit's bill; here no test and no timing within a
+  cycle. task179's banking paper deaths (a payroll client leaving, read off customers who lost a salary credit) are
+  the attaining-subset form of losing a payer; here no subset of the record sits at the forward exposure (the
+  public permanent staff leave at 1.8 to 5.4 per cent a year against 14 to 42 in the private registers) and the only
+  high-leaving subset, the temporaries, rarely default.
+- **Same-puzzle and same-driver tests:** gap population, pattern C, decision quantity_figure, Gate G forecasting:
+  no build in the last twelve, lineage included; the older task45 and task75 carry differentiation lines on the
+  card.
+- **Abstraction test:** stripped of nouns, the nearest drivers (`guard.py check`: task268 0.08, task446 0.07,
+  task130 0.06, task183 0.05, task192 0.05) are a survival share with a lost-to-linkage class, a flag converting by
+  its raising member, a reported-in-window cover, a part that keeps failing, and lifetime events by cohort; none
+  reads the outcome rate per occurrence of a triggering event whose frequency is measured on the forward units' own
+  payment records.
+- **WARNs answered:** `overuse.strategy` (decomposition_attribution in 3 of 12): the honest label for an outcome
+  split between a leaving route and an on-payroll route; composition_mix was the alternative and would also be
+  honest, and the card keeps the label a reviewer reads the decisive step under. `overuse.objective`,
+  `overuse.gate_g`, `repeat.gate_g`, `repeat.decision`: Forecasting is this lane's objective and a forward count is
+  its natural call.
+- **Axes redrawn at the draw, and why the replacements are the honester labels.** First pass against the live window:
+  calibration form `existing_book_actuals` to `settled_transaction_ledger` (BLOCK against task171), since the
+  forecast's transport rests on the private employers' paid payroll registers, the ledger that calibrates the leaving
+  rate; shape `07` to `other` (BLOCK against task175), since one total and a six-sector split is not a grid. Second
+  pass under the registration lock, after task178 v3 (a bank's options desk) filed first and banned
+  `financial_institution`, `launch_or_rollout` and `portfolio_manager`: the world itself was redrawn from a state
+  savings bank to a public servants' savings and credit cooperative, which is the commonest payroll-deduction lender
+  in the region this world borrows from and makes the deduction agreements and the employers' payroll registers the
+  natural records; the forcing event is then the 2027 budget's provision for the first private-employer loans, the
+  role the finance manager who books it, and the forum the board that approves the budget.
+
+## Screen
+
+Measured on code before any card (scratchpad `b177c/proto/p2.py`, `p2sweep.py`, output `sweep_p2.out`; seeds 1 to
+20 fixed before outcomes). The world: 70,000 public loans over 96 months across 70 agencies (permanent staff
+leaving at 1.4 to 5.4 per cent a year, a third of agencies with 20 to 60 per cent temporaries whose loans are
+capped to end before the contract), 38 private employers leaving at 10 to 42 per cent a year (log-normal around
+24), 6,200 launch loans in the prototype; on leaving with the loan open the loan reaches 90 days past due 3 to 5
+months later with probability about 0.55 (rising mildly with the balance left over the salary), and an on-payroll
+route of 0.2 per cent a month. Graded figure: the launch loans' share in default by month 12.
+
+| Route | min | median | max (per cent, 20 seeds) |
+|---|---|---|---|
+| truth (expectation on the forward borrowers) | 8.53 | 9.31 | 10.64 |
+| pooled public 12-month default | 1.45 | 1.56 | 1.68 |
+| logistic PD on borrower attributes, scored on the launch | 1.34 | 1.60 | 2.11 |
+| temporaries as the high-leaving analogue | 1.55 | 1.79 | 2.06 |
+| public PD scaled by all-staff turnover (private over public) | 3.29 | 3.95 | 4.70 |
+| public permanent PD scaled by permanent turnover | 10.24 | 11.18 | 12.57 |
+| golden: P(leave by month 8) x conversion + on-payroll rate | 8.82 | 9.52 | 10.57 |
+| golden: conversion by month of leaving | 8.87 | 9.58 | 10.64 |
+| golden: eventual conversion x lag distribution | 8.89 | 9.54 | 10.79 |
+| golden: conversion by balance band | 8.68 | 9.41 | 10.46 |
+| agency-level regression of default on leaving, extrapolated | 7.69 | 9.15 | 10.46 |
+
+- **Lever:** the golden is 5 to 6 times the default path; the nearest wrong rung (all-staff turnover scaling) sits
+  at 0.42 of the golden. The decomposition family's own spread is at most 0.42 percentage points (median 0.24) on a
+  figure near 9.5, so about 4 per cent of the figure against a lever of several hundred per cent.
+- **Bins:** at the nearest 5 per cent the four decomposition forms share the truth's bin in 20 of 20 seeds, the
+  agency regression in 20, the permanent-turnover scaling in 19; the logistic and the all-staff scaling miss it in
+  20 of 20. The build grades counts (the total to the nearest 50 of 2,400 loans, the sector counts to the nearest
+  10), placed mid-bin on the cut world.
+- **Screens (stumping 1.2) as code and algebra.** Dispersion: not a spread. Variance-only: the step moves the point
+  estimate. Common-exposure subset: no public subset sits at the private leaving rate; the only high-leaving subset
+  (temporaries) is the misleading analogue above (1.6 to 2.1). Partial coverage: every launch loan carries its own
+  employer's leaving hazard. One-number screen: the correcting input is per employer (38) and per loan (term,
+  tenure), never a scalar. Proxy screen: no shipped file publishes a turnover or headcount-change column; the
+  leaving rate exists only by following employees through the registers. Truncation direction: none. The cheapest
+  one-group-by route to the call: leavers per employee-month by employer from the registers, times the share of public
+  loans defaulting after their treasury deductions stop for good; it is the golden's own construction once the
+  exposure is seen, and nothing in the pack names it.
+
+## Default path
+
+1. Read the prompt, the product sheet and the credit policy: 2,400 loans disbursed on 1 February 2027, default is 90
+   days past due on the loan, the window ends on 31 January 2028.
+2. Load the public loan book (both cores through the crosswalk) and the default register; flag each public loan
+   disbursed 2017 to 2025 that entered default within twelve months of disbursement.
+3. Fit a PD model on the borrower and loan attributes the book carries (age, net salary, tenure with the employer,
+   contract type, instalment over salary, term, agency type), checked out of time on the 2025 disbursements.
+4. Score the 2,400 launch applications on the same attributes (tenure from the employer's certificate, contract
+   type indefinite, salary from the application) and sum the probabilities, overall and by sector.
+
+Ends on: about 50 of the 2,400 loans in default by 31 January 2028 (1.6 to 2.1 per cent).
+Golden: about 250 (about 10 per cent), the launch loans' chance of their borrower leaving the employer's payroll
+while the loan is open, from each employer's own payroll registers, times the share of public loans that defaulted
+after their deductions stopped for good, plus the on-payroll rate.
+
+## Stump sentence
+
+A PD model fitted on the public book's borrower attributes and scored on the launch file files about 50 of the 2,400
+loans in default by 31 January 2028; the public book's defaults run almost wholly through borrowers leaving the
+payroll with the loan open, which the private employers' own payroll registers show five to six times as often, so the
+count is about 250.
+
+## Three rules
+
+Task type: credit-scoring-pd-modeling (Banking, Credit & Financial Risk), which serves Forecasting & Predictive Modeling in the taxonomy; the call is a forward first-year default count for a new segment.
+Domain test: the deciding quantity is the launch loans' first-year probability of default, which payroll-deduction lending reads as the chance that the borrower leaves the paying employer's payroll while the loan is open times the share of such loans that then reach 90 days past due, the leaving rate taken from each employer's own payroll and the conversion from the public book.
+Swap: "how many of the 2,400 payroll-deduction loans will be in default a year after disbursement" with hospitals and patients in place of employers and borrowers stops making sense: nothing collects a patient's obligation at source from a body the patient can leave, so there is no event through which the outcome runs.
+Layer 1: the legacy core's loans (to June 2021) carried into the new core under new numbers with a crosswalk, amounts in thousands and contract type as a letter; the treasury's deduction returns listing only the loan-months not applied, under a two-code scheme with a 2023 layout change and re-sent months; the 38 private employers' payroll registers sent under the deduction agreements since 2025, fortnightly and monthly payers side by side, mid-year and December bonus registers, vacation and final-settlement lines, re-sent registers and an employee-key change at the cooperative's 2026 intake-portal upgrade; the launch file's tenure certificates; the default register's cures and re-entries; each produced by the system named and none placed to be caught.
+Layer 2: estimand and identification: which exposure the default rate is read on; the record's rate is a property of how rarely its borrowers leave their employer with a loan open, and it carries to a new population only per leaving event, with the leaving rate measured on the new population's own payroll.
+Decisive step: decompose the first-year PD of a payroll-deduction loan into the borrower's chance of leaving the employer's payroll while the loan is open and the default rate that follows such an exit, read the conversion from the public book's permanent-staff loans whose deductions stopped for good, and take each private employer's leaving rate from its own payroll registers.
+Not semantics: every field, code and definition read correctly (the two cores joined, the treasury codes, the 90-day definition, the registers' pay concepts) still leaves the PD model on borrower attributes at about 50, because no field names the leaving event and none states that default runs through it; the treasury's code for a deduction not applied covers a borrower short of margin and one gone from the payroll alike.
+Not rule application: no filed rule or procedure says how to forecast the launch's default, and executing every stated rule (the default definition, the window, the deduction cap, the eligibility rules) leaves the estimator open; the enumerated family a competent analyst reaches for spans 1.3 to 12.6 per cent over 20 seeds (logistic on attributes, pooled, temporaries as analogue, all-staff and permanent turnover scalings, the decomposition forms, the agency regression), the standing family the data leave defensible (the four decomposition forms, the agency regression, the permanent-turnover scaling) spans at most 0.42 percentage points within the decomposition and 7.7 to 12.6 across all of it, and nothing filed does the ruling-out: the logistic is refuted by the records themselves (most public defaults follow a run of deductions not applied that never resumes, and the private employers' staff leave at five to six times the public rate), which no clause states.
+Analyst test: a strong analyst who joins the two cores, reads the treasury returns and the default register correctly, fits a PD model on the public book's borrower attributes (validated out of time) and scores the 2,400 launch applications files about 50 loans in default by 31 January 2028, where the answer is about 250.
+Estimand: the number of the 2,400 Libranza Empresarial loans disbursed on 1 February 2027 that are 90 days or more past due at any month-end up to 31 January 2028, as an expected count, in total and by employer sector, filed in prompt.txt and the product sheet (population, outcome, window, unit) with no comparison.
+No decoy: nothing in the pack is planted to be caught; no memo, draft, briefing or stakeholder figure states a launch forecast, a turnover figure or a PD for the private segment, and no public-book PD table ships.
+No certified replay: the method is not recovered by reproducing certified or published figures; no shipped figure is reproduced only by the decomposition, and the conversion and leaving rates exist only by construction from the records.
+Lesson: a rate learned on one population carries to another only per occurrence of the event that produces it, and when that event's frequency differs between the populations it has to be measured on the new one's own records; no build on file reads an outcome rate per exit from the body that collects the obligation (task169 closes a route, task446 prices a flag by its kind, task177 v2 times a test's effect within a billing cycle).
+
+## Architecture 2 record (product-analytics / churn-propensity-uplift-modeling, retired 2026-10-22)
+
+### Draw
 
 | Item | Value |
 |---|---|
@@ -41,7 +194,7 @@ same task type (Qini, rank by effect) are the same route. Strategy F5 (compositi
 new, a delivery's place in each unit's own decision cycle, rebuilt from the invoice ledger and the send date and never
 a column.
 
-## Screen
+### Screen
 
 - Measured before the card, on prototypes in the session scratchpad (r177/c2/proto; rebuild from code): c2a to c2f are
   in-memory worlds; c2pack.py writes a file-only mini-pack; c2out.py is an outsider re-implementation that reads only
@@ -71,7 +224,7 @@ a column.
 - Pack sizes from the screen: last year's test 200,000 subscribers half and half (single-day bins spread 3 to 5 points
   at 150,000), this year's list about 40,000 to 60,000.
 
-## Default path
+### Default path
 
 1. Build last January's test: the arms from `retention_campaign_2026-01_assignment.csv` (offer against holdout, as
    randomised), each subscription still subscribed on 31 March 2026 from `subscription_events.csv` (access_ended is the
@@ -85,14 +238,14 @@ a column.
 Ends on: 10 per cent
 Golden: 20 per cent
 
-## Stump sentence
+### Stump sentence
 
 An uplift model on last January's half-and-half test (two-model or transformed outcome on the subscriber features)
 scored on this year's list files about 10 per cent; the test's subscribers whose next bill fell within two weeks of the
 send were kept at about twice the overall rate and almost none of the rest, and every bill on this year's list falls
 six days after the send, so the share is about 20 per cent.
 
-## Three rules
+### Three rules
 
 Task type: churn-propensity-uplift-modeling in product-analytics, which serves Forecasting & Predictive Modeling: an uplift model estimated on a randomised retention test and scored on the next list to forecast the share of it the offer keeps.
 Domain test: the deciding quantity is the heterogeneity of a retention offer's uplift by where the delivery lands in each subscriber's billing cycle (the days from the send to the next bill), estimated from the randomised test and carried to a list whose deliveries all land at one point of that cycle, which is the product analyst's own transport of an uplift from the test population to the target list.
@@ -108,7 +261,7 @@ No decoy: nothing is planted to be caught; no memo, briefing or figure states a 
 No certified replay: no published or certified figure reproduces the method; the effect by the days to the bill is recovered from the test's own records and no shipped figure is a function of it.
 Lesson: an offer's uplift belongs to where it lands in the customer's decision cycle as much as to who the customer is, so a test whose deliveries fell across the cycle under-forecasts a send that lands at the decision point for everyone; no build on file turns on a delivery's place in each unit's billing cycle.
 
-## Readability screen
+### Readability screen
 
 | Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -117,7 +270,7 @@ Lesson: an offer's uplift belongs to where it lands in the customer's decision c
 | This year's next bill on 1 February | note 1.2 | the platform lines' service periods | yes | none | no | no | readable |
 | (decisive) The offer's effect by the days from the send to each test subscription's next bill, carried to six days | none: no document says the effect depends on the bill | the bill day lives only in the legacy ledger's January lines; no column holds a lead to the bill | the subscriber's features are the reflex | none: no file holds an effect by bill timing or a readout of the test | no sweep reaches it | no: a constructed covariate, then a conditional effect | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -137,7 +290,7 @@ Lesson: an offer's uplift belongs to where it lands in the customer's decision c
 | SF14 | the outcome read | by access (live on 31 March) | by the cancellation request | same call (18.72) | the dictionary; converges |
 | SF15 | the unit | the subscription, in both lists | the customer | same call (one subscription per customer number on each list) | the prompt; the assignment's subscription_ref |
 
-## Ladder
+### Ladder
 
 | Rung | Route | Figure (nearest 5 per cent; unrounded) | Dies to |
 |---|---|---|---|
@@ -156,7 +309,7 @@ error either way (0.35) stays in the cell, 2.38 inside its lower edge. The bill 
 a window to day 16 lands 17.78, both in the golden's cell. The forecast's truth in the world (each list member's
 expected share kept at a six-day lead) is 20.93.
 
-## Closure table
+### Closure table
 
 | Axis | Reading | Closure |
 |---|---|---|
@@ -183,7 +336,7 @@ expected share kept at a six-day lead) is 20.93.
 | 21 Clause scope | the 1st-of-month calendar covers every monthly digital subscription from 1 November 2026 | note 1.2 |
 | 22 Forward window contents | two bills inside the window, 1 February and 1 March 2027, the offer on both | the plan (the next two monthly bills); note 1.2; SF11 |
 
-## Literal reader
+### Literal reader
 
 The method is open and forced by the record: the arms' difference by the days from the send to each test
 subscription's next bill is 18 to 22 per 100 on every day from 1 to 13, 14.3 on day 14, 6.4 on day 15 and 3.5 or
@@ -197,7 +350,7 @@ from the assignment or the email log, the billing day from the January or the De
 20 per cent (SF2 to SF15 in checks.py), and the reading that does not (the effect of taking the offer) violates the
 prompt's "because they are sent". The default path reads the same literal estimand with the easy method.
 
-## Oracles
+### Oracles
 
 - `billing_move_note_2026.pdf`: the platform's calendar (1.2), an input every route uses alike; it says nothing about
   the offer.
@@ -206,7 +359,7 @@ prompt's "because they are sent". The default path reads the same literal estima
 - `reader_survey_2026_q4.csv` (distractor): stated intentions; no arm, no bill.
 - None ranks the forecast, states an uplift or confirms a timing effect.
 
-## Ask sheet
+### Ask sheet
 
 **Main call's declared row population:** last January's assignment, its CRM snapshot, its events to 31 March 2026 and
 each test subscription's January 2026 SUB line in `legacy_billing_invoices.csv`; this year's list and note 1.2's
@@ -321,7 +474,7 @@ Measured by: generator/cracker.py
 | Ask A, reader C's route (round 2) | the engine's acceptances through the CRM's keys as takers, the discount lines naming an acceptance | 0 of 9 | miss |
 | Ask A, reader D's quoted route (round 2) | the discount lines with OE26 refs, CS cases out, plus the -MA rate lines at list price less the charge | 0 of 9 | miss |
 
-## Leak sweep
+### Leak sweep
 
 `leak.py --asof 2027-01-25` on the round 3 pack (target.zip c2789bda): REVIEW, no LEAK, the same four lines. Each answered:
 - Design-note vocabulary, the prompt: the ask sentence carries "subscriptions" and "invoices" because those are the
@@ -1215,6 +1368,33 @@ its group's surviving records), the same family by its label.
   curve times the season share stays within 0.6 to 6.3 per cent of the golden, even at strengths beyond any registry
   (H1), because new entrants carry the duration curve and the season carries the calendar. A lever of 30 per cent needs a forward change, and in this cell each forward change
   either names its step, closes a competing route (task169) or is architecture 2's driver.
+- **Third rebuild cell, banking-credit-financial-risk / credit-scoring-pd-modeling (2026-10-23), candidate R4 measured
+  on code: internal-rating momentum after a sector shock.** A business book's grades read a latent credit quality
+  with review lags; a 2026 shock pushes a fifth of the book into deteriorating states, and the textbook route is the
+  per-grade (Markov) PD on the 31 December grades. Prototype `b177c/proto/r4.py` (12,000 obligors, 2014 to 2026,
+  annual and triggered reviews, noise 0.15 to 0.25, steps capped at 1, 2 or 9 notches): the truth sits 18 to 24 per
+  cent above the per-grade PD, but every grade-by-recency-of-downgrade route (6, 12, 18, 24 months, three bins)
+  moves the forecast by 0.1 to 2.3 per cent, because the shock's deterioration is mostly not yet rated and the
+  history's recent downgrades are mostly noise; the latest year's per-grade rates land within -5 to +9 per cent.
+  Dead: the golden is not identified from the records, and the PIT reflex beats it.
+- **Candidate S1 measured on code: rating staleness under a review backlog.** The grade is a reading at the last
+  review and PD is convex in the latent quality, so a backlog leaves the book's grades stale. Prototype
+  `b177c/proto/s1.py` (backlogs of 60 and 90 per cent of scheduled reviews from June 2026, triggered reviews at 20
+  and 50 per cent): grade-by-review-age routes move the forecast -1 to -7 per cent (the wrong way, survivors of
+  stale grades are the ones no trigger caught), the truth is 8 to 10 per cent over the per-grade PD, and the
+  history's support beyond 12 months since review is 0.1 per cent of obligor-years. Dead.
+- **Third cell, paper deaths (2026-10-23), one line each.** Trade-link contagion after a large customer fails (the
+  payroll-client-leaving death in task179's note by abstraction, and sized from a single event); payroll-deduction
+  default read off reason codes that name the separation (the decomposition is then read off a column); fresh
+  against chronic arrears in a roll-rate forecast (featurisable: months delinquent in the last twelve is a standard
+  behavioural characteristic); top-up chains as one exposure (identity); a first-payment deferral clock (obvious
+  from the terms); due date against payday (task177 v2's own driver by abstraction); payment protection insurance,
+  guarantor payments, sold-before-default and portability of payroll loans (each a route closure, task169's
+  driver); a cladding or flood-map designation (a filed rule and a join); fixed-rate resets and promotional-rate
+  expiry (task137 and task166 ground, a behavioural slope, and the expiry is a column); a credit amnesty deleting
+  bureau records (identified only from a single past event); income verification (task192's audit-subsample
+  driver); distance to branch in a mobile expansion (the forward population's defining feature names the
+  covariate).
 
 ## Retired
 
@@ -1279,9 +1459,14 @@ Two candidates measured on code (H1, the time since the last discharge after an 
 nineteen on paper, all in `## Tried and rejected` with the cell's finding. No card registered, nothing cut; PAUSED at
 stage 1 again for the coordinator to assign another cell.
 
+Third rebuild cell the same day, banking-credit-financial-risk / credit-scoring-pd-modeling (Forecasting), worktree
+`b_177n` on origin/main e7f776e4. Two candidates measured dead on code (R4 rating momentum, S1 rating staleness) and
+fourteen directions on paper (`## Tried and rejected`); candidate P held at the screen and carries architecture 3
+(`## Draw`, `## Screen`): the first-year default of payroll-deduction loans read per exit from the employer's payroll,
+carried from a public-servant book to private employers whose own salary batches show their staff leaving five to
+six times as often. The card's v2 identity is already in its lineage; v3 registered on the filing day.
+
 ## Resume
 
-PAUSED 2026-10-23 at stage 1 after two rebuild cells found no draw that holds (quantitative-finance /
-volatility-derivatives-pricing, then biomedical-clinical-research / survival-time-to-event-analysis); resume at stage 1
-in the next cell the coordinator assigns, reading `## Tried and rejected` first. (RETIRED 2026-10-22 before the
-reopening: architecture 2's asks never cleared two readers in one round; architecture 1 was spent at Gate F.)
+Architecture 3 drawn 2026-10-23 (stage 1 complete at registration); resume at stage 2 (design: readability screen,
+fork table, ladder, closure, asks, prompt; gate precut.py) from `## Draw`, `## Screen` and `## Default path`.
