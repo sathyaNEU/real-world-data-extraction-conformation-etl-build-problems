@@ -23,12 +23,12 @@
     "nearest": "task241 0.07 (abstraction differentiated on the card)"
   },
   "judge": {
-    "verdict": null,
-    "disposition": null,
-    "report": null
+    "verdict": "DETERMINISTIC",
+    "disposition": "APPROVE",
+    "report": "architecture 1, isolated judge thread 2026-10-24 (/tmp/determinism-check-task279-r1/verdict.md): call and all 24 ask figures reproduce; Gate G method_or_model_selection, analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical; the architecture was already spent on Gate F by both readers"
   },
   "returned": [],
-  "resume": "Architecture 1 spent at stage 4 on 2026-10-24: both isolated scored readers landed the call (Bovenmade, Zuidergeer, Ravenbroek) by finding the 1997 top metre again by its cumulative ash. The determinism judge's thread was in flight on /tmp/determinism-check-task279-r1 (its verdict, when it returns, is recorded for the architecture, not acted on). Next: re-root to architecture 2 at stage 1 in the same objective (fresh mechanism, the slot's screens in the design note's Tried and rejected), card lineage, DRAWN commit.",
+  "resume": "Architecture 1 spent at stage 4 on 2026-10-24 (both isolated scored readers found the ash anchor; the judge DETERMINISTIC, APPROVE). Architecture 2 screened the same day and not drawn: every candidate is spent in the corpus at the abstraction test, landed by a reflex or a filed sentence, or left open across the field's estimators (the design note's last Tried and rejected line, prototypes in the session scratchpad t279v2/). Next: the author's choice between retiring the number and a further screen; nothing is registered for architecture 2.",
   "approved": null,
   "delivered": null,
   "portal": null,
