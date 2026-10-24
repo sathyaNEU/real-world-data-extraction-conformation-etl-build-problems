@@ -110,6 +110,19 @@ def main(target):
         fits[form] = (float(m.predict(Xa[isf]).sum()), float(m.aic))
     form = min(fits, key=lambda k: fits[k][1])
     call = fits[form][0]
+    # SF12: the count-free model, which the cutover notes' section 6 rules out as the 2026 forecast, loses by far;
+    # SF13: the forms here printing outside the bin (the log, the 22-classmate indicator) lose to every form inside it
+    m0 = sm.GLM(np.array(yv), base[~isf], family=sm.families.Binomial()).fit()
+    if not float(m0.aic) - fits[form][1] > 800:
+        bad.append("SF12 count-free model only %.1f AIC worse" % (float(m0.aic) - fits[form][1]))
+    inside = [k for k in fits if int(250 * round(fits[k][0] / 250.0)) == figs["call_not_enrolled_2027"]]
+    outside = [k for k in fits if k not in inside]
+    if any(fits[k][1] <= max(fits[j][1] for j in inside) for k in outside):
+        bad.append("SF13 a form outside the bin beats one inside: %s" % ", ".join(outside))
+    from pypdf import PdfReader
+    cut = " ".join(" ".join(p.extract_text().split()) for p in PdfReader(P("arc_cutover_notes_registry.pdf")).pages)
+    if "from Semester 1 2026 entrants choose their classes and enrol in them themselves" not in cut:
+        bad.append("SF12 cutover notes section 6 missing")
     Xf = base[isf]
     printed = int(250 * round(call / 250.0))
     if printed != figs["call_not_enrolled_2027"]:

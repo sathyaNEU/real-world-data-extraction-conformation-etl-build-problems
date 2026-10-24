@@ -180,6 +180,8 @@ Lesson: a retention model validated on a later intake is only as good as the pro
 | SF9 | an entrant's faculty | the admissions Faculty (first-listed programme) | the second programme's | same call | conjoint entrants are 3 per cent and the faculty terms are small (asserted under SF3) |
 | SF10 | the model's form for the repeat-classmate count | the lowest Akaike information criterion among the forms fitted (an indicator at 10, 3,253.0) | a log or square-root term (judge round 1: 3,115, 3,130), a 22-classmate indicator (2,976) | 3,000 | SELECT_PIN (conventions section 3); every form within 12 AIC prints the call (asserted SF10, B0, B1, B3) |
 | SF11 | the ask's teaching group (judge pass 3) | the whole set of students taught together in one room at one time, counted once however often and wherever it meets: each distinct set of classes meeting together | every room-and-time meeting its own group (FASS 200 21 and 66); one group per class code (15 and 43) | asks only, the call reads no timetable row | the prompt's clause (2026-10-24), asserted A4 |
+| SF12 | whether the model reads the entrants' classes (portal judge 2, 2026-10-24) | the 2026 intake's class enrolments are its own while every intake the model is fitted on had the Registry's, so the forecast tests the classes it carries (3,253.0 on the count) | a model on entrant attributes and week-6 ratings alone, the classes never read (2,141.9); the 2026 collapse in repeat classmates read as a migration artefact | 2,250 | cutover notes section 6 (the class-enrolment change, filed as a Registry fact, no measure named); the count-free model 897.2 AIC worse under SELECT_PIN (asserted SF12, verify) |
+| SF13 | the count's form (portal judge 2) | the lowest AIC among the forms fitted (an indicator at 10) | a logarithm of the count alone (3,113.6) or a scale-4 curve (3,090.9) | 3,000 | SELECT_PIN: every form printing outside the bin loses to every form printing inside it (the log 23.0 AIC worse than the best, 3.1 worse than the linear count and 2.7 worse than the square root), so any comparison of two forms prints the call (asserted SF13, verify) |
 
 ## Ladder
 
@@ -230,9 +232,12 @@ of the golden.
 
 Executed word for word, the prompt and the conventions fix the count (first-time bachelor's entrants enrolled at the
 1 October 2026 census, not enrolled at the 1 October 2027 census, approved leave not enrolled, to the nearest 250) and
-leave the estimate of each entrant's chance to the data. Every reading of SF1 to SF9 either violates a quoted sentence
-or files the same call, and the easy answer (2,250) comes from an easy method on the same literal estimand, not from
-another reading.
+leave the estimate of each entrant's chance to the data. Every reading of SF1 to SF13 either violates a quoted
+sentence or files the same call, and the easy answer (2,250) comes from an easy method on the same literal estimand,
+not from another reading. The cutover notes' section 6 files that the 2026 class enrolments are the entrants' own and
+every earlier intake's were the Registry's, so the change the class records show is a recorded fact, and a model
+that never reads those records ignores a filed difference between the intakes it is fitted on and the one it
+forecasts; no sentence names the count, its form or its effect.
 
 ## Oracles
 
@@ -364,6 +369,27 @@ Measured by: generator/ceiling.py
 - Re-judge (judge-task179w, pass 4): DETERMINISTIC, APPROVE, no fix. The call 3,253.7, every AIC-competitive
   form 3,208 to 3,256; all 20 cells reproduced; the remaining risk it names is the asks' own (lecture-only
   pairs read against the clause), not the call's.
+
+## Determinism repair (portal, 2026-10-24)
+
+- Portal round 2 on zip c1b19cef: both responses filed 2,250 (the call held). Determinism judge 1 PASS on every gate;
+  judge 2 FAIL, competing_defensible_answer: nothing required reading the entrants' classes, so a count-free model
+  (2,141.9) broke no shipped rule; the count's form was open; and no file recorded a change at the cutover, so the 2026
+  collapse in repeat classmates could be a migration artefact.
+- Stump test: the fork is not the stump. The closure leaves the default path where it was (it never opens the class
+  records and still prints 2,250), and the golden's lead comes from building the repeat-classmate count, which no
+  sentence names.
+- Move: a Registry fact in the cutover notes' 14 August revision, section 6: in SIRIUS the Registry entered first-year
+  entrants' Semester 1 class enrolments, and from Semester 1 2026 entrants choose and enrol in their classes themselves
+  (SF12). No count, form, grouping or effect is named, and D2 still finds none of the decisive step's words. SF13 stays
+  with SELECT_PIN: every form printing outside the bin loses to every form inside it.
+- Gates: checks 92 green (SF11 to SF13 and F4 added; F1 now admits the cutover notes and F4 proves only section 6
+  was added), verify 0 failed (its own count-free fit and its own read of section 6), two builds byte-identical
+  over 20 files, figures_check 44, precut 51 PASS, voice-check PASS (the prompt unchanged), leak.py REVIEW (the
+  cutover notes now share the pack's own words, entrant, classes, record and Registry; no figure and none of the
+  decisive step's words), guard validate 0 invalid, heart BLOCK unchanged since the first ship (the author's
+  ruling, window fixed at draw), freeze --mode determinism PASS. target.zip 256adf20.
+- Re-judge and readers: pending.
 
 ## Architecture v2 record (spent, kept as history)
 
@@ -1053,6 +1079,11 @@ candidate touches them.
   - Judge pass 3 (2026-10-24) on the group unit left to section 4's "in one room at one time": counting every
     room-and-time meeting, or every class code, was as defensible as the distinct sets of classes. Closed by the
     prompt clause (SF11) rather than section 4, which the call reads.
+  - Portal round 2 judge 2 (2026-10-24) on the class-enrolment change left unfiled: a count-free model read as
+    defensible and the 2026 collapse as a possible migration artefact. Closed by the cutover notes' section 6 (who
+    entered the class enrolments). Rejected for the closure: a candidate-predictor list in the conventions (the
+    decisive step becomes rule application) and a stated held-out benchmark (no intake in the record enrolled
+    itself, and a stated figure would be a certified record).
 
 ## Retired
 

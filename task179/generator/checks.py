@@ -72,6 +72,18 @@ def main(target):
                "%.1f (dAIC %.1f)%s" % (v[0], v[2] - amin, "" if inbin(v[0], figs["call_not_enrolled_2027"]) else ", outside the bin"))
     for k in ("none", "any", "log", "sqrt", "ge22"):
         ok("B3 rival %s refuted by the criterion" % k, aic[k][2] - amin > 15, "dAIC %.1f" % (aic[k][2] - amin))
+    # SF12 whether the model reads the entrants' classes: the cutover notes record that the 2026 class enrolments are
+    # the entrants' own and every earlier intake's were the Registry's, and the model without the count loses by far
+    ok("SF12 the class-enrolment change is filed (cutover notes section 6) and the count-free model loses loudly",
+       any(h.startswith("6. Class enrolments") for h, _ in D.CUTOVER) and aic["none"][2] - amin > 800,
+       "dAIC %.1f, prints %d" % (aic["none"][2] - amin, deliver.r250(aic["none"][0])))
+    # SF13 the count's form: the two forms printing outside the bin lose to every other form of the count
+    count_forms = [k for k in aic if k not in ("none", "any")]
+    off = [k for k in count_forms if not inbin(aic[k][0], figs["call_not_enrolled_2027"])]
+    ok("SF13 every form of the count printing outside the bin loses to every form inside it",
+       set(off) <= {"log", "sat4", "ge22"}
+       and all(aic[k][2] > aic[j][2] for k in off for j in count_forms if j not in off),
+       "outside: %s" % ", ".join("%s %.1f (dAIC %.1f)" % (k, aic[k][0], aic[k][2] - amin) for k in off))
     for yrs in ([2022, 2023, 2024, 2025], [2023, 2024, 2025]):
         v = calc.forecast(a, r["form"], yrs)[0]
         ok("B4 the golden form on intakes %d to 2025 prints the call" % yrs[0], inbin(v, figs["call_not_enrolled_2027"]), "%.1f" % v)
@@ -210,6 +222,14 @@ def main(target):
         per[(m_["fac"], m_["level"])] = per.get((m_["fac"], m_["level"]), 0) + 1
     ok("A4 two pairs a faculty and level share the lecture only: three groups each", part_ok and set(per.values()) == {2},
        "%d pairs" % len(part))
+    # SF11 the ask's teaching group: the prompt's clause counts the whole set of students taught together once, so every
+    # room-and-time meeting as a group, or every class code as a group, breaks it; the clause's reading is the golden
+    prompt = " ".join(open(os.path.join(task, "prompt.txt")).read().split())
+    sets_cells = ceiling.route(d, "sets", "enrolled")
+    ok("SF11 the group unit, closed by the prompt's clause: the distinct sets of classes print every cell",
+       "a group being the whole set of students taught together in one room at one time, counted once however often "
+       "and wherever it meets" in prompt and all(sets_cells[k] == figs[k] for k in figs if k.startswith("ask_"))
+       and ceiling.route(d, "meeting", "enrolled") != sets_cells and ceiling.route(d, "class", "enrolled") != sets_cells)
     multi = act.groupby(["Room", "Day", "Start", "Teaching Weeks"])["Class Code"].nunique()
     shared = set()
     for k in multi[multi > 1].index:
@@ -248,9 +268,17 @@ def main(target):
     import hashlib
     shipped = json.load(open(os.path.join(HERE, "shipped_digests.json")))["sha256"]
     sha = lambda b: hashlib.sha256(b).hexdigest()
-    moved = [f for f in shipped if f not in (C.F_TT, C.F_DICT)
+    moved = [f for f in shipped if f not in (C.F_TT, C.F_DICT, C.F_CUT)
              and sha(open(os.path.join(target, f), "rb").read()) != shipped[f]]
-    ok("F1 every file but the timetable and the dictionary is the shipped file", not moved, ", ".join(moved))
+    ok("F1 every file but the timetable, the dictionary and the cutover notes is the shipped file", not moved,
+       ", ".join(moved))
+    from pypdf import PdfReader
+    digests = json.load(open(os.path.join(HERE, "shipped_digests.json")))
+    cut_shipped = json.dumps(D.CUTOVER[:-1], ensure_ascii=False, sort_keys=True).encode("utf-8")
+    cut_text = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(target, C.F_CUT)).pages))
+    ok("F4 the cutover notes are the shipped ones with section 6 added",
+       sha(cut_shipped) == digests["cutover_sections_1_to_5"] and D.CUTOVER[-1][0] == "6. Class enrolments"
+       and all(re.sub(r"\s+", " ", p) in cut_text for _, ps in D.CUTOVER for p in ps))
     dic_now = open(os.path.join(target, C.F_DICT), "rb").read().decode("utf-8")
     entry = dic_now[dic_now.index(C.F_CLE):]
     entry = entry[:entry.index("\r\n\r\n") + 4]

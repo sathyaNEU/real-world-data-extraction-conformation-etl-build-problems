@@ -74,6 +74,9 @@ CUTOVER = [
         "Timetabling exports the Semester 1 timetable from ARC Scheduling, one row per weekly meeting of a class. A "
         "class taught in different rooms in different weeks has a row for each room. Teacher is the "
         "class's teacher of record."]),
+    ("6. Class enrolments", [
+        "In SIRIUS the Registry entered first-year entrants' Semester 1 class enrolments. ARC has no Registry entry "
+        "of class enrolments: from Semester 1 2026 entrants choose their classes and enrol in them themselves."]),
 ]
 CODE_TABLE = [
     ("Field", "SIRIUS", "ARC"),
@@ -147,7 +150,7 @@ def write_cutover(path):
          "%s, Registry, Student Systems. Revised 14 August 2026. Malcolm Hussey, Student Systems Manager." % C.UNI,
          CUTOVER, table=CODE_TABLE, table_after="Table 1. Code changes", issued=dt.date(2026, 8, 14),
          author="Malcolm Hussey", widths=[40 * mm, 55 * mm, 75 * mm],
-         foot="First issued 1 June 2026. This revision adds section 5.")
+         foot="First issued 1 June 2026. This revision adds sections 5 and 6.")
 
 
 DICT = """DATA DICTIONARY, CONTINUING ENROLMENT PROJECTION 2027 (Planning and Insight, assembled 16 October 2026)
