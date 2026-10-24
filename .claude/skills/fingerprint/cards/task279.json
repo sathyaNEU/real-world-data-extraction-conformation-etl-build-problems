@@ -1,0 +1,107 @@
+{
+  "task": "task279",
+  "architecture": "v1",
+  "drawn": "2026-10-24",
+  "slot_note": "Seed DA29's corrosion-review world set aside at the author's choice to re-world each wave 6 number (2026-10-24): its split test histories are identity resolution, which the 10/10 rules keep to Layer 1, and its eight-year failure share is the share-free-by-a-fixed-time quantity task265, task266 and task268 spent. The number keeps the Descriptive lane and is drawn fresh: the carbon a drained peat loses, measured against the one component the peat cannot lose.",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "niche": "a regional water board's 2027 water-level order, which raises the summer level first in the three polder units whose peat lost the most carbon per hectare per year between the 1997 baseline coring and the 2024 re-coring of the same monitoring points, when three units' surface lowering since their 2009 to 2013 water-level cuts is mostly peat compressing, down to below the 1997 cores' base",
+  "objective": "descriptive-distribution",
+  "shape": "01",
+  "decision_type": "ranked_slate_under_cap",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "objective"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G2",
+    "G16",
+    "G3"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "register",
+  "stump_class": "analytical",
+  "analyst_test": "With every lab, survey and register field read correctly, the strong analyst either multiplies each unit's surveyed lowering by its topsoil carbon density, lines the 1997 and 2024 cores up on the surveyed lowering and differences the carbon above the 1997 core base, or compares the two campaigns on equal total soil mass, and none of the three names the three units the peat's own carbon balance names: the first two book the compression that followed the 2009 to 2013 water-level cuts as carbon lost, and equal total mass hides most of the loss because the organic matter oxidation removes is most of the peat's mass.",
+  "domain_test": "Carbon loss from drained peat is measured as a mass balance between repeat cores on the one component oxidation cannot remove, the ash, so the 1997 top metre is found again in 2024 as the depth holding its ash; swap the peat for any other stock and there is no compressing, mostly combustible medium whose own mass is what is lost, so neither the lowering, the fixed depth or level nor the equal total mass is wrong for a reason the field would recognise.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:ash-anchored carbon balance of drained peat between repeat cores",
+  "layer1": [
+    "1997 cores cut in 5 cm slices on a typed laboratory report, 2024 cores in 10 cm slices from the laboratory's LIMS export",
+    "bulk density in g/cm3 on the 1997 report and kg/m3 in the 2024 export",
+    "1997 levels on the board's old survey datum and 2024 levels from GNSS on the current datum, with the board's published offset",
+    "monitoring points re-staked in 2024 under new point codes with a crosswalk",
+    "dipwell series from fortnightly manual readings to pressure loggers, depths below a tube top re-levelled at replacement",
+    "summer and winter target levels with a dated change log",
+    "unit areas in the register against the parcel register's hectares"
+  ],
+  "stakeholder_role": "the water board's senior adviser for soil and subsidence, who drafts the 2027 water-level order for the general board",
+  "role_family": "policy_adviser",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "dipwell_series_2014_2025.csv",
+    "rows": 0,
+    "entity": "one dipwell reading",
+    "grain": "dipwell x reading time",
+    "source": "synthetic"
+  },
+  "forum": "council_or_assembly",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "local_government",
+  "world": {
+    "geography": "Netherlands (an invented water board in the western peat meadow district)",
+    "currency": "EUR",
+    "org_type": "regional water board",
+    "invented_names": [
+      "Hoogheemraadschap van het Lageveen",
+      "Oudelaak",
+      "Ruigeland",
+      "Hazelweer",
+      "Kortewaard",
+      "Zuidergeer",
+      "Lindeschot",
+      "Bovenmade",
+      "Wedderkamp",
+      "Goorsloot",
+      "Ravenbroek",
+      "Hellerwaard",
+      "Meerkoog"
+    ],
+    "people": [
+      "Zara Lelijveld",
+      "Olivier Fredriks",
+      "Yfke Gemen",
+      "Joëlle Kleijse"
+    ]
+  },
+  "deliverables": [
+    "peat_carbon_loss_1997_2024.xlsx",
+    "peilbesluit_2027_first_raise.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is how much of a substance a compressible medium lost between two samplings, where most of the medium's mass is what the loss removes and part of the medium compresses without losing anything; reading the loss off the lowering of the surface, or matching the two samplings at a fixed depth, at a fixed level or on equal total mass, counts compression as loss or hides loss, and only matching them on the one component the process cannot remove finds the same material again.",
+  "driver_concrete": "Each polder unit's carbon lost per hectare per year from the peat that formed the top metre of its 1997 cores, found again in the 2024 cores as the depth holding the same cumulative ash per square metre, where three units' lowering since their 2009 to 2013 water-level cuts is mostly the newly drained layer shrinking and the soft peat below consolidating, much of it below the 1997 core base, and where equal total mass reaches into deeper peat by the mass oxidation removed.",
+  "stump": "A competent analyst books each unit's surveyed lowering at its topsoil carbon density, or lines the 2024 cores up on that lowering, and files the three units that compressed after their 2009 to 2013 level cuts; one who corrects to equal total soil mass files the three most clay-rich units instead; only the carbon above the 1997 cores' cumulative ash, found again in 2024, names the three units whose peat lost the most.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task263": "task263 separates sources that are measured only in mixtures by solving a mass balance across blends whose proportions vary; here nothing is mixed: one medium is sampled twice, and the 2024 cores are matched to the 1997 top metre on the ash the peat cannot lose, so the move is finding the same material again across compression and loss, not unmixing contributors.",
+    "task269": "task269 v3 measures each rider's wait against the departures serving the stop the rider leaves at, a population of departures read from a second file at the rider's grain; here the population is the peat that formed the 1997 top metre, found again in 2024 by its cumulative ash, and no second file or grain carries it.",
+    "task187": "task187 reads a unit's shortfall at matched input spread to strip a capped response's curvature; here the surface lowering is split between compression and loss by a conserved component in repeat cores, with no response curve or input spread.",
+    "task48": "task48 v2 recovers a population invisible at the monitor's grain by aggregating transactions to a pair grain; here nothing is aggregated to another grain: the decisive step finds the same material again in a second sampling by the one component the process cannot remove.",
+    "task241": "task241 compares a float's salinity with reference water on potential-temperature levels because the deep layer heaved, a medium that moves without losing or compressing anything; here the medium compresses and oxidation removes most of its own mass, so the field's own material coordinate, equal total mass, fails as well, and the decisive step is matching the samplings on the one component oxidation cannot remove."
+  },
+  "lineage": [],
+  "notes": "",
+  "registered": "2026-10-24T05:52:41Z"
+}
