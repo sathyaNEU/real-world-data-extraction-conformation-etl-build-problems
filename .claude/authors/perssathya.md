@@ -2,7 +2,9 @@
 
 Account email pers.sathya@gmail.com. A session for anyone else ignores this file.
 
-- **Lane:** Data Quality Monitoring & Alerting, task228 to task252. Two builds in flight (the author may allow a
+- **Lane:** Data Quality Monitoring & Alerting, task228 to task252, fully shipped 2026-10-23. From wave 6 on, at the
+  author's instruction (2026-10-24, "work on next task items whatever is available"), the open numbers of the unassigned
+  Opportunity Sizing & Decision Support block, lowest first (task301 up). Two builds in flight (the author may allow a
   third); `status.py next perssathya`.
 - **Status board:** https://claude.ai/artifact/EJXoU6JxGoZ1oZYKHmSLyt (one row per task: the task and its call, status, links to the prompt, submission and `target.zip` on `main`, a short note, the date), updated at every commit point.
 - **Never retire a task without asking the author.** A re-root past the third architecture, a ban waiver or a
@@ -30,3 +32,4 @@ architecture), new. A task from an objective no developer owns says so.
 | 3 | task237 (new) · task238 (new) · task239 (new) · task240 (new) · task241 (new) · task242 (new) |
 | 4 | task243 (new) · task244 (new) · task245 (new) · task246 (new) · task247 (new) · task248 (new) |
 | 5 | task249 (new) · task250 (new) · task251 (new) · task252 (new) |
+| 6 | task301 (new, Opportunity Sizing) · task302 (new, Opportunity Sizing) · task303 (new, Opportunity Sizing) · task304 (new, Opportunity Sizing) · task305 (new, Opportunity Sizing) · task306 (new, Opportunity Sizing) |
