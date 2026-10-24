@@ -360,7 +360,10 @@ Measured by: generator/ceiling.py
   prints 3,250), all 20 cells reproduced, FIX_NOW on the group unit: section 4's "in one room at one time"
   left every room-and-time meeting, or every class code, defensible as one group. Closed by one clause in the
   prompt's ask sentence (SF11), not in section 4, so no file the call reads moved and the zip is unchanged;
-  voice-check PASS (782 characters), precut 51 PASS, leak.py unchanged, freeze PASS. Re-judge: pending.
+  voice-check PASS (782 characters), precut 51 PASS, leak.py unchanged, freeze PASS.
+- Re-judge (judge-task179w, pass 4): DETERMINISTIC, APPROVE, no fix. The call 3,253.7, every AIC-competitive
+  form 3,208 to 3,256; all 20 cells reproduced; the remaining risk it names is the asks' own (lecture-only
+  pairs read against the clause), not the call's.
 
 ## Architecture v2 record (spent, kept as history)
 
