@@ -291,6 +291,46 @@ form.** Sweeping a parallel run's coverage and precision, the standing family fa
 and **0 of 16 cells** have both a unanimous standing family and the cheapest member missing. Determinacy and
 reach are the same column read from two ends.
 
+**The unknowns-against-cases axis is CLOSED too, and the reason is an identity rather than a measurement: the
+shipped design matrix is simultaneously what closes the estimator family and what makes the construction one
+line.** For a few shared parameters to be identified from many cases, each case's observation must be a known
+function of the parameters of the handlers that case touched, and the organisation must SHIP which handlers it
+touched or nothing is identified at all. So the pack is a design matrix plus an outcome, the link is forced by
+the design (identity for a sum, log or cloglog for a product or a masked-cause series system), and the
+decisive construction is one call on that matrix. Gate C and Gate F are therefore financed by the same object
+and **the dial is one-ended by construction**. Three further measurements say the same thing from other sides.
+
+- **Count the design's RANK, never its rows.** "Unknowns strictly fewer than cases" held in the count and
+  failed in the only count that identifies anything: the routing's own design measured rank **34 of 36**
+  unknowns at two years, **227 of 240** at forty units and **1,122 of 1,200** at two hundred, rank deficient at
+  every realistic window.
+- **A large case count can be pure REPLICATION, and then it buys a fork rather than precision.** 96,000
+  fine-grained rows were identical to the 48 coarse rows in 20 of 20 worlds, because every fine unit saw every
+  event of its coarse one. They added no information and they did add a weighting choice, which **moved the
+  designated set in 10 of 20 worlds**. And the informative count per unknown is invariant to scale (1.00 at 6
+  units, 0.79 at 40, 0.79 at 200), because events and unknowns both scale with the structure, so only the
+  WINDOW buys information and it buys it linearly: the converged cell needed a record of order 500 years.
+- **The cheapest-member law has an algebraic form, which is stronger than its measurement.** 0 of 16 joint
+  cells had a unanimous standing family with the cheapest member missing, and there is no third cell to find,
+  because **the cheapest licensed member IS a member of the family, so unanimity implies it agrees with the
+  rest, and the only cell where the family agrees is the cell where it is right.** Measured alongside: the
+  family fell from 4.30 to 1.05 distinct designated sets while the cheapest member's own hit rate rose from 0
+  of 20 to 19 of 20, and at the realistic window the joint estimator's RMSE was 0.4489 against a golden
+  boundary gap of 0.1449, a ratio of 3.10, so the set is seed hostage at any pack an operator could hold.
+
+**The enumeration of shared-parameter constructions is closed with it**, each on a named kill: the additive
+joint solve (a shipped build's driver); the log or cloglog solve (the same organ once the link is forced);
+variance components (a variance-only screen); paired comparison or Luce severities; difference calibration;
+stage-distribution deconvolution graded on a tail; capture-recapture over channels; conditional or eliminating
+likelihood (a ratio of sums, which is the one-group-by route and a family member at once); flow
+reconciliation; and feasible-set intersection of interval constraints. The shape is also already spent on the
+portal in other nouns, as a common-point-of-purchase construction that a solver landed at proxy 94.5.
+
+**So the only direction the enumeration never reaches:** a decisive step whose licensed family has **NO shipped
+design matrix to solve**, which means the deciding quantity cannot be a parameter attaching to any unit the
+record labels. Everything that attaches to a labelled unit is either corrected per case (closed), propagated
+through a structure (closed), crossed against a limit (closed), or solved from a shipped design (closed here).
+
 **The axis that is actually open, as a constraint and not a mechanism: the number of unknowns against the
 number of cases.** Six grounds now return one dichotomy, the decisive construction being either exact
 arithmetic on a shipped structure or a fit with one unknown per case, and that holds for additive
