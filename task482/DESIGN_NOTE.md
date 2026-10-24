@@ -1,371 +1,187 @@
 # task482 design note
 
-Status lives in `pipeline.json`; this note holds the design. Architecture 9, drawn 2026-10-23 after architectures 1
-to 8 were spent at stage 4: a fresh world and pack in the ETL objective, a mid-sized Ontario city's bike-share
-programme naming its Q1 2027 priority stations from each station's share of Q4 2026 service minutes with a bike in
-working order docked.
+Status lives in `pipeline.json`; this note holds the design. Architecture 10, drawn 2026-10-24 after architectures 1
+to 9 were spent at stage 4: a fresh world and pack in the ETL objective, a nonprofit hospice organisation's FY2026
+Medicare aggregate cap repayments, accrued provider number by provider number at the December 2026 close, each
+beneficiary counted under the proportional method on the hospice days they will receive in every hospice and year.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task482.json` (architecture v9, lineage v1 to v8 spent), registered
-  2026-10-23 after a fetch of main, `check` re-run on the filed card: WARN, no BLOCK. The first draft carried G3 as its
-  decisive generator and BLOCKed on `ban.pattern` against task275, `test.own_lineage` against this slot's v8 and
-  `test.same_driver_older` against task477; the decisive generator is G12 (absence of record against record of
-  absence: a renter's choice not to take a bike is the record), which is the honest one, with G3 (the feed's record
-  against the fleet's operation) as the frame. Against G12 the older task270 v2 and task192 v3 repeat gap, pattern and
-  decision type or Gate G and are answered on the card: task270 scales a reported count by a size distribution and
-  task192 carries a validation batch's rates; here nothing is scaled or carried, a listed bike's working order is read
-  from what renters and the vans did with the bikes in front of them.
-- **WARNs answered.** `repeat.gate_g` and `overuse.gate_g` (method or model selection, against task275): the decisive
-  step is an estimate of a state no record holds, which is what the mechanism names; no other mechanism on the list
-  carries it. `repeat.question_form` (which, against task275): the decision is a set of stations, so the question asks
-  which. The deliverable set was moved off svg plus xlsx (task483) and png plus xlsx (task179, task275) to a workbook
-  and an HTML chart page, the form a city publishes its station figures in.
-- **Pairing:** General Statistics & Data Science, task type `data-integration-record-linkage-entity-resolution`, which
-  serves ETL, through the supply-chain-logistics house domain's transportation network: the City's archive of the
-  operator's station status feed, the operator's trips, fleet moves and rider fault reports and the City's station
-  list conformed into Schedule C's monthly availability for each station, the figure the priority designations read;
-  the pay-station vendor's sales export, work orders, register and alarm log conformed to each station for the asks.
-- **The decision and the quantity:** the City of Wellhaven runs 24 public bike-share stations and 310 classic bikes
-  under an operating agreement with Northlane Mobility. Schedule C makes every station whose availability (the share of
-  a calendar month's service minutes, 6:00 to midnight Eastern, that start with a bike in working order docked) is
-  under 90 per cent in any month of a quarter a priority station for the next quarter: Northlane keeps a rebalancing
-  crew within ten minutes of each priority station through the weekday peaks of February to April 2027. Forward facing:
-  the set fixes where the crews stand through the spring.
-- **Shape:** `07`, a grid read at its binding cell: each station's availability in its lowest month (24 figures in
-  whole per cent), the designation per station and the set, the station that cleared the line by the least and its
-  margin; two asks of one figure per station on files the call never reads (24 card-sales figures to the cent, 24
-  card-downtime figures in whole hours); a chart's named parts and the two files. About 80 criteria on structure.
-- **Strategy:** `other` (a unit's usable state, held in no record, is read from what users and the operator did with
-  the units in front of them); Gate G `method_or_model_selection`; gap `objective` (the feed's count is correct for
-  what the operator knew and is not the bikes in working order the designation is decided on); pattern none;
-  generators G12 (decisive) and G3. Layer 2 family `estimation_fit`, pattern `own:a listed unit's unusability read
-  from users passing it over for units of its own type`. Calibration organ: none.
-- **World:** an Ontario city, CAD; the City of Wellhaven's Transportation Services and its bike-share programme; the
-  operator Northlane Mobility; the pay-station vendor Corlund Kiosk Systems. People from `guard.py names --geo canada
-  --seed 482`: Audrey Bautista (the City's bike-share contract manager) and Lawrence Hughes (Northlane's general manager
-  for Wellhaven); neither appears in the pack. Every invented name is screened against real organisations, products and
-  places before any reader sees the pack (H21).
-- **Forcing fact:** Schedule C has the City name the next quarter's priority stations by the 15th day of that quarter
-  (15 January 2027), from the quarter just closed.
-- **Forum and forcing event:** customer_or_counterparty (the City designates under the agreement and the operator is
-  bound by the notice), purchase_order_or_contract. Organisation local_government; role procurement_lead.
-- **The physics:** a bike that breaks on a ride (a flat tire, a slipped chain, a seized brake) is docked by its rider.
-  About a third of riders report it in the app, and Northlane marks a reported bike out of service within about two
-  hours, after which the feed counts it in `num_bikes_disabled`. An unreported broken bike stays in
-  `num_bikes_available` until a mechanic's inspection or a van visit takes it to the depot for repair, hours to days
-  later. While it is docked every renter at its station takes another bike; at a busy origin station the working bikes
-  go first and the broken one is left as the last bike listed. The feed then shows the station with a bike available
-  and raises no empty alert; the station is empty to every arriving renter until a returning rider docks a bike or a
-  van takes the broken one away.
-- **Data-native sentence:** in the trip records a broken bike shows only as a bike that stays docked while renter after
-  renter at its station rides away on another bike, until a van takes it to the depot and it is off the street for a
-  day or more.
-- **Default path and golden, by count:** the feed's available bikes taken as the bikes in working order designate one
-  station, W-16 Birch Hill; the bikes rebuilt from the trips and fleet moves, each one that broke on a ride counted out
-  of working order until a van took it in, designate four, W-02 Queen and Albert, W-12 Maple Grove, W-16 Birch Hill and
-  W-19 Willow Crescent.
-- **The WHAT screen.** Population: the City's numbered stations (A.1). Outcome: the minutes of service hours that start
-  with a bike in working order docked (C.1). Unit: per cent of the month's service minutes (C.2). Window: each calendar
-  month of Q4 2026 on Eastern time (A.3, C.1). Comparison: 90 per cent (C.3). The decisive step settles none of them:
-  it is which docked bikes were in working order, which no record or filed rule states.
+- **Card:** `.claude/skills/fingerprint/cards/task482.json` (architecture v10, lineage v1 to v9 spent), checked
+  2026-10-24 after a fetch of main: WARN, no BLOCK. The first draft carried G13 (horizon mismatch) as its decisive
+  generator and BLOCKed on `test.same_puzzle` against task171 v4 (time, G13, quantity_figure) and on the older
+  same-puzzle and same-driver signatures of five builds each; the decisive generator is G12 (absence of record against
+  record of absence: a beneficiary discharged alive who has no later election is not a beneficiary who will have none),
+  which is the honest one for the step that decides, with G13 (the days recorded to the close against the days in every
+  year) as the frame. Against G12 the older task157, task192 v2, task201 v2 and task445 v1 repeat gap, pattern and
+  decision type or Gate G and are differentiated on the card: task157 forecasts a lapsed group's returns inside a window
+  from earlier waves' calendar; task192 v2 counts a cohort's events before a terminal end; task201 v2 recovers each
+  event's unrecorded opening interval; task445 v1 completes a still-open period's total. Here every day given is
+  recorded and nothing is completed: each member's later days enter the denominator of a share.
+- **WARNs answered.** `repeat.question_form` (how much, against task486 v2): the decision is an amount for each provider
+  number, so the question asks how much. People drawn with `guard.py names --geo us --seed 482` and checked against
+  every card: Breanna Graham (the organisation's controller, the requester), Jeremy Cortez (its chief financial
+  officer) and John Huang (its reimbursement director); none appears in the pack. Lawrence Hughes and Audrey Bautista,
+  drawn for architecture 9 from the same seed, are not reused.
+- **Pairing:** Healthcare Delivery & Health Economics, task type `payment-claims-health-plan-analytics`, which serves
+  ETL: the organisation's two EMR election exports, its levels-of-care and remittance lines, and the Medicare
+  contractor's beneficiary days reports conformed into the cap schedule the year-end accrual reads, one row per FY2026
+  beneficiary per provider number with the days in the cap year, the days in every hospice and year, the share and the
+  cap they carry.
+- **The decision and the quantity:** Elderglen Hospice & Palliative Care, a nonprofit in central and southeastern Ohio,
+  holds eight Medicare hospice provider numbers: seven of its own and Fallowmere Hospice, bought under a change of
+  ownership on 1 March 2025. Medicare pays each provider number at most its aggregate cap for a cap year (1 October to
+  30 September): the FY2026 per-beneficiary cap amount times the number of beneficiaries counted under the proportional
+  method of 42 CFR 418.309, each beneficiary counted as their FY2026 days at the provider number over their total days
+  of hospice care in all hospices and all years. Payments above the cap are repaid when the contractor determines the
+  cap. Elderglen accrues each provider number's FY2026 repayment at its 31 December 2026 close; the external auditors
+  test the estimate. Forward facing: the determination counts days not yet given.
+- **Shape:** `07`, a grid read provider number by provider number: each provider number's FY2026 payments, counted
+  beneficiaries, cap and accrued repayment (eight provider numbers, four figures each), the total accrual, the provider
+  numbers owing; asks of one figure per provider number on files the call reads only for days (levels-of-care days and
+  payment detail); the workbook's sheets and the deliverable. About 75 criteria on structure.
+- **Strategy:** `maturity_censoring` (each beneficiary's hospice days are recorded only to the close, and the days
+  still to come are estimated from the beneficiary's state at the close); Gate G `method_or_model_selection` (how the
+  remaining days are projected, the data ruling out the easy routes); gap `time` (the days recorded to the close are
+  backward, the determination counts every later year); pattern none; generators G12 (decisive) and G13. Layer 2 family
+  `field_method`, pattern `own:a capped credit shared on each member's lifetime days, projected from the member's state
+  at the close (an open stay by its length so far, a live discharge by its time out)`. Calibration organ:
+  `existing_book_actuals`, Elderglen's own elections since October 2016 and the contractor's reports on its earlier
+  cohorts. Context artifact `capacity_report` (the monthly census report with each program's average length of stay by
+  diagnosis).
+- **World:** Ohio, USD; the organisation's seven programs in Brackwater, Corrinbrook, Dunsmere, Lindmoor, Pennacott,
+  Sallowfield and Wexmoor, and Fallowmere Hospice; invented names screened against real places (a register of US,
+  Canadian and UK places, every one more than two edits away) and against real organisations and products by search
+  before any reader sees the pack (H21).
+- **Forcing fact:** the organisation closes its 2026 books on 31 December 2026, and the cap repayment for FY2026 is
+  accrued at that close from the records as they stand.
+- **Forum and forcing event:** auditor (the external auditors test the accrual), period_close. Organisation
+  hospital_or_health_provider; role finance_controller.
+- **The physics:** a beneficiary elects hospice and stays until death, a revocation or a discharge because they are no
+  longer terminally ill; about one election in six ends alive, one in three for dementia. A beneficiary discharged
+  alive can elect hospice again at any time, at Elderglen or at any other hospice, and many do, most in the first
+  months out; the chance that one who has been out longer comes back falls the longer they stay out. A stay that has
+  already run long is a stay of the kind that runs long: its expected remainder grows with its length so far.
+- **Data-native sentence:** in the elections a beneficiary discharged alive often comes back months later under a new
+  election, and a third of Fallowmere's returns appear only in the contractor's reports, at hospices outside the
+  organisation; the FY2026 cohort holds stays still open at the close and live discharges whose days to come no record
+  holds.
+- **Default path and golden, indicative:** on the feasibility harness (eight provider numbers, ten years of elections)
+  the cap ratio of a dementia-heavy provider number with many live discharges moves from 0.98 on the days to the close
+  to 1.06 with its open stays run conditionally and its live discharges' returns counted in every hospice, while the
+  open stays alone take it to 0.99; the stage 2 generator fixes the set: Brackwater, Lindmoor and Wexmoor owe on the
+  default path, and Fallowmere owes too once each live discharge carries its expected returns.
+- **The WHAT screen.** Population: Medicare beneficiaries with hospice days at the provider number in FY2026 (418.309,
+  the policy). Outcome: the provider number's FY2026 repayment on the contractor's determination. Unit: dollars.
+  Window: the FY2026 cap year, with every later day of each beneficiary's hospice care counted. Comparison: payments
+  against the cap. The decisive step settles none of them: it is how many days each beneficiary will still receive,
+  which no record or filed rule states.
 - **Sources, one line each:**
-  - the General Bikeshare Feed Specification's station status and station information fields;
-  - bike-share operations practice: riders' fault reports in the app, mechanics' station inspections, rebalancing by
-    van on the dispatch system's alerts, winter storage runs;
-  - operators' trip export layouts (one row per trip, the bike, its start and end station and times) and kiosk vendors'
-    sales exports, work orders, asset registers and alarm logs.
-- **Same-puzzle and same-driver tests:** (objective, G12, designation_set) and (objective, G12,
-  method_or_model_selection) against the last twelve builds, lineage included: no match in the last twelve; the older
-  task270 v2 and task192 v3 matches are differentiated on the card.
-- **Abstraction test:** the nearest drivers stripped of nouns: task230 v1 reads a switch's effect against users not yet
-  switched; task478 v1 completes a count no instrument recorded by the units that passed; task471 v3 weights a trait
-  sampled from two overlapping lists; task486 v2 counts distinct units joined only by pairwise findings. Here nothing is
-  completed, weighted or linked across lists: the listed units users passed over and the operator then took in are
-  taken out of the usable count minute by minute.
+  - 42 CFR 418.309 and the hospice payment final rules: the aggregate cap, the cap year, the proportional method;
+  - hospice operations: election, revocation, discharge as no longer terminally ill, transfer, re-election, levels of
+    care (routine home care in two tiers, continuous home care in hours, inpatient respite, general inpatient);
+  - provider practice: the cap liability accrued with the patients still on service and the patients who may return.
+- **Same-puzzle and same-driver tests:** (time, G12, quantity_figure) and (time, G12, method_or_model_selection)
+  against the last twelve builds, lineage included: no match; the older matches are differentiated on the card.
+- **Abstraction test:** the nearest drivers stripped of nouns: task266 v1 counts the units whose spell ends one way
+  within a fixed time; task271 v2 reads a latent state from call records; task244 corrects moves between two states for
+  misclassification; task143 takes a joint chance over a shared error. Here no spell is counted and no state is
+  misread: each member's total is the recorded part plus the remainder its state implies, and the total divides a
+  share.
 
 ## Default path
 
-1. Read Schedule C: a minute of service hours (6:00 to midnight Eastern) is available at a station when a bike in
-   working order is docked there at its start (C.1); a station under 90 per cent of a month's service minutes in any
-   month of Q4 2026 is a priority station for Q1 2027 (C.2, C.3).
-2. Took the City's archive of the status feed (a row per station whenever a poll found its status changed, polled_at in
-   UTC epoch seconds), read each station's last row at or before each minute, carried across the spells the poller was
-   down, and read W-17 Linden Avenue under feed ID 117 until feed ID 125's first row.
-3. Took `num_bikes_available` (the docked bikes Northlane had not marked out of service) as the bikes in working
-   order; a minute is available when it is 1 or more at the minute's start.
-4. Divided each station's available minutes by its month's service minutes and listed the stations under 90 per cent
-   in any month of the quarter.
+1. Read 42 CFR 418.309 and the accrual policy: each FY2026 beneficiary counts as their FY2026 days at the provider
+   number over their total hospice days in all hospices and years; the cap is the count times the FY2026 cap amount;
+   the repayment is the FY2026 payments above the cap.
+2. Built each FY2026 beneficiary's days at each provider number in the cap year from the two EMR exports and the
+   levels-of-care lines, and each one's days in every hospice to date from the elections and the contractor's current
+   report.
+3. Ran each stay still open at the close to its expected end, from Elderglen's closed stays of the same diagnosis
+   group, conditional on how long it had run.
+4. Took each beneficiary discharged alive as finished: no later election is on file.
+5. Summed the shares, applied the cap amount and set the repayment against each provider number's FY2026 payments.
 
-Ends on: one priority station, W-16 Birch Hill (87 per cent in October).
+Ends on: repayments at Brackwater, Lindmoor and Wexmoor; none at Fallowmere.
 
-Golden: four priority stations, W-02 Queen and Albert, W-12 Maple Grove, W-16 Birch Hill and W-19 Willow Crescent
-(88, 88, 86 and 88 per cent in October).
+Golden: repayments at Brackwater, Lindmoor, Wexmoor and Fallowmere.
 
 ## Stump sentence
 
-The default path counts a station available in every minute the status feed lists a bike there and names one priority
-station, Birch Hill (W-16, 87 per cent in October); a bike that breaks on a ride is docked by its rider and stays listed
-until a van takes it to the depot for repair, and at the busiest stations it was left as the only bike listed while
-renters rode away on the others, so with every bike's spells rebuilt from the trips and fleet moves and each bike the
-vans took in for repair counted out of working order from the end of the ride that left it, four stations fall under 90
-per cent in October: Queen and Albert, Maple Grove, Birch Hill and Willow Crescent.
+The default path runs every stay still open at the close to its expected end and treats each beneficiary discharged
+alive as finished, and accrues repayments at Brackwater, Lindmoor and Wexmoor only; a beneficiary discharged alive
+often elects hospice again, the chance falling the longer they have been out, and a third of Fallowmere's returns go
+to hospices outside the organisation that only the contractor's reports hold, so each live discharge's share is read
+on the days the history of beneficiaries out as long shows to come, in every hospice, and Fallowmere owes too.
 
 ## Three rules
 
-Task type: data-integration-record-linkage-entity-resolution (General Statistics & Data Science), through the
-supply-chain-logistics house domain's transportation network, a task type serving Data Extraction & Conformation
-(ETL): the feed archive, trips, fleet moves and station list integrated bike by bike into Schedule C's monthly
-availability for each station, the file the priority designations read.
+Task type: payment-claims-health-plan-analytics (Healthcare Delivery & Health Economics), a task type serving Data
+Extraction & Conformation (ETL): the EMR elections, levels-of-care lines, remittances and the contractor's beneficiary
+days reports conformed into the FY2026 cap schedule, one row per beneficiary per provider number, that the year-end
+accrual reads.
 
-Domain test: the deciding quantity is each station's monthly share of service minutes with a bike in working order
-docked; integrating the feed with the trips and fleet moves reads each docked bike's working order from what happened
-to it (renters passing it over for the bikes around it, then a van taking it to the depot for a day or more), and the
-generic count of the bikes the feed lists names one of the four stations the golden names.
+Domain test: the quantity that decides is each FY2026 beneficiary's hospice days in all hospices and years under the
+proportional method, which hospice finance estimates for the cap liability from each beneficiary's state at the close
+(a stay still open and how long it has run, a live discharge and how long ago, a death) out of the provider's own
+history of elections; the field's estimator is the expected remainder for each state, read from the beneficiaries who
+were once in it.
 
-Swap: General Statistics, so the swap is of the method: replace the bike-by-bike working order with the feed's listing
-and the designated set falls from four stations to one; with another field's nouns ("beds open" for "bikes docked")
-there is no renter choosing among the units in front of them and no van taking the passed-over ones away, and the
-evidence the decision rests on is gone.
+Swap: "which schools owe a refund because each pupil counts as their days at the school over their days in every school
+and every year" stops making sense: no other field shares out a capped amount on its members' lifetime days, and the
+states that decide the remainder (an open election, a live discharge that can be followed by a new election) are the
+hospice benefit's own.
 
-Layer 1: the City's poller archive (rows only on change, UTC epoch seconds, seven spells it was down); trips exported
-in Eastern time across the 1 November clock change, with staff rides among them and the week of 16 November appended a
-second time; bike numbers prefixed WHB- in the fleet moves log and bare in the trips; the night crew's moves stamped
-with their manifest's minute; Linden Avenue moved across the street on the evening of 8 November under a new feed ID
-and the same name; four docks added at Birch Hill and Willow Crescent; in the ask files the pay-station vendor's UTC
-stamps, voided sales, terminal serials, a sales export naming each terminal's present pay station, and an alarm log of
-raises, clears and restarts. Each is what these systems write, none is placed to be caught, and the call holds under
-every obvious handling (checks.py L1 to L6), the staff rides kept as the bikes' own records require (L2).
+Layer 1: two EMR election exports with different layouts, one of them Fallowmere's seller's system for its elections
+before 1 March 2025; the contractor's beneficiary days reports in fixed width, one per cohort, with each beneficiary's
+days at every provider number by cap year as of the report's date; remittance lines with reversals, adjustments and the
+2 per cent sequestration; beneficiary identifiers moving from the HICN to the MBI in 2018 to 2020; continuous home care
+billed in hours; the cap year (October to September) against the December close. Each is produced by the systems that
+hold it; nothing is placed to be caught.
 
-Layer 2: estimation that fits the data (estimation_fit): whether a docked bike could be ridden is recorded nowhere and
-has to be read from what happened to it at its station; the feed's count counts every broken bike Northlane had not
-yet found.
+Layer 2: field_method; the cap liability estimated the way the field estimates it, each beneficiary's remaining
+lifetime hospice days projected from their state at the close, and the methodological choice that flips the call is
+treating a beneficiary discharged alive as a beneficiary still accruing days, with the chance of a return read on how
+long they have been out and counted in every hospice.
 
-Decisive step: rebuilding every bike's spells docked at each station from the trips and fleet moves and counting a
-docked bike out of working order from the end of the ride that left it when renters passed it over and a van then took
-it to the depot for repair, then counting a station's minute available only when a bike in working order was docked.
+Decisive step: projecting each FY2026 beneficiary discharged alive and not yet back to the hospice days the history of
+beneficiaries out as long shows still to come, in Elderglen's programs and in hospices outside it, rather than taking
+the days on file as their total.
 
-Not semantics: every field reads as written (the feed's `num_bikes_available` as the docked bikes Northlane had not
-marked out of service and `num_bikes_disabled` as the ones it had, the trips' bikes, stations and times, the vans'
-moves); read correctly, the listed count still includes every broken bike Northlane had not found, the easy routes
-take it (or it less the bikes customers reported) as the bikes in working order, and only what renters and the vans
-did with each bike, which no field states, separates the two.
+Not semantics: every field can be read correctly (the discharge reasons, the contractor's report columns, the cap
+year, the levels of care) and the default path still treats a live discharge as finished, because no field says
+whether a beneficiary will elect hospice again; the reading of "all hospices and all years" is necessary and leaves
+the projection undone.
 
-Not rule application: the agreement files the WHAT (the City's numbered stations, the minutes of service hours that
-start with a bike in working order docked, each month of Q4 2026 on Eastern time, per cent of the month's service
-minutes, under 90 per cent) and no rule or procedure says which docked bikes were in working order. Measured on the cut
-pack (checks.py G2, G3): the enumerated family (the feed as listed; the feed less the bikes customers reported, from the
-ride that left them; dwell cut-offs of 24 and 48 hours of any end or ended by a van; every bike a van took away; depot
-stays of 6 to 48 hours; bikes passed over once or three times) files five distinct sets with the lowest months spread
-up to 4.1 points: W-16 alone (the feed, the reported bikes, a 48-hour van dwell), W-16 with W-23 (a 48-hour dwell of any
-end), W-12, W-16 and W-19 (a 24-hour van dwell), nineteen or more stations (a 24-hour dwell of any end), and the golden
-four (every reading by the vans' pickups); the standing family, the readings the records leave defensible (a depot stay
-of 6, 12 or 20 hours, a pass by a renter before the van took the bike, every van pickup but the station move, and their
-intersections), files the golden four at a spread of exactly zero on all 72 station-months. What rules the rest out is
-the data itself, silent: the feed and the reported bikes alone by bikes passed over by renter after renter and then
-kept at the depot for days, the 48-hour and 24-hour van dwells by broken bikes the daily downtown inspection took in
-within hours, the any-end dwells by working bikes left alone at quiet stations and ridden by the next renter, and the
-station move by its bikes dropped across the street 25 minutes later and ridden.
+Not rule application: 418.309 and the policy define the count and the cap, and no filed rule or procedure says how
+many days a beneficiary will still receive or how to estimate them; executing every stated rule on the days on file,
+or with open stays run to their ends, files the default path's set. The family the rules leave open, and its spread,
+is measured at stage 2: the enumerated family (days to the close; open stays by average length less time so far;
+open stays conditionally; returns at the history's unconditional rate; returns conditional on time out, in Elderglen's
+programs only; returns conditional on time out in every hospice), the standing family (the constructions that condition
+on time out and diagnosis and count every hospice: nonparametric, parametric and empirical-analog versions), and the
+loudness of what rules the others out.
 
-Analyst test: with every field and rule read correctly, a strong analyst takes the status feed's `num_bikes_available`
-at each station each minute as the bikes in working order (Northlane's own count of the bikes it had not taken out of
-rental), computes each station's share of each month's service minutes with one docked, and names one priority
-station, W-16 Birch Hill (87 per cent in October): the default path's Ends on (checks.py T1 on the clean truth, T2 on
-the pack); the decisive step alone files the golden four (T1, T2).
+Analyst test: with every file read and the proportional method applied, the easy route runs each open stay to its
+expected end and treats each beneficiary discharged alive as finished, and accrues repayments at Brackwater, Lindmoor
+and Wexmoor only (the default path's Ends on), missing Fallowmere.
 
-Estimand: the operating agreement's Schedule C (bike_share_operating_agreement_schedules.pdf, C.1 to C.3, with A.1 and
-A.3): the population (the City's numbered stations, a station moved within its block one station), the outcome (the
-minutes of service hours, 6:00 to midnight Eastern, at whose start at least one bike in working order is docked, a bike
-being in working order when a customer can unlock it and ride it away), the window (each calendar month of Q4 2026),
-the unit (per cent of the month's minutes of service hours) and the comparison (under 90 per cent in any month).
+Estimand: Elderglen's cap liability policy, section 2: each provider number's FY2026 repayment is its FY2026 Medicare
+payments less its aggregate cap, the cap counting each FY2026 beneficiary as their FY2026 days at the provider number
+over the hospice days the beneficiary is expected to receive in every hospice and year, the days on file to the close
+plus the days expected after it given what Elderglen knows of the beneficiary at the close (the file:
+`elderglen_cap_liability_policy.docx`).
 
-No decoy: nothing is planted: the bikes broke on rides as bikes do and were docked by their riders, the feed is
-Northlane's ordinary status feed as the City's poller kept it, the fault reports are the ones customers made, and no
-memo, report, draft or stakeholder figure states any station's availability or argues for the listed count.
+No decoy: nothing is planted to be caught; no memo, draft, briefing or stakeholder figure carries the default path's
+answer, and no provisional FY2026 determination ships. The census report's average lengths of stay are the programs'
+own operating report and rank nothing on the decision.
 
-No certified replay: the method is not recovered by reproducing certified or published figures; Northlane's quarterly
-report states no station's availability, and no figure in the pack ties only under the golden.
+No certified replay: the method is not hidden and recovered by reproducing certified or published figures; the
+contractor's reports on earlier cohorts hold days, not the method, and the policy files the estimand.
 
-Lesson: a count of units a system lists as available includes units nobody can use; integrated with the records of
-what users and the operator did with each unit, a listed unit passed over while the units around it were taken, and
-then taken in for repair, is read as unusable from the moment it was left, and availability is counted from the usable
-ones; no build on file reads a unit's state from what was done with the units in front of it.
-
-## Readability screen
-
-| Rung | What a solver has to see | Where it is | Verdict |
-|---|---|---|---|
-| R0 the feed as listed (the default) | `num_bikes_available` per station per minute | the archive and its notes | readable |
-| R1 the bikes customers reported, from the ride that left them | the fault reports and the feed's disabled count | the reports file, D.1 | readable |
-| R2 the station move, the repeated week, staff rides, the clock change | the station list, a second copy of a week, the rider type, durations | the trips, the station list | readable |
-| R3 (decisive) the bikes that broke on a ride, read from renters passing them over and a van taking them to the depot for a day or more | each bike's spells rebuilt from two files, and what happened at the end of each | no sentence; only the trips and the fleet moves together | silent |
-
-No sentence in the pack says a listed bike may be broken, that renters passed bikes over, or that a van pickup can mean
-a repair: C.1 defines working order by what a customer can do, D.1 says when a reported bike is marked out of service,
-D.2 that mechanics take faulty bikes to the depot, and the notes give the feed's fields in GBFS's words.
-
-## Semantic fork table
-
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | station | the City's numbered station (W-17 one station under feed IDs 117 and 125) | each feed ID a station | same call (Linden Avenue is clear of the line under either) | A.1: a station moved within its block keeps its number and remains the same station |
-| SF2 | service hours | 6:00 to midnight Eastern every day | the same hours in UTC | same call | C.1 and A.3: Eastern time |
-| SF3 | available minute | a bike in working order docked at the minute's start | docked at the minute's end | same call | C.1: "at the start of the minute" |
-| SF4 | bike in working order | a bike a customer can unlock and ride away | a bike Northlane lists as available | W-16 alone | C.1 defines the bike by what a customer can do with it; D.1 marks a bike out of service only after a report; the listed count is a measurement of the term, and its bias is the decisive step, not a reading |
-| SF5 | calendar month | the month on Eastern time | the UTC month | same call | A.3 |
-| SF6 | under 90 per cent | strictly under | at or under | same call (no lowest month within half a point of 90: 88.2 and 90.7 the nearest) | C.3: "under 90 per cent" |
-| SF7 | the quarter | October to December 2026 | none | same call | C.3: the calendar months of the quarter |
-| SF8 | rounding | the line compared on the unrounded share | the share rounded first | same call | nothing within half a point of 90 |
-| SF9 | docked | a bike in a dock at the station | a bike in a van at the station | same call | C.1: docked at the station |
-| SF10 | the station move | no bike docked at either site from 23:00 to the drop at 125 | the 25 minutes left out | same call (W-17's lowest month is October) | C.1: minutes of service hours with a bike docked |
-| SF11 | the poller's down spells | not read by the golden | carried or left dark on the default path | same call (the golden reads no feed row) | the golden is rebuilt from the trips and moves |
-| SF12 | the repeated week | each trip once | the week counted twice | same call (asserted, L1) | exact repeats of the same trip ids |
-| SF13 | staff rides | kept: they moved bikes | dropped as not customer trips | W-12 and W-16 | the bikes' own records: dropped, 461 rides start where the bike was not (L2) |
-| SF14 | the repeated hour of 1 November | each trip placed by its duration | the first reading of the hour | same call | duration_s |
-| SF15 | the start of the records | a bike first recorded leaving a station docked there from 20:00 on 23 September | left out until its first record | same call | the quarter starts a week into the records |
-| SF16 | priority station for Q1 2027 | under 90 per cent in any month of Q4 2026 | none | same call | C.3 |
-| SF17 | the station that cleared the line by the least | the lowest month's margin above 90 among the stations not designated | an average over the months | same call (the line is cleared only when every month clears) | C.3: any month |
-| SF18 | ask A, a station's card sales | approved sales less voids at the pay station the sale was made at | the export's pay_station column | every station's figure | the work orders' terminal replacements and the register's install dates |
-| SF19 | ask A, the fourth quarter | Eastern time | UTC | four stations' figures | A.3 and the City's quarter |
-| SF20 | ask B, could not take a card payment | a COMMS_LOST or READER_FAULT alarm active, from its raise to its clear or the pay station's next restart | each raise paired with its code's next clear | every station's figure | the log itself: after a restart a fault still present is raised again in the same second, and sales resume after restarts with no clear (B4) |
-| SF21 | ask B, the service hours | a set of hours, overlapping alarms counted once, inside 6:00 to midnight | durations summed | same figures at whole hours (B3) | the asking sentence: the hours in which it could not |
-
-## Ladder
-
-| Rung | What the response does | Call | What refutes it |
-|---|---|---|---|
-| 0 | the feed's available count as the bikes in working order (the default) | W-16 | bikes passed over by renter after renter, then kept at the depot for days, stood in that count |
-| 1 | the feed less the bikes customers reported, each from the ride that left it | W-16 | two thirds of the bikes the vans took in for repair were never reported |
-| 2 | a dwell cut-off: a bike docked 24 hours or more before a van took it is counted out | W-12, W-16, W-19 | the daily downtown inspection took broken bikes in within hours at Queen and Albert |
-| 2b | staff rides dropped before the spells are rebuilt | W-12, W-16 | bikes then leave from stations they were never at |
-| 3 (decisive) | every bike passed over and taken to the depot for repair counted out of working order from the ride that left it | W-02, W-12, W-16, W-19 | nothing: the standing family files it at a spread of zero |
-
-## Closure table
-
-| Axis | Reading | Move |
-|---|---|---|
-| 1 Population | the City's 24 numbered stations, W-17 under two feed IDs | filed (A.1); SF1 asserted |
-| 2 Unit of account | a station's month; a docked bike's spell within it | the question names the station; C.2 the month |
-| 3 Attribution window | each calendar month of Q4 2026 on Eastern time | filed (A.3, C.1, C.3); SF2, SF5 |
-| 4 As-of dating | the records to the 10 January extract; each minute's state at its start | filed (C.1); SF3 |
-| 5 Version basis | none on the main path: the trips once each | SF12 |
-| 6 Denominator | the month's minutes of service hours | filed (C.2) |
-| 7 Weighting | none: each minute counts once | filed (C.2) |
-| 8 Window length | 6:00 to midnight each day | filed (C.1) |
-| 9 Boundary inclusivity | under 90 per cent | filed (C.3); C1, nothing within half a point (SF6) |
-| 10 Rounding path | the line on the unrounded share; figures rounded once | SF8; the prompt's rounding |
-| 11 Tie-break | none: no lowest month on the line | C1, asserted |
-| 12 Maturity and censoring | every Q4 spell's end is inside the records (to 10 January) | C1, asserted (the golden equals the truth) |
-| 13 Order of operations | spells rebuilt before the minutes are counted; one order | C1 |
-| 14 Row order | none: every figure is a set computation over sorted events | C1 |
-| 15 Duplicate resolution | the repeated week counted once | SF12, asserted |
-| 16 Identity normalisation | feed IDs to City stations through the station list; bike numbers with and without WHB- | the station list; L5 |
-| 17 Netting against gross | none on the main path; ask A nets voids | SF18 |
-| 18 Dimensional units | minutes and per cent; dollars; hours | filed (C.2); the prompt |
-| 19 Code and status semantics | rider types, move actions, alarm codes | file semantics; never the stump; SF13, SF20 |
-| 20 Integerisation | minute counts whole | C1 by construction |
-| 21 Clause scope | Schedule C's test for every station, every month | filed (C.3) |
-| 22 Forward window contents | the designation governs Q1 2027; the call rests on closed records | not live: Schedule C reads the quarter just closed |
-
-## Literal reader
-
-Executed word for word, the prompt and Schedule C ask for each numbered station's share of each Q4 2026 month's minutes
-of service hours that start with at least one bike a customer could unlock and ride away docked there, and for the
-stations under 90 per cent in any month. No record holds whether a docked bike could be ridden: the feed holds what
-Northlane had marked, the trips and fleet moves hold where each bike was and what was done with it. So the literal
-estimand is unobserved and is estimated from the records, bike by bike; every licensed reading of the records (a depot
-stay of 6 to 20 hours, a renter's pass, every van pickup but the station move, and their intersections) files the same
-72 station-months to the minute, and every term in the fork table files the same call or is ruled out by a quoted
-sentence. The golden is the literal estimand's estimate, not a reading of a term.
-
-## Oracles
-
-- No file states a station's availability: Northlane's quarterly report gives system trips, casual trips, fleet moves
-  and fault reports by month, nothing by station.
-- The feed's available plus disabled bikes equal the bikes rebuilt as docked at every minute the poller ran (T3): an
-  identity every reading passes, which separates nothing.
-- The pay-station sales export's quarter total is the same under the export's own column and under the terminals'
-  history (A2): no control ties only under the golden.
-- The alarm log carries no per-station downtime total; the work orders carry no hours.
-
-## Ask sheet
-
-Two asks, both on files the call never reads: the pay-station vendor's sales export with its work orders and register
-(ask A), its alarm log with the register's alarm codes (ask B). Zero device rows sit in the call's population: no trip,
-move, report or status row is read by either ask, and no pay-station row by the call (X1 and X2).
-
-- **Ask A, each station's Q4 2026 pay-station card sales, dollars to the cent (24 figures).** H18 home: a second
-  measure every station carries, the fares its pay station took beside the availability it is judged on. User: the
-  City's bike-share programme (the fares are the City's under the agreement). Primary device: D7 a field overwritten
-  later (the vendor's export names each sale's pay station from the terminal's present pay station, and every pay
-  station's terminal was replaced in the autumn refurbishment by one from the pool, the one taken out refurbished and
-  installed elsewhere, so every station's pre-replacement sales are filed under another station; the quarter's total
-  is unchanged, so nothing ties wrong). Evidence, split: the register's install dates (a terminal installed on 12
-  November cannot have sold at its present pay station in October) and the work orders' replacements (which terminal
-  left which pay station when). Hazards: voided sales as rows of their own, the stamps in UTC (the quarter on UTC moves
-  four stations), Linden Avenue's move (its pay station kept its number). Stops: the export's column (0 of 24), the
-  sales before each terminal's install dropped (0), voids kept (2), the quarter on UTC (20), the golden.
-- **Ask B, each station's Q4 2026 service hours its pay station could not take a card payment, whole hours (24
-  figures).** H18 home: the same stations' pay-station service, a second measure beside availability. User: the
-  City's bike-share programme. Primary device: D4 absence as the signal (a pay station restarts every night at 3:00
-  and on its own watchdog after an hour without a network; a restart clears its alarms and it raises again, in the same
-  second, any fault still there, so an alarm a restart cured has no clear, and the terminal replacements end their
-  reader alarms the same way). Evidence, split: the restarts and the same-second raises in the log, and sales resuming
-  after restarts in the sales export. Hazards: non-blocking codes (receipt paper, the service door, the cabinet heater on
-  cold days), overlapping alarms (summed alike at whole hours), the service-hours window, the stamps in UTC. Stops: each
-  raise paired with its code's next clear (0 of 24, and 3,868 sales inside those spans), alarms with no clear dropped
-  (0), an open alarm ended at the next event of any kind (4), every code counted (0), the golden.
-
-| Ask | What the cracker does | Cracker |
-|---|---|---|
-| A | the sales export's own pay_station column, voids netted, the quarter on Eastern time | miss |
-| B | each COMMS_LOST and READER_FAULT alarm paired with its code's next clear, inside service hours, overlaps merged | miss |
-
-Measured on the cut pack: ask A keeps 24 of 24 once each sale is placed by its terminal's history and 0 of 24 by the
-export's column; ask B keeps 24 of 24 once restarts end alarms, 4 of 24 if an open alarm is ended at the next event of
-any kind, 0 of 24 under every other pairing. A response that finds both devices and lands the call scores 100; one that
-lands the call and finds neither scores 45; the default path with neither scores 12.
-
-Pair ceiling: 28.5 (the cracker 45.0 with none of 48 ask figures, the mirror 12.0 with none; with the next-event repair
-on both, 33.1).
-
-Mirror leakage: 0.0 per cent of ask weight.
-
-Measured by: generator/ceiling.py on the cut pack.
-
-## Pre-ship check
-
-1. Domain: bike-share operations' own reading of station availability, a docked bike's working order read from what
-   renters and the vans did with it (passed over while the bikes around it were taken, then taken to the depot for
-   repair) against the operator's listing; with a hospital's nouns ("beds open") no renter chooses among the units in
-   front of them and no van takes the passed-over ones away.
-2. Real work, nothing planted: every Layer 1 item is what the producing system writes (the City's change-only poller
-   archive with its down spells, the trips across the clock change with staff rides and a re-run week, the moves log's
-   prefixed bike numbers and manifest-stamped night moves, the station move under a new feed ID, the dock expansions,
-   the pay-station vendor's UTC stamps, voids, present-location column and restart-cleared alarms); none is on the
-   decisive step, and no ask device row sits in the call's population (X1, X2).
-3. The step that flips the call is analytical: estimating a state no record holds (whether a docked bike could be
-   ridden) from two records integrated bike by bike; no clause makes the choice (C.1 defines working order by what a
-   customer can do, D.1 and D.2 say how bikes are marked and taken in).
-4. Analyst test: every field and rule read correctly, the feed's available count names W-16 Birch Hill alone (87 per
-   cent in October), asserted on the clean truth and on the pack (T1, T2); the reported bikes alone keep it (G3).
-5. Schedule C files the estimand (A.1, A.3, C.1 to C.3) and no estimator; the standing family (depot stays of 6 to 20
-   hours, a renter's pass, every van pickup but the station move, and their intersections) files the golden four at a
-   spread of zero on all 72 station-months (G2), and every bike it counts out of working order in a minute it decides
-   broke on the ride that left it (G4: 95 spells, none not).
-6. No decoy, no withheld rule against a stated one, no certified replay.
-7. The lesson is on no other card: nearest drivers task471 v3, task98 v2 and task230 v1 at 0.07; task270 v2 and task192
-   v3 differentiated on the card.
-8. Re-read against the built pack at stage 4: (the scored readers' result, filled on their return).
-9. Judge: (the judge's verdict, filed on its return).
-
-leak.py REVIEW lines (zip 14ceb178), each harmless:
-- the agreement's and the archive notes' estimand vocabulary (docked, minute, working, Eastern, available): Schedule C
-  and the feed's GBFS field definitions, which exist without the trap; neither says a listed bike may be broken;
-- the trips, station list, GBFS snapshot and pay-station files naming every station beside numbers: identifiers, trip
-  times, capacities, sales and serials; none ranks the stations on availability;
-- the archive notes naming three stations beside numbers: Linden Avenue's two feed IDs and the two expanded stations'
-  docks.
+Lesson: a share whose denominator is a member's lifetime total counts every later spell, and a member who left alive
+is not finished; the remainder for each state is read from the members who were once in that state, at the same time
+since entering it.
 
 ## Architecture 9 record (spent 2026-10-23)
 
@@ -563,3 +379,4 @@ it hands all three the call, so the decisive step as designed does not stump and
   activity-data uncertainty (the call is a monitoring decision, Data Quality); cohort waits from cumulative counts under
   first-in-first-out (generic queueing, the swap reads the same); a pick log matched to put-aways by each lane's access
   order (drive-in lanes are last-in-first-out, field knowledge a strong reader carries, architecture 7's death).
+- Architecture 10 draw (2026-10-24): drawn on the hospice cap after a second screen of the four open ETL task types (survey research still closed by task483). Screened and dead: TRI range codes valued at the exact filings inside each range (the midpoint is the programme's own convention, a competing defensible answer, and the exact filings are one group-by away); charge compression in cost-plus repricing (the implant invoices put the cost-to-charge ratio against the charge in plain view, and the functional form forks); a stopped turbine's nacelle anemometer read through the running transfer function (readers impute from neighbours by habit, and Gate G reads an instrument bias as planted); unconstrained demand on sell-out days (the product-limit estimator is a reflex and converges with the intraday route); time-of-observation bias in daily maxima (the calendar-day maximum is not recoverable from a 5 p.m. reset and the nearest hourly station); trend uncertainty with shared emission factors (propagating through the difference carries the shared factor by construction, so the easy route is right); items dropped from scoring rescored through the test characteristic curve (the published conversion table replays the method); best-of-k seed reports deflated by each recipe's seed spread (the client's GSDS Layer 1 list names best seed against mean as harmonisation); inverter clipping, demand ratchets and dead-time counting losses (each leaves a flat top or a ceiling in the records that announces its correction); unit value against a fixed-basket price index for provider unit cost (composition_mix, banned against task179 for this registration); DIF purification, testing-window instruction time and single-group order effects in equating (field reflexes, or no bias in the equating); register status nowcast by a Markov chain (forecasting, and architecture 9's surface-read refusal); interpolation along a process curve between sparse readings (task478 v6's and task480's degradation and life-cycle families). The first card draft BLOCKed on test.same_puzzle against task171 v4 with G13 decisive; G12 is the honest decisive generator for the step that decides.

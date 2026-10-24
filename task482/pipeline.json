@@ -1,35 +1,35 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "PAUSED",
- "domain": "supply-chain-logistics",
+ "status": "DESIGN",
+ "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-23",
- "stump": "The default path counts a station available in every minute the status feed lists a bike there and names one priority station, Birch Hill (W-16, 87 per cent in October); a bike that breaks on a ride is docked by its rider and stays listed until a van takes it to the depot for repair, and at the busiest stations it was left as the only bike listed while renters rode away on the others, so with every bike's spells rebuilt from the trips and fleet moves and each bike the vans took in for repair counted out of working order from the end of the ride that left it, four stations fall under 90 per cent in October: Queen and Albert, Maple Grove, Birch Hill and Willow Crescent.",
- "architecture": 9,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-24",
+ "stump": "The default path runs every stay still open at the close to its expected end and treats each beneficiary discharged alive as finished, and accrues repayments at Brackwater, Lindmoor and Wexmoor only; a beneficiary discharged alive often elects hospice again, the chance falling the longer they have been out, and a third of Fallowmere's returns go to hospices outside the organisation that only the contractor's reports hold, so each live discharge's share is read on the days the history of beneficiaries out as long shows to come, in every hospice, and Fallowmere owes too.",
+ "architecture": 10,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-23"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW, no LEAK (zip 14ceb178)",
-  "reader": "both scored readers missed the call (A: W-16 and W-19, B: W-16) and kept 65 and 64 of 74 ask figures (score_reader exit 1)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g, overuse.gate_g, repeat.question_form against task275; same_puzzle_older and same_driver_older differentiated against task270 v2 and task192 v3)",
-  "nearest": "task471 v3, task98 v2, task230 v1 at 0.07",
-  "surface": "clean, no personas in the pack"
+  "heart": "",
+  "nearest": "task266 v1 at 0.11",
+  "surface": ""
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK",
-  "report": "determinism_check_report.md: competing_defensible_answer (Gates B, C, E); Gate G planted_defect_flip, surface_read_rejection; Gate H decisive_step planted"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "stage 1 of architecture 10: no card filed yet. The draw waits on the guard window or a new mechanism: survey research is closed for ETL while task483 is among the last three live cards (ban.pairing, ban.subdomain), and grain_or_unit, population_selection and composition_mix are banned against task483, task275 and task179; payment claims, emissions, IRT equating and data integration clear the guard, and the mechanisms screened on them are recorded in Tried and rejected (architecture 10 draw). Resume by re-running guard.py recent; when task483 leaves the window, census-register reopens.",
+ "resume": "stage 2 of architecture 10 (hospice cap accrual, drawn 2026-10-24): write the generator's world on paper (eight provider numbers, elections since October 2016, live discharges and returns by diagnosis and time out, outside returns in the contractor's reports), measure the projection family's spread on each provider number's repayment, set the ladder so every easy route files a different set from the golden, then the readability screen, fork table, closure, asks and prompt.txt to precut.py exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
