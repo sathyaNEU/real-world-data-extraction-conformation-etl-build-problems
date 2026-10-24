@@ -1,7 +1,7 @@
 {
   "task": "task280",
   "owner": "sathay3012",
-  "status": "PAUSED",
+  "status": "RETIRED",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
   "stage": 1,
@@ -28,7 +28,7 @@
     "report": "task280/determinism_check_report.md (main call forced; Ask A's planned tickets past 6.00 am, Ask B's split nodes' second records and the shares' whole per cent left open)"
   },
   "returned": [],
-  "resume": "Architecture 1 spent at stage 4 on 2026-10-24 (both readers landed the call by conditioning the tests on node utilisation; judge SEND_BACK on the asks). Next: re-root to architecture 2 at stage 1 (a new draw in descriptive-distribution, the card's identity moved to lineage, architecture 2, loops 0), screened against the abstraction this architecture repeated (selection on a covariate shipped whole at the call's grain is a reflex) and the design note's Tried and rejected; if no candidate clears the screens, the author decides between retiring the number and a further screen.",
+  "resume": "RETIRED 2026-10-24 at the author's choice: architecture 1 spent at stage 4 on Gate F (both readers conditioned the tests on node utilisation and landed the call; the judge NOT_DETERMINISTIC, SEND_BACK on the asks), and architecture 2 not drawn (every candidate screened was spent in the corpus at the abstraction test, failed the swap test, or left the field's estimators open; the note's last Tried and rejected line). The number is not reused; wave 6 continues with task281.",
   "approved": null,
   "delivered": null,
   "portal": null,
