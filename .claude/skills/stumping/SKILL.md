@@ -326,6 +326,40 @@ likelihood (a ratio of sums, which is the one-group-by route and a family member
 reconciliation; and feasible-set intersection of interval constraints. The shape is also already spent on the
 portal in other nouns, as a common-point-of-purchase construction that a solver landed at proxy 94.5.
 
+**The identity is measured to machine precision, and the axis's premise holding is exactly what kills it.** A
+second slot built the design deliberately well: 3,840 cases against 491 unknowns at 7.82 cases per unknown,
+with the analytic standard error per shared parameter at **0.5152 points over 59 worlds against a filed
+tolerance of 5.0**, a tenth of the decision's margin and a fourteenfold improvement on an earlier slot's 6.96
+points against a 3.0 lever, because a joint solve borrows every path through the connected roster instead of
+one handler's own out-of-unit observations. The premise therefore holds, and then **the one-line regression a
+competent analyst types IS the reduced normal equations**: the designed joint solve and `score ~ handler +
+unit` dummies agree to **3.973e-12 points** over 59 worlds, both exact in 20 of 20, while the standing family
+is unanimous in 19 of 20. Unanimity and the easy route landing are one number read twice, and over a 20-cell
+dial the one-liner reached the truth in 78 of 79 kept draws with no cell where it and every cheap reflex both
+missed. The attaining-subset screen fires beside it: cross-cover observations alone, a filter and a divide,
+18 of 20.
+
+**The R test's discriminant validity, confirmed from the other side.** This construction measured **R = 235.99
+mean, 31.18 minimum, with 5.85 sign changes**, so it sits structurally outside the per-case-correction family,
+and for an algebraic reason worth keeping: the naive distortion is a workload-centred contrast (a handler
+looks harsh because their caseload is good), which must change sign. So R = 1 is not a screen that catches
+everything by accident; it separates.
+
+**And the only direction the enumeration never reaches is probably empty, for a structural reason.** A
+decisive step whose licensed family has **no shipped design matrix to solve** requires a deciding quantity
+that is not a parameter of any unit the record labels. But **an organisation keeps a quality record in order
+to attribute variation to the units it labels, so every quantity it has a record about is indexed by a
+labelled handler, and the record needed to identify an unlabelled quantity is precisely the one it has no
+reason to keep.** That is the mandated-indicator law read from the design side. Five enumerable candidates on
+judgement-scored ground are all closed by it: a severity or level is a labelled parameter; an agreement
+functional satisfies the letter of the clause but is a variance functional whose lever and noise are one
+number (a discriminability statistic measured at 1.64 distinct designated sets over four licensed forms); a
+coverage quantity over unreached units transports a rate, which is a filter and a divide; a property of the
+design itself is exact arithmetic on the shipped roster; and the rank object is dead on all four of its
+determinacy criteria. **The corollary is the only place left to look: a record the organisation keeps for a
+reason OTHER than attribution** (compliance, billing, provenance, safety), because only there is the
+labelling not built to carry the decision.
+
 **So the only direction the enumeration never reaches:** a decisive step whose licensed family has **NO shipped
 design matrix to solve**, which means the deciding quantity cannot be a parameter attaching to any unit the
 record labels. Everything that attaches to a labelled unit is either corrected per case (closed), propagated
@@ -488,6 +522,18 @@ read past. And **sweep the competing route's own exponent to its floor, not just
 power route capped at 0.50 scored 7 of 20, while the same route at 0.20 and 0.05 reached truth 20 of 20 with
 a lift of 5.561 against the designed construction's 4.601, so the ladder was inverted and the screen's grid
 hid it.
+
+**A count-based pass condition is written against each cell's own kept count, never a constant.** One sweep
+printed its pass column as 8 of 20 because the condition tested a hit count against a fixed 2 while the
+mid-bin filters left only 1 to 3 draws kept per cell, so a cell where the cheap route hit 2 of 2 scored as a
+miss; read against each cell's kept count it hit everything. **And a mid-bin filter that rejects most draws is
+itself a finding, not a nuisance:** 542 draws tried for 20 kept means the designation object is
+boundary-fragile and would have to be tuned rather than drawn.
+
+**A lineage adjacency the guard cannot see, caught by the abstraction test alone.** Two slots sat on the same
+cell, same objective, same decisive gap, same Gate G mechanism and the same Layer 2 pattern in the same
+nouns, and `guard.py` returned a nearest driver of 0.07 because its structural triples keyed on different
+G-codes. Run the abstraction test by hand on the neighbour's own note; the score will not raise it.
 
 **Two harness defects that make a screen report a pass it did not measure.** A reflex on a threshold-count
 object must be scored against **the limit's own value**, never against a quantile of the reflex statistic,
