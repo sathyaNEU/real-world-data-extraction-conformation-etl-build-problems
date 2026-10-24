@@ -8,8 +8,9 @@ repair re-sites the supplemental asks only.
 
 ## Frozen
 
-Prompt paragraph 1, the Final Recommendation, the Critical Components, steps 1 to 8 and the distractor are carried
-over byte for byte (`generator/spec.py` asserts it). Every input file the call reads is byte-identical to v1: only
+The prompt is the author's one-paragraph rephrase with the call question first and no backstory. The Final
+Recommendation, the Critical Components, steps 1 to 8 and the distractor are carried over byte for byte
+(`generator/spec.py` asserts it). Every input file the call reads is byte-identical to v1: only
 `pos_offer_redemptions_2027.csv` moved, and only in `receipt_total_sek` (`generator/checks.py`). The call
 recomputes unchanged on the v2 inputs: 14,108 mailed at 2,298.58, 1,942 control at 2,161.36, 1,150 objected at
 2,102.15, incremental 137.21, standard error 94.21 on 4.54 degrees of freedom, range minus 56.99 to 331.42, margin

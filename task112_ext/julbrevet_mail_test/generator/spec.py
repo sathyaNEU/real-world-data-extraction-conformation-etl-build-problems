@@ -61,5 +61,5 @@ open(sys.argv[4], "w", encoding="utf-8").write(out)
 b1 = v1.split("```"); b2 = out.split("```")
 assert b1[5] == b2[5] and b1[9] == b2[9] and b1[3] == b2[3], "recommendation, critical components and distractor carried over"
 assert b2[11].strip("\n").split("\n")[:8] == steps_v1[:8]
-assert b2[1].split("\n\n")[0].strip("\n") == b1[1].split("\n\n")[0].strip("\n")
+assert "\n\n" not in b2[1].strip("\n"), "the prompt is one paragraph"
 print("spec written; frozen blocks identical")
