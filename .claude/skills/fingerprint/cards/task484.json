@@ -1,94 +1,90 @@
 {
   "task": "task484",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-10-24",
   "slot_note": "",
   "domain": "physical-environmental-sciences",
   "subdomain": "emissions-inventory",
   "client_domain": "physical-environmental-sciences",
-  "niche": "a regional clean air agency's 2025-26 periodic residential wood combustion inventory for six PM2.5 maintenance areas, each area's 2014 base year recalculated on the household survey method to test its contingency trigger after a decade of stove changeouts",
+  "niche": "a mountain valley county's 2025-26 residential wood combustion inventory for the five burn zones of its PM2.5 maintenance area, each zone's wood burned in a winter of a propane price spike read through the propane distributors' delivery tickets, to name the zones whose wood smoke exceeded their allotment and take the 2026-27 stove changeout funds",
   "objective": "etl",
-  "shape": "03",
+  "shape": "07",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Quarrow and Wethermoor trigger their contingency measures for the 2026-27 heating season; Brannock, Ivelton, Saddeny and Ellick do not.",
+  "answer": "",
   "answer_source": "task484/submission.md",
   "gap": [
-    "population",
     "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G9",
-    "G6",
-    "G19"
+    "G4",
+    "G13"
   ],
-  "gate_g": "method_or_model_selection",
+  "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "composition_mix",
+  "stump_strategy": "causal_design",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst recalculates each area's 2014 base year on the current method by applying the 2024 household survey's cords per appliance class, even split by heat status at the survey's own mix, to the plan's 2014 appliance counts with the current emission factors, which reads the survivors of a decade of primary-heat-first changeouts as the 2014 stock, and files all six areas as triggering the contingency measure where two do.",
-  "domain_test": "The field's own analysis is the inventory recalculation for time-series consistency, the base year's activity rebuilt on the current method for the stock that burned then (the surviving units from the household survey and each changed-out unit from its own application); with another field's nouns (patients for stoves, visits for cords) there is no base-year stock, no consistency recalculation and no contingency trigger, and the task stops making sense.",
+  "analyst_test": "A strong analyst who reads every file correctly builds the 2025-26 inventory from the 2024-25 household survey's cords per appliance class, scaled by the two winters' heating degree days, times the registry's in-use appliances, uses the propane distributors' tickets only for the residential propane category, and names the valley floor zones as over their allotments and the propane-heated benches as under them, where the benches' wood burning rose by about half and they are over.",
+  "domain_test": "The field's own analysis estimates a zone's wood burned for a season its household survey did not cover, and a winter's fuel switching is measured where the displaced fuel is metered: a difference-in-differences of propane deliveries between customers with and without a registered stove, checked on the earlier pair of winters, carried through the heat balance at the furnace's and each stove's efficiency; with another field's nouns (clinics for stoves, visits for cords) there is no heat balance, no fuel switching and no burn zone, and the task stops making sense.",
   "layer2_family": "estimand_identification",
-  "layer2_pattern": "own:base-year activity rebuilt from the surviving stock and the removed units' own records",
+  "layer2_pattern": "own:fuel switching read from the displaced fuel's deliveries by appliance ownership",
   "layer1": [
+    "three propane distributors' delivery tickets in three layouts (CSV, fixed-width text, a workbook of monthly totals by account)",
+    "service addresses written differently from the registry's parcel addresses",
     "cords, face cords and pickup loads in one reported-use field",
-    "the plan's 2014 workbook in its own layout and SCC vintage",
-    "survey install years written two ways",
-    "registry devices re-registered when a parcel splits",
-    "maintenance area boundaries revised in 2020",
-    "changeout applications keyed by parcel or by street address, heat status written as a checkbox code or in words",
-    "the programme's fiscal-year reports against heating-season inventory periods"
+    "the registry's device codes and status history",
+    "burn zone boundaries by parcel",
+    "survey weights by zone and appliance class",
+    "heating degree days from daily airport temperatures"
   ],
-  "stakeholder_role": "the agency's air quality planning lead",
+  "stakeholder_role": "the county air quality program's planning lead",
   "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
-    "file": "wood_device_registry_2026-10.csv",
-    "rows": 38197,
-    "entity": "one registered wood-burning device",
-    "grain": "device",
+    "file": "propane_delivery_tickets_2023_2026.csv",
+    "rows": 240000,
+    "entity": "one propane delivery ticket",
+    "grain": "delivery",
     "source": "synthetic"
   },
-  "forum": "regulator_or_inspector",
-  "forcing_event": "statutory_or_regulatory_filing",
+  "forum": "council_or_assembly",
+  "forcing_event": "season_or_peak",
   "org_family": "local_government",
   "world": {
-    "geography": "US, Washington",
+    "geography": "US, Montana",
     "currency": "USD",
-    "org_type": "regional clean air agency",
+    "org_type": "county air quality program",
     "invented_names": [
-      "Selwick Basin Clean Air Agency"
+      "Halvard County Air Quality Program"
     ],
     "people": [
-      "Kylie Maxwell",
-      "Mitchell Conway",
-      "Alyssa Jacobs"
+      "Billy Davis",
+      "Kimberly Rogers",
+      "Martin Booth"
     ]
   },
   "deliverables": [
-    "rwc_periodic_inventory_2025_26.xlsx",
-    "contingency_determinations_2026_27.csv"
+    "rwc_inventory_2025_26.xlsx",
+    "zone_determinations_2026_27.csv"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A class's base-period total is rebuilt for the stock that existed then, each member at the current sample's rate for its own kind within the class, because removal took one kind first and the current sample holds the class at the survivors' mix; the kind of each member removed since is recorded only in the removal records, so carrying the current class mean back, or the current sample's mix of kinds, understates the base and every reduction measured from it.",
-  "driver_concrete": "Each area's 2014 wood smoke base year is the 2014 appliances' burning on the current method: every uncertified stove and outdoor boiler counted in 2014 at the 2024 survey's cords for its class and heat status, the status of each unit changed out since read from its changeout application (about 85 per cent primary heat, against 6 to 42 per cent among the survivors).",
-  "stump": "The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 4 to 33 points, and all six areas trigger the contingency measure where only two do.",
+  "driver": "A period's use of one fuel is read from a survey of the period before, but a price shock on a competing fuel moved part of the households' heat onto it; the move shows only where the competing fuel is metered, as its deliveries falling further at the households that own the appliance than at those that do not, against an earlier pair of periods in which the two moved alike in proportion, and only that difference, carried into heat and back at the appliances' efficiencies, gives the period's use and every share of the budget split on it.",
+  "driver_concrete": "Each burn zone's 2025-26 wood burned is the 2024-25 survey's cords per appliance at the winter's heating degree days plus the heat the propane price spike moved onto the stoves of propane-heated homes, measured as how much further their propane deliveries fell than at propane customers without a registered stove (the two fell alike in proportion from 2023-24 to 2024-25), converted to cords at the propane furnace's and each stove class's efficiency.",
+  "stump": "The default path carries the 2024-25 survey's cords per appliance into 2025-26 at the winter's degree days and reads the propane tickets' fall as thrift in the propane category, so the propane-heated benches' stoves burn at last winter's secondary-heat rate, their PM2.5 sits under their zone allotments, and the changeout funds go to the valley floor zones alone, where the benches' wood burning rose by about half and both benches are over.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task245": "There a recorder's missing periods are its heaviest and the count is rebuilt through a shared driver; here no record has gaps, the current sample measures the surviving class correctly, and the base period's total is rebuilt from the removed members' own pre-removal records.",
-    "task265": "There an event-free share is estimated from a record that saw early starters only if they survived, a delayed-entry correction; here the quantity is a past period's class total and every member removed since is present in its own removal record, so the base is the survivors' current rate plus each removed member's record, not a risk-set correction.",
-    "task139": "There an arm's effect is read per assigned unit through conversion and cost; here no intervention effect is estimated, the quantity is a base period's class total rebuilt for the stock that existed then.",
-    "task182": "There the record holds items in proportion to their duration (length-biased snapshots); here the current sample is a fair sample of the current stock, and the error is carrying its class mean to an earlier stock that held members removed since for being the heaviest.",
-    "task270": "There a retest lift flattens growth slopes in repeated tests; here nothing is measured twice, and the base period's total is rebuilt from survivors and removed members' own records.",
-    "task452": "There reference observations carry inclusion probabilities from a classification revised before the estimate; here the survey's weights are right for the current stock, and the error is the stock's change between periods through worst-first removal."
+    "task123": "There a recorded total is split across calendar periods by the within-interval profile a daily-read sample shows; here nothing recorded is split: the competing fuel's metered fall, beyond the fall at households without the appliance, measures heat moved onto a fuel no meter records.",
+    "task152": "There a reset part's own wear is separated from a loss that accumulates between resets; here no unit wears or resets, and the movement attributed is a winter's fall in one fuel's deliveries, split between thrift shared by every customer and a switch only appliance owners could make.",
+    "task232": "There outcomes surface after a delay and are attributed to an exposure by the delay's range; here the metered quantity is contemporaneous, and the split is between two groups of customers in the same winter, checked on an earlier pair of winters.",
+    "task269": "There a wait is worked over the departures serving each unit's destination (lineage: scorer and content-area reliability); here the quantity is a fuel's use in a season the survey missed, recovered from a difference-in-differences on another fuel's deliveries carried through a heat balance."
   },
   "lineage": [
     {
@@ -101,9 +97,20 @@
       "niche": "a state population unit's 1 April 2026 housing-unit-method estimates for the cities near the 50,000 line of the state's revenue-sharing tiers, conformed from 2020 census counts, certificates of occupancy, demolitions, ACS occupancy and a utility's residential account history",
       "gate_g": "method_or_model_selection",
       "stump_strategy": "other"
+    },
+    {
+      "driver": "A class's base-period total is rebuilt for the stock that existed then, each member at the current sample's rate for its own kind within the class, because removal took one kind first and the current sample holds the class at the survivors' mix; the kind of each member removed since is recorded only in the removal records, so carrying the current class mean back, or the current sample's mix of kinds, understates the base and every reduction measured from it.",
+      "stump": "The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 4 to 33 points, and all six areas trigger the contingency measure where only two do.",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "niche": "a regional clean air agency's 2025-26 periodic residential wood combustion inventory for six PM2.5 maintenance areas, each area's 2014 base year recalculated on the household survey method to test its contingency trigger after a decade of stove changeouts",
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "composition_mix",
+      "version": "v2",
+      "fate": "spent at stage 4, 2026-10-24 (zip 79bf825cac69ff18): both scored readers missed the call and kept none of the 54 ask figures, but the judge returned NOT_DETERMINISTIC SEND_BACK, competing_defensible_answer: the provision's class-based recalculation executed literally licensed the reflex"
     }
   ],
   "notes": "stump_strategy composition_mix: the decisive quantity is a class mean whose within-class mix of heavy and light burners shifted between the base period and the survey; population_selection would also read and is under ban.strategy (task275), and composition_mix is kept because the survey measures the right population for 2026 and the error is carrying its class mixture back to a base year with a different mixture.",
-  "registered": "2026-10-24T09:58:01Z",
-  "architecture_spent": true
+  "architecture_spent": false,
+  "registered": "2026-10-24T16:39:11Z"
 }

@@ -1,225 +1,79 @@
-# task484 design note: Selwick Basin Clean Air Agency's wood smoke contingency determinations (architecture 2)
+# task484 design note: Halvard County's 2025-26 wood smoke zone determinations after a propane price spike (architecture 3)
 
-Drawn 2026-10-24 on the author's standing rule (no retirement) after architecture 1 was spent at stage 4; a fresh world.
-Eight candidates screened before it are in Tried and rejected.
+Drawn 2026-10-24 on the author's standing rule (no retirement) after architecture 2 was spent at stage 4 on the
+judge's SEND_BACK; a fresh world and mechanism. The candidates screened before it are in Tried and rejected.
 
 ## Draw
 
 - **Pairing:** Physical & Environmental Sciences / `emissions-inventory`, drawn for Data Extraction & Conformation
-  (ETL). The task type builds an inventory from activity data and emission factors and keeps its time series
-  consistent when a method changes. ETL because the deliverable is the conformed periodic inventory in the EPA
-  Emissions Inventory System nonpoint layout (area by SCC), built from sources that disagree in layout, units, keys
-  and vintage, with each area's base year recalculated.
-- **Objective check:** the call is a determination per area read off the conformed inventory; nothing future is
-  predicted (not Forecasting), and the work is the conformation and the recalculation (not Descriptive).
-- **Shape:** 03, a bridge between totals: each area's 2014 base year and 2025-26 inventory by appliance class (six
-  areas by six classes, both periods), each area's reduction and determination, and the call, with the asks.
-- **Decision and window:** which of the six maintenance areas, if any, trigger their contingency measure for the
-  2026-27 heating season, under each plan's provision (a reduction from the 2014 base year, recalculated on the
-  current methods, below the area's commitment). The quantity is retrospective with its reason: the provision reads
-  the latest complete heating season's periodic inventory (2025-26), and the decision it drives (the coming season's
-  curtailment rules) is forward.
-- **World:** Selwick Basin Clean Air Agency, a regional clean air agency in Washington serving six PM2.5 maintenance
-  areas: a registry of wood-burning devices kept since 2010 (the spine, about 27,000 devices), a stove changeout
-  programme from 2015 to 2024 that funded primary-heat households first, a 2024 household survey (the current
-  method's activity source) and the plans' 2014 base-year workbook (the old method, regional default cords per
-  appliance). Personas from `guard.py names --geo US-WA --seed 484`: Kylie Maxwell, Mitchell Conway, Alyssa Jacobs.
-- **Planned pack:** the registry (csv), the 2024 household survey (csv), the changeout applications 2015 to 2024 (csv,
-  extracted from scanned forms), the 2014 base-year workbook (xlsx), the plans' contingency provision and inventory
-  methods appendix (pdf), the current emission factor table, the area boundary crosswalk with the 2020 revision, an
-  SCC crosswalk, the Census block-group relationship file; distractors named in metadata.json at stage 3 (heating degree days, the curtailment log, PM2.5
-  monitor daily values, firewood permit sales).
-- **Deliverables:** `rwc_periodic_inventory_2025_26.xlsx` (the inventory and the recalculated base year, area by SCC)
-  and `contingency_determinations_2026_27.csv` (one row per area in the agency's determination layout).
-- **Card:** `.claude/skills/fingerprint/cards/task484.json` (architecture v2, lineage v1 spent), checked after
-  registration: WARN only. Differentiation lines are filed against task245, task265, task139, task182, task270 and
-  task452 (the same decisive gap, generator G9 and Gate G).
-- **WARN answers:** repeat.gate_g and overuse.gate_g (method_or_model_selection): the mechanism carrying the stump is
-  a choice among recalculation constructions for a base year, which is that key; etl_conformance would misstate it.
-  repeat.question_form (which): the decision is a designation set, so the question asks which areas, with "if any"
-  so that none is a grammatical answer.
-- **Data-native sentence:** the changeout funded primary-heat households first, so the uncertified stoves still in
-  use are mostly secondary heat, while the plan's 2014 count holds every stove the programme later took; the survey
-  can only see the survivors, and the applications are the one record of what each removed stove was.
-- **Strategy label:** composition_mix: the survey measures the right population for 2025-26, and the error is
-  carrying its class mixture of heat status back to a base year with a different mixture. population_selection would
-  also read and is under ban.strategy against task275.
-- **Paper screen** (scratch `t484/sim2.py`, seed 4843, a 15 per cent commitment in every area): the golden triggers A3
-  and A5 (11.1 and 5.2) and clears A1 31.9, A2 27.1, A4 19.3 and A6 34.0, the same set as the world's truth (31.7,
-  26.2, 13.3, 20.6, 3.0, 38.2); the survey's class means carried back trigger all six (5.5 to 11.3); the survey's
-  class-and-status cells at the survey's own mix trigger all six (identical); the old regional default triggers A3,
-  A4 and A5. Each half of the decisive step alone files the class-mean answer, so no partial fix moves toward the
-  golden.
+  (ETL). The task type builds an inventory from activity data and emission factors. ETL because the deliverable is
+  the conformed 2025-26 residential heating inventory by burn zone and appliance class (SCC), built from the
+  device registry, the household survey, three propane distributors' delivery tickets in three layouts, the
+  airport station's temperatures and the state tool's conversion factors, which disagree in layout, units and keys.
+- **Objective check:** the call is a determination per burn zone read off the conformed inventory; nothing future
+  is predicted (not Forecasting), and the work is the conformation and the season's activity estimate (not
+  Descriptive or Causal: the comparison is a means of estimating one season's wood burned, not a policy effect).
+- **Shape:** 07, a grid of cells: five burn zones by six appliance classes (wood burned and PM2.5), each zone's
+  total against its allotment and its determination, and the call, with the asks.
+- **Decision and window:** which of the maintenance area's five burn zones, if any, had 2025-26 PM2.5 from
+  residential wood combustion above their zone allotment in the maintenance plan, and so take the 2026-27 stove
+  changeout funds, which the county ordinance splits equally among the zones over their allotments. The quantity
+  is retrospective with its reason: the ordinance reads the latest complete heating season's inventory (1 October
+  2025 to 30 April 2026), and the decision it drives (the 2026-27 changeout season, opening in November) is
+  forward.
+- **World:** Halvard County Air Quality Program, a county program in Montana for the Halvard Valley PM2.5
+  maintenance area: five burn zones (Valley Floor North and South, served by the gas utility; East Bench, West
+  Bench and Upper Valley, mostly propane), a solid fuel device registry kept since 2008, a 2024-25 household
+  heating survey (the latest; the program surveys every third winter), and the three propane distributors'
+  delivery tickets, which the program receives for the residential propane combustion category. Winter 2025-26
+  ran about four per cent colder than 2024-25 by heating degree days, and propane prices spiked from December to
+  February. Personas from `guard.py names --geo us --seed 484`: Billy Davis, Kimberly Rogers, Martin Booth.
+- **Planned pack:** the registry (csv), the 2024-25 survey (csv, with its weights), the delivery tickets 2023-07 to
+  2026-06 from three distributors (a ticket csv, a fixed-width text export, a workbook of monthly gallons by
+  account) with each distributor's service address list, the airport station's daily temperatures, the state
+  RWC tool's documentation (appliance efficiencies and the energy in a cord, pdf), the state energy office's
+  heating fuel equivalents sheet, the 2023 emission factor table, the burn zone parcel crosswalk, the SCC
+  crosswalk, the maintenance plan's zone allotments and the ordinance (pdf); distractors named in metadata.json at
+  stage 3 (the national forest's firewood permits, the curtailment day log).
+- **Deliverables:** `rwc_inventory_2025_26.xlsx` (the inventory by zone and SCC, with the residential propane
+  category) and `zone_determinations_2026_27.csv` (one row per zone in the program's determination layout).
+- **Card:** `.claude/skills/fingerprint/cards/task484.json` (architecture v3, lineage v1 and v2 spent), checked
+  before registration: WARN only. Differentiation lines are filed against task123 (the same decisive gap, G4 and
+  decision type) and task152, task232 and task269 (the same decisive gap, G4 and Gate G).
+- **WARN answers:** repeat.question_form (which): the decision is a designation set, so the question asks which
+  zones, with "if any" so that none is a grammatical answer.
+- **Data-native sentence:** the propane price spike moved part of the heat in propane-heated homes with a stove
+  onto the stove, which no meter records; it shows only in the propane tickets, as deliveries falling further at
+  the customers with a registered stove than at those without, where the two groups fell alike in proportion from
+  2023-24 to 2024-25.
+- **Strategy label:** causal_design: the season's wood burned is recovered through a difference-in-differences on
+  the displaced fuel, with the comparison group (propane customers without a registered stove) and the pre-period
+  check the decisive choices. Gate G decomposition_attribution: the tickets' fall is split between thrift every
+  propane customer shared and a switch only the stove owners could make.
+- **Paper screen** (scratch `t484v3/sub_sim2.py`, three seeds): carrying the survey's cords at the winter's degree
+  days puts the benches at 39 to 47 tons and the valley floor zones at 60 to 66; adding the switch read from the
+  tickets by ratio puts the benches at 57 to 72 (wood burned up 38 to 56 per cent, the world's truth within three
+  tons) and the valley floor at 66 to 73 (up 6 to 12 per cent). The ratio comparison by zone and pooled agree
+  within about a ton; a comparison in gallons sits within two tons of the ratio but fails the 2023-24 to 2024-25
+  check at about eight standard errors (stove customers' deliveries 6 to 21 gallons higher than a level comparison
+  predicts, the ratio comparison within half a per cent). The allotments are set at stage 2 so the default names
+  one valley floor zone and the golden adds both benches, every golden margin at least four tons.
 
 ## Three rules
 
 Task type: Physical & Environmental Sciences, emissions-inventory, which serves ETL in the taxonomy.
-Domain test: the quantity that decides is each area's 2014 base-year PM2.5 from residential wood combustion recalculated on the current method, the cords its base-year appliance stock burned times the current emission factors, the inventory field's time-series consistency recalculation with activity representative of the base-year source population.
-Swap: "which of our six maintenance areas trigger their contingency measure" with patients for stoves and clinic visits for cords has no base-year appliance stock, no recalculation of an emissions base year on a new activity method and no changeout record of what each removed unit was, so it stops making sense.
-Layer 1: the registry re-registers a device when its parcel splits (the assessor's parcel system); applications are keyed by parcel or by street address and carry heat status as a checkbox code or in words (the programme's scanned forms); the survey writes install years two ways and reported use in cords, face cords or pickup loads (the survey vendor's instrument); the 2014 workbook keeps its own layout and SCC vintage (the 2014 inventory tool); maintenance area boundaries were revised in 2020 (the state's rule); the programme reports by fiscal year while the inventory runs by heating season (the agency's budget cycle); nothing is placed to be caught.
-Layer 2: estimand identification (G9 downstream survival against upstream acquisition, G6 composition shift): a class's base-year activity is a mixture of primary-heat and secondary-heat units whose mixture changed because the changeout took primary-heat units first, and the choice that flips the call is rebuilding the 2014 stock's mixture from the survivors and each changed-out unit's own recorded status, against carrying the survey's class mean or its own mixture back.
-Decisive step: recalculating the base year with activity representative of the base-year source population, each 2014 appliance at the survey's cords for its class and heat status, the status of every unit changed out since read from its application.
-Not semantics: with every field read correctly (cords converted, SCCs mapped, install years parsed, areas on the 2020 boundaries, heat status codes read) the easy route still applies the survey's class means, or its status cells at its own mix, to the 2014 counts and files all six areas, and no field, code, unit or definition read differently moves it.
-Not rule application: the plans file the estimand (the cords each appliance in the 2014 count burned, on the current household survey method and the current factors, against the 2025-26 inventory) and say nothing on how a stock that no longer exists takes the survey's activity; on the paper world the enumerated family (class means carried back, the survey's class-and-status cells at its own mix, the old regional default, the rebuilt mixture) spans 5.5 to 31.9 points on area A1's reduction and files three different sets, the standing family is measured at stage 2, and what rules out the survey-mix constructions is the applications' own status mix (about 85 per cent primary heat against 6 to 42 per cent among the survivors), which no filed clause states.
-Analyst test: A strong analyst recalculates each area's 2014 base year on the current method by applying the 2024 household survey's cords per appliance class, even split by heat status at the survey's own mix, to the plan's 2014 appliance counts with the current emission factors, which reads the survivors of a decade of primary-heat-first changeouts as the 2014 stock, and files all six areas as triggering the contingency measure where two do.
-Estimand: each maintenance area's PM2.5 from residential wood combustion in the 2025-26 heating season and in the 2014 base year, the base year recalculated on the current methods (the cords each appliance in the plan's 2014 count burned, on the household survey's measure of cords burned, times the current emission factors), and the reduction from one to the other against the area's commitment, filed in the plans' contingency provision and the inventory methods appendix (pdf).
-No decoy: nothing is planted; the registry, survey, applications, workbook and factors are the agency's own records as their systems produce them, no memo, draft, briefing or stakeholder figure carries a wrong answer, and the 2014 workbook is the old method's own base year, which the golden does not use.
+Domain test: the quantity that decides is each burn zone's 2025-26 PM2.5 from residential wood combustion, the cords its appliances burned that winter times the 2023 emission factors, estimated for a season the household survey did not cover; a winter's fuel switching is measured where the displaced fuel is metered, a difference-in-differences on propane deliveries between customers with and without a registered stove checked on the earlier pair of winters, carried through the heat balance at the furnace's and each stove's efficiency.
+Swap: "which of our five burn zones were over their wood smoke allotment" with clinics for stoves and patient visits for cords has no fuel a household switches between, no heat balance and no propane customer without a stove to compare against, so it stops making sense.
+Layer 1: three propane distributors export tickets in three layouts, one as individual tickets, one as fixed-width text and one as monthly gallons per account (each distributor's billing system); service addresses are written as the distributors write them, not as the registry's parcel addresses (their customer systems); the survey reports use in cords, face cords and pickup loads (the survey vendor's instrument); the registry codes device types and keeps a status history (the county's permitting system); burn zones are defined by parcel (the ordinance's map); the station reports daily temperatures, not degree days (the airport's observing system); nothing is placed to be caught.
+Layer 2: estimand identification, a difference-in-differences with a pre-period check: a season's wood burned is not measured, the survey's rates describe the winter before, and a price shock on the competing fuel moved heat onto the stoves of the homes that heat with it; the choice that flips the call is reading that switch from the propane tickets against the customers without a stove, in proportion, against carrying the survey's rates into the new winter at its degree days.
+Decisive step: estimating each zone's 2025-26 wood burned as the survey's cords at the winter's degree days plus the heat the propane customers with a registered stove moved off propane, measured by how much further their deliveries fell than at the zone's propane customers without one (in proportion, as in 2023-24 to 2024-25) and carried into cords at the propane furnace's and each stove class's efficiency.
+Not semantics: with every field read correctly (tickets in gallons, accounts joined to service addresses, cords converted, devices mapped to SCCs, zones from parcels, degree days from temperatures) the easy route still carries the survey's cords into 2025-26 and reads the tickets' fall as thrift in the propane category, and no field, code, unit or definition read differently moves it.
+Not rule application: the ordinance and the plan file the estimand (the PM2.5 the zone's appliances in use emitted from the wood they burned in the 2025-26 season, at the 2023 factors, against the zone's allotment) and say nothing on how that winter's wood burned is estimated; on the paper world the enumerated family (the survey's cords as reported, at the winter's degree days, plus the switch read in gallons, plus the switch read in proportion pooled or by zone) spans 45 to 68 tons on the East Bench and files three different sets, the standing family (the proportional comparisons, pooled or by zone) agrees within about a ton and files one set, and what rules out the gallon comparison is the 2023-24 to 2024-25 check, which no filed clause states; the cheapest licensed member (one pooled ratio of the no-stove customers' deliveries applied to each stove customer's 2024-25 deliveries) is measured against the golden set at stage 2.
+Analyst test: A strong analyst who reads every file correctly builds the 2025-26 inventory from the 2024-25 household survey's cords per appliance class, scaled by the two winters' heating degree days, times the registry's in-use appliances, uses the propane distributors' tickets only for the residential propane category, and names the valley floor zone as the only one over its allotment, where the benches' wood burning rose by about half and both are over.
+Estimand: each burn zone's PM2.5 from residential wood combustion in the 2025-26 heating season (1 October 2025 to 30 April 2026), the wood burned by the appliances in use that season at the 2023 emission factors, against the zone's allotment in the maintenance plan; filed in the ordinance's changeout section and the plan's zone allotment table (pdf).
+No decoy: nothing is planted; the registry, survey, tickets, temperatures and conversion factors are the program's and its suppliers' own records as their systems produce them, no memo, draft, briefing or stakeholder figure carries a wrong answer, and no filed sentence prescribes carrying the survey into a later winter.
 No certified replay: no certified or published figure is reproduced to recover the method; the construction follows from the estimand and from the data.
-Lesson: a recalculated base year is only as good as the population its activity describes, and when removal took one kind first the current sample describes the survivors, so the base year is rebuilt member by member from what the removal records say each member was; no build on file teaches recalculation over a stock thinned by a selective programme.
-
-## Default path
-
-1. Conform the registry, survey, applications and workbook: parcels and addresses resolved, cords converted, SCCs
-   mapped, areas on the 2020 boundaries.
-2. The 2025-26 inventory: each area's devices in use by class, times the survey's weighted cords per appliance of the
-   class, times the current factors (right as it stands).
-3. The 2014 base year on the current method: the plan's 2014 counts by class times the same survey cords per
-   appliance (or the survey's class-and-status cells at the survey's mix), times the current factors.
-4. Each area's reduction against its commitment.
-
-Ends on: all six areas trigger the contingency measure.
-
-Golden: Quarrow and Wethermoor trigger their contingency measures; Brannock, Ivelton, Saddeny and Ellick do not.
-
-## Stump sentence
-
-The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 4 to 33 points, and all six areas trigger the contingency measure where only two do.
-
-## Readability screen
-
-Measured on the paper world (`generator/paper_screen.py`, seed 48431; areas Brannock (A1), Ivelton (A2), Quarrow (A3), Saddeny (A4), Wethermoor (A5) and Ellick (A6),
-commitments 25, 22, 20, 15, 15 and 25 per cent on paper; the generator sets Saddeny's at 13). The names are working names until the surface screen.
-
-| Rung | What the response does | What in the pack points at it | Verdict |
-|---|---|---|---|
-| L0 the old method's base year | the 2014 counts at the plan's regional default cords, the current factors | the 2014 workbook is the plan's approved base year | readable |
-| L1 class means carried back (default) | the 2014 counts at the 2024 survey's cords per appliance of each class | the provision's "recalculated on the current methods"; the survey's per-class means | readable |
-| L1a status cells at the survey's mix | the same, split by heat status at the survey's own mix of primary and secondary heat | the survey's heat-status field | readable |
-| L2 survivors only | the registry's survivors of 2014 at the class means, the changed-out units dropped | the registry's removal records | readable |
-| L3 changed-out units at the class mean | survivors and changed-out units both counted, each at its class mean | the applications' unit counts | readable |
-| L4 changed-out units at the primary-heat cell | survivors at their own mix, every changed-out unit at the primary-heat cords | the programme's primary-heat-first rule | readable |
-| G golden (decisive) | survivors at their own mix (the survey's units installed by 2014) and each changed-out unit at the cords for its recorded status | the estimand's "each appliance in the plan's 2014 count" and the applications' status field; nothing announces the selection | silent |
-
-Each half of the decisive step alone (L1a, the status split at the survey's mix; L3, the changed-out units counted at
-the class mean) files the default's answer, so no partial fix moves toward the golden.
-
-## Semantic fork table
-
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | the 2014 count | the plan's approved counts by area and class (the 2014 workbook) | the registry's devices active in the 2014 season | same call (to assert at stage 3) | the provision's "each appliance in the plan's 2014 base year" |
-| SF2 | the base-year burning of an appliance still in use | its burning in the survey season, not weather-adjusted | scaled by heating degree days, 2014 against the survey season | same call (to assert) | methods appendix: wood combustion activity is not weather-adjusted |
-| SF3 | an appliance removed outside the programme | at its class's survivors' mix of heat status | dropped from the base | same call (to assert) | the provision counts every appliance in the 2014 base year |
-| SF4 | reported use in face cords and pickup loads | a face cord is a third of a cord, a pickup load half a cord | face cords read as cords | same call (to assert) | the survey codebook |
-| SF5 | an appliance's area | the 2020 boundaries | the 2014 boundaries | another set (to measure) | the provision names the areas as revised in 2020 |
-| SF6 | the commitment | each plan's own percentage | one percentage for every area | another set | the provision's table of commitments |
-| SF7 | falls short | a reduction below the commitment | at or below it | same call: no area sits within 5 points of its commitment (paper; asserted at stage 3) | the provision's wording |
-| SF8 | the survey's grain | each area's own respondents | respondents pooled across areas | to measure (the valleys burn differently) | methods appendix: activity is estimated for each area from its own respondents |
-| SF9 | the survey weights | each respondent's weight | unweighted means | same call within an area (weights are equal inside an area's stratum) | the survey documentation |
-| SF10 | heat status | wood is the household's main heat source, in both the survey question and the application form | any wood heating | not computed (no file records it) | the survey questionnaire and the application form |
-| SF11 | the current factors | the current table's pounds per ton by SCC, the survey's cords at the table's tons per cord | the 2014 tool's factors | another set | methods appendix |
-| SF12 | the inventory period | the 2025-26 heating season | a calendar year | same call | the provision |
-| SF13 | an appliance registered but not used in the season | in the class mean at zero cords | out of the count | same call (consistent in both periods) | methods appendix |
-| SF14 | a changed-out unit recorded as secondary heat | at the secondary-heat cords | at the primary-heat cords | same call (L4 files the golden's set) | the application's status field |
-| SF15 | a unit the programme installed, in the base year | not in it (installed after 2014) | in it at its class | the default's answer for the certified classes | the survey's install year and the programme's install dates |
-
-## Ladder
-
-Measured in the generator (`checks.py` on the world's clean truth, `verify.py` recomputing the golden from the cut
-pack; areas Brannock, Ivelton, Quarrow, Saddeny, Wethermoor and Ellick, commitments 25, 22, 20, 13, 15 and 25 per cent).
-
-| Rung | Areas triggering | Flips from the golden | Call kept |
-|---|---|---|---|
-| L0 the old method's base year | Ivelton, Quarrow, Saddeny, Wethermoor | 2 | no |
-| L1 class means carried back (default) | all six | 4 | no |
-| L1a status cells at the survey's mix | all six (identical to L1 inside every stratum, max gap 8.9e-16) | 4 | no |
-| L2 survivors only | all six | 4 | no |
-| L4 changed-out units at the primary-heat cell | Quarrow, Wethermoor | none | yes |
-| G golden | Quarrow, Wethermoor | none | yes |
-| T the world's true burning | Quarrow, Wethermoor | none | yes |
-
-The golden's reductions are 48.2, 30.6, 12.2, 21.0, 4.9 and 43.3 per cent, 7.8 to 23.2 points from the commitments;
-the world's truth sits 7.0 points or more from them; the default's (15.7, 13.4, 7.2, 9.3, 0.9, 12.1) sit under every
-commitment. The correction tracks each area's changed-out share, not its size.
-
-## Closure table
-
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | each area's appliances in the plan's 2014 base year, and those in use in the 2025-26 season | filed (the provision); SF1, SF3, SF15 |
-| 2 | Unit of account | an area's PM2.5 tons from residential wood combustion | filed (the provision) |
-| 3 | Attribution window | the 2025-26 heating season; the 2014 base year | filed (the provision); SF12 |
-| 4 | As-of dating | the registry as of its extract date; the 2024 survey as the current method's activity | filed (methods appendix) |
-| 5 | Version basis | the current factor table's edition; the 2020 boundaries | filed; SF5, SF11 |
-| 6 | Denominator | the recalculated 2014 base year's tons | filed (the provision) |
-| 7 | Weighting | the survey's respondent weights inside each area | filed (survey documentation); SF9 |
-| 8 | Window length | one heating season | filed (the provision) |
-| 9 | Boundary inclusivity | a reduction below the commitment triggers | filed; SF7, margins asserted |
-| 10 | Rounding path | the determination on unrounded reductions; tons and percentages rounded only for the deliverables | the prompt's rounding sentence; asserted that no area sits within rounding of its commitment |
-| 11 | Tie-break | none needed | asserted: no area at its commitment |
-| 12 | Maturity and censoring | none: the season is closed | not applicable |
-| 13 | Order of operations | cords converted, per-appliance means, counts, factors | same call in any order (linear); asserted |
-| 14 | Row order | the inventory sorted by area and SCC | filed in the layout |
-| 15 | Duplicate resolution | a device re-registered on a parcel split counted once, through the registry's predecessor field | Layer 1; asserted at stage 3 |
-| 16 | Identity normalisation | applications matched to devices by parcel or by street address | Layer 1; asserted |
-| 17 | Netting against gross | none: counts are of appliances in place | not applicable |
-| 18 | Dimensional units | cords (face cords and pickup loads converted), tons per cord, pounds per ton, short tons | filed (codebook and factor table); SF4, SF11 |
-| 19 | Code and status semantics | heat status, SCC and registry status codes | filed (codebooks); SF10 |
-| 20 | Integerisation | counts are whole appliances; estimates are not integerised | not applicable |
-| 21 | Clause scope | the recalculation clause covers residential wood combustion only | filed (the provision) |
-| 22 | Forward window contents | the determination governs the 2026-27 season; no forward quantity is estimated | not applicable |
-
-## Literal reader
-
-Executing the prompt and every filed sentence word for word: the provision measures each area's reduction against
-the 2014 base year recalculated on the current methods, the base year being the cords each appliance in the plan's
-2014 count burned times the current factors, and the current method measures the cords burned per appliance, by class
-and with the household's heat status, for the appliances in use. A literal reader asks what the 2014 appliances
-burned: those still in use burn what the survey measures for their class and heat status, and each one changed out
-since is known by its application's class and heat status, so each takes the survey's cords for its class and status.
-That is the golden. A reader who applies the survey's class mean to the 2014 count executes the current method on the
-current stock, which is not the stock the provision names.
-
-## Oracles
-
-No file ties only under the golden or only on a wrong read. The pack holds no recalculated base year and no area's
-reduction or determination; the 2014 workbook states the old method's base year, which every route can read and none
-needs to reproduce; the programme's annual reports state units changed out and vouchers paid by fiscal year, never
-burning. The asks' referees are fixed with the ask sheet.
-
-## Ask sheet
-
-The call's declared population is each area's appliances in the plan's 2014 count and in use in 2025-26 (the
-registry's devices active in the 2025-26 season, the survey's respondents, the completed changeouts' applications).
-No ask computes over it: the 2025-26 tons and the recalculated 2014 tons by area and SCC are graded with the call's
-critical components (the construction layer), not as asks.
-
-| Ask | Quantity (unit, rounding in the prompt's closing sentence) | Population, outside the call's | Primary device (silent) | How it enters the call (H18) |
-|---|---|---|---|---|
-| A | each area's registry appliances in place in the 2014 season by class, on the 2020 boundaries, each appliance once (counts) | the registry's closed records and the 2014-season records the call never counts | D1 a replay under fresh ids beside genuine same-day pairs: a parcel split closes the appliance's record and registers it again on the same day under a new number at the same address, nothing linking them, beside second appliances of the same kind registered with the first | the audit trail of the 2014 counts the call consumes |
-| B | each county's remainder outside the areas, 2025-26 PM2.5 by SCC on the state tool's method (tons) | the counties' households outside the six areas | D7 codes valid in both vintages but drawn differently: the assessors' housing units sit on 2010 block groups whose codes match the 2020 ACS block groups while some lines were redrawn; the Census relationship file carries them across | the inventory submission the determination is drawn from, its rows outside the areas |
-
-Shared hazards: face cords and pickup loads in reported use; parcels keyed two ways; the ACS release the tool names
-against the latest one in the pack. Fair handling, asserted: pairing each closed record with the record registered at
-its address on its closing day keeps all 36 of ask A (verify.py V5), and carrying the assessors' 2010 block groups to
-2020 through the relationship file keeps all 18 of ask B.
-
-Measured by: `generator/ceiling.py` on the third cut pack (target.zip 79bf825cac69ff18).
-
-| Ask | Graded figures | Cracker keeps | Mirror keeps | Naive handling keeps | Cracker |
-|---|---|---|---|---|---|
-| A registry counts in place in the 2014 season | 36 | 0 | 0 | 2 | misses |
-| B remainder PM2.5 by county and SCC | 18 | 0 | 0 | 5 | misses |
-
-Over the 54 figures the cracker keeps 0.0 per cent of ask weight (scores 45.0 with the call), the mirror 0.0 per cent
-(12.0), the naive handling 13.0 per cent.
-
-Pair ceiling: 28.5.
-Mirror leakage: 0.0 per cent of ask weight.
-The cracker runs the hygiene battery's near-duplicate merge on the registry (one appliance per address, code and install
-year), which merges every genuine pair, and joins the assessors' housing units to the ACS on the block-group code,
-which matches every code and misplaces the redrawn ones; neither leaves a symptom in the battery. This is the paper
-measurement of the cracker the script models; the stage 4 readers measure the real one.
+Lesson: an unmetered fuel's use in a season the survey missed can be read off the metered fuel the households left, but only against the households that could not switch and only in proportion, as the earlier winters show; no build on file teaches recovering one fuel's use from another fuel's deliveries by appliance ownership.
 
 ## Tried and rejected
 
@@ -277,3 +131,41 @@ measurement of the cracker the script models; the stage 4 readers measure the re
   0.372 against a class mean of 0.383, unexplained). Lesson: where the reflex is the literal execution of the filed
   estimand, the stump is a fork, not a step; the decisive population must follow from the WHAT as filed, with the
   easy route a different reading of the data rather than of the text.
+- 2026-10-24, architecture 3 draw: road fuel sold at border stations to drivers from a neighbouring state (fuel
+  tourism) read by a difference-in-differences around the neighbour's tax change. The swap test fails (cigarette
+  sales read the same), and the territorial estimand's reading, not an analysis, decides. Not drawn.
+- 2026-10-24, architecture 3 draw: a staggered rollout read with not-yet-treated comparisons against two-way fixed
+  effects. Spent in task177's note.
+- 2026-10-24, architecture 3 draw: a gas utility's unaccounted-for gas split into billing lag, the temperature
+  under-registration of uncompensated residential meters and meter drift, leaving leaks as the residual. task476's
+  gas distribution niche; the billing lag is task123's calendarization, and the temperature term executes Charles's
+  law as a formula once seen. Not drawn.
+- 2026-10-24, architecture 3 draw: landfill methane by first-order decay (task480's age-declining increments and
+  four slot notes), capture-recapture across overlapping lists (task123, task180, task196, task253, task269,
+  task448), gross flows corrected for reinterview misclassification (task244), equivalent soil mass for a soil
+  carbon stock change (task279's conserved-component insight), glider kits' engine age (task474's ask device) and a
+  replaceable component's own age (task132). Spent.
+- 2026-10-24, architecture 3 draw: container ships' at-berth load by the reefers on board, calibrated on shore
+  power meters. Rejected in task482's architecture 8 screens (a reader calibrating on the meters sees the per-call
+  spread with reefers its first explanation).
+- 2026-10-24, architecture 3 draw: hydropower turbine degassing of hypolimnetic methane. The pathway is either
+  named by the filed estimand (then executed as a rule) or left to a reading of "reservoir emissions" (a fork, as
+  architecture 2's judge ruled). Not drawn.
+- 2026-10-24, architecture 3 draw: low-voltage anode effects emitting CF4 outside the potline's anode effect log.
+  The cheapest licensed member is one regression with an intercept on the logged anode-effect minutes, task263's
+  unmixing lesson. Not drawn.
+- 2026-10-24, architecture 3 draw: flared gas booked as the balancing item of a production report and recovered
+  by weighted least squares on the meters' stated uncertainties. Pro-rata and uncertainty-based allocation are both
+  industry methods and the flare meter alone is a third defensible reading; filing one names the move. Not drawn.
+- 2026-10-24, architecture 3 draw: N2O outside a growing-season chamber window (the spring thaw pulse) carried by
+  fall-applied nitrogen. The gap is read off the estimand's dates (semantics), and the off-season transport forks
+  between a ratio to the season and a ratio to fall nitrogen. Not drawn.
+- 2026-10-24, architecture 3 draw: the leveraged trend of stop-loss excess claims (a reader with claimant-level
+  claims trends each claimant by reflex), commercial cooking PM by device from health inspection equipment lists (a
+  device-based inventory joins the season's device counts by reflex), bunching below a regulatory threshold (the
+  counterfactual density's polynomial and window fork), and residential wood use moved by heat pumps or read from the
+  assessor's heating type (architecture 2's heat-status variable, a composition one table hands over). Not drawn.
+- 2026-10-24, architecture 3 draw: a Lunar New Year factory shutdown reaching a US port's container imports a
+  Pacific crossing later, for its official seasonally adjusted series. The calendar regressor is a reflex in
+  official statistics (task135, task467), and survey-research/etl sits under ban.pairing while task483 is in the
+  window. Kept as a lead for task482's next architecture once the pairing frees.
