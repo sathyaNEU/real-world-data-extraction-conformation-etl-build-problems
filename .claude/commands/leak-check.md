@@ -33,6 +33,8 @@ Run the leak check over the one task named in `$ARGUMENTS`. A bare number or `ta
      thread (one line each in the design note); the reader's question 1 covers the same ground cold.
      task305's third pair both went first to the rating list's holiday parks at Wrentoft, the two
      words the sweep line named, and both landed a call the four readers before them had missed.
+     The answer-figure sweep's lines go over with their numbers removed (name the files, never the
+     figures), since every number it quotes is a golden figure.
 5. **Append** the agent's answers to `<task>/leak_check_report.md` under `## Solver's-eye read`.
 6. **Report**: the mechanical verdict, the six answers in one line each, and the list of items to
    fix. Run on its own, this command fixes nothing; the fix goes in the generator. Inside `/build`

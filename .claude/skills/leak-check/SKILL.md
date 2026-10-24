@@ -102,7 +102,10 @@ paragraph's own words, so handing them over tells the reader where the decisive 
 call into an announced rung (`build-pipeline` Returned tasks), not a measurement. task305's third pair
 both went first to the rating list's holiday parks at Wrentoft, the two words the sweep line named, and
 both landed a call the four readers before them had missed. The main thread rules those lines itself;
-question 1 asks the same thing cold.
+question 1 asks the same thing cold. **The answer-figure sweep's numbers stay out of the brief for the same
+reason**: each one it quotes is a golden figure, so a line saying "list entry numbers such as 823 and 859"
+hands the reader two answers to check its own against (task305's round-3 brief named ask B's figures for
+stores 110 and 109 that way). Tell the reader which files the sweep flagged, never which numbers.
 
 **The reader also hands back every figure it committed to, as a JSON object keyed exactly as
 `<task>/generator/figures.json` is keyed** (a nested value by a dotted key, `"a1_Norte.contacts": 1965`),
