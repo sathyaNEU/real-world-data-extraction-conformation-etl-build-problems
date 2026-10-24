@@ -387,7 +387,9 @@ class Line:
 
     def _benches(self):
         """four benches, each running one pack at a time: a run starts when it is wanted or when a bench frees up"""
-        free = {"T%d" % i: dt.datetime(2025, 1, 6, 6, 0) for i in range(1, 5)}
+        # the benches came on line one after another on the go-live morning
+        free = {"T1": dt.datetime(2025, 1, 6, 6, 10), "T2": dt.datetime(2025, 1, 6, 6, 55),
+                "T3": dt.datetime(2025, 1, 6, 8, 20), "T4": dt.datetime(2025, 1, 6, 10, 5)}
         self.runs = []
         last = defaultdict(lambda: dt.datetime(2000, 1, 1))
         for x in sorted(self.runreq, key=lambda x: (x["want"], x["wo"])):

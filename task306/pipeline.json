@@ -1,11 +1,11 @@
 {
  "task": "task306",
  "owner": "perssathya",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities",
  "objective": "opportunity-sizing-decision",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-24",
  "stump": "A competent solver forecasts 2027 from the 30 June 2026 register alone, each car's current pack from the replacement log at its conditional chance of failing outside cover, and tools the Mira city car four lots short (1,250 against 1,450, 3,400 against 3,800 in total); the step that lands it there is taking the register as the population whose packs fall due in 2027, when the Mira's used imports keep arriving at about 116 a month past their warranty and fall due inside the year.",
  "architecture": 1,
@@ -15,8 +15,8 @@
   "date": "2026-10-24"
  },
  "leak": {
-  "leak_py": "REVIEW (design-note vocabulary only, a62fa349)",
-  "reader": "round 1 on 4442d745: register-only call (missed), asks A 0/5, B 0/5, C 5/5 (dock 2's zero rejects); ask C re-sited, round 2 reader on a62fa349 pending"
+  "leak_py": "REVIEW on 7aa71d60 (four design-note vocabulary lines, each ruled harmless)",
+  "reader": "round 1 (4442d745): register-only call, asks 5 of 15 (ask C); round 2 (a62fa349): register-only call, asks 0 of 15"
  },
  "duplicate_check": {
   "heart": "",
@@ -25,12 +25,12 @@
  "judge": {
   "verdict": "DETERMINISTIC",
   "disposition": "APPROVE",
-  "report": "determinism_check_report.md (on 4442d745; Gate G analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical)"
+  "report": "determinism_check_report.md (Gate G analytical_non_defect; Gate H domain pass, layers pass, decisive step analytical)"
  },
  "returned": [],
- "resume": "Stage 4 round 2: a fresh medium sonnet reader is reading the rebuilt pack (target.zip a62fa349, ask C re-sited onto the grade's date, realism tells fixed). On its return: score it with score_reader.py (call keys slots.* and total), append rounds 1 and 2 to leak_check_report.md under ## Solver's-eye read, fix any finding in one generator pass, then stage 5: ledger row, status SHIPPED, commit SHIPPED (task306) with target.zip and golden/ force-added, pull --rebase and push to main.",
+ "resume": "Shipped 2026-10-24 (target.zip 7aa71d60). Waits on the portal; a determinism finding goes to /fix-determinism, a rubric over 50 with the call held to /fix-rubric.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-24",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

@@ -92,8 +92,11 @@ def build(target):
                        "picklijst"], rows)
     # goods received
     rec = sorted((x for x in L.receipts if fy(x["datum"])), key=lambda x: (x["datum"], x["partij"]))
+    # goods receipts are numbered across everything stores receives, so the module receipts skip numbers
+    gap = __import__("numpy").random.default_rng([P.SEED_LINE, 12])
+    nums = list(71200 + __import__("numpy").cumsum(gap.integers(4, 61, size=len(rec))))
     _csv(F["receipts"], ["ontvangst", "datum", "artikelnummer", "partij", "aantal", "leverancier", "pakbon"],
-         [["ONT%06d" % (71200 + 3 * i), x["datum"].isoformat(), x["artikel"], x["partij"], x["aantal"],
+         [["ONT%06d" % int(nums[i - 1]), x["datum"].isoformat(), x["artikel"], x["partij"], x["aantal"],
            x["leverancier"], x["pakbon"]] for i, x in enumerate(rec, 1)])
     # parts
     desc = {"Volta hatch": "Module 12S Volta hatch (A-grade, gereviseerd)",

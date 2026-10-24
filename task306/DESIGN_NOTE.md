@@ -151,7 +151,7 @@ Main population zero-counts: the call reads the register, the log, the curves, t
 
 Pair ceiling: 32.8 ((48.7 + 17.0) / 2), the cracker keeping 1 of the 15 ask figures on the call and the mirror the same on the register-only call (1 of 6 call figures, the Plover saloon's 350).
 Mirror leakage: 6.7 per cent of ask weight.
-Measured by: generator/pair.py on the cut pack (target.zip a62fa349).
+Measured by: generator/pair.py on the cut pack (target.zip 7aa71d60).
 
 ## Pre-ship check
 
@@ -173,16 +173,27 @@ Measured by: generator/pair.py on the cut pack (target.zip a62fa349).
   extract without its two constant columns, its filter stated in the field descriptions; the log's source column
   showing the dealer-reported fits of our packs; the item master with its superseded and repair articles; the lead
   times with the BMS boards, seal kit and carrier brackets; the price list with its other charges).
-- leak.py, guard surface and heart, the container audit and the house fixes (H4 the zip's 18 members, H11 one
-  submission and one prompt, H16 every extract ending by its pull date with the APK expiry dates as validity dates,
-  H24 no generator word under target/) are re-run on a62fa349 before the round 2 reader.
+- Stage 4 round 2 (on a62fa349): the reader filed the register-only split and 3,400 again and kept 0 of the 15 ask
+  figures (the natural read on all three asks); its two data tells were fixed with no figure moved (goods receipts
+  numbered with the gaps of a shared sequence, the four benches coming on line one after another on the go-live
+  morning), giving the shipped target.zip 7aa71d60 (101 checks, byte-identical, verify, precut 51/0/0, figures
+  66/66, voice-check PASS).
+- score_reader.py prints a call hit on both readers: it counts any one of the six call keys, and the one key hit is
+  the Plover saloon's 350, which the register-only rung shares with the golden (the ladder); both readers filed
+  that rung's split, four of five slots and the total wrong.
+- leak.py REVIEW on 7aa71d60, four design-note vocabulary lines, each ruled harmless: the warranty terms state the
+  first-admission clock, a filed convention on a lower rung; the price list carries prices and charges only; the RDW
+  field descriptions are the publisher's field list; the plan files the estimand and the conventions and names no
+  import. guard heart WARN (Gate G forecasting in 5 of the last 12; png and xlsx); containers clean; H4 the zip's 18
+  members; H11 one submission and one prompt; H16 every extract ending by its pull date, the APK expiry dates as
+  validity dates; H24 no generator word under target/.
 - The 10/10 rules re-read against the built pack: the decisive step is the population whose packs fall due in 2027,
   the fleet as it will stand with the used imports still to arrive, which no filed rule names and which the field's
   installed-base forecast carries; the Layer 1 items move nothing (R2 asserted per item); nothing is planted (R3c).
 - Pair ceiling 32.8 (cracker 48.7, mirror 17.0), mirror leakage 6.7 per cent of the ask weight; ask C's stops after
   meeting its device are printed apart (2 of 5 at most, by count).
 - Open risk, stated: a reader who reads the import stream off the two registration dates and carries it through 2027
-  lands the call; the round 2 reader is the measurement.
+  lands the call; two stage 4 readers and the four pre-draw probes did not.
 
 ## Tried and rejected
 
