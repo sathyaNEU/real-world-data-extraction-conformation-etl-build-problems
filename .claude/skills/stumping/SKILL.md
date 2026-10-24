@@ -231,7 +231,12 @@ against a family of plus 3, 4, 6 and 7). **Naming it is not the family agreeing 
 reports the former has measured nothing. A structure whose POSITION IS NOT REGISTERED, so the position is
 reconstructed from each unit's own history, gives **5.00 distinct paths of 5** at a spread of 4.72 against a
 printed unit of 1, exact in only 3 of 20, with every licensed reconstruction (largest drop, local minima,
-cusum reset, sawtooth least squares, pooled modal period) giving a different path in every one of 20 worlds.
+cusum reset, sawtooth least squares, pooled modal period) giving a different path in every one of 20 worlds. **And a second slot priced it independently and found it dies in a different place than the law
+predicted, which is the useful half:** the POSITION ITSELF is recovered well, a grid-fitted harmonic putting
+the median phase error at 1.04, 0.46, 0.27, 0.19 and 0.13 months as the amplitude-to-noise ratio runs 0.59
+to 4.71, so the parametric horn does not bite the phase at all. What is free is **the CYCLE the phase is
+measured against**, and every graded object built on a position needs it. So do not price the position's
+recoverability and conclude the direction is open: price the cycle.
 
 **The one-number test for whether a candidate is in the closed family, whatever its nouns.** Over one full
 cycle compute `R = sum_q |G(q)| / |sum_q G(q)|` on the graded path, and count the path's sign changes. A

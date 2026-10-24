@@ -209,6 +209,23 @@ back; the better outcome is never to face it.
   14 task types, and one of them BLOCKed a fresh draw that no driver could have cleared.
 - **Vocabulary drift:** a new `vocab.json` value only when none is honest (reason in `notes`); `other`
   exists so no untrue key is forced.
+- **A never-drawn SUBDOMAIN read as open ground, which is the same error as the never-built pairing and is
+  made twice as often.** A subdomain with zero cards may be unbuilt because the taxonomy does not let it
+  serve the objective at all: one measured instance BLOCKs on `three_rules.task_type` with "task type
+  alarm-interface-evaluation serves experiment-causal, not anomaly-detection: the domain would be a
+  backdrop", and it returns the same BLOCK on a sweep of four objectives. Of six task types in that domain
+  exactly one served the objective, and it was already carded. **Run `guard.py check` on a probe card before
+  briefing a cell as available, never infer availability from a zero count**, and never from the phrase
+  "never drawn". A whole candidate was screened to a measured refusal on an illegal cell this way; its
+  arithmetic stands but the ground it cleared was never there.
+- **An axis ban read as aged out without measuring it, and an unstamped card is not in the window.** A
+  strategy was briefed as legal because a build carrying it had shipped, and it measured `BLOCK ban.strategy`
+  against a card registered the same day. Two things make that reading wrong. The window is the last three
+  LIVE cards in draw order, so a ship does not retire a ban, and a card with **no `registered` stamp at all
+  is not in the window by filing time**, so the shipped build that seemed to license the strategy was not
+  the card the ban was measured against. Read bans off `guard.py check` at the moment a card is drafted, not
+  off a wave contract, a reservation, or a remembered verdict: three separate stale readings were measured in
+  one day, and a slot's own `paper_screen` line had two labels recorded as blocked that measured free.
 - **A family offered on its label:** a mechanism `coverage` shows as never drawn may have died in lineage
   (confirm_surface_read: zero main uses, four lineage architectures, all solved). Read the fates first.
 - **A never-built pairing read as a menu.** Most of the pairings `coverage` prints as never built cannot be
