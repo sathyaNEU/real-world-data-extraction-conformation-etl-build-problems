@@ -27,7 +27,7 @@ Eight candidates screened before it are in Tried and rejected.
 - **Planned pack:** the registry (csv), the 2024 household survey (csv), the changeout applications 2015 to 2024 (csv,
   extracted from scanned forms), the 2014 base-year workbook (xlsx), the plans' contingency provision and inventory
   methods appendix (pdf), the current emission factor table, the area boundary crosswalk with the 2020 revision, an
-  SCC crosswalk; distractors named in metadata.json at stage 3 (heating degree days, the curtailment log, PM2.5
+  SCC crosswalk, the Census block-group relationship file; distractors named in metadata.json at stage 3 (heating degree days, the curtailment log, PM2.5
   monitor daily values, firewood permit sales).
 - **Deliverables:** `rwc_periodic_inventory_2025_26.xlsx` (the inventory and the recalculated base year, area by SCC)
   and `contingency_determinations_2026_27.csv` (one row per area in the agency's determination layout).
@@ -83,7 +83,7 @@ Golden: Quarrow and Wethermoor trigger their contingency measures; Brannock, Ive
 
 ## Stump sentence
 
-The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 8 to 28 points, and all six areas trigger the contingency measure where only two do.
+The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 4 to 33 points, and all six areas trigger the contingency measure where only two do.
 
 ## Readability screen
 
@@ -138,8 +138,8 @@ pack; areas Brannock, Ivelton, Quarrow, Saddeny, Wethermoor and Ellick, commitme
 | G golden | Quarrow, Wethermoor | none | yes |
 | T the world's true burning | Quarrow, Wethermoor | none | yes |
 
-The golden's reductions are 42.5, 35.1, 10.6, 18.8, 4.3 and 48.0 per cent, 5.8 to 23.0 points from the commitments;
-the world's truth sits 7.7 points or more from them; the default's (15.6, 17.0, 4.9, 10.4, 2.2, 14.3) sit under every
+The golden's reductions are 48.2, 30.6, 12.2, 21.0, 4.9 and 43.3 per cent, 7.8 to 23.2 points from the commitments;
+the world's truth sits 7.0 points or more from them; the default's (15.7, 13.4, 7.2, 9.3, 0.9, 12.1) sit under every
 commitment. The correction tracks each area's changed-out share, not its size.
 
 ## Closure table
@@ -189,9 +189,6 @@ burning. The asks' referees are fixed with the ask sheet.
 
 ## Ask sheet
 
-Planned on paper; the cracker and mirror sheets, the pair ceiling and the mirror leakage are measured at stage 3 by
-`generator/ceiling.py` on the first cut pack, and every row is stamped with that pack's digest.
-
 The call's declared population is each area's appliances in the plan's 2014 count and in use in 2025-26 (the
 registry's devices active in the 2025-26 season, the survey's respondents, the completed changeouts' applications).
 No ask computes over it: the 2025-26 tons and the recalculated 2014 tons by area and SCC are graded with the call's
@@ -199,31 +196,31 @@ critical components (the construction layer), not as asks.
 
 | Ask | Quantity (unit, rounding in the prompt's closing sentence) | Population, outside the call's | Primary device (silent) | How it enters the call (H18) |
 |---|---|---|---|---|
-| A | each area's devices in place in the 2014 season by class from the registry, and the items between that count and the plan's approved 2014 count (counts) | registry rows closed before the 2025-26 season or never in it: devices superseded at a parcel split, registered after the plan's extract with an earlier install year, moved into an area by the 2020 boundary revision | D1 a re-registration at a parcel split copies the original install year onto the new device id while the old id is closed as superseded; only the predecessor field joins them | the audit trail of the 2014 counts the call consumes |
-| B | each county's remainder outside the maintenance areas, 2025-26 wood burned and PM2.5 by class on the state tool's method (tons) | the counties' households outside the six areas (ACS block groups and the assessor's improvement records), which the registry does not cover | D5 block groups split by the 2020 boundary, their inside share known only from the assessor's parcels; D2 the ACS vintage the state tool names, not the latest | the inventory submission the determination is drawn from, its rows outside the areas |
+| A | each area's registry appliances in place in the 2014 season by class, on the 2020 boundaries, each appliance once (counts) | the registry's closed records and the 2014-season records the call never counts | D1 a replay under fresh ids beside genuine same-day pairs: a parcel split closes the appliance's record and registers it again on the same day under a new number at the same address, nothing linking them, beside second appliances of the same kind registered with the first | the audit trail of the 2014 counts the call consumes |
+| B | each county's remainder outside the areas, 2025-26 PM2.5 by SCC on the state tool's method (tons) | the counties' households outside the six areas | D7 codes valid in both vintages but drawn differently: the assessors' housing units sit on 2010 block groups whose codes match the 2020 ACS block groups while some lines were redrawn; the Census relationship file carries them across | the inventory submission the determination is drawn from, its rows outside the areas |
 
-Shared hazards (to place at stage 3, each moving both asks): face cords and pickup loads in reported use; parcels
-keyed two ways; the programme's fiscal years against heating seasons. Each ask's prompt wording is fixed against the
-golden at stage 3, with "any" so that none is a grammatical answer, and no trap word (reconcile is not used).
+Shared hazards: face cords and pickup loads in reported use; parcels keyed two ways; the ACS release the tool names
+against the latest one in the pack. Fair handling, asserted: pairing each closed record with the record registered at
+its address on its closing day keeps all 36 of ask A (verify.py V5), and carrying the assessors' 2010 block groups to
+2020 through the relationship file keeps all 18 of ask B.
 
+Measured by: `generator/ceiling.py` on the third cut pack (target.zip 79bf825cac69ff18).
 
-Measured by: `generator/ceiling.py` on the second cut pack (target.zip c7ccb8e1679941e1).
+| Ask | Graded figures | Cracker keeps | Mirror keeps | Naive handling keeps | Cracker |
+|---|---|---|---|---|---|
+| A registry counts in place in the 2014 season | 36 | 0 | 0 | 2 | misses |
+| B remainder PM2.5 by county and SCC | 18 | 0 | 0 | 5 | misses |
 
-| Ask | Graded figures | Cracker keeps | Mirror keeps | Naive handling keeps |
-|---|---|---|---|---|
-| A registry counts in place in the 2014 season | 36 | 3 | 3 | 0 |
-| B remainder PM2.5 by county and SCC | 18 | 18 | 18 | 1 |
-| share of ask weight (score) | 54 | 38.9 per cent (66.4) | 38.9 per cent (33.4) | 1.9 per cent |
+Over the 54 figures the cracker keeps 0.0 per cent of ask weight (scores 45.0 with the call), the mirror 0.0 per cent
+(12.0), the naive handling 13.0 per cent.
 
-Pair ceiling: 49.9, against the 40 the bar is built to.
-Mirror leakage: 38.9 per cent of ask weight.
-Ask A now holds: a parcel split closes the appliance's record and registers it again under a new number on the same
-day at the same address, with nothing linking the two, beside genuine pairs (a second appliance of the same kind
-registered with the first); the hygiene battery's near-duplicate merge (one appliance per address, code and install
-year) keeps 3 of 36, counting every record keeps none, and only pairing a closed record with the record registered at
-its address on its closing day keeps all 36 (verify.py V5). Ask B still leaks every figure: its release is named in
-the tool note and the assessor labels each block group's part inside an area, so it needs a silent device or a
-replacement before stage 4.
+Pair ceiling: 28.5.
+Mirror leakage: 0.0 per cent of ask weight.
+The cracker runs the hygiene battery's near-duplicate merge on the registry (one appliance per address, code and install
+year), which merges every genuine pair, and joins the assessors' housing units to the ACS on the block-group code,
+which matches every code and misplaces the redrawn ones; neither leaves a symptom in the battery. This is the paper
+measurement of the cracker the script models; the stage 4 readers measure the real one.
+
 ## Tried and rejected
 
 - 2026-10-20, at the draw: ET41's own world, broadband grant allocation from the FCC map: served, underserved,
@@ -268,3 +265,6 @@ replacement before stage 4.
   rule. Re-site both with silent devices (supplemental-stumping Part 3).
 - 2026-10-24, ask A re-sited (second cut pack c7ccb8e1679941e1): the predecessor id removed and the split's old
   record closed as an ordinary closed record beside genuine same-day pairs; the cracker now keeps 3 of 36. Ask B unchanged.
+- 2026-10-24, ask B re-sited (third cut pack 79bf825cac69ff18): the assessors' housing units keyed to 2010 block
+  groups, the relationship file shipped, and every area-and-class cell given a genuine same-day pair; ceiling.py measures
+  the cracker keeping 0 of 54 and a pair ceiling of 28.5.

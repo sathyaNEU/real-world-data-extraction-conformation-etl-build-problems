@@ -72,13 +72,21 @@ def ask_b(rule, split):
     hu = collections.defaultdict(lambda: [0, 0])
     for x in rows("assessor_housing_units_by_block_group_2025.csv"):
         hu[x["block_group"]][0 if x["maintenance_area_2020"] else 1] += int(x["housing_units"])
+    share = {}
+    if split == "relationship":
+        o20, t20 = collections.Counter(), collections.Counter()
+        for x in rows("census_bg2020_bg2010_relationship_wa.csv"):
+            i, o = hu[x["GEOID_BG_10"]]
+            o20[x["GEOID_BG_20"]] += int(x["HU_20_OVERLAP"]) * o / (i + o)
+            t20[x["GEOID_BG_20"]] += int(x["HU_20_OVERLAP"])
+        share = {g: o20[g] / t20[g] for g in t20}
     out = collections.Counter()
     for x in acs:
         g = x["GEO_ID"][-12:]
         county = re.search(r", (\w+) County", x["NAME"]).group(1)
         inside, outside = hu[g]
-        share = outside / (inside + outside) if split else (1.0 if outside > inside else 0.0)
-        main = int(x["B25040_008E"]) * share
+        sh = share[g] if split == "relationship" else outside / (inside + outside) if split else (1.0 if outside > inside else 0.0)
+        main = int(x["B25040_008E"]) * sh
         for s, (sp, ss, up, us) in tool.items():
             use = main * sp * up + main * sec * ss * us
             wood = use if s == pel else use * 1.163
@@ -99,8 +107,8 @@ def main():
     total = len(ga) + len(gb)
     ck = score(ask_a("dedupe"), ask_b(True, True))
     nk = score(ask_a("naive"), ask_b(False, False))
-    pk = score(ask_a("pair"), ask_b(True, True))
-    print("pairing each closed record with its same-day re-registration keeps ask A %d" % pk[0])
+    pk = score(ask_a("pair"), ask_b(True, "relationship"))
+    print("the golden handling (same-day pairing; the relationship file) keeps ask A %d, ask B %d" % pk)
     lc = sum(ck) / total
     C = 38 + 7 + 55 * lc
     S = 5 + 7 + 55 * lc            # the mirror misses the call and handles the asks as the cracker does

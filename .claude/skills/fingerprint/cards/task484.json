@@ -11,8 +11,8 @@
   "shape": "03",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Quarrow and Wethermoor trigger their contingency measures for the 2026-27 heating season; Brannock, Ivelton, Saddeny and Ellick do not.",
+  "answer_source": "task484/submission.md",
   "gap": [
     "population",
     "time"
@@ -51,7 +51,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "wood_device_registry_2026-10.csv",
-    "rows": 27000,
+    "rows": 38197,
     "entity": "one registered wood-burning device",
     "grain": "device",
     "source": "synthetic"
@@ -80,7 +80,7 @@
   "question_form": "which",
   "driver": "A class's base-period total is rebuilt for the stock that existed then, each member at the current sample's rate for its own kind within the class, because removal took one kind first and the current sample holds the class at the survivors' mix; the kind of each member removed since is recorded only in the removal records, so carrying the current class mean back, or the current sample's mix of kinds, understates the base and every reduction measured from it.",
   "driver_concrete": "Each area's 2014 wood smoke base year is the 2014 appliances' burning on the current method: every uncertified stove and outdoor boiler counted in 2014 at the 2024 survey's cords for its class and heat status, the status of each unit changed out since read from its changeout application (about 85 per cent primary heat, against 6 to 42 per cent among the survivors).",
-  "stump": "The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 8 to 28 points, and all six areas trigger the contingency measure where only two do.",
+  "stump": "The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 4 to 33 points, and all six areas trigger the contingency measure where only two do.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task245": "There a recorder's missing periods are its heaviest and the count is rebuilt through a shared driver; here no record has gaps, the current sample measures the surviving class correctly, and the base period's total is rebuilt from the removed members' own pre-removal records.",

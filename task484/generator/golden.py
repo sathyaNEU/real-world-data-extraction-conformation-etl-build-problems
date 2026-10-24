@@ -85,20 +85,25 @@ def ask_a(devs):
     return out
 
 
-def ask_b(bgs):
-    """Each county's remainder outside the areas on the state tool: the 2019-2023 release's main-heat households
-    of each block group times its housing units' share outside the areas, the tool's secondary ratio, shares and use."""
+def ask_b(rem):
+    """Each county's remainder outside the areas on the state tool: the 2019-2023 release's main-heat households of
+    each 2020 block group times its housing units' share outside the areas (the assessors' 2010 block groups carried to
+    2020 through the relationship file's overlaps), the tool's secondary ratio, shares and use."""
     import pack as P
+    hu10 = {b["geoid"]: b for b in rem["bg10"]}
+    out20, hu20 = {}, {}
+    for o in rem["ov"]:
+        b = hu10[o["g10"]]
+        out20[o["g20"]] = out20.get(o["g20"], 0.0) + o["hu"] * (b["hu"] - b["inside"]) / b["hu"]
+        hu20[o["g20"]] = hu20.get(o["g20"], 0) + o["hu"]
     out = {}
     for county in W.COUNTIES:
         for cl in W.CL:
             wood = 0.0
-            for b in bgs:
+            for b in rem["bg20"]:
                 if b["county"] != county:
                     continue
-                hu_in = int(round(b["hu"] * b["inside"]))
-                share_out = (b["hu"] - hu_in) / b["hu"]
-                main = b["acs1923"] * share_out
+                main = b["acs1923"] * out20[b["geoid"]] / hu20[b["geoid"]]
                 use = main * P.TOOL_SHARE[True][cl] * P.TOOL_USE[True][cl] + \
                     main * P.TOOL_SECONDARY * P.TOOL_SHARE[False][cl] * P.TOOL_USE[False][cl]
                 wood += W.tons_of(cl, use)

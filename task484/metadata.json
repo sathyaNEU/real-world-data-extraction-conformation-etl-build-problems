@@ -5,69 +5,6 @@
  "as_of": "2026-07-24",
  "files": [
   {
-   "file": "wood_device_registry_2026-06-30.csv",
-   "source": "Selwick Basin Clean Air Agency, wood-burning device registry (fictional, synthetic records)",
-   "date": "2026-06-30",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 38325
-  },
-  {
-   "file": "household_wood_survey_2024_25.csv",
-   "source": "Selwick Basin Clean Air Agency, household wood survey (vendor extract) (fictional, synthetic records)",
-   "date": "2025-06-12",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 3777
-  },
-  {
-   "file": "changeout_applications_2015_2025.csv",
-   "source": "Selwick Basin Clean Air Agency, changeout programme applications (fictional, synthetic records)",
-   "date": "2024-10-15",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 4547
-  },
-  {
-   "file": "maintenance_plan_rwc_base_year_2014.xlsx",
-   "source": "Maintenance plans, 2014 base year appendix (fictional, synthetic records)",
-   "date": "2016-11-21",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "contingency_provisions_rwc.pdf",
-   "source": "Maintenance plans, contingency provisions (fictional, synthetic records)",
-   "date": "2016-12-09",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "rwc_inventory_methods_appendix_2025_26.pdf",
-   "source": "Air Quality Planning, periodic inventory methods appendix (fictional, synthetic records)",
-   "date": "2026-07-15",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "emission_factors_rwc_2023.csv",
-   "source": "Emission factor table, 2023 edition (fictional, synthetic records)",
-   "date": "2023-11-01",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 24
-  },
-  {
-   "file": "scc_crosswalk_rwc.csv",
-   "source": "Air Quality Planning, SCC crosswalk (fictional, synthetic records)",
-   "date": "2026-07-15",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 6
-  },
-  {
-   "file": "parcel_area_crosswalk.csv",
-   "source": "County assessors, parcel and area crosswalk (fictional, synthetic records)",
-   "date": "2026-06-30",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 38325
-  },
-  {
    "file": "acs_b25040_blockgroups_2019_2023.csv",
    "source": "ACS 5-year table B25040, 2019-2023 release (block groups) (fictional, synthetic records)",
    "date": "2024-12-12",
@@ -86,21 +23,28 @@
    "source": "County assessors, housing units by block group (fictional, synthetic records)",
    "date": "2025-08-01",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 189
+   "rows": 188
   },
   {
-   "file": "state_rwc_tool_method_note.pdf",
-   "source": "State residential wood combustion tool, method note (fictional, synthetic records)",
-   "date": "2023-11-02",
+   "file": "census_bg2020_bg2010_relationship_wa.csv",
+   "source": "Census Bureau, 2020 to 2010 block group relationship file (fictional geography, synthetic records)",
+   "date": "2023-04-18",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 284
+  },
+  {
+   "file": "changeout_applications_2015_2025.csv",
+   "source": "Selwick Basin Clean Air Agency, changeout programme applications (fictional, synthetic records)",
+   "date": "2024-10-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 4473
+  },
+  {
+   "file": "contingency_provisions_rwc.pdf",
+   "source": "Maintenance plans, contingency provisions (fictional, synthetic records)",
+   "date": "2016-12-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
-  },
-  {
-   "file": "heating_degree_days_2025_26.csv",
-   "source": "Airport weather stations, heating degree days (fictional, synthetic records)",
-   "date": "2026-05-02",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 636
   },
   {
    "file": "curtailment_log_2025_26.csv",
@@ -110,11 +54,11 @@
    "rows": 95
   },
   {
-   "file": "pm25_monitor_daily_2025_26.csv",
-   "source": "Federal reference method monitors, daily PM2.5 (fictional, synthetic records)",
-   "date": "2026-05-15",
+   "file": "emission_factors_rwc_2023.csv",
+   "source": "Emission factor table, 2023 edition (fictional, synthetic records)",
+   "date": "2023-11-01",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 1272
+   "rows": 24
   },
   {
    "file": "firewood_permits_by_district.csv",
@@ -122,6 +66,69 @@
    "date": "2026-05-30",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": 12
+  },
+  {
+   "file": "heating_degree_days_2025_26.csv",
+   "source": "Airport weather stations, heating degree days (fictional, synthetic records)",
+   "date": "2026-05-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 636
+  },
+  {
+   "file": "household_wood_survey_2024_25.csv",
+   "source": "Selwick Basin Clean Air Agency, household wood survey (vendor extract) (fictional, synthetic records)",
+   "date": "2025-06-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 3785
+  },
+  {
+   "file": "maintenance_plan_rwc_base_year_2014.xlsx",
+   "source": "Maintenance plans, 2014 base year appendix (fictional, synthetic records)",
+   "date": "2016-11-21",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "parcel_area_crosswalk.csv",
+   "source": "County assessors, parcel and area crosswalk (fictional, synthetic records)",
+   "date": "2026-06-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 37195
+  },
+  {
+   "file": "pm25_monitor_daily_2025_26.csv",
+   "source": "Federal reference method monitors, daily PM2.5 (fictional, synthetic records)",
+   "date": "2026-05-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1272
+  },
+  {
+   "file": "rwc_inventory_methods_appendix_2025_26.pdf",
+   "source": "Air Quality Planning, periodic inventory methods appendix (fictional, synthetic records)",
+   "date": "2026-07-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "scc_crosswalk_rwc.csv",
+   "source": "Air Quality Planning, SCC crosswalk (fictional, synthetic records)",
+   "date": "2026-07-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 6
+  },
+  {
+   "file": "state_rwc_tool_method_note.pdf",
+   "source": "State residential wood combustion tool, method note (fictional, synthetic records)",
+   "date": "2023-11-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "wood_device_registry_2026-06-30.csv",
+   "source": "Selwick Basin Clean Air Agency, wood-burning device registry (fictional, synthetic records)",
+   "date": "2026-06-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 38197
   }
  ],
  "distractors": [

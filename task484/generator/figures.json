@@ -3,149 +3,149 @@
   "Brannock": {
    "commitment": 25,
    "determination": "NOT TRIGGERED",
-   "pm14": 185.1,
-   "pm26": 99.6,
-   "reduction": 46.2,
+   "pm14": 196.6,
+   "pm26": 101.9,
+   "reduction": 48.2,
    "rungs": {
-    "allprimary": 49.6,
-    "classmean": 12.7,
-    "default": 31.8,
-    "golden": 46.2,
-    "survivors": -30.2,
-    "truth": 41.7
+    "allprimary": 51.4,
+    "classmean": 15.7,
+    "default": 30.2,
+    "golden": 48.2,
+    "survivors": -28.3,
+    "truth": 41.2
    }
   },
   "Ellick": {
    "commitment": 25,
    "determination": "NOT TRIGGERED",
-   "pm14": 120.0,
-   "pm26": 53.6,
-   "reduction": 55.4,
+   "pm14": 87.7,
+   "pm26": 49.7,
+   "reduction": 43.3,
    "rungs": {
-    "allprimary": 58.7,
-    "classmean": 10.1,
-    "default": 39.1,
-    "golden": 55.4,
-    "survivors": -31.0,
-    "truth": 42.7
+    "allprimary": 47.1,
+    "classmean": 12.1,
+    "default": 43.5,
+    "golden": 43.3,
+    "survivors": -30.2,
+    "truth": 43.0
    }
   },
   "Ivelton": {
    "commitment": 22,
    "determination": "NOT TRIGGERED",
-   "pm14": 123.6,
-   "pm26": 82.7,
-   "reduction": 33.1,
+   "pm14": 117.2,
+   "pm26": 81.4,
+   "reduction": 30.6,
    "rungs": {
-    "allprimary": 36.9,
-    "classmean": 14.5,
-    "default": 18.9,
-    "golden": 33.1,
-    "survivors": -22.2,
-    "truth": 33.3
+    "allprimary": 34.2,
+    "classmean": 13.4,
+    "default": 20.1,
+    "golden": 30.6,
+    "survivors": -22.4,
+    "truth": 32.8
    }
   },
   "Quarrow": {
    "commitment": 20,
    "determination": "TRIGGERED",
-   "pm14": 210.5,
-   "pm26": 185.0,
-   "reduction": 12.1,
+   "pm14": 205.1,
+   "pm26": 180.2,
+   "reduction": 12.2,
    "rungs": {
     "allprimary": 14.3,
-    "classmean": 6.3,
-    "default": 1.9,
-    "golden": 12.1,
-    "survivors": -8.4,
-    "truth": 12.1
+    "classmean": 7.2,
+    "default": 4.6,
+    "golden": 12.2,
+    "survivors": -8.1,
+    "truth": 13.0
    }
   },
   "Saddeny": {
    "commitment": 13,
    "determination": "NOT TRIGGERED",
-   "pm14": 89.0,
-   "pm26": 66.3,
-   "reduction": 25.5,
+   "pm14": 92.1,
+   "pm26": 72.8,
+   "reduction": 21.0,
    "rungs": {
-    "allprimary": 27.5,
-    "classmean": 11.0,
-    "default": 8.5,
-    "golden": 25.5,
-    "survivors": -14.0,
-    "truth": 22.2
+    "allprimary": 24.0,
+    "classmean": 9.3,
+    "default": -0.6,
+    "golden": 21.0,
+    "survivors": -15.9,
+    "truth": 22.0
    }
   },
   "Wethermoor": {
    "commitment": 15,
    "determination": "TRIGGERED",
-   "pm14": 150.2,
-   "pm26": 146.0,
-   "reduction": 2.8,
+   "pm14": 141.9,
+   "pm26": 135.0,
+   "reduction": 4.9,
    "rungs": {
-    "allprimary": 3.7,
-    "classmean": 1.3,
-    "default": -12.0,
-    "golden": 2.8,
-    "survivors": -5.0,
-    "truth": 3.5
+    "allprimary": 5.8,
+    "classmean": 0.9,
+    "default": -3.6,
+    "golden": 4.9,
+    "survivors": -5.5,
+    "truth": 2.7
    }
   }
  },
  "ask_a": {
   "Brannock.2104008100": {
-   "late": 50,
-   "left": 22,
-   "registry": 1177
+   "late": 44,
+   "left": 14,
+   "registry": 1186
   },
   "Brannock.2104008310": {
-   "late": 64,
-   "left": 13,
-   "registry": 2587
+   "late": 58,
+   "left": 18,
+   "registry": 2582
   },
   "Brannock.2104008320": {
-   "late": 54,
+   "late": 58,
    "left": 15,
    "registry": 1485
   },
   "Brannock.2104008330": {
-   "late": 16,
-   "left": 6,
-   "registry": 294
+   "late": 10,
+   "left": 1,
+   "registry": 299
   },
   "Brannock.2104008400": {
-   "late": 26,
+   "late": 35,
    "left": 6,
    "registry": 544
   },
   "Brannock.2104008610": {
-   "late": 2,
-   "left": 0,
-   "registry": 220
+   "late": 5,
+   "left": 1,
+   "registry": 219
   },
   "Ellick.2104008100": {
-   "late": 33,
-   "left": 7,
-   "registry": 713
+   "late": 25,
+   "left": 9,
+   "registry": 711
   },
   "Ellick.2104008310": {
-   "late": 30,
-   "left": 14,
-   "registry": 1546
+   "late": 29,
+   "left": 12,
+   "registry": 1548
   },
   "Ellick.2104008320": {
-   "late": 36,
+   "late": 35,
    "left": 6,
-   "registry": 894
+   "registry": 893
   },
   "Ellick.2104008330": {
-   "late": 6,
-   "left": 3,
-   "registry": 177
+   "late": 4,
+   "left": 5,
+   "registry": 175
   },
   "Ellick.2104008400": {
-   "late": 7,
+   "late": 13,
    "left": 6,
-   "registry": 324
+   "registry": 323
   },
   "Ellick.2104008610": {
    "late": 2,
@@ -153,29 +153,29 @@
    "registry": 132
   },
   "Ivelton.2104008100": {
-   "late": 35,
-   "left": 11,
-   "registry": 829
+   "late": 31,
+   "left": 12,
+   "registry": 828
   },
   "Ivelton.2104008310": {
    "late": 53,
-   "left": 12,
-   "registry": 1808
+   "left": 23,
+   "registry": 1797
   },
   "Ivelton.2104008320": {
-   "late": 40,
-   "left": 13,
-   "registry": 1037
+   "late": 45,
+   "left": 10,
+   "registry": 1040
   },
   "Ivelton.2104008330": {
-   "late": 7,
-   "left": 2,
-   "registry": 208
+   "late": 4,
+   "left": 3,
+   "registry": 207
   },
   "Ivelton.2104008400": {
    "late": 13,
-   "left": 4,
-   "registry": 381
+   "left": 3,
+   "registry": 382
   },
   "Ivelton.2104008610": {
    "late": 2,
@@ -183,168 +183,168 @@
    "registry": 154
   },
   "Quarrow.2104008100": {
-   "late": 58,
-   "left": 16,
-   "registry": 1544
+   "late": 50,
+   "left": 17,
+   "registry": 1542
   },
   "Quarrow.2104008310": {
-   "late": 103,
-   "left": 25,
-   "registry": 3353
+   "late": 104,
+   "left": 31,
+   "registry": 3347
   },
   "Quarrow.2104008320": {
-   "late": 79,
-   "left": 17,
-   "registry": 1933
+   "late": 71,
+   "left": 12,
+   "registry": 1937
   },
   "Quarrow.2104008330": {
-   "late": 16,
-   "left": 7,
-   "registry": 383
+   "late": 19,
+   "left": 4,
+   "registry": 386
   },
   "Quarrow.2104008400": {
-   "late": 29,
-   "left": 9,
-   "registry": 706
+   "late": 25,
+   "left": 5,
+   "registry": 709
   },
   "Quarrow.2104008610": {
-   "late": 9,
-   "left": 2,
+   "late": 6,
+   "left": 3,
    "registry": 283
   },
   "Saddeny.2104008100": {
    "late": 22,
    "left": 7,
-   "registry": 593
+   "registry": 591
   },
   "Saddeny.2104008310": {
-   "late": 43,
-   "left": 11,
-   "registry": 1289
+   "late": 47,
+   "left": 8,
+   "registry": 1292
   },
   "Saddeny.2104008320": {
-   "late": 37,
+   "late": 32,
    "left": 9,
    "registry": 740
   },
   "Saddeny.2104008330": {
-   "late": 2,
-   "left": 1,
-   "registry": 149
+   "late": 7,
+   "left": 2,
+   "registry": 148
   },
   "Saddeny.2104008400": {
-   "late": 7,
-   "left": 3,
-   "registry": 272
+   "late": 13,
+   "left": 1,
+   "registry": 274
   },
   "Saddeny.2104008610": {
-   "late": 2,
-   "left": 1,
-   "registry": 109
+   "late": 1,
+   "left": 0,
+   "registry": 110
   },
   "Wethermoor.2104008100": {
-   "late": 44,
-   "left": 11,
-   "registry": 1068
+   "late": 45,
+   "left": 9,
+   "registry": 1070
   },
   "Wethermoor.2104008310": {
-   "late": 63,
-   "left": 27,
-   "registry": 2311
+   "late": 71,
+   "left": 31,
+   "registry": 2309
   },
   "Wethermoor.2104008320": {
-   "late": 63,
-   "left": 12,
-   "registry": 1337
+   "late": 47,
+   "left": 15,
+   "registry": 1335
   },
   "Wethermoor.2104008330": {
-   "late": 17,
-   "left": 2,
-   "registry": 268
+   "late": 12,
+   "left": 4,
+   "registry": 266
   },
   "Wethermoor.2104008400": {
-   "late": 20,
-   "left": 9,
-   "registry": 486
+   "late": 19,
+   "left": 4,
+   "registry": 491
   },
   "Wethermoor.2104008610": {
-   "late": 9,
-   "left": 3,
-   "registry": 195
+   "late": 13,
+   "left": 0,
+   "registry": 198
   }
  },
  "ask_b": {
   "Corrin.2104008100": {
-   "pm": 12.6,
-   "wood": 1071.5
+   "pm": 10.9,
+   "wood": 922.1
   },
   "Corrin.2104008310": {
-   "pm": 77.6,
-   "wood": 5072.4
+   "pm": 66.8,
+   "wood": 4365.5
   },
   "Corrin.2104008320": {
-   "pm": 37.6,
-   "wood": 5152.2
+   "pm": 32.4,
+   "wood": 4434.2
   },
   "Corrin.2104008330": {
-   "pm": 8.2,
-   "wood": 1253.8
+   "pm": 7.0,
+   "wood": 1079.1
   },
   "Corrin.2104008400": {
-   "pm": 3.3,
-   "wood": 2051.7
+   "pm": 2.8,
+   "wood": 1765.8
   },
   "Corrin.2104008610": {
-   "pm": 20.8,
-   "wood": 2216.4
+   "pm": 17.9,
+   "wood": 1907.5
   },
   "Selwick.2104008100": {
-   "pm": 9.1,
-   "wood": 770.1
+   "pm": 12.0,
+   "wood": 1020.0
   },
   "Selwick.2104008310": {
-   "pm": 55.8,
-   "wood": 3645.5
+   "pm": 73.9,
+   "wood": 4828.8
   },
   "Selwick.2104008320": {
-   "pm": 27.0,
-   "wood": 3702.8
+   "pm": 35.8,
+   "wood": 4904.8
   },
   "Selwick.2104008330": {
-   "pm": 5.9,
-   "wood": 901.1
+   "pm": 7.8,
+   "wood": 1193.6
   },
   "Selwick.2104008400": {
-   "pm": 2.4,
-   "wood": 1474.5
+   "pm": 3.1,
+   "wood": 1953.2
   },
   "Selwick.2104008610": {
-   "pm": 15.0,
-   "wood": 1592.9
+   "pm": 19.8,
+   "wood": 2110.0
   },
   "Tamsey.2104008100": {
-   "pm": 8.4,
-   "wood": 713.2
+   "pm": 11.7,
+   "wood": 993.4
   },
   "Tamsey.2104008310": {
-   "pm": 51.7,
-   "wood": 3376.4
+   "pm": 72.0,
+   "wood": 4702.7
   },
   "Tamsey.2104008320": {
-   "pm": 25.0,
-   "wood": 3429.6
+   "pm": 34.9,
+   "wood": 4776.7
   },
   "Tamsey.2104008330": {
-   "pm": 5.4,
-   "wood": 834.6
+   "pm": 7.6,
+   "wood": 1162.5
   },
   "Tamsey.2104008400": {
-   "pm": 2.2,
-   "wood": 1365.7
+   "pm": 3.0,
+   "wood": 1902.2
   },
   "Tamsey.2104008610": {
-   "pm": 13.9,
-   "wood": 1475.3
+   "pm": 19.3,
+   "wood": 2054.9
   }
  },
  "call": {
@@ -355,220 +355,225 @@
  },
  "cells": {
   "Brannock.2104008100": {
-   "pm14": 4.9,
-   "pm26": 4.9,
-   "wood14": 417.6,
-   "wood26": 411.0
+   "pm14": 5.2,
+   "pm26": 5.1,
+   "wood14": 443.2,
+   "wood26": 435.1
   },
   "Brannock.2104008310": {
-   "pm14": 136.6,
-   "pm26": 31.7,
-   "wood14": 8928.2,
-   "wood26": 2073.1
+   "pm14": 140.8,
+   "pm26": 34.2,
+   "wood14": 9205.5,
+   "wood26": 2237.1
   },
   "Brannock.2104008320": {
-   "pm14": 23.3,
-   "pm26": 52.0,
-   "wood14": 3190.5,
-   "wood26": 7125.8
+   "pm14": 26.9,
+   "pm26": 50.6,
+   "wood14": 3680.2,
+   "wood26": 6935.6
   },
   "Brannock.2104008330": {
-   "pm14": 4.1,
-   "pm26": 4.1,
-   "wood14": 633.1,
-   "wood26": 630.8
+   "pm14": 5.0,
+   "pm26": 5.1,
+   "wood14": 773.8,
+   "wood26": 779.2
   },
   "Brannock.2104008400": {
-   "pm14": 1.8,
-   "pm26": 4.3,
-   "wood14": 1118.8,
-   "wood26": 2709.5
+   "pm14": 1.6,
+   "pm26": 3.8,
+   "wood14": 982.1,
+   "wood26": 2350.9
   },
   "Brannock.2104008610": {
-   "pm14": 14.3,
-   "pm26": 2.5,
-   "wood14": 1525.4,
-   "wood26": 269.0
+   "pm14": 17.0,
+   "pm26": 3.1,
+   "wood14": 1810.9,
+   "wood26": 329.4
   },
   "Ellick.2104008100": {
-   "pm14": 2.7,
-   "pm26": 2.7,
-   "wood14": 229.8,
-   "wood26": 229.8
+   "pm14": 2.6,
+   "pm26": 2.6,
+   "wood14": 221.0,
+   "wood26": 221.0
   },
   "Ellick.2104008310": {
-   "pm14": 89.6,
-   "pm26": 15.8,
-   "wood14": 5855.6,
-   "wood26": 1029.5
+   "pm14": 61.9,
+   "pm26": 15.5,
+   "wood14": 4043.6,
+   "wood26": 1014.0
   },
   "Ellick.2104008320": {
-   "pm14": 14.9,
-   "pm26": 29.0,
-   "wood14": 2043.9,
-   "wood26": 3979.1
+   "pm14": 12.3,
+   "pm26": 25.6,
+   "wood14": 1688.5,
+   "wood26": 3511.4
   },
   "Ellick.2104008330": {
-   "pm14": 2.9,
-   "pm26": 2.8,
-   "wood14": 443.5,
-   "wood26": 433.3
+   "pm14": 2.6,
+   "pm26": 2.5,
+   "wood14": 407.1,
+   "wood26": 386.3
   },
   "Ellick.2104008400": {
-   "pm14": 1.0,
-   "pm26": 2.2,
-   "wood14": 654.9,
-   "wood26": 1393.9
+   "pm14": 0.9,
+   "pm26": 2.3,
+   "wood14": 566.7,
+   "wood26": 1467.7
   },
   "Ellick.2104008610": {
-   "pm14": 8.9,
-   "pm26": 1.0,
-   "wood14": 941.6,
-   "wood26": 106.0
+   "pm14": 7.3,
+   "pm26": 1.1,
+   "wood14": 781.1,
+   "wood26": 118.3
   },
   "Ivelton.2104008100": {
-   "pm14": 3.7,
-   "pm26": 3.6,
-   "wood14": 313.5,
-   "wood26": 306.5
+   "pm14": 4.2,
+   "pm26": 4.1,
+   "wood14": 353.5,
+   "wood26": 345.2
   },
   "Ivelton.2104008310": {
-   "pm14": 85.9,
-   "pm26": 33.3,
-   "wood14": 5614.8,
-   "wood26": 2176.4
+   "pm14": 79.1,
+   "pm26": 32.0,
+   "wood14": 5170.8,
+   "wood26": 2091.7
   },
   "Ivelton.2104008320": {
-   "pm14": 17.8,
-   "pm26": 34.3,
-   "wood14": 2434.4,
-   "wood26": 4695.6
+   "pm14": 18.1,
+   "pm26": 35.5,
+   "wood14": 2480.8,
+   "wood26": 4866.9
   },
   "Ivelton.2104008330": {
-   "pm14": 4.6,
-   "pm26": 4.4,
-   "wood14": 704.3,
-   "wood26": 680.0
+   "pm14": 3.8,
+   "pm26": 3.7,
+   "wood14": 585.6,
+   "wood26": 565.7
   },
   "Ivelton.2104008400": {
    "pm14": 1.5,
-   "pm26": 3.3,
-   "wood14": 952.8,
-   "wood26": 2047.5
+   "pm26": 2.6,
+   "wood14": 922.6,
+   "wood26": 1632.9
   },
   "Ivelton.2104008610": {
-   "pm14": 10.1,
-   "pm26": 3.8,
-   "wood14": 1071.5,
-   "wood26": 404.0
+   "pm14": 10.6,
+   "pm26": 3.5,
+   "wood14": 1123.5,
+   "wood26": 370.4
   },
   "Quarrow.2104008100": {
-   "pm14": 6.6,
-   "pm26": 6.5,
-   "wood14": 558.6,
-   "wood26": 547.1
+   "pm14": 7.3,
+   "pm26": 7.1,
+   "wood14": 617.5,
+   "wood26": 600.7
   },
   "Quarrow.2104008310": {
-   "pm14": 140.5,
-   "pm26": 106.6,
-   "wood14": 9183.0,
-   "wood26": 6964.1
+   "pm14": 139.2,
+   "pm26": 104.7,
+   "wood14": 9096.6,
+   "wood26": 6845.3
   },
   "Quarrow.2104008320": {
-   "pm14": 35.4,
-   "pm26": 48.9,
-   "wood14": 4844.3,
-   "wood26": 6694.4
+   "pm14": 32.6,
+   "pm26": 48.3,
+   "wood14": 4472.6,
+   "wood26": 6612.9
   },
   "Quarrow.2104008330": {
-   "pm14": 6.2,
-   "pm26": 6.1,
-   "wood14": 948.5,
-   "wood26": 943.4
+   "pm14": 5.6,
+   "pm26": 5.6,
+   "wood14": 860.5,
+   "wood26": 865.2
   },
   "Quarrow.2104008400": {
-   "pm14": 1.7,
+   "pm14": 1.8,
    "pm26": 2.9,
-   "wood14": 1064.0,
-   "wood26": 1839.6
+   "wood14": 1117.5,
+   "wood26": 1825.2
   },
   "Quarrow.2104008610": {
-   "pm14": 20.1,
-   "pm26": 14.1,
-   "wood14": 2143.6,
-   "wood26": 1495.3
+   "pm14": 18.6,
+   "pm26": 11.6,
+   "wood14": 1983.1,
+   "wood26": 1230.5
   },
   "Saddeny.2104008100": {
-   "pm14": 3.3,
-   "pm26": 3.2,
-   "wood14": 277.9,
-   "wood26": 273.1
+   "pm14": 2.6,
+   "pm26": 2.6,
+   "wood14": 222.7,
+   "wood26": 219.3
   },
   "Saddeny.2104008310": {
-   "pm14": 60.5,
-   "pm26": 33.5,
-   "wood14": 3956.1,
-   "wood26": 2192.3
+   "pm14": 62.3,
+   "pm26": 35.9,
+   "wood14": 4070.8,
+   "wood26": 2348.9
   },
   "Saddeny.2104008320": {
-   "pm14": 13.8,
-   "pm26": 22.1,
-   "wood14": 1895.8,
-   "wood26": 3027.4
+   "pm14": 15.8,
+   "pm26": 25.9,
+   "wood14": 2165.9,
+   "wood26": 3547.3
   },
   "Saddeny.2104008330": {
-   "pm14": 2.4,
-   "pm26": 2.3,
-   "wood14": 363.9,
-   "wood26": 349.1
+   "pm14": 2.1,
+   "pm26": 2.1,
+   "wood14": 326.6,
+   "wood26": 319.8
   },
   "Saddeny.2104008400": {
-   "pm14": 0.8,
-   "pm26": 1.7,
-   "wood14": 528.4,
-   "wood26": 1063.3
+   "pm14": 0.9,
+   "pm26": 1.8,
+   "wood14": 577.9,
+   "wood26": 1115.0
   },
   "Saddeny.2104008610": {
-   "pm14": 8.2,
-   "pm26": 3.5,
-   "wood14": 869.4,
-   "wood26": 370.5
+   "pm14": 8.3,
+   "pm26": 4.5,
+   "wood14": 884.9,
+   "wood26": 479.9
   },
   "Wethermoor.2104008100": {
-   "pm14": 5.1,
-   "pm26": 5.1,
-   "wood14": 434.4,
-   "wood26": 429.3
+   "pm14": 4.5,
+   "pm26": 4.4,
+   "wood14": 380.3,
+   "wood26": 376.6
   },
   "Wethermoor.2104008310": {
-   "pm14": 103.7,
-   "pm26": 91.0,
-   "wood14": 6780.9,
-   "wood26": 5948.9
+   "pm14": 95.3,
+   "pm26": 82.9,
+   "wood14": 6227.0,
+   "wood26": 5421.2
   },
   "Wethermoor.2104008320": {
-   "pm14": 22.9,
-   "pm26": 32.9,
-   "wood14": 3139.9,
-   "wood26": 4505.7
+   "pm14": 24.9,
+   "pm26": 31.3,
+   "wood14": 3408.7,
+   "wood26": 4290.6
   },
   "Wethermoor.2104008330": {
    "pm14": 3.9,
-   "pm26": 4.0,
-   "wood14": 605.6,
-   "wood26": 620.0
+   "pm26": 3.9,
+   "wood14": 605.9,
+   "wood26": 605.9
   },
   "Wethermoor.2104008400": {
-   "pm14": 1.6,
-   "pm26": 2.4,
-   "wood14": 1008.4,
-   "wood26": 1481.9
+   "pm14": 1.5,
+   "pm26": 1.9,
+   "wood14": 909.5,
+   "wood26": 1162.4
   },
   "Wethermoor.2104008610": {
-   "pm14": 12.9,
-   "pm26": 10.7,
-   "wood14": 1372.9,
-   "wood26": 1133.1
+   "pm14": 11.9,
+   "pm26": 10.5,
+   "wood14": 1266.0,
+   "wood26": 1120.5
   }
+ },
+ "constants": {
+  "bag_lb": 40,
+  "tons_per_cord": 1.163,
+  "tool_secondary": 2.4
  }
 }

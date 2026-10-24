@@ -173,9 +173,9 @@ def scc_crosswalk_csv(path):
     write_csv(path, ["scc", "description", "registry_appliance_code", "survey_appliance", "application_appliance"], rows)
 
 
-def acs_csv(path, bgs, which):
+def acs_csv(path, rem, which):
     rows = []
-    for b in bgs:
+    for b in rem["bg20"]:
         total = b["hu"] - int(b["hu"] * 0.07)
         est = b["acs1923"] if which == "1923" else b["acs2024"]
         moe = b["moe1923"] if which == "1923" else b["moe2024"]
@@ -185,15 +185,19 @@ def acs_csv(path, bgs, which):
     write_csv(path, ["GEO_ID", "NAME", "B25040_001E", "B25040_001M", "B25040_008E", "B25040_008M"], rows)
 
 
-def assessor_csv(path, bgs):
+def assessor_csv(path, rem):
     rows = []
-    for b in bgs:
-        hu_in = int(round(b["hu"] * b["inside"]))
-        if hu_in:
-            rows.append([b["geoid"], b["county"], "inside a maintenance area", hu_in])
-        if b["hu"] - hu_in:
-            rows.append([b["geoid"], b["county"], "", b["hu"] - hu_in])
+    for b in rem["bg10"]:
+        if b["inside"]:
+            rows.append([b["geoid"], b["county"], "inside a maintenance area", b["inside"]])
+        if b["hu"] - b["inside"]:
+            rows.append([b["geoid"], b["county"], "", b["hu"] - b["inside"]])
     write_csv(path, ["block_group", "county", "maintenance_area_2020", "housing_units"], rows)
+
+
+def relationship_csv(path, rem):
+    write_csv(path, ["GEOID_BG_20", "GEOID_BG_10", "HU_20_OVERLAP"],
+              [[o["g20"], o["g10"], o["hu"]] for o in sorted(rem["ov"], key=lambda o: (o["g20"], o["g10"]))])
 
 
 def distractor_csvs(t, devs):

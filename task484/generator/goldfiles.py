@@ -18,8 +18,10 @@ def r1(x):
 
 
 def write(path, ev, aa, ab):
+    import pack as P
     figs = dict(call=dict(triggered=sorted(AREA[c][1] for c in W.CODES if ev[c]["trigger"])), areas={}, cells={},
-                ask_a={}, ask_b={})
+                ask_a={}, ask_b={}, constants=dict(tons_per_cord=W.TONS_PER_CORD, bag_lb=int(W.BAG_LB),
+                                                   tool_secondary=P.TOOL_SECONDARY))
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Inventory 2025-26"

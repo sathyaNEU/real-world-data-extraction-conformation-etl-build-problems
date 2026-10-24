@@ -26,6 +26,7 @@ NAMES = dict(registry="wood_device_registry_2026-06-30.csv", survey="household_w
              factors="emission_factors_rwc_2023.csv", scc="scc_crosswalk_rwc.csv", parcels="parcel_area_crosswalk.csv",
              acs1923="acs_b25040_blockgroups_2019_2023.csv", acs2024="acs_b25040_blockgroups_2020_2024.csv",
              assessor="assessor_housing_units_by_block_group_2025.csv", tool="state_rwc_tool_method_note.pdf",
+             relationship="census_bg2020_bg2010_relationship_wa.csv",
              hdd="heating_degree_days_2025_26.csv", curtail="curtailment_log_2025_26.csv",
              monitor="pm25_monitor_daily_2025_26.csv", permits="firewood_permits_by_district.csv")
 GOLD = dict(inventory="rwc_periodic_inventory_2025_26.xlsx", determinations="contingency_determinations_2026_27.csv")
@@ -45,9 +46,9 @@ def main():
         os.makedirs(d)
     devs, apps = W.build()
     resp = W.survey(devs)
-    bgs = W.remainder()
+    rem = W.remainder()
     ev = G.evaluate(devs, apps, resp)
-    aa, ab = G.ask_a(devs), G.ask_b(bgs)
+    aa, ab = G.ask_a(devs), G.ask_b(rem)
     P.registry_csv(t("registry"), devs)
     P.survey_csv(t("survey"), resp)
     P.applications_csv(t("apps"), apps, devs)
@@ -58,9 +59,10 @@ def main():
     P.factors_csv(t("factors"))
     P.scc_crosswalk_csv(t("scc"))
     P.crosswalk_csv(t("parcels"), devs)
-    P.acs_csv(t("acs1923"), bgs, "1923")
-    P.acs_csv(t("acs2024"), bgs, "2024")
-    P.assessor_csv(t("assessor"), bgs)
+    P.acs_csv(t("acs1923"), rem, "1923")
+    P.acs_csv(t("acs2024"), rem, "2024")
+    P.assessor_csv(t("assessor"), rem)
+    P.relationship_csv(t("relationship"), rem)
     P.distractor_csvs(t, devs)
     figs = GF.write(gpath, ev, aa, ab)
     PP.normalize_ooxml(t("plan"), W.PEOPLE["inventory"], W.PEOPLE["inventory"], "2016-11-18T17:20:00Z",
@@ -71,6 +73,8 @@ def main():
                      ("tool", b"D:20231102090000-07'00'")):
         PP.normalize_pdf(t(k), stamp, stamp)
     json.dump(figs, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
+    import writeup
+    writeup.main()
     cut_zip()
     print("built: %d files in target/, %d in golden/" % (len(os.listdir(TARGET)), len(os.listdir(GOLDEN))))
     return 0

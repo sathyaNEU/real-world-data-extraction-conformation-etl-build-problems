@@ -76,7 +76,7 @@ def build():
                 reg = dt.date(2010, 6, 1) + dt.timedelta(days=int(r.integers(0, 600))) if inst < 2010 else \
                     dt.date(inst, 1, 1) + dt.timedelta(days=int(r.integers(10, 300)))
                 prev = devs[-1] if devs and devs[-1].area == code and devs[-1].cl == cl else None
-                if prev is not None and prev.twin is None and r.random() < (0.04 if cl == "FPL" else 0.012):
+                if prev is not None and prev.twin is None and r.random() < (0.04 if cl == "FPL" else 0.03):
                     inst, reg = prev.installed, prev.registered          # a second appliance of the same kind
                 d = Device(did=did(), area=code, county=county, cl=cl, primary=bool(pr[i]), use=float(base[i]),
                            installed=inst, registered=reg, removed=None, reason=None, programme=False, replaces=None,
@@ -217,25 +217,41 @@ def survey(devs):
 
 
 def remainder():
-    """The counties outside the areas: block groups with wood-heated households in two ACS releases, the assessor's
-    housing units by parcel and block group, and for each block group the share of its housing units inside an area."""
+    """The counties outside the areas. The ACS tabulates 2020 block groups; the assessors' GIS still carries the 2010
+    block groups, whose codes are the same where a tract kept its number but whose lines were redrawn in some tracts.
+    Housing units sit in the overlaps of a 2010 and a 2020 block group; a 2010 block group's units inside an area are a
+    fixed share of each of its overlaps (the plans drew the areas on 2010 lines)."""
     r = np.random.default_rng(SEED + 11)
-    bgs = []
+    bg20, bg10, ov = [], [], []
     for ci, county in enumerate(COUNTIES):
         fips = ["53077", "53081", "53083"][ci]
         for t in range(18):
-            tract = "%06d" % (950100 + 100 * t)
+            tract = fips + "%06d" % (950100 + 100 * t)
+            redrawn = r.random() < 0.6
+            f_in = []
             for b in (1, 2, 3):
-                hu = int(r.integers(350, 1400))
-                inside = 0.0
                 u = r.random()
-                if u < 0.45:
-                    inside = 1.0
-                elif u < 0.62:
-                    inside = float(np.round(r.uniform(0.15, 0.85), 2))
-                wood_main = int(round(hu * r.uniform(0.04, 0.16)))
+                f_in.append(1.0 if u < 0.45 else float(np.round(r.uniform(0.15, 0.85), 2)) if u < 0.65 else 0.0)
+            hu = np.zeros((3, 3))
+            for i10 in range(3):
+                for j20 in range(3):
+                    if i10 == j20:
+                        hu[i10, j20] = int(r.integers(300, 1100))
+                    elif redrawn and r.random() < 0.6:
+                        hu[i10, j20] = int(r.integers(80, 700))
+            for i10 in range(3):
+                tot = hu[i10].sum()
+                inside = int(round(tot * f_in[i10]))
+                bg10.append(dict(geoid=tract + str(i10 + 1), county=county, hu=int(tot), inside=inside))
+                for j20 in range(3):
+                    if hu[i10, j20]:
+                        ov.append(dict(g10=tract + str(i10 + 1), g20=tract + str(j20 + 1), hu=int(hu[i10, j20])))
+            for j20 in range(3):
+                tot = int(hu[:, j20].sum())
+                out = sum(hu[i10, j20] * (1 - f_in[i10]) for i10 in range(3))
+                wood = int(round(tot * r.uniform(0.04, 0.16)))
                 drift = r.normal(1.04, 0.05)
-                bgs.append(dict(geoid=fips + tract + str(b), county=county, hu=hu, inside=inside,
-                                acs1923=wood_main, moe1923=int(round(wood_main * r.uniform(0.25, 0.6))) + 9,
-                                acs2024=int(round(wood_main * drift)), moe2024=int(round(wood_main * r.uniform(0.25, 0.6))) + 9))
-    return bgs
+                bg20.append(dict(geoid=tract + str(j20 + 1), county=county, hu=tot, outside=float(out / tot),
+                                 acs1923=wood, moe1923=int(round(wood * r.uniform(0.25, 0.6))) + 9,
+                                 acs2024=int(round(wood * drift)), moe2024=int(round(wood * r.uniform(0.25, 0.6))) + 9))
+    return dict(bg20=bg20, bg10=bg10, ov=ov)
