@@ -1,18 +1,18 @@
 # leak check, task179
 
-**Verdict: REVIEW.** 14 files read, 6 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 15 files read, 6 golden figures and 2 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: repeat, intake, entrant, record, window, planning, classes, interval, family, classmates, nothing, decisive, forward, quantity, projection, exposure, golden, population, forecasting, student, truncation, allocation, fictional, conventions, november
+Stump terms swept: repeat, intake, entrant, record, classes, window, interval, classmates, family, nothing, decisive, quantity, planning, projection, forward, forecasting, truncation, population, fictional, student, early-warning, allocated, exposure, default, sources
 
 ## 3 answer figures in the pack (REVIEW 2)
 - **REVIEW** `continuing_enrolment_projection_conventions_2027.pdf`: carries 11 of 11 distinctive words of the committed call: 'Plan for about 3,250 of the 8,659 first-time entrants enrolled at the 1 October 2026 census not to be enrolled at the 1 '
 - **REVIEW** `data_dictionary.txt`: carries 9 of 11 distinctive words of the committed call: 'Plan for about 3,250 of the 8,659 first-time entrants enrolled at the 1 October 2026 census not to be enrolled at the 1 '
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `continuing_enrolment_projection_conventions_2027.pdf`: 7 of 25 stump-paragraph terms appear (intake, entrant, planning, projection, student, conventions); read whether the document names the move
-- **REVIEW** `data_dictionary.txt`: 6 of 25 stump-paragraph terms appear (intake, entrant, planning, family, projection, student); read whether the document names the move
+- **REVIEW** `continuing_enrolment_projection_conventions_2027.pdf`: 5 of 25 stump-paragraph terms appear (intake, entrant, planning, projection, student); read whether the document names the move
+- **REVIEW** `data_dictionary.txt`: 6 of 25 stump-paragraph terms appear (intake, entrant, family, planning, projection, student); read whether the document names the move
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)

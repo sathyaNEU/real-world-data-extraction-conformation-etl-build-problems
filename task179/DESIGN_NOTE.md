@@ -242,49 +242,48 @@ enrolment outcome.
 
 ## Ask sheet
 
-Weights on the generated rubric: about 38 recommendation and components, 7 instruction following, 55 asks over 20
-figures and the chart. The ask sits on rows the call never reads (asserted S2, S3). Round 1's continuing-students ask
-was dropped in the round 1 fix (`## Stage 4 round 1`); its files stay as distractors.
+Weights on the portal's generated rubric: 18 the call, 20 the two components, 55 the asks over 20 figures, 7
+instruction following and the chart. The ask sits on rows the call never reads (asserted S2 to S4 and F1 to F3: every
+file the call reads is the shipped one, the dictionary only gains the class list's entry).
 
 - **The ask: Semester 1 2026 teaching groups at 200 level and at 300 level and above, by faculty, with 30 students or
   fewer and with more than 30 at the census (20 figures).** H18 home: the teaching plan sets this year's upper-level
-  groups beside the projection when it sizes the second-year groups for 2027. Files: `s1_2026_class_timetable.xlsx`
-  and the conventions (GROUP_PIN: the students taught together, in one room at one time; the group's faculty and level
-  are its papers'; its size the census enrolment it teaches; cancelled classes are not groups).
-- **Primary (which records are one figure, a key the data forces).** Papers taught together share one room, slot and
-  teaching weeks. Combinations set up in ARC Scheduling after the cutover carry one teacher of record and ARC writes the
-  combination's census enrolment on each of its classes; combinations carried from SIRIUS keep each paper's teacher and
-  show each class's own enrolment. Nothing names either. A combination's figure is the slot plus whether its classes
-  repeat one enrolment that, added, would exceed the room: in every faculty and level, five ARC combinations (three over
-  30, two at 30 or under whose doubled figure crosses 30) and three SIRIUS pairs (one over 30 with unequal classes, one
-  over 30 with two equal classes, one at 30 or under). Fair: a grader confirms each ARC combination by its repeated
-  figure overfilling the room (asserted A2) and each SIRIUS pair by its own figures fitting it (A3).
-- **Why each reflex misses every cell (measured in `ceiling.py`).** Summing merged classes (both round 1 readers'
-  verbatim path) doubles the ARC combinations and moves the small ones over 30; reading a repeated figure once (the
-  battery's bulk-receipt repair) halves the SIRIUS pairs with equal classes; taking the larger class halves every
-  SIRIUS pair; grouping by teacher splits the SIRIUS pairs; ignoring teaching weeks merges one half-semester pair per
-  faculty and level; one group per class code double-counts every pair. Only the slot with the room-capacity reading
-  of a repeated figure gives the golden.
+  groups beside the projection when it sizes the second-year groups for 2027. Files: `s1_2026_class_timetable.xlsx`,
+  `arc_s1_2026_class_enrolments.csv`, the census history and the conventions (GROUP_PIN: the students taught together,
+  in one room at one time; a group's faculty is its paper's; its size is the number of students enrolled at the census
+  whom it teaches; a cancelled class is not a group; ENROLLED_PIN: enrolled at a census means an enrolled programme
+  attempt in the census history, and approved leave is not enrolled).
+- **Primary 1, which classes are one group (D6, seen, the reflex repair wrong).** In every faculty and level two pairs
+  of papers carried from SIRIUS share only their lecture and keep a workshop each: a paper over 30 with a small
+  partner, and a pair at 30 or under. The students taught together are then three groups, the lecture and each
+  workshop. Joining classes through any shared meeting (the portal's route on the first pack) makes one; merging
+  identical meeting sets makes two. Fair: each such pair's classes share exactly one slot and hold one more each, and
+  the three sets are the only reading of "the students taught together, in one room at one time" (asserted A4).
+- **Primary 2, a group's size (D4, absence as the signal, split across two files, silent).** ARC Scheduling's Enrolled
+  at Census, and the class list that ties to it, still count places held by students on approved leave (423) and by
+  students with no 2026 census attempt (558). Only the class list joined to the census history gives the students
+  enrolled at the census. In every faculty and level two single classes stand at 32 to 34 on ARC's figure and at 30 on
+  enrolled students, and neither kind of place alone brings them to 30 (asserted A8, A9); every other stale place sits
+  where it cannot carry a group across 30. Fair: each listed student's state is in the census history, and every list
+  but the combinations' ties to the timetable's figure (asserted A6, A7).
+- **Hazards kept from the first pack:** a combination's figure written on each ARC class (each class's list holds its
+  own students), cancelled classes, rooms changed at week 5, team-taught rows and half-semester papers sharing a slot.
 - **Chart (`s1_2026_teaching_groups.png`):** its segments are the ask's cells.
-- **Answered risk (judge pass 2, optional note):** no file states that ARC writes a combination's enrolment on each of its
-  classes, and the one alternative reading (every figure the class's own) moves one group in each of 10 cells; the
-  sentence was not added because it announces the device, and the golden reading is forced by the data: the ARC
-  combinations carry one teacher of record and their repeated figure added would overfill every room they meet in,
-  while the SIRIUS pairs keep two teachers and fit their rooms.
-- Screened against 1.1e and this round's fallen devices: no duplicate row, comment, code or column marks a combination
-  or its origin; the identity is the slot plus the figure's repetition against the room, which the round 1 readers'
-  path (merge identical meeting sets, add) and the battery's repair (read a repeated total once) both miss.
+- Screened against 1.1e and the portal's path: no column, code or comment marks a lecture-only pair or a stale place;
+  the census state sits in a file the ask's obvious path never joins, and a lecture-only pair shows only as one shared
+  slot among three. The repeated figure read against the room, which the portal's responses executed, is a hazard
+  here, never a primary.
 
-| Ask | Figures | Cracker and the round 1 readers' verbatim paths (ceiling.py routes) | Verdict |
+| Ask | Figures | Cracker and the portal's path (ceiling.py routes) | Verdict |
 |---|---|---|---|
-| 200 level, 30 or fewer, by faculty | 5 | class codes; reader A; reader B; repeated figure once; larger class; teacher | miss |
+| 200 level, 30 or fewer, by faculty | 5 | portal route; shared meetings joined; identical meeting sets; one group per class; each meeting a group; the grouping right on the timetable's figures, on every listed student, with leave kept, with leavers kept; enrolled students under either wrong grouping | miss |
 | 200 level, more than 30, by faculty | 5 | the same routes | miss |
 | 300 and above, 30 or fewer, by faculty | 5 | the same routes | miss |
 | 300 and above, more than 30, by faculty | 5 | the same routes | miss |
 
-Pair ceiling: 31.2 (worst route, room, day, start and teacher summed, keeps 1 of 20; cracker 47.8, mirror 14.8; both round 1 readers' verbatim paths keep 0 of 20)
+Pair ceiling: 28.5 (each of the 14 routes keeps 0 of 20; cracker 45.0, mirror 12.0; on the portal's rubric a response off the call that has one device keeps about 17)
 
-Mirror leakage: 5.0 per cent of ask weight (the teacher route; 0.0 on both readers' paths and the battery's)
+Mirror leakage: 0.0 per cent of ask weight (every route, the portal's path among them)
 
 Measured by: generator/ceiling.py
 
@@ -336,6 +335,20 @@ Measured by: generator/ceiling.py
 - Main-call Gate F risk stays as written at the draw: persistence through social integration is a channel the
   retention literature names, carried by class extracts every reader opens; nothing in the pack names the allocation,
   a block or a classmate, and both round 1 readers missed it.
+
+## Rubric repair (portal, 2026-10-24)
+
+- Portal: the call stumped both responses, but the rubric came back over 60: both answered all 20 teaching-group cells
+  (55 of the 100 points) by joining classes through shared meetings and reading a figure the room could not seat added
+  once, which was the golden route.
+- Repair (`/fix-rubric`, call side frozen): the timetable re-laid with two lecture-only pairs and two flip classes a
+  faculty and level (the `tt_devices` and `tt_partial` streams, so every other draw stands), and the class list added
+  (`arc_s1_2026_class_enrolments.csv`, 49,237 places for 16,597 students). The prompt is unchanged; GROUP_PIN and
+  ENROLLED_PIN are the shipped sentences.
+- Gates: `checks.py` 88 green (A0 to A10, S2 to S4, F1 to F3), `verify.py` 23 figures, two builds byte-identical over
+  20 files, `figures_check.py` 44 figures, `voice-check.py` PASS, `freeze.py check --mode rubric` PASS (the call, the
+  stump and every frozen figure unchanged; 14 ask figures moved).
+- Measured: pending (determinism judge and two cold readers on the new pack).
 
 ## Architecture v2 record (spent, kept as history)
 
@@ -1018,6 +1031,10 @@ candidate touches them.
     enrolled attempt fell to reader B's register join, and pinning its faculty (the judge's fork) would hand it to every
     reader. Replaced by the combination's figure repeated on ARC classes against own figures on SIRIUS pairs, read
     against the room (`## Ask sheet`).
+  - Portal (2026-10-24) on the repeated combination figure read against the room: both responses kept all 20 cells,
+    because the device's whole inconsistency sat in one file and a strong reader's capacity check finds it. Replaced
+    by two devices under every cell, lecture-only pairs (three groups) and places held by students on leave or who
+    left, seen only through the class list joined to the census history (`## Rubric repair`).
 
 ## Retired
 

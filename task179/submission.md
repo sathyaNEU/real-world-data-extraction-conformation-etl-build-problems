@@ -20,7 +20,7 @@ The figure reads each entrant's chance at the number of other entrants met in tw
 3. Counted for every entrant the other entrants of the same intake met in two or more of the entrant's Semester 1 classes (sirius_fy_cohort_classes_2019_2025.csv by term and class number, arc_s1_2026_first_year_classes.csv by class code): 3,778 of the 2026 entrants meet none.
 4. Fitted logistic models of not being enrolled at the next census on the 2019 to 2025 entrants (ASC points, first in family, part-time, aged 21 or over, hardship grant, mean week-6 rating with Satisfactory 0, Some concern 1 and At risk 2, living-learning community, hall, offer acceptance day, faculty) with that count in several forms, and kept the lowest Akaike information criterion, per the conventions: a flag for meeting 10 or more other entrants twice.
 5. Applied it to the 2026 entrants and summed their probabilities: 3,253.0, about 3,250 to the nearest 250.
-6. Counted Semester 1 2026 teaching groups at 200 level and above in s1_2026_class_timetable.xlsx: active classes meeting in the same room on the same day, start and teaching weeks are one group whatever teacher of record each lists; where every class of a group shows the same census enrolment and the classes added would exceed the room's capacity, ARC Scheduling has written the combination's enrolment on each class and it is counted once, otherwise the classes' enrolments are added.
+6. Counted Semester 1 2026 teaching groups at 200 level and above from s1_2026_class_timetable.xlsx: each distinct set of active classes meeting together in one room at one time (day, start and teaching weeks) is one group, so two papers sharing only their lecture make three (the lecture and each workshop); a group's size is the students its classes list in arc_s1_2026_class_enrolments.csv who hold an enrolled programme attempt at the 2026 census in the census history, so places still held by students on approved leave or with no 2026 attempt are not counted (ARC Scheduling's Enrolled at Census counts them, and shows a combination's two classes together on each).
 
 ## 4. Deliverable Answers
 
@@ -28,16 +28,16 @@ The figure reads each entrant's chance at the number of other entrants met in tw
 
 1. First-time entrants enrolled at the 1 October 2026 census not enrolled at the 1 October 2027 census: **3,250** (nearest 250)
 2. Semester 1 2026 teaching groups by faculty and level, with 30 students or fewer and with more than thirty at the census:
-   - Arts and Social Sciences, 200 level: **11** with thirty or fewer, **39** with more than thirty
-   - Arts and Social Sciences, 300 level and above: **16** with thirty or fewer, **45** with more than thirty
-   - Business and Law, 200 level: **10** with thirty or fewer, **40** with more than thirty
-   - Business and Law, 300 level and above: **19** with thirty or fewer, **45** with more than thirty
-   - Science, 200 level: **11** with thirty or fewer, **39** with more than thirty
-   - Science, 300 level and above: **18** with thirty or fewer, **38** with more than thirty
-   - Engineering and Computing, 200 level: **15** with thirty or fewer, **32** with more than thirty
-   - Engineering and Computing, 300 level and above: **21** with thirty or fewer, **34** with more than thirty
-   - Health Sciences, 200 level: **13** with thirty or fewer, **36** with more than thirty
-   - Health Sciences, 300 level and above: **21** with thirty or fewer, **32** with more than thirty
+   - Arts and Social Sciences, 200 level: **14** with thirty or fewer, **40** with more than thirty
+   - Arts and Social Sciences, 300 level and above: **20** with thirty or fewer, **45** with more than thirty
+   - Business and Law, 200 level: **15** with thirty or fewer, **39** with more than thirty
+   - Business and Law, 300 level and above: **22** with thirty or fewer, **46** with more than thirty
+   - Science, 200 level: **15** with thirty or fewer, **39** with more than thirty
+   - Science, 300 level and above: **22** with thirty or fewer, **38** with more than thirty
+   - Engineering and Computing, 200 level: **18** with thirty or fewer, **33** with more than thirty
+   - Engineering and Computing, 300 level and above: **25** with thirty or fewer, **34** with more than thirty
+   - Health Sciences, 200 level: **17** with thirty or fewer, **36** with more than thirty
+   - Health Sciences, 300 level and above: **25** with thirty or fewer, **32** with more than thirty
 
 ### s1_2026_teaching_groups.png
 

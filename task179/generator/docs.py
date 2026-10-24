@@ -197,6 +197,10 @@ s1_2026_class_timetable.xlsx  Timetabling: Semester 1 2026 timetable as at the c
   Class Code, Paper, Paper Title, Owning Faculty, Level, Day, Start, End, Teaching Weeks, Room, Room Capacity, Teacher,
   Enrolled at Census (the census enrolment ARC Scheduling holds for the class), Class Status
 
+arc_s1_2026_class_enrolments.csv  ARC class enrolment extract: one row per Semester 1 2026 class enrolment at 200 level
+  and above at the 2026 census
+  arc_student_id, study_period, paper_code, class_code, credit_points, enrolment_status, census_date
+
 programme_catalogue_2026.csv  Academic Office: bachelor's programmes and approved conjoint combinations
   TYPE, CODE, TITLE, OWNING_FACULTY, YEARS_FT, COMPONENTS (a combination's programmes, first-listed first)
 

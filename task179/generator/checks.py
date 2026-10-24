@@ -169,43 +169,94 @@ def main(target):
     ok("SF9 faculty of the first-listed programme", True, "admissions Faculty column, first-listed programme")
     # ------------------------------------------------------------------ the ask: devices on every route, determinacy
     akeys = [k for k in figs if k.startswith("ask_")]
-    gold = ceiling.route(d, ceiling.SLOT, "golden")
+    gold = ceiling.route(d, "sets", "enrolled")
     ok("A0 golden route reproduces the ask", all(gold[k] == figs[k] for k in akeys), "%d figures" % len(akeys))
-    for name, (cols, rule) in ceiling.ROUTES.items():
-        rr = ceiling.route(d, cols, rule)
+    for name, (how, basis) in ceiling.ROUTES.items():
+        rr = ceiling.route(d, how, basis)
         hits = [k for k in akeys if rr[k] == figs[k]]
         ok("A1 route %s keeps at most one cell" % name[:48], len(hits) <= 1, ", ".join(hits))
     tt = d["tt"]
     act = tt[tt["Class Status"] == "Active"]
+    cle = d["cle"]
+    lists = cle.groupby("class_code")["arc_student_id"].apply(set).to_dict()
+    code = lambda x: "%s-26S1-%03d" % (x["paper"], x["k"])
     pair_codes = {}
     for m_, r_ in w.pairs:
         for x in (m_, r_):
-            pair_codes["%s-26S1-%03d" % (x["paper"], x["k"])] = (m_, r_)
+            pair_codes[code(x)] = (m_, r_)
     arc_ok, sir_ok = True, True
     for m_, r_ in w.pairs:
-        codes = ["%s-26S1-%03d" % (x["paper"], x["k"]) for x in (m_, r_)]
+        codes = [code(x) for x in (m_, r_)]
         rows_ = act[act["Class Code"].isin(codes)]
         shown = rows_.groupby("Class Code")["Enrolled at Census"].first()
-        caps = rows_["Room Capacity"]
-        tot = m_["enrolled"] + r_["enrolled"]
+        own = [len(lists.get(c, ())) for c in codes]
         if m_.get("combined"):
-            arc_ok &= len(set(shown)) == 1 and shown.iloc[0] == tot and (2 * tot > caps).all()
+            caps = rows_["Room Capacity"]
+            arc_ok &= len(set(shown)) == 1 and shown.iloc[0] == sum(own) and (2 * sum(own) > caps).all()
         else:
-            sir_ok &= sorted(shown) == sorted([m_["enrolled"], r_["enrolled"]]) and (tot <= caps).all()
-    ok("A2 ARC combinations: the combination's enrolment on each class, more than the room seats added", arc_ok)
-    ok("A3 classes carried from SIRIUS: own enrolments, fitting the room added", sir_ok)
-    eq = sum(1 for m_, r_ in w.pairs if not m_.get("combined") and m_["enrolled"] == r_["enrolled"])
-    ok("A4 SIRIUS pairs with equal enrolments in every faculty and level", eq == 10, "%d" % eq)
+            shared = rows_.groupby(["Room", "Day", "Start", "Teaching Weeks"])["Class Code"].nunique()
+            caps = rows_.set_index(["Room", "Day", "Start", "Teaching Weeks"]).sort_index()["Room Capacity"]
+            sir_ok &= sorted(shown) == sorted(own) and all(caps.loc[k].max() >= sum(own) for k in shared[shared == 2].index)
+    ok("A2 ARC combinations: the two lists' total on each class, more than the room seats added", arc_ok)
+    ok("A3 pairs carried from SIRIUS: each class its own list, the shared room seats both", sir_ok)
+    gs = calc.groupings(tt, "sets")
+    part = [(m_, r_) for m_, r_ in w.pairs if m_.get("partial")]
+    part_ok = len(part) == 20
+    for m_, r_ in part:
+        a, b = code(m_), code(r_)
+        part_ok &= sum(1 for s in gs if s == frozenset([a, b])) == 1 and frozenset([a]) in gs and frozenset([b]) in gs
+    per = {}
+    for m_, r_ in part:
+        per[(m_["fac"], m_["level"])] = per.get((m_["fac"], m_["level"]), 0) + 1
+    ok("A4 two pairs a faculty and level share the lecture only: three groups each", part_ok and set(per.values()) == {2},
+       "%d pairs" % len(part))
     multi = act.groupby(["Room", "Day", "Start", "Teaching Weeks"])["Class Code"].nunique()
     shared = set()
     for k in multi[multi > 1].index:
         cs = set(act[(act["Room"] == k[0]) & (act["Day"] == k[1]) & (act["Start"] == k[2]) & (act["Teaching Weeks"] == k[3])]["Class Code"])
         shared |= cs
     ok("A5 the only classes sharing a slot are the papers taught together", shared <= set(pair_codes), "%d classes" % len(shared))
+    _, info = calc.class_info(tt)
+    combo = {code(x) for m_, r_ in w.pairs if m_.get("combined") for x in (m_, r_)}
+    tie = [c for c in info.index if c not in combo and int(info.at[c, "n"]) != len(lists.get(c, ()))]
+    ok("A6 every class list ties to ARC Scheduling's figure but the combinations'", not tie and set(lists) <= set(info.index),
+       "%d classes" % len(info))
+    st = calc.census_status_2026(d)
+    cle_st = cle["arc_student_id"].map(st).fillna("none")
+    ok("A7 stale places: students on leave and students with no 2026 census attempt", (cle_st == "On leave").sum() > 300
+       and (cle_st == "none").sum() > 300, "%d on leave, %d with no attempt" % ((cle_st == "On leave").sum(), (cle_st == "none").sum()))
+    tts, en = calc.sizes(d, gs, "tt_golden"), calc.sizes(d, gs, "enrolled")
+    lv_in, left_in = calc.sizes(d, gs, "keep_leave"), calc.sizes(d, gs, "keep_left")
+    cross = [i for i, (a, b) in enumerate(zip(tts, en)) if (a > 30) != (b > 30)]
+    byfl = {}
+    for i in cross:
+        fl = (info.at[sorted(gs[i])[0], "fac"], min(int(info.at[c, "level"]) for c in gs[i]) >= 300)
+        byfl[fl] = byfl.get(fl, 0) + 1
+    ok("A8 two groups a faculty and level carried across 30 by the stale places", len(byfl) == 10 and set(byfl.values()) == {2},
+       "%d groups" % len(cross))
+    ok("A9 neither kind of stale place alone carries them", all(lv_in[i] > 30 and left_in[i] > 30 for i in cross))
+    dup = any(len(set().union(*(lists.get(c, set()) for c in s))) != sum(len(lists.get(c, ())) for c in s) for s in gs)
+    ok("A10 no student holds two classes of one group", not dup)
     # separation: no device row in the call's population
     ok("S2 classes taught together are 200 level and above", all(x["level"] >= 200 for pair in w.pairs for x in pair))
     first = act[act["Level"] == 100]
     ok("S3 first-year classes meet in no shared slot", not first.duplicated(["Room", "Day", "Start", "Teaching Weeks"]).any())
+    intake = set(d["acls"]["arc_student_id"])
+    ok("S4 the class list holds no first-time entrant of 2026 and no first-year class",
+       not (set(cle["arc_student_id"]) & intake) and set(cle["class_code"]) <= set(info.index))
+    # freeze: every file the call reads is the shipped one; the dictionary only gains the class list's entry
+    import hashlib
+    shipped = json.load(open(os.path.join(HERE, "shipped_digests.json")))["sha256"]
+    sha = lambda b: hashlib.sha256(b).hexdigest()
+    moved = [f for f in shipped if f not in (C.F_TT, C.F_DICT)
+             and sha(open(os.path.join(target, f), "rb").read()) != shipped[f]]
+    ok("F1 every file but the timetable and the dictionary is the shipped file", not moved, ", ".join(moved))
+    dic_now = open(os.path.join(target, C.F_DICT), "rb").read().decode("utf-8")
+    entry = dic_now[dic_now.index(C.F_CLE):]
+    entry = entry[:entry.index("\r\n\r\n") + 4]
+    ok("F2 the dictionary is the shipped one with the class list's entry added",
+       sha(dic_now.replace(entry, "", 1).encode("utf-8")) == shipped[C.F_DICT])
+    ok("F3 the pack adds only the class list", sorted(set(files) - set(shipped)) == [C.F_CLE])
     # ------------------------------------------------------------------ documents
     from pypdf import PdfReader
     conv = " ".join(p.extract_text() for p in PdfReader(os.path.join(target, C.F_CONV)).pages)

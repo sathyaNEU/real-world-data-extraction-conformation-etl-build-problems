@@ -119,37 +119,30 @@ def main(target):
     none2026 = sum(1 for (y, sid) in ent if y == 2026 and rep.get((y, sid), 0) == 0)
     if none2026 != figs["cc2_intake_2026_no_repeat_classmate"]:
         bad.append("no repeat %d" % none2026)
-    # teaching groups, 200 level and above: classes meeting in one room, on one day, at one start and over the same
-    # weeks are one group; a combination's enrolment written on each of its classes (the same figure on every class,
-    # more than the room seats when added) is counted once
+    # teaching groups, 200 level and above: each distinct set of active classes meeting together in one room at one
+    # time (day, start, teaching weeks) is one group; its size is the students its classes list who hold an enrolled
+    # programme attempt at the 2026 census
     ws = openpyxl.load_workbook(P("s1_2026_class_timetable.xlsx"), read_only=True).worksheets[0]
     it = ws.iter_rows(values_only=True)
     head = list(next(it))
     slot_classes = defaultdict(set)
-    info, caps = {}, defaultdict(int)
+    info = {}
     for v in it:
         rec = dict(zip(head, v))
-        if rec["Class Status"] != "Active":
+        if rec["Class Status"] != "Active" or int(rec["Level"]) < 200:
             continue
-        info[rec["Class Code"]] = (rec["Owning Faculty"], rec["Enrolled at Census"], int(rec["Level"]))
-        caps[rec["Class Code"]] = max(caps[rec["Class Code"]], rec["Room Capacity"])
+        info[rec["Class Code"]] = (rec["Owning Faculty"], int(rec["Level"]))
         slot_classes[(rec["Room"], rec["Day"], rec["Start"], rec["Teaching Weeks"])].add(rec["Class Code"])
-    comp = {c: {c} for c in info}
-    for cs in slot_classes.values():
-        merged = set().union(*(comp[c] for c in cs))
-        for c in merged:
-            comp[c] = merged
+    enrolled26 = {r["STUDENT_ID"] for r in rows(P("census_enrolments_2019_2026.csv"))
+                  if r["CENSUS_DATE"] == "2026-10-01" and r["STATUS"] == "Enrolled"}
+    members = defaultdict(set)
+    for r in rows(P("arc_s1_2026_class_enrolments.csv")):
+        members[r["class_code"]].add(r["arc_student_id"])
     cnt = defaultdict(int)
-    for gset in {frozenset(x) for x in comp.values()}:
+    for gset in {frozenset(s) for s in slot_classes.values()}:
         cs = sorted(gset)
-        vals = [info[c][1] for c in cs]
-        lv = min(info[c][2] for c in cs)
-        if lv < 200:
-            continue
-        if len(cs) > 1 and len(set(vals)) == 1 and sum(vals) > max(caps[c] for c in cs):
-            size = vals[0]
-        else:
-            size = sum(vals)
+        lv = min(info[c][1] for c in cs)
+        size = len(set().union(*(members[c] for c in cs)) & enrolled26)
         tag = "200" if lv == 200 else "300up"
         cnt[(FAC[info[cs[0]][0]], tag, "over30" if size > 30 else "30orfewer")] += 1
     for f in ("ass", "bus", "sci", "eng", "hlt"):

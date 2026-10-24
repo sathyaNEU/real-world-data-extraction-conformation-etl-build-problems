@@ -47,6 +47,7 @@ def write_pack(out):
     n[C.F_HALL] = pk.write_halls(P(C.F_HALL))
     n[C.F_NSL] = pk.write_school_leavers(P(C.F_NSL))
     n[C.F_TT] = pk.write_timetable(P(C.F_TT))
+    n[C.F_CLE] = pk.write_class_enrolments(P(C.F_CLE))
     n[C.F_ADM] = pk.write_admissions(P(C.F_ADM))
     D.write_cutover(P(C.F_CUT))
     D.write_conventions(P(C.F_CONV))

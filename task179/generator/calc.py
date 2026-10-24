@@ -4,7 +4,9 @@ The call: each 2019 to 2025 first-time entrant's enrolment at the next census, m
 the week-6 progress ratings and the number of other entrants of the intake the entrant meets in two or more of the
 entrant's own Semester 1 classes (repeat classmates, in bands); the model applied to the 2026 intake and summed.
 The ask: Semester 1 2026 teaching groups at 200 level and at 300 level and above by owning faculty, at 30 students or
-fewer and over 30. The model form is the one with the lowest Akaike information criterion, as the conventions file."""
+fewer and over 30: each distinct set of classes taught together in one room at one time is a group, and its size is
+its classes' students enrolled at the census (the census history's definition). The model form is the one with the
+lowest Akaike information criterion, as the conventions file."""
 from __future__ import annotations
 
 import os
@@ -30,6 +32,7 @@ def load(target):
     d["prog"] = pd.read_csv(P(C.F_PROG), dtype={"STUDENT": str, "CLASS": str}, keep_default_na=False)
     d["adm"] = pd.read_excel(P(C.F_ADM), sheet_name=None, dtype={"Student No": str, "Student ID": str})
     d["tt"] = pd.read_excel(P(C.F_TT))
+    d["cle"] = pd.read_csv(P(C.F_CLE), dtype=str)
     return d
 
 
@@ -194,61 +197,112 @@ def forecast(a, form="bands", years=None):
 
 # ------------------------------------------------------------------ the ask: teaching groups
 LEVELS = ("200", "300+")
+SLOT = ("Room", "Day", "Start", "Teaching Weeks")
 
 
-def slot_groups(tt, cols=("Room", "Day", "Start", "Teaching Weeks")):
-    """active classes joined into groups by shared meetings on cols (None: one group per class)"""
-    act = tt[tt["Class Status"] == "Active"]
-    cls = act.groupby("Class Code").agg(fac=("Owning Faculty", "first"), level=("Level", "first"),
-                                        n=("Enrolled at Census", "first"), cap=("Room Capacity", "max")).reset_index()
-    if not cols:
-        return cls.assign(grp=cls["Class Code"])
+def class_info(tt):
+    """active classes at 200 level and above: faculty, level, the timetable's enrolment figure, the largest room"""
+    act = tt[(tt["Class Status"] == "Active") & (tt["Level"] >= 200)]
+    info = act.groupby("Class Code").agg(fac=("Owning Faculty", "first"), level=("Level", "first"),
+                                         n=("Enrolled at Census", "first"), cap=("Room Capacity", "max"))
+    return act, info
+
+
+def groupings(tt, how="sets", cols=SLOT):
+    """the groups as sets of class codes. sets: each distinct set of classes meeting together (the golden); uf: classes
+    joined through any shared meeting; ident: classes with identical meeting sets; meeting: every meeting its own
+    group; class: one group per class"""
+    act, info = class_info(tt)
     meet = act[["Class Code"] + list(cols)].drop_duplicates()
-    key = meet[list(cols)].astype(str).agg("|".join, axis=1)
-    parent = {c: c for c in cls["Class Code"]}
+    slots = meet.groupby(list(cols))["Class Code"].apply(frozenset)
+    if how == "sets":
+        return sorted(set(slots), key=sorted)
+    if how == "meeting":
+        return sorted(slots, key=sorted)
+    if how == "class":
+        return [frozenset([c]) for c in sorted(info.index)]
+    if how == "ident":
+        sig = meet.assign(k=meet[list(cols)].astype(str).agg("|".join, axis=1)).groupby("Class Code")["k"].apply(
+            lambda s: tuple(sorted(set(s))))
+        out = {}
+        for c, s in sig.items():
+            out.setdefault(s, set()).add(c)
+        return sorted((frozenset(v) for v in out.values()), key=sorted)
+    parent = {c: c for c in info.index}
 
     def find(x):
         while parent[x] != x:
             parent[x] = parent[parent[x]]
             x = parent[x]
         return x
-    for _, g in meet.assign(k=key).groupby("k"):
-        cs = sorted(g["Class Code"].unique())
+    for s in slots:
+        cs = sorted(s)
         for c in cs[1:]:
             ra, rb = find(cs[0]), find(c)
             if ra != rb:
                 parent[rb] = ra
-    cls["grp"] = cls["Class Code"].map(find)
-    return cls
+    comp = {}
+    for c in info.index:
+        comp.setdefault(find(c), set()).add(c)
+    return sorted((frozenset(v) for v in comp.values()), key=sorted)
 
 
-def group_sizes(cls, rule="golden"):
-    """golden: classes of a group showing one and the same census enrolment that, added, would exceed the room are
-    the combination's enrolment written on each class, counted once; otherwise the classes' enrolments are added"""
-    out = []
-    for gid, g in cls.groupby("grp"):
-        ns = list(g["n"])
-        if rule == "sum" or len(ns) == 1:
-            size = sum(ns)
-        elif rule == "once":
-            size = max(ns)
-        else:
-            same = len(set(ns)) == 1
-            size = ns[0] if (same and sum(ns) > g["cap"].max()) else sum(ns)
-        lv = int(g["level"].min())
-        lev = "200" if lv == 200 else ("300+" if lv >= 300 else "100")
-        out.append((g["fac"].iloc[0], lev, size, g["fac"].nunique()))
-    return out
+def census_status_2026(d):
+    """each student's state at the 2026 census: Enrolled when any attempt is enrolled, else On leave"""
+    c = d["census"]
+    c26 = c[c["CENSUS_DATE"] == "2026-10-01"]
+    st = {}
+    for sid, s in zip(c26["STUDENT_ID"], c26["STATUS"]):
+        if st.get(sid) != "Enrolled":
+            st[sid] = s
+    return st
 
 
-def teaching_groups(d, cols=("Room", "Day", "Start", "Teaching Weeks"), rule="golden"):
-    gs = group_sizes(slot_groups(d["tt"], cols), rule)
+def sizes(d, groups, basis="enrolled"):
+    """enrolled: the group's students on the class lists who are enrolled at the census (golden); lists: every student
+    on the lists; keep_leave: those with any attempt at the census; keep_left: every listed student but those on
+    leave; tt_golden, tt_sum, tt_once: the timetable's figures under the repeated-figure rule, added, the largest"""
+    act, info = class_info(d["tt"])
+    if basis.startswith("tt_"):
+        out = []
+        for s in groups:
+            ns = [int(info.at[c, "n"]) for c in sorted(s)]
+            if basis == "tt_sum" or len(ns) == 1:
+                out.append(sum(ns))
+            elif basis == "tt_once":
+                out.append(max(ns))
+            else:
+                same = len(set(ns)) == 1
+                out.append(ns[0] if (same and sum(ns) > max(int(info.at[c, "cap"]) for c in s)) else sum(ns))
+        return out
+    st = census_status_2026(d)
+    keep = {"enrolled": lambda x: st.get(x) == "Enrolled", "lists": lambda x: True,
+            "keep_leave": lambda x: x in st, "keep_left": lambda x: st.get(x) != "On leave"}[basis]
+    members = d["cle"].groupby("class_code")["arc_student_id"].apply(set).to_dict()
+    return [sum(1 for x in set().union(*(members.get(c, set()) for c in s)) if keep(x)) for s in groups]
+
+
+def cells(d, how="sets", basis="enrolled", cols=SLOT):
+    """the 20 ask figures under one route, keyed as figures.json keys them"""
+    act, info = class_info(d["tt"])
+    gs = groupings(d["tt"], how, cols)
+    sz = sizes(d, gs, basis)
     out = {}
-    for f in ["FASS", "FBUS", "FSCI", "FENG", "FHLT"]:
-        for lev in LEVELS:
-            sz = [x[2] for x in gs if x[0] == f and x[1] == lev]
-            out[(FAC_ARC[f], lev)] = (sum(1 for v in sz if v <= 30), sum(1 for v in sz if v > 30))
-    return out, all(nf == 1 for *_, nf in gs)
+    one_fac = True
+    for s, v in zip(gs, sz):
+        facs = {info.at[c, "fac"] for c in s}
+        one_fac &= len(facs) == 1
+        lv = min(int(info.at[c, "level"]) for c in s)
+        lev = "200" if lv == 200 else "300+"
+        key = (FAC_ARC[sorted(facs)[0]], lev)
+        a, b = out.get(key, (0, 0))
+        out[key] = (a + (v <= 30), b + (v > 30))
+    return out, one_fac
+
+
+def teaching_groups(d, how="sets", basis="enrolled"):
+    out, one_fac = cells(d, how, basis)
+    return {k: out.get(k, (0, 0)) for k in [(f, lev) for f in ["ASS", "BUS", "SCI", "ENG", "HLT"] for lev in LEVELS]}, one_fac
 
 
 FORMS = ["none", "bands", "bands5", "bands4", "ge5", "ge7", "ge10", "ge15", "ge22", "any", "lin", "log", "sqrt",

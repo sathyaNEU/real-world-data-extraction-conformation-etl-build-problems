@@ -1,12 +1,12 @@
 {
  "task": "task179",
  "owner": "sathya8571",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "education-learning-sciences",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-23",
+ "stage": 4,
+ "stage_name": "check",
+ "updated": "2026-10-24",
  "stump": "A competent solver fits an early-warning model on the entrants' own attributes to the 2019 to 2025 entrants' enrolment at the next census, validates it on the 2025 intake, scores the 8,659 2026 entrants and files 2,250 not enrolled on 1 October 2027 against 3,250, because it never reads each entrant's chance at the number of other entrants met in two or more of the entrant's own classes, which the Registry's allocation run kept near 26 and self-enrolment after the ARC cutover leaves near one.",
  "architecture": 3,
  "loops": 1,
@@ -29,7 +29,24 @@
   "disposition": "no rerun; its fit 3,253.7, peer specifications 3,224 to 3,334 inside the band, the one-or-more and three-or-more class definitions lose on AIC (about 530 for three or more), every group cell matched; Gate G analytical_non_defect, Gate H pass; optional note on the combination enrolment rule recorded as an answered risk",
   "report": "scratchpad judge-task179y/verdict.md (pass 1: judge-task179x/verdict.md)"
  },
- "returned": [],
+ "returned": [
+  {
+   "date": "2026-10-24",
+   "portal": "the call held on both responses; both answered all 20 S1 2026 teaching-group cells (weights 2 to 3, 55 of 100) by joining classes through shared meetings and reading a figure the room could not seat added once, the shipped golden route",
+   "repair": "rubric",
+   "rounds": [
+    {
+     "round": 1,
+     "zip": "c1b19cef",
+     "moves": "two lecture-only SIRIUS pairs a faculty and level (three groups, not one or two) and two flip classes a faculty and level whose lists hold places of students on approved leave or with no 2026 census attempt; arc_s1_2026_class_enrolments.csv added (49,237 places); every other file byte-identical to the shipped pack except the timetable and one dictionary entry; ceiling 0 of 20 on all 14 routes",
+     "reader": "pending: scored-task179ze and scored-task179zf",
+     "judge": "pending: judge-task179z (pass 3)"
+    }
+   ],
+   "freeze": "rubric PASS: the main call, the stump and every frozen figure unchanged; 14 ask figures moved",
+   "commit": ""
+  }
+ ],
  "wave": "new, seed FC50: the world, the decision and the quantity kept, the world moved honestly off local_government to a private ambulance company holding a city's 911 ambulance contract (the city the counterparty), deciding its own ten summer surge medic units for the weekend 20:00 to 24:00 block from June to August across three districts at the contract's 9-in-10 evenings standard at 1.2 unit-hours a call, the rest offered to the county's mutual-aid roster; the seed's filed staffing formula, the public dataset's suppression of one- and two-call cells and a pooling sentence were never candidates; redraw cell 1 econometrics time-series macro (2026-10-19, dead), redraw cell 2 epidemiology infectious-disease-transmission-modeling (2026-10-21, architecture v2, re-sited to the fictional Republic of Saldane after the first world was declined on the real-place records concern)",
  "screen": {
   "assigned": "a forecasting judgment an EMS deployment analyst would recognise, inferred from the data, the rival rejected out of sample; ideas named: pooling with the areas' co-movement measured in the record, the lever of 30 per cent or more on units needed with no pooling discount or square-root law landing, next summer's level against the record's under a trend or a known change, a back-test on past summers",
@@ -73,12 +90,12 @@
    "registration": "registered 2026-10-23 (4afaec0a) after two lock BLOCKs on the window (ban.strategy composition_mix vs task274, then vs task175); not relabelled"
   }
  },
- "resume": "",
+ "resume": "rubric repair at stage 4 on zip c1b19cef: score reader.json in scratchpad scored-task179ze and scored-task179zf with score179z.py against generator/figures.json and read judge-task179z/verdict.md; if the readers keep about a fifth of the 20 cells or fewer and the judge approves, fill returned[0], set status SHIPPED, update the design note's Measured line and the ledger row, commit RESHIPPED (task179): rubric; else re-site the device the reader executed",
  "approved": null,
  "delivered": "2026-10-23",
  "portal": null,
  "portal_id": "",
- "portal_status": "",
- "portal_status_date": "",
- "zip_md5": "a9f8b87819562bddbb81b28da63ac43a"
+ "portal_status": "returned 2026-10-24: the call held (both responses off 3,250), the rubric over 60 because both answered all 20 teaching-group cells (55 of 100)",
+ "portal_status_date": "2026-10-24",
+ "zip_md5": "c1b19cef2086da975dc5b077e3d2b1d6"
 }

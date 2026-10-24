@@ -120,12 +120,12 @@ def write_workbook(path, o):
         "Projection: logistic model fitted on the 2019 to 2025 intakes (admissions attributes, week-6 progress check, "
         "faculty, and whether the entrant met 10 or more other entrants in two or more Semester 1 classes, the form "
         "with the lowest AIC), applied to the 2026 intake; reported to the nearest 250.",
-        "Teaching groups, 200 level and above: active Semester 1 2026 classes meeting in one room, on one day, at one "
-        "start, over the same teaching weeks count as one group. Where ARC Scheduling shows the same enrolment on each "
-        "class of a group, more than the room seats when added, that is the combination's enrolment and is counted "
-        "once.",
+        "Teaching groups, 200 level and above: each distinct set of active Semester 1 2026 classes meeting together "
+        "in one room at one time is a group, so papers sharing only a lecture are the lecture and each workshop. A "
+        "group's size is the students on its classes' lists who are enrolled at the 2026 census in the census history; "
+        "places still held by students on approved leave or who left before the census are not counted.",
         "Sources: Registry census history and first-year cohort extracts; Admissions; Student Success week-6 "
-        "progress check; Timetabling Semester 1 2026 timetable at the census.",
+        "progress check; Timetabling Semester 1 2026 timetable at the census; ARC class enrolments at the census.",
     ]
     ws4["A1"] = "Notes"
     ws4["A1"].font = bold
@@ -212,11 +212,13 @@ def write_submission(path, o, F):
              "for meeting 10 or more other entrants twice.")
     L.append("5. Applied it to the 2026 entrants and summed their probabilities: %s, about %s to the nearest 250."
              % ("{:,.1f}".format(o["call"]), "{:,}".format(o["call_r"])))
-    L.append("6. Counted Semester 1 2026 teaching groups at 200 level and above in s1_2026_class_timetable.xlsx: active "
-             "classes meeting in the same room on the same day, start and teaching weeks are one group whatever teacher "
-             "of record each lists; where every class of a group shows the same census enrolment and the classes added "
-             "would exceed the room's capacity, ARC Scheduling has written the combination's enrolment on each class "
-             "and it is counted once, otherwise the classes' enrolments are added.")
+    L.append("6. Counted Semester 1 2026 teaching groups at 200 level and above from s1_2026_class_timetable.xlsx: each "
+             "distinct set of active classes meeting together in one room at one time (day, start and teaching weeks) "
+             "is one group, so two papers sharing only their lecture make three (the lecture and each workshop); a "
+             "group's size is the students its classes list in arc_s1_2026_class_enrolments.csv who hold an enrolled "
+             "programme attempt at the 2026 census in the census history, so places still held by students on approved "
+             "leave or with no 2026 attempt are not counted (ARC Scheduling's Enrolled at Census counts them, and shows "
+             "a combination's two classes together on each).")
     L.append("")
     L.append("## 4. Deliverable Answers\n")
     L.append("### %s\n" % C.DELIV_XLSX)
@@ -246,7 +248,7 @@ def write_metadata(path):
                        "built by the task's generator, and no real institution, student system or person is "
                        "represented.",
             "sources": {f: {"source": "synthetic (task generator)", "date": "2026-10-16", "license": "CC0-1.0"}
-                        for f in [C.F_SCLS, C.F_ACLS, C.F_CENSUS, C.F_XWALK, C.F_ADM, C.F_PROG, C.F_TT, C.F_CAT,
+                        for f in [C.F_SCLS, C.F_ACLS, C.F_CENSUS, C.F_XWALK, C.F_ADM, C.F_PROG, C.F_TT, C.F_CLE, C.F_CAT,
                                   C.F_TRF, C.F_CUT, C.F_CONV, C.F_DICT, C.F_HALL, C.F_NSL]}}
     json.dump(meta, open(path, "w"), indent=2)
     open(path, "a").write("\n")

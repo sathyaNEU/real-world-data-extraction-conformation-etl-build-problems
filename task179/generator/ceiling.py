@@ -2,13 +2,15 @@
 
     python3 task179/generator/ceiling.py [target]
 
-Every route a careful reader takes on the teaching-groups ask, figure by figure, against figures.json, the two stage 4
-round 1 readers' verbatim paths among them (reader A: "classes of different papers sharing identical room/day/time
-slots in every meeting merged ... summed"; reader B: "pairs of classes with identical meeting sets (same days, times,
-rooms, weeks) ... merged and sizes summed"). The cracker lands the call and runs the hygiene battery, which includes
-reading a repeated total on several lines once; the mirror is the best response off the call. Pair ceiling on the
-generated rubric's weights (38 recommendation and components, 7 instruction following, 55 asks; a wrong call keeps
-about 5)."""
+Every route a careful reader takes on the teaching-groups ask, figure by figure, against figures.json. Two devices sit
+under every cell. Grouping: papers carried from SIRIUS that share only their lecture are three groups (the lecture and
+each workshop), which joining classes through any shared meeting, or merging identical meeting sets, does not give.
+Size: a group's size is its students enrolled at the census, while ARC Scheduling's figure and the class lists also
+count places still held by students on approved leave and by students who left before the census. The portal's
+responses on the first pack ran the shared-meeting join with a repeated figure read once where the room could not
+seat it added (the route labelled "portal"): it kept all 20 cells there. The cracker lands the call and runs the
+hygiene battery; the mirror is the best response off the call. Pair ceiling on the generated rubric's weights (38
+recommendation and components, 7 instruction following, 55 asks; a wrong call keeps about 5)."""
 from __future__ import annotations
 
 import json
@@ -19,49 +21,48 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import calc     # noqa: E402
 
-SLOT = ("Room", "Day", "Start", "Teaching Weeks")
 ROUTES = {
-    "one group per class code": (None, "sum"),
-    "reader A: identical room, day, start in every meeting, summed": (("Room", "Day", "Start"), "sum"),
-    "reader B: identical meeting sets with weeks, summed": (SLOT, "sum"),
-    "identical meeting sets, a repeated enrolment read once (the battery)": (SLOT, "equal_once"),
-    "identical meeting sets, the largest class only": (SLOT, "once"),
-    "room, day, start, teacher, summed": (("Room", "Day", "Start", "Teacher"), "sum"),
-    "room, day, start, weeks, teacher, repeated enrolment once": (SLOT + ("Teacher",), "equal_once"),
-    "room, day, start, no weeks, the golden size rule": (("Room", "Day", "Start"), "golden"),
+    "portal: shared meetings joined, a repeated figure over the room once": ("uf", "tt_golden"),
+    "shared meetings joined, figures added": ("uf", "tt_sum"),
+    "identical meeting sets, repeated figure once": ("ident", "tt_golden"),
+    "identical meeting sets, figures added": ("ident", "tt_sum"),
+    "one group per class code, its figure": ("class", "tt_sum"),
+    "each meeting its own group, figures": ("meeting", "tt_golden"),
+    "grouping right, the timetable's figures": ("sets", "tt_golden"),
+    "grouping right, every listed student": ("sets", "lists"),
+    "grouping right, students on leave left in": ("sets", "keep_leave"),
+    "grouping right, students who left kept": ("sets", "keep_left"),
+    "shared meetings joined, enrolled students": ("uf", "enrolled"),
+    "identical meeting sets, enrolled students": ("ident", "enrolled"),
+    "shared meetings joined, every listed student": ("uf", "lists"),
+    "identical meeting sets, every listed student": ("ident", "lists"),
 }
 
 
-def route(d, cols, rule):
-    cls = calc.slot_groups(d["tt"], cols)
-    if rule == "equal_once":
-        gs = []
-        for gid, g in cls.groupby("grp"):
-            ns = list(g["n"])
-            size = ns[0] if len(set(ns)) == 1 else sum(ns)
-            lv = int(g["level"].min())
-            gs.append((g["fac"].iloc[0], "200" if lv == 200 else ("300+" if lv >= 300 else "100"), size, 1))
-    else:
-        gs = calc.group_sizes(cls, rule)
-    out = {}
-    for f, code in calc.FAC_ARC.items():
-        for lev, tag in (("200", "200"), ("300+", "300up")):
-            sz = [x[2] for x in gs if x[0] == f and x[1] == lev]
-            out["ask_groups_s1_2026_%s_%s_30orfewer" % (code.lower(), tag)] = sum(1 for v in sz if v <= 30)
-            out["ask_groups_s1_2026_%s_%s_over30" % (code.lower(), tag)] = sum(1 for v in sz if v > 30)
-    return out
+def keyed(out):
+    r = {}
+    for (code, lev), (a, b) in out.items():
+        tag = "200" if lev == "200" else "300up"
+        r["ask_groups_s1_2026_%s_%s_30orfewer" % (code.lower(), tag)] = a
+        r["ask_groups_s1_2026_%s_%s_over30" % (code.lower(), tag)] = b
+    return r
+
+
+def route(d, how, basis):
+    out, _ = calc.teaching_groups(d, how, basis)
+    return keyed(out)
 
 
 def main(target):
     figs = json.load(open(os.path.join(HERE, "figures.json")))
     asks = sorted(k for k in figs if k.startswith("ask_"))
     d = calc.load(target)
-    gold = route(d, SLOT, "golden")
+    gold = route(d, "sets", "enrolled")
     assert all(gold[k] == figs[k] for k in asks), "golden route does not reproduce figures.json"
     print("%-72s %s" % ("route", "figures kept"))
     best = 0
-    for name, (cols, rule) in ROUTES.items():
-        r = route(d, cols, rule)
+    for name, (how, basis) in ROUTES.items():
+        r = route(d, how, basis)
         hit = [k for k in asks if r[k] == figs[k]]
         best = max(best, len(hit))
         print("%-72s %d of %d%s" % (name, len(hit), len(asks), (": " + ", ".join(hit)) if hit else ""))

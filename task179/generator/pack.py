@@ -271,10 +271,10 @@ class Pack:
                 code_of[(x["paper"], x["k"])] = "%s-26S1-%03d" % (x["paper"], x["k"])
         meetings = {}
 
-        def place(x, nmeet, teacher, weeks="1-12"):
+        def place(x, nmeet, teacher, weeks="1-12", own=False):
             f = x["fac"]
-            need = x["enrolled"] if x.get("pair") is None else x["enrolled"] + self._mate(x)["enrolled"]
-            if x.get("combined"):
+            need = x["enrolled"] if (x.get("pair") is None or own) else x["enrolled"] + self._mate(x)["enrolled"]
+            if x.get("combined") and not own:
                 cand = [r for r in rooms[f] if need <= r[1] < 2 * need]
             else:
                 cand = [r for r in rooms[f] if r[1] >= need] or [max(rooms[f], key=lambda r: r[1])]
@@ -299,6 +299,20 @@ class Pack:
             if key in paired:
                 continue                      # placed with its 300-level mate
             teacher = staff[x["fac"]][int(g.integers(len(staff[x["fac"]])))]
+            if x.get("partial"):
+                # papers carried from SIRIUS that share the lecture only: each keeps its own coordinator and workshop
+                gp = C.stream("tt_partial_" + key[0])
+                t2 = staff[x["fac"]][int(gp.integers(len(staff[x["fac"]])))]
+                while t2 == teacher:
+                    t2 = staff[x["fac"]][int(gp.integers(len(staff[x["fac"]])))]
+                shared = place(x, 1, teacher)
+                for (d, st, r) in shared:
+                    tbusy.add((t2, d, st))
+                own_a = place(x, 1, teacher, own=True)
+                own_b = place(self._mate(x), 1, t2, own=True)
+                meetings[key] = (teacher, shared + own_a)
+                meetings[x["pair"]] = (t2, shared + own_b)
+                continue
             nmeet = 2 if x["level"] == 100 else int(g.choice([1, 2, 2]))
             mt = place(x, nmeet, teacher)
             meetings[key] = (teacher, mt)
@@ -375,6 +389,133 @@ class Pack:
                                         room=r[0], cap=r[1], teacher=teacher, enrolled=n, status="Active", weeks=wk))
                     self.halves.append(dict(paper=pp, k=1, fac=f, level=lvl, enrolled=n, pair=None))
         self.tt.sort(key=lambda r: (r["fac"], r["paper"], r["code"], DAYS.index(r["day"]), r["start"], r["weeks"]))
+
+    # ------------------------------------------------------------------ class enrolments, 200 level and above
+    def class_lists(self):
+        """Each active class's students at the census as ARC holds them (its own students; a combination's figure in
+        the timetable is the two classes' together). Most students on approved leave and those who left before the
+        census had their class places dropped; some still hold them, which ARC Scheduling's figure counts. Those places
+        sit where they cannot carry a group across 30, except two classes a faculty and level just over 30, which only
+        both kinds of place together bring to 30."""
+        if getattr(self, "_lists", None) is not None:
+            return self._lists
+        g = C.stream("class_lists")
+        code = lambda x: "%s-26S1-%03d" % (x["paper"], x["k"])
+        recs = [x for x in self.w.classes if x["level"] >= 200 and not x.get("cancelled")] + list(self.halves)
+        byc = {code(x): x for x in recs}
+        # the groups as the conventions read them: each distinct set of classes taught together in one meeting
+        sets = {}
+        for r in self.tt:
+            if r["status"] == "Active" and r["level"] >= 200:
+                sets.setdefault((r["room"], r["day"], r["start"], r["weeks"]), set()).add(r["code"])
+        groups = sorted({frozenset(v) for v in sets.values()}, key=lambda s: sorted(s))
+        of = {}
+        for gi, s in enumerate(groups):
+            for c in s:
+                of.setdefault(c, []).append(gi)
+        size = [sum(byc[c]["enrolled"] for c in s) for s in groups]
+        stale = [0] * len(groups)
+        lists = {c: [] for c in byc}
+        # pools by faculty and year of study at the 2026 census
+        en, lv, wd = {}, {}, {}
+        for s in self.w.students:
+            r = s["rows"].get(2026)
+            if r and r[1] >= 2:
+                (en if r[0] == "EN" else lv).setdefault((s["fac"], min(r[1], 4)), []).append(s["arc"])
+            r5 = s["rows"].get(2025)
+            if not r and r5 and r5[0] == "EN" and r5[1] in (1, 2) and s.get("arc"):
+                wd.setdefault((s["fac"], r5[1] + 1), []).append(s["arc"])
+        for k in en:
+            en[k].sort()
+        years = {200: (2, 3), 300: (3, 4), 400: (4, 3)}
+
+        def ok_to_add(c, sid):
+            if byc[c].get("flip") or sid in lists[c]:
+                return False
+            for gi in of[c]:
+                if any(sid in lists[o] for o in groups[gi] if o != c):
+                    return False
+                if size[gi] > 30 and size[gi] - stale[gi] - 1 <= 30:
+                    return False
+            return True
+
+        def add(c, sid, is_stale):
+            lists[c].append(sid)
+            if is_stale:
+                for gi in of[c]:
+                    stale[gi] += 1
+        for f in C.FAC_CODES:
+            mine = sorted([c for c in byc if byc[c]["fac"] == f], key=lambda c: c)
+            # the flips first: a + b places, neither kind alone enough
+            plan = {32: [(1, 1)], 33: [(2, 1), (1, 2)], 34: [(2, 2), (3, 1), (1, 3)]}
+            for c in [c for c in mine if byc[c].get("flip")]:
+                n = byc[c]["enrolled"]
+                a, b = plan[n][int(g.integers(len(plan[n])))]
+                y0 = years[byc[c]["level"]][0]
+                for pool, cnt in ((lv, a), (wd, b)):
+                    cand = sorted(set(pool.get((f, y0), []) + pool.get((f, years[byc[c]["level"]][1]), [])))
+                    for j in g.permutation(len(cand)):
+                        if cnt == 0:
+                            break
+                        if cand[j] not in lists[c]:
+                            add(c, cand[j], True)
+                            cnt -= 1
+            # the other stale places: some students on leave and some who left still hold two or three classes
+            stale_ids = []
+            for y in (2, 3, 4):
+                ids = sorted(lv.get((f, y), []))
+                stale_ids += [(sid, y) for i, sid in enumerate(ids) if g.random() < 0.6]
+                ids = sorted(wd.get((f, y), []))
+                stale_ids += [(sid, y) for sid in ids if g.random() < 0.08]
+            for sid, y in stale_ids:
+                lvls = [L for L in (200, 300, 400) if y in years[L]]
+                cand = [c for c in mine if byc[c]["level"] in lvls and len(lists[c]) < byc[c]["enrolled"]]
+                want = int(g.integers(2, 4))
+                for j in g.permutation(len(cand)):
+                    if want == 0:
+                        break
+                    if ok_to_add(cand[j], sid):
+                        add(cand[j], sid, True)
+                        want -= 1
+            # everyone else's places: enrolled students of the faculty, the least loaded first
+            load = {}
+            for c in mine:
+                lvl = byc[c]["level"]
+                need = byc[c]["enrolled"] - len(lists[c])
+                y1, y2 = years[lvl]
+                n1 = int(g.binomial(need, 0.8))
+                for y, cnt in ((y1, n1), (y2, need - n1)):
+                    pool = en.get((f, y), [])
+                    keyed = sorted(pool, key=lambda sid: (load.get(sid, 0), g.random()))
+                    for sid in keyed:
+                        if cnt == 0:
+                            break
+                        if sid in lists[c] or any(sid in lists[o] for gi in of[c] for o in groups[gi] if o != c):
+                            continue
+                        add(c, sid, False)
+                        load[sid] = load.get(sid, 0) + 1
+                        cnt -= 1
+                    if cnt:
+                        raise RuntimeError("pool short for %s year %d" % (c, y))
+        for c in lists:
+            assert len(lists[c]) == byc[c]["enrolled"], c
+        self._lists = lists
+        return lists
+
+    def write_class_enrolments(self, path):
+        lists = self.class_lists()
+        paper = {}
+        for r in self.tt:
+            paper[r["code"]] = (r["paper"], r["level"])
+        rows = []
+        for c, ids in lists.items():
+            p, lvl = paper[c]
+            for sid in ids:
+                rows.append((sid, "2026-S1", p, c, "30" if lvl == 400 else "15", "ENROLLED", "2026-10-01"))
+        rows.sort(key=lambda r: (r[3], r[0]))
+        head = ["arc_student_id", "study_period", "paper_code", "class_code", "credit_points", "enrolment_status",
+                "census_date"]
+        return C.write_csv(path, head, rows, crlf=False)
 
     def _mate(self, x):
         return self._by_key[x["pair"]]

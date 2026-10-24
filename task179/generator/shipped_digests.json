@@ -1,0 +1,19 @@
+{
+ "pack": "target.zip md5 a9f8b878 (SHIPPED df598c47)",
+ "sha256": {
+  "admissions_entrants_2019_2026.xlsx": "6586e4e875f29f92c568d939733205b174590c60834eaa5d280198c5a1926fec",
+  "arc_cutover_notes_registry.pdf": "870f4ab0750aceef569e97842263ceab0cb76ebb16dd8f67416fa60b88e2b0b9",
+  "arc_s1_2026_first_year_classes.csv": "41bf24b9fc80d6231005e43e4e6bfe0238cbbeb162f247b6ae410c5a8d025f05",
+  "census_enrolments_2019_2026.csv": "e5768b00682a2f8019bb4f614bd331248f0ea75228e73d5c55a7afee325588e5",
+  "continuing_enrolment_projection_conventions_2027.pdf": "1f1948c55e470bbd53fbb4fcbc34c44c950304f792de8f366caebe5efc97ac61",
+  "data_dictionary.txt": "499bfbfc9e35ab6b85f8237f3abe205a1567da1cfc3606f25b6e0c261738856c",
+  "hall_occupancy_weekly_2019_2026.csv": "cc20bf7007fecc9a6aac1ea89406ca197cff59a837c9819a4c256546dafbf729",
+  "national_school_leavers_2019_2026.csv": "922869276ceee4250a1e255a1244645d79df8e6e479ed7b91223f717ee328192",
+  "programme_catalogue_2026.csv": "d0b3eb1376efab82bd6ce4686515e282762f83d1bd3b81f0562fbd514c92497c",
+  "programme_transfers_2025_2026.csv": "fc648192aadf27d4c59e74499b1e5e23097bc0ebfeb221f088ec441b66bf09dd",
+  "progress_check_wk6_2019_2026.csv": "7c97360346891325ac24986575abb4277fac85d81e8648eaa482d63fa509c600",
+  "s1_2026_class_timetable.xlsx": "492906a8c3901ff64516adc171e8794d0c3590e95078337680e65c05e17f05a8",
+  "sirius_arc_student_crosswalk.csv": "cca80878e164b2c4bbc81be57babe5d944abeb368ec7839187d45bc1a9b8eeec",
+  "sirius_fy_cohort_classes_2019_2025.csv": "b28439e140b74b8584860fe53466fc636c70b1f82867c6374778872752a793d8"
+ }
+}

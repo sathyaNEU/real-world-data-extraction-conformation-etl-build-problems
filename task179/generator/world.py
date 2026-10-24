@@ -481,6 +481,28 @@ class World:
             for j in range(4):
                 cd = code_for(stems[f][j % nst], 400)
                 classes.append(dict(paper=cd, k=1, fac=f, level=400, enrolled=int(g.integers(5, 17)), pair=None))
+        # On their own stream, so every draw above stands. Two of each faculty and level's pairs carried from SIRIUS
+        # share only their lecture and keep a workshop each: the unequal pair over 30 (now a paper over 30 with a
+        # small partner) and the pair at 30 or under. Two single classes a faculty and level stand just over 30 on
+        # ARC Scheduling's figure.
+        gd = C.stream("tt_devices")
+        for f in C.FAC_CODES:
+            for lev in (200, 300):
+                sir = [(m, r) for (m, r) in self.pairs if m["fac"] == f and m["level"] == lev and not m.get("combined")]
+                for m, r in sir:
+                    if m["enrolled"] == r["enrolled"]:
+                        continue
+                    if m["enrolled"] + r["enrolled"] > 30:
+                        m["enrolled"], r["enrolled"] = int(gd.integers(31, 37)), int(gd.integers(5, 13))
+                    m["partial"] = r["partial"] = True
+                lv = (lev,) if lev == 200 else (300,)
+                pool = sorted([x for x in classes if x["fac"] == f and x["level"] in lv and x["k"] == 1
+                               and x.get("pair") is None and 30 <= x["enrolled"] <= 60
+                               and not any(y["paper"] == x["paper"] and y["k"] == 2 for y in classes)],
+                              key=lambda x: x["paper"])
+                for j in gd.permutation(len(pool))[:2]:
+                    pool[j]["enrolled"] = int(gd.integers(32, 35))
+                    pool[j]["flip"] = True
         self.classes = classes
 
     @staticmethod
