@@ -10,8 +10,8 @@
   "shape": "01",
   "decision_type": "ranked_slate_under_cap",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Raise the summer level first in Bovenmade, Zuidergeer and Ravenbroek (6.0, 5.5 and 5.1 t C/ha/yr lost 1997 to 2024); Ruigeland, Wedderkamp and Goorsloot follow at 3.7.",
+  "answer_source": "submission.md block 1; peat_carbon_loss_1997_2024.xlsx, sheet First raise 2027",
   "gap": [
     "population",
     "objective"
@@ -49,8 +49,8 @@
   "role_family": "policy_adviser",
   "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "dipwell_series_2014_2025.csv",
-    "rows": 0,
+    "file": "peilbuizen_reeksen_2014_2026.csv",
+    "rows": 111955,
     "entity": "one dipwell reading",
     "grain": "dipwell x reading time",
     "source": "synthetic"
@@ -81,7 +81,10 @@
       "Zara Lelijveld",
       "Olivier Fredriks",
       "Yfke Gemen",
-      "Joëlle Kleijse"
+      "Joëlle Kleijse",
+      "Sep Ulrich",
+      "Michael Kalman",
+      "Vera Kosten"
     ]
   },
   "deliverables": [

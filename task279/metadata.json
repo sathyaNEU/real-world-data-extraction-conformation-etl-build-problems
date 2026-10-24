@@ -1,0 +1,112 @@
+{
+ "answer": "first raise: Bovenmade, Zuidergeer, Ravenbroek",
+ "deliverables": [
+  "peat_carbon_loss_1997_2024.xlsx",
+  "peilbesluit_2027_first_raise.png"
+ ],
+ "distractor_files": [
+  "target/lims_qc_2024.csv",
+  "target/percelen_gewaspercelen_2025.csv",
+  "target/bodemkaart_peilvakken.csv",
+  "target/weerstation_gemaal_lageveen_2014_2026.csv"
+ ],
+ "domain": "Physical & Environmental Sciences (emissions inventory)",
+ "objective": "Descriptive & Distribution Analysis",
+ "provenance": {
+  "README_files.txt": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "bodemkaart_peilvakken.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "data_dictionary.txt": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "hoogteonderzoek_lageveen_2024.pdf": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "lims_export_veenkernen_2024.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "lims_qc_2024.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "meetpunten_veenmonitoring.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "peilbuizen_metadata.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "peilbuizen_onderhoud.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "peilbuizen_reeksen_2014_2026.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "peilvakken_register_2026.xlsx": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "percelen_gewaspercelen_2025.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "veenkernen_1997_bodemlab_wageveld.txt": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "veenmonitoring_protocol_2024.pdf": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "waterpassing_raster_1997_2024.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  },
+  "weerstation_gemaal_lageveen_2014_2026.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Hoogheemraadschap van het Lageveen, its units, monitoring points, laboratories, survey contractor, dipwells and people are fictional; the records follow the forms of Dutch peat monitoring, laboratory, levelling and dipwell files"
+  }
+ },
+ "rows": {
+  "bodemkaart_peilvakken.csv": 36,
+  "lims_export_veenkernen_2024.csv": 468,
+  "lims_qc_2024.csv": 76,
+  "meetpunten_veenmonitoring.csv": 36,
+  "peilbuizen_metadata.csv": 24,
+  "peilbuizen_onderhoud.csv": 206,
+  "peilbuizen_reeksen_2014_2026.csv": 111955,
+  "percelen_gewaspercelen_2025.csv": 727,
+  "veenkernen_1997_bodemlab_wageveld.txt": 720,
+  "waterpassing_raster_1997_2024.csv": 854,
+  "weerstation_gemaal_lageveen_2014_2026.csv": 4383
+ },
+ "task": "task279",
+ "title": "Hoogheemraadschap van het Lageveen: the first raise of the 2027 water-level order"
+}

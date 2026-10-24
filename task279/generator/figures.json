@@ -1,0 +1,226 @@
+{
+ "call": {
+  "codes": [
+   "PG-126",
+   "PG-118",
+   "PG-137"
+  ],
+  "first_below": "Ruigeland",
+  "first_raise": [
+   "Bovenmade",
+   "Zuidergeer",
+   "Ravenbroek"
+  ],
+  "line": 1.377
+ },
+ "facts": {
+  "anchor_depth_cm": {
+   "PG-104": 84.8,
+   "PG-107": 67.6,
+   "PG-111": 76.0,
+   "PG-115": 91.3,
+   "PG-118": 74.7,
+   "PG-122": 90.4,
+   "PG-126": 68.5,
+   "PG-129": 69.7,
+   "PG-133": 84.3,
+   "PG-137": 77.1,
+   "PG-140": 87.9,
+   "PG-144": 88.2
+  },
+  "base_sink_cm": {
+   "PG-104": 3.7,
+   "PG-107": 28.2,
+   "PG-111": 40.7,
+   "PG-115": 3.1,
+   "PG-118": 4.7,
+   "PG-122": 2.3,
+   "PG-126": 3.4,
+   "PG-129": 23.2,
+   "PG-133": 4.9,
+   "PG-137": 5.2,
+   "PG-140": 1.6,
+   "PG-144": 4.9
+  },
+  "filed": {
+   "datum_offset_m": 0.054,
+   "protocol_clauses": [
+    5.1,
+    5.2,
+    6.1
+   ],
+   "years_divisor": 365.25
+  },
+  "point_lowering_cm": {
+   "PG-104": 18.9,
+   "PG-107": 60.6,
+   "PG-111": 64.8,
+   "PG-115": 11.8,
+   "PG-118": 29.9,
+   "PG-122": 11.8,
+   "PG-126": 34.9,
+   "PG-129": 53.5,
+   "PG-133": 20.7,
+   "PG-137": 28.1,
+   "PG-140": 13.6,
+   "PG-144": 16.7
+  },
+  "reshot_min_distance_m": 14
+ },
+ "routes": {
+  "fixed": {
+   "PG-104": 0.2,
+   "PG-107": -3.7,
+   "PG-111": -0.9,
+   "PG-115": 1.0,
+   "PG-118": 0.4,
+   "PG-122": 0.8,
+   "PG-126": -0.1,
+   "PG-129": -3.0,
+   "PG-133": 1.4,
+   "PG-137": 0.4,
+   "PG-140": 0.9,
+   "PG-144": 0.5
+  },
+  "level": {
+   "PG-104": 3.7,
+   "PG-107": 11.8,
+   "PG-111": 11.5,
+   "PG-115": 3.0,
+   "PG-118": 6.4,
+   "PG-122": 2.8,
+   "PG-126": 6.7,
+   "PG-129": 9.3,
+   "PG-133": 4.4,
+   "PG-137": 6.2,
+   "PG-140": 3.2,
+   "PG-144": 3.5
+  },
+  "mass": {
+   "PG-104": 0.6,
+   "PG-107": 0.4,
+   "PG-111": 0.7,
+   "PG-115": 1.2,
+   "PG-118": 1.0,
+   "PG-122": 1.3,
+   "PG-126": 0.8,
+   "PG-129": 0.4,
+   "PG-133": 0.9,
+   "PG-137": 0.8,
+   "PG-140": 1.4,
+   "PG-144": 0.8
+  },
+  "subsidence": {
+   "PG-104": 3.7,
+   "PG-107": 15.0,
+   "PG-111": 11.3,
+   "PG-115": 1.0,
+   "PG-118": 6.2,
+   "PG-122": 0.9,
+   "PG-126": 6.8,
+   "PG-129": 11.4,
+   "PG-133": 5.6,
+   "PG-137": 5.4,
+   "PG-140": 1.6,
+   "PG-144": 2.8
+  }
+ },
+ "units": {
+  "PG-104": {
+   "carbon_loss_t_c_ha_yr": 3.1,
+   "first_raise": false,
+   "glg_cm_below_surface": 63,
+   "name": "Oudelaak",
+   "rank": 8,
+   "surface_lowering_mm_yr": 6.6
+  },
+  "PG-107": {
+   "carbon_loss_t_c_ha_yr": 3.7,
+   "first_raise": false,
+   "glg_cm_below_surface": 80,
+   "name": "Ruigeland",
+   "rank": 4,
+   "surface_lowering_mm_yr": 22.5
+  },
+  "PG-111": {
+   "carbon_loss_t_c_ha_yr": 3.3,
+   "first_raise": false,
+   "glg_cm_below_surface": 86,
+   "name": "Hazelweer",
+   "rank": 7,
+   "surface_lowering_mm_yr": 24.2
+  },
+  "PG-115": {
+   "carbon_loss_t_c_ha_yr": 2.5,
+   "first_raise": false,
+   "glg_cm_below_surface": 75,
+   "name": "Kortewaard",
+   "rank": 11,
+   "surface_lowering_mm_yr": 4.1
+  },
+  "PG-118": {
+   "carbon_loss_t_c_ha_yr": 5.5,
+   "first_raise": true,
+   "glg_cm_below_surface": 79,
+   "name": "Zuidergeer",
+   "rank": 2,
+   "surface_lowering_mm_yr": 11.3
+  },
+  "PG-122": {
+   "carbon_loss_t_c_ha_yr": 2.4,
+   "first_raise": false,
+   "glg_cm_below_surface": 73,
+   "name": "Lindeschot",
+   "rank": 12,
+   "surface_lowering_mm_yr": 4.8
+  },
+  "PG-126": {
+   "carbon_loss_t_c_ha_yr": 6.0,
+   "first_raise": true,
+   "glg_cm_below_surface": 93,
+   "name": "Bovenmade",
+   "rank": 1,
+   "surface_lowering_mm_yr": 13.6
+  },
+  "PG-129": {
+   "carbon_loss_t_c_ha_yr": 3.7,
+   "first_raise": false,
+   "glg_cm_below_surface": 80,
+   "name": "Wedderkamp",
+   "rank": 5,
+   "surface_lowering_mm_yr": 19.4
+  },
+  "PG-133": {
+   "carbon_loss_t_c_ha_yr": 3.7,
+   "first_raise": false,
+   "glg_cm_below_surface": 59,
+   "name": "Goorsloot",
+   "rank": 6,
+   "surface_lowering_mm_yr": 7.6
+  },
+  "PG-137": {
+   "carbon_loss_t_c_ha_yr": 5.1,
+   "first_raise": true,
+   "glg_cm_below_surface": 81,
+   "name": "Ravenbroek",
+   "rank": 3,
+   "surface_lowering_mm_yr": 10.4
+  },
+  "PG-140": {
+   "carbon_loss_t_c_ha_yr": 3.0,
+   "first_raise": false,
+   "glg_cm_below_surface": 71,
+   "name": "Hellerwaard",
+   "rank": 9,
+   "surface_lowering_mm_yr": 4.8
+  },
+  "PG-144": {
+   "carbon_loss_t_c_ha_yr": 2.6,
+   "first_raise": false,
+   "glg_cm_below_surface": 64,
+   "name": "Meerkoog",
+   "rank": 10,
+   "surface_lowering_mm_yr": 6.2
+  }
+ }
+}

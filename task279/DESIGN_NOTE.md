@@ -26,11 +26,127 @@ Layer 2: `field_method`, own:ash-anchored carbon balance of drained peat between
 Decisive step: find the peat that formed the top metre of each 1997 core again in its 2024 core as the depth holding the same cumulative ash per square metre, and take the carbon lost as the 1997 top metre's carbon less the 2024 carbon above that depth.
 Not semantics: every field, code, unit and definition read correctly (bulk density, loss on ignition and its ash residue, total carbon, slice depths, both datums, the crosswalk) leaves the lowering times topsoil carbon density, the cores aligned on the lowering, and the equal total mass on three wrong sets; no definition says which material is the same, and the protocol's estimand names the material, not how to find it.
 Not rule application: the protocol files the outcome (the carbon the 1997 top metre's peat lost by 2024, per hectare per year, a unit's monitoring points averaged) and nothing on locating that peat in 2024. The enumerated family (the lowering at topsoil carbon density, 1997 or 2024; the lowering at the carbon density below the water table; the fixed depth, 0 to 50 or 0 to 100 cm; the cores aligned on the surveyed lowering; equal total mass at the 1997 top metre's mass; equal ash at its ash) names four different three-unit sets in the prototype (`scratchpad t279proto/q2.py`, seeds 0 to 2: the compression units by lowering and by level, a clay-rich three by equal mass, a near-random three by fixed depth). The standing family, the constructions the cores' own ash and mass bookkeeping leave defensible (equal ash at the 1997 top metre, interpolated linearly in cumulative ash or slice-uniform, per point or per unit), names one set, the golden's. What rules the others out is the ash inventory: the 1997 top metre's ash must be found again in 2024, and the subsidence route, the level alignment and equal total mass each imply ash appearing or vanishing, which no filed clause states and no group-by performs. Measured again on the generator at stage 3.
-Analyst test: a strong analyst who reads every record correctly and applies every filed rule, then multiplies each unit's surveyed lowering by its topsoil carbon density (the inventory's subsidence route) or lines the cores up on the lowering, files the three units that compressed after their 2009 to 2013 water-level cuts; one who corrects to equal total soil mass (the soil-carbon standard) files the three most clay-rich units; executed on the generator's clean truth in `checks.py` (R3a ANALYST), where the decisive step alone files the golden (R3b DECISIVE).
-Estimand: the board's peat monitoring protocol (stage 2 fixes its section numbers): each unit's carbon lost between its 1997 baseline coring and its 2024 re-coring from the peat that formed the top metre of the 1997 cores at its monitoring points, in tonnes of carbon per hectare per year of the interval between a point's two corings, a unit's points averaged; the first raise takes the three units with the largest loss.
+Analyst test: a strong analyst who reads every record correctly and applies every filed rule, then lines the 2024 cores up on the surveyed lowering (or multiplies each unit's lowering by its 1997 topsoil carbon density, the inventory's subsidence route), files Ruigeland, Hazelweer and Wedderkamp, the three units that compressed after their 2009 to 2013 water-level cuts; one who corrects to equal total soil mass (the soil-carbon standard) files Hellerwaard, Lindeschot and Kortewaard, the most clay-rich; executed on the generator's clean truth in `checks.py` (R3a ANALYST), where the decisive step alone files the golden (R3b DECISIVE).
+Estimand: protocol 5.1 and 5.2 (veenmonitoring_protocol_2024.pdf): each unit's carbon lost between its 1997 coring and its 2024 coring from the peat that formed the top 1.00 m of the 1997 cores at its monitoring points, in tonnes of carbon per hectare per year of each point's interval (days divided by 365.25), a unit's three points averaged; 6.1: the first raise takes the three units with the largest loss.
 No decoy: nothing is planted to be caught: no memo, earlier estimate, inventory submission, consultant's figure or draft states a unit's loss or ranks the units; the cores, the levels, the dipwells and the register are the network's and the board's own, and no shipped file computes a loss.
 No certified replay: no certified or published figure carries a unit's carbon loss, so the method cannot be recovered by reproducing one; the national inventory's emission factors are per hectare by land use and water level, the same for every unit of a class, and are not shipped.
 Lesson: when a medium loses carbon by losing itself and also compresses, a change in what it holds is measured on the same material, found again by the one component the loss cannot remove; the lowering of the surface, a fixed depth or level and an equal total mass all compare different material. No build on file measures a loss from a medium whose own mass is what is lost.
+
+## Default path
+
+1. Read the protocol (veenmonitoring_protocol_2024.pdf): a point's carbon loss is the carbon the peat of its 1997 core's top 1.00 m has lost by the 2024 coring, over the days between the corings divided by 365.25, in tonnes of carbon per hectare per year (5.1); a unit is the mean of its three points (5.2); the first raise takes the three largest (6.1).
+2. Pair each 1997 core with its 2024 core through the point register and turn every slice into dry mass, ash and carbon per square metre (the 1997 printout in g/cm3 with decimal commas, the 2024 export in kg/m3 with semicolons). Exact; every route shares it.
+3. Find the 1997 top metre in the 2024 core where the levels put it: the point's surface fell by the surveyed lowering (the point register's levels, the 1997 one less 0.054 m), so the 1997 core base lies at 100 cm less the lowering; the loss is the 1997 top metre's carbon less the 2024 carbon above that depth. The inventory's subsidence route (the lowering at the 1997 topsoil's carbon density) files the same three.
+4. Rank the twelve units: Ruigeland 11.8, Hazelweer 11.5, Wedderkamp 9.3, Bovenmade 6.7 fourth.
+
+Ends on: Ruigeland, Hazelweer and Wedderkamp.
+
+Golden: Bovenmade, Zuidergeer and Ravenbroek.
+
+## Stump sentence
+
+The default path lines the 2024 cores up on the surveyed lowering and ends on Ruigeland, Hazelweer and Wedderkamp, because their surfaces fell 54 to 65 cm after their 2009 to 2013 water-level cuts while their peat compressed, much of it below the 1997 core base: Hazelweer's 1997 top metre reaches 76.0 cm down in its 2024 cores, not the 35.2 cm the levels put it at, so its base sank 40.7 cm with its carbon still in it; only finding the 1997 top metre again by its cumulative ash, which oxidation cannot remove, names Bovenmade, Zuidergeer and Ravenbroek.
+
+## Readability screen
+
+| Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| R0 the surveyed lowering at the 1997 topsoil's carbon density | none (5.1 names the peat, not the lowering) | surface levels in the point register | the inventory's subsidence method for drained organic soils | none | none | one product a point | readable |
+| R1 (the default path) the 2024 cores lined up on the surveyed lowering | none | levels and slices | the 1997 base moved with the levels | none | none | one interpolation a point | readable |
+| R2 equal total soil mass | none | slices | the soil-carbon standard when bulk density changes | none | none | one interpolation a point | readable |
+| side: the fixed depth, 0 to 100 cm (three units come out negative) | none | slices | compare two stocks to a depth | none | none | one sum | readable |
+| (decisive) the 1997 top metre found again by its cumulative ash | none: 5.1 names the material and not how to find it | no column marks the 1997 material in 2024; the ash is the residue of the loss on ignition the laboratories report | none (the reflex is equal total mass) | no shipped figure carries a loss | the battery passes every route | one interpolation a point on a cumulative curve the solver builds from three columns, once it has argued that oxidation removes the peat's own mass and leaves its ash | silent |
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the peat which formed the top 1.00 m of the 1997 core | the material of the 1997 core's twenty slices, wherever it lies in 2024 | the 2024 core's top metre | another set (the fixed depth) | protocol 5.1 names the peat of the 1997 core, not a depth in 2024 |
+| SF2 | the carbon that peat has lost | its 1997 carbon less its 2024 carbon | the carbon above the 1997 core base level counted as all that is left | another set (R1) | carbon still in the peat is not lost (5.1); the peat's ash shows where it lies |
+| SF3 | the years between the two coring dates | each point's days divided by 365.25 | 27 years for every point | the same three | protocol 5.1; same call |
+| SF4 | a unit's loss | the mean of its three points' losses | one pooled profile per unit | the same three | protocol 5.2; same call |
+| SF5 | carbon | total carbon by dry combustion, per cent of dry matter | carbon estimated as 0.55 of the loss on ignition | the same three | protocol 4.1 files total carbon; same call |
+| SF6 | a depth inside a slice | linear in the cumulative amounts (uniform concentration in the slice) | a monotone cubic through the cumulative curves | the same three | same call; every unit rounds alike |
+| SF7 | the first raise | the three largest unit losses | the units above the mean loss | the same three | protocol 6.1; no other unit reaches the mean |
+
+## Ladder
+
+| Rung | Construction | Names | What kills it |
+|---|---|---|---|
+| R0 | the surveyed lowering at the 1997 topsoil's carbon density (0 to 30 cm; 0 to 20 cm and the 2024 topsoil give the same three) | Ruigeland 15.0, Wedderkamp 11.4, Hazelweer 11.3 (Bovenmade 6.8 fourth) | most of their lowering is compression after the 2009 to 2013 cuts: the 1997 top metre's base sank 23.2 to 40.7 cm in those three units, 1.6 to 5.2 cm elsewhere |
+| R1 (default path) | the 2024 cores lined up on the surveyed lowering | Ruigeland 11.8, Hazelweer 11.5, Wedderkamp 9.3 (Bovenmade 6.7 fourth) | the peat below the 1997 core base compressed too: Hazelweer's 1997 top metre reaches 76.0 cm, not 35.2 |
+| R2 | equal total soil mass | Hellerwaard 1.4, Lindeschot 1.3, Kortewaard 1.2 (Zuidergeer 1.0 fourth) | oxidation removed most of the peat's own mass, so the equal mass reaches into deeper peat and every unit's loss shrinks toward its ash share |
+| side | the fixed depth, 0 to 100 cm (0 to 50 cm the same) | Goorsloot, Kortewaard, Hellerwaard (Ruigeland, Wedderkamp and Hazelweer negative) | the surface fell 12 to 65 cm |
+| golden | the 1997 top metre found again by its cumulative ash | Bovenmade 6.0, Zuidergeer 5.5, Ravenbroek 5.1; Ruigeland, Wedderkamp and Goorsloot 3.7 | |
+
+Separation (`checks.py` LADDER): the golden's third clears the fourth by 1.377; R0's line 1.65 (1.68 and 1.68 on its variants), R1's 1.39, R2's 1.28; Bovenmade fourth on R0 and on R1, never first on a wrong rung; the fixed depth never files the golden three. The family (linear in the slice, a monotone cubic, one pooled profile per unit) names the golden three and every unit's figure rounds alike (FAMILY); the nearest unit figure stands 0.010 from its rounding boundary.
+
+## Closure table
+
+| # | Axis | Reading and closure |
+|---|---|---|
+| 1 | Population | the peat of each 1997 core's top 1.00 m at the 36 monitoring points (5.1), three a unit |
+| 2 | Unit of account | tonnes of carbon per hectare per year: kilograms a square metre times ten over the years |
+| 3 | Attribution window | each point's 1997 coring date to its 2024 coring date (5.1) |
+| 4 | As-of dating | the cores as reported (report 97-0412, the LIMS export); the window closed with the 2024 coring |
+| 5 | Version basis | one report and one export, neither revised |
+| 6 | Denominator | per hectare; years as days divided by 365.25 (5.1) |
+| 7 | Weighting | a unit is the plain mean of its three points (5.2); a pooled profile converges (FAMILY) |
+| 8 | Window length | 26.9 to 27.3 years by point |
+| 9 | Boundary inclusivity | the three largest (6.1); the third, 5.1, against the fourth, 3.7 |
+| 10 | Rounding path | points and units unrounded, one decimal shown (5.2) |
+| 11 | Tie-break | none at the line; ranks four to six tie at one decimal and are not asked for |
+| 12 | Maturity and censoring | closed window; every core reached its full length |
+| 13 | Order of operations | point first, then the unit mean (5.2) |
+| 14 | Row order | none: sums down each core |
+| 15 | Duplicate resolution | one row a point and slice in both files (asserted); the laboratory's duplicates sit in its QC file |
+| 16 | Identity normalisation | the 1997 and current point codes through the register; pairing by position agrees (R2 LAYER1) |
+| 17 | Netting against gross | none |
+| 18 | Dimensional units | g/cm3 (1997) and kg/m3 (2024) to kilograms a square metre a slice; per cent of dry matter |
+| 19 | Code and status semantics | Vol.massa, Gloeiverl. and C-totaal in the dictionary; the loss on ignition's residue is the ash |
+| 20 | Integerisation | none |
+| 21 | Clause scope | 5.1 and 5.2 scope the loss, 6.1 the call, annexes A and B the asks |
+| 22 | Forward window contents | retrospective by design: the order ranks units on the loss measured over the closed 1997 to 2024 window (`## Draw` item 4) |
+
+## Literal reader
+
+Executed word for word, protocol 5.1 asks for the carbon the peat of each 1997 core's top metre has lost by the 2024 coring. The literal reader has to find that peat in the 2024 core, and the protocol names the material, not its 2024 depth. The one quantity both campaigns measure that oxidation cannot change is the ash, the residue of the loss on ignition, so the 1997 top metre's ash found again in 2024 bounds the same peat; a depth, a level or an equal total mass each bounds different material. Executed that way the first raise is Bovenmade, Zuidergeer and Ravenbroek.
+
+## Oracles
+
+No shipped figure states a unit's carbon loss, carbon stock or a subsidence-based estimate, and nothing ranks the units. The register's soil classes and level changes describe units without a loss. No control total ties only under the golden or only under a wrong route. The survey report's datum offset serves every route that reads a level alike, and the golden reads none.
+
+## Ask sheet
+
+The asks are decoupled from the call: they read the levelling grid and the dipwell network with its register and maintenance log, which the call never opens (SEPARATION, asserted: the call is unchanged with those four files deleted). The order states both for every unit (protocol 6.2, annexes A and B), and neither quantity enters the carbon loss.
+
+**Ask A. Each unit's surface lowering since 1997, millimetres per year to one decimal (12 figures).** Golden: Oudelaak 6.6, Ruigeland 22.5, Hazelweer 24.2, Kortewaard 4.1, Zuidergeer 11.3, Lindeschot 4.8, Bovenmade 13.6, Wedderkamp 19.4, Goorsloot 7.6, Ravenbroek 10.4, Hellerwaard 4.8, Meerkoog 6.2. Primary (silent, D7 the true key elsewhere: a point's number kept on a shot taken somewhere else): in every unit three to five grid points whose pegs had gone were shot in 2024 under their own numbers at the nearest open meadow edge, 14.2 to 53.4 m from the 1996 position, where decades of ditch-cleaning spoil raise the edge 0.10 to 0.26 m; the key is unique a campaign, every point joins one to one, no remark marks them, and the survey report's count of points not surveyed matches the missing rows, so the battery passes; only the shots' positions (every other point within 0.39 m) say the 2024 level is not the fall at the point. Moves every unit by 0.41 to 1.29 mm/yr (asserted). Construction: the datum offset, 0.054 m (the survey report), 2.0 mm/yr on every unit (documented; it moves the mirror).
+
+**Ask B. Each unit's GLG for 2017/18 to 2024/25, whole centimetres below the surface (12 figures).** Golden: Oudelaak 63, Ruigeland 80, Hazelweer 86, Kortewaard 75, Zuidergeer 79, Lindeschot 73, Bovenmade 93, Wedderkamp 80, Goorsloot 59, Ravenbroek 81, Hellerwaard 71, Meerkoog 64. Primary (silent, D7 a field overwritten later): every dipwell's 2013 tube was renewed between March 2018 and October 2022 with a capped tube set 0.18 to 0.34 m lower; the dipwell register carries the current height only, and the earlier height is in the maintenance log's note on the renewal, so every reading before a renewal, less the register's height, reads 18 to 34 cm too deep; the register has one row a dipwell, so no join fans out. Moves every unit by 4.8 cm or more (asserted). Construction: the logger gap at PB115-2 (June to November 2022) filled from the hand readings (annex B, documented), 1.8 cm on Kortewaard.
+
+**Separation.** Zero device rows reach the call: the re-shot grid points sit only in the levelling grid and the renewals only in the dipwell files, files the call never opens (asserted). The asks' devices move no core, slice or point level.
+
+**Cracker sheet.** The response that landed the call, ran the hygiene battery (key uniqueness on each file, exact duplicates, unmatched joins, fan-out) and executed every filed rule the asks point at (annex A with the survey report's offset; annex B with the hand fill):
+
+| Ask row | What the cracker does | Against the golden | Cracker |
+|---|---|---|---|
+| A, surface lowering, twelve units | every grid point levelled in both campaigns, the 1997 level less 0.054 m, each point's own years | every unit low by 0.4 to 1.3 mm/yr | miss |
+| B, GLG, twelve units | the logger's 08:00 readings of the 14th and 28th, the hand reading where the logger has none, less the register's tube height | every unit 5 to 20 cm too deep | miss |
+
+**Mirror sheet.** The response on R1 reads the asks as the cracker does (they consume nothing the call's construction produces), so its ask rows miss the same way.
+
+Mirror leakage: 0 per cent of ask weight (every ask row misses for the mirror as for the cracker; a reader who compares each grid point's two positions lands Ask A, and a reader who reads the maintenance log's renewal notes against the register lands Ask B).
+
+Pair ceiling: 28.5 (the one-cracker case: (38 + 7 + 0 + 5 + 7 + 0) / 2).
+
+Measured by: generator/cracker.py on the cut pack.
+
+## Build record
+
+- Stage 3, 2026-10-24: `python3 task279/generator/build.py`: checks 0 failed, verify PASS, second build byte-identical; generator/cracker.py: Ask A 0 of 12, Ask B 0 of 12.
+- Seeds: world seed 12 (the wider search of 219 seeds found 17 holding every rung, none with wider margins); the dipwell stream 50 (the stream with every GLG at least 0.18 cm from its rounding boundary).
+- Stage 3 gates, 2026-10-24: precut 51 checks 0 FAIL 0 WARN; figures_check 68 figures, none absent; leak.py REVIEW, every line answered below; guard heart WARN (repeat.deliverables, the older same-puzzle and same-driver repeats differentiated); guard surface flags "Ulrich Methoden", the 1997 analyst's initial and surname followed by the printout's next word, not a name; target.zip 977c37cc967376daafbd2eabfe28b6b6.
+- leak.py REVIEW lines, each harmless: the unit-code numerals 104 to 144 inside the 1997 printout's bulk densities (0,104 to 0,144) are coincidences of the slice values; the protocol's clause numbers 3.1, 4.1, 5.1 and 6.2 coincide with graded figures and carry none; the dictionary, survey report and protocol share generic words with this note (material, density, levels, method, register, surveyed) and none mentions ash, compression, an equivalent mass or how to find the 1997 material in 2024 (grep over the pack, 2026-10-24).
 
 ## Tried and rejected
 
