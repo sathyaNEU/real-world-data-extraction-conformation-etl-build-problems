@@ -157,3 +157,7 @@ The ask designer's brief, in short:
 ## task482
 
 PAUSED at the re-root. re-root to architecture 12 from stage 1 (fingerprint, then guide-to-prompt and stumping): architecture 11 was spent at stage 4 round 2 when reader C landed the call by refitting the 2PL latent regression with district in the conditioning model, so a plausible-value conditioning model that omits the grouping variable is not redrawn in any form. Read the design note's ## Tried and rejected (architectures 1 to 11) before drawing; at registration move this card (architecture_spent true) into the new card's lineage with its fate; the generator is architecture 11's record and is replaced at the re-root.
+
+## task484
+
+PAUSED at the re-root. re-root to architecture 3 from stage 1 (fingerprint first): architecture 2 (the wood smoke base year recalculated on a stock thinned primary-heat first) was spent at stage 4 on the judge's SEND_BACK, competing_defensible_answer, although both scored readers missed the call and kept no ask figure. Read the design note's ## Tried and rejected first: the decisive population must follow from the estimand as filed, so the easy route is a different reading of the data, never the literal execution of the filed text. The generator's ask devices (re-registrations beside genuine same-day pairs; block-group codes valid in two vintages) held against both readers and may be reused as devices in a fresh world.
