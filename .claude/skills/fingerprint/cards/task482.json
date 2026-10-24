@@ -10,8 +10,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Birchwick, Ruddmere, Sorrelton, Tamsen Point and Esker Narrows qualify, USD 480,000 each",
+  "answer_source": "generator/figures.json (architecture 12, spent at stage 4)",
   "gap": [
     "population"
   ],
@@ -284,5 +284,6 @@
   ],
   "notes": "stump_strategy other: the decisive quantity is a population no record lists, measured through a physical load calibrated per resident where the residents are the whole population; not population_selection (the population is filed in full, the difficulty is measuring it) and not causal_design (no comparison group carries the step).",
   "client_domain": "survey-research-official-statistics",
-  "registered": "2026-10-24T18:59:47Z"
+  "registered": "2026-10-24T18:59:47Z",
+  "architecture_spent": true
 }

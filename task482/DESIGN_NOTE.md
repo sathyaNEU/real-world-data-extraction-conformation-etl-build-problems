@@ -298,6 +298,22 @@ the real one.
   measure, and summing them is the default path, not a ranking on the Act's test. Harmless.
 - container metadata: the audit found no writer signature; the scrub reports both folders clean.
 
+## Architecture 12 record (spent 2026-10-24)
+
+Architecture 12 certified the Quillmere Lake basin's 2027 Seasonal Communities Aid: each city's average population
+present in its busiest month of the measurement year read from its plant's influent BOD load divided by the load per
+person its own January to April 2026 fix, against the default path that counts residents plus the paid stays the fee
+returns and both platforms record (Sorrelton and Esker Narrows alone, USD 1,200,000 each, against the golden's five
+cities at USD 480,000 each). At stage 4 round 1 (zip be45d7b75ea5cc24) both scored readers landed the call (exit 1):
+each read the Act's "every other person staying in or visiting the city" as a population no record holds, went to the
+one file that measures everyone (the plants' influent), divided the load by 0.17 lb a person a day (the population
+equivalent the world had been tuned to agree with), checked it against the residents in winter and filed the five
+cities; both also counted Kettle & Pine's nights back from the departure in its reference (reader A all 32 of ask A,
+reader B 26 of 32 on half-dollar rounding) and missed only the pond systems' flow basis in ask B. The judge thread was
+stopped at the spend. A statute that defines the population as everyone present, beside records that plainly hold
+only the paid stays, sends a careful reader looking for a measure of everyone, and a pack whose influent rows have
+no other use hands it one.
+
 ## Architecture 11 record (spent 2026-10-24)
 
 Architecture 11 settled Lumenfold Learning's 2025-26 outcomes guarantee district by district, each partner district's
@@ -644,4 +660,7 @@ Architecture 11 (the contractor's plausible values drawn from a conditioning mod
 - 2026-10-24, architecture 12 draw: the lake towns' population present also read from their transfer stations' scale
   tickets or their water meters: solid waste is collected on schedules that lag the stays, and summer water use carries
   the irrigation of empty cottages, so neither measures the people present as the sewer does; kept out of the pack.
-
+- 2026-10-24, architecture 12 stage 4: the population present read through the plants' influent load per person,
+  calibrated on the winter months; both round 1 readers landed the call at the 0.17 lb population equivalent (exit 1),
+  because the Act's definition made the paid-stay records visibly incomplete and the influent rows had no other use in
+  the pack. Spent.

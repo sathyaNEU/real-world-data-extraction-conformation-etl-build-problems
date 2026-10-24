@@ -71,7 +71,7 @@ def main():
     for f in files:
         txt = pdf_text(os.path.join(T, f)) if f.endswith(".pdf") else (
             open(os.path.join(T, f), encoding="utf-8").read() if f.endswith((".csv", ".txt")) else "")
-        if "—" in txt or "–" in txt:
+        if "\u2014" in txt or "\u2013" in txt:
             dash.append(f)
     check("gate: no em or en dash in any text file or PDF", not dash, ",".join(dash))
 
