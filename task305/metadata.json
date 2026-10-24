@@ -33,7 +33,7 @@
       "zip"
     ],
     "largest_file": "ta_punches_20251006_20260329.csv",
-    "largest_file_rows": 109645
+    "largest_file_rows": 108463
   },
   "sources": [
     {
@@ -85,7 +85,7 @@
     {
       "path": "voa_list_entries_2026_lq.txt",
       "format": "txt",
-      "bytes": 795369,
+      "bytes": 794983,
       "rows": 4233,
       "source": "Constructed (seeded generator) in the layout of the VOA compiled list entries (asterisk-separated)",
       "date": "2026-10-09",
@@ -94,7 +94,7 @@
     {
       "path": "voa_summary_valuations_2026_lq.csv",
       "format": "csv",
-      "bytes": 122930,
+      "bytes": 122595,
       "rows": 3763,
       "source": "Constructed (seeded generator) in the layout of the VOA summary valuation main measures",
       "date": "2026-10-09",
@@ -103,7 +103,7 @@
     {
       "path": "store_estate_2026.xlsx",
       "format": "xlsx",
-      "bytes": 6780,
+      "bytes": 6781,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of the chain's estate workbook",
       "date": "2026-10-09",
@@ -139,7 +139,7 @@
     {
       "path": "property_data_notes.md",
       "format": "md",
-      "bytes": 4446,
+      "bytes": 4319,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of the GIS analyst's notes",
       "date": "2026-10-09",
@@ -166,17 +166,17 @@
     {
       "path": "wfm_paid_hours_20251006_20260329.csv",
       "format": "csv",
-      "bytes": 3383276,
-      "rows": 56758,
-      "source": "Constructed (seeded generator) in the layout of a workforce management system's shift export",
+      "bytes": 2774869,
+      "rows": 60861,
+      "source": "Constructed (seeded generator) in the layout of a workforce management system's paid hours report",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
     },
     {
       "path": "ta_punches_20251006_20260329.csv",
       "format": "csv",
-      "bytes": 3892278,
-      "rows": 109645,
+      "bytes": 3850378,
+      "rows": 108463,
       "source": "Constructed (seeded generator) in the layout of a time-and-attendance system's clocking punches",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -184,8 +184,8 @@
     {
       "path": "ta_terminals.csv",
       "format": "csv",
-      "bytes": 726,
-      "rows": 20,
+      "bytes": 878,
+      "rows": 24,
       "source": "Constructed (seeded generator) in the layout of a time-and-attendance terminal register",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -193,7 +193,7 @@
     {
       "path": "gtfs_sallowmere_motor_services_20261002.zip",
       "format": "zip",
-      "bytes": 219683,
+      "bytes": 239137,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of GTFS as published on the Bus Open Data Service",
       "date": "2026-10-09",
@@ -202,7 +202,7 @@
     {
       "path": "gtfs_wrentoft_district_coaches_20261002.zip",
       "format": "zip",
-      "bytes": 193990,
+      "bytes": 205153,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of GTFS as published on the Bus Open Data Service",
       "date": "2026-10-09",
@@ -220,7 +220,7 @@
     {
       "path": "customer_survey_store_scores_2025.csv",
       "format": "csv",
-      "bytes": 920,
+      "bytes": 923,
       "rows": 20,
       "source": "Constructed (seeded generator) in the layout of the chain's customer survey scores",
       "date": "2026-10-09",

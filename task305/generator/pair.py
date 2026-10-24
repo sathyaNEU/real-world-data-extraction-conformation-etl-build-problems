@@ -27,20 +27,23 @@ def main(target):
         "A short stops dropped (under 15 minutes)": score(S.ask_a(target, "drop_short"), A),
         "A next-day repeats deduplicated": score(S.ask_a(target, "dedup_equal"), A),
         "B natural (paid hours by location)": score(S.ask_b(target, "location"), B),
-        "B round-2 reader (every row by its clock-in store)": score(S.ask_b(target, "terminal_all"), B),
-        "B one row a colleague a day (the last)": score(S.ask_b(target, "dedup_last"), B),
-        "B one row a colleague a day (the longest)": score(S.ask_b(target, "dedup_max"), B),
+        "B every line by its punch store": score(S.ask_b(target, "terminal_all"), B),
+        "B exact duplicate lines removed": score(S.ask_b(target, "dedup_exact"), B),
+        "B one line a colleague a day": score(S.ask_b(target, "dedup_day"), B),
+        "B lines kept only where a clock-in falls": score(S.ask_b(target, "in_days"), B),
+        "B exact duplicates removed, then clock-in dates only": score(S.ask_b(target, "exact_in_days"), B),
         "B clocked hours (punch to punch)": score(S.ask_b(target, "punch_hours"), B),
         "C natural (the day's services, every call)": score(S.ask_c(target, "naive"), C),
         "C half (the day's services before 24:00 only)": score(S.ask_c(target, "half"), C),
         "C both feeds counted": score(S.ask_c(target, "nodedup"), C),
         "C round-2 reader (both feeds as one set)": score(S.ask_c(target, "set"), C),
+        "C round-3 reader (the larger feed's count of each call)": score(S.ask_c(target, "maxfeed"), C),
     }
     for k, v in paths.items():
         print("  %-62s %d" % (k, v))
     crack = paths["A natural (every DEL stop's cases, UK dates)"] + \
-        max(paths["B natural (paid hours by location)"], paths["B round-2 reader (every row by its clock-in store)"]) + \
-        max(paths["C round-2 reader (both feeds as one set)"], paths["C natural (the day's services, every call)"])
+        max(v for k, v in paths.items() if k.startswith("B ")) + \
+        max(v for k, v in paths.items() if k.startswith("C "))
     mirror = crack
     c_score = 38 + 7 + 55.0 * crack / n
     m_score = 5 + 7 + 55.0 * mirror / n

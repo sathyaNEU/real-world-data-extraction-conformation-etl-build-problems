@@ -131,10 +131,14 @@ def pcd7(pc):
 
 def onspd_rows(G):
     rows = []
+    qs = np.random.default_rng(P.SEED + 82)
     for p in sorted(G["pcs"], key=lambda p: (p["pcds"].split()[0][:2], int(p["pcds"].split()[0][2:]), p["pcds"].split()[1])):
         out, inn = p["pcds"].split()
+        # most references sit within a matched building; a few rural and newer postcodes are placed less precisely
+        q = qs.uniform()
+        grd = 1 if q < .9 else (2 if q < .95 else (3 if q < .985 else 4))
         rows.append([pcd7(p["pcds"]), (out + " " * (5 - len(out))) + inn if len(out) < 5 else out + inn, p["pcds"],
-                     p["dointr"], p["doterm"], p["usertype"], p["east"], p["north"], 1, p["oa21"], p["lsoa21"], P.LAD])
+                     p["dointr"], p["doterm"], p["usertype"], p["east"], p["north"], grd, p["oa21"], p["lsoa21"], P.LAD])
     return rows
 
 
@@ -180,12 +184,17 @@ def rating_list(G):
         num, street = name or num, road or street
         loc = (town or where[pc]).upper()
         alt = "" if gs.uniform() < .82 else "%02d-%s-%d" % (int(gs.integers(1, 28)), gs.choice(["APR", "MAY", "JUN", "JUL", "AUG", "SEP"]), 2026)
+        if unit == "pitches":
+            alt = ""                                  # the parks stand as compiled
         eff = "01-APR-2026"
         if alt and ed.uniform() < .55:
+            # an alteration takes effect on or before the day the list is altered
             mon = ["APR", "MAY", "JUN", "JUL", "AUG", "SEP"]
-            m_alt = mon.index(alt[3:6])
+            m_alt, d_alt = mon.index(alt[3:6]), int(alt[:2])
             m_eff = int(ed.integers(0, m_alt + 1))
-            eff = "%02d-%s-2026" % (int(ed.integers(2 if m_eff == 0 else 1, 28)), mon[m_eff])
+            lo = 2 if m_eff == 0 else 1
+            hi = d_alt if m_eff == m_alt else 28
+            eff = "%02d-%s-2026" % (int(ed.integers(lo, hi + 1)) if hi >= lo else hi, mon[m_eff])
         rows.append([ent, "3510", "", "%011d" % (ref * 1000 + 1), code, desc, uarn,
                      ("%s, %s, %s, %s" % (num, street, loc, pc)).upper(), firm.upper(), num.upper(), street.upper(), loc, "",
                      "", pc, eff, "", rv, "", "%d" % (16200000 + ent * 7), alt, scat + "G", "", "", "", "",
@@ -233,6 +242,32 @@ def rating_list(G):
     rows = [rows[i] for i in order]
     for i, r in enumerate(rows):
         r[0] = i + 1
+    # the list's reference numbers were issued over decades: UARNs, billing authority references and assessment
+    # references carry no order of their own
+    ns = np.random.default_rng(P.SEED + 81)
+    uarns = {}
+    for v in sorted({r[6] for r in rows}):
+        u = int(ns.integers(1000000, 99999999))
+        while u in uarns.values():
+            u = int(ns.integers(1000000, 99999999))
+        uarns[v] = u
+    used_ref, used_ass = set(), set()
+    ass_map = {}
+    for r in rows:
+        b = "%05d%06d" % (int(ns.integers(0, 600)), int(ns.integers(0, 999999)))
+        while b in used_ref:
+            b = "%05d%06d" % (int(ns.integers(0, 600)), int(ns.integers(0, 999999)))
+        used_ref.add(b)
+        r[3] = b
+        a = "%d" % int(ns.integers(10000000, 29999999))
+        while a in used_ass:
+            a = "%d" % int(ns.integers(10000000, 29999999))
+        used_ass.add(a)
+        ass_map[r[19]] = a
+        r[19] = a
+        r[6] = uarns[r[6]]
+    for m in smv:
+        m[0], m[1] = uarns[m[0]], ass_map[m[1]]
     smv.sort(key=lambda r: r[0])
     return rows, smv
 

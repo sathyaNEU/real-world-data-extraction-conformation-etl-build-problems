@@ -34,7 +34,7 @@ SOURCES = {
     "estate": "the chain's estate workbook", "cards": "a payment acquirer's merchant-insight feed",
     "shortlist": "the property team's site schedule", "model": "the property team's model sheet",
     "notes": "the GIS analyst's notes", "tms": "a transport management system's stop export",
-    "receipts": "store handheld goods-in receipts", "wfm": "a workforce management system's shift export",
+    "receipts": "store handheld goods-in receipts", "wfm": "a workforce management system's paid hours report",
     "punches": "a time-and-attendance system's clocking punches", "terminals": "a time-and-attendance terminal register",
     "gtfs_lb": "GTFS as published on the Bus Open Data Service",
     "gtfs_pdc": "GTFS as published on the Bus Open Data Service", "aadf": "the DfT road traffic count points",

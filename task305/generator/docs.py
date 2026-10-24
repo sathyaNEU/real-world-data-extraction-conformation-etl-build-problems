@@ -135,9 +135,8 @@ Hazel Lucas (GIS), 9 October 2026. What each file is and how it came to us, for 
 - `goods_in_receipts_20251006_20260329.csv`: goods-in receipts scanned on the stores' handhelds, local time, with the
   delivery note and its cases. The handhelds went in store by store from October 2025 (101 to 106 so far); 107 to
   110 still book deliveries in on paper.
-- `wfm_paid_hours_20251006_20260329.csv`: the workforce system's weekly payroll extracts of paid shifts, 6 October
-  2025 to 29 March 2026, one week's after another: employee number, location, the shift's date (the day it starts),
-  start and end (local time), unpaid break and paid hours, and role.
+- `wfm_paid_hours_20251006_20260329.csv`: the workforce system's paid hours report, 6 October 2025 to 29 March 2026:
+  employee number, location, date, role and paid hours.
 - `ta_punches_20251006_20260329.csv`: the time-and-attendance clock-ins and clock-outs for the same weeks, local
   time, with the terminal each was made on; `ta_terminals.csv` is the terminal register (store, door, installed).
 - `gtfs_sallowmere_motor_services_20261002.zip`, `gtfs_wrentoft_district_coaches_20261002.zip`: each operator's

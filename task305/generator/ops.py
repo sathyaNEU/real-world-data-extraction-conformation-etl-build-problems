@@ -224,7 +224,7 @@ def tms(T, G):
 
 
 # ----------------------------------------------------------------- ask B: paid hours
-XS_SEED = P.OPS_SEED + 14         # the extracts' second shifts and amendments
+XS_SEED = P.OPS_SEED + 14         # second shifts and forgotten punches
 STAFF = {"101": 86, "102": 72, "103": 68, "104": 70, "105": 58, "106": 61, "107": 57, "108": 47, "109": 41, "110": 39}
 RELIEF = 9                      # the region's relief team, on store 101's location
 CONTRACTS = [37.5, 30, 24, 20, 16, 12, 8]
@@ -241,21 +241,28 @@ def _paid(start, end):
 
 
 def staffing(T):
-    """the workforce system's paid hours by shift, the clocking terminals' punches and the terminal register. Each
-    shift carries the colleague's location; relief colleagues, cover shifts and colleagues who moved store work
-    shifts at other stores, and only the terminal they clock on at says where"""
+    """the workforce system's paid hours report by colleague and date, the clocking terminals' punches and the
+    terminal register. Each line carries the colleague's location; relief colleagues, cover shifts and colleagues who
+    moved store work shifts at other stores, and only the terminal they clock on at says where"""
     rs = np.random.default_rng(P.OPS_SEED + 2)
     own = {s["id"]: (s["x"], s["y"]) for s in T["stores"] if s["kind"] == "own"}
     ids = sorted(own)
     near = {s: min((o for o in ids if o != s), key=lambda o: math.hypot(own[o][0] - own[s][0], own[o][1] - own[s][1]))
             for s in ids}
     big = {o[0] for o in P.OWN if o[4] >= 1400}
+    opened = {o[0]: o[5] for o in P.OWN}
     nums = list(rs.permutation(np.arange(310, 410)))
     term = {}
     register = []
+    ts = np.random.default_rng(P.OPS_SEED + 15)
     for s in ids:
-        for door, inst in (("staff entrance", "2019-%02d-%02d" % (int(rs.integers(1, 13)), int(rs.integers(1, 28)))),
-                           ("warehouse", "2021-%02d-%02d" % (int(rs.integers(1, 13)), int(rs.integers(1, 28))))):
+        # the terminals each store has: one at the staff entrance, a second at the warehouse door in the larger
+        # stores, a third at the goods-in office in the largest; each fitted when the store opened or replaced since
+        doors = ["staff entrance"] + (["warehouse"] if s in big or ts.uniform() < .5 else []) + \
+            (["goods in office"] if STAFF[s] >= 68 else [])
+        for door in doors:
+            yr = int(ts.integers(max(opened[s], 2016), 2025)) if ts.uniform() < .7 else max(opened[s], 2012)
+            inst = "%d-%02d-%02d" % (yr, int(ts.integers(1, 13)), int(ts.integers(1, 28)))
             tid = "TA%04d" % int(nums.pop())
             term.setdefault(s, []).append(tid)
             register.append([tid, s, door, inst])
@@ -265,7 +272,7 @@ def staffing(T):
     for s in ids:
         for k in range(STAFF[s]):
             eno += int(rs.integers(1, 30))
-            night = s in big and k < max(4, STAFF[s] // 9)
+            night = k < (max(4, STAFF[s] // 9) if s in big else 3)
             contract = 37.5 if night else float(rs.choice(CONTRACTS, p=CONTRACT_P))
             role = "Night Replenishment" if night else str(rs.choice(
                 ["Customer Assistant", "Customer Assistant", "Customer Assistant", "Fresh Food", "Team Leader",
@@ -289,7 +296,8 @@ def staffing(T):
         e["home"] = to
     weeks = [P.TMS_FROM + dt.timedelta(days=7 * w) for w in range(25)]
     shifts, truth = [], {}
-    rot = [s for s in ids for _ in range(2)]
+    # the relief team covers by store size, the larger stores more often
+    rot = [s for s in ids for _ in range(max(1, STAFF[s] // 20))]
     for e in emps:
         for wi, wk in enumerate(weeks):
             if rs.uniform() < 0.10:
@@ -299,15 +307,14 @@ def staffing(T):
                 days = sorted(rs.choice(5, size=n, replace=False))          # Monday to Friday nights
             else:
                 days = sorted(rs.choice(7, size=n, replace=False))
-            extra = rs.uniform() < 0.08 and n < 7
+            extra = rs.uniform() < 0.08 and n < 7 and not e["night"]
             if extra:
-                # an extra shift; the night team's extra is a Saturday night, never a Sunday
-                days = sorted(set(days) | {int(rs.choice([d for d in range(6 if e["night"] else 7) if d not in days]))})
+                days = sorted(set(days) | {int(rs.choice([d for d in range(7) if d not in days]))})
             relief_store = rot[(wi * 3 + int(e["no"][1:]) % 7) % len(rot)] if e["relief"] else None
             for di in days:
                 d = wk + dt.timedelta(days=int(di))
-                if d == dt.date(2025, 12, 25) or rs.uniform() < 0.025:
-                    continue                              # Christmas Day; sickness
+                if d == dt.date(2025, 12, 25) or (e["night"] and d == dt.date(2025, 12, 24)) or rs.uniform() < 0.025:
+                    continue                              # Christmas Day and the night before it; sickness
                 ln = 4.0 if (extra and di == days[-1] and not e["night"]) else length
                 if e["night"]:
                     st = dt.datetime.combine(d, dt.time(22, 0))
@@ -331,9 +338,8 @@ def staffing(T):
                 shifts.append([e["no"], e["home"], d, st, en, brk, paid, e["role"], worked])
                 truth[worked] = truth.get(worked, 0.0) + paid
     shifts.sort(key=lambda r: (r[2], r[3], r[0]))
-    # what the payroll extracts carry on top of the shifts as worked: a part-timer's second shift on the same day
-    # (an evening cover, a split shift), and shifts a manager amended after their week's extract went, which the next
-    # week's extract carries again with their amended times. The clocking terminals record what was worked.
+    # a part-timer's second shift on the same day (an evening cover on a morning shift's day); the clocking terminals
+    # record what was worked
     xs = np.random.default_rng(XS_SEED)
     worked_rows = []
     for r in shifts:
@@ -347,44 +353,56 @@ def staffing(T):
     truth = {}
     for r in worked_rows:
         truth[r[8]] = truth.get(r[8], 0.0) + r[6]
-    last_week = P.TMS_TO - dt.timedelta(days=6)
-    export, amended, twice = [], 0, set()
+    # the workforce system's paid hours report: one line per colleague, date and shift, built by joining each shift to
+    # the calendar dates it covers, so a night shift is listed against the date it starts and again against the date
+    # it ends, each line carrying the shift's paid hours
+    lines, night_lines = [], 0
     for r in worked_rows:
-        wk = (r[2] - P.TMS_FROM).days // 7
-        if r[2] < last_week and xs.uniform() < 0.03:
-            # the shift as first extracted: the rostered end, before the manager's amendment
-            delta = int(xs.choice([-90, -60, -30, 30, 60, 90]))
-            en0 = r[4] + dt.timedelta(minutes=delta)
-            paid0, brk0 = _paid(r[3], en0)
-            export.append((wk, [r[0], r[1], r[2], r[3], en0, brk0, paid0, r[7], r[8]]))
-            export.append((wk + 1, r))
-            amended += 1
-            twice.add(id(r))
-        else:
-            export.append((wk, r))
-    export.sort(key=lambda x: (x[0], x[1][2], x[1][3], x[1][0]))
-    rows_out = [x[1] for x in export]
+        lines.append([r[0], r[1], r[2], r[7], r[6]])
+        if r[4].date() > r[2]:
+            lines.append([r[0], r[1], r[4].date(), r[7], r[6]])
+            night_lines += 1
+    lines.sort(key=lambda x: (x[2], x[1], x[0]))
     punches = []
     two = {}
     for r in worked_rows:
         two[(r[0], r[2])] = two.get((r[0], r[2]), 0) + 1
+    made = []
     for r in worked_rows:
-        tid = term[r[8]][0 if rs.uniform() < 0.8 else 1]
+        tl = term[r[8]]
+        tid = tl[0] if (len(tl) == 1 or rs.uniform() < 0.8) else tl[1 + int(rs.integers(0, len(tl) - 1))]
         p_in = [r[0], tid, r[3] - dt.timedelta(minutes=int(rs.integers(1, 13))), "IN"]
-        tid2 = term[r[8]][0 if rs.uniform() < 0.8 else 1]
+        tid2 = tl[0] if (len(tl) == 1 or rs.uniform() < 0.8) else tl[1 + int(rs.integers(0, len(tl) - 1))]
         p_out = [r[0], tid2, r[4] + dt.timedelta(minutes=int(rs.integers(0, 10))), "OUT"]
-        miss = xs.uniform()
-        # a forgotten clock-in or clock-out, confirmed by the manager; never on a shift extracted twice or split
-        lone = two[(r[0], r[2])] == 1 and id(r) not in twice
-        if lone and miss < 0.004:
+        made.append((r, p_in, p_out, xs.uniform()))
+    # a forgotten clock-in or clock-out, confirmed by the manager: only on a day shift that is the colleague's one shift
+    # that day, and never on the colleague's shift after another with a forgotten punch
+    order = {}
+    for i, (r, _, _, _) in enumerate(made):
+        order.setdefault(r[0], []).append(i)
+    drop = {}
+    for e, idx in order.items():
+        idx.sort(key=lambda i: made[i][0][3])
+        before = False
+        for i in idx:
+            r, _, _, miss = made[i]
+            lone = two[(r[0], r[2])] == 1 and r[4].date() == r[2]
+            want = "IN" if (lone and miss < 0.006) else ("OUT" if (lone and miss < 0.016) else None)
+            if want and not before:
+                drop[i] = want
+                before = True
+            else:
+                before = False
+    for i, (r, p_in, p_out, miss) in enumerate(made):
+        if drop.get(i) == "IN":
             punches.append(p_out)
-        elif lone and miss < 0.014:
+        elif drop.get(i) == "OUT":
             punches.append(p_in)
         else:
             punches += [p_in, p_out]
     punches.sort(key=lambda p: (p[2], p[0], p[3]))
-    return rows_out, punches, register, dict(hours=truth, weeks=25, amended=amended,
-                                            split=len(worked_rows) - len(shifts))
+    return lines, punches, register, dict(hours=truth, weeks=25, night_lines=night_lines,
+                                         split=len(worked_rows) - len(shifts))
 
 
 # ----------------------------------------------------------------- ask C: buses
@@ -406,11 +424,16 @@ ROUTES = [  # number, operator, joint, waypoints (km), weekday service: (first, 
      (7 * 60 + 20, 17 * 60 + 20, 120), 0.8),
     ("9", "PDC", False, [(66.0, 42.0), (66.3, 41.6), (44.0, 38.0)], (8 * 60 + 5, 17 * 60 + 5, 120), 0.9),
 ]
+ROUTE_ORDER = {"4": 0, "41": 1, "7": 2, "12": 3, "15": 4, "22": 5, "9": 6, "S41": 7}
 SCHOOL = ("S41", "PDC", [(66.0, 42.0), (66.2, 41.9), (44.0, 38.0)], [(7 * 60 + 40,), (15 * 60 + 35,)], 0.9)
 # the two inter-town routes' late journeys, service-day minutes from midnight: one a direction Monday to Thursday,
-# two a direction on Friday and Saturday nights
-LATE = {"4": {"mtl": [23 * 60], "fsl": [23 * 60 + 40, 24 * 60 + 40]},
-        "41": {"mtl": [22 * 60 + 50], "fsl": [23 * 60 + 30, 24 * 60 + 30]}}
+# two a direction on Friday nights and on Saturday nights
+LATE = {"4": {"mtl": [23 * 60], "fl": [23 * 60 + 40, 24 * 60 + 40], "sl": [23 * 60 + 40, 24 * 60 + 40]},
+        "41": {"mtl": [22 * 60 + 50], "fl": [23 * 60 + 30, 24 * 60 + 30], "sl": [23 * 60 + 30, 24 * 60 + 30]}}
+# where each late route's Friday-late timetable begins in Sallowmere Motor Services' export: its own late journeys and
+# the weekday journeys from this time on, so on a Friday those weekday journeys are listed twice, on the same blocks
+FL_FROM = {"4": 21 * 60, "41": 20 * 60}
+BLOCK_BASE = {"LB": 300, "PDC": 600}
 
 
 def _along(wps, spacing, rs):
@@ -491,7 +514,7 @@ def buses(T):
     patterns.append((num, op, False, 1, keys[::-1], (times[1][0], times[1][0], 999), True))
     # timetables: weekday, Saturday and Sunday journeys
     def journeys(svc, day, num=None):
-        if day in ("mtl", "fsl"):
+        if day in ("mtl", "fl", "sl"):
             return LATE.get(num, {}).get(day, [])
         first, last, hw = svc
         if hw == 999:
@@ -505,15 +528,15 @@ def buses(T):
             out.append(t)
             t += hw
         return out
-    feeds = {"LB": dict(trips=[], stop_times=[]), "PDC": dict(trips=[], stop_times=[])}
     truth = {k: 0 for k in sites}
     stop_xy = {k: (v[0], v[1]) for k, v in stops.items()}
     near = {sk: {k for k, (x, y) in stop_xy.items() if 1000 * math.hypot(x - sx, y - sy) <= P.BUS_RADIUS}
             for sk, (sx, sy) in sites.items()}
     jn = 0
     dup_done, dups = set(), {k: 0 for k in sites}
+    alls = []
     for num, op, joint, direction, keys, svc, school in patterns:
-        for day in ("wk", "sat", "sun", "mtl", "fsl"):
+        for day in ("wk", "sat", "sun", "mtl", "fl", "sl"):
             for t0 in journeys(svc, day, num):
                 jn += 1
                 times, t = [], float(t0)
@@ -523,17 +546,15 @@ def buses(T):
                     t += 60 * 1.3 * math.hypot(x - prev[0], y - prev[1]) / 28.0 + 0.4
                     times.append(int(round(t)))
                     prev = (x, y)
-                owners = [op] + (["LB" if op == "PDC" else "PDC"] if joint else [])
-                for owner in owners:
-                    feeds[owner]["trips"].append(dict(num=num, op=op, owner=owner, direction=direction, day=day,
-                                                      school=school, keys=keys, times=times, jn=jn, t0=t0))
+                alls.append(dict(num=num, op=op, joint=joint, direction=direction, day=day, school=school, keys=keys,
+                                 times=times, jn=jn, t0=t0, duplicate=False))
                 # departures on the ask's day, a Friday, by the clock: the weekday journeys whole (the Thursday
                 # journeys' calls after midnight replace the Friday ones', the same timetable), the Friday late
                 # journeys' calls before midnight and the Monday to Thursday late journeys' calls after it
                 for i, (k, m) in enumerate(zip(keys, times)):
                     if i == len(keys) - 1:
                         continue
-                    if day == "wk" or (day == "fsl" and m < 1440) or (day == "mtl" and m >= 1440):
+                    if day == "wk" or (day == "fl" and m < 1440) or (day == "mtl" and m >= 1440):
                         for sk in sites:
                             if k in near[sk]:
                                 truth[sk] += 1
@@ -543,12 +564,63 @@ def buses(T):
                         (num, direction, t0 // 480) not in dup_done:
                     dup_done.add((num, direction, t0 // 480))
                     jn += 1
-                    feeds[op]["trips"].append(dict(num=num, op=op, owner=op, direction=direction, day=day, school=True,
-                                                   keys=keys, times=times, jn=jn, t0=t0, duplicate=True))
+                    alls.append(dict(num=num, op=op, joint=False, direction=direction, day=day, school=True, keys=keys,
+                                     times=times, jn=jn, t0=t0, duplicate=True))
                     for i, (k, m) in enumerate(zip(keys, times)):
                         if i < len(keys) - 1:
                             for sk in sites:
                                 if k in near[sk]:
                                     truth[sk] += 1
                                     dups[sk] += 1
-    return feeds, stops, truth, near, dups
+    # vehicle blocks: each operator's buses work a route's journeys in turn, a bus taking the next journey from where
+    # its last one ended after a five-minute stand; the late journeys continue the day's buses (Monday to Thursday,
+    # Friday and Saturday duties), a school duplicate and the school route each have a bus of their own
+    def chain(js, state=None):
+        veh = [list(v) for v in (state or [])]
+        for j in sorted(js, key=lambda j: (j["times"][0], j["direction"], j["jn"])):
+            free = [v for v in veh if v[1] == j["keys"][0] and v[0] + 5 <= j["times"][0]]
+            if free:
+                v = min(free, key=lambda v: (v[0], v[2]))
+            else:
+                v = [None, None, len(veh)]
+                veh.append(v)
+            j["bno"] = v[2]
+            v[0], v[1] = j["times"][-1], j["keys"][-1]
+        return veh
+    by_route = {}
+    for j in alls:
+        by_route.setdefault((j["op"], j["num"]), []).append(j)
+    bcount = {"LB": 0, "PDC": 0}
+    for (op, num), js in sorted(by_route.items(), key=lambda x: (x[0][0], ROUTE_ORDER[x[0][1]])):
+        base = BLOCK_BASE[op] + bcount[op]
+        reg = [j for j in js if not j["duplicate"]]
+        wk = chain([j for j in reg if j["day"] == "wk"])
+        chain([j for j in reg if j["day"] == "mtl"], wk)
+        chain([j for j in reg if j["day"] == "fl"], wk)
+        sat = chain([j for j in reg if j["day"] == "sat"])
+        chain([j for j in reg if j["day"] == "sl"], sat)
+        chain([j for j in reg if j["day"] == "sun"])
+        used = 1 + max(j["bno"] for j in reg)
+        for j in reg:
+            j["block"] = "%d" % (base + j["bno"])
+        for i, j in enumerate(sorted([j for j in js if j["duplicate"]], key=lambda j: (j["t0"], j["direction"]))):
+            j["block"] = "%d" % (base + used + i)
+        bcount[op] += used + sum(1 for j in js if j["duplicate"]) + 3
+    feeds = {"LB": dict(trips=[], stop_times=[]), "PDC": dict(trips=[], stop_times=[])}
+    seam = {k: 0 for k in sites}
+    for j in alls:
+        owners = [j["op"]] + (["LB" if j["op"] == "PDC" else "PDC"] if j["joint"] else [])
+        for owner in owners:
+            feeds[owner]["trips"].append(dict(j, owner=owner))
+        # Sallowmere Motor Services' Friday-late timetable starts with the weekday journeys from FL_FROM on, the same
+        # buses on the same blocks, so its data lists those journeys twice on a Friday
+        if j["day"] == "wk" and not j["duplicate"] and j["num"] in FL_FROM and j["t0"] >= FL_FROM[j["num"]] and \
+                "LB" in owners:
+            jn += 1
+            feeds["LB"]["trips"].append(dict(j, owner="LB", day="fl", jn=jn, seam=True))
+            for i, (k, m) in enumerate(zip(j["keys"], j["times"])):
+                if i < len(j["keys"]) - 1 and m < 1440:
+                    for sk in sites:
+                        if k in near[sk]:
+                            seam[sk] += 1
+    return feeds, stops, truth, near, dups, seam

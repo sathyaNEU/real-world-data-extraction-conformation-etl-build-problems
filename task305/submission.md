@@ -21,8 +21,8 @@ The guests on Wrentoft Lakes Holiday Park's 1,750 pitches live outside the regio
 3. Divided our ten stores' guest spend by the pitches of the 6 pitch-measured sites in voa_summary_valuations_2026_lq.csv, each weighted by the model's share of its spend going to our stores from its postcode in onspd_may2026_lq.csv: GBP 2,440 a pitch for a season.
 4. Added each park as an origin, its pitches times GBP 2,440 at its postcode, and appraised each site by the model sheet's rule (26 per cent of its sales, less 26 per cent of what it takes from our stores, less the running costs in site_shortlist_2027.xlsx): S3 sells GBP 7.1 million and adds GBP 0.8 million, S1 adds GBP 0.5 million.
 5. Cases: summed the cases of the DEL stops in tms_stop_export_20251006_20260329.csv by store for UK arrival dates from 6 October 2025 to 29 March 2026 and divided by 25, counting a load a store turned away once: a stop closed in under 4 minutes plus 0.02 of a minute a case had its cases taken back and delivered to the store the next day on a trip of their own, so it is left out.
-6. Paid hours: took each shift in wfm_paid_hours_20251006_20260329.csv once (a colleague's two rows on one day whose times overlap are one shift extracted again after an amendment, and the row that stands is the one whose end the clock-out in ta_punches_20251006_20260329.csv follows; rows that do not overlap are two shifts), summed its paid_hours by the store, in ta_terminals.csv, of the terminal the colleague clocked in at (or out at, where no clock-in), not the location column, and divided by 25.
-7. Buses: from gtfs_sallowmere_motor_services_20261002.zip and gtfs_wrentoft_district_coaches_20261002.zip, the departures with pickup allowed from stops within 400 m of the site's postcode by the clock on Friday 15 January 2027, which are that day's services up to 24:00 and the previous day's services from 24:00 on (a GTFS service day runs past midnight), a jointly run route's journey listed in both feeds counted once, and a second bus one feed lists on the same timetable (a school-day duplicate on its own block) counted again.
+6. Paid hours: paired each colleague's clock-ins and clock-outs in ta_punches_20251006_20260329.csv into shifts (a clock-in or clock-out with no partner is a shift whose other punch was forgotten), dated each shift by its clock-in (by its clock-out where there is none) and placed it at the store, in ta_terminals.csv, of that punch's terminal, not the location column; took one of the colleague's lines in wfm_paid_hours_20251006_20260329.csv for each shift starting that date, since the report lists a night shift against both dates it covers at its full paid hours, summed paid_hours by store and divided by 25.
+7. Buses: from gtfs_sallowmere_motor_services_20261002.zip and gtfs_wrentoft_district_coaches_20261002.zip, the departures with pickup allowed from stops within 400 m of the site's postcode by the clock on Friday 15 January 2027, which are that day's services up to 24:00 and the previous day's services from 24:00 on (a GTFS service day runs past midnight), each bus once by its block_id: the same block at the same stop and time is one departure (a jointly run route's journey listed in both feeds, and a weekday journey the Friday-late timetable lists again), while a second bus on the same timetable on a block of its own (a school-day duplicate) is another.
 8. Recommended S3, Wrentoft, Mill Lane: it adds GBP 0.8 million a year against S1's GBP 0.5 million.
 
 ## 4. Deliverable Answers
@@ -43,16 +43,16 @@ The guests on Wrentoft Lakes Holiday Park's 1,750 pitches live outside the regio
    - Store 109: 3,890 cases
    - Store 110: 4,429 cases
 4. Paid hours a week worked at each store, 6 October 2025 to 29 March 2026:
-   - Store 101: 1,851 hours
-   - Store 102: 1,623 hours
-   - Store 103: 1,454 hours
-   - Store 104: 1,469 hours
-   - Store 105: 1,192 hours
-   - Store 106: 1,324 hours
-   - Store 107: 1,253 hours
-   - Store 108: 1,018 hours
-   - Store 109: 859 hours
-   - Store 110: 823 hours
+   - Store 101: 1,903 hours
+   - Store 102: 1,533 hours
+   - Store 103: 1,476 hours
+   - Store 104: 1,368 hours
+   - Store 105: 1,207 hours
+   - Store 106: 1,318 hours
+   - Store 107: 1,241 hours
+   - Store 108: 1,073 hours
+   - Store 109: 812 hours
+   - Store 110: 783 hours
 5. Bus departures that pick up passengers from stops within 400 metres on Friday 15 January 2027:
    - S1 Bellingtoft, Fenton Road: 44
    - S2 Darrowfield, Eastgate: 110

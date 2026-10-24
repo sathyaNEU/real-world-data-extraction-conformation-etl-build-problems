@@ -95,17 +95,19 @@ def workbook(path, fig):
     rows = [[k, v] for k, v in fig["ask_b"].items()]
     _sheet(ws5, ["Store", "Paid hours a week"], rows, [8, 18], {"Paid hours a week": "#,##0"},
            title="Paid hours a week worked at each store, 6 October 2025 to 29 March 2026 (25 weeks)",
-           note="Each shift once, at the hours it was paid (a shift amended after its week's extract counts at its "
-                "amended times) and at the store whose terminal the colleague clocked in at, so relief cover, shifts at a "
-                "neighbouring store and colleagues who have since moved are counted where they worked.")
+           note="Each shift once, at the hours it was paid (the workforce report lists a night shift against the date "
+                "it starts and again against the morning it ends) and at the store whose terminal the colleague clocked "
+                "in at, so relief cover, shifts at a neighbouring store and colleagues who have since moved are counted "
+                "where they worked.")
     ws6 = wb.create_sheet("Buses")
     rows = [[k, fig["sites"][k]["name"], v] for k, v in fig["ask_c"].items()]
     _sheet(ws6, ["Site", "Location", "Departures"], rows, [7, 26, 12],
            title="Bus departures within %d m of each site, %s %d January 2027" % (fig["radius_m"], fig["bus_weekday"],
                                                                                fig["bus_day"]),
-           note="By the clock: the day's journeys up to midnight and Thursday's late journeys after it. Routes 4 and 41 "
-                "are in both operators' data, so each journey counts once; the school-day duplicates on those routes are "
-                "second buses and count.")
+           note="By the clock: the day's journeys up to midnight and Thursday's late journeys after it. Each bus once, "
+                "by its running board: routes 4 and 41 are in both operators' data, and Sallowmere Motor Services' "
+                "Friday-late timetable repeats the evening's weekday journeys, so each of those counts once; the school-day "
+                "duplicates on routes 4 and 41 are second buses and count.")
     ws7 = wb.create_sheet("Notes")
     notes = [["As at", "9 October 2026"], ["Model", "Spend-share parameters, June 2025: floor area to the power 1.0, "
               "exp(-0.22 x road km), road km 1.25 x straight line, %d%% of households' grocery spend in store" % fig["instore_pct"]],

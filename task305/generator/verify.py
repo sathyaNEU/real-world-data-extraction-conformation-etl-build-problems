@@ -126,67 +126,61 @@ def asks(T):
     d["local"] = pd.to_datetime(d["arrive_utc"]).dt.tz_localize("UTC").dt.tz_convert(LON).dt.date
     d = d[(d["local"] >= dt.date(2025, 10, 6)) & (d["local"] <= dt.date(2026, 3, 29))]
     A = (d.groupby("store_no")["cases"].sum() / 25.0).to_dict()
-    # B: one row per shift worked (two rows of a colleague's day whose times overlap are one shift, the one standing
-    # being the row the clock-out follows), its paid hours at the store of the terminal clocked in at (or out at)
-    w = pd.read_csv(os.path.join(T, "wfm_paid_hours_20251006_20260329.csv"), dtype=str).reset_index()
-    w["a"] = pd.to_datetime(w["shift_date"] + " " + w["shift_start"])
-    w["b"] = pd.to_datetime(w["shift_date"] + " " + w["shift_end"])
-    w.loc[w["b"] <= w["a"], "b"] += pd.Timedelta(days=1)
+    # B: the report lists a night shift against both dates it covers; the shifts a colleague starts on a date are the
+    # clock-ins that date (a clock-out with no clock-in before it is a shift whose clock-in was forgotten, dated by the
+    # clock-out), and each takes one of that date's lines, at the store of the terminal it was punched at
+    w = pd.read_csv(os.path.join(T, "wfm_paid_hours_20251006_20260329.csv"), dtype=str)
     p = pd.read_csv(os.path.join(T, "ta_punches_20251006_20260329.csv"), dtype=str)
     term = dict(zip(*[pd.read_csv(os.path.join(T, "ta_terminals.csv"), dtype=str)[c] for c in ("terminal_id", "store_no")]))
     p["t"] = pd.to_datetime(p["punch_time"])
     p["store"] = p["terminal_id"].map(term)
-    pin = {k: list(zip(g["t"], g["store"])) for k, g in p[p["punch"] == "IN"].groupby("employee_no")}
-    pout = {k: list(zip(g["t"], g["store"])) for k, g in p[p["punch"] == "OUT"].groupby("employee_no")}
+    p = p.sort_values(["employee_no", "t"])
+    begin = {}
+    for emp, g in p.groupby("employee_no"):
+        prev = None
+        for t, kind, store in zip(g["t"], g["punch"], g["store"]):
+            if kind == "IN":
+                begin.setdefault((emp, t.date().isoformat()), []).append(store)
+            elif prev != "IN":
+                begin.setdefault((emp, t.date().isoformat()), []).append(store)
+            prev = kind
     Bh = {}
-    for (emp, d), g in w.groupby(["employee_no", "shift_date"]):
-        rows = g.sort_values("index").to_dict("records")
-        left = list(rows)
-        while left:
-            r = left.pop(0)
-            same = [r] + [q for q in left if q["a"] < r["b"] and r["a"] < q["b"]]
-            left = [q for q in left if q not in same]
-            if len(same) > 1:
-                fol = [q for q in same if any(pd.Timedelta(0) <= t - q["b"] <= pd.Timedelta(minutes=15) for t, _ in pout.get(emp, []))]
-                r = fol[-1]
-            st = [s for t, s in pin.get(emp, []) if pd.Timedelta(0) <= r["a"] - t <= pd.Timedelta(minutes=15)] or \
-                 [s for t, s in pout.get(emp, []) if pd.Timedelta(0) <= t - r["b"] <= pd.Timedelta(minutes=15)]
-            Bh[st[0]] = Bh.get(st[0], 0.0) + float(r["paid_hours"])
+    for (emp, d), g in w.groupby(["employee_no", "date"], sort=False):
+        for paid, store in zip(g["paid_hours"].astype(float), begin.get((emp, d), [])):
+            Bh[store] = Bh.get(store, 0.0) + paid
     Bh = {s: x / 25.0 for s, x in Bh.items()}
     # C: departures by the clock on Friday 15 January 2027
     pcs = pd.read_csv(os.path.join(T, "onspd_may2026_lq.csv"), dtype=str).set_index("pcds")
     sites = pd.read_excel(os.path.join(T, "site_shortlist_2027.xlsx"), sheet_name="Shortlist")
     pos = {r["site"]: ll(float(pcs.loc[r["postcode"], "oseast1m"]), float(pcs.loc[r["postcode"], "osnrth1m"]))
            for _, r in sites.iterrows()}
-    cnt = []
+    seen = set()
     for f in ("gtfs_sallowmere_motor_services_20261002.zip", "gtfs_wrentoft_district_coaches_20261002.zip"):
         z = zipfile.ZipFile(os.path.join(T, f))
         rd = lambda n: pd.read_csv(io.BytesIO(z.read(n)), dtype=str)
         cal, cd = rd("calendar.txt"), rd("calendar_dates.txt")
-        trips = rd("trips.txt").merge(rd("routes.txt"), on="route_id")
+        trips = rd("trips.txt")
         stops = rd("stops.txt")
         near = {k: set(stops[[dist((float(a), float(b)), q) <= 400 for a, b in zip(stops["stop_lat"], stops["stop_lon"])]]["stop_id"])
                 for k, q in pos.items()}
         st = rd("stop_times.txt")
         st = st[st["pickup_type"] != "1"]
-        c = {}
         for ymd, wd, late in (("20270115", "friday", False), ("20270114", "thursday", True)):
             on = set(cal[(cal[wd] == "1") & (cal["start_date"] <= ymd) & (cal["end_date"] >= ymd)]["service_id"])
             on |= set(cd[(cd["date"] == ymd) & (cd["exception_type"] == "1")]["service_id"])
             on -= set(cd[(cd["date"] == ymd) & (cd["exception_type"] == "2")]["service_id"])
-            tr = trips[trips["service_id"].isin(on)][["trip_id", "route_short_name", "direction_id"]]
+            tr = trips[trips["service_id"].isin(on)][["trip_id", "block_id"]]
             x = st.merge(tr, on="trip_id")
             x = x[(x["departure_time"] >= "24:00:00") == late]
-            for _, r in x.iterrows():
+            # a bus is its block: the same block at the same stop and time is one departure, whichever feed or
+            # timetable lists it
+            for blk, sid, tm in zip(x["block_id"], x["stop_id"], x["departure_time"]):
                 for k in pos:
-                    if r["stop_id"] in near[k]:
-                        key = (k, r["route_short_name"], r["direction_id"], r["stop_id"], r["departure_time"], ymd)
-                        c[key] = c.get(key, 0) + 1
-        cnt.append(c)
+                    if sid in near[k]:
+                        seen.add((k, ymd, blk, sid, tm))
     C = {k: 0 for k in pos}
-    # a journey both feeds list is one bus; a second bus one feed lists on the same timetable is another
-    for key in set(cnt[0]) | set(cnt[1]):
-        C[key[0]] += max(cnt[0].get(key, 0), cnt[1].get(key, 0))
+    for key in seen:
+        C[key[0]] += 1
     return A, Bh, C
 
 

@@ -15,8 +15,8 @@
   "date": "2026-10-24"
  },
  "leak": {
-  "leak_py": "REVIEW (26 lines: store and house numbers, list entry numbers, stump vocabulary in the notes and model sheet, the shortlist's costs, nested GTFS zips; all to be ruled by the readers)",
-  "reader": "round 1 on bb1aef72: both off the call, asks 26 and 16 of 26 (pair 56.4); round 2 on 1680766e: both off the call, asks 16 and 16 of 26 (pair 45.8, B and C kept), asks B and C re-sited; round 3 two fresh scored readers on ec38f0bd"
+  "leak_py": "REVIEW (the model sheet's 'the model', store, house and list entry numbers, stump vocabulary in the notes and model sheet ruled in the main thread, the shortlist's costs, nested GTFS zips)",
+  "reader": "round 1 on bb1aef72: both off the call, asks 26 and 16 of 26 (pair 56.4); round 2 on 1680766e: both off the call, asks 16 and 16 of 26 (pair 45.8); round 3 on ec38f0bd: both on the call after a brief that named the stump terms and two ask B figures, asks 16 and 10 of 26, asks B and C re-sited; round 4 on 41415795 with a clean brief"
  },
  "duplicate_check": {
   "heart": "WARN (repeat.question_form, answered); surface promotes task199, task133, task180 on the card signature, differentiated",
@@ -24,15 +24,16 @@
  },
  "judge": {
   "verdict": "DETERMINISTIC",
-  "disposition": "APPROVE on 1680766e (the FIX_NOW re-judge); a pass on ec38f0bd owed for the re-sited asks B and C",
+  "disposition": "APPROVE on ec38f0bd (round 3, the call and all 26 ask figures reproduced); a pass on 41415795 owed for the re-sited asks B and C",
   "report": "determinism_check_report.md"
  },
  "returned": [],
- "resume": "Stage 4 round 3 in flight on target.zip ec38f0bd (two fresh isolated scored readers in scratch leak-task305-e and -f, the judge thread at /tmp/determinism-check-task305-r3): score both readers against generator/figures.json and have the determinism-judge agent write the report from the thread's verdict.md; fix any finding in one generator pass and re-run the free gates; then ship (SHIPPED commit with target.zip and golden/ force-added, ledger row before 306, card current, board wave 6 rows) and merge. If the scratch folders are gone, rebuild with generator/make.py (byte-identical to ec38f0bd) and re-run round 3 on fresh copies.",
+ "resume": "Stage 4 round 4 on target.zip 41415795 (asks B and C re-sited: night lines on both dates, Friday-late repeats on the same blocks): two fresh isolated scored readers on a brief with no stump terms and no answer figures, and the determinism judge. If either reader lands the call, architecture 1 is spent and task305 re-roots; if both miss, score the asks against generator/figures.json, fix any finding in one generator pass and ship.",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "guard_override": "author, 2026-10-24: heart BLOCKs on ban.strategy and ban.forcing_event against task275 arose after the draw when four builds drawn between them were marked spent; overridden rather than relabelled"
 }

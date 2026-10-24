@@ -29,11 +29,11 @@ TOWNS = [  # name, x km, y km, output areas, households per OA, postcode sectors
 N_VILL = 140
 
 OWN = [  # store no, town, x, y, rating-list floor area m2, opened
-    ("101", "Darrowfield", 34.5, 21.0, 2300, 1994), ("102", "Brackenmere", 22.5, 31.0, 1900, 1998),
-    ("103", "Quellby", 12.5, 13.5, 1700, 2001), ("104", "Sallowmere", 60.5, 12.5, 1600, 2004),
-    ("105", "Withybeck", 44.0, 38.5, 1400, 2007), ("106", "Corrinby", 6.2, 40.1, 1500, 2009),
-    ("107", "Raddleford", 28.5, 8.2, 1500, 2012), ("108", "Loderwell", 40.2, 12.4, 1300, 2015),
-    ("109", "Sedgeton", 54.2, 4.3, 1200, 2018), ("110", "Haddrell Fen", 16.3, 24.2, 1100, 2021)]
+    ("101", "Darrowfield", 34.5, 21.0, 2300, 1993), ("102", "Brackenmere", 22.5, 31.0, 1900, 1999),
+    ("103", "Quellby", 12.5, 13.5, 1700, 2002), ("104", "Sallowmere", 60.5, 12.5, 1600, 2004),
+    ("105", "Withybeck", 44.0, 38.5, 1400, 2008), ("106", "Corrinby", 6.2, 40.1, 1500, 2009),
+    ("107", "Raddleford", 28.5, 8.2, 1500, 2011), ("108", "Loderwell", 40.2, 12.4, 1300, 2016),
+    ("109", "Sedgeton", 54.2, 4.3, 1200, 2017), ("110", "Haddrell Fen", 16.3, 24.2, 1100, 2021)]
 COMP = [  # fascia, town, x, y, rating-list floor area m2
     ("Fairbasket", "Darrowfield", 37.5, 23.0, 3200), ("Brightmart", "Darrowfield", 36.0, 20.5, 900),
     ("Pettifer's", "Bellingtoft", 50.5, 28.0, 1800), ("Fairbasket", "Brackenmere", 21.5, 29.5, 1500),

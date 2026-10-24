@@ -1,5 +1,6 @@
 """Every graded figure from the pack alone: the call (the resident route and the golden, which carries the holiday
 parks as origins), and the three asks. Reads only the files in target/."""
+import collections
 import csv
 import datetime as dt
 import io
@@ -176,20 +177,9 @@ def ask_a(target, mode="golden"):
 
 
 # ----------------------------------------------------------------- ask B
-def _t(date, hhmm):
-    return dt.datetime.strptime(date + " " + hhmm, "%Y-%m-%d %H:%M")
-
-
-def wfm_shifts(target):
-    """the workforce export's rows in file order, each with its start and end as datetimes (a shift ending at or
-    before its start ends the next day)"""
-    out = []
-    for i, r in enumerate(rd(os.path.join(target, P.FILES["wfm"]))):
-        a, b = _t(r["shift_date"], r["shift_start"]), _t(r["shift_date"], r["shift_end"])
-        if b <= a:
-            b += dt.timedelta(days=1)
-        out.append(dict(r, i=i, a=a, b=b, paid=float(r["paid_hours"])))
-    return out
+def wfm_lines(target):
+    """the paid hours report's lines in file order: colleague, location, date, role and paid hours"""
+    return [dict(r, i=i, paid=float(r["paid_hours"])) for i, r in enumerate(rd(os.path.join(target, P.FILES["wfm"])))]
 
 
 def punches_by_employee(target):
@@ -198,85 +188,109 @@ def punches_by_employee(target):
     for p in rd(os.path.join(target, P.FILES["punches"])):
         out.setdefault(p["employee_no"], []).append(
             (dt.datetime.strptime(p["punch_time"], "%Y-%m-%d %H:%M"), p["punch"], reg[p["terminal_id"]]))
+    for v in out.values():
+        v.sort()
     return out
 
 
-def current_shifts(rows, pun, by="punches"):
-    """one row per shift worked: rows of one colleague and day whose times overlap are one shift extracted twice,
-    and the one standing is the row whose end the clock-out follows (by="punches") or the later row in the file
-    (by="file"); rows that do not overlap are separate shifts"""
-    groups = {}
-    for r in rows:
-        groups.setdefault((r["employee_no"], r["shift_date"]), []).append(r)
-    keep = []
-    for g in groups.values():
-        g.sort(key=lambda r: r["i"])
-        clusters = []
-        for r in g:
-            for c in clusters:
-                if any(r["a"] < q["b"] and q["a"] < r["b"] for q in c):
-                    c.append(r)
-                    break
+def punch_shifts(pun):
+    """each colleague's shifts as the terminals recorded them: a clock-in and the clock-out after it are one shift, a
+    clock-in with no clock-out or a clock-out with no clock-in is a shift whose other punch was forgotten. Each shift
+    is dated by its clock-in (by its clock-out where there is none) and placed at that punch's store"""
+    out = {}
+    for e, ps in pun.items():
+        opened = None
+        for t, kind, store in ps:
+            if kind == "IN":
+                if opened is not None:
+                    out.setdefault((e, opened[0].date().isoformat()), []).append(opened[1])
+                opened = (t, store)
             else:
-                clusters.append([r])
-        for c in clusters:
-            if len(c) == 1 or by == "file":
-                keep.append(c[-1])
-                continue
-            outs = [t for t, kind, _ in pun.get(c[0]["employee_no"], []) if kind == "OUT"]
-            ok_ = [r for r in c if any(0 <= (t - r["b"]).total_seconds() / 60 <= 15 for t in outs)]
-            keep.append(ok_[-1] if ok_ else c[-1])
-    return keep
+                if opened is not None and (t - opened[0]).total_seconds() <= 16 * 3600:
+                    out.setdefault((e, opened[0].date().isoformat()), []).append(opened[1])
+                else:
+                    if opened is not None:
+                        out.setdefault((e, opened[0].date().isoformat()), []).append(opened[1])
+                    out.setdefault((e, t.date().isoformat()), []).append(store)
+                opened = None
+        if opened is not None:
+            out.setdefault((e, opened[0].date().isoformat()), []).append(opened[1])
+    return out
 
 
-def worked_store(r, pun):
-    """the store of the terminal the colleague clocked in at for the shift, or clocked out at where no clock-in"""
-    ps = pun.get(r["employee_no"], [])
-    ins = [s for t, kind, s in ps if kind == "IN" and 0 <= (r["a"] - t).total_seconds() / 60 <= 15]
-    if ins:
-        return ins[0]
-    outs = [s for t, kind, s in ps if kind == "OUT" and 0 <= (t - r["b"]).total_seconds() / 60 <= 15]
-    return outs[0] if outs else r["location"]
+def _by_day(lines):
+    g = {}
+    for r in lines:
+        g.setdefault((r["employee_no"], r["date"]), []).append(r)
+    return g
 
 
-def clock_in_store(target):
-    """each current shift's store, keyed by colleague, date and start"""
-    rows, pun = wfm_shifts(target), punches_by_employee(target)
-    return {(r["employee_no"], r["shift_date"], r["shift_start"]): worked_store(r, pun) for r in current_shifts(rows, pun)}
+def _day_store(pun):
+    """the store of a colleague's first punch on each date, whatever the punch"""
+    out = {}
+    for e, ps in pun.items():
+        for t, kind, store in ps:
+            out.setdefault((e, t.date().isoformat()), store)
+    return out
 
 
 def ask_b(target, mode="golden"):
-    """paid hours a week worked at each store over the 25 weeks: each shift worked once, at the hours it was paid,
-    at the store its colleague clocked in at"""
-    rows = wfm_shifts(target)
+    """paid hours a week worked at each store over the 25 weeks: each shift worked once, at the hours it was paid, at
+    the store its colleague clocked in at. The report lists a night shift against both dates it covers, so the lines
+    a colleague has on a date are the shifts that start that date and any night that ended there; the shifts that
+    start a date are the ones the terminals recorded starting it"""
+    lines = wfm_lines(target)
     pun = punches_by_employee(target)
     tot = {}
+
+    def add(store, h):
+        tot[store] = tot.get(store, 0.0) + h
     if mode == "punch_hours":
         for e, ps in pun.items():
-            ps = sorted(ps)
             for (t0, k0, s0), (t1, k1, s1) in zip(ps, ps[1:]):
                 if k0 == "IN" and k1 == "OUT":
-                    tot[s0] = tot.get(s0, 0.0) + (t1 - t0).total_seconds() / 3600.0
+                    add(s0, (t1 - t0).total_seconds() / 3600.0)
         return {s: v / 25.0 for s, v in tot.items()}
-    if mode == "golden":
-        use = current_shifts(rows, pun)
-    elif mode == "by_file":
-        use = current_shifts(rows, pun, by="file")
-    elif mode in ("dedup_last", "dedup_first", "dedup_max"):
-        g = {}
-        for r in rows:
-            g.setdefault((r["employee_no"], r["shift_date"]), []).append(r)
-        if mode == "dedup_last":
-            use = [max(v, key=lambda r: r["i"]) for v in g.values()]
-        elif mode == "dedup_first":
-            use = [min(v, key=lambda r: r["i"]) for v in g.values()]
-        else:
-            use = [max(v, key=lambda r: (r["paid"], r["i"])) for v in g.values()]
-    else:
-        use = rows
+    if mode == "location":
+        for r in lines:
+            add(r["location"], r["paid"])
+        return {s: v / 25.0 for s, v in tot.items()}
+    day = _day_store(pun)
+    if mode in ("golden", "in_days", "exact_in_days"):
+        starts = punch_shifts(pun)
+        ins = {}
+        for e, ps in pun.items():
+            for t, kind, store in ps:
+                if kind == "IN":
+                    ins.setdefault((e, t.date().isoformat()), []).append(store)
+        use = lines
+        if mode == "exact_in_days":
+            seen, use = set(), []
+            for r in lines:
+                k = (r["employee_no"], r["location"], r["date"], r["role"], r["paid_hours"])
+                if k not in seen:
+                    seen.add(k)
+                    use.append(r)
+        for key, g in _by_day(use).items():
+            stores = starts.get(key, []) if mode == "golden" else ins.get(key, [])
+            for r, store in zip(g, stores):
+                add(store, r["paid"])
+        return {s: v / 25.0 for s, v in tot.items()}
+    if mode == "dedup_exact":
+        seen, use = set(), []
+        for r in lines:
+            k = (r["employee_no"], r["location"], r["date"], r["role"], r["paid_hours"])
+            if k not in seen:
+                seen.add(k)
+                use.append(r)
+    elif mode == "dedup_day":
+        use = [g[0] for g in _by_day(lines).values()]
+    elif mode == "dedup_day_max":
+        use = [max(g, key=lambda r: r["paid"]) for g in _by_day(lines).values()]
+    else:                                   # "terminal_all": every line
+        use = lines
     for r in use:
-        s = r["location"] if mode == "location" else worked_store(r, pun)
-        tot[s] = tot.get(s, 0.0) + r["paid"]
+        add(day.get((r["employee_no"], r["date"]), r["location"]), r["paid"])
     return {s: v / 25.0 for s, v in tot.items()}
 
 
@@ -289,19 +303,18 @@ def _mins(t):
 def ask_c(target, mode="golden", day=P.BUS_DAY):
     """bus departures on the day, by the clock, from stops within 400 metres of each site: the day's own services up
     to midnight and the previous day's services after it (a GTFS service day runs past 24:00), no departure from a
-    stop where the bus only sets down, and each bus once: both operators' feeds carry the jointly run routes'
-    journeys, so a journey both list is one bus, while a second bus one feed lists on the same timetable (a school-day
-    duplicate) is another"""
-    import collections
+    stop where the bus only sets down, and each bus once: a bus is its vehicle block, so a journey listed twice on the
+    same block (both operators' feeds carry the jointly run routes, and one operator's Friday-late timetable repeats
+    the evening's weekday journeys) is one departure, while a second bus on the same timetable (a school-day duplicate
+    on a block of its own) is another"""
     import geo
     sites = sheet(os.path.join(target, P.FILES["shortlist"]), "Shortlist")
     pc = {r["pcds"]: (float(r["oseast1m"]), float(r["osnrth1m"])) for r in rd(os.path.join(target, P.FILES["onspd"]))}
     site_ll = {r["site"]: geo.bng_to_wgs84(*pc[r["postcode"]]) for r in sites}
-    per_feed = []
-    late = mode in ("golden", "nodedup", "all_calls", "set")
+    late = mode not in ("naive", "half")
     days = [(day, "today")] + ([(day - dt.timedelta(days=1), "eve")] if late else [])
-    for key in ("gtfs_lb", "gtfs_pdc"):
-        cnt = collections.Counter()
+    calls = []                      # (feed, site, which, route, direction, stop, minute, block)
+    for fi, key in enumerate(("gtfs_lb", "gtfs_pdc")):
         with zipfile.ZipFile(os.path.join(target, P.FILES[key])) as z:
             R = lambda n: list(csv.DictReader(io.TextIOWrapper(z.open(n), encoding="utf-8")))
             cal = R("calendar.txt")
@@ -318,7 +331,11 @@ def ask_c(target, mode="golden", day=P.BUS_DAY):
                 for r in cds:
                     if r["date"] == ymd:
                         (on.add if r["exception_type"] == "1" else on.discard)(r["service_id"])
-                tr = {r["trip_id"]: (routes[r["route_id"]], r["direction_id"]) for r in trips if r["service_id"] in on}
+                if mode == "no_fl":
+                    fri = {r["service_id"] for r in cal if r["friday"] == "1" and r["monday"] == "0" and r["saturday"] == "0"}
+                    on -= fri
+                tr = {r["trip_id"]: (routes[r["route_id"]], r["direction_id"], r["block_id"]) for r in trips
+                      if r["service_id"] in on}
                 for r in st:
                     if r["trip_id"] not in tr or (r["pickup_type"] == "1" and mode != "all_calls"):
                         continue
@@ -327,17 +344,25 @@ def ask_c(target, mode="golden", day=P.BUS_DAY):
                         continue
                     if which == "eve" and m < 1440:
                         continue
+                    route, direction, block = tr[r["trip_id"]]
                     for k in site_ll:
                         if r["stop_id"] in near[k]:
-                            cnt[(k, tr[r["trip_id"]][0], tr[r["trip_id"]][1], r["stop_id"], m, which)] += 1
-        per_feed.append(cnt)
+                            calls.append((fi, k, which, route, direction, r["stop_id"], m, block))
     out = {k: 0 for k in site_ll}
-    for key in set(per_feed[0]) | set(per_feed[1]):
-        if mode == "nodedup":
-            n = per_feed[0][key] + per_feed[1][key]
-        elif mode in ("set", "naive", "half"):
-            n = 1
-        else:
-            n = max(per_feed[0][key], per_feed[1][key])
-        out[key[0]] += n
+    if mode in ("golden", "all_calls", "no_fl"):
+        for c in set(c[1:3] + c[5:8] for c in calls):
+            out[c[0]] += 1
+        return out
+    if mode == "nodedup":
+        for c in calls:
+            out[c[1]] += 1
+        return out
+    if mode in ("set", "naive", "half"):
+        for c in set(c[1:7] for c in calls):
+            out[c[0]] += 1
+        return out
+    # "maxfeed": each feed's calls counted, the larger of the two feeds' counts taken for each route, stop and time
+    per = [collections.Counter(c[1:7] for c in calls if c[0] == fi) for fi in (0, 1)]
+    for key in set(per[0]) | set(per[1]):
+        out[key[0]] += max(per[0][key], per[1][key])
     return out

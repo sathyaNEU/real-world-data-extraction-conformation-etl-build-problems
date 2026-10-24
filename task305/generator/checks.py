@@ -274,76 +274,126 @@ def main(target):
     for s in B:
         ok(round(B[s]) == round(st["hours"][s] / weeks), "ask B %s %.2f against the world" % (s, B[s]))
         ok(edge(B[s], 1.0) >= 0.015, "ask B %s clears its edge (%.2f)" % (s, B[s]))
-    for mode in ("location", "terminal_all", "dedup_last", "dedup_first", "dedup_max", "punch_hours"):
+    for mode in ("location", "terminal_all", "dedup_exact", "dedup_day", "dedup_day_max", "in_days", "exact_in_days",
+                 "punch_hours"):
         Bm = S.ask_b(target, mode)
         ok(all(abs(Bm.get(s, 0) - B[s]) >= 1.0 for s in B), "ask B the %s path misses all ten by an hour or more" % mode)
-    ok(S.ask_b(target, "by_file") == B, "SF24 ask B C1: the later extract's row and the row the clock-out follows agree")
-    rows = S.wfm_shifts(target)
+    lines = S.wfm_lines(target)
     pun = S.punches_by_employee(target)
-    cur = S.current_shifts(rows, pun)
-    groups = {}
-    for r in rows:
-        groups.setdefault((r["employee_no"], r["shift_date"]), []).append(r)
-    twice = splits = 0
-    per_twice, per_split = {}, {}
-    for (emp, d), g in groups.items():
-        if len(g) < 2:
-            continue
-        g = sorted(g, key=lambda r: r["a"])
-        overl = any(x["a"] < y["b"] and y["a"] < x["b"] for x in g for y in g if x is not y)
-        if overl:
-            twice += 1
-            per_twice[g[0]["location"]] = per_twice.get(g[0]["location"], 0) + 1
-        else:
-            splits += 1
-            per_split[g[0]["location"]] = per_split.get(g[0]["location"], 0) + 1
-    ok(twice == st["amended"] and splits >= 300, "ask B %d shifts extracted twice, %d genuine second shifts" % (twice, splits))
-    ok(sorted(per_twice) == sorted(B) and sorted(per_split) == sorted(B),
-       "ask B every store's colleagues have shifts extracted twice and second shifts (law 5, the interior)")
-    # each shift worked has its punches and only the current row of a twice-extracted shift is followed by a clock-out
-    unmatched = [r for r in cur if not any(0 <= (r["a"] - t).total_seconds() / 60 <= 15 for t, k_, _ in pun.get(r["employee_no"], [])
-                                           if k_ == "IN") and not any(0 <= (t - r["b"]).total_seconds() / 60 <= 15
-                                                                     for t, k_, _ in pun.get(r["employee_no"], []) if k_ == "OUT")]
-    ok(not unmatched, "ask B every shift worked has a clock-in or a clock-out (%s)" % unmatched[:2])
+    starts = S.punch_shifts(pun)
+    days = S._by_day(lines)
+    n_shift = sum(len(v) for v in starts.values())
+    ok(n_shift == len(shifts) - st["night_lines"], "ask B the terminals' shifts are the report's lines less one a night "
+       "(%d shifts, %d lines, %d nights)" % (n_shift, len(shifts), st["night_lines"]))
+    extra, uneven, short = {}, [], []
+    for key, g in days.items():
+        k = len(starts.get(key, []))
+        if len(g) < k:
+            short.append(key)
+        if len(g) > k:
+            extra[g[0]["location"]] = extra.get(g[0]["location"], 0) + len(g) - k
+            if len({r["paid_hours"] for r in g}) > 1:
+                uneven.append(key)
+    ok(not short, "ask B no date has more shifts than lines (%s)" % short[:2])
+    ok(not uneven, "SF23 ask B a date with a night's second line carries one paid figure, so which line goes is "
+       "immaterial (%s)" % uneven[:2])
+    ok(sorted(extra) == sorted(B) and min(extra.values()) >= 50, "ask B every store has nights listed on the morning they "
+       "end (%s)" % extra)
+    ends = {}
+    for key, g in days.items():
+        k = len(starts.get(key, []))
+        if len(g) > k and k == 0:
+            ends[g[0]["location"]] = ends.get(g[0]["location"], 0) + 1
+    ok(sorted(ends) == sorted(B), "ask B every store has a night's second line on a date no shift starts, the line an exact "
+       "duplicate check keeps (%s)" % ends)
+    eq = {}
+    for key, g in days.items():
+        if len(g) == 2 and len(starts.get(key, [])) == 2 and g[0]["paid_hours"] == g[1]["paid_hours"]:
+            eq[g[0]["location"]] = eq.get(g[0]["location"], 0) + 1
+    ok(len(eq) >= 8 and sum(eq.values()) >= 60, "ask B genuine second shifts of the same length as the first, the lines an "
+       "exact duplicate check deletes (%s)" % eq)
     n_in = sum(1 for ps in pun.values() for p in ps if p[1] == "IN")
     n_out = sum(1 for ps in pun.values() for p in ps if p[1] == "OUT")
-    ok(n_in < len(cur) and n_out < len(cur) and len(cur) - n_in < 0.02 * len(cur) and len(cur) - n_out < 0.02 * len(cur),
-       "ask B a few clock-ins and clock-outs are missing (%d and %d of %d shifts)" % (len(cur) - n_in, len(cur) - n_out, len(cur)))
-    split_store = [r for r in cur if r["location"] and any(
-        0 <= (r["a"] - t).total_seconds() / 60 <= 15 and s_in != s_out
-        for t, k_, s_in in pun.get(r["employee_no"], []) if k_ == "IN"
-        for t2, k2, s_out in pun.get(r["employee_no"], []) if k2 == "OUT" and 0 <= (t2 - r["b"]).total_seconds() / 60 <= 15)]
-    ok(not split_store, "ask B no shift is clocked in at one store and out at another")
-    off, cross = [], []
-    for r in rows:
-        el = (O.local_to_utc(r["b"]) - O.local_to_utc(r["a"])).total_seconds() / 3600
-        if abs(el - int(r["unpaid_break_mins"]) / 60 - r["paid"]) > 1e-6:
-            off.append(r["employee_no"])
-        if not (P.TMS_FROM <= r["a"].date() and r["b"] <= dt.datetime.combine(P.TMS_TO + dt.timedelta(days=1), dt.time(0, 0))):
-            cross.append(r["employee_no"])
-    ok(not off, "SF23 ask B paid hours are each row's elapsed time less its unpaid break (%s)" % off[:2])
-    ok(not cross, "SF19 ask B no shift crosses the 25 weeks' edges, so dating a shift by its start or its end agrees")
-    away = {}
-    for r in cur:
-        if S.worked_store(r, pun) != r["location"]:
-            away[r["location"]] = away.get(r["location"], 0) + 1
-    share_home = 1 - sum(away.values()) / len(cur)
+    ok(n_in < n_shift and n_out < n_shift and n_shift - n_in < 0.02 * n_shift and n_shift - n_out < 0.02 * n_shift,
+       "ask B a few clock-ins and clock-outs are missing (%d and %d of %d shifts)" % (n_shift - n_in, n_shift - n_out, n_shift))
+    lone_in = {}
+    for e, ps in pun.items():
+        opened = None
+        for t, kind, store in ps:
+            if kind == "OUT" and opened is None:
+                lone_in[store] = lone_in.get(store, 0) + 1
+            opened = (t, store) if kind == "IN" else None
+    ok(sorted(lone_in) == sorted(B), "ask B every store has shifts with no clock-in, which a date with no clock-in drops "
+       "(%s)" % lone_in)
+    split_store = []
+    for e, ps in pun.items():
+        for (t0, k0, s0), (t1, k1, s1) in zip(ps, ps[1:]):
+            if k0 == "IN" and k1 == "OUT" and s0 != s1:
+                split_store.append(e)
+    ok(not split_store, "ask B no shift is clocked in at one store and out at another (%s)" % split_store[:2])
+    ok(all(P.TMS_FROM.isoformat() <= r["date"] <= P.TMS_TO.isoformat() for r in lines) and
+       all(P.TMS_FROM <= p[0].date() <= P.TMS_TO for ps in pun.values() for p in ps),
+       "SF19 ask B every line and punch falls inside the 25 weeks, so no shift straddles their edges")
+    away, total = {}, 0
+    for key, stores in starts.items():
+        loc = days[key][0]["location"]
+        for s_ in stores:
+            total += 1
+            if s_ != loc:
+                away[loc] = away.get(loc, 0) + 1
+    share_home = 1 - sum(away.values()) / total
     ok(0.9 <= share_home < 0.99, "ask B most shifts are worked at the colleague's location (%.3f)" % share_home)
     ok(sorted(away) == sorted(B), "ask B every location has shifts worked elsewhere (%s)" % away)
     whead = next(csv.reader(open(F["wfm"], encoding="utf-8")))
-    ok(not [h for h in whead if any(w in h for w in ("store", "site", "worked", "version", "extract", "amend", "status"))],
-       "ask B no column marks a worked store or a row's extract")
+    ok(not [h for h in whead if any(w in h for w in ("store", "site", "worked", "version", "extract", "amend", "status",
+                                                     "shift", "night", "start", "end", "seq"))],
+       "ask B no column marks a worked store, a shift or a line's place in it (%s)" % whead)
     # ---- ask C ----------------------------------------------------------------------------------------------------
     C = S.ask_c(target)
-    feeds, stops, bt, near, dups = O.buses(T)
+    feeds, stops, bt, near, dups, seam = O.buses(T)
     ok(C == bt, "ask C %s against the world %s" % (C, bt))
-    for mode in ("set", "naive", "half", "nodedup"):
+    for mode in ("maxfeed", "set", "naive", "half", "nodedup"):
         Cm = S.ask_c(target, mode)
         ok(all(Cm[k] != C[k] for k in C), "ask C the %s path misses all six (%s)" % (mode, Cm))
     ok(min(dups.values()) >= 2, "ask C every site has school-day duplicate buses (%s)" % dups)
+    ok(min(seam.values()) >= 2, "ask C every site has weekday journeys the Friday-late timetable lists again (%s)" % seam)
     Cs = S.ask_c(target, "set")
     ok(all(C[k] - Cs[k] == dups[k] for k in C), "SF25 ask C the duplicates are the whole gap to every same-time call once")
+    Cx = S.ask_c(target, "maxfeed")
+    ok(all(Cx[k] - C[k] == seam[k] for k in C), "SF24 ask C the Friday-late repeats are the whole gap to the larger feed's "
+       "count of each call")
     ok(P.BUS_DAY.weekday() == 4, "ask C the day is a Friday")
+    # a block is one bus: no block has two journeys at once, unless one is the other listed again (the same calls)
+    for key in ("gtfs_lb", "gtfs_pdc"):
+        with zipfile.ZipFile(F[key]) as z:
+            R_ = lambda n: list(csv.DictReader(io.TextIOWrapper(z.open(n), encoding="utf-8")))
+            trs = R_("trips.txt")
+            cal_ = {r["service_id"]: r for r in R_("calendar.txt")}
+            st_ = R_("stop_times.txt")
+        span = {}
+        pat = {}
+        for r in st_:
+            m = S._mins(r["departure_time"])
+            a, b = span.get(r["trip_id"], (m, m))
+            span[r["trip_id"]] = (min(a, m), max(b, m))
+            pat.setdefault(r["trip_id"], []).append((r["stop_id"], m))
+        clash = []
+        for dow in ("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"):
+            onb = {}
+            for r in trs:
+                c_ = cal_.get(r["service_id"])
+                if c_ is None or c_[dow] != "1":
+                    continue
+                onb.setdefault(r["block_id"], []).append(r["trip_id"])
+            for blk, tids in onb.items():
+                for i, x in enumerate(tids):
+                    for y in tids[i + 1:]:
+                        (a0, a1), (b0, b1) = span[x], span[y]
+                        if a0 < b1 and b0 < a1 and pat[x] != pat[y]:
+                            clash.append((key, dow, blk))
+        ok(not clash, "ask C no bus is in two places at once (%s)" % clash[:3])
+        tid_vj = [r["vehicle_journey_code"] for r in trs]
+        ok(len(set(tid_vj)) == len(tid_vj), "ask C no journey code repeats inside %s, so only the block tells a repeat" % key)
     import geo
     names = {}
     for key in ("gtfs_lb", "gtfs_pdc"):

@@ -57,17 +57,19 @@ def write(path, fig):
              "29 March 2026 and divided by %d, counting a load a store turned away once: a stop closed in under %d "
              "minutes plus %s of a minute a case had its cases taken back and delivered to the store the next day on a "
              "trip of their own, so it is left out." % (F["tms"], fig["weeks"], fig["turn_base_min"], fig["turn_min_per_case"]))
-    t.append("6. Paid hours: took each shift in %s once (a colleague's two rows on one day whose times overlap are one "
-             "shift extracted again after an amendment, and the row that stands is the one whose end the clock-out in %s "
-             "follows; rows that do not overlap are two shifts), summed its paid_hours by the store, in %s, of the "
-             "terminal the colleague clocked in at (or out at, where no clock-in), not the location column, and divided "
-             "by %d." % (F["wfm"], F["punches"], F["terminals"], fig["weeks"]))
+    t.append("6. Paid hours: paired each colleague's clock-ins and clock-outs in %s into shifts (a clock-in or "
+             "clock-out with no partner is a shift whose other punch was forgotten), dated each shift by its clock-in "
+             "(by its clock-out where there is none) and placed it at the store, in %s, of that punch's terminal, not "
+             "the location column; took one of the colleague's lines in %s for each shift starting that date, since the "
+             "report lists a night shift against both dates it covers at its full paid hours, summed paid_hours by "
+             "store and divided by %d." % (F["punches"], F["terminals"], F["wfm"], fig["weeks"]))
     t.append("7. Buses: from %s and %s, the departures with pickup allowed from stops within %d m of the site's postcode "
              "by the clock on %s %d January 2027, which are that day's services up to 24:00 and the previous day's "
-             "services from 24:00 on (a GTFS service day runs past midnight), a jointly run route's journey listed in "
-             "both feeds counted once, and a second bus one feed lists on the same timetable (a school-day duplicate "
-             "on its own block) counted again." % (F["gtfs_lb"], F["gtfs_pdc"], fig["radius_m"], fig["bus_weekday"],
-                                                  fig["bus_day"]))
+             "services from 24:00 on (a GTFS service day runs past midnight), each bus once by its block_id: the same "
+             "block at the same stop and time is one departure (a jointly run route's journey listed in both feeds, "
+             "and a weekday journey the Friday-late timetable lists again), while a second bus on the same timetable on "
+             "a block of its own (a school-day duplicate) is another." % (F["gtfs_lb"], F["gtfs_pdc"], fig["radius_m"],
+                                                                          fig["bus_weekday"], fig["bus_day"]))
     t.append("8. Recommended S3, %s: it adds GBP %s million a year against S1's GBP %s million.\n"
              % (fig["site_name"], m(fig["add"]), m(s["S1"]["add"])))
     t.append("## 4. Deliverable Answers\n")
