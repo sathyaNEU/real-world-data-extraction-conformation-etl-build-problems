@@ -179,7 +179,7 @@ Lesson: a retention model validated on a later intake is only as good as the pro
 | SF8 | age | 21 or over at entry | age as a number | 3,270.3, same call | same call (asserted) |
 | SF9 | an entrant's faculty | the admissions Faculty (first-listed programme) | the second programme's | same call | conjoint entrants are 3 per cent and the faculty terms are small (asserted under SF3) |
 | SF10 | the model's form for the repeat-classmate count | the lowest Akaike information criterion among the forms fitted (an indicator at 10, 3,253.0) | a log or square-root term (judge round 1: 3,115, 3,130), a 22-classmate indicator (2,976) | 3,000 | SELECT_PIN (conventions section 3); every form within 12 AIC prints the call (asserted SF10, B0, B1, B3) |
-| SF11 | the ask's teaching group (judge pass 3) | the whole set of students taught together in one room at one time, counted once however often and wherever it meets: each distinct set of classes meeting together | every room-and-time meeting its own group (FASS 200 21 and 66); one group per class code (15 and 43) | asks only, the call reads no timetable row | the prompt's clause (2026-10-24), asserted A4 |
+| SF11 | the ask's teaching group (judge pass 3) | the whole set of students taught together in one room at one time, counted once however often and wherever it meets: each distinct set of classes meeting together | every room-and-time meeting its own group (FASS 200 21 and 66); one group per class code (15 and 43) | asks only, the call reads no timetable row | the prompt's clause (2026-10-24) and GROUP_PIN's sentence on two classes sharing one meeting (judge r5), asserted SF11, A4 |
 | SF12 | whether the model reads the entrants' classes (portal judge 2, 2026-10-24) | the 2026 intake's class enrolments are its own while every intake the model is fitted on had the Registry's, so the forecast tests the classes it carries (3,253.0 on the count) | a model on entrant attributes and week-6 ratings alone, the classes never read (2,141.9); the 2026 collapse in repeat classmates read as a migration artefact | 2,250 | cutover notes section 6 (the class-enrolment change, filed as a Registry fact, no measure named); the count-free model 897.2 AIC worse under SELECT_PIN (asserted SF12, verify) |
 | SF13 | the count's form (portal judge 2) | the lowest AIC among the forms fitted (an indicator at 10) | a logarithm of the count alone (3,113.6) or a scale-4 curve (3,090.9) | 3,000 | SELECT_PIN: every form printing outside the bin loses to every form printing inside it (the log 23.0 AIC worse than the best, 3.1 worse than the linear count and 2.7 worse than the square root), so any comparison of two forms prints the call (asserted SF13, verify) |
 
@@ -265,9 +265,10 @@ file the call reads is the shipped one, the dictionary only gains the class list
   workshop. Joining classes through any shared meeting (the portal's route on the first pack) makes one; merging
   identical meeting sets makes two. Fair: each such pair's classes share exactly one slot and hold one more each, and
   the prompt counts a group as the whole set of students taught together in one room at one time, once however
-  often and wherever it meets, so the three sets are the only reading (asserted A4). With the clause filed this
-  primary is rule application a careful reader executes (reader E did, without it); primary 2 carries the ask
-  for that reader, and every route with the grouping right still keeps 0 of 20.
+  often and wherever it meets, and GROUP_PIN says two classes sharing one meeting make three groups, so the three
+  sets are the only reading (asserted A4, SF11). Filed, this primary is rule application a careful reader
+  executes (reader E did without it); primary 2 carries the ask for that reader, and every route with the
+  grouping right still keeps 0 of 20 (readers G and H, on the pack before the sentence, kept every listed place).
 - **Primary 2, a group's size (D4, absence as the signal, split across two files, silent).** ARC Scheduling's Enrolled
   at Census, and the class list that ties to it, still count places held by students on approved leave (423) and by
   students with no 2026 census attempt (558). Only the class list joined to the census history gives the students
@@ -389,7 +390,17 @@ Measured by: generator/ceiling.py
   cutover notes now share the pack's own words, entrant, classes, record and Registry; no figure and none of the
   decisive step's words), guard validate 0 invalid, heart BLOCK unchanged since the first ship (the author's
   ruling, window fixed at draw), freeze --mode determinism PASS. target.zip 256adf20.
-- Re-judge and readers: pending.
+- Readers G and H (zip 256adf20): both missed the call (2,250; G 2,167 after testing its UNIV101 class's make-up,
+  H 2,143 to 2,148 after a class random intercept) and kept 0 of the 20 cells. G read section 6 as a hint that
+  the 2026 classes differ that "does not say what to do about it" and quoted no sentence naming the step.
+- Re-judge (determinism-check-task179-r5, order kept: its blind derivation on disk first, its blind call 2,250):
+  DETERMINISTIC; the call reproduced from the bundle at 3,240 to 3,253 and forced by SELECT_PIN with section 6
+  as the reason to read the classes; Gate G analytical_non_defect, Gate H pass. FIX_NOW, optional, on ask 2:
+  nothing filed said two classes sharing one meeting make three groups, nor that weeks are part of one time.
+  Closed in GROUP_PIN (conventions section 4) in the write-up's own words, step 6 and the workbook note aligned;
+  the same fork (SF11) closed further, so no third judge. Checks 93 (F5: only that sentence moved), verify 0
+  failed, two builds byte-identical, freeze --mode determinism PASS, ceiling 0 of 20 on every route.
+  target.zip 5f48e01e.
 
 ## Architecture v2 record (spent, kept as history)
 
@@ -1084,6 +1095,8 @@ candidate touches them.
     entered the class enrolments). Rejected for the closure: a candidate-predictor list in the conventions (the
     decisive step becomes rule application) and a stated held-out benchmark (no intake in the record enrolled
     itself, and a stated figure would be a certified record).
+  - Judge r5 (2026-10-24) on the group unit left to the prompt's clause alone: two classes sharing one meeting
+    were not filed as three groups, nor weeks as part of one time. Closed in GROUP_PIN in the write-up's words.
 
 ## Retired
 

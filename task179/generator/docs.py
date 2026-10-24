@@ -35,9 +35,11 @@ CALL_PIN = ("The projection reports how many of the 2026 intake will not be enro
             "the nearest 250.")
 SELECT_PIN = ("Where several models of the same outcome are fitted to the same intakes, the projection uses the one "
               "with the lowest Akaike information criterion.")
-GROUP_PIN = ("The teaching plan counts teaching groups: the students taught together, in one room at one time. A group "
-             "belongs to the faculty that owns its paper, and its size is the number of students "
-             "enrolled at the census whom it teaches. A cancelled class is not a teaching group.")
+GROUP_PIN = ("The teaching plan counts teaching groups: the students taught together, in one room at one time. Each "
+             "distinct set of classes meeting together in one room on the same day, start and teaching weeks is one group "
+             "however often it meets, so two classes that share only one of their meetings make three groups: the two at "
+             "the shared meeting and each at its own. A group belongs to the faculty that owns its paper, and its size is "
+             "the number of students enrolled at the census whom it teaches. A cancelled class is not a teaching group.")
 
 CONVENTIONS = [
     ("1. Purpose", [

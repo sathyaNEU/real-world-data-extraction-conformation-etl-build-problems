@@ -226,9 +226,11 @@ def main(target):
     # room-and-time meeting as a group, or every class code as a group, breaks it; the clause's reading is the golden
     prompt = " ".join(open(os.path.join(task, "prompt.txt")).read().split())
     sets_cells = ceiling.route(d, "sets", "enrolled")
-    ok("SF11 the group unit, closed by the prompt's clause: the distinct sets of classes print every cell",
+    ok("SF11 the group unit, closed by the prompt's clause and GROUP_PIN: the distinct sets of classes print every cell",
        "a group being the whole set of students taught together in one room at one time, counted once however often "
-       "and wherever it meets" in prompt and all(sets_cells[k] == figs[k] for k in figs if k.startswith("ask_"))
+       "and wherever it meets" in prompt
+       and "two classes that share only one of their meetings make three groups" in D.GROUP_PIN
+       and all(sets_cells[k] == figs[k] for k in figs if k.startswith("ask_"))
        and ceiling.route(d, "meeting", "enrolled") != sets_cells and ceiling.route(d, "class", "enrolled") != sets_cells)
     multi = act.groupby(["Room", "Day", "Start", "Teaching Weeks"])["Class Code"].nunique()
     shared = set()
@@ -268,12 +270,16 @@ def main(target):
     import hashlib
     shipped = json.load(open(os.path.join(HERE, "shipped_digests.json")))["sha256"]
     sha = lambda b: hashlib.sha256(b).hexdigest()
-    moved = [f for f in shipped if f not in (C.F_TT, C.F_DICT, C.F_CUT)
+    moved = [f for f in shipped if f not in (C.F_TT, C.F_DICT, C.F_CUT, C.F_CONV)
              and sha(open(os.path.join(target, f), "rb").read()) != shipped[f]]
-    ok("F1 every file but the timetable, the dictionary and the cutover notes is the shipped file", not moved,
+    ok("F1 every file but the timetable, the dictionary and the two notes is the shipped file", not moved,
        ", ".join(moved))
     from pypdf import PdfReader
     digests = json.load(open(os.path.join(HERE, "shipped_digests.json")))
+    conv_as_shipped = json.dumps([(h, [digests["group_pin_shipped"] if p == D.GROUP_PIN else p for p in ps])
+                                  for h, ps in D.CONVENTIONS], ensure_ascii=False, sort_keys=True).encode("utf-8")
+    ok("F5 the conventions are the shipped ones with section 4's group sentence added",
+       sha(conv_as_shipped) == digests["conventions"] and D.GROUP_PIN.startswith(digests["group_pin_shipped"][:80]))
     cut_shipped = json.dumps(D.CUTOVER[:-1], ensure_ascii=False, sort_keys=True).encode("utf-8")
     cut_text = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(os.path.join(target, C.F_CUT)).pages))
     ok("F4 the cutover notes are the shipped ones with section 6 added",

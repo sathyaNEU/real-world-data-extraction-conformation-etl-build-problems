@@ -121,9 +121,10 @@ def write_workbook(path, o):
         "faculty, and whether the entrant met 10 or more other entrants in two or more Semester 1 classes, the form "
         "with the lowest AIC), applied to the 2026 intake; reported to the nearest 250.",
         "Teaching groups, 200 level and above: each distinct set of active Semester 1 2026 classes meeting together "
-        "in one room at one time is a group, so papers sharing only a lecture are the lecture and each workshop. A "
-        "group's size is the students on its classes' lists who are enrolled at the 2026 census in the census history; "
-        "places still held by students on approved leave or who left before the census are not counted.",
+        "in one room on the same day, start and teaching weeks is a group however often it meets, so two classes "
+        "sharing only one of their meetings are three groups. A group's size is the students on its classes' lists "
+        "who are enrolled at the 2026 census in the census history; places still held by students on approved leave "
+        "or with no 2026 attempt are not counted.",
         "Sources: Registry census history and first-year cohort extracts; Admissions; Student Success week-6 "
         "progress check; Timetabling Semester 1 2026 timetable at the census; ARC class enrolments at the census.",
     ]
@@ -213,9 +214,9 @@ def write_submission(path, o, F):
     L.append("5. Applied it to the 2026 entrants and summed their probabilities: %s, about %s to the nearest 250."
              % ("{:,.1f}".format(o["call"]), "{:,}".format(o["call_r"])))
     L.append("6. Counted Semester 1 2026 teaching groups at 200 level and above from s1_2026_class_timetable.xlsx: each "
-             "distinct set of active classes meeting together in one room at one time (day, start and teaching weeks) "
-             "is one group, so two papers sharing only their lecture make three (the lecture and each workshop); a "
-             "group's size is the students its classes list in arc_s1_2026_class_enrolments.csv who hold an enrolled "
+             "distinct set of active classes meeting together in one room on the same day, start and teaching weeks is "
+             "one group however often it meets, so two classes that share only one of their meetings make three groups "
+             "(the two at the shared meeting and each at its own); a group's size is the students its classes list in arc_s1_2026_class_enrolments.csv who hold an enrolled "
              "programme attempt at the 2026 census in the census history, so places still held by students on approved "
              "leave or with no 2026 attempt are not counted (ARC Scheduling's Enrolled at Census counts them, and shows "
              "a combination's two classes together on each).")

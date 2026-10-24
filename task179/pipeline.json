@@ -1,11 +1,11 @@
 {
  "task": "task179",
  "owner": "sathya8571",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "education-learning-sciences",
  "objective": "forecasting",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-24",
  "stump": "A competent solver fits an early-warning model on the entrants' own attributes to the 2019 to 2025 entrants' enrolment at the next census, validates it on the 2025 intake, scores the 8,659 2026 entrants and files 2,250 not enrolled on 1 October 2027 against 3,250, because it never reads each entrant's chance at the number of other entrants met in two or more of the entrant's own classes, which the Registry's allocation run kept near 26 and self-enrolment after the ARC cutover leaves near one.",
  "architecture": 3,
@@ -16,8 +16,8 @@
   "date": "2026-10-23"
  },
  "leak": {
-  "leak_py": "REVIEW (2026-10-24, on c1b19cef with the prompt clause): the estimand lines only, unchanged by the repair; prompt gate clean",
-  "reader": "round 1 (fab8b152): call held 2 of 2 (2,250), asks A 10 of 25, B 25 of 25; round 2 (a9f8b878): readers C and D 2,250 against 3,250, 0 of 20 asks each, PASS; the call held in 4 of 4 blind reads; rubric repair (c1b19cef): readers E and F 2,250 against 3,250, 0 of 20 asks each; reader E's leak answers quote no decisive-step sentence and no ranking file"
+  "leak_py": "REVIEW (2026-10-24, on 5f48e01e): the cutover notes and conventions share the pack's own words (entrant, classes, record, Registry); no figure, none of the decisive step's words (D2)",
+  "reader": "round 1 (fab8b152): call held 2 of 2 (2,250), asks A 10 of 25, B 25 of 25; round 2 (a9f8b878): readers C and D 2,250 against 3,250, 0 of 20 asks each, PASS; the call held in 4 of 4 blind reads; rubric repair (c1b19cef): readers E and F 2,250 against 3,250, 0 of 20 asks each; reader E's leak answers quote no decisive-step sentence and no ranking file; determinism repair (256adf20): readers G and H 2,250 against 3,250, 0 of 20 asks each; G quotes no sentence naming the decisive step"
  },
  "duplicate_check": {
   "heart": "BLOCK (2026-10-23) on four axes against task175 after task173 was spent and the live window re-formed; registered under the lock at WARN",
@@ -25,9 +25,9 @@
   "ruling": "Author's standing ruling, 'Ship, window fixed at draw': the card registered under the lock at WARN (4afaec0a) and the later heart BLOCK against task175 comes from the window moving after task173 was spent; nothing relabelled."
  },
  "judge": {
-  "verdict": "DETERMINISTIC, APPROVE (pass 4, c1b19cef with the prompt clause)",
-  "disposition": "pass 3 FIX_NOW on the group unit closed by the prompt clause; pass 4 no fix: the call 3,253.7, AIC-competitive forms 3,208 to 3,256, all 20 cells reproduced",
-  "report": "scratchpad judge-task179w/verdict.md (pass 3: judge-task179z/verdict.md)"
+  "verdict": "DETERMINISTIC (r5, 256adf20; FIX_NOW optional on ask 2 closed in GROUP_PIN, 5f48e01e)",
+  "disposition": "portal round 2 judge 2's competing_defensible_answer closed by cutover notes section 6; r5 blind call 2,250, the call forced at 3,240 to 3,253; ask 2's group unit filed in GROUP_PIN",
+  "report": "scratchpad determinism-check-task179-r5/verdict.md (blind_derivation.md beside it)"
  },
  "returned": [
   {
@@ -61,12 +61,18 @@
      "round": 1,
      "zip": "256adf20",
      "moves": "cutover notes section 6 in the 14 August revision: in SIRIUS the Registry entered first-year entrants' Semester 1 class enrolments, and from Semester 1 2026 entrants choose and enrol in their classes themselves (SF12); SF13 asserted (every form printing outside the bin loses to every form inside it); SF11 asserted",
-     "reader": "pending: scored-task179zg and scored-task179zh",
-     "judge": "pending: determinism-judge on task179 (scratch determinism-check-task179-r5)"
+     "reader": "scored-task179zg and scored-task179zh: both 2,250 (G 2,167 after its UNIV101 class's make-up, H 2,143 to 2,148 after a class random intercept), 0 of 20 cells each; G's leak answers quote no sentence naming the step",
+     "judge": "determinism-check-task179-r5 (order kept, blind call 2,250): DETERMINISTIC, the call 3,240 to 3,253 forced by SELECT_PIN with section 6; Gate G analytical_non_defect, Gate H pass; FIX_NOW optional on ask 2 (two classes sharing one meeting not filed as three groups, weeks not filed as part of one time)"
+    },
+    {
+     "round": 2,
+     "zip": "5f48e01e",
+     "moves": "GROUP_PIN (conventions section 4) files the group in the write-up's words: each distinct set of classes meeting together in one room on the same day, start and teaching weeks, however often it meets, so two classes sharing only one meeting make three groups; step 6 and the workbook note aligned; F5 proves only that sentence moved",
+     "judge": "none: the same fork (SF11) closed further, per /fix-determinism step 6"
     }
    ],
    "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged",
-   "commit": ""
+   "commit": "RESHIPPED (task179): determinism, the cutover notes record who entered first-year class enrolments and the conventions file two classes sharing one meeting as three groups"
   }
  ],
  "wave": "new, seed FC50: the world, the decision and the quantity kept, the world moved honestly off local_government to a private ambulance company holding a city's 911 ambulance contract (the city the counterparty), deciding its own ten summer surge medic units for the weekend 20:00 to 24:00 block from June to August across three districts at the contract's 9-in-10 evenings standard at 1.2 unit-hours a call, the rest offered to the county's mutual-aid roster; the seed's filed staffing formula, the public dataset's suppression of one- and two-call cells and a pooling sentence were never candidates; redraw cell 1 econometrics time-series macro (2026-10-19, dead), redraw cell 2 epidemiology infectious-disease-transmission-modeling (2026-10-21, architecture v2, re-sited to the fictional Republic of Saldane after the first world was declined on the real-place records concern)",
@@ -112,12 +118,12 @@
    "registration": "registered 2026-10-23 (4afaec0a) after two lock BLOCKs on the window (ban.strategy composition_mix vs task274, then vs task175); not relabelled"
   }
  },
- "resume": "determinism repair at stage 4 on zip 256adf20: read task179/determinism_check_report.md and score scored-task179zg and zh; on APPROVE with both readers off 3,250, fill returned[1], set SHIPPED, update the design note and the ledger row, commit RESHIPPED (task179): determinism; a reader landing the call means section 6 spent the stump: redesign the wording before shipping",
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-24",
  "portal": null,
  "portal_id": "",
- "portal_status": "returned 2026-10-24 (round 2, on c1b19cef): both responses 2,250, the call held; determinism judge 1 PASS, judge 2 FAIL competing_defensible_answer (the class records not required, the 2026 change undocumented)",
+ "portal_status": "returned 2026-10-24 (round 2: both responses 2,250; determinism judge 2 FAIL), reshipped 2026-10-24 with the determinism repair",
  "portal_status_date": "2026-10-24",
- "zip_md5": "256adf20959f240eb6d1ba625ef3fb22"
+ "zip_md5": "5f48e01ef4e262add5d119102612cc18"
 }
