@@ -2648,3 +2648,188 @@ parameters across many cases jointly. Draw it on a cell whose spent drivers are 
 instrument or the record sees the quantity, which is what
 `physical-environmental-sciences`/`environmental-monitoring-exceedance` is (task180 a detection
 threshold, task189 instrument-specific censoring, task245 non-random capture, task247 gap filling).
+
+### Architecture 14, the guard measured first (2026-10-24)
+
+The axis taken up is architecture 13's own prescription: **the number of UNKNOWNS against the number of
+CASES**, a construction whose unknowns are strictly fewer than its cases being overidentified by the data,
+which closes the estimator family without filing a method. Assigned ground, so as not to collide with the
+two siblings hunting the same axis (one on assessor or rater severities across subjects, one on instrument
+or laboratory biases across samples): **a few handler, route, facility or channel parameters identified
+across many consignments, cases or transactions by the partial overlap the organisation's own routing
+produces**. `physical-environmental-sciences/environmental-monitoring-exceedance` is ruled out by this
+slot's own condition (all four of its spent drivers are about how the instrument or the record sees the
+quantity: task180 a detection threshold, task189 instrument-specific censoring, task245 non-random
+capture, task247 gap filling).
+
+**Cell chosen and measured open: `energy-systems-utilities`/`grid-reliability-outage-analysis`.** Of the 14
+client task types serving anomaly-detection, the cells free of a concurrent wave-7 sibling and of this
+slot's own measured-dead ground are three: energy/grid-reliability-outage-analysis,
+pharmacology/safety-signal-detection and banking/fraud-aml-detection. Energy is the only one of the three
+whose spent drivers are not all about the seeing (task183 repeat-failure heterogeneity in a unit's parts is
+not; task187, task197 and task201 are) and the only one whose setting is a routing of cases through shared
+facilities. Occupancy read, not inferred: `grep -l wave7_cell task*/pipeline.json` gives seven slots, whose
+cells are criminology/crime-incidence (task182), healthcare/provider-quality (task190),
+epidemiology/disease-surveillance (task194), general-statistics/EDA (task200),
+survey-research/anomaly-detection (task201) and nonprofit/grant-award (task202); none is on energy.
+
+**`guard.py check` on the probe card, run three times today as the signature moved.** No axis ban fires on
+this cell at all: no `ban.pairing`, `ban.subdomain`, `ban.strategy`, `ban.shape`, `ban.role`, `ban.forum`,
+`ban.forcing_event`, `ban.org_family`, `ban.calibration`, `ban.artifact` or `ban.spine`, with
+`decomposition_attribution` as both Gate G and strategy, shape 01, `operations_director`,
+`regulator_or_inspector`, `statutory_or_regulatory_filing`, `utility_or_infrastructure`, `operations_log`
+and `physical_verification` all clear. The live three by filing time are task305, task306 and task125, which
+is what closes `population_selection`, `maturity_censoring` and `composition_mix` (strategy),
+`capacity_planner`, `finance_controller` and `statistical_office_head` (role), `committee_or_panel` and
+`line_manager_or_team` (forum), `vote_or_meeting`, `purchase_order_or_contract` and `budget_or_appropriation`
+(forcing event), `retailer_or_ecommerce`, `manufacturer` and `research_or_statistics_office` (org family),
+and shape `other`. What blocked the first two probes was structural and not the ground: gap `population` with
+pattern `D` BLOCKs `test.same_puzzle_older` (task181 v4, task229, task98) and `test.same_driver_older`
+(task103, task72, task81, task86, task90), and with `pattern: none` the test moves onto `generators[0]`, so
+G17 BLOCKs against task246 and task266. A 96-cell sweep of gap x `generators[0]` x decision type found the
+free signatures: **gap `objective`, pattern `none`, generators `[G4, G6]`, `designation_set`** returns PASS
+with no WARN, as does gap `population` with `[G8, G6]`. Probe cards at
+`<scratch>/t198a14/probe_card.json` and `probe2.json`; nothing registered.
+
+**Nearest drivers on the probe: 0.06 task190 (v1, lineage), 0.05 task69 (v1 and v2, lineage), 0.04 task27,
+0.04 task106.** All under the 0.12 WARN floor, which on this axis means nothing on its own: the spent
+instance of it (a linear solve over coupled observations, task263) sits outside the five nearest and is
+caught only by the structural tests, as task190's architecture 10 recorded.
+
+**`guard.py slots`, run on the mechanism's nouns and again on the setting's.** Mechanism
+(overidentified, identified, jointly, shared, parameters, overlap): only this slot's own architecture-13
+block, plus five slots at two terms each, none of them this insight. Setting (feeder, substation,
+switching, interruption, outage) is the expensive one and it returns **task183 at five terms of five**: its
+`## Three rules` already measures the grouping family on this exact cell (per feeder 1.648x, per substation
+1.366x, per feeder shrunk to the pool 1.676x, failure count collapsed to ever-failed 1.030x, 2 distinct
+names across the 16-member standing family), and its Layer 1 already carries dated connectivity, staged
+restorations, a lateral transfer the customer system never moved and an outage-system migration. So the
+routing layer of this cell is built furniture, which is legitimate to re-skin, and the per-facility
+grouping question on it is measured spent.
+
+### Architecture 14, the axis priced on routing ground, and refused (2026-10-24)
+
+World (clean truth, one generating process, 20 draws per cell, every screen run twice to byte-identical
+output; harness at `<scratch>/t198a14/screen2.py`, `screen3.py`, `screen4.py`): an Irish distribution
+network operator's MV network. T protection zones, each a trunk circuit with L lateral sections, so
+E = T + T*L section intensities. Every section carries its own fault intensity per circuit-kilometre and
+its own length; a fault anywhere inside a zone's CURRENT reach trips that zone's head device, so the
+outage management system records the event against the zone and never against the section; the operator's
+own routing moves laterals between zones each quarter, and that transfer is the partial overlap that
+identifies the sections. Graded object: the three lateral sections whose own intensity per circuit-km is
+highest, next year's renewal programme. One rng drives lengths, intensities, routing and faults together.
+
+**1. Does the routing genuinely identify a few shared parameters across many cases? In the counts yes, in
+the rank no, and the case count is replication.**
+
+| | unknowns | zone-period cases | customer-period cases | faults | faults per unknown | design rank |
+|---|---|---|---|---|---|---|
+| 6 zones, 2 years | 36 | 48 | 96,000 | 36 | 1.00 | **34 of 36** |
+| 6 zones, 10 years | 36 | 240 | 480,000 | 214 | 5.94 | 36 of 36 |
+| 40 zones, 2 years | 240 | 320 | 640,000 | 189 | 0.79 | **227 of 240** |
+| 40 zones, 10 years | 240 | 1,600 | 3,200,000 | 954 | 3.98 | 240 of 240 |
+| 200 zones, 2 years | 1,200 | 1,600 | 3,200,000 | 947 | 0.79 | **1,122 of 1,200** |
+
+Three measured things, and each is a kill on its own. **(a)** The design the routing produces is rank
+deficient at every realistic window, so "unknowns strictly fewer than cases" holds in the count and fails
+in the rank, which is the only count that identifies anything. **(b)** The 96,000 customer-period rows
+**are** the 48 zone-period rows: identical in 20 of 20 worlds, because every customer in a zone sees
+every fault in that zone, so the many cases are one row replicated. They add no information and they do
+add a weighting choice, which moves the designated set in **10 of 20 worlds**, so the case count the axis
+counts on contributes a Gate C fork rather than precision. **(c)** The cases that carry information are
+the faults, and faults per unknown is a constant of the asset class **invariant to the size of the
+network** (1.00 at 6 zones, 0.79 at 40, 0.79 at 200, all at two years), because the events and the
+unknowns both scale with the number of sections. Only the window buys information, linearly, so reaching
+the cell where the family converges needs a record of order 500 years.
+
+**2. The one-number test: R = 1.000 with 0 sign changes, so the construction IS a per-case correction in
+other nouns.** On the graded path (the per-quarter distortion the smear contributes to the designated
+section's figure), `R = sum_q |G(q)| / |sum_q G(q)|` measures **1.000, minimum 1.000 over 20 worlds, with
+0.00 sign changes and a maximum of 0**, and it measures the same at both ends of the volume dial
+(faults per unknown about 1 and about 265). The reason is structural rather than a tuning accident: the
+marginal per-section rate exceeds the section's own rate by the co-travelling sections' contribution,
+which is non-negative in every period, so the distortion cannot change sign. By this lane's own identity
+the candidate is inside the closed family, and additivity does not take it out.
+
+**3. The cheapest licensed member beside the family's unanimity, one table, 16 joint cells: 0 pass.**
+Licensed family of five, every member estimating the same filed quantity: F1 one `nnls` call on the shipped
+reach matrix (the cheapest), F2 identity-link Poisson IRLS, F3 EM attribution of each zone's faults over
+the sections in reach (the masked-cause ML), F4 OLS, F5 ridge. Reflexes of five: the zone rate per km
+inherited by its laterals, the marginal interruptions per customer-year per km, the marginal raw count,
+the marginal less the zone mean, the home-zone-only rate.
+
+| faults per unknown | switch share | distinct designated sets of 5 | F1, the cheapest licensed member | best family member | best reflex |
+|---|---|---|---|---|---|
+| 1.2 | 0.05 to 0.55 | 3.80 to 4.45 | 0 of 20 | 0 of 20 | 0 of 20 |
+| 7.3 | 0.05 to 0.55 | 3.30 to 4.05 | 0 of 20 | 0 of 20 | 0 to 1 of 20 |
+| 42.5 | 0.05 to 0.55 | 2.20 to 3.50 | 3 to 4 of 20 | 3 to 8 of 20 | 0 to 1 of 20 |
+| 264.8 | 0.05 to 0.55 | **1.90 to 1.05** | **14 to 19 of 20** | 14 to 19 of 20 | 0 to 2 of 20 |
+
+**Joint cells with a unanimous standing family AND the cheapest licensed member missing: 0 of 16.** As the
+family falls from 4.30 distinct sets to 1.05, F1's own hit rate rises from 0 of 20 to 19 of 20.
+Determinacy and reach are one column read from two ends, exactly as the lane's standing law states, and
+here the algebra says why there is no third cell: **the cheapest licensed member is a member of the
+family, so unanimity implies it agrees with the rest, and the only cell where the family agrees is the
+cell where it is right.**
+
+**4. And at the realistic window nothing ranks at all.** The joint estimator's own RMSE against the truth
+is **0.4489 against a golden boundary gap of 0.1449, a ratio of 3.10**, at two years and real intensity;
+1.45 at ten years; and 0.29 only at thirty years at fifteen times a real MV network's fault rate. The
+world is sound, not badly drawn: the three deteriorating laterals are the top three by own intensity in
+**20 of 20** worlds. So at any pack a distribution operator could hold, the designated set is seed hostage,
+which is this skill's own standard-error kill measured on new ground.
+
+**5. The one escape priced, and it is empty: an endogenous routing cannot bite a memoryless process.**
+Regenerated with the operator's routing responding to last quarter's faults (the weakest-looking laterals
+switched away), response strength 0, 4 and 12, at the volume where the family had converged: F1 on the
+full record lands **15, 16 and 17 of 20**, rising rather than degrading, and the planned-transfers-only
+filter returns the **identical** designated set in 20 of 20 worlds at every response strength. The reason
+is general: a routing that responds to the record's own past conditions on an ancillary statistic, because
+future counts are independent of past counts under a memoryless event process, so informative selection
+on the realised design is not informative at all. It would bite only if the intensity itself moved with
+the switching, and then the quantity is a time-varying intensity recovered by a free functional form,
+which is dead on sight.
+
+**6. Why this closes the axis as a CLAUSE and not as one cell.** For a few shared parameters to be
+identified from many cases, each case's observation must be a known function of the parameters of the
+handlers that case touched, and the organisation must ship WHICH handlers it touched, or nothing is
+identified at all. So the pack is a design matrix plus an outcome; the link is forced by the design
+(identity for a sum, log or complementary log-log for a product or a series system with a masked cause);
+and the construction is one call on the shipped matrix. **The shipped design matrix is simultaneously what
+closes the estimator family and what makes the construction one line**, so Gate C and Gate F are financed
+by the same object and the dial is one-ended by construction. The enumeration of shared-parameter
+constructions is closed with it, every one on a named kill:
+
+| construction | why it is closed |
+|---|---|
+| additive joint solve over coupled observations | spent as task263's shipped driver, and the cheapest licensed member IS the construction (task190 measured 99.0 per cent) |
+| log or complementary log-log solve (a product, a series system with a masked cause) | the same organ after the link the design forces; one GLM call |
+| variance components shared across cases | the variance-only screen, and this slot's own architectures 2 and 3 |
+| paired comparison, Luce or Bradley-Terry severities | the sibling's assessor-severity ground |
+| difference calibration over two handlers seeing one case | the sibling's instrument-bias ground |
+| deconvolution of shared stage distributions, graded on a tail | open estimator family, architecture 7's M3 at 3.926x across four tail families |
+| capture-recapture over overlapping channels | spent (task196), and it is record-seeing |
+| conditional or eliminating likelihood (Mantel-Haenszel, partial likelihood) | a ratio of sums, which is the one-group-by route and a licensed family member at once |
+| flow reconciliation or mass balance over a network | the additive solve, plus architecture 12's exact-identity kill (max absolute difference exactly 0) |
+| feasible-set intersection of many interval constraints | spent as an average over values known only as bounds (task189) |
+
+**And the shape has already been measured on the portal in other nouns.** The common-point-of-purchase
+construction, a few shared source parameters identified across many victim cases by the partial overlap of
+their transaction histories, is **task181's architecture v1**, spent at in-house solver round 1 with one
+solver at proxy 94.5 landing the call; task181's never-registered draft is the same insight at device and
+channel grain, redrawn before registration. So the Gate F failure of this shape is on file as a solve and
+not only as a harness result.
+
+**Architecture 14, refused. Nothing registered, no file cut, no git write, no agent spawned.** The ground
+is registrable and stays available: `energy-systems-utilities`/`grid-reliability-outage-analysis` carries
+no axis ban today and a PASS-with-no-WARN signature exists (gap `objective`, pattern `none`, generators
+`[G4, G6]`, `designation_set`, Gate G `decomposition_attribution`, strategy `decomposition_attribution`,
+shape 01, `operations_director`, `regulator_or_inspector`, `statutory_or_regulatory_filing`,
+`utility_or_infrastructure`, `operations_log`, `physical_verification`, Ireland and EUR), so a later
+architecture can take that cell with a different mechanism. **What architecture 15 must NOT do is price a
+shared-parameter construction again in any nouns**: the unknowns-against-cases axis was this lane's last
+named opening and it is now measured closed from three directions at once, the rank of the routing's own
+design, the identity R = 1.000, and the cheapest-member-is-a-family-member algebra. The direction it
+leaves is the one clause the enumeration above never reaches: a decisive step whose licensed family has
+**no shipped design matrix to solve**, which means the deciding quantity cannot be a parameter attaching
+to a unit the record labels at all.
