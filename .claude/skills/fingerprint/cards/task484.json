@@ -1,90 +1,108 @@
 {
   "task": "task484",
-  "architecture": "v1",
-  "drawn": "2026-10-20",
-  "slot_note": "seed ET41's number (broadband allocation), re-worlded at the draw: every lever in the broadband world was a filed BEAD definition or a fabric clean-up",
-  "domain": "demographic-social-science",
-  "subdomain": "housing",
-  "niche": "a state population unit's 1 April 2026 housing-unit-method estimates for the cities near the 50,000 line of the state's revenue-sharing tiers, conformed from 2020 census counts, certificates of occupancy, demolitions, ACS occupancy and a utility's residential account history",
+  "architecture": "v2",
+  "drawn": "2026-10-24",
+  "slot_note": "",
+  "domain": "physical-environmental-sciences",
+  "subdomain": "emissions-inventory",
+  "client_domain": "physical-environmental-sciences",
+  "niche": "a regional clean air agency's 2025-26 periodic residential wood combustion inventory for six PM2.5 maintenance areas, each area's 2014 base year recalculated on the household survey method to test its contingency trigger after a decade of stove changeouts",
   "objective": "etl",
-  "shape": "01",
+  "shape": "03",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Put two of the twelve cities in the 2027 upper tier: Fairhaven and Linden (the ACS occupancy on every unit puts seven).",
-  "answer_source": "task474/submission.md",
+  "answer": "",
+  "answer_source": "",
   "gap": [
+    "population",
     "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G3",
-    "G13"
+    "G9",
+    "G6",
+    "G19"
   ],
   "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "other",
+  "stump_strategy": "composition_mix",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
   "context_artifact": "register",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the census base, the three permit systems, the demolitions, the ACS and the group quarters survey and runs the housing unit method with each city's ACS occupancy on every unit puts Ashford, Carver Springs, Eastlake, Fairhaven, Harlow, Juniper Falls and Linden in the upper tier; only counting new apartment buildings at the occupancy their age reached in the utility's account history puts Fairhaven and Linden.",
-  "domain_test": "The decisive quantity is each city's household population on 1 April 2026 by the housing unit method (occupied units times persons per household plus group quarters); the field's step is recognising that newly completed multifamily units are not occupied at the stock's rate and estimating their occupancy by months since completion from the lease-up the utility's account history records.",
-  "layer2_family": "estimation_fit",
-  "layer2_pattern": "own:occupancy of newly completed units estimated by months since completion from a partial account history, the stock occupancy rate invalid for that group",
+  "analyst_test": "A strong analyst recalculates each area's 2014 base year on the current method by applying the 2024 household survey's cords per appliance class, even split by heat status at the survey's own mix, to the plan's 2014 appliance counts with the current emission factors, which reads the survivors of a decade of primary-heat-first changeouts as the 2014 stock, and files all six areas as triggering the contingency measure where two do.",
+  "domain_test": "The field's own analysis is the inventory recalculation for time-series consistency, the base year's activity rebuilt on the current method for the stock that burned then (the surviving units from the household survey and each changed-out unit from its own application); with another field's nouns (patients for stoves, visits for cords) there is no base-year stock, no consistency recalculation and no contingency trigger, and the task stops making sense.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:base-year activity rebuilt from the surviving stock and the removed units' own records",
   "layer1": [
-    "four cities' permit-system certificate-of-occupancy exports in different layouts",
-    "demolition records with partial unit counts",
-    "ACS five-year occupancy against the 2020 census base",
-    "a utility record covering only the cities in its service territory"
+    "cords, face cords and pickup loads in one reported-use field",
+    "the plan's 2014 workbook in its own layout and SCC vintage",
+    "survey install years written two ways",
+    "registry devices re-registered when a parcel splits",
+    "maintenance area boundaries revised in 2020",
+    "changeout applications keyed by parcel or by street address, heat status written as a checkbox code or in words",
+    "the programme's fiscal-year reports against heating-season inventory periods"
   ],
-  "stakeholder_role": "the state population unit's demographer preparing the 2027 revenue-sharing tier list",
-  "role_family": "statistical_office_head",
+  "stakeholder_role": "the agency's air quality planning lead",
+  "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
-    "file": "utility_residential_accounts_monthly.csv",
-    "rows": 30413,
-    "entity": "one building-month",
-    "grain": "building, month",
+    "file": "wood_device_registry_2026-10.csv",
+    "rows": 27000,
+    "entity": "one registered wood-burning device",
+    "grain": "device",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "vote_or_meeting",
-  "org_family": "research_or_statistics_office",
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "local_government",
   "world": {
-    "geography": "United States, a fictional state",
+    "geography": "US, Washington",
     "currency": "USD",
-    "org_type": "a state population estimates unit",
-    "invented_names": [],
+    "org_type": "regional clean air agency",
+    "invented_names": [
+      "Selwick Basin Clean Air Agency"
+    ],
     "people": [
-      "Kimberly Rogers",
-      "Martin Booth"
+      "Kylie Maxwell",
+      "Mitchell Conway",
+      "Alyssa Jacobs"
     ]
   },
   "deliverables": [
-    "city_population_estimates_2026.xlsx",
-    "revenue_sharing_tiers_2027.pdf"
+    "rwc_periodic_inventory_2025_26.xlsx",
+    "contingency_determinations_2026_27.csv"
   ],
   "opening_move": "question-first",
-  "question_form": "how-many",
-  "driver": "A unit's count of occupied places is its places times the share occupied, the share read from the unit's whole stock; places added in the last two years fill over many months after they open, so applying the stock's share to them counts as occupied places that stand empty, most where the stock grew most; a partial record of how earlier additions filled, month by month after opening, measures the fill and carries it to every unit's recent additions.",
-  "driver_concrete": "Each city's 1 April 2026 household population is housing units times occupancy times persons per household; the occupancy of units completed since 2024 comes from a lease-up curve by months since the certificate of occupancy, fitted on the buildings the utility's account history covers, not from the city's ACS occupancy rate.",
-  "stump": "The default path applies each city's ACS occupancy to every housing unit and puts Ashford, Carver Springs, Eastlake, Fairhaven, Harlow, Juniper Falls and Linden in the upper tier; apartment buildings opened since 2024 are still filling, about half occupied at six months in the utility's account history, and only counting each new building at the occupancy of its age puts Fairhaven and Linden alone over the line.",
+  "question_form": "which",
+  "driver": "A class's base-period total is rebuilt for the stock that existed then, each member at the current sample's rate for its own kind within the class, because removal took one kind first and the current sample holds the class at the survivors' mix; the kind of each member removed since is recorded only in the removal records, so carrying the current class mean back, or the current sample's mix of kinds, understates the base and every reduction measured from it.",
+  "driver_concrete": "Each area's 2014 wood smoke base year is the 2014 appliances' burning on the current method: every uncertified stove and outdoor boiler counted in 2014 at the 2024 survey's cords for its class and heat status, the status of each unit changed out since read from its changeout application (about 85 per cent primary heat, against 6 to 42 per cent among the survivors).",
+  "stump": "The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 8 to 28 points, and all six areas trigger the contingency measure where only two do.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task474v6": "task474 expands short counts on single-generator roads by the generator's own record; here the stock's occupancy share is replaced for new units by a fill curve fitted on a partial history and carried by months since opening",
-    "task471": "task471 corrects a dual-system count for dependence in one group; here nothing is counted twice: new units are in the stock but not yet occupied",
-    "task172": "task172 forecasts waits cut short by a deadline that moved; here no wait is forecast: the occupancy of units already completed is estimated from how earlier buildings filled"
+    "task245": "There a recorder's missing periods are its heaviest and the count is rebuilt through a shared driver; here no record has gaps, the current sample measures the surviving class correctly, and the base period's total is rebuilt from the removed members' own pre-removal records.",
+    "task265": "There an event-free share is estimated from a record that saw early starters only if they survived, a delayed-entry correction; here the quantity is a past period's class total and every member removed since is present in its own removal record, so the base is the survivors' current rate plus each removed member's record, not a risk-set correction.",
+    "task139": "There an arm's effect is read per assigned unit through conversion and cost; here no intervention effect is estimated, the quantity is a base period's class total rebuilt for the stock that existed then.",
+    "task182": "There the record holds items in proportion to their duration (length-biased snapshots); here the current sample is a fair sample of the current stock, and the error is carrying its class mean to an earlier stock that held members removed since for being the heaviest.",
+    "task270": "There a retest lift flattens growth slopes in repeated tests; here nothing is measured twice, and the base period's total is rebuilt from survivors and removed members' own records.",
+    "task452": "There reference observations carry inclusion probabilities from a classification revised before the estimate; here the survey's weights are right for the current stock, and the error is the stock's change between periods through worst-first removal."
   },
   "lineage": [
     {
       "version": "v1",
-      "fate": "spent at stage 4, 2026-10-20: an isolated reader built the lease-up curve from the utility's new premises and landed the call and 24 of 24 asks"
+      "fate": "spent at stage 4, 2026-10-20: an isolated reader built the lease-up curve from the utility's new premises and landed the call and 24 of 24 asks",
+      "driver": "A unit's count of occupied places is its places times the share occupied, the share read from the unit's whole stock; places added in the last two years fill over many months after they open, so applying the stock's share to them counts as occupied places that stand empty, most where the stock grew most; a partial record of how earlier additions filled, month by month after opening, measures the fill and carries it to every unit's recent additions.",
+      "stump": "The default path applies each city's ACS occupancy to every housing unit and puts Ashford, Carver Springs, Eastlake, Fairhaven, Harlow, Juniper Falls and Linden in the upper tier; apartment buildings opened since 2024 are still filling, about half occupied at six months in the utility's account history, and only counting each new building at the occupancy of its age puts Fairhaven and Linden alone over the line.",
+      "domain": "demographic-social-science",
+      "subdomain": "housing",
+      "niche": "a state population unit's 1 April 2026 housing-unit-method estimates for the cities near the 50,000 line of the state's revenue-sharing tiers, conformed from 2020 census counts, certificates of occupancy, demolitions, ACS occupancy and a utility's residential account history",
+      "gate_g": "method_or_model_selection",
+      "stump_strategy": "other"
     }
   ],
-  "notes": "task484 drawn 2026-10-20 in a fresh world (housing unit method population estimates) after ET41's broadband world was rejected at the draw",
-  "client_domain": "survey-research-official-statistics",
-  "registered": "2026-10-20T23:40:06Z"
+  "notes": "stump_strategy composition_mix: the decisive quantity is a class mean whose within-class mix of heavy and light burners shifted between the base period and the survey; population_selection would also read and is under ban.strategy (task275), and composition_mix is kept because the survey measures the right population for 2026 and the error is carrying its class mixture back to a base year with a different mixture.",
+  "registered": "2026-10-24T09:58:01Z"
 }

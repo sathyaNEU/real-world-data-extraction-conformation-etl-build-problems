@@ -1,23 +1,20 @@
 {
  "task": "task484",
  "owner": "oviya1301",
- "status": "PAUSED",
- "domain": "demographic-social-science",
+ "status": "DESIGN",
+ "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-24",
- "architecture": 1,
- "loops": 1,
- "stump": "The default path applies each city's ACS occupancy to every housing unit; units completed in the last two years are still leasing up, and only their occupancy by months since completion, from the utility's account history, puts the right cities over 50,000.",
- "precut": "PASS 2026-10-20 (51 checks)",
- "leak": "leak.py REVIEW (program words in the rules and notes, the cities named in the census, ACS and school files)",
- "duplicate_check": {
-  "guard_check": "WARN 2026-10-20",
-  "nearest": "task43 at 0.06"
- },
+ "architecture": 2,
+ "loops": 0,
+ "stump": "The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 8 to 28 points, and all six areas trigger the contingency measure where only two do.",
+ "precut": null,
+ "leak": null,
+ "duplicate_check": null,
  "judge": null,
  "returned": [],
- "resume": "stage 1: architecture 1 spent at stage 4 (reader 2 landed the call and 24 of 24 asks); architecture 2 not drawn on 2026-10-24, eight candidates screened and recorded in ## Tried and rejected. Read them before drawing. The lead carried forward is an inventory base year recalculated after a method change, where worst-first removal left a cleaner surviving stock so the per-class recalculation is wrong and the removed units' own last records measure how much worse. It needs a world other than task476's gas mains and a paper measurement of the reflex sweep before a card. survey-research/etl is under ban.pairing while task483 is in the window.",
- "source_note": "seed ET41's number, re-worlded at the draw (housing unit method population estimates)"
+ "resume": "stage 2 of architecture 2 (drawn 2026-10-24): the wood smoke base year recalculated on a stock the changeout thinned primary-heat first. Next: carry scratch t484/sim2.py into the generator's world model, measure the standing family and the reflex sweep on the clean truth, write the readability screen, fork table (survivors' burning taken at the survey season's, non-programme removals, face cords, the 2020 boundaries), ladder, closure, literal reader, oracles and ask sheet, then prompt.txt and precut.py; the generator, prompt.txt and submission.md in the folder are architecture 1's and are replaced",
+ "source_note": "re-root to a fresh world; architecture 1 spent at stage 4"
 }
