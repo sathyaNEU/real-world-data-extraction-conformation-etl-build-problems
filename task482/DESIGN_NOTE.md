@@ -1,390 +1,120 @@
 # task482 design note
 
-Status lives in `pipeline.json`; this note holds the design. Architecture 10, drawn 2026-10-24 after architectures 1
-to 9 were spent at stage 4: a fresh world and pack in the ETL objective, a nonprofit hospice organisation's FY2026
-Medicare aggregate cap repayments, accrued provider number by provider number at the December 2026 close, each
-beneficiary counted under the proportional method on the hospice days they will receive in every hospice and year.
+Status lives in `pipeline.json`; this note holds the design. Architecture 11, drawn 2026-10-24 after architectures 1
+to 10 were spent at stage 4: a fresh world and pack in the ETL objective, an education technology company's first
+settlement of the outcomes guarantee in its partner districts' 2025-26 licence contracts, each district's share of
+eligible students at or above Proficient on a matrix-sampled spring science assessment read from the students' own
+answers with the district in the model.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task482.json` (architecture v10, lineage v1 to v9 spent), checked
-  2026-10-24 after a fetch of main: WARN, no BLOCK. The first draft carried G13 (horizon mismatch) as its decisive
-  generator and BLOCKed on `test.same_puzzle` against task171 v4 (time, G13, quantity_figure) and on the older
-  same-puzzle and same-driver signatures of five builds each; the decisive generator is G12 (absence of record against
-  record of absence: a beneficiary discharged alive who has no later election is not a beneficiary who will have none),
-  which is the honest one for the step that decides, with G13 (the days recorded to the close against the days in every
-  year) as the frame. Against G12 the older task157, task192 v2, task201 v2 and task445 v1 repeat gap, pattern and
-  decision type or Gate G and are differentiated on the card: task157 forecasts a lapsed group's returns inside a window
-  from earlier waves' calendar; task192 v2 counts a cohort's events before a terminal end; task201 v2 recovers each
-  event's unrecorded opening interval; task445 v1 completes a still-open period's total. Here every day given is
-  recorded and nothing is completed: each member's later days enter the denominator of a share.
-- **WARNs answered.** `repeat.question_form` (how much, against task486 v2): the decision is an amount for each provider
-  number, so the question asks how much. People drawn with `guard.py names --geo us --seed 482` and checked against
-  every card: Breanna Graham (the organisation's controller, the requester), Jeremy Cortez (its chief financial
-  officer) and John Huang (its reimbursement director); B. Graham and J. Cortez appear only as owners in the file
-  properties of the policy, the 2027 budget and the golden, and no name appears in any file's text. Lawrence Hughes and
-  Audrey Bautista, drawn for architecture 9 from the same seed, are not reused.
-- **Pairing:** Healthcare Delivery & Health Economics, task type `payment-claims-health-plan-analytics`, which serves
-  ETL: the organisation's two EMR election exports (its own and Fallowmere's seller's system), its claim lines and
-  remittance register, and the Medicare hospice benefit periods extract conformed into the cap schedule the year-end
-  accrual reads, one row per FY2026 beneficiary per provider number with the days in the cap year, the days to the
-  close in every hospice and year, the days expected after it, and the share of a beneficiary they count.
-- **The decision and the quantity:** Wendleglen Hospice & Palliative Care, a nonprofit in central and southeastern Ohio,
-  holds eight Medicare hospice provider numbers: seven of its own (Brindlemoor, Corvelfield, Darrelbrook, Marrellford,
-  Rennickdale, Varrowmere, Farrinridge) and Fallowmere Hospice, bought under a change of ownership on 1 March 2025 with its
-  provider agreement and its records. Medicare pays each provider number at most its aggregate cap for a cap year (1
-  October to 30 September): the FY2026 cap amount (USD 35,361.44) times the beneficiaries counted under the
-  proportional method of 42 CFR 418.309, each beneficiary counted as their FY2026 days at the provider number over their
-  days of hospice care in every hospice and year. The contractor recovers payments above the cap, the excess reduced
-  by 2 per cent for sequestration. Wendleglen accrues each provider number's FY2026 repayment at its 31 December 2026
-  close; the external auditors test the estimate. Forward facing: the count turns on days not yet given.
-- **Shape:** `07`, a grid read provider number by provider number: the call (how much, if anything, and at which of the
-  eight provider numbers), and for the FY2026 inpatient cap each provider number's general inpatient days, inpatient
-  respite days and inpatient share (24 cells), with the cap schedule workbook as the deliverable. About 29 criteria on
-  structure (the call and its total 3, the inpatient grid 24, the workbook and its sheets 2).
-- **Strategy:** `maturity_censoring` (each beneficiary's hospice days are recorded only to the close, and the days
-  still to come are estimated from the beneficiary's state at the close); Gate G `method_or_model_selection` (how the
-  remaining days are projected, the data ruling out the easy routes); gap `time`; pattern none; generators G12
-  (decisive) and G13. Layer 2 family `field_method`, pattern `own:a capped credit shared on each member's lifetime days,
-  projected from the member's state at the close (an open stay by its length so far, a live discharge by its time out)`.
-  Calibration organ: `existing_book_actuals`, the provider numbers' own elections since October 2016 with every later
-  benefit period at any hospice. Context artifact `capacity_report` (the monthly census report with each program's
-  average length of stay by diagnosis group).
-- **World:** Ohio, USD; the seven programs and Fallowmere Hospice; invented names screened against real places (the
-  GeoNames register of populated places of 500 and more in every country, with the US counties: every name more than
-  two edits from any place and containing no place's distinctive word, Fallowmere's only hit the substring "Fallo", a
-  village in Italy that is no word of the name) and against real organisations by search (no hospice or other
-  organisation under any of the names, and no hospice found under the provider numbers 361791 to 361798) (H21).
-- **Forcing fact:** the organisation closes its 2026 books on 31 December 2026, and the FY2026 cap repayment is accrued
-  at that close from the records as they stand.
-- **Forum and forcing event:** auditor (the external auditors test the accrual), period_close. Organisation
-  hospital_or_health_provider; role finance_controller.
-- **The physics:** a beneficiary elects hospice and stays until death, a revocation or a discharge as no longer
-  terminally ill; about one election in nine ends alive at the seven programs (8 to 17 per cent by program) and two in
-  five at Fallowmere, whose admissions under its seller reached patients early and whose recertification reviews under
-  Wendleglen discharge many. A beneficiary discharged alive can elect hospice again at any time, at Wendleglen or at any
-  other hospice; about half do, two in three of those within a month, the chance that one who has been out longer comes
-  back falling the longer they stay out; four in five of Fallowmere's returns are to hospices outside the organisation. A stay that has already
-  run long is a stay of the kind that runs long: its expected remainder grows with its length so far.
-- **Data-native sentence:** in the benefit periods extract a beneficiary discharged alive often comes back weeks or
-  months later under a new election, most of Fallowmere's at hospices outside the organisation, and Fallowmere's FY2026
-  beneficiaries include 44 discharged alive and not back by the close, whose days to come no record holds.
-- **Default path and golden, measured on the pack** (`task482/generator/checks.py`): Fallowmere's cap ratio is 0.967
-  with its open stays run conditionally and its live discharges taken as finished, so nothing is accrued anywhere; with
-  each live discharge's returns read by time out in every hospice it is 1.046, a repayment of USD 285,027 (0.3); the
-  other seven sit at or under 0.912 on every rung and standing construction.
-- **The WHAT screen.** Population: Medicare beneficiaries with hospice days at the provider number in FY2026 (418.309,
-  the policy). Outcome: the provider number's FY2026 repayment on the contractor's determination. Unit: dollars.
-  Window: the FY2026 cap year, with every later day of each beneficiary's hospice care counted. Comparison: payments
-  against the cap. Reference class for what is expected: the beneficiaries the same provider number has cared for in
-  the same diagnosis group (the policy). The decisive step settles none of them: it is how many days each beneficiary
-  will still receive, which no record or filed rule states.
+- **Card:** `.claude/skills/fingerprint/cards/task482.json` (architecture v11, lineage v1 to v10 spent), checked
+  2026-10-24 after a fetch of main: WARN, no BLOCK. The first draft (a county school system's own matrix-sampled
+  science indicator naming middle schools for coaching) BLOCKed on `ban.org_family` (university_or_school against
+  task179 v3), on `test.same_puzzle_older` (objective, G16, designation_set against task182 v1 and task465 v1) and on
+  `test.same_driver_older` (objective, G16, method_or_model_selection, spent in four builds). The decisive generator is
+  G14 under pattern E (does the pooled model hold for this group: the contractor's background model, pooled over every
+  district, does not hold for a district whose students do better or worse than their backgrounds predict), which is
+  the honest label for the step that decides, with G16 (the design and the field's principle entitle the
+  district-conditioned estimate) as the frame. The setting-word run of `slots` then found task450 (a Texas district's
+  own assessment naming the campuses below 40 per cent for coaching) and task464 (a state's literacy grants by a
+  performance level) in the same assessment setting, so the world moved off a district's coaching list to a company's
+  contract settlement; the role redrew from research_desk (`ban.role` against task179 v3) to portfolio_manager.
+- **WARNs answered.** `people.first` (Amy against task130, Robert against task104, Barbara against task460, one older
+  build each): kept. People drawn with `guard.py names --geo "United States" --seed 482`: Amy Hardin (the head of
+  district partnerships, the requester), Robert Meyers (the director of efficacy research) and Barbara Frazier (the
+  controller), owners in file properties only; Lawrence Hughes and Audrey Bautista (architecture 9) and Breanna Graham,
+  Jeremy Cortez and John Huang (architecture 10) are not reused.
+- **Pairing:** Education & Learning Sciences, task type `item-response-theory-test-equating`, which serves ETL: the
+  platform's session log, the assessment delivery system's response records, the contractor's item parameters and
+  plausible values, the districts' roster uploads and the licence contracts conformed into the guarantee settlement
+  schedule (one row per partner district: eligible students, tested students, the share at or above Proficient, the
+  district's benchmark, met or not, the credit) and the billing system's credit memo import file.
+- **The decision and the quantity:** Lumenfold Learning, an online middle-school science platform, licenses to 58
+  partner districts in six states. Its 2025-26 licence contracts carry an outcomes guarantee for the first time: if the
+  share of a district's eligible students (30 hours or more of active use in the school year) at or above Proficient
+  (500 on the reporting scale) on the spring 2026 Lumenfold Science Outcomes Assessment falls below the district's
+  benchmark (40 to 50 per cent by contract), Lumenfold credits the district a share of its 2025-26 licence fee (10 to 20
+  per cent by contract) against its 2026-27 invoice. The assessment is matrix-sampled: each student answers two of eight
+  modules of nine items, so no student has a score of their own. The contractor, Quillfield Assessment Partners,
+  calibrated the items on the base-year scale and drew five plausible values per student for the 2026 National
+  Efficacy Report from a latent regression on grade, prior state-test band, economic disadvantage, English learner
+  status and disability status. The settlement statements are due to the districts under the guarantee clause by 30
+  November 2026. The quantity is retrospective (the spring 2026 administration is closed) because the contract fixes the
+  measurement window; the commitment it drives (the credits on the 2026-27 invoices) is forward.
+- **Shape:** `07`, a grid read district by district: the call (which districts are owed a credit, and the credits'
+  total), each district's share at or above Proficient and its result against its own benchmark, with the settlement
+  workbook and the credit memo import as the deliverables. Criteria counted at stage 2 (the districts within reach of
+  their benchmark under any rung, the total, the asks).
+- **Strategy:** `other` (imputations aggregated over a grouping their model left out; no vocabulary key names it:
+  composition_mix would need a mix shift and population_selection a denominator, and neither is the move); Gate G
+  `method_or_model_selection` (how each district's share is estimated, the design and the field's principle ruling out
+  the easy routes); gap `objective` (the plausible values are correct for the national and subgroup figures they were
+  drawn for, and are not what a district's guarantee is scored on); pattern E; generators G14 (decisive) and G16. Layer
+  2 family `field_method`, pattern `own:plausible values carry only the groupings in their conditioning model, so a
+  district's share needs the district in the model`. Calibration organ: none. Context artifact `filed_model` (the
+  contractor's technical report, the conditioning variables in its table).
+- **World:** the United States, USD; Lumenfold Learning, the Lumenfold Science Outcomes Assessment, Quillfield Assessment
+  Partners and the 58 partner districts invented, screened against real organisations and places at stage 3 (H21).
+- **Forcing fact:** the settlement statements are due by 30 November 2026.
+- **Forum and forcing event:** customer_or_counterparty (the partner districts receive the settlement),
+  purchase_order_or_contract (the guarantee clause). Organisation software_or_platform; role portfolio_manager.
+- **The physics:** a student's science achievement rises with prior achievement and falls with economic disadvantage,
+  English learner status and disability, and a district's implementation (how many hours students used the platform,
+  how teachers used it, the district's own science curriculum) moves its students up or down beyond what their
+  backgrounds predict, by about 0.35 of a student standard deviation from district to district. Two modules of nine
+  items measure one student with a reliability of about 0.7, so each student's plausible values lean on the background
+  model's prediction for a student like them, and a model with no district term predicts every student as if their
+  district were average: a district's mean plausible value keeps about three quarters of the district's departure.
+- **Data-native sentence:** each student answered two of the eight modules, so a student's plausible values lean on
+  what the background model predicts for a student with that grade, prior band and background, and the background model
+  has no term for the district.
+- **Default path and golden, measured on paper** (three seeds of a 45-unit world in the scratchpad, before any
+  generator): averaging the plausible values by unit moved 2 to 5 of 45 units out of the set below a 30 per cent line,
+  unit shares moving by up to 14 points; the unit-conditioned latent regression with and without background, with a
+  unit-specific spread and with five plausible values drawn from it agreed within 2.7 points (the five-draw Monte Carlo
+  the widest); counting each student's expected a posteriori value under an unconditional prior moved 0 to 4 units and
+  counting the maximum likelihood value 1 to 5. The build places no district within 4 points of its benchmark under the
+  golden family and puts every district the plausible-value route moves at least 3 points across, both asserted in
+  `checks.py`; the expected a posteriori and maximum likelihood counts are placed to file other wrong sets.
+- **The WHAT screen.** Population: each partner district's eligible students who took the spring 2026 assessment (the
+  contract). Outcome: at or above Proficient, 500 on the reporting scale. Unit: per cent of students, a district owed a
+  credit when its share is below its benchmark. Window: the spring 2026 administration. Comparison: each district's
+  share against its own benchmark. The decisive step settles none of them: it is how each district's share is
+  estimated from two-module answers, which no record or filed rule states and which the design and the field's
+  principle select.
 - **Sources, one line each:**
-  - 42 CFR 418.309 and the FY2026 hospice payment final rule (CMS-1835-F): the aggregate cap, the cap year, the
-    proportional method, the FY2026 cap amount and rates;
-  - the contractors' hospice cap practice: payments compared before sequestration, the overpayment then reduced by 2
-    per cent;
-  - hospice operations: election, benefit periods (two of 90 days, then 60-day periods), revocation, discharge as no
-    longer terminally ill, transfer, re-election, levels of care (routine home care in two tiers, continuous home care
-    in 15-minute units, inpatient respite, general inpatient), the inpatient cap of 42 CFR 418.302(f);
-  - provider practice: the cap liability accrued with the patients still on service and the patients who may return.
-- **Same-puzzle and same-driver tests:** (time, G12, quantity_figure) and (time, G12, method_or_model_selection)
-  against the last twelve builds, lineage included: no match; the older matches are differentiated on the card.
-- **Abstraction test:** the nearest drivers stripped of nouns: task266 v1 counts the units whose spell ends one way
-  within a fixed time; task271 v2 reads a latent state from call records; task244 corrects moves between two states for
-  misclassification; task143 takes a joint chance over a shared error. Here no spell is counted and no state is
-  misread: each member's total is the recorded part plus the remainder its state implies, and the total divides a
-  share.
+  - the plausible-values methodology (Mislevy 1991; the NAEP and PISA technical documentation): plausible values are
+    draws from each student's posterior given their responses and the conditioning variables, and support analyses of
+    the variables in the conditioning model;
+  - matrix sampling and balanced incomplete block designs in large-scale assessment;
+  - latent regression item response models, marginal maximum likelihood on a quadrature grid;
+  - outcomes-based contracting in education technology: guarantees that credit a share of the licence fee when a
+    contracted outcome is missed.
+- **Same-puzzle and same-driver tests:** (objective, E, designation_set) and (objective, E,
+  method_or_model_selection) against the last twelve builds, lineage included: no match.
+- **Abstraction test:** the nearest drivers (0.07) stripped of nouns: task271 v3 takes a trait carrier's chance of an
+  outcome by a fixed age; task458 counts a population defined by a lasting trait from events logged while observed;
+  task479 v4, this setting's nearest relative, estimated campuses with rapid-guessed answers set aside (sent back as
+  cleaning contaminated data), and here no answer is set aside and every answer is used; task143 takes the weakest of a
+  few members. Also task464, where counting each unit's regression-predicted value against a cut thins the tail and
+  the decisive step is estimating a distribution instead of counting predictions: here the plausible values are already
+  a distribution, correct for every figure their model covers, and the decisive step is the grouping the model left
+  out. And task450, anchor items that changed for the new group: a different step on the same kind of data.
 
-## Default path
+## Architecture 10 record (spent 2026-10-24)
 
-1. Read 42 CFR 418.309 and the accrual policy: each FY2026 beneficiary counts as their FY2026 days at the provider
-   number over their hospice days in every hospice and year, the days to the close plus the days expected after it;
-   the cap is the count times the FY2026 cap amount; the repayment is 98 per cent of the payments before sequestration
-   above the cap.
-2. Built each FY2026 beneficiary's days at each provider number in the cap year and their days in every hospice to the
-   close from the benefit periods extract, joined to the two EMR exports for diagnosis and discharge reason, and each
-   provider number's FY2026 payments from the remittance register.
-3. Ran each stay still open at the close to its expected end, from the provider number's stays of the same diagnosis
-   group, conditional on how long it had run.
-4. Took each beneficiary discharged alive and not back by the close as finished: no later election is on file.
-5. Summed the shares, applied the cap amount and set the repayment against each provider number's payments.
-
-Ends on: no repayment at any provider number.
-
-Golden: a repayment at Fallowmere only.
-
-## Stump sentence
-
-The default path runs every stay still open at the close to its expected end and treats each beneficiary discharged
-alive as finished, finds every provider number under its cap and accrues no repayment; a beneficiary discharged alive
-often elects hospice again, the chance falling the longer they have been out, and four in five of Fallowmere's returns
-are to hospices outside the organisation that only the benefit periods extract holds, so each live discharge's share is
-read on the days the history of beneficiaries out as long shows to come, in every hospice, and Fallowmere owes.
-
-## Three rules
-
-Task type: payment-claims-health-plan-analytics (Healthcare Delivery & Health Economics), a task type serving Data
-Extraction & Conformation (ETL): the EMR elections, claim lines, remittances and the Medicare benefit periods extract
-conformed into the FY2026 cap schedule, one row per beneficiary per provider number, that the year-end accrual reads.
-
-Domain test: the quantity that decides is each FY2026 beneficiary's hospice days in all hospices and years under the
-proportional method, which hospice finance estimates for the cap liability from each beneficiary's state at the close
-(a stay still open and how long it has run, a live discharge and how long ago, a death) out of the provider's own
-history of elections; the field's estimator is the expected remainder for each state, read from the beneficiaries who
-were once in it.
-
-Swap: "which schools owe a refund because each pupil counts as their days at the school over their days in every school
-and every year" stops making sense: no other field shares out a capped amount on its members' lifetime days, and the
-states that decide the remainder (an open election, a live discharge that can be followed by a new election at any
-hospice) are the hospice benefit's own.
-
-Layer 1: each item with the system that writes it, its file, its natural mishandling and what that does to the call,
-asserted in `checks.py` R2a to R2h. The EMR keeps the identifier captured at admission, the HICN before April 2018
-(wendleglen_emr_admissions.csv; left unlinked, the call holds at 0.3, R2a). Fallowmere's seller's census system exported
-its register at the change of ownership with diagnosis codes stored without the decimal point and UB-04 patient status
-codes (fallowmere_census_register_20250228.xlsx; the register dropped when its codes fail the join, 0.3, R2b; its
-statuses read as discharges home, 0.3, R2c). The Medicare benefit periods extract is fixed width, a row per benefit
-period per hospice, a transfer continuing the election at the receiving hospice (a transfer read as a new election,
-0.3, R2d; each benefit period read as a stay, nothing, closed by SF18, R2f). The billing system's claim lines carry
-replacements, returned replacements and voids, a dated line for each run of days at a level of care and continuous
-home care in 15-minute units (ask A only; the call reads no claim line, SF15, SF16). The contractor's 835 remittances post reversals as negative claim lines, the 2 per cent
-sequestration in its own adjustment column and interest on provider-level lines (interest summed in, 0.3, R2e; payments
-after sequestration, 0.2, closed by SF7, R2g; reversals left out, 0.5, closed by SF8, R2h). The cap year runs October
-to September against the December close (SF1). Each is produced by the systems that hold it and nothing is placed to be
-caught; no mishandling of any item files the golden on the default path, and the three that move the golden method are
-misreads of a filed sentence, not the stump.
-
-Layer 2: field_method; the cap liability estimated the way the field estimates it, each beneficiary's remaining
-lifetime hospice days projected from their state at the close, and the methodological choice that flips the call is
-treating a beneficiary discharged alive as a beneficiary still accruing days, with the chance of a return read on how
-long they have been out and counted in every hospice.
-
-Decisive step: projecting each FY2026 beneficiary discharged alive and not yet back to the hospice days the history of
-beneficiaries out as long shows still to come, in Wendleglen's programs and in hospices outside it, rather than taking
-the days on file as their total.
-
-Not semantics: every field can be read correctly (the discharge reasons and status codes, the benefit periods, the
-cap year, the levels of care, the sequestration column) and the default path still treats a live discharge as
-finished, because no field says whether a beneficiary will elect hospice again; the reading of "every hospice and year"
-is necessary and leaves the projection undone.
-
-Not rule application: 418.309 and the policy define the count, the cap, the repayment and the reference class, and no
-filed rule or procedure says how many days a beneficiary will still receive or how to estimate them; executing every
-stated rule with open stays run to their ends files no repayment. Measured on the pack (`checks.py`): the enumerated
-family (days to the close; census average less time so far; open stays conditionally; returns at the overall rate, with
-and without the open stays' later returns and with a return valued at the census average; returns read by time out from
-Wendleglen's own records; by time out in every hospice with a return valued at the census average, or with the open
-stays' later returns left out; the golden) spreads Fallowmere's repayment from nothing to USD 0.55 million across ten
-constructions and five distinct printed answers apart from the golden's; the standing family (the twelve
-constructions that read returns by time out in every hospice with the open stays' later returns counted: Aalen-Johansen
-or the empirical share among discharges followed four years, a return valued by its stays' Kaplan-Meier mean or by the
-later days of returns three or five years old, the open stay's chance of ending alive overall or from its time so far)
-spans USD 0.279 to 0.314 million, one printed answer (0.3), each member at least USD 0.029 million from its cell's edge;
-what rules the others out is the history itself, in which the share of beneficiaries out 90 days who later return (0.20
-for dementia at Fallowmere) is about a third of the share at discharge (0.55), and 84 per cent of Fallowmere's returns
-before the close are at hospices outside the organisation.
-
-Analyst test: with every file read and the proportional method applied, the easy route runs each open stay to its
-expected end and treats each beneficiary discharged alive as finished, and files no repayment at any provider number
-(the default path's Ends on), missing Fallowmere's.
-
-Estimand: Wendleglen's cap liability policy, section 2: each provider number's FY2026 repayment is 98 per cent of its
-FY2026 Medicare payments before sequestration less its aggregate cap, the cap counting each FY2026 beneficiary as their
-FY2026 days at the provider number over the hospice days the beneficiary is expected to receive in every hospice and
-year, the days on file to the close plus the days expected after it given what Wendleglen knows of the beneficiary at the
-close, read from the beneficiaries the same provider number has cared for in the same diagnosis group (the file:
-`wendleglen_cap_liability_policy.docx`).
-
-No decoy: nothing is planted to be caught; no memo, draft, briefing or stakeholder figure carries the default path's
-answer, and no provisional FY2026 determination ships. The census report's average lengths of stay are the programs'
-own operating report and rank nothing on the decision.
-
-No certified replay: the method is not hidden and recovered by reproducing certified or published figures; the pack
-ships no cap determination, the benefit periods extract holds days, not a method, and the policy files the estimand.
-
-Lesson: a share whose denominator is a member's lifetime total counts every later spell, and a member who left alive
-is not finished; the remainder for each state is read from the members who were once in that state, at the same time
-since entering it.
-
-## Readability screen
-
-| Rung | What the response does | What in the pack points at it | Verdict |
-|---|---|---|---|
-| R0 days to the close | each beneficiary's share on the days on file to the close (Fallowmere 0.911, nothing accrued) | the benefit periods extract's days, the policy's days on file | readable |
-| R1 census average less time so far | each open stay's remainder as the census report's average length of stay less its days so far (0.919) | the census report's averages by program and diagnosis group | readable |
-| R2 open stays by their time so far (the default) | each open stay's remainder from the provider number's stays of the group that ran as long; live discharges finished (0.967) | the policy's days expected after the close, the EMR's open elections | readable |
-| R3 returns at the overall rate | every live discharge out at the close given the history's share that ever came back (USD 0.55 million) | nothing names returns: the extract's later benefit periods are rows like any other | silent |
-| R4 returns from Wendleglen's own records | returns read by time out from the EMR's re-elections only (0.989, nothing accrued) | nothing: the EMR is the organisation's own record of its elections | silent |
-| R5 returns by time out, a return worth the census average | the right chance, each return valued at the census report's average stay (USD 0.20 million) | the census report's averages | silent |
-| R6 returns by time out, open stays' later returns left out | the golden's out-of-care projection, nothing added for an open stay that may end alive and come back (USD 0.23 million) | nothing | silent |
-| G (decisive) returns by time out in every hospice | each live discharge's chance of a later election read from the beneficiaries out as long, the days a return brings in every hospice, and the same for an open stay that may end alive (USD 0.29 million) | nothing names it: no file, column or sentence says a beneficiary discharged alive may come back; only the extract's later benefit periods after live discharges show it | silent |
-
-## Semantic fork table
-
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | FY2026 beneficiary | a Medicare beneficiary with a day of hospice care at the provider number from 1 October 2025 to 30 September 2026 | one who elected in FY2026 (the streamlined method) | nothing (225 beneficiaries against 179.5) | policy section 2 and 418.309: the proportional method, every beneficiary with a day in the cap year |
-| SF2 | a day of hospice care | each day the benefit periods extract counts (the election day counted, a live discharge's day not, the day of death counted) | discharge less admission plus one on every period | same call | C1: the extract states each period's days; the generator asserts the EMR's dates give the same days |
-| SF3 | every hospice and year | every benefit period in the extract, any provider number, any year | the organisation's own provider numbers only | nothing | policy section 2 ("in every hospice and year") and 418.309 |
-| SF4 | the share a beneficiary counts | FY2026 days at the provider number over (days to the close plus days expected after it) | the expected value of the share over the possible futures | nothing on the golden's own projections (Jensen) | policy section 2: the days at the provider number divided by the days the beneficiary is expected to receive in total |
-| SF5 | the reference class | the beneficiaries the same provider number has cared for in the same diagnosis group | the organisation's beneficiaries pooled across provider numbers | same call (0.3) | policy section 2.4 |
-| SF6 | diagnosis group | the census report's group of the election's primary diagnosis code (the code map) | the EMR's free-text diagnosis | same call | the code map; C1: every election's code maps to one group (asserted) |
-| SF7 | the repayment | 98 per cent of (payments before sequestration less the cap), nil when the payments are under the cap | payments after sequestration less the cap; the difference without the 2 per cent | 0.3 with the 2 per cent left out; 0.2 on payments after sequestration | policy section 3, the contractor's method |
-| SF8 | FY2026 payments | Medicare payments for claims with FY2026 statement dates, reversals netted, sequestration added back, interest excluded | by paid date; net of sequestration; interest included; reversals left out | interest included 0.3 (same call); reversals left out 0.5 | policy section 3.1; C1: no claim spans the cap year's edges or its statement month |
-| SF9 | the cap amount | USD 35,361.44 | the FY2025 or FY2027 amount | not computed | the FY2026 rate sheet |
-| SF10 | Fallowmere's experience | every election under its provider number since October 2016, the seller's years included | its elections since 1 March 2025 only | 0.4 | policy 2.4 (the experience since 1 October 2016 of the beneficiaries cared for by the provider number) and policy 1 (its cap years before and after the change of ownership are one provider number's) |
-| SF11 | the close | days on file through 31 December 2026; the extract run on 5 January 2027 with data through 31 December 2026 | the extract's run date | same call | C1: no benefit period starts or ends on 1 to 5 January 2027 (asserted) |
-| SF12 | a death known at the close | the extract's date of death on or before 31 December 2026: no days after the close | a live discharge with a date of death treated as still out | not computed | the extract's date of death |
-| SF13 | a stay continuing at another of Wendleglen's provider numbers | one stay; each provider number counts its own days | a discharge and a return | same call (0.3, R2d) | C1: the receiving hospice's benefit period carries the election's date and starts the day the other's ends (asserted) |
-| SF18 | a stay | an election: the run of benefit periods sharing an election date, at any hospice | each benefit period a stay | nothing (R2f) | the file notes (a detail record per benefit period; ELECT_DT the date of the election the benefit period belongs to); C1: an election's periods tile it from its election date without a gap (asserted) |
-| SF14 | rounding | each repayment to USD 0.1 million from its unrounded amount; the total of the eight unrounded amounts, rounded once | the total of the rounded amounts | same call | C1: a single provider number owes |
-| SF15 | general inpatient and respite days Medicare paid for | the 0656 and 0655 days of the version of each FY2026 claim the remittance register shows paid and not reversed, less the days its payment shows paid at the routine rate | the latest version of each claim in the export | 0 of 16 day cells, 0 of 8 shares | the asking sentence ("that Medicare paid for"); the register is the record of payment |
-| SF19 | the same | as SF15 | every paid version's 0656 and 0655 units as billed | 0 of 24 | the asking sentence: a day paid at the routine rate is not an inpatient day Medicare paid for; AD1, the payment closes on exactly that count |
-| SF20 | the same | as SF15 | the latest versions as billed (both handlings missed) | 0 of 24 | as SF15 and SF19; the two devices never cancel (asserted) |
-| SF21 | the same | as SF15 | every inpatient day on a claim the contractor held taken as unpaid | 0 of 8 shares | AD1: the payment prices the held claims' days at their levels but the counted ones |
-| SF16 | days of care (the inpatient share's denominator) | each FY2026 day of care at the provider number once, at any level | continuous home care units counted as days | 0 of 8 shares | the asking sentence's days of care; C4: units at 0652 are 15-minute increments (the claims dictionary) |
-| SF17 | the inpatient share | (general inpatient plus respite days) over days of care, per cent to one decimal | over routine home care days only | 0 of 8 shares | the asking sentence and 418.302(f) |
-
-## Ladder
-
-Measured on the pack (`checks.py`; Fallowmere, FY2026; the other seven owe nothing on every rung and standing
-construction, the highest cap ratio 0.912).
-
-| Rung | Fallowmere counted beneficiaries | Cap ratio | Repayment (USD millions) | Call kept |
-|---|---|---|---|---|
-| R0 days to the close | 206.0 | 0.911 | nil | no |
-| R1 census average less time so far | 204.2 | 0.919 | nil | no |
-| R2 open stays by their time so far (default) | 194.0 | 0.967 | nil | no |
-| R3 returns at the overall rate | 171.7 | 1.093 | 0.55 | no |
-| R3n the same, open stays' later returns left out | 173.0 | 1.085 | 0.51 | no |
-| R3c the same, a return worth the census average | 175.4 | 1.070 | 0.42 | no |
-| R4 returns from Wendleglen's own records | 189.7 | 0.989 | nil | no |
-| R5 by time out in every hospice, a return worth the census average | 181.9 | 1.032 | 0.20 | no |
-| R6 by time out in every hospice, open stays' later returns left out | 180.9 | 1.037 | 0.23 | no |
-| G golden | 179.5 | 1.046 | 0.29 | yes |
-
-Every rung files a different printed figure from the golden's; the standing family spans 0.279 to 0.314 (one printed
-answer, every member at least 0.029 from its cell's edge). The generator solves the provider numbers' wage indices so
-the golden sits mid-cell (USD 285,027, 0.035 from the cell's edge) and asserts every rung and member.
-
-## Closure table
-
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | Medicare beneficiaries with a day of care at the provider number in FY2026, including those still on service and those who will come back | filed (policy section 2, 418.309); members not yet observed are the beneficiaries' later days, filed as expected days |
-| 2 | Unit of account | a beneficiary's share at a provider number | filed (418.309, the policy) |
-| 3 | Attribution window | FY2026 days by date of care; payments by claim statement dates | filed (policy sections 2, 3); C1: monthly claims sit inside one cap year (asserted) |
-| 4 | As-of dating | days on file through 31 December 2026; expected days after it | filed (policy section 2); C1 on the extract's run date (SF11) |
-| 5 | Version basis | the claim version the remittance shows paid, at the levels its payment prices (ask); the extract as run on 5 January 2027 (call) | filed (the asking sentence; one extract shipped); C1 for the ask: one count of routine-paid days closes each payment (AD1) |
-| 6 | Denominator | days in every hospice and year, to the close plus expected after it | filed (policy section 2; SF3, SF4) |
-| 7 | Weighting | each beneficiary weighted by their share | filed (418.309) |
-| 8 | Window length | the provider number's whole history since October 2016 | filed (policy 2.4: the experience since 1 October 2016; policy 1: Fallowmere's cap years before and after the change of ownership are one provider number's); the history since the change of ownership alone files 0.4 (SF10) |
-| 9 | Boundary inclusivity | a day on 1 October 2025 or 30 September 2026 is in FY2026 | filed (the cap year); C1: no claim crosses the edges |
-| 10 | Rounding path | each repayment from its unrounded amount; the share unrounded | filed (the asking sentence; SF14) |
-| 11 | Tie-break | none needed | C1: no standing construction within USD 0.029 million of a rounding edge (asserted, F2) |
-| 12 | Maturity and censoring | a beneficiary's days are recorded to the close; later days are expected days | filed (policy section 2); the decisive step works on it |
-| 13 | Order of operations | shares summed, then the cap, then the payments' excess, then the 2 per cent | filed (policy section 3) |
-| 14 | Row order | none | C1: the schedule is order-free (asserted on shuffled rows) |
-| 15 | Duplicate resolution | benefit periods chained into elections by beneficiary and election date; claim versions by the register | filed (the file notes: a row is a benefit period, ELECT_DT its election; SF18); SF15 for the ask |
-| 16 | Identity normalisation | a beneficiary by MBI; EMR rows before 2020 through the HICN crosswalk | filed (the crosswalk); C4: every HICN maps to one MBI (asserted) |
-| 17 | Netting against gross | reversals netted against their originals | filed (policy section 3) |
-| 18 | Dimensional units | days, dollars; continuous home care in 15-minute units | units in the dictionaries; SF16 |
-| 19 | Code and status semantics | UB-04 status 01 a live discharge, 30 still a patient, 40 to 42 died, 50 and 51 a transfer to another hospice; EMR reasons | filed (the export dictionaries); never the stump |
-| 20 | Integerisation | whole days; repayments to USD 0.1 million | filed (the asking sentence) |
-| 21 | Clause scope | section 2 applies to every FY2026 beneficiary at every provider number | filed |
-| 22 | Forward window contents | each beneficiary's days after the close, expected from the provider number's history | filed as an expectation (policy section 2); the history is the shipped driver |
-
-## Literal reader
-
-Executing the prompt and every filed sentence word for word: the policy counts each FY2026 beneficiary as their FY2026
-days at the provider number over the days they are expected to receive in every hospice and year, the days to the close
-plus the days expected after it given what Wendleglen knows of the beneficiary at the close, read from the beneficiaries
-the same provider number has cared for in the same diagnosis group. For a beneficiary discharged alive and alive at the
-close, what Wendleglen knows is the discharge, its date and the provider number's history, in which about half of such
-beneficiaries elected hospice again; an expectation of their days after the close is therefore positive, and taking it
-as nil contradicts the sentence rather than reading it. The reader who computes the expectation from the beneficiaries
-in the same position (out as long, alive) and counts their later days wherever they fell lands the golden under every
-standing construction (USD 0.279 to 0.314 million); where the text is silent (the extract's run date, a death on the
-close, a stay moving between programs, the claims crossing the cap year) the records make the readings converge (SF2,
-SF11, SF13, C1 rows above).
-
-## Oracles
-
-No file ties only under the golden or only on a wrong read. The pack holds no cap determination, no count of
-beneficiaries and no repayment for any year; the census report's averages are the programs' operating figures and
-reproduce no construction's count; the remittance register's totals tie under every construction of the call, since the
-call's constructions differ only in days. For the ask, the remittance register is the record of payment and the single
-referee of which claim version stands; it states no inpatient day.
-
-## Ask sheet
-
-**Ask A, the FY2026 inpatient cap: each provider number's general inpatient days and inpatient respite days that
-Medicare paid for, and its inpatient share of its days of care, 24 figures.** H18: a component of the year-end cap
-review, the second limit on the same cap year's payments. Use: the controller accrues any inpatient cap repayment
-beside the aggregate one and the auditors test both. Primary device (D9, a payment true only at its own grain): the
-contractor held claims carrying general inpatient or respite days for prepayment review and paid some of those days
-at the routine home care rate; the claim lines keep the levels as billed and the remittance register carries one claim
-payment with no line detail, so every check a reader runs at the claim's grain (key ties, net payment, statement
-months, reversals) passes on the billed days. Only repricing each paid version from its dated level-of-care lines, the
-rate sheet, the routine care count in the extract and the provider number's wage index shows the payment short, by
-exactly the routine difference on a whole count of its last inpatient days (AD1: every other paid version prices to
-the cent). Evidence split: the claim lines' dated runs, the rate sheet, the extract's day count, the provider register's
-wage index and the remittance register's payment, none enough alone. Hazards: replacements (type of bill 0817) that the
-contractor returned and never paid, all submitted more than 118 days before the close, the longest any payment took
-(X1), so the latest version is not the paid one; continuous home care in 15-minute units (a day of care counted once,
-SF16); accepted voids (0818) cancelling a claim; the reviewed claims' long processing with no interest, not being clean
-claims. Path: wendleglen_claim_lines_fy2026.csv (claim key, prior claim key, type of bill, provider number, MBI,
-revenue code, line date, units), remittance_register_fy2026.csv (patient control number, claim status, paid amount,
-sequestration), fy2026_hospice_payment_rates.pdf (rates, labor shares, the routine care count), provider_numbers.json
-(wage index), the benefit periods extract (the day count and the days of care), the file notes, 6 files and 14 columns.
-Stops: the latest version of each claim chain (SF15, SF20) 0 of 24; every version with a net remitted payment as billed
-(SF19) 0 of 24; every inpatient day on a claim with a long wait dropped (SF21) 0 of 8 shares; the paid versions repriced
-with the routine-paid days taken out 24 of 24. Realism: prepayment review of inpatient levels of care holds a claim for
-its records and pays the days the records support at the level they support, and the provider's remittance register
-summarises the 835 at the claim.
-
-Main population: the call reads no level of care, claim version or claim line; its days come from the benefit periods
-extract and its payments from the remittance register's claim totals, which already carry each review's payment
-(asserted: the call recomputed on the claim lines' days, any version, is unchanged; X2 and X3).
-
-| Ask | The cracker's path (lands the call, runs the hygiene battery, executes every filed rule) | Kept | Verdict |
-|---|---|---|---|
-| A | each claim's lines joined to the remittance register, the 0656 and 0655 units of every version with a net remitted payment, days of care from the extract | 0 of 24 | miss |
-
-Mirror leakage: 0.0 per cent of ask weight (the mirror takes the latest version of each claim chain: 0 of 24).
-Pair ceiling: 28.5 (cracker 45.0, mirror 12.0) on the cut pack; with both responses repricing every claim 83.5, so the
-device is the layer's whole exposure and the stage 4 readers measure it.
-Measured by: task482/generator/ceiling.py (on the cut pack: the remittance join and the latest versions each keep 0 of
-24).
-
-## Pre-ship check
-
-1. Domain: hospice finance's own estimate of the aggregate cap liability under the proportional method, each
-   beneficiary's lifetime hospice days projected from their state at the close out of the provider number's history of
-   elections; with a school's or a utility's nouns no capped amount is shared on a member's lifetime days and no member
-   discharged alive can elect again at another provider.
-2. Real work, nothing planted: every Layer 1 item is what the producing system writes (the EMR's admission-time
-   identifiers, the seller's census register at the change of ownership, the Medicare benefit periods extract, the
-   billing system's claim versions, the contractor's 835 remittances, the cap year against the close), each mishandled
-   the natural way in checks.py R2a to R2h; no mishandling files the golden on the default path, and the three that
-   move the golden method are misreads a filed sentence closes (SF7, SF8, SF18). No ask device row reaches the call
-   (X1 to X3).
-3. The step that flips the call is analytical: projecting each beneficiary discharged alive by the history of
-   beneficiaries out as long, at every hospice; no clause makes that choice (policy 2.3 files the days expected after
-   the close given what is known, and 2.4 whose experience they are read from, not how a live discharge's days are
-   expected).
-4. Analyst test: every field and rule read correctly, open stays run on and live discharges taken as finished file no
-   repayment anywhere (T1, and on the world's own episodes T3); the decisive step alone files Fallowmere's USD 0.3
-   million (T2), and each lower rung's correction files nothing, 0.2, 0.4, 0.5 or 0.6 (L-R0 to L-R6).
-5. The policy files the estimand (population, outcome, window, unit, comparison and reference class in sections 2 and
-   3) and no estimator; the standing family of twelve files one cell at Fallowmere and nothing elsewhere (F1, F2, L-7),
-   and the ask's conventions are filed in its asking sentence or closed by the data (SF15 to SF17).
-6. No decoy, no withheld rule against a stated one, no certified replay: the pack holds no cap determination, no
-   provisional count and no figure any construction reproduces.
-7. The lesson is on no other card: the nearest driver is task266 v1 at 0.11; task157, task192 v2, task201 v2 and
-   task445 v1 are differentiated on the card; the surface screen's three promotions are card-level only (task481 back
-   to back on gap and decision type, with a different domain, pattern, Gate G and strategy).
+Architecture 10 accrued each Medicare hospice provider number's FY2026 aggregate cap repayment at the December 2026
+close, each beneficiary counted under the proportional method on the days to come from their state at the close (an
+open stay by its length so far, a live discharge by its time out, returns read at every hospice from the benefit
+periods extract), against the default path that runs the open stays on and takes the live discharges as finished
+(Fallowmere USD 0.3 million against nothing). At stage 4 all four isolated readers across two rounds missed the call
+and the round 1 judge returned DETERMINISTIC, APPROVE; the round 2 judge returned NOT_DETERMINISTIC, SEND_BACK
+(margin_or_boundary_fragility and competing_defensible_answer): the printed 0.3 needed Fallowmere's count inside a
+window of 2.9 beneficiaries while independent builds of the projection scattered about a beneficiary either way, and
+the pool start, the number of later elections and the Kaplan-Meier tail were left unfiled (0.248 to 0.447 on the
+judge's variants); ask A's routine-paid days read as an unstated rule. A designation set would have held (every variant
+put Fallowmere above its cap); a figure printed to USD 0.1 million on a three-beneficiary window did not.
 
 ## Architecture 9 record (spent 2026-10-23)
 
@@ -622,3 +352,48 @@ it hands all three the call, so the decisive step as designed does not stump and
   repayment printed to USD 0.1 million moves a cell every 2.9 beneficiaries of count, so a projection whose honest
   spread is a beneficiary cannot print one cell; the next architecture's call has to be a quantity whose cell is wider
   than its estimator family's spread, measured on independent builds rather than on the author's own family.
+- 2026-10-24, architecture 11 draw, screened on paper before any code against v10's lesson (a call whose cell is wider
+  than its estimators' measured spread): Medicare Advantage post-payment recoupments or denial overturns for a
+  hospital's 2027 contract notices carry v10's latent structure (a terminal-looking state that is not final) and
+  task451's (amounts still to arrive).
+- Architecture 11 draw: Medicaid procedural reinstatements and COBRA retroactive elections: retroactive eligibility was
+  screened at task451 and task479 v5, and COBRA's selection is population_selection, banned against task275.
+- Architecture 11 draw: ACA risk adjustment transfers estimated from competitors' public prior-year transfers: carrying
+  a competitor's risk forward is a fork; ACA grace-period cures: rule-heavy, with the cure rate carried across the 2026
+  subsidy expiry.
+- Architecture 11 draw: censored transplant costs by inverse probability of censoring weights: mature cohorts are
+  unbiased without a trend, and a trend makes the stump a dated step; authorization- or ADT-based claims reserves: the
+  completion family, and a leading indicator is a reflex.
+- Architecture 11 draw: price-standardised total cost of care tiers: the standardisation is a WHAT (filed is rule
+  application, unfiled a fork); deductible leveraging is task479 v3's driver; prescription abandonment by out-of-pocket
+  cost: the lever is too small; stop-loss and high-cost claimant pooling: non-linear aggregation at claimant level and
+  level-dependent counts are closed.
+- Architecture 11 draw: hospital coding intensity after an EHR conversion, separated by the same patients' successive
+  admissions: adjacent to task453 (a measurement change read from a within-design contrast that nets a drift), the event
+  study is the reflex and the WHAT signposts the method.
+- Architecture 11 draw: low-voltage anode effect PFCs at aluminium potlines: task459's driver (a ratio with a fixed
+  component carried across activity levels), and the IPCC slope method files it; wastewater digester relief-valve
+  venting: v9's Gate G risk (an unmetered event inferred from indirect evidence); idle and shut-in wells: a setting clone
+  of task462 and task450 v1; stack test-day tune-ups: population_selection and a surface read.
+- Architecture 11 draw: a landfill's pre-record waste read from the volume survey: the gas collection record calibrates
+  the decay model and absorbs the missing waste; refinery turnaround cycles: a schedule in a file is read; fuel switched
+  during gas curtailments: a degree-day normalisation is the reflex.
+- Architecture 11 draw: Fellegi-Sunter term-frequency weights: adjacent to task468 (false links on common
+  identifiers); address agreement decaying with the gap between records: adjacent to task468 v1.
+- Architecture 11 draw: majority-drifted or released anchors (v6, task450); rater severity drift on a shared
+  constructed-response subset (task471 v2's driver); rapid guessing in a low-stakes sitting (task479 v4, sent back as
+  cleaning contaminated data); speededness and not-reached items (an anchor-drift screen catches them).
+- Architecture 11 draw: queue position for open appeals or a coding backlog against timely filing limits: the waiting
+  time is a generic queue quantity, so the swap test fails and the domain is a backdrop; censored demand behind
+  capacity is task18, task108 and task168; capture-recapture is task199, task243, task248 and task448.
+- Architecture 11 draw: newborns and deliveries predicted from current pregnancies in an employer group's renewal: the
+  base projection's credibility and trend choices fork, in a large group last year's deliveries already carry the
+  component, and the honest strategy (who is in the 2027 population) is population_selection, banned against task275.
+- Architecture 11 draw: race and ethnicity imputed from surname and geography for group counts: summing the
+  probabilities is the reflex for counts, and the weighting-against-regression choice for rates needs a gold-standard
+  subsample, banned against task275.
+- Architecture 11 draw: the payroll survey's birth-death model against the lagged QCEW census is reserved for task484
+  v2, and drawing it here through a house domain would game the survey x ETL ban against task483.
+- Architecture 11 draw, first world: plausible values aggregated by school for a county school system's coaching list
+  reskins task450's world and call (a district's own assessment naming the campuses below a share for coaching), so the
+  mechanism moved to a company's guarantee settlement with its partner districts.

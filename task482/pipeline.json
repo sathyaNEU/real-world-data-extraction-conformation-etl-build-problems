@@ -1,35 +1,35 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "PAUSED",
- "domain": "healthcare-delivery-health-economics",
+ "status": "DESIGN",
+ "domain": "education-learning-sciences",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-24",
- "stump": "The default path runs every stay still open at the close to its expected end and treats each beneficiary discharged alive as finished, finds every provider number under its cap and accrues no repayment; a beneficiary discharged alive often elects hospice again, the chance falling the longer they have been out, and four in five of Fallowmere's returns are to hospices outside the organisation that only the benefit periods extract holds, so each live discharge's share is read on the days the history of beneficiaries out as long shows to come, in every hospice, and Fallowmere owes.",
- "architecture": 10,
+ "stump": "The default path averages the contractor's five plausible values by district, the standard use of plausible values, and settles each district against its guarantee benchmark on them; the values were drawn for the national efficacy report from a latent regression on grade, prior state-test band and background but not district, so every district is pulled about a quarter of the way toward what its students' backgrounds predict, and re-estimating each district's share from its students' own two-module answers with the district in the model credits districts the easy route clears and clears districts it credits.",
+ "architecture": 11,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-24"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW on the round 2 pack (a section number, the policy's call words, shared domain terms; no LEAK)",
-  "reader": "round 1: both readers missed the call; reader A kept 24 of 24 ask figures through the remittance join (exit 1), reader B 0 of 24; round 2 on the re-sited pack: both missed the call and kept 0 of 24 (exit 0 and 0)"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (question form how-much repeats task486 v2, answered at the draw; older same-puzzle and same-driver differentiated)",
-  "nearest": "task266 v1 at 0.11",
-  "surface": "people clean; three card-level promotions for the author's adjudication only (task481 back to back on gap time and decision type, different domain, pattern, Gate G and strategy; task157 and task201 differentiated on the card)"
+  "heart": "",
+  "nearest": "task271 v3 at 0.07",
+  "surface": ""
  },
  "judge": {
-  "verdict": "round 1 DETERMINISTIC (APPROVE); round 2 NOT_DETERMINISTIC",
-  "disposition": "SEND_BACK (margin_or_boundary_fragility, competing_defensible_answer on Fallowmere's 0.3; ask A's routine-paid days read as an unstated rule)",
-  "report": "task482/determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "stage 1: architecture 10 (the hospice cap accrual, live discharges projected by time out at every hospice) spent at stage 4 on the round 2 judge's SEND_BACK; re-root to architecture 11 with a fresh draw, reading Tried and rejected first: the call must be a quantity whose printed cell is wider than the spread of independent builds of its estimator, measured before the generator is written",
+ "resume": "stage 2 of architecture 11 (Lumenfold Learning's 2025-26 outcomes guarantee settlement, drawn 2026-10-24): write the generator's world on paper (58 partner districts in six states, background and district effects, the two-of-eight-module design, the contractor's background-only plausible values), place every district at least 4 points from its benchmark under the golden family and every district the plausible-value route moves at least 3 points across, keep the expected a posteriori and maximum likelihood counts on other wrong sets, then the readability screen, fork table, closure, asks and prompt.txt to precut.py exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
