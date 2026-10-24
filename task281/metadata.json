@@ -1,0 +1,112 @@
+{
+ "answer": "59 of the 60 positions placed (HRC 9, ACF 8, TWC 7, PCN 6, PCS 6, FFH 7, OXG 10, KPG 6); 1 returned to the Governor's reserve",
+ "deliverables": [
+  "fy2028_relief_positions_by_unit.xlsx",
+  "fy2028_weekly_backfill_need.png"
+ ],
+ "distractor_files": [
+  "target/doc_average_daily_population_fy2026.csv",
+  "target/msp_communications_call_volume_fy2026.csv",
+  "target/sha_winter_operations_log_fy2026.csv",
+  "target/overtime_expenditure_by_program_fy2026.xlsx"
+ ],
+ "domain": "General Statistics & Data Science (exploratory data analysis and distribution assessment)",
+ "objective": "Descriptive & Distribution Analysis",
+ "provenance": {
+  "data_dictionary.txt": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "doc_average_daily_population_fy2026.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "entry_class_calendar_fy2025_fy2028.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "fy2028_allowance_relief_positions_memo.pdf": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "hr_employee_extract_2026-10-01.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "merrimont_shift_rosters_fy2026.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "msp_communications_call_volume_fy2026.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "overtime_expenditure_by_program_fy2026.xlsx": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "overtime_offer_log_fy2026.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "payroll_earnings_codes.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "payroll_overtime_lines_checks_jul2025_jul2026.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "position_control_fy2028_round_the_clock_units.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "protective_services_agreement_excerpts.pdf": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "relief_coverage_standard.pdf": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "sha_winter_operations_log_fy2026.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  },
+  "timekeeping_status_codes.csv": {
+   "date": "2026-10-23",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the State of Merrimont, its agencies, units, people and records are fictional; the records follow the forms of US state timekeeping roster exports, HR extracts, position control projections and biweekly payroll earnings lines"
+  }
+ },
+ "rows": {
+  "doc_average_daily_population_fy2026.csv": 96,
+  "entry_class_calendar_fy2025_fy2028.csv": 28,
+  "hr_employee_extract_2026-10-01.csv": 195,
+  "merrimont_shift_rosters_fy2026.csv": 44115,
+  "msp_communications_call_volume_fy2026.csv": 730,
+  "overtime_offer_log_fy2026.csv": 11567,
+  "payroll_earnings_codes.csv": 4,
+  "payroll_overtime_lines_checks_jul2025_jul2026.csv": 14056,
+  "position_control_fy2028_round_the_clock_units.csv": 182,
+  "sha_winter_operations_log_fy2026.csv": 84,
+  "timekeeping_status_codes.csv": 16
+ },
+ "task": "task281",
+ "title": "State of Merrimont: the FY2028 overtime-relief positions placed across eight round-the-clock units"
+}

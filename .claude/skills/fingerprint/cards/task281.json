@@ -10,8 +10,8 @@
   "shape": "14",
   "decision_type": "allocation_to_total",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "59 of the 60 positions placed (HRC 9, ACF 8, TWC 7, PCN 6, PCS 6, FFH 7, OXG 10, KPG 6); 1 returned to the Governor's reserve",
+  "answer_source": "submission.md block 1; generator/figures.json call",
   "gap": [
     "time",
     "population"
@@ -30,30 +30,35 @@
   "decisive_rule_filed": true,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "published_series",
+  "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "Replaying FY2026's weekly backfill need as it stood, its own vacant lines included, against relief hours at each unit's average availability files other counts for most units and a different total, not the golden's 59 of the 60 positions.",
+  "analyst_test": "Executing Budget Instruction 2024-07 with every rule applied (FY2026's off-post weeks, the position control's vacant lines until their first shifts, FY2026's separations left out) and rating a relief position by title at the title's officers as the HR extract names them files 63 positions, three short of the 60, not the golden's 59 with one returned to the reserve.",
   "domain_test": "The deciding quantity is each unit's FY2028 weekly backfill-need distribution cut at its fifth-heaviest week, built from FY2026's absences, the FY2028 position control's vacant lines until each academy class graduates, and relief hours at the July 2025 class's first-year availability; replacing that distribution with its annual mean, or with FY2026's weeks as they stood, files other counts.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:forward-week-distribution-cut",
   "layer1": [
-    "rosters from two timekeeping systems, one facility migrated mid-year with its own absence codes",
-    "fiscal weeks from 1 July against the payroll's biweekly periods",
-    "lines vacated and refilled mid-year, with transfers between units under a new line number",
-    "re-exported roster days repeated in the extract",
-    "the payroll revision log's retro adjustments posted in later periods"
+    "rosters from two timekeeping systems, one facility migrated mid-year with its own status codes and payroll site number",
+    "fiscal weeks from 1 July against the payroll's biweekly periods ending on Saturdays",
+    "lines vacated by separation carried as roster rows with no holder until a class posted",
+    "re-exported roster days appended to the extract",
+    "a payroll extract cut by check date, with the settlement's retroactive lines posted against earlier service periods",
+    "overtime keyed to the officer's home timekeeper, the offer log recording the post a borrowed officer worked",
+    "timesheets approved after their period closed and paid on a later check, and some paid twice",
+    "HR title history rows for officers who changed title after the year",
+    "resignations rehired under new employee numbers with their seniority restored",
+    "one title outside the bargaining unit, its compensatory time credited hour for hour"
   ],
   "stakeholder_role": "workforce analysis desk, State Department of Budget and Management",
   "role_family": "research_desk",
   "scoring_unit": "other",
   "spine": {
     "file": "merrimont_shift_rosters_fy2026.csv",
-    "rows": 0,
+    "rows": 44115,
     "entity": "one scheduled line-shift: a post on the roster for one shift and who held it",
     "grain": "line x shift",
     "source": "synthetic"
   },
-  "forum": "minister_or_cabinet",
+  "forum": "line_manager_or_team",
   "forcing_event": "budget_or_appropriation",
   "org_family": "government_agency",
   "world": {
@@ -63,12 +68,20 @@
     "invented_names": [
       "State of Merrimont",
       "Harlan Road Correctional Facility",
-      "Ferrisburg Maintenance Garage"
+      "Avesford Correctional Facility",
+      "Thornmere Women's Correctional Center",
+      "Fennimore Forensic Hospital",
+      "Oxbow Bend Maintenance Garage",
+      "Kettle Pass Maintenance Garage",
+      "Merrimont Protective Services Association"
     ],
     "people": [
       "James Cohen",
       "Linda Wolf",
-      "Natalie Mckinney"
+      "Natalie Mckinney",
+      "Sean Crane",
+      "Krystal Russell",
+      "Brandon Snyder"
     ]
   },
   "deliverables": [
@@ -79,7 +92,7 @@
   "question_form": "how-many",
   "driver": "The decisive quantity is each group's need in a coming year read from an upper cut of its weekly shortfall distribution, rebuilt from last year's shortfalls with that year's own structural gaps replaced by the coming year's planned ones, and the added capacity rated at the availability of the newest members who will fill it; last year's weeks as they stood, or the group's average availability, each file other counts.",
   "driver_concrete": "Each unit's FY2028 relief positions are its fifth-heaviest week of backfill need over the weekly hours a relief officer works, the need built from FY2026's absences plus the vacant lines the FY2028 position control carries until each academy class graduates, the hours from the July 2025 academy class's first year; not FY2026's weeks with their own vacant lines, and not the unit's average availability.",
-  "stump": "A competent solver replays FY2026's weekly backfill need as it stood (its own vacant lines) against relief hours at each unit's average availability and files other counts for most units; the step that lands there is reading last year's weeks and last year's staff as next year's.",
+  "stump": "A competent solver executes the standard and rates a relief position at the title's average officer (32.4 to 35.3 hours on post a week), filing 63 positions, three short; the positions are filled from the July 2027 entry classes, and the July 2025 classes' first year (7.8 per cent off post against 14.5) puts a holder at 36.7 to 37.0 hours, so 59 are placed and one returns to the reserve.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task107": "task107 counts units crossing a line on a counterparty's entry rate that steps up at a fixed service anniversary; task281 has no rate step: it rebuilds a weekly shortfall distribution forward with the coming year's planned vacancies and reads an upper cut of it, the new members' availability taken from a comparison cohort.",
@@ -91,6 +104,6 @@
     "task95": "task95 re-weights a two-class conversion rate to a forward class weight recovered from two registers; task281 re-weights no rate: its forward step replaces last year's vacancy-driven weeks with the planned ones and rates new capacity at a first-year cohort's availability."
   },
   "lineage": [],
-  "notes": "Seed DA31's world, decision and quantity kept (60 overtime-relief positions across eight 24/7 units); its decoy-era mechanism set aside. Strategy forecast_method_backtest: the natural fit (last year's weeks replayed) is wrong for the window because the regime changes (the position control's vacancies and graduations, and relief hired as first-year staff). Gate G forecasting: the correctly read FY2026 does not pin FY2028's need. Shape 14: each unit's weekly distribution cut at its fifth-heaviest week.",
+  "notes": "Seed DA31's world, decision and quantity kept (60 overtime-relief positions across eight 24/7 units); its decoy-era mechanism set aside. Strategy forecast_method_backtest: the natural fit (last year's weeks replayed) is wrong for the window because the regime changes (the position control's vacancies and graduations, and relief hired as first-year staff). Gate G forecasting: the correctly read FY2026 does not pin FY2028's need. Shape 14: each unit's weekly distribution cut at its fifth-heaviest week. Forum redrawn at stage 3 from minister_or_cabinet to line_manager_or_team when task482 took minister_or_cabinet into the window: the Office of Budget Analysis's director enters the desk's placement in the allowance.",
   "registered": "2026-10-24T19:39:13Z"
 }
