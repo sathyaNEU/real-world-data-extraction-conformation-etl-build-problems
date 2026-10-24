@@ -6,13 +6,13 @@
   "domain": "energy-systems-utilities",
   "subdomain": "asset-condition-maintenance",
   "client_domain": "energy-systems-utilities",
-  "niche": "tooling a traction-battery refurbishment line's next-year slots across five EV platforms from the Dutch vehicle register, when the packs that will fail out of warranty next year include those in used imports still to arrive, old enough to be past their eight-year cover on arrival",
+  "niche": "tooling a traction-battery refurbishment line's next-year slots across five EV platforms from the Dutch vehicle register, when the packs that will fail out of warranty next year include those in used imports still to arrive, old enough to be past their five-year cover on arrival",
   "objective": "opportunity-sizing-decision",
   "shape": "other",
   "decision_type": "allocation_to_total",
   "answer_unit": "count",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Mira city car 1,450, Volta hatch 900, Plover saloon 350, Kestrel SUV 250, Tern van 50; 3,800 pack failures outside the OEM warranty forecast for 2027",
+  "answer_source": "golden/voltwerk_tooling_2027.xlsx (sheet Slots 2027) and submission.md, from generator/figures.json",
   "gap": [
     "population",
     "time"
@@ -33,7 +33,7 @@
   "validated_decoy": false,
   "context_artifact": "capacity_report",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst reads each registered car's current pack from the EU-wide replacement log (age from its latest fitting, the OEM warranty to eight years from first admission or Voltwerk's two years from a refurbished fit), takes the chance it fails in 2027 outside cover given it works on 30 June 2026 from the published curves, sums by platform over the 30 June 2026 register and splits the 60 lots by largest remainder, which tools the Mira city car two to three lots short and gives them to Volta and Tern, because the register is not the population whose packs fall due in 2027.",
+  "analyst_test": "A strong analyst reads each registered car's current pack from the EU-wide replacement log (age from its latest fitting, the OEM warranty to eight years from first admission, five for the Mira city car, or Voltwerk's two years from a refurbished fit), takes the chance it fails in 2027 outside cover given it works on 30 June 2026 from the published curves, sums by platform over the 30 June 2026 register and splits the 60 lots by largest remainder: Mira city car 1,250, Volta hatch 1,000, Plover saloon 350, Kestrel SUV 300, Tern van 100 and 3,400 in total, the Mira four lots short, because the register is not the population whose packs fall due in 2027.",
   "domain_test": "The deciding quantity is the out-of-warranty replacement demand an asset base throws off in 2027, forecast from each asset's own condition (pack age since its last fitting, its curve, its warranty clock), the asset-condition analyst's installed-base forecast; a vehicle fleet's base keeps moving through used imports that the RDW register records only as they arrive, so the 2027 base is the register plus the import stream it shows, and swapping in boilers or routers loses the cross-border used-car trade and the register's two registration dates that carry both the pack age and the stream.",
   "layer2_family": "estimand_identification",
   "layer2_pattern": "own:installed-base-forecast-carrying-the-inflow-the-register-does-not-hold-yet",
@@ -48,8 +48,8 @@
   "role_family": "capacity_planner",
   "scoring_unit": "other",
   "spine": {
-    "file": "rdw_register_extract_20260630.csv",
-    "rows": 0,
+    "file": "rdw_gekentekende_voertuigen_20260630.csv",
+    "rows": 88128,
     "entity": "one car of the five platforms on the Dutch register on 30 June 2026",
     "grain": "car",
     "source": "synthetic"
@@ -81,8 +81,8 @@
   "opening_move": "question-first",
   "question_form": "how-many",
   "driver": "The decisive quantity is next year's failures in an asset base that keeps taking in old units the current roll does not hold yet: a forecast summed over today's roll leaves out the units still to arrive, which arrive past their cover and fail in their first months, so one segment's demand runs a fifth short and its share of a fixed capacity goes to the segments the roll overstates.",
-  "driver_concrete": "Each platform's 2027 out-of-warranty pack replacements are the registered cars' conditional chances of failing outside cover plus those of the used imports the register shows arriving every month, which keep arriving through 2027 at about nine years old, past the eight-year OEM cover, so the Mira city car's 2027 demand is about a fifth above the register's own and the 60 lots move two to three onto it from Volta and Tern.",
-  "stump": "A competent solver forecasts 2027 from the 30 June 2026 register alone, each car's current pack from the replacement log at its conditional chance of failing outside cover, and tools Mira two to three lots short; the step that lands it there is taking the register as the population whose packs fall due in 2027, when the Mira's used imports keep arriving at about 520 a month past their warranty and fall due inside the year.",
+  "driver_concrete": "Each platform's 2027 out-of-warranty pack replacements are the registered cars' conditional chances of failing outside cover plus those of the used imports the register shows arriving every month, which keep arriving through 2027 at about 116 Mira city cars a month, 8.1 years old on average and past the five-year OEM cover, so the Mira's 2027 demand is about a quarter above the register's own (1,829 against 1,469) and four lots move onto it from Volta, Kestrel and Tern.",
+  "stump": "A competent solver forecasts 2027 from the 30 June 2026 register alone, each car's current pack from the replacement log at its conditional chance of failing outside cover, and tools the Mira city car four lots short (1,250 against 1,450, 3,400 against 3,800 in total); the step that lands it there is taking the register as the population whose packs fall due in 2027, when the Mira's used imports keep arriving at about 116 a month past their warranty and fall due inside the year.",
   "lineage": [],
   "differentiation": {
     "task132": "task132 renews the module in each relay position (a failed module is replaced and restarts the wear curve, so today's module's rate is weighted by its survival); task306's decisive move is the population at risk, the cars still to arrive on the register, and the renewal it needs is read off a complete replacement log as a lower rung.",

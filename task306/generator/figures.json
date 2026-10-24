@@ -1,0 +1,243 @@
+{
+ "arrivals": {
+  "Kestrel SUV": 0,
+  "Mira city car": 360,
+  "Plover saloon": 0,
+  "Tern van": 0,
+  "Volta hatch": 3
+ },
+ "arrivals_exact": {
+  "Kestrel SUV": 0.05,
+  "Mira city car": 359.83,
+  "Plover saloon": 0.48,
+  "Tern van": 0.0,
+  "Volta hatch": 2.76
+ },
+ "arrivals_total": 363,
+ "ask_a": {
+  "Kestrel SUV": 274,
+  "Mira city car": 149,
+  "Plover saloon": 190,
+  "Tern van": 224,
+  "Volta hatch": 167
+ },
+ "ask_a_detail": {
+  "Kestrel SUV": {
+   "modules": 768,
+   "ships": 140
+  },
+  "Mira city car": {
+   "modules": 4553,
+   "ships": 1526
+  },
+  "Plover saloon": {
+   "modules": 869,
+   "ships": 229
+  },
+  "Tern van": {
+   "modules": 94,
+   "ships": 21
+  },
+  "Volta hatch": {
+   "modules": 2493,
+   "ships": 746
+  }
+ },
+ "ask_a_exact": {
+  "Kestrel SUV": 274.29,
+  "Mira city car": 149.18,
+  "Plover saloon": 189.74,
+  "Tern van": 223.81,
+  "Volta hatch": 167.09
+ },
+ "ask_b": {
+  "Kestrel SUV": 88.2,
+  "Mira city car": 88.3,
+  "Plover saloon": 94.0,
+  "Tern van": 90.5,
+  "Volta hatch": 92.6
+ },
+ "ask_b_detail": {
+  "Kestrel SUV": {
+   "packs": 144,
+   "passed": 127
+  },
+  "Mira city car": {
+   "packs": 1551,
+   "passed": 1370
+  },
+  "Plover saloon": {
+   "packs": 232,
+   "passed": 218
+  },
+  "Tern van": {
+   "packs": 21,
+   "passed": 19
+  },
+  "Volta hatch": {
+   "packs": 755,
+   "passed": 699
+  }
+ },
+ "ask_b_exact": {
+  "Kestrel SUV": 88.194,
+  "Mira city car": 88.33,
+  "Plover saloon": 93.966,
+  "Tern van": 90.476,
+  "Volta hatch": 92.583
+ },
+ "ask_c": {
+  "Kestrel SUV": 5.9,
+  "Mira city car": 14.7,
+  "Plover saloon": 11.0,
+  "Tern van": 8.3,
+  "Volta hatch": 8.9
+ },
+ "ask_c_detail": {
+  "Kestrel SUV": {
+   "cores": 169,
+   "rejected": 10,
+   "scrapped_on_line": 7
+  },
+  "Mira city car": {
+   "cores": 1850,
+   "rejected": 272,
+   "scrapped_on_line": 53
+  },
+  "Plover saloon": {
+   "cores": 273,
+   "rejected": 30,
+   "scrapped_on_line": 6
+  },
+  "Tern van": {
+   "cores": 24,
+   "rejected": 2,
+   "scrapped_on_line": 1
+  },
+  "Volta hatch": {
+   "cores": 864,
+   "rejected": 77,
+   "scrapped_on_line": 32
+  }
+ },
+ "ask_c_exact": {
+  "Kestrel SUV": 5.917,
+  "Mira city car": 14.703,
+  "Plover saloon": 10.989,
+  "Tern van": 8.333,
+  "Volta hatch": 8.912
+ },
+ "base": {
+  "Kestrel SUV": 322,
+  "Mira city car": 1469,
+  "Plover saloon": 425,
+  "Tern van": 91,
+  "Volta hatch": 1142
+ },
+ "base_exact": {
+  "Kestrel SUV": 322.03,
+  "Mira city car": 1469.09,
+  "Plover saloon": 425.01,
+  "Tern van": 90.5,
+  "Volta hatch": 1141.73
+ },
+ "base_total": 3448,
+ "extra_lot": {
+  "Kestrel SUV": false,
+  "Mira city car": true,
+  "Plover saloon": true,
+  "Tern van": false,
+  "Volta hatch": false
+ },
+ "extra_lots": 2,
+ "floors": {
+  "Kestrel SUV": 5,
+  "Mira city car": 28,
+  "Plover saloon": 6,
+  "Tern van": 1,
+  "Volta hatch": 18
+ },
+ "forecast": {
+  "Kestrel SUV": {
+   "exact": 322.1,
+   "whole": 322
+  },
+  "Mira city car": {
+   "exact": 1828.9,
+   "whole": 1829
+  },
+  "Plover saloon": {
+   "exact": 425.5,
+   "whole": 425
+  },
+  "Tern van": {
+   "exact": 90.5,
+   "whole": 91
+  },
+  "Volta hatch": {
+   "exact": 1144.5,
+   "whole": 1144
+  }
+ },
+ "lot": 50,
+ "lots_exact": {
+  "Kestrel SUV": 5.07,
+  "Mira city car": 28.79,
+  "Plover saloon": 6.7,
+  "Tern van": 1.42,
+  "Volta hatch": 18.02
+ },
+ "lots_total": 60,
+ "margin": 0.273,
+ "mira_import_age": 8.1,
+ "mira_imports_month": 116,
+ "register_only": {
+  "slots": {
+   "Kestrel SUV": 300,
+   "Mira city car": 1250,
+   "Plover saloon": 350,
+   "Tern van": 100,
+   "Volta hatch": 1000
+  },
+  "total": 3400
+ },
+ "remainders": {
+  "Kestrel SUV": 0.07,
+  "Mira city car": 0.79,
+  "Plover saloon": 0.7,
+  "Tern van": 0.42,
+  "Volta hatch": 0.02
+ },
+ "share": {
+  "Kestrel SUV": 0.0845,
+  "Mira city car": 0.4798,
+  "Plover saloon": 0.1116,
+  "Tern van": 0.0237,
+  "Volta hatch": 0.3003
+ },
+ "slots": {
+  "Kestrel SUV": 250,
+  "Mira city car": 1450,
+  "Plover saloon": 350,
+  "Tern van": 50,
+  "Volta hatch": 900
+ },
+ "slots_total": 3000,
+ "total": 3800,
+ "total_exact": 3811.5,
+ "warranty": {
+  "Kestrel SUV": 8,
+  "Mira city car": 5,
+  "Plover saloon": 8,
+  "Tern van": 8,
+  "Volta hatch": 8
+ },
+ "window_imports": {
+  "Kestrel SUV": 202,
+  "Mira city car": 1394,
+  "Plover saloon": 187,
+  "Tern van": 42,
+  "Volta hatch": 502
+ },
+ "year_days": 365.25
+}
