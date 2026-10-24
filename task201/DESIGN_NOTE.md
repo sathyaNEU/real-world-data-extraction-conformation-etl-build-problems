@@ -1543,6 +1543,51 @@ application) or recovered (the fit is decoration beside the per-case mean), on t
 and on the level-dependent count object (exactness and non-triviality are one dial).** Architecture 13
 starts outside that family or not at all.
 
+
+### Architecture 13, step 0: the axis window measured on a probe card, not read off the brief (2026-10-24)
+
+The axis the author set for this pass is the one structure `stumping` records as having opened a two-ended
+dial: a construction whose UNKNOWNS ARE STRICTLY FEWER THAN ITS CASES, so the data overidentifies it and
+the estimator family closes by arithmetic rather than by a filed sentence. The assigned ground is a few
+ASSESSOR parameters identified across many subjects by an incomplete overlap design, disjoint from two
+siblings hunting the same axis on instrument-and-laboratory comparison and on handler-or-route effects.
+
+**Probe card** at `scratchpad/w13_201/probe_card.json` (never registered), cell
+`survey-research-official-statistics/anomaly-detection`, shape 01, decision `designation_set`,
+strategy `decomposition_attribution`, role `field_unit_lead`, artifact `operations_log`, org
+`research_or_statistics_office`, forum `operations_desk`, forcing event `season_or_peak`, people drawn
+from `guard.py names --geo "United Kingdom" --seed 201`.
+
+**Verdict: NO AXIS BAN FIRES ANYWHERE ON THIS DRAW.** Not `ban.subdomain`, `ban.pairing`, `ban.strategy`,
+`ban.shape`, `ban.role`, `ban.artifact`, `ban.calibration`, `ban.spine`, `ban.forum`,
+`ban.forcing_event`, `ban.org_family`, `ban.pattern`, `people.*` or `tell.names`. Measured rather than
+assumed: task125's card on this same subdomain registered 2026-10-23T17:50:29Z and does **not** reach the
+window, and the mid-wave WINDOW_UPDATE table (2026-10-20) is stale in both directions again. So for the
+fourth consecutive pass on this number occupancy is not the constraint.
+
+**The two BLOCKs that did fire are structural triples, and one of them names a concurrent sibling.** With
+`gap: population` first the card BLOCKs on `test.same_puzzle_older` (task181 v4, task229 v1, task98 v3)
+and `test.same_driver_older` (task103 v1 and v3, task72 v1 and v2, task81 v3, task86 v1, task90), and the
+guard's own fix line says five differentiation lines is dearer than redrawing. Probed over sixteen honest
+combinations of gap, pattern and Gate G: `gap: objective` first with `pattern: none` (`generators[0]` G14,
+which is what the structural tests then key on) and `gate_g: decomposition_attribution` returns **WARN
+only**, the warnings being `repeat.deliverables` (png+xlsx against task306) and `repeat.question_form`
+(which, against task484 and task305). `pattern: E` is **not** available: with `designation_set` it BLOCKs
+`test.same_puzzle` INSIDE THE BATCH against task482, which is the one collision `guard.py check` can see
+and a reminder that the sibling cards are otherwise invisible to it. Free G-codes on the passing signature
+are G14, G6 and G18; G1, G3, G5 and G17 all BLOCK.
+
+**Why `objective` is the honester label and not merely the passing one.** The population is not in doubt
+here: it is every site the programme visited in the window, and no row's membership is argued. What is in
+doubt is what the recorded number is a measure OF, because the decision is scored on a site's own
+condition while the record scores a site-and-assessor pair, and the obvious correction targets the wrong
+objective by removing the caseload's real quality along with the assessor's severity. `population` stays
+as the second gap, which is where the row-grain reading belongs.
+
+**Driver text screen, for the record.** Nearest drivers 0.07 (task73 lineage), 0.05 (task189, task235 v2
+and v1, task471 v2 lineage), all far under the 0.12 WARN floor, so the lexical screen says nothing and the
+abstraction test has to be run by hand. The two neighbours it misses are named in the next entry.
+
 ## Surface screen, answered
 
 `guard.py surface task201` screens 246 builds and promotes five pairs for adjudication. Four are corpus

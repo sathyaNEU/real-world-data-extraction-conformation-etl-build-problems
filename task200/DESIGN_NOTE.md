@@ -1390,3 +1390,76 @@ as the start; a table written an hour earlier is wrong in both directions.
     across-candidate spread of 0.3500, so the estimator's noise is **0.79 of the whole spread it must rank
     on** exactly where the correction starts to reorder.
 
+
+## Architecture 5: the overidentification axis on instrument and laboratory ground (2026-10-24)
+
+The axis, handed in as a constraint and not a mechanism: a construction whose unknowns are strictly fewer
+than its cases is overidentified by the data, which closes the estimator family without filing a method.
+The assigned ground: a few INSTRUMENT, DEVICE or LABORATORY parameters identified across many samples by a
+shared-sample comparison the organisation already runs. Written as it goes; nothing below is to be
+re-screened from this number.
+
+### Step 0, the guard, before any axis is believed free
+
+`guard.py recent` (read 2026-10-24): the last twelve in draw order end task279, task482, task484, task305.
+`guard.py slots` run twice, once on the mechanism's nouns (`overidentified`, `shared parameter`,
+`round-robin`) and once on the setting's (`laboratory`, `instrument`, `analyser`). The setting run is the
+one that pays, exactly as `fingerprint` says: it returned five slots sitting on this ground, two of them
+with the candidate already measured dead on a cut pack.
+
+- **task249 architecture 1** is this ground's candidate in other nouns: "each node's span read from its
+  spread against the four distant analysers, the paired slope attenuated by the sites' partial hourly
+  agreement". It died at stage 4 to a **medium-effort reader in about two minutes**, who "landed the call
+  with an errors-in-variables slope instrumented by the other stations' mean" and kept all 36 ask figures.
+  Its own verdict line: "regression dilution is textbook statistics, so the decisive step is readable to a
+  strong model".
+- **task252 architecture 1** is the same shape with a memory term: "each analyser's carryover from the two
+  samples before and the zero or span form of its calibration error, read from the checks and the raw
+  grabs". It "was solved by one careful reader in eight: **every term of that model is identified by the
+  readings, the checks and the grabs**". Its escape was to move the decisive quantity UPSTREAM of every
+  reference (what each filtered sample line takes before the cell) and to censor it.
+- **task248** holds the holding-time decay restoration; **task245** the analyser that faults under load;
+  **task190** screened the per-batch recovery correction from a laboratory's own quality-control file.
+- The axis's own author (task198, architecture 13) ends with the warning that bears on this ground
+  directly: "draw it on a cell whose spent drivers are not all about how the instrument or the record sees
+  the quantity".
+
+task252's sentence is the axis's kill stated from the other side, and it is the finding this pass starts
+from rather than ends on: **a parameter the design identifies is a parameter a reader recovers.**
+Overidentification closes the estimator family by making the construction forced, and a forced construction
+on a shipped design matrix is one least-squares call, which is the cheapest licensed member. That is the
+same column the brief names: family unanimity and the cheapest licensed member's hit rate.
+
+### Step 1, the probe card, run before any world was imagined
+
+`guard.py check` on `scratchpad/a5_200/probeA.json` (healthcare-delivery-health-economics /
+provider-quality-risk-adjustment, anomaly-detection, shape 07, gap population, G16, `gate_g
+signal_vs_noise_or_hold`, decision `structural_verdict`, strategy `composition_mix`): **BLOCK**, four rules.
+
+| Rule | Verdict | Against |
+|---|---|---|
+| `card world.people is empty` | BLOCK | mechanical, clears with `guard.py names` |
+| `ban.artifact` | BLOCK | `monitoring_export` repeats task305 |
+| `ban.forum` | BLOCK | `committee_or_panel` repeats task305 |
+| `test.same_driver_older` | BLOCK | gap `population` + pattern G16 + `signal_vs_noise_or_hold` repeat **task260** |
+| `overuse.strategy` | WARN | `composition_mix` in 3 of the last 12 |
+
+Two positive legality results worth recording, because a zero card count proves neither: the pairing
+**is** legal on this objective (no `three_rules.task_type` BLOCK fired), and `physical-environmental-
+sciences`/`sensor-calibration-measurement`, which is the natural home for an instrument parameter, is
+tagged **DQ only** in the taxonomy, so it cannot serve anomaly-detection at all. That is why task249 and
+task252 sit on Data Quality Monitoring and not here.
+
+**The two cards the probe surfaced are the ground's real wall, and the driver text screen cannot see
+either** (nearest drivers 0.07, 0.06, 0.06, 0.06, 0.06).
+
+- **task185** (this lane, anomaly-detection, architecture spent): "the decisive quantity is the conversion
+  between an old and a new measuring device sized at the value being converted, because the new device
+  agrees with the old at ordinary values and departs only at high ones, so any single conversion, the
+  average or one high-value offset, leaves a threshold count on the wrong basis". That is the
+  level-dependent device offset recovered from paired comparison readings: the strongest form of this
+  ground's candidate, already on file as a driver, and the abstraction test maps it onto the candidate
+  exactly once the nouns are stripped.
+- **task260** (biomedical, reader study): a shared sample of readers each scoring a shared sample of items,
+  the interval owed to both samples at once. That is the two-way shared-sample design itself, which is why
+  the probe BLOCKs against it rather than against anything in this lane.
