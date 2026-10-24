@@ -1,0 +1,109 @@
+{
+  "task": "task305",
+  "architecture": "v1",
+  "drawn": "2026-10-24",
+  "slot_note": "wave 6, Opportunity Sizing block; seed OS07 (the world, the decision and the quantity only: a regional grocer opening one of six shortlisted sites next year, sized by its incremental annual contribution)",
+  "domain": "urban-regional-science",
+  "subdomain": "accessibility-agglomeration-location-analysis",
+  "niche": "which shortlisted site a regional grocery chain opens next year, sized by a spend-share (Huff) model whose origins are census output areas, when one site sits beside a 1,400-pitch holiday park whose guests live outside the region",
+  "objective": "opportunity-sizing-decision",
+  "shape": "other",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "named_option",
+  "answer": "S3 Pellow, Mill Lane, adding about 0.9 million pounds a year to the chain's contribution (prototype figure; final figure from generator/figures.json)",
+  "answer_source": "golden workbook and submission.md, from generator/figures.json",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G12",
+    "G3",
+    "G6"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "existing_book_actuals",
+  "stump_strategy": "population_selection",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "monitoring_export",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst runs the filed spend-share model over the census output areas' household grocery spend, adds each site to the 24 grocery stores of 280 m2 or more on the rating list, nets what it takes from our ten stores, confirms the model against the card feed (it refits at deterrence 0.220 and floor-area power 0.94, store ratios 0.92 to 1.06) and approves S1 Ashby Moor at about 0.6 million pounds, because the census output areas are not every origin of grocery spend: the guests on Pellow Lakes Holiday Park's 1,400 pitches live outside the region.",
+  "domain_test": "The deciding quantity is a new store's trade from the retail geographer's spatial-interaction model, every origin's grocery spend shared among the stores by floor area and distance deterrence; a holiday park is an origin the census never counts, and its guests' spend is priced per pitch from the out-of-region cardholders at the chain's stores beside other parks, so swapping in a hospital's patients or a utility's megawatt-hours loses the census origin set, the park pitches on the rating list and the acquirer's home-sector feed that measure the guests.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:spatial-interaction-demand-carrying-the-visitor-origins-the-census-does-not-hold",
+  "layer1": [
+    "Census 2021 output areas with population-weighted centroids on the British National Grid",
+    "ONS Postcode Directory extract with terminated postcodes and their termination months",
+    "VOA non-domestic rating list in its own descriptions, with the summary valuation's main measure in m2, parking spaces or pitches",
+    "a payment acquirer's merchant-insight feed of card spend by month and cardholder home postcode sector, out-of-region sectors included",
+    "modelled grocery spend per household by output area from a data provider",
+    "the chain's financial year (April to March) against calendar-month feeds"
+  ],
+  "stakeholder_role": "the chain's finance director, who chairs the property committee",
+  "role_family": "finance_controller",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "voa_rating_list_2026_extract.csv",
+    "rows": 25600,
+    "entity": "one hereditament on the non-domestic rating list in the planning region",
+    "grain": "hereditament",
+    "source": "synthetic"
+  },
+  "forum": "committee_or_panel",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "retailer_or_ecommerce",
+  "world": {
+    "geography": "England (a two-district planning region on the British National Grid, postcode area LQ)",
+    "currency": "GBP",
+    "org_type": "regional grocery chain, ten stores",
+    "invented_names": [
+      "Wenlow Foodstores",
+      "Hallam Fresh",
+      "Brightmart",
+      "Gilbey's",
+      "Kestle Discount",
+      "Pellow",
+      "Ferrisbridge",
+      "Ashby Moor",
+      "Coldharbour",
+      "Wendlebury",
+      "Haxton",
+      "Stoneacre",
+      "Kelbrook",
+      "Brindley",
+      "Oxley Green",
+      "Marston Fen",
+      "Tolland",
+      "Pellow Lakes Holiday Park",
+      "Brindley Water Holiday Park",
+      "Stoneacre Lakes Caravan Park"
+    ],
+    "people": [
+      "Pauline Sullivan",
+      "Joshua Ingram"
+    ]
+  },
+  "deliverables": [
+    "wenlow_site_appraisal_2027.xlsx",
+    "property_committee_paper_2027.docx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The demand model's origins are the resident count, and a body of short-stay occupants counted at homes outside the area sits in no origin; their spend, measured at existing outlets beside similar lodgings and priced per lodging unit, decides which candidate adds most.",
+  "driver_concrete": "The spend-share model's origins are the census output areas, and Pellow Lakes Holiday Park's 1,400 pitches hold guests who live outside the region; their grocery spend, priced per pitch from the out-of-region cardholders at our stores beside Brindley Water and Stoneacre Lakes, makes S3 Pellow the site that adds most.",
+  "stump": "A competent analyst runs the filed spend-share model over the census households' spend, finds it fits the card feed and approves S1 Ashby Moor at about 0.6 million pounds where the golden is S3 Pellow at about 0.9 million; the step that lands them there is taking the census output areas as every origin of grocery spend, when the guests on Pellow Lakes Holiday Park's 1,400 pitches live outside the region.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task199": "task199's record holds an event only where a watcher filed it, so a unit's rise is read against its own filing volume; here no record depends on a watcher: the census is complete for the region's residents, and the missing origin is a holiday park's guests, who appear in no count and are priced per pitch from the out-of-region cardholders the acquirer's feed shows at the chain's stores beside other parks.",
+    "task268": "task268's first architecture carried people present at small areas from a commuting table at a survey's on-site rate, and its later ones a stock retreating from collectors and survival through lost follow-up; here the missing people are holiday guests who live outside the region, absent from every table in the pack, whose only measure is the grocery spend per pitch that out-of-region cardholders leave at stores beside other parks.",
+    "task133": "task133's loan record never watched the months before a system takeover, a left truncation of exposure in a unit-level record; here nothing is truncated or unwatched: the census is complete for its residents and the gap is an origin of spend it never holds.",
+    "task180": "task180's catalogue masks small events in the noisy hours of a daily cycle, a detection gap inside one record; here no event goes undetected: the census counts residents correctly and the decisive origin, a holiday park's guests, is outside its scope altogether."
+  },
+  "lineage": [],
+  "notes": "Shape other: the call is one of six sites with its addition to the chain's annual contribution (2 criteria plus its components), and the asks grade the existing estate and the six sites on measures the call does not turn on (about 25 more); grading every site's addition would pay the resident route five of six. Probes before the draw (2026-10-24, call-only, isolated, medium): sonnet and opus both approved S1 Ashby Moor at 0.6 million pounds; opus refitted the model to the card feed, called the out-of-region cardholders 1.7 per cent of card spend and read Brindley's end-of-season fall as competition. Redrawn at check: context artifact filed_model (ban against task482) to monitoring_export, the acquirer's merchant-insight feed; Gate G method_or_model_selection (repeat of task482, overuse 5 of 12) to forecasting, the honest key since the fitted model back-tests on the estate and the correctly read past does not pin the new store's trade; deliverables moved to xlsx plus docx (a committee paper) from png plus xlsx (repeat of task306).",
+  "registered": "2026-10-24T09:59:30Z"
+}
