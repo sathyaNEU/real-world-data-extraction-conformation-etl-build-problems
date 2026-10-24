@@ -382,6 +382,48 @@ determinacy criteria. **The corollary is the only place left to look: a record t
 reason OTHER than attribution** (compliance, billing, provenance, safety), because only there is the
 labelling not built to carry the decision.
 
+**THE LABELLED-INDEX THEOREM, which closes the enumeration rather than extending it.** Let the deciding
+quantity be indexed by `I`, and let the pack's labels be every attribute any shipped record carries. Then
+exactly one of two holds, and **there is no third case, because an index is either labelled or it is not.**
+Either `I` is a subset or product of those labels, and then **the pack CONTAINS the design matrix** (the
+indicator columns of `I`), the decisive construction is one call on it, and Gate C and Gate F are financed by
+the same object. Or `I` involves an index the pack does not label, and then the model is **saturated** in that
+direction and the quantity is unidentified. The saturation half is measured, not argued: with the crossing
+label absent from the outcome record the profile log-likelihood over the free multipliers, with the unit
+intensities profiled out, has a range of **0.000e+00 in 3 of 5 worlds and 1.137e-13 at worst** over 401
+licensed vectors, because `theta_f = y_f / sum_b delta_b e_fb` fits every equation for ANY multiplier vector.
+That is not weak identification and no orthogonality repairs it: it is a count of equations. Ship the
+crossing label on the outcome and the design is overidentified by 41, whereupon the designed joint solve and a
+one-line GLM with unit and label dummies are **one object** at a maximum absolute difference of **1.3328e-13**
+and a correlation of 1.000000000000, the same identity measured a third time on a third unrelated ground.
+There is no middle either: with the label named on only 15 per cent of outcomes the one call still reaches the
+truth 13 of 20 against the named-subset filter's 0 to 1.
+
+**And a latent index is a mixture, so the strict reading dies too:** where the quantity's index is labelled by
+nothing at all, the licensed class counts give **3.45 distinct designated sets of 4, unanimous in 0 of 20
+worlds**, and using the TRUE class count reaches the truth 2 of 20, **worse than ignoring the latent structure
+entirely** at 3 of 20. The class count is a free method choice.
+
+**The institutional half, which is the mandated-indicator law mirrored: the purpose that crosses the labels is
+the purpose that ships the cross-reference.** A provenance register exists to answer "which units carry this
+lot" and a custody record to answer "who held this item when", and those questions ARE the incidence matrix.
+So the only two record purposes that produce genuine orthogonality to a decision's units produce it for the
+same reason that makes them record the link. Generalised: **a record kept to discharge an obligation must be
+auditable, and auditability means it ships the link between the obligation and the thing it was discharged
+against**, which closes warranty, recall, grant, procurement, insurance and tax records by one sentence.
+
+**The arithmetic half, which does not depend on the institution: orthogonality buys identification and spends
+the lever, one for one.** The correction a crossed label licenses is an exposure-weighted average over the
+unit's own crossed exposure, so `rho` tracks `sd(log delta) / sqrt(k) / sd(log theta)`, predicted 1.45, 1.03,
+0.84, 0.73, 0.59, 0.51 against measured **1.385, 1.099, 0.890, 0.764, 0.530, 0.392** as the crossing count
+rises. At orthogonality 0.000 the label is nested, the design is rank deficient by 8 and nothing is
+identified; at 0.880 the floor is 0.920 and the reflex cannot reorder the candidates. Measured jointly: **0 of
+24 cells and 0 of 36 on a dedicated five-requirement sweep**, with the determinacy flag 0 in every single
+cell (family spread 46.9 to 8,913.2 printed units against 0.4), the designed RMSE 35.7 to 525.1 times the
+golden boundary gap, and **three cells where the ladder is inverted**. In the masked arm the designed route's
+hit rate **equals the pooled naive route's in 12 of 12 cells exactly**, which is saturation showing up in the
+designation identically rather than approximately.
+
 **So the only direction the enumeration never reaches:** a decisive step whose licensed family has **NO shipped
 design matrix to solve**, which means the deciding quantity cannot be a parameter attaching to any unit the
 record labels. Everything that attaches to a labelled unit is either corrected per case (closed), propagated

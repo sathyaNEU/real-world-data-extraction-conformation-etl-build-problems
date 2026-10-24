@@ -2833,3 +2833,270 @@ design, the identity R = 1.000, and the cheapest-member-is-a-family-member algeb
 leaves is the one clause the enumeration above never reaches: a decisive step whose licensed family has
 **no shipped design matrix to solve**, which means the deciding quantity cannot be a parameter attaching
 to a unit the record labels at all.
+
+### Architecture 15, the guard re-measured and the target restated (2026-10-24)
+
+**The live signature from architecture 14 re-measures PASS with no WARN today**, after the window moved
+(task482 and task484 registered since architecture 14 ran, so the live three by filing time have changed).
+`guard.py check` on architecture 14's probe3 card returns `PASS task198
+energy-systems-utilities/anomaly-detection shape 01 gap objective pattern G4 gate_g
+decomposition_attribution decision designation_set strategy decomposition_attribution`, nearest drivers
+0.06 task190 (v1, lineage), 0.05 task69 (v1), 0.05 task69 (v2), 0.04 task27, 0.04 task106, all under the
+0.12 WARN floor. The two BLOCKing probes still BLOCK, and the reason is still structural rather than the
+ground: probe1 (gap `population`, pattern `D`) BLOCKs `test.same_puzzle_older` against task181 v4, task229
+and task98 and `test.same_driver_older` against task103, task72, task81, task86 and task90; probe2 (gap
+`population`, pattern `none`, `generators[0]` G17) BLOCKs the same two tests against task246, task266 and
+task471. So the ground is live and only the `objective`-gap signature is free, exactly as filed.
+
+**Wave 7 occupancy re-read, concurrent not shipped** (`grep -l wave7_cell task*/pipeline.json`): seven
+slots, all PAUSED at stage 1, task182 (criminology/crime-incidence, arch 9), task190
+(healthcare/provider-quality, arch 10), task194 (epidemiology/disease-surveillance, arch 16), task198
+(this slot, arch 14), task200 (general-statistics/EDA, arch 5), task201
+(survey-research/anomaly-detection, arch 13), task202 (nonprofit/grant-award, arch 5). None is on
+energy-systems-utilities.
+
+**The target, as the author states it.** Everything attaching to a unit the record LABELS is closed:
+corrected per case (additive or multiplicative), propagated through a structure, crossed against a limit,
+or solved from a shipped design. The residue is a decisive step whose licensed family has no shipped
+design matrix to solve. Two siblings judge that residue empty because an organisation keeps a quality
+record in order to attribute variation to the units it labels. The corollary to price here is a record
+kept for a different reason entirely (compliance, billing, provenance, custody, safety), whose labels may
+be ORTHOGONAL to the units the decision is about.
+
+### Architecture 15, the corollary priced on the live cell: the record chosen and the orthogonality measured (2026-10-24)
+
+**The record chosen, and what the organisation keeps it FOR.** Of the non-attribution records a
+distribution network operator actually holds, exactly one family has labels that are genuinely CROSSED
+with the decision's units rather than nested in them, and it is worth saying why before the numbers.
+Billing a customer requires naming the customer, which the connectivity model maps onto a feeder, so
+billing labels are nested. A per-customer compliance obligation names the customer, so nested. A safety
+record names the hazard and the place, so nested. The purposes whose labels genuinely cross the asset
+hierarchy are **provenance and custody**, because those records exist to answer "which units got this
+batch" and "who held this item when". So the record priced here is the **provenance and conformity
+register**: a manufacturing BATCH (lot) of a distribution component, issued from stores across many
+feeders, with each feeder carrying components from several batches. It is kept for warranty, recall and
+certificate-of-conformity purposes and not to attribute reliability to anything.
+
+World (clean truth, ONE generating process, one rng per world driving lengths, intensities, batch
+severities, the stores allocation and the faults together; 20 draws per cell; every screen run twice to
+byte-identical output; harness at `<scratch>/t198a15/screen2.py` and `screen3.py`): F = 24 11 kV feeders,
+B = 8 batches. Feeder f has length km_f and a latent condition intensity theta_f (faults per circuit-km
+per year, the quantity a network planner reinforces on, realistic Irish MV level 0.08). Batch b has a
+latent defect multiplier delta_b. A component of batch b on feeder f fails at theta_f times delta_b.
+Graded object: the four feeders of 24 with the highest own theta_f. The stores dial k is how many
+distinct batches a feeder's components came from, k = 1 nested, k = 8 fully crossed.
+
+**1. The orthogonality is real, measurable, and it is the same parameter as the lever.** orth = 1 minus
+I(batch;feeder)/H(batch) over the component population; rho = sd(log mix factor)/sd(log theta), the
+multiplicative floor law's parameter; floor = sqrt(1 - rho squared).
+
+| k | orth | rho | floor | corr bias only | corr with noise | coupling | naive hit | rank deficit |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 0.000 | 1.385 | n/a | 0.6178 | 0.3292 | +0.0442 | 0 of 20 | **8** |
+| 2 | 0.281 | 1.099 | n/a | 0.6576 | 0.3341 | -0.0163 | 0 of 20 | 0 |
+| 3 | 0.457 | 0.890 | 0.455 | 0.7334 | 0.3208 | -0.0257 | 0 of 20 | 0 |
+| 4 | 0.569 | 0.764 | 0.645 | 0.8106 | 0.4079 | +0.0580 | 1 of 20 | 0 |
+| 6 | 0.759 | 0.530 | 0.848 | 0.8765 | 0.4602 | +0.0074 | 1 of 20 | 0 |
+| 8 | 0.880 | 0.392 | 0.920 | 0.9269 | 0.4182 | +0.0313 | 1 of 20 | 0 |
+
+**The dial is one-ended and the reason is arithmetic rather than a tuning accident.** The correction a
+crossed label licenses is an exposure-weighted AVERAGE of the batch multipliers over the unit's own
+components, so its log dispersion falls as one over the root of the number of distinct batches the unit
+draws on: measured rho tracks sd(log delta)/sqrt(k)/sd(log theta) across the whole dial (predicted 1.45,
+1.03, 0.84, 0.73, 0.59, 0.51 against measured 1.385, 1.099, 0.890, 0.764, 0.530, 0.392). So raising the
+orthogonality to escape nesting spends the lever one for one, and at orth 0.880 the floor is 0.920, which
+is this skill's own statement that the reflex cannot reorder the candidates. Driving the orthogonality to
+zero to buy the lever makes the batch label NESTED in the feeder, and then the design is **rank deficient
+by 8** and nothing is identified at all.
+
+**2. The design-matrix test, which is the whole point, and it answers in equations rather than in a
+correlation.** Unknowns: 24 feeder intensities plus 7 free batch multipliers = 31.
+
+- **The outage record alone (the record does not say which batch failed): 24 equations against 31
+  unknowns, a deficit of 7.** Priced as a profile, not argued: the profile log-likelihood over delta with
+  theta profiled out, over 401 licensed delta vectors, has a range of **0.000e+00 in 3 of 5 worlds and
+  1.137e-13 at worst**. The model is SATURATED, because theta_f = y_f / sum_b delta_b e_fb fits all F
+  equations exactly for ANY delta. That is not weak identification and no orthogonality repairs it: it is
+  a count of equations.
+- **What would have to ship for a one-call solve is the batch on the FAULT, and that is exactly what the
+  provenance purpose requires the register to record**, since a warranty claim or a recall is about which
+  lot failed. With it the pack is 72 equations against 31 unknowns, **overidentified by 41**, and the
+  designed joint solve and the one-line GLM are one object: max absolute difference **1.3328e-13**, max
+  relative difference **3.3279e-12**, correlation **1.000000000000** over 20 worlds. That is this lane's
+  identity measured a THIRD time on unrelated ground (3.973e-12 and 5.129e-13 are the two on file).
+
+**3. R = 1.000 with 0 sign changes, at both ends of the volume dial.** On the graded path (the distortion
+the batch mix contributes in quarter q to the designated feeder's graded figure) over a twelve-quarter
+cycle: at realistic MV intensity R mean **1.000**, min 1.000, max 1.000, sign changes **0.00**, max 0,
+19 of 20 paths kept; at fifteen times MV intensity R mean **1.000**, 0.00 sign changes, 20 of 20 kept. By
+this lane's identity the candidate IS a per-case correction in other nouns, and structurally so: the mix
+factor is time-invariant because a feeder's installed population is, so the distortion cannot change
+sign. A construction genuinely outside the family measured R = 235.99 with 5.85 sign changes, so the test
+separates.
+
+**4. The cheapest licensed member's hit rate beside the family's unanimity, one table, 24 cells: 0 pass.**
+Standing family of five on the named record (two-way Poisson solve; GLM on feeder and batch dummies;
+plug-in batch rates then divide, the CHEAPEST; the batch effect collapsed to a binary; the batch effects
+shrunk to the pool) and of four on the masked record. Reflexes of four, including one regression of the
+log rate on the batch shares. PASS needs the designed route to hit, every reflex to miss, the cheapest
+licensed member to MISS, one distinct designated set, and a family spread under 0.4 printed units.
+
+| mode | k | vol | yrs | faults/feeder | designed | cheapest licensed | best reflex | distinct sets | spread/unit | rmse/gap |
+|---|---|---|---|---|---|---|---|---|---|---|
+| named | 3 | 1 | 10 | 18.6 | 3 of 20 | 3 of 20 | 0 of 20 | 3.25 | 76.6 | 314.27 |
+| named | 3 | 15 | 30 | 844.8 | 16 of 20 | 10 of 20 | 6 of 20 | 2.50 | 1151.7 | 36.45 |
+| named | 6 | 5 | 10 | 99.1 | 16 of 20 | **15 of 20** | 12 of 20 | **1.80** | 259.2 | 114.41 |
+| named | 6 | 15 | 30 | 887.8 | 17 of 20 | **16 of 20** | 11 of 20 | **1.90** | 698.0 | 35.72 |
+| masked | 3 | 15 | 30 | 844.8 | 2 of 20 | 2 of 20 | 6 of 20 | 2.85 | 2462.2 | 347.21 |
+| masked | 6 | 15 | 30 | 887.8 | 7 of 20 | 7 of 20 | 11 of 20 | 2.70 | 1572.5 | 261.29 |
+
+**JOINT CELLS PASSING EVERY REQUIREMENT AT ONCE: 0 of 24, total passing draws 0.** Three readings in it,
+each a kill on its own. **(a)** The cheapest licensed member's hit rate rises with the family's unanimity
+and there is no third cell, exactly as the algebra says: at the two most converged cells (1.80 and 1.90
+distinct sets) the cheapest member is at 15 and 16 of 20 against the designed route's 16 and 17, and the
+only cells where it misses are the cells where the family is split at 2.50 or worse. **(b)** In the
+masked mode the designed route's hit rate **equals the pooled no-batch-effect route's hit rate in 12 of
+12 cells exactly**, which is the saturation of 2 showing up in the designation: with no shipped incidence
+the EM route IS the naive route, identically, not approximately. **(c)** Determinacy fails everywhere
+before separation is even reached: the standing family's spread on the graded figure runs **46.9 to
+3,615.2 printed units against the 0.4 required**, and the designed route's own RMSE is **35.7 to 525.1
+times the golden boundary gap**, so the designated set is seed hostage at every pack a DSO could hold.
+
+**5. The middle cell, where the design matrix is only PARTIALLY observed, and there is no middle.** With
+the failed batch named on a share of faults only, run at the volume where anything ranks at all: the solve
+on the named part reaches the truth **13 of 20 at a 15 per cent naming share**, 15, 16, 18 and 20 of 20 at
+35, 60, 85 and 100 per cent, while the named-subset-only filter-and-divide reaches it 0 to 1 of 20, the
+naive route 0 of 20 and the one-regression reflex 1 of 20. So a thinly shipped incidence is still enough
+for the one-call solve to be the designed route, because the batch parameters are shared across many
+faults. Partial shipping does not produce a cell where the matrix is too thin to solve and still
+informative.
+
+### Architecture 15, the four horns of the corollary, each measured (2026-10-24)
+
+Harness at `<scratch>/t198a15/screen3.py`, run twice to byte-identical output (md5
+`10333aea1d424d79ff615f3ccea73509`); `screen2.py` likewise (md5
+`b9086019fc9ee9fe61b6fcf7a07ba932`), and still byte-identical after a singular-matrix fallback was
+added to the IRLS path, so the fallback changed no measured number.
+
+**H1. The joint hunt, counted TOGETHER rather than marginally: 0 of 36 cells.** Five requirements at
+once over k (2, 3, 4, 6) by sd(log delta) (0.8, 1.6, 2.4) by volume (realistic, five times, fifteen
+times at thirty years): the floor holds (rho at or above 0.80), the named design is full rank, the family
+is determinate (spread under 0.4 printed units), the designed route reaches 18 of the kept draws with
+every reflex at zero, and the cheapest licensed member misses. **The determinacy flag is 0 in every one
+of the 36 cells**, at a family spread of **59.4 to 8,913.2 printed units against the 0.4 required**, and
+the best cell satisfies 3 of 5. Determinacy fails before separation is reached, which is where this
+lane's candidates die most often and is why it was priced first. Two further readings in the same table:
+the designed route never reaches 18 of 20 with the reflexes silent at any setting, and in **three cells
+the ladder is INVERTED**, the cheapest licensed member beating the designed joint solve (k=4 sd 0.8: 5
+of 20 against 3; k=4 sd 0.8 at five times volume: 8 against 6; k=6 sd 0.8: 5 against 4).
+
+**H2. The STRICT residue, where the deciding quantity is indexed by something NO record labels.** The
+honest form of the author's clause is not a correction to a labelled unit but a quantity whose index the
+pack does not carry at all: a batch's defect expressing only under an environment class (salt, lightning,
+canopy) that the pack has no column for, so the quantity is `delta[batch, class]` with the class latent.
+Priced as a latent-class model fitted by EM from three starts at each licensed class count: **3.45
+distinct designated sets of 4 across E = 1, 2, 3, 4, unanimous in 0 of 20 worlds**, and the TRUE class
+count reaches the truth **2 of 20**, which is WORSE than ignoring the latent structure altogether (E = 1
+reaches it 3 of 20). An unlabelled index is a MIXTURE, so the class count is a free method choice and the
+designated set forks on it. That is the open-estimator-family death (architecture 7's M3 and
+`determinism-check` section 1's collinearity clause), not a new cell.
+
+**H3. `binding_constraint` on this ground, the first death the author priced: measured exact.** The joint
+constraint a network's records impose is the energy balance, head energy = metered energy + technical
+losses + unmetered supply. The designed residual and one subtraction over shipped columns differ by a
+**maximum of 4.3521e-13 MWh (maximum relative 1.0330e-13)** over 20 worlds. The constraint closes exactly
+over shipped quantities, so the residual is one subtraction: the loss formula is either filed, and then
+this is rule application on a one-join route, or it is unrecorded, and then the call is unforced. A limit
+does not measure itself. This re-measures architecture 12's exact-identity kill on energy nouns.
+
+**H4. Completion on this ground, the second death the author priced: measured ladder-inverted as well as
+spent.** The operations the sustained-interruption record never carries are the auto-reclose operations
+under the three-minute reporting floor, recoverable from the relay event log as a second channel. The
+sustained record alone, one divide and no completion at all, reaches the truth **16 of 20 at every
+capture rate**, against the two-channel Lincoln-Petersen estimator's **14, 13 and 12 of 20** at second
+channel capture 0.25, 0.50 and 0.75. So the completion route is worse than doing nothing, besides being
+record-seeing, which this slot's own condition bars, and capture-recapture being spent on the objective
+(task196).
+
+**`guard.py slots` on the setting's nouns, which arch 14 recorded as the cheaper kill.** Mechanism nouns
+(orthogonal, compliance, billing, provenance, custody) return only this slot's own blocks plus task201's
+resume line, which is where the siblings' argument is filed. Setting nouns (batch, lot, manufacturer,
+warranty, recall, conformity) return **task132 at two terms**, and that hit is worth the read: task132
+sits on energy-systems-utilities/asset-condition-maintenance and its Layer 1 already carries an OEM RMA
+register, asset numbers set up in batches for each station rebuild, date codes, service-bulletin swaps
+and repair-warranty returns. So a warranty and provenance layer on energy ground is **built furniture on
+this corpus**, which Part 6 licenses re-skinning; task132's driver is a renewal function against a
+cumulative hazard and is not this insight. The energy setting nouns (feeder, substation, interruption,
+outage, stores) still return **task183 at five terms** and task201 at four.
+
+### Architecture 15, refused. The residue is EMPTY, and it is empty twice over.
+
+**The institutional half, which is the corollary's own answer turned around.** The author's corollary is
+that a record kept for compliance, billing, provenance, custody or safety labels things for its own
+purpose, and those labels may be orthogonal to the decision's units. Both halves are true and they do not
+meet. Enumerated over the five purposes, with what each labels and what the labelling does:
+
+| purpose | what it labels | orthogonal to the asset hierarchy? | consequence |
+|---|---|---|---|
+| billing | payer, meter point, tariff, settlement period | payer NESTED (connectivity maps a meter point to a feeder); tariff crossed but carries nothing about the asset | one join, or zero information |
+| compliance | obligation, claimant, band, deadline | NESTED (the obligation is owed to a customer at a place) | one join; and the band is a duration floor, which the truncation-direction screen kills |
+| safety | hazard, barrier, occurrence, place | NESTED (a hazard is at a place) | one join; the barrier-grain construction measured proxied at +0.9960 on a sibling's ground |
+| provenance | batch, lot, maker, certificate | **genuinely CROSSED** | measured here: both horns closed |
+| custody | custody step, holder, item | **genuinely CROSSED** | the same object as provenance |
+
+**The purpose that crosses the labels is the purpose that ships the cross-reference.** A provenance
+register exists to answer "which units carry this lot" and a custody record to answer "who held this item
+when". Those questions ARE the incidence matrix, so the two purposes that produce genuine orthogonality
+produce it for the same reason that makes them record the link. Measured on this ground: with the batch
+named on the fault, which is exactly what a warranty claim or a recall requires, the pack is 72 equations
+against 31 unknowns, overidentified by 41, and the designed joint solve and the one-line GLM are one
+object to **1.3328e-13 absolute and 3.3279e-12 relative, correlation 1.000000000000**. Withhold it and
+the model is SATURATED, the profile over the batch effect flat to **1.137e-13** across 401 licensed
+vectors, with the EM route's hit rate **equal to the pooled naive route's in 12 of 12 cells exactly**.
+Generalised, this is the mirror of the mandated-indicator law: **a record kept to discharge an obligation
+must be auditable, and auditability means it ships the link between the obligation and the thing the
+obligation was discharged against.** That closes grant, procurement, insurance and tax records by the
+same sentence, since each must prove what it was discharged against.
+
+**The arithmetic half, which does not depend on the institution at all.** Even granting a record that
+crosses its labels and withholds the incidence, the orthogonality that makes the crossing informative is
+the same parameter that averages the correction away. The correction a crossed label licenses is an
+exposure-weighted average over the unit's own crossed exposure, so rho = sd(log delta)/sqrt(k)/sd(log
+theta), measured across the whole dial (predicted 1.45, 1.03, 0.84, 0.73, 0.59, 0.51 against measured
+1.385, 1.099, 0.890, 0.764, 0.530, 0.392). At full orthogonality (orth 0.880) the floor is 0.920 and the
+reflex cannot reorder the candidates; at zero orthogonality the label is nested, the design is rank
+deficient by 8, and nothing is identified. **Orthogonality buys identification and spends the lever, one
+for one.**
+
+**And the construction is inside the closed family whatever its nouns: R = 1.000, min 1.000, max 1.000,
+with 0.00 sign changes, at both ends of the volume dial**, because a feeder's installed population is
+time-invariant so its mix distortion cannot change sign. By this lane's identity that is a per-case
+correction in other nouns, measured now on a fourth unrelated ground.
+
+**The enumeration of what a deciding quantity can be is therefore closed, and the closure is a theorem
+with the measurements above behind each line.** Let the quantity be indexed by some set I, and let the
+pack's labels be every attribute any record carries. Either I is a subset or product of those labels, in
+which case the pack CONTAINS the design matrix for the quantity (the indicator columns of I), the
+construction is one call on it, and Gate C and Gate F are financed by the same object; or I involves an
+index the pack does not label, in which case the model is saturated in that direction and the quantity is
+unidentified (measured: profile flat to 1.137e-13; the designed route identically the naive route in 12
+of 12 cells; a latent index forking the designated set at 3.45 of 4 with the true class count at 2 of
+20). There is no third case, because an index is either labelled or it is not, and the corollary's hope
+was that a non-attribution record's orthogonal labels would supply one. They do not.
+
+**The two deaths the author priced in advance were both the right ones to price, and this candidate
+reduced to neither: it reduced to the FIRST closure, the shipped design matrix.** The joint-constraint
+route is separately measured exact at 4.3521e-13 and the incompleteness route separately measured
+ladder-inverted at 16 of 20 against 12 to 14.
+
+**Nothing registered, no file cut, no git write, no agent spawned.** The ground stays registrable: the
+`energy-systems-utilities`/`grid-reliability-outage-analysis` signature (gap `objective`, pattern `none`,
+generators `[G4, G6]`, `designation_set`, Gate G `decomposition_attribution`, strategy
+`decomposition_attribution`, shape 01, `operations_director`, `regulator_or_inspector`,
+`statutory_or_regulatory_filing`, `utility_or_infrastructure`, `operations_log`,
+`physical_verification`, Ireland and EUR) re-measured PASS with no WARN today, so a later architecture
+can take that cell with a different mechanism. **What architecture 15 adds to the board is that the
+no-shipped-design-matrix residue, which was this objective's last named opening, is now measured empty
+from two independent directions, one institutional and one arithmetic. With it, anomaly-detection on
+this slot's numbers is closed by enumeration rather than by opinion**, and the honest next move is an
+author decision about the objective or the slot, not another architecture on this one.
