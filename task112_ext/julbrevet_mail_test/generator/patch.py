@@ -1,21 +1,40 @@
-# Builds the v2 input folder from the uploaded v1 inputs. Only pos_offer_redemptions_2027.csv changes:
+# Builds the input folder from the uploaded v1 inputs. Only pos_offer_redemptions_2027.csv changes:
 #   1. December receipt totals are brought into line with member_store_month_2027.csv, whose December spend
 #      carries the area and mailing factors the v1 build applied after the receipts were written;
-#   2. the tills upgraded in October and November 2027 write the total before the discount.
-# Every other file is copied byte for byte. Usage: python3 -I patch.py <v1 inputs dir> <v2 inputs dir>
-import os, shutil, sys
+#   2. the tills upgraded in October and November 2027 write the total before the discount;
+#   3. the self-service tills write the campaign's first offer code for either Julbrevet card offer, so part of
+#      every store's BV27-13-O2 redemptions carry BV27-13-O1.
+# The messaging runbook's offers paragraph (7.3) also states the loyalty engine's once-per-member rule, which every
+# redemption in the export keeps. Every other file is copied byte for byte.
+# Usage: python3 -I patch.py <v1 inputs dir> <out inputs dir>
+import os, shutil, sys, zipfile
 import numpy as np, pandas as pd
 
 SRC, DST = sys.argv[1], sys.argv[2]
 POS = "pos_offer_redemptions_2027.csv"
 # till software upgrade: from this day on the store's tills send the loyalty engine the total before the discount
-UPGRADE = {"BV113": "2027-10-26", "BV115": "2027-10-26", "BV118": "2027-11-02", "BV132": "2027-11-02",
-           "BV125": "2027-11-09", "BV128": "2027-11-09", "BV141": "2027-11-16"}
+UPGRADE = {"BV110": "2027-10-26", "BV113": "2027-10-26", "BV114": "2027-10-26", "BV115": "2027-10-26",
+           "BV118": "2027-11-02", "BV119": "2027-11-02", "BV101": "2027-11-09", "BV104": "2027-11-09",
+           "BV106": "2027-11-09", "BV128": "2027-11-16", "BV129": "2027-11-16", "BV132": "2027-11-16",
+           "BV138": "2027-11-16", "BV141": "2027-11-16"}
 
+RUNBOOK = "messaging_operations_runbook_2027.docx"
 os.makedirs(DST, exist_ok=True)
 for f in sorted(os.listdir(SRC)):
-    if f != POS:
+    if f not in (POS, RUNBOOK):
         shutil.copyfile(os.path.join(SRC, f), os.path.join(DST, f))
+
+OLD73 = "to the last minute of its last day, and the till honours it accordingly."
+NEW73 = "to the last minute of its last day, and the till honours it accordingly, once for each member."
+zin = zipfile.ZipFile(os.path.join(SRC, RUNBOOK))
+with zipfile.ZipFile(os.path.join(DST, RUNBOOK), "w") as zout:
+    for info in zin.infolist():
+        data = zin.read(info.filename)
+        if info.filename == "word/document.xml":
+            assert data.count(OLD73.encode("utf-8")) == 1
+            data = data.replace(OLD73.encode("utf-8"), NEW73.encode("utf-8"))
+        zout.writestr(info, data)
+zin.close()
 
 raw = open(os.path.join(SRC, POS), encoding="ascii").read().split("\n")
 head, lines = raw[0], [l for l in raw[1:] if l]
@@ -86,11 +105,24 @@ up = pos.store_code.map(UPGRADE)
 gross = up.notna() & (pos.redeemed_at.str[:10] >= up.fillna("9999"))
 new[gross] = (new[gross] + pos.disc[gross]).round(2)
 
+# self-service tills: their share of each store's O2 redemptions, drawn once per store
+SEED, SHARE = 150, {"Stor": 0.55, "Mellan": 0.45, "Nära": 0.40}
+fmt = pd.read_csv(os.path.join(SRC, "stores.csv"), dtype=str).set_index("store_code").format
+rng = np.random.default_rng(SEED)
+share = {s: SHARE[fmt[s]] + rng.uniform(-0.06, 0.06) for s in sorted(fmt.index)}
+u = rng.random(len(pos))
+selfco = ((pos.offer_code == "BV27-13-O2") & (u < pos.store_code.map(share).values)).values
+
 out = [head]
 for r, v in zip(rows, new):
     r = list(r)
     r[5] = ("%.2f" % v).replace(".", ",")
     out.append(";".join(r))
+for i in np.flatnonzero(selfco):
+    r = out[i + 1].split(";")
+    assert r[2] == "BV27-13-O2"
+    r[2] = "BV27-13-O1"
+    out[i + 1] = ";".join(r)
 open(os.path.join(DST, POS), "w", encoding="ascii", newline="\n").write("\n".join(out) + "\n")
-print("factor cells %d, mailing factor %.5f, December rows rescaled %d (single-visit %d), gross rows %d"
-      % (len(med), M, int(dec.sum()), int(single.sum()), int(gross.sum())))
+print("factor cells %d, mailing factor %.5f, December rows rescaled %d (single-visit %d), gross rows %d, O2 under O1 %d"
+      % (len(med), M, int(dec.sum()), int(single.sum()), int(gross.sum()), int(selfco.sum())))

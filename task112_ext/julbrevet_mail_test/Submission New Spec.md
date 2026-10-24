@@ -5,7 +5,7 @@ Deliverables: 3 of max 3 - julbrevet_2028_plan.xlsx (workbook), julbrevet_mail_c
 ## 1. PROMPT
 
 ```
-Using the 2028 channel planning guidance in the folder, work out the incremental December purchases per piece caused by the 2027 Julbrevet addressed mailing (Brannvik Plus), with the range the data supports, and make one keep-or-drop call on addressed mail for Julbrevet 2028. Deliver an Excel workbook with two sheets. Sheet 1: for each of the two Julbrevet card offers and each store format, purchases paid on receipts that redeemed the offer from 1 to 24 December 2027, on the BI warehouse's basis, in thousand SEK to one decimal. Sheet 2: for households mailed the Julbrevet in 2027, by county, how many can still be reached for the 2028 Julbrevet by email, by SMS or app push but not email, and by none of the three, each with purchases paid on the same basis on receipts where any card registered to the household redeemed a Julbrevet card offer, in thousand SEK to one decimal. A household counts for a channel if at least one of its accounts open at end-2027 held consent for that channel then and is still sendable on that channel's platform. Deliver a short Word memo that opens with the call, December purchases per household for mailed and control, incremental purchases per piece with its range, and margin per piece at the lower end against the 11.40 SEK piece cost; then states how far the mailing missed or cleared the line per piece, what the test would have needed to show to pay, and how many control households it rested on; and closes with how many mailed households none of the three channels can reach for 2028 and what they paid on their Julbrevet card offer receipts on that basis, in thousand SEK to one decimal. Deliver a PNG chart of mailed households per county in each of the three channel groups.
+Using the 2028 channel planning guidance in the folder, work out the incremental December purchases per piece caused by the 2027 Julbrevet addressed mailing (Brannvik Plus), with the range the data supports, and make one keep-or-drop call on addressed mail for Julbrevet 2028. Count every purchase amount the way the BI warehouse counts purchases. Deliver an Excel workbook with two sheets on the receipts from 1 to 24 December 2027 that redeemed the BV27-13-O2 card offer (50 kr off a purchase over 700 kr) with a basket under 750 SEK before the discount: Sheet 1 gives, for each store format, the number of those receipts and the purchases paid on them in thousand SEK to one decimal; Sheet 2 gives the same two figures for each of ISO weeks 48 to 51. Deliver a short Word memo that opens with the call and closes with the total number of those receipts and the total paid on them in thousand SEK to one decimal. Deliver a PNG chart of those receipts per ISO week, split by store format.
 ```
 
 ZIP: mkt-01_brannvik_plus_reach_2027_input_files.zip
@@ -25,32 +25,28 @@ Drop the addressed Julbrevet mailing from the 2028 plan: it caused 137 SEK of in
 ## 4. SUPPLEMENTARY ANSWERS
 
 ```
-julbrevet_2028_plan.xlsx, sheet of the Julbrevet card offers (purchases paid on the receipts that redeemed the offer, 1 to 24 December 2027, thousand SEK):
-1. BV27-13-O1 Julskinka 25 % billigare, Stor stores: 378.5
-2. BV27-13-O1, Mellan stores: 621.7
-3. BV27-13-O1, Nära stores: 28.6
-4. BV27-13-O2 50 kr rabatt vid köp över 700 kr, Stor stores: 851.6
-5. BV27-13-O2, Mellan stores: 1,514.6
-6. BV27-13-O2, Nära stores: 60.3
-julbrevet_2028_plan.xlsx, sheet of the households mailed the Julbrevet in 2027 by county and by the channels that could still send them the 2028 Julbrevet:
-7. Gävleborg, by email: 3,913 households
-8. Gävleborg, by email: 743.2 thousand SEK paid on the receipts on which a card registered to those households redeemed a Julbrevet card offer
-9. Gävleborg, by SMS or app push but not by email: 1,798 households
-10. Gävleborg, by SMS or app push but not by email: 283.4 thousand SEK paid on the receipts on which a card registered to those households redeemed a Julbrevet card offer
-11. Gävleborg, by none of the three: 1,545 households
-12. Gävleborg, by none of the three: 184.2 thousand SEK paid on the receipts on which a card registered to those households redeemed a Julbrevet card offer
-13. Västernorrland, by email: 3,719 households
-14. Västernorrland, by email: 665.5 thousand SEK paid on the receipts on which a card registered to those households redeemed a Julbrevet card offer
-15. Västernorrland, by SMS or app push but not by email: 1,678 households
-16. Västernorrland, by SMS or app push but not by email: 245.6 thousand SEK paid on the receipts on which a card registered to those households redeemed a Julbrevet card offer
-17. Västernorrland, by none of the three: 1,455 households
-18. Västernorrland, by none of the three: 160.2 thousand SEK paid on the receipts on which a card registered to those households redeemed a Julbrevet card offer
+julbrevet_2028_plan.xlsx, sheet 1 (BV27-13-O2 receipts of 1 to 24 December 2027 with a basket under 750 SEK before the 50 kr discount, amounts as the BI warehouse counts purchases):
+1. Stor stores: 37 receipts
+2. Stor stores: 25.1 thousand SEK paid on them
+3. Mellan stores: 59 receipts
+4. Mellan stores: 39.9 thousand SEK paid on them
+5. Nära stores: 3 receipts
+6. Nära stores: 2.0 thousand SEK paid on them
+julbrevet_2028_plan.xlsx, sheet 2 (the same receipts by ISO week):
+7. Week 48: 21 receipts
+8. Week 48: 14.1 thousand SEK paid on them
+9. Week 49: 28 receipts
+10. Week 49: 19.0 thousand SEK paid on them
+11. Week 50: 34 receipts
+12. Week 50: 23.1 thousand SEK paid on them
+13. Week 51: 16 receipts
+14. Week 51: 10.9 thousand SEK paid on them
 julbrevet_mail_call.docx:
-19. Opens with the call to drop addressed Julbrevet mail from the 2028 plan, with December purchases per household of 2,298.58 SEK mailed against 2,161.36 SEK control, 137.21 SEK of incremental purchases per piece with a 90 percent range of minus 56.99 to 331.42 SEK, and a lower-end margin of minus 14.25 SEK per piece against the 11.40 SEK piece cost; then a miss of 25.65 SEK per piece, 239.81 SEK per piece the test would have needed to show, and 1,942 control households.
-20. Mailed households none of the three channels could still send the 2028 Julbrevet to: 3,000.
-21. What those households paid on their Julbrevet card offer receipts: 344.4 thousand SEK.
+15. Opens with the call to drop addressed Julbrevet mail from the 2028 plan.
+16. Closes with the total number of those receipts: 99.
+17. Closes with the total paid on them: 67.0 thousand SEK.
 julbrevet_reach_2028.png:
-22. Bars of the mailed households for each county in the three groups: Gävleborg 3,913 by email, 1,798 by SMS or app push only, 1,545 by none; Västernorrland 3,719, 1,678 and 1,455.
+18. Bars of the receipts in each ISO week split by store format: week 48 21 (Stor 6, Mellan 15, Nära 0); week 49 28 (Stor 13, Mellan 13, Nära 2); week 50 34 (Stor 13, Mellan 20, Nära 1); week 51 16 (Stor 5, Mellan 11, Nära 0).
 ```
 
 ## 5. CRITICAL COMPONENTS
@@ -73,10 +69,8 @@ julbrevet_reach_2028.png:
 6. Put the interval where the assignment was made. The control was drawn by postcode area, so the households within an area are not independent observations; take each area's mean household December purchases, weight by households, and use a cluster-robust t interval with the 27 areas (24 mailed, 3 held back; about 4.5 degrees of freedom). The 90 percent range is minus 56.99 to plus 331.42 SEK per piece. A household-level interval on the same contrast gives 58.00 to 216.43 and wrongly clears the line. [supplementary: range]
 7. Apply the line. At 25 percent gross margin the lower end is worth minus 14.25 SEK per piece against the 11.40 SEK piece cost, which it does not cover; the mailing is not shown to pay, so the call is to drop addressed Julbrevet mail from the 2028 plan. [supplementary: margin per piece]
 8. Measure the miss and the needed lift. The margin falls short of the piece cost by 11.40 minus (minus 14.25), which is 25.65 SEK per piece. The test would have needed to show 45.60 plus the t critical value 2.0615 times the standard error 94.21, which is 239.81 SEK of incremental purchases per piece, for the lower end to cover the cost. [supplementary: shortfall and needed lift]
-9. Card offers. Take the BV27-13-O1 and BV27-13-O2 receipts of the POS export (all dated 1 to 24 December) and the format of the store where each was rung from stores.csv, on the BI warehouse's basis the prompt sets (spend_sek, the amount paid after offer discounts, the table the guidance takes purchases from). The POS receipt totals equal that basis at every store except BV113, BV115, BV118, BV125, BV128, BV132 and BV141, whose totals from late October 2027 on exceed it by exactly the discount on every member, store and month whose receipts all redeemed an offer (643 of 643 in December). The discount is taken off there, giving O1 378.5, 621.7 and 28.6 and O2 851.6, 1,514.6 and 60.3 thousand SEK paid for Stor, Mellan and Nära. [supplementary: card offers]
-10. Reach. Take the 14,108 BV27-13-D1 households by the county of their postcode area (postcode_areas.csv) and replay each channel's consent to 1 January 2028 00:00 Swedish time (31 December 23:00 UTC) on the accounts open at the end of 2027. Email leaves out the addresses on the email platform's suppression list, which keeps every address that ever hard-bounced (contact policy, section 7): the 238 members who hard-bounced in 2027, and the 252 whose addresses bounced before 2027, seen as the members who held email consent at one or more 2027 newsletter releases yet were sent no 2027 email (at every one of the 26 newsletters the consented open members not sent are exactly the earlier 2027 hard bounces and these members). The 11 members whose consent came after the last 2027 mailing stay in. SMS takes every consented account. App push needs a sign-in to the app and leaves out the 677 members whose last three notifications failed, whose tokens the January clean-up removes (runbook 5.2). Households by email, by SMS or app push only, and by none: Gävleborg 3,913, 1,798 and 1,545; Västernorrland 3,719, 1,678 and 1,455. [supplementary: households by group, chart]
-11. Purchases by group. Sum the amounts paid from step 9 on the Julbrevet offer receipts of every account registered to each group's households: Gävleborg 743.2, 283.4 and 184.2; Västernorrland 665.5, 245.6 and 160.2 thousand SEK. The 3,000 households none of the three channels could send to paid 344.4 thousand SEK. [supplementary: purchases by group, memo close]
-12. Deliver the three files: the workbook with the card offers sheet and the reach sheet, the short Word memo opening with the call and its figures and closing with the households no channel could send to and what they paid on Julbrevet offer receipts, and the PNG of the mailed households by county and group.
+9. Workbook. Take every BV27-13-O2 redemption in the POS export (all dated 1 to 24 December, each 50 SEK off), the format of its store from stores.csv and the ISO week of redeemed_at, with amounts counted as the BI warehouse counts purchases (spend_sek, after offer discounts). 1,415 of the 2,841 O2 redemptions are written under BV27-13-O1: they are the O1 rows giving exactly 50 SEK off a basket over 700 SEK, the O2 terms, and each of the 219 accounts with two O1 rows, which the till's once-for-each-member rule (runbook 7.3) rules out, has one of them, while no other account redeems any offer twice. At BV101, BV104, BV106, BV110, BV113, BV114, BV115, BV118, BV119, BV128, BV129, BV132, BV138 and BV141 the POS receipt total is the amount before the discount: on every member, store and month whose receipts all redeemed an offer it exceeds spend_sek by exactly the discount (1,315 of 1,315 such months in December), while every other store's total equals spend_sek (671 of 671 in December). With both handled, the receipts with a basket under 750 SEK before the discount are Stor 37, Mellan 59, Nära 3 (25.1, 39.9, 2.0 thousand SEK paid) and weeks 48 to 51 21, 28, 34, 16 (14.1, 19.0, 23.1, 10.9 thousand SEK). [supplementary: both sheets, memo, chart]
+10. Deliver the workbook with the two sheets, the short Word memo opening with the call and closing with 99 receipts and 67.0 thousand SEK, and the PNG of the receipts per ISO week split by store format.
 ```
 
 ## 7. GOLDEN DELIVERABLES

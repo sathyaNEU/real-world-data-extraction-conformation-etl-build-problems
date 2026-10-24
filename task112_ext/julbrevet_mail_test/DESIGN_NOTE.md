@@ -10,67 +10,75 @@ repair re-sites the supplemental asks only.
 
 The prompt is the author's one-paragraph rephrase with the call question first and no backstory. The Final
 Recommendation, the Critical Components, steps 1 to 8 and the distractor are carried over byte for byte
-(`generator/spec.py` asserts it). Every input file the call reads is byte-identical to v1: only
-`pos_offer_redemptions_2027.csv` moved, and only in `receipt_total_sek` (`generator/checks.py`). The call
-recomputes unchanged on the v2 inputs: 14,108 mailed at 2,298.58, 1,942 control at 2,161.36, 1,150 objected at
-2,102.15, incremental 137.21, standard error 94.21 on 4.54 degrees of freedom, range minus 56.99 to 331.42, margin
-minus 14.25, shortfall 25.65, needed 239.81.
+(`generator/spec.py` asserts it). Every data file the call reads is byte-identical to v1:
+`pos_offer_redemptions_2027.csv` moved only in `receipt_total_sek` and, on Julbrevet O2 rows, `offer_code`, and the
+messaging runbook's offers paragraph (7.3) gained the loyalty engine's rule that the till honours an offer once for
+each member, which every 2027 redemption keeps (`generator/checks.py`). The call recomputes unchanged: 14,108 mailed at 2,298.58, 1,942 control at 2,161.36, 1,150
+objected at 2,102.15, incremental 137.21, standard error 94.21 on 4.54 degrees of freedom, range minus 56.99 to
+331.42, margin minus 14.25, shortfall 25.65, needed 239.81.
 
-## Where the 62 came from
+## Rebuild
 
-All nine v1 supplementary answers were the call's own construction (group rows, incremental, range, margin,
-shortfall, needed lift, control count), so a response that landed the call banked every ask, and a response on the
-household-level interval still banked the group rows and the incremental. No ask carried a device.
+The generator reads the uploaded package's input zip (b43ae590-v1, `Brannvik Plus Reach 2027 Input Files.zip`, sha256
+prefix d09e36c12403), which stays with the author as the source. Unzip it, then run `generator/patch.py <v1 inputs>
+<out>`, `asks.py <out> figures.json`, `golden.py figures.json <deliverables>`, `spec.py`, and `zips.py`;
+`checks.py <v1 inputs> <out>` asserts the freeze, both devices and the call. Two runs are byte-identical.
+
+## Where the 62 and the 65 and 55 came from
+
+v1's nine supplementary answers were all the call's own construction, so a response that landed the call banked
+every ask (62). v2 hid two silent devices from two cold readers (0 of 20 exact) but graded figures the devices moved
+by only 1 to 6 per cent, and the client's rubric grades numbers "allowing reasonable tolerance": scored that way the
+same readers keep about nine tenths of the asks, which is the portal's 65 and 55. v3 graded the devices' own sets
+(misses of half or more) and both cold readers found both devices, because each question named the place the
+evidence sits. v4 kept the misses large with one device and hidden wording: one reader took the easy route (2 of 28)
+and the other reconciled the POS export to the BI table and kept every figure, a pair in the sixties.
 
 ## Ask sheet
 
-Three asks on rows the call never reads, each with its own silent primary, plus a cross ask that needs both.
+Two silent devices of different families under every graded figure, so a reader who cracks one lands where the
+easy route lands.
 
-| Ask | Figures | Primary (family) | Rows | Easy route and what it files |
-|---|---|---|---|---|
-| A card offers by format | 6 | the tills upgraded 26 October to 16 November 2027 (BV113, BV115, BV118, BV125, BV128, BV132, BV141, every format) send the loyalty engine the total before the discount (D3, per-source convention) | 1,890 Julbrevet offer receipts in the POS export | the column read as the amount paid, as the dictionary describes it: every cell high (O1 Stor 394.7 for 378.5); the discount taken off everywhere: every cell low (351.7) |
-| B 2028 reach of the mailed households | 6 | the email platform's suppression list carries addresses that bounced before 2027: 252 members held email consent at a median of 26 newsletter releases and were sent no 2027 email (D4, absence as the signal, evidenced only in the send log) | email sends; the call reads no email row | 2027 hard bounces taken as the whole list: every cell moves (Gävleborg by email 3,960 for 3,913) |
-| C offer purchases of each reach group | 6 + memo 2 | both of the above | POS and email sends | one device cracked keeps none of the six |
+| Ask | Figures | Devices | Routes and their misses |
+|---|---|---|---|
+| Sheet 1: BV27-13-O2 redemptions of 1 to 24 December with a basket under 750 SEK before the discount, and the purchases paid on them, by store format | 6 | D3: fourteen tills (BV101, BV104, BV106, BV110, BV113, BV114, BV115, BV118, BV119, BV128, BV129, BV132, BV138, BV141) send the total before the discount from their October and November upgrade. D7: the self-service tills write the campaign's first offer code for either Julbrevet card offer, so 1,415 of the 2,841 O2 redemptions (23 to 62 per cent of each store's) carry BV27-13-O1 | the code and the total read at face value: 4 receipts for 99; tills repaired, code trusted: 50 (43 per cent short at the closest figure); O2 recovered, tills not repaired: 12; O2 recovered and the discount taken off everywhere: 157 |
+| Sheet 2: the same by ISO week 48 to 51 | 8 | the same | the same routes, every week missed |
+| Memo close and chart | 2 + 12 bars | the same | each total misses the same way |
 
-Hazards, each seen and each moving several asks: the January push token clean-up (677 members, moves B and C off
-the email rows), 2027 hard bounces (238), the consent cut at 1 January 2028 00:00 Swedish time, accounts open at
-the end of 2027, the 11 members whose email consent came after the last 2027 mailing (a crude "never sent" rule
-drops them and moves eight cells), the O2 receipts under 700 SEK that a reader of "köp över 700 kr" drops as
-invalid (moves the three O2 cells), and the household roll-up over every registered card (11 receipts by accounts
-closed in December move five C cells if dropped).
+Neither device is announced: the prompt sets the purchase basis once for the whole prompt ("Count every purchase
+amount the way the BI warehouse counts purchases"), the ask names the offer by its code and its terms, and nothing
+points at the O1 rows. The relabel leaves no absence or marker: every store carries O2 redemptions under both codes,
+receipt numbers run on unchanged, and the O1 code still carries every ham redemption.
 
-Evidence a grader verifies: on every member, store and month whose receipts all redeemed an offer, the upgraded
-stores' totals exceed `spend_sek` by exactly the discount (765 months) and every other store's totals equal it
-(10,471 months); every O2 receipt is over 700 SEK before the discount. At every one of the 26 newsletter releases
-the consented open members who were not sent are exactly the earlier 2027 hard bounces plus 240 to 250 of these
-members, and no one else. Steps 9 to 11 name both handlings.
-
-Pair on paper (a fifth of the ask weight each is the target): with each primary cracked independently at about one
-in four by a strong reader, the call-lander keeps about 0.19 of the device figures and the best miss the same; the
-memo's call line is the one free ask item. One primary cracked keeps a third, both (about one in sixteen) keep all.
+Evidence a grader verifies. The tills: on every member, store and month whose receipts all redeemed an offer, the
+fourteen stores' totals exceed spend_sek by exactly the discount (1,315 of 1,315 in December) and every other store's
+equal it (671 of 671). The codes: the O1 rows giving exactly 50 SEK off a basket over 700 SEK are exactly the 1,415
+recoded O2 redemptions (the one other 50 SEK O1 row is a 573.77 SEK basket, a ham at 200 SEK), and each of the 219
+accounts with two O1 rows has one of them, while no other account in the export redeems any offer twice. Read at face
+value, the codes would have 219 members redeem the ham offer twice, which runbook 7.3 rules out; that closes the code
+reading, which the first judge pass had called a defensible second answer. Step 9 names both handlings.
 
 ## Measured
 
-Pack 6e530ddeb010 (input zip sha256 prefix; the pack never changed after it was cut). Two cold readers at medium
-effort, each holding only the prompt and the 23 inputs, the second on the prompt with the BI-basis pin:
+Pack 60af3988c3a6 (v5, input zip sha256 prefix). Determinism judge: DETERMINISTIC, APPROVE, every ask reproduced,
+with the face-value code reading flagged as an open second answer (closed in v5.1 by the runbook clause). Two cold
+readers at medium effort, each holding only the prompt and the 23 inputs:
 
-- Both landed the drop call on their own area-level interval (weighted least squares on the 27 area means, 25 degrees
-  of freedom, minus 94.78 to 369.21), so their range, margin, shortfall and needed-lift figures differ from the
-  golden's 4.54-degree interval.
-- Both kept 0 of 20 ask figures, on the same easy routes: the till totals summed as the amount paid (O1 Stor 394.7 for
-  378.5; the second reader matched the POS export to the BI table on offers and discounts in every cell, found it
-  tied, and took the totals as the BI basis) and only the 2027 hard bounces taken off email (Gävleborg 3,960 for
-  3,913). The offer purchases by group missed on both.
-- Neither quoted a sentence for the decisive step or named a file that ranks the options.
+- Both landed the drop call on their own area-level interval (randomisation inference over the 2,925 draws of three
+  areas, minus 120 to 388), so the range, margin, shortfall and needed-lift figures miss the golden's.
+- Both reconciled the POS export to the BI table, found the fourteen before-discount tills and repaired them, and
+  neither looked at the O1 rows: each filed 50 receipts and 33.8 thousand SEK (Stor 19, Mellan 30, Nära 1; weeks 10,
+  16, 16, 8), the one-device route, and kept 2 of 28 ask cells (the two empty Nära bars, inside the one chart
+  criterion) and none of the 16 graded figures.
 
-Pair on these reads: a response on the call keeps the call, the control, the means and the incremental and nothing
-of the asks, about 35; a response on the household interval keeps the control and the means, about 22.
+Pair on these reads: each keeps the call, the control, the means and the incremental, the memo's opening call and
+nothing else of the asks, about 30 to 40 a response.
 
-Determinism: pass 1 returned FIX_NOW on the offer purchases (the dictionary calls receipt_total_sek the amount after
-the discount) and the prompt now pins them to the BI warehouse's basis. Pass 2 reproduced asks 1 to 18 and 20 to 22
-and found them forced; its one small open point is the 11 members whose email consent came after the last 2027
-mailing (kept in, as step 10 says). Its NOT_DETERMINISTIC verdict rests on the call side only: the interval
-estimator and the 1,942 against 2,080 control reading, both in the frozen blocks as v1 shipped them.
+Pack d7aa35a54ac2 (v5.1, the shipped pack, with the runbook clause): determinism judge DETERMINISTIC, APPROVE, every
+ask reproduced, no repair. A third cold reader did what the first two did: it reconciled the POS export to the BI
+table, repaired the fourteen tills, never opened the O1 rows, and filed 50 receipts and 33.8 thousand SEK on its own
+area-level interval (minus 94.8 to 369.2), 2 of 28 ask cells and none of the 16 graded figures. Three of three cold
+readers have found the till device and none the offer codes.
 
 ## Repair of the December receipts
 
@@ -84,5 +92,11 @@ till device is applied. The BI table is untouched.
 
 - v1 asks (group rows, incremental, range, margin, shortfall, needed lift, control count): every one was the call's own construction, so the call-lander banked all nine and the household-interval response banked the group rows; rubric 62.
 - Devices in the email, SMS and push logs that change counts: the campaign report pins sent, delivered, failed, opens, clicks, STOPP and cost per drop and the member reach per campaign, so any such device makes the report an oracle on one handling; only uncovered grains (household, county, timing) can carry a device there.
-- A second receipt-count device in the POS export: the BI table ties offers and discounts per member, store and month, so the POS rows and discounts are pinned; only the receipt total is free.
+- A second receipt-count device in the POS export: the BI table ties offers and discounts per member, store and month, so the POS rows and discounts are pinned; only the receipt total, the time inside the month and the offer code are free.
 - Mail-cost or print-house files: a second piece-cost figure would open a fork on the call's line.
+- v2 asks (offer purchases by offer and format, reach counts of whole groups, the offer purchases of each reach group): both silent devices held against two cold readers (0 of 20), but the figures moved by only 1 to 6 per cent and the steps listed the seen hazards as results; the portal's top two scored 65 and 55.
+- A seven-store till rollout: the receipts-paid-under-700 band missed by only 19 to 36 per cent at Stor and Mellan, because the band sits mostly at BV110 and BV101; widened to ten stores.
+- v3 asks (the devices' own sets: O2 receipts paid under 700 on the BI basis, email-consented households the platform would not send to): both cold readers found both devices, led by wording that named the evidence's place.
+- The pre-2027 email suppression list as an ask device: hidden wording moves whole reach groups by 2 per cent at most, inside the grading tolerance, and wording that isolates it names the sends; retired from the asks.
+- v4 (the threshold band on the till device alone): the BI pin sent one of two cold readers to reconcile single-visit months, where the fourteen stores show to the cent, and it kept all 28 figures; one device under a pin the call side needs cannot hold a careful reader.
+- The O2 relabel confined to one county: an offer missing from every Västernorrland store is an absence a by-store count shows at once; spread across every store's self-service share instead.

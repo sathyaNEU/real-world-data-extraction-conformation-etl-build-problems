@@ -1,4 +1,4 @@
-# Assembles Submission New Spec.md for v2 from the v1 file: blocks 3 and 5 and steps 1 to 8 are carried over byte for byte.
+# Assembles Submission New Spec.md from the v1 file: blocks 3 and 5 and steps 1 to 8 are carried over byte for byte.
 # Usage: python3 -I spec.py <v1 spec> <prompt_v2.txt> <figures.json> <out>
 import json, re, sys
 v1 = open(sys.argv[1], encoding="utf-8").read()
@@ -13,39 +13,32 @@ steps_v1 = blocks[11].strip("\n").split("\n")
 assert steps_v1[8].startswith("9. Deliver the three files")
 n = lambda x: f"{x:,}"
 k = lambda x: f"{x:,.1f}"
-G, V = "Gävleborg", "Västernorrland"
-supp = [
-    "julbrevet_2028_plan.xlsx, sheet of the Julbrevet card offers (purchases paid on the receipts that redeemed the offer, 1 to 24 December 2027, thousand SEK):",
-    f"1. BV27-13-O1 Julskinka 25 % billigare, Stor stores: {k(F['A|O1|Stor'])}",
-    f"2. BV27-13-O1, Mellan stores: {k(F['A|O1|Mellan'])}",
-    f"3. BV27-13-O1, Nära stores: {k(F['A|O1|Nära'])}",
-    f"4. BV27-13-O2 50 kr rabatt vid köp över 700 kr, Stor stores: {k(F['A|O2|Stor'])}",
-    f"5. BV27-13-O2, Mellan stores: {k(F['A|O2|Mellan'])}",
-    f"6. BV27-13-O2, Nära stores: {k(F['A|O2|Nära'])}",
-    "julbrevet_2028_plan.xlsx, sheet of the households mailed the Julbrevet in 2027 by county and by the channels that could still send them the 2028 Julbrevet:",
-]
-i = 7
-for c in [G, V]:
-    for g, label in [("email", "by email"), ("sms_push_only", "by SMS or app push but not by email"), ("none", "by none of the three")]:
-        supp.append(f"{i}. {c}, {label}: {n(F[f'B|{c}|{g}'])} households")
-        supp.append(f"{i + 1}. {c}, {label}: {k(F[f'C|{c}|{g}'])} thousand SEK paid on the receipts on which a card registered to those households redeemed a Julbrevet card offer")
-        i += 2
+FORMATS, WEEKS = ["Stor", "Mellan", "Nära"], [48, 49, 50, 51]
+supp = ["julbrevet_2028_plan.xlsx, sheet 1 (BV27-13-O2 receipts of 1 to 24 December 2027 with a basket under 750 SEK before the 50 kr discount, amounts as the BI warehouse counts purchases):"]
+i = 1
+for f in FORMATS:
+    supp.append(f"{i}. {f} stores: {n(F[f'F|{f}|receipts'])} receipts")
+    supp.append(f"{i + 1}. {f} stores: {k(F[f'F|{f}|paid'])} thousand SEK paid on them")
+    i += 2
+supp.append("julbrevet_2028_plan.xlsx, sheet 2 (the same receipts by ISO week):")
+for w in WEEKS:
+    supp.append(f"{i}. Week {w}: {n(F[f'W|{w}|receipts'])} receipts")
+    supp.append(f"{i + 1}. Week {w}: {k(F[f'W|{w}|paid'])} thousand SEK paid on them")
+    i += 2
+bars = "; ".join(f"week {w} {n(F[f'W|{w}|receipts'])} (" + ", ".join(f"{f} {n(F[f'C|{w}|{f}'])}" for f in FORMATS) + ")" for w in WEEKS)
 supp += [
     "julbrevet_mail_call.docx:",
-    f"{i}. Opens with the call to drop addressed Julbrevet mail from the 2028 plan, with December purchases per household of 2,298.58 SEK mailed against 2,161.36 SEK control, 137.21 SEK of incremental purchases per piece with a 90 percent range of minus 56.99 to 331.42 SEK, and a lower-end margin of minus 14.25 SEK per piece against the 11.40 SEK piece cost; then a miss of 25.65 SEK per piece, 239.81 SEK per piece the test would have needed to show, and 1,942 control households.",
-    f"{i + 1}. Mailed households none of the three channels could still send the 2028 Julbrevet to: {n(F['M|none|households'])}.",
-    f"{i + 2}. What those households paid on their Julbrevet card offer receipts: {k(F['M|none|paid'])} thousand SEK.",
+    f"{i}. Opens with the call to drop addressed Julbrevet mail from the 2028 plan.",
+    f"{i + 1}. Closes with the total number of those receipts: {n(F['M|receipts'])}.",
+    f"{i + 2}. Closes with the total paid on them: {k(F['M|paid'])} thousand SEK.",
     "julbrevet_reach_2028.png:",
-    f"{i + 3}. Bars of the mailed households for each county in the three groups: {G} {n(F[f'B|{G}|email'])} by email, {n(F[f'B|{G}|sms_push_only'])} by SMS or app push only, {n(F[f'B|{G}|none'])} by none; {V} {n(F[f'B|{V}|email'])}, {n(F[f'B|{V}|sms_push_only'])} and {n(F[f'B|{V}|none'])}.",
+    f"{i + 3}. Bars of the receipts in each ISO week split by store format: {bars}.",
 ]
 steps = steps_v1[:8] + [
-    "9. Card offers. Take the BV27-13-O1 and BV27-13-O2 receipts of the POS export (all dated 1 to 24 December) and the format of the store where each was rung from stores.csv, on the BI warehouse's basis the prompt sets (spend_sek, the amount paid after offer discounts, the table the guidance takes purchases from). The POS receipt totals equal that basis at every store except BV113, BV115, BV118, BV125, BV128, BV132 and BV141, whose totals from late October 2027 on exceed it by exactly the discount on every member, store and month whose receipts all redeemed an offer (643 of 643 in December). The discount is taken off there, giving O1 "
-    + f"{k(F['A|O1|Stor'])}, {k(F['A|O1|Mellan'])} and {k(F['A|O1|Nära'])} and O2 {k(F['A|O2|Stor'])}, {k(F['A|O2|Mellan'])} and {k(F['A|O2|Nära'])} thousand SEK paid for Stor, Mellan and Nära. [supplementary: card offers]",
-    "10. Reach. Take the 14,108 BV27-13-D1 households by the county of their postcode area (postcode_areas.csv) and replay each channel's consent to 1 January 2028 00:00 Swedish time (31 December 23:00 UTC) on the accounts open at the end of 2027. Email leaves out the addresses on the email platform's suppression list, which keeps every address that ever hard-bounced (contact policy, section 7): the 238 members who hard-bounced in 2027, and the 252 whose addresses bounced before 2027, seen as the members who held email consent at one or more 2027 newsletter releases yet were sent no 2027 email (at every one of the 26 newsletters the consented open members not sent are exactly the earlier 2027 hard bounces and these members). The 11 members whose consent came after the last 2027 mailing stay in. SMS takes every consented account. App push needs a sign-in to the app and leaves out the 677 members whose last three notifications failed, whose tokens the January clean-up removes (runbook 5.2). "
-    + f"Households by email, by SMS or app push only, and by none: {G} {n(F[f'B|{G}|email'])}, {n(F[f'B|{G}|sms_push_only'])} and {n(F[f'B|{G}|none'])}; {V} {n(F[f'B|{V}|email'])}, {n(F[f'B|{V}|sms_push_only'])} and {n(F[f'B|{V}|none'])}. [supplementary: households by group, chart]",
-    "11. Purchases by group. Sum the amounts paid from step 9 on the Julbrevet offer receipts of every account registered to each group's households: "
-    + f"{G} {k(F[f'C|{G}|email'])}, {k(F[f'C|{G}|sms_push_only'])} and {k(F[f'C|{G}|none'])}; {V} {k(F[f'C|{V}|email'])}, {k(F[f'C|{V}|sms_push_only'])} and {k(F[f'C|{V}|none'])} thousand SEK. The {n(F['M|none|households'])} households none of the three channels could send to paid {k(F['M|none|paid'])} thousand SEK. [supplementary: purchases by group, memo close]",
-    "12. Deliver the three files: the workbook with the card offers sheet and the reach sheet, the short Word memo opening with the call and its figures and closing with the households no channel could send to and what they paid on Julbrevet offer receipts, and the PNG of the mailed households by county and group.",
+    "9. Workbook. Take every BV27-13-O2 redemption in the POS export (all dated 1 to 24 December, each 50 SEK off), the format of its store from stores.csv and the ISO week of redeemed_at, with amounts counted as the BI warehouse counts purchases (spend_sek, after offer discounts). 1,415 of the 2,841 O2 redemptions are written under BV27-13-O1: they are the O1 rows giving exactly 50 SEK off a basket over 700 SEK, the O2 terms, and each of the 219 accounts with two O1 rows, which the till's once-for-each-member rule (runbook 7.3) rules out, has one of them, while no other account redeems any offer twice. At BV101, BV104, BV106, BV110, BV113, BV114, BV115, BV118, BV119, BV128, BV129, BV132, BV138 and BV141 the POS receipt total is the amount before the discount: on every member, store and month whose receipts all redeemed an offer it exceeds spend_sek by exactly the discount (1,315 of 1,315 such months in December), while every other store's total equals spend_sek (671 of 671 in December). With both handled, the receipts with a basket under 750 SEK before the discount are "
+    + ", ".join(f"{f} {n(F[f'F|{f}|receipts'])}" for f in FORMATS) + " (" + ", ".join(k(F[f'F|{f}|paid']) for f in FORMATS) + " thousand SEK paid) and weeks 48 to 51 "
+    + ", ".join(n(F[f'W|{w}|receipts']) for w in WEEKS) + " (" + ", ".join(k(F[f'W|{w}|paid']) for w in WEEKS) + " thousand SEK). [supplementary: both sheets, memo, chart]",
+    f"10. Deliver the workbook with the two sheets, the short Word memo opening with the call and closing with {n(F['M|receipts'])} receipts and {k(F['M|paid'])} thousand SEK, and the PNG of the receipts per ISO week split by store format.",
 ]
 blocks[1] = "\n" + prompt + "\n"
 blocks[7] = "\n" + "\n".join(supp) + "\n"

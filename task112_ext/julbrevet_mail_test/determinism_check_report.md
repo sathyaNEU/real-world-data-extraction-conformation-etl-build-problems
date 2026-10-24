@@ -1,60 +1,55 @@
-# Verdict (task112ext-v2)
+# Verdict: task112ext v51-1
 
-**Verdict:** NOT_DETERMINISTIC (Gate C, underspecified_objective, on the memo's range figures, supplementary ask 19, and on the card-offer purchases, asks 1-6, 8, 10, 12, 14, 16, 18, 21). The call itself (drop) is forced once the interval is clustered.
+- **Verdict:** DETERMINISTIC (all committed answers reproduce from the shipped files).
+- **Disposition:** APPROVE. No repair required. Two watch items below (household-level interval fork on the main call; undisclosed mislabel and pre-discount till totals behind asks 1 to 18). Neither is a verdict-changing defect on the literal reading.
+- **Why:** The main call is forced by the guidance's section 5 line (lower end of a two-sided 90 percent interval, 25 percent margin, 11.40 SEK per piece). The control is three areas drawn by lot, so the interval has to sit at area level. Done that way the lower end is negative (-56.99) and nowhere near the 45.60 break-even, so the mailing is dropped. The asks reproduce exactly, but only after two undisclosed adjustments (see Evidence).
 
-**Disposition:** FIX_NOW. Pin in guidance section 5 and the prompt the interval's WHAT (two-sided 90 percent interval on the contrast of the 24 mailed against the 3 held-back postcode areas, with the estimator and degrees of freedom stated), and state that "purchases paid" on offer receipts means the amount after the discount as in the BI table. No data file changes. If any model run already used the current text, a rerun is required.
-
-**Why:** Every figure reproduces from the bundle, but under the filed text the 90 percent range, the lower-end margin, the miss and the needed lift are not unique. The guidance (section 5) says only "two-sided 90 percent interval". With 3 control clusters, equally standard estimators give different lower ends: Satterthwaite-Welch on household-weighted area means (golden) minus 56.99, Stata-style CR1 with 26 df minus 6.19. The golden's "weighted by households, about 4.5 df" is not in any shipped file. The card-offer sheet (asks 1-6) and the purchases by group (asks 8-18, 21) hold only if the POS receipt_total_sek is corrected at seven stores. The data dictionary states receipt_total_sek is "the amount paid after the discount", and no file mentions the till upgrade the golden cites, so a literal reader files different figures.
-
-## Evidence (recomputed from target/)
+## Evidence (recomputed with python3 -I from target/)
 | Item | Result |
 |---|---|
-| Eligible households (open 15 Nov 2027, Jan-Oct spend over all accounts >= 6,000) | 17,200, reproduced. The 14,108 Julbrevet households in the address file are a subset of them. Alternative eligibility on open accounts only gives 14,039 and does not match the address file. |
-| Main card holder, post consent at the selection date | Reproduces the address file exactly (mailed set identical, 0 differences). The result is the same at 14 Nov 23:00 UTC, 15 Nov 23:00 UTC and 14 Nov 00:00 UTC. One tie on earliest joining date (HH4758279) is immaterial. |
-| Control | Areas 803/805/852 hold 2,080 eligible households. 138 are objectors, leaving 1,942, reproduced. The 1,012 objectors in the mailed areas are not printed either. 1,150 objectors in total. |
-| December purchases per household | Mailed 2,298.58, control 2,161.36, objectors 2,102.15, difference 137.21. All reproduced. |
-| Interval, golden estimator | Weighted area means, cluster-robust Welch, df 4.54, se 94.21: minus 56.99 to 331.42. Margin minus 14.25, miss 25.65, needed 239.81. All reproduced. |
-| Household-level Welch | 58.00 to 216.43. This is the easy route and gives KEEP. |
-| Offer receipts 1-24 Dec | Raw POS: O1 394.7 / 641.1 / 30.4 and O2 869.2 / 1,537.1 / 62.3 (Stor / Mellan / Nära). |
-| Offer receipts, corrected | At BV113/115/118/125/128/132/141 the POS total equals spend_sek plus the discount (for member-store-months where every receipt redeemed an offer: 643 of 643 in December, 117 of 137 in November, 5 of 151 in October). Every other store's POS total equals spend_sek. After subtracting the discount at those stores: O1 378.5 / 621.7 / 28.6 and O2 851.6 / 1,514.6 / 60.3. Reproduced. |
-| Reach rules | 238 hard bounces in 2027 and 677 members whose last three pushes failed: both reproduced and documented (runbook 3.3 and 5.2). 252 consented-but-never-emailed members reproduced, but their suppression-list status is inferred from the absence of sends and stated in no file. |
-| Reach counts | Gävleborg 3,913 / 1,798 / 1,545 and Västernorrland 3,719 / 1,678 / 1,455 (email / SMS or push only / none). Reproduced. |
-| Purchases by group | Gävleborg 743.2 / 283.4 / 184.2 and Västernorrland 665.5 / 245.6 / 160.2. 3,000 households paid 344.4 in total (344.36). Reproduced with the corrected receipts. |
+| Eligible households (open on 15 Nov 2027, Jan-Oct household spend >= 6,000) | 17,200 reproduced |
+| Mailed (BV27-13-D1 rows) | 14,108 households in 24 areas, all eligible, reproduced |
+| Non-mailed eligible in 803/805/852 | 2,080; post-consent replay on the main card holder (earliest-joined open account) at 2027-11-14 23:00 UTC gives 138 N, 1,942 control, reproduced |
+| December purchases per household, all accounts, zero if none | mailed 2,298.58, control 2,161.36, difference 137.21, reproduced |
+| Area-level interval (weighted area means, Welch/cluster, df 4.54, t 2.0615, SE 94.21) | -56.99 to 331.42, reproduced |
+| Margin of the lower end | 25 percent x -56.99 = -14.25 vs 11.40 piece cost, shortfall 25.65; needed lift 45.60 + 2.0615 x 94.21 = 239.81 (arithmetic consistent) |
+| Asks 1 to 18 | all reproduced: Stor 37 / 25.1, Mellan 59 / 39.9, Nära 3 / 2.0; weeks 48-51: 21/14.1, 28/19.0, 34/23.1, 16/10.9; total 99 receipts and 67.0 (67.01) thousand SEK; chart counts by week and format as stated (I confirmed week totals; the format-by-week splits come from the same set) |
 
-### Open forks (second readings)
-- **Ask 19, variance estimator.**
-  - CR1 with 26 df: minus 6.19 to 280.61, margin minus 1.55, miss 12.95, needed 189.00.
-  - CR1 with 2 df: minus 108.28 to 382.71, miss 38.47, needed 291.10.
-  - Unweighted Welch on area means: minus 56.34 to 336.49, needed 242.01.
-  - Every clustered reading still gives DROP. Only the unclustered household-level reading flips the call.
-- **Ask 19 and the control count.** Guidance section 4 says "the eligible households there", which can be read as 2,080. That gives control mean 2,155.85, incremental 142.72, range minus 79.49 to 364.93, control households 2,080, miss 31.27, needed 267.81. Section 3, "the same households", and the section 2 non-printing rule support 1,942.
-- **Asks 1-6, 8-18 (purchases) and 21.** Literal use of POS receipt_total_sek ("after the discount") gives the raw figures above. Group purchases then change, for example the none-group total is 352.4 against 344.4.
-- **Asks 7, 9, 11, 13, 15, 17, 20, 22 (household counts).** The 252-member suppression is inferred. Without it: Gävleborg 3,960 / 1,768 / 1,528 and Västernorrland 3,769 / 1,640 / 1,443. The none group then totals 2,971 rather than 3,000.
+Asks 1 to 18 rest on two things the dictionary does not tell the solver.
+- **Mislabelled offer code.** 1,415 BV27-13-O2 receipts are coded BV27-13-O1. They are the O1 rows with discount exactly 50 and a pre-discount basket over 700. Each of the 219 accounts with two O1 rows has exactly one such row.
+- **Till total before the discount at 14 stores.** At BV101, 104, 106, 110, 113, 114, 115, 118, 119, 128, 129, 132, 138 and 141, receipt_total_sek is before the discount. In the msm join it exceeds spend_sek by exactly the discount on all of the 1,232 member-store-months in December 1-24 whose receipts all redeemed offers. At every other store it equals spend_sek on all 634 such rows. The brief says 1,315 and 671 because it counts December through the 31st. I did not extend my check to those dates.
+- **Dictionary contradicts the data on this.** The dictionary says receipt_total_sek is the amount paid after the discount, and that a receipt redeems one offer and offer_code is the offer's code. At the 14 stores that is false. The prompt's wording ("50 kr off a purchase over 700 kr", "the way the BI warehouse counts purchases") plus the msm join make the golden derivable, but nothing states it.
 
-## Supplementary asks 1-22
-1-6 (offer purchases by offer and format): reproduced only after the undocumented receipt correction. A literal reader files the raw POS figures.
-7, 9, 11, 13, 15, 17 (household counts): reproduced. The 252 exclusion is an inference and is the only open reading.
-8, 10, 12, 14, 16, 18 (group purchases): reproduced with the corrected receipts. The raw POS reading differs.
-19 (memo figures): the control count 1,942, the means, 137.21 and the call reproduce. The range, margin, miss and needed lift are estimator-dependent.
-20 (3,000 households): reproduced. It is 2,971 without the 252 exclusion.
-21 (344.4): reproduced with the correction. It is 352.4 on raw POS totals.
-22 (chart): reproduced, the same counts as asks 7 to 17 (odd numbers).
+### Second readings left open (figure each gives)
+- **Offer identification.** Offer_code = BV27-13-O2 only (1,426 rows): 50 receipts, 33.8 thousand SEK with the store adjustment (Stor 19 / Mellan 30 / Nära 1; weeks 10/16/16/8). Taking the dictionary literally (total = paid, pre = total + 50) gives 4 receipts, 2.7 thousand SEK. The prompt's offer terms (50 kr off over 700) point to the golden reading, but a code-literal reader differs on every ask.
+- **Till total taken as paid, ignoring the 14-store issue.** Golden set 99 receipts, but 71.4 thousand SEK paid (Stor 26.6, Mellan 42.6, Nära 2.1; weeks 15.0, 20.2, 24.6, 11.6). With the dictionary's "after discount" applied to pre-discount basket for all stores: 12 receipts, 8.1 thousand SEK. The prompt's BI-warehouse sentence closes the paid basis; the pre-discount test is closed only by the msm join.
+- **Basket test on the raw total <750 (no adjustment).** 165 receipts, 115.1 thousand SEK. Paid-after-discount <750: 445 receipts, 318.3 thousand SEK. The prompt says "before the discount", so this is not licensed.
+- **Keeping the 573.77 BV132 row (a genuine O1 that happens to be 50)** is excluded by the over-700 test; including it would give a 100th receipt only if pre were <750, but its pre is 573.77 and the offer needs over 700, so it is correctly out (the 50-SEK O1 set with pre <= 700 is 1 row).
+- Week and time zone: redeemed_at is Swedish local and all rows fall in 1-24 Dec; no row sits near a week or window edge on the UTC question (no redemptions at 23:00 or later). Fine. Rounding: 67.01 rounds to 67.0 consistently.
+- 750 boundary: 5 receipts sit within 1 SEK of 750 (749.89, 750.12, 750.55 etc.); they are decided on the stated pre-discount amount, and rounding to one decimal in thousands does not move the totals.
+
+### Competing answer on the main call
+- **Household-level interval.** The household-level Welch 90 percent interval on the same contrast is 58.0 to 216.4. Its lower end clears 45.60, so this reading says keep.
+- **Why it is not licensed.** The control was drawn by area (three areas), so an analyst who respects the assignment unit gets -57. The guidance does not file "cluster at area level"; it only states the draw by lot and says the interval is on incremental purchases per piece.
+- **Unweighted area-mean Welch.** The contrast is 140.1, SE 91.9, df about 4, and the lower end is about -56. The call is the same.
+- **Control with objectors not removed (2,080).** Would shift the mean slightly but the policy section 6 and guidance section 2 pin the objector exclusion; I did not recompute the interval. The call is not expected to move.
 
 ## Files/Hygiene
-PASS. 22 files in csv, docx, xlsx, pdf and md, with several files above 25,000 rows. They read as system exports, with semicolon and decimal-comma POS, mixed clocks and a runbook with an incident log. Distractors: Meta ads, ESP and SMS logs. Dates are consistent with the January 2028 timeline. No authoring leakage found. The till-upgrade cause cited in the solution blocks appears in no shipped file.
+PASS. 23 files, formats csv, xlsx, docx, pdf, md. Realistic operational artifacts, with mixed time bases, semicolon and decimal-comma POS export, and a real-looking campaign report. No benchmark or authoring disclosures seen; DATA_DICTIONARY.md is a normal CRM note. The only defect worth a note is that the dictionary's statement on receipt_total_sek is false for 14 stores, which is a presentation of Layer 1 mess.
 
 ## Stump power
-Good. The easy routes file the wrong thing. A household-level interval gives 58.00 to 216.43 and wrongly clears the line (KEEP). The campaign report's 817.77 baseline, or the 3,092 eligible-but-not-mailed households (difference 159.23), is a poor control. The control is also unlisted and must be rebuilt from consent replay. The hard step is area-level inference with 3 control clusters.
+Good on the main call. The easy route is a household-level interval (58.0 to 216.4, keep) or the report's descriptive pair (2,298.58 vs 817.77), and a capable model plausibly takes it. The asks are hard through the undisclosed mislabel and the 14-store pre-discount totals, so a strong model that does not cross-check the till against the BI table will file 50 receipts or 71.4 thousand SEK.
 
 ## Stumping type
-`mechanism: statistical_rigor` (cluster-level inference after ETL conformance), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. On clean data the 3-control-cluster inference still stumps.
+mechanism: statistical_rigor (unit of analysis for the interval, with a recovered control)
+stumping_family: analytical_non_defect
+surface_read_dependency: no (the report's basket pair is descriptive; the numbers are fine)
+sole_data_defect: no (on clean data the area-level interval still decides the call)
+The difficulty is the cluster-level interval on a three-area control; the asks carry the semantic and mess devices, which the rules allow.
 
 ## Three rules
-`domain: pass`, `layers: pass`, `decisive_step: analytical`. Layer 1 is the mixed clocks, the POS and BI mismatch, the consent replay and the unlisted control. Layer 2 is the cluster-randomised incrementality test. The easy route (household-level interval or the report's baseline) gives KEEP or 159 SEK per piece. The domain passes the swap test: incrementality testing of direct mail and consented channel reach is marketing measurement.
+domain: pass | layers: pass | decisive_step: analytical
+The deciding quantity is an incremental-purchases estimate with a randomised-by-area control and a cluster-robust interval, which marketing measurement actually does. The easy route is a household-level interval, which gives 58.0 to 216.4, clears the 45.60 line, and files "keep the mailing". Layer 1 is the multi-system extracts (UTC against local time, consent replay, household keys, till and BI totals). Layer 2 is the interval at the assignment unit.
 
 ## Fix
-Where: prompt and the guidance docx (input_files text only).
-1. Pin the interval's WHAT in guidance section 5 and the prompt: the contrast of the 24 mailed against the 3 held-back postcode areas, with the estimator and df named.
-2. State that the control is the would-have-been-mailed households (non-objecting).
-3. Define "purchases paid" on offer receipts as the amount after the discount, and either mark the receipt-total basis per store in the POS export or have the dictionary say to reconcile it to the BI table.
-4. Optionally note that suppression carries over from before 2027 for the email platform.
+none. Optional hardening: none required. If the author wants the main call tighter against the household-level reading, file the unit (purchases compared at the level the control was assigned) in the guidance, not the method.
