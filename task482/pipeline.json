@@ -1,40 +1,25 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "PAUSED",
- "domain": "survey-research-official-statistics",
+ "status": "DESIGN",
+ "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-24",
- "stump": "The default path counts each town's busiest month of 2026 as its residents plus the paid stays its lodging tax returns and the booking platforms' remittances record, the guests the lodging tax sees, and certifies the lodge towns alone at three times their residents; the lodging tax records only the stays a guest paid for, while the basin's cottages fill with their owners and the residents' homes with their guests, and each town's plant load in its busiest month, divided by the load per resident in the winter months when only the residents are in town, counts them and puts the cottage towns over as well.",
- "architecture": 12,
+ "stump": "The default path computes each practice's 2026 cost of care per attributed member month on the payers' October interim run, carries it to the year and enters the practices that come in 2 per cent under their benchmarks there; the run holds only the members whose qualifying visit has happened, and the year-end attribution adds the members whose one visit of the year falls in its last four months, with their whole year of enrollment and small amounts, so each practice's own 2025 run-out at the same cut carries its figure down and a different set enters.",
+ "architecture": 13,
  "loops": 0,
- "precut": {
-  "exit": 0,
-  "date": "2026-10-24",
-  "checks": 51
- },
- "leak": {
-  "leak_py": "REVIEW (2026-10-24, no LEAK; zip be45d7b75ea5cc24)",
-  "reader": "round 1 (zip be45d7b7): readers A and B both landed the call (five cities, USD 480,000 each) through the plants' influent load at 0.17 lb a person a day, score_reader exit 1 (asks 74 and 68 of 78). Architecture 12 spent."
- },
- "duplicate_check": {
-  "heart": "WARN (no BLOCK)",
-  "nearest": "task305 at 0.06",
-  "surface": "exit 0, no hard tell"
- },
- "judge": {
-  "verdict": "not run to a verdict: the judge thread was stopped at the spend",
-  "disposition": "",
-  "report": ""
- },
+ "precut": {},
+ "leak": {},
+ "duplicate_check": {},
+ "judge": {},
  "returned": [],
- "resume": "re-root to architecture 13 (architecture 12 spent at stage 4 round 1, both readers landed the call): screen a fresh ETL draw whose default path looks whole, guard.py recent, coverage, mechanisms and slots first, then card, check, register and DRAWN",
+ "resume": "stage 2 of architecture 13 (drawn 2026-10-24, card registered): build the world on paper in the generator (thirteen practices, three payers, members with persistent visit months, 2025 complete and 2026 to the 31 August cut), measure the standing family (each practice's own run-out, per payer, pooled cost ratio with the practice's added share) and every rung on it, place the practices clear of their thresholds, then the three rules, default path, stump sentence, readability screen, fork table, ladder, closure, ask sheet with silent devices and prompt.txt to precut.py exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "re-root to a fresh world; architectures 1 to 11 spent at stage 4",
+ "source_note": "re-root to a fresh world; architectures 1 to 12 spent at stage 4",
  "lineage_v11": {
   "zip": "ce5456c3620c70081c8372bb8f8231421d635c03a6e7d284bc3af350eac671f7",
   "leak": {

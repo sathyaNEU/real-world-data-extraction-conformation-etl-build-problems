@@ -1,102 +1,94 @@
 {
   "task": "task482",
-  "architecture": "v12",
+  "architecture": "v13",
   "drawn": "2026-10-24",
-  "slot_note": "architecture 12, re-rooted after architecture 11 was spent at stage 4 (reader C refitted the conditioning model with the grouping variable)",
-  "domain": "survey-research-official-statistics",
-  "subdomain": "census-register-administrative-data-quality",
-  "niche": "a state demographer's certification of the 2026 peak-season population of the eight cities of a northern lake basin for the 2027 Seasonal Communities Aid, each city's average population present in its busiest month read through the load its sewer carries to its treatment plant, calibrated per person in the winter months, because the Lake Protection Fee records only the paid stays",
+  "slot_note": "architecture 13, re-rooted after architecture 12 was spent at stage 4 (both readers read each city's population present off its plant's influent load per person)",
+  "domain": "healthcare-delivery-health-economics",
+  "subdomain": "payment-claims-health-plan-analytics",
+  "niche": "a clinically integrated network's 2027 two-sided risk elections for its thirteen independent primary care practices, each practice's 2026 total cost of care per attributed member month carried from the payers' September attribution run to the year-end attribution, where the members a retrospective attribution adds after the cut are mostly members whose one primary care visit of the year falls late in it",
   "objective": "etl",
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Birchwick, Ruddmere, Sorrelton, Tamsen Point and Esker Narrows qualify, USD 480,000 each",
-  "answer_source": "generator/figures.json (architecture 12, spent at stage 4)",
+  "answer": "",
+  "answer_source": "",
   "gap": [
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G5",
+    "G13",
+    "G6",
     "G16",
     "G17"
   ],
   "gate_g": "etl_conformance",
-  "calibration_form": "none",
-  "stump_strategy": "other",
+  "calibration_form": "prior_period_close_out",
+  "stump_strategy": "maturity_censoring",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "published_series",
+  "context_artifact": "close_out_summary",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly counts each city's busiest month of the measurement year as its residents plus the paid guests the fee returns and both booking platforms' remittances put in town, finds Sorrelton and Esker Narrows alone at three times their residents and certifies them at USD 1,200,000 each, where the owners in their cottages, the residents' guests and the day visitors, whom no stay record holds, put Birchwick, Ruddmere and Tamsen Point over as well.",
-  "domain_test": "The field's own analysis estimates a seasonal town's de facto population from what everyone present loads onto a measured system, here the influent load each town's treatment plant records, divided by the load per resident calibrated in the winter months when only the residents are in town (the population-equivalent and wastewater-flow methods resort towns use); with another field's nouns (a hospital for a town, patients for people) the hospital counts its patients directly, nothing is calibrated per person and the task stops making sense.",
+  "analyst_test": "A strong analyst who conforms the three payers' feeds, rosters and claims correctly and reads every clause of the network's performance standard computes each practice's 2026 total cost of care per attributed member month on the payers' September attribution run, carries it to the year flat or at 2025's seasonal pattern, and enters the wrong practices in the two-sided track: the year-end attribution adds mostly members whose single primary care visit of the year falls in September to December, who cost a fraction of the run's members over a whole year's enrollment, so the practices whose members come late are much cheaper on the final attribution than on the run.",
+  "domain_test": "The field's own analysis of a retrospective attribution's open year: a practice's cost per attributed member month is a ratio over a population the year's own primary care visits define, so the year-end figure is carried from the payers' interim run by the practice's own attribution run-out after the same cut a year earlier, members and dollars together, the way a value-based finance team accrues a settlement before the final run. With another field's nouns the plurality of qualifying primary care services, the allowed-amount cost of care and the benchmark trend lose their meaning, and the relation that decides (a first primary care visit late in the year marks a low user of care) is a fact about how people use primary care.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:a population present measured by its sewer load per resident",
+  "layer2_pattern": "own:a retrospective attribution's run-out carried from last year's same cut",
   "layer1": [
-    "the state's e-reporting export for five plants repeats every submission of a period (superseded, accepted, revisions returned after acceptance)",
-    "the contract operator's pond workbook, one sheet per pond and year, beside the e-reporting csv",
-    "one joint plant serving two cities, split by member meters read in gallons at month end, one meter replaced mid-month with a new register",
-    "Lake Protection Fee returns monthly or quarterly by an operator's size, amended returns replacing and supplemental returns adding",
-    "two booking platforms' remittances: one by checkout month with cities in capitals, one by the month after checkout with the departure only in the reservation reference",
-    "the state demographer's resident estimates by 1 July vintage with one boundary annexation"
+    "three payers' feeds in three layouts (member-month csv, pipe-delimited claim lines, xlsx roster)",
+    "member identifiers that differ by payer, with dependent suffixes, joined through the network's master patient index",
+    "NPIs that moved between practices, with effective dates in the network's practice roster",
+    "a payer's feed restating earlier months with replacement records under a later run date",
+    "allowed amounts in dollars and cents in two feeds and whole dollars in one",
+    "the 2025 settlement statements as a PDF table"
   ],
-  "stakeholder_role": "the State Demographer",
-  "role_family": "statistical_office_head",
-  "scoring_unit": "other",
+  "stakeholder_role": "the network's director of payer performance analytics",
+  "role_family": "portfolio_manager",
+  "scoring_unit": "per covered member",
   "spine": {
-    "file": "edmr_dmr_export_quillmere_basin_2025-01_2026-09.csv",
-    "rows": 910,
-    "entity": "one value of one submission of a plant's monthly discharge monitoring report",
-    "grain": "permit x month x location x parameter x submission",
+    "file": "tcoc_member_months_2025_2026.csv",
+    "rows": 0,
+    "entity": "one member month of one payer's cost of care feed",
+    "grain": "payer x member x month",
     "source": "synthetic"
   },
-  "forum": "minister_or_cabinet",
-  "forcing_event": "statutory_or_regulatory_filing",
-  "org_family": "research_or_statistics_office",
+  "forum": "board_of_directors",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "hospital_or_health_provider",
   "world": {
-    "geography": "United States, Minnesota (a fictional northern lake basin of eight towns; the program, towns, sanitary districts, booking platforms and people are fictional)",
+    "geography": "United States, Wisconsin (a fictional clinically integrated network of thirteen independent primary care practices in the east-central counties; the network, its practices, the three payers and the people are fictional, the names screened before the pack is cut)",
     "currency": "USD",
-    "org_type": "state demographer's office",
+    "org_type": "a physician-led clinically integrated network holding three commercial payers' total cost of care contracts",
     "invented_names": [
-      "Quillmere Lake",
-      "Quillmere County",
-      "Birchwick",
-      "Teskadel",
-      "Ruddmere",
-      "Sorrelton",
-      "Pinehold",
-      "Tamsen Point",
-      "Esker Narrows",
-      "Hollin Bay",
-      "Seasonal Communities Aid",
-      "Lakeward Stays",
-      "Kettle & Pine",
-      "Northwoods Utility Services",
-      "Quillmere Lake Protection District",
-      "Quillmere Lake Basin Fee Office"
+      "Calder Ridge Physician Network",
+      "Brule Lakes Health Plan",
+      "Meridale Benefit Partners",
+      "Tamarack Mutual Health"
     ],
     "people": [
-      "Marvin Jordan",
-      "William Terry",
-      "Bryce Williams"
+      "Andre O'Connor",
+      "Joel Brewer",
+      "Carlos Howard"
     ]
   },
   "deliverables": [
-    "seasonal_communities_aid_2027_certification.xlsx",
-    "busiest_month_population_2026.png"
+    "two_sided_track_elections_2027.xlsx",
+    "practice_cost_vs_benchmark_2026.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A period's number of people present is read from the stays a register records and the residents an estimate counts, but part of the people present stay where no record of stays exists; they show only in the load a shared physical system carries for everyone present, which, divided by the load each resident carries in the months when only residents are present, gives the people present in the busy period.",
-  "driver_concrete": "Each lake city's average population present in its busiest month of the measurement year is its plant's influent load that month divided by the load per person of its own January to April months, when the cottages are closed and the lodges nearly empty, so the owners in their cottages, the residents' guests and the day visitors, whom no fee return or platform remittance records, are counted.",
-  "stump": "The default path counts each city's busiest month as its residents plus the paid stays the fee returns and platform remittances record and certifies Sorrelton and Esker Narrows alone, where the plants' loads show the owners and guests no stay record holds and put Birchwick, Ruddmere and Tamsen Point over as well.",
+  "driver": "A per-member rate for a period is read over the members each unit has been assigned so far, but members are assigned by their own contacts during the period, so part-way through it the members still unassigned are mostly those who need little; they join late with small amounts and the whole period's exposure, so the rate on the members assigned so far overstates the period's rate by an amount that differs by unit with how late its members make contact, and only each unit's own run-out of the assignment after the same cut in the last period carries the rate to the period's end.",
+  "driver_concrete": "Each practice's 2026 cost of care per attributed member month on the year-end attribution is its September-run figure times its own 2025 ratio of the year-end figure to the figure for the members attributed by 31 August (attribution re-run on 2025's January to August qualifying services), because members whose first qualifying visit falls in September to December are mostly healthy members with one visit a year, who join with low allowed amounts and all twelve months of enrollment.",
+  "stump": "The default path computes each practice's cost per member month on the payers' September run and enters the practices that clear the bar there; carried to the year-end attribution by each practice's own run-out, a different set clears it.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task305": "task305 prices a recorded lodging population's grocery spend per pitch from cardholders at analog stores; here every recorded stay is already counted, and the people missing are those no stay record holds, measured by the load the town's sewer carries per resident",
-    "task177": "task177's spent architecture 1 took a waste series as the given measure of a seasonal population and forecast new collection points from their peers' winter responses; here no series is given as the population's measure, and recognising that the plant's load counts everyone present, calibrated per resident in the winter, is the step"
+    "task451": "task451 completes a closed year's unpaid claims for twelve partners' total cost of care, where the payer's adjudication sped up inside the lag history; here the year is open, the claims are complete, and what is still to come is the population: the members a retrospective attribution adds after the cut, carried by each practice's own attribution run-out.",
+    "task458": "task458 counts a lasting trait seen only through events while each member is observed; here no trait is counted: the population is defined by the year's own visits, and the late-assigned members' small amounts and whole year of exposure carry the rate.",
+    "task130": "task130's lineage forecasts a group chosen on an extreme outcome by a group chosen the same way a period earlier; here nobody is chosen on the outcome: the population grows inside the period by contact, and the run-out is measured on last year's same cut.",
+    "task482": "architecture 10 sums each member's share of a lifetime total that later spells add to; here each member counts once for the year and what is still to come is which members the year's attribution adds."
   },
   "lineage": [
     {
@@ -280,10 +272,35 @@
       ],
       "gate_g": "method_or_model_selection",
       "subdomain": "item-response-theory-test-equating"
+    },
+    {
+      "subdomain": "census-register-administrative-data-quality",
+      "niche": "a state demographer's certification of the 2026 peak-season population of the eight cities of a northern lake basin for the 2027 Seasonal Communities Aid, each city's average population present in its busiest month read through the load its sewer carries to its treatment plant, calibrated per person in the winter months, because the Lake Protection Fee records only the paid stays",
+      "objective": "etl",
+      "shape": "10",
+      "decision_type": "designation_set",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G5",
+        "G16",
+        "G17"
+      ],
+      "gate_g": "etl_conformance",
+      "stump_strategy": "other",
+      "driver": "A period's number of people present is read from the stays a register records and the residents an estimate counts, but part of the people present stay where no record of stays exists; they show only in the load a shared physical system carries for everyone present, which, divided by the load each resident carries in the months when only residents are present, gives the people present in the busy period.",
+      "driver_concrete": "Each lake city's average population present in its busiest month of the measurement year is its plant's influent load that month divided by the load per person of its own January to April months, when the cottages are closed and the lodges nearly empty, so the owners in their cottages, the residents' guests and the day visitors, whom no fee return or platform remittance records, are counted.",
+      "stump": "The default path counts each city's busiest month as its residents plus the paid stays the fee returns and platform remittances record and certifies Sorrelton and Esker Narrows alone, where the plants' loads show the owners and guests no stay record holds and put Birchwick, Ruddmere and Tamsen Point over as well.",
+      "answer": "Birchwick, Ruddmere, Sorrelton, Tamsen Point and Esker Narrows qualify, USD 480,000 each",
+      "architecture": 12,
+      "fate": "spent 2026-10-24 at stage 4 round 1: both scored readers read each city's busiest-month population off its plant's influent BOD at 0.17 lb a person a day checked against the winter residents and landed the call (five cities, USD 480,000 each), asks 74 and 68 of 78 (exit 1); the judge thread was stopped at the spend"
     }
   ],
-  "notes": "stump_strategy other: the decisive quantity is a population no record lists, measured through a physical load calibrated per resident where the residents are the whole population; not population_selection (the population is filed in full, the difficulty is measuring it) and not causal_design (no comparison group carries the step).",
-  "client_domain": "survey-research-official-statistics",
-  "registered": "2026-10-24T18:59:47Z",
-  "architecture_spent": true
+  "notes": "stump_strategy maturity_censoring: the year's attributed population is immature at the cut (late arrival of members into the population), and the decisive move is its run-out; not population_selection (the population is filed in full by the attribution clause, the difficulty is that it has not finished arriving) and not forecast_method_backtest (no method is chosen by a back-test). gate_g etl_conformance: each practice's conformed cost of care on the contract's basis, judged against the board's two-sided standard.",
+  "client_domain": "healthcare-delivery-health-economics",
+  "registered": "2026-10-24T22:03:28Z"
 }
