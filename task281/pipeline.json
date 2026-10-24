@@ -1,0 +1,39 @@
+{
+  "task": "task281",
+  "owner": "sathay3012",
+  "status": "DESIGN",
+  "domain": "general-statistics-data-science",
+  "objective": "descriptive-distribution",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-24",
+  "stump": "A competent analyst replays FY2026's weekly backfill need as it stood, its own vacant lines included, against relief hours at each unit's average availability, and files other counts for most units; the FY2028 need replaces FY2026's vacant lines with the position control's, closed as each academy class graduates, and the relief positions work at the July 2025 class's first-year availability.",
+  "architecture": 1,
+  "loops": 0,
+  "precut": {
+    "exit": null,
+    "date": ""
+  },
+  "leak": {
+    "leak_py": "",
+    "reader": null
+  },
+  "duplicate_check": {
+    "heart": "",
+    "nearest": "task157 0.06 by text; same gap, pattern and Gate G as seven older forecasting builds, differentiated on the card"
+  },
+  "judge": {
+    "verdict": null,
+    "disposition": null,
+    "report": null
+  },
+  "returned": [],
+  "resume": "DRAWN 2026-10-24 (card registered at WARN; seed DA31's world, decision and quantity kept and re-set in a fictional state's government at the guard's axis bans). Next: stage 2, the default path, stump sentence, three rules, fork table, ladder, closure, asks and prompt.txt to precut exit 0; the prototypes are in the scratchpad (t281/proto4.py to proto6.py: the per-unit need at the fifth-heaviest week, the golden robust at 0.18 from every integer edge, every partial route off on four or more units).",
+  "approved": null,
+  "delivered": null,
+  "portal": null,
+  "portal_id": "",
+  "portal_status": "",
+  "portal_status_date": "",
+  "seed": "DA31 (world kept: relief positions for round-the-clock units of four titles, sized on the overtime they remove; re-set from a city to a state; the seed's mechanism rows set aside)"
+}

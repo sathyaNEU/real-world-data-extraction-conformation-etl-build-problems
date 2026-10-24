@@ -1,0 +1,96 @@
+{
+  "task": "task281",
+  "architecture": "v1",
+  "drawn": "2026-10-24",
+  "slot_note": "",
+  "domain": "general-statistics-data-science",
+  "subdomain": "exploratory-data-analysis-distribution-assessment",
+  "niche": "relief staffing for a state's round-the-clock units: each unit's coming-year weekly backfill need cut at its fifth-heaviest week",
+  "objective": "descriptive-distribution",
+  "shape": "14",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "time",
+    "population"
+  ],
+  "pattern": [
+    "A"
+  ],
+  "generators": [
+    "G13",
+    "G6",
+    "G16"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "forecast_method_backtest",
+  "decisive_rule_filed": true,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stump_class": "analytical",
+  "analyst_test": "Replaying FY2026's weekly backfill need as it stood, its own vacant lines included, against relief hours at each unit's average availability files other counts for most units and a different total, not the golden's 59 of the 60 positions.",
+  "domain_test": "The deciding quantity is each unit's FY2028 weekly backfill-need distribution cut at its fifth-heaviest week, built from FY2026's absences, the FY2028 position control's vacant lines until each academy class graduates, and relief hours at the July 2025 class's first-year availability; replacing that distribution with its annual mean, or with FY2026's weeks as they stood, files other counts.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:forward-week-distribution-cut",
+  "layer1": [
+    "rosters from two timekeeping systems, one facility migrated mid-year with its own absence codes",
+    "fiscal weeks from 1 July against the payroll's biweekly periods",
+    "lines vacated and refilled mid-year, with transfers between units under a new line number",
+    "re-exported roster days repeated in the extract",
+    "the payroll revision log's retro adjustments posted in later periods"
+  ],
+  "stakeholder_role": "workforce analysis desk, State Department of Budget and Management",
+  "role_family": "research_desk",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "merrimont_shift_rosters_fy2026.csv",
+    "rows": 0,
+    "entity": "one scheduled line-shift: a post on the roster for one shift and who held it",
+    "grain": "line x shift",
+    "source": "synthetic"
+  },
+  "forum": "minister_or_cabinet",
+  "forcing_event": "budget_or_appropriation",
+  "org_family": "government_agency",
+  "world": {
+    "geography": "United States (a fictional state)",
+    "currency": "USD",
+    "org_type": "state government budget office",
+    "invented_names": [
+      "State of Merrimont",
+      "Harlan Road Correctional Facility",
+      "Ferrisburg Maintenance Garage"
+    ],
+    "people": [
+      "James Cohen",
+      "Linda Wolf",
+      "Natalie Mckinney"
+    ]
+  },
+  "deliverables": [
+    "fy2028_relief_positions_by_unit.xlsx",
+    "fy2028_weekly_backfill_need.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is each group's need in a coming year read from an upper cut of its weekly shortfall distribution, rebuilt from last year's shortfalls with that year's own structural gaps replaced by the coming year's planned ones, and the added capacity rated at the availability of the newest members who will fill it; last year's weeks as they stood, or the group's average availability, each file other counts.",
+  "driver_concrete": "Each unit's FY2028 relief positions are its fifth-heaviest week of backfill need over the weekly hours a relief officer works, the need built from FY2026's absences plus the vacant lines the FY2028 position control carries until each academy class graduates, the hours from the July 2025 academy class's first year; not FY2026's weeks with their own vacant lines, and not the unit's average availability.",
+  "stump": "A competent solver replays FY2026's weekly backfill need as it stood (its own vacant lines) against relief hours at each unit's average availability and files other counts for most units; the step that lands there is reading last year's weeks and last year's staff as next year's.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task107": "task107 counts units crossing a line on a counterparty's entry rate that steps up at a fixed service anniversary; task281 has no rate step: it rebuilds a weekly shortfall distribution forward with the coming year's planned vacancies and reads an upper cut of it, the new members' availability taken from a comparison cohort.",
+    "task35": "task35 attaches an obligation to its settlement period and carries an open stock forward; task281 carries no stock: its forward step replaces last year's structural shortfall with the coming year's planned one inside a weekly distribution read at an upper cut.",
+    "task46": "task46 rolls a rate law stationary in cumulative exposure onto a cohort crossing a step; task281 has no rate law or cohort crossing: it rebuilds each week's shortfall from last year's absences plus the coming year's planned vacancies and reads the distribution's fifth-heaviest week.",
+    "task47": "task47 rolls a forward window's volume from an order book through per-order yields; task281 forecasts no volume: it rebuilds a weekly shortfall distribution and rates new capacity at a comparison cohort's availability.",
+    "task77": "task77 collapses a join to one row per person before netting supply against demand; task281 nets nothing per person: it rebuilds a weekly shortfall distribution forward and cuts it at the fifth-heaviest week.",
+    "task89": "task89 rolls a stock forward against dated inflows to a first passage through zero, and its 911 lineage applies filed gates and origins; task281 rolls no stock and applies no gate: it reads an upper cut of a weekly shortfall distribution rebuilt with the coming year's planned vacancies, against capacity rated at the newest members' availability.",
+    "task95": "task95 re-weights a two-class conversion rate to a forward class weight recovered from two registers; task281 re-weights no rate: its forward step replaces last year's vacancy-driven weeks with the planned ones and rates new capacity at a first-year cohort's availability."
+  },
+  "lineage": [],
+  "notes": "Seed DA31's world, decision and quantity kept (60 overtime-relief positions across eight 24/7 units); its decoy-era mechanism set aside. Strategy forecast_method_backtest: the natural fit (last year's weeks replayed) is wrong for the window because the regime changes (the position control's vacancies and graduations, and relief hired as first-year staff). Gate G forecasting: the correctly read FY2026 does not pin FY2028's need. Shape 14: each unit's weekly distribution cut at its fifth-heaviest week.",
+  "registered": "2026-10-24T19:39:13Z"
+}
