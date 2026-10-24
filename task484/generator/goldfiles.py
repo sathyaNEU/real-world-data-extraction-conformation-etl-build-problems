@@ -48,6 +48,9 @@ def write(path, ev, aa, ab):
             c.font = Font(bold=True)
     for i, w in enumerate([18, 10, 12, 50, 12, 14, 12, 12, 14, 12], 1):
         ws.column_dimensions[get_column_letter(i)].width = w
+    for row in ws.iter_rows(min_row=4):
+        for c in row[4:]:
+            c.number_format = "#,##0" if c.column in (5, 8) else "#,##0.0"
     ws.freeze_panes = "A4"
     rm = wb.create_sheet("Remainder 2025-26")
     rm.append(["County", "SCC", "SCC description", "Wood burned 2025-26 (tons)", "PM2.5 2025-26 (tons)"])
@@ -60,6 +63,10 @@ def write(path, ev, aa, ab):
             figs["ask_b"]["%s.%s" % (county, W.CLASSES[cl][0])] = dict(wood=r1(b["wood"]), pm=r1(b["pm"]))
     for i, w in enumerate([10, 12, 50, 16, 14], 1):
         rm.column_dimensions[get_column_letter(i)].width = w
+    for row in rm.iter_rows(min_row=2):
+        for c in row[3:]:
+            c.number_format = "#,##0.0"
+    rm.freeze_panes = "A2"
     cn = wb.create_sheet("2014 counts")
     cn.append(["Maintenance area", "SCC", "Plan's 2014 count", "Registry, in place in 2014 (2020 boundaries)",
                "Registered after the plan's extract", "Parcel left the area in 2020"])
@@ -74,6 +81,10 @@ def write(path, ev, aa, ab):
                                                                               left=a["left"])
     for i, w in enumerate([18, 12, 14, 22, 20, 18], 1):
         cn.column_dimensions[get_column_letter(i)].width = w
+    for row in cn.iter_rows(min_row=2):
+        for c in row[2:]:
+            c.number_format = "#,##0"
+    cn.freeze_panes = "A2"
     nt = wb.create_sheet("Notes")
     for line in ["Season 1 October 2025 to 30 April 2026; appliances in place in the season on the 2020 boundaries, each "
                  "device once (the registry of 30 June 2026 and the parcel crosswalk).",
