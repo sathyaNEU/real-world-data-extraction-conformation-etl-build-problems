@@ -17,7 +17,7 @@
  },
  "leak": {
   "leak_py": "REVIEW (2026-10-24, no LEAK): coincidental small figures in the tool note and a section number; the provision names the six areas",
-  "reader": "round 1 (zip 79bf825cac69ff18): reader A filed all six areas (the default path), kept 0 of 54 ask figures and 13 of 36 base-year cells, score_reader exit 0; reader B running"
+  "reader": "round 1 (zip 79bf825cac69ff18): readers A and B (sonnet, medium) both filed all six areas (the default path), each kept 0 of 54 ask figures and 13 of 36 base-year cells, score_reader exit 0 for both; both ruled every REVIEW line harmless; both question 6 answers called the call a stated procedure (the Gate H question for the judge)"
  },
  "duplicate_check": {
   "heart": "WARN (no BLOCK)",
@@ -25,7 +25,7 @@
  },
  "judge": null,
  "returned": [],
- "resume": "stage 4 of architecture 2 on the cut pack (target.zip from build.py; two runs byte-identical): the stage 3 gates are green (checks.py 27 of 27, verify.py V0 to V5, figures_check 133 of 133, precut 51 of 51 with a pair ceiling of 28.5 and mirror leakage 0, leak.py REVIEW with no LEAK, guard heart WARN, the containers clean). Next: two fresh scored readers (sonnet, medium, the pack and prompt.txt only) and the determinism judge spawned together; score each reader key by key against generator/figures.json; ship only when both miss the call (Quarrow and Wethermoor), neither keeps a third of the ask figures and the judge approves; then the golden-realism pass on the inventory workbook before the SHIPPED commit.",
+ "resume": "stage 4 of architecture 2 on zip 79bf825cac69ff18: both scored readers missed the call and neither exits 1 (the author's reader condition holds). Next: the determinism judge on the same zip (determinism-check skill, medium), Gate H read against both readers' question 6 (each took the provision's 4.2 as count times the survey's class mean); on APPROVE, the golden-realism pass on the inventory workbook, then the SHIPPED commit with the ledger row, the card, target.zip and golden/ force-added; on SEND_BACK the architecture is spent and the slot re-roots",
  "source_note": "re-root to a fresh world; architecture 1 spent at stage 4",
  "zip": "79bf825cac69ff18a9f05176f747ea0a635e014fbc3b8ff1b9330fdc27fbc6c1"
 }

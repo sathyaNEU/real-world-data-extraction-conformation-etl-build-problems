@@ -48,3 +48,11 @@ default path's answer: it applied each area's survey cords per appliance class t
 of 36 base-year cells (the classes no changeout touched); score_reader exit 0. It ruled every REVIEW line harmless. Its
 question 6 named the provision's 4.2 and called the call a stated procedure, having taken the class means as that
 procedure; the judge reads Gate H on the golden's step.
+
+Reader B (the same brief on a second fresh copy) filed the same six areas: it applied the survey's class means to the
+plan's 2014 counts, merged same-parcel records registered together, and joined the assessors' housing units on the
+block-group code. It kept 0 of 36 ask A counts, 0 of 18 ask B cells, 0 of 18 area figures and the same 13 of 36
+base-year cells; score_reader exit 0. It ruled every REVIEW line harmless. Its question 6 also called the call mostly
+a stated procedure (the provision's 4.1 and 4.2 with the appendix), with the registry's twin records as a data catch.
+Both readers' question 6 is the Gate H question the judge answers on the golden's step: each read the provision as
+fixing count times class mean and never weighed what the changed-out appliances burned.
