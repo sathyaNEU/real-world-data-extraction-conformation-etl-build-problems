@@ -97,6 +97,13 @@ step: `build-pipeline` classes a rung executed as a work order as announced, not
 Answers append to the report under `## Solver's-eye read`, with a verdict on each REVIEW line. The main
 thread rules fix or harmless per line, harmless ones one line each in the design note.
 
+**The stump-vocabulary sweep's lines never reach the reader.** Their parentheses list the stump
+paragraph's own words, so handing them over tells the reader where the decisive step lives and turns its
+call into an announced rung (`build-pipeline` Returned tasks), not a measurement. task305's third pair
+both went first to the rating list's holiday parks at Wrentoft, the two words the sweep line named, and
+both landed a call the four readers before them had missed. The main thread rules those lines itself;
+question 1 asks the same thing cold.
+
 **The reader also hands back every figure it committed to, as a JSON object keyed exactly as
 `<task>/generator/figures.json` is keyed** (a nested value by a dotted key, `"a1_Norte.contacts": 1965`),
 holding only the figures it actually answered. Score it before reading its verdict:

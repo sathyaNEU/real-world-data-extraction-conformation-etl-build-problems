@@ -27,7 +27,12 @@ Run the leak check over the one task named in `$ARGUMENTS`. A bare number or `ta
      six questions from the skill, each answered with a quotation or the word "none" (question 6 is the 10/10
      rule 3 check from outside).
    - Then give it the REVIEW lines from the mechanical report, verbatim, and ask for one line per
-     item: harmless, with the reason, or a leak, with what it gives away.
+     item: harmless, with the reason, or a leak, with what it gives away. **Except the stump-vocabulary
+     sweep's lines**: their parentheses list the stump paragraph's own words, so a reader handed them
+     is told where to look and its call is no longer a measurement. Rule those lines in the main
+     thread (one line each in the design note); the reader's question 1 covers the same ground cold.
+     task305's third pair both went first to the rating list's holiday parks at Wrentoft, the two
+     words the sweep line named, and both landed a call the four readers before them had missed.
 5. **Append** the agent's answers to `<task>/leak_check_report.md` under `## Solver's-eye read`.
 6. **Report**: the mechanical verdict, the six answers in one line each, and the list of items to
    fix. Run on its own, this command fixes nothing; the fix goes in the generator. Inside `/build`
