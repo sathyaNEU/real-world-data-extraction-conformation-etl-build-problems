@@ -1,102 +1,101 @@
 {
   "task": "task170",
-  "architecture": "v4",
-  "drawn": "2026-10-23",
-  "slot_note": "architecture 4, a from-scratch rebuild of a reopened number: v1 (the paediatric ARV order) and v3 (the repellent net campaign, spent at Gate F) are in lineage; architecture 2's cells and the expected-credit-loss cell died before any card (design note ## Tried and rejected)",
-  "domain": "psychology-behavioral-science",
-  "subdomain": "decision-making-computational-behavioral-modeling",
-  "client_domain": "psychology-behavioral-science",
-  "niche": "a county hospital group's forecast, for its FY2027 budget, of the employer matching contributions its workplace pension plan will pay on the staff it hires in 2027, the first intake enrolled automatically at a 3 per cent default with the right to opt out, when every earlier intake had to opt in and the record shows only the hires who chose to join",
+  "architecture": "v5",
+  "drawn": "2026-10-24",
+  "slot_note": "architecture 5, the tenth cell of a reopened number: v1 (the paediatric ARV order), v3 (the repellent net campaign) and v4 (the auto-enrolled employer match) are in lineage; architecture 2's cells and cells five to nine died before any card (design note ## Tried and rejected)",
+  "domain": "human-factors-ergonomics",
+  "subdomain": "human-reliability-assessment",
+  "client_domain": "human-factors-ergonomics",
+  "niche": "a regional rail operator's forecast, for the rail safety regulator, of the train data entry errors its Phase 4 depots' drivers will make at ETCS Start of Mission in each depot's first twelve months on ETCS, when the suburban depots that went first gave each driver four to six times as many start-ups a month",
   "objective": "forecasting",
-  "shape": "other",
+  "shape": "07",
   "decision_type": "quantity_figure",
-  "answer_unit": "currency",
-  "answer": "About TNK 11.5 million in employer matching contributions on Vindeholm County Hospitals' 2027 intake over the January to December 2027 payrolls (TNK 11,439,212 unrounded from the shipped files), with about 1,600 of the intake contributing on the December 2027 payroll.",
-  "answer_source": "submission.md, 1. Final Recommendation (generator/deliver.py from the pack; generator/verify.py recomputes)",
+  "answer_unit": "count",
+  "answer": "About 650 train data entry errors by the Phase 4 depots' drivers in each depot's first twelve months on ETCS (planning value at the draw; fixed from the shipped files at ship)",
+  "answer_source": "design note ## Draw (planning value; submission.md block 1 at ship)",
   "gap": [
-    "time",
-    "population"
+    "population",
+    "time"
   ],
   "pattern": [
-    "none"
+    "E"
   ],
   "generators": [
-    "G7",
-    "G14"
+    "G14",
+    "G2",
+    "G13"
   ],
   "gate_g": "forecasting",
-  "calibration_form": "other",
-  "stump_strategy": "other",
+  "calibration_form": "pilot_log",
+  "stump_strategy": "time_semantics",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "other",
+  "context_artifact": "operations_log",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who cleans the HR history, the member register and the payroll lines, reads the plan rules and the amendment correctly, and carries the income protection cover's cancellations by month of service, the group's one record of hires leaving a default, as the plan's opt-outs files TNK 14.5 million (14.0 million if it reads the opt-in join curve as the share who have chosen, 8.5 million if the 43 per cent who join contribute from the first payroll and nobody else does), when the hires who have not yet made a choice at 3 per cent plus the joiners at their own rates files TNK 11.5 million.",
-  "domain_test": "The deciding quantity is a choice model of a default: each hire carries a preference and a moment of active choice, and until that moment the default holds, so the forward default's take-up is the inactive share plus the active share who prefer to stay, the way behavioural models of defaults and procrastination separate preference from inertia; with clinical or school nouns there is no default to sit in and no moment of choice to wait for.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:the-default-holds-until-each-hire-makes-an-active-choice-on-the-clock-the-opt-in-record-shows",
+  "analyst_test": "A strong analyst who joins the Start of Mission log to the safety desk's error register, removes the duplicate reports, maps the re-keyed staff numbers, reads the safety case conventions correctly and carries the Phase 1 to 3 depots' errors per start-up over each depot's first twelve months on ETCS (or that rate month by month since go-live) to the Phase 4 drivers' start-ups files about 400, against about 650.",
+  "domain_test": "The deciding quantity is a human error probability, train data entry at ETCS Start of Mission, under the experience performance shaping factor human reliability assessment applies to a task: read from the record as the per-attempt error probability on each driver's own count of start-ups and carried to the forward drivers' own start-up rates. Swap the drivers for machines and there is no operator whose practice moves the probability, so the call becomes the earlier depots' rate times the forward volume.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:per-attempt-error-probability-on-the-operator's-own-count-of-attempts",
   "layer1": [
-    "monthly payroll deduction lines with reversals, arrears and a payroll re-run",
-    "rehired staff under reused employee numbers",
-    "a hiring plan with cancelled and re-issued requisitions",
-    "a cover's deductions under an older deduction code before a payroll system change",
-    "hospital codes renamed after a merger of two sites"
+    "staff numbers re-keyed when drivers moved depots, with a crosswalk",
+    "the safety desk's error register with a second report of the same error from the signaller",
+    "error reports with no event reference, matched by unit and minute",
+    "Start of Mission times in UTC on the on-board recorder against local time in the register",
+    "units renumbered after refurbishment",
+    "a diagram file with cancelled and re-issued turns",
+    "test and depot-shunt start-ups on the log beside service start-ups"
   ],
-  "stakeholder_role": "the reward and pensions manager in the hospital group's HR, whose forecast of the employer match on the first auto-enrolled intake goes to the county council's employment committee before it signs off the FY2027 pay budget",
-  "role_family": "other",
+  "stakeholder_role": "the operator's human factors lead, whose Phase 4 safety case submission to the rail safety regulator carries the forecast of train data entry errors that sets the driver monitoring plan",
+  "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "hr_employment_history_2019_2026.csv (HR's extract of every employment spell in post at any time from 1 January 2019, under both employee numbers)",
-    "rows": 31982,
-    "entity": "one employment spell of one employee",
-    "grain": "employee x spell",
+    "file": "etcs_start_of_mission_log (the on-board recorders' Start of Mission events, Phase 1 to 3 depots, each depot's go-live to 31 October 2026)",
+    "rows": 0,
+    "entity": "one Start of Mission by one driver on one unit",
+    "grain": "driver x start-up",
     "source": "synthetic"
   },
-  "forum": "committee_or_panel",
-  "forcing_event": "budget_or_appropriation",
-  "org_family": "hospital_or_health_provider",
+  "forum": "regulator_or_inspector",
+  "forcing_event": "launch_or_rollout",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "Tarnland (a fictional country; Vindeholm County, its hospital group, the pension plan, the cover and every record are fictional)",
-    "currency": "TNK",
-    "org_type": "a county council's hospital group employing about 9,000 staff in six hospitals",
+    "geography": "Arnhallow (a fictional country; Corran Vale Railways, its depots, its regulator and every record are fictional)",
+    "currency": "none",
+    "org_type": "a regional passenger rail operator running about 600 drivers from fourteen depots",
     "invented_names": [
-      "Tarnland",
-      "Vindeholm County",
-      "Vindeholm County Hospitals",
-      "VCH Supplementary Savings Plan",
-      "Ledstrand Pension Administration",
-      "Tarnmark Mutual",
-      "Rendholm",
-      "Askvik",
-      "Ostervall",
-      "Brannby",
-      "Lidmark"
+      "Arnhallow",
+      "Corran Vale Railways",
+      "Arnhallow Office of Rail Safety"
     ],
     "people": [
-      "Caroline Hagman",
-      "Erik Palm",
-      "Alfred Sundberg"
+      "Kate Potter",
+      "Arthur Jackson",
+      "Charlie Coles",
+      "Gillian Armstrong"
     ]
   },
   "deliverables": [
-    "vindeholm_match_forecast_2027.xlsx",
-    "match_forecast_note_2027.docx"
+    "phase4_data_entry_forecast.xlsx",
+    "phase4_depot_readiness.svg"
   ],
   "opening_move": "question-first",
-  "question_form": "how-much",
-  "driver": "When a default switches direction, the record from the old default shows only the units whose preference differs from it and only once they have acted, so the pace at which every unit acts is that record's take-up curve divided by its own plateau; under the new default every unit holds the default until it acts, and the forward take-up is the not-yet-acted share plus the acted share who prefer it, not the old take-up, not one minus it, and not the old curve read as the pace of acting.",
-  "driver_concrete": "Vindeholm's opt-in record shows 43 per cent of hires joining within five years at a pace where 35 per cent of hires have made a choice by their first payroll and 90 per cent by their twelfth; from January 2027 every hire contributes 3 per cent until choosing, so the intake's FY2027 match is the not-yet-chosen at 3 per cent plus the joiners at their own rates, TNK 11.5 million, not the cover's 16 per cent cancellation curve carried as the plan's opt-outs (14.5 million) and not the 43 per cent contributing from the first payroll (8.5 million).",
-  "stump": "A competent analyst carries the income protection cover's cancellations, the group's one record of hires leaving a default, as the share of the 2027 intake that will opt out and files TNK 14.5 million against 11.5 million; the step that lands it there is reading a cancellation curve set by the 16 per cent of hires who want to drop a 0.4 per cent cover as the opt-outs of a plan 57 per cent of hires never join, when the opt-in record holds both what hires prefer and how fast every hire makes a choice.",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is a per-attempt failure probability that falls with each operator's own count of attempts, so a forward group whose operators make attempts more slowly spends most of its first year on the steep part of the curve; the earlier groups' first-year rate per attempt, or a curve on time since start, carries their faster practice into the forecast and understates it.",
+  "driver_concrete": "Corran Vale's Phase 1 to 3 suburban depots gave each driver about 110 ETCS start-ups a month, so a driver passed 600 start-ups inside the first six months, where the train data entry error rate has fallen to a fifth of its first-week level; the Phase 4 rural depots' diagrams give 20 to 45, so their drivers spend the first year where the earlier drivers spent their first two months.",
+  "stump": "A competent analyst carries the Phase 1 to 3 depots' train data entry errors per start-up over each depot's first twelve months on ETCS (or the same rate month by month since go-live) to the Phase 4 drivers' start-ups and files about 400, against about 650, because the error probability falls with each driver's own count of start-ups and the Phase 4 diagrams run that count up at a quarter of the suburban pace.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task136": "there a scheduled intervention mostly enrols units about to take up the outcome on their own; here the default itself holds every unit until it acts, and the act's pace must be recovered from a record where only one preference is visible",
-    "task170": "v3 carried a trial's efficacy through the share of exposure that reaches the protected state; here nothing is transported between settings: one population's own record under one default is read for two things it holds at once, a preference and a moment of choice, and the forward default is rebuilt from them",
-    "task161": "there a stock built ahead of a cost step drains at the steady share of use every earlier build drained at; here no stock drains: each hire holds a default until a moment of choice, and the choice's pace has to be recovered from a record that shows only one of the two preferences",
-    "task259": "there a level at a reference date is carried from earlier reports by how it moves at a fixed grade; here nothing is carried between dates, the forward take-up is rebuilt from a preference share and a timing curve read in the same record under the opposite default",
-    "task87": "there a schedule's exclusivity caps a delivered count; here no capacity or exclusivity binds, the gap is when each hire makes an active choice and what it chooses",
-    "task105": "there a new outlet wins only the part of its catchment nearer to it than to a sister; here there is no spatial competition, the forward default reverses who must act",
-    "task229": "there a convex conversion of a daily mean is biased by within-day swings; here there is no conversion or within-period swing, the selected view of a choice record is undone by dividing the join curve by its own plateau"
+    "task170": "v4 recovered a choice model of a default from an opt-in record; v5 reads a learning curve on each operator's own count of attempts and carries it at the forward operators' slower practice",
+    "task179": "there a predictor's distribution collapses under an allocation regime change and the chance is read at it; here no regime changes the people: the clock the probability runs on is practice, so even a learning curve on calendar time fails",
+    "task167": "there units follow one of two unnamed draw schedules and the young book's mix of them sets the forward draw; here every driver follows one learning curve and only the pace along it differs, read on each driver's own count of attempts",
+    "task177": "there an intervention's effect depends on where it lands in each unit's decision cycle; here a per-attempt error probability falls with the operator's accumulated attempts, with no intervention and no cycle",
+    "task31": "there a lag splits absolutely on a prior approval recovered through a join; here a probability falls continuously with each operator's own practice count, which every log row carries",
+    "task44": "there a pilot's pooled effect mixes opposite effects split by a moderator measured over a prior window; here one monotone curve holds for every operator and the forward operators sit earlier on it",
+    "task56": "there a population is identifiable only by its absence from an event stream; here every forward operator is named in the plan and the probability is read along each one's own count",
+    "task57": "there candidate measures reproduce their own year and only a held-out year separates them; here the candidate clocks are separated inside the record, by drivers who practised slowly inside fast depots",
+    "task76": "there a class with zero conversion exists only as a look-back over failed contacts; here no class is hidden: the probability is a function of practice and the forward drivers' practice rate is planned",
+    "task124": "there the analogs' measured value was held down by the organisation's own dispatch, which newcomers cannot join; here nothing held the earlier depots' rate down: their drivers practised faster, so their first-year rate per attempt is lower than the forward drivers' will be"
   },
   "lineage": [
     {
@@ -200,9 +199,23 @@
       "layer2_pattern": "own:protective-efficacy-carried-through-the-in-bed-share-of-exposure",
       "answer": "About 11,000 Ombeni fever cases averted among the people sleeping under the March 2027 LulaNet R nets in Ruvari County from April to December 2027, 21 per cent of the 53,042 cases the county expects (11,208 unrounded from the shipped files).",
       "fate": "spent 2026-10-23 at stage 4 Gate F on zip 74728781: judge DETERMINISTIC / APPROVE; blind reader A regressed each trial site's efficacy on its in-bed share of exposure from the report's site tables and filed 12,000 against 11,000"
+    },
+    {
+      "architecture": "v4",
+      "drawn": "2026-10-23",
+      "niche": "a county hospital group's forecast, for its FY2027 budget, of the employer matching contributions its workplace pension plan will pay on the staff it hires in 2027, the first intake enrolled automatically at a 3 per cent default with the right to opt out, when every earlier intake had to opt in and the record shows only the hires who chose to join",
+      "domain": "psychology-behavioral-science",
+      "subdomain": "decision-making-computational-behavioral-modeling",
+      "objective": "forecasting",
+      "shape": "other",
+      "driver": "When a default switches direction, the record from the old default shows only the units whose preference differs from it and only once they have acted, so the pace at which every unit acts is that record's take-up curve divided by its own plateau; under the new default every unit holds the default until it acts, and the forward take-up is the not-yet-acted share plus the acted share who prefer it, not the old take-up, not one minus it, and not the old curve read as the pace of acting.",
+      "driver_concrete": "Vindeholm's opt-in record shows 43 per cent of hires joining within five years at a pace where 35 per cent of hires have made a choice by their first payroll and 90 per cent by their twelfth; from January 2027 every hire contributes 3 per cent until choosing, so the intake's FY2027 match is the not-yet-chosen at 3 per cent plus the joiners at their own rates, TNK 11.5 million, not the cover's 16 per cent cancellation curve carried as the plan's opt-outs (14.5 million) and not the 43 per cent contributing from the first payroll (8.5 million).",
+      "stump": "A competent analyst carries the income protection cover's cancellations, the group's one record of hires leaving a default, as the share of the 2027 intake that will opt out and files TNK 14.5 million against 11.5 million; the step that lands it there is reading a cancellation curve set by the 16 per cent of hires who want to drop a 0.4 per cent cover as the opt-outs of a plan 57 per cent of hires never join, when the opt-in record holds both what hires prefer and how fast every hire makes a choice.",
+      "layer2_pattern": "own:the-default-holds-until-each-hire-makes-an-active-choice-on-the-clock-the-opt-in-record-shows",
+      "answer": "About TNK 11.5 million in employer matching contributions on Vindeholm County Hospitals' 2027 intake over the January to December 2027 payrolls (TNK 11,439,212 unrounded from the shipped files), with about 1,600 of the intake contributing on the December 2027 payroll.",
+      "fate": "spent 2026-10-23 at stage 4: the judge returned NOT_DETERMINISTIC (the default's take-up pace forked); cells five to nine found no draw that held before this one"
     }
   ],
-  "notes": "stump_strategy other: a choice model of a default, a preference and a moment of active choice separated in a record that shows only one of the two preferences, then recombined under the opposite default. population_selection also describes the plateau step (the opt-in record shows only hires who chose to join) and is in the ban window (task274); it is named here so the label is not read as chosen around the ban. calibration_form other: the income protection cover, auto-enrolled with opt-out since 2019, whose opt-outs show that hires who decline a default act on the same clock as hires who join an opt-in plan. role_family other: an HR reward and pensions manager, a role the vocabulary does not name; the first draw put the forecast through the director of finance to the executive team (finance_controller, executive_team), and both axes were held by task175 when the window moved under the registration lock, so the world was redrawn to the employment committee that approved the enrolment and signs off the pay budget. SPENT 2026-10-23 at stage 4 on zip 0c216157: the determinism judge returned NOT_DETERMINISTIC (underspecified_objective), SEND_BACK, because no auto-enrolled savings record ships and the IPC Auto basis read as the opt-out clock (TNK 14.3 million, about 2,300 contributors) is a defensible reading nothing rules out; blind reader C took that route and filed 14.5 million and 2,300.",
-  "registered": "2026-10-23T07:11:10Z",
-  "architecture_spent": true
+  "notes": "stump_strategy time_semantics: the decisive clock is the operator's own count of attempts, not calendar time since go-live; composition_mix also describes the forward drivers' lower practice rate, keyed time_semantics because a calendar-clock learning curve, the learning-aware analyst's route, lands with the pooled rate. Prototypes: scratchpad t170h/proto lc1.py to lc3.py (pooled and month routes 36 to 39 per cent low; own-count bands, power law and log-linear within 2 to 9 per cent of each other; a ward-count curve converges). Keyed pattern E (G14, does the pooled rate apply to this pool) with the decisive gap population: the forward drivers practise at a quarter of the suburban pace; pattern A (time_semantics' own) is banned against task281 in the last three and the count-call keyings on G2 and G13 collide with task173's lineage inside the window; nothing relabelled.",
+  "registered": "2026-10-24T23:47:23Z"
 }

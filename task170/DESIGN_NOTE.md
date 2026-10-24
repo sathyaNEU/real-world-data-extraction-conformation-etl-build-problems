@@ -1,15 +1,124 @@
-# task170 design note: the employer match Vindeholm County Hospitals will pay in FY2027 on its first auto-enrolled intake
+# task170 design note: the train data entry errors Corran Vale Railways' Phase 4 depots' drivers will make in their first twelve months on ETCS
 
-Architecture 4, a from-scratch rebuild of a reopened number (Forecasting lane, sathya8571), in a cell this session
-chose under the main session's conditions (`## Rebuild`): psychology-behavioral-science /
-decision-making-computational-behavioral-modeling. Architecture 3 (the repellent net campaign) is summarised under
-`## Architecture 3 record`, architecture 1 (the paediatric ARV order) under `## Architecture 1 record`; architecture 2's
-cells and the expected-credit-loss cell died before any card (`## Tried and rejected`). The setting is fictional
-throughout, country included: Tarnland, Vindeholm County, Vindeholm County Hospitals and its six hospitals, the VCH
-Supplementary Savings Plan, Ledstrand Pension Administration and Tarnmark Mutual are invented, and no record is a real
-employer's, administrator's or insurer's.
+Architecture 5, the tenth cell of a reopened number (Forecasting lane, sathya8571), chosen by this session
+(`## Rebuild`): human-factors-ergonomics / human-reliability-assessment. Architecture 4 (the auto-enrolled employer
+match) is kept under `## Architecture 4 record`, architecture 3 (the repellent net campaign) under `## Architecture 3
+record`, architecture 1 (the paediatric ARV order) under `## Architecture 1 record`; architecture 2's cells and cells
+five to nine died before any card (`## Tried and rejected`). The setting is fictional throughout, country included:
+Arnhallow, Corran Vale Railways, its depots and units, the Arnhallow Office of Rail Safety and every record are
+invented, and no record is a real operator's or regulator's. ETCS (the European Train Control System) is named as the
+signalling standard the fictional operator fits, as any operator in Europe would.
 
 ## Draw
+
+1. Card: `.claude/skills/fingerprint/cards/task170.json`, architecture v5, v4 moved into `lineage` with its fate beside
+   v1 and v3. `guard.py check` WARN (answered in item 9); nearest drivers 0.07 (task251 v2 lineage, an asset's
+   efficiency falling with cumulative use) and 0.06 (task265 v1), none flagged.
+2. Pairing: Human Factors & Ergonomics (client domain) / `human-reliability-assessment` / Forecasting & Predictive
+   Modeling (the taxonomy lists the task type under F only; no card on file in the pairing). The deciding analysis is
+   a human error probability for one task under the experience shaping factor: the per-attempt probability of a train
+   data entry error at ETCS Start of Mission, read from the record as a curve on each driver's own count of start-ups
+   and carried to each forward driver's own start-up rate.
+3. Niche: a regional passenger operator (about 600 drivers from fourteen depots) fitting ETCS route by route; Phases 1
+   to 3 (eight suburban and intercity depots) went live from March 2024 to September 2025, Phase 4 (six rural depots)
+   goes live from February to June 2027. The human factors lead's Phase 4 safety case to the Arnhallow Office of Rail
+   Safety carries the forecast of train data entry errors in each Phase 4 depot's first twelve months, which sets the
+   driver monitoring plan (every recorded error is debriefed).
+4. Call and shape: the Phase 4 depots' train data entry errors in each depot's first twelve months on ETCS, a count
+   (`quantity_figure`, how many). Shape `07`: the call with asks on rows the call never reads, cut by depot and
+   measure (fleet fitment by go-live, conversion training by go-live, the 2026 diagrams' cancelled turns); shapes 14
+   and 10 are banned by the last two builds; criteria are counted in `## Ask sheet` at stage 2.
+5. Mechanism keys: gap population (the Phase 4 drivers practise at a quarter of the suburban pace), then time (the
+   first twelve months cover a different stretch of the practice curve); pattern E with generators G14 (does the pooled
+   first-year rate apply to this pool), G2 (the unit of experience is one start-up by one driver, not a depot-month)
+   and G13 (the decision window is not the pilot's); Gate G `forecasting`; strategy `time_semantics` (the decisive
+   clock is practice, not calendar time; the card's notes say why pattern E, and that pattern A and the G2 and G13
+   count-call keyings collide in the window); Layer 2 family `estimation_fit`, pattern
+   `own:per-attempt-error-probability-on-the-operator's-own-count-of-attempts`.
+6. Default path's answer against the golden (planning values from `t170h/proto`, fixed by the generator at stage 3):
+   the Phase 1 to 3 depots' errors per start-up over each depot's first twelve months, carried to the Phase 4 drivers'
+   planned start-ups, files about 400; the same rate month by month since go-live files about 400; the five
+   lowest-volume Phase 1 to 3 depots' first-year rate files about 450; the golden, each Phase 4 driver's start-ups run
+   along the curve on the driver's own count, files about 650.
+7. **Data-native sentence.** Every Start of Mission on the on-board recorder carries the driver's staff number, so each
+   recorded error's place on that driver's own count of ETCS start-ups is computable, and the record's spare-turn and
+   part-time drivers, who ran up start-ups slowly inside fast suburban depots, show the error rate of their depot-mates
+   at the same count rather than at the same month; the Phase 4 diagrams give every driver that slow pace.
+8. Sources, one line each. `guide-to-prompt` domains README (the task type serves F); human reliability practice for
+   the structure only (a human error probability per task demand under performance shaping factors, experience among
+   them; the power law of practice as the shape of a skill's error rate against repetitions). No card or seed is used;
+   the pitfall is re-found from the record's own structure (the earlier depots' fast diagrams; the slow-practice
+   drivers inside them). task107 v4 (an intake reaching the experienced rate at its twelve-month anniversary) and
+   task251 (efficiency falling with cumulative use) were read for their drivers: there the clock is tenure or an
+   asset's use; here it is each operator's own practice, and a tenure clock lands with the pooled rate.
+9. WARN answers. `three_rules.strategy_risk` (time_semantics often decides on a field read or a stated rule): here no
+   field or rule carries the clock; the curve is estimated from the log's attempts and outcomes (`## Three rules`).
+   `repeat.gate_g` and `repeat.question_form` (forecasting, how many, beside task281): the objective is the lane's and
+   the call is the safety case's own unit. `people.first` and `repeat.deliverables` cleared by drawing a replacement
+   persona and charting in SVG.
+10. People (`guard.py names --geo "united kingdom" --seed 170`; the country is fictional and English-speaking): Kate
+    Potter (human factors lead), Arthur Jackson (head of driver standards), Charlie Coles (ETCS programme manager),
+    Gillian Armstrong (safety desk). None appears in the prompt.
+11. Furniture: forum `regulator_or_inspector` (the Arnhallow Office of Rail Safety accepts the Phase 4 safety case and
+    sets the monitoring condition on the forecast), forcing event `launch_or_rollout` (Phase 4 go-live from February
+    2027), organisation family `utility_or_infrastructure` (a passenger rail operator), role family
+    `compliance_or_audit` (the human factors lead owns the safety case submission), context artifact `operations_log`
+    (the on-board recorders' Start of Mission log), calibration form `pilot_log` (Phases 1 to 3 as the record of the
+    rollout). The hospital world first drafted for this mechanism (smart infusion pumps) was refused by `ban.org_family`
+    against task482 and redrawn before any card.
+12. Cell choice (this session, 2026-10-24, under the main session's four conditions). The forward window changes the
+    process in a way not on file: no depot in the record ran ETCS at rural start-up volumes, so no record shows a
+    slow-practice depot's first year. The record is not replayable (no Phase 4-like depot to copy), not one group-by
+    (each error needs its driver's prior count, the curve has to be estimated on counts, and each forward driver's
+    twelve months run along it at that driver's own planned rate), and not a field-standard correction (the field's
+    habits are a tabled error probability or the earlier sites' observed rate). The materials sit in four files from
+    three systems (the on-board recorders' log, the safety desk's register, Resourcing's 2026 diagrams and the staff
+    crosswalk), and the safety case conventions state only the estimand. Excluded as spent: every cell in this note and
+    in the siblings' `## Rebuild` sections; the never-built Forecasting pairings were screened shape first and this was
+    the one with a fresh mechanism (`guard.py mechanisms`: no spent driver reads a curve on an operator's own practice).
+
+## Default path
+
+1. Read the safety case conventions: the count is the train data entry errors the safety desk records against
+   Phase 4 depots' drivers in each depot's first twelve months from its go-live date.
+2. Join the safety desk's error register to the Start of Mission log (the event reference, else unit and minute), drop
+   the signaller's second reports, map the re-keyed staff numbers, and take each Phase 1 to 3 depot's first twelve
+   months on ETCS.
+3. Divide the errors by the start-ups: the earlier depots' first-year rate per start-up (or, reading learning, that
+   rate in each month since go-live).
+4. Multiply by the Phase 4 drivers' start-ups over their first twelve months, from the 2026 diagrams.
+
+Ends on: about 400 train data entry errors (planning value)
+
+Golden: about 650 train data entry errors (planning value)
+
+## Stump sentence
+
+A competent analyst carries the Phase 1 to 3 depots' train data entry errors per start-up over each depot's first
+twelve months on ETCS (or that rate month by month since go-live) to the Phase 4 drivers' planned start-ups and files
+about 400, against about 650, because the error probability falls with each driver's own count of ETCS start-ups,
+which the suburban diagrams ran past 600 inside six months while the Phase 4 rural diagrams, at a quarter of the
+start-ups, keep each driver on the steep early part of the curve for most of the first year.
+
+## Three rules
+
+Task type: human-reliability-assessment (human-factors-ergonomics), which serves Forecasting: the forward count of human errors in one task over a set window, built from the task's error probability per demand under its shaping factors.
+Domain test: the deciding quantity is the human error probability of train data entry at Start of Mission under the experience shaping factor, the way human reliability assessment quantifies a task: per demand, per operator, moved by practice; it is read as a curve on each driver's own count of start-ups and carried to each forward driver's own rate of start-ups.
+Swap: "how many defects will the new line's machines make in their first year" keeps a rate times a volume, but no machine's own practice moves its probability, so the step that moves the answer has nothing to stand on.
+Layer 1: a rail operator's systems: staff numbers re-keyed when drivers moved depots (Resourcing's crosswalk), the safety desk's register with a second report of the same error from the signaller and reports with no event reference (matched by unit and minute), on-board recorder times in UTC against local time in the register, units renumbered after refurbishment, a diagram file with cancelled and re-issued turns, and test and depot-shunt start-ups on the log beside service start-ups; nothing placed to be caught.
+Layer 2: estimation_fit: the record's first-year rate per start-up is an average over a practice curve its fast depots ran down quickly, so it does not transfer to depots whose drivers make a quarter of the start-ups; the curve must be estimated on each driver's own count and carried at each forward driver's own pace, and a learning curve on months since go-live carries the fast pace too.
+Decisive step: estimate the train data entry error probability per start-up on each driver's own count of ETCS start-ups from the Phase 1 to 3 record, and run each Phase 4 driver's planned start-ups along it over the depot's first twelve months, instead of carrying the earlier depots' first-year rate per start-up or a curve on months since go-live.
+Not semantics: every field (staff number, event reference, unit, time zone, depot, start-up type) can be read correctly and the pooled first-year rate still files about 400; no column holds a driver's count of start-ups or marks a driver's place on a curve, and no file says the probability depends on practice.
+Not rule application: no filed rule or procedure says how the error probability is estimated or that experience counts in start-ups; the conventions fix who is counted, the window (each Phase 4 depot's first twelve months from its go-live), the error definition the safety desk records and the rounding; executing every stated rule leaves the method to the analyst, and the pooled rate, the month curve and the analogue depots all execute those rules.
+Analyst test: a strong analyst who joins the log to the register, drops the duplicate reports, maps the re-keyed staff numbers, converts the recorder's UTC, reads the conventions correctly and carries the Phase 1 to 3 depots' first-year errors per start-up to the Phase 4 drivers' planned start-ups files about 400 against about 650.
+Estimand: the number of train data entry errors the safety desk will record against drivers of the six Phase 4 depots in each depot's first twelve months from its ETCS go-live date, to the nearest 50; filed in the safety case conventions, the count asked in the prompt.
+No decoy: nothing is planted to be caught: no forecast, target, earlier estimate, memo or stakeholder figure ships; the earlier depots' rate is the solver's own arithmetic on the record, and the conventions, the rollout plan and the cutover facts state only what the operator files.
+No certified replay: no certified or published figure is reproduced to recover the method; no figure in the pack is an output of a forecasting method.
+Lesson: an error rate measured on people who practised fast is a point on a curve, not a property of the task; a model learns to ask how fast the forward operators will practise and to read the curve on each operator's own count, which no build on file teaches (task107 v4 reads tenure, task251 an asset's cumulative use, task179 a peer count under a changed allocation).
+
+## Architecture 4 record (spent 2026-10-23, kept as history)
+
+### Draw
 
 1. Card: `.claude/skills/fingerprint/cards/task170.json`, architecture v4, v3 moved into `lineage` with its fate
    beside v1. `guard.py check` WARN (answered in item 9); nearest drivers 0.05 (task129 v1 lineage, task230 v1
@@ -78,7 +187,7 @@ employer's, administrator's or insurer's.
     stopping rule whose lever is bounded by the size of a pay change. Nothing here turns on a pay change or a
     stopping rule, no card of task173's sits in the pairing, and the overlap is reported to the main session.
 
-## Default path
+### Default path
 
 The route a competent analyst takes from the prompt and the pack, every field read and every filed rule applied:
 
@@ -94,7 +203,7 @@ The route a competent analyst takes from the prompt and the pack, every field re
 Ends on: TNK 14.5 million (14,409,662 unrounded).
 Golden: TNK 11.5 million (11,439,212 unrounded).
 
-## Stump sentence
+### Stump sentence
 
 A competent analyst carries the income protection cover's cancellations, the group's one record of hires leaving a
 default, as the share of the 2027 intake that will opt out and files TNK 14.5 million against 11.5 million; the step
@@ -104,7 +213,7 @@ cover as the opt-outs of a plan 57 per cent of hires never join, when the opt-in
 cent by the first payroll, 90 per cent by the twelfth), so the intake's match is the not-yet-chosen at 3 per cent plus
 the joiners at their own rates.
 
-## Three rules
+### Three rules
 
 - Task type: psychology-behavioral-science / decision-making-computational-behavioral-modeling, which serves
   Forecasting in the taxonomy: the match a default will produce over a fiscal year not yet open.
@@ -164,7 +273,7 @@ the joiners at their own rates.
   through a preference and a clock (task136 enrols units about to take up on their own; task137 reads a behavioural
   share at a repricing).
 
-## Readability screen
+### Readability screen
 
 | Rung | 1 Filed sentence | 2 Schema | 3 Reflex | 4 Control bench | 5 Hygiene | 6 Linear | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -174,7 +283,7 @@ the joiners at their own rates.
 | R3 nobody opts out | no | none | inertia is total | none | no | a constant | readable |
 | R7 decisive: the not-yet-chosen at 3 per cent on the join curve over its plateau | no sentence names a clock, a plateau, a preference or the division | no column holds a choice date for non-joiners or a take-up; the curve needs HR spells against register joins across two number schemes with leavers censored | the textbook carries a benchmark opt-out rate | the cover's curve over its own plateau corroborates the clock only once both curves are built | no | a ratio of two curves recombined under the opposite default | silent |
 
-## Semantic fork table
+### Semantic fork table
 
 | Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
 |---|---|---|---|---|---|
@@ -193,7 +302,7 @@ the joiners at their own rates.
 | SF13 | "contributing on the December 2027 payroll" | a contribution deducted on that payroll, at the default or a chosen rate | members including those who opted out | other | the prompt's word "contributing"; asserted |
 | SF14 | who is in the line | the 2027 intake only | the whole workforce | larger | amendment section 4: "counts nobody hired before 2027" |
 
-## Ladder
+### Ladder
 
 | Rung | Construction | FY2027 match, TNK | Rounded | Clearance from the golden's bin |
 |---|---|---|---|---|
@@ -213,7 +322,7 @@ each hospital's golden sits 22,244 to 41,343 from its 100,000 bin's edge against
 The plan's monthly multipliers (1.06 in January, August and September, 0.98 otherwise) were chosen so that every
 standing-family member lands in the golden's bins on every graded figure.
 
-## Closure table
+### Closure table
 
 | # | Axis | Reading | Closure |
 |---|---|---|---|
@@ -240,20 +349,20 @@ standing-family member lands in the golden's bins on every graded figure.
 | 21 | Clause scope | amendment section 4 governs the budget line; section 2 who is enrolled | amendment |
 | 22 | Forward window contents | every requisition's start month and grade for 2027 | the tracker ships all twelve months |
 
-## Literal reader
+### Literal reader
 
 Executed word for word, the prompt and the amendment fix the intake, the window, the pay, the default, the opt-out,
 the match and the comparison basis; the literal reading that carries the cover's cancellations, or any observed
 take-up, is the default path's easy method on the same literal estimand (14.5 million), not another reading of a term,
 and every term's alternatives converge or are ruled out by a quoted sentence (SF1 to SF14). Pass.
 
-## Oracles
+### Oracles
 
 None ties only under the golden. The register's join dates, HR's spells and the bordereau are inputs on every path; no
 published take-up, opt-out rate or match forecast ships. The cover's curve over its own plateau corroborates the
 clock only after both curves are built, which is the decisive step itself.
 
-## Ask sheet
+### Ask sheet
 
 Asks, each on rows the call never reads (separation asserted in `checks.py`: the call's code reads no deduction line,
 and no membership opened before 2019 sits on a 2019 to 2026 hire).
@@ -290,7 +399,7 @@ Measured by: generator/ceiling.py
 Mirror leakage: 0.0 per cent of ask weight (the mirror stops at R0 and takes both asks on their natural reads).
 Pair ceiling: 38.6 ((65.3 + 12.0) / 2 on 38, 7 and 55), 47.3 if the cracker also cracks one ask's device.
 
-## Leak review
+### Leak review
 
 `leak.py --asof 2026-11-09`: REVIEW, no LEAK. Each line answered:
 - vch_savings_plan_amendment_2027.docx shares the call's words (budget, match, intake, FY2027, hospitals): the
@@ -304,7 +413,7 @@ Pair ceiling: 38.6 ((65.3 + 12.0) / 2 on 38, 7 and 55), 47.3 if the cracker also
 - The export manifest's "from 2027-01-01" and the tracker's planned start dates run past the pull: the forward plan's
   own dates, which the estimand needs.
 
-## Duplicate check
+### Duplicate check
 
 `guard.py heart task170` (2026-10-23, after the registration pull): WARN, the WARNs answered in `## Draw` item 9;
 nearest text 0.05 (task133 v2, task255 v1). `guard.py surface task170`: eight pairs promoted, every one on the card
@@ -317,7 +426,7 @@ exclusivity capping a delivered count) and task259 (a level carried to a referen
 labels; the card's `differentiation` carries one line for each the guard named. The surface tool still reads this
 number's ledger row as architecture 1's retirement.
 
-## Layer 1 inventory
+### Layer 1 inventory
 
 | Item | System that writes it | File | Natural mishandling | Neutral |
 |---|---|---|---|---|
@@ -329,7 +438,6 @@ number's ledger row as architecture 1's retirement.
 | the person's match on every assignment line | payroll | deductions | ask A device | ask only |
 | reversed and re-run payroll | payroll | deductions | ask A hazard | ask only |
 | the register before the month-end leavers file | Ledstrand | register | ask B device | ask only |
-
 ## Architecture 3 record (spent 2026-10-23)
 
 Architecture 3, epidemiology-public-health / health-burden-impact-modeling (Forecasting), the main session's cell of
@@ -519,6 +627,7 @@ The full architecture 1 note (default path, ladder, closure, asks and the stage 
   every geometric reason a new unit underperforms (isolation, reach, a barrier) is absorbed by the field's flow model
   with its form chosen by fit, so the textbook route lands; where the geometry is not in the flows (a climb), it has
   to ship as a column or a one-purpose layer, and either names the step.
+  - Tenth cell, first world (2026-10-24): the learning-on-practice mechanism in a hospital group's smart infusion pump rollout (each nurse's programming errors on her own count of programmings) was refused by `ban.org_family` against task482 before any card; the mechanism moved to a rail operator's ETCS rollout (architecture 5).
 
 ## Retired
 
@@ -576,3 +685,9 @@ The ninth cell was left to this session, shape first. urban-regional-science / f
 measured dead on code, seven more on paper) and the other open forecasting cells on paper while choosing (`## Tried and
 rejected`, last five lines). No card registered past v4; PAUSED at stage 1 for another cell. The number is never
 retired.
+
+The tenth cell was chosen by this session, shape first, on 2026-10-24: human-factors-ergonomics /
+human-reliability-assessment, one of the four client Forecasting pairings never built. A learning curve on each
+operator's own practice measured alive on code (`t170h/proto` lc1.py to lc3.py: the pooled and month-since-go-live
+routes 36 to 39 per cent low, the own-count family within 2 to 9 per cent of itself, a depot-count curve converging) and
+was carded as architecture 5 (`## Draw`).

@@ -1,19 +1,18 @@
 {
  "task": "task170",
  "owner": "sathya8571",
- "status": "PAUSED",
- "domain": "psychology-behavioral-science/decision-making-computational-behavioral-modeling",
+ "status": "DESIGN",
+ "domain": "human-factors-ergonomics/human-reliability-assessment",
  "objective": "forecasting",
- "stage": 1,
- "stage_name": "draw",
- "updated": "2026-10-23",
- "stump": "A competent analyst carries the income protection cover's cancellations as the share of the 2027 intake that will opt out and files TNK 14.5 million against 11.5 million; the step that lands it there is reading a cancellation curve set by the 16 per cent of hires who want to drop a cheap cover as the opt-outs of a plan 57 per cent of hires never join, when the opt-in record holds both the preference and the pace at which every hire makes a choice.",
- "architecture": 4,
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-24",
+ "stump": "A competent analyst carries the Phase 1 to 3 depots' train data entry errors per start-up over each depot's first twelve months on ETCS (or that rate month by month since go-live) to the Phase 4 drivers' planned start-ups and files about 400, against about 650, because the error probability falls with each driver's own count of ETCS start-ups and the Phase 4 rural diagrams run that count up at a quarter of the suburban pace.",
+ "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-23",
-  "checks": 51
+  "exit": null,
+  "date": ""
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-23 (--asof 2026-11-09), no LEAK",
@@ -29,11 +28,12 @@
   "report": "scratchpad judge-task170v4/verdict.md"
  },
  "returned": [],
- "resume": "architecture 4 spent at stage 4 2026-10-23; cells five to eight found nothing (design note ## Tried and rejected); the ninth cell, chosen shape first (urban-regional-science / forecasting), found nothing that holds: U1 (an isolated bike-share cluster) measured with the textbook origin-destination gravity model within 0.1 per cent of the truth, U2 (a plateau phase read on each pair's climb) measured with the station elevation column landing within 16 per cent, seven more on paper, and the other open forecasting cells (recidivism, stress testing, retention, seasonal adjustment, macro, infectious disease) screened on paper; prototypes in the session scratchpad t170s/proto; no card registered past v4; next: a cell the main session assigns",
+ "resume": "stage 2 of architecture 5 (drawn 2026-10-24): readability screen, fork table, 3 to 5 rungs, the 22-axis closure, the asks on rows the call never reads (fleet fitment, conversion training, the diagrams' cancelled turns), prompt.txt, then precut.py exit 0; measure the own-count family's spread on a generator world before fixing the rounding",
  "approved": null,
  "delivered": null,
  "portal": null,
  "portal_id": "",
  "portal_status": "",
- "portal_status_date": ""
+ "portal_status_date": "",
+ "card_registered": true
 }
