@@ -1,7 +1,7 @@
 {
  "task": "task484",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
  "stage": 2,
@@ -10,11 +10,15 @@
  "architecture": 2,
  "loops": 0,
  "stump": "The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 8 to 28 points, and all six areas trigger the contingency measure where only two do.",
- "precut": null,
+ "precut": {
+  "exit": 1,
+  "date": "2026-10-24",
+  "checks": "51, 4 FAIL (SF assertions in checks.py, pair ceiling, ceiling script, cracker sheet), 1 WARN (mirror leakage): all four wait on the generator and the first cut pack"
+ },
  "leak": null,
  "duplicate_check": null,
  "judge": null,
  "returned": [],
- "resume": "stage 2 of architecture 2 (drawn 2026-10-24): the wood smoke base year recalculated on a stock the changeout thinned primary-heat first. Next: carry scratch t484/sim2.py into the generator's world model, measure the standing family and the reflex sweep on the clean truth, write the readability screen, fork table (survivors' burning taken at the survey season's, non-programme removals, face cords, the 2020 boundaries), ladder, closure, literal reader, oracles and ask sheet, then prompt.txt and precut.py; the generator, prompt.txt and submission.md in the folder are architecture 1's and are replaced",
+ "resume": "stage 2 to 3 of architecture 2 (drawn c2e40941): the draw, three rules, default path, readability screen, fork table SF1 to SF15, ladder, closure table, literal reader, oracles and the ask plan are written on generator/paper_screen.py (seed 48431; seeds 48432 to 48434 file the same sets), and prompt.txt is architecture 2's draft (voice-check PASS). Next: write the generator (the registry with its parcel splits and late registrations, the 2024 survey with weights and mixed units, the changeout applications with heat status, the plan's 2014 workbook, the provision and methods appendix, the factor table, the boundary and SCC crosswalks, the counties' remainder sources for ask B, the distractors), cut the pack, measure the cracker and mirror sheets with ceiling.py, assert SF1 to SF15 and the ladder in checks.py, fix the asks' wording against the golden, then precut to exit 0 and the stage 3 gates. Every file in generator/ except paper_screen.py, and submission.md, metadata.json and leak_check_report.md, are architecture 1's and are replaced.",
  "source_note": "re-root to a fresh world; architecture 1 spent at stage 4"
 }

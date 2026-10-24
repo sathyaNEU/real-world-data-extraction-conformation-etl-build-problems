@@ -38,6 +38,9 @@ Eight candidates screened before it are in Tried and rejected.
   a choice among recalculation constructions for a base year, which is that key; etl_conformance would misstate it.
   repeat.question_form (which): the decision is a designation set, so the question asks which areas, with "if any"
   so that none is a grammatical answer.
+- **Data-native sentence:** the changeout funded primary-heat households first, so the uncertified stoves still in
+  use are mostly secondary heat, while the plan's 2014 count holds every stove the programme later took; the survey
+  can only see the survivors, and the applications are the one record of what each removed stove was.
 - **Strategy label:** composition_mix: the survey measures the right population for 2025-26, and the error is
   carrying its class mixture of heat status back to a base year with a different mixture. population_selection would
   also read and is under ban.strategy against task275.
@@ -76,37 +79,132 @@ Lesson: a recalculated base year is only as good as the population its activity 
 
 Ends on: all six areas trigger the contingency measure.
 
+Golden: Quarrow and Wethermoor trigger their contingency measures; Brannock, Ivelton, Saddeny and Ellick do not.
+
 ## Stump sentence
 
 The default path multiplies each area's 2014 appliance counts by the 2024 survey's cords per appliance class (or by its class-and-status cells at the survey's own mix), so the base year holds the primary-heat stoves since changed out at the survivors' mostly secondary burning, the reductions to the 2025-26 inventory shrink by 8 to 28 points, and all six areas trigger the contingency measure where only two do.
 
 ## Readability screen
 
-Stage 2.
+Measured on the paper world (`generator/paper_screen.py`, seed 48431; areas Brannock (A1), Ivelton (A2), Quarrow (A3), Saddeny (A4), Wethermoor (A5) and Ellick (A6),
+commitments 25, 22, 20, 15, 15 and 25 per cent). The names are working names until the surface screen at stage 3.
+
+| Rung | What the response does | What in the pack points at it | Verdict |
+|---|---|---|---|
+| L0 the old method's base year | the 2014 counts at the plan's regional default cords, the current factors | the 2014 workbook is the plan's approved base year | readable |
+| L1 class means carried back (default) | the 2014 counts at the 2024 survey's cords per appliance of each class | the provision's "recalculated on the current methods"; the survey's per-class means | readable |
+| L1a status cells at the survey's mix | the same, split by heat status at the survey's own mix of primary and secondary heat | the survey's heat-status field | readable |
+| L2 survivors only | the registry's survivors of 2014 at the class means, the changed-out units dropped | the registry's removal records | readable |
+| L3 changed-out units at the class mean | survivors and changed-out units both counted, each at its class mean | the applications' unit counts | readable |
+| L4 changed-out units at the primary-heat cell | survivors at their own mix, every changed-out unit at the primary-heat cords | the programme's primary-heat-first rule | readable |
+| G golden (decisive) | survivors at their own mix (the survey's units installed by 2014) and each changed-out unit at the cords for its recorded status | the estimand's "each appliance in the plan's 2014 count" and the applications' status field; nothing announces the selection | silent |
+
+Each half of the decisive step alone (L1a, the status split at the survey's mix; L3, the changed-out units counted at
+the class mean) files the default's answer, so no partial fix moves toward the golden.
 
 ## Semantic fork table
 
-Stage 2.
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | the 2014 count | the plan's approved counts by area and class (the 2014 workbook) | the registry's devices active in the 2014 season | same call (to assert at stage 3) | the provision's "each appliance in the plan's 2014 base year" |
+| SF2 | the base-year burning of an appliance still in use | its burning in the survey season, not weather-adjusted | scaled by heating degree days, 2014 against the survey season | same call (to assert) | methods appendix: wood combustion activity is not weather-adjusted |
+| SF3 | an appliance removed outside the programme | at its class's survivors' mix of heat status | dropped from the base | same call (to assert) | the provision counts every appliance in the 2014 base year |
+| SF4 | reported use in face cords and pickup loads | a face cord is a third of a cord, a pickup load half a cord | face cords read as cords | same call (to assert) | the survey codebook |
+| SF5 | an appliance's area | the 2020 boundaries | the 2014 boundaries | another set (to measure) | the provision names the areas as revised in 2020 |
+| SF6 | the commitment | each plan's own percentage | one percentage for every area | another set | the provision's table of commitments |
+| SF7 | falls short | a reduction below the commitment | at or below it | same call: no area sits within 5 points of its commitment (paper; asserted at stage 3) | the provision's wording |
+| SF8 | the survey's grain | each area's own respondents | respondents pooled across areas | to measure (the valleys burn differently) | methods appendix: activity is estimated for each area from its own respondents |
+| SF9 | the survey weights | each respondent's weight | unweighted means | same call within an area (weights are equal inside an area's stratum) | the survey documentation |
+| SF10 | heat status | wood is the household's main heat source, in both the survey question and the application form | any wood heating | not computed (no file records it) | the survey questionnaire and the application form |
+| SF11 | the current factors | the current table's pounds per ton by SCC, the survey's cords at the table's tons per cord | the 2014 tool's factors | another set | methods appendix |
+| SF12 | the inventory period | the 2025-26 heating season | a calendar year | same call | the provision |
+| SF13 | an appliance registered but not used in the season | in the class mean at zero cords | out of the count | same call (consistent in both periods) | methods appendix |
+| SF14 | a changed-out unit recorded as secondary heat | at the secondary-heat cords | at the primary-heat cords | same call (L4 files the golden's set) | the application's status field |
+| SF15 | a unit the programme installed, in the base year | not in it (installed after 2014) | in it at its class | the default's answer for the certified classes | the survey's install year and the programme's install dates |
 
 ## Ladder
 
-Stage 2.
+Measured on the paper world (`generator/paper_screen.py`, seed 48431; seeds 48432 to 48434 file the same sets, the
+golden's smallest margin to a commitment 5.4 to 6.4 points). Re-measured on the pack at stage 3 (`checks.py`).
+
+| Rung | Areas triggering | Flips from the golden | Call kept |
+|---|---|---|---|
+| L0 the old method's base year | Ivelton, Quarrow, Saddeny, Wethermoor | 2 | no |
+| L1 class means carried back (default) | all six | 4 | no |
+| L1a status cells at the survey's mix | all six | 4 | no |
+| L2 survivors only | all six | 4 | no |
+| L4 changed-out units at the primary-heat cell | Quarrow, Wethermoor | none | yes |
+| G golden | Quarrow, Wethermoor | none | yes |
+| T the world's true burning | Quarrow, Wethermoor | none | yes |
+
+The golden's reductions (34.3, 30.2, 14.1, 21.8, 8.5 and 37.2 per cent) sit 5.9 to 12.2 points from the commitments;
+the default's (5.9 to 11.9) sit under every commitment. The correction the decisive step makes tracks each area's
+changed-out share (0.08 to 0.50), not its size.
 
 ## Closure table
 
-Stage 2.
+| # | Axis | Reading | Move |
+|---|---|---|---|
+| 1 | Population | each area's appliances in the plan's 2014 base year, and those in use in the 2025-26 season | filed (the provision); SF1, SF3, SF15 |
+| 2 | Unit of account | an area's PM2.5 tons from residential wood combustion | filed (the provision) |
+| 3 | Attribution window | the 2025-26 heating season; the 2014 base year | filed (the provision); SF12 |
+| 4 | As-of dating | the registry as of its extract date; the 2024 survey as the current method's activity | filed (methods appendix) |
+| 5 | Version basis | the current factor table's edition; the 2020 boundaries | filed; SF5, SF11 |
+| 6 | Denominator | the recalculated 2014 base year's tons | filed (the provision) |
+| 7 | Weighting | the survey's respondent weights inside each area | filed (survey documentation); SF9 |
+| 8 | Window length | one heating season | filed (the provision) |
+| 9 | Boundary inclusivity | a reduction below the commitment triggers | filed; SF7, margins asserted |
+| 10 | Rounding path | the determination on unrounded reductions; tons and percentages rounded only for the deliverables | the prompt's rounding sentence; asserted that no area sits within rounding of its commitment |
+| 11 | Tie-break | none needed | asserted: no area at its commitment |
+| 12 | Maturity and censoring | none: the season is closed | not applicable |
+| 13 | Order of operations | cords converted, per-appliance means, counts, factors | same call in any order (linear); asserted |
+| 14 | Row order | the inventory sorted by area and SCC | filed in the layout |
+| 15 | Duplicate resolution | a device re-registered on a parcel split counted once, through the registry's predecessor field | Layer 1; asserted at stage 3 |
+| 16 | Identity normalisation | applications matched to devices by parcel or by street address | Layer 1; asserted |
+| 17 | Netting against gross | none: counts are of appliances in place | not applicable |
+| 18 | Dimensional units | cords (face cords and pickup loads converted), tons per cord, pounds per ton, short tons | filed (codebook and factor table); SF4, SF11 |
+| 19 | Code and status semantics | heat status, SCC and registry status codes | filed (codebooks); SF10 |
+| 20 | Integerisation | counts are whole appliances; estimates are not integerised | not applicable |
+| 21 | Clause scope | the recalculation clause covers residential wood combustion only | filed (the provision) |
+| 22 | Forward window contents | the determination governs the 2026-27 season; no forward quantity is estimated | not applicable |
 
 ## Literal reader
 
-Stage 2.
+Executing the prompt and every filed sentence word for word: the provision measures each area's reduction against
+the 2014 base year recalculated on the current methods, the base year being the cords each appliance in the plan's
+2014 count burned times the current factors, and the current method measures the cords burned per appliance, by class
+and with the household's heat status, for the appliances in use. A literal reader asks what the 2014 appliances
+burned: those still in use burn what the survey measures for their class and heat status, and each one changed out
+since is known by its application's class and heat status, so each takes the survey's cords for its class and status.
+That is the golden. A reader who applies the survey's class mean to the 2014 count executes the current method on the
+current stock, which is not the stock the provision names.
 
 ## Oracles
 
-Stage 2.
+No file ties only under the golden or only on a wrong read. The pack holds no recalculated base year and no area's
+reduction or determination; the 2014 workbook states the old method's base year, which every route can read and none
+needs to reproduce; the programme's annual reports state units changed out and vouchers paid by fiscal year, never
+burning. The asks' referees are fixed with the ask sheet.
 
 ## Ask sheet
 
-Stage 2.
+Planned on paper; the cracker and mirror sheets, the pair ceiling and the mirror leakage are measured at stage 3 by
+`generator/ceiling.py` on the first cut pack, and every row is stamped with that pack's digest.
+
+The call's declared population is each area's appliances in the plan's 2014 count and in use in 2025-26 (the
+registry's devices active in the 2025-26 season, the survey's respondents, the completed changeouts' applications).
+No ask computes over it: the 2025-26 tons and the recalculated 2014 tons by area and SCC are graded with the call's
+critical components (the construction layer), not as asks.
+
+| Ask | Quantity (unit, rounding in the prompt's closing sentence) | Population, outside the call's | Primary device (silent) | How it enters the call (H18) |
+|---|---|---|---|---|
+| A | each area's devices in place in the 2014 season by class from the registry, and the items between that count and the plan's approved 2014 count (counts) | registry rows closed before the 2025-26 season or never in it: devices superseded at a parcel split, registered after the plan's extract with an earlier install year, moved into an area by the 2020 boundary revision | D1 a re-registration at a parcel split copies the original install year onto the new device id while the old id is closed as superseded; only the predecessor field joins them | the audit trail of the 2014 counts the call consumes |
+| B | each county's remainder outside the maintenance areas, 2025-26 wood burned and PM2.5 by class on the state tool's method (tons) | the counties' households outside the six areas (ACS block groups and the assessor's improvement records), which the registry does not cover | D5 block groups split by the 2020 boundary, their inside share known only from the assessor's parcels; D2 the ACS vintage the state tool names, not the latest | the inventory submission the determination is drawn from, its rows outside the areas |
+
+Shared hazards (to place at stage 3, each moving both asks): face cords and pickup loads in reported use; parcels
+keyed two ways; the programme's fiscal years against heating seasons. Each ask's prompt wording is fixed against the
+golden at stage 3, with "any" so that none is a grammatical answer, and no trap word (reconcile is not used).
 
 ## Tried and rejected
 
