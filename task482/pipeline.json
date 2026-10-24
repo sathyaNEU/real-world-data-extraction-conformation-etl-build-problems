@@ -1,27 +1,28 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-24",
  "stump": "The default path counts each town's busiest month of 2026 as its residents plus the paid stays its lodging tax returns and the booking platforms' remittances record, the guests the lodging tax sees, and certifies the lodge towns alone at three times their residents; the lodging tax records only the stays a guest paid for, while the basin's cottages fill with their owners and the residents' homes with their guests, and each town's plant load in its busiest month, divided by the load per resident in the winter months when only the residents are in town, counts them and puts the cottage towns over as well.",
  "architecture": 12,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-24",
+  "checks": 51
  },
  "leak": {
-  "leak_py": "",
+  "leak_py": "REVIEW (2026-10-24, no LEAK; zip be45d7b75ea5cc24)",
   "reader": ""
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "WARN (no BLOCK)",
   "nearest": "task305 at 0.06",
-  "surface": ""
+  "surface": "exit 0, no hard tell"
  },
  "judge": {
   "verdict": "",
@@ -29,7 +30,7 @@
   "report": ""
  },
  "returned": [],
- "resume": "stage 2 of architecture 12 (the Quillmere Lake basin's 2026 peak-season populations for the 2027 Seasonal Communities Aid, drawn 2026-10-24): write the generator's world on paper (eight towns, residents, lodges, the platforms' rentals, owners' cottages and residents' guests by month, the plants' monthly operating reports with the load per person, one joint plant's member meters), place every town's ratio at least 0.3 from three under the golden family and the busiest month 5 per cent clear, keep the paid-stays route and the owners-at-platform-occupancy route on other wrong sets, measure the calibration family's spread, then the readability screen, fork table, closure, asks and prompt.txt to precut.py exit 0",
+ "resume": "stage 4 of architecture 12 in flight (zip be45d7b75ea5cc24): scored readers A and B (sonnet medium, scratch copies leak-task482-v12A and -v12B) and the judge thread on /tmp/determinism-check-task482-r1 (brief written by the determinism-judge agent); on return score each reader with score_reader.py, hand the judge thread's verdict.md back to the determinism-judge agent for the report, fix every finding in the generator in one pass, re-judge a FIX_NOW once, then ship. If the run was lost, re-run stage 4 from the rebuilt pack (generator/build.py is byte-identical).",
  "approved": null,
  "delivered": null,
  "portal": null,

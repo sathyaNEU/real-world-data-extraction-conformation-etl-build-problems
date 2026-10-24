@@ -5,7 +5,7 @@
   "slot_note": "architecture 12, re-rooted after architecture 11 was spent at stage 4 (reader C refitted the conditioning model with the grouping variable)",
   "domain": "survey-research-official-statistics",
   "subdomain": "census-register-administrative-data-quality",
-  "niche": "a state demographer's 2026 peak-season population for the eight towns of a northern lake basin under a seasonal communities grant, each town's average population present in its busiest month read through the load its sewer carries to its treatment plant, calibrated per resident in the winter months, because the lodging tax records only the paid stays",
+  "niche": "a state demographer's certification of the 2026 peak-season population of the eight cities of a northern lake basin for the 2027 Seasonal Communities Aid, each city's average population present in its busiest month read through the load its sewer carries to its treatment plant, calibrated per person in the winter months, because the Lake Protection Fee records only the paid stays",
   "objective": "etl",
   "shape": "10",
   "decision_type": "designation_set",
@@ -31,25 +31,26 @@
   "validated_decoy": false,
   "context_artifact": "published_series",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every file correctly counts each town's busiest month of 2026 as its residents plus the guests its lodging tax returns and the booking platforms' remittances record, and names only the two lodge towns as at three times their residents, where the second-home owners and the residents' guests, whom no record of stays holds, put three cottage towns over as well.",
+  "analyst_test": "A strong analyst who reads every file correctly counts each city's busiest month of the measurement year as its residents plus the paid guests the fee returns and both booking platforms' remittances put in town, finds Sorrelton and Esker Narrows alone at three times their residents and certifies them at USD 1,200,000 each, where the owners in their cottages, the residents' guests and the day visitors, whom no stay record holds, put Birchwick, Ruddmere and Tamsen Point over as well.",
   "domain_test": "The field's own analysis estimates a seasonal town's de facto population from what everyone present loads onto a measured system, here the influent load each town's treatment plant records, divided by the load per resident calibrated in the winter months when only the residents are in town (the population-equivalent and wastewater-flow methods resort towns use); with another field's nouns (a hospital for a town, patients for people) the hospital counts its patients directly, nothing is calibrated per person and the task stops making sense.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:a population present measured by its sewer load per resident",
   "layer1": [
-    "eight plants' monthly operating reports in three layouts (the state's e-reporting csv, a workbook a month, a fixed-width export), flow in gallons or millions of gallons a day",
-    "one joint plant serving two towns, its load split by the member towns' billing meters",
-    "hotel and inn lodging tax returns monthly or quarterly by account, mailing towns that are not the property's town",
-    "two booking platforms' remittances, booking-level, by postal place name rather than municipality",
-    "the state demographer's resident estimates by July 1 vintage with one boundary annexation"
+    "the state's e-reporting export for five plants repeats every submission of a period (superseded, accepted, revisions returned after acceptance)",
+    "the contract operator's pond workbook, one sheet per pond and year, beside the e-reporting csv",
+    "one joint plant serving two cities, split by member meters read in gallons at month end, one meter replaced mid-month with a new register",
+    "Lake Protection Fee returns monthly or quarterly by an operator's size, amended returns replacing and supplemental returns adding",
+    "two booking platforms' remittances: one by checkout month with cities in capitals, one by the month after checkout with the departure only in the reservation reference",
+    "the state demographer's resident estimates by 1 July vintage with one boundary annexation"
   ],
   "stakeholder_role": "the State Demographer",
   "role_family": "statistical_office_head",
   "scoring_unit": "other",
   "spine": {
-    "file": "plant_monthly_operating_reports_2024_2026",
-    "rows": 0,
-    "entity": "one plant-day: influent flow, BOD and TSS, effluent quality",
-    "grain": "plant x day",
+    "file": "edmr_dmr_export_quillmere_basin_2025-01_2026-09.csv",
+    "rows": 910,
+    "entity": "one value of one submission of a plant's monthly discharge monitoring report",
+    "grain": "permit x month x location x parameter x submission",
     "source": "synthetic"
   },
   "forum": "minister_or_cabinet",
@@ -61,6 +62,7 @@
     "org_type": "state demographer's office",
     "invented_names": [
       "Quillmere Lake",
+      "Quillmere County",
       "Birchwick",
       "Teskadel",
       "Ruddmere",
@@ -68,7 +70,13 @@
       "Pinehold",
       "Tamsen Point",
       "Esker Narrows",
-      "Seasonal Communities Assistance Program"
+      "Hollin Bay",
+      "Seasonal Communities Aid",
+      "Lakeward Stays",
+      "Kettle & Pine",
+      "Northwoods Utility Services",
+      "Quillmere Lake Protection District",
+      "Quillmere Lake Basin Fee Office"
     ],
     "people": [
       "Marvin Jordan",
@@ -77,14 +85,14 @@
     ]
   },
   "deliverables": [
-    "seasonal_population_2026.xlsx",
-    "scap_ratios_2026.png"
+    "seasonal_communities_aid_2027_certification.xlsx",
+    "busiest_month_population_2026.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A period's number of people present is read from the stays a register records and the residents an estimate counts, but part of the people present stay where no record of stays exists; they show only in the load a shared physical system carries for everyone present, which, divided by the load each resident carries in the months when only residents are present, gives the people present in the busy period.",
-  "driver_concrete": "Each lake town's average population present in its busiest month of 2026 is its plant's influent load that month divided by the load per resident in the winter months, when the seasonal cottages are closed and the lodges shut, so the second-home owners, their guests and residents' guests, whom no lodging return or platform remittance records, are counted.",
-  "stump": "The default path counts each town's busiest month as its residents plus the paid stays its lodging tax returns and platform remittances record and names the two lodge towns at three times their residents, where the plants' loads show the owners and guests no stay record holds and put three cottage towns over as well.",
+  "driver_concrete": "Each lake city's average population present in its busiest month of the measurement year is its plant's influent load that month divided by the load per person of its own January to April months, when the cottages are closed and the lodges nearly empty, so the owners in their cottages, the residents' guests and the day visitors, whom no fee return or platform remittance records, are counted.",
+  "stump": "The default path counts each city's busiest month as its residents plus the paid stays the fee returns and platform remittances record and certifies Sorrelton and Esker Narrows alone, where the plants' loads show the owners and guests no stay record holds and put Birchwick, Ruddmere and Tamsen Point over as well.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task305": "task305 prices a recorded lodging population's grocery spend per pitch from cardholders at analog stores; here every recorded stay is already counted, and the people missing are those no stay record holds, measured by the load the town's sewer carries per resident",

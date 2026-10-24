@@ -156,5 +156,4 @@ The ask designer's brief, in short:
 
 ## task482
 
-In design at architecture 12 (drawn 2026-10-24): the Quillmere Lake basin's 2026 peak-season populations for the 2027 Seasonal Communities Aid, each town's population present in its busiest month read through its plant's sewer load per resident. Resume from `task482/pipeline.json` (stage 2) and the design note's Draw and ## Tried and rejected; the generator in the folder is architecture 11's record and is replaced at stage 2.
-
+At stage 4 of architecture 12 (drawn 2026-10-24): the Quillmere Lake basin's 2026 peak-season populations for the 2027 Seasonal Communities Aid, each city's population present in its busiest month read through its plant's influent BOD load per person, calibrated on January to April 2026. precut.py exit 0 (51 checks), checks 82 of 82, verify 26 of 26, two byte-identical rebuilds (zip be45d7b75ea5cc24). Resume from `task482/pipeline.json` (stage 4: readers and judge).

@@ -1,70 +1,114 @@
 {
  "task": "task482",
- "domain": "Education & Learning Sciences (item response theory and test equating)",
- "client_domain": "Education & Learning Sciences",
- "task_type": "item-response-theory-test-equating",
- "objective": "Data Extraction & Conformation (ETL)",
- "distractor_files": [
-  "teacher_implementation_survey_spring2026.csv",
-  "renewal_forecast_2026_27.xlsx"
- ],
- "distractor_reasons": {
-  "teacher_implementation_survey_spring2026.csv": "teachers' spring 2026 self-reports of how they used the platform; the outcomes guarantee is settled on students' assessed achievement and the professional learning hours on the sessions delivered, so no figure reads the survey",
-  "renewal_forecast_2026_27.xlsx": "Partnerships' 2026-27 renewal stages, probabilities and forecast revenue; the credits are settled on the 2025-26 order forms and applied to the invoices actually raised"
- },
- "wrong_basis_distractors": {},
- "stated_inputs": [
-  "58 partner districts",
-  "2025-26 order forms",
-  "half hour",
-  "cent",
-  "2526",
-  "500",
-  "520",
-  "540",
-  "2026-11-30"
- ],
- "forward_dated_files": {
-  "billing_invoices_2026_27.csv": "the 2026-27 invoice register of 20 November 2026 carries its invoices' due dates and service periods, which run past the register date by design",
-  "order_forms_2025_26.xlsx": "subscription terms end on 30 June or 31 July 2026, before the setting"
- },
+ "title": "Seasonal Communities Aid certification, 2027",
+ "setting": "A fictional lake basin of eight cities in Minnesota: the state demographer's office, the aid statute, the basin's fee office, sanitary utilities, contract operator and two booking platforms are fictional, and every record is synthetic.",
+ "as_of": "2026-10-19",
  "deliverables": [
-  "guarantee_credit_memos_2026.csv",
-  "lumenfold_guarantee_settlement_2025_26.xlsx"
+  "seasonal_communities_aid_2027_certification.xlsx",
+  "busiest_month_population_2026.png"
  ],
- "as_of": "2026-11-20",
+ "distractor_files": [
+  "target/quillmere_county_traffic_counts_2024_2026.csv",
+  "target/sorrelton_coop_station_daily_2025_2026.csv"
+ ],
  "files": [
-  "billing_invoices_2026_27.csv",
-  "caldrith_item_parameters_2024.csv",
-  "caldrith_lsoa_technical_report_2026.pdf",
-  "caldrith_plausible_values_2026.csv",
-  "credit_memo_import_layout.pdf",
-  "district_roster_uploads_spring2026.xlsx",
-  "guarantee_eligibility_2025_26.csv",
-  "lsoa_spring2026_item_responses.csv",
-  "lsoa_spring2026_sessions.csv",
-  "lumenfold_msa_v4_2025.docx",
-  "order_forms_2025_26.xlsx",
-  "pd_sessions_2025_26.csv",
-  "professional_learning_catalog_2025_26.pdf",
-  "renewal_forecast_2026_27.xlsx",
-  "student_id_crosswalk_2025_26.csv",
-  "teacher_implementation_survey_spring2026.csv"
- ],
- "rows": {
-  "guarantee_eligibility_2025_26.csv": 34427,
-  "district_roster_uploads_spring2026.xlsx": 32689,
-  "student_id_crosswalk_2025_26.csv": 33928,
-  "lsoa_spring2026_sessions.csv": 31713,
-  "lsoa_spring2026_item_responses.csv": 304109,
-  "caldrith_plausible_values_2026.csv": 29590,
-  "pd_sessions_2025_26.csv": 545,
-  "billing_invoices_2026_27.csv": 103
- },
- "sources": {
-  "constructed": "every file is constructed for this task by its generator (task482/generator); Lumenfold Learning, the Lumenfold Science Outcomes Assessment, Caldrith Assessment Partners, the 58 partner districts and their places, the students, identifiers, accounts, invoices and every record and number in the files are fictional",
-  "public_specifications": "the item response model (two-parameter logistic), the latent regression population model and plausible values follow the published methodology of large-scale assessment (Mislevy, 1991; Rubin, 1987); the states' prior-test performance level names follow each state's public assessment reporting; roster codes follow common state student information system conventions",
-  "licence": "CC0 1.0 (constructed data)",
-  "date": "2026-11-20"
- }
+  {
+   "file": "edmr_dmr_export_quillmere_basin_2025-01_2026-09.csv",
+   "source": "State electronic discharge monitoring report system, export for five basin permits (fictional, synthetic records)",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 910
+  },
+  {
+   "file": "edmr_parameter_codes.csv",
+   "source": "State electronic discharge monitoring report system, code lists (fictional, synthetic records)",
+   "date": "2024-03-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 12
+  },
+  {
+   "file": "kettle_and_pine_remittance_report_2025-07_2026-09.csv",
+   "source": "Kettle & Pine, Lake Protection Fee remittance report (fictional, synthetic records)",
+   "date": "2026-10-09",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 34664
+  },
+  {
+   "file": "lake_protection_fee_ordinance.pdf",
+   "source": "Quillmere Lake Basin Joint Powers Board, Lake Protection Fee ordinance (fictional, synthetic records)",
+   "date": "2025-06-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "lake_protection_fee_returns_2025-07_2026-09.csv",
+   "source": "Quillmere Lake Basin Fee Office, returns extract (fictional, synthetic records)",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 3319
+  },
+  {
+   "file": "lake_protection_fee_returns_field_list.txt",
+   "source": "Quillmere Lake Basin Fee Office, returns extract field list (fictional, synthetic records)",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 27
+  },
+  {
+   "file": "lakeward_stays_remittance_detail_2025-07_2026-09.csv",
+   "source": "Lakeward Stays, Lake Protection Fee remittance detail (fictional, synthetic records)",
+   "date": "2026-10-08",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 54211
+  },
+  {
+   "file": "narrows_joint_member_meters_2025_2026.csv",
+   "source": "Narrows Joint Wastewater Board, member meter reads (fictional, synthetic records)",
+   "date": "2026-10-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 43
+  },
+  {
+   "file": "quillmere_basin_wastewater_facilities.pdf",
+   "source": "Quillmere Lake Protection District, wastewater facilities fact sheet (fictional, synthetic records)",
+   "date": "2026-03-17",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "quillmere_county_population_estimates_2024_2026.csv",
+   "source": "Office of the State Demographer, city and township estimates (fictional, synthetic records)",
+   "date": "2026-10-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 12
+  },
+  {
+   "file": "quillmere_county_traffic_counts_2024_2026.csv",
+   "source": "Quillmere County Highway Department, permanent count stations (fictional, synthetic records)",
+   "date": "2026-10-05",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 66
+  },
+  {
+   "file": "ruddmere_pinehold_ponds_operating_reports_2025_2026.xlsx",
+   "source": "Northwoods Utility Services, pond systems' monthly operating reports (fictional, synthetic records)",
+   "date": "2026-10-09",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "seasonal_communities_aid_act.pdf",
+   "source": "Seasonal Communities Aid Act, unofficial text (fictional, synthetic records)",
+   "date": "2025-11-04",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "sorrelton_coop_station_daily_2025_2026.csv",
+   "source": "Cooperative observer station at Sorrelton, daily observations (fictional, synthetic records)",
+   "date": "2026-10-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 638
+  }
+ ]
 }

@@ -30,20 +30,22 @@ plant, calibrated per resident in the winter months when only the residents are 
   John Huang (architecture 10) and Lawrence Hughes and Audrey Bautista (architecture 9) are not reused, and Amanda Beck
   and Christine Ward were set aside on `people.first` against task104.
 - **Pairing:** Survey Research & Official Statistics, task type `census-register-administrative-data-quality`, which
-  serves ETL: the office's resident estimates, the eight plants' monthly operating reports in three layouts, one joint
-  plant's member meters, the hotel and inn lodging tax returns, the two booking platforms' remittances and the aid
-  statute conformed into the certification (a row per town: its busiest month of 2026, its average population present
+  serves ETL: the office's resident estimates, the seven plants' monthly operating reports in two layouts, one joint
+  plant's member meters, the Lake Protection Fee returns, the two booking platforms' remittances and the aid
+  statute conformed into the certification (a row per town: its busiest month, its average population present
   that month, its ratio to its residents, whether it qualifies and its aid).
 - **The decision and the quantity:** the Seasonal Communities Aid (an invented chapter of the Minnesota statutes) pays
   the 2027 appropriation of USD 2,400,000 in equal shares to the towns whose average population present on the days of
-  their busiest month of 2026 was at least three times their resident population, the State Demographer certifying
+  their busiest month of the measurement year (October 2025 to September 2026) was at least three times their resident
+  population, the State Demographer certifying
   both to the Commissioner of Revenue by 1 December 2026. The statute counts a town's population present on a day as
   everyone the town carries that day, its residents and every person staying or visiting there, a person counting for
   the share of the day spent in the town. The quantity is retrospective (the 2026 season is closed) because the statute
   fixes the measurement year; the commitment it drives (the 2027 aid) is forward.
 - **Shape:** `10`, a scorecard against one threshold: each of the eight towns' busiest month, its average population
   present, its ratio to its residents against three, whether it qualifies and its aid, beside the call (which towns
-  qualify and each one's share); the asks (lodging surcharge collections by quarter, the plants' phosphorus) are wide.
+  qualify and each one's share); the asks (the Lake Protection Fee by city and quarter of fiscal 2026, the plants'
+  2025 phosphorus by half-year) are wide.
 - **Strategy:** `other` (a population no record lists, measured through a physical load calibrated per resident where
   the residents are the whole population; population_selection would need a choice of who is in, and here the statute
   files everyone, and causal_design a comparison group, which carries nothing here); Gate G `etl_conformance` (the
@@ -61,12 +63,12 @@ plant, calibrated per resident in the winter months when only the residents are 
   paid on it.
 - **The physics:** a town's wastewater load is what everyone in the town sends down its sewer, about the same per
   person whether resident or visitor (a person's daily load of biochemical oxygen demand and water), so the plant's
-  influent load in a month, divided by the load per person, counts the people present in person-days. From November to
-  April the basin's seasonal cottages are closed and its lodges mostly shut, so the winter load is the residents' own
+  influent load in a month, divided by the load per person, counts the people present in person-days. From January to April the basin's seasonal cottages are
+  closed and its lodges mostly shut, so the winter load is the residents' own
   and calibrates the load per person town by town. In summer the lodges and the platforms' rentals fill, and so do the
   cottages their owners keep and the residents' spare rooms, none of which any lodging return or remittance records,
   and the share the unrecorded stays hold differs widely between the lodge towns and the cottage towns.
-- **Data-native sentence:** the lodging tax returns and the platforms' remittances record only the stays a guest paid
+- **Data-native sentence:** the Lake Protection Fee returns and the platforms' remittances record only the stays a guest paid
   for, while each town's plant records the load of everyone the town carries, and in the winter months that load is the
   residents' alone.
 - **Paper screen** (`scratchpad t482v12/proto/sim2.py`, eight towns, a month-by-component world): residents plus the
@@ -74,8 +76,9 @@ plant, calibrated per resident in the winter months when only the residents are 
   owners counted at the platforms' occupancy name a different five. The generator measures every rung and the family's
   spread on the cut pack at stage 2.
 - **The WHAT screen.** Population: each town's residents and every person present in it (the statute). Outcome: the
-  average population present on the days of the town's busiest month of 2026, a person counted for the share of the day
-  spent there. Unit: persons, against three times the office's 1 July 2026 resident estimate. Window: calendar 2026, the
+  average population present on the days of the town's busiest month, a person counted for the share of the day
+  spent there. Unit: persons, against three times the office's 1 July 2026 resident estimate. Window: the measurement
+  year, 1 October 2025 to 30 September 2026, the
   busiest month by that average. Comparison: each town against its own residents. The decisive step settles none of
   them: it is how the people no stay record holds are counted, which no record or filed rule states and which only the
   plants' loads, calibrated where the residents are the whole population, measure.
@@ -84,7 +87,7 @@ plant, calibrated per resident in the winter months when only the residents are 
     resort populations, the de facto population of a town in its peak season;
   - wastewater engineering's population equivalent: a person's daily load of biochemical oxygen demand and flow, and the
     monthly operating reports a treatment plant files with the state;
-  - local lodging taxes and the booking platforms' collection agreements: the tax is due on stays a guest pays for.
+  - local lodging fees and the booking platforms' collection agreements: the fee is due on stays a guest pays for.
 - **Same-puzzle and same-driver tests:** (population, none, designation_set) and (population, none, etl_conformance)
   against the last twelve builds, lineage included: no match.
 - **Abstraction test:** the nearest drivers (0.06 and under) stripped of nouns: task305 counts a recorded body of
@@ -94,6 +97,206 @@ plant, calibrated per resident in the winter months when only the residents are 
   population and forecast new points from their peers' winter responses; here the series is not offered as a measure,
   and recognising that it is one is the step. task471 v4 counts registered units actually present from a register less
   its exits; task62's lineage counts resident events wherever registered.
+
+## Three rules
+
+Task type: Survey Research & Official Statistics, census-register-administrative-data-quality, which serves ETL in the taxonomy.
+Domain test: the quantity that decides is each city's average population present in its busiest month, a de facto population no register, return or survey holds, estimated the way official statistics estimates seasonal and resort populations, from a symptomatic indicator calibrated where the population is known: each plant's influent BOD load, divided by the load per person its own January to April months fix (when the residents and the few recorded paid guests are the whole population), counts everyone present in person-days.
+Swap: "which of our eight cities carried three times its residents in its busiest month" with hospitals for cities and admissions for paid stays has no population present beyond the people recorded, no load every person in the place adds to and no winter month that calibrates it, so it stops making sense.
+Layer 1: the state's e-reporting export repeats every submission of a period (superseded, accepted, revisions returned after acceptance), the contract operator keeps the two pond systems' reports in its own workbook, one sheet per pond and year, the joint plant's member meters are read in gallons at midnight as each month ends and Esker Narrows' meter was replaced on 14 August 2025 with a new register from zero, the office's estimates carry three vintages with Pinehold's January 2025 annexation inside the 2025 and 2026 columns, the fee office's returns are monthly or quarterly by an operator's size with amended returns replacing and supplemental returns adding, Lakeward Stays writes its cities in capitals and remits with the checkout month, and Kettle & Pine reports a stay in the month after it checked out and carries its departure date only inside the reservation reference; each is how the system that writes it works, and nothing is placed to be caught.
+Layer 2: a population estimate from a symptomatic indicator: the paid stays the fee records hold are a fraction of the people present, and the cities differ in that fraction (the owners in their cottages, the residents' guests and the day visitors hold 52 to 60 per cent of the busiest month in Birchwick, Ruddmere and Tamsen Point and 14 to 24 per cent in the lodge cities); the choice that flips the call is counting the people present through the load they send to the plant, calibrated per person on the winter months, against counting the stays the records hold.
+Decisive step: recognising that the Act's population present is everyone the city carries, that the fee returns and platform remittances hold only the paid stays, and that each plant's influent load measures everyone, so each city's busiest month is read as its monthly influent load divided by its own January to April 2026 load per person (residents plus the few recorded paid guests).
+Not semantics: with every field read correctly (the latest accepted submission per period, the pond workbook's flows in MGD, the meters in gallons with the replacement handled, the 2026 estimates, amended and supplemental returns, Lakeward's cities matched, Kettle & Pine dated from its reference) the easy route still counts residents plus the recorded paid stays and certifies Sorrelton and Esker Narrows alone, and no field, code, unit or definition read differently moves it: the Act's definition says whom to count, not how to count the people no record holds.
+Not rule application: the Act files the estimand (everyone present, person-time, the mean over the days of the busiest month of the measurement year, against three times the 1 July 2026 estimate) and no method; on the cut pack the enumerated family (the records route as filed or with any uniform uplift of its paid guests, the plants' loads at design constants, the plants' loads calibrated on the winter months) files four different sets, from Esker Narrows alone (100 gallons a person a day) through Sorrelton and Esker Narrows (the records) to the golden five, the standing family (the 90 calibrated constructions, BOD, flow or TSS over ten winter windows, with or without the paid winter guests, each city's own load per person or the basin's pooled one, and the 0.17 lb population equivalent) has a spread of exactly zero on every certified figure (its worst member 140 people inside its thousand, qualifiers at 3.18 times or more and the rest at 2.68 or less), and what rules out the records route is the plants' own loads, 1.16 to 2.51 times what the residents and the recorded guests send in the busiest month while the January to April months hold the load per person at 0.170 to 0.173 lb in every city, which no filed clause states and no file displays; the cheapest licensed member (residents times the busiest month's load over the January to April mean, one group-by) files the golden, so the step is the recognition, not a choice inside the family.
+Analyst test: A strong analyst who reads every file correctly counts each city's busiest month as its residents plus the paid guests the fee returns and both platforms' remittances put in town on an average day, finds Sorrelton (3.40 times) and Esker Narrows (4.35 times) at three times their residents, and certifies those two alone at USD 1,200,000 each, where the plants' loads count the owners in their cottages, the residents' guests and the day visitors too and put Birchwick, Ruddmere and Tamsen Point over as well.
+Estimand: each basin city's average population present (everyone in the city on a day, each person for the share of the day spent there, the mean over the days of the month) in its busiest calendar month of the measurement year 1 October 2025 to 30 September 2026, against three times its 1 July 2026 resident estimate, and USD 2,400,000 in equal shares to the cities at or above it; filed in the Act's sections 2 to 5 (seasonal_communities_aid_act.pdf).
+No decoy: nothing is planted; the estimates, the plants' reports, the meters, the fee returns and the platforms' files are their systems' own records, no memo, draft, briefing or stakeholder figure carries a wrong answer, and no filed sentence says the fee records count the population present.
+No certified replay: no certified or published figure is reproduced to recover the method; the construction follows from the Act's estimand and from the plants' loads.
+Lesson: a population nobody records can be counted by a physical load every person adds to, calibrated per person where the population is known, and the share it adds over the records is largest where the visitors stay outside paid lodging; no build on file counts people through a sewer load (task177's spent architecture 1 took a waste series as the given measure of a seasonal population and forecast it, and recognising the load as the measure is the step here).
+
+## Default path
+
+1. Conform the office's 1 July 2026 estimates, the fee office's returns (amended returns replacing, supplemental
+   returns adding, quarterly returns spread over their months), Lakeward's stays by night and Kettle & Pine's stays dated
+   from its reference into each city's paid guests on an average day of each month.
+2. Count each city's population present in each month of the measurement year as its residents plus those paid
+   guests, the people the records hold.
+3. Take each city's busiest month, compare it with three times its residents and split USD 2,400,000 equally among
+   the cities at or above it.
+
+Ends on: Sorrelton and Esker Narrows alone qualify, USD 1,200,000 each.
+
+Golden: Birchwick, Ruddmere, Sorrelton, Tamsen Point and Esker Narrows qualify, USD 480,000 each.
+
+## Stump sentence
+
+The default path counts each city's busiest month as its residents plus the paid stays the fee returns and both platforms record, the people the records hold, and certifies Sorrelton and Esker Narrows alone at USD 1,200,000 each, where the owners in their cottages, the residents' guests and the day visitors hold 52 to 60 per cent of Birchwick's, Ruddmere's and Tamsen Point's busiest month and no stay record holds them, and each plant's influent load divided by the load per person of the January to April months, when the residents are the whole population, counts them and puts those three over as well.
+
+## Readability screen
+
+Measured on the cut pack (`generator/golden.py`); residents 1,851, 3,902, 1,197, 3,052, 2,411, 3,094, 1,603 and
+2,706 for Birchwick, Teskadel, Ruddmere, Sorrelton, Pinehold, Tamsen Point, Esker Narrows and Hollin Bay.
+
+| Rung | What the response does | What in the pack points at it | Verdict |
+|---|---|---|---|
+| L0 the records as filed (default) | residents plus the paid guests the returns and both platforms put in town each month | the fee returns and the platforms are the only files that count anyone but residents; the Act's "staying in or visiting" | readable |
+| L1 a uniform uplift | the recorded paid guests raised by one factor for the stays nobody recorded | nothing: no file sizes an unrecorded stay | readable |
+| L2 the plants' loads at a design constant | each month's influent flow at 100 gallons a person a day | the e-reporting flows; a textbook planning figure | readable |
+| G golden (decisive) | each month's influent load over the load per person its own January to April 2026 fix | nothing labels a plant's load as a population or relates it to people; the export is permit reporting and the fact sheet states only that every developed parcel in a basin city is connected to its sewer | silent |
+
+L1 never lands the golden set: Hollin Bay goes over at 1.56 times its recorded paid guests, Pinehold at 1.82 and
+Teskadel at 2.07, before Birchwick (2.29), Ruddmere (2.60) and Tamsen Point (5.41), so any uplift that puts Tamsen
+Point over puts every city over first. L2 puts Esker Narrows alone over and every city's January to April population
+at 0.60 to 0.62 times its residents.
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | resident population | the 1 July 2026 estimate | the 1 July 2025 estimate (Pinehold's annexation inside both) | same certified figures (asserted) | the Act's 2(b): 1 July of the measurement year |
+| SF2 | measurement year | 1 October 2025 to 30 September 2026 | January to September 2026 | same busiest months (asserted) | the Act's 2(c) |
+| SF3 | population present | person-time, a day visitor at the share of the day spent in the city | the overnight population alone | same cities qualify (asserted on the clean truth) | the Act's 2(d) |
+| SF4 | busiest month | the calendar month with the highest average present | none | the same month in every construction (asserted) | the Act's 2(f) |
+| SF5 | average population present | the mean over the days of the month | none: the plants report monthly averages of daily flow and monthly composites | asserted | the Act's 2(e) |
+| SF6 | basin city | the eight cities | townships counted | not computable: the townships are on septic systems | the Act's 2(a); the fact sheet |
+| SF7 | at least three times | at or above three | above three | same call: every construction 0.18 or more from three (asserted) | the Act's section 3 |
+| SF8 | rounding | the test on the unrounded average, the nearest thousand certified | the test on the rounded figure | same cities qualify (asserted) | the Act's section 5 rounds the certified figure |
+| SF9 | equal shares | USD 2,400,000 over the cities that qualify | in proportion to the population | USD 480,000 each | the Act's section 4 |
+| SF10 | calendar months | each plant's reports by calendar month | none | asserted | the reports |
+| SF11 | the joint plant | each city at its member meter's flow and the plant's influent strength | a split by residents or by recorded guests | asserted: the meters sum to the plant's influent within 1 per cent every month | the fact sheet: each city's flow is metered at the headworks |
+| SF12 | the plant's load | influent | effluent | not computable for the ponds (no discharge from January to March or in July and August, asserted) | the fact sheet |
+| SF13 | e-reporting submissions | the latest accepted submission | any submission | identical influent values in every submission of a period (asserted) | the export |
+| SF14 | units | MGD times mg/L times 8.34 | gallons or million gallons for the meters | same call: the load per person cancels the unit (asserted) | the fact sheet |
+| SF15 | the calibration's population | residents plus the recorded paid guests of those months | residents alone | same certified figures (the family) | the records converge |
+| SF16 | the calibration window | January to April 2026 | any of ten windows from January to April, the 2025 winter, November to March; a single autumn month | same certified figures (asserted); October, November or December alone fork Tamsen Point | those months carry 9 to 23 per cent above the January to April load in every city (asserted) |
+| SF17 | the measure | influent BOD | flow or TSS | same certified figures (the family) | the records converge |
+| SF18 | the load per person | each city's own | the basin's pooled | same certified figures (the family) | the records converge |
+| SF19 | Kettle & Pine's dates in the calibration | nights counted back from the departure in the reference | that date read as the arrival; the reporting period | same certified figures (asserted, with SF20 as a cross product) | the records converge |
+| SF20 | a quarterly return's months | spread by days | spread equally | same certified figures (asserted) | the records converge |
+| SF21 | the load per person's source | calibrated on the winter months | the 0.17 lb population equivalent, the design 0.20 lb TSS; 100 gallons a person, 0.20 lb BOD, the European 60 g | the first two same certified figures (asserted); the rest other sets | the last three put January to April at 0.60 to 0.62, 0.85 to 0.86 and 1.28 to 1.31 times residents in every city (asserted) |
+
+## Ladder
+
+Measured in the generator (`golden.py` on the cut pack, `checks.py` on the world's clean truth); ratios of the busiest
+month's population present to residents for Birchwick, Teskadel, Ruddmere, Sorrelton, Pinehold, Tamsen Point, Esker
+Narrows and Hollin Bay.
+
+| Rung | Cities at three times their residents | Flips from the golden | Call kept |
+|---|---|---|---|
+| L0 residents plus the recorded paid stays (default) | Sorrelton and Esker Narrows (1.87, 1.97, 1.77, 3.40, 2.10, 1.37, 4.35, 2.29) | 3 | no |
+| L1 a uniform uplift of the recorded paid guests | Hollin Bay, Pinehold and Teskadel join before Birchwick, Ruddmere or Tamsen Point | 3 or more | no |
+| L2 the plants' loads at 100 gallons a person | Esker Narrows alone (2.36, 1.58, 2.64, 2.45, 1.58, 2.00, 3.14, 1.64) | 4 | no |
+| L3 the plants' loads at the 0.17 lb population equivalent | the golden five | none | yes |
+| G golden | Birchwick, Ruddmere, Sorrelton, Tamsen Point and Esker Narrows (3.88, 2.58, 4.43, 3.95, 2.60, 3.26, 5.11, 2.65) | none | yes |
+| T the world's true population present | the same five (3.86, 2.56, 4.41, 3.97, 2.59, 3.28, 5.12, 2.65) | none | yes |
+
+The golden's certified populations sit 196 to 451 people inside their thousands and every busiest month leads the
+next by 6 per cent or more. The correction tracks the people no record holds (52, 24, 60, 14, 19, 58, 15 and 14 per
+cent of the busiest month), not the cities' size.
+
+## Closure table
+
+| # | Axis | Reading | Move |
+|---|---|---|---|
+| 1 | Population | the eight basin cities' residents and every person present in them | filed (the Act's 2(a) and 2(d)); SF6 |
+| 2 | Unit of account | persons on an average day of a calendar month, a person for the share of the day spent there | filed (the Act's 2(d) and 2(e)); SF3, SF5 |
+| 3 | Attribution window | the measurement year, 1 October 2025 to 30 September 2026; fiscal 2026 for the fee; the halves of 2025 for phosphorus | filed (the Act's 2(c) and section 6); SF2 |
+| 4 | As-of dating | the 1 July 2026 estimates; the exports pulled in October 2026 | filed (the Act's 2(b)); SF1 |
+| 5 | Version basis | the latest accepted e-reporting submission for each period | the export's statuses; SF13 (influent identical in every submission) |
+| 6 | Denominator | three times the resident population | filed (the Act's section 3) |
+| 7 | Weighting | none: each day of the month counts once | filed (the Act's 2(e)) |
+| 8 | Window length | one calendar month for the busiest month; four winter months for the calibration | the Act; SF16 converges, asserted |
+| 9 | Boundary inclusivity | at least three times | filed (the Act's section 3); SF7, margins asserted |
+| 10 | Rounding path | the test on the unrounded average; the certified figure to the nearest thousand; the asks at the prompt's rounding from unrounded sums | the Act's section 5 and the prompt; SF8 |
+| 11 | Tie-break | none needed | asserted: every busiest month leads the next by 6 per cent or more |
+| 12 | Maturity and censoring | none: the measurement year closed on 30 September 2026 and every plant reported September | not applicable |
+| 13 | Order of operations | loads, the load per person, monthly populations, the busiest month, the test | linear; the family converges |
+| 14 | Row order | none | C1 |
+| 15 | Duplicate resolution | one value per permit, period, location and parameter; one return per account and period with its supplemental returns | the export; the ordinance's section 2 |
+| 16 | Identity normalisation | Lakeward's capitals to the cities' names; Kettle & Pine's municipality; the returns' property city | Layer 1; every stay and return names a basin city (asserted) |
+| 17 | Netting against gross | a supplemental return adds to its period, an amended return replaces | filed (the ordinance's section 2); R2 asserted |
+| 18 | Dimensional units | MGD, mg/L, 8.34, gallons, guest-nights, USD | filed (the fact sheet, the code list, the ordinance); SF14 |
+| 19 | Code and status semantics | submission statuses, parameter and location codes, return types | the code list and the field list; SF13 |
+| 20 | Integerisation | the aid divides evenly | SF9 (USD 480,000) |
+| 21 | Clause scope | the section 6 reports do not affect the aid | filed (the Act's section 6) |
+| 22 | Forward window contents | the certification governs the 2027 aid; nothing forward is estimated | not applicable |
+
+## Literal reader
+
+Executing the prompt and every filed sentence word for word: the Act counts a city's population present on a day as
+everyone in it, its residents and every other person staying in or visiting, each for the share of the day spent
+there, averages it over the days of each month, and tests the busiest month of the measurement year against three
+times the 1 July 2026 estimate. No file states any city's population present or counts the people present: the fee
+returns and the platforms' files record the paid stays only (the ordinance's fee is due on paid stays), and nothing in
+the pack records the owners in their cottages, the residents' guests or the day visitors. A literal reader therefore
+has to estimate the population present from what the pack measures of everyone present, and the only such measure is
+each city's sewer load, which every person in the city adds to (the fact sheet connects every developed parcel in a
+basin city to its sewer). Counting residents plus the paid stays assumes the cities hold no one else, which their own
+plants' loads contradict by factors of 1.16 to 2.51 in the busiest month; the golden is the population those loads
+imply at the load per person the winter months fix.
+
+## Oracles
+
+No file ties only under the golden or only on a wrong read. No shipped file states a city's population present, a
+visitor count, a load per person or a ranking of the cities; the plants' reports state flows and concentrations for
+permit reporting, the fee files state stays and fees, the estimates state residents. The asks' referees: the fee
+Kettle & Pine remitted on its stays across 1 January 2026 confirms the departure date its reference carries, and the
+pond systems' water balance against the fact sheet's statement that they hold the year's wastewater confirms the
+basis of their flow (the devices' evidence, never an answer).
+
+## Ask sheet
+
+The call's declared population is each plant's influent from October 2025 to September 2026 and January to April
+2026, the meters, the 1 July 2026 estimates, and the paid guests the returns and platforms put in town from January to
+April 2026. Ask A reads every stay's nights in fiscal 2026 and so shares the call's January to April paid guests (149 of
+34,664 Kettle & Pine stays have a night in those months): every reading of their dates leaves every certified figure
+(SF19, asserted), so the device moves no certified figure.
+
+| Ask | Quantity (unit, rounding in the prompt's closing sentence) | Population, outside the call's | Primary device (silent) | How it enters the call (H18) |
+|---|---|---|---|---|
+| A | the Lake Protection Fee the stays in each city generated in each quarter of fiscal 2026, whole dollars | every stay's nights from July 2025 to June 2026 and the fee on them, which the call never sums | D8 a settlement date for the event date, the true key in a reference string: Kettle & Pine reports each stay in the month after it checked out and carries its departure date only inside the reservation reference, so a stay put in its reporting period, or counted forward from that date as an arrival, lands its nights in the wrong quarter; the fee it remitted on the 165 stays the two readings put on different sides of the 1 January 2026 rate change matches only the departure reading | a measure every city carries that the call does not turn on: the fee office's revenue report (the Act's 6(1)) |
+| B | the pounds of total phosphorus each treatment plant discharged in each half of 2025, one decimal | the plants' 2025 effluent, which the call never reads | D2 the record is the latest accepted, not the latest delivered: every e-reporting plant has, in each half of 2025, a revision of an accepted report returned for correction, beside five resubmissions that end accepted; with D3 a per-source convention: the pond systems' effluent flow is the month's average daily flow, at which the ponds release 84 per cent of their 2025 inflow against 28 to 33 per cent at the days discharged | the District's phosphorus grants from the same fund (the Act's 6(2), the ordinance's section 4) |
+
+Shared hazards: quarterly returns spread over their months (the call's calibration and ask A, neutral on the call),
+the stays split at quarter ends and the fee at the rate on each night (ask A), supplemental and amended returns (the
+call and ask A), Lakeward's capitals (the call and ask A), the meters in gallons and the replacement (the call).
+Fair handling, asserted: counting Kettle & Pine's nights back from the departure date reproduces all 32 of ask A and every
+fee it remitted; the latest accepted submission and the ponds' flow read as the month's average reproduce all 14 of ask
+B. Separation, asserted: every mishandling of an ask device leaves every certified figure (R2, SF19, SF20), and ask B's
+rows are effluent rows the call never reads.
+
+Measured by: `generator/ceiling.py` on the cut pack (target.zip be45d7b75ea5cc24).
+
+| Ask | Graded figures | Cracker keeps | Mirror keeps | Naive handling keeps | Cracker |
+|---|---|---|---|---|---|
+| A fee by city and quarter of fiscal 2026, whole dollars | 32 | 0 | 0 | 0 | misses |
+| B total phosphorus by plant and half of 2025, one decimal | 14 | 0 | 0 | 4 | misses |
+
+Over the 46 figures the cracker keeps 0.0 per cent of ask weight (scores 45.0 with the call), the mirror 0.0 per cent
+(12.0), the naive handling 8.7 per cent.
+
+Pair ceiling: 28.5.
+Mirror leakage: 0.0 per cent of ask weight.
+The cracker reads the date in Kettle & Pine's reference as the arrival (the one date that file carries beside its
+reporting period), multiplies the pond systems' effluent flow by the days they discharged and keeps each e-reporting
+period's latest submission; none leaves a symptom in the hygiene battery. A cracker that also finds the departure
+reading keeps 32 of 46 for a pair of 66.8, and one that finds both ask B devices keeps 14 of 46 for 45.2: ask A's
+device carries the layer. This is the paper measurement of the cracker the script models; the stage 4 readers measure
+the real one.
+
+## Leak review
+
+`leak.py --asof 2026-10-19` on zip be45d7b75ea5cc24: REVIEW, no LEAK. Each line ruled:
+- author vocabulary, the Act's "generated by": the Act's section 6 names the fee report in the words the prompt asks
+  it in; it says nothing of how a stay is dated. Harmless.
+- answer words in the fact sheet and the Act: the Act's 2(a) lists all eight basin cities and names the aid, and the
+  fact sheet's plant table lists the cities each plant serves; neither separates the qualifying five. Harmless.
+- stump-paragraph terms in the ordinance, the returns' field list and the Act (returns, platforms, person, resident,
+  register): each is the document's own subject (the fee's returns and platforms, the Act's residents and persons);
+  none relates a plant's load to the people present. Harmless.
+- ranking artifacts, the Kettle & Pine report and the returns: stays and returns by city, unsorted by any city
+  measure, and summing them is the default path, not a ranking on the Act's test. Harmless.
+- container metadata: the audit found no writer signature; the scrub reports both folders clean.
 
 ## Architecture 11 record (spent 2026-10-24)
 
