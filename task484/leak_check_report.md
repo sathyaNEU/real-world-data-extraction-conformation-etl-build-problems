@@ -38,3 +38,13 @@ Stump terms swept: survey, current, status, method, appliance, survivors, activi
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Round 1 readers (zip 79bf825cac69ff18)
+
+Reader A (sonnet, medium, a fresh copy of the pack and prompt.txt only) filed all six areas as triggering, the
+default path's answer: it applied each area's survey cords per appliance class to the plan's 2014 counts. It kept 0 of
+36 ask A counts (it merged same-parcel records registered together and did not pair the split re-registrations), 0 of
+18 ask B cells (it joined the assessors' housing units to the ACS on the block-group code), 0 of 18 area figures and 13
+of 36 base-year cells (the classes no changeout touched); score_reader exit 0. It ruled every REVIEW line harmless. Its
+question 6 named the provision's 4.2 and called the call a stated procedure, having taken the class means as that
+procedure; the judge reads Gate H on the golden's step.

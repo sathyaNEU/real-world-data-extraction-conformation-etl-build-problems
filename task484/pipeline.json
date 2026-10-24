@@ -17,7 +17,7 @@
  },
  "leak": {
   "leak_py": "REVIEW (2026-10-24, no LEAK): coincidental small figures in the tool note and a section number; the provision names the six areas",
-  "reader": null
+  "reader": "round 1 (zip 79bf825cac69ff18): reader A filed all six areas (the default path), kept 0 of 54 ask figures and 13 of 36 base-year cells, score_reader exit 0; reader B running"
  },
  "duplicate_check": {
   "heart": "WARN (no BLOCK)",
