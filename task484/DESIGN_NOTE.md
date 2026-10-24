@@ -197,3 +197,27 @@ Measured by: generator/ceiling.py
   premises begin at zero beside a flat stock is a ready-made curve one step from use, so it is the reflex, not a
   skipped step; the word "occupied" in the estimand points at it; a parcel key exposes re-issues to any hygiene
   pass. Reader 1 and the judge were stopped.
+- 2026-10-24, architecture 2 draw: the payroll survey's birth-death model against the lagged QCEW census (reserved
+  in task482's note). The months after the benchmark need a forecast of the net birth-death residual, and no filed
+  criterion closes that carry-forward family; survey-research/etl is also under ban.pairing while task483 sits in
+  the window. Not drawn.
+- 2026-10-24, architecture 2 draw: a health plan's paid claims completed by received-date development after a
+  processing speed-up. Spent in task451 (received-date development against the paid-date chain ladder).
+- 2026-10-24, architecture 2 draw: a scanner-data price index's chain drift under sales, a multilateral index
+  against linked Tornqvist. Spent in task463.
+- 2026-10-24, architecture 2 draw: the variance of a year-on-year change over an overlapping member panel (a cost
+  growth target read through a confidence interval). Spent in task195 (the paired difference), where a reader landed
+  it.
+- 2026-10-24, architecture 2 draw: rapid guessing read from response times. Spent in task479 (Gate G
+  planted_defect_flip).
+- 2026-10-24, architecture 2 draw: an aerial survey's intermittent plumes annualised as detections over overflights.
+  That is task478 architectures 1 to 4's insight (detections over the coverage that could have seen them), and
+  readers landed it there.
+- 2026-10-24, architecture 2 draw: orphan wells' methane from a measurement campaign after worst-first plugging. The
+  surviving wells' domain is one hygiene filter from the golden: a reader who counts unplugged wells drops the
+  plugged ones from the sample too, so the reflex lands it.
+- 2026-10-24, architecture 2 draw: an inventory base year recalculated after a method change, where the per-class
+  recalculation (the reflex) is wrong because worst-first replacement left a cleaner surviving stock. Unspent at the
+  slot screens, but its natural world is gas distribution mains, which is task476's (a niche repeat); a vehicle
+  fleet's model-year rates tangle age with model year and reopen the family. Carried to the next draw as a lead, not
+  drawn.
