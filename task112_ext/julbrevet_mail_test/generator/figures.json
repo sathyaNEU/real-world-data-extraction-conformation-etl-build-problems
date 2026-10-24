@@ -1,0 +1,22 @@
+{
+ "A|O1|Stor": 378.5,
+ "A|O1|Mellan": 621.7,
+ "A|O1|Nära": 28.6,
+ "A|O2|Stor": 851.6,
+ "A|O2|Mellan": 1514.6,
+ "A|O2|Nära": 60.3,
+ "B|Gävleborg|email": 3913,
+ "C|Gävleborg|email": 743.2,
+ "B|Gävleborg|sms_push_only": 1798,
+ "C|Gävleborg|sms_push_only": 283.4,
+ "B|Gävleborg|none": 1545,
+ "C|Gävleborg|none": 184.2,
+ "B|Västernorrland|email": 3719,
+ "C|Västernorrland|email": 665.5,
+ "B|Västernorrland|sms_push_only": 1678,
+ "C|Västernorrland|sms_push_only": 245.6,
+ "B|Västernorrland|none": 1455,
+ "C|Västernorrland|none": 160.2,
+ "M|none|households": 3000,
+ "M|none|paid": 344.4
+}
