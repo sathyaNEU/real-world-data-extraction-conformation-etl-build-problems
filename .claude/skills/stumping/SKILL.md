@@ -326,6 +326,28 @@ likelihood (a ratio of sums, which is the one-group-by route and a family member
 reconciliation; and feasible-set intersection of interval constraints. The shape is also already spent on the
 portal in other nouns, as a common-point-of-purchase construction that a solver landed at proxy 94.5.
 
+**Put the whole closure in one line: overidentification does not make the construction HARD, it makes it
+FORCED, and the forced construction is the cheap route.** A third slot measured it on instrument-exchange
+ground, 960 readings against 490 unknowns, overidentified by 470, with the focal parameter recovered to about
+1 per cent: the overidentified joint solve **collapses to the pairwise group-by** at a maximum absolute
+difference of **5.129e-13**, correlation 1.00000000 and an identical graded count in 10 of 10 seeds. And the
+cheap route is not merely equal but better: one regression per pair landed the verdict 23 of 24 at a
+**smaller** recovery error than the designed solve (0.989 against 1.154 per cent), so the ladder is level at
+best and inverted on precision. The lever is real (no correction at all lands 11 of 24) and it buys nothing.
+On a graded LEVEL instead of a verdict the family spreads the share 12.2 to 45.8 printed units and agrees in
+**0 of 12** worlds at the largest case count.
+
+**A precise shared parameter does NOT rescue the level-dependent count**, which closes the last cell anyone
+might have hoped for: with the parameter known to 1 per cent the exact count above the limit is reached by
+only **2 to 6 of 20** on the best route, because the misplacement sits in each case's own reading noise and
+no amount of precision in a shared parameter touches it.
+
+**The identification channels are exhaustive, which is why the enumeration can be trusted.** A few shared
+parameters can be identified from many cases in exactly three ways: a within-case contrast, a regression on a
+shipped column, or a moment of the readings' own distribution (which is a dispersion, closed by the
+variance-only screen). And what a device or handler parameter can BE is exhaustive too: location, scale,
+memory, dispersion, threshold, error rate on real samples, drift rate, all seven closed or spent.
+
 **The identity is measured to machine precision, and the axis's premise holding is exactly what kills it.** A
 second slot built the design deliberately well: 3,840 cases against 491 unknowns at 7.82 cases per unknown,
 with the analytic standard error per shared parameter at **0.5152 points over 59 worlds against a filed

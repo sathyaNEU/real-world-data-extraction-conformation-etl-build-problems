@@ -216,7 +216,12 @@ back; the better outcome is never to face it.
   backdrop", and it returns the same BLOCK on a sweep of four objectives. Of six task types in that domain
   exactly one served the objective, and it was already carded. **Run `guard.py check` on a probe card before
   briefing a cell as available, never infer availability from a zero count**, and never from the phrase
-  "never drawn". A whole candidate was screened to a measured refusal on an illegal cell this way; its
+  "never drawn".
+  **It errs in BOTH directions and a third slot measured both at once:** the pairing it expected to be barred
+  was legal (no `three_rules.task_type` BLOCK at all), while the obvious natural home for its mechanism,
+  a sensor-calibration subdomain, is tagged for Data Quality Monitoring ONLY and cannot serve anomaly
+  detection, which is why the two builds sitting there carry that objective instead. Probe both the cell you
+  doubt and the cell you assume. A whole candidate was screened to a measured refusal on an illegal cell this way; its
   arithmetic stands but the ground it cleared was never there.
 - **An axis ban read as aged out without measuring it, and an unstamped card is not in the window.** A
   strategy was briefed as legal because a build carrying it had shipped, and it measured `BLOCK ban.strategy`
