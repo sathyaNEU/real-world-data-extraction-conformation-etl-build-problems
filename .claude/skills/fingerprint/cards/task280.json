@@ -1,0 +1,105 @@
+{
+  "task": "task280",
+  "architecture": "v1",
+  "drawn": "2026-10-24",
+  "slot_note": "Seed DA30's world kept (a broadband regulator's measurement panel on one cable provider, households judged on delivered speed against their plan at the evening peak); the seed's mechanism rows and pilot log are decoy-era design and are set aside unread beyond the header; the quantity is moved from one national household share to each hub's share of weekday peak time below 80 per cent of plan, and the decision to which of the franchisee's hubs the franchising authority designates for a congestion remedy.",
+  "domain": "general-statistics-data-science",
+  "subdomain": "missing-data-censoring-measurement-error",
+  "niche": "a joint cable franchising authority's congestion designation of its franchisee's hubs from its own whitebox measurement panel, whose units skip a scheduled speed test while the household's own line is busy",
+  "objective": "descriptive-distribution",
+  "shape": "10",
+  "decision_type": "designation_set",
+  "answer_unit": "set_of_items",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G14",
+    "G12",
+    "G6"
+  ],
+  "gate_g": "method_or_model_selection",
+  "calibration_form": "none",
+  "stump_strategy": "composition_mix",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "close_out_summary",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field correctly, keeps the weekday 7 to 11 pm tests of the measurement window and takes each hub's share of those tests below 80 per cent of the household's plan speed (or weights each hour of the evening equally) files the default set, because the units skip a test while the household's own line is busy and household use rises on the same nights the hub's nodes congest, so the tests under-sample exactly the congested quarter-hours and the marginal hubs read under the line.",
+  "domain_test": "The deciding quantity is each hub's share of weekday peak time below 80 per cent of plan, a missing-data estimate in which the tests are missing at random only given the node's utilisation in the quarter-hour, so the field conditions on that auxiliary record (each household's tests re-weighted to its node's full peak load distribution, or the load at which its connection drops under 80 per cent located and the node's peak quarter-hours above it counted); the share of tests, by hour or overall, is the same summary in any field and misses the missingness mechanism that decides the call.",
+  "layer2_family": "estimation_fit",
+  "layer2_pattern": "own:missing at random given an auxiliary utilisation record",
+  "layer1": [
+    "node utilisation in UTC against test times in local time across the November clock change",
+    "plan changes effective-dated in the subscription history",
+    "whitebox units replaced under a new unit id at the same address",
+    "nodes split mid-window and renamed in the node register",
+    "test batches re-uploaded after a unit outage",
+    "speeds in kbit/s in the test export and Mbit/s in the plan catalogue"
+  ],
+  "stakeholder_role": "performance compliance analyst at the franchising authority",
+  "role_family": "compliance_or_audit",
+  "scoring_unit": "per active unit per period",
+  "spine": {
+    "file": "panel_download_tests_2026q3q4.csv",
+    "rows": 0,
+    "entity": "one completed download speed test by one panel unit",
+    "grain": "unit x test",
+    "source": "synthetic"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "local_government",
+  "world": {
+    "geography": "United States (an invented valley of eight towns)",
+    "currency": "USD",
+    "org_type": "joint cable franchising authority of eight towns",
+    "invented_names": [
+      "Orlenford Valley Cable Commission",
+      "Tollard Cable",
+      "Bellwick",
+      "Carrow Mills",
+      "Dunfield",
+      "Eastholm",
+      "Greyhaven",
+      "Kesterbrook",
+      "Larchmoor",
+      "Sedgecombe"
+    ],
+    "people": [
+      "Travis Delgado",
+      "Kathleen Mcdonald",
+      "Donna Atkins"
+    ]
+  },
+  "deliverables": [
+    "hub_peak_congestion_2026.xlsx",
+    "hub_peak_congestion_2026.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is each group's share of a fixed daily window during which a shared resource left its members below a standard, measured by probes that each member's own activity silences and that activity rising on the same days the resource is loaded, so the probes under-sample the loaded intervals and only a re-weighting of each member's probes to the resource's own continuous load record, or a reconstruction of every interval from that record, counts the window.",
+  "driver_concrete": "Each hub's share of the weekday 7 to 11 pm quarter-hours of the autumn window in which its panel households' connections delivered under 80 per cent of plan, rebuilt for every quarter-hour from each household's tests and its node's 15-minute utilisation; not the share of tests below 80 per cent, overall or hour by hour, because the units skip a test while the household's line is busy and households are busiest on the nights the nodes congest.",
+  "stump": "A competent solver counts each hub's weekday peak tests below 80 per cent of plan (or weights each evening hour equally) and files the default set; the step that lands there is reading the completed tests as a sample of the peak's quarter-hours when the units skip a test whenever the household's own line is busy, which happens most on the nights the hub's nodes are most loaded.",
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task273": "architecture 1 rebuilt requests a closed-loop client never sent, withheld by the outcome itself (a paused pod) and rebuilt from the pause log as arithmetic, and its readers named the mechanism from the standard's clauses; task280's tests are withheld by the household's own use, which is not the outcome and only rises on the nights the hub's nodes load up, so the reflex correction by hour of the evening leaves the bias in place and only conditioning each household's tests on its node's own utilisation removes it; architecture 2 recovered a missing exposure from struck vehicles by stratum, while task280's exposure, every peak quarter-hour, is known and only the speed in the untested quarter-hours is missing",
+    "task233": "task233 carries an imputation's departure, measured on a gold-standard follow-up, to every unit on the odds scale; task280 imputes nothing from a model of the missing: each untested quarter-hour's speed follows from its node's recorded utilisation through the household's own tested speed at that load, and no follow-up exists",
+    "task458": "task458 counts a lasting trait seen only through events logged while units are observed, each recorded unit at one over its window's capture share; task280 counts time rather than units, the share of every weekday peak quarter-hour below the standard, and every household is observed throughout",
+    "task473": "task473 completes a count by the observer's catch share at each case's level, measured where every unit is tested; task280 has no fully tested reference group: the untested quarter-hours are rebuilt from a continuous utilisation record at another grain that covers every quarter-hour, tested or not",
+    "task256": "task256 carries a reference group's conditional distribution of body dimensions to a population through two recorded measurements; task280 carries nothing between populations: each household's own tests give its speed at each node load and its own node's record gives the load in every quarter-hour",
+    "task262": "task262 transports a noise variance from a subsample to a population; task280 has no measurement error to transport: the tests are accurate readings taken at a selected set of times, re-weighted to the node's full peak load distribution",
+    "task267": "task267 weights checked members by the inverse of a known checking rate in each group; task280's testing rate is filed nowhere and varies within each evening hour from night to night, so it is recovered only by setting the node loads at the tests against the node's full peak record, and the hour, the stratum a weighting reaches for first, does not carry it",
+    "task465": "task465 joins two large sources through a small one's within-cell association; task280 joins each household's tests to its own node's utilisation record and needs no third source",
+    "task54": "task54 multiplies an exposure integral under a recovered rule over a re-sequenced plan; task280 recovers no rule and re-sequences nothing: it measures the closed window's peak quarter-hours below the standard"
+  },
+  "lineage": [],
+  "notes": "Strategy and decisive generator name the decisive rung, conditioning each household's tests on its node's utilisation rather than on the hour (composition_mix, G14); the cause of the selection (skipped tests, population_selection, G12) is carried second, and both of those were in the window at filing against task305. The draw repeats the abstraction of task273 architecture 1 (probes silenced while the state that degrades the outcome holds, rebuilt from a continuous state record), spent at stage 4; built at the author's choice to let stage 4 decide, recorded in the design note.",
+  "registered": "2026-10-24T14:05:16Z"
+}
