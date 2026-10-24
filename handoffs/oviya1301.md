@@ -153,3 +153,7 @@ The ask designer's brief, in short:
   first.
 - Solver sandboxes go under `/sbx/`, never the scratchpad, which builders fill with their own scripts.
 - Leak readers have twice claimed that task445's CUSIP 359Y60106 fails its check digit. It passes.
+
+## task482
+
+PAUSED at the re-root. re-root to architecture 12 from stage 1 (fingerprint, then guide-to-prompt and stumping): architecture 11 was spent at stage 4 round 2 when reader C landed the call by refitting the 2PL latent regression with district in the conditioning model, so a plausible-value conditioning model that omits the grouping variable is not redrawn in any form. Read the design note's ## Tried and rejected (architectures 1 to 11) before drawing; at registration move this card (architecture_spent true) into the new card's lineage with its fate; the generator is architecture 11's record and is replaced at the re-root.

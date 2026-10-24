@@ -1,67 +1,70 @@
 {
  "task": "task482",
- "domain": "Healthcare Delivery & Health Economics (payment, claims and health plan analytics)",
- "client_domain": "Healthcare Delivery & Health Economics",
- "task_type": "payment-claims-health-plan-analytics",
+ "domain": "Education & Learning Sciences (item response theory and test equating)",
+ "client_domain": "Education & Learning Sciences",
+ "task_type": "item-response-theory-test-equating",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "hospice_quality_measures_2026.xlsx",
-  "fy2027_operating_budget.xlsx"
+  "teacher_implementation_survey_spring2026.csv",
+  "renewal_forecast_2026_27.xlsx"
  ],
  "distractor_reasons": {
-  "hospice_quality_measures_2026.xlsx": "the provider numbers' 2025 and 2026 hospice quality reporting measures (care index, visits in the last days of life, assessments, family survey); quality scores enter neither the aggregate cap nor the inpatient cap, so no figure reads them",
-  "fy2027_operating_budget.xlsx": "the 2027 operating budget's census, admissions and revenue by program; a plan for the next year, while the FY2026 cap counts the days beneficiaries did and will receive"
+  "teacher_implementation_survey_spring2026.csv": "teachers' spring 2026 self-reports of how they used the platform; the outcomes guarantee is settled on students' assessed achievement and the professional learning hours on the sessions delivered, so no figure reads the survey",
+  "renewal_forecast_2026_27.xlsx": "Partnerships' 2026-27 renewal stages, probabilities and forecast revenue; the credits are settled on the 2025-26 order forms and applied to the invoices actually raised"
  },
  "wrong_basis_distractors": {},
  "stated_inputs": [
-  "31 December 2026 close",
-  "FY2026",
-  "eight provider numbers",
-  "USD millions to one decimal",
-  "whole days",
-  "percentages to one decimal",
-  "361791",
-  "361792",
-  "361793",
-  "361794",
-  "361795",
-  "361796",
-  "361797",
-  "361798",
-  "35,361.44",
-  "35361.44"
+  "58 partner districts",
+  "2025-26 order forms",
+  "half hour",
+  "cent",
+  "2526",
+  "500",
+  "520",
+  "540",
+  "2026-11-30"
  ],
+ "forward_dated_files": {
+  "billing_invoices_2026_27.csv": "the 2026-27 invoice register of 20 November 2026 carries its invoices' due dates and service periods, which run past the register date by design",
+  "order_forms_2025_26.xlsx": "subscription terms end on 30 June or 31 July 2026, before the setting"
+ },
  "deliverables": [
-  "fy2026_hospice_cap_accrual.xlsx"
+  "guarantee_credit_memos_2026.csv",
+  "lumenfold_guarantee_settlement_2025_26.xlsx"
  ],
- "as_of": "2026-12-31",
+ "as_of": "2026-11-20",
  "files": [
-  "census_report_december_2026.pdf",
-  "diagnosis_groups.csv",
-  "fallowmere_census_register_20250228.xlsx",
-  "fy2026_hospice_payment_rates.pdf",
-  "fy2027_operating_budget.xlsx",
-  "hicn_mbi_crosswalk.csv",
-  "hospice_quality_measures_2026.xlsx",
-  "medicare_hospice_benefit_periods_20270105.txt",
-  "provider_numbers.json",
-  "remittance_register_fy2026.csv",
-  "revenue_cycle_file_notes.pdf",
-  "wendleglen_cap_liability_policy.docx",
-  "wendleglen_claim_lines_fy2026.csv",
-  "wendleglen_emr_admissions.csv"
+  "billing_invoices_2026_27.csv",
+  "caldrith_item_parameters_2024.csv",
+  "caldrith_lsoa_technical_report_2026.pdf",
+  "caldrith_plausible_values_2026.csv",
+  "credit_memo_import_layout.pdf",
+  "district_roster_uploads_spring2026.xlsx",
+  "guarantee_eligibility_2025_26.csv",
+  "lsoa_spring2026_item_responses.csv",
+  "lsoa_spring2026_sessions.csv",
+  "lumenfold_msa_v4_2025.docx",
+  "order_forms_2025_26.xlsx",
+  "pd_sessions_2025_26.csv",
+  "professional_learning_catalog_2025_26.pdf",
+  "renewal_forecast_2026_27.xlsx",
+  "student_id_crosswalk_2025_26.csv",
+  "teacher_implementation_survey_spring2026.csv"
  ],
  "rows": {
-  "medicare_hospice_benefit_periods_20270105.txt": 66364,
-  "wendleglen_emr_admissions.csv": 28635,
-  "fallowmere_census_register_20250228.xlsx": 2047,
-  "wendleglen_claim_lines_fy2026.csv": 17038,
-  "remittance_register_fy2026.csv": 14079
+  "guarantee_eligibility_2025_26.csv": 34427,
+  "district_roster_uploads_spring2026.xlsx": 32689,
+  "student_id_crosswalk_2025_26.csv": 33928,
+  "lsoa_spring2026_sessions.csv": 31713,
+  "lsoa_spring2026_item_responses.csv": 304109,
+  "caldrith_plausible_values_2026.csv": 29590,
+  "pd_sessions_2025_26.csv": 545,
+  "billing_invoices_2026_27.csv": 103
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task482/generator); Wendleglen Hospice & Palliative Care, Fallowmere Hospice, their programs and places, their staff, the beneficiaries, identifiers, provider numbers and every record and number in the files are fictional",
-  "public_specifications": "the FY2026 hospice payment rates, labor shares and aggregate cap amount are those of the FY2026 Medicare hospice payment rule (CMS-1835-F, 90 FR 37404, 5 August 2025); the proportional method and the inpatient limit follow 42 CFR 418.309 and 418.302(f); the claim and remittance fields follow the institutional claim's type of bill, revenue code and HCPCS conventions and the 835 remittance's CLP and PLB records with claim adjustment reason code 253 for sequestration; the census register's discharge statuses are UB-04 patient status codes; diagnosis codes are ICD-10-CM",
-  "licence": "CC0 1.0 (constructed data); the public rule figures are US government works",
-  "date": "2026-12-31"
+  "constructed": "every file is constructed for this task by its generator (task482/generator); Lumenfold Learning, the Lumenfold Science Outcomes Assessment, Caldrith Assessment Partners, the 58 partner districts and their places, the students, identifiers, accounts, invoices and every record and number in the files are fictional",
+  "public_specifications": "the item response model (two-parameter logistic), the latent regression population model and plausible values follow the published methodology of large-scale assessment (Mislevy, 1991; Rubin, 1987); the states' prior-test performance level names follow each state's public assessment reporting; roster codes follow common state student information system conventions",
+  "licence": "CC0 1.0 (constructed data)",
+  "date": "2026-11-20"
  }
 }

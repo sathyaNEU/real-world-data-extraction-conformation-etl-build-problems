@@ -1,112 +1,168 @@
-"""Builds task482's pack under target/, the golden under golden/ and generator/figures.json.
+"""Builds task482's pack under target/, the golden under golden/, generator/figures.json, submission.md and
+metadata.json.
 
     python3 task482/generator/build.py
 """
-import datetime as dt
 import json
 import os
 import shutil
 import sys
 
+import numpy as np
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
-import world as W
-import records as R
-import pack
-import files as F
-import docs as D
-import golden as Gd
-import postprocess as PP
+import world as W          # noqa: E402
+import records as R        # noqa: E402
+import pd as PD            # noqa: E402
+import billing as BL       # noqa: E402
+import files as F          # noqa: E402
+import docs as D           # noqa: E402
+import golden as G         # noqa: E402
+import goldwb as GW        # noqa: E402
+import irt                 # noqa: E402
+import postprocess as PP   # noqa: E402
 
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 GOLDEN = os.path.join(TASK, "golden")
 
 NAMES = {
-    "extract": "medicare_hospice_benefit_periods_20270105.txt",
-    "emr": "wendleglen_emr_admissions.csv",
-    "legacy": "fallowmere_census_register_20250228.xlsx",
-    "crosswalk": "hicn_mbi_crosswalk.csv",
-    "dx": "diagnosis_groups.csv",
-    "claims": "wendleglen_claim_lines_fy2026.csv",
-    "remit": "remittance_register_fy2026.csv",
-    "policy": "wendleglen_cap_liability_policy.docx",
-    "census": "census_report_december_2026.pdf",
-    "rates": "fy2026_hospice_payment_rates.pdf",
-    "register": "provider_numbers.json",
-    "notes": "revenue_cycle_file_notes.pdf",
-    "quality": "hospice_quality_measures_2026.xlsx",
-    "budget": "fy2027_operating_budget.xlsx",
+    "msa": "lumenfold_msa_v4_2025.docx",
+    "orders": "order_forms_2025_26.xlsx",
+    "elig": "guarantee_eligibility_2025_26.csv",
+    "roster": "district_roster_uploads_spring2026.xlsx",
+    "xwalk": "student_id_crosswalk_2025_26.csv",
+    "sessions": "lsoa_spring2026_sessions.csv",
+    "responses": "lsoa_spring2026_item_responses.csv",
+    "items": "caldrith_item_parameters_2024.csv",
+    "pv": "caldrith_plausible_values_2026.csv",
+    "report": "caldrith_lsoa_technical_report_2026.pdf",
+    "pd": "pd_sessions_2025_26.csv",
+    "catalog": "professional_learning_catalog_2025_26.pdf",
+    "invoices": "billing_invoices_2026_27.csv",
+    "layout": "credit_memo_import_layout.pdf",
+    "survey": "teacher_implementation_survey_spring2026.csv",
+    "renewals": "renewal_forecast_2026_27.xlsx",
 }
+DELIVERABLES = {"settlement": "lumenfold_guarantee_settlement_2025_26.xlsx",
+                "memos": "guarantee_credit_memos_2026.csv"}
 
 
-def census_figures(P):
-    """ADC, admissions and discharges by program from the EMR export (all payers)."""
-    emr = P["tb"]["emr"]
-    y0, y1 = dt.date(2026, 1, 1), dt.date(2026, 12, 31)
-    dec0 = dt.date(2026, 12, 1)
-    adc, adm, dis = {}, {}, {}
-    for code in W.CODES:
-        ccn = R.CCN[code]
-        rows = [r for r in emr if r["provider_number"] == ccn]
-        def census(a, z):
-            tot = 0
-            for r in rows:
-                s = max(r["admit_date"], a)
-                e = min(r["discharge_date"] or dt.date(2027, 1, 1), z + dt.timedelta(days=1))
-                tot += max(0, (e - s).days)
-            return tot / ((z - a).days + 1)
-        adc[ccn] = (census(dec0, y1), census(y0, y1))
-        adm[ccn] = sum(1 for r in rows if y0 <= r["admit_date"] <= y1 and r["admission_type"] != "Conversion")
-        dis[ccn] = (sum(1 for r in rows if r["discharge_date"] and y0 <= r["discharge_date"] <= y1 and r["discharge_reason"] == "Expired"),
-                    sum(1 for r in rows if r["discharge_date"] and y0 <= r["discharge_date"] <= y1
-                        and r["discharge_reason"] in ("Revoked", "No longer terminally ill", "Moved out of service area")))
-    return adc, adm, dis
+def report_figures(v, V):
+    """What the technical report states: counts, the population model's coefficients, results from the plausible
+    values (every student with a submitted session)."""
+    T = {"n_tested": int(len(v["g"]))}
+    T["counts"] = {st: [int(((v["state"] == W.STATES.index(st)) & (v["g"] == k)).sum()) for k in range(3)]
+                   for st in W.STATES}
+    T["n_dist"] = {st: sum(1 for dd in W.DISTRICTS if dd["state"] == st) for st in W.STATES}
+    g = V["gamma"] * W.SCALE_B
+    rows = [("Grade", "Grade %d" % W.GRADES[k], W.SCALE_A + g[k]) for k in range(3)]
+    rows += [("State", W.STATE_NAME[st], g[3 + i]) for i, st in enumerate(W.STATES[1:])]
+    rows += [("Prior state-test band", lab, g[8 + i]) for i, lab in enumerate(("Band 2", "Band 3", "Band 4",
+                                                                                   "No prior result"))]
+    rows += [("Economically disadvantaged", "Yes", g[12]), ("English learner", "Yes", g[13]),
+             ("Students with disabilities", "Yes", g[14])]
+    T["gamma_rows"] = rows
+    T["resid_sd"] = float(np.sqrt(V["s2"]) * W.SCALE_B)
+    pv = V["pv"]
+    cut = np.array(W.CUT_SCALE)[v["g"]]
+
+    def res(mask, label):
+        pct = float(np.mean([(p[mask] >= cut[mask] - 1e-9).mean() for p in pv]) * 100)
+        mean = float(np.mean([p[mask].mean() for p in pv]))
+        return (label, int(mask.sum()), pct, mean)
+
+    out = [res(np.ones(len(v["g"]), bool), "All students")]
+    out += [res(v["g"] == k, "Grade %d" % W.GRADES[k]) for k in range(3)]
+    out += [res(v["state"] == i, W.STATE_NAME[st]) for i, st in enumerate(W.STATES)]
+    out += [res(v["ed"] == 1, "Economically disadvantaged"), res(v["ed"] == 0, "Not economically disadvantaged"),
+            res(v["el"] == 1, "English learner"), res(v["iep"] == 1, "Students with disabilities")]
+    out += [res(v["band"] == b, lab) for b, lab in enumerate(("Prior band 1", "Prior band 2", "Prior band 3",
+                                                              "Prior band 4", "No prior result"))]
+    T["results"] = out
+    return T
 
 
-def finish(t, golden_xlsx):
+def finish(t, gold):
     """Office files carry their owners and saved stamps, PDFs their issue dates; two builds are byte-identical."""
-    PP.normalize_ooxml(t("legacy"), "FHI Census", "FHI Census", "2025-03-01T04:41:00Z", "2025-03-01T04:41:00Z",
-                       excel=True, company="Fallowmere Hospice Inc")
-    PP.normalize_ooxml(t("quality"), "Quality", "Quality", "2026-11-03T19:05:00Z", "2026-11-03T19:05:00Z", excel=True)
-    PP.normalize_ooxml(t("budget"), "Finance", "J. Cortez", "2026-10-21T14:30:00Z", "2026-12-02T21:48:00Z", excel=True)
-    PP.normalize_ooxml(t("policy"), "B. Graham", "B. Graham", "2023-09-12T13:02:00Z", "2026-11-18T14:12:00Z")
-    PP.normalize_ooxml(golden_xlsx, "B. Graham", "B. Graham", "2027-01-08T15:20:00Z", "2027-01-11T22:02:00Z", excel=True)
-    PP.normalize_pdf(t("census"), b"D:20270106081500-05'00'", b"D:20270106081500-05'00'")
-    PP.normalize_pdf(t("rates"), b"D:20250814102200-04'00'", b"D:20250814102200-04'00'")
-    PP.normalize_pdf(t("notes"), b"D:20270107160400-05'00'", b"D:20270107160400-05'00'")
+    PP.normalize_ooxml(t("msa"), "Legal", "Legal", "2025-05-28T20:40:00Z", "2025-05-28T20:40:00Z")
+    PP.normalize_ooxml(t("orders"), "Partnerships Operations", W.PEOPLE["requester"], "2026-11-02T14:05:00Z",
+                       "2026-11-02T14:05:00Z", excel=True)
+    PP.normalize_ooxml(t("roster"), "Data Services", "Data Services", "2026-04-10T13:20:00Z",
+                       "2026-04-10T13:20:00Z", excel=True)
+    PP.normalize_ooxml(t("renewals"), "Partnerships Operations", "Partnerships Operations", "2026-09-14T15:00:00Z",
+                       "2026-11-06T18:42:00Z", excel=True)
+    PP.normalize_ooxml(gold("settlement"), W.PEOPLE["controller"], W.PEOPLE["controller"], "2026-11-23T15:10:00Z",
+                       "2026-11-24T21:35:00Z", excel=True)
+    PP.normalize_pdf(t("report"), b"D:20260619110000-04'00'", b"D:20260619110000-04'00'")
+    PP.normalize_pdf(t("catalog"), b"D:20250714093000-04'00'", b"D:20250714093000-04'00'")
+    PP.normalize_pdf(t("layout"), b"D:20260804101500-04'00'", b"D:20260804101500-04'00'")
 
 
 def main():
-    P = pack.build()
+    PD.crm_names()
+    P = R.build()
+    v = R.tested_view(P["c"])
+    V = R.contractor(v)
+    pd_rows, pd_truth = PD.build()
+    inv = BL.build()
     for d in (TARGET, GOLDEN):
         if os.path.isdir(d):
             shutil.rmtree(d)
         os.makedirs(d)
-    tb = P["tb"]
     t = lambda k: os.path.join(TARGET, NAMES[k])
-    F.extract_txt(t("extract"), tb["extract"])
-    F.emr_csv(t("emr"), tb["emr"])
-    F.legacy_xlsx(t("legacy"), tb["legacy"])
-    F.crosswalk_csv(t("crosswalk"), tb["crosswalk"])
-    F.dx_csv(t("dx"), tb["dx"])
-    n_lines = F.claim_lines_csv(t("claims"), P["claims"])
-    n_remit = F.remittance_csv(t("remit"), P["remit"])
-    F.register_json(t("register"), P["wi"])
-    D.policy_docx(t("policy"))
-    adc, adm, dis = census_figures(P)
-    D.census_pdf(t("census"), P["people"], P["book"].closed_2026, adc, adm, dis)
-    D.rates_pdf(t("rates"))
-    D.file_notes_pdf(t("notes"), len(tb["extract"]))
-    D.quality_xlsx(t("quality"))
-    D.budget_xlsx(t("budget"), adc)
-    import goldwb
-    figs = goldwb.write(P, os.path.join(GOLDEN, "fy2026_hospice_cap_accrual.xlsx"))
-    finish(t, os.path.join(GOLDEN, "fy2026_hospice_cap_accrual.xlsx"))
-    figs["files"] = {k: NAMES[k] for k in NAMES}
-    figs["rows"] = {"extract": len(tb["extract"]), "emr": len(tb["emr"]), "legacy": len(tb["legacy"]),
-                    "claim_lines": n_lines, "remittance": n_remit}
+    gold = lambda k: os.path.join(GOLDEN, DELIVERABLES[k])
+    D.msa_docx(t("msa"))
+    F.order_forms_xlsx(t("orders"))
+    n = {}
+    n["elig"] = F.eligibility_csv(t("elig"), P["elig"])
+    n["roster"] = F.roster_xlsx(t("roster"), P["roster"])
+    n["xwalk"] = F.crosswalk_csv(t("xwalk"), P["xwalk"])
+    n["sessions"] = F.sessions_csv(t("sessions"), P["sessions"])
+    n["responses"] = F.responses_csv(t("responses"), P["responses"])
+    F.item_params_csv(t("items"), P["item_id"])
+    n["pv"] = F.pv_csv(t("pv"), v, V["pv"])
+    T = report_figures(v, V)
+    D.tech_report_pdf(t("report"), T)
+    n["pd"] = F.pd_csv(t("pd"), pd_rows)
+    D.catalog_pdf(t("catalog"))
+    n["invoices"] = F.invoices_csv(t("invoices"), inv)
+    D.layout_pdf(t("layout"))
+    F.survey_csv(t("survey"))
+    F.renewal_xlsx(t("renewals"))
+    rows, memos, share = G.settle(v, pd_truth, inv)
+    GW.workbook(gold("settlement"), rows)
+    GW.memos_csv(gold("memos"), memos)
+    finish(t, gold)
+    owed = [x for x in rows if x["result"] == "Not met"]
+    figs = {
+        "call": {"owed": sorted(x["partner_id"] for x in owed), "n_owed": len(owed),
+                 "og_total": round(sum(x["og"] for x in rows), 2)},
+        "districts": {x["partner_id"]: {k: x[k] for k in ("name", "state", "benchmark", "result", "credit_pct", "fee",
+                                                           "og", "pd_contract", "pd_delivered", "pd_short", "pl",
+                                                           "invoice", "account", "assessed")} for x in rows},
+        "share_golden": {x["partner_id"]: round(x["share"], 3) for x in rows},
+        "pl_total": round(sum(x["pl"] for x in rows), 2),
+        "n_pl": sum(1 for x in rows if x["pl"] > 0),
+        "credit_total": round(sum(x["og"] + x["pl"] for x in rows), 2),
+        "memos": memos,
+        "memo": {m["memo_reference"]: {"customer_account": m["customer_account"], "amount": m["credit_amount"],
+                                       "apply": m["apply_to_invoice"] if m["refund_method"] == "APPLY" else "CHECK"}
+                 for m in memos},
+        "memo_row": {m["memo_reference"]: "%s|%.2f|%s" % (m["customer_account"], m["credit_amount"],
+                                                           m["apply_to_invoice"] if m["refund_method"] == "APPLY" else "CHECK")
+                     for m in memos},
+        "n_check": sum(1 for m in memos if m["refund_method"] == "CHECK"),
+        "rows": n,
+        "files": dict(NAMES),
+        "deliverables": dict(DELIVERABLES),
+        "n_tested": T["n_tested"],
+        "n_districts": len(W.DISTRICTS),
+        "n_assessed": int(sum(x["assessed"] for x in rows)),
+        "cuts": list(W.CUT_SCALE),
+    }
     with open(os.path.join(HERE, "figures.json"), "w") as f:
         json.dump(figs, f, indent=1, sort_keys=True)
     import writeup
@@ -125,7 +181,7 @@ def cut_zip():
     path = os.path.join(TASK, "target.zip")
     with zipfile.ZipFile(path, "w") as z:
         for name in sorted(os.listdir(TARGET)):
-            zi = zipfile.ZipInfo(name, date_time=(2027, 1, 7, 16, 4, 0))
+            zi = zipfile.ZipInfo(name, date_time=(2026, 11, 20, 17, 30, 0))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             with open(os.path.join(TARGET, name), "rb") as f:

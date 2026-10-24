@@ -6,88 +6,80 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
-import records as R   # noqa: E402
-import world as W     # noqa: E402
-import goldwb as GW   # noqa: E402
-
 
 def usd(v):
-    return "USD {:,.0f}".format(v)
+    return "USD {:,.2f}".format(v)
 
 
-def n(v):
-    return "{:,}".format(v)
+def hrs(v):
+    return ("%.1f" % v).rstrip("0").rstrip(".") if v != int(v) else "%d" % v
 
 
 def write(fig_path, out_path):
     f = json.load(open(fig_path))
-    order = list(W.CODES)
-    name = {c: "%s (%s)" % (R.PROGRAM[c], R.CCN[c]) for c in order}
-    st = f["fal_states"]
+    ds = f["districts"]
+    order = sorted(ds, key=lambda k: (ds[k]["state"], ds[k]["name"]))
+    owed = [k for k in order if ds[k]["result"] == "Not met"]
     o = ["## Tags\n",
-         "**Domain:** Healthcare Delivery & Health Economics, payment, claims and health plan analytics (a hospice "
-         "organisation's EMR admissions, its acquired hospice's census register, claim lines and remittances and the "
-         "Medicare hospice benefit periods extract conformed into the FY2026 aggregate cap schedule its December 2026 "
-         "accrual reads).",
+         "**Domain:** Education & Learning Sciences, item response theory and test equating (an education technology "
+         "company's partner district contracts, its platform's eligibility and roster records, the assessment delivery "
+         "system's sessions and scored responses, the contractor's item parameters and plausible values, the "
+         "professional learning scheduling export and the billing register conformed into the 2025-26 guarantee "
+         "settlement and the billing system's credit memo import).",
          "**Analytical objective:** Data Extraction & Conformation (ETL).\n",
          "## 1. Final Recommendation\n",
-         "**Accrue USD %.1f million for FY2026 Medicare hospice cap repayments, all of it at Fallowmere Hospice (provider "
-         "number %s); the other seven provider numbers are under their caps.**" % (f["call"]["total_musd"],
-                                                                        f["provider_numbers"]["FAL"]),
-         "Fallowmere's FY2026 payments before sequestration of %s run above its aggregate cap once each beneficiary it "
-         "discharged alive carries the hospice days still expected after the close. Not nothing, which taking every "
-         "beneficiary discharged alive as finished gives: %s of Fallowmere's elections end in a live discharge, and the "
-         "extract's later benefit periods show many of those beneficiaries electing hospice again, most at hospices "
-         "outside the organisation.\n" % (usd(f["payments_usd"]["FAL"]), GW.in_words(f["history"]["alive_share"]["FAL"])),
+         "**%d of the 58 partner districts are owed the outcomes guarantee credit under their 2025-26 order forms, "
+         "%s in total: %s.**" % (len(owed), usd(f["call"]["og_total"]),
+                                 "; ".join("%s (%s)" % (ds[k]["name"], k) for k in owed)),
+         "Each district's Outcome Share is estimated from its eligible students' own answers on the two modules they "
+         "took, with the district in the population model. The contractor's plausible values were drawn for the "
+         "national report from a model on grade, state, prior band and background with no district term, so they pull "
+         "every district toward what its students' backgrounds predict: averaged by district they credit districts "
+         "that met their benchmark and clear districts that did not.\n",
          "## 2. Critical Components\n",
-         "1. Fallowmere's FY2026 payments before sequestration are **%s**." % usd(f["payments_usd"]["FAL"]),
-         "2. Fallowmere has **%s** FY2026 beneficiaries: at 31 December 2026 **%s** on service, **%s** discharged alive "
-         "and not back, **%s** died." % (n(f["fal_n"]), n(st["open"]), n(st["out"]), n(st["dead"])),
-         "3. Fallowmere's FY2026 repayment is **USD %.1f million**; every other provider number's is nil.\n" % f["repayment_musd"]["FAL"],
+         "1. Districts owed the outcomes credit: **%d** of 58." % len(owed),
+         "2. Outcomes credits: **%s** in total." % usd(f["call"]["og_total"]),
+         "3. Professional learning shortfall credits: **%s** across **%d** districts; all credits **%s**.\n"
+         % (usd(f["pl_total"]), f["n_pl"], usd(f["credit_total"])),
          "## 3. Step-by-Step Solution\n",
-         "1. Read medicare_hospice_benefit_periods_20270105.txt (%s benefit periods, the periods sharing an election date "
-         "one stay), with wendleglen_emr_admissions.csv and fallowmere_census_register_20250228.xlsx matched to MBIs "
-         "through hicn_mbi_crosswalk.csv and each beneficiary's group taken from diagnosis_groups.csv: %s FY2026 "
-         "beneficiaries across the eight provider numbers." % (n(f["rows"]["extract"]), n(f["cohort_n"])),
-         "2. Took each beneficiary's FY2026 days at each provider number, days to 31 December 2026 in every hospice and "
-         "year, and state at the close (at Fallowmere %s on service, %s discharged alive and not back, %s died)."
-         % (n(st["open"]), n(st["out"]), n(st["dead"])),
-         "3. Read the days expected after the close from the experience since 1 October 2016 of the provider number that "
-         "cared for the beneficiary last, in the beneficiary's group (wendleglen_cap_liability_policy.docx section 2.4): "
-         "for a stay still open, the further days of that provider number's stays that had run as long (Kaplan-Meier), "
-         "plus the chance such a stay ends alive times the chance of a later election times the days a later election "
-         "brings.",
-         "4. For a beneficiary discharged alive and alive at the close, the chance of a later election at any hospice "
-         "among the provider number's live discharges still alive and not back after as many days out (Aalen-Johansen on "
-         "the extract's later elections and dates of death), times the days a later election brings (the Kaplan-Meier "
-         "mean of those elections); a beneficiary who died has none.",
-         "5. Counted each beneficiary at each provider number as its FY2026 days over the days to the close plus the "
-         "expected days (section 2.3) and multiplied each provider number's count by USD 35,361.44 (section 2.1).",
-         "6. Summed each provider number's FY2026 payments from remittance_register_fy2026.csv (CLP rows with reversals, "
-         "adj_carc_253 added back, PLB interest left out) and took 98 per cent of any excess over the cap (section 3.2): "
-         "only Fallowmere's payments exceed its cap.",
-         "7. For the inpatient cap, took the version of each FY2026 claim in wendleglen_claim_lines_fy2026.csv that "
-         "remittance_register_fy2026.csv shows paid and not reversed (a returned replacement was never paid, so the claim "
-         "it would have replaced stands), repriced it from its dated level-of-care lines with fy2026_hospice_payment_rates.pdf, "
-         "the routine care count from the extract and the wage index in provider_numbers.json, and where the payment falls "
-         "short, counted its last general inpatient and respite days paid at the routine rate (the one count that closes "
-         "the gap to the cent) out of the 0656 and 0655 units, over each provider number's FY2026 days of care in the "
-         "extract.",
-         "8. The accrual is as in the Final Recommendation.\n",
+         "1. Took each district's eligible students from guarantee_eligibility_2025_26.csv (the 1 May 2026 record "
+         "flagged eligible) and linked them through student_id_crosswalk_2025_26.csv to their submitted session in "
+         "lsoa_spring2026_sessions.csv: %s eligible students assessed." % "{:,}".format(sum(ds[k]["assessed"] for k in order)),
+         "2. Scored each submitted session's responses (omitted items incorrect, items not reached left out) on the "
+         "2024 item parameters, two-parameter logistic with D = 1.",
+         "3. Fitted a latent regression of achievement on district, grade, prior state-test band (Table 5 of the "
+         "technical report, read from the roster uploads) and the three status flags by EM on a grid, and took each "
+         "district's Outcome Share as the mean posterior probability of its eligible assessed students being at or "
+         "above 500, 520 or 540 for their grade.",
+         "4. Compared each share with the district's Guarantee Benchmark in order_forms_2025_26.xlsx; a district below "
+         "it is credited its Credit Percentage of the 2025-26 Subscription Fee.",
+         "5. Summed each district's live sessions (virtual live and on site) in pd_sessions_2025_26.csv with status "
+         "Delivered and a date in its subscription term, each session's hours read as hours and minutes after the "
+         "point (the scheduling system's way of writing a session's time), joint sessions in full for every district "
+         "attending, to the nearest half hour; any shortfall against the order form's hours is credited at USD 250 an "
+         "hour under the agreement's professional learning clause.",
+         "6. Applied each credit to the open 2026-27 subscription invoice on the order form's bill-to account with the "
+         "earliest due date in billing_invoices_2026_27.csv, or a refund by check where none is open, in the layout of "
+         "credit_memo_import_layout.pdf.\n",
          "## 4. Deliverable Answers\n",
-         "### fy2026_hospice_cap_accrual.xlsx\n",
-         "1. FY2026 aggregate cap repayments to accrue, USD millions to one decimal:"]
-    for c in order:
-        o.append("   - %s: %.1f" % (name[c], f["repayment_musd"][c]))
-    o.append("   - Total: %.1f" % f["call"]["total_musd"])
-    o.append("2. FY2026 inpatient cap, general inpatient days and inpatient respite days Medicare paid for (whole days) and "
-             "the inpatient share of days of care (per cent to one decimal):")
-    for c in order:
-        a = f["ask_a"][c]
-        o.append("   - %s: general inpatient %s, respite %s, share %.1f" % (name[c], n(a["gip_days"]), n(a["respite_days"]),
-                                                                          a["share_pct"]))
-    o.append("3. The cap schedule: one row per FY2026 beneficiary per provider number (%s rows) with the FY2026 days there, "
-             "the hospice days to the close, the days expected after it and the share counted." % n(f["schedule_rows"]))
+         "### lumenfold_guarantee_settlement_2025_26.xlsx\n",
+         "1. Outcomes guarantee: not met, and credited, at the %d districts in the Final Recommendation; met at the "
+         "other %d." % (len(owed), len(order) - len(owed))]
+    o.append("2. Live professional learning hours delivered in the subscription term, to the half hour, against the "
+             "order form's hours:")
+    for k in order:
+        o.append("   - %s (%s): %s of %s" % (ds[k]["name"], k, hrs(ds[k]["pd_delivered"]), hrs(ds[k]["pd_contract"])))
+    o.append("3. Professional learning shortfall credit, USD to the cent (every other district nil):")
+    for k in order:
+        if ds[k]["pl"] > 0:
+            o.append("   - %s (%s): %s" % (ds[k]["name"], k, usd(ds[k]["pl"])))
+    o.append("\n### guarantee_credit_memos_2026.csv\n")
+    o.append("4. %d credit memos dated 2026-11-30 (memo reference, customer account, reason, amount, applied to):"
+             % len(f["memos"]))
+    for m in f["memos"]:
+        o.append("   - %s, %s, %s, %s, %s" % (m["memo_reference"], m["customer_account"], m["reason_code"],
+                                              "%.2f" % m["credit_amount"],
+                                              m["apply_to_invoice"] if m["refund_method"] == "APPLY" else "CHECK"))
     open(out_path, "w").write("\n".join(o) + "\n")
 
 

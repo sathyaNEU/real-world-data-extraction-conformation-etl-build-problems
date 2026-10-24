@@ -1,23 +1,75 @@
-"""The pack's documents: the cap liability policy (docx), the December 2026 census report, the FY2026 rate sheet and
-the revenue cycle file notes (pdf), and two workbooks the analysis does not need (quality measures, the 2027 budget)."""
+"""The pack's documents: the Master Subscription Agreement (docx), the contractor's technical report, the professional
+learning catalog and the billing system's credit memo import layout (pdf)."""
 import datetime as dt
 
 import docx
 from docx.shared import Pt
-import openpyxl
-from openpyxl.styles import Font
 import reportlab.rl_config
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle, PageBreak
 
 import world as W
 import records as R
+import pd as PD
 
-ORG = "Wendleglen Hospice & Palliative Care"
 reportlab.rl_config.invariant = 1
+
+MSA = [
+    ("h", "1. Definitions"),
+    ("p", "1.1 “District” means the school district or system named on an Order Form. “Order Form” means the "
+          "ordering document signed by the District and Lumenfold that states the Subscription Term, the Subscription "
+          "Fee, the licensed seats, the hours of live professional learning, the Guarantee Benchmark and the Credit "
+          "Percentage."),
+    ("p", "1.2 “Subscription Term” means the period stated on the Order Form. “Subscription Fee” means the annual "
+          "subscription fee stated on the Order Form for the Subscription Term, before any credit."),
+    ("p", "1.3 “Assessment” means the Lumenfold Science Outcomes Assessment, administered online each spring to the "
+          "students in the District's Lumenfold class sections, with the reporting scale and performance levels set out "
+          "in the Assessment's technical report for that spring."),
+    ("h", "2. Subscription and access"),
+    ("p", "2.1 Lumenfold provides the District's students and teachers access to the Lumenfold platform for the "
+          "Subscription Term for up to the licensed seats."),
+    ("p", "2.2 The District uploads its class rosters and the student fields listed in section 11 at least once each "
+          "term, and whenever students join its Lumenfold class sections."),
+    ("h", "3. Fees and invoicing"),
+    ("p", "3.1 Lumenfold invoices the Subscription Fee in advance, annually or in two equal semester instalments as the "
+          "Order Form provides. 3.2 Invoices are due 45 days from the invoice date."),
+    ("h", "8. Professional learning"),
+    ("p", "8.1 Lumenfold delivers to the District the hours of live professional learning stated on the Order Form "
+          "within the Subscription Term. Live professional learning is a session led by a Lumenfold facilitator, "
+          "virtual or on site, attended by the District's teachers; recorded webinars and on-demand courses do not "
+          "count toward the hours."),
+    ("p", "8.2 A live session delivered to teachers of more than one district counts in full toward the hours of each "
+          "district whose teachers attended it."),
+    ("p", "8.3 Where the live professional learning delivered to the District within the Subscription Term, counted to "
+          "the nearest half hour, falls short of the hours stated on the Order Form, Lumenfold credits the District USD "
+          "250 for each hour of the shortfall."),
+    ("h", "9. Outcomes guarantee"),
+    ("p", "9.1 An “Eligible Student” is a student rostered to one of the District's Lumenfold class sections on 1 May "
+          "2026 who completed at least 20 Lumenfold lessons from the start of the Subscription Term to 1 May 2026, as "
+          "recorded in Lumenfold's guarantee eligibility file for the 2025-26 Subscription Term."),
+    ("p", "9.2 The District's “Outcome Share” is the percentage of its Eligible Students who completed the spring "
+          "2026 Assessment whose science achievement, on the Assessment's reporting scale, is at or above the "
+          "Proficient level for their grade: 500 in grade 6, 520 in grade 7 and 540 in grade 8."),
+    ("p", "9.3 If the District's Outcome Share is below the Guarantee Benchmark on its Order Form, Lumenfold credits "
+          "the District the Credit Percentage on its Order Form of its 2025-26 Subscription Fee."),
+    ("p", "9.4 Lumenfold sends the District a settlement statement for the 2025-26 Subscription Term by 30 November "
+          "2026 and issues any credit under section 10 with it."),
+    ("h", "10. Credits"),
+    ("p", "10.1 Lumenfold applies a credit owed under section 8 or section 9 against the District's open subscription "
+          "invoice for the following Subscription Term. Where no such invoice is open when the credit is issued, "
+          "Lumenfold refunds the credit to the District within 30 days."),
+    ("h", "11. Student data"),
+    ("p", "11.1 The District shares, for each rostered student, the student's grade, economic disadvantage status, "
+          "English learner status, disability status and performance level on the state's most recent mathematics or "
+          "science assessment, under the data sharing addendum. Lumenfold and its assessment contractor use these "
+          "fields for the Assessment and for Lumenfold's efficacy research."),
+    ("h", "14. General"),
+    ("p", "14.1 This Agreement and the Order Form are the entire agreement between the parties for the Subscription "
+          "Term. 14.2 Where this Agreement and an Order Form conflict, the Order Form governs."),
+]
 
 
 def _core(d, author, when):
@@ -26,244 +78,191 @@ def _core(d, author, when):
     cp.last_modified_by = author
     cp.created = when
     cp.modified = when
-    cp.revision = 4
+    cp.revision = 6
     cp.title = ""
     cp.comments = ""
 
 
-POLICY = [
-    ("h", "1. Purpose and scope"),
-    ("p", "Medicare limits the payments each hospice provider number receives for a cap year, 1 October to 30 September, "
-          "to its aggregate cap (42 CFR 418.309). At each year-end close Wendleglen estimates the repayment each of its "
-          "provider numbers will owe for the cap year that ended on the preceding 30 September, accrues it, and the "
-          "external auditors test the estimate. This policy covers the eight provider numbers in the provider register, "
-          "Fallowmere Hospice (provider number 361798) included: Wendleglen took over its provider agreement on 1 March "
-          "2025 together with its records, and its cap years before and after that date are one provider number's."),
-    ("h", "2. The count and the cap"),
-    ("p", "2.1 A provider number's aggregate cap for FY2026 is the FY2026 cap amount, USD 35,361.44 per beneficiary under "
-          "the FY2026 hospice payment rule, times the number of Medicare beneficiaries counted for it under the "
-          "proportional method."),
-    ("p", "2.2 A Medicare beneficiary is counted for a provider number if the provider number gave them hospice care on any "
-          "day of the cap year. The beneficiary counts as the fraction that their days of hospice care at the provider "
-          "number in the cap year are of their days of hospice care in every hospice and in every year."),
-    ("p", "2.3 A beneficiary's days of hospice care in every hospice and year are not all known at the close. The estimate "
-          "takes them as the days on file through 31 December plus the days the beneficiary is expected to receive after "
-          "that date, given what Wendleglen knows of the beneficiary at the close, and the fraction is the beneficiary's "
-          "days at the provider number in the cap year divided by that total."),
-    ("p", "2.4 What a beneficiary is expected to receive is read from the experience since 1 October 2016 of the "
-          "beneficiaries cared for by the provider number at which Wendleglen cared for the beneficiary last, in the "
-          "beneficiary's diagnosis group (the four groups of the monthly census report)."),
-    ("p", "2.5 The days on file are the days of hospice care in the Medicare benefit periods extract, which holds every "
-          "benefit period of every beneficiary the provider numbers have cared for since 1 October 2016, at any hospice "
-          "and in any year, as Medicare holds them at the data date."),
-    ("h", "3. Payments and the repayment"),
-    ("p", "3.1 A provider number's payments for the cap year are the Medicare payments for its claims with statement dates "
-          "in the cap year, net of reversals, before the 2 per cent sequestration reduction. Interest paid on claims "
-          "paid late is not a payment for care and is left out."),
-    ("p", "3.2 The repayment is estimated as the contractor determines it: the payments less the aggregate cap, the "
-          "difference reduced by 2 per cent for the sequestration already withheld from the payments. A provider number "
-          "whose payments are below its cap owes nothing."),
-    ("h", "4. The inpatient cap"),
-    ("p", "Under 42 CFR 418.302(f) the days of general inpatient and inpatient respite care Medicare pays a provider number "
-          "for in a cap year may not exceed 20 per cent of its days of hospice care for Medicare beneficiaries in the "
-          "year. The year-end review reports each provider number's inpatient days and inpatient share beside the "
-          "aggregate cap estimate."),
-    ("h", "5. Records"),
-    ("p", "The estimate is built from the Medicare benefit periods extract, Wendleglen's EMR admissions export (Wendleglen's "
-          "programs since 1 October 2016 and Fallowmere from 1 March 2025), Fallowmere's census register as exported by "
-          "the seller at the change of ownership, the HICN to MBI crosswalk for records keyed before the MBI, the claim "
-          "lines and the remittance register. Diagnosis groups follow the census report's code list."),
-    ("h", "6. Presentation"),
-    ("p", "Repayments are reported in USD millions to one decimal, each from its unrounded estimate, with their total. The "
-          "workpapers keep the schedule of beneficiaries behind each count."),
-]
-
-
-def policy_docx(path):
+def msa_docx(path):
     d = docx.Document()
     st = d.styles["Normal"]
     st.font.name = "Calibri"
     st.font.size = Pt(10.5)
-    d.add_heading(ORG, level=1)
-    d.add_paragraph("Finance Policy FIN-14: Medicare hospice cap liability")
-    d.add_paragraph("Owner: Controller. Approved by the Finance Committee, 18 November 2026. Supersedes the revision of "
-                    "September 2023.")
-    for kind, text in POLICY:
+    d.add_heading("Lumenfold Learning, Inc. Master Subscription Agreement", level=1)
+    d.add_paragraph("Version 4.0, effective 1 June 2025. Incorporated by reference in each 2025-26 Order Form. "
+                    "Sections 4 to 7, 12 and 13 (privacy, security, acceptable use, warranties, liability and "
+                    "termination) are unchanged from version 3.2 and are not reproduced here.")
+    for kind, text in MSA:
         if kind == "h":
             d.add_heading(text, level=2)
         else:
             d.add_paragraph(text)
-    _core(d, "B. Graham", dt.datetime(2026, 11, 18, 9, 12))
+    _core(d, "Legal", dt.datetime(2025, 5, 28, 16, 40))
     d.save(path)
 
 
-def _pdf(path, title, story_fn, author):
-    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.7 * inch, rightMargin=0.7 * inch,
+def _pdf(path, title, story, author, producer):
+    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=0.75 * inch, rightMargin=0.75 * inch,
                             topMargin=0.7 * inch, bottomMargin=0.7 * inch, title=title, author=author, creator=author,
-                            subject=title, producer="Wendleglen reporting")
-    ss = getSampleStyleSheet()
-    story = story_fn(ss)
-    doc.build(story)
+                            subject=title, producer=producer)
+
+    def footer(canvas, doc_):
+        canvas.saveState()
+        canvas.setFont("Helvetica", 7.5)
+        canvas.drawString(0.75 * inch, 0.45 * inch, title)
+        canvas.drawRightString(letter[0] - 0.75 * inch, 0.45 * inch, "Page %d" % doc_.page)
+        canvas.restoreState()
+
+    doc.build(story, onFirstPage=footer, onLaterPages=footer)
 
 
-def _table(rows, widths=None, fs=7.5):
+def _table(rows, widths=None, fs=7.5, align_from=1):
     t = Table(rows, colWidths=widths, repeatRows=1)
     t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", fs), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", fs),
-                           ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.black), ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+                           ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.black),
+                           ("ALIGN", (align_from, 1), (-1, -1), "RIGHT"),
                            ("VALIGN", (0, 0), (-1, -1), "TOP"), ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
                            ("TOPPADDING", (0, 0), (-1, -1), 2)]))
     return t
 
 
-def census_pdf(path, people, closed_2026, adc, admissions, discharges):
-    """The programs' operating report for December 2026: census, admissions, discharges, lengths of stay by group."""
-    def story(ss):
-        s = [Paragraph("%s: Monthly Census Report, December 2026" % ORG, ss["Title"]),
-             Paragraph("Prepared by Clinical Operations, 6 January 2027. All payers. Calendar 2026 unless stated.", ss["Normal"]),
-             Spacer(1, 8)]
-        rows = [["Program", "Provider no.", "ADC Dec 2026", "ADC 2026", "Admissions 2026", "Deaths 2026", "Live discharges 2026"]]
-        for code in W.CODES:
-            ccn = R.CCN[code]
-            rows.append([R.PROGRAM[code], ccn, "%.1f" % adc[ccn][0], "%.1f" % adc[ccn][1], "%d" % admissions[ccn],
-                         "%d" % discharges[ccn][0], "%d" % discharges[ccn][1]])
-        s += [Paragraph("Census and flow", ss["Heading3"]), _table(rows), Spacer(1, 10)]
-        rows = [["Program", "Cancer", "Dementia", "Heart and lung", "Other", "All"]]
-        for code in W.CODES:
-            ccn = R.CCN[code]
-            vals = []
-            alls = []
-            for g in W.GRP:
-                x = closed_2026.get((ccn, W.GROUP_NAME[g]), [])
-                alls += x
-                vals.append("%.1f" % (sum(x) / len(x)) if x else "")
-            vals.append("%.1f" % (sum(alls) / len(alls)) if alls else "")
-            rows.append([R.PROGRAM[code]] + vals)
-        s += [Paragraph("Average length of stay of 2026 discharges, days, by diagnosis group (Medicare)", ss["Heading3"]),
-              _table(rows), Spacer(1, 6),
-              Paragraph("Length of stay is counted from admission to the program to discharge from it. Diagnosis groups follow "
-                        "the census code list (diagnosis_groups.csv).", ss["Normal"])]
-        return s
-    _pdf(path, "Monthly Census Report December 2026", story, "Clinical Operations")
+def tech_report_pdf(path, T):
+    """Caldrith's technical report for the spring 2026 administration. T: the figures it reports."""
+    ss = getSampleStyleSheet()
+    body = ParagraphStyle("b", parent=ss["Normal"], fontSize=9, leading=12, spaceAfter=5)
+    h2 = ParagraphStyle("h2", parent=ss["Heading2"], fontSize=11.5, spaceBefore=8, spaceAfter=4)
+    cap = ParagraphStyle("c", parent=ss["Normal"], fontSize=8, leading=10, spaceBefore=4, spaceAfter=2,
+                         fontName="Helvetica-Bold")
+    src = ParagraphStyle("s", parent=ss["Normal"], fontSize=7, leading=9, textColor=colors.HexColor("#444444"))
+    P = lambda t: Paragraph(t, body)
+    s = [Paragraph("Lumenfold Science Outcomes Assessment", ss["Title"]),
+         Paragraph("Spring 2026 Administration: Technical Report", ss["Heading2"]),
+         P("Prepared for Lumenfold Learning, Inc. by Caldrith Assessment Partners. Final, 19 June 2026. This report "
+           "documents the design, scoring and scaling of the spring 2026 administration and the results reported in "
+           "Lumenfold's 2026 National Efficacy Report."),
+         Paragraph("1. The administration", h2),
+         P("The Lumenfold Science Outcomes Assessment (LSOA) measures the science achievement of students in grades 6, "
+           "7 and 8 in Lumenfold's partner districts. The spring 2026 window ran from 13 April to 22 May 2026. "
+           "%s students in %d partner districts in six states submitted a session; Table 1 gives the counts by "
+           "grade and state." % ("{:,}".format(T["n_tested"]), len(W.DISTRICTS))),
+         Paragraph("2. Design", h2),
+         P("The item pool has 40 dichotomously scored items in eight modules of five. Each student takes two modules, "
+           "so each of the 28 two-module forms is one pairing of modules; forms are spiralled within class sections, "
+           "so every form is taken by students of every grade, state and district. A student's assessment is a "
+           "single online session in Caldrith's delivery system. A session is scored when the student submits it. "
+           "A session that is not submitted before the student's class closes the window is not scored; the student "
+           "may begin a new session on the same form, which is scored if submitted."),
+         P("Within a submitted session, an item the student left blank with a later item answered is omitted and is "
+           "scored incorrect. Items left blank at the end of the session, after the last item the student answered, "
+           "are not reached and are treated as not administered."),
+         Paragraph("3. Scaling and the reporting scale", h2),
+         P("Items are scaled with the two-parameter logistic model, P(correct) = 1 / (1 + exp(-a(theta - b))), with "
+           "the scaling constant D = 1. Item parameters are fixed at the values from the 2024 base-year calibration "
+           "(the file caldrith_item_parameters_2024.csv); the 2026 administration is not recalibrated. On the "
+           "base-year scale theta has mean 0 and standard deviation 1 in the 2024 calibration sample. Scale scores are "
+           "reported as 500 + 50 theta."),
+         P("The 2024 standard setting set the Proficient level at 500 in grade 6, 520 in grade 7 and 540 in grade 8, "
+           "and the Advanced level at 560, 580 and 600."),
+         Paragraph("4. Population model and plausible values", h2),
+         P("Each student answers ten items, too few to report a score for the student. The results in this report "
+           "are estimated from a population model: a latent regression of theta on the conditioning variables in Table 6, "
+           "theta = gamma'x + e with e normal with mean 0 and a common variance, fitted to every submitted session by "
+           "marginal maximum likelihood with the EM algorithm on a quadrature grid of 179 points from -4.475 to "
+           "4.475 with the item parameters fixed. The prior state-test band is read from the districts' roster "
+           "uploads through the crosswalk in Table 5; students with no prior state-test result form their own "
+           "category."),
+         P("For each student Caldrith drew five plausible values from the posterior distribution of theta given "
+           "the student's responses and conditioning variables, and reports them on the scale to one decimal "
+           "(caldrith_plausible_values_2026.csv). Each result in Table 8 is computed five times, once with each "
+           "plausible value, and the five results are averaged; its standard error combines the average sampling "
+           "variance with the variance between the five results (Rubin, 1987)."),
+         Paragraph("5. Results", h2),
+         P("Table 8 gives the percentage of students at or above Proficient for their grade and the mean scale score "
+           "for the partner districts' students and for the groups in the 2026 National Efficacy Report.")]
+    # Table 1
+    rows = [["State", "Districts", "Grade 6", "Grade 7", "Grade 8", "All"]]
+    for st in W.STATES:
+        c = T["counts"][st]
+        rows.append([W.STATE_NAME[st], str(T["n_dist"][st])] + ["{:,}".format(x) for x in c] + ["{:,}".format(sum(c))])
+    tot = [sum(T["counts"][st][k] for st in W.STATES) for k in range(3)]
+    rows.append(["All", str(len(W.DISTRICTS))] + ["{:,}".format(x) for x in tot] + ["{:,}".format(sum(tot))])
+    s += [Paragraph("Table 1. Students with a submitted session, by state and grade", cap), _table(rows),
+          Paragraph("Source: Caldrith delivery system, sessions submitted 13 April to 22 May 2026.", src)]
+    # Table 5
+    rows = [["State", "State test", "Band 1", "Band 2", "Band 3", "Band 4"]]
+    for st in W.STATES:
+        name, lv = R.LEVELS[st]
+        rows.append([W.STATE_NAME[st], name] + [", ".join(x) for x in lv])
+    s += [Paragraph("Table 5. Prior state-test performance levels by band", cap),
+          _table(rows, widths=[62, 78, 82, 78, 82, 88], fs=7, align_from=9),
+          Paragraph("Bands are read from the most recent state science or mathematics result in the roster upload.",
+                    src)]
+    # Table 6
+    rows = [["Conditioning variable", "Category", "Coefficient (scale points)"]]
+    for lab, cat, val in T["gamma_rows"]:
+        rows.append([lab, cat, ("%.1f" if lab == "Grade" else "%+.1f") % val])
+    rows.append(["Residual standard deviation", "", "%.1f" % T["resid_sd"]])
+    s += [Paragraph("Table 6. Population model: conditioning variables and estimated coefficients", cap),
+          _table(rows, widths=[150, 150, 110]),
+          Paragraph("Grade terms are the grade means for a student in North Carolina, band 1, with none of the three "
+                    "status flags; the other coefficients are differences from that student.", src)]
+    # Table 8
+    rows = [["Group", "Students", "At or above Proficient (%)", "Mean scale score"]]
+    for lab, n, pct, mean in T["results"]:
+        rows.append([lab, "{:,}".format(n), "%.1f" % pct, "%.1f" % mean])
+    s += [Paragraph("Table 8. Results, spring 2026", cap), _table(rows, widths=[170, 70, 110, 90]),
+          Paragraph("Averages over the five plausible values. Proficient: 500, 520 and 540 in grades 6, 7 and 8.",
+                    src)]
+    _pdf(path, "LSOA Spring 2026 Technical Report", s, "Caldrith Assessment Partners", "Caldrith Assessment Partners")
 
 
-def rates_pdf(path):
-    def story(ss):
-        s = [Paragraph("FY2026 Medicare hospice payment rates and limits", ss["Title"]),
-             Paragraph("Reimbursement summary of the FY2026 hospice payment rule (CMS-1835-F, 90 FR 37404, 5 August 2025), "
-                       "for claims with dates of service 1 October 2025 to 30 September 2026. National rates for hospices "
-                       "submitting the required quality data, before the wage index adjustment.", ss["Normal"]),
-             Spacer(1, 8)]
-        rows = [["Level of care", "Revenue code", "Rate (USD)", "Unit", "Labor share"],
-                ["Routine home care, days 1 to 60", "0651", "230.83", "day", "66.0%"],
-                ["Routine home care, days 61 and later", "0651", "181.94", "day", "66.0%"],
-                ["Continuous home care", "0652", "69.76", "hour (8 hours a day minimum)", "75.2%"],
-                ["Inpatient respite care", "0655", "532.48", "day", "61.0%"],
-                ["General inpatient care", "0656", "1,199.86", "day", "63.5%"]]
-        s += [_table(rows, fs=8.5), Spacer(1, 10)]
-        s += [Paragraph("Each rate is paid as the labor share times the wage index of the location of care plus the rest of the "
-                        "rate. Routine home care days are counted from the start of hospice care; the count runs on across a "
-                        "gap of 60 days or fewer between elections.", ss["Normal"]), Spacer(1, 6),
-              Paragraph("Aggregate cap amount, cap year ending 30 September 2026: USD 35,361.44 per beneficiary.", ss["Normal"]),
-              Paragraph("Inpatient limit: general inpatient and respite days may not exceed 20 per cent of a hospice's days of "
-                        "care for Medicare beneficiaries in the cap year (42 CFR 418.302(f)).", ss["Normal"]),
-              Paragraph("Payments are reduced by 2 per cent under sequestration (claim adjustment reason code 253).", ss["Normal"])]
-        return s
-    _pdf(path, "FY2026 hospice rates", story, "Reimbursement")
+def catalog_pdf(path):
+    ss = getSampleStyleSheet()
+    body = ParagraphStyle("b", parent=ss["Normal"], fontSize=9, leading=12, spaceAfter=5)
+    small = ParagraphStyle("t", parent=ss["Normal"], fontSize=7.5, leading=9)
+    s = [Paragraph("Lumenfold Professional Learning Catalog, 2025-26", ss["Title"]),
+         Paragraph("Partner Success, July 2025. Offerings are booked through your district's partner success manager; "
+                   "sessions are scheduled with the district and appear on the district's professional learning "
+                   "record when delivered.", body), Spacer(1, 6)]
+    rows = [["Code", "Offering", "Format", "Sessions", "Hours per session", "Total hours"]]
+    for code, title, fmt, n, h in PD.CATALOG:
+        rows.append([code, Paragraph(title, small), fmt, str(n) if fmt in PD.LIVE else "", "%d" % h if fmt in PD.LIVE else "",
+                     "%d" % (n * h)])
+    s.append(_table(rows, widths=[46, 190, 82, 46, 66, 56], fs=7.5, align_from=3))
+    s += [Spacer(1, 8),
+          Paragraph("Series (Inquiry Labs, Coaching Cycle, Assessment for Learning) are booked as one offering and "
+                    "scheduled as their sessions, two to four weeks apart. The Summer Science Institute runs in July on "
+                    "two consecutive days, booked by day. Facilitators record each session's hours on the district's "
+                    "professional learning record when it closes. Recorded webinars and on-demand courses are "
+                    "self-paced and available all year; their hours are the running time.", body)]
+    _pdf(path, "Professional Learning Catalog 2025-26", s, "Partner Success", "Lumenfold Partner Success")
 
 
-def file_notes_pdf(path, n_extract):
-    def story(ss):
-        body = ss["Normal"]
-        s = [Paragraph("Revenue cycle file notes: cap year-end files", ss["Title"]),
-             Paragraph("Revenue Cycle, January 2027. Layouts and field notes for the files pulled for the FY2026 cap review.", body),
-             Spacer(1, 8), Paragraph("medicare_hospice_benefit_periods_20270105.txt", ss["Heading3"]),
-             Paragraph("Fixed width, one header record (H), one detail record (D) per benefit period per hospice, one trailer "
-                       "record (T) with the count of detail records (%s in this pull). Pulled 5 January 2027 for every "
-                       "beneficiary the eight provider numbers have cared for since 1 October 2016; data through 31 December "
-                       "2026." % format(n_extract, ","), body)]
-        rows = [["Field", "Positions", "Notes"],
-                ["REC_TYPE", "1", "H, D or T"], ["MBI", "2-12", "Medicare beneficiary identifier"],
-                ["BP_NUM", "13-15", "benefit period number in the beneficiary's Medicare record"],
-                ["ELECT_DT", "16-23", "date of the election the benefit period belongs to (YYYYMMDD)"],
-                ["PROV_CCN", "24-29", "provider number of the hospice for the eight provider numbers; for another hospice the "
-                                      "pull's own key for it (X and five digits), its provider number withheld"],
-                ["BP_START", "30-37", "first day of the period at this hospice"],
-                ["BP_END", "38-45", "last day of the period; the date of death; or the date of a discharge, revocation or "
-                                    "transfer; blank while the period is open at the data date"],
-                ["BP_DAYS", "46-49", "days of hospice care in the record, through the data date for an open period"],
-                ["DOD", "50-57", "date of death where Medicare has one by the data date"]]
-        s += [_table(rows, widths=[0.9 * inch, 0.8 * inch, 5.2 * inch], fs=7.5), Spacer(1, 8)]
-        s += [Paragraph("wendleglen_emr_admissions.csv", ss["Heading3"]),
-              Paragraph("One row per admission to an Wendleglen program (Fallowmere from 1 March 2025; its patients on service "
-                        "that day carried over with their admission dates, admission type Conversion). medicare_id is the "
-                        "identifier captured at admission (the HICN before April 2018). discharge_date is blank for a patient "
-                        "on service at 31 December 2026. All payers.", body),
-              Paragraph("fallowmere_census_register_20250228.xlsx", ss["Heading3"]),
-              Paragraph("The seller's admission and discharge register, run at the change of ownership. Disch Status is the "
-                        "UB-04 patient status: 01 discharged home or to self care, 30 still a patient, 40 expired at home, 41 "
-                        "expired in a medical facility, 42 expired, place unknown, 50 discharged to hospice (home), 51 "
-                        "discharged to hospice (medical facility). Prim Dx is stored without its decimal point.", body),
-              Paragraph("wendleglen_claim_lines_fy2026.csv", ss["Heading3"]),
-              Paragraph("One row per revenue line of each claim the billing system submitted through 31 December 2026 for "
-                        "statement months October 2025 to September 2026. type_of_bill 0811 admission through discharge, 0812 first claim of a "
-                        "continuing stay, 0813 continuing, 0814 last, 0817 replacement of the claim in prior_claim_key, 0818 "
-                        "void of it. Revenue codes 0651 routine home care, 0655 inpatient respite and 0656 general inpatient: a "
-                        "line for each run of days at the level, line_date the run's first day and units its days; 0652 "
-                        "continuous home care: a line per day, units are 15-minute increments. clearinghouse_status is the "
-                        "clearinghouse's response to the claim file.", body),
-              Paragraph("hicn_mbi_crosswalk.csv", ss["Heading3"]),
-              Paragraph("One row per HICN carried by an EMR admission or a census register record, with the MBI of the same "
-                        "beneficiary.", body),
-              Paragraph("diagnosis_groups.csv", ss["Heading3"]),
-              Paragraph("The census report's code list: one row per ICD-10-CM code with its description and census group.", body),
-              Paragraph("provider_numbers.json", ss["Heading3"]),
-              Paragraph("The provider register: each provider number with its program, the FY2026 wage index applied to its "
-                        "claims and the date Wendleglen took it on.", body),
-              Paragraph("remittance_register_fy2026.csv", ss["Heading3"]),
-              Paragraph("The 835 remittances posted from November 2025 to 31 December 2026 for the FY2026 claims. record_type CLP is "
-                        "a claim payment (claim_status 1) or the reversal of an earlier payment (22); paid_amount is the amount "
-                        "paid and adj_carc_253 the sequestration withheld (claim adjustment reason code 253). record_type PLB "
-                        "is a provider-level adjustment; L6 is interest on a claim paid late.", body)]
-        return s
-    _pdf(path, "Revenue cycle file notes", story, "Revenue Cycle")
-
-
-def quality_xlsx(path):
-    rng = R.stream(8)
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "HQRP 2026"
-    hdr = ["Provider number", "Program", "Period", "Hospice Care Index (of 10)", "Visits in last days of life (%)",
-           "HIS comprehensive assessment (%)", "CAHPS willing to recommend (%)", "CAHPS overall rating (%)"]
-    ws.append(hdr)
-    for c in ws[1]:
-        c.font = Font(bold=True)
-    for code in W.CODES:
-        for per in ("CY2025 Q1-Q4", "CY2026 Q1-Q2"):
-            ws.append([R.CCN[code], R.PROGRAM[code], per, int(rng.integers(6 if code == "FAL" else 8, 11)),
-                       round(float(rng.uniform(38, 62)), 1), round(float(rng.uniform(86, 99)), 1),
-                       round(float(rng.uniform(78, 92)), 1), round(float(rng.uniform(76, 90)), 1)])
-    wb.properties.creator = "Quality"
-    wb.properties.created = dt.datetime(2026, 11, 3, 14, 5)
-    wb.properties.modified = dt.datetime(2026, 11, 3, 14, 5)
-    wb.save(path)
-
-
-def budget_xlsx(path, adc):
-    rng = R.stream(9)
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "2027 budget"
-    ws.append(["Program", "Provider number", "Budget ADC 2027", "Admissions 2027", "Medicare share of days (%)",
-               "Net patient revenue 2027 (USD)"])
-    for c in ws[1]:
-        c.font = Font(bold=True)
-    for code in W.CODES:
-        ccn = R.CCN[code]
-        a = adc[ccn][1] * float(rng.uniform(0.98, 1.06))
-        ws.append([R.PROGRAM[code], ccn, round(a, 1), int(a * 365 / float(rng.uniform(60, 110))),
-                   round(float(rng.uniform(88, 95)), 1), int(round(a * 365 * float(rng.uniform(205, 225)), -3))])
-    wb.properties.creator = "Finance"
-    wb.properties.created = dt.datetime(2026, 10, 21, 10, 30)
-    wb.properties.modified = dt.datetime(2026, 12, 2, 16, 48)
-    wb.save(path)
+def layout_pdf(path):
+    ss = getSampleStyleSheet()
+    body = ParagraphStyle("b", parent=ss["Normal"], fontSize=9, leading=12, spaceAfter=5)
+    small = ParagraphStyle("t", parent=ss["Normal"], fontSize=7.5, leading=9)
+    s = [Paragraph("Credit Memo Import: File Layout", ss["Title"]),
+         Paragraph("Billing Operations, revision 3, 4 August 2026. Credit memos for customer accounts are loaded "
+                   "into the billing system from a comma-separated file with a header row, one row per credit.",
+                   body), Spacer(1, 4)]
+    rows = [["Column", "Format", "Content"],
+            ["memo_reference", "text", Paragraph("Reason code, the term and the four digits of the partner ID, "
+                                                 "e.g. OG-2526-1234. Unique in the file.", small)],
+            ["customer_account", "text", Paragraph("The account the credit memo posts to: the bill-to account on the "
+                                                   "order form under which the credit was earned.", small)],
+            ["reason_code", "OG or PL", Paragraph("OG: outcomes guarantee credit (MSA section 9). PL: professional "
+                                                  "learning shortfall credit (MSA section 8.3).", small)],
+            ["credit_amount", "0.00", Paragraph("The credit in US dollars, positive, two decimals.", small)],
+            ["apply_to_invoice", "text", Paragraph("The invoice the credit is applied to: of the open subscription "
+                                                   "invoices for the following subscription term on the same customer "
+                                                   "account, the one with the earliest due date. Blank when the credit "
+                                                   "is refunded.", small)],
+            ["refund_method", "APPLY or CHECK", Paragraph("APPLY when the credit is applied to an invoice; CHECK when "
+                                                          "it is refunded by check.", small)],
+            ["credit_date", "YYYY-MM-DD", Paragraph("The date the credit memo is issued.", small)]]
+    s.append(_table(rows, widths=[90, 80, 300], fs=7.5, align_from=9))
+    s += [Spacer(1, 8),
+          Paragraph("Rows are sorted by memo_reference. The import rejects a file with a duplicate memo_reference, a "
+                    "credit applied to an invoice on another account, or a blank apply_to_invoice with APPLY.", body)]
+    _pdf(path, "Credit Memo Import Layout", s, "Billing Operations", "Lumenfold Billing Operations")

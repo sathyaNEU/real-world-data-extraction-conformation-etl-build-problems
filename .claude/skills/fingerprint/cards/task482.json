@@ -1,257 +1,258 @@
 {
-  "task": "task482",
-  "architecture": "v11",
-  "drawn": "2026-10-24",
-  "slot_note": "",
-  "domain": "education-learning-sciences",
-  "subdomain": "item-response-theory-test-equating",
-  "client_domain": "education-learning-sciences",
-  "niche": "an education technology company's first settlement of the outcomes guarantee in its partner districts' 2025-26 licence contracts: each district's share of eligible students at or above Proficient on the matrix-sampled spring science outcomes assessment, read on the calibrated scale from the students' own two-module responses, where the contractor's plausible values were drawn for the national efficacy report from a background model without the district",
-  "objective": "etl",
-  "shape": "07",
-  "decision_type": "designation_set",
-  "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
-  "gap": [
+ "task": "task482",
+ "architecture": "v11",
+ "drawn": "2026-10-24",
+ "slot_note": "",
+ "domain": "education-learning-sciences",
+ "subdomain": "item-response-theory-test-equating",
+ "client_domain": "education-learning-sciences",
+ "niche": "an education technology company's first settlement of the outcomes guarantee in its partner districts' 2025-26 licence contracts: each district's share of eligible students at or above Proficient on the matrix-sampled spring science outcomes assessment, read on the calibrated scale from the students' own two-module responses, where the contractor's plausible values were drawn for the national efficacy report from a background model without the district",
+ "objective": "etl",
+ "shape": "07",
+ "decision_type": "designation_set",
+ "answer_unit": "set_of_items",
+ "answer": "16 of the 58 partner districts are owed the outcomes guarantee credit, USD 25,493.75 in total: LD-1017, LD-1018, LD-1026, LD-1047, LD-1053, LD-1059, LD-1062, LD-1089, LD-1116, LD-1148, LD-1153, LD-1164, LD-1179, LD-1181, LD-1182, LD-1184",
+ "answer_source": "task482/submission.md, Final Recommendation; golden/lumenfold_guarantee_settlement_2025_26.xlsx",
+ "gap": [
+  "objective"
+ ],
+ "pattern": [
+  "E"
+ ],
+ "generators": [
+  "G14",
+  "G16"
+ ],
+ "gate_g": "method_or_model_selection",
+ "calibration_form": "none",
+ "stump_strategy": "other",
+ "decisive_rule_filed": true,
+ "official_decoy": false,
+ "validated_decoy": false,
+ "context_artifact": "filed_model",
+ "stump_class": "analytical",
+ "analyst_test": "With every file read and every contract term applied, the easy route computes each district's share from the contractor's five plausible values the way the technical report computes its results and settles each district against its guarantee benchmark on them; the values were drawn from a model that knew each student's grade, state, prior band and background but not the district, so every district is pulled about halfway toward what its students' backgrounds predict, and the easy route files 19 districts owed USD 32,045.00 against the 16 owed USD 25,493.75.",
+ "domain_test": "A district's share at or above Proficient on a matrix-sampled assessment is educational measurement's own estimate: each student answers two short modules, so the share is read from a latent distribution fitted to the students' item responses on the calibrated scale with the district in the conditioning model, the plausible-values methodology; swapped into another field's nouns the module design, the proficiency standard and the conditioning model have nothing to attach to.",
+ "layer2_family": "field_method",
+ "layer2_pattern": "own:plausible values carry only the groupings in their conditioning model, so a district's share needs the district in the model",
+ "layer1": [
+  "the delivery system's abandoned sessions logged before a student's submitted one, and items not reached at a session's end",
+  "the platform's eligibility file keeping a mover's record in the district left and a re-rostered student's superseded record",
+  "a crosswalk linking a re-rostered student's two IDs to one test taker",
+  "roster uploads in each state's own codes and prior-test levels",
+  "a scheduling export holding each session's time as hours and minutes after the point, joint sessions under one session id, rescheduled and cancelled rows, recorded and on-demand courses",
+  "a 2026-27 invoice register holding 2025-26 true-ups, add-ons, kits, paid instalments and virtual academy accounts"
+ ],
+ "stakeholder_role": "the company's head of district partnerships",
+ "role_family": "portfolio_manager",
+ "scoring_unit": "other",
+ "spine": {
+  "file": "lsoa_spring2026_item_responses.csv",
+  "rows": 304109,
+  "entity": "one item of one student's assessment session, answered, omitted or not reached",
+  "grain": "session x item",
+  "source": "synthetic"
+ },
+ "forum": "customer_or_counterparty",
+ "forcing_event": "period_close",
+ "org_family": "software_or_platform",
+ "world": {
+  "geography": "United States (partner districts in six states)",
+  "currency": "USD",
+  "org_type": "education technology company (online middle-school science platform)",
+  "invented_names": [
+   "Lumenfold Learning",
+   "Lumenfold Science Outcomes Assessment",
+   "Caldrith Assessment Partners"
+  ],
+  "people": [
+   "Amy Hardin",
+   "Robert Meyers",
+   "Barbara Frazier"
+  ]
+ },
+ "deliverables": [
+  "lumenfold_guarantee_settlement_2025_26.xlsx",
+  "guarantee_credit_memos_2026.csv"
+ ],
+ "opening_move": "question-first",
+ "question_form": "which",
+ "driver": "A group's share above a cut is read from values imputed for each member from a model of the whole population that knew the members' other traits but not their group, so every group is pulled toward what its members' traits predict and a group that departs from that prediction looks ordinary; the share has to be re-estimated from the members' own sparse answers with the group in the model, while every figure for the whole population or for a trait in the model comes out the same either way.",
+ "driver_concrete": "Each partner district's share of eligible students at or above Proficient on the spring 2026 science outcomes assessment is read from plausible values the company's psychometric contractor drew for the national efficacy report from a latent regression on grade, state, prior state-test band and background but not district, so each district keeps only about half of its departure from what its students' backgrounds predict; re-estimating the latent regression from the students' two-module responses with the district in it moves seven districts across their guarantee benchmarks (16 owed, not 19), while the national and group results in the contractor's report come out the same either way.",
+ "stump": "The default path averages the contractor's five plausible values by district, the standard use of plausible values, and files 19 districts owed USD 32,045.00, crediting five districts that met their benchmark and clearing two that did not, because the values were drawn without the district in the model and pull each district about halfway toward what its students' backgrounds predict.",
+ "mechanism_source": "design_note",
+ "differentiation": {},
+ "lineage": [
+  {
+   "architecture": "v1",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: round 1 readers split each parent's return by FTE or total credit hours and missed the call (asks kept 50 per cent on the reissued ids, re-sited); both round 2 readers (target.zip b160b2ca) fitted cost per credit hour by level on the standalone campuses and landed the call (score_reader exit 1); the judge returned DETERMINISTIC APPROVE on round 1. A cost-by-level fit is natural to a strong reader once a credit hour file by level sits beside a consolidated return.",
+   "driver": "A combined return reports one total for several units, and each unit's share is split by its head count, which gives every unit the group's average; but the item follows an activity whose unit cost differs several-fold across kinds, and the units inside the return do mostly the cheap kind, which the units that report alone measure, so the split by head count overstates the units inside and keeps them out of the lowest ranks.",
+   "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and files 214506, 214682, 214858, 214946 and 215298 awarded, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs per student on average: the campuses that report alone show a lower-division credit hour costing under a third of a graduate hour, and three branches priced at the hours they teach have the lowest instruction expense per FTE in the state.",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "etl_conformance",
+   "niche": "a state higher-education coordinating board's 2027-28 instructional investment grant to the five public four-year reporting units with the lowest instruction expense per FTE student in fiscal 2026, from the federal finance and enrollment returns, where six branch campuses' finances are reported inside their parent campuses' returns"
+  },
+  {
+   "architecture": "v2",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: both readers (target.zip bacb3a67) compared the audit's referred share (35 per cent) with the register's (8 per cent), weighted each stratum to the 30 April register and landed the call, and both resolved the UTC quarter and the restorations (asks 28 of 28)",
+   "driver": "A rate over a whole list is read from an audit of a sample drawn at very different rates for the members a screen flagged and the rest, and the flagged members carry the outcome far more often; the audited share overstates the rate wherever flagged members are a small part of the list, and only weighting each audited member by the inverse of its chance of being drawn, a chance recorded only in the screen's own output, recovers the list's rate.",
+   "stump": "The default path takes each region's share of its audited records in error and files AR01, AR02, AR04, AR05, AR06, AR07, AR08, AR10, AR11, AR12 and AR13 chosen, because it never asks how the audit drew its records: it took close to a quarter of the records the May risk screen referred and one in twenty-five of the rest, the referred records are in error far more often, and a region's register error rate is its strata's audited rates carried to the records each stratum holds.",
+   "gap": [
+    "population"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "etl_conformance",
+   "niche": "a national statistics office's decision at its November 2026 quality board on which regional business registers go to a 2027 re-validation exercise because their share of records in error exceeds 4 per cent, estimated from the summer 2026 quality audit, whose sample took records flagged by the register's automated risk screen at a far higher rate than unflagged ones"
+  },
+  {
+   "architecture": "v3",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: both readers (target.zip 29ab3b38) read the board paper's 'those still open on it', censored the open applications at their age, took the product-limit median and landed the call; both kept all 28 ask figures by dating payments on the batch terminal day (score_reader exit 1); the judge returned DETERMINISTIC APPROVE. A duration cohort with an open caseload shipped beside it is read as right-censored by a strong reader.",
+   "driver": "A cohort's median duration is read while part of the cohort is still running, and the still-running members are the slow ones; the median of the finished members understates it, and so does counting the unfinished at their age, so only the product-limit estimate that keeps each unfinished member at risk until its age recovers the cohort's median.",
+   "stump": "The default path takes each office's median working days over its registered third-quarter applications and files CRO-FM and CRO-MG planned, because it never asks how long the applications still open at the extract will take: they are the slow ones, so the four offices with a backlog look quick on what they have registered, and only the product-limit median over registered and open applications, each open one at risk until its age, gives the quarter's median.",
+   "gap": [
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "etl_conformance",
+   "niche": "a business registry's choice of the regional registration offices placed on a timeliness improvement plan because the median working days from a complete application to registration, for applications received in the third quarter of 2026, exceed 20, when at the October extract a share of each office's applications is still open and sits only in the open caseload snapshot"
+  },
+  {
+   "architecture": "v4",
+   "drawn": "2026-10-21",
+   "fate": "spent 2026-10-21 at stage 4: reader 9 (target.zip 9e21c3d9) fitted a hedonic regression with the address point file's electoral division and landed the call (score_reader exit 1, asks 14 of 48 from the shared changes); reader 10 fitted it without location and missed (0 of 48); the judge was stopped once the call landed. A hedonic regression is a strong reader's reflex once a methodology note cites the RPPI handbook beside a valuation register, and location is one join away.",
+   "driver": "A unit's price change is read from the units of a heterogeneous stock that happened to trade in each period, and the traded mix shifts between periods by location, size and newness, with location held in a separate register; every summary of the traded units, raw, per unit of size or reweighted by a coarse type, moves with the mix, and only a regression of log price on the units' characteristics and fine location with a period term gives the change for an unchanged unit.",
+   "stump": "The default path compares each area's sales between the two years dwelling type by dwelling type, weights the changes by the census stock and files Annaghvale, Ballymarne, Carrigvore, Glenaskin, Innishrue, Kilbrannagh, Moyrath and Rathgowan designated, because it never asks whether the homes that sold within each type were the same kind of home in both years: in several areas the second year sold more homes in the cheaper or the dearer electoral divisions, or new homes at a premium, and only a hedonic regression on type, floor area, new-dwelling status and electoral division gives each area's change for an unchanged dwelling.",
+   "gap": [
     "objective"
-  ],
-  "pattern": [
-    "E"
-  ],
-  "generators": [
-    "G14",
-    "G16"
-  ],
-  "gate_g": "method_or_model_selection",
-  "calibration_form": "none",
-  "stump_strategy": "other",
-  "decisive_rule_filed": true,
-  "official_decoy": false,
-  "validated_decoy": false,
-  "context_artifact": "filed_model",
-  "stump_class": "analytical",
-  "analyst_test": "With every file read and every contract term applied, the easy route averages the contractor's five plausible values by district, the standard use of plausible values, and settles each district against its guarantee benchmark on them; the values were drawn from a model that knew each student's grade, prior state-test band and background but not the district, so every district is pulled about a quarter of the way toward what its students' backgrounds predict, and the easy route refunds districts that met their benchmark and misses districts that fell below it on their own students' answers.",
-  "domain_test": "A district's share at or above Proficient on a matrix-sampled assessment is educational measurement's own estimate: each student answers two short modules, so the share is read from a latent distribution fitted to the students' item responses on the calibrated scale with the district in the conditioning model, the plausible-values methodology; swapped into another field's nouns the module design, the proficiency standard and the conditioning model have nothing to attach to.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:plausible values carry only the groupings in their conditioning model, so a school's share needs the school in the model",
-  "layer1": [
-    "the platform's session log in UTC for districts in four time zones, sessions open on two devices at once, idle sessions closed by the auto-logout long after the last activity",
-    "student identifiers that differ between the platform, the assessment delivery system and the districts' roster uploads, joined through a roster crosswalk, students who transferred between two partner districts mid-year",
-    "assessment sessions restarted after a connectivity drop, leaving a partial and a complete response record under one student",
-    "module assignments from the delivery system's spiral, the item parameter file on the base-year scale, the scale's linear transformation and the performance-level cut in the technical report",
-    "licence contracts as PDFs whose guarantee clause varies by district (benchmark, refund share, eligibility hours), multi-year terms, invoices and credit memos",
-    "background and prior state-test bands from the districts' data-sharing uploads, coded differently by state"
-  ],
-  "stakeholder_role": "the company's head of district partnerships",
-  "role_family": "portfolio_manager",
-  "scoring_unit": "other",
-  "spine": {
-    "file": "sci_outcomes_spring2026_item_responses.csv",
-    "rows": 210000,
-    "entity": "one scored response of one student to one item",
-    "grain": "student x item",
-    "source": "synthetic"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, read against the housing ministry's 8 per cent line for designating rapid price growth areas, when each area's sales in a year are a shifting sample of its dwelling stock and the dwellings' attributes and small-area locations sit in the valuation register and the address point file, not in the price register"
   },
-  "forum": "customer_or_counterparty",
-  "forcing_event": "purchase_order_or_contract",
-  "org_family": "software_or_platform",
-  "world": {
-    "geography": "United States (partner districts in six states)",
-    "currency": "USD",
-    "org_type": "education technology company (online middle-school science platform)",
-    "invented_names": [
-      "Lumenfold Learning",
-      "Lumenfold Science Outcomes Assessment",
-      "Quillfield Assessment Partners"
-    ],
-    "people": [
-      "Amy Hardin",
-      "Robert Meyers",
-      "Barbara Frazier"
-    ]
+  {
+   "architecture": "v5",
+   "drawn": "2026-10-22",
+   "driver": "A stock's value change is estimated from a regression on the units that traded, but the unit types' prices move at different rates and the traded mix over-represents one type against the stock, so the regression's one period effect is a traded-mix average of the types' changes; the stock's change takes each type's own period effect, holding characteristics and location fixed, weighted by the stock's value of that type.",
+   "stump": "The default path fits one regression of log price on dwelling type, floor area, new-dwelling status and the address point file's electoral division with a single year term and designates Ardcullen, Annaghvale, Dunmarra, Drumshallon, Glenaskin, Innishrue and Kilbrannagh, because the one year term averages the types' changes over what sold, and in Moyrath and Carrigvore the flat apartments are a third of the sales while in Innishrue and Drumshallon the rising ones are; each type's own year effect weighted by the census stock's value of that type designates Carrigvore and Moyrath in their place.",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "D"
+   ],
+   "gate_g": "method_or_model_selection",
+   "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, the change in the market value of each area's census dwelling stock, read against the housing ministry's 8 per cent line, when the dwelling types' prices move apart and each area's sales over- or under-represent apartments against its stock",
+   "fate": "spent at stage 4 on 2026-10-22: both scored readers and the judge's first derivation weighted dwelling types by the census stock by reflex and missed only on the electoral-division control, which the judge read as unfiled (r5a); filing it hands them the call; re-rooted fresh by the author's rule (no retirement)",
+   "subdomain": "census-register-administrative-data-quality",
+   "domain": "survey-research-official-statistics"
   },
-  "deliverables": [
-    "lumenfold_guarantee_settlement_2025_26.xlsx",
-    "guarantee_credit_memos_2026.csv"
-  ],
-  "opening_move": "question-first",
-  "question_form": "which",
-  "driver": "A group's share above a cut is read from values imputed for each member from a model of the whole population that knew the members' other traits but not their group, so every group is pulled toward what its members' traits predict and a group that departs from that prediction looks ordinary; the share has to be re-estimated from the members' own sparse answers with the group in the model, while every figure for the whole population or for a trait in the model comes out the same either way.",
-  "driver_concrete": "Each partner district's share of eligible students at or above Proficient on the spring 2026 science outcomes assessment is read from plausible values the company's psychometric contractor drew for the national efficacy report from a latent regression on grade, prior state-test band and background but not district, so each district's departure from what its students' backgrounds predict is cut by about a quarter; re-estimating the latent regression from the students' two-module responses with the district in it moves several districts across their guarantee benchmarks, while the national and subgroup figures agree under both.",
-  "stump": "The default path averages the contractor's five plausible values by district and settles the guarantee on them, refunding districts that met their benchmark and missing districts whose own students' answers put them below it, because the values were drawn without the district in the model and pull each district toward what its students' backgrounds predict.",
-  "mechanism_source": "design_note",
-  "differentiation": {},
-  "lineage": [
-    {
-      "architecture": "v1",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: round 1 readers split each parent's return by FTE or total credit hours and missed the call (asks kept 50 per cent on the reissued ids, re-sited); both round 2 readers (target.zip b160b2ca) fitted cost per credit hour by level on the standalone campuses and landed the call (score_reader exit 1); the judge returned DETERMINISTIC APPROVE on round 1. A cost-by-level fit is natural to a strong reader once a credit hour file by level sits beside a consolidated return.",
-      "driver": "A combined return reports one total for several units, and each unit's share is split by its head count, which gives every unit the group's average; but the item follows an activity whose unit cost differs several-fold across kinds, and the units inside the return do mostly the cheap kind, which the units that report alone measure, so the split by head count overstates the units inside and keeps them out of the lowest ranks.",
-      "stump": "The default path splits each parent's instruction expense among the parent and its branches by FTE students and files 214506, 214682, 214858, 214946 and 215298 awarded, because it never asks whether a branch that teaches mostly lower-division credit hours costs what its system costs per student on average: the campuses that report alone show a lower-division credit hour costing under a third of a graduate hour, and three branches priced at the hours they teach have the lowest instruction expense per FTE in the state.",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "etl_conformance",
-      "niche": "a state higher-education coordinating board's 2027-28 instructional investment grant to the five public four-year reporting units with the lowest instruction expense per FTE student in fiscal 2026, from the federal finance and enrollment returns, where six branch campuses' finances are reported inside their parent campuses' returns"
-    },
-    {
-      "architecture": "v2",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: both readers (target.zip bacb3a67) compared the audit's referred share (35 per cent) with the register's (8 per cent), weighted each stratum to the 30 April register and landed the call, and both resolved the UTC quarter and the restorations (asks 28 of 28)",
-      "driver": "A rate over a whole list is read from an audit of a sample drawn at very different rates for the members a screen flagged and the rest, and the flagged members carry the outcome far more often; the audited share overstates the rate wherever flagged members are a small part of the list, and only weighting each audited member by the inverse of its chance of being drawn, a chance recorded only in the screen's own output, recovers the list's rate.",
-      "stump": "The default path takes each region's share of its audited records in error and files AR01, AR02, AR04, AR05, AR06, AR07, AR08, AR10, AR11, AR12 and AR13 chosen, because it never asks how the audit drew its records: it took close to a quarter of the records the May risk screen referred and one in twenty-five of the rest, the referred records are in error far more often, and a region's register error rate is its strata's audited rates carried to the records each stratum holds.",
-      "gap": [
-        "population"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "etl_conformance",
-      "niche": "a national statistics office's decision at its November 2026 quality board on which regional business registers go to a 2027 re-validation exercise because their share of records in error exceeds 4 per cent, estimated from the summer 2026 quality audit, whose sample took records flagged by the register's automated risk screen at a far higher rate than unflagged ones"
-    },
-    {
-      "architecture": "v3",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: both readers (target.zip 29ab3b38) read the board paper's 'those still open on it', censored the open applications at their age, took the product-limit median and landed the call; both kept all 28 ask figures by dating payments on the batch terminal day (score_reader exit 1); the judge returned DETERMINISTIC APPROVE. A duration cohort with an open caseload shipped beside it is read as right-censored by a strong reader.",
-      "driver": "A cohort's median duration is read while part of the cohort is still running, and the still-running members are the slow ones; the median of the finished members understates it, and so does counting the unfinished at their age, so only the product-limit estimate that keeps each unfinished member at risk until its age recovers the cohort's median.",
-      "stump": "The default path takes each office's median working days over its registered third-quarter applications and files CRO-FM and CRO-MG planned, because it never asks how long the applications still open at the extract will take: they are the slow ones, so the four offices with a backlog look quick on what they have registered, and only the product-limit median over registered and open applications, each open one at risk until its age, gives the quarter's median.",
-      "gap": [
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "etl_conformance",
-      "niche": "a business registry's choice of the regional registration offices placed on a timeliness improvement plan because the median working days from a complete application to registration, for applications received in the third quarter of 2026, exceed 20, when at the October extract a share of each office's applications is still open and sits only in the open caseload snapshot"
-    },
-    {
-      "architecture": "v4",
-      "drawn": "2026-10-21",
-      "fate": "spent 2026-10-21 at stage 4: reader 9 (target.zip 9e21c3d9) fitted a hedonic regression with the address point file's electoral division and landed the call (score_reader exit 1, asks 14 of 48 from the shared changes); reader 10 fitted it without location and missed (0 of 48); the judge was stopped once the call landed. A hedonic regression is a strong reader's reflex once a methodology note cites the RPPI handbook beside a valuation register, and location is one join away.",
-      "driver": "A unit's price change is read from the units of a heterogeneous stock that happened to trade in each period, and the traded mix shifts between periods by location, size and newness, with location held in a separate register; every summary of the traded units, raw, per unit of size or reweighted by a coarse type, moves with the mix, and only a regression of log price on the units' characteristics and fine location with a period term gives the change for an unchanged unit.",
-      "stump": "The default path compares each area's sales between the two years dwelling type by dwelling type, weights the changes by the census stock and files Annaghvale, Ballymarne, Carrigvore, Glenaskin, Innishrue, Kilbrannagh, Moyrath and Rathgowan designated, because it never asks whether the homes that sold within each type were the same kind of home in both years: in several areas the second year sold more homes in the cheaper or the dearer electoral divisions, or new homes at a premium, and only a hedonic regression on type, floor area, new-dwelling status and electoral division gives each area's change for an unchanged dwelling.",
-      "gap": [
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, read against the housing ministry's 8 per cent line for designating rapid price growth areas, when each area's sales in a year are a shifting sample of its dwelling stock and the dwellings' attributes and small-area locations sit in the valuation register and the address point file, not in the price register"
-    },
-    {
-      "architecture": "v5",
-      "drawn": "2026-10-22",
-      "driver": "A stock's value change is estimated from a regression on the units that traded, but the unit types' prices move at different rates and the traded mix over-represents one type against the stock, so the regression's one period effect is a traded-mix average of the types' changes; the stock's change takes each type's own period effect, holding characteristics and location fixed, weighted by the stock's value of that type.",
-      "stump": "The default path fits one regression of log price on dwelling type, floor area, new-dwelling status and the address point file's electoral division with a single year term and designates Ardcullen, Annaghvale, Dunmarra, Drumshallon, Glenaskin, Innishrue and Kilbrannagh, because the one year term averages the types' changes over what sold, and in Moyrath and Carrigvore the flat apartments are a third of the sales while in Innishrue and Drumshallon the rising ones are; each type's own year effect weighted by the census stock's value of that type designates Carrigvore and Moyrath in their place.",
-      "gap": [
-        "objective"
-      ],
-      "pattern": [
-        "D"
-      ],
-      "gate_g": "method_or_model_selection",
-      "niche": "a national statistics office's year-to-September 2026 residential property price change for sixteen local authority areas, the change in the market value of each area's census dwelling stock, read against the housing ministry's 8 per cent line, when the dwelling types' prices move apart and each area's sales over- or under-represent apartments against its stock",
-      "fate": "spent at stage 4 on 2026-10-22: both scored readers and the judge's first derivation weighted dwelling types by the census stock by reflex and missed only on the electoral-division control, which the judge read as unfiled (r5a); filing it hands them the call; re-rooted fresh by the author's rule (no retirement)",
-      "subdomain": "census-register-administrative-data-quality",
-      "domain": "survey-research-official-statistics"
-    },
-    {
-      "architecture": "v6",
-      "drawn": "2026-10-22",
-      "driver": "The decisive quantity is a sum over a fixed set of measuring items of each item's expected outcome at one fixed level, where each item's parameter was calibrated in the slot it occupied on an earlier instrument and an item's outcome worsens the later its slot; the slot effect is estimated from earlier administrations that presented the same items in varied orders, and each item is carried from its calibration slot to its new slot before summing, while summing the parameters as filed, or shifting every item by one average drift, sets the dial elsewhere.",
-      "stump": "The default path computes Form 27A's expected raw score at each standard from the bank difficulties as filed (28.2 and 17.5) and sets College Algebra from 29, Corequisite College Algebra from 18; the golden carries each of the 40 field-test-calibrated unique items from the field-test section's mean position (65.5) to the positions 21 to 70 it takes on Northgate Assess by the position term the 2026 attempts measure (0.0075 logits a position, 0.15 over the carry), which puts the expected raw scores at 29.5 and 18.5 and the placement scores at 30 and 19.",
-      "gap": [
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "niche": "a state community college system's 2027 mathematics placement form, pre-equated from a Rasch item bank before it goes live on 1 March 2027: the raw score that places a student into college algebra, where most of the form's scored items were calibrated in the unscored field-test section at the end of earlier forms",
-      "fate": "spent at stage 4 on 2026-10-22: reader A fitted a Rasch model with a position term to the rebuilt attempts with the anchor block fixed and landed both placement scores exactly (30 and 19); a context effect measured by an obvious model term is a reflex for the field's own analysts; re-rooted fresh by the author's rule (no retirement)",
-      "subdomain": "item-response-theory-test-equating",
-      "domain": "education-learning-sciences"
-    },
-    {
-      "architecture": "v7",
-      "drawn": "2026-10-23",
-      "driver": "The decisive quantity is each unit's period total of an output that leaves through a removal device whose outlet holds near a floor concentration, so the share the device removes falls as its inlet grows dilute; each device's removal is measured in tests run at the unit's maximum rate, and on the days the unit runs below it the device's fan still draws its full air, so the inlet is dilute and the device removes less than its test shows; applying a test's removal across the period overstates the removal at every unit whose days ran dilute, while the tests across all the devices trace the outlet against the inlet, and each day's inlet, built from the day's throughput and air, carries the removal to the day.",
-      "stump": "The default path applies each plant's latest oxidizer test efficiency to its 2026 captured VOC and names Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging; a thermal oxidizer's outlet holds near a floor (about 45 ppmv as carbon) however dilute its inlet, every test ran at maximum production, and at Ashcombe Flexible Packaging and Kelvedon Laminates the fixed-speed fans drew their full air through days when the presses ran part of their capacity, so the oxidizers destroyed less than their tests show; each production day's outlet read from the relation the ten oxidizers' tests trace, at the inlet the day's captured VOC and airflow imply, carries Ashcombe from 21 to 29 tons and Kelvedon from 20 to 28, and the rule covers five plants.",
-      "gap": [
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "niche": "a state air agency's 2026 press VOC inventory of fourteen printing and converting plants in an ozone nonattainment area, conformed from the plants' information-request returns (ink and coating purchases with their safety data sheets, press logs, oxidizer data-historian exports, capture determinations and oxidizer performance tests), to name the plants a new rule covers from 2027 at 25 tons of 2026 press VOC",
-      "subdomain": "emissions-inventory",
-      "domain": "physical-environmental-sciences",
-      "fate": "spent at stage 4, 2026-10-23 (zip 5ab18e48): reader A read the outlet floor off the test tables (Ashcombe's 2018 two-press test holding the same 45 ppmv at half the inlet), rebuilt each hour's outlet as the greater of the floor and 1.8 per cent of the inlet and landed the five and all 14 whole tons, Part 2 question 1 'none', question 6 'an analytical choice'; reader B carried each fixed-fan unit's test outlet to the year by the register's fan-drive column (rung R4, six plants). Both readers kept all 28 ask figures: the SDS revision log read, the washer vendor's payment lines parsed, Haldane's items matched on description past the renumbering."
-    },
-    {
-      "architecture": "v8",
-      "drawn": "2026-10-23",
-      "driver": "The decisive quantity is how long a slowly responding quantity spent beyond a limit, recorded for most units only by an instrument that follows a fast-responding quantity; the slow quantity follows the fast one through a lag measured where a direct instrument ran beside the fast one for a short overlap, so counting the fast record's time beyond the limit counts every brief swing the slow quantity never felt, and each record has to be carried through the measured lag before it is counted.",
-      "stump": "The default path takes each store's logger readings as its vaccine's temperature and replaces the refrigerators of most of the busiest stores and heaviest restockers; carried through the vaccine's response fitted on the pilot stores' two-week overlaps, the readings replace a smaller set, the stores whose vaccine itself warmed through outages, doors left ajar and failing thermostats.",
-      "gap": [
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "niche": "a regional pharmacy chain's 2027 vaccine refrigerator replacements, given to the stores whose vaccine spent 24 hours or more above 8 degrees C in 2026, conformed from three data logger makes' temperature logs (one per chain the company bought) and a wireless in-carton monitoring pilot whose sensors ran beside the old loggers for two weeks at each pilot store",
-      "subdomain": "data-integration-record-linkage-entity-resolution",
-      "domain": "general-statistics-data-science",
-      "fate": "spent 2026-10-23 at stage 4: reader B set the pilot stores' loggers beside their in-carton sensors, fitted the vaccine's first-order lag on the overlap unprompted and landed the call and all 122 graded figures (exit 1); reader A and the judge thread stopped at the spend. Two records of one unit side by side are compared on reflex"
-    },
-    {
-      "architecture": "v9",
-      "drawn": "2026-10-23",
-      "fate": "spent 2026-10-23 at stage 4: judge NOT_DETERMINISTIC SEND_BACK (competing_defensible_answer; Gate G surface_read_rejection; Gate H decisive_step planted); both scored readers missed the call and kept 65 and 64 of 74 ask figures",
-      "driver": "The decisive quantity is the share of time a site held at least one usable unit, where the site's listing counts every unit not yet found faulty; a unit that failed in use is returned to the site and stays listed until it is collected, while every later user at the site takes another unit, so the listing shows a usable unit through stretches when the only units present were faulty, and the faulty spells are read from users passing a unit over rather than from the listing.",
-      "stump": "The default path counts a station available in every minute the status feed lists a bike there and names one priority station, Birch Hill (W-16, 87 per cent in October); a bike that breaks on a ride is docked by its rider and stays listed until a van takes it to the depot for repair, and at the busiest stations it was left as the only bike listed while renters rode away on the others, so with every bike's spells rebuilt from the trips and fleet moves and each bike the vans took in for repair counted out of working order from the end of the ride that left it, four stations fall under 90 per cent in October: Queen and Albert, Maple Grove, Birch Hill and Willow Crescent.",
-      "gap": [
-        "objective"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "gate_g": "method_or_model_selection",
-      "niche": "a mid-sized Ontario city's bike-share programme: the Q1 2027 priority stations its operating agreement designates from each public station's monthly share of Q4 2026 service minutes with a bike in working order docked, conformed from the operator's station status feed archive, its trip records, its van moves and the station register",
-      "subdomain": "transportation-network",
-      "domain": "supply-chain-logistics"
-    },
-    {
-      "architecture": "v10",
-      "drawn": "2026-10-24",
-      "domain": "healthcare-delivery-health-economics",
-      "subdomain": "payment-claims-health-plan-analytics",
-      "niche": "a nonprofit hospice organisation's eight Medicare hospice provider numbers: the FY2026 aggregate cap repayment each accrues at the December 2026 close, each beneficiary counted under the proportional method on the hospice days they will receive in every hospice and year, stays still open and returns after a live discharge included",
-      "gap": [
-        "time"
-      ],
-      "pattern": [
-        "none"
-      ],
-      "generators": [
-        "G12",
-        "G13"
-      ],
-      "gate_g": "method_or_model_selection",
-      "decision_type": "quantity_figure",
-      "stump_strategy": "maturity_censoring",
-      "driver": "A unit's credit for a period is each member's share of the member's lifetime total, and the total counts every later spell, including spells after a member leaves and comes back; reading each share on the total recorded to date, or running only the open spells to their end, overstates the credit for every member still accruing and every member who left but will return, so the total is the recorded part plus the expected remainder for the member's state, read from the history of members in the same state.",
-      "stump": "The default path runs every stay still open at the close to its expected end from its time so far and treats each beneficiary discharged alive and not back as finished, finds all eight provider numbers under their caps and accrues nothing, missing Fallowmere's USD 0.3 million: a beneficiary discharged alive often elects hospice again, four in five of Fallowmere's returns at hospices outside the organisation, the chance falling the longer they have been out.",
-      "fate": "spent 2026-10-24 at stage 4: all four isolated readers missed the call, but the round 2 judge returned NOT_DETERMINISTIC SEND_BACK (margin_or_boundary_fragility and competing_defensible_answer on Fallowmere's USD 0.3 million: the pool start, the number of later elections and the Kaplan-Meier tail, left unfiled, moved the repayment from 0.248 to 0.447); ask A's routine-paid days read as an unstated rule. A USD figure printed to 0.1 million on a three-beneficiary window is a small difference of large estimates, so the next call is a set whose members sit outside a band wider than the licensed estimators' measured spread."
-    }
-  ],
-  "notes": "v11 drawn 2026-10-24 after v10 was spent at stage 4 (judge SEND_BACK on a USD figure's rounding window). Re-rooted on the author's standing rule (no retirement), aimed at v10's lesson: the call is a designation set and no school sits inside a band around the line wider than the licensed estimators' measured spread (school-conditioned latent regression variants and five-draw plausible values, 2.7 points on paper). Strategy other: imputations aggregated over a grouping their model left out (no vocabulary key names it; composition_mix and population_selection are not the move). The contractor's plausible values are a genuine deliverable built for the national efficacy report, correct for that use, not a decoy.",
-  "registered": "2026-10-24T06:17:08Z"
+  {
+   "architecture": "v6",
+   "drawn": "2026-10-22",
+   "driver": "The decisive quantity is a sum over a fixed set of measuring items of each item's expected outcome at one fixed level, where each item's parameter was calibrated in the slot it occupied on an earlier instrument and an item's outcome worsens the later its slot; the slot effect is estimated from earlier administrations that presented the same items in varied orders, and each item is carried from its calibration slot to its new slot before summing, while summing the parameters as filed, or shifting every item by one average drift, sets the dial elsewhere.",
+   "stump": "The default path computes Form 27A's expected raw score at each standard from the bank difficulties as filed (28.2 and 17.5) and sets College Algebra from 29, Corequisite College Algebra from 18; the golden carries each of the 40 field-test-calibrated unique items from the field-test section's mean position (65.5) to the positions 21 to 70 it takes on Northgate Assess by the position term the 2026 attempts measure (0.0075 logits a position, 0.15 over the carry), which puts the expected raw scores at 29.5 and 18.5 and the placement scores at 30 and 19.",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "niche": "a state community college system's 2027 mathematics placement form, pre-equated from a Rasch item bank before it goes live on 1 March 2027: the raw score that places a student into college algebra, where most of the form's scored items were calibrated in the unscored field-test section at the end of earlier forms",
+   "fate": "spent at stage 4 on 2026-10-22: reader A fitted a Rasch model with a position term to the rebuilt attempts with the anchor block fixed and landed both placement scores exactly (30 and 19); a context effect measured by an obvious model term is a reflex for the field's own analysts; re-rooted fresh by the author's rule (no retirement)",
+   "subdomain": "item-response-theory-test-equating",
+   "domain": "education-learning-sciences"
+  },
+  {
+   "architecture": "v7",
+   "drawn": "2026-10-23",
+   "driver": "The decisive quantity is each unit's period total of an output that leaves through a removal device whose outlet holds near a floor concentration, so the share the device removes falls as its inlet grows dilute; each device's removal is measured in tests run at the unit's maximum rate, and on the days the unit runs below it the device's fan still draws its full air, so the inlet is dilute and the device removes less than its test shows; applying a test's removal across the period overstates the removal at every unit whose days ran dilute, while the tests across all the devices trace the outlet against the inlet, and each day's inlet, built from the day's throughput and air, carries the removal to the day.",
+   "stump": "The default path applies each plant's latest oxidizer test efficiency to its 2026 captured VOC and names Carrow Gravure, Merrion Flexibles and Ravensbrook Gravure Packaging; a thermal oxidizer's outlet holds near a floor (about 45 ppmv as carbon) however dilute its inlet, every test ran at maximum production, and at Ashcombe Flexible Packaging and Kelvedon Laminates the fixed-speed fans drew their full air through days when the presses ran part of their capacity, so the oxidizers destroyed less than their tests show; each production day's outlet read from the relation the ten oxidizers' tests trace, at the inlet the day's captured VOC and airflow imply, carries Ashcombe from 21 to 29 tons and Kelvedon from 20 to 28, and the rule covers five plants.",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "niche": "a state air agency's 2026 press VOC inventory of fourteen printing and converting plants in an ozone nonattainment area, conformed from the plants' information-request returns (ink and coating purchases with their safety data sheets, press logs, oxidizer data-historian exports, capture determinations and oxidizer performance tests), to name the plants a new rule covers from 2027 at 25 tons of 2026 press VOC",
+   "subdomain": "emissions-inventory",
+   "domain": "physical-environmental-sciences",
+   "fate": "spent at stage 4, 2026-10-23 (zip 5ab18e48): reader A read the outlet floor off the test tables (Ashcombe's 2018 two-press test holding the same 45 ppmv at half the inlet), rebuilt each hour's outlet as the greater of the floor and 1.8 per cent of the inlet and landed the five and all 14 whole tons, Part 2 question 1 'none', question 6 'an analytical choice'; reader B carried each fixed-fan unit's test outlet to the year by the register's fan-drive column (rung R4, six plants). Both readers kept all 28 ask figures: the SDS revision log read, the washer vendor's payment lines parsed, Haldane's items matched on description past the renumbering."
+  },
+  {
+   "architecture": "v8",
+   "drawn": "2026-10-23",
+   "driver": "The decisive quantity is how long a slowly responding quantity spent beyond a limit, recorded for most units only by an instrument that follows a fast-responding quantity; the slow quantity follows the fast one through a lag measured where a direct instrument ran beside the fast one for a short overlap, so counting the fast record's time beyond the limit counts every brief swing the slow quantity never felt, and each record has to be carried through the measured lag before it is counted.",
+   "stump": "The default path takes each store's logger readings as its vaccine's temperature and replaces the refrigerators of most of the busiest stores and heaviest restockers; carried through the vaccine's response fitted on the pilot stores' two-week overlaps, the readings replace a smaller set, the stores whose vaccine itself warmed through outages, doors left ajar and failing thermostats.",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "niche": "a regional pharmacy chain's 2027 vaccine refrigerator replacements, given to the stores whose vaccine spent 24 hours or more above 8 degrees C in 2026, conformed from three data logger makes' temperature logs (one per chain the company bought) and a wireless in-carton monitoring pilot whose sensors ran beside the old loggers for two weeks at each pilot store",
+   "subdomain": "data-integration-record-linkage-entity-resolution",
+   "domain": "general-statistics-data-science",
+   "fate": "spent 2026-10-23 at stage 4: reader B set the pilot stores' loggers beside their in-carton sensors, fitted the vaccine's first-order lag on the overlap unprompted and landed the call and all 122 graded figures (exit 1); reader A and the judge thread stopped at the spend. Two records of one unit side by side are compared on reflex"
+  },
+  {
+   "architecture": "v9",
+   "drawn": "2026-10-23",
+   "fate": "spent 2026-10-23 at stage 4: judge NOT_DETERMINISTIC SEND_BACK (competing_defensible_answer; Gate G surface_read_rejection; Gate H decisive_step planted); both scored readers missed the call and kept 65 and 64 of 74 ask figures",
+   "driver": "The decisive quantity is the share of time a site held at least one usable unit, where the site's listing counts every unit not yet found faulty; a unit that failed in use is returned to the site and stays listed until it is collected, while every later user at the site takes another unit, so the listing shows a usable unit through stretches when the only units present were faulty, and the faulty spells are read from users passing a unit over rather than from the listing.",
+   "stump": "The default path counts a station available in every minute the status feed lists a bike there and names one priority station, Birch Hill (W-16, 87 per cent in October); a bike that breaks on a ride is docked by its rider and stays listed until a van takes it to the depot for repair, and at the busiest stations it was left as the only bike listed while renters rode away on the others, so with every bike's spells rebuilt from the trips and fleet moves and each bike the vans took in for repair counted out of working order from the end of the ride that left it, four stations fall under 90 per cent in October: Queen and Albert, Maple Grove, Birch Hill and Willow Crescent.",
+   "gap": [
+    "objective"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "gate_g": "method_or_model_selection",
+   "niche": "a mid-sized Ontario city's bike-share programme: the Q1 2027 priority stations its operating agreement designates from each public station's monthly share of Q4 2026 service minutes with a bike in working order docked, conformed from the operator's station status feed archive, its trip records, its van moves and the station register",
+   "subdomain": "transportation-network",
+   "domain": "supply-chain-logistics"
+  },
+  {
+   "architecture": "v10",
+   "drawn": "2026-10-24",
+   "domain": "healthcare-delivery-health-economics",
+   "subdomain": "payment-claims-health-plan-analytics",
+   "niche": "a nonprofit hospice organisation's eight Medicare hospice provider numbers: the FY2026 aggregate cap repayment each accrues at the December 2026 close, each beneficiary counted under the proportional method on the hospice days they will receive in every hospice and year, stays still open and returns after a live discharge included",
+   "gap": [
+    "time"
+   ],
+   "pattern": [
+    "none"
+   ],
+   "generators": [
+    "G12",
+    "G13"
+   ],
+   "gate_g": "method_or_model_selection",
+   "decision_type": "quantity_figure",
+   "stump_strategy": "maturity_censoring",
+   "driver": "A unit's credit for a period is each member's share of the member's lifetime total, and the total counts every later spell, including spells after a member leaves and comes back; reading each share on the total recorded to date, or running only the open spells to their end, overstates the credit for every member still accruing and every member who left but will return, so the total is the recorded part plus the expected remainder for the member's state, read from the history of members in the same state.",
+   "stump": "The default path runs every stay still open at the close to its expected end from its time so far and treats each beneficiary discharged alive and not back as finished, finds all eight provider numbers under their caps and accrues nothing, missing Fallowmere's USD 0.3 million: a beneficiary discharged alive often elects hospice again, four in five of Fallowmere's returns at hospices outside the organisation, the chance falling the longer they have been out.",
+   "fate": "spent 2026-10-24 at stage 4: all four isolated readers missed the call, but the round 2 judge returned NOT_DETERMINISTIC SEND_BACK (margin_or_boundary_fragility and competing_defensible_answer on Fallowmere's USD 0.3 million: the pool start, the number of later elections and the Kaplan-Meier tail, left unfiled, moved the repayment from 0.248 to 0.447); ask A's routine-paid days read as an unstated rule. A USD figure printed to 0.1 million on a three-beneficiary window is a small difference of large estimates, so the next call is a set whose members sit outside a band wider than the licensed estimators' measured spread."
+  }
+ ],
+ "notes": "v11 drawn 2026-10-24 after v10 was spent at stage 4 (judge SEND_BACK on a USD figure's rounding window). Re-rooted on the author's standing rule (no retirement), aimed at v10's lesson: the call is a designation set and no school sits inside a band around the line wider than the licensed estimators' measured spread (school-conditioned latent regression variants and five-draw plausible values, 2.7 points on paper). Strategy other: imputations aggregated over a grouping their model left out (no vocabulary key names it; composition_mix and population_selection are not the move). The contractor's plausible values are a genuine deliverable built for the national efficacy report, correct for that use, not a decoy. Stage 3 (2026-10-24): forcing_event redrawn from purchase_order_or_contract (ban.forcing_event against task306, filed after this draw) to period_close: what forces the call now is the close-out of the 2025-26 subscription year, every district's term settled on its statement by 30 November 2026 (MSA 9.4), the contract being the forum's instrument rather than the event.",
+ "registered": "2026-10-24T06:17:08Z",
+ "architecture_spent": true
 }

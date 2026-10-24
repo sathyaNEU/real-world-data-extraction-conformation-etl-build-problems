@@ -1,22 +1,14 @@
-"""Writers for the pack's data files (the documents are in docs.py)."""
+"""Writers for the pack's data files, each in its source system's own layout."""
 import csv
 import datetime as dt
-import io
-import json
-import os
 
+import numpy as np
 import openpyxl
-from openpyxl.styles import Font, Alignment, PatternFill
+from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 
 import world as W
-import records as R
-
-EPOCH = dt.datetime(2026, 12, 31, 18, 0, 0)
-
-
-def d8(d):
-    return d.strftime("%Y%m%d") if d else " " * 8
+import pd as PD
 
 
 def iso(d):
@@ -24,139 +16,185 @@ def iso(d):
 
 
 def write_csv(path, header, rows):
-    with open(path, "w", newline="", encoding="utf-8") as f:
+    with open(path, "w", newline="") as f:
         w = csv.writer(f, lineterminator="\r\n")
         w.writerow(header)
-        for r in rows:
-            w.writerow(r)
+        for row in rows:
+            w.writerow(row)
+    return len(rows)
 
 
-def extract_txt(path, rows):
-    lines = ["H01WENDLEGLEN HOSPICE & PALLIATIVE CARE     HOSPICE BENEFIT PERIODS   RUN 20270105  DATA THRU 20261231"]
-    for r in rows:
-        lines.append("D%s%03d%s%s%s%s%04d%s   " % (r["mbi"], r["bp"], d8(r["elect"]), r["ccn"], d8(r["start"]),
-                                                d8(r["end"]), r["days"], d8(r["dod"])))
-    lines.append("T%09d" % (len(lines) - 1))
-    with open(path, "w", encoding="ascii", newline="") as f:
-        f.write("\r\n".join(lines) + "\r\n")
+def sessions_csv(path, rows):
+    rows = sorted(rows, key=lambda x: (x["started"], x["session_id"]))
+    return write_csv(path, ["session_id", "test_taker_id", "form_id", "session_status", "started_at_utc",
+                            "submitted_at_utc", "items_presented"],
+                     [(x["session_id"], x["test_taker_id"], x["form_id"], x["status"], x["started"], x["submitted"],
+                       x["items"]) for x in rows])
 
 
-def emr_csv(path, rows):
-    header = ["episode_id", "mrn", "medicare_id", "provider_number", "program", "admission_type", "admit_date",
-              "discharge_date", "discharge_reason", "primary_dx", "birth_date", "sex", "payer"]
-    out = [[r["episode_id"], r["mrn"], r["medicare_id"], r["provider_number"], r["program"], r["admission_type"],
-            iso(r["admit_date"]), iso(r["discharge_date"]), r["discharge_reason"], r["primary_dx"], iso(r["birth_date"]),
-            r["sex"], r["payer"]] for r in rows]
-    write_csv(path, header, out)
+def responses_csv(path, rows):
+    return write_csv(path, ["session_id", "item_seq", "item_id", "response_status", "score"],
+                     [(s, q, it, st, "" if sc is None else sc) for s, q, it, st, sc in rows])
 
 
-def legacy_xlsx(path, rows):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Census Export"
-    ws["A1"] = "FALLOWMERE HOSPICE INC  -  ADMISSION/DISCHARGE REGISTER"
-    ws["A2"] = "Report run 02/28/2025 23:41   Medicare   Admissions active on or after 10/01/2016"
-    ws["A1"].font = Font(bold=True)
-    hdr = ["Pt Acct No", "Medicare No", "DOB", "Sex", "Admit Dt", "Disch Dt", "Disch Status", "Prim Dx", "Payer"]
-    for j, h in enumerate(hdr, 1):
-        c = ws.cell(row=4, column=j, value=h)
-        c.font = Font(bold=True)
-    for i, r in enumerate(rows, 5):
-        vals = [r["acct"], r["medicare_no"], r["dob"], r["sex"], r["admit"], r["disch"], r["status"], r["dx"], r["payer"]]
-        for j, v in enumerate(vals, 1):
-            c = ws.cell(row=i, column=j, value=v)
-            if isinstance(v, dt.date):
-                c.number_format = "mm/dd/yyyy"
-    for j, wdt in enumerate([12, 14, 11, 5, 11, 11, 12, 9, 7], 1):
-        ws.column_dimensions[get_column_letter(j)].width = wdt
-    wb.properties.creator = "FHI Census"
-    wb.properties.lastModifiedBy = "FHI Census"
-    wb.properties.created = dt.datetime(2025, 2, 28, 23, 41)
-    wb.properties.modified = dt.datetime(2025, 2, 28, 23, 41)
-    wb.save(path)
+def item_params_csv(path, item_id):
+    rows = []
+    for m in range(W.N_MOD):
+        for k in range(W.N_ITEM):
+            rows.append((item_id[(m, k)], "M%d" % (m + 1), k + 1, "2PL", "%.3f" % W.A[m, k], "%.3f" % W.B[m, k],
+                         "1.0", "2024 base year"))
+    return write_csv(path, ["item_id", "module", "position", "model", "a_discrimination", "b_difficulty",
+                            "scaling_constant_D", "calibration"], rows)
+
+
+def pv_csv(path, v, pv):
+    order = np.argsort(v["tt"])
+    rows = []
+    for i in order:
+        dd = W.DISTRICTS[v["dist"][i]]
+        rows.append((v["tt"][i], dd["partner_id"], W.GRADES[v["g"][i]], dd["state"]) +
+                    tuple("%.1f" % pv[m, i] for m in range(5)))
+    return write_csv(path, ["test_taker_id", "partner_id", "grade", "state", "pv1", "pv2", "pv3", "pv4", "pv5"], rows)
+
+
+def eligibility_csv(path, rows):
+    rows = sorted(rows, key=lambda x: (x["partner_id"], x["student_id"]))
+    return write_csv(path, ["partner_id", "student_id", "grade", "enrolled_on", "withdrawn_on",
+                            "rostered_on_2026_05_01", "lessons_completed_to_2026_05_01", "guarantee_eligible"],
+                     [(x["partner_id"], x["student_id"], x["grade"], iso(x["enrolled_on"]), iso(x["withdrawn_on"]),
+                       x["rostered_2026_05_01"], x["lessons"], x["eligible"]) for x in rows])
 
 
 def crosswalk_csv(path, rows):
-    write_csv(path, ["hicn", "mbi"], [[r["hicn"], r["mbi"]] for r in rows])
+    rows = sorted(rows, key=lambda x: (x["test_taker_id"], x["student_id"]))
+    return write_csv(path, ["student_id", "test_taker_id", "partner_id", "linked_on", "link_source"],
+                     [(x["student_id"], x["test_taker_id"], x["partner_id"], iso(x["linked_on"]), x["source"])
+                      for x in rows])
 
 
-def dx_csv(path, rows):
-    write_csv(path, ["icd10_code", "description", "census_group"], [[r["code"], r["description"], r["group"]] for r in rows])
+def roster_xlsx(path, rows):
+    wb = openpyxl.Workbook()
+    wb.remove(wb.active)
+    head = ["Partner ID", "Student ID", "Grade", "Economically Disadvantaged", "English Learner",
+            "Students with Disabilities", "Prior State Test", "Prior Test Level", "Upload Date"]
+    for st in W.STATES:
+        ws = wb.create_sheet(W.STATE_NAME[st])
+        ws.append(head)
+        for c in ws[1]:
+            c.font = Font(bold=True)
+        mine = sorted((x for x in rows if x["state"] == st), key=lambda x: (x["partner_id"], x["student_id"]))
+        for x in mine:
+            ws.append([v if v != "" else None for v in (x["partner_id"], x["student_id"], x["grade"], x["econ"],
+                                                        x["el"], x["swd"], x["prior_test"], x["prior_level"],
+                                                        x["upload_date"])])
+        for i, w in enumerate((11, 11, 7, 14, 10, 12, 26, 22, 12), 1):
+            ws.column_dimensions[get_column_letter(i)].width = w
+        for c in ws["I"][1:]:
+            c.number_format = "yyyy-mm-dd"
+        ws.freeze_panes = "A2"
+    wb.save(path)
+    return len(rows)
 
 
-def runs(days, lv):
-    """(first day, days) of each run of consecutive days at one level of care: a level-of-care line on the claim."""
-    out, start, n = [], None, 0
-    for d, x, hi, q in days:
-        if x == lv:
-            if start is None:
-                start, n = d, 0
-            n += 1
-        elif start is not None:
-            out.append((start, n))
-            start = None
-    if start is not None:
-        out.append((start, n))
-    return out
+def pd_csv(path, rows):
+    return write_csv(path, ["booking_id", "session_id", "offering_code", "offering_title", "partner_id", "account_name",
+                            "session_date", "start_time_local", "delivery", "status", "hours", "facilitator",
+                            "teachers_attended"],
+                     [(x["booking_id"], x["session_id"], x["offering_code"], x["offering_title"], x["partner_id"],
+                       x["account_name"], iso(x["session_date"]), x["start_time"], x["delivery"], x["status"],
+                       x["hours"], x["facilitator"], x["teachers"]) for x in rows])
 
 
-def claim_lines_csv(path, claims):
-    header = ["claim_key", "prior_claim_key", "type_of_bill", "provider_number", "mbi", "statement_from",
-              "statement_through", "revenue_code", "hcpcs", "line_date", "units", "line_charge", "submitted_on",
-              "clearinghouse_status"]
-    out = []
-    for c in sorted(claims, key=lambda c: (c["submitted"], c["key"])):
-        base = [c["key"], c["prior"] or "", R.tob(c), R.CCN[c["code"]], c["mbi"], iso(c["frm"]), iso(c["thru"])]
-        tail = [iso(c["submitted"]), "Accepted"]
-        lines = []
-        for rev, lv, hcpcs in (("0651", "R", c["loc"]), ("0655", "I", "Q5004"), ("0656", "G", c["gip_loc"])):
-            for first, n in runs(c["days"], lv):
-                lines.append((rev, first, [rev, hcpcs, iso(W.date_of(first)), n, "%.2f" % (n * R.CHARGE[rev])]))
-        for d, x, hi, q in c["days"]:
-            if x == "C":
-                lines.append(("0652", d, ["0652", c["loc"], iso(W.date_of(d)), q, "%.2f" % (q * R.CHARGE["0652"])]))
-        for rev, first, ln in sorted(lines, key=lambda t: (t[0], t[1])):
-            out.append(base + ln + tail)
-    write_csv(path, header, out)
-    return len(out)
+def invoices_csv(path, inv):
+    return write_csv(path, ["invoice_number", "customer_account", "bill_to_name", "invoice_date", "due_date",
+                            "service_period_start", "service_period_end", "description", "invoice_amount",
+                            "amount_paid", "balance_due", "status", "paid_date"],
+                     [(x["invoice_number"], x["customer_account"], x["bill_to"], iso(x["invoice_date"]),
+                       iso(x["due_date"]), iso(x["service_start"]), iso(x["service_end"]), x["description"],
+                       "%.2f" % x["amount"], "%.2f" % (x["amount"] - x["balance"]), "%.2f" % x["balance"],
+                       x["status"], iso(x["paid_on"])) for x in inv])
 
 
-def remittance_csv(path, rows):
-    header = ["remit_date", "record_type", "icn", "patient_control_no", "provider_number", "mbi", "statement_from",
-              "statement_through", "type_of_bill", "claim_status", "paid_amount", "adj_carc_253", "plb_reason", "plb_amount"]
-    out = []
-    for r in sorted(rows, key=lambda r: (r["remit_date"], r["provider_number"], r["record"], r["patient_control_no"])):
-        if r["record"] == "CLP":
-            out.append([iso(r["remit_date"]), "CLP", r["icn"], r["patient_control_no"], r["provider_number"], r["mbi"],
-                        iso(r["stmt_from"]), iso(r["stmt_thru"]), r["tob"], r["claim_status"], "%.2f" % r["paid"],
-                        "%.2f" % r["sequestration"], "", ""])
-        else:
-            out.append([iso(r["remit_date"]), "PLB", r["icn"], r["patient_control_no"], r["provider_number"], "",
-                        "", "", "", "", "", "", "L6", "%.2f" % r["paid"]])
-    write_csv(path, header, out)
-    return len(out)
+def order_forms_xlsx(path):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Order forms 2025-26"
+    head = ["Order Form", "Partner ID", "District", "State", "Signed", "Subscription Term Start",
+            "Subscription Term End", "Licensed Seats", "Price per Seat (USD)", "Subscription Fee (USD)", "Billing",
+            "Live PL Hours", "Guarantee Benchmark (%)", "Credit Percentage (%)", "Bill-to Account"]
+    ws.append(head)
+    for c in ws[1]:
+        c.font = Font(bold=True)
+    for dd in sorted(W.DISTRICTS, key=lambda x: x["order_form"]):
+        ws.append([dd["order_form"], dd["partner_id"], dd["name"], dd["state"], dd["signed"], dd["term_start"],
+                   dd["term_end"], dd["seats"], dd["seat_price"], dd["fee"], dd["billing"], dd["pd_hours"],
+                   dd["benchmark"], dd["credit_pct"], dd["account"]])
+    widths = (14, 10, 44, 6, 11, 12, 12, 9, 10, 12, 24, 9, 11, 10, 12)
+    for i, w in enumerate(widths, 1):
+        ws.column_dimensions[get_column_letter(i)].width = w
+    for row in ws.iter_rows(min_row=2):
+        for k in (4, 5, 6):
+            row[k].number_format = "yyyy-mm-dd"
+        row[8].number_format = "#,##0.00"
+        row[9].number_format = "#,##0.00"
+        row[12].number_format = "0.0"
+    ws.freeze_panes = "C2"
+    ws.auto_filter.ref = "A1:O%d" % (len(W.DISTRICTS) + 1)
+    n2 = wb.create_sheet("Notes")
+    for line in ("Order forms signed for the 2025-26 Subscription Term under Master Subscription Agreement v4.0.",
+                 "Subscription Fee is the annual fee before any credit (MSA section 1.2).",
+                 "Live PL Hours, Guarantee Benchmark and Credit Percentage are as signed (MSA sections 8 and 9).",
+                 "Bill-to Account is the customer account the District's subscription is invoiced to.",
+                 "Source: Salesforce contract records, exported 2 November 2026 by Partnerships Operations."):
+        n2.append([line])
+    n2.column_dimensions["A"].width = 110
+    wb.save(path)
+    return len(W.DISTRICTS)
 
 
-def npi(base9):
-    """A ten-digit NPI: nine digits and the Luhn check digit computed with the 80840 prefix."""
-    digits = [int(c) for c in "80840" + base9]
-    total = 0
-    for k, d in enumerate(reversed(digits)):
-        if k % 2 == 0:
-            d *= 2
-            d = d - 9 if d > 9 else d
-        total += d
-    return base9 + str((10 - total % 10) % 10)
+def survey_csv(path):
+    """Spring teacher implementation survey (a distractor: implementation self-reports by teacher)."""
+    r = np.random.default_rng(W.SEED + 41)
+    rows = []
+    rid = 30000
+    for dd in W.DISTRICTS:
+        k = int(r.integers(4, 19))
+        for _ in range(k):
+            rid += int(r.integers(1, 9))
+            rows.append(("R%d" % rid, dd["partner_id"], int(r.choice([6, 7, 8])),
+                         (dt.date(2026, 4, 20) + dt.timedelta(days=int(r.integers(0, 30)))).isoformat(),
+                         int(r.integers(1, 6)), int(r.integers(1, 6)), int(r.integers(1, 6)),
+                         int(r.choice([0, 1, 2, 3, 4, 5, 6])), r.choice(["Weekly", "2-3 times a week", "Daily",
+                                                                          "Less than weekly"])))
+    return write_csv(path, ["response_id", "partner_id", "grade_taught", "submitted_on", "q1_lessons_as_designed",
+                            "q2_students_engaged", "q3_lab_simulations_used", "q4_pl_sessions_attended",
+                            "q5_frequency_of_use"], rows)
 
 
-def register_json(path, wi):
-    progs = []
-    for code in W.CODES:
-        progs.append({"provider_number": R.CCN[code], "program": R.PROGRAM[code],
-                      "fy2026_wage_index_applied": wi[code],
-                      "owned_since": "2025-03-01" if code == "FAL" else "1998-07-01" if code in ("BRK", "COR") else "2004-01-01",
-                      "notes": ("Change of ownership 1 March 2025; provider agreement assigned to Wendleglen, records before "
-                                "that date held in the seller's census system" if code == "FAL" else "")})
-    doc = {"organisation": "Wendleglen Hospice & Palliative Care", "as_of": "2026-12-31", "provider_numbers": progs}
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(doc, f, indent=2)
+def renewal_xlsx(path):
+    """Partnerships' renewal forecast for 2026-27 (a distractor)."""
+    r = np.random.default_rng(W.SEED + 43)
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Renewals 2026-27"
+    ws.append(["Partner ID", "District", "State", "2025-26 ARR (USD)", "Renewal Stage", "Renewal Probability",
+               "Forecast 2026-27 ARR (USD)", "Account Health", "CSM"])
+    for c in ws[1]:
+        c.font = Font(bold=True)
+    for dd in W.DISTRICTS:
+        p = float(np.round(r.uniform(0.55, 0.98), 2))
+        stage = "Closed won" if dd["j"] not in (11, 33, 50) else "Closed lost"
+        if stage == "Closed lost":
+            p = 0.0
+        ws.append([dd["partner_id"], dd["name"], dd["state"], dd["fee"], stage, p if stage != "Closed won" else 1.0,
+                   round(dd["fee"] * (1.03 if stage == "Closed won" else 0.0), 2),
+                   r.choice(["Green", "Green", "Yellow", "Red"]), "CSM-%02d" % int(r.integers(1, 9))])
+    for i, w in enumerate((10, 44, 6, 14, 12, 12, 16, 12, 8), 1):
+        ws.column_dimensions[get_column_letter(i)].width = w
+    for row in ws.iter_rows(min_row=2):
+        row[3].number_format = "#,##0.00"
+        row[5].number_format = "0%"
+        row[6].number_format = "#,##0.00"
+    ws.freeze_panes = "C2"
+    wb.save(path)
+    return len(W.DISTRICTS)

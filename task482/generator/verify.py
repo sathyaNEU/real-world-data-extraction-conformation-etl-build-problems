@@ -1,321 +1,205 @@
-"""Independent verifier for task482: reads only the shipped files under target/ and recomputes the call and ask A's
-figures with its own code, then compares them with generator/figures.json.
+"""Independent verifier: recomputes every graded figure from the shipped files in target/ alone, reading each file the
+way a solver would, and compares them with golden/ and generator/figures.json.
 
-    python3 task482/generator/verify.py     # exit 1 on any mismatch
+    python3 task482/generator/verify.py
 """
 import collections
 import csv
 import datetime as dt
 import json
 import os
+import re
 import sys
 
 import numpy as np
 import openpyxl
+from pypdf import PdfReader
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TARGET = os.path.join(os.path.dirname(HERE), "target")
-DAY0 = dt.date(2016, 10, 1)
-FY0, FY1 = (dt.date(2025, 10, 1) - DAY0).days, (dt.date(2026, 10, 1) - DAY0).days
-CLOSE = (dt.date(2027, 1, 1) - DAY0).days
-CAP = 35361.44
-H = 6000
+TASK = os.path.dirname(HERE)
+T = os.path.join(TASK, "target")
+GD = os.path.join(TASK, "golden")
+FAIL = []
 
 
-def d(s):
-    return dt.date(int(s[:4]), int(s[4:6]), int(s[6:8])) if s.strip() else None
+def ok(tag, cond, msg):
+    print("%-5s %s %s" % (tag, "ok  " if cond else "FAIL", msg))
+    if not cond:
+        FAIL.append(tag)
 
 
-def n(x):
-    return (x - DAY0).days
+def rows(name):
+    with open(os.path.join(T, name), newline="") as f:
+        return list(csv.DictReader(f))
 
 
-def load():
-    reg = json.load(open(os.path.join(TARGET, "provider_numbers.json")))
-    ours = [p["provider_number"] for p in reg["provider_numbers"]]
-    names = {p["provider_number"]: p["program"] for p in reg["provider_numbers"]}
-    ext = []
-    with open(os.path.join(TARGET, "medicare_hospice_benefit_periods_20270105.txt")) as f:
-        for line in f:
-            if line[0] != "D":
-                continue
-            ext.append(dict(mbi=line[1:12], bp=int(line[12:15]), elect=d(line[15:23]), ccn=line[23:29], start=d(line[29:37]),
-                            end=d(line[37:45]), days=int(line[45:49]), dod=d(line[49:57])))
-    cw = {r["hicn"]: r["mbi"] for r in csv.DictReader(open(os.path.join(TARGET, "hicn_mbi_crosswalk.csv")))}
-    grp = {r["icd10_code"]: r["census_group"] for r in csv.DictReader(open(os.path.join(TARGET, "diagnosis_groups.csv")))}
-    group, when = {}, {}
-    for r in csv.DictReader(open(os.path.join(TARGET, "wendleglen_emr_admissions.csv"))):
-        if r["payer"] != "Medicare":
-            continue
-        m = cw.get(r["medicare_id"], r["medicare_id"])
-        if m not in when or r["admit_date"] >= when[m]:
-            when[m], group[m] = r["admit_date"], grp[r["primary_dx"]]
-    wb = openpyxl.load_workbook(os.path.join(TARGET, "fallowmere_census_register_20250228.xlsx"), read_only=True)
-    ws = wb["Census Export"]
-    for row in ws.iter_rows(min_row=5, values_only=True):
-        if not row or not row[0]:
-            continue
-        acct, mno, dob, sex, admit, disch, status, dx, payer = row[:9]
-        m = cw.get(mno, mno)
-        dx = dx if "." in dx or len(dx) <= 3 else dx[:3] + "." + dx[3:]
-        a = admit.date().isoformat() if hasattr(admit, "date") else str(admit)
-        if m not in when or a > when[m]:
-            when[m], group[m] = a, grp[dx]
-    return ours, names, ext, group
+def day(s):
+    return dt.date.fromisoformat(s) if s else None
 
 
-def km_s(t, o):
-    t = np.clip(np.asarray(t, int), 0, H)
-    o = np.asarray(o, bool)
-    ev = np.bincount(t[o], minlength=H + 1)
-    ce = np.bincount(t[~o], minlength=H + 1)
-    risk = len(t) - np.concatenate([[0], np.cumsum(ev + ce)[:-1]])
-    return np.cumprod(1 - np.where(risk > 0, ev / np.maximum(risk, 1), 0.0))
-
-
-def resid(S, e):
-    e = int(min(max(e, 0), H))
-    base = S[e - 1] if e > 0 else 1.0
-    return float(S[e:].sum() / base) if base > 0 else 0.0
-
-
-def cif(rows, kind):
-    t = np.array([min(max(int(x), 0), H) for x, _ in rows])
-    k = np.array([y for _, y in rows])
-    a = np.bincount(t[k == kind], minlength=H + 1)
-    b = np.bincount(t[(k != kind) & (k != "cen")], minlength=H + 1)
-    c = np.bincount(t[k == "cen"], minlength=H + 1)
-    risk = len(t) - np.concatenate([[0], np.cumsum(a + b + c)[:-1]])
-    s, f = 1.0, 0.0
-    S, F = np.ones(H + 1), np.zeros(H + 1)
-    for i in range(H + 1):
-        if risk[i] > 0:
-            f += s * a[i] / risk[i]
-            s *= 1 - (a[i] + b[i]) / risk[i]
-        S[i], F[i] = s, f
-    return S, F
-
-
-def rate_sheet():
-    """The FY2026 rates and labor shares, each checked against the rate sheet's printed table."""
-    from pdfminer.high_level import extract_text
-    text = " ".join(extract_text(os.path.join(TARGET, "fy2026_hospice_payment_rates.pdf")).split())
-    printed = ["230.83", "181.94", "69.76", "532.48", "1,199.86", "66.0%", "75.2%", "61.0%", "63.5%"]
-    missing = [v for v in printed if v not in text]
-    assert not missing, "rate sheet lacks %s" % missing
-    return ({"R_HI": 230.83, "R_LO": 181.94, "C": 69.76, "I": 532.48, "G": 1199.86},
-            {"R": 0.660, "C": 0.752, "I": 0.610, "G": 0.635})
-
-
-def routine_count(ext):
-    """Each beneficiary's day -> position in the routine home care count: every day of hospice care at any hospice,
-    the count running on across a gap of 60 days or fewer between stays (the rate sheet)."""
-    by = collections.defaultdict(list)
-    for r in ext:
-        by[r["mbi"]].append((n(r["start"]), r["days"]))
-    out = {}
-    for m, periods in by.items():
-        idx, cnt, prev = {}, 0, None
-        for s0, k in sorted(periods):
-            if prev is not None and s0 - prev > 60:
-                cnt = 0
-            for day in range(s0, s0 + k):
-                cnt += 1
-                idx[day] = cnt
-            prev = s0 + k
-        out[m] = idx
-    return out
-
-
-def price(days, rates, labor, wi, idx):
-    fixed = lab = 0.0
-    for day, lv, q in days:
-        if lv == "C":
-            pay = rates["C"] * q / 4.0
-        elif lv == "R":
-            pay = rates["R_HI"] if idx.get(day, 1) <= 60 else rates["R_LO"]
-        else:
-            pay = rates[lv]
-        fixed += pay * (1 - labor[lv])
-        lab += pay * labor[lv]
-    return round(fixed + lab * wi, 2)
+def pdf_text(name):
+    return "\n".join(p.extract_text() for p in PdfReader(os.path.join(T, name)).pages)
 
 
 def main():
-    ours, names, ext, group = load()
-    own = set(ours)
-    stays = collections.defaultdict(list)
-    tmp = collections.defaultdict(list)
-    for r in ext:
-        tmp[(r["mbi"], r["elect"])].append(r)
-    dod = {}
-    for (m, e), rows in tmp.items():
-        rows.sort(key=lambda r: r["start"])
-        days = sum(r["days"] for r in rows)
-        s = n(e)
-        dd = rows[0]["dod"]
-        dod[m] = n(dd) if dd else None
-        is_open = rows[-1]["end"] is None
-        died = (not is_open) and dd is not None and n(dd) == s + days - 1
-        stays[m].append(dict(s=s, n=days, e=s + days, open=is_open, died=died, first=rows[0]["ccn"], last=rows[-1]["ccn"],
-                             segs=[(r["ccn"], n(r["start"]), r["days"]) for r in rows]))
-    for m in stays:
-        stays[m].sort(key=lambda x: x["s"])
-    # experience by (provider number, group)
-    st_rows, lv_rows, rt_rows = collections.defaultdict(list), collections.defaultdict(list), collections.defaultdict(list)
-    for m, lst in stays.items():
-        g = group.get(m)
-        if g is None:
+    # order forms
+    ws = openpyxl.load_workbook(os.path.join(T, "order_forms_2025_26.xlsx"), read_only=True)["Order forms 2025-26"]
+    it = ws.iter_rows(values_only=True)
+    head = next(it)
+    of = {}
+    for r in it:
+        x = dict(zip(head, r))
+        of[x["Partner ID"]] = x
+    pids = sorted(of)
+    dix = {p: i for i, p in enumerate(pids)}
+    ok("V0", len(of) == 58, "58 order forms")
+    # the technical report: scale, cuts, the band crosswalk
+    rep = pdf_text("caldrith_lsoa_technical_report_2026.pdf")
+    ok("V1", "500 + 50 theta" in rep and "500 in grade 6, 520 in grade 7 and 540 in grade 8" in rep.replace("\n", " "),
+       "reporting scale and Proficient levels as the report states them")
+    bands = {"EOG": ["Not Proficient", "Level 3", "Level 4", "Level 5"],
+             "OST": ["Limited", "Basic", "Proficient", "Accomplished|Advanced"],
+             "Georgia Milestones": ["Beginning Learner", "Developing Learner", "Proficient Learner", "Distinguished Learner"],
+             "TCAP": ["Below", "Approaching", "Met Expectations", "Exceeded Expectations"],
+             "CMAS": ["Did Not Yet Meet|Partially Met", "Approached", "Met", "Exceeded"],
+             "AASA": ["Minimally Proficient", "Partially Proficient", "Proficient", "Highly Proficient"]}
+    flat = rep.replace("\n", " ")
+    ok("V2", all(lv.split("|")[0] in flat for v in bands.values() for lv in v), "Table 5 carries every level read here")
+    # items
+    items = {r["item_id"]: (float(r["a_discrimination"]), float(r["b_difficulty"])) for r in rows("caldrith_item_parameters_2024.csv")}
+    # eligibility, crosswalk, sessions, responses, roster
+    elig = {}
+    for r in rows("guarantee_eligibility_2025_26.csv"):
+        if r["guarantee_eligible"] == "Y":
+            assert r["student_id"] not in elig
+            elig[r["student_id"]] = (r["partner_id"], int(r["grade"]))
+    xw = collections.defaultdict(list)
+    for r in rows("student_id_crosswalk_2025_26.csv"):
+        xw[r["test_taker_id"]].append(r["student_id"])
+    sub = {}
+    for r in rows("lsoa_spring2026_sessions.csv"):
+        if r["session_status"] == "Submitted":
+            assert r["test_taker_id"] not in sub
+            sub[r["test_taker_id"]] = r["session_id"]
+    resp = collections.defaultdict(list)
+    for r in rows("lsoa_spring2026_item_responses.csv"):
+        resp[r["session_id"]].append(r)
+    wb = openpyxl.load_workbook(os.path.join(T, "district_roster_uploads_spring2026.xlsx"), read_only=True)
+    ros = {}
+    yes = {"Economically Disadvantaged": {"EDS", "Y", "F", "ED", "Free", "1"}, "English Learner": {"LEP", "L", "Y", "EL", "NEP", "1"},
+           "Students with Disabilities": {"EC", "Y", "SPED", "IEP"}}
+    for sh in wb.worksheets:
+        itr = sh.iter_rows(values_only=True)
+        h = next(itr)
+        for r in itr:
+            x = dict(zip(h, r))
+            b = 4
+            if x["Prior Test Level"]:
+                test = next(k for k in bands if (x["Prior State Test"] or "").startswith(k))
+                b = next(i for i, lv in enumerate(bands[test]) if x["Prior Test Level"] in lv.split("|"))
+            ros[x["Student ID"]] = (b, int(str(x["Economically Disadvantaged"] or "") in yes["Economically Disadvantaged"]),
+                                    int(str(x["English Learner"] or "") in yes["English Learner"]),
+                                    int(str(x["Students with Disabilities"] or "") in yes["Students with Disabilities"]))
+    Q = np.round(np.arange(-4.475, 4.4751, 0.05), 4)
+    recs = []
+    for tt, sess in sub.items():
+        es = [s for s in xw[tt] if s in elig]
+        if not es:
             continue
-        for k, x in enumerate(lst):
-            if x["s"] >= CLOSE:
+        assert len(es) == 1
+        sid = es[0]
+        p, g = elig[sid]
+        ll = np.zeros(len(Q))
+        for r in resp[sess]:
+            if r["response_status"] == "Not reached":
                 continue
-            if x["first"] in own and x["s"] >= 0:
-                st_rows[(x["first"], g)].append((x["n"], "cen" if x["open"] else ("death" if x["died"] else "live")))
-            if x["open"] or x["died"] or x["last"] not in own or x["e"] < 0 or x["e"] > CLOSE:
-                continue
-            nx = lst[k + 1] if k + 1 < len(lst) and lst[k + 1]["s"] < CLOSE else None
-            if nx:
-                lv_rows[(x["last"], g)].append((nx["s"] - x["e"], "ret"))
-                rt_rows[(x["last"], g)].append((nx["n"], not nx["open"]))
-            elif dod[m] is not None and dod[m] <= CLOSE:
-                lv_rows[(x["last"], g)].append((dod[m] - x["e"], "death"))
-            else:
-                lv_rows[(x["last"], g)].append((CLOSE - x["e"], "cen"))
-    cache = {}
-
-    def model(key):
-        if key in cache:
-            return cache[key]
-        sr = st_rows.get(key, [])
-        S = km_s([a for a, _ in sr], [b != "cen" for _, b in sr])
-        Ss, Fl = cif([(a, "ret" if b == "live" else b) for a, b in sr], "ret")
-        Sr, Fr = cif(lv_rows.get(key, []), "ret")
-        rr = rt_rows.get(key, [])
-        A = float(km_s([a for a, _ in rr], [b for _, b in rr]).sum()) if rr else 0.0
-        Sret = km_s([a for a, _ in rr], [b for _, b in rr]) if rr else np.zeros(H + 1)
-        cache[key] = (S, Ss, Fl, Sr, Fr, A, Sret)
-        return cache[key]
-
-    counts = collections.defaultdict(float)
-    for m, lst in stays.items():
-        fy, kn, home = {}, 0, None
-        for x in lst:
-            if x["s"] >= CLOSE:
-                continue
-            kn += min(x["n"], CLOSE - x["s"])
-            for ccn, s, k in x["segs"]:
-                if ccn in own:
-                    a, z = max(s, FY0), min(s + k, FY1)
-                    if z > a:
-                        fy[ccn] = fy.get(ccn, 0) + z - a
-                    if s < CLOSE:
-                        home = ccn
-        if not fy:
-            continue
-        S, Ss, Fl, Sr, Fr, A, Sret = model((home, group[m]))
-        last = [x for x in lst if x["s"] < CLOSE][-1]
-        if last["open"]:
-            e = CLOSE - last["s"]
-            if last["first"] not in own:
-                fut = resid(Sret, e)
-            else:
-                ei = min(e, H)
-                pl = (Fl[-1] - Fl[ei]) / Ss[ei] if Ss[ei] > 1e-12 else 0.0
-                fut = resid(S, e) + pl * Fr[-1] * A
-        elif last["died"] or (dod[m] is not None and dod[m] <= CLOSE - 1):
-            fut = 0.0
-        else:
-            s_out = min(CLOSE - last["e"], H)
-            p = (Fr[-1] - Fr[s_out]) / Sr[s_out] if Sr[s_out] > 1e-12 else 0.0
-            fut = p * A
-        for ccn, dd in fy.items():
-            counts[ccn] += dd / (kn + fut)
-    # payments and the repayment
-    pay = collections.defaultdict(float)
-    paid_keys = collections.defaultdict(int)
-    for r in csv.DictReader(open(os.path.join(TARGET, "remittance_register_fy2026.csv"))):
-        if r["record_type"] != "CLP":
-            continue
-        pay[r["provider_number"]] += float(r["paid_amount"]) + float(r["adj_carc_253"])
-        paid_keys[r["patient_control_no"]] += 1 if r["claim_status"] == "1" else -1
+            a, b = items[r["item_id"]]
+            pq = 1 / (1 + np.exp(-a * (Q - b)))
+            y = int(r["score"])
+            ll += y * np.log(pq) + (1 - y) * np.log(1 - pq)
+        recs.append((dix[p], g - 6, ros[sid], ll))
+    n = len(recs)
+    dist = np.array([x[0] for x in recs]); gr = np.array([x[1] for x in recs])
+    bd = np.array([x[2][0] for x in recs]); bg = np.array([x[2][1:] for x in recs], float)
+    LL = np.array([x[3] for x in recs]); L = np.exp(LL - LL.max(1, keepdims=True))
+    ok("V3", n == sum(v["assessed"] for v in json.load(open(os.path.join(HERE, "figures.json")))["districts"].values()),
+       "%d eligible students assessed" % n)
+    X = np.column_stack([np.eye(58)[dist], np.eye(3)[gr][:, 1:], np.eye(5)[bd][:, 1:], bg])
+    # EM for theta ~ N(X g, s2) on the grid
+    g_ = np.zeros(X.shape[1]); s2 = 1.0
+    XtXi = np.linalg.pinv(X.T @ X)
+    for _ in range(400):
+        mu = X @ g_
+        w = L * np.exp(-0.5 * (Q[None, :] - mu[:, None]) ** 2 / s2)
+        w /= w.sum(1, keepdims=True)
+        gn = XtXi @ (X.T @ (w @ Q))
+        mu = X @ gn
+        s2 = float((w * (Q[None, :] - mu[:, None]) ** 2).sum(1).mean())
+        if np.abs(gn - g_).max() < 1e-7:
+            g_ = gn
+            break
+        g_ = gn
+    mu = X @ g_
+    w = L * np.exp(-0.5 * (Q[None, :] - mu[:, None]) ** 2 / s2)
+    w /= w.sum(1, keepdims=True)
+    cut = np.array([0.0, 0.4, 0.8])[gr]
+    pa = (w * (Q[None, :] > cut[:, None])).sum(1)
+    share = 100 * np.bincount(dist, pa, minlength=58) / np.bincount(dist, minlength=58)
+    owed = sorted(p for p in pids if share[dix[p]] < of[p]["Guarantee Benchmark (%)"])
     figs = json.load(open(os.path.join(HERE, "figures.json")))
-    bad = []
-    inv = {v: k for k, v in figs["provider_numbers"].items()}
-    fal = figs["provider_numbers"]["FAL"]
-    total = 0.0
-    for ccn in ours:
-        rep = max(0.0, 0.98 * (pay[ccn] - counts[ccn] * CAP))
-        total += rep
-        want = figs["repayment_usd"][inv[ccn]]
-        if abs(rep - want) > 1.0:
-            bad.append("%s repayment %.2f against %.2f" % (inv[ccn], rep, want))
-        if abs(pay[ccn] - figs["payments_usd"][inv[ccn]]) > 0.05:
-            bad.append("%s payments %.2f against %.2f" % (inv[ccn], pay[ccn], figs["payments_usd"][inv[ccn]]))
-    if round(total / 1e6 + 1e-12, 1) != figs["call"]["total_musd"]:
-        bad.append("total %.1f" % (total / 1e6))
-    # ask A: the inpatient days Medicare paid for on the versions the register shows paid and not reversed, each
-    # version repriced at its billed levels from the rate sheet and its provider number's wage index; where the payment
-    # falls short, the count of its last general inpatient and respite days paid at the routine rate that closes the gap
-    rates, labor = rate_sheet()
-    wi = {p["provider_number"]: p["fy2026_wage_index_applied"]
-          for p in json.load(open(os.path.join(TARGET, "provider_numbers.json")))["provider_numbers"]}
-    tier = routine_count(ext)
-    remitted, net = {}, collections.defaultdict(float)
-    for r in csv.DictReader(open(os.path.join(TARGET, "remittance_register_fy2026.csv"))):
-        if r["record_type"] != "CLP":
-            continue
-        amt = float(r["paid_amount"]) + float(r["adj_carc_253"])
-        net[r["patient_control_no"]] += amt
-        if r["claim_status"] == "1":
-            remitted[r["patient_control_no"]] = amt
-    lines = collections.defaultdict(list)
-    for r in csv.DictReader(open(os.path.join(TARGET, "wendleglen_claim_lines_fy2026.csv"))):
-        lines[r["claim_key"]].append(r)
-    gip, irc = collections.Counter(), collections.Counter()
-    unexplained = 0
-    for key, rows in lines.items():
-        if net.get(key, 0.0) <= 0.005:
-            continue
-        ccn, mbi = rows[0]["provider_number"], rows[0]["mbi"]
-        days = []
-        for r in rows:
-            first = n(dt.date.fromisoformat(r["line_date"]))
-            lv = {"0651": "R", "0652": "C", "0655": "I", "0656": "G"}[r["revenue_code"]]
-            if lv == "C":
-                days.append((first, "C", int(r["units"])))
-            else:
-                days += [(first + k, lv, 0) for k in range(int(r["units"]))]
-        days.sort()
-        want = remitted[key]
-        g_n = sum(1 for d in days if d[1] == "G")
-        i_n = sum(1 for d in days if d[1] == "I")
-        found = None
-        for kg in range(g_n + 1):
-            for ki in range(i_n + 1):
-                adj = list(days)
-                for lv, k in (("G", kg), ("I", ki)):
-                    for j in ([j for j, d in enumerate(adj) if d[1] == lv][-k:] if k else []):
-                        adj[j] = (adj[j][0], "R", 0)
-                if abs(price(adj, rates, labor, wi[ccn], tier.get(mbi, {})) - want) < 0.02:
-                    found = (kg, ki)
-                    break
-            if found:
-                break
-        if found is None:
-            unexplained += 1
-            found = (0, 0)
-        gip[ccn] += g_n - found[0]
-        irc[ccn] += i_n - found[1]
-    if unexplained:
-        bad.append("%d paid claims whose payment no count of routine-paid days explains" % unexplained)
-    print("verify: Fallowmere USD %.2f (%.1f), total %.1f, ask A %d provider numbers checked" % (
-        max(0.0, 0.98 * (pay[fal] - counts[fal] * CAP)), max(0.0, 0.98 * (pay[fal] - counts[fal] * CAP)) / 1e6,
-        total / 1e6, len(ours)))
-    for b in bad:
-        print("MISMATCH", b)
-    print("verify: %s" % ("PASS" if not bad else "FAIL"))
-    return 1 if bad else 0
+    ok("V4", owed == figs["call"]["owed"], "owed set recomputed from the files: %d districts" % len(owed))
+    og = {p: round(of[p]["Subscription Fee (USD)"] * of[p]["Credit Percentage (%)"] / 100, 2) for p in owed}
+    ok("V5", abs(sum(og.values()) - figs["call"]["og_total"]) < 0.005, "outcomes credits USD %.2f" % sum(og.values()))
+    gap = min(abs(share[dix[p]] - of[p]["Guarantee Benchmark (%)"]) for p in pids)
+    ok("V6", gap > 4.0, "every district more than 4 points from its benchmark on this recomputation (min %.2f)" % gap)
+    # professional learning
+    cat = pdf_text("professional_learning_catalog_2025_26.pdf")
+    per = {}
+    for m in re.finditer(r"(LL-\d{3})\s.*?(Virtual live|On site)\s+(\d)\s+(\d+)\s+(\d+)", cat.replace("\n", " ")):
+        per[m.group(1)] = float(m.group(4))
+    ok("V7", len(per) == 11 and all(h == int(h) for h in per.values()),
+       "the catalog schedules its %d live offerings in whole hours" % len(per))
+    mins = collections.Counter()
+    for r in rows("pd_sessions_2025_26.csv"):
+        o = of[r["partner_id"]]
+        d = day(r["session_date"])
+        h, mm = r["hours"].split(".")
+        assert int(mm) < 60, r["hours"]                  # hours and minutes after the point
+        if r["status"] == "Delivered" and r["delivery"] in ("Virtual live", "On site") and \
+                o["Subscription Term Start"].date() <= d <= o["Subscription Term End"].date():
+            mins[r["partner_id"]] += 60 * int(h) + int(mm)
+    assert all(mins[p] % 30 != 15 for p in pids), "a district's hours sit on a quarter hour"
+    hrs = {p: float(np.floor(mins[p] / 30.0 + 0.5) / 2) for p in pids}
+    ok("V8", all(abs(hrs[p] - figs["districts"][p]["pd_delivered"]) < 1e-9 for p in pids),
+       "live hours delivered, 58 districts, to the nearest half hour")
+    pl = {p: max(0.0, of[p]["Live PL Hours"] - hrs[p]) * 250 for p in pids}
+    ok("V9", all(abs(pl[p] - figs["districts"][p]["pl"]) < 1e-9 for p in pids), "shortfall credits, total USD %.2f" % sum(pl.values()))
+    # invoices and the memo file
+    inv = rows("billing_invoices_2026_27.csv")
+    memo_exp = []
+    for p in pids:
+        o = of[p]
+        a = o["Subscription Term Start"].date().replace(year=2026)
+        c = [x for x in inv if x["customer_account"] == o["Bill-to Account"] and x["status"] == "Open"
+             and day(x["service_period_start"]) == a and "subscription 2026-27" in x["description"]]
+        tgt = min(c, key=lambda x: (x["due_date"], x["invoice_number"])) if c else None
+        for code, amt in (("OG", og.get(p, 0.0)), ("PL", pl[p])):
+            if amt > 0:
+                memo_exp.append(["%s-2526-%s" % (code, p[3:]), o["Bill-to Account"], code, "%.2f" % amt,
+                                 tgt["invoice_number"] if tgt else "", "APPLY" if tgt else "CHECK", "2026-11-30"])
+                if tgt:
+                    assert float(tgt["balance_due"]) >= og.get(p, 0) + pl[p]
+    memo_exp.sort()
+    with open(os.path.join(GD, "guarantee_credit_memos_2026.csv"), newline="") as f:
+        got = list(csv.reader(f))[1:]
+    ok("V10", got == memo_exp, "credit memo file: %d rows match" % len(memo_exp))
+    gw = openpyxl.load_workbook(os.path.join(GD, "lumenfold_guarantee_settlement_2025_26.xlsx"))["Settlement 2025-26"]
+    body = [r for r in gw.iter_rows(min_row=5, values_only=True) if r[0]]
+    ok("V11", len(body) == 58 and all((r[6] == "Not met") == (r[0] in owed) for r in body) and
+       all(abs((r[9] or 0) - og.get(r[0], 0.0)) < 1e-9 and abs(r[11] - hrs[r[0]]) < 1e-9 and abs(r[13] - pl[r[0]]) < 1e-9
+           for r in body), "settlement workbook rows agree")
+    print("\n%s" % ("all checks passed" if not FAIL else "FAILED: " + ", ".join(FAIL)))
+    return 1 if FAIL else 0
 
 
 if __name__ == "__main__":
