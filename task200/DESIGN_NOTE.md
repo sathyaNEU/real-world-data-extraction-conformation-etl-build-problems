@@ -1222,6 +1222,28 @@ half is shut this sitting and open again three builds later.
   slot even where it cleared task125, so nothing in the family is taken to a card by this pass and **the family
   is not to be re-screened from this number.**
 
+- **Architecture 5, the overidentification axis on instrument and laboratory ground, refused with
+  measurements (2026-10-24).** A few analyser offsets and scales identified across many split specimens by
+  the network's own exchange. The design genuinely overidentifies (960 readings against 490 unknowns, the
+  focal analyser's scale recovered to about 1 per cent), and that is the kill rather than the opening.
+  **Horn 1:** with additive shared parameters the joint solve collapses to the pairwise group-by by algebra,
+  max absolute difference **5.129e-13**, corr **1.00000000**, identical graded count in 10 of 10 seeds.
+  **Horn 2:** with offset and scale the licensed family spreads the graded share **12.2 to 45.8 printed
+  units** and agrees on the printed figure in **0 of 12** worlds at the largest case count, and the exact
+  count above the limit is reached by only 2 to 6 of 20 even with the shared parameter precise, so the
+  shared-parameter design does not rescue the discontinuous count. **Horn 3, the verdict:** the naive route
+  fails (11 of 24) but **the ratio of each exchange pair's means, one group-by, lands it 22 of 24** and one
+  ordinary least squares per pair lands it **23 of 24 at a smaller recovery error (0.989 per cent) than the
+  designed joint solve (1.154)**, with the family unanimous 11 of 12 and 8 of 12; the field's own textbook
+  route (Deming) is the worst member at 19 of 24. **R = 1.000 with 0 sign changes in every cell**, so the
+  construction is a per-case correction in other nouns. The guard is independent of all of it: the probe
+  card BLOCKs on `ban.artifact`, `ban.forum`, `test.same_driver_older` against task260 and an empty
+  persona list, and `guard.py slots` on the setting's nouns returns task249 architecture 1 (the same
+  candidate, landed by a medium-effort reader in about two minutes with an errors-in-variables slope) and
+  task252 architecture 1 (the same candidate with a memory term, "every term of that model is identified by
+  the readings, the checks and the grabs"), with task185 holding the level-dependent device conversion as a
+  driver already. Not to be re-screened from this number in any nouns.
+
 ## Architecture 4's verdict: a measured refusal, with four members priced and three closures earned
 
 No card is filed and none must be registered. `architecture` moves to 4 because the pass is spent; nothing was
@@ -1463,3 +1485,116 @@ either** (nearest drivers 0.07, 0.06, 0.06, 0.06, 0.06).
 - **task260** (biomedical, reader study): a shared sample of readers each scoring a shared sample of items,
   the interval owed to both samples at once. That is the two-way shared-sample design itself, which is why
   the probe BLOCKs against it rather than against anything in this lane.
+
+### Step 2, the measurements. The axis is priced on this ground and refused.
+
+Harness `scratchpad/a5_200/` (`screen_a5.py`, `scr2.py`, `scr3.py`), each rerun to **byte-identical
+output over two consecutive runs** (2010, 3187 and 3314 bytes; md5 97f5bf19559668ba3f7d64d08896f014,
+96b1ee7846836910e60718e11b759af3, a15abb9005dab35fef052c3627e5a329). One generating process throughout:
+six analysers with their own offset and scale, 6 x n specimens with their own true values, each site's
+case mix at its own level, and the network's own split-sample exchange giving one specimen in four a
+second reading on a rotating partner. Every route is scored against the world's own truth, never against
+a quantile of a fit.
+
+**The design does identify a few shared parameters across many cases, and that is the answer to the
+draw's first test: yes.** At 320 specimens a site the exchange carries 960 readings against 490 unknowns
+(12 shared parameters, 480 specimen values, two gauge constraints), overidentified by **470**, and the
+focal analyser's own scale comes back to about **1 per cent** of its true value. The axis's premise holds
+exactly as stated. What the measurements add is that the premise is the kill.
+
+**HORN 1, additive shared parameters: the overidentified joint solve IS one group-by, by algebra.** With
+two readings per specimen and one nuisance value per specimen, the per-case value profiles out in closed
+form and what is left is the pairwise difference. Measured over 10 seeds at 360 readings against 185
+unknowns: the dense joint least squares and the mean-pairwise-difference solve agree at
+**max |joint - group-by| = 5.129e-13**, **corr = 1.00000000**, and the graded count is identical in
+**10 of 10** seeds. Overidentification does not make the construction hard. It makes it forced, and the
+forced construction is the cheap route.
+
+**HORN 2, offset AND scale, the bilinear design that does not profile out.** Here the joint solve is
+genuinely non-linear, so horn 1's algebra does not apply, and the candidate still dies three ways.
+
+| n a site | readings | unknowns | over | family spread on the graded share | in printed units of 0.1 | family unanimous | cheapest member hit | designed hit | R | sign changes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 40 | 120 | 70 | 50 | 4.5833 pp | 45.83 | 5/12 | 2/12 | 6/12 | 1.000 | 0.0 |
+| 80 | 240 | 130 | 110 | 3.5417 pp | 35.42 | 3/12 | 3/12 | 4/12 | 1.000 | 0.0 |
+| 160 | 480 | 250 | 230 | 1.6146 pp | 16.15 | 2/12 | 2/12 | 3/12 | 1.000 | 0.0 |
+| 320 | 960 | 490 | 470 | 1.2240 pp | 12.24 | 0/12 | 2/12 | 2/12 | 1.000 | 0.0 |
+
+1. **R = 1.000 with 0 sign changes in every cell measured**, at both scale-error settings and in the
+   artifact world as well as the real one. By the lane's own identity that is a per-case correction in
+   other nouns, so the closed family's six laws bind it and the first screen is failed before any
+   separation is measured. The structure behind it: an analyser's scale multiplies every specimen's value
+   the same way, so the graded path cannot change sign.
+2. **A graded LEVEL on this ground is indeterminate.** The licensed family's spread on the share above the
+   limit runs **12.2 to 45.8 times the printed unit**, and the family agrees on the printed figure in
+   **0 of 12** worlds at the largest case count. The spread does fall with the case count while the lever
+   holds (lever over spread 1.00 at 40 a site, 2.3 at 320), which is the one place the axis's two-ended
+   dial is real, and it never gets inside the printed unit.
+3. **The level-dependent count is not rescued by a precise shared parameter, which was the one cell of
+   this that was unpriced.** The lane's law was measured on a per-case recovery; here the recovered
+   parameter is shared and known to about 1 per cent, and the exact count above the limit is still reached
+   by **2 to 6 of 20** on the best route, because the misplacement is in each specimen's own reading noise
+   and not in the shared parameter. So the escape the shared-parameter design appeared to offer from the
+   discontinuous-count kill does not exist.
+
+**HORN 3, the verdict, which is this objective's native call and the only determinate object left.** Two
+windows from one process: in one the focal site's specimens really rise, in the other the focal analyser
+drifts 8.5 per cent and the specimens do not move. The call is which.
+
+| route | real world | artifact world | both | focal scale recovery error |
+|---|---|---|---|---|
+| the joint alternating solve (designed) | 11/12 | 12/12 | 23/24 | 1.154 per cent |
+| the joint solve, weighted | 11/12 | 12/12 | 23/24 | 1.138 per cent |
+| Deming per pair (the field's textbook route) | 10/12 | 9/12 | 19/24 | 9.459 per cent |
+| Passing-Bablok per pair | 11/12 | 10/12 | 21/24 | 1.348 per cent |
+| **one ordinary least squares per exchange pair** | 11/12 | 12/12 | **23/24** | **0.989 per cent** |
+| **the ratio of each pair's means (ONE GROUP-BY)** | 11/12 | 11/12 | **22/24** | 1.229 per cent |
+| the naive route, no correction | 4/12 | 7/12 | 11/24 | - |
+| **family unanimous on the verdict** | **11/12** | **8/12** | | |
+
+**The cheapest licensed member's hit rate and the family's unanimity are one column, printed here side by
+side as the brief requires.** The naive route genuinely fails (11 of 24), so the lever is real; and the
+construction that exploits the identification is one group-by on the exchange pairs, which lands the
+verdict **22 of 24**, while one ordinary least squares per pair lands it **23 of 24 at a smaller recovery
+error (0.989 per cent) than the designed joint solve (1.154)**. The ladder is level at best and inverted
+on precision. Two further readings worth keeping: the field's own textbook route (Deming) is the **worst**
+member here, because with small scale differences and comparable error variances its slope is unstable, so
+the domain's named method is not even the one to beat; and the thinner exchange (one specimen in ten)
+changes nothing (21 of 24 against 21 of 24).
+
+**Why this was always going to happen, in one sentence that is about the design rather than about
+analysers.** For a few shared parameters to be identified across many cases, the record must ship which
+handler touched each case, so the pack is a design matrix plus an outcome; the shipped design matrix is
+simultaneously what closes the estimator family and what makes the construction one call on that matrix,
+so Gate C and Gate F are financed by the same object. task252's own words for it, measured on a cut pack
+rather than in a screen: "every term of that model is identified by the readings, the checks and the
+grabs", solved by one careful reader. A parameter the design identifies is a parameter a reader recovers.
+
+**The three channels are exhaustive, which is why no instrument parameter escapes.** A few shared
+parameters can be identified from many cases in exactly three ways: a within-case contrast between
+handlers, which is the pairwise group-by measured above; a regression on a column the record already
+carries, which is one regression; or a moment of the readings' own distribution, which is a dispersion and
+which this slot closed in its own architectures 2 and 3. Nothing else reaches a shared parameter, so the
+enumeration over what a device's parameter can BE is also closed: a location (horn 1, exact group-by), a
+scale (horn 2, and task185's driver besides), a memory of preceding samples (task252 architecture 1,
+solved by a reader), a dispersion (this slot's own first direction, 1.108 to 2.161 against a band edge at
+2.000), a threshold (task180 and task189), an error rate on real samples (a second independent observation
+of the same events, spent on this objective by task195 and task196), and a drift rate (task248, task249).
+Seven kinds, all closed or spent.
+
+**Refusal.** Architecture 5 is refused with measurements. No world was drawn, no file was cut, no persona
+was generated, no card was registered, and the probe card at `scratchpad/a5_200/probeA.json` returns BLOCK
+on four rules and **must not be registered**. The axis is closed as a clause by a sibling from three
+further directions (the design's rank against its case count, replication rather than information, and the
+impossibility that a unanimous family can leave its own cheapest member missing); this slot's contribution
+to that closure is the R identity, the horn 1 algebra, and the cheapest-member-beside-unanimity table above.
+
+**The one direction the enumeration does not reach, recorded and not recommended.** The complement of "a
+parameter attaching to a unit the record labels" is, as far as this slot can enumerate it, already spoken
+for: a parameter attaching to a unit the record does NOT label is completion or capture-recapture, spent
+on this objective; a parameter attaching to the mapping between record and world is identity or grain,
+which rule 3 bars from deciding a call; a functional of a distribution attaching to no unit is a
+dispersion, a quantile or an overlap, closed by the dispersion screen; and a set rather than a point is
+the feasible-set intersection the sibling has already closed. So the direction is not an opening this
+slot can see, and the honest reading of five closed families from one number is the one already on the
+author's desk: what is spent is the mechanism search on this objective, not any one cell.
