@@ -1721,3 +1721,92 @@ one-ended dial whether or not the family were available, and the family is not a
 estimand escapes the grain pincer that spent architecture 2, because what gets filed is the
 estimand's comparison rather than the grain a level is taken at. That reasoning is sound and is worth
 carrying to the next pass; what was wrong is that the resulting driver is already on file.
+
+**The per-case-correction test on candidate A, which it passes, so that is not what kills it.** The
+brief's test is whether the graded quantity can be written as an observable divided by a per-case
+factor; if it can, all six laws of the closed clause apply. It cannot. The graded quantity is
+`G_q = sum_c w_qc m_c - m_0`, a difference of two period-level means with the weights `w_qc` a
+share of the period's own awards, and **no quantity is divided per case**: every award amount is
+observed in full in the portal and aggregated exactly in the claim returns, so there is no latent
+per-case quantity for a factor to correct. `sd(log factor)` therefore has no referent, which is
+what makes the dispersion ceiling, the `sqrt(1 - rho^2)` floor, the one-over-root-k averaging law,
+the geometric-mean route and the floor-against-precision pincer all silent here. The positive half
+of the test also passes: the graded object is a **path**, so a route with the ordering right still
+files a wrong answer, and none of the four reflexes is an affine rescaling of the golden
+(best-affine rms 168 to 219 pesos on a path whose mean absolute level is 421).
+
+**Kill 3, found by running the affine clause on the forcing column, and it converges with the
+sibling's trichotomy from the other side.** `corr(golden path, mixture share) = +0.978549`, and one
+regression of the path on that share reproduces it at **rms 47.70 pesos, 11.3 per cent of the mean
+absolute level**, against the reflexes' 168 to 219. So once the mixture share is in hand the
+decisive step is one regression. The share is not a shipped column in candidate A, which is the
+only reason the clause does not fire outright, and that is exactly the sibling's point reached from
+the other side: the weights have to ship for the path to be computable, and once they ship the
+construction is one group-by.
+
+### Direction (b), priced: a position registered nowhere, reconstructed from each unit's own history
+
+The coordinator's one piece of genuinely open ground, with the lane's standing law expecting death on
+the parametric horn and nothing on file measuring it. Instantiated on this slot's own world: each
+accredited partner follows its municipality's household re-validation round, which the Foundation
+records nowhere, so the partner's award volume and band mix move with its position in that round and
+the only evidence for the position is the partner's own 33 monthly claim returns. Harnesses
+`.../a5/position.py`, `position2.py` and `position3.py`, each rerun byte-identically, 88 partners, 12
+seeds, amplitude swept 0.15 to 1.20 (amplitude-to-noise 0.59 to 4.71), the round length and the
+partner's own size driven by one process.
+
+**It dies, and not where the law expected, which is the finding.** The position itself is recovered
+**well**: the grid-fitted harmonic puts the median phase error at 1.04, 0.46, 0.27, 0.19 and 0.13
+months across the sweep, so the parametric horn does not bite the phase. What is free is the **cycle
+the phase is measured against**, and every graded object built on a position needs it.
+
+- *A forward position (which quarter a partner's next round falls in) dies on extrapolation.* The
+  five-member licensed family returns **3.16 to 3.26 distinct answers per partner out of five**, with
+  **all 88 partners split at every amplitude**, and the aggregate next-quarter figure spreads **0.738
+  to 0.806 of its own level**. Flat across the sweep, so it is structural rather than a dial: a
+  two-month error in the period compounds through `phase + L * ceil(...)`.
+- *A current position (which third of its own round a partner is in now) dies on the banding.* 2.13
+  to 2.25 distinct answers per partner, 94.5 to 99.4 per cent of partners split, and the aggregate
+  share spreads **0.091 to 0.107** against a printed unit of 0.001 for a share stated to one decimal
+  of a per cent, about a hundred times over. The spread is **ten times the best member's own error**
+  (0.0105 at the top amplitude), so the family disagrees by far more than any member is wrong by.
+- *The one rescue, that the record refutes the misassumed lengths, fails.* Per partner, an F test of
+  the fitted period against an assumed twelve months clears 5 per cent for only **0.412, 0.657,
+  0.793, 0.871 and 0.904** of partners across the sweep (and 0.336 to 0.860 against sixteen months),
+  so even where the cycle is plain to the eye about one partner in ten has a length the record cannot
+  separate, which on 88 partners is eight to twelve partners whose position is a free choice. At the
+  realistic amplitudes an assumed length fits **better in sample than the truth's own period** for
+  19 to 52 per cent of partners.
+- *And the dial is one-ended in the usual way.* The fitted route only clearly beats the one-line
+  last-peak route at amplitude 0.80 and above (0.0147 and 0.0105 against 0.0305 and 0.0365), and
+  that is precisely where the cycle is visible in the partner's own plotted series, so buying the
+  construction's advantage buys the readability with it.
+
+**The law this earns, stated for the corpus.** Where a structure's position is registered nowhere and
+has to be reconstructed from each unit's own history, **the free parameter is not the position but the
+cycle it is measured against**: the phase is recoverable to a fraction of a reporting period, while
+the period is not, and a graded object needs the period both to project a position forward and to band
+a current one. A unit's own thin history cannot refute a plausible rival period, so the family stays
+open at both ends of the amplitude dial. The escape this leaves, unpriced, is a graded object that
+depends on the position **ordinally only** (which unit is further through its round than which), since
+an ordinal object needs no period; that is one computation for a later pass and is not drawn here.
+
+### Architecture 5, the verdict: a measured refusal, two deaths, nothing registered
+
+No card was drafted and nothing was registered. `guard.py names` was not run and no persona was drawn,
+because no candidate reached a card. Candidate A (the surge-schedule queue) dies three ways on its own
+measurements and a fourth on the corpus; direction (b) dies on the period. The brief's third direction,
+grading a path's turning point, needs a propagation that is not task125's, and the two this world can
+supply are the two measured dead here, so it has no carrier on this ground.
+
+**What the next pass should not repeat.** The propagation estimand is spent as a driver, so no
+instance of it is drawable however different the world (the clone verdict is structural, on
+`test.same_puzzle_older` and `test.same_driver_older` against task125 v2). The queue instantiation is
+closed by the invariance law, which is a theorem. The unregistered-cycle instantiation is closed by the
+period's freedom. Together with the per-case-correction clause closed by architecture 4 and the
+within-cell distribution closed by architecture 2, this slot has now measured four families dead. **The
+positive specification left standing for this world is unchanged from architecture 4's and is narrow:**
+a quantity that stays unobserved while a second file at another grain pins it through a form the design
+fixes with no free parameter. The two housekeeping findings still stand and still block a successor: the
+v1/v2 card carries no `architecture_spent`, so its axes fence off ground no live build occupies, and
+`guard.py names --geo PH` has no locale mapped and returns the en_US pool.

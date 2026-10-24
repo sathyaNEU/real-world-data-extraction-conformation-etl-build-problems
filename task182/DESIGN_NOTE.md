@@ -2713,3 +2713,59 @@ twice with byte-identical output.
   - What it leaves standing: the cell and the subdomain, which are fresh and unspent, and the finding that a
     chatter correction is structurally unable to carry a ranking call because chatter multiplies a tag's count
     while the excursion rate itself spans a far wider range.
+
+- **Architecture 9 candidate 2, and it refuses the CELL rather than a mechanism.** The brief for this pass
+  carried the premise that `human-factors-ergonomics/alarm-interface-evaluation` x `anomaly-detection`
+  survived candidate 1 intact, as a never-drawn subdomain clear of every axis ban, and that only the
+  decisive step had to be redrawn. **The premise is false and the cell is not drawable at all.** Measured
+  with `guard.py check` on probe cards, three runs, byte-identical output, in
+  `scratchpad/w8_182c/` (`probe.py`, `probe2.py`, `probe3.py`):
+  - `BLOCK three_rules.task_type  task type alarm-interface-evaluation serves experiment-causal, not
+    anomaly-detection: the domain would be a backdrop`. The subdomain serves **EC only** in the client
+    taxonomy (`guide-to-prompt/references/domains/README.md`, the Human Factors & Ergonomics block), and
+    the same BLOCK returns on an objective sweep of anomaly-detection, root-cause, forecasting and
+    descriptive-distribution. It is never-drawn **because it cannot be drawn on this objective**, which is
+    exactly the hazard `fingerprint` Part 4 names under "A never-built pairing read as a menu" and exactly
+    what this slot's own `## ARCHITECTURE 9 ALLOCATION SCREEN` recorded for urban-regional-science five
+    days earlier. The second reading of zero cards as open ground, on the same number, in the same wave.
+  - **Candidate 1 was therefore screened on an illegal cell.** Its arithmetic refusal (the
+    multiplicative-correction floor at rho 0.480) stands and is still worth its place in `stumping`, but
+    the cell it cleared was never available, so no part of its ground "survived".
+  - **Of the six task types in human-factors-ergonomics, exactly one serves anomaly-detection:**
+    `safety-incident-error-analysis` (the other five BLOCK on `three_rules.task_type`, naming
+    experiment-causal, root-cause, forecasting and descriptive-distribution respectively). That one cell is
+    architecture 5's own measured-dead ground and carries task181's v4 card. So keeping both the lane and
+    the domain means returning to the cell whose reflex sweep this slot already failed.
+  - **`composition_mix` is BLOCKED, not legal.** `BLOCK ban.strategy  stump strategy composition_mix
+    repeats a recent build against task179 (v3)`. The live three-card window today is task179
+    (`composition_mix`, `register`, registered 2026-10-23T11:02:26), task275 (`population_selection`,
+    `operations_log`, 11:22:44) and task483 (`grain_or_unit`, `filed_standard`, 11:44:34); task482 v9 is
+    skipped as `architecture_spent`. task183's ship does not make the strategy legal because its card
+    carries **no registration stamp at all**, so it is not in the window by filing time. The reservation of
+    `composition_mix` for this slot was made against a stale reading of the window for the second time.
+  - **Two other axes the brief did not mention are also shut**: `context_artifact` `filed_standard` BLOCKs
+    against task483, `operations_log` against task275 and `register` against task179; free artifacts are
+    `monitoring_export`, `published_series`, `capacity_report`, `close_out_summary`, `planning_thread`,
+    `filed_model`, `other`, `none`. Free strategies measured on a legal cell: `decomposition_attribution`,
+    `forecast_method_backtest`, `maturity_censoring`, `causal_design`, `uncertainty_hold`,
+    `binding_constraint`, `other`, plus the four the guard flags for semantics risk and the banned
+    withheld-rule shape. Note that this slot's own `paper_screen` line calls `maturity_censoring` blocked
+    by task471 and `causal_design` blocked by task163: both are **stale**, task471's strategy is
+    `population_selection` and both labels measure free today.
+  - **No mechanism was designed, by decision rather than by omission.** A decisive step on alarm ground
+    cannot reach a registrable card on anomaly-detection whatever its quality, so searching one before the
+    cell question is settled spends the pass on an unregistrable design. The pass was spent proving the
+    cell question instead.
+  - **What is open, priced and both at `guard.py check` exit 0** (probe cards with a free strategy and a
+    free artifact, one `repeat.question_form` WARN against task483 in each): (a)
+    `alarm-interface-evaluation` x `experiment-causal`, which is genuinely virgin ground, a never-drawn
+    subdomain on a never-built pairing, and keeps the alarm world the last two passes have learned; it
+    changes the objective and so moves the number out of the lane. (b)
+    `safety-incident-error-analysis` x `anomaly-detection`, which keeps the lane and the domain and
+    returns to architecture 5's measured-dead cell with a driver that has to clear both families this
+    number has now closed. The choice is the author's, and it is the same choice architecture 9 handed
+    back on 2026-10-18 with urban-regional-science in place of the alarm cell.
+- **Reading a cell's axis-ban clearance as drawability.** An axis-ban sweep cannot see
+  `three_rules.task_type`, so "clear of every axis ban" is compatible with the pairing being illegal. On
+  any new cell the task-type gate is read first, off the domains README and off one `guard.py check` probe,
+  before the mechanism search starts. Both of this number's last two passes lost their pass to this.
