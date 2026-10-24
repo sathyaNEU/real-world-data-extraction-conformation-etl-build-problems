@@ -47,3 +47,23 @@ Stump terms swept: material, inventory, subsidence, density, levels, method, oxi
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+Two isolated scored readers (Sonnet, medium effort), each on its own fresh copy of prompt.txt and target/ unzipped from target.zip 977c37cc967376daafbd2eabfe28b6b6, 2026-10-24. Scored with score_reader.py --call-key call.first_raise.
+
+**Reader A.** Call: Bovenmade, Zuidergeer, Ravenbroek (hit). Ask figures 35 of 48: every carbon loss but one (Oudelaak 3.0 against 3.1), every first-raise flag, every GLG; no surface lowering (it averaged every grid point levelled in both surveys, 413 of 441).
+1. Decisive step: protocol 5.1, "the carbon that the peat which formed the top 1.00 m of the point's 1997 core has lost", with 3.2 and the two core lengths; "nothing states the method for locating that depth".
+2. Ranking file: none. 3. Helper file: none. 4. Answer figure: none.
+5. Literal sentence: 5.1 and 5.2 fix population, window, unit and mean, not how to find the peat in 2024; its own result with ash conservation is the golden three, the fixed-level reading gives Ruigeland, Hazelweer, Wedderkamp.
+6. An analytical choice: identifying the same 1997 peat in the 2024 core (ash conservation against the surveyed lowering).
+Sweep lines: all five harmless.
+
+**Reader B.** Call: Bovenmade, Zuidergeer, Ravenbroek (hit). Ask figures 36 of 48: every carbon loss, every flag, every GLG; no surface lowering (the same 413 points).
+1. Decisive step: protocol 5.1, the same sentence; the ash match inferred from 3.1 and 3.2.
+2. Ranking file: none. 3. Helper files: the dictionary, the README and the point register (as maps, not answers). 4. Answer figure: none.
+5. Literal sentence: 5.1 and 5.2; result the golden three; the method is not named.
+6. An analytical choice: identifying the same peat in a thinner, compacted 2024 core; "the naive top-1-m comparison gives a wrong or negative answer".
+Sweep lines: all five harmless.
+
+**Verdict.** Gate F failed: both readers landed the call by the decisive step itself (the ash as the conserved component), from the estimand's own wording and the laboratories' loss on ignition, with no leak in any file. Ask B's renewed tube heights were read off the maintenance log by both (12 of 12 each): the device was on their path. Ask A's re-shot grid points held (0 of 12 each). Architecture 1 is spent.

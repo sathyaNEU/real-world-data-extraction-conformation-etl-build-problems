@@ -4,8 +4,8 @@
   "status": "PAUSED",
   "domain": "physical-environmental-sciences",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-24",
   "stump": "A competent analyst books each unit's surveyed lowering at its topsoil carbon density, or lines the 2024 cores up on that lowering, and files the three units that compressed after their 2009 to 2013 level cuts; one who corrects to equal total soil mass files the three most clay-rich units instead; only the carbon above the 1997 cores' cumulative ash, found again in 2024, names the three units whose peat lost the most.",
   "architecture": 1,
@@ -15,8 +15,8 @@
     "date": "2026-10-24"
   },
   "leak": {
-    "leak_py": "REVIEW (19 lines: coincidental numerals and generic vocabulary; nothing names the decisive step)",
-    "reader": null
+    "leak_py": "REVIEW (19 lines, all harmless)",
+    "reader": "two scored readers: both landed the call (1 of 1); ask figures 35 and 36 of 48"
   },
   "duplicate_check": {
     "heart": "WARN (repeat.deliverables; same_puzzle and same_driver older, differentiated)",
@@ -28,7 +28,7 @@
     "report": null
   },
   "returned": [],
-  "resume": "PAUSED 2026-10-24 at stage 4 with its threads in flight: two isolated scored readers (scratchpad leak-task279-A and -B, each writing reader.json) and the determinism judge's thread on the brief at /tmp/determinism-check-task279-r1 (writing verdict.md, then the judge agent re-invoked with that path to write determinism_check_report.md). Pack target.zip 977c37cc967376daafbd2eabfe28b6b6. Stage 3 green: checks 0 failed, verify PASS, byte-identical, figures_check 68/68, precut 51/0/0, cracker 0 of 24, heart WARN. On resume: status back to BUILD, score both readers with score_reader.py --call-key call.first_raise, read the judge, fix every finding in one generator pass (the golden workbook's coring dates are already moved to real dates, not yet rebuilt), then ship (SHIPPED commit with target.zip and golden/) or record the architecture spent.",
+  "resume": "Architecture 1 spent at stage 4 on 2026-10-24: both isolated scored readers landed the call (Bovenmade, Zuidergeer, Ravenbroek) by finding the 1997 top metre again by its cumulative ash. The determinism judge's thread was in flight on /tmp/determinism-check-task279-r1 (its verdict, when it returns, is recorded for the architecture, not acted on). Next: re-root to architecture 2 at stage 1 in the same objective (fresh mechanism, the slot's screens in the design note's Tried and rejected), card lineage, DRAWN commit.",
   "approved": null,
   "delivered": null,
   "portal": null,
