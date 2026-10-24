@@ -1588,6 +1588,147 @@ as the second gap, which is where the row-grain reading belongs.
 and v1, task471 v2 lineage), all far under the 0.12 WARN floor, so the lexical screen says nothing and the
 abstraction test has to be run by hand. The two neighbours it misses are named in the next entry.
 
+### Architecture 13, step 1: the shared-assessor-parameter ground, REFUSED on measurement (2026-10-24)
+
+(Harness at `scratchpad/w13_201/`: `world.py` one generating process, `exact.py` the reduced normal
+equations so nothing depends on an iteration count, `screen2.py` the route table, `screen3.py` the joint
+dial. Every route scored against the world's OWN truth, never against a quantile of the designed
+statistic or of a fitted recovery.)
+
+**The world, built to the axis.** Six districts, twelve assessors (two with each district as their home),
+480 sites, eight visits a site, 3,840 visits. A visit goes to a home assessor of the site's district
+unless it is cross-cover, when it goes to an assessor of another district. The assessor's own additive
+effect is a district scoring-culture component plus an individual one; the site's level is its district's
+quality plus its own. The filed comparison is each assessor's effect against the workload-weighted mean of
+all assessors, the filed tolerance 5.0 points, and the graded object the set of assessors outside it. The
+coupled quantities (district quality, scoring culture, severity, site level, roster, score) are all drawn
+from the one process, and the roster's confound is structural rather than planted: an assessor's own mean
+is their effect plus the quality of the caseload the roster gave them, whether or not culture and quality
+are correlated at all (measured at a correlation of exactly zero).
+
+**Does the process identify a few shared parameters across many cases? YES, and precisely.** Unknowns 491
+(480 sites plus 12 assessors less the one location constraint) against 3,840 cases, 7.82 cases per
+unknown. The analytic standard error of each shared parameter, from the reduced normal equations with the
+residual sd estimated off the fit (5.99 against the world's 6.00), is **0.51 points against a filed
+tolerance of 5.0**, about a tenth of the decision's own margin. That is the axis's premise confirmed, and
+it is a fourteenfold improvement on the nearest measurement in the corpus: task198's architecture 2 put a
+per-interviewer differential's standard error at 6.96 points against a golden rise of 3.0, because it
+recovered each interviewer's differential from that interviewer's own 33 out-of-region observations, while
+the joint solve here borrows every path through the connected roster. So the shape is not what killed
+task198's architecture 2, and the count test is passed.
+
+**R test, run first as the brief requires. R = 235.99 mean, 31.18 minimum, with 5.85 sign changes** over 20
+mid-bin draws (and 136.79 mean, 37.34 minimum, 3.30 sign changes on the unfiltered base). The closed
+per-case-correction family's identity is R = 1.000 with 0 sign changes, so **this construction is
+structurally outside that family**, and for a reason that is algebra rather than tuning: the naive
+distortion is a CONTRAST (an assessor looks harsh because their caseload is good, lenient because it is
+bad) and the workload-weighted centring makes it sum to zero by construction, so it must change sign.
+
+**The route table, the cheapest LICENSED member printed in the same table as the family's unanimity**
+(20 draws, mid-bin clearance 3.0 standard errors either side of the tolerance, mean designated set 0.90 of
+12; 542 draws tried for 20 kept):
+
+| route | exact set | mean abs error (pts) | class |
+|---|---|---|---|
+| a0 each assessor's own mean score | 3 / 20 | 3.0344 | cheap |
+| a1 mean deviation from the site's own mean (one group-by) | 10 / 20 | 1.3145 | cheap |
+| a4 mean deviation from the district mean (one stratification) | 12 / 20 | 1.2776 | cheap |
+| a5 cross-cover visits alone (the attaining subset) | 18 / 20 | 0.9304 | cheap |
+| **L one-line OLS, score on assessor dummies and site dummies** | **20 / 20** | **0.4251** | **cheapest licensed** |
+| a2 the designed joint solve | 20 / 20 | 0.4251 | standing |
+| a3 the same with the site facet shrunk | 19 / 20 | 0.8239 | standing |
+| a7 the same with medians | 20 / 20 | 0.5336 | standing |
+| standing family unanimous on the set | 19 / 20 | | |
+
+**The kill, and it is the law rather than a cell property. The cheapest licensed member and the designed
+route are the SAME COLUMN**: over 59 worlds the maximum absolute difference between L and a2 is
+**3.973e-12 points**, the backfitting tolerance and nothing else, because the one-line regression a
+competent analyst types IS the reduced normal equations. (The shared parameter's analytic standard error
+over the same 59 worlds is 0.5152 points, range 0.4911 to 0.5389.) So family unanimity (19 of 20) and the easy route landing (20 of 20) are one number read twice,
+which is `stumping`'s own clause on a linear-solve construction, reproduced here on new nouns. And the
+attaining-subset screen fires beside it: a filter and a divide over the cross-cover visits alone, with no
+model at all, names the truth **18 of 20** at a mean absolute error of 0.93.
+
+**The joint dial, counted jointly over 20 cells** (district culture 0.0 to 8.0 against cross-cover 0.02 to
+0.25, mid-bin at 2.0 points and the designated set held to 1 to 4): **the one-line OLS reaches the truth in
+78 of the 79 kept draws, and a2 is identical to it in all 20 cells.** There is no cell in which every cheap
+reflex misses and the one-liner misses too.
+
+**And the sweep's own PASS column says 8 of 20, which is a HARNESS ARTEFACT, recorded because reading it as
+a pass is exactly the defect this skill already carries.** The pass condition tested `one_line_hits <= 2`
+as an absolute threshold while the mid-bin and set-size filters left only **1 to 3 draws kept per cell**
+(57 of every 60 draws rejected), so a cell where the one-liner hit 2 of its 2 kept draws scored as a cell
+where it missed. Read against `kept` rather than against a constant, the one-liner hit every kept draw in
+19 of the 20 cells. Two rules earned: a pass condition on a count is written against the cell's own kept
+count, never against a constant; and a mid-bin filter that rejects 95 per cent of draws is itself a finding
+(with twelve assessors and a tolerance at 5.0 points an honest world rarely clears the boundary
+everywhere, so the designation object here is boundary-fragile and would have to be tuned rather than
+drawn).
+
+**The general clause, which the orchestrator closed from three further directions while this was running
+and which the numbers above corroborate independently.** For a few shared parameters to be identified from
+many cases, each case's observation must be a known function of the parameters of the handlers it touched,
+and the organisation must SHIP which handlers it touched or nothing is identified at all. The pack is then
+a design matrix plus an outcome, the link is forced by the design, and the construction is one call on the
+shipped matrix. **The shipped design matrix is at once what closes the estimator family and what makes the
+construction one line, so Gate C and Gate F are financed by the same object and the dial is one-ended by
+construction.** The sibling's three further kills are the design's RANK rather than its case count (rank
+deficient at every realistic window), the large case count being replication rather than information (and
+replication buys a weighting choice that moved the designated set in 10 of 20 worlds), and R = 1.000 with
+0 sign changes on its own ground. Ten shared-parameter constructions are closed with named kills and
+**paired-comparison or Luce severities, which is this ground, is one of them**; the additive joint solve
+measured here is another, and is a shipped build's driver besides.
+
+**The lineage adjacency, which would have refused this ground on paper even had the arithmetic held.**
+task198's architecture 2 sits on the SAME cell (`survey-research-official-statistics/anomaly-detection`),
+the same objective, the same decisive gap `objective` with `population` second, the same
+`gate_g: decomposition_attribution`, and its Layer 2 pattern is `own:measurer-portability-across-units`:
+"a minority of interviewers work more than one region because rural workloads cross territorial authority
+boundaries, so the record contains the same interviewer's own differential measured away from the region
+that looks worst, which is the only thing that separates her from it". That is the incomplete overlap
+roster in the same nouns. `guard.py check` passes my card at a nearest driver of 0.07 and does not see it,
+because the structural triples key on the decisive pattern (G3 there, G14 here) and the driver screen is
+lexical; the abstraction test sees it at once, since the latent structure, the default path and the
+correcting move all map. Inverting the facets so the ASSESSORS are the decision's candidates and the sites
+the nuisance does change the default path, the graded quantity and the decision, and it repairs that
+architecture's standard-error death outright (0.51 against 6.96 points), but it does not touch the Gate F
+kill above, so it is not drawn.
+
+**Reproducibility.** `screen2.py` and `identity.py` were each run twice to byte-identical output
+(`s2_run1.txt` and `s2_run2.txt` at md5 `8a897e220d1e73db78f487a2480d2402`, `id_run1.txt` and
+`id_run2.txt` identical), and `screen3.py` ran to exit 0 once with its artefact recorded above.
+
+**What was NOT measured, and is left recorded rather than screened:** the time-varying nuisance escape (the
+sites drift inside the window, so site fixed effects is misspecified and the one-liner lands wrong). It is
+not pursued because the repair is one slope per site, which is one unknown per case, the shape closed by
+algebra in architecture 10's enumeration, and because the licensed drift forms (linear, by period, smooth)
+reopen the estimator family on the graded designation.
+
+### Architecture 13, step 2: the no-shipped-design-matrix direction, answered on this ground and not built (2026-10-24)
+
+Asked whether a decisive step exists here whose licensed family has no shipped design matrix to solve, so
+that the deciding quantity attaches to no unit the record labels: **on judgement-scored ground I cannot see
+one, and the reason looks structural rather than local.** Every candidate enumerable on this ground falls
+into one of five closed boxes. (1) An assessor's severity, a subject's level or a district's scoring
+culture is a parameter of a labelled unit, the roster ships the incidence, and the construction is one call
+on it, which is the refusal measured above. (2) A decision-consistency or agreement functional (the share
+of subjects whose side of the filed tolerance would change on a replication of the measurement) genuinely
+attaches to no labelled unit and satisfies the letter of the clause, and it is closed twice over by screens
+already on file: it is a variance functional, so the lever that reorders the candidates is the variance
+that randomises the quantity they are ranked on, and the determinacy screen has already measured a
+discriminability statistic at 1.64 distinct designated sets over four licensed forms. (3) A coverage
+quantity over the sites the roster never reached attaches to units with no rows, and its construction
+transports a rate from the visited sites, which is `population_selection` needing the data to force the
+selection, with the visited subset a filter and a divide. (4) A property of the design itself, which
+contrasts the roster leaves unidentified or the date accumulating cross-cover makes a judgement possible,
+is exact arithmetic on the shipped roster (rule application) or a running-sum crossing (the increment
+trichotomy). (5) A rank or ordering object is dead across all four of its determinacy criteria, which are
+exhaustive. **The structural reason is the mandated-indicator law reached from the design side:** a
+quality system over human judgement exists in order to attribute variation to the people and units it
+labels, so every quantity such an organisation keeps a record about is indexed by a labelled handler, and
+the record that would be needed to identify an unlabelled quantity is the one it has no reason to keep.
+Recorded, not drawn.
+
 ## Surface screen, answered
 
 `guard.py surface task201` screens 246 builds and promotes five pairs for adjudication. Four are corpus
