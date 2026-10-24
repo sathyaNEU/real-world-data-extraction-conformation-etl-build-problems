@@ -39,8 +39,14 @@
      "round": 1,
      "zip": "c1b19cef",
      "moves": "two lecture-only SIRIUS pairs a faculty and level (three groups, not one or two) and two flip classes a faculty and level whose lists hold places of students on approved leave or with no 2026 census attempt; arc_s1_2026_class_enrolments.csv added (49,237 places); every other file byte-identical to the shipped pack except the timetable and one dictionary entry; ceiling 0 of 20 on all 14 routes",
-     "reader": "pending: scored-task179ze and scored-task179zf",
-     "judge": "pending: judge-task179z (pass 3)"
+     "reader": "scored-task179ze and scored-task179zf: both missed the call (2,250) and kept 0 of the 20 cells; E took the golden grouping and counted every listed place (each cell off by the two flip classes), F merged only classes with identical meetings and counted every listed place",
+     "judge": "judge-task179z (pass 3): the call DETERMINISTIC (3,253.6), all 20 cells reproduced, FIX_NOW on the group unit (every room-and-time meeting, or every class code, as defensible as the distinct sets under section 4 alone)"
+    },
+    {
+     "round": 2,
+     "zip": "c1b19cef, the pack unchanged",
+     "moves": "one clause in the prompt's ask sentence: a group is the whole set of students taught together in one room at one time, counted once however often and wherever it meets (SF11); no file the call reads moved; voice-check PASS at 782 characters, precut 51 PASS, leak.py unchanged, freeze PASS",
+     "judge": "pending: judge-task179w (the one re-judge)"
     }
    ],
    "freeze": "rubric PASS: the main call, the stump and every frozen figure unchanged; 14 ask figures moved",
@@ -90,7 +96,7 @@
    "registration": "registered 2026-10-23 (4afaec0a) after two lock BLOCKs on the window (ban.strategy composition_mix vs task274, then vs task175); not relabelled"
   }
  },
- "resume": "rubric repair at stage 4 on zip c1b19cef: score reader.json in scratchpad scored-task179ze and scored-task179zf with score179z.py against generator/figures.json and read judge-task179z/verdict.md; if the readers keep about a fifth of the 20 cells or fewer and the judge approves, fill returned[0], set status SHIPPED, update the design note's Measured line and the ledger row, commit RESHIPPED (task179): rubric; else re-site the device the reader executed",
+ "resume": "rubric repair at stage 4 on zip c1b19cef with the prompt clause: read judge-task179w/verdict.md; on APPROVE fill returned[0], set status SHIPPED, update the design note's re-judge line and the ledger row, commit RESHIPPED (task179): rubric; a second FIX_NOW leaves the shipped a9f8b878 version standing",
  "approved": null,
  "delivered": "2026-10-23",
  "portal": null,

@@ -179,6 +179,7 @@ Lesson: a retention model validated on a later intake is only as good as the pro
 | SF8 | age | 21 or over at entry | age as a number | 3,270.3, same call | same call (asserted) |
 | SF9 | an entrant's faculty | the admissions Faculty (first-listed programme) | the second programme's | same call | conjoint entrants are 3 per cent and the faculty terms are small (asserted under SF3) |
 | SF10 | the model's form for the repeat-classmate count | the lowest Akaike information criterion among the forms fitted (an indicator at 10, 3,253.0) | a log or square-root term (judge round 1: 3,115, 3,130), a 22-classmate indicator (2,976) | 3,000 | SELECT_PIN (conventions section 3); every form within 12 AIC prints the call (asserted SF10, B0, B1, B3) |
+| SF11 | the ask's teaching group (judge pass 3) | the whole set of students taught together in one room at one time, counted once however often and wherever it meets: each distinct set of classes meeting together | every room-and-time meeting its own group (FASS 200 21 and 66); one group per class code (15 and 43) | asks only, the call reads no timetable row | the prompt's clause (2026-10-24), asserted A4 |
 
 ## Ladder
 
@@ -258,7 +259,10 @@ file the call reads is the shipped one, the dictionary only gains the class list
   partner, and a pair at 30 or under. The students taught together are then three groups, the lecture and each
   workshop. Joining classes through any shared meeting (the portal's route on the first pack) makes one; merging
   identical meeting sets makes two. Fair: each such pair's classes share exactly one slot and hold one more each, and
-  the three sets are the only reading of "the students taught together, in one room at one time" (asserted A4).
+  the prompt counts a group as the whole set of students taught together in one room at one time, once however
+  often and wherever it meets, so the three sets are the only reading (asserted A4). With the clause filed this
+  primary is rule application a careful reader executes (reader E did, without it); primary 2 carries the ask
+  for that reader, and every route with the grouping right still keeps 0 of 20.
 - **Primary 2, a group's size (D4, absence as the signal, split across two files, silent).** ARC Scheduling's Enrolled
   at Census, and the class list that ties to it, still count places held by students on approved leave (423) and by
   students with no 2026 census attempt (558). Only the class list joined to the census history gives the students
@@ -348,7 +352,15 @@ Measured by: generator/ceiling.py
 - Gates: `checks.py` 88 green (A0 to A10, S2 to S4, F1 to F3), `verify.py` 23 figures, two builds byte-identical over
   20 files, `figures_check.py` 44 figures, `voice-check.py` PASS, `freeze.py check --mode rubric` PASS (the call, the
   stump and every frozen figure unchanged; 14 ask figures moved).
-- Measured: pending (determinism judge and two cold readers on the new pack).
+- Measured on zip c1b19cef: cold readers E and F both missed the call (2,250 against 3,250) and kept 0 of the 20
+  cells. Reader E took the golden grouping and sized groups from every listed place, so each cell is off by the
+  two flip classes; reader F merged only classes with identical meetings and also counted every listed place.
+  On the portal's weights each scores about 17 (the baseline component and instruction following).
+- Judge pass 3 (judge-task179z): the call DETERMINISTIC (3,253.6; every form within reach of the lowest AIC
+  prints 3,250), all 20 cells reproduced, FIX_NOW on the group unit: section 4's "in one room at one time"
+  left every room-and-time meeting, or every class code, defensible as one group. Closed by one clause in the
+  prompt's ask sentence (SF11), not in section 4, so no file the call reads moved and the zip is unchanged;
+  voice-check PASS (782 characters), precut 51 PASS, leak.py unchanged, freeze PASS. Re-judge: pending.
 
 ## Architecture v2 record (spent, kept as history)
 
@@ -1035,6 +1047,9 @@ candidate touches them.
     because the device's whole inconsistency sat in one file and a strong reader's capacity check finds it. Replaced
     by two devices under every cell, lecture-only pairs (three groups) and places held by students on leave or who
     left, seen only through the class list joined to the census history (`## Rubric repair`).
+  - Judge pass 3 (2026-10-24) on the group unit left to section 4's "in one room at one time": counting every
+    room-and-time meeting, or every class code, was as defensible as the distinct sets of classes. Closed by the
+    prompt clause (SF11) rather than section 4, which the call reads.
 
 ## Retired
 
