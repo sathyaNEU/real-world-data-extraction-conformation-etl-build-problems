@@ -1,0 +1,222 @@
+{
+ "V": 2440,
+ "V_exact": 2443.0,
+ "add": 0.8,
+ "add_exact": 803527,
+ "area_code": "LQ",
+ "ask_a": {
+  "101": 7456,
+  "102": 7085,
+  "103": 6968,
+  "104": 7290,
+  "105": 5954,
+  "106": 6734,
+  "107": 5710,
+  "108": 4658,
+  "109": 3890,
+  "110": 4429
+ },
+ "ask_a_exact": {
+  "101": 7456.2,
+  "102": 7084.88,
+  "103": 6968.32,
+  "104": 7289.84,
+  "105": 5954.24,
+  "106": 6733.92,
+  "107": 5710.12,
+  "108": 4657.76,
+  "109": 3890.0,
+  "110": 4429.16
+ },
+ "ask_b": {
+  "101": 1851,
+  "102": 1623,
+  "103": 1454,
+  "104": 1469,
+  "105": 1192,
+  "106": 1324,
+  "107": 1253,
+  "108": 1018,
+  "109": 859,
+  "110": 823
+ },
+ "ask_b_exact": {
+  "101": 1851.02,
+  "102": 1622.68,
+  "103": 1453.74,
+  "104": 1469.16,
+  "105": 1192.18,
+  "106": 1324.04,
+  "107": 1253.04,
+  "108": 1018.36,
+  "109": 859.06,
+  "110": 823.22
+ },
+ "ask_c": {
+  "S1": 44,
+  "S2": 110,
+  "S3": 44,
+  "S4": 64,
+  "S5": 72,
+  "S6": 84
+ },
+ "beta": 0.22,
+ "bus_day": 15,
+ "bus_eve": 14,
+ "bus_weekday": "Friday",
+ "deterrence_exponent": -0.22,
+ "guests_by_store": {
+  "101": 29833,
+  "102": 2747,
+  "103": 8285,
+  "104": 99411,
+  "105": 328864,
+  "106": 33646,
+  "107": 615358,
+  "108": 53583,
+  "109": 10594,
+  "110": 2496
+ },
+ "instore_pct": 88,
+ "margin_pct": 26,
+ "min_area": 280,
+ "n_park_sites": 6,
+ "n_stores_share": 24,
+ "parks": [
+  {
+   "desc": "CARAVAN PARK AND PREMISES",
+   "pitches": 1750,
+   "postcode": "LQ15 4DZ"
+  },
+  {
+   "desc": "CARAVAN PARK AND PREMISES",
+   "pitches": 420,
+   "postcode": "LQ18 4PH"
+  },
+  {
+   "desc": "CARAVAN PARK AND PREMISES",
+   "pitches": 240,
+   "postcode": "LQ6 2DB"
+  },
+  {
+   "desc": "CARAVAN PARK AND PREMISES",
+   "pitches": 80,
+   "postcode": "LQ16 1AR"
+  },
+  {
+   "desc": "CAMPING SITE AND PREMISES",
+   "pitches": 20,
+   "postcode": "LQ7 2AA"
+  },
+  {
+   "desc": "TOURING CARAVAN SITE AND PREMISES",
+   "pitches": 15,
+   "postcode": "LQ17 1XA"
+  }
+ ],
+ "radius_m": 400,
+ "resident_add": 0.5,
+ "resident_site": "S1",
+ "resident_site_name": "Bellingtoft, Fenton Road",
+ "roadf": 1.25,
+ "runner_up": "S1",
+ "runner_up_add": 0.5,
+ "s3_cost": 976000,
+ "s3_resident": 0.1,
+ "s3_resident_rank": "second",
+ "s3_sales": 7.1,
+ "s3_took": 290,
+ "site": "S3",
+ "site_name": "Wrentoft, Mill Lane",
+ "sites": {
+  "S1": {
+   "add": 0.5,
+   "add_exact": 507748,
+   "area": 1800,
+   "cost": 1200000,
+   "name": "Bellingtoft, Fenton Road",
+   "resident_add": 0.5,
+   "resident_add_exact": 496330,
+   "sales": 7.6,
+   "sales_exact": 7639952,
+   "took": 1071689
+  },
+  "S2": {
+   "add": 0.1,
+   "add_exact": 90687,
+   "area": 1800,
+   "cost": 839000,
+   "name": "Darrowfield, Eastgate",
+   "resident_add": 0.1,
+   "resident_add_exact": 88946,
+   "sales": 5.6,
+   "sales_exact": 5640896,
+   "took": 2065177
+  },
+  "S3": {
+   "add": 0.8,
+   "add_exact": 803527,
+   "area": 1500,
+   "cost": 976000,
+   "name": "Wrentoft, Mill Lane",
+   "resident_add": 0.1,
+   "resident_add_exact": 144617,
+   "sales": 7.1,
+   "sales_exact": 7133923,
+   "took": 289588
+  },
+  "S4": {
+   "add": -0.1,
+   "add_exact": -148023,
+   "area": 1500,
+   "cost": 691000,
+   "name": "Brackenmere, Northfield",
+   "resident_add": -0.1,
+   "resident_add_exact": -148190,
+   "sales": 4.5,
+   "sales_exact": 4481202,
+   "took": 2392827
+  },
+  "S5": {
+   "add": -0.1,
+   "add_exact": -122906,
+   "area": 1600,
+   "cost": 659000,
+   "name": "Quellby, Sutton Road",
+   "resident_add": -0.1,
+   "resident_add_exact": -123799,
+   "sales": 4.5,
+   "sales_exact": 4510917,
+   "took": 2449016
+  },
+  "S6": {
+   "add": 0.0,
+   "add_exact": -331,
+   "area": 1500,
+   "cost": 662000,
+   "name": "Sallowmere, Westway",
+   "resident_add": 0.0,
+   "resident_add_exact": -10254,
+   "sales": 5.1,
+   "sales_exact": 5080937,
+   "took": 2536058
+  }
+ },
+ "store_numbers": [
+  101,
+  102,
+  103,
+  104,
+  105,
+  106,
+  107,
+  108,
+  109,
+  110
+ ],
+ "turn_base_min": 4,
+ "turn_min_per_case": 0.02,
+ "weeks": 25,
+ "weeks_year": 52,
+ "wrentoft_lakes_pitches": 1750
+}

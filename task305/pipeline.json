@@ -1,21 +1,34 @@
 {
  "task": "task305",
  "owner": "perssathya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "urban-regional-science",
  "objective": "opportunity-sizing-decision",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-24",
- "stump": "A competent analyst runs the filed spend-share model over the census households' spend, finds it fits the card feed and approves S1 Ashby Moor at about 0.6 million pounds where the golden is S3 Pellow at about 0.9 million; the step that lands them there is taking the census output areas as every origin of grocery spend, when the guests on Pellow Lakes Holiday Park's 1,400 pitches live outside the region.",
+ "stump": "A competent analyst runs the filed spend-share model over the census households' spend, finds it reproduces the estate's sales and approves S1 Bellingtoft at GBP 0.5 million where the golden is S3 Wrentoft at GBP 0.8 million; the step that lands them there is taking the census output areas as every origin of grocery spend, when the guests on Wrentoft Lakes Holiday Park's 1,750 pitches live outside the region.",
  "architecture": 1,
  "loops": 0,
- "precut": {"exit": null, "date": ""},
- "leak": {"leak_py": "", "reader": ""},
- "duplicate_check": {"heart": "", "nearest": "task89 lineage and task98 lineage at 0.05; task471 lineage and task53 lineage at 0.04"},
- "judge": {"verdict": "", "disposition": "", "report": ""},
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-24"
+ },
+ "leak": {
+  "leak_py": "REVIEW (26 lines: store and house numbers, list entry numbers, stump vocabulary in the notes and model sheet, the shortlist's costs, nested GTFS zips; all to be ruled by the readers)",
+  "reader": "round 1 on bb1aef72: both off the call, asks 26 and 16 of 26 (pair 56.4); round 2 on 1680766e: both off the call, asks 16 and 16 of 26 (pair 45.8, B and C kept), asks B and C re-sited; round 3 two fresh scored readers on ec38f0bd"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.question_form, answered); surface promotes task199, task133, task180 on the card signature, differentiated",
+  "nearest": "task89 lineage and task98 lineage at 0.05; task471 lineage and task53 lineage at 0.04"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE on 1680766e (the FIX_NOW re-judge); a pass on ec38f0bd owed for the re-sited asks B and C",
+  "report": "determinism_check_report.md"
+ },
  "returned": [],
- "resume": "DRAWN 2026-10-24: stage 2 next (default path, stump sentence, ladder from the scratch prototype t305/hp/ at seed 7 with the golden tuned mid-bin, fork table and closure for the per-pitch spend family, the asks on populations the call does not read, prompt.txt, precut.py).",
+ "resume": "Stage 4 round 3 in flight on target.zip ec38f0bd (two fresh isolated scored readers in scratch leak-task305-e and -f, the judge thread at /tmp/determinism-check-task305-r3): score both readers against generator/figures.json and have the determinism-judge agent write the report from the thread's verdict.md; fix any finding in one generator pass and re-run the free gates; then ship (SHIPPED commit with target.zip and golden/ force-added, ledger row before 306, card current, board wave 6 rows) and merge. If the scratch folders are gone, rebuild with generator/make.py (byte-identical to ec38f0bd) and re-run round 3 on fresh copies.",
  "approved": null,
  "delivered": null,
  "portal": null,
