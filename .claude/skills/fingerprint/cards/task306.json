@@ -1,0 +1,98 @@
+{
+  "task": "task306",
+  "architecture": "v1",
+  "drawn": "2026-10-24",
+  "slot_note": "",
+  "domain": "energy-systems-utilities",
+  "subdomain": "asset-condition-maintenance",
+  "client_domain": "energy-systems-utilities",
+  "niche": "tooling a traction-battery refurbishment line's next-year slots across five EV platforms from the Dutch vehicle register, when the packs that will fail out of warranty next year include those in used imports still to arrive, old enough to be past their eight-year cover on arrival",
+  "objective": "opportunity-sizing-decision",
+  "shape": "other",
+  "decision_type": "allocation_to_total",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population",
+    "time"
+  ],
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G13",
+    "G6",
+    "G12"
+  ],
+  "gate_g": "forecasting",
+  "calibration_form": "none",
+  "stump_strategy": "maturity_censoring",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "capacity_report",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst reads each registered car's current pack from the EU-wide replacement log (age from its latest fitting, the OEM warranty to eight years from first admission or Voltwerk's two years from a refurbished fit), takes the chance it fails in 2027 outside cover given it works on 30 June 2026 from the published curves, sums by platform over the 30 June 2026 register and splits the 60 lots by largest remainder, which tools the Mira city car two to three lots short and gives them to Volta and Tern, because the register is not the population whose packs fall due in 2027.",
+  "domain_test": "The deciding quantity is the out-of-warranty replacement demand an asset base throws off in 2027, forecast from each asset's own condition (pack age since its last fitting, its curve, its warranty clock), the asset-condition analyst's installed-base forecast; a vehicle fleet's base keeps moving through used imports that the RDW register records only as they arrive, so the 2027 base is the register plus the import stream it shows, and swapping in boilers or routers loses the cross-border used-car trade and the register's two registration dates that carry both the pack age and the stream.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:installed-base-forecast-carrying-the-inflow-the-register-does-not-hold-yet",
+  "layer1": [
+    "RDW open-data register with Dutch column names and YYYYMMDD dates",
+    "two registration dates per car: first admission anywhere in the EU and first Dutch registration",
+    "a pack replacement log merged from the OEMs' EU-wide dealer records and Voltwerk's own, with the country and the cover under which each pack was fitted",
+    "life curves published as cumulative shares by whole year of pack age, one OEM column per platform and Voltwerk's own refurbished-pack curve",
+    "trade-name spellings that vary by platform variant in the register"
+  ],
+  "stakeholder_role": "operations planner at a traction-battery refurbisher",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "rdw_register_extract_20260630.csv",
+    "rows": 0,
+    "entity": "one car of the five platforms on the Dutch register on 30 June 2026",
+    "grain": "car",
+    "source": "synthetic"
+  },
+  "forum": "line_manager_or_team",
+  "forcing_event": "purchase_order_or_contract",
+  "org_family": "manufacturer",
+  "world": {
+    "geography": "Netherlands (Tilburg)",
+    "currency": "EUR",
+    "org_type": "traction-battery refurbisher (remanufacturing line)",
+    "invented_names": [
+      "Voltwerk Accu Revisie",
+      "Volta hatch",
+      "Kestrel SUV",
+      "Plover saloon",
+      "Mira city car",
+      "Tern van"
+    ],
+    "people": [
+      "Imke Recers",
+      "Maarten Cammel"
+    ]
+  },
+  "deliverables": [
+    "voltwerk_tooling_2027.xlsx",
+    "voltwerk_tooling_2027.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "how-many",
+  "driver": "The decisive quantity is next year's failures in an asset base that keeps taking in old units the current roll does not hold yet: a forecast summed over today's roll leaves out the units still to arrive, which arrive past their cover and fail in their first months, so one segment's demand runs a fifth short and its share of a fixed capacity goes to the segments the roll overstates.",
+  "driver_concrete": "Each platform's 2027 out-of-warranty pack replacements are the registered cars' conditional chances of failing outside cover plus those of the used imports the register shows arriving every month, which keep arriving through 2027 at about nine years old, past the eight-year OEM cover, so the Mira city car's 2027 demand is about a fifth above the register's own and the 60 lots move two to three onto it from Volta and Tern.",
+  "stump": "A competent solver forecasts 2027 from the 30 June 2026 register alone, each car's current pack from the replacement log at its conditional chance of failing outside cover, and tools Mira two to three lots short; the step that lands it there is taking the register as the population whose packs fall due in 2027, when the Mira's used imports keep arriving at about 520 a month past their warranty and fall due inside the year.",
+  "lineage": [],
+  "differentiation": {
+    "task132": "task132 renews the module in each relay position (a failed module is replaced and restarts the wear curve, so today's module's rate is weighted by its survival); task306's decisive move is the population at risk, the cars still to arrive on the register, and the renewal it needs is read off a complete replacement log as a lower rung.",
+    "task173": "task173 forecast asset failures on the same task type from a different driver; task306 adds the units the register does not hold yet, which no condition model of today's assets can see.",
+    "task133": "task133 counts each taken-over unit only from its age at the takeover, a denominator fixed inside the record's own history; task306's units are not in the record at all yet, and the decisive step adds the cars still to arrive on the register, at the age profile the register's own imports show.",
+    "task180": "task180 corrects a record that misses small events in its noisy hours; task306's register records every car it holds correctly, and what it lacks is the cars that will arrive after the snapshot.",
+    "task468": "task468's spent architectures forecast next year's cost of the units active today from how long each has been active (tenure since first fill, then the current spell); task306's decisive step is not any unit's clock but the units not on the roll yet, used imports arriving after the snapshot, whose packs fall due in their first months here.",
+    "task98": "task98's lineage turned on arrivals that count without consuming a unit, a channel no closed period showed, and on reclassified scores; task306's arrivals are a steady stream the register already shows month by month, and they consume refurbishment capacity like any registered car."
+  },
+  "architecture_spent": false,
+  "notes": "Drawn out of wave order (wave 6 is task301 to task306): task301, task302 and task304 are parked after call-only probes landed every mechanism tried (notes in their scratch tried-and-rejected files); task306's probes (four, on two packs) all missed the decisive step. Shape filed as other because ban.shape holds 05 against task486; the call is an allocation of 60 lots with a forecast per platform. Redrawn at check and at registration against the live window (task179, task275, task483): the decisive generator G12 to G13 (ban.pattern against task482 at the first check); the strategy from population_selection (F7, banned against task275) and composition_mix (banned against task179) to maturity_censoring, which is F4's own insight here: the register is the count that has arrived, the decision needs an estimate of what will arrive, and the arrived count understates exactly the platform whose cars keep arriving; the context artifact from register and filed_standard (banned against task179 and task483) to capacity_report, the tooling plan being a capacity plan; the forum from executive_team (banned against task179) to line_manager_or_team, the head of operations signing the plan.",
+  "registered": "2026-10-24T05:24:54Z"
+}
