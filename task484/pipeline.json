@@ -1,20 +1,66 @@
 {
  "task": "task484",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-24",
  "architecture": 3,
  "loops": 0,
- "stump": "The default path carries the 2024-25 survey's cords per appliance into 2025-26 at the winter's degree days and reads the propane tickets' fall as thrift in the propane category, so the propane-heated benches' stoves burn at last winter's secondary-heat rate, their PM2.5 sits under their zone allotments, and the changeout funds go to the valley floor zone alone, where the benches' wood burning rose by about half and both benches are over.",
- "precut": {},
- "leak": {},
- "duplicate_check": {},
- "judge": {},
+ "stump": "The default path carries the 2024-25 survey's wood per appliance into 2025-26 (the two winters had the same degree days) and reads the propane exports only for the commercial category, so the benches' appliances burn at last winter's rate, their PM2.5 sits at 78 and 68 tons under allotments of 89.9 and 77.6, and Valley Floor South alone takes the fund, where the benches' propane homes with a heating appliance took 26 to 32 per cent less propane while those without one took the same, and the wood burned in its place puts both benches over.",
+ "precut": {
+  "result": "PASS",
+  "checks": 51,
+  "fail": 0,
+  "warn": 0,
+  "pair_ceiling": 28.5,
+  "mirror_leakage": 0.0,
+  "date": "2026-10-24"
+ },
+ "leak": {
+  "result": "REVIEW",
+  "date": "2026-10-24",
+  "zip": "87a0101c91c1a4ef",
+  "note": "leak.py REVIEW only (Table 4-2's allotments, the ordinance's call words, column names), answered by four readers' Q1 to Q6: no sentence names the decisive step, no file ranks the zones, nothing reads as the answer"
+ },
+ "duplicate_check": {
+  "heart": "WARN (repeat.question_form, answered in the note)",
+  "surface": "exit 0, five promoted pairs on surface 0.08 to 0.10 and card-level collisions differentiated on the card",
+  "date": "2026-10-24"
+ },
+ "judge": {
+  "pass": 1,
+  "zip": "d51a7c26815e683b",
+  "verdict": "DETERMINISTIC",
+  "disposition": "APPROVE",
+  "gate_g": "other, analytical_non_defect, surface_read_dependency no, sole_data_defect no",
+  "gate_h": "domain pass, layers pass, decisive_step analytical",
+  "carried_to": "87a0101c91c1a4ef",
+  "note": "the judge agent diffed the two cuts by md5 and confirmed the assessor's 2010 vintage from the data (48 of 48 codes equal the relationship file's sums by GEOID_BG_10, ratio sd 0, against 34 differing by GEOID_BG_20)",
+  "report": "determinism_check_report.md"
+ },
  "returned": [],
- "resume": "stage 2 for architecture 3 (Halvard County's 2025-26 burn zone determinations after a propane price spike): world on paper with the five zones' allotments set so the default names one valley floor zone and the golden adds both benches (every golden margin at least four tons), the standing family measured (pooled and by-zone ratio comparisons, the gallon comparison failing the 2023-24 to 2024-25 check), the cheapest licensed member's hit rate, ladder, fork table, closure, asks on rows outside the main population (not the residential propane accounts the comparison uses), prompt.txt, precut.py exit 0.",
- "source_note": "re-root to a fresh world; architectures 1 and 2 spent at stage 4"
+ "resume": "shipped; next is the portal result from the author (APPROVED to SHIPPED_APPROVED, PENDING_REVIEW stays SHIPPED, left off to FAILED_TO_STUMP).",
+ "source_note": "re-root to a fresh world; architectures 1 and 2 spent at stage 4",
+ "readers": {
+  "round1": {
+   "zip": "d51a7c26815e683b",
+   "call": "0 of 2 twice",
+   "asks": "17 of 37 twice (45.9 per cent), exit 1",
+   "cause": "ask B kept by both through the assessor file's 2010 name; renamed, and two commercial parcels on home geocodes given their own"
+  },
+  "round2": {
+   "zip": "87a0101c91c1a4ef",
+   "call": "0 of 2 twice",
+   "asks": "5 of 37 twice (13.5 per cent), exit 0",
+   "note": "both filed Valley Floor South alone on the survey carried forward, read Coldwater's TRANS-DT and joined the assessor's codes without the relationship file"
+  }
+ },
+ "shipped": {
+  "date": "2026-10-24",
+  "zip": "87a0101c91c1a4ef",
+  "call": "Valley Floor South, East Bench and West Bench exceeded their 2025-26 allotments and share the 2026-27 changeout fund, USD 155,000 each; Valley Floor North and Upper Valley did not."
+ }
 }

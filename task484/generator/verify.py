@@ -1,155 +1,216 @@
-"""Independent verifier: recomputes every graded figure from target/ alone, reading each file the way a solver would,
-and compares them with golden/ and generator/figures.json.
+"""The independent verifier: reads only the shipped bundle (target/), the golden deliverables and figures.json, on its
+own code path (pandas for the tables, pdfplumber for the documents, the fixed-width layout read from its own file),
+and recomputes the call, every zone figure, the propane component and both asks.
 
     python3 task484/generator/verify.py
 """
-import collections
-import csv
 import json
+import math
 import os
 import re
+import sys
 
-import openpyxl
-from pypdf import PdfReader
+import pandas as pd
+import pdfplumber
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 T = os.path.join(TASK, "target")
 GD = os.path.join(TASK, "golden")
-FAIL = []
+OK, BAD = [0], []
 
 
-def ok(tag, cond, msg):
-    print("%-5s %s %s" % (tag, "ok  " if cond else "FAIL", msg))
+def v(label, cond, detail=""):
+    OK[0] += 1
     if not cond:
-        FAIL.append(tag)
+        BAD.append(label)
+    print("%s  %s%s" % ("PASS" if cond else "FAIL", label, ("  (" + detail + ")") if detail else ""))
 
 
-def rows(name):
-    with open(os.path.join(T, name), newline="") as f:
-        return list(csv.DictReader(f))
+def f(prefix):
+    m = [n for n in os.listdir(T) if n.startswith(prefix)]
+    assert len(m) == 1, prefix
+    return os.path.join(T, m[0])
 
 
-def pdf(name):
-    return " ".join(p.extract_text() for p in PdfReader(os.path.join(T, name)).pages).replace("\n", " ")
+def pdf(prefix):
+    with pdfplumber.open(f(prefix)) as d:
+        return "\n".join(p.extract_text() or "" for p in d.pages)
 
 
-def r1(x):
-    return round(x + 1e-9, 1)
+def rnd(x, nd=0):
+    k = 10 ** nd
+    return math.floor(x * k + 0.5) / k
 
 
 def main():
     figs = json.load(open(os.path.join(HERE, "figures.json")))
-    prov = pdf("contingency_provisions_rwc.pdf")
-    commit = {m.group(1): int(m.group(3)) for m in re.finditer(r"(Brannock|Ivelton|Quarrow|Saddeny|Wethermoor|Ellick) "
-                                                              r"(Selwick|Corrin|Tamsey) (\d+)", prov)}
-    ok("V0", len(commit) == 6, "six commitments read from Table 4-1")
-    scc = {x["registry_appliance_code"]: x["scc"] for x in rows("scc_crosswalk_rwc.csv")}
-    lab = {x["survey_appliance"]: x["scc"] for x in rows("scc_crosswalk_rwc.csv")}
-    app = {x["application_appliance"]: x["scc"] for x in rows("scc_crosswalk_rwc.csv") if x["application_appliance"]}
-    ef = {x["scc"]: float(x["factor"]) for x in rows("emission_factors_rwc_2023.csv") if x["pollutant"] == "PM2.5"}
-    pellet = [s for s, l in lab.items() if s.startswith("Pellet")][0]
-    pel = lab[pellet]
-    area20 = {x["parcel_number"]: x["area_2020_boundary"] for x in rows("parcel_area_crosswalk.csv")}
-    reg = rows("wood_device_registry_2026-06-30.csv")
-    # the 2025-26 appliances: in place in the season, the 2020 boundary, each device once
-    n26 = collections.Counter()
-    for x in reg:
-        if x["status"] == "A" and int(x["year_installed"]) <= 2025 and area20.get(x["parcel_number"]):
-            n26[area20[x["parcel_number"]], scc[x["appliance_code"]]] += 1
-    # the survey: wood burned per appliance by area and class (cords, or tons of pellets)
-    conv = {"cords": 1.0, "face cords": 1 / 3.0, "pickup loads": 0.5, "tons": 1.0, "bags": 40 / 2000.0}
-    sv = collections.defaultdict(list)
-    for x in rows("household_wood_survey_2024_25.csv"):
-        yr = x["year_installed"]
-        yr = int(yr) if not yr.startswith("'") else (1900 + int(yr[1:]) if int(yr[1:]) > 30 else 2000 + int(yr[1:]))
-        sv[x["maintenance_area"], lab[x["appliance"]]].append((float(x["amount_burned_2024_25"]) * conv[x["amount_unit"]],
-                                                               x["wood_main_heat"] == "Yes", yr, float(x["weight"])))
-    mean = lambda v: sum(u * w for u, s, y, w in v) / sum(w for u, s, y, w in v)
-    # the changeouts: completed applications, by area (parcel or address), class and heat status
-    by_addr = {}
-    for x in reg:
-        by_addr.setdefault((x["site_address"], x["county"]), x["parcel_number"])
-    co = collections.Counter()
-    for x in rows("changeout_applications_2015_2025.csv"):
-        if x["status"] != "Completed":
-            continue
-        p = x["parcel_number"] or by_addr[x["site_address"], x["county"]]
-        a = area20.get(p) or [y["area_2014_boundary"] for y in rows_cache(p)][0]
-        prim = x["heat"] in ("P", "main heat source")
-        co[a, app[x["existing_appliance"]], prim] += 1
-    ws = openpyxl.load_workbook(os.path.join(T, "maintenance_plan_rwc_base_year_2014.xlsx"), read_only=True)["RWC base year 2014"]
-    it = ws.iter_rows(values_only=True)
-    next(it)
-    n14 = {(r[0], r[2]): r[4] for r in it if r[0]}
-    tpc = 1.163
-    res = {}
-    for a in commit:
-        e26 = b14 = 0.0
-        for s in ef:
-            v = sv[a, s]
-            m = mean(v)
-            f = (1.0 if s == pel else tpc) * ef[s] / 2000
-            e26 += n26[a, s] * m * f
-            ncp, ncs = co[a, s, True], co[a, s, False]
-            if ncp + ncs:
-                mp = mean([z for z in v if z[1]])
-                ms = mean([z for z in v if not z[1]])
-                b14 += ((n14[a, s] - ncp - ncs) * m + ncp * mp + ncs * ms) * f
+    # documents, each with a positive control on the same extractor
+    plan, tool, meth = pdf("maintenance_plan"), pdf("montana_rwc_tool"), pdf("heating_survey_2024_25_methods")
+    v("pdf: the plan's Table 4-2 reads back", "Table 4-2" in plan and len(plan) > 1000)
+    v("pdf: the tool documentation reads back", "Table 1" in tool and "seasonal heating efficiency" in " ".join(tool.lower().split()))
+    v("pdf: the survey methods note reads back", "weighted mean" in meth)
+    zones = ["Valley Floor North", "Valley Floor South", "East Bench", "West Bench", "Upper Valley"]
+    allot = {z: float(re.search(z + r"\s+(\d+\.\d)", plan).group(1)) for z in zones}
+    fund = int(re.search(r"USD\s+([\d,]+)", plan).group(1).replace(",", ""))
+    flat = " ".join(tool.split())
+    cord = float(re.search(r"holds ([\d.]+) million Btu and weighs ([\d.]+) tons", flat).group(1)) * 1e6
+    tpc = float(re.search(r"holds ([\d.]+) million Btu and weighs ([\d.]+) tons", flat).group(2))
+    pel = float(re.search(r"pellets holds ([\d.]+) million Btu", flat).group(1)) * 1e6
+    sec = float(re.search(r"source are ([\d.]+) times", flat).group(1))
+    eff, shm, shs, um, us = {}, {}, {}, {}, {}
+    for line in tool.splitlines():
+        m = re.search(r"(\d{10}) (not a heating appliance|\d+%) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)\s*$", line)
+        if m:
+            scc = m.group(1)
+            eff[scc] = None if m.group(2).startswith("not") else int(m.group(2)[:-1]) / 100.0
+            shm[scc], shs[scc], um[scc], us[scc] = (float(x) for x in m.groups()[2:])
+    v("pdf: the tool's Table 1 parses six classes", len(eff) == 6, str(sorted(eff)))
+    fuel = pd.read_csv(f("heating_fuel_equivalents"))
+    lp = fuel[fuel.fuel == "Propane"].iloc[0]
+    btu, afue = float(lp.btu_per_unit), float(lp.seasonal_efficiency_pct) / 100.0
+    ef = pd.read_csv(f("emission_factors_2023"), dtype={"scc": str})
+    pm_lb = ef[(ef.pollutant == "PM2.5") & ef.unit.str.startswith("lb/ton")].set_index("scc").factor.to_dict()
+    nox = float(ef[(ef.category == "Commercial/institutional propane combustion") & (ef.pollutant == "NOx")].factor.iloc[0])
+
+    # the registry, the crosswalk, the zones
+    xw = pd.read_csv(f("device_code_scc"), dtype=str).set_index("device_code").scc.to_dict()
+    reg = pd.read_csv(f("solid_fuel_device_registry"), dtype=str)
+    reg["scc"] = reg.device_code.map(xw)
+    inst = pd.to_datetime(reg.installed.where(reg.installed.str.len() > 4, reg.installed + "-01-01"))
+    gone = pd.to_datetime(reg.status_date)
+    inuse25 = (inst <= "2025-10-01") & (gone.isna() | (gone > "2026-04-30"))
+    inuse24 = (inst <= "2024-10-01") & (gone.isna() | (gone > "2025-04-30"))
+    n = reg[inuse25].groupby(["burn_zone", "scc"]).size()
+    v("csv: the registry reads back", len(reg) > 10000 and n.sum() == figs["steps"]["appliances"], "%d in use" % n.sum())
+    parcels = pd.read_csv(f("burn_zone_parcels"), dtype=str)
+    zone_of = parcels.set_index("geocode").burn_zone.to_dict()
+    geo_of = parcels.set_index("situs_address").geocode.to_dict()
+
+    # the survey's estimates, as the methods note states them
+    sv = pd.read_csv(f("heating_survey_2024_25_responses"), dtype={"device_id": str})
+    conv = {"cords": 1.0, "face cords": 1 / 3.0, "pickup loads": 0.5, "tons": 1.0, "bags (40 lb)": 0.02}
+    sv["units"] = sv.amount_burned_2024_25 * sv.unit.map(conv)
+    sv = sv.merge(reg[["device_id", "scc"]], on="device_id")
+    sv["wu"] = sv.weight * sv.units
+    area = sv.groupby("scc").wu.sum() / sv.groupby("scc").weight.sum()
+    cell = sv.groupby(["burn_zone", "scc"]).agg(wu=("wu", "sum"), w=("weight", "sum"), k=("units", "size"))
+    mean = {}
+    for z in zones:
+        for s in pm_lb:
+            if (z, s) in cell.index and cell.loc[(z, s), "k"] >= 10:
+                mean[z, s] = cell.loc[(z, s), "wu"] / cell.loc[(z, s), "w"]
             else:
-                old = [z for z in v if z[2] <= 2014]
-                b14 += n14[a, s] * mean(old) * f
-        red = 100 * (b14 - e26) / b14
-        res[a] = (b14, e26, red, red < commit[a])
-    if os.environ.get("VDEBUG"):
-        for a in res:
-            x = figs["areas"][a]
-            print(a, "pm14 %.3f/%.1f pm26 %.3f/%.1f red %.3f/%.1f" % (res[a][0], x["pm14"], res[a][1], x["pm26"], res[a][2], x["reduction"]))
-    trig = sorted(a for a in res if res[a][3])
-    ok("V1", trig == figs["call"]["triggered"], "areas triggered: %s" % ", ".join(trig))
-    ok("V2", all(abs(r1(res[a][2]) - figs["areas"][a]["reduction"]) < 1e-9 and abs(r1(res[a][0]) - figs["areas"][a]["pm14"]) < 1e-9
-                 and abs(r1(res[a][1]) - figs["areas"][a]["pm26"]) < 1e-9 for a in res),
-       "every area's base year, 2025-26 tons and reduction")
-    ok("V3", min(abs(res[a][2] - commit[a]) for a in res) > 4.0,
-       "every area more than 4 points from its commitment (min %.2f)" % min(abs(res[a][2] - commit[a]) for a in res))
-    with open(os.path.join(GD, "contingency_determinations_2026_27.csv"), newline="") as f:
-        det = {x["maintenance_area"]: x for x in csv.DictReader(f)}
-    ok("V4", all(det[a]["determination"] == ("TRIGGERED" if res[a][3] else "NOT TRIGGERED") for a in res),
-       "the determinations file agrees")
-    # ask A: the registry's appliances in place in the 2014 season on the 2020 boundaries, each appliance once: a record
-    # closed on a day another record of the same kind and install year is registered at the same address is the same
-    # appliance registered again; records registered together at one address are two appliances
-    reg_on = collections.defaultdict(list)
-    for x in reg:
-        reg_on[x["site_address"], x["county"], x["appliance_code"], x["year_installed"], x["registered_on"]].append(x)
-    again = set()
-    for x in reg:
-        if x["status"] == "C" and x["status_reason"] == "Record closed":
-            for y in reg_on.get((x["site_address"], x["county"], x["appliance_code"], x["year_installed"], x["status_date"]), []):
-                if y["device_no"] != x["device_no"]:
-                    again.add(y["device_no"])
-    na = collections.Counter()
-    for x in reg:
-        if x["device_no"] in again or x["replaces_device_no"] or int(x["year_installed"]) > 2014:
-            continue
-        a = area20.get(x["parcel_number"])
-        if a:
-            na[a, scc[x["appliance_code"]]] += 1
-    ok("V5", all(na[tuple(k.split("."))] == v["registry"] for k, v in figs["ask_a"].items()),
-       "ask A: the registry's 2014-season appliances, 36 cells (%d re-registrations paired)" % len(again))
-    print("\n%s" % ("all checks passed" if not FAIL else "FAILED: " + ", ".join(FAIL)))
-    return 1 if FAIL else 0
+                mean[z, s] = area[s]
+    pellet = [s for s in pm_lb if s == "2104008400"][0]
 
+    def tons(s, u):
+        return u if s == pellet else u * tpc
 
-_rows = {}
+    # the propane accounts: three layouts to one table of season gallons by account
+    seasons = {2023: ("2023-10-01", "2024-04-30"), 2024: ("2024-10-01", "2025-04-30"), 2025: ("2025-10-01", "2026-04-30")}
+    acct = pd.read_csv(f("wapiti_propane_accounts"), dtype=str)
+    acc = [pd.DataFrame(dict(key="W" + acct.account_no, cls=acct.account_class.str[:3].str.upper(), geo=acct.geocode))]
+    tk = pd.read_csv(f("wapiti_propane_tickets"), dtype={"account_no": str})
+    dl = [pd.DataFrame(dict(key="W" + tk.account_no, date=pd.to_datetime(tk.delivery_date, format="%m/%d/%Y"),
+                            gal=tk.gallons))]
+    lay = open(f("coldwater_export_record_layout")).read()
+    spans = {m.group(3): (int(m.group(1)) - 1, int(m.group(2) or m.group(1))) for m in
+             re.finditer(r"col\s+(\d+)(?:-(\d+))?\s+([A-Z-]+)", lay)}
+    a_rows, t_rows = [], []
+    for line in open(f("coldwater_activity_export")):
+        line = line.rstrip("\r\n")
+        cut = lambda k: line[spans[k][0]:spans[k][1]].strip()
+        if line[0] == "A":
+            g = cut("GEOCODE")
+            a_rows.append(dict(key="C" + cut("ACCT-NO"), cls="COM" if cut("ACCT-CLASS") == "C" else "RES",
+                               geo="-".join([g[0:2], g[2:6], g[6:8], g[8], g[9:11], g[11:13], g[13:17]])))
+        else:
+            ref = cut("TKT-REF")
+            t_rows.append(dict(key="C" + cut("ACCT-NO"), date=pd.to_datetime("20" + ref[1:7], format="%Y%m%d"),
+                               posted=pd.to_datetime(cut("TRANS-DT"), format="%Y%m%d"), gal=int(cut("QTY")) / 10.0))
+    acc.append(pd.DataFrame(a_rows))
+    cw = pd.DataFrame(t_rows)
+    v("txt: the Coldwater export reads back on its own layout", len(cw) > 50000 and len(a_rows) > 4000)
+    dl.append(cw[["key", "date", "gal"]])
+    xl = pd.read_excel(f("halvard_coop_propane"), sheet_name=None, header=2)
+    words = {"North": "N", "South": "S", "Street": "ST", "Avenue": "AVE", "Drive": "DR", "Lane": "LN", "Road": "RD",
+             "Trail": "TRL", "Loop": "LOOP"}
+    mon = dict(Jul=7, Aug=8, Sep=9, Oct=10, Nov=11, Dec=12, Jan=1, Feb=2, Mar=3, Apr=4, May=5, Jun=6)
+    seen = {}
+    for name, df in xl.items():
+        fy = int(name[2:6])
+        for _, r in df.iterrows():
+            k = "H" + str(r["Member account"])
+            seen[k] = dict(key=k, cls="COM" if r["Class"] == "Commercial" else "RES",
+                           geo=geo_of.get(" ".join(words.get(w, w) for w in str(r["Service address"]).split()).upper()))
+            for m, mi in mon.items():
+                if pd.notna(r[m]) and r[m]:
+                    dl.append(pd.DataFrame(dict(key=[k], date=[pd.Timestamp(fy if mi >= 7 else fy + 1, mi, 15)],
+                                                gal=[float(r[m])])))
+    v("xlsx: the cooperative's workbook reads back", len(seen) > 2000 and len(xl) == 3)
+    acc.append(pd.DataFrame(list(seen.values())))
+    A = pd.concat(acc, ignore_index=True)
+    A["zone"] = A.geo.map(zone_of)
+    D = pd.concat(dl, ignore_index=True)
+    for t, (a, b) in seasons.items():
+        D.loc[(D.date >= a) & (D.date <= b), "season"] = t
+    G = D.dropna(subset=["season"]).groupby(["key", "season"]).gal.sum().unstack().fillna(0.0)
+    R = A[(A.cls == "RES") & A.zone.notna()].set_index("key").join(G)
+    heat = {g: s for g, s in reg[inuse25 & inuse24][["geocode", "scc"]].values if eff.get(s)}
+    R["scc"] = R.geo.map(heat)
 
+    # the inventory and the call
+    pm, extra = {}, {}
+    for z in zones:
+        Rz = R[(R.zone == z) & R.scc.isna()]
+        ratio = Rz[2025].sum() / Rz[2024].sum()
+        tot = ex = 0.0
+        for s in pm_lb:
+            units = mean[z, s] * n.get((z, s), 0)
+            trt = R[(R.zone == z) & (R.scc == s)]
+            gal = (trt[2024] * ratio - trt[2025]).sum()
+            add = gal * btu * afue / ((pel if s == pellet else cord) * eff[s]) if eff.get(s) else 0.0
+            tot += tons(s, units + add) * pm_lb[s] / 2000.0
+            ex += tons(s, add) * pm_lb[s] / 2000.0
+        pm[z], extra[z] = tot, ex
+    over = [z for z in zones if pm[z] > allot[z]]
+    v("call: the zones over their allotments", over == figs["call"]["over"], str(over))
+    v("call: each share of the fund", all(figs["zones"][z]["share"] == (fund // len(over) if z in over else 0) for z in zones))
+    for z in zones:
+        v("zone %s: %d tons, %d from the propane switch" % (z, rnd(pm[z]), rnd(extra[z])),
+          rnd(pm[z]) == figs["zones"][z]["pm"] and rnd(extra[z]) == figs["zones"][z]["extra_pm"])
+    det = pd.read_csv(os.path.join(GD, "zone_determinations_2026_27.csv"))
+    v("golden csv: every row matches the recomputation", all(
+        int(r.pm25_2025_26_tons) == rnd(pm[r.burn_zone]) and (r.exceeded_allotment == "Yes") == (r.burn_zone in over)
+        for r in det.itertuples()))
 
-def rows_cache(p):
-    if not _rows:
-        for x in rows("parcel_area_crosswalk.csv"):
-            _rows.setdefault(x["parcel_number"], []).append(x)
-    return _rows.get(p, [])
+    # ask A: commercial propane by delivery date
+    C = A[(A.cls == "COM") & A.zone.notna()].set_index("key").join(G)
+    for z in zones:
+        g = C[C.zone == z][2025].sum()
+        v("ask A %s: %s gallons, %.2f tons of NOx" % (z, format(int(rnd(g / 100) * 100), ","), rnd(g * btu / 1e6 * nox / 2000, 2)),
+          int(rnd(g / 100) * 100) == figs["ask_a"][z]["gal"] and abs(rnd(g * btu / 1e6 * nox / 2000, 2) - figs["ask_a"][z]["nox"]) < 1e-9)
+
+    # ask B: the county outside the area on the tool
+    acs = pd.read_csv(f("acs5_2019_2023"), dtype=str)
+    acs["bg"] = acs.GEO_ID.str[-12:]
+    asr = pd.read_csv(f("assessor_housing_units"), dtype={"block_group": str})
+    asr["out"] = asr.housing_units.where(asr.maintenance_area.isna(), 0)
+    hu = asr.groupby("block_group").agg(out=("out", "sum"), tot=("housing_units", "sum"))
+    rel = pd.read_csv(f("tab2020_tab2010"), dtype={"GEOID_BG_20": str, "GEOID_BG_10": str})
+    rel = rel.merge(hu, left_on="GEOID_BG_10", right_index=True)
+    rel["o"] = rel.HU_20_OVERLAP * rel.out / rel.tot
+    share = rel.groupby("GEOID_BG_20").o.sum() / rel.groupby("GEOID_BG_20").HU_20_OVERLAP.sum()
+    main_ = (acs.B25040_008E.astype(int) * acs.bg.map(share).fillna(0)).sum()
+    for s in pm_lb:
+        app = main_ * shm[s] + main_ * sec * shs[s]
+        p25 = tons(s, main_ * shm[s] * um[s] + main_ * sec * shs[s] * us[s]) * pm_lb[s] / 2000.0
+        v("ask B %s: %d appliances, %.1f tons" % (s, rnd(app), rnd(p25, 1)),
+          rnd(app) == figs["ask_b"][s]["app"] and abs(rnd(p25, 1) - figs["ask_b"][s]["pm"]) < 1e-9)
+    print("\n%d verified, %d failed%s" % (OK[0], len(BAD), (": " + "; ".join(BAD)) if BAD else ""))
+    return 1 if BAD else 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())

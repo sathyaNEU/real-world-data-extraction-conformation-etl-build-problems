@@ -1,31 +1,94 @@
-# Determinism check report, task484 architecture 2 (pass 1)
+# determinism-check report, task484, 2026-10-24
 
-Judge thread: sonnet, medium, isolated in /tmp/determinism-check-task484-pass1/ with a fresh unzip of target.zip 79bf825cac69ff18 and the submission's graded blocks; the two round 1 readers' committed answers given as contrasting responses. The thread's verdict follows as written.
+## Verdict
+DETERMINISTIC
+**Disposition:** APPROVE (carries to the shipped pack 87a0101c91c1a4ef for the main call and every graded figure; see Pack-identity note for the one ask-B caveat)
+**Stumping type:** mechanism: other (current-season activity nowcast by difference-in-differences against an unaffected control group), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
-# Determinism verdict, task 484 (pass 1)
+## Pack-identity note
+The judge thread read target.zip d51a7c26815e683b (unzipped at /tmp/determinism-check-task484-484-1792865040/target/). The shipped target.zip is 87a0101c91c1a4ef (21 files in both). I diffed the two by md5. Three things differ:
+1. assessor_housing_units_2010_block_groups.csv is renamed assessor_housing_units_by_block_group_2025.csv. Content is byte-identical (md5 e01f28dd82a3ae9c).
+2. burn_zone_parcels_2025.csv: the commercial parcels at 5198 QUARTZ RD (East Bench) and 7438 SAGE HEN TRL (West Bench) get parcel ids of their own. Geocodes are now unique across all 19,769 rows.
+3. wapiti_propane_accounts.csv: account 51284 (5198 Quartz Rd, Commercial) carries its new id.
 
-- **Verdict:** NOT_DETERMINISTIC (Gate C fails on the main recommendation and on every 2014 base-year figure; Gate A also fails on the 2014 PM2.5 figures, which do not reproduce to one decimal).
-- **Disposition:** SEND_BACK. The filed estimand has to say what the 2014 base year is meant to measure, which changes what solvers see, so a model rerun is required.
-- **Why:** Provisions 4.2 reads: "the wood each appliance in the plan's 2014 base year count burned, on the Agency's household survey measure of wood burned ... The appliance count is not revised." Appendix A.2 files the survey measure as the area's respondents "by appliance class, with each respondent's weight". Executed word for word, that is class-mean wood burned times the 2014 count times the 2023 factors, and that reading makes all six areas trigger. The golden instead values the changed-out stoves and boilers at the survey rate for their class and the heat status on their applications, and values the rest of each class at the class mean. No shipped sentence licenses that step: the provisions never mention heat status or survivors, and the survey's main-heat flag is only listed in A.2. The two contrasting responses, both capable, read 4.2 as a stated procedure and filed six triggers. Taxonomy label: competing_defensible_answer (the literal reading and the golden give different calls on the main recommendation).
-- **Evidence (recomputed from target/):**
+Neither the parcel nor the account change touches a residential home, a zone or the commercial-propane category's membership, and the generator's figures are unchanged.
 
-| Item | Result | Reproduced? |
-|---|---|---|
-| 2025-26 appliances (registry status A, 2020 boundary through the parcel crosswalk) times survey weighted class mean (face cord 1/3, pickup 1/2, bag 40 lb, 1.163 t/cord) times 2023 PM2.5 factors | 101.9 / 81.4 / 180.2 / 72.8 / 135.0 / 49.7 t | Yes, all six exact |
-| Registry appliances in the 2014 season (year_installed 2014 or earlier, active or closed on or after the season start, "Record closed" rows dropped when the closing date equals the registration date of a same address, kind and year record) | All 36 cells equal the golden | Yes, but the duplicate rule appears in no shipped document and is inferred from the registry |
-| County remainders (2019-2023 ACS main-heat households times the share outside the areas through the 2010-to-2020 relationship file, 2.4 secondary households per main-heat household, tool shares and use) | Selwick 73.9 / 35.8 / 7.8 / 3.1 / 12.0 / 19.8, and likewise Corrin and Tamsey | Yes, exact |
-| 2014 PM2.5 by SCC and area | Brannock non-certified stoves 141.9 against golden 140.8; certified non-catalytic 30.9 (all respondents) or 27.7 (installed 2014 or earlier) against 26.9; fireplaces 5.4 against 5.2 | No. Even fireplaces, which have no changeouts and an unambiguous class mean, do not match. The golden's per-class rate (about 0.372 against the class mean 0.383) has no stated source. |
-| 2014 base year totals, my closest reconstruction of the golden method (changeouts at the heat-status rate, rest at the class mean) | Brannock 202.6 (cert/pellet at all respondents) or 199.0 (cert/pellet at installed 2014 or earlier), golden 196.6. Reductions 49.7% or 48.8% against 48.2%. Quarrow 14.8% or 14.0% against 12.2%. Wethermoor 6.3% or 7.1% against 4.9%. | The call survives (Quarrow and Wethermoor trigger, the other four clear). The graded figures do not match to 0.1. |
-| Literal class-mean reading of 4.2 | Reductions Brannock 17.4, Ivelton 15.1, Quarrow 9.3, Saddeny 11.9, Wethermoor 3.3, Ellick 13.6 per cent. All six are below their commitments, so all six trigger. | Matches the two contrasting responses' pattern |
+**Does the APPROVE carry?** Yes for the main call, the critical components, the zone CSV and ask A. Changes 2 and 3 are id hygiene on commercial rows, and the thread's recomputed figures depend on residential joins and on category/zone membership. For ask B (the outside-the-area sheet) the carry is conditional: the thread's own derivation cites "the 2010 assessor file" and "assessor 2010 BG outside share", so its vintage reading may have come from the old file name. I therefore tested the renamed pack myself.
 
-  The fork is therefore between "class mean for the whole 2014 count" (the stated procedure; six triggers) and "survivorship-corrected 2014 stock" (the golden; two triggers). The margin is not thin under either. The golden's own estimator variants give the same call and differ only by 1 to 3 per cent on the 2014 base year. The only fork that changes the call is whether the correction is applied at all.
-  Other items that stay open in the files:
-  - The registry's 737 exact active duplicate pairs (same address, kind, year and registration date, distinct device numbers) are kept by the golden as two devices. Dropping them moves 2025-26 by about 1.7% (Brannock 100.2, Quarrow 176.3), which shifts the graded figures but not the call.
-  - The application heat codes `P` and `S` are undocumented. They are inferred from the parallel "main heat source" and "supplemental" values.
-  - A.1 says "each device once", but no key for a duplicate is filed.
-  - The paragraph's "any items between that count and the plan's" requires the unfiled duplicate-by-closure rule above.
-- **Files/Hygiene:** PASS with notes. 18 files in 3 formats (14 CSV, 1 XLSX, 3 PDF). Registry dates (latest status date 2024-12-24, latest registration 2025-06-27) are coherent with the 2026-06-30 extract. Layer 1 mess is realistic: mixed units, two-digit years such as `'84` and `'24`, the `P`/`S` heat codes, missing parcel numbers on 1,776 applications, 317 parcels leaving the areas in 2020. Distractors are present (PM2.5 monitor, curtailment log, degree days, firewood permits, the 2020-2024 ACS release). Survey rows with EPA-certified stoves "installed" in 1978 are implausible but harmless. The 2014 plan workbook uses PM2.5 factors equal to the 2023 PM10 values (for example 15.2 for the non-catalytic stove). That reads as a real prior-tool difference, not a leak. No authoring leakage and no exclusion-level finding.
-- **Stump power:** The intended trap is selection (survivorship): the 2024-25 survey describes the stoves that were not changed out, while the programme funded main-heat households first, so the class mean understates what the 2014 stock burned. A strong analyst who recognises this and builds the heat-status base year files the golden's call. The two contrasting responses did not; they executed 4.2 literally. That is hard, but it is not clearly a valid analytical stump here, because the text does not file the estimand and their reading is the literal one (see Why).
-- **Stumping type:** `mechanism: statistical_rigor` (selection or survivorship in the survey's activity rate), `stumping_family: analytical_non_defect`, `surface_read_dependency: no`, `sole_data_defect: no`. Run on perfectly clean data the survivor bias would still exist, so it is not a defect flip. The family passes Gate G; the problem is that the estimand is unfiled, not the family.
-- **Three rules:** `domain: pass`, `layers: pass`, `decisive_step: analytical`. Field analysis: an emission inventory base-year recalculation and a contingency trigger test, where the deciding quantity is the 2014 emissions of the stock the plan counted. The easy route is the survey class mean times the plan's 2014 count, which gives reductions of 3.3 to 17.4 per cent and all six areas triggered. H3 passes only if the shipped text commits to the survivor-aware estimand, which it currently does not.
-- **Fix:** prompt and input_files. File the WHAT in the provisions or the prompt: the 2014 base year measures the wood burned in 2014 by the stock the plan counted, including the stoves and boilers changed out since. Do not file the method. Also make the graded 2014 figures reproducible: either state the activity population for the certified and pellet classes, or regenerate the goldens from a rule the files support (the golden's rates for fireplaces and certified stoves have no source). File the duplicate-registration key and the meaning of the `P` and `S` heat codes (this is data semantics that should be pinned, not the stump). Then re-run the isolated responses.
+**Assessor vintage, current pack (I confirm the coordinator's measurement).**
+- The assessor file has 56 rows over 48 block_group codes (Inside plus blank rows; the same code set as the ACS files).
+- For all 48 codes, assessor housing units equal the relationship file's HU_20_OVERLAP summed by GEOID_BG_10. There are 0 mismatches and the ratio's standard deviation is 0.
+- Summed by GEOID_BG_20 they differ in 34 codes, and the ratio's standard deviation is 0.447.
+- So the 2010 vintage is recoverable from data alone, with no file name or header needed. Step 7 of the submission names the handling.
+- The tool documentation (section 3) says only "the county assessor's housing unit counts" and gives no vintage. The code sets of the two vintages coincide, so a reader gets the vintage only by testing against the relationship file.
+- The old file name stated it outright. The renamed pack makes it a data check instead, which is a modest tightening, and it is not a second defensible answer: the alternative (skipping the crosswalk) gives 3,350 households and 221.9 t, against 240.0 t, and fails the exact-sum test.
+- Residual risk is confined to ask B (12 criteria) and none touches the call. I make no repair recommendation.
+
+## Why
+The thread's verdict was DETERMINISTIC, with one residual risk on the main call that it does not count against the verdict. The estimand is filed: the PM2.5 from wood burned in the 2025-26 season, at the 2023 factors, against Table 4-2. The pack separates the candidate methods. In every zone the propane homes with a heating appliance in use in both seasons took 26 to 32 per cent less propane (season ratio 0.68 to 0.74). The homes without one were flat at 0.996 to 1.002. The two seasons' heating degree days are identical (7,393.5 against 7,394.5). Each home has one heating device, so the displaced wood has no efficiency or device ambiguity.
+
+That puts East Bench and West Bench over their allotments and Valley Floor North and Upper Valley under. Valley Floor South is over either way, and 465,000 / 3 = USD 155,000 each. Every enumerated variant (no pooling, unweighted pooling, removed devices counted, a pooled control ratio) leaves the same set. The thread's sensitivity: displaced wood needs to be about 59 per cent (East Bench) and 63 per cent (West Bench) of the golden estimate to hold the call.
+
+## Recomputation ledger
+| Figure | Claimed | Judge recomputed | Reproduced |
+|---|---|---|---|
+| Devices in use (registry Active, installed before 1 Oct 2025, not removed) | 12,100 | 12,100 | yes |
+| Survey carry-forward tons (East Bench / West Bench) | 78 / 68 | 77.9 / 68.2 | yes |
+| Survey carry-forward tons (Valley Floor North / South / Upper Valley) | not stated in the golden | 57.5 / 56.3 / 47.3 | n/a |
+| Propane-displaced wood PM2.5 tons (VFN / VFS / EB / WB / UV) | 2 / 3 / 20 / 15 / 7 | 1.66 / 2.64 / 20.22 / 14.77 / 6.81 | yes |
+| Zone PM2.5 tons (VFN / VFS / EB / WB / UV) | 59 / 59 / 98 / 83 / 54 | 59.2 / 58.96 / 98.1 / 83.0 / 54.2 | yes |
+| Fund shares | 155,000 each to VFS, EB, WB | 465,000 / 3 | yes |
+| Commercial propane gallons | 515,500 / 437,300 / 323,000 / 253,000 / 276,900 | same | yes |
+| Commercial NOx tons | 3.35 / 2.84 / 2.10 / 1.64 / 1.80 | same | yes |
+| Outside the area appliances | 2,753 / 2,999 / 652 / 1,333 / 3,347 / 507 | same | yes |
+| Outside the area PM2.5 tons | 118.6 / 50.4 / 9.9 / 4.0 / 16.1 / 41.0 | same | yes |
+| Main-heat households outside the area | 3,622 | 3,622.3 | yes |
+
+The thread read the old pack. Ask B's vintage handling was independently re-verified by me on the shipped pack (the Pack-identity note). The other rows were not re-run on 87a0101c91c1a4ef, but the diff shows no input to them changed.
+
+## Competing answers that survived
+None failing. One recorded fork:
+- Survey carried forward unchanged gives Valley Floor South only (fund 465,000). This is the declared default-path error, and the shipped data contradict it (the 26 to 32 per cent shortfall against the flat control).
+- Secondary, asks only: the Coldwater ticket-reference date is not in the record layout, and TRANS-DT instead gives 484,700 / 419,300 / 309,000 / 235,200 / 260,900 gallons. The ticket reference equals TRANS-DT for every residential row and is recoverable from the data.
+- Ask B: skipping the crosswalk gives 221.9 t against 240.0 t. It is closed by the exact-sum test above.
+
+## Spec gates
+| Gate | Required | Actual | Pass |
+|---|---|---|---|
+| Files | 10 or more | 21 | yes |
+| Formats | 3 or more | 4 (csv, txt, xlsx, pdf) | yes |
+| Large file | 25,000 rows or more | Coldwater 64,123 lines; Wapiti tickets 43,811 | yes |
+| Distractors in metadata.json | 2 or more, none labelled by file name | burn_curtailment_calls_2023_2026.csv, forest_firewood_permits_2019_2025.csv | yes |
+| Distractors relevant but unused | each weighable and unused, ruled out by a shipped fact | thread found both relevant and unused, and neither carries the call (the temperature file is neutral by design) | yes |
+| Deliverables | 1 to 3, all in the golden | 2, both present in golden/ | yes |
+| Asks | multi-dimensional, unit and rounding stated | zone PM2.5 nearest ton, gallons nearest hundred, NOx two decimals, county appliances whole and PM2.5 one decimal | yes |
+| Prompt shape and rubric | identifiable shape, 25 or more criteria | shape 07, 45 criteria per the design note | yes |
+| Not LLM-reading, realistic goldens | | The xlsx has five sheets (RWC inventory, Propane comparison, Commercial propane, Outside the area, Notes). Nothing in the pack or goldens reads as generated. | yes |
+
+## Gate G reconciliation
+- Thread: mechanism "other" (a difference-in-differences nowcast of the open season), stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no.
+- Card and design note: stump_strategy causal_design, gate_g decomposition_attribution, stump_class analytical, layer2_family estimand_identification. The thread's reading is the same mechanism in different words.
+- Declared distractors (curtailment calls, firewood permits): the thread names neither as the surface read carrying the task. No finding.
+- Gate G line: no shipped artifact ranks the zones on the decision and gets it wrong. The survey-carry-forward figures exist only as the solver's own error path and nothing ships them. The difficulty survives deleting every wrong number from the pack.
+- Minor: the card's analyst_test text is garbled against the design note and golden. It says the "valley floor zones" are over and the "benches" under, whereas the note says Valley Floor South alone is over on the default path and the benches go over on the golden. This is a card-text fix for the author and not a determinism finding.
+
+## Gate H line
+domain: pass; layers: pass; decisive_step: analytical.
+- Layer 1 is the three distributor layouts, the Coldwater posting date against the delivery date, the 2010 against 2020 block groups, and mixed survey units.
+- Layer 2 is estimating the open season's wood burned by comparing appliance homes with appliance-free propane homes in the same zone, season and weather.
+- This matches the design note's `## Three rules`: No decoy, Not semantics, Not rule application. The thread reached the golden by recognising the switch, which the note also states as the decisive step. No judgment was left that the data did not settle.
+
+## Stump power (Gate F)
+Good, per the thread. A strong analyst who cleans the data and reads every rule correctly still plausibly files the survey carry-forward (Valley Floor South only, 465,000). Two cautions for the main thread to weigh with the scored readers' result:
+- Nothing in the prompt points at the residential propane accounts, so a failure may be partly discovery. That is the intended analysis, not a hidden rule.
+- The design note concedes that the cheapest method (each home's 2024-25 gallons less its 2025-26 gallons, no control) already files the golden set. Once the switch is recognised, the method is not a second hurdle, so stump power rests on recognition.
+
+## Findings, ranked
+1. Pack mismatch: the judge read d51a7c26815e683b and the shipped pack is 87a0101c91c1a4ef. The differences are harmless to the call and the graded figures (see the Pack-identity note).
+2. The file rename moves the assessor vintage from the name to the data. I confirmed it is recoverable (exact-sum test, 0 mismatches). The thread cited the vintage, perhaps from the old name, so ask B on the shipped pack rests on my check and not on the thread's. This is low severity.
+3. The Coldwater ticket reference date is undescribed in the layout but recoverable. Asks only.
+4. The registry is stamped 2026-05-15 but shows no installs or removals after 2025-09-28, and Coldwater holds 63 postings dated 2026-07-01. Both are explained and neither affects the stump.
+5. The card's analyst_test text conflicts with the design note.
+
+## Next action for the author
+Proceed to ship on 87a0101c91c1a4ef. Correct the card's analyst_test to match the design note, and do not re-judge unless the scored readers' result calls for it.

@@ -1,579 +1,135 @@
 {
- "areas": {
-  "Brannock": {
-   "commitment": 25,
-   "determination": "NOT TRIGGERED",
-   "pm14": 196.6,
-   "pm26": 101.9,
-   "reduction": 48.2,
-   "rungs": {
-    "allprimary": 51.4,
-    "classmean": 15.7,
-    "default": 30.2,
-    "golden": 48.2,
-    "survivors": -28.3,
-    "truth": 41.2
-   }
-  },
-  "Ellick": {
-   "commitment": 25,
-   "determination": "NOT TRIGGERED",
-   "pm14": 87.7,
-   "pm26": 49.7,
-   "reduction": 43.3,
-   "rungs": {
-    "allprimary": 47.1,
-    "classmean": 12.1,
-    "default": 43.5,
-    "golden": 43.3,
-    "survivors": -30.2,
-    "truth": 43.0
-   }
-  },
-  "Ivelton": {
-   "commitment": 22,
-   "determination": "NOT TRIGGERED",
-   "pm14": 117.2,
-   "pm26": 81.4,
-   "reduction": 30.6,
-   "rungs": {
-    "allprimary": 34.2,
-    "classmean": 13.4,
-    "default": 20.1,
-    "golden": 30.6,
-    "survivors": -22.4,
-    "truth": 32.8
-   }
-  },
-  "Quarrow": {
-   "commitment": 20,
-   "determination": "TRIGGERED",
-   "pm14": 205.1,
-   "pm26": 180.2,
-   "reduction": 12.2,
-   "rungs": {
-    "allprimary": 14.3,
-    "classmean": 7.2,
-    "default": 4.6,
-    "golden": 12.2,
-    "survivors": -8.1,
-    "truth": 13.0
-   }
-  },
-  "Saddeny": {
-   "commitment": 13,
-   "determination": "NOT TRIGGERED",
-   "pm14": 92.1,
-   "pm26": 72.8,
-   "reduction": 21.0,
-   "rungs": {
-    "allprimary": 24.0,
-    "classmean": 9.3,
-    "default": -0.6,
-    "golden": 21.0,
-    "survivors": -15.9,
-    "truth": 22.0
-   }
-  },
-  "Wethermoor": {
-   "commitment": 15,
-   "determination": "TRIGGERED",
-   "pm14": 141.9,
-   "pm26": 135.0,
-   "reduction": 4.9,
-   "rungs": {
-    "allprimary": 5.8,
-    "classmean": 0.9,
-    "default": -3.6,
-    "golden": 4.9,
-    "survivors": -5.5,
-    "truth": 2.7
-   }
-  }
- },
  "ask_a": {
-  "Brannock.2104008100": {
-   "late": 44,
-   "left": 14,
-   "registry": 1186
+  "East Bench": {
+   "gal": 323000,
+   "nox": 2.1
   },
-  "Brannock.2104008310": {
-   "late": 58,
-   "left": 18,
-   "registry": 2582
+  "Upper Valley": {
+   "gal": 276900,
+   "nox": 1.8
   },
-  "Brannock.2104008320": {
-   "late": 58,
-   "left": 15,
-   "registry": 1485
+  "Valley Floor North": {
+   "gal": 515500,
+   "nox": 3.35
   },
-  "Brannock.2104008330": {
-   "late": 10,
-   "left": 1,
-   "registry": 299
+  "Valley Floor South": {
+   "gal": 437300,
+   "nox": 2.84
   },
-  "Brannock.2104008400": {
-   "late": 35,
-   "left": 6,
-   "registry": 544
-  },
-  "Brannock.2104008610": {
-   "late": 5,
-   "left": 1,
-   "registry": 219
-  },
-  "Ellick.2104008100": {
-   "late": 25,
-   "left": 9,
-   "registry": 711
-  },
-  "Ellick.2104008310": {
-   "late": 29,
-   "left": 12,
-   "registry": 1548
-  },
-  "Ellick.2104008320": {
-   "late": 35,
-   "left": 6,
-   "registry": 893
-  },
-  "Ellick.2104008330": {
-   "late": 4,
-   "left": 5,
-   "registry": 175
-  },
-  "Ellick.2104008400": {
-   "late": 13,
-   "left": 6,
-   "registry": 323
-  },
-  "Ellick.2104008610": {
-   "late": 2,
-   "left": 0,
-   "registry": 132
-  },
-  "Ivelton.2104008100": {
-   "late": 31,
-   "left": 12,
-   "registry": 828
-  },
-  "Ivelton.2104008310": {
-   "late": 53,
-   "left": 23,
-   "registry": 1797
-  },
-  "Ivelton.2104008320": {
-   "late": 45,
-   "left": 10,
-   "registry": 1040
-  },
-  "Ivelton.2104008330": {
-   "late": 4,
-   "left": 3,
-   "registry": 207
-  },
-  "Ivelton.2104008400": {
-   "late": 13,
-   "left": 3,
-   "registry": 382
-  },
-  "Ivelton.2104008610": {
-   "late": 2,
-   "left": 0,
-   "registry": 154
-  },
-  "Quarrow.2104008100": {
-   "late": 50,
-   "left": 17,
-   "registry": 1542
-  },
-  "Quarrow.2104008310": {
-   "late": 104,
-   "left": 31,
-   "registry": 3347
-  },
-  "Quarrow.2104008320": {
-   "late": 71,
-   "left": 12,
-   "registry": 1937
-  },
-  "Quarrow.2104008330": {
-   "late": 19,
-   "left": 4,
-   "registry": 386
-  },
-  "Quarrow.2104008400": {
-   "late": 25,
-   "left": 5,
-   "registry": 709
-  },
-  "Quarrow.2104008610": {
-   "late": 6,
-   "left": 3,
-   "registry": 283
-  },
-  "Saddeny.2104008100": {
-   "late": 22,
-   "left": 7,
-   "registry": 591
-  },
-  "Saddeny.2104008310": {
-   "late": 47,
-   "left": 8,
-   "registry": 1292
-  },
-  "Saddeny.2104008320": {
-   "late": 32,
-   "left": 9,
-   "registry": 740
-  },
-  "Saddeny.2104008330": {
-   "late": 7,
-   "left": 2,
-   "registry": 148
-  },
-  "Saddeny.2104008400": {
-   "late": 13,
-   "left": 1,
-   "registry": 274
-  },
-  "Saddeny.2104008610": {
-   "late": 1,
-   "left": 0,
-   "registry": 110
-  },
-  "Wethermoor.2104008100": {
-   "late": 45,
-   "left": 9,
-   "registry": 1070
-  },
-  "Wethermoor.2104008310": {
-   "late": 71,
-   "left": 31,
-   "registry": 2309
-  },
-  "Wethermoor.2104008320": {
-   "late": 47,
-   "left": 15,
-   "registry": 1335
-  },
-  "Wethermoor.2104008330": {
-   "late": 12,
-   "left": 4,
-   "registry": 266
-  },
-  "Wethermoor.2104008400": {
-   "late": 19,
-   "left": 4,
-   "registry": 491
-  },
-  "Wethermoor.2104008610": {
-   "late": 13,
-   "left": 0,
-   "registry": 198
+  "West Bench": {
+   "gal": 253000,
+   "nox": 1.64
   }
  },
  "ask_b": {
-  "Corrin.2104008100": {
-   "pm": 10.9,
-   "wood": 922.1
+  "2104008100": {
+   "app": 3347,
+   "pm": 16.1
   },
-  "Corrin.2104008310": {
-   "pm": 66.8,
-   "wood": 4365.5
+  "2104008310": {
+   "app": 2753,
+   "pm": 118.6
   },
-  "Corrin.2104008320": {
-   "pm": 32.4,
-   "wood": 4434.2
+  "2104008320": {
+   "app": 2999,
+   "pm": 50.4
   },
-  "Corrin.2104008330": {
-   "pm": 7.0,
-   "wood": 1079.1
+  "2104008330": {
+   "app": 652,
+   "pm": 9.9
   },
-  "Corrin.2104008400": {
-   "pm": 2.8,
-   "wood": 1765.8
+  "2104008400": {
+   "app": 1333,
+   "pm": 4.0
   },
-  "Corrin.2104008610": {
-   "pm": 17.9,
-   "wood": 1907.5
-  },
-  "Selwick.2104008100": {
-   "pm": 12.0,
-   "wood": 1020.0
-  },
-  "Selwick.2104008310": {
-   "pm": 73.9,
-   "wood": 4828.8
-  },
-  "Selwick.2104008320": {
-   "pm": 35.8,
-   "wood": 4904.8
-  },
-  "Selwick.2104008330": {
-   "pm": 7.8,
-   "wood": 1193.6
-  },
-  "Selwick.2104008400": {
-   "pm": 3.1,
-   "wood": 1953.2
-  },
-  "Selwick.2104008610": {
-   "pm": 19.8,
-   "wood": 2110.0
-  },
-  "Tamsey.2104008100": {
-   "pm": 11.7,
-   "wood": 993.4
-  },
-  "Tamsey.2104008310": {
-   "pm": 72.0,
-   "wood": 4702.7
-  },
-  "Tamsey.2104008320": {
-   "pm": 34.9,
-   "wood": 4776.7
-  },
-  "Tamsey.2104008330": {
-   "pm": 7.6,
-   "wood": 1162.5
-  },
-  "Tamsey.2104008400": {
-   "pm": 3.0,
-   "wood": 1902.2
-  },
-  "Tamsey.2104008610": {
-   "pm": 19.3,
-   "wood": 2054.9
+  "2104008610": {
+   "app": 507,
+   "pm": 41.0
   }
  },
  "call": {
-  "triggered": [
-   "Quarrow",
-   "Wethermoor"
-  ]
- },
- "cells": {
-  "Brannock.2104008100": {
-   "pm14": 5.2,
-   "pm26": 5.1,
-   "wood14": 443.2,
-   "wood26": 435.1
-  },
-  "Brannock.2104008310": {
-   "pm14": 140.8,
-   "pm26": 34.2,
-   "wood14": 9205.5,
-   "wood26": 2237.1
-  },
-  "Brannock.2104008320": {
-   "pm14": 26.9,
-   "pm26": 50.6,
-   "wood14": 3680.2,
-   "wood26": 6935.6
-  },
-  "Brannock.2104008330": {
-   "pm14": 5.0,
-   "pm26": 5.1,
-   "wood14": 773.8,
-   "wood26": 779.2
-  },
-  "Brannock.2104008400": {
-   "pm14": 1.6,
-   "pm26": 3.8,
-   "wood14": 982.1,
-   "wood26": 2350.9
-  },
-  "Brannock.2104008610": {
-   "pm14": 17.0,
-   "pm26": 3.1,
-   "wood14": 1810.9,
-   "wood26": 329.4
-  },
-  "Ellick.2104008100": {
-   "pm14": 2.6,
-   "pm26": 2.6,
-   "wood14": 221.0,
-   "wood26": 221.0
-  },
-  "Ellick.2104008310": {
-   "pm14": 61.9,
-   "pm26": 15.5,
-   "wood14": 4043.6,
-   "wood26": 1014.0
-  },
-  "Ellick.2104008320": {
-   "pm14": 12.3,
-   "pm26": 25.6,
-   "wood14": 1688.5,
-   "wood26": 3511.4
-  },
-  "Ellick.2104008330": {
-   "pm14": 2.6,
-   "pm26": 2.5,
-   "wood14": 407.1,
-   "wood26": 386.3
-  },
-  "Ellick.2104008400": {
-   "pm14": 0.9,
-   "pm26": 2.3,
-   "wood14": 566.7,
-   "wood26": 1467.7
-  },
-  "Ellick.2104008610": {
-   "pm14": 7.3,
-   "pm26": 1.1,
-   "wood14": 781.1,
-   "wood26": 118.3
-  },
-  "Ivelton.2104008100": {
-   "pm14": 4.2,
-   "pm26": 4.1,
-   "wood14": 353.5,
-   "wood26": 345.2
-  },
-  "Ivelton.2104008310": {
-   "pm14": 79.1,
-   "pm26": 32.0,
-   "wood14": 5170.8,
-   "wood26": 2091.7
-  },
-  "Ivelton.2104008320": {
-   "pm14": 18.1,
-   "pm26": 35.5,
-   "wood14": 2480.8,
-   "wood26": 4866.9
-  },
-  "Ivelton.2104008330": {
-   "pm14": 3.8,
-   "pm26": 3.7,
-   "wood14": 585.6,
-   "wood26": 565.7
-  },
-  "Ivelton.2104008400": {
-   "pm14": 1.5,
-   "pm26": 2.6,
-   "wood14": 922.6,
-   "wood26": 1632.9
-  },
-  "Ivelton.2104008610": {
-   "pm14": 10.6,
-   "pm26": 3.5,
-   "wood14": 1123.5,
-   "wood26": 370.4
-  },
-  "Quarrow.2104008100": {
-   "pm14": 7.3,
-   "pm26": 7.1,
-   "wood14": 617.5,
-   "wood26": 600.7
-  },
-  "Quarrow.2104008310": {
-   "pm14": 139.2,
-   "pm26": 104.7,
-   "wood14": 9096.6,
-   "wood26": 6845.3
-  },
-  "Quarrow.2104008320": {
-   "pm14": 32.6,
-   "pm26": 48.3,
-   "wood14": 4472.6,
-   "wood26": 6612.9
-  },
-  "Quarrow.2104008330": {
-   "pm14": 5.6,
-   "pm26": 5.6,
-   "wood14": 860.5,
-   "wood26": 865.2
-  },
-  "Quarrow.2104008400": {
-   "pm14": 1.8,
-   "pm26": 2.9,
-   "wood14": 1117.5,
-   "wood26": 1825.2
-  },
-  "Quarrow.2104008610": {
-   "pm14": 18.6,
-   "pm26": 11.6,
-   "wood14": 1983.1,
-   "wood26": 1230.5
-  },
-  "Saddeny.2104008100": {
-   "pm14": 2.6,
-   "pm26": 2.6,
-   "wood14": 222.7,
-   "wood26": 219.3
-  },
-  "Saddeny.2104008310": {
-   "pm14": 62.3,
-   "pm26": 35.9,
-   "wood14": 4070.8,
-   "wood26": 2348.9
-  },
-  "Saddeny.2104008320": {
-   "pm14": 15.8,
-   "pm26": 25.9,
-   "wood14": 2165.9,
-   "wood26": 3547.3
-  },
-  "Saddeny.2104008330": {
-   "pm14": 2.1,
-   "pm26": 2.1,
-   "wood14": 326.6,
-   "wood26": 319.8
-  },
-  "Saddeny.2104008400": {
-   "pm14": 0.9,
-   "pm26": 1.8,
-   "wood14": 577.9,
-   "wood26": 1115.0
-  },
-  "Saddeny.2104008610": {
-   "pm14": 8.3,
-   "pm26": 4.5,
-   "wood14": 884.9,
-   "wood26": 479.9
-  },
-  "Wethermoor.2104008100": {
-   "pm14": 4.5,
-   "pm26": 4.4,
-   "wood14": 380.3,
-   "wood26": 376.6
-  },
-  "Wethermoor.2104008310": {
-   "pm14": 95.3,
-   "pm26": 82.9,
-   "wood14": 6227.0,
-   "wood26": 5421.2
-  },
-  "Wethermoor.2104008320": {
-   "pm14": 24.9,
-   "pm26": 31.3,
-   "wood14": 3408.7,
-   "wood26": 4290.6
-  },
-  "Wethermoor.2104008330": {
-   "pm14": 3.9,
-   "pm26": 3.9,
-   "wood14": 605.9,
-   "wood26": 605.9
-  },
-  "Wethermoor.2104008400": {
-   "pm14": 1.5,
-   "pm26": 1.9,
-   "wood14": 909.5,
-   "wood26": 1162.4
-  },
-  "Wethermoor.2104008610": {
-   "pm14": 11.9,
-   "pm26": 10.5,
-   "wood14": 1266.0,
-   "wood26": 1120.5
-  }
+  "fund": 465000,
+  "over": [
+   "Valley Floor South",
+   "East Bench",
+   "West Bench"
+  ],
+  "share": 155000
  },
  "constants": {
+  "afue_pct": 85,
   "bag_lb": 40,
-  "tons_per_cord": 1.163,
-  "tool_secondary": 2.4
+  "btu_gal": 91500,
+  "cord_mmbtu": 18.5,
+  "main_out": 3622,
+  "nox": 0.142,
+  "pellet_mmbtu": 16.4,
+  "secondary": 2.2,
+  "tons_per_cord": 1.163
+ },
+ "order": [
+  "Valley Floor North",
+  "Valley Floor South",
+  "East Bench",
+  "West Bench",
+  "Upper Valley"
+ ],
+ "scc_codes": [
+  "2104008310",
+  "2104008320",
+  "2104008330",
+  "2104008400",
+  "2104008100",
+  "2104008610"
+ ],
+ "steps": {
+  "appliances": 12100,
+  "comp_hi": 1.002,
+  "comp_lo": 0.996,
+  "drop_hi": 32,
+  "drop_lo": 26,
+  "pre_gap": 0.01
+ },
+ "zones": {
+  "East Bench": {
+   "allot": 89.9,
+   "default_pm": 78,
+   "exceeded": true,
+   "extra_pm": 20,
+   "pm": 98,
+   "share": 155000
+  },
+  "Upper Valley": {
+   "allot": 58.6,
+   "default_pm": 47,
+   "exceeded": false,
+   "extra_pm": 7,
+   "pm": 54,
+   "share": 0
+  },
+  "Valley Floor North": {
+   "allot": 63.9,
+   "default_pm": 58,
+   "exceeded": false,
+   "extra_pm": 2,
+   "pm": 59,
+   "share": 0
+  },
+  "Valley Floor South": {
+   "allot": 52.6,
+   "default_pm": 56,
+   "exceeded": true,
+   "extra_pm": 3,
+   "pm": 59,
+   "share": 155000
+  },
+  "West Bench": {
+   "allot": 77.6,
+   "default_pm": 68,
+   "exceeded": true,
+   "extra_pm": 15,
+   "pm": 83,
+   "share": 155000
+  }
  }
 }

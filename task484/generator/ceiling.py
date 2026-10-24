@@ -2,123 +2,77 @@
 
     python3 task484/generator/ceiling.py
 
-The cracker lands the call, runs the hygiene battery and executes every filed rule: it counts the registry's
-appliances in place in the 2014 season on the 2020 boundaries following each re-registration's predecessor id, and
-builds each county's remainder from the tool's named ACS release with each block group's housing units outside the
-areas. The mirror stops at the default rung (the survey's class means carried back) and does everything else as the
-cracker does. A naive handling (every registry row counted, the latest ACS release, whole block groups) is printed
-beside them. Each graded ask figure in submission.md's Deliverable Answers is scored against figures.json."""
-import collections
-import csv
+The cracker lands the call, runs the hygiene battery and executes every filed rule: it reads each export's own date
+field as the delivery date (Coldwater's TRANS-DT), and takes the assessor's housing units by block group as the tool
+documentation says, joining them to the ACS block groups on the code. The mirror stops at the default rung (the
+survey carried into 2025-26) and does everything else as the cracker does. A naive handling (the posted dates, the
+code join and the latest ACS release) is printed beside them. Each graded ask figure in submission.md's Deliverable
+Answers is scored against figures.json at the prompt's rounding."""
 import json
+import math
 import os
-import re
-
-from pypdf import PdfReader
+import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
-T = os.path.join(TASK, "target")
+sys.path.insert(0, HERE)
+import golden as G  # noqa: E402
 
 
-def rows(name):
-    with open(os.path.join(T, name), newline="") as f:
-        return list(csv.DictReader(f))
+def whole(x):
+    return int(math.floor(x + 0.5))
 
 
-def ask_a(mode):
-    """mode 'naive' counts every record, 'dedupe' runs the hygiene battery's near-duplicate merge (one appliance per
-    address, code and install year), 'pair' pairs a closed record with the record registered at its address on its
-    closing day."""
-    scc = {x["registry_appliance_code"]: x["scc"] for x in rows("scc_crosswalk_rwc.csv")}
-    area20 = {x["parcel_number"]: x["area_2020_boundary"] for x in rows("parcel_area_crosswalk.csv")}
-    reg = rows("wood_device_registry_2026-06-30.csv")
-    keep = [x for x in reg if int(x["year_installed"]) <= 2014 and not x["replaces_device_no"]
-            and area20.get(x["parcel_number"])]
-    if mode == "dedupe":
-        seen, out = set(), []
-        for x in keep:
-            k = (x["site_address"], x["county"], x["appliance_code"], x["year_installed"])
-            if k not in seen:
-                seen.add(k)
-                out.append(x)
-        keep = out
-    elif mode == "pair":
-        on = collections.defaultdict(list)
-        for x in reg:
-            on[x["site_address"], x["county"], x["appliance_code"], x["year_installed"], x["registered_on"]].append(x)
-        again = {y["device_no"] for x in reg if x["status"] == "C" and x["status_reason"] == "Record closed"
-                 for y in on.get((x["site_address"], x["county"], x["appliance_code"], x["year_installed"], x["status_date"]), [])
-                 if y["device_no"] != x["device_no"]}
-        keep = [x for x in keep if x["device_no"] not in again]
-    n = collections.Counter()
-    for x in keep:
-        n[area20[x["parcel_number"]], scc[x["appliance_code"]]] += 1
-    return n
+def keep_a(p, figs, by):
+    a = G.ask_a(p, by=by)
+    n = 0
+    for z, v in a.items():
+        n += int(math.floor(v["gal"] / 100.0 + 0.5) * 100) == figs["ask_a"][z]["gal"]
+        n += abs(math.floor(v["nox"] * 100 + 0.5) / 100.0 - figs["ask_a"][z]["nox"]) < 1e-9
+    return n, 2 * len(a)
 
 
-def ask_b(rule, split):
-    text = " ".join(p.extract_text() for p in PdfReader(os.path.join(T, "state_rwc_tool_method_note.pdf")).pages)
-    text = text.replace("\n", " ")
-    sec = float(re.search(r"secondary heat source are ([\d.]+) times", text).group(1))
-    sccs = {x["description"].replace("Woodstove: ", ""): x["scc"] for x in rows("scc_crosswalk_rwc.csv")}
-    ef = {x["scc"]: float(x["factor"]) for x in rows("emission_factors_rwc_2023.csv") if x["pollutant"] == "PM2.5"}
-    pel = [s for d, s in sccs.items() if d.startswith("pellet")][0]
-    tool = {}
-    for name, s in sccs.items():
-        m = re.search(re.escape(name) + r" (\d\.\d\d) (\d\.\d\d) (\d+\.\d) (\d+\.\d)", text)
-        tool[s] = tuple(float(v) for v in m.groups())
-    acs = rows("acs_b25040_blockgroups_2019_2023.csv" if rule else "acs_b25040_blockgroups_2020_2024.csv")
-    hu = collections.defaultdict(lambda: [0, 0])
-    for x in rows("assessor_housing_units_by_block_group_2025.csv"):
-        hu[x["block_group"]][0 if x["maintenance_area_2020"] else 1] += int(x["housing_units"])
-    share = {}
-    if split == "relationship":
-        o20, t20 = collections.Counter(), collections.Counter()
-        for x in rows("census_bg2020_bg2010_relationship_wa.csv"):
-            i, o = hu[x["GEOID_BG_10"]]
-            o20[x["GEOID_BG_20"]] += int(x["HU_20_OVERLAP"]) * o / (i + o)
-            t20[x["GEOID_BG_20"]] += int(x["HU_20_OVERLAP"])
-        share = {g: o20[g] / t20[g] for g in t20}
-    out = collections.Counter()
-    for x in acs:
-        g = x["GEO_ID"][-12:]
-        county = re.search(r", (\w+) County", x["NAME"]).group(1)
-        inside, outside = hu[g]
-        sh = share[g] if split == "relationship" else outside / (inside + outside) if split else (1.0 if outside > inside else 0.0)
-        main = int(x["B25040_008E"]) * sh
-        for s, (sp, ss, up, us) in tool.items():
-            use = main * sp * up + main * sec * ss * us
-            wood = use if s == pel else use * 1.163
-            out[county, s] += wood * ef[s] / 2000
-    return out
+def keep_b(p, figs, **kw):
+    b = {c: v for c, v in G.ask_b(p, **kw).items() if c != "_main"}
+    n = 0
+    for c, v in b.items():
+        scc = p["scc_of"][c]
+        n += whole(v["app"]) == figs["ask_b"][scc]["app"]
+        n += abs(math.floor(v["pm"] * 10 + 0.5) / 10.0 - figs["ask_b"][scc]["pm"]) < 1e-9
+    return n, 2 * len(b)
 
 
 def main():
+    p = G.load()
     figs = json.load(open(os.path.join(HERE, "figures.json")))
-    ga = {k: v["registry"] for k, v in figs["ask_a"].items()}
-    gb = {k: v["pm"] for k, v in figs["ask_b"].items()}
-
-    def score(a, b):
-        ka = sum(1 for k, v in ga.items() if a.get(tuple(k.split(".")), -1) == v)
-        kb = sum(1 for k, v in gb.items() if abs(round(b.get(tuple(k.split(".")), -99) + 1e-9, 1) - v) < 0.05)
-        return ka, kb
-
-    total = len(ga) + len(gb)
-    ck = score(ask_a("dedupe"), ask_b(True, True))
-    nk = score(ask_a("naive"), ask_b(False, False))
-    pk = score(ask_a("pair"), ask_b(True, "relationship"))
-    print("the golden handling (same-day pairing; the relationship file) keeps ask A %d, ask B %d" % pk)
-    lc = sum(ck) / total
+    gold = G.inventory(p)
+    dflt = G.inventory(p, "default")
+    assert gold["over"] == figs["call"]["over"] and dflt["over"] != gold["over"]
+    rows = []
+    ca, ta = keep_a(p, figs, "posted")
+    cb, tb = keep_b(p, figs, split="code")
+    na, _ = keep_a(p, figs, "posted")
+    nb, _ = keep_b(p, figs, split="code", release="acs5_2020_2024")
+    ga, _ = keep_a(p, figs, "delivery")
+    gb, _ = keep_b(p, figs)
+    assert ga == ta and gb == tb, "the golden handling must reproduce every ask figure"
+    rows.append(("A commercial propane by zone, gallons and NOx", ta, ca, ca, na))
+    rows.append(("B outside the maintenance area by SCC, appliances and PM2.5", tb, cb, cb, nb))
+    total = ta + tb
+    lc = (ca + cb) / float(total)
+    lm = lc
     C = 38 + 7 + 55 * lc
-    S = 5 + 7 + 55 * lc            # the mirror misses the call and handles the asks as the cracker does
-    print("ask figures: %d registry counts (ask A), %d remainder cells (ask B), %d in all" % (len(ga), len(gb), total))
-    print("cracker keeps ask A %d, ask B %d: %.1f per cent of ask weight; scores %.1f" % (ck + (100 * lc, C)))
-    print("mirror (default rung) keeps the same: %.1f per cent; scores %.1f" % (100 * lc, S))
-    print("naive handling keeps ask A %d, ask B %d" % nk)
-    print("pair ceiling %.1f; mirror leakage %.1f per cent of ask weight" % ((C + S) / 2, 100 * lc))
+    S = 5 + 7 + 55 * lm
+    print("| Ask | Graded figures | Cracker keeps | Mirror keeps | Naive handling keeps | Cracker |")
+    print("|---|---|---|---|---|---|")
+    for name, t, c, m, nv in rows:
+        print("| %s | %d | %d | %d | %d | %s |" % (name, t, c, m, nv, "misses" if c == 0 else "keeps %d" % c))
+    print()
+    print("cracker keeps %.1f per cent of ask weight (scores %.1f with the call); mirror %.1f per cent (scores %.1f); "
+          "naive %.1f per cent" % (100 * lc, C, 100 * lm, S, 100 * (na + nb) / float(total)))
+    print("Pair ceiling: %.1f" % ((C + S) / 2))
+    print("Mirror leakage: %.1f per cent of ask weight" % (100 * lm))
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())

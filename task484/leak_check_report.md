@@ -1,26 +1,38 @@
 # leak check, task484
 
-**Verdict: REVIEW.** 18 files read, 102 golden figures and 0 candidate names taken from submission.md, 25 stump terms taken from the design note.
+**Verdict: REVIEW.** 21 files read, 25 golden figures and 6 candidate names taken from submission.md, 25 stump terms taken from the design note.
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: survey, current, status, method, appliance, survivors, activity, base-year, changed-out, factors, recalculated, applications, mixture, programme, primary-heat, workbook, default, readable, emission, nothing, recalculation, provision, methods, agency, regional
+Stump terms swept: survey, architecture, appliance, comparison, exports, burned, degree, carried, device, member, estimand, registry, winter, account, parcel, accounts, switch, golden, reader, reflex, nothing, program, groups, deliveries, change
 
-## 3 answer figures in the pack (REVIEW 6)
-- **REVIEW** `contingency_provisions_rwc.pdf`: golden figure 4.2 appears: ...by less than the area's commitment in Table 4-1. 4.2 Base year The 2014 base year is recalculated on t...
-- **REVIEW** `state_rwc_tool_method_note.pdf`: golden figure 3.9 appears: ...condary freestanding, non-EPA certified 0.30 0.18 3.9 1.0 freestanding, EPA certified, non-catalytic 0....
-- **REVIEW** `state_rwc_tool_method_note.pdf`: golden figure 7.0 appears: ...0 0.47 0.9 0.3 Hydronic heater: outdoor 0.10 0.00 7.0 0.0...
-- **REVIEW** `state_rwc_tool_method_note.pdf`: golden figure 3.0 appears: ...atalytic 0.08 0.05 3.6 0.9 pellet-fired 0.20 0.08 3.0 0.8 Fireplace: general 0.00 0.47 0.9 0.3 Hydronic...
-- **REVIEW** `state_rwc_tool_method_note.pdf`: golden figure 0.9 appears: ...nding, EPA certified, non-catalytic 0.32 0.22 3.6 0.9 freestanding, EPA certified, catalytic 0.08 0.05...
-- **REVIEW** `contingency_provisions_rwc.pdf`: carries 10 of 11 distinctive words of the committed call: 'Quarrow and Wethermoor trigger their contingency measures for the 2026-27 heating season; Brannock, Ivelton, Saddeny and'
+## 3 answer figures in the pack (REVIEW 4)
+- **REVIEW** `maintenance_plan_chapter4_rwc.pdf`: golden figure 77.6 appears: ...alley Floor South 52.6 East Bench 89.9 West Bench 77.6 Upper Valley 58.6 Table 4-2. Zone allotments. 4.3...
+- **REVIEW** `maintenance_plan_chapter4_rwc.pdf`: golden figure 89.9 appears: ...oor North 63.9 Valley Floor South 52.6 East Bench 89.9 West Bench 77.6 Upper Valley 58.6 Table 4-2. Zone...
+- **REVIEW** `heating_survey_2024_25_methods.pdf`: carries 12 of 17 distinctive words of the committed call: 'Valley Floor South, East Bench and West Bench exceeded their 2025-26 allotments and share the 2026-27 changeout fund, US'
+- **REVIEW** `maintenance_plan_chapter4_rwc.pdf`: carries 16 of 17 distinctive words of the committed call: 'Valley Floor South, East Bench and West Bench exceeded their 2025-26 allotments and share the 2026-27 changeout fund, US'
 
-## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `contingency_provisions_rwc.pdf`: 9 of 25 stump-paragraph terms appear (survey, method, appliance, factors, recalculated, emission); read whether the document names the move
-- **REVIEW** `rwc_inventory_methods_appendix_2025_26.pdf`: 8 of 25 stump-paragraph terms appear (survey, method, appliance, activity, factors, emission); read whether the document names the move
-- **REVIEW** `state_rwc_tool_method_note.pdf`: 4 of 25 stump-paragraph terms appear (survey, method, appliance, agency); read whether the document names the move
+## 4 design-note vocabulary (REVIEW 4)
+- **REVIEW** `coldwater_export_record_layout.txt`: 3 of 25 stump-paragraph terms appear (account, accounts, program); read whether the document names the move
+- **REVIEW** `heating_survey_2024_25_methods.pdf`: 6 of 25 stump-paragraph terms appear (survey, appliance, burned, device, registry, program); read whether the document names the move
+- **REVIEW** `maintenance_plan_chapter4_rwc.pdf`: 7 of 25 stump-paragraph terms appear (appliance, burned, device, registry, parcel, program); read whether the document names the move
+- **REVIEW** `montana_rwc_tool_documentation_2023.pdf`: 5 of 25 stump-paragraph terms appear (survey, appliance, burned, registry, program); read whether the document names the move
 
-## 8 column names (REVIEW 1)
-- **REVIEW** `wood_device_registry_2026-06-30.csv`: columns a generator names and an organisation does not: device_no, replaces_device_no
+## 6 ranking artifacts (REVIEW 3, INFO 2)
+- **REVIEW** `burn_zone_parcels_2025.csv`: names 5 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `heating_survey_2024_25_methods.pdf`: names 6 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **REVIEW** `solid_fuel_device_registry_2026-05-15.csv`: names 5 of 6 answer-set candidates beside numbers; confirm it does not rank them on the decision question
+- **INFO** `heating_survey_2024_25_responses.csv`: names 5 of 6 answer-set candidates; confirm it does not rank them on the decision question
+- **INFO** `maintenance_plan_chapter4_rwc.pdf`: names 6 of 6 answer-set candidates; confirm it does not rank them on the decision question
+
+## 8 column names (REVIEW 4)
+- **REVIEW** `device_code_scc_crosswalk.csv`: columns a generator names and an organisation does not: device_code, device_description
+- **REVIEW** `heating_survey_2024_25_responses.csv`: columns a generator names and an organisation does not: device_id
+- **REVIEW** `khlv_daily_temperatures_2023-07_2026-06.csv`: columns a generator names and an organisation does not: flag
+- **REVIEW** `solid_fuel_device_registry_2026-05-15.csv`: columns a generator names and an organisation does not: device_id, device_code, replaced_by_device
+
+## 9 dates after the setting (INFO 1)
+- **INFO** `-`: no --asof given, sweep skipped (pass the fiction's as-of date)
 
 ## 10 container metadata (INFO 1)
 - **INFO** `-`: audit reported no writer signature (1 lines)
@@ -31,28 +43,6 @@ Stump terms swept: survey, current, status, method, appliance, survivors, activi
 
 ## 5 announcements (clean)
 
-## 6 ranking artifacts (clean)
-
 ## 7 hidden content (clean)
 
-## 9 dates after the setting (clean)
-
 ## 11 prompt gate (clean)
-
-## Round 1 readers (zip 79bf825cac69ff18)
-
-Reader A (sonnet, medium, a fresh copy of the pack and prompt.txt only) filed all six areas as triggering, the
-default path's answer: it applied each area's survey cords per appliance class to the plan's 2014 counts. It kept 0 of
-36 ask A counts (it merged same-parcel records registered together and did not pair the split re-registrations), 0 of
-18 ask B cells (it joined the assessors' housing units to the ACS on the block-group code), 0 of 18 area figures and 13
-of 36 base-year cells (the classes no changeout touched); score_reader exit 0. It ruled every REVIEW line harmless. Its
-question 6 named the provision's 4.2 and called the call a stated procedure, having taken the class means as that
-procedure; the judge reads Gate H on the golden's step.
-
-Reader B (the same brief on a second fresh copy) filed the same six areas: it applied the survey's class means to the
-plan's 2014 counts, merged same-parcel records registered together, and joined the assessors' housing units on the
-block-group code. It kept 0 of 36 ask A counts, 0 of 18 ask B cells, 0 of 18 area figures and the same 13 of 36
-base-year cells; score_reader exit 0. It ruled every REVIEW line harmless. Its question 6 also called the call mostly
-a stated procedure (the provision's 4.1 and 4.2 with the appendix), with the registry's twin records as a data catch.
-Both readers' question 6 is the Gate H question the judge answers on the golden's step: each read the provision as
-fixing count times class mean and never weighed what the changed-out appliances burned.
