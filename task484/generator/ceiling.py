@@ -26,15 +26,34 @@ def rows(name):
         return list(csv.DictReader(f))
 
 
-def ask_a(chain):
-    scc = {x["registry_device_type"]: x["scc"] for x in rows("scc_crosswalk_rwc.csv")}
+def ask_a(mode):
+    """mode 'naive' counts every record, 'dedupe' runs the hygiene battery's near-duplicate merge (one appliance per
+    address, code and install year), 'pair' pairs a closed record with the record registered at its address on its
+    closing day."""
+    scc = {x["registry_appliance_code"]: x["scc"] for x in rows("scc_crosswalk_rwc.csv")}
     area20 = {x["parcel_number"]: x["area_2020_boundary"] for x in rows("parcel_area_crosswalk.csv")}
+    reg = rows("wood_device_registry_2026-06-30.csv")
+    keep = [x for x in reg if int(x["year_installed"]) <= 2014 and not x["replaces_device_no"]
+            and area20.get(x["parcel_number"])]
+    if mode == "dedupe":
+        seen, out = set(), []
+        for x in keep:
+            k = (x["site_address"], x["county"], x["appliance_code"], x["year_installed"])
+            if k not in seen:
+                seen.add(k)
+                out.append(x)
+        keep = out
+    elif mode == "pair":
+        on = collections.defaultdict(list)
+        for x in reg:
+            on[x["site_address"], x["county"], x["appliance_code"], x["year_installed"], x["registered_on"]].append(x)
+        again = {y["device_no"] for x in reg if x["status"] == "C" and x["status_reason"] == "Record closed"
+                 for y in on.get((x["site_address"], x["county"], x["appliance_code"], x["year_installed"], x["status_date"]), [])
+                 if y["device_no"] != x["device_no"]}
+        keep = [x for x in keep if x["device_no"] not in again]
     n = collections.Counter()
-    for x in rows("wood_device_registry_2026-06-30.csv"):
-        if chain and x["predecessor_id"]:
-            continue
-        if int(x["year_installed"]) <= 2014 and not x["replaces_device_id"] and area20.get(x["parcel_number"]):
-            n[area20[x["parcel_number"]], scc[x["device_type"]]] += 1
+    for x in keep:
+        n[area20[x["parcel_number"]], scc[x["appliance_code"]]] += 1
     return n
 
 
@@ -78,8 +97,10 @@ def main():
         return ka, kb
 
     total = len(ga) + len(gb)
-    ck = score(ask_a(True), ask_b(True, True))
-    nk = score(ask_a(False), ask_b(False, False))
+    ck = score(ask_a("dedupe"), ask_b(True, True))
+    nk = score(ask_a("naive"), ask_b(False, False))
+    pk = score(ask_a("pair"), ask_b(True, True))
+    print("pairing each closed record with its same-day re-registration keeps ask A %d" % pk[0])
     lc = sum(ck) / total
     C = 38 + 7 + 55 * lc
     S = 5 + 7 + 55 * lc            # the mirror misses the call and handles the asks as the cracker does

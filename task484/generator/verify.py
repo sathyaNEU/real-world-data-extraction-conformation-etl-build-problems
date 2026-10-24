@@ -44,7 +44,7 @@ def main():
     commit = {m.group(1): int(m.group(3)) for m in re.finditer(r"(Brannock|Ivelton|Quarrow|Saddeny|Wethermoor|Ellick) "
                                                               r"(Selwick|Corrin|Tamsey) (\d+)", prov)}
     ok("V0", len(commit) == 6, "six commitments read from Table 4-1")
-    scc = {x["registry_device_type"]: x["scc"] for x in rows("scc_crosswalk_rwc.csv")}
+    scc = {x["registry_appliance_code"]: x["scc"] for x in rows("scc_crosswalk_rwc.csv")}
     lab = {x["survey_appliance"]: x["scc"] for x in rows("scc_crosswalk_rwc.csv")}
     app = {x["application_appliance"]: x["scc"] for x in rows("scc_crosswalk_rwc.csv") if x["application_appliance"]}
     ef = {x["scc"]: float(x["factor"]) for x in rows("emission_factors_rwc_2023.csv") if x["pollutant"] == "PM2.5"}
@@ -52,12 +52,11 @@ def main():
     pel = lab[pellet]
     area20 = {x["parcel_number"]: x["area_2020_boundary"] for x in rows("parcel_area_crosswalk.csv")}
     reg = rows("wood_device_registry_2026-06-30.csv")
-    succ = {x["predecessor_id"] for x in reg if x["predecessor_id"]}
     # the 2025-26 appliances: in place in the season, the 2020 boundary, each device once
     n26 = collections.Counter()
     for x in reg:
         if x["status"] == "A" and int(x["year_installed"]) <= 2025 and area20.get(x["parcel_number"]):
-            n26[area20[x["parcel_number"]], scc[x["device_type"]]] += 1
+            n26[area20[x["parcel_number"]], scc[x["appliance_code"]]] += 1
     # the survey: wood burned per appliance by area and class (cords, or tons of pellets)
     conv = {"cords": 1.0, "face cords": 1 / 3.0, "pickup loads": 0.5, "tons": 1.0, "bags": 40 / 2000.0}
     sv = collections.defaultdict(list)
@@ -117,6 +116,27 @@ def main():
         det = {x["maintenance_area"]: x for x in csv.DictReader(f)}
     ok("V4", all(det[a]["determination"] == ("TRIGGERED" if res[a][3] else "NOT TRIGGERED") for a in res),
        "the determinations file agrees")
+    # ask A: the registry's appliances in place in the 2014 season on the 2020 boundaries, each appliance once: a record
+    # closed on a day another record of the same kind and install year is registered at the same address is the same
+    # appliance registered again; records registered together at one address are two appliances
+    reg_on = collections.defaultdict(list)
+    for x in reg:
+        reg_on[x["site_address"], x["county"], x["appliance_code"], x["year_installed"], x["registered_on"]].append(x)
+    again = set()
+    for x in reg:
+        if x["status"] == "C" and x["status_reason"] == "Record closed":
+            for y in reg_on.get((x["site_address"], x["county"], x["appliance_code"], x["year_installed"], x["status_date"]), []):
+                if y["device_no"] != x["device_no"]:
+                    again.add(y["device_no"])
+    na = collections.Counter()
+    for x in reg:
+        if x["device_no"] in again or x["replaces_device_no"] or int(x["year_installed"]) > 2014:
+            continue
+        a = area20.get(x["parcel_number"])
+        if a:
+            na[a, scc[x["appliance_code"]]] += 1
+    ok("V5", all(na[tuple(k.split("."))] == v["registry"] for k, v in figs["ask_a"].items()),
+       "ask A: the registry's 2014-season appliances, 36 cells (%d re-registrations paired)" % len(again))
     print("\n%s" % ("all checks passed" if not FAIL else "FAILED: " + ", ".join(FAIL)))
     return 1 if FAIL else 0
 

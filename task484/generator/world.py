@@ -49,7 +49,7 @@ def tons_of(cl, use):
 
 class Device:
     __slots__ = ("did", "area", "county", "cl", "primary", "use", "installed", "registered", "removed", "reason",
-                 "parcel", "address", "programme", "replaces", "moved", "split", "late", "survey", "app")
+                 "parcel", "address", "programme", "replaces", "moved", "split", "late", "survey", "app", "twin")
 
     def __init__(self, **kw):
         for k in self.__slots__:
@@ -75,9 +75,15 @@ def build():
                 inst = int(r.integers(1978, 2015))
                 reg = dt.date(2010, 6, 1) + dt.timedelta(days=int(r.integers(0, 600))) if inst < 2010 else \
                     dt.date(inst, 1, 1) + dt.timedelta(days=int(r.integers(10, 300)))
+                prev = devs[-1] if devs and devs[-1].area == code and devs[-1].cl == cl else None
+                if prev is not None and prev.twin is None and r.random() < (0.04 if cl == "FPL" else 0.012):
+                    inst, reg = prev.installed, prev.registered          # a second appliance of the same kind
                 d = Device(did=did(), area=code, county=county, cl=cl, primary=bool(pr[i]), use=float(base[i]),
                            installed=inst, registered=reg, removed=None, reason=None, programme=False, replaces=None,
                            moved=False, split=None, late=False)
+                if prev is not None and inst == prev.installed and reg == prev.registered:
+                    d.twin = prev
+                    prev.twin = d
                 devs.append(d)
             # the changeout: primary-heat households first
             if cl in CHANGED:
@@ -115,7 +121,7 @@ def build():
                                    replaces=None, moved=False, split=None, late=False))
     # late registrations: some pre-2015 appliances first registered after the plan's extract (never changed out)
     for d in devs:
-        if d.installed <= 2014 and not d.programme and d.replaces is None and r.random() < 0.04:
+        if d.installed <= 2014 and not d.programme and d.replaces is None and d.twin is None and r.random() < 0.04:
             yl = int(r.integers(2016, 2026))
             d.registered = dt.date(yl, int(r.integers(1, 13 if yl < 2025 else 7)), int(r.integers(1, 28)))
             d.late = True
@@ -124,7 +130,7 @@ def build():
                 d.reason = None
     # the 2020 boundary revision: a few parcels at each area's edge leave it (never a changed-out household)
     for d in devs:
-        if d.replaces is None and not d.programme and d.installed <= 2014 and r.random() < 0.012:
+        if d.replaces is None and not d.programme and d.installed <= 2014 and d.twin is None and r.random() < 0.012:
             d.moved = True
     # parcels and street addresses; a parcel split re-registers its appliance under a new id and parcel, the old
     # record closed as superseded on the split date, the install year carried over
@@ -133,6 +139,9 @@ def build():
     used, usedp = set(), set()
     for d in devs:
         k = int(r.integers(10, 9999))
+        if d.twin is not None and d.twin.parcel is not None:
+            d.parcel, d.address = d.twin.parcel, d.twin.address
+            continue
         d.parcel = None
         while d.parcel is None or d.parcel in usedp:
             d.parcel = _parcel(r, d.county)
@@ -144,7 +153,7 @@ def build():
                 break
             k = int(r.integers(10, 99999))
     for d in devs:
-        if d.replaces is None and d.installed <= 2014 and not d.late and not d.moved and r.random() < 0.025:
+        if d.replaces is None and d.installed <= 2014 and not d.late and not d.moved and d.twin is None and r.random() < 0.025:
             when = dt.date(int(r.integers(2016, 2025)), int(r.integers(1, 13)), int(r.integers(1, 28)))
             if d.removed is not None and d.removed <= when:
                 continue

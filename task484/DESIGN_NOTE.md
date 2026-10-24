@@ -207,19 +207,23 @@ keyed two ways; the programme's fiscal years against heating seasons. Each ask's
 golden at stage 3, with "any" so that none is a grammatical answer, and no trap word (reconcile is not used).
 
 
-Measured by: `generator/ceiling.py` on the first cut pack (target.zip 8b1df16c3144cafa).
+Measured by: `generator/ceiling.py` on the second cut pack (target.zip c7ccb8e1679941e1).
 
 | Ask | Graded figures | Cracker keeps | Mirror keeps | Naive handling keeps |
 |---|---|---|---|---|
-| A registry counts in place in the 2014 season | 36 | 36 | 36 | 2 |
+| A registry counts in place in the 2014 season | 36 | 3 | 3 | 0 |
 | B remainder PM2.5 by county and SCC | 18 | 18 | 18 | 1 |
-| share of ask weight (score) | 54 | 100.0 per cent (100.0) | 100.0 per cent (67.0) | 5.6 per cent |
+| share of ask weight (score) | 54 | 38.9 per cent (66.4) | 38.9 per cent (33.4) | 1.9 per cent |
 
-Pair ceiling: 83.5, against the 40 the bar is built to: the layer fails as drafted.
-Mirror leakage: 100.0 per cent of ask weight.
-Every device in the draft is seen rather than silent: ask A's re-registrations carry a predecessor id, ask B's
-release is named in the tool note and the assessor file labels each block group's part inside an area, so the
-hygiene battery and the filed rules keep every figure. The asks are re-sited with silent devices before stage 4.
+Pair ceiling: 49.9, against the 40 the bar is built to.
+Mirror leakage: 38.9 per cent of ask weight.
+Ask A now holds: a parcel split closes the appliance's record and registers it again under a new number on the same
+day at the same address, with nothing linking the two, beside genuine pairs (a second appliance of the same kind
+registered with the first); the hygiene battery's near-duplicate merge (one appliance per address, code and install
+year) keeps 3 of 36, counting every record keeps none, and only pairing a closed record with the record registered at
+its address on its closing day keeps all 36 (verify.py V5). Ask B still leaks every figure: its release is named in
+the tool note and the assessor labels each block group's part inside an area, so it needs a silent device or a
+replacement before stage 4.
 ## Tried and rejected
 
 - 2026-10-20, at the draw: ET41's own world, broadband grant allocation from the FCC map: served, underserved,
@@ -262,3 +266,5 @@ hygiene battery and the filed rules keep every figure. The asks are re-sited wit
   predecessor id and ask B on a filed ACS vintage rule with labelled split block groups; ceiling.py measured the
   cracker and the mirror keeping 54 of 54 figures (pair ceiling 83.5), because every device was a field or a filed
   rule. Re-site both with silent devices (supplemental-stumping Part 3).
+- 2026-10-24, ask A re-sited (second cut pack c7ccb8e1679941e1): the predecessor id removed and the split's old
+  record closed as an ordinary closed record beside genuine same-day pairs; the cracker now keeps 3 of 36. Ask B unchanged.

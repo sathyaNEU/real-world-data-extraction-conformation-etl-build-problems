@@ -13,13 +13,13 @@
  "precut": {
   "exit": 1,
   "date": "2026-10-24",
-  "checks": "51, 3 FAIL, all the ask layer: pair ceiling 83.5, mirror leakage 100 per cent, the cracker keeps every ask"
+  "checks": "51, 3 FAIL, all the ask layer: pair ceiling 49.9, mirror leakage 38.9 per cent, the cracker keeps ask B"
  },
  "leak": null,
  "duplicate_check": null,
  "judge": null,
  "returned": [],
- "resume": "stage 2, the ask layer, of architecture 2 (drawn c2e40941). The call side is built and asserted: generator/ (world, pack, golden, goldfiles, checks, verify, ceiling, build) cuts the pack byte-identically, checks.py passes 27 (G0, T1, M1, M2, L0 to L4, SF1 to SF15, S1, S2), verify.py recomputes the golden from target/ (Quarrow and Wethermoor trigger, every area 5.8 points or more from its commitment). The ask draft failed on the first cut pack: ceiling.py measured the cracker and the mirror keeping 54 of 54 figures (pair ceiling 83.5), because ask A's re-registrations carry a predecessor id and ask B's release is named in the tool note with labelled block-group parts. Next: re-site both asks with silent devices on populations the call never reads (leads: ask B on block-group codes the assessor's GIS keeps from 2010 while the ACS uses 2020 geography, a few codes unchanged in name but redrawn, the Census relationship file as the fair handling; ask A off the call's registry rows, for example the registry's commercial wood-fired devices or a migration that re-keyed one county's records beside genuine same-day pairs), re-measure with ceiling.py to 40 or less, then submission.md, the golden-realism pass, figures_check.py, leak.py, guard surface and heart, precut to exit 0, and stage 4.",
+ "resume": "stage 2, the ask layer, of architecture 2 (drawn c2e40941). The call side is built and asserted: generator/ (world, pack, golden, goldfiles, checks, verify, ceiling, build) cuts the pack byte-identically, checks.py passes 27 (G0, T1, M1, M2, L0 to L4, SF1 to SF15, S1, S2), verify.py recomputes the golden from target/ (Quarrow and Wethermoor trigger, every area 5.8 points or more from its commitment). The first ask draft failed on the first cut pack: ceiling.py measured the cracker and the mirror keeping 54 of 54 figures (pair ceiling 83.5), because ask A's re-registrations carry a predecessor id and ask B's release is named in the tool note with labelled block-group parts. Ask A has since been re-sited and holds (the cracker keeps 3 of 36; pair ceiling 49.9). Next: re-site ask B with a silent device on populations the call never reads (leads: ask B on block-group codes the assessor's GIS keeps from 2010 while the ACS uses 2020 geography, a few codes unchanged in name but redrawn, the Census relationship file as the fair handling; ask A off the call's registry rows, for example the registry's commercial wood-fired devices or a migration that re-keyed one county's records beside genuine same-day pairs), re-measure with ceiling.py to 40 or less, then submission.md, the golden-realism pass, figures_check.py, leak.py, guard surface and heart, precut to exit 0, and stage 4.",
  "source_note": "re-root to a fresh world; architecture 1 spent at stage 4",
- "zip": "8b1df16c3144cafa543cc589ae8ab58352fb9ed52fbc78789ad772eea36a2dac"
+ "zip": "c7ccb8e1679941e1f2f64a87db5b94cb27a6c9dbba1032bed0ccded778d0c7f4"
 }

@@ -46,29 +46,32 @@ def area_2020(d):
 
 
 def registry_rows(devs):
-    """One row per registration: a split's old record closes as superseded and its new record carries the install
-    year, the new parcel and the predecessor id; the area field is the area at registration."""
+    """One row per registration. A parcel split closes the appliance's record and registers it again under a new id
+    and the new parcel on the same day, the install year carried over; nothing links the two records. Some closures
+    for other reasons are also recorded only as a closed record."""
+    r = np.random.default_rng(W.SEED + 51)
     rows = []
     nxt = [900000]
     for d in devs:
-        status = "S" if d.split else ("R" if d.removed else "A")
         closed = d.split if d.split else d.removed
+        reason = "Record closed" if d.split else (d.reason or "")
+        if d.reason == "Owner removed" and r.random() < 0.5:
+            reason = "Record closed"
         rows.append([d.did, d.parcel, d.address, AREA_NAME[d.area], d.county, REG_CODE[d.cl], d.installed,
-                     iso(d.registered), status, iso(closed), "Parcel split" if d.split else (d.reason or ""), "",
-                     d.replaces or ""])
+                     iso(d.registered), "C" if closed else "A", iso(closed), reason, d.replaces or ""])
         if d.split:
-            nxt[0] += 7
+            nxt[0] += int(r.integers(1, 9))
             rows.append(["WD-%06d" % nxt[0], W.SPLIT_SUFFIX[d.county](d.parcel), d.address, AREA_NAME[d.area], d.county,
-                         REG_CODE[d.cl], d.installed, iso(d.split), "R" if d.removed else "A", iso(d.removed),
-                         d.reason or "", d.did, ""])
+                         REG_CODE[d.cl], d.installed, iso(d.split), "C" if d.removed else "A", iso(d.removed),
+                         d.reason or "", ""])
     rows.sort(key=lambda x: x[0])
     return rows
 
 
 def registry_csv(path, devs):
-    write_csv(path, ["device_id", "parcel_number", "site_address", "maintenance_area", "county", "device_type",
-                     "year_installed", "registered_on", "status", "status_date", "status_reason", "predecessor_id",
-                     "replaces_device_id"], registry_rows(devs))
+    write_csv(path, ["device_no", "parcel_number", "site_address", "maintenance_area", "county", "appliance_code",
+                     "year_installed", "registered_on", "status", "status_date", "status_reason", "replaces_device_no"],
+              registry_rows(devs))
 
 
 def survey_csv(path, resp):
@@ -167,7 +170,7 @@ def scc_crosswalk_csv(path):
     rows = []
     for cl in W.CL:
         rows.append([W.CLASSES[cl][0], W.CLASSES[cl][1], REG_CODE[cl], SURVEY_LABEL[cl], APP_LABEL.get(cl, "")])
-    write_csv(path, ["scc", "description", "registry_device_type", "survey_appliance", "application_appliance"], rows)
+    write_csv(path, ["scc", "description", "registry_appliance_code", "survey_appliance", "application_appliance"], rows)
 
 
 def acs_csv(path, bgs, which):
