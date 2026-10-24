@@ -268,3 +268,12 @@ measurement of the cracker the script models; the stage 4 readers measure the re
 - 2026-10-24, ask B re-sited (third cut pack 79bf825cac69ff18): the assessors' housing units keyed to 2010 block
   groups, the relationship file shipped, and every area-and-class cell given a genuine same-day pair; ceiling.py measures
   the cracker keeping 0 of 54 and a pair ceiling of 28.5.
+- 2026-10-24, architecture 2 spent at stage 4 (zip 79bf825cac69ff18): both scored readers missed the call (each
+  filed all six areas) and kept none of the 54 ask figures, but the judge returned NOT_DETERMINISTIC, SEND_BACK,
+  competing_defensible_answer: the provision's 4.2 with the appendix's "by appliance class" executes literally as
+  the survey's class mean times the plan's 2014 count, so the survivorship correction the golden makes is licensed
+  by no shipped sentence, and filing that the base year means the stock that burned then, changed-out units
+  included, would name the move. The judge also failed the golden's 2014 cells to one decimal (its fireplace rate
+  0.372 against a class mean of 0.383, unexplained). Lesson: where the reflex is the literal execution of the filed
+  estimand, the stump is a fork, not a step; the decisive population must follow from the WHAT as filed, with the
+  easy route a different reading of the data rather than of the text.

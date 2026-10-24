@@ -4,8 +4,8 @@
  "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 4,
- "stage_name": "check",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-24",
  "architecture": 2,
  "loops": 0,
@@ -23,9 +23,13 @@
   "heart": "WARN (no BLOCK)",
   "surface": "6 pairs promoted for the author's clone-check (task265, task483, task450, task139, task245, task452), surface similarity at most 0.101; the card-signature collisions (gap population, G9, method_or_model_selection) carry the six differentiation lines; only the planned persona in the pack"
  },
- "judge": null,
+ "judge": {
+  "verdict": "pass 1 NOT_DETERMINISTIC, competing_defensible_answer (the literal class-mean reading of 4.2 and A.2 against the golden's survivorship correction); Gate A failed on the 2014 cells; Gate G statistical_rigor and analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical",
+  "disposition": "SEND_BACK",
+  "report": "determinism_check_report.md"
+ },
  "returned": [],
- "resume": "stage 4 of architecture 2 on zip 79bf825cac69ff18: both scored readers missed the call and neither exits 1 (the author's reader condition holds). Next: the determinism judge on the same zip (determinism-check skill, medium), Gate H read against both readers' question 6 (each took the provision's 4.2 as count times the survey's class mean); on APPROVE, the golden-realism pass on the inventory workbook, then the SHIPPED commit with the ledger row, the card, target.zip and golden/ force-added; on SEND_BACK the architecture is spent and the slot re-roots",
- "source_note": "re-root to a fresh world; architecture 1 spent at stage 4",
+ "resume": "re-root to architecture 3 from stage 1 (fingerprint first): architecture 2 (the wood smoke base year recalculated on a stock thinned primary-heat first) was spent at stage 4 on the judge's SEND_BACK, competing_defensible_answer, although both scored readers missed the call and kept no ask figure. Read the design note's ## Tried and rejected first: the decisive population must follow from the estimand as filed, so the easy route is a different reading of the data, never the literal execution of the filed text. The generator's ask devices (re-registrations beside genuine same-day pairs; block-group codes valid in two vintages) held against both readers and may be reused as devices in a fresh world.",
+ "source_note": "re-root to a fresh world; architectures 1 and 2 spent at stage 4",
  "zip": "79bf825cac69ff18a9f05176f747ea0a635e014fbc3b8ff1b9330fdc27fbc6c1"
 }
