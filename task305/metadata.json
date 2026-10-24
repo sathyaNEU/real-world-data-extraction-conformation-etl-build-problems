@@ -33,7 +33,7 @@
       "zip"
     ],
     "largest_file": "ta_punches_20251006_20260329.csv",
-    "largest_file_rows": 108463
+    "largest_file_rows": 108741
   },
   "sources": [
     {
@@ -85,7 +85,7 @@
     {
       "path": "voa_list_entries_2026_lq.txt",
       "format": "txt",
-      "bytes": 794983,
+      "bytes": 794939,
       "rows": 4233,
       "source": "Constructed (seeded generator) in the layout of the VOA compiled list entries (asterisk-separated)",
       "date": "2026-10-09",
@@ -166,8 +166,8 @@
     {
       "path": "wfm_paid_hours_20251006_20260329.csv",
       "format": "csv",
-      "bytes": 2774869,
-      "rows": 60861,
+      "bytes": 2779465,
+      "rows": 60972,
       "source": "Constructed (seeded generator) in the layout of a workforce management system's paid hours report",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -175,8 +175,8 @@
     {
       "path": "ta_punches_20251006_20260329.csv",
       "format": "csv",
-      "bytes": 3850378,
-      "rows": 108463,
+      "bytes": 3860236,
+      "rows": 108741,
       "source": "Constructed (seeded generator) in the layout of a time-and-attendance system's clocking punches",
       "date": "2026-10-09",
       "license": "CC0-1.0 (original work)"
@@ -193,7 +193,7 @@
     {
       "path": "gtfs_sallowmere_motor_services_20261002.zip",
       "format": "zip",
-      "bytes": 239137,
+      "bytes": 239140,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of GTFS as published on the Bus Open Data Service",
       "date": "2026-10-09",
@@ -202,7 +202,7 @@
     {
       "path": "gtfs_wrentoft_district_coaches_20261002.zip",
       "format": "zip",
-      "bytes": 205153,
+      "bytes": 205147,
       "rows": null,
       "source": "Constructed (seeded generator) in the layout of GTFS as published on the Bus Open Data Service",
       "date": "2026-10-09",
@@ -211,7 +211,7 @@
     {
       "path": "dft_aadf_count_points_lq_2025.csv",
       "format": "csv",
-      "bytes": 10154,
+      "bytes": 9723,
       "rows": 64,
       "source": "Constructed (seeded generator) in the layout of the DfT road traffic count points",
       "date": "2026-10-09",

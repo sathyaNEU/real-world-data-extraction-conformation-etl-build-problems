@@ -174,7 +174,7 @@ def rating_list(G):
     ref = 1000
     ent = 0
 
-    def add(desc, code, scat, pc, firm, measure, unit, rv, town=None, name=None, road=None):
+    def add(desc, code, scat, pc, firm, measure, unit, rv, town=None, name=None, road=None, stable=False):
         nonlocal uarn, ref, ent
         uarn += int(gs.integers(1, 40))
         ref += int(gs.integers(1, 9))
@@ -184,8 +184,8 @@ def rating_list(G):
         num, street = name or num, road or street
         loc = (town or where[pc]).upper()
         alt = "" if gs.uniform() < .82 else "%02d-%s-%d" % (int(gs.integers(1, 28)), gs.choice(["APR", "MAY", "JUN", "JUL", "AUG", "SEP"]), 2026)
-        if unit == "pitches":
-            alt = ""                                  # the parks stand as compiled
+        if stable:
+            alt = ""                                  # the grocery stores and the parks stand as compiled
         eff = "01-APR-2026"
         if alt and ed.uniform() < .55:
             # an alteration takes effect on or before the day the list is altered
@@ -229,11 +229,11 @@ def rating_list(G):
         road = STREETS[int(s["id"]) % len(STREETS)] if s["kind"] == "own" else None
         number = str(3 + (sum(map(ord, s["id"])) * 37) % 140)
         s["uarn"] = add(kind, "CS", "217" if s["area"] < 2000 else "218", s["pc"], firm, s["area"], "m2", rv, s["town"],
-                        name=number, road=road)
+                        name=number, road=road, stable=True)
     for name, x, y, n, desc in P.PARKS:
         rv = int(round(n * (330 if "CARAVAN PARK" in desc else 150) / 250.0)) * 250
         add(desc, "LC", "045" if "CARAVAN PARK" in desc else "049", G["parks"][name], "", n, "pitches", rv,
-            name=name, road=P.PARK_ROAD[name])
+            name=name, road=P.PARK_ROAD[name], stable=True)
     for s in G["stores"]:
         if s["kind"] == "own" and s["id"] in ("101", "102", "104"):
             add("PETROL FILLING STATION AND PREMISES", "CG", "211", s["pc"], "Marrable Foodstores Ltd", "", "",

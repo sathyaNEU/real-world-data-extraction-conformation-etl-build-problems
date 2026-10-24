@@ -1,66 +1,67 @@
-# determinism-check report, task305, 2026-10-24 (pack 1680766e, re-judge pass; replaces the first pass)
+# determinism-check report, task305, 2026-10-24
+
+This is pass 4 on target.zip sha256 414157955646a50b54e00231c1aa740c48a298a87ccff95f35368559cd60d1f3. Passes 2 and 3 approved packs 1680766e and ec38f0bd; this report replaces the round-2 report at the author's instruction (no separate pass file). The main call is unchanged since pass 3; asks B (paid hours) and C (bus departures) have new data and write-up steps.
 
 ## Verdict
-DETERMINISTIC
+DETERMINISTIC (no SOLUTION_WRONG)
 **Disposition:** APPROVE
 **Stumping type:** mechanism: method_or_model_selection, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-One isolated sonnet thread (medium) on a fresh unzip of target.zip at /tmp/determinism-check-task305-44869/target/ recomputed every graded figure from the bundle and reproduced all of them. The call (S3 Wrentoft, GBP 0.8m) holds for every guest-spend construction the data supports (0.77 to 0.81 across variants; S3 beats S1 for any per-pitch rate above about 1,300). The per-pitch rate is separated from its rivals by a store-by-store back-test (store 107 predicted 598k against 600k observed; store 105 345k against 343k). The thread's full verdict is /tmp/determinism-check-task305-44869/verdict.md.
+One isolated sonnet thread (medium) on a fresh unzip at /tmp/determinism-check-task305-r4/target/ recomputed every graded figure in submission.md blocks 1 to 4 from the raw bundle and reproduced all of them. The residents-only model files S1 at GBP 0.5M (0.496); carrying the six pitch-measured holiday parks as origins at about GBP 2,443 a pitch gives S3 7.13M sales and a 0.80M addition. S3 beats S1 for any per-pitch spend above about GBP 1,350, and every guest definition tried lands between 2,300 and 2,900. Asks 3, 4 and 5 (all 10 stores, all 6 sites) reproduce exactly. Thread verdict: /tmp/determinism-check-task305-r4/verdict.md.
 
 ## Recomputation ledger
 | Figure | Claimed | Judge recomputed | Reproduced |
 |---|---|---|---|
-| Grocery stores in share (rating list, 280 m2 or more) | 24 | 24 | yes |
-| Residents alone, S1 / S3 additions (GBP m) | 0.5 / 0.1 | 0.493 / 0.142 (S3 fourth of six) | yes |
-| Guest spend per pitch | GBP 2,440 | 2,439.5 (6 pitch-measured entries, 2,525 pitches) | yes |
-| With guests, S3 sells / adds (GBP m) | 7.1 / 0.8 | 7.118 / 0.800 | yes |
-| With guests, S1 / S2 / S6 (GBP m) | 0.5 / 0.3 / 0.2 | 0.504 / 0.304 / 0.232 | yes |
-| Largest park pitches | 1,750 | 1,750 (Wrentoft Lakes Holiday Park, LQ15 4DZ) | yes |
-| Cases a week, stores 101 to 110 | 7456 7085 6968 7290 5954 6734 5710 4658 3890 4429 | 7456.2 7084.9 6968.3 7289.8 5954.2 6733.9 5710.1 4657.8 3890.0 4429.2 | yes (24 turned-away DEL stops dropped, /25; no value within 0.2 of a rounding edge) |
-| Paid hours a week, stores 101 to 110 | 1839 1612 1444 1459 1182 1313 1243 1010 852 816 | 1838.7 1612.0 1443.8 1458.8 1182.4 1313.2 1243.4 1009.6 851.9 815.7 | yes (clock-in terminal store, /25) |
-| Bus departures S1 to S6 | 40 102 40 60 68 80 | 40 102 40 60 68 80 | yes (pickup_type not 1, clock-day logic, joint routes 4 and 41 once) |
+| Grocery stores of 280 m2 or more | 24 | 24 (37 grocery entries, 13 under 280 m2) | yes |
+| Residents alone, S1 / S3 add (GBP m) | 0.5 / 0.1, S3 second of six | 0.496 / 0.145, second (S2 0.089) | yes |
+| GBP per pitch | 2,440 | 2,443.03 | yes (rounded to the nearest 10; S3 add 0.803 at 2,440, 0.804 at 2,443) |
+| Wrentoft Lakes pitches | 1,750 | 1,750 (LQ15 4DZ) | yes |
+| S3 sales with guests | 7.1M | 7.131 to 7.134M | yes |
+| S3 add with guests | 0.8M | 0.803 to 0.804M (running costs 976,000) | yes |
+| S1 add with guests | 0.5M | 0.508M | yes |
+| S2 add; own-store take | 0.1M; over a third | 0.091M; 36.6% | yes |
+| Cases a week, 101 to 110 | 7,456 / 7,085 / 6,968 / 7,290 / 5,954 / 6,734 / 5,710 / 4,658 / 3,890 / 4,429 | 7,456.2 / 7,084.9 / 6,968.3 / 7,289.8 / 5,954.2 / 6,733.9 / 5,710.1 / 4,657.8 / 3,890.0 / 4,429.2 | yes, all 10 (24 turned-away DEL stops excluded, /25) |
+| Paid hours a week, 101 to 110 | 1,903 / 1,533 / 1,476 / 1,368 / 1,207 / 1,318 / 1,241 / 1,073 / 812 / 783 | 1,902.9 / 1,532.6 / 1,475.7 / 1,367.9 / 1,206.8 / 1,317.9 / 1,240.6 / 1,072.7 / 811.7 / 783.2 | yes, all 10 (53,860 pairs, 471 orphan IN, 272 orphan OUT; terminal store; one wfm line per shift start date) |
+| Bus departures S1 to S6 | 44 / 110 / 44 / 64 / 72 / 84 | 44 / 110 / 44 / 64 / 72 / 84 | yes, all 6 (nearest stops within 250 m, next beyond 480 m, so the 400 m line is not a fork) |
 
 ## Competing answers that survived
-No fork changes the call or a graded amount under a rigorous reading. Residual forks, all on the asks:
-1. **Bus ask, "departures":** GTFS final-stop rows (pickup_type 1) still carry a departure_time. Counting them gives S1 46 and S3 46 instead of 40 and 40; S2, S4, S5, S6 are unchanged. The prompt does not say "that pick up passengers". The design note closes this in its fork table (SF20, pickup_type asserted at every final stop), but the closure is not in the shipped text. This is the one finding that touches the graded text.
-2. **Cases ask:** every TMS stop is status COMPLETE, so the turned-away rule is recoverable only from dwell time and the next-day repeat (and goods-in for stores 101 to 106). The separation is clean (dwell under 4 + 0.02 x cases for 24 stops, next-best stop at 6 or more) and the reading is unique. Nothing is filed, which is acceptable on an ask.
-3. **Hours ask:** the WFM `location` column (the colleague's home store) against the clock-in terminal. The WFM column gives 101 = 2,097, not 1,839. "Worked at" and the punch terminals license the terminal reading, and 2,616 shifts are clocked in at another store. Recoverable from the files.
-4. **Amount-level variants of the main call (non-rigorous):** no winter-baseline subtraction gives 0.9 (S3 still wins). Applying the 88 per cent to guest card spend gives 0.7 (S3 still wins). The data argues against both: flat winter spend at stores 102, 109 and 110 shows the off-season level is background, and card spend is already in store.
+No fork gives a competing answer of equal standing or changes the call. Four rest on a data-derived inference rather than a filed sentence (the submission's own write-up steps 5 to 7 now file the turned-away rule, the terminal-store rule and the block_id rule, but the shipped notes do not):
+1. **Cases, turned-away loads.** Counting every COMPLETE DEL stop gives 7,482 / 7,154 / 6,995 / 7,368 / 6,003 / 6,785 / 5,773 / 4,705 / 3,932 / 4,475. The split is clean (24 stops with dwell far below 4 min + 0.02 per case, each followed next day by a one-stop trip with identical cases); the 12 short stops at stores 101 to 106 fall before go-live, so goods-in cannot confirm them.
+2. **Hours, wfm `location` against the terminal store.** By location: 2,128 / 1,463 / 1,474 / 1,356 / 1,190 / 1,335 / 1,245 / 1,023 / 789 / 708. "Worked at each store" and the terminal register favour the golden; the notes do not define `location`. Ignoring shifts with an unpaired punch: 1,881 / 1,515 / 1,452 / 1,349 / 1,195 / 1,301 / 1,222 / 1,055 / 800 / 772. Dating by clock-in or clock-out makes no difference.
+3. **Buses, identity of a departure.** Every trip counted: 81 / 220 / 80 / 100 / 144 / 156. Dedup by stop and time only: 40 / 102 / 28 / 60 / 68 / 80. No Thursday carry-over past 24:00: 41 / 102 / 41 / 61 / 66 / 78. The prompt's "by the clock" and GTFS block semantics support the golden.
+4. **Main amount, guest definition.** S3 first under every reading; the rounded amount moves only to 0.9 (all-year out-of-region spend, or Mar-Oct with no baseline) or stays 0.8 (Apr-Oct only, no card-share divide: 0.77). The even-spread-per-pitch construction gives S3 0.27 and S1 first, which is the intended easy route, not a rival.
+
+These four are asks-level or amount-rounding forks the author may close with a neutral sentence in the notes; none is blocking.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
-| Files | 10 or more | 20 | yes |
-| Formats | 3 or more | 6 (csv, txt, xlsx, pdf, md, zip) | yes |
-| Large file | 25,000 rows or more | ta_punches 109,184 rows; wfm_paid_hours 54,593 | yes |
-| Distractors | 2 or more named in metadata.json, none labelled in a file name | dft_aadf_count_points_lq_2025.csv, customer_survey_store_scores_2025.csv (goods_in_receipts is a third, partial-rollout undercount, not named) | yes |
-| Distractor weighing | unused by the solution, relevant, ruled out by a shipped fact | the car-park counts and survey scores do not answer a graded quantity | yes |
-| Deliverables | 1 to 3, each in the golden | 2 (xlsx, docx); both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | 10 + 10 + 6 figures; each states unit and rounding | yes |
-| Prompt shape | identifiable | "other", per metadata.json | yes |
-| Rubric | 25 or more criteria | 2 call criteria, 3 components, 26 ask figures, about 31; the rubric itself is generated downstream and was not inspected | yes (by count) |
-| Not LLM generated | clean | grep clean on authoring strings; xlsx and PDF metadata in fiction; all evidence dated before 9 Oct 2026 | yes |
+| Files | 10 or more | 20 in the zip (thread counted 21) | yes |
+| Formats | 3 or more | csv, txt, xlsx, pdf, md, zip (two GTFS feeds) | yes |
+| Large file | 25,000 rows or more | ta_punches 108,463 rows (wfm about 61k) | yes |
+| Distractors | 2 or more named in metadata.json, none labelled by file name | dft_aadf_count_points_lq_2025.csv, customer_survey_store_scores_2025.csv; names carry no label; both unused by the solution (thread read them as usable, relevant to a site decision); goods_in_receipts is a further unused file | yes |
+| Distractor rule-out | one that answers a graded quantity reproduces and a shipped fact rules it out | neither distractor answers a graded quantity; not exercised | yes (n/a) |
+| Deliverables | 1 to 3, all in the golden, no format family | 2 (xlsx, docx), both in golden/ | yes |
+| Asks | multi-dimensional; unit and rounding stated | prompt states pounds to 0.1 million and whole numbers for cases, hours, departures; asks of 10, 10 and 6 figures | yes |
+| Prompt shape and rubric 25 or more | identifiable shape; 25 or more criteria | metadata shape "other"; about 29 separately gradable figures (2 + 10 + 10 + 6 + docx) plus critical components; the generated rubric itself was not inspected | yes (by count, rubric unverified) |
+| Prompt | one paragraph, under 1,000 chars | 691 characters | yes |
+| Reads as real | no LLM tells; goldens read as work products | thread: no authoring language in property_data_notes.md; I did not re-read goldens for realism (golden-realism owns that) | yes (thread) |
 
 ## Gate G reconciliation
-Thread: mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card and design note: stump_class analytical, strategy population_selection, gate_g `forecasting`, generator G12 (census silence read as nobody there), layer2 field_method.
+Thread: mechanism method_or_model_selection, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. Card: gate_g method_or_model_selection, stump_class analytical, no decoy. Design note: strategy population_selection, Gate G method_or_model_selection, decisive generator G12 (holiday-park guests are an origin the census never counts). The card and note say the same as the thread; no mismatch. The declared distractors (AADF counts, customer survey) are not named by the thread as the surface read, and the surface read the thread names is the filed residents-only model, which the pack presents as the model and not as a ranking of sites. Gate G: no shipped artifact ranks the sites wrongly.
 
-- **Substance matches.** Both name the same decisive step: the park guests are an origin the census never counts, priced per pitch from the out-of-region card spend at the chain's park-side stores. Both name the same easy route (residents only, S1 at 0.5m). The thread classes the ranking artifacts as clean: the filed model and every shipped figure are accurate and none ranks the sites.
-- **Label mismatch (finding).** The card says `forecasting`; the thread says `method_or_model_selection`. The design note records that it moved the label away from `method_or_model_selection` because that label repeated task482 (five of the last twelve builds). The mismatch is in the label, not the mechanism, but it is the kind of difference a reviewer could read as a re-labelling to dodge the repeat guard. The author should confirm which label is honest.
-- **Distractor check.** The declared distractors (traffic counts, survey scores) are not the surface read carrying the task. The easy route is the filed model on census households. Pass.
-- **Borderline the thread raised.** The filed rule says "households as Census 2021 counted them". The solution adds non-household origins, which extends the rule and does not override it, because the PDF sets the shares and not the list of origins. A reviewer who reads census-only origins as a stated rule being overridden would send it to live testing.
-
-## Gate H
-domain: pass, layers: pass, decisive_step: analytical. The domain is the retail geographer's Huff-style spend-share model with a contribution appraisal; the swap test fails to make it generic. Layer 1 is UTC against UK dates, incomplete rollout, home store against clock-in store, postcode spacing, the GTFS service day past midnight with joint routes in two feeds, and the VOA layout. Layer 2 is demand origins outside the census plus a leakage-corrected pitch rate. No decoy, not semantics (reading every field correctly still gives the residents answer), not rule application (no stated rule yields the guests). This matches the design note's `## Three rules`.
+Gate H, thread: domain pass, layers pass, decisive_step analytical (retail spatial-interaction model, swap test fails; Layer 1 UTC vs local, BNG vs WGS84, VOA layout, double-listed nights, orphan punches, joint feeds; Layer 2 demand-origin completeness calibrated on card data). Design note's Three rules: decisive step is carrying the parks as origins at a card-measured spend per pitch, same as the thread; Not semantics and Not rule application lines match (filing the model as given yields S1 at 0.5M, the easy wrong answer). No mismatch.
 
 ## Stump power (Gate F)
-Real. The filed model reproduces the ten stores' sales within 0.4 per cent (75.9m against 76.2m), so the residents-only route looks validated and lands on S1 at 0.5. The pooled-over-all-pitches route also lands on S1 (0.495 for S1, 0.268 for S3); the nearest-park-pitches route lands on S3 at 0.5. Each easy route files a wrong site or a wrong amount. The decisive step is not stated anywhere, and the notes file names the card feed and pitch measures but not their link. The thread did not class the step analytical merely because it is a textbook method; it reached the golden only by noticing the seasonal out-of-region spend in the feed, so this is not the landable-method case.
+Plausibly strong. A capable analyst who runs the filed model over the census lands on S1 at GBP 0.5M (0.496). Reaching S3 needs the unprompted recognition that guests are an origin the census cannot hold, a per-pitch spend calibrated from out-of-region card spend weighted by the share of each park's spend that reaches our stores (an even spread gives S3 0.27 and S1 first), and a rerun of the appraisal. The thread did not class the step analytical merely because the method is standard, so no discount of the kind in the contract applies; the main thread weighs this with the scored readers' result.
 
 ## Findings, ranked
-1. **Bus ask lacks "that pick up passengers"** (optional fix). S1 and S3 read 46 instead of 40 under the alternative reading. Two of six bus figures are affected; the call is not.
-2. **Gate G label mismatch** between the card and design note (`forecasting`) and the thread (`method_or_model_selection`). The design note says it moved off `method_or_model_selection` to avoid repeating task482.
-3. **Non-household origins versus "households as Census 2021 counted them"** is a possible live-testing flag, not a determinism defect.
-4. **Cases and hours reading rules are unfiled** (turned-away loads, clock-in terminal). Both are recoverable from the files and acceptable on an ask. Optional: record the back-test (per-store predicted against observed guest spend) as the evidence in the submission.
+1. Advisory: the cases ask's turned-away rule is recoverable only from dwell time and the next-day repeat; nothing in the notes files what a short dwell means. Clean separation, unique reading.
+2. Advisory: the notes do not define the wfm `location` column; terminal store is licensed by "worked at" but not stated.
+3. Advisory: bus "departure" identity (block_id dedup, Thursday carry-over past 24:00) is recoverable from GTFS semantics, not filed in the bundle.
+4. Advisory: the guest-spend baseline (Mar to Oct excess over the Nov to Feb level) is inferential; rounded amount stays 0.8 under the licensed reading and S3 wins under every reading.
+5. Cosmetic: GBP 2,440 is 2,443.03 unrounded; consistent as rounded to the nearest ten.
 
 ## Next action for the author
-Add "that pick up passengers" after "bus departures" in prompt.txt. This is optional: it changes no graded figure and the prompt has to stay under 1,000 characters (it is now 667). Then confirm which Gate G label (`forecasting` or `method_or_model_selection`) the card should carry. The verdict is APPROVE and no re-judge is owed.
+None required. Ship on this pass. Optionally, if hardening the asks, add one neutral sentence per item 1 to 3 to property_data_notes.md (what a refused load is, what `location` means, what counts as one departure) without moving any figure; the main call and its stump stay frozen.

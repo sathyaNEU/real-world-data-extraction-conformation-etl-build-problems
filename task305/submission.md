@@ -43,16 +43,16 @@ The guests on Wrentoft Lakes Holiday Park's 1,750 pitches live outside the regio
    - Store 109: 3,890 cases
    - Store 110: 4,429 cases
 4. Paid hours a week worked at each store, 6 October 2025 to 29 March 2026:
-   - Store 101: 1,903 hours
-   - Store 102: 1,533 hours
-   - Store 103: 1,476 hours
-   - Store 104: 1,368 hours
-   - Store 105: 1,207 hours
-   - Store 106: 1,318 hours
-   - Store 107: 1,241 hours
-   - Store 108: 1,073 hours
-   - Store 109: 812 hours
-   - Store 110: 783 hours
+   - Store 101: 1,890 hours
+   - Store 102: 1,608 hours
+   - Store 103: 1,488 hours
+   - Store 104: 1,401 hours
+   - Store 105: 1,194 hours
+   - Store 106: 1,259 hours
+   - Store 107: 1,248 hours
+   - Store 108: 1,052 hours
+   - Store 109: 822 hours
+   - Store 110: 764 hours
 5. Bus departures that pick up passengers from stops within 400 metres on Friday 15 January 2027:
    - S1 Bellingtoft, Fenton Road: 44
    - S2 Darrowfield, Eastgate: 110

@@ -68,8 +68,12 @@ def gtfs_time(m):
 
 
 def locality(G):
-    """the town a point lies in, or else the parish of the nearest village seat"""
+    """the town a point lies in, or else the parish of the nearest village seat; a site's own surroundings take the
+    town its address gives"""
     def at(x, y):
+        for st in P.SITES:
+            if math.hypot(st[3] - x, st[4] - y) <= 1.2:
+                return st[2]
         t = min(P.TOWNS, key=lambda t: (t[1] - x) ** 2 + (t[2] - y) ** 2)
         if math.hypot(t[1] - x, t[2] - y) <= 2.5:
             return t[0]
@@ -313,10 +317,13 @@ def build(target):
         lat, lon = geo.bng_to_wgs84(P.E0 + 1000 * x, P.N0 + 1000 * y)
         major = i % 3 != 0
         cars = int(ds.uniform(6000, 17000) if major else ds.uniform(900, 4200))
+        method = "Counted" if ds.uniform() < .45 else "Estimated"
         aadf.append([946000 + 113 * i, 2025, "East Midlands", "Sallowdale", roads[i % len(roads)],
                      "PA" if major else "MB", int(P.E0 + 1000 * x), int(P.N0 + 1000 * y), "%.5f" % lat, "%.5f" % lon,
-                     "%.1f" % ds.uniform(0.8, 9.5), "Counted" if ds.uniform() < .45 else "Estimated",
-                     "Manual count" if ds.uniform() < .45 else "Estimated using previous year's AADF on this link",
+                     "%.1f" % ds.uniform(0.8, 9.5), method,
+                     ("Manual count" if ds.uniform() < .7 else "Automatic counter") if method == "Counted" else
+                     ("Estimated using previous year's AADF on this link" if ds.uniform() < .75 else
+                      "Estimated from nearby links"),
                      int(cars * .006), int(cars * .009), cars, int(cars * .007), int(cars * .19), int(cars * .045),
                      int(cars * 1.25)])
     _csv(F["aadf"], ["count_point_id", "year", "region_name", "local_authority_name", "road_name", "road_category", "easting",

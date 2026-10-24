@@ -298,6 +298,9 @@ def staffing(T):
     shifts, truth = [], {}
     # the relief team covers by store size, the larger stores more often
     rot = [s for s in ids for _ in range(max(1, STAFF[s] // 20))]
+    vs = np.random.default_rng(P.OPS_SEED + 16)
+    # a minority of colleagues pick up cover at the neighbouring store; most never do
+    cover = {e["no"]: (vs.uniform() < 0.22) for e in emps}
     for e in emps:
         for wi, wk in enumerate(weeks):
             if rs.uniform() < 0.10:
@@ -316,6 +319,8 @@ def staffing(T):
                 if d == dt.date(2025, 12, 25) or (e["night"] and d == dt.date(2025, 12, 24)) or rs.uniform() < 0.025:
                     continue                              # Christmas Day and the night before it; sickness
                 ln = 4.0 if (extra and di == days[-1] and not e["night"]) else length
+                if not e["night"] and ln >= 5.0:
+                    ln += float(vs.choice([-1.0, -0.5, 0.0, 0.0, 0.0, 0.5, 1.0]))
                 if e["night"]:
                     st = dt.datetime.combine(d, dt.time(22, 0))
                 elif d.weekday() == 6:
@@ -330,7 +335,7 @@ def staffing(T):
                     worked = relief_store
                 elif e["move"] and d < e["move"][0]:
                     worked = e["move"][1]
-                elif rs.uniform() < 0.025:
+                elif cover[e["no"]] and vs.uniform() < 0.11:
                     worked = near[e["home"]]
                 else:
                     worked = e["home"]
