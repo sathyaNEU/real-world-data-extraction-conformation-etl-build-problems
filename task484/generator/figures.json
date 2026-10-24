@@ -1,88 +1,574 @@
 {
- "asks": {
-  "multi": {
-   "Ashford": 319,
-   "Bellmont": 823,
-   "Carver Springs": 0,
-   "Dunmore": 579,
-   "Eastlake": 305,
-   "Fairhaven": 196,
-   "Glenridge": 340,
-   "Harlow": 392,
-   "Ironwood": 288,
-   "Juniper Falls": 227,
-   "Kestrel Bay": 0,
-   "Linden": 859
+ "areas": {
+  "Brannock": {
+   "commitment": 25,
+   "determination": "NOT TRIGGERED",
+   "pm14": 174.5,
+   "pm26": 100.4,
+   "reduction": 42.5,
+   "rungs": {
+    "allprimary": 46.1,
+    "classmean": 15.6,
+    "default": 31.2,
+    "golden": 42.5,
+    "survivors": -30.3,
+    "truth": 42.2
+   }
   },
-  "single": {
-   "Ashford": 85,
-   "Bellmont": 66,
-   "Carver Springs": 106,
-   "Dunmore": 57,
-   "Eastlake": 91,
-   "Fairhaven": 58,
-   "Glenridge": 75,
-   "Harlow": 93,
-   "Ironwood": 49,
-   "Juniper Falls": 91,
-   "Kestrel Bay": 46,
-   "Linden": 80
+  "Ellick": {
+   "commitment": 25,
+   "determination": "NOT TRIGGERED",
+   "pm14": 98.1,
+   "pm26": 51.0,
+   "reduction": 48.0,
+   "rungs": {
+    "allprimary": 52.1,
+    "classmean": 14.3,
+    "default": 42.2,
+    "golden": 48.0,
+    "survivors": -30.8,
+    "truth": 43.2
+   }
+  },
+  "Ivelton": {
+   "commitment": 22,
+   "determination": "NOT TRIGGERED",
+   "pm14": 124.6,
+   "pm26": 80.8,
+   "reduction": 35.1,
+   "rungs": {
+    "allprimary": 38.3,
+    "classmean": 17.0,
+    "default": 20.9,
+    "golden": 35.1,
+    "survivors": -20.6,
+    "truth": 35.3
+   }
+  },
+  "Quarrow": {
+   "commitment": 20,
+   "determination": "TRIGGERED",
+   "pm14": 197.8,
+   "pm26": 176.8,
+   "reduction": 10.6,
+   "rungs": {
+    "allprimary": 12.5,
+    "classmean": 4.9,
+    "default": 6.2,
+    "golden": 10.6,
+    "survivors": -9.2,
+    "truth": 12.3
+   }
+  },
+  "Saddeny": {
+   "commitment": 13,
+   "determination": "NOT TRIGGERED",
+   "pm14": 89.4,
+   "pm26": 72.6,
+   "reduction": 18.8,
+   "rungs": {
+    "allprimary": 21.6,
+    "classmean": 10.4,
+    "default": 0.1,
+    "golden": 18.8,
+    "survivors": -13.6,
+    "truth": 22.5
+   }
+  },
+  "Wethermoor": {
+   "commitment": 15,
+   "determination": "TRIGGERED",
+   "pm14": 155.8,
+   "pm26": 149.1,
+   "reduction": 4.3,
+   "rungs": {
+    "allprimary": 5.0,
+    "classmean": 2.2,
+    "default": -14.4,
+    "golden": 4.3,
+    "survivors": -4.7,
+    "truth": 4.5
+   }
   }
  },
- "call": [
-  "Fairhaven",
-  "Linden"
- ],
- "cities": [
-  "Ashford",
-  "Bellmont",
-  "Carver Springs",
-  "Dunmore",
-  "Eastlake",
-  "Fairhaven",
-  "Glenridge",
-  "Harlow",
-  "Ironwood",
-  "Juniper Falls",
-  "Kestrel Bay",
-  "Linden"
- ],
- "dates": {
-  "census_year": 2020,
-  "est_day": 1,
-  "est_year": 2026
+ "ask_a": {
+  "Brannock.2104008100": {
+   "late": 55,
+   "left": 12,
+   "registry": 1188
+  },
+  "Brannock.2104008310": {
+   "late": 56,
+   "left": 17,
+   "registry": 2580
+  },
+  "Brannock.2104008320": {
+   "late": 59,
+   "left": 22,
+   "registry": 1477
+  },
+  "Brannock.2104008330": {
+   "late": 18,
+   "left": 4,
+   "registry": 295
+  },
+  "Brannock.2104008400": {
+   "late": 23,
+   "left": 5,
+   "registry": 545
+  },
+  "Brannock.2104008610": {
+   "late": 3,
+   "left": 0,
+   "registry": 220
+  },
+  "Ellick.2104008100": {
+   "late": 25,
+   "left": 5,
+   "registry": 715
+  },
+  "Ellick.2104008310": {
+   "late": 23,
+   "left": 3,
+   "registry": 1557
+  },
+  "Ellick.2104008320": {
+   "late": 34,
+   "left": 9,
+   "registry": 889
+  },
+  "Ellick.2104008330": {
+   "late": 6,
+   "left": 4,
+   "registry": 176
+  },
+  "Ellick.2104008400": {
+   "late": 17,
+   "left": 1,
+   "registry": 329
+  },
+  "Ellick.2104008610": {
+   "late": 0,
+   "left": 0,
+   "registry": 132
+  },
+  "Ivelton.2104008100": {
+   "late": 53,
+   "left": 10,
+   "registry": 829
+  },
+  "Ivelton.2104008310": {
+   "late": 38,
+   "left": 13,
+   "registry": 1805
+  },
+  "Ivelton.2104008320": {
+   "late": 47,
+   "left": 13,
+   "registry": 1037
+  },
+  "Ivelton.2104008330": {
+   "late": 9,
+   "left": 6,
+   "registry": 204
+  },
+  "Ivelton.2104008400": {
+   "late": 16,
+   "left": 2,
+   "registry": 383
+  },
+  "Ivelton.2104008610": {
+   "late": 1,
+   "left": 0,
+   "registry": 154
+  },
+  "Quarrow.2104008100": {
+   "late": 59,
+   "left": 22,
+   "registry": 1534
+  },
+  "Quarrow.2104008310": {
+   "late": 117,
+   "left": 33,
+   "registry": 3345
+  },
+  "Quarrow.2104008320": {
+   "late": 67,
+   "left": 24,
+   "registry": 1926
+  },
+  "Quarrow.2104008330": {
+   "late": 12,
+   "left": 3,
+   "registry": 387
+  },
+  "Quarrow.2104008400": {
+   "late": 24,
+   "left": 8,
+   "registry": 707
+  },
+  "Quarrow.2104008610": {
+   "late": 8,
+   "left": 2,
+   "registry": 284
+  },
+  "Saddeny.2104008100": {
+   "late": 28,
+   "left": 4,
+   "registry": 596
+  },
+  "Saddeny.2104008310": {
+   "late": 41,
+   "left": 6,
+   "registry": 1294
+  },
+  "Saddeny.2104008320": {
+   "late": 28,
+   "left": 7,
+   "registry": 743
+  },
+  "Saddeny.2104008330": {
+   "late": 4,
+   "left": 0,
+   "registry": 150
+  },
+  "Saddeny.2104008400": {
+   "late": 9,
+   "left": 3,
+   "registry": 272
+  },
+  "Saddeny.2104008610": {
+   "late": 2,
+   "left": 0,
+   "registry": 110
+  },
+  "Wethermoor.2104008100": {
+   "late": 46,
+   "left": 21,
+   "registry": 1059
+  },
+  "Wethermoor.2104008310": {
+   "late": 84,
+   "left": 28,
+   "registry": 2312
+  },
+  "Wethermoor.2104008320": {
+   "late": 47,
+   "left": 13,
+   "registry": 1337
+  },
+  "Wethermoor.2104008330": {
+   "late": 5,
+   "left": 4,
+   "registry": 266
+  },
+  "Wethermoor.2104008400": {
+   "late": 13,
+   "left": 2,
+   "registry": 493
+  },
+  "Wethermoor.2104008610": {
+   "late": 7,
+   "left": 2,
+   "registry": 196
+  }
  },
- "line": "50,000",
- "line_n": 50000,
- "n_call": 2,
- "n_cities": 12,
- "pop": {
-  "Ashford": 49270,
-  "Bellmont": 48911,
-  "Carver Springs": 48830,
-  "Dunmore": 49180,
-  "Eastlake": 48621,
-  "Fairhaven": 52309,
-  "Glenridge": 48691,
-  "Harlow": 49030,
-  "Ironwood": 48470,
-  "Juniper Falls": 48739,
-  "Kestrel Bay": 48390,
-  "Linden": 51629
+ "ask_b": {
+  "Corrin.2104008100": {
+   "pm": 12.6,
+   "wood": 1071.5
+  },
+  "Corrin.2104008310": {
+   "pm": 77.6,
+   "wood": 5072.4
+  },
+  "Corrin.2104008320": {
+   "pm": 37.6,
+   "wood": 5152.2
+  },
+  "Corrin.2104008330": {
+   "pm": 8.2,
+   "wood": 1253.8
+  },
+  "Corrin.2104008400": {
+   "pm": 3.3,
+   "wood": 2051.7
+  },
+  "Corrin.2104008610": {
+   "pm": 20.8,
+   "wood": 2216.4
+  },
+  "Selwick.2104008100": {
+   "pm": 9.1,
+   "wood": 770.1
+  },
+  "Selwick.2104008310": {
+   "pm": 55.8,
+   "wood": 3645.5
+  },
+  "Selwick.2104008320": {
+   "pm": 27.0,
+   "wood": 3702.8
+  },
+  "Selwick.2104008330": {
+   "pm": 5.9,
+   "wood": 901.1
+  },
+  "Selwick.2104008400": {
+   "pm": 2.4,
+   "wood": 1474.5
+  },
+  "Selwick.2104008610": {
+   "pm": 15.0,
+   "wood": 1592.9
+  },
+  "Tamsey.2104008100": {
+   "pm": 8.4,
+   "wood": 713.2
+  },
+  "Tamsey.2104008310": {
+   "pm": 51.7,
+   "wood": 3376.4
+  },
+  "Tamsey.2104008320": {
+   "pm": 25.0,
+   "wood": 3429.6
+  },
+  "Tamsey.2104008330": {
+   "pm": 5.4,
+   "wood": 834.6
+  },
+  "Tamsey.2104008400": {
+   "pm": 2.2,
+   "wood": 1365.7
+  },
+  "Tamsey.2104008610": {
+   "pm": 13.9,
+   "wood": 1475.3
+  }
  },
- "sections": {
-  "cities": "2.1",
-  "permits": "3.1",
-  "population": "2.2",
-  "tier": "2.3"
+ "call": {
+  "triggered": [
+   "Quarrow",
+   "Wethermoor"
+  ]
  },
- "textbook_route": [
-  "Ashford",
-  "Carver Springs",
-  "Eastlake",
-  "Fairhaven",
-  "Harlow",
-  "Juniper Falls",
-  "Linden"
- ]
+ "cells": {
+  "Brannock.2104008100": {
+   "pm14": 5.7,
+   "pm26": 5.7,
+   "wood14": 487.1,
+   "wood26": 482.8
+  },
+  "Brannock.2104008310": {
+   "pm14": 120.4,
+   "pm26": 31.7,
+   "wood14": 7869.4,
+   "wood26": 2075.1
+  },
+  "Brannock.2104008320": {
+   "pm14": 26.7,
+   "pm26": 52.1,
+   "wood14": 3660.9,
+   "wood26": 7136.6
+  },
+  "Brannock.2104008330": {
+   "pm14": 4.0,
+   "pm26": 4.0,
+   "wood14": 615.5,
+   "wood26": 617.7
+  },
+  "Brannock.2104008400": {
+   "pm14": 1.6,
+   "pm26": 3.8,
+   "wood14": 1030.8,
+   "wood26": 2403.0
+  },
+  "Brannock.2104008610": {
+   "pm14": 16.0,
+   "pm26": 3.0,
+   "wood14": 1699.4,
+   "wood26": 320.2
+  },
+  "Ellick.2104008100": {
+   "pm14": 2.8,
+   "pm26": 2.7,
+   "wood14": 233.5,
+   "wood26": 230.4
+  },
+  "Ellick.2104008310": {
+   "pm14": 70.3,
+   "pm26": 15.8,
+   "wood14": 4593.8,
+   "wood26": 1035.3
+  },
+  "Ellick.2104008320": {
+   "pm14": 13.2,
+   "pm26": 26.2,
+   "wood14": 1804.0,
+   "wood26": 3588.7
+  },
+  "Ellick.2104008330": {
+   "pm14": 2.8,
+   "pm26": 2.7,
+   "wood14": 435.1,
+   "wood26": 422.6
+  },
+  "Ellick.2104008400": {
+   "pm14": 0.9,
+   "pm26": 2.4,
+   "wood14": 571.9,
+   "wood26": 1506.0
+  },
+  "Ellick.2104008610": {
+   "pm14": 8.2,
+   "pm26": 1.1,
+   "wood14": 869.2,
+   "wood26": 113.5
+  },
+  "Ivelton.2104008100": {
+   "pm14": 3.7,
+   "pm26": 3.7,
+   "wood14": 310.9,
+   "wood26": 312.1
+  },
+  "Ivelton.2104008310": {
+   "pm14": 83.6,
+   "pm26": 33.5,
+   "wood14": 5465.8,
+   "wood26": 2189.3
+  },
+  "Ivelton.2104008320": {
+   "pm14": 19.8,
+   "pm26": 33.5,
+   "wood14": 2718.2,
+   "wood26": 4592.3
+  },
+  "Ivelton.2104008330": {
+   "pm14": 3.8,
+   "pm26": 3.7,
+   "wood14": 585.1,
+   "wood26": 573.4
+  },
+  "Ivelton.2104008400": {
+   "pm14": 1.2,
+   "pm26": 2.9,
+   "wood14": 737.1,
+   "wood26": 1843.2
+  },
+  "Ivelton.2104008610": {
+   "pm14": 12.4,
+   "pm26": 3.5,
+   "wood14": 1323.3,
+   "wood26": 368.0
+  },
+  "Quarrow.2104008100": {
+   "pm14": 7.2,
+   "pm26": 7.0,
+   "wood14": 608.9,
+   "wood26": 595.8
+  },
+  "Quarrow.2104008310": {
+   "pm14": 130.5,
+   "pm26": 96.0,
+   "wood14": 8529.5,
+   "wood26": 6275.7
+  },
+  "Quarrow.2104008320": {
+   "pm14": 33.4,
+   "pm26": 50.6,
+   "wood14": 4580.1,
+   "wood26": 6936.0
+  },
+  "Quarrow.2104008330": {
+   "pm14": 6.6,
+   "pm26": 6.4,
+   "wood14": 1017.2,
+   "wood26": 982.2
+  },
+  "Quarrow.2104008400": {
+   "pm14": 2.2,
+   "pm26": 3.7,
+   "wood14": 1364.9,
+   "wood26": 2316.8
+  },
+  "Quarrow.2104008610": {
+   "pm14": 17.8,
+   "pm26": 13.0,
+   "wood14": 1898.5,
+   "wood26": 1381.4
+  },
+  "Saddeny.2104008100": {
+   "pm14": 3.0,
+   "pm26": 3.0,
+   "wood14": 254.9,
+   "wood26": 254.9
+  },
+  "Saddeny.2104008310": {
+   "pm14": 60.6,
+   "pm26": 36.0,
+   "wood14": 3961.8,
+   "wood26": 2352.5
+  },
+  "Saddeny.2104008320": {
+   "pm14": 13.6,
+   "pm26": 23.6,
+   "wood14": 1866.0,
+   "wood26": 3237.2
+  },
+  "Saddeny.2104008330": {
+   "pm14": 3.3,
+   "pm26": 3.3,
+   "wood14": 511.8,
+   "wood26": 504.7
+  },
+  "Saddeny.2104008400": {
+   "pm14": 0.9,
+   "pm26": 2.0,
+   "wood14": 577.5,
+   "wood26": 1236.9
+  },
+  "Saddeny.2104008610": {
+   "pm14": 7.9,
+   "pm26": 4.7,
+   "wood14": 842.3,
+   "wood26": 497.1
+  },
+  "Wethermoor.2104008100": {
+   "pm14": 5.0,
+   "pm26": 5.0,
+   "wood14": 425.9,
+   "wood26": 421.0
+  },
+  "Wethermoor.2104008310": {
+   "pm14": 107.8,
+   "pm26": 95.1,
+   "wood14": 7047.8,
+   "wood26": 6215.9
+  },
+  "Wethermoor.2104008320": {
+   "pm14": 21.6,
+   "pm26": 29.9,
+   "wood14": 2961.3,
+   "wood26": 4101.1
+  },
+  "Wethermoor.2104008330": {
+   "pm14": 4.2,
+   "pm26": 4.0,
+   "wood14": 643.8,
+   "wood26": 617.1
+  },
+  "Wethermoor.2104008400": {
+   "pm14": 1.6,
+   "pm26": 2.3,
+   "wood14": 981.4,
+   "wood26": 1408.1
+  },
+  "Wethermoor.2104008610": {
+   "pm14": 15.5,
+   "pm26": 12.8,
+   "wood14": 1651.5,
+   "wood26": 1364.8
+  }
+ }
 }

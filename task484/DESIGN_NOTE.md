@@ -21,10 +21,10 @@ Eight candidates screened before it are in Tried and rejected.
   curtailment rules) is forward.
 - **World:** Selwick Basin Clean Air Agency, a regional clean air agency in Washington serving six PM2.5 maintenance
   areas: a registry of wood-burning devices kept since 2010 (the spine, about 27,000 devices), a stove changeout
-  programme from 2015 to 2025 that funded primary-heat households first, a 2024 household survey (the current
+  programme from 2015 to 2024 that funded primary-heat households first, a 2024 household survey (the current
   method's activity source) and the plans' 2014 base-year workbook (the old method, regional default cords per
   appliance). Personas from `guard.py names --geo US-WA --seed 484`: Kylie Maxwell, Mitchell Conway, Alyssa Jacobs.
-- **Planned pack:** the registry (csv), the 2024 household survey (csv), the changeout applications 2015 to 2025 (csv,
+- **Planned pack:** the registry (csv), the 2024 household survey (csv), the changeout applications 2015 to 2024 (csv,
   extracted from scanned forms), the 2014 base-year workbook (xlsx), the plans' contingency provision and inventory
   methods appendix (pdf), the current emission factor table, the area boundary crosswalk with the 2020 revision, an
   SCC crosswalk; distractors named in metadata.json at stage 3 (heating degree days, the curtailment log, PM2.5
@@ -88,7 +88,7 @@ The default path multiplies each area's 2014 appliance counts by the 2024 survey
 ## Readability screen
 
 Measured on the paper world (`generator/paper_screen.py`, seed 48431; areas Brannock (A1), Ivelton (A2), Quarrow (A3), Saddeny (A4), Wethermoor (A5) and Ellick (A6),
-commitments 25, 22, 20, 15, 15 and 25 per cent). The names are working names until the surface screen at stage 3.
+commitments 25, 22, 20, 15, 15 and 25 per cent on paper; the generator sets Saddeny's at 13). The names are working names until the surface screen.
 
 | Rung | What the response does | What in the pack points at it | Verdict |
 |---|---|---|---|
@@ -125,22 +125,22 @@ the class mean) files the default's answer, so no partial fix moves toward the g
 
 ## Ladder
 
-Measured on the paper world (`generator/paper_screen.py`, seed 48431; seeds 48432 to 48434 file the same sets, the
-golden's smallest margin to a commitment 5.4 to 6.4 points). Re-measured on the pack at stage 3 (`checks.py`).
+Measured in the generator (`checks.py` on the world's clean truth, `verify.py` recomputing the golden from the cut
+pack; areas Brannock, Ivelton, Quarrow, Saddeny, Wethermoor and Ellick, commitments 25, 22, 20, 13, 15 and 25 per cent).
 
 | Rung | Areas triggering | Flips from the golden | Call kept |
 |---|---|---|---|
 | L0 the old method's base year | Ivelton, Quarrow, Saddeny, Wethermoor | 2 | no |
 | L1 class means carried back (default) | all six | 4 | no |
-| L1a status cells at the survey's mix | all six | 4 | no |
+| L1a status cells at the survey's mix | all six (identical to L1 inside every stratum, max gap 8.9e-16) | 4 | no |
 | L2 survivors only | all six | 4 | no |
 | L4 changed-out units at the primary-heat cell | Quarrow, Wethermoor | none | yes |
 | G golden | Quarrow, Wethermoor | none | yes |
 | T the world's true burning | Quarrow, Wethermoor | none | yes |
 
-The golden's reductions (34.3, 30.2, 14.1, 21.8, 8.5 and 37.2 per cent) sit 5.9 to 12.2 points from the commitments;
-the default's (5.9 to 11.9) sit under every commitment. The correction the decisive step makes tracks each area's
-changed-out share (0.08 to 0.50), not its size.
+The golden's reductions are 42.5, 35.1, 10.6, 18.8, 4.3 and 48.0 per cent, 5.8 to 23.0 points from the commitments;
+the world's truth sits 7.7 points or more from them; the default's (15.6, 17.0, 4.9, 10.4, 2.2, 14.3) sit under every
+commitment. The correction tracks each area's changed-out share, not its size.
 
 ## Closure table
 
@@ -206,6 +206,20 @@ Shared hazards (to place at stage 3, each moving both asks): face cords and pick
 keyed two ways; the programme's fiscal years against heating seasons. Each ask's prompt wording is fixed against the
 golden at stage 3, with "any" so that none is a grammatical answer, and no trap word (reconcile is not used).
 
+
+Measured by: `generator/ceiling.py` on the first cut pack (target.zip 8b1df16c3144cafa).
+
+| Ask | Graded figures | Cracker keeps | Mirror keeps | Naive handling keeps |
+|---|---|---|---|---|
+| A registry counts in place in the 2014 season | 36 | 36 | 36 | 2 |
+| B remainder PM2.5 by county and SCC | 18 | 18 | 18 | 1 |
+| share of ask weight (score) | 54 | 100.0 per cent (100.0) | 100.0 per cent (67.0) | 5.6 per cent |
+
+Pair ceiling: 83.5, against the 40 the bar is built to: the layer fails as drafted.
+Mirror leakage: 100.0 per cent of ask weight.
+Every device in the draft is seen rather than silent: ask A's re-registrations carry a predecessor id, ask B's
+release is named in the tool note and the assessor file labels each block group's part inside an area, so the
+hygiene battery and the filed rules keep every figure. The asks are re-sited with silent devices before stage 4.
 ## Tried and rejected
 
 - 2026-10-20, at the draw: ET41's own world, broadband grant allocation from the FCC map: served, underserved,
@@ -244,3 +258,7 @@ golden at stage 3, with "any" so that none is a grammatical answer, and no trap 
   slot screens, but its natural world is gas distribution mains, which is task476's (a niche repeat); a vehicle
   fleet's model-year rates tangle age with model year and reopen the family. Carried to the next draw as a lead, not
   drawn.
+- 2026-10-24, architecture 2 ask draft (first cut pack 8b1df16c3144cafa): ask A on re-registrations linked by a
+  predecessor id and ask B on a filed ACS vintage rule with labelled split block groups; ceiling.py measured the
+  cracker and the mirror keeping 54 of 54 figures (pair ceiling 83.5), because every device was a field or a filed
+  rule. Re-site both with silent devices (supplemental-stumping Part 3).

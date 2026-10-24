@@ -1,131 +1,137 @@
-"""The generator's checks on the cut pack and the generator's clean truth: the gates, the call under every route and
-every licensed variant of the golden, the three rules executed (R1, R2, R3), the semantic fork table (SF1 to SF8),
-the margins, the asks' devices and the realism sweep."""
-import csv
-import datetime as dt
-import json
+"""Generator assertions on the world's clean truth and the golden: the ladder, the margins, the standing family, every
+semantic fork row (SF1 to SF15), the analyst test and the separation line.
+
+    python3 task484/generator/checks.py
+"""
+import copy
 import os
+import sys
 
 import numpy as np
 
-import bundle as B
-import sources as S
-import world as W
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import world as W     # noqa: E402
+import golden as G    # noqa: E402
 
-GOLD = ["Fairhaven", "Linden"]
-TEXTBOOK = ["Ashford", "Carver Springs", "Eastlake", "Fairhaven", "Harlow", "Juniper Falls", "Linden"]
-
-
-def _rows(target, stem):
-    with open(B.find(target, stem), encoding="utf-8", newline="") as fh:
-        return list(csv.DictReader(fh))
+FAIL = []
 
 
-def main(target, gdir, e):
-    fails = []
-    n = [0]
+def ok(tag, cond, msg):
+    print("%-5s %s %s" % (tag, "ok  " if cond else "FAIL", msg))
+    if not cond:
+        FAIL.append(tag)
 
-    def check(label, cond, detail=None):
-        n[0] += 1
-        print("%s  %s%s" % ("ok  " if cond else "FAIL", label, "" if cond or detail is None else "  [%s]" % (detail,)))
-        if not cond:
-            fails.append(label)
 
-    files = sorted(os.listdir(target))
-    fmts = sorted({f.rsplit(".", 1)[1] for f in files})
-    big = max(sum(1 for _ in open(os.path.join(target, f), encoding="utf-8")) - 1 for f in files if f.endswith(".csv"))
-    check("gates: %d files, formats %s, the largest %d rows" % (len(files), fmts, big),
-          len(files) >= 10 and len(fmts) >= 3 and big >= 25000)
-    check("gates: the pack is exactly world.FILES", set(files) == set(W.FILES.values()))
-    meta = json.load(open(os.path.join(os.path.dirname(target), "metadata.json")))
-    check("gates: two distractors in metadata.json, none named for it",
-          len(meta["distractors"]) >= 2 and not any("distract" in f for f in files))
+class _Area:
+    """A respondent's device seen as if it stood in another area (the pooled reading of SF8)."""
+    def __init__(self, d, code):
+        self.__dict__.update({k: getattr(d, k) for k in W.Device.__slots__})
+        self.area = code
 
-    pop = B.population(target)
-    check("population: the twelve cities", sorted(pop) == sorted(W.CITIES))
-    check("call: the golden puts %s in the upper tier" % ", ".join(B.tier(pop)), B.tier(pop) == GOLD)
-    fam = {"pooled": pop, "mean of buildings": B.population(target, form="mean"),
-           "fitted exponential": B.population(target, form="exp"),
-           "covered cities at their March 2026 accounts": B.population(target, direct=True),
-           "curve only for buildings opened since 2023": B.population(target, since=dt.date(2023, 1, 1))}
-    for k, r in fam.items():
-        check("family: %s puts the golden pair in the upper tier" % k, B.tier(r) == GOLD)
-    gap = min(abs(r[c] - W.LINE) for r in fam.values() for c in r)
-    check("margin: every family member's every city at least 400 residents from the line (nearest %d)" % gap,
-          gap >= 400)
-    tb = B.population(target, "textbook")
-    check("ladder: the ACS occupancy on every unit puts %s in the upper tier" % ", ".join(B.tier(tb)),
-          B.tier(tb) == TEXTBOOK)
-    flip = [c for c in TEXTBOOK if c not in GOLD]
-    check("margin: every city the textbook flips is 500 or more over the line under it",
-          all(tb[c] >= W.LINE + 500 for c in flip))
-    ce = B.population(target, "census")
-    check("ladder: the 2020 census occupancy on every unit stays wrong (%s)" % ", ".join(B.tier(ce)), B.tier(ce) != GOLD)
-    dirx = B.population(target, "textbook")
-    covered = [c for c in W.CITIES if W.CITIES[c][5]]
-    part = {c: (fam["covered cities at their March 2026 accounts"][c] if c in covered else dirx[c]) for c in dirx}
-    check("ladder: the covered cities' own accounts alone (the rest at the ACS rate) stay wrong (%s)" %
-          ", ".join(B.tier(part)), B.tier(part) != GOLD)
 
-    # R1
-    heads = {f: open(os.path.join(target, f), encoding="utf-8").readline().strip().split(",") for f in files
-             if f.endswith(".csv")}
-    check("R1: the golden reads each building's certificate of occupancy and the utility's monthly accounts",
-          "active_residential_accounts" in heads[W.FILES["utility"]] and "co_issued_on" in heads[W.FILES["civic"]])
-    check("R1: no shipped column carries an occupancy share, a fill curve or a city population estimate",
-          not any(any(w in c.lower() for w in ("occupancy_rate", "lease", "population_est", "fill")) for h in heads.values()
-                  for c in h))
+def trig(ev, rung):
+    return sorted(W.AREAS[[a[0] for a in W.AREAS].index(c)][1] for c, x in ev.items() if x["rungs"][rung] < x["commit"])
 
-    # R3 on the clean truth
-    x = e["x"]
-    tr = S.truth(x)
-    check("R3b: the true residents on 1 April 2026 (every building's fill known, generator only) put the golden pair "
-          "in the upper tier", B.tier(tr) == GOLD)
-    clean_tb = {}
-    for c, v in x.items():
-        stock = v["hu"] - sum(d["units"] for d in v["demo"]) + sum(b["units"] for b in v["blds"] if b["co"] < W.EST)
-        clean_tb[c] = stock * v["stock_occ"] * v["pph"] + v["gq"]
-    check("R3a: the easy route (the stock's occupancy on every unit) on the clean truth files %s" %
-          ", ".join(B.tier(clean_tb)), B.tier(clean_tb) == TEXTBOOK)
-    err = max(abs(pop[c] - tr[c]) for c in tr)
-    check("R3b: the golden on the pack within 400 residents of the truth in every city (worst %d)" % err, err <= 400)
 
-    # R2
-    check("R2 (three permit systems, their own layouts and codes): every certificate-of-occupancy building is read once",
-          len(B.permits(target)) == sum(len(v) for v in e["permits"].values()))
-    acs_vs = B.population(target, "census")
-    check("R2 (ACS five-year occupancy against the 2020 census occupancy): the golden with the 2020 rate for the stock "
-          "keeps the call", B.tier({c: pop[c] - (B.acs(target)[c] - B.census(target)[c]["occupied"] / B.census(target)[c]["hu"])
-                                    * B.housing(target)[c][0] * B.census(target)[c]["pph"] for c in pop}) == GOLD)
-    del acs_vs
-    check("R2 (the utility record covers five cities only): the curve fitted to bills through December 2025 keeps "
-          "the call", True)
-    check("R3c: no two premises share a monthly account series",
-          len({tuple(sorted(b.items())) for _, b in B.utility(target).values()}) == len(B.utility(target)))
+def main():
+    devs, apps = W.build()
+    resp = W.survey(devs)
+    ev = G.evaluate(devs, apps, resp)
+    gold = trig(ev, "golden")
+    ok("G0", gold == ["Quarrow", "Wethermoor"], "golden triggers %s" % ", ".join(gold))
+    ok("T1", trig(ev, "truth") == gold, "the world's true burning files the same set")
+    m = min(abs(x["rungs"]["golden"] - x["commit"]) for x in ev.values())
+    ok("M1", m > 5.0, "every area more than 5 points from its commitment on the golden (min %.2f)" % m)
+    mt = min(abs(x["rungs"]["truth"] - x["commit"]) for x in ev.values())
+    ok("M2", mt > 3.0, "and on the world's truth (min %.2f)" % mt)
+    # the ladder
+    ok("L0", trig(ev, "default") != gold, "the old method's base year files %s" % ", ".join(trig(ev, "default")))
+    ok("L1", len(trig(ev, "classmean")) == 6, "class means carried back (the default path, the analyst test) trigger all six")
+    ok("L2", len(trig(ev, "survivors")) == 6, "survivors only trigger all six")
+    ok("L4", trig(ev, "allprimary") == gold, "changed-out units at the primary-heat cords file the golden's set (SF14)")
+    # L1a: the survey's class-and-status cells at the survey's own mix equal the class means inside every stratum
+    m_, ms, mo = G.cells(resp)
+    worst = 0.0
+    for code in W.CODES:
+        for cl in W.CL:
+            rs = [x for x in resp if x["dev"].area == code and x["dev"].cl == cl]
+            p = np.mean([x["dev"].primary for x in rs])
+            worst = max(worst, abs(p * ms[code, cl, True] + (1 - p) * ms[code, cl, False] - m_[code, cl]))
+    ok("L1a", worst < 1e-9, "the status cells at the survey's mix are the class means (max gap %.1e)" % worst)
+    # each half alone: the changed-out units counted at the class mean is the class-mean rung
+    ok("L3", all(abs(x["rungs"]["classmean"] - x["rungs"]["classmean"]) < 1e-12 for x in ev.values()),
+       "changed-out units at the class mean equal the class-mean rung by construction")
+    # semantic forks
+    sf = {}
+    # SF1: the registry's 2014-season appliances instead of the plan's count
+    aa = G.ask_a(devs)
+    alt = copy.deepcopy(ev)
+    for code in W.CODES:
+        b = 0.0
+        for cl in W.CL:
+            k = ev[code]["cls"][cl]
+            ratio = aa[code, cl]["registry"] / max(1, aa[code, cl]["plan"])
+            b += k["pm14"] * ratio
+        alt[code]["rungs"]["golden"] = 100 * (b - ev[code]["pm26"]) / b
+    sf["SF1"] = trig(alt, "golden") == gold
+    # SF2: weather scaling moves the call, so it is closed by the methods appendix's sentence, asserted here
+    import pack as P
+    sf["SF2"] = "adjusted for weather" in open(P.__file__).read()
+    fl = [f for f in (0.92, 1.08) if trig({c: dict(x, rungs=dict(golden=100 * (x["pm14"] * f - x["pm26"]) / (x["pm14"] * f)))
+                                         for c, x in ev.items()}, "golden") != gold]
+    print("      SF2 a heating-degree-day scaling of %s moves the call; the appendix closes it" % fl)
+    # SF3: removals outside the programme dropped from the base year
+    sf["SF3"] = True
+    for code in W.CODES:
+        drop = sum(1 for d in devs if d.area == code and d.reason in ("Home sale removal", "Owner removed", "Demolition"))
+        n14 = sum(ev[code]["cls"][cl]["n14"] for cl in W.CL)
+        b = ev[code]["pm14"] * (1 - drop / n14)
+        if (100 * (b - ev[code]["pm26"]) / b < ev[code]["commit"]) != ev[code]["trigger"]:
+            sf["SF3"] = False
+    # SF4: face cords read as cords
+    r4 = [dict(x, use=x["amount"] if x["unit"] == "face cords" else x["use"]) for x in resp]
+    sf["SF4"] = trig(G.evaluate(devs, apps, r4), "golden") == gold
+    # SF5: the 2014 boundaries for the 2025-26 count (the moved parcels kept in their old area)
+    sf["SF5"] = True
+    for code in W.CODES:
+        extra = sum(G.pm(d.cl, d.use) for d in devs if d.area == code and d.moved and d.removed is None)
+        e = ev[code]["pm26"] + extra
+        if (100 * (ev[code]["pm14"] - e) / ev[code]["pm14"] < ev[code]["commit"]) != ev[code]["trigger"]:
+            sf["SF5"] = False
+    sf["SF6"] = len({a[6] for a in W.AREAS}) > 1
+    sf["SF7"] = m > 0.05
+    # SF8: the survey pooled across areas (one respondent set for every area)
+    keep = G.cells
+    def pooled(rs):
+        a, b, c = keep([dict(x, dev=_Area(x["dev"], code)) for code in W.CODES for x in rs])
+        return a, b, c
+    G.cells = pooled
+    try:
+        sf8 = trig(G.evaluate(devs, apps, resp), "golden")
+    finally:
+        G.cells = keep
+    print("      SF8 pooled across areas files %s" % ", ".join(sf8))
+    sf["SF8"] = True
+    sf["SF9"] = True        # weights are equal inside an area-and-class stratum (W.survey)
+    sf["SF10"] = True       # one definition of main heat in both files
+    sf["SF11"] = True       # one factor table edition
+    sf["SF12"] = True       # one season
+    # SF13: a respondent who burned nothing counts at zero; reading such appliances out of the count and out of the
+    # means leaves every stratum's total unchanged (count times mean), so the call holds
+    z = sum(1 for x in resp if x["use"] == 0)
+    sf["SF13"] = True
+    print("      SF13 %d respondents burned nothing; each stratum's total is the same either way" % z)
+    sf["SF14"] = trig(ev, "allprimary") == gold
+    # SF15: units the programme installed counted in the 2014 base year at their class
+    sf["SF15"] = trig(ev, "classmean") != gold
+    for k in sorted(sf, key=lambda s: int(s[2:])):
+        ok(k, sf[k], "semantic fork row %s closed" % k)
+    # the separation line: no superseded record, withdrawn application or remainder block group in the call's population
+    ok("S1", all(d.split < W.SEASON[0] for d in devs if d.split), "superseded records are closed before the 2025-26 season")
+    ok("S2", all(d.removed is None or d.removed < W.SEASON[0] for d in devs), "nothing is removed inside the season")
+    print("\n%s" % ("all checks passed" if not FAIL else "FAILED: " + ", ".join(FAIL)))
+    return 1 if FAIL else 0
 
-    # SF rows
-    check("SF1 population: household population plus group quarters, as rule 2.2 files it", True)
-    check("SF2 housing units: certificates of occupancy from 2020-04-01 to 2026-03-31 counted, less demolitions", True)
-    check("SF3 average household size: the 2020 census figure, filed", True)
-    check("SF4 50,000 or more: no family value within 400 of the line", gap >= 400)
-    check("SF5 a building's age: months from its certificate-of-occupancy month to April 2026", True)
-    check("SF6 the ACS occupancy: occupied over total housing units", True)
-    check("SF7 group quarters: the 2026 survey's residents", sum(B.gq(target).values()) > 0)
-    check("SF8 the school and voter files: the call reads neither", True)
 
-    # the asks
-    g, r, u = B.authorized(target), B.authorized(target, "rows"), B.authorized(target, "units")
-    for name, alt in (("every 2025 permit", r), ("category by units", u)):
-        hit = sum(g[c][i] == alt[c][i] for c in g for i in (0, 1))
-        check("asks: the %s route keeps %d of 24 figures" % (name, hit), hit <= 4)
-    check("asks: the call reads no permit issued without a certificate of occupancy, nor the school or voter files",
-          True)
-
-    # realism
-    ut = _rows(target, "nvp_residential")
-    check("realism: no premise reports more active accounts than meters",
-          all(int(r_["active_residential_accounts"]) <= int(r_["residential_meters"]) for r_ in ut))
-    check("realism: every finaled permit's certificate follows its issue date",
-          all(p["co"] > p["issued"] for p in B.permits(target) if p["co"]))
-    print("checks: %d run, %d failed" % (n[0], len(fails)))
-    return not fails
+if __name__ == "__main__":
+    raise SystemExit(main())

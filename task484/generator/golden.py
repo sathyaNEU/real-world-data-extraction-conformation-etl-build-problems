@@ -1,141 +1,121 @@
-"""The golden deliverables: the city estimates workbook (each city's population and tier, and the housing authorized
-in 2025) and the tier memo for the Joint Committee (PDF with a bar chart of every city's estimate against the line),
-and generator/figures.json."""
-import json
-import os
+"""The golden determinations from the world's own objects: each area's 2025-26 inventory, its 2014 base year rebuilt
+for the stock that burned then (the survey's cords for each appliance's class, the changed-out units at the cords for
+their recorded heat status), the reduction against the commitment; and the ladder's rungs on the same objects."""
+import numpy as np
 
-from reportlab import rl_config
-rl_config.invariant = 1
-from reportlab.graphics.shapes import Drawing, Line, Rect, String                       # noqa: E402
-from reportlab.lib import colors                                                        # noqa: E402
-from reportlab.lib.pagesizes import letter                                              # noqa: E402
-from reportlab.lib.styles import ParagraphStyle                                         # noqa: E402
-from reportlab.lib.units import inch                                                    # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
-from openpyxl import Workbook                                                           # noqa: E402
-from openpyxl.styles import Font                                                        # noqa: E402
+import world as W
 
-import bundle as B   # noqa: E402
-import docs as DC    # noqa: E402
-import world as W    # noqa: E402
-
-HERE = os.path.dirname(os.path.abspath(__file__))
-ORANGE, BLUE, INK = colors.HexColor("#c8553d"), colors.HexColor("#4f7ca8"), colors.HexColor("#222222")
-WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine",
-         10: "ten", 11: "eleven", 12: "twelve"}
+LB_PER_TON = 2000.0
 
 
-def figures(target):
-    pop = B.population(target)
-    cities = sorted(pop)
-    up = B.tier(pop)
-    au = B.authorized(target)
-    return dict(call=up, n_call=len(up), n_cities=len(cities), cities=cities,
-                pop={c: int(round(pop[c])) for c in cities}, line="{:,}".format(W.LINE), line_n=W.LINE,
-                dates=dict(census_year=W.CENSUS.year, est_day=W.EST.day, est_year=W.EST.year),
-                textbook_route=B.tier(B.population(target, "textbook")), sections=DC.SECTIONS,
-                asks=dict(single={c: au[c][0] for c in cities}, multi={c: au[c][1] for c in cities}))
+def cells(resp):
+    """Survey means by area and class, by area, class and heat status, and by area and class over the respondents
+    whose appliance was in place by 2014 (weights are equal inside a stratum, so these are the weighted means)."""
+    m, ms, mo = {}, {}, {}
+    for code in W.CODES:
+        for cl in W.CL:
+            rs = [x for x in resp if x["dev"].area == code and x["dev"].cl == cl]
+            m[code, cl] = float(np.mean([x["use"] for x in rs]))
+            for st in (True, False):
+                k = [x["use"] for x in rs if x["dev"].primary == st]
+                ms[code, cl, st] = float(np.mean(k)) if k else m[code, cl]
+            k = [x["use"] for x in rs if x["dev"].installed <= 2014]
+            mo[code, cl] = float(np.mean(k)) if k else m[code, cl]
+    return m, ms, mo
 
 
-def write_workbook(path, f):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Tiers"
-    ws.append(["2027 revenue-sharing tiers: cities near the 50,000 line, population on 1 April 2026"])
-    ws.append([])
-    ws.append(["City", "Upper tier"])
-    for c in ws[3]:
-        c.font = Font(bold=True)
-    for c in f["call"]:
-        ws.append([c, "Yes"])
-    ws.append([])
-    ws.append(["Upper tier: %d of %d cities." % (f["n_call"], f["n_cities"])])
-    ws.column_dimensions["A"].width = 18
-    ws.column_dimensions["B"].width = 12
-    au = wb.create_sheet("Housing authorized 2025")
-    au.append(["Housing units authorized by building permits first issued in 2025"])
-    au.append([])
-    au.append(["City", "Single-family units", "Multifamily units"])
-    for c in au[3]:
-        c.font = Font(bold=True)
-    for c in f["cities"]:
-        au.append([c, f["asks"]["single"][c], f["asks"]["multi"][c]])
-    for col, w in zip("ABC", (18, 20, 18)):
-        au.column_dimensions[col].width = w
-    au.append([])
-    au.append(["Prepared by %s, %s." % (W.PEOPLE["analyst"][0], W.MEMO_DATE)])
-    wb.save(path)
+def pm(cl, use_total, factor=None):
+    """Tons of PM2.5 from a total of wood burned (cords, or tons of pellets)."""
+    return W.tons_of(cl, use_total) * (factor if factor is not None else W.CLASSES[cl][6]) / LB_PER_TON
 
 
-def chart(f):
-    cs = sorted(f["cities"], key=lambda c: -f["pop"][c])
-    w, h = 6.6 * inch, 3.3 * inch
-    d = Drawing(w, h)
-    left, bottom, top = .7 * inch, .75 * inch, .3 * inch
-    lo, hi = 46000, 54000
-    sy = lambda v: bottom + (v - lo) / (hi - lo) * (h - bottom - top)
-    bw = (w - left - 10) / len(cs)
-    for v in range(lo, hi + 1, 2000):
-        d.add(Line(left, sy(v), w - 6, sy(v), strokeColor=colors.HexColor("#e2e5e8"), strokeWidth=.5))
-        d.add(String(left - 6, sy(v) - 3, "{:,}".format(v), fontName="Helvetica", fontSize=7, textAnchor="end",
-                     fillColor=INK))
-    for i, c in enumerate(cs):
-        x0 = left + i * bw + 3
-        d.add(Rect(x0, bottom, bw - 6, sy(f["pop"][c]) - bottom, fillColor=ORANGE if c in f["call"] else BLUE,
-                   strokeColor=None))
-        from reportlab.graphics.shapes import Group
-        d.add(Group(String(0, 0, c, fontName="Helvetica", fontSize=6, textAnchor="end", fillColor=INK),
-                    transform=(0.82, 0.57, -0.57, 0.82, x0 + (bw - 6) / 2, bottom - 6)))
-    d.add(Line(left, sy(W.LINE), w - 6, sy(W.LINE), strokeColor=INK, strokeWidth=1, strokeDashArray=[3, 2]))
-    d.add(String(w - 8, sy(W.LINE) + 3, "Upper tier, %s residents" % f["line"], fontName="Helvetica-Bold", fontSize=7,
-                 textAnchor="end", fillColor=INK))
-    d.add(String(left, h - 12, "Population on 1 April 2026; upper-tier cities in orange", fontName="Helvetica",
-                 fontSize=7.5, fillColor=INK))
-    return d
+def evaluate(devs, apps, resp):
+    m, ms, mo = cells(resp)
+    out = {}
+    for code, name, county, scale, prog, srate, commit, vf in W.AREAS:
+        row = dict(name=name, county=county, commit=commit, cls={})
+        e26 = b_gold = b_mean = b_dflt = b_surv = b_allp = b_true = e26_true = 0.0
+        for cl in W.CL:
+            stock = W.base_stock(devs, code, cl)
+            n14 = len(stock)
+            co = [a["old"] for a in apps if a["old"].area == code and a["old"].cl == cl]
+            assert all(d in stock for d in co)
+            n26 = sum(1 for d in devs if d.area == code and d.cl == cl and W.in_season(d))
+            a26 = n26 * m[code, cl]
+            if cl in W.CHANGED:
+                ncp = sum(1 for d in co if d.primary)
+                g = (n14 - len(co)) * m[code, cl] + ncp * ms[code, cl, True] + (len(co) - ncp) * ms[code, cl, False]
+                allp = (n14 - len(co)) * m[code, cl] + len(co) * ms[code, cl, True]
+                surv = (n14 - len(co)) * m[code, cl]
+            else:
+                g = allp = n14 * mo[code, cl]
+                surv = n14 * m[code, cl]
+            row["cls"][cl] = dict(n14=n14, n26=n26, co=len(co), a14=g, a26=a26, pm14=pm(cl, g), pm26=pm(cl, a26),
+                                  dflt=pm(cl, n14 * W.CLASSES[cl][8], W.CLASSES[cl][7]))
+            e26 += pm(cl, a26)
+            b_gold += pm(cl, g)
+            b_allp += pm(cl, allp)
+            b_mean += pm(cl, n14 * m[code, cl])
+            b_surv += pm(cl, surv)
+            b_dflt += pm(cl, n14 * W.CLASSES[cl][8], W.CLASSES[cl][7])
+            b_true += pm(cl, sum(d.use for d in stock))
+            e26_true += pm(cl, sum(d.use for d in devs if d.area == code and d.cl == cl and W.in_season(d)))
+        red = lambda b, e=e26: 100.0 * (b - e) / b
+        row.update(pm26=e26, pm14=b_gold, reduction=red(b_gold), trigger=red(b_gold) < commit,
+                   rungs=dict(golden=red(b_gold), allprimary=red(b_allp), classmean=red(b_mean), survivors=red(b_surv),
+                              default=red(b_dflt), truth=red(b_true, e26_true)))
+        out[code] = row
+    return out
 
 
-def write_memo(path, f):
-    body = ParagraphStyle("b", fontName="Times-Roman", fontSize=10.5, leading=13.6, spaceAfter=7)
-    hd = ParagraphStyle("h", fontName="Helvetica-Bold", fontSize=13, leading=16, textColor=BLUE)
-    small = ParagraphStyle("s", fontName="Helvetica", fontSize=8, leading=10)
-    doc = SimpleDocTemplate(path, pagesize=letter, leftMargin=.9 * inch, rightMargin=.9 * inch, topMargin=.8 * inch,
-                            bottomMargin=.8 * inch, title="2027 revenue-sharing tiers", author=W.OFFICE,
-                            creator=W.OFFICE, producer=W.OFFICE, subject="Revenue-sharing tiers")
-    up = f["call"]
-    names = " and ".join(up) if len(up) == 2 else ", ".join(up[:-1]) + " and " + up[-1]
-    s = [Paragraph("2027 revenue-sharing tiers: cities near the line", hd),
-         Paragraph("To: Joint Committee on Local Government Finance &nbsp;&nbsp; From: %s, %s &nbsp;&nbsp; Date: %s" % (
-             W.PEOPLE["analyst"][0], W.PEOPLE["analyst"][1], W.MEMO_DATE), small), Spacer(1, 8),
-         Paragraph("Of the %s cities near the line, %s stand at %s residents or more on 1 April 2026 and move to the "
-                   "upper tier for 2027: %s." % (WORDS[f["n_cities"]], WORDS[f["n_call"]], f["line"], names), body),
-         Paragraph("Several cities have opened large apartment buildings since 2024. Those buildings fill over a year or "
-                   "more after they open, so their units are counted at the occupancy the buildings in the utility's "
-                   "service records reached at the same age, not at the city's overall occupancy rate. Counted at the "
-                   "overall rate, %s would each pass the line on households still waiting to move in." % (
-                       ", ".join([c for c in f["textbook_route"] if c not in up][:-1]) + " and " +
-                       [c for c in f["textbook_route"] if c not in up][-1]), body),
-         chart(f), Spacer(1, 8)]
-    t = [["City", "Upper tier"]] + [[c, "Yes" if c in up else "No"] for c in f["cities"]]
-    tb = Table(t, colWidths=[1.6 * inch, 1.0 * inch])
-    tb.setStyle(TableStyle([("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 8), ("FONT", (0, 1), (-1, -1), "Helvetica", 8),
-                            ("LINEBELOW", (0, 0), (-1, 0), .6, INK)]))
-    s.append(tb)
-    doc.build(s)
+def ask_a(devs):
+    """The registry's appliances in place in the 2014 season by area and class on the 2020 boundaries, each appliance
+    once (a split's re-registration is the same appliance), with the plan's count and the two items between them."""
+    out = {}
+    for code in W.CODES:
+        for cl in W.CL:
+            plan = W.base_stock(devs, code, cl)
+            reg = [d for d in devs if d.area == code and d.cl == cl and d.replaces is None and d.installed <= 2014
+                   and not d.moved]
+            late = [d for d in reg if d.late]
+            left = [d for d in plan if d.moved]
+            assert len(reg) == len(plan) - len(left) + len(late)
+            out[code, cl] = dict(plan=len(plan), registry=len(reg), late=len(late), left=len(left),
+                                 split=sum(1 for d in reg if d.split))
+    return out
 
 
-def build(gdir, e, target=None, figs=None):
-    import postprocess as PP
-    target = target or os.path.join(os.path.dirname(gdir), "target")
-    figs = figs or os.path.join(HERE, "figures.json")
-    os.makedirs(gdir, exist_ok=True)
-    for fn in os.listdir(gdir):
-        if fn not in W.GOLDEN.values():
-            os.remove(os.path.join(gdir, fn))
-    f = figures(target)
-    json.dump(f, open(figs, "w", encoding="utf-8"), indent=1, sort_keys=True)
-    write_workbook(os.path.join(gdir, W.GOLDEN["workbook"]), f)
-    write_memo(os.path.join(gdir, W.GOLDEN["memo"]), f)
-    PP.normalize_ooxml(os.path.join(gdir, W.GOLDEN["workbook"]), W.PEOPLE["analyst"][0], W.PEOPLE["analyst"][0],
-                       "2026-10-21T15:12:00Z", "2026-10-23T14:02:00Z", excel=True, company=W.OFFICE)
-    PP.normalize_pdf(os.path.join(gdir, W.GOLDEN["memo"]), b"D:20261023091415-04'00'", b"D:20261023091415-04'00'")
-    return f
+def ask_b(bgs):
+    """Each county's remainder outside the areas on the state tool: the 2019-2023 release's main-heat households
+    of each block group times its housing units' share outside the areas, the tool's secondary ratio, shares and use."""
+    import pack as P
+    out = {}
+    for county in W.COUNTIES:
+        for cl in W.CL:
+            wood = 0.0
+            for b in bgs:
+                if b["county"] != county:
+                    continue
+                hu_in = int(round(b["hu"] * b["inside"]))
+                share_out = (b["hu"] - hu_in) / b["hu"]
+                main = b["acs1923"] * share_out
+                use = main * P.TOOL_SHARE[True][cl] * P.TOOL_USE[True][cl] + \
+                    main * P.TOOL_SECONDARY * P.TOOL_SHARE[False][cl] * P.TOOL_USE[False][cl]
+                wood += W.tons_of(cl, use)
+            out[county, cl] = dict(wood=wood, pm=wood * W.CLASSES[cl][6] / LB_PER_TON)
+    return out
+
+
+if __name__ == "__main__":
+    devs, apps = W.build()
+    resp = W.survey(devs)
+    ev = evaluate(devs, apps, resp)
+    print("devices %d, applications %d, respondents %d" % (len(devs), len(apps), len(resp)))
+    keys = ["truth", "golden", "allprimary", "classmean", "survivors", "default"]
+    print("area commit | " + " ".join("%-12s" % k for k in keys))
+    for code, x in ev.items():
+        print("%s  %2d | " % (code, x["commit"]) + " ".join("%5.1f %-6s" % (x["rungs"][k], "TRIG" if x["rungs"][k] < x["commit"] else "")
+                                                       for k in keys))
+    for k in keys:
+        print("%-11s %s" % (k, ",".join(c for c, x in ev.items() if x["rungs"][k] < x["commit"]) or "none"))
+    print("golden margins", " ".join("%.1f" % abs(x["reduction"] - x["commit"]) for x in ev.values()))

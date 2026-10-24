@@ -1,116 +1,149 @@
 {
  "task": "task484",
- "title": "2027 municipal revenue-sharing tiers",
- "setting": "A fictional state's population estimates unit and twelve fictional cities; every record is synthetic.",
- "as_of": "2026-10-14",
+ "title": "Wood smoke contingency determinations, 2026-27",
+ "setting": "A fictional regional clean air agency in Washington, its six PM2.5 maintenance areas and three fictional counties; every record is synthetic.",
+ "as_of": "2026-07-24",
  "files": [
   {
-   "file": "acs_2020_2024_city_occupancy.xlsx",
-   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
-   "date": "2025-12-15",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "building_type_code_table.xlsx",
-   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
-   "date": "2025-01-08",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "census_2020_city_housing_base.xlsx",
-   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
-   "date": "2023-05-25",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "civic_permit_records.csv",
-   "source": "Civic permit system (fictional), synthetic records",
-   "date": "2026-10-06",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 2211
-  },
-  {
-   "file": "county_building_permits.xlsx",
-   "source": "County Building Department (fictional), synthetic records",
-   "date": "2026-10-02",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "data_notes.txt",
-   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
-   "date": "2026-10-14",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "demolition_permits_2020_2026.csv",
-   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
-   "date": "2026-10-06",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 225
-  },
-  {
-   "file": "group_quarters_survey_2026.csv",
-   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
+   "file": "wood_device_registry_2026-06-30.csv",
+   "source": "Selwick Basin Clean Air Agency, wood-burning device registry (fictional, synthetic records)",
    "date": "2026-06-30",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 52
+   "rows": 38325
   },
   {
-   "file": "metro_permits_export.csv",
-   "source": "Metro permit system (fictional cities) (fictional), synthetic records",
-   "date": "2026-10-05",
+   "file": "household_wood_survey_2024_25.csv",
+   "source": "Selwick Basin Clean Air Agency, household wood survey (vendor extract) (fictional, synthetic records)",
+   "date": "2025-06-12",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 2984
+   "rows": 3777
   },
   {
-   "file": "nvp_residential_accounts_monthly.csv",
-   "source": "Northern Valley Power (fictional), synthetic records",
-   "date": "2026-04-20",
+   "file": "changeout_applications_2015_2025.csv",
+   "source": "Selwick Basin Clean Air Agency, changeout programme applications (fictional, synthetic records)",
+   "date": "2024-10-15",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 30413
+   "rows": 4547
   },
   {
-   "file": "revenue_sharing_tier_rules_2027.pdf",
-   "source": "State Office of Financial Planning, Population and Demographics Unit (fictional), synthetic records",
-   "date": "2026-02-17",
+   "file": "maintenance_plan_rwc_base_year_2014.xlsx",
+   "source": "Maintenance plans, 2014 base year appendix (fictional, synthetic records)",
+   "date": "2016-11-21",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "school_enrollment_oct2025.csv",
-   "source": "State Department of Education (fictional), synthetic records",
-   "date": "2025-11-03",
+   "file": "contingency_provisions_rwc.pdf",
+   "source": "Maintenance plans, contingency provisions (fictional, synthetic records)",
+   "date": "2016-12-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 36
+   "rows": null
   },
   {
-   "file": "voter_registration_by_city_2026.csv",
-   "source": "Secretary of State, Elections Division (fictional), synthetic records",
-   "date": "2026-09-01",
+   "file": "rwc_inventory_methods_appendix_2025_26.pdf",
+   "source": "Air Quality Planning, periodic inventory methods appendix (fictional, synthetic records)",
+   "date": "2026-07-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "emission_factors_rwc_2023.csv",
+   "source": "Emission factor table, 2023 edition (fictional, synthetic records)",
+   "date": "2023-11-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 24
+  },
+  {
+   "file": "scc_crosswalk_rwc.csv",
+   "source": "Air Quality Planning, SCC crosswalk (fictional, synthetic records)",
+   "date": "2026-07-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 6
+  },
+  {
+   "file": "parcel_area_crosswalk.csv",
+   "source": "County assessors, parcel and area crosswalk (fictional, synthetic records)",
+   "date": "2026-06-30",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 38325
+  },
+  {
+   "file": "acs_b25040_blockgroups_2019_2023.csv",
+   "source": "ACS 5-year table B25040, 2019-2023 release (block groups) (fictional, synthetic records)",
+   "date": "2024-12-12",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 162
+  },
+  {
+   "file": "acs_b25040_blockgroups_2020_2024.csv",
+   "source": "ACS 5-year table B25040, 2020-2024 release (block groups) (fictional, synthetic records)",
+   "date": "2025-12-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 162
+  },
+  {
+   "file": "assessor_housing_units_by_block_group_2025.csv",
+   "source": "County assessors, housing units by block group (fictional, synthetic records)",
+   "date": "2025-08-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 189
+  },
+  {
+   "file": "state_rwc_tool_method_note.pdf",
+   "source": "State residential wood combustion tool, method note (fictional, synthetic records)",
+   "date": "2023-11-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "heating_degree_days_2025_26.csv",
+   "source": "Airport weather stations, heating degree days (fictional, synthetic records)",
+   "date": "2026-05-02",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 636
+  },
+  {
+   "file": "curtailment_log_2025_26.csv",
+   "source": "Selwick Basin Clean Air Agency, burn ban log (fictional, synthetic records)",
+   "date": "2026-05-01",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 95
+  },
+  {
+   "file": "pm25_monitor_daily_2025_26.csv",
+   "source": "Federal reference method monitors, daily PM2.5 (fictional, synthetic records)",
+   "date": "2026-05-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1272
+  },
+  {
+   "file": "firewood_permits_by_district.csv",
+   "source": "Ranger districts, firewood permits (fictional, synthetic records)",
+   "date": "2026-05-30",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": 12
   }
  ],
  "distractors": [
   {
-   "file": "school_enrollment_oct2025.csv",
-   "why": "school enrollment by city: children enrolled, not residents, and a different date"
+   "file": "heating_degree_days_2025_26.csv",
+   "why": "weather the inventory method does not adjust for"
   },
   {
-   "file": "voter_registration_by_city_2026.csv",
-   "why": "voter registration by city: registered adults, including inactive registrations, not residents"
+   "file": "curtailment_log_2025_26.csv",
+   "why": "burn ban days, the measure the trigger changes, not an input to the inventory"
+  },
+  {
+   "file": "pm25_monitor_daily_2025_26.csv",
+   "why": "ambient PM2.5, which the provision does not test"
+  },
+  {
+   "file": "firewood_permits_by_district.csv",
+   "why": "firewood permits sold, which no inventory step uses"
+  },
+  {
+   "file": "acs_b25040_blockgroups_2020_2024.csv",
+   "why": "the newer ACS release, not the one the state tool's method names"
   }
- ],
- "deliverables": [
-  "city_population_estimates_2026.xlsx",
-  "revenue_sharing_tiers_2027.pdf"
- ],
- "stated_inputs": [
-  "50,000"
  ]
 }
