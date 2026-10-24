@@ -1,0 +1,202 @@
+{
+ "call": {
+  "count": 4,
+  "designated": [
+   "CM",
+   "DF",
+   "GH",
+   "KB"
+  ],
+  "nearest_over": "KB",
+  "nearest_under": "LM",
+  "not_designated": [
+   "BW",
+   "EH",
+   "LM",
+   "SC"
+  ]
+ },
+ "coverage": {
+  "BW": {
+   "load_all": 0.6328,
+   "load_all_pct": 63.3,
+   "load_tested": 0.6057,
+   "load_tested_pct": 60.6,
+   "scheduled": 21960,
+   "tests": 16953
+  },
+  "CM": {
+   "load_all": 0.7017,
+   "load_all_pct": 70.2,
+   "load_tested": 0.6712,
+   "load_tested_pct": 67.1,
+   "scheduled": 28080,
+   "tests": 21692
+  },
+  "DF": {
+   "load_all": 0.7277,
+   "load_all_pct": 72.8,
+   "load_tested": 0.702,
+   "load_tested_pct": 70.2,
+   "scheduled": 22860,
+   "tests": 17337
+  },
+  "EH": {
+   "load_all": 0.5719,
+   "load_all_pct": 57.2,
+   "load_tested": 0.5437,
+   "load_tested_pct": 54.4,
+   "scheduled": 23580,
+   "tests": 17429
+  },
+  "GH": {
+   "load_all": 0.6804,
+   "load_all_pct": 68.0,
+   "load_tested": 0.6532,
+   "load_tested_pct": 65.3,
+   "scheduled": 23760,
+   "tests": 17979
+  },
+  "KB": {
+   "load_all": 0.6706,
+   "load_all_pct": 67.1,
+   "load_tested": 0.6428,
+   "load_tested_pct": 64.3,
+   "scheduled": 25020,
+   "tests": 19271
+  },
+  "LM": {
+   "load_all": 0.6136,
+   "load_all_pct": 61.4,
+   "load_tested": 0.5832,
+   "load_tested_pct": 58.3,
+   "scheduled": 32400,
+   "tests": 24563
+  },
+  "SC": {
+   "load_all": 0.5849,
+   "load_all_pct": 58.5,
+   "load_tested": 0.5569,
+   "load_tested_pct": 55.7,
+   "scheduled": 27000,
+   "tests": 20704
+  }
+ },
+ "default_path": {
+  "BW": 12,
+  "CM": 22,
+  "DF": 25,
+  "EH": 6,
+  "GH": 19,
+  "KB": 17,
+  "LM": 13,
+  "SC": 10
+ },
+ "default_path_set": [
+  "CM",
+  "DF"
+ ],
+ "hubs": {
+  "BW": {
+   "capacity_13_nov_mbps": 143730,
+   "capacity_14_sep_mbps": 130530,
+   "capacity_added_mbps": 13200,
+   "designated": false,
+   "households": 122,
+   "name": "Bellwick",
+   "outage_credit_subscriber_days": 2549,
+   "share": 17,
+   "share_of_tests": 12
+  },
+  "CM": {
+   "capacity_13_nov_mbps": 133930,
+   "capacity_14_sep_mbps": 118970,
+   "capacity_added_mbps": 14960,
+   "designated": true,
+   "households": 156,
+   "name": "Carrow Mills",
+   "outage_credit_subscriber_days": 2531,
+   "share": 29,
+   "share_of_tests": 22
+  },
+  "DF": {
+   "capacity_13_nov_mbps": 152060,
+   "capacity_14_sep_mbps": 135220,
+   "capacity_added_mbps": 16840,
+   "designated": true,
+   "households": 127,
+   "name": "Dunfield",
+   "outage_credit_subscriber_days": 2401,
+   "share": 31,
+   "share_of_tests": 25
+  },
+  "EH": {
+   "capacity_13_nov_mbps": 160390,
+   "capacity_14_sep_mbps": 148480,
+   "capacity_added_mbps": 11910,
+   "designated": false,
+   "households": 131,
+   "name": "Eastholm",
+   "outage_credit_subscriber_days": 3149,
+   "share": 10,
+   "share_of_tests": 6
+  },
+  "GH": {
+   "capacity_13_nov_mbps": 118510,
+   "capacity_14_sep_mbps": 107480,
+   "capacity_added_mbps": 11030,
+   "designated": true,
+   "households": 132,
+   "name": "Greyhaven",
+   "outage_credit_subscriber_days": 1095,
+   "share": 25,
+   "share_of_tests": 19
+  },
+  "KB": {
+   "capacity_13_nov_mbps": 135750,
+   "capacity_14_sep_mbps": 129770,
+   "capacity_added_mbps": 5980,
+   "designated": true,
+   "households": 139,
+   "name": "Kesterbrook",
+   "outage_credit_subscriber_days": 2559,
+   "share": 22,
+   "share_of_tests": 17
+  },
+  "LM": {
+   "capacity_13_nov_mbps": 141410,
+   "capacity_14_sep_mbps": 127740,
+   "capacity_added_mbps": 13670,
+   "designated": false,
+   "households": 180,
+   "name": "Larchmoor",
+   "outage_credit_subscriber_days": 2808,
+   "share": 18,
+   "share_of_tests": 13
+  },
+  "SC": {
+   "capacity_13_nov_mbps": 154640,
+   "capacity_14_sep_mbps": 136800,
+   "capacity_added_mbps": 17840,
+   "designated": false,
+   "households": 150,
+   "name": "Sedgecombe",
+   "outage_credit_subscriber_days": 3140,
+   "share": 14,
+   "share_of_tests": 10
+  }
+ },
+ "line": 20.0,
+ "schedule_clauses": [
+  1.2,
+  1.8,
+  3.1,
+  3.2
+ ],
+ "standard_pct": 80,
+ "totals": {
+  "capacity_added_mbps": 105430,
+  "households": 1137,
+  "outage_credit_subscriber_days": 20232
+ }
+}

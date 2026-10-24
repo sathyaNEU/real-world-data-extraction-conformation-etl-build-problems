@@ -1,34 +1,34 @@
 {
   "task": "task280",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-24",
-  "stump": "A competent analyst counts each hub's weekday 7 to 11 pm tests below 80 per cent of the household's plan speed, overall or with each evening hour weighted equally, and files the default set; the units skip a test while the household's own line is busy and households are busiest on the nights the hub's nodes load up, so the completed tests under-sample the congested quarter-hours, and only each household's tests conditioned on its node's 15-minute utilisation and carried to every quarter-hour of the peak name the hubs over the line.",
+  "stump": "A competent analyst counts each hub's weekday 7 to 11 pm tests below 80 per cent of the household's plan speed, overall or with each evening hour or night weighted equally, and files Carrow Mills and Dunfield; the units skip a test while the household's own line is busy and households are busiest on the nights the hub's nodes load up, so the completed tests under-sample the congested quarter-hours, and only each household's tests conditioned on its node's 15-minute utilisation and carried to every quarter-hour of the peak name the four hubs over the line (Carrow Mills, Dunfield, Greyhaven and Kesterbrook).",
   "architecture": 1,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-24"
   },
   "leak": {
-    "leak_py": "",
-    "reader": null
+    "leak_py": "REVIEW (the Schedule, the pack index and the dictionary carry the Schedule's own words; none names the move)",
+    "reader": "round 1 on target.zip 59039694: readers A and B both landed the call with every share (call 1 of 1, ask figures 19 of 32 each, score_reader exit 1): each fitted the below-standard rate to node utilisation by node class and plan and carried it to every peak quarter-hour"
   },
   "duplicate_check": {
-    "heart": "",
+    "heart": "WARN (strategy, Gate G, deliverable-pair and question-form overuse only); surface exit 0, the pack index renamed off a shared file name and the card-level pairs answered on the card",
     "nearest": "task63 v2 0.06 by text; the abstraction of task273 v1 recorded in the note (built at the author's choice)"
   },
   "judge": {
-    "verdict": null,
-    "disposition": null,
-    "report": null
+    "verdict": "NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK",
+    "report": "task280/determinism_check_report.md (main call forced; Ask A's planned tickets past 6.00 am, Ask B's split nodes' second records and the shares' whole per cent left open)"
   },
   "returned": [],
-  "resume": "DRAWN 2026-10-24 (card registered at WARN; seed DA30's world kept, its mechanism set aside; the deferral design built at the author's choice against task273 v1's abstraction). Next: stage 2, the default path, stump sentence, fork table, ladder, closure, asks and prompt.txt to precut exit 0; the prototype is in the scratchpad (t280/p5.py world and routes, p6.py seed sweep at the 20 per cent line: golden sets 1 to 5 hubs, the share of tests, by hour and by night on fewer hubs, skips counted as failures on nearly all; load-conditioned family within 0.35 to 0.77 points; to be tuned for margin at stage 3).",
+  "resume": "Architecture 1 spent at stage 4 on 2026-10-24 (both readers landed the call by conditioning the tests on node utilisation; judge SEND_BACK on the asks). Next: re-root to architecture 2 at stage 1 (a new draw in descriptive-distribution, the card's identity moved to lineage, architecture 2, loops 0), screened against the abstraction this architecture repeated (selection on a covariate shipped whole at the call's grain is a reflex) and the design note's Tried and rejected; if no candidate clears the screens, the author decides between retiring the number and a further screen.",
   "approved": null,
   "delivered": null,
   "portal": null,

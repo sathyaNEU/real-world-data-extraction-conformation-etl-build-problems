@@ -1,0 +1,116 @@
+{
+ "answer": "4 hubs designated: CM, DF, GH, KB",
+ "deliverables": [
+  "hub_peak_congestion_2026.xlsx",
+  "hub_peak_congestion_2026.png"
+ ],
+ "distractor_files": [
+  "target/ovcc_consumer_complaints_2026.csv",
+  "target/panel_latency_2026_evening.csv"
+ ],
+ "domain": "General Statistics & Data Science (missing data, censoring and measurement error)",
+ "objective": "Descriptive & Distribution Analysis",
+ "provenance": {
+  "designation_closeout_2025.pdf": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "franchise_network_performance_schedule.pdf": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "ovcc_2026_review_pack_index.txt": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "ovcc_consumer_complaints_2026.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "ovcc_panel_data_dictionary.pdf": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "panel_download_tests_2026_evening.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "panel_households.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "panel_latency_2026_evening.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "panel_methods_note_2026.pdf": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "panel_units.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "tollard_address_node_table.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "tollard_node_register.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "tollard_node_subscriber_counts_2026.xlsx": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "tollard_node_utilisation_2026q3q4.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "tollard_outage_reports_2026.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "tollard_plan_catalogue.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  },
+  "tollard_subscription_history.csv": {
+   "date": "2026-10-24",
+   "licence": "CC0 1.0 (constructed for this task)",
+   "source": "constructed by the task generator (seeded); the Orlenford Valley Cable Commission, Tollard Cable, its hubs, nodes, plans, the panel and every person are fictional; the records follow the forms of whitebox broadband measurement panels, cable operators' node registers and utilisation filings, and franchise performance schedules"
+  }
+ },
+ "rows": {
+  "ovcc_consumer_complaints_2026.csv": 404,
+  "panel_download_tests_2026_evening.csv": 403017,
+  "panel_households.csv": 1225,
+  "panel_latency_2026_evening.csv": 69362,
+  "panel_units.csv": 1259,
+  "tollard_address_node_table.csv": 1340,
+  "tollard_node_register.csv": 724,
+  "tollard_node_subscriber_counts_2026.xlsx": 666,
+  "tollard_node_utilisation_2026q3q4.csv": 432612,
+  "tollard_outage_reports_2026.csv": 426,
+  "tollard_plan_catalogue.csv": 6,
+  "tollard_subscription_history.csv": 1756
+ },
+ "task": "task280",
+ "title": "Orlenford Valley Cable Commission: the Tollard Cable hubs designated for 2027 under Schedule 4"
+}

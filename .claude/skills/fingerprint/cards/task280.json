@@ -10,8 +10,8 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Designate four of Tollard's eight hubs for 2027 under Schedule 4: Carrow Mills, Dunfield, Greyhaven and Kesterbrook (29, 31, 25 and 22 per cent of the weekday evening peak below 80 per cent of plan; Larchmoor, the highest of the rest, 18 per cent).",
+  "answer_source": "submission.md block 1; generator/figures.json call.designated and hubs.<code>.share",
   "gap": [
     "population"
   ],
@@ -36,20 +36,21 @@
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:missing at random given an auxiliary utilisation record",
   "layer1": [
-    "node utilisation in UTC against test times in local time across the November clock change",
-    "plan changes effective-dated in the subscription history",
-    "whitebox units replaced under a new unit id at the same address",
-    "nodes split mid-window and renamed in the node register",
-    "test batches re-uploaded after a unit outage",
+    "node utilisation in UTC against test times in local time with their offsets, across the 1 November clock change",
+    "plan changes effective-dated in the subscription history, with two legacy plans migrated",
+    "measurement units replaced under a new unit id at the same address after a gap of one to four days",
+    "households joining after the window opened, withdrawing or moving before it closed",
+    "nodes split before the window, parent then child in the address table",
+    "test batches re-uploaded after a unit outage, so some tests arrive twice",
     "speeds in kbit/s in the test export and Mbit/s in the plan catalogue"
   ],
   "stakeholder_role": "performance compliance analyst at the franchising authority",
   "role_family": "compliance_or_audit",
   "scoring_unit": "per active unit per period",
   "spine": {
-    "file": "panel_download_tests_2026q3q4.csv",
-    "rows": 0,
-    "entity": "one completed download speed test by one panel unit",
+    "file": "panel_download_tests_2026_evening.csv",
+    "rows": 403017,
+    "entity": "one download speed test a panel unit ran (the tests a unit skipped are absent)",
     "grain": "unit x test",
     "source": "synthetic"
   },
@@ -86,7 +87,7 @@
   "question_form": "which",
   "driver": "The decisive quantity is each group's share of a fixed daily window during which a shared resource left its members below a standard, measured by probes that each member's own activity silences and that activity rising on the same days the resource is loaded, so the probes under-sample the loaded intervals and only a re-weighting of each member's probes to the resource's own continuous load record, or a reconstruction of every interval from that record, counts the window.",
   "driver_concrete": "Each hub's share of the weekday 7 to 11 pm quarter-hours of the autumn window in which its panel households' connections delivered under 80 per cent of plan, rebuilt for every quarter-hour from each household's tests and its node's 15-minute utilisation; not the share of tests below 80 per cent, overall or hour by hour, because the units skip a test while the household's line is busy and households are busiest on the nights the nodes congest.",
-  "stump": "A competent solver counts each hub's weekday peak tests below 80 per cent of plan (or weights each evening hour equally) and files the default set; the step that lands there is reading the completed tests as a sample of the peak's quarter-hours when the units skip a test whenever the household's own line is busy, which happens most on the nights the hub's nodes are most loaded.",
+  "stump": "A competent solver counts each hub's weekday peak tests below 80 per cent of plan (or weights each evening hour or night equally) and files two hubs, Carrow Mills and Dunfield, against the golden four; the step that lands there is reading the completed tests as a sample of the peak's quarter-hours when the units skip a test whenever the household's own line is busy, which happens most on the nights the hub's nodes are most loaded.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task273": "architecture 1 rebuilt requests a closed-loop client never sent, withheld by the outcome itself (a paused pod) and rebuilt from the pause log as arithmetic, and its readers named the mechanism from the standard's clauses; task280's tests are withheld by the household's own use, which is not the outcome and only rises on the nights the hub's nodes load up, so the reflex correction by hour of the evening leaves the bias in place and only conditioning each household's tests on its node's own utilisation removes it; architecture 2 recovered a missing exposure from struck vehicles by stratum, while task280's exposure, every peak quarter-hour, is known and only the speed in the untested quarter-hours is missing",
@@ -97,9 +98,12 @@
     "task262": "task262 transports a noise variance from a subsample to a population; task280 has no measurement error to transport: the tests are accurate readings taken at a selected set of times, re-weighted to the node's full peak load distribution",
     "task267": "task267 weights checked members by the inverse of a known checking rate in each group; task280's testing rate is filed nowhere and varies within each evening hour from night to night, so it is recovered only by setting the node loads at the tests against the node's full peak record, and the hour, the stratum a weighting reaches for first, does not carry it",
     "task465": "task465 joins two large sources through a small one's within-cell association; task280 joins each household's tests to its own node's utilisation record and needs no third source",
-    "task54": "task54 multiplies an exposure integral under a recovered rule over a re-sequenced plan; task280 recovers no rule and re-sequences nothing: it measures the closed window's peak quarter-hours below the standard"
+    "task54": "task54 multiplies an exposure integral under a recovered rule over a re-sequenced plan; task280 recovers no rule and re-sequences nothing: it measures the closed window's peak quarter-hours below the standard",
+    "task476": "task476 dates when each item began inside an inspection interval from a second record's seasonal start profile; task280 dates nothing, since every test and every interval carries its time, and its step is that the tests that ran sample the node's lighter intervals, carried to every interval by the node's own continuous load record.",
+    "task275": "task275 rebuilds the unobserved members' share from what the observed members catch per unit of effort, place by place, because being observed changes behaviour; task280 has no observed and unobserved members, since every household is measured, and its probes are silenced by the household's own use, so each household's tests are carried to the intervals it skipped by its node's load record."
   },
   "lineage": [],
-  "notes": "Strategy and decisive generator name the decisive rung, conditioning each household's tests on its node's utilisation rather than on the hour (composition_mix, G14); the cause of the selection (skipped tests, population_selection, G12) is carried second, and both of those were in the window at filing against task305. The draw repeats the abstraction of task273 architecture 1 (probes silenced while the state that degrades the outcome holds, rebuilt from a continuous state record), spent at stage 4; built at the author's choice to let stage 4 decide, recorded in the design note.",
-  "registered": "2026-10-24T14:05:16Z"
+  "notes": "Strategy and decisive generator name the decisive rung, conditioning each household's tests on its node's utilisation rather than on the hour (composition_mix, G14); the cause of the selection (skipped tests, population_selection, G12) is carried second, and both of those were in the window at filing against task305. The draw repeats the abstraction of task273 architecture 1 (probes silenced while the state that degrades the outcome holds, rebuilt from a continuous state record), spent at stage 4; built at the author's choice to let stage 4 decide, recorded in the design note. Architecture 1 spent at stage 4 on 2026-10-24: both isolated scored readers conditioned the tests on node utilisation and landed the call with every share; the slot re-roots.",
+  "registered": "2026-10-24T14:05:16Z",
+  "architecture_spent": true
 }
