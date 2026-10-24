@@ -1,37 +1,37 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-24",
- "stump": "The default path runs every stay still open at the close to its expected end and treats each beneficiary discharged alive as finished, and accrues repayments at Brackwater, Lindmoor and Wexmoor only; a beneficiary discharged alive often elects hospice again, the chance falling the longer they have been out, and a third of Fallowmere's returns go to hospices outside the organisation that only the contractor's reports hold, so each live discharge's share is read on the days the history of beneficiaries out as long shows to come, in every hospice, and Fallowmere owes too.",
+ "stump": "The default path runs every stay still open at the close to its expected end and treats each beneficiary discharged alive as finished, finds every provider number under its cap and accrues no repayment; a beneficiary discharged alive often elects hospice again, the chance falling the longer they have been out, and four in five of Fallowmere's returns are to hospices outside the organisation that only the benefit periods extract holds, so each live discharge's share is read on the days the history of beneficiaries out as long shows to come, in every hospice, and Fallowmere owes.",
  "architecture": 10,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-24"
  },
  "leak": {
-  "leak_py": "",
-  "reader": ""
+  "leak_py": "REVIEW on the round 2 pack (a section number, the policy's call words, shared domain terms; no LEAK)",
+  "reader": "round 1: both readers missed the call; reader A kept 24 of 24 ask figures through the remittance join (exit 1), reader B 0 of 24; round 2 on the re-sited pack: both missed the call and kept 0 of 24 (exit 0 and 0)"
  },
  "duplicate_check": {
-  "heart": "",
+  "heart": "WARN (question form how-much repeats task486 v2, answered at the draw; older same-puzzle and same-driver differentiated)",
   "nearest": "task266 v1 at 0.11",
-  "surface": ""
+  "surface": "people clean; three card-level promotions for the author's adjudication only (task481 back to back on gap time and decision type, different domain, pattern, Gate G and strategy; task157 and task201 differentiated on the card)"
  },
  "judge": {
-  "verdict": "",
-  "disposition": "",
-  "report": ""
+  "verdict": "round 1 DETERMINISTIC (APPROVE); round 2 NOT_DETERMINISTIC",
+  "disposition": "SEND_BACK (margin_or_boundary_fragility, competing_defensible_answer on Fallowmere's 0.3; ask A's routine-paid days read as an unstated rule)",
+  "report": "task482/determinism_check_report.md"
  },
  "returned": [],
- "resume": "stage 2 of architecture 10 (hospice cap accrual, drawn 2026-10-24): write the generator's world on paper (eight provider numbers, elections since October 2016, live discharges and returns by diagnosis and time out, outside returns in the contractor's reports), measure the projection family's spread on each provider number's repayment, set the ladder so every easy route files a different set from the golden, then the readability screen, fork table, closure, asks and prompt.txt to precut.py exit 0",
+ "resume": "stage 1: architecture 10 (the hospice cap accrual, live discharges projected by time out at every hospice) spent at stage 4 on the round 2 judge's SEND_BACK; re-root to architecture 11 with a fresh draw, reading Tried and rejected first: the call must be a quantity whose printed cell is wider than the spread of independent builds of its estimator, measured before the generator is written",
  "approved": null,
  "delivered": null,
  "portal": null,
- "source_note": "re-root to a fresh world; architectures 1 to 9 spent at stage 4"
+ "source_note": "re-root to a fresh world; architectures 1 to 10 spent at stage 4"
 }

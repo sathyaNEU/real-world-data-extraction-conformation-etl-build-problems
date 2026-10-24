@@ -1,269 +1,322 @@
-"""task482's independent verifier: reads only the shipped bundle (target/), the golden deliverables and
-generator/figures.json, recomputes every graded figure with its own code (pandas and numpy, no generator module), and
-compares.
+"""Independent verifier for task482: reads only the shipped files under target/ and recomputes the call and ask A's
+figures with its own code, then compares them with generator/figures.json.
 
-    python3 task482/generator/verify.py
+    python3 task482/generator/verify.py     # exit 1 on any mismatch
 """
+import collections
+import csv
 import datetime as dt
 import json
 import os
-import re
 import sys
-import warnings
-from collections import defaultdict
 
 import numpy as np
-import pandas as pd
+import openpyxl
 
-warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
-T = os.path.join(TASK, "target")
-GOLD = os.path.join(TASK, "golden")
-FAILS = []
-UTC = dt.timezone.utc
-FALL = pd.Timestamp("2026-11-01 06:00")             # UTC, naive: every instant below is naive UTC
+TARGET = os.path.join(os.path.dirname(HERE), "target")
+DAY0 = dt.date(2016, 10, 1)
+FY0, FY1 = (dt.date(2025, 10, 1) - DAY0).days, (dt.date(2026, 10, 1) - DAY0).days
+CLOSE = (dt.date(2027, 1, 1) - DAY0).days
+CAP = 35361.44
+H = 6000
 
 
-def say(name, ok):
-    print("%s  %s" % ("PASS" if ok else "FAIL", name))
-    if not ok:
-        FAILS.append(name)
+def d(s):
+    return dt.date(int(s[:4]), int(s[4:6]), int(s[6:8])) if s.strip() else None
 
 
-def half_up(x, d=0):
-    q = 10 ** d
-    return np.floor(x * q + 0.5) / q
+def n(x):
+    return (x - DAY0).days
 
 
-def to_utc(s, later=False):
-    """Eastern wall-clock strings to UTC; in the repeated hour the first reading unless later"""
-    t = pd.to_datetime(s)
-    a = t + pd.Timedelta(hours=4)
-    b = t + pd.Timedelta(hours=5)
-    first = a.where(a < FALL, b)
-    if not later:
-        return first
-    return b.where((a < FALL) & (b >= FALL), first)
+def load():
+    reg = json.load(open(os.path.join(TARGET, "provider_numbers.json")))
+    ours = [p["provider_number"] for p in reg["provider_numbers"]]
+    names = {p["provider_number"]: p["program"] for p in reg["provider_numbers"]}
+    ext = []
+    with open(os.path.join(TARGET, "medicare_hospice_benefit_periods_20270105.txt")) as f:
+        for line in f:
+            if line[0] != "D":
+                continue
+            ext.append(dict(mbi=line[1:12], bp=int(line[12:15]), elect=d(line[15:23]), ccn=line[23:29], start=d(line[29:37]),
+                            end=d(line[37:45]), days=int(line[45:49]), dod=d(line[49:57])))
+    cw = {r["hicn"]: r["mbi"] for r in csv.DictReader(open(os.path.join(TARGET, "hicn_mbi_crosswalk.csv")))}
+    grp = {r["icd10_code"]: r["census_group"] for r in csv.DictReader(open(os.path.join(TARGET, "diagnosis_groups.csv")))}
+    group, when = {}, {}
+    for r in csv.DictReader(open(os.path.join(TARGET, "wendleglen_emr_admissions.csv"))):
+        if r["payer"] != "Medicare":
+            continue
+        m = cw.get(r["medicare_id"], r["medicare_id"])
+        if m not in when or r["admit_date"] >= when[m]:
+            when[m], group[m] = r["admit_date"], grp[r["primary_dx"]]
+    wb = openpyxl.load_workbook(os.path.join(TARGET, "fallowmere_census_register_20250228.xlsx"), read_only=True)
+    ws = wb["Census Export"]
+    for row in ws.iter_rows(min_row=5, values_only=True):
+        if not row or not row[0]:
+            continue
+        acct, mno, dob, sex, admit, disch, status, dx, payer = row[:9]
+        m = cw.get(mno, mno)
+        dx = dx if "." in dx or len(dx) <= 3 else dx[:3] + "." + dx[3:]
+        a = admit.date().isoformat() if hasattr(admit, "date") else str(admit)
+        if m not in when or a > when[m]:
+            when[m], group[m] = a, grp[dx]
+    return ours, names, ext, group
+
+
+def km_s(t, o):
+    t = np.clip(np.asarray(t, int), 0, H)
+    o = np.asarray(o, bool)
+    ev = np.bincount(t[o], minlength=H + 1)
+    ce = np.bincount(t[~o], minlength=H + 1)
+    risk = len(t) - np.concatenate([[0], np.cumsum(ev + ce)[:-1]])
+    return np.cumprod(1 - np.where(risk > 0, ev / np.maximum(risk, 1), 0.0))
+
+
+def resid(S, e):
+    e = int(min(max(e, 0), H))
+    base = S[e - 1] if e > 0 else 1.0
+    return float(S[e:].sum() / base) if base > 0 else 0.0
+
+
+def cif(rows, kind):
+    t = np.array([min(max(int(x), 0), H) for x, _ in rows])
+    k = np.array([y for _, y in rows])
+    a = np.bincount(t[k == kind], minlength=H + 1)
+    b = np.bincount(t[(k != kind) & (k != "cen")], minlength=H + 1)
+    c = np.bincount(t[k == "cen"], minlength=H + 1)
+    risk = len(t) - np.concatenate([[0], np.cumsum(a + b + c)[:-1]])
+    s, f = 1.0, 0.0
+    S, F = np.ones(H + 1), np.zeros(H + 1)
+    for i in range(H + 1):
+        if risk[i] > 0:
+            f += s * a[i] / risk[i]
+            s *= 1 - (a[i] + b[i]) / risk[i]
+        S[i], F[i] = s, f
+    return S, F
+
+
+def rate_sheet():
+    """The FY2026 rates and labor shares, each checked against the rate sheet's printed table."""
+    from pdfminer.high_level import extract_text
+    text = " ".join(extract_text(os.path.join(TARGET, "fy2026_hospice_payment_rates.pdf")).split())
+    printed = ["230.83", "181.94", "69.76", "532.48", "1,199.86", "66.0%", "75.2%", "61.0%", "63.5%"]
+    missing = [v for v in printed if v not in text]
+    assert not missing, "rate sheet lacks %s" % missing
+    return ({"R_HI": 230.83, "R_LO": 181.94, "C": 69.76, "I": 532.48, "G": 1199.86},
+            {"R": 0.660, "C": 0.752, "I": 0.610, "G": 0.635})
+
+
+def routine_count(ext):
+    """Each beneficiary's day -> position in the routine home care count: every day of hospice care at any hospice,
+    the count running on across a gap of 60 days or fewer between stays (the rate sheet)."""
+    by = collections.defaultdict(list)
+    for r in ext:
+        by[r["mbi"]].append((n(r["start"]), r["days"]))
+    out = {}
+    for m, periods in by.items():
+        idx, cnt, prev = {}, 0, None
+        for s0, k in sorted(periods):
+            if prev is not None and s0 - prev > 60:
+                cnt = 0
+            for day in range(s0, s0 + k):
+                cnt += 1
+                idx[day] = cnt
+            prev = s0 + k
+        out[m] = idx
+    return out
+
+
+def price(days, rates, labor, wi, idx):
+    fixed = lab = 0.0
+    for day, lv, q in days:
+        if lv == "C":
+            pay = rates["C"] * q / 4.0
+        elif lv == "R":
+            pay = rates["R_HI"] if idx.get(day, 1) <= 60 else rates["R_LO"]
+        else:
+            pay = rates[lv]
+        fixed += pay * (1 - labor[lv])
+        lab += pay * labor[lv]
+    return round(fixed + lab * wi, 2)
 
 
 def main():
-    fig = json.load(open(os.path.join(HERE, "figures.json")))
-    st = pd.read_excel(os.path.join(T, "wellhaven_bike_share_station_list.xlsx"), sheet_name="Stations")
-    city = {int(r["Feed station ID"]): int(str(r["Station"])[2:]) for _, r in st.iterrows()}
-    name = {int(str(r["Station"])[2:]): r["Name"] for _, r in st.iterrows()}
-    nos = sorted(name)
-
-    # ------------------------------------------------------------------------------------------ the records
-    tr = pd.read_csv(os.path.join(T, "northlane_trips_2026q4.csv"))
-    n0 = len(tr)
-    tr = tr.drop_duplicates()
-    say("the trips' repeated rows dropped (%d of %d)" % (n0 - len(tr), n0), n0 - len(tr) > 3000 and tr.trip_id.is_unique)
-    a1, a2 = to_utc(tr.start_time), to_utc(tr.start_time, True)
-    b1, b2 = to_utc(tr.end_time), to_utc(tr.end_time, True)
-    dur = pd.to_timedelta(tr.duration_s, unit="s")
-    start = a1.copy()
-    end = b1.copy()
-    for (x, y) in ((a1, b1), (a1, b2), (a2, b1), (a2, b2)):
-        m = (y - x) == dur
-        start = start.where(~m, x)
-        end = end.where(~m, y)
-    say("every trip's start and end resolve on its duration", ((end - start) == dur).all())
-    mv = pd.read_csv(os.path.join(T, "northlane_fleet_moves_2026q4.csv"))
-    mv["t"] = to_utc(mv.logged_at)
-    mv["bike_no"] = mv.bike.str.replace("WHB-", "", regex=False).astype(int)
-    ev = pd.concat([
-        pd.DataFrame({"bike": tr.bike_id.values, "t": start.values, "o": 2, "kind": "rent", "s": tr.start_station_id.values}),
-        pd.DataFrame({"bike": tr.bike_id.values, "t": end.values, "o": 1, "kind": "dock", "s": tr.end_station_id.values}),
-        pd.DataFrame({"bike": mv.bike_no.values, "t": mv.t.values, "o": np.where(mv.action == "Pick up", 0, 1),
-                      "kind": np.where(mv.action == "Pick up", "pickup", "drop"), "s": mv.station_id.values}),
-    ], ignore_index=True)
-    ev["k"] = np.arange(len(ev))
-    ev = ev.sort_values(["bike", "t", "o", "k"]).reset_index(drop=True)
-    origin = pd.Timestamp("2026-09-24 00:00")
-    extract = pd.Timestamp("2027-01-11 01:00")
-    grid = int((extract - origin).total_seconds() // 60) + 2
-
-    def idx(t):
-        s = (t - origin).total_seconds()
-        k = int(s // 60)
-        return k if s == k * 60 else k + 1
-
-    spells = []
-    for b, g in ev.groupby("bike", sort=False):
-        rows = list(zip(g.t, g.kind, g.s))
-        cur, a = (rows[0][2], origin) if rows[0][1] in ("rent", "pickup") else (None, None)
-        for i, (t, kind, s) in enumerate(rows):
-            if kind in ("rent", "pickup"):
-                if cur is not None:
-                    back = None
-                    if kind == "pickup":
-                        back = next((x[0] for x in rows[i + 1:] if x[1] in ("drop", "dock")), None)
-                    spells.append((b, cur, a, t, kind, back))
-                cur, a = None, None
-            else:
-                cur, a = s, t
-        if cur is not None:
-            spells.append((b, cur, a, None, "open", None))
-    starts = defaultdict(list)
-    for s, t in zip(tr.start_station_id, start):
-        starts[s].append(t)
-    for s in starts:
-        starts[s] = np.array(sorted(starts[s]), dtype="datetime64[ns]")
-
-    def passed(s, a, z):
-        arr = starts.get(s)
-        if arr is None or z is None:
-            return False
-        lo = np.searchsorted(arr, np.datetime64(a), side="right")
-        hi = np.searchsorted(arr, np.datetime64(z), side="left")
-        return hi > lo
-
-    def broken(x):
-        b, s, a, z, kind, back = x
-        if kind != "pickup":
-            return False
-        if back is not None and (back - z) < pd.Timedelta(hours=20):
-            return False
-        return passed(s, a, z)
-
-    work = {no: np.zeros(grid + 1, dtype=np.int32) for no in nos}
-    for x in spells:
-        if broken(x):
+    ours, names, ext, group = load()
+    own = set(ours)
+    stays = collections.defaultdict(list)
+    tmp = collections.defaultdict(list)
+    for r in ext:
+        tmp[(r["mbi"], r["elect"])].append(r)
+    dod = {}
+    for (m, e), rows in tmp.items():
+        rows.sort(key=lambda r: r["start"])
+        days = sum(r["days"] for r in rows)
+        s = n(e)
+        dd = rows[0]["dod"]
+        dod[m] = n(dd) if dd else None
+        is_open = rows[-1]["end"] is None
+        died = (not is_open) and dd is not None and n(dd) == s + days - 1
+        stays[m].append(dict(s=s, n=days, e=s + days, open=is_open, died=died, first=rows[0]["ccn"], last=rows[-1]["ccn"],
+                             segs=[(r["ccn"], n(r["start"]), r["days"]) for r in rows]))
+    for m in stays:
+        stays[m].sort(key=lambda x: x["s"])
+    # experience by (provider number, group)
+    st_rows, lv_rows, rt_rows = collections.defaultdict(list), collections.defaultdict(list), collections.defaultdict(list)
+    for m, lst in stays.items():
+        g = group.get(m)
+        if g is None:
             continue
-        b, s, a, z, kind, back = x
-        i, j = idx(a), (idx(z) if z is not None else grid)
-        if j > i:
-            work[city[s]][i] += 1
-            work[city[s]][j] -= 1
-    work = {no: np.cumsum(v)[:grid] for no, v in work.items()}
-
-    def service(mo):
-        out = []
-        d = dt.date(2026, mo, 1)
-        while d.month == mo:
-            a = to_utc(pd.Series([str(dt.datetime(d.year, d.month, d.day, 6, 0))])).iloc[0]
-            b = to_utc(pd.Series([str(dt.datetime(d.year, d.month, d.day) + dt.timedelta(days=1))])).iloc[0]
-            out.append(np.arange(idx(a), idx(b)))
-            d += dt.timedelta(days=1)
-        return np.concatenate(out)
-    svc = {mo: service(mo) for mo in (10, 11, 12)}
-    av = {no: {mo: 100.0 * float((work[no][svc[mo]] >= 1).mean()) for mo in svc} for no in nos}
-    pr = sorted(no for no in nos if min(av[no].values()) < 90)
-    gs = fig["stations"]
-    say("the priority stations recompute: %s" % pr,
-        ["W-%02d %s" % (no, name[no]) for no in pr] == fig["call"]["priority"])
-    say("each station's lowest month recomputes in whole per cent",
-        all(int(half_up(min(av[no].values()))) == gs["W-%02d" % no]["lowest"] for no in nos))
-    clear = sorted((min(av[no].values()), no) for no in nos if min(av[no].values()) >= 90)
-    v, nb = clear[0]
-    say("the nearest station above the line and its margin recompute (W-%02d, %.1f)" % (nb, half_up(v - 90, 1)),
-        fig["components"]["nearest"]["station"] == "W-%02d" % nb and
-        abs(fig["components"]["nearest"]["margin_points"] - half_up(v - 90, 1)) < 1e-9)
-
-    # the default: the archive's available count taken as the bikes in working order
-    ss = pd.read_csv(os.path.join(T, "wellhaven_station_status_archive_2026q4.csv"))
-    ss["k"] = ((ss.polled_at - int((origin - pd.Timestamp("1970-01-01")).total_seconds())) // 60).astype(int)
-    feed = {no: np.zeros(grid, dtype=np.int32) for no in nos}
-    first = ss.groupby("station_id").k.min().to_dict()
-    for sid, g in ss.groupby("station_id"):
-        later = [first[x] for x in first if x != sid and city[x] == city[sid] and first[x] > first[sid]]
-        stop = min(later) if later else grid
-        ks = g.k.values
-        vs = g.num_bikes_available.values
-        for i in range(len(ks)):
-            hi = min(ks[i + 1] if i + 1 < len(ks) else grid, stop)
-            if hi > ks[i]:
-                feed[city[sid]][ks[i]:hi] += vs[i]
-    dav = {no: {mo: 100.0 * float((feed[no][svc[mo]] >= 1).mean()) for mo in svc} for no in nos}
-    dpr = sorted(no for no in nos if min(dav[no].values()) < 90)
-    say("the default path (the feed's available count) recomputes to W-16 alone", dpr == [16])
-
-    # ------------------------------------------------------------------------------------------ ask A
-    sa = pd.read_csv(os.path.join(T, "paystation_sales_2026q4.csv"))
-    wo = pd.read_excel(os.path.join(T, "paystation_work_orders_2026q4.xlsx"))
-    sw = wo[wo["Work type"].str.startswith("Card terminal")].sort_values("Opened")
-    hist = defaultdict(list)
-    for _, r in sw.iterrows():
-        no = int(r["Pay station"][2:])
-        if not hist[r["Terminal removed"]]:
-            hist[r["Terminal removed"]].append((pd.Timestamp.min, no))
-        hist[r["Terminal installed"]].append((r["Closed"], no))
-    sa["u"] = pd.to_datetime(sa.sold_at, utc=True).dt.tz_convert(None)
-    off = np.where(sa.u < FALL, 4, 5)
-    sa["loc"] = sa.u - pd.to_timedelta(off, unit="h")
-    voided = set(sa.loc[sa.transaction == "VOID", "original_sale"])
-    q = sa[(sa.transaction == "SALE") & (~sa.sale_id.isin(voided)) & (sa["loc"] >= "2026-10-01") & (sa["loc"] < "2027-01-01")]
-
-    def where(r):
-        found = None
-        for since, no in hist[r["terminal"]]:
-            if since <= r["loc"]:
-                found = no
-        return found
-    q = q.assign(no=q.apply(where, axis=1))
-    say("every fourth-quarter sale has a pay station from its terminal's history", q.no.notna().all())
-    tot = q.groupby("no").amount.sum().round(2).to_dict()
-    say("each station's pay-station card sales recompute to the cent",
-        all(abs(tot.get(no, 0.0) - gs["W-%02d" % no]["sales_cad"]) < 0.005 for no in nos))
-
-    # ------------------------------------------------------------------------------------------ ask B
-    al = pd.read_csv(os.path.join(T, "paystation_alarm_log_2026q4.csv"))
-    al["u"] = pd.to_datetime(al.event_time, utc=True).dt.tz_convert(None)
-    al = al.sort_values(["pay_station", "u", "event_id"])
-    windows = []
-    d = dt.date(2026, 10, 1)
-    while d <= dt.date(2026, 12, 31):
-        a = to_utc(pd.Series([str(dt.datetime(d.year, d.month, d.day, 6, 0))])).iloc[0]
-        b = to_utc(pd.Series([str(dt.datetime(d.year, d.month, d.day) + dt.timedelta(days=1))])).iloc[0]
-        windows.append((a, b))
-        d += dt.timedelta(days=1)
-    clears = {"COMMS_RESTORED": "COMMS_LOST", "READER_OK": "READER_FAULT"}
-    hours = {}
-    for ps, g in al.groupby("pay_station"):
-        spans, open_ = [], {}
-        for t, e in zip(g.u, g.event):
-            if e == "RESTART":
-                spans += [(a, t) for a in open_.values()]
-                open_ = {}
-            elif e in ("COMMS_LOST", "READER_FAULT"):
-                open_.setdefault(e, t)
-            elif e in clears and clears[e] in open_:
-                spans.append((open_.pop(clears[e]), t))
-        spans += [(a, extract) for a in open_.values()]
-        merged = []
-        for a, b in sorted(spans):
-            if merged and a <= merged[-1][1]:
-                merged[-1] = (merged[-1][0], max(merged[-1][1], b))
+        for k, x in enumerate(lst):
+            if x["s"] >= CLOSE:
+                continue
+            if x["first"] in own and x["s"] >= 0:
+                st_rows[(x["first"], g)].append((x["n"], "cen" if x["open"] else ("death" if x["died"] else "live")))
+            if x["open"] or x["died"] or x["last"] not in own or x["e"] < 0 or x["e"] > CLOSE:
+                continue
+            nx = lst[k + 1] if k + 1 < len(lst) and lst[k + 1]["s"] < CLOSE else None
+            if nx:
+                lv_rows[(x["last"], g)].append((nx["s"] - x["e"], "ret"))
+                rt_rows[(x["last"], g)].append((nx["n"], not nx["open"]))
+            elif dod[m] is not None and dod[m] <= CLOSE:
+                lv_rows[(x["last"], g)].append((dod[m] - x["e"], "death"))
             else:
-                merged.append((a, b))
-        s = 0.0
-        for a, b in merged:
-            for x, y in windows:
-                lo, hi = max(a, x), min(b, y)
-                if hi > lo:
-                    s += (hi - lo).total_seconds()
-        hours[int(ps[2:])] = s / 3600.0
-    say("each station's service hours without card payments recompute in whole hours",
-        all(int(half_up(hours[no])) == gs["W-%02d" % no]["hours_no_card"] for no in nos))
+                lv_rows[(x["last"], g)].append((CLOSE - x["e"], "cen"))
+    cache = {}
 
-    # ------------------------------------------------------------------------------------------ the golden files
-    wb = pd.read_excel(os.path.join(GOLD, "priority_stations_2027q1.xlsx"), sheet_name="Priority stations", header=3)
-    wb = wb[wb["Station"].astype(str).str.match(r"W-\d\d$")]
-    say("the golden workbook carries every station's lowest month and designation",
-        all(int(r["Lowest month (%)"]) == gs[r["Station"]]["lowest"] and (r["Priority station for Q1 2027"] == "Yes")
-            == gs[r["Station"]]["priority"] for _, r in wb.iterrows()) and len(wb) == 24)
-    ps = pd.read_excel(os.path.join(GOLD, "priority_stations_2027q1.xlsx"), sheet_name="Pay stations", header=3)
-    ps = ps[ps["Station"].astype(str).str.match(r"W-\d\d$")]
-    say("the golden workbook carries every station's sales and hours",
-        all(abs(r["Card sales (CAD)"] - gs[r["Station"]]["sales_cad"]) < 0.005 and
-            int(r["Service hours unable to take a card"]) == gs[r["Station"]]["hours_no_card"] for _, r in ps.iterrows()))
-    page = open(os.path.join(GOLD, "station_availability_2026q4.html"), encoding="utf-8").read()
-    say("the golden page names the priority stations' count and carries an inline chart",
-        "<svg" in page and "90 per cent" in page and page.count('class="p"') == len(pr))
-    print("\n%d FAIL" % len(FAILS))
-    return 1 if FAILS else 0
+    def model(key):
+        if key in cache:
+            return cache[key]
+        sr = st_rows.get(key, [])
+        S = km_s([a for a, _ in sr], [b != "cen" for _, b in sr])
+        Ss, Fl = cif([(a, "ret" if b == "live" else b) for a, b in sr], "ret")
+        Sr, Fr = cif(lv_rows.get(key, []), "ret")
+        rr = rt_rows.get(key, [])
+        A = float(km_s([a for a, _ in rr], [b for _, b in rr]).sum()) if rr else 0.0
+        Sret = km_s([a for a, _ in rr], [b for _, b in rr]) if rr else np.zeros(H + 1)
+        cache[key] = (S, Ss, Fl, Sr, Fr, A, Sret)
+        return cache[key]
+
+    counts = collections.defaultdict(float)
+    for m, lst in stays.items():
+        fy, kn, home = {}, 0, None
+        for x in lst:
+            if x["s"] >= CLOSE:
+                continue
+            kn += min(x["n"], CLOSE - x["s"])
+            for ccn, s, k in x["segs"]:
+                if ccn in own:
+                    a, z = max(s, FY0), min(s + k, FY1)
+                    if z > a:
+                        fy[ccn] = fy.get(ccn, 0) + z - a
+                    if s < CLOSE:
+                        home = ccn
+        if not fy:
+            continue
+        S, Ss, Fl, Sr, Fr, A, Sret = model((home, group[m]))
+        last = [x for x in lst if x["s"] < CLOSE][-1]
+        if last["open"]:
+            e = CLOSE - last["s"]
+            if last["first"] not in own:
+                fut = resid(Sret, e)
+            else:
+                ei = min(e, H)
+                pl = (Fl[-1] - Fl[ei]) / Ss[ei] if Ss[ei] > 1e-12 else 0.0
+                fut = resid(S, e) + pl * Fr[-1] * A
+        elif last["died"] or (dod[m] is not None and dod[m] <= CLOSE - 1):
+            fut = 0.0
+        else:
+            s_out = min(CLOSE - last["e"], H)
+            p = (Fr[-1] - Fr[s_out]) / Sr[s_out] if Sr[s_out] > 1e-12 else 0.0
+            fut = p * A
+        for ccn, dd in fy.items():
+            counts[ccn] += dd / (kn + fut)
+    # payments and the repayment
+    pay = collections.defaultdict(float)
+    paid_keys = collections.defaultdict(int)
+    for r in csv.DictReader(open(os.path.join(TARGET, "remittance_register_fy2026.csv"))):
+        if r["record_type"] != "CLP":
+            continue
+        pay[r["provider_number"]] += float(r["paid_amount"]) + float(r["adj_carc_253"])
+        paid_keys[r["patient_control_no"]] += 1 if r["claim_status"] == "1" else -1
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    bad = []
+    inv = {v: k for k, v in figs["provider_numbers"].items()}
+    fal = figs["provider_numbers"]["FAL"]
+    total = 0.0
+    for ccn in ours:
+        rep = max(0.0, 0.98 * (pay[ccn] - counts[ccn] * CAP))
+        total += rep
+        want = figs["repayment_usd"][inv[ccn]]
+        if abs(rep - want) > 1.0:
+            bad.append("%s repayment %.2f against %.2f" % (inv[ccn], rep, want))
+        if abs(pay[ccn] - figs["payments_usd"][inv[ccn]]) > 0.05:
+            bad.append("%s payments %.2f against %.2f" % (inv[ccn], pay[ccn], figs["payments_usd"][inv[ccn]]))
+    if round(total / 1e6 + 1e-12, 1) != figs["call"]["total_musd"]:
+        bad.append("total %.1f" % (total / 1e6))
+    # ask A: the inpatient days Medicare paid for on the versions the register shows paid and not reversed, each
+    # version repriced at its billed levels from the rate sheet and its provider number's wage index; where the payment
+    # falls short, the count of its last general inpatient and respite days paid at the routine rate that closes the gap
+    rates, labor = rate_sheet()
+    wi = {p["provider_number"]: p["fy2026_wage_index_applied"]
+          for p in json.load(open(os.path.join(TARGET, "provider_numbers.json")))["provider_numbers"]}
+    tier = routine_count(ext)
+    remitted, net = {}, collections.defaultdict(float)
+    for r in csv.DictReader(open(os.path.join(TARGET, "remittance_register_fy2026.csv"))):
+        if r["record_type"] != "CLP":
+            continue
+        amt = float(r["paid_amount"]) + float(r["adj_carc_253"])
+        net[r["patient_control_no"]] += amt
+        if r["claim_status"] == "1":
+            remitted[r["patient_control_no"]] = amt
+    lines = collections.defaultdict(list)
+    for r in csv.DictReader(open(os.path.join(TARGET, "wendleglen_claim_lines_fy2026.csv"))):
+        lines[r["claim_key"]].append(r)
+    gip, irc = collections.Counter(), collections.Counter()
+    unexplained = 0
+    for key, rows in lines.items():
+        if net.get(key, 0.0) <= 0.005:
+            continue
+        ccn, mbi = rows[0]["provider_number"], rows[0]["mbi"]
+        days = []
+        for r in rows:
+            first = n(dt.date.fromisoformat(r["line_date"]))
+            lv = {"0651": "R", "0652": "C", "0655": "I", "0656": "G"}[r["revenue_code"]]
+            if lv == "C":
+                days.append((first, "C", int(r["units"])))
+            else:
+                days += [(first + k, lv, 0) for k in range(int(r["units"]))]
+        days.sort()
+        want = remitted[key]
+        g_n = sum(1 for d in days if d[1] == "G")
+        i_n = sum(1 for d in days if d[1] == "I")
+        found = None
+        for kg in range(g_n + 1):
+            for ki in range(i_n + 1):
+                adj = list(days)
+                for lv, k in (("G", kg), ("I", ki)):
+                    for j in ([j for j, d in enumerate(adj) if d[1] == lv][-k:] if k else []):
+                        adj[j] = (adj[j][0], "R", 0)
+                if abs(price(adj, rates, labor, wi[ccn], tier.get(mbi, {})) - want) < 0.02:
+                    found = (kg, ki)
+                    break
+            if found:
+                break
+        if found is None:
+            unexplained += 1
+            found = (0, 0)
+        gip[ccn] += g_n - found[0]
+        irc[ccn] += i_n - found[1]
+    if unexplained:
+        bad.append("%d paid claims whose payment no count of routine-paid days explains" % unexplained)
+    print("verify: Fallowmere USD %.2f (%.1f), total %.1f, ask A %d provider numbers checked" % (
+        max(0.0, 0.98 * (pay[fal] - counts[fal] * CAP)), max(0.0, 0.98 * (pay[fal] - counts[fal] * CAP)) / 1e6,
+        total / 1e6, len(ours)))
+    for b in bad:
+        print("MISMATCH", b)
+    print("verify: %s" % ("PASS" if not bad else "FAIL"))
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

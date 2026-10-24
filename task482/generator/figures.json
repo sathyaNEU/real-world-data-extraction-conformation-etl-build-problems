@@ -1,607 +1,225 @@
 {
- "_unrounded": {
-  "availability": {
-   "W-01": {
-    "dec": 99.841697,
-    "nov": 98.104938,
-    "oct": 94.31601
-   },
-   "W-02": {
-    "dec": 99.602748,
-    "nov": 96.731481,
-    "oct": 88.210872
-   },
-   "W-03": {
-    "dec": 99.333931,
-    "nov": 97.771605,
-    "oct": 94.531063
-   },
-   "W-04": {
-    "dec": 99.775986,
-    "nov": 96.018519,
-    "oct": 93.873955
-   },
-   "W-05": {
-    "dec": 99.256272,
-    "nov": 95.740741,
-    "oct": 90.875149
-   },
-   "W-06": {
-    "dec": 99.498208,
-    "nov": 96.907407,
-    "oct": 95.564516
-   },
-   "W-07": {
-    "dec": 99.295102,
-    "nov": 96.061728,
-    "oct": 94.73417
-   },
-   "W-08": {
-    "dec": 100.0,
-    "nov": 98.601852,
-    "oct": 94.746117
-   },
-   "W-09": {
-    "dec": 99.740143,
-    "nov": 95.895062,
-    "oct": 90.68399
-   },
-   "W-10": {
-    "dec": 99.796894,
-    "nov": 98.231481,
-    "oct": 97.204301
-   },
-   "W-11": {
-    "dec": 99.360812,
-    "nov": 96.657407,
-    "oct": 97.789725
-   },
-   "W-12": {
-    "dec": 98.07049,
-    "nov": 94.345679,
-    "oct": 87.65233
-   },
-   "W-13": {
-    "dec": 97.368578,
-    "nov": 95.567901,
-    "oct": 91.842891
-   },
-   "W-14": {
-    "dec": 99.904421,
-    "nov": 94.848765,
-    "oct": 91.771207
-   },
-   "W-15": {
-    "dec": 100.0,
-    "nov": 97.861111,
-    "oct": 94.758065
-   },
-   "W-16": {
-    "dec": 98.378136,
-    "nov": 92.953704,
-    "oct": 85.755675
-   },
-   "W-17": {
-    "dec": 98.921744,
-    "nov": 95.080247,
-    "oct": 91.239546
-   },
-   "W-18": {
-    "dec": 98.897849,
-    "nov": 95.182099,
-    "oct": 92.882318
-   },
-   "W-19": {
-    "dec": 96.630824,
-    "nov": 93.82716,
-    "oct": 88.100358
-   },
-   "W-20": {
-    "dec": 100.0,
-    "nov": 98.719136,
-    "oct": 94.707288
-   },
-   "W-21": {
-    "dec": 98.781362,
-    "nov": 94.62963,
-    "oct": 92.028076
-   },
-   "W-22": {
-    "dec": 100.0,
-    "nov": 100.0,
-    "oct": 100.0
-   },
-   "W-23": {
-    "dec": 100.0,
-    "nov": 100.0,
-    "oct": 100.0
-   },
-   "W-24": {
-    "dec": 99.868578,
-    "nov": 99.373457,
-    "oct": 99.139785
-   }
+ "ask_a": {
+  "BRK": {
+   "days_of_care": 33464,
+   "gip_days": 837,
+   "respite_days": 69,
+   "share_exact": 2.7074,
+   "share_pct": 2.7
   },
-  "default": {
-   "W-01": {
-    "dec": 99.841697,
-    "nov": 98.91358,
-    "oct": 95.454002
-   },
-   "W-02": {
-    "dec": 99.602748,
-    "nov": 96.731481,
-    "oct": 91.015532
-   },
-   "W-03": {
-    "dec": 99.333931,
-    "nov": 97.771605,
-    "oct": 94.531063
-   },
-   "W-04": {
-    "dec": 99.775986,
-    "nov": 96.169753,
-    "oct": 94.232378
-   },
-   "W-05": {
-    "dec": 99.256272,
-    "nov": 95.740741,
-    "oct": 92.051971
-   },
-   "W-06": {
-    "dec": 99.498208,
-    "nov": 96.907407,
-    "oct": 96.412784
-   },
-   "W-07": {
-    "dec": 99.444444,
-    "nov": 96.200617,
-    "oct": 95.899044
-   },
-   "W-08": {
-    "dec": 100.0,
-    "nov": 98.601852,
-    "oct": 95.528674
-   },
-   "W-09": {
-    "dec": 99.740143,
-    "nov": 96.70679,
-    "oct": 90.68399
-   },
-   "W-10": {
-    "dec": 99.796894,
-    "nov": 98.231481,
-    "oct": 97.258065
-   },
-   "W-11": {
-    "dec": 99.360812,
-    "nov": 96.657407,
-    "oct": 97.822581
-   },
-   "W-12": {
-    "dec": 98.085424,
-    "nov": 95.268519,
-    "oct": 91.789128
-   },
-   "W-13": {
-    "dec": 99.363799,
-    "nov": 97.734568,
-    "oct": 92.368578
-   },
-   "W-14": {
-    "dec": 99.904421,
-    "nov": 96.015432,
-    "oct": 94.474313
-   },
-   "W-15": {
-    "dec": 100.0,
-    "nov": 99.145062,
-    "oct": 94.758065
-   },
-   "W-16": {
-    "dec": 98.378136,
-    "nov": 93.459877,
-    "oct": 87.491039
-   },
-   "W-17": {
-    "dec": 98.921744,
-    "nov": 96.845679,
-    "oct": 93.632019
-   },
-   "W-18": {
-    "dec": 99.761051,
-    "nov": 95.216049,
-    "oct": 92.882318
-   },
-   "W-19": {
-    "dec": 98.862007,
-    "nov": 93.765432,
-    "oct": 92.093787
-   },
-   "W-20": {
-    "dec": 100.0,
-    "nov": 99.506173,
-    "oct": 94.707288
-   },
-   "W-21": {
-    "dec": 98.781362,
-    "nov": 95.91358,
-    "oct": 92.028076
-   },
-   "W-22": {
-    "dec": 100.0,
-    "nov": 100.0,
-    "oct": 100.0
-   },
-   "W-23": {
-    "dec": 100.0,
-    "nov": 100.0,
-    "oct": 100.0
-   },
-   "W-24": {
-    "dec": 99.868578,
-    "nov": 99.373457,
-    "oct": 99.139785
-   }
+  "COR": {
+   "days_of_care": 47732,
+   "gip_days": 1280,
+   "respite_days": 158,
+   "share_exact": 3.0127,
+   "share_pct": 3.0
   },
-  "hours_no_card": {
-   "W-01": 86.1464,
-   "W-02": 6.2225,
-   "W-03": 67.1453,
-   "W-04": 86.975,
-   "W-05": 70.5811,
-   "W-06": 22.69,
-   "W-07": 65.7875,
-   "W-08": 65.8419,
-   "W-09": 47.2494,
-   "W-10": 45.7189,
-   "W-11": 9.9444,
-   "W-12": 30.1367,
-   "W-13": 35.6808,
-   "W-14": 52.6497,
-   "W-15": 99.3797,
-   "W-16": 51.0811,
-   "W-17": 37.0636,
-   "W-18": 43.8703,
-   "W-19": 104.9172,
-   "W-20": 52.2378,
-   "W-21": 77.6089,
-   "W-22": 55.2267,
-   "W-23": 5.9008,
-   "W-24": 67.2992
+  "DUN": {
+   "days_of_care": 46483,
+   "gip_days": 716,
+   "respite_days": 159,
+   "share_exact": 1.8824,
+   "share_pct": 1.9
   },
-  "margin": 0.68399
+  "FAL": {
+   "days_of_care": 28193,
+   "gip_days": 327,
+   "respite_days": 72,
+   "share_exact": 1.4152,
+   "share_pct": 1.4
+  },
+  "LIN": {
+   "days_of_care": 31184,
+   "gip_days": 195,
+   "respite_days": 60,
+   "share_exact": 0.8177,
+   "share_pct": 0.8
+  },
+  "PEN": {
+   "days_of_care": 38790,
+   "gip_days": 1047,
+   "respite_days": 151,
+   "share_exact": 3.0884,
+   "share_pct": 3.1
+  },
+  "SAL": {
+   "days_of_care": 58541,
+   "gip_days": 478,
+   "respite_days": 157,
+   "share_exact": 1.0847,
+   "share_pct": 1.1
+  },
+  "WEX": {
+   "days_of_care": 33589,
+   "gip_days": 413,
+   "respite_days": 93,
+   "share_exact": 1.5064,
+   "share_pct": 1.5
+  }
  },
  "call": {
-  "count": 4,
-  "of": 24,
-  "priority": [
-   "W-02 Queen and Albert",
-   "W-12 Maple Grove",
-   "W-16 Birch Hill",
-   "W-19 Willow Crescent"
-  ]
- },
- "components": {
-  "nearest": {
-   "availability": 91,
-   "margin_points": 0.7,
-   "month": "October",
-   "name": "Science Quad",
-   "station": "W-09"
-  }
- },
- "default": {
-  "count": 1,
-  "lowest": {
-   "W-01": 95,
-   "W-02": 91,
-   "W-03": 95,
-   "W-04": 94,
-   "W-05": 92,
-   "W-06": 96,
-   "W-07": 96,
-   "W-08": 96,
-   "W-09": 91,
-   "W-10": 97,
-   "W-11": 97,
-   "W-12": 92,
-   "W-13": 92,
-   "W-14": 94,
-   "W-15": 95,
-   "W-16": 87,
-   "W-17": 94,
-   "W-18": 93,
-   "W-19": 92,
-   "W-20": 95,
-   "W-21": 92,
-   "W-22": 100,
-   "W-23": 100,
-   "W-24": 99
-  },
-  "priority": [
-   "W-16 Birch Hill"
-  ]
- },
- "stated": {
-  "fares_cad": {
-   "day": 11.5,
-   "single": 3.25
-  },
-  "linden_avenue_feed_ids": [
-   117,
-   125
+  "owing": [
+   "FAL"
   ],
-  "line_per_cent": 90,
-  "next_quarter": "Q1 2027",
-  "notice_by": "15 January 2027",
-  "quarter": "Q4 2026",
-  "service_hours": "6:00 to midnight Eastern"
+  "total_musd": 0.3,
+  "total_usd": 285111.29
  },
- "stations": {
-  "W-01": {
-   "dec": 99.8,
-   "hours_no_card": 86,
-   "lowest": 94,
-   "lowest_month": "October",
-   "name": "Market Square",
-   "nov": 98.1,
-   "oct": 94.3,
-   "priority": false,
-   "sales_cad": 1660.25
+ "cap_amount": 35361.44,
+ "cap_usd": {
+  "BRK": 7522897.71,
+  "COR": 19031045.16,
+  "DUN": 12375665.55,
+  "FAL": 6345838.41,
+  "LIN": 6214481.25,
+  "PEN": 18648102.93,
+  "SAL": 12554986.06,
+  "WEX": 7422366.22
+ },
+ "cohort_n": 3540,
+ "count": {
+  "BRK": 212.743,
+  "COR": 538.1864,
+  "DUN": 349.9763,
+  "FAL": 179.4564,
+  "LIN": 175.7417,
+  "PEN": 527.357,
+  "SAL": 355.0474,
+  "WEX": 209.9
+ },
+ "dates": {
+  "close": [
+   31,
+   "December",
+   2026
+  ],
+  "experience_from": [
+   1,
+   "October",
+   2016
+  ]
+ },
+ "extract_stays": 30085,
+ "fal_fy_days": 28193,
+ "fal_n": 304,
+ "fal_states": {
+  "dead": 198,
+  "open": 62,
+  "out": 44
+ },
+ "files": {
+  "budget": "fy2027_operating_budget.xlsx",
+  "census": "census_report_december_2026.pdf",
+  "claims": "wendleglen_claim_lines_fy2026.csv",
+  "crosswalk": "hicn_mbi_crosswalk.csv",
+  "dx": "diagnosis_groups.csv",
+  "emr": "wendleglen_emr_admissions.csv",
+  "extract": "medicare_hospice_benefit_periods_20270105.txt",
+  "legacy": "fallowmere_census_register_20250228.xlsx",
+  "notes": "revenue_cycle_file_notes.pdf",
+  "policy": "wendleglen_cap_liability_policy.docx",
+  "quality": "hospice_quality_measures_2026.xlsx",
+  "rates": "fy2026_hospice_payment_rates.pdf",
+  "register": "provider_numbers.json",
+  "remit": "remittance_register_fy2026.csv"
+ },
+ "history": {
+  "alive_share": {
+   "BRK": 0.1396,
+   "COR": 0.0834,
+   "DUN": 0.1692,
+   "FAL": 0.4007,
+   "LIN": 0.1439,
+   "PEN": 0.0808,
+   "SAL": 0.1282,
+   "WEX": 0.1378
   },
-  "W-02": {
-   "dec": 99.6,
-   "hours_no_card": 6,
-   "lowest": 88,
-   "lowest_month": "October",
-   "name": "Queen and Albert",
-   "nov": 96.7,
-   "oct": 88.2,
-   "priority": true,
-   "sales_cad": 1913.0
-  },
-  "W-03": {
-   "dec": 99.3,
-   "hours_no_card": 67,
-   "lowest": 95,
-   "lowest_month": "October",
-   "name": "City Hall",
-   "nov": 97.8,
-   "oct": 94.5,
-   "priority": false,
-   "sales_cad": 1573.5
-  },
-  "W-04": {
-   "dec": 99.8,
-   "hours_no_card": 87,
-   "lowest": 94,
-   "lowest_month": "October",
-   "name": "Wharf Street",
-   "nov": 96.0,
-   "oct": 93.9,
-   "priority": false,
-   "sales_cad": 1516.5
-  },
-  "W-05": {
-   "dec": 99.3,
-   "hours_no_card": 71,
-   "lowest": 91,
-   "lowest_month": "October",
-   "name": "Courthouse",
-   "nov": 95.7,
-   "oct": 90.9,
-   "priority": false,
-   "sales_cad": 1580.5
-  },
-  "W-06": {
-   "dec": 99.5,
-   "hours_no_card": 23,
-   "lowest": 96,
-   "lowest_month": "October",
-   "name": "Library Plaza",
-   "nov": 96.9,
-   "oct": 95.6,
-   "priority": false,
-   "sales_cad": 1630.75
-  },
-  "W-07": {
-   "dec": 99.3,
-   "hours_no_card": 66,
-   "lowest": 95,
-   "lowest_month": "October",
-   "name": "General Hospital",
-   "nov": 96.1,
-   "oct": 94.7,
-   "priority": false,
-   "sales_cad": 1634.5
-  },
-  "W-08": {
-   "dec": 100.0,
-   "hours_no_card": 66,
-   "lowest": 95,
-   "lowest_month": "October",
-   "name": "University Commons",
-   "nov": 98.6,
-   "oct": 94.7,
-   "priority": false,
-   "sales_cad": 1184.5
-  },
-  "W-09": {
-   "dec": 99.7,
-   "hours_no_card": 47,
-   "lowest": 91,
-   "lowest_month": "October",
-   "name": "Science Quad",
-   "nov": 95.9,
-   "oct": 90.7,
-   "priority": false,
-   "sales_cad": 854.5
-  },
-  "W-10": {
-   "dec": 99.8,
-   "hours_no_card": 46,
-   "lowest": 97,
-   "lowest_month": "October",
-   "name": "Central Station",
-   "nov": 98.2,
-   "oct": 97.2,
-   "priority": false,
-   "sales_cad": 1994.0
-  },
-  "W-11": {
-   "dec": 99.4,
-   "hours_no_card": 10,
-   "lowest": 97,
-   "lowest_month": "November",
-   "name": "Eastgate Terminal",
-   "nov": 96.7,
-   "oct": 97.8,
-   "priority": false,
-   "sales_cad": 1897.0
-  },
-  "W-12": {
-   "dec": 98.1,
-   "hours_no_card": 30,
-   "lowest": 88,
-   "lowest_month": "October",
-   "name": "Maple Grove",
-   "nov": 94.3,
-   "oct": 87.7,
-   "priority": true,
-   "sales_cad": 1124.25
-  },
-  "W-13": {
-   "dec": 97.4,
-   "hours_no_card": 36,
-   "lowest": 92,
-   "lowest_month": "October",
-   "name": "Elmwood Park",
-   "nov": 95.6,
-   "oct": 91.8,
-   "priority": false,
-   "sales_cad": 967.5
-  },
-  "W-14": {
-   "dec": 99.9,
-   "hours_no_card": 53,
-   "lowest": 92,
-   "lowest_month": "October",
-   "name": "Riverbend",
-   "nov": 94.8,
-   "oct": 91.8,
-   "priority": false,
-   "sales_cad": 900.25
-  },
-  "W-15": {
-   "dec": 100.0,
-   "hours_no_card": 99,
-   "lowest": 95,
-   "lowest_month": "October",
-   "name": "Cedar Heights",
-   "nov": 97.9,
-   "oct": 94.8,
-   "priority": false,
-   "sales_cad": 736.5
-  },
-  "W-16": {
-   "dec": 98.4,
-   "hours_no_card": 51,
-   "lowest": 86,
-   "lowest_month": "October",
-   "name": "Birch Hill",
-   "nov": 93.0,
-   "oct": 85.8,
-   "priority": true,
-   "sales_cad": 1073.0
-  },
-  "W-17": {
-   "dec": 98.9,
-   "hours_no_card": 37,
-   "lowest": 91,
-   "lowest_month": "October",
-   "name": "Linden Avenue",
-   "nov": 95.1,
-   "oct": 91.2,
-   "priority": false,
-   "sales_cad": 791.75
-  },
-  "W-18": {
-   "dec": 98.9,
-   "hours_no_card": 44,
-   "lowest": 93,
-   "lowest_month": "October",
-   "name": "Orchard Lane",
-   "nov": 95.2,
-   "oct": 92.9,
-   "priority": false,
-   "sales_cad": 746.0
-  },
-  "W-19": {
-   "dec": 96.6,
-   "hours_no_card": 105,
-   "lowest": 88,
-   "lowest_month": "October",
-   "name": "Willow Crescent",
-   "nov": 93.8,
-   "oct": 88.1,
-   "priority": true,
-   "sales_cad": 1098.0
-  },
-  "W-20": {
-   "dec": 100.0,
-   "hours_no_card": 52,
-   "lowest": 95,
-   "lowest_month": "October",
-   "name": "Ashdale",
-   "nov": 98.7,
-   "oct": 94.7,
-   "priority": false,
-   "sales_cad": 613.25
-  },
-  "W-21": {
-   "dec": 98.8,
-   "hours_no_card": 78,
-   "lowest": 92,
-   "lowest_month": "October",
-   "name": "Fernwood",
-   "nov": 94.6,
-   "oct": 92.0,
-   "priority": false,
-   "sales_cad": 1127.75
-  },
-  "W-22": {
-   "dec": 100.0,
-   "hours_no_card": 55,
-   "lowest": 100,
-   "lowest_month": "October",
-   "name": "Waterfront Trail",
-   "nov": 100.0,
-   "oct": 100.0,
-   "priority": false,
-   "sales_cad": 866.75
-  },
-  "W-23": {
-   "dec": 100.0,
-   "hours_no_card": 6,
-   "lowest": 100,
-   "lowest_month": "October",
-   "name": "Pier Park",
-   "nov": 100.0,
-   "oct": 100.0,
-   "priority": false,
-   "sales_cad": 933.75
-  },
-  "W-24": {
-   "dec": 99.9,
-   "hours_no_card": 67,
-   "lowest": 99,
-   "lowest_month": "October",
-   "name": "Lighthouse Point",
-   "nov": 99.4,
-   "oct": 99.1,
-   "priority": false,
-   "sales_cad": 1025.75
-  }
+  "fal_dementia_return_at_0": 0.5508,
+  "fal_dementia_return_at_90": 0.1975,
+  "fal_returns_outside": 0.8427,
+  "live_return_share": 0.5009,
+  "returns_within_30": 0.6735,
+  "seven_alive_share": 0.116
+ },
+ "payments_usd": {
+  "BRK": 6674942.84,
+  "COR": 10432740.98,
+  "DUN": 9666768.65,
+  "FAL": 6636768.3,
+  "LIN": 5569397.11,
+  "PEN": 9187785.73,
+  "SAL": 11008414.53,
+  "WEX": 6450802.39
+ },
+ "policy": {
+  "repayment_share_pct": 98,
+  "sections": [
+   2.1,
+   2.3,
+   2.4,
+   3.2
+  ],
+  "sequestration_pct": 2
+ },
+ "provider_numbers": {
+  "BRK": "361791",
+  "COR": "361792",
+  "DUN": "361793",
+  "FAL": "361798",
+  "LIN": "361794",
+  "PEN": "361795",
+  "SAL": "361796",
+  "WEX": "361797"
+ },
+ "ratio": {
+  "BRK": 0.8873,
+  "COR": 0.5482,
+  "DUN": 0.7811,
+  "FAL": 1.0458,
+  "LIN": 0.8962,
+  "PEN": 0.4927,
+  "SAL": 0.8768,
+  "WEX": 0.8691
+ },
+ "repayment_musd": {
+  "BRK": 0.0,
+  "COR": 0.0,
+  "DUN": 0.0,
+  "FAL": 0.3,
+  "LIN": 0.0,
+  "PEN": 0.0,
+  "SAL": 0.0,
+  "WEX": 0.0
+ },
+ "repayment_usd": {
+  "BRK": 0.0,
+  "COR": 0.0,
+  "DUN": 0.0,
+  "FAL": 285111.29,
+  "LIN": 0.0,
+  "PEN": 0.0,
+  "SAL": 0.0,
+  "WEX": 0.0
+ },
+ "revenue_codes": {
+  "general_inpatient": "0656",
+  "respite": "0655"
+ },
+ "rows": {
+  "claim_lines": 17038,
+  "emr": 28635,
+  "extract": 66364,
+  "legacy": 2047,
+  "remittance": 14079
+ },
+ "schedule_rows": 3572,
+ "wage_index": {
+  "BRK": 0.8302,
+  "COR": 0.9193,
+  "DUN": 0.9496,
+  "FAL": 1.0412,
+  "LIN": 0.8237,
+  "PEN": 1.027,
+  "SAL": 0.8801,
+  "WEX": 0.8674
  }
 }

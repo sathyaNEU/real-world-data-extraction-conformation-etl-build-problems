@@ -1,70 +1,67 @@
 {
  "task": "task482",
- "domain": "General Statistics & Data Science (data integration, record linkage and entity resolution)",
- "client_domain": "General Statistics & Data Science",
- "house_domain": "supply-chain-logistics (transportation network)",
- "task_type": "data-integration-record-linkage-entity-resolution",
+ "domain": "Healthcare Delivery & Health Economics (payment, claims and health plan analytics)",
+ "client_domain": "Healthcare Delivery & Health Economics",
+ "task_type": "payment-claims-health-plan-analytics",
  "objective": "Data Extraction & Conformation (ETL)",
  "distractor_files": [
-  "wellhaven_daily_weather_2026q4.csv",
-  "northlane_wellhaven_quarterly_report_2026q4.pdf"
+  "hospice_quality_measures_2026.xlsx",
+  "fy2027_operating_budget.xlsx"
  ],
  "distractor_reasons": {
-  "wellhaven_daily_weather_2026q4.csv": "Wellhaven's daily temperatures, rain and snow for the period: the weather behind the season's ridership and the pay stations' cold-weather faults, which no station's availability, sales or card downtime is computed from",
-  "northlane_wellhaven_quarterly_report_2026q4.pdf": "Northlane's quarterly report to the City: monthly trips, casual trips, fleet moves and fault reports for the whole system, and the quarter's operations notes; it states no station's availability, sales or downtime"
+  "hospice_quality_measures_2026.xlsx": "the provider numbers' 2025 and 2026 hospice quality reporting measures (care index, visits in the last days of life, assessments, family survey); quality scores enter neither the aggregate cap nor the inpatient cap, so no figure reads them",
+  "fy2027_operating_budget.xlsx": "the 2027 operating budget's census, admissions and revenue by program; a plan for the next year, while the FY2026 cap counts the days beneficiaries did and will receive"
  },
+ "wrong_basis_distractors": {},
  "stated_inputs": [
-  "Schedule C",
-  "90 per cent",
-  "service hours 6:00 to midnight Eastern",
-  "Q4 2026",
-  "Q1 2027",
-  "whole per cent",
-  "one decimal of a point",
-  "dollars to the cent",
-  "whole hours"
+  "31 December 2026 close",
+  "FY2026",
+  "eight provider numbers",
+  "USD millions to one decimal",
+  "whole days",
+  "percentages to one decimal",
+  "361791",
+  "361792",
+  "361793",
+  "361794",
+  "361795",
+  "361796",
+  "361797",
+  "361798",
+  "35,361.44",
+  "35361.44"
  ],
  "deliverables": [
-  "priority_stations_2027q1.xlsx",
-  "station_availability_2026q4.html"
+  "fy2026_hospice_cap_accrual.xlsx"
  ],
- "as_of": "2027-01-12",
+ "as_of": "2026-12-31",
  "files": [
-  "bike_share_operating_agreement_schedules.pdf",
-  "gbfs_station_information_2027-01-11.json",
-  "northlane_fleet_moves_2026q4.csv",
-  "northlane_rider_fault_reports_2026q4.csv",
-  "northlane_trips_2026q4.csv",
-  "northlane_wellhaven_quarterly_report_2026q4.pdf",
-  "paystation_alarm_log_2026q4.csv",
-  "paystation_register_2027-01-08.xlsx",
-  "paystation_sales_2026q4.csv",
-  "paystation_work_orders_2026q4.xlsx",
-  "station_status_archive_notes.pdf",
-  "wellhaven_bike_share_station_list.xlsx",
-  "wellhaven_daily_weather_2026q4.csv",
-  "wellhaven_station_status_archive_2026q4.csv"
+  "census_report_december_2026.pdf",
+  "diagnosis_groups.csv",
+  "fallowmere_census_register_20250228.xlsx",
+  "fy2026_hospice_payment_rates.pdf",
+  "fy2027_operating_budget.xlsx",
+  "hicn_mbi_crosswalk.csv",
+  "hospice_quality_measures_2026.xlsx",
+  "medicare_hospice_benefit_periods_20270105.txt",
+  "provider_numbers.json",
+  "remittance_register_fy2026.csv",
+  "revenue_cycle_file_notes.pdf",
+  "wendleglen_cap_liability_policy.docx",
+  "wendleglen_claim_lines_fy2026.csv",
+  "wendleglen_emr_admissions.csv"
  ],
  "rows": {
-  "bike_share_operating_agreement_schedules.pdf": 1,
-  "paystation_alarm_log_2026q4.csv": 11083,
-  "gbfs_station_information_2027-01-11.json": 24,
-  "northlane_fleet_moves_2026q4.csv": 22035,
-  "station_status_archive_notes.pdf": 1,
-  "paystation_register_2027-01-08.xlsx": 32,
-  "northlane_wellhaven_quarterly_report_2026q4.pdf": 1,
-  "northlane_rider_fault_reports_2026q4.csv": 165,
-  "paystation_sales_2026q4.csv": 6184,
-  "wellhaven_bike_share_station_list.xlsx": 25,
-  "wellhaven_station_status_archive_2026q4.csv": 93441,
-  "northlane_trips_2026q4.csv": 50254,
-  "wellhaven_daily_weather_2026q4.csv": 109,
-  "paystation_work_orders_2026q4.xlsx": 246
+  "medicare_hospice_benefit_periods_20270105.txt": 66364,
+  "wendleglen_emr_admissions.csv": 28635,
+  "fallowmere_census_register_20250228.xlsx": 2047,
+  "wendleglen_claim_lines_fy2026.csv": 17038,
+  "remittance_register_fy2026.csv": 14079
  },
  "sources": {
-  "constructed": "every file is constructed for this task by its generator (task482/generator); the City of Wellhaven, its bike-share stations, the operator Northlane Mobility, the pay-station vendor, their staff and every number in the files are fictional",
-  "public_specifications": "the station status archive follows the General Bikeshare Feed Specification (GBFS 2.3) station_status and station_information fields; the trip export, fleet moves log, rider fault reports, pay-station sales export, alarm log, work orders and asset register follow the layouts bike-share operators and kiosk vendors commonly publish or hand to their cities",
-  "licence": "CC0 1.0 (constructed data)",
-  "date": "2027-01-12"
+  "constructed": "every file is constructed for this task by its generator (task482/generator); Wendleglen Hospice & Palliative Care, Fallowmere Hospice, their programs and places, their staff, the beneficiaries, identifiers, provider numbers and every record and number in the files are fictional",
+  "public_specifications": "the FY2026 hospice payment rates, labor shares and aggregate cap amount are those of the FY2026 Medicare hospice payment rule (CMS-1835-F, 90 FR 37404, 5 August 2025); the proportional method and the inpatient limit follow 42 CFR 418.309 and 418.302(f); the claim and remittance fields follow the institutional claim's type of bill, revenue code and HCPCS conventions and the 835 remittance's CLP and PLB records with claim adjustment reason code 253 for sequestration; the census register's discharge statuses are UB-04 patient status codes; diagnosis codes are ICD-10-CM",
+  "licence": "CC0 1.0 (constructed data); the public rule figures are US government works",
+  "date": "2026-12-31"
  }
 }

@@ -1,108 +1,95 @@
 """submission.md, every figure read from generator/figures.json."""
 import json
 import os
+import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TASK = os.path.dirname(HERE)
+sys.path.insert(0, HERE)
+
+import records as R   # noqa: E402
+import world as W     # noqa: E402
+import goldwb as GW   # noqa: E402
 
 
-def join(xs, word="and"):
-    xs = [str(x) for x in xs]
-    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " %s " % word + xs[-1]
+def usd(v):
+    return "USD {:,.0f}".format(v)
 
 
-def main():
-    f = json.load(open(os.path.join(HERE, "figures.json")))
-    st = f["stations"]
-    c = f["components"]
-    d = f["default"]
-    nb = c["nearest"]
-    pr = f["call"]["priority"]
-    keys = [p.split()[0] for p in pr]
-    dkeys = [p.split()[0] for p in d["priority"]]
-    missed = [k for k in keys if k not in dkeys]
-    o = []
-    o.append("## Tags\n")
-    o.append("**Domain:** General Statistics & Data Science, data integration, record linkage and entity resolution (a "
-             "city bike-share programme's archive of its operator's station status feed, the operator's trips, fleet "
-             "moves and rider fault reports, and its pay-station vendor's sales, work orders, register and alarm log, "
-             "conformed into each station's Schedule C availability and pay-station figures for the fourth quarter "
-             "of 2026).")
-    o.append("**Analytical objective:** Data Extraction & Conformation (ETL).\n")
-    o.append("## 1. Final Recommendation\n")
-    words = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight"}
-    o.append("**The City names %s priority stations for the first quarter of 2027 under Schedule C: %s, each under 90 "
-             "per cent availability in October 2026 (%s per cent).**"
-             % (words.get(f["call"]["count"], f["call"]["count"]), join(pr), join([st[k]["lowest"] for k in keys])))
-    o.append("The station that cleared the line by the least is %s %s, %d per cent in %s, %.1f points above 90. Not %s "
-             "alone: the status feed counts a docked bike as available until Northlane marks it out of service, and "
-             "bikes that broke on rides and were docked unreported stayed listed while renters took the bikes around "
-             "them, so read as the bikes in working order the feed puts %s at %s per cent in October.\n"
-             % (nb["station"], nb["name"], nb["availability"], nb["month"], nb["margin_points"],
-                join(d["priority"]), join(["%s %s" % (k, st[k]["name"]) for k in missed]),
-                join([d["lowest"][k] for k in missed])))
-    o.append("## 2. Critical Components\n")
-    o.append("1. With each docked bike that broke on a ride counted out of working order from the end of that ride "
-             "until a van took it to the depot, the lowest month of Q4 2026 puts %s."
-             % join(["%s at **%d** per cent" % (k, st[k]["lowest"]) for k in keys]))
-    o.append("2. The feed's available bikes taken as the bikes in working order put them at %s per cent and name %s "
-             "alone." % (join([d["lowest"][k] for k in keys]), join(d["priority"])))
-    o.append("3. The nearest station above the line is %s %s at **%d** per cent in %s, **%.1f** points clear.\n"
-             % (nb["station"], nb["name"], nb["availability"], nb["month"], nb["margin_points"]))
-    o.append("## 3. Step-by-Step Solution\n")
-    steps = [
-        "Mapped each feed station ID to its City station in wellhaven_bike_share_station_list.xlsx (W-17 Linden Avenue "
-        "under 117 until its move on the evening of 8 November and 125 after) and read northlane_trips_2026q4.csv once "
-        "per trip (its week of 16 November is repeated at the end), its times on Eastern time with a trip in the "
-        "repeated hour of 1 November placed by its duration, and northlane_fleet_moves_2026q4.csv with the WHB- prefix "
-        "dropped from its bike numbers.",
-        "Rebuilt every bike's spells docked at a station from the trips (staff rides too, since they moved bikes) and "
-        "the fleet moves: from a ride's end or a van's drop to the next ride's start or a van's pickup, a bike first "
-        "recorded leaving a station counted as docked there from the start of the records.",
-        "Counted a docked bike out of working order from the end of the ride that left it when renters took other bikes "
-        "from its station while it stood there and a van then took it to the depot, where it stayed a day or more "
-        "before it was back on the street, and every other docked bike in working order; a bike counted out this way "
-        "that a full station's surplus or a storage run took decides no minute, since a bike a rider then took was "
-        "docked beside it.",
-        "For each station and each minute of service hours (6:00 to midnight Eastern) from October to December 2026, "
-        "counted the minute available when a bike in working order was docked at its start (Schedule C, C.1), and "
-        "divided each month's available minutes by its service minutes (C.2).",
-        "Listed the stations under 90 per cent in a month (C.3): %s; the lowest month above the line is %s's %s, "
-        "%d per cent." % (join(keys), nb["station"], nb["month"], nb["availability"]),
-        "For pay-station sales, kept paystation_sales_2026q4.csv's sales not voided and sold in the fourth quarter on "
-        "Eastern time, and placed each at the pay station its terminal was in when it was sold, from the terminal "
-        "replacements in paystation_work_orders_2026q4.xlsx (the export's pay_station column is each terminal's "
-        "present pay station in paystation_register_2027-01-08.xlsx).",
-        "For the hours without card payments, ran each COMMS_LOST and READER_FAULT alarm in "
-        "paystation_alarm_log_2026q4.csv (the register's codes that stop card payments) from its raise to its clear or "
-        "to the pay station's next restart, after which a fault still present is raised again in the same second, "
-        "merged overlapping alarms and summed the service hours of October to December.",
-    ]
-    for i, s in enumerate(steps, 1):
-        o.append("%d. %s" % (i, s))
-    o.append("")
-    o.append("## 4. Deliverable Answers\n")
-    o.append("### priority_stations_2027q1.xlsx\n")
-    o.append("1. The priority stations for Q1 2027: %s." % join(pr))
-    o.append("2. Each station's availability in its lowest month of Q4 2026, whole per cent, and whether it is a "
-             "priority station:")
-    for k in sorted(st):
-        o.append("   - %s %s: %d, %s" % (k, st[k]["name"], st[k]["lowest"], "priority" if st[k]["priority"] else "not"))
-    o.append("3. The station that cleared the line by the least: %s %s, %d per cent in %s, %.1f points above 90."
-             % (nb["station"], nb["name"], nb["availability"], nb["month"], nb["margin_points"]))
-    o.append("4. Each station's Q4 2026 pay-station card sales, dollars to the cent:")
-    for k in sorted(st):
-        o.append("   - %s %s: %s" % (k, st[k]["name"], "{:,.2f}".format(st[k]["sales_cad"])))
-    o.append("5. Each station's Q4 2026 service hours its pay station could not take a card payment, whole hours:")
-    for k in sorted(st):
-        o.append("   - %s %s: %d" % (k, st[k]["name"], st[k]["hours_no_card"]))
-    o.append("\n### station_availability_2026q4.html\n")
-    o.append("6. A horizontal bar chart of the %d stations' availability in their lowest month of Q4 2026, lowest first, "
-             "each bar labelled with its whole per cent and its month, a dashed line at 90 per cent, the %d priority "
-             "stations in orange and the rest in grey, with each station's monthly figures in a table beneath."
-             % (f["call"]["of"], f["call"]["count"]))
-    open(os.path.join(TASK, "submission.md"), "w", encoding="utf-8").write("\n".join(o) + "\n")
+def n(v):
+    return "{:,}".format(v)
+
+
+def write(fig_path, out_path):
+    f = json.load(open(fig_path))
+    order = list(W.CODES)
+    name = {c: "%s (%s)" % (R.PROGRAM[c], R.CCN[c]) for c in order}
+    st = f["fal_states"]
+    o = ["## Tags\n",
+         "**Domain:** Healthcare Delivery & Health Economics, payment, claims and health plan analytics (a hospice "
+         "organisation's EMR admissions, its acquired hospice's census register, claim lines and remittances and the "
+         "Medicare hospice benefit periods extract conformed into the FY2026 aggregate cap schedule its December 2026 "
+         "accrual reads).",
+         "**Analytical objective:** Data Extraction & Conformation (ETL).\n",
+         "## 1. Final Recommendation\n",
+         "**Accrue USD %.1f million for FY2026 Medicare hospice cap repayments, all of it at Fallowmere Hospice (provider "
+         "number %s); the other seven provider numbers are under their caps.**" % (f["call"]["total_musd"],
+                                                                        f["provider_numbers"]["FAL"]),
+         "Fallowmere's FY2026 payments before sequestration of %s run above its aggregate cap once each beneficiary it "
+         "discharged alive carries the hospice days still expected after the close. Not nothing, which taking every "
+         "beneficiary discharged alive as finished gives: %s of Fallowmere's elections end in a live discharge, and the "
+         "extract's later benefit periods show many of those beneficiaries electing hospice again, most at hospices "
+         "outside the organisation.\n" % (usd(f["payments_usd"]["FAL"]), GW.in_words(f["history"]["alive_share"]["FAL"])),
+         "## 2. Critical Components\n",
+         "1. Fallowmere's FY2026 payments before sequestration are **%s**." % usd(f["payments_usd"]["FAL"]),
+         "2. Fallowmere has **%s** FY2026 beneficiaries: at 31 December 2026 **%s** on service, **%s** discharged alive "
+         "and not back, **%s** died." % (n(f["fal_n"]), n(st["open"]), n(st["out"]), n(st["dead"])),
+         "3. Fallowmere's FY2026 repayment is **USD %.1f million**; every other provider number's is nil.\n" % f["repayment_musd"]["FAL"],
+         "## 3. Step-by-Step Solution\n",
+         "1. Read medicare_hospice_benefit_periods_20270105.txt (%s benefit periods, the periods sharing an election date "
+         "one stay), with wendleglen_emr_admissions.csv and fallowmere_census_register_20250228.xlsx matched to MBIs "
+         "through hicn_mbi_crosswalk.csv and each beneficiary's group taken from diagnosis_groups.csv: %s FY2026 "
+         "beneficiaries across the eight provider numbers." % (n(f["rows"]["extract"]), n(f["cohort_n"])),
+         "2. Took each beneficiary's FY2026 days at each provider number, days to 31 December 2026 in every hospice and "
+         "year, and state at the close (at Fallowmere %s on service, %s discharged alive and not back, %s died)."
+         % (n(st["open"]), n(st["out"]), n(st["dead"])),
+         "3. Read the days expected after the close from the experience since 1 October 2016 of the provider number that "
+         "cared for the beneficiary last, in the beneficiary's group (wendleglen_cap_liability_policy.docx section 2.4): "
+         "for a stay still open, the further days of that provider number's stays that had run as long (Kaplan-Meier), "
+         "plus the chance such a stay ends alive times the chance of a later election times the days a later election "
+         "brings.",
+         "4. For a beneficiary discharged alive and alive at the close, the chance of a later election at any hospice "
+         "among the provider number's live discharges still alive and not back after as many days out (Aalen-Johansen on "
+         "the extract's later elections and dates of death), times the days a later election brings (the Kaplan-Meier "
+         "mean of those elections); a beneficiary who died has none.",
+         "5. Counted each beneficiary at each provider number as its FY2026 days over the days to the close plus the "
+         "expected days (section 2.3) and multiplied each provider number's count by USD 35,361.44 (section 2.1).",
+         "6. Summed each provider number's FY2026 payments from remittance_register_fy2026.csv (CLP rows with reversals, "
+         "adj_carc_253 added back, PLB interest left out) and took 98 per cent of any excess over the cap (section 3.2): "
+         "only Fallowmere's payments exceed its cap.",
+         "7. For the inpatient cap, took the version of each FY2026 claim in wendleglen_claim_lines_fy2026.csv that "
+         "remittance_register_fy2026.csv shows paid and not reversed (a returned replacement was never paid, so the claim "
+         "it would have replaced stands), repriced it from its dated level-of-care lines with fy2026_hospice_payment_rates.pdf, "
+         "the routine care count from the extract and the wage index in provider_numbers.json, and where the payment falls "
+         "short, counted its last general inpatient and respite days paid at the routine rate (the one count that closes "
+         "the gap to the cent) out of the 0656 and 0655 units, over each provider number's FY2026 days of care in the "
+         "extract.",
+         "8. The accrual is as in the Final Recommendation.\n",
+         "## 4. Deliverable Answers\n",
+         "### fy2026_hospice_cap_accrual.xlsx\n",
+         "1. FY2026 aggregate cap repayments to accrue, USD millions to one decimal:"]
+    for c in order:
+        o.append("   - %s: %.1f" % (name[c], f["repayment_musd"][c]))
+    o.append("   - Total: %.1f" % f["call"]["total_musd"])
+    o.append("2. FY2026 inpatient cap, general inpatient days and inpatient respite days Medicare paid for (whole days) and "
+             "the inpatient share of days of care (per cent to one decimal):")
+    for c in order:
+        a = f["ask_a"][c]
+        o.append("   - %s: general inpatient %s, respite %s, share %.1f" % (name[c], n(a["gip_days"]), n(a["respite_days"]),
+                                                                          a["share_pct"]))
+    o.append("3. The cap schedule: one row per FY2026 beneficiary per provider number (%s rows) with the FY2026 days there, "
+             "the hospice days to the close, the days expected after it and the share counted." % n(f["schedule_rows"]))
+    open(out_path, "w").write("\n".join(o) + "\n")
 
 
 if __name__ == "__main__":
-    main()
+    write(os.path.join(HERE, "figures.json"), os.path.join(os.path.dirname(HERE), "submission.md"))
