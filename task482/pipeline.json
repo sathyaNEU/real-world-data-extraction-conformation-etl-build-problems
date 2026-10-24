@@ -1,38 +1,49 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "PAUSED",
- "domain": "education-learning-sciences",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics",
  "objective": "etl",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-24",
- "stump": "The default path averages the contractor's five plausible values by district, the standard use of plausible values, and settles each district against its guarantee benchmark on them; the values were drawn for the national efficacy report from a latent regression on grade, prior state-test band and background but not district, so every district is pulled about a quarter of the way toward what its students' backgrounds predict, and re-estimating each district's share from its students' own two-module answers with the district in the model credits districts the easy route clears and clears districts it credits.",
- "architecture": 11,
+ "stump": "The default path counts each town's busiest month of 2026 as its residents plus the paid stays its lodging tax returns and the booking platforms' remittances record, the guests the lodging tax sees, and certifies the lodge towns alone at three times their residents; the lodging tax records only the stays a guest paid for, while the basin's cottages fill with their owners and the residents' homes with their guests, and each town's plant load in its busiest month, divided by the load per resident in the winter months when only the residents are in town, counts them and puts the cottage towns over as well.",
+ "architecture": 12,
  "loops": 0,
  "precut": {
-  "exit": 0,
-  "date": "2026-10-24"
+  "exit": null,
+  "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (2026-10-24, no LEAK)",
-  "reader": "round 1 (zip 632eeb37): both readers filed the default 19 districts; reader A kept 107 of 110 ask figures, reader B 17 of 110. Round 2 (zip ce5456c3): reader D filed the default 19 districts and kept the PD asks by reading the hours field as hours and minutes; reader C landed the call (16 districts, USD 25,493.75) by refitting the latent regression with district in the model and kept every ask figure, score_reader exit 1. Architecture 11 spent."
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (people.first x3, repeat.question_form)",
-  "nearest": "task271 v3 at 0.07",
-  "surface": "clean, no personas in the pack"
+  "heart": "",
+  "nearest": "task305 at 0.06",
+  "surface": ""
  },
  "judge": {
-  "verdict": "pass 1 NOT_DETERMINISTIC (narrow), FIX_NOW: a half-cent tie on one outcomes credit, fixed in the generator; the re-judge was not run, the architecture being spent on the call first",
-  "disposition": "FIX_NOW",
-  "report": "determinism_check_report_pass3.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "re-root to architecture 12 from stage 1 (fingerprint, then guide-to-prompt and stumping): architecture 11 was spent at stage 4 round 2 when reader C landed the call by refitting the 2PL latent regression with district in the conditioning model, so a plausible-value conditioning model that omits the grouping variable is not redrawn in any form. Read the design note's ## Tried and rejected (architectures 1 to 11) before drawing; at registration move this card (architecture_spent true) into the new card's lineage with its fate; the generator is architecture 11's record and is replaced at the re-root.",
+ "resume": "stage 2 of architecture 12 (the Quillmere Lake basin's 2026 peak-season populations for the 2027 Seasonal Communities Aid, drawn 2026-10-24): write the generator's world on paper (eight towns, residents, lodges, the platforms' rentals, owners' cottages and residents' guests by month, the plants' monthly operating reports with the load per person, one joint plant's member meters), place every town's ratio at least 0.3 from three under the golden family and the busiest month 5 per cent clear, keep the paid-stays route and the owners-at-platform-occupancy route on other wrong sets, measure the calibration family's spread, then the readability screen, fork table, closure, asks and prompt.txt to precut.py exit 0",
  "approved": null,
  "delivered": null,
  "portal": null,
  "source_note": "re-root to a fresh world; architectures 1 to 11 spent at stage 4",
- "zip": "ce5456c3620c70081c8372bb8f8231421d635c03a6e7d284bc3af350eac671f7"
+ "lineage_v11": {
+  "zip": "ce5456c3620c70081c8372bb8f8231421d635c03a6e7d284bc3af350eac671f7",
+  "leak": {
+   "leak_py": "REVIEW (2026-10-24, no LEAK)",
+   "reader": "round 1 (zip 632eeb37): both readers filed the default 19 districts; reader A kept 107 of 110 ask figures, reader B 17 of 110. Round 2 (zip ce5456c3): reader D filed the default 19 districts and kept the PD asks by reading the hours field as hours and minutes; reader C landed the call (16 districts, USD 25,493.75) by refitting the latent regression with district in the model and kept every ask figure, score_reader exit 1. Architecture 11 spent."
+  },
+  "judge": {
+   "verdict": "pass 1 NOT_DETERMINISTIC (narrow), FIX_NOW: a half-cent tie on one outcomes credit, fixed in the generator; the re-judge was not run, the architecture being spent on the call first",
+   "disposition": "FIX_NOW",
+   "report": "determinism_check_report_pass3.md"
+  }
+ }
 }

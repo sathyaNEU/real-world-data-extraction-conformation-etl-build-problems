@@ -1,402 +1,112 @@
 # task482 design note
 
-Status lives in `pipeline.json`; this note holds the design. Architecture 11, drawn 2026-10-24 after architectures 1
-to 10 were spent at stage 4: a fresh world and pack in the ETL objective, an education technology company's first
-settlement of the outcomes guarantee in its partner districts' 2025-26 order forms, each district's share of eligible
-students at or above Proficient on a matrix-sampled spring science assessment estimated from the students' own answers
-with the district in the population model.
+Status lives in `pipeline.json`; this note holds the design. Architecture 12, drawn 2026-10-24 after architectures 1
+to 11 were spent at stage 4: a fresh world and pack in the ETL objective, a state demographer's certification of the
+2026 peak-season population of the eight towns of a northern lake basin for the 2027 Seasonal Communities Aid, each
+town's average population present in its busiest month read through the load its sewer carries to its treatment
+plant, calibrated per resident in the winter months when only the residents are in town.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task482.json` (architecture v11, lineage v1 to v10 spent), checked
-  2026-10-24 after a fetch of main: WARN, no BLOCK. The first draft (a county school system's own matrix-sampled
-  science indicator naming middle schools for coaching) BLOCKed on `ban.org_family` (university_or_school against
-  task179 v3), on `test.same_puzzle_older` (objective, G16, designation_set against task182 v1 and task465 v1) and on
-  `test.same_driver_older` (objective, G16, method_or_model_selection, spent in four builds). The decisive generator is
-  G14 under pattern E (does the pooled model hold for this group: the contractor's background model, pooled over every
-  district, does not hold for a district whose students do better or worse than their backgrounds predict), which is
-  the honest label for the step that decides, with G16 (the design and the field's principle entitle the
-  district-conditioned estimate) as the frame. The setting-word run of `slots` then found task450 (a Texas district's
-  own assessment naming the campuses below 40 per cent for coaching) and task464 (a state's literacy grants by a
-  performance level) in the same assessment setting, so the world moved off a district's coaching list to a company's
-  contract settlement; the role redrew from research_desk (`ban.role` against task179 v3) to portfolio_manager.
-- **WARNs answered.** `people.first` (Amy against task130, Robert against task104, Barbara against task460, one older
-  build each): kept. People drawn with `guard.py names --geo "United States" --seed 482`: Amy Hardin (the head of
-  district partnerships, the requester), Robert Meyers (the director of efficacy research) and Barbara Frazier (the
-  controller), owners in file properties only; Lawrence Hughes and Audrey Bautista (architecture 9) and Breanna Graham,
-  Jeremy Cortez and John Huang (architecture 10) are not reused.
-- **Pairing:** Education & Learning Sciences, task type `item-response-theory-test-equating`, which serves ETL: the
-  platform's eligibility file and roster uploads, the delivery system's sessions and scored responses, the contractor's
-  item parameters and plausible values, the order forms, the professional learning export and the billing register
-  conformed into the guarantee settlement (a row per partner district: the guarantee result and credit, the live
-  professional learning hours against the order form and any shortfall credit) and the billing system's credit memo
-  import file.
-- **The decision and the quantity:** Lumenfold Learning, an online middle-school science platform, licenses to 58
-  partner districts in six states (NC 12, OH 11, GA 9, TN 9, CO 9, AZ 8). Its 2025-26 order forms carry an outcomes
-  guarantee for the first time (MSA version 4.0, section 9): a district whose Outcome Share, the percentage of its
-  Eligible Students (rostered on 1 May 2026 with at least 20 lessons since the start of the term) who completed the spring
-  2026 Lumenfold Science Outcomes Assessment whose achievement is at or above Proficient for their grade (500, 520 and
-  540 on a scale of 500 plus 50 theta), is below the Guarantee Benchmark on its order form (12 to 35 per cent) is
-  credited its Credit Percentage (10, 15 or 20) of its 2025-26 Subscription Fee. The assessment is matrix-sampled: eight
-  modules of five items, each student answering two (28 forms), so no student has a score of their own. The contractor,
-  Caldrith Assessment Partners, scaled the responses on the 2024 item parameters and drew five plausible values per
-  student for the 2026 National Efficacy Report from a latent regression on grade, state, prior state-test band,
-  economic disadvantage, English learner status and disability status. The settlement statements are due by 30
-  November 2026, the credits issued with them. The quantity is retrospective (the spring 2026 administration is closed)
-  because the contract fixes the measurement window; the commitment it drives (the credits on the 2026-27 invoices, or
-  refunds) is forward.
-- **Shape:** `07`, a grid read district by district: the call (which districts are owed the credit, and the credits'
-  total), each district's result against its own benchmark, its live professional learning hours delivered against
-  its order form (58) and any shortfall credit (20), and every credit's memo row in the billing system's import layout
-  (36): 114 graded figures besides the call's count and totals.
-- **Strategy:** `other` (imputations aggregated over a grouping their model left out; no vocabulary key names it:
-  composition_mix would need a mix shift and population_selection a denominator, and neither is the move); Gate G
-  `method_or_model_selection` (how each district's share is estimated, the design and the field's principle ruling out
-  the easy routes); gap `objective` (the plausible values are correct for the national and subgroup figures they were
-  drawn for, and are not what a district's guarantee is scored on); pattern E; generators G14 (decisive) and G16. Layer
-  2 family `field_method`, pattern `own:plausible values carry only the groupings in their conditioning model, so a
-  district's share needs the district in the model`. Calibration organ: none. Context artifact `filed_model` (the
-  contractor's technical report, the conditioning variables in its Table 6).
-- **World:** the United States, USD; Lumenfold Learning, the Lumenfold Science Outcomes Assessment, Caldrith Assessment
-  Partners and the 58 partner districts invented, the districts' place names screened against every populated place of
-  500 or more and the US counties (more than two edits from any, no distinctive place word of five letters or more
-  inside, H21).
-- **Forcing fact:** the settlement statements are due by 30 November 2026 and the credits issue that day.
-- **Forum and forcing event:** customer_or_counterparty (the partner districts receive the settlement), period_close
-  (the close-out of the 2025-26 subscription year, every district's term settled on its statement by 30 November
-  2026). Redrawn at stage 3 from purchase_order_or_contract, which `guard.py heart` BLOCKed on `ban.forcing_event`
-  against task306, filed after this draw: the contract is the forum's instrument, and what forces the call now is the
-  year's close-out, so period_close is the honest label for the event and not only the passing one. Organisation
-  software_or_platform; role portfolio_manager.
-- **The physics:** a student's science achievement rises with prior achievement and falls with economic disadvantage,
-  English learner status and disability, and a district's implementation moves its students up or down beyond what
-  their backgrounds predict (district effects with a standard deviation of 0.45 on the theta scale among the 58, from
-  -0.66 to +0.75). Two modules of five items measure one student with a reliability of about 0.68, so each student's
-  plausible values lean on what the population model predicts for a student with that grade, state, band and
-  background; the model has no district term, so it predicts every student as if their district were average for its
-  state and background, and a district's mean over its plausible values keeps about 0.46 of its departure from that
-  prediction (the slope across the 58, r = 0.99).
-- **Data-native sentence:** each student answered two of the eight modules, so a student's plausible values lean on
-  what the population model predicts for a student with that grade, state, prior band and background, and the
-  population model has no term for the district.
-- **Measured on the pack** (`checks.py`, `verify.py`): averaging the plausible values by district files 19 districts
-  (USD 32,045.00), moving 7 districts across their benchmarks by 3.4 to 9.3 points; twelve constructions with the
-  district in the population model file the golden's 16 (USD 25,493.75), every district at least 4.05 points from its
-  benchmark across all of them; the world's own true shares file the same 16.
-- **The WHAT screen.** Population: each partner district's eligible students who completed the spring 2026
-  assessment (the contract). Outcome: achievement at or above Proficient for the grade, 500, 520 and 540 on the
-  reporting scale. Unit: per cent of students, a district owed a credit when its share is below its benchmark. Window:
-  the spring 2026 administration. Comparison: each district's share against its own benchmark. The decisive step settles
-  none of them: it is how each district's share is estimated from two-module answers, which no record or filed rule
-  states and which the design and the field's principle select.
+- **Card:** `.claude/skills/fingerprint/cards/task482.json` (architecture v12, lineage v1 to v11 spent), checked
+  2026-10-24 after a fetch of main: WARN, no BLOCK. The window the axis bans read (task484 v3, task305 and task306,
+  the live cards filed last; task280 and task279 carry `architecture_spent`) closes the strategies causal_design,
+  population_selection and maturity_censoring, the forums council_or_assembly, committee_or_panel and
+  line_manager_or_team, the forcing events season_or_peak, vote_or_meeting and purchase_order_or_contract, the
+  organisations local_government, retailer_or_ecommerce and manufacturer, the roles policy_adviser, finance_controller
+  and capacity_planner, the context artifacts register, monitoring_export and capacity_report, and the shapes 07 and
+  other. The draw's honest labels clear all of them: the decision is a certification the State Demographer files with
+  the Commissioner of Revenue (forum minister_or_cabinet, forcing event statutory_or_regulatory_filing, organisation
+  research_or_statistics_office, role statistical_office_head), the shape a scorecard against one threshold (10), the
+  context artifact the office's own resident estimates (published_series).
+- **WARNs answered.** `overuse.shape` (10 in three of the last twelve): the decision is each town scored against the
+  aid's three-times threshold, which is shape 10 and no other. `repeat.decision` (designation_set against task484 v3)
+  and `repeat.question_form` (which, against task280 and task484 v3): the statute designates the towns that qualify, so
+  the answer is a set and the question asks which. `repeat.deliverables` (png and xlsx against task306): a workbook is
+  what the office files and the ratios against the line read at a glance as a chart. People drawn with
+  `guard.py names --geo "United States" --seed 482`: Marvin Jordan (the State Demographer, the requester), William
+  Terry (the seasonal estimates lead) and Bryce Williams (the basin's wastewater data steward), owners in file
+  properties only; Amy Hardin, Robert Meyers and Barbara Frazier (architecture 11), Breanna Graham, Jeremy Cortez and
+  John Huang (architecture 10) and Lawrence Hughes and Audrey Bautista (architecture 9) are not reused, and Amanda Beck
+  and Christine Ward were set aside on `people.first` against task104.
+- **Pairing:** Survey Research & Official Statistics, task type `census-register-administrative-data-quality`, which
+  serves ETL: the office's resident estimates, the eight plants' monthly operating reports in three layouts, one joint
+  plant's member meters, the hotel and inn lodging tax returns, the two booking platforms' remittances and the aid
+  statute conformed into the certification (a row per town: its busiest month of 2026, its average population present
+  that month, its ratio to its residents, whether it qualifies and its aid).
+- **The decision and the quantity:** the Seasonal Communities Aid (an invented chapter of the Minnesota statutes) pays
+  the 2027 appropriation of USD 2,400,000 in equal shares to the towns whose average population present on the days of
+  their busiest month of 2026 was at least three times their resident population, the State Demographer certifying
+  both to the Commissioner of Revenue by 1 December 2026. The statute counts a town's population present on a day as
+  everyone the town carries that day, its residents and every person staying or visiting there, a person counting for
+  the share of the day spent in the town. The quantity is retrospective (the 2026 season is closed) because the statute
+  fixes the measurement year; the commitment it drives (the 2027 aid) is forward.
+- **Shape:** `10`, a scorecard against one threshold: each of the eight towns' busiest month, its average population
+  present, its ratio to its residents against three, whether it qualifies and its aid, beside the call (which towns
+  qualify and each one's share); the asks (lodging surcharge collections by quarter, the plants' phosphorus) are wide.
+- **Strategy:** `other` (a population no record lists, measured through a physical load calibrated per resident where
+  the residents are the whole population; population_selection would need a choice of who is in, and here the statute
+  files everyone, and causal_design a comparison group, which carries nothing here); Gate G `etl_conformance` (the
+  conformed certification judged against the statute's population); gap `population` (the lodging records are not the
+  people present); pattern none; generators G5 (decisive: the town's visitors are housed outside the taxed lodging, in
+  the cottages their owners keep and in the residents' homes, and the asymmetry by town is the trap), G16 (the plant's
+  load is the one measure the statute's definition entitles) and G17. Layer 2 family `field_method`, pattern
+  `own:a population present measured by its sewer load per resident`. Calibration organ: none. Context artifact
+  `published_series` (the office's July 1 resident estimates).
+- **World:** the United States, Minnesota, USD; the Quillmere Lake basin, its eight towns (Birchwick, Teskadel,
+  Ruddmere, Sorrelton, Pinehold, Tamsen Point, Esker Narrows, Hollin Bay), their sanitary districts, the two booking
+  platforms and the aid program invented, the names screened against populated places and counties before the pack is
+  cut (H21).
+- **Forcing fact:** the certification is due with the Commissioner of Revenue by 1 December 2026 and the 2027 aid is
+  paid on it.
+- **The physics:** a town's wastewater load is what everyone in the town sends down its sewer, about the same per
+  person whether resident or visitor (a person's daily load of biochemical oxygen demand and water), so the plant's
+  influent load in a month, divided by the load per person, counts the people present in person-days. From November to
+  April the basin's seasonal cottages are closed and its lodges mostly shut, so the winter load is the residents' own
+  and calibrates the load per person town by town. In summer the lodges and the platforms' rentals fill, and so do the
+  cottages their owners keep and the residents' spare rooms, none of which any lodging return or remittance records,
+  and the share the unrecorded stays hold differs widely between the lodge towns and the cottage towns.
+- **Data-native sentence:** the lodging tax returns and the platforms' remittances record only the stays a guest paid
+  for, while each town's plant records the load of everyone the town carries, and in the winter months that load is the
+  residents' alone.
+- **Paper screen** (`scratchpad t482v12/proto/sim2.py`, eight towns, a month-by-component world): residents plus the
+  paid stays names one lodge town over three times its residents; the plants' loads per resident name five or six; the
+  owners counted at the platforms' occupancy name a different five. The generator measures every rung and the family's
+  spread on the cut pack at stage 2.
+- **The WHAT screen.** Population: each town's residents and every person present in it (the statute). Outcome: the
+  average population present on the days of the town's busiest month of 2026, a person counted for the share of the day
+  spent there. Unit: persons, against three times the office's 1 July 2026 resident estimate. Window: calendar 2026, the
+  busiest month by that average. Comparison: each town against its own residents. The decisive step settles none of
+  them: it is how the people no stay record holds are counted, which no record or filed rule states and which only the
+  plants' loads, calibrated where the residents are the whole population, measure.
 - **Sources, one line each:**
-  - the plausible-values methodology (Mislevy 1991; the NAEP and PISA technical documentation): plausible values are
-    draws from each student's posterior given their responses and the conditioning variables, and support analyses of
-    the variables in the conditioning model;
-  - matrix sampling and balanced incomplete block designs in large-scale assessment;
-  - latent regression item response models, marginal maximum likelihood on a quadrature grid;
-  - outcomes-based contracting in education technology: guarantees that credit a share of the licence fee when a
-    contracted outcome is missed.
-- **Same-puzzle and same-driver tests:** (objective, E, designation_set) and (objective, E,
-  method_or_model_selection) against the last twelve builds, lineage included: no match.
-- **Abstraction test:** the nearest drivers (0.07) stripped of nouns: task271 v3 takes a trait carrier's chance of an
-  outcome by a fixed age; task458 counts a population defined by a lasting trait from events logged while observed;
-  task479 v4, this setting's nearest relative, estimated campuses with rapid-guessed answers set aside (sent back as
-  cleaning contaminated data), and here no answer is set aside and every answer is used; task143 takes the weakest of a
-  few members. Also task464, where counting each unit's regression-predicted value against a cut thins the tail and
-  the decisive step is estimating a distribution instead of counting predictions: here the plausible values are already
-  a distribution, correct for every figure their model covers, and the decisive step is the grouping the model left
-  out. And task450, anchor items that changed for the new group: a different step on the same kind of data.
+  - population estimates from symptomatic indicators (utility connections and usage, wastewater flow) for seasonal and
+    resort populations, the de facto population of a town in its peak season;
+  - wastewater engineering's population equivalent: a person's daily load of biochemical oxygen demand and flow, and the
+    monthly operating reports a treatment plant files with the state;
+  - local lodging taxes and the booking platforms' collection agreements: the tax is due on stays a guest pays for.
+- **Same-puzzle and same-driver tests:** (population, none, designation_set) and (population, none, etl_conformance)
+  against the last twelve builds, lineage included: no match.
+- **Abstraction test:** the nearest drivers (0.06 and under) stripped of nouns: task305 counts a recorded body of
+  short-stay occupants left out of a resident-based demand model and prices their spend per pitch from analog stores;
+  here every recorded stay is already counted and the missing people are those no stay record holds, measured by a
+  physical load per resident. task177's spent architecture 1 took a waste series as the given measure of a seasonal
+  population and forecast new points from their peers' winter responses; here the series is not offered as a measure,
+  and recognising that it is one is the step. task471 v4 counts registered units actually present from a register less
+  its exits; task62's lineage counts resident events wherever registered.
 
-## Default path
+## Architecture 11 record (spent 2026-10-24)
 
-1. Read MSA section 9: a district is owed when its Outcome Share, the percentage of its Eligible Students who completed
-   the spring 2026 Assessment at or above Proficient for their grade (500, 520, 540), is below its Guarantee Benchmark;
-   the credit is its Credit Percentage of the 2025-26 Subscription Fee.
-2. Took each district's Eligible Students from the eligibility file's 1 May records and linked them through the student
-   crosswalk to the contractor's plausible values file (every student with a submitted session).
-3. Computed each district's share the way the technical report computes its results: the percentage of its eligible
-   assessed students at or above their grade's level with each of the five plausible values, averaged over the five.
-4. Compared each share with the district's benchmark and credited the districts below it.
-
-Ends on: 19 districts owed the outcomes credit, USD 32,045.00 in total.
-
-Golden: 16 districts owed the outcomes credit, USD 25,493.75 in total.
-
-## Stump sentence
-
-The default path averages the contractor's five plausible values by district, the standard use of plausible values,
-and files 19 districts owed USD 32,045.00; the values were drawn for the national report from a population model on
-grade, state, prior band and background with no district term, so each student's values lean on what students like
-them score and each district keeps only about half of its departure from its background prediction, and re-estimating
-each district's share from its eligible students' own two-module answers with the district in the population model
-files 16 districts owed USD 25,493.75, crediting two districts the easy route clears (Merleywick and Belberbury) and
-clearing five it credits.
-
-## Three rules
-
-Task type: item-response-theory-test-equating (Education & Learning Sciences), a task type serving Data Extraction &
-Conformation (ETL): the platform's eligibility and roster records, the delivery system's sessions and scored responses,
-the contractor's item parameters and plausible values, the order forms, the professional learning export and the
-billing register conformed into the 2025-26 guarantee settlement and the billing system's credit memo import.
-
-Domain test: the quantity that decides is each district's share of eligible assessed students whose achievement is at
-or above Proficient on a matrix-sampled assessment where no student has a score, which educational measurement
-estimates as a group's latent distribution from item responses through a population model; the field's estimator is a
-latent regression with the reporting group in the conditioning model (posterior probabilities or plausible values from
-it), because plausible values support only the groupings their model conditions on.
-
-Swap: "which hospitals are owed a credit because the share of their patients at or above a level on two of eight
-modules of a ten-item assessment, read from the contractor's plausible values, is below the benchmark" stops making
-sense: no other field scores a unit's members on two of eight modules each and reports group results only through
-draws from a population model, and what decides (the groupings the conditioning model holds) is the assessment
-design's own.
-
-Layer 1: each item with the system that writes it, its file, its natural mishandling and what that does to the call,
-asserted in `checks.py` R2a to R2f and the SF rows. The delivery system logs an abandoned session before a student's
-submitted one and leaves items blank at a session's end as not reached (lsoa_spring2026_sessions.csv,
-lsoa_spring2026_item_responses.csv; the abandoned answers scored with the submitted ones, same call, R2e; not reached
-scored incorrect, same call, R2b). The platform's eligibility file keeps a mover's record in the district they left and
-a re-rostered student's superseded record (guarantee_eligibility_2025_26.csv; the 1 May record flagged eligible
-decides, SF8). The crosswalk links a re-rostered student's two IDs to one test taker (student_id_crosswalk_2025_26.csv,
-SF9). The districts upload rosters in their states' own codes and prior-test levels
-(district_roster_uploads_spring2026.xlsx; Colorado's and Ohio's lowest levels mapped a band apart, same call, R2c; the
-roster not joined at all, same call, R2d). Eligibility ignored altogether files the same call (R2a). Each is produced
-by the systems that hold it and nothing is placed to be caught; no mishandling moves the golden or files it on the
-default path (R2f).
-
-Layer 2: field_method; each district's share at or above Proficient estimated the way large-scale assessment
-estimates a group's results from matrix-sampled responses, with the group in the population model, and the
-methodological choice that flips the call is whether the conditioning model behind the plausible values holds the
-district.
-
-Decisive step: re-estimating each district's share from its eligible students' own scored responses with the district
-in the latent regression (as posterior probabilities, or as plausible values drawn from that model), rather than
-aggregating by district the contractor's plausible values, whose population model has no district term.
-
-Not semantics: every field can be read correctly (the session statuses, the not-reached and omitted rules, the
-eligibility flag, the state codes and bands, the 2PL parameters, the reporting scale and the cuts) and the default path
-still files the wrong set, because the plausible values are exactly what the technical report says they are and its
-Table 6 lists their conditioning variables correctly; no field, code or definition says they cannot be aggregated by
-district.
-
-Not rule application: MSA section 9 files the population, the outcome, the cuts and the comparison, and no filed rule or
-procedure says how a district's share is estimated from two-module answers; executing every stated rule with the
-technical report's own way of computing results (each statistic with each plausible value, averaged) files 19
-districts. Measured on the pack (`checks.py`): the enumerated family (the plausible values by district over the
-eligible or every assessed student, as the contractor's posterior probabilities or with each student's mean value
-counted; expected a posteriori values counted under the contractor's model, under no model and under the golden model;
-maximum likelihood values counted; number correct through the test characteristic curve; and the twelve
-district-conditioned constructions) files nine wrong sets of 13 to 25 districts besides the golden's 16, the
-plausible-value routes moving districts by up to 16 points; the standing family (the twelve constructions with the
-district in the population model: with and without background, a spread per district, district by grade cells, five
-plausible values drawn from it under three seeds, fitted on every assessed student, its implied share, each district
-fitted alone with and without background, district effects with no grade term) spans at most 4.79 points of share in
-any district and files one set, every district at least 4.05 points from its benchmark; what does the ruling out is no
-filed clause and no one-line comparison but the design (two modules give a reliability of about 0.68, so a point
-estimate's spread is not the population's and a draw leans on its model's prediction) and the data (district effects
-with a standard deviation of 0.45 on the theta scale against the contractor model's residual of 0.65), which the
-district-conditioned model reads and the contractor's cannot.
-
-Analyst test: with every file read and every rule applied, the easy route computes each district's share from the
-contractor's plausible values the way the technical report computes its results and files 19 districts owed the
-outcomes credit, USD 32,045.00 in total (the default path's Ends on), two of the golden's districts cleared and five
-others credited.
-
-Estimand: MSA section 9 (lumenfold_msa_v4_2025.docx): a district is owed the Credit Percentage of its 2025-26
-Subscription Fee when its Outcome Share, the percentage of its Eligible Students (rostered on 1 May 2026 with at least
-20 lessons, as the eligibility file records) who completed the spring 2026 Assessment whose science achievement on the
-reporting scale is at or above 500, 520 or 540 for their grade, is below its order form's Guarantee Benchmark.
-
-No decoy: nothing is planted to be caught; the plausible values are the contractor's real deliverable for the national
-report and correct for every figure it reports (Table 8's grades, states and groups, all in the conditioning model); no
-memo, draft or stakeholder figure carries the default path's answer and no file states any district's share.
-
-No certified replay: the method is not hidden and recovered by reproducing certified or published figures; Table 8's
-results are for groups both the contractor's model and the golden's carry, so matching them selects nothing, and no
-file holds a district result to match.
-
-Lesson: a plausible value is a draw from a posterior that leans on its population model, so it supports only the
-groupings that model conditions on; a group the model leaves out is pulled toward what its members' covariates
-predict, and its result must be estimated with the group in the model. No build on file teaches it: task450 and
-task464 sit in this assessment setting with other steps (anchor items that changed, counting predicted values against
-a cut).
-
-## Readability screen
-
-| Rung | What the response does | What in the pack points at it | Verdict |
-|---|---|---|---|
-| L0 number correct through the test characteristic curve | each student's number correct turned into a theta on their form's curve and counted against the cut (13 owed) | the item parameters and forms invite a score per student; the report says ten items are too few for one | readable |
-| L4 maximum likelihood counted | each student's own estimate counted (13 owed) | the same | readable |
-| L3 expected a posteriori counted, no model | each student's posterior mean under one normal prior counted (21 owed) | the report's statement that results are estimated through a population model | readable |
-| L2 expected a posteriori counted, the contractor's model | (25 owed) | the same | readable |
-| L1c each student's mean plausible value counted | (24 owed) | the report's statement that a result is computed with each plausible value and averaged | readable |
-| L1 plausible values by district (the default) | the share with each plausible value, averaged over the five, over each district's eligible assessed students (19 owed) | the plausible values file and the report's own way of computing results | readable |
-| L5 the golden model's expected a posteriori counted | the district in the model, each student's posterior mean counted (18 owed) | the report's statement that results come from a population model | readable |
-| G (decisive) the district in the population model | each district's share as the mean posterior probability under a latent regression with district, grade, band and background (16 owed) | nothing names it: Table 6 lists the contractor's conditioning variables without comment, no sentence says a grouping outside them is biased, and no file carries a district result | silent |
-
-## Semantic fork table
-
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | the Outcome Share's denominator | Eligible Students who completed the assessment | every Eligible Student, those not assessed counted below Proficient | same call | MSA 9.2 ("of its Eligible Students who completed the spring 2026 Assessment"); asserted |
-| SF2 | completed the assessment | a submitted session | any session, abandoned ones included | not computed (an abandoned session is not scored) | technical report section 2; C1: one submitted session per assessed student (asserted) |
-| SF3 | Proficient | 500, 520 and 540 in grades 6, 7 and 8 | 500 for every grade | another set | MSA 9.2 and the report's section 3 |
-| SF4 | at or above | the posterior mass at or above the grade's cut | above it | same call | C1: the grid's cells end on every cut, so no mass sits on a cut |
-| SF5 | the reporting scale | 500 plus 50 theta, 2PL with D = 1 on the 2024 parameters | D = 1.7; parameters recalibrated on 2026 | not computed | technical report section 3 ("not recalibrated", D = 1) |
-| SF6 | items not reached | left out of the likelihood | scored incorrect | same call | technical report section 2; R2b |
-| SF7 | items omitted | scored incorrect | left out | not computed | technical report section 2 |
-| SF8 | an Eligible Student | the 1 May record flagged eligible, one per student | a mover's record in the district left; a superseded record | not computed (neither is flagged eligible) | MSA 9.1 and the eligibility file; C1 asserted |
-| SF9 | one student | a test taker; two student IDs linked to one test taker are one student | each student ID a student | same call | the crosswalk; C1 asserted |
-| SF10 | the population the model is fitted on | the eligible assessed students | every assessed student | same call | convergent (F5) |
-| SF11 | the conditioning covariates beside the district | grade, prior band, the three status flags | grade only | same call | convergent (F1) |
-| SF12 | the residual spread | one for every student | one per district | same call | convergent (F2) |
-| SF13 | the district's share from the model | mean posterior probability of being at or above the cut | five plausible values drawn from the model, averaged | same call | convergent (F4, three seeds) |
-| SF14 | the outcomes credit | the Credit Percentage of the 2025-26 Subscription Fee before any credit, a whole number of cents | net of the professional learning credit | not computed | MSA 1.2 and 9.3; C1: every fee times its percentage a whole cent, so no rounding tie (SF14b, asserted) |
-| SF15 | below the benchmark | strictly below | at or below | same call | C1: no district within 4.8 points of its benchmark |
-| SF16 | live professional learning | virtual live and on site sessions delivered in the district's subscription term | recorded webinars and on-demand courses counted | the ask only | MSA 8.1 |
-| SF17 | a joint session | counts in full for each district attending | counted once, or split | the ask only | MSA 8.2 |
-| SF18 | the shortfall credit | USD 250 an hour of the shortfall, the hours delivered counted to the nearest half hour | the hours delivered unrounded; rounded down | the ask only | MSA 8.3 and the prompt; C1: no district's minutes on a quarter hour, so the half hour has no tie (asserted) |
-| SF19 | the invoice a credit applies to | the open 2026-27 subscription invoice on the order form's bill-to account with the earliest due date; a refund by check where none is open | any open invoice on the account; a district's other account | the ask only | MSA 10.1 and the import layout |
-| SF20 | the credit date | 30 November 2026 | the statement's own date | the ask only | the prompt ("issued on 30 November 2026") |
-
-## Ladder
-
-Measured on the pack (`checks.py`; the share of each district's eligible assessed students at or above Proficient).
-
-| Rung | Districts owed | Flips from the golden | Call kept |
-|---|---|---|---|
-| L0 number correct through the test characteristic curve | 13 | 3 | no |
-| L4 maximum likelihood counted | 13 | 3 | no |
-| L3 expected a posteriori counted, no model | 21 | 5 | no |
-| L2 expected a posteriori counted, the contractor's model | 25 | 11 | no |
-| L1c each student's mean plausible value counted | 24 | 10 | no |
-| L1 plausible values by district (default) | 19 | 7 (3.4 to 9.3 points) | no |
-| L1a the same over every assessed student | 19 | 7 | no |
-| L1b the contractor's posterior probabilities | 19 | 7 | no |
-| L5 the golden model's expected a posteriori counted | 18 | 2 | no |
-| G golden (district, grade, band, background) | 16 | none | yes |
-
-Every rung files a different set from the golden's, and every rung but L1b a different count; the standing family of
-twelve files the golden's set with every district at least 4.05 points from its benchmark (F0). The world's own true
-shares file the same 16 (T1), and the default route's error tracks the district effect (r = 0.88, T3).
-
-## Closure table
-
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | each district's Eligible Students who completed the spring 2026 assessment | filed (MSA 9.1 and 9.2); SF1, SF2, SF8 |
-| 2 | Unit of account | a district's share of students | filed (MSA 9.2) |
-| 3 | Attribution window | the spring 2026 administration; the eligibility roster of 1 May 2026 | filed (MSA 9.1, 9.2); C1: every session inside the window |
-| 4 | As-of dating | the eligibility file as recorded; the billing register of 20 November 2026 | filed (MSA 9.1; the register's own date) |
-| 5 | Version basis | the submitted session, not an abandoned one; the 2024 item parameters | filed (technical report sections 2 and 3); SF2, SF5 |
-| 6 | Denominator | eligible students who completed the assessment | filed (MSA 9.2); SF1 |
-| 7 | Weighting | every student once | filed (MSA 9.2, a percentage of students); SF9 |
-| 8 | Window length | one administration | filed |
-| 9 | Boundary inclusivity | at or above the grade's level; below the benchmark | filed (MSA 9.2, 9.3); SF4, SF15 |
-| 10 | Rounding path | the share unrounded against the benchmark; credits to the cent | filed (the prompt); C1: no district within 4.8 points |
-| 11 | Tie-break | none needed | C1: no family member within 4.05 points of a benchmark (F0) |
-| 12 | Maturity and censoring | none: the administration is closed | C1 |
-| 13 | Order of operations | eligibility, then the submitted session, then the share, then the comparison, then the credit | filed (MSA 9) |
-| 14 | Row order | none | C1: the settlement is order-free |
-| 15 | Duplicate resolution | one submitted session per student; one eligible record per student | filed (technical report section 2; the eligibility flag); SF2, SF8 |
-| 16 | Identity normalisation | a student is a test taker; two student IDs on one test taker are one student | the crosswalk; SF9 |
-| 17 | Netting against gross | the outcomes credit on the fee before any credit | filed (MSA 1.2); SF14 |
-| 18 | Dimensional units | theta and the scale (500 plus 50 theta); per cent; USD; hours | filed (technical report section 3; MSA 8.3); SF5 |
-| 19 | Code and status semantics | session statuses, response statuses, state roster codes and levels (Table 5) | filed (technical report sections 2 and 4, Table 5); never the stump |
-| 20 | Integerisation | hours to the nearest half hour, dollars to the cent | filed (the prompt; MSA 8.3); C1: no district on a quarter hour and every credit a whole cent (SF14, SF18) |
-| 21 | Clause scope | section 9 for every partner district's 2025-26 order form | filed |
-| 22 | Forward window contents | the credits apply to the 2026-27 invoices open on the credit date or are refunded | filed (MSA 10.1, the import layout); SF19, SF20 |
-
-## Literal reader
-
-Executing the prompt and every filed sentence word for word: MSA 9.2 defines the Outcome Share as the percentage of a
-district's eligible assessed students whose achievement on the reporting scale is at or above the grade's level, and
-the technical report says no student has a score because each answers ten items, so the share is a property of the
-district's students' latent distribution, estimated from their responses. A reader who takes the contractor's
-plausible values as that estimate computes a quantity the report defines for its own conditioning variables, which do
-not include the district; the reader who estimates the district's distribution with the district in the model lands
-the golden under every standing construction (one set, at least 4.05 points of margin in every district). Where the
-text is silent on a convention (the fitting population, the covariates beside the district, the residual spread, the
-summary of the posterior), the readings converge (SF10 to SF13, F1 to F9).
-
-## Oracles
-
-No file ties only under the golden or only on a wrong read. The pack holds no district share, result or credit; Table 8
-reports national, grade, state and group results that both the contractor's model and the golden's reproduce (all in
-both conditioning models); Table 6's coefficients describe the contractor's model and rank no district. For the asks,
-the catalog's whole-hour schedule and the MSA's rules are the only referees, and no file states a district's delivered
-hours or a credit.
-
-## Ask sheet
-
-**Ask A, professional learning: each district's live professional learning hours delivered in its 2025-26 subscription
-term against its order form, to the nearest half hour, and any shortfall credit, 58 hours and 20 credits.** H18: a
-component of each district's settlement statement (MSA 8.3 credits sit beside the outcomes credit on the same statement
-and the same memo import). Use: the statements and the billing import. Primary device (D3, units set per source: hours
-and minutes in a decimal column): every offering is scheduled in whole hours, and the scheduling export holds the time
-each session actually ran as the scheduling system takes it, hours and minutes after the point (1.40 is an hour and
-forty minutes); nothing in the export or the documents says so. A session that ran to time reads the same either way,
-so the device lives only in the sessions that ran short or long (192 rows, never past 59 after the point): read as
-decimal hours, the field misses 51 of 58 districts' hours and every shortfall credit (0 of 20 right), and setting each
-session to its catalog length, the repair round 1's reader A made for the series rows, misses 47 and gets 1 of 20 (AD1,
-AD1b, AD2). Evidence split: the export's entries, none past .59, and the catalog's whole-hour schedule, neither enough
-alone. Hazards: joint regional sessions sharing a session id across two to four districts (a de-duplication on the
-session id misses 29 districts, AD3); rescheduled sessions kept as a Rescheduled row beside the delivered one;
-cancellations; recorded webinars and on-demand courses (MSA 8.1); the summer institute's July 2025 and July 2026 cohorts
-and July 2026 make-ups against terms running July to June or August to July. Stops: the field as decimal hours keeps 7
-of 58 hours and 0 of 20 credits; the catalog lengths 11 of 58 and 1 of 20. Realism: facilitators type an hour and forty
-minutes as 1.40 in a duration field, and a scheduler stores it as typed.
-
-**Ask B, the credit memo import: every outcomes and professional learning credit in the billing system's layout, 36
-rows.** H18: the settlement's audit trail into billing (MSA 10.1). Use: Billing Operations loads it on 30 November.
-Device (D5, out-of-scope rows known only by structure): the 2026-27 invoice register also holds 2025-26 seat true-ups
-invoiced after the term closed (their service period the 2025-26 term), professional learning add-ons and lab kit
-orders, some open with earlier due dates than the subscription instalments, and six districts' virtual academies bill
-on accounts of their own; the earliest open invoice on the account, any description, misplaces 6 of 30 credited
-districts' credits (AD4). Hazards: semester instalments (the first paid, the second open), invoices paid before the
-register date, three districts without a 2026-27 order (refund by check). Rows coupled to the call: the 16 outcomes
-credits (the mirror carries 14 of them); rows coupled to ask A: the 20 shortfall credits.
-
-**Measured, round 1 (zip 632eeb37):** both scored readers filed the default path's 19 districts. Reader A replaced the
-series rows' hours with the catalog's hours per session and kept 107 of 110 ask figures (exit 1); reader B summed the
-export's hours and kept 17 of 110 (its outcomes memo rows on the 14 districts it shares with the golden, exit 1 on the
-per-field count). The series device was re-sited onto the session times, and the readers' memo rows are now scored one
-key per row.
-
-Main population: the call reads no session, booking, invoice or catalog row, and the asks read no student (X1, X2).
-
-| Ask | The cracker's path (lands the call, runs the hygiene battery, executes every filed rule) | Kept | Verdict |
-|---|---|---|---|
-| A | delivered live rows in each district's term, the export's hours read as decimal hours, joint sessions kept, totals to the nearest half hour, credits at USD 250 an hour | 7 of 78 | miss |
-| B | the golden's outcomes credits and the cracker's shortfall credits, each applied by the layout's rule | 16 of 36 | miss |
-
-Mirror leakage: 18.4 per cent of ask weight (the default rung keeps 7 hours, 0 credits and 14 memo rows of 114).
-Pair ceiling: 39.1 (cracker 56.1, mirror 22.1) on the cut pack, the call's 16 outcomes memo rows the cracker's main
-exposure on ask B.
-Measured by: task482/generator/ceiling.py (on the cut pack: the export's hours as decimal hours keep 7 of 58 hours and
-0 of 20 credits; the memo rows keep 16 and 14 of 36).
-
-## Pre-ship check
-
-1. Domain: educational measurement's own estimate of a group's share at or above a performance level from
-   matrix-sampled responses, with the group in the population model; with a hospital's or a utility's nouns no unit's
-   members answer two of eight modules and no result exists only through a population model's draws.
-2. Real work, nothing planted: every Layer 1 item is what the producing system writes (the delivery system's
-   abandoned sessions and not-reached items, the platform's eligibility records for movers and re-rostered students,
-   the crosswalk's two IDs, the states' roster codes), each mishandled the natural way in checks.py R2a to R2e with the
-   call unchanged; no ask device row reaches the call (X1, X2).
-3. The step that flips the call is analytical: estimating each district's share with the district in the population
-   model; no clause makes that choice (MSA 9.2 files the share of students at or above the level, the report how its
-   own results were computed).
-4. Analyst test: every field and rule read correctly, the plausible values averaged by district file 19 districts (L1),
-   and every other crude route a different wrong set (L0 to L5); the decisive step alone files the 16 (G).
-5. The MSA files the estimand (population, outcome, cuts, comparison) and no estimator; the standing family of twelve
-   files one set at a margin of at least 4.05 points (F0), and the asks' conventions are filed (SF16 to SF20).
-6. No decoy, no withheld rule against a stated one, no certified replay: the pack holds no district share and no
-   figure any construction reproduces.
-7. The lesson is on no other card: the nearest driver is task271 v3 at 0.07; task450, task464 and task479 v4 are this
-   setting's builds with other steps.
+Architecture 11 settled Lumenfold Learning's 2025-26 outcomes guarantee district by district, each partner district's
+share of eligible students at or above Proficient on a matrix-sampled spring science assessment re-estimated from its
+students' own two-module answers with the district in the population model, against the default path that averages
+the contractor's five plausible values by district (19 districts owed USD 32,045.00 against the golden's 16 owed
+USD 25,493.75). At stage 4 round 1 both scored readers missed the call, reader A kept all of ask A through the
+catalog's hours per session, and the judge's pass 1 returned FIX_NOW on a cent tie in the credits (seat prices moved to
+whole half dollars). In round 2 reader C refitted the 2PL latent regression from the item responses with district in
+the conditioning model, validated it on the contractor's Table 6, filed the golden 16 districts and USD 25,493.75 and
+kept every ask figure: a conditioning model that leaves out the grouping variable is a reflex for a reader who knows
+plausible values, so the architecture was spent.
 
 ## Architecture 10 record (spent 2026-10-24)
 
@@ -711,3 +421,24 @@ it hands all three the call, so the decisive step as designed does not stump and
   cent had a tie that no file breaks (judge pass 1, FIX_NOW); seat prices moved to whole half dollars, every credit a
   whole cent, the call's set unchanged.
 Architecture 11 (the contractor's plausible values drawn from a conditioning model with no district term, each district re-estimated with the district in the model), spent at stage 4 round 2 on zip ce5456c3: reader C refitted the 2PL latent regression from the item responses with district in the conditioning model, validated its fit on the contractor's Table 6, filed the golden 16 districts and USD 25,493.75, and kept every ask figure (58 of 58 hours, 20 of 20 shortfall credits, 36 of 36 memo rows) by reading the hours field as hours and minutes from its fractions. A conditioning model that omits the grouping variable is a reflex for a reader who knows plausible values, so the round-3 PD re-site (series credit hours stacked on h.mm) is moot and the slot re-roots.
+- 2026-10-24, architecture 12 draw: a Lunar New Year factory shutdown reaching a US East Coast port's container imports
+  a Pacific or Cape crossing later, for its calendar-adjusted series: the decisive step is a lag and a window, the
+  enumerable single choice the client's measured coin flips share, the effect is famous in trade data, and a port world
+  would be this lane's third (task472, task474). Not drawn.
+- 2026-10-24, architecture 12 draw: a state's payroll survey estimates early-benchmarked to the lagged unemployment
+  insurance census where the birth-death model ran ahead in a slowdown: the two series count the same jobs side by side
+  (architecture 8's reflex), the step is a choice between two files, and rejecting the published estimate for the census
+  reads as a surface-read rejection at Gate G. Not drawn.
+- 2026-10-24, architecture 12 draw: revisions measured from real-time vintages, or rebuilt pseudo-real-time by
+  re-adjusting truncated spans: the client's pin makes the triangle rule application once the vintages ship, and the
+  truncated re-adjustment forks between X-11 and STL end filters. A seasonal break from a school calendar moved to
+  August: the post-break span is a window and the regime regressors are a reflex. Not drawn.
+- 2026-10-24, architecture 12 draw: chain drift in a scanner-data price index (economics x ETL is undrawable, and the
+  formula is one enumerable switch); suppressed county-industry cells rebuilt from their margins (identification is the
+  step, so one linear solve is the easy route landing); custom-area margins of error from replicate tables against the
+  approximation (the handbook licenses both, a fork at Gate C); register over-coverage by signs of life (every activity
+  window is a threshold read as a fork). Not drawn.
+- 2026-10-24, architecture 12 draw: the lake towns' population present also read from their transfer stations' scale
+  tickets or their water meters: solid waste is collected on schedules that lag the stays, and summer water use carries
+  the irrigation of empty cottages, so neither measures the people present as the sewer does; kept out of the pack.
+
