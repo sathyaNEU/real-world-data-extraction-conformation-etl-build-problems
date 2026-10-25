@@ -1,221 +1,157 @@
 {
- "ask_on_time_pct": {
-  "BRANCH": 87.4,
-  "COAST": 85.0,
-  "LINK": 79.0,
-  "MAIN": 81.0,
-  "VALE": 84.6
+ "annex_a": {
+  "Brantholme Park Academy": {
+   "pa": "18.3",
+   "pupils": 1256,
+   "sa": "1.1"
+  },
+  "Coldwell Academy": {
+   "pa": "21.5",
+   "pupils": 1117,
+   "sa": "1.8"
+  },
+  "Fernlea Academy": {
+   "pa": "21.1",
+   "pupils": 994,
+   "sa": "2.2"
+  },
+  "Halwick Academy": {
+   "pa": "30.2",
+   "pupils": 925,
+   "sa": "1.2"
+  },
+  "Mossgate Academy": {
+   "pa": "28.8",
+   "pupils": 844,
+   "sa": "2.1"
+  },
+  "Ridley Hey Academy": {
+   "pa": "19.2",
+   "pupils": 1128,
+   "sa": "1.6"
+  },
+  "Saltmoor Academy": {
+   "pa": "25.8",
+   "pupils": 885,
+   "sa": "1.9"
+  },
+  "Wrayfield Academy": {
+   "pa": "21.2",
+   "pupils": 819,
+   "sa": "1.5"
+  }
  },
- "ask_on_time_trains": {
-  "BRANCH": 960,
-  "COAST": 1094,
-  "LINK": 1056,
-  "MAIN": 1112,
-  "VALE": 1150
- },
- "ask_staffed_pct": {
-  "BRANCH": 43.5,
-  "COAST": 47.6,
-  "LINK": 88.8,
-  "MAIN": 89.5,
-  "VALE": 43.9
- },
- "ask_staffed_trains": {
-  "BRANCH": 948,
-  "COAST": 1080,
-  "LINK": 1048,
-  "MAIN": 1106,
-  "VALE": 1138
- },
- "ask_standing": {
-  "COAST": 1210,
-  "LINK": 3021,
-  "MAIN": 1720,
-  "VALE": 829
- },
- "ask_standing_trains": {
-  "COAST": 74,
-  "LINK": 74,
-  "MAIN": 91,
-  "VALE": 94
- },
- "bridge_exact": {
-  "crowding": 3.1234,
-  "fares": 0.0125,
-  "on-board staffing": 1.2674,
-  "punctuality": 0.6529
- },
- "bridge_points": {
-  "crowding": 3,
-  "fares": 0,
-  "on-board staffing": 1,
-  "other": 0,
-  "punctuality": 1
+ "annex_b": {
+  "Brantholme Park Academy": {
+   "a8": "49.3",
+   "ebacc": "31.0",
+   "pupils": 239
+  },
+  "Coldwell Academy": {
+   "a8": "42.6",
+   "ebacc": "37.1",
+   "pupils": 202
+  },
+  "Fernlea Academy": {
+   "a8": "41.4",
+   "ebacc": "40.2",
+   "pupils": 194
+  },
+  "Halwick Academy": {
+   "a8": "37.0",
+   "ebacc": "44.8",
+   "pupils": 165
+  },
+  "Mossgate Academy": {
+   "a8": "40.6",
+   "ebacc": "39.9",
+   "pupils": 148
+  },
+  "Ridley Hey Academy": {
+   "a8": "47.5",
+   "ebacc": "37.3",
+   "pupils": 212
+  },
+  "Saltmoor Academy": {
+   "a8": "40.1",
+   "ebacc": "35.2",
+   "pupils": 165
+  },
+  "Wrayfield Academy": {
+   "a8": "43.5",
+   "ebacc": "35.1",
+   "pupils": 151
+  }
  },
  "call": {
-  "driver": "crowding",
-  "points": 3,
-  "sentence": "Crowding accounts for most of the fall: 3 of the 5.2 points by which the share of passengers satisfied overall fell, from 86.4% in spring 2025 to 81.2% in spring 2026"
+  "largest": "rem",
+  "largest_name": "the remainder",
+  "sentence": "No: the academy's own effect accounts for almost none of Halwick's Progress 8 gap to the trust (0.0 of -0.4 points); the largest item is the remainder (-0.2), the shortfall its pupils bring from the seven primary schools that send it most of its intake, ahead of attendance (-0.1) and disadvantage (-0.1)",
+  "verdict": "no"
  },
- "effects": {
-  "crowded": -0.3245,
-  "fare": -0.0012,
-  "late": -0.1481,
-  "unstaffed": -0.0426
+ "default_path": {
+  "att": "-0.1",
+  "dis": "-0.1",
+  "gap": "-0.4",
+  "own": "-0.2",
+  "rem": "0.0"
  },
- "evidence": {
-  "baseline_window": [
-   "2026-08-23",
-   "2026-09-19"
+ "feeders": {
+  "count": 7,
+  "names": [
+   "Larchmere Primary School",
+   "Halwick Moor Primary School",
+   "Sedgefold Primary School",
+   "Gillcroft Primary Academy",
+   "Thursby Lane Primary School",
+   "Cobden Street Primary Academy",
+   "Netherfold Community Primary School"
   ],
-  "class_reporting_each_vehicle": 166,
-  "condition_share_pct": {
-   "crowded": {
-    "2025": 7.2,
-    "2026": 16.8
-   },
-   "late": {
-    "2025": 8.0,
-    "2026": 12.5
-   },
-   "unstaffed": {
-    "2025": 9.3,
-    "2026": 39.0
-   }
-  },
-  "default_path": {
-   "driver": "on-board staffing",
-   "points": 2
-  },
-  "effect_points_if_met": {
-   "crowded": 32.5,
-   "late": 14.8,
-   "unstaffed": 4.3
-  },
-  "late_minutes": 5,
-  "respondents": {
-   "2025": 8913,
-   "2026": 8860
-  },
-  "respondents_answering_q1": {
-   "2025": 8913,
-   "2026": 8860
-  },
-  "seats": {
-   "150/2": 116,
-   "158": 138,
-   "158/9": 126,
-   "166": 232
-  },
-  "standing_window": {
-   "from_hour": 7,
-   "to_hour": 9,
-   "to_minute": 59
+  "p8_at_halwick": "-0.57",
+  "p8_elsewhere": "-0.50",
+  "p8_others_at_halwick": "-0.10",
+  "share_of_halwick": 89
+ },
+ "filed_constants": {
+  "persistent_absence_threshold_pct": 10,
+  "severe_absence_threshold_pct": 50,
+  "year_10": 10,
+  "year_11": 11
+ },
+ "halwick_p8": "-0.52",
+ "model": {
+  "absence_halwick": "8.57",
+  "absence_trust": "7.05",
+  "b_absence": "-0.041",
+  "b_disadvantaged": "-0.46",
+  "disadvantaged_halwick_pct": "45.4",
+  "disadvantaged_trust_pct": "30.4",
+  "walk_3dp": {
+   "att": "-0.063",
+   "dis": "-0.068",
+   "gap": "-0.378",
+   "own": "-0.023",
+   "rem": "-0.224"
   }
  },
- "prevalence_change_points": {
-  "crowded": 9.62,
-  "fare": 0.1,
-  "late": 4.41,
-  "unstaffed": 29.74
+ "pupils": {
+  "borough": 9573,
+  "halwick": 681,
+  "trust": 5581
  },
- "routes": {
-  "R0_derived_importance": {
-   "crowding": 0.39,
-   "fares": 0.36,
-   "on-board staffing": 2.09,
-   "other": 1.66,
-   "punctuality": 0.68
-  },
-  "R0_points": 2,
-  "R0_top": "on-board staffing",
-  "R1_conditions_with_ratings_as_controls": {
-   "crowding": 0.96,
-   "fares": 0.01,
-   "on-board staffing": -1.61,
-   "punctuality": 0.04
-  },
-  "R1_points": 1,
-  "R1_top": "crowding",
-  "R1_with_ratings_booked_to_drivers": {
-   "crowding": 1.33,
-   "fares": 0.29,
-   "on-board staffing": 0.92,
-   "other": 1.3,
-   "punctuality": 0.76
-  },
-  "R2_cascade_groups": {
-   "credited_to_crowding": 0.25,
-   "extra_fall": 0.6
-  },
-  "golden_family": {
-   "2025 effects": {
-    "crowding": 3.18,
-    "fares": 0.01,
-    "on-board staffing": 1.4,
-    "punctuality": 0.54
-   },
-   "2026 effects": {
-    "crowding": 3.1,
-    "fares": 0.01,
-    "on-board staffing": 1.23,
-    "punctuality": 0.73
-   },
-   "pooled": {
-    "crowding": 3.12,
-    "fares": 0.01,
-    "on-board staffing": 1.27,
-    "punctuality": 0.65
-   },
-   "pooled+controls": {
-    "crowding": 3.16,
-    "fares": 0.01,
-    "on-board staffing": 1.35,
-    "punctuality": 0.65
-   }
-  },
-  "logit": {
-   "crowding": 3.09,
-   "fares": 0.01,
-   "on-board staffing": 1.25,
-   "punctuality": 0.65
-  },
-  "stratified": {
-   "crowding": 3.12,
-   "on-board staffing": 1.22,
-   "punctuality": 0.8
-  },
-  "unweighted": {
-   "2025": 87.01,
-   "2026": 82.37,
-   "fall": 4.64
-  }
+ "trust_p8": "-0.14",
+ "walk": {
+  "att": "-0.1",
+  "dis": "-0.1",
+  "gap": "-0.4",
+  "own": "0.0",
+  "rem": "-0.2"
  },
- "shares": {
-  "by_group": {
-   "BRANCH": {
-    "spring_2025": 91.0,
-    "spring_2026": 86.4
-   },
-   "COAST": {
-    "spring_2025": 88.6,
-    "spring_2026": 80.4
-   },
-   "LINK": {
-    "spring_2025": 86.8,
-    "spring_2026": 79.9
-   },
-   "MAIN": {
-    "spring_2025": 83.4,
-    "spring_2026": 80.4
-   },
-   "VALE": {
-    "spring_2025": 86.7,
-    "spring_2026": 83.1
-   }
-  },
-  "fall_points": 5.2,
-  "spring_2025": 86.4,
-  "spring_2026": 81.2
+ "walk_unrounded": {
+  "att": -0.0626,
+  "dis": -0.0685,
+  "gap": -0.3781,
+  "own": -0.0228,
+  "rem": -0.2243
  }
 }

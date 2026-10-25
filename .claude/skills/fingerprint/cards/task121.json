@@ -11,7 +11,7 @@
   "shape": "03",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "pending (stage 3)",
+  "answer": "No: Halwick Academy's own effect accounts for almost none of its Progress 8 gap to the trust average (0.0 of -0.4, 2022 to 2024 cohorts); the largest item is the remainder, -0.2, what its pupils bring from the seven primary schools that send it 89% of its intake (attendance -0.1, disadvantage -0.1)",
   "answer_source": "task121/submission.md, block 1 (Final Recommendation)",
   "gap": [
     "objective"
@@ -34,8 +34,8 @@
   "role_family": "policy_adviser",
   "scoring_unit": "other",
   "spine": {
-    "file": "borough KS2 to KS4 pupil transfer file, 2022 to 2024 KS4 cohorts",
-    "rows": 9600,
+    "file": "brantholme_ks2_ks4_transfer_2022_2024.csv",
+    "rows": 9842,
     "entity": "one pupil at the end of key stage 4 in a borough secondary, with the primary school and results of their key stage 2 tests",
     "grain": "pupil x KS4 cohort",
     "source_dataset": "constructed (pupil-level KS2 to KS4 records are not public; the National Pupil Database is restricted)"
@@ -62,26 +62,27 @@
     ]
   },
   "deliverables": [
-    "halwick_progress8_bridge_2022_2024.xlsx",
-    "halwick_progress8_bridge.png"
+    "halwick_progress8_walk_2022_2024.xlsx",
+    "halwick_progress8_walk.png"
   ],
   "opening_move": "question-first",
   "question_form": "whether",
   "driver": "The decisive quantity is a unit's own contribution to a shortfall in an outcome measured relative to an earlier score, when members carry an effect from the earlier units they came from that the earlier score does not capture; because most of a unit's members come from a few earlier units, its average shortfall holds both, and only the members of the same earlier units who went to other units separate the earlier units' carried effect from the unit's own.",
   "driver_concrete": "Pupils from seven primary schools make less progress at every secondary in the borough than their KS2 results predict, and those seven feed Halwick Academy; Progress 8, and a model of pupils within secondaries netting attendance and disadvantage, read the shortfall as Halwick's own, while a cross-classified model of the borough's pupils (secondary by primary) measures the seven primaries' carried effect on their pupils who went to other secondaries and leaves Halwick's own effect near zero.",
-  "stump": "The default path takes Progress 8 as already netting the intake (it compares pupils with the same KS2 results), nets attendance and disadvantage in a model of pupils within secondaries and books most of Halwick's gap to the academy's own effect; the cross-classified model of the borough file books most of it to the primary schools its pupils came from and leaves the academy's own effect near zero.",
+  "stump": "The default path takes Progress 8 at its word that the key stage 2 baseline nets the intake, fits the field's school-effects model of pupils within secondaries with attendance and disadvantage, and files the academy's own effect as the largest item, -0.2 of the -0.4 gap; the cross-classified model of the borough's pupils (secondary by key stage 2 school) books the remainder, -0.2, to seven primaries' carried effect and leaves the academy's own effect at 0.0.",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who reads every field and rule correctly, takes Progress 8 as the field's value-added measure and nets attendance and disadvantage in a model of pupils within secondaries files the academy's own effect as most of the gap; estimating the primaries' carried effect from their pupils at the borough's other secondaries leaves it near zero, and the wrong answer survives every cleaning step.",
+  "analyst_test": "A strong analyst who reads every field and rule correctly, takes Progress 8 as the field's value-added measure and nets attendance and disadvantage in a model of pupils within secondaries files the academy's own effect as the largest item, -0.2 of the -0.4 gap (also with gender, special needs, first language or key stage 2 held); classifying the pupils by their key stage 2 school as well leaves it at 0.0 and the remainder at -0.2.",
   "domain_test": "School-effects research: a secondary's own effect on progress is estimated by a cross-classified multilevel model of pupils in secondaries and in the primaries they came from (Goldstein and Sammons 1997; Leckie 2009), because pupils carry their primary school's effect beyond their KS2 result, the value-added baseline taken at the change of school; with another field's nouns (a hospital's readmission gap, a plant's yield) there is no attainment baseline at a transfer between institutions whose precondition the earlier institution breaks, and the call stops reading the same.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:primary-legacy-in-secondary-progress-cross-classified",
   "layer1": [
-    "primary schools that converted to academies mid-window carry a new URN in the transfer file, with the predecessor URN only in the borough's establishment register",
-    "pupils without KS2 results (arrived from outside England, or absent from the tests) carry Attainment 8 but no Progress 8",
-    "the 2022 KS4 cohort graded on the transition year's more generous boundaries, so Attainment 8 levels move between cohorts while Progress 8 re-centres nationally each year",
-    "attendance as sessions possible and missed by reason code, with codes not counted as possible sessions",
-    "disadvantage as the Ever-6 free school meals, looked-after and previously looked-after flags",
-    "pupils who moved secondary in years 10 and 11 counted at the school on roll in January of year 11"
+    "primary schools that converted to academies inside the window under a new URN, the predecessor only in the borough's establishment register",
+    "pupils without key stage 2 results carrying Attainment 8 but no Progress 8",
+    "pupils who sat key stage 2 outside the borough under another authority's number and URN",
+    "the 2022 cohort graded on the transition year's boundaries (national estimates by year)",
+    "year 11 absence as sessions possible and missed, authorised and unauthorised, autumn and spring only",
+    "the trust warehouse's attendance extract labelling every row with the pupil's current academy and current year group (the asks)",
+    "the 2026 cohort's year 10 early entries filed in the summer 2025 results among the 2025 cohort's (the asks)"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
@@ -215,6 +216,7 @@
       "fate": "spent 2026-10-25 at stage 4: both scored readers linked every questionnaire to its train and the passenger's legs, read the letter's counterfactual as the estimand and landed crowding (3 and 4 points); the judge returned DETERMINISTIC, SEND_BACK on Gate H, the decisive step read as rule application because once the conditions are linked every estimator files 3, 1, 1, 0"
     }
   ],
-  "notes": "v5 drawn 2026-10-25 by sathay3012 after v4 was spent at stage 4 the same day (both readers linked the journey conditions; judge SEND_BACK on Gate H). The candidate list names the academy's own effect, attendance, disadvantage and the rest of the intake; the primary schools are not a named candidate, so the step that books the rest of the intake to them is the analysis, not a reading of the list.",
-  "registered": "2026-10-25T15:49:34Z"
+  "notes": "v5 drawn 2026-10-25 by sathay3012 after v4 was spent at stage 4 the same day (both readers linked the journey conditions; judge SEND_BACK on Gate H). The candidate list names the academy's own effect, attendance, disadvantage and the rest of the intake; the primary schools are not a named candidate, so the step that books the rest of the intake to them is the analysis, not a reading of the list. Stage 3 green 2026-10-25: walk -0.4 = -0.1, -0.1, 0.0, -0.2 (golden family unanimous at one decimal); default path own effect -0.2; asks 32 figures, cracker 0 of 32. Architecture 5 spent at stage 4 on 2026-10-25: reader A landed the verdict by grouping Halwick pupils by key stage 2 school; judge SEND_BACK on the Annex B cohort.",
+  "registered": "2026-10-25T15:49:34Z",
+  "architecture_spent": true
 }

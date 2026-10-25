@@ -20,33 +20,13 @@ warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import common as K         # noqa: E402
-import context as CX       # noqa: E402
 import docs as DC          # noqa: E402
-import pack as PK          # noqa: E402
-import survey as SV        # noqa: E402
+import records as RC       # noqa: E402
+import trust as T          # noqa: E402
 import world as Wd         # noqa: E402
 
 TASK = os.path.dirname(HERE)
 MTIME = calendar.timegm(K.ASSEMBLED.timetuple())
-
-
-def survey_stats(sv):
-    st = {"batches": {}, "issued": {}, "returned": {}, "overall": {}, "items": {}}
-    for wave in (2025, 2026):
-        bs = [b for b in sv.batches if b["wave"] == wave]
-        st["batches"][wave] = len(bs)
-        st["issued"][wave] = sum(b["issued"] for b in bs)
-        st["returned"][wave] = sum(b["post"] + b["online"] for b in bs)
-        rs = [x for x in sv.resp if x["wave"] == wave]
-        w = sum(x["weight"] for x in rs)
-        st["overall"][wave] = 100.0 * sum(x["weight"] for x in rs if x["overall"] >= 4) / w
-        for q, _ in K.ITEMS + [K.ITEM_2026]:
-            if q == "q5k" and wave == 2025:
-                continue
-            ans = [x for x in rs if x["R"].get(q) not in (None, 9)]
-            st["items"].setdefault(q, {})[wave] = 100.0 * sum(x["weight"] for x in ans if x["R"][q] >= 4) / \
-                sum(x["weight"] for x in ans)
-    return st
 
 
 def build(out, keep=False):
@@ -55,44 +35,46 @@ def build(out, keep=False):
     os.makedirs(out)
     p = lambda k: os.path.join(out, K.FILES[k])
     w = Wd.World()
-    sv = SV.Survey(w)
+    tr = T.Trust()
     n = {}
-    for key, fn in (("responses", lambda: PK.responses(sv)), ("fieldwork", lambda: PK.fieldwork(sv)),
-                    ("timetable", lambda: PK.timetable(w)), ("movements", lambda: PK.movements(w)),
-                    ("loadweigh", lambda: PK.loadweigh(w, sv)), ("formations", lambda: PK.formations(w)),
-                    ("crew_worked", lambda: PK.crew_as_worked(w)), ("fares", lambda: PK.fares(w)),
-                    ("stations", PK.stations), ("contacts", CX.contacts), ("delays", lambda: CX.delays(w))):
+    tabs = None
+    for key, fn in (("transfer", lambda: RC.transfer(w)), ("register", lambda: RC.register(w)),
+                    ("tables", lambda: RC.tables(w)), ("attendance", lambda: RC.attendance(tr)),
+                    ("movements", lambda: RC.movements(tr)), ("results25", lambda: RC.results(tr, "June 2025")),
+                    ("results26", lambda: RC.results(tr, "June 2026"))):
         head, rows = fn()
-        PK.write_csv(p(key), head, rows)
+        RC.write_csv(p(key), head, rows)
         n[key] = len(rows)
-    (h1, r1), (h2, r2) = PK.crew_live(w)
-    PK.write_csv(p("crew_roster"), h1, r1)
-    PK.write_csv(p("crew_amend"), h2, r2)
-    n["crew_roster"], n["crew_amend"] = len(r1), len(r2)
-    st = survey_stats(sv)
-    DC.write_technote(p("technote"), st)
-    DC.write_topline(p("topline"), st)
-    DC.write_requirement(p("requirement"), st)
-    DC.write_schedule(p("standards"))
-    DC.write_fleet(p("fleet"), w)
-    DC.write_dictionary(p("dictionary"))
-    return dict(w=w if keep else None, sv=sv if keep else None, counts=n, stats=st)
+        if key == "tables":
+            tabs = rows
+    RC.estimates(p("estimates"))
+    RC.workforce(p("workforce"), w)
+    RC.funding(p("funding"), w)
+    DC.write_paper(p("paper"), tabs)
+    DC.write_guide(p("guide"))
+    DC.write_measures(p("measures"))
+    DC.write_attnote(p("attnote"))
+    return dict(w=w if keep else None, tr=tr if keep else None, counts=n)
 
 
-PDF_DATES = {"technote": ("D:20260511101500+01'00'", "D:20260511101500+01'00'"),
-             "topline": ("D:20260511102000+01'00'", "D:20260511102000+01'00'"),
-             "requirement": ("D:20261002143000+01'00'", "D:20261002143000+01'00'"),
-             "standards": ("D:20260401090000+01'00'", "D:20260401090000+01'00'")}
-OOXML = {"fleet": (K.PEOPLE["fleet"], K.PEOPLE["fleet"], "2019-12-02T09:12:00Z", "2026-09-22T15:48:00Z",
-                   "Fleet register", True)}
+PDF_DATES = {"paper": ("D:20261023141500+01'00'", "D:20261023141500+01'00'"),
+             "guide": ("D:20260911093000+01'00'", "D:20260911093000+01'00'"),
+             "measures": ("D:20260929110000+01'00'", "D:20260929110000+01'00'"),
+             "attnote": ("D:20260922154500+01'00'", "D:20260922154500+01'00'")}
+OOXML = {"estimates": ("Department for Education", "Department for Education", "2025-02-06T09:30:00Z",
+                       "2025-02-06T09:30:00Z", "Progress 8 estimates", True),
+         "workforce": (K.PEOPLE["la"], K.PEOPLE["la"], "2026-06-18T10:02:00Z", "2026-06-18T10:41:00Z",
+                       "School workforce, November 2025", True),
+         "funding": (K.PEOPLE["la"], K.PEOPLE["la"], "2025-03-27T13:20:00Z", "2025-04-02T08:55:00Z",
+                     "School funding 2025-26", True)}
 
 
 def finish(out):
     import postprocess as PP
     for k, (c, m) in PDF_DATES.items():
         PP.normalize_pdf(os.path.join(out, K.FILES[k]), c.encode(), m.encode())
-    PP.COMPANY = K.OPERATOR_LTD
     for k, (cr, lb, c, m, title, excel) in OOXML.items():
+        PP.COMPANY = K.COUNCIL if k != "estimates" else "Department for Education"
         PP.normalize_ooxml(os.path.join(out, K.FILES[k]), cr, lb, c, m, title=title, excel=excel)
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
@@ -100,24 +82,23 @@ def finish(out):
 
 def finish_golden(golden):
     import postprocess as PP
-    PP.COMPANY = K.OPERATOR_LTD
-    PP.normalize_ooxml(os.path.join(golden, K.GOLDEN), K.PEOPLE["contract"], K.PEOPLE["contract"],
-                       "2026-10-26T09:05:00Z", "2026-11-06T16:40:00Z", title="Satisfaction fall, spring 2026",
-                       excel=True)
+    PP.COMPANY = K.TRUST
+    PP.normalize_ooxml(os.path.join(golden, K.GOLDEN), K.PEOPLE["data"], K.PEOPLE["data"],
+                       "2026-10-26T09:05:00Z", "2026-11-04T16:40:00Z", title="Halwick Progress 8 walk", excel=True)
     for f in os.listdir(golden):
         os.utime(os.path.join(golden, f), (MTIME, MTIME))
 
 
 def metadata(fig, counts):
-    src = ("constructed by the task generator (seeded); %s, the %s, %s, their network, people and records are "
-           "fictional; the records follow the forms of a train operator's working timetable, train movement, "
-           "load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
-           % (K.OPERATOR, K.AUTHORITY, K.AGENCY))
+    src = ("constructed by the task generator (seeded); %s, %s, the borough of %s, their schools, people and records "
+           "are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, "
+           "the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's "
+           "attendance, movements and examination results exports" % (K.TRUST, K.COUNCIL, K.BOROUGH))
     return {
         "task": "task121",
-        "title": "%s: which service driver accounts for most of the fall in passengers satisfied, spring 2025 to "
-                 "spring 2026" % K.OPERATOR,
-        "domain": "Marketing & Consumer Research (customer satisfaction driver analysis)",
+        "title": "%s: whether Halwick Academy's own effect accounts for most of its Progress 8 gap to the trust "
+                 "average, 2022 to 2024" % K.TRUST,
+        "domain": "Education & Learning Sciences (multilevel school effects research)",
         "objective": "Root-Cause Analysis",
         "distractor_files": ["target/" + K.FILES[k] for k in K.DISTRACTORS],
         "deliverables": list(K.DELIVERABLES),

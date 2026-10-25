@@ -1,422 +1,199 @@
-"""The operating world: two working timetables, the fleet and its daily formations, each train's passengers by
-origin and destination (so its load after every departure), its movements against the timetable, its on-board
-crew and the fares. Every draw comes from a stream keyed on the thing it describes, so adding one train or one
-day moves nothing else."""
-import datetime as dt
+"""The borough's schools and pupils: fourteen secondaries, sixty-two primaries placed on the map, each primary's
+leavers choosing a secondary by distance, catchment, faith and how sought after it is, and every pupil of the
+2022, 2023 and 2024 key stage 4 cohorts with their key stage 2 results, census record, year 11 attendance and
+key stage 4 grades. Progress 8 is the Department's: Attainment 8 against the national estimate for the pupil's key
+stage 2 prior attainment, divided by ten. Every draw comes from a stream keyed on what it describes."""
 import hashlib
 import numpy as np
+import pandas as pd
 import common as K
 
 
-def rng_for(*key):
-    h = hashlib.sha256(("|".join(str(k) for k in (K.SEED,) + key)).encode()).digest()
+def rng_for(*key, seed=None):
+    s = K.SEED if seed is None else seed
+    h = hashlib.sha256(("|".join(str(k) for k in (s,) + key)).encode()).digest()
     return np.random.default_rng(int.from_bytes(h[:8], "little"))
 
 
-def hm(m):
-    m = int(round(m)) % (24 * 60)
-    return "%02d:%02d" % (m // 60, m % 60)
+def national_estimate(ks2, year):
+    """The Department's estimated Attainment 8 for a key stage 2 average scaled score (a smooth curve read at the
+    prior attainment group's centre), by key stage 4 year: 2022 graded on the transition year's boundaries."""
+    base = 9.5 + 73.0 / (1.0 + np.exp(-(np.asarray(ks2, float) - 101.0) / 5.3))
+    return base + {2022: 2.6, 2023: -0.5, 2024: 0.0}[year]
 
 
-def day_type(d):
-    if d in K.BANK_HOLIDAYS:
-        return "SU"
-    return "SU" if d.weekday() == 6 else ("SA" if d.weekday() == 5 else "WD")
+PAG_EDGES = np.array([80.0, 82.0, 84.0, 86.0, 88.0, 90.0, 91.5, 93.0, 94.0, 95.0, 96.0, 97.0, 98.0, 99.0, 100.0,
+                      101.0, 102.0, 103.0, 104.0, 105.0, 106.0, 107.0, 108.0, 109.0, 110.0, 111.0, 112.0, 113.5,
+                      115.0, 116.5, 118.0, 120.01])
 
 
-def time_band(d, minute, inbound):
-    if day_type(d) != "WD":
-        return 4
-    if 6 * 60 + 30 <= minute < 9 * 60 + 30:
-        return 0
-    if 16 * 60 + 30 <= minute < 19 * 60:
-        return 2
-    if minute >= 19 * 60:
-        return 3
-    return 1
+def pag(ks2):
+    """Prior attainment group (1 to 31) of a key stage 2 average scaled score, and the group's centre."""
+    k = np.clip(np.asarray(ks2, float), 80.0, 120.0)
+    g = np.searchsorted(PAG_EDGES, k, side="right")
+    g = np.clip(g, 1, len(PAG_EDGES) - 1)
+    centre = (PAG_EDGES[g - 1] + np.minimum(PAG_EDGES[g], 120.0)) / 2.0
+    return g, centre
 
 
-def fare_table():
-    """Fares by flow and ticket type, before and after the change of 4 January 2026, in pence: each ticket type's
-    scale on the flow's distance, rounded to 10p, and the change applied and rounded to 10p again."""
-    out = {}
-    for g in K.GROUP_ORDER:
-        calls = K.GROUPS[g]["calls"]
-        for i, (a, ma) in enumerate(calls):
-            for b, mb in calls[i + 1:]:
-                key = tuple(sorted((a, b)))
-                if any((key, tt) in out for tt in K.TICKETS):
-                    continue
-                km = abs(mb - ma) * 0.95
-                base = {"Season": 2050 + 330 * km, "Anytime": 390 + 21.5 * km, "Off-Peak": 280 + 14.2 * km,
-                        "Advance": 220 + 9.1 * km}
-                for tt in K.TICKETS:
-                    before = int(round(base[tt] / 10.0)) * 10
-                    after = int(round(before * (1 + K.FARE_CHANGE[tt] / 100.0) / 10.0)) * 10
-                    out[(key, tt)] = (before, after)
-    return out
-
-
-FARES = fare_table()
-
-
-def fare_change(a, b, ticket):
-    before, after = FARES[(tuple(sorted((a, b))), ticket)]
-    return (after / before - 1.0) * 100.0
-
-
-class Timetable:
-    """One working timetable: every train's calls with public times (local), by day type."""
-
-    def __init__(self, label, recast):
-        self.label = label
-        self.trains = []          # dicts: uid, headcode, group, dir, daytype, calls [(station, arr_min, dep_min)]
-        rg = rng_for("tt", label)
-        uid_base = {"Dec24": 41000, "Dec25": 57000}[label]
-        n = 0
-        for g in K.GROUP_ORDER:
-            calls = K.GROUPS[g]["calls"]
-            run = calls[-1][1]
-            extra = {"MAIN": 2, "LINK": 3}.get(g, 0) if recast else 0     # the Dec25 recast adds running time
-            for dtp in ("WD", "SA", "SU"):
-                deps = self.departures(g, dtp, recast)
-                for direction in ("up", "down"):
-                    seq = calls if direction == "down" else [(s, run - m) for s, m in reversed(calls)]
-                    offs = 0 if direction == "down" else {"MAIN": 25, "VALE": 20, "COAST": 30, "BRANCH": 28, "LINK": 34}[g]
-                    for i, d0 in enumerate(deps):
-                        start = d0 + offs
-                        cl = []
-                        for j, (st, m) in enumerate(seq):
-                            t = start + m * (1 + extra / max(run, 1)) if m else start
-                            arr = None if j == 0 else round(t)
-                            dep = None if j == len(seq) - 1 else round(t) + (1 if 0 < j else 0)
-                            cl.append((st, arr, dep))
-                        n += 1
-                        self.trains.append(dict(uid="C%05d" % (uid_base + n), group=g, dir=direction, daytype=dtp,
-                                                calls=cl, start=start, idx=i))
-        # the last train out of each group's hub, timed to reach the far end just before midnight
-        for g in K.GROUP_ORDER:
-            calls = K.GROUPS[g]["calls"]
-            run = calls[-1][1]
-            extra = {"MAIN": 2, "LINK": 3}.get(g, 0) if recast else 0
-            arrive = {"MAIN": 23 * 60 + 56, "VALE": 23 * 60 + 55, "COAST": 23 * 60 + 57, "BRANCH": 23 * 60 + 56,
-                      "LINK": 23 * 60 + 58}[g]
-            start = arrive - round(run * (1 + extra / max(run, 1)))
-            for dtp in ("WD", "SA", "SU"):
-                cl = []
-                for j, (st, m) in enumerate(calls):
-                    t = start + m * (1 + extra / max(run, 1)) if m else start
-                    arr = None if j == 0 else round(t)
-                    dep = None if j == len(calls) - 1 else round(t) + (1 if 0 < j else 0)
-                    cl.append((st, arr, dep))
-                n_late = {"WD": 0, "SA": 1, "SU": 2}[dtp] + 3 * K.GROUP_ORDER.index(g)
-                self.trains.append(dict(uid="C%05d" % (uid_base + 900 + n_late), group=g, dir="down", daytype=dtp,
-                                        calls=cl, start=start, idx=99))
-        self.assign_headcodes(rg, recast)
-
-    @staticmethod
-    def departures(g, dtp, recast):
-        first, last = {"MAIN": (6 * 60, 22 * 60), "VALE": (6 * 60 + 15, 22 * 60 + 15),
-                       "COAST": (6 * 60 + 40, 21 * 60 + 40), "BRANCH": (6 * 60 + 50, 22 * 60 + 50),
-                       "LINK": (6 * 60 + 5, 21 * 60 + 5)}[g]
-        if dtp == "SU":
-            first += 120
-        base = list(range(first, last + 1, 60))
-        if dtp != "WD":
-            return base
-        peaks = []
-        if g in ("MAIN", "VALE", "LINK") or (g == "COAST" and recast):
-            for m in base:
-                if 6 * 60 + 30 <= m <= 8 * 60 + 45 or 16 * 60 + 15 <= m <= 18 * 60 + 15:
-                    peaks.append(m + 30)
-        return sorted(base + peaks)
-
-    def assign_headcodes(self, rg, recast):
-        """Headcodes are reused across groups' day types; the Dec25 timetable renumbers each group from a new
-        start, so a 2025 headcode names another train in 2026."""
-        for g in K.GROUP_ORDER:
-            pre = K.GROUPS[g]["prefix"]
-            for dtp in ("WD", "SA", "SU"):
-                for direction in ("up", "down"):
-                    ts = sorted([t for t in self.trains if t["group"] == g and t["daytype"] == dtp and t["dir"] == direction],
-                                key=lambda t: t["start"])
-                    base = (10 if direction == "down" else 50) + (7 if recast else 0)
-                    for k, t in enumerate(ts):
-                        t["headcode"] = "%s%02d" % (pre, (base + k) % 100)
-
-    def for_day(self, d):
-        dtp = day_type(d)
-        return [t for t in self.trains if t["daytype"] == dtp]
+def pag_table(year):
+    """The national estimates by prior attainment group: overall and per element (English and maths double-weighted,
+    the EBacc and open elements three slots each), to two decimals."""
+    rows = []
+    for g in range(1, len(PAG_EDGES)):
+        lo, hi = PAG_EDGES[g - 1], min(PAG_EDGES[g], 120.0)
+        c = (lo + hi) / 2.0
+        a8 = float(national_estimate(c, year))
+        m = a8 / 10.0
+        eng, mat = 2 * min(9, m * 1.04), 2 * min(9, m * 1.01)
+        ebac = 3 * min(9, m * 0.97)
+        opn = a8 - eng - mat - ebac
+        rows.append(dict(pag=g, low=lo, high=hi if g < len(PAG_EDGES) - 1 else 120.0, a8=round(a8, 2),
+                         eng=round(eng, 2), mat=round(mat, 2), ebac=round(ebac, 2), open=round(opn, 2)))
+    return rows
 
 
 class World:
-    def __init__(self):
-        self.tt = {"Dec24": Timetable("Dec24", False), "Dec25": Timetable("Dec25", True)}
-        self.fleet = self.make_fleet()
-        self.unit_by_no = {u["unit"]: u for u in self.fleet}
-        self.runs = []            # one dict per train run on a day
-        for d in K.ALL_DAYS:
-            tt = self.tt["Dec24"] if d < K.TIMETABLE_CHANGE else self.tt["Dec25"]
-            for t in tt.for_day(d):
-                self.runs.append(dict(date=d, t=t, uid=t["uid"], headcode=t["headcode"], group=t["group"]))
-        self.diagrams()
-        self.formations()
-        self.demand()
-        self.movements()
-        self.crew()
+    def __init__(self, seed=None):
+        self.seed = K.SEED if seed is None else seed
+        self.schools()
+        self.primaries()
+        self.feeding()
+        self.pupils()
 
-    # ---------------------------------------------------------------- fleet
-    def make_fleet(self):
-        units = []
-        for i in range(12):        # class 166: six go off lease at the October 2025 cascade
-            units.append(dict(unit="166%03d" % (201 + i), cls="166", off=K.CASCADE if i >= 6 else None, on=None))
-        for i in range(22):        # class 158: four refurbished in summer 2026 (fewer seats, cycle space)
-            units.append(dict(unit="158%03d" % (831 + i), cls="158", off=None, on=None))
-        for i in range(16):        # class 150/2: twelve arrive at the cascade
-            units.append(dict(unit="150%03d" % (241 + i), cls="150/2", off=None, on=K.CASCADE if i >= 4 else None))
-        refurb = [("158834", dt.date(2026, 6, 1), dt.date(2026, 6, 26)), ("158838", dt.date(2026, 6, 29), dt.date(2026, 7, 24)),
-                  ("158841", dt.date(2026, 7, 27), dt.date(2026, 8, 21)), ("158845", dt.date(2026, 8, 24), dt.date(2026, 9, 18))]
-        for u in units:
-            u["refurb"] = None
-            for un, a, b in refurb:
-                if u["unit"] == un:
-                    u["refurb"] = (a, b)
-        return units
+    def r(self, *key):
+        return rng_for(*key, seed=self.seed)
 
-    def unit_class(self, unit, d):
-        u = self.unit_by_no[unit]
-        if u["refurb"] and d >= u["refurb"][1]:
-            return "158/9"
-        return u["cls"]
+    def schools(self):
+        rg = self.r("own effects")
+        S = K.SECONDARIES
+        self.sec = [s[0] for s in S]
+        self.sec_name = {s[0]: s[1] for s in S}
+        self.sec_xy = {s[0]: np.array(s[4]) for s in S}
+        self.attract = {s[0]: s[5] for s in S}
+        u = {s[0]: 0.12 * s[5] + rg.normal(0, 0.11) for s in S}
+        others = [k for k in K.TRUST_KEYS if k != K.FOCAL]
+        m = np.mean([u[k] for k in others])
+        for k in others:
+            u[k] -= m
+        u[K.FOCAL] = K.HALWICK_OWN
+        self.u = u
 
-    def available(self, cls, d):
-        out = []
-        for u in self.fleet:
-            if u["cls"] != cls:
-                continue
-            if u["off"] and d >= u["off"]:
-                continue
-            if u["on"] and d < u["on"]:
-                continue
-            if u["refurb"] and u["refurb"][0] <= d < u["refurb"][1]:
-                continue
-            if rng_for("maint", d.isoformat(), u["unit"]).random() < 0.07:
-                continue
-            out.append(u["unit"])
-        return out
-
-    # ---------------------------------------------------------------- diagrams and formations
-    def lead_class(self, g, d, k):
-        """The class a group's k-th diagram is planned on: VALE lost its class 166s at the cascade, COAST kept
-        them on its first three diagrams."""
-        if g in ("MAIN", "LINK"):
-            return "158"
-        if g == "BRANCH":
-            return "150/2"
-        if d < K.CASCADE:
-            return "166"
-        if g == "COAST" and k < 3:
-            return "166"
-        return "150/2"
-
-    @staticmethod
-    def chain(rs):
-        """Chain runs into unit workings: a unit turns at a terminal after 8 minutes or more."""
-        rs = sorted(rs, key=lambda r: r["t"]["start"])
-        chains = []
-        for r in rs:
-            first = r["t"]["calls"][0]
-            for c in chains:
-                prev = c[-1]["t"]
-                if prev["calls"][-1][0] == first[0] and prev["calls"][-1][1] + 8 <= first[2]:
-                    c.append(r)
-                    break
+    def primaries(self):
+        rg = self.r("primaries")
+        n = len(K.PRIMARY_NAMES)
+        hosts = [k for k in self.sec if k not in ("HAL", "SWF", "OKV")]
+        xy, dep, eal, mu, size = [], [], [], [], []
+        j = 0
+        for p in range(n):
+            if p in K.FEEDERS:
+                ang = 2 * np.pi * p / 7 + rg.normal(0, 0.25)
+                c = self.sec_xy["HAL"] + rg.uniform(0.5, 1.6) * np.array([np.cos(ang), np.sin(ang)])
+                d = rg.uniform(0.40, 0.56)
+            elif p in K.CATHOLIC or p in K.CHURCH:
+                c = np.array([rg.uniform(0.8, 12.6), rg.uniform(0.8, 9.2)])
+                d = float(np.clip(rg.normal(0.24, 0.07), 0.08, 0.45))
             else:
-                chains.append([r])
-        return chains
+                h = hosts[j % len(hosts)]
+                j += 1
+                c = self.sec_xy[h] + rg.normal(0, 0.9, 2)
+                d = float(np.clip(rg.normal(0.26 + 0.06 * (self.attract[h] < 0), 0.09), 0.06, 0.55))
+            xy.append(c)
+            dep.append(d)
+            eal.append(float(np.clip(rg.normal(0.12, 0.07), 0.01, 0.38)))
+            mu.append(float(-1.1 * (d - 0.27) + rg.normal(0, 0.12)))
+            size.append(int(rg.choice([30, 45, 60, 60, 60, 90]) * rg.uniform(0.88, 1.0)))
+        self.p_xy, self.dep, self.eal, self.mu, self.size = np.array(xy), np.array(dep), np.array(eal), np.array(mu), size
+        rv = self.r("primary effects")
+        v = rv.normal(0, K.SD_PRIMARY, n)
+        rest = [p for p in range(n) if p not in K.FEEDERS and p not in K.OTHER_WEAK]
+        v[rest] -= v[rest].mean()
+        for p in K.FEEDERS:
+            v[p] = K.FEEDER_SHORTFALL + rv.normal(0, 0.06)
+        for p in K.OTHER_WEAK:
+            v[p] = K.OTHER_WEAK_SHORTFALL + rv.normal(0, 0.05)
+        self.v = v
 
-    def diagrams(self):
-        by_day = {}
-        for r in self.runs:
-            by_day.setdefault((r["date"], r["group"]), []).append(r)
-        for (d, g), rs in by_day.items():
-            for k, c in enumerate(self.chain(rs)):
-                for r in c:
-                    r["diagram"] = "%s%03d" % (g[0] + g[-1], 101 + k)
-                    r["diag_k"] = k
+    def catchment(self, p):
+        if p in K.FEEDERS:
+            return "HAL"
+        ds = {k: np.linalg.norm(self.p_xy[p] - self.sec_xy[k]) for k in self.sec if k not in ("SWF", "OKV")}
+        return min(ds, key=ds.get)
 
-    def formations(self):
-        """Units per run, without a unit in two places: one lead unit per diagram, then the units left over
-        strengthen the peak trains planned for two units, chain by chain; chains the day's pool cannot cover run
-        short-formed on their lead unit alone."""
-        self.unit_by_no = {u["unit"]: u for u in self.fleet}
-        self.substitutions = []
-        days_ = sorted({r["date"] for r in self.runs})
-        by_day = {}
-        for r in self.runs:
-            by_day.setdefault(r["date"], []).append(r)
-        for d in days_:
-            rs = by_day[d]
-            pools = {}
-            for cls in ("166", "158", "150/2"):
-                pool = self.available(cls, d)
-                rng_for("pool", d.isoformat(), cls).shuffle(pool)
-                pools[cls] = pool
-            lead = {}
-            for g in K.GROUP_ORDER:
-                ks = sorted({r["diag_k"] for r in rs if r["group"] == g})
-                for k in ks:
-                    cls = self.lead_class(g, d, k)
-                    for c2 in (cls, "158", "150/2", "166"):
-                        if pools[c2]:
-                            lead[(g, k)] = pools[c2].pop(0)
-                            if c2 != cls:
-                                self.substitutions.append((d, g, k, cls, c2))
-                            break
-            for r in rs:
-                u = lead[(r["group"], r["diag_k"])]
-                r["units"] = [u]
-            for g in K.GROUP_ORDER:
-                need = []
-                for r in rs:
-                    if r["group"] != g or time_band(d, r["t"]["start"], True) not in (0, 2):
-                        continue
-                    cls = self.unit_class(r["units"][0], d)
-                    if g in ("MAIN", "LINK") or (cls == "150/2" and g in ("VALE", "COAST")):
-                        need.append(r)
-                for c in self.chain(need):
-                    cls = "158" if g in ("MAIN", "LINK") else "150/2"
-                    if pools[cls]:
-                        u = pools[cls].pop(0)
-                        for r in c:
-                            r["units"].append(u)
-                            r.setdefault("tag", {})[u] = c[0]["headcode"]   # the attached unit's recorder keeps
-                                                                             # the headcode it was attached under
-                    else:
-                        for r in c:
-                            r["short"] = True
-            for r in rs:
-                r.setdefault("short", False)
-                r["seats"] = sum(K.CLASSES[self.unit_class(u, d)][1] for u in r["units"])
+    def feeding(self):
+        """Each primary's leavers spread over the secondaries by distance, catchment, faith and how sought after
+        each school is; each secondary's admission number then holds its intake near its planned size (a school
+        constant fitted to the expected flows)."""
+        n = len(K.PRIMARY_NAMES)
+        base = np.zeros((n, len(self.sec)))
+        for p in range(n):
+            c = self.catchment(p)
+            for j, k in enumerate(self.sec):
+                d = np.linalg.norm(self.p_xy[p] - self.sec_xy[k])
+                x = -d / 1.25 + 0.9 * self.attract[k] + (1.7 if k == c else 0.0)
+                if k == "SWF":
+                    x += 3.2 if p in K.CATHOLIC else -1.4
+                if k == "OKV":
+                    x += 1.6 if p in K.CHURCH else -0.6
+                base[p, j] = x
+        size = np.array(self.size, float) * 0.93
+        tgt = np.array([K.PLANNED[k] for k in self.sec], float)
+        tgt = tgt / tgt.sum() * size.sum()
+        cst = np.zeros(len(self.sec))
+        for _ in range(200):
+            lg = base + cst
+            e = np.exp(lg - lg.max(axis=1, keepdims=True))
+            pr = e / e.sum(axis=1, keepdims=True)
+            got = (pr * size[:, None]).sum(axis=0)
+            cst += 0.8 * np.log(tgt / got)
+        self.prob = {p: pr[p] for p in range(n)}
 
-    # ---------------------------------------------------------------- passengers
-    BOARD = {   # passengers boarding per station per train, by group, inbound peak (scaled by band and direction)
-        "MAIN": 83.0, "VALE": 46.0, "COAST": 40.0, "BRANCH": 18.0, "LINK": 68.0}
-    GROWTH = {"MAIN": 1.18, "VALE": 1.07, "COAST": 1.05, "BRANCH": 1.04, "LINK": 1.17}
+    def pupils(self):
+        rows = []
+        for year in K.COHORTS:
+            for p in range(len(K.PRIMARY_NAMES)):
+                rg = self.r("cohort", year, p)
+                n = int(round(self.size[p] * rg.uniform(0.86, 1.0)))
+                ss = rg.choice(len(self.sec), n, p=self.prob[p])
+                for i in range(n):
+                    rows.append(self.pupil(rg, year, p, self.sec[ss[i]], self.v[p], self.dep[p], self.eal[p], self.mu[p]))
+            for k in self.sec:          # pupils who sat key stage 2 outside the borough
+                rg = self.r("incomers", year, k)
+                for i in range(int(rg.integers(5, 12))):
+                    rows.append(self.pupil(rg, year, -1, k, rg.normal(0, K.SD_PRIMARY), float(rg.uniform(0.15, 0.4)),
+                                           0.18, float(rg.normal(-0.1, 0.2))))
+        self.D = pd.DataFrame(rows)
 
-    def demand(self):
-        """Each run's passengers by origin and destination (Poisson), its load after every departure."""
-        for r in self.runs:
-            t, d, g = r["t"], r["date"], r["group"]
-            calls = [c[0] for c in t["calls"]]
-            n = len(calls)
-            inbound = calls[-1] in ("MVC", "SEN")
-            band = time_band(d, t["start"], inbound)
-            hub = n - 1 if inbound else 0
-            bf = {0: 1.0 if inbound else 0.40, 1: 0.30, 2: 1.0 if not inbound else 0.38, 3: 0.19, 4: 0.33}[band]
-            if day_type(d) == "SU":
-                bf *= 0.85
-            grow = self.GROWTH[g] if d >= K.WAVES[2026][0] else 1.0
-            if d >= K.LATEST[0]:
-                grow *= 1.02
-            base = self.BOARD[g] * bf * grow
-            rg = rng_for("od", d.isoformat(), r["uid"])
-            day_f = float(np.exp(rg.normal(0, 0.16)))
-            od = np.zeros((n, n), dtype=int)
-            for i in range(n - 1):
-                dests = np.arange(i + 1, n)
-                w = np.where(dests == hub, 3.2, 1.0) * (1.0 + 0.15 * (dests - i))
-                lam = base * day_f * (1.25 if i == 0 and not inbound else 1.0) * (0.55 if inbound and i == 0 else 1.0)
-                if not inbound and i == 0:
-                    lam *= 3.0
-                tot = rg.poisson(lam)
-                if tot:
-                    od[i, dests] = rg.multinomial(tot, w / w.sum())
-            load = [int(od[:i + 1, i + 1:].sum()) for i in range(n - 1)]
-            r["od"] = od
-            r["load"] = load                 # passengers on board after departing call i (i = 0 .. n-2)
-
-    # ---------------------------------------------------------------- movements
-    def movements(self):
-        """Delay at the origin and along the run, cancellations in full or part. The Dec25 recast on MAIN and
-        LINK lengthened the run but dwell times run longer than planned, so lateness rises there."""
-        for r in self.runs:
-            t, d, g = r["t"], r["date"], r["group"]
-            rg = rng_for("mv", d.isoformat(), r["uid"])
-            u = rg.random()
-            r["cancel"] = None
-            if u < 0.011:
-                r["cancel"] = "full"
-            elif u < 0.017:
-                r["cancel"] = "part"
-            worse = 1.0
-            if d >= K.TIMETABLE_CHANGE and g in ("MAIN", "LINK"):
-                worse = 1.9
-            elif d >= K.TIMETABLE_CHANGE:
-                worse = 1.25
-            x = rg.random()
-            delay = 0.0 if x < 0.62 else (rg.uniform(0, 2.5) if x < 0.90 else (rg.uniform(2, 7) if x < 0.975 else rg.uniform(5, 22)))
-            acts = []
-            for j, (st, arr, dep) in enumerate(t["calls"]):
-                if j:
-                    delay = max(0.0, delay + rg.normal(0.12 * worse, 0.40 * worse) + (rg.exponential(2.5 * worse) if rg.random() < 0.02 * worse else 0.0) - 0.12)
-                a = None if arr is None else arr + delay
-                dd = None if dep is None else dep + delay + (rg.uniform(0, 0.8) if j else 0)
-                acts.append((st, a, dd))
-            if r["cancel"] == "part":
-                stop = int(rg.integers(1, len(acts) - 1))
-                acts = acts[:stop + 1]
-                acts[-1] = (acts[-1][0], acts[-1][1], None)
-            r["acts"] = acts
-
-    # ---------------------------------------------------------------- crew
-    def crew(self):
-        """On-board staff by run. In the waves (the as-worked archive) every train carried a conductor unless the
-        turn went uncovered until the February 2026 host model, after which VALE, COAST and BRANCH trains carry a
-        host on part of their diagrams. In the baseline window (the new rostering platform) a turn belongs to a
-        diagram: rostered, or off sick or never filled, when a spare may cover it by amendment."""
-        host_from = dt.date(2026, 2, 8)
-        latest = set(K.WINDOWS["latest"])
-        turns = {}
-        for r in self.runs:
-            d, g = r["date"], r["group"]
-            if d in latest:
-                key = (d, r["diagram"])
-                if key not in turns:
-                    rg = rng_for("turn", d.isoformat(), r["diagram"])
-                    conductor = g in ("MAIN", "LINK")
-                    exists = rg.random() < (0.97 if conductor else 0.46)
-                    t = None
-                    if exists:
-                        u = rg.random()
-                        status = "Rostered" if u < 0.88 else ("Sick" if u < 0.96 else "Vacant")
-                        staff = "%s%05d" % ("C" if conductor else "H", int(rg.integers(10000, 99999))) if status != "Vacant" else ""
-                        cover = ""
-                        if status != "Rostered" and rg.random() < 0.6:
-                            cover = "S%05d" % int(rg.integers(10000, 99999))
-                        eve = bool(cover) and (status == "Vacant" or rg.random() < 0.45)   # a vacancy is known the day before
-                        t = dict(grade="Conductor" if conductor else "Host", staff=staff, status=status, cover=cover,
-                                 reason={"Sick": "Sickness", "Vacant": "Vacancy"}.get(status, ""),
-                                 logged=hm(int(rg.integers(19 * 60, 22 * 60 + 30)) if eve else
-                                           int(rg.integers(4 * 60 + 30, 7 * 60))),
-                                 logged_day_before=eve)
-                    turns[key] = t
-                t = turns[key]
-                r["turn"] = t
-                r["staffed"] = bool(t and (t["status"] == "Rostered" or t["cover"]))
-                r["role"] = t["grade"] if r["staffed"] else ""
-                r["staff_ref"] = (t["staff"] if t["status"] == "Rostered" else t["cover"]) if r["staffed"] else ""
-                continue
-            rg = rng_for("crew", d.isoformat(), r["diagram"])
-            r2 = rng_for("crewrun", d.isoformat(), r["uid"])
-            if d < host_from or g in ("MAIN", "LINK"):
-                p_none = 0.10 if g in ("BRANCH",) else 0.085
-                if d >= host_from:
-                    p_none = 0.17
-                role = "Conductor"
-            else:
-                p_none = {"VALE": 0.64, "COAST": 0.60, "BRANCH": 0.55}[g]
-                role = "Host"
-            r["staffed"] = bool(r2.random() >= p_none)
-            r["role"] = role if r["staffed"] else ""
-            r["staff_ref"] = ("%s%05d" % ("C" if role == "Conductor" else "H", int(rg.integers(10000, 99999)))) if r["staffed"] else ""
+    def pupil(self, rg, year, p, s, v, dep, eal, mu):
+        girl = rg.random() < 0.49
+        dis = rg.random() < dep
+        sen = "E" if rg.random() < 0.025 else ("K" if rg.random() < 0.12 else "N")
+        e = rg.random() < 0.12
+        ab = rg.normal(mu - 0.30 * dis - 0.55 * (sen == "K") - 1.3 * (sen == "E"), 0.95)
+        rd = float(np.clip(np.round(104 + 6.6 * ab + rg.normal(0, 3.4)), 80, 120))
+        ma = float(np.clip(np.round(104 + 6.6 * ab + rg.normal(0, 3.4)), 80, 120))
+        no_ks2 = rg.random() < (0.02 if p >= 0 else 0.22)
+        possible = int(rg.integers(250, 266))
+        rate = float(np.clip(rg.gamma(2.0, 2.9) + 3.2 * dis + 6.5 * (dep - 0.27)
+                             + rg.normal(0, 1.0), 0.0, 75.0))
+        missed = int(round(rate * possible / 100.0))
+        unauth = int(round(missed * float(np.clip(rg.beta(2, 5) + 0.15 * dis, 0, 1))))
+        absr = 100.0 * missed / possible
+        ks2 = (rd + ma) / 2.0
+        g, centre = pag(ks2)
+        est = float(national_estimate(centre, year))
+        p8t = (K.BOROUGH_LEVEL + self.u[s] + v + K.B_ABSENCE * (absr - 8.5) + K.B_DISADV * dis
+               + K.B_GIRL * (girl - 0.49) + (K.B_SEN_K if sen == "K" else K.B_SEN_E if sen == "E" else 0.0)
+               + K.B_EAL * e + rg.normal(0, K.SD_PUPIL))
+        a8t = est + 10.0 * p8t
+        m = float(np.clip(a8t / 10.0, 0.0, 9.0))
+        gr = np.clip(np.round(m + rg.normal(0, 0.55, 8)), 0, 9)
+        if m < 1.2:
+            gr[rg.random(8) < 0.35] = 0
+        a8 = float(2 * gr[0] + 2 * gr[1] + gr[2:5].sum() + gr[5:8].sum())
+        p8 = round((a8 - est) / 10.0, 2)
+        return dict(year=year, p=p, s=s, girl=float(girl), dis=float(dis), sen=sen, eal=float(e), ks2_read=rd,
+                    ks2_mat=ma, ks2=ks2, no_ks2=no_ks2, pag=int(g), est=round(est, 2), possible=possible,
+                    missed=missed, unauth=unauth, absr=absr, eng=int(gr[0]), mat=int(gr[1]),
+                    ebac=float(gr[2:5].sum()), opn=float(gr[5:8].sum()), a8=a8,
+                    p8=(np.nan if no_ks2 else p8), v=v)

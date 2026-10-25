@@ -1,34 +1,36 @@
 {
   "task": "task121",
   "owner": "sathay3012",
-  "status": "DESIGN",
+  "status": "PAUSED",
   "domain": "education-learning-sciences",
   "objective": "root-cause",
-  "stage": 2,
-  "stage_name": "design",
+  "stage": 1,
+  "stage_name": "draw",
   "updated": "2026-10-25",
   "stump": "The default path takes Progress 8 at its word that the key stage 2 baseline nets the intake, fits the school-effects model of pupils within secondaries with attendance and disadvantage, and ends on the academy's own effect, about 0.15 of the 0.15 gap; a cross-classified model of the borough's pupils (secondary by primary) books the remainder to seven feeder primaries' carried effect and leaves the academy's own effect near nil.",
   "architecture": 5,
   "loops": 0,
   "precut": {
-    "exit": null,
-    "date": ""
+    "exit": 0,
+    "date": "2026-10-25",
+    "checks": 51
   },
   "leak": {
-    "leak_py": "",
-    "reader": ""
+    "leak_py": "REVIEW (answered: a coincident 1.5 in the technical award points and -0.14 in the paper's published table; generic vocabulary; academy names beside figures that rank nothing on the decision)",
+    "reader": "Gate F failed: reader A exit 1 (verdict no, feeder legacy), reader B exit 0 (default path); Annex A 15 and 16 of 16"
   },
   "duplicate_check": {
-    "heart": "",
-    "nearest": "task157 0.07"
+    "heart": "WARN (repeat.gate_g against task303, repeat.deliverables against task485)",
+    "nearest": "task157 0.07",
+    "surface": "exit 0"
   },
   "judge": {
-    "verdict": "",
-    "disposition": "",
-    "report": ""
+    "verdict": "NOT_DETERMINISTIC",
+    "disposition": "SEND_BACK",
+    "report": "determinism_check_report.md"
   },
   "returned": [],
-  "resume": "Architecture 5 drawn 2026-10-25 (card registered, guard WARN repeat.gate_g only). Stage 2: ladder, fork table, closure, asks and prompt to precut exit 0, then the generator (borough transfer file, 14 secondaries, cross-feeding primaries, Progress 8 from a national table by prior attainment group).",
+  "resume": "Architecture 5 spent at stage 4 on 2026-10-25 (reader A landed the verdict through the feeder primaries; the judge SEND_BACK on Annex B). Re-root at the draw in a fresh world, architecture 6, Root-Cause; read DESIGN_NOTE.md Tried and rejected first, every dead architecture and screen there stays dead.",
   "approved": null,
   "delivered": null,
   "portal": null,
@@ -90,6 +92,22 @@
       },
       "stump": "The tracker industry's derived importance on the ten attribute ratings files on-board staffing, 2 points, because passengers on a crowded train mark every aspect down; the ratings beside the linked conditions leave crowding at 1 point and the cascade comparison at none; the fall attributed through the conditions each surveyed journey ran under files crowding, 3 of the 5.2 points."
     },
-    "architecture_5": "v5 Halwick Academy's Progress 8 gap against the primary schools its pupils came from (cross-classified school effects): drawn 2026-10-25"
+    "architecture_5": "v5 Halwick Academy's Progress 8 gap against the primary schools its pupils came from (cross-classified school effects): drawn 2026-10-25",
+    "architecture_5_stage4": {
+      "date": "2026-10-25",
+      "reader_a": "score_reader exit 1: call.verdict 'no' hit (feeder legacy found by ks2_urn grouping and key stage 2 school effects), walk filed two-level (own -0.2 largest); asks 20 of 38 (Annex A 15 of 16)",
+      "reader_b": "score_reader exit 0 on the call: 'yes', own -0.245; Annex A 16 of 16",
+      "annex_b": "both readers executed the filed January-census cohort (1,514, 38 leavers at nil) and agree in 16 cells; the golden used the results-file cohort (1,476)",
+      "judge": "NOT_DETERMINISTIC, SEND_BACK (competing_defensible_answer on Annex B's cohort); main call and Annex A reproduced, own -0.023, remainder -0.224; Gate H analytical",
+      "fate": "spent on Gate F (reader A landed the verdict) and the judge's SEND_BACK"
+    }
+  },
+  "build": {
+    "checks": "116 run, 0 failed",
+    "verifier": "PASS (40 figures)",
+    "byte_identical": true,
+    "figures_check": "86 of 86",
+    "cracker": "0 of 32 ask figures, pair ceiling 28.5",
+    "target_zip_md5": "7cad62bc324a0e6164650cd30920f94a"
   }
 }

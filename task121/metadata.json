@@ -1,127 +1,96 @@
 {
- "answer": "Crowding accounts for most of the fall: 3 of the 5.2 points by which the share of passengers satisfied overall fell, from 86.4% in spring 2025 to 81.2% in spring 2026",
+ "answer": "No: the academy's own effect accounts for almost none of Halwick's Progress 8 gap to the trust (0.0 of -0.4 points); the largest item is the remainder (-0.2), the shortfall its pupils bring from the seven primary schools that send it most of its intake, ahead of attendance (-0.1) and disadvantage (-0.1)",
  "deliverables": [
-  "satisfaction_fall_spring2026.xlsx",
-  "satisfaction_bridge_spring2026.png"
+  "halwick_progress8_walk_2022_2024.xlsx",
+  "halwick_progress8_walk.png"
  ],
  "distractor_files": [
-  "target/customer_contacts_2025_2026.csv",
-  "target/delay_attribution_spring2026.csv"
+  "target/brantholme_school_workforce_nov2025.xlsx",
+  "target/brantholme_school_funding_2025_26.xlsx"
  ],
- "domain": "Marketing & Consumer Research (customer satisfaction driver analysis)",
+ "domain": "Education & Learning Sciences (multilevel school effects research)",
  "objective": "Root-Cause Analysis",
  "provenance": {
-  "cst_fieldwork_log_spring2025_spring2026.csv": {
+  "brantholme_establishments_2026.csv": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "cst_responses_spring2025_spring2026.csv": {
+  "brantholme_ks2_ks4_transfer_2022_2024.csv": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "cst_technical_note_spring2026.pdf": {
+  "brantholme_school_funding_2025_26.xlsx": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "cst_topline_report_spring2026.pdf": {
+  "brantholme_school_workforce_nov2025.xlsx": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "customer_contacts_2025_2026.csv": {
+  "brantholme_transfer_file_guide_2026.pdf": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "daily_formations_2025_2026.csv": {
+  "ks4_measures_summary_2026.pdf": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "delay_attribution_spring2026.csv": {
+  "ks4_performance_tables_brantholme_2022_2024.csv": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "fares_change_jan2026.csv": {
+  "larkhollow_attendance_2025_26.csv": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "fleet_register_2026.xlsx": {
+  "larkhollow_attendance_reporting_2025_26.pdf": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "loadweigh_departures_2025_2026.csv": {
+  "larkhollow_exam_results_summer2025.csv": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "onboard_crew_as_worked_mar2025_apr2026.csv": {
+  "larkhollow_exam_results_summer2026.csv": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "onboard_roster_amendments_aug_sep_2026.csv": {
+  "larkhollow_in_year_movements_2025_26.csv": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "onboard_roster_aug_sep_2026.csv": {
+  "progress8_national_estimates_2022_2024.xlsx": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   },
-  "operating_extracts_field_notes.txt": {
+  "trustees_paper6_halwick_progress8_2026.pdf": {
    "date": "2026-10-23",
    "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
-  },
-  "service_quality_measures_schedule7.pdf": {
-   "date": "2026-10-23",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
-  },
-  "station_reference.csv": {
-   "date": "2026-10-23",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
-  },
-  "train_movements_2025_2026.csv": {
-   "date": "2026-10-23",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
-  },
-  "working_timetable_dec2024_dec2025.csv": {
-   "date": "2026-10-23",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
-  },
-  "wrp_recovery_plan_requirement_2026.pdf": {
-   "date": "2026-10-23",
-   "licence": "CC0 1.0 (constructed for this task)",
-   "source": "constructed by the task generator (seeded); Marlvale Trains, the Western Rail Partnership, Harcourt Rowe Research, their network, people and records are fictional; the records follow the forms of a train operator's working timetable, train movement, load-weigh, formation and crew exports and of a customer satisfaction tracker's data file"
+   "source": "constructed by the task generator (seeded); Larkhollow Academies Trust, Brantholme Metropolitan Borough Council, the borough of Brantholme, their schools, people and records are fictional; the records follow the forms of a local authority's key stage 2 to key stage 4 pupil file, the Department for Education's performance tables and Progress 8 estimates, and a multi-academy trust's attendance, movements and examination results exports"
   }
  },
  "rows": {
-  "cst_fieldwork_log_spring2025_spring2026.csv": 1588,
-  "cst_responses_spring2025_spring2026.csv": 17773,
-  "customer_contacts_2025_2026.csv": 7724,
-  "daily_formations_2025_2026.csv": 24598,
-  "delay_attribution_spring2026.csv": 30,
-  "fares_change_jan2026.csv": 360,
-  "loadweigh_departures_2025_2026.csv": 202961,
-  "onboard_crew_as_worked_mar2025_apr2026.csv": 11600,
-  "onboard_roster_amendments_aug_sep_2026.csv": 26,
-  "onboard_roster_aug_sep_2026.csv": 405,
-  "station_reference.csv": 27,
-  "train_movements_2025_2026.csv": 227728,
-  "working_timetable_dec2024_dec2025.csv": 6712
+  "brantholme_establishments_2026.csv": 84,
+  "brantholme_ks2_ks4_transfer_2022_2024.csv": 9842,
+  "ks4_performance_tables_brantholme_2022_2024.csv": 42,
+  "larkhollow_attendance_2025_26.csv": 43134,
+  "larkhollow_exam_results_summer2025.csv": 12004,
+  "larkhollow_exam_results_summer2026.csv": 11400,
+  "larkhollow_in_year_movements_2025_26.csv": 833
  },
  "task": "task121",
- "title": "Marlvale Trains: which service driver accounts for most of the fall in passengers satisfied, spring 2025 to spring 2026"
+ "title": "Larkhollow Academies Trust: whether Halwick Academy's own effect accounts for most of its Progress 8 gap to the trust average, 2022 to 2024"
 }

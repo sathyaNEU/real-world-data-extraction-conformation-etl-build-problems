@@ -1,6 +1,5 @@
-"""The pack's documents: the agency's technical note and topline report for the spring 2026 wave, the Western Rail
-Partnership's letter requiring the recovery plan, the contract's Schedule 7 (service quality measures and
-drivers), and the fleet register workbook."""
+"""The pack's documents: the director of education's paper to the trustees, the council's guide to the transfer file,
+the trust's summary of the 2026 key stage 4 measures and its attendance reporting note."""
 from __future__ import annotations
 
 from reportlab import rl_config
@@ -12,7 +11,7 @@ from reportlab.lib.styles import ParagraphStyle                                 
 from reportlab.lib.units import mm                                                  # noqa: E402
 from reportlab.pdfbase import pdfmetrics                                            # noqa: E402
 from reportlab.pdfbase.ttfonts import TTFont                                        # noqa: E402
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle, PageBreak   # noqa: E402
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle   # noqa: E402
 
 import common as K   # noqa: E402
 
@@ -24,12 +23,14 @@ for nm, f in (("Sans", "LiberationSans-Regular"), ("Sans-B", "LiberationSans-Bol
 pdfmetrics.registerFontFamily("Sans", normal="Sans", bold="Sans-B", italic="Sans-I", boldItalic="Sans-B")
 pdfmetrics.registerFontFamily("Serif", normal="Serif", bold="Serif-B", italic="Serif-I", boldItalic="Serif-B")
 INK, GREY, RULE = colors.HexColor("#1b2430"), colors.HexColor("#56616c"), colors.HexColor("#b8c0c8")
-TEAL = colors.HexColor("#0f5c63")
-PLUM = colors.HexColor("#4b2a55")
-SLATE = colors.HexColor("#2e3f50")
+GREEN = colors.HexColor("#1f5e4a")
+NAVY = colors.HexColor("#22355a")
+RUST = colors.HexColor("#7a3b1d")
+
+NAMES = {s[0]: s[1] for s in K.SECONDARIES}
 
 
-def styles(face="Sans", accent=TEAL):
+def styles(face="Sans", accent=GREEN):
     b = face + "-B"
     body = ParagraphStyle("b", fontName=face, fontSize=10.0, leading=13.6, textColor=INK, spaceAfter=5)
     return dict(
@@ -58,7 +59,7 @@ def _frame(left, right):
     return draw
 
 
-def _table(S, rows, widths, right=(), head_bg=colors.HexColor("#e8eef0")):
+def _table(S, rows, widths, right=(), head_bg=colors.HexColor("#e6ede9")):
     data = [[Paragraph(str(c), S["cellb"] if i == 0 else S["cell"]) for c in r] for i, r in enumerate(rows)]
     t = Table(data, colWidths=widths, repeatRows=1)
     st = [("LINEBELOW", (0, 0), (-1, 0), 0.6, RULE), ("LINEBELOW", (0, -1), (-1, -1), 0.4, RULE),
@@ -76,260 +77,184 @@ def _doc(path, title, author, subject, left, right):
                              producer=author), _frame(left, right)
 
 
-def write_technote(path, stats):
-    S = styles("Sans", TEAL)
-    doc, fr = _doc(path, "Customer Satisfaction Tracker: technical note, spring 2026", K.AGENCY,
-                   "Technical note", K.AGENCY + " for " + K.OPERATOR, "CST technical note, spring 2026")
+def write_paper(path, tables):
+    S = styles("Serif", GREEN)
+    doc, fr = _doc(path, "Paper 6: Halwick Academy, the Progress 8 gap", K.PEOPLE["director"], "Board of Trustees",
+                   K.TRUST + ", Board of Trustees, 9 December 2026", "Paper 6 (draft for the chair's briefing)")
     P = lambda t, s="body": Paragraph(t, S[s])
-    f = [P("Customer Satisfaction Tracker", "h1"),
-         P("Technical note for the spring 2025 and spring 2026 waves. Prepared for %s by %s. Version 1.1, "
-           "11 May 2026. Contact: %s, Associate Director." % (K.OPERATOR, K.AGENCY, K.PEOPLE["agency"]), "meta"),
-         P("1. What the tracker measures", "h2"),
-         P("The tracker asks passengers about the journey they are making on the day they are given a "
-           "questionnaire. It has run in a spring wave and an autumn wave each year since 2021; this note covers "
-           "the two spring waves the operator compares year on year."),
-         P("2. Sample design", "h2"),
-         P("Trains are sampled from the operator's working timetable for the fieldwork weeks, in strata defined by "
-           "service group (Marlvale Main Line, Hollin Vale, Coastway, Pellow Branch, Corrington Link) and time band "
-           "(weekday morning peak, inter-peak, evening peak and evening, and weekends). A fieldworker boards the "
-           "sampled train at one of its stations, rides it to a later station and hands a questionnaire to every "
-           "passenger aboard in the unit or units covered (on a train of two units the fieldworker usually covers "
-           "one). Trains due at their last station after 23:45 are not sampled. The fieldwork log records each "
-           "batch: the train, the stations between which the fieldworker rode, the units covered and the "
-           "questionnaires handed out."),
-         P("Passengers return the questionnaire by freepost or complete it online with the serial printed on it. "
-           "Questionnaires received up to 28 days after the end of fieldwork are included. Spring 2025 fieldwork "
-           "ran from %s to %s, spring 2026 from %s to %s." % (
-               K.WAVES[2025][0].strftime("%-d %B %Y"), K.WAVES[2025][1].strftime("%-d %B %Y"),
-               K.WAVES[2026][0].strftime("%-d %B %Y"), K.WAVES[2026][1].strftime("%-d %B %Y"))),
-         _table(S, [["Wave", "Batches", "Questionnaires handed out", "Returned", "Return rate"]] + [
-             [w, "{:,}".format(stats["batches"][w]), "{:,}".format(stats["issued"][w]),
-              "{:,}".format(stats["returned"][w]), "%.1f%%" % (100.0 * stats["returned"][w] / stats["issued"][w])]
-             for w in (2025, 2026)], [32 * mm, 22 * mm, 46 * mm, 26 * mm, 26 * mm], right=(1, 2, 3, 4)),
-         P("Source: %s fieldwork records." % K.AGENCY, "note"),
-         P("3. Questionnaire", "h2"),
-         P("Q1 asks how satisfied the passenger was with this journey overall, on a five-point scale (very "
-           "satisfied, fairly satisfied, neither satisfied nor dissatisfied, fairly dissatisfied, very "
-           "dissatisfied). Q5 asks the passenger to rate ten aspects of the journey on the same scale, with a "
-           "no-opinion box; the spring 2026 questionnaire added an eleventh aspect, the Wi-Fi on the train, and "
-           "moved the Q5 block from page 1 to page 2 so the journey questions come first. No wording changed. The "
-           "passenger also writes in the stations they joined and left the train, and gives their ticket type, "
-           "journey purpose, how often they travel and their age band."),
-         _table(S, [["Item", "Aspect rated"]] + [[q.upper(), a] for q, a in K.ITEMS] + [[K.ITEM_2026[0].upper(), K.ITEM_2026[1] + " (spring 2026 only)"]],
-                [22 * mm, 128 * mm]),
-         P("4. Data file conventions", "h2"),
-         P("Ratings are coded 1 (very dissatisfied) to 5 (very satisfied); 9 is the no-opinion box and a blank is "
-           "a question left unanswered. Written-in stations are given as written and, where the coding frame "
-           "recognised them, with their three-letter station code; the remainder are left uncoded. The "
-           "batch identifier links each questionnaire to the fieldwork log."),
-         P("5. Weighting", "h2"),
-         P("Within each wave, returned questionnaires are weighted so that each service group and time band "
-           "carries its share of the passenger journeys made on the operator's trains in the fieldwork weeks, "
-           "from the operator's journey estimates. The weights sum to the number of questionnaires returned in the "
-           "wave. All results the agency reports are weighted."),
-         P("6. Reporting", "h2"),
-         P("A passenger is satisfied when they answer very or fairly satisfied (codes 4 and 5). Percentages are "
-           "of those who answered the question: the no-opinion box and blanks are left out of the base for that "
-           "question. Changes between waves are in percentage points."),
-         P("The tracker is a sample: changes of less than about two points in the overall result, or of less "
-           "than about four points for a single service group, are within the range sampling alone produces "
-           "between waves.", "note")]
+    by = {}
+    for r in tables:
+        by.setdefault(r[0], {})[r[2]] = r[5]
+    urn = {v: k for k, v in K.SEC_URN.items()}
+    rows = [["Academy", "2021/22", "2022/23", "2023/24"]]
+    for k in K.TRUST_KEYS:
+        rows.append([NAMES[k]] + [by[K.SEC_URN[k]][y] for y in ("2021/22", "2022/23", "2023/24")])
+    f = [P(K.TRUST, "h1"),
+         P("Board of Trustees, 9 December 2026. Paper 6, for decision. From %s, Director of Education. Draft of 23 "
+           "October 2026 for the chair's briefing." % K.PEOPLE["director"], "meta"),
+         P("Halwick Academy: the Progress 8 gap and the 2027 school improvement plan", "h2"),
+         P("1. Purpose", "h2"),
+         P("At its meeting on 24 September the board asked how much of Halwick Academy's gap to the rest of the trust "
+           "on Progress 8 is the academy's own doing, before it votes the 2027 school improvement plan in December. "
+           "This paper sets out what the board asked for, so that the analysis answers that question as the board "
+           "put it. The figures follow in the analysis workbook, with the two annexes the board asked for."),
+         P("2. Where Halwick stands", "h2"),
+         P("Progress 8 as published for the trust's academies (the Department's revised figures):"),
+         _table(S, rows, [62 * mm, 30 * mm, 30 * mm, 30 * mm], right=(1, 2, 3)),
+         P("Source: Department for Education, key stage 4 performance tables (revised), 2021/22 to 2023/24.", "note"),
+         P("Halwick's Progress 8 has been the lowest in the trust in each of the last three published years. There is "
+           "no Progress 8 for 2024/25 or 2025/26: the key stage 2 tests those cohorts would have sat in 2020 and 2021 "
+           "were cancelled, so these three cohorts are the last the measure covers."),
+         P("3. What the board asked for", "h2"),
+         P("The board asked for Halwick's gap to the trust average to be walked in four items that add up to the "
+           "gap:"),
+         P("<b>The gap.</b> Halwick's average Progress 8 less the trust's average, over the pupils who finished key "
+           "stage 4 at the trust's eight academies in 2022, 2023 and 2024 and have a Progress 8 score, the three "
+           "cohorts pooled so that each pupil counts once.", "clause"),
+         P("(a)&nbsp;&nbsp;<b>Attendance:</b> the effect of a pupil's year 11 absence rate (sessions missed in the "
+           "autumn and spring terms as a percentage of sessions possible) on their Progress 8, times Halwick's average "
+           "absence rate less the trust's.", "clause"),
+         P("(b)&nbsp;&nbsp;<b>Disadvantage:</b> the effect of being disadvantaged on a pupil's Progress 8, times "
+           "Halwick's share of disadvantaged pupils less the trust's.", "clause"),
+         P("(c)&nbsp;&nbsp;<b>The academy's own effect:</b> how far the Progress 8 of Halwick's pupils differs from "
+           "what the same pupils, with the same attendance, would have made at the trust's average academy, that is "
+           "with the eight academies' own effects averaged over the trust's pupils.", "clause"),
+         P("(d)&nbsp;&nbsp;<b>The remainder:</b> the gap less the other three items.", "clause"),
+         P("Every effect is measured on all the borough's pupils in the three cohorts, in the council's transfer file, "
+           "and is read as it stands, without shrinking it toward the average, the way Progress 8 itself reports a "
+           "school. The walk is given in Progress 8 points to one decimal place: the board has been clear that it "
+           "wants the size of each item, not a precision the cohorts cannot support."),
+         P("4. What the board will decide", "h2"),
+         P("The trust's school improvement budget for 2027 is GBP 640,000. If the academy's own effect is the largest "
+           "item in the walk, the plan puts it into a Halwick improvement programme (curriculum leadership, teaching "
+           "and the academy's leadership capacity). If it is not, the plan follows the largest item instead. The "
+           "analysis should therefore say which item is largest and what lies behind it."),
+         P("5. Annexes the board asked for", "h2"),
+         P("<b>Annex A, attendance in 2025/26.</b> For each academy, the persistent absence rate (the share of its "
+           "pupils missing 10 per cent or more of their possible sessions) and the severe absence rate (50 per cent "
+           "or more), counted as the trust's attendance reporting note sets out.", "clause"),
+         P("<b>Annex B, results in 2026.</b> For each academy, the average Attainment 8 and the EBacc entry rate of "
+           "its 2026 cohort (its pupils in year 11 in 2025/26), as the trust's summary of the 2026 key stage 4 "
+           "measures defines them.", "clause"),
+         P("6. Data", "h2"),
+         P("The council's key stage 2 to key stage 4 transfer file for the borough's fourteen secondary schools "
+           "(2022 to 2024), shared under the data sharing agreement of March 2026; the Department's performance tables "
+           "and Progress 8 estimates; the trust warehouse's attendance extract and movements log for 2025/26; and the "
+           "summer 2025 and summer 2026 results from the trust's examination centres."),
+         P("%s<br/>Director of Education" % K.PEOPLE["director"])]
     doc.build(f, onFirstPage=fr, onLaterPages=fr)
 
 
-def write_topline(path, stats):
-    S = styles("Sans", TEAL)
-    doc, fr = _doc(path, "Customer Satisfaction Tracker: spring 2026 topline", K.AGENCY, "Topline report",
-                   K.AGENCY + " for " + K.OPERATOR, "CST spring 2026 topline")
+def write_guide(path):
+    S = styles("Sans", NAVY)
+    doc, fr = _doc(path, "KS2 to KS4 transfer file: guide for data sharing partners", K.PEOPLE["la"], "Data guide",
+                   K.COUNCIL, "School Performance and Data Team, September 2026")
     P = lambda t, s="body": Paragraph(t, S[s])
-    s25, s26 = stats["overall"][2025], stats["overall"][2026]
-    f = [P("Customer Satisfaction Tracker: spring 2026 topline", "h1"),
-         P("%s for %s. Issued 11 May 2026. Weighted results; the base for each aspect is passengers who "
-           "rated it." % (K.AGENCY, K.OPERATOR), "meta"),
-         P("Overall satisfaction with the journey fell from %.0f%% in spring 2025 to %.0f%% in spring 2026, the "
-           "lowest spring result since the tracker began. Every aspect the questionnaire asks about was rated "
-           "lower than a year earlier. The new Wi-Fi question is reported for the first time." % (s25, s26)),
-         _table(S, [["", "Spring 2025", "Spring 2026", "Change (points)"]] + [
-             ["Satisfied with the journey overall", "%.0f%%" % s25, "%.0f%%" % s26, "%+.0f" % (round(s26) - round(s25))]] + [
-             [a[0].upper() + a[1:], "%.0f%%" % stats["items"][q][2025], "%.0f%%" % stats["items"][q][2026],
-              "%+.0f" % (round(stats["items"][q][2026]) - round(stats["items"][q][2025]))]
-             for q, a in K.ITEMS] + [[K.ITEM_2026[1][0].upper() + K.ITEM_2026[1][1:], "-",
-                                      "%.0f%%" % stats["items"]["q5k"][2026], "-"]],
-                [76 * mm, 26 * mm, 26 * mm, 28 * mm], right=(1, 2, 3)),
-         P("Percentage very or fairly satisfied. Source: %s, Customer Satisfaction Tracker, spring waves." % K.AGENCY, "note"),
-         P("Returns", "h2"),
-         P("Spring 2026: {:,} questionnaires returned from {:,} handed out on {:,} sampled trains; spring 2025: "
-           "{:,} from {:,} on {:,}.".format(stats["returned"][2026], stats["issued"][2026], stats["batches"][2026],
-                                            stats["returned"][2025], stats["issued"][2025], stats["batches"][2025]))]
+    rows = [["Field", "What it holds"],
+            ["pupil_ref", "The council's pseudonymised reference for the pupil; one row per pupil"],
+            ["ks4_year", "Academic year the pupil finished key stage 4 (2021/22, 2022/23 or 2023/24)"],
+            ["ks4_urn, ks4_laestab, ks4_school", "The secondary school the pupil is counted at: the school they were "
+                                                 "on roll at in the January census of year 11"],
+            ["gender, sen_provision, eal", "From the January census of year 11. sen_provision: N none, K SEN support, "
+                                          "E education, health and care plan"],
+            ["disadvantaged", "Y if the pupil was eligible for free school meals at any census in the last six years, "
+                              "looked after, or previously looked after, as at the January census of year 11"],
+            ["ks2_year, ks2_la, ks2_urn", "The year the pupil sat the key stage 2 tests, and the local authority number "
+                                         "and URN of the school they sat them at (397 is Brantholme)"],
+            ["ks2_read_scaled, ks2_mat_scaled", "Key stage 2 reading and mathematics scaled scores (80 to 120)"],
+            ["ks2_prior_attainment", "The average of the two scaled scores, the prior attainment Progress 8 uses"],
+            ["y11_sessions_possible, y11_sessions_auth_absence, y11_sessions_unauth_absence",
+             "Sessions possible and sessions missed (authorised and unauthorised) in the autumn and spring terms of "
+             "year 11, from the termly censuses"],
+            ["att8, att8_english, att8_maths, att8_ebacc, att8_open", "Attainment 8 and its four elements"],
+            ["p8_score", "Progress 8 as the Department calculated it for the pupil; blank where the pupil has no key "
+                         "stage 2 result"]]
+    f = [P(K.COUNCIL, "h1"),
+         P("%s. Key stage 2 to key stage 4 transfer file, 2021/22 to 2023/24: guide for data sharing partners. "
+           "September 2026. Contact: %s, School Performance and Data Manager." % (K.LA_TEAM, K.PEOPLE["la"]),
+           "meta"),
+         P("What the file holds", "h2"),
+         P("One row for every pupil who finished key stage 4 at one of the borough's fourteen state-funded mainstream "
+           "secondary schools in 2021/22, 2022/23 or 2023/24, with their key stage 2 results, their school census "
+           "record and their key stage 4 results. Special schools and the pupil referral unit are not in the file. The "
+           "key stage 4 results and Progress 8 scores are the Department's revised (final) data for each year."),
+         _table(S, rows, [58 * mm, 112 * mm]),
+         P("Notes", "h2"),
+         P("Pupils who arrived in England after key stage 2, or whose results were not recorded, have no Progress 8 "
+           "score; their Attainment 8 is in the file. Pupils who sat key stage 2 outside the borough carry the local "
+           "authority number and URN of the school where they sat it."),
+         P("A school's URN changes when it converts to an academy. The file keeps the URN the school had when the "
+           "pupil sat the tests; the borough's establishment register lists each academy's predecessor URN."),
+         P("Absence covers the autumn and spring terms of year 11 only: the summer term census is not collected for "
+           "pupils in year 11."),
+         P("Data sharing", "h2"),
+         P("Shared with %s under the data sharing agreement of March 2026 for school improvement planning across the "
+           "trust's academies. Do not publish figures for groups of fewer than six pupils." % K.TRUST)]
     doc.build(f, onFirstPage=fr, onLaterPages=fr)
 
 
-def write_requirement(path, stats):
-    S = styles("Serif", PLUM)
-    doc, fr = _doc(path, "Customer satisfaction recovery plan: requirement", K.AUTHORITY, "Recovery plan requirement",
-                   K.AUTHORITY, "Contract Management, ref WRP/CM/2026/118")
+def write_measures(path):
+    S = styles("Sans", RUST)
+    doc, fr = _doc(path, "Key stage 4 measures 2026: a summary for the trust", K.PEOPLE["data"], "KS4 measures",
+                   K.TRUST, "Data and Assessment, September 2026")
     P = lambda t, s="body": Paragraph(t, S[s])
-    s25, s26 = stats["overall"][2025], stats["overall"][2026]
-    f = [P(K.AUTHORITY, "h1"),
-         P("Contract Management. Ref WRP/CM/2026/118. 2 October 2026.", "meta"),
-         P("To: %s, Contract Performance Manager, %s<br/>From: %s, Contract Manager, %s" % (
-             K.PEOPLE["contract"], K.OPERATOR_LTD, K.PEOPLE["authority"], K.AUTHORITY)),
-         P("Subject: Customer satisfaction recovery plan (Schedule 7, paragraph 9)", "h2"),
-         P("The spring 2026 wave of your Customer Satisfaction Tracker reports %.0f%% of passengers satisfied with "
-           "their journey overall, against %.0f%% in spring 2025. Under Schedule 7, paragraph 9, a fall of three "
-           "points or more between spring waves requires a recovery plan. Please submit it by %s." % (
-               s26, s25, K.PLAN_DUE.strftime("%-d %B %Y"))),
-         P("The plan must:"),
-         P("(a)&nbsp;&nbsp;state which of the four service drivers in Part 3 of Schedule 7 (crowding, punctuality, "
-           "on-board staffing and fares) accounts for most of the fall in the share of passengers satisfied overall "
-           "between the spring 2025 and spring 2026 waves, and how many points of the fall it accounts for: the "
-           "points by which the share satisfied would have fallen less had passengers' journeys met that driver as "
-           "they did in spring 2025, the other three as they were;", "clause"),
-         P("(b)&nbsp;&nbsp;fund the remedy for that driver from the Customer Experience Fund for 2027; and", "clause"),
-         P("(c)&nbsp;&nbsp;report the Part 2 measures for each service group for the four weeks ending 19 September "
-           "2026 as the plan's baseline.", "clause"),
-         P("The share satisfied is as the tracker reports it (the agency's technical note). The Partnership will "
-           "review the plan with your Customer Experience Committee before the Fund is drawn."),
-         P("%s<br/>Contract Manager" % K.PEOPLE["authority"])]
+    pts = [["Technical award grade", "Points"], ["Level 2 Distinction*", "8.5"], ["Level 2 Distinction", "7"],
+           ["Level 2 Merit", "5.5"], ["Level 2 Pass", "4"], ["Level 1 Distinction*", "3"], ["Level 1 Distinction", "2"],
+           ["Level 1 Merit", "1.5"], ["Level 1 Pass", "1.25"], ["Unclassified", "0"]]
+    f = [P("Key stage 4 measures 2026", "h1"),
+         P("%s, Data and Assessment. A summary of the Department's key stage 4 performance measures guidance for the "
+           "2026 results, for academies' data leads. %s, Head of Data and Assessment, September 2026." % (
+             K.TRUST, K.PEOPLE["data"]), "meta"),
+         P("Who is counted", "h2"),
+         P("An academy's 2026 cohort is its pupils at the end of key stage 4: those in year 11 on its roll at the "
+           "January 2026 census. Results a pupil achieved in any examination series during key stage 4, in year 10 or "
+           "year 11, count toward the cohort's measures."),
+         P("Attainment 8", "h2"),
+         P("Attainment 8 adds a pupil's points in eight subjects, in three elements:"),
+         P("(a)&nbsp;&nbsp;English: the higher of English language and English literature, double weighted only if the "
+           "pupil took both; the other can count in the open element.", "clause"),
+         P("(b)&nbsp;&nbsp;Mathematics, double weighted.", "clause"),
+         P("(c)&nbsp;&nbsp;The EBacc element: the three highest-scoring of the sciences (biology, chemistry, physics, "
+           "combined science, computer science), history, geography and languages. Combined science counts as two "
+           "qualifications, each scored at the mean of its two grades.", "clause"),
+         P("(d)&nbsp;&nbsp;The open element: the three highest-scoring of the remaining qualifications, including the "
+           "second English, any EBacc subject not used in (c), other GCSEs and approved technical awards.", "clause"),
+         P("A GCSE graded 9 to 1 scores its grade; U scores nothing. Technical awards score as follows:"),
+         _table(S, pts, [60 * mm, 25 * mm], right=(1,)),
+         P("Where two qualifications share a discount code only one counts. For English, mathematics and the EBacc "
+           "subjects it is the pupil's first entry (the earliest series), whatever a later entry achieved; otherwise "
+           "it is the higher-scoring. An academy's average Attainment 8 is the total of its pupils' Attainment 8 over "
+           "the number of pupils in its cohort."),
+         P("EBacc entry", "h2"),
+         P("A pupil is entered for the EBacc if they took English language and English literature, mathematics, "
+           "combined science or two of biology, chemistry, physics and computer science, history or geography, and a "
+           "language. The entry rate is the share of the cohort entered.")]
     doc.build(f, onFirstPage=fr, onLaterPages=fr)
 
 
-def write_schedule(path):
-    S = styles("Serif", SLATE)
-    doc, fr = _doc(path, "Schedule 7: Service Quality", K.AUTHORITY + " and " + K.OPERATOR_LTD, "Contract schedule",
-                   "Marlvale Network Contract", "Schedule 7: Service Quality (consolidated, April 2026)")
+def write_attnote(path):
+    S = styles("Sans", NAVY)
+    doc, fr = _doc(path, "Attendance reporting 2025/26", K.PEOPLE["data"], "Attendance reporting", K.TRUST,
+                   "Data and Assessment, attendance reporting note 2025/26")
     P = lambda t, s="body": Paragraph(t, S[s])
-    f = [P("Schedule 7: Service Quality", "h1"),
-         P("Marlvale Network Contract between the %s and %s. Consolidated text incorporating variations to "
-           "1 April 2026." % (K.AUTHORITY, K.OPERATOR_LTD), "meta"),
-         P("Part 1. General", "h2"),
-         P("1.1&nbsp;&nbsp;Times are those of the working timetable in force on the day, in local time. A train is "
-           "identified by its train identity and the date it runs.", "clause"),
-         P("1.2&nbsp;&nbsp;A service group is the group named in Annex A for the train's route.", "clause"),
-         P("Part 2. Measures", "h2"),
-         P("2.1&nbsp;&nbsp;<b>Punctuality.</b> A train is on time when it arrives at the final destination in the "
-           "working timetable less than five minutes after the time shown there. A train that does not run, or "
-           "does not reach that destination, is not on time. The measure is trains on time as a percentage of "
-           "trains in the working timetable for the day.", "clause"),
-         P("2.2&nbsp;&nbsp;<b>On-board staffing.</b> A train runs with on-board staff when a conductor, a host or a "
-           "member of staff covering their turn works it. The measure is trains that ran with on-board staff as a "
-           "percentage of trains that ran; a train that did not run at all is left out.", "clause"),
-         P("2.3&nbsp;&nbsp;<b>Standing on arrival.</b> For each train in the working timetable to arrive at "
-           "Marlvale Central between 07:00 and 09:59 on a weekday, the passengers on board on arrival less the "
-           "standard-class seats of the train as formed that day, where that is more than nothing; the measure is "
-           "the sum. Passengers on board on arrival are those recorded by the units' load-weigh equipment on "
-           "departure from the station before Marlvale Central.", "clause"),
-         P("Part 3. Service drivers", "h2"),
-         P("3.1&nbsp;&nbsp;The service drivers the Operator reports against are, for a passenger's journey:", "clause"),
-         P("(a)&nbsp;&nbsp;<b>crowding</b>: the train carried more passengers than standard-class seats between any two "
-           "consecutive stations of the passenger's journey;", "sub"),
-         P("(b)&nbsp;&nbsp;<b>punctuality</b>: the train arrived at the passenger's station five minutes or more "
-           "after the working timetable;", "sub"),
-         P("(c)&nbsp;&nbsp;<b>on-board staffing</b>: the train ran without on-board staff (2.2); and", "sub"),
-         P("(d)&nbsp;&nbsp;<b>fares</b>: the change, in per cent, in the price of the passenger's ticket at the "
-           "annual fares change of 4 January 2026.", "sub"),
-         P("Part 4. Customer satisfaction", "h2"),
-         P("9.&nbsp;&nbsp;Where the share of passengers satisfied with their journey overall in the Customer "
-           "Satisfaction Tracker falls by three percentage points or more between spring waves, the Operator shall "
-           "submit a recovery plan within such period as the Partnership notifies.", "clause"),
-         P("Annex A. Service groups: Marlvale Main Line (Marlvale Central to Tregarrow), Hollin Vale (Marlvale "
-           "Central to Hollinford), Coastway (Marlvale Central to Trevose Quay), Pellow Branch (Sennow to Pellow), "
-           "Corrington Link (Marlvale Central to Corrington).", "note")]
+    f = [P("Attendance reporting, 2025/26", "h1"),
+         P("%s, Data and Assessment. How the trust counts attendance for its board, following the Department's "
+           "methodology for school absence statistics. %s, September 2026." % (K.TRUST, K.PEOPLE["data"]), "meta"),
+         P("Measures", "h2"),
+         P("A pupil is persistently absent if they missed 10 per cent or more of their possible sessions, and severely "
+           "absent if they missed 50 per cent or more. Sessions missed are authorised and unauthorised absence; "
+           "approved educational activity counts as attendance. Sessions coded as not possible (pupils not required to "
+           "attend, unable to attend in exceptional circumstances, not yet on roll, or planned closures) are not in "
+           "sessions possible."),
+         P("Who is counted, and where", "h2"),
+         P("Each academy counts its own pupils' sessions while they are on its roll. A pupil who moved between "
+           "academies during the year counts at each academy for the sessions they spent on its roll, their absence "
+           "there judged against their possible sessions there. A rate is the number of the academy's pupils "
+           "persistently (or severely) absent over the number of pupils it counts."),
+         P("Pupils in year 11 count for the autumn and spring terms only, as in the Department's full-year measure: "
+           "most have left by the summer half-term and the remainder are on study leave."),
+         P("Source", "h2"),
+         P("The trust's data warehouse, which takes each academy's registers nightly. The board's figures are taken "
+           "from the extract of 18 September 2026, which holds every half-term of 2025/26 for every pupil on any "
+           "academy's roll during the year.")]
     doc.build(f, onFirstPage=fr, onLaterPages=fr)
-
-
-def write_fleet(path, w):
-    """The fleet register as the fleet engineer keeps it: the units, and the modifications log."""
-    import openpyxl
-    from openpyxl.styles import Font, Alignment, PatternFill
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Units"
-    head = ["Unit", "Class", "Vehicles", "Standard seats", "On lease from", "Off lease", "Depot", "Notes"]
-    ws.append(head)
-    for u in w.fleet:
-        cls = u["cls"]
-        veh, seats = K.CLASSES[cls]
-        on = u["on"].isoformat() if u["on"] else "2019-12-15"
-        off = u["off"].isoformat() if u["off"] else None
-        note = None
-        if cls == "166" and u["off"]:
-            note = "Released to the lessor at the October 2025 cascade"
-        if cls == "150/2" and u["on"]:
-            note = "Cascaded in October 2025"
-        ws.append([u["unit"], "Class " + cls, veh, seats, on, off, "Marlvale TMD", note])
-    ws2 = wb.create_sheet("Modifications")
-    ws2.append(["Unit", "Modification", "Out of service", "Returned to traffic", "Standard seats after"])
-    for u in w.fleet:
-        if u["refurb"]:
-            a, b = u["refurb"]
-            ws2.append([u["unit"], "Interior refresh: cycle area and wheelchair space (C4 exam)", a.isoformat(),
-                        b.isoformat(), K.CLASSES["158/9"][1]])
-    for s in (ws, ws2):
-        for c in s[1]:
-            c.font = Font(bold=True)
-            c.fill = PatternFill("solid", fgColor="DCE6E8")
-        s.freeze_panes = "A2"
-    for col, wd in zip("ABCDEFGH", (10, 12, 9, 15, 14, 12, 14, 48)):
-        ws.column_dimensions[col].width = wd
-    for col, wd in zip("ABCDE", (10, 58, 15, 19, 21)):
-        ws2.column_dimensions[col].width = wd
-    wb.properties.creator = K.PEOPLE["fleet"]
-    wb.save(path)
-
-
-def write_dictionary(path):
-    """Field notes for the operating extracts, as the performance team keeps them beside the exports."""
-    F = K.FILES
-    txt = """MARLVALE TRAINS - OPERATING EXTRACTS: FIELD NOTES
-Performance and Planning, issued with the extracts of 23 October 2026. Times are local (UK) unless a field says
-otherwise. A train is its train identity (headcode) on its run date; train_uid identifies a schedule within one
-working timetable.
-
-{tt}
-  timetable            Dec24 (in force to 13 December 2025) or Dec25 (from 14 December 2025).
-  train_uid            The schedule's identifier in that timetable.
-  headcode             Train identity. Headcodes are reissued at each timetable change.
-  service_group        Code of the service group (Annex A of Schedule 7): MAIN, VALE, COAST, BRANCH, LINK.
-  days_run             MO-FR, SAT or SUN. Bank holidays run the SUN schedules.
-  call_seq, station    Calling order and station code; arr and dep are the public times (blank at the ends).
-
-{mv}
-  One row per recorded arrival or departure. wtt_time is the working timetable time; recorded_time is the time
-  the train describer recorded, to the minute. A train cancelled in full has no rows; a train cancelled part way has
-  rows up to the station where it terminated.
-
-{lw}
-  Passengers on board estimated from each unit's suspension load on departure from a station. Class 166 units
-  report each vehicle (vehicle = unit-number and position); other classes report the unit. Recorder downloads
-  were not recovered for a few units on some days.
-
-{fm}
-  The units that formed each train, from the fleet allocation system as worked. position 1 is the leading unit.
-
-{fl}
-  Units: one row per unit with its class, vehicles and standard seats. Modifications: works that changed a unit's
-  layout, with the date it returned to traffic and its standard seats afterwards.
-
-{cw}
-  One row per train worked by a member of on-board staff (conductor or host), from the as-worked archive
-  (to 30 April 2026). The archive was closed when the new rostering platform went live on 17 May 2026.
-
-{cr}
-  The new rostering platform: one row per on-board turn and day. status is Rostered (worked by the member of
-  staff shown), Sick (the member of staff shown was off sick) or Vacant (the turn was not filled). workings lists
-  the trains in the diagram the turn covers.
-
-{ca}
-  A spare member of staff put on a turn, as the crew controller logged it: amend_date and logged are the date and
-  time of the log entry; original_staff_ref is the member of staff the turn was rostered to (blank for a vacancy).
-
-{fa}
-  Fares by flow and ticket type before and after the annual fares change of 4 January 2026, in pence.
-
-{st}
-  Station codes and names, with the service groups calling there.
-""".format(tt=F["timetable"], mv=F["movements"], lw=F["loadweigh"], fm=F["formations"], fl=F["fleet"],
-           cw=F["crew_worked"], cr=F["crew_roster"], ca=F["crew_amend"], fa=F["fares"], st=F["stations"])
-    with open(path, "w", encoding="utf-8", newline="\r\n") as f:
-        f.write(txt)

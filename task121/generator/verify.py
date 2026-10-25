@@ -1,195 +1,211 @@
-"""Independent verifier for task121 (pandas, its own code path): links each questionnaire to its train and journey,
-recomputes the four drivers' points of the fall and the plan's baselines from target/, and compares them with
-generator/figures.json."""
+"""The independent verifier: every graded figure recomputed from the shipped files by a second code path (the walk
+by dense least squares on dummy columns, the annexes by plain loops over the CSV rows), compared with
+generator/figures.json at the stated rounding.
+
+    python3 task121/generator/verify.py"""
 from __future__ import annotations
 
+import csv
 import json
 import os
-import re
-from datetime import date, timedelta
+import sys
+from decimal import ROUND_HALF_UP, Decimal
 
 import numpy as np
-import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-F = {k: v for k, v in [
-    ("resp", "cst_responses_spring2025_spring2026.csv"), ("field", "cst_fieldwork_log_spring2025_spring2026.csv"),
-    ("tt", "working_timetable_dec2024_dec2025.csv"), ("mv", "train_movements_2025_2026.csv"),
-    ("lw", "loadweigh_departures_2025_2026.csv"), ("form", "daily_formations_2025_2026.csv"),
-    ("fleet", "fleet_register_2026.xlsx"), ("crew", "onboard_crew_as_worked_mar2025_apr2026.csv"),
-    ("roster", "onboard_roster_aug_sep_2026.csv"), ("amend", "onboard_roster_amendments_aug_sep_2026.csv"),
-    ("fares", "fares_change_jan2026.csv"), ("st", "station_reference.csv")]}
-HOLS = {"2026-04-03", "2026-04-06", "2026-08-31"}
-GROUP_CODE = {"Marlvale Main Line": "MAIN", "Hollin Vale": "VALE", "Coastway": "COAST", "Pellow Branch": "BRANCH",
-              "Corrington Link": "LINK"}
+TASK = os.path.dirname(HERE)
+sys.path.insert(0, HERE)
+import common as K   # noqa: E402
+
+NAMES = {s[0]: s[1] for s in K.SECONDARIES}
+TRUST = [NAMES[k] for k in K.TRUST_KEYS]
 
 
-def m(t):
-    h, mi = str(t).split(":")
-    return int(h) * 60 + int(mi)
+def rnd(x, nd):
+    v = float(Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-nd), rounding=ROUND_HALF_UP))
+    s = "%.*f" % (nd, v)
+    return "0.0" if s in ("-0.0", "0.0") and nd == 1 else s
 
 
-def runs_label(d):
-    if d in HOLS:
-        return "SUN"
-    wd = date.fromisoformat(d).weekday()
-    return {5: "SAT", 6: "SUN"}.get(wd, "MO-FR")
+def rows(target, key):
+    with open(os.path.join(target, K.FILES[key]), newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
 
 
-def norm(s):
-    return re.sub(r"[^a-z]", "", str(s).lower())
+def walk(target):
+    reg = rows(target, "register")
+    pred = {r["urn"]: r["predecessor_urn"] for r in reg if r["phase"] == "Primary" and r["predecessor_urn"]}
+    P = [r for r in rows(target, "transfer") if r["p8_score"]]
+    secs = sorted({r["ks4_school"] for r in P})
+    pris = sorted({r["ks2_la"] + "/" + pred.get(r["ks2_urn"], r["ks2_urn"]) for r in P})
+    si = {s: i for i, s in enumerate(secs)}
+    pi = {p: i for i, p in enumerate(pris)}
+    n = len(P)
+    X = np.zeros((n, 2 + len(secs) + len(pris) - 1))
+    y = np.zeros(n)
+    for j, r in enumerate(P):
+        poss = float(r["y11_sessions_possible"])
+        X[j, 0] = 100.0 * (float(r["y11_sessions_auth_absence"]) + float(r["y11_sessions_unauth_absence"])) / poss
+        X[j, 1] = 1.0 if r["disadvantaged"] == "Y" else 0.0
+        X[j, 2 + si[r["ks4_school"]]] = 1.0
+        q = pi[r["ks2_la"] + "/" + pred.get(r["ks2_urn"], r["ks2_urn"])]
+        if q > 0:
+            X[j, 2 + len(secs) + q - 1] = 1.0
+        y[j] = float(r["p8_score"])
+    beta = np.linalg.lstsq(X, y, rcond=None)[0]
+    eff = {s: beta[2 + i] for s, i in si.items()}
+    t = [j for j, r in enumerate(P) if r["ks4_school"] in TRUST]
+    h = [j for j, r in enumerate(P) if r["ks4_school"] == NAMES[K.FOCAL]]
+    gap = y[h].mean() - y[t].mean()
+    att = beta[0] * (X[h, 0].mean() - X[t, 0].mean())
+    dis = beta[1] * (X[h, 1].mean() - X[t, 1].mean())
+    own = np.mean([eff[P[j]["ks4_school"]] for j in h]) - np.mean([eff[P[j]["ks4_school"]] for j in t])
+    return dict(gap=gap, att=att, dis=dis, own=own, rem=gap - att - dis - own,
+                trust=y[t].mean(), halwick=y[h].mean())
 
 
-def main():
-    t = os.path.join(os.path.dirname(HERE), "target")
-    rd = lambda k, **kw: pd.read_csv(os.path.join(t, F[k]), **kw)
-    resp = rd("resp", dtype=str)
-    field = rd("field", dtype=str).set_index("batch_id")
-    tt = rd("tt", dtype=str)
-    tt["seq"] = tt.call_seq.astype(int)
-    mv = rd("mv", dtype=str)
-    lw = rd("lw", dtype={"passengers_est": int})
-    form = rd("form", dtype=str)
-    units = pd.read_excel(os.path.join(t, F["fleet"]), sheet_name="Units", dtype={"Unit": str})
-    mods = pd.read_excel(os.path.join(t, F["fleet"]), sheet_name="Modifications", dtype={"Unit": str})
-    crew = rd("crew", dtype=str)
-    fares = rd("fares")
-    st = rd("st")
+HT = ["Autumn 1", "Autumn 2", "Spring 1", "Spring 2", "Summer 1", "Summer 2"]
+HT_START = ["2025-09-03", "2025-11-03", "2026-01-05", "2026-02-23", "2026-04-13", "2026-06-08"]
+
+
+def annex_a(target):
+    moves = {}
+    for r in rows(target, "movements"):
+        if r["movement"] == "Transfer within trust":
+            moves[r["upn"]] = (r["movement_date"], r["from_school"])
+    tot = {}
+    for r in rows(target, "attendance"):
+        h = HT.index(r["half_term"])
+        yg = int(r["year_group"]) - (1 if r["on_roll"] == "Y" else 0)
+        if yg == 11 and h >= 4:
+            continue
+        acad = r["academy"]
+        mv = moves.get(r["upn"])
+        if mv and HT_START[h] < mv[0]:
+            acad = mv[1]
+        k = (acad, r["upn"])
+        a = tot.setdefault(k, [0, 0])
+        a[0] += int(r["sessions_possible"])
+        a[1] += int(r["sessions_auth_absence"]) + int(r["sessions_unauth_absence"])
+    out = {}
+    for (acad, upn), (poss, miss) in tot.items():
+        o = out.setdefault(acad, [0, 0, 0])
+        o[0] += 1
+        o[1] += miss >= 0.10 * poss
+        o[2] += miss >= 0.50 * poss
+    return {k: (100.0 * v[1] / v[0], 100.0 * v[2] / v[0]) for k, v in out.items()}
+
+
+EB = {"Biology", "Chemistry", "Physics", "Computer Science", "History", "Geography", "French", "Spanish", "Urdu",
+      "Polish"}
+FIRST = EB | {"English Language", "English Literature", "Mathematics", "Combined Science"}
+TA = {"L2D*": 8.5, "L2D": 7.0, "L2M": 5.5, "L2P": 4.0, "L1D*": 3.0, "L1D": 2.0, "L1M": 1.5, "L1P": 1.25, "U": 0.0}
+
+
+def score(r):
+    if r["qualification"] == "Technical Award":
+        return TA[r["grade"]]
+    if r["subject"] == "Combined Science":
+        a, b = r["grade"].split("-")
+        return (float(a) + float(b)) / 2
+    return 0.0 if r["grade"] == "U" else float(r["grade"])
+
+
+def a8(entries):
+    by_code = {}
+    for e in sorted(entries, key=lambda e: e["series"][-4:]):          # earliest series first
+        c = e["discount_code"]
+        if c not in by_code:
+            by_code[c] = e
+        elif e["subject"] not in FIRST and score(e) > score(by_code[c]):
+            by_code[c] = e
+    q = list(by_code.values())
+    s = {e["subject"]: score(e) for e in q}
+    total = 2 * s.get("Mathematics", 0.0)
+    left = []
+    if "English Language" in s and "English Literature" in s:
+        hi, lo = sorted([s["English Language"], s["English Literature"]], reverse=True)
+        total += 2 * hi
+        left.append(lo)
+    elif "English Language" in s or "English Literature" in s:
+        total += s.get("English Language", s.get("English Literature"))
+    ebs = []
+    for e in q:
+        if e["subject"] == "Combined Science":
+            ebs += [score(e)] * 2
+        elif e["subject"] in EB:
+            ebs.append(score(e))
+    ebs.sort(reverse=True)
+    total += sum(ebs[:3])
+    left += ebs[3:]
+    left += [score(e) for e in q if e["subject"] not in FIRST]
+    left.sort(reverse=True)
+    return total + sum(left[:3])
+
+
+def entered(entries):
+    s = {e["subject"] for e in entries}
+    sci = "Combined Science" in s or len(s & {"Biology", "Chemistry", "Physics", "Computer Science"}) >= 2
+    return ("English Language" in s and "English Literature" in s and "Mathematics" in s and sci
+            and bool(s & {"History", "Geography"}) and bool(s & {"French", "Spanish", "Urdu", "Polish"}))
+
+
+def annex_b(target):
+    by = {}
+    centre = {}
+    for r in rows(target, "results26"):
+        by.setdefault(r["upn"], []).append(r)
+        centre[r["upn"]] = r["centre_name"]
+    for r in rows(target, "results25"):
+        if r["upn"] in by:
+            by[r["upn"]].append(r)
+    out = {}
+    for upn, es in by.items():
+        o = out.setdefault(centre[upn], [0, 0.0, 0])
+        o[0] += 1
+        o[1] += a8(es)
+        o[2] += entered(es)
+    return {k: (v[1] / v[0], 100.0 * v[2] / v[0]) for k, v in out.items()}
+
+
+def run(task):
+    target = os.path.join(task, "target")
     fig = json.load(open(os.path.join(HERE, "figures.json")))
-
-    names = {norm(n): c for c, n in zip(st.crs_code, st.station_name)}
-    short = {"marlvale": "MVC", "marlvalecent": "MVC", "mvalecentral": "MVC", "marlvalec": "MVC", "ashcombepkwy": "ASP",
-             "ashcombe": "ASP", "stcleerrd": "STC", "stcleer": "STC", "marlvalenth": "MVN", "marlvalesth": "MVS",
-             "holbeck": "HBK", "farnley": "FRN", "wexleyx": "WXC", "trevose": "TRV", "pennick": "PNB", "carrow": "CRW",
-             "radley": "RDL"}
-
-    def code(written, coded):
-        if isinstance(coded, str) and coded:
-            return coded
-        k = norm(written)
-        if k.upper() in set(st.crs_code):
-            return k.upper()
-        if k in names:
-            return names[k]
-        if k in short:
-            return short[k]
-        import difflib
-        mm = difflib.get_close_matches(k, list(names), n=1, cutoff=0.85)
-        return names[mm[0]]
-
-    seats = dict(zip(units.Unit, units["Standard seats"]))
-    after = {r.Unit: (str(r[3])[:10], int(r[4])) for r in mods.itertuples(index=False)}
-
-    def seat(u, d):
-        if u in after and d >= after[u][0]:
-            return after[u][1]
-        return seats[u]
-
-    sched = {}
-    for uid, g in tt.groupby("train_uid"):
-        g = g.sort_values("seq")
-        f0 = g.iloc[0]
-        sched[(f0.timetable, f0.headcode, f0.days_run, f0.station, f0.dep)] = (uid, list(g.station), f0.service_group)
-    load = lw.groupby(["run_date", "headcode", "station"]).passengers_est.sum().to_dict()
-    fm = form.groupby(["run_date", "headcode"]).unit_no.apply(list).to_dict()
-    arr = mv[mv.event_type == "ARRIVAL"].set_index(["run_date", "train_uid", "station"])[["wtt_time", "recorded_time"]].to_dict("index")
-    crewed = set(zip(crew.work_date, crew.headcode))
-    pct = {}
-    for r in fares.itertuples():
-        x = (r.fare_from_04jan2026_pence / r.fare_before_pence - 1) * 100
-        pct[(r.from_station, r.to_station, r.ticket_type)] = pct[(r.to_station, r.from_station, r.ticket_type)] = x
-    rows = []
-    for r in resp.itertuples():
-        b = field.loc[r.batch_id]
-        d = b.fieldwork_date
-        tl = "Dec24" if d < "2025-12-14" else "Dec25"
-        uid, calls, grp = sched[(tl, b.train_headcode, runs_label(d), b.origin_station, b.origin_dep)]
-        bs, al = code(r.board_station_written, r.board_station_code), code(r.alight_station_written, r.alight_station_code)
-        i, j = calls.index(bs), calls.index(al)
-        cap = sum(seat(u, d) for u in fm[(d, b.train_headcode)])
-        crowded = max(load[(d, b.train_headcode, calls[k])] for k in range(i, j)) > cap
-        a = arr[(d, uid, al)]
-        late = ((m(a["recorded_time"]) - m(a["wtt_time"]) + 720) % 1440 - 720) >= 5
-        unstaffed = (d, b.train_headcode) not in crewed
-        fare = pct[(bs, al, r.ticket_type)] if r.wave == "Spring 2026" else 0.0
-        rows.append((r.wave == "Spring 2026", int(r.q1_overall) >= 4, float(r.weight), grp, int(crowded), int(late),
-                     int(unstaffed), fare))
-    J = pd.DataFrame(rows, columns=["w26", "sat", "wt", "grp", "crowded", "late", "unstaffed", "fare"])
-    sh = {k: 100 * np.average(g.sat, weights=g.wt) for k, g in J.groupby("w26")}
-    X = np.column_stack([np.ones(len(J)), J.crowded, J.late, J.unstaffed, J.fare, J.w26.astype(float)])
-    W = J.wt.values
-    beta = np.linalg.solve(X.T @ (X * W[:, None]), X.T @ (W * J.sat.astype(float)))
-    dlt = [np.average(J[c][J.w26], weights=J.wt[J.w26]) - np.average(J[c][~J.w26], weights=J.wt[~J.w26])
-           for c in ("crowded", "late", "unstaffed", "fare")]
-    pts = {n: -beta[k + 1] * dlt[k] * (100 if n != "fares" else 100)
-           for k, n in enumerate(["crowding", "punctuality", "on-board staffing", "fares"])}
-    top = max(pts, key=pts.get)
     bad = []
-
-    def cmp(label, got, want):
-        if got != want:
-            bad.append("%s: %s against %s" % (label, got, want))
-
-    half = lambda x, nd=0: float(np.floor(x * 10 ** nd + 0.5) / 10 ** nd) if nd else int(np.floor(x + 0.5))
-    cmp("driver", top, fig["call"]["driver"])
-    cmp("points", half(pts[top]), fig["call"]["points"])
-    cmp("share 2025", half(sh[False], 1), fig["shares"]["spring_2025"])
-    cmp("share 2026", half(sh[True], 1), fig["shares"]["spring_2026"])
-    for n, v in pts.items():
-        cmp("bridge " + n, half(v), fig["bridge_points"][n])
-
-    # baselines, four weeks ending 19 September 2026
-    days = [(date(2026, 8, 23) + timedelta(days=k)).isoformat() for k in range(28)]
-    t25 = tt[tt.timetable == "Dec25"].sort_values(["train_uid", "seq"])
-    tr = {uid: (g.iloc[0].service_group, g.iloc[0].days_run, g.iloc[0].headcode, list(g.station), list(g.arr))
-          for uid, g in t25.groupby("train_uid")}
-    ran = set(zip(mv.run_date, mv.train_uid))
-    roster = rd("roster", dtype=str)
-    amend = rd("amend", dtype=str)
-    cov = set()
-    for r in amend.itertuples():
-        dd = date.fromisoformat(r.amend_date) + timedelta(days=1 if m(r.logged) >= 720 else 0)
-        cov.add((dd.isoformat(), r.diagram))
-    staffed = set()
-    for r in roster.itertuples():
-        if r.status == "Rostered" or (r.roster_date, r.diagram) in cov:
-            staffed |= {(r.roster_date, h) for h in r.workings.split(";")}
-    lw["unit_no"] = lw["unit_no"].astype(str)
-    gu = lw.groupby(["run_date", "unit_no", "station", "departed"]).passengers_est.agg(["sum", "max", "nunique", "count"])
-    # after the fleet system's move (17 May 2026) a class 166's three vehicle rows each carry the unit's figure
-    once = (gu["count"] == 3) & (gu["nunique"] == 1) & (gu.index.get_level_values(0) >= "2026-05-17")
-    by_unit = gu["max"].where(once, gu["sum"]).to_dict()
-    depart = mv[mv.event_type == "DEPARTURE"].set_index(["run_date", "train_uid", "station"]).recorded_time.to_dict()
-    on, sf, sd = {}, {}, {}
-    for d in days:
-        lab = runs_label(d)
-        for uid, (g, dr, hc, calls, arrs) in tr.items():
-            if dr != lab:
-                continue
-            a = arr.get((d, uid, calls[-1]))
-            ot = a is not None and ((m(a["recorded_time"]) - m(arrs[-1]) + 720) % 1440 - 720) < 5
-            on.setdefault(g, []).append(ot)
-            if (d, uid) in ran:
-                sf.setdefault(g, []).append((d, hc) in staffed)
-            if calls[-1] == "MVC" and lab == "MO-FR" and 420 <= m(arrs[-1]) <= 599 and a is not None:
-                left = depart.get((d, uid, calls[-2]))
-                got = [by_unit.get((d, u, calls[-2], left)) for u in fm[(d, hc)]]
-                if left is not None and None not in got:
-                    sd[g] = sd.get(g, 0) + max(0, sum(got) - sum(seat(u, d) for u in fm[(d, hc)]))
-    for g in GROUP_CODE.values():
-        cmp("on time " + g, half(100 * np.mean(on[g]), 1), fig["ask_on_time_pct"][g])
-        cmp("staffed " + g, half(100 * np.mean(sf[g]), 1), fig["ask_staffed_pct"][g])
-        if g != "BRANCH":
-            cmp("standing " + g, int(sd[g]), fig["ask_standing"][g])
-    print("verify: %s (%d figures)" % ("PASS" if not bad else "FAIL", 4 + len(pts) + 14))
+    n = 0
+    w = walk(target)
+    for k in ("gap", "att", "dis", "own", "rem"):
+        n += 1
+        if rnd(w[k], 1) != fig["walk"][k]:
+            bad.append("walk %s %s against %s" % (k, rnd(w[k], 1), fig["walk"][k]))
+    for k, f in (("trust", "trust_p8"), ("halwick", "halwick_p8")):
+        n += 1
+        if rnd(w[k], 2) != fig[f]:
+            bad.append("%s %s against %s" % (k, rnd(w[k], 2), fig[f]))
+    big = min(("att", "dis", "own", "rem"), key=lambda k: w[k])
+    n += 1
+    if big != fig["call"]["largest"]:
+        bad.append("largest %s against %s" % (big, fig["call"]["largest"]))
+    a = annex_a(target)
+    for k, (pa, sa) in a.items():
+        n += 2
+        if rnd(pa, 1) != fig["annex_a"][k]["pa"]:
+            bad.append("annex A pa %s %s against %s" % (k, rnd(pa, 1), fig["annex_a"][k]["pa"]))
+        if rnd(sa, 1) != fig["annex_a"][k]["sa"]:
+            bad.append("annex A sa %s %s against %s" % (k, rnd(sa, 1), fig["annex_a"][k]["sa"]))
+    b = annex_b(target)
+    for k, (av, eb) in b.items():
+        n += 2
+        if rnd(av, 1) != fig["annex_b"][k]["a8"]:
+            bad.append("annex B a8 %s %s against %s" % (k, rnd(av, 1), fig["annex_b"][k]["a8"]))
+        if rnd(eb, 1) != fig["annex_b"][k]["ebacc"]:
+            bad.append("annex B ebacc %s %s against %s" % (k, rnd(eb, 1), fig["annex_b"][k]["ebacc"]))
+    print("verify: %d figures, %s" % (n, "PASS" if not bad else "FAIL"))
     for x in bad:
         print("  ", x)
     return 1 if bad else 0
 
 
-def run(task):
-    return main()
-
-
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(run(TASK))

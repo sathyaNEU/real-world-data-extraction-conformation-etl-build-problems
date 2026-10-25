@@ -1,299 +1,285 @@
-"""The goldens: satisfaction_fall_spring2026.xlsx and satisfaction_bridge_spring2026.png, and generator/figures.json,
+"""The goldens: halwick_progress8_walk_2022_2024.xlsx and halwick_progress8_walk.png, and generator/figures.json,
 every figure read back from the shipped files."""
 from __future__ import annotations
 
 import json
 import os
-
-import numpy as np
+from decimal import ROUND_HALF_UP, Decimal
 
 import analysis as A
 import common as K
-import routes as RT
-
-GNAME = {g: K.GROUPS[g]["name"] for g in K.GROUP_ORDER}
-WORD = {0: "none", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight"}
 
 
 def half_up(x, nd=0):
-    from decimal import ROUND_HALF_UP, Decimal
     if nd:
         return float(Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-nd), rounding=ROUND_HALF_UP))
     return int(Decimal(repr(float(x))).quantize(Decimal(1), rounding=ROUND_HALF_UP))
 
 
+def p1(x):
+    v = half_up(x, 1)
+    return "0.0" if v == 0 else "%.1f" % v
+
+
 def results(target):
     D = A.load(target)
-    J = A.journeys(D)
-    c = A.call(J)
-    ontime, ontime_n = A.ask_ontime(D)
-    staffed, staffed_n = A.ask_staffed(D)
-    standing, standing_n = A.ask_standing(D)
-    return dict(D=D, J=J, call=c, ontime=ontime, ontime_n=ontime_n, staffed=staffed, staffed_n=staffed_n,
-                standing=standing, standing_n=standing_n)
+    E = A.pupils(D)
+    w = A.walk(E)
+    two = A.walk(E, classify=("secondary",))
+    feed = feeders(D, E)
+    return dict(D=D, E=E, walk=w, default=two, feeders=feed, att=A.attendance(D), res=A.results(D))
+
+
+def feeders(D, E):
+    """The seven primaries that each send Halwick more than 5 per cent of its pupils, by name, with their pupils'
+    Progress 8 at Halwick and at the borough's other secondaries."""
+    R = D["register"]
+    name = {}
+    for r in R.itertuples():
+        if r.phase == "Primary" and r.status == "Open":
+            name[r.urn] = r.establishment_name
+            if r.predecessor_urn:
+                name[r.predecessor_urn] = r.establishment_name
+    H = E[E.ks4_school == A.FOCAL_NAME]
+    share = H.ks2_school.value_counts() / len(H)
+    top = [s for s in share.index if share[s] > 0.05]
+    rows = []
+    for s in top:
+        g = E[E.ks2_school == s]
+        rows.append(dict(school=name[s.split(":")[1]], share=100.0 * float(share[s]),
+                         n_halwick=int((g.ks4_school == A.FOCAL_NAME).sum()),
+                         n_elsewhere=int((g.ks4_school != A.FOCAL_NAME).sum()),
+                         p8_halwick=float(g[g.ks4_school == A.FOCAL_NAME].p8.mean()),
+                         p8_elsewhere=float(g[g.ks4_school != A.FOCAL_NAME].p8.mean())))
+    G = E[E.ks2_school.isin(top)]
+    O = E[~E.ks2_school.isin(top)]
+    pooled = dict(share=100.0 * float(share[top].sum()), p8_elsewhere=float(G[G.ks4_school != A.FOCAL_NAME].p8.mean()),
+                  n_elsewhere=int((G.ks4_school != A.FOCAL_NAME).sum()),
+                  p8_halwick=float(G[G.ks4_school == A.FOCAL_NAME].p8.mean()),
+                  p8_others_at_halwick=float(O[O.ks4_school == A.FOCAL_NAME].p8.mean()),
+                  n_others_at_halwick=int((O.ks4_school == A.FOCAL_NAME).sum()))
+    return dict(rows=rows, pooled=pooled)
 
 
 def figures(res):
-    c, J, D = res["call"], res["J"], res["D"]
-    sh = c["shares"]
-    s25, s26 = half_up(sh["overall"][2025], 1), half_up(sh["overall"][2026], 1)
-    pts = {k: half_up(v) for k, v in c["points"].items()}
-    other = half_up(c["unexplained"])
-    name = c["top"]
-    sentence = ("%s accounts for most of the fall: %d of the %.1f points by which the share of passengers satisfied "
-                "overall fell, from %.1f%% in spring 2025 to %.1f%% in spring 2026" %
-                (name[0].upper() + name[1:], c["top_points"], s25 - s26, s25, s26))
-    kda = RT.kda(D, J)
-    ks = RT.kitchen_sink(D, J)
-    ksm = RT.kitchen_sink(D, J, mapping="as worded")
+    w, two = res["walk"], res["default"]
+    T = res["E"][res["E"].trust]
+    H = res["E"][res["E"].ks4_school == A.FOCAL_NAME]
+    big = A.largest(w)
+    walk = {k: p1(w[k]) for k in ("gap", "att", "dis", "own", "rem")}
+    sentence = ("No: the academy's own effect accounts for almost none of Halwick's Progress 8 gap to the trust "
+                "(%s of %s points); the largest item is the remainder (%s), the shortfall its pupils bring from the "
+                "seven primary schools that send it most of its intake, ahead of attendance (%s) and disadvantage "
+                "(%s)" % (walk["own"], walk["gap"], walk["rem"], walk["att"], walk["dis"]))
+    fe = res["feeders"]
     return {
-        "call": {"driver": name, "points": c["top_points"], "sentence": sentence},
-        "shares": {"spring_2025": s25, "spring_2026": s26, "fall_points": half_up(s25 - s26, 1),
-                   "by_group": {g: {"spring_2025": half_up(sh["groups"][g][2025], 1),
-                                    "spring_2026": half_up(sh["groups"][g][2026], 1)} for g in K.GROUP_ORDER}},
-        "bridge_points": dict(pts, other=other),
-        "bridge_exact": {k: round(float(v), 4) for k, v in c["points"].items()},
-        "prevalence_change_points": {k: round(float(v) * (1 if k == "fare" else 100), 2) for k, v in c["delta"].items()},
-        "effects": {k: round(float(v), 4) for k, v in c["beta"].items()},
-        "ask_on_time_pct": {g: half_up(res["ontime"][g], 1) for g in K.GROUP_ORDER},
-        "ask_on_time_trains": {g: res["ontime_n"][g][1] for g in K.GROUP_ORDER},
-        "ask_staffed_pct": {g: half_up(res["staffed"][g], 1) for g in K.GROUP_ORDER},
-        "ask_staffed_trains": {g: res["staffed_n"][g][1] for g in K.GROUP_ORDER},
-        "ask_standing": {g: int(res["standing"][g]) for g in K.INTO_MVC},
-        "ask_standing_trains": {g: res["standing_n"][g] for g in K.INTO_MVC},
-        "routes": {
-            "R0_derived_importance": {k: round(v, 2) for k, v in kda.items()},
-            "R0_top": RT.top(kda),
-            "R0_points": half_up(kda[RT.top(kda)]),
-            "R1_conditions_with_ratings_as_controls": {k: round(v, 2) for k, v in ks.items()},
-            "R1_top": RT.top(ks),
-            "R1_points": half_up(ks[RT.top(ks)]),
-            "R1_with_ratings_booked_to_drivers": {k: round(v, 2) for k, v in ksm.items()},
-            "stratified": {k: round(v, 2) for k, v in RT.stratified(J).items()},
-            "R2_cascade_groups": {k: round(v, 2) for k, v in RT.cascade_did(J).items()},
-            "unweighted": {k: round(v, 2) for k, v in RT.unweighted(J).items()},
-            "golden_family": {k: {d: round(v, 2) for d, v in f.items()} for k, f in RT.golden_family(J).items()},
-            "logit": {k: round(v, 2) for k, v in RT.logit_family(J).items()},
-        },
-        "evidence": {"condition_share_pct": {col: {str(wv): half_up(100 * float(np.average(
-                         J.loc[(J["wave"] == wv) & ~J["sat"].isna(), col],
-                         weights=J.loc[(J["wave"] == wv) & ~J["sat"].isna(), "weight"])), 1) for wv in (2025, 2026)}
-                         for col in ("crowded", "late", "unstaffed")},
-                     "effect_points_if_met": {col: half_up(-100 * float(c["beta"][col]), 1)
-                                              for col in ("crowded", "late", "unstaffed")},
-                     "default_path": {"driver": RT.top(kda), "points": half_up(kda[RT.top(kda)])},
-                     "seats": {"150/2": 116, "158": 138, "158/9": 126, "166": 232},
-                     "class_reporting_each_vehicle": 166,
-                     "standing_window": {"from_hour": 7, "to_hour": 9, "to_minute": 59},
-                     "respondents": {str(w): int((J["wave"] == w).sum()) for w in (2025, 2026)},
-                     "respondents_answering_q1": {str(w): int(((J["wave"] == w) & ~J["sat"].isna()).sum())
-                                                  for w in (2025, 2026)},
-                     "baseline_window": [K.LATEST[0].isoformat(), K.LATEST[1].isoformat()],
-                     "late_minutes": K.LATE_MIN},
+        "call": {"verdict": "no", "largest": big, "largest_name": A.ITEM_NAME[big], "sentence": sentence},
+        "walk": walk,
+        "walk_unrounded": {k: round(float(w[k]), 4) for k in ("gap", "att", "dis", "own", "rem")},
+        "trust_p8": "%.2f" % half_up(T.p8.mean(), 2), "halwick_p8": "%.2f" % half_up(H.p8.mean(), 2),
+        "pupils": {"halwick": int(len(H)), "trust": int(len(T)), "borough": int(len(res["E"]))},
+        "default_path": {k: p1(two[k]) for k in ("gap", "att", "dis", "own", "rem")},
+        "model": {"b_absence": "%.3f" % half_up(w["b_abs"], 3), "b_disadvantaged": "%.2f" % half_up(w["b_dis"], 2),
+                  "absence_halwick": "%.2f" % half_up(w["abs_h"], 2), "absence_trust": "%.2f" % half_up(w["abs_t"], 2),
+                  "disadvantaged_halwick_pct": "%.1f" % half_up(100 * w["dis_h"], 1),
+                  "disadvantaged_trust_pct": "%.1f" % half_up(100 * w["dis_t"], 1),
+                  "walk_3dp": {k: "%.3f" % half_up(w[k], 3) for k in ("gap", "att", "dis", "own", "rem")}},
+        "feeders": {"count": len(fe["rows"]), "share_of_halwick": half_up(fe["pooled"]["share"]),
+                    "p8_elsewhere": "%.2f" % half_up(fe["pooled"]["p8_elsewhere"], 2),
+                    "p8_at_halwick": "%.2f" % half_up(fe["pooled"]["p8_halwick"], 2),
+                    "p8_others_at_halwick": "%.2f" % half_up(fe["pooled"]["p8_others_at_halwick"], 2),
+                    "names": [r["school"] for r in fe["rows"]]},
+        "filed_constants": {"persistent_absence_threshold_pct": 10, "severe_absence_threshold_pct": 50,
+                            "year_10": 10, "year_11": 11},
+        "annex_a": {k: {"pa": "%.1f" % half_up(v["pa"], 1), "sa": "%.1f" % half_up(v["sa"], 1), "pupils": v["n"]}
+                    for k, v in sorted(res["att"].items())},
+        "annex_b": {k: {"a8": "%.1f" % half_up(v["a8"], 1), "ebacc": "%.1f" % half_up(v["ebacc"], 1),
+                        "pupils": v["n"]} for k, v in res["res"].items()},
     }
 
 
-# ------------------------------------------------------------------------------------------------ chart
-LABEL = {"crowding": "Crowding", "punctuality": "Punctuality", "on-board staffing": "On-board staffing",
-         "fares": "Fares", "other": "Not explained by\nthe four drivers"}
-
-
+# ------------------------------------------------------------------ the chart
 def chart_png(path, fig, res):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     from matplotlib import font_manager
-    for f in ("LiberationSans-Regular.ttf", "LiberationSans-Bold.ttf"):
-        p = "/usr/share/fonts/truetype/liberation/" + f
-        if os.path.exists(p):
-            font_manager.fontManager.addfont(p)
-    plt.rcParams.update({"font.family": "Liberation Sans", "font.size": 9.5})
-    ink, muted, grid = "#1c2733", "#5d6874", "#dde2e7"
-    hero, rest, total_c, resid = "#b5482a", "#7d97ae", "#2b4257", "#c3cbd3"
-    c = res["call"]
-    exact = dict(c["points"], other=c["unexplained"])
-    order = sorted(c["points"], key=lambda k: -c["points"][k]) + ["other"]
-    f, ax = plt.subplots(figsize=(9.6, 5.4), dpi=150)
-    level = 0.0
-    xs = list(range(len(order) + 1))
-    for i, k in enumerate(order):
-        v = float(exact[k])
-        lo, hi = (level, level + v) if v >= 0 else (level + v, level)
-        col = hero if k == c["top"] else (resid if k == "other" else rest)
-        ax.bar(i, hi - lo, bottom=lo, width=0.62, color=col, edgecolor="none", zorder=2)
-        if i:
-            ax.plot([i - 1 + 0.31, i - 0.31], [level, level], color=muted, linewidth=0.7, zorder=3)
-        lab = "%d" % fig["bridge_points"][k]
-        ax.text(i, hi + 0.08, lab + (" point" if abs(fig["bridge_points"][k]) == 1 else " points"), ha="center",
-                va="bottom", fontsize=9.2, color=ink, fontweight="bold" if k == c["top"] else "normal")
+    for f in ("LiberationSans-Regular", "LiberationSans-Bold"):
+        font_manager.fontManager.addfont("/usr/share/fonts/truetype/liberation/%s.ttf" % f)
+    plt.rcParams["font.family"] = "Liberation Sans"
+    w, wu = fig["walk"], fig["walk_unrounded"]
+    T = res["E"][res["E"].trust]
+    start = float(T.p8.mean())
+    steps = [("Attendance", wu["att"], w["att"]), ("Disadvantage", wu["dis"], w["dis"]),
+             ("Halwick's own\neffect", wu["own"], w["own"]),
+             ("Remainder: what its\npupils bring from\nprimary school", wu["rem"], w["rem"])]
+    fg, ax = plt.subplots(figsize=(9.2, 5.4), dpi=150)
+    ink, grey, accent, muted = "#1d2733", "#8a949e", "#b4532a", "#5b7c99"
+    ax.bar(0, start, color=grey, width=0.6)
+    ax.text(0, start - 0.012, fig["trust_p8"], ha="center", va="top", fontsize=10, color=ink)
+    level = start
+    for i, (lab, v, label) in enumerate(steps, start=1):
+        col = accent if lab.startswith("Remainder") else muted
+        ax.bar(i, v, bottom=level, color=col, width=0.6)
+        ax.text(i, level + min(v, 0) - 0.012, label, ha="center", va="top",
+                fontsize=10.5, color=ink, fontweight="bold" if col == accent else "normal")
+        ax.plot([i - 0.7, i - 0.3], [level, level], color=grey, lw=0.8)
         level += v
-    fall = c["shares"]["fall"]
-    ax.plot([len(order) - 1 + 0.31, len(order) - 0.31], [level, level], color=muted, linewidth=0.7, zorder=3)
-    ax.bar(len(order), fall, width=0.62, color=total_c, edgecolor="none", zorder=2)
-    ax.text(len(order), fall + 0.08, "%.1f points" % fig["shares"]["fall_points"], ha="center", va="bottom",
-            fontsize=9.2, color=ink, fontweight="bold")
-    ax.set_xticks(xs)
-    ax.set_xticklabels([LABEL[k] for k in order] + ["Fall, spring 2025\nto spring 2026"], fontsize=9, color=ink)
-    top = np.ceil(max(fall, level) + 1.0)
-    ax.set_ylim(min(0, np.floor(min(0, min(exact.values())))), top)
-    ax.set_ylabel("Percentage points of the share satisfied", fontsize=9, color=muted)
-    ax.yaxis.grid(True, color=grid, linewidth=0.6, zorder=0)
+    end = level
+    ax.bar(len(steps) + 1, end, color=grey, width=0.6)
+    ax.text(len(steps) + 1, end - 0.012, fig["halwick_p8"], ha="center", va="top", fontsize=10, color=ink)
+    ax.set_xticks(range(len(steps) + 2))
+    ax.set_xticklabels(["Trust average"] + [s[0] for s in steps] + ["Halwick"], fontsize=9.2, color=ink)
+    ax.axhline(0, color=ink, lw=0.8)
+    ax.set_ylabel("Progress 8 points", fontsize=10, color=ink)
+    ax.set_ylim(min(end, start) - 0.18, 0.08)
+    for s in ("top", "right"):
+        ax.spines[s].set_visible(False)
+    ax.tick_params(colors=ink, labelsize=9)
+    ax.grid(axis="y", color="#e2e6ea", lw=0.6)
     ax.set_axisbelow(True)
-    ax.axhline(0, color=muted, linewidth=0.8, zorder=3)
-    for sp in ("top", "right", "left", "bottom"):
-        ax.spines[sp].set_visible(False)
-    ax.tick_params(axis="both", length=0, labelsize=8.8, colors=muted)
-    s25, s26 = fig["shares"]["spring_2025"], fig["shares"]["spring_2026"]
-    f.suptitle("%s accounts for %d of the %.1f points the share of passengers satisfied fell between the spring "
-               "waves" % (LABEL[c["top"]], fig["call"]["points"], fig["shares"]["fall_points"]),
-               x=0.012, y=0.975, ha="left", fontsize=12.4, fontweight="bold", color=ink)
-    f.text(0.012, 0.875, "Satisfied overall %.1f%% in spring 2025, %.1f%% in spring 2026. Each driver: the points by "
-                         "which the share would have fallen less had passengers' journeys\nmet it as in spring 2025, "
-                         "the other three as they were. Points rounded to the nearest whole point, each bar alone."
-           % (s25, s26), fontsize=8.8, color=muted, ha="left", linespacing=1.4)
-    f.text(0.988, 0.015, "Source: Customer Satisfaction Tracker, spring 2025 and 2026 waves (weighted), linked to "
-                         "train movements, load-weigh, formations, crew records and fares.", fontsize=7.2,
-           color=muted, ha="right")
-    f.subplots_adjust(left=0.08, right=0.98, top=0.82, bottom=0.17)
-    f.savefig(path, dpi=150, metadata={"Software": None})
-    plt.close(f)
+    fg.suptitle("Halwick's Progress 8 gap is mostly what its pupils bring with them, not the academy's own effect",
+                x=0.02, ha="left", fontsize=12.5, fontweight="bold", color=ink)
+    ax.set_title("Walk from the trust average to Halwick, pupils finishing key stage 4 in 2022 to 2024, Progress 8 "
+                 "points; the four steps to one decimal", loc="left", fontsize=9.3, color="#46525e")
+    fg.text(0.02, 0.012, "Source: Brantholme KS2 to KS4 transfer file, %s pupils with Progress 8 at the borough's 14 "
+                         "secondaries. Fixed effects for each secondary and each key stage 2 school,\nwith the year 11 "
+                         "absence rate and disadvantage. Bars drawn to the unrounded items. Larkhollow Data and "
+                         "Assessment." % format(fig["pupils"]["borough"], ","), fontsize=7.6, color="#5c6670")
+    fg.tight_layout(rect=(0, 0.05, 1, 0.97))
+    fg.savefig(path, metadata={"Software": None})
+    plt.close(fg)
 
 
-# ------------------------------------------------------------------------------------------------ workbook
+# ------------------------------------------------------------------ the workbook
 def workbook(path, fig, res):
     import openpyxl
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
-    c = res["call"]
-    navy = "2B4257"
-    thin = Side(style="thin", color="B9C1C8")
-    head_font = Font(bold=True, color="FFFFFF")
-    head_fill = PatternFill("solid", fgColor=navy)
-
-    def header(ws, row, height=32):
-        for cell in ws[row]:
-            if cell.value is None:
-                continue
-            cell.font = head_font
-            cell.fill = head_fill
-            cell.alignment = Alignment(wrap_text=True, vertical="center", horizontal="center")
-        ws.row_dimensions[row].height = height
-
-    def note(ws, text):
-        ws.append([text])
-        ws.cell(ws.max_row, 1).font = Font(size=9, color="5D6874")
-
     wb = openpyxl.Workbook()
+    ink = "1D2733"
+    head_fill = PatternFill("solid", fgColor="E4EAE6")
+    thin = Side(style="thin", color="B8C0C8")
+    bold = Font(bold=True, color=ink)
+    note = Font(italic=True, color="56616C", size=9)
+
+    def header(ws, row, cells):
+        for j, v in enumerate(cells, start=1):
+            c = ws.cell(row=row, column=j, value=v)
+            c.font = bold
+            c.fill = head_fill
+            c.border = Border(bottom=thin)
+            c.alignment = Alignment(wrap_text=True, vertical="top")
+
+    w = fig["walk"]
     ws = wb.active
-    ws.title = "Recovery plan (a)"
-    ws.append(["Fall in passengers satisfied overall, spring 2025 to spring 2026: points by service driver"])
-    ws["A1"].font = Font(bold=True, size=13, color=navy)
-    ws.append(["%s, Contract Performance. For the recovery plan to the %s (ref WRP/CM/2026/118), "
-               "Schedule 7 paragraph 9." % (K.OPERATOR, K.AUTHORITY)])
-    ws["A2"].font = Font(italic=True, size=9, color="5D6874")
-    ws.append([])
-    ws.append(["Driver accounting for most of the fall", LABEL[c["top"]]])
-    ws.append(["Points of the fall it accounts for", fig["call"]["points"]])
-    for r in (4, 5):
-        ws.cell(r, 1).font = Font(bold=True)
-        ws.cell(r, 2).font = Font(bold=True, color="B5482A", size=12)
-        ws.cell(r, 2).alignment = Alignment(horizontal="right")
-    ws.append([])
-    ws.append(["Share satisfied overall", "Spring 2025", "Spring 2026", "Fall (points)"])
-    header(ws, ws.max_row)
-    ws.append(["All passengers", fig["shares"]["spring_2025"] / 100, fig["shares"]["spring_2026"] / 100,
-               fig["shares"]["fall_points"]])
-    row = ws[ws.max_row]
-    row[1].number_format = row[2].number_format = "0.0%"
-    row[3].number_format = "0.0"
-    ws.append([])
-    ws.append(["Bridge", "Points of the fall", "Change in journeys meeting the driver", "Effect on the chance of "
-               "being satisfied"])
-    header(ws, ws.max_row, 44)
-    order = sorted(c["points"], key=lambda k: -c["points"][k])
-    for k in order:
-        col = dict(A.DRIVERS)[k]
-        d = c["delta"][col]
-        b = c["beta"][col]
-        ws.append([LABEL[k], fig["bridge_points"][k],
-                   ("%+.1f points of journeys" % (100 * d)) if col != "fare" else ("%+.2f%% average fare change" % d),
-                   ("%+.1f points if met" % (100 * b)) if col != "fare" else ("%+.2f points per 1%% on the fare" % (100 * b))])
-        ws.cell(ws.max_row, 2).number_format = "0"
-        if k == c["top"]:
-            ws.cell(ws.max_row, 1).font = ws.cell(ws.max_row, 2).font = Font(bold=True, color="B5482A")
-    ws.append(["Not explained by the four drivers", fig["bridge_points"]["other"], None, None])
-    ws.append(["Fall in the share satisfied", fig["shares"]["fall_points"], None, None])
-    for cell in ws[ws.max_row]:
-        cell.font = Font(bold=True)
-        cell.border = Border(top=thin)
-    ws.cell(ws.max_row, 2).number_format = "0.0"
-    for r in ws.iter_rows(min_row=8, max_row=ws.max_row):
-        for cell in r[1:]:
-            cell.alignment = Alignment(horizontal="right")
-    ws.append([])
-    note(ws, "Points are rounded to the nearest whole point and the bridge's rows are rounded separately, so they "
-             "need not add to the fall.")
-    note(ws, "A driver's points: the change between the waves in the share of passengers whose journey met it "
-             "(Schedule 7, 3.1), times its effect on the chance of a passenger being satisfied, from a weighted "
-             "linear model of being satisfied on the four drivers and the wave, both waves' respondents together.")
-    note(ws, "Each questionnaire is linked to the train it was handed out on (fieldwork log) and the passenger's "
-             "written-in stations: load-weigh against the seats of the units formed on every leg of the journey, "
-             "arrival at the passenger's station, the on-board crew archive and the fare for the ticket type.")
-    for k, v in {"A": 40, "B": 18, "C": 30, "D": 30}.items():
-        ws.column_dimensions[k].width = v
-    ws.freeze_panes = "A4"
+    ws.title = "Walk"
+    ws["A1"] = "Halwick's Progress 8 gap to the trust is mostly what its pupils bring from primary school"
+    ws["A1"].font = Font(bold=True, size=13, color=ink)
+    ws["A2"] = ("Pupils finishing key stage 4 in 2022, 2023 and 2024 with a Progress 8 score; the walk in Progress 8 "
+                "points to one decimal place, as Paper 6 asks")
+    ws["A2"].font = Font(italic=True, color="56616C")
+    header(ws, 4, ["Item", "Progress 8 points", "How it is measured"])
+    rows = [("Trust average", fig["trust_p8"], "All %s pupils at the eight academies, pooled" % format(fig["pupils"]["trust"], ",")),
+            ("Attendance", w["att"], "Effect of the year 11 absence rate, times Halwick's average rate less the trust's"),
+            ("Disadvantage", w["dis"], "Effect of being disadvantaged, times Halwick's share less the trust's"),
+            ("The academy's own effect", w["own"], "Halwick's own effect less the trust's pupil-weighted average"),
+            ("The remainder", w["rem"], "What Halwick's pupils bring from the schools they came from"),
+            ("Halwick", fig["halwick_p8"], "All %s Halwick pupils, pooled" % format(fig["pupils"]["halwick"], ",")),
+            ("Gap (Halwick less trust)", w["gap"], "The four items above add to it")]
+    for i, (a, b, c) in enumerate(rows, start=5):
+        ws.cell(row=i, column=1, value=a)
+        ws.cell(row=i, column=2, value=float(b)).number_format = "0.00" if a in ("Trust average", "Halwick") else "0.0"
+        ws.cell(row=i, column=3, value=c)
+        if a in ("The remainder", "Gap (Halwick less trust)"):
+            ws.cell(row=i, column=1).font = bold
+            ws.cell(row=i, column=2).font = bold
+    ws["A13"] = ("Largest item: the remainder. The academy's own effect is %s of the %s gap. Effects are estimated on all "
+                 "%s pupils at the borough's fourteen secondaries, with a fixed effect for each secondary and for each "
+                 "school where pupils sat key stage 2, unshrunk, as Paper 6 sets out." % (w["own"], w["gap"],
+                                                                                          format(fig["pupils"]["borough"], ",")))
+    ws["A13"].alignment = Alignment(wrap_text=True, vertical="top")
+    ws.merge_cells("A13:C13")
+    ws.row_dimensions[13].height = 48
+    fe = res["feeders"]
+    header(ws, 15, ["Primary school (where pupils sat key stage 2)", "Share of Halwick's pupils (%)",
+                    "Pupils at Halwick", "Pupils at other secondaries", "Progress 8 at Halwick",
+                    "Progress 8 at other secondaries"])
+    r = 16
+    for x in fe["rows"]:
+        ws.cell(row=r, column=1, value=x["school"])
+        ws.cell(row=r, column=2, value=half_up(x["share"], 1)).number_format = "0.0"
+        ws.cell(row=r, column=3, value=x["n_halwick"])
+        ws.cell(row=r, column=4, value=x["n_elsewhere"])
+        ws.cell(row=r, column=5, value=half_up(x["p8_halwick"], 2)).number_format = "0.00"
+        ws.cell(row=r, column=6, value=half_up(x["p8_elsewhere"], 2)).number_format = "0.00"
+        r += 1
+    po = fe["pooled"]
+    ws.cell(row=r, column=1, value="The seven together").font = bold
+    ws.cell(row=r, column=2, value=half_up(po["share"], 1)).number_format = "0.0"
+    ws.cell(row=r, column=4, value=po["n_elsewhere"])
+    ws.cell(row=r, column=5, value=half_up(po["p8_halwick"], 2)).number_format = "0.00"
+    ws.cell(row=r, column=6, value=half_up(po["p8_elsewhere"], 2)).number_format = "0.00"
+    ws.cell(row=r + 1, column=1, value="Halwick's pupils from every other school")
+    ws.cell(row=r + 1, column=3, value=po["n_others_at_halwick"])
+    ws.cell(row=r + 1, column=5, value=half_up(po["p8_others_at_halwick"], 2)).number_format = "0.00"
+    ws.cell(row=r + 3, column=1, value="Source: Brantholme KS2 to KS4 transfer file; school names from the borough's "
+                                       "establishment register (converted academies under their current name).")
+    ws.cell(row=r + 3, column=1).font = note
+    for col, wd in zip("ABCDEF", (46, 16, 62, 16, 14, 18)):
+        ws.column_dimensions[col].width = wd
+    ws.freeze_panes = "A5"
 
-    w2 = wb.create_sheet("By service group")
-    w2.append(["Share satisfied overall by service group, spring waves (weighted)"])
-    w2["A1"].font = Font(bold=True, size=12, color=navy)
-    w2.append([])
-    w2.append(["Service group", "Spring 2025", "Spring 2026", "Change (points)"])
-    header(w2, 3)
-    for g in K.GROUP_ORDER:
-        a, b = fig["shares"]["by_group"][g]["spring_2025"], fig["shares"]["by_group"][g]["spring_2026"]
-        w2.append([GNAME[g], a / 100, b / 100, round(b - a, 1)])
-        row = w2[w2.max_row]
-        row[1].number_format = row[2].number_format = "0.0%"
-        row[3].number_format = "+0.0;-0.0;0.0"
-    w2.append([])
-    note(w2, "Changes of less than about four points for a single service group are within the range sampling "
-             "alone produces between waves (the agency's technical note).")
-    for k, v in {"A": 26, "B": 14, "C": 14, "D": 16}.items():
-        w2.column_dimensions[k].width = v
-    w2.freeze_panes = "A4"
+    wa = wb.create_sheet("Annex A attendance")
+    wa["A1"] = "Annex A: persistent and severe absence by academy, 2025/26"
+    wa["A1"].font = Font(bold=True, size=12, color=ink)
+    header(wa, 3, ["Academy", "Pupils counted", "Persistent absence (%)", "Severe absence (%)"])
+    for i, k in enumerate(A.TRUST_NAMES, start=4):
+        v = fig["annex_a"][k]
+        wa.cell(row=i, column=1, value=k)
+        wa.cell(row=i, column=2, value=v["pupils"])
+        wa.cell(row=i, column=3, value=float(v["pa"])).number_format = "0.0"
+        wa.cell(row=i, column=4, value=float(v["sa"])).number_format = "0.0"
+    wa.cell(row=13, column=1, value="Each academy counts its pupils' sessions while on its roll; a pupil who moved "
+                                    "between academies counts at each. Year 11: autumn and spring terms only.")
+    wa.cell(row=13, column=1).font = note
+    for col, wd in zip("ABCD", (36, 16, 22, 20)):
+        wa.column_dimensions[col].width = wd
+    wa.freeze_panes = "A4"
 
-    w3 = wb.create_sheet("Baseline (c)")
-    w3.append(["Schedule 7 Part 2 measures, four weeks ending 19 September 2026 (23 August to 19 September)"])
-    w3["A1"].font = Font(bold=True, size=12, color=navy)
-    w3.append([])
-    w3.append(["Service group", "Trains in the working timetable", "On time at final destination (2.1)",
-               "Trains that ran", "Ran with on-board staff (2.2)", "Weekday arrivals at Marlvale Central 07:00 to "
-               "09:59", "Passengers standing on arrival (2.3)"])
-    header(w3, 3, 58)
-    for g in K.GROUP_ORDER:
-        into = g in K.INTO_MVC
-        w3.append([GNAME[g], fig["ask_on_time_trains"][g], fig["ask_on_time_pct"][g] / 100,
-                   fig["ask_staffed_trains"][g], fig["ask_staffed_pct"][g] / 100,
-                   fig["ask_standing_trains"][g] if into else "n/a", fig["ask_standing"][g] if into else "n/a"])
-        row = w3[w3.max_row]
-        row[1].number_format = row[3].number_format = row[5].number_format = row[6].number_format = "#,##0"
-        row[2].number_format = row[4].number_format = "0.0%"
-        for cell in row[1:]:
-            cell.alignment = Alignment(horizontal="right")
-    w3.append([])
-    note(w3, "2.1: a train arriving at its final destination less than five minutes after the working timetable "
-             "is on time; one cancelled in full or part way is not. Bank Holiday Monday 31 August ran the Sunday "
-             "timetable. Arrivals after midnight are timed against the previous evening's schedule.")
-    note(w3, "2.2: trains that ran, in full or part, with a conductor, a host or a spare covering the turn. Cover "
-             "the crew controller arranged the evening before is logged on the day before the turn.")
-    note(w3, "2.3: load-weigh on departure from the station before Marlvale Central, less the standard seats of "
-             "the units formed that day (seats after the 2026 interior refresh from each unit's return to traffic).")
-    for k, v in {"A": 24, "B": 16, "C": 16, "D": 14, "E": 16, "F": 18, "G": 18}.items():
-        w3.column_dimensions[k].width = v
-    w3.freeze_panes = "B4"
-    for s in (ws, w2, w3):
-        s.page_setup.orientation = "landscape"
-        s.page_setup.fitToWidth = 1
-        s.sheet_properties.pageSetUpPr.fitToPage = True
+    wr = wb.create_sheet("Annex B results")
+    wr["A1"] = "Annex B: average Attainment 8 and EBacc entry by academy, 2026 cohort"
+    wr["A1"].font = Font(bold=True, size=12, color=ink)
+    header(wr, 3, ["Academy", "Pupils in the cohort", "Average Attainment 8", "EBacc entry (%)"])
+    for i, k in enumerate(A.TRUST_NAMES, start=4):
+        v = fig["annex_b"][k]
+        wr.cell(row=i, column=1, value=k)
+        wr.cell(row=i, column=2, value=v["pupils"])
+        wr.cell(row=i, column=3, value=float(v["a8"])).number_format = "0.0"
+        wr.cell(row=i, column=4, value=float(v["ebacc"])).number_format = "0.0"
+    wr.cell(row=13, column=1, value="Results from the summer 2025 series (year 10 entries) and the summer 2026 series; "
+                                    "for English, maths and EBacc subjects the first entry counts.")
+    wr.cell(row=13, column=1).font = note
+    for col, wd in zip("ABCD", (36, 20, 22, 18)):
+        wr.column_dimensions[col].width = wd
+    wr.freeze_panes = "A4"
+
+    wn = wb.create_sheet("Notes")
+    notes = ["Prepared for Paper 6 (Board of Trustees, 9 December 2026) by %s, Data and Assessment." % K.PEOPLE["data"],
+             "Walk: estimated on the council's transfer file, all %s pupils with a Progress 8 score at the borough's "
+             "fourteen secondaries in 2021/22 to 2023/24." % format(fig["pupils"]["borough"], ","),
+             "Model: Progress 8 on the year 11 absence rate and the disadvantaged flag, with a fixed effect for each "
+             "secondary and for each school where a pupil sat key stage 2 (academy converters read through their "
+             "predecessor URN; schools outside the borough as recorded).",
+             "The academy's own effect: Halwick's secondary effect less the trust's average, weighted by the trust's "
+             "%s pupils." % format(fig["pupils"]["trust"], ","),
+             "Read alone, Progress 8 and a model of pupils within secondaries put %s of the gap on the academy itself; "
+             "the same primaries' pupils at the other secondaries show the shortfall is theirs." % (
+                 fig["default_path"]["own"]),
+             "Rounding: the walk to one decimal place of a Progress 8 point; averages to two; rates to one."]
+    for i, t in enumerate(notes, start=1):
+        wn.cell(row=i, column=1, value=t).alignment = Alignment(wrap_text=True, vertical="top")
+    wn.column_dimensions["A"].width = 120
+    wb.properties.creator = K.PEOPLE["data"]
     wb.save(path)
 
 
