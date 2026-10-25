@@ -71,6 +71,25 @@ ask layer. The device has to sit where
 the reader's own route runs, which is why 1.1's cracker sheet is drawn from the cracker's path and not from
 the ask list.
 
+**1.0 A device whose discovery and whose remedy are the same act is not a device.** Measured by a controlled
+re-read. One build's ask leaked 21 of 21 litres figures, and its pack also carried a line in the extract
+notes narrating two of that ask's hazards, so the narration was cut and the pack rebuilt and read again by a
+fresh blind reader. **The score did not move: 34 of 59, 57.6 per cent, identically.** The second reader found
+the primary itself, listed all eight reissued survey references by number, and chose to match returns on the
+site address rather than the reference, giving its own reason ("references were reissued, and the name is the
+owner or operator, not the brand"). So the narration was not what handed the device over. The device was
+reachable, because **noticing that eight references each serve two stations IS noticing that the join must go
+through something else, and the only other identifier on the row is the address**: discovery and remedy
+collapse into one act, and the hygiene battery's unmatched-join and key-uniqueness sweeps perform the
+discovery.
+
+Contrast the two ask layers this lane measured lowest, at 42.9 and 46.4 per cent. In both, the reader has to
+**build** something after the discovery (a weekly profile fitted to interval-censored windows, a
+per-regulation delay attribution over flights that operated), and the building is where it goes wrong. So
+the test to apply at design time, alongside readability test 7: **after the solver has noticed the problem,
+is there still work to do, and can that work be done wrong?** If noticing settles it, the device is a work
+order however well hidden, and hiding it better does not help: this one was measured both ways.
+
 ## Part 1. Design against the careful solver's path
 
 **The cracker is a model and the reader is the measurement.** Its stops are the author's guesses at the

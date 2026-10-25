@@ -782,6 +782,42 @@ check that it is there.** A design note whose default path does not contain the 
 `Domain test:` names that method as the deciding analysis, has the ladder upside down, and `Analyst test:`
 will read as plausible because the easy route it names is a generic move the opponent does not make.
 
+### 1.1c The grouping dichotomy: an estimator's grouping cannot carry a stump
+
+**A decisive step that is a choice of estimation grouping (pooled against stratified, one clock against one
+per class, a shared parameter against a per-unit one) has exactly two outcomes, and both fail a gate.**
+
+- **The data separate the groupings.** Then the separation shows in the fit itself, a competent analyst reads
+  it and takes the better-supported grouping, and the step is readability test 3, a reflex. Gate F fails.
+- **The data do not separate them.** Then two defensible estimators give two committed answers with nothing
+  shipped choosing between them, and filing the choice makes the step rule application. Gate C fails as
+  `underspecified_objective`.
+
+There is no third case, because "which grouping" is a question the likelihood answers or does not, and the
+analyst reads that answer either way.
+
+**Measured.** One build's decisive step was a pooled hour-of-week clock recovered from interval-censored
+records, one clock across five offence classes and both seasons. Its judge failed it on Gate C with Gate F
+strong, Gate G and Gate H passing, and the main thread verified the finding from the generator rather than
+taking it on trust: one clock per class, summed, gives seven of the eight slots in common with the golden
+and a different eighth, the eight totalling 4,866 a season against 5,705, at a likelihood ratio of per-class
+over pooled of 511.1 on 668 degrees of freedom, z = -4.29. **The data neither reject pooling nor prefer it**,
+which is the second horn exactly. An independent blind reader then fitted per class by default, without
+being asked, and filed 5,096.6 with the same two slots swapped: so the fork is not hypothetical, it is the
+route a competent analyst takes first.
+
+**Why the obvious repairs do not reach it.** Filing the grouping is rule application. Making the data force
+pooling (thinning the per-class samples until a per-class fit is degenerate) forces it toward the grouping a
+careful analyst would then also choose, so the golden becomes the reflex. Making the classes genuinely differ
+inverts the ladder onto per-class, which is the reflex the reader already took. Each repair moves the build
+from one horn to the other.
+
+**So do not draw a grouping as the decisive step.** A grouping may sit at rung 0 or rung 1, and the asks are
+free to turn on one. When a draw's decisive step reduces to "at what level is this estimated", re-root it
+before any data is cut: the dial it needs does not exist. What survives such a re-root is everything around
+the step, and that is worth keeping: the build above measured a pair of 29.4 with its call held and 31.7 per
+cent ask leakage, so its world, pack and ask layer were sound and only the step was not.
+
 ### 1.2 The stump lives in HOW, never in WHAT
 
 The estimand (population, outcome, window, unit, comparison) is filed so its literal execution is the
