@@ -1,15 +1,15 @@
 {
  "task": "task184",
  "owner": "oviya13ya",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "criminology-justice",
  "objective": "anomaly-detection",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-25",
  "stump": "A competent solver conforms the two recording systems, drops the cross-system duplicates, fixes the gazetteer, keeps the contracted classes in the quarter, spreads each occurrence window evenly over its own hours and commissions Friday 12:00, Thursday 20:00, Friday 00:00, Saturday 00:00, Friday 16:00, Thursday 16:00, Friday 20:00 and Sunday 20:00, filing 3,150 covered offences a season when its eight meet 4,250 of the golden's 5,700; the step that lands it there is reading the window as a statement that the offence is equally likely in every hour of it, when the window is the gap in its keeper's own routine and the gap covering a Friday or Saturday night is a weekend closure three to four times as long as a midweek one.",
  "architecture": 5,
- "loops": 0,
+ "loops": 1,
  "precut": {
   "exit": 0,
   "date": "2026-10-21",
@@ -49,7 +49,7 @@
    "commit": ""
   }
  ],
- "resume": "ARCHITECTURE 5 PASSES ALL THREE CONDITIONS, measured on the clean truth before anything is built. Probe patches reverted; the pack reproduces at c507033cde9b779a. Full design and numbers in the design note under `### Architecture 5`. SETTLED PARAMETERS, so stage 3 applies them rather than searching: NIGHT_CREST = [26, 21, 26, 26, 26, 26, 22], PASSER = 0.92, the immediate-notice rate following the footfall shape on all 168 hours and never zero (CLOSED_FOOT = 2.4 / 1242.24), fitted level's MLE 0.97. MEASURED: golden 8 of 8 against the truth, naive 4 of 8, the two differ on 4 of 8; margin 114.7 (23.05 per cent) against a worst licensed-variant shift of 77.6, a cushion of 1.48x; both grid variants reproduce the golden's eight slots exactly. The stump reads in one line: the naive interval-censored fit sends the patrol to Friday and Saturday AFTERNOONS, because the windows it spreads flat end at the hours somebody was about, and the offences are in the small hours. WHAT MAKES IT WORK, per stumping 1.1f: the likelihood is written PER KEEPER TYPE rather than over a pooled watch share, so nothing aggregates and the fitted level stops absorbing an aggregation error. That needs two organs the pack does not yet carry, both multi-purpose under readability test 7: the premises type on each offence record (a force classifies premises for its own recording) and the monitored hours per premises type (a keyholding and alarm-monitoring contract records them because the monitoring is billed). STAGE 3 OWES: the two organs, the corrected estimator as the golden with the naive fit as rung 3, the three conditions as three separate checks.py assertions, the per-class variant (left over from this pass), the prompt's call sentence re-cut because the slate changes, and the ask layer re-scored against the new cracker. The ask layer carries over unchanged at 31.7 per cent, the lane's best. DO NOT RE-SEARCH THE DIAL: twenty-six settings across four architectures are recorded, and the trade-off surface is in the note.",
+ "resume": "ARCHITECTURE 5 WAS BUILT AT STAGE 3 AND THE LADDER INVERTED. Everything the design promised held; it failed on a rung no earlier pass had scored. Reverted, pack reproduces at c507033cde9b779a, clean tree. WHAT WENT IN AND WORKED: the settled parameters; a premises_type column on the extract carrying the force's own twelve-class classification, which preserved all three conditions against the raw twenty schedules (golden 8 of 8, naive 4 of 8, margin 110.7 at 22.45 per cent, cushion 1.41x); harbourgate_keyholding_schedule.csv, 3,414 rows across 424 monitored sites at the site's own grain because the contractor is paid per attended hour; and the corrected estimator as the golden with the interval-censored fit as the top rung. The SOLVER'S path, band read off the shipped schedule rather than the generator, passed all three at a cushion of 1.46x with the band deviating by at most 0.0898. WHAT KILLED IT: the full rung table, which no earlier pass computed. Window start 0.440, window end 0.311, THE MIDPOINT 0.905 at 6 of 8, flat aoristic 0.569, seen profile 0.553, the interval-censored fit 0.685. The crudest route beats the sophisticated one and reaches nine tenths of the decision's value, because the correction moves mass toward the quiet part of a window, an overnight gap's quiet part sits near its middle, and the midpoint rule puts it there already. stumping Part 3 forbids a non-monotone ladder and this is a scatter. Filed as stumping 1.1g. FIVE ARCHITECTURES ARE NOW SPENT ON THIS SLOT and each failed on a different condition found after the fact: arch 2 on Gate C (the grouping fork, 1.1c) and the cap boundary (1.1d); arch 3 on Gate B (the censoring parameters nobody records, 1.1e); arch 4 on accuracy (the aggregation bias, 1.1f); arch 5 on the rung table (1.1g). The laws are the yield and they now gate every future draw. IF THE SLOT IS TAKEN FURTHER: the step must move mass somewhere no crude placement rule already puts it, which for an interval-censored record means the quiet part of the window must NOT sit near its middle, so the keeper routines and trading hours would have to be redrawn to make the gaps asymmetric. That is a world redraw, not a step redraw. The author file forbids retirement. Everything else still carries: the ask layer measured at 31.7 per cent, the lane's best, the cap decision and the interval-censored spine.",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -811,6 +811,37 @@ mechanism rather than measuring it has not tested its own premise.
 (the unit type on each event record, and the schedule per unit type) rather than one pooled share. That is a
 further organ on the pack and has to be weighed against readability test 7 before it is drawn.
 
+### 1.1g Score EVERY rung against the golden before cutting data, not the decisive pair
+
+**The pre-draw arithmetic is the whole rung table, not the two routes the design is arguing about.** Four
+measured passes on one build each cleared the conditions being tracked and failed one that was not, and the
+last of them failed on a rung the design had never scored.
+
+**Measured.** Architecture 5 of one build cleared all three conditions of 1.1d and 1.1f: the two routes it
+cared about differed on 4 of 8 graded members, the margin was 105.9 against a worst licensed-variant shift
+of 72.4, and the corrected route was strictly the more accurate, 8 of 8 against 4 of 8 on the clean truth.
+Built, its full rung table read:
+
+| rung | slots shared with the golden | its slate's share of the golden's own coverage |
+|---|---|---|
+| window start | 1 of 8 | 0.440 |
+| window end | 1 of 8 | 0.311 |
+| **the window's midpoint** | **6 of 8** | **0.905** |
+| the flat aoristic weight | 3 of 8 | 0.569 |
+| a profile off the seen records | 3 of 8 | 0.553 |
+| the interval-censored fit, the field's own method | 4 of 8 | 0.685 |
+
+So **the crudest route on the list, take the middle of each window, came nearer the golden than the
+sophisticated one**, and reached nine tenths of the decision's whole value. The reason is geometric and will
+recur: the correction moves mass toward the quiet part of a censoring window, an overnight gap's quiet part
+sits near its middle, and the midpoint rule puts it there already. The two agree by accident.
+
+**The screen, run on paper at the draw:** write every rung's share of the golden's own value and require the
+sequence to be monotone, with the decisive move the only reversal (Part 3 already says this; what was
+missing was measuring it before the pack existed). **A correction whose direction coincides with a crude
+placement rule is mimicked by that rule**, so when the decisive step moves mass toward the middle of a
+window, score the midpoint rung first and draw elsewhere if it lands.
+
 ### 1.1e A correction to a censoring mechanism needs the mechanism's own parameters, and nobody records them
 
 **When the decisive step corrects for how the records came to be censored, the correction needs the
