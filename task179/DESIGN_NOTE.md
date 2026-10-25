@@ -183,6 +183,7 @@ Lesson: a retention model validated on a later intake is only as good as the pro
 | SF12 | whether the model reads the entrants' classes (portal judge 2, 2026-10-24) | the 2026 intake's class enrolments are its own while every intake the model is fitted on had the Registry's, so the forecast tests the classes it carries (3,253.0 on the count) | a model on entrant attributes and week-6 ratings alone, the classes never read (2,141.9); the 2026 collapse in repeat classmates read as a migration artefact | 2,250 | SELECT_PIN: the count-free model 897.2 AIC worse once the count is a candidate (asserted SF12, verify); the dictionary files both first-year class extracts as one row per Semester 1 class enrolment of a first-time entrant at the census (cited in write-up step 3). Section 6, the round 2 closure, was withdrawn after portal round 4 landed the call on it (2026-10-25); SF12 now asserts the cutover notes carry no class-enrolment section |
 | SF13 | the count's form (portal judge 2) | the lowest AIC among the forms fitted (an indicator at 10) | a logarithm of the count alone (3,113.6) or a scale-4 curve (3,090.9) | 3,000 | SELECT_PIN: every form printing outside the bin loses to every form printing inside it (the log 23.0 AIC worse than the best, 3.1 worse than the linear count and 2.7 worse than the square root), so any comparison of two forms prints the call (asserted SF13, verify) |
 | SF14 | whether the repeat-classmate count is comparable across the cutover (portal round 3, 2026-10-25) | a class enrolment records the same thing in both systems, the student on the class's list at the census, so the 2026 collapse in repeat classmates is a change in who chose the classes and the count is carried (3,253.0) | the count read as measured differently across the cutover and dropped as not transportable (2,141.9) | 2,250 | the record's own 11,640 entrants meeting fewer than 10 others twice are 5,029 not enrolled against 4,166.2 from the count-free model (write-up step 5); the count's model fitted on the 9,497 entrants the July run did not place prints 3,293.8 (flag at 10) and 3,264.4 (five bands), and reweighted to the 2026 mix of the count 3,263.6 and 3,279.3 (asserted SF14, verify). The comparability sentence, the round 3 closure, was withdrawn with section 6 after portal round 4 |
+| SF15 | whether the 2026 class extract measures the same unit as SIRIUS's (portal round 5, judge 1) | the same unit: one paper and 15 points a class in both, 218,044 places for 57,073 entrants in 8,407 classes (2019 to 2025) and 33,064 for 8,659 in 1,279 (2026), about 3.8 classes an entrant and 26 entrants a class on both sides; only who shares them changed (45,433 of 57,073 meeting 10 or more others twice against 928 of 8,659) | the collapse read as a class-code artefact and the count dropped (2,141.9) | 2,250 | the extracts themselves (write-up step 4) and the cutover notes' Table 1, which maps the class number to the class code; the record's own control (step 6); every form within 12 AIC of the lowest prints 3,250 (step 5) (asserted SF15, verify) |
 
 ## Ladder
 
@@ -481,6 +482,19 @@ Measured by: generator/ceiling.py
   peer definition and the attribute model dominated on AIC by 500 or more (the log count by 23); Gate G forecasting,
   analytical_non_defect; Gate H pass. Its one advisory: nothing in the files names the class-sharing shift, which
   it rules correct under the no-method-filing rule since the AIC gap decides. Report: determinism_check_report_pass2.md.
+
+## Determinism repair, portal round 5 (2026-10-25)
+
+- Portal round 5 on 01124ef4 (section 6 withdrawn): judge 2 passed every gate (3,239 to 3,250, all 20 cells); judge 1 failed,
+  underspecified_objective with Gate G: the count unforced, and the 2026 collapse in repeat classmates read as a definitional
+  mismatch between SIRIUS's class numbers and ARC's class codes (89 against 20 per cent meeting fewer than 10 twice).
+- Diagnosis: the same reading portal round 2's judge 2 took on this call side; judge 2 here checked the classes per entrant
+  and called the collapse a real delivery-structure change. The files settle it: the class is the same unit on both sides.
+- Stump test: the fork is not the stump, and no sentence is added to the pack (round 4 showed what a filed account of the
+  change costs). The move is in the solution: step 4 states the comparability as exact counts from the two extracts, step 5
+  the form corridor. target.zip 01124ef4 unchanged.
+- Gates: checks 102 (SF15's three rows), verify 0 failed, two builds byte-identical over 20 files, figures_check 58, precut
+  51, freeze --mode determinism PASS. Re-judge: determinism-check-task179-r8, results below.
 
 ## Architecture v2 record (spent, kept as history)
 
@@ -1194,6 +1208,7 @@ candidate touches them.
   failed the determinism block on its own reading (a measurement change, so the count dropped as not transportable).
 - Same round, considered: a new rung under the classmate count to re-stump the landed version. Rejected: it redesigns
   the step that held six of six, against one withdrawn section.
+- Portal round 5 (2026-10-25, 01124ef4): the write-up without the files' comparability evidence. Judge 1 read the 2026 collapse as a class-code artefact; the evidence (classes per entrant, class sizes, one paper a class) moved into step 4 as exact counts; nothing filed, the pack unchanged.
 
 ## Retired
 

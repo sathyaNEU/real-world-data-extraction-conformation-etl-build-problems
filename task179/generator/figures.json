@@ -33,6 +33,19 @@
   "call_not_enrolled_2027": 3250,
   "cc1_intake_2026_at_census": 8659,
   "cc2_intake_2026_no_repeat_classmate": 3778,
+  "check_class_unit_across_cutover": {
+    "class_size_whole": 26,
+    "classes_2019_2025": 8407,
+    "classes_2026": 1279,
+    "entrants_2019_2025": 57073,
+    "entrants_2026": 8659,
+    "meet10_2019_2025": 45433,
+    "meet10_2026": 928,
+    "one_paper_a_class": true,
+    "per_entrant_1dp": 3.8,
+    "places_2019_2025": 218044,
+    "places_2026": 33064
+  },
   "check_fewer_than_10_twice_2019_2025": {
     "count_free_predicted": 4166.2,
     "entrants": 11640,

@@ -75,6 +75,23 @@ def main(target):
         if n >= 2:
             rep[(y, a)] += 1
             rep[(y, b)] += 1
+    # SF15: a class is the same unit on both sides of the cutover, counted from the extracts for the enrolled entrants
+    cp = figs["check_class_unit_across_cutover"]
+    tally = {"2019_2025": [0, set(), set()], "2026": [0, set(), set()]}
+    for (y, c), ms in members.items():
+        k = "2026" if y == 2026 else "2019_2025"
+        for m_ in ms:
+            if (y, m_) in ent:
+                tally[k][0] += 1
+                tally[k][1].add((y, m_))
+                tally[k][2].add((y, c))
+    for k, (n_pl, en_, cl_) in tally.items():
+        if (n_pl, len(en_), len(cl_)) != (cp["places_" + k], cp["entrants_" + k], cp["classes_" + k]):
+            bad.append("SF15 %s places %d entrants %d classes %d" % (k, n_pl, len(en_), len(cl_)))
+    m10 = {"2019_2025": sum(1 for (y, sid) in ent if y < 2026 and rep.get((y, sid), 0) >= 10),
+           "2026": sum(1 for (y, sid) in ent if y == 2026 and rep.get((y, sid), 0) >= 10)}
+    if (m10["2019_2025"], m10["2026"]) != (cp["meet10_2019_2025"], cp["meet10_2026"]):
+        bad.append("SF15 meeting 10 or more twice %s" % m10)
     # progress ratings
     val = {"S": 0, "C": 1, "R": 2, "Satisfactory": 0, "Some concern": 1, "At risk": 2}
     pr = defaultdict(list)

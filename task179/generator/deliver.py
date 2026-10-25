@@ -39,6 +39,9 @@ def compute(target):
     b_all, _ = calc.logit_fit(X0, y)
     o["seg"] = dict(n=int(low.sum()), gone=int(y[low].sum()),
                     all=float((1 / (1 + np.exp(-(X0[low] @ b_all)))).sum()))
+    # a class is the same unit on both sides of the cutover: places, entrants and classes in each system's extract,
+    # and who shares them (entrants meeting 10 or more others twice)
+    o["comp"] = calc.class_comparability(r["data"], a)
     return o
 
 
@@ -58,6 +61,7 @@ def figures(o):
     F["hist_intake_entrants_not_enrolled"] = [list(x) for x in o["hist"]]
     F["check_fewer_than_10_twice_2019_2025"] = {"entrants": o["seg"]["n"], "not_enrolled": o["seg"]["gone"],
                                                 "count_free_predicted": round(o["seg"]["all"], 1)}
+    F["check_class_unit_across_cutover"] = o["comp"]
     return F
 
 
@@ -217,18 +221,29 @@ def write_submission(path, o, F):
              "arc_s1_2026_first_year_classes.csv by class code; the dictionary files both as one row per Semester 1 "
              "class enrolment of a first-time entrant at the census): %s of the 2026 entrants meet none."
              % "{:,}".format(o["no_repeat_2026"]))
-    L.append("4. Fitted logistic models of not being enrolled at the next census on the 2019 to 2025 entrants (ASC "
+    cp = o["comp"]
+    L.append("4. Checked that a class is the same unit on both sides of the cutover, so the 2026 counts can be read "
+             "against the earlier intakes': each class number or class code carries one paper at 15 points, and the "
+             "extracts hold %s class places for %s entrants in %s classes in 2019 to 2025 and %s for %s in %s in 2026, "
+             "about %.1f classes an entrant and %d entrants a class on both sides; what changed is who shares them, "
+             "%s of the 2019 to 2025 entrants meeting 10 or more others twice against %s of 2026's."
+             % ("{:,}".format(cp["places_2019_2025"]), "{:,}".format(cp["entrants_2019_2025"]),
+                "{:,}".format(cp["classes_2019_2025"]), "{:,}".format(cp["places_2026"]),
+                "{:,}".format(cp["entrants_2026"]), "{:,}".format(cp["classes_2026"]), cp["per_entrant_1dp"],
+                cp["class_size_whole"], "{:,}".format(cp["meet10_2019_2025"]), "{:,}".format(cp["meet10_2026"])))
+    L.append("5. Fitted logistic models of not being enrolled at the next census on the 2019 to 2025 entrants (ASC "
              "points, first in family, part-time, aged 21 or over, hardship grant, mean week-6 rating with Satisfactory "
              "0, Some concern 1 and At risk 2, living-learning community, hall, offer acceptance day, faculty) with that "
              "count in several forms, and kept the lowest Akaike information criterion, per the conventions: a flag "
-             "for meeting 10 or more other entrants twice.")
-    L.append("5. Checked the model without the count where the 2026 intake sits: %s of the %s entrants of 2019 to "
+             "for meeting 10 or more other entrants twice; every form within 12 AIC of it prints %s."
+             % "{:,}".format(o["call_r"]))
+    L.append("6. Checked the model without the count where the 2026 intake sits: %s of the %s entrants of 2019 to "
              "2025 who meet fewer than 10 other entrants in two or more of their classes were not enrolled at the next "
              "census, and it predicts %s." % ("{:,}".format(o["seg"]["gone"]), "{:,}".format(o["seg"]["n"]),
                                               "{:,.1f}".format(o["seg"]["all"])))
-    L.append("6. Applied the kept model to the 2026 entrants and summed their probabilities: %s, about %s to the nearest 250."
+    L.append("7. Applied the kept model to the 2026 entrants and summed their probabilities: %s, about %s to the nearest 250."
              % ("{:,.1f}".format(o["call"]), "{:,}".format(o["call_r"])))
-    L.append("7. Counted Semester 1 2026 teaching groups at 200 level and above from s1_2026_class_timetable.xlsx: each "
+    L.append("8. Counted Semester 1 2026 teaching groups at 200 level and above from s1_2026_class_timetable.xlsx: each "
              "distinct set of active classes meeting together in one room on the same day, start and teaching weeks is "
              "one group however often it meets, so two classes that share only one of their meetings make three groups "
              "(the two at the shared meeting and each at its own); a group's size is the students its classes list in arc_s1_2026_class_enrolments.csv who hold an enrolled "

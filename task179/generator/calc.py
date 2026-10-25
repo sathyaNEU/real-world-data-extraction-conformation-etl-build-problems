@@ -318,6 +318,36 @@ def aic_table(a, forms=FORMS):
     return out
 
 
+def class_comparability(d, a):
+    """a class on both sides of the cutover: the class places, entrants and classes each system's first-year extract
+    holds for the enrolled entrants, one paper and one credit value a class, and the entrants meeting 10 or more others
+    in two or more classes"""
+    s = d["scls"].rename(columns={"STUDENT_NO": "sid"})
+    s["cls"] = s["TERM"] + ":" + s["CLASS_NBR"].astype(str)
+    s["intake"] = s["COHORT_YR"]
+    r = d["acls"].rename(columns={"arc_student_id": "sid"})
+    r["cls"] = r["class_code"]
+    r["intake"] = 2026
+    keep = set(zip(a["sid"], a["intake"]))
+    out = {}
+    for tag, t in (("2019_2025", s), ("2026", r)):
+        t = t[[(x, y) in keep for x, y in zip(t["sid"], t["intake"])]]
+        out["places_" + tag] = int(len(t))
+        out["entrants_" + tag] = int(t.groupby(["intake", "sid"]).ngroups)
+        out["classes_" + tag] = int(t.groupby(["intake", "cls"]).ngroups)
+    per = [out["places_" + k] / out["entrants_" + k] for k in ("2019_2025", "2026")]
+    size = [out["places_" + k] / out["classes_" + k] for k in ("2019_2025", "2026")]
+    assert round(per[0], 1) == round(per[1], 1) and round(size[0]) == round(size[1])
+    out["per_entrant_1dp"] = round(per[0], 1)
+    out["class_size_whole"] = int(round(size[0]))
+    out["one_paper_a_class"] = bool(s.groupby(["TERM", "CLASS_NBR"])["PAPER"].nunique().max() == 1
+                                    and d["acls"].groupby("class_code")["paper_code"].nunique().max() == 1)
+    h, f = a[a["intake"] < 2026], a[a["intake"] == 2026]
+    out["meet10_2019_2025"] = int((h["ties"] >= 10).sum())
+    out["meet10_2026"] = int((f["ties"] >= 10).sum())
+    return out
+
+
 def compute(target):
     d = load(target)
     a = frame(d)

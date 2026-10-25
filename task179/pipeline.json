@@ -1,7 +1,7 @@
 {
  "task": "task179",
  "owner": "sathya8571",
- "status": "SHIPPED",
+ "status": "PAUSED",
  "domain": "education-learning-sciences",
  "objective": "forecasting",
  "stage": 5,
@@ -150,7 +150,7 @@
    "registration": "registered 2026-10-23 (4afaec0a) after two lock BLOCKs on the window (ban.strategy composition_mix vs task274, then vs task175); not relabelled"
   }
  },
- "resume": "",
+ "resume": "determinism repair, portal round 5 (2026-10-25), at stage 4: write-up step 4 states the class unit's comparability across the cutover as exact counts and step 5 the form corridor, SF15 asserted in checks (102 green) and verify (0 failed), two builds byte-identical, target.zip 01124ef4 unchanged, figures_check 58, precut 51, freeze determinism PASS. Next: read the re-judge (scratchpad determinism-check-task179-r8/verdict.md), write determinism_check_report_pass3.md, append returned, reship.",
  "approved": null,
  "delivered": "2026-10-24",
  "portal": null,
