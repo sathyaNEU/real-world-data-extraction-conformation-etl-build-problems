@@ -10,75 +10,102 @@ import shutil
 import sys
 import zipfile
 
+import numpy as np
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 GOLDEN = os.path.join(TASK, "golden")
 sys.path.insert(0, HERE)
 
+import contractors as C    # noqa: E402
+import golden as G         # noqa: E402
+import registry as R       # noqa: E402
 import world as W          # noqa: E402
-import alterations as AL   # noqa: E402
-import geo as G            # noqa: E402
-import pack as P           # noqa: E402
-import docs as DOC         # noqa: E402
 
 NAMES = dict(
-    ems_new="ems_property_electorate_2022-2025.csv", ems_2020="ELECTRA_PROPERTY_ELECTORATE_REV_2020.txt",
-    ems_2021="ELECTRA_PROPERTY_ELECTORATE_REV_2021.txt", xref="ems_migration_property_xref_2022-03.csv",
-    llpg="llpg_extract_2026-10-12.csv", completions="housing_completions_monitoring_2014-2026.xlsx",
-    trajectory="housing_trajectory_2026-09-30.xlsx", pd="polling_district_review_2023_schedule.csv",
-    wards="wards_councillors_2014_order.csv", notices="ELECTRA_NOTICES_OF_ALTERATION_2021-01_2022-03.txt",
-    proj="snpp_2022based_lorrimere.csv", ctax="council_tax_dwellings_by_band_ward_2025-09.csv",
-    guide="lorrimere_review_data_notes.txt", guidance="lgbc_electorate_forecast_guidance_2024.pdf",
-    canvass="lorrimere_annual_canvass_report_2025.pdf")
-GOLD = dict(workbook="ward_electorate_forecast_2032.xlsx", chart="ward_variance_2032.png")
+    animals="nbr_animals_2025-26.csv", movements="nbr_movements_2025-26.csv", herds="nbr_herd_register_2026-11.xlsx",
+    notes="nbr_export_notes.txt", census="nso_june_livestock_census_2026.csv",
+    census_pdf="nso_june_livestock_census_2026_tables.pdf", epo="epo_cattle_ammonia_factors_2025.pdf",
+    survey="moa_livestock_housing_survey_2025.xlsx", arp="arp_designation_rules_2025.pdf",
+    lpr="lpr_farmed_area_2026.csv", ardvale="vale_agri_jobs_2026.csv", kilbrack="countrywide_invoice_lines_2026.xlsx",
+    northmoor="basin_agri_job_sheets_2026.xlsx", fert="moa_fertiliser_sales_by_region_2025-26.csv",
+    milk="creamery_milk_intake_by_region_2025.csv", pigs="nso_pig_poultry_census_2026.csv")
+GOLD = dict(workbook="ammonia_action_regions_2027.xlsx", chart="cattle_ammonia_per_hectare_2025-26.png")
+DEPT = "Ministry of Agriculture"
+OWNERS = {
+    "herds": dict(creator="NBR Data Management", last_by="Noel Herity", created="2019-03-04T09:41:00Z",
+                  modified="2026-11-09T06:14:00Z", company=DEPT),
+    "survey": dict(creator="Livestock Surveys Unit", last_by="Livestock Surveys Unit", created="2025-06-02T10:05:00Z",
+                   modified="2025-07-14T15:22:00Z", company=DEPT),
+    "kilbrack": dict(creator="Countrywide Slurry Services", last_by="Accounts", created="2026-11-03T11:48:00Z",
+                     modified="2026-11-03T11:52:00Z", company="Countrywide Slurry Services Ltd"),
+    "northmoor": dict(creator="Basin Agri", last_by="Office", created="2026-01-12T08:30:00Z",
+                      modified="2026-11-04T17:06:00Z", company="Basin Agri"),
+}
 
 
 def t(k):
     return os.path.join(TARGET, NAMES[k])
 
 
-def pack():
+def truth():
+    """the clean truth: the world, its identity layer, every animal's herd intervals, the golden ammonia, farmed land,
+    the census and the contractors' jobs"""
+    w = W.build(W.SEED)
+    rng = np.random.default_rng(W.SEED + 1)
+    moved = R.assign(w, rng)
+    R.second_herds(w, rng)
+    old = R.reissued(w, rng)
+    bherd = R.birth_herds(w, rng)
+    tags = R.tags(w, rng, bherd)
+    IV = W.intervals(w.A, w.moves)
+    T = G.Truth(w.A)
+    hr = np.array([G.REGI[h["region"]] for h in w.herds])
+    ivs = G.iv_arrays(IV)
+    P = G.Pieces(T, ivs, hr)
+    gold = G.ammonia(P)
+    parcels = R.land(w, IV, G.by_region(gold), rng)
+    cen = R.census(w, IV)
+    cj = C.jobs(w, IV, np.random.default_rng(W.SEED + 2))
+    herd_region = {h["herd_no"]: h["region"] for h in w.herds}
+    land = G.farmed_land(parcels, herd_region)
+    return dict(w=w, moved=moved, old=old, bherd=bherd, tags=tags, IV=IV, T=T, hr=hr, ivs=ivs, P=P, gold=gold,
+                parcels=parcels, cen=cen, cj=cj, herd_region=herd_region, land=land)
+
+
+def pack(tr=None):
+    import docs as DOC
+    import pack as PK
+    import postprocess as PP
     for d in (TARGET, GOLDEN):
         shutil.rmtree(d, ignore_errors=True)
         os.makedirs(d)
-    w = W.build()
-    g = G.build(w)
-    P.attach(w, g)
-    meta = P.site_meta(w, g)
-    ev = AL.events(w)
-    idx = AL.by_dwelling(ev)
-    w["events"], w["event_index"] = ev, idx
+    tr = tr or truth()
+    w = tr["w"]
+    rng = np.random.default_rng(W.SEED + 3)
     n = {}
-    n["ems_new"] = P.ems_new(t("ems_new"), w)
-    n["ems_2020"] = P.ems_old(t("ems_2020"), w, 2020, run="04/03/2022 17:47")
-    n["ems_2021"] = P.ems_old(t("ems_2021"), w, 2021, idx=idx)
-    n["notices"] = P.electra_notices(t("notices"), w, ev)
-    n["xref"] = P.xref(t("xref"), w)
-    n["llpg"], parish = P.llpg(t("llpg"), w, g)
-    n["completions"] = P.completions(t("completions"), w, meta)
-    n["trajectory"] = P.trajectory(t("trajectory"), w, meta)
-    n["pd"] = P.pd_schedule(t("pd"), w, g)
-    n["wards"] = P.wards_file(t("wards"), g)
-    n["proj"] = P.projections(t("proj"), w)
-    n["ctax"] = P.council_tax(t("ctax"), w)
-    P.field_guide(t("guide"), NAMES)
-    dw = w["dwellings"]
-    Y = W.LAST_SHIP
-    onreg = [d for d in dw if d["inuse"] is None or d["inuse"] <= W.mindex(Y, 10)]
-    r3 = int(round(0.0046 * len(onreg)))
-    r1 = int(round(0.784 * len(onreg)))
-    stats = dict(props=len(onreg), r1=r1, r3=r3, r2=len(onreg) - r1 - r3, resp=71.6,
-                 lg=sum(d["count"][Y] for d in onreg), att=sum(d["attainers"][Y] for d in onreg),
-                 ov=sum(d["overseas"].get(Y, 0) for d in onreg))
-    DOC.guidance_pdf(t("guidance"))
-    DOC.canvass_pdf(t("canvass"), stats)
-    import postprocess as PP
-    for k in ("completions", "trajectory"):
-        PP.normalize_ooxml(t(k), excel=True, **PP.OWNERS[k])
-    for k, stamp in DOC.STAMPS.items():
+    n["animals"] = PK.animals(t("animals"), w, tr["IV"], tr["tags"], tr["bherd"])
+    n["movements"] = PK.movements(t("movements"), w, tr["tags"], rng)
+    n["herds"] = PK.herd_register(t("herds"), w, tr["old"], rng)
+    PK.export_notes(t("notes"))
+    n["census"] = PK.census_csv(t("census"), w, tr["cen"])
+    n["lpr"] = PK.lpr(t("lpr"), tr["parcels"])
+    PK.survey(t("survey"), w, rng)
+    n["ardvale"] = PK.ardvale(t("ardvale"), tr["cj"])
+    n["kilbrack"] = PK.kilbrack(t("kilbrack"), tr["cj"])
+    n["northmoor"] = PK.northmoor(t("northmoor"), tr["cj"])
+    n["fert"] = PK.fertiliser(t("fert"), tr["land"], rng)
+    n["milk"] = PK.milk(t("milk"), w, rng)
+    n["pigs"] = PK.pigs_poultry(t("pigs"), rng)
+    DOC.epo_pdf(t("epo"))
+    DOC.arp_pdf(t("arp"))
+    DOC.census_pdf(t("census_pdf"), w, tr["cen"])
+    for k in ("herds", "survey", "kilbrack", "northmoor"):
+        PP.normalize_ooxml(t(k), excel=True, **OWNERS[k])
+    for k, stamp in (("epo", DOC.STAMPS["epo"]), ("arp", DOC.STAMPS["arp"]), ("census_pdf", DOC.STAMPS["census"])):
         PP.normalize_pdf(t(k), stamp, stamp)
-    return w, g, meta, n
+    return tr, n
 
 
 def gpath(k):
@@ -86,13 +113,13 @@ def gpath(k):
 
 
 def main():
-    built = pack()
+    tr, n = pack()
     import goldfiles as GF
     import postprocess as PP
-    figs = GF.write(gpath, TARGET)
-    PP.normalize_ooxml(gpath("workbook"), "Megan Stewart", "Megan Stewart", "2026-10-26T09:12:00Z", "2026-10-28T16:47:00Z",
-                       title="Lorrimere electoral review: electorate forecast 2032", excel=True,
-                       company="Local Government Boundary Commission")
+    figs = GF.write(gpath, tr)
+    PP.normalize_ooxml(gpath("workbook"), "Emily McAleer", "Emily McAleer", "2026-11-12T09:26:00Z",
+                       "2026-11-18T16:41:00Z", title="Ammonia Action Regions 2027: the Unit's figures", excel=True,
+                       company=DEPT)
     json.dump(figs, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
     import writeup
     writeup.main()
@@ -100,7 +127,8 @@ def main():
     metadata.main()
     cut_zip()
     print("built: %d files in target/, %d in golden/" % (len(os.listdir(TARGET)), len(os.listdir(GOLDEN))))
-    return built
+    print(json.dumps(n))
+    return tr
 
 
 def cut_zip():
@@ -109,18 +137,18 @@ def cut_zip():
     import metadata
     zp = os.path.join(TASK, "target.zip")
     with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
-        for n in sorted(os.listdir(TARGET)):
-            y, mo, d = (int(x) for x in metadata.SOURCES[n][1].split("-"))
-            h = int(hashlib.md5(n.encode()).hexdigest(), 16)
-            zi = zipfile.ZipInfo(n, date_time=(y, mo, d, 7 + h % 11, (h // 11) % 60, ((h // 660) % 30) * 2))
+        for nm in sorted(os.listdir(TARGET)):
+            y, mo, d = (int(x) for x in metadata.SOURCES[nm][1].split("-"))
+            h = int(hashlib.md5(nm.encode()).hexdigest(), 16)
+            zi = zipfile.ZipInfo(nm, date_time=(y, mo, d, 7 + h % 11, (h // 11) % 60, ((h // 660) % 30) * 2))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
-            z.writestr(zi, open(os.path.join(TARGET, n), "rb").read())
+            z.writestr(zi, open(os.path.join(TARGET, nm), "rb").read())
 
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "pack":
-        w, g, meta, n = pack()
+        tr, n = pack()
         print(json.dumps(n, indent=1))
     else:
         main()

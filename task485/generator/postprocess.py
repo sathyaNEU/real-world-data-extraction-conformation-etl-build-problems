@@ -4,14 +4,7 @@ banner. Every substitution keeps byte lengths where the format needs it."""
 import re
 import zipfile
 
-COMPANY = "Lorrimere District Council"
-# each office file's owner and saved stamps in the fiction (UTC)
-OWNERS = {
-    "completions": dict(creator="Planning Policy", last_by="Housing Monitoring", created="2015-05-11T09:20:00Z",
-                        modified="2026-10-09T14:36:00Z"),
-    "trajectory": dict(creator="Planning Policy", last_by="Planning Policy", created="2026-10-05T10:02:00Z",
-                       modified="2026-10-08T16:18:00Z"),
-}
+COMPANY = "Ministry of Agriculture"
 
 
 def _x(s):

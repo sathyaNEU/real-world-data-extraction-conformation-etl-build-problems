@@ -1,81 +1,59 @@
 ## Tags
 
-**Domain:** Survey Research & Official Statistics, census, register and administrative data quality (a boundary commission's 2032 electorate forecast for a district's 23 wards, conformed from six electoral registers in two election management system layouts, the old system's notices of alteration, the address gazetteer, the council's completions monitoring and housing trajectory, and its polling district and ward schedules).
+**Domain:** Physical & Environmental Sciences, emissions inventory (a national agriculture department's regional inventory of ammonia from cattle manure for the 2025-26 programme year, conformed from the bovine register's animal and movement exports, its herd register, the June census by farm, the land parcel register's farmed area and the environmental protection office's Tier 2 factors).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**The draft recommendations should address Lorrimere West, Caldenstow Park, Quenbrook, Ebborby and Kettermere: on the forecast for the register to be published on 1 December 2032 these five wards lie more than 10 per cent from the district's average of 2,714 electors per councillor, and the other 18 are within it.**
-Lorrimere West, Caldenstow Park, Quenbrook and Kettermere sit at +12.8, +12.2, +15.3 and +15.6 per cent and Ebborby at -12.3. Not Lorrimere North and Tibberfield, which the 2025 register plus the dwellings to come at the settled stock's electors per dwelling puts at +14.9 and +15.4: their sites complete from 2030, and a dwelling's electors join the register over the canvasses after it comes into use, so in 2032 they hold well under the settled level (+6.5 and +4.1). Not with Lorrimere West, Caldenstow Park and Quenbrook within, at +7.5, +3.8 and +3.7 on that route: their estates completed from 2024 are still joining the register.
+**The Minister should designate Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Inner Basin and Lower Basin as Ammonia Action Regions for the 2027 spreading season: on the ammonia from cattle manure arising in each region over 2025-26 these six regions are at or above 26 kilograms a hectare of farmed land, and the other six are under it.**
+Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Inner Basin and Lower Basin stand at 31.53, 29.74, 28.48, 34.23, 28.10 and 28.31 kilograms a hectare. Not Lake Uplands, Middle Uplands, Eastern Uplands, Western Seaboard and Atlantic Coast, at 24.23, 23.62, 20.27, 23.92 and 20.10: the cattle on their holdings on 1 June include lowland yearlings out on summer grazing and calves bought in that spring, whose housed months fall in other regions, so the census at the annual factor per head puts them over the line. Not without Inner Basin and Lower Basin, at 28.10 and 28.31: their finishers house stores all winter and send them to slaughter before June, which the census misses.
 
 ## 2. Critical Components
 
-1. Local government electors on the register published 1 December 2025: **109,512**.
-2. Dwellings the housing trajectory expects from 1 October 2026 to 31 March 2032: **2,664**.
+1. Ammonia from cattle manure arising in the twelve regions, 1 November 2025 to 31 October 2026: **1,352.2 tonnes**.
+2. Farmed land of the twelve regions in the 2026 land parcel register, commonage at each herd's share: **50,930.53 hectares**.
 
 ## 3. Step-by-Step Solution
 
-1. Conformed the registers of 1 December 2022 to 2025 in ems_property_electorate_2022-2025.csv to llpg_extract_2026-10-12.csv through each property's UPRN (approved records in use, RD02 to RD04 houses, RD06 flats, the gazetteer's ward): 109,512 local government electors on the 2025 register.
-2. Counted each dwelling's canvasses by each register from its gazetteer in-use date, a property being first canvassed in the year it is in use on 31 August and applications determined by 31 October reaching the 1 December register (lorrimere_annual_canvass_report_2025.pdf).
-3. Took the settled level from the 2025 register at the dwellings at their seventh canvass or later (houses 1.84, flats 1.22 electors per dwelling) and, from the 2022 to 2025 registers at the dwellings in housing_completions_monitoring_2014-2026.xlsx, the share of it a dwelling holds: 0.08 on rolling registration alone, then 0.45, 0.69, 0.83, 0.91, 0.96, 0.97 at its first to sixth canvass.
-4. Carried each dwelling at its seventh canvass or later on the 2025 register at its 2025 count and every other dwelling, in use since or due in housing_trajectory_2026-09-30.xlsx (2,664 from October 2026 to March 2032, and 2032/33's April to October, each year's completions spread evenly at the site's remaining mix), at its type's settled level times its share at its canvasses on 1 December 2032.
-5. Divided each ward's forecast by its councillors (wards_councillors_2014_order.csv) against the district's 116,705 electors over 43 councillors, 2,714 each: five wards lie more than 10 per cent from it.
-6. For the 2021 register, read ELECTRA_PROPERTY_ELECTORATE_REV_2021.txt as the register Electra held when it was switched off on 4 March 2022 (dwellings first in use after 31 October 2021 hold electors in it, each an addition in the 2022 notices) and backed each local government entry of the notices of 4 January, 1 February and 1 March 2022 in ELECTRA_NOTICES_OF_ALTERATION_2021-01_2022-03.txt out of each property's TOTAL less its attainers and overseas electors (an addition taken off, a deletion put back, F entries and attainers left), by the ward of its 2014 district through polling_district_review_2023_schedule.csv: 107,065 electors.
-7. The draft recommendations address the five wards outside 10 per cent.
+1. Rebuilt each animal's days in nbr_animals_2025-26.csv and nbr_movements_2025-26.csv, from its date of birth or 1 November 2025 to the day before its exit date or 31 October 2026, in HERD_AT_START and then in each destination herd from its arrival date (nbr_export_notes.txt): 37,319,657 animal-days.
+2. Put each herd number in the 2024 region of its district in nbr_herd_register_2026-11.xlsx, a reissued number at the record valid on the day (designation rules, section 4).
+3. Classed each day by epo_cattle_ammonia_factors_2025.pdf (section 2 and the annex's dairy breeds) and charged Table 3's housed rate on days inside the Table 4 housing season of the region the animal was in that day and its grass rate on the others: 1,352.2 tonnes of ammonia.
+4. Divided each region's ammonia by its farmed land in lpr_farmed_area_2026.csv by the herds' regions, a commonage parcel at the herd's SHARE_PCT: 50,930.53 hectares.
+5. Tested each region against 26 kilograms a hectare on the unrounded figures (designation rules, section 5): six regions at or above it.
+6. For the contractors, took cattle slurry jobs dated 13 January to 30 April 2026 on herds in the herd register from vale_agri_jobs_2026.csv (loads times the tanker's gallons), countrywide_invoice_lines_2026.xlsx (SS- services, thousands of gallons) and basin_agri_job_sheets_2026.xlsx (metered cubic metres), at 0.00454609 cubic metres a gallon, and counted each job once: a Countrywide line whose Reference is a Vale Agri Job No or a Basin Agri Job No bills that contractor's job, so it is left out and the job sheet's volume and spreader are kept; trailing shoe, trailing hose, dribble bar, umbilical dribble bar and shallow injection are low-emission (designation rules, section 6): 243,900 cubic metres, 54.7 per cent low-emission.
+7. The Minister designates the six regions at or above the line.
 
 ## 4. Deliverable Answers
 
-### ward_electorate_forecast_2032.xlsx
+### ammonia_action_regions_2027.xlsx
 
-1. Finding for each ward on the 2032 forecast:
-   - Lorrimere Abbey: within 10 per cent
-   - Lorrimere Castle: within 10 per cent
-   - Lorrimere North: within 10 per cent
-   - Lorrimere West: outside, above the average
-   - Caldenstow Central: within 10 per cent
-   - Caldenstow Park: outside, above the average
-   - Quenbrook: outside, above the average
-   - Tibberfield: within 10 per cent
-   - Ebborby: outside, below the average
-   - Kettermere: outside, above the average
-   - Selwarstow: within 10 per cent
-   - Vellanridge: within 10 per cent
-   - Ostenworth: within 10 per cent
-   - Harnwick: within 10 per cent
-   - Brenningholme: within 10 per cent
-   - Faulcott: within 10 per cent
-   - Griselbrook: within 10 per cent
-   - Dorranford: within 10 per cent
-   - Pellanham: within 10 per cent
-   - Rothenridge: within 10 per cent
-   - Stellfield: within 10 per cent
-   - Vardonham: within 10 per cent
-   - Yarnmere: within 10 per cent
-2. Local government electors on the register published 1 December 2021, whole electors:
-   - Lorrimere Abbey: 7,758
-   - Lorrimere Castle: 5,058
-   - Lorrimere North: 5,104
-   - Lorrimere West: 7,489
-   - Caldenstow Central: 4,974
-   - Caldenstow Park: 4,129
-   - Quenbrook: 2,330
-   - Tibberfield: 2,593
-   - Ebborby: 2,362
-   - Kettermere: 7,623
-   - Selwarstow: 5,028
-   - Vellanridge: 5,022
-   - Ostenworth: 5,130
-   - Harnwick: 2,628
-   - Brenningholme: 7,461
-   - Faulcott: 2,494
-   - Griselbrook: 5,120
-   - Dorranford: 7,478
-   - Pellanham: 2,478
-   - Rothenridge: 4,859
-   - Stellfield: 4,873
-   - Vardonham: 2,636
-   - Yarnmere: 2,438
+1. Ammonia from cattle manure arising in each region over 2025-26, tonnes, kilograms a hectare of farmed land, and whether designated:
+   - Northern Vale: 177.4 tonnes, 31.53 kg a hectare, designated
+   - Eastern Vale: 191.9 tonnes, 29.74 kg a hectare, designated
+   - Southern Vale: 176.1 tonnes, 28.48 kg a hectare, designated
+   - Coastal Vale: 177.9 tonnes, 22.91 kg a hectare, not designated
+   - Midland Basin: 102.2 tonnes, 34.23 kg a hectare, designated
+   - Inner Basin: 82.1 tonnes, 28.10 kg a hectare, designated
+   - Lower Basin: 105.0 tonnes, 28.31 kg a hectare, designated
+   - Lake Uplands: 57.9 tonnes, 24.23 kg a hectare, not designated
+   - Middle Uplands: 62.7 tonnes, 23.62 kg a hectare, not designated
+   - Eastern Uplands: 50.5 tonnes, 20.27 kg a hectare, not designated
+   - Western Seaboard: 79.3 tonnes, 23.92 kg a hectare, not designated
+   - Atlantic Coast: 89.1 tonnes, 20.10 kg a hectare, not designated
+2. Cattle slurry spread by contractors on each region's farms from 13 January to 30 April 2026, cubic metres to the nearest hundred, and the share spread by trailing shoe, trailing hose or injection, per cent:
+   - Northern Vale: 34,100 cubic metres, 44.5 per cent
+   - Eastern Vale: 34,400 cubic metres, 54.7 per cent
+   - Southern Vale: 25,900 cubic metres, 65.4 per cent
+   - Coastal Vale: 35,900 cubic metres, 77.8 per cent
+   - Midland Basin: 19,500 cubic metres, 37.1 per cent
+   - Inner Basin: 15,600 cubic metres, 29.5 per cent
+   - Lower Basin: 22,600 cubic metres, 72.7 per cent
+   - Lake Uplands: 9,600 cubic metres, 19.4 per cent
+   - Middle Uplands: 9,900 cubic metres, 53.1 per cent
+   - Eastern Uplands: 9,800 cubic metres, 70.9 per cent
+   - Western Seaboard: 12,100 cubic metres, 26.1 per cent
+   - Atlantic Coast: 14,700 cubic metres, 62.5 per cent
 
-### ward_variance_2032.png
+### cattle_ammonia_per_hectare_2025-26.png
 
-1. Horizontal bar chart of each ward's 2032 variance from the district average against the 10 per cent lines: the five wards outside (Lorrimere West, Caldenstow Park, Quenbrook, Ebborby and Kettermere) marked beyond the lines and the other 18 within them.
+1. Horizontal bar chart of each region's kilograms of ammonia a hectare against the 26 kilogram line, the six designated regions (Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Inner Basin and Lower Basin) in orange beyond the line and the other six in grey under it.

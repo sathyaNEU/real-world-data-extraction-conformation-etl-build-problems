@@ -1,21 +1,17 @@
 {
  "task": "task485",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-25",
  "architecture": 2,
  "loops": 0,
- "stump": "The default path multiplies each region's 1 June 2026 census by the inventory's annual factor per head and divides by farmed area, designating the upland regions where lowland youngstock spend the summer and missing the lowland dairy regions that house them all winter; averaging the register's count over the year still leaves the upland regions over the line, because the housed season's ammonia arises where the animals winter.",
- "precut": {},
- "leak": {},
- "duplicate_check": {},
- "judge": {},
+ "stump": "The default path multiplies each region's 1 June 2026 census by the factor note's annual factor per head and divides by farmed land, designating nine regions: it adds Lake Uplands, Middle Uplands, Eastern Uplands, Western Seaboard and Atlantic Coast, whose June herds hold lowland yearlings out on summer grazing lets and calves bought from dairy farms that spring, and it misses Inner Basin and Lower Basin, whose finishers house stores all winter and send them to slaughter before June; averaging the bovine register's count over the year still adds Lake Uplands, Middle Uplands and Western Seaboard, because the annual factor's housed days never happen there.",
  "returned": [],
- "resume": "stage 2 for architecture 2 (the Ammonia Reduction Programme's 2027 Ammonia Action Regions on each region's 2025-26 cattle-manure ammonia per hectare of farmed land): world on paper with the twelve regions' herds, grazing lets, weanling and calf flows, farmed areas and the line set so the census route files the upland regions and the golden files lowland dairy regions, every golden margin wide against Layer 1 handling; the standing family measured (animal-days at the season of the region the animal is in, at the home region's season, monthly stock snapshots, the register's mean count), the cheapest licensed member's hit rate, the ladder, the fork table (a mart day's region, the housing season by location, the census categories against the register's, the programme year's bounds), closure, asks on rows outside the main population, prompt.txt, precut.py exit 0.",
+ "resume": "re-root to architecture 3 (no retirement by the author's rule): screen a fresh ETL architecture whose decisive step is not the careful analyst's first construction from a record that covers the estimand at its own grain; read ## Tried and rejected and both architecture records first; the cattle generator under generator/ is architecture 2's and is rewritten or retired with the draw",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -37,5 +33,37 @@
    "pair_ceiling": 28.5,
    "mirror_leakage": 0.0
   }
- }
+ },
+ "lineage_v2": {
+  "zip": "37f7e1986e84036128ca2496b64197b3",
+  "precut": {
+   "result": "51 checks, 0 FAIL, 0 WARN (2026-10-25, zip 37f7e198)",
+   "pair_ceiling": 28.5,
+   "mirror_leakage": 0.0
+  },
+  "leak": {
+   "leak_py": "REVIEW (2026-10-25, no LEAK; zip 37f7e198)",
+   "reader": "round 1 (zip 37f7e198): both scored readers (sonnet, medium, fresh copies) landed the call, the golden six, by rebuilding each animal's days from the register at Table 3's per-day rates inside each region's housing season; score_reader FAIL on both, ask A 0 of 24 on both; reader B called the step closer to rule application"
+  },
+  "duplicate_check": {
+   "heart": "WARN (no BLOCK), 2026-10-25",
+   "surface": "exit 0, four promoted pairs on surface 0.077 to 0.102 (task484 back to back on the emissions-inventory ETL pairing, task455, task161, task181), each answered by a differentiation line on the card; persona in the pack: Noel Herity"
+  },
+  "gates": {
+   "checks": "61 PASS, 0 FAIL",
+   "verify": "66 of 66",
+   "rebuild": "byte-identical, zip 37f7e1986e84036128ca2496b64197b3",
+   "figures_check": "71 figures, 0 absent",
+   "scrub": "target and golden clean",
+   "house_fixes": "H16 the factor note re-dated after the survey it cites; H21 regions, contractors and the department renamed to descriptive names clear of real places and of every card"
+  },
+  "judge": {
+   "r1": "stopped at the spend (the isolated thread was running when both readers had landed)"
+  },
+  "fate": "spent 2026-10-25 at stage 4 round 1: both scored readers landed the call"
+ },
+ "precut": {},
+ "leak": {},
+ "duplicate_check": {},
+ "judge": {}
 }

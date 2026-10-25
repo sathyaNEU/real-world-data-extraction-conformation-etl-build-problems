@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "filed_standard",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst conforms the 1 June 2026 census holdings to regions, applies the inventory's annual ammonia factor per head by category and region, divides by each region's farmed area and designates the regions at or over the line, filing the upland regions where lowland youngstock spend the summer and missing lowland dairy regions that house them all winter.",
+  "analyst_test": "A strong analyst conforms the 1 June 2026 census holdings to the 2024 regions, applies the factor note's annual ammonia factor per head by category and region (its Table 5), divides by each region's farmed land and designates the regions at or over the line, filing nine regions: it adds five grassland and western regions whose June herds hold summer grazers and spring-bought calves, and misses Inner Basin and Lower Basin, whose finishers house stores all winter and send them to slaughter before June.",
   "domain_test": "A regional ammonia inventory places each animal's emissions where and when they arise, at the housed rate in the housing season of the region it is in and at the grass rate outside it, so the activity data for a herd that moves with the seasons are animal-days by region and stage rebuilt from the movement register; swap cattle for hospital patients and bed-days for animal-days and nothing is left to place, because a patient's day emits nothing at a rate set by the season and the ward it falls in.",
   "layer2_family": "field_method",
   "layer2_pattern": "own:animal-days by region and housing stage rebuilt from the movement register",
@@ -43,11 +43,12 @@
     "the herd register's region codes revised in 2024 (two regions' boundary moved), the census still on the old codes",
     "the census keyed by the statistics office's farm number, joined to herd numbers through the herd register",
     "census categories (dairy cows, suckler cows, other cattle by age band, calves) against categories the register implies from sex, breed, age and calving",
-    "the inventory's factors in kg of ammonia-nitrogen, the programme's line in kg of ammonia",
+    "the factor note's mass flow in kilograms of ammonia-nitrogen, its per-day factors and the programme's line in kilograms of ammonia",
     "day-month-year dates in the register, ISO dates elsewhere, the programme year November to October",
-    "farmed area from the land parcel register by herd, commonage shares split across herds"
+    "farmed area from the land parcel register by herd, commonage shares split across herds",
+    "three slurry contractors' exports in three units (loads at each tanker's gallons, thousands of gallons, metered cubic metres), with herd numbers written two ways and pig slurry and digestate among the jobs"
   ],
-  "stakeholder_role": "the head of the Department's Ammonia Programme Unit",
+  "stakeholder_role": "the head of the Ministry's Ammonia Programme Unit",
   "role_family": "programme_officer",
   "scoring_unit": "other",
   "spine": {
@@ -78,13 +79,16 @@
   "question_form": "which",
   "driver": "A region's period total of a flow is read as each unit's annual rate for that region times the units counted there on one day, but part of the units move between regions with the seasons and their rate is several times higher in the season they spend in their other region; the total belongs to each region by the days each unit spends there in each season, rebuilt from the units' movement histories, and an average of the units present still leaves each unit's high-rate season with the region where it spends the low-rate one.",
   "driver_concrete": "Each animal's ammonia accrues day by day at the housed rate in the housing season of the region it is in and at the grass rate outside it, so each region's 2025-26 cattle-manure ammonia is rebuilt from the bovine register's movement histories as animal-days by region and stage, not taken as the 1 June census times the region's annual factor per head.",
-  "stump": "The default path multiplies each region's 1 June 2026 census by the inventory's annual factor per head and divides by farmed area, designating the upland regions where lowland youngstock spend the summer and missing the lowland dairy regions that house them all winter; averaging the register's count over the year still leaves the upland regions over the line, because the housed season's ammonia arises where the animals winter.",
+  "stump": "The default path multiplies each region's 1 June 2026 census by the factor note's annual factor per head and divides by farmed land, designating nine regions: it adds Lake Uplands, Middle Uplands, Eastern Uplands, Western Seaboard and Atlantic Coast, whose June herds hold lowland yearlings out on summer grazing lets and calves bought from dairy farms that spring, and it misses Inner Basin and Lower Basin, whose finishers house stores all winter and send them to slaughter before June; averaging the bovine register's count over the year still adds Lake Uplands, Middle Uplands and Western Seaboard, because the annual factor's housed days never happen there.",
   "mechanism_source": "design_note",
   "differentiation": {
     "task181": "There the expected count of events follows the crossings moving units make through each other's positions, so scaling by time spent misses a forward change in crossings; here no event arises between units: each animal's ammonia accrues at the rate of the stage it is in, and the move is placing its days in the region where it spends them, housed or at grass, from the movement register.",
     "task229": "There the decisive quantity is the standard error of a mean over entities that fail together through a shared node (lineage v1); here nothing is uncertain or correlated: each region's total is a sum of animal-days placed by region and housing stage from the movement records.",
     "task98": "There a per-unit threshold applies to units formed by chaining members within a fixed distance, which the settled periods hid (lineage v3); here the units are fixed regions and the line reads their totals per hectare, and what moves is which region each animal's days, and its housed season, belong to.",
-    "task70": "There a per-record date is rebuilt from a movement log as the first departure after the record's own timestamp, reshaping a daily distribution behind a per-period threshold (lineage v1); here no date is rebuilt for a record: every animal's whole year is placed day by day across regions and housing stages, and the line reads each region's annual total."
+    "task70": "There a per-record date is rebuilt from a movement log as the first departure after the record's own timestamp, reshaping a daily distribution behind a per-period threshold (lineage v1); here no date is rebuilt for a record: every animal's whole year is placed day by day across regions and housing stages, and the line reads each region's annual total.",
+    "task484": "Both are emissions inventories that designate areas, consecutive in this lane; there a period's fuel use is read from the previous winter's survey and the move recovers a fuel switch from the metered fuel's deliveries against a base pair of winters, here nothing switches and no survey is carried forward: the June census counts every animal correctly and the move is placing each animal's days, housed or at grass, in the region where it spends them, from the movement register.",
+    "task455": "There new administrative identifiers are linked to the units they continue through member flows read from the old unit's side; here no identifier continues another and nothing is linked: each animal keeps its tag and the move is placing its days by region and housing stage from its own movement history.",
+    "task161": "There stock built ahead of a cost step drains at each holder's own use share and the filed standard selects a drawdown model; here nothing is forecast or selected: the factor note's per-day rates are filed and the move is where, and in which season, each animal-day falls."
   },
   "lineage": [
     {
@@ -99,6 +103,7 @@
       "stump_strategy": "maturity_censoring"
     }
   ],
-  "notes": "",
-  "registered": "2026-10-25T14:17:53Z"
+  "notes": "architecture 2 spent 2026-10-25 at stage 4 round 1: both scored readers rebuilt the animal-days from the movement register at the factor note's per-day rates by region and housing season and landed the golden six; ask A held at 0 of 24 on both",
+  "registered": "2026-10-25T14:17:53Z",
+  "architecture_spent": true
 }

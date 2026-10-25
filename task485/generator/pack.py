@@ -1,632 +1,325 @@
-"""Cut task485's pack from the world: the electoral management systems' property electorate reports (the old system's
-for the 2021 and 2022 registers, the new system's for 2023 to 2026), the 2023 migration's property cross-reference,
-the address register extract, the council's completions monitoring and housing trajectory, the 2024 polling district
-review schedule and the ward list."""
+"""Cut task485's pack from the clean truth: the National Bovine Register's animal and movement exports with its herd
+register, the June census by farm, the land parcel register's farmed area, the farm practices survey's housing seasons,
+the three slurry contractors' exports, three context files and the register's export notes."""
 import csv
 import datetime as dt
 import io
 
 import numpy as np
 import openpyxl
-from openpyxl.styles import Font, Alignment
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import Alignment, Font
 
-import alterations as AL
+import contractors as C
+import registry as R
 import world as W
 
 D = dt.date
-REG_DATE = {Y: D(Y, 12, 1) for Y in range(2014, 2033)}
-LLPG_DATE = D(2026, 10, 12)
-MIGRATION = D(2022, 3, 7)                   # the new system live; Electra's last export ran on 4 March 2022
-SWITCH_OFF = D(2022, 3, 4)
-OLD_YEARS, NEW_YEARS = (2020, 2021), (2022, 2023, 2024, 2025)
-REVIEW_YEAR = 2023                          # the 2023 polling district review takes effect on the 2023 register
-TOWN = {"LAB": "Lorrimere", "LCA": "Lorrimere", "LNO": "Lorrimere", "LWE": "Lorrimere", "CCE": "Caldenstow",
-        "CPK": "Caldenstow"}
-CLASS_HOUSE = ["RD02", "RD03", "RD04"]       # detached, semi-detached, terraced
-CLASS_FLAT = "RD06"                         # self-contained flat
-CLASS_PARENT = "PP"                         # property shell (a building holding flats)
+BOLD = Font(bold=True)
+PREMISES = {"mart": "%s Mart", "factory": None, "knackery": None, "export": None, "dealer": None}
+FACTORY_NAMES = ["Midland Basin Meats", "Southern Vale Beef", "Inner Basin Meat Packers", "Western Seaboard Foods", "Lower Basin Meats"]
+KNACKERY_NAMES = ["Eastern Vale Knackery", "Lower Basin Fallen Animals", "Middle Uplands Knackery"]
+EXPORT_NAMES = ["Northern Vale Export Assembly Centre", "Coastal Vale Live Export Lairage"]
 
 
-def _csv(path, header, rows, delim=",", crlf=True, pre=None):
+def _csv(path, header, rows, crlf=True):
     buf = io.StringIO()
-    if pre:
-        for line in pre:
-            buf.write(line + ("\r\n" if crlf else "\n"))
-    w = csv.writer(buf, delimiter=delim, lineterminator="\r\n" if crlf else "\n")
+    w = csv.writer(buf, lineterminator="\r\n" if crlf else "\n")
     w.writerow(header)
-    for r in rows:
-        w.writerow(r)
+    w.writerows(rows)
     with open(path, "w", encoding="utf-8", newline="") as f:
         f.write(buf.getvalue())
-
-
-def month_date(mi, rng=None, day=None):
-    y, m = W.ym(mi)
-    if day is None:
-        last = (D(y + (m == 12), m % 12 + 1, 1) - dt.timedelta(days=1)).day
-        day = int(rng.integers(1, last + 1)) if rng is not None else 15
-    return D(y, m, day)
-
-
-def attach(w, g, seed=W.SEED + 2):
-    """the per-dwelling attributes every file reads: class, address line, postcode, in-use date, the old system's
-    property reference, the new system's property id, overseas and attainer entries by register year"""
-    rng = np.random.default_rng(seed)
-    dw = w["dwellings"]
-    blocks = g["blocks"]
-    # postcodes: runs of about fifteen dwellings along a street
-    pc_seq = {}
-    sectors = {}
-    for i, (c, n, cl, r, p) in enumerate(W.WARDS):
-        sectors[c] = "LR%d" % (1 + i // 2)
-    unit_letters = "ABDEFGHJLNPQRSTUWXYZ"
-    for d in dw:
-        key = (d["ward"], d["street"])
-        pc_seq.setdefault(key, [])
-    street_pc = {}
-    used = set()
-    for key in sorted(pc_seq):
-        c, st = key
-        n = sum(1 for d in dw if d["ward"] == c and d["street"] == st)
-        units = []
-        for _ in range(max(1, int(np.ceil(n / 15.0)))):
-            for _t in range(500):
-                pc = "%s %d%s%s" % (sectors[c], int(rng.integers(1, 10)), unit_letters[int(rng.integers(0, 20))],
-                                    unit_letters[int(rng.integers(0, 20))])
-                if pc not in used:
-                    used.add(pc)
-                    units.append(pc)
-                    break
-        street_pc[key] = units
-    for d in dw:
-        c = d["ward"]
-        units = street_pc[(c, d["street"])]
-        d["postcode"] = units[min(len(units) - 1, (d["number"] - 1) // 15 if d["block"] is None else 0)]
-        town = TOWN.get(c, [x for x in W.WARDS if x[0] == c][0][1])
-        if d["block"] is None:
-            d["addr"] = "%d %s, %s" % (d["number"], d["street"], town)
-            d["cls"] = CLASS_HOUSE[int(rng.integers(0, 3))] if d["site"] is None else ["RD02", "RD03", "RD04"][int(rng.choice(3, p=[.45, .4, .15]))]
-        else:
-            b = blocks[d["block"]]
-            d["addr"] = "Flat %d, %s, %d %s, %s" % (d["flat"], b["name"], b["number"], d["street"], town)
-            d["cls"] = CLASS_FLAT
-        # the address register's in-use date: a settled dwelling's record from the register's load or its build;
-        # a new dwelling's when it is first in use
-        if d["site"] is None:
-            d["inuse_date"] = D(int(rng.integers(1965, 2014)), int(rng.integers(1, 13)), int(rng.integers(1, 29)))
-            d["llpg_state_date"] = max(D(2003, 4, 1), d["inuse_date"])
-        else:
-            d["inuse_date"] = month_date(d["inuse"], rng)
-            d["llpg_state_date"] = d["inuse_date"]
-            d["done_date"] = month_date(d["done"], rng) if d["done"] <= W.mindex(*W.CUT) else None
-            if d["done_date"] is not None and d["done_date"] > d["inuse_date"]:
-                d["done_date"] = d["inuse_date"]
-    # overseas electors registered at a qualifying address (settled stock) and attainers, by register year
-    for d in dw:
-        d["overseas"] = {}
-        d["attainers"] = {}
-    settled = [d for d in dw if d["site"] is None]
-    for d in settled:
-        if rng.random() < 0.012:
-            start = int(rng.integers(2005, 2027))
-            for Y in w["years"]:
-                d["overseas"][Y] = 1 if Y >= start and rng.random() < 0.97 else 0
-    for d in dw:
-        eu = rng.random() < (0.03 if d["type"] == "house" else 0.07)
-        d["eu"] = eu
-        d["local_only"] = {}
-        for Y in w["years"]:
-            n = d["count"][Y]
-            p = 0.045 if d["type"] == "house" else 0.012
-            d["attainers"][Y] = 1 if (n >= 2 and rng.random() < p) else 0
-            d["local_only"][Y] = n if eu else 0
-    # system keys: the old system's property reference for every dwelling in use before the 2023 migration, the new
-    # system's property id for every dwelling on its database
-    refs = rng.choice(np.arange(100000, 999999), size=len(dw), replace=False)
-    pids = rng.choice(np.arange(1000000, 9999999), size=len(dw), replace=False)
-    for k, d in enumerate(dw):
-        d["old_ref"] = int(refs[k]) if d["inuse_date"] <= SWITCH_OFF else None
-        d["pid"] = "P%07d" % int(pids[k])
-    return dict(street_pc=street_pc)
-
-
-def ems_new(path, w):
-    """the new system's property electorate report for the 2022 to 2025 registers: one row a property on its
-    property database at each publication, in use by the register's last alteration"""
-    rows = []
-    for Y in NEW_YEARS:
-        for d in w["dwellings"]:
-            if d["inuse"] is not None and d["inuse"] > W.mindex(Y, 10):
-                continue
-            lg = d["count"][Y]
-            pd = d["pd_new"] if Y >= REVIEW_YEAR else d["pd_old"]
-            rows.append((REG_DATE[Y].isoformat(), pd, d["pid"], d["uprn"], d["addr"], d["postcode"], lg,
-                         d["attainers"][Y], d["overseas"].get(Y, 0), d["local_only"][Y]))
-    rows.sort(key=lambda r: (r[0], r[1], r[4]))
-    _csv(path, ["register_date", "polling_district", "property_id", "uprn", "address", "postcode",
-                "local_government_electors", "attainers", "overseas_electors", "local_franchise_only"], rows)
     return len(rows)
 
 
-ELECTRA_TITLE = ["ELECTRA ELECTORAL MANAGEMENT SYSTEM", None, "LORRIMERE DISTRICT COUNCIL - ELECTORAL REGISTRATION OFFICER",
-                 None, ""]
+def dmy(i):
+    return W.dd(i).strftime("%d/%m/%Y")
 
 
-def ems_old(path, w, Y, idx=None, run="04/03/2022 17:52"):
-    """the old system's property electorate report: a title block, then pipe-delimited rows by polling district and
-    property reference, every entry counted in TOTAL with attainers and overseas electors broken out. The 2020
-    register's report is from Electra's archive of it as published; the 2021 report is the register Electra held when
-    it was switched off, with the notices of January to March 2022 applied"""
-    pre = list(ELECTRA_TITLE)
-    pre[1] = "PROPERTY ELECTORATE REPORT - REVISED REGISTER %s" % REG_DATE[Y].strftime("%d/%m/%Y")
-    pre[3] = "RUN %s" % run
-    rows = []
-    live = idx is not None
-    for k, d in enumerate(w["dwellings"]):
-        if d["old_ref"] is None:
-            continue
-        if live:
-            if d["inuse_date"] > SWITCH_OFF:
-                continue
-            lg, at, ov, lo = AL.held_at(w, idx, k, Y, SWITCH_OFF)
-        else:
-            if d["inuse"] is not None and d["inuse"] > W.mindex(Y, 10):
-                continue
-            lg, at, ov, lo = d["count"][Y], d["attainers"][Y], d["overseas"].get(Y, 0), d["local_only"][Y]
-        rows.append((d["pd_old"], d["old_ref"], d["addr"].upper().replace(",", ""), d["postcode"], lg + at + ov, at, ov, lo))
-    rows.sort(key=lambda r: (r[0], r[1]))
-    _csv(path, ["PD", "PROPREF", "ADDRESS", "POSTCODE", "TOTAL", "ATTAINERS", "OVERSEAS", "LOCAL_ONLY"], rows,
-         delim="|", pre=pre)
-    return len(rows)
-
-
-def _register_order(w):
-    return sorted([k for k, d in enumerate(w["dwellings"]) if d["old_ref"] is not None],
-                  key=lambda k: (w["dwellings"][k]["pd_old"], w["dwellings"][k]["street"], w["dwellings"][k]["number"],
-                                 w["dwellings"][k].get("flat") or 0))
-
-
-def _numbering(w, Y, order):
-    """elector numbers on the register published 1 December Y: each polling district's entries numbered in street
-    order, a property's electors first, then its attainers and overseas electors"""
-    num, anchor, seq = {}, {}, {}
-    ref = W.mindex(Y, 10)
-    for k in order:
-        d = w["dwellings"][k]
-        if d["inuse"] is not None and d["inuse"] > ref:
-            anchor[k] = "%s-%04d" % (d["pd_old"], seq.get(d["pd_old"], 0))
-            continue
-        pd = d["pd_old"]
-        n = seq.get(pd, 0)
-        for hi, h in enumerate(d["hh"]):
-            if h.arrive <= ref < h.leave:
-                for ai, a in enumerate(h.adults):
-                    if a is not None and a <= Y:
-                        n += 1
-                        num[(k, hi, ai)] = "%s-%04d" % (pd, n)
-        n += d["attainers"][Y] + d["overseas"].get(Y, 0)
-        seq[pd] = n
-        anchor[k] = "%s-%04d" % (pd, n)
-    return num, anchor
-
-
-def electra_notices(path, w, ev):
-    """Electra's monthly notices of alteration from January 2021 to March 2022: one row an entry added to or deleted
-    from the register, with the elector number it carries on the register"""
-    order = _register_order(w)
-    nums = {Y: _numbering(w, Y, order) for Y in (2020, 2021)}
-    added, suffix = {}, {}
-    rows = []
-    for (k, act, day, mk, key, doa) in ev:
-        nd = AL.notice_of(day)
-        if nd is None:
-            continue
-        d = w["dwellings"][k]
-        ry = day.year if day.month >= 11 else day.year - 1
-        num, anchor = nums[ry]
-        if act == "A":
-            j = suffix.get((ry, k), 0) + 1
-            suffix[(ry, k)] = j
-            eno = "%s/%d" % (anchor[k], j)
-            added[key] = eno
-        else:
-            eno = num.get(key) or added.get(key)
-            assert eno is not None, key
-        rows.append((nd.strftime("%d/%m/%Y"), d["pd_old"], eno, d["old_ref"], d["addr"].upper().replace(",", ""),
-                     "ADD" if act == "A" else "DEL", {"Y": "", "F": "F", "K": "K", "": ""}[mk],
-                     doa.strftime("%d/%m/%Y") if doa else ""))
-    rows.sort(key=lambda r: (r[0][6:] + r[0][3:5] + r[0][:2], r[1], r[2]))
-    pre = list(ELECTRA_TITLE)
-    pre[1] = "NOTICES OF ALTERATION 04/01/2021 TO 01/03/2022"
-    pre[3] = "RUN 04/03/2022 17:58"
-    _csv(path, ["NOTICE", "PD", "ELECTOR_NO", "PROPREF", "ADDRESS", "ACTION", "FRANCHISE", "ATTAINS_18"], rows, delim="|",
-         pre=pre)
-    return len(rows)
-
-
-def xref(path, w):
-    rows = []
-    for d in w["dwellings"]:
-        if d["old_ref"] is None:
-            continue
-        rows.append((d["old_ref"], d["pid"], d["uprn"], "UPRN" if d["site"] is None or d["done"] < W.mindex(2019, 1) else "ADDRESS"))
-    rows.sort()
-    _csv(path, ["electra_propref", "property_id", "uprn", "match_basis"], rows)
-    return len(rows)
-
-
-NONRES = [("CR01", "shop"), ("CR02", "retail unit"), ("CO01", "offices"), ("CC03", "community hall"), ("CE01", "school"),
-          ("CI01", "workshop"), ("CT08", "garage"), ("CL06", "public house"), ("CM02", "surgery"), ("CU01", "chapel")]
-
-
-def llpg(path, w, g, seed=W.SEED + 3):
-    """the address register extract, one row an address record (LPI) with its property's (BLPU) state, class,
-    parent, ward and parish; dwellings, the buildings that hold flats, alternative and historical records, the plots
-    already addressed on sites under way, and non-residential properties"""
-    rng = np.random.default_rng(seed)
-    dw = w["dwellings"]
-    blocks = g["blocks"]
-    rows = []
-    parish = {}
-    for c, n, cl, r, p in W.WARDS:
-        for j in range(p):
-            parish[(c, j)] = "" if c in TOWN else "P%s%d" % (c, j + 1)
-    xy0 = {c: (440000 + 3000 * (i % 6), 360000 + 3000 * (i // 6)) for i, (c, *_r) in enumerate(W.WARDS)}
-
-    def xy(c):
-        x0, y0 = xy0[c]
-        return int(x0 + rng.integers(0, 2600)), int(y0 + rng.integers(0, 2600))
-    for k, b in enumerate(blocks):
-        town = TOWN.get(b["ward"], [x for x in W.WARDS if x[0] == b["ward"]][0][1])
-        x, y = xy(b["ward"])
-        kids = [d for d in dw if d.get("block") == k and (d["inuse"] is None or d["inuse_date"] <= LLPG_DATE)]
-        if not kids:
-            continue
-        sd = min(d["llpg_state_date"] for d in kids)
-        rows.append([b["uprn"], "", 1, 2, sd.isoformat(), CLASS_PARENT, "", b["number"], b["name"], b["street"], town,
-                     kids[0]["postcode"], b["ward"], parish[(b["ward"], b["pd"])], x, y])
-    for d in dw:
-        if d["inuse"] is not None and d["inuse_date"] > LLPG_DATE:
-            continue
-        town = TOWN.get(d["ward"], [x for x in W.WARDS if x[0] == d["ward"]][0][1])
-        x, y = xy(d["ward"])
-        par = blocks[d["block"]]["uprn"] if d["block"] is not None else ""
-        sao = "Flat %d" % d["flat"] if d["block"] is not None else ""
-        pao_t = blocks[d["block"]]["name"] if d["block"] is not None else ""
-        rows.append([d["uprn"], par, 1, 2, d["llpg_state_date"].isoformat(), d["cls"], sao, d["number"], pao_t,
-                     d["street"], town, d["postcode"], d["ward"], parish[(d["ward"], d["pd"])], x, y])
-        if d["block"] is None and rng.random() < 0.018:
-            rows.append([d["uprn"], "", 3, 2, d["llpg_state_date"].isoformat(), d["cls"], "", d["number"],
-                         "%s %s" % (["Rose", "Ivy", "Fern", "Holly", "Stone", "Orchard"][int(rng.integers(0, 6))],
-                                    ["Cottage", "House", "Lodge", "Villa"][int(rng.integers(0, 4))]),
-                         d["street"], town, d["postcode"], d["ward"], parish[(d["ward"], d["pd"])], x, y])
-    # plots addressed ahead of completion on the sites under way at the extract
-    for d in dw:
-        if d["inuse"] is None or d["inuse_date"] <= LLPG_DATE:
-            continue
-        if d["done"] <= W.mindex(2027, 6):
-            town = TOWN.get(d["ward"], [x for x in W.WARDS if x[0] == d["ward"]][0][1])
-            x, y = xy(d["ward"])
-            par = blocks[d["block"]]["uprn"] if d["block"] is not None else ""
-            sao = "Flat %d" % d["flat"] if d["block"] is not None else ""
-            rows.append([d["uprn"], par, 6, 1, "", d["cls"], sao, d["number"], blocks[d["block"]]["name"] if d["block"] is not None else "",
-                         d["street"], town, d["postcode"], d["ward"], parish[(d["ward"], d["pd"])], x, y])
-    # non-residential properties and records closed before the extract
-    seq = 200061000000
-    for c, n, cl, r, p in W.WARDS:
-        town = TOWN.get(c, n)
-        streets = sorted(set(d["street"] for d in dw if d["ward"] == c and d["site"] is None))
-        for _ in range(int(rng.integers(60, 160)) if c in TOWN else int(rng.integers(15, 45))):
-            seq += int(rng.integers(1, 40))
-            cls, nm = NONRES[int(rng.integers(0, len(NONRES)))]
-            x, y = xy(c)
-            st = streets[int(rng.integers(0, len(streets)))]
-            j = int(rng.integers(0, p))
-            rows.append([seq, "", 1, 2, D(int(rng.integers(2003, 2026)), int(rng.integers(1, 13)), 1).isoformat(), cls, "",
-                         int(rng.integers(1, 200)), "", st, town, "", c, parish[(c, j)], x, y])
-        for _ in range(int(rng.integers(3, 15))):
-            seq += int(rng.integers(1, 40))
-            x, y = xy(c)
-            st = streets[int(rng.integers(0, len(streets)))]
-            j = int(rng.integers(0, p))
-            rows.append([seq, "", 8, 4, D(int(rng.integers(2008, 2026)), int(rng.integers(1, 13)), 1).isoformat(),
-                         ["RD03", "RD04", "CR01", "CI01"][int(rng.integers(0, 4))], "", int(rng.integers(1, 120)), "",
-                         st, town, "", c, parish[(c, j)], x, y])
-    rows.sort(key=lambda r: (int(r[0]), r[2]))
-    _csv(path, ["UPRN", "PARENT_UPRN", "LOGICAL_STATUS", "BLPU_STATE", "BLPU_STATE_DATE", "CLASSIFICATION", "SAO_TEXT",
-                "PAO_START_NUMBER", "PAO_TEXT", "STREET_DESCRIPTOR", "TOWN_NAME", "POSTCODE_LOCATOR", "WARD_CODE",
-                "PARISH_CODE", "X_COORDINATE", "Y_COORDINATE"], rows)
-    return len(rows), parish
-
-
-def site_meta(w, g, seed=W.SEED + 4):
-    """each site's reference, planning reference, name and permission"""
-    rng = np.random.default_rng(seed)
-    dw = w["dwellings"]
-    sites = W.all_sites()
-    meta = []
-    used = set()
-    for si, (c, name, nh, nf, ph) in enumerate(sites):
-        ks = [d for d in dw if d["site"] == si]
-        first = min(ph)
-        if first >= 2027:
-            yr = int(rng.integers(2019, 2026)) if nh + nf > 300 else int(rng.integers(2023, 2026))
-        else:
-            yr = min(2026, max(2010, first - int(rng.integers(1, 4))))
-        for _ in range(100):
-            num = int(rng.integers(100, 2400))
-            pref = "%02d/%05d/%s" % (yr % 100, num, "OUT" if nh + nf > 300 else "FUL")
-            if pref not in used:
-                used.add(pref)
-                break
-        if si >= len(W.SITES):
-            st = ks[0]["street"] if ks else "unnamed"
-            num0 = ks[0]["number"] if ks else 0
-            name = {"infill": "Land adjoining %d %s" % (max(1, num0 - 1), st),
-                    "former garage site": "Former garages, %s" % st,
-                    "barn conversion": "Barns at %s" % st,
-                    "conversion": "%d %s (conversion to flats)" % (num0, st)}[name]
-        meta.append(dict(si=si, ward=c, name=name, ref="HLS%04d" % (si * 7 + 113), planning=pref, houses=nh, flats=nf,
-                         phasing=ph))
-    return meta
-
-
-def tenure_beds(rng, typ):
-    t = ["Market", "Market", "Market", "Market", "Market", "Market", "Market", "Affordable rent", "Shared ownership",
-         "Social rent"][int(rng.integers(0, 10))]
-    if typ == "house":
-        b = int(rng.choice([2, 3, 4, 5], p=[0.2, 0.45, 0.28, 0.07]))
-        ty = "Bungalow" if rng.random() < 0.05 else "House"
-    else:
-        b = int(rng.choice([1, 2], p=[0.45, 0.55]))
-        ty = "Maisonette" if rng.random() < 0.06 else "Flat"
-    return ty, b, t
-
-
-def completions(path, w, meta, seed=W.SEED + 5):
-    """the council's housing completions monitoring, one row a completed plot from 2014/15 to 30 September 2026"""
-    rng = np.random.default_rng(seed)
-    dw = w["dwellings"]
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Completions"
-    ws.append(["Lorrimere District Council: housing completions monitoring, plot schedule"])
-    ws.append(["Completions 1 April 2014 to 30 September 2026 (half-year return). Planning Policy, Housing Monitoring."])
-    ws.append([])
-    hdr = ["Site ref", "Site", "Ward", "Planning ref", "Plot", "UPRN", "Address", "Dwelling type", "Bedrooms", "Tenure",
-           "Completion date", "Monitoring year"]
-    ws.append(hdr)
-    for c in ws[4]:
-        c.font = Font(bold=True)
-    rows = []
-    plot_no = {}
-    for d in sorted([d for d in dw if d["site"] is not None and d["built"]], key=lambda d: (d["site"], d["done"], d["uprn"])):
-        m = meta[d["site"]]
-        plot_no[d["site"]] = plot_no.get(d["site"], 0) + 1
-        ty, b, t = tenure_beds(rng, d["type"])
-        y, mo = W.ym(d["done"])
-        my = y if mo >= 4 else y - 1
-        cd = d["done_date"]
-        rows.append([m["ref"], m["name"], [x for x in W.WARDS if x[0] == d["ward"]][0][1], m["planning"],
-                     plot_no[d["site"]], d["uprn"], d["addr"], ty, b, t, cd, "%d/%02d" % (my, (my + 1) % 100)])
-        d["beds"], d["tenure"], d["dtype"] = b, t, ty
-    rows.sort(key=lambda r: (r[10], r[0], r[4]))
+def _sheet(ws, header, rows, widths, fmts=None):
+    ws.append(header)
+    for c in ws[1]:
+        c.font = BOLD
+        c.alignment = Alignment(wrap_text=True, vertical="top")
     for r in rows:
         ws.append(r)
-    for row in ws.iter_rows(min_row=5, min_col=11, max_col=11):
-        for c in row:
-            c.number_format = "dd/mm/yyyy"
-    widths = [10, 34, 20, 14, 6, 13, 52, 13, 9, 17, 15, 14]
-    for i, wd in enumerate(widths):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = wd
-    ws.freeze_panes = "A5"
-    wb.save(path)
-    return len(rows)
+    for k, wd in enumerate(widths):
+        ws.column_dimensions[get_column_letter(k + 1)].width = wd
+    for col, fmt in (fmts or {}).items():
+        for row in ws.iter_rows(min_row=2, min_col=col, max_col=col):
+            for c in row:
+                c.number_format = fmt
+    ws.freeze_panes = "A2"
 
 
-def trajectory(path, w, meta, seed=W.SEED + 6):
-    """the housing trajectory at 30 September 2026: every site with dwellings still to come, phased by monitoring
-    year, and the sites with permission whose dwellings come after 2032/33"""
-    rng = np.random.default_rng(seed)
-    dw = w["dwellings"]
-    years = list(range(2026, 2033))
-    cols = ["2026/27 (1 Oct to 31 Mar)"] + ["%d/%02d" % (y, (y + 1) % 100) for y in years[1:]] + ["2033/34 onwards"]
-    later = {"North Lorrimere urban extension": 810}
+# ------------------------------------------------------------------------------------------- the bovine register
+def animals(path, w, IV, tags, bherd):
+    A, H = w.A, w.herds
+    rows = []
+    for a in sorted(IV, key=lambda x: tags[x]):
+        b, fc, dam = A["birth"][a], A["fc"][a], A["dam"][a]
+        rows.append([tags[a], A["sex"][a], A["breed"][a], dmy(b), dmy(b + A["reg_lag"][a]),
+                     tags[dam] if dam is not None and dam in IV else "", H[bherd[a]]["herd_no"],
+                     H[A["herd0"][a]]["herd_no"], dmy(fc) if fc is not None and A["sex"][a] == "F" else "",
+                     dmy(A["exit"][a]) if A["exit"][a] is not None else "", A["exit_type"][a] or "",
+                     H[A["exit_herd"][a]]["herd_no"] if A["exit_herd"][a] is not None else ""])
+    return _csv(path, ["TAG_NUMBER", "SEX", "BREED", "DATE_OF_BIRTH", "DATE_REGISTERED", "DAM_TAG", "BIRTH_HERD",
+                       "HERD_AT_START", "FIRST_CALVING_DATE", "EXIT_DATE", "EXIT_TYPE", "EXIT_HERD"], rows)
+
+
+def movements(path, w, tags, rng):
+    H = w.herds
+    ms = sorted((m for m in w.moves if 0 <= m["dep"] < W.NDAY), key=lambda m: (m["dep"], m["k"]))
+    rows, mid = [], 31204117
+    for m in ms:
+        mid += int(rng.integers(1, 4))
+        rows.append([mid, tags[m["a"]], H[m["frm"]]["herd_no"], dmy(m["dep"]), H[m["to"]]["herd_no"], dmy(m["arr"])])
+    return _csv(path, ["MOVEMENT_ID", "TAG_NUMBER", "DEPARTURE_HERD", "DEPARTURE_DATE", "DESTINATION_HERD",
+                       "ARRIVAL_DATE"], rows)
+
+
+def premises_names(w):
+    names, k = {}, {"factory": 0, "knackery": 0, "export": 0}
+    for h in w.herds:
+        t = h["type"]
+        if t == "mart":
+            names[h["id"]] = "%s Mart" % h["region"]
+        elif t in k:
+            names[h["id"]] = {"factory": FACTORY_NAMES, "knackery": KNACKERY_NAMES, "export": EXPORT_NAMES}[t][k[t]]
+            k[t] += 1
+    return names
+
+
+def herd_register(path, w, old, rng):
+    names = premises_names(w)
+    rows = []
+    for h in w.herds:
+        main = w.herds[h["out_farm_of"]]["herd_no"] if "out_farm_of" in h else None
+        if "valid_from" not in h:
+            y0 = 2006 if main else 1987
+            h["valid_from"] = D(int(rng.integers(y0, 2024)), int(rng.integers(1, 13)), int(rng.integers(1, 29)))
+        rows.append([h["herd_no"], R.HTYPE[h["type"]], names.get(h["id"]), h["district"], h["region"],
+                     W.RCODE[h["region"]], W.RCODE[h["region_pre2024"]], h["farm_no"] or None, main,
+                     h["valid_from"], None])
+    for o in old:
+        rows.append([o["herd_no"], "Farm", None, o["district"], o["region"], W.RCODE[o["region"]],
+                     W.RCODE[o["region_pre2024"]], None, None, o["valid_from"], o["valid_to"]])
+    rows.sort(key=lambda r: (r[0], r[9]))
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Trajectory"
-    ws.append(["Lorrimere District Council: housing trajectory, base date 30 September 2026"])
-    ws.append(["Sites with planning permission or allocated, dwellings still to be completed. Planning Policy."])
-    ws.append([])
-    hdr = ["Site ref", "Site", "Ward", "Planning ref", "Permission", "Status at 30/09/2026", "Houses", "Flats",
-           "Total dwellings", "Completed to 30/09/2026"] + cols
-    ws.append(hdr)
-    for c in ws[4]:
-        c.font = Font(bold=True)
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-    out = []
-    for m in meta:
-        ks = [d for d in dw if d["site"] == m["si"]]
-        done = sum(1 for d in ks if d["built"])
-        fut = [d for d in ks if not d["built"]]
-        extra = later.get(m["name"], 0)
-        if not fut and not extra:
-            continue
-        by = {y: sum(1 for d in fut if d["plan_year"] == y) for y in years}
-        houses = m["houses"] + (extra if m["houses"] else 0)
-        flats = m["flats"]
-        status = "Under construction" if done else ("Full permission, not started" if "FUL" in m["planning"] else "Outline permission")
-        perm = "Full" if "FUL" in m["planning"] else "Outline"
-        row = [m["ref"], m["name"], [x for x in W.WARDS if x[0] == m["ward"]][0][1], m["planning"], perm, status, houses,
-               flats, houses + flats, done] + [by[y] for y in years] + [extra]
-        out.append(row)
-    # permissions whose dwellings all come after the trajectory's seventh year
-    for name, ward, n in [("Land east of Selwar Common", "SEL", 240), ("Holme Ings farm", "BRE", 180),
-                          ("Ketter Wold north", "KET", 320)]:
-        out.append(["HLS%04d" % (900 + len(out)), name, [x for x in W.WARDS if x[0] == ward][0][1], "26/%05d/OUT" % int(rng.integers(100, 900)),
-                    "Outline", "Outline permission", n, 0, n, 0] + [0] * len(years) + [n])
-    out.sort(key=lambda r: (r[2], r[0]))
-    for r in out:
-        ws.append(r)
-    ws.freeze_panes = "C5"
-    for i, wd in enumerate([10, 36, 20, 14, 10, 26, 8, 8, 10, 12] + [11] * (len(cols))):
-        ws.column_dimensions[openpyxl.utils.get_column_letter(i + 1)].width = wd
-    ns = wb.create_sheet("Notes")
-    for line in [
-        "Base date 30 September 2026. Completions to that date are from the completions monitoring plot schedule.",
-        "Phasing is by monitoring year (1 April to 31 March); the 2026/27 column holds the dwellings expected from 1 October 2026 to 31 March 2027.",
-        "Phasing is taken from developers' build programmes and the council's site visits, and completions in a year are assumed to fall evenly through it.",
-        "Where a site holds houses and flats, the mix in each year follows the mix the site still has to build.",
-        "Dwellings expected after 31 March 2033 are shown in a single column and are not phased.",
-        "Prepared by Planning Policy for the Housing Land Supply Statement; not a forecast of population or electors."]:
-        ns.append([line])
-    ns.column_dimensions["A"].width = 140
+    ws.title = "Herds"
+    _sheet(ws, ["Herd No", "Herd type", "Name", "District", "Region", "Region code", "Region code (pre-2024)",
+                "NSO farm no", "Main herd no", "Valid from", "Valid to"], rows,
+           [12, 22, 32, 9, 13, 8, 10, 12, 12, 12, 12], {10: "DD/MM/YYYY", 11: "DD/MM/YYYY"})
+    ws.auto_filter.ref = "A1:K%d" % (len(rows) + 1)
+    ws2 = wb.create_sheet("Regions")
+    reg_rows = []
+    for r in W.REG:
+        ds = sorted({h["district"] for h in w.herds if h["region"] == r})
+        reg_rows.append([W.RCODE[r], r, ", ".join(ds)])
+    _sheet(ws2, ["Region code", "Region", "Districts"], reg_rows, [10, 14, 70])
+    ws2.append([])
+    ws2.append(["Regions are the Ministry's 2024 regional structure. On 1 January 2024 districts 0412, 0415 and "
+                "0418 moved from Coastal Vale (04) to Southern Vale (03); herds there keep their herd numbers, and the "
+                "pre-2024 code is kept on each herd for continuity with earlier returns."])
     wb.save(path)
-    return len(out)
-
-
-PLACES = ["Village Hall", "Community Centre", "Church Hall", "Primary School", "Methodist Hall", "Scout Hut", "Sports Pavilion",
-          "Memorial Hall", "Library", "Youth Centre"]
-
-
-def pd_schedule(path, w, g, seed=W.SEED + 7):
-    """the 2023 polling district review's schedule: each new district, its ward, polling place and the districts it
-    replaces, with the streets the review moved"""
-    rng = np.random.default_rng(seed)
-    import geo as G
-    rows = []
-    moved = g["moved_streets"]
-    for c, n, cl, r, p in W.WARDS:
-        for j in range(p):
-            new = g["new_code"][(c, j)]
-            old = g["old_code"][(c, j)]
-            nm = G.PD_NAMES[c][j]
-            ins = sorted(st for (cc, st), (oj, nj) in moved.items() if cc == c and nj == j)
-            outs = sorted(st for (cc, st), (oj, nj) in moved.items() if cc == c and oj == j)
-            change = []
-            if ins:
-                frm = sorted(set(g["old_code"][(c, moved[(c, st)][0])] for st in ins))
-                change.append("%s transferred from district %s" % (" and ".join(ins), "/".join(frm)))
-            if outs:
-                to = sorted(set(g["new_code"][(c, moved[(c, st)][1])] for st in outs))
-                change.append("%s transferred to %s" % (" and ".join(outs), "/".join(to)))
-            place = "%s %s" % (nm.split()[0], PLACES[int(rng.integers(0, len(PLACES)))])
-            rows.append((new, nm, n, place, old, "; ".join(change) if change else "renamed, boundary unchanged"))
-    _csv(path, ["district", "district_name", "ward", "polling_place", "replaces_district", "change"], rows)
     return len(rows)
 
 
-def wards_file(path, g):
+# --------------------------------------------------------------------------------------------- the census and land
+def census_csv(path, w, cen):
+    code = {h["farm_no"]: int(W.RCODE[h["region_pre2024"]]) for h in w.herds if h.get("farm_no") and "out_farm_of" not in h}
     rows = []
-    for c, n, cl, r, p in W.WARDS:
-        rows.append((c, n, cl, ";".join(g["new_code"][(c, j)] for j in range(p))))
-    _csv(path, ["ward_code", "ward_name", "councillors", "polling_districts_2023_scheme"], rows)
+    for f in sorted(cen, key=int):
+        c = cen[f]
+        vals = [c.get(k, 0) for k in R.NSO_CATS]
+        rows.append([int(f), code[f]] + vals + [sum(vals)])
+    return _csv(path, ["FARM_NO", "REGION"] + [k.upper() for k in R.NSO_CATS] + ["TOTAL_CATTLE"], rows)
+
+
+def lpr(path, parcels):
+    rows = [[p["parcel"], p["herd"], 2026, p["use"], "%.2f" % p["area"], "%.1f" % p["share"]]
+            for p in sorted(parcels, key=lambda p: (p["parcel"], p["herd"]))]
+    return _csv(path, ["PARCEL_ID", "HERD_NO", "CLAIM_YEAR", "LAND_USE", "AREA_HA", "SHARE_PCT"], rows)
+
+
+def survey(path, w, rng):
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Housing"
+    rows = []
+    for r in W.REG:
+        (im, idd), (om, od) = W.HOUSING[r]
+        n = sum(1 for h in w.herds if h["region"] == r and h["type"] in ("dairy", "suckler", "finisher", "rearer"))
+        rows.append([r, W.RCODE[r], int(n * rng.uniform(0.78, 0.94)), D(2025, im, idd).strftime("%-d %B"),
+                     D(2026, om, od).strftime("%-d %B"), W.housed_days(r)])
+    _sheet(ws, ["Region", "Region code", "Farms responding", "Usual housing date", "Usual turnout date",
+                "Housed days in a 365-day year"], rows, [14, 8, 11, 14, 14, 14])
+    ws2 = wb.create_sheet("Slurry storage")
+    rows2 = []
+    for r in W.REG:
+        t = W.RTYPE[r]
+        wk = {"D": 19.4, "B": 18.1, "G": 16.2, "W": 16.8}[t] + rng.uniform(-1.2, 1.2)
+        cov = {"D": 21.0, "B": 17.5, "G": 9.5, "W": 11.0}[t] + rng.uniform(-3, 3)
+        rows2.append([r, W.RCODE[r], round(wk, 1), round(cov, 1)])
+    _sheet(ws2, ["Region", "Region code", "Slurry storage, mean weeks", "Stores covered, % of farms"], rows2,
+           [14, 8, 14, 14])
+    ws3 = wb.create_sheet("Notes")
+    for line in ["Livestock Housing Survey 2025: housing and slurry storage",
+                 "Ministry of Agriculture, Livestock Surveys Unit. Fieldwork 3 March to 30 May 2025.",
+                 "",
+                 "Housing: the median of the dates farmers gave for housing their cattle in the autumn and turning them "
+                 "out in the spring in a usual year, by the farm's region (2024 regions).",
+                 "Housed days run from the housing date to the day before the turnout date.",
+                 "Slurry storage: mean weeks of storage capacity on farms with slurry tanks; covered stores as a share "
+                 "of farms with an outdoor store.",
+                 "Results are weighted to the June 2024 census population of farms with cattle."]:
+        ws3.append([line] if line else [])
+    ws3.column_dimensions["A"].width = 110
+    wb.save(path)
+
+
+# ---------------------------------------------------------------------------------------------- the contractors
+def ardvale(path, cj):
+    rows = [[j["job_id"], dmy(j["date"]), j["herd"], j["material"], j["tanker"], j["gal"], j["loads"], j["equipment"]]
+            for j in sorted(cj["av"], key=lambda j: j["job_id"])]
+    return _csv(path, ["Job No", "Date", "Herd No", "Material", "Tanker", "Capacity (gal)", "Loads", "Spreader"], rows)
+
+
+def spaced(herd_no):
+    return herd_no[:2] + " " + herd_no[2:]
+
+
+def kilbrack(path, cj):
+    desc = {c: (d, u) for c, d, u, _ in C.KB_SERVICES}
+    rows = []
+    for l in sorted(cj["kb"], key=lambda l: l["invoice"]):
+        lines = [(l["service"], l["qty"])]
+        if l["agit"]:
+            lines.append(("AG-HR", l["agit"]))
+        for svc, q in lines:
+            net = round(q * C.KB_RATE[svc], 2)
+            vat = round(net * C.VAT, 2)
+            rows.append([l["invoice"], W.dd(l["date"]), l["acct"], spaced(l["herd"]), svc, desc[svc][0], q,
+                         desc[svc][1], C.KB_RATE[svc], net, vat, round(net + vat, 2), l["ref"]])
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Invoice lines"
+    _sheet(ws, ["Invoice No", "Invoice date", "Account", "Herd No", "Service", "Description", "Qty", "Unit", "Rate",
+                "Net", "VAT", "Gross", "Reference"], rows, [11, 11, 8, 11, 8, 40, 7, 9, 7, 10, 9, 10, 11],
+           {2: "DD/MM/YYYY", 7: "0.0", 9: "#,##0.00", 10: "#,##0.00", 11: "#,##0.00", 12: "#,##0.00"})
+    ws.auto_filter.ref = "A1:M%d" % (len(rows) + 1)
+    ws2 = wb.create_sheet("Services")
+    _sheet(ws2, ["Service", "Description", "Unit", "Rate (EUR, ex VAT)"], [list(s) for s in C.KB_SERVICES],
+           [8, 44, 9, 12], {4: "#,##0.00"})
+    wb.save(path)
     return len(rows)
 
 
-def projections(path, w, seed=W.SEED + 8):
-    """the statistics office's 2022-based sub-national population projections for the district, by age group"""
-    rng = np.random.default_rng(seed)
-    base = sum(d["count"][2022] for d in w["dwellings"]) / 0.80
-    rows = []
-    shares = {"0-15": 0.176, "16-17": 0.022, "18-64": 0.565, "65+": 0.237}
-    g = 0.0068
-    for y in range(2022, 2043):
-        tot = base * (1 + g) ** (y - 2022)
-        old = shares["65+"] + 0.0021 * (y - 2022)
-        sh = {"0-15": shares["0-15"] - 0.0009 * (y - 2022), "16-17": shares["16-17"], "65+": old}
-        sh["18-64"] = 1 - sum(sh.values())
-        for a in ["0-15", "16-17", "18-64", "65+"]:
-            rows.append(("mid-%d" % y, "Lorrimere", a, int(round(tot * sh[a] / 10.0) * 10)))
-    _csv(path, ["year", "area", "age_group", "population"], rows)
+def northmoor(path, cj):
+    rows = [[j["job_no"], W.dd(j["date"]), j["herd"] or None, j["site"] or None, j["material"], j["method"], j["m3"],
+             j["operator"]] for j in sorted(cj["nm"], key=lambda j: j["job_no"])]
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Job sheets 2026"
+    _sheet(ws, ["Job No", "Date", "Herd No", "Site", "Product", "Applicator", "Metered m3", "Operator"], rows,
+           [11, 11, 11, 7, 13, 13, 10, 8], {2: "DD/MM/YYYY", 7: "0.0"})
+    ws2 = wb.create_sheet("Sites")
+    _sheet(ws2, ["Site", "Description"], [["AD01", "Lower Basin Biogas, digestate lagoon"],
+                                          ["AD02", "Middle Uplands Anaerobic Digestion, outfield store"],
+                                          ["AD03", "Atlantic Coast Renewables, digestate store"]], [7, 50])
+    wb.save(path)
     return len(rows)
 
 
-BANDS = "ABCDEFGH"
+# --------------------------------------------------------------------------------------------- the context files
+def fertiliser(path, land, rng):
+    prods = [("CAN", 0.27), ("Urea", 0.46), ("Protected urea", 0.46), ("Compound 18-6-12", 0.18), ("Compound 10-10-20", 0.10)]
+    qshare = {"2025Q4": 0.04, "2026Q1": 0.36, "2026Q2": 0.44, "2026Q3": 0.16}
+    inten = {"D": 0.62, "B": 0.38, "G": 0.21, "W": 0.27}
+    mix = {"CAN": 0.38, "Urea": 0.17, "Protected urea": 0.13, "Compound 18-6-12": 0.22, "Compound 10-10-20": 0.10}
+    rows = []
+    for i, r in enumerate(W.REG):
+        tot = land[i] * inten[W.RTYPE[r]] * rng.uniform(0.9, 1.1)
+        for q, qs in qshare.items():
+            for p, n in prods:
+                t = tot * qs * mix[p] * rng.uniform(0.8, 1.2)
+                rows.append([r, q, p, round(t, 1), round(t * n, 1)])
+    return _csv(path, ["Region", "Quarter", "Product", "Tonnes product", "Tonnes N"], rows)
 
 
-def council_tax(path, w, seed=W.SEED + 10):
-    """the valuation list's dwellings by council tax band and ward at 1 September 2025"""
-    rng = np.random.default_rng(seed)
-    cut = D(2025, 9, 1)
-    tab = {}
-    for d in w["dwellings"]:
-        if d["inuse_date"] > cut:
+def milk(path, w, rng):
+    prof = [0.012, 0.035, 0.083, 0.118, 0.135, 0.126, 0.114, 0.101, 0.088, 0.077, 0.064, 0.047]
+    rows = []
+    for r in W.REG:
+        cows = sum(h["size"] for h in w.herds if h["region"] == r and h["type"] == "dairy")
+        sup = sum(1 for h in w.herds if h["region"] == r and h["type"] == "dairy")
+        if not sup:
             continue
-        if d["type"] == "flat":
-            b = BANDS[int(rng.choice(3, p=[0.55, 0.35, 0.10]))]
-        else:
-            b = BANDS[int(rng.choice(8, p=[0.08, 0.20, 0.28, 0.20, 0.13, 0.07, 0.035, 0.005]))]
-        tab[(d["ward"], b)] = tab.get((d["ward"], b), 0) + 1
+        year = cows * 5350 * rng.uniform(0.93, 1.07)
+        for m, p in enumerate(prof):
+            rows.append([r, "2025-%02d" % (m + 1), sup - int(rng.integers(0, 2)),
+                         int(round(year * p * rng.uniform(0.96, 1.04), -2))])
+    return _csv(path, ["Region", "Month", "Suppliers", "Milk intake (litres)"], rows)
+
+
+def pigs_poultry(path, rng):
     rows = []
-    for c, n, cl, r, p in W.WARDS:
-        rows.append([c, n] + [tab.get((c, b), 0) for b in BANDS] + [sum(tab.get((c, b), 0) for b in BANDS)])
-    _csv(path, ["ward_code", "ward_name"] + ["band_%s" % b for b in BANDS] + ["all_bands"], rows)
-    return len(rows)
+    for r in W.REG:
+        av = r in C.ARDVALE_REGIONS
+        sows = int(rng.integers(900, 2600)) if av else int(rng.integers(0, 400))
+        rows.append([int(W.RCODE[r]), sows, int(sows * rng.uniform(9.5, 11.5)), int(rng.integers(20000, 160000)),
+                     int(rng.integers(30000, 410000)), int(rng.integers(2000, 21000))])
+    return _csv(path, ["REGION", "BREEDING_SOWS", "OTHER_PIGS", "LAYING_HENS", "BROILERS", "OTHER_POULTRY"], rows)
 
 
-def field_guide(path, names):
-    lines = [
-        "LORRIMERE DISTRICT COUNCIL: DATA SUPPLIED FOR THE ELECTORAL REVIEW",
-        "Electoral Services and Planning Policy, 12 October 2026. Contact: Donald Hayes, Electoral Services Manager.",
-        "",
-        "%s" % names["ems_new"],
-        "  The current electoral management system's property electorate report for the revised registers of 1 December",
-        "  2022, 2023, 2024 and 2025. One row a property on the system's property database at the register's publication.",
-        "  register_date               publication date of the revised register",
-        "  polling_district            polling district of the property on that register (the 2023 scheme from 2023)",
-        "  property_id                 the system's property id",
-        "  uprn                        the property's UPRN from the gazetteer",
-        "  local_government_electors   entries for electors aged 18 or over on the publication date with the local",
-        "                              government franchise",
-        "  attainers                   entries for persons under 18 on the publication date",
-        "  overseas_electors           overseas electors registered at the property for parliamentary elections only",
-        "  local_franchise_only        of local_government_electors, those registered for local elections only",
-        "",
-        "%s, %s" % (names["ems_2020"], names["ems_2021"]),
-        "  The Electra system's property electorate report for the revised registers of 1 December 2020 and 2021,",
-        "  pipe-delimited after a title block, one row a property, by polling district (the scheme in force before 2023).",
-        "  TOTAL counts every entry at the property; ATTAINERS and OVERSEAS are included in TOTAL; LOCAL_ONLY counts",
-        "  the electors registered for local elections only.",
-        "",
-        "%s" % names["notices"],
-        "  Electra's monthly notices of alteration, January 2021 to March 2022, pipe-delimited after a title block, one",
-        "  row an entry added to (ADD) or deleted from (DEL) the register, with its elector number and property reference.",
-        "  FRANCHISE F marks an overseas elector and K an elector registered for local elections only; ATTAINS_18 is the",
-        "  date an attainer reaches 18.",
-        "  The Electra files were exported when the system was replaced in March 2022.",
-        "",
-        "%s" % names["xref"],
-        "  The cross-reference made when Electra's property database was migrated in March 2022: Electra's property",
-        "  reference, the new system's property id and the UPRN, with the basis on which the UPRN was matched.",
-        "",
-        "%s" % names["llpg"],
-        "  Extract of the local land and property gazetteer at 12 October 2026, one row an address record.",
-        "  LOGICAL_STATUS 1 approved, 3 alternative, 6 provisional, 8 historical. BLPU_STATE 1 under construction,",
-        "  2 in use, 4 no longer existing; BLPU_STATE_DATE the date the property's state last changed.",
-        "  CLASSIFICATION: RD02 detached, RD03 semi-detached, RD04 terraced house, RD06 self-contained flat, PP a",
-        "  building holding flats (the flats carry it as PARENT_UPRN); C codes are commercial and community properties.",
-        "  WARD_CODE and PARISH_CODE are the administrative areas of the property (no parish in the two towns).",
-        "",
-        "%s" % names["completions"],
-        "  Planning Policy's plot schedule of completed dwellings, 1 April 2014 to 30 September 2026, with the date",
-        "  building control recorded each completion and the monitoring year (1 April to 31 March) it falls in.",
-        "",
-        "%s" % names["trajectory"],
-        "  The housing trajectory at 30 September 2026 (see its Notes sheet).",
-        "",
-        "%s" % names["pd"],
-        "  The 2023 polling district review: each district of the 2023 scheme with the district it replaces and the",
-        "  streets the review moved between districts. Wards were not changed.",
-        "",
-        "%s" % names["wards"],
-        "  The wards and numbers of councillors set by the 2014 electoral changes order, with each ward's districts.",
-        "",
-        "%s" % names["proj"],
-        "  The statistics office's 2022-based sub-national population projections for the district.",
-        "",
-        "%s" % names["ctax"],
-        "  Dwellings on the valuation list by council tax band and ward at 1 September 2025.",
-        ""]
+EXPORT_NOTES = """NATIONAL BOVINE REGISTER
+Exports for the Ammonia Programme Unit, programme year 2025-26
+Extract run 09/11/2026 06:12 from the live register. Data management: Noel Herity.
+
+FILES
+  nbr_animals_2025-26.csv          one row per animal present in the State at any time from 01/11/2025 to 31/10/2026
+  nbr_movements_2025-26.csv        one row per movement with a departure date from 01/11/2025 to 31/10/2026
+  nbr_herd_register_2026-11.xlsx   every herd number on the register at the extract date, with earlier holders of a
+                                   reissued number
+
+Dates are DD/MM/YYYY. Herd numbers are the region letter, a digit and six digits (C2123456). Tag numbers are the
+herd-of-birth region letter, the two-digit year of birth, a six-digit serial and a check digit.
+
+nbr_animals_2025-26.csv
+  TAG_NUMBER          the animal's tag
+  SEX                 M or F
+  BREED               breed code, a cross shown as the sire's breed code followed by X
+  DATE_OF_BIRTH
+  DATE_REGISTERED     the date the birth was registered; a birth is registered within 27 days
+  DAM_TAG             the dam's tag, where the dam is in this export
+  BIRTH_HERD          the herd of birth
+  HERD_AT_START       the herd holding the animal on 01/11/2025, or its herd of birth if it was born after that date
+  FIRST_CALVING_DATE  the date of a female's first calving, where she has calved
+  EXIT_DATE           the date the animal left the register
+  EXIT_TYPE           SL slaughtered, DF died on farm (collected by a knackery), EX exported live
+  EXIT_HERD           the slaughter plant, knackery or export assembly centre that recorded the exit
+
+nbr_movements_2025-26.csv
+  MOVEMENT_ID         the register's movement number
+  TAG_NUMBER
+  DEPARTURE_HERD      the herd the animal left
+  DEPARTURE_DATE      the date it left
+  DESTINATION_HERD    the herd that received it
+  ARRIVAL_DATE        the date it was received; the register holds an animal in its departure herd until this date
+  Marts, dealers' premises and export assembly centres are herds in their own right, so a sale through a mart is two
+  movements, farm to mart and mart to farm. An exit is recorded on the animal, not as a movement.
+
+nbr_herd_register_2026-11.xlsx (sheet Herds)
+  Herd type           Farm, Mart, Dealer, Slaughter plant, Knackery or Export assembly centre
+  District, Region    the herd's district and its region in the 2024 regional structure; Region code (pre-2024) is
+                      the region code the herd had before 1 January 2024
+  NSO farm no         the statistics office's farm number for the June census; a farmer's herds share one
+  Main herd no        for a second herd number a farmer keeps on an out-farm, the farmer's main herd number
+  Valid from, to      the dates the number was held; a number reissued to a new holder has a row for each holder
+"""
+
+
+def export_notes(path):
     with open(path, "w", encoding="utf-8", newline="") as f:
-        f.write("\r\n".join(lines) + "\r\n")
+        f.write(EXPORT_NOTES.replace("\n", "\r\n"))

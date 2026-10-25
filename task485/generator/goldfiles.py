@@ -1,22 +1,23 @@
-"""The golden deliverables: the review's electorate forecast workbook (each ward's 2032 electors, electors per
-councillor, variance and finding, the 2021 register by ward, the build-up the forecast uses, notes) and the chart of
-each ward's 2032 variance against the 10 per cent lines; returns every figure the write-up states."""
+"""The golden deliverables: the Unit's workbook (each region's cattle-manure ammonia over 2025-26, its farmed land, its
+kilograms a hectare against the line and its designation; the contractors' spring spreading by region; notes) and the
+chart of each region's kilograms a hectare against the line; returns every figure the write-up states."""
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
-import matplotlib.ticker  # noqa: E402
+import numpy as np  # noqa: E402
 import openpyxl  # noqa: E402
 from openpyxl.styles import Alignment, Border, Font, PatternFill, Side  # noqa: E402
 from openpyxl.utils import get_column_letter  # noqa: E402
 
+import contractors as C  # noqa: E402
 import golden as G  # noqa: E402
+import world as W  # noqa: E402
 
 BOLD = Font(bold=True)
-HEAD_FILL = PatternFill("solid", fgColor="DCE6F1")
+HEAD_FILL = PatternFill("solid", fgColor="DDE7E3")
 TOTAL_FILL = PatternFill("solid", fgColor="F2F2F2")
-OUT_FILL = PatternFill("solid", fgColor="FCE4D6")
+DES_FILL = PatternFill("solid", fgColor="F6E3C8")
 TOP = Border(top=Side(style="thin"))
-WORDS = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 18: "18"}
 
 
 def _head(ws, row):
@@ -26,190 +27,185 @@ def _head(ws, row):
         c.alignment = Alignment(wrap_text=True, vertical="top")
 
 
-def finding(v):
-    if v > 10:
-        return "Outside: above the average"
-    if v < -10:
-        return "Outside: below the average"
-    return "Within 10 per cent"
+def fmt1(x):
+    return "{:,.1f}".format(x)
 
 
-def write(path, target):
-    L = G.load(target)
-    e, S, c = G.forecast(L)
-    v, avg, tot = G.verdicts(L, e)
-    wards = L["wards"]
-    order = list(wards)
-    fail = [w for w in order if abs(v[w]) > 10]
-    meet = [w for w in order if w not in fail]
-    reg25 = G.ward_totals(L, 2025)
-    A = G.ask_a(target, wards)
-    dflt_e = G.default_path(L)
-    dv, davg, dtot = G.verdicts(L, dflt_e)
-    dfail = [w for w in order if abs(dv[w]) > 10]
-    traj = G.trajectory_years(L)
-    switch = G.switch_off_net(target, wards)
+def fmt2(x):
+    return "{:,.2f}".format(x)
 
+
+def figures(tr):
+    gold, land = tr["gold"], tr["land"]
+    kgha = gold / land
+    des = [r for i, r in enumerate(W.REG) if kgha[i] >= W.LINE]
+    w = tr["w"]
+    farm_region = {h["farm_no"]: h["region"] for h in w.herds if h.get("farm_no")}
+    L0 = G.census_route(tr["cen"], farm_region)
+    L3 = (G.days(tr["P"]) / W.NDAY * G.table5()).sum(1)
+    A = C.golden(tr["cj"], tr["herd_region"])
+    P = tr["P"]
+    regions = {}
+    for i, r in enumerate(W.REG):
+        regions[r] = dict(tonnes=fmt1(gold[i] / 1000), kg_ha="%.2f" % kgha[i], land_ha=fmt2(land[i]),
+                          designated="Yes" if r in des else "No")
+    ask = {r: dict(m3="{:,.0f}".format(round(A[r][0], -2)), less_pct="%.1f" % A[r][1]) for r in W.REG}
+    tot_v = sum(A[r][0] for r in W.REG)
+    tot_l = sum(A[r][0] * A[r][1] / 100 for r in W.REG)
+    return dict(
+        call=dict(designated=des, not_designated=[r for r in W.REG if r not in des]),
+        regions=regions, ask_a=ask,
+        components=dict(tonnes_total=fmt1(gold.sum() / 1000), land_total=fmt2(land.sum()),
+                        animal_days="{:,.0f}".format(float((P.p1 - P.p0).sum()))),
+        ask_a_total=dict(m3="{:,.0f}".format(round(tot_v, -2)), less_pct="%.1f" % (100 * tot_l / tot_v)),
+        default=dict(designated=G.designated(L0, land), kg_ha={r: "%.2f" % (L0[i] / land[i]) for i, r in enumerate(W.REG)}),
+        mean_count=dict(designated=G.designated(L3, land)),
+        constants=dict(line=W.LINE, order=W.REG, gallon_m3="%.8f" % C.GAL, programme_year="2025-26",
+                       rule_sections=["3", "4", "5", "6"]),
+        _raw=dict(kg_ha={r: float(kgha[i]) for i, r in enumerate(W.REG)}, tonnes={r: float(gold[i] / 1000) for i, r in enumerate(W.REG)},
+                  land={r: float(land[i]) for i, r in enumerate(W.REG)},
+                  ask_m3={r: float(A[r][0]) for r in W.REG}, ask_less={r: float(A[r][1]) for r in W.REG}))
+
+
+def workbook(path, f):
+    raw = f["_raw"]
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Electoral equality 2032"
-    ws.append(["Lorrimere District: electoral equality on the forecast for the register to be published 1 December 2032"])
+    ws.title = "Designation 2027"
+    ws.append(["Ammonia Action Regions 2027: ammonia from cattle manure arising in each region, programme year "
+               "1 November 2025 to 31 October 2026"])
     ws["A1"].font = Font(bold=True, size=12)
-    ws.append(["Existing wards and councillor numbers (the 2014 order), council size 43. %s wards lie more than 10 per cent "
-               "from the district average of %s electors per councillor." % (WORDS[len(fail)].capitalize(),
-                                                                              "{:,.0f}".format(round(avg)))])
+    ws.append(["%d regions at or above the line of %d kg NH3 a hectare of farmed land: %s." % (
+        len(f["call"]["designated"]), W.LINE, ", ".join(f["call"]["designated"]))])
     ws.append([])
-    ws.append(["Ward code", "Ward", "Councillors", "Electors, 1 December 2025 register", "Forecast electors, 1 December 2032",
-               "Electors per councillor, 2032", "Variance from average, 2032 (%)", "Finding"])
+    ws.append(["Region", "Region code", "Ammonia from cattle manure (t NH3)", "Farmed land (ha)",
+               "Ammonia a hectare (kg NH3/ha)", "Against the line (%)", "Designated"])
     _head(ws, 4)
-    for w in order:
-        name, cl = wards[w]
-        ws.append([w, name, cl, reg25[w], round(e[w]), round(e[w] / cl), round(v[w], 1), finding(v[w])])
-        if w in fail:
+    for r in W.REG:
+        ws.append([r, W.RCODE[r], round(raw["tonnes"][r], 1), round(raw["land"][r], 2), round(raw["kg_ha"][r], 2),
+                   round(100 * (raw["kg_ha"][r] / W.LINE - 1), 1), f["regions"][r]["designated"]])
+        if f["regions"][r]["designated"] == "Yes":
             for cell in ws[ws.max_row]:
-                cell.fill = OUT_FILL
+                cell.fill = DES_FILL
     last = ws.max_row
-    ws.append([None, "Lorrimere District", "=SUM(C5:C%d)" % last, "=SUM(D5:D%d)" % last, "=SUM(E5:E%d)" % last,
-               "=E%d/C%d" % (last + 1, last + 1), None, None])
+    tot_t, tot_l = sum(raw["tonnes"].values()), sum(raw["land"].values())
+    ws.append(["All regions", None, round(tot_t, 1), round(tot_l, 2), round(1000 * tot_t / tot_l, 2), None, None])
     for cell in ws[ws.max_row]:
         cell.font = BOLD
         cell.fill = TOTAL_FILL
         cell.border = TOP
-    for r in range(5, ws.max_row + 1):
-        ws.cell(r, 4).number_format = "#,##0"
-        ws.cell(r, 5).number_format = "#,##0"
-        ws.cell(r, 6).number_format = "#,##0"
-        ws.cell(r, 7).number_format = "+0.0;-0.0;0.0"
-        for col in (3, 4, 5, 6, 7):
-            ws.cell(r, col).alignment = Alignment(horizontal="right")
+    for row in range(5, ws.max_row + 1):
+        ws.cell(row, 3).number_format = "#,##0.0"
+        ws.cell(row, 4).number_format = "#,##0.00"
+        ws.cell(row, 5).number_format = "0.00"
+        ws.cell(row, 6).number_format = "+0.0;-0.0"
+        ws.cell(row, 2).alignment = Alignment(horizontal="center")
+        ws.cell(row, 7).alignment = Alignment(horizontal="center")
     ws.append([])
-    ws.append(["Source: Lorrimere District Council registers of 1 December 2022 to 2025, local land and property gazetteer "
-               "at 12 October 2026, housing completions monitoring and housing trajectory at 30 September 2026."])
-    ws.freeze_panes = "C5"
-    for i, wd in enumerate([10, 22, 12, 18, 18, 16, 16, 28]):
-        ws.column_dimensions[get_column_letter(i + 1)].width = wd
-    ws.row_dimensions[4].height = 45
+    ws.append(["Designation is decided on unrounded figures (designation rules, section 5). Figures as at the National "
+               "Bovine Register extract of 9 November 2026."])
+    for k, wd in enumerate([16, 9, 15, 13, 14, 12, 11]):
+        ws.column_dimensions[get_column_letter(k + 1)].width = wd
+    ws.freeze_panes = "A5"
     ws.print_title_rows = "4:4"
-    ws.page_setup.orientation = "landscape"
-    ws.page_setup.fitToWidth = 1
 
-    w2 = wb.create_sheet("Register 2021")
-    w2.append(["Local government electors on the register published 1 December 2021, by ward"])
-    w2["A1"].font = Font(bold=True, size=12)
-    w2.append(["The register as published, from Electra's report of the register it held on 4 March 2022 less the "
-               "notices of alteration of 4 January, 1 February and 1 March 2022."])
-    w2.append([])
-    w2.append(["Ward code", "Ward", "Councillors", "Local government electors, 1 December 2021"])
-    _head(w2, 4)
-    for w in order:
-        name, cl = wards[w]
-        w2.append([w, name, cl, A[w]])
-    last2 = w2.max_row
-    w2.append([None, "Lorrimere District", "=SUM(C5:C%d)" % last2, "=SUM(D5:D%d)" % last2])
-    for cell in w2[w2.max_row]:
+    ws2 = wb.create_sheet("Contractor spreading")
+    ws2.append(["Cattle slurry spread by contractors on farms in each region, 13 January to 30 April 2026"])
+    ws2["A1"].font = Font(bold=True, size=12)
+    ws2.append(["Countrywide Slurry Services, Vale Agri and Basin Agri, each job counted once."])
+    ws2.append([])
+    ws2.append(["Region", "Region code", "Cattle slurry spread (m3)", "Spread by trailing shoe, trailing hose or "
+                "injection (%)"])
+    _head(ws2, 4)
+    for r in W.REG:
+        ws2.append([r, W.RCODE[r], round(raw["ask_m3"][r], -2), round(raw["ask_less"][r], 1)])
+    tv = sum(raw["ask_m3"].values())
+    tl = sum(raw["ask_m3"][r] * raw["ask_less"][r] / 100 for r in W.REG)
+    ws2.append(["All regions", None, round(tv, -2), round(100 * tl / tv, 1)])
+    for cell in ws2[ws2.max_row]:
         cell.font = BOLD
         cell.fill = TOTAL_FILL
         cell.border = TOP
-    for r in range(5, w2.max_row + 1):
-        w2.cell(r, 4).number_format = "#,##0"
-    w2.freeze_panes = "C5"
-    for i, wd in enumerate([10, 22, 12, 22]):
-        w2.column_dimensions[get_column_letter(i + 1)].width = wd
-    w2.row_dimensions[4].height = 30
+    for row in range(5, ws2.max_row + 1):
+        ws2.cell(row, 3).number_format = "#,##0"
+        ws2.cell(row, 4).number_format = "0.0"
+        ws2.cell(row, 2).alignment = Alignment(horizontal="center")
+    for k, wd in enumerate([16, 9, 15, 22]):
+        ws2.column_dimensions[get_column_letter(k + 1)].width = wd
+    ws2.freeze_panes = "A5"
 
-    w3 = wb.create_sheet("Build-up")
-    w3.append(["Electors per dwelling by canvasses since a dwelling came into use, as a share of the settled level"])
-    w3["A1"].font = Font(bold=True, size=12)
-    w3.append(["Registers of 1 December 2022 to 2025 at the dwellings in the completions monitoring; the settled level "
-               "from the 2025 register at dwellings at their seventh canvass or later."])
-    w3.append([])
-    w3.append(["Canvasses by the register", "Share of the settled level"])
-    _head(w3, 4)
-    for k in sorted(c):
-        w3.append(["%d (rolling registration only)" % k if k == 0 else k, round(c[k], 3)])
-    w3.append(["7 or more", 1.0])
-    for r in range(5, w3.max_row + 1):
-        w3.cell(r, 2).number_format = "0.000"
-        w3.cell(r, 1).alignment = Alignment(horizontal="left")
-    w3.append([])
-    w3.append(["Settled level, electors per dwelling", None])
-    w3.cell(w3.max_row, 1).font = BOLD
-    w3.append(["Houses (RD02 to RD04)", round(S["house"], 2)])
-    w3.append(["Flats (RD06)", round(S["flat"], 2)])
-    w3.column_dimensions["A"].width = 34
-    w3.column_dimensions["B"].width = 18
+    ws3 = wb.create_sheet("Notes")
+    notes = [
+        "Notes",
+        "",
+        "Measure: ammonia from cattle manure arising in the region over the programme year, at the Environmental "
+        "Protection Office's 2025 factors (designation rules, section 3). Each animal-day is placed in the region of the "
+        "herd holding the animal that day in the National Bovine Register, at the housed rate inside that region's "
+        "housing season (factor note, Tables 3 and 4) and the grass rate outside it.",
+        "Animal-days: from the date of birth, or 1 November 2025, to the day before the exit date, or 31 October 2026; "
+        "an animal is in its departure herd until the arrival date. Days at marts, dealers' premises and export assembly "
+        "centres sit in the region of those premises.",
+        "Categories: calves under 12 months, cattle 12 to 24 months and over 24 months, and cows from first calving, dairy "
+        "by the factor note's breed list.",
+        "Regions: the 2024 regional structure, by the herd register's district for each herd number, a reissued number "
+        "taken at the record valid on the day.",
+        "Farmed land: the 2026 Land Parcel Register declarations by herd, commonage at each herd's share.",
+        "Contractor spreading: cattle slurry only (pig slurry and digestate left out), on herds in the herd register, "
+        "dated 13 January to 30 April 2026; Vale Agri's loads at each tanker's capacity, Countrywide's thousands of gallons and "
+        "Basin Agri's metered cubic metres, at 0.00454609 cubic metres a gallon. A Countrywide invoice line whose reference is "
+        "a Vale Agri or Basin Agri job number bills that contractor's job and is not counted again.",
+        "Rounding: tonnes to one decimal, kilograms a hectare to two decimals, slurry to the nearest hundred cubic metres, "
+        "shares to one decimal.",
+        "Prepared by the Ammonia Programme Unit for the Minister's designation by 1 December 2026."]
+    for line in notes:
+        ws3.append([line] if line else [])
+    ws3["A1"].font = Font(bold=True, size=12)
+    ws3.column_dimensions["A"].width = 120
+    for row in ws3.iter_rows(min_row=3):
+        for c in row:
+            c.alignment = Alignment(wrap_text=True, vertical="top")
+    wb.save(path)
 
-    w4 = wb.create_sheet("Notes")
-    for line in [
-        "Electors: local government electors aged 18 or over on the revised register; attainers and overseas electors "
-        "registered for parliamentary elections only are not counted, electors registered for local elections only are "
-        "(technical guidance note 3, section 1).",
-        "Forecast date: the register to be published on 1 December 2032 (the Commission's letter of 2 March 2026).",
-        "Dwellings counted: every dwelling in use today and the dwellings the housing trajectory at 30 September 2026 "
-        "expects by the 2032 register, completions falling evenly through each monitoring year and each year's mix the "
-        "site's remaining mix; dwellings the trajectory places after 31 March 2033 are not counted.",
-        "A dwelling is first canvassed in the year it is in use on 31 August, and applications determined by 31 October "
-        "reach the register published on 1 December (annual canvass report 2025).",
-        "Each dwelling at its seventh canvass or later on the 2025 register is carried at its 2025 count; every younger "
-        "dwelling, and every dwelling in use since or to come, at the settled level of its type times the share its "
-        "canvass count on 1 December 2032 holds on the Build-up sheet.",
-        "Variance: a ward's electors per councillor against the district's forecast electors over 43 councillors. A ward "
-        "more than 10 per cent above or below does not provide good electoral equality (guidance, section 2).",
-        "Forecast electors are shown to the nearest elector; findings are taken on unrounded figures.",
-        "Prepared for the Commission's meeting of 17 November 2026. Review Manager: Megan Stewart."]:
-        w4.append([line])
-        w4.cell(w4.max_row, 1).alignment = Alignment(wrap_text=True, vertical="top")
-    w4.column_dimensions["A"].width = 120
-    wb.save(path("workbook"))
 
-    # the chart: each ward's variance, the wards outside the line marked, the lines labelled
-    rows = sorted(order, key=lambda w: v[w])
-    fig, ax = plt.subplots(figsize=(8.6, 7.4), dpi=150)
-    cols = ["#c0504d" if w in fail else "#8497b0" for w in rows]
-    ax.barh(range(len(rows)), [v[w] for w in rows], color=cols, height=0.62, edgecolor="white", linewidth=1.0)
-    ax.set_yticks(range(len(rows)))
-    ax.set_yticklabels([wards[w][0] for w in rows], fontsize=8.5)
-    for x in (-10, 10):
-        ax.axvline(x, color="#404040", linestyle=(0, (4, 3)), linewidth=1.0)
-        ax.text(x, len(rows) - 0.35, "%+d%%" % x, ha="center", va="bottom", fontsize=8, color="#404040")
-    ax.axvline(0, color="#7f7f7f", linewidth=0.8)
-    for i, w in enumerate(rows):
-        if w in fail:
-            ax.text(v[w] + (0.4 if v[w] > 0 else -0.4), i, "%+.1f" % v[w], va="center",
-                    ha="left" if v[w] > 0 else "right", fontsize=8, color="#262626")
-    ax.set_xlim(-18, 20)
-    ax.set_ylim(-0.7, len(rows) - 0.1)
-    ax.set_xlabel("Variance from the district's average electors per councillor, 1 December 2032 forecast (per cent)",
-                  fontsize=8.5)
-    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: "%+d" % x if x else "0"))
-    ax.tick_params(axis="x", labelsize=8)
-    for s in ("top", "right"):
+def chart(path, f):
+    raw = f["_raw"]["kg_ha"]
+    order = sorted(W.REG, key=lambda r: raw[r])
+    vals = [raw[r] for r in order]
+    des = set(f["call"]["designated"])
+    ink, muted, grid = "#1F2A2E", "#5B6770", "#D9DEE1"
+    on, off = "#B5562B", "#9AA7AE"
+    fig, ax = plt.subplots(figsize=(8.6, 5.6), dpi=150)
+    ax.barh(range(len(order)), vals, height=0.62, color=[on if r in des else off for r in order], zorder=2)
+    ax.axvline(W.LINE, color=ink, lw=1.2, ls=(0, (4, 3)), zorder=3)
+    ax.text(W.LINE + 0.25, len(order) - 0.45, "Line: %d kg NH3/ha" % W.LINE, color=ink, fontsize=8.5, va="center")
+    for k, (r, v) in enumerate(zip(order, vals)):
+        ax.text(v - 0.3, k, "%.2f" % v, va="center", ha="right", fontsize=8, color="white" if r in des else ink)
+    ax.set_yticks(range(len(order)))
+    ax.set_yticklabels(order, fontsize=9, color=ink)
+    ax.set_xlim(0, max(vals) * 1.12)
+    ax.set_xlabel("Ammonia from cattle manure, kg NH3 a hectare of farmed land, 1 Nov 2025 to 31 Oct 2026",
+                  fontsize=8.5, color=muted)
+    ax.tick_params(axis="x", labelsize=8, colors=muted)
+    ax.tick_params(axis="y", length=0)
+    ax.grid(axis="x", color=grid, lw=0.6, zorder=0)
+    for s in ("top", "right", "left"):
         ax.spines[s].set_visible(False)
-    ax.grid(axis="x", color="#e7e7e7", linewidth=0.6)
-    ax.set_axisbelow(True)
-    ax.set_title("%s of Lorrimere's 23 wards fall outside electoral equality on the 2032 forecast" %
-                 WORDS[len(fail)].capitalize(), fontsize=11, loc="left", pad=14)
-    fig.text(0.01, 0.028, "Existing wards and councillor numbers; district average %s electors per councillor. Red: more "
-             "than 10 per cent from the average." % "{:,.0f}".format(round(avg)), fontsize=6.8, color="#595959")
-    fig.text(0.01, 0.008, "Source: Lorrimere District Council registers 2022 to 2025, gazetteer at 12 October 2026, "
-             "completions monitoring and housing trajectory at 30 September 2026.", fontsize=6.8, color="#595959")
+    ax.spines["bottom"].set_color(grid)
+    ax.set_title("%s regions reach the line: %s" % (["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"][len(des)],
+                                                  ", ".join(r for r in W.REG if r in des)),
+                 loc="left", fontsize=10.5, color=ink, pad=12, fontweight="bold")
+    fig.text(0.01, 0.012, "Bars in orange: designated as Ammonia Action Regions for 2027.\nSource: Ammonia Programme Unit, "
+             "from the National Bovine Register (extract 9 November 2026) and the Land Parcel Register 2026.",
+             fontsize=7, color=muted, linespacing=1.4)
     fig.tight_layout(rect=(0, 0.05, 1, 1))
-    fig.savefig(path("chart"), metadata={"Software": None})
+    fig.savefig(path, metadata={"Software": None, "Title": "Cattle ammonia per hectare 2025-26",
+                                "Author": "Ammonia Programme Unit"})
     plt.close(fig)
 
-    def r1(x):
-        return round(x, 1)
-    figs = dict(
-        call=dict(fail=[wards[w][0] for w in fail], meet=[wards[w][0] for w in meet], fail_codes=fail,
-                  findings={wards[w][0]: finding(v[w]) for w in order}),
-        components=dict(electors_2025="{:,}".format(sum(reg25.values())), trajectory_dwellings="{:,}".format(traj)),
-        forecast=dict(total="{:,}".format(round(tot)), average="{:,.1f}".format(avg), average_whole="{:,}".format(round(avg)),
-                      variance={wards[w][0]: r1(v[w]) for w in order},
-                      electors={wards[w][0]: round(e[w]) for w in order}),
-        default=dict(fail=[wards[w][0] for w in dfail], variance={wards[w][0]: r1(dv[w]) for w in order}),
-        buildup={str(k): round(c[k], 2) for k in sorted(c)}, settled={t: round(x, 2) for t, x in S.items()},
-        ask_a={wards[w][0]: A[w] for w in order}, ask_a_total="{:,}".format(sum(A.values())),
-        switch_off=dict(net=switch["net"], low=switch["low"], high=switch["high"]),
-        constants=dict(council_size=43, councillors={wards[w][0]: wards[w][1] for w in order},
-                       order=[wards[w][0] for w in order]))
-    return figs
+
+def write(gpath, tr):
+    f = figures(tr)
+    workbook(gpath("workbook"), f)
+    chart(gpath("chart"), f)
+    f.pop("_raw")
+    return f

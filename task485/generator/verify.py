@@ -1,142 +1,185 @@
-"""An independent recomputation of every graded figure from target/ alone, written without golden.py: the 2025
-register, the build-up, each ward's 2032 forecast and finding, and the 2021 register by ward; compared with
-generator/figures.json at the write-up's rounding.
+"""The independent verifier: every graded figure recomputed from target/ alone (no generator module is imported), then
+compared with generator/figures.json.
 
     python3 task485/generator/verify.py
 """
-import csv
-import datetime as dt
 import json
 import os
-from collections import defaultdict
+import re
+import subprocess
+import sys
 
-import openpyxl
+import numpy as np
+import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-T = os.path.join(os.path.dirname(HERE), "target")
-D = dt.date
-RES = ("RD02", "RD03", "RD04", "RD06")
+TASK = os.path.dirname(HERE)
+T = os.path.join(TASK, "target")
+Y0, Y1 = pd.Timestamp("2025-11-01"), pd.Timestamp("2026-11-01")     # the programme year, end exclusive
+NDAY = (Y1 - Y0).days
+LINE = 26.0
+GAL = 0.00454609
+CATS = ["Calves", "Cattle 12 to 24 months", "Cattle over 24 months", "Dairy cows", "Suckler cows"]
+DAIRY = {"HO", "FR", "JE", "NR", "MO"}
+OK, BAD = [], []
 
 
-def tp(n):
-    return os.path.join(T, n)
+def check(label, cond, detail=""):
+    (OK if cond else BAD).append(label)
+    print("%s  %s%s" % ("PASS" if cond else "FAIL", label, ("  " + detail) if detail else ""))
 
 
-def k_on(day, Y):
-    """canvasses by the 1 December Y register of a dwelling in use from day (None: not in use by 31 October Y)"""
-    if day > D(Y, 10, 31):
-        return None
-    first = day.year if day <= D(day.year, 8, 31) else day.year + 1
-    return Y - first + 1
+def rates():
+    txt = subprocess.run(["pdftotext", "-layout", os.path.join(T, "epo_cattle_ammonia_factors_2025.pdf"), "-"],
+                         capture_output=True, text=True).stdout
+    part = txt.split("4. The factors")[1].split("Table 3.")[0]
+    out = {}
+    for c in CATS:
+        m = re.search(re.escape(c) + r"\s+([0-9.]+)\s+([0-9.]+)", part)
+        out[c] = (float(m.group(1)), float(m.group(2)))
+    return out
+
+
+def seasons():
+    hs = pd.read_excel(os.path.join(T, "moa_livestock_housing_survey_2025.xlsx"), sheet_name="Housing")
+    days = pd.date_range(Y0, Y1 - pd.Timedelta(days=1))
+    out = {}
+    for _, r in hs.iterrows():
+        h = pd.to_datetime(r["Usual housing date"] + " 2000", format="%d %B %Y")
+        t = pd.to_datetime(r["Usual turnout date"] + " 2000", format="%d %B %Y")
+        housed = np.array([(d.month, d.day) >= (h.month, h.day) or (d.month, d.day) < (t.month, t.day) for d in days])
+        assert housed.sum() == r["Housed days in a 365-day year"], r["Region"]
+        out[r["Region"]] = np.concatenate([[0], np.cumsum(housed)])
+    return out
+
+
+def herd_regions():
+    hr = pd.read_excel(os.path.join(T, "nbr_herd_register_2026-11.xlsx"), sheet_name="Herds", dtype=str)
+    hr["Valid to"] = pd.to_datetime(hr["Valid to"])
+    cur = hr[hr["Valid to"].isna() | (hr["Valid to"] >= Y0)]
+    assert cur["Herd No"].is_unique
+    return dict(zip(cur["Herd No"], cur["Region"])), dict(zip(cur["Herd No"], cur["Herd type"]))
+
+
+def ammonia(region_of):
+    an = pd.read_csv(os.path.join(T, "nbr_animals_2025-26.csv"), dtype=str)
+    mv = pd.read_csv(os.path.join(T, "nbr_movements_2025-26.csv"), dtype=str)
+    dt = lambda s: pd.to_datetime(s, format="%d/%m/%Y")
+    an["birth"] = (dt(an["DATE_OF_BIRTH"]) - Y0).dt.days
+    an["exitd"] = (dt(an["EXIT_DATE"]) - Y0).dt.days
+    an["fc"] = (dt(an["FIRST_CALVING_DATE"]) - Y0).dt.days
+    an["s"] = an["birth"].clip(lower=0)
+    an["e"] = an["exitd"].fillna(NDAY).clip(upper=NDAY)
+    idx = {t: i for i, t in enumerate(an["TAG_NUMBER"])}
+    mv["i"] = mv["TAG_NUMBER"].map(idx)
+    mv["day"] = (dt(mv["ARRIVAL_DATE"]) - Y0).dt.days
+    ev = pd.concat([pd.DataFrame(dict(i=np.arange(len(an)), day=an["s"].values, order=-1, herd=an["HERD_AT_START"].values)),
+                    pd.DataFrame(dict(i=mv["i"].values, day=mv["day"].values, order=mv["MOVEMENT_ID"].astype(int).values,
+                                      herd=mv["DESTINATION_HERD"].values))])
+    s_of, e_of = an["s"].values, an["e"].values
+    ev["day"] = np.maximum(ev["day"].values, s_of[ev["i"].values])
+    ev = ev.sort_values(["i", "day", "order"]).reset_index(drop=True)
+    nxt = np.append(ev["day"].values[1:], NDAY)
+    same = np.append(ev["i"].values[1:] == ev["i"].values[:-1], False)
+    end = np.where(same, nxt, e_of[ev["i"].values])
+    end = np.minimum(end, e_of[ev["i"].values])
+    seg = ev.assign(end=end)
+    seg = seg[seg["end"] > seg["day"]]
+    a = seg["i"].values
+    s, e = seg["day"].values.astype(int), seg["end"].values.astype(int)
+    birth = an["birth"].values
+    fc = an["fc"].fillna(10 ** 6).values
+    cuts = np.stack([birth[a] + 365, birth[a] + 730, fc[a]], 1)
+    cuts = np.minimum(np.maximum(cuts, s[:, None]), e[:, None])
+    cuts.sort(1)
+    pts = np.concatenate([s[:, None], cuts, e[:, None]], 1)
+    p0, p1 = pts[:, :-1].ravel(), pts[:, 1:].ravel()
+    rows = np.repeat(np.arange(len(a)), 4)
+    keep = p1 > p0
+    p0, p1, rows = p0[keep].astype(int), p1[keep].astype(int), rows[keep]
+    aa = a[rows]
+    herd = seg["herd"].values[rows]
+    region = np.array([region_of[h] for h in herd])
+    age = p0 - birth[aa]
+    cow = (an["SEX"].values[aa] == "F") & (fc[aa] <= p0)
+    dairy = an["BREED"].isin(DAIRY).values[aa]
+    cat = np.where(age < 365, 0, np.where(cow, np.where(dairy, 3, 4), np.where(age < 730, 1, 2)))
+    R = rates()
+    rh = np.array([R[c][0] for c in CATS])
+    rg = np.array([R[c][1] for c in CATS])
+    cum = seasons()
+    kg = {}
+    for r in sorted(set(region)):
+        m = region == r
+        hd = cum[r][p1[m]] - cum[r][p0[m]]
+        kg[r] = float((hd * rh[cat[m]] + (p1[m] - p0[m] - hd) * rg[cat[m]]).sum())
+    return kg, int((p1 - p0).sum())
+
+
+def land(region_of):
+    lp = pd.read_csv(os.path.join(T, "lpr_farmed_area_2026.csv"), dtype={"HERD_NO": str})
+    lp["ha"] = lp["AREA_HA"] * lp["SHARE_PCT"] / 100
+    lp["region"] = lp["HERD_NO"].map(region_of)
+    assert lp["region"].notna().all()
+    return lp.groupby("region")["ha"].sum().to_dict()
+
+
+def contractors(region_of):
+    lo, hi = pd.Timestamp("2026-01-13"), pd.Timestamp("2026-04-30")
+    av = pd.read_csv(os.path.join(T, "vale_agri_jobs_2026.csv"), dtype=str)
+    av["date"] = pd.to_datetime(av["Date"], format="%d/%m/%Y")
+    av["m3"] = av["Loads"].astype(int) * av["Capacity (gal)"].astype(int) * GAL
+    av["less"] = av["Spreader"].isin(["TRAILING SHOE", "DRIBBLE BAR"])
+    av = av[(av["Material"] == "CATTLE SLURRY") & av["date"].between(lo, hi) & av["Herd No"].isin(region_of)]
+    nm = pd.read_excel(os.path.join(T, "basin_agri_job_sheets_2026.xlsx"), sheet_name="Job sheets 2026", dtype={"Herd No": str})
+    nm = nm[(nm["Product"] == "Cattle slurry") & pd.to_datetime(nm["Date"]).between(lo, hi) & nm["Herd No"].isin(region_of)]
+    nm = nm.assign(m3=nm["Metered m3"].astype(float), less=nm["Applicator"].isin(["Trailing shoe", "Dribble bar"]))
+    kb = pd.read_excel(os.path.join(T, "countrywide_invoice_lines_2026.xlsx"), sheet_name="Invoice lines",
+                       dtype={"Reference": str, "Herd No": str})
+    kb["herd"] = kb["Herd No"].str.replace(" ", "", regex=False)
+    jobs = set(av["Job No"]) | set(pd.read_csv(os.path.join(T, "vale_agri_jobs_2026.csv"), dtype=str)["Job No"]) | \
+        set(pd.read_excel(os.path.join(T, "basin_agri_job_sheets_2026.xlsx"), sheet_name="Job sheets 2026")["Job No"])
+    kb = kb[kb["Service"].str.startswith("SS-") & pd.to_datetime(kb["Invoice date"]).between(lo, hi)
+            & ~kb["Reference"].isin(jobs)]
+    kb = kb.assign(m3=kb["Qty"].astype(float) * 1000 * GAL, less=kb["Service"].isin(["SS-TS", "SS-TH", "SS-UMB", "SS-INJ"]))
+    allj = pd.concat([av.assign(region=av["Herd No"].map(region_of))[["region", "m3", "less"]],
+                      nm.assign(region=nm["Herd No"].map(region_of))[["region", "m3", "less"]],
+                      kb.assign(region=kb["herd"].map(region_of))[["region", "m3", "less"]]])
+    allj["lm3"] = allj["m3"] * allj["less"]
+    g = allj.groupby("region")[["m3", "lm3"]].sum()
+    return {r: (float(g.loc[r, "m3"]), 100 * float(g.loc[r, "lm3"] / g.loc[r, "m3"])) for r in g.index}
 
 
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    ok = []
-
-    def same(label, a, b):
-        ok.append(a == b)
-        print("%s  %s  %s %s" % ("PASS" if a == b else "FAIL", label, a, "" if a == b else "against %s" % (b,)))
-    wards = {}
-    for r in csv.DictReader(open(tp("wards_councillors_2014_order.csv"), newline="")):
-        wards[r["ward_code"]] = (r["ward_name"], int(r["councillors"]))
-    gaz = {}
-    for r in csv.DictReader(open(tp("llpg_extract_2026-10-12.csv"), newline="")):
-        if r["LOGICAL_STATUS"] == "1" and r["BLPU_STATE"] == "2" and r["CLASSIFICATION"] in RES:
-            gaz[int(r["UPRN"])] = (r["WARD_CODE"], "flat" if r["CLASSIFICATION"] == "RD06" else "house",
-                                   D.fromisoformat(r["BLPU_STATE_DATE"]))
-    reg = defaultdict(dict)
-    for r in csv.DictReader(open(tp("ems_property_electorate_2022-2025.csv"), newline="")):
-        reg[int(r["register_date"][:4])][int(r["uprn"])] = int(r["local_government_electors"])
-    new, done_by_site = set(), defaultdict(lambda: [0, 0])
-    ws = openpyxl.load_workbook(tp("housing_completions_monitoring_2014-2026.xlsx"), read_only=True)["Completions"]
-    for i, r in enumerate(ws.iter_rows(values_only=True)):
-        if i >= 4 and r[0]:
-            new.add(int(r[5]))
-            done_by_site[r[0]][1 if r[7] in ("Flat", "Maisonette") else 0] += 1
-    same("2025 register's local government electors", "{:,}".format(sum(reg[2025].values())), f["components"]["electors_2025"])
-    # settled level and build-up
-    num, den = defaultdict(float), defaultdict(int)
-    for u, n in reg[2025].items():
-        w, t, day = gaz[u]
-        if k_on(day, 2025) >= 7:
-            num[t] += n
-            den[t] += 1
-    S = {t: num[t] / den[t] for t in den}
-    same("settled level", {t: round(x, 2) for t, x in S.items()}, f["settled"])
-    bn, bd = defaultdict(float), defaultdict(int)
-    for Y in (2022, 2023, 2024, 2025):
-        for u, n in reg[Y].items():
-            if u not in new:
-                continue
-            w, t, day = gaz[u]
-            k = k_on(day, Y)
-            if k is not None and k < 7:
-                bn[k] += n / S[t]
-                bd[k] += 1
-    c = {k: bn[k] / bd[k] for k in bd}
-    same("build-up", {str(k): round(x, 2) for k, x in sorted(c.items())}, f["buildup"])
-
-    def share(k):
-        return 0.0 if k is None else (1.0 if k >= 7 else c[k])
-    e = defaultdict(float)
-    for u, n in reg[2025].items():
-        w, t, day = gaz[u]
-        e[w] += n if k_on(day, 2025) >= 7 else S[t] * share(k_on(day, 2032))
-    for u, (w, t, day) in gaz.items():
-        if u not in reg[2025] and day > D(2025, 10, 31):
-            e[w] += S[t] * share(k_on(day, 2032))
-    rows = list(openpyxl.load_workbook(tp("housing_trajectory_2026-09-30.xlsx"), read_only=True)["Trajectory"].iter_rows(values_only=True))
-    hdr = list(rows[3])
-    name2code = {v[0]: k for k, v in wards.items()}
-    traj_dw = 0
-    for r in rows[4:]:
-        if not r[0]:
-            continue
-        rec = dict(zip(hdr, r))
-        dh, df = done_by_site.get(rec["Site ref"], (0, 0))
-        rh, rf = (rec["Houses"] or 0) - dh, (rec["Flats"] or 0) - df
-        sf = rf / float(rh + rf) if rh + rf else 0.0
-        for col in hdr[10:]:
-            if col.startswith("2033"):
-                continue
-            n = rec[col] or 0
-            y0 = int(col[:4])
-            if y0 <= 2031:
-                traj_dw += n
-            months = [(y0, m) for m in range(10 if y0 == 2026 else 4, 13)] + [(y0 + 1, m) for m in range(1, 4)]
-            for yy, mm in months:
-                k = k_on(D(yy, mm, 15), 2032)
-                for t, sh in (("house", 1 - sf), ("flat", sf)):
-                    e[name2code[rec["Ward"]]] += n * sh / len(months) * S[t] * share(k)
-    same("trajectory dwellings 2026/27 to 2031/32", "{:,}".format(traj_dw), f["components"]["trajectory_dwellings"])
-    tot = sum(e.values())
-    avg = tot / 43.0
-    v = {w: 100.0 * (e[w] / wards[w][1] / avg - 1.0) for w in wards}
-    same("2032 total", "{:,}".format(round(tot)), f["forecast"]["total"])
-    same("2032 average", "{:,}".format(round(avg)), f["forecast"]["average_whole"])
-    same("variances", {wards[w][0]: round(v[w], 1) for w in wards}, f["forecast"]["variance"])
-    same("wards outside", [wards[w][0] for w in wards if abs(v[w]) > 10], f["call"]["fail"])
-    # the 2021 register: Electra's switch-off report less the 2022 notices' local government entries
-    oldw = {}
-    for r in csv.DictReader(open(tp("polling_district_review_2023_schedule.csv"), newline="")):
-        oldw[r["replaces_district"]] = name2code[r["ward"]]
-    a = defaultdict(int)
-    lines = open(tp("ELECTRA_PROPERTY_ELECTORATE_REV_2021.txt"), encoding="utf-8").read().splitlines()
-    for ln in lines[lines.index([x for x in lines if x.startswith("PD|")][0]) + 1:]:
-        p = ln.split("|")
-        a[oldw[p[0]]] += int(p[4]) - int(p[5]) - int(p[6])
-    lines = open(tp("ELECTRA_NOTICES_OF_ALTERATION_2021-01_2022-03.txt"), encoding="utf-8").read().splitlines()
-    for ln in lines[lines.index([x for x in lines if x.startswith("NOTICE|")][0]) + 1:]:
-        p = ln.split("|")
-        if p[0].endswith("2022") and p[6] != "F" and not p[7]:
-            a[oldw[p[1]]] += -1 if p[5] == "ADD" else 1
-    same("2021 register by ward", {wards[w][0]: a[w] for w in wards}, f["ask_a"])
-    same("2021 register district", "{:,}".format(sum(a.values())), f["ask_a_total"])
-    print("%d of %d PASS" % (sum(ok), len(ok)))
-    return all(ok)
+    region_of, types = herd_regions()
+    kg, days = ammonia(region_of)
+    la = land(region_of)
+    order = f["constants"]["order"]
+    des = [r for r in order if kg[r] / la[r] >= LINE]
+    check("the call: the designated regions", des == f["call"]["designated"], str(des))
+    for r in order:
+        g = f["regions"][r]
+        check("%s tonnes %s" % (r, g["tonnes"]), "{:,.1f}".format(kg[r] / 1000) == g["tonnes"], "{:,.1f}".format(kg[r] / 1000))
+        check("%s kg a hectare %s" % (r, g["kg_ha"]), "%.2f" % (kg[r] / la[r]) == g["kg_ha"], "%.2f" % (kg[r] / la[r]))
+        check("%s farmed land %s" % (r, g["land_ha"]), "{:,.2f}".format(la[r]) == g["land_ha"])
+    c = f["components"]
+    check("component: tonnes in all", "{:,.1f}".format(sum(kg.values()) / 1000) == c["tonnes_total"])
+    check("component: farmed land in all", "{:,.2f}".format(sum(la.values())) == c["land_total"])
+    check("step: animal-days", "{:,.0f}".format(days) == c["animal_days"], "{:,.0f}".format(days))
+    A = contractors(region_of)
+    for r in order:
+        a = f["ask_a"][r]
+        check("%s ask A %s m3" % (r, a["m3"]), "{:,.0f}".format(round(A[r][0], -2)) == a["m3"], "{:,.0f}".format(A[r][0]))
+        check("%s ask A %s per cent" % (r, a["less_pct"]), "%.1f" % A[r][1] == a["less_pct"], "%.2f" % A[r][1])
+    tv = sum(v for v, _ in A.values())
+    tl = sum(v * s / 100 for v, s in A.values())
+    check("step: contractors' slurry in all", "{:,.0f}".format(round(tv, -2)) == f["ask_a_total"]["m3"])
+    check("step: low-emission share in all", "%.1f" % (100 * tl / tv) == f["ask_a_total"]["less_pct"])
+    print("\n%d PASS, %d FAIL" % (len(OK), len(BAD)))
+    if BAD:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    import sys
-    sys.exit(0 if main() else 1)
+    main()

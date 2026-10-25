@@ -12,83 +12,74 @@ def joined(xs):
     return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 1 else xs[0]
 
 
-def sv(x):
-    return "%+.1f" % x
-
-
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    fail, meet = f["call"]["fail"], f["call"]["meet"]
     order = f["constants"]["order"]
-    fail = [w for w in order if w in fail]
-    v, dv = f["forecast"]["variance"], f["default"]["variance"]
-    dfail = f["default"]["fail"]
-    late = [w for w in dfail if w not in fail]
-    young = [w for w in fail if w not in dfail]
-    b = f["buildup"]
-    shares = ", ".join("%.2f" % b[str(k)] for k in range(1, 7))
+    des, nod = f["call"]["designated"], f["call"]["not_designated"]
+    R = f["regions"]
+    dflt = f["default"]["designated"]
+    added = [r for r in order if r in dflt and r not in des]
+    missed = [r for r in order if r in des and r not in dflt]
+    kg = lambda r: R[r]["kg_ha"]
+    c = f["components"]
     out = ["## Tags", "",
-           "**Domain:** Survey Research & Official Statistics, census, register and administrative data quality (a boundary "
-           "commission's 2032 electorate forecast for a district's 23 wards, conformed from six electoral registers in two "
-           "election management system layouts, the old system's notices of alteration, the address gazetteer, the "
-           "council's completions monitoring and housing trajectory, and its polling district and ward schedules).",
+           "**Domain:** Physical & Environmental Sciences, emissions inventory (a national agriculture department's "
+           "regional inventory of ammonia from cattle manure for the 2025-26 programme year, conformed from the bovine "
+           "register's animal and movement exports, its herd register, the June census by farm, the land parcel "
+           "register's farmed area and the environmental protection office's Tier 2 factors).",
            "**Analytical objective:** Data Extraction & Conformation (ETL).", "",
            "## 1. Final Recommendation", "",
-           "**The draft recommendations should address %s: on the forecast for the register to be published on 1 December "
-           "2032 these %s wards lie more than 10 per cent from the district's average of %s electors per councillor, and "
-           "the other %d are within it.**" % (joined(fail), WORDS[len(fail)], f["forecast"]["average_whole"], len(meet)),
-           "%s sit at %s per cent and %s at %s. Not %s, which the 2025 register plus the dwellings to come at the settled "
-           "stock's electors per dwelling puts at %s: their sites complete from 2030, and a dwelling's electors join the "
-           "register over the canvasses after it comes into use, so in 2032 they hold well under the settled level (%s). "
-           "Not with %s within, at %s on that route: their estates completed from 2024 are still joining the register." % (
-               joined(young + [w for w in fail if w not in young and v[w] > 0]),
-               joined(sv(v[w]) for w in young + [w for w in fail if w not in young and v[w] > 0]),
-               joined(w for w in fail if v[w] < 0), joined(sv(v[w]) for w in fail if v[w] < 0),
-               joined(late), joined(sv(dv[w]) for w in late), joined(sv(v[w]) for w in late),
-               joined(young), joined(sv(dv[w]) for w in young)), "",
+           "**The Minister should designate %s as Ammonia Action Regions for the 2027 spreading season: on the ammonia "
+           "from cattle manure arising in each region over 2025-26 these %s regions are at or above 26 kilograms a "
+           "hectare of farmed land, and the other %s are under it.**" % (joined(des), WORDS[len(des)], WORDS[len(nod)]),
+           "%s stand at %s kilograms a hectare. Not %s, at %s: the cattle on their holdings on 1 June include lowland "
+           "yearlings out on summer grazing and calves bought in that spring, whose housed months fall in other regions, "
+           "so the census at the annual factor per head puts them over the line. Not without %s, at %s: their finishers "
+           "house stores all winter and send them to slaughter before June, which the census misses." % (
+               joined(des), joined(kg(r) for r in des), joined(added), joined(kg(r) for r in added),
+               joined(missed), joined(kg(r) for r in missed)), "",
            "## 2. Critical Components", "",
-           "1. Local government electors on the register published 1 December 2025: **%s**." % f["components"]["electors_2025"],
-           "2. Dwellings the housing trajectory expects from 1 October 2026 to 31 March 2032: **%s**." %
-           f["components"]["trajectory_dwellings"], "",
+           "1. Ammonia from cattle manure arising in the twelve regions, 1 November 2025 to 31 October 2026: **%s "
+           "tonnes**." % c["tonnes_total"],
+           "2. Farmed land of the twelve regions in the 2026 land parcel register, commonage at each herd's share: "
+           "**%s hectares**." % c["land_total"], "",
            "## 3. Step-by-Step Solution", "",
-           "1. Conformed the registers of 1 December 2022 to 2025 in ems_property_electorate_2022-2025.csv to "
-           "llpg_extract_2026-10-12.csv through each property's UPRN (approved records in use, RD02 to RD04 houses, RD06 "
-           "flats, the gazetteer's ward): %s local government electors on the 2025 register." % f["components"]["electors_2025"],
-           "2. Counted each dwelling's canvasses by each register from its gazetteer in-use date, a property being first "
-           "canvassed in the year it is in use on 31 August and applications determined by 31 October reaching the 1 "
-           "December register (lorrimere_annual_canvass_report_2025.pdf).",
-           "3. Took the settled level from the 2025 register at the dwellings at their seventh canvass or later (houses %.2f, "
-           "flats %.2f electors per dwelling) and, from the 2022 to 2025 registers at the dwellings in "
-           "housing_completions_monitoring_2014-2026.xlsx, the share of it a dwelling holds: %.2f on rolling registration "
-           "alone, then %s at its first to sixth canvass." % (f["settled"]["house"], f["settled"]["flat"], b["0"], shares),
-           "4. Carried each dwelling at its seventh canvass or later on the 2025 register at its 2025 count and every other "
-           "dwelling, in use since or due in housing_trajectory_2026-09-30.xlsx (%s from October 2026 to March 2032, and "
-           "2032/33's April to October, each year's completions spread evenly at the site's remaining mix), at its type's "
-           "settled level times its share at its canvasses on 1 December 2032." % f["components"]["trajectory_dwellings"],
-           "5. Divided each ward's forecast by its councillors (wards_councillors_2014_order.csv) against the district's %s "
-           "electors over %d councillors, %s each: %s wards lie more than 10 per cent from it." % (
-               f["forecast"]["total"], f["constants"]["council_size"], f["forecast"]["average_whole"], WORDS[len(fail)]),
-           "6. For the 2021 register, read ELECTRA_PROPERTY_ELECTORATE_REV_2021.txt as the register Electra held when it "
-           "was switched off on 4 March 2022 (dwellings first in use after 31 October 2021 hold electors in it, each an "
-           "addition in the 2022 notices) and backed each local government entry of the notices of 4 January, 1 February "
-           "and 1 March 2022 in ELECTRA_NOTICES_OF_ALTERATION_2021-01_2022-03.txt out of each property's TOTAL less its "
-           "attainers and overseas electors (an addition taken off, a deletion put back, F entries and attainers left), "
-           "by the ward of its 2014 district through polling_district_review_2023_schedule.csv: %s electors." %
-           f["ask_a_total"],
-           "7. The draft recommendations address the %s wards outside 10 per cent." % WORDS[len(fail)],
+           "1. Rebuilt each animal's days in nbr_animals_2025-26.csv and nbr_movements_2025-26.csv, from its date of birth "
+           "or 1 November 2025 to the day before its exit date or 31 October 2026, in HERD_AT_START and then in each "
+           "destination herd from its arrival date (nbr_export_notes.txt): %s animal-days." % c["animal_days"],
+           "2. Put each herd number in the 2024 region of its district in nbr_herd_register_2026-11.xlsx, a reissued number "
+           "at the record valid on the day (designation rules, section 4).",
+           "3. Classed each day by epo_cattle_ammonia_factors_2025.pdf (section 2 and the annex's dairy breeds) and charged "
+           "Table 3's housed rate on days inside the Table 4 housing season of the region the animal was in that day and "
+           "its grass rate on the others: %s tonnes of ammonia." % c["tonnes_total"],
+           "4. Divided each region's ammonia by its farmed land in lpr_farmed_area_2026.csv by the herds' regions, a "
+           "commonage parcel at the herd's SHARE_PCT: %s hectares." % c["land_total"],
+           "5. Tested each region against 26 kilograms a hectare on the unrounded figures (designation rules, section 5): "
+           "%s regions at or above it." % WORDS[len(des)],
+           "6. For the contractors, took cattle slurry jobs dated 13 January to 30 April 2026 on herds in the herd register "
+           "from vale_agri_jobs_2026.csv (loads times the tanker's gallons), countrywide_invoice_lines_2026.xlsx (SS- "
+           "services, thousands of gallons) and basin_agri_job_sheets_2026.xlsx (metered cubic metres), at 0.00454609 "
+           "cubic metres a gallon, and counted each job once: a Countrywide line whose Reference is a Vale Agri Job No or a "
+           "Basin Agri Job No bills that contractor's job, so it is left out and the job sheet's volume and spreader are "
+           "kept; trailing shoe, trailing hose, dribble bar, umbilical dribble bar and shallow injection are low-emission "
+           "(designation rules, section 6): %s cubic metres, %s per cent low-emission." % (
+               f["ask_a_total"]["m3"], f["ask_a_total"]["less_pct"]),
+           "7. The Minister designates the %s regions at or above the line." % WORDS[len(des)],
            "", "## 4. Deliverable Answers", "",
-           "### ward_electorate_forecast_2032.xlsx", "",
-           "1. Finding for each ward on the 2032 forecast:"]
-    order = f["constants"]["order"]
-    for w in order:
-        out.append("   - %s: %s" % (w, f["call"]["findings"][w].lower().replace("outside: ", "outside, ")))
-    out.append("2. Local government electors on the register published 1 December 2021, whole electors:")
-    for w in order:
-        out.append("   - %s: %s" % (w, "{:,}".format(f["ask_a"][w])))
-    out += ["", "### ward_variance_2032.png", "",
-            "1. Horizontal bar chart of each ward's 2032 variance from the district average against the 10 per cent lines: "
-            "the %s wards outside (%s) marked beyond the lines and the other %d within them." % (
-                WORDS[len(fail)], joined(fail), len(meet))]
+           "### ammonia_action_regions_2027.xlsx", "",
+           "1. Ammonia from cattle manure arising in each region over 2025-26, tonnes, kilograms a hectare of farmed land, "
+           "and whether designated:"]
+    for r in order:
+        out.append("   - %s: %s tonnes, %s kg a hectare, %s" % (r, R[r]["tonnes"], R[r]["kg_ha"],
+                                                                 "designated" if R[r]["designated"] == "Yes" else "not designated"))
+    out.append("2. Cattle slurry spread by contractors on each region's farms from 13 January to 30 April 2026, cubic "
+               "metres to the nearest hundred, and the share spread by trailing shoe, trailing hose or injection, per cent:")
+    for r in order:
+        out.append("   - %s: %s cubic metres, %s per cent" % (r, f["ask_a"][r]["m3"], f["ask_a"][r]["less_pct"]))
+    out += ["", "### cattle_ammonia_per_hectare_2025-26.png", "",
+            "1. Horizontal bar chart of each region's kilograms of ammonia a hectare against the 26 kilogram line, the %s "
+            "designated regions (%s) in orange beyond the line and the other %s in grey under it." % (
+                WORDS[len(des)], joined(des), WORDS[len(nod)])]
     with open(os.path.join(TASK, "submission.md"), "w") as fh:
         fh.write("\n".join(out) + "\n")
 

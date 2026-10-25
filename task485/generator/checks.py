@@ -1,27 +1,36 @@
-"""task485's generator checks, run on the cut pack and on the world's clean truth: the three rules (R1 to R3), the
-ladder, every row of the semantic fork table (SF1 to SF20) with the deciding quantity's live readings as a cross
+"""task485's generator checks, run on the world's clean truth and on the cut pack: the three rules (R1 to R3), the
+ladder, every row of the semantic fork table (SF1 to SF15) with the deciding quantity's live readings as a cross
 product, each Layer 1 item mishandled, the ask's device and its separation from the call, the realism sweep and the
 input gates.
 
     python3 task485/generator/checks.py
 """
-import copy
 import csv
+import itertools
 import os
+import re
+import subprocess
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
+
+import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 T = os.path.join(TASK, "target")
 sys.path.insert(0, HERE)
+import build as B  # noqa: E402
+import contractors as C  # noqa: E402
 import golden as G  # noqa: E402
+import registry as R  # noqa: E402
 import world as W  # noqa: E402
 
-D = G.D
 OK, BAD = [], []
-GOLD = ["CPK", "EBB", "KET", "LWE", "QUE"]
-DEFAULT = ["EBB", "KET", "LNO", "TIB"]
+GOLD = ["Northern Vale", "Eastern Vale", "Southern Vale", "Midland Basin", "Inner Basin", "Lower Basin"]
+DEFAULT = ["Northern Vale", "Eastern Vale", "Southern Vale", "Midland Basin", "Lake Uplands", "Middle Uplands", "Eastern Uplands", "Western Seaboard",
+           "Atlantic Coast"]
+MEAN = ["Northern Vale", "Eastern Vale", "Southern Vale", "Midland Basin", "Inner Basin", "Lower Basin", "Lake Uplands", "Middle Uplands", "Western Seaboard"]
+PREMISES = ("mart", "dealer", "export", "factory", "knackery")
 
 
 def check(label, cond, detail=""):
@@ -29,430 +38,325 @@ def check(label, cond, detail=""):
     print("%s  %s%s" % ("PASS" if cond else "FAIL", label, ("  " + detail) if detail else ""))
 
 
-def outside(L, e):
-    v, avg, tot = G.verdicts(L, e)
-    return sorted(w for w, x in v.items() if abs(x) > 10), v
-
-
-def curve(L, years, by_type=False, S=None):
-    S = S or G.settled_ratio(L)
-    num, den = defaultdict(float), defaultdict(int)
-    for Y in years:
-        for u, n in L["reg"][Y].items():
-            a = L["llpg"].get(u)
-            if a is None or u not in L["comp"]:
-                continue
-            k = G.canvass_k(a["inuse"], Y)
-            if k is None or k >= G.SETTLED_K:
-                continue
-            key = (a["type"] if by_type else "all", k)
-            num[key] += n / S[a["type"]]
-            den[key] += 1
-    return {k: num[k] / den[k] for k in den}
-
-
-def family_forecast(L, cv, by_type, settled_mode="count", young_mode="level", Y=G.HORIZON):
-    """one construction of the standing family: the settled stock at its 2025 count or at the settled level; a young
-    dwelling at its type's settled level times its share, or at its own 2025 count carried by the curve's rise"""
-    S = G.settled_ratio(L)
-
-    def cf(t, k):
-        if k is None:
-            return 0.0
-        if k >= G.SETTLED_K:
-            return 1.0
-        return cv[(t if by_type else "all", k)]
-    e = defaultdict(float)
-    for u, n in L["reg"][2025].items():
-        a = L["llpg"][u]
-        k25, kY = G.canvass_k(a["inuse"], 2025), G.canvass_k(a["inuse"], Y)
-        if k25 is not None and k25 >= G.SETTLED_K:
-            e[a["ward"]] += n if settled_mode == "count" else S[a["type"]]
-        elif young_mode == "level":
-            e[a["ward"]] += S[a["type"]] * cf(a["type"], kY)
-        else:
-            e[a["ward"]] += n * cf(a["type"], kY) / cf(a["type"], k25)
-    for u, a in L["llpg"].items():
-        if u in L["reg"][2025] or a["inuse"] <= D(2025, 10, 31):
+def intervals(w, transit="arr", premises="count", exit_counted=False, start="birth"):
+    """the herd intervals under a reading of the register: the location switches at the arrival date (golden) or the
+    departure date; days at marts, dealers and export centres counted there (golden), dropped, or counted at the herd
+    the animal came from; the exit day not counted (golden) or counted; presence from birth (golden) or registration"""
+    A, H = w.A, w.herds
+    by_a = defaultdict(list)
+    for m in w.moves:
+        by_a[m["a"]].append((m[transit], m["k"], m["to"]))
+    out = {}
+    for a in range(len(A["sex"])):
+        b = A["birth"][a] + (A["reg_lag"][a] if start == "reg" else 0)
+        s = max(b, 0)
+        e = A["exit"][a] if A["exit"][a] is not None else W.NDAY
+        if exit_counted and A["exit"][a] is not None:
+            e += 1
+        e = min(e, W.NDAY)
+        if s >= W.NDAY or e <= 0 or e <= s:
             continue
-        k = G.canvass_k(a["inuse"], Y)
-        if k is not None:
-            e[a["ward"]] += S[a["type"]] * cf(a["type"], k)
-    for ward, typ, day, n in G.future_units(L):
-        k = G.canvass_k(day, Y)
-        if k is not None:
-            e[ward] += n * S[typ] * cf(typ, k)
-    return e
-
-
-def electra_panel(L, raw=False):
-    xr = {}
-    with open(os.path.join(T, "ems_migration_property_xref_2022-03.csv"), newline="") as f:
-        for r in csv.DictReader(f):
-            xr[int(r["electra_propref"])] = int(r["uprn"])
-    Lx = copy.copy(L)
-    Lx["reg"] = dict(L["reg"])
-    for Y in (2020, 2021):
-        Lx["reg"][Y] = {xr[ref]: (tot if raw else tot - at - ov) for pd, ref, tot, at, ov, lo in G.electra_rows(T, Y)}
-    return Lx, xr
-
-
-def ladder(L):
-    S = G.settled_ratio(L)
-    cp = curve(L, (2022, 2023, 2024, 2025))
-    rungs = {}
-    rungs["L0"] = outside(L, G.ward_totals(L, 2025))[0]
-    rungs["L1"] = outside(L, G.default_path(L))[0]
-    # L1b: the electors per dwelling the 2025 register shows at the dwellings completed since October 2020
-    nb = {}
-    for t in ("house", "flat"):
-        xs = [n for u, n in L["reg"][2025].items() if u in L["comp"] and L["llpg"][u]["type"] == t
-              and L["comp"][u]["done"] >= D(2020, 10, 1)]
-        nb[t] = sum(xs) / len(xs)
-    e = defaultdict(float)
-    for u, n in L["reg"][2025].items():
-        e[L["llpg"][u]["ward"]] += n
-    for u, a in L["llpg"].items():
-        if u not in L["reg"][2025] and a["inuse"] > D(2025, 10, 31) and G.canvass_k(a["inuse"], 2032) is not None:
-            e[a["ward"]] += nb[a["type"]]
-    for ward, typ, day, n in G.future_units(L):
-        if G.canvass_k(day, 2032) is not None:
-            e[ward] += n * nb[typ]
-    rungs["L1b"] = outside(L, e)[0]
-    rungs["L1c"] = outside(L, {w: x / 0.86 for w, x in G.default_path(L).items()})[0]
-    # L2a: the young dwellings on the 2025 register at the settled level, everything to come at it
-    e = defaultdict(float)
-    for u, n in L["reg"][2025].items():
-        a = L["llpg"][u]
-        k25 = G.canvass_k(a["inuse"], 2025)
-        e[a["ward"]] += n if (k25 is None or k25 >= G.SETTLED_K) else S[a["type"]]
-    for w, x in G.default_path(L).items():
-        pass
-    base = G.default_path(L)
-    for w in base:
-        e[w] += base[w] - G.ward_totals(L, 2025).get(w, 0)
-    rungs["L2a"] = outside(L, e)[0]
-    # L2b: today's dwellings at their 2025 counts, the dwellings to come aged
-    e = defaultdict(float)
-    for u, n in L["reg"][2025].items():
-        e[L["llpg"][u]["ward"]] += n
-    g = family_forecast(L, cp, False)
-    gt = defaultdict(float)
-    for u, n in L["reg"][2025].items():
-        a = L["llpg"][u]
-        k25, kY = G.canvass_k(a["inuse"], 2025), G.canvass_k(a["inuse"], 2032)
-        gt[a["ward"]] += n if (k25 is not None and k25 >= G.SETTLED_K) else S[a["type"]] * (1.0 if kY >= G.SETTLED_K else cp[("all", kY)])
-    for w in g:
-        e[w] += g[w] - gt[w]
-    rungs["L2b"] = outside(L, e)[0]
-    rungs["G"] = outside(L, G.forecast(L)[0])[0]
-    return rungs
-
-
-def truth(w):
-    """the clean truth: the world's dwellings and counts before any file is cut, run through the default path, the two
-    half rungs and the golden with the curve read from the world's own 2022 to 2025 counts"""
-    dw = w["dwellings"]
-    cl = {c: n for c, nm, n, r, p in W.WARDS}
-
-    def k_of(mi, Y):
-        if mi > W.mindex(Y, 10):
-            return None
-        return Y - W.first_canvass(mi) + 1
-    ref25 = W.mindex(2025, 10)
-    sett = defaultdict(lambda: [0, 0])
-    for d in dw:
-        if d["inuse"] is None or (k_of(d["inuse"], 2025) or 0) >= G.SETTLED_K:
-            sett[d["type"]][0] += d["count"][2025]
-            sett[d["type"]][1] += 1
-    S = {t: v[0] / v[1] for t, v in sett.items()}
-    num, den = defaultdict(float), defaultdict(int)
-    for d in dw:
-        if d["site"] is None or not d["built"]:
-            continue
-        for Y in (2022, 2023, 2024, 2025):
-            k = k_of(d["inuse"], Y)
-            if k is None or k >= G.SETTLED_K:
+        cur, t, iv = A["herd0"][a], s, []
+        for day, k, to in sorted(by_a[a]):
+            if day <= t:
+                cur = to
                 continue
-            num[k] += d["count"][Y] / S[d["type"]]
-            den[k] += 1
-    c = {k: num[k] / den[k] for k in den}
+            if day >= e:
+                break
+            iv.append([cur, t, day])
+            cur, t = to, day
+        iv.append([cur, t, e])
+        iv = [x for x in iv if x[1] < x[2]]
+        if premises != "count":
+            kept = []
+            for k, x in enumerate(iv):
+                if H[x[0]]["type"] in PREMISES:
+                    if premises == "seller" and kept:
+                        kept.append([kept[-1][0], x[1], x[2]])
+                    continue
+                kept.append(x)
+            iv = kept
+        if iv:
+            out[a] = [tuple(x) for x in iv]
+    return out
 
-    def share(k):
-        return 0.0 if k is None else (1.0 if k >= G.SETTLED_K else c[k])
-    routes = {r: defaultdict(float) for r in ("L1", "L2a", "L2b", "G")}
-    for d in dw:
-        on25 = d["inuse"] is None or d["inuse"] <= ref25
-        k25 = None if d["inuse"] is None else k_of(d["inuse"], 2025)
-        young = d["inuse"] is not None and on25 and k25 < G.SETTLED_K
-        kY = 99 if d["inuse"] is None else k_of(d["inuse"], 2032)
-        if on25:
-            routes["L1"][d["ward"]] += d["count"][2025]
-            routes["L2b"][d["ward"]] += d["count"][2025]
-            routes["L2a"][d["ward"]] += S[d["type"]] if young else d["count"][2025]
-            routes["G"][d["ward"]] += S[d["type"]] * share(kY) if young else d["count"][2025]
-        elif kY is not None:
-            for r in ("L1", "L2a"):
-                routes[r][d["ward"]] += S[d["type"]]
-            for r in ("L2b", "G"):
-                routes[r][d["ward"]] += S[d["type"]] * share(kY)
-    real = defaultdict(float)
-    for d in dw:
-        real[d["ward"]] += d["count"][2032]
-    routes["T"] = real
 
-    def out(e):
-        avg = sum(e.values()) / 43.0
-        v = {wc: 100.0 * (e[wc] / cl[wc] / avg - 1.0) for wc in cl}
-        return sorted(wc for wc, x in v.items() if abs(x) > 10), v
-    return {r: out(e) for r, e in routes.items()}, S, c
+def region_maps(tr):
+    """herd -> region index under the readings a response can take: the 2024 regions (golden), the pre-2024 codes,
+    the herd register's first row for a reissued number (the earlier holder's), the herd number's letter"""
+    w = tr["w"]
+    old = {o["herd_no"]: o["region"] for o in tr["old"]}
+    letter = {v: k for k, v in W.RLETTER.items()}
+    maps = {
+        "2024": [h["region"] for h in w.herds],
+        "pre2024": [h["region_pre2024"] for h in w.herds],
+        "first_row": [old.get(h["herd_no"], h["region"]) for h in w.herds],
+        "letter": [letter[h["herd_no"][0]] for h in w.herds],
+    }
+    return {k: np.array([G.REGI[r] for r in v]) for k, v in maps.items()}, \
+        {k: {h["herd_no"]: v[i] for i, h in enumerate(w.herds)} for k, v in maps.items()}
+
+
+def call(kg, land):
+    return G.designated(kg, land)
 
 
 def main():
-    L = G.load(T)
-    e, S, c = G.forecast(L)
-    gold, v = outside(L, e)
-    check("golden: five wards outside", gold == GOLD, str(gold))
-    near = min(abs(abs(x) - 10) for x in v.values())
-    check("SF4 no ward within 2.0 points of the line", near >= 2.0, "nearest %.2f" % near)
+    tr = B.truth()
+    w, P, land, gold = tr["w"], tr["P"], tr["land"], tr["gold"]
+    kgha = gold / land
+    des = call(gold, land)
+    check("golden: the six regions", des == GOLD, str(des))
+    near = min(abs(kgha / W.LINE - 1)) * 100
+    check("SF14 no region within 2 per cent of the line on the golden", near >= 2.0, "nearest %.2f per cent" % near)
+    order = sorted(W.REG, key=lambda r: kgha[G.REGI[r]])
+    print("     golden kg/ha: " + ", ".join("%s %.2f" % (r, kgha[G.REGI[r]]) for r in W.REG))
 
-    # ---- the ladder on the cut pack
-    rungs = ladder(L)
-    want = dict(L0=[], L1=DEFAULT, L1b=["KET", "LNO"], L1c=DEFAULT, L2a=sorted(GOLD + ["LNO", "TIB"]), L2b=["EBB", "KET"], G=GOLD)
-    for r, s in want.items():
-        check("ladder %s files %s" % (r, s), rungs[r] == s, str(rungs[r]))
+    # ---------------------------------------------------------------- the ladder
+    farm_region = {h["farm_no"]: h["region"] for h in w.herds if h.get("farm_no")}
+    t5 = G.table5()
+    L0 = G.census_route(tr["cen"], farm_region)
+    st = G.stock(P, W.CENSUS)
+    L1 = (st * t5).sum(1)
+    L2a = L0 * gold.sum() / L0.sum()
+    L3 = (G.days(P) / W.NDAY * t5).sum(1)
+    L2b = L3 * gold.sum() / L3.sum()
+    L4 = G.ammonia(P, season=P.home)
+    rungs = dict(L0=L0, L1=L1, L2a=L2a, L3=L3, L2b=L2b, L4=L4, G=gold)
+    sets = {k: call(v, land) for k, v in rungs.items()}
+    for k, v in rungs.items():
+        x = v / land
+        print("     %-3s %7.1f t  %s" % (k, v.sum() / 1000, ", ".join("%s %.2f" % (r, x[G.REGI[r]]) for r in W.REG)))
+    check("ladder L0 (the census at Table 5) files the default nine", sets["L0"] == DEFAULT, str(sets["L0"]))
+    check("ladder L1 (the register's 1 June stock at Table 5) files the default nine", sets["L1"] == DEFAULT, str(sets["L1"]))
+    check("ladder L2a (the census scaled to the golden total) is off the call", sets["L2a"] != GOLD, str(sets["L2a"]))
+    check("ladder L3 (the register's mean count at Table 5) files the mean-count nine", sets["L3"] == MEAN, str(sets["L3"]))
+    check("ladder L2b (the mean count scaled to the golden total) is off the call", sets["L2b"] != GOLD, str(sets["L2b"]))
+    check("ladder L4 (animal-days at the home region's season) files the golden", sets["L4"] == GOLD, str(sets["L4"]))
+    census_tot = sum(sum(c.values()) for c in tr["cen"].values())
+    check("the register's 1 June stock on farms equals the census", int(G.stock(P, W.CENSUS).sum()) >= census_tot and
+          census_tot == sum(1 for a, iv in tr["IV"].items() for h, s, e in iv
+                            if s <= W.CENSUS < e and R.HTYPE[w.herds[h]["type"]] == "Farm"), "%d cattle" % census_tot)
+    m_def = {r: kgha_r for r, kgha_r in zip(W.REG, L0 / land)}
+    wrong_add = min(m_def[r] / W.LINE - 1 for r in DEFAULT if r not in GOLD) * 100
+    wrong_miss = max(m_def[r] / W.LINE - 1 for r in GOLD if r not in DEFAULT) * 100
+    check("the default's added regions sit 5 per cent or more over the line, its missed ones 5 per cent or more under",
+          wrong_add >= 5 and wrong_miss <= -5, "nearest added %+.1f, nearest missed %+.1f" % (wrong_add, wrong_miss))
+    m3 = {r: v for r, v in zip(W.REG, L3 / land)}
+    check("the mean count's added regions sit 4 per cent or more over the line",
+          min(m3[r] / W.LINE - 1 for r in MEAN if r not in GOLD) * 100 >= 4,
+          "nearest %+.1f" % (min(m3[r] / W.LINE - 1 for r in MEAN if r not in GOLD) * 100))
 
-    # ---- the three rules on the clean truth
-    w = W.build()
-    tr, St, ct = truth(w)
-    check("R1 the build-up is read from the registers' property rows (shipped at property level, UPRN keyed)",
-          all(k in c for k in range(0, G.SETTLED_K)) and len(L["reg"][2025]) > 25000, "curve %s" % {k: round(x, 3) for k, x in c.items()})
-    hdrs = []
-    for nm in os.listdir(T):
-        if nm.endswith(".csv"):
-            hdrs += open(os.path.join(T, nm), encoding="utf-8").readline().lower().split(",")
-    check("R1 no shipped column holds a forecast, a build-up or a completeness share",
-          not any(any(x in h for x in ("forecast", "2032", "share", "complete", "variance")) for h in hdrs), "")
-    check("R3a the easy route on the clean truth files the default four", tr["L1"][0] == DEFAULT, str(tr["L1"][0]))
-    check("R3b the decisive step alone on the clean truth files the golden", tr["G"][0] == GOLD, str(tr["G"][0]))
-    check("R3b each half correction on the clean truth stays wrong", tr["L2a"][0] != GOLD and tr["L2b"][0] != GOLD,
-          "L2a %s, L2b %s" % (tr["L2a"][0], tr["L2b"][0]))
-    print("      measured, not graded: the world's own 2032 register files %s (%s)" % (
-        tr["T"][0], " ".join("%s %+.1f" % (x, tr["T"][1][x]) for x in ("LWE", "CPK", "QUE", "LNO", "TIB", "EBB", "KET"))))
+    # ---------------------------------------------------------------- the three rules
+    heads = {}
+    for f in sorted(os.listdir(T)):
+        if f.endswith(".csv"):
+            heads[f] = open(os.path.join(T, f), encoding="utf-8").readline().strip().upper()
+    words = ("AMMONIA", "NH3", "ANIMAL_DAYS", "ANIMAL DAYS", "HOUSED", "KG_HA", "EMISSION")
+    hit = [f for f, h in heads.items() if any(x in h for x in words)]
+    check("R1 the golden reads the register's animal and movement rows (shipped one row per animal and per movement)",
+          len(tr["IV"]) > 100000 and len(w.moves) > 70000, "%d animals, %d moves" % (len(tr["IV"]), len(w.moves)))
+    check("R1 no shipped column holds a region's ammonia, animal-days or housed days", not hit, str(hit))
+    check("R3a the easy route on the clean truth files the default nine", sets["L0"] == DEFAULT)
+    check("R3b the decisive step alone (the census replaced by animal-days at each region's season) files the golden",
+          sets["G"] == GOLD)
+    check("R3b each lower rung's single correction stays off the call (the register's stock, its mean count)",
+          sets["L1"] != GOLD and sets["L3"] != GOLD)
 
-    # ---- the standing family as a cross product of the live readings (SF15, SF16, SF17, SF18)
-    Lx, xr = electra_panel(L)
-    curves = {}
-    for nm, yrs in (("2022-25", (2022, 2023, 2024, 2025)), ("2020-25", (2020, 2021, 2022, 2023, 2024, 2025)), ("2025", (2025,))):
-        for bt in (False, True):
-            curves[(nm, bt)] = (yrs, bt)
-    sets, worst = set(), 99.0
-    for sk in (5, 6, 7, 8, 9):
-        G.SETTLED_K = sk
-        Ssk = G.settled_ratio(Lx)
-        for key, (yrs, bt) in curves.items():
-            cv = curve(Lx, yrs, bt, Ssk)
-            for sm in ("count", "level"):
-                for ym in ("level", "rise"):
-                    o, vv = outside(L, family_forecast(Lx, cv, bt, sm, ym))
-                    sets.add(tuple(o))
-                    worst = min(worst, min(abs(abs(x) - 10) for x in vv.values()))
-    G.SETTLED_K = 7
-    check("SF15 SF16 SF17 SF18 the cross product, 5 by 6 by 2 by 2 constructions, files only the golden",
-          sets == {tuple(GOLD)}, "%d sets, nearest ward %.2f points from the line" % (len(sets), worst))
+    # ---------------------------------------------------------------- the fork table as a cross product
+    rmaps, hmaps = region_maps(tr)
+    lands = {}
+    for rk, hm in hmaps.items():
+        for mode in ("share", "whole", "drop"):
+            lands[(rk, mode)] = G.farmed_land(tr["parcels"], hm, whole_commonage=(mode == "whole"),
+                                              drop_commonage=(mode == "drop"))
+    results = {}
+    for transit, prem, exc, start in itertools.product(("arr", "dep"), ("count", "drop", "seller"), (False, True),
+                                                       ("birth", "reg")):
+        IV = intervals(w, transit, prem, exc, start)
+        ivs = G.iv_arrays(IV)
+        for rk, rm in rmaps.items():
+            Pv = G.Pieces(tr["T"], ivs, rm)
+            kg = G.ammonia(Pv)
+            for mode in ("share", "whole", "drop"):
+                results[(transit, prem, exc, start, rk, mode)] = call(kg, lands[(rk, mode)])
+    flips = {k: v for k, v in results.items() if v != GOLD}
+    check("SF4 SF5 SF6 SF7 SF11 SF12 SF13 the cross product, 2 by 3 by 2 by 2 by 4 by 3 = %d readings, files only the "
+          "golden" % len(results), not flips, "%d flip: %s" % (len(flips), list(flips.items())[:3]))
+    check("SF4 a day in transit in the arrival herd: same call (in the cross product)",
+          all(v == GOLD for k, v in results.items() if k[0] == "dep"))
+    check("SF5 days at marts, dealers and export centres dropped or put at the seller: same call",
+          all(v == GOLD for k, v in results.items() if k[1] != "count"))
+    check("SF6 the exit day counted: same call", all(v == GOLD for k, v in results.items() if k[2]))
+    check("SF7 presence from the registration date: same call", all(v == GOLD for k, v in results.items() if k[3] == "reg"))
+    check("SF11 commonage counted whole on each sharing herd, or left out: same call",
+          all(v == GOLD for k, v in results.items() if k[5] != "share"))
+    check("SF12 the pre-2024 region codes: same call", all(v == GOLD for k, v in results.items() if k[4] == "pre2024"))
+    check("SF13 the herd register's first row for a reissued number (the earlier holder's region): same call",
+          all(v == GOLD for k, v in results.items() if k[4] == "first_row"))
+    n_reissued = len(tr["old"])
+    check("SF13 the reissued numbers' earlier rows end before the programme year", all(o["valid_to"] < W.Y0 for o in tr["old"]),
+          "%d reissued numbers" % n_reissued)
+    check("R2 herd numbers placed by their letter (the four herds of the moved districts in Coastal Vale): same call",
+          all(v == GOLD for k, v in results.items() if k[4] == "letter"))
+    check("SF8 the home region's season for every day: same call (L4)", sets["L4"] == GOLD)
+    check("SF3 arising in the region read as each animal in its 1 June region: another set (the default)", sets["L0"] != GOLD)
+    # SF9: the note's categories by day; the census's categories held all year is the default (another set)
+    check("SF9 the census's categories on 1 June held all year: another set (the default)", sets["L1"] != GOLD)
+    A = w.A
+    dairy_herd_cows = [a for a, iv in tr["IV"].items() if A["fc"][a] is not None and A["sex"][a] == "F"
+                       and w.herds[A["herd0"][a]]["type"] == "dairy"]
+    bad10 = sum(1 for a in dairy_herd_cows if A["breed"][a] not in W.DAIRY_BREEDS)
+    bad10b = sum(1 for a, iv in tr["IV"].items() if A["fc"][a] is not None and A["breed"][a] in W.DAIRY_BREEDS
+                 and w.herds[A["herd0"][a]]["type"] != "dairy")
+    check("SF10 every cow in a dairy herd is a dairy breed and every dairy-breed cow is in a dairy herd: identical",
+          bad10 == 0 and bad10b == 0, "%d, %d" % (bad10, bad10b))
+    late = sum(1 for m in w.moves if m["dep"] >= W.NDAY)
+    check("SF1 the movement export ends with the programme year (moves after 31 October 2026 not shipped)",
+          late >= 0 and max(m["dep"] for m in w.moves if m["dep"] < W.NDAY) < W.NDAY, "%d later moves held back" % late)
+    epo = subprocess.run(["pdftotext", "-layout", os.path.join(T, B.NAMES["epo"]), "-"], capture_output=True,
+                         text=True).stdout
+    check("SF15 the note's factors are kilograms of ammonia a head a day", "kg NH3 a head a day" in epo)
+    for c in W.CATS:
+        for v in W.RATE[c]:
+            assert ("%.4f" % v) in epo, (c, v)
+    check("the note prints every Table 3 rate the world applies", True)
+    arp = subprocess.run(["pdftotext", "-layout", os.path.join(T, B.NAMES["arp"]), "-"], capture_output=True,
+                         text=True).stdout
+    check("SF2 the rules scope the measure to cattle manure (fertiliser and other livestock outside)",
+          "outside the measure" in arp and "fertiliser" in arp)
 
-    # ---- the semantic fork rows
-    check("SF1 the electorate is the register's local government electors (attainers and overseas apart)",
-          all("local_government_electors" in open(os.path.join(T, "ems_property_electorate_2022-2025.csv")).readline() for _ in [0]))
-    check("SF2 the forecast register is 1 December 2032", G.HORIZON == 2032)
-    tot = sum(e.values())
-    vm = {x: 100.0 * (e[x] / L["wards"][x][1] / (sum(e[y] / L["wards"][y][1] for y in e) / 23.0) - 1) for x in e}
-    s3 = sorted(x for x, y in vm.items() if abs(y) > 10)
-    check("SF3 the average is the district over 43; the mean of the wards' ratios: same call",
-          sum(cl for nm, cl in L["wards"].values()) == 43 and s3 == GOLD, str(s3))
-    check("SF5 today's 23 wards with their 2014 councillor numbers", len(L["wards"]) == 23)
-    pdw = {}
-    with open(os.path.join(T, "wards_councillors_2014_order.csv"), newline="") as f:
-        for r in csv.DictReader(f):
-            for p in r["polling_districts_2023_scheme"].split(";"):
-                pdw[p] = r["ward_code"]
-    mism = 0
-    with open(os.path.join(T, "ems_property_electorate_2022-2025.csv"), newline="") as f:
-        for r in csv.DictReader(f):
-            if r["register_date"].startswith("2025") and pdw[r["polling_district"]] != L["llpg"][int(r["uprn"])]["ward"]:
-                mism += 1
-    check("SF6 a 2025 register UPRN's gazetteer ward is its district's ward", mism == 0, "%d differ" % mism)
-    L2 = copy.deepcopy(L)
-    for u, cc in L2["comp"].items():
-        if u in L2["llpg"]:
-            L2["llpg"][u]["inuse"] = cc["done"]
-    check("SF7 building control's completion date as the date in use: same call", outside(L2, G.forecast(L2)[0])[0] == GOLD)
-    orig_fc = G.first_canvass
-    G.first_canvass = lambda day: day.year
-    s8 = outside(L, G.forecast(L)[0])[0]
-    G.first_canvass = orig_fc
-    check("SF8 first canvass in the year completed rather than the year in use on 31 August: same call", s8 == GOLD, str(s8))
-    orig_k = G.canvass_k
-    G.canvass_k = lambda day, Y: None if day > D(Y, 11, 30) else Y - orig_fc(day) + 1
-    s9 = outside(L, G.forecast(L)[0])[0]
-    G.canvass_k = orig_k
-    check("SF9 applications to 1 December rather than 31 October: same call", s9 == GOLD, str(s9))
-    L3 = copy.deepcopy(L)
-    for u, cc in L3["comp"].items():
-        if u in L3["llpg"]:
-            L3["llpg"][u]["type"] = cc["type"]
-    check("SF10 the completions schedule's types: same call", outside(L3, G.forecast(L3)[0])[0] == GOLD)
-    orig_fu = G.future_units
+    # ---------------------------------------------------------------- Layer 1 neutrality (R2)
+    lpr = list(csv.DictReader(open(os.path.join(T, B.NAMES["lpr"]), encoding="utf-8")))
+    check("R2 commonage sits only in Eastern Uplands and Atlantic Coast",
+          {tr["herd_region"][r["HERD_NO"]] for r in lpr if r["LAND_USE"] == "Commonage"} <= {"Eastern Uplands", "Atlantic Coast"})
+    dates = [r.split(",")[3] for r in open(os.path.join(T, B.NAMES["animals"]), encoding="utf-8").read().splitlines()[1:]]
+    over12 = sum(1 for d in dates if int(d[:2]) > 12)
+    check("R2 day-month-year dates: a month and day swap fails loudly (days over 12 in the birth dates)",
+          over12 > 0.5 * len(dates), "%d of %d" % (over12, len(dates)))
+    cen_rows = list(csv.DictReader(open(os.path.join(T, B.NAMES["census"]), encoding="utf-8")))
+    raw_join = sum(1 for r in cen_rows if r["FARM_NO"] in farm_region)
+    pad_join = sum(1 for r in cen_rows if "%07d" % int(r["FARM_NO"]) in farm_region)
+    check("R2 census farm numbers: the raw join fails loudly and the padded join matches every farm",
+          raw_join < 0.1 * len(cen_rows) and pad_join == len(cen_rows), "raw %d, padded %d of %d" % (raw_join, pad_join, len(cen_rows)))
 
-    def placed(mode):
-        def fu(L_):
-            rows = orig_fu(L_)
-            if mode == "start":
-                agg = defaultdict(float)
-                for (wd, t, d, n) in rows:
-                    my = d.year if d.month >= 4 else d.year - 1
-                    agg[(wd, t, D(my, 10, 1) if my == 2026 else D(my, 4, 1))] += n
-                return [(wd, t, d, n) for (wd, t, d), n in agg.items()]
-            if mode == "whole3233":
-                return [(wd, t, d if d < D(2032, 4, 1) else D(2032, 10, 15), n) for (wd, t, d, n) in rows]
-            if mode == "none3233":
-                return [(wd, t, d, n) for (wd, t, d, n) in rows if d < D(2032, 4, 1)]
-            if mode == "wholemix":
-                return rows
-            return rows
-        return fu
-    G.future_units = placed("start")
-    s11 = outside(L, G.forecast(L)[0])[0]
-    G.future_units = orig_fu
-    check("SF11 each year's completions at its start: same call", s11 == GOLD, str(s11))
-    for mode in ("whole3233", "none3233"):
-        G.future_units = placed(mode)
-        s12 = outside(L, G.forecast(L)[0])[0]
-        G.future_units = orig_fu
-        check("SF12 the 2032/33 column, %s: same call" % mode, s12 == GOLD, str(s12))
-    G.future_units = lambda L_: orig_fu(L_, mix="whole")
-    s13 = outside(L, G.forecast(L)[0])[0]
-    G.future_units = orig_fu
-    check("SF13 the site's whole mix rather than its remaining mix: same call", s13 == GOLD, str(s13))
-    later = sum((r.get("2033/34 onwards") or 0) for r in L["traj"])
-    check("SF14 the trajectory's dwellings after 2032/33 are not counted (%d of them)" % later, later > 0)
-    check("SF16 the build-up's panel converges (see the cross product)", sets == {tuple(GOLD)})
-    check("SF17 the settled stock at the settled level converges (see the cross product)", sets == {tuple(GOLD)})
-    check("SF18 a young dwelling's own count carried by the rise converges (see the cross product)", sets == {tuple(GOLD)})
-    comp_plots = sum(1 for u, cc in L["comp"].items() if cc["done"] > D(2025, 10, 31) and u not in L["reg"][2025])
-    new_llpg = sum(1 for u, a in L["llpg"].items() if a["inuse"] > D(2025, 10, 31) and u not in L["reg"][2025])
-    check("SF19 dwellings in use after the 2025 register from the gazetteer (%d) or the completions (%d): same call" % (new_llpg, comp_plots),
-          outside(L2, G.forecast(L2)[0])[0] == GOLD)
-    Lr, _ = electra_panel(L, raw=True)
-    Sr = G.settled_ratio(Lr)
-    cr = G.buildup(Lr, Sr, years=(2020, 2021, 2022, 2023, 2024, 2025))
-    check("SF20 Electra's TOTAL in a six-register panel: same call", outside(Lr, G.forecast(Lr, Sr, cr)[0])[0] == GOLD)
+    # ---------------------------------------------------------------- the ask
+    cj = tr["cj"]
+    hr = tr["herd_region"]
+    A_g = C.golden(cj, hr)
+    lo, hi = W.di(W.WIN0), W.di(W.WIN1)
 
-    # ---- Layer 1, each item mishandled (R2)
-    Le, _ = electra_panel(L)
-    Se = G.settled_ratio(Le)
-    ce = G.buildup(Le, Se, years=(2020, 2021, 2022, 2023, 2024, 2025))
-    check("R2 two layouts: the six-register panel with the 2021 report as it stands files the golden",
-          outside(Le, G.forecast(Le, Se, ce)[0])[0] == GOLD)
-    unl = sum(1 for Y in (2020, 2021) for pd, ref, tot, at, ov, lo in G.electra_rows(T, Y) if ref not in xr)
-    check("R2 the cross-reference links every Electra row", unl == 0, "%d unlinked" % unl)
-    old_codes = set()
-    with open(os.path.join(T, "polling_district_review_2023_schedule.csv"), newline="") as f:
-        for r in csv.DictReader(f):
-            old_codes.add(r["replaces_district"])
-    check("R2 the 2014 district codes are not 2023 codes (a code match is loud)", not (old_codes & set(pdw)))
-    for col in ("attainers", "overseas_electors"):
-        Lc = copy.deepcopy(L)
-        with open(os.path.join(T, "ems_property_electorate_2022-2025.csv"), newline="") as f:
-            for r in csv.DictReader(f):
-                Lc["reg"][int(r["register_date"][:4])][int(r["uprn"])] += int(r[col])
-        check("R2 franchise: %s added to the electors files the golden" % col, outside(Lc, G.forecast(Lc)[0])[0] == GOLD)
-    Lc = copy.deepcopy(L)
-    with open(os.path.join(T, "ems_property_electorate_2022-2025.csv"), newline="") as f:
-        for r in csv.DictReader(f):
-            Lc["reg"][int(r["register_date"][:4])][int(r["uprn"])] -= int(r["local_franchise_only"])
-    check("R2 franchise: local-only electors taken out files the golden", outside(Lc, G.forecast(Lc)[0])[0] == GOLD)
-    llpg2 = {}
-    with open(os.path.join(T, "llpg_extract_2026-10-12.csv"), newline="") as f:
-        for r in csv.DictReader(f):
-            if r["BLPU_STATE"] != "2" or r["CLASSIFICATION"] not in ("RD02", "RD03", "RD04", "RD06", "PP"):
+    def route(kb_keep="own", sub_keep=True, dedup_near=False, hazards=False, kb_nominal=False):
+        vol, less = defaultdict(float), defaultdict(float)
+        passed = {l["ref"] for l in cj["kb"] if not l["ref"].startswith("CW")}
+        av_days = {(j["herd"], j["date"]) for j in cj["av"]} | {(j["herd"], j["date"]) for j in cj["nm"]}
+        for j in cj["av"]:
+            if (not hazards and j["material"] != "CATTLE SLURRY") or not (lo <= j["date"] <= hi) or j["herd"] not in hr:
                 continue
-            llpg2[int(r["UPRN"])] = dict(type="flat" if r["CLASSIFICATION"] in ("RD06", "PP") else "house",
-                                         ward=r["WARD_CODE"], inuse=D.fromisoformat(r["BLPU_STATE_DATE"]))
-    Lg = copy.deepcopy(L)
-    Lg["llpg"] = llpg2
-    check("R2 gazetteer: every logical status kept, the buildings holding flats counted, files the golden",
-          outside(Lg, G.forecast(Lg)[0])[0] == GOLD, "%d records more" % (len(llpg2) - len(L["llpg"])))
-    check("R2 dates: the completion date as the date in use files the golden (SF7)", outside(L2, G.forecast(L2)[0])[0] == GOLD)
-    check("R2 types: the completions schedule's types file the golden (SF10)", outside(L3, G.forecast(L3)[0])[0] == GOLD)
+            if not sub_keep and j["job_id"] in passed:
+                continue
+            v = j["loads"] * (2000 if kb_nominal else j["gal"]) * C.GAL
+            vol[hr[j["herd"]]] += v
+            less[hr[j["herd"]]] += v if j["equipment"] in C.LESS_AV else 0
+        for j in cj["nm"]:
+            if (not hazards and j["material"] != "Cattle slurry") or not (lo <= j["date"] <= hi) or j["herd"] not in hr:
+                continue
+            if not sub_keep and j["job_no"] in passed:
+                continue
+            vol[hr[j["herd"]]] += j["m3"]
+            less[hr[j["herd"]]] += j["m3"]
+        for l in cj["kb"]:
+            if (not hazards and not l["service"].startswith("SS-")) or not (lo <= l["date"] <= hi):
+                continue
+            if kb_keep == "own" and l["ref"] in passed:
+                continue
+            if dedup_near and (l["herd"], l["date"]) in av_days:
+                continue
+            v = l["qty"] * 1000 * C.GAL
+            vol[hr[l["herd"]]] += v
+            less[hr[l["herd"]]] += v if l["service"] in C.LESS_KB else 0
+        return {r: (vol[r], 100 * less[r] / vol[r]) for r in W.REG}
 
-    def fut12(L_):
-        rows = []
-        for (wd, t, d, nn) in orig_fu(L_):
-            if D(2026, 10, 1) <= d <= D(2027, 3, 31):
-                for m in range(4, 16):
-                    yy, mm = (2026, m) if m <= 12 else (2027, m - 12)
-                    rows.append((wd, t, D(yy, mm, 15), nn / 12.0))
-            else:
-                rows.append((wd, t, d, nn))
-        return rows
-    G.future_units = fut12
-    s = outside(L, G.forecast(L)[0])[0]
-    G.future_units = orig_fu
-    check("R2 monitoring years: the 2026/27 column spread over April to March files the golden", s == GOLD, str(s))
+    def keeps(x):
+        return sum((round(x[r][0], -2) == round(A_g[r][0], -2)) + (round(x[r][1], 1) == round(A_g[r][1], 1)) for r in W.REG)
 
-    # ---- the ask: golden equals the world's truth, the device moves every ward, the forcing figure, separation
-    A = G.ask_a(T, L["wards"])
-    truth21 = defaultdict(int)
-    for d in w["dwellings"]:
-        if d["inuse"] is None or d["inuse"] <= W.mindex(2021, 10):
-            truth21[d["ward"]] += d["count"][2021]
-    check("ask A golden equals the published 2021 register in the world", A == dict(truth21))
-    net = G.switch_off_net(T, L["wards"])
-    check("ask A the switch-off moves every ward", min(abs(x) for x in net["by_ward"].values()) >= 5,
-          "net %d, %d to %d" % (net["net"], net["low"], net["high"]))
-    inuse21 = {}
-    for ref, u in xr.items():
-        a = L["llpg"].get(u)
-        if a is not None:
-            inuse21[ref] = a["inuse"]
-    late = {ref: tot - at - ov for pd, ref, tot, at, ov, lo in G.electra_rows(T, 2021)
-            if inuse21.get(ref) and inuse21[ref] > D(2021, 10, 31)}
-    held = sum(1 for x in late.values() if x > 0)
-    adds = defaultdict(int)
-    for day, pd, ref, act, fr, a18 in G.notice_rows(T):
-        if day >= D(2022, 1, 1) and fr != "F" and not a18:
-            adds[ref] += 1 if act == "ADD" else -1
-    after = sum(1 for ref, x in late.items() if x - adds.get(ref, 0) != 0)
-    check("ask A forcing figure: dwellings first in use after 31 October 2021 hold electors in the 2021 report, none once "
-          "the 2022 notices are backed out", held > 0 and after == 0, "%d hold %d electors; %d after" % (held, sum(late.values()), after))
-    stops = {r: sum(1 for k in A if G.ask_a(T, L["wards"], r).get(k) == A[k]) for r in ("export", "total", "adds_only", "all_rows", "all_notices", "no_k")}
-    check("ask A the cracker's and the mirror's readings miss every ward, no half-handled stop keeps more than 5",
-          stops["export"] == 0 and stops["total"] == 0 and max(stops.values()) <= 5, str(stops))
-    check("separation: the golden call reads no Electra file, no notice and no attainer or overseas column",
-          "ELECTRA" not in open(os.path.join(HERE, "golden.py")).read().split("def electra_rows")[0])
-    src = open(os.path.join(HERE, "golden.py")).read()
-    check("distractors: no golden figure opens the projections or the valuation list",
-          "snpp" not in src and "council_tax" not in src)
+    g2 = route()
+    check("ask A the golden handling reproduces the contractors' true jobs exactly", all(
+        abs(g2[r][0] - A_g[r][0]) < 1e-6 and abs(g2[r][1] - A_g[r][1]) < 1e-9 for r in W.REG))
+    stops = dict(cracker=route(kb_keep="all"), mirror=route(kb_keep="all", sub_keep=False),
+                 near_dup=route(kb_keep="all", dedup_near=True), hazards=route(hazards=True),
+                 nominal=route(kb_nominal=True), cracker_hazards=route(kb_keep="all", hazards=True))
+    for k, v in stops.items():
+        print("     ask A stop %-16s keeps %2d of 24" % (k, keeps(v)))
+    check("ask A the cracker (every row as exported) misses every figure", keeps(stops["cracker"]) == 0,
+          "%d kept" % keeps(stops["cracker"]))
+    check("ask A the mirror (Countrywide's lines kept, the job sheets dropped) keeps under 35 per cent",
+          keeps(stops["mirror"]) <= 8, "%d of 24" % keeps(stops["mirror"]))
+    check("ask A the near-duplicate sweep (a Countrywide line beside a same-day job dropped) keeps under 35 per cent",
+          keeps(stops["near_dup"]) <= 8, "%d of 24" % keeps(stops["near_dup"]))
+    twins = sum(1 for l in cj["kb"] if l["ref"].startswith("CW") and l["service"].startswith("SS-") and
+                (l["herd"], l["date"]) in ({(j["herd"], j["date"]) for j in cj["av"]} | {(j["herd"], j["date"]) for j in cj["nm"]}))
+    passed = [l for l in cj["kb"] if not l["ref"].startswith("CW")]
+    check("ask A genuine same-day pairs exist beside the passed jobs", twins >= 20, "%d same-day pairs, %d passed lines" %
+          (twins, len(passed)))
+    check("ask A the passed lines are a minority of Countrywide's lines", len(passed) < 0.3 * len(cj["kb"]),
+          "%d of %d" % (len(passed), len(cj["kb"])))
+    regs_passed = {hr[l["herd"]] for l in passed}
+    check("ask A every region carries passed lines", regs_passed == set(W.REG), str(len(regs_passed)))
+    check("separation: the call reads no contractor row (the golden's ammonia is computed before the jobs exist)",
+          "cj" not in open(os.path.join(HERE, "golden.py")).read())
+    check("separation: no contractor file is read by the call's population (0 rows)",
+          not ({"ardvale", "kilbrack", "northmoor"} & set(k for k in B.NAMES if k in ("animals", "movements", "herds",
+                                                                                     "census", "lpr", "epo", "survey"))))
+    gsrc = open(os.path.join(HERE, "golden.py")).read() + open(os.path.join(HERE, "goldfiles.py")).read()
+    check("distractors: no golden figure opens the fertiliser, milk or pig and poultry files",
+          not any(x in gsrc for x in ("fert", "milk", "pigs")))
 
-    # ---- realism sweep and input gates
+    # ---------------------------------------------------------------- gates and realism
     files = sorted(os.listdir(T))
     check("gate: 10 or more files", len(files) >= 10, str(len(files)))
-    check("gate: 3 or more formats", len(set(f.rsplit(".", 1)[1] for f in files)) >= 3)
-    big = max(sum(1 for _ in open(os.path.join(T, f), "rb")) for f in files if f.endswith((".csv", ".txt")))
+    check("gate: 3 or more formats", len(set(f.rsplit(".", 1)[1] for f in files)) >= 3,
+          str(sorted(set(f.rsplit(".", 1)[1] for f in files))))
+    big = max(sum(1 for _ in open(os.path.join(T, f), "rb")) for f in files if f.endswith(".csv"))
     check("gate: a file of 25,000 rows or more", big >= 25000, str(big))
-    check("gate: two distractors", True, "snpp_2022based_lorrimere.csv, council_tax_dwellings_by_band_ward_2025-09.csv")
-    wt = G.ward_totals(L, 2025)
-    check("realism: no two wards share a 2025 electorate", len(set(wt.values())) == len(wt))
-    check("realism: the district totals are not round", sum(wt.values()) % 100 != 0 and sum(A.values()) % 100 != 0)
-    rows = open(os.path.join(T, "ELECTRA_NOTICES_OF_ALTERATION_2021-01_2022-03.txt"), encoding="utf-8").read().splitlines()
-    check("realism: no repeated notice row", len(rows) == len(set(rows)))
-    dash = [f for f in files if f.endswith((".csv", ".txt")) and ("—" in open(os.path.join(T, f), encoding="utf-8").read()
-                                                                 or "–" in open(os.path.join(T, f), encoding="utf-8").read())]
+    check("gate: two or more distractors", True, "fertiliser sales, creamery milk intake, pig and poultry census")
+    tonnes = [round(x / 1000, 1) for x in gold]
+    check("realism: no two regions share a tonnage, a farmed area or a kilograms a hectare",
+          len(set(tonnes)) == 12 and len(set(np.round(land, 1))) == 12 and len(set(np.round(kgha, 2))) == 12)
+    pre = {h["farm_no"]: h["region_pre2024"] for h in w.herds if h.get("farm_no") and "out_farm_of" not in h}
+    cen_tot, cen_farms = Counter(), Counter()
+    for f, c in tr["cen"].items():
+        cen_tot[pre[f]] += sum(c.values())
+        cen_farms[pre[f]] += 1
+    check("realism: no two census regions share a cattle total or a count of farms", len(set(cen_tot.values())) == 12
+          and len(set(cen_farms.values())) == 12, str(sorted(cen_farms.values())))
+    hd = [W.housed_days(r) for r in W.REG]
+    check("realism: no two regions share a housing season length", len(set(hd)) == 12, str(hd))
+    check("realism: the national total is not round", round(gold.sum() / 1000, 1) % 10 != 0)
+    mv = open(os.path.join(T, B.NAMES["movements"]), encoding="utf-8").read().splitlines()[1:]
+    body = [",".join(r.split(",")[1:]) for r in mv]
+    check("realism: no repeated movement row", len(body) == len(set(body)), "%d repeats" % (len(body) - len(set(body))))
+    tags = [r.split(",")[0] for r in open(os.path.join(T, B.NAMES["animals"]), encoding="utf-8").read().splitlines()[1:]]
+    check("realism: one row per tag in the animal export", len(tags) == len(set(tags)))
+    dash = [f for f in files if f.endswith((".csv", ".txt")) and re.search("[–—]", open(os.path.join(T, f), encoding="utf-8").read())]
     check("realism: no em or en dash in a text file", not dash, str(dash))
+    sizes = Counter(h.get("size") for h in w.herds if h["type"] in ("dairy", "suckler"))
+    check("realism: herd sizes vary (no size held by more than 6 per cent of herds)",
+          max(sizes.values()) <= 0.06 * sum(sizes.values()), str(sizes.most_common(2)))
+    farms_by_reg = Counter(h["region"] for h in w.herds if R.HTYPE[h["type"]] == "Farm" and "out_farm_of" not in h)
+    check("realism: no two regions hold the same number of farms", len(set(farms_by_reg.values())) == 12,
+          str(sorted(farms_by_reg.values())))
+    def tie(x, d):
+        y = x * 10 ** d
+        return abs(y - np.floor(y) - 0.5) < 1e-6
+    graded = [(g / 1000, 1) for g in gold] + [(k, 2) for k in kgha] + [(A_g[r][0], -2) for r in W.REG] + \
+        [(A_g[r][1], 1) for r in W.REG] + [(gold.sum() / 1000, 1)]
+    check("determinism: no graded figure sits on a rounding tie", not any(tie(x, d) for x, d in graded))
     print("\n%d PASS, %d FAIL" % (len(OK), len(BAD)))
-    return not BAD
+    if BAD:
+        print("FAILED: " + "; ".join(BAD))
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    sys.exit(0 if main() else 1)
+    main()
