@@ -782,6 +782,35 @@ check that it is there.** A design note whose default path does not contain the 
 `Domain test:` names that method as the deciding analysis, has the ladder upside down, and `Analyst test:`
 will read as plausible because the easy route it names is a generic move the opponent does not make.
 
+### 1.1f A nuisance parameter fitted from an aggregated mechanism absorbs the aggregation bias
+
+**If the decisive correction carries a nuisance parameter, and the mechanism it corrects acts per unit while
+the series the solver can see is a share across units, the fit absorbs the aggregation error and the
+corrected estimate comes out no more accurate than the uncorrected one.** The correction still changes the
+answer, which is why this passes a difference test and fails an accuracy test, so **measure accuracy against
+the generator's own truth and not merely the difference between the two routes.**
+
+**Measured on sixteen settings of one build's intensity.** The step corrected an interval-censored clock for
+a detection process; the generative mechanism draws immediate notice per keeper, from a 0/1 indicator of
+whether that keeper is watching, while the series a solver can read is `m_h`, the share of keepers watching
+at hour h. With the parameter FIXED at its true value the correction recovered the truth 8 of 8 against the
+uncorrected fit's 6 of 8. With the parameter FITTED, its maximum likelihood landed at 0.75 against a true
+0.62, because aggregating a per-unit indicator into a share changes the likelihood and the parameter moves to
+absorb it, and at the fitted value the corrected estimate matched the truth 6 of 8, exactly as often as the
+uncorrected one, and at two settings less often (5 of 8 against 6 and 7). Across the sixteen settings the two
+routes always disagreed on three to seven of the eight graded members and the corrected one was never the
+more accurate.
+
+**So the three conditions a corrected route owes are separate, and the first two can pass while the third
+fails.** State them and assert them: the two routes differ on three or more graded members; the decided
+figure's margin exceeds the spread of every licensed variant; **and the corrected route is strictly more
+accurate against the clean truth than the uncorrected one.** A build that argues the third from the
+mechanism rather than measuring it has not tested its own premise.
+
+**The escape is to keep the likelihood per unit**, which means shipping the mechanism at the unit's own grain
+(the unit type on each event record, and the schedule per unit type) rather than one pooled share. That is a
+further organ on the pack and has to be weighed against readability test 7 before it is drawn.
+
 ### 1.1e A correction to a censoring mechanism needs the mechanism's own parameters, and nobody records them
 
 **When the decisive step corrects for how the records came to be censored, the correction needs the
