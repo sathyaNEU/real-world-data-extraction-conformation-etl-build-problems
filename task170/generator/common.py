@@ -1,101 +1,119 @@
-"""task170 constants shared by every generator module.
+"""task170 shared constants: the in-fiction calendar, Corran Vale Railways' depots and fleets, file names, random
+streams and byte-stable writers.
 
-Tarnland is a fictional country and Vindeholm County a fictional county in it. The county council's hospital group,
-Vindeholm County Hospitals, employs about 9,000 staff in six hospitals and runs a supplementary savings plan that
-staff have had to opt into since 2012: an employee contribution of 1 to 10 per cent of basic pay, matched by the
-employer at 100 per cent of the first 3 per cent and 50 per cent of the next 3. From 1 January 2027 every new hire is
-enrolled automatically at 3 per cent from the first payroll and may opt out. The reward and pensions team forecasts
-the FY2027 employer match on the 2027 intake for the budget the executive team approves in December 2026. Every
-record is invented.
-
-The seed was fixed by rule before any data was generated: the task number, then the pull's month and day."""
+Arnhallow is a fictional country. Corran Vale Railways, its depots, units, staff numbers and every record are
+invented; the Arnhallow Office of Rail Safety is a fictional regulator. ETCS, the European Train Control System, is
+the signalling standard the operator fits, as any operator in Europe would."""
 from __future__ import annotations
 
+import csv
 import datetime as dt
-import os
+import hashlib
+import io
 
-SEED = 1701109
+import numpy as np
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-TASK_DIR = os.path.dirname(HERE)
-TARGET = os.path.join(TASK_DIR, "target")
-GOLDEN = os.path.join(TASK_DIR, "golden")
+TASK = "task170"
+OPERATOR = "Corran Vale Railways"
+COUNTRY = "Arnhallow"
+REGULATOR = "Arnhallow Office of Rail Safety"
 
 D = dt.date
-PULL = D(2026, 11, 9)                   # every file pulled for the forecast
-HIST_START = (2019, 1)                  # the first intake auto-enrolled into the income protection cover
-LAST_PAYROLL = (2026, 10)               # the last payroll in the pull
-MIGRATION = (2026, 2)                   # the payroll and HR system cutover: new employee numbers from February 2026
-DEDUCT_START = (2025, 11)               # the deduction export's first payroll
-FY = 2027
-DEFAULT_RATE = 3                        # the auto-enrolment rate, per cent of basic pay
-CUTOFF_DAY = 10                         # elections received by the 10th apply to that month's payroll
+RECORD_END = D(2026, 10, 31)       # the last day in the extracts (local)
+ASSEMBLED = D(2026, 11, 9)         # the pack assembled for the Phase 4 safety case
+ROSTER_DATE = D(2026, 10, 31)
+DUTY_START, DUTY_END = D(2026, 1, 1), D(2026, 10, 31)   # the Phase 4 depots' 2026 duty records
+DUTY_MONTHS = 10
 
-ORG = "Vindeholm County Hospitals"
-COUNTRY = "Tarnland"
-COUNTY = "Vindeholm County"
-CURRENCY = "TNK"
-PLAN = "VCH Supplementary Savings Plan"
-ADMIN = "Ledstrand Pension Administration"
-INSURER = "Tarnmark Mutual"
-PEOPLE = {
-    "me": "Caroline Hagman",            # reward and pensions manager
-    "fd": "Erik Palm",                  # director of finance
-    "pay": "Alfred Sundberg",           # payroll services lead
-}
+# depot code, name, phase, ETCS go-live (local date), drivers at go-live
+RECORD_DEPOTS = [
+    ("BRN", "Brennick", 1, D(2024, 3, 4)),
+    ("TLM", "Tollmere", 1, D(2024, 3, 25)),
+    ("ALR", "Ashlow Road", 2, D(2024, 11, 11)),
+    ("KDB", "Kelderby", 2, D(2024, 12, 2)),
+    ("MWB", "Marrow Bridge", 2, D(2025, 1, 13)),
+    ("FNJ", "Fennick Junction", 3, D(2025, 5, 12)),
+    ("SNH", "Stanholt", 3, D(2025, 7, 7)),
+    ("CNC", "Corran Central", 3, D(2025, 9, 1)),
+]
+PHASE4_DEPOTS = [
+    ("GLH", "Glenhallow", 4, D(2027, 2, 1)),
+    ("DRC", "Drumcarra", 4, D(2027, 3, 1)),
+    ("KVN", "Kilvane", 4, D(2027, 3, 29)),
+    ("ADM", "Ardmorrow", 4, D(2027, 4, 26)),
+    ("MSB", "Mossbeck", 4, D(2027, 5, 24)),
+    ("FBK", "Fellbrook", 4, D(2027, 6, 21)),
+]
+DEPOTS = RECORD_DEPOTS + PHASE4_DEPOTS
+DEPOT = {d[0]: d for d in DEPOTS}
+REC_CODES = [d[0] for d in RECORD_DEPOTS]
+P4_CODES = [d[0] for d in PHASE4_DEPOTS]
+# each depot's staff number block: the first two digits of every staff number Resourcing issues at that depot
+BLOCK = {"BRN": 11, "TLM": 12, "ALR": 21, "KDB": 22, "MWB": 23, "FNJ": 31, "SNH": 32, "CNC": 33,
+         "GLH": 41, "DRC": 42, "KVN": 43, "ADM": 44, "MSB": 45, "FBK": 46}
+FLEET_BLOCK = 90                   # fleet technicians' staff numbers (test start-ups)
 
-# the six hospitals; Lidmark Rehabilitation Centre (LRC) was merged into Lidmark Hospital on 1 July 2024
-HOSPITALS = [("VCS", "Vindeholm Central Hospital"), ("RDH", "Rendholm Hospital"), ("ASK", "Askvik Hospital"),
-             ("OSV", "Ostervall Hospital"), ("BRB", "Brannby Hospital"), ("LDM", "Lidmark Hospital")]
-H_NAME = dict(HOSPITALS)
-H_CODES = [c for c, _ in HOSPITALS]
-MERGED = ("LRC", "LDM", D(2024, 7, 1))
+# file names in the pack
+F_SOM = "obr_start_of_mission_log_2024-03_2026-10.csv"
+F_REG = "safety_desk_register_2024-2026.xlsx"
+F_ROSTER = "driver_roster_2026-10-31.xlsx"
+F_XWALK = "staff_number_crosswalk.csv"
+F_DUTY = "phase4_duty_records_2026.csv"
+F_ROLL = "etcs_rollout_plan_2024-2027.pdf"
+F_CONV = "phase4_safety_case_conventions.pdf"
+F_GUIDE = "safety_desk_reporting_guidance.pdf"
+F_ALLOC = "fleet_allocation_2027.csv"
+F_WORKS = "etcs_fitment_works_records.xlsx"
+F_FORM = "unit_formations_2026-10-31.csv"
+F_RENUM = "unit_renumbering_register.csv"
+F_ACCEPT = "fleet_etcs_acceptance_note.pdf"
+F_DICT = "data_dictionary.txt"
+F_PUNC = "punctuality_by_depot_2024-2026.xlsx"
+F_WX = "depot_weather_daily_2024-2026.csv"
+DISTRACTORS = [F_PUNC, F_WX]
 
-GRADES = ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8"]
-SCALE_2027 = {"G1": 24900, "G2": 27300, "G3": 30100, "G4": 33800, "G5": 38600, "G6": 44900, "G7": 52700, "G8": 63400}
-SCALE_2026 = {"G1": 24150, "G2": 26480, "G3": 29190, "G4": 32780, "G5": 37440, "G6": 43550, "G7": 51120, "G8": 61500}
-SCALE_2025 = {"G1": 23450, "G2": 25710, "G3": 28340, "G4": 31830, "G5": 36350, "G6": 42280, "G7": 49630, "G8": 59710}
-IPC_PREMIUM = 0.004                     # the cover's premium, a share of basic pay
+DELIV_XLSX = "phase4_data_entry_forecast.xlsx"
+DELIV_SVG = "phase4_depot_readiness.svg"
 
-
-def match_pct(rate):
-    """The employer's match, per cent of basic pay, on an employee rate in whole per cent."""
-    r = float(rate)
-    return min(r, 3.0) + 0.5 * min(max(r - 3.0, 0.0), 3.0)
-
-
-def months(a, b):
-    y, m = a
-    out = []
-    while (y, m) <= b:
-        out.append((y, m))
-        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
-    return out
-
-
-def mindex(ym):
-    return ym[0] * 12 + ym[1] - 1
-
-
-def ym_of(i):
-    return (i // 12, i % 12 + 1)
-
-
-def first_working_day(y, m):
-    d = D(y, m, 1)
-    while d.weekday() >= 5 or (d.month == 1 and d.day == 1):
-        d += dt.timedelta(days=1)
-    return d
+SALT = ""      # screening only: another world draw; the shipped world uses the empty salt
 
 
-def month_end(y, m):
-    nxt = D(y + (m == 12), m % 12 + 1, 1)
-    return nxt - dt.timedelta(days=1)
+def stream(name):
+    h = int.from_bytes(hashlib.sha256(("task170v5/" + SALT + name).encode()).digest()[:8], "little")
+    return np.random.default_rng(h)
 
 
-def pay_day(y, m):
-    """Salaries are paid on the 25th, the working day before when the 25th falls on a weekend."""
-    d = D(y, m, 25)
-    while d.weekday() >= 5:
-        d -= dt.timedelta(days=1)
-    return d
+def write_csv(path, head, rows, crlf=True):
+    buf = io.StringIO()
+    w = csv.writer(buf, lineterminator="\r\n" if crlf else "\n")
+    w.writerow(head)
+    n = 0
+    for r in rows:
+        w.writerow(["" if v is None else v for v in r])
+        n += 1
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        f.write(buf.getvalue())
+    return n
+
+
+def is_bst(t):
+    """t a naive UTC datetime: True when Arnhallow keeps summer time (last Sunday in March 01:00 UTC to last Sunday
+    in October 01:00 UTC), as the country's clocks follow the European rule"""
+    y = t.year
+
+    def last_sunday(m):
+        d = dt.date(y, m, 31)
+        return d - dt.timedelta(days=(d.weekday() + 1) % 7)
+    start = dt.datetime.combine(last_sunday(3), dt.time(1, 0))
+    end = dt.datetime.combine(last_sunday(10), dt.time(1, 0))
+    return start <= t < end
+
+
+def utc_to_local(t):
+    return t + dt.timedelta(hours=1) if is_bst(t) else t
+
+
+def local_to_utc(t):
+    """naive local to naive UTC (the autumn repeated hour read as summer time)"""
+    cand = t - dt.timedelta(hours=1)
+    return cand if is_bst(cand) else t

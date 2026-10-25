@@ -116,6 +116,92 @@ No decoy: nothing is planted to be caught: no forecast, target, earlier estimate
 No certified replay: no certified or published figure is reproduced to recover the method; no figure in the pack is an output of a forecasting method.
 Lesson: an error rate measured on people who practised fast is a point on a curve, not a property of the task; a model learns to ask how fast the forward operators will practise and to read the curve on each operator's own count, which no build on file teaches (task107 v4 reads tenure, task251 an asset's cumulative use, task179 a peer count under a changed allocation).
 
+## Readability screen
+
+| Rung | Filed sentence | Schema | Reflex | Control bench | Hygiene | Linear | Verdict |
+|---|---|---|---|---|---|---|---|
+| 0 the Phase 1 to 3 depots' errors per start-up over each depot's first twelve months, times the Phase 4 drivers' planned start-ups | no | yes (the register and the daily start-up counts) | yes (carry the earlier sites' rate forward) | no | no | yes | readable |
+| 1 the same pool held to every visible attribute of the driver (years of service, age, depot type, grade) | no | yes (Resourcing's roster) | yes (the opponent holds the pool to every visible attribute) | no | no | no | readable |
+| 2a a learning curve on months since go-live, depot by depot | no | yes (go-live dates in the rollout plan) | yes (a go-live curve is the field's own monitoring chart) | no | no | no | readable |
+| 2b the record's own slow drivers (spare turns, part-time, links) as the Phase 4 drivers' analogue | no | no | yes (the opponent builds the analog) | no | no | no | readable |
+| 3 (decisive) the error probability on each driver's own count of ETCS start-ups, run along each Phase 4 driver's planned start-ups | no | no (no column holds a driver's count; it is built from each driver's dated start-ups) | no (the reflexes are pool, hold to attributes, analogue, curve on calendar time) | no | no | no | silent |
+
+The reflex row is written from what the field does to the deciding quantity, the error probability of one task:
+a tabled probability for the task type, the observed rate at the earlier sites, a go-live curve by week or month,
+an analogue of similar operators, an adjustment for operator tenure. Each files rung 0, 1, 2a or 2b.
+
+## Semantic fork table
+
+| Id | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | each depot's first twelve months | from the depot's go-live date in the rollout plan | calendar 2027 | another window | the conventions (window from each depot's go-live) |
+| SF2 | the Phase 4 depots' drivers | the drivers on the six depots' rosters at 31 October 2026 | every driver who will work there in 2027 | same call | the conventions name the roster date; no hiring plan ships |
+| SF3 | a train data entry error | an error the safety desk records in category TDE (train data entry at Start of Mission) | every ETCS incident in the register | another count | the conventions (category) and the register's category field |
+| SF4 | a start-up's place on a driver's count | every ETCS Start of Mission the driver performed, at any depot | only start-ups at the driver's current depot | same call (asserted: transferred drivers are few) | the conventions count the driver, not the depot |
+| SF5 | a second report of one error | one error (the signaller's report and the driver's are one event) | two | same call within the bin (asserted) | the register's linked-report field and the desk's guidance |
+| SF6 | a forecast count | the expected number | a simulated count's median | same call (asserted) | same call |
+| SF7 | a Phase 4 driver's start-ups in the window | the driver's average monthly start-ups in the 2026 diagrams times twelve | the diagrams' busiest month | same call (asserted) | the rollout plan: ETCS replaces the current traction one for one on the same diagrams |
+| SF8 | the error probability's form along the count | any form fitted on the record's counts (bands, power law, exponential, logistic on log count) | a curve on months since go-live | 750 | the record's slow drivers err at their count, not their month (asserted: the month curve's likelihood against the count curve's) |
+
+## Ladder
+
+| Rung | Construction | Planning value | Prints | Dies to |
+|---|---|---|---|---|
+| 0 | pooled first-year rate per start-up times the Phase 4 planned start-ups | about 780 | 750 | the record's slow drivers, whose first-year rate is twice the pool's |
+| 1 | the pool held to years of service, age, grade and depot type | about 790 | 750 | service carries no effect on data entry once the count is held |
+| 2a | a curve on months since go-live | about 780 | 750 | drivers in one month at different counts err at their counts |
+| 2b | the record's slow drivers as the analogue | about 1,900 | 2,000 | no record driver practised at the Phase 4 pace; the slow drivers sit far below it |
+| 3 | the curve on each driver's own count, run along each Phase 4 driver's planned start-ups | about 1,220 | 1,250 | (golden) |
+
+Position and dominance: rung 0 at 780 against a golden bin of 1,125 to 1,375 clears the bin's lower edge by 1.44x;
+rung 2b at 1,900 clears its upper edge by 1.38x; both above the 1.15x floor. Every correction short of rung 3 walks
+one way (rungs 0 to 2a under, 2b over), and only the decisive construction lands inside. Measured on the prototype
+(`t170h/proto` lc7.py, four seeds): the own-count family 1,150 to 1,300, all printing 1,250; a per-driver regression of
+first-year rate on pace 1,059 to 1,241, the one route whose interpolation across the empty pace band can print 1,000,
+recorded as the risk to assert on the generator world.
+
+## Closure table
+
+| Axis | Reading | Closure |
+|---|---|---|
+| 1 Population | drivers on the six Phase 4 depots' rosters at 31 October 2026 | the conventions |
+| 2 Unit of account | train data entry errors | the question and the conventions |
+| 3 Attribution window | each depot's first twelve months from its go-live | the conventions; go-live dates in the rollout plan |
+| 4 As-of dating | records to 31 October 2026, assembled November 2026 | the dictionary and the export notes |
+| 5 Version basis | the register as exported, each error's latest classification | the register's guidance |
+| 6 Denominator | the Phase 4 drivers' planned start-ups | SF7 |
+| 7 Weighting | driver by driver | the estimand sums drivers |
+| 8 Window length | the record's whole history, each driver from the first ETCS start-up | the count curve uses every start-up; asserted the call holds on first-year-only history |
+| 9 Boundary inclusivity | go-live day inclusive, the anniversary exclusive | the conventions |
+| 10 Rounding path | the count to the nearest 250 | the prompt; the family inside one bin (asserted) |
+| 11 Tie-break | none | no ranking |
+| 12 Maturity and censoring | the record's drivers observed to 31 October 2026, younger depots for fewer months | the count curve needs no completed year; asserted |
+| 13 Order of operations | the curve fitted before the forward sum | the construction |
+| 14 Row order | none | n/a |
+| 15 Duplicate resolution | the signaller's second report folded into the driver's | SF5 |
+| 16 Identity normalisation | re-keyed staff numbers through Resourcing's crosswalk | the crosswalk; mess neutral |
+| 17 Netting against gross | none | n/a |
+| 18 Dimensional units | counts | n/a |
+| 19 Code and status semantics | category TDE; withdrawn reports out | the register's guidance; SF3 |
+| 20 Integerisation | rounding of an expected count | SF6 |
+| 21 Clause scope | the conventions govern the Phase 4 safety case | the conventions' first section |
+| 22 Forward window contents | the Phase 4 drivers' 2026 diagrams, carried unchanged | SF7 and the rollout plan |
+
+## Literal reader
+
+Executed word for word, the prompt and the conventions fix the count (train data entry errors the safety desk records
+against the six Phase 4 depots' rostered drivers in each depot's first twelve months from its go-live, to the nearest
+250) and leave the estimate of each driver's error probability to the data. Every reading of SF1 to SF8 either
+violates a quoted sentence or files the same call, and the easy answers (750, and 2,000 from the slow analogue) come
+from easy methods on the same literal estimand, not from another reading.
+
+## Oracles
+
+none: no control, published figure or reconciliation column confirms the pooled rate or the golden; the record's
+first-year totals are the default path's own arithmetic, and the distractors (the timetable performance file, the
+depot weather log) carry no error outcome.
+
+
 ## Architecture 4 record (spent 2026-10-23, kept as history)
 
 ### Draw
