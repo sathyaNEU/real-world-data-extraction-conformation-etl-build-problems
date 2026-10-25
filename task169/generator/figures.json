@@ -3,58 +3,58 @@
   "rate_step": 20
  },
  "cohort_size": 6466,
- "spells": 35818,
+ "spells": 30959,
  "window_days": 730,
  "a1_D1": {
-  "arrest": 1586,
-  "conditions": 296
+  "arrest": 1277,
+  "conditions": 261
  },
  "a1_D2": {
-  "arrest": 709,
-  "conditions": 262
+  "arrest": 621,
+  "conditions": 210
  },
  "a1_D3": {
-  "arrest": 427,
-  "conditions": 179
+  "arrest": 368,
+  "conditions": 172
  },
  "a1_D4": {
-  "arrest": 157,
-  "conditions": 139
+  "arrest": 116,
+  "conditions": 149
  },
  "b_Garrison": {
-  "H1": 44780,
-  "H2": 49489
+  "H1": 34632,
+  "H2": 35505
  },
  "b_Ridgway": {
-  "H1": 30248,
-  "H2": 27668
+  "H1": 21448,
+  "H2": 23962
  },
  "b_Linwood": {
-  "H1": 19991,
-  "H2": 21769
+  "H1": 17928,
+  "H2": 19236
  },
  "b_Corliss": {
-  "H1": 12729,
-  "H2": 12505
+  "H1": 10265,
+  "H2": 10627
  },
  "c_SCI-KTR": {
-  "H1": 3524,
-  "H2": 3857
+  "H1": 3443,
+  "H2": 4237
  },
  "c_SCI-FNW": {
-  "H1": 3642,
-  "H2": 3754
+  "H1": 3838,
+  "H2": 4166
  },
  "c_SCI-DNM": {
-  "H1": 3604,
-  "H2": 3734
+  "H1": 3896,
+  "H2": 4122
  },
  "c_SCI-LKV": {
-  "H1": 3489,
-  "H2": 4116
+  "H1": 3957,
+  "H2": 4546
  },
  "c_SCI-BRW": {
-  "H1": 3637,
-  "H2": 3993
+  "H1": 3947,
+  "H2": 4497
  }
 }

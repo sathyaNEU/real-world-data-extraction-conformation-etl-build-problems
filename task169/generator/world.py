@@ -15,22 +15,22 @@ DIST_P = (0.34, 0.27, 0.22, 0.17)
 DIST_ETA = {"Garrison": 0.40, "Ridgway": 0.07, "Linwood": 0.08, "Corliss": -0.22}
 
 FRAILTY_SHAPE = 8.0
-A0 = 0.00186                                  # arrests per day at liberty at eta 0, z 1, g 1
+A0 = 0.00154                                  # arrests per day at liberty at eta 0, z 1, g 1
 G_BANDS = ((0, 90, 1.70), (90, 180, 1.35), (180, 365, 1.00), (365, 730, 0.78), (730, 99999, 0.62))
 CLASS_BASE = {"Violent": (0.24, 0.37, 0.39), "Property": (0.13, 0.45, 0.42),
               "Drug": (0.14, 0.43, 0.43), "Public order": (0.15, 0.33, 0.52)}
 # the Board's practice: share of a parolee's arrests it answers by revocation, by district (felony A-B scaled)
-R_INLIEU = {"Garrison": 0.78, "Ridgway": 0.58, "Linwood": 0.40, "Corliss": 0.22}
-R_F1_SCALE = 0.80
+R_INLIEU = {"Garrison": 0.90, "Ridgway": 0.67, "Linwood": 0.46, "Corliss": 0.25}
+R_F1_SCALE = 1.00
 # the courts: a prosecuted arrest's chance of a prison commitment, by class; and the arrest-to-admission lag
 P_PRISON = {"F1": 0.62, "F2": 0.27, "M": 0.025}
 P_CONVICT_OTHER = {"F1": 0.20, "F2": 0.41, "M": 0.52}     # convicted, sentence not prison
-LAG_MEAN = {"F1": 250.0, "F2": 190.0, "M": 110.0}
+LAG_MEAN = {"F1": 100.0, "F2": 76.0, "M": 44.0}
 LAG_SHAPE = 5.0
 TECH_RATE = 0.00070                         # condition violations reported per supervised day at liberty
 TECH_REVOKE = 0.55
 HEARING_DELAY = (18, 56)
-REVOKE_TERM = (120, 271)
+REVOKE_TERM = (264, 596)
 NEWCOMMIT_MONTHS = (26.0, 0.45)             # lognormal median months, sigma
 DEATH_RATE = 0.00006
 
@@ -86,6 +86,6 @@ def history_people():
     return make_people(34000, rng, RECORD_START, CUT, 3_100_000)
 
 
-def new_cohort_people(n=4300):
+def new_cohort_people(n=3978):
     rng = stream("people/cohort2027")
     return make_people(n, rng, dt.date(2027, 1, 1), dt.date(2028, 1, 1), 3_900_000)

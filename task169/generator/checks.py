@@ -242,11 +242,36 @@ def main(target):
     # decisive step) and mishandles a filed convention or the exposure, so each is a fork on the golden route
     cv0 = dict(cv, lags={c: np.zeros(1) for c in cv["lags"]})
     st, h, l, ss = call_of(D, calc.crude_count_route(D, S, cv=cv0))
-    ok("SF11 in-window arrests counted crude, no time at risk and no arrest-to-admission time, at the courts' "
-       "conversion: same call, takes the decisive step", st == 20, "%.2f per cent" % (100 * ss["all"]))
+    st_l, _, _, ss_l = call_of(D, calc.crude_count_route(D, S))
+    late = 1 - ss_l["all"] / ss["all"]
+    ok("SF11 in-window arrests counted crude, no time at risk and no arrest-to-admission time: ruled out by "
+       "methodology 3.1, an arrest whose admission falls after the 730th day is no return; with that time the count "
+       "misses too, short of the days the record's parolees spent recommitted",
+       late > 0.05 and st_l != 20 and st_l == 15,
+       "%.2f per cent, %.2f with the admission time (%.0f per cent of its returns fall past day 730)"
+       % (100 * ss["all"], 100 * ss_l["all"], 100 * late))
     st, h, l, ss = call_of(D, calc.project(D, G["lam"], cv, pooled=True))
     ok("SF12 one conversion pooled over charge grades, at the courts' rate: same call, takes the decisive step",
        st == 20, "%.2f per cent" % (100 * ss["all"]))
+    # the portal judges' readings (round 1): each takes the decisive step and reads one convention its own way
+    save = calc.CONV_TO
+    calc.CONV_TO = pd.Timestamp(C.CUT)
+    st, h, l, ss = call_of(D, calc.project(D, G["lam"], calc.conversion(D)))
+    calc.CONV_TO = save
+    ok("SF13 the courts' conversion read from every arrest, cases open at the extract counted as no sentence: same call",
+       st == 20, "%.2f per cent" % (100 * ss["all"]))
+    st, h, l, ss = call_of(D, calc.project(D, G["lam"], cv0))
+    ok("SF14 the arrest-to-admission time left out: ruled out by methodology 3.1, a conversion admitted after the "
+       "730th day is no return", ss["all"] > s["all"] + 0.005, "%.2f per cent, step %d" % (100 * ss["all"], st))
+    hh = np.minimum(-np.log(1 - G["p"]), 1.0)
+    st, h, l, ss = call_of(D, hh)
+    ok("SF15 the expected number of returns read as the share: ruled out by methodology 3.2, the share of members "
+       "with a return", float(np.mean(hh)) > s["all"] + 0.01, "%.2f per cent, step %d" % (100 * ss["all"], st))
+    pe2 = calc.liberty(D, S, until_first=True)
+    m2, c2 = calc.arrest_model(D, S, pe2)
+    st, h, l, ss = call_of(D, calc.project(D, calc.lam_projected(D, m2, c2), cv))
+    ok("SF16 arrests and time at risk counted only to each release's first admission: same call", st == 20,
+       "%.2f per cent" % (100 * ss["all"]))
     st, h, l, ss = call_of(D, calc.crude_count_route(D, S, cv=cv0, court_only=False))
     ok("SF11 control: the same crude count without the decisive step misses", st != 20, "%.2f per cent" % (100 * ss["all"]))
 

@@ -70,21 +70,20 @@ That draw's world, mechanism and blocked axes are not reused; its line is in `##
     change route.
 - **Screens run as code** (prototype first, scratch `proto/p3.py`; then the cut pack, `generator/checks.py` FAM and
   RIV blocks):
-  - Lever: the record's new-commitment rate 6.61 per cent (step 5), with revocations as competing exits 11.02
-    (step 10); the golden 20.37 (step 20); the record's return rate of every kind 52.24 (step 50).
+  - Lever: the record's new-commitment rate 5.90 per cent (step 5), with revocations as competing exits 9.10
+    (step 10); the golden 20.40 (step 20); the record's return rate of every kind 52.32 (step 50).
   - Outsider spread (nine constructions of the golden family: frailty 4 and 2, pooled conversion, one class mix for
     everyone, conversion from discharged parolees only, exposure stopped at the first admission, a flat arrest rate,
-    the risk score added, the last two complete years only): 18.50 to 20.87, every one on 20; the largest move 1.88 points against a lever of 9.4 to 13.8 points.
-  - Subset (discharged parolees' new-commitment admissions per day, flat): 15.75, misses (the hazard falls with
+    the risk score added, the last two complete years only): 18.42 to 20.64, every one on 20; the largest move 1.98 points against a lever of 11.3 to 14.5 points.
+  - Subset (discharged parolees' new-commitment admissions per day, flat): 14.45, misses (the hazard falls with
     time since release and discharged time sits late). Scalar route (the record's rate over the share of arrests
-    the courts decided): 10.11, misses (the record's rate is also cut by revocations removing people early).
+    the courts decided): 9.44, misses (the record's rate is also cut by revocations removing people early).
   - Stage 4 round 1 routes, run on the cut pack (`checks.py` RIV and SF11, SF12): the readers' route (arrests that
-    ended in a Department sentence per day at liberty, with the arrest-to-admission time) 12.59, misses; the courts'
-    conversion on arrests counted with no time at risk 16.25, misses; the judge's crude in-window count at the
-    courts' conversion with no arrest-to-admission time 21.78 and its pooled conversion 20.87 both land 20, and both
-    take the decisive step (every parolee arrest at the courts' rate); the same crude count without the step 14.23,
-    misses.
-  - Simulated forward truth under the Act, eight redraws of the cohort's two years: 20.41 per cent.
+    ended in a Department sentence per day at liberty, with the arrest-to-admission time) 11.69, misses; the courts'
+    conversion on arrests counted with no time at risk 15.67, misses; the judge's crude in-window count at the
+    courts' conversion with no arrest-to-admission time 17.46 (step 15, ruled out by methodology 3.1) and its pooled
+    conversion 20.45 (step 20, the decisive step taken); the same crude count without the step 10.10, misses.
+  - Simulated forward truth under the Act, eight redraws of the cohort's two years: 20.53 per cent.
   - Dispersion, variance-only and truncation-direction screens do not apply: the decisive quantity is a level, the
     step moves the point, no threshold suppresses a tail.
 
@@ -98,18 +97,18 @@ The pipeline a strong analyst builds from the prompt, the Act and the files' gra
 2. Keep the returns the Act still allows: admissions on a new court commitment; Board recommitments (PAROLE
    VIOLATOR) are dropped (Act 26-114, section 3; methodology 4.2).
 3. Fit a logistic model of a new-commitment admission within 730 days on age, prior commitments, offence, sex and
-   district over the 35,818 complete releases (AUC 0.59), apply it to the 6,466 people on the projected-release
+   district over the 30,959 complete releases (AUC 0.64), apply it to the 6,466 people on the projected-release
    extract and round to the methodology's step.
 
-Ends on: 5 per cent (6.61 per cent unrounded)
+Ends on: 5 per cent (5.90 per cent unrounded)
 
-Golden: 20 per cent (20.37)
+Golden: 20 per cent (20.40)
 
 ## Stump sentence
 
 A competent solver keeps only the returns the Act still allows, models each 2027 release's chance of a
 new-commitment admission within two years on the record's complete releases and files 5 per cent (10 per cent with
-revocations treated as competing exits, 12.59 per cent counting the arrests that ended in a Department sentence per
+revocations treated as competing exits, 11.69 per cent counting the arrests that ended in a Department sentence per
 day at liberty); the step that lands it there is reading the record's new-commitment returns as what parolees' arrests
 produce, when the Board answered about a third of parolees' arrests by revoking them before any court could, and
 under the Act those arrests go to court and become prison commitments at the courts' own rate for their charge
@@ -146,16 +145,18 @@ grade, which puts the cohort at 20 per cent.
   regime the record never ran.
 - Not rule application: the Act files which returns remain and the methodology files the cohort, the window, the
   outcome and the step; executing every filed sentence on the clean truth gives the record's new-commitment rate
-  (6.61 per cent, step 5) or with competing exits 11.02 (step 10), never 20. Enumerated family 6.61 to 20.87 per
-  cent (the default, competing exits, the scalar uplift 10.11, the readers' route 12.59, discharged time 15.75, the
-  crude count 16.25, and the nine golden constructions); standing family (the nine that route the revoked arrests
-  through the courts) 18.50 to 20.87, all on 20; what rules the rest out is the arrests' own fates, a DOC sentence for 10.4 per
-  cent of parolees' arrests while the Board could revoke against 21.2 per cent after discharge (6.8 against 21.4 in
-  Garrison, 17.1 against 21.8 in Corliss), loud in the records and stated in no sentence.
+  (5.90 per cent, step 5) or with competing exits 9.10 (step 10), never 20. Enumerated family 5.90 to 20.64 per
+  cent (the default, competing exits, the scalar uplift 9.44, the readers' route 11.69, the courts' conversion on
+  every arrest with the revoked ones in 13.43, discharged time 14.45, the crude count 15.67, and the nine golden
+  constructions); standing family (the nine that route the revoked arrests through the courts) 18.42 to 20.64, all
+  on 20; what rules the rest out is the arrests' own fates, a DOC sentence for 7.7 per cent of parolees' arrests
+  while the Board could revoke against 22.3 per cent after discharge (2.5 against 22.5 in Garrison, 15.8 against
+  21.4 in Corliss), and the revoked arrests' cases nolle prossed (14,318 of 14,445, against 2.3 per cent of the
+  others), loud in the records and stated in no sentence.
 - Analyst test: a strong analyst who links the four agencies' records, reads the Act correctly and keeps only the
   new-commitment returns, modelling them on the obvious covariates, files 5 per cent (Ends on); with revocations as
-  competing exits 10 per cent; counting the arrests that ended in a Department sentence per day at liberty 12.59
-  per cent, which both stage 4 readers filed as 10; only routing the revoked arrests through the courts' conversion files 20 per cent
+  competing exits 10 per cent; counting the arrests that ended in a Department sentence per day at liberty 11.69
+  per cent (step 10, as both stage 4 readers filed it); only routing the revoked arrests through the courts' conversion files 20 per cent
   (`checks.py` R3a, R3b, RIV).
 - Estimand: `prison_population_projection_methodology_2026.pdf` 2.1 to 2.3 (the cohort: every person on the 9
   October 2026 projected-release extract with a projected movement to parole in 2027, once each, the district
@@ -186,7 +187,7 @@ recalibration to the latest complete cohort, standardisation to the projected co
 | R2 revocations as competing exits | the admissions' two reasons | 3 reflex | readable |
 | R2b discharged parolees as the analogue, flat | the release file's maximum dates | 3 reflex | readable |
 | R2c arrests that ended in a Department sentence, per day at liberty (both stage 4 readers) | the crosswalk and the court file | 3 reflex | readable |
-| R3 (decisive) the revoked arrests re-routed through the courts' conversion by charge grade, with the arrest-to-admission time | nothing names it: no column carries an arrest's would-be court outcome, no sentence says the courts will take the revoked arrests, the disposition file's NP code covers the courts' own nolle prosequis too | none of the six fires: no clause, no column or marker, not an opponent default, no control bench, no hygiene finding, not one subtraction (the scalar uplift misses at 10.11) | silent |
+| R3 (decisive) the revoked arrests re-routed through the courts' conversion by charge grade, with the arrest-to-admission time | nothing names it: no column carries an arrest's would-be court outcome, no sentence says the courts will take the revoked arrests, the disposition file's NP code covers the courts' own nolle prosequis too | none of the seven fires: no clause, no column or marker, not an opponent default, no control bench, no hygiene finding, not one subtraction (the scalar uplift misses at 9.44), no dedicated organ (with the step deleted the court file still feeds the projection's first flow, new court commitments (methodology 1.1), and the arrests are the field's rearrest measure among the extracts 1.2 lists; readers A to D used both and filed 10) | silent |
 
 No confidence level, significance level or test threshold is filed anywhere in the pack.
 
@@ -200,30 +201,36 @@ No confidence level, significance level or test threshold is filed anywhere in t
 | SF4 | within two years of release | day 1 to day 730 | 731 days, two calendar years | same call | methodology 3.1; asserted at 731 |
 | SF5 | under Act 26-114 | no recommitment; returns only as new commitments | the Act applying only to violations after its date | same call | every cohort member is released after 1 January 2027 (asserted) |
 | SF6 | parole district | the district holding the county of commitment | the releasing institution's district | same call | methodology 2.3, Table 1; one district per county (asserted) |
-| SF8 | round the share to a multiple of five percentage points | the nearest multiple, 20 | half-up against half-even, or rounding down | same call | the rate sits 2.13 points from the nearest rounding edge (asserted) and rounds down to 20 as well |
+| SF8 | round the share to a multiple of five percentage points | the nearest multiple, 20 | half-up against half-even, or rounding down | same call | the rate sits 2.10 points from the nearest rounding edge (asserted) and rounds down to 20 as well |
 | SF9 | a member who dies | in the denominator, no return | out of the denominator | same call | methodology 3.2 |
-| SF10 | the history the forecast stands on | every complete release since 2019 | the last two complete years | same call | asserted at 20.30 |
-| SF11 | the arrests a member makes in the window (the judge's crude count) | arrests per day out of custody, each timed by the arrest-to-admission lag | every arrest in the 730 days counted, no time at risk, no lag | same call (21.78) | the route still sends every parolee arrest through the courts' conversion, the decisive step; its two mishandlings offset; without the step the same count gives 14.23 (asserted) |
-| SF12 | the courts' conversion (the judge's flat conversion) | by charge grade | one rate pooled over grades | same call (20.87) | the route still takes the decisive step; the grade mix moves it less than a point (asserted) |
+| SF10 | the history the forecast stands on | every complete release since 2019 | the last two complete years | same call | asserted at 20.33 |
+| SF11 | the arrests a member makes in the window (the round 1 judge's crude count) | arrests per day out of custody, each timed by the arrest-to-admission time | every arrest in the 730 days counted, no time at risk, no time to admission | 17.46, step 15 | methodology 3.1: a return is an admission by the 730th day, and 10 per cent of the count's returns are admitted after it; with that time the count prints 15.67 (step 15), still short of the days the record's parolees spent recommitted, which the Act ends (4.1); without the step 10.10 (asserted) |
+| SF12 | the courts' conversion (the judge's flat conversion) | by charge grade | one rate pooled over grades | same call (20.45) | the route still takes the decisive step; the grade mix moves it less than a point (asserted) |
+| SF13 | the courts' conversion (portal judge 2's basis) | arrests whose cases had closed (to 30 June 2024) | every arrest, cases open at the extract counted as no sentence | same call (19.43) | open cases are 5 per cent of the arrests the Board did not revoke on (asserted) |
+| SF14 | within two years of release (the arrest-to-admission time) | each conversion timed by its arrest-to-admission time | every conversion admitted at once | 22.35, step 20 | methodology 3.1: a conversion admitted after the 730th day is no return (asserted) |
+| SF15 | what share of the people will be admitted | the share of members with a return | the expected number of returns per member | 23.38, step 25 | methodology 3.2: the share of its members with a return (asserted) |
+| SF16 | the time at risk (portal judge 1's early exposure) | every day out of custody in the window | arrests and days only to each release's first admission | same call (18.42) | the route still sends every parolee arrest through the courts (asserted, FAM) |
 
-Every row is asserted in `generator/checks.py` (labels SF1 to SF6, SF8 to SF12; SF7, the districts' order, left
+Every row is asserted in `generator/checks.py` (labels SF1 to SF6, SF8 to SF16; SF7, the districts' order, left
 with the districts at stage 4 round 1).
 
 ## Ladder
 
 | Rung | Construction | The pack's answer |
 |---|---|---|
-| 0 | the record's return rate of every kind, modelled on the covariates | 52.24 per cent (step 50) |
-| 1 (default) | the record's new-commitment rate, logistic on the covariates, complete releases | 6.61 (step 5) |
-| 2 | new-commitment admissions as a cause-specific hazard by time since release, revocations censoring | 11.02 (step 10) |
-| 2b | the record's rate over the share of arrests the courts decided (one-number uplift) | 10.11 (step 10) |
-| 2c | arrests that ended in a Department sentence, per day at liberty, with the arrest-to-admission time (the stage 4 readers) | 12.59 (step 15; the readers filed 10) |
-| 2d | the courts' conversion on arrests counted with no time at risk, with the lag | 16.25 (step 15) |
-| 2e | discharged parolees' new-commitment admissions per day, flat over 730 days | 15.75 (step 15) |
-| 3 (golden) | arrests per day out of custody by time since release and covariates, times the courts' DOC share by charge grade, timed by the arrest-to-admission lag | 20.37 (step 20) |
+| 0 | the record's return rate of every kind, modelled on the covariates | 52.32 per cent (step 50) |
+| 1 (default) | the record's new-commitment rate, logistic on the covariates, complete releases | 5.90 (step 5) |
+| 2 | new-commitment admissions as a cause-specific hazard by time since release, revocations censoring | 9.10 (step 10) |
+| 2b | the record's rate over the share of arrests the courts decided (one-number uplift) | 9.44 (step 10) |
+| 2c | arrests that ended in a Department sentence, per day at liberty, with the arrest-to-admission time (the stage 4 readers) | 11.69 (step 10, as the readers filed it) |
+| 2d | the courts' conversion on arrests counted with no time at risk, with the lag | 15.67 (step 15) |
+| 2e | discharged parolees' new-commitment admissions per day, flat over 730 days | 14.45 (step 15) |
+| 2f | the courts' conversion on every arrest, the revoked ones in, over full time at risk (portal judge 2's all-arrest basis) | 13.43 (step 15) |
+| 3 (golden) | arrests per day out of custody by time since release and covariates, times the courts' DOC share by charge grade, timed by the arrest-to-admission lag | 20.40 (step 20) |
 
 Position and margins: every rung below 3 misses by one full step or more; the golden family's nine constructions sit
-18.50 to 20.87 (edge distances 1.00 to 2.13); the judge's two readings (SF11 21.78, SF12 20.87) take rung 3's step.
+18.42 to 20.64 (edge distances 0.92 to 2.33); the round 1 judge's pooled conversion (SF12, 20.45) takes rung 3's step
+and its crude count (SF11, 17.46) falls to methodology 3.1; the portal judges' readings SF13 and SF16 take it too.
 
 ## Closure table
 
@@ -257,11 +264,12 @@ Position and margins: every rung below 3 misses by one full step or more; the go
 Executed word for word, the methodology fixes the cohort (2.2), the return (3.1), the share (3.2), the step (3.3)
 and the Act's scope (4.1 to 4.2); the Act's section 3 fixes that only new commitments remain. Nothing filed says how
 the share of the cohort the Department will admit on a new commitment is estimated, so the method stays open, and
-the records force it: parolees' arrests while the Board could revoke reached a DOC sentence 10.4 per cent of the
-time against 21.2 after discharge, in every district (6.8 against 21.4 in Garrison), so the record's
+the records force it: parolees' arrests while the Board could revoke reached a DOC sentence 7.7 per cent of the
+time against 22.3 after discharge, in every district (2.5 against 22.5 in Garrison), so the record's
 new-commitment rate is a censored route and the courts' own conversion is the forward one. Every construction that
-routes the revoked arrests through the courts files 20 per cent (nine of nine, `checks.py` FAM, and the judge's two,
-SF11 and SF12); every term's alternative reading gives the same call (SF1 to SF6, SF8 to SF12). A literal reader who stops at the filed
+routes the revoked arrests through the courts files 20 per cent (nine of nine, `checks.py` FAM, and the judges'
+SF12, SF13 and SF16); every term's alternative reading gives the same call or breaks a quoted sentence (SF1 to SF6,
+SF8 to SF16). A literal reader who stops at the filed
 sentences has the estimand and no estimate.
 
 ## Oracles
@@ -383,8 +391,8 @@ single crack 39.1 (C1).
 ## Leak sweep
 
 `leak.py task169 --asof 2026-10-14`: REVIEW, no LEAK. Each REVIEW line, answered:
-- Two coincidences in the court file (a sentence length in days such as 248 or 769 after a date's day digits)
-  match the tail of a detainer-day figure; they are sentence lengths, unrelated to any ask.
+- One coincidence in the court file (a sentence length of 928 days after a date's day digits) matches the tail of
+  a detainer-day figure; it is a sentence length, unrelated to any ask.
 - The methodology carries seven of the call's words because it files the estimand (the cohort, the return, the
   share, the step); it states no rate and no method.
 - Design-note vocabulary in the Act, the PRAT study and the methodology is the field's own (record, return,
@@ -402,12 +410,48 @@ single crack 39.1 (C1).
   Layer 2 decides.
 - Rule 3: no plant, no filed method, no field names what a revoked arrest becomes in court; the easy route on the clean
   truth files 5 (R3a); every route without the step misses (5, 10, 15, 50 or 55), and the judge's own wrong routes
-  land in their own buckets (raw arrests 15, no lag 25).
-- Determinism: the re-judge on 501d0e28 DETERMINISTIC, APPROVE, no fix; all 40 figures reproduce; its estimators put
-  the call at 18.6 to 19.3, 1.2 to 1.6 points above the 17.5 floor, against the golden's 20.37 (thin but clean).
+  land in their own buckets or break a filed sentence (raw arrests 15; no lag 20, against 3.1; an expected count 25,
+  against 3.2).
+- Determinism: the stage 4 re-judge on 501d0e28 approved, but the portal's judges found its routes at 11 to 16 and
+  the call unforced (`## Determinism repair`); rebuilt so every route that takes the step files 20.
 - Stage 4 record: round 1 (8912821b) readers A and B and the judge APPROVE, districts and asks re-sited; round 2
   (f3ef6705) readers C and D both off the call (asks 1 and 9 of 26), the judge FIX_NOW on Table 3, repaired in the
   data; the heart BLOCK on ban.strategy ruled as task177's, the window fixed at the draw.
+
+## Determinism repair (portal, 2026-10-25)
+
+- Portal round 1 on 501d0e28: both responses off the call and the rubric at 50, but the determinism block failed.
+  Judge 1 unsure, Gate C margin fragility (observed-window, pooled band-hazard and early-exposure routes at 13.3 to
+  15.6 against a full-exposure proxy at 20.9); judge 2 FAIL, competing_defensible_answer (11.4 with every arrest's
+  conversion, 15.68 with the Board-revoked arrests left out, the golden needing choices no file forces).
+- Measured on the shipped pack, a route map over conversion basis, arrest-rate construction, timing and probability:
+  the routes that take the decisive step and follow the filed definitions ran 17.5 to 21.0. Counting the cases still
+  open at the extract as no sentence cost 2.4 points (0.188 against 0.222, the courts taking about eight months on a
+  felony A-B case); the courts' own nolle prosequis (28 per cent of their dismissals) and the Board's lighter hand on
+  felony A-B arrests moved pooled bases by 1 to 2 points; the arrests counted per release sat on the 17.5 edge.
+- Stump test: the fork is not the stump. No reading moved the call; the spread was in how the record let a sound
+  method be implemented, so the closure is C1 in the world and nothing is filed.
+- Move (C1): the courts decide faster (arrest to admission about three months for felony A-B, two for C-E, six weeks
+  for misdemeanours), revocations run 9 to 20 months, the Board's in-lieu share is the same for every grade and
+  15 per cent higher in each district (Garrison 0.90 to Corliss 0.25), the courts' own nolle prosequis are 8 per cent of
+  their dismissals, and the cohort keeps its 6,466 members. Every route that takes the step and follows 3.1 and 3.2
+  now files 20: the nine golden constructions 18.42 to 20.64, the portal judges' bases 19.43 (open cases as no
+  sentence, SF13) and 18.42 (exposure to first admission, SF16), pooled 20.45 and from discharged parolees 20.44. The
+  routes without it stay out (5.90, 9.10, 9.44, 11.69, 13.43, 14.45, 15.67); the forward truth is 20.53; the stump
+  sentence holds as written (5 per cent; the Board revoked on 31.4 per cent of the record's arrests).
+- Asks: the three tables re-derive from the new world with every device as it was (`cracker.py`: 0 of 26 on every
+  stop, the one-crack keeps unchanged at 4, 0, 8 and 10 of 26, pair ceiling 28.5).
+- Gates: checks 88 PASS, verify 0 failed, two builds byte-identical over 20 files and a later full rebuild identical
+  to the pack on disk, figures_check 36, precut 51, voice-check PASS, leak.py REVIEW (answered in `## Leak sweep`),
+  guard validate 292 cards. freeze, rubric mode: the call, the components, the stump, the card and the call sentence
+  untouched; it flags only the ladder and default-path sections, whose figures are re-derived from the new world (each
+  rung's method and the default path's steps and end step as they were, rung 2f added for judge 2's basis).
+  Determinism mode fails by construction on 30 items: the 26 ask figures, the history's 30,959 releases in step 1,
+  the Deliverable Answers block that carries them and those two sections, the latitude the author gave.
+- Heart: BLOCK on ban.forcing_event and ban.org_family against task125 (v2), registered 2026-10-23, after this card
+  (2026-10-22); the class the ruling at ship covers (the window fixed at the draw), the card untouched by the repair
+  and not relabelled.
+- Re-judge and readers: pending.
 
 ## Tried and rejected
 
@@ -475,3 +519,7 @@ single crack 39.1 (C1).
   The generator now writes one trip at a time per person (a later trip that would leave before the earlier one came
   back is not written), asserted in `checks.py` and `verify.py`; next-WRI and same-institution pairings both
   reproduce Table 3 exactly. No pairing rule and no trip-end rule is filed.
+- Portal round 1 (2026-10-25) on the first world: the sound routes ran 17.5 to 21.0, because open cases, the courts'
+  own nolle prosequis and the Board's lighter hand on felony A-B arrests moved the courts' conversion with the basis
+  a judge chose. A filed conversion basis, hazard model or timing rule would make the decisive step rule application,
+  so the world was rebuilt instead (`## Determinism repair`).

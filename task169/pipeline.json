@@ -1,12 +1,12 @@
 {
   "task": "task169",
   "owner": "sathya8571",
-  "status": "SHIPPED",
+  "status": "PAUSED",
   "domain": "criminology-justice",
   "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-22",
+  "stage": 4,
+  "stage_name": "check",
+  "updated": "2026-10-25",
   "stump": "A competent solver keeps only the returns the Act still allows, models each 2027 release's chance of a new-commitment admission within two years on the record's complete releases and files 5 per cent; the step that lands it there is reading the record's new-commitment returns as what parolees' arrests produce, when the Board answered about a third of parolees' arrests by revoking them before any court could, and under the Act those arrests go to court and become prison commitments at the courts' own rate for their charge grade, which files 20 per cent.",
   "architecture": 2,
   "loops": 2,
@@ -16,7 +16,7 @@
     "checks": 51
   },
   "leak": {
-    "leak_py": "REVIEW (no LEAK; every REVIEW line answered in ## Leak sweep), 2026-10-22",
+    "leak_py": "REVIEW (no LEAK; every REVIEW line answered in ## Leak sweep), 2026-10-25",
     "reader": "round 2 on f3ef6705: reader C share 10, asks 1 of 26 (PASS); reader D share 10, asks 9 of 26 (exit 2, thin: the detainer union and one writ cell)"
   },
   "duplicate_check": {
@@ -29,17 +29,34 @@
     "disposition": "shipped; all 40 figures reproduce; the call at 18.6 to 19.3 under the judge's estimators, 1.2 to 1.6 points above the 17.5 floor, against the golden's 20.37",
     "report": "scratchpad/judge-task169t/verdict.md"
   },
-  "returned": [],
-  "resume": "",
+  "returned": [
+    {
+      "date": "2026-10-25",
+      "portal": "round 1 on 501d0e28: both responses off the call, rubric about 50; determinism failed: judge 1 unsure, Gate C margin (routes 13.3 to 15.6 against 20.9), judge 2 competing_defensible_answer (11.4 with every arrest's conversion, 15.68 with the Board-revoked arrests left out)",
+      "repair": "determinism",
+      "rounds": [
+        {
+          "round": 1,
+          "zip": "4cd348a9",
+          "moves": "C1 in the world, nothing filed: faster courts (arrest to admission about three months for felony A-B), revocations 9 to 20 months, the Board's in-lieu share uniform across grades and 15 per cent higher, the courts' own nolle prosequis 8 per cent of their dismissals, the cohort held at 6,466; every route taking the step and following 3.1 and 3.2 files 20 (golden 20.40, family 18.42 to 20.64, judges' bases 19.43 and 18.42); SF11 rewritten (ruled out by 3.1), SF13 to SF16 added; asks re-derived, cracker unchanged",
+          "reader": "pending: scored-task169e (with the leak questions) and scored-task169f",
+          "judge": "pending: determinism-check-task169-r2 (brief ready, graded blocks in their own file)"
+        }
+      ],
+      "freeze": "rubric mode: the call, components, stump, card and call sentence untouched; flags only the design note's ladder and default-path sections, their figures re-derived from the new world (methods and end step as they were, rung 2f added); determinism mode fails by construction on 30 items (the 26 ask figures, the history's 30,959 releases, the Deliverable Answers block, those two sections), the author's latitude",
+      "commit": ""
+    }
+  ],
+  "resume": "determinism repair at stage 4 on zip 4cd348a9: spawn one judge thread from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/determinism-check-task169-r2/judge_brief.md (general-purpose, sonnet, medium) and two cold readers from /tmp/claude-0/-home-user-real-world-data-extraction-conformation-etl-build-problems/98ff0d30-fbdb-590b-8f7a-decafc622b0e/scratchpad/reader169e.md and reader169f.md (general-purpose, medium); score each reader with leak-check/score_reader.py task169 <reader.json> --call-key call.rate_step; ship (RESHIPPED, determinism) only with the judge DETERMINISTIC and both readers off 20",
   "approved": null,
   "delivered": "2026-10-22",
   "portal": null,
   "portal_id": "",
-  "portal_status": "",
-  "portal_status_date": "",
+  "portal_status": "returned 2026-10-25 (round 1 on 501d0e28): both responses off the call, rubric about 50; determinism judge 1 unsure (margin), judge 2 FAIL competing_defensible_answer",
+  "portal_status_date": "2026-10-25",
   "wave": "redraw of a parked number (architecture 1, the cycleway widening, never registered)",
   "gates": {
-    "checks": "84 of 84",
+    "checks": "88 of 88",
     "verify": "0 failed",
     "rebuild": "20 files byte-identical",
     "figures_check": "exit 0, 36 figures",
@@ -48,7 +65,7 @@
     "scrub": "target and golden clean",
     "cracker": "pair 28.5, mirror leakage 0.0, both readers' quoted paths keep 0 of 26, worst single crack 39.1 (C1)"
   },
-  "target_zip_sha256": "501d0e28f019bdcb6b3786935db0a5b8eccd178da34344313fbbd2f65bb15c7e",
+  "target_zip_sha256": "4cd348a926b7aee3e6f9c7055adc077792a32f8b14a8fe95beedc2f0b7969c8c",
   "call": {
     "rate_step": 20,
     "default_path": "5 per cent"
@@ -91,5 +108,5 @@
       "judge": "DETERMINISTIC / APPROVE, no fix"
     }
   ],
-  "heart_ruling": "BLOCK on ban.strategy against task252 (entered the window after registration) ruled as the author ruled task177's: the window stays fixed at the draw; not relabelled"
+  "heart_ruling": "BLOCK on ban.strategy against task252 (entered the window after registration) ruled as the author ruled task177's: the window stays fixed at the draw; not relabelled; 2026-10-25 at the determinism repair: BLOCK on ban.forcing_event and ban.org_family against task125 (v2, registered 2026-10-23, after this card's 2026-10-22), the same class, the card untouched and not relabelled"
 }

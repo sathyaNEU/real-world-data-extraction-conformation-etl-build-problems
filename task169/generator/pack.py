@@ -249,7 +249,7 @@ def write_cases(path, book, ident, grades):
         elif disp == "ACQUITTED":
             code = "AQ"
         else:
-            code = "NP" if rng.random() < 0.28 else "DM"
+            code = "NP" if rng.random() < 0.08 else "DM"
         st = {"PRISON": "DOC", "JAIL": "CJ", "PROBATION": "PROB", "": ""}[sent]
         sdays = ""
         if st == "DOC":
