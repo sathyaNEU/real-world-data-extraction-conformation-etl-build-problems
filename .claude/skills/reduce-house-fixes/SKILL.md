@@ -527,3 +527,20 @@ empty, and says which empty it was: nothing to measure, or nothing that could be
 axis is not a guard on the next: the same script already refused a run with no call figure for this exact
 reason and still passed one with no ask figure. When a rate is computed, grep the script for every
 `if ... else 0` fallback on its denominator and give each one a refusal.
+
+## H35. A measuring brief that names the answer
+
+**The defect.** An instrument needs to tell its subject which quantities to report, and the identifiers it
+uses to do that are drawn from the artifact being measured, so an identifier can carry the answer. A key
+path with one component per member of the committed set enumerates that set, and enumerating it beside the
+non-members is what the pack does; enumerating it alone is handing it over.
+
+**What it cost.** A blind reader scored as having landed a call it had been given: the key list it was
+briefed with held one path per slot of the committed slate, eight of the week's forty-two, and the reader
+named that list as its reason for choosing the method. One full reader run was spent and the build's verdict
+had to be withdrawn.
+
+**The check.** Generate the brief's identifier list with a tool that drops any identifier whose own
+components name the measured answer, and define that mechanically: a component is distinguishing when every
+sibling at its position is a member of the answer. Then read the subject's own account of why it chose its
+method, because a subject that was handed the answer usually says so.

@@ -144,6 +144,35 @@ the list for the design's vocabulary exactly as sweep 2 sweeps the pack, since a
 for the length of the read. Where a scored read has already run on a contaminated list, its Gate F evidence is
 contaminated too: say so, and re-establish the verdict from the clean truth rather than from the read.
 
+## Scoring the reader
+
+`score_reader.py` turns the reader's answers into the one ask-layer measurement that counts, and the design
+note's `## Ask sheet` cracker table is a model of the opponent, not evidence (`supplemental-stumping` Part 0).
+
+```
+python3 .claude/skills/leak-check/score_reader.py taskNN --emit-keys [--call-key K]...   # the brief's key list
+python3 .claude/skills/leak-check/score_reader.py taskNN <reader.json> [--call-key K]... # the verdict
+```
+
+**Brief the reader with the emitted key list, never with a raw flatten of `figures.json`.** Two failures sit
+on either side of that sentence, both measured.
+
+- **Name no keys and the run scores nothing.** The reader invents its own names, every one of them scores as
+  nothing and leaves the denominator, and the script divides by an empty set. One shipped build carried a
+  passing ask-layer line earned exactly that way, its reader having committed to twenty ask figures under
+  names `figures.json` does not hold. The script now refuses such a run (house fix H34).
+- **Flatten the keys raw and the path can be the answer.** One build nests its committed slate under
+  `call.slot_offences.<slot>`, one component per slot, so the list named eight of the week's forty-two slots
+  and only those eight. Its reader wrote that its method "reproduces the same eight slots as the slate the
+  key names, which is why I used it", and the run scored the call as landed on a brief that had handed it
+  over (house fix H35). `--emit-keys` drops a path whose own components name the call's members, where
+  **distinguishing** means every sibling at that position is a golden member: a five-plant annex naming the
+  one plant over amber beside four that are not says nothing and is kept.
+
+The reader's call figure is the Gate F measurement: a landed call means the architecture is spent and no ask
+repair reaches it, because the pair then floors at 45 plus 55 times the ask keep. An ask share at or over 35
+per cent means the devices are absent from the reader's path, not weak.
+
 ## Not a leak
 
 - A figure the prompt states or `stated_inputs` lists.

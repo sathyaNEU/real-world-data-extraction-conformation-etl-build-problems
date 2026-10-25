@@ -31,6 +31,13 @@ it off. The list is a naming convention and not a reading of the submission, so 
 a provenance-shaped name is dropped silently: check the printed exclusions against the submission's blocks
 before acting on a run.
 
+**Emitting the key list.** `score_reader.py taskNN --emit-keys [--call-key K]...` writes the flat key
+paths a reader should be briefed with, dropping any path whose own components name the call's members. A
+component is distinguishing when every sibling at its position is a golden call member: a five-plant annex
+naming the one plant over amber beside four that are not says nothing, while `call.slot_offences.<slot>`
+holding exactly the eight slots of the committed slate hands the answer over. Brief from this output, never
+from a raw flatten of `figures.json`.
+
 **Hand the reader the key list.** Keys the reader invents are not in `figures.json`, score as nothing and
 leave the denominator, so a reader that answered twenty ask figures under its own names measures as zero.
 The scorer now refuses such a run rather than passing it, but the cure is the brief: give the reader the
@@ -48,6 +55,7 @@ Exit status
     3  usage or file error
 """
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -115,18 +123,84 @@ def same(gold, got, tol_pct):
     return round(g, d) == round(r, d)
 
 
+def emit_keys(gold, call_keys, quiet=False):
+    """Write the reader's key list, with any key path that distinguishes the call's own members removed.
+
+    The reader has to be told which figures to fill or it names its own keys and the run scores nothing
+    (H34). But a key path can BE the answer: one build nested the committed slate under
+    `call.slot_offences.<slot>`, one component per slot, so the key list named eight of the week's
+    forty-two slots and only those eight. Its reader wrote that the refined method "reproduces the same
+    eight slots as the slate the key names, which is why I used it", and the run scored the call as landed
+    on a brief that had handed it over.
+
+    A component is DISTINGUISHING when every sibling at its position is a golden call member. Where the
+    siblings also carry non-members the list says nothing: a five-plant annex names the one plant over
+    amber alongside four that are not, which is how the pack itself reads. So drop the distinguishing
+    paths, keep the rest, and the asks stay scoreable.
+    """
+    rows = list(flat_keys(gold))
+    # The call is often a dict (slate, runner-up, totals), so collect every string it holds at any depth:
+    # it is the members of call.slate that a key path can name, not the dict.
+    def strings_in(val):
+        out = set()
+        if isinstance(val, dict):
+            for v in val.values():
+                out |= strings_in(v)
+        elif isinstance(val, (list, tuple)):
+            for v in val:
+                out |= strings_in(v)
+        elif isinstance(val, str):
+            out.add(val)
+        return out
+
+    members = set()
+    for key in call_keys:
+        val, ok = walk(gold, key)
+        if ok:
+            members |= strings_in(val)
+    members = {m for m in members if len(m) > 2}
+
+    # group every key path by its parent prefix, then test each parent's child labels
+    kids = {}
+    for key in rows:
+        parts = key.split(".")
+        for i in range(1, len(parts)):
+            kids.setdefault(".".join(parts[:i]), set()).add(parts[i])
+    distinguishing = {par for par, ch in kids.items()
+                      if ch and members and ch <= members}
+
+    kept, dropped = [], []
+    for key in rows:
+        parts = key.split(".")
+        bad = any(".".join(parts[:i]) in distinguishing for i in range(1, len(parts)))
+        (dropped if bad else kept).append(key)
+    if dropped and not quiet:
+        sys.stderr.write("dropped %d key path(s) whose own components name the call's members, under: %s\n"
+                         % (len(dropped), ", ".join(sorted(distinguishing))))
+    return kept, dropped
+
+
+def flat_keys(obj, prefix=""):
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            yield from flat_keys(v, prefix + ("." if prefix else "") + str(k))
+    else:
+        yield prefix
+
+
 def main(argv):
     if len(argv) < 3:
         print(__doc__)
         return 3
     task = argv[1]
-    reader_path = Path(argv[2])
+    reader_path = Path(argv[2] if not argv[2].startswith("--") else os.devnull)
     tol_pct = 0.0
     quiet = "--quiet" in argv
     if "--tol-pct" in argv:
         tol_pct = float(argv[argv.index("--tol-pct") + 1])
     call_keys = {argv[i + 1] for i, a in enumerate(argv) if a == "--call-key" and i + 1 < len(argv)}
     all_keys = "--all-keys" in argv
+    emit = "--emit-keys" in argv
 
     root = Path(__file__).resolve().parents[3]
     figures = root / task / "generator" / "figures.json"
@@ -137,6 +211,15 @@ def main(argv):
         print("no %s" % reader_path)
         return 3
     gold = json.loads(figures.read_text())
+    if emit:
+        if not call_keys:
+            call_keys = {k for k in gold if k == CALL_PREFIX or k.startswith(CALL_PREFIX)}
+        if not call_keys:
+            sys.stderr.write("name the call with --call-key, or a key path that IS the answer stays in\n")
+            return 3
+        kept, _ = emit_keys(gold, call_keys, quiet)
+        print("\n".join(kept))
+        return 0
     got = json.loads(reader_path.read_text())
     if not isinstance(got, dict):
         print("the reader file holds %s, not an object keyed like figures.json" % type(got).__name__)

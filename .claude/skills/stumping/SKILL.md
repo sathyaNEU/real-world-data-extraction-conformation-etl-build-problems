@@ -749,6 +749,39 @@ coding lag (194), an audit subsample does measure a classifier's own error rates
 specimens do measure the dependence between two screens (195). task198 screened fourteen mechanisms across
 three routes and every one died in case one or case three, which is what sent the number to a new world.
 
+### 1.1b The rule 1 tension, and which side of the ladder the field's method goes on
+
+**Rule 1 requires the decisive quantity to be worked the way the field works it. Gate F requires the
+decisive step to be one a competent analyst skips. For a strong reader those two pull opposite ways, because
+a strong analyst applies the field's own method.** A build that puts the field's method at the TOP of its
+ladder has written its golden as the opponent's first move, and it lands every time while passing every
+other gate.
+
+Measured on one lane, eleven builds read by an isolated reader holding only the pack, the prompt and a key
+list with the answer stripped out. **Every one of the eight scoreable builds had the reader land the call**,
+and in each the step the design called decisive was the step the domain's practitioner takes first:
+- matching the exposure denominator to the mechanism that produces the event, the reader writing that losses
+  happen when one aircraft climbs through another's level so crossings and not flight hours are the
+  exposure, validating that against 104 of 106 recorded occurrences, and naming the per-flight-hour answer
+  as what it had avoided;
+- reading detection completeness off an hour-of-day histogram, the reader finding one site's catalogue sees
+  events only between local 00:00 and 05:00 while four others are flat;
+- homogenising an instrument record across a change of instrument, which the pricing manual in the pack
+  obliges and the reader quoted back;
+- recovering censored readings from the more sensitive of two laboratories;
+- choosing a null the standard leaves open, where the reader chose a defensible one, said the choice was its
+  own, and three licensed choices filed the same figure.
+
+So the resolution is not a better-hidden method but a different **place on the ladder**: the field's own
+method is rung 0 or rung 1, and the decisive step is the recognition that **this dataset violates that
+method's precondition**. The reader then applies the field's method correctly, as rule 1 requires it to be
+present, and lands wrong, as Gate F requires. This is the "wrong now" line in Part 6 stated as a
+constraint rather than a preference: the default construction has to be wrong on the data in hand, and the
+field's standard method is the default construction. **Write the field's method into `## Default path` and
+check that it is there.** A design note whose default path does not contain the domain's own method, while
+`Domain test:` names that method as the deciding analysis, has the ladder upside down, and `Analyst test:`
+will read as plausible because the easy route it names is a generic move the opponent does not make.
+
 ### 1.2 The stump lives in HOW, never in WHAT
 
 The estimand (population, outcome, window, unit, comparison) is filed so its literal execution is the
