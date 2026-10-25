@@ -782,6 +782,42 @@ check that it is there.** A design note whose default path does not contain the 
 `Domain test:` names that method as the deciding analysis, has the ladder upside down, and `Analyst test:`
 will read as plausible because the easy route it names is a generic move the opponent does not make.
 
+### 1.1e A correction to a censoring mechanism needs the mechanism's own parameters, and nobody records them
+
+**When the decisive step corrects for how the records came to be censored, the correction needs the
+censoring mechanism's parameters, and an organisation records those only when it has its own use for them.
+It almost never does.** So before drawing such a step, name the shipped series that carries the mechanism's
+parameters and say why the organisation keeps it. If the answer is a reconstruction from the censored records
+themselves, show it identified before any data is cut, because that reconstruction is circular with the
+quantity being estimated.
+
+**Measured to exhaustion on one build, in four passes.** The step was that an occurrence window exists only
+because nobody was watching, so the window's placement is informative about the hour inside it and the naive
+interval-censored fit is misspecified. The corrected likelihood is
+`P(exact | h) = m_h + (1 - m_h) d_h` with `P(the gap | h) = (1 - m_h)(1 - d_h)`, where `d_h` is the chance
+of immediate notice (its shape from a shipped footfall feed, its level one fitted parameter) and `m_h` is
+**the share of targets watching at hour h**. Everything turns on `m_h`, and the pack can supply it three
+ways and no more:
+
+| `m_h` from | what happened |
+|---|---|
+| the keeper mix (the generator's own routine weights) | recovers the truth 8 of 8 at the true level, and is **not shippable**: no solver can see which target watches which hour |
+| the trading hours, as a solver reads them | a 0/1 indicator, so `(1 - m_h)` is exactly zero on every open hour, which hard-excludes those hours from every window instead of down-weighting them. The slate is identical at every level of `d`, the level is pushed to its boundary, and the answer is worse than the uncorrected fit |
+| the windows' own endpoints (a start is a last look, an end a first notice) | right in shape and wrong in level: correlation 0.5477 with the truth, mean 0.612 against 0.222, because each target contributes endpoints in proportion to its own offences, so the reconstruction is weighted by the clock it exists to correct, and de-confounding it needs that clock |
+
+There is no fourth source, so the step is not computable from the shipped record and the build fails Gate B
+rather than Gate C or Gate F. **The reason is the attribution law one level down:** an organisation records
+trading hours because licensing needs them, one general schedule for the whole quarter, and never a
+per-target watch schedule, because nothing it does requires one. The record that identifies the censoring is
+the record nobody keeps.
+
+**The salvage, and it is worth taking.** The same four passes establish that the bias itself is real and
+large: adding a passer-by process whose rate follows the shipped footfall (776 to 1 across the week) drops
+the naive fit from 8 of the truth's 8 slots to **6 of 8**, losing both small-hours slots. So a world where
+the watch schedule IS recorded for its own sake, because something in the organisation depends on it (a
+guarding contract, a keyholding roster, an alarm-monitoring schedule, a night-shift rota), carries this step
+intact. Draw the step into that world, not into one where the schedule has to be inferred.
+
 ### 1.1d A stump at the cap boundary makes Gate F and Gate C the same number
 
 On a `ranked_slate_under_cap` decision, if the decisive step changes the ranking only near the cap, then the
