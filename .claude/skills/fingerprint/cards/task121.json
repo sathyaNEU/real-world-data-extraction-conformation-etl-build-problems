@@ -1,95 +1,89 @@
 {
   "task": "task121",
-  "architecture": "v3 (architecture 3, re-root after retirement: odor complaints against the valley's wind)",
-  "drawn": "2026-10-12",
-  "slot_note": "seed RC01 (checkout release forward cost); v1 drafted and rejected at checkpoint A, v2 built and solved twice (signed-out club-app customers behind a checkout fall), retired 2026-10-10 and re-queued in wave 1 as re-root, Root-Cause; v3 re-roots in the same objective with a new domain, niche and Layer 2 pitfall",
-  "domain": "physical-environmental-sciences",
-  "subdomain": "pollution-source-attribution",
-  "client_domain": "physical-environmental-sciences",
-  "niche": "a regional air district deciding which of the permitted odor sources around a valley town (a compost facility that began taking food waste, the county landfill up-valley, the town's wastewater plant, a rendering plant and a mushroom substrate yard) is behind the 2026 surge in residents' odor complaints, from the complaint log's household locations and times and the district's 5-minute valley wind record, before the 2027 season",
+  "architecture": "v4 (architecture 4, re-root after the number was reopened: a train operator's satisfaction fall against the conditions its passengers' journeys ran under)",
+  "drawn": "2026-10-25",
+  "slot_note": "seed RC01 (checkout release forward cost); v1 drafted and rejected at checkpoint A, v2 built and solved twice (signed-out club-app customers behind a checkout fall), retired 2026-10-10 and re-queued in wave 1 as re-root, Root-Cause; v3 re-roots in the same objective with a new domain, niche and Layer 2 pitfall v4 drawn 2026-10-25 after the author reopened the number (no number in the lane is retired).",
+  "domain": "marketing-consumer-research",
+  "subdomain": "customer-satisfaction-driver-analysis",
+  "client_domain": "marketing-consumer-research",
+  "niche": "a regional train operator deciding which of four service drivers (crowding, punctuality, on-board staffing, fares) its contractual customer satisfaction recovery plan funds, from the fall in its tracker's satisfied share between the spring 2025 and spring 2026 waves",
   "objective": "root-cause",
-  "shape": "07",
+  "shape": "03",
   "decision_type": "root_cause_named",
   "answer_unit": "named_option",
-  "answer": "Ridgeway Organics' composting facility is behind the 2026 surge in odor complaints in Harlow Falls, and the district should take it to the hearing board for an order for abatement before the 2027 season.",
+  "answer": "",
   "answer_source": "task121/submission.md, block 1 (Final Recommendation)",
   "gap": [
-    "time",
-    "population"
+    "objective"
   ],
   "pattern": [
     "none"
   ],
   "generators": [
-    "G14",
-    "G16",
-    "G7"
+    "G3",
+    "G16"
   ],
   "gate_g": "decomposition_attribution",
   "calibration_form": "none",
-  "stump_strategy": "causal_design",
+  "stump_strategy": "decomposition_attribution",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "monitoring_export",
-  "stakeholder_role": "the air district's enforcement supervisor, who leads the odor inspectors and brings abatement cases to the district hearing board",
-  "role_family": "field_unit_lead",
+  "context_artifact": "published_series",
+  "stakeholder_role": "the operator's contract performance manager, who owes the transport authority a customer satisfaction recovery plan under the contract's service quality regime",
+  "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "hfs_met_5min_2026-01-01_2026-09-30.csv",
-    "rows": 78624,
-    "entity": "one 5-minute record of the district's town meteorological station",
-    "grain": "station x 5 minutes",
-    "source": "synthetic"
+    "file": "loadweigh_departures_spring2025_spring2026.parquet",
+    "rows": 0,
+    "entity": "one train's departure from one calling station on one day, with its load-weigh passenger estimate per vehicle",
+    "grain": "train x calling station x day",
+    "source_dataset": "constructed operating layer (no public microdata carries per-departure loads)"
   },
   "forum": "committee_or_panel",
-  "forcing_event": "season_or_peak",
-  "org_family": "local_government",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "utility_or_infrastructure",
   "world": {
-    "geography": "United States, California (a fictional foothill valley town and air district)",
-    "currency": "USD",
-    "org_type": "a regional air quality management district handling public nuisance odor complaints",
-    "invented_names": [
-      "Upper Kestrel Valley Air Quality Management District",
-      "Harlow Falls",
-      "Ridgeway Organics",
-      "Pine Gulch Landfill",
-      "Kestrel Valley Rendering",
-      "Sutter Bend Mushroom Farms"
-    ],
+    "geography": "England (a fictional West Country network of five service groups)",
+    "currency": "GBP",
+    "org_type": "a train operating company under a National Rail Contract",
+    "nouns": [],
     "people": [
-      "Erica Schmitt",
-      "Roy Heath",
-      "Jerome Reed",
-      "Alyssa White"
+      "Naomi Stanley",
+      "Mohamed Hussain",
+      "Zoe Williamson"
     ]
   },
   "deliverables": [
-    "odor_source_determination_2026.docx",
-    "odor_events_2026.xlsx",
-    "odor_events_by_wind_direction_2026.png"
+    "satisfaction_fall_spring2026.xlsx",
+    "satisfaction_bridge_spring2026.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "The decisive comparison sets each event's exposure against the same unit's exposure at the same clock hours on other days, because the events and the exposure both follow one daily cycle for reasons unrelated to any candidate; counting exposures among events, or normalizing by exposure over all hours, credits whichever candidate the daily cycle points at, and only the time-matched comparison at each unit's own geometry names the candidate whose exposure arrives with the events.",
-  "driver_concrete": "Residents report odor when they are home, in the evening and early morning, and the valley wind turns with the clock (down-valley drainage at night), so the landfill up-valley lies upwind of the town on most nights whether or not anyone complains; only comparing the wind at each odor event's hour with the same hours on the other days of the season, at each household's own bearing to each facility, shows the compost facility in the side canyon upwind of complaint hours several times as often as of the same hours on other days.",
-  "stump": "A competent solver forms the district's 499 odor events of May to September 2026, applies the procedure's upwind check to each and files the Pine Gulch Landfill, upwind of 210 events (the compost facility 69), where the golden is Ridgeway Organics' composting facility; the step that lands it there is counting upwind events, when the night drainage puts the landfill upwind of the town on most nights complaint or not (299.1 expected at the same hours), and dividing by the all-hours wind only moves the pick to Kestrel Valley Rendering (2.69 times) and drops the compost facility to 0.39, because the up-valley wind puts it upwind all day when nobody reports; set against the same clock hours on the season's other days it stands 42.6 events above expectation (69 against 26.4).",
+  "driver": "The decisive quantity is each candidate driver's share of a fall in the proportion of respondents satisfied, measured on the conditions each response was actually made under, because respondents' ratings of the candidates rise and fall with their overall verdict, so ranking the drivers on those ratings, alone or beside the conditions as controls, books the fall to whichever rating fell most.",
+  "driver_concrete": "Passengers on crowded trains mark every attribute down and the on-board staff rating also fell where the new host model left trains unstaffed, so a driver analysis on the tracker's attribute ratings names on-board staffing, while the conditions each surveyed journey ran under (load against seats on its busiest leg, lateness at the passenger's station, staff rostered, the ticket's January fare change) put most of the fall on crowding.",
+  "stump": "A competent analyst weights both spring waves of the operator's customer satisfaction tracker, regresses overall satisfaction on the nine attribute ratings and books the fall in the satisfied share to each attribute's derived importance times its fall, filing on-board staffing (the staff rating fell furthest); putting the journeys' conditions beside the ratings as controls leaves staffing on top, and comparing the service groups that lost seats in the autumn fleet cascade with the rest credits crowding with only about a third of the fall; the fall attributed through the conditions each surveyed journey ran under (load against seats on its busiest leg, lateness at the passenger's station, staff rostered, the ticket's January fare change) files crowding with most of it.",
   "stump_class": "analytical",
-  "analyst_test": "An analyst who cleans the complaint log into the district's odor events, reads the noticed time, vector-averages the 5-minute wind into hours and applies the 30-degree upwind check correctly still files the landfill by counting upwind events, or the rendering plant by dividing by each facility's all-hours upwind frequency, because both comparisons let the valley's daily wind cycle and the residents' evening reporting stand in for the source.",
-  "domain_test": "Odor source attribution from complaint geometry and the local wind record (conditional probability by direction and its time-stratified form) is the air agency's own analysis; with another field's nouns there is no plume bearing from each household, no valley wind turning with the clock and no drainage flow putting one source upwind every night, and the task stops reading the same.",
-  "layer2_family": "field_method",
-  "layer2_pattern": "own:odor-complaints-against-time-matched-wind",
+  "analyst_test": "A strong analyst who weights both waves, cleans the stations and links every questionnaire to its train still runs the driver analysis on the nine attribute ratings (importance times each rating's fall), or puts the ratings beside the journey conditions as controls, and files on-board staffing; the fall attributed through the conditions each journey ran under files crowding.",
+  "domain_test": "Customer satisfaction driver analysis: each service driver's contribution to the fall in the satisfied share, estimated by linking every response to the conditions its journey ran under (linkage analysis), with the attribute ratings' halo the field's own known bias; with another field's nouns (megawatt-hours, test scores) there are no perception ratings that move with the verdict, so the task stops reading the same.",
+  "layer2_family": "estimand_identification",
+  "layer2_pattern": "own:attribute-ratings-halo-against-journey-conditions",
   "layer1": [
-    "a complaint log merged from phone intake, the web form and the mobile app, with received and noticed times, double submissions and households filing under more than one contact",
-    "a 5-minute meteorological export in Pacific standard time year-round, wind direction to be vector-averaged across north, calms with no direction, a sensor outage with flagged gaps",
-    "facility operations kept in each operator's own idiom: a compost facility's monthly reports with turning logs, a landfill's daily tonnage, a treatment plant's biosolids log",
-    "household locations geocoded at parcel and at street-segment precision"
+    "two waves on two questionnaire layouts, the 2026 version adding an item and moving the ratings block",
+    "boarding and alighting stations written in by respondents, with abbreviations and misspellings, mapped to station codes",
+    "the fieldwork log identifying each issued batch by headcode and scheduled departure, headcodes reused for other trains after the December 2025 timetable change",
+    "load-weigh records in two layouts (per vehicle on one unit class, per unit on another) with sensor gaps on some departures",
+    "train running records stamped in UTC against a timetable and fieldwork log in local time across the March clock change",
+    "on-board crew rosters keyed by diagram, not headcode, with spare-cover and sickness swaps",
+    "fares changes filed by flow and ticket type in pence",
+    "survey weights recalibrated to new passenger count totals for the 2026 wave",
+    "a refurbished sub-class of units carrying fewer seats from its refurbishment date, in a fleet register keyed by unit number"
   ],
   "mechanism_source": "design_note",
   "differentiation": {
-    "task180": "task180 recovers a unit's true event rate from the quiet hours because instrument noise masks small events by day (completeness by hour); here nothing is masked: complaints and winds both follow the clock, so the comparison of each event's wind with the same hours on other days (a time-stratified referent at each household's own bearing) separates a confounded co-occurrence from the source, and the count of what was recorded is never in question.",
-    "task97": "task97 counts a place's cumulative history across every occupant to forecast a unit's repeat need; here nothing about a place's history decides: each odor event's wind is compared with the same clock hours on other days, a confound by the shared daily cycle.",
-    "task128": "task128 books one request per interval against a budget stated for the whole period; here the shared organ is only the context-artifact type (a monitoring export), and the decisive move is a time-matched comparison, not a binding resource."
+    "task107": "task107 v2 scales a lottery pilot's assignment effect for a comparison arm contaminated by reassigned practitioners; here a fall is attributed to service drivers through the conditions each journey ran under, because the perception ratings carry the verdict's halo; nothing is reassigned and no pilot effect is scaled",
+    "task170": "task170 is the same kind of operator (a regional train company) on a different analysis, a forecast of drivers' data entry errors at ETCS start-up from depot experience; nothing in it rates a service or attributes a satisfaction fall",
+    "task194": "task194 screened over-adjustment for a quantity a provider's own conduct produces as a WHAT-screen death in a provider-quality world; here the controls that absorb the effect are perception ratings that move with the outcome itself, and the estimand files the drivers as journey conditions"
   },
   "lineage": [
     {
@@ -194,6 +188,6 @@
       "fate": "spent 2026-10-12 at stage 4: the determinism judge returned FIX_NOW in round 1 (the monthly complaint ask counted an app report received twice once on an unfiled rule) and SEND_BACK on the re-judge: no shipped file says how 'behind the surge' is decided, and a pre-surge baseline (each facility's share of the January to April events applied to the season's) names Kestrel Valley Rendering, so the hour-matched comparison was a method choice the text did not force; the number retired with its third architecture"
     }
   ],
-  "notes": "v3 drawn 2026-10-12 by sathay3012 for the wave-1 re-root. v3 spent 2026-10-12 (judge SEND_BACK on the re-judge); task121 retired.",
-  "architecture_spent": true
+  "notes": "v4 drawn 2026-10-25 by sathay3012 after the author reopened the number; v3 spent 2026-10-12 (judge SEND_BACK on the re-judge).",
+  "registered": "2026-10-25T12:27:07Z"
 }
