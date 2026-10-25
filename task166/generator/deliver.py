@@ -1,378 +1,383 @@
-"""task166 golden deliverables, computed from the shipped pack by calc.py: the designation workbook and the two ALCO
-slides, and generator/figures.json, from which the write-up's blocks are drafted.
-
-    python3 deliver.py <target> <golden_dir> <figures.json>"""
+"""task166's goldens, computed from the shipped pack (calc.py): the decision workbook he_payoff_pilot_2027.xlsx, the chart
+payoff_quotes_by_center.png, generator/figures.json and submission.md, every figure emitted from one computation."""
 from __future__ import annotations
 
 import json
 import os
 import sys
 
-from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
-from pptx import Presentation
-from pptx.chart.data import CategoryChartData
-from pptx.dml.color import RGBColor
-from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION, XL_LABEL_POSITION
-from pptx.util import Emu, Inches, Pt
+import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import calc as C            # noqa: E402
+import common as K          # noqa: E402
 import postprocess as PP    # noqa: E402
 
-F_BOOK = "overlay_designation_2027.xlsx"
-F_DECK = "overlay_designation_alco.pptx"
-OWNER = "Guy Morrison"
-ORDER = ["Fixed-rate commercial real estate", "Agency MBS", "2023-24 residential mortgages", "Treasury ladder",
-         "Indirect auto loans"]
-PARTS = [("overlay", "Overlays, the new overlay included"), ("funding", "Funding hedges"), ("loan", "Loan hedges")]
-QLAB = ["31 Mar 2027", "30 Jun 2027", "30 Sep 2027", "31 Dec 2027"]
+F_BOOK = "he_payoff_pilot_2027.xlsx"
+F_CHART = "payoff_quotes_by_center.png"
+QLABEL = {"2025Q4": "October to December 2025", "2026Q1": "January to March 2026", "2026Q2": "April to June 2026",
+          "2026Q3": "July to September 2026"}
+QSHORT = {"2025Q4": "Oct to Dec 2025", "2026Q1": "Jan to Mar 2026", "2026Q2": "Apr to Jun 2026",
+          "2026Q3": "Jul to Sep 2026"}
+SHORT = {"Grand Rapids": "Grand Rapids", "The Lakeshore": "the Lakeshore",
+         "Kalamazoo and Battle Creek": "Kalamazoo and Battle Creek", "Muskegon and the North": "Muskegon and the North"}
 
 
 def r10(x):
     return int(10 * round(x / 10.0))
 
 
-SHARE_WORDS = [(0.5, "about half"), (0.6, "about three-fifths"), (2 / 3, "about two-thirds"),
-               (0.75, "about three-quarters"), (0.8, "about four-fifths"), (0.9, "about nine-tenths"),
-               (0.94, "over nine-tenths"), (0.98, "nearly all")]
+def compute(target):
+    gold, ctx = C.golden(target)
+    H, FW, curt = ctx["H"], ctx["FW"], ctx["curt"]
+    he = C.he_posted_monthly(target)
+    ph = C.plan_he(target)
+    H2 = C.add_own(H, he)
+    FW2 = C.add_own(FW, he, ph)
+    dev = {"blend": float(ctx["model"].deviance)}
+    rival = {}
+    for name, cov in (("own", ["own"]), ("first", ["first"]), ("walt", ["walt"]), ("own_first", ["own", "first"])):
+        f = C.fit(H2, cov)
+        dev[name] = float(f.deviance)
+        rival[name] = C.project(FW2, f.predict(C.design(FW2, cov)), curt)
+    tr = H[(H.t >= C.mo(2025, 12)) & (H.y == 1)]
+    rival["trailing"] = (tr.groupby("region").H.sum() / 1e6).reindex(C.REG_ORDER)
+    bk = ctx["book"].merge(ctx["los"][["region"]], left_on="key", right_index=True)
+    leg, core, los = ctx["leg"], ctx["core"], ctx["los"]
+    paid = C.paid_by_asof(core)
+    ask = C.ask_table(C.statement_loans(target, los, core), paid)
+    # payoffs and curtailments apart, for the workbook's detail
+    h = ctx["model"].predict(C.design(FW, ["blend"]))
+    pay_only = C.project(FW, h, 0.0)
+    return dict(gold=gold, ctx=ctx, dev=dev, rival=rival, bk=bk, ask=ask, pay_only=pay_only, curt=curt)
 
 
-def share_words(x):
-    return min(SHARE_WORDS, key=lambda t: abs(t[0] - x))[1]
-
-
-def figures(G, prog):
-    f = {}
-    f["call_pool"] = G.call
-    f["call_loss_musd_nearest10"] = r10(G.CRE / 1e6)
-    f["call_loss_musd_unrounded"] = round(G.CRE / 1e6, 2)
-    f["runner_up"] = "Agency MBS"
-    f["runner_up_loss_musd_nearest10"] = int(10 * round(G.MBS / 1e7))
-    f["pools"] = {k: dict(principal_musd=round(G.principal[k] / 1e6, 1), loss_musd_nearest10=r10(G.pools[k] / 1e6),
-                          loss_musd=round(G.pools[k] / 1e6, 2)) for k in ORDER}
-    f["wall_balloon_busd"] = round(G.wall_balloon / 1e9, 1)
-    f["wall_extended_busd"] = round(G.wall_extended / 1e9, 1)
-    f["wall_share"] = round(G.wall_share, 3)
-    f["wall_loans"] = len(G.wall)
-    f["wall_share_words"] = share_words(G.wall_share)
-    f["m_cpr_2027_pct"] = int(round(100 * G.m_cpr_2027))
-    f["m_cpr_trailing_pct"] = int(round(100 * (1 - (1 - G.m_smm_trailing) ** 12)))
-    f["planning_cre_rate_pct"] = G.plan.cre
-    f["planning_mortgage_rate_pct"] = G.plan.mortgage
-    f["programme_musd"] = {k: [round(v / 1e6, 1) for v in prog[k]] for k, _ in PARTS}
-    f["quarter_ends"] = QLAB
-    f["oos_brier"] = G.oos
-    f["oos_brier_2dp"] = {k: round(v, 2) for k, v in G.oos.items() if isinstance(v, float)}
-    f["notional_busd"] = 1.2
-    f["shock_bp"] = 200
-    f["extension_months"] = 36
-    f["amortization_years"] = 25
-    f["treasury_loss_musd_about"] = r10(G.T / 1e6)
-    f["mortgage_loss_musd_about"] = r10(G.M / 1e6)
-    f["auto_loss_musd_about"] = r10(G.AUTO / 1e6)
-    f["programme_total_musd"] = [round(sum(prog[k][j] for k, _ in PARTS) / 1e6, 1) for j in range(4)]
-    f["programme_total_busd"] = [round(sum(prog[k][j] for k, _ in PARTS) / 1e9, 1) for j in range(4)]
+def figures(R):
+    g = R["gold"]
+    order = g.sort_values(ascending=False)
+    pick, second = order.index[0], order.index[1]
+    bk = R["bk"]
+    H = R["ctx"]["H"]
+    own = R["rival"]["own"]
+    f = {
+        "call": {"center": pick, "principal_2027_musd": r10(g[pick]), "principal_2027_musd_unrounded": round(float(g[pick]), 2),
+                 "second": second, "second_principal_musd_unrounded": round(float(g[second]), 2),
+                 "margin": round(float(g[pick] / g[second]), 2)},
+        "components": {"book_loans": int(len(bk)), "book_musd": round(float(bk.bal.sum()) / 1e6, 1),
+                       "book_musd_pick": round(float(bk[bk.region == pick].bal.sum()) / 1e6, 1),
+                       "payoffs_2019_2026": int(H.y.sum())},
+        "steps": {"curtailment_pct_month": round(100 * R["curt"], 3),
+                  "deviance": {k: round(v, 1) for k, v in R["dev"].items()},
+                  "forecast_musd": {r: round(float(g[r]), 1) for r in C.REG_ORDER},
+                  "own_rate_pick": own.idxmax(), "own_rate_pick_musd": round(float(own.max()), 1),
+                  "own_rate_pick_musd_rounded": r10(float(own.max())),
+                  "first_alone_pick": R["rival"]["first"].idxmax(),
+                  "trailing_pick": R["rival"]["trailing"].idxmax()},
+        "asks": {},
+        "conventions": {"posted_rate_term_years": 30, "senior_lien_terms_months": [360, 180], "knots": C.KNOTS,
+                        "marker_months": 24, "policy_section": "7.4", "as_of_year": 2026, "forecast_year": 2027,
+                        "rounding_musd": 10},
+    }
+    for (rg, q), (a, b) in R["ask"].items():
+        f["asks"]["%s|%s" % (rg, q)] = {"quoted": a, "paid_in_full": b}
     return f
 
 
-def write_book(path, G, prog, f):
+# ------------------------------------------------------------------------------------------------- the workbook
+def write_book(path, R, F):
+    from openpyxl import Workbook
+    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     wb = Workbook()
+    ink = "1D232A"
+    head_fill = PatternFill("solid", fgColor="E3E9EE")
+    pick_fill = PatternFill("solid", fgColor="FFF4D6")
+    bold = Font(name="Calibri", size=11, bold=True, color=ink)
+    body = Font(name="Calibri", size=11, color=ink)
+    grey = Font(name="Calibri", size=9, color="5A626B")
+    title = Font(name="Calibri", size=14, bold=True, color="24515E")
+    thin = Side(style="thin", color="B9C1C8")
+    g = R["gold"]
+    c = F["call"]
+    # sheet 1: the recommendation and the regional forecast
     ws = wb.active
-    ws.title = "Designation"
-    bold = Font(name="Calibri", size=11, bold=True)
-    head = PatternFill("solid", fgColor="DCE6EC")
-    pick = PatternFill("solid", fgColor="F3E7D3")
-    ws["A1"] = "Designate the overlay against fixed-rate commercial real estate"
-    ws["A1"].font = Font(name="Calibri", size=14, bold=True, color="1F4E5F")
-    ws["A2"] = ("$1.2 billion four-year pay-fixed overlay: trades Tuesday 15 December 2026, starts Monday 4 January "
-                "2027. Positions at the close on Monday 30 November 2026.")
-    ws["A4"] = "Designated pool"
-    ws["B4"] = f["call_pool"]
-    ws["A5"] = "Averaged +200 bp loss in economic value, $ millions"
-    ws["B5"] = f["call_loss_musd_nearest10"]
-    ws["C5"] = "to the nearest 10 (policy measure, section 3)"
-    ws["C5"].font = Font(name="Calibri", size=10, italic=True, color="5A626B")
-    for c in ("A4", "A5", "B4", "B5"):
-        ws[c].font = bold
-    ws["B5"].alignment = Alignment(horizontal="left")
-    hdr = ["Pool", "Principal at 30 Nov 2026 ($ millions)", "Averaged +200 bp loss ($ millions)", "Rank"]
-    for j, h in enumerate(hdr):
-        c = ws.cell(row=7, column=j + 1, value=h)
-        c.font = bold
-        c.fill = head
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-    for i, k in enumerate(ORDER):
-        p = f["pools"][k]
-        r = 8 + i
-        ws.cell(row=r, column=1, value=k)
-        ws.cell(row=r, column=2, value=p["principal_musd"]).number_format = "#,##0.0"
-        ws.cell(row=r, column=3, value=p["loss_musd_nearest10"]).number_format = "#,##0"
-        ws.cell(row=r, column=4, value=i + 1)
-        if i == 0:
-            for j in range(4):
-                ws.cell(row=r, column=j + 1).fill = pick
-    ws.cell(row=13, column=1, value="Losses in the table are rounded to the nearest $10 million.").font = \
-        Font(name="Calibri", size=10, italic=True, color="5A626B")
-    lines = [
-        ("Fixed-rate commercial real estate",
-         "%s of balloons fall due from December 2026 to December 2027 (%d loans, mostly the push of December 2021 to "
-         "April 2022). At the planning cycle's %.2f per cent five-year rate %s of that principal is expected to "
-         "take the bank's 36-month extension (a tenth paid down, the rest at the posted rate on 25 years): the "
-         "extension share each loan's refinance cover carries in the maturity log since 2015. Loans already extended "
-         "repay at their extended maturity."
-         % ("$%.1f billion" % f["wall_balloon_busd"], f["wall_loans"], f["planning_cre_rate_pct"],
-            f["wall_share_words"])),
-        ("2023-24 residential mortgages",
-         "Expected to prepay about %d per cent a year in 2027 at the planning cycle's %.2f per cent, against about %d "
-         "per cent over the last twelve months." % (f["m_cpr_2027_pct"], f["planning_mortgage_rate_pct"],
-                                                    f["m_cpr_trailing_pct"])),
-        ("Agency MBS", "Each 2020-21 pool at its own prepayment rate over the last twelve factor months; under the "
-                       "base case the pools stay as far out of the money as in 2026."),
-        ("Treasury ladder", "Contractual coupons and principal."),
-        ("Indirect auto loans", "The portfolio's monthly prepayment rate over the last twelve months."),
-    ]
-    ws.cell(row=15, column=1, value="Run-off behind each figure").font = bold
-    for i, (a, b) in enumerate(lines):
-        ws.cell(row=16 + i, column=1, value=a).alignment = Alignment(vertical="top")
-        c = ws.cell(row=16 + i, column=2, value=b)
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-        ws.merge_cells(start_row=16 + i, start_column=2, end_row=16 + i, end_column=4)
-        ws.row_dimensions[16 + i].height = 15 * (len(b) // 88 + 1) + 4
-    ws.column_dimensions["A"].width = 46
-    ws.column_dimensions["B"].width = 34
-    ws.column_dimensions["C"].width = 34
-    ws.column_dimensions["D"].width = 9
-    ws.freeze_panes = "A8"
-    ws.page_setup.orientation = "landscape"
+    ws.title = "Pilot region"
+    ws["A1"] = "Muskegon and the North opens the payoff-retention pilot on 4 January 2027"
+    ws["A1"].font = title
+    ws["A2"] = ("Prepared by %s, Lending Analytics, for the Management Lending Committee meeting of 9 December 2026. "
+                "Loans on the books at the close of 30 November 2026; Lending Policy 7.4." % K.PEOPLE["analytics"])
+    ws["A2"].font = grey
+    ws["A4"] = "Recommendation"
+    ws["A4"].font = bold
+    ws["A5"] = ("Open the pilot at the %s lending center: its members will pay off about $%d million of fixed-rate home "
+                "equity principal in 2027, the most of the four centers. %s comes second."
+                % (c["center"], c["principal_2027_musd"], SHORT[c["second"]][0].upper() + SHORT[c["second"]][1:]))
+    ws["A5"].font = body
+    ws["A5"].alignment = Alignment(wrap_text=True, vertical="top")
+    ws.merge_cells("A5:F5")
+    ws.row_dimensions[5].height = 32
+    ws["A7"] = "2027 principal paid ahead of schedule, base case"
+    ws["A7"].font = bold
+    hdr = ["Regional lending center", "Loans on the books 30 Nov 2026", "Principal 30 Nov 2026 ($ millions)",
+           "Paid in full 2027 ($ millions)", "Curtailments 2027 ($ millions)", "Total 2027 ($ millions)"]
+    ws.append(hdr)
+    for cell in ws[8]:
+        cell.font = bold
+        cell.fill = head_fill
+        cell.alignment = Alignment(wrap_text=True, vertical="center")
+        cell.border = Border(bottom=thin)
+    ws.row_dimensions[8].height = 44
+    bk = R["bk"]
+    pay = R["pay_only"]
+    for rg in sorted(C.REG_ORDER, key=lambda r: -g[r]):
+        b = bk[bk.region == rg]
+        ws.append([rg, int(len(b)), round(float(b.bal.sum()) / 1e6, 1), round(float(pay[rg]), 1),
+                   round(float(g[rg] - pay[rg]), 1), round(float(g[rg]), 1)])
+    last = ws.max_row
+    ws.append(["All centers", int(len(bk)), round(float(bk.bal.sum()) / 1e6, 1), round(float(pay.sum()), 1),
+               round(float((g - pay).sum()), 1), round(float(g.sum()), 1)])
+    for cell in ws[ws.max_row]:
+        cell.font = bold
+        cell.border = Border(top=thin)
+    for row in ws.iter_rows(min_row=9, max_row=ws.max_row):
+        row[1].number_format = "#,##0"
+        for cell in row[2:]:
+            cell.number_format = "0.0"
+    for cell in ws[9]:
+        cell.fill = pick_fill
+    ws["A%d" % (ws.max_row + 2)] = ("Totals are summed before rounding. The pilot figure is given to the nearest $10 "
+                                    "million as the committee asked.")
+    ws["A%d" % ws.max_row].font = grey
+    for col, w in zip("ABCDEF", (30, 16, 17, 16, 16, 15)):
+        ws.column_dimensions[col].width = w
+    ws.freeze_panes = "A9"
+    # sheet 2: the payoff quotes
+    ws = wb.create_sheet("Payoff quotes")
+    ws["A1"] = "Fixed-rate home equity loans quoted a payoff, by center and quarter"
+    ws["A1"].font = title
+    ws["A2"] = ("A loan counts once in a quarter however many statements it had. Paid in full: closed as paid in full by "
+                "the member on or before 30 November 2026.")
+    ws["A2"].font = grey
+    ws.append([])
+    ws.append(["Regional lending center", "Quarter", "Loans quoted", "Of which paid in full by 30 Nov 2026"])
+    for cell in ws[4]:
+        cell.font = bold
+        cell.fill = head_fill
+        cell.border = Border(bottom=thin)
+    for rg in C.REG_ORDER:
+        for q, _, _ in C.QUARTERS:
+            a, b = R["ask"][(rg, q)]
+            ws.append([rg, QLABEL[q], a, b])
+    for col, w in zip("ABCD", (30, 26, 14, 22)):
+        ws.column_dimensions[col].width = w
+    ws.freeze_panes = "A5"
+    ws.print_title_rows = "4:4"
+    ws.print_area = "A1:D%d" % ws.max_row
+    ws.page_setup.orientation = "portrait"
     ws.page_setup.fitToWidth = 1
-    ws.page_setup.fitToHeight = 0
     ws.sheet_properties.pageSetUpPr.fitToPage = True
-    p2 = wb.create_sheet("Programme")
-    p2["A1"] = "Hedge programme: notional in effect at each quarter-end of 2027"
-    p2["A1"].font = Font(name="Calibri", size=14, bold=True, color="1F4E5F")
-    p2["A2"] = "$ millions; the treasury system's ALM book, with the new overlay at $1.2 billion from 4 January 2027"
-    p2["A2"].font = Font(name="Calibri", size=10, italic=True, color="5A626B")
-    for j, h in enumerate(["Part"] + QLAB):
-        c = p2.cell(row=4, column=j + 1, value=h)
-        c.font = bold
-        c.fill = head
-        c.alignment = Alignment(horizontal="left" if j == 0 else "right")
-    for i, (k, lab) in enumerate(PARTS):
-        p2.cell(row=5 + i, column=1, value=lab)
-        for j, v in enumerate(f["programme_musd"][k]):
-            p2.cell(row=5 + i, column=2 + j, value=v).number_format = "#,##0.0"
-    p2.cell(row=8, column=1, value="Programme").font = bold
-    for j in range(4):
-        c = p2.cell(row=8, column=2 + j, value=round(sum(prog[k][j] for k, _ in PARTS) / 1e6, 1))
-        c.number_format = "#,##0.0"
-        c.font = bold
-    notes = ["The four trades the register carries both as bilateral trades with Ostrander Securities and as cleared "
-             "trades are counted once, as cleared: the clearing statement holds the bilateral trade numbers as the "
-             "client references of the cleared trades."]
-    for t in C.load_register(G.pack):
-        if t["Book"] == "ALM" and t["Bank pays"] == "FIXED" and t["Strategy"] == "FUNDING" and \
-                C.programme_category(t) == "overlay":
-            notes.append("Swap %s is counted as an overlay: it is designated against %s." %
-                         (t["Trade No."], t["Hedged item"][0].lower() + t["Hedged item"][1:]))
-    notes.append("Amortizing swaps at the notional of the calculation period in effect on each date.")
-    for i, n in enumerate(notes):
-        c = p2.cell(row=10 + i, column=1, value=n)
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-        p2.merge_cells(start_row=10 + i, start_column=1, end_row=10 + i, end_column=5)
-        p2.row_dimensions[10 + i].height = 32
-    p2.column_dimensions["A"].width = 38
-    for col in "BCDE":
-        p2.column_dimensions[col].width = 15
-    p2.freeze_panes = "B5"
-    p2.page_setup.orientation = "landscape"
-    p2.page_setup.fitToWidth = 1
-    p2.page_setup.fitToHeight = 0
-    p2.sheet_properties.pageSetUpPr.fitToPage = True
-    p3 = wb.create_sheet("Notes")
-    nl = [
-        ("Measure", "The hedging policy, section 3: a pool's loss in economic value at a month-end is the present value "
-                    "of its base-case expected cash flows after that month-end on the planning cycle's base-case zero "
-                    "curve, less the same on the curve 200 bp higher, averaged over the month-ends of January to "
-                    "December 2027."),
-        ("Base case", "ALCO planning cycle for the 2027 plan, approved 21 September 2026: the zero curve, %.2f per cent "
-                      "for portfolio jumbo mortgages, %.2f per cent for 15-year conforming loans, %.2f per cent for "
-                      "five-year commercial real estate, held after December 2027." %
-         (f["planning_mortgage_rate_pct"], G.plan.conf15, f["planning_cre_rate_pct"])),
-        ("Pools", "Schedule A of the policy. Agency MBS is the 2020-21 purchases only; the 2023-24 agency pools, "
-                  "municipal bonds and agency multifamily securities in the account are not in it. Floating-rate "
-                  "commercial real estate loans are not in the fixed-rate pool."),
-        ("Eligibility", "Every pool holds more than the $1.2 billion notional at the as-of."),
-        ("Credit", "Cash flows before credit losses, as the policy defines them."),
-        ("Files", "Pulled Thursday 3 December 2026; positions at the close on Monday 30 November 2026."),
+    # sheet 3: notes
+    ws = wb.create_sheet("Notes")
+    notes = [
+        "Definitions",
+        "Population, outcome, window, region and rates as Lending Policy 7.4.3 files them: the fixed-rate closed-end home "
+        "equity loans on the books at the close of 30 November 2026; principal paid ahead of schedule (payoffs before "
+        "maturity at the balance retired, and curtailments); payments posted in calendar 2027; the region of the "
+        "collateral county; the planning cycle's base case.",
+        "",
+        "Forecast",
+        "Each loan's monthly payoff probability is read off the debt on the house: the blended rate of the first mortgage "
+        "and the home equity loan at their balances, less the posted 30-year fixed rate a month earlier. The first "
+        "mortgage's rate comes from the senior lien the lending system took from the credit report (the amortization "
+        "identity on its original amount, term and reported balance; a second funded with the purchase carries it as "
+        "filed). Fitted by logistic regression on every loan-month from January 2019 to November 2026, with seasonality "
+        "and a marker for a first mortgage opened in the last two years; curtailments at the trial balance's monthly rate "
+        "of %.3f per cent of the balance." % F["steps"]["curtailment_pct_month"],
+        "",
+        "Payoff quotes",
+        "Statements issued or updated in the payoff statement system, by the Eastern date of issue, the March 2026 "
+        "statements prepared by hand during the system upgrade, and the home equity loan a statement on one of our first "
+        "mortgages paid off as well. Home equity lines and voided requests are not counted.",
+        "",
+        "Sources",
+        "core_he_trial_balance_2024-09_2026-11.csv, legacy_he_loans_2019-01_2024-08.csv, core_conversion_xref.csv, "
+        "he_lending_file_2009-2026.csv, county_region_map.csv, posted_rate_sheets_2018-12_2026-11.csv, "
+        "planning_cycle_2027_rates.xlsx, payoff_statement_log_2025-10_2026-11.csv, payoff_statements_manual_2026-03.xlsx, "
+        "first_mortgage_servicing_2026-11.csv; pulled 3 December 2026.",
     ]
-    for i, (a, b) in enumerate(nl):
-        p3.cell(row=1 + i, column=1, value=a).font = bold
-        c = p3.cell(row=1 + i, column=2, value=b)
-        c.alignment = Alignment(wrap_text=True, vertical="top")
-        p3.row_dimensions[1 + i].height = 46 if len(b) > 110 else 18
-    p3.column_dimensions["A"].width = 14
-    p3.column_dimensions["B"].width = 110
-    p3.page_setup.orientation = "landscape"
-    p3.page_setup.fitToWidth = 1
-    p3.page_setup.fitToHeight = 0
-    p3.sheet_properties.pageSetUpPr.fitToPage = True
+    for line in notes:
+        ws.append([line])
+        cell = ws.cell(row=ws.max_row, column=1)
+        cell.alignment = Alignment(wrap_text=True, vertical="top")
+        if line in ("Definitions", "Forecast", "Payoff quotes", "Sources"):
+            cell.font = bold
+        else:
+            cell.font = body
+    ws.column_dimensions["A"].width = 120
     wb.save(path)
 
 
-def write_deck(path, G, f):
-    prs = Presentation()
-    prs.slide_width = Inches(13.333)
-    prs.slide_height = Inches(7.5)
-    blank = prs.slide_layouts[6]
-    ink = RGBColor(0x1D, 0x23, 0x2A)
-    grey = RGBColor(0x5A, 0x62, 0x6B)
-    accent = RGBColor(0x1F, 0x4E, 0x5F)
-
-    def text(slide, x, y, w, h, lines, size=18, bold_first=False, color=ink, after=8):
-        tb = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
-        tf = tb.text_frame
-        tf.word_wrap = True
-        for i, ln in enumerate(lines):
-            p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-            p.text = ln
-            p.font.size = Pt(size)
-            p.font.name = "Calibri"
-            p.font.color.rgb = color
-            p.font.bold = bold_first and i == 0
-            p.space_after = Pt(after)
-        return tb
-
-    def strip(slide, n, src):
-        text(slide, 0.6, 7.0, 11.0, 0.35, [src], size=10, color=grey)
-        text(slide, 12.2, 7.0, 0.6, 0.35, [str(n)], size=10, color=grey)
-
-    s1 = prs.slides.add_slide(blank)
-    text(s1, 0.6, 0.4, 12.1, 1.0, ["Designate the $1.2 billion overlay against fixed-rate commercial real estate"],
-         size=30, bold_first=True, color=accent)
-    text(s1, 0.6, 1.35, 12.1, 0.6, ["Averaged +200 bp loss in economic value over the month-ends of 2027: $%d million "
-                                    "(to the nearest $10 million)" % f["call_loss_musd_nearest10"]],
-         size=22, bold_first=True)
-    text(s1, 0.6, 2.25, 6.6, 4.4, [
-        "About $%.1f billion of the pool's balloons fall due from December 2026 to December 2027, most of them "
-        "written in the early-2022 push on pro forma rents. At the planning cycle's %.2f per cent few of those "
-        "properties' incomes can carry a new loan of their balance; %s of that principal is expected to take "
-        "the bank's 36-month extension." % (f["wall_balloon_busd"], f["planning_cre_rate_pct"], f["wall_share_words"]),
-        "Agency MBS is next, at about $%d million." % f["runner_up_loss_musd_nearest10"],
-        "The 2023-24 mortgages would lose more than agency MBS only at last year's prepayment speed; at %.2f per "
-        "cent they are expected to prepay about %d per cent a year in 2027." % (f["planning_mortgage_rate_pct"],
-                                                                                f["m_cpr_2027_pct"]),
-    ], size=17, after=12)
-    rows, cols = 6, 3
-    tbl = s1.shapes.add_table(rows, cols, Inches(7.6), Inches(2.35), Inches(5.1), Inches(2.6)).table
-    tbl.columns[0].width = Inches(2.9)
-    tbl.columns[1].width = Inches(1.1)
-    tbl.columns[2].width = Inches(1.1)
-    hd = ["Pool", "Principal, $ bn", "Loss, $ m"]
-    for j, h in enumerate(hd):
-        cell = tbl.cell(0, j)
-        cell.text = h
-        cell.text_frame.paragraphs[0].font.size = Pt(13)
-        cell.text_frame.paragraphs[0].font.bold = True
-    for i, k in enumerate(ORDER):
-        p = f["pools"][k]
-        vals = [k, "%.2f" % (p["principal_musd"] / 1000.0), "%d" % p["loss_musd_nearest10"]]
-        for j, v in enumerate(vals):
-            cell = tbl.cell(i + 1, j)
-            cell.text = v
-            cell.text_frame.paragraphs[0].font.size = Pt(13)
-            cell.text_frame.paragraphs[0].font.bold = i == 0
-    text(s1, 7.6, 5.05, 5.1, 0.5, ["Losses to the nearest $10 million; principal at 30 November 2026."], size=11,
-         color=grey)
-    text(s1, 0.6, 6.45, 12.1, 0.4, ["$1.2 billion pay-fixed for four years: trades Tuesday 15 December 2026, starts "
-                                    "Monday 4 January 2027."], size=14, color=grey)
-    strip(s1, 1, "Source: ALM analysis of positions at 30 November 2026; hedging policy section 3; 2027 planning "
-                 "cycle, base case.")
-    s2 = prs.slides.add_slide(blank)
-    tot = [sum(f["programme_musd"][k][j] for k, _ in PARTS) for j in range(4)]
-    text(s2, 0.6, 0.35, 12.1, 0.9, ["The programme's notional runs from $%.1f billion to $%.1f billion through 2027 "
-                                    "as loan hedges mature" % (tot[0] / 1000.0, tot[-1] / 1000.0)],
-         size=26, bold_first=True, color=accent)
-    cd = CategoryChartData()
-    cd.categories = QLAB
-    for k, lab in PARTS:
-        cd.add_series(lab, f["programme_musd"][k], number_format="#,##0.0")
-    gf = s2.shapes.add_chart(XL_CHART_TYPE.COLUMN_STACKED, Inches(0.7), Inches(1.25), Inches(11.9), Inches(5.6), cd)
-    ch = gf.chart
-    ch.has_legend = True
-    ch.legend.position = XL_LEGEND_POSITION.BOTTOM
-    ch.legend.include_in_layout = False
-    ch.legend.font.size = Pt(14)
-    cols_ = [RGBColor(0x1F, 0x4E, 0x5F), RGBColor(0x8A, 0xA8, 0xB8), RGBColor(0xC9, 0x8B, 0x3B)]
-    for s, c in zip(ch.plots[0].series, cols_):
-        s.format.fill.solid()
-        s.format.fill.fore_color.rgb = c
-    pl = ch.plots[0]
-    pl.gap_width = 70
-    pl.has_data_labels = True
-    dl = pl.data_labels
-    dl.number_format = "#,##0.0"
-    dl.number_format_is_linked = False
-    dl.font.size = Pt(13)
-    dl.position = XL_LABEL_POSITION.CENTER
-    va = ch.value_axis
-    va.has_major_gridlines = True
-    va.tick_labels.font.size = Pt(12)
-    va.tick_labels.number_format = "#,##0"
-    va.tick_labels.number_format_is_linked = False
-    va.has_title = True
-    va.axis_title.text_frame.text = "$ millions"
-    va.axis_title.text_frame.paragraphs[0].font.size = Pt(12)
-    ch.category_axis.tick_labels.font.size = Pt(14)
-    strip(s2, 2, "Source: treasury system swap register, amortization schedules and clearing statement at 30 "
-                 "November 2026; the new overlay included from 4 January 2027.")
-    prs.save(path)
+# ------------------------------------------------------------------------------------------------- the chart
+SERIES = {"Grand Rapids": "#2a78d6", "The Lakeshore": "#eb6834", "Kalamazoo and Battle Creek": "#1baf7a",
+          "Muskegon and the North": "#eda100"}
 
 
-def fix_embedded(path, created, modified):
-    """the chart's embedded workbook carries its writer's clock: give it the deck's owner and stamps"""
-    import tempfile
-    import zipfile
-    with zipfile.ZipFile(path) as z:
-        items = [(i.filename, z.read(i.filename)) for i in z.infolist()]
-    out = []
-    for name, data in items:
-        if name.startswith("ppt/embeddings/") and name.endswith(".xlsx"):
-            tmp = tempfile.mkdtemp(prefix="b166_emb_")
-            p = os.path.join(tmp, "e.xlsx")
-            open(p, "wb").write(data)
-            PP.normalize_ooxml(p, OWNER, OWNER, created, modified, company="Carrick Valley Bank")
-            data = open(p, "rb").read()
-            os.remove(p)
-            os.rmdir(tmp)
-        out.append((name, data))
-    with zipfile.ZipFile(path, "w") as z:
-        for name, data in out:
-            zi = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
-            zi.compress_type = zipfile.ZIP_DEFLATED
-            z.writestr(zi, data)
+def write_chart(path, R):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 10, "svg.hashsalt": "task166"})
+    qs = [q for q, _, _ in C.QUARTERS]
+    fig, ax = plt.subplots(figsize=(9.2, 5.6), dpi=150)
+    fig.patch.set_facecolor("#fcfcfb")
+    ax.set_facecolor("#fcfcfb")
+    bottoms = np.zeros(len(qs))
+    x = np.arange(len(qs))
+    for rg in C.REG_ORDER:
+        vals = np.array([R["ask"][(rg, q)][0] for q in qs], float)
+        ax.bar(x, vals, 0.58, bottom=bottoms, color=SERIES[rg], edgecolor="#fcfcfb", linewidth=2, label=rg, zorder=3)
+        for xi, (v, b0) in enumerate(zip(vals, bottoms)):
+            dark = rg in ("Grand Rapids",)
+            ax.text(xi, b0 + v / 2, "%d" % v, ha="center", va="center", fontsize=9.5,
+                    color="#ffffff" if dark else "#0b0b0b", zorder=4)
+        bottoms += vals
+    for xi, tot in enumerate(bottoms):
+        ax.text(xi, tot + 4, "%d" % tot, ha="center", va="bottom", fontsize=9, color="#52514e")
+    ax.set_xticks(x)
+    ax.set_xticklabels([QSHORT[q] for q in qs])
+    ax.set_ylabel("Fixed-rate home equity loans quoted a payoff")
+    ax.set_ylim(0, max(bottoms) * 1.12)
+    ax.grid(axis="y", color="#e4e3df", linewidth=0.8, zorder=0)
+    for s in ("top", "right"):
+        ax.spines[s].set_visible(False)
+    for s in ("left", "bottom"):
+        ax.spines[s].set_color("#b5b3ad")
+    ax.tick_params(colors="#52514e")
+    top = max(C.REG_ORDER, key=lambda r: sum(R["ask"][(r, q)][0] for q in qs))
+    ax.set_title("%s drew the most payoff quotes in every quarter" % top, loc="left", fontsize=12.5,
+                 color="#0b0b0b", pad=28)
+    ax.legend(loc="upper left", bbox_to_anchor=(0.0, 1.075), ncol=4, frameon=False, fontsize=9)
+    fig.text(0.01, 0.012, "A loan counts once a quarter however many statements it had. Source: payoff statement "
+             "system and the payoff desk's log, %s." % K.CU, fontsize=7.5, color="#52514e")
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    fig.savefig(path, facecolor=fig.get_facecolor(), metadata={"Software": None})
+    plt.close(fig)
 
 
-def main(target, golden, fig_path):
-    os.makedirs(golden, exist_ok=True)
-    G = C.golden(target)
-    G.pack = target
-    G.oos = C.oos_table(G)
-    prog = C.programme(target)
-    f = figures(G, prog)
-    write_book(os.path.join(golden, F_BOOK), G, prog, f)
-    write_deck(os.path.join(golden, F_DECK), G, f)
-    PP.normalize_ooxml(os.path.join(golden, F_BOOK), OWNER, OWNER, "2026-12-04T14:12:00Z", "2026-12-11T21:37:00Z",
-                       excel=True, company="Carrick Valley Bank")
-    fix_embedded(os.path.join(golden, F_DECK), "2026-12-07T15:02:00Z", "2026-12-11T22:05:00Z")
-    PP.normalize_ooxml(os.path.join(golden, F_DECK), OWNER, OWNER, "2026-12-07T15:02:00Z", "2026-12-11T22:05:00Z",
-                       company="Carrick Valley Bank")
+# ------------------------------------------------------------------------------------------------- the write-up
+def write_submission(path, R, F):
+    g = R["gold"]
+    c = F["call"]
+    s = F["steps"]
+    comp = F["components"]
+    fc = s["forecast_musd"]
+    d = s["deviance"]
+    sec = SHORT[c["second"]]
+    lines = [
+        "## Tags", "",
+        "**Domain:** Banking, credit and financial risk, deposit and liquidity behaviour (home equity prepayment).  ",
+        "**Analytical objective:** Forecasting and predictive modeling.", "",
+        "## 1. Final Recommendation", "",
+        "**Open the payoff-retention pilot at the Muskegon and the North lending center: its members will pay off about "
+        "$%d million of fixed-rate home equity principal in 2027, the most of the four centers, and %s comes second.**"
+        % (c["principal_2027_musd"], sec),
+        "The forecast reads each loan's payoff off the whole debt on the house, the first mortgage and the home equity "
+        "loan at their balances: Muskegon and the North's 2024 to 2026 home equity loans are large and sit behind small "
+        "seasoned first mortgages, so those stacks come into the money as the planning cycle's 30-year rate falls, and the "
+        "region pays off %.1f against %.1f for %s. Not Grand Rapids, which a prepayment curve on each loan's own note rate "
+        "puts first at about $%d million (%.1f), when its home equity loans sit behind large first mortgages that keep the "
+        "debt on the house below the market. Not %s, which leads when payoffs are read off the first mortgage's own rate "
+        "alone because its purchase seconds sit behind high-rate first mortgages; those seconds are small. Not Kalamazoo "
+        "and Battle Creek, whose trailing payoffs were its 2023 purchase loans, now mostly paid off."
+        % (fc["Muskegon and the North"], fc[c["second"]], sec, s["own_rate_pick_musd_rounded"], s["own_rate_pick_musd"],
+           sec),
+        "",
+        "## 2. Critical Components", "",
+        "1. Fixed-rate home equity loans on the books at the close of 30 November 2026: **%s** loans, **$%.1f million**"
+        % ("{:,}".format(comp["book_loans"]), comp["book_musd"]),
+        "2. Muskegon and the North's principal on the books at 30 November 2026: **$%.1f million**" % comp["book_musd_pick"],
+        "3. Payoffs in full in the record the forecast is fitted on, January 2019 to November 2026: **%s**"
+        % "{:,}".format(comp["payoffs_2019_2026"]),
+        "",
+        "## 3. Step-by-Step Solution", "",
+        "1. Took the loans on the books from core_he_trial_balance_2024-09_2026-11.csv, the 2026-11-30 rows with LoanStatus "
+        "ACTIVE: %s loans, $%.1f million, per Lending Policy 7.4.3." % ("{:,}".format(comp["book_loans"]), comp["book_musd"]),
+        "2. Built one loan-month history from January 2019 to November 2026 from legacy_he_loans_2019-01_2024-08.csv to "
+        "August 2024 (each month's balance on the loan's schedule from BAL_12_31_2018 or its funding) and the trial "
+        "balance after it (the prior month-end balance, the first core month from BAL_AT_CONV), linked through "
+        "core_conversion_xref.csv, with the region from he_lending_file_2009-2026.csv's property_county and "
+        "county_region_map.csv: %s payoffs in full (PIF); maturities and charge-offs leave the record without "
+        "counting." % "{:,}".format(comp["payoffs_2019_2026"]),
+        "3. Recovered each first mortgage from the lending file's senior lien: its rate from the amortization identity on "
+        "senior_lien_original_amount, senior_lien_term_months and senior_lien_balance after the payments from "
+        "senior_lien_opened to senior_lien_balance_as_of (a blank term is the one of 360 and 180 months whose payment the "
+        "reported payment carries; a second funded with the purchase carries senior_lien_note_rate_pct as filed), and its "
+        "balance in every month on its schedule.",
+        "4. Took the posted 30 YR FIXED MORTGAGE rate's monthly average from posted_rate_sheets_2018-12_2026-11.csv, each "
+        "sheet in effect until the next, and the base case's 30-year fixed rate from planning_cycle_2027_rates.xlsx for "
+        "December 2026 to December 2027.",
+        "5. Fitted each loan-month's payoff probability by logistic regression on the stack's refinancing incentive, the "
+        "blended rate of the first mortgage and the home equity loan at their balances less the posted 30-year rate a "
+        "month earlier (piecewise linear, knots at -1, 0, 0.5, 1, 1.5 and 2 points), with a sine and cosine of the month "
+        "and a marker for a first mortgage opened less than 24 months before: deviance %s, against %s on the first "
+        "mortgage's own rate, %s with each lien against its own posted rate, %s with the loan's own and the first's "
+        "rates side by side and %s on the loan's own note rate against the posted home equity rate."
+        % ("{:,.1f}".format(d["blend"]), "{:,.1f}".format(d["first"]), "{:,.1f}".format(d["walt"]),
+           "{:,.1f}".format(d["own_first"]), "{:,.1f}".format(d["own"])),
+        "6. Took curtailments at the trial balance's rate, PrincipalPaid above ScheduledPrincipal in ACTIVE months over the "
+        "prior month-end balance: %.3f per cent of the balance a month." % s["curtailment_pct_month"],
+        "7. Ran the book from December 2026 through December 2027 on the base case, a payoff at the start-of-month balance "
+        "and curtailments on the balance that survives the month, and summed 2027 by region: Muskegon and the North %.1f "
+        "million (about %d to the nearest 10), the Lakeshore %.1f, Grand Rapids %.1f, Kalamazoo and Battle Creek %.1f; "
+        "the pilot opens at Muskegon and the North and the Lakeshore comes second."
+        % (fc["Muskegon and the North"], c["principal_2027_musd"], fc["The Lakeshore"], fc["Grand Rapids"],
+           fc["Kalamazoo and Battle Creek"]),
+        "8. Counted each center's loans quoted a payoff per quarter from payoff_statement_log_2025-10_2026-11.csv, ISSUED "
+        "and UPDATED statements by their Eastern issue date, a legacy number through the cross-reference, home equity "
+        "lines and VOID requests out; added the home equity loan behind each MTG statement whose amount paid it as well "
+        "as the credit union's first mortgage (the mortgage in first_mortgage_servicing_2026-11.csv, the loan at the same "
+        "property_street and property_zip in the lending file) and the home equity loans in "
+        "payoff_statements_manual_2026-03.xlsx matched by property address; paid in full is LoanStatus PIF with a "
+        "CloseDate on or before 2026-11-30.",
+        "",
+        "## 4. Deliverable Answers", "",
+        "### he_payoff_pilot_2027.xlsx", "",
+        "1. Center to open the payoff-retention pilot on 4 January 2027: **%s**" % c["center"],
+        "2. Fixed-rate home equity principal its members will pay off in 2027: **$%d million** (nearest 10)"
+        % c["principal_2027_musd"],
+        "3. Center second: **%s**" % (sec[0].upper() + sec[1:]),
+        "4. Fixed-rate home equity loans quoted a payoff, and of those paid in full by 30 November 2026, by center and "
+        "quarter:",
+    ]
+    for rg in C.REG_ORDER:
+        for q, _, _ in C.QUARTERS:
+            a = F["asks"]["%s|%s" % (rg, q)]
+            lines.append("   - %s, %s: **%d** quoted, **%d** paid in full" % (rg, QLABEL[q], a["quoted"], a["paid_in_full"]))
+    lines += ["", "### payoff_quotes_by_center.png", "",
+              "1. One bar per quarter, October to December 2025 through July to September 2026, split by center, each "
+              "segment labelled with its count of loans quoted as in answer 4 above.", ""]
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(lines))
+
+
+def main(target, golden_dir, fig_path):
+    os.makedirs(golden_dir, exist_ok=True)
+    R = compute(target)
+    F = figures(R)
     with open(fig_path, "w", encoding="utf-8") as fh:
-        json.dump(f, fh, indent=1, sort_keys=True)
+        json.dump(F, fh, indent=1, ensure_ascii=False)
         fh.write("\n")
-    return f
+    write_book(os.path.join(golden_dir, F_BOOK), R, F)
+    PP.normalize_ooxml(os.path.join(golden_dir, F_BOOK), K.PEOPLE["analytics"], K.PEOPLE["analytics"],
+                       "2026-12-04T14:12:00Z", "2026-12-08T21:37:00Z", excel=True, company=K.CU)
+    write_chart(os.path.join(golden_dir, F_CHART), R)
+    task_dir = os.path.dirname(golden_dir.rstrip("/"))
+    sub = os.path.join(task_dir, "submission.md") if os.path.basename(golden_dir.rstrip("/")) == "golden" else \
+        os.path.join(golden_dir, "submission.md")
+    write_submission(sub, R, F)
+    return R, F
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:4])
+    T = os.path.dirname(HERE)
+    main(os.path.join(T, "target"), os.path.join(T, "golden"), os.path.join(HERE, "figures.json"))

@@ -1,106 +1,123 @@
 {
- "amortization_years": 25,
- "auto_loss_musd_about": 30,
- "call_loss_musd_nearest10": 150,
- "call_loss_musd_unrounded": 149.99,
- "call_pool": "Fixed-rate commercial real estate",
- "extension_months": 36,
- "m_cpr_2027_pct": 30,
- "m_cpr_trailing_pct": 16,
- "mortgage_loss_musd_about": 90,
- "notional_busd": 1.2,
- "oos_brier": {
-  "cover": 0.0333,
-  "cur": 0.17308,
-  "dy": 0.0875,
-  "gap": 0.19979,
-  "last_year_share": 0.20981,
-  "n_test": 284,
-  "n_train": 555,
-  "pooled_share": 0.22878
+ "call": {
+  "center": "Muskegon and the North",
+  "principal_2027_musd": 40,
+  "principal_2027_musd_unrounded": 39.19,
+  "second": "The Lakeshore",
+  "second_principal_musd_unrounded": 23.9,
+  "margin": 1.64
  },
- "oos_brier_2dp": {
-  "cover": 0.03,
-  "cur": 0.17,
-  "dy": 0.09,
-  "gap": 0.2,
-  "last_year_share": 0.21,
-  "pooled_share": 0.23
+ "components": {
+  "book_loans": 8813,
+  "book_musd": 436.9,
+  "book_musd_pick": 132.5,
+  "payoffs_2019_2026": 5264
  },
- "planning_cre_rate_pct": 6.95,
- "planning_mortgage_rate_pct": 6.25,
- "pools": {
-  "2023-24 residential mortgages": {
-   "loss_musd": 85.21,
-   "loss_musd_nearest10": 90,
-   "principal_musd": 1656.1
+ "steps": {
+  "curtailment_pct_month": 0.165,
+  "deviance": {
+   "blend": 48888.4,
+   "own": 52394.5,
+   "first": 49475.5,
+   "walt": 49294.9,
+   "own_first": 49431.4
   },
-  "Agency MBS": {
-   "loss_musd": 110.52,
-   "loss_musd_nearest10": 110,
-   "principal_musd": 1497.9
+  "forecast_musd": {
+   "Grand Rapids": 18.5,
+   "The Lakeshore": 23.9,
+   "Kalamazoo and Battle Creek": 13.5,
+   "Muskegon and the North": 39.2
   },
-  "Fixed-rate commercial real estate": {
-   "loss_musd": 149.99,
-   "loss_musd_nearest10": 150,
-   "principal_musd": 3615.7
+  "own_rate_pick": "Grand Rapids",
+  "own_rate_pick_musd": 58.7,
+  "own_rate_pick_musd_rounded": 60,
+  "first_alone_pick": "The Lakeshore",
+  "trailing_pick": "Kalamazoo and Battle Creek"
+ },
+ "asks": {
+  "Grand Rapids|2025Q4": {
+   "quoted": 47,
+   "paid_in_full": 39
   },
-  "Indirect auto loans": {
-   "loss_musd": 30.66,
-   "loss_musd_nearest10": 30,
-   "principal_musd": 1316.0
+  "Grand Rapids|2026Q1": {
+   "quoted": 59,
+   "paid_in_full": 49
   },
-  "Treasury ladder": {
-   "loss_musd": 66.98,
-   "loss_musd_nearest10": 70,
-   "principal_musd": 1660.0
+  "Grand Rapids|2026Q2": {
+   "quoted": 63,
+   "paid_in_full": 57
+  },
+  "Grand Rapids|2026Q3": {
+   "quoted": 65,
+   "paid_in_full": 49
+  },
+  "The Lakeshore|2025Q4": {
+   "quoted": 76,
+   "paid_in_full": 71
+  },
+  "The Lakeshore|2026Q1": {
+   "quoted": 72,
+   "paid_in_full": 61
+  },
+  "The Lakeshore|2026Q2": {
+   "quoted": 51,
+   "paid_in_full": 45
+  },
+  "The Lakeshore|2026Q3": {
+   "quoted": 78,
+   "paid_in_full": 67
+  },
+  "Kalamazoo and Battle Creek|2025Q4": {
+   "quoted": 140,
+   "paid_in_full": 139
+  },
+  "Kalamazoo and Battle Creek|2026Q1": {
+   "quoted": 109,
+   "paid_in_full": 103
+  },
+  "Kalamazoo and Battle Creek|2026Q2": {
+   "quoted": 92,
+   "paid_in_full": 84
+  },
+  "Kalamazoo and Battle Creek|2026Q3": {
+   "quoted": 101,
+   "paid_in_full": 97
+  },
+  "Muskegon and the North|2025Q4": {
+   "quoted": 48,
+   "paid_in_full": 41
+  },
+  "Muskegon and the North|2026Q1": {
+   "quoted": 46,
+   "paid_in_full": 36
+  },
+  "Muskegon and the North|2026Q2": {
+   "quoted": 48,
+   "paid_in_full": 40
+  },
+  "Muskegon and the North|2026Q3": {
+   "quoted": 55,
+   "paid_in_full": 41
   }
  },
- "programme_musd": {
-  "funding": [
-   437.5,
-   437.5,
-   537.5,
-   537.5
+ "conventions": {
+  "posted_rate_term_years": 30,
+  "senior_lien_terms_months": [
+   360,
+   180
   ],
-  "loan": [
-   2047.5,
-   1647.5,
-   1313.2,
-   1313.2
+  "knots": [
+   -1.0,
+   0.0,
+   0.5,
+   1.0,
+   1.5,
+   2.0
   ],
-  "overlay": [
-   3127.8,
-   3114.3,
-   3101.2,
-   3088.4
-  ]
- },
- "programme_total_busd": [
-  5.6,
-  5.2,
-  5.0,
-  4.9
- ],
- "programme_total_musd": [
-  5612.8,
-  5199.3,
-  4951.9,
-  4939.1
- ],
- "quarter_ends": [
-  "31 Mar 2027",
-  "30 Jun 2027",
-  "30 Sep 2027",
-  "31 Dec 2027"
- ],
- "runner_up": "Agency MBS",
- "runner_up_loss_musd_nearest10": 110,
- "shock_bp": 200,
- "treasury_loss_musd_about": 70,
- "wall_balloon_busd": 2.6,
- "wall_extended_busd": 2.4,
- "wall_loans": 278,
- "wall_share": 0.935,
- "wall_share_words": "over nine-tenths"
+  "marker_months": 24,
+  "policy_section": "7.4",
+  "as_of_year": 2026,
+  "forecast_year": 2027,
+  "rounding_musd": 10
+ }
 }

@@ -6,13 +6,13 @@
   "domain": "banking-credit-financial-risk",
   "subdomain": "deposit-liquidity-behaviour",
   "client_domain": "banking-credit-financial-risk",
-  "niche": "a West Michigan credit union's lending committee choosing which of its four regional lending centers opens the 2027 payoff-retention pilot, by the home equity principal each region's members will pay off in 2027, when most of the fixed-rate home equity loans written in the 2024 to 2026 equity-tap boom carry note rates the planning path now beats but sit behind 2020 and 2021 first mortgages at 2.5 to 3.5 per cent, while the newer suburbs' loans sit behind 2025 and 2026 purchase mortgages at 6.25 to 7.25 per cent, both firsts held at other lenders",
+  "niche": "a West Michigan credit union's lending committee choosing which of its four regional lending centers opens the 2027 payoff-retention pilot, by the fixed-rate home equity principal each region's members will pay off in 2027, when Muskegon and the north's 2024 to 2026 equity taps sit behind small, seasoned first mortgages at 3.5 to 4.75 per cent, so the debt on the house carries a blended rate the planning path's 30-year rate falls under from early 2027, while Grand Rapids' taps sit behind large first mortgages that keep the whole stack locked and the Lakeshore's newer purchase stacks are carried by their high first-mortgage rates",
   "objective": "forecasting",
   "shape": "other",
   "decision_type": "pick_one_of_n",
   "answer_unit": "named_option",
-  "answer": "",
-  "answer_source": "",
+  "answer": "Open the payoff-retention pilot at the Muskegon and the North lending center: its members will pay off about $40 million of fixed-rate home equity principal in 2027, the most of the four centers, and the Lakeshore comes second.",
+  "answer_source": "task166/submission.md block 1; task166/generator/figures.json call",
   "gap": [
     "population",
     "time"
@@ -32,22 +32,31 @@
   "validated_decoy": false,
   "context_artifact": "close_out_summary",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who joins the two core systems' extracts, reads every field and fits the home equity loans' payoffs on their own rate incentive against the credit union's posted home equity rate, validated on the 2019 to 2026 payoffs, projects a payoff wave among the 2024 to 2026 loans when the planning path takes the posted rate below their notes and names the region holding most of them; only reading each loan's payoff off the first mortgage it sits behind, whose rate comes from the bureau refresh's mortgage tradeline, names the region whose members will refinance.",
-  "domain_test": "The deciding quantity is each region's 2027 home equity payoffs under the planning rate path, which prepayment modeling forecasts from the refinancing incentive and lock-in of the first mortgage ahead of each closed-end second, because a member refinances or sells on the first and the second is paid off at that closing; with another field's nouns (a hospital's follow-up visits, a utility's add-on meters) there is no senior lien whose refinance retires the junior, so the quantity that decides the call has nothing to stand on.",
+  "analyst_test": "A strong analyst who joins the two cores and fits the home equity payoffs on each loan's own note rate against the posted home equity rate (the textbook S-curve, validated on 2019 to 2026) names Grand Rapids at about $60 million; one who reads the lock-in, recovering each first mortgage's rate from the senior lien and fitting the payoffs on the first's own incentive, names the Lakeshore; only reading each payoff off the whole stack, the first mortgage and the second at their balances, their blended rate against the posted 30-year rate, names Muskegon and the North at about $40 million.",
+  "domain_test": "The deciding quantity is each region's 2027 home equity payoffs under the planning rate path, which prepayment modeling forecasts from the refinancing incentive of the whole mortgage debt on the house (the first mortgage ahead of the closed-end second and the second itself, at their balances, their blended rate against a new first mortgage), because a member pays the second off when selling or refinancing the debt on the house; with another field's nouns (a hospital's follow-up visits, a utility's add-on meters) there is no stack of liens whose blended rate a new first mortgage replaces, so the quantity that decides the call has nothing to stand on.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:junior-lien-payoffs-set-by-the-senior-mortgages-refinance-incentive",
+  "layer2_pattern": "own:junior-lien-payoffs-set-by-the-whole-stacks-blended-refinance-incentive",
   "layer1": [
-    "to be listed at the build"
+    "the legacy core's home equity loan master to the conversion on 1 September 2024 beside the new core's monthly trial balance after it, different layouts, codes and loan numbers linked through the conversion cross-reference",
+    "the legacy master carries a 2018 year-end balance and the closing record, not monthly balances",
+    "the lending system keeps the core loan number assigned at funding, so loans funded before the conversion carry legacy numbers",
+    "the senior lien taken from the credit report: balance as of its last reported month, payment as reported (some servicers report it with escrow), term blank where the tradeline did not report it, opened month as MMYYYY; purchase seconds carry the first's terms from the purchase file",
+    "the posted rate sheet archive: weekly sheets with mid-week reprices, a sheet in effect until the next",
+    "close codes PIF, MAT and CHGOFF (CO in the legacy core): maturities and charge-offs are not payoffs",
+    "region from the collateral property's county through the county map, the field of membership's two counties without a lending center of their own",
+    "the payoff statement log's product code HE covers home equity loans and lines; legacy loan numbers on requests from title agencies holding old statements; updated statements and voided requests; issue times in UTC",
+    "a statement on one of the credit union's first mortgages quoting the home equity loan behind it as well, beside first-mortgage statements quoting the mortgage alone, told apart only by the amount (ask device)",
+    "the statement system's March 2026 outage and the desk's hand-kept log with addresses and no loan numbers (ask device)"
   ],
   "stakeholder_role": "the credit union's lending analytics manager, who prepares the pilot's regional payoff forecast for the lending committee",
   "role_family": "finance_controller",
   "scoring_unit": "other",
   "spine": {
-    "file": "to be named at the build (the new core's monthly home equity loan extract)",
-    "rows": 0,
-    "entity": "one fixed-rate home equity loan in one calendar month",
+    "file": "core_he_trial_balance_2024-09_2026-11.csv",
+    "rows": 197078,
+    "entity": "one fixed-rate home equity loan at one month-end",
     "grain": "loan x month",
-    "source": "synthetic (constructed in the layout of a credit union core system's monthly loan extract)"
+    "source": "synthetic (constructed in the layout of a credit union core system's monthly trial balance)"
   },
   "forum": "committee_or_panel",
   "forcing_event": "launch_or_rollout",
@@ -56,7 +65,9 @@
     "geography": "United States, Michigan (Grand Rapids; West Michigan)",
     "currency": "USD",
     "org_type": "state-chartered credit union, about 4 billion dollars in assets",
-    "invented_names": [],
+    "invented_names": [
+      "Hollowell Community Credit Union"
+    ],
     "people": [
       "Sherri Bautista",
       "Brandon Coffey",
@@ -64,28 +75,31 @@
       "Cody Li"
     ]
   },
-  "deliverables": [],
+  "deliverables": [
+    "he_payoff_pilot_2027.xlsx",
+    "payoff_quotes_by_center.png"
+  ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A junior unit leaves almost only when the senior unit ahead of it is replaced or the whole stack is sold, so its exits follow the senior's own price incentive and lock-in, a rate set by another holder and recovered only from a third party's summary of that holder's account, while its own price incentive barely moves it; in the record the juniors with high prices of their own sat behind high-priced seniors, so a fit on the junior's own terms validates, but the forward pool's high-priced juniors mostly sit behind low-priced seniors, and the fit puts the window's exits on units that will not leave.",
-  "driver_concrete": "",
-  "stump": "A strong solver fits the home equity loans' payoffs on their own note rate against the credit union's posted home equity rate, a curve the 2019 to 2026 payoffs support because the loans written at high rates then sat behind high-rate first mortgages, projects a payoff wave among the 2024 to 2026 loans when the planning path takes the posted rate below their notes, and names the region that holds most of them; the step that lands it there is reading a second lien's payoff off its own rate, when a member pays off the second almost only on refinancing or selling on the first mortgage, and most of those loans sit behind 2020 and 2021 first mortgages at 2.5 to 3.5 per cent that no planning rate reaches.",
+  "driver": "A junior unit leaves when the whole stack it belongs to is replaced or sold, and the holder replaces the stack when its blended price, each layer weighted by its size, rises above the price of one new senior unit; read off the junior's own price, or off the senior's alone, the exits validate on a record where a stack with a high-priced layer was high-priced throughout, and they miss a forward book whose largest juniors sit on small, cheap seniors, which lock nothing because they are small.",
+  "driver_concrete": "Muskegon and the north's 1,460 equity taps of 2023 to 2026 ($70,000 to $112,000 at 8.1 to 9.4 per cent) sit behind first mortgages opened from 2010 to 2015 at 3.5 to 4.75 per cent with $65,000 to $125,000 left, so the debt on each house carries a blended rate of about 6.3 to 6.6 per cent: quiet while the posted 30-year rate held at 6.6 to 7.3 per cent through 2024 to 2026, and in the money from February 2027 as the planning cycle's base case takes it from 6.45 to 5.20 per cent; the region's members then pay off about $40 million of fixed-rate home equity principal in 2027, where the own-rate S-curve names Grand Rapids (about $60 million), the first mortgage's own incentive names the Lakeshore and the trailing payoffs name Kalamazoo and Battle Creek.",
+  "stump": "A strong solver fits the home equity payoffs on each loan's own note rate against the posted home equity rate, a curve the 2019 to 2026 payoffs support, and names Grand Rapids at about $60 million, or reads the lock-in off each first mortgage's own rate and names the Lakeshore; the step that lands it there is reading a second lien's payoff off one of the two loans, when a member pays the second off by refinancing the whole debt on the house, which the stack's blended rate at the two balances against the posted 30-year rate decides: Muskegon and the north's large 2024 to 2026 taps sit behind small seasoned firsts at 3.5 to 4.75 per cent, so its stacks blend near 6.5 per cent and come into the money as the planning path falls, and it pays off about $40 million.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task228": "task228 sets a false-alarm budget per monitored run from runs disturbed by mid-run configuration changes; here no alarm or budget is set, the pick is the region whose junior liens will pay off most, each loan's payoff read off the senior mortgage's refinance incentive recovered from the bureau tradeline",
-    "task268": "task268 carries a sample's on-site rate by member kind onto complete attachments; here nothing is carried from a sample onto a census, each junior lien's 2027 payoff is read at the senior lien's own incentive from every past payoff",
-    "task28": "task28 conditions an at-stake volume on a portability property recovered through a credential join after level-matching a published gap; here the conditioning property is a rate held by another lender, recovered by an amortization solve from a third party's tradeline, and it decides which junior liens leave in a refinance wave",
-    "task30": "task30 measures a change on the subset of events a procedure leaves unadjusted; here no subset is read for bias, every junior lien's exit is conditioned on the senior lien's incentive",
-    "task32": "task32 conditions an offer's realised yield on the collection programme behind it; here the conditioned quantity is a loan's payoff hazard, set by the rate of the senior mortgage ahead of it under a forward rate path",
-    "task53": "task53 pools eligible volume per account against an unstated scale break after an eligibility screen; here no break or screen decides, the payoff hazard follows a continuous incentive on another loan",
-    "task167": "task167 reads a fund's draw schedule from funds financed like it, a class read from entry data; here no class is read from entry data, each loan's exit is set by the senior lien's incentive recovered from the bureau tradeline",
-    "task31": "task31 splits a lag on whether a provider already holds a prior approval; here no lag is split, the forward hazard of each junior lien follows the senior's refinance incentive and lock-in",
-    "task448": "task448 completes a register from a second list whose capture depends on filing route; here nothing is completed or captured, a junior lien's payoff follows the senior lien it sits behind",
-    "task471": "task471 estimates absent units from a field audit by stay length and prior departures; here no audit or absence is estimated, each junior lien's 2027 payoff is read off the senior mortgage's incentive under the planning path",
-    "task500": "task500 reads a spillover on untouched units linked through another entity's register; here no causal spillover is estimated, a junior lien is retired by its own senior lien's refinance or sale, and the senior's rate is recovered by an amortization solve from a third party's tradeline",
-    "task57": "task57 separates candidate measures on a held-out year by an arithmetic identity in sample; here no measure is chosen on a held-out year alone, the record's payoffs separate the senior-lien model from the own-rate model on the loans whose two incentives diverged",
-    "task69": "task69 re-pools an arm contrast within periods of a varying assignment rate; here no experiment is read, the forecast conditions each loan's payoff on the senior lien's incentive",
-    "task76": "task76 removes a zero-conversion class built by a per-unit look-back over a contact log; here no class is removed, each junior lien's payoff probability varies with the senior mortgage's rate against the planning path"
+    "task228": "task228 sets a false-alarm budget per monitored run from runs disturbed by mid-run configuration changes; here no alarm or budget is set, the pick is the region whose junior liens will pay off most, each loan's payoff read off the whole stack's blended rate (the first mortgage and the second at their balances) against the posted 30-year rate",
+    "task268": "task268 carries a sample's on-site rate by member kind onto complete attachments; here nothing is carried from a sample onto a census, each junior lien's 2027 payoff is read off the blended rate of the stack it sits in, fitted on every past payoff",
+    "task28": "task28 conditions an at-stake volume on a portability property recovered through a credential join after level-matching a published gap; here the conditioning property is a blend of two rates at two moving balances, one recovered by an amortization solve from the senior lien the lending file took from a credit report, and it decides which junior liens leave in a refinance wave",
+    "task30": "task30 measures a change on the subset of events a procedure leaves unadjusted; here no subset is read for bias, every junior lien's exit is conditioned on the blended rate of the debt on the house",
+    "task32": "task32 conditions an offer's realised yield on the collection programme behind it; here the conditioned quantity is a loan's payoff hazard, set by the blended rate of the stack it sits in (the senior mortgage ahead of it and the loan itself at their balances) under a forward rate path",
+    "task53": "task53 pools eligible volume per account against an unstated scale break after an eligibility screen; here no break or screen decides, the payoff hazard follows a continuous incentive of the whole stack",
+    "task167": "task167 reads a fund's draw schedule from funds financed like it, a class read from entry data; here no class is read from entry data, each loan's exit is set by the blended rate of the senior mortgage and the loan itself at their balances, the senior's rate recovered from the lending file's senior lien",
+    "task31": "task31 splits a lag on whether a provider already holds a prior approval; here no lag is split, the forward hazard of each junior lien follows the refinance incentive of the whole stack it sits in",
+    "task448": "task448 completes a register from a second list whose capture depends on filing route; here nothing is completed or captured, a junior lien's payoff follows the blended rate of the stack it sits in",
+    "task471": "task471 estimates absent units from a field audit by stay length and prior departures; here no audit or absence is estimated, each junior lien's 2027 payoff is read off the stack's blended rate under the planning path",
+    "task500": "task500 reads a spillover on untouched units linked through another entity's register; here no causal spillover is estimated, a junior lien is retired when the whole stack is refinanced or sold, and the senior's rate is recovered by an amortization solve from the senior lien the lending file took from a credit report",
+    "task57": "task57 separates candidate measures on a held-out year by an arithmetic identity in sample; here no measure is chosen on a held-out year alone, the record's payoffs select the stack's blended incentive over the own-rate, first-alone, two-incentive and lien-by-lien models",
+    "task69": "task69 re-pools an arm contrast within periods of a varying assignment rate; here no experiment is read, the forecast conditions each loan's payoff on the blended rate of the stack it sits in",
+    "task76": "task76 removes a zero-conversion class built by a per-unit look-back over a contact log; here no class is removed, each junior lien's payoff probability varies with the stack's blended rate against the planning path"
   },
   "lineage": [
     {
@@ -119,6 +133,6 @@
       "stump": "A strong solver prepays the 2023-24 mortgages on an incentive curve fitted to the bank's own loan history at the planning rate, runs the CRE loans to their contractual maturities and designates the agency MBS; the step that lands it there is paying the 2027 CRE balloons off on schedule (or at the recent extension share, or by rate gap), when the bank's maturity record shows that loans whose property income no longer covers a new loan at the prevailing CRE rate take the bank's one 36-month extension, and over nine-tenths of the 2027 wall's principal is such loans."
     }
   ],
-  "notes": "Re-root of the slot after portal round 1. Subdomain: the client taxonomy files prepayment behaviour with deposit behaviour under deposit-liquidity-behaviour (the rigor group deposit-prepayment-interest-rate-behavior), which serves forecasting. Gate G: the decisive gap is population (what drives one loan's exit), which stumping 1.4 maps to method_or_model_selection: the record selects the senior-lien payoff model over the own-rate model on the loans whose incentives diverged. Org family: a credit union is a member-owned depository institution, read as financial_institution. Forum: the credit union's management lending committee; forcing event: the pilot opens in one region on 4 January 2027 (launch_or_rollout). Decision: a pick of one of four regions with its 2027 payoff figure; a plain run-off figure for the plan was the first framing and repeats task170 v5's gap, pattern and decision type inside the batch, and the pilot is the decision the payoff forecast genuinely serves.",
+  "notes": "Re-root of the slot after portal round 1. Subdomain: the client taxonomy files prepayment behaviour with deposit behaviour under deposit-liquidity-behaviour (the rigor group deposit-prepayment-interest-rate-behavior), which serves forecasting. Gate G: the decisive gap is population (what drives one loan's exit), which stumping 1.4 maps to method_or_model_selection: the record selects the stack's blended-incentive payoff model over the own-rate, first-alone, two-incentive and lien-by-lien models (deviance 48,888 against 49,295 to 52,395). Org family: a credit union is a member-owned depository institution, read as financial_institution. Forum: the credit union's management lending committee; forcing event: the pilot opens in one region on 4 January 2027 (launch_or_rollout). Decision: a pick of one of four regions with its 2027 payoff figure; a plain run-off figure for the plan was the first framing and repeats task170 v5's gap, pattern and decision type inside the batch, and the pilot is the decision the payoff forecast genuinely serves. Stage 2 redesign of the decisive step within architecture 2 (2026-10-25): the first mortgage's own incentive, the lock-in, is the reflex a 2026 model takes once it sees the senior lien, and it names the Lakeshore; the decisive step is the whole stack's blended rate at the two balances against the posted 30-year rate, which names Muskegon and the North. The forcing file is the lending system's senior lien taken from the credit report at application (the first's rate recovered by the amortization identity on its original amount, term and reported balance), not a bureau refresh.",
   "registered": "2026-10-25T17:31:36Z"
 }

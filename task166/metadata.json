@@ -1,224 +1,186 @@
 {
   "task": "task166",
-  "title": "Which fixed-rate pool a Pittsburgh regional bank's one $1.2 billion four-year pay-fixed swap overlay is designated against, ranked on the +200 basis point loss in economic value averaged over the swap's first year, when the 2023-24 mortgages lose most on last year's speed and most of the commercial real estate balloons due in 2027 cannot be refinanced at the planning cycle's rate",
+  "title": "Which of a West Michigan credit union's four regional lending centers opens its 2027 payoff-retention pilot, by the fixed-rate home equity principal each region's members will pay off in 2027, when the largest new home equity loans sit behind small seasoned first mortgages",
   "domain": "Banking, Credit & Financial Risk",
   "client_domain": "Banking, Credit & Financial Risk",
   "house_domain": "banking-credit-financial-risk",
-  "subdomain": "stress-testing-capital (interest-rate risk in the banking book: each fixed-rate pool's +200 bp loss in economic value through the swap's first year, on base-case cash flows that need each pool's behaviour forecast: mortgage prepayment at the planning rate, commercial real estate balloons extended by their refinance cover)",
+  "subdomain": "deposit-liquidity-behaviour (home equity prepayment: each region's 2027 payoffs of fixed-rate closed-end seconds under the planning cycle's base case)",
   "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "a committed designation (one of five pools) with its averaged +200 bp loss to the nearest $10 million, a table of the hedge programme's notional in effect at each 2027 quarter-end for its overlays, funding hedges and loan hedges, and a two-slide ALCO deck charting it",
+  "prompt_shape": "a committed pick of one of four regional lending centers with its 2027 principal paid ahead of schedule to the nearest $10 million and the center second, a table of loans quoted a payoff and of those paid in full by center and quarter (32 counts), and a stacked bar chart of the quotes",
   "as_of": "2026-12-03",
   "deliverables": [
-    "overlay_designation_2027.xlsx",
-    "overlay_designation_alco.pptx"
+    "he_payoff_pilot_2027.xlsx",
+    "payoff_quotes_by_center.png"
   ],
   "distractor_files": [
-    "deposit_decay_study_2026.xlsx",
-    "mortgage_lock_pipeline_20261130.csv"
+    "heloc_lines_2026-11.csv",
+    "county_house_price_index_2019q1_2026q3.csv"
   ],
-  "field_terms": [
-    "ladder"
-  ],
+  "field_terms": [],
   "stated_inputs": [],
   "input_gates": {
-    "files": 20,
+    "files": 16,
     "formats": [
       "csv",
       "pdf",
       "txt",
       "xlsx"
     ],
-    "largest_file": "servicing_monthly_2024-09_2026-11.csv",
-    "largest_file_rows": 116277
+    "largest_file": "core_he_trial_balance_2024-09_2026-11.csv",
+    "largest_file_rows": 197078
   },
   "sources": [
     {
       "files": "all files under target/",
-      "origin": "constructed for this task by task166/generator/build.py (seeded, deterministic) around a fictional Pittsburgh bank holding company, in the layouts of a mortgage servicing platform's monthly loan extract before and after a conversion, a commercial loan system, a credit administration log and review file, a custodian's holdings statement, an agency pool factor history, a consumer loan tape and roll, a treasury system's swap register and a clearing broker's statement, office workbooks and PDF documents; the securities, pools and identifiers are constructed and are not an agency's or a custodian's release, and no real organisation's records or person is depicted.",
+      "origin": "constructed for this task by task166/generator/build.py (seeded, deterministic) around a fictional West Michigan credit union, in the layouts of a credit union's legacy and new core systems, a lending system, a mortgage servicing system, a payoff statement system, a pricing desk's rate sheets, office workbooks and PDF documents; the members, loans, addresses and creditors are constructed, and no real organisation's records or person is depicted.",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work)"
     }
   ],
-  "created": "2026-10-18",
+  "created": "2026-10-25",
   "generator": "task166/generator/build.py",
   "files": [
     {
-      "path": "agency_pool_factors.csv",
-      "format": "csv",
-      "bytes": 90869,
-      "rows": 2333,
-      "source": "Constructed: Carrick Valley Bank investment accounting, monthly factors of the agency pools held (constructed pools; not an agency release)",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
       "path": "alm_report_2026_q3.pdf",
       "format": "pdf",
-      "bytes": 42255,
+      "bytes": 42271,
       "rows": null,
-      "source": "Constructed: Carrick Valley Bank ALM, report for the third quarter of 2026 (14 October 2026)",
+      "source": "Constructed: Hollowell Community Credit Union ALM report for the third quarter of 2026 (16 October 2026)",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "balance_sheet_hedging_policy.pdf",
-      "format": "pdf",
-      "bytes": 42622,
-      "rows": null,
-      "source": "Constructed: Carrick Valley Bancorp treasury, balance sheet hedging policy version 1.0 (24 March 2026)",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "clearing_statement_20261130.csv",
+      "path": "core_conversion_xref.csv",
       "format": "csv",
-      "bytes": 3445,
-      "rows": 31,
-      "source": "Constructed: Carrick Valley Bank clearing broker statement of cleared swaps, 30 November 2026 (constructed)",
+      "bytes": 281183,
+      "rows": 5406,
+      "source": "Constructed: Hollowell Community Credit Union core conversion, legacy loan and member numbers to new (September 2024)",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "cre_maturity_log.xlsx",
-      "format": "xlsx",
-      "bytes": 68789,
-      "rows": 889,
-      "source": "Constructed: Carrick Valley Bank credit administration, commercial real estate maturity log, 2015 to 2026",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "cre_operating_statements.csv",
+      "path": "core_he_trial_balance_2024-09_2026-11.csv",
       "format": "csv",
-      "bytes": 396689,
-      "rows": 6040,
-      "source": "Constructed: Carrick Valley Bank credit administration, borrowers' annual operating statements as reviewed, from 2013",
+      "bytes": 23602901,
+      "rows": 197078,
+      "source": "Constructed: Hollowell Community Credit Union core system, monthly trial balance of fixed-rate home equity loans, September 2024 to November 2026",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "cre_term_loans_20261130.csv",
+      "path": "county_house_price_index_2019q1_2026q3.csv",
       "format": "csv",
-      "bytes": 121282,
-      "rows": 747,
-      "source": "Constructed: Carrick Valley Bank commercial loan system, commercial real estate term loans at 30 November 2026",
+      "bytes": 9958,
+      "rows": 403,
+      "source": "Constructed: Hollowell Community Credit Union ALM market data, county house price index (constructed, not an agency release)",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "custody_holdings_20261130.csv",
+      "path": "county_region_map.csv",
       "format": "csv",
-      "bytes": 10281,
-      "rows": 71,
-      "source": "Constructed: Carrick Valley Bank custodian statement of the available-for-sale account, 30 November 2026 (constructed holdings and identifiers)",
+      "bytes": 680,
+      "rows": 15,
+      "source": "Constructed: Hollowell Community Credit Union lending administration, counties of the regional lending centers",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "deposit_decay_study_2026.xlsx",
-      "format": "xlsx",
-      "bytes": 8068,
-      "rows": 55,
-      "source": "Constructed: Carrick Valley Bank ALM, non-maturity deposit study 2026",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "extract_notes.txt",
+      "path": "data_dictionary.txt",
       "format": "txt",
-      "bytes": 6783,
+      "bytes": 10450,
       "rows": null,
-      "source": "Constructed: Carrick Valley Bank ALM, notes on the files pulled for the overlay designation memo (3 December 2026)",
+      "source": "Constructed: Hollowell Community Credit Union lending analytics, data dictionary of the files pulled 3 December 2026",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "indirect_auto_monthly_roll.csv",
+      "path": "export_manifest.csv",
       "format": "csv",
-      "bytes": 4113,
-      "rows": 47,
-      "source": "Constructed: Carrick Valley Bank consumer finance, indirect auto portfolio roll by month from January 2023",
+      "bytes": 1594,
+      "rows": 16,
+      "source": "Constructed: Hollowell Community Credit Union lending analytics, list of the files pulled 3 December 2026",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "indirect_auto_tape_20261130.csv",
+      "path": "first_mortgage_servicing_2026-11.csv",
       "format": "csv",
-      "bytes": 4054138,
-      "rows": 51846,
-      "source": "Constructed: Carrick Valley Bank consumer loan system, indirect auto loans at 30 November 2026",
+      "bytes": 429104,
+      "rows": 3713,
+      "source": "Constructed: Hollowell Community Credit Union mortgage servicing system, first mortgages active at 30 November 2026 or paid in full since January 2025",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "mortgage_lock_pipeline_20261130.csv",
+      "path": "he_lending_file_2009-2026.csv",
       "format": "csv",
-      "bytes": 31463,
-      "rows": 398,
-      "source": "Constructed: Carrick Valley Bank mortgage pipeline, rate locks outstanding at 30 November 2026",
+      "bytes": 2992175,
+      "rows": 16490,
+      "source": "Constructed: Hollowell Community Credit Union lending system, funded fixed-rate home equity loans since 2009 with the senior lien as underwritten",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "planning_cycle_2027_base_case.xlsx",
+      "path": "heloc_lines_2026-11.csv",
+      "format": "csv",
+      "bytes": 248157,
+      "rows": 2650,
+      "source": "Constructed: Hollowell Community Credit Union core system, home equity lines of credit at 30 November 2026",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "legacy_he_loans_2019-01_2024-08.csv",
+      "format": "csv",
+      "bytes": 885391,
+      "rows": 8823,
+      "source": "Constructed: Hollowell Community Credit Union legacy core, home equity loan master archived at the 1 September 2024 conversion (loans on the books at any month-end from December 2018 to August 2024)",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "lending_policy_7-4_he_payoff_forecast.pdf",
+      "format": "pdf",
+      "bytes": 42086,
+      "rows": null,
+      "source": "Constructed: Hollowell Community Credit Union Lending Policy section 7.4, version 1.0 (21 October 2026)",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "payoff_statement_log_2025-10_2026-11.csv",
+      "format": "csv",
+      "bytes": 331997,
+      "rows": 3172,
+      "source": "Constructed: Hollowell Community Credit Union payoff statement system, requests October 2025 to November 2026",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "payoff_statements_manual_2026-03.xlsx",
       "format": "xlsx",
-      "bytes": 8508,
-      "rows": 29,
-      "source": "Constructed: Carrick Valley Bank ALCO planning cycle, 2027 plan, base case (21 September 2026)",
+      "bytes": 11911,
+      "rows": 92,
+      "source": "Constructed: Hollowell Community Credit Union payoff desk, statements prepared by hand during the March 2026 upgrade",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     },
     {
-      "path": "rate_sheet_archive.csv",
-      "format": "csv",
-      "bytes": 140227,
-      "rows": 2089,
-      "source": "Constructed: Carrick Valley Bank pricing desk, posted rate sheet archive, 2015 to November 2026",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "servicing_conversion_xref.csv",
-      "format": "csv",
-      "bytes": 180814,
-      "rows": 4516,
-      "source": "Constructed: Carrick Valley Bank servicing conversion, legacy loan numbers to loan ids (August 2024)",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "servicing_monthly_2024-09_2026-11.csv",
-      "format": "csv",
-      "bytes": 16993403,
-      "rows": 116277,
-      "source": "Constructed: Carrick Valley Bank mortgage servicing platform, monthly loan extract of the 2023 and 2024 originations, September 2024 to November 2026",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "servicing_monthly_legacy_2023-01_2024-08.csv",
-      "format": "csv",
-      "bytes": 4493226,
-      "rows": 41524,
-      "source": "Constructed: Carrick Valley Bank legacy mortgage servicing platform, monthly loan extract of the 2023 and 2024 originations, cycles January 2023 to August 2024",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "swap_amortisation_schedules.csv",
-      "format": "csv",
-      "bytes": 1336,
-      "rows": 30,
-      "source": "Constructed: Carrick Valley Bank treasury system, notional schedules of the amortizing swaps",
-      "date": "2026-12-03",
-      "license": "CC0-1.0 (original work, constructed for this task)"
-    },
-    {
-      "path": "swap_register_20261130.xlsx",
+      "path": "planning_cycle_2027_rates.xlsx",
       "format": "xlsx",
-      "bytes": 18420,
-      "rows": 161,
-      "source": "Constructed: Carrick Valley Bank treasury system, register of interest-rate swaps at 30 November 2026",
+      "bytes": 10328,
+      "rows": 42,
+      "source": "Constructed: Hollowell Community Credit Union ALM, 2027 planning cycle rates (22 September 2026)",
+      "date": "2026-12-03",
+      "license": "CC0-1.0 (original work, constructed for this task)"
+    },
+    {
+      "path": "posted_rate_sheets_2018-12_2026-11.csv",
+      "format": "csv",
+      "bytes": 113397,
+      "rows": 2475,
+      "source": "Constructed: Hollowell Community Credit Union pricing desk, posted rate sheet archive, December 2018 to November 2026",
       "date": "2026-12-03",
       "license": "CC0-1.0 (original work, constructed for this task)"
     }

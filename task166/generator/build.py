@@ -3,7 +3,8 @@ generator/figures.json, then the checks and the independent verifier, then a sec
 compared byte for byte (and deleted), then target.zip cut from the pack.
 
     python3 task166/generator/build.py              everything
-    python3 task166/generator/build.py --out DIR    the pack only, into DIR"""
+    python3 task166/generator/build.py --out DIR    the pack only, into DIR
+    python3 task166/generator/build.py --pack       the pack into target/ only"""
 from __future__ import annotations
 
 import argparse
@@ -18,68 +19,40 @@ import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import asks as A            # noqa: E402
 import common as K          # noqa: E402
 import docs as DOC          # noqa: E402
 import postprocess as PP    # noqa: E402
 import records as R         # noqa: E402
-import swaps as SW          # noqa: E402
 import world as WD          # noqa: E402
 
 TASK = os.path.dirname(HERE)
-SCRATCH = os.environ.get("TASK166_SCRATCH", "/tmp")
-PULL_DONE = (2026, 12, 3, 16, 48, 0)                       # the pull's end, Pittsburgh (EST)
-MTIME = calendar.timegm((2026, 12, 3, 21, 48, 0, 0, 0, 0))  # the same moment, UTC
-
-
-def world():
-    W = WD.simulate()
-    R.prepare(W)
-    S = SW.build()
-    return W, S
-
-
-def build_data(out, W, S):
-    p = lambda f: os.path.join(out, f)
-    n = {}
-    leg, new, xref = R.servicing_rows(W)
-    n[R.F_LEGACY] = K.write_csv(p(R.F_LEGACY), R.LEGACY_COLS, leg, crlf=True) - 1     # the trailer is not a loan
-    n[R.F_SERV] = K.write_csv(p(R.F_SERV), R.SERV_COLS, new)
-    n[R.F_XREF] = K.write_csv(p(R.F_XREF), R.XREF_COLS, xref)
-    n[R.F_RATES] = K.write_csv(p(R.F_RATES), R.RATE_COLS, R.rate_rows(W))
-    n[R.F_CRE] = K.write_csv(p(R.F_CRE), R.CRE_COLS, R.cre_rows(W))
-    n[R.F_STMT] = K.write_csv(p(R.F_STMT), R.STMT_COLS, R.stmt_rows(W))
-    n[R.F_CUSTODY] = K.write_csv(p(R.F_CUSTODY), R.CUSTODY_COLS, R.custody_rows(W))
-    n[R.F_FACTORS] = K.write_csv(p(R.F_FACTORS), R.FACTOR_COLS, R.factor_rows(W))
-    n[R.F_AUTO] = K.write_csv(p(R.F_AUTO), R.AUTO_COLS, R.auto_rows(W))
-    n[R.F_ROLL] = K.write_csv(p(R.F_ROLL), R.ROLL_COLS, R.roll_rows(W))
-    n[R.F_SCHED] = K.write_csv(p(R.F_SCHED), R.SCHED_COLS, R.sched_rows(S))
-    n[R.F_CLEAR] = K.write_csv(p(R.F_CLEAR), R.CLEAR_COLS, R.clear_rows(S))
-    n[R.F_LOCKS] = K.write_csv(p(R.F_LOCKS), R.LOCK_COLS, R.lock_rows(W))
-    return n
-
+SCRATCH = os.environ.get("TASK166_SCRATCH", os.path.join(TASK, ".scratch"))
+PULL_DONE = (2026, 12, 3, 16, 12, 0)                       # the pull's end, Grand Rapids (EST)
+MTIME = calendar.timegm((2026, 12, 3, 21, 12, 0, 0, 0, 0))  # the same moment, UTC
 
 CONTAINERS = [
-    (DOC.F_LOG, "Jeff Guzman", "Jeff Guzman", "2015-01-12T15:20:00Z", "2026-12-02T19:41:00Z", True),
-    (DOC.F_PLAN, "Sheri Roberts", "Sheri Roberts", "2026-09-08T13:05:00Z", "2026-09-22T20:18:00Z", True),
-    (DOC.F_REGISTER, "Treasury Reporting", "Treasury Reporting", "2026-12-01T11:02:00Z", "2026-12-01T11:02:00Z", True),
-    (DOC.F_NMD, "Sheri Roberts", "Sheri Roberts", "2026-07-20T14:31:00Z", "2026-08-14T18:52:00Z", True),
+    (DOC.F_PLAN, K.PEOPLE["alm"], K.PEOPLE["alm"], "2026-09-15T13:05:00Z", "2026-09-22T19:44:00Z"),
+    (A.F_MANUAL, "Payoff Desk", K.PEOPLE["servicing"], "2026-03-09T13:21:00Z", "2026-03-23T14:02:00Z"),
 ]
-PDFS = [(DOC.F_POLICY, b"D:20260325101400-04'00'", b"D:20260325101400-04'00'"),
-        (DOC.F_ALM, b"D:20261014162000-04'00'", b"D:20261014162000-04'00'")]
+PDFS = [(DOC.F_POLICY, b"D:20261021103300-04'00'", b"D:20261021103300-04'00'"),
+        (DOC.F_ALM, b"D:20261016151800-04'00'", b"D:20261016151800-04'00'")]
 
 
 def normalize(out):
-    for f, cr, lb, c, m, xl in CONTAINERS:
-        PP.normalize_ooxml(os.path.join(out, f), cr, lb, c, m, excel=xl, company=K.BANK)
+    for f, cr, lb, c, m in CONTAINERS:
+        PP.normalize_ooxml(os.path.join(out, f), cr, lb, c, m, excel=True, company=K.CU)
     for f, c, m in PDFS:
         PP.normalize_pdf(os.path.join(out, f), c, m)
 
 
 def build(out, quiet=False):
     os.makedirs(out, exist_ok=True)
-    W, S = world()
-    n = build_data(out, W, S)
-    DOC.write_all(out, W, S, n)
+    W = WD.simulate_world()
+    ids, n = R.write_all(out, W)
+    heloc = R.heloc_rows(W, ids)
+    n.update(A.write_all(out, W, ids, heloc))
+    DOC.write_all(out, W, n)
     normalize(out)
     for f in os.listdir(out):
         os.utime(os.path.join(out, f), (MTIME, MTIME))
@@ -87,7 +60,7 @@ def build(out, quiet=False):
         for f in sorted(os.listdir(out)):
             print("  %-46s %10d bytes %s" % (f, os.path.getsize(os.path.join(out, f)),
                                               ("%d rows" % n[f]) if f in n else ""))
-    return W, S, n
+    return W, ids, n
 
 
 def digest(folder):
@@ -114,6 +87,7 @@ def cut_zip(root):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out")
+    ap.add_argument("--pack", action="store_true")
     ap.add_argument("--no-rebuild", action="store_true")
     ap.add_argument("--no-checks", action="store_true")
     a = ap.parse_args()
@@ -123,7 +97,9 @@ def main():
     target = os.path.join(TASK, "target")
     if os.path.isdir(target):
         shutil.rmtree(target)
-    W, S, n = build(target)
+    W, ids, n = build(target)
+    if a.pack:
+        return
     import deliver
     deliver.main(target, os.path.join(TASK, "golden"), os.path.join(HERE, "figures.json"))
     import metadata
@@ -134,6 +110,7 @@ def main():
         r2 = subprocess.run([sys.executable, os.path.join(HERE, "verify.py"), target])
     same = same_g = same_f = True
     if not a.no_rebuild:
+        os.makedirs(SCRATCH, exist_ok=True)
         tmp = tempfile.mkdtemp(prefix="b166_", dir=SCRATCH)
         try:
             build(os.path.join(tmp, "target"), quiet=True)
@@ -145,6 +122,8 @@ def main():
             print("rebuild byte-identical: target %s, golden %s, figures %s" % (same, same_g, same_f))
         finally:
             shutil.rmtree(tmp)
+            if not os.listdir(SCRATCH):
+                os.rmdir(SCRATCH)
     z = cut_zip(TASK)
     print("zip", z, hashlib.sha256(open(z, "rb").read()).hexdigest())
     bad = (r1 is not None and r1.returncode) or (r2 is not None and r2.returncode)

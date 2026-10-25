@@ -1,18 +1,16 @@
-"""The clean truth of task166's world: the bank's rate sheets, its five fixed-rate pools and every behaviour that
-generates their records. Nothing here is shipped as is; records.py writes the pack from it in the systems' own layouts.
-Behaviour parameters live only here; the golden (calc.py) estimates everything from the shipped files.
+"""The clean truth of task166's world: the credit union's posted rates, its members' home equity loans and the first
+mortgages ahead of them, and every behaviour that generates their records. Nothing here ships as is; records.py writes
+the pack from it in the systems' own layouts. Behaviour parameters live only here; calc.py estimates everything from
+the shipped files.
 
-Pools at the close on 30 November 2026:
-  T    Treasury ladder (available-for-sale notes bought 2021 to 2026)
-  MBS  agency pass-throughs bought in 2020 and 2021 (mostly 15-year)
-  M    2023-24 residential mortgages held for investment (portfolio jumbo)
-  AUTO indirect auto loans
-  CRE  fixed-rate commercial real estate term loans"""
+A member pays a closed-end second off when the house is sold or when the member refinances the debt on it. The
+refinance is driven by the whole stack: the first mortgage and the second at their balances, their blended rate against
+a new first mortgage at the posted 30-year rate (a cash-out refinance prices a quarter point above it)."""
 from __future__ import annotations
 
 import datetime as dt
-import bisect
 import math
+from dataclasses import dataclass, field
 
 import numpy as np
 
@@ -20,705 +18,361 @@ import common as K
 
 mo, ym = K.mo, K.ym
 
+# ------------------------------------------------------------------------------------------------- posted rates
+ANNUAL_30 = {2002: 6.62, 2003: 5.93, 2004: 5.94, 2005: 5.97, 2006: 6.51, 2007: 6.44, 2008: 6.13, 2009: 5.14,
+             2010: 4.79, 2011: 4.55, 2012: 3.76, 2013: 4.08, 2014: 4.27, 2015: 3.95, 2016: 3.75, 2017: 4.09,
+             2018: 4.64}
+MONTHLY_30 = {
+    2019: [4.55, 4.47, 4.37, 4.24, 4.17, 3.90, 3.87, 3.72, 3.71, 3.79, 3.80, 3.82],
+    2020: [3.72, 3.57, 3.55, 3.41, 3.33, 3.26, 3.12, 3.04, 2.99, 2.93, 2.87, 2.78],
+    2021: [2.84, 2.91, 3.18, 3.16, 3.06, 3.08, 2.97, 2.94, 3.00, 3.17, 3.17, 3.20],
+    2022: [3.55, 3.86, 4.27, 5.08, 5.33, 5.62, 5.51, 5.32, 6.21, 7.00, 6.91, 6.46],
+    2023: [6.37, 6.36, 6.64, 6.44, 6.53, 6.81, 6.94, 7.17, 7.30, 7.72, 7.54, 6.92],
+    2024: [6.84, 6.98, 7.02, 7.20, 7.26, 7.12, 7.05, 6.80, 6.58, 6.70, 7.01, 6.92],
+    2025: [7.16, 7.04, 6.85, 6.93, 7.02, 7.02, 6.92, 6.85, 6.66, 6.58, 6.56, 6.59],
+    2026: [6.64, 6.68, 6.75, 6.82, 6.86, 6.80, 6.72, 6.66, 6.62, 6.68, 6.74, 6.71],
+}
+# the planning cycle's base case, December 2026 then each month of 2027 (the 30-year fixed, monthly average)
+PLAN_30 = [6.62, 6.45, 6.10, 5.85, 5.65, 5.55, 5.48, 5.42, 5.37, 5.32, 5.28, 5.24, 5.20]
+HE_SPREAD = {120: 1.70, 180: 1.95, 240: 2.20}     # posted fixed home equity rate over the 30-year, by term
+M15_SPREAD = 0.62                                  # the 15-year fixed below the 30-year
+CASH_OUT = 0.25                                    # a cash-out refinance prices this far above the posted 30-year
 
-def path(knots, start, end):
-    """monthly path, linear between (year, month) knots, as {ordinal: value}"""
-    xs = [mo(y, m) for (y, m) in knots]
-    ys = list(knots.values())
-    return {o: float(np.interp(o, xs, ys)) for o in range(start, end + 1)}
-
-
-# ------------------------------------------------------------------------------------------------- rate targets
-# the bank's posted 30-year portfolio jumbo rate, monthly level the weekly sheets move around, per cent
-J30_TARGET = {mo(2022, 1) + i: v for i, v in enumerate([
-    3.55, 3.95, 4.45, 5.05, 5.35, 5.75, 5.55, 5.40, 6.05, 6.95, 6.80, 6.45,        # 2022
-    6.30, 6.40, 6.55, 6.40, 6.60, 6.75, 6.85, 7.05, 7.20, 7.40, 7.25, 6.95,        # 2023
-    7.05, 7.10, 7.15, 7.25, 7.20, 7.05, 6.90, 6.55, 6.25, 6.50, 6.90, 6.95,        # 2024
-    7.00, 6.90, 6.85, 6.95, 7.00, 6.95, 6.90, 6.75, 6.45, 6.40, 6.70, 6.80,        # 2025
-    6.75, 6.80, 6.85, 6.80, 6.75, 6.70, 6.65, 6.70, 6.75, 6.80, 6.85])}           # 2026 to November
-# the 15-year conforming rate (the agency pools' borrowers), per cent
-C15_TARGET = {mo(2019, 1) + i: v for i, v in enumerate(
-    list(np.round(np.interp(np.arange(36), [0, 8, 14, 20, 24, 30, 35], [4.05, 3.15, 2.95, 2.55, 2.30, 2.25, 2.35]), 2)) +
-    [2.85, 3.25, 3.70, 4.30, 4.55, 4.90, 4.75, 4.65, 5.20, 6.10, 6.00, 5.70,      # 2022
-     5.60, 5.75, 5.85, 5.70, 5.90, 6.05, 6.15, 6.45, 6.65, 7.00, 6.75, 6.10,      # 2023
-     5.95, 6.10, 6.15, 6.40, 6.35, 6.20, 6.05, 5.75, 5.40, 5.60, 6.00, 6.05,      # 2024
-     6.15, 6.05, 5.95, 5.95, 6.00, 5.95, 5.85, 5.75, 5.55, 5.50, 5.65, 5.85,      # 2025
-     6.00, 6.10, 6.20, 6.25, 6.30, 6.30, 6.25, 6.15, 6.10, 6.05, 6.00])}          # 2026 to November
-# the bank's posted five-year fixed CRE rate, per cent
-CRE5_TARGET = path({(2007, 1): 6.30, (2009, 1): 5.95, (2010, 6): 5.45, (2012, 6): 4.45, (2013, 1): 4.25,
-                    (2013, 9): 4.95, (2015, 1): 4.45, (2016, 7): 3.95, (2017, 1): 4.55, (2018, 11): 5.30,
-                    (2019, 9): 4.15, (2020, 3): 3.80, (2020, 8): 3.25, (2021, 6): 3.35, (2021, 12): 3.65,
-                    (2022, 3): 4.30, (2022, 6): 5.30, (2022, 10): 6.45, (2023, 3): 6.65, (2023, 10): 7.45,
-                    (2024, 1): 6.75, (2024, 4): 7.05, (2024, 9): 6.35, (2025, 1): 6.90, (2025, 9): 6.55,
-                    (2026, 3): 6.85, (2026, 11): 6.80}, mo(2007, 1), K.ASOF_M)
-# one-month SOFR (floating CRE coupons), per cent
-SOFR = path({(2022, 1): 0.05, (2022, 6): 1.50, (2022, 12): 4.30, (2023, 7): 5.30, (2024, 8): 5.33, (2024, 12): 4.45,
-             (2025, 9): 4.30, (2025, 12): 3.90, (2026, 6): 3.75, (2026, 11): 3.70}, mo(2022, 1), K.ASOF_M)
-# market capitalisation rate behind the bank's appraisals (truth only), per cent
-CAP = path({(2007, 1): 6.6, (2009, 6): 7.8, (2012, 1): 7.0, (2015, 1): 6.3, (2019, 1): 6.0, (2020, 6): 6.1,
-            (2021, 6): 5.4, (2022, 3): 4.85, (2022, 9): 5.3, (2023, 6): 6.1, (2024, 6): 6.6, (2026, 11): 6.7},
-           mo(2007, 1), K.ASOF_M)
-# property income level of the bank's markets (truth only): flat to 2016, up to 2020, a dip, the 2021-22 surge,
-# then expenses (insurance, taxes, payroll) running ahead of rents from 2023
-NOI_IDX = path({(2006, 1): 0.92, (2009, 6): 0.86, (2012, 1): 0.92, (2016, 1): 1.02, (2019, 12): 1.08, (2020, 6): 1.03,
-                (2021, 6): 1.06, (2022, 4): 1.15, (2023, 6): 1.16, (2024, 6): 1.14, (2025, 6): 1.12, (2026, 11): 1.09},
-               mo(2006, 1), K.ASOF_M)
-
-SEASON = [0.74, 0.80, 0.96, 1.06, 1.16, 1.24, 1.26, 1.20, 1.06, 0.96, 0.84, 0.72]   # home-sale turnover by month
+START = mo(2002, 1)
+END = mo(2027, 12)
 
 
-# ------------------------------------------------------------------------------------------------- the rate sheets
-# product code, first sheet month, target path, rounding step, spread to the target
-PRODUCTS = [
-    ("J30F", mo(2022, 1), "J30", 0.125, 0.0),     # portfolio jumbo 30-year fixed
-    ("J15F", mo(2022, 1), "J30", 0.125, -0.55),   # portfolio jumbo 15-year fixed
-    ("C30F", mo(2019, 1), "C15", 0.125, 0.70),    # conforming 30-year fixed
-    ("C15F", mo(2019, 1), "C15", 0.125, 0.0),     # conforming 15-year fixed
-    ("CRE5F", mo(2015, 1), "CRE5", 0.05, 0.0),    # commercial real estate five-year fixed
-]
+def _rate_path():
+    M = np.zeros(END + 1)
+    g = K.rng(1)
+    # annual levels interpolated through mid-year knots, with a small within-year wander
+    xs = [mo(y, 7) for y in sorted(ANNUAL_30)] + [mo(2019, 1)]
+    ys = [ANNUAL_30[y] for y in sorted(ANNUAL_30)] + [MONTHLY_30[2019][0]]
+    for o in range(START, mo(2019, 1)):
+        M[o] = float(np.interp(o, xs, ys)) + g.normal(0, 0.07)
+    for y, vs in MONTHLY_30.items():
+        for k, v in enumerate(vs):
+            M[mo(y, k + 1)] = v
+    for k, v in enumerate(PLAN_30):
+        M[mo(2026, 12) + k] = v
+    return np.round(M, 2)
 
 
-def mondays(o_start, o_end):
-    y, m = ym(o_start)
-    d = dt.date(y, m, 1)
-    d += dt.timedelta(days=(7 - d.weekday()) % 7)
-    end = K.month_end(o_end)
-    out = []
-    while d <= end:
-        out.append(d)
-        d += dt.timedelta(days=7)
-    return out
+M30 = _rate_path()
 
 
-def build_rate_sheets(W):
-    """weekly sheets (a Monday sheet, and an extra mid-week re-price in volatile weeks); the monthly rate the
-    behaviour reads is the average of the sheets issued in the month."""
-    g = K.rng(10)
-    tgt = {"J30": J30_TARGET, "C15": C15_TARGET, "CRE5": CRE5_TARGET}
-    sheets = []
-    for code, start, key, step, spread in PRODUCTS:
-        T = tgt[key]
-        for d in mondays(start, K.ASOF_M):
-            o = mo(d.year, d.month)
-            frac = (d.day - 1) / 31.0
-            nxt = T.get(o + 1, T[o])
-            prv = T.get(o - 1, T[o])
-            # the sheet sits on the month's level, leaning toward its neighbours at the month's edges
-            lvl = T[o] + (nxt - T[o]) * max(0.0, frac - 0.5) * 0.6 + (prv - T[o]) * max(0.0, 0.5 - frac) * 0.6
-            lvl += spread + g.normal(0, 0.035 if step < 0.1 else 0.045)
-            rate = round(lvl / step) * step
-            pts = round(float(g.choice([0.0, 0.125, 0.25, 0.375, 0.5], p=[0.30, 0.20, 0.25, 0.15, 0.10])), 3) \
-                if code != "CRE5F" else 0.0
-            sheets.append((d, code, round(rate, 3), pts))
-            if g.random() < 0.06:                      # a mid-week re-price
-                d2 = d + dt.timedelta(days=int(g.integers(2, 4)))
-                if mo(d2.year, d2.month) <= K.ASOF_M:
-                    r2 = round((lvl + g.normal(0, 0.06)) / step) * step
-                    sheets.append((d2, code, round(r2, 3), pts))
-    sheets.sort(key=lambda s: (s[0], s[1]))
-    W.sheets = sheets
-    mon = {}
-    for d, code, rate, pts in sheets:
-        mon.setdefault((code, mo(d.year, d.month)), []).append(rate)
-    W.rate = {k: float(np.mean(v)) for k, v in mon.items()}
-    W.J30 = {o: W.rate[("J30F", o)] for o in range(mo(2022, 1), K.ASOF_M + 1)}
-    W.C15 = {o: W.rate[("C15F", o)] for o in range(mo(2019, 1), K.ASOF_M + 1)}
-    # the CRE rate before the archive starts is the target path itself (origination rates only)
-    W.CRE5 = {o: (W.rate[("CRE5F", o)] if o >= mo(2015, 1) else CRE5_TARGET[o]) for o in range(mo(2007, 1), K.ASOF_M + 1)}
+def m15(o):
+    return round(M30[o] - M15_SPREAD, 2)
 
 
-# ------------------------------------------------------------------------------------------------- loan arithmetic
-def dc(r_pct, n=300):
-    """annual debt-service constant of a level-payment loan, rate in per cent"""
-    r = np.asarray(r_pct, float) / 1200.0
-    return 12 * r / (1 - (1 + r) ** (-n))
-
-
-def pmt(bal, r_pct, n):
-    r = np.asarray(r_pct, float) / 1200.0
-    n = np.maximum(np.asarray(n, float), 1)
-    return bal * r / (1 - (1 + r) ** (-n))
-
-
-def days_in(o):
-    return K.month_end(o).day
-
-
-def run_balance(b0, r_pct, payment, o_first, n, basis):
-    """balance after each of n monthly payments starting in month o_first; interest on the basis (ACT/360 counts the
-    month's days, 30/360 thirty); the payment is fixed, principal is what it leaves after interest."""
-    B = b0
-    out = []
-    for k in range(n):
-        o = o_first + k
-        days = days_in(o - 1) if basis == "ACT/360" else 30      # interest accrues over the month before the payment
-        intr = B * r_pct / 100.0 * days / 360.0
-        prin = min(payment - intr, B)
-        B = B - prin
-        out.append(B)
-    return out
+def he_posted(o, term):
+    return round(M30[o] + HE_SPREAD[term], 2)
 
 
 # ------------------------------------------------------------------------------------------------- behaviour (truth)
-M_TURN = 0.0046            # monthly turnover hazard at full seasoning, average month
-M_REFI = 0.0480            # refinancing hazard ceiling
-M_MID, M_W = 0.0062, 0.0021  # incentive midpoint and width (fractions)
-M_CURTAIL = 0.0004         # monthly partial prepayment, share of balance
-M_SCALE = 1.14             # loan size (design): sets the pool's level so the ladder's margins hold
+TH, TS, RMAX = 0.40, 0.15, 0.050      # the refinance response to the stack's incentive: threshold, scale, peak monthly
+TURN = 0.0042                          # monthly sale rate of a settled household
+TURN_YOUNG = 0.45                      # its multiple in the first two years after a purchase
+CURT_P, CURT_LO, CURT_HI = 0.030, 0.005, 0.060
+BIG_CURT_P = 0.0018                    # a large curtailment (a bonus, an inheritance), 20 to 50 per cent
+CHARGE_OFF = 0.00008
 
 
-def m_smm(incent, month_of_year, age):
-    ramp = np.minimum(1.0, 0.45 + 0.55 * np.asarray(age, float) / 12.0)
-    turn = M_TURN * np.asarray([SEASON[(k - 1) % 12] for k in np.atleast_1d(month_of_year)]) * ramp
-    refi = M_REFI / (1.0 + np.exp(-(np.asarray(incent, float) - M_MID) / M_W))
-    return turn + refi
+def refi_h(I):
+    return RMAX / (1.0 + np.exp(-(I - TH) / TS))
 
 
-CRE_C0, CRE_S = 1.10, 0.025  # the 36-month extension: logistic in refinance cover
-CRE_CONV = 0.0              # an extension taken whatever the cover: none (noise there moves the fitted response)
-CONV_BAND = (1.10, 1.35)    # the covers it would be taken at
-CRE_SALE = 0.012            # a sale pending at maturity: six months more on the note's terms
-SALE_MIN = 1.0              # a sale repays the loan only from a property with equity: none below this cover
-CRE_SA = (0.35, 0.05)       # at the extended maturity: to special assets, cover below 1.0 / at or above it
-EXT_PAYDOWN, EXT_AMORT, SALE_EXT_MONTHS = 0.10, 300, 6
-# the push loans' income scale: the one design parameter set against the golden, by a rule written before any route
-# was measured: solved so the file-built cover-logit figure sits within $0.5 million of $150 million, the centre of
-# its $10 million reporting bin
-PUSH_SCALE = 1.065
-CRE_EXT_MONTHS = 36
-CRE_EARLY = 0.0006          # monthly hazard of an early sale payoff (with the prepayment premium)
-# the fixed-rate book's origination intensity (loans a month): flat to 2018, a ramp through 2020-21 to the push of
-# December 2021 to April 2022, a sharp slowdown from May 2022 and a thin tail after
-LAM_FLAT = (3.4, 4.8, 9.0)                  # before 2013, 2013-18, 2019
-LAM_2020 = (6.5, 4.0, 7.0)                  # to March, the April to August pause, September to December
-LAM_RAMP21 = (9.0, 25.0)                    # January to November 2021, linear
-PUSH_FROM, PUSH_TO, PUSH_LAM = mo(2021, 12), mo(2022, 4), 55.0
-# the push's leverage came in through the second half of 2021 and went out through mid-2022: the share of the push's
-# sizing (pro forma rents, the box's full proceeds, interest only) a month's loans carried
-RAMP_IN = (mo(2021, 6), mo(2021, 12))       # zero at the first month, full at the second, linear between
-RAMP_OUT = (0.6, 0.3, 0.1)                  # May, June and July 2022
-LAM_SLOW22 = (10.0, 7.0, 5.0, 4.0, 3.0)     # May to September 2022
-LAM_TAIL = (0.8, 0.5)                       # October 2022 to 2023, then 2024 on
-PUSH_PROFORMA = 1.15        # the push was underwritten on pro forma rents
-POST_DSCR = 1.30            # the cover the box asked for after the push
-PUSH_FIT, PUSH_LOWLEV_P, PUSH_LOWLEV = (0.97, 1.0), 0.0, (0.60, 0.80)
-# interest only to maturity on part of the push (sized on 25-year amortization like the rest)
-IO_P = 0.50
-# term mix (five, seven, ten years); borrowers locked longer terms at the 2020-21 lows
-TERMS, LATE_TERMS, TAIL_TERMS = [0.70, 0.24, 0.06], [0.92, 0.05, 0.03], [0.80, 0.15, 0.05]
-NOI_SD, NOI_SHOCK_P, NOI_SHOCK = 0.03, 0.025, (0.66, 0.86)
-# department-store closings of 2016 to 2019 (Bon-Ton, Sears, the regional chains): a retail centre losing an anchor
-ANCHOR_YEARS, ANCHOR_P, ANCHOR = (2016, 2019), 0.09, (0.45, 0.70)
-# the officer's refinance view on a loan maturing within twelve months of the pull: cover at the posted rate below
-# 1.0, a floor of 6 or 5; from 1.0 to 1.15, a floor of 5
-GR_FLOOR = (0.10, 0.50, 0.30)               # below 1.0: P(floor 6), P(floor 5); 1.0 to 1.15: P(floor 5)
-# the pandemic in property income (truth only): a month's net operating income against its trend, hotels and retail
-HOT_PATH = path({(2020, 2): 1.0, (2020, 3): 0.45, (2020, 4): -0.25, (2020, 5): -0.15, (2020, 6): 0.05,
-                 (2020, 7): 0.20, (2020, 8): 0.25, (2020, 9): 0.20, (2020, 10): 0.20, (2020, 11): 0.10,
-                 (2020, 12): 0.05, (2021, 1): 0.05, (2021, 2): 0.10, (2021, 3): 0.25, (2021, 4): 0.35,
-                 (2021, 5): 0.50, (2021, 6): 0.65, (2021, 7): 0.80, (2021, 8): 0.80, (2021, 9): 0.70,
-                 (2021, 10): 0.70, (2021, 11): 0.65, (2021, 12): 0.60, (2022, 1): 0.70, (2022, 12): 0.95,
-                 (2023, 12): 0.98}, mo(2020, 2), K.ASOF_M)
-RET_PATH = path({(2020, 2): 1.0, (2020, 3): 0.85, (2020, 4): 0.45, (2020, 5): 0.55, (2020, 6): 0.75,
-                 (2020, 7): 0.80, (2020, 8): 0.82, (2020, 9): 0.84, (2020, 10): 0.85, (2020, 12): 0.85,
-                 (2021, 1): 0.86, (2021, 12): 0.92, (2022, 12): 0.96, (2023, 12): 0.97}, mo(2020, 2), K.ASOF_M)
-COVID_SEV = {"HOT": (0.8, 1.2), "RET": (0.6, 2.2)}
-COVID_FLOOR = 0.0
+def turn_h(cal_month, months_since_purchase):
+    seas = 1.0 + 0.35 * np.sin(2 * np.pi * (cal_month - 3) / 12.0)
+    return TURN * seas * np.where(months_since_purchase < 24, TURN_YOUNG, 1.0)
 
 
-def push_w(o):
-    """the share of the push's sizing a month's fixed-rate loans carried"""
-    if o <= RAMP_IN[0] or o > PUSH_TO + len(RAMP_OUT):
-        return 0.0
-    if o < RAMP_IN[1]:
-        return (o - RAMP_IN[0]) / float(RAMP_IN[1] - RAMP_IN[0])
-    if o <= PUSH_TO:
-        return 1.0
-    return RAMP_OUT[o - PUSH_TO - 1]
+def payment(P, rate, n):
+    i = rate / 1200.0
+    return P * i / (1.0 - (1.0 + i) ** (-n))
 
 
-def covid_mult(L, o):
-    """a month's income against its trend for one property"""
-    if L["ptype"] not in COVID_SEV or o < mo(2020, 2):
-        return 1.0
-    m = (HOT_PATH if L["ptype"] == "HOT" else RET_PATH)[min(o, K.ASOF_M)]
-    return max(COVID_FLOOR, 1.0 - L["covid_sev"] * (1.0 - m))
+def sched_balance(P, rate, n, k):
+    """scheduled balance after k payments of a level-payment loan (vectorised)"""
+    i = np.asarray(rate, float) / 1200.0
+    k = np.clip(np.asarray(k, float), 0, None)
+    g = (1.0 + i) ** np.asarray(n, float)
+    b = np.asarray(P, float) * (g - (1.0 + i) ** k) / (g - 1.0)
+    return np.where(k >= n, 0.0, b)
 
 
-def covid_avg(L, end_o):
-    return sum(covid_mult(L, o) for o in range(end_o - 11, end_o + 1)) / 12.0
+# ------------------------------------------------------------------------------------------------- the stacks
+# (region, kind, count, HE funded from, to, boom start or None, first opened from, to, share of 15-year firsts,
+#  first original amount range, HE amount range, share of firsts the credit union holds)
+STREAMS = [
+    ("GR", "tap", 1300, mo(2023, 1), mo(2026, 11), mo(2024, 1), mo(2020, 3), mo(2021, 12), 0.10, (200e3, 340e3), (40e3, 110e3), 0.10),
+    ("GR", "tap", 1100, mo(2023, 1), mo(2026, 11), mo(2024, 1), mo(2012, 1), mo(2016, 12), 0.05, (300e3, 450e3), (40e3, 110e3), 0.10),
+    ("GR", "purchase", 1150, mo(2014, 1), mo(2026, 11), None, None, None, 0.0, (180e3, 360e3), (20e3, 55e3), 0.18),
+    ("GR", "tap", 1200, mo(2014, 1), mo(2022, 6), None, mo(2009, 1), mo(2019, 12), 0.15, (150e3, 280e3), (30e3, 80e3), 0.10),
+    ("GR", "seasoned", 300, mo(2016, 1), mo(2026, 11), None, mo(2003, 1), mo(2013, 12), 0.10, (90e3, 170e3), (50e3, 140e3), 0.12),
+    ("GR", "tap", 380, mo(2009, 1), mo(2013, 12), None, mo(2002, 1), mo(2012, 12), 0.15, (130e3, 240e3), (25e3, 70e3), 0.10),
+    ("LS", "purchase", 1800, mo(2024, 9), mo(2026, 11), None, None, None, 0.0, (260e3, 420e3), (20e3, 45e3), 0.15),
+    ("LS", "purchase", 750, mo(2014, 1), mo(2024, 8), None, None, None, 0.0, (200e3, 360e3), (20e3, 55e3), 0.18),
+    ("LS", "tap", 400, mo(2022, 7), mo(2026, 11), None, mo(2020, 3), mo(2021, 12), 0.10, (220e3, 340e3), (35e3, 90e3), 0.10),
+    ("LS", "tap", 600, mo(2014, 1), mo(2022, 6), None, mo(2009, 1), mo(2019, 12), 0.15, (150e3, 280e3), (30e3, 80e3), 0.10),
+    ("LS", "seasoned", 150, mo(2016, 1), mo(2026, 11), None, mo(2003, 1), mo(2013, 12), 0.10, (90e3, 170e3), (50e3, 140e3), 0.12),
+    ("LS", "tap", 240, mo(2009, 1), mo(2013, 12), None, mo(2002, 1), mo(2012, 12), 0.15, (140e3, 250e3), (25e3, 70e3), 0.10),
+    ("KB", "purchase", 1700, mo(2023, 8), mo(2023, 11), None, None, None, 0.0, (180e3, 300e3), (30e3, 60e3), 0.15),
+    ("KB", "purchase", 600, mo(2014, 1), mo(2026, 11), None, None, None, 0.0, (160e3, 280e3), (20e3, 45e3), 0.18),
+    ("KB", "tap", 600, mo(2014, 1), mo(2022, 6), None, mo(2009, 1), mo(2019, 12), 0.15, (120e3, 240e3), (30e3, 80e3), 0.10),
+    ("KB", "tap", 200, mo(2022, 7), mo(2026, 11), None, mo(2020, 3), mo(2021, 12), 0.10, (150e3, 260e3), (30e3, 80e3), 0.10),
+    ("KB", "seasoned", 150, mo(2016, 1), mo(2026, 11), None, mo(2003, 1), mo(2013, 12), 0.10, (90e3, 170e3), (50e3, 140e3), 0.12),
+    ("KB", "tap", 300, mo(2009, 1), mo(2013, 12), None, mo(2002, 1), mo(2012, 12), 0.15, (110e3, 210e3), (25e3, 65e3), 0.10),
+    ("MN", "seasoned", 1460, mo(2023, 1), mo(2026, 11), mo(2024, 6), mo(2010, 1), mo(2015, 12), 0.0, (110e3, 170e3), (70e3, 112e3), 0.12),
+    ("MN", "seasoned", 120, mo(2014, 1), mo(2022, 12), None, mo(2003, 1), mo(2012, 12), 0.10, (90e3, 170e3), (50e3, 130e3), 0.12),
+    ("MN", "purchase", 900, mo(2014, 1), mo(2026, 11), None, None, None, 0.0, (140e3, 260e3), (20e3, 45e3), 0.18),
+    ("MN", "tap", 300, mo(2022, 7), mo(2026, 11), None, mo(2020, 3), mo(2021, 12), 0.10, (150e3, 260e3), (30e3, 80e3), 0.10),
+    ("MN", "tap", 550, mo(2014, 1), mo(2022, 6), None, mo(2009, 1), mo(2019, 12), 0.15, (110e3, 220e3), (30e3, 75e3), 0.10),
+    ("MN", "tap", 240, mo(2009, 1), mo(2013, 12), None, mo(2002, 1), mo(2012, 12), 0.15, (100e3, 190e3), (25e3, 65e3), 0.10),
+]
 
 
-def cre_lam(o):
-    y, m = ym(o)
-    if y < 2013:
-        return LAM_FLAT[0]
-    if y < 2019:
-        return LAM_FLAT[1]
-    if y == 2019:
-        return LAM_FLAT[2]
-    if y == 2020:
-        return LAM_2020[0] if m < 4 else LAM_2020[1] if m < 9 else LAM_2020[2]
-    if o <= mo(2021, 11):
-        return LAM_RAMP21[0] + (LAM_RAMP21[1] - LAM_RAMP21[0]) * (o - mo(2021, 1)) / 10.0
-    if o <= PUSH_TO:
-        return PUSH_LAM
-    if o <= mo(2022, 9):
-        return LAM_SLOW22[o - mo(2022, 5)]
-    return LAM_TAIL[0] if y <= 2023 else LAM_TAIL[1]
-
-
-def posted_cre(W, d):
-    """the five-year fixed CRE rate on the latest rate sheet issued on or before a date"""
-    if not hasattr(W, "_cre_sheets"):
-        W._cre_sheets = sorted((sd, rate) for sd, code, rate, pts in W.sheets if code == "CRE5F")
-    i = bisect.bisect_right(W._cre_sheets, (d, 99.0)) - 1
-    return W._cre_sheets[i][1] if i >= 0 else float(CRE5_TARGET[mo(d.year, d.month)])
-
-
-def cre_p_ext(cover):
-    return 1.0 / (1.0 + np.exp((np.asarray(cover, float) - CRE_C0) / CRE_S))
-
-
-AUTO_ABS = 0.0128           # auto prepayments: share of original balance each month
-
-
-# ------------------------------------------------------------------------------------------------- the pools
+@dataclass
 class World:
-    pass
+    n: int = 0
+    reg: np.ndarray = None          # region code
+    kind: np.ndarray = None
+    stream: np.ndarray = None
+    o1: np.ndarray = None           # first mortgage opened (month)
+    n1: np.ndarray = None
+    r1: np.ndarray = None
+    F0: np.ndarray = None
+    cu_first: np.ndarray = None
+    o2: np.ndarray = None           # home equity loan funded (month)
+    d2: list = None                 # funded date
+    n2: np.ndarray = None
+    r2: np.ndarray = None
+    H0: np.ndarray = None
+    pmt2: np.ndarray = None
+    score: np.ndarray = None
+    tier: np.ndarray = None
+    cltv: np.ndarray = None
+    value: np.ndarray = None
+    county: list = None
+    city: list = None
+    # outcomes
+    exit_m: np.ndarray = None       # month of exit (payoff, charge-off or maturity), -1 if on the books at the as-of
+    exit_kind: list = None          # "PAYOFF", "SALE", "REFI", "CHARGEOFF", "MATURED"
+    exit_day: list = None
+    exit_bal: np.ndarray = None     # principal retired at exit (the balance before the exit)
+    bal: dict = field(default_factory=dict)       # (i, month) -> month-end balance, from 2019 on (and the funding month)
+    curt: dict = field(default_factory=dict)      # (i, month) -> curtailment that month
+    sched: dict = field(default_factory=dict)     # (i, month) -> scheduled principal that month
 
 
-STATES_M = (["PA"] * 70 + ["OH"] * 18 + ["WV"] * 7 + ["MD"] * 3 + ["NY"] * 2)
+def _months_weights(lo, hi, boom):
+    w = np.ones(hi - lo + 1)
+    if boom is not None:
+        w = np.where(np.arange(lo, hi + 1) >= boom, 1.0, 0.5)
+    return w / w.sum()
 
 
-def build_mortgages(W):
-    """2023-24 portfolio jumbo originations, simulated month by month to the as-of."""
-    g = K.rng(11)
-    loans = []
-    lid = 0
-    for o in range(mo(2023, 1), mo(2024, 12) + 1):
-        y, m = ym(o)
-        lam = 198 if y == 2023 else 261
-        lam *= 1.0 + 0.22 * math.sin((m - 3) / 12 * 2 * math.pi)
-        for _ in range(g.poisson(lam)):
-            lid += 1
-            term = int(g.choice([360, 240, 180], p=[0.88, 0.05, 0.07]))
-            adj = g.choice([-0.125, 0.0, 0.125, 0.25, 0.375, 0.5], p=[0.12, 0.30, 0.24, 0.17, 0.11, 0.06])
-            base = W.J30[o] - (0.55 if term == 180 else 0.25 if term == 240 else 0.0)
-            note = round((base + adj) * 8) / 8
-            bal0 = float(np.clip(np.exp(g.normal(math.log(395000), 0.42)), 120000, 2600000)) * M_SCALE
-            bal0 = round(bal0 / 50) * 50
-            loans.append(dict(lid=lid, orig=o, term=term, note=note, bal0=bal0))
-    W.m_loans = loans
-    hist = []
-    for L in loans:
-        B = L["bal0"]
-        n = L["term"]
-        r = L["note"]
-        L["exit"] = None
-        for o in range(L["orig"] + 1, K.ASOF_M + 1):
-            age = o - L["orig"]
-            k = n - (age - 1)
-            pay = float(pmt(B, r, k))
-            intr = B * r / 1200.0
-            sched = min(pay - intr, B)
-            curt = M_CURTAIL * (B - sched) * (g.random() < 0.35) * 2.6
-            inc = (r - W.J30[o - 1]) / 100.0
-            smm = float(m_smm(inc, ym(o)[1], age)[0])
-            u = g.random()
-            status = "C"
-            if u < smm:
-                status = "PIF"     # paid in full
-            elif u < smm + 0.00012:
-                status = "TRF"     # servicing released (loan sold)
-            if status == "C":
-                Bn = B - sched - curt
-                hist.append((L["lid"], o, B, sched, curt, 0.0, Bn, r, status))
-                B = Bn
-            else:
-                hist.append((L["lid"], o, B, sched, 0.0, B - sched, 0.0, r, status))
-                L["exit"] = (o, status)
-                B = 0.0
-                break
-        L["bal_asof"] = B
-    W.m_hist = hist
-    W.m_pool = [L for L in loans if L["exit"] is None]
-    # loan attributes the servicing system carries (none moves behaviour)
-    ga = K.rng(18)
-    for L in loans:
-        L["state"] = str(ga.choice(STATES_M))
-        L["occ"] = str(ga.choice(["P", "S", "I"], p=[0.90, 0.08, 0.02]))
-        L["ltv"] = int(np.clip(round(ga.normal(72, 9)), 35, 90))
-        L["fico"] = int(np.clip(round(ga.normal(768, 28)), 660, 840))
-        L["purpose"] = str(ga.choice(["P", "R", "C"], p=[0.74, 0.16, 0.10]))
-        L["day"] = int(ga.integers(1, 29))     # origination day of month
-
-
-def build_hfs(W):
-    """conforming loans originated for sale in 2023-24: the servicing system carries them until the agency purchase
-    settles, usually inside two months."""
-    g = K.rng(17)
+def build_stacks():
     rows = []
-    lid = 900000
-    for o in range(mo(2023, 1), mo(2024, 12) + 1):
-        y, m = ym(o)
-        lam = 105 if y == 2023 else 132
-        lam *= 1.0 + 0.25 * math.sin((m - 3) / 12 * 2 * math.pi)
-        for _ in range(g.poisson(lam)):
-            lid += 1
-            term = int(g.choice([360, 180], p=[0.86, 0.14]))
-            note = round((W.C15[o] + (0.70 if term == 360 else 0.0) + g.choice([-0.125, 0, 0.125, 0.25])) * 8) / 8
-            bal0 = round(float(np.clip(np.exp(g.normal(math.log(285000), 0.35)), 80000, 766550)) / 50) * 50
-            months_held = int(g.choice([1, 2, 3], p=[0.55, 0.38, 0.07]))
-            rows.append(dict(lid=lid, orig=o, term=term, note=note, bal0=bal0, held=months_held,
-                             state=str(g.choice(STATES_M)), occ="P", ltv=int(np.clip(round(g.normal(78, 10)), 40, 97)),
-                             fico=int(np.clip(round(g.normal(742, 35)), 620, 830)),
-                             purpose=str(g.choice(["P", "R", "C"], p=[0.70, 0.18, 0.12])), day=int(g.integers(1, 29))))
-    W.hfs = rows
-
-
-PTYPES = ["MF", "OFF", "RET", "IND", "MIX", "HOT"]
-MSAS = [("Pittsburgh", "PA", 0.52), ("Cleveland", "OH", 0.14), ("Columbus", "OH", 0.10), ("Erie", "PA", 0.06),
-        ("Morgantown", "WV", 0.06), ("Wheeling", "WV", 0.04), ("Youngstown", "OH", 0.04), ("State College", "PA", 0.04)]
-
-
-PT_MIX = [0.30, 0.18, 0.19, 0.17, 0.07, 0.09]      # the fixed-rate book by property type, PTYPES' order
-PT_MIX_FLOAT = [0.36, 0.12, 0.13, 0.25, 0.09, 0.05]
-
-
-def lrng(stream, o, j):
-    """one generator per loan and component, keyed by its origination month and its place in the month, so a change
-    in one loan or one knob never moves another loan's draws"""
-    return np.random.default_rng([K.SEED, stream, o, j])
-
-
-def build_cre(W):
-    rows = []
-    lid = 0
-    for o in range(mo(2007, 1), K.ASOF_M + 1):
-        lam = cre_lam(o)
-        push = PUSH_FROM <= o <= PUSH_TO
-        w = push_w(o)
-        for j in range(int(np.random.default_rng([K.SEED, 12, o]).poisson(lam))):
-            g = lrng(12, o, j)
-            lid += 1
-            late = mo(2020, 1) <= o <= mo(2021, 11)
-            tail = o > PUSH_TO
-            base = LATE_TERMS if late else TAIL_TERMS if tail else TERMS
-            term = int(g.choice([60, 84, 120], p=[w + (1 - w) * base[0], (1 - w) * base[1], (1 - w) * base[2]]))
-            amort = int(g.choice([300, 240, 360], p=[0.78, 0.12, 0.10]))
-            io = 0
-            if g.random() < IO_P * w:
-                io = term                            # interest only to maturity
-                amort = 300
-            r0 = round((W.CRE5[o] + g.normal(0.05, 0.12)) * 100) / 100
-            noi0 = float(np.exp(g.normal(math.log(560000), 0.62))) * (1.0 + (PUSH_SCALE - 1.0) * w)
-            value = noi0 / (CAP[o] / 100.0 * math.exp(g.normal(0, 0.05)))
-            if o > PUSH_TO:
-                ltv_max, dscr_min = 0.70 + 0.02 * w, POST_DSCR - (POST_DSCR - 1.25) * w   # the box tightened after
-            elif o >= mo(2021, 12):
-                ltv_max, dscr_min = 0.72, 1.25
-            elif o >= mo(2020, 4):
-                ltv_max, dscr_min = 0.62 + 0.10 * w, 1.25      # pandemic caution, loosening into the push
-            elif o >= mo(2017, 7):
-                ltv_max, dscr_min = 0.75, 1.20      # the 2017-19 credit box
+    for si, (reg, kind, cnt, lo, hi, boom, flo, fhi, f15, Fr, Hr, cus) in enumerate(STREAMS):
+        g = K.rng(10, si)
+        w = _months_weights(lo, hi, boom)
+        for j in range(cnt):
+            o2 = int(g.choice(np.arange(lo, hi + 1), p=w))
+            if kind == "purchase":
+                o1 = o2 - int(g.integers(0, 3))
+                n1 = 360
             else:
-                ltv_max, dscr_min = 0.70, 1.25
-            uw_noi = noi0 * (1.0 + (PUSH_PROFORMA - 1.0) * w)   # the push was sized on pro forma rents
-            b_ltv = ltv_max * uw_noi / (CAP[o] / 100.0 * math.exp(g.normal(0, 0.05)))
-            b_dscr = uw_noi / (dscr_min * float(dc(r0, amort)))   # interest-only loans sized on 25 years too
-            u_ll, u_fit = g.random(), g.random()
-            if push and u_ll < PUSH_LOWLEV_P:     # a rate-and-term refinance took far less than the box allowed
-                lo, hi = PUSH_LOWLEV
-            elif push:                            # cash-out deals took the box's full proceeds
-                lo, hi = PUSH_FIT
-            else:
-                lo, hi = 0.86 + (PUSH_FIT[0] - 0.86) * w, 1.0
-            fit = lo + (hi - lo) * u_fit
-            b0 = min(b_ltv, b_dscr) * fit
-            b0 = round(b0 / 1000) * 1000
-            ptype = str(g.choice(PTYPES, p=PT_MIX))
-            # life: an early sale payoff before maturity (a monthly hazard)
-            u_e = g.random()
-            k_e = int(math.ceil(math.log(1.0 - u_e) / math.log(1.0 - CRE_EARLY))) if u_e > 0 else 10 ** 6
-            mat = o + term
-            early = o + k_e if o + k_e < min(mat, K.ASOF_M + 1) else None
-            # property income by the borrower's fiscal year: a random walk on the market index
-            gw = lrng(14, o, j)
-            walk, noi = 1.0, {}
-            for fy in range(ym(o)[0], 2027):
-                walk *= math.exp(gw.normal(0, NOI_SD))
-                u_s, u_v, u_a, v_a = gw.random(), gw.random(), gw.random(), gw.random()
-                if u_s < NOI_SHOCK_P:
-                    walk *= NOI_SHOCK[0] + (NOI_SHOCK[1] - NOI_SHOCK[0]) * u_v   # a tenant lost, a cost shock
-                if ptype == "RET" and ANCHOR_YEARS[0] <= fy <= ANCHOR_YEARS[1] and u_a < ANCHOR_P:
-                    walk *= ANCHOR[0] + (ANCHOR[1] - ANCHOR[0]) * v_a           # the anchor store closed
-                noi[fy] = walk                    # the walk only; the level comes with the fiscal year's midpoint
-            rows.append(dict(lid=lid, orig=o, j=j, term=term, amort=amort, io=io, r0=r0, noi0=noi0, b0=b0,
-                             value0=value, ptype=ptype, push=push, pw=w, fit=fit, uw_noi=uw_noi, noi=noi, mat=mat,
-                             early=early))
-    # attributes, identifiers, the day count (a second stream per loan: the behaviour's draws stay put)
-    obligors = []
-    for L in rows:
-        ga = lrng(19, L["orig"], L["j"])
-        L["basis"] = "ACT/360" if L["orig"] >= mo(2012, 1) else "30/360"
-        L["oday"] = int(ga.integers(1, 29))
-        msa = MSAS[int(ga.choice(len(MSAS), p=[x[2] for x in MSAS]))]
-        L["msa"], L["state"] = msa[0], msa[1]
-        u_ob, new_ob, pick = ga.random(), int(ga.integers(100000, 999999)), ga.random()
-        if obligors and u_ob < 0.08:
-            L["obligor"] = obligors[int(pick * len(obligors))]
-        else:
-            L["obligor"] = new_ob
-            obligors.append(new_ob)
-        L["fye"] = int(ga.choice([12, 6, 9], p=[0.74, 0.16, 0.10]))
-        L["exp_ratio"] = float(np.clip(ga.normal({"MF": 0.46, "OFF": 0.44, "RET": 0.36, "IND": 0.30, "MIX": 0.42,
-                                                  "HOT": 0.66}[L["ptype"]], 0.05), 0.18, 0.78))
-        L["review_lag"] = [int(ga.integers(70, 160)) for _ in range(30)]
-        L["basis_stmt"] = [str(ga.choice(["Borrower prepared", "CPA reviewed", "Audited"], p=[0.55, 0.35, 0.10]))
-                           for _ in range(30)]
-        L["grade_adj"] = int(ga.choice([-1, 0, 1], p=[0.12, 0.76, 0.12]))   # the credit officer's judgment
-        L["prop_off"] = int(ga.integers(0, 7))
-        gc = lrng(21, L["orig"], L["j"])            # the pandemic's weight on a hotel or retail property
-        lo, hi = COVID_SEV.get(L["ptype"], (0.0, 0.0))
-        L["covid_sev"] = lo + (hi - lo) * float(gc.random())
-    seen = {}
-    for L in rows:
-        k = (L["obligor"])
-        seen[k] = seen.get(k, 0) + 1
-        L["note_no"] = seen[k]
-    for i, L in enumerate(rows):
-        L["prop"] = 10000 + i * 7 + L["prop_off"]
-        if L["io"]:      # interest only to maturity: the payment is the interest, the balance stays put
-            L["payment"] = float(np.round(L["b0"] * L["r0"] / 100.0 * 30 / 360.0, 2))
-            L["bal_path"] = [float(L["b0"])] * L["term"]
-        else:
-            L["payment"] = float(np.round(pmt(L["b0"], L["r0"], L["amort"]), 2))
-            L["bal_path"] = run_balance(L["b0"], L["r0"], L["payment"], L["orig"] + 1, L["term"], L["basis"])
-        L["bal_mat"] = L["bal_path"][L["term"] - 1]
-    # each fiscal year's statement: the twelve months to the borrower's year end, reviewed some months later
-    for L in rows:
-        od = dt.date(*ym(L["orig"]), L["oday"])
-        uw_rev = L["uw_noi"] / (1.0 - L["exp_ratio"])
-        st = [dict(fy=None, end=K.month_end(L["orig"] - 1), end_o=L["orig"] - 1, noi=L["uw_noi"], rev=uw_rev,
-                   exp=uw_rev - L["uw_noi"], review=od, basis="Underwriting")]      # the NOI the loan was sized on
-        oy = ym(L["orig"])[0]
-        for j, fy in enumerate(range(oy, 2027)):
-            end_o = mo(fy, L["fye"])
-            if end_o < L["orig"] + 12:              # the first statement covers a full year on the bank's loan
-                continue
-            mid = end_o - 6
-            lvl = L["noi0"] * NOI_IDX[min(mid, K.ASOF_M)] / NOI_IDX[L["orig"]] * L["noi"][fy] * covid_avg(L, end_o)
-            rev = lvl / (1.0 - L["exp_ratio"])
-            end_d = K.month_end(end_o)
-            rdate = end_d + dt.timedelta(days=L["review_lag"][j % 30])
-            st.append(dict(fy=fy, end=end_d, end_o=end_o, noi=lvl, rev=rev, exp=rev - lvl, review=rdate,
-                           basis=L["basis_stmt"][j % 30]))
-        L["stmts"] = st
-    # at maturity the decision reads the latest statement reviewed before the maturity date: a sale pending takes six
-    # months on the note's terms; otherwise a loan whose income cannot carry a new loan of its balloon takes the
-    # bank's one extension (36 months, a tenth paid down, the posted rate, 25-year amortization), or it repays
-    for L in rows:
-        gd = lrng(22, L["orig"], L["j"])
-        u, u2, u3 = gd.random(), gd.random(), gd.random()
-        L["mat_date"] = dt.date(*ym(L["mat"]), L["oday"])
-        L["ext"] = None
-        L["sale"] = False
-        L["outcome"] = None
-        L["outcome2"] = None
-        if L["early"] is None and L["mat"] <= K.ASOF_M:
-            prior = [s for s in L["stmts"] if s["review"] < L["mat_date"]]
-            s = prior[-1]
-            L["noi_review"] = s["noi"]
-            L["cover"] = L["noi_review"] / (L["bal_mat"] * float(dc(W.CRE5[L["mat"]], 300)))
-            conv = CRE_CONV if CONV_BAND[0] <= L["cover"] < CONV_BAND[1] else 0.0
-            L["p_ext"] = conv + (1.0 - conv) * float(cre_p_ext(L["cover"]))
-            if u3 < CRE_SALE and L["cover"] >= SALE_MIN:
-                L["ext"], L["sale"], L["outcome"] = True, True, "EXT-S"
-                L["ext_months"] = SALE_EXT_MONTHS
-                L["ext_rate"], L["ext_pay"] = L["r0"], L["payment"]
-                L["ext_path"] = ([L["bal_mat"]] * SALE_EXT_MONTHS if L["io"] else
-                                 run_balance(L["bal_mat"], L["r0"], L["payment"], L["mat"] + 1, SALE_EXT_MONTHS,
-                                             L["basis"]))
-            elif u < L["p_ext"]:
-                L["ext"], L["outcome"] = True, "EXT"
-                L["ext_months"] = CRE_EXT_MONTHS
-                L["ext_rate"] = float(posted_cre(W, L["mat_date"]))
-                B1 = round(L["bal_mat"] * (1 - EXT_PAYDOWN), 2)
-                L["ext_bal0"] = B1
-                L["ext_pay"] = float(np.round(pmt(B1, L["ext_rate"], EXT_AMORT), 2))
-                L["ext_path"] = run_balance(B1, L["ext_rate"], L["ext_pay"], L["mat"] + 1, CRE_EXT_MONTHS, L["basis"])
-            else:
-                L["ext"], L["outcome"] = False, "PO"
-            # an extended loan is not extended again: at its extended maturity it repays or goes to special assets
-            if L["ext"] and L["mat"] + L["ext_months"] <= K.ASOF_M:
-                emat = L["mat"] + L["ext_months"]
-                ed = dt.date(*ym(emat), L["oday"])
-                prior = [s for s in L["stmts"] if s["review"] < ed]
-                cov2 = prior[-1]["noi"] / (L["ext_path"][-1] * float(dc(W.CRE5[emat], 300)))
-                L["outcome2"] = "SA" if u2 < (CRE_SA[0] if cov2 < 1.0 else CRE_SA[1]) else "PO-EXT"
-    # the officer's refinance view on a loan due within twelve months of the pull
-    rate_now = float(posted_cre(W, K.PULL))
-    for L in rows:
-        L["refi_floor"] = 0
-        u = float(lrng(23, L["orig"], L["j"]).random())
-        if L["early"] is None and K.ASOF_M < L["mat"] <= K.ASOF_M + 12:
-            s = [x for x in L["stmts"] if x["review"] <= K.PULL][-1]
-            cv = s["noi"] / (L["bal_mat"] * float(dc(rate_now, 300)))
-            if cv < 1.0:
-                L["refi_floor"] = 6 if u < GR_FLOOR[0] else 5 if u < GR_FLOOR[0] + GR_FLOOR[1] else 0
-            elif cv < 1.15:
-                L["refi_floor"] = 5 if u < GR_FLOOR[2] else 0
-    # the risk grade on the latest reviewed statement: in-place debt service cover on the current payment
-    for L in rows:
-        s = [x for x in L["stmts"] if x["review"] <= K.PULL]
-        pay = L["ext_pay"] if (L.get("ext") and L["mat"] <= K.ASOF_M) else L["payment"]
-        L["dscr_now"] = s[-1]["noi"] / (pay * 12) if s else None
-    W.cre = rows
-
-
-def build_cre_floating(W):
-    """floating-rate CRE term loans, the programme from May 2022 (five and seven years): positions only."""
-    g = K.rng(16)
-    out = []
-    lid = 0
-    for o in range(mo(2022, 5), K.ASOF_M + 1):
-        for _ in range(g.poisson(5.6)):
-            lid += 1
-            term = int(g.choice([60, 84], p=[0.8, 0.2]))
-            spread = round(float(g.uniform(2.35, 3.10)) * 20) / 20
-            b0 = round(float(np.exp(g.normal(math.log(4.6e6), 0.6))) / 1000) * 1000
-            msa = MSAS[int(g.choice(len(MSAS), p=[x[2] for x in MSAS]))]
-            amort = 300
-            # principal amortises on a 25-year schedule at the rate in force; approximate the balance
-            age = K.ASOF_M - o
-            bal = b0 * (1 - age / amort * 0.55)
-            out.append(dict(lid=lid, orig=o, term=term, spread=spread, b0=b0, bal=round(bal, 2), msa=msa[0],
-                            state=msa[1], ptype=str(g.choice(PTYPES, p=PT_MIX_FLOAT)),
-                            oday=int(g.integers(1, 29)), obligor=int(g.integers(100000, 999999)),
-                            prop=60000 + lid * 5 + int(g.integers(0, 5))))
-    W.cre_float = out
-
-
-def build_mbs(W):
-    g = K.rng(13)
-    pools = []
-    for i in range(30):
-        issue = mo(2020, 3) + int(g.integers(0, 19))
-        thirty = i % 6 == 2
-        cpn = 2.0 if g.random() < 0.55 else 2.5
-        wac = cpn + round(g.uniform(0.62, 0.85) if thirty else g.uniform(0.50, 0.68), 3)
-        face = round(float(g.uniform(64, 128)) * 1e6, -5)
-        wam0 = int(g.integers(349, 358)) if thirty else int(g.integers(171, 180))
-        pools.append(dict(pid=i, issue=issue, cpn=cpn, wac=wac, face=face, wam0=wam0, term=360 if thirty else 180))
-    for P in pools:
-        P["factors"] = {P["issue"]: 1.0}
-        bal = 1.0
-        for o in range(P["issue"] + 1, K.ASOF_M + 1):
-            age = o - P["issue"]
-            k = P["wam0"] - (age - 1)
-            pay = float(pmt(bal, P["wac"], k))
-            intr = bal * P["wac"] / 1200.0
-            sched = min(pay - intr, bal)
-            inc = (P["wac"] - W.C15.get(o - 1, 5.5) - (0.70 if P["term"] == 360 else 0.0)) / 100.0
-            lock = 0.62 if inc < -0.02 else 0.8 if inc < -0.01 else 1.0
-            smm = M_TURN * 0.95 * SEASON[ym(o)[1] - 1] * lock + 0.030 / (1 + math.exp(-(inc - 0.0075) / 0.0022))
-            smm *= math.exp(g.normal(0, 0.08))
-            bal = (bal - sched) * (1 - smm)
-            P["factors"][o] = bal
-    # purchase dates and prices (the bank bought each pool within a few months of issue)
-    ga = K.rng(20)
-    for P in pools:
-        P["bought"] = P["issue"] + int(ga.integers(0, 4))
-        P["price"] = round(float(ga.uniform(101.6, 104.4)) * 32) / 32
-        P["agency"] = str(ga.choice(["FNMA", "FHLMC"], p=[0.6, 0.4]))
-    W.mbs = pools
-
-
-def build_treasuries(W):
-    # (purchase month, coupon %, maturity date, par $): one rung a half-year, 2027 to 2032
-    W.ust = [
-        (mo(2021, 3), 0.750, dt.date(2027, 3, 31), 140_000_000),
-        (mo(2021, 9), 1.125, dt.date(2027, 8, 31), 135_000_000),
-        (mo(2022, 2), 1.875, dt.date(2028, 2, 29), 145_000_000),
-        (mo(2023, 5), 3.625, dt.date(2028, 5, 31), 120_000_000),
-        (mo(2023, 10), 4.875, dt.date(2028, 10, 31), 115_000_000),
-        (mo(2024, 4), 4.625, dt.date(2029, 4, 30), 130_000_000),
-        (mo(2024, 10), 3.875, dt.date(2029, 9, 30), 125_000_000),
-        (mo(2025, 3), 4.000, dt.date(2030, 2, 28), 135_000_000),
-        (mo(2025, 6), 4.000, dt.date(2030, 5, 31), 120_000_000),
-        (mo(2025, 9), 3.625, dt.date(2030, 8, 31), 125_000_000),
-        (mo(2025, 11), 3.750, dt.date(2031, 5, 31), 130_000_000),
-        (mo(2026, 4), 4.125, dt.date(2031, 10, 31), 125_000_000),
-        (mo(2026, 8), 4.000, dt.date(2032, 7, 31), 115_000_000),
-    ]
-
-
-def build_auto(W):
-    """indirect auto originations from December 2020, run to the as-of under ABS prepayment and charge-offs
-    (vectorised by origination month); the monthly portfolio roll is kept for the run-off report."""
-    g = K.rng(15)
-    lid = 0
-    keep = []
-    roll = {}
-    for o in range(mo(2020, 12), K.ASOF_M + 1):
-        y, m = ym(o)
-        lam = 1450 if y >= 2024 else 1200
-        n = int(g.poisson(lam))
-        if n == 0:
-            continue
-        term = g.choice([60, 72, 75, 84], size=n, p=[0.30, 0.46, 0.14, 0.10]).astype(float)
-        mu = 3.9 if y <= 2021 else 5.6 if y == 2022 else 7.6 if y <= 2024 else 7.1
-        apr = np.round(np.clip(g.normal(mu, 1.4, n), 1.9, 13.5), 2)
-        bal0 = np.round(np.clip(np.exp(g.normal(math.log(33500), 0.38, n)), 7000, 95000), 2)
-        ids = np.arange(lid + 1, lid + n + 1)
-        lid += n
-        roll.setdefault(o, dict(orig=0.0, sched=0.0, prepay=0.0, co=0.0, n_orig=0))
-        roll[o]["orig"] += float(bal0.sum())
-        roll[o]["n_orig"] += n
-        B = bal0.copy()
-        alive = np.ones(n, bool)
-        r = apr / 1200.0
-        for t in range(o + 1, K.ASOF_M + 1):
-            age = t - o
-            k = term - (age - 1)
-            alive &= k > 0
-            pay = np.where(alive, B * r / (1 - (1 + r) ** (-np.maximum(k, 1))), 0.0)
-            sched = np.where(alive, np.minimum(pay - B * r, B), 0.0)
-            smm = np.minimum(1.0, AUTO_ABS * bal0 / np.maximum(B, 1.0))
-            u = g.random(n)
-            pre = alive & (u < smm)
-            co = alive & ~pre & (g.random(n) < 0.0011)
-            R = roll.setdefault(t, dict(orig=0.0, sched=0.0, prepay=0.0, co=0.0, n_orig=0))
-            R["sched"] += float(sched[alive & ~pre & ~co].sum())
-            R["prepay"] += float(B[pre].sum())
-            R["co"] += float(B[co].sum())
-            alive &= ~pre & ~co
-            B = np.where(alive, B - sched, 0.0)
-            done = alive & (B <= 1)
-            alive &= B > 1
-        for j in np.nonzero(alive)[0]:
-            keep.append(dict(lid=int(ids[j]), orig=o, term=int(term[j]), apr=float(apr[j]), bal0=float(bal0[j]),
-                             bal=float(B[j]), age=K.ASOF_M - o))
-    W.auto_roll = roll
-    W.auto_pool = keep
-    ga = K.rng(21)
-    for a in keep:
-        a["dealer"] = int(ga.integers(1000, 1460))
-        a["state"] = str(ga.choice(["PA", "OH", "WV", "MD", "NY"], p=[0.66, 0.21, 0.09, 0.02, 0.02]))
-        a["new"] = str(ga.choice(["NEW", "USED"], p=[0.38, 0.62]))
-        a["fico"] = str(ga.choice(["<620", "620-679", "680-739", "740+"], p=[0.04, 0.18, 0.36, 0.42]))
-        a["oday"] = int(ga.integers(1, 29))
-
-
-def simulate():
+                top = min(fhi, o2 - 9)
+                o1 = int(g.integers(flo, max(flo, top) + 1))
+                n1 = 180 if g.random() < f15 else 360
+            base1 = M30[o1] - (M15_SPREAD if n1 == 180 else 0.0)
+            r1 = round(base1 + g.normal(0.0, 0.17), 3)
+            F0 = round(float(g.uniform(*Fr)), -2)
+            H0 = round(float(g.uniform(*Hr)), -2)
+            n2 = int(g.choice([120, 180, 240], p=[0.30, 0.45, 0.25]))
+            sc = int(np.clip(g.normal(752, 42), 620, 840))
+            tier = "A" if sc >= 740 else ("B" if sc >= 680 else "C")
+            adj = {"A": 0.0, "B": 0.50, "C": 1.25}[tier]
+            r2 = round((he_posted(o2, n2) + adj + g.normal(0, 0.06)) / 0.05) * 0.05
+            cu = bool(g.random() < cus)
+            cltv = float(g.uniform(0.50, 0.89))
+            cty = _pick(g, K.COUNTIES[reg])
+            city = K.CITIES[cty][int(g.integers(0, len(K.CITIES[cty])))]
+            rows.append((reg, kind, si, o1, n1, r1, F0, cu, o2, n2, round(r2, 2), H0, sc, tier, cltv, cty, city))
     W = World()
-    build_rate_sheets(W)
-    build_mortgages(W)
-    build_hfs(W)
-    build_cre(W)
-    build_cre_floating(W)
-    build_mbs(W)
-    build_treasuries(W)
-    build_auto(W)
+    W.n = len(rows)
+    cols = list(zip(*rows))
+    W.reg = np.array(cols[0])
+    W.kind = np.array(cols[1])
+    W.stream = np.array(cols[2])
+    W.o1 = np.array(cols[3])
+    W.n1 = np.array(cols[4])
+    W.r1 = np.array(cols[5], float)
+    W.F0 = np.array(cols[6], float)
+    W.cu_first = np.array(cols[7])
+    W.o2 = np.array(cols[8])
+    W.n2 = np.array(cols[9])
+    W.r2 = np.array(cols[10], float)
+    W.H0 = np.array(cols[11], float)
+    W.score = np.array(cols[12])
+    W.tier = np.array(cols[13])
+    W.cltv = np.array(cols[14], float)
+    W.county = list(cols[15])
+    W.city = list(cols[16])
+    W.pmt2 = np.round(payment(W.H0, W.r2, W.n2), 2)
+    # the first's balance when the home equity loan was funded, and the property value behind the stack
+    Fapp = sched_balance(W.F0, W.r1, W.n1, W.o2 - W.o1)
+    W.value = np.round((Fapp + W.H0) / W.cltv, -3)
+    # funded dates: a business day in the funding month
+    W.d2 = []
+    for i in range(W.n):
+        g = K.rng(11, i)
+        y, m = ym(int(W.o2[i]))
+        d = K.business_day(dt.date(y, m, int(g.integers(1, 26))))
+        if d.month != m:
+            d = K.business_day(dt.date(y, m, 1))
+        W.d2.append(d)
     return W
+
+
+def _pick(g, pairs):
+    names = [a for a, _ in pairs]
+    p = np.array([b for _, b in pairs], float)
+    return names[int(g.choice(len(names), p=p / p.sum()))]
+
+
+def first_balance(W, idx, t):
+    return sched_balance(W.F0[idx], W.r1[idx], W.n1[idx], t - W.o1[idx])
+
+
+def simulate(W):
+    """month by month from the first funding to the as-of: scheduled amortisation, curtailments, sales, refinances,
+    charge-offs and maturities. Each loan draws from its own keyed stream."""
+    n = W.n
+    B = np.zeros(n)                 # balance after the month
+    alive = np.zeros(n, bool)
+    W.exit_m = np.full(n, -1)
+    W.exit_kind = [""] * n
+    W.exit_day = [None] * n
+    W.exit_bal = np.zeros(n)
+    gens = [K.rng(20, i) for i in range(n)]
+    t0 = int(W.o2.min())
+    for t in range(t0, K.ASOF_M + 1):
+        new = np.where(W.o2 == t)[0]
+        B[new] = W.H0[new]
+        alive[new] = True
+        if t >= K.REC0 - 1:
+            for i in new:
+                W.bal[(int(i), t)] = float(B[i])
+        idx = np.where(alive & (W.o2 < t))[0]
+        if not len(idx):
+            continue
+        r = W.r2[idx]
+        interest = B[idx] * r / 1200.0
+        sched = np.minimum(W.pmt2[idx] - interest, B[idx])
+        F = first_balance(W, idx, t)
+        H = B[idx]
+        blend = np.where(F + H > 0, (F * W.r1[idx] + H * r) / np.maximum(F + H, 1.0), r)
+        I = blend - (M30[t - 1] + CASH_OUT)
+        cal = t % 12 + 1
+        since_purchase = t - W.o1[idx]
+        h_sale = turn_h(cal, since_purchase)
+        h_refi = refi_h(I)
+        for k, i in enumerate(idx):
+            g = gens[i]
+            u = g.random(4)
+            bal0 = B[i]
+            if bal0 - sched[k] <= 0.5:              # the final scheduled payment
+                W.exit_m[i], W.exit_kind[i], W.exit_bal[i] = t, "MATURED", bal0
+                W.exit_day[i] = _day(g, t)
+                alive[i] = False
+                if t >= K.REC0 - 1:
+                    W.sched[(int(i), t)] = float(bal0)
+                    W.bal[(int(i), t)] = 0.0
+                continue
+            if t - W.o2[i] >= 6 and u[0] < CHARGE_OFF:
+                W.exit_m[i], W.exit_kind[i], W.exit_bal[i] = t, "CHARGEOFF", bal0
+                W.exit_day[i] = _day(g, t)
+                alive[i] = False
+                continue
+            hs, hr = h_sale[k], h_refi[k]
+            if u[1] < hs + hr:
+                kind = "SALE" if u[1] < hs else "REFI"
+                W.exit_m[i], W.exit_kind[i], W.exit_bal[i] = t, kind, bal0
+                W.exit_day[i] = _day(g, t)
+                alive[i] = False
+                continue
+            c = 0.0
+            if u[2] < CURT_P:
+                c = round(bal0 * g.uniform(CURT_LO, CURT_HI), -1)
+            if u[3] < BIG_CURT_P:
+                c += round(bal0 * g.uniform(0.20, 0.50), -2)
+            b1 = bal0 - sched[k] - c
+            if b1 <= 50.0:                          # a curtailment that clears the loan is a payoff
+                W.exit_m[i], W.exit_kind[i], W.exit_bal[i] = t, "PAYOFF", bal0
+                W.exit_day[i] = _day(g, t)
+                alive[i] = False
+                continue
+            B[i] = round(b1, 2)
+            if t >= K.REC0 - 1:
+                W.bal[(int(i), t)] = float(B[i])
+                W.sched[(int(i), t)] = float(round(sched[k], 2))
+                if c:
+                    W.curt[(int(i), t)] = float(c)
+    W.book = np.where(alive)[0]
+    W.book_bal = {int(i): float(B[i]) for i in W.book}
+    return W
+
+
+def _day(g, t):
+    y, m = ym(int(t))
+    d = K.business_day(dt.date(y, m, int(g.integers(1, 28))))
+    if d.month != m:
+        d = K.business_day(dt.date(y, m, 1))
+    return d
+
+
+# ------------------------------------------------------------------------------------------------- the truth's 2027
+def truth_2027(W):
+    """expected 2027 principal paid ahead of schedule by region under the true behaviour on the planning path:
+    payoffs at the scheduled balance plus curtailments on the surviving balance (reference only; never shipped)"""
+    idx = W.book
+    S = np.ones(len(idx))
+    H = np.array([W.book_bal[int(i)] for i in idx])
+    out = {r: 0.0 for r in K.RCODE.values()}
+    curt_rate = CURT_P * (CURT_LO + CURT_HI) / 2 + BIG_CURT_P * 0.35
+    for t in K.FORE:
+        F = first_balance(W, idx, t)
+        r = W.r2[idx]
+        interest = H * r / 1200.0
+        sched = np.minimum(W.pmt2[idx] - interest, H)
+        blend = (F * W.r1[idx] + H * r) / np.maximum(F + H, 1.0)
+        I = blend - (M30[t - 1] + CASH_OUT)
+        h = turn_h(t % 12 + 1, t - W.o1[idx]) + refi_h(I)
+        pay = S * h * H
+        cur = S * (1 - h) * curt_rate * H
+        if t in K.YEAR:
+            for rc in out:
+                m = W.reg[idx] == rc
+                out[rc] += float(pay[m].sum() + cur[m].sum())
+        S = S * (1 - h)
+        H = np.maximum(H - sched - curt_rate * H, 0.0)
+    return {k: v / 1e6 for k, v in out.items()}
+
+
+def simulate_world():
+    W = build_stacks()
+    simulate(W)
+    return W
+
+
+if __name__ == "__main__":
+    import time
+    t = time.time()
+    W = simulate_world()
+    print("stacks", W.n, "on book", len(W.book), "seconds", round(time.time() - t, 1))
+    for rc in ["GR", "LS", "KB", "MN"]:
+        m = [int(i) for i in W.book if W.reg[i] == rc]
+        print(rc, len(m), round(sum(W.book_bal[i] for i in m) / 1e6, 1))
+    print({k: round(v, 1) for k, v in truth_2027(W).items()})

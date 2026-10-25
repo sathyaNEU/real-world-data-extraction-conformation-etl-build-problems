@@ -1,15 +1,14 @@
-"""task166 workbooks and documents: the credit administration maturity log, ALCO's planning cycle workbook, the
-treasury system's swap register, the deposit study, the hedging policy, the third-quarter ALM report and the extract
-notes. Their text is kept here as data so checks.py and verify.py can quote and execute it."""
+"""task166's documents and office files: the lending policy section that files the forecast, the third-quarter ALM report,
+the planning cycle's rate workbook, the data dictionary and the export manifest. Their text is kept here as data so
+checks.py and verify.py can quote and execute it."""
 from __future__ import annotations
 
 import datetime as dt
 import os
-import re
 
 import numpy as np
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.styles import Font, PatternFill
 from reportlab import rl_config
 
 rl_config.invariant = 1
@@ -21,9 +20,9 @@ from reportlab.pdfbase import pdfmetrics                                        
 from reportlab.pdfbase.ttfonts import TTFont                                          # noqa: E402
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle  # noqa: E402
 
+import asks as A           # noqa: E402
 import common as K          # noqa: E402
 import records as R         # noqa: E402
-import swaps as SW          # noqa: E402
 import world as WD          # noqa: E402
 
 FONT_DIR = "/usr/share/fonts/truetype/"
@@ -31,230 +30,79 @@ for _n, _f in (("LibSans", "liberation/LiberationSans-Regular.ttf"), ("LibSans-B
     pdfmetrics.registerFont(TTFont(_n, FONT_DIR + _f))
 INK = colors.HexColor("#1d232a")
 GREY = colors.HexColor("#5a626b")
-ACCENT = colors.HexColor("#1f4e5f")
+ACCENT = colors.HexColor("#24515e")
 RULE = colors.HexColor("#b9c1c8")
 HEAD = colors.HexColor("#e5ebef")
 
-F_LOG = "cre_maturity_log.xlsx"
-F_PLAN = "planning_cycle_2027_base_case.xlsx"
-F_REGISTER = "swap_register_20261130.xlsx"
-F_NMD = "deposit_decay_study_2026.xlsx"
-F_POLICY = "balance_sheet_hedging_policy.pdf"
+F_POLICY = "lending_policy_7-4_he_payoff_forecast.pdf"
 F_ALM = "alm_report_2026_q3.pdf"
-F_NOTES = "extract_notes.txt"
+F_PLAN = "planning_cycle_2027_rates.xlsx"
+F_DICT = "data_dictionary.txt"
+F_MANIFEST = "export_manifest.csv"
 
 BOLD = Font(name="Calibri", size=11, bold=True)
-BODY = Font(name="Calibri", size=11)
 FILL = PatternFill("solid", fgColor="DDE5EA")
 
-
-def _sheet(ws, header, rows, widths=None, fmt=None):
-    ws.append(header)
-    for c in ws[1]:
-        c.font = BOLD
-        c.fill = FILL
-    for r in rows:
-        ws.append(r)
-    if widths:
-        for i, w in enumerate(widths):
-            ws.column_dimensions[chr(65 + i)].width = w
-    if fmt:
-        for col, f in fmt.items():
-            for cell in ws[col][1:]:
-                cell.number_format = f
-    ws.freeze_panes = "A2"
-
-
-# ------------------------------------------------------------------------------------------------- maturity log
-LOG_A = ["Obligation", "Property", "Prop Type", "Orig Amt", "Rate", "Maturity", "Balance", "Disposition", "New Maturity"]
-LOG_B = ["Obligation No.", "Property No.", "Property Type", "Original Principal", "Note Rate", "Maturity Date",
-         "Principal at Maturity", "Outcome", "Extended To"]
-PT_A = {"MF": "MF", "OFF": "OFF", "RET": "RTL", "IND": "IND", "MIX": "MXD", "HOT": "HTL"}
-OUT_B = {"PO": "Paid at maturity", "EXT": "Extended", "EXT-S": "Extended, sale pending",
-         "PO-EXT": "Paid at extended maturity", "SA": "Transferred to special assets"}
-
-
-def write_log(path, W):
-    log = R.maturity_log(W)
-    wb = Workbook()
-    wb.remove(wb.active)
-    for y in sorted(log):
-        ws = wb.create_sheet(str(y))
-        rows = []
-        if y < 2020:
-            for r in log[y]:
-                L = r["L"]
-                rows.append([r["ob"], "%d" % r["prop"], PT_A[L["ptype"]], round(L["b0"], 0), L["r0"], r["date"],
-                             round(r["bal"], 2), r["out"], r["new"]])
-            _sheet(ws, LOG_A, rows, widths=[13, 10, 10, 13, 8, 12, 15, 12, 13],
-                   fmt={"D": "#,##0", "E": "0.00", "F": "mm/dd/yyyy", "G": "#,##0.00", "I": "mm/dd/yyyy"})
-        else:
-            for r in log[y]:
-                L = r["L"]
-                rows.append([r["ob"], "%d" % r["prop"], R.PT_NAME[L["ptype"]], round(L["b0"], 2), L["r0"], r["date"],
-                             round(r["bal"], 2), OUT_B[r["out"]], r["new"]])
-            _sheet(ws, LOG_B, rows, widths=[15, 13, 14, 18, 10, 14, 20, 26, 13],
-                   fmt={"D": "#,##0.00", "E": "0.000", "F": "yyyy-mm-dd", "G": "#,##0.00", "I": "yyyy-mm-dd"})
-    wb.save(path)
-    return sum(len(v) for v in log.values())
-
-
-# ------------------------------------------------------------------------------------------------- planning cycle
-PLAN_NOTE = [
-    "ALCO planning cycle: 2027 plan, base case",
-    "Approved by ALCO on Monday 21 September 2026. Owner: %s, ALM." % K.PEOPLE["alm"],
-    "Base-case zero rates are continuously compounded, by tenor in years, read by linear interpolation between "
-    "tenors and held flat beyond 30 years.",
-    "Product rates are the bank's posted rates assumed for each month of the plan; after December 2027 they are held "
-    "at their December 2027 level.",
-]
-PLAN_MONTHS = [K.mo(2026, 12) + i for i in range(13)]
-
-
-def write_plan(path):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Cycle"
-    for i, line in enumerate(PLAN_NOTE):
-        ws.cell(row=i + 1, column=1, value=line).font = BOLD if i == 0 else BODY
-    ws.column_dimensions["A"].width = 120
-    z = wb.create_sheet("Zero curve")
-    _sheet(z, ["Tenor (years)", "Zero rate (%)"],
-           [[round(t, 6) if t >= 1 else round(t, 6), r] for t, r in zip(K.CURVE_TENORS, K.CURVE_ZEROS)],
-           widths=[15, 15], fmt={"A": "0.0000", "B": "0.00"})
-    p = wb.create_sheet("Product rates")
-    rows = []
-    for o in PLAN_MONTHS:
-        y, m = K.ym(o)
-        rows.append([dt.date(y, m, 1), K.PLAN_MORTGAGE, K.PLAN_MORTGAGE_15, K.PLAN_CRE])
-    _sheet(p, ["Month", "Portfolio jumbo 30-year fixed (%)", "Conforming 15-year fixed (%)",
-               "Commercial real estate 5-year fixed (%)"], rows, widths=[12, 32, 30, 40],
-           fmt={"A": "mmm yyyy", "B": "0.00", "C": "0.00", "D": "0.00"})
-    wb.save(path)
-
-
-# ------------------------------------------------------------------------------------------------- swap register
-REG_COLS = ["Trade No.", "Book", "Strategy", "Hedged item", "Counterparty", "Cleared", "Clearing ref", "Bank pays",
-            "Notional (USD)", "Fixed rate (%)", "Floating index", "Trade date", "Effective date", "Maturity date",
-            "Amortizing", "Status", "Terminated on"]
-
-
-def register_rows(S):
-    rows = []
-    for t in S["trades"]:
-        cur = t["notional"]
-        if t["key"] in S["sched"]:
-            cur = [n for a, b, n in S["sched"][t["key"]] if a <= K.AS_OF < b][0]
-        rows.append([t["id"], t["book"], t["strategy"], t["item"], t["cpty"], "Y" if t["cleared"] else "N",
-                     t["ccp_id"] or "", "FIXED" if t["dir"] == "PAY" else "FLOAT", float(cur), t["rate"],
-                     "USD-SOFR-OIS COMPOUND", t["trade"], t["eff"], t["mat"], "Y" if t["amort"] else "N", t["status"],
-                     t.get("terminated")])
-    rows.sort(key=lambda r: r[0])
-    return rows
-
-
-def write_register(path, S):
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Trades"
-    rows = register_rows(S)
-    _sheet(ws, REG_COLS, rows, widths=[11, 10, 17, 52, 26, 8, 12, 10, 17, 13, 24, 12, 13, 13, 11, 12, 14],
-           fmt={"I": "#,##0.00", "J": "0.000", "L": "yyyy-mm-dd", "M": "yyyy-mm-dd", "N": "yyyy-mm-dd",
-                "Q": "yyyy-mm-dd"})
-    wb.save(path)
-    return len(rows)
-
-
-# ------------------------------------------------------------------------------------------------- deposit study
-NMD_PRODUCTS = [("Non-interest-bearing demand", 6.9, 0.00, 7.8), ("Interest checking", 4.1, 0.18, 6.2),
-                ("Savings", 2.6, 0.22, 5.4), ("Money market", 5.3, 0.46, 3.1), ("Business money market", 3.2, 0.58, 2.4)]
-
-
-def write_nmd(path):
-    g = K.rng(50)
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Summary"
-    rows = []
-    for name, bal, beta, life in NMD_PRODUCTS:
-        rows.append([name, round(bal * 1000 + float(g.uniform(-40, 40)), 1), round(beta + float(g.normal(0, 0.01)), 3),
-                     round(life + float(g.normal(0, 0.15)), 2), round(100 / (life * 12) * 1.9, 3)])
-    _sheet(ws, ["Product", "Balance 30 Jun 2026 ($ millions)", "Deposit beta", "Average life (years)",
-                "Monthly decay (%)"], rows, widths=[30, 30, 14, 20, 18])
-    h = wb.create_sheet("Vintage decay")
-    rows = []
-    for name, bal, beta, life in NMD_PRODUCTS:
-        for yrs in range(1, 11):
-            rows.append([name, yrs, round(100 * np.exp(-yrs / life) * float(np.exp(g.normal(0, 0.02))), 1)])
-    _sheet(h, ["Product", "Years since account opening", "Balance retained (% of opening cohort)"], rows,
-           widths=[30, 28, 38])
-    wb.save(path)
-
-
-# ------------------------------------------------------------------------------------------------- the hedging policy
+# ------------------------------------------------------------------------------------------------- the policy section
 POLICY = [
-    ("1. Purpose", [
-        "This policy governs the interest-rate swaps Carrick Valley Bank uses to manage the economic value of its "
-        "balance sheet, and how the Asset/Liability Committee (ALCO) designates them.",
+    ("7.4.1 Purpose", [
+        "In 2027 the credit union will test whether a dedicated mortgage loan officer who contacts home equity members "
+        "before they pay a loan off keeps more of those members' borrowing with the credit union. The pilot runs in one "
+        "regional lending center from Monday 4 January 2027 to Friday 31 December 2027, and the Management Lending "
+        "Committee chooses the region at its December 2026 meeting.",
     ]),
-    ("2. The hedge programme", [
-        "The hedge programme is the swaps in the treasury system's ALM book. Overlays are pay-fixed swaps designated "
-        "against a fixed-rate asset pool; funding hedges are pay-fixed swaps on the interest the bank pays on its "
-        "funding; loan hedges are receive-fixed swaps on the interest it earns on floating-rate loans. Swaps the bank "
-        "writes for its customers, and the swaps that offset them, are not part of the programme.",
-        "A swap is in effect on a date when its effective date is on or before that date and its maturity date, and the "
-        "date it was terminated where it has been terminated early, are after it.",
-        "The notional of pay-fixed swaps in effect may not exceed 15 per cent of total assets at any quarter-end.",
+    ("7.4.2 Choosing the pilot region", [
+        "The pilot opens in the regional lending center whose members are forecast to pay off the most fixed-rate home "
+        "equity principal in calendar 2027. The forecast is the one defined in 7.4.3; no other measure decides the "
+        "region.",
     ]),
-    ("3. Designating an overlay", [
-        "ALCO designates each overlay, before it is traded, against the eligible pool in Schedule A whose loss in "
-        "economic value under a parallel rise of 200 basis points, averaged over the month-ends of the overlay's first "
-        "twelve months, is largest.",
-        "A pool is eligible if its principal outstanding at the close on the as-of date of the designation memo is at "
-        "least the overlay's notional. A pool is the positions in it at the close on that date; positions added after "
-        "it are not part of it.",
-        "The loss in economic value of a pool at a month-end is the present value at that month-end of the pool's "
-        "expected cash flows after that month-end, discounted on the base-case zero curve of ALCO's most recent "
-        "planning cycle, the same zero rates at every month-end, less their present value on that curve shifted up by "
-        "200 basis points. The same expected cash flows are used in both. Time is measured in years from the "
-        "month-end, a month counting as a twelfth of a year, and each cash flow is placed at the end of the month in "
-        "which it is paid.",
-        "Expected cash flows are the principal and interest the bank expects each position to pay under the planning "
-        "cycle's base case, before credit losses.",
+    ("7.4.3 The 2027 home equity payoff forecast", [
+        "Population: the fixed-rate closed-end home equity loans on the books at the close of business on 30 November "
+        "2026. Loans funded after that date are not in the forecast; home equity lines of credit are a separate product "
+        "and are not in it.",
+        "Outcome: principal paid ahead of schedule, which is the principal retired when a loan is paid in full before "
+        "its maturity date and any principal paid in a month above that month's scheduled principal. Scheduled "
+        "principal, including the final scheduled payment of a loan that reaches maturity, is not paid ahead of "
+        "schedule, and a balance charged off is not principal paid. A loan the credit union refinances itself is paid "
+        "in full.",
+        "Window: payments posted from 1 January 2027 to 31 December 2027.",
+        "Region: the regional lending center of the county where the collateral property sits, as the county map "
+        "assigns it.",
+        "Rates: the planning cycle's base case, which states the credit union's posted rates as monthly averages for "
+        "each month from December 2026 to December 2027.",
+        "Unit: dollars of principal, reported in millions.",
     ]),
-    ("4. Documentation", [
-        "The designation memo goes to ALCO's chair before the trade. It names the pool, gives its averaged loss in "
-        "millions of dollars, and states the programme's notional in effect at each quarter-end of the overlay's "
-        "first year.",
+    ("7.4.4 Records", [
+        "The forecast is prepared from the credit union's own records: the legacy core's home equity loan master from "
+        "January 2019 to the conversion on 1 September 2024, the new core's monthly trial balance since the "
+        "conversion, the lending system's funded-loan file, and the posted rate sheet archive. Loan numbers changed at "
+        "the conversion and the conversion cross-reference links them.",
     ]),
-]
-SCHEDULE_A = [
-    ("Treasury ladder", "United States Treasury notes held in the available-for-sale portfolio."),
-    ("Agency MBS", "Agency mortgage pass-through securities bought in 2020 and 2021."),
-    ("2023-24 residential mortgages", "First-lien residential mortgages held for investment, originated from "
-                                      "1 January 2023 to 31 December 2024."),
-    ("Indirect auto loans", "Auto loans bought from dealers."),
-    ("Fixed-rate commercial real estate", "Commercial real estate term loans with a fixed note rate."),
+    ("7.4.5 Responsibilities", [
+        "The lending analytics manager prepares the forecast and presents it to the Management Lending Committee, "
+        "which records the pilot region in its minutes. The ALM and finance manager owns the planning cycle's rates.",
+    ]),
 ]
 
 
 def sentences(paras):
+    import re
     return [s for p in paras for s in re.split(r"(?<=\.)\s+(?=[A-Z0-9(])", p)]
 
 
-def policy_sentences():
-    return sentences([p for _, ps in POLICY for p in ps] + [b for _, b in SCHEDULE_A])
+def policy_text():
+    return [p for _, ps in POLICY for p in ps]
 
 
 def _styles():
     return dict(
-        h1=ParagraphStyle("h1", fontName="LibSans-Bold", fontSize=15, leading=19, textColor=ACCENT, spaceAfter=2),
+        h1=ParagraphStyle("h1", fontName="LibSans-Bold", fontSize=14.5, leading=18.5, textColor=ACCENT, spaceAfter=2),
         sub=ParagraphStyle("sub", fontName="LibSans", fontSize=8.6, leading=11.4, textColor=GREY, spaceAfter=10),
-        h2=ParagraphStyle("h2", fontName="LibSans-Bold", fontSize=10.6, leading=14, textColor=INK, spaceBefore=6,
+        h2=ParagraphStyle("h2", fontName="LibSans-Bold", fontSize=10.4, leading=14, textColor=INK, spaceBefore=6,
                           spaceAfter=3),
         body=ParagraphStyle("b", fontName="LibSans", fontSize=9.6, leading=13.2, textColor=INK, spaceAfter=5),
-        cell=ParagraphStyle("c", fontName="LibSans", fontSize=8.6, leading=10.8, textColor=INK),
-        cellb=ParagraphStyle("cb", fontName="LibSans-Bold", fontSize=8.6, leading=10.8, textColor=INK),
+        cell=ParagraphStyle("c", fontName="LibSans", fontSize=8.4, leading=10.6, textColor=INK),
+        cellb=ParagraphStyle("cb", fontName="LibSans-Bold", fontSize=8.4, leading=10.6, textColor=INK),
         small=ParagraphStyle("sm", fontName="LibSans", fontSize=7.8, leading=10, textColor=GREY, spaceAfter=4))
 
 
@@ -269,10 +117,10 @@ def _footer(text):
     return foot
 
 
-def _table(data, widths, st, head=True):
+def _table(data, widths, head=True):
     t = Table(data, colWidths=widths, repeatRows=1 if head else 0)
     style = [("GRID", (0, 0), (-1, -1), 0.4, RULE), ("VALIGN", (0, 0), (-1, -1), "TOP"),
-             ("TOPPADDING", (0, 0), (-1, -1), 2.4), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.4)]
+             ("TOPPADDING", (0, 0), (-1, -1), 2.2), ("BOTTOMPADDING", (0, 0), (-1, -1), 2.2)]
     if head:
         style.append(("BACKGROUND", (0, 0), (-1, 0), HEAD))
     t.setStyle(TableStyle(style))
@@ -281,223 +129,303 @@ def _table(data, widths, st, head=True):
 
 def write_policy(path):
     st = _styles()
-    s = [Paragraph("Balance Sheet Hedging Policy", st["h1"]),
-         Paragraph("%s. Owner: %s, Treasurer. Approved by ALCO on 17 March 2026 and by the Board Risk Committee on "
-                   "24 March 2026. Version 1.0." % (K.HOLDCO, K.PEOPLE["treasurer"]), st["sub"])]
+    s = [Paragraph("Lending Policy, Section 7.4: Home Equity Payoff Forecast and the 2027 Payoff-Retention Pilot", st["h1"]),
+         Paragraph("%s. Owner: %s, Chief Lending Officer. Adopted by the Management Lending Committee on 21 October 2026; "
+                   "version 1.0." % (K.CU, K.PEOPLE["clo"]), st["sub"])]
     for head, paras in POLICY:
         s.append(Paragraph(head, st["h2"]))
         for p in paras:
             s.append(Paragraph(p, st["body"]))
-    s.append(Paragraph("Schedule A. Pools for overlay designation", st["h2"]))
-    data = [[Paragraph("Pool", st["cellb"]), Paragraph("Positions", st["cellb"])]]
-    for a, b in SCHEDULE_A:
-        data.append([Paragraph(a, st["cell"]), Paragraph(b, st["cell"])])
-    s.append(_table(data, [2.2 * inch, 4.5 * inch], st))
     doc = SimpleDocTemplate(path, pagesize=LETTER, leftMargin=0.9 * inch, rightMargin=0.9 * inch,
-                            topMargin=0.8 * inch, bottomMargin=0.85 * inch, title="Balance Sheet Hedging Policy",
-                            author=K.PEOPLE["treasurer"], subject="", creator="", producer="")
-    doc.build(s, onFirstPage=_footer("%s  |  Treasury  |  Balance Sheet Hedging Policy v1.0" % K.HOLDCO),
-              onLaterPages=_footer("%s  |  Treasury  |  Balance Sheet Hedging Policy v1.0" % K.HOLDCO))
+                            topMargin=0.8 * inch, bottomMargin=0.85 * inch,
+                            title="Lending Policy 7.4: Home Equity Payoff Forecast", author=K.PEOPLE["clo"],
+                            subject="", creator="", producer="")
+    foot = _footer("%s  |  Lending Policy  |  Section 7.4  |  v1.0" % K.CU)
+    doc.build(s, onFirstPage=foot, onLaterPages=foot)
 
 
 # ------------------------------------------------------------------------------------------------- the Q3 ALM report
-ALM_EVE = [("-100", 1.9), ("+100", -5.4), ("+200", -11.6), ("+300", -17.9)]
-ALM_LIMIT = {"+100": -8.0, "+200": -15.0, "+300": -22.0, "-100": -8.0}
-ALM_NII = [("-100 ramp", -1.8), ("+100 ramp", 1.1), ("+200 ramp", 1.9)]
-ALM_BALANCE = [("Cash and due from banks", 1.48), ("Securities available for sale", 4.31), ("Loans held for sale", 0.06),
-               ("Commercial and industrial loans", 4.62), ("Commercial real estate loans", 6.93),
-               ("Residential mortgages", 7.38), ("Home equity and consumer loans", 1.36), ("Indirect auto loans", 1.33),
-               ("Other assets", 3.68)]
+def alm_figures(W):
+    """the third-quarter book the ALM report states, from the clean truth at 30 September 2026"""
+    t = K.mo(2026, 9)
+    bal = [W.bal.get((i, t)) for i in range(W.n)]
+    live = [b for b in bal if b]
+    he = sum(live)
+    rates = [(W.bal.get((i, t)), W.r2[i]) for i in range(W.n) if W.bal.get((i, t))]
+    wac = sum(b * r for b, r in rates) / he
+    return dict(he=he, wac=wac, count=len(live))
 
 
-def cre_book(W):
-    """the commercial real estate book at the as-of: principal, and the share graded watch or worse"""
-    fx = [(R.cre_balance_asof(L), R.risk_grade(L)) for L in W.cre if R.cre_alive(L)]
-    fl = [(F["bal"], F["grade"]) for F in W.cre_float]
-    tot = sum(b for b, _ in fx + fl)
-    w6 = sum(b for b, g_ in fx + fl if g_ >= 6) / tot
-    w7 = sum(b for b, g_ in fx + fl if g_ >= 7) / tot
-    return tot, w6, w7
-
-
-ALM_TOTAL = 38.06          # total assets at 30 September 2026, $ billions
-
-
-def alm_balance(W):
-    """the balance sheet at 30 September: the commercial real estate line is the book, C&I takes up the rest"""
-    tot, _, _ = cre_book(W)
-    cre = round(tot / 1e9 + 0.04, 2)
-    others = sum(v for k, v in ALM_BALANCE if k not in ("Commercial real estate loans", "Commercial and industrial loans"))
-    rows = []
-    for k, v in ALM_BALANCE:
-        if k == "Commercial real estate loans":
-            v = cre
-        elif k == "Commercial and industrial loans":
-            v = round(ALM_TOTAL - others - cre, 2)
-        rows.append((k, v))
-    return rows
+ALM_BALANCE = [("Cash and short-term investments", 0.312), ("Investment securities", 0.684),
+               ("First mortgage loans", 1.418), ("Fixed-rate home equity loans", None),
+               ("Home equity lines of credit", 0.094), ("Auto loans", 0.731), ("Credit card and other consumer", 0.188),
+               ("Commercial and member business loans", 0.246), ("Allowance for credit losses", -0.031),
+               ("Premises, NCUSIF deposit and other assets", 0.122)]
+ALM_NEV = [("-200", 2.6, 12.1), ("-100", 1.6, 11.8), ("Base", 0.0, 11.4), ("+100", -4.1, 10.6), ("+200", -8.9, 9.7),
+           ("+300", -13.8, 8.8)]
+ALM_NII = [("-200 ramp", -2.9), ("-100 ramp", -1.3), ("+100 ramp", 0.8), ("+200 ramp", 1.4)]
 
 
 def write_alm(path, W):
     st = _styles()
-    bal = alm_balance(W)
-    tot = sum(v for _, v in bal)
-    _, w6, w7 = cre_book(W)
-    s = [Paragraph("ALM Report, Third Quarter 2026", st["h1"]),
-         Paragraph("%s. Positions at Wednesday 30 September 2026. Prepared by %s, ALM, for ALCO's meeting of 19 October "
-                   "2026." % (K.BANK, K.PEOPLE["alm"]), st["sub"]),
-         Paragraph("This report answers where the balance sheet stands against ALCO's interest-rate risk limits at the "
-                   "quarter-end.", st["body"]),
-         Paragraph("Economic value of equity", st["h2"]),
-         Paragraph("Economic value of equity at 30 September was $3.41 billion. Its change under instantaneous parallel "
-                   "shifts of the quarter-end market curve:", st["body"])]
-    data = [[Paragraph(x, st["cellb"]) for x in ("Shift (basis points)", "Change in EVE (%)", "Limit (%)")]]
-    for k, v in ALM_EVE:
-        data.append([Paragraph(k, st["cell"]), Paragraph("%.1f" % v, st["cell"]), Paragraph("%.1f" % ALM_LIMIT[k], st["cell"])])
-    s.append(_table(data, [1.8 * inch, 1.8 * inch, 1.4 * inch], st))
-    s.append(Spacer(1, 6))
-    s.append(Paragraph("The +200 basis point change used 77 per cent of its limit, against 71 per cent at 30 June; the "
-                       "+300 change used 81 per cent. ALCO's November meeting will consider a pay-fixed overlay.",
+    f = alm_figures(W)
+    he_b = f["he"] / 1e9
+    total = sum(v for _, v in ALM_BALANCE if v is not None) + he_b
+    s = [Paragraph("Asset/Liability Management Report, Third Quarter 2026", st["h1"]),
+         Paragraph("%s. Prepared by %s, ALM and Finance Manager, for the Asset/Liability Committee meeting of 20 October "
+                   "2026. Positions at 30 September 2026." % (K.CU, K.PEOPLE["alm"]), st["sub"])]
+    s.append(Paragraph("1. Balance sheet", st["h2"]))
+    s.append(Paragraph("Total assets were $%.2f billion at 30 September 2026. Fixed-rate home equity loans stood at "
+                       "$%.1f million across %s loans at a weighted average note rate of %.2f per cent." %
+                       (total, f["he"] / 1e6, "{:,}".format(f["count"]), f["wac"]),
                        st["body"]))
-    s.append(Paragraph("Net interest income", st["h2"]))
-    data = [[Paragraph(x, st["cellb"]) for x in ("Scenario, twelve months", "Change in NII (%)")]]
-    for k, v in ALM_NII:
-        data.append([Paragraph(k, st["cell"]), Paragraph("%.1f" % v, st["cell"])])
-    s.append(_table(data, [2.4 * inch, 1.8 * inch], st))
-    s.append(Paragraph("Credit quality", st["h2"]))
-    s.append(Paragraph("Commercial real estate loans graded watch or worse (grades 6 to 8) were %.1f per cent of the "
-                       "commercial real estate book at 30 September, against %.1f per cent at 30 June; special mention "
-                       "and substandard loans (grades 7 and 8) were %.1f per cent." %
-                       (100 * w6, 100 * w6 - 0.6, 100 * w7), st["body"]))
-    s.append(Paragraph("Balance sheet", st["h2"]))
-    data = [[Paragraph(x, st["cellb"]) for x in ("Assets at 30 September 2026", "$ billions")]]
-    for k, v in bal:
-        data.append([Paragraph(k, st["cell"]), Paragraph("%.2f" % v, st["cell"])])
-    data.append([Paragraph("Total assets", st["cellb"]), Paragraph("%.2f" % tot, st["cellb"])])
-    s.append(_table(data, [3.4 * inch, 1.4 * inch], st))
+    data = [[Paragraph("Assets ($ billions)", st["cellb"]), Paragraph("30 Sep 2026", st["cellb"])]]
+    for a, v in ALM_BALANCE:
+        v = he_b if v is None else v
+        data.append([Paragraph(a, st["cell"]), Paragraph("%.3f" % v, st["cell"])])
+    data.append([Paragraph("Total assets", st["cellb"]), Paragraph("%.3f" % total, st["cellb"])])
+    s.append(_table(data, [3.6 * inch, 1.3 * inch]))
     s.append(Spacer(1, 6))
-    s.append(Paragraph("Report version 1.2, issued 14 October 2026. Questions to %s." % K.PEOPLE["alm"], st["small"]))
+    s.append(Paragraph("2. Net economic value and net interest income", st["h2"]))
+    s.append(Paragraph("Instantaneous parallel shocks to the posted rate curves; ramp scenarios over twelve months. All "
+                       "results are within the limits in the ALM Policy (net economic value ratio not below 7.0 per "
+                       "cent in any shock).", st["body"]))
+    data = [[Paragraph(h, st["cellb"]) for h in ("Shock (bp)", "NEV change (%)", "NEV ratio (%)")]]
+    for a, b, c in ALM_NEV:
+        data.append([Paragraph(a, st["cell"]), Paragraph("%.1f" % b, st["cell"]), Paragraph("%.1f" % c, st["cell"])])
+    s.append(_table(data, [1.4 * inch, 1.4 * inch, 1.4 * inch]))
+    s.append(Spacer(1, 6))
+    data = [[Paragraph(h, st["cellb"]) for h in ("Scenario", "Net interest income, next 12 months (%)")]]
+    for a, b in ALM_NII:
+        data.append([Paragraph(a, st["cell"]), Paragraph("%.1f" % b, st["cell"])])
+    s.append(_table(data, [1.4 * inch, 3.0 * inch]))
+    s.append(Spacer(1, 6))
+    s.append(Paragraph("3. Liquidity and the planning cycle", st["h2"]))
+    s.append(Paragraph("Liquid assets were 11.9 per cent of shares and deposits. The 2027 planning cycle's rates were "
+                       "approved by ALCO on 22 September 2026; the base case and two alternatives are in the planning "
+                       "workbook.", st["body"]))
     doc = SimpleDocTemplate(path, pagesize=LETTER, leftMargin=0.9 * inch, rightMargin=0.9 * inch,
-                            topMargin=0.8 * inch, bottomMargin=0.85 * inch, title="ALM Report, Third Quarter 2026",
+                            topMargin=0.8 * inch, bottomMargin=0.85 * inch, title="ALM Report Q3 2026",
                             author=K.PEOPLE["alm"], subject="", creator="", producer="")
-    doc.build(s, onFirstPage=_footer("%s  |  ALM  |  Q3 2026" % K.BANK), onLaterPages=_footer("%s  |  ALM  |  Q3 2026" % K.BANK))
+    foot = _footer("%s  |  ALM Report  |  Q3 2026" % K.CU)
+    doc.build(s, onFirstPage=foot, onLaterPages=foot)
+    return f
 
 
-# ------------------------------------------------------------------------------------------------- the extract notes
-def notes_text(n):
-    P = K.PEOPLE
-    L = []
-    w = L.append
-    w("Overlay designation memo: files pulled Thursday 3 December 2026")
-    w("Prepared by %s, ALM. Positions are as of the close on Monday 30 November 2026." % P["analyst"])
-    w("")
-    w("servicing_monthly_legacy_2023-01_2024-08.csv (%s rows)" % format(n[R.F_LEGACY], ","))
-    w("  The legacy servicing platform's monthly extract of the residential loans originated in 2023 and 2024,")
-    w("  cycles January 2023 to August 2024. One row per loan per cycle; the platform was retired after the August")
-    w("  2024 cycle. The last row is the platform's trailer (record count, total END_PRIN).")
-    w("  PORTF: PORT held for investment, HFS held for sale. ORIG_DT and LIQ_DT are MMDDYYYY; NOTE_RT is per cent.")
-    w("  BEG_PRIN principal at the start of the cycle; SCHED_PRIN scheduled principal paid; CURTAIL principal paid")
-    w("  ahead of schedule on a loan that stays open; PIF_PRIN principal paid off, or delivered on a sale, on the")
-    w("  loan's last cycle; END_PRIN principal at the end of the cycle. STAT: C active, P paid in full, S sold.")
-    w("")
-    w("servicing_monthly_2024-09_2026-11.csv (%s rows)" % format(n[R.F_SERV], ","))
-    w("  The servicing platform from the September 2024 cycle: the same population, reporting periods September 2024")
-    w("  to November 2026, one row per loan per reporting period. investor_type PORTFOLIO is held for investment.")
-    w("  interest_rate is a decimal (0.06875 is 6.875 per cent). unscheduled_principal is all principal paid beyond")
-    w("  the scheduled payment, a payoff included. zero_balance_code: 01 paid in full, 15 sold.")
-    w("")
-    w("servicing_conversion_xref.csv (%s rows)" % format(n[R.F_XREF], ","))
-    w("  Every loan converted from the legacy platform: legacy loan number, loan id, principal converted.")
-    w("")
-    w("rate_sheet_archive.csv (%s rows)" % format(n[R.F_RATES], ","))
-    w("  The bank's posted rate sheets as issued: commercial real estate from 2015, conforming from 2019, portfolio")
-    w("  jumbo from 2022. Sheets go out on Mondays, with a mid-week re-price when markets move. Rates and points are")
-    w("  per cent. The product codes changed with the pricing engine on 1 January 2024: JMB30 is now J30F, JMB15")
-    w("  J15F, CNF30 C30F, CNF15 C15F and CRE5 CRE5F.")
-    w("")
-    w("cre_term_loans_20261130.csv (%s rows)" % format(n[R.F_CRE], ","))
-    w("  Every commercial real estate term loan at the close on 30 November 2026, fixed and floating; loans in special")
-    w("  assets are not in it. The loan number is 44, the obligor number and the note number. maturity_date is the")
-    w("  current maturity and original_maturity_date the maturity at origination; on an extended loan note_rate,")
-    w("  monthly_payment and amortization_months are the extension's. interest_basis ACT/360 charges the month's actual")
-    w("  days over 360 and 30/360 thirty days over 360; the monthly payment is fixed and principal is what it leaves")
-    w("  after interest. interest_only_months is the interest-only period from origination, after which the payment")
-    w("  amortizes the loan over amortization_months. On floating loans note_rate is the rate in force (one-month Term")
-    w("  SOFR plus rate_spread). risk_grade is the bank's scale of 1 to 9: 6 watch, 7 special mention, 8 substandard.")
-    w("")
-    w("cre_maturity_log.xlsx (%s rows)" % format(n[F_LOG], ","))
-    w("  Credit administration's log of term loans reaching a maturity date, one sheet a year from 2015, one row per")
-    w("  loan and maturity date. The sheet layout changed in 2020. Obligation is the obligor and note number;")
-    w("  Property is the property number without its P. Disposition (to 2019) and Outcome: PO, paid at maturity;")
-    w("  EXT, extended; EXT-S, extended six months on the note's terms for a sale under contract; PO-EXT, paid at")
-    w("  the extended maturity; SA, transferred to special assets at the extended maturity. The bank grants a")
-    w("  maturing term loan one extension, of 36 months, on a paydown of 10 per cent of the principal due, at the")
-    w("  bank's posted five-year fixed rate on the maturity date, the payment amortizing the rest over 25 years. An")
-    w("  extended loan is not extended again: at its extended maturity it is paid or goes to special assets. Every")
-    w("  extension is granted on the guarantor's reaffirmed support agreement, with an interest reserve funded at the")
-    w("  extension; the extended loan's payments are made as scheduled.")
-    w("")
-    w("cre_operating_statements.csv (%s rows)" % format(n[R.F_STMT], ","))
-    w("  Borrowers' annual operating statements as reviewed, one row per property and fiscal year from 2013, with the")
-    w("  underwriting row (statement_basis Underwriting: the net operating income the loan was sized on, its year")
-    w("  ending the month before the loan closed). Fiscal years end in the borrower's own month. review_completed is")
-    w("  the date the review was signed off.")
-    w("")
-    w("custody_holdings_20261130.csv (%s rows)" % format(n[R.F_CUSTODY], ","))
-    w("  The custodian's statement of the available-for-sale account at the close on 30 November 2026. Faces, cost,")
-    w("  value and accrued interest are thousands of dollars; factor is the pool factor for November 2026.")
-    w("")
-    w("agency_pool_factors.csv (%s rows)" % format(n[R.F_FACTORS], ","))
-    w("  Monthly factors of the agency pools held, with each pool's weighted average coupon (wac, per cent),")
-    w("  remaining term and age (wam, wala, months). A factor is the principal left per dollar of original face")
-    w("  after the month's payments; holders receive the month's principal and interest on the 25th of the next month.")
-    w("")
-    w("indirect_auto_tape_20261130.csv (%s rows)" % format(n[R.F_AUTO], ","))
-    w("  Every indirect auto loan at the close on 30 November 2026.")
-    w("")
-    w("indirect_auto_monthly_roll.csv (%s rows)" % format(n[R.F_ROLL], ","))
-    w("  The indirect auto portfolio's roll by month from January 2023: principal at the start of the month, loans")
-    w("  bought, scheduled principal, principal prepaid, charge-offs, principal at the month end.")
-    w("")
-    w("planning_cycle_2027_base_case.xlsx")
-    w("  ALCO's September 2026 planning cycle for the 2027 plan, base case.")
-    w("")
-    w("swap_register_20261130.xlsx (%s rows)" % format(n[F_REGISTER], ","))
-    w("  The treasury system's register of the bank's interest-rate swaps at the close on 30 November 2026, both")
-    w("  books, one row per trade. Notional is the trade's notional on 30 November (an amortizing swap's current")
-    w("  period). Hedged item is what the swap is designated against. Clearing ref is the clearing house's trade id.")
-    w("  Terminated on is the date an early termination took effect, on a trade with Status TERMINATED.")
-    w("")
-    w("swap_amortisation_schedules.csv (%s rows)" % format(n[R.F_SCHED], ","))
-    w("  Notional by calculation period of the amortizing swaps.")
-    w("")
-    w("clearing_statement_20261130.csv (%s rows)" % format(n[R.F_CLEAR], ","))
-    w("  The clearing broker's statement of the bank's cleared swaps at the close on 30 November 2026.")
-    w("  client_trade_ref is the bank's reference the broker holds for the trade: the treasury system trade number the")
-    w("  bank gave the broker when it submitted the trade for clearing. cleared_on is the date the clearing house")
-    w("  accepted it; termination_date is the swap's scheduled end; client_pays is the bank's side.")
-    w("")
-    w("mortgage_lock_pipeline_20261130.csv (%s rows)" % format(n[R.F_LOCKS], ","))
-    w("  Rate locks outstanding at the close on 30 November 2026.")
-    w("")
-    w("deposit_decay_study_2026.xlsx")
-    w("  ALM's 2026 study of non-maturity deposits (balances at 30 June 2026).")
-    w("")
-    w("balance_sheet_hedging_policy.pdf, alm_report_2026_q3.pdf")
-    return "\r\n".join(L) + "\r\n"
+# ------------------------------------------------------------------------------------------------- the planning workbook
+def plan_rows(shift=0.0):
+    rows = []
+    for k, o in enumerate(K.FORE):
+        y, m = K.ym(o)
+        r30 = WD.PLAN_30[k] + shift
+        rows.append([dt.date(y, m, 1), round(r30, 2), round(r30 - WD.M15_SPREAD, 2), round(r30 + WD.HE_SPREAD[120], 2),
+                     round(r30 + WD.HE_SPREAD[180], 2), round(r30 + WD.HE_SPREAD[240], 2),
+                     round(PRIME[k] + shift, 2)])
+    return rows
 
 
-def write_notes(path, n):
-    open(path, "w", encoding="utf-8", newline="").write(notes_text(n))
+PRIME = [7.00, 7.00, 6.75, 6.75, 6.50, 6.50, 6.50, 6.25, 6.25, 6.25, 6.25, 6.25, 6.25]
+PLAN_HEAD = ["Month", "30-year fixed mortgage", "15-year fixed mortgage", "Home equity fixed 10-year",
+             "Home equity fixed 15-year", "Home equity fixed 20-year", "Prime rate"]
 
 
-def write_all(out, W, S, n):
-    p = lambda f: os.path.join(out, f)
-    n[F_LOG] = write_log(p(F_LOG), W)
-    write_plan(p(F_PLAN))
-    n[F_REGISTER] = write_register(p(F_REGISTER), S)
-    write_nmd(p(F_NMD))
-    write_policy(p(F_POLICY))
-    write_alm(p(F_ALM), W)
-    write_notes(p(F_NOTES), n)
-    return n
+def write_plan(path):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Base case"
+    for title, shift in (("Base case", 0.0), ("Rates up 100", 1.0), ("Rates down 100", -1.0)):
+        if title != "Base case":
+            ws = wb.create_sheet(title)
+        ws.append(PLAN_HEAD)
+        for c in ws[1]:
+            c.font = BOLD
+            c.fill = FILL
+        for r in plan_rows(shift):
+            ws.append(r)
+        for row in ws.iter_rows(min_row=2):
+            row[0].number_format = "mmm yyyy"
+            for c in row[1:]:
+                c.number_format = "0.00"
+        ws.column_dimensions["A"].width = 11
+        for col in "BCDEFG":
+            ws.column_dimensions[col].width = 15
+    ws = wb.create_sheet("About")
+    for line in ["2027 planning cycle: rate scenarios",
+                 "Approved by ALCO on 22 September 2026. Owner: %s, ALM and Finance Manager." % K.PEOPLE["alm"],
+                 "Each rate is the monthly average of the credit union's posted rate for the product, in per cent.",
+                 "The base case is the plan; the alternatives are parallel shifts used for the net interest income "
+                 "ramps."]:
+        ws.append([line])
+    ws.column_dimensions["A"].width = 110
+    wb.save(path)
+
+
+# ------------------------------------------------------------------------------------------------- the dictionary and manifest
+DICT = [
+    (R.F_LEGACY, "Legacy core system, home equity loan master as archived at the conversion. One row per fixed-rate "
+     "home equity loan on the books at any month-end from 31 December 2018 to 31 August 2024.", [
+        ("LOAN_NO", "Legacy loan number: the legacy member number and a two-digit loan suffix."),
+        ("MBR_NO", "Legacy member number."),
+        ("PROD_CD", "HEF10, HEF15 or HEF20: fixed-rate home equity, term in years."),
+        ("OPEN_DT", "Date funded (MM/DD/YYYY)."),
+        ("ORIG_AMT", "Amount funded, dollars."),
+        ("NOTE_RT", "Note rate, per cent."),
+        ("TERM_MOS", "Term in months."),
+        ("PMT_AMT", "Monthly principal and interest payment, dollars."),
+        ("MAT_DT", "Maturity date."),
+        ("BAL_12_31_2018", "Principal balance at 31 December 2018; blank for loans funded after that date."),
+        ("STATUS", "CLOSED: the loan closed before the conversion. CNV: open at the conversion and moved to the new core."),
+        ("CLOSE_DT", "Date the loan closed."),
+        ("CLOSE_CD", "PIF paid in full by the member; MAT final scheduled payment at maturity; CO charged off."),
+        ("PRIN_AT_CLOSE", "Principal retired or charged off when the loan closed, dollars."),
+        ("BAL_AT_CONV", "Principal balance at 31 August 2024 for loans moved to the new core."),
+    ]),
+    (R.F_CORE, "New core system, monthly trial balance of fixed-rate home equity loans. One row per loan per month-end "
+     "from 30 September 2024 to 30 November 2026, including the month a loan closed.", [
+        ("LoanNumber", "Loan number in the new core."),
+        ("MemberNumber", "Member number in the new core."),
+        ("ProductCode", "FHE120, FHE180 or FHE240: fixed-rate home equity, term in months."),
+        ("AsOfDate", "Month-end date of the row."),
+        ("OpenDate", "Date funded."),
+        ("OriginalAmount", "Amount funded, dollars."),
+        ("InterestRate", "Note rate as a decimal fraction."),
+        ("TermMonths", "Term in months."),
+        ("PaymentAmount", "Monthly principal and interest payment, dollars."),
+        ("PrincipalBalance", "Principal balance at the month-end, dollars."),
+        ("ScheduledPrincipal", "Principal due in the month under the loan's payment schedule, dollars."),
+        ("PrincipalPaid", "Principal posted in the month, dollars."),
+        ("InterestPaid", "Interest posted in the month, dollars."),
+        ("LoanStatus", "ACTIVE; PIF paid in full by the member; MAT final scheduled payment at maturity; CHGOFF charged off."),
+        ("CloseDate", "Date the loan closed, on the row of the month it closed."),
+        ("DaysPastDue", "Days the oldest unpaid installment was past due at the month-end."),
+    ]),
+    (R.F_XREF, "Conversion cross-reference. One row per loan moved from the legacy core to the new core on 1 September "
+     "2024.", [
+        ("legacy_loan_no", "Legacy loan number."), ("loan_number", "New core loan number."),
+        ("legacy_member_no", "Legacy member number."), ("member_number", "New core member number."),
+        ("converted_on", "Conversion date."),
+    ]),
+    (R.F_LOS, "Lending system, funded fixed-rate home equity loans since January 2009. One row per funded loan, as "
+     "underwritten. The senior lien fields are the first mortgage tradeline on the applicant's credit report at "
+     "application.", [
+        ("application_id", "Application identifier."), ("funded_date", "Date funded."),
+        ("loan_number", "Core loan number assigned at funding (the legacy number for loans funded before September 2024)."),
+        ("member_number", "Member number at funding."),
+        ("property_street", "Collateral property street address."), ("property_city", "Collateral property city."),
+        ("property_county", "Collateral property county."), ("property_state", "Collateral property state."),
+        ("property_zip", "Collateral property ZIP code."),
+        ("appraised_value", "Appraised or automated value of the property at application, dollars."),
+        ("cltv_pct", "Combined loan-to-value at funding, per cent."),
+        ("credit_score", "Credit score at application."),
+        ("dti_pct", "Debt-to-income ratio at application, per cent."),
+        ("loan_amount", "Amount funded, dollars."), ("note_rate_pct", "Note rate, per cent."),
+        ("term_months", "Term in months."),
+        ("senior_lien_creditor", "Creditor name on the first mortgage tradeline."),
+        ("senior_lien_opened", "Month the first mortgage was opened (MMYYYY)."),
+        ("senior_lien_original_amount", "Original amount of the first mortgage, dollars."),
+        ("senior_lien_term_months", "Term of the first mortgage in months, where the tradeline reported it."),
+        ("senior_lien_balance", "Balance of the first mortgage as last reported, dollars."),
+        ("senior_lien_balance_as_of", "Month of that balance (MMYYYY)."),
+        ("senior_lien_monthly_payment", "Monthly payment on the first mortgage as the tradeline reported it, dollars."),
+        ("senior_lien_note_rate_pct", "Note rate of the first mortgage, per cent, for a loan funded with the purchase of "
+         "the property, where the first mortgage's terms came from the purchase file; blank otherwise."),
+    ]),
+    (R.F_SERV, "Mortgage servicing system, the credit union's first mortgages: those active at 30 November 2026 and those "
+     "paid in full since 1 January 2025.", [
+        ("mortgage_loan_number", "Mortgage loan number."), ("member_number", "Member number in the new core."),
+        ("property_street", "Property street address."), ("property_city", "Property city."),
+        ("property_zip", "Property ZIP code."), ("note_date", "Note date."),
+        ("original_amount", "Original principal, dollars."), ("note_rate_pct", "Note rate, per cent."),
+        ("term_months", "Term in months."), ("maturity_date", "Maturity date."),
+        ("status", "ACTIVE or PAID IN FULL."), ("paid_in_full_date", "Date paid in full."),
+        ("principal_paid_at_payoff", "Principal retired at the payoff, dollars."),
+        ("principal_balance_2026_11_30", "Principal balance at 30 November 2026, dollars."),
+    ]),
+    (R.F_MAP, "County map of the regional lending centers.", [
+        ("county", "County."), ("state", "State."), ("regional_lending_center", "Regional lending center."),
+        ("effective_date", "Date the assignment took effect."),
+    ]),
+    (R.F_RATES, "Posted rate sheet archive. One row per product per rate sheet; a sheet takes effect on its date and "
+     "stays in effect until the next sheet.", [
+        ("effective_date", "Date the sheet took effect."), ("product", "Product."),
+        ("rate_pct", "Posted rate, per cent."), ("apr_pct", "Annual percentage rate as posted, per cent."),
+    ]),
+    (R.F_HELOC, "Home equity lines of credit at 30 November 2026.", [
+        ("line_number", "Line number."), ("member_number", "Member number."), ("open_date", "Date opened."),
+        ("credit_limit", "Credit limit, dollars."), ("balance_2026_11_30", "Balance at 30 November 2026, dollars."),
+        ("index", "Rate index."), ("margin_pct", "Margin over the index, per cent."),
+        ("rate_pct", "Rate at 30 November 2026, per cent."), ("draw_period_end", "End of the draw period."),
+        ("line_status", "OPEN or FROZEN."), ("property_county", "Collateral property county."),
+        ("property_zip", "Collateral property ZIP code."),
+    ]),
+    (R.F_HPI, "Quarterly all-transactions house price index by county, 1995 Q1 = 100.", [
+        ("county", "County."), ("state", "State."), ("quarter", "Quarter."), ("index_1995q1_100", "Index level."),
+    ]),
+    (A.F_LOG, "Payoff statement system. One row per payoff statement request: issued statements, updated statements "
+     "for a later good-through date, and requests voided before a statement was issued. The system was out of service "
+     "from 9 to 20 March 2026 for its upgrade.", [
+        ("statement_id", "Statement identifier."), ("issued_utc", "Time the statement was issued or the request voided, UTC."),
+        ("channel", "PORTAL, FAX or EMAIL."), ("requested_by", "Who asked for the statement."),
+        ("account_reference", "The account the request named."),
+        ("product_on_file", "HE home equity (loans and lines); MTG first mortgage."),
+        ("good_through_date", "Date the quoted amount is good through."),
+        ("statement_amount", "Amount needed to pay in full on the good-through date, dollars."),
+        ("statement_status", "ISSUED, UPDATED or VOID."), ("prepared_by", "Initials of the payoff desk staff member."),
+    ]),
+    (A.F_MANUAL, "Payoff desk, statements prepared by hand from 9 to 20 March 2026. One row per statement prepared.", [
+        ("Date received", "Date the request arrived."), ("Requested by", "Who asked for the statement."),
+        ("Borrower", "Borrower's last name."), ("Property", "Property address."),
+        ("Liens", "The liens the statement quoted."), ("Amount quoted", "Amount quoted, dollars."),
+        ("Good through", "Date the amount is good through."), ("Prepared by", "Initials."),
+    ]),
+    (F_PLAN, "2027 planning cycle rates: the base case and two alternatives, monthly averages of posted rates, per cent.",
+     []),
+]
+
+
+def write_dictionary(path):
+    lines = ["%s data dictionary" % K.CU, "Files pulled on 3 December 2026 for the 2027 home equity payoff forecast.", ""]
+    for f, desc, fields in DICT:
+        lines.append(f)
+        lines.append("  " + desc)
+        for a, b in fields:
+            lines.append("    %-30s %s" % (a, b))
+        lines.append("")
+    with open(path, "w", encoding="utf-8", newline="\r\n") as fh:
+        fh.write("\n".join(lines))
+
+
+MANIFEST = [
+    (R.F_LEGACY, "Legacy core (archived)", "2026-12-03", "Loans on the books at any month-end, Dec 2018 to Aug 2024"),
+    (R.F_CORE, "New core", "2026-12-03", "Month-ends Sep 2024 to Nov 2026"),
+    (R.F_XREF, "Conversion project", "2024-09-03", "Loans moved on 1 Sep 2024"),
+    (R.F_LOS, "Lending system", "2026-12-03", "Fixed-rate home equity loans funded Jan 2009 to Nov 2026"),
+    (R.F_SERV, "Mortgage servicing system", "2026-12-03", "First mortgages active at 30 Nov 2026 or paid since 1 Jan 2025"),
+    (R.F_MAP, "Lending administration", "2026-12-03", "Counties served"),
+    (R.F_RATES, "Pricing desk", "2026-12-03", "Rate sheets 3 Dec 2018 to 30 Nov 2026"),
+    (R.F_HELOC, "New core", "2026-12-03", "Lines open at 30 Nov 2026"),
+    (R.F_HPI, "ALM (market data)", "2026-11-12", "2019 Q1 to 2026 Q3"),
+    (A.F_LOG, "Payoff statement system", "2026-12-03", "Requests 1 Oct 2025 to 30 Nov 2026"),
+    (A.F_MANUAL, "Payoff desk", "2026-03-23", "Statements prepared by hand 9 to 20 Mar 2026"),
+    (F_PLAN, "ALM", "2026-09-22", "Planning cycle 2027"),
+    (F_POLICY, "Lending administration", "2026-10-21", "Lending Policy section 7.4, version 1.0"),
+    (F_ALM, "ALM", "2026-10-16", "Positions at 30 Sep 2026"),
+    (F_DICT, "Lending analytics", "2026-12-03", "Fields of the data files"),
+]
+
+
+def write_manifest(path, n):
+    rows = []
+    for f, sysname, pulled, cov in MANIFEST:
+        rows.append([f, sysname, pulled, cov, n.get(f, "")])
+    rows.append([F_MANIFEST, "Lending analytics", "2026-12-03", "This list", ""])
+    return K.write_csv(path, ["file", "source_system", "pulled_or_issued", "coverage", "rows"], rows)
+
+
+def write_all(out, W, n):
+    write_policy(os.path.join(out, F_POLICY))
+    alm = write_alm(os.path.join(out, F_ALM), W)
+    write_plan(os.path.join(out, F_PLAN))
+    write_dictionary(os.path.join(out, F_DICT))
+    n[F_MANIFEST] = write_manifest(os.path.join(out, F_MANIFEST), n)
+    return alm

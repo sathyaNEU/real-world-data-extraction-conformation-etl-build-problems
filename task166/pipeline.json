@@ -1,21 +1,35 @@
 {
  "task": "task166",
  "owner": "sathya8571",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-25",
- "stump": "Fitting the home equity loans' payoffs on their own note rate against the credit union's posted home equity rate names Grand Rapids; the step that lands it there is reading a second lien's payoff off its own rate, when a member pays off the second almost only on refinancing or selling on the first mortgage ahead of it, and the planning path's falling rates reach the Lakeshore's 2025 and 2026 purchase mortgages at 6.25 to 7.25 per cent while Grand Rapids' boom-era seconds sit behind 2020 and 2021 first mortgages at 2.5 to 3.5 per cent that stay put: a payoff hazard read off each first mortgage's incentive, its rate recovered from the bureau refresh, names the Lakeshore.",
+ "stump": "Fitting the home equity payoffs on each loan's own note rate against the posted home equity rate names Grand Rapids at about $60 million, and reading the lock-in off each first mortgage's own rate names the Lakeshore; the step that lands it there is reading a second lien's payoff off one of the two loans, when a member pays the second off by refinancing the whole debt on the house, which the stack's blended rate at the two balances against the posted 30-year rate decides: Muskegon and the North's large 2024 to 2026 taps sit behind small seasoned first mortgages at 3.5 to 4.75 per cent, so those stacks blend near 6.5 per cent, come into the money as the planning path falls, and pay off about $40 million.",
  "architecture": 2,
  "loops": 0,
  "card_registered": "2026-10-25T17:31:36Z",
- "guard": "WARN, no BLOCK, against the registered v2 card (2026-10-25T17:31:36Z): repeat.question_form (which, against task485); the same-puzzle and same-driver NOTEs against older builds differentiated on the card",
- "precut": null,
- "leak": null,
- "duplicate_check": null,
- "judge": null,
+ "guard": "heart WARN, no BLOCK, after the pull to 876c00de: repeat.decision and repeat.question_form against task301 v2 (pick, which), test.same_puzzle_older and test.same_driver_older differentiated on the card (every line rewritten for the stage 2 step); nearest driver 0.05 (task154), nearest stump 0.06 (task133)",
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-25",
+  "checks": 51
+ },
+ "leak": {
+  "leak_py": "REVIEW 2026-10-25 --asof 2026-12-03, no LEAK: sweep 4's three documents (policy, ALM report, dictionary) name no move; sweep 9's four files carry forward-dated fields only (maturities, draw-period ends, good-through dates, plan months)",
+  "reader": "on f022d2a9: reader A (Sonnet, medium) missed the call (the Lakeshore at $20 million on the first mortgage alone), asks 0 of 36, score_reader PASS; reader B (Opus, medium) landed it (Muskegon and the North at $40 million, the Lakeshore second, the blended stack kept over the own-rate and first-only incentives on fit and back-test), asks 0 of 36, score_reader exit 1; neither found a decisive-step sentence, a helping file or a main-call fork; answers in leak_check_report.md"
+ },
+ "duplicate_check": {
+  "heart": "WARN 2026-10-25 after the pull to 79055299, no BLOCK (repeat.decision and repeat.question_form against task301 v2; test.same_puzzle_older and test.same_driver_older differentiated on the card); nearest driver 0.05 (task154), nearest stump 0.06 (task133)",
+  "surface": "exit 0: task167 back to back (gap, pattern, Gate G mechanism and context artifact; task167 v2 registered 2026-10-18; differentiation line on the card) and fifteen card-level pairs at 0.101 to 0.104, left to the author's optional clone-check"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC, APPROVE on f022d2a9 (Gate G method_or_model_selection, analytical_non_defect, surface_read_dependency no, sole_data_defect no; Gate H domain, layers and decisive step pass)",
+  "disposition": "finding 1 fixed (write-up step 2's loan-month count dropped from submission.md and figures.json, target.zip unchanged at f022d2a9); finding 2 (stump power on validation-based model selection) accepted by the author's ruling; caution 3 (mortgage statements read at the statement date's balance, which the servicing file's note terms decide) noted, no change",
+  "report": "task166/determinism_check_report.md"
+ },
  "returned": [
   {
    "date": "2026-10-25",
@@ -24,9 +38,9 @@
    "commit": ""
   }
  ],
- "resume": "architecture 2 drawn 2026-10-25 (a West Michigan credit union's payoff-retention pilot region, by each region's 2027 home equity payoffs, set by the first mortgages' refinancing incentive recovered from the bureau refresh): stage 2 next, the prototype of the generating process first (the three routes, trailing, own-rate and senior-lien, must name three regions; the record must select the senior-lien model on the loans whose incentives diverged; the family spread on the graded figure fixes the rounding), then the ladder, fork table, asks and prompt.txt to precut.py exit 0",
+ "resume": "portal return: a landed call re-roots to architecture 3 off the enumerate-and-back-test chain (grain, population or censoring); a determinism return goes to /fix-determinism, a rubric at or over 50 with the call held to /fix-rubric",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-25",
  "portal": {
   "round1": "2026-10-25: not stumped, both responses on the call (CRE, $150 million)"
  },
@@ -68,5 +82,23 @@
   },
   "delivered": "2026-10-18",
   "wave": "wave 7 (new), seed FC37 (world, decision and quantity kept; the seed's certified-control-set method clause and the ALM report's trailing-year ranking not shipped)"
- }
+ },
+ "stage3": {
+  "generator_checks": "85 assertions, 0 failed (three-rules block R1 to R3c, SF1 to SF21, A1 to A12, realism sweep Q1 to Q6)",
+  "verify": "25 checks, 0 failed (own code path; the call, rungs 0 to 2, all 32 counts, every format read back)",
+  "rebuild": "byte-identical (target, golden, figures)",
+  "figures_check": "exit 0 (69 figures, 0 absent)",
+  "voice_check": "exit 0",
+  "precut": "exit 0 (51 checks, 0 FAIL, 0 WARN)",
+  "h1_audit": "target/ and golden/ clean, stamps inside the fiction's band, PNG without text chunks",
+  "ceiling": "pair 31.6, mirror leakage 5.7 per cent (generator/ceiling.py); cracker 0 of 32, unreconciled mortgage statements 9 of 32",
+  "call": "Muskegon and the North, $40 million (39.19); second the Lakeshore (23.90); margin 1.64",
+  "default_path": "Grand Rapids, $60 million (58.71, own-rate S-curve)",
+  "rungs": "rung 1 trailing payoffs Kalamazoo and Battle Creek (14.6); rung 2 first mortgage alone the Lakeshore (22.95)",
+  "golden_realism": "workbook (named sheets, frozen headers, widths, number formats, notes sheet, print setup) and chart (finding title, axis units, direct labels, source line) reviewed",
+  "house_fixes": "H1 clean; H4 zip members equal target; H8 citations resolve; H9 manifest and dictionary cover the pack; H11 one submission and prompt; H16 forward dates allow-listed; H21 nine creditor and agency names renamed; H23 no presupposition; H25 strict PDF reader and pdfminer",
+  "target_zip_sha256": "f022d2a94b534aad60cf312d47530b6b1cb007572ec9d90e47adf0788f48bdf2",
+  "pack": "/home/user/b_166/task166/target (16 files, 4 formats; trial balance 197,078 rows)"
+ },
+ "ruling": "Shipped 2026-10-25 under the author's ruling ('yea ship') with the Opus reader landing the call; Gate F risk accepted"
 }

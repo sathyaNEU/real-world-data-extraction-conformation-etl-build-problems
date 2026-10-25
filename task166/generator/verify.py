@@ -1,400 +1,502 @@
-"""Independent verifier for task166: reads only the shipped bundle (no generator module), on its own code path (pandas,
-numpy, scipy), and recomputes the designation, the designated pool's loss bin, the default path's answer, the decisive
-step's out-of-sample choice and Ask A. It reads every format the pack ships, each with a positive control.
+"""task166's independent verifier. It reads only the shipped bundle (target/, golden/, submission.md) on its own code path
+(the csv module, numpy, openpyxl, pypdf and zoneinfo; no generator module and no pandas), recomputes the call, its
+figure, the center second, the three lower rungs and all 32 ask counts, reads back every format the pack ships, and
+compares the goldens, figures.json and submission.md with what it recomputed.
 
-    python3 verify.py <target_dir>"""
+    python3 task166/generator/verify.py [target]"""
 from __future__ import annotations
 
+import csv
 import datetime as dt
+import json
+import math
 import os
 import re
+import struct
 import sys
+from zoneinfo import ZoneInfo
 
 import numpy as np
-import pandas as pd
-from scipy.optimize import minimize
 
-PACK = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                                                          "target")
-OUT = []
+HERE = os.path.dirname(os.path.abspath(__file__))
+TASK = os.path.dirname(HERE)
+TARGET = sys.argv[1] if len(sys.argv) > 1 else os.path.join(TASK, "target")
+GOLDEN = os.path.join(TASK, "golden")
 
+CENTERS = ["Grand Rapids", "The Lakeshore", "Kalamazoo and Battle Creek", "Muskegon and the North"]
+KNOTS = (-1.0, 0.0, 0.5, 1.0, 1.5, 2.0)
+QTRS = (("2025Q4", dt.date(2025, 10, 1), dt.date(2025, 12, 31)), ("2026Q1", dt.date(2026, 1, 1), dt.date(2026, 3, 31)),
+        ("2026Q2", dt.date(2026, 4, 1), dt.date(2026, 6, 30)), ("2026Q3", dt.date(2026, 7, 1), dt.date(2026, 9, 30)))
+EASTERN = ZoneInfo("America/Detroit")
 
-def ok(label, cond, detail=""):
-    OUT.append(bool(cond))
-    print("%s  %-46s %s" % ("PASS" if cond else "FAIL", label, detail))
-
-
-def f(name):
-    return os.path.join(PACK, name)
+FAILS = []
 
 
-def ordm(d):
-    return d.year * 12 + d.month - 1
+def ok(label, cond, msg):
+    print("%s  %-5s %s" % ("PASS" if cond else "FAIL", label, msg))
+    if not cond:
+        FAILS.append(label)
 
 
-ASOF = 2026 * 12 + 10
-FIRST = ASOF + 1
-H = 360
-
-# ------------------------------------------------------------------------------------------------- formats, with controls
-from pypdf import PdfReader    # noqa: E402
-policy = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(f("balance_sheet_hedging_policy.pdf")).pages))
-alm = re.sub(r"\s+", " ", " ".join(p.extract_text() for p in PdfReader(f("alm_report_2026_q3.pdf")).pages))
-notes = re.sub(r"\s+", " ", open(f("extract_notes.txt"), encoding="utf-8").read())
-ok("PDF policy read", "the same zero rates at every month-end" in policy and "before credit losses" in policy,
-   "measure sentence and cash flow definition found")
-ok("PDF policy Schedule A", all(w in policy for w in ("Treasury ladder", "Agency MBS", "2023-24 residential mortgages",
-                                                      "Indirect auto loans", "Fixed-rate commercial real estate")), "")
-ok("PDF ALM report read", "77 per cent" in alm and "30 September" in alm, "control phrase found")
-ok("TXT notes read", "client_trade_ref" in notes and "36 months" in notes, "")
-plan = pd.read_excel(f("planning_cycle_2027_base_case.xlsx"), sheet_name=None)
-zc = plan["Zero curve"]
-pr = plan["Product rates"]
-ok("XLSX planning workbook", len(zc) == 13 and len(pr) == 13, "13 tenors, 13 months")
-TEN = zc.iloc[:, 0].astype(float).values
-ZER = zc.iloc[:, 1].astype(float).values
-MORT, CONF15, CRER = [float(pr.iloc[-1, k]) for k in (1, 2, 3)]
-t = np.arange(1, H + 1) / 12
-z = np.interp(t, TEN, ZER) / 100
-WGT = np.exp(-z * t) - np.exp(-(z + 0.02) * t)
+def rows(name):
+    with open(os.path.join(TARGET, name), newline="", encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
 
 
-def loss(cf):
-    cf = np.asarray(cf, float)
-    out = []
-    for k in range(1, 13):                      # month-ends of January to December 2027; cf[0] is December 2026
-        tail = cf[k + 1:]
-        out.append((tail * WGT[:len(tail)]).sum())
-    return float(np.mean(out)) / 1e6
+def mi(y, m):
+    """a month as an integer index"""
+    return 12 * y + m - 1
 
 
-def level(bal, rate, n, smm):
-    bal = np.array(bal, float)
-    r = np.array(rate, float) / 1200
-    n = np.array(n, float)
-    cf = np.zeros(H)
-    for k in range(H):
-        a = (n > 0) & (bal > 0.005)
-        if not a.any():
-            break
-        pay = np.where(a, bal * r / (1 - (1 + r) ** (-np.maximum(n, 1))), 0)
-        it = np.where(a, bal * r, 0)
-        sc = np.where(a, np.where(n <= 1, bal, np.minimum(pay - it, bal)), 0)
-        s = smm[:, k] if np.ndim(smm) == 2 else (smm[k] if np.ndim(smm) == 1 else smm)
-        pp = (bal - sc) * s
-        cf[k] = (it + sc + pp).sum()
-        bal = bal - sc - pp
-        n = n - 1
-    return cf
+def num(s):
+    return float(str(s).replace(",", ""))
 
 
-# rate sheet monthly averages
-rs = pd.read_csv(f("rate_sheet_archive.csv"))
-rs["code"] = rs["product_code"].replace({"JMB30": "J30F", "JMB15": "J15F", "CNF30": "C30F", "CNF15": "C15F",
-                                          "CRE5": "CRE5F"})
-rs["m"] = pd.to_datetime(rs["sheet_date"]).map(ordm)
-RATE = rs.groupby(["code", "m"])["rate"].mean().to_dict()
+# ------------------------------------------------------------------------------------------------- formats read back
+files = sorted(os.listdir(TARGET))
+fmts = sorted({f.rsplit(".", 1)[1] for f in files})
+ok("V1", len(files) >= 10 and len(fmts) >= 3, "%d files in %d formats (%s)" % (len(files), len(fmts), ", ".join(fmts)))
+csv_rows = {f: rows(f) for f in files if f.endswith(".csv")}
+ok("V2", all(len(v) > 0 for v in csv_rows.values()) and max(len(v) for v in csv_rows.values()) >= 25000,
+   "every csv parses with a header; the largest holds %d rows" % max(len(v) for v in csv_rows.values()))
 
-# ------------------------------------------------------------------------------------------------- Treasury and MBS
-cu = pd.read_csv(f("custody_holdings_20261130.csv"))
-ust = cu[cu.security_type == "UST"]
-cf_t = np.zeros(H)
-for _, r in ust.iterrows():
-    par = r.current_face * 1000
-    m = ordm(pd.Timestamp(r.maturity_date))
-    k = m
-    while k > ASOF:
-        cf_t[k - FIRST] += par * r.coupon / 200
-        k -= 6
-    cf_t[m - FIRST] += par
-L_T = loss(cf_t)
-fa = pd.read_csv(f("agency_pool_factors.csv"))
-fa["m"] = fa.factor_month.map(lambda s: int(s[:4]) * 12 + int(s[5:]) - 1)
-mbs = cu[(cu.security_type == "AGENCY MBS") & (pd.to_datetime(cu.acquisition_date).dt.year.isin([2020, 2021]))]
-cf_m = np.zeros(H)
-for _, r in mbs.iterrows():
-    g = fa[fa.pool_number == r.pool_number].set_index("m").sort_index()
-    sm = []
-    for m in range(ASOF - 11, ASOF + 1):
-        f0, w0, n0 = g.loc[m - 1, "pool_factor"], g.loc[m - 1, "wac"], g.loc[m - 1, "wam"]
-        rr = w0 / 1200
-        ratio = ((1 + rr) ** n0 - (1 + rr)) / ((1 + rr) ** n0 - 1)
-        sm.append(1 - g.loc[m, "pool_factor"] / f0 / ratio)
-    s = np.mean(sm)
-    B = r.current_face * 1000
-    n = g.loc[ASOF, "wam"]
-    rr = g.loc[ASOF, "wac"] / 1200
-    for k in range(H - 1):
-        if n <= 0 or B < 0.01:
-            break
-        pay = B * rr / (1 - (1 + rr) ** (-n))
-        sc = B if n <= 1 else min(pay - B * rr, B)
-        pp = (B - sc) * s
-        cf_m[k + 1] += B * r.coupon / 1200 + sc + pp
-        B -= sc + pp
-        n -= 1
-L_MBS = loss(cf_m)
+from openpyxl import load_workbook  # noqa: E402
 
-# ------------------------------------------------------------------------------------------------- 2023-24 mortgages
-lg = pd.read_csv(f("servicing_monthly_legacy_2023-01_2024-08.csv"), dtype={"LOAN_NO": str, "ORIG_DT": str})
-lg = lg[(lg.LOAN_NO != "TRL") & (lg.PORTF == "PORT")]
-xr = pd.read_csv(f("servicing_conversion_xref.csv"), dtype=str)
-lg["id"] = lg.LOAN_NO.map(dict(zip(xr.legacy_loan_no, xr.loan_id))).fillna("L" + lg.LOAN_NO)
-lg["m"] = lg.CYCLE.astype(int).map(lambda c: (c // 100) * 12 + c % 100 - 1)
-lg["orig"] = lg.ORIG_DT.map(lambda s: int(s[4:]) * 12 + int(s[:2]) - 1)
-lg["note"] = lg.NOTE_RT.astype(float)
-lg["pif"] = (lg.STAT == "P").astype(int)
-lg["sold"] = (lg.STAT == "S").astype(int)
-lg["beg"], lg["sch"], lg["cur"], lg["end"] = lg.BEG_PRIN, lg.SCHED_PRIN, lg.CURTAIL, lg.END_PRIN
-nw = pd.read_csv(f("servicing_monthly_2024-09_2026-11.csv"), dtype={"loan_id": str, "zero_balance_code": str})
-nw = nw[nw.investor_type == "PORTFOLIO"].copy()
-nw["id"] = nw.loan_id
-nw["m"] = nw.reporting_period.map(lambda s: int(s[:4]) * 12 + int(s[5:]) - 1)
-nw["orig"] = pd.to_datetime(nw.origination_date).map(ordm)
-nw["note"] = nw.interest_rate * 100
-nw["pif"] = (nw.zero_balance_code == "01").astype(int)
-nw["sold"] = (nw.zero_balance_code == "15").astype(int)
-nw["beg"], nw["sch"], nw["end"] = nw.beginning_principal, nw.scheduled_principal, nw.ending_principal
-nw["cur"] = np.where(nw.pif == 1, 0.0, nw.unscheduled_principal)
-cols = ["id", "m", "orig", "note", "pif", "sold", "beg", "sch", "cur", "end"]
-mm = pd.concat([lg[cols], nw[cols]])
-ok("CSV servicing stacked", mm.groupby(["id", "m"]).size().max() == 1, "%d loan-months, one per loan and month" % len(mm))
-pnl = mm[mm.sold == 0].copy()
-pnl["rate"] = [RATE.get(("J30F", m - 1)) for m in pnl.m]
-pnl = pnl.dropna(subset=["rate"])
-inc = ((pnl.note - pnl.rate) / 100).values
-moy = (pnl.m % 12).values
-age = (pnl.m - pnl.orig).values.astype(float)
-y = pnl.pif.values.astype(float)
+plan_wb = load_workbook(os.path.join(TARGET, "planning_cycle_2027_rates.xlsx"), data_only=True)
+base = plan_wb["Base case"]
+hdr = [c.value for c in base[1]]
+plan30, plan_he = {}, {120: {}, 180: {}, 240: {}}
+for r in base.iter_rows(min_row=2, values_only=True):
+    if r[0] is None:
+        continue
+    t = mi(r[0].year, r[0].month)
+    plan30[t] = float(r[hdr.index("30-year fixed mortgage")])
+    plan_he[120][t] = float(r[hdr.index("Home equity fixed 10-year")])
+    plan_he[180][t] = float(r[hdr.index("Home equity fixed 15-year")])
+    plan_he[240][t] = float(r[hdr.index("Home equity fixed 20-year")])
+ok("V3", sorted(plan30) == list(range(mi(2026, 12), mi(2027, 12) + 1)),
+   "xlsx: the planning workbook's base case covers December 2026 to December 2027 (%d months)" % len(plan30))
+
+from pypdf import PdfReader  # noqa: E402
 
 
-def smm_f(th, inc, moy, age):
-    se = np.exp(np.concatenate([[0.0], th[1:12]]))
-    se = se / se.mean()
-    b = 1 / (1 + np.exp(-th[12]))
-    return np.exp(th[0]) * se[moy] * np.minimum(1, b + (1 - b) * age / 12) + \
-        np.exp(th[13]) / (1 + np.exp(-(inc - th[14]) / np.exp(th[15])))
+def pdf_text(name):
+    t = " ".join(p.extract_text() for p in PdfReader(os.path.join(TARGET, name)).pages)
+    return re.sub(r"\s+", " ", t)
 
 
-def nll(th):
-    p = np.clip(smm_f(th, inc, moy, age), 1e-7, 0.5)
-    return -np.sum(y * np.log(p) + (1 - y) * np.log1p(-p))
+policy = pdf_text("lending_policy_7-4_he_payoff_forecast.pdf")
+filed = ["Population: the fixed-rate closed-end home equity loans on the books at the close of business on 30 November 2026",
+         "home equity lines of credit are a separate product and are not in it",
+         "Window: payments posted from 1 January 2027 to 31 December 2027",
+         "a balance charged off is not principal paid",
+         "A loan the credit union refinances itself is paid in full",
+         "the regional lending center of the county where the collateral property sits",
+         "Rates: the planning cycle's base case",
+         "Unit: dollars of principal, reported in millions"]
+ok("V4", "7.4.3" in policy and all(s in policy for s in filed) and "Muskegon" not in policy,
+   "pdf: the policy reads back with its %d filed sentences (positive control 7.4.3; it names no region)" % len(filed))
+strict = []
+for f in ("lending_policy_7-4_he_payoff_forecast.pdf", "alm_report_2026_q3.pdf"):
+    try:
+        PdfReader(os.path.join(TARGET, f), strict=True).pages[0].extract_text()
+        strict.append(f)
+    except Exception:          # noqa: BLE001
+        pass
+try:
+    from pdfminer.high_level import extract_text as miner_text
+    miner = re.sub(r"\s+", " ", miner_text(os.path.join(TARGET, "lending_policy_7-4_he_payoff_forecast.pdf")))
+except ImportError:
+    miner = policy
+ok("V25", len(strict) == 2 and all(s in miner for s in filed),
+   "pdf: a strict reader opens both documents and a second extractor reads the policy's filed sentences")
+alm = pdf_text("alm_report_2026_q3.pdf")
+mm = re.search(r"Fixed-rate home equity loans stood at \$([\d.]+) million across ([\d,]+) loans", alm)
+core_rows = csv_rows["core_he_trial_balance_2024-09_2026-11.csv"]
+sep = [r for r in core_rows if r["AsOfDate"] == "2026-09-30" and r["LoanStatus"] == "ACTIVE"]
+ok("V5", mm is not None and abs(float(mm.group(1)) - sum(num(r["PrincipalBalance"]) for r in sep) / 1e6) < 0.05
+   and int(mm.group(2).replace(",", "")) == len(sep),
+   "pdf: the ALM report's home equity book ties to the 30 September 2026 trial balance (%.1f million, %d loans)"
+   % (sum(num(r["PrincipalBalance"]) for r in sep) / 1e6, len(sep)))
+with open(os.path.join(TARGET, "data_dictionary.txt"), encoding="utf-8") as fh:
+    dic = fh.read()
+ok("V6", all(f in dic for f in files if f.endswith((".csv", ".xlsx")) and f != "export_manifest.csv"),
+   "txt: the dictionary describes every data file in the pack")
+man = csv_rows["export_manifest.csv"]
+ok("V7", {r["file"] for r in man} >= set(files) - {"export_manifest.csv"},
+   "csv: the export manifest lists every other file")
+
+# ------------------------------------------------------------------------------------------------- the rates
 
 
-th = minimize(nll, np.array([np.log(0.004)] + [0.0] * 11 + [0.0, np.log(0.04), 0.006, np.log(0.002)]),
-              method="L-BFGS-B", options=dict(maxiter=4000)).x
-pool = mm[(mm.m == ASOF) & (mm.end > 0.005) & (mm.sold == 0) & (mm.pif == 0)]
-recent = mm[(mm.m > ASOF - 12) & (mm.pif == 0) & (mm.sold == 0)]
-curt = recent.cur.sum() / (recent.beg - recent.sch).sum()
-note = pool.note.values
-age0 = (ASOF - pool.orig).values.astype(float)
-S = np.zeros((len(pool), H))
-for k in range(H):
-    S[:, k] = np.minimum(1, smm_f(th, (note - MORT) / 100, np.full(len(pool), (FIRST + k) % 12), age0 + k + 1) + curt)
-nrem = 0
-termmap = pd.concat([lg[["id"]].assign(term=lg.TERM), nw[["id"]].assign(term=nw.original_term_months)]).drop_duplicates("id")
-tm = dict(zip(termmap.id, termmap.term))
-nrem = np.array([tm[i] - (ASOF - o) for i, o in zip(pool.id, pool.orig)])
-L_M = loss(level(pool.end.values, note, nrem, S))
-tr = mm[(mm.m > ASOF - 12) & (mm.sold == 0)]
-s12 = tr.pif.mul(tr.beg - tr.sch).sum() / (tr.beg - tr.sch).sum()
-L_M12 = loss(level(pool.end.values, note, nrem, np.full(H, min(1, s12 + curt))))
-
-# ------------------------------------------------------------------------------------------------- auto
-tape = pd.read_csv(f("indirect_auto_tape_20261130.csv"))
-roll = pd.read_csv(f("indirect_auto_monthly_roll.csv"))
-r12 = roll.tail(12)
-sa = r12.prepaid_principal.sum() / (r12.beginning_principal - r12.scheduled_principal).sum()
-L_A = loss(level(tape.principal_balance.values, tape.apr.values,
-                 tape.term_months.values - (ASOF - pd.to_datetime(tape.contract_date).map(ordm).values), np.full(H, sa)))
-
-# ------------------------------------------------------------------------------------------------- CRE
-pos = pd.read_csv(f("cre_term_loans_20261130.csv"), dtype={"loan_number": str, "obligor_number": str})
-fx = pos[pos.rate_type == "FIXED"].copy()
-st = pd.read_csv(f("cre_operating_statements.csv"))
-st["fye"] = pd.to_datetime(st.fiscal_year_end)
-st["rev"] = pd.to_datetime(st.review_completed)
-xl = pd.read_excel(f("cre_maturity_log.xlsx"), sheet_name=None)
-logs = []
-for name, df in xl.items():
-    df = df.copy()
-    df.columns = ["ob", "prop", "ptype", "b0", "rate", "date", "bal", "out", "new"]
-    logs.append(df)
-lgc = pd.concat(logs)
-lgc["prop"] = "P" + lgc["prop"].astype(str).str.zfill(5)
-lgc["date"] = pd.to_datetime(lgc["date"])
-lgc["out"] = lgc["out"].replace({"PO": "PAID", "Paid at maturity": "PAID", "EXT": "EXT", "Extended": "EXT",
-                                  "EXT-S": "SALE", "Extended, sale pending": "SALE", "PO-EXT": "PX",
-                                  "Paid at extended maturity": "PX", "SA": "SA", "Transferred to special assets": "SA"})
-n_sa = int((lgc.out == "SA").sum())
-lgc = lgc[~lgc.out.isin(["PX", "SA"])]
-ok("XLSX maturity log", len(lgc) >= 550 and set(lgc.out) == {"PAID", "EXT", "SALE"},
-   "%d maturities, %d extended, %d sale-pending, %d to special assets at the extended date" % (
-       len(lgc), (lgc.out == "EXT").sum(), (lgc.out == "SALE").sum(), n_sa))
-
-
-def dcon(rate, n=300):
-    r = rate / 1200
-    return 12 * r / (1 - (1 + r) ** (-n))
-
-
-def latest(prop, before, strict=True):
-    s = st[(st.property_number == prop) & ((st.rev < before) if strict else (st.rev <= before))]
-    return s.sort_values(["rev", "fye"]).net_operating_income.iloc[-1]
-
-
-lgc["noi"] = [latest(p, d) for p, d in zip(lgc.prop, lgc.date)]
-lgc["refi"] = [RATE[("CRE5F", ordm(d))] for d in lgc.date]
-lgc["cover"] = lgc.noi / (lgc.bal * dcon(lgc.refi))
-lgc["gap"] = lgc.refi - lgc.rate
-lgc["dy"] = lgc.noi / lgc.bal
-lgc["dscr"] = lgc.noi / (lgc.b0 * dcon(lgc.rate))
-lgc["y"] = (lgc.out == "EXT").astype(float)
-
-
-def irls(x, y, it=60):
-    X = np.column_stack([np.ones(len(x)), x])
-    b = np.zeros(2)
-    for _ in range(it):
-        p = 1 / (1 + np.exp(-(X @ b)))
-        w = np.clip(p * (1 - p), 1e-9, None)
-        b = b + np.linalg.solve(X.T @ (X * w[:, None]) + 1e-9 * np.eye(2), X.T @ (y - p))
-    return b
-
-
-def pred(b, x):
-    return 1 / (1 + np.exp(-(b[0] + b[1] * np.asarray(x, float))))
-
-
-trn = lgc.date <= "2024-12-31"
-brier = {}
-for c in ("cover", "gap", "dy", "dscr"):
-    b = irls(lgc.loc[trn, c].values, lgc.loc[trn, "y"].values)
-    brier[c] = float(np.mean((pred(b, lgc.loc[~trn, c].values) - lgc.loc[~trn, "y"].values) ** 2))
-ok("OOS cover chosen", all(brier["cover"] < 0.5 * brier[c] for c in ("gap", "dy", "dscr")),
-   ", ".join("%s %.3f" % kv for kv in brier.items()))
-beta = irls(lgc.cover.values, lgc.y.values)
-fx["mat"] = pd.to_datetime(fx.maturity_date)
-fx["omat"] = pd.to_datetime(fx.original_maturity_date)
-fx["ext"] = fx.mat != fx.omat
-
-
-def run(r, months):
-    B = r.principal_balance
-    out = []
-    for k in range(months):
-        m = FIRST + k - 1
-        yy, mo_ = divmod(m, 12)
-        days = (pd.Timestamp(yy, mo_ + 1, 1) + pd.offsets.MonthEnd(0)).day if r.interest_basis == "ACT/360" else 30
-        it = B * r.note_rate / 100 * days / 360
-        pr_ = 0.0 if r.interest_only_months > 0 else min(r.monthly_payment - it, B)
-        B -= pr_
-        out.append((it, pr_, B))
+def posted_monthly(product):
+    """a product's posted rate averaged over each month's days, a sheet in effect from its date to the next"""
+    sh = sorted((dt.date.fromisoformat(r["effective_date"]), float(r["rate_pct"]))
+                for r in csv_rows["posted_rate_sheets_2018-12_2026-11.csv"] if r["product"] == product)
+    out, acc = {}, {}
+    d, j = dt.date(2018, 12, 1), -1
+    while d <= dt.date(2026, 11, 30):
+        while j + 1 < len(sh) and sh[j + 1][0] <= d:
+            j += 1
+        acc.setdefault(mi(d.year, d.month), []).append(sh[max(j, 0)][1])
+        d += dt.timedelta(days=1)
+    for t, v in acc.items():
+        out[t] = sum(v) / len(v)
     return out
 
 
-def cre_loss(pfun):
-    """payments to maturity; at the original maturity the balloon repays, or with p the one extension runs: a tenth
-    paid down, the rest at the plan's five-year CRE rate amortizing over 25 years, repaid 36 months later"""
-    cf = np.zeros(H)
-    r_e = CRER / 1200
-    for _, r in fx.iterrows():
-        mat = ordm(r.mat)
-        p = 0.0 if r.ext else pfun(r)
-        sched = run(r, mat - ASOF)
-        for k, (it, pr_, B) in enumerate(sched):
-            cf[k] += it + pr_
-        due = sched[-1][2]
-        cf[mat - ASOF - 1] += (1 - p) * due + p * 0.10 * due
-        if p > 0:
-            B = 0.9 * due
-            pay = B * r_e / (1 - (1 + r_e) ** (-300))
-            for j in range(36):
-                m = mat + 1 + j - 1
-                yy, mo_ = divmod(m, 12)
-                days = (pd.Timestamp(yy, mo_ + 1, 1) + pd.offsets.MonthEnd(0)).day if r.interest_basis == "ACT/360" else 30
-                it = B * CRER / 100 * days / 360
-                pr_ = min(pay - it, B)
-                B -= pr_
-                cf[mat - ASOF + j] += p * (it + pr_ + (B if j == 35 else 0.0))
-    return loss(cf)
+sheets = csv_rows["posted_rate_sheets_2018-12_2026-11.csv"]
+ok("V8", len({(r["product"], r["effective_date"]) for r in sheets}) == len(sheets),
+   "one posted rate per product per sheet date")
+m30 = posted_monthly("30 YR FIXED MORTGAGE")
+he_posted = {120: posted_monthly("HOME EQUITY FIXED 10 YR"), 180: posted_monthly("HOME EQUITY FIXED 15 YR"),
+             240: posted_monthly("HOME EQUITY FIXED 20 YR")}
+all30 = dict(m30)
+all30.update(plan30)
+allhe = {k: dict(v, **{}) for k, v in he_posted.items()}
+for k in allhe:
+    allhe[k].update(plan_he[k])
+
+# ------------------------------------------------------------------------------------------------- the loans
+region_of = {r["county"]: r["regional_lending_center"] for r in csv_rows["county_region_map.csv"]}
+xref = {r["legacy_loan_no"]: r["loan_number"] for r in csv_rows["core_conversion_xref.csv"]}
+los_rows = csv_rows["he_lending_file_2009-2026.csv"]
 
 
-bal_cache = {}
+def bal_after(P, rate, n, k):
+    """balance of a level-payment loan after k payments (zero once the term has run)"""
+    i = rate / 1200.0
+    k = max(k, 0)
+    if k >= n:
+        return 0.0
+    g = (1 + i) ** n
+    return P * (g - (1 + i) ** k) / (g - 1)
 
 
-def balloon(r):
-    if r.loan_number not in bal_cache:
-        bal_cache[r.loan_number] = run(r, ordm(r.omat) - ASOF)[-1][2]
-    return bal_cache[r.loan_number]
-
-
-pull = pd.Timestamp("2026-12-03")
-
-
-def cover_now(r):
-    return latest(r.property_number, pull, strict=False) / (balloon(r) * dcon(CRER))
-
-
-L_CRE = cre_loss(lambda r: float(pred(beta, cover_now(r))))
-L_CRE0 = cre_loss(lambda r: 0.0)
-recent_share = lgc[lgc.date > "2025-11-30"].y.mean()
-L_CREr = cre_loss(lambda r: recent_share)
-ok("CRE recomputed", abs(L_CRE - 150.05) < 1.0, "%.2f" % L_CRE)
-gold = {"Treasury ladder": L_T, "Agency MBS": L_MBS, "2023-24 residential mortgages": L_M, "Indirect auto loans": L_A,
-        "Fixed-rate commercial real estate": L_CRE}
-top = max(gold, key=gold.get)
-ok("CALL designation", top == "Fixed-rate commercial real estate" and 10 * round(L_CRE / 10) == 150,
-   "%s $%d million (%s)" % (top, 10 * round(L_CRE / 10), ", ".join("%s %.1f" % (k.split()[0], v) for k, v in gold.items())))
-dflt = dict(gold, **{"Fixed-rate commercial real estate": L_CREr})
-d_top = max(dflt, key=dflt.get)
-ok("DEFAULT path files Agency MBS", d_top == "Agency MBS" and 10 * round(L_MBS / 10) == 110,
-   "Agency MBS %.1f, CRE at the recent share %.1f" % (L_MBS, L_CREr))
-r0 = dict(gold, **{"Fixed-rate commercial real estate": L_CRE0, "2023-24 residential mortgages": L_M12})
-ok("R0 last year's speeds file the mortgages", max(r0, key=r0.get) == "2023-24 residential mortgages",
-   "mortgages %.1f" % L_M12)
-
-# ------------------------------------------------------------------------------------------------- Ask A
-rg = pd.read_excel(f("swap_register_20261130.xlsx"), sheet_name="Trades", dtype={"Trade No.": str, "Clearing ref": str})
-cl = pd.read_csv(f("clearing_statement_20261130.csv"), dtype={"ccp_trade_id": str, "client_trade_ref": str})
-sc = pd.read_csv(f("swap_amortisation_schedules.csv"), dtype={"trade_number": str})
-alm_ = rg[(rg.Book == "ALM") & (rg.Status == "LIVE")].copy()
-ccp_of = dict(zip(cl.client_trade_ref, cl.ccp_trade_id))
-reg_ccp = dict(zip(rg["Clearing ref"].fillna(""), rg["Trade No."]))
-gone = [tn for tn, c in zip(alm_["Trade No."], alm_.Cleared) if c == "N" and tn in ccp_of and
-        reg_ccp.get(ccp_of[tn], tn) != tn]
-alm_ = alm_[~alm_["Trade No."].isin(gone)]
-ok("XLSX register and statement", len(gone) == 4, "%d bilateral trades held by the broker under cleared trades" % len(gone))
-
-
-def part(r):
-    if r["Bank pays"] == "FLOAT":
-        return "loan"
-    h = str(r["Hedged item"]).lower()
-    return "funding" if ("deposit" in h or "advances" in h) else "overlay"
-
-
-QE = [pd.Timestamp(d) for d in ("2027-03-31", "2027-06-30", "2027-09-30", "2027-12-31")]
-res = {"overlay": [], "funding": [], "loan": []}
-for d in QE:
-    tot = {"overlay": 0.0, "funding": 0.0, "loan": 0.0}
-    for _, r in alm_.iterrows():
-        if not (pd.Timestamp(r["Effective date"]) <= d < pd.Timestamp(r["Maturity date"])):
-            continue
-        if pd.notna(r["Terminated on"]) and d >= pd.Timestamp(r["Terminated on"]):
-            continue
-        s = sc[sc.trade_number == r["Trade No."]]
-        if len(s):
-            s = s[(pd.to_datetime(s.period_start) <= d) & (d < pd.to_datetime(s.period_end))]
-            n = float(s.notional.iloc[0])
+def rate_for_balance(A, B, n, k):
+    """the note rate at which A over n months leaves B after k payments, on 0.25 to 14 per cent (the balance after
+    k payments rises with the rate); the bracket's end where B lies outside it"""
+    lo, hi = 0.25, 14.0
+    if bal_after(A, lo, n, k) > B:
+        return lo
+    if bal_after(A, hi, n, k) <= B:
+        return hi
+    for _ in range(100):
+        mid = 0.5 * (lo + hi)
+        if bal_after(A, mid, n, k) > B:
+            hi = mid
         else:
-            n = float(r["Notional (USD)"])
-        tot[part(r)] += n
-    tot["overlay"] += 1.2e9
-    for k in tot:
-        res[k].append(round(tot[k] / 1e6, 1))
-ok("ASK A recomputed", res == {"overlay": [3127.8, 3114.3, 3101.2, 3088.4], "funding": [437.5, 437.5, 537.5, 537.5],
-                               "loan": [2047.5, 1647.5, 1313.2, 1313.2]}, str(res))
-fails = OUT.count(False)
-print("verify: %d passed, %d failed" % (OUT.count(True), fails))
-sys.exit(1 if fails else 0)
+            lo = mid
+    return 0.5 * (lo + hi)
+
+
+def mmyyyy(s):
+    s = s.strip().zfill(6)
+    return mi(int(s[2:]), int(s[:2]))
+
+
+LOAN = {}
+for r in los_rows:
+    key = xref.get(r["loan_number"], r["loan_number"])
+    A = num(r["senior_lien_original_amount"])
+    B = num(r["senior_lien_balance"])
+    o1 = mmyyyy(r["senior_lien_opened"])
+    k = mmyyyy(r["senior_lien_balance_as_of"]) - o1
+    pay = num(r["senior_lien_monthly_payment"])
+    term = r["senior_lien_term_months"].strip()
+    given = r["senior_lien_note_rate_pct"].strip()
+    n1 = int(term) if term else 360
+    r1 = float(given) if given else rate_for_balance(A, B, n1, k)
+    if not term:
+        # a blank term: 180 months where that term's principal and interest sits nearer the reported payment and
+        # does not exceed it
+        r15 = rate_for_balance(A, B, 180, k)
+        i30, i15 = r1 / 1200, r15 / 1200
+        p30 = A * i30 / (1 - (1 + i30) ** -360)
+        p15 = A * i15 / (1 - (1 + i15) ** -180)
+        if abs(pay - p15) < abs(pay - p30) and p15 <= pay + 1.0:
+            n1, r1 = 180, r15
+    LOAN[key] = dict(center=region_of.get(r["property_county"]), r2=float(r["note_rate_pct"]),
+                     n2=int(r["term_months"]), A1=A, n1=n1, r1=r1, o1=o1,
+                     street=r["property_street"], city=r["property_city"], zip=r["property_zip"])
+ok("V9", len(LOAN) == len(los_rows) and all(v["center"] in CENTERS for v in LOAN.values()),
+   "%d funded loans, each with one key and a center by its collateral county" % len(LOAN))
+
+# ------------------------------------------------------------------------------------------------- loan-month history
+legacy = csv_rows["legacy_he_loans_2019-01_2024-08.csv"]
+D18, JAN19, AUG24, SEP24 = mi(2018, 12), mi(2019, 1), mi(2024, 8), mi(2024, 9)
+hist = []          # (key, month, balance at the start of the month, paid in full in the month)
+conv_bal = {}
+for r in legacy:
+    key = xref.get(r["LOAN_NO"], r["LOAN_NO"])
+    od = r["OPEN_DT"]
+    om = mi(int(od[6:]), int(od[:2]))
+    cd = r["CLOSE_DT"].strip()
+    cm = mi(int(cd[6:]), int(cd[:2])) if cd else None
+    if r["BAL_AT_CONV"].strip():
+        conv_bal[key] = num(r["BAL_AT_CONV"])
+    rate, n = float(r["NOTE_RT"]), int(r["TERM_MOS"])
+    first, last = max(om + 1, JAN19), (cm if cm is not None else AUG24)
+    for t in range(first, last + 1):
+        if om < JAN19:
+            h = bal_after(num(r["BAL_12_31_2018"]), rate, n - (D18 - om), t - 1 - D18)
+        else:
+            h = bal_after(num(r["ORIG_AMT"]), rate, n, t - 1 - om)
+        if t == cm:
+            if r["CLOSE_CD"] == "PIF":
+                hist.append((key, t, h, 1))
+            continue
+        hist.append((key, t, h, 0))
+by_loan = {}
+for r in core_rows:
+    by_loan.setdefault(r["LoanNumber"], []).append(r)
+for key, rs in by_loan.items():
+    rs.sort(key=lambda r: r["AsOfDate"])
+    prev = None
+    for r in rs:
+        t = mi(int(r["AsOfDate"][:4]), int(r["AsOfDate"][5:7]))
+        p = conv_bal.get(key) if (t == SEP24 and key in conv_bal) else prev
+        prev = num(r["PrincipalBalance"])
+        if p is None or p <= 0 or r["LoanStatus"] in ("MAT", "CHGOFF"):
+            continue
+        hist.append((key, t, p, int(r["LoanStatus"] != "ACTIVE")))
+hist = [h for h in hist if h[0] in LOAN]
+pays = sum(h[3] for h in hist)
+
+
+def frame(recs, rates):
+    """the covariates of a list of (key, month, balance) rows: the stack's blended rate less the posted 30-year rate a
+    month earlier, the first mortgage alone, the loan's own rate less the posted home equity rate for its term, the
+    young-first marker and the calendar month"""
+    out = {c: np.empty(len(recs)) for c in ("blend", "first", "own", "young", "s1", "s2", "H")}
+    for j, (key, t, h) in enumerate(recs):
+        L = LOAN[key]
+        F = bal_after(L["A1"], L["r1"], L["n1"], t - 1 - L["o1"])
+        m = rates[t - 1]
+        out["blend"][j] = (F * L["r1"] + h * L["r2"]) / (F + h) - m
+        out["first"][j] = L["r1"] - m
+        out["own"][j] = L["r2"] - allhe[L["n2"]][t - 1]
+        out["young"][j] = 1.0 if t - L["o1"] < 24 else 0.0
+        cal = t % 12 + 1
+        out["s1"][j] = math.sin(2 * math.pi * cal / 12)
+        out["s2"][j] = math.cos(2 * math.pi * cal / 12)
+        out["H"][j] = h
+    return out
+
+
+def matrix(X, cov):
+    x = X[cov]
+    cols = [np.ones(len(x)), x] + [np.maximum(x - k, 0.0) for k in KNOTS] + [X["young"], X["s1"], X["s2"]]
+    return np.column_stack(cols)
+
+
+def logit_fit(M, y):
+    """maximum likelihood logistic regression by Newton steps"""
+    b = np.zeros(M.shape[1])
+    b[0] = math.log(y.mean() / (1 - y.mean()))
+    for _ in range(100):
+        p = 1 / (1 + np.exp(-(M @ b)))
+        w = p * (1 - p)
+        step = np.linalg.solve((M * w[:, None]).T @ M, M.T @ (y - p))
+        b += step
+        if np.max(np.abs(step)) < 1e-10:
+            break
+    p = np.clip(1 / (1 + np.exp(-(M @ b))), 1e-300, 1 - 1e-16)
+    dev = -2 * float(np.sum(y * np.log(p) + (1 - y) * np.log(1 - p)))
+    return b, dev
+
+
+HX = frame([(k, t, h) for k, t, h, _ in hist], m30)
+yv = np.array([h[3] for h in hist], float)
+
+# curtailments: principal above the schedule on active loans, over the balance at the prior month-end
+extra = base_bal = 0.0
+for key, rs in by_loan.items():
+    prev = None
+    for r in rs:
+        if r["LoanStatus"] != "ACTIVE":
+            continue
+        if prev is not None and prev > 0:
+            extra += max(num(r["PrincipalPaid"]) - num(r["ScheduledPrincipal"]), 0.0)
+            base_bal += prev
+        prev = num(r["PrincipalBalance"])
+curt = extra / base_bal
+
+# the book at the close of 30 November 2026, run forward on its payments from December 2026 to December 2027
+book = [r for r in core_rows if r["AsOfDate"] == "2026-11-30" and r["LoanStatus"] == "ACTIVE"]
+months = [mi(2026, 12)] + [mi(2027, m) for m in range(1, 13)]
+fw = []
+for r in book:
+    i = num(r["InterestRate"]) * 100 / 1200
+    b, pmt = num(r["PrincipalBalance"]), num(r["PaymentAmount"])
+    for j, t in enumerate(months):
+        if j:
+            b = max(b - (pmt - b * i), 0.0)
+        if b > 0:
+            fw.append((r["LoanNumber"], t, b))
+FX = frame(fw, all30)
+
+
+def forecast(cov):
+    b, dev = logit_fit(matrix(HX, cov), yv)
+    h = 1 / (1 + np.exp(-(matrix(FX, cov) @ b)))
+    tot = {c: 0.0 for c in CENTERS}
+    surv = {}
+    for (key, t, bal), hh in zip(fw, h):
+        s = surv.get(key, 1.0)
+        if t >= mi(2027, 1):
+            tot[LOAN[key]["center"]] += s * hh * bal + s * (1 - hh) * curt * bal
+        surv[key] = s * (1 - hh)
+    return {c: v / 1e6 for c, v in tot.items()}, dev
+
+
+gold, dev_b = forecast("blend")
+own, dev_o = forecast("own")
+first, dev_f = forecast("first")
+trail = {c: 0.0 for c in CENTERS}
+for key, t, h, y in hist:
+    if y and t >= mi(2025, 12):
+        trail[LOAN[key]["center"]] += h / 1e6
+rank = sorted(CENTERS, key=lambda c: -gold[c])
+pick, second = rank[0], rank[1]
+figs = json.load(open(os.path.join(HERE, "figures.json")))
+print("  recomputed 2027 principal paid ahead of schedule, $ millions: " +
+      ", ".join("%s %.2f" % (c, gold[c]) for c in CENTERS))
+ok("V10", pick == figs["call"]["center"] and int(10 * round(gold[pick] / 10)) == figs["call"]["principal_2027_musd"],
+   "the call: %s, %.2f million, printed %d" % (pick, gold[pick], int(10 * round(gold[pick] / 10))))
+ok("V11", second == figs["call"]["second"] and abs(gold[pick] - figs["call"]["principal_2027_musd_unrounded"]) < 0.02,
+   "second: %s (%.2f); margin %.2f" % (second, gold[second], gold[pick] / gold[second]))
+edge = 5 - abs(gold[pick] - 10 * round(gold[pick] / 10))
+ok("V12", edge >= 2.0, "the figure sits %.2f million inside its $10 million cell" % edge)
+ok("V13", max(own, key=own.get) == figs["steps"]["own_rate_pick"] == "Grand Rapids"
+   and abs(max(own.values()) - figs["steps"]["own_rate_pick_musd"]) < 0.06,
+   "rung 0, the own rate: %s %.1f" % (max(own, key=own.get), max(own.values())))
+ok("V14", max(trail, key=trail.get) == figs["steps"]["trailing_pick"] == "Kalamazoo and Battle Creek",
+   "rung 1, the trailing year's payoffs: %s %.1f" % (max(trail, key=trail.get), max(trail.values())))
+ok("V15", max(first, key=first.get) == figs["steps"]["first_alone_pick"] == "The Lakeshore",
+   "rung 2, the first mortgage alone: %s %.1f" % (max(first, key=first.get), max(first.values())))
+ok("V16", dev_b < min(dev_o, dev_f) and abs(dev_b - figs["steps"]["deviance"]["blend"]) < 0.5,
+   "deviance: the stack %.1f, the own rate %.1f, the first alone %.1f" % (dev_b, dev_o, dev_f))
+ok("V17", len(book) == figs["components"]["book_loans"]
+   and abs(sum(num(r["PrincipalBalance"]) for r in book) / 1e6 - figs["components"]["book_musd"]) < 0.06
+   and pays == figs["components"]["payoffs_2019_2026"],
+   "%d loans and %.1f million on the books; %d payoffs in full since January 2019"
+   % (len(book), sum(num(r["PrincipalBalance"]) for r in book) / 1e6, pays))
+
+# ------------------------------------------------------------------------------------------------- the ask
+
+
+def norm(s):
+    s = s.upper().replace(".", "").replace(",", " ")
+    return " ".join(s.split())
+
+
+def eastern(ts):
+    return dt.datetime.strptime(ts, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc).astimezone(EASTERN).date()
+
+
+def quarter(d):
+    for q, a, b in QTRS:
+        if a <= d <= b:
+            return q
+    return None
+
+
+month_end = {}
+opened = {}
+for key, rs in by_loan.items():
+    for r in rs:
+        month_end[(key, r["AsOfDate"][:7])] = num(r["PrincipalBalance"])
+    opened[key] = (rs[0]["OpenDate"], num(rs[0]["OriginalAmount"]))
+
+
+def he_balance(key, d):
+    """the principal a statement quotes: the prior month-end balance, or the amount funded earlier in the month"""
+    pm = dt.date(d.year, d.month, 1) - dt.timedelta(days=1)
+    v = month_end.get((key, pm.isoformat()[:7]))
+    if v is None:
+        o = opened.get(key)
+        if o and o[0][:7] == d.isoformat()[:7] and o[0] <= d.isoformat():
+            return o[1]
+        return None
+    return v if v > 0 else None
+
+
+by_addr, by_full = {}, {}
+for key, L in LOAN.items():
+    by_addr.setdefault((norm(L["street"]), L["zip"]), []).append(key)
+    by_full.setdefault(norm("%s %s %s" % (L["street"], L["city"], L["zip"])), []).append(key)
+serv = {r["mortgage_loan_number"]: r for r in csv_rows["first_mortgage_servicing_2026-11.csv"]}
+quoted = []      # (key, eastern date)
+for r in csv_rows["payoff_statement_log_2025-10_2026-11.csv"]:
+    if r["statement_status"] not in ("ISSUED", "UPDATED"):
+        continue
+    d = eastern(r["issued_utc"])
+    ref = xref.get(r["account_reference"], r["account_reference"])
+    if ref in LOAN:
+        quoted.append((ref, d))
+        continue
+    m = serv.get(r["account_reference"])
+    if r["product_on_file"] != "MTG" or m is None:
+        continue
+    nd = dt.date.fromisoformat(m["note_date"])
+    k = (d.year - nd.year) * 12 + (d.month - nd.month) - 1
+    days = (dt.date.fromisoformat(r["good_through_date"]) - d).days
+    fb = bal_after(num(m["original_amount"]), float(m["note_rate_pct"]), int(m["term_months"]), k)
+    left = num(r["statement_amount"]) - fb * (1 + float(m["note_rate_pct"]) / 36500 * days) - 25.0
+    for key in by_addr.get((norm(m["property_street"]), m["property_zip"]), []):
+        hb = he_balance(key, d)
+        if hb is not None and abs(left - hb * (1 + LOAN[key]["r2"] / 36500 * days)) <= 1.0:
+            quoted.append((key, d))
+n_mtg = len(quoted)
+mwb = load_workbook(os.path.join(TARGET, "payoff_statements_manual_2026-03.xlsx"), data_only=True)
+ws = mwb.worksheets[0]
+head_row = [c.value for c in ws[3]]
+for r in ws.iter_rows(min_row=4, values_only=True):
+    if r[0] is None:
+        continue
+    liens = str(r[head_row.index("Liens")]).lower()
+    if "home equity" not in liens:
+        continue
+    d = r[0].date() if isinstance(r[0], dt.datetime) else r[0]
+    for key in by_full.get(norm(str(r[head_row.index("Property")])), []):
+        if he_balance(key, d) is not None:
+            quoted.append((key, d))
+ok("V18", len(quoted) > n_mtg > 0, "xlsx: the outage workbook adds %d loan-quotes" % (len(quoted) - n_mtg))
+paid = {r["LoanNumber"] for r in core_rows if r["LoanStatus"] == "PIF" and r["CloseDate"] <= "2026-11-30"}
+table = {}
+for c in CENTERS:
+    for q, _, _ in QTRS:
+        ks = {k for k, d in quoted if quarter(d) == q and LOAN[k]["center"] == c}
+        table[(c, q)] = (len(ks), len(ks & paid))
+fa = figs["asks"]
+ok("V19", all(fa["%s|%s" % k]["quoted"] == v[0] and fa["%s|%s" % k]["paid_in_full"] == v[1] for k, v in table.items()),
+   "all 32 ask counts recompute and match figures.json")
+
+# ------------------------------------------------------------------------------------------------- the goldens
+gwb = load_workbook(os.path.join(GOLDEN, "he_payoff_pilot_2027.xlsx"), data_only=True)
+gtext = " ".join(str(v) for wsx in gwb.worksheets for row in wsx.iter_rows(values_only=True) for v in row if v is not None)
+ok("V20", "Muskegon and the North opens the payoff-retention pilot" in gtext and "The Lakeshore" in gtext,
+   "the golden workbook states the call and the center second")
+QNAME = {"2025Q4": "October to December 2025", "2026Q1": "January to March 2026", "2026Q2": "April to June 2026",
+         "2026Q3": "July to September 2026"}
+cells = {}
+for row in gwb["Payoff quotes"].iter_rows(values_only=True):
+    if row and row[0] in CENTERS:
+        cells[(row[0], row[1])] = (row[2], row[3])
+ok("V21", len(cells) == 16 and all(cells.get((c, QNAME[q])) == table[(c, q)] for c, q in table),
+   "the workbook's Payoff quotes sheet carries the 32 counts")
+with open(os.path.join(GOLDEN, "payoff_quotes_by_center.png"), "rb") as fh:
+    png = fh.read(32)
+w, h = struct.unpack(">II", png[16:24])
+ok("V22", png[:8] == b"\x89PNG\r\n\x1a\n" and w >= 1200 and h >= 700, "png: the chart reads back (%d by %d)" % (w, h))
+with open(os.path.join(TASK, "submission.md"), encoding="utf-8") as fh:
+    sub = fh.read()
+ok("V23", "Muskegon and the North" in sub.split("## 2.")[0] and "$40 million" in sub.split("## 2.")[0],
+   "submission.md block 1 carries the call and its figure")
+blk4 = sub.split("## 4.")[1].replace("*", "")
+ok("V24", all(("%s, %s: %d quoted, %d paid in full" % (c, QNAME[q], v[0], v[1])) in blk4 for (c, q), v in table.items()),
+   "submission.md block 4 carries every count")
+
+print("%d failed" % len(FAILS))
+sys.exit(1 if FAILS else 0)

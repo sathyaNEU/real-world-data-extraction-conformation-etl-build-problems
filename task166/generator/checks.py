@@ -1,8 +1,8 @@
-"""task166 checks: the three rules executed on the clean truth (R1 to R3c), the ladder and its grid, the golden family,
-the out-of-sample choice, the hard rules and constant shares that land, every semantic fork row (SF1 to SF23), the ask
-and its devices, the separation line, the distractors, the input gates and the realism sweep. Exit 1 on any failure.
+"""task166 checks: the build's assertions, run on the cut pack in target/ and on the generator's clean truth.
 
-    python3 checks.py            reads task166/target, the generator's world and generator/figures.json"""
+Blocks: G input gates; C the call and its bin; L the ladder and its rivals on the shipped files; F the standing family;
+R1 to R3c the three rules on the clean truth; M each Layer 1 item mishandled; SF1 to SF21 the semantic fork table;
+A the ask and its devices; S the separation of the ask from the call and the distractors; D the documents; Q realism."""
 from __future__ import annotations
 
 import datetime as dt
@@ -15,795 +15,382 @@ import tempfile
 import zipfile
 
 import numpy as np
+import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+import asks as A            # noqa: E402
 import calc as C            # noqa: E402
 import common as K          # noqa: E402
-import cracker as CR        # noqa: E402
 import docs as DOC          # noqa: E402
 import records as R         # noqa: E402
-import swaps as SW          # noqa: E402
 import world as WD          # noqa: E402
 
 TASK = os.path.dirname(HERE)
-PACK = os.path.join(TASK, "target")
-RESULTS = []
+TARGET = os.path.join(TASK, "target")
+GOLDEN = os.path.join(TASK, "golden")
+RES = []
+MN, LS, GR, KB = C.REG_ORDER[3], C.REG_ORDER[1], C.REG_ORDER[0], C.REG_ORDER[2]
+LO, HI = 35.0, 45.0          # the $40 million bin at the nearest 10
 
 
 def check(label, ok, detail=""):
-    RESULTS.append((label, bool(ok), detail))
-    print("%s  %-44s %s" % ("PASS" if ok else "FAIL", label, detail))
+    RES.append((label, bool(ok), detail))
+    print("%s  %-6s %s" % ("PASS" if ok else "FAIL", label, detail))
 
 
-def bin10(x):
-    return int(10 * round(x / 10.0))
+def pick(s):
+    s = s.reindex(C.REG_ORDER)
+    return s.idxmax(), float(s.max() / s.drop(s.idxmax()).max())
 
 
-def edge10(x):
-    return 5.0 - abs(x - bin10(x))
+def in_bin(x):
+    return LO <= x < HI
 
 
-PROMPT = open(os.path.join(TASK, "prompt.txt"), encoding="utf-8").read()
-# the constant shares (every balloon, the 2027 balloons alone) and the hard rules that land the bin, as measured and
-# counted in the note's Strength line
-LANDING_SHARES = (["four-fifths", "0.85"], [])
-LANDING_RULES = ["a cover test at 1.10 on 30-year amortization", "a cover test at 1.15 on 30-year amortization",
-                 "a cover test at 1.20 on 30-year amortization", "a cover test at 1.25 on 30-year amortization",
-                 "a cover test at 1.10 on 25-year amortization", "a cover test at 1.15 on 25-year amortization",
-                 "a cover test at 1.20 on 25-year amortization", "a debt yield hurdle of 9.0 per cent",
-                 "a debt yield hurdle of 9.5 per cent", "a debt yield hurdle of 10.0 per cent",
-                 "a cover test at 1.15 on the extension's payment", "a cover test at 1.20 on the extension's payment",
-                 "a cover test at 1.25 on the extension's payment", "a cover test at 1.30 on the extension's payment",
-                 "a cover test at 1.35 on the extension's payment", "the share of November 2026's maturities",
-                 "the share of October and November 2026's maturities"]
-
-
-# ------------------------------------------------------------------------------------------------- the golden
-G = C.golden(PACK)
-RT = C.routes(G)
-FIG = json.load(open(os.path.join(HERE, "figures.json")))
-CRE = G.CRE / 1e6
-POOLS = {k: v / 1e6 for k, v in G.pools.items()}
-
-
-def ranking(vals):
-    return sorted(vals, key=vals.get, reverse=True)
-
-
-def with_cre(x, mort=None):
-    v = dict(POOLS)
-    v["Fixed-rate commercial real estate"] = x
-    if mort is not None:
-        v["2023-24 residential mortgages"] = mort
-    return v
-
-
-check("GOLDEN call", G.call == "Fixed-rate commercial real estate", G.call)
-check("GOLDEN figure", bin10(CRE) == 150 and FIG["call_loss_musd_nearest10"] == 150 and
-      FIG["pools"]["Fixed-rate commercial real estate"]["loss_musd_nearest10"] == 150, "%.2f -> %d" % (CRE, bin10(CRE)))
-check("GOLDEN re-centred by the rule", abs(CRE - 150.0) <= 0.5,
-      "%.2f; the push's income scale is solved to put the golden within 0.5 of the bin centre" % CRE)
-check("GOLDEN eligibility", all(v >= 1.2e9 for v in G.principal.values()),
-      ", ".join("%s %.1f" % (k.split()[0], v / 1e6) for k, v in G.principal.items()))
-
-# ------------------------------------------------------------------------------------------------- three rules, R1
-log_rows = len(G.cre.log)
-stmt_rows = sum(len(v) for v in G.cre.stmts.values())
-check("R1 raw material ships", len(G.cre_hist) >= 550 and stmt_rows >= 4000 and len(G.wall) >= 250,
-      "%d maturities with outcomes, %d statements, %d balloons due by December 2027" % (len(G.cre_hist), stmt_rows,
-                                                                                        len(G.wall)))
-heads = []
-for f in sorted(os.listdir(PACK)):
-    p = os.path.join(PACK, f)
-    if f.endswith(".csv"):
-        heads += [h.lower() for h in open(p, encoding="utf-8").readline().strip().split(",")]
-    elif f.endswith(".xlsx"):
-        from openpyxl import load_workbook
-        wb = load_workbook(p, read_only=True)
-        for ws in wb.worksheets:
-            for r in ws.iter_rows(min_row=1, max_row=1, values_only=True):
-                heads += [str(c).lower() for c in r if c is not None]
-        wb.close()
-bad_heads = [h for h in heads if re.search(r"cover|dscr|debt.?yield|extension|probab|refinanc|cpr|speed|duration|eve\b",
-                                           h)]
-check("R1 no column holds the deciding quantity", not bad_heads, ", ".join(bad_heads) or "none")
-
-# ------------------------------------------------------------------------------------------------- R2: mess neutrality
-def call_and_bin(cre_val, mort_val=None, mbs_val=None, t_val=None, auto_val=None):
-    v = with_cre(cre_val, mort_val)
-    if mbs_val is not None:
-        v["Agency MBS"] = mbs_val
-    if t_val is not None:
-        v["Treasury ladder"] = t_val
-    if auto_val is not None:
-        v["Indirect auto loans"] = auto_val
-    return ranking(v)[0], bin10(v["Fixed-rate commercial real estate"])
-
-
-GOLD_CALL = ("Fixed-rate commercial real estate", 150)
-M = C.load_mortgages(PACK)
-pool = G.m_pool
-# R2a the conversion: the curve fitted on the new platform's extract only
-rows_new = [r for r in M.rows if r[1] >= C.mo(2024, 9)]
-Mn = C.Mort()
-Mn.rows = rows_new
-th, _ = C.fit_mortgage(*C.mortgage_panel(Mn, G.rates))
-m_new = C.measure(C.mortgage_cf(pool, C.mortgage_smm_plan(th, pool, G.plan.mortgage), G.m_curt), G.W)[0] / 1e6
-check("R2 conversion: new platform only", call_and_bin(CRE, m_new) == GOLD_CALL, "mortgages %.1f" % m_new)
-# R2b loans held for sale counted, their deliveries read as payoffs
-leg = C.read_csv(os.path.join(PACK, R.F_LEGACY))
-new = C.read_csv(os.path.join(PACK, R.F_SERV))
-extra = []
-for r in leg:
-    if r["PORTF"] == "HFS":
-        cyc = r["CYCLE"]
-        extra.append(("H" + r["LOAN_NO"], C.mo(int(cyc[:4]), int(cyc[4:])), C.pdate(r["ORIG_DT"]), int(r["TERM"]),
-                      float(r["NOTE_RT"]), float(r["BEG_PRIN"]), float(r["SCHED_PRIN"]), 0.0, float(r["PIF_PRIN"]),
-                      float(r["END_PRIN"]), 1 if r["STAT"] == "S" else 0))
-for r in new:
-    if r["investor_type"] == "HELD FOR SALE":
-        y, m = r["reporting_period"].split("-")
-        extra.append(("H" + r["loan_id"], C.mo(int(y), int(m)), C.pdate(r["origination_date"]),
-                      int(r["original_term_months"]), float(r["interest_rate"]) * 100, float(r["beginning_principal"]),
-                      float(r["scheduled_principal"]), 0.0, float(r["unscheduled_principal"]), float(r["ending_principal"]),
-                      1 if r["zero_balance_code"] == "15" else 0))
-Mh = C.Mort()
-Mh.rows = M.rows + extra
-th, _ = C.fit_mortgage(*C.mortgage_panel(Mh, G.rates))
-m_hfs = C.measure(C.mortgage_cf(pool, C.mortgage_smm_plan(th, pool, G.plan.mortgage), G.m_curt), G.W)[0] / 1e6
-check("R2 held-for-sale deliveries as payoffs", call_and_bin(CRE, m_hfs) == GOLD_CALL,
-      "mortgages %.1f (%d held-for-sale loan-months)" % (m_hfs, len(extra)))
-# R2c the trailer row read as a loan: it carries no portfolio code and no balance in BEG_PRIN
-trl = [r for r in leg if r["LOAN_NO"] == "TRL"]
-check("R2 legacy trailer", len(trl) == 1 and trl[0]["PORTF"] == "" and trl[0]["BEG_PRIN"] == "",
-      "trailer count %s" % (trl[0]["CYCLE"] if trl else "-"))
-# R2d the rate sheet codes renamed in 2024: only the new codes read
-rates_new = {k: v for k, v in G.rates.items() if k[1] >= C.mo(2024, 1)}
-Hn = [h for h in C.cre_history(G.cre, {**rates_new, **{(c, o): v for (c, o), v in G.rates.items() if o < C.mo(2024, 1)}})
-      if h["date"] >= dt.date(2024, 1, 1)]
-b = C.logit_fit(np.array([h["cover"] for h in Hn]), np.array([h["y"] for h in Hn]))
-fut = [L for L in G.cre_loans if not L["extended"]]
-cre_24 = C.measure(C.cre_cf(G.cre_loans, lambda L: float(C.logit_pred(b, np.array([G.cre_cover[id(L)]]))[0])
-                            if not L["extended"] else 0.0), G.W)[0] / 1e6
-check("R2 rate codes renamed: 2024 onward only", call_and_bin(cre_24) == GOLD_CALL, "CRE %.1f on %d maturities" % (cre_24,
-                                                                                                                len(Hn)))
-# R2e ACT/360 read as 30/360
-check("R2 interest basis", call_and_bin(RT["family"]["interest on 30/360"]) == GOLD_CALL,
-      "%.1f" % RT["family"]["interest on 30/360"])
-# R2f the log's two layouts: only the 2020 onward sheets read
-H20 = [h for h in G.cre_hist if h["date"] >= dt.date(2020, 1, 1)]
-b = C.logit_fit(np.array([h["cover"] for h in H20]), np.array([h["y"] for h in H20]))
-cre_20 = C.measure(C.cre_cf(G.cre_loans, lambda L: float(C.logit_pred(b, np.array([G.cre_cover[id(L)]]))[0])
-                            if not L["extended"] else 0.0), G.W)[0] / 1e6
-check("R2 maturity log: 2020 layout only", call_and_bin(cre_20) == GOLD_CALL, "%.1f" % cre_20)
-# R2g statements by fiscal year end, whatever the review date
-check("R2 statements by fiscal year end", call_and_bin(RT["family"]["statement by fiscal year end"]) == GOLD_CALL,
-      "%.1f" % RT["family"]["statement by fiscal year end"])
-# R2h floating loans in the pool at their monthly repricing (a month of duration each)
-flt = [r for r in G.cre.pos if r["rate_type"] == "FLOATING"]
-fl_add = sum(float(r["principal_balance"]) for r in flt) * float(np.mean(G.W[:1])) / 1e6
-check("R2 floating loans at their repricing", call_and_bin(CRE + fl_add) == GOLD_CALL,
-      "%d floating loans add %.2f" % (len(flt), fl_add))
-# R2i the custodian's thousands read as dollars
-cust = C.load_custody(PACK)
-fac = C.load_factors(PACK)
-check("R2 custody thousands", call_and_bin(CRE, mbs_val=G.MBS / 1e9, t_val=G.T / 1e9) == GOLD_CALL,
-      "MBS %.3f, Treasury %.3f" % (G.MBS / 1e9, G.T / 1e9))
-# R2j every agency pool in the account read as the MBS pool
-orig_pools = C.mbs_pools
-C.mbs_pools = lambda cu: [r for r in cu if r["security_type"] == "AGENCY MBS"]
-mbs_all = C.measure(C.mbs_cf(cust, fac)[0], G.W)[0] / 1e6
-C.mbs_pools = orig_pools
-check("R2 newer agency pools included", call_and_bin(CRE, mbs_val=mbs_all) == GOLD_CALL and CRE / mbs_all >= 1.15,
-      "MBS %.1f, margin %.2f" % (mbs_all, CRE / mbs_all))
-# R2k the agency payment delay ignored
-mbs_d0 = C.measure(C.mbs_cf(cust, fac, delay=0)[0], G.W)[0] / 1e6
-check("R2 agency payment delay", call_and_bin(CRE, mbs_val=mbs_d0) == GOLD_CALL, "MBS %.1f" % mbs_d0)
-# R2l the auto roll read on the ABS convention (prepayments over the loans' original amounts)
-tape, roll = C.load_auto(PACK)
-orig_amt = sum(float(r["amount_financed"]) for r in tape)
-abs_rate = np.mean([float(r["prepaid_principal"]) for r in roll[-12:]]) / orig_amt
-bal = np.array([float(r["principal_balance"]) for r in tape])
-smm_abs = min(0.2, abs_rate * orig_amt / bal.sum())
-auto_abs = C.measure(C.auto_cf(tape, smm_abs), G.W)[0] / 1e6
-check("R2 auto on ABS", call_and_bin(CRE, auto_val=auto_abs) == GOLD_CALL, "auto %.1f" % auto_abs)
-
-# ------------------------------------------------------------------------------------------------- R3 on the clean truth
-TW = WD.simulate()
-H_ = K.HORIZON
-Wt = K.discount(np.arange(1, H_ + 1) / 12) - K.discount(np.arange(1, H_ + 1) / 12, K.SHOCK)
-
-
-def tmeasure(Cf):
-    Cf = np.asarray(Cf, float)
-    return np.mean([(Cf[m:] * Wt[:len(Cf) - m]).sum() for m in range(2, 14)]) / 1e6
-
-
-def t_level(bal, rate, nrem, smm):
-    return C.level_pay(bal, rate, nrem, smm)
-
-
-mp = TW.m_pool
-tb = np.array([L["bal_asof"] for L in mp])
-tn = np.array([L["note"] for L in mp])
-tr = np.array([L["term"] - (K.ASOF_M - L["orig"]) for L in mp])
-ta = np.array([K.ASOF_M - L["orig"] for L in mp])
-S = np.zeros((len(mp), H_))
-for t in range(H_):
-    S[:, t] = WD.m_smm((tn - K.PLAN_MORTGAGE) / 100.0, [(K.PROJ_START + t) % 12 + 1] * len(mp), ta + t + 1)
-t_M = tmeasure(t_level(tb, tn, tr, S))
-hist = np.array([(h[1], h[2], h[3], h[5]) for h in TW.m_hist])
-sel = hist[:, 0] > K.ASOF_M - 12
-s12 = hist[sel, 3].sum() / (hist[sel, 1] - hist[sel, 2]).sum()
-t_M_trail = tmeasure(t_level(tb, tn, tr, np.full((len(mp), H_), s12)))
-cf = np.zeros(H_)
-for Pm in TW.mbs:
-    B = Pm["face"] * Pm["factors"][K.ASOF_M]
-    n = Pm["wam0"] - (K.ASOF_M - Pm["issue"])
-    inc = (Pm["wac"] - K.PLAN_MORTGAGE_15 - (0.70 if Pm["term"] == 360 else 0)) / 100
-    for t in range(H_ - 1):
-        if n <= 0 or B <= 0:
-            break
-        smm = WD.M_TURN * 0.95 * WD.SEASON[(K.PROJ_START + t) % 12] * (0.62 if inc < -0.02 else 0.8 if inc < -0.01 else 1) \
-            + 0.030 / (1 + np.exp(-(inc - 0.0075) / 0.0022))
-        rr = Pm["wac"] / 1200
-        pay = B * rr / (1 - (1 + rr) ** (-n))
-        sch = B if n <= 1 else min(pay - B * rr, B)
-        pre = (B - sch) * smm
-        cf[t + 1] += B * Pm["cpn"] / 1200 + sch + pre
-        B -= sch + pre
-        n -= 1
-t_MBS = tmeasure(cf)
-cfT = np.zeros(H_)
-for (pm, cpn, md, par) in TW.ust:
-    mm = K.mo(md.year, md.month)
-    o = mm
-    while o > K.ASOF_M:
-        cfT[o - K.PROJ_START] += par * cpn / 200
-        o -= 6
-    cfT[mm - K.PROJ_START] += par
-t_T = tmeasure(cfT)
-ap = TW.auto_pool
-ab = np.array([a["bal"] for a in ap])
-ab0 = np.array([a["bal0"] for a in ap])
-t_A = tmeasure(t_level(ab, np.array([a["apr"] for a in ap]), np.array([a["term"] - a["age"] for a in ap]),
-                       np.repeat(np.minimum(1, WD.AUTO_ABS * ab0 / np.maximum(ab, 1))[:, None], H_, 1)))
-tpool = [L for L in TW.cre if R.cre_alive(L)]
-
-
-def t_cre(pfun, qfun=lambda L: 0.0):
-    """the truth's cash flows: the world's own balance paths to maturity, then the bank's one extension (a tenth paid
-    down, the rest at the plan's rate on 25 years for 36 months) with p, six months on the note for a sale with q"""
-    Cf = np.zeros(H_)
-    for L in tpool:
-        if R.cre_extended_now(L):
-            rate, pay, mat_e, _ = R.cre_terms_now(L)
-            prev = R.cre_balance_asof(L)
-            for t in range(mat_e - K.ASOF_M):
-                o = K.PROJ_START + t
-                days = WD.days_in(o - 1) if L["basis"] == "ACT/360" else 30
-                nb = L["ext_path"][o - L["mat"] - 1]
-                Cf[t] += prev * rate / 100 * days / 360 + prev - nb + (nb if o == mat_e else 0.0)
-                prev = nb
-            continue
-        p, q = pfun(L), qfun(L)
-        prev = L["bal_path"][K.ASOF_M - L["orig"] - 1]
-        for t in range(L["mat"] - K.ASOF_M):
-            o = K.PROJ_START + t
-            days = WD.days_in(o - 1) if L["basis"] == "ACT/360" else 30
-            nb = L["bal_path"][o - L["orig"] - 1]
-            Cf[t] += prev * L["r0"] / 100 * days / 360 + prev - nb
-            prev = nb
-        tm = L["mat"] - K.ASOF_M - 1
-        Cf[tm] += (1 - p - q) * prev + p * WD.EXT_PAYDOWN * prev
-        B = prev * (1 - WD.EXT_PAYDOWN)
-        pay = float(WD.pmt(B, K.PLAN_CRE, WD.EXT_AMORT))
-        for j in range(WD.CRE_EXT_MONTHS):
-            o = L["mat"] + 1 + j
-            days = WD.days_in(o - 1) if L["basis"] == "ACT/360" else 30
-            it = B * K.PLAN_CRE / 100 * days / 360
-            B -= pay - it
-            Cf[tm + 1 + j] += p * (it + pay - it + (B if j == WD.CRE_EXT_MONTHS - 1 else 0.0))
-        B = prev
-        for j in range(WD.SALE_EXT_MONTHS):
-            o = L["mat"] + 1 + j
-            days = WD.days_in(o - 1) if L["basis"] == "ACT/360" else 30
-            it = B * L["r0"] / 100 * days / 360
-            pr_ = 0.0 if L["io"] else L["payment"] - it
-            B -= pr_
-            Cf[tm + 1 + j] += q * (it + pr_ + (B if j == WD.SALE_EXT_MONTHS - 1 else 0.0))
-    return tmeasure(Cf)
-
-
-t_hist = [L for L in TW.cre if L["outcome"] and L["mat"] >= K.mo(2015, 1)]
-t_recent = np.mean([L["outcome"] == "EXT" for L in t_hist if L["mat"] > K.ASOF_M - 12])
-
-
-def t_cover_now(L):
-    s = R.latest_stmt(L)
-    return s["noi"] / (L["bal_mat"] * float(WD.dc(K.PLAN_CRE, 300)))
-
-
-def t_q(L):
-    return WD.CRE_SALE if t_cover_now(L) >= WD.SALE_MIN else 0.0
-
-
-def t_p(L):
-    c = t_cover_now(L)
-    conv = WD.CRE_CONV if WD.CONV_BAND[0] <= c < WD.CONV_BAND[1] else 0.0
-    return (1 - t_q(L)) * (conv + (1 - conv) * float(WD.cre_p_ext(c)))
-
-
-t_C0 = t_cre(lambda L: 0.0)
-t_Crec = t_cre(lambda L: t_recent)
-t_Ccov = t_cre(t_p, t_q)
-tv = {"Treasury ladder": t_T, "Agency MBS": t_MBS, "2023-24 residential mortgages": t_M, "Indirect auto loans": t_A}
-r3a = ranking({**tv, "Fixed-rate commercial real estate": t_Crec})[0]
-check("R3a analyst test on the clean truth", r3a == "Agency MBS",
-      "default path names %s (MBS %.1f, mortgages %.1f, CRE %.1f at the recent share %.3f)" % (r3a, t_MBS, t_M, t_Crec,
-                                                                                            t_recent))
-r3b = ranking({**tv, "Fixed-rate commercial real estate": t_Ccov})[0]
-check("R3b the decisive step alone, clean truth", r3b == "Fixed-rate commercial real estate" and bin10(t_Ccov) == 150,
-      "%s, CRE %.1f" % (r3b, t_Ccov))
-lower = {"R0 (every pool at last year's speed)": ranking({**tv, "2023-24 residential mortgages": t_M_trail,
-                                                          "Fixed-rate commercial real estate": t_C0})[0],
-         "R0 + the prepayment curve": ranking({**tv, "Fixed-rate commercial real estate": t_C0})[0],
-         "R0 + the recent share": ranking({**tv, "2023-24 residential mortgages": t_M_trail,
-                                           "Fixed-rate commercial real estate": t_Crec})[0]}
-check("R3b each lower correction alone is wrong", all(v != "Fixed-rate commercial real estate" for v in lower.values()),
-      "; ".join("%s: %s" % kv for kv in lower.items()))
-# R3c no plant: no repeated monthly block in the servicing data, no memo or ranking among the documents
-seqs = {}
-for r in new:
-    if r["investor_type"] == "PORTFOLIO":
-        seqs.setdefault(r["loan_id"], []).append((r["scheduled_principal"], r["unscheduled_principal"]))
-sig = {}
-dup = 0
-for k, v in seqs.items():
-    if len(v) >= 6:
-        key = tuple(v)
-        dup += key in sig
-        sig[key] = k
-check("R3c no copied block", dup == 0, "%d loans with six or more periods, %d repeated sequences" % (len(sig), dup))
-texts = [DOC.notes_text({**{f: 1 for f in os.listdir(PACK)}, **{R.F_LEGACY: 1, R.F_SERV: 1, R.F_XREF: 1, R.F_RATES: 1,
-                                                               R.F_CRE: 1, DOC.F_LOG: 1, R.F_STMT: 1, R.F_CUSTODY: 1,
-                                                               R.F_FACTORS: 1, R.F_AUTO: 1, R.F_ROLL: 1,
-                                                               DOC.F_REGISTER: 1, R.F_SCHED: 1, R.F_CLEAR: 1,
-                                                               R.F_LOCKS: 1}})]
-texts += [p for _, ps in DOC.POLICY for p in ps] + [b for _, b in DOC.SCHEDULE_A] + DOC.PLAN_NOTE
-plant = [w for w in ("recommend", "we suggest", "should be designated", "draft", "rank", "largest loss", "extend more",
-                     "refinanc", "cover", "debt yield", "dscr", "trailing")
-         if any(w in t.lower() for t in texts)]
-check("R3c no decoy or method text", not plant, ", ".join(plant) or "none")
-
-# ------------------------------------------------------------------------------------------------- the ladder
-R0 = ranking(with_cre(RT["cre_contractual"], G.M_trailing / 1e6))
-R1 = ranking(with_cre(RT["cre_contractual"]))
-v0 = with_cre(RT["cre_contractual"], G.M_trailing / 1e6)
-check("LADDER R0 names the mortgages, CRE 4th or 5th", R0[0] == "2023-24 residential mortgages" and
-      R0.index("Fixed-rate commercial real estate") >= 3 and v0[R0[0]] / v0[R0[1]] >= 1.15,
-      "%s %.1f / %s %.1f = %.2f; CRE %d" % (R0[0], v0[R0[0]], R0[1], v0[R0[1]], v0[R0[0]] / v0[R0[1]],
-                                            R0.index("Fixed-rate commercial real estate") + 1))
-v1 = with_cre(RT["cre_contractual"])
-check("LADDER R1 default names Agency MBS", R1[0] == "Agency MBS" and v1[R1[0]] / v1[R1[1]] >= 1.15,
-      "%.2f over %s" % (v1[R1[0]] / v1[R1[1]], R1[1]))
-for lab, key in (("R2a recent share", "cre_recent"), ("R2b rate gap", "cre_gap"), ("R2c note-rate DSCR", "cre_cur")):
-    v = with_cre(RT[key])
-    rk = ranking(v)
-    m = v[rk[0]] / v[rk[1]]
-    pos = rk.index("Fixed-rate commercial real estate") + 1
-    check("LADDER %s names Agency MBS" % lab, rk[0] == "Agency MBS" and m >= (1.20 if pos == 2 else 1.15),
-          "CRE %.1f, %d, margin %.2f" % (RT[key], pos, m))
-v3 = with_cre(CRE)
-rk3 = ranking(v3)
-check("LADDER R3 decisive names the pool", rk3[0] == "Fixed-rate commercial real estate" and
-      v3[rk3[0]] / v3[rk3[1]] >= 1.2, "%.2f over %s" % (v3[rk3[0]] / v3[rk3[1]], rk3[1]))
-dom = (CRE - RT["cre_contractual"]) / (POOLS["Agency MBS"] - RT["cre_contractual"])
-check("DOMINANCE", dom >= 1.2, "%.2f" % dom)
-# the grid: one correction at a time
-v_cmt = with_cre(CRE, G.M_trailing / 1e6)
-v_dy = with_cre(RT["cre_dy"])
-grid = {
-    "cover with last year's mortgage speed": "%s %.2fx" % (ranking(v_cmt)[0], v_cmt[ranking(v_cmt)[0]] /
-                                                            v_cmt[ranking(v_cmt)[1]]),
-    "debt yield, every maturity": "%s, CRE %d" % (ranking(v_dy)[0], bin10(RT["cre_dy"])),
-    "note-rate DSCR since 2023": "CRE %d" % bin10(RT["cre_cur_2023"]),
-    "every balloon extended": "CRE %d" % bin10(RT["cre_all_extend"]),
-    "cover on the 2027 balloons only": "CRE %d" % bin10(RT["cre_wall_only"]),
-}
-okg = ranking(v_cmt)[0] == "Fixed-rate commercial real estate" and v_cmt[ranking(v_cmt)[0]] / v_cmt[ranking(v_cmt)[1]] \
-    >= 1.15 and bin10(RT["cre_dy"]) != 150 and bin10(RT["cre_cur_2023"]) != 150 and \
-    bin10(RT["cre_all_extend"]) != 150 and bin10(RT["cre_wall_only"]) == 150
-check("GRID cells", okg, "; ".join("%s: %s" % kv for kv in grid.items()))
-RIVALS = ("cre_recent", "cre_since2023", "cre_pooled", "cre_gap", "cre_gap_2023", "cre_cur", "cre_cur_2023", "cre_dy",
-          "cre_ptype", "cre_all_extend", "cre_contractual")
-rivals_in = [k for k in RIVALS if bin10(RT[k]) == 150]
-check("RIVALS outside the golden bin", not rivals_in, ", ".join(rivals_in) or
-      "every rival misses: " + ", ".join("%s %.1f" % (k[4:], RT[k]) for k in RIVALS))
-# ------------------------------------------------------------------------------------------------- the golden family
-# every out-of-sample-valid construction of the decisive step sits in the quarter-bin (the centre plus or minus 2.5)
-fam = dict(RT["family"])
-SC = RT["score"]
-MISREAD = "sale-pending outcomes counted as extensions"     # reads a filed code against its definition
-misread = fam.pop(MISREAD)
-H = G.cre_hist
-xs = np.array([h["cover"] for h in H])
-ys = np.array([h["y"] for h in H])
-fut_ = C.cre_linear(G)[0]
-covs = np.array([G.cre_cover[id(L)] for L in fut_])
-check("FAM linear book equals the golden", abs(C.cre_total(G, C.logit_pred(G.cover_beta, covs)) - CRE) < 1e-6,
-      "%.6f" % C.cre_total(G, C.logit_pred(G.cover_beta, covs)))
-g = np.random.default_rng(1661214)
-boot = []
-for _ in range(200):
-    i = g.integers(0, len(H), len(H))
-    bb = C.logit_fit(xs[i], ys[i])
-    boot.append(C.cre_total(G, C.logit_pred(bb, covs)))
-sig1 = float(np.std(boot))
-q_off = [k for k, v in fam.items() if v - sig1 < 147.5 or v + sig1 > 152.5]
-check("FAM every construction plus or minus one sigma in 147.5 to 152.5", not q_off and len(fam) >= 18,
-      "%d constructions, %.2f to %.2f, sigma %.2f: %.2f to %.2f%s" % (
-          len(fam), min(fam.values()), max(fam.values()), sig1, min(fam.values()) - sig1, max(fam.values()) + sig1,
-          ("; off: " + ", ".join(q_off)) if q_off else ""))
-for k in ("cover bands of 0.05", "cover bands of 0.10", "debt yield, maturities since 2023",
-          "debt yield and the refinance rate", "cover, the 2027 balloons only", "cover, maturities since 2023",
-          "sale-pending outcomes dropped from the fit", "sale-pending six months carried forward"):
-    check("FAM named: %s" % k, k in fam and abs(fam[k] - 150.0) + sig1 <= 2.5,
-          "%.2f, hold-out %.4f" % (fam.get(k, 0), SC.get(k, 0)))
-cuts = RT["chosen_cuts"]
-best_cut = min(RT["cut_holdout"].values())
-check("FAM the data-chosen hard cuts", cuts and all("hard cut at %.2f" % c in fam for c in cuts) and
-      all(abs(RT["cut_figure"][c] - 150.0) + sig1 <= 2.5 for c in cuts),
-      "cuts %s (hold-out Brier %.4f at best); %s" % (", ".join("%.2f" % c for c in cuts), best_cut,
-                                                     ", ".join("%.2f: %.1f" % (c, RT["cut_figure"][c]) for c in cuts)))
-far = [c for c in C.CUTS if abs(RT["cut_figure"][c] - 150.0) + sig1 > 2.5 and RT["cut_holdout"][c] <= 1.25 * best_cut]
-check("FAM every cut that scores near the best lands", not far,
-      "cuts outside the middle half all score at least 1.25 times the best hold-out Brier" if not far else
-      ", ".join("%.2f" % c for c in far))
-check("FAM the misread code misses", misread < 145.0 or misread >= 155.0 or SC[MISREAD] >= 1.5 * SC["cover, every maturity since 2015"],
-      "EXT-S read as the 36-month extension: %.2f, hold-out %.4f against %.4f" % (
-          misread, SC[MISREAD], SC["cover, every maturity since 2015"]))
-check("FAM debt constants ruled out by the sheet", "25-year amortization" in R.DESC["CRE5F"], R.DESC["CRE5F"])
-# ------------------------------------------------------------------------------------------------- the routes kept outside
-OUT = RT["outside"]
-NAMED_OUT = ("the 1.25 cover convention", "note-rate DSCR, every maturity", "note-rate DSCR, maturities since 2023",
-             "debt yield, every maturity", "the 2027 model share carried to every balloon", "every balloon extended",
-             "the 1.00 cover rule", "every 2027 balloon extended")
-for k in ("in-place cover below 1.20", "in-place cover below 1.25", "the watch list (grade 6 or worse)"):
-    v = OUT[k]
-    check("OUT %s, a full bin away" % k, abs(v - CRE) >= 10.0 and v < POOLS["Agency MBS"],
-          "%.2f (%+.1f), Agency MBS still first" % (v, v - CRE))
-for k in NAMED_OUT:
-    v = OUT[k]
-    check("OUT %s" % k, v < 145.0 or v >= 155.0,
-          "%.2f (%s the bin by %.1f)%s" % (v, "below" if v < 145 else "above", (145.0 - v) if v < 145 else (v - 155.0),
-                                          (", hold-out %.4f" % SC[k]) if k in SC else ""))
-# ------------------------------------------------------------------------------------------------- the routes that land
-# the constant shares and the hard rules that land the bin, as the note's Strength line counts them
-GU = RT["guesses"]
-land_all = [nm for nm, (a, w) in GU.items() if 145.0 <= a < 155.0]
-land_wall = [nm for nm, (a, w) in GU.items() if 145.0 <= w < 155.0]
-check("BYPASS the listed shares that land are the note's", land_all == LANDING_SHARES[0] and land_wall == LANDING_SHARES[1],
-      "every balloon: band %.3f to %.3f, lands %s; the 2027 balloons alone: band %.3f to %.3f, lands %s" % (
-          (145 - RT["M0"]) / RT["S_all"], (155 - RT["M0"]) / RT["S_all"], ", ".join(land_all) or "none",
-          (145 - RT["M0"]) / RT["S_wall"], (155 - RT["M0"]) / RT["S_wall"], ", ".join(land_wall) or "none"))
-RU = RT["rules"]
-land_rules = [k for k, v in RU.items() if 145.0 <= v < 155.0]
-check("RULES the hard rules that land are the note's", land_rules == LANDING_RULES,
-      "; ".join("%s %.1f" % (k, v) for k, v in RU.items()))
-# ------------------------------------------------------------------------------------------------- out of sample
-oos = C.oos_table(G)
-check("OOS cover beats every rival by half", all(oos["cover"] <= 0.5 * oos[k] for k in ("gap", "cur", "dy",
-                                                                                          "last_year_share",
-                                                                                          "pooled_share")),
-      ", ".join("%s %.3f" % (k, v) for k, v in oos.items() if isinstance(v, float)))
-low = [h for h in H if h["cover"] < 1.0]
-mid = [h for h in H if 1.12 <= h["cover"] < 1.25]
-outs = {}
-for e in G.cre.log:
-    outs[e["out"]] = outs.get(e["out"], 0) + 1
-check("REAL the history carries its exceptions", low and sum(h["y"] for h in low) / len(low) >= 0.85 and
-      0 < sum(h["y"] for h in mid) < len(mid) and outs.get("SALE", 0) >= 3 and outs.get("SPECIAL", 0) >= 1,
-      "below a cover of 1.0 %d of %d extended; 1.12 to 1.25 %d of %d; codes %s" % (
-          sum(h["y"] for h in low), len(low), sum(h["y"] for h in mid), len(mid), outs))
-ext_y = {}
-for h in H:
-    if h["out"] == "EXTENDED":
-        ext_y[h["date"].year] = ext_y.get(h["date"].year, 0) + 1
-covid = [h for h in H if h["out"] == "EXTENDED" and h["date"].year == 2021 and h["ptype"] in ("Hotel", "Retail")]
-check("REAL extensions before the wall", sum(v for y_, v in ext_y.items() if y_ <= 2021) >= 6 and ext_y.get(2020, 0) >= 1
-      and len(covid) >= 3, "by year %s; 2021 hotel and retail %d" % (
-          ", ".join("%d: %d" % kv for kv in sorted(ext_y.items())), len(covid)))
-sale_cov = [h["cover"] for h in H if h["out"] == "SALE"]
-check("REAL a sale extension only with equity", sale_cov and min(sale_cov) >= 1.0 and
-      not any(e["out"] == "SPECIAL" and e["date"] == h_["date"] for e in G.cre.log for h_ in H if e["ob"] == h_["ob"]),
-      "lowest cover at a sale-pending extension %.2f; no loan to special assets at its original maturity" % min(sale_cov))
-bym = {}
-for h in H:
-    if h["date"] >= dt.date(2026, 6, 1):
-        bym.setdefault((h["date"].year, h["date"].month), []).append(h["cover"])
-for L_ in fut_:
-    if L_["omat"] <= dt.date(2027, 9, 30):
-        bym.setdefault((L_["omat"].year, L_["omat"].month), []).append(G.cre_cover[id(L_)])
-med = [(k, float(np.median(v))) for k, v in sorted(bym.items())]
-jump = max(abs(b_[1] - a_[1]) for a_, b_ in zip(med[:-1], med[1:]))
-check("REAL the push came in and went out", jump <= 0.20, "largest month-to-month move %.2f; %s" % (
-    jump, " ".join("%d-%02d %.2f" % (k[0], k[1], v) for k, v in med)))
-iop = [L_ for L_ in G.cre_loans if L_["io"] and not L_["extended"] and dt.date(2021, 12, 1) <= L_["orig"] <= dt.date(2022, 4, 30)]
-g23 = sum(1 for L_ in iop if L_["grade"] <= 3) / len(iop)
-check("REAL the grades see the maturity", g23 <= 0.5 and sum(1 for L_ in iop if L_["grade"] >= 6) >= 5,
-      "the push's interest-only loans: %.0f per cent graded 2 or 3, %d graded 6 or worse of %d" % (
-          100 * g23, sum(1 for L_ in iop if L_["grade"] >= 6), len(iop)))
-
-# ------------------------------------------------------------------------------------------------- semantic forks
-pol = " ".join(DOC.policy_sentences())
-
-
-def cfs():
-    tape_, roll_ = C.load_auto(PACK)
-    return {"Treasury ladder": C.treasury_cf(cust)[0], "Agency MBS": C.mbs_cf(cust, fac)[0],
-            "2023-24 residential mortgages": G.m_cf, "Indirect auto loans": C.auto_cf(tape_, G.auto_smm),
-            "Fixed-rate commercial real estate": G.cre_cf}
-
-
-CF = cfs()
-
-
-def call_with(fn):
-    v = {k: fn(c) / 1e6 for k, c in CF.items()}
-    return ranking(v)[0], v["Fixed-rate commercial real estate"]
-
-
-check("SF1 five pools", "the eligible pool in Schedule A" in pol and len(DOC.SCHEDULE_A) == 5, "Schedule A, 5 pools")
-check("SF2 designated against", "ALCO designates each overlay, before it is traded" in pol, "policy section 3")
-c3, v3_ = call_with(lambda c: C.measure(c, G.W, months=[C.ASOF])[0])
-check("SF3 averaged, not the as-of", "averaged over the month-ends of the overlay's first twelve months" in pol and
-      bin10(v3_) != 150, "the as-of alone: %s %.1f" % (c3, v3_))
-c4, v4 = call_with(lambda c: C.measure(c, G.W, months=[C.mo(2026, 12)] + [C.mo(2027, k) for k in range(1, 12)])[0])
-c4b, v4b = call_with(lambda c: C.measure(c, G.W, months=C.MEASURE + [C.mo(2028, 1)])[0])
-check("SF4 the twelve month-ends", "starts on Monday 4 January" in PROMPT and C.MEASURE[0] == C.mo(2027, 1) and
-      len(C.MEASURE) == 12 and c4 == c4b == G.call,
-      "the prompt files the start: January to December 2027; December 2026 to November 2027 %.1f, thirteen to "
-      "January 2028 %.1f" % (v4, v4b))
-t_ = np.arange(0, C.HORIZON + 14) / 12.0
-z_ = np.interp(t_, G.plan.tenors, G.plan.zeros) / 100.0
-D0, D2 = np.exp(-z_ * t_), np.exp(-(z_ + 0.02) * t_)
-
-
-def fwd(c):
-    vals = []
-    for m in C.MEASURE:
-        k = m - C.START
-        tail = c[k + 1:]
-        j = np.arange(1, len(tail) + 1)
-        a = k + 1
-        vals.append(float((tail * (D0[a + j] / D0[a] - D2[a + j] / D2[a])).sum()))
-    return np.mean(vals)
-
-
-c5, v5 = call_with(fwd)
-check("SF5 the same zero rates at every month-end", "the same zero rates at every month-end" in pol and c5 == G.call,
-      "filed; forwards would give %.1f" % v5)
-check("SF6 time and placement", "a month counting as a twelfth of a year" in pol and
-      "placed at the end of the month in which it is paid" in pol, "filed")
-check("SF7 before credit losses", "before credit losses" in pol, "filed")
-check("SF8 the pool at the as-of", "positions added after it are not part of it" in pol, "filed")
-check("SF9 eligible at the as-of", "its principal outstanding at the close on the as-of date" in pol, "filed")
-check("SF10 the base case", "ALCO's most recent planning cycle" in pol and G.plan.cre == 6.95 and
-      G.plan.mortgage == 6.25 and G.plan.conf15 == 5.55, "6.25, 5.55, 6.95")
-cre_noext = C.measure(C.cre_cf([L for L in G.cre_loans if not L["extended"]],
-                               lambda L: float(C.logit_pred(G.cover_beta, np.array([G.cre_cover[id(L)]]))[0])), G.W)[0] / 1e6
-check("SF11 extended loans in the pool", "Commercial real estate term loans with a fixed note rate" in pol and
-      sum(1 for L in G.cre_loans if L["extended"]) > 0, "filed; without them %.1f" % cre_noext)
-check("SF12 agency MBS bought 2020-21", "bought in 2020 and 2021" in pol and call_and_bin(CRE, mbs_val=mbs_all) == GOLD_CALL,
-      "every agency pool: %.1f" % mbs_all)
-hfs_left = sum(1 for r in new if r["investor_type"] == "HELD FOR SALE" and r["reporting_period"] == "2026-11")
-check("SF13 held for investment", "held for investment" in pol and hfs_left == 0, "%d held for sale at the as-of" % hfs_left)
-check("SF14 rounding to $10 million", "to the nearest $10 million" in PROMPT and FIG["call_loss_musd_nearest10"] == 150,
-      "filed in the prompt")
-prog = C.programme(PACK)
-reg = C.load_register(PACK)
-cust_book = [t for t in reg if t["Book"] == "CUSTOMER" and t["Status"] == "LIVE"]
-check("SF15 the hedge programme is the ALM book", "are not part of the programme" in pol and len(cust_book) > 50,
-      "%d live customer-programme trades excluded" % len(cust_book))
-qe = set(C.QUARTER_ENDS)
-on_qe = [t for t in reg if t["Book"] == "ALM" and t["Maturity date"] in qe]
-check("SF16 no maturity on a quarter-end", not on_qe, "%d" % len(on_qe))
-lit = C.programme(PACK, any_status=True)
-check("SF16 in effect to the termination", "terminated early, are after it" in pol and lit == prog,
-      "a date-only reading of every ALM trade gives the golden: the terminated swap's own date ends it")
-by_code = C.programme(PACK, by="strategy")
-mv = [round((a - b) / 1e6, 1) for a, b in zip(prog["overlay"], by_code["overlay"])]
-check("SF17 parts by what each swap is designated against", "Overlays are pay-fixed swaps designated against a fixed-rate "
-      "asset pool" in pol and all(x == mv[0] and x > 0 for x in mv), "strategy code moves overlays by %.1f" % mv[0])
-no_new = C.programme(PACK, include_overlay=False)
-check("SF18 the new overlay included", all(round((a - b) / 1e6, 1) == 1200.0 for a, b in zip(prog["overlay"],
-                                                                                         no_new["overlay"])), "1,200.0")
-flat = sum(1 for t in reg if t["Amortizing"] == "Y" and t["Book"] == "ALM")
-NOTES = re.sub(r"\s+", " ", open(os.path.join(PACK, DOC.F_NOTES), encoding="utf-8").read())
-check("SF19 notional of the period in effect", flat == 2 and "an amortizing swap's current period" in NOTES,
-      "%d amortizing trades; the register's note" % flat)
-
-# SF20 the one extension: an extended loan repays at its extended date
-alt = [dict(L, extended=False, omat=L["mat"]) if L["extended"] else L for L in G.cre_loans]
-p_alt = lambda L: float(C.logit_pred(G.cover_beta, np.array([C.cre_cover_now(G.cre, L, G.plan.cre)]))[0])
-cre_alt = C.measure(C.cre_cf(alt, p_alt, ext_rate=G.plan.cre), G.W)[0] / 1e6
-n_ext = sum(1 for L in G.cre_loans if L["extended"])
-check("SF20 one extension", "An extended loan is not extended again" in NOTES and n_ext > 0,
-      "filed; the %d extended loans extended again would give %.1f" % (n_ext, cre_alt))
-
-
-def old_terms(L_list, pfun):
-    """the extension read as 36 months more on the note's rate and payment, nothing paid down"""
-    Cf = np.zeros(C.HORIZON)
-    for L in L_list:
-        mat_o = C.ordinal(L["mat"])
-        p = 0.0 if L["extended"] else float(pfun(L))
-        last = mat_o + (36 if p > 0 else 0)
-        n = last - C.ASOF
-        bals, ints = C.run_sched(L, n)
-        prev = L["bal"]
-        for k in range(n):
-            o = C.START + k
-            sch = prev - bals[k]
-            if o < mat_o:
-                Cf[k] += ints[k] + sch
-            elif o == mat_o:
-                Cf[k] += ints[k] + sch + (1 - p) * bals[k]
-            elif o < last:
-                Cf[k] += p * (ints[k] + sch)
-            else:
-                Cf[k] += p * (ints[k] + sch + bals[k])
-            prev = bals[k]
-    return C.measure(Cf, G.W)[0] / 1e6
-
-
-cre_old = old_terms(G.cre_loans, lambda L: float(C.logit_pred(G.cover_beta, np.array([G.cre_cover[id(L)]]))[0]))
-cre_now_rate = C.measure(C.cre_cf(G.cre_loans, lambda L: float(C.logit_pred(G.cover_beta, np.array(
-    [G.cre_cover[id(L)]]))[0]), ext_rate=G.rates[("CRE5F", C.ASOF)]), G.W)[0] / 1e6
-check("SF21 the extension's terms", "on a paydown of 10 per cent of the principal due" in NOTES and
-      "posted five-year fixed rate on the maturity date" in NOTES and "over 25 years" in NOTES and
-      bin10(cre_now_rate) == 150,
-      "filed; the note's rate and payment with nothing paid down would give %.1f; November's posted rate in place "
-      "of the plan's %.1f" % (cre_old, cre_now_rate))
-check("SF22 the sale-pending six months", "EXT-S, extended six months on the note's terms for a sale under contract" in
-      NOTES, "filed; dropped %.1f, carried forward %.1f, read as the extension %.1f" % (
-          RT["family"]["sale-pending outcomes dropped from the fit"],
-          RT["family"]["sale-pending six months carried forward"], misread))
-
-check("SF23 the extension's payments are made", "Every extension is granted on the guarantor's reaffirmed support "
-      "agreement, with an interest reserve funded at the extension; the extended loan's payments are made as scheduled."
-      in NOTES and "falls short" not in NOTES and "income falls" not in NOTES,
-      "filed as a blanket practice, no income condition: every extension's payments are made as scheduled")
-
-# ------------------------------------------------------------------------------------------------- the ask
-gold_fig = {k: [round(v / 1e6, 1) for v in prog[k]] for k in prog}
-check("ASK A golden in figures.json", gold_fig == FIG["programme_musd"], json.dumps(gold_fig))
-truth = SW.ask_a_truth(SW.build())
-check("ASK A golden equals the truth", all(abs(a - b) < 1 for k in prog for a, b in zip(prog[k], truth[k])), "")
-exact = all(abs(v / 1e5 - round(v / 1e5)) < 1e-6 for k in prog for v in prog[k])
-check("ASK A figures exact to the printed unit", exact, "every figure is a whole number of $0.1 million (0.05 from both edges)")
-meas = CR.measure(PACK, quiet=True)
-check("ASK A cracker misses all twelve", meas["res"]["cracker"]["figures"] == 0, "%d hit" % meas["res"]["cracker"]["figures"])
-check("ASK A over-cleaner misses", meas["res"]["over-cleaner"]["figures"] <= 4, "%d hit" % meas["res"]["over-cleaner"]["figures"])
-check("ASK A pair ceiling and leakage", meas["pair"] <= 40 and meas["leak"] < 35, "pair %.1f, leakage %.1f" % (meas["pair"],
-                                                                                                         meas["leak"]))
-clr = C.load_clearing(PACK)
-tradenos = {str(t["Trade No."]) for t in reg}
-live_bil = {str(t["Trade No."]) for t in reg if t["Cleared"] == "N" and t["Status"] == "LIVE"}
-held_refs = [c["client_trade_ref"] for c in clr if c["client_trade_ref"] in live_bil]
-check("ASK A device A1 rows", len(held_refs) == 4, "%d live bilateral trades held as client references" % len(held_refs))
-ids = [str(t["Trade No."]) for t in reg]
-refs_ok = all(str(t["Clearing ref"]) in {c["ccp_trade_id"] for c in clr} for t in reg if t["Cleared"] == "Y" and
-              t["Status"] == "LIVE")
-check("ASK A device A1 silent", len(ids) == len(set(ids)) and refs_ok and
-      not any("backload" in x.lower() for x in texts), "unique numbers, every clearing ref on the statement, no sentence")
-terms = {}
-for t in reg:
-    if t["Book"] == "ALM" and t["Status"] == "LIVE":
-        terms.setdefault((t["Bank pays"], t["Notional (USD)"], t["Effective date"], t["Maturity date"],
-                          t["Fixed rate (%)"]), []).append(t)
-pairs = [v for v in terms.values() if len(v) == 2]
-check("ASK A over-cleaning half", len(pairs) == 6, "%d repeated-terms pairs (4 backloads, 2 genuine)" % len(pairs))
-
-# ------------------------------------------------------------------------------------------------- separation and distractors
-tmp = tempfile.mkdtemp(prefix="b166_sep_")
-try:
-    for f in os.listdir(PACK):
-        if f not in (DOC.F_REGISTER, R.F_SCHED, R.F_CLEAR, DOC.F_NMD, R.F_LOCKS):
-            shutil.copy(os.path.join(PACK, f), tmp)
-    G2 = C.golden(tmp)
-    check("DEVICE separation: the call reads no swap file", G2.call == G.call and abs(G2.CRE - G.CRE) < 1 and
-          all(abs(G2.pools[k] - G.pools[k]) < 1 for k in G.pools), "unchanged with the swap files deleted")
-    check("DISTRACTOR deletion", G2.call == G.call and abs(G2.CRE - G.CRE) < 1,
-          "call unchanged without %s and %s" % (DOC.F_NMD, R.F_LOCKS))
-finally:
-    shutil.rmtree(tmp)
-tmp = tempfile.mkdtemp(prefix="b166_sep_")
-try:
-    for f in os.listdir(PACK):
-        if f not in (DOC.F_NMD, R.F_LOCKS):
-            shutil.copy(os.path.join(PACK, f), tmp)
-    check("DISTRACTOR deletion, the ask", C.programme(tmp) == prog, "Ask A unchanged")
-finally:
-    shutil.rmtree(tmp)
-meta = json.load(open(os.path.join(TASK, "metadata.json")))
-check("DISTRACTORS declared", sorted(meta["distractor_files"]) == sorted([DOC.F_NMD, R.F_LOCKS]) and
-      not any("distractor" in f for f in os.listdir(PACK)), ", ".join(meta["distractor_files"]))
-
-# ------------------------------------------------------------------------------------------------- input gates
-files = sorted(os.listdir(PACK))
+# ------------------------------------------------------------------------------------------------- G: input gates
+files = sorted(os.listdir(TARGET))
 fmts = sorted({f.rsplit(".", 1)[1] for f in files})
-check("GATE files", len(files) >= 10, "%d files" % len(files))
-check("GATE formats", len(fmts) >= 3, ", ".join(fmts))
-check("GATE a file of 25,000 rows", meta["input_gates"]["largest_file_rows"] >= 25000,
-      "%s %d" % (meta["input_gates"]["largest_file"], meta["input_gates"]["largest_file_rows"]))
+meta = json.load(open(os.path.join(TASK, "metadata.json")))
+check("G1", len(files) >= 10, "%d files" % len(files))
+check("G2", len(fmts) >= 3, "formats %s" % fmts)
+check("G3", meta["input_gates"]["largest_file_rows"] >= 25000,
+      "%s %d rows" % (meta["input_gates"]["largest_file"], meta["input_gates"]["largest_file_rows"]))
+dis = meta["distractor_files"]
+check("G4", len(dis) >= 2 and all(d in files for d in dis) and not any("distract" in f.lower() for f in files),
+      "distractors %s" % dis)
+check("G5", sorted(os.listdir(GOLDEN)) == ["he_payoff_pilot_2027.xlsx", "payoff_quotes_by_center.png"],
+      "goldens %s" % sorted(os.listdir(GOLDEN)))
+bad = [f for f in files if re.search(r"stack|blend|lock|consolid|cash.?out|incentive|answer|golden", f, re.I)]
+check("G6", not bad, "no file name names the step %s" % bad)
 
-# ------------------------------------------------------------------------------------------------- realism sweep
-roll_cols = [[r[c] for r in roll] for c in ("prepaid_principal", "scheduled_principal", "charge_offs")]
-check("REAL no constant stream", all(len(set(c)) == len(c) for c in roll_cols), "the auto roll's columns vary")
-counts = {}
-for r in new:
-    if r["investor_type"] == "PORTFOLIO":
-        counts[r["reporting_period"]] = counts.get(r["reporting_period"], 0) + 1
-check("REAL no identical monthly counts", len(set(counts.values())) >= len(counts) - 2, "%d periods, %d distinct counts"
-      % (len(counts), len(set(counts.values()))))
-roundish = [k for k, v in G.principal.items() if abs(v / 1e6 - round(v / 1e8) * 100) < 0.5 and "Treasury" not in k]
-check("REAL no round pool totals", not roundish, ", ".join(roundish) or "none")
-names_ok = True
-alltext = ""
+# ------------------------------------------------------------------------------------------------- C: the call
+gold, ctx = C.golden(TARGET)
+g_pick, g_margin = pick(gold)
+second = gold.drop(g_pick).idxmax()
+check("C1", g_pick == MN, "pick %s" % g_pick)
+check("C2", in_bin(gold[MN]) and min(gold[MN] - LO, HI - gold[MN]) >= 2.5,
+      "%.2f in [35, 45), %.2f from the nearer edge" % (gold[MN], min(gold[MN] - LO, HI - gold[MN])))
+check("C3", second == LS and gold[LS] / gold.drop([MN, LS]).max() >= 1.15,
+      "second %s, %.2f over the third" % (second, gold[LS] / gold.drop([MN, LS]).max()))
+check("C4", g_margin >= 1.5, "margin %.2f" % g_margin)
+figs = json.load(open(os.path.join(HERE, "figures.json")))
+check("C5", figs["call"]["center"] == MN and figs["call"]["principal_2027_musd"] == 40 and figs["call"]["second"] == LS,
+      "figures.json carries the call")
+
+# ------------------------------------------------------------------------------------------------- L: the ladder
+routes = {}
+he = C.he_posted_monthly(TARGET)
+ph = C.plan_he(TARGET)
+H2 = C.add_own(ctx["H"], he)
+FW2 = C.add_own(ctx["FW"], he, ph)
+dev = {}
+for name, cov, kw in (("own", ["own"], {}), ("first", ["first"], {}), ("own_first", ["own", "first"], {}),
+                      ("walt", ["walt"], {}), ("own_fe", ["own"], {"fe": True}), ("first_fe", ["first"], {"fe": True})):
+    f = C.fit(H2, cov, **kw)
+    dev[name] = f.deviance
+    routes[name] = C.project(FW2, f.predict(C.design(FW2, cov, **kw)), ctx["curt"])
+dev["blend"] = ctx["model"].deviance
+tr = ctx["H"][(ctx["H"].t >= C.mo(2025, 12)) & (ctx["H"].y == 1)]
+routes["trailing"] = (tr.groupby("region").H.sum() / 1e6).reindex(C.REG_ORDER)
+p, m = pick(routes["own"])
+check("L0", p == GR and m >= 1.15, "rung 0, own rate: %s by %.2f (%.1f)" % (p, m, routes["own"].max()))
+p, m = pick(routes["trailing"])
+check("L1", p == KB and m >= 1.15, "rung 1, trailing payoffs: %s by %.2f" % (p, m))
+p, m = pick(routes["first"])
+check("L2", p == LS and m >= 1.15, "rung 2, the first mortgage alone: %s by %.2f" % (p, m))
+check("L3", g_pick == MN and g_margin >= 1.5, "rung 3, the stack: %s by %.2f" % (g_pick, g_margin))
+p, m = pick(routes["own_first"])
+check("L4", p != MN, "own and first side by side: %s by %.2f" % (p, m))
+check("L5", not in_bin(routes["walt"][MN]), "each lien at its own rate: %s, Muskegon and the North %.1f outside the bin"
+      % (pick(routes["walt"])[0], routes["walt"][MN]))
+check("L6", pick(routes["own_fe"])[0] == GR and pick(routes["first_fe"])[0] == LS, "region effects keep rungs 0 and 2")
+check("L7", dev["blend"] < dev["walt"] < dev["own_first"] < dev["first"] < dev["own"],
+      "deviance blend %.1f < lien by lien %.1f < side by side %.1f < first %.1f < own %.1f"
+      % (dev["blend"], dev["walt"], dev["own_first"], dev["first"], dev["own"]))
+check("L8", dev["walt"] - dev["blend"] > 100, "the record selects the blend by %.1f" % (dev["walt"] - dev["blend"]))
+rank0 = routes["own"].sort_values(ascending=False).index.tolist()
+check("L9", rank0.index(MN) == 1 and routes["own"][GR] / routes["own"][MN] >= 1.2,
+      "the golden second on rung 0 only, by %.2f" % (routes["own"][GR] / routes["own"][MN]))
+
+# ------------------------------------------------------------------------------------------------- F: the standing family
+import statsmodels.api as sm   # noqa: E402
+cache = {}
+fam = {}
+fam["complementary log-log"] = C.variant(TARGET, cache, model={"link": sm.families.links.CLogLog()})[0]
+fam["three knots"] = C.variant(TARGET, cache, model={"knots": [0.0, 1.0, 2.0]})[0]
+fam["no seasonality"] = C.variant(TARGET, cache, model={"seasonal": False})[0]
+fam["no purchase marker"] = C.variant(TARGET, cache, model={"young": False})[0]
+fam["region effects"] = C.variant(TARGET, cache, model={"fe": True})[0]
+for name, s in fam.items():
+    p, m = pick(s)
+    check("F" + str(list(fam).index(name) + 1), p == MN and in_bin(s[MN]),
+          "%s: %s %.2f (margin %.2f)" % (name, p, s[MN], m))
+
+# ------------------------------------------------------------------------------------------------- SF: the fork table
+book = ctx["book"]
+core = ctx["core"]
+nov = core[core.AsOfDate == "2026-11-30"]
+check("SF1", (nov[nov.LoanStatus != "ACTIVE"].PrincipalBalance.astype(float) == 0).all(),
+      "November's closed rows carry no balance: same call")
+s2 = C.variant(TARGET, cache, curtail=False)[0]
+check("SF2", pick(s2)[0] == MN and in_bin(s2[MN]), "payoffs only: %.2f" % s2[MN])
+s3 = C.variant(TARGET, cache, with_december=True)[0]
+check("SF3", pick(s3)[0] == MN and in_bin(s3[MN]), "December 2026 counted too: %.2f" % s3[MN])
+los = ctx["los"]
+check("SF4", los.region.notna().all() and set(los.region) == set(C.REG_ORDER), "every loan's county maps to a center")
+check("SF5", not set(pd.read_csv(os.path.join(TARGET, R.F_HELOC), dtype=str).line_number) & set(book.key),
+      "lines are not in the book")
+pol = " ".join(DOC.policy_text())
+check("SF6", "the planning cycle's base case" in pol, "the policy files the base case")
+s7 = C.variant(TARGET, cache, rates_mode="simple")[0]
+check("SF7", pick(s7)[0] == MN and in_bin(s7[MN]), "simple monthly averages: %.2f" % s7[MN])
+s8a = C.variant(TARGET, cache, lag=0)[0]
+s8b = C.variant(TARGET, cache, lag=2)[0]
+check("SF8", all(pick(s)[0] == MN and in_bin(s[MN]) for s in (s8a, s8b)), "lag 0 %.2f, lag 2 %.2f" % (s8a[MN], s8b[MN]))
+s9 = C.variant(TARGET, cache, hist={"exits_as_payoffs": True})[0]
+check("SF9", pick(s9)[0] == MN and in_bin(s9[MN]) and "including the final scheduled payment" in pol,
+      "maturities and charge-offs counted as payoffs: %.2f" % s9[MN])
+check("SF10", "a balance charged off is not principal paid" in pol, "the policy excludes charge-offs")
+check("SF11", "A loan the credit union refinances itself is paid in full" in pol, "the policy counts own refinances")
+s12 = C.variant(TARGET, cache, fm={"blank_360": True})[0]
+check("SF12", pick(s12)[0] == MN and in_bin(s12[MN]), "blank terms read as 360 months: %.2f" % s12[MN])
+# one payment fewer by the reported month
+s13 = C.variant(TARGET, cache, fm={"one_fewer": True})[0]
+check("SF13", pick(s13)[0] == MN and in_bin(s13[MN]), "one payment fewer by the reported month: %.2f" % s13[MN])
+s14 = C.variant(TARGET, cache, hist={"legacy_from_funding": True})[0]
+check("SF14", pick(s14)[0] == MN and in_bin(s14[MN]), "legacy balances from the funding: %.2f" % s14[MN])
+check("SF15", round(gold[MN] / 10) * 10 == 40, "%.2f prints 40" % gold[MN])
+check("SF16", second == LS, "second: %s" % second)
+
+# ------------------------------------------------------------------------------------------------- A: the ask
+paid = C.paid_by_asof(core)
+S = C.statement_loans(TARGET, los, core)
+ask = C.ask_table(S, paid)
+crack = C.ask_table(C.statement_loans(TARGET, los, core, with_mortgages=False, with_manual=True), paid)
+mirror = C.ask_table(C.statement_loans(TARGET, los, core, with_mortgages=False, with_manual=False), paid)
+check("A1", all(ask[k][0] != crack[k][0] and ask[k][1] != crack[k][1] for k in ask),
+      "the cracker misses all 32 counts")
+check("A2", all(ask[k][0] != mirror[k][0] and ask[k][1] != mirror[k][1] for k in ask), "the mirror misses all 32")
+mt = S[S.how == "mortgage"]
+check("A3", all(((mt.region == r) & (mt.quarter == q)).any() for r in C.REG_ORDER for q, _, _ in C.QUARTERS),
+      "every cell holds a home equity loan quoted on a first-mortgage statement (%d)" % len(mt))
+check("A4", (S[S.how == "manual"].quarter == "2026Q1").all() and len(S[S.how == "manual"]) > 0,
+      "the outage log's loans all fall in the first quarter of 2026 (%d)" % len(S[S.how == "manual"]))
+# every first-mortgage statement ties to the cent: the first mortgage's payoff alone, or the two payoffs at the
+# good-through date with one fee when it also quoted the home equity loan behind it
+log = pd.read_csv(os.path.join(TARGET, A.F_LOG), dtype={"account_reference": str})
+serv = pd.read_csv(os.path.join(TARGET, R.F_SERV), dtype=str).set_index("mortgage_loan_number")
+addr = {}
+for k, row in los.iterrows():
+    addr.setdefault((C.norm_addr(row.property_street), str(row.property_zip)), []).append(k)
+hbal = C.he_balance_lookup(core, TARGET)
+ties = alone = both = total_mtg = 0
+for r in log[(log.product_on_file == "MTG") & log.statement_status.isin(["ISSUED", "UPDATED"])].itertuples(index=False):
+    m = serv.loc[r.account_reference]
+    d = C.eastern_date(r.issued_utc)
+    pm = "%04d-%02d" % ((d.year, d.month - 1) if d.month > 1 else (d.year - 1, 12))
+    mb = C.mortgage_balance(m, d)
+    days = (dt.date.fromisoformat(r.good_through_date) - d).days
+    first = mb + mb * float(m.note_rate_pct) / 36500 * days
+    total_mtg += 1
+    hit = abs(round(first + 25.0, 2) - float(r.statement_amount)) <= 0.05
+    alone += hit
+    for key in addr.get((C.norm_addr(m.property_street), str(m.property_zip)), []):
+        hb = hbal(key, d)
+        if not hb:
+            continue
+        rate = float(los.loc[key].note_rate_pct)
+        if abs(round(hb + hb * rate / 36500 * days + first + 25.0, 2) - float(r.statement_amount)) <= 0.05:
+            both += 1
+            hit = True
+    ties += hit
+check("A5", total_mtg > 0 and ties == total_mtg and both > 0 and alone > 0,
+      "%d of %d first-mortgage statements tie to the cent (%d the first mortgage alone, %d both liens)"
+      % (ties, total_mtg, alone, both))
+loose = C.ask_table(C.statement_loans(TARGET, los, core, loose=True), paid)
+check("A11", loose == ask, "a coarser reconciliation (more than half the home equity balance above the first's "
+      "scheduled balance) gives the same 32 counts")
+unrec = C.ask_table(C.statement_loans(TARGET, los, core, reconcile=False), paid)
+check("A12", sum(unrec[k][0] != ask[k][0] for k in ask) >= 12,
+      "every first-mortgage statement counted without its amount misses %d of 16 quote counts"
+      % sum(unrec[k][0] != ask[k][0] for k in ask))
+wb_rows = pd.read_excel(os.path.join(TARGET, A.F_MANUAL), header=2)
+he_rows = wb_rows[wb_rows.Liens.str.contains("home equity", case=False)]
+addr2 = {}
+for k, row in los.iterrows():
+    addr2.setdefault(C.norm_addr("%s %s %s" % (row.property_street, row.property_city, row.property_zip)), []).append(k)
+check("A6", all(len(addr2.get(C.norm_addr(p), [])) == 1 for p in he_rows.Property),
+      "each of the outage log's %d home equity rows matches one collateral address" % len(he_rows))
+check("A7", all(ask[k][1] <= ask[k][0] for k in ask) and len({v[0] for v in ask.values()}) > 10,
+      "paid never exceeds quoted; the counts vary across cells")
+# hazards: legacy references, lines, updates, voids, UTC
+legacy_refs = log.account_reference.isin(pd.read_csv(os.path.join(TARGET, R.F_XREF), dtype=str).legacy_loan_no).sum()
+check("A8", legacy_refs > 0, "%d requests name a legacy loan number" % legacy_refs)
+from zoneinfo import ZoneInfo
+_et = ZoneInfo("America/Detroit")
+local = [dt.datetime.strptime(t, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc).astimezone(_et)
+         for t in log.issued_utc]
+local_h = [t.hour for t in local]
+check("A9", all(8 <= h <= 18 for h in local_h), "every statement issued between 8 a.m. and 7 p.m. Eastern (UTC inert)")
+figq = figs["asks"]
+check("A10", all(figq["%s|%s" % k]["quoted"] == v[0] and figq["%s|%s" % k]["paid_in_full"] == v[1] for k, v in ask.items()),
+      "figures.json carries the 32 counts")
+check("SF17", sum(1 for v in ask.values()) == 16 and len(mt) > 0, "statements quoting the loan, the mortgage's included")
+check("SF18", all(ask[k][0] == S[(S.region == k[0]) & (S.quarter == k[1])].key.nunique() for k in ask),
+      "distinct loans per quarter")
+check("SF19", all(t.date().isoformat() == u[:10] for t, u in zip(local, log.issued_utc)),
+      "the Eastern and UTC dates agree for every issue")
+check("SF20", paid == set(core[(core.LoanStatus == "PIF") & (core.CloseDate <= "2026-11-30")].LoanNumber),
+      "paid in full is PIF on or before 30 November 2026")
+check("SF21", ((log.statement_status == "VOID") & (log.statement_amount == 0)).sum() == (log.statement_status == "VOID").sum(),
+      "voided requests carry no amount")
+
+# ------------------------------------------------------------------------------------------------- S: separation
+_scratch = os.environ.get("TASK166_SCRATCH")
+if _scratch:
+    os.makedirs(_scratch, exist_ok=True)
+tmp = tempfile.mkdtemp(prefix="c166_", dir=_scratch)
+try:
+    t2 = os.path.join(tmp, "t")
+    shutil.copytree(TARGET, t2)
+    for f in (A.F_LOG, A.F_MANUAL, R.F_SERV, R.F_HELOC, R.F_HPI, DOC.F_ALM, DOC.F_DICT, DOC.F_MANIFEST):
+        os.remove(os.path.join(t2, f))
+    g2, _ = C.golden(t2)
+    check("S1", (g2.round(6) == gold.round(6)).all(), "the call reads none of the ask's files, the distractors or the "
+          "documents beside the policy")
+    t3 = os.path.join(tmp, "t3")
+    shutil.copytree(TARGET, t3)
+    for f in dis:
+        os.remove(os.path.join(t3, f))
+    _, core3, los3 = C.load(t3)
+    ask3 = C.ask_table(C.statement_loans(t3, los3, core3), C.paid_by_asof(core3))
+    check("S2", ask3 == ask, "the asks unchanged with the distractors deleted")
+finally:
+    shutil.rmtree(tmp)
+main_files = {R.F_LEGACY, R.F_CORE, R.F_XREF, R.F_LOS, R.F_MAP, R.F_RATES, DOC.F_PLAN}
+check("S3", not ({A.F_LOG, A.F_MANUAL, R.F_SERV} & main_files), "no ask device sits in a file the call reads")
+
+# ------------------------------------------------------------------------------------------------- M: Layer 1 neutral
+sp = C.variant(TARGET, cache, fm={"by_payment": True})[0]
+check("M1", pick(sp)[0] == MN and in_bin(sp[MN]), "first-mortgage rates from the reported payment: %.2f" % sp[MN])
+sd = C.variant(TARGET, cache, hist={"drop_conversion": True})[0]
+check("M2", pick(sd)[0] == MN and in_bin(sd[MN]), "the conversion month dropped: %.2f" % sd[MN])
+check("M3", pick(s14)[0] == MN, "legacy balances from the funding (SF14)")
+check("M4", pick(s7)[0] == MN, "rates as simple averages (SF7)")
+check("M5", pick(s9)[0] == MN, "maturities and charge-offs as payoffs (SF9)")
+check("M6", pick(s12)[0] == MN, "blank terms as 360 (SF12)")
+
+# ------------------------------------------------------------------------------------------------- R: three rules, clean truth
+W = WD.simulate_world()
+
+
+def truth_frames(W):
+    M = WD.M30
+    rows = []
+    for i in range(W.n):
+        o2, ex = int(W.o2[i]), int(W.exit_m[i])
+        end = ex if ex >= 0 else K.ASOF_M
+        for t in range(max(o2 + 1, K.REC0), end + 1):
+            if t == ex and W.exit_kind[i] in ("MATURED", "CHARGEOFF"):
+                continue
+            prev = W.bal.get((i, t - 1))
+            if prev is None or prev <= 0:
+                continue
+            rows.append((i, t, prev, int(t == ex)))
+    D = pd.DataFrame(rows, columns=["i", "t", "H", "y"])
+    book = [int(i) for i in W.book]
+    fw = []
+    for j, t in enumerate(K.FORE):
+        b0 = np.array([W.book_bal[i] for i in book])
+        r = W.r2[book]
+        bb = b0.copy()
+        for _ in range(j):
+            bb = np.maximum(bb - (W.pmt2[book] - bb * r / 1200.0), 0.0)
+        fw.append(pd.DataFrame({"i": book, "t": t, "H": bb, "y": 0}))
+    FWt = pd.concat(fw, ignore_index=True)
+    FWt = FWt[FWt.H > 0]
+    out = []
+    for df in (D, FWt):
+        df = df.copy()
+        df["key"] = df.i
+        df["region"] = [{v: k for k, v in K.RCODE.items()}[W.reg[i]] for i in df.i]
+        df["r1"], df["r2"] = W.r1[df.i], W.r2[df.i]
+        df["F"] = WD.sched_balance(W.F0[df.i], W.r1[df.i], W.n1[df.i], df.t - 1 - W.o1[df.i])
+        df["m1"] = M[df.t - 1]
+        df["blend"] = (df.F * df.r1 + df.H * df.r2) / (df.F + df.H) - df.m1
+        df["first"] = df.r1 - df.m1
+        df["own"] = df.r2 - (M[df.t - 1] + np.array([WD.HE_SPREAD[n] for n in W.n2[df.i]]))
+        df["cal"] = df.t % 12 + 1
+        df["s1"] = np.sin(2 * np.pi * df.cal / 12.0)
+        df["s2"] = np.cos(2 * np.pi * df.cal / 12.0)
+        df["young"] = ((df.t - W.o1[df.i]) < 24).astype(float)
+        out.append(df)
+    return out
+
+
+Dt, FWt = truth_frames(W)
+curt_t = WD.CURT_P * (WD.CURT_LO + WD.CURT_HI) / 2 + WD.BIG_CURT_P * 0.35
+tro = {}
+for name, cov in (("own", ["own"]), ("first", ["first"]), ("blend", ["blend"])):
+    f = C.fit(Dt, cov)
+    tro[name] = C.project(FWt, f.predict(C.design(FWt, cov)), curt_t)
+cols = set()
 for f in files:
-    p = os.path.join(PACK, f)
-    if f.endswith((".txt",)):
-        alltext += open(p, encoding="utf-8").read()
-    if f.endswith(".pdf"):
-        from pypdf import PdfReader
-        alltext += " ".join(pg.extract_text() for pg in PdfReader(p).pages)
-for nm in re.findall(r"\b(?:Prepared by|Owner:|Questions to|Approved by)\s+([A-Z][a-z]+ [A-Z][a-z]+)", alltext):
-    names_ok &= nm in K.PEOPLE.values()
-check("REAL personas from guard names", names_ok and "Guy Morrison" not in alltext,
-      "named: " + ", ".join(sorted(set(re.findall(r"(Sheri Roberts|Cody Li|Jeff Guzman|Joshua Boyd)", alltext)))))
-check("REAL no em or en dash", chr(0x2014) not in alltext and chr(0x2013) not in alltext, "")
-leaks = []
-for f in files:
-    b = open(os.path.join(PACK, f), "rb").read()
-    if f.endswith((".xlsx", ".pptx", ".docx")):
-        with zipfile.ZipFile(os.path.join(PACK, f)) as z:
-            b = b"".join(z.read(n) for n in z.namelist() if n.startswith("docProps"))
-    for w in (b"openpyxl", b"python-pptx", b"ReportLab", b"reportlab", b"Python"):
-        if w in b:
-            leaks.append("%s:%s" % (f, w.decode()))
-check("REAL containers scrubbed (H1)", not leaks, ", ".join(leaks) or "clean")
-mt = {int(os.path.getmtime(os.path.join(PACK, f))) for f in files}
-check("REAL one export time", len(mt) == 1, "%s" % sorted(mt))
-late = re.findall(r"\b(2026-12-(?:0[4-9]|[12]\d|3[01])|2027-\d\d-\d\d)\b", DOC.notes_text({f: 0 for f in [R.F_LEGACY,
-                  R.F_SERV, R.F_XREF, R.F_RATES, R.F_CRE, DOC.F_LOG, R.F_STMT, R.F_CUSTODY, R.F_FACTORS, R.F_AUTO, R.F_ROLL,
-                  DOC.F_REGISTER, R.F_SCHED, R.F_CLEAR, R.F_LOCKS]}))
-check("REAL no document dated after the pull", not late, ", ".join(late) or "none")
-plan_in = [w for w in ("6.25", "5.55", "6.95") if w in alltext]
-check("REAL each planning rate in one file", not plan_in, ", ".join(plan_in) or "the planning workbook only")
-listed = set(re.findall(r"^([\w.-]+\.(?:csv|xlsx|pdf|txt))\b", open(os.path.join(PACK, DOC.F_NOTES),
-                                                                         encoding="utf-8").read(), re.M))
-listed |= {DOC.F_POLICY, DOC.F_ALM} if (DOC.F_POLICY in NOTES and DOC.F_ALM in NOTES) else set()
-check("H9 the notes register every shipped file", listed == set(files) - {DOC.F_NOTES},
-      "missing: %s; extra: %s" % (sorted(set(files) - {DOC.F_NOTES} - listed), sorted(listed - set(files))))
-pts = sorted(set(h["ptype"] for h in G.cre_hist))
-Xp = np.column_stack([xs] + [[1.0 if h["ptype"] == p else 0.0 for h in G.cre_hist] for p in pts[1:]])
-bp = C.logit_fit(Xp, ys)
-pmap = {L_["prop"]: L_["ptype"] for L_ in G.cre_loans}
+    if f.endswith(".csv"):
+        cols |= set(pd.read_csv(os.path.join(TARGET, f), nrows=1).columns.str.lower())
+check("R1", not [c for c in cols if re.search(r"blend|stack|incentive|refi|lock", c)] and "senior_lien_balance" in cols,
+      "the senior lien and the loan-months ship; no column holds the stack's incentive")
+check("R2", all(pick(s)[0] == MN for s in (sp, sd, s14, s7, s9, s12)), "every Layer 1 item mishandled keeps the call (M1 to M6)")
+check("R3a", pick(tro["own"])[0] == GR, "clean truth, the easy route (own rate): %s" % pick(tro["own"])[0])
+check("R3b", pick(tro["blend"])[0] == MN and pick(tro["first"])[0] == LS,
+      "clean truth, the decisive step alone: %s; the lower rung's single correction: %s"
+      % (pick(tro["blend"])[0], pick(tro["first"])[0]))
+truth = WD.truth_2027(W)
+check("R3c", max(truth, key=truth.get) == "MN", "the world's own 2027 (reference): %s" % {k: round(v, 1) for k, v in truth.items()})
+
+# ------------------------------------------------------------------------------------------------- D: documents
+from pypdf import PdfReader   # noqa: E402
 
 
-def p_pt(L):
-    row = [G.cre_cover[id(L)]] + [1.0 if L["ptype"] == p else 0.0 for p in pts[1:]]
-    return float(C.logit_pred(bp, np.array([row]))[0])
+def pdf_text(path):
+    return " ".join((p.extract_text() or "") for p in PdfReader(path).pages)
 
 
-cre_pt = C.measure(C.cre_cf(G.cre_loans, lambda L: p_pt(L) if not L["extended"] else 0.0), G.W)[0] / 1e6
-check("H14 a finer grain: cover with property type", abs(cre_pt - 150.0) <= 2.5, "%.1f" % cre_pt)
-check("FIGURES figures.json matches the golden", FIG["call_pool"] == G.call and FIG["call_loss_musd_unrounded"] ==
-      round(CRE, 2) and FIG["runner_up"] == rk3[1], "%s %.2f, runner-up %s" % (FIG["call_pool"], CRE, rk3[1]))
+pt = re.sub(r"\s+", " ", pdf_text(os.path.join(TARGET, DOC.F_POLICY)))
+check("D1", "fixed-rate closed-end home equity loans on the books at the close of business on 30 November 2026" in pt
+      and len(pt) > 1500, "the policy PDF reads back (positive control)")
+check("D2", not re.search(r"blend|stack|cash-out|consolidat|first mortgage's rate|lock", pt, re.I),
+      "the policy names no method")
+at = re.sub(r"\s+", " ", pdf_text(os.path.join(TARGET, DOC.F_ALM)))
+sep = core[core.AsOfDate == "2026-09-30"]
+he_sep = sep[sep.LoanStatus == "ACTIVE"].PrincipalBalance.astype(float).sum()
+check("D3", ("$%.1f million" % (he_sep / 1e6)) in at, "the ALM report's book ties to the September trial balance (%.1f)"
+      % (he_sep / 1e6))
+check("D4", not re.search(r"Grand Rapids|Lakeshore|Kalamazoo|Muskegon|prepay|speed|CPR", at),
+      "the ALM report ranks no region and carries no speed")
+latest = max(core.AsOfDate.max(), log.issued_utc.str[:10].max())
+check("D5", latest <= "2026-11-30", "no extract dated after the as-of (%s)" % latest)
+dic = open(os.path.join(TARGET, DOC.F_DICT), encoding="utf-8").read()
+check("D6", not re.search(r"blend|stack|cash-out|consolidat|lock", dic, re.I) and "senior lien" in dic,
+      "the dictionary describes rows, not the step")
 
-n_fail = sum(1 for _, ok, _ in RESULTS if not ok)
-print("checks: %d run, %d failed" % (len(RESULTS), n_fail))
-sys.exit(1 if n_fail else 0)
+# ------------------------------------------------------------------------------------------------- Q: realism
+rs = pd.read_csv(os.path.join(TARGET, R.F_RATES))
+off = (rs.apr_pct - rs.rate_pct).round(3)
+check("Q1", off.nunique() > 20, "APR spreads vary (%d values)" % off.nunique())
+check("Q2", abs(book.bal.sum() / 1e6 - round(book.bal.sum() / 1e6)) > 0.05, "the book's total is not round")
+blob = b"".join(open(os.path.join(TARGET, f), "rb").read() for f in files if not f.endswith(".csv"))
+check("Q3", not re.search(rb"ReportLab|openpyxl|matplotlib|python", blob, re.I), "containers carry no library banner")
+people = set(K.PEOPLE.values())
+txt = pt + at + dic
+check("Q4", all(p in txt or p in json.dumps(meta) for p in [K.PEOPLE["clo"], K.PEOPLE["alm"]]),
+      "the documents' people are the drawn personas")
+tbc = core.groupby("AsOfDate").size()
+check("Q5", tbc.nunique() == len(tbc), "the trial balance's monthly counts all differ")
+vals = [v[0] for v in ask.values()]
+check("Q6", len(set(vals)) >= 12, "the quote counts are not uniform")
+
+fails = [r for r in RES if not r[1]]
+print("%d checks, %d failed" % (len(RES), len(fails)))
+sys.exit(1 if fails else 0)
