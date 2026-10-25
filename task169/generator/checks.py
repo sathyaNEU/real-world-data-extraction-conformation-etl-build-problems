@@ -274,6 +274,36 @@ def main(target):
        "%.2f per cent" % (100 * ss["all"]))
     st, h, l, ss = call_of(D, calc.crude_count_route(D, S, cv=cv0, court_only=False))
     ok("SF11 control: the same crude count without the decisive step misses", st != 20, "%.2f per cent" % (100 * ss["all"]))
+    # SF17 the courts' conversion's base (portal round 2: both judges converted over every arrest, the revoked ones in,
+    # and could not reproduce 20). The record decides it: every arrest the Board revoked on was nolle prossed, few of the
+    # others were, and the arrests made once the Board could no longer revoke convert at the same rate as the arrests it
+    # did not revoke on, class by class, so the every-arrest base counts the Board's revocations as court outcomes
+    ev = calc.conversion_evidence(D)
+    ok("SF17 every arrest the Board revoked on was nolle prossed, against few of the others",
+       ev["revoked_np"] == ev["revoked"] and ev["others_np"] < 0.05 * ev["others"],
+       "%d of %d; %d of %d" % (ev["revoked_np"], ev["revoked"], ev["others_np"], ev["others"]))
+    gap = max(abs(ev["off_by"][c][0] / ev["off_by"][c][1] - ev["others_by"][c][0] / ev["others_by"][c][1]) for c in ("F1", "F2", "M"))
+    ok("SF17 the arrests made once the Board could not revoke convert at the courts' rate, class by class",
+       ev["off_revoked"] == 0 and gap < 0.015 and abs(ev["off_doc"] / ev["off"] - ev["others_doc"] / ev["others"]) < 0.005,
+       "largest class gap %.4f; pooled %.4f against %.4f" % (gap, ev["off_doc"] / ev["off"], ev["others_doc"] / ev["others"]))
+    ok("SF17 every arrest with the revoked ones in converts far lower", ev["others_doc"] / ev["others"] - ev["every_doc"] / ev["every"] > 0.05,
+       "%.4f against %.4f" % (ev["every_doc"] / ev["every"], ev["others_doc"] / ev["others"]))
+    st, h, l, ss = call_of(D, calc.project(D, G["lam"], calc.conversion(D, source="off")))
+    ok("SF17 the projection on the after-maximum-date conversion: same call", st == 20, "%.2f per cent" % (100 * ss["all"]))
+    _rev = calc.board_revoked_otns
+    calc.board_revoked_otns = lambda D_: set()
+    cv_all = calc.conversion(D)
+    calc.board_revoked_otns = _rev
+    st, h, l, ss = call_of(D, calc.project(D, G["lam"], cv_all))
+    ok("SF17 the conversion over every arrest (ladder 2f) misses: ruled out by the record's own no-Board arrests", st != 20,
+       "%.2f per cent, step %d" % (100 * ss["all"], st))
+    ok("SF17 figures.json carries the evidence as the write-up states it",
+       figs["conv_revoked_arrests"] == {"arrests": ev["revoked"], "nolle_prosequi": ev["revoked_np"]}
+       and figs["conv_courts"]["felony_ab"] == ev["others_by"]["F1"] and figs["conv_after_max_date"]["doc"] == ev["off_doc"]
+       and figs["conv_every_arrest"] == {"arrests": ev["every"], "doc": ev["every_doc"]})
+    ok("SF17 the golden's conversion counts a DOC sentence only (CJ and PROB are no return)",
+       all(abs(cv["pc"][c] - ev["others_by"][c][0] / ev["others_by"][c][1]) < 1e-12 for c in ("F1", "F2", "M")),
+       ", ".join("%s %.4f" % (c, cv["pc"][c]) for c in ("F1", "F2", "M")))
 
     # ------------------------------------------------------------ the asks
     A = calc.ask_a(D)

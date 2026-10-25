@@ -184,6 +184,37 @@ def main(target):
             if nc:
                 lags[c].append((nc[0] - d).days)
     pc = {c: stat[c][1] / stat[c][0] for c in stat}
+    # SF17: the evidence behind the courts' conversion, each count from its own reader
+    ev_rev = [o for doc, o, d, c in arr_rows if d <= lim and o in revoked]
+    np_rev = sum(1 for o in ev_rev if cases.get(o, {}).get("disposition") == "NP")
+    oth = [(o, c) for doc, o, d, c in arr_rows if d <= lim and o not in revoked]
+    np_oth = sum(1 for o, c in oth if cases.get(o, {}).get("disposition") == "NP")
+    isdoc = lambda o: cases.get(o, {}).get("sentence_type") == "DOC"
+    pr = {}
+    for r in rel:
+        if r["code"] in ("PAR", "RPR"):
+            pr.setdefault(r["doc_number"], []).append((r["rd"], d_mdy(r["max_expiration_date"]) if r["max_expiration_date"] else None))
+    for v in pr.values():
+        v.sort(key=lambda z: z[0])
+    off = {c: [0, 0] for c in stat}
+    for doc, o, d, c in arr_rows:
+        if d > lim:
+            continue
+        last = [z for z in pr.get(doc, []) if z[0] <= d]
+        if last and last[-1][1] is not None and d >= last[-1][1]:
+            off[c][0] += isdoc(o)
+            off[c][1] += 1
+    every = [(o, c) for doc, o, d, c in arr_rows if d <= lim]
+    want = figs
+    check("SF17 revoked arrests all nolle prossed", {"arrests": len(ev_rev), "nolle_prosequi": np_rev} == want["conv_revoked_arrests"]
+          and np_rev == len(ev_rev), "%d of %d" % (np_rev, len(ev_rev)))
+    check("SF17 the courts' DOC sentences by class", [stat["F1"][1], stat["F1"][0]] == want["conv_courts"]["felony_ab"]
+          and [stat["F2"][1], stat["F2"][0]] == want["conv_courts"]["felony_ce"] and [stat["M"][1], stat["M"][0]] == want["conv_courts"]["misdemeanour"]
+          and len(oth) == want["conv_courts"]["arrests"] and np_oth == want["conv_courts"]["nolle_prosequi"], json.dumps(stat))
+    check("SF17 the arrests after the maximum date", off["F1"] == want["conv_after_max_date"]["felony_ab"]
+          and off["F2"] == want["conv_after_max_date"]["felony_ce"] and off["M"] == want["conv_after_max_date"]["misdemeanour"]
+          and sum(v[1] for v in off.values()) == want["conv_after_max_date"]["arrests"], json.dumps(off))
+    check("SF17 every arrest", {"arrests": len(every), "doc": sum(isdoc(o) for o, c in every)} == want["conv_every_arrest"], "")
     lagv = {c: np.sort(lags[c]) for c in lags}
     proj = rows(J("doc_projected_releases_2027.csv"))
     ds = np.arange(730)

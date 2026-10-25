@@ -5,6 +5,50 @@
  "cohort_size": 6466,
  "spells": 30959,
  "window_days": 730,
+ "_unrounded": {
+  "rate_pct": 20.4
+ },
+ "conv_revoked_arrests": {
+  "arrests": 9410,
+  "nolle_prosequi": 9410
+ },
+ "conv_courts": {
+  "arrests": 15707,
+  "nolle_prosequi": 374,
+  "doc": 3483,
+  "felony_ab": [
+   1622,
+   2594
+  ],
+  "felony_ce": [
+   1673,
+   6400
+  ],
+  "misdemeanour": [
+   188,
+   6713
+  ]
+ },
+ "conv_after_max_date": {
+  "arrests": 10576,
+  "doc": 2357,
+  "felony_ab": [
+   1092,
+   1748
+  ],
+  "felony_ce": [
+   1143,
+   4338
+  ],
+  "misdemeanour": [
+   122,
+   4490
+  ]
+ },
+ "conv_every_arrest": {
+  "arrests": 25117,
+  "doc": 3483
+ },
  "a1_D1": {
   "arrest": 1277,
   "conditions": 261

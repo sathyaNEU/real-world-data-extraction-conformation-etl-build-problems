@@ -247,6 +247,25 @@ def conversion(D, source="court"):
     return dict(pc=pc, pooled=pooled, lags=lags, mix=mix, n=len(x))
 
 
+def conversion_evidence(D):
+    """the counts behind the courts' conversion, in the write-up's terms: what became of the arrests the Board revoked
+    on, the DOC sentences of the arrests it did not, the arrests made once the Board could no longer revoke (on or
+    after the maximum date of the parole release before them), and every arrest with the revoked ones in"""
+    x = D["arr"].dropna(subset=["doc_number"])
+    x = x[x.date <= CONV_TO].merge(D["aoc"][["otn", "disposition", "sentence_type"]], on="otn", how="left")
+    rev = board_revoked_otns(D)
+    xr, xn = x[x.otn.isin(rev)], x[~x.otn.isin(rev)]
+    doc = lambda t: int((t.sentence_type == "DOC").sum())
+    by = lambda t: {c: [doc(t[t.cls == c]), int((t.cls == c).sum())] for c in ("F1", "F2", "M")}
+    rel = D["rel"][D["rel"].code.isin(["PAR", "RPR"])][["doc_number", "rd", "maxd"]].sort_values("rd")
+    y = pd.merge_asof(x.sort_values("date"), rel, left_on="date", right_on="rd", by="doc_number", direction="backward")
+    off = y[y.maxd.notna() & (y.date >= y.maxd)]
+    return dict(revoked=len(xr), revoked_np=int((xr.disposition == "NP").sum()), others=len(xn),
+                others_np=int((xn.disposition == "NP").sum()), others_doc=doc(xn), others_by=by(xn),
+                off=len(off), off_doc=doc(off), off_by=by(off), off_revoked=int(off.otn.isin(rev).sum()),
+                every=len(x), every_doc=doc(x))
+
+
 def project(D, lam, cv, edges=(90, 180, 365), pooled=False, frail=None, mix_overall=False):
     proj = D["proj"]
     ds = np.arange(C.WINDOW)

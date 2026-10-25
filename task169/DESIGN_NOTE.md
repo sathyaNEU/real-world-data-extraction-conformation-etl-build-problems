@@ -210,8 +210,9 @@ No confidence level, significance level or test threshold is filed anywhere in t
 | SF14 | within two years of release (the arrest-to-admission time) | each conversion timed by its arrest-to-admission time | every conversion admitted at once | 22.35, step 20 | methodology 3.1: a conversion admitted after the 730th day is no return (asserted) |
 | SF15 | what share of the people will be admitted | the share of members with a return | the expected number of returns per member | 23.38, step 25 | methodology 3.2: the share of its members with a return (asserted) |
 | SF16 | the time at risk (portal judge 1's early exposure) | every day out of custody in the window | arrests and days only to each release's first admission | same call (18.42) | the route still sends every parolee arrest through the courts (asserted, FAM) |
+| SF17 | the courts' conversion's base (portal round 2, both judges) | the arrests the Board did not revoke on, their DOC sentences by grade (3,483 of 15,707) | every arrest with the revoked ones in (3,483 of 25,117; judge 1 at 14.8, judge 2 at 10.0, ladder 2f 13.43, step 15); the revoked arrests dropped from the counts too (11.70); a DOC or county-jail endpoint (judge 2's 19.4, a coincidence near the golden, not its route) | 15 or 10 | the record: the 9,410 revoked arrests were all nolle prossed against 374 of the 15,707 others, so their record outcome is the Board's; the 10,576 arrests made on or after the parole's maximum date, when the Board could not revoke, convert class by class at the same rates (1,092 of 1,748, 1,143 of 4,338, 122 of 4,490), and the projection on them files 20.44; write-up steps 3 to 5 state it; the endpoint is DOC alone (Act section 3(c), the dictionary's sentence_type) (asserted SF17, verify) |
 
-Every row is asserted in `generator/checks.py` (labels SF1 to SF6, SF8 to SF16; SF7, the districts' order, left
+Every row is asserted in `generator/checks.py` (labels SF1 to SF6, SF8 to SF17; SF7, the districts' order, left
 with the districts at stage 4 round 1).
 
 ## Ladder
@@ -464,6 +465,22 @@ single crack 39.1 (C1).
   repair of tables 2 and 3 is the next step if the portal returns it on the rubric. E's leak answers quote no sentence
   naming the step and read the validation study's 45 to 61 per cent all-returns figures as a wrong basis.
 
+## Determinism repair, portal round 2 (2026-10-25)
+
+- Portal round 2 on 73e3137b: the determinism block failed again. Judge 1 unsure (A and C fail, answer_contradicts_files,
+  fix location the solution, the model response a valid stump): five reconstructions at 10 to 15 per cent, the covariate
+  Poisson over full exposure 14.8; it read step 3's "leaving out the arrests the Board revoked on" as dropping arrests,
+  which it expected to push the rate down. Judge 2 failed (A, C, D, golden_wrong): every DOC route at 9 to 10.5, and 20
+  only with county-jail sentences counted (19.4).
+- Diagnosis: both judges converted over every arrest, the revoked ones in (ladder 2f, 13.43 on the golden's hazard), so
+  the call held on them; the write-up never showed why the courts' rate leaves the revoked arrests out, and judge 2 found a
+  coincidental 19.4 to explain the golden. The golden reproduces (20.40; on the discharged arrests' conversion 20.44).
+- Stump test: the fork is the decisive step's own working, not a reading. Filing it would hand it over; the record already
+  decides it, so the move is in the solution (both judges' fix location): steps 3 to 5 now state the evidence as exact
+  counts, every one recomputed by verify. Nothing a solver sees changed: target.zip 73e3137b unchanged.
+- Gates: checks 120 (SF17's eleven rows), verify 0 failed, two builds byte-identical over 20 files, figures_check 59,
+  precut 51, freeze --mode determinism PASS. Re-judge: determinism-check-task169-r3, results below.
+
 ## Tried and rejected
 
 - Candidate A with five summers of record (2022 to 2026): the extra cool summers made growth by hour without
@@ -534,3 +551,4 @@ single crack 39.1 (C1).
   own nolle prosequis and the Board's lighter hand on felony A-B arrests moved the courts' conversion with the basis
   a judge chose. A filed conversion basis, hazard model or timing rule would make the decisive step rule application,
   so the world was rebuilt instead (`## Determinism repair`).
+- Portal round 2 (2026-10-25, 73e3137b): the write-up's step 3 as the only account of the courts' conversion. Both judges converted over every arrest and could not reproduce 20; the evidence (revoked arrests all nolle prossed, the no-Board arrests at the courts' rate) moved into steps 3 to 5 as exact counts; nothing filed, the pack unchanged.

@@ -1,113 +1,113 @@
 {
-  "task": "task169",
-  "owner": "sathya8571",
-  "status": "SHIPPED",
-  "domain": "criminology-justice",
-  "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-25",
-  "stump": "A competent solver keeps only the returns the Act still allows, models each 2027 release's chance of a new-commitment admission within two years on the record's complete releases and files 5 per cent; the step that lands it there is reading the record's new-commitment returns as what parolees' arrests produce, when the Board answered about a third of parolees' arrests by revoking them before any court could, and under the Act those arrests go to court and become prison commitments at the courts' own rate for their charge grade, which files 20 per cent.",
-  "architecture": 2,
-  "loops": 2,
-  "precut": {
-    "exit": 0,
-    "date": "2026-10-22",
-    "checks": 51
-  },
-  "leak": {
-    "leak_py": "REVIEW (no LEAK; every REVIEW line answered in ## Leak sweep), 2026-10-25",
-    "reader": "determinism repair (4cd348a9): reader E share 10, asks 23 of 26; reader F share 10, asks 18 of 26; the call held in both; before that, round 2 on f3ef6705: reader C share 10, asks 1 of 26; reader D share 10, asks 9 of 26"
-  },
-  "duplicate_check": {
-    "heart": "BLOCK ban.strategy against task252, which entered the window after this card was registered; ruled as task177's: the window stays fixed at the draw, not relabelled. WARN repeat.question_form against task482 (answered)",
-    "nearest": "task103 v1 lineage at 0.06",
-    "surface": "exit 0 (run with an in-memory guard for ledger rows whose artifact cell is '-', which crash clone-check fingerprint.py artifact_family on main), no personas; the shared rounding sentence with task177 reworded"
-  },
-  "judge": {
-    "verdict": "DETERMINISTIC / APPROVE, no fix (r2 on 4cd348a9)",
-    "disposition": "portal round 1's margin and competing-basis findings closed in the world; blind 19.7 per cent, every correct variant 20",
-    "report": "scratchpad/determinism-check-task169-r2/verdict.md (blind_derivation.md beside it)"
-  },
-  "returned": [
+ "task": "task169",
+ "owner": "sathya8571",
+ "status": "PAUSED",
+ "domain": "criminology-justice",
+ "objective": "forecasting",
+ "stage": 5,
+ "stage_name": "ship",
+ "updated": "2026-10-25",
+ "stump": "A competent solver keeps only the returns the Act still allows, models each 2027 release's chance of a new-commitment admission within two years on the record's complete releases and files 5 per cent; the step that lands it there is reading the record's new-commitment returns as what parolees' arrests produce, when the Board answered about a third of parolees' arrests by revoking them before any court could, and under the Act those arrests go to court and become prison commitments at the courts' own rate for their charge grade, which files 20 per cent.",
+ "architecture": 2,
+ "loops": 2,
+ "precut": {
+  "exit": 0,
+  "date": "2026-10-22",
+  "checks": 51
+ },
+ "leak": {
+  "leak_py": "REVIEW (no LEAK; every REVIEW line answered in ## Leak sweep), 2026-10-25",
+  "reader": "determinism repair (4cd348a9): reader E share 10, asks 23 of 26; reader F share 10, asks 18 of 26; the call held in both; before that, round 2 on f3ef6705: reader C share 10, asks 1 of 26; reader D share 10, asks 9 of 26"
+ },
+ "duplicate_check": {
+  "heart": "BLOCK ban.strategy against task252, which entered the window after this card was registered; ruled as task177's: the window stays fixed at the draw, not relabelled. WARN repeat.question_form against task482 (answered)",
+  "nearest": "task103 v1 lineage at 0.06",
+  "surface": "exit 0 (run with an in-memory guard for ledger rows whose artifact cell is '-', which crash clone-check fingerprint.py artifact_family on main), no personas; the shared rounding sentence with task177 reworded"
+ },
+ "judge": {
+  "verdict": "DETERMINISTIC / APPROVE, no fix (r2 on 4cd348a9)",
+  "disposition": "portal round 1's margin and competing-basis findings closed in the world; blind 19.7 per cent, every correct variant 20",
+  "report": "scratchpad/determinism-check-task169-r2/verdict.md (blind_derivation.md beside it)"
+ },
+ "returned": [
+  {
+   "date": "2026-10-25",
+   "portal": "round 1 on 501d0e28: both responses off the call, rubric about 50; determinism failed: judge 1 unsure, Gate C margin (routes 13.3 to 15.6 against 20.9), judge 2 competing_defensible_answer (11.4 with every arrest's conversion, 15.68 with the Board-revoked arrests left out)",
+   "repair": "determinism",
+   "rounds": [
     {
-      "date": "2026-10-25",
-      "portal": "round 1 on 501d0e28: both responses off the call, rubric about 50; determinism failed: judge 1 unsure, Gate C margin (routes 13.3 to 15.6 against 20.9), judge 2 competing_defensible_answer (11.4 with every arrest's conversion, 15.68 with the Board-revoked arrests left out)",
-      "repair": "determinism",
-      "rounds": [
-        {
-          "round": 1,
-          "zip": "4cd348a9",
-          "moves": "C1 in the world, nothing filed: faster courts (arrest to admission about three months for felony A-B), revocations 9 to 20 months, the Board's in-lieu share uniform across grades and 15 per cent higher, the courts' own nolle prosequis 8 per cent of their dismissals, the cohort held at 6,466; every route taking the step and following 3.1 and 3.2 files 20 (golden 20.40, family 18.42 to 20.64, judges' bases 19.43 and 18.42); SF11 rewritten (ruled out by 3.1), SF13 to SF16 added; asks re-derived, cracker unchanged",
-          "reader": "scored-task169e: share 10 against 20, asks 23 of 26 (88.5 per cent); scored-task169f: share 10, asks 18 of 26 (69.2 per cent); the call held in both; the ask layer at the portal's round 1 level",
-          "judge": "determinism-check-task169-r2 (order kept, blind 19.7 per cent, prints 20): DETERMINISTIC, APPROVE; every correct variant 19.7 to 20.8; the only rival an incomplete method (16.5 to 18.2); all three tables exact"
-        }
-      ],
-      "freeze": "rubric mode: the call, components, stump, card and call sentence untouched; flags only the design note's ladder and default-path sections, their figures re-derived from the new world (methods and end step as they were, rung 2f added); determinism mode fails by construction on 30 items (the 26 ask figures, the history's 30,959 releases, the Deliverable Answers block, those two sections), the author's latitude",
-      "commit": "RESHIPPED (task169): determinism, the courts' conversion closed in the world so every route taking the step files 20"
+     "round": 1,
+     "zip": "4cd348a9",
+     "moves": "C1 in the world, nothing filed: faster courts (arrest to admission about three months for felony A-B), revocations 9 to 20 months, the Board's in-lieu share uniform across grades and 15 per cent higher, the courts' own nolle prosequis 8 per cent of their dismissals, the cohort held at 6,466; every route taking the step and following 3.1 and 3.2 files 20 (golden 20.40, family 18.42 to 20.64, judges' bases 19.43 and 18.42); SF11 rewritten (ruled out by 3.1), SF13 to SF16 added; asks re-derived, cracker unchanged",
+     "reader": "scored-task169e: share 10 against 20, asks 23 of 26 (88.5 per cent); scored-task169f: share 10, asks 18 of 26 (69.2 per cent); the call held in both; the ask layer at the portal's round 1 level",
+     "judge": "determinism-check-task169-r2 (order kept, blind 19.7 per cent, prints 20): DETERMINISTIC, APPROVE; every correct variant 19.7 to 20.8; the only rival an incomplete method (16.5 to 18.2); all three tables exact"
     }
-  ],
-  "resume": "",
-  "approved": null,
-  "delivered": "2026-10-22",
-  "portal": null,
-  "portal_id": "",
-  "portal_status": "returned 2026-10-25 (round 1 on 501d0e28): both responses off the call, rubric about 50; determinism judge 1 unsure (margin), judge 2 FAIL competing_defensible_answer",
-  "portal_status_date": "2026-10-25",
-  "wave": "redraw of a parked number (architecture 1, the cycleway widening, never registered)",
-  "gates": {
-    "checks": "88 of 88",
-    "verify": "0 failed",
-    "rebuild": "20 files byte-identical",
-    "figures_check": "exit 0, 36 figures",
-    "voice_check": "PASS",
-    "precut": "exit 0, 51 checks",
-    "scrub": "target and golden clean",
-    "cracker": "pair 28.5, mirror leakage 0.0, both readers' quoted paths keep 0 of 26, worst single crack 39.1 (C1)"
+   ],
+   "freeze": "rubric mode: the call, components, stump, card and call sentence untouched; flags only the design note's ladder and default-path sections, their figures re-derived from the new world (methods and end step as they were, rung 2f added); determinism mode fails by construction on 30 items (the 26 ask figures, the history's 30,959 releases, the Deliverable Answers block, those two sections), the author's latitude",
+   "commit": "RESHIPPED (task169): determinism, the courts' conversion closed in the world so every route taking the step files 20"
+  }
+ ],
+ "resume": "determinism repair, portal round 2 (2026-10-25), at stage 4: the write-up's steps 3 to 5 state the courts' conversion evidence as exact counts (revoked arrests all nolle prossed, DOC sentences by grade among the arrests the Board did not revoke on, the after-maximum-date control), SF17 asserted in checks (120 green) and verify (0 failed), two builds byte-identical, target.zip 73e3137b unchanged, figures_check 59, precut 51, freeze determinism PASS. Next: read the re-judge (scratchpad determinism-check-task169-r3/verdict.md), write determinism_check_report_pass2.md, append returned, reship.",
+ "approved": null,
+ "delivered": "2026-10-22",
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "returned 2026-10-25 (round 1 on 501d0e28): both responses off the call, rubric about 50; determinism judge 1 unsure (margin), judge 2 FAIL competing_defensible_answer",
+ "portal_status_date": "2026-10-25",
+ "wave": "redraw of a parked number (architecture 1, the cycleway widening, never registered)",
+ "gates": {
+  "checks": "88 of 88",
+  "verify": "0 failed",
+  "rebuild": "20 files byte-identical",
+  "figures_check": "exit 0, 36 figures",
+  "voice_check": "PASS",
+  "precut": "exit 0, 51 checks",
+  "scrub": "target and golden clean",
+  "cracker": "pair 28.5, mirror leakage 0.0, both readers' quoted paths keep 0 of 26, worst single crack 39.1 (C1)"
+ },
+ "target_zip_sha256": "4cd348a926b7aee3e6f9c7055adc077792a32f8b14a8fe95beedc2f0b7969c8c",
+ "call": {
+  "rate_step": 20,
+  "default_path": "5 per cent"
+ },
+ "rounds": [
+  {
+   "round": 0,
+   "zip": "8912821b",
+   "result": "share held (readers 10, judge 20); districts landed by a route without the step; asks 24 of 24 on both readers"
   },
-  "target_zip_sha256": "4cd348a926b7aee3e6f9c7055adc077792a32f8b14a8fe95beedc2f0b7969c8c",
-  "call": {
-    "rate_step": 20,
-    "default_path": "5 per cent"
+  {
+   "round": 1,
+   "zip": "f3ef6705",
+   "fixes": "districts dropped from the call; asks re-sited onto grain devices (one recommitment per hearing, the union of a parolee's overlapping detainers, writ trips ended by a release); rescission closed by a WHAT (not rescinded by 30 June 2026); chart dropped"
   },
-  "rounds": [
-    {
-      "round": 0,
-      "zip": "8912821b",
-      "result": "share held (readers 10, judge 20); districts landed by a route without the step; asks 24 of 24 on both readers"
-    },
-    {
-      "round": 1,
-      "zip": "f3ef6705",
-      "fixes": "districts dropped from the call; asks re-sited onto grain devices (one recommitment per hearing, the union of a parolee's overlapping detainers, writ trips ended by a release); rescission closed by a WHAT (not rescinded by 30 June 2026); chart dropped"
-    },
-    {
-      "round": 2,
-      "zip": "501d0e28",
-      "fixes": "writ movements generated one trip at a time per person (overlapping stays had written overlapping WRO pairs); Table 3 reproduces under next-WRI and same-institution pairing; call, Tables 1 and 2 and every target file but the admissions table and the manifest byte-identical"
-    }
-  ],
-  "stage4": [
-    {
-      "round": 1,
-      "zip": "8912821b",
-      "readers": "A and B: share 10 (missed), districts landed, asks 24 of 24",
-      "judge": "DETERMINISTIC / APPROVE",
-      "then": "districts dropped from the call; asks re-sited; rescission closed by a WHAT"
-    },
-    {
-      "round": 2,
-      "zip": "f3ef6705",
-      "readers": "C: share 10, asks 1 of 26, exit 0; D: share 10, asks 9 of 26, exit 2",
-      "judge": "NOT_DETERMINISTIC on Table 3 plus SOLUTION_WRONG, FIX_NOW",
-      "then": "writ trips one at a time per person, nothing filed; call and Tables 1 and 2 byte-identical"
-    },
-    {
-      "round": "re-judge",
-      "zip": "501d0e28",
-      "judge": "DETERMINISTIC / APPROVE, no fix"
-    }
-  ],
-  "heart_ruling": "BLOCK on ban.strategy against task252 (entered the window after registration) ruled as the author ruled task177's: the window stays fixed at the draw; not relabelled; 2026-10-25 at the determinism repair: BLOCK on ban.forcing_event and ban.org_family against task125 (v2, registered 2026-10-23, after this card's 2026-10-22), the same class, the card untouched and not relabelled",
-  "zip_md5": "73e3137b5e1d0f6308234ec721f2619c"
+  {
+   "round": 2,
+   "zip": "501d0e28",
+   "fixes": "writ movements generated one trip at a time per person (overlapping stays had written overlapping WRO pairs); Table 3 reproduces under next-WRI and same-institution pairing; call, Tables 1 and 2 and every target file but the admissions table and the manifest byte-identical"
+  }
+ ],
+ "stage4": [
+  {
+   "round": 1,
+   "zip": "8912821b",
+   "readers": "A and B: share 10 (missed), districts landed, asks 24 of 24",
+   "judge": "DETERMINISTIC / APPROVE",
+   "then": "districts dropped from the call; asks re-sited; rescission closed by a WHAT"
+  },
+  {
+   "round": 2,
+   "zip": "f3ef6705",
+   "readers": "C: share 10, asks 1 of 26, exit 0; D: share 10, asks 9 of 26, exit 2",
+   "judge": "NOT_DETERMINISTIC on Table 3 plus SOLUTION_WRONG, FIX_NOW",
+   "then": "writ trips one at a time per person, nothing filed; call and Tables 1 and 2 byte-identical"
+  },
+  {
+   "round": "re-judge",
+   "zip": "501d0e28",
+   "judge": "DETERMINISTIC / APPROVE, no fix"
+  }
+ ],
+ "heart_ruling": "BLOCK on ban.strategy against task252 (entered the window after registration) ruled as the author ruled task177's: the window stays fixed at the draw; not relabelled; 2026-10-25 at the determinism repair: BLOCK on ban.forcing_event and ban.org_family against task125 (v2, registered 2026-10-23, after this card's 2026-10-22), the same class, the card untouched and not relabelled",
+ "zip_md5": "73e3137b5e1d0f6308234ec721f2619c"
 }

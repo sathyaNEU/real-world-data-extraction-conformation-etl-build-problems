@@ -28,12 +28,22 @@ def compute(target):
     A = calc.ask_a(D)
     B = calc.ask_b(D)
     W = calc.ask_c(D)
-    return dict(D=D, S=S, g=g, s=s, n=len(proj), dist_n=dist_n, high=order[-1], low=order[0], A=A, B=B, W=W)
+    ev = calc.conversion_evidence(D)
+    return dict(D=D, S=S, g=g, s=s, n=len(proj), dist_n=dist_n, high=order[-1], low=order[0], A=A, B=B, W=W, ev=ev)
 
 
 def figures(r):
     f = {"call": {"rate_step": calc.step5(r["s"]["all"])},
-         "cohort_size": r["n"], "spells": len(r["S"]), "window_days": C.WINDOW}
+         "cohort_size": r["n"], "spells": len(r["S"]), "window_days": C.WINDOW,
+         "_unrounded": {"rate_pct": round(100 * r["s"]["all"], 1)}}
+    ev = r["ev"]
+    f["conv_revoked_arrests"] = {"arrests": ev["revoked"], "nolle_prosequi": ev["revoked_np"]}
+    f["conv_courts"] = {"arrests": ev["others"], "nolle_prosequi": ev["others_np"], "doc": ev["others_doc"],
+                        "felony_ab": ev["others_by"]["F1"], "felony_ce": ev["others_by"]["F2"],
+                        "misdemeanour": ev["others_by"]["M"]}
+    f["conv_after_max_date"] = {"arrests": ev["off"], "doc": ev["off_doc"], "felony_ab": ev["off_by"]["F1"],
+                                "felony_ce": ev["off_by"]["F2"], "misdemeanour": ev["off_by"]["M"]}
+    f["conv_every_arrest"] = {"arrests": ev["every"], "doc": ev["every_doc"]}
     for o, d in zip(calc.OFFICES, C.DISTRICTS):
         f["a1_" + o] = {"arrest": r["A"][o]["arrest"], "conditions": r["A"][o]["conditions"]}
     for d in C.DISTRICTS:
@@ -178,6 +188,9 @@ def write_chart(path, r):
 
 def submission(r, f):
     rate = f["call"]["rate_step"]
+    ev = r["ev"]
+    ob, fb = ev["others_by"], ev["off_by"]
+    c = lambda v: "{:,}".format(v)
     lines = ["## Tags", "",
              "**Domain:** Criminology & Justice (recidivism and risk assessment).",
              "**Analytical objective:** Forecasting & Predictive Modeling.", "",
@@ -193,27 +206,40 @@ def submission(r, f):
              "", "## 3. Step-by-Step Solution", "",
              "1. Read release movements PAR and RPR (PAROLE and REPAROLE before the 2022 upgrade) dated 1 January 2019 "
              "to 30 September 2024 in %s, each followed %d days: %s releases." % (C.F_REL, C.WINDOW, "{:,}".format(len(r["S"]))),
-             "2. Linked %s to Department numbers through %s and counted, for each release, arrests and days out of "
-             "Department custody (ADM to the next release movement in %s) in four bands of time since release; fitted "
-             "a Poisson model of arrests per day on age, prior commitments, offence, sex and district."
-             % (C.F_ARR, C.F_XW, C.F_ADM),
-             "3. Took from %s each court-decided arrest's chance of a DOC sentence by grade class (felony A-B, felony C-E, "
-             "misdemeanour), arrests to 30 June 2024, leaving out the arrests the Board revoked on in its two case "
-             "files, and the arrest-to-ADM time of those sentenced." % C.F_AOC,
-             "4. For each person in %s, combined the arrest rate by time since release with that class mix, conversion "
-             "and timing over %d days: the cohort's rate is %d per cent." % (C.F_PROJ, C.WINDOW, rate),
-             "5. Took REVOKE and REVOKED decisions dated 1 July 2025 to 30 June 2026, dropped the legacy entries dated "
+             "2. Linked %s to Department numbers through %s and counted, for each release, every arrest (the ones the "
+             "Board revoked on included) and the days out of Department custody (ADM to the next release movement in %s) "
+             "in four bands of time since release; fitted a Poisson model of arrests per day on age, prior commitments, "
+             "offence, sex and district." % (C.F_ARR, C.F_XW, C.F_ADM),
+             "3. Matched the arrests to 30 June 2024 to their cases in %s on otn (a docket's latest entry): the %s the "
+             "Board revoked on (an arrest_otn on a REVOKE or REVOKED decision in its two case files) were all nolle "
+             "prossed (%s of %s, against %s of the %s others), so their record outcome is the Board's, not a court's; of "
+             "the %s, %s ended in a DOC sentence (sentence_type DOC; CJ and PROB are not returns), by the arrest's top "
+             "charge grade felony A-B %s of %s, felony C-E %s of %s, misdemeanour %s of %s, with the arrest-to-ADM time of "
+             "those sentenced." % (C.F_AOC, c(ev["revoked"]), c(ev["revoked_np"]), c(ev["revoked"]), c(ev["others_np"]),
+                                   c(ev["others"]), c(ev["others"]), c(ev["others_doc"]), c(ob["F1"][0]), c(ob["F1"][1]),
+                                   c(ob["F2"][0]), c(ob["F2"][1]), c(ob["M"][0]), c(ob["M"][1])),
+             "4. Checked that rate where the Board could not revoke: of the %s arrests made on or after the maximum "
+             "expiration date of the parole release before them, %s ended in a DOC sentence (felony A-B %s of %s, felony "
+             "C-E %s of %s, misdemeanour %s of %s), the same rates; every arrest with the revoked ones in gives %s of %s, "
+             "which counts the Board's revocations as court outcomes." % (c(ev["off"]), c(ev["off_doc"]), c(fb["F1"][0]),
+                                                                          c(fb["F1"][1]), c(fb["F2"][0]), c(fb["F2"][1]),
+                                                                          c(fb["M"][0]), c(fb["M"][1]),
+                                                                          c(ev["every_doc"]), c(ev["every"])),
+             "5. For each person in %s, sent every arrest the model expects in %d days at liberty through those courts' "
+             "rates for the grade mix of the person's governing offence, each timed by the arrest-to-ADM time, and took "
+             "the share with a return (1 minus e to the minus the expected returns): %.1f per cent, %d per cent to the "
+             "step." % (C.F_PROJ, C.WINDOW, f["_unrounded"]["rate_pct"], rate),
+             "6. Took REVOKE and REVOKED decisions dated 1 July 2025 to 30 June 2026, dropped the legacy entries dated "
              "after the legacy system closed on 2 January 2026 and those rescinded by 30 June 2026, and counted one "
              "recommitment per parolee per hearing date (two cases decided together are one order), on a reported "
              "arrest when any of its cases cites an arrest number.",
-             "6. Took each detainer once (one per legacy case; a carried-over case from the new system), ended a legacy "
+             "7. Took each detainer once (one per legacy case; a carried-over case from the new system), ended a legacy "
              "detainer with no lift date at the person's next ADM in %s, merged each parolee's overlapping detainers, "
              "and counted days from the lodge day to the day before the end in each half of 2025 by the district of the "
              "county jail." % C.F_ADM,
-             "7. Ended each writ trip (a WRO in %s; no person has two open at once) at the person's next WRI or, where "
+             "8. Ended each writ trip (a WRO in %s; no person has two open at once) at the person's next WRI or, where "
              "a release movement in %s comes first, at the release, and counted days from the day out to the day before "
              "the trip ended in each half of 2025 by the WRO's institution." % (C.F_ADM, C.F_REL),
-             "8. Carried %d per cent in the projection." % rate,
              "", "## 4. Deliverable Answers", "", "### %s" % WB, "",
              "1. Two-year return rate of the 2027 parole releases under Act 26-114: %d per cent." % rate,
              "2. Recommitments the Board ordered from 1 July 2025 to 30 June 2026 and had not rescinded by 30 June 2026:"]
