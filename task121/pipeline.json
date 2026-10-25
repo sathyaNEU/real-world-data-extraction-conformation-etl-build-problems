@@ -30,7 +30,7 @@
     "report": "determinism_check_report.md"
   },
   "returned": [],
-  "resume": "Architecture 5 spent at stage 4 on 2026-10-25 (reader A landed the verdict through the feeder primaries; the judge SEND_BACK on Annex B). Re-root at the draw in a fresh world, architecture 6, Root-Cause; read DESIGN_NOTE.md Tried and rejected first, every dead architecture and screen there stays dead.",
+  "resume": "Architecture 5 spent at stage 4 on 2026-10-25 (reader A landed the verdict through the feeder primaries; the judge SEND_BACK on Annex B). Architecture 6 draw open (stage 1, fresh world, Root-Cause): three screens on 2026-10-25, one probed (p121a, nitrate source shares under denitrification, landed in 34 seconds), each in DESIGN_NOTE.md Tried and rejected; read it first, every dead architecture and screen there stays dead. Resume at the draw.",
   "approved": null,
   "delivered": null,
   "portal": null,
