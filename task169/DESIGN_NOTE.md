@@ -496,6 +496,26 @@ single crack 39.1 (C1).
   the eleven with an ADM or TRN between end at their WRI. No further judge: the closures are the ones the judge wrote,
   and no graded figure moved.
 
+## Determinism repair, portal round 3 (2026-10-25)
+
+- Portal round 3 on 73e3137b with the ask clauses: judge 1 passed every gate (the call, all three tables exact); judge 2
+  passed the call (20.1 per cent on its own decontamination) and tables 1 and 3, and failed table 2 on C and E: where a
+  person was admitted to the Department before the Board's recorded lift date, the days held in the county jail end at the
+  recorded lift (the golden) or at the admission (the physical exit), and five cells differ.
+- Diagnosis: 123 detainers (21 touching 2025), every one a parolee the Board continued after an arrest whom the courts sent
+  to the Department on a new sentence before the Board's hearing lifted the detainer, 1 to 39 days earlier. The golden
+  counted jail days after the person was in a State institution; the prompt counts days held in the county jails.
+- Move (C1 in the records): the Board lifts such a detainer on the admission day (pack.py, no random draw, every other row
+  unchanged), so the recorded end and the physical exit select the same days; SF20 in checks and verify. Six table 2 cells
+  move (Garrison 34,632 to 34,613 and 35,505 to 35,500; Ridgway 21,448 to 21,409; Linwood 19,236 to 19,163; Corliss
+  10,265 to 10,241 and 10,627 to 10,611), the golden counting by the literal reading (judge 2's figures). The realism check
+  now allows one ask figure of 26 on a hundred (Garrison's 35,500 is the record's count) and none on a thousand.
+- Gates: checks 125, verify 0 failed, two builds byte-identical over 20 files, figures_check 60, precut 51, freeze rubric
+  PASS (the call, the stump and every frozen figure unchanged; six ask figures and the golden workbook moved), determinism
+  mode listing the same six cells. target.zip 972382ac (the two Board files changed).
+- Re-judge (determinism-check-task169-r4, order kept): DETERMINISTIC, APPROVE, no fix; the call 19.5 to 20.4, all three
+  tables exact with the new cells; Gate G analytical_non_defect, Gate H pass. Report: determinism_check_report_pass3.md.
+
 ## Tried and rejected
 
 - Candidate A with five summers of record (2022 to 2026): the extra cool summers made growth by hour without
@@ -568,3 +588,4 @@ single crack 39.1 (C1).
   so the world was rebuilt instead (`## Determinism repair`).
 - Portal round 2 (2026-10-25, 73e3137b): the write-up's step 3 as the only account of the courts' conversion. Both judges converted over every arrest and could not reproduce 20; the evidence (revoked arrests all nolle prossed, the no-Board arrests at the courts' rate) moved into steps 3 to 5 as exact counts; nothing filed, the pack unchanged.
 - Stage 4 re-judge r3 (2026-10-25): asks 2 and 4 with their units left to the write-up and the records. The judge read the recommitments per decision row and the writ trips paired WRO to WRI; both units are now in the ask clauses.
+- Portal round 3 (2026-10-25): table 2 counted to the Board's recorded lift date for detainers whose holder the courts had already sent to the Department; judge 2 stopped at the admission. Closed in the records (the Board lifts at the admission), not by a prompt clause the 1,000-character budget could not carry.

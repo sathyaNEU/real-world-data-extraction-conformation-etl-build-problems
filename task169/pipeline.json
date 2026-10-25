@@ -1,7 +1,7 @@
 {
  "task": "task169",
  "owner": "sathya8571",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "criminology-justice",
  "objective": "forecasting",
  "stage": 5,
@@ -25,9 +25,9 @@
   "surface": "exit 0 (run with an in-memory guard for ledger rows whose artifact cell is '-', which crash clone-check fingerprint.py artifact_family on main), no personas; the shared rounding sentence with task177 reworded"
  },
  "judge": {
-  "verdict": "r3 on 73e3137b: the main call DETERMINISTIC; asks 2 and 4 open on their units, closed in the ask clauses",
-  "disposition": "portal round 2's every-arrest conversion answered by the record's evidence in write-up steps 3 to 5; the asks' units filed in the prompt's ask clauses",
-  "report": "task169/determinism_check_report_pass2.md (thread: scratchpad determinism-check-task169-r3/verdict.md)"
+  "verdict": "DETERMINISTIC / APPROVE, no fix (r4 on 972382ac)",
+  "disposition": "portal round 3's detainer endpoint closed in the records; the call 19.5 to 20.4, all three tables exact",
+  "report": "task169/determinism_check_report_pass3.md (thread: scratchpad determinism-check-task169-r4/verdict.md)"
  },
  "returned": [
   {
@@ -60,14 +60,29 @@
    ],
    "freeze": "determinism PASS: the main call, the stump and every frozen figure unchanged; the prompt's call sentence unchanged",
    "commit": "RESHIPPED (task169): determinism, the courts' conversion evidence in the write-up and the asks' units in their clauses"
+  },
+  {
+   "date": "2026-10-25",
+   "portal": "round 3 on 73e3137b with the ask clauses: judge 1 passed every gate; judge 2 passed the call (20.1) and tables 1 and 3, failed table 2 on C and E (detainer days end at the recorded lift or at an earlier Department admission, five cells differ)",
+   "repair": "determinism",
+   "rounds": [
+    {
+     "round": 1,
+     "zip": "972382ac",
+     "moves": "C1 in the records: a detainer whose holder the courts sent to the Department before the Board's hearing is lifted on the admission day (123 detainers, 21 touching 2025; pack.py, no random draw); six table 2 cells move to the days held in the county jails; SF20 in checks and verify; the realism check allows one ask figure of 26 on a hundred",
+     "judge": "determinism-check-task169-r4 (order kept): DETERMINISTIC, APPROVE, no fix; Gate G analytical_non_defect, Gate H pass"
+    }
+   ],
+   "freeze": "rubric mode PASS (the call, the stump and every frozen figure unchanged; six ask figures and the golden workbook moved); determinism mode lists the same six cells, the golden having been the non-literal figure",
+   "commit": "RESHIPPED (task169): determinism, detainers lifted on the admission day so the jail days and the record agree"
   }
  ],
- "resume": "determinism repair, portal round 3: the rebuild passed (checks 125, verify 0 failed, byte-identical over 20 files), target.zip 972382ac (the two Board files changed: detainers lifted on the admission day), figures_check 60, precut 51, freeze rubric PASS (the call and every frozen figure unchanged, six detainer cells and the golden workbook moved), determinism mode lists the same six cells. The re-judge (determinism-check-task169-r4) is running. Next: its verdict, determinism_check_report_pass3.md, returned entry, ledger, RESHIPPED.",
+ "resume": "",
  "approved": null,
  "delivered": "2026-10-22",
  "portal": null,
  "portal_id": "",
- "portal_status": "returned 2026-10-25 twice (determinism, rounds 1 and 2), reshipped 2026-10-25; upload the 16 files or target.zip, not both",
+ "portal_status": "returned 2026-10-25 three times (determinism; round 3 table 2 only), reshipped 2026-10-25; upload the new target.zip or the two Board files, not both",
  "portal_status_date": "2026-10-25",
  "wave": "redraw of a parked number (architecture 1, the cycleway widening, never registered)",
  "gates": {
@@ -124,5 +139,5 @@
   }
  ],
  "heart_ruling": "BLOCK on ban.strategy against task252 (entered the window after registration) ruled as the author ruled task177's: the window stays fixed at the draw; not relabelled; 2026-10-25 at the determinism repair: BLOCK on ban.forcing_event and ban.org_family against task125 (v2, registered 2026-10-23, after this card's 2026-10-22), the same class, the card untouched and not relabelled",
- "zip_md5": "73e3137b5e1d0f6308234ec721f2619c"
+ "zip_md5": "972382acc622abed9a4ed26242bb5b86"
 }

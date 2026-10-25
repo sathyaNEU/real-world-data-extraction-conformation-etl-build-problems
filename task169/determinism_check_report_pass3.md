@@ -1,0 +1,39 @@
+# determinism-check report, task169, 2026-10-25 (pass 3, portal round 3 repair)
+
+## Verdict
+DETERMINISTIC
+**Disposition:** APPROVE, no fix. The optional note (a hearing date mixing an arrest case and a conditions-only case,
+any against all) is closed by the prompt's own words, "those on conditions alone" (SF18's row), so nothing was added.
+**Stumping type:** mechanism: forecasting, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
+
+Pack: target.zip 972382ac (the two Board files carry the detainers the Board lifted on an admission day). Thread:
+scratchpad determinism-check-task169-r4, order kept (blind_derivation.md on disk before graded_blocks.md was opened, an
+addendum after it labelled as such); its first-pass call 15, then 19.5 on the full exposure correction.
+
+## The thread's verdict, verbatim
+
+Verdict: DETERMINISTIC
+Disposition: APPROVE (no repair needed; one optional one-clause pin on the Table 1 mixed-case split, see Evidence, would need a rerun so it is not required).
+Why: The main call is forced by the shipped files to 20 percent: the record's new-commitment rate (8-9 percent, rounds to 10) is a Board-selected sample (all 9,410 arrests the Board revoked on were nolle prossed, 99 percent in the full file) and the old regime also removed liberty days (arrests almost never occur in custody, 159 of 45,933); the Act restores both. Exposure-adjusted, court-rate projection gives 19.5 (my build) to 20.4 (golden), both inside the 17.5-22.5 band for 20, so the rounding step absorbs the method freedom. Supplementary asks 2-4 reproduce exactly. Order kept: blind_derivation.md was written to disk before graded_blocks.md was opened (a short addendum was appended after opening, labelled as such; my first-pass main figure of 15 was the half-corrected counterfactual).
+
+Evidence (recomputed from target/):
+- Cohort 6,466 (doc_projected_releases_2027.csv; 5,290 PAR, 1,176 RPR): reproduced. Historic base 30,959 PAR/RPR releases 2019-01-01..2024-09-30 (full 730-day window to 2026-09-30): reproduced.
+- Step 3 counts reproduced exactly: 25,117 arrests to 2024-06-30; 9,410 revoked-on, 9,410 NP; 15,707 others, 374 NP, 3,483 DOC; AB 1,622/2,594, CE 1,673/6,400, M 188/6,713. Step 4 reproduced: 10,576 arrests at or after max expiration, 2,357 DOC.
+- Competing answers: 10 (record new-commitment rate 8.0-9.3 percent by release year); 15 (revoked arrests re-imputed at court rates, exposure unchanged: 16.5-16.9 percent, 16.6 standardised to the cohort); 45 (PRAT study / recommitment-inclusive rate ~46 percent PV ADM plus new commitments); 20 (exposure-adjusted). 10 and 45 are ruled out by the Act text plus methodology 4.2; 15 is ruled out because arrests demonstrably occur only at liberty, so removing recommitments adds arrest exposure (liberty days per release in the four 6-month bands 164/131/133/150 of 182/183/182/183). Cohort-mix standardisation moves the figure under 1 point; deaths about -0.3.
+- Table 1 (offices, arrest / conditions alone): D1 1,277/261, D2 621/210, D3 368/172, D4 116/149. Reproduced exactly with: legacy REVOKE rows plus new-system REVOKED rows, cross-system duplicate cases (about 200 carried-over) and same-day multi-case orders collapsed on (doc_number, hearing date), rescind by 30 Jun 2026 from either system, arrest if any case cites an arrest_otn. Hearing date is unambiguous (decision_ts is always -05:00, hours 9-16, no UTC date shift).
+- Table 2 (H1/H2): Garrison 34,613/35,500; Ridgway 21,409/23,962; Linwood 17,928/19,163; Corliss 10,241/10,611. Reproduced exactly (legacy REVOKE detainers end at the PAROLE VIOLATOR ADM date, confirmed by the new system's hold_end equalling the ADM date; open legacy holds closed from the new system; overlapping detainers of one parolee merged, 2,170 overlaps). Summing detainer-days instead gives D1 36,658/38,014, D2 22,552/25,237, D3 18,631/19,909, D4 10,546/10,904.
+- Table 3 (H1/H2): KTR 3,443/4,237; FNW 3,838/4,166; DNM 3,896/4,122; LKV 3,957/4,546; BRW 3,947/4,497. Reproduced exactly (2,110 WRO with no WRI end at the person's next release, as the prompt states; WRI always at the WRO institution).
+- Residual forks, all small and on the asks, not the main call: (a) 110 parolee-hearing dates mix an arrest case and a conditions-only case; "arrest if any" (golden) vs "only if all" moves D1 64, D2 26, D3 17, D4 3 between columns, and the prompt says "took up a reported arrest" without saying which; (b) 2 parolee-dates with one case rescinded and one not (moves D2 and D3 by 1 each); (c) "parolee-days" must be read as distinct parolees (about 5 percent below detainer-days), which the word supports; (d) legacy detainers with a blank lift date need the DOC admission join (the new system's own hold_end proves the rule), a solver ending them at the hearing date would be low by about 7 days per revoked detainer; (e) district rows vs per-jail rows, "for the county jails of each parole district" reads as district.
+No SOLUTION_WRONG defect: step 5's 20.4 and my 19.5 agree after rounding; the blocks agree on 20 throughout and on all table figures.
+
+Files/Hygiene: PASS. 17 files (10 csv incl. manifest, 3 xlsx incl. data dictionary, 3 pdf, 1 parquet; 4 formats); several files above 25,000 rows (admissions 108,609, releases 53,515, arrests 45,933, AOC 46,152). Distractors usable: PRAT validation study (any-admission rates), caseload by office, capacity report, vital-records deaths. Layer 1 mess is real and unplanted (legacy vs new case system with overlap at the 2 Jan 2026 cutover, MM/DD/YYYY vs ISO dates, PAROLE/PAR code change in March 2022, hyphenated SBI ids, amended AOC docket rows, WRI missing when release ends a writ). No authoring or benchmark language found in the PDFs or dictionary; the methodology PDF states the estimand (return = new court commitment within 730 days) without disclosing the NP mechanism or the answer. No temporal or public-data contamination finding. Nothing exclusion-level.
+
+Stump power: High. Two easy routes hand out plausible wrong answers (10 from the record's new-commitment rate; 15 from re-imputing the revoked arrests at court rates but leaving liberty time unchanged; 45 from the PRAT/any-return basis), and a capable model that reads the Act correctly still has to see both the selection (Board-revoked arrests were nolle prossed) and the exposure change (custody removes arrest opportunity). Asks add ETL hazards (cross-system duplicates, release-ended writs, merged overlapping detainers).
+
+Stumping type: mechanism: forecasting (regime-change counterfactual with exposure/competing-risk and censoring), stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no. On clean data the task still stumps: the answer needs the liberty-time exposure model and court rates, not the catching of a wrong reported figure. The reported record rates are accurate; they just answer a different regime.
+
+Three rules: domain: pass, layers: pass, decisive_step: analytical
+Field's own analysis: a corrections-policy return-rate projection under a statutory change (competing risk, exposure at liberty, selection out of the Board's recommitment filter, right-censoring of recent cohorts). Easy route for an analyst who cleaned everything and read every rule: take the 2019-2024 new-commitment share (8.7 percent, files 10) or correct only for the nolle-prossed revoked arrests (15); both miss the added liberty-time exposure. Swap test: "hospital readmissions" nouns would not reproduce the same reasoning without the same structure, domain is genuine. Not data semantics (no field-reading flips it) and not rule application (Act and methodology give the target, not the method).
+
+Fix: none required. Optional, only if a rerun is accepted: add to the Table 1 ask the clause "on a reported arrest if any of that day's cases cites one" to close fork (a).
+
