@@ -211,8 +211,10 @@ No confidence level, significance level or test threshold is filed anywhere in t
 | SF15 | what share of the people will be admitted | the share of members with a return | the expected number of returns per member | 23.38, step 25 | methodology 3.2: the share of its members with a return (asserted) |
 | SF16 | the time at risk (portal judge 1's early exposure) | every day out of custody in the window | arrests and days only to each release's first admission | same call (18.42) | the route still sends every parolee arrest through the courts (asserted, FAM) |
 | SF17 | the courts' conversion's base (portal round 2, both judges) | the arrests the Board did not revoke on, their DOC sentences by grade (3,483 of 15,707) | every arrest with the revoked ones in (3,483 of 25,117; judge 1 at 14.8, judge 2 at 10.0, ladder 2f 13.43, step 15); the revoked arrests dropped from the counts too (11.70); a DOC or county-jail endpoint (judge 2's 19.4, a coincidence near the golden, not its route) | 15 or 10 | the record: the 9,410 revoked arrests were all nolle prossed against 374 of the 15,707 others, so their record outcome is the Board's; the 10,576 arrests made on or after the parole's maximum date, when the Board could not revoke, convert class by class at the same rates (1,092 of 1,748, 1,143 of 4,338, 122 of 4,490), and the projection on them files 20.44; write-up steps 3 to 5 state it; the endpoint is DOC alone (Act section 3(c), the dictionary's sentence_type) (asserted SF17, verify) |
+| SF18 | ask 2's unit, "the recommitments the Board ordered" (stage 4 judge r3) | one per parolee per hearing date, two cases decided together one order (3,174) | each REVOKE or REVOKED decision row (3,523) | asks only | the prompt's clause "one per parolee per hearing date" (2026-10-25); "those on conditions alone" closes any against all cited arrests (asserted SF18) |
+| SF19 | ask 4's trip end, "the day the trip ended" (stage 4 judge r3) | the person back from the writ (WRI) or released, whichever comes first; 28,287 trips end at a WRI and 2,110 at a release, none open | WRO paired with WRI alone, the released trips dropped (every cell lower) | asks only | the prompt's clause "with the person back from the writ or released" (2026-10-25) (asserted SF19) |
 
-Every row is asserted in `generator/checks.py` (labels SF1 to SF6, SF8 to SF17; SF7, the districts' order, left
+Every row is asserted in `generator/checks.py` (labels SF1 to SF6, SF8 to SF19; SF7, the districts' order, left
 with the districts at stage 4 round 1).
 
 ## Ladder
@@ -479,7 +481,19 @@ single crack 39.1 (C1).
   decides it, so the move is in the solution (both judges' fix location): steps 3 to 5 now state the evidence as exact
   counts, every one recomputed by verify. Nothing a solver sees changed: target.zip 73e3137b unchanged.
 - Gates: checks 120 (SF17's eleven rows), verify 0 failed, two builds byte-identical over 20 files, figures_check 59,
-  precut 51, freeze --mode determinism PASS. Re-judge: determinism-check-task169-r3, results below.
+  precut 51, freeze --mode determinism PASS.
+- Re-judge (determinism-check-task169-r3, order kept): the main call forced (every sound estimate 18.2 to 20.9, all
+  20; the revoked arrests' nolle prosequis and the after-maximum-date control reproduced), table 2 (detainers) exact;
+  Gate F good (wrong routes at 10, 15 and 50), Gate G analytical_non_defect, Gate H pass. NOT_DETERMINISTIC on two
+  asks, labelled SEND_BACK but a Gate C and E failure confined to supplementary asks with the main call forced, so an
+  ask-layer wording repair that spends no architecture: ask 2 counted per decision row (3,523 against 3,174) and ask 4
+  with WRO paired to WRI alone (every cell lower). Closed in the prompt's ask clauses with the units the judge named,
+  "one per parolee per hearing date" and "with the person back from the writ or released" (SF18, SF19); the call
+  sentence untouched; 951 characters, voice-check PASS. Step 3 now names its base (every linked arrest dated to 30
+  June 2024, release-day arrests included: the judge's 25,053 left out 64 arrests made on a release day). Its step 8
+  note (four trips ending at an ADM or TRN) does not hold on the record: all 30,397 trips end at a WRI or a release, and
+  the eleven with an ADM or TRN between end at their WRI. No further judge: the closures are the ones the judge wrote,
+  and no graded figure moved.
 
 ## Tried and rejected
 
@@ -552,3 +566,4 @@ single crack 39.1 (C1).
   a judge chose. A filed conversion basis, hazard model or timing rule would make the decisive step rule application,
   so the world was rebuilt instead (`## Determinism repair`).
 - Portal round 2 (2026-10-25, 73e3137b): the write-up's step 3 as the only account of the courts' conversion. Both judges converted over every arrest and could not reproduce 20; the evidence (revoked arrests all nolle prossed, the no-Board arrests at the courts' rate) moved into steps 3 to 5 as exact counts; nothing filed, the pack unchanged.
+- Stage 4 re-judge r3 (2026-10-25): asks 2 and 4 with their units left to the write-up and the records. The judge read the recommitments per decision row and the writ trips paired WRO to WRI; both units are now in the ask clauses.

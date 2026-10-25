@@ -305,6 +305,19 @@ def main(target):
        all(abs(cv["pc"][c] - ev["others_by"][c][0] / ev["others_by"][c][1]) < 1e-12 for c in ("F1", "F2", "M")),
        ", ".join("%s %.4f" % (c, cv["pc"][c]) for c in ("F1", "F2", "M")))
 
+    # SF18 ask 2's unit and SF19 ask 4's trip end (stage 4 judge r3, 2026-10-25): each reading the judge took files other
+    # figures, and the prompt's own clause rules it out
+    prompt = open(os.path.join(task, "prompt.txt")).read()
+    A0 = calc.ask_a(D)
+    A1 = calc.ask_a(D, orders=False)
+    ok("SF18 one per parolee per hearing date: the prompt files it, and counting each decision row moves the table",
+       "one per parolee per hearing date" in prompt and A1 != A0,
+       "per decision row %d against %d" % (sum(sum(v.values()) for v in A1.values()), sum(sum(v.values()) for v in A0.values())))
+    W0 = calc.ask_c(D)
+    W1 = calc.ask_c(D, ended_by_release=False)
+    ok("SF19 a trip ends back from the writ or at the release: the prompt files it, and pairing WRO with WRI alone moves "
+       "every cell", "with the person back from the writ or released" in prompt
+       and all(W1[i][h] != W0[i][h] for i in W0 for h in ("H1", "H2")), json.dumps(W1)[:120])
     # ------------------------------------------------------------ the asks
     A = calc.ask_a(D)
     ok("ASKA golden matches figures.json", all(figs["a1_" + o] == A[o] for o in calc.OFFICES), "")

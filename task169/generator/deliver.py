@@ -210,12 +210,13 @@ def submission(r, f):
              "Board revoked on included) and the days out of Department custody (ADM to the next release movement in %s) "
              "in four bands of time since release; fitted a Poisson model of arrests per day on age, prior commitments, "
              "offence, sex and district." % (C.F_ARR, C.F_XW, C.F_ADM),
-             "3. Matched the arrests to 30 June 2024 to their cases in %s on otn (a docket's latest entry): the %s the "
+             "3. Matched every arrest linked to a Department number and dated on or before 30 June 2024 (%s, arrests on "
+             "a release day included) to its case in %s on otn (a docket's latest entry): the %s the "
              "Board revoked on (an arrest_otn on a REVOKE or REVOKED decision in its two case files) were all nolle "
              "prossed (%s of %s, against %s of the %s others), so their record outcome is the Board's, not a court's; of "
              "the %s, %s ended in a DOC sentence (sentence_type DOC; CJ and PROB are not returns), by the arrest's top "
              "charge grade felony A-B %s of %s, felony C-E %s of %s, misdemeanour %s of %s, with the arrest-to-ADM time of "
-             "those sentenced." % (C.F_AOC, c(ev["revoked"]), c(ev["revoked_np"]), c(ev["revoked"]), c(ev["others_np"]),
+             "those sentenced." % (c(ev["every"]), C.F_AOC, c(ev["revoked"]), c(ev["revoked_np"]), c(ev["revoked"]), c(ev["others_np"]),
                                    c(ev["others"]), c(ev["others"]), c(ev["others_doc"]), c(ob["F1"][0]), c(ob["F1"][1]),
                                    c(ob["F2"][0]), c(ob["F2"][1]), c(ob["M"][0]), c(ob["M"][1])),
              "4. Checked that rate where the Board could not revoke: of the %s arrests made on or after the maximum "
