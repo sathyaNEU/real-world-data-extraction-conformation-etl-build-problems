@@ -1,11 +1,11 @@
 {
   "task": "task485",
-  "architecture": "v2",
+  "architecture": "v3",
   "drawn": "2026-10-25",
-  "slot_note": "re-rooted after architecture 1 (an electoral review's 2032 electorate with a new dwelling's electors joining the register over its first canvasses) was spent at stage 4; a fresh world and mechanism on the lane's objective, the slot's seed (ET42) set aside at the first draw",
+  "slot_note": "re-rooted after architecture 2 (a region's cattle-manure ammonia from animal-days by region and housing season) was spent at stage 4; a fresh world and mechanism on the lane's objective, the slot's seed (ET42) set aside at the first draw",
   "domain": "physical-environmental-sciences",
   "subdomain": "emissions-inventory",
-  "niche": "a national ammonia programme's 2027 Ammonia Action Regions, designated on each region's cattle-manure ammonia per hectare of farmed land over the 2025-26 programme year, conformed from the bovine register's animal and movement records, the June livestock census, the herd register, the land parcel register and the inventory's factors, where youngstock spend the summer on grazing lets and the winter housed in another region",
+  "niche": "an environment ministry's 2027 Sulphur Dioxide Order, listing the permitted industrial coal boilers whose 2026 sulphur dioxide reached 250 tonnes, the inventory conformed from the coal suppliers' delivery analyses, the boiler operators' quarterly returns, the limestone quarries' delivery tickets, the annual scrubber performance tests and the permits' scrubber design data, where each wet limestone scrubber's real removal over the year is closed on the limestone it consumed",
   "objective": "etl",
   "shape": "10",
   "decision_type": "designation_set",
@@ -13,82 +13,71 @@
   "answer": "",
   "answer_source": "",
   "gap": [
-    "population",
-    "time"
+    "objective"
   ],
   "pattern": [
-    "D"
+    "none"
   ],
   "generators": [
-    "G2",
-    "G7",
-    "G4"
+    "G3",
+    "G12"
   ],
-  "gate_g": "etl_conformance",
+  "gate_g": "method_or_model_selection",
   "calibration_form": "none",
-  "stump_strategy": "grain_or_unit",
+  "stump_strategy": "other",
   "decisive_rule_filed": false,
   "official_decoy": false,
   "validated_decoy": false,
-  "context_artifact": "filed_standard",
+  "context_artifact": "none",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst conforms the 1 June 2026 census holdings to the 2024 regions, applies the factor note's annual ammonia factor per head by category and region (its Table 5), divides by each region's farmed land and designates the regions at or over the line, filing nine regions: it adds five grassland and western regions whose June herds hold summer grazers and spring-bought calves, and misses Inner Basin and Lower Basin, whose finishers house stores all winter and send them to slaughter before June.",
-  "domain_test": "A regional ammonia inventory places each animal's emissions where and when they arise, at the housed rate in the housing season of the region it is in and at the grass rate outside it, so the activity data for a herd that moves with the seasons are animal-days by region and stage rebuilt from the movement register; swap cattle for hospital patients and bed-days for animal-days and nothing is left to place, because a patient's day emits nothing at a rate set by the season and the ward it falls in.",
+  "analyst_test": "A strong analyst conforms each boiler's 2026 coal burned and its as-received sulphur from the suppliers' delivery analyses and the quarterly stock changes, takes off the permit's ash retention, applies the removal its scrubber showed at the 2026 performance test (or the permit's design removal) to the whole year and lists the boilers at or over 250 tonnes, filing one or two large boilers; it is wrong because several scrubbers stood bypassed for weeks while their boilers ran, which no return records and no announced test sees, and the limestone each scrubber consumed fixes the sulphur it actually removed.",
+  "domain_test": "A sulphur dioxide inventory for abated combustion closes each unit's sulphur balance over the year (sulphur fired, less sulphur kept in the ash, less sulphur the absorber removed), and for a wet limestone scrubber the sulphur removed is set by the calcium carbonate it consumed at its operating stoichiometry, so the year's emissions come from the reagent balance, not from a removal rate observed while the absorber runs; with hospitals for boilers and infections for sulphur nothing stoichiometric binds a reagent to what it removes and the task stops making sense.",
   "layer2_family": "field_method",
-  "layer2_pattern": "own:animal-days by region and housing stage rebuilt from the movement register",
+  "layer2_pattern": "own:the year's sulphur removed read from the limestone each wet scrubber consumed at its guaranteed stoichiometry, closing the sulphur balance, against the scrubber's design removal or its announced annual test",
   "layer1": [
-    "the bovine register in two files, one row per animal with birth and exit dates and one row per movement with departure and arrival dates that can differ by a day",
-    "marts and dealers' premises as intermediate herds on many moves",
-    "herd numbers reissued after a holding changes hands, and farmers keeping more than one herd number",
-    "the herd register's region codes revised in 2024 (two regions' boundary moved), the census still on the old codes",
-    "the census keyed by the statistics office's farm number, joined to herd numbers through the herd register",
-    "census categories (dairy cows, suckler cows, other cattle by age band, calves) against categories the register implies from sex, breed, age and calving",
-    "the factor note's mass flow in kilograms of ammonia-nitrogen, its per-day factors and the programme's line in kilograms of ammonia",
-    "day-month-year dates in the register, ISO dates elsewhere, the programme year November to October",
-    "farmed area from the land parcel register by herd, commonage shares split across herds",
-    "three slurry contractors' exports in three units (loads at each tanker's gallons, thousands of gallons, metered cubic metres), with herd numbers written two ways and pig slurry and digestate among the jobs"
+    "coal analyses issued per delivery by four suppliers' laboratories, two reporting sulphur on an as-received basis and two on an air-dried basis with the moisture beside it",
+    "operators' quarterly returns in a template whose layout changed between the first and second half of 2026, coal and limestone stocks reported at each quarter end",
+    "limestone quarry tickets keyed to the quarry's customer account names, not the ministry's permit numbers, through a customer cross-reference",
+    "annual performance test reports issued as PDF tables by two accredited laboratories with concentrations at different reference oxygen contents",
+    "boilers that share a site and a coal yard but not a scrubber, with deliveries apportioned in the operator's return"
   ],
-  "stakeholder_role": "the head of the Ministry's Ammonia Programme Unit",
-  "role_family": "programme_officer",
+  "stakeholder_role": "the Air Quality Directorate's head of industrial emissions, who prepares the schedule of boilers the 2027 Sulphur Dioxide Order lists for the Minister",
+  "role_family": "compliance_or_audit",
   "scoring_unit": "other",
   "spine": {
-    "file": "nbr_movements_2025-26.csv",
+    "file": "coal_deliveries_2026.csv",
     "rows": 0,
-    "entity": "one movement of one animal from one herd to another",
-    "grain": "animal x movement",
+    "entity": "one delivery of coal to a boiler site with its supplier's laboratory analysis",
+    "grain": "site x delivery",
     "source": "synthetic"
   },
   "forum": "minister_or_cabinet",
-  "forcing_event": "season_or_peak",
+  "forcing_event": "statutory_or_regulatory_filing",
   "org_family": "government_agency",
   "world": {
-    "geography": "an unnamed Atlantic country with a national bovine register and an annual June livestock census (the regions, bodies and people are invented)",
-    "currency": "EUR",
-    "org_type": "a national agriculture department's ammonia programme unit",
+    "geography": "an unnamed coal-producing country with a register of permitted industrial boilers in a Northern Priority Area (the provinces, bodies, firms and people are invented)",
+    "currency": "none",
+    "org_type": "an environment ministry's air quality directorate",
     "invented_names": [],
     "people": [
-      "Emily McAleer",
-      "Noel Herity"
+      "Maria Burgess",
+      "Timothy Peterson",
+      "Brenda Cook"
     ]
   },
   "deliverables": [
-    "ammonia_action_regions_2027.xlsx",
-    "cattle_ammonia_per_hectare_2025-26.png"
+    "sulphur_dioxide_order_schedule_2027.xlsx",
+    "boiler_sulphur_dioxide_2026.png"
   ],
   "opening_move": "question-first",
   "question_form": "which",
-  "driver": "A region's period total of a flow is read as each unit's annual rate for that region times the units counted there on one day, but part of the units move between regions with the seasons and their rate is several times higher in the season they spend in their other region; the total belongs to each region by the days each unit spends there in each season, rebuilt from the units' movement histories, and an average of the units present still leaves each unit's high-rate season with the region where it spends the low-rate one.",
-  "driver_concrete": "Each animal's ammonia accrues day by day at the housed rate in the housing season of the region it is in and at the grass rate outside it, so each region's 2025-26 cattle-manure ammonia is rebuilt from the bovine register's movement histories as animal-days by region and stage, not taken as the 1 June census times the region's annual factor per head.",
-  "stump": "The default path multiplies each region's 1 June 2026 census by the factor note's annual factor per head and divides by farmed land, designating nine regions: it adds Lake Uplands, Middle Uplands, Eastern Uplands, Western Seaboard and Atlantic Coast, whose June herds hold lowland yearlings out on summer grazing lets and calves bought from dairy farms that spring, and it misses Inner Basin and Lower Basin, whose finishers house stores all winter and send them to slaughter before June; averaging the bovine register's count over the year still adds Lake Uplands, Middle Uplands and Western Seaboard, because the annual factor's housed days never happen there.",
+  "driver": "Each unit's period output of a pollutant is the content of what it burned less what its ash kept and less what its removal step took out, and the removal step's share over the period is read neither from its design nor from its one announced test, which see it only while it runs, but from the reagent it consumed, which it uses in a fixed ratio to what it removes; no record carries the hours the step stood idle while the unit ran, so only the reagent balance shows them.",
+  "driver_concrete": "Each boiler's 2026 sulphur dioxide is the sulphur in the coal it burned, less the sulphur its ash kept, less the sulphur its wet limestone scrubber removed, and the sulphur removed is the limestone the scrubber consumed (deliveries less the quarter-end stock change, at each delivery's carbonate purity) over the vendor's guaranteed moles of calcium carbonate per mole of sulphur dioxide removed; scrubbers that stood bypassed for part of the year while their boilers ran consumed too little limestone for their design removal, and their sulphur dioxide runs three to six times what their design or their annual test implies.",
+  "stump": "The default path takes each boiler's 2026 coal sulphur from the delivery analyses and the quarter-end stock changes, less the permit's ash retention, times one minus the removal its scrubber showed at the 2026 performance test, and lists only the largest boiler or two; the step that lands it there is carrying a removal observed while the scrubber ran across a year in which several scrubbers stood bypassed for weeks with their boilers firing, when the limestone each scrubber consumed, at its guaranteed stoichiometry, fixes the sulphur it removed and puts those boilers at three to six times their tested emissions, over the line.",
   "mechanism_source": "design_note",
   "differentiation": {
-    "task181": "There the expected count of events follows the crossings moving units make through each other's positions, so scaling by time spent misses a forward change in crossings; here no event arises between units: each animal's ammonia accrues at the rate of the stage it is in, and the move is placing its days in the region where it spends them, housed or at grass, from the movement register.",
-    "task229": "There the decisive quantity is the standard error of a mean over entities that fail together through a shared node (lineage v1); here nothing is uncertain or correlated: each region's total is a sum of animal-days placed by region and housing stage from the movement records.",
-    "task98": "There a per-unit threshold applies to units formed by chaining members within a fixed distance, which the settled periods hid (lineage v3); here the units are fixed regions and the line reads their totals per hectare, and what moves is which region each animal's days, and its housed season, belong to.",
-    "task70": "There a per-record date is rebuilt from a movement log as the first departure after the record's own timestamp, reshaping a daily distribution behind a per-period threshold (lineage v1); here no date is rebuilt for a record: every animal's whole year is placed day by day across regions and housing stages, and the line reads each region's annual total.",
-    "task484": "Both are emissions inventories that designate areas, consecutive in this lane; there a period's fuel use is read from the previous winter's survey and the move recovers a fuel switch from the metered fuel's deliveries against a base pair of winters, here nothing switches and no survey is carried forward: the June census counts every animal correctly and the move is placing each animal's days, housed or at grass, in the region where it spends them, from the movement register.",
-    "task455": "There new administrative identifiers are linked to the units they continue through member flows read from the old unit's side; here no identifier continues another and nothing is linked: each animal keeps its tag and the move is placing its days by region and housing stage from its own movement history.",
-    "task161": "There stock built ahead of a cost step drains at each holder's own use share and the filed standard selects a drawdown model; here nothing is forecast or selected: the factor note's per-day rates are filed and the move is where, and in which season, each animal-day falls."
+    "task477": "There each industry's exposure to pay schedules is estimated from how its period totals move with the pay dates the periods hold; here nothing is estimated from co-movement: a conservation law on a consumed reagent fixes how much a removal step removed, and the period's output is the balance's remainder.",
+    "task482": "Its architecture 7 reads a removal device's share through the outlet floor it holds against a diluting inlet; here no model of the device is fitted at all, the reagent the device consumed bounds what it removed, and the shortfall is idle time no record carries."
   },
   "lineage": [
     {
@@ -101,9 +90,19 @@
       "niche": "a boundary commission's electoral review of a district's 23 wards, each ward's electors on the register to be published after the 2032 canvass forecast from six canvasses of the register at property level, the address register and the council's housing trajectory, where a new dwelling's electors join the register over several canvasses after it is completed",
       "gate_g": "etl_conformance",
       "stump_strategy": "maturity_censoring"
+    },
+    {
+      "version": "v2",
+      "fate": "spent at stage 4 round 1, 2026-10-25: both scored readers rebuilt each animal's days from the movement register at the factor note's per-day rates by region and housing season and landed the golden six",
+      "driver": "A region's period total of a flow is read as each unit's annual rate for that region times the units counted there on one day, but part of the units move between regions with the seasons and their rate is several times higher in the season they spend in their other region; the total belongs to each region by the days each unit spends there in each season, rebuilt from the units' movement histories, and an average of the units present still leaves each unit's high-rate season with the region where it spends the low-rate one.",
+      "stump": "The default path multiplies each region's 1 June 2026 census by the factor note's annual factor per head and divides by farmed land, designating nine regions: it adds Lake Uplands, Middle Uplands, Eastern Uplands, Western Seaboard and Atlantic Coast, whose June herds hold lowland yearlings out on summer grazing lets and calves bought from dairy farms that spring, and it misses Inner Basin and Lower Basin, whose finishers house stores all winter and send them to slaughter before June; averaging the bovine register's count over the year still adds Lake Uplands, Middle Uplands and Western Seaboard, because the annual factor's housed days never happen there.",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "emissions-inventory",
+      "niche": "a national ammonia programme's 2027 Ammonia Action Regions, designated on each region's cattle-manure ammonia per hectare of farmed land over the 2025-26 programme year, conformed from the bovine register's animal and movement records, the June livestock census, the herd register, the land parcel register and the inventory's factors, where youngstock spend the summer on grazing lets and the winter housed in another region",
+      "gate_g": "etl_conformance",
+      "stump_strategy": "grain_or_unit"
     }
   ],
-  "notes": "architecture 2 spent 2026-10-25 at stage 4 round 1: both scored readers rebuilt the animal-days from the movement register at the factor note's per-day rates by region and housing season and landed the golden six; ask A held at 0 of 24 on both",
-  "registered": "2026-10-25T14:17:53Z",
-  "architecture_spent": true
+  "notes": "stump_strategy other: a conservation law on the reagent, the sulphur a wet limestone scrubber removed fixed by the limestone it consumed at its operating stoichiometry",
+  "registered": "2026-10-25T18:55:58Z"
 }

@@ -1,297 +1,95 @@
-# task485 design note: the Ammonia Reduction Programme's 2027 Ammonia Action Regions from a herd that moves with the seasons (architecture 2)
+# task485 design note: the 2027 Sulphur Dioxide Order's schedule of coal boilers, each scrubber's year closed on the limestone it consumed (architecture 3)
 
-Status lives in `pipeline.json`; this note holds the design. Architecture 2, drawn 2026-10-25 on the author's standing
-rule (no retirement) after architecture 1 (an electoral review's 2032 electorate, a new dwelling's electors joining the
-register over its first canvasses) was spent at stage 4 when both scored readers fitted the ramp. A fresh world and
+Status lives in `pipeline.json`; this note holds the design. Architecture 3, drawn 2026-10-25 on the author's standing
+rule (no retirement) after architecture 2 (a region's cattle-manure ammonia from animal-days by region and housing
+season) was spent at stage 4 when both scored readers rebuilt the animal-days from the register. A fresh world and
 mechanism on the lane's objective; the candidates screened before it are in `## Tried and rejected`. The slot's seed
 (ET42) was set aside at the first draw and stays set aside.
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task485.json` (architecture v2, lineage v1 spent). The window the axis bans
-  read (task121, task303 and task301, the live cards filed last; task485's own v1 card is spent and skipped) closes the
-  strategies decomposition_attribution, composition_mix and population_selection, the forums committee_or_panel,
-  board_of_directors and executive_team, the forcing events statutory_or_regulatory_filing, launch_or_rollout and
-  budget_or_appropriation, the organisations utility_or_infrastructure, financial_institution and foundation_or_funder,
-  the roles compliance_or_audit, portfolio_manager and research_desk, the context artifacts published_series, other and
-  register, and the shapes 03 and other. The draw's honest labels clear all of them: the Minister designates the
-  regions (minister_or_cabinet) for the spreading season that opens in January (season_or_peak), the Ministry is the
-  organisation (government_agency), the requester heads the Ministry's Ammonia Programme Unit (programme_officer),
-  and the stakeholder's own file is the programme's designation rules (filed_standard).
-- **BLOCKs differentiated on the card** (similarity rules only, never an axis): `test.same_puzzle_older` and
-  `test.same_driver_older` (population, pattern D, designation_set and etl_conformance) against task181 v4 (crossings of
-  moving units), task229 v1 (a shared-node standard error), task98 v3 (units chained by distance) and task70 v1 (a
-  per-record date rebuilt from a movement log). None places a unit's days across places by a seasonal stage.
-- **WARNs answered.** `three_rules.strategy_risk` (grain_or_unit): the analyst test below is a route that reads every
-  field and rule correctly and still files the wrong regions, because the census counts every animal correctly and the
-  factor is right for an animal that stays put. `overuse.org_family` (government_agency in 40 builds): the programme is
-  the Ministry's and the Minister designates under it; no other body decides a region's measures. `repeat.deliverables`
-  (png and xlsx): a scorecard against a line reads at a glance as a bar chart, and the workbook carries the regional
-  figures and the asks' tables. `repeat.question_form` (which): the Minister names the regions, so the question asks
-  which.
+- **Card:** `.claude/skills/fingerprint/cards/task485.json` (architecture v3, lineage v1 and v2 spent), registered
+  2026-10-25T18:55:58Z and checked again after filing. The window the axis bans read (task302, task301 and task166, the
+  live cards filed last; task121 v5, task303 and task485 v2 are spent and skipped) closes the strategies causal_design,
+  population_selection and composition_mix, the forums line_manager_or_team, executive_team and committee_or_panel, the
+  forcing events cutover_or_migration, budget_or_appropriation and launch_or_rollout, the organisations
+  retailer_or_ecommerce, foundation_or_funder and financial_institution, the roles operations_director, research_desk
+  and finance_controller, the context artifacts other, register and close_out_summary, the calibration forms pilot_log
+  and existing_book_actuals and the patterns C and E. The draw's honest labels clear all of them: the Minister signs the
+  Order's schedule (minister_or_cabinet), the schedule is a statutory instrument laid under the clean air act
+  (statutory_or_regulatory_filing), the Ministry is the organisation (government_agency), the requester heads the Air
+  Quality Directorate's industrial emissions team (compliance_or_audit), no stakeholder file frames the answer (none),
+  and the shape is a scorecard against a line (`10`).
+- **BLOCK differentiated on the card** (a similarity rule, never an axis): `test.same_driver_older` (gap objective,
+  decisive G3, method_or_model_selection) against task477, where each industry's exposure to pay schedules is estimated
+  from how its period totals move with the pay dates; here nothing is estimated from co-movement, a conservation law on
+  a consumed reagent fixes what a removal step removed. Nearest drivers 0.07 (task482 v7, a removal device read through
+  its outlet floor; differentiated on the card) and 0.05.
+- **WARNs answered.** `overuse.org_family` (government_agency in 40 builds): the Order is the Minister's and the
+  Directorate prepares its schedule; no other body lists a boiler. `repeat.gate_g` (method_or_model_selection, as
+  task166): the honest mechanism, two routes to a scrubber's year (the removal it shows while running, and the
+  limestone it consumed) of which the conservation of sulphur and calcium pins one. `repeat.question_form` (which):
+  the Minister names the boilers, so the question asks which.
 - **Pairing:** Physical & Environmental Sciences / `emissions-inventory`, drawn for Data Extraction & Conformation
-  (ETL). The deliverable is the conformed 2025-26 regional inventory of ammonia from cattle manure, built from the
-  National Bovine Register's two exports (one row per animal, one row per movement), the statistics office's June
-  livestock census by holding, the herd register, the land parcel register's farmed area, the farm practices survey's
-  housing seasons by region and the national inventory's ammonia factors for cattle.
-- **The decision and the quantity:** an unnamed Atlantic country runs an Ammonia Reduction Programme for 2025 to 2030.
-  Each autumn the Minister designates Ammonia Action Regions for the next spreading season: a region whose ammonia from
-  cattle manure over the programme year (1 November to 31 October) is at or above the programme's line in kilograms of
-  ammonia per hectare of its farmed land is designated, and in a designated region every farm above the programme's
-  stocking threshold must spread slurry by low-emission equipment and cover its slurry store from 13 January 2027, when
-  the closed period ends. The Minister designates by 1 December 2026 on the Ammonia Programme Unit's figures for the
-  programme year 2025-26. Twelve regions; the line and the regions' farmed areas are set at stage 2.
-- **Timing (the pack's present is November 2026).** The bovine register's exports of 9 November 2026 cover every animal
-  present at any time from 1 November 2025 to 31 October 2026 and every movement in that span; the census holds each
-  holding's cattle on 1 June 2026 and was published in September 2026; the inventory methodology is the 2025 edition;
-  the farm practices survey's housing seasons are from its 2025 round. The call is retrospective by design: the
-  programme designates on the emission year just closed, so the measures reach the next spreading season.
-- **Shape:** `10`, a scorecard against thresholds: each region's cattle-manure ammonia per hectare against the line
-  beside the call, with asks of many figures on the register's own conformation.
-- **The default path holds the field's method (stumping 1.1b).** The inventory's Tier 2 factor per head is built the
-  field's way, from nitrogen excretion by category and the share lost at each stage (housing, storage, spreading,
-  grazing), with a region's housing season setting the housed and grass days. Multiply each region's census cattle by
-  category by the region's annual factor per head, divide by farmed area and test the line. That is how the national
-  inventory states its regional table, and the route an inventory compiler builds first.
-- **The decisive step:** the annual factor per head is right for an animal kept in one region all year, housed in that
-  region's season and at grass outside it. A large share of the herd is not. Lowland dairy farms send their yearling
-  heifers out on summer grazing lets in the grassland and western regions in May and house them at home from October;
-  western rearers buy the dairy regions' calves in spring; and the finishers of Midland Basin, Inner Basin and Lower Basin buy
-  stores in the autumn, house them all winter and send them to slaughter before June. The census counts the summer
-  grazers and the spring calves where they are on 1 June and never sees the winter stores, so the annual factor hands
-  the grassland and western regions a housed season they do not have and takes one from the finishing regions. Placing
-  each animal-day in the region where the animal is that day, at the housed rate inside that region's housing season and
-  the grass rate outside it, from the register's movement histories, takes the grassland and western regions under the
-  line and puts Inner Basin and Lower Basin over it. Averaging the register's count over the year moves the days but not the
-  season: it still files Lake Uplands, Middle Uplands and Western Seaboard over the line, because their summer grazers' housed-season
-  ammonia arises where they winter.
-- **Data-native sentence (restated from the generator):** the census route puts the five grassland and western
-  regions' cattle ammonia 42 to 51 per cent above what their animal-days give and the three finishing regions' 13 to 16
-  per cent below; the mean of the register's count over the year still puts the grassland and western regions 15 to 20
-  per cent above; the three routes file three different sets of regions.
-- **People:** drawn with `guard.py names --geo ie --seed 485` (Gary Farnon, Tiegan Ferry, Emily McAleer, Anna McKenna,
-  Eimhear Rhattigan, Kerri Cunneen, Aislinn Mullane, Graham Mansfield, Noel Herity, Pearce Delaney): Emily McAleer,
-  head of the Ministry's Ammonia Programme Unit and requester; Noel Herity, the National Bovine Register's data
-  manager, who supplied the exports. Owners in file properties and sign-offs only.
+  (ETL). The deliverable is the conformed 2026 sulphur dioxide inventory of the Northern Priority Area's permitted coal
+  boilers, built from the coal suppliers' laboratory analyses per delivery, the operators' quarterly returns (coal and
+  limestone burned and held), the limestone quarries' delivery tickets, the 2026 scrubber performance test reports and
+  the permit register's scrubber design schedules.
+- **The decision and the quantity:** an unnamed coal-producing country's clean air act lets the Minister list, by
+  order, the permitted combustion units in a priority area whose annual sulphur dioxide reached a line; a listed boiler
+  must install continuous emission monitoring by 1 October 2027 and either upgrade its scrubber or move to low-sulphur
+  coal by 2029. The 2027 Sulphur Dioxide Order lists every permitted coal boiler in the Northern Priority Area whose
+  sulphur dioxide leaving the stack over calendar 2026 was 250 tonnes or more. About eighteen boilers at fourteen
+  sites (paper and board, sugar, chemicals, textiles, malting, a brewery, a hospital campus energy centre), each fitted
+  with a wet limestone scrubber under the 2019 to 2023 retrofit programme; none has continuous monitoring, which the
+  Order brings in.
+- **Timing (the pack's present is February 2027).** The operators' fourth-quarter returns were due on 31 January 2027;
+  the suppliers' and quarries' annual statements to the Directorate cover deliveries through 31 December 2026; each
+  boiler's 2026 performance test was run by one of two accredited laboratories between April and October 2026. The
+  call's quantity is retrospective by design: the Order's test is the last full calendar year, so the listing reaches
+  2027's monitoring and the upgrade programme.
+- **Shape:** `10`, a scorecard against thresholds: each boiler's 2026 sulphur dioxide against the 250 tonne line beside
+  the call, with asks of many figures on the conformed coal, limestone and carbon dioxide tables.
+- **The default path holds the field's method (stumping 1.1b).** For an abated unit without continuous monitoring the
+  inventory compiler closes the sulphur balance on the fuel and applies the abatement the unit has demonstrated: coal
+  burned (deliveries adjusted by the stock change) times its as-received sulphur, less the permit's ash retention,
+  times one minus the removal the scrubber showed at its 2026 performance test (or, without a test, its design
+  removal), times 64.06 over 32.06. That is how the Directorate has compiled the area's annual table since the
+  retrofit, and the route a compiler builds first.
+- **The decisive step:** a removal observed while the scrubber runs is the year's removal only if the scrubber ran
+  whenever the boiler fired. Several did not: absorber recirculation pumps, mist eliminator washes and limestone mill
+  trips put a scrubber on bypass for days at a time while its boiler kept firing, and no return records the hours, and
+  an announced test is never run on bypass. The year's sulphur removed is the limestone the scrubber consumed (its
+  deliveries less the change in its silo stock, at each delivery's calcium carbonate purity) over the vendor's
+  guaranteed moles of calcium carbonate per mole of sulphur dioxide removed; the sulphur fired, less the ash's share,
+  less that, is what left the stack. The reagent balance puts the bypassed boilers at three to six times their tested
+  emissions and over the line, while the boilers whose scrubbers ran all year sit where their test puts them.
+- **Data-native sentence (prototype, restated from the generator at stage 3):** on a prototype of eighteen boilers with
+  seven scrubbers bypassed for 6 to 32 per cent of the sulphur fired, the design-removal route lists one boiler, the
+  tested-removal route none, and the limestone balance eight; the bypassed boilers' balance figures run 2.3 to 6.8 times
+  their tested figures.
+- **People:** drawn with `guard.py names --seed 485` (Donald Wolf, Timothy Peterson, Paul Levine, Maria Burgess,
+  Brenda Cook, Amanda Carey, Jimmy Rogers, Daniel Lee; Paul, Amanda and Daniel set aside on the guard's first-name
+  warnings): Maria Burgess, head of industrial emissions in the Air Quality Directorate and requester; Timothy
+  Peterson, technical manager of one accredited test laboratory and signatory of its reports; Brenda Cook, the
+  scrubber vendor's performance engineer who signed the guarantee schedules. Owners in file properties and sign-offs
+  only.
 
 ## Three rules
 
-Task type: Physical & Environmental Sciences, emissions-inventory, which serves ETL in the taxonomy (a regional inventory conformed from the bovine register's animal and movement exports, the June census by holding, the herd and land parcel registers, the housing seasons and the inventory's factors).
-Domain test: the quantity that decides is each region's ammonia from cattle manure over the programme year per hectare of farmed land; the field estimates it by the inventory's mass-flow stages (housing, storage, spreading, grazing) on activity data, and for a herd that moves with the seasons the activity data are animal-days by region and stage rebuilt from the movement register, not the census day times the region's factor per head.
-Swap: "which of 12 health boards' hospital infections per 1,000 bed-days exceed the line" (patients for cattle, bed-days for animal-days) leaves nothing to place: a patient's day carries no rate set by the season and the ward it falls in, so the census day stands for the year and the step has nothing to act on.
-Layer 1: the register in two exports (one row per animal with birth and exit dates, one row per movement with departure and arrival dates that can differ by a day), marts and dealers' premises as intermediate herds on many moves, herd numbers reissued when a holding changes hands and farmers keeping more than one herd number, the herd register's region codes revised in 2024 with the census still on the old codes, the census keyed by the statistics office's farm number and joined to herd numbers through the herd register, census categories against the categories the register implies from sex, breed, age and calving, the factor note's mass flow in kilograms of ammonia-nitrogen beside its per-day factors and the programme's line in kilograms of ammonia, day-month-year dates in the register and ISO dates elsewhere, the programme year from November to October against the census's June date, farmed area by herd with commonage shares split across herds, and, on the ask's side, three slurry contractors' exports in three units with herd numbers written two ways; each written by the system that holds it, none placed to be caught, each asserted neutral on the call (R2).
-Layer 2: field_method, exposure windows: the activity data an inventory multiplies by its factors are the animal-days in each stage in each place; the choice that flips the call is rebuilding them by region and housing stage from the movement histories rather than taking the census day times the region's annual factor, or an average count times it.
-Decisive step: recognising that the inventory's annual factor per head holds only for an animal kept in one region all year, and placing each animal-day in the region where the animal is that day, at the housed rate inside that region's housing season and the grass rate outside it, from the bovine register's movement histories.
-Not semantics: with every field read correctly (herd numbers across both exports and the census's farm numbers, the 2024 region codes, the categories, ammonia-nitrogen against ammonia, the programme year), the census route still files the wrong regions, because the census counts every animal correctly on 1 June and the annual factor is correct for an animal that stays put; no field records that an animal's housed season falls in another region, and the register's 1 June stock agrees with the census.
-Not rule application: no filed rule places an animal's days by region and stage; the factor note's Table 5 states the annual factor for an animal kept in one region and the census counts every holding's cattle on 1 June, and executing the two files the wrong set. Measured on the generator's clean truth, the enumerated family (the census times Table 5; the register's 1 June stock times it; the register's mean count over the year times it; animal-days at each location's housing season; animal-days at the home region's housing season) files three distinct designated sets of the twelve regions (the census and the register's stock file the same nine), and the standing family (animal-days at the season of the region the animal is in, or at its home region's season, the two members the estimand and the closure sentence leave defensible) files one, a spread of zero, the home-season member moving Western Seaboard and Atlantic Coast by 5.7 and 6.5 per cent with no region across the line; the easy route sits outside that family because the register refutes it, so unanimity is the cell the build wants (stumping 1.1), and what rules the easy route out is quiet: the register's 1 June stock agrees with the census, and the seasonal flows show only when the moves are aggregated by month and region against the census day; no column or summary states them.
-Analyst test: a strong analyst conforms the 1 June 2026 census holdings to the 2024 regions, applies the factor note's annual ammonia factor per head by category and region (Table 5), divides by each region's farmed land and designates the regions at or over the line, filing nine regions: it adds Lake Uplands, Middle Uplands, Eastern Uplands, Western Seaboard and Atlantic Coast, whose June herds hold summer grazers and spring-bought calves, and misses Inner Basin and Lower Basin, whose finishers house stores all winter and send them to slaughter before June (the default path's `Ends on:`).
-Estimand: each region's ammonia from cattle manure arising in the region from 1 November 2025 to 31 October 2026, in kilograms of ammonia per hectare of the region's farmed land, against the programme's line; filed in the programme's designation rules, with each stage's emissions arising where the animal is on the day, as the inventory methodology's mass-flow states it.
-No decoy: nothing is planted to be caught: the census counts who it counts on 1 June, the register records every move as the herds and marts report it, the methodology's factors are correct for an animal kept in one region, and no memo, draft, briefing or stakeholder figure argues the census route.
-No certified replay: the method is not recovered by reproducing published figures; the census tables and the inventory's national total are context, and the national total is the same under every route to within a few per cent, so no published figure separates the routes.
-Lesson: a regional inventory of a herd that moves with the seasons has to place each day's emissions where the animal is that day and at the rate of the stage it is in there; the census day hands a whole year's housed-season ammonia to the region where the summer grazing is, and an average of the animals present still leaves the housed season with the region the animal grazes in; no build on file teaches it (the card's nearest drivers sit at 0.07 and below, and no slot note screens a herd's seasonal movements).
-
-## Layer 1 inventory
-
-Each item is written by the system that holds it, none is placed to be caught, and each is asserted in `checks.py`
-(R2): the golden method run with the item mishandled files the same six regions, or the item moves only the census
-route or the ask. The register's readings are asserted together, as a cross product of 288 readings (transit, premises,
-exit day, presence, region map, commonage), and every one files the golden six.
-
-| Item | System that writes it | File | Natural mishandling | Effect on the call |
-|---|---|---|---|---|
-| departure and arrival dates that differ by a day | hauliers' overnight loads, recorded at both ends | movements | the animal in the arrival herd from the departure date | same six (cross product) |
-| marts, dealers' premises and export assembly centres as herds | the register records each leg | movements, herd register | their days dropped, or counted at the seller | same six (cross product) |
-| herd numbers reissued after a holding changed hands | the register's herd allocation | herd register (a row per holder, with validity dates) | the number's first row (the earlier holder's region) | same six (cross product) |
-| farmers keeping a second herd number on an out-farm | the register's herd allocation; the census asks per farm | herd register (main herd number), census | the census farm placed in one herd's region | the census route only (an out-farm sits in its main herd's district) |
-| region codes revised in 2024 (three Coastal Vale districts to Southern Vale, their herds keeping L numbers) | the Ministry's reorganisation; the census keeps the old codes | herd register (both codes), census | the pre-2024 codes, or a herd's region read from its number's letter | same six (cross product) |
-| census farm numbers written without their leading zeros | the census frame's export | census, herd register | a raw join | loud: the raw join matches no farm |
-| census categories against the register's sex, breed, age and calving | two classifications | census, animals | categories mapped by hand | the census route only |
-| day-month-year dates in the register, ISO elsewhere | the register's export format | animals, movements | month and day swapped | loud: most birth dates have a day after the twelfth |
-| births registered up to 27 days late | farmers' registration window | animals (birth and registration dates) | presence from registration | same six (cross product) |
-| the exit date | the plant, knackery or export centre recording the exit | animals | the exit day counted | same six (cross product) |
-| commonage parcels shared across herds | the land parcel register's declarations | `lpr_farmed_area_2026.csv` | a parcel's whole area on each sharing herd, or commonage left out | same six (cross product; commonage sits only in Eastern Uplands and Atlantic Coast, more than 22 per cent under the line) |
-| the factor note's mass flow in kilograms of ammonia-nitrogen beside its factors in kilograms of ammonia | the inventory's method | `epo_cattle_ammonia_factors_2025.pdf` | Table 3 converted to ammonia a second time | not invited: Table 3 and the line are both in kilograms of ammonia, and the note applies its rates as printed |
-| Countrywide's herd numbers written with a space | the contractor's account system | `countrywide_invoice_lines_2026.xlsx` | a raw join | the ask only, loud (no line matches) |
-| three units across the contractors (loads at each tanker's gallons, thousands of gallons, metered cubic metres) | each contractor's own system | the three contractor exports | Vale Agri's loads at a standard 2,000 gallons | the ask only |
-| pig slurry and digestate jobs beside cattle slurry, jobs into May | the contractors' job systems | the three contractor exports | kept | the ask only |
-
-## Default path
-
-1. Conform the 1 June 2026 census holdings to the 2024 regions through the herd register's farm numbers, and map the
-   census's categories to the factor note's five (dairy cows, suckler cows, other cattle over two years, cattle one to
-   two years, calves).
-2. Multiply each region's census cattle by category by the note's annual factor per head for that category and region
-   (Table 5, the per-day rates over the region's housed and grass days in a 365-day year).
-3. Divide each region's tonnes by its farmed land in the land parcel register (2026, the 2024 regions, commonage shares
-   included) and designate every region at or above the programme's 26 kilograms of ammonia a hectare.
-
-Ends on: Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Lake Uplands, Middle Uplands, Eastern Uplands, Western Seaboard and Atlantic Coast
-(nine regions).
-
-Golden: Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Inner Basin and Lower Basin (six regions).
-
-## Stump sentence
-
-The default path multiplies each region's 1 June 2026 census by the factor note's annual factor per head and divides by farmed land, designating nine regions: it adds Lake Uplands, Middle Uplands, Eastern Uplands, Western Seaboard and Atlantic Coast, whose June herds hold lowland yearlings out on summer grazing lets and calves bought from dairy farms that spring, and it misses Inner Basin and Lower Basin, whose finishing units house stores all winter and send them to slaughter before June; averaging the bovine register's count over the year still adds Lake Uplands, Middle Uplands and Western Seaboard, because the annual factor's housed days never happen there; placing each animal-day in the region where the animal is that day, at the housed rate inside that region's housing season and the grass rate outside it, designates Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Inner Basin and Lower Basin.
-
-## Readability screen
-
-Measured by the generator on the clean truth (`checks.py` restates every figure on each build). Kilograms of ammonia a
-hectare, golden against the census route and the mean count: Northern Vale 31.53 (31.94, 31.69), Eastern Vale 29.74 (30.33,
-29.93), Southern Vale 28.48 (29.09, 28.70), Coastal Vale 22.91 (23.04, 22.90), Midland Basin 34.23 (29.73, 32.41), Inner Basin 28.10
-(23.63, 26.31), Lower Basin 28.31 (24.19, 26.63), Lake Uplands 24.23 (34.41, 27.88), Middle Uplands 23.62 (34.02, 27.23), Eastern Uplands
-20.27 (28.79, 23.30), Western Seaboard 23.92 (36.05, 28.76), Atlantic Coast 20.10 (29.28, 23.60).
-
-| Rung | What the response does | What in the pack points at it | Verdict |
-|---|---|---|---|
-| L0 the census at the annual factor (default) | each region's 1 June census by category times Table 5 | the census is the national livestock count; Table 5 is per head per year | readable |
-| L1 the register's 1 June stock at the annual factor | the same cattle rebuilt from the register | the register's exports; it agrees with the census | readable |
-| L2 a uniform correction | L0 or L3 scaled to any national figure | nothing ships a national total | readable |
-| L3 the register's mean count at the annual factor | each region's animal-days by category over the year, divided by 365, times Table 5 | the measure is a year's; the register shows births, moves and exits | readable |
-| L4 animal-days at the home region's season | each animal's days at the stage of the region of its first herd | nothing | silent |
-| G golden (decisive) | each animal-day in the region of the herd holding it, at Table 3's housed rate inside that region's housing season and its grass rate outside it | nothing labels an animal's housed days or sets the census day against the year; Table 3's caption reads as the factor's derivation, and the register's seasonal moves show only when aggregated by month and region against the census day | silent |
-
-L2 never lands the golden set: scaling the census to the golden's national total files the default nine, and scaling
-the mean count designates Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Lake Uplands, Middle Uplands and Western Seaboard. L4 files the
-golden set (Western Seaboard and Atlantic Coast move 5.7 and 6.5 per cent, both far under the line).
-
-## Semantic fork table
-
-| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
-|---|---|---|---|---|---|
-| SF1 | the programme year | 1 November 2025 to 31 October 2026, by calendar day | the twelve months to the extract | same call (the extract ends 31 October) | rules section 2 |
-| SF2 | ammonia from cattle manure | housing, storage, spreading and grazing, cattle of all ages, at the factor note's factors | fertiliser or other livestock added | not computable on the measure; the fertiliser and pig files are distractors | rules section 3 |
-| SF3 | arising in the region | each animal-day in the region of the herd holding the animal that day | each animal in the region it was counted in on 1 June | another set (the default) | rules section 3 with the note's Table 3 caption |
-| SF4 | a day in transit | the animal in its departure herd until its arrival date | in the arrival herd from the departure date | same call (asserted) | the export notes' arrival date |
-| SF5 | a day at a mart, a dealer's premises or an export centre | counted where those premises are | dropped, or counted at the seller | same call (asserted) | the herd register's herd types |
-| SF6 | the exit day | not counted (present on days before the exit date) | counted | same call (asserted) | the export notes |
-| SF7 | the birth day | present from the birth date | from the registration date | same call (asserted) | the export notes |
-| SF8 | a housed day | a day inside the housing season of the region where the animal is that day (Table 4) | the season of the animal's home region | same call (asserted) | the note's Table 3 caption |
-| SF9 | an animal's category on a day | calf under 365 days; cow from its first calving, dairy or suckler by breed; otherwise one to two years or over two years | the census's categories on 1 June held all year | another set (the default) | the note's section 2 |
-| SF10 | a dairy cow | a cow of a dairy breed on the note's list | a cow in a dairy herd | identical (every cow in a dairy herd is a dairy breed; asserted) | the note's breed list |
-| SF11 | farmed land | the 2026 declared area by herd, commonage shares included, by the herd's 2024 region | commonage shares left out or counted whole | same call (asserted) | rules section 4 |
-| SF12 | the regions | the 2024 regions | the census's pre-2024 codes | same call (asserted) | rules section 4 |
-| SF13 | a reissued herd number | the herd register's record valid on the day | the current record for every day | same call (asserted) | the herd register's validity dates |
-| SF14 | at or above the line | unrounded kilograms a hectare at or above 26 | rounded to two decimals first | same call (the nearest region sits 6.8 per cent from the line) | rules section 5 |
-| SF15 | ammonia against ammonia-nitrogen | the note's factors are kilograms of ammonia | not applicable | not applicable | the note's units |
-
-## Ladder
-
-Measured by the generator on the clean truth; `checks.py` asserts every row on each build.
-
-| Rung | Regions designated | Flips from the golden | Call kept |
-|---|---|---|---|
-| L0 the census at the annual factor (default) | Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Lake Uplands, Middle Uplands, Eastern Uplands, Western Seaboard, Atlantic Coast | 7 | no |
-| L1 the register's 1 June stock | as L0 | 7 | no |
-| L2a the census scaled to the golden's national total | as L0 | 7 | no |
-| L3 the register's mean count at the annual factor | Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Inner Basin, Lower Basin, Lake Uplands, Middle Uplands, Western Seaboard | 3 | no |
-| L2b the mean count scaled to the golden's national total | Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Lake Uplands, Middle Uplands, Western Seaboard | 5 | no |
-| L4 animal-days at the home region's season | the golden six | none | yes |
-| G golden | Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Inner Basin, Lower Basin | none | yes |
-
-The golden's margins from the line are +21.3, +14.4, +9.5, -11.9, +31.6, +8.1, +8.9, -6.8, -9.2, -22.1, -8.0 and
--22.7 per cent (in the order of the regions); the default's wrong cells sit 9.1 and 7.0 per cent under the line
-(Inner Basin, Lower Basin) and 10.7 to 38.7 per cent over it (the five it adds); the mean count's three wrong cells sit 4.7
-to 10.6 per cent over. The national total is 1,352.2 tonnes on the golden, 1,475.4 on the census and 1,396.1 on the mean
-count; nothing in the pack publishes one.
-
-## Closure table
-
-| # | Axis | Reading | Move |
-|---|---|---|---|
-| 1 | Population | cattle of all ages present in the country at any time in the programme year | filed (rules section 3); the register's export covers every animal present |
-| 2 | Unit of account | a region's tonnes of ammonia from cattle manure, and its kilograms a hectare of farmed land | filed (rules sections 3 and 5) |
-| 3 | Attribution window | 1 November 2025 to 31 October 2026 | filed (rules section 2); SF1 |
-| 4 | As-of dating | the register's extract of 9 November 2026, the herd register of the same date, the census of 1 June 2026 | C1 |
-| 5 | Version basis | the factor note's 2025 edition; the 2024 regions | filed (rules sections 3 and 4); SF12 |
-| 6 | Denominator | farmed land, the 2026 declared area with commonage shares | filed (rules section 4); SF11 |
-| 7 | Weighting | none: animal-days at per-day rates | not applicable |
-| 8 | Window length | one programme year | filed |
-| 9 | Boundary inclusivity | designated at or above 26 kilograms a hectare | filed (rules section 5); SF14 |
-| 10 | Rounding path | the line tested on unrounded figures; tonnes to one decimal and kilograms a hectare to two in the file | the prompt's rounding sentence |
-| 11 | Tie-break | none needed | asserted: no region within 2 per cent of the line |
-| 12 | Maturity and censoring | none: the year closed on 31 October and the extract runs to 9 November | not applicable |
-| 13 | Order of operations | animal-days by herd, region and stage, then rates, then sums | linear |
-| 14 | Row order | none | C1 |
-| 15 | Duplicate resolution | one row per animal and per movement | C1, asserted (no tag repeats in the animal file) |
-| 16 | Identity normalisation | herd numbers with and without the county prefix's separator, the census's farm numbers | Layer 1; every movement herd and census farm resolves in the herd register (asserted) |
-| 17 | Netting against gross | none | not applicable |
-| 18 | Dimensional units | kilograms of ammonia a head a day, days, hectares, tonnes | filed (the note's units); SF15 |
-| 19 | Code and status semantics | herd types, exit types, breed codes | filed (the export notes, the note's breed list); SF5, SF10 |
-| 20 | Integerisation | none | not applicable |
-| 21 | Clause scope | cattle manure only; fertiliser and other livestock outside the measure | filed (rules section 3); SF2 |
-| 22 | Forward window contents | the designation governs the 2027 spreading season; nothing forward is estimated | not applicable |
-
-## Literal reader
-
-Executing the prompt and every filed sentence word for word: the rules measure each region's ammonia from cattle
-manure arising in the region over the programme year, computed with the Environmental Protection Office's 2025
-factors, against 26 kilograms a hectare of farmed land. The factor note states its rates per head per day, housed on
-the days inside the housing season of the region where the animal is kept and at grass on the others, and its Table 5
-sums them over a 365-day year for an animal kept in one region. No file states which cattle were in which region on
-which day except the bovine register; the census states the cattle on each holding on 1 June. A literal reader
-therefore computes the ammonia arising in each region from the cattle there on each day, at the stage of that day,
-from the register's animal and movement records; taking the 1 June census for the year assumes the cattle on a
-holding on 1 June were there all year, which the register contradicts for the yearlings out on summer lets, the
-spring calves and the stores slaughtered before June. The golden is what those records give.
-
-## Oracles
-
-No file ties only under the golden or only on a wrong read. The census tables state the cattle on holdings on 1 June,
-and the register's 1 June stock agrees with them under both routes, so they referee the conforming (herd and farm
-numbers, regions, categories) and never the year; no shipped file states a region's ammonia, a national total or a
-ranking of the regions on the measure. The ask's referee: one contractor's invoice lines carry the other contractor's
-docket number in their reference field, the device's evidence, never an answer.
-
-## Ask sheet
-
-The call's declared population is the bovine register's animals and movements, the herd register, the census, the
-land parcel register's farmed area and the factor note. Ask A reads only the three slurry contractors' exports and the
-herd register's 2024 regions for their customers' herds, which the call never reads for spreading (the herd register's
-region field is shared; the contractors' rows are outside the call's population, asserted by count). The fertiliser
-sales by region, the creameries' milk supply and the pig and poultry census ship as distractors: the rules' section 3
-scopes the measure to cattle manure, and no golden figure opens them (asserted).
-
-- **Ask A, each region's cattle slurry spread by contractors on its farms from 13 January to 30 April 2026, cubic
-  metres to the nearest hundred, and the share of it spread by low-emission equipment (trailing shoe, trailing hose or
-  injection), per cent to one decimal (24 figures).** H18 home: a measure every region carries that the designation
-  does not turn on, the low-emission spreading its farms already buy, beside its ammonia. User: the Unit's head, whose
-  measures in designated regions require low-emission spreading. Primary device (silent, D1 the same records under two
-  sources beside genuine same-day pairs, with D7 the true key in a reference string): in its busy weeks (9 February to
-  27 March) Countrywide Slurry Services passes about a third of its jobs to the local contractor, Vale Agri in six
-  regions and Basin Agri in the other six. Countrywide invoices the farmer at the service the farmer ordered and at
-  its own two-thousand-gallon load (Vale Agri's load count at two thousand gallons whatever the tanker; Basin Agri's
-  metered volume in whole loads, rounded up), dated when the local docket reaches it three to ten days later, with the
-  local job number in the invoice line's reference field; the local job sheet records the same job on its day, at the
-  farm's herd, with its own volume and the spreader it used (Basin Agri's fleet runs only trailing shoes and dribble
-  bars, and Vale Agri sends a low-emission tanker to a third of the splash-plate orders it takes on). 149 of Countrywide's
-  935 lines are such jobs, in every region. Twin: 47 farms where Countrywide and the local contractor each spread part of
-  a store on the same day carry two genuine jobs at unrelated volumes. Only the reference field, read against the
-  local contractors' job numbers, says which invoice lines bill another contractor's job. Hazards: Vale Agri's loads at
-  each tanker's gallons, Countrywide's herd numbers written with a space, pig slurry and digestate jobs in all three
-  exports, Countrywide's agitation hours, jobs into May. Stops, measured on the cut pack: every job once as exported (0 of
-  24), a Countrywide line beside a same-day job on the herd dropped (0 of 24), Countrywide's lines kept and the job sheets
-  they bill dropped (4 of 24), the reference read with Vale Agri's loads at two thousand gallons (12 of 24), the
-  reference read with pig slurry, digestate and May kept (1 of 24), the golden.
-
-| Ask | What the cracker does | Cracker |
-|---|---|---|
-| A | converts every export to cubic metres, keeps cattle slurry in the window, maps each customer herd to its 2024 region and sums every job as exported | misses |
-
-Measured by: `generator/ceiling.py` on the cut pack.
-
-| Ask | Graded figures | Cracker keeps | Mirror keeps | Naive handling keeps | Cracker |
-|---|---|---|---|---|---|
-| A contractors' spreading by region, cubic metres and low-emission share | 24 | 0 | 0 | 0 | misses |
-
-Over the 24 figures the cracker keeps 0.0 per cent of ask weight (scores 45.0 with the call), the mirror 0.0 per cent
-(12.0), the naive handling (a Countrywide line beside a same-day job dropped) 0.0 per cent; the best half-handled stop
-keeps 12 of 24 and needs the reference field read.
-
-Pair ceiling: 28.5.
-Mirror leakage: 0.0 per cent of ask weight.
-The construction layer is the chart, each region's kilograms a hectare against the line, which the cracker has with
-the call and the mirror misses with it.
+Task type: Physical & Environmental Sciences, emissions-inventory, which serves ETL in the taxonomy (an annual inventory of sulphur dioxide from abated coal boilers, conformed from the suppliers' delivery analyses, the operators' quarterly returns, the quarries' delivery tickets, the performance test reports and the permits' scrubber schedules).
+Domain test: the quantity that decides is each boiler's sulphur dioxide leaving the stack over 2026; the field estimates an abated source without continuous monitoring by closing its sulphur balance (sulphur fired, less sulphur kept in the ash, less sulphur the absorber removed), and for a wet limestone scrubber the sulphur removed over the year is set by the calcium carbonate it consumed at its operating stoichiometry.
+Swap: "which of 18 hospitals' surgical-site infections reached 250 in 2026" (hospitals for boilers, infections for sulphur dioxide) leaves no balance to close: no reagent is consumed in a fixed ratio to what a ward prevents, so a ward's year cannot be read from what it used and the task stops making sense.
+Layer 1: four suppliers' laboratories reporting sulphur per delivery, two on an as-received basis and two air-dried with the moisture beside it; quarterly returns in a template whose layout changed at mid-year, with coal and limestone stocks at each quarter end; quarry tickets keyed to the quarry's customer accounts through a cross-reference to permit numbers; test reports as PDF tables from two laboratories at different reference oxygen contents; boilers sharing a site and a coal yard with deliveries apportioned in the operator's return. Each is how those systems issue their records; none is placed to be caught, and none moves a boiler across the line once read correctly.
+Layer 2: field_method, the inventory's mass balance done right: the abatement term of an unmonitored abated source is the reagent-fixed removal over the year, not a removal rate observed while the absorber runs; the choice that flips the call is closing each scrubber's year on the limestone it consumed.
+Decisive step: recognising that a scrubber's tested or design removal holds only for the hours it runs, and taking the year's sulphur removed from the limestone each scrubber consumed at its guaranteed calcium-to-sulphur ratio, so the sulphur dioxide left is the sulphur fired less the ash's share less that.
+Not semantics: with every field read correctly (both sulphur bases, the stock changes, the quarry accounts against permit numbers, the reference oxygen of each report, the guarantee schedule's ratio per mole removed), the tested-removal route still lists the wrong boilers, because a test run on a running scrubber measures that scrubber correctly and says nothing of the days it stood on bypass.
+Not rule application: no filed rule takes the year's removal from the reagent; the Directorate's guidance files the estimand and the sulphur conventions, and its abatement clause asks only for the removal the scrubber achieved over the year. Enumerated family on the prototype: design removal (one boiler listed), tested removal (none), the test day's stack concentration times the year's flue gas (none to two by the test day's coal), the limestone balance (eight), so the enumerated spread is seven boilers on the call; the standing family, the constructions consistent with the conservation of sulphur and calcium (the limestone balance with deliveries or with consumption, at the delivered or the year's mean purity), spreads 0 boilers on the call and under 3 per cent on any boiler's tonnage, re-measured on the generator; the ruling-out is quiet, because only the balance itself shows a test-based removal to be more than the limestone could have done.
+Analyst test: a strong analyst conforms each boiler's 2026 coal burned and its as-received sulphur from the delivery analyses and the stock changes, takes off the permit's ash retention, applies the removal its scrubber showed at its 2026 performance test to the whole year and lists the boilers at or over 250 tonnes, filing at most the largest one or two; the default path's Ends on: names them at stage 2.
+Estimand: each permitted coal boiler's sulphur dioxide leaving the stack from 1 January to 31 December 2026, in tonnes, against 250 tonnes; filed in the Order's draft schedule note and the Directorate's 2026 inventory guidance (sulphur on the as-received basis, coal and limestone as consumed, ash retention from the permit, molar masses stated).
+No decoy: nothing is planted to be caught: the tests measure their days correctly, the design removals are the vendors' true guarantees, the returns record what their template asks, the limestone tickets record every delivery, and no memo, draft, briefing or stakeholder figure states or ranks any boiler's emissions.
+No certified replay: the method is not recovered by reproducing certified or published figures; no shipped document states a boiler's 2026 tonnage, and the Directorate's earlier annual tables are not shipped.
+Lesson: an abated source's year is what its reagent bounds; a removal rate observed while the absorber runs, at its design or its announced test, carries over days it stood idle, and no build on file closes a removal device's year on the reagent it consumed (task482 v7 read a device through its outlet floor, task478 v6 through hours since renewal).
 
 ## Architecture 2 record (spent 2026-10-25)
 
@@ -396,3 +194,15 @@ type, the trajectory's site sizes are round, and no register row lacks a UPRN.
   ended (a code's meaning, semantics); a broiler flock's crop phase on the census day (the estimand's own definition
   invites the placements; its insight is kept, and widened, in the herd draw).
 - 2026-10-25, architecture 2 (each region's cattle-manure ammonia from animal-days placed by region and housing season, against the June census at the annual factor): spent at stage 4 round 1. Both scored readers rebuilt the animal-days from the register at Table 3's per-day rates by region and season and landed the golden six; with the register covering the whole year at the estimand's grain and the factor note stating per-day rates by place and season, the golden was the careful route, not a step past a default.
+- 2026-10-25, architecture 3 draw, screened and set aside before the scrubber balance: a gas bill's therms split by the
+  daily profile (task123's calendarisation), register over-coverage by signs of life (screened in task478's and
+  task482's notes), extinct cohorts for the oldest old (task173, task271), rater severity (task471 v2), pooled tests
+  (task188), a common stack's units unmixed from single-unit hours (task263), a warranty's usage clock against months in
+  service (task478 v6's hours since renewal, landed), a flare's destruction read from steam dilution (task478 v7's
+  driver: a rate set by a metered condition, read on test days), AdBlue dosing against type-approval NOx (a fleet's
+  reagent sits beside its fuel and reads at once), a district heat network's fixed losses (no ETL task type, and the
+  loss model forks on ground temperature), a heat pump fleet's coefficient of performance integrated over the hours (no
+  ETL task type), the time-of-observation bias in manual maximum thermometers (the carry-over day's true maximum is
+  unobserved, so every correction forks), a continuous monitor's flow bias read from the fuel's carbon balance (an
+  instrument bias is Layer 1 cleaning, never the stump), and the scrubber balance read from gypsum to landfill (the waste
+  return's FGD code names the link).
