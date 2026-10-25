@@ -30,6 +30,21 @@ measurement is worth running until the ladder holds. Where both of them miss the
 evidence and the ask work is the work. A build whose cold readers both land the call needs a
 redesigned decisive step, not a fourth device.
 
+**Where a whole lane actually bled, measured across thirteen builds: the ask layer, not the call.** An
+in-house audit scored a reader against thirteen FAILED_TO_STUMP builds and the ask figures came back at **61,
+61, 64, 80, 92, 93, 95 and 98 per cent solved** against this part's target of about a fifth each, three to
+five times the bar. Run the pair arithmetic on those numbers and the cause is unambiguous: with one response
+on the call the pair is `28.5 + 27.5 (Lc + Ls)`, so the audited ask layers put the pair at **62.0 to 82.3**,
+while the SAME call with the asks at their own spec puts it at **39.5**, under the build target. Every one of
+the eight would have cleared the bar on its existing call if this layer had met the spec.
+
+Two things follow. **The ask layer is not margin, it is the pair**: the call contributes a fixed 45 against 12
+on the miss side, and everything that moves the average past 50 is ask weight. And **a weak ask layer is a
+systemic failure, not thirteen accidents**: the same author produced all thirteen, so when a lane's pairs come
+back high, measure `Lc` before redesigning a single decisive step. The ask layer is also the one layer no
+closure argument reaches, because 2.1 licenses an ask to turn on semantics or rule application, which the
+rules that close a main call's decisive step do not touch.
+
 ## Part 1. Design against the careful solver's path
 
 **The cracker is a model and the reader is the measurement.** Its stops are the author's guesses at the
