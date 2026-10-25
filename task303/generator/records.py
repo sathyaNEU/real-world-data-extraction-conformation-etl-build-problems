@@ -250,5 +250,5 @@ class Record:
                 what = "Remnants of a tropical storm" if rng.random() < 0.45 else "Severe thunderstorms"
             else:
                 what = "Severe thunderstorms" if rng.random() < 0.8 else "Wind storm"
-            out.append([day.isoformat(), what, P.TMED[day.year], "Docket E-%d-0%d" % (day.year + 1, 31 + day.year % 7)])
+            out.append([day.isoformat(), what, P.TMED[day.year], "Docket E-%d-0%d" % (day.year + 1, 41 + day.year % 7)])
         return out

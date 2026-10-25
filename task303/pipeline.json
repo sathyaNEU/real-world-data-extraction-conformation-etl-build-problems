@@ -1,11 +1,11 @@
 {
  "task": "task303",
  "owner": "perssathya",
- "status": "PAUSED",
+ "status": "SHIPPED",
  "domain": "energy-systems-utilities",
  "objective": "opportunity-sizing-decision",
- "stage": 4,
- "stage_name": "check",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-25",
  "stump": "A competent solver credits every feeder-breaker and line-recloser ticket caused by vegetation, wind or wildlife outside the major event days to the feeder's own backbone and converts F-112 at 455,400 customer-minutes a year, where the golden is F-205 at 237,600; the step that lands it there is reading each Pell Creek breaker ticket as a fault on F-112's backbone, when the tickets all three Pell Creek feeders open in the same minute are losses of the substation's supply.",
  "architecture": 2,
@@ -23,14 +23,14 @@
   "nearest": "task127 v2 at 0.08 (abstraction test answered in the note)"
  },
  "judge": {
-  "verdict": "r2 DETERMINISTIC (784cd964); r3 re-judge running on c2fb8f15",
-  "disposition": "r2 FIX_NOW on two ask-level forks (storm restoration source; handheld conventions) and the storm-days wording, fixed by filing the first levels in oms_export_notes.txt and rewording the prompt",
-  "report": "task303/determinism_check_report.md (run r2)"
+  "verdict": "r3 DETERMINISTIC (c2fb8f15); r2 DETERMINISTIC (784cd964)",
+  "disposition": "r3 APPROVE; r2 FIX_NOW on two ask-level forks, fixed (the storm desk's entries and the hours and minutes filed in the export notes, the storm days reworded)",
+  "report": "task303/determinism_check_report.md (run r3); Gate G decomposition_attribution, analytical_non_defect; Gate H pass, pass, analytical"
  },
  "returned": [],
- "resume": "PAUSED at stage 4, architecture 2, target.zip c2fb8f15 (asks re-sited: ask A the contract crews' devices on Eastern standard time, ask B the handheld tickets dated the day they closed; storm tickets folded off 23:25; r2 judge's ask forks fixed). Every gate passes: checks 0, verify 0, byte-identical, figures_check 60, precut 51, leak.py REVIEW, heart WARN, scrub clean, pair 30.8, round 2 readers 2 of 30 each. Next: the one owed re-judge (run r3) on c2fb8f15; if /tmp/determinism-check-task303-r3/verdict.md is gone, re-invoke the determinism-judge for r3, spawn its thread from the brief, then hand the verdict back for the report; then ship (SHIPPED commit with target.zip and golden/ forced, ledger row 303, board).",
+ "resume": "SHIPPED 2026-10-25 (target.zip b7b11390): F-205 at 237,600 customer-minutes a year, USD 499,000. After the r3 judge the major event days' docket labels moved off the incentive order's docket (only that column of one file changed; no figure moved). Next: the portal result; task304 is the lane's next number to draw.",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-25",
  "portal": null,
  "portal_id": "",
  "portal_status": "",

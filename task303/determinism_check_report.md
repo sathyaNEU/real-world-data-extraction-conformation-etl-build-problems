@@ -1,58 +1,58 @@
-# determinism-check report, task303 (run r2), 2026-10-25
+# determinism-check report, task303, 2026-10-25 (run r3, replaces r2)
 
 ## Verdict
-DETERMINISTIC (main recommendation forced; every graded figure reproduced). Two ask-level forks are open on the literal text.
-**Disposition:** FIX_NOW (optional pins on the two asks; no model rerun for the main call). Not SEND_BACK.
-**Stumping type:** mechanism: decomposition_attribution, stumping_family: analytical_non_defect (thread wrote analytical_attribution), surface_read_dependency: no, sole_data_defect: no
-
-Pack note: the thread judged the pre-rebuild unzip (all 11 files, hash 784cd964). target.zip was then rebuilt (8f1811e2); the three data files oms_interruptions_2019_2022.csv, oms_interruptions_2023_2025.csv and storm_crew_status_2023_2025.csv differ, the other eight are byte-identical. I re-ran the load-bearing recomputation myself on the new pack (see ledger): every figure is identical to the judged pack. The judged text (prompt, submission, notes) is unchanged.
+DETERMINISTIC
+**Disposition:** APPROVE
+**Stumping type:** mechanism: decomposition_attribution, stumping_family: analytical_non_defect, surface_read_dependency: no, sole_data_defect: no
 
 ## Why
-Outside the accepted major event days, F-205 removes 237,615 customer-minutes a year (0.9 x backbone breaker and recloser tickets from vegetation, wind and wildlife, over 7). Crediting every breaker ticket to its own backbone gives F-112 455,449. Dropping the tickets that all three feeders at a substation opened in the same minute (Pell Creek 12, Byers Mill 3, Sorrel Hill 0) gives F-112 137,771, about 100k below F-205: a wide, clean margin. The plan says the conversion does nothing for faults elsewhere, and a backbone fault cannot interrupt sibling feeders.
+Executed literally, the plan values each project at nine in ten of the vegetation, wind and wildlife customer-minutes on the backbone devices (feeder breaker, line recloser) outside accepted major event days, over seven. After the simultaneous substation-supply trips are removed, F-205 leads at 237,615 against 137,771 for F-112. The 20 supply-loss events are separable with no near-miss (all feeders at the substation open in the same minute, same cause). The thread reproduced every golden figure. The r2 fixes (restoration_utc filed, legacy DUR_MIN format filed, prompt reworded to accepted major event days) hold, and no golden moved.
 
 ## Recomputation ledger
-| Figure | Claimed | Judge recomputed (old pack) | Me, rebuilt pack | Reproduced |
-|---|---|---|---|---|
-| F-205 / F-112 / F-301 / F-208 / F-303 / F-114 | 237,600 / 137,800 / 67,300 / 39,000 / 32,100 / 29,600 | 237,615 / 137,771 / 67,316 / 38,986 / 32,086 / 29,634 | identical | yes |
-| F-112 crediting every ticket | 455,400 | 455,449 | 455,450 | yes |
-| Same-minute 3-feeder events | 12 / 3 / 0 | 12 / 3 / 0 | 7+5 / 1+2 / 0 (legacy + current substation labels) | yes |
-| USD value | 499,000 | 498,991 | n/a | yes |
-| Storm record cm (crew Restored, contract crews EST) | 11,615,000; 5,773,000; 7,332,000; 6,210,000; 9,952,000; 4,391,000 | 11,614,771 ... 4,391,082 | identical | yes |
-| Storm min per customer | 411.9 / 339.7 / 393.5 / 413.5 / 406.1 / 420.3 | same | identical | yes |
-| Taps cm/yr | 23,840; 14,450; 25,950; 9,000; 16,410; 13,540 | 23,841 ... 13,540 | identical | yes |
-| Taps min per customer | 125.1 / 116.3 / 119.2 / 116.5 / 110.6 / 118.5 | same | identical | yes |
+| Figure | Claimed | Judge recomputed | Reproduced |
+|---|---|---|---|
+| Conversion, F-205/F-112/F-301/F-208/F-303/F-114 | 237,600/137,800/67,300/39,000/32,100/29,600 | 237,615/137,771/67,316/38,986/32,086/29,634 | yes |
+| F-205 value at USD 2.10 | 499,000 | 498,992 | yes |
+| Credit-every-breaker reading (F-112, F-114) | 455,400 / 285,400 | 455,450 / 285,449 | yes |
+| Storm-day customer-minutes (F-112, F-114, F-205, F-208, F-301, F-303) | 11,615k/5,773k/7,332k/6,210k/9,952k/4,391k | 11,614,771/5,773,110/7,332,062/6,210,057/9,951,819/4,391,082 | yes |
+| Storm-day minutes per customer | 411.9/339.7/393.5/413.5/406.1/420.3 | identical | yes |
+| Tap customer-minutes a year | 23,840/14,450/25,950/9,000/16,410/13,540 | 23,841/14,452/25,951/9,001/16,413/13,540 | yes |
+| Tap minutes per customer | 125.1/116.3/119.2/116.5/110.6/118.5 | identical | yes |
+| Critical component 1 (12 / 3 / 0 simultaneous trips) | 12 / 3 / 0 | same | yes |
 
 ## Competing answers that survived
-Main call: none. Counting each shared event once, reclosers only, and any n>1 same-minute test were stress-tested (identical figures or not defensible).
-Ask-level forks (both repairable by a pin, neither moves the call):
-1. Workbook ask 1, restoration source: OMS restoration_utc gives 14,031,730 / 7,375,539 / 8,480,709 / 7,110,809 / 11,959,696 / 5,027,984 (F-112, F-114, F-205, F-208, F-301, F-303); the crew Restored time (contract crews on EST) gives the golden. The prompt does not say which. The crew note ("the crew reported the customers on the job back in supply") and the data (raw contract times put En route before Assigned) favour the golden but never state it.
-2. Workbook ask 2, legacy handheld tickets (decimal DUR_MIN, h.mm, OUT_DT the closing day): never stated in oms_export_notes.txt. Reading OUT_DT as the start day gives 32,893 / 30,308 / 42,045 / 21,589 / 27,928 / 34,102. The golden is recoverable (ticket numbers run in start order) but not filed. By design this is an ask-level semantic, which the spec allows.
-3. "accepted in 2023 to 2025" read by docket year: strained; the plan's last three years supports the golden.
+- Credit every breaker ticket: files F-112 (455,400). The single competing answer, closed by the plan's "faults on the converted backbone" and "would have removed" wording (a trip opening all three breakers is not a fault on one backbone) and by the data signature. The removal rule itself is not stated in a file; the thread judged it forced by the counterfactual estimand and advised against pinning it. Recorded as residual risk, not a failure.
+- Legacy decimal DUR_MIN start: under the literal ticket-date reading the tap figures move (F-112 34,886; F-301 63,523 a year); the call does not move. The now-filed format closes it, and the ticket-order consistency discriminates. Asks only.
+- Crew clock (EST vs local): the files support EST (En route precedes Assigned by about 48 minutes; 536 tickets with OMS restoration exactly 60 minutes earlier). Local reading gives F-112 11,068,651. Closed by the shipped notes. Asks only.
+- Crew Restored vs OMS restoration: OMS reading gives F-112 14,020,061; closed by "lost" and the filed storm-desk entries. Asks only.
 
 ## Spec gates
 | Gate | Required | Actual | Pass |
 |---|---|---|---|
 | Files | 10 or more | 11 | yes |
-| Formats | 3 or more | csv, xlsx, pdf, docx, txt (5) | yes |
-| Large file | 25,000 rows or more | storm_crew_status 29,451 rows | yes |
-| Distractors in metadata | 2 or more, no file name labels one | vegetation_work_orders_2017_2026.csv, line_recloser_settings_2026.xlsx; names neutral | yes |
-| Distractor relevance | unused, weighable, ruled out by a shipped fact | thread confirmed unused and present; I did not test an arithmetic reproduction of a graded quantity from either | partly verified |
-| Deliverables | 1 to 3, all in golden, no format family required | 2 (pdf, xlsx); both in golden/ | yes |
-| Asks | multi-dimensional, unit and rounding stated | 12-figure asks each, rounding in the prompt | yes |
-| Prompt shape / rubric | identifiable, 25 or more criteria | shape 01; about 33 graded figures (call, value, 6 candidates, 12 + 12) | yes |
-| Reads real, not LLM generated | clean | thread found nothing; the golden/ files were not inspected by me | not independently checked |
+| Formats | 3 or more | 5 (csv, xlsx, pdf, txt, docx) | yes |
+| Large file | 25,000 rows or more | storm_crew_status_2023_2025.csv, 29,451 rows | yes |
+| Distractors in metadata.json | 2 or more, none named by file name | vegetation_work_orders_2017_2026.csv, line_recloser_settings_2026.xlsx; names are neutral | yes |
+| Distractors unused yet weighable | arithmetic reproduces, shipped fact rules out | thread listed them as unused by the solution; I did not separately recompute an answer from them | not independently verified |
+| Deliverables | 1 to 3, all in golden | 2 (pdf, xlsx) | yes |
+| Asks multi-dimensional, unit and rounding stated | yes | per-feeder, three-fold figures, rounding stated in prompt | yes |
+| Prompt shape, 25 or more criteria | yes | shape 01 in metadata; 6 candidates plus 24 workbook cells plus value and call, above 25 by count | yes |
+| Reads as real, not LLM generated | yes | thread found plan and order realistic; no leakage | yes |
+
+Minor hygiene flag from the thread: major_event_days `accepted_in` cites Docket E-2024-031 for 2023 days, while the PDF is the March 2024 stipulation order, which does not itself accept days. Not exclusion-level.
 
 ## Gate G reconciliation
-Thread: decomposition_attribution, surface_read_dependency no, sole_data_defect no. Design note and card: strategy decomposition_attribution (gap population, generators G8 and G3). Match. The surface read the thread names as carrying the task is crediting every breaker ticket to its own backbone, not either declared distractor (vegetation work orders, recloser settings), so the distractors are not too load-bearing. Residual risk: every ticket is true as recorded, but the attribution rests on a fact stated in no field or sentence (the design's readability screen marks it "silent"); the thread treats it as FINE-numbers attribution, and the design's Three rules lines are consistent. The main thread should weigh this with the blind readers' result.
+Thread: mechanism decomposition_attribution, stumping_family analytical_non_defect, surface_read_dependency no, sole_data_defect no. The design note's Layer 2 (field_method: attribute each interruption to its origin; a supply loss is no backbone fault) and decisive step (separating same-minute breaker tickets across the substation's feeders before crediting nine in ten) match. No shipped artifact ranks candidates, and the declared distractors are not the surface read carrying the task. The thread's borderline remark (attribution versus a planted double-count) is noted; the events are realistic supply losses also appearing at non-candidate substations. No mismatch.
+
+Gate H: domain: pass | layers: pass | decisive_step: analytical. Matches the design note's Three rules.
 
 ## Stump power (Gate F)
-Good. The easy route (sum breaker and recloser tickets, take F-112 at 455,400) is what the design's own call-only probes filed. The decisive cross-feeder same-minute check is never prompted. The over-correction (drop all breaker tickets) files F-301, a second wrong answer. The asks add device-time and handheld-format traps. Gate H reconciliation: thread `domain: pass`, `layers: pass`, `decisive_step: analytical`; design note Three rules and card agree (common-cause attribution by origin; swap test fails). No case of classing the decisive step analytical merely because the method is standard: the thread reached the golden only after testing sibling-feeder coincidence, a judgment the data had to settle.
+The easy route (filter cause and device, rank) files F-112 at 455,400 and F-114 at 285,400, a wrong call. Only a common-mode check across the substation's feeders moves it to F-205. The attribution is the field's own standard method and no judgment is left once the idea is had; the main thread should weigh the scored readers' result against that. The asks add independent traps (crew clock, crew versus desk restoration, legacy decimal tickets, event-day placement).
 
 ## Findings, ranked
-1. Ask-level fork: restoration source for the storm record (workbook ask 1). FIX_NOW, optional one-line pin of the WHAT.
-2. Ask-level fork: legacy handheld ticket format and closing-day OUT_DT (workbook ask 2). Optional pin; it would lower that ask's difficulty slightly.
-3. Judge ran on the pre-rebuild unzip; I verified the main call, storm record and taps figures on the rebuilt pack and they match. The thread did not itself test a distractor-arithmetic reproduction.
-4. Hygiene PASS, no exclusion-level finding; provenance and license are recorded in metadata.json (CC0, original work).
+1. Residual: the supply-loss removal is not filed in any shipped file; it rests on the plan's counterfactual wording plus a clean data signature. Thread recommends against pinning.
+2. Minor: `accepted_in` docket reference does not match the shipped PDF.
+3. Distractor arithmetic not independently verified.
 
 ## Next action for the author
-Decide whether to pin the two ask-level semantics in oms_export_notes.txt and the prompt (file the WHAT only, not the method); if not, ship as is, accepting the two ask forks. The main call needs no change.
+Proceed to ship. Optionally correct the `accepted_in` docket text in major_event_days_2019_2025.csv (or the PDF) only if it can be done without moving any figure, and then re-zip.

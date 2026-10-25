@@ -278,7 +278,7 @@ it in.
 
 Pair ceiling: 30.8 (cracker 45.0 on the call with no ask figure, mirror 16.5 off it: two of eight call criteria, F-205's and F-208's figures, which the default path files the same, and no ask figure); a cracker that also finds ask A's device reaches 44.5, ask B's 44.5. Measured: round 2's two scored readers (target.zip 784cd964) both filed F-112 and kept 2 of 30 scored figures (the two candidate figures the default path shares, no ask cell), each on a route pair.py prints as the careful read and scores 0 of 12 on the shipped pack; measured pair 16.5.
 Mirror leakage: 0.0 per cent of ask weight.
-Measured by: generator/pair.py on the cut pack (target.zip c2fb8f15).
+Measured by: generator/pair.py on the cut pack (target.zip b7b11390).
 
 ## Tried and rejected
 

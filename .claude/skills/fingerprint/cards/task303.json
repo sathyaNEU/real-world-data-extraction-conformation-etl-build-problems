@@ -49,7 +49,7 @@
   "scoring_unit": "other",
   "spine": {
     "file": "oms_interruptions_2019_2022.csv and oms_interruptions_2023_2025.csv",
-    "rows": 15599,
+    "rows": 15600,
     "entity": "one feeder's sustained interruption on one ticket",
     "grain": "feeder x interruption",
     "source": "synthetic"
