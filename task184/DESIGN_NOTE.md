@@ -70,6 +70,70 @@ gate or amount would misdescribe the call.
 22-axis closure table, the ladder with the three-or-more-members and variant-spread assertions, the literal
 reader line, and `precut.py` at exit 0. The ask sheet carries over and is re-scored against the new cracker.
 
+### Architecture 3 stage 2: the step measured on the shipped pack, 2026-10-25
+
+Measured rather than argued, on the shipped record as a solver holds it, before a line of the generator
+changed. The scripts are in the scratch directory and every number below is reproducible from the pack.
+
+**The step, precisely.** An offence's window is produced only when nobody was watching: the keeper's last
+look opens it and the first notice closes it. So the probability of seeing a given window is not flat in the
+hour inside it. A window spanning a closed weekend is far likelier to have come from 03:00 Sunday than from
+14:00 Saturday, because at 14:00 most targets are open and the offence would have been noticed sooner. The
+naive fit ignores that and spreads the window's mass in proportion to the clock it is estimating, which
+already favours the busy hours, so it under-counts the small hours and over-counts the evening shoulder.
+The correction weights each windowed record's hours by `1 - d_h`, where `d_h` is the chance an offence at
+hour h is noticed at once, and keeps an exact-time record's likelihood at `q_h * d_h`.
+
+**Why that is not a free parameter.** `d_h = lambda * open_h`, with `open_h` read off
+`harbourgate_trading_hours.csv` (139 of the week's 168 hours have targets open), and **lambda is fitted by
+maximum likelihood, not chosen**. The profile log-likelihood has a sharp interior maximum:
+
+| lambda | 0.20 | 0.35 | 0.50 | **0.60** | 0.70 | 0.85 | 0.995 |
+|---|---|---|---|---|---|---|---|
+| profile log-lik | -1,192,031.1 | -1,188,770.2 | -1,187,744.1 | **-1,187,721.4** | -1,188,159.7 | -1,190,059.9 | -1,202,304.1 |
+
+So lambda is identified at 0.60, decisively (a log-likelihood of 23 against 0.50 and 438 against 0.70), and
+the slate is **identical for every lambda from 0.60 to 0.995**, which is a corridor sitting on top of an
+MLE. The exact-time records carry the identifying signal, and a blind reader on architecture 2 refused them
+in as many words, that "the exact-time offences are not a random sample (they skew to daytime), so the
+profile is biased": correct as a direct estimate of the clock and exactly wrong as a reason to discard them,
+because that skew IS the detection model.
+
+**The ladder, measured.** Rungs 0 to 2 (window start, window end, midpoint) and the aoristic flat weight are
+already in `analysis.py` and already refuted. Rung 3 is the field's own method and is where the architecture
+2 reader stopped: the interval-censored latent-clock fit treating the window as uninformative. Rung 4 is the
+decisive move.
+
+| | slate | against the reference |
+|---|---|---|
+| rung 3, the naive fit | Mon 00, Fri 20, Thu 20, Sat 00, Fri 00, Fri 12, Sun 20, Wed 20 | |
+| rung 4, corrected at the MLE | Mon 00, Tue 00, Wed 00, Thu 00, Fri 00, Fri 12, Sat 00, Sun 00 | **5 of 8 members differ** |
+
+**1.1d condition 1 PASSES: five of the eight members move**, well past the three the law requires, and the
+direction is the designed one, mass leaving the evening shoulder for the small hours.
+
+**1.1d condition 2 FAILS, and this is what stage 3 owes.** The reference margin between the eighth slot
+(Friday 12:00-16:00, 1,200.8) and the ninth (Saturday 20:00-00:00, 1,162.0) is 38.8, or 3.23 per cent, while
+the licensed variants move those two figures by up to 107.5:
+
+| licensed variant | slots in common | its own 8th to 9th margin | max shift on the reference 8th or 9th |
+|---|---|---|---|
+| pooled, hour grid (reference) | 8 of 8 | 38.8 (3.23 per cent) | 0.0 |
+| pooled, 2-hour grid | 8 of 8 | 46.2 (3.62) | 73.6 |
+| pooled, 4-hour grid | **7 of 8** | 65.8 (5.39) | **107.5** |
+| per class, summed | 8 of 8 | 298.8 (27.05) | 398.2 |
+| lambda 0.70 | 8 of 8 | 130.1 (11.05) | 115.3 |
+| lambda 0.90 | 8 of 8 | 109.4 (11.27) | 300.3 |
+
+Five of the six give the same eight slots, which is the family holding together, and the per-class fit
+agreeing at 8 of 8 is the measured proof that 1.1c does not bite here: the misspecification is in the
+censoring mechanism and survives any grouping, so pooled and per-class are both at rung 3 and the grouping
+is not the decisive choice. But **38.8 does not exceed 107.5**, so the cap's own margin is inside the
+family's spread, which is the exact condition architecture 2 died of and the reason 1.1d names it
+separately. Stage 3 must widen the eighth-to-ninth gap under the corrected fit to more than about 110, or
+about 9 per cent, in the generator's intensity, while keeping the naive fit's slate different in three or
+more members. Until that is measured, this architecture is not past stage 2.
+
 ## Tried and rejected`.
 
 Architecture 1 (a mobile screening team posted among eight flagged airports, decided by the lanes each
