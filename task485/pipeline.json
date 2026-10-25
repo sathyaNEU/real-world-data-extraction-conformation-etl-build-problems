@@ -1,0 +1,23 @@
+{
+ "task": "task485",
+ "owner": "oviya1301",
+ "status": "DESIGN",
+ "domain": "survey-research-official-statistics",
+ "objective": "etl",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-25",
+ "stump": "The default path adds every dwelling the council's trajectory places before the 2032 canvass at the settled stock's electors per dwelling by type to the 1 December 2026 register and flags the wrong wards, because a dwelling's electors join the register over the canvasses after it is completed: the estates finished since 2022 are still building up and the dwellings due in 2030 to 2032 will still be young at the 2032 canvass.",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {},
+ "leak": {},
+ "duplicate_check": {},
+ "judge": {},
+ "returned": [],
+ "resume": "stage 2: the world on paper (23 wards, 43 councillors, completions 2014 to 2026, the trajectory to 2032/33), the build-up measured from the six-canvass panel, the standing family's spread, the ladder, the fork and closure tables, the asks and prompt.txt, then precut.py",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "source_note": "seed ET42 (H-1B labour condition applications) screened and set aside at the draw; re-worlded into a boundary commission's electoral review"
+}
