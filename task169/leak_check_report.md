@@ -34,3 +34,16 @@ Stump terms swept: arrests, courts, conversion, record, sentence, asserted, deci
 ## 8 column names (clean)
 
 ## 11 prompt gate (clean)
+
+## Solver's-eye read
+
+Determinism repair (2026-10-25), two scored readers on zip 73e3137b (`scratchpad/scored-task169e`, `scored-task169f`),
+each with `score_reader.py --call-key call.rate_step`: reader E filed 10 against 20 and kept 23 of 26 ask figures
+(tables 1 and 2 whole, three writ cells off); reader F filed 10 and kept 18 of 26 (tables 2 and 3 whole, table 1 off on
+every cell). The call held in both.
+
+Reader E's answers: 1. nothing named the decisive step; the Act and the methodology state the definition (a return
+only on a new sentence of total confinement), which pointed it to the court sentences but not to the method. 2. the
+validation study ranks release levels by return rate on all returns, not on the question, and was not used. 3. no file
+exists only to help; the capacity report and the caseload file read as context. 4. nothing reads as the answer; the
+study's 45 to 61 per cent all-returns figures read as a tempting wrong basis.

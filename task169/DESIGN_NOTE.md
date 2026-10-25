@@ -451,7 +451,18 @@ single crack 39.1 (C1).
 - Heart: BLOCK on ban.forcing_event and ban.org_family against task125 (v2), registered 2026-10-23, after this card
   (2026-10-22); the class the ruling at ship covers (the window fixed at the draw), the card untouched by the repair
   and not relabelled.
-- Re-judge and readers: pending.
+- Re-judge (determinism-check-task169-r2, order kept): DETERMINISTIC, APPROVE, no fix. Its blind estimate 19.7 per
+  cent (arrest hazard per day at liberty, times each grade's conversion to a DOC sentence, an 82-day lag), 20.2 with
+  the cohort's covariates, 20.8 at a 60-day lag; every correct variant prints 20. The only surviving rival is an
+  incomplete method (arrests imputed without the exposure correction, 16.5 to 18.2). All three tables reproduce
+  exactly; its residual ask notes (per case or per order in table 1, the unreturned writs' end in table 3) are each
+  closed by a shipped sentence or the records. Gate G analytical_non_defect, Gate H pass.
+- Readers (scored): reader E filed 10 against 20 and kept 23 of 26 ask figures (88.5 per cent; tables 1 and 2 whole,
+  three writ cells off); reader F filed 10 and kept 18 of 26 (69.2 per cent; tables 2 and 3 whole, table 1 missed on
+  every cell). The call held in both; the asks leak as the portal's round 1 measured them (two responses off the call
+  at about 50 means about seven tenths of the ask weight kept), so the ask layer stands where it shipped and a rubric
+  repair of tables 2 and 3 is the next step if the portal returns it on the rubric. E's leak answers quote no sentence
+  naming the step and read the validation study's 45 to 61 per cent all-returns figures as a wrong basis.
 
 ## Tried and rejected
 
