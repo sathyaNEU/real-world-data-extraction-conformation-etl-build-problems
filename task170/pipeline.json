@@ -11,8 +11,8 @@
  "architecture": 5,
  "loops": 0,
  "precut": {
-  "exit": null,
-  "date": ""
+  "exit": 0,
+  "date": "2026-10-25"
  },
  "leak": {
   "leak_py": "REVIEW 2026-10-23 (--asof 2026-11-09), no LEAK",
@@ -28,7 +28,7 @@
   "report": "scratchpad judge-task170v4/verdict.md"
  },
  "returned": [],
- "resume": "stage 3 of architecture 5: prompt.txt drafted (968 characters, voice-check PASS: the forecast, the drivers and starts it covers, ask A Class 461 units accepted or not by each Phase 4 go-live, ask C each Phase 1 to 3 depot's level transition errors and brake interventions in January to October 2026, the readiness chart); generator world, pack, docs, calc and build written; the curve's scale calibrated (F 1.72): on the clean truth the own-count family prints 1,242 to 1,296 (bands, power, shifted power, exponential, logistic on log count, two pace regressions), pooled first-year rate 829, month curve 837, per driver-year 2,328, slow analogue 1,988. Next: deliver.py, checks.py (SF1 to SF8, the family corridor, the ask devices and the separation), verify.py, ceiling.py, the note's Ask sheet and the planning values at the generator's numbers, precut exit 0, then the stage 3 gates. Architecture 4's checks, verify, deliver, ceiling, records and metadata modules are stale and are replaced or removed in that pass.",
+ "resume": "stage 3 of architecture 5, last block: build green (checks 103, verify 0 of 31 failed, rebuild 21 files identical, target.zip 645ccb30), house fixes H1 (pack and golden clean), H4 (16 members equal the tree), H9 (dictionary names every file) and H11 (one submission, one prompt) pass; H21 open: 12 of 15 invented names sit within two letters of a real GB or IE place of 500 or more (GeoNames cities500): Corran (Carron), Tollmere, Ashlow Road, Kelderby, Marrow Bridge (Harrow, Jarrow, Marlow, d1), Fennick Junction (Fenwick, d1), Stanholt, Glenhallow and Arnhallow (Hallow), Kilvane (Kilrane, d1), Mossbeck, Fellbrook; screened clear replacements keeping every depot code: Tolmarnie, Ashlarrick Road, Keddarby, Morwennick Bridge, Finnachy Junction, Strannoch, Cairnmorlie Central, Glenlossart, Kilvennach, Mossgarrie, Fellbrackan, the operator Brannoch Vale Railways and the country Arnmorlie (names feed no random stream, so no figure moves). Next: the rename in common.py, docs.py, deliver.py, postprocess.py, xlsx_writer.py, prompt.txt and the card's world, rebuild, H8, H16, H23, H24, H25, leak.py --asof 2026-11-09, guard surface and heart, the card's text fields at the generator's numbers, then stage 4 (reader and judge).",
  "approved": null,
  "delivered": null,
  "portal": null,

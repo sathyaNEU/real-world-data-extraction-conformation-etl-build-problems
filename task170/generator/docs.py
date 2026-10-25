@@ -38,8 +38,9 @@ COUNT_PIN = ("The forecast counts the train data entry errors the safety desk wi
              "train data entry error is a report in category TDE; a report withdrawn on review is not an error, and a "
              "report the desk links to an earlier report is the same error.")
 WORK_PIN = ("After go-live each Phase 4 driver works the same turns as on the duties the driver worked from January to "
-            "October 2026, at the same monthly number of cab activations, and each cab activation becomes one ETCS "
-            "Start of Mission. A cancelled duty was not worked, and a re-issued duty replaces its earlier issue.")
+            "October 2026, at the driver's average monthly number of cab activations over those ten months, and each "
+            "cab activation becomes one ETCS Start of Mission. A cancelled duty was not worked, and a re-issued duty "
+            "replaces its earlier issue.")
 ROSTER_PIN = ("A driver is counted at the depot on whose roster the driver stands at 31 October 2026; Resourcing plans "
               "no change to the six depots' establishments before go-live.")
 CALL_PIN = "The forecast is the expected number of errors, reported to the nearest 250."
@@ -199,7 +200,7 @@ obr_start_of_mission_log_2024-03_2026-10.csv  On-board recorder downloads: one r
 safety_desk_register_2024-2026.xlsx  Safety desk register: one row per report received, March 2024 to October 2026
   Report No, Received (when the report was logged), Reporter, Category (see the reporting guidance), Depot (the
   driver's depot), Staff No (the driver's staff number), Unit, SoM Ref, Linked To (the first report of the same event),
-  Status (Closed, Open or Withdrawn), Summary
+  Status (Closed, Open or Withdrawn), Sub-category (the desk's pick list within the category)
 
 driver_roster_2026-10-31.xlsx  Resourcing: every driver on a depot roster at 31 October 2026, all fourteen depots
   Staff No, Depot, Grade, Link, Contract, Date of Birth, Qualified (date qualified as a driver)

@@ -1,38 +1,96 @@
 {
   "task": "task170",
-  "title": "What a hospital group will pay in employer pension matching in FY2027 on the first intake enrolled automatically, when every earlier intake had to opt in and the record shows only the hires who chose to join",
-  "domain": "Psychology & Behavioral Science",
-  "client_domain": "Psychology & Behavioral Science",
-  "subdomain": "decision-making and computational behavioural modelling (a default's take-up under inertia)",
-  "objective": "Forecasting & Predictive Modeling",
-  "prompt_shape": "the FY2027 employer match on the 2027 intake by hospital and in total, the intake contributing on the December 2027 payroll, the match paid on the January to October 2026 payrolls and the long-standing active members by hospital, and a one-page budget note",
-  "as_of": "2026-11-09",
-  "deliverables": [
-    "vindeholm_match_forecast_2027.xlsx",
-    "match_forecast_note_2027.docx"
-  ],
   "distractor_files": [
-    "staff_benefits_survey_2025.xlsx",
-    "sickness_absence_2025_2026.csv"
+    "target/punctuality_by_depot_2024-2026.xlsx",
+    "target/depot_weather_daily_2024-2026.csv"
   ],
-  "input_gates": {
-    "files": 12,
-    "formats": [
-      "csv",
-      "docx",
-      "pdf",
-      "txt",
-      "xlsx"
-    ],
-    "largest_file": "payroll_deductions_2025-11_2026-10.csv",
-    "largest_file_rows": 344484
-  },
-  "sources": [
-    {
-      "files": "all files under target/",
-      "origin": "constructed for this task by task170/generator/build.py (seeded, deterministic) around a fictional country (Tarnland), a fictional county and its hospital group, a fictional pension administrator and insurer, in the layouts of an HR history extract, a pension member register, an insurer's bordereau, a payroll deduction export, a requisition tracker, plan rules, a committee paper and a pay scale extract; no real organisation's records or person is depicted.",
+  "deliverables": [
+    "phase4_data_entry_forecast.xlsx",
+    "phase4_depot_readiness.svg"
+  ],
+  "objective": "Forecasting & Predictive Modeling",
+  "domain": "Human Factors & Ergonomics / Human Reliability Assessment",
+  "setting": "Arnhallow, Corran Vale Railways, its depots and units and the Arnhallow Office of Rail Safety are fictional; every record is synthetic, built by the task's generator, and no real operator, regulator, system or person is represented. ETCS is named as the signalling standard.",
+  "sources": {
+    "obr_start_of_mission_log_2024-03_2026-10.csv": {
+      "source": "synthetic (task generator)",
       "date": "2026-11-09",
-      "license": "CC0-1.0 (original work)"
+      "license": "CC0-1.0"
+    },
+    "safety_desk_register_2024-2026.xlsx": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "driver_roster_2026-10-31.xlsx": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "staff_number_crosswalk.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "phase4_duty_records_2026.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "etcs_rollout_plan_2024-2027.pdf": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "phase4_safety_case_conventions.pdf": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "safety_desk_reporting_guidance.pdf": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "fleet_allocation_2027.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "etcs_fitment_works_records.xlsx": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "unit_formations_2026-10-31.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "unit_renumbering_register.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "fleet_etcs_acceptance_note.pdf": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "data_dictionary.txt": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "punctuality_by_depot_2024-2026.xlsx": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
+    },
+    "depot_weather_daily_2024-2026.csv": {
+      "source": "synthetic (task generator)",
+      "date": "2026-11-09",
+      "license": "CC0-1.0"
     }
-  ]
+  }
 }

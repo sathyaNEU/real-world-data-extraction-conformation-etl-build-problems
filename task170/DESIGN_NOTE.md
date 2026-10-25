@@ -26,8 +26,9 @@ signalling standard the fictional operator fits, as any operator in Europe would
    driver monitoring plan (every recorded error is debriefed).
 4. Call and shape: the Phase 4 depots' train data entry errors in each depot's first twelve months on ETCS, a count
    (`quantity_figure`, how many). Shape `07`: the call with asks on rows the call never reads, cut by depot and
-   measure (fleet fitment by go-live, conversion training by go-live, the 2026 diagrams' cancelled turns); shapes 14
-   and 10 are banned by the last two builds; criteria are counted in `## Ask sheet` at stage 2.
+   measure (Class 461 units accepted for ETCS service by each Phase 4 go-live, and each Phase 1 to 3 depot's level
+   transition errors and brake interventions in January to October 2026); shapes 14 and 10 are banned by the last
+   two builds; 36 criteria (`## Ask sheet`).
 5. Mechanism keys: gap population (the Phase 4 drivers practise at a quarter of the suburban pace), then time (the
    first twelve months cover a different stretch of the practice curve); pattern E with generators G14 (does the pooled
    first-year rate apply to this pool), G2 (the unit of experience is one start-up by one driver, not a depot-month)
@@ -35,11 +36,12 @@ signalling standard the fictional operator fits, as any operator in Europe would
    clock is practice, not calendar time; the card's notes say why pattern E, and that pattern A and the G2 and G13
    count-call keyings collide in the window); Layer 2 family `estimation_fit`, pattern
    `own:per-attempt-error-probability-on-the-operator's-own-count-of-attempts`.
-6. Default path's answer against the golden (planning values from `t170h/proto`, fixed by the generator at stage 3):
-   the Phase 1 to 3 depots' errors per start-up over each depot's first twelve months, carried to the Phase 4 drivers'
-   planned start-ups, files about 400; the same rate month by month since go-live files about 400; the five
-   lowest-volume Phase 1 to 3 depots' first-year rate files about 450; the golden, each Phase 4 driver's start-ups run
-   along the curve on the driver's own count, files about 650.
+6. Default path's answer against the golden (the generator's pack): the Phase 1 to 3 depots' errors per start over
+   each depot's first twelve months, carried to the Phase 4 drivers' starts, files 821.6 (750); the same rate month by
+   month since go-live 829.6 (750); the pool held to years of service 817.5 (750); the record's spare, instructor,
+   manager and restricted-duties drivers as the analogue 1,970.0 (2,000); errors per driver over the first year
+   2,306.9 (2,250); the golden, each Phase 4 driver's starts run along the rate on the driver's own count, 1,280.2
+   (1,250).
 7. **Data-native sentence.** Every Start of Mission on the on-board recorder carries the driver's staff number, so each
    recorded error's place on that driver's own count of ETCS start-ups is computable, and the record's spare-turn and
    part-time drivers, who ran up start-ups slowly inside fast suburban depots, show the error rate of their depot-mates
@@ -88,30 +90,30 @@ signalling standard the fictional operator fits, as any operator in Europe would
    rate in each month since go-live).
 4. Multiply by the Phase 4 drivers' start-ups over their first twelve months, from the 2026 diagrams.
 
-Ends on: about 400 train data entry errors (planning value)
+Ends on: 750 train data entry errors (821.6 unrounded)
 
-Golden: about 650 train data entry errors (planning value)
+Golden: 1,250 train data entry errors (1,280.2 unrounded)
 
 ## Stump sentence
 
 A competent analyst carries the Phase 1 to 3 depots' train data entry errors per start-up over each depot's first
 twelve months on ETCS (or that rate month by month since go-live) to the Phase 4 drivers' planned start-ups and files
-about 400, against about 650, because the error probability falls with each driver's own count of ETCS start-ups,
-which the suburban diagrams ran past 600 inside six months while the Phase 4 rural diagrams, at a quarter of the
-start-ups, keep each driver on the steep early part of the curve for most of the first year.
+750 (821.6), against 1,250 (1,280.2), because the error probability falls with each driver's own count of ETCS
+start-ups, which the suburban diagrams ran past 600 inside five months while the Phase 4 rural diagrams, at about a
+third of the start-ups, keep each driver on the steep early part of the curve for most of the first year.
 
 ## Three rules
 
 Task type: human-reliability-assessment (human-factors-ergonomics), which serves Forecasting: the forward count of human errors in one task over a set window, built from the task's error probability per demand under its shaping factors.
 Domain test: the deciding quantity is the human error probability of train data entry at Start of Mission under the experience shaping factor, the way human reliability assessment quantifies a task: per demand, per operator, moved by practice; it is read as a curve on each driver's own count of start-ups and carried to each forward driver's own rate of start-ups.
 Swap: "how many defects will the new line's machines make in their first year" keeps a rate times a volume, but no machine's own practice moves its probability, so the step that moves the answer has nothing to stand on.
-Layer 1: a rail operator's systems: staff numbers re-keyed when drivers moved depots (Resourcing's crosswalk), the safety desk's register with a second report of the same error from the signaller and reports with no event reference (matched by unit and minute), on-board recorder times in UTC against local time in the register, units renumbered after refurbishment, a diagram file with cancelled and re-issued turns, and test and depot-shunt start-ups on the log beside service start-ups; nothing placed to be caught.
+Layer 1: a rail operator's systems: staff numbers re-keyed when drivers moved depots (Resourcing's crosswalk), the safety desk's register with a second report of the same error linked to the first, reports withdrawn on review and reports with no event reference (placed at the driver's last start before the report), on-board recorder times in UTC against local time in the register, fleet technicians' test starts on the log beside the drivers' service and depot starts, and a duty file with cancelled and re-issued duties; nothing placed to be caught.
 Layer 2: estimation_fit: the record's first-year rate per start-up is an average over a practice curve its fast depots ran down quickly, so it does not transfer to depots whose drivers make a quarter of the start-ups; the curve must be estimated on each driver's own count and carried at each forward driver's own pace, and a learning curve on months since go-live carries the fast pace too.
 Decisive step: estimate the train data entry error probability per start-up on each driver's own count of ETCS start-ups from the Phase 1 to 3 record, and run each Phase 4 driver's planned start-ups along it over the depot's first twelve months, instead of carrying the earlier depots' first-year rate per start-up or a curve on months since go-live.
-Not semantics: every field (staff number, event reference, unit, time zone, depot, start-up type) can be read correctly and the pooled first-year rate still files about 400; no column holds a driver's count of start-ups or marks a driver's place on a curve, and no file says the probability depends on practice.
-Not rule application: no filed rule or procedure says how the error probability is estimated or that experience counts in start-ups; the conventions fix who is counted, the window (each Phase 4 depot's first twelve months from its go-live), the error definition the safety desk records and the rounding; executing every stated rule leaves the method to the analyst, and the pooled rate, the month curve and the analogue depots all execute those rules.
-Analyst test: a strong analyst who joins the log to the register, drops the duplicate reports, maps the re-keyed staff numbers, converts the recorder's UTC, reads the conventions correctly and carries the Phase 1 to 3 depots' first-year errors per start-up to the Phase 4 drivers' planned start-ups files about 400 against about 650.
-Estimand: the number of train data entry errors the safety desk will record against drivers of the six Phase 4 depots in each depot's first twelve months from its ETCS go-live date, to the nearest 50; filed in the safety case conventions, the count asked in the prompt.
+Not semantics: every field (staff number, event reference, unit, time zone, depot, start-up type) can be read correctly and the pooled first-year rate still files 750; no column holds a driver's count of start-ups or marks a driver's place on a curve, and no file says the probability depends on practice.
+Not rule application: no filed rule or procedure says how the error probability is estimated or that experience counts in start-ups; the conventions fix who is counted, the window (each Phase 4 depot's first twelve months from its go-live), the error definition the safety desk records, the drivers' turns and the rounding; executing every stated rule leaves the method to the analyst, and the pooled rate, the month curve, the service-held pool and the analogue all execute those rules. The enumerated family (those four, errors per driver-year and eleven own-count constructions) spreads 817.5 to 2,306.9, six printed units; the standing family (bands of 25, 50 and 100, nine and five bands, power, shifted power, exponential with a floor, logistic on log count, and a Poisson regression of each driver's first-year rate on pace, linear and quadratic) spreads 1,208.4 to 1,293.2, one printed call; what rules the rest out is the record's own slow drivers, who err at their count (0.0293 against 0.0321 in the first 50 starts, 0.0107 against 0.0123 at 50 to 199) and not at their month (0.0160 against 0.0057 three to eight months after go-live), a comparison no column offers because the count has to be built from each driver's dated starts.
+Analyst test: a strong analyst who joins the log to the register, drops the duplicate reports, maps the re-keyed staff numbers, converts the recorder's UTC, reads the conventions correctly and carries the Phase 1 to 3 depots' first-year errors per start-up to the Phase 4 drivers' planned start-ups files 750 against 1,250.
+Estimand: the expected number of train data entry errors the safety desk will record against the drivers on the six Phase 4 depots' rosters at 31 October 2026 in each depot's first twelve months from its ETCS go-live date, each driver working the 2026 turns at the ten months' average cab activations, to the nearest 250; filed in the safety case conventions (sections 2 and 3), the count asked in the prompt.
 No decoy: nothing is planted to be caught: no forecast, target, earlier estimate, memo or stakeholder figure ships; the earlier depots' rate is the solver's own arithmetic on the record, and the conventions, the rollout plan and the cutover facts state only what the operator files.
 No certified replay: no certified or published figure is reproduced to recover the method; no figure in the pack is an output of a forecasting method.
 Lesson: an error rate measured on people who practised fast is a point on a curve, not a property of the task; a model learns to ask how fast the forward operators will practise and to read the curve on each operator's own count, which no build on file teaches (task107 v4 reads tenure, task251 an asset's cumulative use, task179 a peer count under a changed allocation).
@@ -124,6 +126,7 @@ Lesson: an error rate measured on people who practised fast is a point on a curv
 | 1 the same pool held to every visible attribute of the driver (years of service, age, depot type, grade) | no | yes (Resourcing's roster) | yes (the opponent holds the pool to every visible attribute) | no | no | no | readable |
 | 2a a learning curve on months since go-live, depot by depot | no | yes (go-live dates in the rollout plan) | yes (a go-live curve is the field's own monitoring chart) | no | no | no | readable |
 | 2b the record's own slow drivers (spare turns, part-time, links) as the Phase 4 drivers' analogue | no | no | yes (the opponent builds the analog) | no | no | no | readable |
+| 2c errors per driver over each depot's first year, times the Phase 4 drivers | no | yes (the register and the roster) | yes (a safety case's errors per driver-year) | no | no | yes | readable |
 | 3 (decisive) the error probability on each driver's own count of ETCS start-ups, run along each Phase 4 driver's planned start-ups | no | no (no column holds a driver's count; it is built from each driver's dated start-ups) | no (the reflexes are pool, hold to attributes, analogue, curve on calendar time) | no | no | no | silent |
 
 The reflex row is written from what the field does to the deciding quantity, the error probability of one task:
@@ -136,29 +139,35 @@ an analogue of similar operators, an adjustment for operator tenure. Each files 
 |---|---|---|---|---|---|
 | SF1 | each depot's first twelve months | from the depot's go-live date in the rollout plan | calendar 2027 | another window | the conventions (window from each depot's go-live) |
 | SF2 | the Phase 4 depots' drivers | the drivers on the six depots' rosters at 31 October 2026 | every driver who will work there in 2027 | same call | the conventions name the roster date; no hiring plan ships |
-| SF3 | a train data entry error | an error the safety desk records in category TDE (train data entry at Start of Mission) | every ETCS incident in the register | another count | the conventions (category) and the register's category field |
-| SF4 | a start-up's place on a driver's count | every ETCS Start of Mission the driver performed, at any depot | only start-ups at the driver's current depot | same call (asserted: transferred drivers are few) | the conventions count the driver, not the depot |
-| SF5 | a second report of one error | one error (the signaller's report and the driver's are one event) | two | same call within the bin (asserted) | the register's linked-report field and the desk's guidance |
-| SF6 | a forecast count | the expected number | a simulated count's median | same call (asserted) | same call |
-| SF7 | a Phase 4 driver's start-ups in the window | the driver's average monthly start-ups in the 2026 diagrams times twelve | the diagrams' busiest month | same call (asserted) | the rollout plan: ETCS replaces the current traction one for one on the same diagrams |
-| SF8 | the error probability's form along the count | any form fitted on the record's counts (bands, power law, exponential, logistic on log count) | a curve on months since go-live | 750 | the record's slow drivers err at their count, not their month (asserted: the month curve's likelihood against the count curve's) |
+| SF3 | a train data entry error | a report in category TDE, not withdrawn | every driver category (TDE, LTR, BRK) | 1,966.0, prints 2,000 | COUNT_PIN (conventions section 2) names category TDE; the default path with every category 1,507.3 and 1,516.3, off the call (asserted SF3) |
+| SF4 | a start's place on a driver's count | every ETCS Start of Mission the driver made, at any depot | the Phase 4 drivers who transferred in counted from their first Phase 4 start | same call (asserted SF4) | same call |
+| SF5 | a second report of one error | one error (the desk links the later report to the first) | two | 1,476.6, prints 1,500 | COUNT_PIN: a report the desk links to an earlier report is the same error; the default path with linked reports counted again 949.8 and 959.2, off the call (asserted SF5) |
+| SF6 | a forecast count | the expected number | a simulated count's median | same call (asserted SF6) | CALL_PIN files the expected number |
+| SF7 | a Phase 4 driver's starts in the window | twelve months at the driver's average monthly cab activations over January to October 2026 | the busiest month times twelve | 1,496.2, prints 1,500 | WORK_PIN files the ten months' average (asserted SF7) |
+| SF8 | the error probability's clock and form | the record's starts on each driver's own count, any form the record fits (bands of 25, 50 or 100, nine or five bands, power, shifted power, exponential with a floor, logistic on log count, a pace regression) | a curve on months since go-live | 750 | the record's slow drivers err at their count, 0.0293 against 0.0321 in the first 50 starts, and not at their month, 0.0160 against 0.0057 (asserted SF8); every form on the count prints the call (B1) |
+| SF9 | a fleet technician's test start | not a driver's start | counted with the drivers' starts | same call (asserted SF9) | same call; the dictionary marks TST as a technician's test |
+| SF10 | a withdrawn report | not an error | kept | same call (asserted SF10) | COUNT_PIN |
+| SF11 | a driver who transferred | one driver across staff numbers (the crosswalk) | two drivers | same call (asserted SF11) | same call |
+| SF12 | the register's clock | local time | read as the recorder's UTC | same call (asserted SF12) | same call |
+| SF13 | a cancelled duty | not worked | its cab activations counted | same call (asserted SF13) | WORK_PIN |
+| SF14 | a re-issued duty | issue 2 replaces issue 1 | both kept | same call (asserted SF14) | WORK_PIN and the dictionary |
 
 ## Ladder
 
-| Rung | Construction | Planning value | Prints | Dies to |
+| Rung | Construction | On the pack | Prints | Dies to |
 |---|---|---|---|---|
-| 0 | pooled first-year rate per start-up times the Phase 4 planned start-ups | about 780 | 750 | the record's slow drivers, whose first-year rate is twice the pool's |
-| 1 | the pool held to years of service, age, grade and depot type | about 790 | 750 | service carries no effect on data entry once the count is held |
-| 2a | a curve on months since go-live | about 780 | 750 | drivers in one month at different counts err at their counts |
-| 2b | the record's slow drivers as the analogue | about 1,900 | 2,000 | no record driver practised at the Phase 4 pace; the slow drivers sit far below it |
-| 3 | the curve on each driver's own count, run along each Phase 4 driver's planned start-ups | about 1,220 | 1,250 | (golden) |
+| 0 | the record's first-year errors per start, times the Phase 4 drivers' starts (the default path) | 821.6 | 750 | the record's slow drivers, whose first-year rate per start is 2.8 times the regular drivers' at the same month |
+| 1 | the pool held to years of service (bands of ten) | 817.5 | 750 | service carries no effect once the count is held |
+| 2a | a rate on months since go-live, depot by depot pooled | 829.6 | 750 | drivers in one month at different counts err at their counts |
+| 2b | the record's spare, instructor, manager and restricted-duties drivers as the analogue | 1,970.0 | 2,000 | no record driver practised at the Phase 4 pace; the slow links sit far below it |
+| 2c | errors per driver over each depot's first year, times the Phase 4 drivers | 2,306.9 | 2,250 | the record's regular drivers made three times the Phase 4 starts |
+| 3 | the rate on each driver's own count, each Phase 4 driver run along it from the starts already made | 1,280.2 | 1,250 | (golden; the standing family 1,208.4 to 1,293.2) |
 
-Position and dominance: rung 0 at 780 against a golden bin of 1,125 to 1,375 clears the bin's lower edge by 1.44x;
-rung 2b at 1,900 clears its upper edge by 1.38x; both above the 1.15x floor. Every correction short of rung 3 walks
-one way (rungs 0 to 2a under, 2b over), and only the decisive construction lands inside. Measured on the prototype
-(`t170h/proto` lc7.py, four seeds): the own-count family 1,150 to 1,300, all printing 1,250; a per-driver regression of
-first-year rate on pace 1,059 to 1,241, the one route whose interpolation across the empty pace band can print 1,000,
-recorded as the risk to assert on the generator world.
+Position and dominance: the default path's rungs (0 to 2a) sit 1.36x to 1.38x below the golden bin's lower edge
+(1,125) and the over-shooting rungs (2b, 2c) 1.43x and 1.68x above its upper edge (1,375), all above the 1.15x floor.
+Every correction short of rung 3 walks one way, and composed mishandlings stay off the call: the default path with
+every driver category 1,507.3, with linked reports counted again 949.8 (`checks.py` SF3, SF5). The world's own
+expected count is 1,298.8 against the golden's 1,280.2.
 
 ## Closure table
 
@@ -185,15 +194,16 @@ recorded as the risk to assert on the generator world.
 | 19 Code and status semantics | category TDE; withdrawn reports out | the register's guidance; SF3 |
 | 20 Integerisation | rounding of an expected count | SF6 |
 | 21 Clause scope | the conventions govern the Phase 4 safety case | the conventions' first section |
-| 22 Forward window contents | the Phase 4 drivers' 2026 diagrams, carried unchanged | SF7 and the rollout plan |
+| 22 Forward window contents | the Phase 4 drivers' 2026 duties at the ten months' average cab activations | SF7, WORK_PIN and the rollout plan (the diagrams do not change at go-live) |
 
 ## Literal reader
 
 Executed word for word, the prompt and the conventions fix the count (train data entry errors the safety desk records
 against the six Phase 4 depots' rostered drivers in each depot's first twelve months from its go-live, to the nearest
-250) and leave the estimate of each driver's error probability to the data. Every reading of SF1 to SF8 either
-violates a quoted sentence or files the same call, and the easy answers (750, and 2,000 from the slow analogue) come
-from easy methods on the same literal estimand, not from another reading.
+250) and leave the estimate of each driver's error probability to the data. Every reading of SF1 to SF14 either
+violates a quoted sentence or files the same call, and the easy answers (750 from the pooled rate, the month curve
+and the service-held pool, 2,000 from the slow analogue, 2,250 from errors per driver-year) come from easy methods on
+the same literal estimand, not from another reading.
 
 ## Oracles
 
@@ -201,6 +211,67 @@ none: no control, published figure or reconciliation column confirms the pooled 
 first-year totals are the default path's own arithmetic, and the distractors (the timetable performance file, the
 depot weather log) carry no error outcome.
 
+
+
+## Layer 1 inventory
+
+| Item | System that writes it | File | Natural mishandling | Neutral |
+|---|---|---|---|---|
+| staff numbers re-issued on a transfer | Resourcing | log, register, roster, duties | a mover's starts read as two drivers | same call (SF11, asserted) |
+| a second report linked to the first | safety desk | register | counted as a second error | closed by COUNT_PIN (SF5): 1,476.6 the other way |
+| reports withdrawn on review | safety desk | register | kept | same call (SF10) |
+| reports without a SoM Ref | drivers and signallers | register | dropped, or matched by unit and minute | placed at the driver's last start before the report; same call (SF12) |
+| recorder time in UTC, register in local time | on-board recorders, the desk | log, register | no conversion | same call (SF12) |
+| fleet technicians' test starts | on-board recorders | log | counted as starts | same call (SF9) |
+| cancelled and re-issued duties | crew management | duties | counted, both issues kept | same call (SF13, SF14); WORK_PIN files both |
+| units renumbered after refurbishment, twice for three | Fleet Engineering | renumbering register, works records | not mapped | ask A only (a stop) |
+| vehicles reformed into other units at the works | the fleet team, the contractor's records | works records, formations | the programme's unit read as the vehicle's unit | ask A's primary device |
+| recorder downloads' reports in UTC, never linked | the desk's weekly import | register | read as local, or every report counted | ask C's primary device |
+| the same event again on the return working | drivers' turns | register | folded by driver, unit and day | ask C's second device |
+
+## Ask sheet
+
+Asks, each on rows the call never reads (separation asserted in `checks.py`: the call is identical with the asks'
+files and the register's non-TDE rows removed; no recorder download report carries category TDE).
+
+- Ask A, Class 461 units allocated to each Phase 4 depot for the 2027 timetable accepted for ETCS service by its
+  go-live, and not accepted (12 figures, whole numbers; the chart's bars carry the same figures, 3 criteria). H18
+  home: the safety case's fleet readiness beside the error forecast, the units the depot's drivers will start on.
+  Path: fleet_allocation_2027.csv, unit_formations_2026-10-31.csv, etcs_fitment_works_records.xlsx (9 columns),
+  unit_renumbering_register.csv, the acceptance note's pin (both driving vehicles), the rollout plan's go-live dates.
+  Primary device (D2, a label stored before a silent switch): the works records carry each vehicle under the
+  fitment programme's own unit, the unit it was planned in before refurbishment renumbering and before the fleet
+  team reformed fitted vehicles together; every programme unit still shows two driving vehicles, so nothing in the
+  works records flags it, and only the formation list says which vehicles a unit has now. Two or three pairs a
+  depot reformed. Hazards: thirty units renumbered 461/0 to 461/1, three again to 461/2 (a two-hop chain); one or
+  two units a depot with one vehicle booked before go-live and one after. Stops: works records by programme unit
+  with the renumbering mapped (every depot 2 to 3 short); not mapped (further short); either vehicle accepted (every
+  depot over); accepted vehicles only (every depot short); golden, the formation list's two vehicles at their
+  accepted or planned dates.
+- Ask C, each Phase 1 to 3 depot's level transition errors and ETCS brake interventions, January to October 2026
+  (16 figures, whole numbers). H18 home: the hazard log's other ETCS driver events beside the data entry forecast.
+  Path: safety_desk_register_2024-2026.xlsx (11 columns), the guidance's categories and linking rule, the recorder
+  log's UTC for comparison. Primary device (D1 with D8, the same records under two sources with a clock set per
+  source): the desk imports the recorder downloads' reports weekly with the recorder's own time, UTC, and never links
+  them to the driver's or signaller's report of the same event; in winter the pair sits minutes apart, in summer an
+  hour and some minutes. Second device: about a quarter of level transition errors and a fifth of brake
+  interventions come back on the return working with the same unit later the same day. Stops: every report, linked
+  ones once (every cell over); downloads folded within 30 minutes read as local (summer pairs left, every cell
+  over); one event per driver, unit, category and day (the return workings folded, every cell short); downloads
+  only, manual reports only (every cell short); golden, downloads read as UTC and folded into a manual report of
+  the same driver, unit and category up to 30 minutes after.
+
+Measured by: generator/ceiling.py
+
+| Ask | Cracker (lands the call, runs the battery, applies every filed rule, maps the renumbering, folds linked reports) | Figures kept | Verdict |
+|---|---|---|---|
+| A units accepted by go-live | works records by programme unit, renumbering mapped | 0 of 12 | miss |
+| C level transitions and brake interventions | downloads folded within 30 minutes, read as local time | 0 of 16 | miss |
+
+Mirror leakage: 0.0 per cent of ask weight (the mirror stops at the default path and takes both asks on their
+natural reads: programme units and every report).
+Pair ceiling: 28.5 ((45.0 + 12.0) / 2 on 38, 7 and 55); 41.8 if the cracker reads the formation list, 42.7 if it
+converts the downloads' UTC, 56.0 if both.
 
 ## Architecture 4 record (spent 2026-10-23, kept as history)
 

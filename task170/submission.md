@@ -1,57 +1,51 @@
 ## Tags
 
-**Domain:** Psychology and behavioural science (decision-making and computational behavioural modelling).
-**Analytical objective:** Forecasting and predictive modelling.
+**Domain:** Human factors and ergonomics, human reliability assessment.  
+**Analytical objective:** Forecasting and predictive modeling.
 
 ## 1. Final Recommendation
 
-**Budget about TNK 11,500,000 for the employer's match on Vindeholm County Hospitals' 2027 intake in FY2027, with about 1,600 of the intake contributing on the December 2027 payroll.**
-Every hire holds the three per cent default until making a choice, and the opt-in record shows that 90 per cent have chosen by their twelfth payroll while 43 per cent of those who choose join. Not the income protection cover's cancellations carried as the plan's opt-outs (about TNK 14,500,000).
+**Plan the Phase 4 safety case and its debriefing for about 1,250 train data entry errors recorded against the six Phase 4 depots' drivers in each depot's first twelve months on ETCS, to the nearest 250.**
+The figure reads the chance of an error at each Start of Mission at the driver's own count of ETCS starts in the Phase 1 to 3 record, and runs each of the 276 Phase 4 drivers along it at that driver's 2026 cab activations, about 111,000 starts in the twelve months. Not the earlier depots' first-year errors per start, nor a curve on months since go-live: both carry the suburban drivers' pace, and the rural diagrams keep a Phase 4 driver in the record's first weeks for most of the year.
 
 ## 2. Critical Components
 
-1. Share of hires who join when joining is their own choice (the join curve's five-year level): **43 per cent**.
-2. Share of hires who have made a choice by their twelfth payroll (the join curve over that level): **90 per cent**.
+1. Drivers on the six Phase 4 depots' rosters at 31 October 2026: **276**
+2. Their ETCS Starts of Mission in the depots' first twelve months: **111,000** (nearest 1,000)
 
 ## 3. Step-by-Step Solution
 
-1. Took every spell starting from January 2019 in hr_employment_history_2019_2026.csv as a hire, followed to the October 2026 payroll or the month it ended.
-2. Placed each membership in ledstrand_member_register_2026-10.xlsx on its spell through either employee number and the month of its first contribution, and built the share of hires joined by each payroll month of service, leavers censored (Kaplan-Meier); its five-year level is 43 per cent.
-3. Read the share who have made a choice by each month as the join curve over its five-year level (90 per cent by the twelfth payroll); the income protection cancellations in tarnmark_ipc_bordereau_2019_2026.csv, over their own five-year level, run on the same clock.
-4. Built the share of hires still on the payroll by month of service from the same spells, and the average match on joiners' rates at join under the rules' formula.
-5. For each requisition in vch_hiring_plan_2027.xlsx, paid at the 2027 scale for its grade and FTE from its planned start, summed over its 2027 payrolls: still employed times pay times (not yet chosen at three per cent plus joined at their own rates' match).
-6. The 2026 match: ERM lines on the January to October 2026 payrolls of every run, each employee's line counted once per payroll and run, by cost centre.
-7. Members: Ledstrand's Active memberships opened before 1 January 2019, less those whose HR contract ended on 31 October 2026, by the cost centre of their October 2026 payroll.
-8. The FY2027 match on the 2027 intake is about TNK 11,500,000.
+1. Placed every Phase 1 to 3 driver start in obr_start_of_mission_log_2024-03_2026-10.csv on the driver's own count of ETCS starts, staff numbers chained through staff_number_crosswalk.csv and TST test starts left out: 707,562 starts.
+2. Took the train data entry errors from safety_desk_register_2024-2026.xlsx (category TDE, withdrawn reports out, a linked report once): 4,418, each placed at its start by the SoM Ref of its own or a linked report, else at the driver's last start before the report (the register in local time, the recorder in UTC).
+3. Read the errors per start in bands of 50 on that count, to 600 and then one band: 0.0315 in a driver's first 50 starts and 0.0049 beyond 600.
+4. For each of the 276 drivers on a Phase 4 roster in driver_roster_2026-10-31.xlsx, took the ETCS starts already made (6 drivers transferred in with some) and twelve months at the driver's monthly cab activations on duties worked in phase4_duty_records_2026.csv, latest issue: 111,357.6 starts.
+5. Summed each driver's chance along the bands from the starts already made: 1,280.2, about 1,250 to the nearest 250.
+6. Units: each unit in fleet_allocation_2027.csv by its two driving vehicles in unit_formations_2026-10-31.csv, accepted for ETCS service by its depot's go-live in the rollout plan when both vehicles' Accepted or Planned Acceptance dates in etcs_fitment_works_records.xlsx fall on or before it; the works records' Unit is the programme's own unit, so vehicles reformed into other units and renumbered units are read through the formation list.
+7. Events: the register's LTR and BRK reports received January to October 2026, withdrawn reports out and linked reports once, each recorder download report (stamped in the recorder's UTC) folded into a driver's or signaller's report of the same driver, unit and category up to 30 minutes after it, and a later event the same day kept as its own.
 
 ## 4. Deliverable Answers
 
-### vindeholm_match_forecast_2027.xlsx
+### phase4_data_entry_forecast.xlsx
 
-1. Employer match on the 2027 intake, FY2027, group (to the nearest half million TNK): 11,500,000
-2. By hospital (to the nearest hundred thousand TNK):
-   - Vindeholm Central Hospital: 3,800,000
-   - Rendholm Hospital: 2,300,000
-   - Askvik Hospital: 1,700,000
-   - Ostervall Hospital: 1,400,000
-   - Brannby Hospital: 1,200,000
-   - Lidmark Hospital: 1,000,000
-3. Intake contributing on the December 2027 payroll (to the nearest hundred): 1,600
-4. Employer match paid on the January to October 2026 payrolls (to the nearest thousand TNK):
-   - Vindeholm Central Hospital: 27,990,000
-   - Rendholm Hospital: 14,628,000
-   - Askvik Hospital: 11,882,000
-   - Ostervall Hospital: 9,827,000
-   - Brannby Hospital: 8,466,000
-   - Lidmark Hospital: 7,134,000
-5. Members since before 2019 still active on 1 November 2026:
-   - Vindeholm Central Hospital: 728
-   - Rendholm Hospital: 354
-   - Askvik Hospital: 302
-   - Ostervall Hospital: 238
-   - Brannby Hospital: 199
-   - Lidmark Hospital: 187
+1. Train data entry errors the safety desk will record against the six Phase 4 depots' drivers in each depot's first twelve months on ETCS: **1,250** (nearest 250)
+2. Drivers covered: **276**; their ETCS starts over those twelve months: **111,000** (nearest 1,000)
+3. Class 461 units allocated for the 2027 timetable, accepted for ETCS service by the depot's go-live and not accepted:
+   - Glenhallow: **8** accepted, **6** not accepted
+   - Drumcarra: **8** accepted, **5** not accepted
+   - Kilvane: **7** accepted, **6** not accepted
+   - Ardmorrow: **6** accepted, **4** not accepted
+   - Mossbeck: **5** accepted, **5** not accepted
+   - Fellbrook: **4** accepted, **6** not accepted
+4. Level transition errors and ETCS brake interventions of each Phase 1 to 3 depot's drivers, January to October 2026:
+   - Brennick: **54** level transition errors, **83** brake interventions
+   - Tollmere: **71** level transition errors, **92** brake interventions
+   - Ashlow Road: **73** level transition errors, **92** brake interventions
+   - Kelderby: **33** level transition errors, **65** brake interventions
+   - Marrow Bridge: **51** level transition errors, **70** brake interventions
+   - Fennick Junction: **60** level transition errors, **59** brake interventions
+   - Stanholt: **76** level transition errors, **83** brake interventions
+   - Corran Central: **61** level transition errors, **64** brake interventions
 
-### match_forecast_note_2027.docx
+### phase4_depot_readiness.svg
 
-1. A one-page note to the employment committee stating the FY2027 line (TNK 11,500,000) and each hospital's figure.
+1. One stacked bar per Phase 4 depot, its accepted and not accepted units, each segment labelled with its count as in answer 3 above.

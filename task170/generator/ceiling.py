@@ -1,13 +1,17 @@
-"""task170 ceiling: the cracker and the mirror run as code on the cut pack, each graded figure scored against
-generator/figures.json, and the pair ceiling on supplemental-stumping Part 0's weights (38 recommendation and
-critical components, 7 instruction-following, 55 for the hospital rows and the asks; a wrong call keeps r = 5).
+"""task170 ask layer against the careful solver's routes, on the cut pack.
 
-    python3 task170/generator/ceiling.py task170/target
+    python3 task170/generator/ceiling.py [target]
 
-The cracker lands the call and runs the hygiene battery (exact duplicates, key uniqueness, unmatched joins) and
-every filed rule it points at: the plan rules' match formula, the payroll's reversal and re-run netted, the two
-employee numbers mapped, the register's Active status. The mirror stops at the default path (the cover's
-cancellations carried as the plan's opt-outs) and takes the asks on their natural reads."""
+Every route a careful reader takes on the two asks, figure by figure, against figures.json. Ask A (Class 461 units
+accepted by each Phase 4 go-live): the works records carry the fitment programme's own unit numbers, so vehicles the
+fleet team reformed into other units after their works visit sit under the unit they arrived in; every unit still
+shows two driving vehicles, and only the formation list says which vehicles a unit now has. Ask C (each Phase 1 to 3
+depot's level transition errors and brake interventions in 2026): the recorder downloads' reports carry the
+recorder's time (UTC) and are never linked to the driver's or signaller's report of the same event, and some drivers
+meet the same transition or speed board again on the return working the same day. The cracker lands the call, runs
+the hygiene battery and executes every filed rule (both driving vehicles, the renumbering register, linked and
+withdrawn reports); the mirror is the best response off the call. Pair ceiling on the generated rubric's weights (38
+recommendation and components, 7 instruction following, 55 asks; a wrong call keeps about 5)."""
 from __future__ import annotations
 
 import json
@@ -16,50 +20,81 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import calc  # noqa: E402
-import common as C  # noqa: E402
+import calc     # noqa: E402
+import common as C     # noqa: E402
+
+A_ROUTES = {
+    "works records by programme unit, renumbering mapped (the cracker)": "programme",
+    "works records by programme unit, renumbering not mapped": "raw_unit",
+    "either driving vehicle accepted, by the formation list": "any",
+    "accepted vehicles only, planned dates ignored": "accepted_only",
+    "golden: the formation list's two vehicles, actual or planned dates": "formations",
+}
+C_ROUTES = {
+    "recorder downloads folded within 30 minutes, read as local time (the cracker)": "fold_as_local",
+    "one event per driver, unit, category and day": "fold_day",
+    "every report, linked ones once (the mirror)": "all_rows",
+    "recorder downloads only": "obr_only",
+    "drivers' and signallers' reports only": "manual_only",
+    "golden: downloads read as UTC and folded within 30 minutes": "golden",
+}
 
 
-def rnd(v, unit):
-    return int(round(v / float(unit))) * unit
+def keyed_a(out):
+    r = {}
+    for c, (a, n) in out.items():
+        r["ask_units_accepted_by_golive_%s" % c.lower()] = a
+        r["ask_units_not_accepted_by_golive_%s" % c.lower()] = n
+    return r
+
+
+def keyed_c(out):
+    r = {}
+    for c, (lt, bk) in out.items():
+        r["ask_level_transition_errors_2026_%s" % c.lower()] = lt
+        r["ask_brake_interventions_2026_%s" % c.lower()] = bk
+    return r
 
 
 def main(target):
-    F = json.load(open(os.path.join(HERE, "figures.json")))
-    G = calc.golden(target)
-    cv, P = G["cv"], G["P"]
-    ded = calc.deductions(target)
-    keys = ["call_match_fy2027_%s" % h for h in C.H_CODES] + ["call_contributing_dec2027"] + \
-           ["ask_match_paid_2026_%s" % h for h in C.H_CODES] + ["ask_members_pre2019_%s" % h for h in C.H_CODES]
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    d = calc.load(target)
+    ka = sorted(k for k in figs if k.startswith("ask_units_"))
+    kc = sorted(k for k in figs if k.startswith(("ask_level_", "ask_brake_")))
+    nA, nC = len(ka), len(kc)
+    chart = 3                                    # the chart's bars, labels and segments, right only when ask A is
+    total = nA + nC + chart
+    print("ask A: %d figures, ask C: %d figures, chart %d criteria tied to ask A" % (nA, nC, chart))
+    hits = {}
+    for nm, how in A_ROUTES.items():
+        out = keyed_a(calc.fleet(d, how))
+        h = sum(out[k] == figs[k] for k in ka)
+        hits[("A", how)] = h
+        print("  A  %-74s %2d of %d" % (nm, h, nA))
+    for nm, how in C_ROUTES.items():
+        out = keyed_c(calc.events(d, how))
+        h = sum(out[k] == figs[k] for k in kc)
+        hits[("C", how)] = h
+        print("  C  %-74s %2d of %d" % (nm, h, nC))
 
-    def score(call, paid, mem):
-        out = {"call_contributing_dec2027": rnd(call["heads_total"], 100)}
-        for h in C.H_CODES:
-            out["call_match_fy2027_%s" % h] = rnd(call["by"][h], 100000)
-            out["ask_match_paid_2026_%s" % h] = rnd(paid[h], 1000)
-            out["ask_members_pre2019_%s" % h] = mem[h]
-        return out
-
-    crack = score(G, calc.match_paid_2026(target, "lines", ded), calc.members_pre2019(target, "register", ded))
-    mirror = score(calc.forecast(target, cv, "ipc_carry", P), calc.match_paid_2026(target, "lines", ded),
-                   calc.members_pre2019(target, "register", ded))
-    hit_c = [k for k in keys if crack[k] == F[k]]
-    hit_m = [k for k in keys if mirror[k] == F[k]]
-    for k in keys:
-        print("%-32s golden %10s  cracker %10s %-4s  mirror %10s %-4s" % (k, F[k], crack[k], "HIT" if k in hit_c else "miss",
-                                                                     mirror[k], "HIT" if k in hit_m else "miss"))
-    Lc = len(hit_c) / len(keys)
-    Ls = len(hit_m) / len(keys)
-    Cs = 38 + 7 + 55 * Lc
-    Ss = 5 + 7 + 55 * Ls
-    print("\ncracker keeps %d of %d figures (%d on the call's own construction, %d ask figures)" %
-          (len(hit_c), len(keys), sum(1 for k in hit_c if k.startswith("call_")), sum(1 for k in hit_c if k.startswith("ask_"))))
-    print("mirror keeps %d of %d (mirror leakage %.1f per cent)" % (len(hit_m), len(keys), 100 * Ls))
-    print("pair ceiling (%.1f + %.1f) / 2 = %.1f" % (Cs, Ss, (Cs + Ss) / 2))
-    one = 38 + 7 + 55 * (len(hit_c) + 6) / len(keys)
-    print("if the cracker also cracks one ask's device: (%.1f + %.1f) / 2 = %.1f" % (one, Ss, (one + Ss) / 2))
+    def score(on_call, a_how, c_how):
+        ha = hits[("A", a_how)]
+        kept = ha + hits[("C", c_how)] + (chart if ha == nA else 0)
+        L = kept / float(total)
+        return (38 + 7 + 55 * L) if on_call else (5 + 7 + 55 * L), kept
+    cr, crk = score(True, "programme", "fold_as_local")
+    mi, mik = score(False, "programme", "all_rows")
+    print("cracker (on the call, programme units, downloads folded as local): %d of %d ask criteria, %.1f" % (crk, total, cr))
+    print("mirror (default path 750, programme units, every report): %d of %d ask criteria, %.1f" % (mik, total, mi))
+    print("Mirror leakage: %.1f per cent of ask weight" % (100.0 * mik / total))
+    print("Pair ceiling: %.1f" % ((cr + mi) / 2))
+    for nm, (a, c_) in (("cracker reading the formation list", ("formations", "fold_as_local")),
+                        ("cracker converting the downloads' UTC", ("programme", "golden")),
+                        ("cracker cracking both", ("formations", "golden"))):
+        v, k = score(True, a, c_)
+        print("  if the %s: %d of %d, pair %.1f" % (nm, k, total, (v + mi) / 2))
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else C.TARGET))
+    sys.exit(main(sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(HERE), "target")))

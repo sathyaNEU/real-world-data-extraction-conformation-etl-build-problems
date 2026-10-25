@@ -28,7 +28,9 @@ class Pack:
     def register_rows(self):
         w = self.w
         g = C.stream("register")
-        reps = [dict(r) for r in w.tde_reports + w.event_reports]
+        cutoff = dt.datetime.combine(C.RECORD_END, dt.time(23, 59, 59))
+        # the extract holds the reports logged to the record's end; a later report of an October event is not in it
+        reps = [dict(r) for r in w.tde_reports + w.event_reports if r["when"] <= cutoff]
         reps.sort(key=lambda r: (r["when"], r["cat"], r["unit"], r["who"]))
         seq = {}
         for r in reps:
@@ -55,7 +57,7 @@ class Pack:
 
     def write_register(self, path):
         head = ["Report No", "Received", "Reporter", "Category", "Depot", "Staff No", "Unit", "SoM Ref", "Linked To",
-                "Status", "Summary"]
+                "Status", "Sub-category"]
         rows = self.register_rows()
         XW.STAMPS[C.F_REG] = ("Gillian Armstrong", "2026-11-04T08:42:00Z")
         return XW.write_table(path, "Register", head, rows, widths=[12, 16, 16, 9, 7, 9, 9, 13, 12, 10, 52],

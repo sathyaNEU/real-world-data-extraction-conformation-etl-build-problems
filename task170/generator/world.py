@@ -25,8 +25,9 @@ import common as C
 # the error probability per Start of Mission at a driver's n-th ETCS start (n from 0): F (C0 + A0 (1 + n / S0)^-B0),
 # times the driver's own error-proneness (lognormal, sd 0.25 on the log scale)
 CURVE = dict(F=1.72, C0=0.0026, A0=0.024, S0=60.0, B0=1.6, FRAIL=0.25)
-LTR_P, BRK_P = 0.0011, 0.0016          # per service start, flat: the asks' events
+LTR_P, BRK_P = 0.0014, 0.0021          # per service start, flat: the asks' events
 OBR_CAPTURE, DRIVER_REPORT = 0.88, 0.72
+REPEAT_LTR, REPEAT_BRK = 0.26, 0.18    # a second event on the return working, same driver, unit and day
 SLOW_LINKS = ("SPARE", "INSTR", "MGR", "RESTR")
 
 
@@ -227,9 +228,15 @@ class World:
                 shift_start = [5.0, 10.5, 15.0][(p.shift + a.month) % 3]
                 hrs = shift_start + g.uniform(0, 8.6, u)
                 secs = (hrs * 3600).astype(int)
+                locs = sorted(dt.datetime.combine(a + dt.timedelta(days=int(dd[i])), dt.time(0, 0))
+                              + dt.timedelta(seconds=int(secs[i])) for i in range(u))
+                # a driver's next start is at least five minutes after the last (a cab change takes that long)
+                for j in range(1, u):
+                    if (locs[j] - locs[j - 1]).total_seconds() < 300:
+                        locs[j] = locs[j - 1] + dt.timedelta(seconds=300 + (j * 53) % 300)
                 for i in range(u):
-                    day = a + dt.timedelta(days=int(dd[i]))
-                    local = dt.datetime.combine(day, dt.time(0, 0)) + dt.timedelta(seconds=int(secs[i]))
+                    local = locs[i]
+                    day = local.date()
                     t = C.local_to_utc(local)
                     unit = self.units384[dep][int(g.integers(12))]
                     rows.append((t, p.pid, self.number_on(p, day), unit, "AB"[int(g.integers(2))],
@@ -275,8 +282,8 @@ class World:
             ref = "SM%09d" % (i + 104000000)
             rep = []
             drv = g.random() < 0.62
-            sig = g.random() < (0.55 if typ == "SVC" else 0.05)
-            fleet = (not drv and not sig) or g.random() < 0.08
+            sig = g.random() < (0.25 if typ == "SVC" else 0.03)
+            fleet = (not drv and not sig) or g.random() < 0.02
             what = kinds[int(g.choice(len(kinds), p=[0.30, 0.18, 0.16, 0.14, 0.10, 0.08, 0.04]))]
             if drv:
                 rep.append(("Driver", local + dt.timedelta(minutes=float(g.uniform(2, 40))),
@@ -310,7 +317,12 @@ class World:
         svc = np.array([i for i, (r, n) in enumerate(zip(self.starts, self.start_n)) if n >= 0 and r[5] == "SVC"])
         for cat, pr in (("LTR", LTR_P), ("BRK", BRK_P)):
             for i in svc[g.random(len(svc)) < pr]:
-                evs.append((cat, self.starts[int(i)][0] + dt.timedelta(minutes=float(g.uniform(6, 55))), int(i)))
+                t = self.starts[int(i)][0] + dt.timedelta(minutes=float(g.uniform(6, 55)))
+                evs.append((cat, t, int(i)))
+                # the same driver meets the same transition or the same speed board on the return working with the
+                # same unit later that day: a second event
+                if g.random() < (REPEAT_LTR if cat == "LTR" else REPEAT_BRK):
+                    evs.append((cat, t + dt.timedelta(minutes=float(g.uniform(70, 200))), int(i)))
         evs.sort(key=lambda e: (e[1], e[0], e[2]))
         reports = []
         for k, (cat, t, i) in enumerate(evs):
@@ -423,11 +435,15 @@ class World:
             mine = [u for u in units if u["depot"] == c]
             order = list(g.permutation(len(mine)))
             npair = int(g.integers(2, 4))
+            nlate = int(g.integers(1, 3))
             for j, u in enumerate(mine):
                 pos = order.index(j)
                 if pos < 2 * npair:
                     first = pos % 2 == 0
                     da, db = (done(), after(gl)) if first else (after(gl), done())
+                elif pos < 2 * npair + nlate:
+                    # neither vehicle fitted yet, one booked into the works before go-live and one after it
+                    da, db = (before(gl), after(gl)) if g.random() < 0.5 else (after(gl), before(gl))
                 else:
                     da, db = [done() if r < 0.40 else before(gl) if r < 0.80 else after(gl) for r in g.random(2)]
                     # a unit whose two vehicles fall either side of the cutoff with one already fitted is not left

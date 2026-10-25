@@ -1,170 +1,210 @@
-"""task170 independent verifier: reads only the bundle in a target folder, on its own code path (csv and openpyxl, no
-pandas, no calc.py), recomputes every graded figure and compares it with figures.json.
+"""task170 independent verifier: its own readers (the csv module, openpyxl, pypdf), its own clock rule, its own count
+of each driver's starts and its own placement of every error; the go-live dates read from the rollout plan's table.
+Recomputes every graded figure in figures.json from target/ alone. Exit 1 on a mismatch.
 
-    python3 task170/generator/verify.py task170/target"""
+    python3 task170/generator/verify.py [target]"""
 from __future__ import annotations
 
+import bisect
 import csv
 import datetime as dt
 import json
 import os
+import re
 import sys
 from collections import defaultdict
 
-from openpyxl import load_workbook
+import openpyxl
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-HOSP = ["VCS", "RDH", "ASK", "OSV", "BRB", "LDM"]
-SCALE27 = {"G1": 24900, "G2": 27300, "G3": 30100, "G4": 33800, "G5": 38600, "G6": 44900, "G7": 52700, "G8": 63400}
-LAST = 2026 * 12 + 9          # the October 2026 payroll as a month index
-FIRST = 2019 * 12             # January 2019
-FAILS = []
+P4 = ["GLH", "DRC", "KVN", "ADM", "MSB", "FBK"]
+REC = ["BRN", "TLM", "ALR", "KDB", "MWB", "FNJ", "SNH", "CNC"]
 
 
-def ok(label, cond, detail=""):
-    print("%s  %s  %s" % ("PASS" if cond else "FAIL", label, detail))
-    if not cond:
-        FAILS.append(label)
+def rows(path):
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
 
 
-def mi(d):
-    return d.year * 12 + d.month - 1
-
-
-def iso(s):
-    return dt.date.fromisoformat(s)
-
-
-def match(rate):
-    r = float(rate)
-    return min(r, 3.0) + 0.5 * min(max(r - 3.0, 0.0), 3.0)
-
-
-def rows_of(path, sheet=None):
-    wb = load_workbook(path, read_only=True, data_only=True)
-    ws = wb[sheet] if sheet else wb.worksheets[0]
+def xrows(path):
+    ws = openpyxl.load_workbook(path, read_only=True).worksheets[0]
     it = ws.iter_rows(values_only=True)
-    head = [str(h) for h in next(it)]
-    return [dict(zip(head, r)) for r in it if any(v is not None for v in r)]
+    head = list(next(it))
+    return [dict(zip(head, v)) for v in it]
 
 
-def as_date(v):
-    return v.date() if isinstance(v, dt.datetime) else (v if isinstance(v, dt.date) else iso(str(v)[:10]))
+def summer(t_utc):
+    """European summer time: from 01:00 UTC on the last Sunday of March to 01:00 UTC on the last Sunday of October"""
+    def last_sun(y, m):
+        d = dt.date(y, m, 31)
+        while d.weekday() != 6:
+            d -= dt.timedelta(days=1)
+        return dt.datetime(d.year, d.month, d.day, 1)
+    return last_sun(t_utc.year, 3) <= t_utc < last_sun(t_utc.year, 10)
 
 
-def km(events, follow, n=96):
-    """events: list of month-of-event or None; follow: months observed. Returns cumulative incidence 1..n."""
-    at = defaultdict(int)
-    ev = defaultdict(int)
-    for e, f in zip(events, follow):
-        end = f if e is None else min(e, f)
-        at[end] += 1
-        if e is not None and e <= f:
-            ev[e] += 1
-    total = len(events)
-    leaving = 0
-    S, out = 1.0, []
-    removed = 0
-    for k in range(1, n + 1):
-        risk = total - removed
-        d = ev.get(k, 0)
-        S *= (1 - d / risk) if risk else 1.0
-        out.append(1 - S)
-        removed += at.get(k, 0)
-    return out
+def to_local(t_utc):
+    return t_utc + dt.timedelta(hours=1) if summer(t_utc) else t_utc
+
+
+def to_utc(t_local):
+    c = t_local - dt.timedelta(hours=1)
+    return c if summer(c) else t_local
 
 
 def main(target):
-    F = json.load(open(os.path.join(HERE, "figures.json")))
-    # hires: spells from January 2019
-    hr = list(csv.DictReader(open(os.path.join(target, "hr_employment_history_2019_2026.csv"), encoding="utf-8")))
-    idm = {}
-    for r in hr:
-        idm[r["legacy_employee_no"]] = r["employee_no"]
-        idm[r["employee_no"]] = r["employee_no"]
-    sp = []
-    for r in hr:
-        s = mi(iso(r["contract_start"]))
-        if s < FIRST:
-            continue
-        e = mi(iso(r["contract_end"])) if r["contract_end"] else None
-        sp.append(dict(emp=r["employee_no"], s=s, e=e, f=(min(e, LAST) if e is not None else LAST) - s + 1))
-    by_emp = defaultdict(list)
-    for i, x in enumerate(sp):
-        by_emp[x["emp"]].append(i)
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    P = lambda f: os.path.join(target, f)
+    bad = []
+    nxt = {r["old_staff_no"]: r["new_staff_no"] for r in rows(P("staff_number_crosswalk.csv"))}
 
-    def spell(emp, m):
-        for i in by_emp.get(emp, []):
-            x = sp[i]
-            if x["s"] <= m and (x["e"] is None or m <= x["e"]):
-                return i
-        return None
-
-    reg = rows_of(os.path.join(target, "ledstrand_member_register_2026-10.xlsx"))
-    join = {}
-    rate = {}
-    for r in reg:
-        m = mi(as_date(r["joined"]))
-        i = spell(idm.get(str(r["employer_ref"])), m)
-        if i is not None:
-            join[i] = m
-            rate[i] = int(r["rate_at_join_pct"])
-    Cj = km([(join[i] - x["s"] + 1) if i in join else None for i, x in enumerate(sp)], [x["f"] for x in sp])
-    p = Cj[59]
-    # staying on the payroll: P(still paid in month k)
-    left = [(x["e"] - x["s"] + 1) if (x["e"] is not None and x["e"] <= LAST) else None for x in sp]
-    Lc = km(left, [x["f"] for x in sp])
-    Se = [1.0] + [1 - v for v in Lc[:95]]
-    mb = sum(match(r) for r in rate.values()) / len(rate) / 100
-    ok("five-year join share", int(round(100 * p)) == F["component_prefer_to_save_pct"], "%.4f" % p)
-    ok("chosen by the twelfth payroll", int(round(100 * Cj[11] / p)) == F["component_chosen_by_12th_payroll_pct"],
-       "%.4f" % (Cj[11] / p))
-    plan = rows_of(os.path.join(target, "vch_hiring_plan_2027.xlsx"), "Requisitions")
-    by = defaultdict(float)
-    heads = 0.0
-    for r in plan:
-        m0 = as_date(r["planned_start"]).month
-        pay = SCALE27[r["grade"]] * float(r["fte"])
-        for k in range(1, 14 - m0):
-            A = Cj[k - 1] / p
-            by[r["hospital"]] += Se[k - 1] * pay * ((1 - A) * 0.03 + Cj[k - 1] * mb)
-            if k == 13 - m0:
-                heads += Se[k - 1] * ((1 - A) + Cj[k - 1])
-    tot = sum(by.values())
-    ok("FY2027 match, group", int(round(tot / 500000)) * 500000 == F["call_match_fy2027_tnk"], "%.0f" % tot)
-    for h in HOSP:
-        ok("FY2027 match, %s" % h, int(round(by[h] / 100000)) * 100000 == F["call_match_fy2027_%s" % h], "%.0f" % by[h])
-    ok("December 2027 contributors", int(round(heads / 100)) * 100 == F["call_contributing_dec2027"], "%.1f" % heads)
-    # ask A: ERM once per employee, payroll and run, January to October 2026
-    seen = set()
-    paid = defaultdict(float)
-    with open(os.path.join(target, "payroll_deductions_2025-11_2026-10.csv"), encoding="utf-8") as fh:
-        octo = {}
-        for r in csv.DictReader(fh):
-            if r["payroll"] == "202610" and r["assignment"] == "1":
-                octo.setdefault(r["employee_ref"], r["cost_centre"][:3])
-            if r["code"] != "ERM" or not ("202601" <= r["payroll"] <= "202610"):
-                continue
-            key = (r["payroll"], r["run"], r["employee_ref"])
-            if key in seen:
-                continue
-            seen.add(key)
-            paid[r["cost_centre"][:3]] += float(r["amount"])
-    for h in HOSP:
-        ok("ask A %s" % h, int(round(paid[h] / 1000)) * 1000 == F["ask_match_paid_2026_%s" % h], "%.2f" % paid[h])
-    # ask B: memberships opened before 2019, Active, employment not ended, by the October payroll's cost centre
-    open_spell = {r["employee_no"] for r in hr if not r["contract_end"]}
-    cnt = defaultdict(int)
-    for r in reg:
-        if r["status"] != "Active" or as_date(r["joined"]) >= dt.date(2019, 1, 1):
+    def person(s):
+        while s in nxt:
+            s = nxt[s]
+        return s
+    # each driver's starts in time order
+    times = defaultdict(list)
+    ref_at = {}
+    for r in rows(P("obr_start_of_mission_log_2024-03_2026-10.csv")):
+        if r["som_type"] == "TST":
             continue
-        emp = idm.get(str(r["employer_ref"]))
-        if emp in open_spell:
-            cnt[octo.get(emp)] += 1
-    for h in HOSP:
-        ok("ask B %s" % h, cnt[h] == F["ask_members_pre2019_%s" % h], str(cnt[h]))
-    print("\n%d failed" % len(FAILS))
-    return 1 if FAILS else 0
+        t = dt.datetime.strptime(r["obr_utc"], "%Y-%m-%dT%H:%M:%SZ")
+        times[person(r["driver_id"])].append((t, r["som_ref"]))
+    for p in times:
+        times[p].sort()
+        for n, (t, ref) in enumerate(times[p]):
+            ref_at[ref] = (p, n)
+    tonly = {p: [t for t, _ in v] for p, v in times.items()}
+    T = defaultdict(int)
+    for p, v in times.items():
+        for n in range(len(v)):
+            T[n] += 1
+    # errors
+    reg = xrows(P("safety_desk_register_2024-2026.xlsx"))
+    tde = [r for r in reg if r["Category"] == "TDE" and r["Status"] != "Withdrawn"]
+    link_ref = {}
+    for r in tde:
+        if r["Linked To"] and r["SoM Ref"]:
+            link_ref.setdefault(r["Linked To"], r["SoM Ref"])
+    E = defaultdict(int)
+    nerr = 0
+    for r in tde:
+        if r["Linked To"]:
+            continue
+        nerr += 1
+        ref = r["SoM Ref"] or link_ref.get(r["Report No"])
+        if ref and ref in ref_at:
+            E[ref_at[ref][1]] += 1
+            continue
+        p = person(str(r["Staff No"]))
+        k = bisect.bisect_right(tonly.get(p, []), to_utc(r["Received"])) - 1
+        if k < 0:
+            bad.append("error %s not placed" % r["Report No"])
+            continue
+        E[k] += 1
+    edges = list(range(0, 650, 50))
+    rate = []
+    for i in range(len(edges)):
+        a = edges[i]
+        b = edges[i + 1] if i + 1 < len(edges) else 10 ** 9
+        st = sum(v for n, v in T.items() if a <= n < b)
+        er = sum(v for n, v in E.items() if a <= n < b)
+        rate.append(er / st)
+
+    def p_of(n):
+        return rate[min(n // 50, len(rate) - 1)]
+    # the Phase 4 drivers and their starts
+    roster = xrows(P("driver_roster_2026-10-31.xlsx"))
+    p4 = [(str(r["Staff No"]), r["Depot"]) for r in roster if r["Depot"] in P4]
+    latest = {}
+    for r in rows(P("phase4_duty_records_2026.csv")):
+        if r["status"] != "Worked":
+            continue
+        k = (r["duty_date"], r["staff_no"], r["duty_no"])
+        if k not in latest or int(r["issue"]) > latest[k][0]:
+            latest[k] = (int(r["issue"]), int(r["cab_activations"]))
+    act = defaultdict(int)
+    for (day, staff, duty), (iss, ca) in latest.items():
+        act[person(staff)] += ca
+    total, starts = 0.0, 0.0
+    for staff, depot in p4:
+        pp = person(staff)
+        prior = len(times.get(pp, []))
+        nn = act[pp] * 1.2
+        starts += nn
+        whole = int(nn)
+        total += sum(p_of(prior + j) for j in range(whole)) + (nn - whole) * p_of(prior + whole)
+    if int(250 * round(total / 250.0)) != figs["call_tde_errors_phase4_first_12_months"]:
+        bad.append("call %.1f" % total)
+    if len(p4) != figs["cc1_phase4_drivers"]:
+        bad.append("drivers %d" % len(p4))
+    if int(1000 * round(starts / 1000.0)) != figs["cc2_phase4_etcs_starts_first_12_months"]:
+        bad.append("starts %.1f" % starts)
+    if nerr != figs["_path"]["tde_errors_recorded"]:
+        bad.append("errors %d" % nerr)
+    # go-live dates from the rollout plan's table
+    from pypdf import PdfReader
+    txt = " ".join(p.extract_text() for p in PdfReader(P("etcs_rollout_plan_2024-2027.pdf")).pages)
+    golive = {}
+    for code in P4 + REC:
+        m = re.search(r"\b%s\s+(\d{1,2}) (\w+) (\d{4})" % code, txt)
+        if not m:
+            bad.append("go-live of %s not in the plan" % code)
+            continue
+        golive[code] = dt.datetime.strptime("%s %s %s" % m.groups(), "%d %B %Y").date()
+    # ask A
+    form = {r["unit"]: (r["vehicle_a_end"], r["vehicle_b_end"]) for r in rows(P("unit_formations_2026-10-31.csv"))}
+    when = {}
+    for r in xrows(P("etcs_fitment_works_records.xlsx")):
+        v = r["Accepted"] or r["Planned Acceptance"]
+        when[str(r["Vehicle"])] = v.date() if hasattr(v, "date") else v
+    acc = defaultdict(lambda: [0, 0])
+    for r in rows(P("fleet_allocation_2027.csv")):
+        a, b = form[r["unit"]]
+        okk = when.get(a) and when.get(b) and when[a] <= golive[r["depot"]] and when[b] <= golive[r["depot"]]
+        acc[r["depot"]][0 if okk else 1] += 1
+    for c in P4:
+        if tuple(acc[c]) != (figs["ask_units_accepted_by_golive_%s" % c.lower()], figs["ask_units_not_accepted_by_golive_%s" % c.lower()]):
+            bad.append("units %s %s" % (c, acc[c]))
+    # ask C
+    lo, hi = dt.datetime(2026, 1, 1), dt.datetime(2026, 11, 1)
+    ev = []
+    for r in reg:
+        if r["Category"] not in ("LTR", "BRK") or r["Status"] == "Withdrawn" or r["Linked To"]:
+            continue
+        t = r["Received"]
+        is_obr = r["Reporter"] == "OBR download"
+        if is_obr:
+            t = to_local(t)
+        if lo <= t < hi:
+            ev.append((str(r["Staff No"]), str(r["Unit"]), r["Category"], t, is_obr, r["Depot"]))
+    manual = defaultdict(list)
+    for i, x in enumerate(ev):
+        if not x[4]:
+            manual[(x[0], x[1], x[2])].append((x[3], i))
+    for k in manual:
+        manual[k].sort()
+    used, drop = set(), set()
+    for i, x in sorted(enumerate(ev), key=lambda z: z[1][3]):
+        if not x[4]:
+            continue
+        for t, j in manual.get((x[0], x[1], x[2]), []):
+            m = (t - x[3]).total_seconds() / 60.0
+            if 0 <= m <= 30 and j not in used:
+                used.add(j)
+                drop.add(i)
+                break
+    cnt = defaultdict(lambda: [0, 0])
+    for i, x in enumerate(ev):
+        if i not in drop:
+            cnt[x[5]][0 if x[2] == "LTR" else 1] += 1
+    for c in REC:
+        if tuple(cnt[c]) != (figs["ask_level_transition_errors_2026_%s" % c.lower()], figs["ask_brake_interventions_2026_%s" % c.lower()]):
+            bad.append("events %s %s" % (c, cnt[c]))
+    print("verify: call %.1f -> %d, drivers %d, starts %.1f, %d errors placed, %d graded figures checked, %d failed%s"
+          % (total, int(250 * round(total / 250.0)), len(p4), starts, nerr, 3 + 12 + 16, len(bad),
+             (": " + "; ".join(bad[:8])) if bad else ""))
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":
