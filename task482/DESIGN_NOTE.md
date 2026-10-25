@@ -47,17 +47,17 @@ are already past the member cap.
   final runs and the thresholds, compute each practice's interim measure on the October runs (section 4.1, the payers'
   completion factors), and carry it to the year by the practice's own 2025 run-out at the same cut (the 2025
   attribution re-run on the 2025 claims at 31 August and 30 September): the projection both architecture 13 readers
-  built, which enters nine practices.
+  built, which enters ten practices.
 - **The decisive step:** that projection carries what the year adds on average, the claims still to be paid for
   services already given (the completion factors) and the members a later visit attributes (the run-out); its
   precondition is that what is still to come for each practice is like what was still to come at the same cut in
   2025. It is not where a member is in hospital at the cut: a hospital bills a stay when it ends, so a stay open on 31
   August has no facility claim in any feed, and shows only through the daily professional claims of the physicians who
   attend it. Premature triplets in a regional neonatal unit since their birth in June (attributed to Mallowcrest
-  Pediatrics through its pediatrician's newborn examination at the birth hospital) and three members of one family in
+  Pediatrics through its pediatrician's newborn examination at the birth hospital) and four members of one family in
   trauma intensive care since a July crash (attributed to Garrowdale Family Practice) are each already past USD 250,000
   of care by the cut on any per-day rate the 2025 stays of the same kind carry, so each member's 2026 cost is the cap
-  whatever the rest of the stay costs, and with them both practices come in over their thresholds: seven practices
+  whatever the rest of the stay costs, and with them both practices come in over their thresholds: eight practices
   enter.
 - **Strategy:** `maturity_censoring` (amounts not yet recorded at the cut, late arrival by the billing of a stay at its
   end); not binding_constraint (the cap fixes the size of the step, it does not remove a pick by itself). Gate G
@@ -92,6 +92,295 @@ are already past the member cap.
   that fills by contact, now the default path's run-out; task232 (0.08) estimates a rate per unit of exposure from
   closed episodes; task483 (0.07) rebuilds quantities recorded at a coarser grain. None turns on an episode whose amount
   is written only at its end and is already fixed by a cap.
+
+## Three rules
+
+Task type: Healthcare Delivery & Health Economics, payment-claims-health-plan-analytics, which serves ETL in the taxonomy.
+Domain test: the quantity that decides is each practice's 2026 total cost of care per attributed member month on the payers' final 2026 attribution, each member's year capped at USD 250,000; health plan finance projects an open year from an interim cut by completing the paid claims (the payers' completion factors) and developing the attributed population (each practice's own 2025 run-out at the same cut), and carries apart the catastrophic cases it knows to be in progress, because a lag study built without claims over USD 100,000, and a run-out from a year in which no such case was running at the cut, carry nothing of a stay still open.
+Swap: "which of our thirteen schools enter the 2027 two-sided track on each school's 2026 cost per enrolled student-month" (schools for practices, students for members) has no service billed in one sum when it ends, no daily visits standing in for it while it runs and no cap on a student's year, so the step has nothing to act on and the task stops making sense.
+Layer 1: three claim feeds in three layouts (Merrinlake's CSV voiding and replacing reprocessed claims under new numbers, Kesselcrest's pipe-delimited extract in cents with MM/DD/YYYY dates whose adjusted lines stand beside a suffixed reprocessed claim and whose facility claims carry a bill type, Pemberglen's JSON of claim versions), three coverage files with open spans written as 9999-12-31 or left blank and newborns covered from their month of birth, three attribution files (Kesselcrest's a workbook with a title block above its header), TINs with and without a hyphen, each payer's own member identifiers beside the network's master patient index, the roster's effective-dated clinician rows, and 2025 claims paid after the 31 March cut-off still in the feeds; each is what that payer's or the network's system writes, none is placed to be caught, and mishandling any one leaves the call (checks.py R2).
+Layer 2: estimation_fit, a censored year: a member's 2026 total is censored at the cut wherever a hospital has yet to bill a stay, and the field's projection (completion factors built without claims over USD 100,000, and each practice's own 2025 run-out at the same cut) carries the average late arrival of claims and members but nothing of a stay still running; the choice that flips the call is reading the members in such stays as totals already past the cap and carrying each at it.
+Decisive step: recognising that the October feeds hold a hospital stay still running on 31 August only as its attending physicians' daily inpatient visits (the facility claim comes after discharge), that neither the completion factors nor the 2025 run-out carries such a stay (the factors leave out claims over USD 100,000, and no long stay was running at the 2025 cut), and that seven members in neonatal and intensive care since 14 June and 11 July are already past the USD 250,000 cap at the lowest per-day amount any closed stay of the same kind was allowed, so each is carried at the cap: Mallowcrest and Garrowdale come in over their thresholds.
+Not semantics: with every field read correctly (claims at their current version, Kesselcrest's cents and bill types, member months from the spans, newborns from their month of birth, the runs' TINs mapped to practices, the factors by payer and incurred month, place of service 21 and the neonatal and critical care codes for what they are), the easy route still enters ten practices, because nothing in any file says a stay is still running or what it will cost: the facility claim is absent, not mis-coded, and the daily visits are small professional claims like any other.
+Not rule application: the standard files the population (the final 2026 attribution), the outcome, the cap, the unit and the comparison, section 4.1 the interim measure and Appendix C the factors and their large-claim rule, but no clause says how a year on the final attribution is reached from an interim run or what a stay still running at the cut will add, so executing every filed rule computes the interim measure and enters Ostrelwood, Thornelfield and Jesselford. Measured on the cut pack: the enumerated family (the interim measure as it stands; carried by the final 2025 members' own January to August; by the short counts read as members who cost nothing; by one pooled run-out, with and without the running stays; by each practice's own run-out alone; by each practice's own run-out with the members in a running stay carried at the cap) enters 3 to 11 practices in five distinct sets; the standing family (every construction that carries each practice's own run-out and the running stays: the 128 of the cross product of the claim version, the re-run's paid basis and cut-off, the same-cut figure's basis, the grain, which running stays are carried and the 2025 adjustment) enters the golden eight, a spread of zero on the call, worst margin 3.4 per cent where the stays past the cap are carried at it and 1.45 where every running stay is carried; and what rules out the run-out alone is no filed clause and no flag but the records read quietly: seven members' daily neonatal and critical care visits run to the cut with no facility claim, past the cap at the USD 4,580 and 6,380 a day the closed stays of the same kinds were allowed.
+Analyst test: A strong analyst who reads every file correctly conforms the three feeds, computes each practice's interim measure on the October runs (section 4.1, the payers' factors), carries it to the year by the practice's own 2025 run-out at the same cut (the 2025 attribution re-run at 31 August and 30 September against the final 2025 runs), compares it with 98 per cent of the benchmark and enters ten practices: Ostrelwood, Callowglen, Thornelfield, Birrelhaven, Raddelview, Jesselford, Nerrincreek, Torrinridge, Mallowcrest and Garrowdale.
+Estimand: each practice's 2026 network measure (the allowed amounts, at current version, of the claims for covered medical and pharmacy services incurred in 2026 and first paid by 31 March 2027, each member's year capped at USD 250,000, over every 2026 month of coverage) for its members on the payers' final 2026 attribution, against 98 per cent of its benchmark (its 2025 measure on the final 2025 attribution times 1.052); filed in the standard's sections 2 and 3 and the resolution.
+No decoy: nothing is planted; the feeds, runs, roster, index, fee schedules, remittances and statements are the payers' and the network's own records as their systems write them, no memo, draft, interim report, briefing or stakeholder figure carries a wrong answer, and the stays running at the cut are ordinary care (premature triplets born on 14 June, a family injured on 11 July) recorded as any stay is while it runs.
+No certified replay: no certified or published figure is reproduced to recover the method; the payers' 2025 settlement statements carry their own Schedule A bases and no 2026 figure, and carrying the running stays follows from the estimand (a year capped per member) and the records.
+Lesson: a year's per-member cost projected from an interim cut has two incompletenesses, the average late arrival that completion factors and a run-out carry and the particular episodes still running whose amounts are written only at their end; a model learns to find the episode in progress through its daily footprint and to price it against the cap, which no build on file asks.
+
+## Layer 1 inventory
+
+| Item | System that writes it | File | Natural mishandling | Effect on the call (checks.py) |
+|---|---|---|---|---|
+| reprocessed claims voided and replaced under new numbers | Merrinlake's claim system | mlh_tcoc_claims_2025-01_2026-09.csv | the void lines dropped, the originals kept beside their replacements | none (R2) |
+| adjusted lines beside a suffixed reprocessed claim | Kesselcrest's claim system | KBP_CLAIMS_LPN_20261009.txt | every line kept | none (R2) |
+| claim versions | Pemberglen's adjudication engine | pmh_partner_claims_2026-10-12.json | every version summed | none (R2) |
+| allowed in cents, MM/DD/YYYY dates, pipes | Kesselcrest's partner extract | the KBP text files | read as dollars or as day-first dates | loud (impossible amounts or unparseable dates) |
+| facility claims on one form, inpatient and outpatient told apart by the bill type | Kesselcrest's partner extract | KBP_CLAIMS_LPN_20261009.txt | every UB04 claim read as outpatient | none: the call sums every claim's allowed amount; the stays it reads are Pemberglen's (SF25) |
+| open coverage as 9999-12-31 or blank | each payer's eligibility system | the three coverage files | an open span ended at the feed date | none: every member month the measure counts unchanged (R2) |
+| newborns covered from the month of birth | each payer's enrollment | the three coverage files | a newborn's months counted from January | none: no newborn is attributed before birth (SF26) |
+| a title block above the header | Kesselcrest's reporting tool | KBP_ATTRIBUTION_PY2025F_PY2026R10.xlsx | the first row read as the header | loud (no member numbers) |
+| TINs with and without a hyphen | the payers' provider files | the attribution and remittance files | joined as written | loud (a payer's members unmatched); every TIN maps once the hyphen is dropped (asserted) |
+| member identifiers per payer, the master patient index | the payers and the network's registration | lpn_master_patient_index.csv | persons merged across payers | none: no patient holds two payers' coverage in one year (SF11) |
+| a clinician's move on 1 July 2025, a new clinician on 1 April 2026 | the network's credentialing | lpn_primary_care_roster_2026-10.xlsx | each clinician at the current practice | none (R2, SF12) |
+| 2025 claims paid after 31 March 2026 | the payers' feeds through October | the three claim feeds | counted in the 2025 measure | none (R2, SF16) |
+
+## Default path
+
+1. Conform the three payers' feeds: claims at their current version (Merrinlake's voids and replacements, Kesselcrest's
+   adjusted lines, Pemberglen's latest version), Kesselcrest's cents in dollars, the three date formats, member months
+   from the coverage spans, every run's TIN mapped to a practice through the roster.
+2. Compute each practice's 2025 network measure on the payers' final 2025 runs (claims incurred in 2025 and first paid
+   by 31 March 2026, each member capped at USD 250,000, over the year's member months, pooled across the payers), its
+   benchmark at 1.052 times it and its threshold at 98 per cent of the benchmark.
+3. Compute each practice's interim measure on the payers' October runs as section 4.1 sets it out: claims incurred
+   January to August 2026 and paid by the feed date, divided by each payer's completion factor by incurred month, each
+   member's year to date capped, over the run members' January to August member months, pooled across the payers.
+4. Re-run the standard's attribution on the 2025 claims at the October run's cut (qualifying services incurred by 31
+   August 2025, a visit counted once paid by 30 September 2025), take each practice's 2025 run-out (its 2025 measure
+   over the January to August 2025 measure of the members so attributed) and carry its interim measure to the year by
+   it: the field's projection of an interim run to the final one, the members a later visit attributes included.
+5. Compare each practice's projection with its threshold.
+
+Ends on: ten practices enter (Ostrelwood, Callowglen, Thornelfield, Birrelhaven, Raddelview, Jesselford, Nerrincreek, Torrinridge, Mallowcrest and Garrowdale); Haddelcrest, Wexelmoor and Prestelglen stay one-sided.
+
+Golden: eight practices enter (Ostrelwood, Callowglen, Thornelfield, Birrelhaven, Raddelview, Jesselford, Nerrincreek and Torrinridge); Haddelcrest, Wexelmoor, Mallowcrest, Prestelglen and Garrowdale stay one-sided.
+
+## Stump sentence
+
+The default path carries each practice's interim measure by its own 2025 run-out at the same cut and enters ten practices, Mallowcrest 5.6 and Garrowdale 3.9 per cent under their thresholds; but a hospital bills a stay when it ends, so the October feeds hold a stay still running on 31 August only as its attending physicians' daily visits, and seven members in such stays (Mallowcrest's premature triplets in a neonatal unit since 14 June, four of Garrowdale's members in intensive care since 11 July) are already past the USD 250,000 cap at the USD 4,580 and 6,380 a day the closed stays of the same kinds were allowed: carried at the cap, Mallowcrest comes in 6.4 and Garrowdale 4.8 per cent over, and eight practices enter.
+
+## Readability screen
+
+Measured on the cut pack (`generator/golden.py`): thresholds 751.74 (Ostrelwood), 406.16 (Callowglen), 488.31
+(Thornelfield), 808.99 (Haddelcrest), 213.32 (Birrelhaven), 483.17 (Raddelview), 555.95 (Jesselford), 387.82
+(Nerrincreek), 937.07 (Wexelmoor), 404.52 (Torrinridge), 179.67 (Mallowcrest), 776.57 (Prestelglen) and 454.16
+(Garrowdale), USD per member month.
+
+| Rung | What the response does | What in the pack points at it | Verdict |
+|---|---|---|---|
+| L0 the interim measure | each practice's section 4.1 measure on the October runs as its 2026 figure | the standard defines it; the runs are the payers' own | readable |
+| L1 each practice's own 2025 run-out (the default path) | the interim measure times the practice's 2025 measure over the January to August measure of its members at the same cut, the 2025 attribution re-run at 31 August and 30 September | the prompt's final attribution beside the standard's section 2 rules, which re-run on 2025's claims; the attribution files' short counts | readable |
+| L1b the short counts as members who cost nothing | the interim measure scaled by the October run's members over the 2025 final run's, or by the member months | the attribution files' counts | readable |
+| L1c one pooled run-out | every practice carried by the network's 2025 run-out, with or without the running stays at the cap | the same re-run, pooled | readable |
+| G the members in a stay running at the cut carried at the cap (decisive) | each member whose attending physicians bill an inpatient visit every day to the cut with no facility claim, already past the cap at the lowest per-day amount the closed stays of the same kind were allowed, carried at USD 250,000 with every 2026 month of coverage, the run-out applied to the rest | nothing names a stay running at the cut: no facility claim exists for it, its daily visits are professional claims like any other, and Appendix C says only which claims the lag study leaves out | silent |
+
+L1 and L1b land the same ten: the members still to come cost nearly what each practice's others cost, so reading them
+as costing nothing moves no election. L1c misplaces the practices whose members come early (Haddelcrest, Wexelmoor)
+and Callowglen whichever way the stays are read.
+
+## Semantic fork table
+
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | total cost of care | allowed amounts for covered medical and pharmacy services | medical alone (Kesselcrest's settlement basis) | reported, not graded | section 3.1 |
+| SF2 | the member cap | USD 250,000 a member-year | Merrinlake's own Schedule A cap of USD 150,000 | another call (asserted): Mallowcrest enters | section 3.1 files the network's cap |
+| SF3 | member month | a calendar month of coverage in force | days of coverage; coverage on the first | identical: every span starts on a first and ends on a month end (asserted) | section 3.2 |
+| SF4 | a claim's year | incurred on its first date of service | its last date of service (lines cross the new year) | same call (asserted) | section 3.1 |
+| SF5 | a claim's version | the current version of every claim first paid by the cut | the version in force at the cut | same call (asserted) | section 3.1 |
+| SF6 | the interim measure's completion | each payer's factor by incurred month | the payer's mean factor; no factor | same call (asserted) | section 4.1 and Appendix C |
+| SF7 | the interim cap | each member's year to date capped | uncapped | same call (asserted) | sections 3.1 and 4.1 |
+| SF8 | the 2025 re-run's cut | services incurred by 31 August 2025, a visit counted once a version was paid by 30 September 2025 | the visit's current version's paid date; every 2025 claim paid by 31 March 2026 | same call (asserted) | section 2.3's interim run executed on 2025 |
+| SF9 | the same-cut figure | January to August 2025 claims paid by 31 March 2026 over the members' January to August months | as the network would have reported it at 30 September 2025, over the factors | same call (asserted) | the records converge |
+| SF10 | the run-out's grain | by practice | by practice and payer, weighted by projected member months | same call (asserted) | the records converge |
+| SF11 | a member | each payer's own member, member months summed across the payers | persons through the master patient index | identical: no patient holds two payers' coverage in one year (asserted) | sections 2.1 and 3.3 |
+| SF12 | a qualifying service's practice | the clinician's practice on the roster on the date of service | the clinician's current practice | same call (asserted) | section 2.1 |
+| SF13 | a tie | to the practice of the latest qualifying day | to the earliest | same call (asserted) | section 2.1 |
+| SF14 | the benchmark | the 2025 network measure on the final 2025 runs times 1.052 | the payers' 2025 settlement benchmarks | another basis: each payer's Schedule A, no network figure | section 3.4 |
+| SF15 | at least 2 per cent below | at or under 98 per cent of the benchmark | strictly under | same call: no practice within 4.5 per cent (asserted) | the resolution |
+| SF16 | the 2025 measure's paid cut-off | first paid by 31 March 2026 | every 2025 claim the October feeds carry | same call (asserted) | section 3.1 |
+| SF17 | the interim window | January to August 2026, the October run's service cut | January to September | not available: the completion factors stop at August | sections 2.3 and 4.1, Appendix C |
+| SF18 | pooling across payers | each practice's costs and member months summed across the payers | per-payer projections weighted by projected member months | same call (asserted) | section 3.3 |
+| SF19 | a fill's incurred date | the fill date | none other in the feeds | identical | section 3.1 |
+| SF20 | a stay running at the cut | the attending physicians' inpatient visits (place of service 21, the neonatal, critical and hospital care codes) on consecutive days to within days of 31 August, with no inpatient facility claim paid by 30 September covering them | none: the seven's visits run to within days of the cut with no facility claim in the feeds (asserted) | identical | the records |
+| SF21 | the per-day amount a running stay is priced at | the lowest per-day allowed of the closed stays of 30 days or more of the same kind (USD 4,580 neonatal, 6,380 intensive) | the median of every closed stay of the kind | identical: the same seven past the cap, each with a quarter of the cap to spare (asserted) | the records |
+| SF22 | which running stays are carried | those already past the cap, at the cap | every running stay at the lesser of the cap and its amount so far plus its days at the median per-day amount | same call (asserted) | the records converge |
+| SF23 | the held members' months | each one's 2026 months of coverage counted | left out of the denominator | same call (asserted) | section 3.3 |
+| SF24 | the 2025 run-out | without the members in a stay running at the 2025 cut | with them | identical: no long stay runs at the 2025 cut (asserted) | the records |
+| SF25 | Kesselcrest's inpatient claims | bill type 011x | the room-and-board revenue codes | identical (asserted) | the field guide |
+| SF26 | a newborn's coverage | from the month of birth (the coverage files) | none other in the feeds | identical (asserted) | the coverage files |
+
+The live readings of the deciding quantity (SF5, SF8, SF9, SF10, SF22, SF24) are asserted as a cross product, 128
+constructions, each entering the golden eight.
+
+## Ladder
+
+Measured on the cut pack (`golden.py`; `checks.py` asserts each on the pack and L0, L1 and G on the world's clean truth).
+
+| Rung | Practices entering | Flips from the golden | Call kept |
+|---|---|---|---|
+| L0 the interim measure | Ostrelwood, Thornelfield, Jesselford | 5 | no |
+| L0b the final 2025 members' seasonality | Ostrelwood, Thornelfield, Jesselford | 5 | no |
+| L1 each practice's own run-out (the default path) | the golden eight, Mallowcrest and Garrowdale | 2 | no |
+| L1b the short counts as members who cost nothing (members or member months) | the golden eight, Mallowcrest and Garrowdale | 2 | no |
+| L1c one pooled run-out | eleven: the golden eight less Callowglen, with Haddelcrest, Wexelmoor, Mallowcrest and Garrowdale | 5 | no |
+| L1d one pooled run-out, the running stays at the cap | nine: the golden eight less Callowglen, with Haddelcrest and Wexelmoor | 3 | no |
+| G each practice's own run-out, the running stays at the cap | the eight | none | yes |
+| T the world's own final 2026 measure | measured, not graded (checks.py R3b): the golden's election on 12 of 13; Garrowdale's late 2026 members cost less than its 2025 run-out carries (0.78 against 0.86), so its true measure comes in 6 per cent under with the four at the cap | | |
+
+The golden's positions against the thresholds are 8.4, 6.1, 5.8, 9.5, 7.1, 7.7, 5.4 and 7.9 per cent under for
+Ostrelwood, Callowglen, Thornelfield, Birrelhaven, Raddelview, Jesselford, Nerrincreek and Torrinridge, and 5.3, 4.9,
+6.4, 5.7 and 4.8 per cent over for Haddelcrest, Wexelmoor, Mallowcrest, Prestelglen and Garrowdale; on the run-out
+alone Mallowcrest sits 5.6 and Garrowdale 3.9 per cent under, every other practice where the golden puts it.
+Birrelhaven sits 9.5 per cent under so that the shortcut that reads the 2025 same-cut members off the final run's own
+fields, and Merrinlake's settlement cap read as the network's, both leave it 3 per cent or more under. The step
+moves only the two practices with members in a running stay: three newborns at Mallowcrest (79 days to the cut) and
+four members at Garrowdale (52 days), each past the cap with a third or more to spare.
+
+## Closure table
+
+| Axis | Reading | Move |
+|---|---|---|
+| 1 Population | each practice's members on the payers' final 2026 attribution, the members a later visit attributes included | filed (standard 2.1 and 3.3, the resolution) |
+| 2 Unit of account | a practice's USD per attributed member month, pooled across the payers | filed (3.3); SF18 |
+| 3 Attribution window | services incurred in 2026 | filed (3.1); SF4 |
+| 4 As-of dating | the October feeds (7, 9 and 12 October 2026), the October runs on services to 31 August paid by 30 September | filed (2.3, 4.1); C1 |
+| 5 Version basis | each claim at its current version | filed (3.1); SF5 |
+| 6 Denominator | member months of coverage in force, the held members' included | filed (3.2); SF3, SF23 |
+| 7 Weighting | costs and member months summed across payers | filed (3.3); SF10, SF18 asserted |
+| 8 Window length | the calendar year; the interim January to August | filed (3.1, 4.1); SF17 |
+| 9 Boundary inclusivity | at or under 98 per cent of the benchmark | filed (the resolution); SF15, margins asserted |
+| 10 Rounding path | elections on unrounded figures; benchmarks and thresholds to the cent | the prompt's closing sentence; C1 |
+| 11 Tie-break | attribution ties to the latest qualifying day | filed (2.1); SF13 |
+| 12 Maturity and censoring | the 2026 claims completed by the payers' factors, the attribution by each practice's 2025 run-out, the stays running at the cut at the cap | the decisive step; the factors and their large-claim rule filed (Appendix C), the cap filed (3.1) |
+| 13 Order of operations | cap each member's year, then sum by practice | filed (3.1, 3.3); C1 |
+| 14 Row order | none: every figure is a set computation | C1 |
+| 15 Duplicate resolution | superseded versions and void lines out | filed (3.1, the field guide); R2 asserted |
+| 16 Identity normalisation | TINs with or without a hyphen; members per payer, the index across them | the roster and the field guide; SF11, asserted |
+| 17 Netting against gross | void lines net their originals | the field guide; R2 asserted |
+| 18 Dimensional units | USD, Kesselcrest's cents | the field guide; loud if misread |
+| 19 Code and status semantics | Appendix A's qualifying codes; claim types and bill types; status P and A | filed (Appendix A, the field guide); SF25 |
+| 20 Integerisation | none | not applicable |
+| 21 Clause scope | commercial members only; each payer's settlement under its own Schedule A | filed (title, 1); SF14 |
+| 22 Forward window contents | the 2026 attribution and claims after the cut: the run-out and the factors carry the average, the stays running at the cut the cap | the decisive step; SF20 to SF24 asserted |
+
+## Literal reader
+
+Executing the prompt and every filed sentence word for word: the resolution enters a practice when its 2026 network
+measure on the payers' final 2026 attribution comes in at least 2 per cent under its benchmark, and asks for the
+network's projection of that figure because the elections close before the final runs. The standard defines the measure
+(section 3.1: the allowed amounts of the claims incurred in the year and first paid by 31 March 2027, each member's year
+capped at USD 250,000) and the final run (section 2.3), and no file holds either for 2026. The October feeds hold the
+claims paid by 30 September; section 4.1's interim measure completes them by the payers' factors, which Appendix C says
+leave out claims over USD 100,000. A literal reader therefore has to project two things the October feeds do not hold:
+the members the final runs will add, which only 2025's own run-out at the same cut measures, and the claims not yet
+paid. For most claims the factors carry the second; for the seven members whose attending physicians bill a neonatal or
+critical care visit every day to the cut with no facility claim, the facility claim is the stay's and is not yet
+written, and at any per-day amount the closed stays of the same kinds were allowed each member's year has already
+reached the cap the standard sets. Leaving them at their professional claims assumes those stays cost nothing more,
+which the records contradict; the golden is the projection with each at the cap.
+
+## Oracles
+
+No file ties only under the golden or only on a wrong read. No shipped file states a practice's 2026 figure on any
+attribution, a stay's status or a member's expected cost, or ranks the practices on the elections: the attribution
+files list members, the claims list services, the standard and the resolution state rules, and the payers' 2025
+settlement statements state each payer's own 2025 settlement on its own Schedule A. The asks' referees: Pemberglen's
+payment reference carries the month a line covers, and the standard's section 5.2 says a member's catch-up covers every
+earlier month of the year in which the member was covered (the devices' evidence, never an answer).
+
+## Ask sheet
+
+The call's declared population is each practice's members on the October runs and on the final 2025 runs, their
+claims' allowed amounts, dates and paid dates, their coverage, and their stays' inpatient visits and facility claims.
+Ask A reads the E&M claims' codes, modifiers and lines against the fee schedules, which the call never reads (the call
+reads a claim's allowed amount and its qualifying day, never its level, its modifier or how its allowed amount is split
+across its lines: re-coding every E&M line to one level, blanking every modifier, or folding Kesselcrest's adjustment
+lines into their service lines leaves every call figure identical, asserted). The three care coordination remittances
+ship as distractors: the standard's section 5 sets the fees, section 3.1 counts claims only, and no golden figure opens
+them (asserted).
+
+- **Ask A, each practice's share of its clinicians' January to August 2026 established-patient visits (99211 to
+  99215, in person or by telehealth) the payers paid at level 5, per cent to one decimal (13 figures).** H18 home: a
+  measure every practice carries that the elections do not turn on, the level the payers pay its visits at, beside its
+  cost. User: the payer performance director, whose payers' level reviews and payment policies cut what the practices
+  are paid. Primary device (silent, D9 a payment true only at its own grain): from 1 March 2026 Kesselcrest's level
+  review pays a share of 99215 visits at its 99214 rate, and Kesselcrest takes the difference on the claim, not the
+  line: the visit's line keeps the code billed and the code's own rate, so every line matches its code on the
+  schedule, and the claim's second line, with no procedure, revenue or drug code, carries the difference (the field
+  guide: a line with no procedure, revenue or drug code is an adjustment to the claim). Only the claim's allowed amount,
+  every line counted, shows the visit paid at level 4. Twin: the same adjustment line sits on 1,188 of Kesselcrest's
+  outpatient facility claims (a case rate cutting the line fee schedule), so a blank code marks adjustments, not
+  reviews. Second device (seen): Merrinlake allows an E&M billed with modifier 25 beside a minor procedure by the same
+  clinician that day at half its rate, and its 2026 schedule sets level 5 at twice level 3 in both settings, so a
+  halved 99215 is allowed exactly Merrinlake's 99213 rate; over-cleaning half: a modifier 25 visit beside a same-day
+  preventive visit is paid in full, so halving every modifier 25 line reads a full 99213 as a halved 99215. Hazards:
+  the place-of-service rules (hospital-based clinics and Pemberglen's telehealth at the facility rate, the schedules'
+  own notes), claim versions, Kesselcrest's cents, the roster's dates. A member has at most one established-patient
+  visit a day with the practices' clinicians, so a line, a member-day-clinician and a member-day count the same
+  visits (asserted). Files and columns: the three claim feeds (claim, line, code, modifier, place of service,
+  rendering NPI, member, date, allowed, version), the fee schedule workbook, the roster, 5 files and 11 columns. Stops:
+  the code on the claim (0 of 13), each line at the level its own allowed amount equals (0 of 13), the line's amount
+  with Merrinlake's halved visits found (round 1's cracker, 0 of 13), every Merrinlake modifier 25 visit at twice its
+  line's amount (0 of 13), each claim's amount with Merrinlake's halving unseen (0 of 13), the golden. Forcing figure:
+  every Kesselcrest 99215 claim with an adjustment line totals exactly Kesselcrest's 99214 rate for its setting, and
+  every Kesselcrest E&M line carries its code's own rate. Realism: a payer's post-adjudication edit lands as a
+  claim-level adjustment in an 835, and a partner extract that writes one row per 835 line carries it as a line.
+One device ask, by design. The fee ask that stood beside it (each payer's July to September coverage fees) is
+withdrawn: a reader that rebuilds the payers' monthly runs from the claims reconciles any allocation of fees to the
+months they cover, so the cracker keeps it whole and no device in the remittances survives that reconciliation (Tried
+and rejected). The construction layer is the chart, each practice's projected figure against its threshold, which the
+cracker has with the call and the mirror misses with it.
+
+Main population: the call reads no remittance line, no fee schedule, no E&M level, no modifier and no split of a
+claim's allowed amount across its lines (checks.py separation, each emptied, blanked or folded with every call figure
+identical); the ask reads no stay, no attribution run and no completion factor.
+
+| Ask | What the cracker does | Cracker |
+|---|---|---|
+| A | reads each visit's paid level from its line's allowed amount against the payer's 2026 schedule for its setting, Merrinlake's halved visits found | miss |
+
+Measured on the cut pack: the cracker keeps 0 of 13 ask figures and scores 45.0 with the call; the mirror keeps 0 of
+13 and scores 12.0 off it; the best half-handled response keeps 0 of 13.
+
+Pair ceiling: 28.5 (the cracker 45.0 on the call with no ask figure, the mirror 12.0 off it with none).
+
+Mirror leakage: 0.0 per cent of ask weight.
+
+Measured by: generator/ceiling.py on the cut pack.
+
+## Leak sweep lines
+
+leak.py on the final pack (`--asof 2026-10-16`, the cap declared a stated input in metadata.json): REVIEW, no LEAK.
+- Sweep 3, answer figures: the payers' 2025 statements carry 16 of the call's 18 distinctive words: the words are the
+  practices' names, which every statement lists; the statements state each payer's own 2025 settlement and no 2026
+  figure. Harmless.
+- Sweep 4, the resolution, the field guide, the standard and the statements carry 3 to 5 of the stump paragraph's 25
+  terms (member, claims, interim, factors, completion, facility, projection): the vocabulary of any payer feed pack; no
+  shipped text names a stay running at the cut, its billing or the run-out (checks.py, documents). Harmless; the
+  readers' question 1 tests it.
+- Sweep 6, the Kesselcrest attribution workbook, its Medicare Advantage attribution, the roster, the quality composite
+  and the statements name the practices beside numbers: member lists, a clinician roster, 2025 quality measures and
+  2025 settlements; none ranks the practices on the 2027 elections. Harmless.
+- Sweep 9, dates after the setting: clean.
+
+Stage 4: round 1 (zip cc4a6fbd) both scored readers filed the default ten and the judge returned DETERMINISTIC with
+FIX_NOW; after the fix pass, round 2 (zip 04486b1a) both fresh scored readers filed the default ten again and kept 0 of
+13 ask figures (score_reader PASS twice), every sweep line above answered harmless by all four readers, and the judge
+(v14r2) returned DETERMINISTIC and APPROVE (Gate G forecasting, analytical_non_defect; Gate H analytical). The round 2
+readers' realism notes (one claim-number scheme across the three payers, roster NPIs rising practice by practice) were
+fixed in the generator for the shipped cut (zip 2c0f8d35): each payer numbers its claims its own way and the NPIs are
+drawn at random, with Prestelglen's 2026 movement nudged off a round-dollar interim measure; figures.json is identical
+to the judged build's.
+
+## Pre-ship check
+
+The 10/10 rules re-read against the built pack. Rule 1: the deciding quantity is each practice's 2026 cost of care per
+attributed member month on the payers' final 2026 attribution, capped at USD 250,000 a member, which no file holds in
+October, estimated the way a value-based finance team projects a performance year from an interim run: the interim
+measure completed by the payers' factors, carried by the practice's own 2025 run-out at the same cut, and the members in
+a stay still running at the cut carried at the cap from the daily visits that are all the feeds hold of their stays.
+Swapping the method moves two to five elections (the run-out alone two, the interim measure as it stands five, one
+pooled run-out three to five). Rule 2: Layer 1 is the feeds' own mess (Merrinlake's voids and replacements,
+Kesselcrest's adjusted lines, cents, bill types and pipe-delimited layout, Pemberglen's versions, three date formats,
+hyphenated TINs, clinicians who changed practice, open coverage spans, newborns from their month of birth), each
+mishandled alone leaving the call (checks.py R2), and cleaning all of it leaves the default path at ten; Layer 2 is the
+censored year, which no cleaning performs. Rule 3: nothing planted (the stays are ordinary care recorded as any stay is
+while it runs), no field reading decides (checks.py R3a runs the easy route on the clean truth with every filed rule
+applied and files ten), and no stated rule carries a running stay (Appendix C says only which claims the factors leave
+out). The analyst test executes in checks.py R3a and R3b; the standing family files the golden eight across 128
+constructions; the ask reads no stay, no run and no factor.
 
 ## Architecture 13 record (spent 2026-10-25)
 
@@ -514,3 +803,31 @@ Architecture 11 (the contractor's plausible values drawn from a conditioning mod
   Kaplan-Meier) is spent by task134, task254, task257, task264 and task266; a share above a cut counted from scores
   measured with error is task253's driver; random-groups equating with make-up sessions on one form fails on the
   group-equivalence check, which is the field's own quality control and lands by reflex.
+- 2026-10-25, architecture 14 stage 2: the run-out (v13's golden) on the default path left Birrelhaven's 2025 twins,
+  in a neonatal unit from 24 June to October 2025, running at the 2025 cut, and the same-cut figure read as the network
+  would have reported it at 30 September 2025 then left their facility claims out of the run-out's denominator and kept
+  them in its numerator: 32 of the 128 constructions entered seven, Birrelhaven out. Their stay now runs from 3 March to
+  June 2025 and is paid by August, so no long stay runs at the 2025 cut and the run-out's precondition holds in 2025.
+- 2026-10-25, architecture 14 stage 2: the asks' architecture 13 devices (Kesselcrest's reviewed 99215 visits at its
+  99214 rate, Merrinlake's halved modifier 25 visits at no rate on the schedule, Pemberglen's coverage month in its
+  payment reference, Kesselcrest's Medicare Advantage lines at another fee) all fell to one reader who matched every
+  line to the schedule and every fee to the standard. The halved visit now passes that match (Merrinlake's 2026 level 5
+  is twice its level 3, so a halved 99215 is a full 99213), Merrinlake's retro lines from its July run now carry a
+  cohort's member months under its first month of coverage (every line its member count times the fee), and the
+  Medicare Advantage lines are gone.
+- 2026-10-25, architecture 14 stage 2: the benchmarks and thresholds as graded columns (26 figures every reader keeps,
+  a third of the scored ask figures in architecture 13) were dropped from the prompt; the workbook carries them as the
+  elections' context and the write-up names the two practices the stays move.
+- 2026-10-25, architecture 14 stage 4 round 1 (target.zip cc4a6fbd821d4dfd): both scored readers filed the default ten
+  and missed the call, and the judge returned DETERMINISTIC with FIX_NOW (Callowglen's share 0.002 points from its
+  rounding boundary under 23 same-day duplicate visits, the chart graded on sign). Reader A rebuilt every payer's runs
+  from the claims, read Kesselcrest's reviewed 99215 lines at their 99214 rate, took Merrinlake's halving as a payment
+  reduction and spread Merrinlake's retro lines over the rebuilt members' months, keeping all 52 ask figures (score
+  FAIL). Kesselcrest's review moved off the line onto a claim adjustment line (every line now matches its code), the
+  world bills one visit a member a day, and the fees narrowed to each payer's July to September total, because a
+  run-rebuilding reader reconciles any allocation of fees to the months they cover.
+- 2026-10-25, architecture 14 fix pass: the narrowed fee ask (each payer's July to September coverage fees, 3 figures)
+  withdrawn before any reader saw it: ceiling.py's cracker kept all three (Merrinlake's retro lines spread by their
+  member counts, Pemberglen's from its payment reference), so precut's cracker row read "keeps 3", and a fee ask in
+  these remittances has no device a run-rebuilding reader cannot reconcile. The remittances ship as distractors; ask A
+  is the one device ask.

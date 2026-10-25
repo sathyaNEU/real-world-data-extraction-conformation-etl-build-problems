@@ -1,23 +1,37 @@
 {
  "task": "task482",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "SHIPPED",
  "domain": "healthcare-delivery-health-economics",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 5,
+ "stage_name": "ship",
  "updated": "2026-10-25",
- "stump": "The default path conforms the three payers' feeds, computes each practice's October interim measure (section 4.1, the payers' completion factors) and carries it to the year by the practice's own 2025 run-out at the same cut, entering nine practices; but the stays still open on 31 August are billed at discharge and show only as their physicians' daily professional claims, and the members in them (premature triplets in a neonatal unit at Mallowcrest Pediatrics, a crash family in trauma intensive care at Garrowdale Family Practice) are each already past the USD 250,000 member cap, so both practices come in over their thresholds and seven enter.",
+ "stump": "The default path conforms the three payers' feeds, computes each practice's October interim measure (section 4.1, the payers' completion factors) and carries it to the year by the practice's own 2025 run-out at the same cut, entering ten practices; but the stays still open on 31 August are billed at discharge and show only as their physicians' daily professional claims, and the members in them (premature triplets in a neonatal unit at Mallowcrest Pediatrics, a crash family in trauma intensive care at Garrowdale Family Practice) are each already past the USD 250,000 member cap, so both practices come in over their thresholds and eight enter.",
  "architecture": 14,
- "loops": 0,
- "precut": {},
- "leak": {},
- "duplicate_check": {},
- "judge": {},
+ "loops": 1,
+ "precut": {
+  "result": "51 checks, 0 FAIL, 0 WARN (2026-10-25, final pack)",
+  "pair_ceiling": 28.5,
+  "mirror_leakage": 0.0
+ },
+ "leak": {
+  "leak_py": "REVIEW (2026-10-25, no LEAK; zip 2c0f8d35561fc8c2)",
+  "reader": "round 1 (zip cc4a6fbd): readers A and B both filed the default ten and missed the call; reader A rebuilt every payer's runs and kept all 52 ask figures (score FAIL), reader B 0 of 52. Fix pass: Kesselcrest's level review moved onto a claim adjustment line, one visit a member a day, the fee ask withdrawn (precut's cracker kept it whole). Round 2 (zip 04486b1a): readers C and D both filed the default ten again and kept 0 of 13 ask figures (score_reader PASS, exit 0 twice); every REVIEW line answered harmless by all four readers. Their realism tells (claim numbers in one scheme across the payers, roster NPIs rising by practice) fixed in the generator for the shipped cut, every figure unchanged (figures.json identical)"
+ },
+ "duplicate_check": {
+  "heart": "WARN (2026-10-25)",
+  "surface": "4 pairs promoted for adjudication (task484, task480, task231, task234 on card axes); the adjudicated clone-check is author-triggered"
+ },
+ "judge": {
+  "verdict": "pass 1 (v14r1, zip cc4a6fbd) DETERMINISTIC, FIX_NOW (Callowglen's share at its rounding boundary under same-day duplicate visits, the chart graded on sign); pass 2 (v14r2, zip 04486b1a) DETERMINISTIC, APPROVE, Gate G forecasting and analytical_non_defect, Gate H domain pass, layers pass, decisive_step analytical",
+  "disposition": "APPROVE",
+  "report": "determinism_check_report.md"
+ },
  "returned": [],
- "resume": "stage 2 of architecture 14 (drawn 2026-10-25, card registered): rebuild architecture 13's world in the generator with whole inpatient care (daily professional claims for every stay, facility claims billed at discharge and paid after it, the 2025 long neonatal and intensive care stays closing before the 2025 cut, ordinary short stays open at both cuts, newborn coverage from the birth month and Appendix A's newborn care codes), place the open long stays of 2026 (the triplets at Mallowcrest, the crash family at Garrowdale), re-place every practice with the run-out (L1) on nine and the golden on seven, measure the standing family, then the three rules, default path, stump sentence, readability screen, fork table, ladder, closure, a rebuilt ask sheet with silent devices and prompt.txt to precut.py exit 0",
+ "resume": "shipped 2026-10-25 (zip 2c0f8d35, judged on 04486b1a with every graded figure identical): wait for the author's portal list; a determinism finding goes to /fix-determinism, a rubric over 50 with the call held to /fix-rubric",
  "approved": null,
- "delivered": null,
+ "delivered": "2026-10-25",
  "portal": null,
  "source_note": "re-root keeping architecture 13's world; architectures 1 to 13 spent at stage 4",
  "lineage_v11": {
@@ -55,5 +69,6 @@
    "disposition": "",
    "report": ""
   }
- }
+ },
+ "zip": "2c0f8d35561fc8c2a2d88e6ae2995fae"
 }

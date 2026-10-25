@@ -1,12 +1,15 @@
-"""The golden for task482 (architecture 13), read from the cut pack alone.
+"""The golden for task482 (architecture 14), read from the cut pack alone.
 
 Conform the three payers' feeds (claims at their current version, eligibility spans, attribution runs) into the network
 measure of the performance standard: each practice's total cost of care per attributed member month, pooled across the
 payers. The benchmark is the 2025 figure on the final 2025 attribution times 1.052; a practice enters the two-sided track
 when its 2026 figure on the final 2026 attribution comes in at least 2 per cent under. The year is open at the extract,
-so the 2026 figure is the October interim run's figure carried to the year by the practice's own run-out: its 2025
-attribution re-run at the same cut (qualifying services incurred through 31 August and paid by 30 September), the 2025
-final figure over the figure of the members that cut attributes. Every rung of the ladder is a function here."""
+so the 2026 figure is the October interim run's figure carried to the year by the practice's own run-out (its 2025
+attribution re-run at the same cut, the 2025 final figure over the figure of the members that cut attributes), except
+for the members still in a hospital stay on 31 August: a stay is billed at discharge, so the October feeds hold only its
+physicians' daily visits, and a member whose days in the unit to the cut, at the lowest per-day amount the closed long
+stays of the same kind were allowed, already pass the member cap is carried at the cap. Every rung of the ladder is a
+function here."""
 import csv
 import datetime as dt
 import json
@@ -19,7 +22,6 @@ import pandas as pd
 
 D = dt.date
 TREND, MSR, CAP = 1.052, 0.02, 250000.0
-CCF = {"MLH": 3.25, "KBP": 2.80, "PMH": 4.10}     # the standard's care coordination fee a member month (section 5.1)
 PAYERS = ("MLH", "KBP", "PMH")
 CUT = {2025: (D(2025, 8, 31), D(2025, 9, 30)), 2026: (D(2026, 8, 31), D(2026, 9, 30))}
 FINAL_PAID = {2025: D(2026, 3, 31)}
@@ -43,9 +45,9 @@ def load(target):
     mlh = pd.DataFrame(dict(payer="MLH", member=m.MBR_ID, ctype=m.CLM_TYP.map({"PROF": "P", "OUTP": "O", "INPT": "I", "PHRM": "R"}),
                             svc=pd.to_datetime(m.SVC_FROM_DT), end=pd.to_datetime(m.SVC_THRU_DT), paid=pd.to_datetime(m.PD_DT),
                             first_paid=pd.to_datetime(m.first_paid),
-                            code=m.PROC_CD, mod=m.PROC_MOD, pos=m.POS_CD, npi=m.REND_NPI, allowed=m.allowed,
+                            code=m.PROC_CD, mod=m.PROC_MOD, pos=m.POS_CD, npi=m.REND_NPI, rev=m.REV_CD, allowed=m.allowed,
                             reversal=m.ADJ_TYP == "VOID", superseded=m.CLM_ID.isin(m.ORIG_CLM_ID[m.ADJ_TYP == "VOID"]),
-                            grp=m.grp, ver=np.where(m.ADJ_TYP == "REPL", 2, 1)))
+                            grp=m.grp, ver=np.where(m.ADJ_TYP == "REPL", 2, 1), clm="M" + m.CLM_ID))
     k = pd.read_csv(pick(r"^KBP_CLAIMS"), sep="|", dtype=str, keep_default_na=False)
     k["base"] = "K" + k.CLAIM_NO.str.replace(r"-\d+$", "", regex=True)
     k["fp"] = pd.to_datetime(k.PAID_DATE, format="%m/%d/%Y")
@@ -53,10 +55,10 @@ def load(target):
     kbp = pd.DataFrame(dict(payer="KBP", member=k.MEMBER_NO, ctype=k.CLAIM_FORM.map({"1500": "P", "UB04": "O", "NCPDP": "R"}),
                             svc=pd.to_datetime(k.FIRST_DOS, format="%m/%d/%Y"), end=pd.to_datetime(k.LAST_DOS, format="%m/%d/%Y"),
                             paid=k.fp, first_paid=k.first_paid,
-                            code=k.PROCEDURE, mod=k.MODIFIER, pos=k.PLACE_OF_SVC, npi=k.RENDERING_PROV_NPI,
+                            code=k.PROCEDURE, mod=k.MODIFIER, pos=k.PLACE_OF_SVC, npi=k.RENDERING_PROV_NPI, rev=k.REVENUE,
                             allowed=k.ALLOWED_CENTS.astype(int) / 100.0, reversal=False, superseded=k.CLAIM_STATUS == "A",
-                            grp=k.base, ver=np.where(k.CLAIM_NO.str.contains("-"), 2, 1)))
-    kbp.loc[(k.CLAIM_FORM == "UB04") & (k.REVENUE == "0120"), "ctype"] = "I"
+                            grp=k.base, ver=np.where(k.CLAIM_NO.str.contains("-"), 2, 1), clm="K" + k.CLAIM_NO))
+    kbp.loc[(k.CLAIM_FORM == "UB04") & k.BILL_TYPE.str.startswith("011"), "ctype"] = "I"
     j = json.load(open(pick(r"^pmh_partner_claims")))["records"]
     t = pd.DataFrame(j)
     t["first_paid"] = t.groupby("claimId").adjudicated.transform("min")
@@ -67,8 +69,10 @@ def load(target):
                             first_paid=pd.to_datetime(t.first_paid), code=t.get("cpt", pd.Series([""] * len(t))).fillna(""),
                             mod=t.get("modifier", pd.Series([""] * len(t))).fillna(""),
                             pos=t.get("pos", pd.Series([""] * len(t))).fillna(""),
-                            npi=t.get("renderingNpi", pd.Series([""] * len(t))).fillna(""), allowed=t.allowed.astype(float),
-                            reversal=False, superseded=~t.latest, grp="P" + t.claimId, ver=t.version.astype(int)))
+                            npi=t.get("renderingNpi", pd.Series([""] * len(t))).fillna(""),
+                            rev=t.get("revenueCode", pd.Series([""] * len(t))).fillna(""), allowed=t.allowed.astype(float),
+                            reversal=False, superseded=~t.latest, grp="P" + t.claimId, ver=t.version.astype(int),
+                            clm="P" + t.claimId + ":" + t.version.astype(str)))
     c = pd.concat([mlh, kbp, pmh], ignore_index=True)
     c["current"] = ~c.reversal & ~c.superseded
     c["year"] = c.svc.dt.year
@@ -112,7 +116,7 @@ def load(target):
                         end=_d(row[6]) if row[6] else None))
     p["roster"] = ros
     p["tin2prac"] = {r["tin"]: r["practice"] for r in ros}
-    p["practices"] = sorted({r["practice"] for r in ros}, key=lambda n: min(r["tin"] for r in ros if r["practice"] == n))
+    p["practices"] = list(dict.fromkeys(r["practice"] for r in ros))     # the roster's own order of practices
     p["qualifying"] = set(pd.read_csv(pick(r"^qualifying_primary_care"), dtype=str).code)
     cf = pd.read_csv(pick(r"^payer_completion_factors"), dtype=str)
     p["cf"] = {(r.payer, int(r.incurred_month[5:7])): float(r.completion_factor) for r in cf.itertuples()}
@@ -124,19 +128,6 @@ def load(target):
             if i >= 4 and row[0] and str(row[0]).isdigit():
                 fees[(ab, str(row[0]))] = (row[2], row[3])
     p["fees"] = fees
-    # --- care coordination remittances (ask B) ---
-    rem = []
-    r = pd.read_csv(pick(r"^mlh_care_coordination"), dtype=str)
-    rem += [("MLH", x.PRACTICE_TIN, int(x.COV_MO[4:6]), float(x.PMT_AMT), x.PMT_DT, int(x.MBR_CNT)) for x in r.itertuples()]
-    wb = openpyxl.load_workbook(pick(r"^KBP_CCF_REMIT"), read_only=True)
-    for i, row in enumerate(wb.active.iter_rows(values_only=True)):
-        if i == 0 or row[0] is None:
-            continue
-        rem.append(("KBP", str(row[2]).replace("-", ""), int(str(row[3])[5:7]), float(row[5]), _d(row[0]).isoformat(), int(row[4])))
-    r = pd.read_csv(pick(r"^pmh_ccf_payments"), dtype=str)
-    rem += [("PMH", x.tin.replace("-", ""), int(x.paymentRef.split("-")[3][4:6]), float(x.amount), x.period + "-01",
-             int(x.memberCount)) for x in r.itertuples()]
-    p["remit"] = rem
     return p
 
 
@@ -154,6 +145,10 @@ def _d(x):
 
 def member_months(p, year, upto):
     """{(payer, member): months of coverage in year, January through month upto}."""
+    memo = p.setdefault("_mm", {})
+    key = (id(p["spans"]), year, upto)
+    if key in memo:
+        return memo[key]
     out = {}
     for payer, mid, s, e in p["spans"]:
         s, e = dt.date.fromisoformat(s), dt.date.fromisoformat(e)
@@ -165,6 +160,7 @@ def member_months(p, year, upto):
                 n += 1
         if n:
             out[(payer, mid)] = out.get((payer, mid), 0) + n
+    memo[key] = out
     return out
 
 
@@ -241,8 +237,73 @@ def pm(d, k):
     return d[k][0] / d[k][1]
 
 
+STAY_CODES = {"99468": "NICU", "99469": "NICU", "99291": "ICU", "99239": "ICU", "99223": "MEDSURG", "99232": "MEDSURG",
+              "99238": "MEDSURG"}
+STAY_REV = {"0174": "NICU", "0200": "ICU"}
+
+
+def stay_rates(p):
+    """The lowest per-day facility allowed of the closed stays of 30 days or more in the feeds, by kind of unit."""
+    c = p["claims"]
+    f = c[(c.ctype == "I") & c.current].copy()
+    f["los"] = (f.end - f.svc).dt.days
+    f = f[f.los >= 30]
+    out = {}
+    for r in f.itertuples():
+        kind = STAY_REV.get(r.rev)
+        if kind:
+            out[kind] = min(out.get(kind, 1e12), r.allowed / r.los)
+    return out
+
+
+def stay_day_amounts(p):
+    """The median per-day facility allowed of the closed stays in the feeds, by kind of unit (revenue code)."""
+    c = p["claims"]
+    f = c[(c.ctype == "I") & c.current].copy()
+    f["los"] = (f.end - f.svc).dt.days
+    f = f[f.los >= 1]
+    kind = f.rev.map({"0174": "NICU", "0200": "ICU", "0120": "MEDSURG"})
+    return {k: float((f.allowed / f.los)[kind == k].median()) for k in ("NICU", "ICU", "MEDSURG") if (kind == k).any()}
+
+
+def open_stays(p, year, rule="cap", rates=None):
+    """The members in a stay still running at the year's cut: inpatient visits by the attending physicians day by day up to
+    the cut, and no facility claim for the stay paid by it. rule 'cap': only the stays whose days to the cut, at the lowest
+    per-day amount of the closed stays of the same kind of unit, already pass the member cap; 'all': every running stay.
+    Returns {(payer, member): (kind, first day, days to the cut)}."""
+    cut, paid = CUT[year]
+    rates = rates or stay_rates(p)
+    c = p["claims"]
+    pr = c[(c.ctype == "P") & c.current & (c.pos == "21") & (c.year == year) & (c.svc <= _ts(cut)) & (c.first_paid <= _ts(paid)) &
+           c.code.isin(list(STAY_CODES))]
+    fac = c[(c.ctype == "I") & c.current & (c.year == year) & (c.first_paid <= _ts(paid))]
+    fac = {k: g for k, g in fac.groupby(["payer", "member"])}
+    out = {}
+    for mk, g in pr.groupby(["payer", "member"]):
+        days = sorted(set(g.svc.dt.date))
+        if (cut - days[-1]).days > 10:
+            continue
+        run = [days[-1]]
+        for d in reversed(days[:-1]):
+            if (run[-1] - d).days > 2:
+                break
+            run.append(d)
+        first = run[-1]
+        f = fac.get(mk)
+        if f is not None and ((f.svc.dt.date <= first + dt.timedelta(days=1)) & (f.end.dt.date >= days[-1])).any():
+            continue
+        kinds = g[g.svc.dt.date >= first].code.map(STAY_CODES)
+        kind = "NICU" if (kinds == "NICU").any() else ("ICU" if (kinds == "ICU").any() else "MEDSURG")
+        ndays = (cut - first).days + 1
+        if rule == "cap" and not (kind in rates and ndays * rates[kind] >= CAP):
+            continue
+        out[mk] = (kind, first, ndays)
+    return out
+
+
 def golden(p, pooled=False, per_payer=False, first_paid=True, cut_paid=True, a_reported=False, f_paid=None, aug=None,
-           season=False, complete=True, version="current", cap=CAP):
+           season=False, complete=True, version="current", cap=CAP, stays=True, stays25=True, stay_months=True,
+           stay_rule="cap"):
     """Every practice's figures on the golden handling: the October run's interim measure carried to the year by the
     practice's own 2025 run-out (the 2025 final figure over the figure of the members the 2025 attribution re-run at the
     same cut attributes, January to August). The options are the family's members and the ladder's rungs: pooled (one
@@ -271,17 +332,27 @@ def golden(p, pooled=False, per_payer=False, first_paid=True, cut_paid=True, a_r
         return figure(p, mem, 2026, 8, D(2026, 8, 31), D(2026, 9, 30), complete=complete, version=version, cap=cap)
 
     F, A, I = Ff(f25), Af(aug), If(r26)
+    o25 = open_stays(p, 2025, stay_rule) if (stays and stays25) else {}
+    o26 = open_stays(p, 2026, stay_rule) if stays else {}
+    drop = lambda mem, o: {mk: v for mk, v in mem.items() if mk not in o}
+    Fr, Ar, Ir = Ff(drop(f25, o25)), Af(drop(aug, o25)), If(drop(r26, o26))
+    mm26 = member_months(p, 2026, 12)
+    if stay_rule != "cap":
+        day_amt = stay_day_amounts(p)
+        sub = claims_at(p, 2026, D(2026, 8, 31), D(2026, 9, 30), version)
+        so_far = sub.groupby(["payer", "member"]).allowed.sum().to_dict()
     if per_payer:
         sub = lambda mem, py: {mk: v for mk, v in mem.items() if mk[0] == py}
-        parts = {py: (Ff(sub(f25, py)), Af(sub(aug, py)), If(sub(r26, py))) for py in PAYERS}
-    Fn = sum(v[0] for v in F.values()) / sum(v[1] for v in F.values())
-    An = sum(v[0] for v in A.values()) / sum(v[1] for v in A.values())
+        parts = {py: (Ff(sub(drop(f25, o25), py)), Af(sub(drop(aug, o25), py)), If(sub(drop(r26, o26), py))) for py in PAYERS}
+    Fn = sum(v[0] for v in Fr.values()) / sum(v[1] for v in Fr.values())
+    An = sum(v[0] for v in Ar.values()) / sum(v[1] for v in Ar.values())
     out = {}
     for k in p["practices"]:
         bench = round(round(pm(F, k), 2) * TREND, 2)        # the standard's section 3.4, to the cent
-        R = Fn / An if pooled else pm(F, k) / pm(A, k)
+        R = Fn / An if pooled else pm(Fr, k) / pm(Ar, k)
         interim = pm(I, k)
-        proj = interim * R
+        rest = pm(Ir, k) * R
+        months = Ir[k][1] * Fr[k][1] / Ar[k][1]
         if per_payer:
             num = den = 0.0
             for py in PAYERS:
@@ -291,11 +362,19 @@ def golden(p, pooled=False, per_payer=False, first_paid=True, cut_paid=True, a_r
                 mmk = Ik[k][1] * Fk[k][1] / Ak[k][1]
                 num += pm(Ik, k) * pm(Fk, k) / pm(Ak, k) * mmk
                 den += mmk
-            proj = num / den
+            rest, months = num / den, den
+        held = [mk for mk in o26 if r26.get(mk) == k]
+        add_m = sum(mm26.get(mk, 0) for mk in held) if stay_months else 0
+        if stay_rule == "cap":
+            carried = cap * len(held)
+        else:
+            carried = sum(min(cap, o26[mk][2] * day_amt.get(o26[mk][0], 0.0) + so_far.get(mk, 0.0)) for mk in held)
+        proj = (rest * months + carried) / (months + add_m)
         out[k] = dict(f2025=pm(F, k), benchmark=bench, threshold=bench * (1 - MSR), interim=interim, runout=R, projected=proj,
                       enters=proj <= bench * (1 - MSR), members2025=sum(1 for v in f25.values() if v == k),
                       members_aug=sum(1 for v in aug.values() if v == k), members_run=sum(1 for v in r26.values() if v == k),
-                      mm2025=F[k][1], mm_aug=A[k][1], mm_run=I[k][1])
+                      mm2025=F[k][1], mm_aug=A[k][1], mm_run=I[k][1], open_at_cut=len(held),
+                      open_2025=sum(1 for mk in o25 if aug.get(mk) == k))
     return out
 
 
@@ -332,43 +411,48 @@ def default(p):
 
 # ---- asks ----
 
-def ask_a(p, rule="golden"):
-    """Each practice's share of its clinicians' 2026 January to August established-patient visits (99211 to 99215) that
-    the payers paid at level 5. rule 'golden': the paid level is the one whose rate for the visit's setting (the payer's
-    place-of-service rule) the allowed amount equals, or half of which it equals where the payer halved an E&M billed
-    with a same-day minor procedure; 'code': the code on the claim; 'rate': the full level-5 rate only."""
+def paid_levels(p, rule="golden"):
+    """The paid level of every established-patient visit by the practices' clinicians, January to August 2026, at the
+    claim's current version: [(practice, payer, code, level)]. rule 'golden': the level of the payer's 2026 rate for the
+    visit's setting (its place-of-service rule) that the claim's allowed amount reflects, every line of the claim
+    counted (a Kesselcrest claim adjusted at the claim carries the adjustment on a line with no code), the rate itself,
+    or half of it for a Merrinlake E&M billed with modifier 25 beside a minor procedure by the same clinician that day;
+    'code': the code on the claim; 'line': the level whose rate the E&M line's own allowed equals, a line matching no
+    rate read at its code; 'line_mlh': 'line' with Merrinlake's halved visits found (round 1's cracker); 'halve_all':
+    'line' with every Merrinlake modifier 25 line read at twice its allowed; 'claim_only': the claim's allowed with
+    Merrinlake's halved visits read at the level they match."""
     c = p["claims"]
-    v = c[(c.ctype == "P") & (c.year == 2026) & (c.svc <= _ts(D(2026, 8, 31))) & c.code.isin(EM) & c.current]
-    out = {}
-    for r in v[["payer", "code", "pos", "npi", "svc", "allowed"]].itertuples(index=False):
+    cur = c[(c.ctype == "P") & (c.year == 2026) & (c.svc <= _ts(D(2026, 8, 31))) & c.current]
+    claim_total = cur.groupby("clm").allowed.sum().to_dict()
+    v = cur[cur.code.isin(EM)]
+    other = cur[~cur.code.isin(EM) & ~cur.code.isin(list(p["qualifying"])) & (cur.code != "")]
+    proc_days = set(zip(other.payer, other.member, other.npi, other.svc))
+    out = []
+    for r in v[["payer", "member", "code", "mod", "pos", "npi", "svc", "allowed", "clm"]].itertuples(index=False):
         prac = npi_practice(p, r.npi, r.svc.date())
         if prac is None:
             continue
-        if rule == "code":
-            lvl5 = r.code == "99215"
-        else:
+        lvl = EM.index(r.code) + 1
+        if rule != "code":
             fac = r.pos in ("19", "22") or (r.payer == "PMH" and r.pos in ("02", "10"))
-            rate5 = p["fees"][(r.payer, "99215")][1 if fac else 0]
-            lvl5 = r.code == "99215" and (abs(r.allowed - rate5) < 0.005 or (rule == "golden" and abs(2 * r.allowed - rate5) < 0.01))
+            rates = [p["fees"][(r.payer, e)][1 if fac else 0] for e in EM]
+            amt = claim_total[r.clm] if rule in ("golden", "claim_only") else r.allowed
+            if r.payer == "MLH" and r.mod == "25" and (rule == "halve_all" or (
+                    rule in ("golden", "line_mlh") and (r.payer, r.member, r.npi, r.svc) in proc_days)):
+                amt = 2 * amt
+            hit = [i + 1 for i, x in enumerate(rates) if abs(x - amt) < 0.005]
+            lvl = hit[0] if hit else lvl
+        out.append((prac, r.payer, r.code, lvl))
+    return out
+
+
+def ask_a(p, rule="golden"):
+    """Each practice's share of its clinicians' 2026 January to August established-patient visits (99211 to 99215) that
+    the payers paid at level 5, per cent to one decimal, on paid_levels' rule."""
+    out = {}
+    for prac, payer, code, lvl in paid_levels(p, rule):
         o = out.setdefault(prac, [0, 0])
-        o[0] += int(lvl5)
+        o[0] += int(lvl == 5)
         o[1] += 1
     return {k: round(100.0 * a / b, 1) for k, (a, b) in out.items()}
 
-
-def ask_b(p, pmh_by_period=False, keep_other_programs=False):
-    """The care coordination fees the three payers paid under the standard for each practice's members, by coverage
-    quarter of 2026, January to September, on the March to October runs: a line counts where its amount is its members
-    times the payer's fee in section 5.1. With pmh_by_period, Pemberglen's lines by the period they were posted to; with
-    keep_other_programs, every line of the remittances whatever its fee."""
-    out = {}
-    for payer, tin, cov, amt, pdate, members in p["remit"]:
-        if not keep_other_programs and abs(members * CCF[payer] - amt) > 0.005:
-            continue
-        m = int(pdate[5:7]) if (pmh_by_period and payer == "PMH") else cov
-        if not 1 <= m <= 9:
-            continue
-        prac = p["tin2prac"][tin]
-        q = (m - 1) // 3 + 1
-        out[(prac, q)] = out.get((prac, q), 0.0) + amt
-    return {k: round(v, 2) for k, v in out.items()}

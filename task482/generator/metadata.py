@@ -32,7 +32,9 @@ SOURCES = {
     "kbp_medicare_advantage_attribution_2026.xlsx": ("Kesselcrest Benefit Partners, Medicare Advantage provider attribution", "2026-07-16"),
     "lpn_quality_composite_2025.csv": ("The three payers' 2025 quality measure results for the network's practices", "2026-05-29"),
 }
-DISTRACTORS = ["target/kbp_medicare_advantage_attribution_2026.xlsx", "target/lpn_quality_composite_2025.csv"]
+DISTRACTORS = ["target/kbp_medicare_advantage_attribution_2026.xlsx", "target/lpn_quality_composite_2025.csv",
+               "target/mlh_care_coordination_remittance_2026.csv", "target/KBP_CCF_REMIT_2026.xlsx",
+               "target/pmh_ccf_payments_2026.csv"]
 
 
 def main():
@@ -48,7 +50,7 @@ def main():
                         "Wisconsin and its three commercial payers: the network, the practices, the payers and the "
                         "people are fictional, and every record is synthetic.", as_of="2026-10-16",
                 deliverables=["two_sided_track_elections_2027.xlsx", "practice_cost_vs_benchmark_2026.png"],
-                distractor_files=DISTRACTORS, files=files)
+                distractor_files=DISTRACTORS, stated_inputs=["250,000"], files=files)
     assert set(SOURCES) == set(os.listdir(T)), set(SOURCES) ^ set(os.listdir(T))
     json.dump(meta, open(os.path.join(TASK, "metadata.json"), "w"), indent=1)
 

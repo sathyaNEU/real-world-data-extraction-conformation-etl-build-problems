@@ -1,6 +1,5 @@
 """The golden deliverables: the board's elections workbook (each practice's projected 2026 network measure against its
-threshold and its election, the level 5 paid share, the care coordination fees by coverage quarter, notes) and the
-chart of each practice's projected figure against its threshold; returns every figure the write-up states."""
+threshold and its election, the level 5 paid share, notes) and the of each practice's projected figure against its threshold; returns every figure the write-up states."""
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
@@ -35,16 +34,13 @@ def listing(xs):
 
 
 def level5_counts(p):
-    """Each practice's established-patient visits and the visits paid at level 5, the golden's own classification."""
-    share = G.ask_a(p)
-    c = p["claims"]
-    v = c[(c.ctype == "P") & (c.year == 2026) & (c.svc <= G._ts(G.D(2026, 8, 31))) & c.code.isin(G.EM) & c.current]
+    """Each practice's established-patient visits and the visits paid at level 5, on the golden's paid levels."""
     tot = {}
-    for n, d in zip(v.npi, v.svc):
-        prac = G.npi_practice(p, n, d.date())
-        if prac:
-            tot[prac] = tot.get(prac, 0) + 1
-    return {k: (tot[k], int(round(share[k] * tot[k] / 100.0))) for k in share}, share
+    for prac, payer, code, lvl in G.paid_levels(p, "golden"):
+        o = tot.setdefault(prac, [0, 0])
+        o[0] += 1
+        o[1] += int(lvl == 5)
+    return {k: tuple(v) for k, v in tot.items()}
 
 
 def write(path, p):
@@ -52,13 +48,22 @@ def write(path, p):
     order = p["practices"]
     enter = [k for k in order if g[k]["enters"]]
     stay = [k for k in order if not g[k]["enters"]]
-    a_counts, a = level5_counts(p)
-    b = G.ask_b(p)
+    a_counts = level5_counts(p)
+    a = G.ask_a(p)
+    held = G.open_stays(p, 2026)
+    rates = G.stay_rates(p)
     dflt = G.default(p)
-    pooled = G.golden(p, pooled=True)
-    figs = dict(call=dict(enter=enter, stay=stay, n_enter=len(enter)), practices={}, ask_a={}, ask_b={}, order=order,
-                constants=dict(trend=G.TREND, threshold_share=98, cap=int(G.CAP), mlh_fee=G.CCF["MLH"], kbp_fee=G.CCF["KBP"],
-                               pmh_fee=G.CCF["PMH"], ma_fee=6.50, codes=["99211", "99214", "99215"],
+    runout = G.golden(p, stays=False)
+    r26, hc = G.run_members(p, "run2026"), {}
+    for mk in held:
+        hc[r26[mk]] = hc.get(r26[mk], 0) + 1
+    figs = dict(call=dict(enter=enter, stay=stay), ask_a={},
+                parameters=dict(threshold={}, benchmark={}, position_pct={},
+                                steps=dict(default_enter=[k for k in order if dflt[k]["enters"]],
+                                           runout_enter=[k for k in order if runout[k]["enters"]],
+                                           held=[[k, hc[k]] for k in order if k in hc],
+                                           open_2025=len(G.open_stays(p, 2025)))),
+                constants=dict(order=order, trend=G.TREND, threshold_share=98, cap=int(G.CAP), codes=["99211", "99213", "99214", "99215"],
                                sections=["2", "3", "3.4", "4.1"]))
 
     wb = openpyxl.Workbook()
@@ -73,29 +78,29 @@ def write(path, p):
     ws.append([])
     ws.append(["Practice", "Practice TIN", "2025 network measure, final 2025 runs", "2026 benchmark (x 1.052)",
                "Threshold (98% of benchmark)", "Interim measure, October 2026 runs", "2025 run-out at the same cut",
-               "Projected 2026 network measure", "Projected against threshold", "Election"])
+               "Members in hospital on 31 August, carried at the cap", "Projected 2026 network measure",
+               "Projected against threshold", "Election"])
     _head(ws, 4)
     tin = {v: k for k, v in p["tin2prac"].items()}
     for k in order:
         x = g[k]
         gap = x["projected"] / x["threshold"] - 1
         ws.append([k, "%s-%s" % (tin[k][:2], tin[k][2:]), round(x["f2025"], 2), round(x["benchmark"], 2),
-                   round(x["threshold"], 2), round(x["interim"], 2), round(x["runout"], 4), round(x["projected"], 2),
-                   gap, "Two-sided" if x["enters"] else "One-sided"])
+                   round(x["threshold"], 2), round(x["interim"], 2), round(x["runout"], 4), x["open_at_cut"] or None,
+                   round(x["projected"], 2), gap, "Two-sided" if x["enters"] else "One-sided"])
         if x["enters"]:
             for c in ws[ws.max_row]:
                 c.fill = ENTER_FILL
-        figs["practices"][k] = dict(f2025=round(x["f2025"], 2), benchmark=round(x["benchmark"], 2),
-                                    threshold=round(x["threshold"], 2), interim=round(x["interim"], 2),
-                                    runout=round(x["runout"], 4), projected=round(x["projected"], 2),
-                                    gap_pct=round(100 * gap, 1), enters=bool(x["enters"]),
-                                    members2025=x["members2025"], members_run=x["members_run"])
+        figs["parameters"]["threshold"][k] = round(x["threshold"], 2)
+        figs["parameters"]["benchmark"][k] = round(x["benchmark"], 2)
+        figs["parameters"]["position_pct"][k] = round(100 * gap, 1)
     for row in ws.iter_rows(min_row=5, max_row=ws.max_row):
-        for c in (row[2], row[3], row[4], row[5], row[7]):
+        for c in (row[2], row[3], row[4], row[5], row[8]):
             c.number_format = "#,##0.00"
         row[6].number_format = "0.0000"
-        row[8].number_format = "+0.0%;-0.0%;0.0%"
-    for i, w in enumerate([31, 12, 14, 13, 13, 14, 12, 14, 12, 11], 1):
+        row[7].number_format = "0"
+        row[9].number_format = "+0.0%;-0.0%;0.0%"
+    for i, w in enumerate([31, 12, 14, 13, 13, 14, 12, 14, 14, 12, 11], 1):
         ws.column_dimensions[get_column_letter(i)].width = w
     ws.row_dimensions[4].height = 58
     ws.freeze_panes = "B5"
@@ -104,14 +109,14 @@ def write(path, p):
     la.append(["Established-patient visits by the practices' clinicians paid at level 5, January to August 2026"])
     la["A1"].font = BOLD
     la.append(["Visits billed 99211 to 99215 in person or by telehealth, at the claim's current version, by the clinician's "
-               "practice on the date of service; the paid level is the level of the payer's 2026 rate that the allowed "
-               "amount reflects."])
+               "practice on the date of service; the paid level is the level of the payer's 2026 rate for the visit's "
+               "setting that the claim's allowed amount reflects, every line of the claim counted."])
     la.append([])
     la.append(["Practice", "Established-patient visits", "Paid at level 5", "Share paid at level 5"])
     _head(la, 4)
     for k in order:
         n, n5 = a_counts[k]
-        la.append([k, n, n5, a[k] / 100.0])
+        la.append([k, n, n5, n5 / n])
         figs["ask_a"][k] = a[k]
     tn = sum(v[0] for v in a_counts.values())
     t5 = sum(v[1] for v in a_counts.values())
@@ -128,40 +133,13 @@ def write(path, p):
     la.row_dimensions[4].height = 30
     la.freeze_panes = "B5"
 
-    fb = wb.create_sheet("Care coordination fees")
-    fb.append(["Care coordination fees paid under the Performance Standard, by coverage quarter, January to September "
-               "2026, on the March to October runs, USD"])
-    fb["A1"].font = BOLD
-    fb.append(["The three payers' remittances by the month each line covers; Kesselcrest's Medicare Advantage lines "
-               "(USD 6.50 a member month) are outside the standard and left out; Pemberglen's lines are placed by the "
-               "coverage month in their payment reference."])
-    fb.append([])
-    fb.append(["Practice", "Q1 January to March", "Q2 April to June", "Q3 July to September", "January to September"])
-    _head(fb, 4)
-    for k in order:
-        vals = [b[(k, q)] for q in (1, 2, 3)]
-        fb.append([k] + vals + [round(sum(vals), 2)])
-        for q, v in zip((1, 2, 3), vals):
-            figs["ask_b"]["%s|Q%d" % (k, q)] = v
-    fb.append(["Network"] + [round(sum(b[(k, q)] for k in order), 2) for q in (1, 2, 3)] + [round(sum(b.values()), 2)])
-    for c in fb[fb.max_row]:
-        c.font = BOLD
-        c.fill = TOTAL_FILL
-    for row in fb.iter_rows(min_row=5, min_col=2):
-        for c in row:
-            c.number_format = "#,##0.00"
-    for i, w in enumerate([31, 13, 13, 13, 13], 1):
-        fb.column_dimensions[get_column_letter(i)].width = w
-    fb.row_dimensions[4].height = 30
-    fb.freeze_panes = "B5"
-
-    rmin = min(g[k]["runout"] for k in order)
-    rmax = max(g[k]["runout"] for k in order)
-    figs["steps"] = dict(default_enter=[k for k in order if dflt[k]["enters"]], pooled_runout=round(pooled[order[0]]["runout"], 3),
-                         pooled_enter=[k for k in order if pooled[k]["enters"]], runout_min=round(rmin, 3),
-                         runout_max=round(rmax, 3),
-                         under_min=min(-figs["practices"][k]["gap_pct"] for k in enter),
-                         under_max=max(-figs["practices"][k]["gap_pct"] for k in enter))
+    kinds = {}
+    for mk, (kind, first, days) in held.items():
+        kinds.setdefault((kind, first), []).append(days)
+    count = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 7: "Seven"}
+    stays_line = "; ".join("%s in %s from %s, %d days to the cut" % (
+        count[len(v)], {"NICU": "a neonatal unit", "ICU": "intensive care"}[kd], f.strftime("%-d %B"), v[0])
+        for (kd, f), v in sorted(kinds.items(), key=lambda kv: kv[0][1]))
     no = wb.create_sheet("Notes")
     notes = [
         "Prepared by Payer Performance Analytics for the Board's meeting of 29 October 2026; elections due with the "
@@ -175,16 +153,25 @@ def write(path, p):
         "(Resolution 2026-11).",
         "Interim measure (section 4.1): claims incurred January to August 2026 paid by each payer's October feed, "
         "divided by the payer's completion factor for the month incurred, for the members on the October runs.",
-        "The October runs attribute only the members whose qualifying visit had been paid by 30 September; the final "
-        "runs will add the members whose first qualifying visit of 2026 comes later, for every month of their coverage. "
-        "Each practice's projection carries its interim measure by its own 2025 run-out at the same cut: its 2025 "
-        "network measure over the measure, January to August 2025, of the members the standard's attribution assigns "
-        "to it on qualifying services incurred by 31 August 2025 and paid by 30 September 2025. The practices' run-outs "
-        "run from %.3f to %.3f; the network's pooled run-out of %.3f would misplace the practices whose members come "
-        "early." % (rmin, rmax, pooled[order[0]]["runout"]),
-        "Level 5 paid share: Kesselcrest's level review pays some level 5 visits at its level 4 rate from 1 March 2026, "
-        "and Merrinlake allows an E&M billed with a same-day minor procedure (modifier 25) at half its rate; both are "
-        "read from the allowed amount against the payer's 2026 schedule for the visit's setting.",
+        "Run-out: the October runs attribute only the members whose qualifying visit had been paid by 30 September, and "
+        "the final runs will add the members whose first qualifying visit of 2026 comes later, for every month of their "
+        "coverage. Each practice's interim measure is carried by its own 2025 run-out at the same cut: its 2025 network "
+        "measure over the measure, January to August 2025, of the members the standard's attribution assigns to it on "
+        "qualifying services incurred by 31 August 2025 and paid by 30 September 2025.",
+        "Members in hospital at the cut: a hospital bills a stay when it ends, so the October feeds hold a stay still "
+        "running on 31 August only as its attending physicians' daily visits. %s (%s) had passed the USD 250,000 cap by "
+        "the cut at the lowest per-day amount any closed stay of 30 days or more of the same kind was allowed (USD %s a day "
+        "in neonatal care, USD %s in intensive care); each is carried at the cap with its 2026 months of coverage. No "
+        "stay of the kind was running at the 2025 cut, and the completion factors leave out claims over USD 100,000 "
+        "(Appendix C), so neither the run-out nor the factors carry these stays." % (
+            "%s members" % count[len(held)], stays_line,
+            "{:,.0f}".format(rates["NICU"]), "{:,.0f}".format(rates["ICU"])),
+        "Level 5 paid share: from 1 March 2026 Kesselcrest's level review pays some level 5 visits at its level 4 rate, "
+        "the visit's line keeping the level 5 rate and the claim taking the difference on a line with no procedure code, "
+        "so such a visit is level 4; Merrinlake allows an E&M billed with modifier 25 beside a minor procedure by the "
+        "same clinician that day at half its rate, so such a visit is at the level whose rate is twice its allowed amount "
+        "(a halved level 5 equals Merrinlake's level 3 rate), while a modifier 25 visit beside a preventive visit is "
+        "paid in full.",
         "Prices are USD per attributed member month, rounded to the cent; the elections are made on unrounded figures.",
     ]
     for t_ in notes:
@@ -207,7 +194,7 @@ def chart(path, p, g, enter):
     inter = [100 * (g[k]["interim"] / g[k]["threshold"] - 1) for k in names]
     fig, ax = plt.subplots(figsize=(8.8, 5.4), dpi=150)
     cols = [green if k in enter else grey for k in names]
-    bars = ax.barh(y, proj, height=0.56, color=cols, zorder=2)
+    ax.barh(y, proj, height=0.56, color=cols, zorder=2)
     dots, = ax.plot(inter, y, linestyle="none", marker="o", markersize=5.5, markerfacecolor="white",
                     markeredgecolor=ink2, markeredgewidth=1.2, zorder=3)
     ax.axvline(0, color=ink, linewidth=1.0, zorder=4)
@@ -236,10 +223,10 @@ def chart(path, p, g, enter):
     dots.set_label("Interim measure on the October runs")
     ax.legend(handles=handles, loc="lower left", bbox_to_anchor=(-0.38, 1.04), ncol=3, frameon=False, fontsize=7.4,
               handlelength=1.3, borderaxespad=0, columnspacing=1.2)
-    fig.suptitle("%s practices come in at least 2 per cent under their 2026 benchmarks once the year's attribution is "
-                 "carried in" % WORDS[len(enter)], x=0.012, y=0.975, ha="left", fontsize=10.2, color=ink)
-    fig.text(0.012, 0.012, "Larrowbrook Physician Network, Payer Performance Analytics. Network measure on the payers' "
-             "final 2026 attribution, projected from the October 2026 runs by each practice's 2025 run-out.",
+    fig.suptitle("%s practices clear their 2026 thresholds; the stays at Mallowcrest and Garrowdale keep them out"
+                 % WORDS[len(enter)], x=0.012, y=0.975, ha="left", fontsize=10.2, color=ink)
+    fig.text(0.012, 0.012, "Larrowbrook Physician Network, Payer Performance Analytics. Projected from the October 2026 "
+             "runs by each practice's 2025 run-out; members in hospital on 31 August at the USD 250,000 cap.",
              fontsize=6.6, color=ink2)
     fig.subplots_adjust(left=0.27, right=0.97, top=0.84, bottom=0.13)
     fig.savefig(path, facecolor="white", metadata={"Software": None, "Title": "Practice cost against benchmark 2026",

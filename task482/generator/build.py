@@ -1,4 +1,4 @@
-"""Builds task482's pack (architecture 13) into target/ and the golden deliverables into golden/, writes
+"""Builds task482's pack (architecture 14) into target/ and the golden deliverables into golden/, writes
 generator/figures.json, and cuts target.zip; two runs are byte-identical.
 
     python3 task482/generator/build.py          # the whole build
@@ -94,10 +94,15 @@ def main():
 
 
 def cut_zip():
+    """Each file keeps the date its source produced it (metadata.SOURCES) and a working-hours time of its own."""
+    import hashlib
+    import metadata
     zp = os.path.join(TASK, "target.zip")
     with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED) as z:
         for n in sorted(os.listdir(TARGET)):
-            zi = zipfile.ZipInfo(n, date_time=(2026, 10, 16, 9, 0, 0))
+            y, mo, d = (int(x) for x in metadata.SOURCES[n][1].split("-"))
+            h = int(hashlib.md5(n.encode()).hexdigest(), 16)
+            zi = zipfile.ZipInfo(n, date_time=(y, mo, d, 7 + h % 11, (h // 11) % 60, ((h // 660) % 30) * 2))
             zi.compress_type = zipfile.ZIP_DEFLATED
             zi.external_attr = 0o644 << 16
             z.writestr(zi, open(os.path.join(TARGET, n), "rb").read())

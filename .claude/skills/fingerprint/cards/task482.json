@@ -10,7 +10,7 @@
   "shape": "10",
   "decision_type": "designation_set",
   "answer_unit": "set_of_items",
-  "answer": "Enter Ostrelwood, Callowglen, Thornelfield, Raddelview, Jesselford, Nerrincreek and Torrinridge in the 2027 two-sided track; keep Haddelcrest, Birrelhaven, Wexelmoor, Mallowcrest, Prestelglen and Garrowdale one-sided (to be confirmed by the build).",
+  "answer": "Enter Ostrelwood, Callowglen, Thornelfield, Birrelhaven, Raddelview, Jesselford, Nerrincreek and Torrinridge in the 2027 two-sided track; keep Haddelcrest, Wexelmoor, Mallowcrest, Prestelglen and Garrowdale one-sided.",
   "answer_source": "submission.md block 1; generator/figures.json call.enter",
   "gap": [
     "time",
@@ -32,7 +32,7 @@
   "validated_decoy": false,
   "context_artifact": "close_out_summary",
   "stump_class": "analytical",
-  "analyst_test": "A strong analyst who conforms the three payers' feeds, reads every rule and carries each practice's October interim measure by its own 2025 run-out at the same cut (the field's projection of a retrospective attribution) enters nine practices; the members still in hospital at the cut, whose stays the hospitals bill at discharge, are past the member cap, and only counting each at the cap moves Mallowcrest Pediatrics and Garrowdale Family Practice over their thresholds.",
+  "analyst_test": "A strong analyst who conforms the three payers' feeds, reads every rule and carries each practice's October interim measure by its own 2025 run-out at the same cut (the field's projection of a retrospective attribution) enters ten practices; the members still in hospital at the cut, whose stays the hospitals bill at discharge, are past the member cap, and only counting each at the cap moves Mallowcrest Pediatrics and Garrowdale Family Practice over their thresholds.",
   "domain_test": "The deciding quantity is each practice's 2026 total cost of care per attributed member month on the payers' final runs, which a value-based finance team projects from the interim run by completion factors and the attribution's own run-out, with the large claims it already knows of carried separately at the stop-loss; swap the hospital for a school and there is no stay billed at its end and no member cap, so the step has nothing to act on.",
   "layer2_family": "estimation_fit",
   "layer2_pattern": "own:a stay billed at its end carried at the member cap from its daily professional charges",
@@ -50,7 +50,7 @@
   "scoring_unit": "per covered member",
   "spine": {
     "file": "mlh_tcoc_claims_2025-01_2026-09.csv",
-    "rows": 273594,
+    "rows": 283413,
     "entity": "one claim, void or replacement line of Merrinlake's value-based partner claims extract",
     "grain": "claim x version",
     "source": "synthetic"
@@ -94,8 +94,8 @@
   "opening_move": "question-first",
   "question_form": "which",
   "driver": "A per-member rate for a period still running is carried to the period's end by the last period's own relation at the same cut, but a few members are inside episodes whose amount is recorded only when the episode ends; the episodes show only through the small charges recorded day by day while they run, and they are already past the per-member cap, so each such member's amount for the period is the cap however the episode ends, while the carried rate, built on members whose later amounts are small, leaves it out.",
-  "driver_concrete": "Each practice's 2026 network measure on the payers' final attribution is its October interim measure carried by its own 2025 run-out at the same cut, plus what the members still in hospital on 31 August will bring: the hospitals bill a stay when it ends, so the premature triplets in a neonatal unit since June (Mallowcrest Pediatrics) and the three members of one family in trauma intensive care since a July crash (Garrowdale Family Practice) show only through the neonatologists' and intensivists' daily professional claims, and each is already past the USD 250,000 member cap, so each member's 2026 cost is the cap.",
-  "stump": "The default path carries each practice's October interim measure, completed by the payers' factors, by its own 2025 run-out at the same cut and enters nine practices; the factors and the run-out carry what the year adds on average, but the stays still open at the cut are billed at discharge and show only as daily professional charges, and the six members in them are each past the cap, so Mallowcrest Pediatrics and Garrowdale Family Practice come in over their thresholds and seven practices enter.",
+  "driver_concrete": "Each practice's 2026 network measure on the payers' final attribution is its October interim measure carried by its own 2025 run-out at the same cut, plus what the members still in hospital on 31 August will bring: the hospitals bill a stay when it ends, so the premature triplets in a neonatal unit since June (Mallowcrest Pediatrics) and the four members of one family in trauma intensive care since a July crash (Garrowdale Family Practice) show only through the neonatologists' and intensivists' daily professional claims, and each is already past the USD 250,000 member cap, so each member's 2026 cost is the cap.",
+  "stump": "The default path carries each practice's October interim measure, completed by the payers' factors, by its own 2025 run-out at the same cut and enters ten practices; the factors and the run-out carry what the year adds on average, but the stays still open at the cut are billed at discharge and show only as daily professional charges, and the seven members in them are each past the cap, so Mallowcrest Pediatrics and Garrowdale Family Practice come in over their thresholds and eight practices enter.",
   "mechanism_source": "stumping 1.1b (the field's own method, the attribution run-out, placed on the default path) and the rigor library's judgment list ('what a cap truncates'); a hospital's discharge billing of long stays and an ACO's large-claim handling at the stop-loss",
   "differentiation": {
     "task451": "task451 completes a closed year's unpaid claims by a lag history whose handling sped up; here the completion factors are right on average and what they cannot carry is a few known stays billed at their end, each already past the cap.",
@@ -344,7 +344,7 @@
       "fate": "spent 2026-10-25 at stage 4 round 1: both scored readers re-ran the October 2025 interim run from the 2025 claims and carried each practice's interim measure by its own 2025 final-to-interim ratio, landing the call (the nine), asks 78 and 65 of 78 (exit 1); the judge thread was stopped at the spend"
     }
   ],
-  "notes": "stump_strategy maturity_censoring: the year's attributed population is immature at the cut (late arrival of members into the population), and the decisive move is its run-out; not population_selection (the population is filed in full by the attribution clause, the difficulty is that it has not finished arriving) and not forecast_method_backtest (no method is chosen by a back-test). gate_g etl_conformance: each practice's conformed cost of care on the contract's basis, judged against the board's two-sided standard.",
+  "notes": "stump_strategy maturity_censoring: a member's year is censored at the cut wherever a hospital has yet to bill a stay still running, and the decisive move is reading the members in such stays, already past the member cap, at the cap; not population_selection (the population is filed in full by the attribution clause) and not binding_constraint (the cap fixes the size of the step, it removes no pick by itself). gate_g etl_conformance: each practice's conformed cost of care on the contract's basis, judged against the board's two-sided standard.",
   "client_domain": "healthcare-delivery-health-economics",
   "registered": "2026-10-25T01:34:36Z"
 }

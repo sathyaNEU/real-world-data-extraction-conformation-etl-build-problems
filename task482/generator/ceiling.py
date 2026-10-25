@@ -1,6 +1,8 @@
 """The ask layer's pair ceiling on the cut pack (supplemental-stumping Part 0 and 1.1): the cracker lands the call, runs
-the hygiene battery and executes every filed rule it points at; the mirror stops on the default rung. Each is scored
-figure by figure against the golden at the asks' rounding, with the partial handlings measured beside them.
+the hygiene battery, executes every filed rule it points at and reads every rate against the schedules (each visit at
+the level whose rate its line's allowed amount equals, Merrinlake's halved visits found: round 1's reader A); the
+mirror stops off the call and reads each visit at the code on its claim. Each is scored figure by figure against the golden at the asks' rounding,
+on its own readings, with the half-handled stops measured beside them.
 
     python3 task482/generator/ceiling.py
 """
@@ -19,32 +21,26 @@ def keep(gold, other, tol):
 
 def main():
     p = G.load(T)
-    A, B = G.ask_a(p), G.ask_b(p)
-    a_code = keep(A, G.ask_a(p, rule="code"), 0.05)
-    a_rate = keep(A, G.ask_a(p, rule="rate"), 0.05)
-    b_crack = keep(B, G.ask_b(p, pmh_by_period=True, keep_other_programs=True), 0.005)
-    b_ref = keep(B, G.ask_b(p, keep_other_programs=True), 0.005)
-    b_fee = keep(B, G.ask_b(p, pmh_by_period=True), 0.005)
-    n = len(A) + len(B)
-    print("ask A, level 5 paid share by practice: %d figures" % len(A))
-    print("  the code on the claim (the cracker)                          keeps %2d" % a_code)
-    print("  the full level-5 rate only                                   keeps %2d" % a_rate)
-    print("ask B, care coordination fees by practice and coverage quarter: %d figures" % len(B))
-    print("  every remittance line, Pemberglen by its period (the cracker) keeps %2d" % b_crack)
-    print("  Pemberglen's coverage month from its reference, every line   keeps %2d" % b_ref)
-    print("  the standard's fees only, Pemberglen by its period           keeps %2d" % b_fee)
-    crack = a_code + b_crack
-    mirror = a_code + b_crack           # the mirror reads both asks as the cracker does
+    A = G.ask_a(p)
+    a = {r: keep(A, G.ask_a(p, rule=r), 0.05) for r in ("line_mlh", "code", "line", "halve_all", "claim_only")}
+    n = len(A)
+    print("ask A, level 5 paid share by practice: %d figures" % n)
+    print("  each line at its rate, Merrinlake's halved visits found (the cracker)            keeps %2d" % a["line_mlh"])
+    print("  the code on the claim (the mirror)                                                keeps %2d" % a["code"])
+    print("  each line at the level its own allowed amount equals                              keeps %2d" % a["line"])
+    print("  every Merrinlake modifier 25 visit read at twice its line's allowed amount        keeps %2d" % a["halve_all"])
+    print("  each claim at the level its allowed amount equals, Merrinlake's halving unseen    keeps %2d" % a["claim_only"])
+    crack, mirror = a["line_mlh"], a["code"]
     lc, lm = crack / n, mirror / n
     c = 38 + 7 + 55 * lc
     s = 5 + 7 + 55 * lm
     print("cracker keeps %d of %d ask figures (%.1f per cent), scores %.1f with the call" % (crack, n, 100 * lc, c))
     print("mirror keeps %d of %d (%.1f per cent), scores %.1f off it" % (mirror, n, 100 * lm, s))
-    best_partial = max(a_rate, a_code) + max(b_ref, b_fee, b_crack)
-    print("the best single-device handling keeps %d of %d (%.1f per cent)" % (best_partial, n, 100 * best_partial / n))
+    best = max(a.values())
+    print("the best half-handled response keeps %d of %d (%.1f per cent)" % (best, n, 100 * best / n))
     print("Pair ceiling: %.1f" % ((c + s) / 2))
     print("Mirror leakage: %.1f per cent of ask weight" % (100 * lm))
-    return dict(crack=crack, mirror=mirror, n=n, pair=(c + s) / 2, partial=best_partial)
+    return dict(crack=crack, mirror=mirror, n=n, pair=(c + s) / 2, partial=best, a=a)
 
 
 if __name__ == "__main__":

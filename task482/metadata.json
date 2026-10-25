@@ -9,7 +9,13 @@
  ],
  "distractor_files": [
   "target/kbp_medicare_advantage_attribution_2026.xlsx",
-  "target/lpn_quality_composite_2025.csv"
+  "target/lpn_quality_composite_2025.csv",
+  "target/mlh_care_coordination_remittance_2026.csv",
+  "target/KBP_CCF_REMIT_2026.xlsx",
+  "target/pmh_ccf_payments_2026.csv"
+ ],
+ "stated_inputs": [
+  "250,000"
  ],
  "files": [
   {
@@ -31,14 +37,14 @@
    "source": "Kesselcrest Benefit Partners, partner claims extract (fictional, synthetic records)",
    "date": "2026-10-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 152353
+   "rows": 159442
   },
   {
    "file": "KBP_ELIG_LPN_20261009.txt",
    "source": "Kesselcrest Benefit Partners, partner eligibility extract (fictional, synthetic records)",
    "date": "2026-10-09",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 9180
+   "rows": 9289
   },
   {
    "file": "kbp_medicare_advantage_attribution_2026.xlsx",
@@ -59,14 +65,14 @@
    "source": "Larrowbrook Physician Network, master patient index extract (fictional, synthetic records)",
    "date": "2026-10-13",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 29164
+   "rows": 29583
   },
   {
    "file": "lpn_payer_feed_field_guide.txt",
    "source": "Larrowbrook Physician Network, payer performance analytics, feed field guide (fictional, synthetic records)",
    "date": "2026-10-13",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 63
+   "rows": 66
   },
   {
    "file": "lpn_performance_standard_2026.pdf",
@@ -94,28 +100,28 @@
    "source": "Merrinlake Health Plan, attribution runs (fictional, synthetic records)",
    "date": "2026-10-07",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 24667
+   "rows": 25009
   },
   {
    "file": "mlh_care_coordination_remittance_2026.csv",
    "source": "Merrinlake Health Plan, care coordination remittance detail (fictional, synthetic records)",
    "date": "2026-10-16",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 676
+   "rows": 454
   },
   {
    "file": "mlh_eligibility_2025_2026.csv",
    "source": "Merrinlake Health Plan, partner eligibility extract (fictional, synthetic records)",
    "date": "2026-10-07",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 16491
+   "rows": 16729
   },
   {
    "file": "mlh_tcoc_claims_2025-01_2026-09.csv",
    "source": "Merrinlake Health Plan, value-based partner claims extract (fictional, synthetic records)",
    "date": "2026-10-07",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 273594
+   "rows": 283413
   },
   {
    "file": "payer_completion_factors_2026-09.csv",
@@ -143,7 +149,7 @@
    "source": "Pemberglen Mutual Health, attribution runs (fictional, synthetic records)",
    "date": "2026-10-12",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 7166
+   "rows": 7278
   },
   {
    "file": "pmh_ccf_payments_2026.csv",
@@ -157,7 +163,7 @@
    "source": "Pemberglen Mutual Health, partner member coverage (fictional, synthetic records)",
    "date": "2026-10-12",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 4960
+   "rows": 5032
   },
   {
    "file": "pmh_partner_claims_2026-10-12.json",
@@ -171,7 +177,7 @@
    "source": "Larrowbrook Physician Network, Performance Standard Appendix A (fictional, synthetic records)",
    "date": "2025-12-11",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 21
+   "rows": 25
   }
  ]
 }

@@ -4,11 +4,7 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-WORDS = {9: "nine", 10: "ten", 8: "eight", 11: "eleven", 3: "three", 4: "four", 12: "twelve"}
-
-
-def c(n):
-    return format(n, ",")
+WORDS = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten"}
 
 
 def usd(x):
@@ -26,75 +22,73 @@ def short(k):
 
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    P, order, s, k_ = f["practices"], f["order"], f["steps"], f["constants"]
+    k_, par = f["constants"], f["parameters"]
+    order, steps = k_["order"], par["steps"]
     enter, stay = f["call"]["enter"], f["call"]["stay"]
-    late = [k for k in enter if k not in s["default_enter"]]
-    pooled_extra = [k for k in s["pooled_enter"] if k not in enter]
+    held = dict(steps["held"])
+    hp = sorted(held, key=lambda k: order.index(k))
+    dflt, runout = steps["default_enter"], steps["runout_enter"]
     out = ["## Tags", "",
            "**Domain:** Healthcare Delivery & Health Economics, payment, claims and health plan analytics (a clinically "
            "integrated network's 2027 two-sided risk elections for its thirteen primary care practices, conformed from "
            "three commercial payers' claim, coverage and attribution feeds in three layouts, the network's clinician "
-           "roster and master patient index, its performance standard and the payers' care coordination remittances).",
+           "roster and master patient index, its performance standard and the payers' E&M fee schedules).",
            "**Analytical objective:** Data Extraction & Conformation (ETL).", "",
            "## 1. Final Recommendation", "",
            "**Enter %s in the 2027 two-sided track and keep %s one-sided.**" % (
                joined([short(k) for k in enter]), joined([short(k) for k in stay])),
-           "On the payers' final 2026 attribution each of the %s comes in %.1f to %.1f per cent under its threshold, its "
-           "October interim measure carried to the year by its own 2025 run-out at the same cut. Not %s alone, the "
-           "interim measure taken as it stands: the October runs attribute only the members whose qualifying visit has "
-           "happened, and the year adds the members who visit late, with a whole year of member months and a fraction of "
-           "the cost. Not %s as well, one pooled network run-out of %.3f: their members come early, or cost what the "
-           "practice's other members cost." % (
-               WORDS[len(enter)], s["under_min"], s["under_max"], joined([short(k) for k in s["default_enter"]]),
-               joined([short(k) for k in pooled_extra]), s["pooled_runout"]), "",
+           "%s come in over their thresholds once the %s members still in hospital on 31 August 2026, each already past "
+           "the USD %s cap, are carried at it. Not %s alone, the interim measure as it stands: the October runs attribute "
+           "only the members whose qualifying visit has been paid. Not %s as well, the interim measure carried by each "
+           "practice's own 2025 run-out alone: a hospital bills a stay when it ends, so neither the completion factors "
+           "nor the run-out carries a stay still running at the cut." % (
+               joined([short(k) for k in hp]), WORDS[sum(held.values())], "{:,}".format(k_["cap"]),
+               joined([short(k) for k in dflt]), joined([short(k) for k in runout if k not in enter])), "",
            "## 2. Critical Components", "",
-           "1. 2025 network measure on the payers' final 2025 runs, USD per member month: %s." % "; ".join(
-               "%s **%s**" % (short(k), "{:,.2f}".format(P[k]["f2025"])) for k in order),
-           "2. 2026 threshold, 98 per cent of the benchmark, the 2025 measure to the cent times %s to the cent (standard, "
-           "section 3.4): %s." % (
-               k_["trend"], "; ".join("%s **%s**" % (short(k), "{:,.2f}".format(P[k]["threshold"])) for k in order)), "",
+           "1. Members in a hospital stay still running on 31 August 2026 and already past the USD %s cap: **%s**, %s." % (
+               "{:,}".format(k_["cap"]), WORDS[sum(held.values())],
+               " and ".join("%s at %s" % (WORDS[held[k]], k) for k in hp)),
+           "2. 2026 thresholds, 98 per cent of the benchmark: %s." % " and ".join(
+               "%s **%s**" % (short(k), usd(par["threshold"][k])) for k in hp), "",
            "## 3. Step-by-Step Solution", "",
            "1. Conformed the three payers' claims at their current version (Merrinlake's voided originals out, "
-           "Kesselcrest's adjusted lines out and its cents in dollars, Pemberglen's latest version), member months from "
+           "Kesselcrest's superseded claims (status A) out and its cents in dollars, Pemberglen's latest version), member months from "
            "the coverage files, and every run's TIN to its practice through lpn_primary_care_roster_2026-10.xlsx.",
            "2. Took each practice's 2025 network measure on the payers' final 2025 runs (standard, section 3: claims "
-           "first paid by 31 March 2026, each member's year capped at USD %s) and its threshold at 98 per cent of its "
-           "benchmark, the measure to the cent times %s to the cent (section 3.4)." % (c(k_["cap"]), k_["trend"]),
+           "first paid by 31 March 2026, each member's year capped at USD %s) and its threshold at %d per cent of its "
+           "benchmark, the measure to the cent times %s to the cent (section 3.4)." % (
+               "{:,}".format(k_["cap"]), k_["threshold_share"], k_["trend"]),
            "3. Computed each practice's interim measure on the October runs (section 4.1, the factors in "
            "payer_completion_factors_2026-09.csv): taken as the 2026 figure it enters %s alone." % joined(
-               [short(k) for k in s["default_enter"]]),
+               [short(k) for k in dflt]),
            "4. Re-ran the standard's attribution (section 2) on the 2025 professional claims at the October run's cut, "
-           "qualifying services incurred by 31 August 2025 and paid by 30 September 2025, and took each practice's 2025 "
-           "run-out, its 2025 measure over the January to August 2025 measure of the members so attributed: %.3f to "
-           "%.3f." % (s["runout_min"], s["runout_max"]),
-           "5. Carried each practice's interim measure by its own run-out: %s come in under their thresholds." % (
-               WORDS[len(enter)]),
-           "6. For the level 5 share, read each visit's paid level from its allowed amount against the payer's 2026 rate "
-           "for its setting in payer_em_fee_schedules_2026.xlsx: Kesselcrest's reviewed 99215 visits allowed at its "
-           "99214 rate are level 4, and Merrinlake's modifier-25 visits with a same-day minor procedure by the same "
-           "clinician, allowed at half the rate, keep their level.",
-           "7. For the fees, summed the three remittance files by the month each line covers: Pemberglen's by the month "
-           "in its payment reference (PMH-CCF-TIN-YYYYMM-sequence), not its posting period, and Kesselcrest's only at "
-           "the standard's USD %.2f (its USD %.2f lines are its Medicare Advantage fees)." % (k_["kbp_fee"], k_["ma_fee"]),
-           "8. Entered the %s practices under their thresholds in the two-sided track for 2027." % WORDS[len(enter)],
+           "qualifying services incurred by 31 August 2025 and paid by 30 September 2025, and carried each practice's "
+           "interim measure by its 2025 measure over the January to August 2025 measure of the members so attributed "
+           "(no long stay was running at the 2025 cut): %s practices come in under." % WORDS[len(runout)],
+           "5. Found the members in a stay still running at the cut (their attending physicians' daily inpatient visits "
+           "run to the cut with no facility claim in the October feeds): at the lowest per-day amount any closed stay of "
+           "a month or more of the same kind was allowed, %s had passed the USD %s cap; carried at the cap with each "
+           "one's months of coverage in the year, %s come in over their thresholds." % (
+               WORDS[sum(held.values())], "{:,}".format(k_["cap"]), joined([short(k) for k in hp])),
+           "6. For the level 5 share, read each visit's paid level from its claim's allowed amount, every line of the claim "
+           "counted, against the payer's 2026 rate for its setting in payer_em_fee_schedules_2026.xlsx: a Kesselcrest %s "
+           "claim whose line with no procedure code takes it down to Kesselcrest's %s rate is level 4, and a Merrinlake "
+           "E&M billed with modifier 25 beside a minor procedure by the same clinician that day is at the level whose rate "
+           "is twice its allowed amount (a halved %s equals Merrinlake's %s rate), a modifier 25 visit beside a preventive "
+           "visit at its own rate." % (k_["codes"][3], k_["codes"][2], k_["codes"][3], k_["codes"][1]),
+           "7. Entered the %s practices under their thresholds in the two-sided track for 2027." % WORDS[len(enter)],
            "", "## 4. Deliverable Answers", "",
            "### two_sided_track_elections_2027.xlsx", "",
-           "1. Elections, one row per practice (2026 benchmark, threshold, election):"]
+           "1. Elections, one row per practice:"]
     for k in order:
-        x = P[k]
-        out.append("   - %s: benchmark %s, threshold %s, %s" % (k, usd(x["benchmark"]), usd(x["threshold"]),
-                                                               "two-sided" if x["enters"] else "one-sided"))
+        out.append("   - %s: %s" % (k, "two-sided" if k in enter else "one-sided"))
     out.append("2. Share of established-patient visits January to August 2026 the payers paid at level 5, per cent:")
     for k in order:
         out.append("   - %s: %.1f" % (k, f["ask_a"][k]))
-    out.append("3. Care coordination fees paid under the standard, by coverage quarter, USD:")
-    for k in order:
-        out.append("   - %s: Q1 %s, Q2 %s, Q3 %s" % (k, usd(f["ask_b"]["%s|Q1" % k]), usd(f["ask_b"]["%s|Q2" % k]),
-                                                      usd(f["ask_b"]["%s|Q3" % k])))
     out += ["", "### practice_cost_vs_benchmark_2026.png", "",
-            "1. Horizontal bar chart of each practice's projected 2026 network measure as the per cent above or below "
-            "its threshold, the %s entering practices shaded apart, with each practice's October interim measure "
-            "marked beside its bar." % WORDS[len(enter)]]
+            "1. Horizontal bar chart of each practice's projected 2026 network measure against its threshold: the %s "
+            "entering practices' bars fall below the threshold line and the %s one-sided practices' bars above it." % (
+                WORDS[len(enter)], WORDS.get(len(stay), str(len(stay))))]
     with open(os.path.join(TASK, "submission.md"), "w") as fh:
         fh.write("\n".join(out) + "\n")
 

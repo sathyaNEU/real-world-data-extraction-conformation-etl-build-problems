@@ -107,7 +107,8 @@ def standard_pdf(path):
            "remittances. The layouts are set out in the network's field guide."),
          P("Appendix C. Completion factors", H),
          P("Each payer issues, with its September-paid feed, the share of a month's allowed amounts it has paid by 30 "
-           "September for each month incurred from January, from its lag study of the prior year.")]
+           "September for each month incurred from January, from its lag study of the prior year. Claims with an allowed "
+           "amount over USD 100,000 are left out of the lag study.")]
     _pdf(path, "Performance Standard for Commercial Members", s, W.PEOPLE["analytics"], W.NETWORK)
 
 
@@ -235,13 +236,16 @@ MERRINLAKE HEALTH PLAN (MLH)
     ORIG_CLM_ID      on VOID and REPL rows, the claim they reverse or replace
   mlh_eligibility_2025_2026.csv           one row per coverage span; COV_TERM_DT 9999-12-31 while open
   mlh_attribution_runs_py2025_py2026.csv  the final 2025 run (PY2025-F) and the October 2026 interim run (PY2026-10)
-  mlh_care_coordination_remittance_2026.csv  fees paid on each 2026 interim run; COV_MO is the month the fee covers;
-                                          LINE_TYP CUR for the run's month, RETRO for an earlier month
+  mlh_care_coordination_remittance_2026.csv  fees paid on each 2026 interim run, a line for each practice TIN,
+                                          coverage month (COV_MO) and line type (LINE_TYP: CUR the run's month, RETRO
+                                          earlier months); MBR_CNT is the member months the line pays
 
 KESSELCREST BENEFIT PARTNERS (KBP)
   KBP_CLAIMS_LPN_20261009.txt             pipe delimited; dates MM/DD/YYYY
-    CLAIM_NO, LINE_NO, MEMBER_NO          claim, line and member; a reprocessed claim takes a suffix -01
+    CLAIM_NO, LINE_NO, MEMBER_NO          claim, line and member; a reprocessed claim takes a suffix -01; a line with no
+                                          procedure, revenue or drug code is an adjustment to the claim
     CLAIM_FORM                            1500 professional, UB04 facility, NCPDP pharmacy
+    BILL_TYPE                             type of bill on facility claims: 0111 inpatient, 0131 outpatient
     FIRST_DOS, LAST_DOS, PAID_DATE        dates of service and payment
     PROCEDURE, MODIFIER, PLACE_OF_SVC, REVENUE, NDC, RENDERING_PROV_NPI
     ALLOWED_CENTS                         allowed amount in cents

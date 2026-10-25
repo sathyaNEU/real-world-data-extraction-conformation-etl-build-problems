@@ -1,9 +1,10 @@
-"""The clean truth of task482's world (architecture 13): a clinically integrated network of thirteen independent primary
-care practices and the commercial members of its three payers in 2025 and 2026.
+"""The clean truth of task482's world (architecture 14): a clinically integrated network of thirteen independent primary
+care practices and the commercial members of its three payers in 2025 and 2026, newborns and hospital stays included.
 
 Everything is generated forward from the parameters below with fixed seeds: each person's enrollment with a payer,
 their primary care visits (the qualifying services attribution counts), every other claim with its allowed amount and
-paid date, each payer's attribution (the final 2025 run, the monthly 2026 interim runs, the 2026 final run as truth),
+paid date (a hospital stay's facility claim is billed after discharge, its physicians' visits day by day while it runs),
+each payer's attribution (the final 2025 run, the monthly 2026 interim runs, the 2026 final run as truth),
 and the care coordination fees each payer remits on its runs. The pack (pack.py) cuts the payers' feeds from this
 truth; the golden (golden.py) reads only the pack."""
 import datetime as dt
@@ -32,22 +33,23 @@ PRACTICES = [
     dict(code="P02", kind="FM", n=2900, chronic=0.17, need=0.92, camp=0.02, late=0.40, mix=(0.50, 0.36, 0.14), pcp=7, hosp=False, pos=-0.0612),
     dict(code="P03", kind="FM", n=2500, chronic=0.26, need=0.98, camp=0.82, late=0.00, mix=(0.62, 0.24, 0.14), pcp=6, hosp=False, pos=-0.0584),
     dict(code="P04", kind="IM", n=2200, chronic=0.40, need=1.12, camp=0.84, late=0.00, mix=(0.47, 0.38, 0.15), pcp=5, hosp=False, pos=0.0527),
-    dict(code="P05", kind="PED", n=2800, chronic=0.10, need=0.62, camp=0.04, late=0.36, mix=(0.55, 0.27, 0.18), pcp=7, hosp=True, pos=0.0543),
+    dict(code="P05", kind="PED", n=2800, chronic=0.10, need=0.62, camp=0.04, late=0.36, mix=(0.55, 0.27, 0.18), pcp=7, hosp=True, pos=-0.0950),
     dict(code="P06", kind="FM", n=2600, chronic=0.20, need=1.00, camp=0.03, late=0.38, mix=(0.60, 0.25, 0.15), pcp=6, hosp=False, pos=-0.0706),
     dict(code="P07", kind="FM", n=2300, chronic=0.30, need=1.04, camp=0.80, late=0.00, mix=(0.52, 0.30, 0.18), pcp=5, hosp=False, pos=-0.0771),
     dict(code="P08", kind="FM", n=2700, chronic=0.16, need=0.90, camp=0.02, late=0.42, mix=(0.57, 0.31, 0.12), pcp=6, hosp=False, pos=-0.0537),
     dict(code="P09", kind="IM", n=2100, chronic=0.44, need=1.18, camp=0.88, late=0.00, mix=(0.55, 0.29, 0.16), pcp=5, hosp=True, pos=0.0493),
     dict(code="P10", kind="FM", n=3000, chronic=0.18, need=0.94, camp=0.03, late=0.40, mix=(0.54, 0.33, 0.13), pcp=7, hosp=False, pos=-0.0794),
-    dict(code="P11", kind="PED", n=2400, chronic=0.08, need=0.58, camp=0.02, late=0.38, mix=(0.58, 0.26, 0.16), pcp=6, hosp=False, pos=-0.0743),
+    dict(code="P11", kind="PED", n=2400, chronic=0.08, need=0.58, camp=0.02, late=0.38, mix=(0.58, 0.26, 0.16), pcp=6, hosp=False, pos=0.0638),
     dict(code="P12", kind="IM", n=2000, chronic=0.38, need=1.10, camp=0.84, late=0.00, mix=(0.50, 0.34, 0.16), pcp=5, hosp=False, pos=0.0571),
-    dict(code="P13", kind="FM", n=2500, chronic=0.21, need=0.97, camp=0.03, late=0.36, mix=(0.61, 0.25, 0.14), pcp=6, hosp=False, pos=-0.0629),
+    dict(code="P13", kind="FM", n=2500, chronic=0.21, need=0.97, camp=0.03, late=0.36, mix=(0.61, 0.25, 0.14), pcp=6, hosp=False, pos=0.0482),
 ]
 CODES = [p["code"] for p in PRACTICES]
 PMAP = {p["code"]: p for p in PRACTICES}
 # each practice's 2026 movement in allowed amounts outside primary care visits, set by the tuning pass that places the
-# golden figure, read from the cut pack, at each practice's target position (worst miss 0.0001)
-MOVE = {"P01": 0.0190, "P02": -0.1154, "P03": 0.0633, "P04": 0.1428, "P05": -0.1290, "P06": -0.0854, "P07": -0.0684,
-        "P08": 0.0547, "P09": 0.1291, "P10": -0.0594, "P11": 0.1493, "P12": 0.1931, "P13": -0.1497}
+# golden figure, read from the cut pack, at each practice's target position (worst miss 0.0002, Haddelcrest,
+# Wexelmoor and Prestelglen nudged off a round-dollar interim measure)
+MOVE = {"P01": 0.0167, "P02": -0.0604, "P03": 0.0960, "P04": 0.1421, "P05": 0.0435, "P06": -0.0269, "P07": -0.0439,
+        "P08": 0.0286, "P09": 0.1235, "P10": -0.0916, "P11": 0.0670, "P12": 0.1906, "P13": -0.1448}
 
 # E&M fee schedules (allowed, USD): established office visits 99211 to 99215 at the non-facility and facility rates,
 # new-patient visits 99202 to 99205, preventive visits by age band (under 18, 18 to 39, 40 to 64)
@@ -56,7 +58,7 @@ NEWPT = ("99202", "99203", "99204", "99205")
 FEES = {
     ("B", 2025): dict(nf=(26.40, 57.10, 91.80, 129.90, 183.40), fa=(11.20, 38.60, 66.10, 98.70, 141.20),
                       new=(88.40, 131.70, 197.20, 258.80), prev=(141.60, 152.30, 167.80)),
-    ("B", 2026): dict(nf=(27.10, 58.60, 92.60, 133.50, 188.40), fa=(11.50, 39.70, 67.90, 101.40, 145.10),
+    ("B", 2026): dict(nf=(27.10, 58.60, 92.60, 133.50, 185.20), fa=(11.50, 39.70, 71.20, 101.40, 142.40),
                       new=(90.80, 135.30, 202.60, 265.90), prev=(145.50, 156.50, 172.40)),
     ("M", 2025): dict(nf=(24.90, 54.80, 88.20, 125.10, 177.30), fa=(10.60, 37.10, 63.40, 95.20, 136.80),
                       new=(85.10, 126.90, 190.40, 249.70), prev=(136.20, 146.40, 161.30)),
@@ -68,9 +70,12 @@ FEES = {
                       new=(95.70, 142.50, 213.10, 279.70), prev=(153.80, 165.40, 182.20)),
 }
 PREV_EST = ((0, "99391"), (1, "99392"), (5, "99393"), (12, "99394"), (18, "99395"), (40, "99396"))
-QUALIFYING = set(EM) | set(NEWPT) | {c for _, c in PREV_EST} | {"99381", "99382", "99383", "99384", "99385", "99386"}
+NEWBORN_CARE = ("99460", "99461", "99462", "99463")
+QUALIFYING = (set(EM) | set(NEWPT) | {c for _, c in PREV_EST} | {"99381", "99382", "99383", "99384", "99385", "99386"} |
+              set(NEWBORN_CARE))
 # Kesselcrest's E&M level review from 1 March 2026 pays a share of the level 5 claims at the level 4 rate; the claim
-# keeps the code billed, and nothing on the feed marks the reviewed claims
+# keeps the code billed and its line keeps the code's rate, the difference taken on a claim-level adjustment line
+# (pack.claims_kbp), and nothing on the feed marks the reviewed claims
 LEVEL_REVIEW_FROM = D(2026, 3, 1)
 LEVEL_REVIEW_SHARE = 0.37
 CCF_RATE = {"B": 3.25, "M": 2.80, "T": 4.10}      # care coordination fee per attributed member per month, 2026
@@ -86,7 +91,25 @@ MINOR_PROC_SHARE = 0.07
 PROC_PAYER = {"B": 1.0, "M": 0.96, "T": 1.04}
 MLH_MOD25_FACTOR = 0.5
 SAME_DAY_PROBLEM_SHARE = 0.12       # a preventive visit with a problem addressed the same day (E&M with modifier 25)
-MA_RATE = 6.50                      # Kesselcrest's Medicare Advantage care coordination fee a member a month, 2026
+# newborns: births a year per panel person, attributed to the practice whose clinician examines the baby at birth
+BIRTH_RATE = {"PED": 0.016, "FM": 0.009, "IM": 0.0}
+NICU_SHARE = 0.07
+LARGE_CLAIM = 100000.0              # the payers' lag studies leave out claims with an allowed amount above this
+# a hospital stay: facility revenue code, the attending physicians' first-day, daily and discharge codes and allowed
+STAY = {"MEDSURG": dict(rev="0120", first=("99223", 212.0), daily=("99232", 104.0), last=("99238", 109.0)),
+        "NICU": dict(rev="0174", first=("99468", 1046.0), daily=("99469", 383.0), last=("99238", 109.0)),
+        "ICU": dict(rev="0200", first=("99291", 286.0), daily=("99291", 286.0), last=("99239", 158.0))}
+# the long stays of the two years, by practice: (year, kind, admission or birth, lengths of stay, per-day facility
+# allowed); a newborn stay's members are born on the date, an adult stay's members are drawn from the practice's panel
+LONG_STAYS = (
+    dict(practice="P02", year=2025, kind="NICU", start=D(2025, 1, 16), los=(84,), per_day=(4620.0,), payer="B"),
+    dict(practice="P06", year=2025, kind="ICU", start=D(2025, 3, 8), los=(46,), per_day=(6380.0,), payer="M", ages=(57,)),
+    dict(practice="P05", year=2025, kind="NICU", start=D(2025, 3, 3), los=(102, 98), per_day=(4580.0, 4710.0), payer="B"),
+    dict(practice="P11", year=2026, kind="NICU", start=D(2026, 6, 14), los=(118, 112, 125), per_day=(4760.0, 4690.0, 4840.0),
+         payer="T"),
+    dict(practice="P13", year=2026, kind="ICU", start=D(2026, 7, 11), los=(84, 79, 76, 70),
+         per_day=(6450.0, 6300.0, 6520.0, 6410.0), payer="T", ages=(44, 15, 13, 9)),
+)
 
 
 def rng(*k):
@@ -118,28 +141,52 @@ def clinicians():
     """The network's primary care clinicians by practice with effective dates: one P03 clinician moved to P06 on
     1 July 2025, and P10 added a clinician on 1 April 2026."""
     g = rng(7)
+    gd = rng(9)        # credentialing dates, drawn apart from the identifiers
     rows = []
-    base = 104017733
+    used = set()
+
+    def fresh():
+        while True:
+            npi = npi_check("1" + "%08d" % int(g.integers(0, 10 ** 8)))
+            if npi not in used:
+                used.add(npi)
+                return npi
+
+    def joined():
+        y, m = int(gd.integers(2006, 2025)), int(gd.integers(1, 13))
+        if y == 2024 and m > 10:
+            m = 10
+        return D(y, m, int(gd.choice([1, 1, 1, 16, int(gd.integers(2, 28))])))
+
     for p in PRACTICES:
         spec = "208000000X" if p["kind"] == "PED" else ("207R00000X" if p["kind"] == "IM" else "207Q00000X")
         for k in range(p["pcp"]):
-            base += int(g.integers(1100, 98000))
-            rows.append(dict(npi=npi_check("1" + str(base)[-8:]), practice=p["code"], start=D(2018, 7, 1), end=None, spec=spec))
+            rows.append(dict(npi=fresh(), practice=p["code"], start=joined(), end=None, spec=spec))
     mover = [r for r in rows if r["practice"] == "P03"][-1]
     mover["end"] = D(2025, 6, 30)
     rows.append(dict(npi=mover["npi"], practice="P06", start=D(2025, 7, 1), end=None, spec=mover["spec"]))
-    base += 51133
-    rows.append(dict(npi=npi_check("1" + str(base)[-8:]), practice="P10", start=D(2026, 4, 1), end=None, spec="207Q00000X"))
+    rows.append(dict(npi=fresh(), practice="P10", start=D(2026, 4, 1), end=None, spec="207Q00000X"))
+    # clinicians who left before 2025 stay on the roster with their termination dates
+    for p in PRACTICES[::2]:
+        gd.integers(2100, 71000)          # the draw that numbered them once; kept so the dates below stay put
+        s = joined()
+        e = D(min(2024, s.year + int(gd.integers(2, 9))), int(gd.integers(1, 13)), 1) - dt.timedelta(days=1)
+        if e > s:
+            spec = "208000000X" if p["kind"] == "PED" else ("207R00000X" if p["kind"] == "IM" else "207Q00000X")
+            rows.append(dict(npi=fresh(), practice=p["code"], start=s, end=e, spec=spec))
     return rows
 
 
 def specialists():
+    """The hospitals' and specialty groups' rendering NPIs, none a roster clinician's."""
     g = rng(8)
+    taken = {r["npi"] for r in clinicians()}
     out = []
-    base = 113300402
-    for _ in range(420):
-        base += int(g.integers(900, 41000))
-        out.append(npi_check("1" + str(base)[-8:]))
+    while len(out) < 420:
+        npi = npi_check("1" + "%08d" % int(g.integers(0, 10 ** 8)))
+        if npi not in taken:
+            taken.add(npi)
+            out.append(npi)
     return out
 
 
@@ -152,7 +199,7 @@ def npi_practice(clin, npi, day):
 
 class Person(object):
     __slots__ = ("pid", "practice", "second", "share2", "age", "sex", "chronic", "need", "annual", "am", "sick", "cvis",
-                 "payer", "span", "drugs", "spec", "dob")
+                 "payer", "span", "drugs", "spec", "dob", "born", "stays", "extra")
 
 
 def people():
@@ -177,6 +224,7 @@ def people():
             else:
                 q.age = int(g.integers(1, 18)) if g.random() < 0.27 else int(g.integers(18, 65))
             q.dob = D(2025 - q.age - 1, int(g.integers(1, 13)), int(g.integers(1, 29)))
+            q.born, q.stays, q.extra = None, {}, {}
             q.sex = "F" if g.random() < 0.51 else "M"
             agef = 0.35 if q.age < 18 else (0.7 if q.age < 40 else 1.35)
             q.chronic = bool(g.random() < min(0.9, p["chronic"] * agef / 0.95))
@@ -219,6 +267,61 @@ def people():
                 else:
                     q.span[y] = (0, 12)
             out.append(q)
+    return births_and_stays(out)
+
+
+def newborn(pid, p, y, dob, g, payer=None):
+    """A baby born on dob to a family of practice p, covered by its payer from the month of birth."""
+    q = Person()
+    q.pid, q.practice, q.second, q.share2 = pid, p["code"], None, 0.0
+    q.age = 0 if y == 2025 else -1
+    q.dob = q.born = dob
+    q.sex = "F" if g.random() < 0.49 else "M"
+    q.chronic, q.need, q.annual, q.am = False, float(g.lognormal(-0.9, 0.6)), True, dob.month - 1
+    q.sick, q.cvis, q.drugs, q.spec = 0.9, 0.0, 0, False
+    pay = payer or PAYERS[int(g.choice(3, p=p["mix"]))]
+    q.payer = {2025: pay if y == 2025 else None, 2026: pay}
+    q.span = {2025: (dob.month - 1, 12) if y == 2025 else None, 2026: (dob.month - 1, 12) if y == 2026 else (0, 12)}
+    q.stays, q.extra = {}, {}
+    return q
+
+
+def births_and_stays(out):
+    """The newborns of 2025 and 2026 at the paediatric and family practices (a few with a short neonatal unit stay), and
+    the long stays of LONG_STAYS: the babies are born on the stay's first day, the adults are panel members of the
+    practice with the payer and a whole year of enrollment, each with an office visit at the practice before the stay."""
+    pid = max(q.pid for q in out)
+    for pi, p in enumerate(PRACTICES):
+        rate = BIRTH_RATE[p["kind"]]
+        if not rate:
+            continue
+        for y in YEARS:
+            g = rng(2, pi, y)
+            for _ in range(int(g.poisson(p["n"] * rate))):
+                pid += 1
+                q = newborn(pid, p, y, D(y, int(g.integers(1, 13)), int(g.integers(1, 29))), g)
+                if g.random() < NICU_SHARE:
+                    los = int(min(18, max(2, round(g.lognormal(math.log(8.0), 0.5)))))
+                    q.stays[y] = dict(kind="NICU", start=q.born, los=los, per_day=float(g.lognormal(math.log(4700.0), 0.06)),
+                                      long=False)
+                out.append(q)
+    for k, ls in enumerate(LONG_STAYS):
+        g = rng(3, k)
+        y = ls["year"]
+        if ls["kind"] == "NICU":
+            for los, pdy in zip(ls["los"], ls["per_day"]):
+                pid += 1
+                q = newborn(pid, PMAP[ls["practice"]], y, ls["start"], g, payer=ls["payer"])
+                q.stays[y] = dict(kind="NICU", start=ls["start"], los=los, per_day=pdy, long=True)
+                out.append(q)
+            continue
+        pool = [q for q in out if q.practice == ls["practice"] and q.born is None and q.second is None and not q.stays
+                and q.payer[y] == ls["payer"] and q.span[y] == (0, 12)]
+        for j, (los, pdy, age) in enumerate(zip(ls["los"], ls["per_day"], ls["ages"])):
+            q = sorted(pool, key=lambda x: (abs(x.age + (y - 2025) - age), x.pid))[0]
+            pool.remove(q)
+            q.stays[y] = dict(kind="ICU", start=ls["start"], los=los, per_day=pdy, long=True)
+            q.extra[y] = [D(y, 2 + j, 9 + 5 * j), D(y, 5, 4 + 6 * j)]
     return out
 
 
@@ -264,17 +367,55 @@ def claims(ppl, clin, spec_npis):
     """Every claim of every person in both years, incurred January 2025 to December 2026, as parallel column lists."""
     col = {c: [] for c in COLS}
     cid = [700000000]
-    rx_ndc = ("68180051301", "00093505898", "00378180110", "16714023401", "65862001090", "00591040810")
+    # short courses (antibiotics, steroids, antivirals) and maintenance drugs, as the plans' pharmacy feeds carry them
+    acute = ("68180051301", "00093505898", "65862001090", "16714023401", "00781506401", "43547035910", "31722071201",
+             "00093314701", "68382004601", "57237013401", "00904693261", "60505257102")
+    maint = ("00378180110", "00591040810", "68180051302", "16714023402", "00093505801", "65862001099", "43547035210",
+             "31722074390", "69097012712", "29300011301", "57237001905", "70010006301", "62332003831", "00781185101",
+             "51991074401", "68382013510", "33342002011", "13668013605", "00093083701", "00378395201", "68180074109",
+             "43547032710", "31722052530", "69097083602", "29300012410", "57237015901", "70010004901", "62332006691",
+             "00781507292", "51991031801", "68382012230", "33342011810", "13668040930", "00093721401", "00378022701",
+             "68180098003", "43547028250", "31722099390", "69097036512", "16714066201")
+    spec_ndc = ("00074433906", "00074055402", "59676032001")
 
     def add(g, q, y, payer, ctype, svc, allowed, code="", pos="", npi="", rev="", ndc="", days=0, end=None, units=1, mod="",
-            paid=None):
+            paid=None, emit=True):
+        """One claim; emit False draws exactly what an emitted claim draws and records nothing (a second same-day visit
+        to the practice is not billed)."""
         cid[0] += int(1 + g.integers(0, 3))
-        lag = svc + dt.timedelta(days=lag_days(g, ctype, payer))
+        lag = ((end or svc) if ctype == "INPT" else svc) + dt.timedelta(days=lag_days(g, ctype, payer))
+        if not emit:
+            return
         for k, v in (("cid", cid[0]), ("pid", q.pid), ("year", y), ("payer", payer), ("ctype", ctype), ("svc", svc),
                      ("end", end or svc), ("paid", paid or lag),
                      ("allowed", round(float(allowed), 2)), ("code", code), ("pos", pos), ("npi", npi), ("rev", rev),
                      ("ndc", ndc), ("days", days), ("units", units), ("mod", mod)):
             col[k].append(v)
+
+    pools = dict(NICU=spec_npis[0:5], ED=spec_npis[5:10], ICU=spec_npis[10:16], SURG=spec_npis[16:22],
+                 MEDSURG=spec_npis[22:32])
+    surgeries = (("27506", 1846.0), ("44120", 1638.0), ("61312", 2975.0), ("49002", 1412.0), ("27245", 1527.0))
+
+    def own_npis(prac, day):
+        return [r["npi"] for r in clin if r["practice"] == prac and r["start"] <= day and (r["end"] is None or day <= r["end"])]
+
+    def stay_professional(gx, q, y, payer, kind, adm, los):
+        """The attending physicians' visits of a stay, one a day, billed and paid on the professional lag while it runs;
+        lines after the year's end are left to the next year's own record."""
+        sd, pf = STAY[kind], PROC_PAYER[payer]
+        pool = pools[kind]
+        if kind == "ICU":
+            add(gx, q, y, payer, "PROF", adm, 392.0 * pf, code="99285", pos="23", npi=pools["ED"][int(gx.integers(0, 5))])
+            for k in range(2):
+                code, amt = surgeries[int(gx.integers(0, len(surgeries)))]
+                add(gx, q, y, payer, "PROF", adm + dt.timedelta(days=k), amt * pf, code=code, pos="21",
+                    npi=pools["SURG"][int(gx.integers(0, len(pools["SURG"])))])
+        for d in range(los + 1):
+            day = adm + dt.timedelta(days=d)
+            if day.year != y:
+                break
+            code, amt = sd["first"] if d == 0 else (sd["last"] if d == los else sd["daily"])
+            add(gx, q, y, payer, "PROF", day, amt * pf, code=code, pos="21", npi=pool[int(gx.integers(0, len(pool)))])
 
     for q in ppl:
         for y in YEARS:
@@ -283,12 +424,59 @@ def claims(ppl, clin, spec_npis):
                 continue
             g = rng(11, q.pid, y)
             g2 = rng(12, q.pid, y)
+            g3 = rng(13, q.pid, y)
             s, e = q.span[y]
             enr = [s <= m < e for m in range(12)]
             mult = 1.0 if y == 2025 else 1.0 + MOVE[q.practice]
             fee = FEES[(payer, y)]
             age = q.age + (y - 2025)
-            for (day, kind) in visit_days(q, y, g, enr):
+            stay = q.stays.get(y)
+            out_on = (stay["start"] + dt.timedelta(days=stay["los"])) if stay else None
+            nb = q.born is not None and q.born.year == y
+            seen = set()        # the days this person already has a visit at the practice this year
+
+            def first_visit(d):
+                if d in seen:
+                    return False
+                seen.add(d)
+                return True
+
+            if nb:
+                pf = PROC_PAYER[payer]
+                los0 = 1 if stay else 2
+                add(g3, q, y, payer, "INPT", q.born, g3.lognormal(math.log(2350.0), 0.2), rev="0171", days=los0,
+                    end=q.born + dt.timedelta(days=los0))
+                ped = own_npis(q.practice, q.born)
+                add(g3, q, y, payer, "PROF", q.born, 138.0 * pf, code="99460", pos="21", npi=ped[int(g3.integers(0, len(ped)))])
+                if not stay:
+                    add(g3, q, y, payer, "PROF", q.born + dt.timedelta(days=1), 72.0 * pf, code="99462", pos="21",
+                        npi=ped[int(g3.integers(0, len(ped)))])
+                for mo in (1, 2, 4, 6, 9, 12):
+                    d = q.born + dt.timedelta(days=int(30.4 * mo) + int(g3.integers(-4, 5)))
+                    if d.year != y or not enr[d.month - 1] or (out_on and d <= out_on):
+                        continue
+                    npis = own_npis(q.practice, d)
+                    add(g3, q, y, payer, "PROF", d, fee["prev"][0], code="99391", pos="11", npi=npis[int(g3.integers(0, len(npis)))],
+                        emit=first_visit(d))
+                for _ in range(int(g3.poisson(0.5 * (e - s) / 12.0))):
+                    m = int(g3.integers(s, e))
+                    d = D(y, m + 1, int(g3.integers(1, month_days(y, m + 1) + 1)))
+                    if d <= q.born or (out_on and d <= out_on):
+                        continue
+                    npis = own_npis(q.practice, d)
+                    add(g3, q, y, payer, "PROF", d, fee["nf"][2], code="99213", pos="11", npi=npis[int(g3.integers(0, len(npis)))],
+                        emit=first_visit(d))
+            for d in q.extra.get(y, []):
+                npis = own_npis(q.practice, d)
+                add(g3, q, y, payer, "PROF", d, fee["nf"][2], code="99213", pos="11", npi=npis[int(g3.integers(0, len(npis)))],
+                    emit=first_visit(d))
+            if stay:
+                amt = stay["per_day"] * stay["los"] * (1.0 if stay["long"] else float(g3.lognormal(0.0, 0.03)))
+                add(g3, q, y, payer, "INPT", stay["start"], amt, rev=STAY[stay["kind"]]["rev"], days=stay["los"], end=out_on)
+                stay_professional(g3, q, y, payer, stay["kind"], stay["start"], stay["los"])
+            inside = (lambda d: stay is not None and stay["long"] and stay["start"] <= d <= out_on)
+            for (day, kind) in ([] if nb else [v for v in visit_days(q, y, g, enr) if not inside(v[0])]):
+                on = first_visit(day)
                 prac = q.second if (q.second and g.random() < q.share2) else q.practice
                 npis = [r["npi"] for r in clin if r["practice"] == prac and r["start"] <= day and (r["end"] is None or day <= r["end"])]
                 npi = npis[int(g.integers(0, len(npis)))]
@@ -315,22 +503,23 @@ def claims(ppl, clin, spec_npis):
                     mod = "25"
                     if payer == "B":
                         allowed = round(allowed * MLH_MOD25_FACTOR, 2)
-                add(g, q, y, payer, "PROF", day, allowed, code=code, pos=pos, npi=npi, mod=mod)
+                add(g, q, y, payer, "PROF", day, allowed, code=code, pos=pos, npi=npi, mod=mod, emit=on)
                 if proc:   # billed with the visit, so adjudicated and paid with it
                     add(g2, q, y, payer, "PROF", day, proc[1] * PROC_PAYER[payer] * (0.82 if pos == "22" else 1.0), code=proc[0],
-                        pos=pos, npi=npi, paid=col["paid"][-1])
+                        pos=pos, npi=npi, paid=col["paid"][-1] if on else None, emit=on)
                 elif kind == "prev" and g2.random() < SAME_DAY_PROBLEM_SHARE:
                     lv = int(g2.choice([1, 2, 3], p=[0.25, 0.55, 0.20]))
                     rate = fee["fa"] if pos in ("22", "19") else fee["nf"]
-                    add(g2, q, y, payer, "PROF", day, rate[lv], code=EM[lv], pos=pos, npi=npi, mod="25")
+                    add(g2, q, y, payer, "PROF", day, rate[lv], code=EM[lv], pos=pos, npi=npi, mod="25", emit=on)
                 if hosp and pos == "22":
-                    add(g, q, y, payer, "OUTPT", day, g.lognormal(math.log(118.0), 0.18), rev="0510")
+                    add(g, q, y, payer, "OUTPT", day, g.lognormal(math.log(118.0), 0.18), rev="0510", emit=on)
                 if kind == "prob" and g.random() < 0.45:
                     add(g, q, y, payer, "RX", day + dt.timedelta(days=int(g.integers(0, 2))), mult * g.lognormal(math.log(19.0), 0.6),
-                        ndc=rx_ndc[int(g.integers(0, 6))], days=10)
+                        ndc=acute[(int(g.integers(0, 6)) + 6 * (q.pid % 2)) % len(acute)], days=10, emit=on)
             h = q.need
             for m in range(12):
-                if not enr[m]:
+                if not enr[m] or (stay is not None and stay["long"] and stay["start"] <= D(y, m + 1, 1) and
+                                  D(y, m + 1, month_days(y, m + 1)) <= out_on):
                     continue
                 nd = month_days(y, m + 1)
                 for _ in range(int(g.poisson(0.03 + 0.15 * h))):
@@ -350,16 +539,18 @@ def claims(ppl, clin, spec_npis):
                     los = int(1 + g.gamma(1.6, 2.2))
                     add(g, q, y, payer, "INPT", st, mult * g.lognormal(math.log(19500.0), 0.75), rev="0120", days=los,
                         end=st + dt.timedelta(days=los))
+                    stay_professional(g3, q, y, payer, "MEDSURG", st, los)
                 for k in range(q.drugs):
                     per90 = (q.pid + k) % 10 < 7
                     if per90 and m % 3 != (q.pid + k) % 3:
                         continue
                     mo = 3 if per90 else 1
                     add(g, q, y, payer, "RX", D(y, m + 1, int(min(nd, 1 + (q.pid * 7 + k * 11) % 28))),
-                        mult * mo * g.lognormal(math.log(58.0), 0.9), ndc=rx_ndc[(q.pid + 2 * k) % 6], days=30 * mo, units=30 * mo)
+                        mult * mo * g.lognormal(math.log(58.0), 0.9), ndc=maint[(q.pid * 7 + 3 * k) % len(maint)], days=30 * mo,
+                        units=30 * mo)
                 if q.spec:
                     add(g, q, y, payer, "RX", D(y, m + 1, int(min(nd, 3 + q.pid % 25))), mult * g.lognormal(math.log(5600.0), 0.15),
-                        ndc="00074433906", days=28, units=2)
+                        ndc=spec_ndc[q.pid % 3], days=28, units=2)
     return col
 
 
@@ -438,7 +629,25 @@ PRACTICE_NAMES = {
     "P10": "Torrinridge Family Medicine", "P11": "Mallowcrest Pediatrics", "P12": "Prestelglen Internal Medicine",
     "P13": "Garrowdale Family Practice"}
 PEOPLE = {"president": "Andre O'Connor", "analytics": "Joel Brewer", "payer": "Carlos Howard"}
-TINS = {c: "39-%07d" % (1184402 + 37717 * i) for i, c in enumerate(CODES)}
+def _tins():
+    """Each practice's federal employer identification number: the older practices' numbers carry the 39 prefix the IRS
+    gave Wisconsin employers, the ones formed since 2001 a prefix of the online application; no two share last four."""
+    g = rng(31)
+    out, last4 = {}, set()
+    for c in CODES:
+        while True:
+            pre = str(g.choice(["39", "39", "39", "39", "39", "20", "26", "27", "45", "46", "47", "81", "82", "83"]))
+            body = "%07d" % int(g.integers(0, 10 ** 7))
+            if pre == "39" and body[0] not in "12":
+                body = str(int(g.integers(1, 3))) + body[1:]
+            if body[-4:] not in last4:
+                last4.add(body[-4:])
+                out[c] = pre + "-" + body
+                break
+    return out
+
+
+TINS = _tins()
 
 
 def member_ids(ppl):
@@ -462,19 +671,42 @@ def member_ids(ppl):
                     used.add(v)
                     break
             ids[(q.pid, payer)] = v
+    # Pemberglen and Merrinlake number a family's members under the subscriber's contract, so the members of one long
+    # stay (a set of newborns, a family in one crash) share a contract number, numbered in order of age
+    fams = {}
+    for q in ppl:
+        for y, st in q.stays.items():
+            if st["long"] and q.payer[y] in ("B", "T"):
+                fams.setdefault((q.payer[y], q.practice, y, st["start"]), []).append(q)
+    g = rng(22)
+    fmt = {"B": ("MLH%06d", "MLH%06d%02d"), "T": ("PG-%06d-", "PG-%06d-%02d")}
+    for key in sorted(fams):
+        payer, group = key[0], sorted(fams[key], key=lambda x: (x.dob, x.pid))
+        if len(group) < 2:
+            continue
+        while True:
+            contract = int(g.integers(100000, 999999))
+            if not any(u.startswith(fmt[payer][0] % contract) for u in used):
+                break
+        first = 1 if group[0].born is None else 3
+        for j, q in enumerate(group):
+            used.discard(ids[(q.pid, payer)])
+            ids[(q.pid, payer)] = fmt[payer][1] % (contract, first + j)
+            used.add(ids[(q.pid, payer)])
     return ids
 
 
 def completion_factors(col):
     """Each payer's completion of 2025 allowed by incurred month when paid through 30 September 2025 against paid
-    through 31 March 2026, the lag study the payers apply to their September-paid interim files."""
+    through 31 March 2026, the lag study the payers apply to their September-paid interim files; a claim with an
+    allowed amount above LARGE_CLAIM is left out of the study."""
     out = {}
     pay, yr, svc, paid, amt = col["payer"], col["year"], col["svc"], col["paid"], col["allowed"]
     for payer in PAYERS:
         num = [0.0] * 12
         den = [0.0] * 12
         for i in range(len(pay)):
-            if pay[i] != payer or yr[i] != 2025 or paid[i] > FINAL_PAID[2025]:
+            if pay[i] != payer or yr[i] != 2025 or paid[i] > FINAL_PAID[2025] or amt[i] > LARGE_CLAIM:
                 continue
             m = svc[i].month - 1
             den[m] += amt[i]
@@ -487,7 +719,11 @@ def completion_factors(col):
 def remittances(w):
     """The care coordination fees each payer paid on its 2026 interim runs, March to October: on each run, the fee for
     the run's month for every member on it enrolled that month, and for a member on the run for the first time the fees
-    for the year's earlier months the member was enrolled. Lines are by payer, run, practice, coverage month and type."""
+    for the year's earlier months the member was enrolled. Lines are by payer, run, practice, coverage month and type.
+    From its July run Merrinlake pays a first-time member's earlier months only where the member is enrolled in the run's
+    month, on one line per practice and first month of coverage: the line carries that first month as its coverage month,
+    the member months it pays (every month from the first through the month before the run) as its member count, and
+    their fees."""
     ppl = {q.pid: q for q in w["people"]}
     att = w["att"]
     lines = []
@@ -500,23 +736,20 @@ def remittances(w):
                 q = ppl[pid]
                 s, e = q.span[2026]
                 if s <= k - 1 < e:
-                    agg[(prac, k, "CURRENT")] = agg.get((prac, k, "CURRENT"), 0) + 1
+                    agg[(prac, k, "CURRENT", 1)] = agg.get((prac, k, "CURRENT", 1), 0) + 1
                 if pid not in seen:
+                    if payer == "B" and k >= 7:
+                        if s <= k - 1 < e and s < k - 1:
+                            agg[(prac, s + 1, "CATCHUP", k - 1 - s)] = agg.get((prac, s + 1, "CATCHUP", k - 1 - s), 0) + 1
+                        continue
                     for m in range(1, k):
                         if s <= m - 1 < e:
-                            agg[(prac, m, "CATCHUP")] = agg.get((prac, m, "CATCHUP"), 0) + 1
+                            agg[(prac, m, "CATCHUP", 1)] = agg.get((prac, m, "CATCHUP", 1), 0) + 1
             seen.update(run.keys())
-            for (prac, m, typ), n in sorted(agg.items()):
-                lines.append(dict(payer=payer, run=k, practice=prac, cov=m, type=typ, members=n,
-                                  amount=round(n * CCF_RATE[payer], 2)))
-    # Kesselcrest pays its Medicare Advantage care coordination fee to the same practice TINs each month, from January,
-    # on its prospective MA attribution
-    ma = ma_members()
-    for m in range(1, max(RUN_MONTHS) + 1):
-        for c in CODES:
-            n = sum(1 for r in ma if r["practice"] == c and r["start"].month <= m)
-            if n:
-                lines.append(dict(payer="M", run=m, practice=c, cov=m, type="MA", members=n, amount=round(n * MA_RATE, 2)))
+            for (prac, m, typ, n), cnt in sorted(agg.items()):
+                grouped = payer == "B" and k >= 7 and typ == "CATCHUP"
+                lines.append(dict(payer=payer, run=k, practice=prac, cov=m, type=typ, members=cnt * n, heads=cnt, months=n,
+                                  amount=round(cnt * n * CCF_RATE[payer], 2), covers=list(range(m, k)) if grouped else [m]))
     return lines
 
 
