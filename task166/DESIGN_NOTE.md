@@ -743,3 +743,4 @@ The 10/10 rules read again against the shipped pack (target.zip 7117491f):
   reader read it as a mild-to-moderate hint and the recheck as the first filed sentence setting income against forward
   debt service, one step from the cover metric; reworded as a blanket practice on every extension, the pin that the
   payments are made as scheduled kept, no figure moved.
+- Portal round 1 (2026-10-25): both responses landed the call, Fixed-rate commercial real estate at $150 million, so conditioning each balloon's extension on refinance cover at the planning rate is a reflex for the portal's models, not a decisive step; the stump sentence's step is spent and the build returns to stage 2.

@@ -1,12 +1,12 @@
 {
  "task": "task166",
  "owner": "sathya8571",
- "status": "SHIPPED",
+ "status": "RETURNED",
  "domain": "banking-credit-financial-risk",
  "objective": "forecasting",
- "stage": 5,
- "stage_name": "ship",
- "updated": "2026-10-18",
+ "stage": 2,
+ "stage_name": "design",
+ "updated": "2026-10-25",
  "stump": "Projecting the 2023-24 mortgages on a prepayment curve at the planning rate and the commercial real estate balloons at the extension share the maturity log shows lately files Agency MBS, $110 million; the step that lands it there is carrying the recent share of due balloons that extended as a constant, when each balloon extends according to whether its property's income can carry a new loan of its balance at the planning cycle's 6.95 per cent, and the $2.6 billion due from December 2026 through 2027, nearly all written in the early-2022 push on pro forma rents, mostly cannot: an extension model conditioned on refinance cover, fitted on every maturity since 2015 and chosen on the 2025-26 maturities held out, puts over nine-tenths of that principal on the bank's 36-month extension and the pool's averaged loss at $150 million.",
  "architecture": 1,
  "loops": 5,
@@ -28,11 +28,20 @@
   "disposition": "round 1's rule 3 audit (PASS, tighter) reworked in one rebuild (the family in the bin's middle half at $10 million, the overlay's start filed); round 2's realism AT_RISK and unfiled fork repaired (the one extension and its terms filed, sale extensions and special assets, the origination ramp, half the push interest only); round 3's realism AT_RISK repaired in one pass, its findings reproduced on aa42d3e6 first (keyed per-loan streams, hotels and the pandemic, anchor closings, the push's leverage ramped in and out, sale extensions only with equity, the statements file closed at payoff, the officer's grade floor, the termination date pinned, the memo's mortgages line), high-cover extensions and a softened shoulder dropped for determinism; round 4 clean, its low items left as filed; the reader's one hint reworded (only extract_notes.txt changed, figures.json, block 4 and the goldens byte-identical); rule 3 recheck round 4 PASS, P(one) about 0.22, P(both) about 0.05 independent and 0.09 at a correlation of 0.2, this pack chosen over round 3's",
   "report": "judge-task166d/verdict.md, rule3/task166d.md, leak-task166d/reader_answers.md and leak-task166e/reader_answers.md, relayed by the coordinator"
  },
- "returned": [],
- "resume": "",
+ "returned": [
+  {
+   "date": "2026-10-25",
+   "portal": "round 1 on the shipped pack (delivered 10-18): call landed by both responses, each designating Fixed-rate commercial real estate at an averaged +200 bp loss of $150 million (the golden), with overlay_designation_2027.xlsx and overlay_designation_alco.pptx built; the decisive step (each balloon's extension conditioned on refinance cover at the planning rate) is a reflex for both portal models",
+   "repair": "design (call landed: back to stage 2, the decisive step redesigned or the architecture re-rooted)",
+   "commit": ""
+  }
+ ],
+ "resume": "call landed on the portal (both responses CRE $150 million): stage 2 redesign of the decisive step per build-pipeline Returned tasks; the cover-conditioned extension is spent as the decisive step; read ## Tried and rejected first",
  "approved": null,
  "delivered": "2026-10-18",
- "portal": null,
+ "portal": {
+  "round1": "2026-10-25: not stumped, both responses on the call (CRE, $150 million)"
+ },
  "portal_id": "",
  "portal_status": "",
  "portal_status_date": "",
