@@ -121,8 +121,6 @@ def main(target):
               % (name, k, n, kept(gold, flat(tab)), c1, (c1 + S_) / 2))
     print("\none crack at a time (the cracker repairs one device and keeps its other stops):")
     singles = (("A: a rescission sets aside the order before it", dict(crack_a, level="event"), crack_b, crack_c),
-               ("A: a late legacy entry dropped only on a match", dict(crack_a, parallel="match"), crack_b, crack_c),
-               ("A: both of the above", {}, crack_b, crack_c),
                ("B: a carried-over detainer from its legacy lodge", crack_a, dict(carry="legacy"), crack_c))
     for name, ak, bk, ck in singles:
         k = kept(gold, figures(D, ak, bk, ck))

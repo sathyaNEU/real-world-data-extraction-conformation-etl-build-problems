@@ -381,7 +381,6 @@ def board_frames(book, ident):
             new.append(dict(rec, migrated=False))
     paired = set(companion_of) | set(companion_of.values())
     rehearings(legacy, new, book, paired, officers)
-    parallel_gaps(new, paired)
     return legacy, new
 
 
@@ -433,23 +432,6 @@ def rehearings(legacy, new, book, paired, officers):
         r["rehear"] = (r1, d2, officers[dist][int(_h("officer", r["vid"]) * 6)])
     for r in legacy:
         r.pop("_rehear", None)
-
-
-def parallel_gaps(new, paired):
-    """decisions taken during the January 2026 parallel run that reached only the legacy system: the carried-over
-    case stays undecided in the new system while its hold dates come from the jail"""
-    cells, rest = {}, []
-    for r in new:
-        if not r["migrated"] or r["decided"] is None or not (C.BOARD_GOLIVE <= r["decided"] <= C.BOARD_PARALLEL_END):
-            continue
-        if r["vid"] in paired or r["rescind"] is not None:
-            continue
-        if r["decision"] == "REVOKED":
-            cells.setdefault((r["office"], r["otn"] != ""), []).append(r)
-        elif _h("gap", r["vid"]) < 0.15:
-            rest.append(r)
-    for r in _pick(cells, 0.15, 1) + rest:
-        r["legacy_only"] = True
 
 
 def write_board_legacy(path, legacy, admissions_by_doc):
@@ -540,8 +522,6 @@ def write_board_new(path, new):
             if end is not None and end <= C.CUT:
                 he = end.isoformat()
         dec = r["decision"]
-        if r.get("legacy_only"):
-            dec = ""
         rdate = ""
         if dec == "REVOKED" and r["rescind"] is not None and r["rescind"] <= C.CUT:
             rdate = r["rescind"].isoformat()
@@ -549,7 +529,7 @@ def write_board_new(path, new):
         rows.append((case_id, r["doc"], r["office"], "LEGACY" if r["migrated"] else "NEW", r["rep"].isoformat(), r["otn"],
                      conds, (r["jail"] + " County Jail") if r["jail"] else "", hs, he,
                      dec, (r["decided"].isoformat() + "T%02d:%02d:00-05:00" % _hearing_time(r["doc"], r["decided"]))
-                     if r["decided"] and dec else "", r["term"] if dec == "REVOKED" else "", rdate, r["officer"]))
+                     if r["decided"] else "", r["term"] if dec == "REVOKED" else "", rdate, r["officer"]))
     head = ("case_id", "doc_number", "office", "opened_in", "report_date", "arrest_otn", "conditions_cited",
             "hold_facility", "hold_start", "hold_end", "decision", "decision_ts", "revocation_term_days",
             "rescinded_date", "hearing_officer")

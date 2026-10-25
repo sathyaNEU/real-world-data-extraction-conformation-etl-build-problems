@@ -386,10 +386,7 @@ def main(target):
     def miss_a(a, name):
         hits = sum(a[o][x] == A[o][x] for o in calc.OFFICES for x in ("arrest", "conditions"))
         ok("ASKA stop %s misses every cell" % name, hits == 0, "%d of 8 kept" % hits)
-    miss_a(calc.ask_a(D, level="case", parallel="date"), "round 4 responses' path (every order on a rescinded case out, "
-           "every late legacy entry dropped)")
-    miss_a(calc.ask_a(D, level="case"), "every order on a rescinded case out")
-    miss_a(calc.ask_a(D, parallel="date"), "every legacy entry after the close dropped")
+    miss_a(calc.ask_a(D, level="case"), "every order on a rescinded case out (the round 3 golden's rule)")
     miss_a(calc.ask_a(D, orders=False), "each case row a recommitment")
     miss_a(calc.ask_a(D, orders=False, dedupe=False), "both systems added, case rows")
     leg, new = calc._board(D)
@@ -413,18 +410,11 @@ def main(target):
     ok("ASKA A3 re-heard cases: REVOKE, RESCIND, REVOKE, the parolee held throughout",
        len(re_cases) >= 16 and held == len(re_cases) and len(other) == 0,
        "%d cases, %d held from the first admission past the second hearing" % (len(re_cases), held))
-    # A4 decisions of the January 2026 parallel run that reached only the legacy system
+    # the parallel run: every legacy decision dated after the close is a copy of a decision the new system holds
     late = leg[(leg.ad > pd.Timestamp(C.BOARD_MIGRATE_CUT)) & leg.action.isin(["REVOKE", "CONTINUE"])]
-    lk = calc._key(late)
-    blank = new[(new.opened_in == "LEGACY") & (new.decision == "")]
-    gap = late[lk.isin(set(calc._key(blank)))]
-    pvd = 0
-    for doc, d in zip(gap[gap.action == "REVOKE"].doc_number, gap[gap.action == "REVOKE"].ad):
-        pvd += any(d < t <= d + np.timedelta64(14, "D") for t in pv_by.get(doc, []))
-    ok("ASKA A4 parallel-run orders with no new-system decision, each followed by a PAROLE VIOLATOR admission",
-       (gap.action == "REVOKE").sum() >= 8 and pvd == (gap.action == "REVOKE").sum() and len(blank) == len(gap),
-       "%d REVOKE and %d CONTINUE entries, %d carried-over cases undecided in the new system"
-       % ((gap.action == "REVOKE").sum(), (gap.action == "CONTINUE").sum(), len(blank)))
+    held = set(calc._key(new[(new.opened_in == "LEGACY") & (new.decision != "")]))
+    ok("ASKA the parallel run's legacy decisions all copy a new-system decision", calc._key(late).isin(held).all()
+       and calc.ask_a(D, parallel="date") == calc.ask_a(D), "%d late legacy decisions" % len(late))
     nd = new.assign(d=new.dd.dt.date)
     pairs = nd[nd.decision == "REVOKED"].groupby(["doc_number", "d"]).size()
     ok("ASKA two cases decided at one hearing share the decision timestamp",

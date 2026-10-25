@@ -4,16 +4,19 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: arrests, courts, conversion, record, sentence, asserted, revoked, decisive, golden, methodology, return, family, cohort, window, discharged, nothing, records, extract, parolees, default, pooled, forward, method, dropped, routes
+Stump terms swept: arrests, courts, conversion, record, sentence, asserted, golden, revoked, return, methodology, decisive, cohort, admission, custody, family, window, records, prompt, default, discharged, nothing, method, extract, closed, parolees
 
-## 3 answer figures in the pack (REVIEW 2)
+## 3 answer figures in the pack (REVIEW 5)
+- **REVIEW** `aoc_case_dispositions_2019-2026.csv`: golden figure 19,163 appears: ...way County,M2,2022-11-06,GP,2022-12-19,CJ,2022-12-19,163,2022-12-20 CR-COR-2022-00849,T40130985,Corliss Co...
 - **REVIEW** `aoc_case_dispositions_2019-2026.csv`: golden figure 17,928 appears: ...ss County,FA,2025-01-26,GP,2025-04-17,DOC,2025-04-17,928,2025-04-17 CR-COR-2025-00277,T40204321,Corliss Co...
+- **REVIEW** `aoc_case_dispositions_2019-2026.csv`: golden figure 21,409 appears: ...er County,FB,2023-09-07,GP,2023-12-21,DOC,2023-12-21,409,2023-12-24 CR-COR-2023-01030,T40252203,Corliss Co...
+- **REVIEW** `aoc_case_dispositions_2019-2026.csv`: golden figure 10,241 appears: ...ner County,M2,2020-07-21,GP,2020-10-10,CJ,2020-10-10,241,2020-10-12 CR-COR-2020-00408,T40033303,Corliss Co...
 - **REVIEW** `prison_population_projection_methodology_2026.pdf`: carries 7 of 10 distinctive words of the committed call: 'Carry a two-year return rate of 20 per cent for the 6,466 people the Department expects to release to parole in 2027.'
 
 ## 4 design-note vocabulary (REVIEW 3)
-- **REVIEW** `act_26-114_enrolled.pdf`: 3 of 25 stump-paragraph terms appear (sentence, return, parolees); read whether the document names the move
-- **REVIEW** `prat_validation_study_2023.pdf`: 3 of 25 stump-paragraph terms appear (record, return, records); read whether the document names the move
-- **REVIEW** `prison_population_projection_methodology_2026.pdf`: 10 of 25 stump-paragraph terms appear (courts, record, sentence, methodology, return, cohort); read whether the document names the move
+- **REVIEW** `act_26-114_enrolled.pdf`: 4 of 25 stump-paragraph terms appear (sentence, return, custody, parolees); read whether the document names the move
+- **REVIEW** `prat_validation_study_2023.pdf`: 5 of 25 stump-paragraph terms appear (record, return, admission, custody, records); read whether the document names the move
+- **REVIEW** `prison_population_projection_methodology_2026.pdf`: 12 of 25 stump-paragraph terms appear (courts, record, sentence, return, methodology, cohort); read whether the document names the move
 
 ## 9 dates after the setting (REVIEW 1)
 - **REVIEW** `doc_projected_releases_2027.csv`: 12932 ISO dates after 2026-10-14, e.g. 2027-01-01, 2027-01-02, 2027-01-03, 2027-01-04, 2027-01-05

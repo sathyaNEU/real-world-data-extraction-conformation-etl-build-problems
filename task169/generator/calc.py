@@ -499,24 +499,17 @@ def revocations(D, dedupe=True, rescind=True, orders=True, rescind_by=FY[1], lev
 
 def board_devices(D):
     """the counts the write-up states for the Board's records: legacy cases heard again after a rescission (REVOKE,
-    RESCIND, REVOKE), parallel-run recommitments that reached only the legacy system, and carried-over detainers the
-    new system re-issued at its go-live with the legacy lodge dates they replaced"""
+    RESCIND, REVOKE), and carried-over detainers the new system re-issued at its go-live with the legacy lodge dates
+    they replaced"""
     leg, new = _board(D)
     acts = leg[leg.action.isin(["REVOKE", "RESCIND"])].sort_values(["case_no", "ad"])
     seqs = acts.groupby("case_no").action.apply(tuple)
     rehear = int((seqs == ("REVOKE", "RESCIND", "REVOKE")).sum())
-    late = leg[(leg.ad > pd.Timestamp(C.BOARD_MIGRATE_CUT)) & (leg.action == "REVOKE")]
-    blank = set(_key(new[(new.opened_in == "LEGACY") & (new.decision == "")]))
-    gap = late[_key(late).isin(blank)]
-    pv = D["adm"][(D["adm"].movement_type == "ADM") & (D["adm"].movement_reason == "PAROLE VIOLATOR")]
-    pv = pv.groupby("doc_number").t.apply(list)
-    lag = max(min((t - d).days for t in pv.get(doc, []) if t > d) for doc, d in zip(gap.doc_number, gap.ad))
     cn = new[(new.opened_in == "LEGACY") & (new.hold_start == C.BOARD_GOLIVE.isoformat())]
     lg = leg[leg.hold_lodged != ""]
     lodge = pd.to_datetime(lg.assign(k=_key(lg)).groupby("k").hold_lodged.min())
     lk = _key(cn).map(lodge)
-    return dict(rehear=rehear, parallel_only=len(gap), pv_within=int(lag), reissued=len(cn),
-                lodge_from=lk.min().date(), lodge_to=lk.max().date())
+    return dict(rehear=rehear, reissued=len(cn), lodge_from=lk.min().date(), lodge_to=lk.max().date())
 
 
 def ask_a(D, **kw):

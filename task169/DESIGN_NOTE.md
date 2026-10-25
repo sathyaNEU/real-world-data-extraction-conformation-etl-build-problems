@@ -214,8 +214,9 @@ No confidence level, significance level or test threshold is filed anywhere in t
 | SF18 | ask 2's unit, "the recommitments the Board ordered" (stage 4 judge r3) | one per parolee per hearing date, two cases decided together one order (3,174) | each REVOKE or REVOKED decision row (3,523) | asks only | the prompt's clause "one per parolee per hearing date" (2026-10-25); "those on conditions alone" closes any against all cited arrests (asserted SF18) |
 | SF19 | ask 4's trip end, "the day the trip ended" (stage 4 judge r3) | the person back from the writ (WRI) or released, whichever comes first; 28,287 trips end at a WRI and 2,110 at a release, none open | WRO paired with WRI alone, the released trips dropped (every cell lower) | asks only | the prompt's clause "with the person back from the writ or released" (2026-10-25) (asserted SF19) |
 | SF20 | ask 3's detainer end where the courts sent the person to the Department before the Board lifted the detainer (portal round 3, judge 2) | the day of the admission, when the person left the county jail | the recorded lift date, 1 to 39 days later (123 detainers, 21 touching 2025, five cells) | asks only | C1 in the records: the Board lifts such a detainer on the admission day, so the recorded end and the physical exit select the same days (asserted SF20, verify) |
+| SF21 | the days at risk under the Act (portal round 4, judge 2) | every day out of Department custody from release to a return: the record's arrests read per day out of custody (the record's releases spent 554.5 of their 730 days out, on average) and carried over all 730 | the record's arrests over the 730 calendar days, each through the courts' DOC share (14.77, judge 2's 14.8; 13.50 with the arrest-to-admission time); the share scaled whole by 730 over the mean days out (23.04, judge 2's 23.5) | 15 or 25 | methodology 4.1 now files it: "A member of the 2027 cohort is therefore out of Department custody from release until a return, and for all 730 days where there is none"; the scaled share falls to 3.1 (a return is an admission by day 730) and 3.2 (a share of members); on the days out of custody every route files 20 (no covariates 19.91, one rate 20.11, detainer days out of the exposure too 21.64 and 21.76, each release's own arrests scaled to its own days out 20.50) and the default path read on the same days still files 10 (11.12) (asserted SF21) |
 
-Every row is asserted in `generator/checks.py` (labels SF1 to SF6, SF8 to SF20; SF7, the districts' order, left
+Every row is asserted in `generator/checks.py` (labels SF1 to SF6, SF8 to SF21; SF7, the districts' order, left
 with the districts at stage 4 round 1).
 
 ## Ladder
@@ -262,11 +263,12 @@ and its crude count (SF11, 17.46) falls to methodology 3.1; the portal judges' r
 | 20 | Integerisation | none on the call | C1 |
 | 21 | Clause scope | the Act from 1 January 2027 for every parolee | filed, Act section 6; methodology 4.1 |
 | 22 | Forward window contents | 2027 to 2029 under the Act; the cohort is on the extract | filed, methodology 2.2, 4.1 |
+| 23 | Exposure under the counterfactual | every day out of Department custody from release to a return | filed, methodology 4.1 (portal round 4); SF21 asserted |
 
 ## Literal reader
 
-Executed word for word, the methodology fixes the cohort (2.2), the return (3.1), the share (3.2), the step (3.3)
-and the Act's scope (4.1 to 4.2); the Act's section 3 fixes that only new commitments remain. Nothing filed says how
+Executed word for word, the methodology fixes the cohort (2.2), the return (3.1), the share (3.2), the step (3.3),
+the Act's scope (4.1 to 4.2) and the cohort's days at risk, every day out of Department custody to a return (4.1); the Act's section 3 fixes that only new commitments remain. Nothing filed says how
 the share of the cohort the Department will admit on a new commitment is estimated, so the method stays open, and
 the records force it: parolees' arrests while the Board could revoke reached a DOC sentence 7.7 per cent of the
 time against 22.3 after discharge, in every district (2.5 against 22.5 in Garrison), so the record's
@@ -293,79 +295,82 @@ cite, the deaths and the projected-release extract. Device and hazard rows in it
 parallel-run row cites an arrest the call converts; the call never reads a detainer; deleting every writ row leaves
 the call unchanged; companion reports add no arrest number the Board did not already revoke on).
 
-Round 1 re-siting. Both stage 4 readers landed the round 0 devices by reflex (carried-over cases taken once, a blank
-lift ended at the next admission, rescissions out). Every device below sits on the line a careful reader's quoted
-path already executes and is a grain the path takes for granted, with no flag, no time zone, no time-gap merge and
-no second file needed to see it; each leaves an inconsistency a grader can count in the data.
+Round 4 re-siting (portal round 4, 2026-10-25). Both portal responses reproduced all three tables of the round 3 pack:
+the round 2 ask clauses state A1's unit and C1's trip end, and B1's union and A2's cut sit on a careful path, so the
+rubric came back at 74 per cent with the call missed. Each new primary needs a reconstruction after it is seen (a case's
+actions replayed in date order, a cross-system match on the carried-over key, a detainer spliced across the two systems);
+none is flagged, narrated in a file or isolated by one column, and each leaves a count a grader can check in the records.
 
 **Ask A. For each district office, the recommitments the Board ordered from 1 July 2025 to 30 June 2026 and had not
-rescinded by 30 June 2026, split between those that took up a reported arrest and those on conditions alone** (8
-figures, whole numbers). H18 home: the record the Act ends, which the projection replaces and the committees read
-beside it.
-- A1 (one order, two case rows; silent primary): a second report on a parolee already held (a supplemental report
-  on the same arrest, or a conditions report filed during the hold) opens its own case, and the Board decides both
-  at one hearing with one recommitment term: two REVOKE or REVOKED rows, the same DOC number, the same decision
-  date and time, the same term, the same hold end. The ask counts recommitments, so one per parolee per hearing,
-  on an arrest when either case cites one. Both readers count case rows: reader A's dedupe key (DOC number, report
-  date, arrest number) never meets a companion, whose report date differs. Every cell moves (D1 +114 arrests, +109
-  conditions; D4 +12, +19).
-- A2 (WHAT closure, not a device): rescissions are counted when dated on or before 30 June 2026; 9 recommitments
-  rescinded later stay in (the judge's fork). Both readers removed every rescission to the cut, which moves the
-  four conditions cells by 1 to 3.
-- Hazards kept from round 0, now on the readers' own path: the parallel-run fortnight (legacy entries after the 2
-  January close), rescissions.
-- Stops (asserted): case rows counted (all 8); rescissions to the cut (the 4 conditions cells).
+rescinded by 30 June 2026, one per parolee per hearing date, split between those that took up a reported arrest and
+those on conditions alone** (8 figures, whole numbers). H18 home: the record the Act ends, which the projection replaces
+and the committees read beside it.
+- A1 (one order per parolee per hearing) and A2 (rescissions dated by 30 June 2026) stand as WHAT closures in the
+  prompt's clause and the records; a careful path executes both.
+- A3 (a revocation set aside on appeal and heard again; silent primary, a case's actions replayed in order): the Board
+  rescinds an order with the parolee still in Department custody and recommits on the same term at a second hearing on
+  the same case. The legacy action table writes REVOKE, RESCIND, REVOKE on one case number, the second action row
+  repeating the case's detainer columns as every action row does (32 cases, two to eleven per cell). A rescission sets
+  aside the order standing on its case when it came (the dictionary: "an earlier revocation"), so the later order
+  stands; the round 3 golden's own rule, every order on a case with a RESCIND row out, loses it. Every cell moves (1 to
+  11).
+- The parallel run stays a hazard: every legacy decision dated after the close copies one the new system holds.
+- Stops (asserted): every order on a rescinded case out (all 8), case rows (all 8), both systems added (all 8).
 
-**Ask B. For the county jails of each parole district, the parolee-days held on Board detainers in each half of
-2025, counting the day a detainer was lodged but not the day the person left** (8 figures). H18 home: the detainer
-days the State reimburses from 2027 (Act section 4(b)), the projection's cost line beside the returns.
-- B1 (overlapping detainers on one person; silent primary): a companion case lodges its own detainer on a parolee
-  already held, ending with the first, so the person's two intervals overlap. Parolee-days are days a parolee was
-  held: the union of each person's intervals in the jail. Both readers sum one hold per case. Every cell moves (351 to
-  2,795 days).
-- Hazards kept from round 0 and on the readers' path: legacy detainers with no lift date (ended at the person's next
-  admission), the legacy action table repeating a case's detainer on every action row, carried-over cases in both
-  systems.
-- Stops (asserted): intervals summed (all 8); blank lifts dropped or ended on the decision (all 8).
+**Ask B. For the county jails of each parole district, the parolee-days held on Board detainers in each half of 2025,
+counting the day a detainer was lodged but not the day the person left** (8 figures). H18 home: the detainer days the
+State reimburses from 2027 (Act section 4(b)), the projection's cost line beside the returns.
+- B1 (each parolee's overlapping detainers merged) and the round 3 lift at an admission stand; a careful path executes
+  both.
+- B3 (the go-live re-issue; silent primary, one detainer rebuilt from the two systems): the Board re-issued the detainer
+  of every carried-over case still undecided at go-live under the new case, lodged 5 January 2026 (450 of the 473
+  carried-over detainers; 14 new cases' detainers were lodged that day too), and the legacy table keeps the detainer it
+  replaced, lodged 12 November 2025 to 2 January 2026 and lifted in neither system before go-live. A carried-over
+  detainer runs from its legacy lodge day to its end in the new system; taking the carried-over case from the new
+  system, as the round 3 golden's step 7 did, loses its 2025 days. Every July to December cell moves (920 to 3,232
+  days).
+- The January to June cells carry no device: they are the construction's, free to a careful path.
+- Stops (asserted): the new system's date for a carried-over detainer (the four July to December cells), detainers
+  summed (all 8), both systems and every row ended at the decision (all 8), blank lifts dropped (all 8), both end days
+  counted (all 8).
 
 **Ask C. For each institution, the days its people spent out on court writs in each half of 2025, counting the day
-they went out but not the day the trip ended** (10 figures). H18 home: the Department's writ transport cost, the
-per-institution line the projection's custody days carry.
-- C1 (a trip ended by a release; silent primary): a person taken out on a writ is sometimes released by the court
-  or from the county without coming back, so the WRO has no WRI and the person's next movement is a release to
-  parole in the Department's own release file. The trip ended with the release; 2,561 of 26,482 trips end that way.
-  No person has two trips open at once (asserted in `checks.py` and `verify.py`), so every pairing of a WRI to an
-  open WRO gives the same trips. The quoted path pairs WRO with WRI and drops a trip with no return. Every cell moves
-  (144 to 221 days).
-- Stops (asserted): unpaired trips dropped (all 10); a trip with no return run to the next movement in the
-  admissions table (all 10).
+they went out but not the day the trip ended, with the person back from the writ or released** (10 figures). H18 home:
+the Department's writ transport cost, the per-institution line the projection's custody days carry.
+- No device: C1's trip end is the prompt's clause (round 2). No person has two trips open at once (asserted), so every
+  pairing gives the same trips; the construction alone, free to a careful path.
+- Stops (asserted): an unreturned trip dropped (all 10).
 
 **Hazard table.**
 
 | Hazard | Root cause | Moves | Per-ask delta |
 |---|---|---|---|
-| H1 companion reports | a second report on a held parolee decided at the same hearing | A, B | A every cell, +12 to +114; B every cell, +351 to +2,795 |
-| H2 rescissions after 30 June 2026 | reconsideration after the fiscal year | A | the conditions cells, -1 to -3 |
-| H3 releases from a writ | the court releases a person out on a writ | C | every cell, +144 to +221 |
-| H4 the parallel-run fortnight | decisions entered in both Board systems 5 to 23 January 2026 | A, B | handled on the readers' path |
-| H5 postponed hearings, blank lifts | the legacy action table | B | handled on the readers' path |
+| H1 companion reports | a second report on a held parolee decided at the same hearing | A, B | executed by a careful path (the clause; the union) |
+| H2 rescissions after 30 June 2026 | reconsideration after the fiscal year | A | executed by a careful path (the cut) |
+| H3 releases from a writ | the court releases a person out on a writ | C | executed by a careful path (the clause) |
+| H4 the parallel-run fortnight | decisions entered in both Board systems 5 to 23 January 2026 | A | handled on a careful path |
+| H5 postponed hearings, blank lifts | the legacy action table | B | handled on a careful path |
+| H6 appeals heard again | an order set aside on administrative appeal and re-heard on the same case | A | A3: every cell, 1 to 11 |
+| H7 the go-live re-issue | open detainers re-issued under the new case on 5 January 2026 | B | B3: the July to December cells, 920 to 3,232 days |
 
-**Referee.** For A, the shared hearing time and term on two cases of one DOC number; for B, the overlap of one
-person's intervals; for C, the release movement that follows an unreturned WRO. Each is countable from the shipped
-rows and none needs a filed definition.
+**Referee.** For A3, the PAROLE VIOLATOR admission after the first order and no release before the second hearing
+(the parolee held on the second order); for B3, the 450 carried-over detainers all lodged on the go-live day
+against legacy lodges in the eight weeks before it, none lifted before go-live. Each is countable from the shipped rows
+and none needs a filed definition.
 
-**Cracker sheet** (the cracker is the two stage 4 readers' quoted paths, executed literally on the cut pack by
-`generator/cracker.py`: the call landed, every convention the asking sentences state, carried-over cases once, blank
-lifts ended at the next admission, writs paired WRO to WRI)
+**Cracker sheet** (the cracker is portal round 4's two responses, which reproduced every table of the round 3 pack,
+executed by `generator/cracker.py` along the round 3 golden's own path: the call landed, every convention the asking
+sentences state, every order on a rescinded case out, a carried-over case's detainer from
+the new system, overlaps merged, writs ended at the WRI or the release)
 
 | Ask row | Figures | Cracker's path | Device that holds | Verdict |
 |---|---|---|---|---|
-| Ask A, recommitments by office and basis | 8 | case rows counted, rescissions to the cut (reader A and reader B tables run separately) | A1, A2 | miss |
-| Ask B, parolee-days by district and half | 8 | one hold per case, intervals summed | B1 | miss |
-| Ask C, writ days by institution and half | 10 | WRO paired to WRI, unpaired trips dropped | C1 | miss |
+| Ask A, recommitments by office and basis | 8 | every order on a rescinded case out | A3 | miss |
+| Ask B, July to December by district | 4 | carried-over detainers from the new system | B3 | miss |
+| Ask B, January to June by district | 4 | the construction | none | kept |
+| Ask C, writ days by institution and half | 10 | the construction | none | kept |
 
-One crack at a time (`cracker.py`): A1 cracked, the cracker keeps 4 of 26 and the pair is 32.7; A2 alone, 0 and 28.5;
-B1, 8 and 37.0; C1, 10 and 39.1.
+One crack at a time (`cracker.py`): A3 repaired, the cracker keeps 22 of 26; B3 repaired, 18 of 26.
 
 Measured by: `generator/cracker.py` (run on the cut pack; Part 0's weights, the call and its components 38, the
 instructions 7, the asks 55 over the 26 ask figures; a response off the call keeps 5).
@@ -373,8 +378,12 @@ instructions 7, the asks 55 over the 26 ask figures; a response off the call kee
 Mirror leakage: 0.0 per cent of ask weight (the mirror, off the call on 5 per cent, adds both Board systems, keeps
 rescissions, leaves blank lifts out and drops unpaired writs, and keeps none of the 26 figures).
 
-Pair ceiling: 28.5 measured on the cut pack (the cracker 45.0 on either reader's path, the mirror 12.0); the worst
-single crack 39.1 (C1).
+Pair ceiling: 43.3 measured on the cut pack (the cracker on the call keeps 14 of 26 and scores 74.6, the mirror 12.0).
+The repair is built to the author's target for this return, not to this file's 40: the portal's cutoff is 70 and the
+target the high 50s to low 60s, with both responses off the call in every portal round. On the round 4 rubric a response
+off the call scored 74 with all 26 ask figures, so each figure is worth 1.3 to 2.3 points: keeping the 14 free figures
+it lands near 46 to 58, and near 56 to 65 if it repairs both Table 1 devices or B3. `precut.py` fails this sheet's two
+kept rows and the 43.3 by design, recorded in `## Repairs, portal round 4`.
 
 ## Layer 1 inventory
 
@@ -395,12 +404,14 @@ single crack 39.1 (C1).
 ## Leak sweep
 
 `leak.py task169 --asof 2026-10-14`: REVIEW, no LEAK. Each REVIEW line, answered:
-- One coincidence in the court file (a sentence length of 928 days after a date's day digits) matches the tail of
-  a detainer-day figure; it is a sentence length, unrelated to any ask.
+- Four coincidences in the court file (a date's day digits running into the next field's sentence length, as in
+  "2022-12-19,163") read as detainer-day figures; they are sentence lengths, unrelated to any ask.
 - The methodology carries seven of the call's words because it files the estimand (the cohort, the return, the
-  share, the step); it states no rate and no method.
+  share, the step); it states no rate and no method. Round 4's sentence in 4.1 (the cohort out of Department custody
+  from release until a return) brings its stump-paragraph terms from 10 to 12 of 25 (custody, release); it names no
+  arrest, court, conversion or rate.
 - Design-note vocabulary in the Act, the PRAT study and the methodology is the field's own (record, return,
-  sentence, courts, cohort, parolees); none of the three says what a revoked arrest becomes in court.
+  sentence, courts, cohort, parolees, custody); none of the three says what a revoked arrest becomes in court.
 - The projected-release extract carries 2027 dates by nature (projected release and maximum dates).
 
 ## Pre-ship check
@@ -516,6 +527,40 @@ single crack 39.1 (C1).
 - Re-judge (determinism-check-task169-r4, order kept): DETERMINISTIC, APPROVE, no fix; the call 19.5 to 20.4, all three
   tables exact with the new cells; Gate G analytical_non_defect, Gate H pass. Report: determinism_check_report_pass3.md.
 
+## Repairs, portal round 4 (2026-10-25)
+
+- Portal round 4 on f958b874 (target.zip 972382ac): judge 1 passed every gate (F strong), reproducing the call's chain
+  (25,117 arrests, 3,483 DOC sentences) and all three tables; judge 2 failed C and D, competing_defensible_answer on the
+  call's exposure basis (the calendar counterfactual 14.8, step 15; the golden's days out of custody 20.4; a share scaled
+  by the days out 23.5, step 25), fix location a shipped governing file. Both responses filed 10 on the naive route, and
+  the rubric came back at 74 per cent with the call missed: they reproduced every table, the round 2 clauses having
+  spelled out A1 and C1 and B1 and A2 sitting on a careful path.
+- Determinism move (a WHAT at authority, once): methodology 4.1 adds "A member of the 2027 cohort is therefore out of
+  Department custody from release until a return, and for all 730 days where there is none." It fixes the
+  counterfactual cohort's custody state, the estimand's population condition, and names no arrest, court, conversion,
+  rate or model. Readability screen: it does not name the decisive quantity (the courts' conversion of the arrests the
+  Board revoked on), and the default path read on the same days still files 10 (11.12). SF21 and closure row 23.
+- Rubric move (the call frozen): A3 and B3 (`## Ask sheet`; A4 withdrawn at stage 4) on rows outside the call's population. The call reads
+  the Board's REVOKE and REVOKED rows only for the arrest numbers they cite (the shipped 14,445, asserted), no hold and
+  no writ; every file it reads that no device touches is byte-identical to 972382ac (asserted, SEP), and the
+  unrounded rate is the shipped 20.403944. Only the two Board files, the methodology and the manifest's row counts
+  changed. The Table 1 golden moved by one to three orders in five cells (seven re-heard orders whose first order fell
+  before 1 July 2025); Tables 2 and 3 are unchanged. The prompt is unchanged.
+- Gates (target.zip 457a4616): checks 129, verify 0 failed, two builds byte-identical over 20 files (again after the
+  write-up's step 5 cited its file and section), figures_check 63 of 63, voice-check exit 0, leak.py REVIEW with no
+  LEAK (answered in `## Leak sweep`), guard validate 296 cards and none invalid, freeze rubric PASS (the call, the
+  stump and every frozen figure unchanged; the golden workbook and nine ask figures moved). precut 51 checks with two
+  FAIL by design (the pair ceiling 43.3 and the two kept cracker rows, the author's target above). heart BLOCK on
+  ban.forcing_event and ban.org_family against task125 (v2), whose card was registered on 23 October after this
+  draw on 22 October: ruled as the earlier window rulings, the window fixed at the draw and the card not relabelled.
+- Stage 4 on 457a4616: judge r5 DETERMINISTIC, APPROVE, no fix; its blind pass filed 10 against 20 (the record's
+  new-commitment rate) and reproduced all three tables; Gate F strong, G analytical_non_defect, H pass; the calendar
+  route its closest rival, ruled out by 4.1's sentence and the arrests' near absence in custody (0.36 per cent). Scored
+  readers: g filed 10 and kept 26 of 26 ask figures; h filed 20 (the revoked arrests' nolle prosequis found in the data)
+  and kept 25 of 26. Before this pack the in-house readers A to F and the portal's eight responses all filed 10.
+- Expected portal effect: a response off the call that keeps the 14 free figures lands near 46 to 58 on the round 4
+  rubric, near 56 to 65 if it repairs both Table 1 devices or B3, 74 only if it repairs all three.
+
 ## Tried and rejected
 
 - Candidate A with five summers of record (2022 to 2026): the extra cool summers made growth by hour without
@@ -589,3 +634,13 @@ single crack 39.1 (C1).
 - Portal round 2 (2026-10-25, 73e3137b): the write-up's step 3 as the only account of the courts' conversion. Both judges converted over every arrest and could not reproduce 20; the evidence (revoked arrests all nolle prossed, the no-Board arrests at the courts' rate) moved into steps 3 to 5 as exact counts; nothing filed, the pack unchanged.
 - Stage 4 re-judge r3 (2026-10-25): asks 2 and 4 with their units left to the write-up and the records. The judge read the recommitments per decision row and the writ trips paired WRO to WRI; both units are now in the ask clauses.
 - Portal round 3 (2026-10-25): table 2 counted to the Board's recorded lift date for detainers whose holder the courts had already sent to the Department; judge 2 stopped at the admission. Closed in the records (the Board lifts at the admission), not by a prompt clause the 1,000-character budget could not carry.
+- Portal round 4 (2026-10-25): the round 2 clauses spelled out A1's unit and C1's trip end, and B1's union and A2's cut sat on a careful path, so both responses reproduced every table (rubric 74 with the call missed). A1 and C1 stay as WHAT closures; the ask weight moved onto A3, A4 and B3.
+- Judge 2's suggested pin (state the liberty-day Poisson and the full-730 assumption, or the calendar basis with the courts' rate applied to expected arrests): either sentence files the method and makes the decisive step rule application; the WHAT, the cohort's custody state under the Act, closes the same fork.
+- A device on the parole maximum date (holds and orders past the Board's jurisdiction): the world lets the Board act after the maximum date on violations before it (86 recommitments and 722 PAROLE VIOLATOR admissions after it), so "a parolee" past the date is a fork, not a device. Set aside on code.
+- A writ trip split across a transfer while out: "the days its people spent out" reads as the institution left or the one holding the person each day, a fork the prompt's budget cannot close. Set aside on paper.
+- A re-hearing in the new system, the rescinded date kept on the case's one row beside a later decision timestamp: a judge can read the date as rescinding the row's decision, so the device would ride on a reading; kept to the legacy action table, where the order of the rows decides it.
+- An arrest report with no arrest number (condition 01 cited, the number missing): the split would turn on reading condition 01 as an arrest, a semantic fork. Set aside on paper.
+- Re-issuing every carried-over detainer open at go-live (the first cut): the cases decided on 3 and 4 January 2026 have no legacy row, so their 2025 days were in no record (law 6) and three July to December cells fell; the re-issue is limited to the cases still undecided at go-live.
+- A Table 3 device to bring the pair under 40: the author's target for this return is the high 50s to low 60s against the portal's 70 cutoff, and Table 3's trip end has already cost two judge passes; left as the construction.
+- A4, the parallel run's decisions that reached only the legacy system (27 recommitments left undecided in the new system): the stage 4 judge (r5) read it as a soft fork, nothing filed saying which system governs a carried-over case whose new-system decision is blank, and readers g and h kept every one by deduplicating the two systems on parolee and hearing date. It bought no figure and cost a reading; withdrawn.
+- A3 and B3 as primaries, measured on target.zip 457a4616: readers g and h and the judge's blind pass reproduced every Table 1 and Table 2 cell (g: "legacy RESCIND paired with the latest prior REVOKE", "legacy lodged date (not the reset new-system start)"; h: both systems merged per case, the earliest lodge kept). Seen and repaired right by a careful path; kept as hazards that cost a looser path cells, not counted on for the rubric.
