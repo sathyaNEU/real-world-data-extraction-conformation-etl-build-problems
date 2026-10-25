@@ -1,360 +1,346 @@
-"""task485's generator checks, run on the world's clean truth and on the cut pack: the three rules (R1 to R3), the
-ladder, every row of the semantic fork table (SF1 to SF15) with the deciding quantity's live readings as a cross
-product, each Layer 1 item mishandled, the ask's device and its separation from the call, the realism sweep and the
-input gates.
+"""task485's assertions on the cut pack and on the generator's clean truth: the input gates, the three rules (R1 the
+raw material, R2 every Layer 1 item mishandled, R3a the analyst test, R3b the decisive step alone, R3c no plant), the
+ladder and its margins, every semantic fork row (SF1 to SF15), rounding robustness, the ask, the documents' positive
+controls and the realism sweep.
 
-    python3 task485/generator/checks.py
+    python3 task485/generator/checks.py          (after build.py)
 """
+import collections
 import csv
-import itertools
+import datetime as dt
+import json
+import math
 import os
 import re
-import subprocess
 import sys
-from collections import Counter, defaultdict
-
-import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 T = os.path.join(TASK, "target")
 sys.path.insert(0, HERE)
-import build as B  # noqa: E402
-import contractors as C  # noqa: E402
-import golden as G  # noqa: E402
-import registry as R  # noqa: E402
-import world as W  # noqa: E402
+import ash as A           # noqa: E402
+import build as B         # noqa: E402
+import ceiling as C       # noqa: E402
+import golden as G        # noqa: E402
+import pack as PK         # noqa: E402
+import pack_ash_read      # noqa: E402
+import world as W         # noqa: E402
 
-OK, BAD = [], []
-GOLD = ["Northern Vale", "Eastern Vale", "Southern Vale", "Midland Basin", "Inner Basin", "Lower Basin"]
-DEFAULT = ["Northern Vale", "Eastern Vale", "Southern Vale", "Midland Basin", "Lake Uplands", "Middle Uplands", "Eastern Uplands", "Western Seaboard",
-           "Atlantic Coast"]
-MEAN = ["Northern Vale", "Eastern Vale", "Southern Vale", "Midland Basin", "Inner Basin", "Lower Basin", "Lake Uplands", "Middle Uplands", "Western Seaboard"]
-PREMISES = ("mart", "dealer", "export", "factory", "knackery")
+N, FAILS = [0], []
+GOLD = ["S01-2", "S03-1", "S12-1", "S13-1", "S14-1", "S15-1"]
 
 
-def check(label, cond, detail=""):
-    (OK if cond else BAD).append(label)
-    print("%s  %s%s" % ("PASS" if cond else "FAIL", label, ("  " + detail) if detail else ""))
+def check(label, ok, detail=""):
+    N[0] += 1
+    if not ok:
+        FAILS.append(label)
+    print("%s  %s%s" % ("PASS" if ok else "FAIL", label, ("  (" + detail + ")") if detail else ""))
 
 
-def intervals(w, transit="arr", premises="count", exit_counted=False, start="birth"):
-    """the herd intervals under a reading of the register: the location switches at the arrival date (golden) or the
-    departure date; days at marts, dealers and export centres counted there (golden), dropped, or counted at the herd
-    the animal came from; the exit day not counted (golden) or counted; presence from birth (golden) or registration"""
-    A, H = w.A, w.herds
-    by_a = defaultdict(list)
-    for m in w.moves:
-        by_a[m["a"]].append((m[transit], m["k"], m["to"]))
-    out = {}
-    for a in range(len(A["sex"])):
-        b = A["birth"][a] + (A["reg_lag"][a] if start == "reg" else 0)
-        s = max(b, 0)
-        e = A["exit"][a] if A["exit"][a] is not None else W.NDAY
-        if exit_counted and A["exit"][a] is not None:
-            e += 1
-        e = min(e, W.NDAY)
-        if s >= W.NDAY or e <= 0 or e <= s:
-            continue
-        cur, t, iv = A["herd0"][a], s, []
-        for day, k, to in sorted(by_a[a]):
-            if day <= t:
-                cur = to
-                continue
-            if day >= e:
-                break
-            iv.append([cur, t, day])
-            cur, t = to, day
-        iv.append([cur, t, e])
-        iv = [x for x in iv if x[1] < x[2]]
-        if premises != "count":
-            kept = []
-            for k, x in enumerate(iv):
-                if H[x[0]]["type"] in PREMISES:
-                    if premises == "seller" and kept:
-                        kept.append([kept[-1][0], x[1], x[2]])
-                    continue
-                kept.append(x)
-            iv = kept
-        if iv:
-            out[a] = [tuple(x) for x in iv]
-    return out
+def ten(x):
+    return int(math.floor(x / 10.0 + 0.5) * 10)
 
 
-def region_maps(tr):
-    """herd -> region index under the readings a response can take: the 2024 regions (golden), the pre-2024 codes,
-    the herd register's first row for a reissued number (the earlier holder's), the herd number's letter"""
-    w = tr["w"]
-    old = {o["herd_no"]: o["region"] for o in tr["old"]}
-    letter = {v: k for k, v in W.RLETTER.items()}
-    maps = {
-        "2024": [h["region"] for h in w.herds],
-        "pre2024": [h["region_pre2024"] for h in w.herds],
-        "first_row": [old.get(h["herd_no"], h["region"]) for h in w.herds],
-        "letter": [letter[h["herd_no"][0]] for h in w.herds],
-    }
-    return {k: np.array([G.REGI[r] for r in v]) for k, v in maps.items()}, \
-        {k: {h["herd_no"]: v[i] for i, h in enumerate(w.herds)} for k, v in maps.items()}
+def hundred(x):
+    return int(math.floor(x / 100.0 + 0.5) * 100)
 
 
-def call(kg, land):
-    return G.designated(kg, land)
+def comps(bal):
+    return (hundred(sum(v["formed"] for v in bal.values())), hundred(sum(v["removed"] for v in bal.values())))
+
+
+def pdf_text(name):
+    import pdfplumber
+    with pdfplumber.open(os.path.join(T, name)) as p:
+        return "\n".join(pg.extract_text() or "" for pg in p.pages)
+
+
+def rows_csv(name):
+    with open(os.path.join(T, name), newline="", encoding="utf-8") as fh:
+        return list(csv.DictReader(fh))
 
 
 def main():
+    figs = json.load(open(os.path.join(HERE, "figures.json")))
+    meta = json.load(open(os.path.join(TASK, "metadata.json")))
     tr = B.truth()
-    w, P, land, gold = tr["w"], tr["P"], tr["land"], tr["gold"]
-    kgha = gold / land
-    des = call(gold, land)
-    check("golden: the six regions", des == GOLD, str(des))
-    near = min(abs(kgha / W.LINE - 1)) * 100
-    check("SF14 no region within 2 per cent of the line on the golden", near >= 2.0, "nearest %.2f per cent" % near)
-    order = sorted(W.REG, key=lambda r: kgha[G.REGI[r]])
-    print("     golden kg/ha: " + ", ".join("%s %.2f" % (r, kgha[G.REGI[r]]) for r in W.REG))
+    w, rt = tr["w"], tr["rt"]
+    bal = G.balance(w, w.returns, w.tickets, w.permits)
+    gold = G.listed_of(bal)
+    base_c = comps(bal)
+    names = {b["id"]: b["firm"] if b["site"] not in PK.UNIT_NAME else None for b in w.B}
 
-    # ---------------------------------------------------------------- the ladder
-    farm_region = {h["farm_no"]: h["region"] for h in w.herds if h.get("farm_no")}
-    t5 = G.table5()
-    L0 = G.census_route(tr["cen"], farm_region)
-    st = G.stock(P, W.CENSUS)
-    L1 = (st * t5).sum(1)
-    L2a = L0 * gold.sum() / L0.sum()
-    L3 = (G.days(P) / W.NDAY * t5).sum(1)
-    L2b = L3 * gold.sum() / L3.sum()
-    L4 = G.ammonia(P, season=P.home)
-    rungs = dict(L0=L0, L1=L1, L2a=L2a, L3=L3, L2b=L2b, L4=L4, G=gold)
-    sets = {k: call(v, land) for k, v in rungs.items()}
-    for k, v in rungs.items():
-        x = v / land
-        print("     %-3s %7.1f t  %s" % (k, v.sum() / 1000, ", ".join("%s %.2f" % (r, x[G.REGI[r]]) for r in W.REG)))
-    check("ladder L0 (the census at Table 5) files the default nine", sets["L0"] == DEFAULT, str(sets["L0"]))
-    check("ladder L1 (the register's 1 June stock at Table 5) files the default nine", sets["L1"] == DEFAULT, str(sets["L1"]))
-    check("ladder L2a (the census scaled to the golden total) is off the call", sets["L2a"] != GOLD, str(sets["L2a"]))
-    check("ladder L3 (the register's mean count at Table 5) files the mean-count nine", sets["L3"] == MEAN, str(sets["L3"]))
-    check("ladder L2b (the mean count scaled to the golden total) is off the call", sets["L2b"] != GOLD, str(sets["L2b"]))
-    check("ladder L4 (animal-days at the home region's season) files the golden", sets["L4"] == GOLD, str(sets["L4"]))
-    census_tot = sum(sum(c.values()) for c in tr["cen"].values())
-    check("the register's 1 June stock on farms equals the census", int(G.stock(P, W.CENSUS).sum()) >= census_tot and
-          census_tot == sum(1 for a, iv in tr["IV"].items() for h, s, e in iv
-                            if s <= W.CENSUS < e and R.HTYPE[w.herds[h]["type"]] == "Farm"), "%d cattle" % census_tot)
-    m_def = {r: kgha_r for r, kgha_r in zip(W.REG, L0 / land)}
-    wrong_add = min(m_def[r] / W.LINE - 1 for r in DEFAULT if r not in GOLD) * 100
-    wrong_miss = max(m_def[r] / W.LINE - 1 for r in GOLD if r not in DEFAULT) * 100
-    check("the default's added regions sit 5 per cent or more over the line, its missed ones 5 per cent or more under",
-          wrong_add >= 5 and wrong_miss <= -5, "nearest added %+.1f, nearest missed %+.1f" % (wrong_add, wrong_miss))
-    m3 = {r: v for r, v in zip(W.REG, L3 / land)}
-    check("the mean count's added regions sit 4 per cent or more over the line",
-          min(m3[r] / W.LINE - 1 for r in MEAN if r not in GOLD) * 100 >= 4,
-          "nearest %+.1f" % (min(m3[r] / W.LINE - 1 for r in MEAN if r not in GOLD) * 100))
-
-    # ---------------------------------------------------------------- the three rules
-    heads = {}
-    for f in sorted(os.listdir(T)):
-        if f.endswith(".csv"):
-            heads[f] = open(os.path.join(T, f), encoding="utf-8").readline().strip().upper()
-    words = ("AMMONIA", "NH3", "ANIMAL_DAYS", "ANIMAL DAYS", "HOUSED", "KG_HA", "EMISSION")
-    hit = [f for f, h in heads.items() if any(x in h for x in words)]
-    check("R1 the golden reads the register's animal and movement rows (shipped one row per animal and per movement)",
-          len(tr["IV"]) > 100000 and len(w.moves) > 70000, "%d animals, %d moves" % (len(tr["IV"]), len(w.moves)))
-    check("R1 no shipped column holds a region's ammonia, animal-days or housed days", not hit, str(hit))
-    check("R3a the easy route on the clean truth files the default nine", sets["L0"] == DEFAULT)
-    check("R3b the decisive step alone (the census replaced by animal-days at each region's season) files the golden",
-          sets["G"] == GOLD)
-    check("R3b each lower rung's single correction stays off the call (the register's stock, its mean count)",
-          sets["L1"] != GOLD and sets["L3"] != GOLD)
-
-    # ---------------------------------------------------------------- the fork table as a cross product
-    rmaps, hmaps = region_maps(tr)
-    lands = {}
-    for rk, hm in hmaps.items():
-        for mode in ("share", "whole", "drop"):
-            lands[(rk, mode)] = G.farmed_land(tr["parcels"], hm, whole_commonage=(mode == "whole"),
-                                              drop_commonage=(mode == "drop"))
-    results = {}
-    for transit, prem, exc, start in itertools.product(("arr", "dep"), ("count", "drop", "seller"), (False, True),
-                                                       ("birth", "reg")):
-        IV = intervals(w, transit, prem, exc, start)
-        ivs = G.iv_arrays(IV)
-        for rk, rm in rmaps.items():
-            Pv = G.Pieces(tr["T"], ivs, rm)
-            kg = G.ammonia(Pv)
-            for mode in ("share", "whole", "drop"):
-                results[(transit, prem, exc, start, rk, mode)] = call(kg, lands[(rk, mode)])
-    flips = {k: v for k, v in results.items() if v != GOLD}
-    check("SF4 SF5 SF6 SF7 SF11 SF12 SF13 the cross product, 2 by 3 by 2 by 2 by 4 by 3 = %d readings, files only the "
-          "golden" % len(results), not flips, "%d flip: %s" % (len(flips), list(flips.items())[:3]))
-    check("SF4 a day in transit in the arrival herd: same call (in the cross product)",
-          all(v == GOLD for k, v in results.items() if k[0] == "dep"))
-    check("SF5 days at marts, dealers and export centres dropped or put at the seller: same call",
-          all(v == GOLD for k, v in results.items() if k[1] != "count"))
-    check("SF6 the exit day counted: same call", all(v == GOLD for k, v in results.items() if k[2]))
-    check("SF7 presence from the registration date: same call", all(v == GOLD for k, v in results.items() if k[3] == "reg"))
-    check("SF11 commonage counted whole on each sharing herd, or left out: same call",
-          all(v == GOLD for k, v in results.items() if k[5] != "share"))
-    check("SF12 the pre-2024 region codes: same call", all(v == GOLD for k, v in results.items() if k[4] == "pre2024"))
-    check("SF13 the herd register's first row for a reissued number (the earlier holder's region): same call",
-          all(v == GOLD for k, v in results.items() if k[4] == "first_row"))
-    n_reissued = len(tr["old"])
-    check("SF13 the reissued numbers' earlier rows end before the programme year", all(o["valid_to"] < W.Y0 for o in tr["old"]),
-          "%d reissued numbers" % n_reissued)
-    check("R2 herd numbers placed by their letter (the four herds of the moved districts in Coastal Vale): same call",
-          all(v == GOLD for k, v in results.items() if k[4] == "letter"))
-    check("SF8 the home region's season for every day: same call (L4)", sets["L4"] == GOLD)
-    check("SF3 arising in the region read as each animal in its 1 June region: another set (the default)", sets["L0"] != GOLD)
-    # SF9: the note's categories by day; the census's categories held all year is the default (another set)
-    check("SF9 the census's categories on 1 June held all year: another set (the default)", sets["L1"] != GOLD)
-    A = w.A
-    dairy_herd_cows = [a for a, iv in tr["IV"].items() if A["fc"][a] is not None and A["sex"][a] == "F"
-                       and w.herds[A["herd0"][a]]["type"] == "dairy"]
-    bad10 = sum(1 for a in dairy_herd_cows if A["breed"][a] not in W.DAIRY_BREEDS)
-    bad10b = sum(1 for a, iv in tr["IV"].items() if A["fc"][a] is not None and A["breed"][a] in W.DAIRY_BREEDS
-                 and w.herds[A["herd0"][a]]["type"] != "dairy")
-    check("SF10 every cow in a dairy herd is a dairy breed and every dairy-breed cow is in a dairy herd: identical",
-          bad10 == 0 and bad10b == 0, "%d, %d" % (bad10, bad10b))
-    late = sum(1 for m in w.moves if m["dep"] >= W.NDAY)
-    check("SF1 the movement export ends with the programme year (moves after 31 October 2026 not shipped)",
-          late >= 0 and max(m["dep"] for m in w.moves if m["dep"] < W.NDAY) < W.NDAY, "%d later moves held back" % late)
-    epo = subprocess.run(["pdftotext", "-layout", os.path.join(T, B.NAMES["epo"]), "-"], capture_output=True,
-                         text=True).stdout
-    check("SF15 the note's factors are kilograms of ammonia a head a day", "kg NH3 a head a day" in epo)
-    for c in W.CATS:
-        for v in W.RATE[c]:
-            assert ("%.4f" % v) in epo, (c, v)
-    check("the note prints every Table 3 rate the world applies", True)
-    arp = subprocess.run(["pdftotext", "-layout", os.path.join(T, B.NAMES["arp"]), "-"], capture_output=True,
-                         text=True).stdout
-    check("SF2 the rules scope the measure to cattle manure (fertiliser and other livestock outside)",
-          "outside the measure" in arp and "fertiliser" in arp)
-
-    # ---------------------------------------------------------------- Layer 1 neutrality (R2)
-    lpr = list(csv.DictReader(open(os.path.join(T, B.NAMES["lpr"]), encoding="utf-8")))
-    check("R2 commonage sits only in Eastern Uplands and Atlantic Coast",
-          {tr["herd_region"][r["HERD_NO"]] for r in lpr if r["LAND_USE"] == "Commonage"} <= {"Eastern Uplands", "Atlantic Coast"})
-    dates = [r.split(",")[3] for r in open(os.path.join(T, B.NAMES["animals"]), encoding="utf-8").read().splitlines()[1:]]
-    over12 = sum(1 for d in dates if int(d[:2]) > 12)
-    check("R2 day-month-year dates: a month and day swap fails loudly (days over 12 in the birth dates)",
-          over12 > 0.5 * len(dates), "%d of %d" % (over12, len(dates)))
-    cen_rows = list(csv.DictReader(open(os.path.join(T, B.NAMES["census"]), encoding="utf-8")))
-    raw_join = sum(1 for r in cen_rows if r["FARM_NO"] in farm_region)
-    pad_join = sum(1 for r in cen_rows if "%07d" % int(r["FARM_NO"]) in farm_region)
-    check("R2 census farm numbers: the raw join fails loudly and the padded join matches every farm",
-          raw_join < 0.1 * len(cen_rows) and pad_join == len(cen_rows), "raw %d, padded %d of %d" % (raw_join, pad_join, len(cen_rows)))
-
-    # ---------------------------------------------------------------- the ask
-    cj = tr["cj"]
-    hr = tr["herd_region"]
-    A_g = C.golden(cj, hr)
-    lo, hi = W.di(W.WIN0), W.di(W.WIN1)
-
-    def route(kb_keep="own", sub_keep=True, dedup_near=False, hazards=False, kb_nominal=False):
-        vol, less = defaultdict(float), defaultdict(float)
-        passed = {l["ref"] for l in cj["kb"] if not l["ref"].startswith("CW")}
-        av_days = {(j["herd"], j["date"]) for j in cj["av"]} | {(j["herd"], j["date"]) for j in cj["nm"]}
-        for j in cj["av"]:
-            if (not hazards and j["material"] != "CATTLE SLURRY") or not (lo <= j["date"] <= hi) or j["herd"] not in hr:
-                continue
-            if not sub_keep and j["job_id"] in passed:
-                continue
-            v = j["loads"] * (2000 if kb_nominal else j["gal"]) * C.GAL
-            vol[hr[j["herd"]]] += v
-            less[hr[j["herd"]]] += v if j["equipment"] in C.LESS_AV else 0
-        for j in cj["nm"]:
-            if (not hazards and j["material"] != "Cattle slurry") or not (lo <= j["date"] <= hi) or j["herd"] not in hr:
-                continue
-            if not sub_keep and j["job_no"] in passed:
-                continue
-            vol[hr[j["herd"]]] += j["m3"]
-            less[hr[j["herd"]]] += j["m3"]
-        for l in cj["kb"]:
-            if (not hazards and not l["service"].startswith("SS-")) or not (lo <= l["date"] <= hi):
-                continue
-            if kb_keep == "own" and l["ref"] in passed:
-                continue
-            if dedup_near and (l["herd"], l["date"]) in av_days:
-                continue
-            v = l["qty"] * 1000 * C.GAL
-            vol[hr[l["herd"]]] += v
-            less[hr[l["herd"]]] += v if l["service"] in C.LESS_KB else 0
-        return {r: (vol[r], 100 * less[r] / vol[r]) for r in W.REG}
-
-    def keeps(x):
-        return sum((round(x[r][0], -2) == round(A_g[r][0], -2)) + (round(x[r][1], 1) == round(A_g[r][1], 1)) for r in W.REG)
-
-    g2 = route()
-    check("ask A the golden handling reproduces the contractors' true jobs exactly", all(
-        abs(g2[r][0] - A_g[r][0]) < 1e-6 and abs(g2[r][1] - A_g[r][1]) < 1e-9 for r in W.REG))
-    stops = dict(cracker=route(kb_keep="all"), mirror=route(kb_keep="all", sub_keep=False),
-                 near_dup=route(kb_keep="all", dedup_near=True), hazards=route(hazards=True),
-                 nominal=route(kb_nominal=True), cracker_hazards=route(kb_keep="all", hazards=True))
-    for k, v in stops.items():
-        print("     ask A stop %-16s keeps %2d of 24" % (k, keeps(v)))
-    check("ask A the cracker (every row as exported) misses every figure", keeps(stops["cracker"]) == 0,
-          "%d kept" % keeps(stops["cracker"]))
-    check("ask A the mirror (Countrywide's lines kept, the job sheets dropped) keeps under 35 per cent",
-          keeps(stops["mirror"]) <= 8, "%d of 24" % keeps(stops["mirror"]))
-    check("ask A the near-duplicate sweep (a Countrywide line beside a same-day job dropped) keeps under 35 per cent",
-          keeps(stops["near_dup"]) <= 8, "%d of 24" % keeps(stops["near_dup"]))
-    twins = sum(1 for l in cj["kb"] if l["ref"].startswith("CW") and l["service"].startswith("SS-") and
-                (l["herd"], l["date"]) in ({(j["herd"], j["date"]) for j in cj["av"]} | {(j["herd"], j["date"]) for j in cj["nm"]}))
-    passed = [l for l in cj["kb"] if not l["ref"].startswith("CW")]
-    check("ask A genuine same-day pairs exist beside the passed jobs", twins >= 20, "%d same-day pairs, %d passed lines" %
-          (twins, len(passed)))
-    check("ask A the passed lines are a minority of Countrywide's lines", len(passed) < 0.3 * len(cj["kb"]),
-          "%d of %d" % (len(passed), len(cj["kb"])))
-    regs_passed = {hr[l["herd"]] for l in passed}
-    check("ask A every region carries passed lines", regs_passed == set(W.REG), str(len(regs_passed)))
-    check("separation: the call reads no contractor row (the golden's ammonia is computed before the jobs exist)",
-          "cj" not in open(os.path.join(HERE, "golden.py")).read())
-    check("separation: no contractor file is read by the call's population (0 rows)",
-          not ({"ardvale", "kilbrack", "northmoor"} & set(k for k in B.NAMES if k in ("animals", "movements", "herds",
-                                                                                     "census", "lpr", "epo", "survey"))))
-    gsrc = open(os.path.join(HERE, "golden.py")).read() + open(os.path.join(HERE, "goldfiles.py")).read()
-    check("distractors: no golden figure opens the fertiliser, milk or pig and poultry files",
-          not any(x in gsrc for x in ("fert", "milk", "pigs")))
-
-    # ---------------------------------------------------------------- gates and realism
+    # ------------------------------------------------------------ input gates
     files = sorted(os.listdir(T))
-    check("gate: 10 or more files", len(files) >= 10, str(len(files)))
-    check("gate: 3 or more formats", len(set(f.rsplit(".", 1)[1] for f in files)) >= 3,
-          str(sorted(set(f.rsplit(".", 1)[1] for f in files))))
-    big = max(sum(1 for _ in open(os.path.join(T, f), "rb")) for f in files if f.endswith(".csv"))
-    check("gate: a file of 25,000 rows or more", big >= 25000, str(big))
-    check("gate: two or more distractors", True, "fertiliser sales, creamery milk intake, pig and poultry census")
-    tonnes = [round(x / 1000, 1) for x in gold]
-    check("realism: no two regions share a tonnage, a farmed area or a kilograms a hectare",
-          len(set(tonnes)) == 12 and len(set(np.round(land, 1))) == 12 and len(set(np.round(kgha, 2))) == 12)
-    pre = {h["farm_no"]: h["region_pre2024"] for h in w.herds if h.get("farm_no") and "out_farm_of" not in h}
-    cen_tot, cen_farms = Counter(), Counter()
-    for f, c in tr["cen"].items():
-        cen_tot[pre[f]] += sum(c.values())
-        cen_farms[pre[f]] += 1
-    check("realism: no two census regions share a cattle total or a count of farms", len(set(cen_tot.values())) == 12
-          and len(set(cen_farms.values())) == 12, str(sorted(cen_farms.values())))
-    hd = [W.housed_days(r) for r in W.REG]
-    check("realism: no two regions share a housing season length", len(set(hd)) == 12, str(hd))
-    check("realism: the national total is not round", round(gold.sum() / 1000, 1) % 10 != 0)
-    mv = open(os.path.join(T, B.NAMES["movements"]), encoding="utf-8").read().splitlines()[1:]
-    body = [",".join(r.split(",")[1:]) for r in mv]
-    check("realism: no repeated movement row", len(body) == len(set(body)), "%d repeats" % (len(body) - len(set(body))))
-    tags = [r.split(",")[0] for r in open(os.path.join(T, B.NAMES["animals"]), encoding="utf-8").read().splitlines()[1:]]
-    check("realism: one row per tag in the animal export", len(tags) == len(set(tags)))
-    dash = [f for f in files if f.endswith((".csv", ".txt")) and re.search("[–—]", open(os.path.join(T, f), encoding="utf-8").read())]
-    check("realism: no em or en dash in a text file", not dash, str(dash))
-    sizes = Counter(h.get("size") for h in w.herds if h["type"] in ("dairy", "suckler"))
-    check("realism: herd sizes vary (no size held by more than 6 per cent of herds)",
-          max(sizes.values()) <= 0.06 * sum(sizes.values()), str(sizes.most_common(2)))
-    farms_by_reg = Counter(h["region"] for h in w.herds if R.HTYPE[h["type"]] == "Farm" and "out_farm_of" not in h)
-    check("realism: no two regions hold the same number of farms", len(set(farms_by_reg.values())) == 12,
-          str(sorted(farms_by_reg.values())))
-    def tie(x, d):
-        y = x * 10 ** d
-        return abs(y - np.floor(y) - 0.5) < 1e-6
-    graded = [(g / 1000, 1) for g in gold] + [(k, 2) for k in kgha] + [(A_g[r][0], -2) for r in W.REG] + \
-        [(A_g[r][1], 1) for r in W.REG] + [(gold.sum() / 1000, 1)]
-    check("determinism: no graded figure sits on a rounding tie", not any(tie(x, d) for x, d in graded))
-    print("\n%d PASS, %d FAIL" % (len(OK), len(BAD)))
-    if BAD:
-        print("FAILED: " + "; ".join(BAD))
+    check("G1 ten or more files in the pack", len(files) >= 10, "%d" % len(files))
+    fmts = {f.rsplit(".", 1)[1] for f in files}
+    check("G2 three or more formats", len(fmts) >= 3, ", ".join(sorted(fmts)))
+    coal_rows = rows_csv("coal_deliveries_2026.csv")
+    check("G3 a file of 25,000 rows or more", len(coal_rows) >= 25000, "coal_deliveries_2026.csv %d" % len(coal_rows))
+    check("G4 two or more distractors named in metadata.json, none named for its role",
+          len(meta["distractor_files"]) >= 2 and not any("distract" in f for f in files))
+    check("G5 every file carries a source, a date and a licence",
+          all(x["source"] and x["date"] and x["license"] for x in meta["files"]) and len(meta["files"]) == len(files))
+    check("G6 the call and the ask read neither distractor (no golden input names the ambient network or the "
+          "statistics office)", all(n not in open(os.path.join(HERE, m)).read() for m in ("golden.py", "pack_ash_read.py")
+                                    for n in ("ambient", "national_coal")))
+
+    # ------------------------------------------------------------ R1: the field's raw material
+    certs = {(r["Supplier"], r["Certificate No"]) for r in coal_rows}
+    check("R1a the spine carries each delivery's laboratory analysis and net tonnes",
+          all(r["Total Sulphur % (ar)"] and r["Net Tonnes"] for r in coal_rows) and len(certs) > 5000,
+          "%d rows under %d certificates" % (len(coal_rows), len(certs)))
+    per_b = collections.Counter(x["boiler"] for x in w.tickets)
+    check("R1b every scrubber's quarry tickets, the weekly certificates, each quarter's silo stocks and each "
+          "guarantee's stoichiometry ship", min(per_b.values()) >= 10 and len(per_b) == 18 and
+          all(len(w.purity[q]) >= 54 for q in w.purity) and len(w.returns) == 72,
+          "tickets per scrubber %d to %d" % (min(per_b.values()), max(per_b.values())))
+    heads = []
+    for f in files:
+        if f.endswith(".csv"):
+            heads += list(rows_csv(f)[0].keys())
+        elif f.endswith(".xlsx"):
+            import openpyxl
+            wb = openpyxl.load_workbook(os.path.join(T, f), read_only=True)
+            for ws in wb.worksheets:
+                first = next(ws.iter_rows(min_row=1, max_row=1, values_only=True))
+                heads += [str(x) for x in first if x]
+    check("R1c no shipped column holds a boiler's sulphur dioxide over a period (the tests carry concentrations "
+          "only)", not [h for h in heads if re.search(r"(?i)(sulphur dioxide|so2).*(tonne|\(t\))", h)])
+    rem = {b: v["caco3"] / W.MCACO3 / next(p["ratio"] for p in w.permits if p["boiler"] == b) * W.MSO2
+           for b, v in bal.items()}
+    check("R1d the golden's removal is the calcium carbonate each scrubber consumed over its moles per mole removed",
+          all(abs(rem[b] - bal[b]["removed"]) < 1e-6 for b in bal))
+
+    # ------------------------------------------------------------ the call
+    check("call: the balance lists the golden six", gold == GOLD, ", ".join(gold))
+    check("call: figures.json carries the same six", sorted(figs["call"]["listed"]) == sorted(
+        figs["order"][i] for i, b in enumerate(sorted(rt, key=lambda b: PK.PERMIT[b])) if b in GOLD))
+    lo = min(bal[b]["so2"] for b in GOLD) / W.LINE
+    hi = W.LINE / max(bal[b]["so2"] for b in bal if b not in GOLD)
+    check("call: every listed boiler 1.2 times the line or more and every other one 1.2 times under it or more",
+          lo >= 1.2 and hi >= 1.2, "%.3f over, %.3f under" % (lo, hi))
+
+    # ------------------------------------------------------------ R2: every Layer 1 item mishandled
+    def same(label, **o):
+        v = G.balance(w, w.returns, w.tickets, w.permits, **o)
+        check("R2 %s: the call and the two components" % label, G.listed_of(v) == GOLD and comps(v) == base_c,
+              "%s; %s" % (", ".join(G.listed_of(v)), comps(v)))
+    same("the collation's December 2025 and January 2027 receipts kept", window="all")
+    same("receipts dated by dispatch", window="dispatched")
+    same("re-issued certificates' deliveries set aside",
+         skip={x["lot"] for x in w.lots if x["reissued"]})
+    same("the 2026 template's gas oil added to its coal fired", gas_oil=True)
+    same("ISO weeks counted from 1 January", purity_mode="jan1")
+    v = G.balance(w, w.returns, w.tickets, w.permits, coal="receipts")
+    check("R2 the yard reported once on the first boiler's row, coal burned rebuilt as receipts less the surveyed "
+          "stock change shared by the returns' coal (SF3, guidance 4.1 files the returns): the call",
+          G.listed_of(v) == GOLD)
+    year_ok = True
+    for r in coal_rows:
+        if r["Supplier"] != "Ostmouth Coal Imports":
+            continue
+        d, m, y = (int(x) for x in r["Received"].split("/"))
+        if d <= 12 and int(y) != dt.date(y, d, m).year:
+            year_ok = False
+    check("R2 Ostmouth's day-first dates read month first: no delivery changes year", year_ok)
+    import openpyxl
+    wb = openpyxl.load_workbook(os.path.join(T, "limestone_certificates_2026.xlsx"), read_only=True)
+    dp = collections.defaultdict(set)
+    for r in wb["Delivery points"].iter_rows(min_row=2, values_only=True):
+        if r[0]:
+            dp[(r[0], r[1], r[3])].add(r[4])
+    tk = rows_csv("limestone_tickets_2026.csv")
+    check("R2 every quarry ticket resolves to exactly one permit through the Delivery points sheet",
+          all(len(dp[(t_["Quarry"], t_["Account"], t_["Delivery Point"])]) == 1 for t_ in tk), "%d tickets" % len(tk))
+    sc = collections.defaultdict(set)
+    for r in rows_csv("coal_supplier_customers.csv"):
+        sc[(r["Supplier"], r["Customer Code"])].add(r["Customer"])
+    check("R2 every coal row's customer code resolves to exactly one site",
+          all(len(sc[(r["Supplier"], r["Customer Code"])]) == 1 for r in coal_rows))
+    E = pack_ash_read.read(T)
+    check("R2 every ash row resolves to one site through the contractors' cross-reference",
+          all(r["site"] in w.sites for k in E for r in E[k]), "%d rows" % sum(len(v) for v in E.values()))
+    check("R2 the two laboratories' reference oxygen: the golden opens no test report, and the test-rate route at "
+          "each report's own reference lists Pridwold Starch and Candrigg Soda Works",
+          G.listed(rt, "test_rate") == ["S10-1", "S12-1"])
+
+    # ------------------------------------------------------------ R3
+    check("R3a the analyst test: each scrubber's 2026 test removal carried across the year lists Candrigg Soda Works "
+          "alone", G.listed(rt, "tested") == ["S12-1"], "%.0f t" % rt["S12-1"]["tested"])
+    check("R3b the decisive step alone: the default path with only its removal taken from the reagent balance files "
+          "the golden", G.listed(rt, "golden") == GOLD)
+    for k, want in (("design", ["S01-1", "S12-1"]), ("test_rate", ["S10-1", "S12-1"]),
+                    ("golden_ratio_one", ["S01-2", "S03-1", "S13-1", "S14-1", "S15-1"]),
+                    ("golden_limestone_as_caco3", ["S01-2", "S03-1", "S13-1", "S14-1", "S15-1"]),
+                    ("none", sorted(rt))):
+        check("R3b the lower rung %s stays off the golden" % k, G.listed(rt, k) == want and want != GOLD,
+              ", ".join(G.listed(rt, k)) if len(want) < 10 else "all eighteen")
+    sig = collections.Counter((x["s"], x["tm"], x["ash"], x["c"], x["gcv"]) for x in
+                              {v["lot"]: v for v in w.lots}.values())
+    check("R3c no copied block: no two coal lots share an analysis", max(sig.values()) == 1)
+    seqs = collections.Counter(tuple(round(x["t"], 2) for x in w.tickets if x["boiler"] == b) for b in rt)
+    check("R3c no copied block: no two scrubbers share a ticket sequence", max(seqs.values()) == 1)
+    txt = {f: pdf_text(f) for f in files if f.endswith(".pdf")}
+    tonnes = [(f, m.group(0)) for f, s in txt.items() for m in re.finditer(r"\b(\d{2,3}(?:\.\d+)?) tonnes", s)
+              if float(m.group(1)) not in (250.0, 64.066, 32.065)]
+    check("R3c no shipped document states or ranks a boiler's tonnage", not tonnes, str(tonnes[:3]))
+
+    # ------------------------------------------------------------ ladder and margins
+    for k, floor in (("design", 1.15), ("tested", 1.15), ("test_rate", 1.15), ("golden_ratio_one", 1.15)):
+        on = [rt[b][k] for b in rt if rt[b][k] >= W.LINE]
+        off = [rt[b][k] for b in rt if rt[b][k] < W.LINE]
+        m = min(min(on) / W.LINE, W.LINE / max(off))
+        check("ladder: %s's set-defining cells 1.15 times from the line or more" % k, m >= floor, "%.3f" % m)
+    ratios = [rt[b]["golden"] / rt[b]["tested"] for b in GOLD if b != "S12-1"]
+    check("ladder: the five bypassed boilers run three times their tested figures or more", min(ratios) >= 3.0,
+          "%.1f to %.1f" % (min(ratios), max(ratios)))
+
+    # ------------------------------------------------------------ semantic forks
+    check("SF1 calendar 2026: the four returns are the calendar quarters 1 January to 31 December",
+          [W.day(a).isoformat() + "/" + W.day(z).isoformat() for a, z in __import__("returns").QDAYS] ==
+          ["2026-01-01/2026-03-31", "2026-04-01/2026-06-30", "2026-07-01/2026-09-30", "2026-10-01/2026-12-31"])
+    check("SF2 sulphur dioxide formed in place of leaving the stack lists all eighteen (another set; guidance 3.1)",
+          G.listed(rt, "none") == sorted(rt))
+    v = G.balance(w, w.returns, w.tickets, w.permits, weighted=False)
+    check("SF4 a plain mean over delivery rows adds Pridwold Starch (another set; guidance 4.2 weights by tonnes)",
+          G.listed_of(v) == sorted(GOLD + ["S10-1"]) and "each weighted by the tonnes" in txt[
+              "so2_inventory_guidance_2026.pdf"].replace("\n", " "))
+    v = G.balance(w, w.returns, w.tickets, w.permits, window="dispatched")
+    check("SF5 a 2026 receipt dated by dispatch in place of receipt: the call (guidance 4.2 dates it by receipt)",
+          G.listed_of(v) == GOLD and "received at the site" in txt["so2_inventory_guidance_2026.pdf"].replace("\n", " "))
+    import openpyxl as _ox
+    reg = [r for r in _ox.load_workbook(os.path.join(T, "permitted_boilers_register_2026.xlsx"), read_only=True)[
+        "Register"].iter_rows(min_row=2, values_only=True) if r[0]]
+    check("SF6 the ash's share is the permit register's figure for each boiler, 2 per cent pulverised and 5 per cent "
+          "stoker, as the golden applies it", all(abs(r[11] - (2.0 if r[4] == "Pulverised coal" else 5.0)) < 1e-9 for r in reg)
+          and all(abs(p["ash_ret"] - (0.02 if p["type"] == "PF" else 0.05)) < 1e-12 for p in w.permits))
+    check("SF13 every boiler's records resolve across the files by permit number: the coal customer codes, the quarry "
+          "delivery points, the laboratories' permit columns and the contractors' names (R2 above)",
+          len({r[0] for r in reg}) == 18 and all(PK.PERMIT[b] in txt["scrubber_guarantee_schedules.pdf"] for b in rt)
+          and all(PK.PERMIT[x["boiler"]] in txt["scrubber_tests_2026_iverstow.pdf"] + txt["scrubber_tests_2026_jarrness.pdf"]
+                  for x in w.tests))
+    v = G.balance(w, w.returns, w.tickets, w.permits, mratio=2.0)
+    check("SF7 sulphur to sulphur dioxide at 2: the call and every boiler's tonnes",
+          G.listed_of(v) == GOLD and all(ten(v[b]["so2"]) == ten(bal[b]["so2"]) for b in bal))
+    check("SF8 the line on rounded tonnes: the call", sorted(b for b in bal if ten(bal[b]["so2"]) >= 250) == GOLD)
+    site_tot = collections.Counter()
+    for b in bal:
+        site_tot[b.split("-")[0]] += bal[b]["so2"]
+    by_site = sorted(s for s, x in site_tot.items() if x >= W.LINE)
+    check("SF9 each site in place of each boiler names Quarholt Board Mills as a site (another set; the Order's "
+          "note makes each boiler a unit)", "S01" in by_site and "each boiler is a unit" in txt[
+              "so2_order_2027_schedule_note.pdf"].replace("\n", " "))
+    v = G.balance(w, w.returns, w.tickets, w.permits, stock_change=False)
+    check("SF10 the tickets alone in place of tickets less the silo's change: the call", G.listed_of(v) == GOLD)
+    v = G.balance(w, w.returns, w.tickets, w.permits, purity_mode="mean")
+    spread = max(abs(v[b]["so2"] / bal[b]["so2"] - 1) for b in bal)
+    check("SF11 each quarry's mean certificate in place of each week's: the call", G.listed_of(v) == GOLD,
+          "widest %.1f per cent" % (100 * spread))
+    check("SF12 the stoichiometry is per mole removed in both schedules",
+          txt["scrubber_guarantee_schedules.pdf"].replace("\n", " ").count("mole of sulphur dioxide removed") >= 2)
+    moist = {}
+    for q, sh in (("Bromscar Quarry", "Bromscar weekly"), ("Molhope Lime and Stone", "Molhope weekly")):
+        moist[q] = {r[0]: r[4] for r in wb[sh].iter_rows(min_row=2, values_only=True) if r[0]}
+    v = G.balance(w, w.returns, w.tickets, w.permits, moisture=moist)
+    notes = " ".join(str(r[0]) for r in wb["Notes"].iter_rows(values_only=True) if r[0])
+    check("SF14 the certificate's carbonate read as dry with the moisture taken off adds Quarholt Board Mills "
+          "boiler 1 (another set; the certificates state it as delivered, moisture included)",
+          G.listed_of(v) == sorted(GOLD + ["S01-1"]) and "as delivered, its moisture included" in notes)
+    for mm in (100.09, 100.1):
+        v = G.balance(w, w.returns, w.tickets, w.permits, mcaco3=mm)
+        check("SF15 calcium carbonate at %s g a mole: the call and every boiler's tonnes" % mm,
+              G.listed_of(v) == GOLD and all(ten(v[b]["so2"]) == ten(bal[b]["so2"]) for b in bal))
+
+    # ------------------------------------------------------------ rounding
+    edge = min(abs(bal[b]["so2"] % 10 - 5) for b in bal)
+    check("rounding: every boiler's tonnes 1 tonne or more from a rounding boundary", edge >= 1.0, "%.2f" % edge)
+    tots = [sum(x["formed"] for x in bal.values()), sum(x["removed"] for x in bal.values())]
+    e2 = min(abs(t % 100 - 50) for t in tots)
+    check("rounding: the two components 15 tonnes or more from a rounding boundary", e2 >= 15, "%.1f" % e2)
+
+    # ------------------------------------------------------------ the ask
+    g_cut = C.route(E, keep_moorside_sub=False)
+    check("ask A: the cut pack's golden equals the clean truth's, every site at its rounding",
+          all(ten(g_cut[s][0]) == ten(tr["ash"][s]["t"]) and round(g_cut[s][1], 1) == round(tr["ash"][s]["rec_pct"], 1)
+              for s in tr["ash"]))
+    check("ask A: figures.json carries the cut pack's golden",
+          all(figs["ash"][w.sites[s]["firm"]]["t"] == ten(g_cut[s][0]) and
+              abs(figs["ash"][w.sites[s]["firm"]]["rec"] - round(g_cut[s][1], 1)) < 1e-9 for s in g_cut))
+    crack = C.score(g_cut, C.route(E))
+    check("ask A: every ash line once as exported keeps under a tenth of the 32 figures", crack <= 3, "%d" % crack)
+    subs = collections.Counter(r["site"] for r in E["moorside"] if r["kind"] != "other" and not r["ref"].startswith("WM-"))
+    check("ask A: Whinmoss bills a local contractor's collection at every site", len(subs) == 16,
+          "%d lines" % sum(subs.values()))
+    loc = {(r["site"], r["day"]) for k in ("tolland", "greave") for r in E[k] if r["kind"] != "other"}
+    own_same = sum(1 for r in E["moorside"] if r["ref"].startswith("WM-") and r["kind"] != "other"
+                   and (r["site"], r["day"]) in loc)
+    check("ask A: Whinmoss's own collections beside a local's on the same day exist (genuine pairs)", own_same >= 50,
+          "%d" % own_same)
+    lags = [r["day"] - next(j["day"] for k in ("tolland", "greave") for j in E[k] if j["job"] == r["ref"])
+            for r in E["moorside"][:4000] if not r["ref"].startswith("WM-") and r["kind"] != "other"][:200]
+    check("ask A: a subcontracted line is dated 3 to 10 days after the local's collection", min(lags) >= 3 and
+          max(lags) <= 10)
+    check("ask A: the call's population holds no ash row (no ash file is a golden input of the call)",
+          all(n not in open(os.path.join(HERE, "golden.py")).read() for n in ("moorside", "tolland", "greave")))
+
+    # ------------------------------------------------------------ documents
+    g = txt["so2_inventory_guidance_2026.pdf"].replace("\n", " ")
+    check("docs: the guidance files the year, the measure, 64.066 over 32.065, the returns' coal, the receipts by "
+          "received date weighted by tonnes, the permit's ash retention and the unrounded line",
+          all(s in g for s in ("calendar 2026", "leaving its stack", "64.066", "32.065", "four quarterly returns",
+                               "received at the site", "permit register's figure", "unrounded")))
+    check("docs: the guidance never names limestone, a test or a removal rate",
+          not re.search(r"(?i)limestone|performance test|removal effic|tested", g))
+    allt = " ".join(txt.values())
+    for f in files:
+        if f.endswith((".csv", ".json")):
+            allt += open(os.path.join(T, f), encoding="utf-8").read(200000)
+    hits = re.findall(r"(?i)\bby-?pass\w*|outage|availability|downtime|\bidle\b|stood down", allt)
+    check("docs: no shipped text names the decisive relation's vocabulary (bypass, outage, availability, downtime)",
+          not hits, str(hits[:5]))
+
+    # ------------------------------------------------------------ realism sweep
+    def dd(s):
+        return dt.date.fromisoformat(s) if "-" in s else dt.datetime.strptime(s, "%d/%m/%Y").date()
+    check("realism: every delivery received on or after its dispatch, and its certificate issued after dispatch",
+          all(dd(r["Received"]) >= dd(r["Dispatched"]) and dd(r["Issued"]) > dd(r["Dispatched"]) for r in coal_rows))
+    road = [dd(r["Received"]).weekday() for r in coal_rows if r["Transport"] == "Road"]
+    rail = [dd(r["Received"]).weekday() for r in coal_rows if r["Transport"] == "Rail" and r["Received"][-4:] == "2026"]
+    check("realism: no road delivery on a Sunday", 6 not in road)
+    check("realism: trains received across the week (rail transit)", len(set(rail)) >= 5)
+    days = [x["day"] for x in w.ash_jobs if x["day"] <= 364]
+    check("realism: no ash collection on a Sunday or a holiday",
+          all(W.day(d).weekday() != 6 and d not in A.CLOSED for d in days))
+    tn = collections.defaultdict(list)
+    for t_ in tk:
+        tn[t_["Quarry"]].append((t_["Date"], t_["Time"], t_["Ticket"]))
+    check("realism: each quarry's ticket numbers run in date and time order",
+          all([x[2] for x in sorted(v)] == sorted(x[2] for x in v) for v in tn.values()))
+    tdays = [W.day(x["day"]) for x in w.tests]
+    check("realism: every test on a weekday between April and October, each report issued after its last test",
+          all(d.weekday() < 5 and 4 <= d.month <= 10 for d in tdays) and
+          all(dt.datetime.strptime(re.search(r"Issued (\d+ \w+ \d{4})", txt[f].replace("\n", " ")).group(1),
+                                     "%d %B %Y").date() > max(W.day(x["day"]) for x in w.tests if x["lab"] == lab)
+              for f, lab in (("scrubber_tests_2026_iverstow.pdf", "Iverstow Emission Testing"),
+                             ("scrubber_tests_2026_jarrness.pdf", "Jarrness Stack Testing"))))
+    cnt = [per_b[b] for b in rt]
+    check("realism: the scrubbers' ticket counts are not alike", len(set(cnt)) >= 14, "%d distinct" % len(set(cnt)))
+    coal_tot = sum(r["coal_burned"] for r in w.returns)
+    check("realism: no round headline total", coal_tot % 1000 and len(tk) % 100 and len(coal_rows) % 100)
+    lots_per_site = collections.Counter(x["site"] for x in w.lots)
+    check("realism: no identical delivery counts across sites", len(set(lots_per_site.values())) == 16)
+    people = ["Maria Burgess", "Timothy Peterson", "Brenda Cook"]
+    found = {p for p in people if p in allt}
+    check("realism: the personas in the pack are the card's", found <= set(people) and "Brenda Cook" in found and
+          "Timothy Peterson" in found and "Maria Burgess" in found, ", ".join(sorted(found)))
+    feeder = [abs(G.coal_from_receipts(w.lots, w.returns)[b] / G.coal_burned(w.returns)[b] - 1) for b in rt]
+    check("realism: the yard balance and the weigh feeders differ, as stockpile surveys and belt weighers do",
+          0.0005 < max(feeder) < 0.03, "widest %.2f per cent" % (100 * max(feeder)))
+
+    print("\n%d checks, %d FAIL" % (N[0], len(FAILS)))
+    if FAILS:
+        print("FAILED: " + "; ".join(FAILS))
         sys.exit(1)
 
 

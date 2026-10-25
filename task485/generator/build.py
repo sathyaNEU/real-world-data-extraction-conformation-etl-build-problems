@@ -10,39 +10,45 @@ import shutil
 import sys
 import zipfile
 
-import numpy as np
-
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
 TARGET = os.path.join(TASK, "target")
 GOLDEN = os.path.join(TASK, "golden")
 sys.path.insert(0, HERE)
 
-import contractors as C    # noqa: E402
+import ash as A            # noqa: E402
+import coal                # noqa: E402
 import golden as G         # noqa: E402
-import registry as R       # noqa: E402
+import reagent             # noqa: E402
+import returns             # noqa: E402
+import tests               # noqa: E402
 import world as W          # noqa: E402
 
 NAMES = dict(
-    animals="nbr_animals_2025-26.csv", movements="nbr_movements_2025-26.csv", herds="nbr_herd_register_2026-11.xlsx",
-    notes="nbr_export_notes.txt", census="nso_june_livestock_census_2026.csv",
-    census_pdf="nso_june_livestock_census_2026_tables.pdf", epo="epo_cattle_ammonia_factors_2025.pdf",
-    survey="moa_livestock_housing_survey_2025.xlsx", arp="arp_designation_rules_2025.pdf",
-    lpr="lpr_farmed_area_2026.csv", ardvale="vale_agri_jobs_2026.csv", kilbrack="countrywide_invoice_lines_2026.xlsx",
-    northmoor="basin_agri_job_sheets_2026.xlsx", fert="moa_fertiliser_sales_by_region_2025-26.csv",
-    milk="creamery_milk_intake_by_region_2025.csv", pigs="nso_pig_poultry_census_2026.csv")
-GOLD = dict(workbook="ammonia_action_regions_2027.xlsx", chart="cattle_ammonia_per_hectare_2025-26.png")
-DEPT = "Ministry of Agriculture"
+    note="so2_order_2027_schedule_note.pdf", guidance="so2_inventory_guidance_2026.pdf",
+    permits="permitted_boilers_register_2026.xlsx", guarantees="scrubber_guarantee_schedules.pdf",
+    coal="coal_deliveries_2026.csv", sup_cust="coal_supplier_customers.csv", returns="boiler_returns_2026.xlsx",
+    tickets="limestone_tickets_2026.csv", certs="limestone_certificates_2026.xlsx",
+    northfield="scrubber_tests_2026_iverstow.pdf", ashgrove="scrubber_tests_2026_jarrness.pdf",
+    moorside="whinmoss_invoice_lines_2026.xlsx", tolland="carnhope_jobs_2026.csv", greave="pellrigg_dockets_2026.xlsx",
+    xref="ash_contractor_customers.csv", ambient="npa_ambient_so2_2026.csv",
+    national="national_coal_consumption_2025.json")
+GOLD = dict(workbook="sulphur_dioxide_order_schedule_2027.xlsx", chart="boiler_sulphur_dioxide_2026.png")
+MIN = "Ministry of the Environment"
 OWNERS = {
-    "herds": dict(creator="NBR Data Management", last_by="Noel Herity", created="2019-03-04T09:41:00Z",
-                  modified="2026-11-09T06:14:00Z", company=DEPT),
-    "survey": dict(creator="Livestock Surveys Unit", last_by="Livestock Surveys Unit", created="2025-06-02T10:05:00Z",
-                   modified="2025-07-14T15:22:00Z", company=DEPT),
-    "kilbrack": dict(creator="Countrywide Slurry Services", last_by="Accounts", created="2026-11-03T11:48:00Z",
-                     modified="2026-11-03T11:52:00Z", company="Countrywide Slurry Services Ltd"),
-    "northmoor": dict(creator="Basin Agri", last_by="Office", created="2026-01-12T08:30:00Z",
-                      modified="2026-11-04T17:06:00Z", company="Basin Agri"),
+    "permits": dict(creator="Permitting Team", last_by="Permitting Team", created="2019-05-13T08:52:00Z",
+                    modified="2027-01-06T10:37:00Z", company=MIN),
+    "returns": dict(creator="AQD Returns", last_by="AQD Returns", created="2026-04-30T14:05:00Z",
+                    modified="2027-02-02T16:21:00Z", company=MIN),
+    "certs": dict(creator="AQD Returns", last_by="AQD Returns", created="2026-01-19T09:12:00Z",
+                  modified="2027-01-14T11:48:00Z", company=MIN),
+    "moorside": dict(creator="Whinmoss Waste Haulage", last_by="Accounts", created="2027-01-11T13:02:00Z",
+                     modified="2027-01-11T13:09:00Z", company="Whinmoss Waste Haulage Ltd"),
+    "greave": dict(creator="Pellrigg and Sons", last_by="Office", created="2026-01-05T07:58:00Z",
+                   modified="2027-01-08T17:26:00Z", company="Pellrigg and Sons Haulage"),
 }
+STAMPS = {"note": b"D:20270208101500+00'00'", "guidance": b"D:20261102093000+00'00'",
+          "guarantees": b"D:20240314112000+00'00'"}
 
 
 def t(k):
@@ -50,28 +56,21 @@ def t(k):
 
 
 def truth():
-    """the clean truth: the world, its identity layer, every animal's herd intervals, the golden ammonia, farmed land,
-    the census and the contractors' jobs"""
-    w = W.build(W.SEED)
-    rng = np.random.default_rng(W.SEED + 1)
-    moved = R.assign(w, rng)
-    R.second_herds(w, rng)
-    old = R.reissued(w, rng)
-    bherd = R.birth_herds(w, rng)
-    tags = R.tags(w, rng, bherd)
-    IV = W.intervals(w.A, w.moves)
-    T = G.Truth(w.A)
-    hr = np.array([G.REGI[h["region"]] for h in w.herds])
-    ivs = G.iv_arrays(IV)
-    P = G.Pieces(T, ivs, hr)
-    gold = G.ammonia(P)
-    parcels = R.land(w, IV, G.by_region(gold), rng)
-    cen = R.census(w, IV)
-    cj = C.jobs(w, IV, np.random.default_rng(W.SEED + 2))
-    herd_region = {h["herd_no"]: h["region"] for h in w.herds}
-    land = G.farmed_land(parcels, herd_region)
-    return dict(w=w, moved=moved, old=old, bherd=bherd, tags=tags, IV=IV, T=T, hr=hr, ivs=ivs, P=P, gold=gold,
-                parcels=parcels, cen=cen, cj=cj, herd_region=herd_region, land=land)
+    """the clean truth: the world day by day, every record cut from it, and every route computed from the records"""
+    import pack as PK
+    w = W.build()
+    coal.deliveries(w)
+    W.flows(w)
+    reagent.silos(w)
+    tests.run(w)
+    returns.build(w)
+    returns.permits(w)
+    prod = A.produce(w, w.lots)
+    jobs = A.collections(w, prod)
+    A.exports(w, jobs)
+    PK.customer_codes(w)
+    rt = G.routes(w, w.returns, w.tickets, w.tests, w.permits)
+    return dict(w=w, rt=rt, jobs=jobs, ash=A.golden(jobs))
 
 
 def pack(tr=None):
@@ -83,28 +82,30 @@ def pack(tr=None):
         os.makedirs(d)
     tr = tr or truth()
     w = tr["w"]
-    rng = np.random.default_rng(W.SEED + 3)
     n = {}
-    n["animals"] = PK.animals(t("animals"), w, tr["IV"], tr["tags"], tr["bherd"])
-    n["movements"] = PK.movements(t("movements"), w, tr["tags"], rng)
-    n["herds"] = PK.herd_register(t("herds"), w, tr["old"], rng)
-    PK.export_notes(t("notes"))
-    n["census"] = PK.census_csv(t("census"), w, tr["cen"])
-    n["lpr"] = PK.lpr(t("lpr"), tr["parcels"])
-    PK.survey(t("survey"), w, rng)
-    n["ardvale"] = PK.ardvale(t("ardvale"), tr["cj"])
-    n["kilbrack"] = PK.kilbrack(t("kilbrack"), tr["cj"])
-    n["northmoor"] = PK.northmoor(t("northmoor"), tr["cj"])
-    n["fert"] = PK.fertiliser(t("fert"), tr["land"], rng)
-    n["milk"] = PK.milk(t("milk"), w, rng)
-    n["pigs"] = PK.pigs_poultry(t("pigs"), rng)
-    DOC.epo_pdf(t("epo"))
-    DOC.arp_pdf(t("arp"))
-    DOC.census_pdf(t("census_pdf"), w, tr["cen"])
-    for k in ("herds", "survey", "kilbrack", "northmoor"):
+    n["permits"] = PK.permits_xlsx(t("permits"), w)
+    n["coal"] = PK.coal_csv(t("coal"), w)
+    n["sup_cust"] = PK.supplier_customers_csv(t("sup_cust"), w)
+    n["returns"] = PK.returns_xlsx(t("returns"), w)
+    n["tickets"] = PK.tickets_csv(t("tickets"), w)
+    n["certs"] = PK.certificates_xlsx(t("certs"), w)
+    n["moorside"], n["tolland"], n["greave"] = PK.ash_files(
+        dict(moorside=t("moorside"), tolland=t("tolland"), greave=t("greave"), xref=t("xref")), w)
+    n["ambient"] = PK.ambient_csv(t("ambient"))
+    n["national"] = PK.national_coal_json(t("national"))
+    DOC.order_note(t("note"))
+    DOC.guidance(t("guidance"))
+    DOC.guarantees(t("guarantees"), w)
+    issued = {k: DOC.test_report(t(k), w, lab) for k, lab in
+              (("northfield", "Iverstow Emission Testing"), ("ashgrove", "Jarrness Stack Testing"))}
+    for k in OWNERS:
         PP.normalize_ooxml(t(k), excel=True, **OWNERS[k])
-    for k, stamp in (("epo", DOC.STAMPS["epo"]), ("arp", DOC.STAMPS["arp"]), ("census_pdf", DOC.STAMPS["census"])):
+    stamps = dict(STAMPS)
+    for k, d in issued.items():
+        stamps[k] = ("D:%s143000+00'00'" % d.strftime("%Y%m%d")).encode()
+    for k, stamp in stamps.items():
         PP.normalize_pdf(t(k), stamp, stamp)
+    tr["issued"] = issued
     return tr, n
 
 
@@ -117,9 +118,9 @@ def main():
     import goldfiles as GF
     import postprocess as PP
     figs = GF.write(gpath, tr)
-    PP.normalize_ooxml(gpath("workbook"), "Emily McAleer", "Emily McAleer", "2026-11-12T09:26:00Z",
-                       "2026-11-18T16:41:00Z", title="Ammonia Action Regions 2027: the Unit's figures", excel=True,
-                       company=DEPT)
+    PP.normalize_ooxml(gpath("workbook"), "Maria Burgess", "Maria Burgess", "2027-02-09T09:14:00Z",
+                       "2027-02-17T15:52:00Z", title="Sulphur Dioxide Order 2027: schedule of listed boilers",
+                       excel=True, company=MIN)
     json.dump(figs, open(os.path.join(HERE, "figures.json"), "w"), indent=1, sort_keys=True)
     import writeup
     writeup.main()

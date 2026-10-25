@@ -1,103 +1,100 @@
-"""The ask layer's pair ceiling on the cut pack (supplemental-stumping Part 0 and 1.1). The cracker lands the call,
-runs the hygiene battery (exact duplicates, unmatched herds, units, scope by material and service, the window) and
-sums every contractor job as exported; the mirror stops off the call and reads the contractors the same way. The ask
-reads no row the call reads, so the two share their ask reading by construction (checks.py, separation); each
-half-handled stop is scored beside them.
+"""The ask layer's cracker and mirror, run on the contractors' exports as the pack cuts them: each stop is a route a
+careful reader takes, scored figure by figure against the golden at the ask's rounding (a site's tonnes to the
+nearest 10, its recovery share to one decimal). Prints the pair ceiling and the mirror's leakage.
 
     python3 task485/generator/ceiling.py
 """
 import json
 import os
-
-import pandas as pd
+import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-T = os.path.join(os.path.dirname(HERE), "target")
-GAL = 0.00454609
-LO, HI = pd.Timestamp("2026-01-13"), pd.Timestamp("2026-04-30")
+sys.path.insert(0, HERE)
+
+import ash as A    # noqa: E402
+
+REC = {"Yarrdale Blocks", "Velthwaite Cement Works"}
 
 
 def load():
-    hr = pd.read_excel(os.path.join(T, "nbr_herd_register_2026-11.xlsx"), sheet_name="Herds", dtype=str)
-    hr = hr[hr["Valid to"].isna()]
-    region = dict(zip(hr["Herd No"], hr["Region"]))
-    av = pd.read_csv(os.path.join(T, "vale_agri_jobs_2026.csv"), dtype=str)
-    av["date"] = pd.to_datetime(av["Date"], format="%d/%m/%Y")
-    nm = pd.read_excel(os.path.join(T, "basin_agri_job_sheets_2026.xlsx"), sheet_name="Job sheets 2026",
-                       dtype={"Herd No": str})
-    nm["date"] = pd.to_datetime(nm["Date"])
-    kb = pd.read_excel(os.path.join(T, "countrywide_invoice_lines_2026.xlsx"), sheet_name="Invoice lines",
-                       dtype={"Reference": str, "Herd No": str})
-    kb["date"] = pd.to_datetime(kb["Invoice date"])
-    kb["herd"] = kb["Herd No"].str.replace(" ", "", regex=False)
-    return region, av, nm, kb
+    """the cut pack's three exports, read back from target/ when present, else from the generator"""
+    import pack_read
+    return pack_read.ash_exports()
 
 
-def route(L, dedup="ref", keep="sheet", nominal=False, hazards=False, near=False, raw_herds=False):
-    region, av, nm, kb = L
-    a = av if hazards else av[av["Material"] == "CATTLE SLURRY"]
-    n = nm if hazards else nm[nm["Product"] == "Cattle slurry"]
-    k = kb[kb["Service"].str.startswith(("SS-", "PS-", "DS-") if hazards else "SS-")]
-    if not hazards:
-        a, n, k = a[a["date"].between(LO, HI)], n[n["date"].between(LO, HI)], k[k["date"].between(LO, HI)]
-    refs = set(av["Job No"]) | set(nm["Job No"])
-    passed = set(k["Reference"]) & refs
-    if dedup == "ref":
-        if keep == "sheet":
-            k = k[~k["Reference"].isin(refs)]
-        else:
-            a, n = a[~a["Job No"].isin(passed)], n[~n["Job No"].isin(passed)]
-    if near:
-        days = set(zip(a["Herd No"], a["date"])) | set(zip(n["Herd No"], n["date"]))
-        k = k[[(h, d) not in days for h, d in zip(k["herd"], k["date"])]]
-    hk = k["Herd No"] if raw_herds else k["herd"]
-    rows = [pd.DataFrame(dict(region=a["Herd No"].map(region),
-                              m3=a["Loads"].astype(int) * (2000 if nominal else a["Capacity (gal)"].astype(int)) * GAL,
-                              less=a["Spreader"].isin(["TRAILING SHOE", "DRIBBLE BAR"]))),
-            pd.DataFrame(dict(region=n["Herd No"].map(region), m3=n["Metered m3"].astype(float), less=True)),
-            pd.DataFrame(dict(region=hk.map(region), m3=k["Qty"].astype(float) * 1000 * GAL,
-                              less=k["Service"].isin(["SS-TS", "SS-TH", "SS-UMB", "SS-INJ", "DS-TS"])))]
-    x = pd.concat(rows).dropna(subset=["region"])
-    x["lm3"] = x["m3"] * x["less"]
-    g = x.groupby("region")[["m3", "lm3"]].sum()
-    return {r: ("{:,.0f}".format(round(g.loc[r, "m3"], -2)), "%.1f" % (100 * g.loc[r, "lm3"] / g.loc[r, "m3"]))
-            for r in g.index}
+def route(E, keep_moorside_sub=True, keep_local_sub=True, drop_same_day=False, by_invoice=True, kg_as_t=False,
+          other=False, y2027=False):
+    """each site's ash taken off site in 2026 and its recovery share under one handling of the three exports"""
+    sub_refs = set()
+    for r in E["moorside"]:
+        if r["ref"] and not r["ref"].startswith("WM-"):
+            sub_refs.add(r["ref"])
+    rows = []
+    for r in E["moorside"]:
+        if r["kind"] == "other" and not other:
+            continue
+        if (not r["ref"].startswith("WM-")) and not keep_moorside_sub:
+            continue
+        rows.append(dict(src="M", site=r["site"], day=r["day"], t=r["qty"], rec=r["dest"] in ("cement", "blocks"),
+                         ref=r["ref"]))
+    for key, unit in (("tolland", "kg"), ("greave", "t")):
+        for r in E[key]:
+            if r["kind"] == "other" and not other:
+                continue
+            if r["job"] in sub_refs and not keep_local_sub:
+                continue
+            t = r["net_kg"] / (1.0 if kg_as_t else 1000.0) if unit == "kg" else r["net_t"]
+            rows.append(dict(src="L", site=r["site"], day=r["day"], t=t, rec=r["dest"] in REC, ref=r["job"]))
+    if drop_same_day:
+        local_days = set((r["site"], r["day"]) for r in rows if r["src"] == "L")
+        rows = [r for r in rows if not (r["src"] == "M" and (r["site"], r["day"]) in local_days)]
+    out = {}
+    for r in rows:
+        if r["day"] > 364 and not y2027:
+            continue
+        o = out.setdefault(r["site"], [0.0, 0.0])
+        o[0] += r["t"]
+        o[1] += r["t"] if r["rec"] else 0.0
+    return {s: (v[0], 100 * v[1] / v[0] if v[0] else 0.0) for s, v in out.items()}
 
 
-def keeps(gold, other):
-    return sum((other.get(r, ("", ""))[0] == gold[r]["m3"]) + (other.get(r, ("", ""))[1] == gold[r]["less_pct"])
-               for r in gold)
+def score(gold, got):
+    hits = 0
+    for s, (t, p) in gold.items():
+        g = got.get(s, (0, 0))
+        hits += int(round(g[0], -1) == round(t, -1))
+        hits += int(round(g[1], 1) == round(p, 1))
+    return hits
 
 
 def main():
-    f = json.load(open(os.path.join(HERE, "figures.json")))
-    gold = f["ask_a"]
-    L = load()
-    g = route(L)
-    assert all(g[r] == (gold[r]["m3"], gold[r]["less_pct"]) for r in gold), "the golden handling does not reproduce"
-    stops = {
-        "every job as exported (the cracker)": route(L, dedup=None),
-        "Countrywide's lines kept, the job sheets they bill dropped": route(L, keep="invoice"),
-        "a Countrywide line beside a same-day job on the herd dropped": route(L, dedup=None, near=True),
-        "the reference read, Vale Agri's loads at 2,000 gallons": route(L, nominal=True),
-        "the reference read, pig slurry, digestate and May kept": route(L, hazards=True),
-        "the reference read, Countrywide's spaced herd numbers left unmatched": route(L, raw_herds=True),
-    }
+    E = load()
+    gold = route(E, keep_moorside_sub=False)
     n = 2 * len(gold)
-    print("ask A, each region's cattle slurry spread by contractors and its low-emission share: %d figures" % n)
-    for k, v in stops.items():
-        print("  %-70s keeps %2d" % (k, keeps(gold, v)))
-    crack = mirror = keeps(gold, stops["every job as exported (the cracker)"])
-    lc, lm = crack / n, mirror / n
-    c = 38 + 7 + 55 * lc
-    s = 5 + 7 + 55 * lm
-    print("cracker keeps %d of %d ask figures (%.1f per cent), scores %.1f with the call" % (crack, n, 100 * lc, c))
-    print("mirror keeps %d of %d (%.1f per cent), scores %.1f off it" % (mirror, n, 100 * lm, s))
-    best = max(keeps(gold, v) for v in stops.values())
-    print("the best half-handled response keeps %d of %d (%.1f per cent)" % (best, n, 100 * best / n))
-    print("Pair ceiling: %.1f" % ((c + s) / 2))
-    print("Mirror leakage: %.1f per cent of ask weight" % (100 * lm))
-    return dict(crack=crack, mirror=mirror, n=n, pair=(c + s) / 2, partial=best)
+    stops = [
+        ("every ash line once as exported", route(E)),
+        ("a Whinmoss line beside a same-day local job dropped", route(E, drop_same_day=True)),
+        ("Whinmoss's lines kept and the local jobs they bill dropped", route(E, keep_local_sub=False)),
+        ("the reference read, Carnhope's kilograms read as tonnes", route(E, keep_moorside_sub=False, kg_as_t=True)),
+        ("the reference read, other waste and January 2027 kept", route(E, keep_moorside_sub=False, other=True, y2027=True)),
+        ("golden", gold),
+    ]
+    print("ask A: %d graded figures (16 sites' tonnes to the nearest 10 and recovery share to one decimal)" % n)
+    res = {}
+    for name, got in stops:
+        h = score(gold, got)
+        res[name] = h
+        print("  %-62s %2d of %d" % (name, h, n))
+    cracker = res["every ash line once as exported"]
+    mirror = res["every ash line once as exported"]
+    lc, ls = cracker / n, mirror / n
+    C = 38 + 7 + 55 * lc
+    S = 5 + 7 + 55 * ls
+    print("cracker keeps %.1f per cent of ask weight (scores %.1f with the call); mirror %.1f per cent (%.1f)" % (
+        100 * lc, C, 100 * ls, S))
+    print("Pair ceiling: %.1f" % ((C + S) / 2))
+    print("Mirror leakage: %.1f per cent of ask weight" % (100 * ls))
+    return res
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TASK = os.path.dirname(HERE)
-WORDS = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven"}
+WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 11: "eleven", 12: "twelve"}
 
 
 def joined(xs):
@@ -12,76 +12,86 @@ def joined(xs):
     return ", ".join(xs[:-1]) + " and " + xs[-1] if len(xs) > 1 else xs[0]
 
 
+def t(x):
+    return "{:,}".format(x)
+
+
 def main():
     f = json.load(open(os.path.join(HERE, "figures.json")))
-    order = f["constants"]["order"]
-    des, nod = f["call"]["designated"], f["call"]["not_designated"]
-    R = f["regions"]
-    dflt = f["default"]["designated"]
-    added = [r for r in order if r in dflt and r not in des]
-    missed = [r for r in order if r in des and r not in dflt]
-    kg = lambda r: R[r]["kg_ha"]
+    B = f["boilers"]
+    order = f["order"]
+    listed, unlisted = f["call"]["listed"], f["call"]["not_listed"]
+    near = min(listed, key=lambda k: B[k]["so2_unrounded"])
+    top_off = max(unlisted, key=lambda k: B[k]["so2_unrounded"])
+    dflt = f["default"]["listed"]
+    bypassed = [k for k in listed if k not in dflt]
+    ratios = [B[k]["ratio"] for k in bypassed]
+    design = f["design"]
     c = f["components"]
+    k = f["constants"]
     out = ["## Tags", "",
-           "**Domain:** Physical & Environmental Sciences, emissions inventory (a national agriculture department's "
-           "regional inventory of ammonia from cattle manure for the 2025-26 programme year, conformed from the bovine "
-           "register's animal and movement exports, its herd register, the June census by farm, the land parcel "
-           "register's farmed area and the environmental protection office's Tier 2 factors).",
+           "**Domain:** Physical & Environmental Sciences, emissions inventory (an environment ministry's 2026 sulphur "
+           "dioxide inventory of eighteen permitted coal boilers with wet limestone scrubbers, conformed from four coal "
+           "suppliers' delivery analyses, the operators' quarterly returns, two quarries' tickets and weekly "
+           "certificates, the scrubber guarantee schedules and two laboratories' test reports).",
            "**Analytical objective:** Data Extraction & Conformation (ETL).", "",
            "## 1. Final Recommendation", "",
-           "**The Minister should designate %s as Ammonia Action Regions for the 2027 spreading season: on the ammonia "
-           "from cattle manure arising in each region over 2025-26 these %s regions are at or above 26 kilograms a "
-           "hectare of farmed land, and the other %s are under it.**" % (joined(des), WORDS[len(des)], WORDS[len(nod)]),
-           "%s stand at %s kilograms a hectare. Not %s, at %s: the cattle on their holdings on 1 June include lowland "
-           "yearlings out on summer grazing and calves bought in that spring, whose housed months fall in other regions, "
-           "so the census at the annual factor per head puts them over the line. Not without %s, at %s: their finishers "
-           "house stores all winter and send them to slaughter before June, which the census misses." % (
-               joined(des), joined(kg(r) for r in des), joined(added), joined(kg(r) for r in added),
-               joined(missed), joined(kg(r) for r in missed)), "",
+           "**The 2027 Sulphur Dioxide Order lists %s boilers, %s, whose sulphur dioxide leaving the stack over 2026 "
+           "was %s tonnes against the 250 tonne line; the other %s boilers are under it.**" % (
+               WORDS[len(listed)], joined(listed), joined(t(B[x]["so2"]) for x in listed), WORDS[len(unlisted)]),
+           "%s is the nearest to the line among the %s at %s tonnes, and %s the highest of the rest at %s. Not %s "
+           "alone, which the removals the scrubbers showed at their 2026 performance tests give when carried across "
+           "the year: %s consumed too little limestone for those removals, so their sulphur dioxide runs %s to %s "
+           "times their tested figures. Not %s, which its design removal puts at %s tonnes: over the year its "
+           "scrubber removed more than its design." % (
+               near, WORDS[len(listed)], t(B[near]["so2"]), top_off, t(B[top_off]["so2"]), joined(dflt),
+               "the scrubbers at " + joined(bypassed), "%.1f" % min(ratios), "%.1f" % max(ratios), design["name"],
+               t(design["so2"])), "",
            "## 2. Critical Components", "",
-           "1. Ammonia from cattle manure arising in the twelve regions, 1 November 2025 to 31 October 2026: **%s "
-           "tonnes**." % c["tonnes_total"],
-           "2. Farmed land of the twelve regions in the 2026 land parcel register, commonage at each herd's share: "
-           "**%s hectares**." % c["land_total"], "",
+           "1. Sulphur dioxide formed from the coal the eighteen boilers fired in 2026, less the ash's share, to the "
+           "nearest 100: **%s tonnes**." % t(c["formed"]),
+           "2. Sulphur dioxide the eighteen scrubbers removed over 2026, from the calcium carbonate they consumed, to "
+           "the nearest 100: **%s tonnes**." % t(c["removed"]), "",
            "## 3. Step-by-Step Solution", "",
-           "1. Rebuilt each animal's days in nbr_animals_2025-26.csv and nbr_movements_2025-26.csv, from its date of birth "
-           "or 1 November 2025 to the day before its exit date or 31 October 2026, in HERD_AT_START and then in each "
-           "destination herd from its arrival date (nbr_export_notes.txt): %s animal-days." % c["animal_days"],
-           "2. Put each herd number in the 2024 region of its district in nbr_herd_register_2026-11.xlsx, a reissued number "
-           "at the record valid on the day (designation rules, section 4).",
-           "3. Classed each day by epo_cattle_ammonia_factors_2025.pdf (section 2 and the annex's dairy breeds) and charged "
-           "Table 3's housed rate on days inside the Table 4 housing season of the region the animal was in that day and "
-           "its grass rate on the others: %s tonnes of ammonia." % c["tonnes_total"],
-           "4. Divided each region's ammonia by its farmed land in lpr_farmed_area_2026.csv by the herds' regions, a "
-           "commonage parcel at the herd's SHARE_PCT: %s hectares." % c["land_total"],
-           "5. Tested each region against 26 kilograms a hectare on the unrounded figures (designation rules, section 5): "
-           "%s regions at or above it." % WORDS[len(des)],
-           "6. For the contractors, took cattle slurry jobs dated 13 January to 30 April 2026 on herds in the herd register "
-           "from vale_agri_jobs_2026.csv (loads times the tanker's gallons), countrywide_invoice_lines_2026.xlsx (SS- "
-           "services, thousands of gallons) and basin_agri_job_sheets_2026.xlsx (metered cubic metres), at 0.00454609 "
-           "cubic metres a gallon, and counted each job once: a Countrywide line whose Reference is a Vale Agri Job No or a "
-           "Basin Agri Job No bills that contractor's job, so it is left out and the job sheet's volume and spreader are "
-           "kept; trailing shoe, trailing hose, dribble bar, umbilical dribble bar and shallow injection are low-emission "
-           "(designation rules, section 6): %s cubic metres, %s per cent low-emission." % (
-               f["ask_a_total"]["m3"], f["ask_a_total"]["less_pct"]),
-           "7. The Minister designates the %s regions at or above the line." % WORDS[len(des)],
-           "", "## 4. Deliverable Answers", "",
-           "### ammonia_action_regions_2027.xlsx", "",
-           "1. Ammonia from cattle manure arising in each region over 2025-26, tonnes, kilograms a hectare of farmed land, "
-           "and whether designated:"]
-    for r in order:
-        out.append("   - %s: %s tonnes, %s kg a hectare, %s" % (r, R[r]["tonnes"], R[r]["kg_ha"],
-                                                                 "designated" if R[r]["designated"] == "Yes" else "not designated"))
-    out.append("2. Cattle slurry spread by contractors on each region's farms from 13 January to 30 April 2026, cubic "
-               "metres to the nearest hundred, and the share spread by trailing shoe, trailing hose or injection, per cent:")
-    for r in order:
-        out.append("   - %s: %s cubic metres, %s per cent" % (r, f["ask_a"][r]["m3"], f["ask_a"][r]["less_pct"]))
-    out += ["", "### cattle_ammonia_per_hectare_2025-26.png", "",
-            "1. Horizontal bar chart of each region's kilograms of ammonia a hectare against the 26 kilogram line, the %s "
-            "designated regions (%s) in orange beyond the line and the other %s in grey under it." % (
-                WORDS[len(des)], joined(des), WORDS[len(nod)])]
-    with open(os.path.join(TASK, "submission.md"), "w") as fh:
-        fh.write("\n".join(out) + "\n")
+           "1. Took each boiler's coal burned from the four quarters of boiler_returns_2026.xlsx, quarters 1 and 2 on "
+           "the 2019 template and 3 and 4 on the 2026 template: %s tonnes in all." % t(c["coal"]),
+           "2. Took each site's sulphur as received from coal_deliveries_2026.csv, the deliveries received from 1 "
+           "January to 31 December 2026 weighted by net tonnes (guidance section 4.2), each customer code put to its "
+           "site through coal_supplier_customers.csv.",
+           "3. Took off each boiler's sulphur retained in ash from permitted_boilers_register_2026.xlsx and converted "
+           "at %s over %s: %s tonnes of sulphur dioxide formed." % (k["mso2"], k["ms"], t(c["formed"])),
+           "4. Took each scrubber's limestone consumed as its 2026 tickets in limestone_tickets_2026.csv, put to "
+           "permits by the Delivery points sheet of limestone_certificates_2026.xlsx, less its silo's change from the "
+           "first quarter's opening to the fourth quarter's closing stock in the returns, each ticket at its ISO "
+           "week's calcium carbonate in the same workbook.",
+           "5. Converted each scrubber's calcium carbonate to sulphur dioxide removed at its operating stoichiometry in "
+           "scrubber_guarantee_schedules.pdf, %s to %s moles of calcium carbonate per mole removed: %s tonnes." % (
+               "%.2f" % k["ratios"][0], "%.2f" % k["ratios"][-1], t(c["removed"])),
+           "6. Subtracted each boiler's removal from its sulphur dioxide formed and tested the remainder unrounded "
+           "against 250 tonnes (the Order's note, section 2): %s boilers at or over the line." % WORDS[len(listed)],
+           "7. For the ash, conformed whinmoss_invoice_lines_2026.xlsx, carnhope_jobs_2026.csv and "
+           "pellrigg_dockets_2026.xlsx to the sites through ash_contractor_customers.csv, kept bottom and fly ash "
+           "collected in 2026, read Carnhope's net weights in kilograms, and dropped every Whinmoss line whose "
+           "reference is a Carnhope or Pellrigg job number, because that line bills the local contractor's own "
+           "collection, counted on its record: each site's tonnes and recovery share below.",
+           "8. The Order lists %s." % joined(listed), "",
+           "## 4. Deliverable Answers", "",
+           "### sulphur_dioxide_order_schedule_2027.xlsx", "",
+           "1. Each boiler's sulphur dioxide leaving the stack in 2026, tonnes to the nearest 10, and whether the "
+           "Order lists it, in the register's order:"]
+    for x in order:
+        out.append("   - %s: %s tonnes, %s" % (x, t(B[x]["so2"]), B[x]["listed"]))
+    out.append("2. Each site's boiler ash taken off site in 2026 by the three contractors, tonnes to the nearest 10, "
+               "and the share sent to recovery at Yarrdale Blocks or Velthwaite Cement Works, per cent to one "
+               "decimal:")
+    for s in f["ash_order"]:
+        v = f["ash"][s]
+        out.append("   - %s: %s tonnes, %.1f per cent" % (s, t(v["t"]), v["rec"]))
+    out += ["", "### boiler_sulphur_dioxide_2026.png", "",
+            "1. A horizontal bar chart of the eighteen boilers' 2026 sulphur dioxide leaving the stack, highest at the "
+            "top, against a line at 250 tonnes, the %s listed boilers in red-brown and every bar labelled with its "
+            "tonnes to the nearest 10." % WORDS[len(listed)], ""]
+    open(os.path.join(TASK, "submission.md"), "w").write("\n".join(out))
 
 
 if __name__ == "__main__":

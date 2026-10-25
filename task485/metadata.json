@@ -1,133 +1,139 @@
 {
  "task": "task485",
- "title": "Ammonia Action Regions 2027: cattle manure ammonia by region, 2025-26",
- "setting": "A fictional national agriculture department in an unnamed Atlantic country with a national bovine register, an annual June livestock census and an ammonia reduction programme: the country, its regions, the bodies, the contractors and the people are fictional, and every record is synthetic.",
- "as_of": "2026-11-10",
+ "title": "The 2027 Sulphur Dioxide Order: which coal boilers its schedule lists",
+ "setting": "A fictional environment ministry's air quality directorate in an unnamed coal-producing country with a register of permitted coal boilers in a Northern Priority Area: the country, its bodies, the firms, the contractors and the people are fictional, and every record is synthetic.",
+ "as_of": "2027-02-09",
  "deliverables": [
-  "ammonia_action_regions_2027.xlsx",
-  "cattle_ammonia_per_hectare_2025-26.png"
+  "sulphur_dioxide_order_schedule_2027.xlsx",
+  "boiler_sulphur_dioxide_2026.png"
  ],
  "distractor_files": [
-  "target/moa_fertiliser_sales_by_region_2025-26.csv",
-  "target/creamery_milk_intake_by_region_2025.csv",
-  "target/nso_pig_poultry_census_2026.csv"
+  "target/npa_ambient_so2_2026.csv",
+  "target/national_coal_consumption_2025.json"
  ],
  "stated_inputs": [
-  "26 kilograms a hectare",
-  "13 January to 30 April 2026"
+  "250 tonnes",
+  "calendar 2026"
  ],
  "files": [
   {
-   "file": "arp_designation_rules_2025.pdf",
-   "source": "Ministry of Agriculture, Ammonia Reduction Programme, designation rules, 2025 edition (fictional, synthetic records)",
-   "date": "2025-09-30",
+   "file": "ash_contractor_customers.csv",
+   "source": "Ministry of the Environment, Air Quality Directorate, ash contractors' customer names mapped to permits (fictional, synthetic records)",
+   "date": "2027-01-15",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 32
+  },
+  {
+   "file": "boiler_returns_2026.xlsx",
+   "source": "Ministry of the Environment, Air Quality Directorate, operators' quarterly returns for 2026 (fictional, synthetic records)",
+   "date": "2027-02-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "basin_agri_job_sheets_2026.xlsx",
-   "source": "Basin Agri, job sheets January to May 2026, supplied to the Ammonia Programme Unit (fictional, synthetic records)",
-   "date": "2026-11-04",
+   "file": "carnhope_jobs_2026.csv",
+   "source": "Carnhope Skips, 2026 job sheet for permitted sites, supplied to the Ministry of the Environment, Air Quality Directorate (fictional, synthetic records)",
+   "date": "2027-01-07",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 887
+  },
+  {
+   "file": "coal_deliveries_2026.csv",
+   "source": "Ministry of the Environment, Air Quality Directorate, coal suppliers' 2026 delivery statements, collated (fictional, synthetic records)",
+   "date": "2027-01-22",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 31461
+  },
+  {
+   "file": "coal_supplier_customers.csv",
+   "source": "Ministry of the Environment, Air Quality Directorate, coal suppliers' customer codes mapped to permits (fictional, synthetic records)",
+   "date": "2027-01-22",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 23
+  },
+  {
+   "file": "limestone_certificates_2026.xlsx",
+   "source": "Bromscar Quarry and Molhope Lime and Stone, 2026 weekly certificates, collated by the Ministry of the Environment, Air Quality Directorate (fictional, synthetic records)",
+   "date": "2027-01-14",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "countrywide_invoice_lines_2026.xlsx",
-   "source": "Countrywide Slurry Services, invoice lines January to May 2026, supplied to the Ammonia Programme Unit (fictional, synthetic records)",
-   "date": "2026-11-03",
+   "file": "limestone_tickets_2026.csv",
+   "source": "Bromscar Quarry and Molhope Lime and Stone, 2026 delivery tickets to permitted sites (fictional, synthetic records)",
+   "date": "2027-01-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": 1394
+  },
+  {
+   "file": "national_coal_consumption_2025.json",
+   "source": "National Statistics Office, coal consumption by sector, 2025 (provisional) (fictional, synthetic records)",
+   "date": "2026-06-25",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "creamery_milk_intake_by_region_2025.csv",
-   "source": "Ministry of Agriculture, creamery milk intake by region, 2025 (fictional, synthetic records)",
-   "date": "2026-02-20",
+   "file": "npa_ambient_so2_2026.csv",
+   "source": "Ministry of the Environment, Air Quality Directorate, Northern Priority Area ambient monitoring network, 2026 monthly means (fictional, synthetic records)",
+   "date": "2027-01-20",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 144
+   "rows": 96
   },
   {
-   "file": "epo_cattle_ammonia_factors_2025.pdf",
-   "source": "Environmental Protection Office, Ammonia emission factors for cattle, 2025 edition (fictional, synthetic records)",
-   "date": "2025-08-18",
+   "file": "pellrigg_dockets_2026.xlsx",
+   "source": "Pellrigg and Sons Haulage, 2026 dockets for permitted sites, supplied to the Ministry of the Environment, Air Quality Directorate (fictional, synthetic records)",
+   "date": "2027-01-08",
    "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "lpr_farmed_area_2026.csv",
-   "source": "Ministry of Agriculture, Land Parcel Register, 2026 declarations by herd (fictional, synthetic records)",
+   "file": "permitted_boilers_register_2026.xlsx",
+   "source": "Ministry of the Environment, permit register of coal boilers, Northern Priority Area (fictional, synthetic records)",
+   "date": "2027-01-06",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "scrubber_guarantee_schedules.pdf",
+   "source": "Ministry of the Environment, Air Quality Directorate, scrubber suppliers' guarantee schedules copied from the permit files (fictional, synthetic records)",
+   "date": "2024-03-14",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "scrubber_tests_2026_iverstow.pdf",
+   "source": "Iverstow Emission Testing, 2026 abatement performance tests, summary (fictional, synthetic records)",
+   "date": "2026-10-16",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "scrubber_tests_2026_jarrness.pdf",
+   "source": "Jarrness Stack Testing, 2026 FGD performance tests, results summary (fictional, synthetic records)",
    "date": "2026-11-06",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 5887
-  },
-  {
-   "file": "moa_fertiliser_sales_by_region_2025-26.csv",
-   "source": "Ministry of Agriculture, fertiliser sales by region, programme year 2025-26 (fictional, synthetic records)",
-   "date": "2026-10-28",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 240
-  },
-  {
-   "file": "moa_livestock_housing_survey_2025.xlsx",
-   "source": "Ministry of Agriculture, Livestock Housing Survey 2025, housing and slurry storage (fictional, synthetic records)",
-   "date": "2025-07-14",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
    "rows": null
   },
   {
-   "file": "nbr_animals_2025-26.csv",
-   "source": "Ministry of Agriculture, National Bovine Register, animal export for the programme year 2025-26 (fictional, synthetic records)",
-   "date": "2026-11-09",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 130835
-  },
-  {
-   "file": "nbr_export_notes.txt",
-   "source": "Ministry of Agriculture, National Bovine Register, notes to the exports (fictional, synthetic records)",
-   "date": "2026-11-09",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 44
-  },
-  {
-   "file": "nbr_herd_register_2026-11.xlsx",
-   "source": "Ministry of Agriculture, National Bovine Register, herd register (fictional, synthetic records)",
-   "date": "2026-11-09",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "nbr_movements_2025-26.csv",
-   "source": "Ministry of Agriculture, National Bovine Register, movement export for the programme year 2025-26 (fictional, synthetic records)",
-   "date": "2026-11-09",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 78133
-  },
-  {
-   "file": "nso_june_livestock_census_2026.csv",
-   "source": "National Statistics Office, June Agricultural Census 2026, cattle by farm (fictional, synthetic records)",
-   "date": "2026-09-17",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 1232
-  },
-  {
-   "file": "nso_june_livestock_census_2026_tables.pdf",
-   "source": "National Statistics Office, June Agricultural Census 2026, cattle, final results (fictional, synthetic records)",
-   "date": "2026-09-17",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": null
-  },
-  {
-   "file": "nso_pig_poultry_census_2026.csv",
-   "source": "National Statistics Office, June Agricultural Census 2026, pigs and poultry by region (fictional, synthetic records)",
-   "date": "2026-09-17",
-   "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 12
-  },
-  {
-   "file": "vale_agri_jobs_2026.csv",
-   "source": "Vale Agri, slurry jobs January to May 2026, supplied to the Ammonia Programme Unit (fictional, synthetic records)",
+   "file": "so2_inventory_guidance_2026.pdf",
+   "source": "Ministry of the Environment, Air Quality Directorate, sulphur dioxide inventory guidance for the 2026 inventory year (fictional, synthetic records)",
    "date": "2026-11-02",
    "license": "CC0-1.0 (synthetic, generated for this task)",
-   "rows": 526
+   "rows": null
+  },
+  {
+   "file": "so2_order_2027_schedule_note.pdf",
+   "source": "Ministry of the Environment, Air Quality Directorate, note on the 2027 Sulphur Dioxide Order's schedule (fictional, synthetic records)",
+   "date": "2027-02-08",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
+  },
+  {
+   "file": "whinmoss_invoice_lines_2026.xlsx",
+   "source": "Whinmoss Waste Haulage, 2026 invoice lines for permitted sites, supplied to the Ministry of the Environment, Air Quality Directorate (fictional, synthetic records)",
+   "date": "2027-01-11",
+   "license": "CC0-1.0 (synthetic, generated for this task)",
+   "rows": null
   }
  ]
 }

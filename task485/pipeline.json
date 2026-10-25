@@ -1,17 +1,17 @@
 {
  "task": "task485",
  "owner": "oviya1301",
- "status": "DESIGN",
+ "status": "PAUSED",
  "domain": "physical-environmental-sciences",
  "objective": "etl",
- "stage": 2,
- "stage_name": "design",
+ "stage": 1,
+ "stage_name": "draw",
  "updated": "2026-10-25",
- "architecture": 3,
+ "architecture": 4,
  "loops": 0,
- "stump": "The default path takes each boiler's 2026 coal sulphur, less the permit's ash retention, times one minus the removal its scrubber showed at its 2026 performance test and lists at most the largest boiler or two; several scrubbers stood bypassed for days at a time while their boilers fired, and the limestone each consumed fixes the sulphur it removed, putting those boilers over 250 tonnes",
+ "stump": "",
  "returned": [],
- "resume": "stage 2 on architecture 3 (DRAWN): build the world on paper (eighteen boilers, coal and limestone flows, bypass spells, tests), measure the enumerated and standing families on it, then the default path, stump sentence, readability screen, fork table, ladder, closure table, literal reader, asks and prompt.txt to precut.py exit 0; the cattle generator under generator/ is architecture 2's and is rewritten with the stage 3 build",
+ "resume": "stage 1 of architecture 4: architecture 3 (each scrubber's year closed on the limestone it consumed) spent at stage 4 when both scored readers took the removal from the reagent balance; re-root fresh in the lane's objective with a new draw, reading Tried and rejected first (no consumable, reagent or other record covering the window beside a governing sentence that names the window; the default must not read as a snapshot against the estimand's own period)",
  "approved": null,
  "delivered": null,
  "portal": null,
@@ -65,5 +65,34 @@
  "precut": {},
  "leak": {},
  "duplicate_check": {},
- "judge": {}
+ "judge": {},
+ "gates": {},
+ "lineage_v3": {
+  "zip": "9263b80dcd8ccb1c8722ce81d63f66d3",
+  "precut": {
+   "result": "51 checks, 0 FAIL, 0 WARN (2026-10-25, architecture 3 stage 3)",
+   "pair_ceiling": 30.2,
+   "mirror_leakage": 3.1
+  },
+  "gates": {
+   "checks": "77 PASS, 0 FAIL",
+   "verify": "48 of 48",
+   "rebuild": "byte-identical, zip 9263b80dcd8ccb1c8722ce81d63f66d3",
+   "figures_check": "76 figures, 0 absent",
+   "precut": "51 checks, 0 FAIL, 0 WARN (pair ceiling 30.2, mirror leakage 3.1)",
+   "leak_py": "REVIEW, no LEAK (coincident figures in the guarantee and test tables, decision vocabulary in the documents, candidate names beside numbers)",
+   "scrub": "target and golden clean",
+   "surface": "exit 0, no promotion; personas none beyond the card's",
+   "heart": "WARN (overuse.org_family, repeat.gate_g, repeat.question_form; answered in the note)",
+   "house_fixes": "H21 every invented name rescreened against the real-place registers and the corpus and renamed (33 names); H1 containers scrubbed"
+  },
+  "leak": {
+   "leak_py": "REVIEW (2026-10-25, no LEAK; zip 9263b80d)",
+   "reader": "round 1 (zip 9263b80d): both scored readers (sonnet, medium, fresh copies) took each scrubber's year from the limestone balance (tickets less the silo's stock change, at each ISO week's certificate, over the guarantee's stoichiometry), reading the one-day test as a snapshot against the guidance's 'removed over the year'; both landed the golden six with 18 of 18 boiler tonnes and listings; score_reader FAIL on both; ask A held at 1 of 32 on both"
+  },
+  "judge": {
+   "r1": "stopped at the spend (the isolated thread was running when both readers had landed)"
+  },
+  "fate": "spent 2026-10-25 at stage 4 round 1: both scored readers landed the call"
+ }
 }

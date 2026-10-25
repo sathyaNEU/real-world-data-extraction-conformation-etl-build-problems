@@ -1,126 +1,146 @@
-"""The golden computation and the ladder's routes on the clean truth, vectorised. Each animal's herd intervals are cut
-at its first and second birthdays and its first calving; each piece sits in the region of the herd holding the animal,
-at the factor note's housed rate on the days inside that region's housing season and its grass rate on the others."""
-from collections import defaultdict
-
+"""The golden and every route on the ladder, computed from the records as the pack ships them (the returns' coal
+burned, the 2026 receipts' delivered-weighted sulphur, the quarry tickets and certificates, the silo stocks, the
+tests and the permits), never from the world's daily truth. balance() takes every convention as an option, so the
+fork table and the Layer 1 handlings run through one computation."""
 import numpy as np
 
 import world as W
 
-REGI = {r: i for i, r in enumerate(W.REG)}
-NREG = len(W.REG)
-CUMH = np.array([W.CUMH[r] for r in W.REG])
-CATI = {c: i for i, c in enumerate(W.CATS)}
-NCAT = len(W.CATS)
-RH = np.array([W.RATE[c][0] for c in W.CATS])
-RG = np.array([W.RATE[c][1] for c in W.CATS])
-# the census's categories against the factor note's
-NSO_TO_CAT = {"dairy_cows": "dairy_cow", "other_cows": "suckler_cow", "bulls": "over24", "male_2yr_plus": "over24",
-              "female_2yr_plus": "over24", "male_1_2yr": "m12_24", "female_1_2yr": "m12_24", "male_calves": "calf",
-              "female_calves": "calf"}
+M = W.MSO2 / W.MS
 
 
-class Truth:
-    """the animal columns as arrays"""
-
-    def __init__(self, A):
-        self.birth = np.array(A["birth"])
-        self.fc = np.array([x if x is not None else 10 ** 6 for x in A["fc"]])
-        self.female = np.array([x == "F" for x in A["sex"]])
-        self.dairy = np.array([b in W.DAIRY_BREEDS for b in A["breed"]])
+def iso_week(d):
+    return W.day(d).isocalendar()[1]
 
 
-def iv_arrays(IV):
-    a, h, s, e = [], [], [], []
-    for k, iv in IV.items():
-        for hh, ss, ee in iv:
-            a.append(k)
-            h.append(hh)
-            s.append(ss)
-            e.append(ee)
-    return np.array(a), np.array(h), np.array(s), np.array(e)
-
-
-def split(T, a, s, e):
-    c = np.stack([T.birth[a] + 365, T.birth[a] + 730, T.fc[a]], 1)
-    c = np.minimum(np.maximum(c, s[:, None]), e[:, None])
-    c.sort(1)
-    pts = np.concatenate([s[:, None], c, e[:, None]], 1)
-    p0, p1 = pts[:, :-1].ravel(), pts[:, 1:].ravel()
-    rows = np.repeat(np.arange(len(a)), 4)
-    keep = p1 > p0
-    return rows[keep], p0[keep], p1[keep]
-
-
-def cat_of(T, a, day):
-    age = day - T.birth[a]
-    cow = T.female[a] & (T.fc[a] <= day)
-    return np.where(age < 365, CATI["calf"],
-                    np.where(cow, np.where(T.dairy[a], CATI["dairy_cow"], CATI["suckler_cow"]),
-                             np.where(age < 730, CATI["m12_24"], CATI["over24"])))
-
-
-class Pieces:
-    def __init__(self, T, ivs, herd_region):
-        a, h, s, e = ivs
-        rows, self.p0, self.p1 = split(T, a, s, e)
-        self.a, self.h = a[rows], h[rows]
-        self.r = herd_region[self.h]
-        self.cat = cat_of(T, self.a, self.p0)
-        first = {}
-        for k in range(len(a) - 1, -1, -1):
-            first[a[k]] = h[k]
-        self.home = herd_region[np.array([first[x] for x in self.a])]
-
-
-def ammonia(P, season=None):
-    """kg NH3 by region; season: the region whose housing season applies to each piece (default its own region)"""
-    sr = P.r if season is None else season
-    hd = CUMH[sr, P.p1] - CUMH[sr, P.p0]
-    kg = hd * RH[P.cat] + (P.p1 - P.p0 - hd) * RG[P.cat]
-    return np.bincount(P.r, kg, NREG)
-
-
-def days(P):
-    return np.bincount(P.r * NCAT + P.cat, P.p1 - P.p0, NREG * NCAT).reshape(NREG, NCAT)
-
-
-def stock(P, day):
-    m = (P.p0 <= day) & (day < P.p1)
-    return np.bincount(P.r[m] * NCAT + P.cat[m], None, NREG * NCAT).reshape(NREG, NCAT)
-
-
-def table5():
-    """the factor note's Table 5 as printed, kg NH3 a head a year to one decimal"""
-    return np.array([[round(W.annual_factor(r, c), 1) for c in W.CATS] for r in W.REG])
-
-
-def census_route(census_by_farm, farm_region, t5=None):
-    t5 = table5() if t5 is None else t5
-    out = np.zeros(NREG)
-    for farm, cats in census_by_farm.items():
-        ri = REGI[farm_region[farm]]
-        for k, n in cats.items():
-            out[ri] += n * t5[ri, CATI[NSO_TO_CAT[k]]]
+def site_sulphur(lots, weighted=True, window="received", skip=None):
+    """each site's sulphur, per cent as received: weighted by tonnes (guidance 4.2) or a plain mean over rows; lots
+    received in 2026 (guidance 4.2), dispatched in 2026, or every row in the collation"""
+    out = {}
+    for site in sorted(set(x["site"] for x in lots)):
+        if window == "received":
+            xs = [x for x in lots if x["site"] == site and 0 <= x["received"] <= 364]
+        elif window == "dispatched":
+            xs = [x for x in lots if x["site"] == site and 0 <= x["dispatched"] <= 364]
+        else:
+            xs = [x for x in lots if x["site"] == site]
+        if skip:
+            xs = [x for x in xs if x["lot"] not in skip]
+        if weighted:
+            out[site] = sum(x["t"] * x["s"] for x in xs) / sum(x["t"] for x in xs)
+        else:
+            out[site] = float(np.mean([x["s"] for x in xs]))
     return out
 
 
-def farmed_land(parcels, herd_no_region, whole_commonage=False, drop_commonage=False):
-    land = np.zeros(NREG)
-    for p in parcels:
-        if p["use"] == "Commonage":
-            if drop_commonage:
-                continue
-            f = 1.0 if whole_commonage else p["share"] / 100.0
-        else:
-            f = p["share"] / 100.0
-        land[REGI[herd_no_region[p["herd"]]]] += p["area"] * f
-    return land
+def coal_burned(rets, gas_oil=False):
+    out = {}
+    for r in rets:
+        out[r["boiler"]] = out.get(r["boiler"], 0) + r["coal_burned"] + (r["oil"] if gas_oil and r["quarter"] >= 3 else 0)
+    return out
 
 
-def designated(kg, land):
-    return [W.REG[i] for i in range(NREG) if kg[i] / land[i] >= W.LINE]
+def coal_from_receipts(lots, rets):
+    """receipts in 2026 less the yard's stock change, a two-boiler site's yard split by the returns' coal burned"""
+    cb = coal_burned(rets)
+    out = {}
+    for site in sorted(set(r["site"] for r in rets)):
+        rec = sum(x["t"] for x in lots if x["site"] == site and 0 <= x["received"] <= 364)
+        first = [r for r in rets if r["site"] == site and r["unit"] == 1]
+        q1 = [r for r in first if r["quarter"] == 1][0]
+        q4 = [r for r in first if r["quarter"] == 4][0]
+        burned = rec - (q4["coal_close"] - q1["coal_open"])
+        bs = sorted(b for b in cb if b.startswith(site + "-"))
+        tot = sum(cb[b] for b in bs)
+        for b in bs:
+            out[b] = burned * cb[b] / tot
+    return out
 
 
-def by_region(x):
-    return {r: float(x[i]) for i, r in enumerate(W.REG)}
+def limestone(rets, tickets, purity, stock_change=True, purity_mode="weekly", moisture=None):
+    """calcium carbonate each scrubber consumed in 2026, t: tickets less the silo's stock change, each ticket at its
+    ISO week's certified purity as delivered (or the year's plain mean, or weeks counted from 1 January, or with the
+    week's moisture taken off as if the purity were dry)"""
+    cons, caco3 = {}, {}
+    for b in sorted(set(r["boiler"] for r in rets)):
+        ts = [x for x in tickets if x["boiler"] == b]
+        tons = sum(x["t"] for x in ts)
+        q = ts[0]["quarry"]
+        pur_t = 0.0
+        for x in ts:
+            if purity_mode == "weekly":
+                p = purity[q][iso_week(x["day"])]
+            elif purity_mode == "jan1":
+                p = purity[q][min(53, x["day"] // 7 + 1)]
+            else:
+                p = float(np.mean(purity[q][1:54]))
+            if moisture is not None:
+                p = p * (1 - moisture[q][iso_week(x["day"])] / 100)
+            pur_t += x["t"] * p / 100
+        q1 = [r for r in rets if r["boiler"] == b and r["quarter"] == 1][0]
+        q4 = [r for r in rets if r["boiler"] == b and r["quarter"] == 4][0]
+        dstock = (q4["ls_close"] - q1["ls_open"]) if stock_change else 0.0
+        used = tons - dstock
+        cons[b] = used
+        caco3[b] = pur_t / tons * used
+    return cons, caco3
+
+
+def balance(w, rets, tickets, permits, lots=None, purity=None, *, weighted=True, window="received", skip=None,
+            coal="returns", gas_oil=False, stock_change=True, purity_mode="weekly", moisture=None, ratio_one=False,
+            as_caco3=False, mcaco3=W.MCACO3, mratio=M):
+    """each boiler's sulphur dioxide leaving the stack over 2026, t, on the reagent balance: the sulphur fired less the
+    ash's share, less the sulphur dioxide removed (the calcium carbonate consumed over the scrubber's moles per mole
+    removed). Returns {boiler: dict(formed, removed, so2, s_gas, caco3, cons)}."""
+    lots = w.lots if lots is None else lots
+    purity = w.purity if purity is None else purity
+    S = site_sulphur(lots, weighted, window, skip)
+    cb = coal_burned(rets, gas_oil) if coal == "returns" else coal_from_receipts(lots, rets)
+    per = {p["boiler"]: p for p in permits}
+    cons, caco3 = limestone(rets, tickets, purity, stock_change, purity_mode, moisture)
+    out = {}
+    for b in sorted(cb):
+        p = per[b]
+        s_gas = cb[b] * S[b.split("-")[0]] / 100 * (1 - p["ash_ret"])
+        reagent = cons[b] if as_caco3 else caco3[b]
+        removed = reagent / mcaco3 / (1.0 if ratio_one else p["ratio"]) * W.MS * mratio
+        formed = s_gas * mratio
+        out[b] = dict(formed=formed, removed=removed, so2=formed - removed, s_gas=s_gas, caco3=caco3[b], cons=cons[b])
+    return out
+
+
+def routes(w, rets, tickets, tests, permits):
+    """every route's 2026 sulphur dioxide per boiler, t"""
+    S = site_sulphur(w.lots)
+    cb = coal_burned(rets)
+    per = {p["boiler"]: p for p in permits}
+    tst = {x["boiler"]: x for x in tests}
+    hours = {}
+    for r in rets:
+        hours[r["boiler"]] = hours.get(r["boiler"], 0) + r["hours"]
+    gold = balance(w, rets, tickets, permits)
+    alt = dict(golden_no_stock=balance(w, rets, tickets, permits, stock_change=False),
+               golden_mean_purity=balance(w, rets, tickets, permits, purity_mode="mean"),
+               golden_mean_sulphur=balance(w, rets, tickets, permits, weighted=False),
+               golden_ratio_one=balance(w, rets, tickets, permits, ratio_one=True),
+               golden_limestone_as_caco3=balance(w, rets, tickets, permits, as_caco3=True))
+    out = {}
+    for b in sorted(cb):
+        p = per[b]
+        s_gas = cb[b] * S[b.split("-")[0]] / 100 * (1 - p["ash_ret"])
+        x = tst[b]
+        test_rate = x["so2_out"] * x["flow"] / 1e9      # t per hour: mg/Nm3 times Nm3/h, both at the report's oxygen
+        out[b] = dict(none=s_gas * M, design=s_gas * (1 - p["design"]) * M, tested=s_gas * (1 - x["removal"] / 100) * M,
+                      test_rate=test_rate * hours[b], golden=gold[b]["so2"], s_gas=s_gas, caco3=gold[b]["caco3"],
+                      cons=gold[b]["cons"])
+        for k, v in alt.items():
+            out[b][k] = v[b]["so2"]
+    return out
+
+
+def listed(rt, key, line=W.LINE):
+    return sorted(b for b in rt if rt[b][key] >= line)
+
+
+def listed_of(bal, line=W.LINE):
+    return sorted(b for b in bal if bal[b]["so2"] >= line)

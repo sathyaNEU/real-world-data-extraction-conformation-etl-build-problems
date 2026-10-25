@@ -1,218 +1,313 @@
 {
- "ask_a": {
-  "Atlantic Coast": {
-   "less_pct": "62.5",
-   "m3": "14,700"
+ "ash": {
+  "Candrigg Soda Works": {
+   "rec": 87.2,
+   "t": 16560
   },
-  "Coastal Vale": {
-   "less_pct": "77.8",
-   "m3": "35,900"
+  "Dremstead Chemicals": {
+   "rec": 72.9,
+   "t": 8490
   },
-  "Eastern Uplands": {
-   "less_pct": "70.9",
-   "m3": "9,800"
+  "Eskfold Sugar": {
+   "rec": 82.2,
+   "t": 6200
   },
-  "Eastern Vale": {
-   "less_pct": "54.7",
-   "m3": "34,400"
+  "Haskmouth Paper": {
+   "rec": 71.4,
+   "t": 3410
   },
-  "Inner Basin": {
-   "less_pct": "29.5",
-   "m3": "15,600"
+  "Kirlgate Maltings": {
+   "rec": 68.8,
+   "t": 2280
   },
-  "Lake Uplands": {
-   "less_pct": "19.4",
-   "m3": "9,600"
+  "Lathgarth Fibres": {
+   "rec": 71.3,
+   "t": 4000
   },
-  "Lower Basin": {
-   "less_pct": "72.7",
-   "m3": "22,600"
+  "Nethstead Tissue": {
+   "rec": 88.5,
+   "t": 11060
   },
-  "Middle Uplands": {
-   "less_pct": "53.1",
-   "m3": "9,900"
+  "Pridwold Starch": {
+   "rec": 20.9,
+   "t": 9890
   },
-  "Midland Basin": {
-   "less_pct": "37.1",
-   "m3": "19,500"
+  "Quarholt Board Mills": {
+   "rec": 87.4,
+   "t": 23610
   },
-  "Northern Vale": {
-   "less_pct": "44.5",
-   "m3": "34,100"
+  "Sellhope Rubber": {
+   "rec": 15.8,
+   "t": 4860
   },
-  "Southern Vale": {
-   "less_pct": "65.4",
-   "m3": "25,900"
+  "Thalwold Foods": {
+   "rec": 74.3,
+   "t": 7000
   },
-  "Western Seaboard": {
-   "less_pct": "26.1",
-   "m3": "12,100"
+  "Ulvdale Dyeworks": {
+   "rec": 13.9,
+   "t": 4120
+  },
+  "Umbgarth District Heating": {
+   "rec": 68.8,
+   "t": 6760
+  },
+  "Vornfield Brewery": {
+   "rec": 85.3,
+   "t": 5870
+  },
+  "Wendscar Tannery": {
+   "rec": 17.2,
+   "t": 8320
+  },
+  "Yeldholt General Hospital Energy Centre": {
+   "rec": 75.0,
+   "t": 7320
   }
  },
- "ask_a_total": {
-  "less_pct": "54.7",
-  "m3": "243,900"
+ "ash_area": {
+  "rec": 68.0,
+  "t": 129750
+ },
+ "ash_order": [
+  "Quarholt Board Mills",
+  "Eskfold Sugar",
+  "Dremstead Chemicals",
+  "Ulvdale Dyeworks",
+  "Kirlgate Maltings",
+  "Vornfield Brewery",
+  "Yeldholt General Hospital Energy Centre",
+  "Haskmouth Paper",
+  "Nethstead Tissue",
+  "Pridwold Starch",
+  "Lathgarth Fibres",
+  "Candrigg Soda Works",
+  "Thalwold Foods",
+  "Sellhope Rubber",
+  "Umbgarth District Heating",
+  "Wendscar Tannery"
+ ],
+ "boilers": {
+  "Candrigg Soda Works": {
+   "listed": "listed",
+   "over_line_pct": 27.1,
+   "ratio": 0.9,
+   "so2": 320,
+   "so2_unrounded": 317.8,
+   "tested": 340
+  },
+  "Dremstead Chemicals": {
+   "listed": "listed",
+   "over_line_pct": 34.8,
+   "ratio": 4.3,
+   "so2": 340,
+   "so2_unrounded": 336.9,
+   "tested": 80
+  },
+  "Eskfold Sugar": {
+   "listed": "not listed",
+   "over_line_pct": -72.9,
+   "ratio": 0.9,
+   "so2": 70,
+   "so2_unrounded": 67.7,
+   "tested": 70
+  },
+  "Haskmouth Paper": {
+   "listed": "not listed",
+   "over_line_pct": -85.4,
+   "ratio": 0.9,
+   "so2": 40,
+   "so2_unrounded": 36.6,
+   "tested": 40
+  },
+  "Kirlgate Maltings": {
+   "listed": "not listed",
+   "over_line_pct": -91.6,
+   "ratio": 1.1,
+   "so2": 20,
+   "so2_unrounded": 21.1,
+   "tested": 20
+  },
+  "Lathgarth Fibres": {
+   "listed": "not listed",
+   "over_line_pct": -83.7,
+   "ratio": 1.1,
+   "so2": 40,
+   "so2_unrounded": 40.8,
+   "tested": 40
+  },
+  "Nethstead Tissue No. 1 boiler": {
+   "listed": "not listed",
+   "over_line_pct": -73.5,
+   "ratio": 1.7,
+   "so2": 70,
+   "so2_unrounded": 66.3,
+   "tested": 40
+  },
+  "Nethstead Tissue No. 2 boiler": {
+   "listed": "not listed",
+   "over_line_pct": -76.1,
+   "ratio": 1.0,
+   "so2": 60,
+   "so2_unrounded": 59.9,
+   "tested": 60
+  },
+  "Pridwold Starch": {
+   "listed": "not listed",
+   "over_line_pct": -51.2,
+   "ratio": 1.0,
+   "so2": 120,
+   "so2_unrounded": 122.0,
+   "tested": 130
+  },
+  "Quarholt Board Mills boiler 1": {
+   "listed": "not listed",
+   "over_line_pct": -35.6,
+   "ratio": 0.9,
+   "so2": 160,
+   "so2_unrounded": 161.1,
+   "tested": 170
+  },
+  "Quarholt Board Mills boiler 2": {
+   "listed": "listed",
+   "over_line_pct": 55.5,
+   "ratio": 3.3,
+   "so2": 390,
+   "so2_unrounded": 388.7,
+   "tested": 120
+  },
+  "Sellhope Rubber": {
+   "listed": "listed",
+   "over_line_pct": 39.1,
+   "ratio": 5.9,
+   "so2": 350,
+   "so2_unrounded": 347.6,
+   "tested": 60
+  },
+  "Thalwold Foods": {
+   "listed": "listed",
+   "over_line_pct": 31.1,
+   "ratio": 3.5,
+   "so2": 330,
+   "so2_unrounded": 327.7,
+   "tested": 90
+  },
+  "Ulvdale Dyeworks": {
+   "listed": "not listed",
+   "over_line_pct": -65.2,
+   "ratio": 1.7,
+   "so2": 90,
+   "so2_unrounded": 87.0,
+   "tested": 50
+  },
+  "Umbgarth District Heating": {
+   "listed": "listed",
+   "over_line_pct": 36.8,
+   "ratio": 5.6,
+   "so2": 340,
+   "so2_unrounded": 342.0,
+   "tested": 60
+  },
+  "Vornfield Brewery": {
+   "listed": "not listed",
+   "over_line_pct": -80.9,
+   "ratio": 1.0,
+   "so2": 50,
+   "so2_unrounded": 47.7,
+   "tested": 50
+  },
+  "Wendscar Tannery": {
+   "listed": "not listed",
+   "over_line_pct": -51.2,
+   "ratio": 1.0,
+   "so2": 120,
+   "so2_unrounded": 122.0,
+   "tested": 120
+  },
+  "Yeldholt General Hospital Energy Centre": {
+   "listed": "not listed",
+   "over_line_pct": -73.0,
+   "ratio": 1.0,
+   "so2": 70,
+   "so2_unrounded": 67.4,
+   "tested": 60
+  }
  },
  "call": {
-  "designated": [
-   "Northern Vale",
-   "Eastern Vale",
-   "Southern Vale",
-   "Midland Basin",
-   "Inner Basin",
-   "Lower Basin"
+  "listed": [
+   "Quarholt Board Mills boiler 2",
+   "Dremstead Chemicals",
+   "Candrigg Soda Works",
+   "Thalwold Foods",
+   "Sellhope Rubber",
+   "Umbgarth District Heating"
   ],
-  "not_designated": [
-   "Coastal Vale",
-   "Lake Uplands",
-   "Middle Uplands",
-   "Eastern Uplands",
-   "Western Seaboard",
-   "Atlantic Coast"
+  "n_listed": 6,
+  "not_listed": [
+   "Quarholt Board Mills boiler 1",
+   "Eskfold Sugar",
+   "Ulvdale Dyeworks",
+   "Kirlgate Maltings",
+   "Vornfield Brewery",
+   "Yeldholt General Hospital Energy Centre",
+   "Haskmouth Paper",
+   "Nethstead Tissue No. 1 boiler",
+   "Nethstead Tissue No. 2 boiler",
+   "Pridwold Starch",
+   "Lathgarth Fibres",
+   "Wendscar Tannery"
   ]
  },
  "components": {
-  "animal_days": "37,319,657",
-  "land_total": "50,930.53",
-  "tonnes_total": "1,352.2"
+  "coal": 893723,
+  "formed": 25400,
+  "leaving_10": 2960,
+  "removed": 22400
  },
  "constants": {
-  "gallon_m3": "0.00454609",
-  "line": 26.0,
-  "order": [
-   "Northern Vale",
-   "Eastern Vale",
-   "Southern Vale",
-   "Coastal Vale",
-   "Midland Basin",
-   "Inner Basin",
-   "Lower Basin",
-   "Lake Uplands",
-   "Middle Uplands",
-   "Eastern Uplands",
-   "Western Seaboard",
-   "Atlantic Coast"
+  "ash_sites": 16,
+  "ask_figures": 32,
+  "boilers": 18,
+  "contractors": 3,
+  "guidance_section_sulphur": "4.2",
+  "line": 250,
+  "mcaco3": 100.087,
+  "ms": 32.065,
+  "mso2": 64.066,
+  "ratios": [
+   1.03,
+   1.05,
+   1.07
   ],
-  "programme_year": "2025-26",
-  "rule_sections": [
-   "3",
-   "4",
-   "5",
-   "6"
-  ]
+  "sites": 16
  },
  "default": {
-  "designated": [
-   "Northern Vale",
-   "Eastern Vale",
-   "Southern Vale",
-   "Midland Basin",
-   "Lake Uplands",
-   "Middle Uplands",
-   "Eastern Uplands",
-   "Western Seaboard",
-   "Atlantic Coast"
-  ],
-  "kg_ha": {
-   "Atlantic Coast": "29.28",
-   "Coastal Vale": "23.04",
-   "Eastern Uplands": "28.79",
-   "Eastern Vale": "30.33",
-   "Inner Basin": "23.63",
-   "Lake Uplands": "34.41",
-   "Lower Basin": "24.19",
-   "Middle Uplands": "34.02",
-   "Midland Basin": "29.73",
-   "Northern Vale": "31.94",
-   "Southern Vale": "29.09",
-   "Western Seaboard": "36.05"
-  }
- },
- "mean_count": {
-  "designated": [
-   "Northern Vale",
-   "Eastern Vale",
-   "Southern Vale",
-   "Midland Basin",
-   "Inner Basin",
-   "Lower Basin",
-   "Lake Uplands",
-   "Middle Uplands",
-   "Western Seaboard"
+  "listed": [
+   "Candrigg Soda Works"
   ]
  },
- "regions": {
-  "Atlantic Coast": {
-   "designated": "No",
-   "kg_ha": "20.10",
-   "land_ha": "4,434.76",
-   "tonnes": "89.1"
-  },
-  "Coastal Vale": {
-   "designated": "No",
-   "kg_ha": "22.91",
-   "land_ha": "7,764.47",
-   "tonnes": "177.9"
-  },
-  "Eastern Uplands": {
-   "designated": "No",
-   "kg_ha": "20.27",
-   "land_ha": "2,493.20",
-   "tonnes": "50.5"
-  },
-  "Eastern Vale": {
-   "designated": "Yes",
-   "kg_ha": "29.74",
-   "land_ha": "6,452.62",
-   "tonnes": "191.9"
-  },
-  "Inner Basin": {
-   "designated": "Yes",
-   "kg_ha": "28.10",
-   "land_ha": "2,923.13",
-   "tonnes": "82.1"
-  },
-  "Lake Uplands": {
-   "designated": "No",
-   "kg_ha": "24.23",
-   "land_ha": "2,387.75",
-   "tonnes": "57.9"
-  },
-  "Lower Basin": {
-   "designated": "Yes",
-   "kg_ha": "28.31",
-   "land_ha": "3,709.19",
-   "tonnes": "105.0"
-  },
-  "Middle Uplands": {
-   "designated": "No",
-   "kg_ha": "23.62",
-   "land_ha": "2,656.98",
-   "tonnes": "62.7"
-  },
-  "Midland Basin": {
-   "designated": "Yes",
-   "kg_ha": "34.23",
-   "land_ha": "2,985.94",
-   "tonnes": "102.2"
-  },
-  "Northern Vale": {
-   "designated": "Yes",
-   "kg_ha": "31.53",
-   "land_ha": "5,624.73",
-   "tonnes": "177.4"
-  },
-  "Southern Vale": {
-   "designated": "Yes",
-   "kg_ha": "28.48",
-   "land_ha": "6,182.97",
-   "tonnes": "176.1"
-  },
-  "Western Seaboard": {
-   "designated": "No",
-   "kg_ha": "23.92",
-   "land_ha": "3,314.79",
-   "tonnes": "79.3"
-  }
- }
+ "design": {
+  "name": "Quarholt Board Mills boiler 1",
+  "so2": 310
+ },
+ "order": [
+  "Quarholt Board Mills boiler 1",
+  "Quarholt Board Mills boiler 2",
+  "Eskfold Sugar",
+  "Dremstead Chemicals",
+  "Ulvdale Dyeworks",
+  "Kirlgate Maltings",
+  "Vornfield Brewery",
+  "Yeldholt General Hospital Energy Centre",
+  "Haskmouth Paper",
+  "Nethstead Tissue No. 1 boiler",
+  "Nethstead Tissue No. 2 boiler",
+  "Pridwold Starch",
+  "Lathgarth Fibres",
+  "Candrigg Soda Works",
+  "Thalwold Foods",
+  "Sellhope Rubber",
+  "Umbgarth District Heating",
+  "Wendscar Tannery"
+ ]
 }

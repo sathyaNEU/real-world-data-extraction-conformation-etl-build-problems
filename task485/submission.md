@@ -1,59 +1,70 @@
 ## Tags
 
-**Domain:** Physical & Environmental Sciences, emissions inventory (a national agriculture department's regional inventory of ammonia from cattle manure for the 2025-26 programme year, conformed from the bovine register's animal and movement exports, its herd register, the June census by farm, the land parcel register's farmed area and the environmental protection office's Tier 2 factors).
+**Domain:** Physical & Environmental Sciences, emissions inventory (an environment ministry's 2026 sulphur dioxide inventory of eighteen permitted coal boilers with wet limestone scrubbers, conformed from four coal suppliers' delivery analyses, the operators' quarterly returns, two quarries' tickets and weekly certificates, the scrubber guarantee schedules and two laboratories' test reports).
 **Analytical objective:** Data Extraction & Conformation (ETL).
 
 ## 1. Final Recommendation
 
-**The Minister should designate Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Inner Basin and Lower Basin as Ammonia Action Regions for the 2027 spreading season: on the ammonia from cattle manure arising in each region over 2025-26 these six regions are at or above 26 kilograms a hectare of farmed land, and the other six are under it.**
-Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Inner Basin and Lower Basin stand at 31.53, 29.74, 28.48, 34.23, 28.10 and 28.31 kilograms a hectare. Not Lake Uplands, Middle Uplands, Eastern Uplands, Western Seaboard and Atlantic Coast, at 24.23, 23.62, 20.27, 23.92 and 20.10: the cattle on their holdings on 1 June include lowland yearlings out on summer grazing and calves bought in that spring, whose housed months fall in other regions, so the census at the annual factor per head puts them over the line. Not without Inner Basin and Lower Basin, at 28.10 and 28.31: their finishers house stores all winter and send them to slaughter before June, which the census misses.
+**The 2027 Sulphur Dioxide Order lists six boilers, Quarholt Board Mills boiler 2, Dremstead Chemicals, Candrigg Soda Works, Thalwold Foods, Sellhope Rubber and Umbgarth District Heating, whose sulphur dioxide leaving the stack over 2026 was 390, 340, 320, 330, 350 and 340 tonnes against the 250 tonne line; the other twelve boilers are under it.**
+Candrigg Soda Works is the nearest to the line among the six at 320 tonnes, and Quarholt Board Mills boiler 1 the highest of the rest at 160. Not Candrigg Soda Works alone, which the removals the scrubbers showed at their 2026 performance tests give when carried across the year: the scrubbers at Quarholt Board Mills boiler 2, Dremstead Chemicals, Thalwold Foods, Sellhope Rubber and Umbgarth District Heating consumed too little limestone for those removals, so their sulphur dioxide runs 3.3 to 5.9 times their tested figures. Not Quarholt Board Mills boiler 1, which its design removal puts at 310 tonnes: over the year its scrubber removed more than its design.
 
 ## 2. Critical Components
 
-1. Ammonia from cattle manure arising in the twelve regions, 1 November 2025 to 31 October 2026: **1,352.2 tonnes**.
-2. Farmed land of the twelve regions in the 2026 land parcel register, commonage at each herd's share: **50,930.53 hectares**.
+1. Sulphur dioxide formed from the coal the eighteen boilers fired in 2026, less the ash's share, to the nearest 100: **25,400 tonnes**.
+2. Sulphur dioxide the eighteen scrubbers removed over 2026, from the calcium carbonate they consumed, to the nearest 100: **22,400 tonnes**.
 
 ## 3. Step-by-Step Solution
 
-1. Rebuilt each animal's days in nbr_animals_2025-26.csv and nbr_movements_2025-26.csv, from its date of birth or 1 November 2025 to the day before its exit date or 31 October 2026, in HERD_AT_START and then in each destination herd from its arrival date (nbr_export_notes.txt): 37,319,657 animal-days.
-2. Put each herd number in the 2024 region of its district in nbr_herd_register_2026-11.xlsx, a reissued number at the record valid on the day (designation rules, section 4).
-3. Classed each day by epo_cattle_ammonia_factors_2025.pdf (section 2 and the annex's dairy breeds) and charged Table 3's housed rate on days inside the Table 4 housing season of the region the animal was in that day and its grass rate on the others: 1,352.2 tonnes of ammonia.
-4. Divided each region's ammonia by its farmed land in lpr_farmed_area_2026.csv by the herds' regions, a commonage parcel at the herd's SHARE_PCT: 50,930.53 hectares.
-5. Tested each region against 26 kilograms a hectare on the unrounded figures (designation rules, section 5): six regions at or above it.
-6. For the contractors, took cattle slurry jobs dated 13 January to 30 April 2026 on herds in the herd register from vale_agri_jobs_2026.csv (loads times the tanker's gallons), countrywide_invoice_lines_2026.xlsx (SS- services, thousands of gallons) and basin_agri_job_sheets_2026.xlsx (metered cubic metres), at 0.00454609 cubic metres a gallon, and counted each job once: a Countrywide line whose Reference is a Vale Agri Job No or a Basin Agri Job No bills that contractor's job, so it is left out and the job sheet's volume and spreader are kept; trailing shoe, trailing hose, dribble bar, umbilical dribble bar and shallow injection are low-emission (designation rules, section 6): 243,900 cubic metres, 54.7 per cent low-emission.
-7. The Minister designates the six regions at or above the line.
+1. Took each boiler's coal burned from the four quarters of boiler_returns_2026.xlsx, quarters 1 and 2 on the 2019 template and 3 and 4 on the 2026 template: 893,723 tonnes in all.
+2. Took each site's sulphur as received from coal_deliveries_2026.csv, the deliveries received from 1 January to 31 December 2026 weighted by net tonnes (guidance section 4.2), each customer code put to its site through coal_supplier_customers.csv.
+3. Took off each boiler's sulphur retained in ash from permitted_boilers_register_2026.xlsx and converted at 64.066 over 32.065: 25,400 tonnes of sulphur dioxide formed.
+4. Took each scrubber's limestone consumed as its 2026 tickets in limestone_tickets_2026.csv, put to permits by the Delivery points sheet of limestone_certificates_2026.xlsx, less its silo's change from the first quarter's opening to the fourth quarter's closing stock in the returns, each ticket at its ISO week's calcium carbonate in the same workbook.
+5. Converted each scrubber's calcium carbonate to sulphur dioxide removed at its operating stoichiometry in scrubber_guarantee_schedules.pdf, 1.03 to 1.07 moles of calcium carbonate per mole removed: 22,400 tonnes.
+6. Subtracted each boiler's removal from its sulphur dioxide formed and tested the remainder unrounded against 250 tonnes (the Order's note, section 2): six boilers at or over the line.
+7. For the ash, conformed whinmoss_invoice_lines_2026.xlsx, carnhope_jobs_2026.csv and pellrigg_dockets_2026.xlsx to the sites through ash_contractor_customers.csv, kept bottom and fly ash collected in 2026, read Carnhope's net weights in kilograms, and dropped every Whinmoss line whose reference is a Carnhope or Pellrigg job number, because that line bills the local contractor's own collection, counted on its record: each site's tonnes and recovery share below.
+8. The Order lists Quarholt Board Mills boiler 2, Dremstead Chemicals, Candrigg Soda Works, Thalwold Foods, Sellhope Rubber and Umbgarth District Heating.
 
 ## 4. Deliverable Answers
 
-### ammonia_action_regions_2027.xlsx
+### sulphur_dioxide_order_schedule_2027.xlsx
 
-1. Ammonia from cattle manure arising in each region over 2025-26, tonnes, kilograms a hectare of farmed land, and whether designated:
-   - Northern Vale: 177.4 tonnes, 31.53 kg a hectare, designated
-   - Eastern Vale: 191.9 tonnes, 29.74 kg a hectare, designated
-   - Southern Vale: 176.1 tonnes, 28.48 kg a hectare, designated
-   - Coastal Vale: 177.9 tonnes, 22.91 kg a hectare, not designated
-   - Midland Basin: 102.2 tonnes, 34.23 kg a hectare, designated
-   - Inner Basin: 82.1 tonnes, 28.10 kg a hectare, designated
-   - Lower Basin: 105.0 tonnes, 28.31 kg a hectare, designated
-   - Lake Uplands: 57.9 tonnes, 24.23 kg a hectare, not designated
-   - Middle Uplands: 62.7 tonnes, 23.62 kg a hectare, not designated
-   - Eastern Uplands: 50.5 tonnes, 20.27 kg a hectare, not designated
-   - Western Seaboard: 79.3 tonnes, 23.92 kg a hectare, not designated
-   - Atlantic Coast: 89.1 tonnes, 20.10 kg a hectare, not designated
-2. Cattle slurry spread by contractors on each region's farms from 13 January to 30 April 2026, cubic metres to the nearest hundred, and the share spread by trailing shoe, trailing hose or injection, per cent:
-   - Northern Vale: 34,100 cubic metres, 44.5 per cent
-   - Eastern Vale: 34,400 cubic metres, 54.7 per cent
-   - Southern Vale: 25,900 cubic metres, 65.4 per cent
-   - Coastal Vale: 35,900 cubic metres, 77.8 per cent
-   - Midland Basin: 19,500 cubic metres, 37.1 per cent
-   - Inner Basin: 15,600 cubic metres, 29.5 per cent
-   - Lower Basin: 22,600 cubic metres, 72.7 per cent
-   - Lake Uplands: 9,600 cubic metres, 19.4 per cent
-   - Middle Uplands: 9,900 cubic metres, 53.1 per cent
-   - Eastern Uplands: 9,800 cubic metres, 70.9 per cent
-   - Western Seaboard: 12,100 cubic metres, 26.1 per cent
-   - Atlantic Coast: 14,700 cubic metres, 62.5 per cent
+1. Each boiler's sulphur dioxide leaving the stack in 2026, tonnes to the nearest 10, and whether the Order lists it, in the register's order:
+   - Quarholt Board Mills boiler 1: 160 tonnes, not listed
+   - Quarholt Board Mills boiler 2: 390 tonnes, listed
+   - Eskfold Sugar: 70 tonnes, not listed
+   - Dremstead Chemicals: 340 tonnes, listed
+   - Ulvdale Dyeworks: 90 tonnes, not listed
+   - Kirlgate Maltings: 20 tonnes, not listed
+   - Vornfield Brewery: 50 tonnes, not listed
+   - Yeldholt General Hospital Energy Centre: 70 tonnes, not listed
+   - Haskmouth Paper: 40 tonnes, not listed
+   - Nethstead Tissue No. 1 boiler: 70 tonnes, not listed
+   - Nethstead Tissue No. 2 boiler: 60 tonnes, not listed
+   - Pridwold Starch: 120 tonnes, not listed
+   - Lathgarth Fibres: 40 tonnes, not listed
+   - Candrigg Soda Works: 320 tonnes, listed
+   - Thalwold Foods: 330 tonnes, listed
+   - Sellhope Rubber: 350 tonnes, listed
+   - Umbgarth District Heating: 340 tonnes, listed
+   - Wendscar Tannery: 120 tonnes, not listed
+2. Each site's boiler ash taken off site in 2026 by the three contractors, tonnes to the nearest 10, and the share sent to recovery at Yarrdale Blocks or Velthwaite Cement Works, per cent to one decimal:
+   - Quarholt Board Mills: 23,610 tonnes, 87.4 per cent
+   - Eskfold Sugar: 6,200 tonnes, 82.2 per cent
+   - Dremstead Chemicals: 8,490 tonnes, 72.9 per cent
+   - Ulvdale Dyeworks: 4,120 tonnes, 13.9 per cent
+   - Kirlgate Maltings: 2,280 tonnes, 68.8 per cent
+   - Vornfield Brewery: 5,870 tonnes, 85.3 per cent
+   - Yeldholt General Hospital Energy Centre: 7,320 tonnes, 75.0 per cent
+   - Haskmouth Paper: 3,410 tonnes, 71.4 per cent
+   - Nethstead Tissue: 11,060 tonnes, 88.5 per cent
+   - Pridwold Starch: 9,890 tonnes, 20.9 per cent
+   - Lathgarth Fibres: 4,000 tonnes, 71.3 per cent
+   - Candrigg Soda Works: 16,560 tonnes, 87.2 per cent
+   - Thalwold Foods: 7,000 tonnes, 74.3 per cent
+   - Sellhope Rubber: 4,860 tonnes, 15.8 per cent
+   - Umbgarth District Heating: 6,760 tonnes, 68.8 per cent
+   - Wendscar Tannery: 8,320 tonnes, 17.2 per cent
 
-### cattle_ammonia_per_hectare_2025-26.png
+### boiler_sulphur_dioxide_2026.png
 
-1. Horizontal bar chart of each region's kilograms of ammonia a hectare against the 26 kilogram line, the six designated regions (Northern Vale, Eastern Vale, Southern Vale, Midland Basin, Inner Basin and Lower Basin) in orange beyond the line and the other six in grey under it.
+1. A horizontal bar chart of the eighteen boilers' 2026 sulphur dioxide leaving the stack, highest at the top, against a line at 250 tonnes, the six listed boilers in red-brown and every bar labelled with its tonnes to the nearest 10.

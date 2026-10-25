@@ -1,325 +1,376 @@
-"""Cut task485's pack from the clean truth: the National Bovine Register's animal and movement exports with its herd
-register, the June census by farm, the land parcel register's farmed area, the farm practices survey's housing seasons,
-the three slurry contractors' exports, three context files and the register's export notes."""
+"""The pack's data files, each written as the system that issues it writes its records."""
 import csv
 import datetime as dt
-import io
 
 import numpy as np
-import openpyxl
-from openpyxl.utils import get_column_letter
+from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
 
-import contractors as C
-import registry as R
+import ash as A
+import reagent as RG
 import world as W
 
-D = dt.date
-BOLD = Font(bold=True)
-PREMISES = {"mart": "%s Mart", "factory": None, "knackery": None, "export": None, "dealer": None}
-FACTORY_NAMES = ["Midland Basin Meats", "Southern Vale Beef", "Inner Basin Meat Packers", "Western Seaboard Foods", "Lower Basin Meats"]
-KNACKERY_NAMES = ["Eastern Vale Knackery", "Lower Basin Fallen Animals", "Middle Uplands Knackery"]
-EXPORT_NAMES = ["Northern Vale Export Assembly Centre", "Coastal Vale Live Export Lairage"]
+PERMIT = {}            # boiler id -> permit number
+for i, b in enumerate(W.BOILERS):
+    PERMIT["%s-%d" % (b["site"], b["unit"])] = "NPA/CB/%04d" % (311 + 37 * i)
+UNIT_NAME = {"S01": ("Boiler 1", "Boiler 2"), "S09": ("No. 1 boiler", "No. 2 boiler")}
+SUP_CUST = {}          # (supplier, site) -> customer code
+
+
+def unit_label(bid):
+    site, u = bid.split("-")
+    if site in UNIT_NAME:
+        return UNIT_NAME[site][int(u) - 1]
+    return "Main boiler"
 
 
 def _csv(path, header, rows, crlf=True):
-    buf = io.StringIO()
-    w = csv.writer(buf, lineterminator="\r\n" if crlf else "\n")
-    w.writerow(header)
-    w.writerows(rows)
-    with open(path, "w", encoding="utf-8", newline="") as f:
-        f.write(buf.getvalue())
+    with open(path, "w", newline="", encoding="utf-8") as fh:
+        wr = csv.writer(fh, lineterminator="\r\n" if crlf else "\n")
+        wr.writerow(header)
+        for r in rows:
+            wr.writerow(r)
     return len(rows)
 
 
-def dmy(i):
-    return W.dd(i).strftime("%d/%m/%Y")
+def iso(d):
+    return W.day(d).isoformat()
+
+
+def dmy(d):
+    x = W.day(d)
+    return "%02d/%02d/%04d" % (x.day, x.month, x.year)
 
 
 def _sheet(ws, header, rows, widths, fmts=None):
     ws.append(header)
     for c in ws[1]:
-        c.font = BOLD
-        c.alignment = Alignment(wrap_text=True, vertical="top")
+        c.font = Font(bold=True)
+        c.alignment = Alignment(wrap_text=True, vertical="bottom")
     for r in rows:
         ws.append(r)
-    for k, wd in enumerate(widths):
-        ws.column_dimensions[get_column_letter(k + 1)].width = wd
-    for col, fmt in (fmts or {}).items():
-        for row in ws.iter_rows(min_row=2, min_col=col, max_col=col):
-            for c in row:
-                c.number_format = fmt
+    for i, wd in enumerate(widths):
+        ws.column_dimensions[chr(65 + i) if i < 26 else "A" + chr(65 + i - 26)].width = wd
+    if fmts:
+        for col, f in fmts.items():
+            for cell in ws[col][1:]:
+                cell.number_format = f
     ws.freeze_panes = "A2"
 
 
-# ------------------------------------------------------------------------------------------- the bovine register
-def animals(path, w, IV, tags, bherd):
-    A, H = w.A, w.herds
+def customer_codes(w):
+    rng = np.random.default_rng(W.SEED + 81)
+    pref = {"Ormthwaite Colliery": "OT-", "Brisgarth Main Colliery": "BG", "Ostmouth Coal Imports": "OCI/",
+            "Zellfold Fuels": "ZF"}
+    for sup in W.SUPPLIERS:
+        used = set()
+        for site in sorted(w.sites):
+            while True:
+                n = int(rng.integers(1000, 9999))
+                if n not in used:
+                    used.add(n)
+                    break
+            SUP_CUST[(sup, site)] = "%s%d" % (pref[sup], n)
+
+
+POINT = {"Ormthwaite Colliery": lambda f: f,
+         "Brisgarth Main Colliery": lambda f: f.upper() + " - YARD",
+         "Ostmouth Coal Imports": lambda f: f.split()[0] + " sidings",
+         "Zellfold Fuels": lambda f: " ".join(f.split()[:2]) + " (coal)"}
+FLEET = {"Ormthwaite Colliery": "OC", "Brisgarth Main Colliery": "BMH", "Zellfold Fuels": "ZF"}
+LABS = {"Ormthwaite Colliery": "Ormthwaite Colliery laboratory", "Brisgarth Main Colliery": "Tavscar Fuel Analysts",
+        "Ostmouth Coal Imports": "Ostmouth dockside laboratory", "Zellfold Fuels": "Tavscar Fuel Analysts"}
+
+
+def coal_csv(path, w):
+    """the four suppliers' statements to the Directorate, collated: one row per truck or wagon, with the certificate
+    of the lot it was dispatched in (a day's dispatch to a customer, or a train) and the laboratory's analysis as
+    received; Ostmouth writes dates day first, the others ISO; a certificate corrected after a check sample carries
+    its revision letter and the corrected analysis (the sulphur is unchanged on every re-issue)"""
+    rng = np.random.default_rng(W.SEED + 82)
+    fleets = {s: ["%s %03d" % (pre, n) for n in rng.choice(np.arange(11, 400), int(rng.integers(45, 90)), replace=False)]
+              for s, pre in FLEET.items()}
+    wagons = ["%d" % n for n in rng.choice(np.arange(30001, 32999), 260, replace=False)]
+    by_lot = {}
+    for x in w.lots:
+        by_lot.setdefault(x["lot"], []).append(x)
+    order = sorted(by_lot, key=lambda k: (by_lot[k][0]["supplier"], by_lot[k][0]["dispatched"], by_lot[k][0]["site"]))
+    cert = {s: int(rng.integers(20000, 60000)) for s in W.SUPPLIERS}
+    dn = {s: int(rng.integers(100000, 400000)) for s in W.SUPPLIERS}
     rows = []
-    for a in sorted(IV, key=lambda x: tags[x]):
-        b, fc, dam = A["birth"][a], A["fc"][a], A["dam"][a]
-        rows.append([tags[a], A["sex"][a], A["breed"][a], dmy(b), dmy(b + A["reg_lag"][a]),
-                     tags[dam] if dam is not None and dam in IV else "", H[bherd[a]]["herd_no"],
-                     H[A["herd0"][a]]["herd_no"], dmy(fc) if fc is not None and A["sex"][a] == "F" else "",
-                     dmy(A["exit"][a]) if A["exit"][a] is not None else "", A["exit_type"][a] or "",
-                     H[A["exit_herd"][a]]["herd_no"] if A["exit_herd"][a] is not None else ""])
-    return _csv(path, ["TAG_NUMBER", "SEX", "BREED", "DATE_OF_BIRTH", "DATE_REGISTERED", "DAM_TAG", "BIRTH_HERD",
-                       "HERD_AT_START", "FIRST_CALVING_DATE", "EXIT_DATE", "EXIT_TYPE", "EXIT_HERD"], rows)
+    w.coal_certs = {}
+    for k in order:
+        xs = by_lot[k]
+        x0 = xs[0]
+        sup = x0["supplier"]
+        cert[sup] += int(rng.integers(1, 4))
+        c = "%s-%d" % (W.SUP_CODE[sup], cert[sup])
+        fmt = dmy if sup == "Ostmouth Coal Imports" else iso
+        issued = x0["dispatched"] + int(rng.integers(1, 3))
+        ash, carbon, gcv = x0["ash"], x0["c"], x0["gcv"]
+        rev = ""
+        if x0["reissued"]:
+            rev = "A"
+            issued += int(rng.integers(9, 40))
+            ash = float(np.round(ash + rng.choice([-1, 1]) * rng.uniform(0.4, 1.4), 1))
+            carbon = float(np.round(carbon + rng.choice([-1, 1]) * rng.uniform(0.4, 1.6), 1))
+            gcv = float(np.round(gcv + rng.choice([-1, 1]) * rng.uniform(0.1, 0.5), 2))
+        w.coal_certs[k] = dict(cert=c, rev=rev)
+        consign = "OCI/CN/%05d" % (dn[sup] % 100000) if x0["rail"] else None
+        for x in xs:
+            dn[sup] += 1
+            if x["rail"]:
+                note, veh = consign, "Wagon " + str(rng.choice(wagons))
+            else:
+                note, veh = "%d" % dn[sup], str(rng.choice(fleets[sup]))
+            rows.append([sup, c, rev, fmt(issued), SUP_CUST[(sup, x["site"])], POINT[sup](w.sites[x["site"]]["firm"]),
+                         note, fmt(x["dispatched"]), fmt(x["received"]), "Rail" if x["rail"] else "Road", veh,
+                         "%.2f" % x["t"], "%.1f" % x["tm"], "%.1f" % ash, "%.2f" % x["s"], "%.1f" % carbon,
+                         "%.2f" % gcv, LABS[sup]])
+    header = ["Supplier", "Certificate No", "Rev", "Issued", "Customer Code", "Delivery Point", "Delivery Note",
+              "Dispatched", "Received", "Transport", "Vehicle / Wagon", "Net Tonnes", "Total Moisture % (ar)",
+              "Ash % (ar)", "Total Sulphur % (ar)", "Carbon % (ar)", "Gross CV MJ/kg (ar)", "Laboratory"]
+    return _csv(path, header, rows)
 
 
-def movements(path, w, tags, rng):
-    H = w.herds
-    ms = sorted((m for m in w.moves if 0 <= m["dep"] < W.NDAY), key=lambda m: (m["dep"], m["k"]))
-    rows, mid = [], 31204117
-    for m in ms:
-        mid += int(rng.integers(1, 4))
-        rows.append([mid, tags[m["a"]], H[m["frm"]]["herd_no"], dmy(m["dep"]), H[m["to"]]["herd_no"], dmy(m["arr"])])
-    return _csv(path, ["MOVEMENT_ID", "TAG_NUMBER", "DEPARTURE_HERD", "DEPARTURE_DATE", "DESTINATION_HERD",
-                       "ARRIVAL_DATE"], rows)
-
-
-def premises_names(w):
-    names, k = {}, {"factory": 0, "knackery": 0, "export": 0}
-    for h in w.herds:
-        t = h["type"]
-        if t == "mart":
-            names[h["id"]] = "%s Mart" % h["region"]
-        elif t in k:
-            names[h["id"]] = {"factory": FACTORY_NAMES, "knackery": KNACKERY_NAMES, "export": EXPORT_NAMES}[t][k[t]]
-            k[t] += 1
-    return names
-
-
-def herd_register(path, w, old, rng):
-    names = premises_names(w)
+def supplier_customers_csv(path, w):
     rows = []
-    for h in w.herds:
-        main = w.herds[h["out_farm_of"]]["herd_no"] if "out_farm_of" in h else None
-        if "valid_from" not in h:
-            y0 = 2006 if main else 1987
-            h["valid_from"] = D(int(rng.integers(y0, 2024)), int(rng.integers(1, 13)), int(rng.integers(1, 29)))
-        rows.append([h["herd_no"], R.HTYPE[h["type"]], names.get(h["id"]), h["district"], h["region"],
-                     W.RCODE[h["region"]], W.RCODE[h["region_pre2024"]], h["farm_no"] or None, main,
-                     h["valid_from"], None])
-    for o in old:
-        rows.append([o["herd_no"], "Farm", None, o["district"], o["region"], W.RCODE[o["region"]],
-                     W.RCODE[o["region_pre2024"]], None, None, o["valid_from"], o["valid_to"]])
-    rows.sort(key=lambda r: (r[0], r[9]))
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Herds"
-    _sheet(ws, ["Herd No", "Herd type", "Name", "District", "Region", "Region code", "Region code (pre-2024)",
-                "NSO farm no", "Main herd no", "Valid from", "Valid to"], rows,
-           [12, 22, 32, 9, 13, 8, 10, 12, 12, 12, 12], {10: "DD/MM/YYYY", 11: "DD/MM/YYYY"})
-    ws.auto_filter.ref = "A1:K%d" % (len(rows) + 1)
-    ws2 = wb.create_sheet("Regions")
-    reg_rows = []
-    for r in W.REG:
-        ds = sorted({h["district"] for h in w.herds if h["region"] == r})
-        reg_rows.append([W.RCODE[r], r, ", ".join(ds)])
-    _sheet(ws2, ["Region code", "Region", "Districts"], reg_rows, [10, 14, 70])
-    ws2.append([])
-    ws2.append(["Regions are the Ministry's 2024 regional structure. On 1 January 2024 districts 0412, 0415 and "
-                "0418 moved from Coastal Vale (04) to Southern Vale (03); herds there keep their herd numbers, and the "
-                "pre-2024 code is kept on each herd for continuity with earlier returns."])
+    for (sup, site), code in sorted(SUP_CUST.items()):
+        if not any(x["site"] == site and x["supplier"] == sup for x in w.lots):
+            continue
+        rows.append([sup, code, w.sites[site]["firm"], site_permits(site)])
+    return _csv(path, ["Supplier", "Customer Code", "Customer", "Permit Numbers"], rows)
+
+
+def site_permits(site):
+    return "; ".join(PERMIT[b] for b in sorted(PERMIT) if b.startswith(site + "-"))
+
+
+def returns_xlsx(path, w):
+    """the operators' quarterly returns: quarters 1 and 2 in the 2019 template, 3 and 4 in the 2026 template"""
+    wb = Workbook()
+    wb.remove(wb.active)
+    by = {}
+    for r in w.returns:
+        by.setdefault(r["quarter"], []).append(r)
+    for q in (1, 2, 3, 4):
+        ws = wb.create_sheet("Q%d 2026" % q)
+        rows = []
+        for r in sorted(by[q], key=lambda x: PERMIT[x["boiler"]]):
+            site = r["site"]
+            first = r["unit"] == 1
+            coal_open = r["coal_open"] if first else None
+            coal_close = r["coal_close"] if first else None
+            if q <= 2:
+                rows.append([PERMIT[r["boiler"]], w.sites[site]["firm"], unit_label(r["boiler"]), r["coal_burned"],
+                             r["hours"], r["steam"], r["oil"], coal_open, coal_close, r["ls_open"], r["ls_close"]])
+            else:
+                rows.append([PERMIT[r["boiler"]], unit_label(r["boiler"]), w.sites[site]["firm"], r["hours"],
+                             r["coal_burned"], r["oil"], r["steam"], coal_open, coal_close, r["ls_open"], r["ls_close"]])
+        if q <= 2:
+            header = ["Permit No", "Operator", "Boiler", "Coal burned (t)", "Firing hours", "Steam raised (t)",
+                      "Gas oil for start-up (t)", "Coal stock at start of quarter (t)",
+                      "Coal stock at end of quarter (t)", "Reagent held at start of quarter (t)",
+                      "Reagent held at end of quarter (t)"]
+        else:
+            header = ["Permit reference", "Unit", "Operator", "Operating hours", "Fuel fired: coal (tonnes)",
+                      "Fuel fired: gas oil (tonnes)", "Steam (tonnes)", "Coal yard, opening (tonnes)",
+                      "Coal yard, closing (tonnes)", "Limestone in silo, opening (tonnes)",
+                      "Limestone in silo, closing (tonnes)"]
+        _sheet(ws, header, rows, [14, 30, 13, 13, 11, 12, 12, 14, 14, 14, 14])
+    ws = wb.create_sheet("Notes")
+    for line in ["Quarterly returns under permit condition 7 (fuel, steam and reagent), Northern Priority Area, 2026.",
+                 "Quarters 1 and 2 were filed on the 2019 return template, quarters 3 and 4 on the 2026 template.",
+                 "Where two boilers share a site, the coal yard is reported once, on the first boiler's row.",
+                 "Stocks are as measured or estimated by the operator at the end of the quarter's last day.",
+                 "Compiled by the Air Quality Directorate from the returns as filed by 31 January 2027."]:
+        ws.append([line])
+    ws.column_dimensions["A"].width = 110
+    wb.save(path)
+    return sum(len(v) for v in by.values())
+
+
+def tickets_csv(path, w):
+    rng = np.random.default_rng(W.SEED + 83)
+    acct = {}
+    for b in w.B:
+        q = RG.SITE_QUARRY[b["site"]]
+        acct.setdefault((q, b["site"]), ("BSQ-%d" % int(rng.integers(2000, 2999))) if q == "Bromscar Quarry"
+                        else A.MOORSIDE_NAMES[b["site"]].upper())
+    w.ls_accounts = acct
+    stamped = []
+    for x in w.tickets:
+        tare = float(np.round(rng.uniform(13.8, 15.2), 2))
+        stamped.append((x, tare, int(rng.integers(6 * 60, 17 * 60))))
+    stamped.sort(key=lambda v: (v[0]["quarry"], v[0]["day"], v[2]))
+    rows = []
+    tno = {"Bromscar Quarry": 160000, "Molhope Lime and Stone": 7300}
+    for x, tare, minute in stamped:
+        q = x["quarry"]
+        tno[q] += 1
+        rows.append([q, ("BS%d" % tno[q]) if q.startswith("Bromscar") else ("MH/%05d" % tno[q]), iso(x["day"]),
+                     "%02d:%02d" % divmod(minute, 60), acct[(q, x["site"])], _point(x["boiler"]),
+                     "%.2f" % (x["t"] + tare), "%.2f" % tare, "%.2f" % x["t"], "Limestone 0-2 mm (FGD grade)"])
+    header = ["Quarry", "Ticket", "Date", "Time", "Account", "Delivery Point", "Gross t", "Tare t", "Net t",
+              "Product"]
+    return _csv(path, header, rows)
+
+
+def _point(bid):
+    site, u = bid.split("-")
+    if site in UNIT_NAME:
+        return "Absorber %s silo" % u
+    return "Scrubber silo"
+
+
+def certificates_xlsx(path, w):
+    wb = Workbook()
+    wb.remove(wb.active)
+    rng = np.random.default_rng(W.SEED + 84)
+    for q, short in (("Bromscar Quarry", "Bromscar weekly"), ("Molhope Lime and Stone", "Molhope weekly")):
+        ws = wb.create_sheet(short)
+        rows = []
+        for wk in range(1, 54):
+            mon = dt.date.fromisocalendar(2026, wk, 1)
+            caco3 = float(w.purity[q][wk])
+            rows.append([wk, mon.isoformat(), caco3, float(np.round(max(0.6, 98.6 - caco3 - rng.uniform(0.3, 1.6)), 1)),
+                         float(np.round(rng.uniform(1.5, 4.0), 1)), float(np.round(rng.uniform(88, 96), 0))])
+        _sheet(ws, ["ISO week", "Week commencing", "CaCO3 %", "Acid insoluble residue %", "Moisture %",
+                    "Passing 63 micron %"], rows, [9, 15, 10, 13, 11, 12], fmts={"C": "0.0", "D": "0.0", "E": "0.0"})
+    ws = wb.create_sheet("Delivery points")
+    rows = []
+    for (q, site), a in sorted(w.ls_accounts.items()):
+        for b in sorted(PERMIT):
+            if b.startswith(site + "-"):
+                rows.append([q, a, w.sites[site]["firm"], _point(b), PERMIT[b]])
+    _sheet(ws, ["Quarry", "Account", "Site", "Delivery Point", "Permit No"], rows, [26, 34, 34, 18, 14])
+    ws = wb.create_sheet("Notes")
+    for line in ["Each quarry certifies its FGD-grade limestone weekly: one composite sample drawn at the loading shovel",
+                 "over the ISO week (Monday to Sunday), analysed by the quarry's accredited laboratory, and the result",
+                 "applies to every delivery made in that week. Week 53 of 2026 runs from 28 December 2026.",
+                 "Composition is stated on the limestone as delivered, its moisture included; the moisture is stated",
+                 "for handling.",
+                 "Delivery points are mapped to permit numbers by the Air Quality Directorate from the quarries'",
+                 "customer lists and the permit files."]:
+        ws.append([line])
+    ws.column_dimensions["A"].width = 110
     wb.save(path)
     return len(rows)
 
 
-# --------------------------------------------------------------------------------------------- the census and land
-def census_csv(path, w, cen):
-    code = {h["farm_no"]: int(W.RCODE[h["region_pre2024"]]) for h in w.herds if h.get("farm_no") and "out_farm_of" not in h}
-    rows = []
-    for f in sorted(cen, key=int):
-        c = cen[f]
-        vals = [c.get(k, 0) for k in R.NSO_CATS]
-        rows.append([int(f), code[f]] + vals + [sum(vals)])
-    return _csv(path, ["FARM_NO", "REGION"] + [k.upper() for k in R.NSO_CATS] + ["TOTAL_CATTLE"], rows)
-
-
-def lpr(path, parcels):
-    rows = [[p["parcel"], p["herd"], 2026, p["use"], "%.2f" % p["area"], "%.1f" % p["share"]]
-            for p in sorted(parcels, key=lambda p: (p["parcel"], p["herd"]))]
-    return _csv(path, ["PARCEL_ID", "HERD_NO", "CLAIM_YEAR", "LAND_USE", "AREA_HA", "SHARE_PCT"], rows)
-
-
-def survey(path, w, rng):
-    wb = openpyxl.Workbook()
+def permits_xlsx(path, w):
+    rng = np.random.default_rng(W.SEED + 85)
+    wb = Workbook()
     ws = wb.active
-    ws.title = "Housing"
+    ws.title = "Register"
     rows = []
-    for r in W.REG:
-        (im, idd), (om, od) = W.HOUSING[r]
-        n = sum(1 for h in w.herds if h["region"] == r and h["type"] in ("dairy", "suckler", "finisher", "rearer"))
-        rows.append([r, W.RCODE[r], int(n * rng.uniform(0.78, 0.94)), D(2025, im, idd).strftime("%-d %B"),
-                     D(2026, om, od).strftime("%-d %B"), W.housed_days(r)])
-    _sheet(ws, ["Region", "Region code", "Farms responding", "Usual housing date", "Usual turnout date",
-                "Housed days in a 365-day year"], rows, [14, 8, 11, 14, 14, 14])
-    ws2 = wb.create_sheet("Slurry storage")
-    rows2 = []
-    for r in W.REG:
-        t = W.RTYPE[r]
-        wk = {"D": 19.4, "B": 18.1, "G": 16.2, "W": 16.8}[t] + rng.uniform(-1.2, 1.2)
-        cov = {"D": 21.0, "B": 17.5, "G": 9.5, "W": 11.0}[t] + rng.uniform(-3, 3)
-        rows2.append([r, W.RCODE[r], round(wk, 1), round(cov, 1)])
-    _sheet(ws2, ["Region", "Region code", "Slurry storage, mean weeks", "Stores covered, % of farms"], rows2,
-           [14, 8, 14, 14])
-    ws3 = wb.create_sheet("Notes")
-    for line in ["Livestock Housing Survey 2025: housing and slurry storage",
-                 "Ministry of Agriculture, Livestock Surveys Unit. Fieldwork 3 March to 30 May 2025.",
-                 "",
-                 "Housing: the median of the dates farmers gave for housing their cattle in the autumn and turning them "
-                 "out in the spring in a usual year, by the farm's region (2024 regions).",
-                 "Housed days run from the housing date to the day before the turnout date.",
-                 "Slurry storage: mean weeks of storage capacity on farms with slurry tanks; covered stores as a share "
-                 "of farms with an outdoor store.",
-                 "Results are weighted to the June 2024 census population of farms with cattle."]:
-        ws3.append([line] if line else [])
-    ws3.column_dimensions["A"].width = 110
+    vend = {}
+    for b in w.B:
+        vend[b["id"]] = "Kellfold Process Systems" if int(b["site"][1:]) % 3 else "Lundsett Absorber Engineering"
+        rows.append([PERMIT[b["id"]], w.sites[b["site"]]["firm"], unit_label(b["id"]), b["industry"].capitalize(),
+                     "Pulverised coal" if b["type"] == "PF" else "Chain grate stoker", b["mwth"],
+                     int(rng.integers(1988, 2012)), "Wet limestone scrubber", vend[b["id"]],
+                     int(rng.integers(2019, 2024)), 100 * b["design"], 100 * b["ash_ret"], "Annual test (periodic)"])
+    w.vendor = vend
+    _sheet(ws, ["Permit No", "Operator", "Unit", "Sector", "Boiler type", "Rated thermal input (MWth)",
+                "Boiler commissioned", "SO2 abatement", "Scrubber supplier", "Scrubber commissioned",
+                "Design SO2 removal (%)", "Sulphur retained in ash (% of sulphur fired)", "SO2 monitoring"],
+           rows, [13, 34, 13, 15, 18, 12, 11, 20, 28, 11, 11, 14, 20], fmts={"F": "0.0", "K": "0.0", "L": "0.0"})
+    ws = wb.create_sheet("Conditions")
+    for line in ["Standard conditions for permitted coal boilers, Northern Priority Area (summary).",
+                 "C3  Burn only coal delivered with a supplier's analysis certificate for each lot.",
+                 "C5  Operate the sulphur dioxide abatement plant whenever the boiler fires coal, so far as practicable.",
+                 "C7  File a quarterly return of fuel burned, steam raised and fuel and reagent held, by the end of the "
+                 "month after the quarter.",
+                 "C9  Keep fuel and reagent delivery records for six years.",
+                 "C11 Commission an accredited laboratory to test the scrubber's performance once a year at not less "
+                 "than 60 per cent of the boiler's rating."]:
+        ws.append([line])
+    ws.column_dimensions["A"].width = 120
     wb.save(path)
+    return len(rows)
 
 
-# ---------------------------------------------------------------------------------------------- the contractors
-def ardvale(path, cj):
-    rows = [[j["job_id"], dmy(j["date"]), j["herd"], j["material"], j["tanker"], j["gal"], j["loads"], j["equipment"]]
-            for j in sorted(cj["av"], key=lambda j: j["job_id"])]
-    return _csv(path, ["Job No", "Date", "Herd No", "Material", "Tanker", "Capacity (gal)", "Loads", "Spreader"], rows)
-
-
-def spaced(herd_no):
-    return herd_no[:2] + " " + herd_no[2:]
-
-
-def kilbrack(path, cj):
-    desc = {c: (d, u) for c, d, u, _ in C.KB_SERVICES}
-    rows = []
-    for l in sorted(cj["kb"], key=lambda l: l["invoice"]):
-        lines = [(l["service"], l["qty"])]
-        if l["agit"]:
-            lines.append(("AG-HR", l["agit"]))
-        for svc, q in lines:
-            net = round(q * C.KB_RATE[svc], 2)
-            vat = round(net * C.VAT, 2)
-            rows.append([l["invoice"], W.dd(l["date"]), l["acct"], spaced(l["herd"]), svc, desc[svc][0], q,
-                         desc[svc][1], C.KB_RATE[svc], net, vat, round(net + vat, 2), l["ref"]])
-    wb = openpyxl.Workbook()
+def ash_files(paths, w):
+    E = w.ash_exports
+    rng = np.random.default_rng(W.SEED + 86)
+    # Whinmoss's invoice lines
+    wb = Workbook()
     ws = wb.active
     ws.title = "Invoice lines"
-    _sheet(ws, ["Invoice No", "Invoice date", "Account", "Herd No", "Service", "Description", "Qty", "Unit", "Rate",
-                "Net", "VAT", "Gross", "Reference"], rows, [11, 11, 8, 11, 8, 40, 7, 9, 7, 10, 9, 10, 11],
-           {2: "DD/MM/YYYY", 7: "0.0", 9: "#,##0.00", 10: "#,##0.00", 11: "#,##0.00", 12: "#,##0.00"})
-    ws.auto_filter.ref = "A1:M%d" % (len(rows) + 1)
-    ws2 = wb.create_sheet("Services")
-    _sheet(ws2, ["Service", "Description", "Unit", "Rate (EUR, ex VAT)"], [list(s) for s in C.KB_SERVICES],
-           [8, 44, 9, 12], {4: "#,##0.00"})
-    wb.save(path)
-    return len(rows)
-
-
-def northmoor(path, cj):
-    rows = [[j["job_no"], W.dd(j["date"]), j["herd"] or None, j["site"] or None, j["material"], j["method"], j["m3"],
-             j["operator"]] for j in sorted(cj["nm"], key=lambda j: j["job_no"])]
-    wb = openpyxl.Workbook()
+    rows = []
+    inv = 61000
+    rate = {"Bottom ash": 31.40, "Fly ash (conditioned)": 33.10, "Fly ash (dry)": 21.75,
+            "General waste": 24.60, "Skip hire": 196.00, "Scrap metal": 38.00}
+    by_month = {}
+    for r in E["moorside"]:
+        by_month.setdefault((r["site"], W.day(r["day"]).month if r["day"] <= 364 else 13), []).append(r)
+    acct = {s: "WMH%04d" % (100 + 7 * i) for i, s in enumerate(sorted(w.sites))}
+    for key in sorted(by_month, key=lambda k: (k[1], k[0])):
+        inv += 1
+        for n, r in enumerate(sorted(by_month[key], key=lambda x: (x["day"], x["ref"])), start=1):
+            svc = r["service"]
+            rt = next(v for k, v in rate.items() if svc.startswith(k))
+            rows.append(["INV-%d" % inv, iso(r["day"]), acct[r["site"]], A.MOORSIDE_NAMES[r["site"]], n, svc,
+                         r["qty"], r["unit"], rt, float(np.round(r["qty"] * rt, 2)), r["ref"]])
+    _sheet(ws, ["Invoice No", "Line date", "Account", "Customer", "Line", "Service", "Quantity", "Unit", "Rate",
+                "Net", "Reference"], rows, [12, 11, 10, 34, 5, 46, 9, 5, 7, 10, 13],
+           fmts={"G": "0.00", "I": "0.00", "J": "#,##0.00"})
+    wb.save(paths["moorside"])
+    # Carnhope's job sheet
+    trows = []
+    for r in E["tolland"]:
+        tare = int(rng.integers(11800, 14600))
+        trows.append([r["job"], iso(r["day"]), w.sites[r["site"]]["firm"], r["material"], r["dest"],
+                      r["net_kg"] + tare, tare, r["net_kg"]])
+    _csv(paths["tolland"], ["Job No", "Date", "Site", "Material", "Destination", "Gross kg", "Tare kg", "Net kg"],
+         trows)
+    # Pellrigg's dockets
+    wb = Workbook()
     ws = wb.active
-    ws.title = "Job sheets 2026"
-    _sheet(ws, ["Job No", "Date", "Herd No", "Site", "Product", "Applicator", "Metered m3", "Operator"], rows,
-           [11, 11, 11, 7, 13, 13, 10, 8], {2: "DD/MM/YYYY", 7: "0.0"})
-    ws2 = wb.create_sheet("Sites")
-    _sheet(ws2, ["Site", "Description"], [["AD01", "Lower Basin Biogas, digestate lagoon"],
-                                          ["AD02", "Middle Uplands Anaerobic Digestion, outfield store"],
-                                          ["AD03", "Atlantic Coast Renewables, digestate store"]], [7, 50])
-    wb.save(path)
+    ws.title = "Dockets"
+    grows = []
+    for r in E["greave"]:
+        grows.append([r["job"], iso(r["day"]), w.sites[r["site"]]["firm"].upper(), r["material"], r["dest"],
+                      r["net_t"]])
+    _sheet(ws, ["Docket", "Date", "Customer", "Material", "Taken to", "Net t"], grows, [13, 11, 40, 22, 26, 8],
+           fmts={"F": "0.00"})
+    wb.save(paths["greave"])
+    # the Directorate's cross-reference of the contractors' customer names
+    xrows = []
+    for s in sorted(w.sites):
+        xrows.append(["Whinmoss Waste Haulage", A.MOORSIDE_NAMES[s], s and site_permits(s)])
+        xrows.append([A.LOCAL[s], w.sites[s]["firm"] if A.LOCAL[s] == "Carnhope Skips" else w.sites[s]["firm"].upper(),
+                      site_permits(s)])
+    _csv(paths["xref"], ["Contractor", "Customer as recorded", "Permit Numbers"], xrows)
+    return len(rows), len(trows), len(grows)
+
+
+def ambient_csv(path):
+    rng = np.random.default_rng(W.SEED + 87)
+    st = ["Quarholt Road", "Eskfold Lock", "Nethstead Park", "Velthwaite Hill", "Umbgarth Centre", "Ulvdale Green",
+          "Pridwold School", "Wendscar Bridge"]
+    rows = []
+    for s in st:
+        base = rng.uniform(4.0, 11.0)
+        for m in range(1, 13):
+            v = base * (1 + 0.35 * np.cos(2 * np.pi * (m - 1) / 12)) * rng.lognormal(0, 0.12)
+            rows.append([s, "2026-%02d" % m, "%.1f" % v, "%.0f" % rng.uniform(86, 100)])
+    return _csv(path, ["Station", "Month", "SO2 monthly mean (ug/m3)", "Data capture (%)"], rows)
+
+
+def national_coal_json(path):
+    """the statistics office's provisional 2025 coal consumption by sector, as its open data portal serves it"""
+    import json
+    rows = [("Electricity generation", 4812), ("Iron and steel", 1106), ("Cement and lime", 644),
+            ("Paper, printing and publishing", 297), ("Food, drink and tobacco", 238), ("Chemicals", 205),
+            ("Textiles and leather", 94), ("Other industry", 167), ("Public administration and health", 71),
+            ("Domestic", 412), ("Commercial and other", 58)]
+    doc = {"dataset": "ENR-COAL-02", "title": "Coal consumption by sector, 2025 (provisional)",
+           "unit": "thousand tonnes", "source": "National Statistics Office, energy balance",
+           "released": "2026-06-25", "status": "provisional",
+           "data": [{"sector": s, "year": 2025, "value": v} for s, v in rows]}
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(doc, fh, indent=2)
+        fh.write("\n")
     return len(rows)
-
-
-# --------------------------------------------------------------------------------------------- the context files
-def fertiliser(path, land, rng):
-    prods = [("CAN", 0.27), ("Urea", 0.46), ("Protected urea", 0.46), ("Compound 18-6-12", 0.18), ("Compound 10-10-20", 0.10)]
-    qshare = {"2025Q4": 0.04, "2026Q1": 0.36, "2026Q2": 0.44, "2026Q3": 0.16}
-    inten = {"D": 0.62, "B": 0.38, "G": 0.21, "W": 0.27}
-    mix = {"CAN": 0.38, "Urea": 0.17, "Protected urea": 0.13, "Compound 18-6-12": 0.22, "Compound 10-10-20": 0.10}
-    rows = []
-    for i, r in enumerate(W.REG):
-        tot = land[i] * inten[W.RTYPE[r]] * rng.uniform(0.9, 1.1)
-        for q, qs in qshare.items():
-            for p, n in prods:
-                t = tot * qs * mix[p] * rng.uniform(0.8, 1.2)
-                rows.append([r, q, p, round(t, 1), round(t * n, 1)])
-    return _csv(path, ["Region", "Quarter", "Product", "Tonnes product", "Tonnes N"], rows)
-
-
-def milk(path, w, rng):
-    prof = [0.012, 0.035, 0.083, 0.118, 0.135, 0.126, 0.114, 0.101, 0.088, 0.077, 0.064, 0.047]
-    rows = []
-    for r in W.REG:
-        cows = sum(h["size"] for h in w.herds if h["region"] == r and h["type"] == "dairy")
-        sup = sum(1 for h in w.herds if h["region"] == r and h["type"] == "dairy")
-        if not sup:
-            continue
-        year = cows * 5350 * rng.uniform(0.93, 1.07)
-        for m, p in enumerate(prof):
-            rows.append([r, "2025-%02d" % (m + 1), sup - int(rng.integers(0, 2)),
-                         int(round(year * p * rng.uniform(0.96, 1.04), -2))])
-    return _csv(path, ["Region", "Month", "Suppliers", "Milk intake (litres)"], rows)
-
-
-def pigs_poultry(path, rng):
-    rows = []
-    for r in W.REG:
-        av = r in C.ARDVALE_REGIONS
-        sows = int(rng.integers(900, 2600)) if av else int(rng.integers(0, 400))
-        rows.append([int(W.RCODE[r]), sows, int(sows * rng.uniform(9.5, 11.5)), int(rng.integers(20000, 160000)),
-                     int(rng.integers(30000, 410000)), int(rng.integers(2000, 21000))])
-    return _csv(path, ["REGION", "BREEDING_SOWS", "OTHER_PIGS", "LAYING_HENS", "BROILERS", "OTHER_POULTRY"], rows)
-
-
-EXPORT_NOTES = """NATIONAL BOVINE REGISTER
-Exports for the Ammonia Programme Unit, programme year 2025-26
-Extract run 09/11/2026 06:12 from the live register. Data management: Noel Herity.
-
-FILES
-  nbr_animals_2025-26.csv          one row per animal present in the State at any time from 01/11/2025 to 31/10/2026
-  nbr_movements_2025-26.csv        one row per movement with a departure date from 01/11/2025 to 31/10/2026
-  nbr_herd_register_2026-11.xlsx   every herd number on the register at the extract date, with earlier holders of a
-                                   reissued number
-
-Dates are DD/MM/YYYY. Herd numbers are the region letter, a digit and six digits (C2123456). Tag numbers are the
-herd-of-birth region letter, the two-digit year of birth, a six-digit serial and a check digit.
-
-nbr_animals_2025-26.csv
-  TAG_NUMBER          the animal's tag
-  SEX                 M or F
-  BREED               breed code, a cross shown as the sire's breed code followed by X
-  DATE_OF_BIRTH
-  DATE_REGISTERED     the date the birth was registered; a birth is registered within 27 days
-  DAM_TAG             the dam's tag, where the dam is in this export
-  BIRTH_HERD          the herd of birth
-  HERD_AT_START       the herd holding the animal on 01/11/2025, or its herd of birth if it was born after that date
-  FIRST_CALVING_DATE  the date of a female's first calving, where she has calved
-  EXIT_DATE           the date the animal left the register
-  EXIT_TYPE           SL slaughtered, DF died on farm (collected by a knackery), EX exported live
-  EXIT_HERD           the slaughter plant, knackery or export assembly centre that recorded the exit
-
-nbr_movements_2025-26.csv
-  MOVEMENT_ID         the register's movement number
-  TAG_NUMBER
-  DEPARTURE_HERD      the herd the animal left
-  DEPARTURE_DATE      the date it left
-  DESTINATION_HERD    the herd that received it
-  ARRIVAL_DATE        the date it was received; the register holds an animal in its departure herd until this date
-  Marts, dealers' premises and export assembly centres are herds in their own right, so a sale through a mart is two
-  movements, farm to mart and mart to farm. An exit is recorded on the animal, not as a movement.
-
-nbr_herd_register_2026-11.xlsx (sheet Herds)
-  Herd type           Farm, Mart, Dealer, Slaughter plant, Knackery or Export assembly centre
-  District, Region    the herd's district and its region in the 2024 regional structure; Region code (pre-2024) is
-                      the region code the herd had before 1 January 2024
-  NSO farm no         the statistics office's farm number for the June census; a farmer's herds share one
-  Main herd no        for a second herd number a farmer keeps on an out-farm, the farmer's main herd number
-  Valid from, to      the dates the number was held; a number reissued to a new holder has a row for each holder
-"""
-
-
-def export_notes(path):
-    with open(path, "w", encoding="utf-8", newline="") as f:
-        f.write(EXPORT_NOTES.replace("\n", "\r\n"))
