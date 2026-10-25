@@ -1,12 +1,12 @@
 {
   "task": "task137",
   "owner": "sathya8571",
-  "status": "SHIPPED",
+  "status": "RETURNED",
   "domain": "banking-credit-financial-risk",
   "objective": "forecasting",
-  "stage": 5,
-  "stage_name": "ship",
-  "updated": "2026-10-14",
+  "stage": 2,
+  "stage_name": "design",
+  "updated": "2026-10-25",
   "stump": "A competent solver washes the numbers, prices dialling per mix of callable numbers from the seven closed campaigns, conditions the past share of conversations that went to the retention offer on each deposit's drop from its locked rate to the card it reinvests at and books 4,250 agent-hours (Ends on); the step that lands it there is reading that share off every past conversation at the drop instead of off the conversations about the same class of money: 10,697 of the 18,400 deposits are money the 2023 four-year special won at 5.65 per cent, and money a special won went to the offer at 87 per cent at its first maturity whatever its drop, where past conversations at the special's 1.65-point drop, almost all about member money, went to the offer about a third of the time: the golden is 5,250.",
   "architecture": 1,
   "loops": 1,
@@ -68,12 +68,20 @@
       "portal": "10/10 audit COMPLIANT_WEAK (round 2): the drop the strong model's reflex, a locked-rate-by-term logit landing the golden bin, Ask B's file name announcing the overlap, Ask A's clause signalling its device, the swap test passed narrowly",
       "repair": "design",
       "commit": "the RESHIPPED (task137) commit of 2026-10-14"
+    },
+    {
+      "date": "2026-10-25",
+      "portal": "round 1 on the round 2 pack (delivered 10-14): response 1 booked 5,250 agent-hours with Harbourline, 1,250 for January, 2,000 for February and 2,000 for March, the golden, with td_booking_q1_2027.xlsx and td_booking_note_q1_2027.docx built (143 resources reviewed, 32 minutes); response 2 not reported; the class of the money (what the 2023 four-year special won, read off its rate against its cohort) is a reflex for the portal's model",
+      "repair": "design (call landed: the decisive step is spent; the drop and the class of money both landed, so the world's deposit behaviour layer is exhausted)",
+      "commit": ""
     }
   ],
-  "resume": "shipped (round 2); next event is the author's portal result",
+  "resume": "call landed on the portal (response 1 on 5,250): the class of money is a reflex, after round 1's drop was the audit's reflex; read ## Tried and rejected first; a redesign in place needs a deposit-native decisive step the agent-hours world no longer holds (the holder-as-unit step fails the swap test), so the fix is a re-root, and a fresh banking/forecasting draw is banned while task166 v2 sits in the last three live builds",
   "approved": null,
   "delivered": "2026-10-14",
-  "portal": null,
+  "portal": {
+    "round1": "2026-10-25: response 1 on the call (5,250 agent-hours: 1,250, 2,000, 2,000); response 2 not reported"
+  },
   "portal_id": "",
   "portal_status": "",
   "portal_status_date": "",

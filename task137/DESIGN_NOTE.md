@@ -667,3 +667,4 @@ gone.
 - Band shares as a Critical Component (88 against 28 per cent at drops of 1.50 to 1.75): a corridor member (special
   money pooled, a logistic within each class) never computes them; the component keeps the class's 87 per cent and the
   bands stay in the steps.
+- Portal round 1 (2026-10-25): response 1 landed the call exactly, 5,250 agent-hours (1,250, 2,000 and 2,000 by maturity month), so reading each reached holder's retention-offer share by the class of the money (the 2023 four-year special's block at 5.65 per cent against its cohort's 5.15) is a reflex for the portal's model, as the drop was for the audit's; with both the drop and the class spent, the world's deposit behaviour layer has no decisive step left, and the one structural step it still holds (a reached holder's conversation settling the holder's later deposits on the list, so hours follow holders, not deposits) reads the same with a clinic's reminder calls, a backdrop by the swap test.
