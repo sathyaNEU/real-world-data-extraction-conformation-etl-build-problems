@@ -49,10 +49,14 @@
   "arrests": 25117,
   "doc": 3483
  },
+ "conv_courts_pct": {
+  "all": 22.2,
+  "felony_ab": 62.5,
+  "felony_ce": 26.1,
+  "misdemeanour": 2.8
+ },
  "board_records": {
   "reheard_cases": 32,
-  "parallel_only_orders": 27,
-  "admitted_within_days": 14,
   "reissued_detainers": 450
  },
  "a1_D1": {

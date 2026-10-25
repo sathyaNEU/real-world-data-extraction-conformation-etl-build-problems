@@ -546,6 +546,11 @@ kept rows and the 43.3 by design, recorded in `## Repairs, portal round 4`.
   unrounded rate is the shipped 20.403944. Only the two Board files, the methodology and the manifest's row counts
   changed. The Table 1 golden moved by one to three orders in five cells (seven re-heard orders whose first order fell
   before 1 July 2025); Tables 2 and 3 are unchanged. The prompt is unchanged.
+- Final gates (target.zip c605bd87, A4 withdrawn and the components re-anchored): checks 127, verify 0 failed, two
+  builds byte-identical over 20 files, figures_check 69 of 69, voice-check exit 0, leak.py REVIEW with no LEAK, guard
+  validate 296 cards, scrub clean; freeze rubric FAIL on the Critical Components block alone (the author's accepted move,
+  above); precut 51 checks with the same two FAIL by design; heart BLOCK under the same window ruling. The Table 1 and
+  Table 2 goldens are the ones judge r5 reproduced.
 - Gates (target.zip 457a4616): checks 129, verify 0 failed, two builds byte-identical over 20 files (again after the
   write-up's step 5 cited its file and section), figures_check 63 of 63, voice-check exit 0, leak.py REVIEW with no
   LEAK (answered in `## Leak sweep`), guard validate 296 cards and none invalid, freeze rubric PASS (the call, the
@@ -558,8 +563,16 @@ kept rows and the 43.3 by design, recorded in `## Repairs, portal round 4`.
   route its closest rival, ruled out by 4.1's sentence and the arrests' near absence in custody (0.36 per cent). Scored
   readers: g filed 10 and kept 26 of 26 ask figures; h filed 20 (the revoked arrests' nolle prosequis found in the data)
   and kept 25 of 26. Before this pack the in-house readers A to F and the portal's eight responses all filed 10.
-- Expected portal effect: a response off the call that keeps the 14 free figures lands near 46 to 58 on the round 4
-  rubric, near 56 to 65 if it repairs both Table 1 devices or B3, 74 only if it repairs all three.
+- The author's lever (2026-10-25, chosen over withdrawing the writ-trip clause and over shipping as is): the Critical
+  Components re-anchored on the decisive evidence. Component 1 was the cohort's size, which every response off the
+  call banks; the components are now the Board's 9,410 revoked arrests of the 25,117, every one nolle prossed, the
+  courts' 3,483 DOC sentences of the other 15,707 (22.2 per cent; felony A-B 62.5, felony C-E 26.1, misdemeanour 2.8),
+  and the 20 per cent rate. The Final Recommendation is unchanged and still names the 6,466 cohort; every new figure is
+  one write-up step 3 already states and judge r5 reproduced. freeze.py's rubric mode lists block 2 as moved, the
+  author's acceptance recorded here.
+- Expected portal effect: a response off the call loses the component weight it banked on the cohort size, and on the
+  tables keeps what a careful path keeps (every cell, measured on readers g and h); the round 4 rubric's 74 comes down
+  by that component's share, an estimate in the low to mid 60s, lower where a response mishandles A3 or B3.
 
 ## Tried and rejected
 

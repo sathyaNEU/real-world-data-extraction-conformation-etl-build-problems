@@ -46,6 +46,9 @@ def figures(r):
     f["conv_after_max_date"] = {"arrests": ev["off"], "doc": ev["off_doc"], "felony_ab": ev["off_by"]["F1"],
                                 "felony_ce": ev["off_by"]["F2"], "misdemeanour": ev["off_by"]["M"]}
     f["conv_every_arrest"] = {"arrests": ev["every"], "doc": ev["every_doc"]}
+    pct = lambda a: round(100.0 * a[0] / a[1], 1)
+    f["conv_courts_pct"] = {"all": pct((ev["others_doc"], ev["others"])), "felony_ab": pct(ev["others_by"]["F1"]),
+                            "felony_ce": pct(ev["others_by"]["F2"]), "misdemeanour": pct(ev["others_by"]["M"])}
     bd = r["bd"]
     f["board_records"] = {"reheard_cases": bd["rehear"], "reissued_detainers": bd["reissued"]}
     for o, d in zip(calc.OFFICES, C.DISTRICTS):
@@ -209,8 +212,13 @@ def submission(r, f):
              "the arrests the Board left to the courts. Not the record's return rate of every kind, which counts "
              "recommitments the Act ends." % (rate, "{:,}".format(r["n"])),
              "", "## 2. Critical Components", "",
-             "1. The 2027 cohort is **%s** people on the projected-release extract." % "{:,}".format(r["n"]),
-             "2. The two-year return rate under the Act is **%d per cent**." % rate,
+             "1. The Board revoked on **%s of the %s** parolee arrests to 30 June 2024 and every one was nolle prossed, so "
+             "the record's new-commitment returns count only the arrests the courts decided." % (c(ev["revoked"]), c(ev["every"])),
+             "2. The courts sent **%s of the other %s** arrests to the Department, **%.1f per cent** (felony A-B %.1f, "
+             "felony C-E %.1f, misdemeanour %.1f per cent), the rate that applies to every arrest once the Board cannot "
+             "recommit." % (c(ev["others_doc"]), c(ev["others"]), f["conv_courts_pct"]["all"], f["conv_courts_pct"]["felony_ab"],
+                            f["conv_courts_pct"]["felony_ce"], f["conv_courts_pct"]["misdemeanour"]),
+             "3. The two-year return rate under the Act is **%d per cent**." % rate,
              "", "## 3. Step-by-Step Solution", "",
              "1. Read release movements PAR and RPR (PAROLE and REPAROLE before the 2022 upgrade) dated 1 January 2019 "
              "to 30 September 2024 in %s, each followed %d days: %s releases." % (C.F_REL, C.WINDOW, "{:,}".format(len(r["S"]))),
