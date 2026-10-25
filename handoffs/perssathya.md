@@ -1,5 +1,14 @@
 # perssathya: where work stopped
 
+**Now (2026-10-25, late):** wave 6 is 5 of 6 shipped (task301, task302, task303, task305, task306 SHIPPED and merged;
+task303 last, 1558fdee). task304 is PAUSED at the draw (44da85ed): six candidates on the retrofit-savings world died on
+call-only probes, the last a waiting list partly treated by its own assessment visits (both probes found it); its
+design note's Tried and rejected and its `pipeline.json` resume line say where to redraw (what the record double-counts,
+omits or misstates; never a per-unit effect, a recorded event or a comparison group). Wave 7 is cut (08195746:
+task307 to task312, seeds OS09 to OS14) and task307 is at intake: the installers' business-stealing candidate was
+rejected on paper as task302's substitution driver in reverse. Two builds are in flight (task304, task307); task307's
+draw should also avoid taking economics x Opportunity Sizing if task304 is to keep that pairing.
+
 Updated 2026-10-25 (wave 6, Opportunity Sizing, task301 to task306: task305 and task306 SHIPPED; task301 PAUSED with architecture 1 spent at stage 4 and its re-root owed; task302 and task304 parked before a draw after call-only probes landed every mechanism tried, nothing registered for them; task303 not drawn. Before wave 6, the lane was fully shipped: wave 4 task243 to task248; wave 5 task250 SHIPPED 10-20, task251 and task252 SHIPPED 10-21, task249 SHIPPED 10-23 (architecture 6)). Work is on `main` (one branch); each build's state is in its `pipeline.json`.
 task229, task131, task122, task231 and task232 (2026-10-13) and task230 and task129 (reshipped 2026-10-14) are SHIPPED
 and wait on the portal; task123's determinism repair is RESHIPPED. Wave 1 is fully shipped: task228 was redrawn as architecture 5

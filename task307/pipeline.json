@@ -1,0 +1,38 @@
+{
+ "task": "task307",
+ "owner": "perssathya",
+ "status": "PAUSED",
+ "domain": "",
+ "objective": "opportunity-sizing-decision",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-25",
+ "stump": "",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "Stage 1 draw from seed OS09 (a mini-split rebate programme's net first-year savings next year; distributors' monthly outdoor-unit sales by installer account against customer rebate claims). Rejected on paper: installers' added unrebated sales partly taken from competitors in the same market (task302's substitution driver in reverse). The seed's own furniture (a utility filing with its regulator) is barred; economics-econometrics x Opportunity Sizing is task304's only legal home, so prefer another honest pairing here.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
