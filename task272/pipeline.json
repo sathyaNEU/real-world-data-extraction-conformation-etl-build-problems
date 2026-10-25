@@ -1,14 +1,14 @@
 {
   "task": "task272",
   "owner": "sathay3012",
-  "status": "RETIRED",
+  "status": "OPEN",
   "domain": "demographic-social-science",
   "objective": "descriptive-distribution",
   "stage": 1,
   "stage_name": "draw",
-  "updated": "2026-10-21",
+  "updated": "2026-10-25",
   "stump": "A competent analyst who conforms the three hubs and takes the 2025 policy's yearly figure (the three months before the application times four) as each household's income over the twelve months before it applied files 5 grants (H11, H15, H17, H23, H26); one calendar for every seasonal kind of work files 6, one per kind of work across regions or per region or hospital across kinds of work 10; only each region's calendar for each kind of work names the 16.",
-  "architecture": 2,
+  "architecture": 3,
   "loops": 0,
   "precut": {
     "exit": 0,
@@ -30,7 +30,7 @@
     "report": "determinism_check_report.md (architecture 2)"
   },
   "returned": [],
-  "resume": "RETIRED 2026-10-21: architectures 1 and 2 spent at stage 4 on Gate F, and the third dead at its draw (every candidate screened was spent in the corpus, landed by a filter or reflex route, or left open across the field's estimators; the note's last Tried and rejected line). The number is not reused; wave 4 is closed and wave 5 (task273 to task278) is cut.",
+  "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 3; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: RETIRED 2026-10-21: architectures 1 and 2 spent at stage 4 on Gate F, and the third dead at its draw (every candidate screened was spent in the corpus, landed by a filter or reflex route, or left open across the field's estimators; the note's last Tried and rejected line). The number is not reused; wave 4 is closed and wave 5 (task273 to task278) is cut.",
   "approved": null,
   "delivered": null,
   "portal": null,

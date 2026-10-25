@@ -1,14 +1,14 @@
 {
   "task": "task270",
   "owner": "sathay3012",
-  "status": "RETIRED",
+  "status": "OPEN",
   "domain": "psychology-behavioral-science",
   "objective": "descriptive-distribution",
-  "stage": "retired",
-  "stage_name": "retired: architecture 3, the slot's last, spent at stage 4 round 2 (Gate F: both scored readers landed the call once 3.1 filed the exclusion of the test's own change)",
-  "updated": "2026-10-19",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-25",
   "stump": "The default path reads the paper's 3.1, sizes the change the test itself produces on the period's sittings (each patient's first sitting from 2022 as their first, 1.24 points) and names Thurlwick and Penwardine as ARV-1102's recruiting sites, because the gain of a second completed sitting belongs to each patient's whole record and the patients first assessed before 2022 carry it through the period; only the whole-record estimate within patients (2.63) puts Quarndale with Thurlwick.",
-  "architecture": 3,
+  "architecture": 4,
   "loops": 1,
   "precut": {
     "exit": 0,
@@ -30,7 +30,7 @@
     "report": "/tmp/determinism-check-task270-r5/verdict.md (round 1); task270/DESIGN_NOTE.md, Build record"
   },
   "returned": [],
-  "resume": "none: task270 retired (three architectures spent); the number is not reused",
+  "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 4; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: none: task270 retired (three architectures spent); the number is not reused",
   "architectures": [
     {
       "architecture": 1,

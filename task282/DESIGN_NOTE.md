@@ -12,6 +12,6 @@ Not drawn. Seed DA32, kept as world, decision and quantity: a county highway aut
 - Seasonal factors from a counter year disturbed by a closure or diversion: the closure is a dated record that announces itself, so the repair is Layer 1 and cannot carry the call.
 - Twelve-hour to 24-hour conversion by group: a filed national table executes it (rule application), and the night share moves annual vehicle-km by a few per cent, under any ranking margin a credible network gives.
 
-## Retired
+## Reopened
 
-Retired 2026-10-25 at the author's choice, never drawn. The seed's natural decisive step repeats task474's driver at the abstraction test, and every other step screened in the traffic-count world is spent in the corpus, a filed table, a dated record that announces itself, or too small to reorder the links. No card was registered. The number is not reused.
+Reopened 2026-10-25 at the author's direction: no number is retired. The slot is re-rooted in a fresh world as architecture 1; the screens and dead architectures above stay dead.

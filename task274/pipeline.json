@@ -1,14 +1,14 @@
 {
   "task": "task274",
   "owner": "sathay3012",
-  "status": "RETIRED",
+  "status": "OPEN",
   "domain": "survey-research-official-statistics",
   "objective": "descriptive-distribution",
   "stage": 1,
   "stage_name": "draw",
-  "updated": "2026-10-23",
+  "updated": "2026-10-25",
   "stump": "A competent analyst pools the December re-assays of stored duplicates by the reagent lot and analyzer each original result carries, adds the October accuracy check's bias for the lot and analyzer it measured, weights each county and names the wrong counties, or divides every result by the check's bias and names fewer; the immunoassay's bias is set at each calibration, the calibrator lot changed on its own dates and every recalibration moved it, so only each result's own calibration's shift, read from the re-assays of results measured under it and anchored at the check's own calibration, names the golden set.",
-  "architecture": 2,
+  "architecture": 3,
   "loops": 0,
   "precut": {
     "exit": 0,
@@ -31,7 +31,7 @@
     "report": "none: the judge thread (run a2r1) was stopped once both scored readers had landed the call, which spends the architecture whatever the verdict"
   },
   "returned": [],
-  "resume": "RETIRED 2026-10-23: architectures 1 and 2 spent at stage 4 on Gate F, and the third dead at its draw (every candidate screened was spent in the corpus, landed by a filed sentence or a reflex, or left open across the field's estimators; the note's last Tried and rejected line). The number is not reused; wave 5 continues with task275.",
+  "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 3; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: RETIRED 2026-10-23: architectures 1 and 2 spent at stage 4 on Gate F, and the third dead at its draw (every candidate screened was spent in the corpus, landed by a filed sentence or a reflex, or left open across the field's estimators; the note's last Tried and rejected line). The number is not reused; wave 5 continues with task275.",
   "approved": null,
   "delivered": null,
   "portal": null,

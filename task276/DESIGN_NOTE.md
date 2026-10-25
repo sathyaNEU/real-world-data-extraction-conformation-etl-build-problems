@@ -14,7 +14,6 @@ The exposure-response architecture prototyped on 2026-10-23 (acceptance rising w
 - The pilots' evidence judged at the pilot rather than the invitation (`uncertainty_hold`): the client's record has interval stumps landing on the natural computation.
 - Exposure-response at launch density (`composition_mix`, pattern E, 2026-10-24): a developer's chance of accepting rises steeply with how many seeded collaborators invite, read at each member's own invitation count at launch density, is task175's driver (a unit's chance of being taken rises steeply with how many units on its own run are already taken, read at its own run's fill and carried run by run) with the count created by the seeding instead of found on the street; `guard.py check` scored it 0.06 against task175 and passed it with WARNs only, so the repeat was found by the abstraction test, not the guard.
 
-## Retired
+## Reopened
 
-Retired 2026-10-24 at the author's choice, never drawn. Every mechanism screened on seed DA26 is either spent in the corpus or lands by a reflex (the five lines above). The exposure-response architecture, the strongest of them, met every ladder separation rule on a re-searched world and passed `guard.py check` with WARNs only. It was refused at the abstraction test because, with the nouns stripped, its driver is task175's. No card was registered, so none is kept; the prototype numbers above are the record. The number is not reused.
-
+Reopened 2026-10-25 at the author's direction: no number is retired. The slot is re-rooted in a fresh world as architecture 1; the screens and dead architectures above stay dead.

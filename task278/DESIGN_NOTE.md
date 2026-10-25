@@ -15,6 +15,6 @@ Not drawn. Seed DA28, kept as world, decision and quantity: a reinsurer's model 
 - A research memo arguing the near-doubling: a memo written to carry the wrong answer is a decoy, banned as the decisive organ.
 - A catalogue truncated at a nominal reporting threshold that as-if growth lifts above the attachment: the storm event records carry damage with no threshold, so the truncation never binds on the solver's source.
 
-## Retired
+## Reopened
 
-Retired 2026-10-24 at the author's choice, never drawn. Every candidate decisive step on this seed is a filed definition or rule, a reflex, or an open estimator family. No card was registered. The number is not reused.
+Reopened 2026-10-25 at the author's direction: no number is retired. The slot is re-rooted in a fresh world as architecture 1; the screens and dead architectures above stay dead.

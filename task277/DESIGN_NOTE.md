@@ -13,6 +13,6 @@ Not drawn. Seed DA27, kept as world, decision and quantity: Corvane Health is ac
 - A market partition drawn from switching measured against the share-based expectation (the client's segmentation card 4): the card's textbook route, which a strong reader runs as stated, and a data-defined market contradicts the department's filed basis.
 - Annual-election switching and member attrition projected to 1 January by cohort: moves the parties' shares by tenths of a point, well inside the filing's nearest 10, so it cannot carry a stump.
 
-## Retired
+## Reopened
 
-Retired 2026-10-24 at the author's choice, never drawn. Every candidate decisive step on this seed is a filed rule, a definition read or a reflex, or is too small to move the filed figure. No card was registered. The number is not reused.
+Reopened 2026-10-25 at the author's direction: no number is retired. The slot is re-rooted in a fresh world as architecture 1; the screens and dead architectures above stay dead.

@@ -5,6 +5,7 @@ session for anyone else ignores this file.
 
 - **Lane:** Descriptive & Distribution Analysis, task253 to task300. Two builds in flight; `status.py next sathay3012`.
 - **Status board:** https://claude.ai/artifact/Ht1rZ4FAUWxn91Ma75XRzC (one row per task: the task and its call, status, links to the prompt, submission and `target.zip` on `main`, a short note, the date), updated at every commit point.
+- **No retirement.** No number in this lane is retired: an architecture that dies at the draw or at stage 4 is re-rooted in a fresh world, and the number stays in its wave until it ships (the author, 2026-10-25). The twelve numbers retired before that date (task121, task269 to task272, task274, task276 to task280, task282) were reopened the same day.
 - **Resume:** `handoffs/sathay3012/HANDOFF.md` (task253, task254).
 
 ## Backlog
@@ -19,9 +20,9 @@ architecture), new. A task from an objective no developer owns says so.
 
 | Wave | Tasks, in order |
 |---|---|
-| 1 | task253 (resume 2: Ask A) · task254 (resume 2: architecture 3) · task120 (re-root: retired) · task121 (re-root, Root-Cause) · task127 (re-root, Opportunity Sizing) |
+| 1 | task253 (resume 2: Ask A) · task254 (resume 2: architecture 3) · task120 (re-root: retired) · task121 (re-root: fresh world, Root-Cause) · task127 (re-root, Opportunity Sizing) |
 | 2 | task255 (new) · task256 (new) · task257 (new) · task258 (new) · task259 (new) · task260 (new) |
 | 3 | task261 (new) · task262 (new) · task263 (new) · task264 (new) · task265 (new) · task266 (new) |
-| 4 | task267 (new) · task268 (new) · task269 (new) · task270 (new) · task271 (new) · task272 (new) |
-| 5 | task273 (new) · task274 (new) · task275 (new) · task276 (new) · task277 (new) · task278 (new) |
-| 6 | task279 (new) · task280 (new) · task281 (new) · task282 (new) · task283 (new) · task284 (new) |
+| 4 | task267 (new) · task268 (new) · task269 (re-root: fresh world) · task270 (re-root: fresh world) · task271 (re-root: fresh world) · task272 (re-root: fresh world) |
+| 5 | task273 (new) · task274 (re-root: fresh world) · task275 (new) · task276 (re-root: fresh world) · task277 (re-root: fresh world) · task278 (re-root: fresh world) |
+| 6 | task279 (re-root: fresh world) · task280 (re-root: fresh world) · task281 (new) · task282 (re-root: fresh world) · task283 (new) · task284 (new) |

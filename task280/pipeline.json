@@ -1,14 +1,14 @@
 {
   "task": "task280",
   "owner": "sathay3012",
-  "status": "RETIRED",
+  "status": "OPEN",
   "domain": "general-statistics-data-science",
   "objective": "descriptive-distribution",
   "stage": 1,
   "stage_name": "draw",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "stump": "A competent analyst counts each hub's weekday 7 to 11 pm tests below 80 per cent of the household's plan speed, overall or with each evening hour or night weighted equally, and files Carrow Mills and Dunfield; the units skip a test while the household's own line is busy and households are busiest on the nights the hub's nodes load up, so the completed tests under-sample the congested quarter-hours, and only each household's tests conditioned on its node's 15-minute utilisation and carried to every quarter-hour of the peak name the four hubs over the line (Carrow Mills, Dunfield, Greyhaven and Kesterbrook).",
-  "architecture": 1,
+  "architecture": 2,
   "loops": 0,
   "precut": {
     "exit": 0,
@@ -28,7 +28,7 @@
     "report": "task280/determinism_check_report.md (main call forced; Ask A's planned tickets past 6.00 am, Ask B's split nodes' second records and the shares' whole per cent left open)"
   },
   "returned": [],
-  "resume": "RETIRED 2026-10-24 at the author's choice: architecture 1 spent at stage 4 on Gate F (both readers conditioned the tests on node utilisation and landed the call; the judge NOT_DETERMINISTIC, SEND_BACK on the asks), and architecture 2 not drawn (every candidate screened was spent in the corpus at the abstraction test, failed the swap test, or left the field's estimators open; the note's last Tried and rejected line). The number is not reused; wave 6 continues with task281.",
+  "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 2; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: RETIRED 2026-10-24 at the author's choice: architecture 1 spent at stage 4 on Gate F (both readers conditioned the tests on node utilisation and landed the call; the judge NOT_DETERMINISTIC, SEND_BACK on the asks), and architecture 2 not drawn (every candidate screened was spent in the corpus at the abstraction test, failed the swap test, or left the field's estimators open; the note's last Tried and rejected line). The number is not reused; wave 6 continues with task281.",
   "approved": null,
   "delivered": null,
   "portal": null,

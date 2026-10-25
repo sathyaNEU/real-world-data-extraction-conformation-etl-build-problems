@@ -1,14 +1,14 @@
 {
   "task": "task121",
   "owner": "sathay3012",
-  "status": "RETIRED",
+  "status": "OPEN",
   "domain": "physical-environmental-sciences",
   "objective": "root-cause",
-  "stage": "retired",
-  "stage_name": "retired: architecture 3 spent at stage 4 (judge SEND_BACK on the re-judge)",
-  "updated": "2026-10-12",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-25",
   "stump": "A competent solver forms the district's 499 odor events of May to September 2026, counts the events each facility lay upwind of under the procedure's check and files the Pine Gulch Landfill (210; the compost facility 69), where the golden is Ridgeway Organics' composting facility; the step that lands it there is counting upwind events when the night drainage puts the landfill upwind of the town on most nights (299.1 expected at the same hours), and dividing by the all-hours wind only moves the pick to Kestrel Valley Rendering (2.69 times) while the compost facility falls to 0.39; against the same clock hours on the season's other days it stands 42.6 events above expectation (69 against 26.4).",
-  "architecture": 3,
+  "architecture": 4,
   "loops": 0,
   "precut": {
     "exit": 0,
@@ -29,7 +29,7 @@
     "report": "task121/determinism_check_report.md, task121/determinism_check_report_pass2.md"
   },
   "returned": [],
-  "resume": "",
+  "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 4; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead.",
   "approved": null,
   "delivered": null,
   "portal": null,

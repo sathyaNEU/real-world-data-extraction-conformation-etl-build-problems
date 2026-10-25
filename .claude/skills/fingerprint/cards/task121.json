@@ -194,5 +194,6 @@
       "fate": "spent 2026-10-12 at stage 4: the determinism judge returned FIX_NOW in round 1 (the monthly complaint ask counted an app report received twice once on an unfiled rule) and SEND_BACK on the re-judge: no shipped file says how 'behind the surge' is decided, and a pre-surge baseline (each facility's share of the January to April events applied to the season's) names Kestrel Valley Rendering, so the hour-matched comparison was a method choice the text did not force; the number retired with its third architecture"
     }
   ],
-  "notes": "v3 drawn 2026-10-12 by sathay3012 for the wave-1 re-root. v3 spent 2026-10-12 (judge SEND_BACK on the re-judge); task121 retired."
+  "notes": "v3 drawn 2026-10-12 by sathay3012 for the wave-1 re-root. v3 spent 2026-10-12 (judge SEND_BACK on the re-judge); task121 retired.",
+  "architecture_spent": true
 }

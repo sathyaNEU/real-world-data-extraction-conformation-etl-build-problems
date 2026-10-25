@@ -1,14 +1,14 @@
 {
   "task": "task269",
   "owner": "sathay3012",
-  "status": "RETIRED",
+  "status": "OPEN",
   "domain": "urban-regional-science",
   "objective": "descriptive-distribution",
-  "stage": "retired",
-  "stage_name": "retired: architecture 3 spent at stage 4 (judge SEND_BACK on the first pass: the departure set that ends a rider's wait is unfiled, and filing it is rule application)",
-  "updated": "2026-10-19",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-25",
   "stump": "The default path gives the 2027 supervisor teams to routes 7, 14, 31 and 40, because it works every corridor rider's excess wait from all of the route's departures; on the branched routes a rider bound for a branch can take only that branch's buses, which on route 14 keep an even interval while the branches run as bunched pairs, and only working each rider's wait over the departures serving the stop the rider taps off at puts route 3 in and route 14 fifth.",
-  "architecture": 3,
+  "architecture": 4,
   "loops": 0,
   "precut": {
     "exit": 0,
@@ -30,7 +30,7 @@
     "report": "task269/determinism_check_report.md"
   },
   "returned": [],
-  "resume": "",
+  "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 4; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead.",
   "approved": null,
   "delivered": null,
   "portal": null,

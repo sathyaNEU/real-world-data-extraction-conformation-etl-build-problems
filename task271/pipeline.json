@@ -1,14 +1,14 @@
 {
   "task": "task271",
   "owner": "sathay3012",
-  "status": "RETIRED",
+  "status": "OPEN",
   "domain": "biomedical-clinical-research",
   "objective": "descriptive-distribution",
-  "stage": 4,
-  "stage_name": "check",
-  "updated": "2026-10-21",
+  "stage": 1,
+  "stage_name": "draw",
+  "updated": "2026-10-25",
   "stump": "A competent analyst who sets the probands aside and runs Kaplan-Meier on the relatives whose final report shows each family's variant names five groups for the 2027 Family Outreach Program, PALB2-PTV, PALB2-MIS, ATM-MIS, BARD1-PTV and RAD51D-PTV, because the relatives of the groups identified late were tested mostly for a cancer of their own; only every mother, sister and daughter, each a carrier with probability one half unless a final report settles it (the kin-cohort or the Mendelian likelihood), names PALB2-PTV and PALB2-MIS.",
-  "architecture": 3,
+  "architecture": 4,
   "loops": 0,
   "precut": {
     "exit": 0,
@@ -30,7 +30,7 @@
     "report": "isolated judge thread 2026-10-21 (/tmp/determinism-check-task271-1/verdict.md): main call and all 20 ask figures reproduce; Gate G statistical_rigor, analytical_non_defect; Gate H domain pass, layers pass, decisive_step analytical; the tested-carriers reading of 2.1 a watch item only"
   },
   "returned": [],
-  "resume": "RETIRED 2026-10-21: three architectures spent (v1 and v2 at stage 4 on Gate F, v3 at stage 4 on Gate F with the judge's APPROVE). The number is not reused; the backlog moves to task272.",
+  "resume": "Reopened 2026-10-25 at the author's direction: no number in this lane is retired. Re-root at the draw in a fresh world, architecture 4; read DESIGN_NOTE.md's Tried and rejected first, every dead architecture and screen there stays dead. Before the reopen: RETIRED 2026-10-21: three architectures spent (v1 and v2 at stage 4 on Gate F, v3 at stage 4 on Gate F with the judge's APPROVE). The number is not reused; the backlog moves to task272.",
   "architectures": [
     {
       "architecture": 1,
