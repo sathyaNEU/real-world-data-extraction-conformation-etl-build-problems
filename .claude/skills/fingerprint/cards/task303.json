@@ -1,90 +1,124 @@
 {
- "task": "task303",
- "architecture": "v1",
- "drawn": "2026-10-25",
- "slot_note": "fresh draw after the seed's permit-centre world (plan review load from the builders' plan libraries) was landed by both call-only probes before any card; staffing a stage pipeline reads the same in any office, so the world is re-drawn where the field's own analysis decides (design note ## Tried and rejected)",
- "domain": "actuarial-science-insurance",
- "subdomain": "pricing-ratemaking-credibility",
- "client_domain": "actuarial-science-insurance",
- "niche": "a Canadian pet insurer choosing which of four products takes a 12 per cent renewal increase in 2027, sized by what the increase adds to the year's underwriting result on the 2027 renewals, when an owner whose pet has a continuing condition covered for life cannot take that cover to a new insurer and renews whatever the price",
- "objective": "opportunity-sizing-decision",
- "shape": "other",
- "decision_type": "pick_one_of_n",
- "answer_unit": "currency",
- "answer": "Essentials, CAD 0.5 million added to the 2027 underwriting result (0.463 to 0.509 across the 144 constructions that split the lifetime response by a continuing condition)",
- "answer_source": "submission.md block 1 (generator/figures.json call_m)",
- "gap": [
-  "population"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G14",
-  "G6",
-  "G9"
- ],
- "gate_g": "decomposition_attribution",
- "calibration_form": "existing_book_actuals",
- "stump_strategy": "composition_mix",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "other",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who fits the owners' renewal response to past offers by product, with age and claim history, and values every renewing policy at its expected claims puts the increase on Lifetime Dog at about CAD 0.5 to 1.4 million; the extra lapses an increase brings come almost wholly from pets without a continuing condition, whose owners can take their cover elsewhere, while the owners of pets with a continuing condition covered for life renew whatever the price, so Lifetime Dog's increase sheds its profitable dogs and keeps its costly ones, and Essentials, whose conditions leave cover after twelve months, adds the most, CAD 0.5 million.",
- "domain_test": "The deciding quantity is the change in a product's underwriting result from a rate increase net of the margin on the policies the increase drives away, which pricing actuaries estimate from each policy's renewal response and expected claims; the response is set by whether the owner can replace the cover, and any new insurer excludes a continuing condition as pre-existing, so lifetime cover keeps exactly the owners whose pets cost most; swap in schools or hospitals and a pre-existing-condition exclusion, an annual renewal and an underwriting result stop meaning anything.",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:the-owners-a-renewal-increase-drives-away-are-those-who-can-replace-the-cover",
- "layer1": [
-  "a policy administration go-live on 15 April 2024 that renumbered every policy: terms before it in a legacy archive with its own layout, codes and day-first dates, the term in force at the go-live in both systems, a crosswalk joining a pet's two numbers, invitations and claims under the reference in use when issued or lodged",
-  "clinics' free-text diagnoses with abbreviations and variants under the claims team's condition references",
-  "claims paid net of a deductible and co-insurance, a reopened claim's second payment row, claims still being assessed at the extract with no payment",
-  "renewal invitations issued again with a corrected premium",
-  "policies ending mid-term on a death or a cancellation",
-  "multi-pet discounts on part of the book"
- ],
- "stakeholder_role": "the insurer's head of pricing, who recommends to the board the product that takes the increase",
- "role_family": "portfolio_manager",
- "scoring_unit": "per covered member",
- "spine": {
-  "file": "policy_terms_2024-2026.csv and policy_terms_legacy_2019-2024.csv",
-  "rows": 310000,
-  "entity": "one pet's policy term: its premium, the premium offered at renewal and what the owner did",
-  "grain": "pet x policy term",
-  "source": "synthetic"
- },
- "forum": "board_of_directors",
- "forcing_event": "launch_or_rollout",
- "org_family": "financial_institution",
- "world": {
-  "geography": "Canada (Ontario head office, policies in eight provinces)",
-  "currency": "CAD",
-  "org_type": "a specialist pet insurer writing accident and illness cover for dogs and cats",
-  "invented_names": [
-   "Kestrel Pet Insurance"
+  "task": "task303",
+  "architecture": "v2",
+  "drawn": "2026-10-25",
+  "slot_note": "re-root at stage 1 after architecture 1 (a pet insurer's renewal increase, lifetime owners held by a continuing condition) was spent at stage 4; candidates screened on paper and by isolated concept probes before this draw (design note ## Tried and rejected)",
+  "domain": "energy-systems-utilities",
+  "subdomain": "asset-condition-maintenance",
+  "client_domain": "energy-systems-utilities",
+  "niche": "an electric distribution utility's storm-hardening filing choosing which of six feeders' three-phase backbones to convert to covered conductor on steel poles, sized as the customer-minutes of sustained interruption a year the conversion removes, when some tickets recorded at a feeder's breaker are losses of its substation's supply that every feeder there opens in the same minute",
+  "objective": "opportunity-sizing-decision",
+  "shape": "01",
+  "decision_type": "pick_one_of_n",
+  "answer_unit": "count",
+  "answer": "",
+  "answer_source": "",
+  "gap": [
+    "population"
   ],
-  "people": [
-   "Brianna Flynn",
-   "John Mullen"
-  ]
- },
- "deliverables": [
-  "kestrel_renewal_increase_2027.pdf",
-  "kestrel_renewal_workbook_2027.xlsx"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "A price rise's yield on a book is the rise on those who stay less the margin of those it drives away, and members who cannot take what they hold elsewhere stay whatever the price; when what a member holds is worth most to the members who cost most, the rise drives away the book's profitable members, so their margin rather than the book's average is what it loses, and a book whose holding lapses after a fixed term has no such members.",
- "driver_concrete": "Each product's 2027 addition is the 12 per cent on the policies that renew less the margin of the extra policies the increase drives away, each valued at its own claims. On the lifetime products a pet with a continuing condition is covered for it every year and no new insurer would cover it, so its owner lapses 3 to 7 per cent whatever the offer, while healthy pets' owners lapse 13 to 40 per cent as the offer rises; the extra lapses are the healthy pets, whose margin (about CAD 360 a Lifetime Dog renewal against minus 1,280 with a continuing condition) is the book's highest, so Lifetime Dog's increase adds little, and Essentials, whose renewals carry about nil margin, adds the most.",
- "stump": "A competent solver fits the renewal response to past offers by product with age and claim history, values each renewal at its expected claims and puts the increase on Lifetime Dog at about CAD 0.5 to 1.4 million, where the golden is Essentials at CAD 0.5 million; the step that lands it there is reading the renewal response as the product's, when the owners of pets with a continuing condition covered for life renew whatever the price and the increase drives away only the healthy pets, whose margin is the book's highest.",
- "differentiation": {
-  "task256": "task256 estimates the share of a population inside a box of correlated body measurements from a reference survey that differs from it; task303 has no measurement box or reference group: each policy's renewal response is split by whether its pet carries a continuing condition the product keeps paying, rebuilt from the claims history, and an increase loses the margin of the owners free to leave.",
-  "task262": "task262 corrects a slope on a long-run average for the reliability of a subsample selected on its level; task303 fits no slope and corrects no measurement error: an increase yields the rise on the owners who stay less the margin of those who leave, and those who leave are the pets without a continuing condition, since a pet with one cannot take its cover elsewhere.",
-  "task267": "task267 reweights a verified subsample to recover a referral rule's capture rate over a screened population; task303 has no verification design: the policies a renewal increase drives away are selected by a switching barrier read from each pet's claims history, and their margin, not the product's average, is what the increase loses.",
-  "task238": "task238 separates a reporting channel's effect from who chooses the channel with a randomized nudge; task303 has no channel and no experiment: owners answer a renewal offer according to whether they can replace the cover, which the claims history's continuing conditions reveal, and the margin of those who leave decides which product's increase adds most."
- },
- "architecture_spent": true,
- "notes": "stump_strategy composition_mix: the lapse response's mix on a property no column names (a continuing condition the product keeps paying, rebuilt from the claims history's condition references and diagnoses) differs between the book and the policies an increase drives away; pattern none with G14 (the yield conditioned on who renews), G6 (the leavers' composition is not the book's) and G9 (what survives the renewal against what was acquired). Two call-only probes on a prototype pack both filed Lifetime Dog (CAD 1.38 and 1.25 million) after fitting lapse on claim history. On the built pack 144 of 144 constructions that split the lifetime response name Essentials at CAD 0.5 million (0.463 to 0.509), and five one-response routes name Lifetime Dog at 0.48 to 1.89 million; the renewal history prefers marking a condition from its first treatment to marking it on recurrence (log-likelihood 753) or a 90-day span (357). Asks: renewals-line calls under a menu reordered on 5 October 2026 (D2 label before a silent switch), renewal-premium complaints from a case export missing the cases passed to Pricing (D5 silent partial extract, the acknowledgement letters complete), instalments never collected with re-presentations as new items (D1 resubmission); cracker 0 of 48, pair 28.5. Spent at stage 4 on 2026-10-25: reader A named Essentials by a claims-aware retention model by product; the judge returned SEND_BACK on the figure (CAD 0.32 to 0.51 million across licensed constructions); both readers took 48 of 48 ask cells.",
- "registered": "2026-10-25T11:03:53Z"
+  "pattern": [
+    "none"
+  ],
+  "generators": [
+    "G8",
+    "G3"
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "operations_log",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every file correctly sums each candidate's feeder-breaker and line-recloser tickets caused by vegetation, wind or wildlife outside the accepted major event days over 2019 to 2025, takes nine in ten of their customer-minutes divided by seven and converts F-112 at about 356,000 customer-minutes a year, where the golden is F-205 at about 263,000.",
+  "domain_test": "The deciding quantity is the customer-minutes a backbone conversion removes, which a reliability engineer attributes to where each interruption originated: a ticket recorded at a feeder's breaker that every feeder at the substation opens in the same minute is a loss of the substation's supply and not a fault on that feeder's backbone; with wards or stores in place of feeders the sentence loses its mechanism, because neither has a protective device that records a shared upstream supply loss as its own interruption.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:interruptions-attributed-to-their-origin-before-a-feeder-investment-is-credited",
+  "layer1": [
+    "an outage-system migration on 1 January 2023: legacy tickets with feeder numbers, codes, Eastern local dates and clock times and minutes of duration; current tickets with feeder ids, worded categories and UTC start and restoration stamps",
+    "major event days as Eastern calendar days against UTC stamps",
+    "vegetation work by feeder section on a four-year cycle",
+    "a feeder inventory with LiDAR canopy shares and pole counts"
+  ],
+  "stakeholder_role": "the utility's distribution planning engineer preparing the 2027 storm-hardening filing",
+  "role_family": "capacity_planner",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "oms_interruptions_2019_2022.csv and oms_interruptions_2023_2025.csv",
+    "rows": 533,
+    "entity": "one feeder's sustained interruption on one ticket",
+    "grain": "feeder x interruption",
+    "source": "synthetic"
+  },
+  "forum": "regulator_or_inspector",
+  "forcing_event": "statutory_or_regulatory_filing",
+  "org_family": "utility_or_infrastructure",
+  "world": {
+    "geography": "United States (south-east, an invented service territory)",
+    "currency": "USD",
+    "org_type": "an investor-owned electric distribution utility",
+    "invented_names": [
+      "Shenmore Valley Electric",
+      "Pell Creek",
+      "Sorrel Hill",
+      "Byers Mill",
+      "Hollow Fork",
+      "Kettering Run",
+      "Wyeth Crossing"
+    ],
+    "people": [
+      "Zachary Sanders"
+    ]
+  },
+  "deliverables": [
+    "hardening_memo_2027.pdf",
+    "hardening_tables_2027.xlsx"
+  ],
+  "opening_move": "question-first",
+  "question_form": "which",
+  "driver": "The decisive quantity is what an intervention on one unit removes from its recorded losses, when part of that record is a shared loss that every unit fed from the same upstream source logs in the same minute under its own first device; summing the unit's records by cause and device credits the intervention with losses that originate upstream, and only the minute every sibling shares separates them.",
+  "driver_concrete": "Each candidate's figure is nine in ten of the customer-minutes outside major event days from vegetation, wind and wildlife interruptions on its backbone, after removing the feeder-breaker tickets that every feeder at its substation opened in the same minute, which are losses of the substation's supply that the conversion cannot prevent.",
+  "stump": "A competent solver sums each candidate's breaker and recloser tickets caused by vegetation, wind or wildlife outside major event days, takes nine in ten of their customer-minutes over seven years and converts F-112 at about 356,000 customer-minutes a year, where the golden is F-205 at about 263,000; the step that lands it there is reading every feeder-breaker ticket as a fault on that feeder's backbone, when the Pell Creek tickets that all three of its feeders open in the same minute are losses of the substation's supply.",
+  "mechanism_source": "design_note",
+  "lineage": [
+    {
+      "architecture": "v1",
+      "domain": "actuarial-science-insurance",
+      "subdomain": "pricing-ratemaking-credibility",
+      "niche": "a Canadian pet insurer choosing which of four products takes a 12 per cent renewal increase in 2027, sized by what the increase adds to the year's underwriting result on the 2027 renewals, when an owner whose pet has a continuing condition covered for life cannot take that cover to a new insurer and renews whatever the price",
+      "objective": "opportunity-sizing-decision",
+      "shape": "other",
+      "decision_type": "pick_one_of_n",
+      "gap": [
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G6",
+        "G9"
+      ],
+      "gate_g": "decomposition_attribution",
+      "stump_strategy": "composition_mix",
+      "calibration_form": "existing_book_actuals",
+      "context_artifact": "other",
+      "forum": "board_of_directors",
+      "forcing_event": "launch_or_rollout",
+      "org_family": "financial_institution",
+      "role_family": "portfolio_manager",
+      "layer2_family": "estimand_identification",
+      "layer2_pattern": "own:the-owners-a-renewal-increase-drives-away-are-those-who-can-replace-the-cover",
+      "driver": "A price rise's yield on a book is the rise on those who stay less the margin of those it drives away, and members who cannot take what they hold elsewhere stay whatever the price; when what a member holds is worth most to the members who cost most, the rise drives away the book's profitable members, so their margin rather than the book's average is what it loses, and a book whose holding lapses after a fixed term has no such members.",
+      "driver_concrete": "Each product's 2027 addition is the 12 per cent on the policies that renew less the margin of the extra policies the increase drives away, each valued at its own claims. On the lifetime products a pet with a continuing condition is covered for it every year and no new insurer would cover it, so its owner lapses 3 to 7 per cent whatever the offer, while healthy pets' owners lapse 13 to 40 per cent as the offer rises; the extra lapses are the healthy pets, whose margin (about CAD 360 a Lifetime Dog renewal against minus 1,280 with a continuing condition) is the book's highest, so Lifetime Dog's increase adds little, and Essentials, whose renewals carry about nil margin, adds the most.",
+      "stump": "A competent solver fits the renewal response to past offers by product with age and claim history, values each renewal at its expected claims and puts the increase on Lifetime Dog at about CAD 0.5 to 1.4 million, where the golden is Essentials at CAD 0.5 million; the step that lands it there is reading the renewal response as the product's, when the owners of pets with a continuing condition covered for life renew whatever the price and the increase drives away only the healthy pets, whose margin is the book's highest.",
+      "answer": "Essentials, CAD 0.5 million added to the 2027 underwriting result (0.463 to 0.509 across the 144 constructions that split the lifetime response by a continuing condition)",
+      "fate": "spent 2026-10-25 at stage 4: scored reader A named Essentials with a claims-aware retention model by product (lifetime claimants almost never leave), a covariate reflex that reaches the split without marking a condition; the determinism judge returned NOT_DETERMINISTIC, SEND_BACK on the figure (0.32 to 0.51 across condition markings, flag timings and response fits); both readers took 48 of 48 ask cells"
+    }
+  ],
+  "differentiation": {},
+  "notes": "stump_strategy decomposition_attribution: a feeder's recorded customer-minutes split by where each interruption originated (its own backbone, its taps, the substation's supply), the overlap of the sibling feeders' tickets in the same minute deciding the split; gap population (what one breaker-level ticket is); generators G8 (the conversion cannot reach a loss of the substation's supply, decided ticket by ticket) and G3 (the ticket records the feeder's own breaker while the interruption began upstream); pattern none (pattern C's join is not the form here: no share behind a join, the classification is read off the sibling tickets' shared minute); scoring_unit other: the commission's incentive pays per customer-minute removed. WARNs answered in the design note: people.first (Zachary, one older build), repeat.gate_g (task121 v5, spent), repeat.decision and repeat.question_form (task166 v2: the decision here is a pick of one feeder, so the question asks which).",
+  "registered": "2026-10-25T17:59:56Z"
 }

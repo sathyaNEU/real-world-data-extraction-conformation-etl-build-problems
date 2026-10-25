@@ -1,13 +1,13 @@
 {
  "task": "task303",
  "owner": "perssathya",
- "status": "PAUSED",
- "domain": "actuarial-science-insurance",
+ "status": "DESIGN",
+ "domain": "energy-systems-utilities",
  "objective": "opportunity-sizing-decision",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 2,
+ "stage_name": "design",
  "updated": "2026-10-25",
- "stump": "A competent solver fits the renewal response to past offers by product with claim history, values each renewal at its own expected claims and puts the increase on Lifetime Dog at about CAD 0.9 million or more, where the golden is Essentials at about CAD 500,000; the step that lands it there is reading the renewal response as the product's, when the owners of pets with a continuing condition covered for life renew whatever the price and the increase drives away only the healthy pets, whose margin is the book's highest.",
+ "stump": "A competent solver credits every feeder-breaker and line-recloser ticket caused by vegetation, wind or wildlife outside the major event days to the feeder's own backbone and converts F-112 at about 356,000 customer-minutes a year, where the golden is F-205 at about 263,000; the step that lands it there is reading each Pell Creek breaker ticket as a fault on F-112's backbone, when the tickets all three Pell Creek feeders open in the same minute are losses of the substation's supply, which the conversion cannot prevent.",
  "architecture": 2,
  "loops": 0,
  "precut": {
@@ -15,20 +15,20 @@
   "date": ""
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK), architecture 1",
-  "reader": "architecture 1: r303ra landed the call (Essentials, claims-aware retention), 48 of 48 asks; r303rb missed (Lifetime Cat), 48 of 48 asks"
+  "leak_py": "",
+  "reader": ""
  },
  "duplicate_check": {
   "heart": "",
-  "nearest": "task137 at 0.06"
+  "nearest": "task127 v2 at 0.08 (abstraction test answered in the note)"
  },
  "judge": {
-  "verdict": "NOT_DETERMINISTIC (architecture 1)",
-  "disposition": "SEND_BACK",
-  "report": "task303/determinism_check_report.md"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "Stage 1 re-root, architecture 2: architecture 1 (lifetime owners held by a continuing condition) spent at stage 4 (reader A landed the call by a claims-aware retention model, the judge returned SEND_BACK on the figure, both readers took 48 of 48 ask cells); its build is out of the task folder. Next: four candidates on paper with a default path and a screen each, a probe pack and two isolated call-only probes, then the card (architecture 1 into lineage) through guard.py check and register, then DRAWN.",
+ "resume": "Stage 2, architecture 2 (Shenmore Valley Electric's 2027 backbone conversion, F-205 against F-112, the Pell Creek breaker tickets every feeder opens in the same minute being losses of the substation's supply): card v2 registered 2026-10-25 17:59 UTC, note sections Draw, Three rules, Default path and Stump sentence written, prototype world4.py seed 42 and the probe pack builder in scratch p303uo; both call-only probes (r303ua, r303ub) filed F-112 at 356,000. Next: the ladder, readability screen, fork and closure tables, the asks and their silent devices, the prompt, precut; then the generator in task303/generator.",
  "approved": null,
  "delivered": null,
  "portal": null,
