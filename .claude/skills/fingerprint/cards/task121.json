@@ -1,203 +1,220 @@
 {
- "task": "task121",
- "architecture": "v4 (architecture 4, re-root after the number was reopened: a train operator's satisfaction fall against the conditions its passengers' journeys ran under)",
- "drawn": "2026-10-25",
- "slot_note": "seed RC01 (checkout release forward cost); v1 drafted and rejected at checkpoint A, v2 built and solved twice (signed-out club-app customers behind a checkout fall), retired 2026-10-10 and re-queued in wave 1 as re-root, Root-Cause; v3 re-roots in the same objective with a new domain, niche and Layer 2 pitfall v4 drawn 2026-10-25 after the author reopened the number (no number in the lane is retired).",
- "domain": "marketing-consumer-research",
- "subdomain": "customer-satisfaction-driver-analysis",
- "client_domain": "marketing-consumer-research",
- "niche": "a regional train operator deciding which of four service drivers (crowding, punctuality, on-board staffing, fares) its contractual customer satisfaction recovery plan funds, from the fall in its tracker's satisfied share between the spring 2025 and spring 2026 waves",
- "objective": "root-cause",
- "shape": "03",
- "decision_type": "root_cause_named",
- "answer_unit": "named_option",
- "answer": "Crowding accounts for most of the fall: 3 of the 5.2 points by which the share of passengers satisfied overall fell, from 86.4% in spring 2025 to 81.2% in spring 2026",
- "answer_source": "task121/submission.md, block 1 (Final Recommendation)",
- "gap": [
-  "objective"
- ],
- "pattern": [
-  "none"
- ],
- "generators": [
-  "G3",
-  "G16"
- ],
- "gate_g": "decomposition_attribution",
- "calibration_form": "none",
- "stump_strategy": "decomposition_attribution",
- "decisive_rule_filed": false,
- "official_decoy": false,
- "validated_decoy": false,
- "context_artifact": "published_series",
- "stakeholder_role": "the operator's contract performance manager, who owes the transport authority a customer satisfaction recovery plan under the contract's service quality regime",
- "role_family": "compliance_or_audit",
- "scoring_unit": "other",
- "spine": {
-  "file": "cst_responses_spring2025_spring2026.csv",
-  "rows": 17773,
-  "entity": "one returned questionnaire: the overall verdict, ten attribute ratings and the written-in stations, linked through its batch to the train it was handed out on",
-  "grain": "respondent x wave",
-  "source_dataset": "constructed (no public microdata links a rail satisfaction survey to train loads)"
- },
- "forum": "committee_or_panel",
- "forcing_event": "statutory_or_regulatory_filing",
- "org_family": "utility_or_infrastructure",
- "world": {
-  "geography": "England (a fictional West Country network of five service groups)",
-  "currency": "GBP",
-  "org_type": "a train operating company under a National Rail Contract",
-  "nouns": [
-   "Marlvale Trains",
-   "Western Rail Partnership",
-   "Harcourt Rowe Research",
-   "Customer Satisfaction Tracker",
-   "Marlvale Central",
-   "Hollin Vale",
-   "Coastway",
-   "Pellow Branch",
-   "Corrington Link"
+  "task": "task121",
+  "architecture": "v5 (architecture 5, re-root in a fresh world: a multi-academy trust's lowest Progress 8 against the primary schools its pupils came from)",
+  "drawn": "2026-10-25",
+  "slot_note": "seed RC01 (checkout release forward cost); v1 drafted and rejected at checkpoint A, v2 built and solved twice (signed-out club-app customers behind a checkout fall), retired 2026-10-10 and re-queued in wave 1 as re-root, Root-Cause; v3 re-roots in the same objective with a new domain, niche and Layer 2 pitfall; v4 drawn 2026-10-25 after the author reopened the number (no number in the lane is retired). v4 spent at stage 4 the same day; v5 re-roots in Education & Learning Sciences, still Root-Cause.",
+  "domain": "education-learning-sciences",
+  "subdomain": "multilevel-classroom-school-research",
+  "client_domain": "education-learning-sciences",
+  "niche": "a multi-academy trust's director of education deciding, before the trustees set the 2027 school improvement budget, whether the trust's lowest Progress 8 secondary owes its gap to the trust average over the 2022 to 2024 cohorts to its own teaching or to the pupils it takes in, using the borough's pupil-level KS2 to KS4 transfer file",
+  "objective": "root-cause",
+  "shape": "03",
+  "decision_type": "root_cause_named",
+  "answer_unit": "named_option",
+  "answer": "pending (stage 3)",
+  "answer_source": "task121/submission.md, block 1 (Final Recommendation)",
+  "gap": [
+    "objective"
   ],
-  "people": [
-   "Naomi Stanley",
-   "Mohamed Hussain",
-   "Zoe Williamson",
-   "Bernard Burrows"
-  ]
- },
- "deliverables": [
-  "satisfaction_fall_spring2026.xlsx",
-  "satisfaction_bridge_spring2026.png"
- ],
- "opening_move": "question-first",
- "question_form": "which",
- "driver": "The decisive quantity is each candidate driver's share of a fall in the proportion of respondents satisfied, measured on the conditions each response was actually made under, because respondents' ratings of the candidates rise and fall with their overall verdict, so ranking the drivers on those ratings, alone or beside the conditions as controls, books the fall to whichever rating fell most.",
- "driver_concrete": "Passengers on crowded trains mark every attribute down and the staff ratings carry the verdict most, so derived importance on the tracker's ratings names on-board staffing (2 points), while the conditions each surveyed journey ran under, linked through the fieldwork batch to the train, its units, legs, crew and fare, put 3 of the 5.2 points on crowding.",
- "stump": "The default path runs the tracker industry's derived importance on the ten attribute ratings and files on-board staffing, 2 points, because passengers on a train carrying more people than seats mark every aspect down, the staff items most, and the tracker never asks whether they had a seat; the ratings held as controls beside the linked conditions leave crowding at 1 point, and the cascade groups against the rest credit crowding with nothing; the fall attributed through the conditions each surveyed journey ran under (load-weigh against the seats formed on each leg of the passenger's trip, arrival at their station, the train's crew, the flow's fare change) files crowding, 3 points.",
- "stump_class": "analytical",
- "analyst_test": "A strong analyst who reads every rule and runs the tracker industry's derived importance on the ten attribute ratings files on-board staffing, 2 points (1 to 3 under every item mapping and importance measure); with the ratings beside the linked conditions as controls, crowding at 1 point; the conditions alone file crowding, 3 points, on every construction.",
- "domain_test": "Customer satisfaction driver analysis: each service driver's contribution to the fall in the satisfied share, estimated by linking every response to the conditions its journey ran under (linkage analysis), with the attribute ratings' halo the field's own known bias; with another field's nouns (megawatt-hours, test scores) there are no perception ratings that move with the verdict, so the task stops reading the same.",
- "layer2_family": "estimand_identification",
- "layer2_pattern": "own:attribute-ratings-halo-against-journey-conditions",
- "layer1": [
-  "written-in boarding and alighting stations, some coded, with short forms and slips",
-  "questionnaire batches identified by train, date, origin and departure against two working timetables whose headcodes were reissued at the December 2025 change",
-  "bank holidays on the Sunday schedules (Easter 2026 in the spring wave, 31 August in the baseline)",
-  "class 166 load-weigh by vehicle, the two-car classes by unit, two-unit peak formations",
-  "the as-worked crew archive with a row only for a train someone worked, closed at the May 2026 system move",
-  "fares by flow rounded to 10p",
-  "the baseline weeks' late arrivals after midnight on clock time, crew cover logged the evening before, attached units reporting their first train's headcode and class 166 vehicle rows carrying the unit's figure after the May 2026 move (the asks only)"
- ],
- "mechanism_source": "design_note",
- "differentiation": {
-  "task107": "task107 v2 scales a lottery pilot's assignment effect for a comparison arm contaminated by reassigned practitioners; here a fall is attributed to service drivers through the conditions each journey ran under, because the perception ratings carry the verdict's halo; nothing is reassigned and no pilot effect is scaled",
-  "task170": "task170 is the same kind of operator (a regional train company) on a different analysis, a forecast of drivers' data entry errors at ETCS start-up from depot experience; nothing in it rates a service or attributes a satisfaction fall",
-  "task194": "task194 screened over-adjustment for a quantity a provider's own conduct produces as a WHAT-screen death in a provider-quality world; here the controls that absorb the effect are perception ratings that move with the outcome itself, and the estimand files the drivers as journey conditions"
- },
- "lineage": [
-  {
-   "architecture": "v1 (first draft: the address check's forward weekly cost, self-healing exposure)",
-   "drawn": "2026-10-08",
-   "domain": "product-analytics",
-   "subdomain": "onboarding-activation",
-   "objective": "root-cause",
-   "shape": "09",
-   "decision_type": "quantity_figure",
-   "answer_unit": "count",
-   "gap": [
-    "time",
-    "population"
-   ],
-   "pattern": [
-    "A",
-    "E",
-    "C"
-   ],
-   "generators": [
-    "G13",
-    "G14",
-    "G2",
+  "pattern": [
+    "none"
+  ],
+  "generators": [
     "G6",
     "G16"
-   ],
-   "gate_g": "decomposition_attribution",
-   "calibration_form": "closed_decision_corpus",
-   "context_artifact": "operations_log",
-   "driver": "The decisive move conditions a correctly measured pooled effect on a state each unit holds only until the effect first strikes it, because a struck unit repairs the property that exposed it; the state is reached only through a two-step join from the event records to a property of a different entity, ordered against the unit's own occurrence, so the forward cost is the expected first occurrences among units still holding the state as that pool drains period by period, while the pooled effect carried flat forward reproduces every closed case (no earlier case could alter the property) and overstates every forward period.",
-   "driver_concrete": "The address check rejects only saved addresses holding a four-digit CP4 postcode without its three-digit extension, and an account that fails it once re-saves a full CP7 address within two days and never fails again, so the release's forward cost is the expected first failures among accounts still holding a CP4-only address over the quarter's 13 weeks, reached session to account to saved address, while the cohort-measured weekly loss carried flat reproduces both prior releases' reviewed effects (neither touched saved customer data) and overstates every forward week.",
-   "stump": "A competent solver nets out the partner-referral mix, measures the release's per-session effect from the staggered flag cohorts balanced on channel and account age (the construction that reproduces both prior releases' reviewed effects), and applies that pooled effect to the quarter's planned sessions, filing a weekly cost about a quarter too high, because it never follows sessions through accounts to their saved addresses, where only four-digit-postcode addresses fail and an account that fails once re-saves and never fails again, so the share of checkouts still exposed falls week by week.",
-   "fate": "drafted 2026-10-08 and never registered; redrawn at checkpoint A on 2026-10-09. It passed the guard only after its decisive pattern was relabelled from the note's A (past effect against forward yield) to E, and as E it still collides with task117 (registered in this batch) on time, E and a quantity figure, while A stays blocked inside the window by task107's v4 lineage. Its committed figure, the release's forward weekly cost, read as Forecasting and put the Root-Cause tag at risk. Its stump was weak: the staggered flag cohorts let a solver run an event study by weeks since exposure and watch the effect fade (an arithmetic symptom, task75's dead shape), the vendor's published address rules pointed at the address book, and both nearest measured exemplars scored above 0.50 because the model names the cause and loses only on sizing. Rolling back a flag-gated release is a flag flip, not a sprint. The self-healing exposure survives in v2 as a lower rung."
+  ],
+  "gate_g": "decomposition_attribution",
+  "calibration_form": "none",
+  "stump_strategy": "decomposition_attribution",
+  "decisive_rule_filed": false,
+  "official_decoy": false,
+  "validated_decoy": false,
+  "context_artifact": "published_series",
+  "stakeholder_role": "the trust's director of education, who recommends to the board of trustees where the 2027 school improvement budget goes",
+  "role_family": "policy_adviser",
+  "scoring_unit": "other",
+  "spine": {
+    "file": "borough KS2 to KS4 pupil transfer file, 2022 to 2024 KS4 cohorts",
+    "rows": 9600,
+    "entity": "one pupil at the end of key stage 4 in a borough secondary, with the primary school and results of their key stage 2 tests",
+    "grain": "pupil x KS4 cohort",
+    "source_dataset": "constructed (pupil-level KS2 to KS4 records are not public; the National Pupil Database is restricted)"
   },
-  {
-   "architecture": "v2 (redraw at checkpoint A: signed-out club-app customers)",
-   "drawn": "2026-10-09",
-   "domain": "product-analytics",
-   "subdomain": "onboarding-activation",
-   "objective": "root-cause",
-   "shape": "18",
-   "decision_type": "pick_one_of_n",
-   "answer_unit": "named_option",
-   "gap": [
-    "population",
-    "time"
-   ],
-   "pattern": [
-    "none",
-    "A"
-   ],
-   "generators": [
-    "G3",
-    "G6",
-    "G13",
-    "G14"
-   ],
-   "gate_g": "decomposition_attribution",
-   "calibration_form": "prior_period_close_out",
-   "context_artifact": "monitoring_export",
-   "stump_strategy": "identity_resolution",
-   "driver": "The decisive quantity is the loss carried by units that the records file as newcomers with no owning account but that belong to established accounts, reachable only by following a reference each unit carries through a second party's report to an identifier held on a different entity, because the channel that brings them strips the stored state that makes established accounts succeed; joined on the visible account key they read as incremental newcomers whose shortfall is harmless dilution, every closed case confirms that reading because in every closed case those accounts arrived with their state intact, and the loss is charged to the largest symptom it produces downstream instead of to the stripped state.",
-   "driver_concrete": "The club app opens the store in its own browser, where nobody is signed in, so most of the shop-tab sessions the session log files as new, signed-out visitors are existing customers: each session's members'-price token resolves through the club's monthly redemption report to a member number, and the member number to the account that holds it on a store loyalty profile or as last season's SOCIO members' code redeemed on the account; signed out, they lose their saved address, saved card and card-on-file exemptions and convert at a fraction of their own usual rate, which makes their lost orders the largest current loss and puts it within reach of the parked one-time-code sign-in alone, while joined on the account key they look like new fans, both closed partner close-outs (open-web partners whose visitors arrived signed in) book partner traffic as dilution exactly, and their losses surface as typed-postcode failures at the address check and 3-D Secure challenges at payment.",
-   "stump": "A competent solver gives the sprint to the card-authentication upgrade: it measures the address check on its flag cohorts and watches its losses drain as accounts re-save, follows each club-app session's members'-price token through the club's token report to a member number and the member number to the loyalty profile's `club_member_no`, finds only about a sixth of the Shop-tab sessions on existing accounts losing about 13 orders a week, books the rest as new-fan dilution the way both partner close-outs book partner traffic, and is left with the rise in 3-D Secure challenges (18 orders) as the largest loss, because it joins member numbers to accounts on the visible profile key alone and never reads last season's members' code (SOCIO and the member number) redeemed on the accounts in the promotions extract, which places 63 per cent of those sessions on existing accounts whose lost orders, 51 a week, are the largest current loss and which only the one-time-code sign-in reaches.",
-   "spine": {
-    "file": "basket_sessions_2026-07-27_2026-09-27.parquet",
-    "rows": 214465,
-    "entity": "one storefront session that put an item in the basket, with its account when signed in, its traffic source and members'-price token, its new-visitor flag and the furthest checkout step it reached",
-    "grain": "session",
-    "source": "synthetic"
-   },
-   "forum": "line_manager_or_team",
-   "forcing_event": "incident_or_complaint",
-   "org_family": "retailer_or_ecommerce",
-   "role_family": "product_manager",
-   "fate": "built; solved in-house twice (rounds 86.1 and 89.5: the identity join was a schema read, token and member number on both files, then the SOCIO codes); retired 2026-10-10, FAILED_TO_STUMP; re-queued in wave 1 as re-root, Root-Cause"
+  "forum": "trustees_or_governors",
+  "forcing_event": "vote_or_meeting",
+  "org_family": "university_or_school",
+  "world": {
+    "geography": "England (a fictional northern metropolitan borough)",
+    "currency": "GBP",
+    "org_type": "a multi-academy trust of eight secondary academies in a borough of fourteen secondaries",
+    "nouns": [
+      "Larkhollow Academies Trust",
+      "Halwick Academy",
+      "Brantholme"
+    ],
+    "people": [
+      "Chloe Richardson",
+      "Maureen Frost",
+      "Terence Rose",
+      "Chelsea Newton",
+      "Roy Ahmed",
+      "Mohammed Alexander"
+    ]
   },
-  {
-   "architecture": "v3 (odor complaints against the valley's wind)",
-   "drawn": "2026-10-12",
-   "domain": "physical-environmental-sciences",
-   "subdomain": "pollution-source-attribution",
-   "objective": "root-cause",
-   "shape": "07",
-   "decision_type": "root_cause_named",
-   "answer_unit": "named_option",
-   "gap": [
-    "time",
-    "population"
-   ],
-   "pattern": [
-    "none"
-   ],
-   "generators": [
-    "G14",
-    "G16",
-    "G7"
-   ],
-   "gate_g": "decomposition_attribution",
-   "driver": "The decisive comparison sets each event's exposure against the same unit's exposure at the same clock hours on other days, because the events and the exposure both follow one daily cycle for reasons unrelated to any candidate; counting exposures among events, or normalizing by exposure over all hours, credits whichever candidate the daily cycle points at, and only the time-matched comparison at each unit's own geometry names the candidate whose exposure arrives with the events.",
-   "fate": "spent 2026-10-12 at stage 4: the determinism judge returned FIX_NOW in round 1 (the monthly complaint ask counted an app report received twice once on an unfiled rule) and SEND_BACK on the re-judge: no shipped file says how 'behind the surge' is decided, and a pre-surge baseline (each facility's share of the January to April events applied to the season's) names Kestrel Valley Rendering, so the hour-matched comparison was a method choice the text did not force; the number retired with its third architecture"
-  }
- ],
- "notes": "v4 drawn 2026-10-25 by sathay3012 after the author reopened the number; v3 spent 2026-10-12 (judge SEND_BACK on the re-judge). Stage 3 green 2026-10-25: crowding 3 of 5.2 points; derived importance on the ratings files on-board staffing 2. Spent 2026-10-25 at stage 4: both scored readers linked the conditions and landed crowding; judge SEND_BACK on Gate H.",
- "registered": "2026-10-25T12:27:07Z",
- "architecture_spent": true
+  "deliverables": [
+    "halwick_progress8_bridge_2022_2024.xlsx",
+    "halwick_progress8_bridge.png"
+  ],
+  "opening_move": "question-first",
+  "question_form": "whether",
+  "driver": "The decisive quantity is a unit's own contribution to a shortfall in an outcome measured relative to an earlier score, when members carry an effect from the earlier units they came from that the earlier score does not capture; because most of a unit's members come from a few earlier units, its average shortfall holds both, and only the members of the same earlier units who went to other units separate the earlier units' carried effect from the unit's own.",
+  "driver_concrete": "Pupils from seven primary schools make less progress at every secondary in the borough than their KS2 results predict, and those seven feed Halwick Academy; Progress 8, and a model of pupils within secondaries netting attendance and disadvantage, read the shortfall as Halwick's own, while a cross-classified model of the borough's pupils (secondary by primary) measures the seven primaries' carried effect on their pupils who went to other secondaries and leaves Halwick's own effect near zero.",
+  "stump": "The default path takes Progress 8 as already netting the intake (it compares pupils with the same KS2 results), nets attendance and disadvantage in a model of pupils within secondaries and books most of Halwick's gap to the academy's own effect; the cross-classified model of the borough file books most of it to the primary schools its pupils came from and leaves the academy's own effect near zero.",
+  "stump_class": "analytical",
+  "analyst_test": "A strong analyst who reads every field and rule correctly, takes Progress 8 as the field's value-added measure and nets attendance and disadvantage in a model of pupils within secondaries files the academy's own effect as most of the gap; estimating the primaries' carried effect from their pupils at the borough's other secondaries leaves it near zero, and the wrong answer survives every cleaning step.",
+  "domain_test": "School-effects research: a secondary's own effect on progress is estimated by a cross-classified multilevel model of pupils in secondaries and in the primaries they came from (Goldstein and Sammons 1997; Leckie 2009), because pupils carry their primary school's effect beyond their KS2 result, the value-added baseline taken at the change of school; with another field's nouns (a hospital's readmission gap, a plant's yield) there is no attainment baseline at a transfer between institutions whose precondition the earlier institution breaks, and the call stops reading the same.",
+  "layer2_family": "field_method",
+  "layer2_pattern": "own:primary-legacy-in-secondary-progress-cross-classified",
+  "layer1": [
+    "primary schools that converted to academies mid-window carry a new URN in the transfer file, with the predecessor URN only in the borough's establishment register",
+    "pupils without KS2 results (arrived from outside England, or absent from the tests) carry Attainment 8 but no Progress 8",
+    "the 2022 KS4 cohort graded on the transition year's more generous boundaries, so Attainment 8 levels move between cohorts while Progress 8 re-centres nationally each year",
+    "attendance as sessions possible and missed by reason code, with codes not counted as possible sessions",
+    "disadvantage as the Ever-6 free school meals, looked-after and previously looked-after flags",
+    "pupils who moved secondary in years 10 and 11 counted at the school on roll in January of year 11"
+  ],
+  "mechanism_source": "design_note",
+  "differentiation": {
+    "task129": "task129 v1 separates two causes that switched on together through two groups that each received one; here one unit's own effect is separated from an earlier unit's carried effect through the earlier units' members who went to other units, a cross-classified structure with no switch and no dated change",
+    "task500": "task500 v2 measures a spillover reaching untouched units through a household link; here nothing spills over: pupils carry an earlier school's effect with them, and the decision is how much of a school's gap is its own",
+    "task253": "task253 (this lane, Descriptive) counts schools past a floor from noisy averages under shrinkage; here a secondary's gap is decomposed with its pupils' primary schools as a second classification, and no count or floor is involved"
+  },
+  "lineage": [
+    {
+      "architecture": "v1 (first draft: the address check's forward weekly cost, self-healing exposure)",
+      "drawn": "2026-10-08",
+      "domain": "product-analytics",
+      "subdomain": "onboarding-activation",
+      "objective": "root-cause",
+      "shape": "09",
+      "decision_type": "quantity_figure",
+      "answer_unit": "count",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "A",
+        "E",
+        "C"
+      ],
+      "generators": [
+        "G13",
+        "G14",
+        "G2",
+        "G6",
+        "G16"
+      ],
+      "gate_g": "decomposition_attribution",
+      "calibration_form": "closed_decision_corpus",
+      "context_artifact": "operations_log",
+      "driver": "The decisive move conditions a correctly measured pooled effect on a state each unit holds only until the effect first strikes it, because a struck unit repairs the property that exposed it; the state is reached only through a two-step join from the event records to a property of a different entity, ordered against the unit's own occurrence, so the forward cost is the expected first occurrences among units still holding the state as that pool drains period by period, while the pooled effect carried flat forward reproduces every closed case (no earlier case could alter the property) and overstates every forward period.",
+      "driver_concrete": "The address check rejects only saved addresses holding a four-digit CP4 postcode without its three-digit extension, and an account that fails it once re-saves a full CP7 address within two days and never fails again, so the release's forward cost is the expected first failures among accounts still holding a CP4-only address over the quarter's 13 weeks, reached session to account to saved address, while the cohort-measured weekly loss carried flat reproduces both prior releases' reviewed effects (neither touched saved customer data) and overstates every forward week.",
+      "stump": "A competent solver nets out the partner-referral mix, measures the release's per-session effect from the staggered flag cohorts balanced on channel and account age (the construction that reproduces both prior releases' reviewed effects), and applies that pooled effect to the quarter's planned sessions, filing a weekly cost about a quarter too high, because it never follows sessions through accounts to their saved addresses, where only four-digit-postcode addresses fail and an account that fails once re-saves and never fails again, so the share of checkouts still exposed falls week by week.",
+      "fate": "drafted 2026-10-08 and never registered; redrawn at checkpoint A on 2026-10-09. It passed the guard only after its decisive pattern was relabelled from the note's A (past effect against forward yield) to E, and as E it still collides with task117 (registered in this batch) on time, E and a quantity figure, while A stays blocked inside the window by task107's v4 lineage. Its committed figure, the release's forward weekly cost, read as Forecasting and put the Root-Cause tag at risk. Its stump was weak: the staggered flag cohorts let a solver run an event study by weeks since exposure and watch the effect fade (an arithmetic symptom, task75's dead shape), the vendor's published address rules pointed at the address book, and both nearest measured exemplars scored above 0.50 because the model names the cause and loses only on sizing. Rolling back a flag-gated release is a flag flip, not a sprint. The self-healing exposure survives in v2 as a lower rung."
+    },
+    {
+      "architecture": "v2 (redraw at checkpoint A: signed-out club-app customers)",
+      "drawn": "2026-10-09",
+      "domain": "product-analytics",
+      "subdomain": "onboarding-activation",
+      "objective": "root-cause",
+      "shape": "18",
+      "decision_type": "pick_one_of_n",
+      "answer_unit": "named_option",
+      "gap": [
+        "population",
+        "time"
+      ],
+      "pattern": [
+        "none",
+        "A"
+      ],
+      "generators": [
+        "G3",
+        "G6",
+        "G13",
+        "G14"
+      ],
+      "gate_g": "decomposition_attribution",
+      "calibration_form": "prior_period_close_out",
+      "context_artifact": "monitoring_export",
+      "stump_strategy": "identity_resolution",
+      "driver": "The decisive quantity is the loss carried by units that the records file as newcomers with no owning account but that belong to established accounts, reachable only by following a reference each unit carries through a second party's report to an identifier held on a different entity, because the channel that brings them strips the stored state that makes established accounts succeed; joined on the visible account key they read as incremental newcomers whose shortfall is harmless dilution, every closed case confirms that reading because in every closed case those accounts arrived with their state intact, and the loss is charged to the largest symptom it produces downstream instead of to the stripped state.",
+      "driver_concrete": "The club app opens the store in its own browser, where nobody is signed in, so most of the shop-tab sessions the session log files as new, signed-out visitors are existing customers: each session's members'-price token resolves through the club's monthly redemption report to a member number, and the member number to the account that holds it on a store loyalty profile or as last season's SOCIO members' code redeemed on the account; signed out, they lose their saved address, saved card and card-on-file exemptions and convert at a fraction of their own usual rate, which makes their lost orders the largest current loss and puts it within reach of the parked one-time-code sign-in alone, while joined on the account key they look like new fans, both closed partner close-outs (open-web partners whose visitors arrived signed in) book partner traffic as dilution exactly, and their losses surface as typed-postcode failures at the address check and 3-D Secure challenges at payment.",
+      "stump": "A competent solver gives the sprint to the card-authentication upgrade: it measures the address check on its flag cohorts and watches its losses drain as accounts re-save, follows each club-app session's members'-price token through the club's token report to a member number and the member number to the loyalty profile's `club_member_no`, finds only about a sixth of the Shop-tab sessions on existing accounts losing about 13 orders a week, books the rest as new-fan dilution the way both partner close-outs book partner traffic, and is left with the rise in 3-D Secure challenges (18 orders) as the largest loss, because it joins member numbers to accounts on the visible profile key alone and never reads last season's members' code (SOCIO and the member number) redeemed on the accounts in the promotions extract, which places 63 per cent of those sessions on existing accounts whose lost orders, 51 a week, are the largest current loss and which only the one-time-code sign-in reaches.",
+      "spine": {
+        "file": "basket_sessions_2026-07-27_2026-09-27.parquet",
+        "rows": 214465,
+        "entity": "one storefront session that put an item in the basket, with its account when signed in, its traffic source and members'-price token, its new-visitor flag and the furthest checkout step it reached",
+        "grain": "session",
+        "source": "synthetic"
+      },
+      "forum": "line_manager_or_team",
+      "forcing_event": "incident_or_complaint",
+      "org_family": "retailer_or_ecommerce",
+      "role_family": "product_manager",
+      "fate": "built; solved in-house twice (rounds 86.1 and 89.5: the identity join was a schema read, token and member number on both files, then the SOCIO codes); retired 2026-10-10, FAILED_TO_STUMP; re-queued in wave 1 as re-root, Root-Cause"
+    },
+    {
+      "architecture": "v3 (odor complaints against the valley's wind)",
+      "drawn": "2026-10-12",
+      "domain": "physical-environmental-sciences",
+      "subdomain": "pollution-source-attribution",
+      "objective": "root-cause",
+      "shape": "07",
+      "decision_type": "root_cause_named",
+      "answer_unit": "named_option",
+      "gap": [
+        "time",
+        "population"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G14",
+        "G16",
+        "G7"
+      ],
+      "gate_g": "decomposition_attribution",
+      "driver": "The decisive comparison sets each event's exposure against the same unit's exposure at the same clock hours on other days, because the events and the exposure both follow one daily cycle for reasons unrelated to any candidate; counting exposures among events, or normalizing by exposure over all hours, credits whichever candidate the daily cycle points at, and only the time-matched comparison at each unit's own geometry names the candidate whose exposure arrives with the events.",
+      "fate": "spent 2026-10-12 at stage 4: the determinism judge returned FIX_NOW in round 1 (the monthly complaint ask counted an app report received twice once on an unfiled rule) and SEND_BACK on the re-judge: no shipped file says how 'behind the surge' is decided, and a pre-surge baseline (each facility's share of the January to April events applied to the season's) names Kestrel Valley Rendering, so the hour-matched comparison was a method choice the text did not force; the number retired with its third architecture"
+    },
+    {
+      "architecture": "v4 (Marlvale Trains' satisfaction fall against the conditions its passengers' journeys ran under)",
+      "drawn": "2026-10-25",
+      "domain": "marketing-consumer-research",
+      "subdomain": "customer-satisfaction-driver-analysis",
+      "objective": "root-cause",
+      "shape": "03",
+      "decision_type": "root_cause_named",
+      "answer_unit": "named_option",
+      "gap": [
+        "objective"
+      ],
+      "pattern": [
+        "none"
+      ],
+      "generators": [
+        "G3",
+        "G16"
+      ],
+      "gate_g": "decomposition_attribution",
+      "driver": "The decisive quantity is each candidate driver's share of a fall in the proportion of respondents satisfied, measured on the conditions each response was actually made under, because respondents' ratings of the candidates rise and fall with their overall verdict, so ranking the drivers on those ratings, alone or beside the conditions as controls, books the fall to whichever rating fell most.",
+      "fate": "spent 2026-10-25 at stage 4: both scored readers linked every questionnaire to its train and the passenger's legs, read the letter's counterfactual as the estimand and landed crowding (3 and 4 points); the judge returned DETERMINISTIC, SEND_BACK on Gate H, the decisive step read as rule application because once the conditions are linked every estimator files 3, 1, 1, 0"
+    }
+  ],
+  "notes": "v5 drawn 2026-10-25 by sathay3012 after v4 was spent at stage 4 the same day (both readers linked the journey conditions; judge SEND_BACK on Gate H). The candidate list names the academy's own effect, attendance, disadvantage and the rest of the intake; the primary schools are not a named candidate, so the step that books the rest of the intake to them is the analysis, not a reading of the list.",
+  "registered": "2026-10-25T15:49:34Z"
 }
