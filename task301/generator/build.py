@@ -1,90 +1,104 @@
-"""Cut the task301 pack from the world, the asks' records and the documents."""
-import csv
+"""Write the bundle under target/: the main call's records, the ask files, the distractors and the documents."""
 import os
 
 import numpy as np
 import pandas as pd
 
 import asks as A
-import docs
+import docs as DC
 import params as P
-import world as Wd
+import postprocess
+import records as RC
 
-FILES = P.FILES
+FILES = {
+    "extract": "active_patients_2026-09-30.csv",
+    "history": "smoking_status_history_2012-2026.parquet",
+    "practices": "practices.csv",
+    "log": "quit_outreach_calls_eastern_shore_2025.csv",
+    "plan": "quit_outreach_plan_2027.docx",
+    "dictionary": "data_dictionary_2026.docx",
+    "quitline": "quitline_referrals_2023-2025.csv",
+    "dialler": "dialler_legs_2025.csv",
+    "roster": "team_roster_2025.csv",
+    "profiles": "sub_region_profiles_2025.csv",
+    "workforce": "gp_workforce_2025.xlsx",
+    "medicines": "quit_medicines_dispensed_2025.csv",
+}
 PACK = list(FILES)
-DISTRACTORS = ("terms", "datasheets")
-CONTEXT = ("note",)
+DISTRACTORS = ["profiles", "workforce", "medicines"]
+CONTEXT = ["plan"]
 
 
-def _csv(path, header, rows):
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh, lineterminator="\n")
-        w.writerow(header)
-        w.writerows(rows)
+def world():
+    R = RC.build()
+    log, *_ = RC.pilot(R)
+    R["log"] = log
+    rng = np.random.default_rng(P.SEED_ASK)
+    names, qln = A.practice_names(R["pr"], rng, entered_2023=A.moved_practices(R["pr"], R["ext"]))
+    R["practices"].insert(1, "practice_name", R["practices"].practice_id.map(names))
+    R["quitline"] = A.quitline(R["pr"], R["ext"], qln, rng)
+    R["dialler"] = A.dialler(log, rng)
+    R["roster"] = A.roster()
+    R["moved"] = A.moved_practices(R["pr"], R["ext"])
+    return R
 
 
-def build(target):
+def distractors(R, rng):
+    ext = R["ext"]
+    adults = ext.groupby("sub_region").size()
+    prof = pd.DataFrame({"sub_region": [P.NAME[g] for g in P.REG],
+                         "residents_18_plus_2025": [int(adults[P.NAME[g]] * rng.uniform(1.22, 1.38)) for g in P.REG],
+                         "remoteness": ["Major city", "Inner regional", "Major city", "Inner regional", "Outer regional"],
+                         "irsd_median_decile": [6, 7, 2, 5, 4]})
+    # GP workforce by practice: full-time equivalent GPs and practice nurses, and new-patient availability
+    pr = R["practices"]
+    wf = pd.DataFrame({"practice_id": pr.practice_id, "sub_region": pr.sub_region,
+                       "gp_fte": [round(max(1.0, n / 1700.0 * rng.uniform(0.75, 1.25)), 1) for n in pr.active_patients_18_plus],
+                       "practice_nurse_fte": [round(max(0.4, n / 3200.0 * rng.uniform(0.6, 1.4)), 1)
+                                              for n in pr.active_patients_18_plus],
+                       "taking_new_patients": rng.choice(["Yes", "No", "Limited"], len(pr), p=[0.55, 0.15, 0.30])})
+    med = []
+    for g in P.REG:
+        for m in pd.period_range("2025-01", "2025-12", freq="M"):
+            base = adults[P.NAME[g]] / 1000.0
+            med.append((P.NAME[g], str(m), "Varenicline", int(rng.poisson(base * 0.55))))
+            med.append((P.NAME[g], str(m), "Nicotine replacement therapy", int(rng.poisson(base * 0.90))))
+    medicines = pd.DataFrame(med, columns=["sub_region", "month", "medicine", "dispensings"])
+    return prof, wf, medicines
+
+
+def build(target, R=None):
     os.makedirs(target, exist_ok=True)
-    F = {k: os.path.join(target, v) for k, v in FILES.items()}
-    W = Wd.world()
-    days = W.days
-    k0 = W.k0
-    ds = [d.strftime("%Y-%m-%d") for d in days]
-    # the register
-    rows = []
-    for nm, dc, comm, mod, pf, ws, amt, td, E0, N0 in P.SITES:
-        lay = P.LAYOUT["KP" if nm == "Knowle Park" else mod]
-        rows.append([nm, "operating", "%.1f" % dc, comm.isoformat(), P.MODN[mod], lay, E0, N0])
-    for nm, dc, comm, mod, pf, ws, amt, td, E0, N0 in P.CAND:
-        rows.append([nm, "candidate", "%.1f" % dc, "", P.MODN[mod], P.LAYOUT["KP"], E0, N0])
-    _csv(F["register"], ["site", "status", "dc_capacity_mwp", "commissioned", "module", "mounting",
-                         "centroid_easting", "centroid_northing"], rows)
-    # the weather record: satellite-derived irradiation in the plane of the array and reanalysis rain, air temperature
-    # and wind direction, one row a site a day
-    rows = []
-    for nm in P.OPERATING + P.CANDIDATES:
-        S = W.site[nm]
-        for i in range(len(days)):
-            rows.append([ds[i], nm, "%.3f" % S["poa_sat"][i], "%.1f" % S["rain"][i], "%.1f" % S["temp"][i],
-                         int(S["wind"][i])])
-    _csv(F["weather"], ["date", "site", "poa_irradiation_kwh_m2", "rainfall_mm", "air_temperature_c", "wind_from_deg"], rows)
-    # the fiscal meters
-    rows = []
-    for nm in P.OPERATING:
-        ex = W.site[nm]["export"]
-        for i in range(W.site[nm]["k_start"], len(days)):
-            rows.append([ds[i], nm, "%.2f" % ex[i]])
-    _csv(F["export"], ["date", "site", "export_mwh"], rows)
-    # the inverter SCADA
-    recs = {"date": [], "site": [], "inverter": [], "ac_energy_mwh": []}
-    for nm in P.OPERATING:
-        for b, B in enumerate(W.site[nm]["blocks"]):
-            inv = "INV%02d" % (b + 1)
-            for i in range(W.site[nm]["k_start"], len(days)):
-                recs["date"].append(ds[i])
-                recs["site"].append(nm)
-                recs["inverter"].append(inv)
-                recs["ac_energy_mwh"].append(round(float(B["energy"][i]), 3))
-    sc = pd.DataFrame(recs)
-    sc.to_parquet(F["scada"], index=False, engine="pyarrow", compression="snappy")
-    # the layout: every block of every operating farm and every candidate's planned blocks
-    rows = []
-    for nm in P.OPERATING + P.CANDIDATES:
-        S = W.site[nm]
-        nb = len(S["blocks"])
-        for b, B in enumerate(S["blocks"]):
-            rows.append([nm, "INV%02d" % (b + 1), "%.3f" % (S["dc"] / nb), int(round(S["E0"] + B["x"])),
-                         int(round(S["N0"] + B["y"]))])
-    _csv(F["layout"], ["site", "inverter", "dc_mwp", "block_easting", "block_northing"], rows)
-    # the environs
-    env = Wd.environs()
-    env.to_csv(F["environs"], index=False, lineterminator="\n")
-    # the O&M log
-    ev = sorted(W.events, key=lambda r: (r[0], P.OPERATING.index(r[1]), r[2]))
-    _csv(F["omlog"], ["date", "site", "inverter", "event", "share_of_day_available"],
-         [[d.isoformat(), s, i, e, "%.2f" % f] for d, s, i, e, f in ev])
-    # the asks' records
-    A.write(W, F, _csv)
-    # the documents
-    docs.write(W, F)
-    return W
+    if R is None:
+        R = world()
+    f = lambda k: os.path.join(target, FILES[k])
+    R["ext"].to_csv(f("extract"), index=False)
+    R["hist"].to_parquet(f("history"), index=False)
+    R["practices"].to_csv(f("practices"), index=False)
+    R["log"].to_csv(f("log"), index=False)
+    R["quitline"].to_csv(f("quitline"), index=False)
+    R["dialler"].drop(columns=["_local", "_leg"]).to_csv(f("dialler"), index=False)
+    R["roster"].to_csv(f("roster"), index=False)
+    rng = np.random.default_rng(P.SEED_DOCS)
+    prof, wf, medicines = distractors(R, rng)
+    prof.to_csv(f("profiles"), index=False)
+    from openpyxl import Workbook
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Workforce June 2026"
+    ws.append(list(wf.columns))
+    for row in wf.itertuples(index=False):
+        ws.append(list(row))
+    ns = wb.create_sheet("Notes")
+    ns.append(["Notes"])
+    ns.append(["Full-time equivalents at 30 June 2026 from the practices' workforce returns to the PHN."])
+    ns.append(["Taking new patients is as each practice reported it to the PHN's practice support team in June 2026."])
+    wb.properties.creator = "Practice Support"
+    wb.save(f("workforce"))
+    postprocess.scrub(f("workforce"), P.ORG, "2026-07-21")
+    postprocess.finish_office(f("workforce"), "2026-07-08T00:20:00Z", "2026-07-21T04:05:00Z", P.ORG,
+                              person="Practice Support")
+    medicines.to_csv(f("medicines"), index=False)
+    DC.plan(f("plan"))
+    DC.dictionary(f("dictionary"))
+    return R

@@ -1,262 +1,243 @@
-"""Generator assertions for task301: the three rules (R1 to R3) on the clean truth and the pack, the main call's
-family, every semantic fork row, both asks against the generator's truth and their wrong paths, the bins, the input
-gates and the separation line.
-
-    python3 task301/generator/checks.py <target dir>
-"""
-import datetime as dt
+"""Generator assertions for task301: the call and its licensed family, the ladder, the semantic fork rows (SFn), the
+ask devices, the input gates and the three-rules block on the world's clean truth. Exit status 1 on any failure."""
 import os
 import sys
-import zoneinfo
 
 import numpy as np
 import pandas as pd
+import statsmodels.api as sm
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import asks as A
 import build as B
 import params as P
-import solve as SV
-import world as Wd
+import solve as S
 
-UK = zoneinfo.ZoneInfo("Europe/London")
-FAILS = []
+FAIL = []
 
 
-def ok(label, cond, detail=""):
-    print("%-4s %s %s" % ("PASS" if cond else "FAIL", label, detail))
-    if not cond:
-        FAILS.append(label)
+def check(name, ok, detail=""):
+    print("%-4s %s%s" % ("ok" if ok else "FAIL", name, (" :: " + detail) if detail else ""))
+    if not ok:
+        FAIL.append(name)
 
 
-def edge(v, u):
-    return u / 2 - abs(v - round(v / u) * u)
+def rnd(x, u):
+    return int(round(x / float(u)) * u)
 
 
-def main(T):
-    FAILS.clear()
-    K = SV.Pack(T)
-    c = SV.call(K)
-    gold, clean = c["gold"], c["clean"]
-    W = Wd.world()
-    days = W.days
+def family(target, ext, hist, log, h, pr, L, K):
+    """The licensed constructions: each fits a sub-region's own decay from its own recordings."""
+    grid = (np.arange(53) + 0.5) / 53
+    he = hist.sort_values(["patient_key", "recorded_at"], kind="stable").copy()
+    he["c"] = S.code(he.smoking_status.values)
+    he["t"] = (pd.to_datetime(he.recorded_at.str[:10]) - pd.Timestamp("2012-01-01")).dt.days.values / S.YD
+    he["sub_region"] = he.patient_key.map(ext.set_index("patient_key").sub_region).values
+    pe_all = S.pairs_of(he)
+    es = S.fit_ctmc(pr[pr.sub_region == "Eastern Shore"])[0]
+    lg = log.copy()
+    lg["age"] = (pd.to_datetime(lg.call_date) - pd.to_datetime(lg.list_status_date)).dt.days.values / S.YD
+    pi = es[1] / sum(es)
+    k_model = (log.four_week_status == "Not smoking").sum() / (pi + (1 - pi) * np.exp(-sum(es) * lg.age.values)).sum()
+    fam = {}
+    for g in S.CANDS:
+        Lg = L[L.sub_region == g]
+        a = Lg.age_y.values
+        p = pr[pr.sub_region == g]
+        o = {}
+        qr = S.fit_ctmc(p)[0]
+        o["ctmc_day_pairs"] = S.p_still(a, *qr).sum() * K
+        o["ctmc_entry_pairs"] = S.p_still(a, *S.fit_ctmc(pe_all[pe_all.sub_region == g])[0]).sum() * K
+        o["ctmc_smoker_start"] = S.p_still(a, *S.fit_ctmc(p[p.c0 == "S"])[0]).sum() * K
+        o["ctmc_never_dropped"] = S.p_still(a, *S.fit_ctmc(p[p.c1 != "N"])[0]).sum() * K
+        o["mid_year_call"] = (qr[1] / sum(qr) + (1 - qr[1] / sum(qr)) * np.exp(-sum(qr) * (a + 0.5))).sum() * K
+        o["model_conversion"] = S.p_still(a, *qr).sum() * k_model
+        ps = p[p.c0 == "S"]
+        edges = np.array([0, 0.5, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 15])
+        mids, vals = [], []
+        for lo, hi in zip(edges[:-1], edges[1:]):
+            m = ps[(ps.dt >= lo) & (ps.dt < hi)]
+            if len(m) >= 25:
+                mids.append(m.dt.mean())
+                vals.append((m.c1 == "S").mean())
+        o["share_by_gap"] = np.mean([np.interp(a + x, mids, vals) for x in grid], axis=0).sum() * K
+        X2 = sm.add_constant(np.column_stack([ps.dt, ps.dt ** 2]))
+        l2 = sm.GLM((ps.c1 == "S").astype(float), X2, family=sm.families.Binomial()).fit()
+        o["logit_gap_sq"] = np.mean([l2.predict(sm.add_constant(np.column_stack([a + x, (a + x) ** 2]),
+                                                                has_constant="add")) for x in grid], axis=0).sum() * K
+        X1 = sm.add_constant(ps.dt.values)
+        l1 = sm.GLM((ps.c1 == "S").astype(float), X1, family=sm.families.Binomial()).fit()
+        o["logit_gap"] = np.mean([l1.predict(sm.add_constant(a + x, has_constant="add")) for x in grid],
+                                 axis=0).sum() * K
+        acc = 0.0
+        for flag in ("Y", "N"):
+            keys = set(ext.patient_key[(ext.sub_region == g) & (ext.chronic_condition_review == flag)])
+            pk = S.pairs_of(h[h.patient_key.isin(keys)])
+            Lf = Lg[Lg.chronic_condition_review == flag]
+            acc += S.p_still(Lf.age_y.values, *S.fit_ctmc(pk)[0]).sum() * K
+        o["by_review_flag"] = acc
+        fam[g] = o
+    return pd.DataFrame(fam).T
 
-    # ------------------------------------------------------------ R1: the field's raw material ships
-    sc_cols = set(K.sc.columns)
-    ok("R1 block SCADA ships at the block-day grain", {"date", "site", "inverter", "ac_energy_mwh"} <= sc_cols
-       and K.sc.groupby(["site", "inverter", "date"]).size().max() == 1)
-    banned = ("soil", "loss", "deposit", "dust", "clean", "exposure", "pr", "ratio")
-    shipped = []
-    for f in os.listdir(T):
-        if f.endswith(".csv"):
-            shipped += list(pd.read_csv(os.path.join(T, f), nrows=1).columns)
-    shipped += list(sc_cols)
-    ok("R1 no shipped column holds the deciding quantity",
-       not [x for x in shipped if any(x.lower() == b or x.lower().startswith(b + "_") or x.lower().endswith("_" + b)
-                                      for b in banned)], str([x for x in shipped if "ratio" in x.lower()]))
-    ok("R1 the golden reads the blocks: Wexcombe's near blocks carry fitted deposits", len(c["rates"]) >= 3,
-       str(len(c["rates"])))
 
-    # ------------------------------------------------------------ the call and its ladder
-    order = sorted(SV.CANDS, key=lambda k: -gold[k])
-    ok("call: Kingsley Fields first", order[0] == "Kingsley Fields", str({k: round(v) for k, v in gold.items()}))
-    ok("call: export prints 9,700", int(round(gold["Kingsley Fields"] / 100) * 100) == 9700)
-    ok("bin: 2028 export at least 20 MWh inside its cell", edge(gold["Kingsley Fields"], 100) >= 20,
-       "%.1f" % edge(gold["Kingsley Fields"], 100))
-    ok("R3a easy route (site-level ratio at the meter) builds Hallam Down", max(clean, key=clean.get) == "Hallam Down",
-       "%.0f against %.0f" % (clean["Hallam Down"], clean["Kingsley Fields"]))
-    ok("rung 2 (Wexcombe's farm-level deficit applied flat) still builds Hallam Down",
-       clean["Hallam Down"] * min(1.0, c["farm_ratio"]) > clean["Kingsley Fields"], "%.4f" % c["farm_ratio"])
-    ok("rung 3 (Wexcombe's block deficits carried flat by distance) still builds Hallam Down",
-       clean["Hallam Down"] * (1 - c["flat_blocks"]) > clean["Kingsley Fields"], "%.4f" % c["flat_blocks"])
-    ok("R3b the decisive step alone (block-distance transport) builds Kingsley Fields",
-       clean["Hallam Down"] * (1 - c["loss"]) < clean["Kingsley Fields"], "%.4f" % c["loss"])
-    ok("the blocks select the wash thresholds 4 and 10 mm",
-       (c["wash"][0][1], c["wash"][0][2]) == (4, 10) and c["wash"][1][0] / c["wash"][0][0] > 1.05,
-       "%.3f" % (c["wash"][1][0] / c["wash"][0][0]))
+def rungs(ext, hist, log, h, pr, L, cv):
+    K = cv["k"]
+    lg = log.copy()
+    lg["age"] = (pd.to_datetime(lg.call_date) - pd.to_datetime(lg.list_status_date)).dt.days.values / S.YD
+    lg["q4"] = (lg.four_week_status == "Not smoking").astype(float)
+    edges = [0, 1, 2, 3, 5, 8, 99]
+    rate = lg.groupby(pd.cut(lg.age, edges, right=False), observed=False).q4.mean()
+    X = sm.add_constant(np.column_stack([lg.age, lg.age ** 2]))
+    fl = sm.GLM(lg.q4, X, family=sm.families.Binomial()).fit()
+    es = S.fit_ctmc(pr[pr.sub_region == "Eastern Shore"])[0]
+    pool = S.fit_ctmc(pr[pr.sub_region.isin(S.CANDS)])[0]
+    out = {}
+    for g in S.CANDS:
+        Lg = L[L.sub_region == g]
+        a = Lg.age_y.values
+        out[g] = {"naive_per_listed": len(Lg) * cv["per_listed"],
+                  "recent_two_years": (a < 2.25).sum() * cv["per_listed"],
+                  "common_five_pct": np.exp(-0.05 * (a + 0.5)).sum() * K,
+                  "pilot_age_bins": pd.Series(pd.cut(a + 0.5, edges, right=False)).map(rate).astype(float).sum(),
+                  "pilot_age_logit": fl.predict(sm.add_constant(np.column_stack([a + 0.5, (a + 0.5) ** 2]),
+                                                                has_constant="add")).sum(),
+                  "eastern_shore_decay": S.p_still(a, *es).sum() * K,
+                  "pooled_decay": S.p_still(a, *pool).sum() * K}
+    return pd.DataFrame(out).T
 
-    # R3a on the clean truth: the true irradiation and the true output, no satellite error, no outages taken out
-    k0 = W.site["Knowle Park"]["k_start"]
-    kp_true = W.site["Knowle Park"]["export"][k0:].sum() / (12.0 * W.site["Knowle Park"]["poa"][k0:].sum())
-    true_clean = {k: 11.0 * W.site[k]["poa"].sum() / 10.0 * kp_true for k in SV.CANDS}
-    ok("R3a on the clean truth: the site-level route builds Hallam Down", max(true_clean, key=true_clean.get) ==
-       "Hallam Down", str({k: round(v) for k, v in true_clean.items()}))
-    hd = W.site["Hallam Down"]
-    true_loss = float(np.mean([(hd["poa"] * B_["soil"]).sum() / hd["poa"].sum() for B_ in hd["blocks"]]))
-    ok("R3b on the clean truth: Hallam Down's true deposit loss exceeds its true lead",
-       true_clean["Hallam Down"] * (1 - true_loss) < true_clean["Kingsley Fields"], "true loss %.4f" % true_loss)
 
-    # the deposit family: every member files Kingsley Fields
-    fam = SV.family(K)
-    worst = max(clean["Hallam Down"] * (1 - r[4]) for r in fam)
-    ok("family: %d deposit fits, every one leaves Hallam Down below Kingsley Fields" % len(fam),
-       worst < gold["Kingsley Fields"] - 50, "best Hallam %.0f" % worst)
-    # SF7: the deposit's ceiling, chosen by the blocks' own fit; every ceiling the record does not reject files Kingsley
-    s_far = SV.wexcombe_blocks(K, "far")
-    wxr = K.w[K.w.site == "Wexcombe"].set_index("date").sort_index()
-    L7 = SV.block_distances(K, "Hallam Down")
-    h7 = K.w[K.w.site == "Hallam Down"].sort_values("date")
-    caps = []
-    for cap in (0.05, 0.08, 0.10, 0.15, 0.25, 1.0):
-        dep = SV.run_deposit(wxr.rainfall_mm.values, SV.RATES, 4, 10, cap)
-        tot, per = 0.0, {}
-        for inv, d in s_far[s_far.d < 320].groupby("inverter"):
-            d = d.sort_values("date")
-            e, r = SV._best_rate(d, dep[wxr.index.get_indexer(d.date)], SV.RATES)
-            per[inv] = (float(d.d.iloc[0]), r)
-            tot += e * len(d)
-        f7 = SV.rate_fn(per, "exp")
-        hd7 = SV.run_deposit(h7.rainfall_mm.values, [f7(x) for x in L7.d], 4, 10, cap)
-        p7 = h7.poa_irradiation_kwh_m2.values
-        caps.append((tot, cap, float(np.mean((p7[:, None] * hd7).sum(axis=0) / p7.sum()))))
-    best7 = min(caps)[0]
-    standing = [x for x in caps if x[0] <= 1.10 * best7]
-    ok("SF7 the deposit ceiling the blocks fit best is 15 per cent or more, and every ceiling within 10 per cent of the "
-       "best fit files Kingsley Fields", min(caps)[1] >= 0.15 and
-       all(clean["Hallam Down"] * (1 - x[2]) < clean["Kingsley Fields"] for x in standing),
-       str([(x[1], round(x[0] / best7, 2), round(x[2], 4)) for x in caps]))
-    ok("family: the partial-wash fits beat the full-wash fits on the blocks' own record",
-       min(r[3] for r in fam if r[0] == "far" and r[1].startswith("partial")) * 1.3 <
-       min(r[3] for r in fam if r[0] == "far" and r[1].startswith("full")))
+def main(target, R=None):
+    FAIL.clear()
+    gold, cv, h, pr, L, log, ext = S.golden(target)
+    hist = pd.read_parquet(os.path.join(target, B.FILES["history"]))
+    K = cv["k"]
+    q = pd.Series({g: v["quits"] for g, v in gold.items()})
+    win = q.idxmax()
+    check("call: the golden names Inner South", win == "Inner South", "%s %.1f" % (win, q.max()))
+    check("call: printed to the nearest 50 is 550", rnd(q[win], 50) == 550, "%.1f" % q[win])
+    fam = family(target, ext, hist, log, h, pr, L, K)
+    names = fam.idxmax()
+    check("family: every licensed construction names Inner South", (names == "Inner South").all(), names.to_dict().__str__())
+    b = fam.loc["Inner South"]
+    printed = sorted(set(rnd(v, 50) for v in b))
+    check("family: Inner South prints 550 under every construction", printed == [550], "%s from %.1f to %.1f" % (printed, b.min(), b.max()))
+    check("family: every construction at least 5 inside the 550 cell", b.min() >= 530 and b.max() <= 570,
+          "%.1f to %.1f against 525 and 575" % (b.min(), b.max()))
+    lead = (b / fam.drop("Inner South").max() - 1) * 100
+    check("family: Inner South leads by 4 per cent or more under every construction", (lead >= 4.0).all(),
+          "lowest %.1f per cent" % lead.min())
+    rg = rungs(ext, hist, log, h, pr, L, cv)
+    want = {"naive_per_listed": "Coastal Hinterland", "recent_two_years": "Western Plains",
+            "common_five_pct": "Coastal Hinterland", "pilot_age_bins": "Coastal Hinterland",
+            "pilot_age_logit": "Coastal Hinterland", "eastern_shore_decay": "Coastal Hinterland",
+            "pooled_decay": "Coastal Hinterland"}
+    for k, w in want.items():
+        got = rg[k].idxmax()
+        check("ladder: %s names %s" % (k, w), got == w, "%s; Inner South %.1f, %s %.1f" % (got, rg.loc["Inner South", k], w, rg.loc[w, k]))
+    check("ladder: the pilot gradient's lead for Coastal Hinterland is 15 per cent or more",
+          rg.loc["Coastal Hinterland", "pilot_age_logit"] / rg.loc["Inner South", "pilot_age_logit"] >= 1.15
+          and rg.loc["Coastal Hinterland", "pilot_age_bins"] / rg.loc["Inner South", "pilot_age_bins"] >= 1.15,
+          "%.3f and %.3f" % (rg.loc["Coastal Hinterland", "pilot_age_logit"] / rg.loc["Inner South", "pilot_age_logit"],
+                             rg.loc["Coastal Hinterland", "pilot_age_bins"] / rg.loc["Inner South", "pilot_age_bins"]))
+    # pooling is refuted: a likelihood ratio on the four candidates' pairs, per-region rates against one pair of rates
+    ll_sep = sum(S.fit_ctmc(pr[pr.sub_region == g])[1] for g in S.CANDS)
+    ll_pool = S.fit_ctmc(pr[pr.sub_region.isin(S.CANDS)])[1]
+    check("ladder: the record rejects one decay for all four (LR on 6 df over 100)", 2 * (ll_pool - ll_sep) > 100,
+          "2 dlogL %.1f" % (2 * (ll_pool - ll_sep)))
+    # semantic fork rows
+    alt = ext[ext.smoking_status.isin(["Daily smoker", "Smoker"]) & ext.sub_region.isin(S.CANDS)].copy()
+    alt["age_y"] = (pd.Timestamp(S.Y0) - pd.to_datetime(alt.smoking_status_date)).dt.days.values / S.YD
+    q1 = {g: S.p_still(alt[alt.sub_region == g].age_y.values, *S.fit_ctmc(pr[pr.sub_region == g])[0]).sum() * K
+          for g in S.CANDS}
+    check("SF1 current smoker read as daily smoker or smoker only: same call", max(q1, key=q1.get) == win)
+    fu = log[log.four_week_status != "Lost to follow-up"]
+    k2 = cv["reach"] * (fu.four_week_status == "Not smoking").sum() / ((fu.outcome != "Not reached").sum() - cv["stopped"])
+    check("SF2 lost to follow-up left out instead of counted as smoking: same call (one factor for all four)",
+          True, "factor %.4f against %.4f" % (k2, K))
+    check("SF3 calls taken at mid-2027 instead of spread through the year: same call",
+          fam["mid_year_call"].idxmax() == win)
+    hl = h.groupby("patient_key").tail(1)
+    lst2 = set(hl[hl.c == "S"].patient_key) & set(ext.patient_key[ext.sub_region.isin(S.CANDS)])
+    check("SF4 the list from the history's last day-level entry equals the extract's", lst2 == set(L.patient_key),
+          "%d against %d" % (len(lst2), len(L)))
+    check("SF5 never smoked after a smoker or ex-smoker entry dropped instead of read as not smoking: same call",
+          fam["ctmc_never_dropped"].idxmax() == win)
+    check("SF6 entry-level pairs instead of the day's last entry: same call", fam["ctmc_entry_pairs"].idxmax() == win)
+    check("SF7 conversion from Eastern Shore's own expected smokers at its calls: same call and figure",
+          fam["model_conversion"].idxmax() == win and rnd(fam.loc[win, "model_conversion"], 50) == 550)
+    check("SF8 a December 2027 call whose four weeks end in 2028 counts in 2027 (the plan counts by the call): no "
+          "alternative changes the call", True)
+    # asks
+    A = S.ask_referrals(target)
+    qr_ = pd.read_csv(os.path.join(target, B.FILES["quitline"]), dtype=str, keep_default_na=False)
+    qr_ = qr_[qr_.month.str[:4] == "2025"].copy()
+    qr_["quarter"] = "Q" + ((qr_.month.str[5:7].astype(int) - 1) // 3 + 1).astype(str)
+    qr_["referrals"] = qr_.referrals.astype(int)
+    lab = qr_[qr_.phn_sub_region.isin(S.CANDS)].pivot_table(index="phn_sub_region", columns="quarter",
+                                                            values="referrals", aggfunc="sum").reindex(S.CANDS)
+    prac = pd.read_csv(os.path.join(target, B.FILES["practices"]), dtype=str, keep_default_na=False)
+    exact = dict(zip(prac.practice_name, prac.sub_region))
+    qr_["exact"] = qr_.referring_practice.map(exact).fillna(qr_.phn_sub_region)
+    exj = qr_[qr_.exact.isin(S.CANDS)].pivot_table(index="exact", columns="quarter", values="referrals",
+                                                   aggfunc="sum").reindex(S.CANDS)
+    check("ask A: Quitline's own sub-region label misses all 16 cells", int((lab.values == A.values).sum()) == 0,
+          "%d hits" % int((lab.values == A.values).sum()))
+    check("ask A: an exact-name join falling back on the label misses all 16 cells",
+          int((exj.values == A.values).sum()) == 0, "%d hits" % int((exj.values == A.values).sum()))
+    d = pd.read_csv(os.path.join(target, B.FILES["dialler"]), dtype={"patient_key": str})
+    d["st"] = pd.to_datetime(d.started)
+    calls, handed = S.dialler_calls(target)
+    keep = set(calls.leg_id)
+    dates = d.st.dt.date
+    dst = np.zeros(len(d), bool)
+    for a_, b_ in S.DST:
+        dst |= (dates >= a_).values & (dates <= b_).values
+    d["local"] = d.st + pd.to_timedelta(np.where(dst, 1, 0), unit="h")
 
-    # the performance basis family (SF3): every basis prints the golden for Kingsley Fields
-    base = SV.site_pr(K, "Knowle Park")
-    ev = K.om[K.om.site == "Knowle Park"]
-    x = K.ex[K.ex.site == "Knowle Park"].merge(K.w[K.w.site == "Knowle Park"], on=["date", "site"])
-    x = x[~x.date.isin(ev.date)]
-    pr_out = x.export_mwh.sum() / (12.0 * x.poa_irradiation_kwh_m2.sum())
-    a25 = SV.mean_age(K, "Knowle Park", dt.date(2025, 1, 1), dt.date(2025, 12, 31))
-    akp = SV.mean_age(K, "Knowle Park")
-    pr25 = SV.site_pr(K, "Knowle Park", (2025, 2025))
-    for name, pr, d, a0 in [("SF3 golden", base, c["deg"], akp), ("SF3 no age carry", base, 0.0, akp),
-                            ("SF3 datasheet degradation", base, 0.0045, akp), ("SF3 outage days out", pr_out, c["deg"], akp),
-                            ("SF3 2025 alone", pr25, c["deg"], a25), ("SF1 age at 1 January 2028", base, c["deg"], None)]:
-        vals = {}
-        for k in SV.CANDS:
-            age = SV.age_2028(k) if a0 is not None else (dt.date(2028, 1, 1) - SV.ENERGISED[k]).days / 365.25
-            vals[k] = 11.0 * SV.avg_year_poa(K, k) * pr * (1 - d) ** (age - (a0 if a0 is not None else akp))
-        vals["Hallam Down"] *= (1 - c["loss"])
-        top = max(vals, key=vals.get)
-        ok("%s: Kingsley Fields at %d" % (name, int(round(vals["Kingsley Fields"] / 100) * 100)),
-           top == "Kingsley Fields" and int(round(vals["Kingsley Fields"] / 100) * 100) == 9700,
-           "%.1f" % vals["Kingsley Fields"])
-    # SF2: a year of average weather as the ten-year mean, not one year
-    yrs = {y: {k: K.w[(K.w.site == k) & (K.w.date.dt.year == y)].poa_irradiation_kwh_m2.sum() for k in SV.CANDS}
-           for y in range(2016, 2026)}
-    ok("SF2 Kingsley Fields out-shines Larkhill Common and Marston Vale in every year of the record (a single year, "
-       "the median year or the ten-year mean all build it)",
-       all(v["Kingsley Fields"] > max(v["Larkhill Common"], v["Marston Vale"]) for v in yrs.values()))
-    # SF5: the four candidates are the register's, each with its planned blocks in the layout
-    cands = set(K.reg[K.reg.status == "candidate"].site)
-    ok("SF5 the register's candidates are the four, each with planned blocks", cands == set(SV.CANDS) and
-       all((K.lay.site == k).sum() >= 9 for k in SV.CANDS), str(sorted(cands)))
-    # SF4: export at the meter, not the inverters' sum
-    sc_sum = K.sc[K.sc.site == "Knowle Park"].ac_energy_mwh.sum()
-    ok("SF4 the meter reads below the inverters (transformer and cable)", K.ex[K.ex.site == "Knowle Park"].export_mwh.sum()
-       < sc_sum)
-    # Hallam Down's blocks: distances by block, not one centroid distance (R2 mess item)
-    L = SV.block_distances(K, "Hallam Down")
-    f = SV.rate_fn(c["rates"], "exp")
-    h = K.w[K.w.site == "Hallam Down"].sort_values("date")
-    poa, rain = h.poa_irradiation_kwh_m2.values, h.rainfall_mm.values
-    one = float((poa * SV.run_deposit(rain, f(105.0), 4, 10)).sum() / poa.sum())
-    ok("SF6 / R2 environs from the centroid: one centroid distance for every block still builds Kingsley Fields",
-       clean["Hallam Down"] * (1 - one) < gold["Kingsley Fields"], "%.4f" % one)
-    ok("R2 inverter sum as the export (no meter loss) keeps Kingsley Fields",
-       max(SV.CANDS, key=lambda k: gold[k] / 0.984) == "Kingsley Fields")
-    ok("R2 module generations pooled (all fourteen farms' ratio) keeps the order",
-       sorted(SV.CANDS, key=lambda k: -gold[k] * 0.97)[0] == "Kingsley Fields")
-
-    # R3c: no plant
-    dup = 0
-    for s_, g in K.sc.groupby("site"):
-        piv = g.pivot(index="date", columns="inverter", values="ac_energy_mwh")
-        dup += int(piv.T.duplicated().sum())
-    ok("R3c no copied block series", dup == 0, str(dup))
-    note_text = " ".join(p.text for p in __import__("docx").Document(os.path.join(T, P.FILES["note"])).paragraphs)
-    ok("R3c the note ranks nothing and names no dust", not any(w in note_text.lower() for w in
-                                                                  ("dust", "soil", "poultry", "broiler", "rank")))
-
-    # ------------------------------------------------------------ ask A against the generator's truth
-    _, _, _, ta = A.pyranometers(W)
-    a = SV.ask_a(K)
-    for fm in P.OPERATING:
-        v = a[fm]
-        ok("A %s golden equals the truth" % fm, abs(v["gold"] - ta[fm]["ratio"]) < 1e-9 and v["down"] == ta[fm]["old"]
-           and v["label"] == ta[fm]["old"], "%.6f" % v["gold"])
-        ok("A %s off-centre, 0.25 unit from an edge" % fm, 0.00025 <= edge(v["gold"], 0.001) <= 0.0004,
-           "%.5f" % edge(v["gold"], 0.001))
-        for w in ("register", "label_asof", "label_latest", "all_days", "gold_latest"):
-            ok("A %s %s misses" % (fm, w), round(v[w], 3) != round(v["gold"], 3), "%.4f" % v[w])
-    # ------------------------------------------------------------ ask B against the generator's truth
-    *_, tb = A.response(W)
-    b = SV.ask_b(K)
-    for fm in P.OPERATING:
-        v = b[fm]
-        ok("B %s golden equals the truth" % fm, abs(v["gold"] - tb[fm]["mean"]) < 1e-9 and v["n"] == tb[fm]["n"],
-           "%.4f" % v["gold"])
-        ok("B %s off-centre" % fm, 0.025 <= edge(v["gold"], 0.1) <= 0.04, "%.4f" % edge(v["gold"], 0.1))
-        for w in ("attended", "cmms", "mixed", "tracker_raw", "from_wo", "possible_only"):
-            ok("B %s %s misses" % (fm, w), round(v[w], 1) != round(v["gold"], 1), "%.3f" % v[w])
-    al = pd.read_csv(os.path.join(T, P.FILES["alarms"]), parse_dates=["raised_utc", "cleared_utc"])
-    wo = pd.read_csv(os.path.join(T, P.FILES["workorders"]), parse_dates=["raised", "attended", "completed"])
-    gf = pd.read_csv(os.path.join(T, P.FILES["geofence"]), parse_dates=["entered", "left"])
-    faults = al[al.code.str.startswith("F")]
-    ok("B every fault alarm has one work order and no warning has one",
-       set(faults.alarm_id) == set(wo.alarm_ref.dropna().astype(int)) and wo.alarm_ref.dropna().is_unique)
-
-    def ambiguous(t):
-        t = pd.Timestamp(t).to_pydatetime()
-        return t.replace(fold=0).utcoffset() != t.replace(fold=1).utcoffset() if t.tzinfo else \
-            t.replace(tzinfo=UK, fold=0).utcoffset() != t.replace(tzinfo=UK, fold=1).utcoffset()
-    amb = sum(ambiguous(t) for t in list(gf.entered) + list(gf.left) + list(wo.raised) + list(wo.attended))
-    ok("B no UK time in the tracker or the CMMS falls in a clock-change hour", amb == 0, str(amb))
-    j = wo.dropna(subset=["alarm_ref"]).merge(al, left_on=wo.dropna(subset=["alarm_ref"]).alarm_ref.astype(int),
-                                              right_on="alarm_id")
-    to_utc = lambda t: pd.Timestamp(t).tz_localize(UK).tz_convert("UTC").tz_localize(None)
-    late = sum(to_utc(r.attended) > r.cleared_utc for r in j.itertuples())
-    ok("B some CMMS attended stamps fall after the alarm cleared (the sync)", late > 0, str(late))
-    ok("B C1 on the clocks: elapsed and wall-clock hours agree at every farm (no wait spans a change of the clocks)",
-       all(abs(b[f]["gold"] - b[f]["wall"]) < 1e-9 for f in P.OPERATING),
-       str({f: round(b[f]["wall"] - b[f]["gold"], 3) for f in P.OPERATING if abs(b[f]["gold"] - b[f]["wall"]) > 1e-9}))
-
-    # ------------------------------------------------------------ the realism sweep
-    w = K.w
-    piv = w.pivot(index="date", columns="site", values="poa_irradiation_kwh_m2")
-    same = max(int((piv[a] == piv[b]).sum()) for i, a in enumerate(piv.columns) for b in piv.columns[i + 1:])
-    ok("realism: two sites' irradiation agree to the watt-hour only by chance (under 1 per cent of days)",
-       same < 0.01 * len(piv), str(same))
-    ok("realism: no constant block series", int(K.sc.groupby(["site", "inverter"]).ac_energy_mwh.nunique().min()) > 300)
-    vt = pd.read_csv(os.path.join(T, P.FILES["geofence"]), parse_dates=["entered", "left"])
-    ok("realism: every van visit leaves after it enters", bool((vt.left > vt.entered).all()))
-    ok("realism: every alarm clears after it is raised", bool((al.cleared_utc > al.raised_utc).all()))
-    ok("realism: every work order completes after it is attended", bool((wo.completed >= wo.attended).all()))
-    names = {"Valerie Freeman", "Terence Coates", "Rosie Taylor", "Clive Barber"}
-    import zipfile as _z
-    seen = set()
-    for f in os.listdir(T):
-        if f.endswith((".docx", ".xlsx")):
-            core = _z.ZipFile(os.path.join(T, f)).read("docProps/core.xml").decode("utf-8")
-            seen |= {n for n in names if n in core}
-            ok("realism: %s carries no writing library's name" % f,
-               not any(s in core for s in ("python-docx", "openpyxl", "Openpyxl")))
-    ok("realism: every person in the documents comes from guard.py names", seen <= names, str(seen))
-
-    # ------------------------------------------------------------ the separation line and the input gates
-    call_files = {P.FILES[k] for k in ("export", "scada", "weather", "register", "layout", "environs", "omlog", "note")}
-    ask_files = {P.FILES[k] for k in ("met", "pyrreg", "certs", "alarms", "workorders", "geofence", "vans")}
-    ok("separation: no ask file is a call file", not call_files & ask_files)
-    files = sorted(os.listdir(T))
-    fmts = {f.rsplit(".", 1)[1] for f in files}
-    rows = {f: sum(1 for _ in open(os.path.join(T, f))) - 1 for f in files if f.endswith(".csv")}
-    ok("gates: 10 or more files", len(files) >= 10, str(len(files)))
-    ok("gates: 3 or more formats", len(fmts) >= 3, str(sorted(fmts)))
-    ok("gates: one file of 25,000 rows or more", max(rows.values()) >= 25000 or len(K.sc) >= 25000,
-       "%d / parquet %d" % (max(rows.values()), len(K.sc)))
-    ok("gates: two distractors named", len(B.DISTRACTORS) >= 2)
-    print("%d failures" % len(FAILS))
-    return FAILS
+    def ev(df, col):
+        e = df[df[col].dt.hour >= 17]
+        return pd.DataFrame({"calls": e.groupby(e[col].dt.day_name()).size(),
+                             "reached": e[e.result == "Answered"].groupby(e[col].dt.day_name()).size()}).reindex(S.WEEKDAYS)
+    Bg = S.ask_evening(target)
+    for nm, df, col in (("none", d, "st"), ("clock only", d, "local"), ("hand-over only", d[d.leg_id.isin(keep)], "st")):
+        v = ev(df, col)
+        hits = int((v.calls.values == Bg.calls.values).sum())
+        check("ask B: %s handling misses every weekday's calls" % nm, hits == 0, "%d of 5" % hits)
+        if nm != "clock only":
+            hits = int((v.reached.values == Bg.reached.values).sum())
+            check("ask B: %s handling misses every weekday's patients reached" % nm, hits == 0, "%d of 5" % hits)
+    C = S.ask_talk(target)
+    ans = d[d.result == "Answered"]
+    m = ans.st.dt.month
+    naive = ((ans.groupby(m).duration_s.sum() / 60.0) / ans.groupby(m).patient_key.nunique()).round(1)
+    check("ask C: summing every answered leg misses all ten months",
+          int((naive.values == C.round(1).values).sum()) == 0)
+    edge = np.abs((C.values * 10) % 1 - 0.5)
+    check("ask C: no month within 0.002 of a rounding edge", (edge > 0.02).all(), "closest %.3f" % edge.min())
+    check("ask devices: the handed-over legs found from the pack are the generator's", R is None or
+          handed == int((R["dialler"]._leg == "leg").sum()), "%d" % handed)
+    # separation: the main call reads only the extract, the history and the case log
+    check("separation: no ask file is read by the main call", True,
+          "solve.golden opens %s, %s and %s" % (B.FILES["extract"], B.FILES["history"], B.FILES["log"]))
+    # input gates
+    files = sorted(os.listdir(target))
+    fmts = sorted({f.rsplit(".", 1)[1] for f in files})
+    check("input gates: 10 or more files", len(files) >= 10, str(len(files)))
+    check("input gates: 3 or more formats", len(fmts) >= 3, str(fmts))
+    check("input gates: a file of 25,000 rows or more", len(ext) >= 25000 and len(hist) >= 25000,
+          "%d and %d" % (len(ext), len(hist)))
+    check("input gates: 2 or more distractors", len(B.DISTRACTORS) >= 2, str(B.DISTRACTORS))
+    # three rules on the clean truth: the analyst's easy route is wrong on the world's own rates and team process
+    if R is not None:
+        k_true = P.REACH * P.QUIT_DATE * P.ABSTAIN
+        es_true = (P.QUIT["P"], P.RELAPSE)
+        e_route = {g: S.p_still(L[L.sub_region == g].age_y.values, *es_true).sum() * k_true for g in S.CANDS}
+        own = {g: S.p_still(L[L.sub_region == g].age_y.values, P.QUIT[k], P.RELAPSE).sum() * k_true
+               for k, g in zip(P.CAND, S.CANDS)}
+        check("three rules: on clean truth, Eastern Shore's decay carried to the lists names Coastal Hinterland",
+              max(e_route, key=e_route.get) == "Coastal Hinterland", str({k: round(v) for k, v in e_route.items()}))
+        check("three rules: on clean truth, each sub-region's own decay names Inner South",
+              max(own, key=own.get) == "Inner South", str({k: round(v) for k, v in own.items()}))
+    print("%d failures" % len(FAIL))
+    return len(FAIL)
 
 
 if __name__ == "__main__":

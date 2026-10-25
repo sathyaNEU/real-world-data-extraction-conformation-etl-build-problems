@@ -1,137 +1,145 @@
-# task301 design note
+# task301: the quit outreach team's 2027 placement
 
-Architecture 1, drawn 2026-10-25. Seed `analytical_tasks/04_opportunity_sizing/OS03` (kept only as the shape of the question: a first-year benefit where part of the obvious pool cannot be realised; the seed's road-safety world and the worlds after it were worked and set aside, see the last section).
+Architecture 2 (re-rooted 2026-10-25 from architecture 1, the solar build, spent at stage 4).
 
 ## Draw
 
-- **Card:** `.claude/skills/fingerprint/cards/task301.json`, architecture v1, registered 2026-10-25. Guard verdict WARN (`repeat.gate_g` against task170, `repeat.question_form` against task482, both answered below); `test.same_puzzle_older` and `test.same_driver_older` are cleared by differentiation lines against task72, task181 and task60. The first filing as (population, D, `method_or_model_selection`) BLOCKed on a signature spent in eight builds; the decisive step is a forecast the fleet's site-level past, read correctly, does not pin, so the card carries `forecasting`. Nearest drivers on file sit at 0.09 (task184 lineage) and 0.08 (task69 lineage).
-- **Pairing:** Energy Systems & Utilities / `generation-capacity-planning`, drawn for Opportunity Sizing & Decision Support. The task type sizes what a new plant will deliver; here each candidate solar farm's first-year export, pool (the plane-of-array irradiation its 11.0 MWp receives in a year of average weather) to realisable (what the array exports once the fleet's measured performance and the site's own losses are taken off).
-- **Niche:** Fenmore Solar Income plc (fictional, a listed solar fund with fourteen operating farms, 163.7 MWp, from Devon to Essex) builds one of four consented candidates in 2027, each at 11.0 MWp on the layout and bifacial 410 W modules of its newest farm, Knowle Park (energised 16 January 2024, the only farm yet built to that design). The investment committee approves the one that exports the most in its first full year (2028) in a year of average weather, taken as the 2016 to 2025 record in the site weather file, on the fleet's own measured performance.
-- **The call:** the site and its 2028 export: Kingsley Fields at 9,700 MWh (9,680 before rounding). The site-level route builds Hallam Down at 10,100 MWh; on its own record Hallam Down exports 9,300 MWh (no deposit fit above 9,600), behind Kingsley Fields.
-- **Shape:** other. The call is one of four sites with its export, a chart of the four, and two measures for each of the fourteen operating farms from their 2025 records (28 figures). Grading every candidate's export would pay the site-level route three of four, and Hallam Down's own figure spans 280 MWh across the deposit family; the runner-up is not graded (last section). Criteria: the site, its export, the chart's four candidates with Hallam Down's after-dust bar below Kingsley Fields, the two files, 14 ratios, 14 means: 36 or more.
-- **Strategy:** `composition_mix`, Gate G `forecasting`, generators G2 (the fiscal meter and the inverter SCADA are two grains of one farm, both correct), G6 (a farm's ratio is a mix of the few blocks near the source and the many far from it, and Hallam Down's mix is all near), G14 (the loss a deposit leaves is conditioned on the site's own rain record); gap population (the fleet's site-level record is not the exposure the candidate faces); pattern D; Layer 2 `field_method`, pattern `own:a-site-level-ratio-averages-a-deposit-that-falls-off-with-distance-over-the-units-far-from-its-source`.
-- **Forum, event, organisation:** committee_or_panel (the fund's investment committee), vote_or_meeting (its December meeting approves one build), financial_institution (a listed fund; `utility_or_infrastructure` is banned against task170). Role capacity_planner (the head of development); context artifact `monitoring_export` (the fleet's SCADA and fiscal-meter exports); calibration form `existing_book_actuals`.
-- **People** (`guard.py names --geo England --seed 301`): Valerie Freeman, head of development, who asks; Terence Coates, head of asset management; Rosie Taylor, performance analyst; Clive Barber, O&M contracts. None appears in the prompt.
-- **Spent mechanisms on the objective** (`guard.py mechanisms --objective opportunity-sizing-decision`, nine builds): task105 the part of a catchment nearer the new outlet; task106 candidates drawing on one shared pool; task116 a group offer reachable through one signatory; task118 the gain on volume a unit does not already treat; task120 a peak draw read through a reserve's drawdown; task127 the step of a wait an intervention removes; task128 a contact's effect where the queue outran the team; task306 the units a roll does not hold yet; task305 an origin the demand data never counts. None reads a loss at a sub-site grain and carries it by distance.
-- **Probes before the draw:** call-only, isolated, sonnet at medium, one pack cut from the prototype (scratch `t301i/pack/`, nine files: the fiscal export, the inverter SCADA, the O&M log, the weather, the register, the block layout, the 2 km environs, the build note and the candidates' terms). Probe Y measured performance from the SCADA at farm level, fitted a fleet-wide dryness term and built Hallam Down at 10,020 MWh, naming the 105 m broiler unit as a loss it could not quantify from the fleet; probe Z fitted the bifacial farms, tested the environs (poultry units, days since rain, wind towards the source, distance) at farm level, found no signal and built Hallam Down at 10,070 MWh. Two of two missed the decisive step.
-- **WARN answered:** `repeat.question_form` (which, against task482): the decision is a pick of one of four sites, so the form is which. `repeat.gate_g` (forecasting, against task170): the label is the honest one, the 2028 export being a forecast the site-level past does not pin, and the driver repeats none on file.
-- **Data-native sentence:** Wexcombe's fiscal meter sums 58 central-inverter blocks, and the three at its west end nearest a 10-shed broiler unit (87 to 141 m) lose 1.5 to 4.2 per cent of their output to litter dust that settles on dry days and washes off in rain, so the meter runs 1.1 per cent above its 2012 to 2014 peers; Hallam Down's ten planned blocks wrap the yard of a 10-shed broiler unit at 76 to 269 m, on about 520 mm of rain a year against Wexcombe's 1,500.
+- **Card:** `.claude/skills/fingerprint/cards/task301.json`, architecture v2. Guard check: every finding answered except `ban.calibration` (pilot_log against task170), which clears when the next card of another task registers; `test.same_puzzle_older` (task454) and `test.same_driver_older` (task177 v3, task75 v2) are cleared by differentiation; `repeat.question_form` is answered below.
+- **Pairing:** Epidemiology & Public Health / `health-burden-impact-modeling`, drawn for Opportunity Sizing & Decision Support. The task type sizes the health gain an intervention buys in each candidate population: here the quits a quit outreach team achieves in a sub-region in 2027, pool (the patients its practices record as current smokers) to addressable (those still smoking when the team calls) to realisable (those the team reaches who set a quit date and are not smoking four weeks later).
+- **Niche:** Coast and Tablelands PHN (fictional, New South Wales, five sub-regions, 61 practices) places its quit outreach team (a clinical nurse consultant and two quit coaches) in one of four sub-regions for 2027. The team calls every active patient the sub-region's practices record as a current smoker in the 30 September 2026 extract, as it did in Eastern Shore in 2025 off a list drawn at the end of January 2025.
+- **The call:** Inner South, about 550 quits in 2027 (563.0 before rounding to the nearest 50). Every route that carries Eastern Shore's yield, its decay or a pooled decay places the team in Coastal Hinterland.
+- **Shape:** other. The call is one of four sub-regions with its quits, a chart of the four, and three asks (16 Quitline cells, 10 evening-call cells, 10 talk-time cells). The runner-up and the other three sub-regions' quits are not graded: the licensed constructions split the runner-up between Western Plains and Coastal Hinterland and put Coastal Hinterland anywhere from 480 to 541.
+- **Strategy:** `population_selection` (the listed population is not the population the team can help: the recorded smokers who have since stopped are on the list and cannot quit), pattern C (the serviceable share behind a join: the share still smoking is rebuilt from the status history, never read off a column), generators G9 (the list was acquired upstream at each recording, the quit is realised downstream at the call), G14 (the 2025 yield is conditioned on a fresh list), G13 (records dated years before the 2027 calls); Gate G `forecasting`.
+- **Forum, event, organisation:** executive_team (the PHN's executive places the team), budget_or_appropriation (the Commonwealth's 2026-27 allocation funds the 2027 year), foundation_or_funder (a PHN commissions primary care services rather than providing them). Role research_desk (the health intelligence manager); context artifact register (the active patient extract); calibration pilot_log (the 2025 team's case log).
+- **People** (`guard.py names --geo AU --seed 301`): Megan Collins, health intelligence manager, who wrote the plan and the dictionary; Gregory Roth, the team's clinical nurse consultant. Neither appears in the prompt.
+- **Spent mechanisms on the objective** (`guard.py mechanisms --objective opportunity-sizing-decision`, ten builds): task105 the part of a catchment nearer the new outlet; task106 candidates drawing on one shared pool; task116 a group offer reachable through one signatory; task118 the gain on volume a unit does not already treat; task120 a supply system's draw net of what accumulated inside it; task127 the part of a fused wait the intervention removes; task128 a contact's effect read only on over-capacity days; task306 an asset base that keeps taking in units the roll does not hold yet; task305 short-stay occupants who sit in no origin; task301 v1 a deposit averaged away at the meter. None reads a recorded state's decay from the candidate population's own re-recordings.
+- **Probes before the draw:** two call-only probes, isolated, sonnet at medium, on a prototype pack (scratch `t301sm/pack/`, seven files: the extract, the status history, the practices, the 2025 call log, the plan, two distractors). Both modelled the 2025 team's quits per listed patient on the age of the status record and filed Coastal Hinterland (about 490 binned and logistic; about 510 with a step at two years), the prototype's golden being Inner South; neither fitted a decay from the candidate sub-regions' own recordings.
+- **WARN answered:** `repeat.question_form` (which, against task482 and task184): the decision is a pick of one of four sub-regions, so the form is which; the count is asked for the chosen one.
+- **Data-native sentence:** each sub-region's practices re-record many patients' smoking status over the years, and those consecutive recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year against Inner South's 5, so Coastal Hinterland's list, 5,287 of its 8,422 recorded more than five years before the extract, is about half ex-smokers by 2027 while about 85 per cent of Inner South's 5,456 still smoke.
 
 ## Three rules
 
-Task type: generation-capacity-planning (Energy Systems & Utilities), tagged in the taxonomy for Opportunity Sizing & Decision Support: each candidate solar farm's first-year export, pool (the irradiation its array receives in a year of average weather) to realisable (the export once the fleet's measured performance and the site's own soiling are taken off).
-Domain test: The deciding quantity is each candidate's first-year export, which PV performance engineering builds as plane-of-array irradiation times the fleet's measured performance ratio less a soiling loss; here the loss is a deposit whose daily rate falls with each inverter block's distance from a broiler unit, measured on the analog farm's block SCADA against its far blocks and washed off by the site's own rain above a threshold, and Hallam Down's planned blocks all sit at the distances where it is large.
-Swap: "the farm that exports the most once the deposit its blocks' distances from a dust source and its own showers leave is counted" put into a hospital's beds or a bus operator's corridors loses its mechanism: no ward or route has an array of blocks at measured distances from a source, no output that falls as dust settles between showers, and no meter that sums blocks the source reaches with blocks it does not.
-Layer 1: satellite-derived irradiance with a daily error against on-site output; the fiscal meter's export against the inverter SCADA, apart by transformer and cable losses; an O&M log with partial-day availability at farm and inverter level; three module generations and two mounting frames across the fleet; Knowle Park's record from its January 2024 energisation; a GIS environs listing with distances and bearings from each site's centroid; the block layout in national grid coordinates; nothing is placed to be caught.
-Layer 2: field_method: the soiling loss is measured at the grain it varies over, each block's deposit rate against its distance from the sheds, read from the blocks' own decline on dry days and recovery after rain, and carried to the candidate's planned blocks at their distances through the candidate's own 2016 to 2025 rain; the site-level ratio, the site-level soiling check and a flat transfer of the analog's measured loss all average the deposit away.
-Decisive step: carrying the broiler dust to Hallam Down as a deposit rate by block distance, fitted on Wexcombe's SCADA blocks against its far blocks and run through Hallam Down's own rain at each planned block's distance, rather than reading the fleet's performance at the fiscal meter, where Wexcombe's three exposed blocks average away among its 58.
-Not semantics: every field reads as what it is (the export, each block's energy, the layout's coordinates, the environs' distances and bearings, the rain); no field, code or note marks a block as soiled, a feature as a dust source or a site as exposed, and an analyst who reads all of it correctly still takes the fleet's performance at the meter.
-Not rule application: the build note files the WHAT (the site exporting the most in 2028 in a year of average weather, taken as the 2016 to 2025 record, on the fleet's own measured performance) and nothing about soiling, blocks or distance; executing it at the meter, which is what both probes did, builds Hallam Down. The enumerated family (the site-level ratio, Wexcombe's farm-level deficit applied flat, Wexcombe's block deficits carried flat by distance, and 42 process transports over two references, partial and full wash models at the thresholds that fit best and three decay forms) puts Hallam Down's loss between 0.0 and 7.5 per cent; the standing family, the 42 process transports, spreads 4.7 to 7.5 per cent against Hallam Down's 4.1 per cent irradiation lead, every member filing Kingsley Fields; what rules the rest out is no clause but the record: the exposed blocks fall on dry days and recover after rain, so a loss read flat or at the meter is refuted by the blocks' own series.
-Analyst test: A strong analyst who reads every file correctly fits Knowle Park's measured performance, checks dry-day soiling and the environs at the meter, finds nothing, applies the ratio to each candidate's average-year irradiation and builds Hallam Down at about 10,100 MWh, where the golden is Kingsley Fields at 9,700 MWh; checks.py runs both on the generator's clean truth and on the pack.
-Estimand: the 2028 export of the one 11.0 MWp farm built in 2027 on Knowle Park's layout and modules, in a year of average weather taken as the 2016 to 2025 record in the site weather file, on the fleet's own measured performance (`build_decision_note_2027.docx`, section 2).
-No decoy: nothing is planted: the meters, the SCADA, the O&M log, the weather, the layout and the environs are the fund's and its GIS contractor's ordinary records; no memo, draft or figure argues for a site, no file ranks the four, and no stakeholder figure is set up to be overturned.
+Task type: health-burden-impact-modeling (Epidemiology & Public Health), tagged in the taxonomy for Opportunity Sizing & Decision Support: the quits a cessation programme achieves in each candidate population, pool (recorded current smokers) to realisable (those still smoking when called whom the team reaches and who are abstinent four weeks after a quit date).
+Domain test: The deciding quantity is how many of each sub-region's recorded smokers still smoke when the team calls, which epidemiology estimates from repeated status recordings as a two-state (smoker, ex-smoker) continuous-time Markov process with a cessation and a relapse rate by population, fitted to that population's own consecutive recordings, times the programme's quits per smoker it calls.
+Swap: "the sub-region whose recorded smokers still smoke when called, at its own rate of stopping and relapse" put into a bank's dormant accounts or a retailer's lapsed customers keeps the arithmetic and loses the epidemiology that makes the rates differ and bounds them: the relapse floor of ex-smokers returning, the deprivation gradient in cessation, and a quit defined by four weeks' abstinence with lost to follow-up counted as smoking.
+Layer 1: two clinical systems' vocabularies for one status (daily, weekly or irregular smoker against smoker; never smoked against non-smoker); patients registering through the record with a status taken at registration; ex-smokers now and then entered as never smoked; same-day re-entries and corrections; a practice that moved from Medical Director to Best Practice in 2021 with its history carried across; Eastern Shore patients on the 2025 list who have since left and are not in the 2026 extract; the case log's four-week follow-up with lost to follow-up.
+Layer 2: estimation_fit: the decay of a recorded state is estimated per population from interval-censored panel observations (each patient's consecutive recordings) as a continuous-time Markov process with relapse, and the programme's conversion is carried per smoker reached, not per listed patient.
+Decisive step: estimating from each sub-region's own consecutive status recordings how fast its recorded smokers stop and relapse, and so how many of its list still smoke when called through 2027, instead of carrying the 2025 team's quits per listed patient by record age, which is Eastern Shore's own rate of stopping.
+Not semantics: every field reads as what it is (the latest status and its date, every entry since 2012, the case log's outcomes); no field, code or note marks a status as stale or a sub-region as quitting fast, and an analyst who maps both vocabularies and counts every list exactly still files Coastal Hinterland by carrying the pilot's curve.
+Not rule application: the plan files the WHAT (the team calls every listed patient in 2027, a quit is a quit date and four weeks not smoking, lost to follow-up counted as smoking) and nothing about decay, rates or how the history is used; the family it leaves open, ten constructions that each fit a sub-region's own decay from its own recordings (Markov fits on day or entry pairs, from smoker records only, with never smoked dropped, at mid-year, with a modelled conversion, a share-by-gap curve, two logistic curves, split by the review flag), names Inner South in all ten at a spread of 554.8 to 566.5 that prints 550 every time, while the enumerated family that carries Eastern Shore's yield or decay, a common 5 per cent or a pooled decay names Coastal Hinterland in all six; what rules those out is the record, the four sub-regions' rates differing at 2 dlogL 564.3 on 6 degrees of freedom, not a filed clause.
+Analyst test: A strong analyst reads each listed smoker's status date, finds the 2025 team's quits per listed patient falling with the age of the status record, models that curve on the case log, carries it to each sub-region's list and places the team in Coastal Hinterland at about 750 quits (737 on the logistic curve, 787 binned), where the golden is Inner South at about 550.
+Estimand: the patients the team calls in 2027 who set a quit date with it and are not smoking four weeks after that date, lost to follow-up counted as smoking, the team calling once each every active patient the sub-region's practices record as a current smoker in the 30 September 2026 extract, the calls spread evenly through 2027 (`quit_outreach_plan_2027.docx`, "How the team will work in 2027" and "The decision").
+No decoy: nothing is planted: the extract, the history, the practices and the case log are the PHN's and the team's ordinary records; no memo, draft or stakeholder figure argues for a sub-region, no file ranks the four, and the 2025 case log is the team's own record of its year, needed for the conversion the golden also uses.
 No certified replay: no certified or published figure sits in the pack to be reproduced, and the method is not recovered from any figure.
-Lesson: a loss read at the meter averages a deposit that falls off with distance over the many blocks far from its source, so a fleet can carry the evidence and show nothing at site level; a candidate whose every block sits near a similar source, on a drier record, loses several times any site-level figure on file, and only the block record prices it; no build on file reads a loss at a sub-site grain and carries it by distance to a planned layout.
+Lesson: a programme's yield on a list is its conversion times the share of the list still in the recorded state, and that share decays at the population's own rate, so a yield curve carried from where the programme ran is that place's decay; each candidate's consecutive recordings give its own rate, and the oldest list with the fastest exits shrinks the most. No build on file reads a recorded state's decay from the candidate population's own re-recordings (nearest drivers at 0.06).
 
 ## Default path
 
-1. Reads the build note: 11.0 MWp on Knowle Park's layout and modules, the 2028 export in a year of average weather taken as the 2016 to 2025 record, on the fleet's own measured performance.
-2. Builds Knowle Park's ratio of fiscal export to irradiation per MWp (0.830), checks the bifacial farms' degradation and the O&M log's days.
-3. Checks soiling per farm (the ratio against days since rain) and tests the environs at farm level; Wexcombe's meter runs 1.1 per cent above its peers, no feature separates the fleet, and the environs file is read as non-informative.
-4. Runs the ratio on each candidate's 2016 to 2025 average irradiation at 11.0 MWp, carried to its age in 2028.
-5. Ranks the four: Hallam Down first on its 4.1 per cent irradiation lead, then Kingsley Fields, Larkhill Common and Marston Vale.
+1. Map both clinical systems' wording and take each candidate sub-region's active patients recorded as current smokers in the extract: Coastal Hinterland 8,422, Inner South 5,456, Northern Corridor 4,855, Western Plains 4,957.
+2. From the 2025 case log, 609 of the 5,489 listed patients quit (11.1 per cent); the quits per listed patient fall, and "not a current smoker" rises, with the age of the status record at the call.
+3. Model quits per listed patient on the record's age at the call (in bins, or logistic in age and its square) on the case log.
+4. Apply the curve to each candidate's list at its records' ages in 2027, sum, and place the team in the sub-region with the most.
 
-Ends on: Hallam Down, about 10,100 MWh
-Golden: Kingsley Fields, 9,700 MWh
+Ends on: Coastal Hinterland at about 750 quits
+Golden: Inner South at about 550 quits
 
 ## Stump sentence
 
-A competent solver applies the fleet's measured performance to each candidate's average-year irradiation and builds Hallam Down at about 10,100 MWh, where the golden is Kingsley Fields at 9,700 MWh; the step that lands it there is reading the loss at the fiscal meter, where Wexcombe's three blocks nearest a broiler unit average away among its 58, when Hallam Down's ten planned blocks all sit 76 to 269 m from a unit of the same size on a record a third as wet.
+A competent solver models the 2025 team's quits per listed patient on the age of each status record, carries Eastern Shore's curve to the four lists and places the team in Coastal Hinterland at about 750 quits, where the golden is Inner South at about 550; the step that lands it there is carrying the pilot's curve, which is Eastern Shore's own rate of stopping, when each sub-region's consecutive status recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year and Inner South's at about 5.
 
 ## Ladder
 
-| Rung | Construction | Hallam Down 2028 | Files |
+| Rung | Construction | Names | Inner South |
 |---|---|---|---|
-| 1 | Knowle Park's measured ratio at the meter on each candidate's average year | 10,100 MWh | Hallam Down |
-| 2 | Rung 1 less Wexcombe's farm-level deficit against its 2012 to 2014 peers (its meter runs 1.1 per cent above them, so nothing) | 10,100 MWh | Hallam Down |
-| 3 | Rung 1 less Wexcombe's measured block deficits carried flat to Hallam Down's blocks by distance (2.4 per cent) | 9,840 MWh | Hallam Down |
-| 4 (decisive) | The deposit fitted on Wexcombe's near blocks as a daily step falling with distance, washed by rain, run through Hallam Down's own rain at each planned block (7.4 per cent on the best fit, never under 4.7) | 9,300 MWh (no fit above 9,600) | Kingsley Fields, 9,700 MWh |
+| R0 | the list times the 2025 quits per listed patient (11.1 per cent) | Coastal Hinterland (934) | 605 |
+| R1 | only patients recorded in the last two years, at that rate | Western Plains (359) | 279 |
+| R2 | a common 5 per cent a year stopping, times quits per smoker called | Coastal Hinterland (715) | 550 |
+| R3 | the 2025 quits per listed patient by record age, in bins or logistic (the default path) | Coastal Hinterland (787, 737) | 589, 578 |
+| R4 | Eastern Shore's own decay fitted from its recordings, carried to the four | Coastal Hinterland (687) | 535 |
+| R5 | one decay fitted to the four candidates' recordings pooled | Coastal Hinterland (673) | 529 |
+| R6 (decisive) | each sub-region's own decay from its own recordings, times quits per smoker called | Inner South | 563 (550) |
 
-Rung 3 is the partial fix a solver who reaches the blocks takes: the deficit measured at Wexcombe is an average over its wet record, so carried flat it misses that Hallam Down's dry spells let the deposit build several times as far. Asserted in checks.py: rungs 1 to 3 build Hallam Down, rung 4 alone builds Kingsley Fields.
+Each rung is asserted in `generator/checks.py` (`ladder:` lines). R4 and R5 are the careful analyst's corrections of R3 and still land Coastal Hinterland; only R6 separates the sub-regions.
 
 ## Readability screen
 
-| Rung | What the pack offers toward it | Verdict |
+| Rung | What the pack shows a reader | Verdict |
 |---|---|---|
-| 1 site-level ratio | the note asks for the fleet's measured performance; export and weather files at the farm-day grain | readable |
-| 2 farm-level dust check | the environs file lists poultry units at every site; a farm's ratio against its peers and a dry-day check are reflexes | readable |
-| 3 block-level flat transfer | the SCADA at block grain and the block layout; nothing ties a block to a feature | silent |
-| 4 (decisive) deposit process carried by distance through the candidate's own rain | nothing names a deposit, a wash, a rate or rain as a driver; the blocks' dry-spell decline and recovery after rain shows only once rung 3's block cut is made, and on Wexcombe's 1,500 mm a year the exposed blocks lose little on average | silent |
-
-Cheapest licensed route to the call, in one line: each block's daily ratio against the far blocks, a fitted deposit with a rain wash for each near block, a rate-against-distance curve, run at Hallam Down's blocks through its own rain. Not linear in any shipped column: the loss depends on the order of dry and wet days, so no group-by on a shipped field gives it.
+| R0 | the case log's quits over its list | readable |
+| R1 | the extract's status dates | readable |
+| R2 | nothing; a rate a reader brings | readable |
+| R3 | the case log's list status dates against its outcomes: quits fall and "not a current smoker" rises with age | readable |
+| R4 | Eastern Shore's own recordings in the history | readable |
+| R5 | the four candidates' recordings in the history | readable |
+| R6 (decisive) | nothing names a sub-region's rate or says the rates differ; the plan describes the history as every status recorded since 2012 and the dictionary describes its fields | silent |
 
 ## Semantic fork table
 
-| ID | Term or convention | Golden reading | Alternatives and their call | Ruled out by |
-|---|---|---|---|---|
-| SF1 | first full year (2028) | calendar 2028, the array's age at mid-2028 from its energisation date | age at 1 January 2028; no age carry: Kingsley Fields at 9,700 | same call, same printed figure (asserted) |
-| SF2 | a year of average weather, taken as the 2016 to 2025 record | the ten-year mean of each site's irradiation and rain in the weather file | the median year; any single year | same call: Kingsley Fields first in every year of the record (asserted) |
-| SF3 | the fleet's own measured performance | Knowle Park's export at the meter over its 12.0 MWp and irradiation, energisation to 2025, outages kept | outage days out; 2025 alone; the datasheet's degradation; no age carry: Kingsley Fields at 9,700 on each; the four bifacial farms pooled | same call and figure on the first four (asserted); the pooled basis by the note's "Knowle Park is the only farm yet built to this design" and the register's mounting column |
-| SF4 | export | energy at the fiscal meter | the inverters' AC sum: every candidate scaled alike | same call (asserted) |
-| SF5 | the four candidate sites | the register's four candidates at 11.0 MWp on their planned blocks in the layout file | none | the note's section 1 and the register (asserted) |
-| SF6 | Hallam Down's blocks and the unit beside them | the ten planned blocks, each at its distance from the sheds placed by the environs listing's distance and bearing from the centroid | one centroid distance for every block | same call (asserted) |
+| ID | Term or convention | Golden reading | Alternative | Call under it | Ruled out by |
+|---|---|---|---|---|---|
+| SF1 | current smoker | daily, weekly or irregular smoker, or smoker | daily smoker or smoker only | Inner South | same call; the dictionary names all four |
+| SF2 | a quit | quit date set and not smoking at four weeks, lost to follow-up as smoking | lost to follow-up left out of the conversion | Inner South | same call (one factor for all four); the plan counts them as smoking |
+| SF3 | calls spread evenly through 2027 | each patient's chance averaged over the year | every call at mid-2027 | Inner South | same call |
+| SF4 | recorded as a current smoker in the extract | the extract's latest status | the history's last day-level entry | Inner South | same call; the two lists are identical (23,690) |
+| SF5 | never smoked after a smoker or ex-smoker entry | read as not smoking | the pair dropped | Inner South | same call |
+| SF6 | one recording | the day's last entry | every entry, same-day re-entries included | Inner South | same call |
+| SF7 | the team's conversion | reach times quits per smoker reached | quits over the 2025 list's expected smokers under Eastern Shore's own fit | Inner South | same call and the same printed 550 |
+| SF8 | quits in 2027 | counted by the year of the call | a December call's four weeks ending in 2028 left out | Inner South | same call; the plan counts a quit by the call |
 
 ## Closure table
 
-| # | Axis | Reading and move |
+| Axis | Reading | Move |
 |---|---|---|
-| 1 | Population | the register's four candidates (status candidate); C1, nothing else is a candidate |
-| 2 | Unit of account | a site's 2028 export in MWh; the question names it |
-| 3 | Attribution window | calendar 2028; every candidate energised July to October 2027, wholly before it |
-| 4 | As-of dating | the weather 2016 to 2025 and the fleet's records to 31 December 2025, as the note files them |
-| 5 | Version basis | one version of every file; nothing restated |
-| 6 | Denominator | Knowle Park's export over its 12.0 MWp and its irradiation; SF3 bases converge (asserted) |
-| 7 | Weighting | energy-weighted ratio over the record; the mean of daily ratios weights a winter day as a summer day and is no performance ratio, and it moves all four alike |
-| 8 | Window length | the ten-year average (filed); Knowle Park's whole record, C1 against 2025 alone (asserted) |
-| 9 | Boundary inclusivity | no candidate energised near 1 January 2028 (latest 29 October 2027) |
-| 10 | Rounding path | the export rounded once to 100 MWh at the end, 30 MWh inside its cell (asserted) |
-| 11 | Tie-break | none needed: Kingsley Fields leads Larkhill Common by about 2 per cent in every year |
-| 12 | Maturity and censoring | Knowle Park's record from 16 January 2024; 2025 alone gives the same figure (asserted) |
-| 13 | Order of operations | irradiation, ratio, age carry and dust loss multiply; order immaterial |
-| 14 | Row order | sums and medians; no order dependence |
-| 15 | Duplicate resolution | one row a site a day and a block a day (asserted) |
-| 16 | Identity normalisation | site names identical across every file |
-| 17 | Netting against gross | outage days kept in Knowle Park's ratio; taken out, the same figure (asserted) |
-| 18 | Dimensional units | MWh, MWp and kWh/m2 throughout; the ratio is dimensionless |
-| 19 | Code and status semantics | status candidate or operating in the register; O&M event days left out of the block fits |
-| 20 | Integerisation | none |
-| 21 | Clause scope | the note's section 2 governs the call; the asks' figures are separate quantities |
-| 22 | Forward window contents | 2028's weather is the 2016 to 2025 average (filed); the candidates' planned blocks are in the layout file |
+| 1 Population | every active patient the sub-region's practices record as a current smoker in the 30 September 2026 extract, those who have since stopped included | filed in the plan; C1 (the extract and the history give one list, SF4) |
+| 2 Unit of account | a patient helped to quit | the question and the plan name it |
+| 3 Attribution window | calls in 2027, a quit counted by its call | filed (SF8) |
+| 4 As-of dating | each status at its recorded date; the list at the 30 September 2026 extract | filed in the plan and the dictionary |
+| 5 Version basis | the extract as cut | one extract ships |
+| 6 Denominator | quits per smoker reached times reach, over the listed patients still smoking | C1 across the two conversions (SF7) |
+| 7 Weighting | each listed patient counts once | the plan's once each |
+| 8 Window length | the whole 2012 to 2026 record for the fits | C1: share-by-gap and Markov fits agree on the call |
+| 9 Boundary inclusivity | a status dated on the extract day is in the list | no status after the extract ships |
+| 10 Rounding path | the sub-region total rounded once to the nearest 50 | stated in the prompt; every licensed construction prints 550 |
+| 11 Tie-break | none needed | the winner leads by 4.8 per cent or more under every construction |
+| 12 Maturity and censoring | every pair of consecutive recordings, the interval censoring handled by the Markov likelihood | C1 across fits |
+| 13 Order of operations | collapse same-day entries, pair, fit, average, multiply | C1 (SF6) |
+| 14 Row order | sorted by patient and time | asserted by the fit's independence of file order |
+| 15 Duplicate resolution | the day's last entry | C1 (SF6) |
+| 16 Identity normalisation | one patient key across every file | the dictionary |
+| 17 Netting against gross | none | no netting in the estimand |
+| 18 Dimensional units | patients and years | one unit each |
+| 19 Code and status semantics | the two vocabularies mapped by the dictionary | dictionary semantics, never the stump (SF1) |
+| 20 Integerisation | none before the final rounding | one rounding |
+| 21 Clause scope | the plan's quit and calling rules apply to the 2027 team | filed |
+| 22 Forward window contents | the calls through 2027 and each listed patient's chance of still smoking then | the history carries the rates; the extract carries the ages |
 
 ## Literal reader
 
-Executing section 2 of the build note word for word gives each candidate's export in 2028 in the ten-year average weather on the fleet's measured performance; the literal estimand is the site's export, so a loss the site will carry is inside it, and the easy route is a worse estimate of the same estimand, never another reading of it. Every literal reading in SF1 to SF6 files Kingsley Fields at 9,700 MWh (asserted in checks.py). The asks' sentences are literal too: ask A over the days the pyranometer recorded, with the sensitivity in force each day by the certificates' Notes sheet; ask B from the alarm's raised time to the arrival of the technician the work order names, the filed fact that a fault stays raised until the inverter is reset on site placing every arrival before the alarm cleared.
+Executed word for word, the plan fixes who is called (every active patient the chosen sub-region's practices record as a current smoker in the 30 September 2026 extract, once each, through 2027), what counts (a quit date with the team and four weeks not smoking, lost to follow-up as smoking) and how the team works (as in Eastern Shore in 2025). It says nothing about how many of the listed patients still smoke, so the literal reader has to estimate it, and every reading of the fork table gives Inner South (SF1 to SF8, asserted). The easy answer comes from the easy method on the same estimand, carrying Eastern Shore's curve, never from another reading.
 
 ## Oracles
 
-- No control ties only under the golden: Wexcombe's fiscal meter sits above its peers whichever route is taken, and no file totals the dust.
-- No round number confirms the golden: every ask figure sits a tenth to a quarter of a unit off its cell's centre, so no route prints round values everywhere (asserted).
-- The asks' consistency checks are fair, not oracles: the CMMS attended stamps after the alarm cleared refute the CMMS as the arrival, and the station file's step at the register's installation date refutes the logger's sensor setting; a grader verifies each from the files.
+No file reproduces the golden or ranks the four sub-regions on the quits question. The 2025 case log reproduces its own curve by construction, which is the trap rather than an oracle; the Quitline report, the dialler export and the roster carry the asks only; the three distractors (sub-region profiles, GP workforce, quit medicines dispensed) carry no smoking-status signal.
 
 ## Ask sheet
 
-Ask A, each operating farm's 2025 on-site irradiation over the weather file's (14 figures, three decimals). Primary device D2 (an attribute at the wrong vintage): the station file keeps the logger's sensor setting, the sensor that came down in 2025; the register (as at 31 December 2025) names the sensor in the mast now and its installation date; the certificate of the sensor that came down says which mast it was sent from. Hazard D7 (an as-of join): the certificate in force each day, by the certificates' Notes sheet. Every path that misses either lands outside the cell on all 14 farms.
+Ask A, Quitline referrals from each candidate sub-region's practices by quarter of 2025 (16 cells): the report labels each practice with Quitline's own directory sub-region, taken in 2023 and never updated after the PHN realigned four practices round a cycle on 1 July 2025, and names practices in Quitline's spelling; the register's sub-region by a normalised name match gives the golden. Device D2, an attribute at the wrong vintage, every cell moving.
 
-Ask B, each operating farm's average hours in 2025 from a fault alarm to the attending technician's arrival (14 figures, one decimal). Primary device D8 (a clock): the van tracker's portal exports in UK time against the alarm log's UTC, and the CMMS attended stamp is the tablet's sync after the visit at farms without signal. Hazard D7: the van the technician had that day (two van changes and a pool van). Every path that misses the clock or the CMMS stamp lands outside the cell on all 14 farms; the first van of any technician lands 10 of 14 once the clock is met.
+Ask B, the 2025 team's calls from 5 pm and the patients reached in them, by weekday (10 cells): the dialler stamps Australian Eastern Standard Time all year while the team worked to New South Wales daylight time before 6 April and from 5 October 2025, and a handed-over call writes the nurse's leg as a second row starting inside the first. Devices D8 (a clock against a filed cutoff) and D6 (an event on two lines), every cell moving.
 
-| Ask | Cracker's best path | Cracker |
+Ask C, minutes on answered calls per patient reached, by month (10 cells): the first leg of a handed-over call already runs to the end of the call, so summing every answered leg counts the nurse's minutes twice. Device D6, every cell moving.
+
+| Ask | Cracker's handling | Cracker |
 |---|---|---|
-| A ratios | the station file's sensor serial to its certificate in force each day: 0 of 14 | miss |
-| B hours | the CMMS attended stamp less the CMMS raised stamp: 0 of 14 | miss |
+| A | Quitline's phn_sub_region as given; an exact-name join falling back on it misses as well | miss |
+| B | every leg a call, the stamp the clock | miss |
+| C | every answered leg's minutes over the patients reached | miss |
 
-Pair ceiling: 26.0 (both devices missed; 39.8 if the response on the call meets one, 53.5 if it meets both, which the stage 4 readers measure)
-Mirror leakage: 0.0 per cent of ask weight (both devices missed)
-Measured by: generator/pair.py on the cut pack
+Pair ceiling: 28.5 (cracker 45.0 on the call with no ask cell, mirror 12.0 off it with none); a cracker that also finds ask A's device alone reaches 40.7, ask B's or C's 36.1.
+Mirror leakage: 0.0 per cent of ask weight.
+Measured by: generator/pair.py on the cut pack.
+
+Separation: none of the ask files is read by the main call (the golden opens only the extract, the history and the case log), and the asks' devices sit in the Quitline report and the dialler export. Read against architecture 1's round: both of its readers took every ask figure by cross-checking a stale label against a register and a clock against a second file; asks A and B carry those exposures here (a normalised name join, the roster's local shifts), and ask C and ask B's call counts rest on the identity device the held builds share (two legs ending at the same second are one call). Stage 4 measures it.
 
 ## Tried and rejected
 
@@ -160,3 +168,5 @@ Measured by: generator/pair.py on the cut pack
 - The pyranometer serial in the station file as the sensor in the mast that day: the swap is then plain in the file; the file now keeps the logger's setting, which nobody changed at the swap.
 - The note's performance basis worded as the measured performance for the design being built: read literally it could leave out every site loss, the stump's own included; the design fact now stands as its own sentence beside the open estimand.
 - Architecture 1, the solar build with the broiler dust carried by block distance (Kingsley Fields at 9,700 MWh against the site-level route's Hallam Down at 10,100): spent at stage 4 on target.zip 402a51e4. Reader A landed the call in 66 tool calls: Hallam Down's "broiler, 10 sheds" row at 105 m in the environs listing matched Wexcombe's unit word for word, so it looked for the dust in Wexcombe's inverter blocks, found the gradient against the blocks more than 700 m away, and carried it through Hallam Down's rain (5.4 to 5.7 per cent, Hallam Down 9,480); reader B tested the environs at farm level, found nothing and built Hallam Down. Both readers took all 31 ask figures: the register's 2025 installation dates gave the stale sensor label away and the as-of certificate followed from the Notes sheet; comparing the CMMS attended stamps with the tracker and checking that each clearance falls inside a van visit gave both the sync stamps and the tracker's UK clock away. The judge (DETERMINISTIC SOLUTION_WRONG, FIX_NOW) found the call forced and one ask figure wrong across the 30 March clock change (Wexcombe 19.654 by wall clock against 19.614 elapsed), and closed the deposit-ceiling fork by fit. A matched source named in a listing the candidate also appears in is a trail, not a trace: the analog's evidence has to be reachable only through a judgment the listing does not invite.
+- Post-discharge services extended to every uncovered district for 2027, sized by first unplanned 90-day readmissions prevented (healthcare-delivery x OS, a staggered rollout read as the comparison): both call-only probes ran the staggered comparison the referral extract invites, probe A by two-way fixed effects and cohort difference-in-differences (about 170 for the hip fracture service), probe B by Poisson difference-in-differences with immortal time named (about 120); the staggered-rollout comparison is a reflex once the extract shows every eligible discharge referred; dead.
+- The state survey's modelled adult smoking prevalence as a distractor in architecture 2: it puts Coastal Hinterland lowest against the longest list and invites the stale-list reading by a cross-check of the two; replaced by the practices' GP workforce returns before any reader saw the pack.

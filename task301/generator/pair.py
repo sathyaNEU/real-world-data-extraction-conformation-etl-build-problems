@@ -1,64 +1,78 @@
-"""The ask sheet's measurement on the cut pack: the cracker (lands the call, runs the battery, executes every filed rule)
-and the mirror (builds Hallam Down at the meter), each scored figure by figure on the 38/7/55 weights, with every path
-each ask offers a response that does not meet its device.
+"""The ask sheet's measurement: the cracker (lands the call, runs the hygiene battery, takes every ask at its file's
+face) and the mirror (stops at the pilot-gradient rung and handles the asks the same way), each scored cell by cell
+against figures.json at half a unit of the stated rounding, and the pair ceiling under the rubric's weights.
 
-    python3 task301/generator/pair.py <target dir>
+    python3 task301/generator/pair.py task301/target
 """
+import json
 import os
 import sys
 
+import numpy as np
+import pandas as pd
+
+import build as B
+import solve as S
+
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import params as P
-import solve as SV
-
-REC, IF, ASK = 38.0, 7.0, 55.0
+REC, INSTR, ASK = 38.0, 7.0, 55.0          # rubric weights: recommendation and components, instruction, asks
+R_WRONG = 5.0                               # what a wrong call keeps of the recommendation weight
 
 
-def hits(a, path, unit):
-    return sum(1 for f in P.OPERATING if round(a[f][path] / unit) == round(a[f]["gold"] / unit))
+def face_asks(target):
+    """The asks taken at the files' face: Quitline's own sub-region; every dialler leg a call and its stamp the
+    clock; every answered leg's minutes summed."""
+    q = pd.read_csv(os.path.join(target, B.FILES["quitline"]), dtype=str, keep_default_na=False)
+    q = q[q.month.str[:4] == "2025"].copy()
+    q["quarter"] = "Q" + ((q.month.str[5:7].astype(int) - 1) // 3 + 1).astype(str)
+    q["referrals"] = q.referrals.astype(int)
+    A = q[q.phn_sub_region.isin(S.CANDS)].pivot_table(index="phn_sub_region", columns="quarter", values="referrals",
+                                                      aggfunc="sum").reindex(S.CANDS)
+    d = pd.read_csv(os.path.join(target, B.FILES["dialler"]), dtype={"patient_key": str})
+    d["st"] = pd.to_datetime(d.started)
+    d = d.drop_duplicates()
+    ev = d[d.st.dt.hour >= 17]
+    Bv = pd.DataFrame({"calls": ev.groupby(ev.st.dt.day_name()).size(),
+                       "reached": ev[ev.result == "Answered"].groupby(ev.st.dt.day_name()).patient_key.nunique()}
+                      ).reindex(S.WEEKDAYS)
+    a = d[d.result == "Answered"]
+    m = a.st.dt.month
+    C = (a.groupby(m).duration_s.sum() / 60.0) / a.groupby(m).patient_key.nunique()
+    return A, Bv, C
+
+
+def score(F, A, Bv, C):
+    hits = {"A": 0, "B": 0, "C": 0}
+    n = {"A": 16, "B": 10, "C": 10}
+    for g in S.CANDS:
+        for qq in ("Q1", "Q2", "Q3", "Q4"):
+            hits["A"] += int(abs(A.loc[g, qq] - F["ask_referrals"][g][qq]) < 0.5)
+    for dname in S.WEEKDAYS:
+        hits["B"] += int(abs(Bv.loc[dname, "calls"] - F["ask_evening"][dname]["calls"]) < 0.5)
+        hits["B"] += int(abs(Bv.loc[dname, "reached"] - F["ask_evening"][dname]["reached"]) < 0.5)
+    for i, (mth, v) in enumerate(F["ask_talk_min"].items()):
+        hits["C"] += int(abs(C.iloc[i] - v) < 0.05)
+    return hits, n
 
 
 def main(target):
-    K = SV.Pack(target)
-    c = SV.call(K)
-    a, b = SV.ask_a(K), SV.ask_b(K)
-    n = len(P.OPERATING)
-    pa = {"the station file's sensor serial to its certificate in force each day (the natural join)": "label_asof",
-          "the station file's sensor serial to its latest certificate": "label_latest",
-          "the register's sensitivity on every day": "register",
-          "the right sensor each day, each sensor's latest certificate": "gold_latest",
-          "the right sensitivities over every day's satellite irradiation": "all_days"}
-    pb = {"the CMMS attended stamp less the CMMS raised stamp (the natural read)": "cmms",
-          "the CMMS attended stamp in UTC less the alarm's raised time": "attended",
-          "the CMMS attended stamp, unconverted, less the alarm's raised time": "mixed",
-          "the van tracker's entry read as UTC": "tracker_raw",
-          "the van tracker less the work order's raised stamp": "from_wo",
-          "the CMMS attended stamp where it falls before the alarm cleared": "possible_only"}
-    # a response that has met ask B's device (the tracker's arrival in UK time) and skips the van the technician had
-    met_b = {"the first van of any technician at the farm after the alarm": "any_van"}
-    ha = {k: hits(a, v, 0.001) for k, v in pa.items()}
-    hb = {k: hits(b, v, 0.1) for k, v in pb.items()}
-    print("ask A, pyranometer ratio (%d figures), paths of a response that misses the device:" % n)
-    for k, v in ha.items():
-        print("   %-96s %2d of %d" % (k, v, n))
-    print("ask B, hours to arrival (%d figures), paths of a response that misses the device:" % n)
-    for k, v in hb.items():
-        print("   %-96s %2d of %d" % (k, v, n))
-    print("ask B, a stop after meeting the device (the ask's ladder; the van the technician had lands %d):" % n)
-    for k, v in met_b.items():
-        print("   %-96s %2d of %d" % (k, hits(b, v, 0.1), n))
-    ka, kb = max(ha.values()), max(hb.values())
-    mirror = 0.0 + IF + ASK * (ka + kb) / (2.0 * n)
-    print("mirror: Hallam Down at the meter, both devices missed: %.1f" % mirror)
-    for label, x, y in [("both devices missed", ka, kb), ("ask A's device met", n, kb), ("ask B's device met", ka, n),
-                        ("both devices met", n, n)]:
-        cr = REC + IF + ASK * (x + y) / (2.0 * n)
-        print("cracker (the call), %-22s %5.1f   pair %5.1f" % (label + ":", cr, (cr + mirror) / 2))
-    print("(the asks read no file the call reads, so both responses take the same ask paths; separation is asserted in "
-          "checks.py)")
-    return 0
+    F = json.load(open(os.path.join(HERE, "figures.json")))
+    A, Bv, C = face_asks(target)
+    hits, n = score(F, A, Bv, C)
+    cells = sum(n.values())
+    kept = sum(hits.values()) / cells
+    cracker = REC + INSTR + ASK * kept
+    mirror = R_WRONG + INSTR + ASK * kept
+    print("cracker sheet: ask A %d of %d, ask B %d of %d, ask C %d of %d" % (hits["A"], n["A"], hits["B"], n["B"],
+                                                                         hits["C"], n["C"]))
+    print("cracker %.1f, mirror %.1f, pair ceiling %.1f, mirror leakage %.1f per cent of ask weight"
+          % (cracker, mirror, (cracker + mirror) / 2, 100 * kept))
+    # a cracker that also finds each device alone, one at a time
+    for name, k in (("ask A found", n["A"]), ("ask B found", n["B"]), ("ask C found", n["C"])):
+        c2 = REC + INSTR + ASK * (sum(hits.values()) + k) / cells
+        print("if the cracker also finds %s: cracker %.1f, pair %.1f" % (name.split()[1], c2, (c2 + mirror) / 2))
+    return hits, n
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1]))
+    main(sys.argv[1])

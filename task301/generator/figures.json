@@ -1,201 +1,97 @@
 {
- "call_site": "Kingsley Fields",
- "call_export_mwh": 9700,
- "export_mwh": {
-  "Kingsley Fields": 9700,
-  "Larkhill Common": 9500,
-  "Marston Vale": 9300
+ "call_region": "Inner South",
+ "call_quits": 550,
+ "listed": {
+  "Coastal Hinterland": 8422,
+  "Inner South": 5456,
+  "Northern Corridor": 4855,
+  "Western Plains": 4957
  },
- "irradiation_kwh_m2": {
-  "Hallam Down": 1103,
-  "Kingsley Fields": 1060,
-  "Larkhill Common": 1038,
-  "Marston Vale": 1016
+ "listed_over5y": {
+  "Coastal Hinterland": 5287,
+  "Inner South": 1338,
+  "Northern Corridor": 1555,
+  "Western Plains": 485
  },
- "energised": {
-  "Hallam Down": "2027-09-30",
-  "Kingsley Fields": "2027-08-31",
-  "Larkhill Common": "2027-10-29",
-  "Marston Vale": "2027-07-30"
+ "quit_rate_pct": {
+  "Coastal Hinterland": 11,
+  "Inner South": 5,
+  "Northern Corridor": 7,
+  "Western Plains": 6
  },
- "hallam_clean_export_mwh": 10100,
- "hallam_export_mwh": 9300,
- "hallam_export_range_mwh": [
-  9300,
-  9600
- ],
- "hallam_loss_pct": 7.3,
- "hallam_loss_range_pct": [
-  4.6,
-  7.7
- ],
- "hallam_loss_whole_pct": [
-  4,
-  8
- ],
- "hallam_lead_pct": 4.1,
- "hallam_blocks": 10,
- "hallam_block_range_m": [
-  76,
-  269
- ],
- "hallam_rain_mm": 520,
- "wexcombe_rain_mm": 1500,
- "knowle_ratio": 0.83,
- "knowle_ratio_2dp": 0.83,
- "fleet_degradation_pct": 0.16,
- "wexcombe_blocks": 58,
- "wexcombe_near_blocks": 18,
- "corner_blocks": [
-  [
-   "INV55",
-   87,
-   4.1
-  ],
-  [
-   "INV56",
-   102,
-   3.0
-  ],
-  [
-   "INV37",
-   141,
-   1.4
-  ]
- ],
- "corner_range_m": [
-  87,
-  141
- ],
- "corner_loss_range_pct": [
-  1.4,
-  4.1
- ],
- "build_mwp": 11.0,
- "knowle_mwp": 12.0,
- "knowle_start": "16 January 2024",
- "wash_keep_pct": [
-  55,
-  8
- ],
- "deposit_cap_pct": 25,
- "far_ref_m": 450,
- "near_m": 320,
- "wash_mm": [
-  4,
-  10
- ],
- "wexcombe_meter_vs_peers_pct": 1.2,
- "ask_a": {
-  "Ashcombe": 0.985,
-  "Bramble Hill": 0.984,
-  "Wexcombe": 0.988,
-  "Coldharbour": 0.991,
-  "Brindle Moor": 0.985,
-  "Dunsford Lane": 1.008,
-  "Elmstead": 0.988,
-  "Fairoak": 0.987,
-  "Greystoke Barns": 0.984,
-  "Hartsfield": 0.971,
-  "Ivy Cross": 0.99,
-  "Furzedown": 0.985,
-  "Jessop's Farm": 0.993,
-  "Knowle Park": 0.987
+ "relapse_pct": 1.5,
+ "call_still_pct": 85,
+ "quits_per100_still": 12,
+ "pilot": {
+  "listed": 5489,
+  "reached": 4149,
+  "stopped": 393,
+  "smokers_reached": 3756,
+  "quit_dates": 1170,
+  "quits": 609
  },
- "ask_a_days": {
-  "Ashcombe": 360,
-  "Bramble Hill": 355,
-  "Wexcombe": 356,
-  "Coldharbour": 360,
-  "Brindle Moor": 354,
-  "Dunsford Lane": 358,
-  "Elmstead": 360,
-  "Fairoak": 361,
-  "Greystoke Barns": 356,
-  "Hartsfield": 357,
-  "Ivy Cross": 361,
-  "Furzedown": 358,
-  "Jessop's Farm": 361,
-  "Knowle Park": 355
+ "pilot_reach_pct": 75.6,
+ "pilot_quit_per_smoker_reached_pct": 16.2,
+ "ask_referrals": {
+  "Coastal Hinterland": {
+   "Q1": 228,
+   "Q2": 255,
+   "Q3": 214,
+   "Q4": 191
+  },
+  "Inner South": {
+   "Q1": 162,
+   "Q2": 196,
+   "Q3": 173,
+   "Q4": 158
+  },
+  "Northern Corridor": {
+   "Q1": 188,
+   "Q2": 165,
+   "Q3": 138,
+   "Q4": 132
+  },
+  "Western Plains": {
+   "Q1": 153,
+   "Q2": 129,
+   "Q3": 140,
+   "Q4": 149
+  }
  },
- "ask_a_swap": {
-  "Ashcombe": "2025-07-23",
-  "Bramble Hill": "2025-05-09",
-  "Wexcombe": "2025-10-04",
-  "Coldharbour": "2025-06-05",
-  "Brindle Moor": "2025-07-22",
-  "Dunsford Lane": "2025-04-30",
-  "Elmstead": "2025-07-06",
-  "Fairoak": "2025-06-16",
-  "Greystoke Barns": "2025-05-28",
-  "Hartsfield": "2025-04-27",
-  "Ivy Cross": "2025-04-22",
-  "Furzedown": "2025-07-26",
-  "Jessop's Farm": "2025-06-08",
-  "Knowle Park": "2025-06-13"
+ "ask_evening": {
+  "Monday": {
+   "calls": 596,
+   "reached": 226
+  },
+  "Tuesday": {
+   "calls": 605,
+   "reached": 241
+  },
+  "Wednesday": {
+   "calls": 581,
+   "reached": 232
+  },
+  "Thursday": {
+   "calls": 599,
+   "reached": 246
+  },
+  "Friday": {
+   "calls": 605,
+   "reached": 240
+  }
  },
- "ask_b": {
-  "Ashcombe": 12.9,
-  "Bramble Hill": 11.9,
-  "Wexcombe": 13.9,
-  "Coldharbour": 14.9,
-  "Brindle Moor": 20.7,
-  "Dunsford Lane": 16.2,
-  "Elmstead": 13.1,
-  "Fairoak": 20.6,
-  "Greystoke Barns": 15.1,
-  "Hartsfield": 14.4,
-  "Ivy Cross": 13.5,
-  "Furzedown": 20.2,
-  "Jessop's Farm": 14.3,
-  "Knowle Park": 6.6
+ "ask_talk_min": {
+  "February": 14.2,
+  "March": 14.5,
+  "April": 14.2,
+  "May": 14.5,
+  "June": 14.4,
+  "July": 14.5,
+  "August": 14.4,
+  "September": 14.6,
+  "October": 14.9,
+  "November": 14.4
  },
- "ask_b_alarms": {
-  "Ashcombe": 16,
-  "Bramble Hill": 21,
-  "Wexcombe": 23,
-  "Coldharbour": 16,
-  "Brindle Moor": 10,
-  "Dunsford Lane": 9,
-  "Elmstead": 8,
-  "Fairoak": 12,
-  "Greystoke Barns": 8,
-  "Hartsfield": 15,
-  "Ivy Cross": 10,
-  "Furzedown": 8,
-  "Jessop's Farm": 16,
-  "Knowle Park": 14
- },
- "ask_a_down": {
-  "Ashcombe": "SMP10-177210",
-  "Bramble Hill": "SMP10-158692",
-  "Wexcombe": "SMP10-169077",
-  "Coldharbour": "SMP10-142794",
-  "Brindle Moor": "SMP10-150697",
-  "Dunsford Lane": "SMP10-175200",
-  "Elmstead": "SMP10-156393",
-  "Fairoak": "SMP10-156915",
-  "Greystoke Barns": "SMP10-145545",
-  "Hartsfield": "SMP10-185543",
-  "Ivy Cross": "SMP10-189111",
-  "Furzedown": "SMP10-170533",
-  "Jessop's Farm": "SMP10-189853",
-  "Knowle Park": "SMP10-168788"
- },
- "ask_a_up": {
-  "Ashcombe": "SMP10-157516",
-  "Bramble Hill": "SMP10-149210",
-  "Wexcombe": "SMP10-160338",
-  "Coldharbour": "SMP10-160741",
-  "Brindle Moor": "SMP10-187951",
-  "Dunsford Lane": "SMP10-158829",
-  "Elmstead": "SMP10-165103",
-  "Fairoak": "SMP10-145855",
-  "Greystoke Barns": "SMP10-143570",
-  "Hartsfield": "SMP10-140423",
-  "Ivy Cross": "SMP10-155556",
-  "Furzedown": "SMP10-173877",
-  "Jessop's Farm": "SMP10-189247",
-  "Knowle Park": "SMP10-155168"
- }
+ "handed_over_legs": 675,
+ "dialler_legs": 11328
 }

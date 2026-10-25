@@ -17,6 +17,9 @@ def _scrubber():
     import importlib.util
     here = os.path.dirname(os.path.abspath(__file__))
     p = os.path.join(here, "..", "..", ".claude", "skills", "reduce-house-fixes", "scripts", "scrub_producer_metadata.py")
+    if not os.path.exists(p):
+        p = os.path.join(os.environ.get("REPO", "/home/user/real-world-data-extraction-conformation-etl-build-problems"),
+                         ".claude", "skills", "reduce-house-fixes", "scripts", "scrub_producer_metadata.py")
     spec = importlib.util.spec_from_file_location("scrub_producer_metadata", p)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)

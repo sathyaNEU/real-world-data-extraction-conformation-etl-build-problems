@@ -1,34 +1,34 @@
 {
  "task": "task301",
  "owner": "perssathya",
- "status": "PAUSED",
- "domain": "energy-systems-utilities",
+ "status": "BUILD",
+ "domain": "epidemiology-public-health",
  "objective": "opportunity-sizing-decision",
- "stage": 1,
- "stage_name": "draw",
+ "stage": 4,
+ "stage_name": "check",
  "updated": "2026-10-25",
- "stump": "A competent solver applies the fleet's measured performance to each candidate's average-year irradiation and builds Hallam Down at about 10,100 MWh, where the golden is Kingsley Fields at 9,700 MWh; the step that lands it there is reading the loss at the fiscal meter, where Wexcombe's three blocks nearest a broiler unit average away among its 58, when Hallam Down's ten planned blocks all sit 76 to 269 m from a unit of the same size on a record a third as wet.",
- "architecture": 1,
- "loops": 1,
+ "stump": "A competent solver models the 2025 team's quits per listed patient on the age of each status record, carries Eastern Shore's curve to the four lists and places the team in Coastal Hinterland at about 750 quits, where the golden is Inner South at about 550; the step that lands it there is carrying the pilot's curve, which is Eastern Shore's own rate of stopping, when each sub-region's consecutive status recordings show Coastal Hinterland's recorded smokers stopping at about 11 per cent a year and Inner South's at about 5.",
+ "architecture": 2,
+ "loops": 0,
  "precut": {
   "exit": 0,
   "date": "2026-10-25"
  },
  "leak": {
-  "leak_py": "REVIEW (no LEAK)",
-  "reader": "two scored readers on 402a51e4: A landed the call (Kingsley Fields 9,700) and 31 of 31 ask figures; B missed the call (Hallam Down 10,100) and took 31 of 31 ask figures; score_reader FAIL (Gate F, architecture spent)"
+  "leak_py": "REVIEW on f2c362ba (the plan names the candidates beside the decision's words; domain vocabulary; distractors name sub-regions)",
+  "reader": ""
  },
  "duplicate_check": {
-  "heart": "WARN (repeat.gate_g against task170, repeat.question_form against task482, both answered at the draw)",
-  "nearest": "task184 lineage at 0.09; task69 lineage at 0.08; task114 and task136 lineage at 0.07"
+  "heart": "WARN (repeat.decision and repeat.question_form against task302 and task184, answered: a pick of one of four asks which)",
+  "nearest": "task243 and task482 v10 lineage at 0.06"
  },
  "judge": {
-  "verdict": "DETERMINISTIC SOLUTION_WRONG",
-  "disposition": "FIX_NOW",
-  "report": "Wexcombe ask 4 across the 30 March 2025 clock change (19.654 wall clock, 19.614 elapsed); deposit ceiling closed by fit; Gate G analytical_non_defect; Gate H pass"
+  "verdict": "",
+  "disposition": "",
+  "report": ""
  },
  "returned": [],
- "resume": "Architecture 1 spent at stage 4 (reader A landed the call; both readers took every ask figure). Re-root at stage 1 as architecture 2: a new decisive step and card, the old card's lineage saying spent and why, asks re-sited onto devices no careful reader's join crosses; the generator's world (fleet, weather geography, site wind, environs mix, clock-change exclusion) can be kept where the new draw uses it.",
+ "resume": "Architecture 2 built (target.zip f2c362ba, make.py 0 failures, verify green, byte-identical rebuilds). Stage 4: two scored readers and the determinism judge in the background, each on a fresh copy; fix every finding in the generator in one pass.",
  "approved": null,
  "delivered": null,
  "portal": null,

@@ -1,233 +1,159 @@
-"""The world behind the pack: ten years of daily weather at the fourteen farms and four candidates, each farm's inverter
-blocks and their output, the broiler litter dust that settles on the blocks nearest Wexcombe's sheds (and would on Hallam
-Down's), the fleet's outages and the environs listing."""
+"""The world behind task301: five sub-regions' active adult patients, each with a true smoking trajectory (a two-state
+process, smoker and ex-smoker, at the sub-region's own quit and relapse rates), the statuses their practices recorded at
+consultations from 2012, Eastern Shore's 2024 recording drive, and the quit outreach team's 2025 calls there.
+
+Times are integer days from 1 January 2012. Everything is seeded and deterministic."""
+import datetime as dt
+
 import numpy as np
 import pandas as pd
 
 import params as P
 
-
-class World:
-    pass
+YD = 365.25
 
 
-def _layout(nm, dc):
-    """inverter blocks around the centroid: the 2012 to 2014 farms on 500 kW central inverters (blocks of about 0.55 MWp
-    on a 62 m by 55 m grid), later farms on blocks of about 1.1 MWp on a 95 m by 85 m grid; Hallam Down's planned blocks
-    wrap the farmyard to its south-west"""
-    if nm == "Hallam Down":
-        cells = [(c, r) for r in range(3) for c in range(4) if (c, r) not in ((0, 2), (1, 2))]
-        return [((c - 1.5) * 95.0, (1 - r) * 85.0) for c, r in cells]
-    old = nm in ("Ashcombe", "Bramble Hill", "Wexcombe", "Coldharbour")
-    bmw, dx, dy = (0.547, 62.0, 55.0) if old else (1.1, 95.0, 85.0)
-    k = max(4, int(round(dc / bmw)))
-    asp = {"Wexcombe": 5.0}.get(nm, 1.8 if old else 1.3)
-    cols = int(np.ceil(np.sqrt(k * asp)))
-    rows_ = int(np.ceil(k / cols))
-    out = []
-    for j in range(k):
-        r, c = divmod(j, cols)
-        out.append(((c - (cols - 1) / 2) * dx, ((rows_ - 1) / 2 - r) * dy))
-    return out
+def day(d):
+    return (d - P.D0).days
 
 
-def soil(rain, dep):
-    """the deposit a block carries each day: it builds by the day's deposit when less than LO mm falls, is cut to
-    WASH_LO of itself by LO to HI mm and to WASH_HI by HI mm or more, and never passes CAP"""
-    s = 0.0
-    out = np.zeros(len(rain))
-    for i, r in enumerate(rain):
-        if r >= P.HI:
-            s *= P.WASH_HI
-        elif r >= P.LO:
-            s *= P.WASH_LO
-        else:
-            s = min(s + dep[i], P.CAP)
-        out[i] = s
-    return out
+def date_of(n):
+    return P.D0 + dt.timedelta(days=int(n))
 
 
-def world():
+E_DAY = day(P.EXTRACT)
+H_DAY = day(P.HORIZON)
+L_DAY = day(P.PILOT_LIST)
+
+
+def _practices(rng):
+    rows, k = [], 1
+    for g in P.REG:
+        m = P.PRACTICES[g]
+        mult = np.exp(rng.normal(0, 0.30, m))
+        mult = mult / mult.mean()
+        for i in range(m):
+            sysk = "BP" if rng.uniform() < 0.62 else "MD"
+            rows.append(dict(practice_id="PR%03d" % k, reg=g, system=sysk, rec_mult=float(mult[i]), migrated=None))
+            k += 1
+    pr = pd.DataFrame(rows)
+    # the Coastal Hinterland practice that moved from Medical Director to Best Practice
+    g, when = P.MIGRATION
+    idx = pr.index[(pr.reg == g)][3]
+    pr.loc[idx, "system"] = "BP"
+    pr.loc[idx, "migrated"] = when.isoformat()
+    return pr
+
+
+def simulate():
     rng = np.random.default_rng(P.SEED_WORLD)
-    W = World()
-    days = pd.date_range(P.W0, P.W1, freq="D")
-    W.days = days
-    n = len(days)
-    doy = days.dayofyear.values
-    z = np.zeros(n)
-    e = rng.normal(size=n)
-    for i in range(1, n):
-        z[i] = 0.62 * z[i - 1] + np.sqrt(1 - 0.62 ** 2) * e[i]
-    season = 0.28 * np.sin(2 * np.pi * (doy - 100) / 365.25)
-    sun = np.clip(rng.normal(1, 0.30, n) - 0.22 * z, 0.22, 1.7)
-    clear = 2.9 + 2.3 * np.sin(2 * np.pi * (doy - 80) / 365.25)
-    t_reg = 10.6 + 6.4 * np.sin(2 * np.pi * (doy - 112) / 365.25) + rng.normal(0, 2.0, n)
-    wind = np.where(rng.uniform(size=n) < 0.58, rng.normal(232, 38, n), rng.uniform(0, 360, n)) % 360
-    W.wind = wind
-    # the weather's own geography: daily gradients across the region (fronts clearing from the west, a sunnier
-    # south coast on some days) and each site's wind turned a little by its own ground
-    rs = np.random.default_rng(P.SEED_WORLD + 17)
-    gE, gN = np.zeros(n), np.zeros(n)
-    eE, eN = rs.normal(size=n), rs.normal(size=n)
-    for i in range(1, n):
-        gE[i] = 0.5 * gE[i - 1] + np.sqrt(1 - 0.25) * eE[i]
-        gN[i] = 0.5 * gN[i - 1] + np.sqrt(1 - 0.25) * eN[i]
-    W.site = {}
-    for nm, dc, comm, mod, pf, ws, amt, td, E0, N0 in P.SITES + P.CAND:
-        loc = z + 0.55 * rng.normal(size=n)
-        wet = loc > (0.15 + season + ws)
-        a = rng.gamma(0.85, 4.6, n) * amt * np.exp(0.35 * np.clip(loc, 0, None))
-        rain = np.where(wet, np.round(a, 1), 0.0)
-        geo = np.exp(0.09 * gE * (E0 - 450000) / 150000.0 + 0.06 * gN * (N0 - 150000) / 60000.0)
-        geo = geo / geo.mean()
-        poa = np.clip(clear * sun * pf * geo * rng.lognormal(0, 0.04, n), 0.05, None)
-        site_wind = (wind + rs.normal(0, 6) + rs.normal(0, 14, n)) % 360
-        bias = float(rng.lognormal(0, 0.008))
-        if nm in P.BIFACIAL:
-            bias = 1.0 + (bias - 1.0) * 0.15      # the provider's tiles over the bifacial farms were validated on site
-        sat = poa * bias * rng.lognormal(0, 0.06, n)
-        temp = t_reg + td + rng.normal(0, 0.5, n)
-        W.site[nm] = dict(dc=dc, comm=comm, mod=mod, E0=E0, N0=N0, rain=rain, poa=poa, poa_sat=sat, sat_bias=bias,
-                          temp=temp, wind=site_wind, blocks=[])
-        for (x, y) in _layout(nm, dc):
-            dep = np.full(n, P.BG)
-            d_src = None
-            if nm in P.SOURCES:
-                dist, brg, sheds = P.SOURCES[nm]
-                sx, sy = dist * np.sin(np.radians(brg)), dist * np.cos(np.radians(brg))
-                d_src = float(np.hypot(sx - x, sy - y))
-                b_src = float(np.degrees(np.arctan2(sx - x, sy - y)) % 360)
-                r0 = P.R0 * sheds / 10.0 * np.exp(-(d_src - P.D0) / P.DL)
-                towards = np.abs(((site_wind - b_src) + 180) % 360 - 180) <= P.PLUME_HALF_ANGLE
-                dep = np.where(towards, r0, P.OFF_PLUME * r0) + P.BG
-            W.site[nm]["blocks"].append(dict(x=x, y=y, soil=soil(rain, dep), d_src=d_src))
-    # the fleet's output from 2022, block by block, and its outages
-    k0 = int(np.where(days == pd.Timestamp(P.F0))[0][0])
-    W.k0 = k0
-    W.events = []
-    for nm, dc, comm, mod, pf, ws, amt, td, E0, N0 in P.SITES:
-        S = W.site[nm]
-        ks = max(k0, int(days.searchsorted(pd.Timestamp(comm))))     # the meter's first day
-        S["k_start"] = ks
-        pr0, tc, deg = P.MOD[mod]
-        age = (days - pd.Timestamp(comm)).days.values / 365.25
-        cell = S["temp"] + 3.2 * S["poa"]
-        pr = pr0 * P.BOS[nm] * (1 + tc * (cell - 25)) * (1 - deg) ** np.clip(age, 0, None)
-        pr = pr * (1 - 0.035 * np.exp(-S["poa"] / 0.9))
-        nb = len(S["blocks"])
-        site_av = np.ones(n)
-        n_site = 2 if nm == "Knowle Park" else int(rng.integers(4, 10))
-        for k in rng.choice(np.arange(ks, n), size=n_site, replace=False):
-            f = round(float(rng.uniform(0.0, 0.75)), 2)
-            site_av[k] = f
-            W.events.append((days[k].date(), nm, "", str(rng.choice(["Grid outage (DNO)", "Transformer fault",
-                                                                     "Planned maintenance"])), f))
-        tot = np.zeros(n)
-        for b, B in enumerate(S["blocks"]):
-            av = site_av.copy()
-            # the newest farm, still in its defects period, has had fewer inverter faults
-            for k in rng.choice(np.arange(ks, n), size=int(rng.integers(0, 3 if nm == "Knowle Park" else 5)), replace=False):
-                f = round(float(rng.uniform(0.0, 0.8)), 2)
-                av[k] = min(av[k], f)
-                W.events.append((days[k].date(), nm, "INV%02d" % (b + 1),
-                                 str(rng.choice(["Inverter trip", "String fuse failures", "IGBT fault",
-                                                 "AC breaker trip"])), f))
-            eb = S["poa"] * (dc / nb) * pr * (1 - B["soil"]) * av * rng.lognormal(0, 0.010, n) * float(rng.lognormal(0, 0.006))
-            B["energy"] = eb
-            tot += eb
-        S["export"] = tot * P.EXPORT_LOSS * rng.lognormal(0, 0.003, n)
-        S["pr_model"] = pr
-    return W
+    pr = _practices(rng)
+    pats, sw_flat, sw_off = [], [], [0]
+    recs = []
+    pid = 0
+    for g in P.REG:
+        n = P.N[g]
+        ids = pr[pr.reg == g].practice_id.values
+        # practice sizes vary; patients assigned with a skewed share
+        share = rng.gamma(2.0, 1.0, len(ids))
+        share = share / share.sum()
+        prac = rng.choice(ids, n, p=share)
+        age = np.clip(18 + rng.gamma(2.6, 11.0, n), 18, 98)          # age at the extract
+        sex = rng.choice(np.array(["F", "M"]), n, p=[0.52, 0.48])
+        ltc = rng.uniform(size=n) < np.clip(0.08 + 0.006 * (age - 18), 0, 0.75)
+        ever = rng.uniform(size=n) < P.EVER
+        cur0 = ever & (rng.uniform(size=n) < P.CUR0[g])
+        # the day each patient turned 15, and registration at the practice
+        birth = E_DAY - age * YD
+        start15 = np.maximum(0, np.ceil(birth + 15 * YD)).astype(int)
+        pre = rng.uniform(size=n) < 0.55
+        reg_day = np.where(pre, 0, rng.integers(0, E_DAY - 20, n))
+        if g == "P":
+            # Eastern Shore's roll is the January 2025 roll: nobody registers after the list date
+            reg_day = np.where(pre, 0, rng.integers(0, L_DAY - 5, n))
+        rec_start = np.maximum(start15, reg_day)
+        leave = np.full(n, 10 ** 6)
+        if g == "P":
+            lv = rng.uniform(size=n) < P.LEAVE_P
+            leave = np.where(lv, rng.integers(L_DAY + 5, E_DAY - 5, n), 10 ** 6)
+        lam = P.BASE[g] * np.where(ltc, P.LTC_MULT, 1.0) * pr.set_index("practice_id").rec_mult.reindex(prac).values
+        qd, rd = P.QUIT[g] / YD, P.RELAPSE / YD
+        for i in range(n):
+            # true trajectory from the later of 1 January 2012 and the patient's fifteenth birthday
+            t0 = int(start15[i])
+            s = bool(cur0[i])
+            sw = []
+            if ever[i]:
+                t = float(t0)
+                while True:
+                    t += rng.exponential(1.0 / (qd if s else rd))
+                    if t >= H_DAY:
+                        break
+                    sw.append(t)
+                    s = not s
+            sw_flat.extend(sw)
+            sw_off.append(len(sw_flat))
+            # recording days
+            lo, hi = int(rec_start[i]), min(E_DAY, int(leave[i]))
+            days = []
+            if hi > lo:
+                k = rng.poisson(lam[i] * (hi - lo) / YD)
+                days = list(rng.integers(lo, hi + 1, k))
+                if reg_day[i] > 0 and reg_day[i] >= start15[i] and rng.uniform() < P.REG_RECORD:
+                    days.append(int(reg_day[i]))
+                if g == "P" and rng.uniform() < P.P_DRIVE:
+                    a, b = day(P.P_DRIVE_WIN[0]), day(P.P_DRIVE_WIN[1])
+                    dd = int(rng.integers(a, b + 1))
+                    if lo <= dd <= hi:
+                        days.append(dd)
+            for dd in days:
+                recs.append((pid, dd))
+            pats.append((pid, g, prac[i], float(age[i]), sex[i], bool(ltc[i]), bool(ever[i]), bool(cur0[i]),
+                         int(t0), int(reg_day[i]), int(leave[i])))
+            pid += 1
+    pat = pd.DataFrame(pats, columns=["pid", "reg", "practice_id", "age", "sex", "ltc", "ever", "cur0", "t0", "reg_day",
+                                      "leave"])
+    sw = (np.array(sw_flat), np.array(sw_off))
+    rec = pd.DataFrame(recs, columns=["pid", "day"]).sort_values(["pid", "day"], kind="stable").reset_index(drop=True)
+    rec["true"] = true_state(pat, sw, rec.pid.values, rec.day.values)
+    return pr, pat, sw, rec
 
 
-FEAT = [("Arable field", ["winter wheat", "oilseed rape", "spring barley", "maize", "potatoes", "sugar beet"], 40, 1900),
-        ("Pasture", ["permanent grass", "sheep grazing", "horse paddocks"], 40, 1900),
-        ("Hedgerow", ["mixed native", "hawthorn", "laid hedge"], 5, 400),
-        ("Woodland", ["mixed broadleaf", "conifer plantation", "ancient woodland"], 120, 1900),
-        ("Dwelling", ["detached house", "farmhouse", "pair of cottages", "bungalow"], 110, 1900),
-        ("Settlement", ["hamlet", "village"], 500, 1950),
-        ("Road", ["A-road", "B-road", "minor road", "unclassified lane"], 25, 1900),
-        ("Track", ["farm track, surfaced", "farm track, unsurfaced", "bridleway"], 10, 900),
-        ("Watercourse", ["stream", "drainage ditch", "river"], 30, 1500), ("Pond", ["field pond", "balancing pond"], 40, 1200),
-        ("Overhead line", ["11 kV", "33 kV", "132 kV"], 20, 1900),
-        ("Substation", ["33/11 kV primary", "pole-mounted transformer", "132/33 kV grid"], 150, 1950),
-        ("Church", ["parish church (listed)"], 400, 1950),
-        ("Listed building", ["grade II farmhouse", "grade II barn", "grade II* manor"], 250, 1950),
-        ("Public right of way", ["footpath", "bridleway", "byway"], 0, 600),
-        ("Farm buildings", ["general purpose shed", "machinery store", "Dutch barn"], 100, 1500),
-        ("Livestock unit", ["beef cattle", "dairy, 180 cows", "pig finishing", "calf rearing"], 250, 1950),
-        ("Poultry unit", ["free-range layers, 2 sheds", "free-range layers, 4 sheds", "turkey, 3 sheds", "broiler, 6 sheds"], 600, 1950),
-        ("Grain store", ["on-farm store with drier", "co-operative store"], 200, 1800),
-        ("Equestrian", ["livery yard", "riding school"], 400, 1900),
-        ("Caravan site", ["touring park", "static caravans"], 600, 1950), ("Golf course", ["18-hole course"], 800, 1950),
-        ("Telecom mast", ["lattice mast", "monopole"], 200, 1800),
-        ("Wind turbine", ["single 500 kW turbine", "single 50 kW turbine"], 500, 1950),
-        ("Reservoir", ["irrigation reservoir"], 300, 1900), ("Sewage works", ["small treatment works"], 700, 1950),
-        ("Recreation ground", ["playing field", "cricket ground"], 600, 1950),
-        ("Business unit", ["agricultural contractor yard", "small industrial unit"], 400, 1950),
-        ("Railway", ["branch line", "main line"], 300, 1950), ("Scheduled monument", ["barrow", "moated site"], 300, 1950)]
-
-# features placed by the survey where they stand: the two broiler units close upwind of blocks, broiler units downwind or
-# far off, and the dusty workings close upwind of farms whose blocks show nothing
-EXTRA = {"Wexcombe": [("Poultry unit", "broiler, 10 sheds", 545, 252)],
-         "Hallam Down": [("Poultry unit", "broiler, 10 sheds", 105, 229)],
-         "Elmstead": [("Poultry unit", "broiler, 8 sheds", 420, 48)],
-         "Dunsford Lane": [("Poultry unit", "broiler, 8 sheds", 470, 75)],
-         "Greystoke Barns": [("Poultry unit", "broiler, 6 sheds", 530, 352)],
-         "Hartsfield": [("Poultry unit", "broiler, 8 sheds", 1450, 204), ("Business unit", "agricultural contractor yard", 380, 233)],
-         "Furzedown": [("Poultry unit", "broiler, 12 sheds", 1320, 241)],
-         "Larkhill Common": [("Poultry unit", "broiler, 12 sheds", 1890, 214)],
-         "Brindle Moor": [("Poultry unit", "broiler, 6 sheds", 880, 118), ("Equestrian", "riding school", 410, 252)],
-         "Marston Vale": [("Poultry unit", "broiler, 8 sheds", 1110, 87)],
-         "Ashcombe": [("Track", "farm track, unsurfaced", 240, 214)],
-         "Fairoak": [("Track", "farm track, unsurfaced", 310, 247)],
-         "Jessop's Farm": [("Track", "farm track, unsurfaced", 190, 228)],
-         "Coldharbour": [("Equestrian", "livery yard", 450, 238)],
-         "Knowle Park": [("Business unit", "small industrial unit", 520, 221)],
-         "Ivy Cross": [("Track", "farm track, unsurfaced", 270, 205)]}
+def true_state(pat, sw, pids, days):
+    """1 smoker, 0 ex-smoker, -1 never smoked, at each (patient, day)."""
+    flat, off = sw
+    pids = np.asarray(pids)
+    days = np.asarray(days, dtype=float)
+    ever = pat.ever.values[pids]
+    cur0 = pat.cur0.values[pids]
+    out = np.empty(len(pids), dtype=int)
+    for j in range(len(pids)):
+        p = pids[j]
+        if not ever[j]:
+            out[j] = -1
+            continue
+        a, b = off[p], off[p + 1]
+        k = np.searchsorted(flat[a:b], days[j], side="right")
+        cur = bool(cur0[j]) ^ (k % 2 == 1)
+        out[j] = 1 if cur else 0
+    return out
 
 
-# how often the surveys list each kind of feature within 2 km of a rural site: fields, hedges and dwellings by the
-# dozen, a church or a golf course now and then
-FREQ = {"Arable field": 10, "Pasture": 8, "Hedgerow": 9, "Woodland": 5, "Dwelling": 6, "Settlement": 1.5, "Road": 4,
-        "Track": 3, "Watercourse": 2.5, "Pond": 1.5, "Overhead line": 2, "Substation": 0.6, "Church": 0.4,
-        "Listed building": 1, "Public right of way": 3, "Farm buildings": 2.5, "Livestock unit": 1, "Poultry unit": 0.6,
-        "Grain store": 0.5, "Equestrian": 0.5, "Caravan site": 0.3, "Golf course": 0.15, "Telecom mast": 0.6,
-        "Wind turbine": 0.3, "Reservoir": 0.3, "Sewage works": 0.2, "Recreation ground": 0.3, "Business unit": 0.5,
-        "Railway": 0.3, "Scheduled monument": 0.4}
+def frac_smoking(pat, sw, pids, d_from, d_to, n=52):
+    """Share of each patient's days smoking over a window, on an even grid."""
+    grid = np.linspace(d_from, d_to, n + 1)[:-1] + (d_to - d_from) / (2 * n)
+    pids = np.asarray(pids)
+    acc = np.zeros(len(pids))
+    for gday in grid:
+        acc += (true_state(pat, sw, pids, np.full(len(pids), gday)) == 1)
+    return acc / n
 
 
-def environs():
-    rng = np.random.default_rng(P.SEED_ENV)
-    env = []
-    base = np.array([FREQ[f[0]] for f in FEAT])
-    for nm in P.OPERATING + P.CANDIDATES:
-        k = int(rng.integers(52, 68))
-        wts = base * rng.lognormal(0, 0.5, len(FEAT))      # each site's own country: arable here, pasture there
-        for j in rng.choice(len(FEAT), size=k, p=wts / wts.sum()):
-            t, descs, lo, hi = FEAT[j]
-            if t == "Poultry unit" and rng.uniform() < 0.6:
-                continue
-            env.append((nm, t, descs[int(rng.integers(0, len(descs)))], int(rng.uniform(lo, hi) // 10 * 10),
-                        int(rng.uniform(0, 360))))
-    for nm in P.OPERATING + P.CANDIDATES:
-        for t, d, dist, b in EXTRA.get(nm, []):
-            env.append((nm, t, d, dist, b))
-    e2 = pd.DataFrame(env, columns=["site", "feature", "description", "distance_m", "bearing_from_site_deg"])
-    keep = set((nm, d, dist) for nm, lst in EXTRA.items() for t, d, dist, b in lst)
-    placed = pd.Series([(a, b, c) in keep for a, b, c in zip(e2.site, e2.description, e2.distance_m)])
-    # no other poultry or livestock unit lies within 700 m to the south and west of any site
-    m = (e2.feature.isin(["Poultry unit", "Livestock unit"]) & (e2.distance_m < 700)
-         & e2.bearing_from_site_deg.between(150, 310) & ~placed)
-    e2.loc[m, "distance_m"] = e2.loc[m, "distance_m"] + 700
-    # and at the two sites beside a broiler unit no other working that raises dust lies close upwind
-    dusty = (e2.feature.isin(["Business unit", "Equestrian", "Livestock unit", "Sewage works", "Grain store", "Railway"])
-             | e2.description.eq("farm track, unsurfaced"))
-    m2 = (e2.site.isin(["Wexcombe", "Hallam Down"]) & dusty & (e2.distance_m < 900)
-          & e2.bearing_from_site_deg.between(150, 310))
-    e2.loc[m2, "distance_m"] = e2.loc[m2, "distance_m"] + 900
-    order = {s: i for i, s in enumerate(P.OPERATING + P.CANDIDATES)}
-    e2 = e2.sample(frac=1, random_state=7)
-    e2["_o"] = e2.site.map(order)
-    e2 = e2.sort_values(["_o", "distance_m"], kind="mergesort").drop(columns="_o").reset_index(drop=True)
-    return e2
+if __name__ == "__main__":
+    import pickle
+    import sys
+    pr, pat, sw, rec = simulate()
+    out = sys.argv[1] if len(sys.argv) > 1 else "world.pkl"
+    with open(out, "wb") as fh:
+        pickle.dump((pr, pat, sw, rec), fh)
+    print(len(pat), "patients", len(rec), "recordings")
