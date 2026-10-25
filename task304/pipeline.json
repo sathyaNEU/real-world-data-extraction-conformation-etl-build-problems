@@ -1,0 +1,38 @@
+{
+ "task": "task304",
+ "owner": "perssathya",
+ "status": "PAUSED",
+ "domain": "economics-econometrics",
+ "objective": "opportunity-sizing-decision",
+ "stage": 1,
+ "stage_name": "draw",
+ "updated": "2026-10-25",
+ "stump": "",
+ "architecture": 1,
+ "loops": 0,
+ "precut": {
+  "exit": null,
+  "date": ""
+ },
+ "leak": {
+  "leak_py": "",
+  "reader": ""
+ },
+ "duplicate_check": {
+  "heart": "",
+  "nearest": ""
+ },
+ "judge": {
+  "verdict": "",
+  "disposition": "",
+  "report": ""
+ },
+ "returned": [],
+ "resume": "Stage 1 draw, nothing registered. Six candidates died at call-only probes (DESIGN_NOTE.md, Tried and rejected): balance-point class, fuel substitution, documented and undocumented price steps, and a waiting list partly treated by its assessment visits (landed by both probes at 27.47 and 28.75 against a golden of 28). The legal re-home is economics-econometrics / elasticity-welfare-policy-impact-estimation with a county programme (local_government, council_or_assembly, vote_or_meeting, programme_officer); re-draw from what the record double-counts, omits or misstates, never a per-unit effect, a recorded event or a comparison group. Scratch generator: scratchpad t304c/gen.py.",
+ "approved": null,
+ "delivered": null,
+ "portal": null,
+ "portal_id": "",
+ "portal_status": "",
+ "portal_status_date": ""
+}
