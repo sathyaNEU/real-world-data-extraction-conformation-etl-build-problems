@@ -4,11 +4,11 @@
 
 LEAK stops the ship. REVIEW is a reader's call and the /leak-check command's solver's-eye pass reads every REVIEW line. INFO is a sweep that ran and found nothing or was skipped.
 
-Stump terms swept: change, margin, register, harbourline, changes, tallis, anomaly, standard, statistics, detection, reference, decisive, discovery, ownership, period, examined, cycles, dealer, official, commissioner, sentence, day-to-day, variation, comparable, domain
+Stump terms swept: change, tallis, margin, routes, register, golden, standard, harbourline, changes, decisive, default, dealer, statistics, anomaly, reference, spread, ownership, detection, cross-section, examined, robust, exactly, pellow, period, cycles
 
 ## 4 design-note vocabulary (REVIEW 2)
-- **REVIEW** `extract_notes_2026-11-16.md`: 5 of 25 stump-paragraph terms appear (change, register, standard, reference, commissioner); read whether the document names the move
-- **REVIEW** `pass_through_monitoring_standard_PM-04.pdf`: 10 of 25 stump-paragraph terms appear (change, margin, register, changes, standard, statistics); read whether the document names the move
+- **REVIEW** `extract_notes_2026-11-16.md`: 3 of 25 stump-paragraph terms appear (change, register, standard); read whether the document names the move
+- **REVIEW** `pass_through_monitoring_standard_PM-04.pdf`: 8 of 25 stump-paragraph terms appear (change, margin, register, standard, changes, statistics); read whether the document names the move
 
 ## 6 ranking artifacts (REVIEW 2, INFO 1)
 - **REVIEW** `fuel_sales_survey_returns_2026.csv`: names 4 of 8 answer-set candidates beside numbers; confirm it does not rank them on the decision question
@@ -33,6 +33,7 @@ Stump terms swept: change, margin, register, harbourline, changes, tallis, anoma
 ## 9 dates after the setting (clean)
 
 ## 11 prompt gate (clean)
+
 
 ## Solver's-eye read
 
